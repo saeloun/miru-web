@@ -384,7 +384,7 @@ const ExpensesTable: React.FC = () => {
     ) : (
       <Badge
         variant="outline"
-        className="text-xs text-gray-600 border-gray-300"
+        className="border-border text-xs text-muted-foreground"
       >
         Personal
       </Badge>
@@ -435,7 +435,7 @@ const ExpensesTable: React.FC = () => {
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           className="-ml-4"
         >
-          <span className="text-xs font-medium text-gray-700 uppercase tracking-wider">
+          <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
             Date
           </span>
           {column.getIsSorted() === "asc" ? (
@@ -449,7 +449,7 @@ const ExpensesTable: React.FC = () => {
         const date = new Date(row.original.date);
 
         return (
-          <span className="text-sm text-gray-700">
+          <span className="text-sm text-foreground">
             {date.toLocaleDateString("en-US", {
               month: "short",
               day: "numeric",
@@ -462,17 +462,17 @@ const ExpensesTable: React.FC = () => {
     {
       accessorKey: "description",
       header: () => (
-        <span className="text-xs font-medium text-gray-700 uppercase tracking-wider">
+        <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
           Description
         </span>
       ),
       cell: ({ row }) => (
         <div>
-          <p className="text-sm font-medium text-gray-900">
+          <p className="text-sm font-medium text-foreground">
             {row.original.description}
           </p>
           {row.original.notes && (
-            <p className="text-xs text-gray-500 truncate max-w-xs mt-1">
+            <p className="mt-1 max-w-xs truncate text-xs text-muted-foreground">
               {row.original.notes}
             </p>
           )}
@@ -482,7 +482,7 @@ const ExpensesTable: React.FC = () => {
     {
       accessorKey: "category",
       header: () => (
-        <span className="text-xs font-medium text-gray-700 uppercase tracking-wider">
+        <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
           Category
         </span>
       ),
@@ -500,7 +500,7 @@ const ExpensesTable: React.FC = () => {
             >
               {category.icon}
             </span>
-            <span className="text-sm text-gray-700">{category.label}</span>
+            <span className="text-sm text-foreground">{category.label}</span>
           </div>
         );
       },
@@ -508,12 +508,12 @@ const ExpensesTable: React.FC = () => {
     {
       accessorKey: "vendor",
       header: () => (
-        <span className="text-xs font-medium text-gray-700 uppercase tracking-wider">
+        <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
           Vendor
         </span>
       ),
       cell: ({ row }) => (
-        <span className="text-sm text-gray-600">
+        <span className="text-sm text-muted-foreground">
           {row.original.vendor || "—"}
         </span>
       ),
@@ -526,7 +526,7 @@ const ExpensesTable: React.FC = () => {
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           className="-ml-4"
         >
-          <span className="text-xs font-medium text-gray-700 uppercase tracking-wider">
+          <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
             Amount
           </span>
           {column.getIsSorted() === "asc" ? (
@@ -537,7 +537,7 @@ const ExpensesTable: React.FC = () => {
         </Button>
       ),
       cell: ({ row }) => (
-        <div className="text-sm font-semibold text-gray-900">
+        <div className="text-sm font-semibold text-foreground">
           {currencyFormat(baseCurrency, row.original.amount)}
         </div>
       ),
@@ -545,7 +545,7 @@ const ExpensesTable: React.FC = () => {
     {
       accessorKey: "expenseType",
       header: () => (
-        <span className="text-xs font-medium text-gray-700 uppercase tracking-wider">
+        <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
           Type
         </span>
       ),
@@ -554,7 +554,7 @@ const ExpensesTable: React.FC = () => {
     {
       accessorKey: "status",
       header: () => (
-        <span className="text-xs font-medium text-gray-700 uppercase tracking-wider">
+        <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
           Status
         </span>
       ),
@@ -563,21 +563,21 @@ const ExpensesTable: React.FC = () => {
     {
       id: "receipts",
       header: () => (
-        <span className="text-xs font-medium text-gray-700 uppercase tracking-wider">
+        <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
           Receipts
         </span>
       ),
       cell: ({ row }) => {
         const receipts = row.original.receipts || [];
         if (receipts.length === 0) {
-          return <span className="text-gray-400 text-sm">—</span>;
+          return <span className="text-sm text-muted-foreground">—</span>;
         }
 
         return (
           <Button
             variant="ghost"
             size="sm"
-            className="text-gray-600 hover:text-gray-900"
+            className="text-muted-foreground hover:text-foreground"
             onClick={() => openReceiptsPreview(row.original)}
             aria-label={`View receipts for ${row.original.description}`}
           >
@@ -642,7 +642,7 @@ const ExpensesTable: React.FC = () => {
               {expense.status !== "paid" && (
                 <DropdownMenuItem
                   onClick={() => handleDelete(expense)}
-                  className="text-red-600"
+                  className="text-destructive focus:text-destructive"
                 >
                   <Trash size={16} className="mr-2" />
                   Delete expense
@@ -663,8 +663,8 @@ const ExpensesTable: React.FC = () => {
     return (
       <div className="flex items-center justify-center h-96">
         <div className="text-center">
-          <Receipt size={48} className="mx-auto mb-4 text-gray-400" />
-          <p className="text-gray-600">Failed to load expenses</p>
+          <Receipt size={48} className="mx-auto mb-4 text-muted-foreground" />
+          <p className="text-muted-foreground">Failed to load expenses</p>
         </div>
       </div>
     );
@@ -751,10 +751,12 @@ const ExpensesTable: React.FC = () => {
               <Calendar size={20} className="text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-semibold text-gray-900">
+              <div className="text-2xl font-semibold text-foreground">
                 {expenses.length}
               </div>
-              <p className="text-xs text-gray-500 mt-1">Expense entries</p>
+              <p className="mt-1 text-xs text-muted-foreground">
+                Expense entries
+              </p>
             </CardContent>
           </Card>
         </div>
@@ -770,8 +772,13 @@ const ExpensesTable: React.FC = () => {
               />
             ) : (
               <div className="text-center py-12">
-                <Receipt size={48} className="mx-auto mb-4 text-gray-300" />
-                <p className="text-gray-600 mb-4">No expenses recorded</p>
+                <Receipt
+                  size={48}
+                  className="mx-auto mb-4 text-muted-foreground/70"
+                />
+                <p className="mb-4 text-muted-foreground">
+                  No expenses recorded
+                </p>
                 <Button
                   variant="outline"
                   onClick={() => setShowAddDialog(true)}
