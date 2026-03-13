@@ -1,6 +1,7 @@
 import React from "react";
 import { Navigate, Outlet } from "react-router-dom";
 import { useAuthState } from "context/auth";
+import { useUserContext } from "context/UserContext";
 import { Paths } from "constants/index";
 
 interface PublicRouteProps {
@@ -15,9 +16,11 @@ const PublicRoute: React.FC<PublicRouteProps> = ({
   redirectTo = Paths.DASHBOARD,
 }) => {
   const { isLoggedIn } = useAuthState();
+  const { user } = useUserContext();
+  const isAuthenticated = isLoggedIn || Boolean(user?.email);
 
   // If logged in and trying to access a restricted route (login/signup), redirect
-  if (isLoggedIn && restricted) {
+  if (isAuthenticated && restricted) {
     return <Navigate replace to={redirectTo} />;
   }
 

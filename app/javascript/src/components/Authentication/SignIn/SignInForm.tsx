@@ -9,6 +9,7 @@ import { Formik, Form, FormikProps } from "formik";
 import { GithubIcon, GoogleSVG } from "miruIcons";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { dashboardUrl } from "utils/dashboardUrl";
 
 import { signInFormInitialValues, signInFormValidationSchema } from "./utils";
 
@@ -58,7 +59,7 @@ const SignInForm = () => {
         // Navigate to home after successful login
         toast.success("Welcome back!");
         setTimeout(() => {
-          window.location.href = "/";
+          window.location.href = dashboardUrl(company_role);
         }, 500);
       } else {
         throw new Error("No authentication token received");
