@@ -4,12 +4,14 @@ import React from "react";
 
 import { authenticationApi } from "apis/api";
 import MiruLogoWatermark from "common/MiruLogoWatermark";
+import useThemeMode from "common/useThemeMode";
 import { MiruLogoWithTextSVG } from "miruIcons";
 
 interface Props {
   email: string;
 }
 const PasswordResetLinkSentMsg = ({ email }: Props) => {
+  const themeMode = useThemeMode();
   const resendPasswordResetLink = async (email: string) => {
     if (email?.trim()) {
       await authenticationApi.forgotPassword({ email });
@@ -23,8 +25,12 @@ const PasswordResetLinkSentMsg = ({ email }: Props) => {
           <a href={MIRU_APP_URL} rel="noreferrer noopener">
             <img
               alt="Miru"
-              className="d-block mx-auto mb-4 h-10 w-auto object-contain brightness-0 dark:invert md:mb-10 lg:mb-20"
+              className="d-block mx-auto mb-4 h-10 w-auto object-contain md:mb-10 lg:mb-20"
               src={MiruLogoWithTextSVG}
+              style={{
+                filter:
+                  themeMode === "dark" ? "brightness(0) invert(1)" : "none",
+              }}
             />
           </a>
         </div>

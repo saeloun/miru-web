@@ -18,6 +18,7 @@ import {
   House,
 } from "phosphor-react";
 import { useUserContext } from "context/UserContext";
+import useThemeMode from "common/useThemeMode";
 import { cn } from "../../lib/utils";
 import { Paths } from "constants/index";
 // Branding inlined per request
@@ -95,6 +96,7 @@ const navigationItems: NavItem[] = [
 
 export const ModernNavbar: React.FC = () => {
   const { user, companyRole, isDesktop: contextIsDesktop } = useUserContext();
+  const themeMode = useThemeMode();
   const location = useLocation();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 1024);
@@ -141,7 +143,10 @@ export const ModernNavbar: React.FC = () => {
           <img
             src="/assets/miru-logo.svg"
             alt="Miru"
-            className="h-8 w-auto dark:invert"
+            className="h-8 w-auto"
+            style={{
+              filter: themeMode === "dark" ? "brightness(0) invert(1)" : "none",
+            }}
           />
           <span className="text-xl font-bold text-foreground">Miru</span>
         </div>

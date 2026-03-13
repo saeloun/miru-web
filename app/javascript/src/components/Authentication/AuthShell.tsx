@@ -118,10 +118,7 @@ const AuthShell = ({ children, description, title }: AuthShellProps) => {
                 className="h-10 w-auto object-contain transition"
                 src={MiruLogoWithTextSVG}
                 style={{
-                  filter:
-                    theme === "dark"
-                      ? "brightness(0) invert(1)"
-                      : "brightness(0)",
+                  filter: theme === "dark" ? "brightness(0) invert(1)" : "none",
                 }}
               />
             </a>
