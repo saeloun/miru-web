@@ -191,13 +191,10 @@ export const expensesApi = {
   markPaid: (id: any) => http.patch(`${expensesPath}/${id}/mark_paid`),
 };
 
-// Generate Invoice
-export const generateInvoiceApi = {
-  get: () => http.get(`/generate_invoice`),
+export const invoiceLineItemsApi = {
   getLineItems: (queryParams: string) =>
-    http.get(`/generate_invoice?${queryParams}`),
+    http.get(`/invoices/line_items?${queryParams}`),
 };
-export const generateInvoice = generateInvoiceApi;
 
 // Google Calendar
 export const googleCalendarApi = {

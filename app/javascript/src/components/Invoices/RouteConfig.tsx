@@ -1,5 +1,5 @@
 import React from "react";
-import { Navigate, Route, Routes, useParams } from "react-router-dom";
+import { Route, Routes, useParams } from "react-router-dom";
 import ErrorPage from "common/Error";
 import { useUserContext } from "context/UserContext";
 
@@ -45,12 +45,7 @@ const InvoicesRouteConfig = () => {
     <Routes>
       <Route index element={<InvoicesPage />} />
       <Route element={<InvoiceCreate />} path="new" />
-      <Route
-        element={
-          <Navigate replace to={`/invoices/new${window.location.search}`} />
-        }
-        path="generate"
-      />
+      <Route element={<ErrorPage />} path="generate" />
       <Route element={<InvoiceEdit />} path=":id/edit" />
       <Route element={<InvoiceView />} path=":id" />
 

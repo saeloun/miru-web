@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe GenerateInvoicePolicy, type: :policy do
+RSpec.describe InvoiceLineItemPolicy, type: :policy do
   let(:company) { create(:company) }
   let(:client) { create(:client, company:) }
   let(:admin) { create(:user, current_workspace_id: company.id) }
@@ -16,7 +16,7 @@ RSpec.describe GenerateInvoicePolicy, type: :policy do
   let(:another_owner) { create(:user, current_workspace_id: another_company.id) }
   let(:another_book_keeper) { create(:user, current_workspace_id: another_company.id) }
 
-  subject { described_class }
+  subject(:policy) { described_class }
 
   before do
     owner.add_role :owner, company
@@ -31,27 +31,21 @@ RSpec.describe GenerateInvoicePolicy, type: :policy do
   end
 
   permissions :index? do
-    context "when user is an admin or owner" do
-      it "grants permission" do
-        expect(described_class).to permit(admin, client)
-        expect(described_class).to permit(owner, client)
-      end
+    it "permits owners and admins in the same workspace" do
+      expect(policy).to permit(admin, client)
+      expect(policy).to permit(owner, client)
     end
 
-    context "when user is an employee, book_keeper" do
-      it "does not grant permission" do
-        expect(described_class).not_to permit(employee, client)
-        expect(described_class).not_to permit(book_keeper, client)
-      end
+    it "rejects non-finance roles in the same workspace" do
+      expect(policy).not_to permit(employee, client)
+      expect(policy).not_to permit(book_keeper, client)
     end
 
-    context "when user is from another company" do
-      it "does not grants permission" do
-        expect(described_class).not_to permit(another_admin, client)
-        expect(described_class).not_to permit(another_owner, client)
-        expect(described_class).not_to permit(another_employee, client)
-        expect(described_class).not_to permit(another_book_keeper, client)
-      end
+    it "rejects users from another workspace" do
+      expect(policy).not_to permit(another_admin, client)
+      expect(policy).not_to permit(another_owner, client)
+      expect(policy).not_to permit(another_employee, client)
+      expect(policy).not_to permit(another_book_keeper, client)
     end
   end
 end

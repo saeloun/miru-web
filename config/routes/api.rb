@@ -100,6 +100,8 @@ namespace :api, defaults: { format: "json" } do
       get "/:id/payments/success", to: "payments#success", as: "success"
     end
 
+    get "invoices/line_items", to: "invoices/line_items#index", as: :line_items_invoices
+
     resources :invoices, only: [:index, :create, :update, :show, :destroy, :edit] do
       member do
         post :send_invoice
@@ -107,8 +109,6 @@ namespace :api, defaults: { format: "json" } do
         get :download
       end
     end
-
-    resources :generate_invoice, only: [:index, :show]
     resources :project_members, only: [:update]
     resources :employments, only: [:index, :show, :update]
     resources :timezones, only: [:index]
