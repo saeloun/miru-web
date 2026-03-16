@@ -117,5 +117,14 @@ RSpec.describe "Role access redirects", type: :system, js: true do
         expect(page).to have_current_path("/error", wait: 10)
       end
     end
+
+    it "hides preferences navigation for clients" do
+      with_forgery_protection do
+        visit "/settings/profile"
+
+        expect(page).to have_current_path("/settings/profile", wait: 10)
+        expect(page).not_to have_link("Preferences")
+      end
+    end
   end
 end
