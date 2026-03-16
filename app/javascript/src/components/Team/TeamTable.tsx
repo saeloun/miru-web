@@ -70,6 +70,13 @@ interface TeamData {
   totalCount: number;
 }
 
+interface TeamMemberFormState {
+  firstName: string;
+  lastName: string;
+  email: string;
+  role: string;
+}
+
 const fetchTeamMembers = async (): Promise<TeamData> => {
   const response = await teamApi.get();
   const sanitized = unmapList(response);
@@ -94,6 +101,13 @@ const TeamTable: React.FC = () => {
     queryFn: fetchTeamMembers,
   });
 
+  const [memberForm, setMemberForm] = useState<TeamMemberFormState>({
+    firstName: "",
+    lastName: "",
+    email: "",
+    role: Roles.EMPLOYEE,
+  });
+
   const teamSeatLimitReached =
     !company?.pro_access && Boolean(company?.team_member_limit_reached);
 
@@ -111,8 +125,75 @@ const TeamTable: React.FC = () => {
     },
   });
 
+  const inviteMutation = useMutation({
+    mutationFn: async (payload: TeamMemberFormState) =>
+      teamApi.inviteMember({
+        first_name: payload.firstName,
+        last_name: payload.lastName,
+        email: payload.email,
+        recipient_email: payload.email,
+        role: payload.role,
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["team"] });
+      toast.success("Team member invited successfully");
+      setShowInviteDialog(false);
+      setMemberForm({
+        firstName: "",
+        lastName: "",
+        email: "",
+        role: Roles.EMPLOYEE,
+      });
+    },
+    onError: error => {
+      toast.error(
+        error?.response?.data?.errors || "Failed to invite team member"
+      );
+    },
+  });
+
+  const editMutation = useMutation({
+    mutationFn: async (payload: TeamMemberFormState) => {
+      if (!selectedMember) throw new Error("No team member selected");
+
+      if (selectedMember.status === "invited") {
+        return teamApi.updateInvitedMember(selectedMember.id, {
+          first_name: payload.firstName,
+          last_name: payload.lastName,
+          email: payload.email,
+          recipient_email: payload.email,
+          role: payload.role,
+        });
+      }
+
+      return teamApi.updateTeamMember(selectedMember.id, {
+        first_name: payload.firstName,
+        last_name: payload.lastName,
+        email: payload.email,
+        role: payload.role,
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["team"] });
+      toast.success("Team member updated successfully");
+      setShowEditDialog(false);
+      setSelectedMember(null);
+    },
+    onError: error => {
+      toast.error(
+        error?.response?.data?.errors || "Failed to update team member"
+      );
+    },
+  });
+
   const handleEdit = (member: TeamMember) => {
     setSelectedMember(member);
+    setMemberForm({
+      firstName: member.firstName || "",
+      lastName: member.lastName || "",
+      email: member.email || "",
+      role: member.role || Roles.EMPLOYEE,
+    });
     setShowEditDialog(true);
   };
 
@@ -137,6 +218,34 @@ const TeamTable: React.FC = () => {
         return <User size={16} className="text-muted-foreground" />;
     }
   };
+
+  const handleInviteOpen = () => {
+    setMemberForm({
+      firstName: "",
+      lastName: "",
+      email: "",
+      role: Roles.EMPLOYEE,
+    });
+    setShowInviteDialog(true);
+  };
+
+  const handleDialogClose = (setter: (value: boolean) => void) => value => {
+    setter(value);
+    if (!value) {
+      setSelectedMember(null);
+    }
+  };
+
+  const handleMemberFormChange =
+    (field: keyof TeamMemberFormState) => (event: React.ChangeEvent<any>) => {
+      setMemberForm(previous => ({ ...previous, [field]: event.target.value }));
+    };
+
+  const memberFormComplete =
+    memberForm.firstName.trim() &&
+    memberForm.lastName.trim() &&
+    memberForm.email.trim() &&
+    memberForm.role.trim();
 
   const getRoleBadge = (role: string) => {
     switch (role) {
@@ -421,7 +530,7 @@ const TeamTable: React.FC = () => {
         {isAdminUser && (
           <div className="flex flex-col items-start gap-2 md:items-end">
             <Button
-              onClick={() => setShowInviteDialog(true)}
+              onClick={handleInviteOpen}
               className="bg-primary text-primary-foreground hover:bg-primary/90"
               disabled={teamSeatLimitReached}
             >
@@ -526,7 +635,7 @@ const TeamTable: React.FC = () => {
               {isAdminUser && (
                 <Button
                   variant="outline"
-                  onClick={() => setShowInviteDialog(true)}
+                  onClick={handleInviteOpen}
                   disabled={teamSeatLimitReached}
                 >
                   <UserPlus size={20} className="mr-2" />
@@ -563,6 +672,195 @@ const TeamTable: React.FC = () => {
               disabled={deleteMutation.isPending}
             >
               {deleteMutation.isPending ? "Removing..." : "Remove"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog
+        open={showInviteDialog}
+        onOpenChange={handleDialogClose(setShowInviteDialog)}
+      >
+        <DialogContent className="border-border bg-card text-foreground sm:max-w-xl">
+          <DialogHeader>
+            <DialogTitle>Invite Member</DialogTitle>
+            <DialogDescription className="text-muted-foreground">
+              Add a new teammate to your workspace and choose their role.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="space-y-2">
+              <label
+                htmlFor="invite-member-first-name"
+                className="text-sm font-medium text-foreground"
+              >
+                First name
+              </label>
+              <input
+                id="invite-member-first-name"
+                name="firstName"
+                value={memberForm.firstName}
+                onChange={handleMemberFormChange("firstName")}
+                className="flex h-11 w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground outline-none ring-offset-background placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring"
+              />
+            </div>
+            <div className="space-y-2">
+              <label
+                htmlFor="invite-member-last-name"
+                className="text-sm font-medium text-foreground"
+              >
+                Last name
+              </label>
+              <input
+                id="invite-member-last-name"
+                name="lastName"
+                value={memberForm.lastName}
+                onChange={handleMemberFormChange("lastName")}
+                className="flex h-11 w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground outline-none ring-offset-background placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring"
+              />
+            </div>
+            <div className="space-y-2 sm:col-span-2">
+              <label
+                htmlFor="invite-member-email"
+                className="text-sm font-medium text-foreground"
+              >
+                Email
+              </label>
+              <input
+                id="invite-member-email"
+                name="email"
+                type="email"
+                value={memberForm.email}
+                onChange={handleMemberFormChange("email")}
+                className="flex h-11 w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground outline-none ring-offset-background placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring"
+              />
+            </div>
+            <div className="space-y-2 sm:col-span-2">
+              <label
+                htmlFor="invite-member-role"
+                className="text-sm font-medium text-foreground"
+              >
+                Role
+              </label>
+              <select
+                id="invite-member-role"
+                name="role"
+                value={memberForm.role}
+                onChange={handleMemberFormChange("role")}
+                className="flex h-11 w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground outline-none ring-offset-background focus-visible:ring-2 focus-visible:ring-ring"
+              >
+                <option value={Roles.ADMIN}>Admin</option>
+                <option value={Roles.EMPLOYEE}>Employee</option>
+                <option value={Roles.BOOK_KEEPER}>Bookkeeper</option>
+                <option value={Roles.CLIENT}>Client</option>
+              </select>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setShowInviteDialog(false)}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={() => inviteMutation.mutate(memberForm)}
+              disabled={!memberFormComplete || inviteMutation.isPending}
+            >
+              {inviteMutation.isPending ? "Inviting..." : "Invite Member"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog
+        open={showEditDialog}
+        onOpenChange={handleDialogClose(setShowEditDialog)}
+      >
+        <DialogContent className="border-border bg-card text-foreground sm:max-w-xl">
+          <DialogHeader>
+            <DialogTitle>Edit Member</DialogTitle>
+            <DialogDescription className="text-muted-foreground">
+              Update team member details and role for this workspace.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="space-y-2">
+              <label
+                htmlFor="edit-member-first-name"
+                className="text-sm font-medium text-foreground"
+              >
+                First name
+              </label>
+              <input
+                id="edit-member-first-name"
+                name="firstName"
+                value={memberForm.firstName}
+                onChange={handleMemberFormChange("firstName")}
+                className="flex h-11 w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground outline-none ring-offset-background placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring"
+              />
+            </div>
+            <div className="space-y-2">
+              <label
+                htmlFor="edit-member-last-name"
+                className="text-sm font-medium text-foreground"
+              >
+                Last name
+              </label>
+              <input
+                id="edit-member-last-name"
+                name="lastName"
+                value={memberForm.lastName}
+                onChange={handleMemberFormChange("lastName")}
+                className="flex h-11 w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground outline-none ring-offset-background placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring"
+              />
+            </div>
+            <div className="space-y-2 sm:col-span-2">
+              <label
+                htmlFor="edit-member-email"
+                className="text-sm font-medium text-foreground"
+              >
+                Email
+              </label>
+              <input
+                id="edit-member-email"
+                name="email"
+                type="email"
+                value={memberForm.email}
+                onChange={handleMemberFormChange("email")}
+                className="flex h-11 w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground outline-none ring-offset-background placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring"
+              />
+            </div>
+            <div className="space-y-2 sm:col-span-2">
+              <label
+                htmlFor="edit-member-role"
+                className="text-sm font-medium text-foreground"
+              >
+                Role
+              </label>
+              <select
+                id="edit-member-role"
+                name="role"
+                value={memberForm.role}
+                onChange={handleMemberFormChange("role")}
+                className="flex h-11 w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground outline-none ring-offset-background focus-visible:ring-2 focus-visible:ring-ring"
+              >
+                <option value={Roles.ADMIN}>Admin</option>
+                <option value={Roles.EMPLOYEE}>Employee</option>
+                <option value={Roles.BOOK_KEEPER}>Bookkeeper</option>
+                <option value={Roles.CLIENT}>Client</option>
+              </select>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowEditDialog(false)}>
+              Cancel
+            </Button>
+            <Button
+              onClick={() => editMutation.mutate(memberForm)}
+              disabled={!memberFormComplete || editMutation.isPending}
+            >
+              {editMutation.isPending ? "Saving..." : "Save changes"}
             </Button>
           </DialogFooter>
         </DialogContent>
