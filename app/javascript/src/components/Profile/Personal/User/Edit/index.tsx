@@ -10,7 +10,7 @@ import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import { useOutsideClick } from "helpers";
 import { teamsMapper } from "mapper/teams.mapper";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import worldCountries from "world-countries";
 import * as Yup from "yup";
 import { useCurrentUser } from "~/hooks/useCurrentUser";
@@ -42,6 +42,7 @@ const UserDetailsEdit = () => {
   };
 
   const navigate = useNavigate();
+  const { memberId } = useParams();
   const { avatarUrl, user, isDesktop, setCurrentAvatarUrl } = useUserContext();
   const { currentUser, refetch: refetchCurrentUser } = useCurrentUser();
   const { personalDetails, isCalledFromSettings, updateDetails } =
@@ -132,10 +133,9 @@ const UserDetailsEdit = () => {
         setCurrentUserId(currentUser.id);
       }
     } else {
-      // Use personalDetails.id for team view
-      setCurrentUserId(personalDetails?.id);
+      setCurrentUserId(memberId);
     }
-  }, [isCalledFromSettings, currentUser, personalDetails?.id]);
+  }, [isCalledFromSettings, currentUser, memberId]);
 
   useEffect(() => {
     if (currentUserId) {
