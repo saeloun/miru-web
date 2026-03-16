@@ -63,5 +63,21 @@ RSpec.describe "Sign-in", type: :system, js: true do
         expect(page).to have_button("Continue with GitHub")
       end
     end
+
+    it "preserves dark mode on forgot password page" do
+      with_forgery_protection do
+        visit "/login"
+
+        page.execute_script(<<~JS)
+          localStorage.setItem("miru-theme", "dark");
+          document.documentElement.classList.add("dark");
+        JS
+        click_link "Forgot password?"
+
+        expect(page).to have_current_path("/password/new")
+        expect(page).to have_button("Send password reset link")
+        expect(page.evaluate_script("document.documentElement.classList.contains('dark')")).to be(true)
+      end
+    end
   end
 end
