@@ -13,11 +13,20 @@ RSpec.describe "Inviting team member", type: :system, js: true do
     end
 
     context "when inviting team member" do
-      it "can open team page" do
+      it "opens the invite member dialog" do
         with_forgery_protection do
           visit "/team"
+
           expect(page).to have_css("#react-root", wait: 10)
           expect(page).to have_content("Team", wait: 10)
+
+          click_button "Invite Member"
+          expect(page).to have_css("[role='dialog']", text: "Invite Member")
+          expect(page).to have_field("First name")
+          expect(page).to have_field("Last name")
+          expect(page).to have_field("Email")
+          expect(page).to have_select("Role")
+          click_button "Cancel"
         end
       end
     end
