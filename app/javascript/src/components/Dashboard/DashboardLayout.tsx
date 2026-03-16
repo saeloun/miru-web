@@ -146,7 +146,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
           label: "Preferences",
           href: "/settings/preferences",
           icon: Gear,
-          roles: ["admin", "owner", "book_keeper", "employee", "client"],
+          roles: ["admin", "owner", "book_keeper", "employee"],
         },
         {
           label: "Devices",
