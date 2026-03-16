@@ -3,7 +3,7 @@
 require "rails_helper"
 
 RSpec.describe Api::V1::Reports::PaymentsController, type: :request do
-  let(:company) { create(:company) }
+  let(:company) { create(:company, plan_tier: "paid") }
   let(:client) { create(:client, company: company) }
   let(:project) { create(:project, client: client, company: company) }
   let(:user) { create(:user, current_workspace_id: company.id) }
@@ -191,13 +191,24 @@ RSpec.describe Api::V1::Reports::PaymentsController, type: :request do
 
     context "authorization" do
       let(:employee) { create(:user, current_workspace_id: company.id) }
+      let(:free_company) { create(:company, plan_tier: "free") }
+      let(:free_admin) { create(:user, current_workspace_id: free_company.id) }
 
       before do
         employee.add_role(:employee, company)
-        sign_in(employee)
       end
 
       it "denies access to employees" do
+        sign_in(employee)
+        get "/api/v1/reports/payments"
+
+        expect(response).to have_http_status(:forbidden)
+      end
+
+      it "denies access to admins on the free plan" do
+        free_admin.add_role(:admin, free_company)
+        sign_in(free_admin)
+
         get "/api/v1/reports/payments"
 
         expect(response).to have_http_status(:forbidden)
@@ -259,13 +270,24 @@ RSpec.describe Api::V1::Reports::PaymentsController, type: :request do
 
     context "authorization" do
       let(:employee) { create(:user, current_workspace_id: company.id) }
+      let(:free_company) { create(:company, plan_tier: "free") }
+      let(:free_admin) { create(:user, current_workspace_id: free_company.id) }
 
       before do
         employee.add_role(:employee, company)
-        sign_in(employee)
       end
 
       it "denies download access to employees" do
+        sign_in(employee)
+        get "/api/v1/reports/payments/download.csv"
+
+        expect(response).to have_http_status(:forbidden)
+      end
+
+      it "denies download access to admins on the free plan" do
+        free_admin.add_role(:admin, free_company)
+        sign_in(free_admin)
+
         get "/api/v1/reports/payments/download.csv"
 
         expect(response).to have_http_status(:forbidden)
