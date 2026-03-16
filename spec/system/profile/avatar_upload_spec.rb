@@ -25,11 +25,11 @@ RSpec.describe "Profile avatar upload", type: :system, js: true do
       expect(page).to have_css("#react-root", wait: 15)
 
       find("[data-testid='profile-image-input']", visible: false)
-        .set(Rails.root.join("tmp/manual-fixtures/vipul.webp"))
+        .set(Rails.root.join("spec/support/fixtures/test-image.png"))
 
-      expect(page).to have_css("[role='dialog']", wait: 10)
+      expect(page).to have_text("Adjust profile photo", wait: 10)
       expect(page).to have_button("Save photo", disabled: false, wait: 10)
-      expect(page).to have_css("[role='dialog'] img", wait: 10)
+      expect(page).to have_field("Zoom", wait: 10)
     end
   end
 end

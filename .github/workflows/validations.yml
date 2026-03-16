@@ -156,7 +156,7 @@ jobs:
           - shard_name: reports
             spec_args: "spec/system/reports"
           - shard_name: outstanding-overdue
-            spec_args: "spec/system/outstanding_overdue_reports_spec.rb"
+            spec_args: "spec/system/clients/overdue_and_outstanding_calucluation_spec.rb"
           - shard_name: teams-expenses
             spec_args: "spec/system/teams spec/system/expenses"
           - shard_name: time-tracking

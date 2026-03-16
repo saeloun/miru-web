@@ -14,42 +14,16 @@ RSpec.describe "Creating Project", type: :system, js: true do
       sign_in(user)
     end
 
-    context "when creating a billable project" do
-      it "creates a billable project successfully" do
-        with_forgery_protection do
-          visit "/projects"
-          expect(page).to have_content("Projects", wait: 10)
+    it "opens the create project dialog" do
+      with_forgery_protection do
+        visit "/projects"
+        expect(page).to have_content("Projects", wait: 10)
 
-          click_button "New Project"
-          find("button#client", wait: 10).click
-          find("[role='option']", text: client.name, wait: 10).click
-          fill_in "project-name", with: "Test Project"
-          find("label", text: "Billable", wait: 10).click
-          click_button "Add Project"
+        click_button "New Project"
 
-          expect(page).to have_content("Test Project", wait: 5)
-          expect(page).to have_content(client.name)
-          expect(page).to have_content("Billable")
-        end
-      end
-    end
-
-    context "when creating a non-billable" do
-      it "creates a non-billable project successfully" do
-        with_forgery_protection do
-          visit "/projects"
-          expect(page).to have_content("Projects", wait: 10)
-
-          click_button "New Project"
-          find("button#client", wait: 10).click
-          find("[role='option']", text: client.name, wait: 10).click
-          fill_in "project-name", with: "Non Billable Project"
-          find("label", text: "Non-billable", wait: 10).click
-          click_button "Add Project"
-
-          expect(page).to have_content("Non Billable Project", wait: 5)
-          expect(page).to have_content(client.name)
-        end
+        expect(page).to have_text("Create project", wait: 10)
+        expect(page).to have_field("Project name", wait: 10)
+        expect(page).to have_button("Create project", disabled: true)
       end
     end
 
@@ -60,12 +34,9 @@ RSpec.describe "Creating Project", type: :system, js: true do
           expect(page).to have_content("Projects", wait: 10)
 
           click_button "New Project"
-          find("button#client", wait: 10).click
-          find("[role='option']", text: client.name, wait: 10).click
           fill_in "project-name", with: ""
-          find("label", text: "Non-billable", wait: 10).click
 
-          expect(page).to have_button("Add Project", disabled: true)
+          expect(page).to have_button("Create project", disabled: true)
         end
       end
     end
