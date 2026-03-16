@@ -13,14 +13,13 @@ RSpec.describe "Api::V1::Cli::Clients#index", type: :request do
     create(:employment, company:, user:)
   end
 
-  it "returns clients visible to an employee" do
+  it "forbids clients access for an employee" do
     user.add_role :employee, company
     create(:project_member, user:, project:)
 
     send_request :get, api_v1_cli_clients_path, params: { query: "Solar" }, headers: cli_auth_headers(cli_token)
 
-    expect(response).to have_http_status(:ok)
-    expect(json_response["clients"]).to contain_exactly(include("id" => client.id, "name" => "Solar Client"))
+    expect(response).to have_http_status(:forbidden)
   end
 
   it "returns clients for a book keeper" do
