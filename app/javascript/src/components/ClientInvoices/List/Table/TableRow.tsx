@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
 
 import { currencyFormat, useDebounce } from "helpers";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Avatar, Badge, Tooltip } from "StyledComponents";
 import getStatusCssClass from "utils/getBadgeStatus";
 
@@ -9,7 +9,6 @@ const TableRow = ({ invoice, index }) => {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
   const [showToolTip, setShowToolTip] = useState<boolean>(false);
   useDebounce(isMenuOpen, 500);
-  const navigate = useNavigate();
   const toolTipRef = useRef(null);
 
   const {
@@ -36,16 +35,16 @@ const TableRow = ({ invoice, index }) => {
 
   return (
     <tr
-      className="group cursor-pointer last:border-b-0 md:hover:bg-muted"
+      className="group last:border-b-0 md:hover:bg-muted"
       id="invoicesListTableRow"
       key={index}
-      onClick={() => {
-        navigate(`/invoices/${externalViewKey}`);
-      }}
     >
       <td>
         <Tooltip content={name} show={showToolTip}>
-          <div className="flex w-40 cursor-pointer items-center py-5 pr-2 text-left font-medium tracking-normal sm:w-80 md:w-96 lg:w-full">
+          <Link
+            to={`/invoices/${externalViewKey}`}
+            className="flex w-40 items-center py-5 pr-2 text-left font-medium tracking-normal outline-none sm:w-80 md:w-96 lg:w-full"
+          >
             <Avatar url={logo} />
             <div
               className="ml-2 overflow-hidden truncate whitespace-nowrap lg:ml-4"
@@ -58,8 +57,9 @@ const TableRow = ({ invoice, index }) => {
               <h3 className="text-xs font-medium leading-4 text-muted-foreground lg:text-sm lg:leading-5">
                 {invoiceNumber}
               </h3>
+              <span className="sr-only">View invoice {invoiceNumber}</span>
             </div>
-          </div>
+          </Link>
         </Tooltip>
       </td>
       <td className="hidden w-1/4 whitespace-nowrap px-4 py-5 font-medium tracking-normal lg:table-cell lg:px-6">
