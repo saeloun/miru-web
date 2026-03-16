@@ -47,12 +47,12 @@ const UploadLogo = ({
 
   const SelectLogo = () => (
     <div className="flex flex-row items-start gap-4">
-      <div className="h-20 w-20 flex-shrink-0 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center">
+      <div className="flex h-20 w-20 flex-shrink-0 items-center justify-center rounded-lg border-2 border-dashed border-border bg-muted/30">
         <label
-          className="flex h-full w-full cursor-pointer justify-center items-center"
+          className="flex h-full w-full cursor-pointer items-center justify-center"
           htmlFor="file-input"
         >
-          <span className="text-xs font-medium text-gray-900 hover:text-gray-700">
+          <span className="text-xs font-medium text-foreground hover:text-foreground/80">
             Select File
           </span>
         </label>
@@ -65,7 +65,7 @@ const UploadLogo = ({
           onChange={onLogoChange}
         />
       </div>
-      <div className="text-xs text-gray-500 space-y-1">
+      <div className="space-y-1 text-xs text-muted-foreground">
         <p>Accepted file formats: PNG and JPG.</p>
         <p>File size should be ≤ 30 KB.</p>
         <p>Image resolution should be 1:1.</p>
@@ -75,15 +75,15 @@ const UploadLogo = ({
 
   const EditLogo = () => (
     <div className="flex flex-row items-start gap-4">
-      <div className="h-20 w-20 flex-shrink-0 border-2 border-dashed border-gray-300 rounded-lg overflow-hidden relative group">
+      <div className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-lg border-2 border-dashed border-border bg-muted/30 group">
         <img
           src={clientLogoUrl}
           alt="Client logo"
           className="h-full w-full object-cover"
         />
-        <div className="absolute inset-0 bg-white/90 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-1">
+        <div className="absolute inset-0 flex flex-col items-center justify-center gap-1 bg-background/90 opacity-0 transition-opacity group-hover:opacity-100">
           <label
-            className="text-xs font-medium text-gray-900 cursor-pointer hover:text-gray-700"
+            className="cursor-pointer text-xs font-medium text-foreground hover:text-foreground/80"
             htmlFor="file_input_edit"
           >
             Edit
@@ -107,7 +107,7 @@ const UploadLogo = ({
           )}
         </div>
       </div>
-      <div className="text-xs text-gray-500 space-y-1">
+      <div className="space-y-1 text-xs text-muted-foreground">
         <p>Accepted file formats: PNG and JPG.</p>
         <p>File size should be ≤ 30 KB.</p>
         <p>Image resolution should be 1:1.</p>
@@ -115,7 +115,7 @@ const UploadLogo = ({
     </div>
   );
 
-  if (formType == "edit" || clientLogoUrl) {
+  if (formType == "edit" && clientLogoUrl) {
     return <EditLogo />;
   }
 
