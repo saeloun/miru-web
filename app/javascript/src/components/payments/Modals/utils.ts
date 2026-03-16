@@ -4,7 +4,7 @@ export const paymentEntryInitialValues = {
   invoice: null,
   transactionDate: dayjs(),
   transactionType: null,
-  note: null,
-  amount: null,
+  note: "",
+  amount: "",
   showTransactionTypes: false,
 };
