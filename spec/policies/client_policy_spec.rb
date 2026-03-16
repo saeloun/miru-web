@@ -18,11 +18,14 @@ RSpec.describe ClientPolicy, type: :policy do
   end
 
   permissions :index? do
-    it "grants permission to an admin, employee, owner and book keeper" do
+    it "grants permission to an admin, owner and book keeper" do
       expect(described_class).to permit(owner)
       expect(described_class).to permit(admin)
-      expect(described_class).to permit(employee)
       expect(described_class).to permit(book_keeper)
+    end
+
+    it "denies permission to an employee" do
+      expect(described_class).not_to permit(employee)
     end
   end
 
