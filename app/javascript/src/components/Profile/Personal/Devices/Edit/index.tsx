@@ -12,18 +12,8 @@ import ModernEditPage from "./ModernEditPage";
 import { Device } from "../Device";
 
 const AllocatedDevicesEdit = () => {
-  const initialErrState = {
-    device_type_err: "",
-    name_err: "",
-    serial_number_err: "",
-    specifications_err: {
-      ram_err: "",
-      graphics_err: "",
-      processor_err: "",
-    },
-  };
   const navigate = useNavigate();
-  const { isDesktop, user } = useUserContext();
+  const { user } = useUserContext();
   const { memberId } = useParams();
   const { isCalledFromSettings } = useProfileContext();
 
@@ -38,7 +28,7 @@ const AllocatedDevicesEdit = () => {
   const currentUserId = shouldUseCurrentUser ? user?.id : memberId;
   const [isLoading, setIsLoading] = useState(false);
   const [devices, setDevices] = useState<Device[]>([]);
-  const [errDetails, _setErrDetails] = useState(initialErrState);
+  const [initialDevices, setInitialDevices] = useState<Device[]>([]);
 
   useEffect(() => {
     if (currentUserId) {
@@ -54,18 +44,47 @@ const AllocatedDevicesEdit = () => {
       const res: any = await deviceApi.get(currentUserId);
       const devicesDetails: Device[] = res.data.devices;
       setDevices(devicesDetails);
+      setInitialDevices(devicesDetails);
     } catch (error) {
       console.error("Failed to fetch devices:", error);
       setDevices([]);
+      setInitialDevices([]);
     } finally {
       setIsLoading(false);
     }
   };
 
+  const devicePayload = (device: Device) => ({
+    device: {
+      device_type: device.device_type,
+      name: device.name,
+      serial_number: device.serial_number,
+      specifications: device.specifications,
+    },
+  });
+
   const handleUpdateDetails = async (updatedDevices: Device[]) => {
     try {
       setIsLoading(true);
-      await deviceApi.update(currentUserId, { devices: updatedDevices });
+      const persistedDevices = updatedDevices.filter(device => device.id);
+      const newDevices = updatedDevices.filter(device => !device.id);
+      const removedDevices = initialDevices.filter(
+        device =>
+          device.id && !updatedDevices.some(updated => updated.id === device.id)
+      );
+
+      await Promise.all([
+        ...persistedDevices.map(device =>
+          deviceApi.update(currentUserId, device.id, devicePayload(device))
+        ),
+        ...newDevices.map(device =>
+          deviceApi.create(currentUserId, devicePayload(device))
+        ),
+        ...removedDevices.map(device =>
+          deviceApi.destroy(currentUserId, device.id)
+        ),
+      ]);
+
       Toastr.success("Devices updated successfully");
       navigate(`${navigateToPath}/devices`, { replace: true });
     } catch (error) {
@@ -78,22 +97,6 @@ const AllocatedDevicesEdit = () => {
 
   const handleCancelDetails = () => {
     navigate(`${navigateToPath}/devices`, { replace: true });
-  };
-
-  const addAnotherDevice = () => {
-    setDevices([
-      ...devices,
-      {
-        device_type: "",
-        name: "",
-        serial_number: "",
-        specifications: {
-          graphics: "",
-          processor: "",
-          ram: "",
-        },
-      },
-    ]);
   };
 
   return isLoading ? (

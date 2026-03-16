@@ -2,8 +2,6 @@ import React, { useState } from "react";
 import {
   Laptop,
   DeviceMobile as Smartphone,
-  DeviceTablet as Tablet,
-  Monitor,
   HardDrives as HardDrive,
   Cpu,
   Plus,
@@ -54,10 +52,7 @@ interface ModernEditPageProps {
 
 const deviceTypes = [
   { value: "laptop", label: "Laptop", icon: Laptop },
-  { value: "desktop", label: "Desktop", icon: Monitor },
   { value: "mobile", label: "Mobile", icon: Smartphone },
-  { value: "tablet", label: "Tablet", icon: Tablet },
-  { value: "other", label: "Other", icon: HardDrive },
 ];
 
 const getDeviceIcon = (type: string) => {

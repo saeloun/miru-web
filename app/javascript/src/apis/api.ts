@@ -167,8 +167,12 @@ export const companyProfileApi = { get: () => http.get(`/timezones`) };
 // Devices
 export const deviceApi = {
   get: (userId: any) => http.get(`/users/${userId}/devices`),
-  update: (userId: any, data: any) =>
-    http.patch(`/users/${userId}/devices`, data),
+  create: (userId: any, data: any) =>
+    http.post(`/users/${userId}/devices`, data),
+  update: (userId: any, deviceId: any, data: any) =>
+    http.patch(`/users/${userId}/devices/${deviceId}`, data),
+  destroy: (userId: any, deviceId: any) =>
+    http.delete(`/users/${userId}/devices/${deviceId}`),
 };
 
 // Download helper
