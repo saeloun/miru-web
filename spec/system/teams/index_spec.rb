@@ -80,5 +80,25 @@ RSpec.describe "Team Member", type: :system, js: true do
         end
       end
     end
+
+    context "when editing a team member profile" do
+      before do
+        create(:employment, company:, user:)
+        create(:employment, company:, user: employee_user)
+        user.add_role :admin, company
+        employee_user.add_role :employee, company
+        sign_in(user)
+      end
+
+      it "prefills the member details form" do
+        with_forgery_protection do
+          visit "/team/#{employee_user.id}/profile/edit"
+
+          expect(page).to have_field("first_name", with: employee_user.first_name, wait: 10)
+          expect(page).to have_field("last_name", with: employee_user.last_name)
+          expect(page).to have_field("email_id", with: employee_user.personal_email_id)
+        end
+      end
+    end
   end
 end
