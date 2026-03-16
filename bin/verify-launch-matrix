@@ -1,0 +1,47 @@
+#!/usr/bin/env ruby
+
+require "fileutils"
+require "json"
+require "shellwords"
+require "tempfile"
+require "yaml"
+
+config_path = File.expand_path("../config/launch_matrix.yml", __dir__)
+output_path = ENV.fetch(
+  "LAUNCH_MATRIX_OUTPUT",
+  File.expand_path("../tmp/launch_matrix/results.json", __dir__)
+)
+
+selected_groups = ARGV
+raw_config = YAML.safe_load(File.read(config_path), aliases: true)
+groups = raw_config.fetch("groups")
+
+selected = if selected_groups.empty?
+  groups
+else
+  groups.slice(*selected_groups)
+end
+
+abort("No launch matrix groups selected") if selected.nil? || selected.empty?
+
+payload = {
+  "roles" => raw_config.fetch("roles"),
+  "groups" => selected.map { |name, checks| { "name" => name, "checks" => checks } }
+}
+
+FileUtils.mkdir_p(File.dirname(output_path))
+
+Tempfile.create(["launch-matrix", ".json"]) do |file|
+  file.write(JSON.generate(payload))
+  file.flush
+
+  command = [
+    "mise", "exec", "--", "node",
+    File.expand_path("../script/launch_matrix/verify.mjs", __dir__),
+    file.path,
+    output_path
+  ]
+
+  success = system(*command)
+  exit($?.exitstatus || 1) unless success
+end
