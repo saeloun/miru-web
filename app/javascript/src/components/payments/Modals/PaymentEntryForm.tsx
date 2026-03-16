@@ -49,7 +49,6 @@ const PaymentEntryForm = ({
   const { isDesktop } = useUserContext();
 
   const [showDatePicker, setShowDatePicker] = useState<any>(false);
-  const [showSelectInvoice, setShowSelectInvoice] = useState<any>(false);
   const [showSelectMenu, setShowSelectMenu] = useState(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -57,17 +56,16 @@ const PaymentEntryForm = ({
   const wrapperCalendartRef = useRef(null);
 
   const navigate = useNavigate();
+  const selectedInvoiceFromUrl = invoiceId
+    ? invoiceList?.invoiceList?.find(
+        invoice => invoice.value === Number(invoiceId)
+      ) || null
+    : null;
 
-  const handleSelectedInvoice = setFieldValue => {
-    if (!invoiceList || invoiceList.length === 0) return;
-    const selectedInvoice = invoiceList.invoiceList.find(
-      invoice => invoice.value === Number(invoiceId)
-    );
-    if (selectedInvoice) {
-      setFieldValue("invoice", selectedInvoice);
-      setFieldValue("amount", selectedInvoice.amount);
-      setShowSelectInvoice(true);
-    }
+  const initialValues = {
+    ...paymentEntryInitialValues,
+    invoice: selectedInvoiceFromUrl,
+    amount: selectedInvoiceFromUrl?.amount ?? "",
   };
 
   const isAddPaymentBtnActive = (
@@ -133,7 +131,8 @@ const PaymentEntryForm = ({
 
   return (
     <Formik
-      initialValues={paymentEntryInitialValues}
+      enableReinitialize
+      initialValues={initialValues}
       onSubmit={async (values, { resetForm }) => {
         await handleAddPayment(values);
         resetForm();
@@ -141,12 +140,6 @@ const PaymentEntryForm = ({
     >
       {(props: FormikProps<PaymentEntryFormValues>) => {
         const { values, setFieldValue } = props;
-
-        if (invoiceId) {
-          handleSelectedInvoice(setFieldValue);
-        } else {
-          setShowSelectInvoice(true);
-        }
 
         const setShowTransactionTypes = visibilty => {
           setFieldValue("showTransactionTypes", visibilty);
@@ -174,103 +167,104 @@ const PaymentEntryForm = ({
             <div className="relative mt-4">
               <div className="field">
                 <div className="mt-1" id="invoice" ref={wrapperSelectRef}>
-                  {showSelectInvoice && (
-                    <div
-                      className="relative mt-3"
-                      id="invoicesList"
-                      onClick={handleShowSelectMenu}
-                    >
-                      <CustomReactSelect
-                        ignoreDisabledFontColor
-                        isDisabled
-                        isSearchable
-                        classNamePrefix="border-0 font-medium text-foreground"
-                        defaultValue={invoice}
-                        id="invoice"
-                        label="Invoice"
-                        name="invoiceSearch"
-                        options={invoiceList.invoiceList}
-                        value={invoice}
-                        components={{
-                          ValueContainer: CustomValueContainer,
-                          IndicatorSeparator: () => null,
-                        }}
-                        handleOnChange={val => {
-                          setShowSelectMenu(!showSelectMenu);
-                          setFieldValue("invoice", val);
-                          setFieldValue("amount", amount);
-                        }}
-                      />
-                      {showSelectMenu && (
-                        <div
-                          className="absolute right-0 top-0 z-15 min-h-24 w-full flex-col items-end bg-white p-2 shadow-c1 group-hover:flex"
-                          id="transactionDate"
-                          onClick={e => e.stopPropagation()}
+                  <div
+                    className="relative mt-3"
+                    id="invoicesList"
+                    onClick={handleShowSelectMenu}
+                  >
+                    <CustomReactSelect
+                      ignoreDisabledFontColor
+                      isDisabled
+                      isSearchable
+                      classNamePrefix="border-0 font-medium text-foreground"
+                      defaultValue={invoice}
+                      id="invoice"
+                      label="Invoice"
+                      name="invoiceSearch"
+                      options={invoiceList.invoiceList}
+                      value={invoice}
+                      components={{
+                        ValueContainer: CustomValueContainer,
+                        IndicatorSeparator: () => null,
+                      }}
+                      handleOnChange={val => {
+                        setShowSelectMenu(!showSelectMenu);
+                        setFieldValue("invoice", val);
+                        setFieldValue("amount", val?.amount ?? "");
+                      }}
+                    />
+                    {showSelectMenu && (
+                      <div
+                        className="absolute right-0 top-0 z-15 min-h-24 w-full flex-col items-end bg-white p-2 shadow-c1 group-hover:flex"
+                        id="transactionDate"
+                        onClick={e => e.stopPropagation()}
+                      >
+                        <Select
+                          defaultOpen
+                          value={invoice?.value?.toString() || ""}
+                          onValueChange={value => {
+                            const selectedInvoice =
+                              invoiceList.invoiceList.find(
+                                inv => inv.value.toString() === value
+                              );
+                            setShowSelectMenu(!showSelectMenu);
+                            setFieldValue("invoice", selectedInvoice);
+                            setFieldValue(
+                              "amount",
+                              selectedInvoice?.amount ?? ""
+                            );
+                          }}
                         >
-                          <Select
-                            defaultOpen
-                            value={invoice?.value?.toString() || ""}
-                            onValueChange={value => {
-                              const selectedInvoice =
-                                invoiceList.invoiceList.find(
-                                  inv => inv.value.toString() === value
-                                );
-                              setShowSelectMenu(!showSelectMenu);
-                              setFieldValue("invoice", selectedInvoice);
-                              setFieldValue("amount", selectedInvoice.amount);
-                            }}
-                          >
-                            <SelectTrigger className="m-0 mt-2 w-full border-0 font-medium text-foreground">
-                              <SelectValue placeholder="Search by client name or invoice ID" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {invoiceList.invoiceList.map(invoiceOption => (
-                                <SelectItem
-                                  key={invoiceOption.value}
-                                  value={invoiceOption.value.toString()}
-                                >
-                                  <div className="flex w-full cursor-pointer flex-col gap-2 p-2 sm:flex-row sm:items-center sm:justify-between sm:gap-0">
-                                    <div className="w-full py-2 pr-0 pl-0 text-left sm:w-2/6 sm:py-3 sm:pr-2">
-                                      <div className="truncate text-sm font-medium leading-5 text-foreground">
-                                        {invoiceOption.label}
-                                      </div>
-                                      <div className="pt-1 text-sm font-normal leading-5 text-muted-foreground">
-                                        {invoiceOption.invoiceNumber}
-                                      </div>
+                          <SelectTrigger className="m-0 mt-2 w-full border-0 font-medium text-foreground">
+                            <SelectValue placeholder="Search by client name or invoice ID" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {invoiceList.invoiceList.map(invoiceOption => (
+                              <SelectItem
+                                key={invoiceOption.value}
+                                value={invoiceOption.value.toString()}
+                              >
+                                <div className="flex w-full cursor-pointer flex-col gap-2 p-2 sm:flex-row sm:items-center sm:justify-between sm:gap-0">
+                                  <div className="w-full py-2 pr-0 pl-0 text-left sm:w-2/6 sm:py-3 sm:pr-2">
+                                    <div className="truncate text-sm font-medium leading-5 text-foreground">
+                                      {invoiceOption.label}
                                     </div>
-                                    <div className="w-full px-0 py-2 text-left sm:w-2/6 sm:px-2 sm:py-3 sm:text-right">
-                                      <div className="text-base font-bold leading-5 text-foreground">
-                                        {baseCurrency &&
-                                          currencyFormat(
-                                            baseCurrency,
-                                            invoiceOption.amount
-                                          )}
-                                      </div>
-                                      <div className="pt-1 text-sm font-medium leading-5 text-muted-foreground">
-                                        {dayjs(
-                                          invoiceOption.invoiceDate
-                                        ).format(dateFormat)}
-                                      </div>
-                                    </div>
-                                    <div className="w-full py-1 pl-0 pr-0 text-left text-sm font-semibold leading-4 tracking-wider sm:w-2/6 sm:py-3 sm:pl-2 sm:text-right">
-                                      <span className="rounded-lg">
-                                        <Badge
-                                          className={`${getStatusCssClass(
-                                            invoiceOption.status
-                                          )} uppercase`}
-                                          text={invoiceOption.status}
-                                        />
-                                      </span>
+                                    <div className="pt-1 text-sm font-normal leading-5 text-muted-foreground">
+                                      {invoiceOption.invoiceNumber}
                                     </div>
                                   </div>
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                        </div>
-                      )}
-                    </div>
-                  )}
+                                  <div className="w-full px-0 py-2 text-left sm:w-2/6 sm:px-2 sm:py-3 sm:text-right">
+                                    <div className="text-base font-bold leading-5 text-foreground">
+                                      {baseCurrency &&
+                                        currencyFormat(
+                                          baseCurrency,
+                                          invoiceOption.amount
+                                        )}
+                                    </div>
+                                    <div className="pt-1 text-sm font-medium leading-5 text-muted-foreground">
+                                      {dayjs(invoiceOption.invoiceDate).format(
+                                        dateFormat
+                                      )}
+                                    </div>
+                                  </div>
+                                  <div className="w-full py-1 pl-0 pr-0 text-left text-sm font-semibold leading-4 tracking-wider sm:w-2/6 sm:py-3 sm:pl-2 sm:text-right">
+                                    <span className="rounded-lg">
+                                      <Badge
+                                        className={`${getStatusCssClass(
+                                          invoiceOption.status
+                                        )} uppercase`}
+                                        text={invoiceOption.status}
+                                      />
+                                    </span>
+                                  </div>
+                                </div>
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
@@ -379,7 +373,9 @@ const PaymentEntryForm = ({
                 name="paymentAmount"
                 type="text"
                 value={
-                  amount && baseCurrency && currencyFormat(baseCurrency, amount)
+                  amount && baseCurrency
+                    ? currencyFormat(baseCurrency, amount)
+                    : ""
                 }
                 onChange={() => {}}
               />
