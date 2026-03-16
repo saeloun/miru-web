@@ -6,14 +6,12 @@ import { MobileEditHeader } from "common/Mobile/MobileEditHeader";
 import { useProfileContext } from "context/Profile/ProfileContext";
 import { useUserContext } from "context/UserContext";
 import { useNavigate, useParams } from "react-router-dom";
-import { useCurrentUser } from "~/hooks/useCurrentUser";
 
 import { Device } from "./Device";
 import StaticPage from "./StaticPage";
 
 const AllocatedDevicesDetails = () => {
   const { user, isDesktop } = useUserContext();
-  const { currentUser } = useCurrentUser();
   const { isCalledFromSettings } = useProfileContext();
   const navigate = useNavigate();
   const { memberId } = useParams();
@@ -53,14 +51,12 @@ const AllocatedDevicesDetails = () => {
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         {isDesktop ? (
           <div className="mb-6 flex justify-end">
-            {devices.length > 0 && (
-              <button
-                onClick={handleEdit}
-                className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
-              >
-                Edit Devices
-              </button>
-            )}
+            <button
+              onClick={handleEdit}
+              className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+            >
+              {devices.length > 0 ? "Edit Devices" : "Add Devices"}
+            </button>
           </div>
         ) : (
           <MobileEditHeader

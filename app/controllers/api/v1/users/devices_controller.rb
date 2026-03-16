@@ -27,6 +27,12 @@ class Api::V1::Users::DevicesController < Api::V1::ApplicationController
     render :update, locals: { device: }, status: 200
   end
 
+  def destroy
+    authorize device, policy_class: Users::DevicePolicy
+    device.destroy!
+    head 204
+  end
+
   private
 
     def set_user

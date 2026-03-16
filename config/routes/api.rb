@@ -166,7 +166,7 @@ namespace :api, defaults: { format: "json" } do
 
     resources :users, concerns: :addressable do
       resources :previous_employments, only: [:create, :index, :show, :update], controller: "users/previous_employments"
-      resources :devices, only: [:create, :index, :show, :update], controller: "users/devices"
+      resources :devices, only: [:create, :index, :show, :update, :destroy], controller: "users/devices"
     end
 
     resource :profile, only: [:update], controller: "profile"
