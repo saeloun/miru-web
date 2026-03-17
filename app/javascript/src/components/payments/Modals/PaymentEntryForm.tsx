@@ -195,7 +195,7 @@ const PaymentEntryForm = ({
                     />
                     {showSelectMenu && (
                       <div
-                        className="absolute right-0 top-0 z-15 min-h-24 w-full flex-col items-end bg-white p-2 shadow-c1 group-hover:flex"
+                        className="absolute right-0 top-0 z-15 min-h-24 w-full flex-col items-end rounded-md border border-border bg-background p-2 shadow-c1 group-hover:flex"
                         id="transactionDate"
                         onClick={e => e.stopPropagation()}
                       >
@@ -278,8 +278,9 @@ const PaymentEntryForm = ({
                 <CustomInputText
                   readOnly
                   id="transactionDate"
-                  inputBoxClassName="cursor-pointer"
+                  inputBoxClassName="cursor-pointer bg-background text-foreground"
                   label="Transaction Date"
+                  labelClassName="absolute top-0.5 left-1 h-6 z-1 origin-0 bg-background p-2 text-base font-medium duration-300 text-muted-foreground"
                   name="transactionDate"
                   type="text"
                   value={
@@ -367,9 +368,9 @@ const PaymentEntryForm = ({
               <CustomInputText
                 disabled
                 id="paymentAmount"
-                inputBoxClassName="form__input block w-full appearance-none bg-white p-4 text-base h-12 focus-within:border-primary border-border"
+                inputBoxClassName="form__input block h-12 w-full appearance-none border-border bg-background p-4 text-base text-foreground focus-within:border-primary"
                 label="Payment amount"
-                labelClassName="absolute top-0.5 left-1 h-6 z-1 origin-0 bg-white p-2 text-base font-medium duration-300 text-muted-foreground"
+                labelClassName="absolute top-0.5 left-1 h-6 z-1 origin-0 bg-background p-2 text-base font-medium duration-300 text-muted-foreground"
                 name="paymentAmount"
                 type="text"
                 value={
