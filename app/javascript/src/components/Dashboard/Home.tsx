@@ -1,7 +1,7 @@
 import { Roles, Paths } from "constants/index";
 import { ROUTES } from "constants/routes";
 
-import React from "react";
+import React, { Suspense } from "react";
 
 import ErrorPage from "common/Error";
 import Cookies from "js-cookie";
@@ -90,7 +90,17 @@ const Home = (props: Iprops) => {
           >
             {parentRoute.subRoutes.map(({ path, Component }) => (
               <Route
-                element={<Component {...props} />}
+                element={
+                  <Suspense
+                    fallback={
+                      <div className="flex min-h-[40vh] items-center justify-center px-6 text-sm text-muted-foreground">
+                        Loading…
+                      </div>
+                    }
+                  >
+                    <Component {...props} />
+                  </Suspense>
+                }
                 key={path}
                 path={path}
               />
