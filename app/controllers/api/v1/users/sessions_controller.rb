@@ -3,6 +3,7 @@
 class Api::V1::Users::SessionsController < Devise::SessionsController
   skip_before_action :verify_authenticity_token, only: :create
   include Authenticable
+  include AuthResponsePayload
   include CurrentCompanyConcern
 
   before_action :authenticate_user_using_x_auth_token, only: :me
@@ -154,33 +155,6 @@ class Api::V1::Users::SessionsController < Devise::SessionsController
         }
       }, status: 200
     end
-
-    def safe_user_payload(user)
-      user.as_json(only: [:id, :email, :first_name, :last_name, :current_workspace_id])
-    end
-
-    def company_payload(company)
-      return nil unless company
-
-      company.attributes.slice(
-        "id",
-        "name",
-        "base_currency",
-        "fiscal_year_end",
-        "date_format",
-        "business_phone",
-        "tax_id",
-        "plan_tier"
-      ).merge(
-        "pro_access" => company.pro_access?,
-        "current_plan_label" => company.current_plan_label,
-        "team_member_limit" => company.team_member_limit,
-        "used_team_seats" => company.used_team_seats,
-        "reserved_team_seats" => company.reserved_team_seats,
-        "team_member_limit_reached" => company.team_member_limit_reached?
-      )
-    end
-
     def passkey_login_required?(user)
       user.passkey_required_for_login? && user.passkeys.exists? && params[:app].blank?
     end
