@@ -69,7 +69,7 @@ RSpec.configure do |config|
 
   # Configure system tests with Cuprite
   config.before(:each, type: :system) do
-    driven_by :cuprite
+    driven_by(ENV["CI"].present? ? :cuprite_headless : :cuprite)
     Capybara.default_max_wait_time = 5
   end
 
