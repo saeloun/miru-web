@@ -234,6 +234,65 @@ groups:
           - Free for every plan
         min_buttons: 6
 
+  owner_actions:
+    - name: owner_payments_manual_entry_dark
+      role: owner
+      theme: dark
+      path: /payments
+      wait_ms: 4000
+      actions:
+        click_controls:
+          - Add manual entry
+      expect:
+        final_path: /payments
+        contains_text:
+          - Add Payment
+          - Record a manual payment against an invoice.
+        visible_controls:
+          - ADD PAYMENT
+        min_buttons: 10
+        min_inputs: 4
+        enforce_dark_inputs: true
+    - name: owner_expense_dialog_dark
+      role: owner
+      theme: dark
+      path: /expenses
+      wait_ms: 4000
+      actions:
+        click_controls:
+          - Add Expense
+      expect:
+        final_path: /expenses
+        contains_text:
+          - Add Expense
+          - Category
+          - Amount
+        visible_controls:
+          - Add Expense
+        min_buttons: 10
+        min_inputs: 4
+        enforce_dark_inputs: true
+    - name: owner_team_invite_dark
+      role: owner
+      theme: dark
+      path: /team
+      wait_ms: 4000
+      actions:
+        click_controls:
+          - Invite Member
+      expect:
+        final_path: /team
+        contains_text:
+          - Invite Member
+          - First name
+          - Last name
+          - Email
+        visible_controls:
+          - Invite Member
+        min_buttons: 10
+        min_inputs: 4
+        enforce_dark_inputs: true
+
   employee_core:
     - name: employee_time_tracking_dark
       role: employee
