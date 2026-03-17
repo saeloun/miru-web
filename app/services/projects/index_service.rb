@@ -38,7 +38,7 @@ module Projects
       end
 
       def search_query
-        @_search_query ||= search_term.to_s.strip
+        @_search_query ||= ActiveRecord::Base.sanitize_sql_like(search_term.to_s.strip)
       end
 
       def client_list

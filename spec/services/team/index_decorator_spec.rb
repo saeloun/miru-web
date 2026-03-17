@@ -109,6 +109,26 @@ RSpec.describe Team::IndexDecorator do
       end
     end
 
+    context "with wildcard characters in the query" do
+      let(:query) { "%" }
+      let!(:special_employee) { create(:user, first_name: "Percent", last_name: "User", email: "100%real@example.com") }
+      let!(:normal_employee) { create(:user, first_name: "Normal", last_name: "User", email: "normal@example.com") }
+      let!(:special_employment) { create(:employment, user: special_employee, company: company) }
+      let!(:normal_employment) { create(:employment, user: normal_employee, company: company) }
+      let!(:special_invitation) { create(:invitation, company: company, recipient_email: "invite%team@example.com", first_name: "Invite", last_name: "Percent") }
+
+      before do
+        special_employee.add_role(:employee, company)
+        normal_employee.add_role(:employee, company)
+      end
+
+      it "treats wildcard characters as literals" do
+        result = subject[:combined_data]
+
+        expect(result.pluck(:email)).to contain_exactly("100%real@example.com", "invite%team@example.com")
+      end
+    end
+
     context "with client role employees" do
       let!(:employee) { create(:user) }
       let!(:client_employee) { create(:user) }

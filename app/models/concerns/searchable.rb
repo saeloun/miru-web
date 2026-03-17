@@ -24,7 +24,7 @@ module Searchable
         results = pg_search(query)
       elsif column_names.include?("name")
         # Fallback to basic search on name column if it exists
-        results = where("name ILIKE ?", "%#{query}%")
+        results = where("name ILIKE ?", "%#{sanitize_sql_like(query)}%")
       else
         # If no search capability, return all records
         results = all

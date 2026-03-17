@@ -110,13 +110,14 @@ module PgSearchable
 
         conn = connection
         quoted_table = conn.quote_table_name(table_name)
+        sanitized_query = ActiveRecord::Base.sanitize_sql_like(query.to_s)
 
         conditions = columns.map do |col|
           quoted_col = conn.quote_column_name(col)
           "LOWER(#{quoted_table}.#{quoted_col}::text) LIKE LOWER(:query)"
         end.join(" OR ")
 
-        scope.where(conditions, query: "%#{query}%")
+        scope.where(conditions, query: "%#{sanitized_query}%")
       end
 
       def self.database_supports_trigrams?
