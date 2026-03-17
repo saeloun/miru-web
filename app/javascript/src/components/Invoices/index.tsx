@@ -78,11 +78,15 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
     loadInvoices();
     loadClients();
 
-    // If we have an initial invoice ID, load that invoice
-    if (
-      initialInvoiceId &&
-      (initialMode === "edit" || initialMode === "preview")
-    ) {
+    if (!initialInvoiceId) return;
+
+    if (initialMode === "edit") {
+      handleEditInvoice(initialInvoiceId);
+
+      return;
+    }
+
+    if (initialMode === "preview") {
       handleViewInvoice(initialInvoiceId);
     }
   }, [initialInvoiceId, initialMode]);

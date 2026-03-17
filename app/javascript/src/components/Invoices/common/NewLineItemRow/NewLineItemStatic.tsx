@@ -97,6 +97,7 @@ const NewLineItemStatic = ({
         <td className="relative px-1 py-3 text-right text-base font-normal text-foreground ">
           <div onClick={() => setShowDatePicker(!showDatePicker)}>
             <input
+              readOnly
               placeholder="Select Date"
               type="text"
               value={lineItemDate}

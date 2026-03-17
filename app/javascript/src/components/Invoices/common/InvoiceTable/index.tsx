@@ -89,7 +89,7 @@ const InvoiceTable = ({
     }
 
     return (
-      <div className="flex h-10 items-center justify-center sm:h-48">
+      <div className="flex h-10 items-center justify-center rounded-md border border-border/60 bg-card px-4 text-sm text-muted-foreground sm:h-48">
         Please select Client to add line item.
       </div>
     );
@@ -102,9 +102,9 @@ const InvoiceTable = ({
           <td className="relative w-full pt-4 pr-10" colSpan={6}>
             <button
               disabled={!selectedClient}
-              className={`hoverButton w-full rounded-md border-2 border-dashed  bg-white py-1 pr-10 text-center text-base font-bold tracking-widest ${
+              className={`hoverButton w-full rounded-md border-2 border-dashed bg-card py-1 pr-10 text-center text-base font-bold tracking-widest transition-colors ${
                 selectedClient
-                  ? "border-border text-muted-foreground"
+                  ? "border-primary/40 text-foreground hover:border-primary/60 hover:bg-accent"
                   : "border-border text-muted-foreground"
               }`}
               onClick={() => setAddNew(!addNew)}
@@ -143,7 +143,7 @@ const InvoiceTable = ({
     return (
       <tr>
         <td colSpan={5}>
-          <div className="shadow-2 mt-4 flex h-10 w-full items-center justify-center bg-white sm:h-48">
+          <div className="shadow-2 mt-4 flex h-10 w-full items-center justify-center rounded-md border border-border/60 bg-card px-4 text-sm text-muted-foreground sm:h-48">
             Please select Client to add line item.
           </div>
         </td>
