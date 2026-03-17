@@ -285,18 +285,10 @@ const ReportsTable: React.FC = () => {
                         {report.category.charAt(0).toUpperCase() +
                           report.category.slice(1)}
                       </Badge>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="text-muted-foreground hover:text-foreground"
-                        onClick={e => {
-                          e.stopPropagation();
-                          // Handle export
-                        }}
-                      >
+                      <span className="inline-flex items-center text-sm text-muted-foreground">
                         <Download size={16} className="mr-1" />
                         Export
-                      </Button>
+                      </span>
                     </div>
                   </CardContent>
                 </Card>
