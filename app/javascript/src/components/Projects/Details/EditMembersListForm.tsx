@@ -85,6 +85,7 @@ const EditMembersListForm = ({
                   <Input
                     disabled
                     id={`member-${memberIndex}`}
+                    readOnly
                     value={selectedMember?.name || member.name || ""}
                   />
                 ) : (
