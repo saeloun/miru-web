@@ -3,7 +3,6 @@
 module Api::V1
   module Reports
     class PaymentsController < Api::V1::ApplicationController
-      before_action :authenticate_user!
       after_action :verify_authorized
 
       def index
@@ -137,10 +136,6 @@ module Api::V1
               label: method.humanize
             }
           end
-        end
-
-        def current_company
-          @_current_company ||= current_user.current_workspace
         end
     end
   end
