@@ -19,6 +19,7 @@ import { CustomInputText } from "common/CustomInputText";
 import { CustomReactSelect } from "common/CustomReactSelect";
 import { Divider } from "common/Divider";
 import { ErrorSpan } from "common/ErrorSpan";
+import PasskeysPanel from "./PasskeysPanel";
 
 const inputClass =
   "form__input block h-12 w-full appearance-none bg-background p-4 text-sm focus-within:border-primary";
@@ -56,6 +57,13 @@ const MobileEditDetails = ({
   setErrDetails,
   handleCurrentPasswordChange,
   currentPassword,
+  canManagePasskeys,
+  onRegisterPasskey,
+  onRemovePasskey,
+  onTogglePasskeyRequirement,
+  passkeyRequiredForLogin,
+  passkeys,
+  passkeysBusy,
 }) => {
   const handlePasswordChange = () => {
     if (changePassword) {
@@ -586,6 +594,15 @@ const MobileEditDetails = ({
           </div>
         </div>
       </div>
+      <PasskeysPanel
+        busy={passkeysBusy}
+        canManage={canManagePasskeys}
+        onRegister={onRegisterPasskey}
+        onRemove={onRemovePasskey}
+        onToggleRequirement={onTogglePasskeyRequirement}
+        passkeyRequiredForLogin={passkeyRequiredForLogin}
+        passkeys={passkeys}
+      />
       <Divider />
       <div className="flex flex-row justify-between py-4">
         <button

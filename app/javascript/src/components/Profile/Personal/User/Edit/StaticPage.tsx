@@ -23,6 +23,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "../../../../ui/card";
 import { Input } from "../../../../ui/input";
 import { Button } from "../../../../ui/button";
 import { Separator } from "../../../../ui/separator";
+import PasskeysPanel from "./PasskeysPanel";
 
 const EditProfilePage = ({
   avatarSection,
@@ -57,6 +58,13 @@ const EditProfilePage = ({
   setShowConfirmPassword,
   dateFormat,
   cancelPasswordChange,
+  canManagePasskeys,
+  onRegisterPasskey,
+  onRemovePasskey,
+  onTogglePasskeyRequirement,
+  passkeyRequiredForLogin,
+  passkeys,
+  passkeysBusy,
 }) => (
   <div className="min-h-screen bg-background font-geist">
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -430,6 +438,15 @@ const EditProfilePage = ({
               </div>
             </CardContent>
           </Card>
+          <PasskeysPanel
+            busy={passkeysBusy}
+            canManage={canManagePasskeys}
+            onRegister={onRegisterPasskey}
+            onRemove={onRemovePasskey}
+            onToggleRequirement={onTogglePasskeyRequirement}
+            passkeyRequiredForLogin={passkeyRequiredForLogin}
+            passkeys={passkeys}
+          />
         </div>
         {/* Side Column */}
         <div className="space-y-6">

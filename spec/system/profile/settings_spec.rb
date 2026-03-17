@@ -105,4 +105,16 @@ RSpec.describe "Profile Settings", type: :system, js: true do
       expect(page).to have_content("Current Employment", wait: 10)
     end
   end
+
+  it "shows passkey controls on the security settings card" do
+    with_forgery_protection do
+      visit "/settings/profile/edit"
+
+      expect(page).to have_css("#react-root", wait: 10)
+      expect(page).to have_content("Passkeys", wait: 10)
+      expect(page).to have_content("Add a passkey for this account", wait: 10)
+      expect(page).to have_button("Add passkey", wait: 10)
+      expect(page).to have_content("Require passkey on sign in", wait: 10)
+    end
+  end
 end

@@ -12,6 +12,14 @@ namespace :api, defaults: { format: "json" } do
         put "reset_password", to: "passwords#update", as: "reset_password"
         post "resend_confirmation_email", to: "confirmations#create", as: "resend_confirmation_email"
       end
+
+      resources :passkeys, only: [:index, :create, :destroy] do
+        collection do
+          post :registration_options
+          post :authenticate
+          patch :requirement, action: :update_requirement
+        end
+      end
     end
 
     resources :clients, only: [:index, :update, :destroy, :show, :create] do

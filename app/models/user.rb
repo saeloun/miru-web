@@ -33,6 +33,7 @@ class User < ApplicationRecord
   has_one_attached :avatar
   has_many :addresses, as: :addressable, dependent: :destroy
   has_many :devices, dependent: :destroy
+  has_many :passkeys, dependent: :destroy
   has_many :invitations, foreign_key: "sender_id", dependent: :destroy
   has_secure_token :token, length: 50
   has_many :projects, through: :project_members
@@ -166,6 +167,13 @@ class User < ApplicationRecord
     return nil unless avatar.attached?
 
     Rails.application.routes.url_helpers.polymorphic_url(avatar, only_path: true)
+  end
+
+  def ensure_webauthn_id!
+    return webauthn_id if webauthn_id.present?
+
+    update!(webauthn_id: ::WebAuthn.generate_user_id)
+    webauthn_id
   end
 
   private

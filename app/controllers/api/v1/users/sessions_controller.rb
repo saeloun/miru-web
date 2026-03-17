@@ -16,6 +16,10 @@ class Api::V1::Users::SessionsController < Devise::SessionsController
       render_invalid_password_error
     elsif !user.confirmed?
       render_unconfirmed_user_error(user)
+    elsif passkey_login_unsupported?(user)
+      render_passkey_unsupported_error
+    elsif passkey_login_required?(user)
+      render_passkey_challenge(user)
     else
       handle_successful_sign_in(user)
     end
@@ -66,6 +70,12 @@ class Api::V1::Users::SessionsController < Devise::SessionsController
       }, status: 422
     end
 
+    def render_passkey_unsupported_error
+      render json: {
+        error: "This account requires a passkey. Sign in from the web app to continue."
+      }, status: 422
+    end
+
     def handle_successful_sign_in(user)
       sign_in(user)
 
@@ -90,6 +100,28 @@ class Api::V1::Users::SessionsController < Devise::SessionsController
         user: user_data,
         company_role: user.roles.find_by(resource: current_company)&.name,
         company: company_payload(current_company)
+      }, status: 200
+    end
+
+    def render_passkey_challenge(user)
+      options = ::WebAuthn::RelyingParty.new(
+        allowed_origins: [request.base_url],
+        id: request.host,
+        name: "Miru"
+      ).options_for_authentication(
+        allow: user.passkeys.pluck(:external_id),
+        user_verification: "preferred"
+      )
+
+      render json: {
+        requires_passkey: true,
+        public_key: options,
+        pending_token: Passkeys::ChallengeToken.issue(
+          "challenge" => options.challenge,
+          "user_id" => user.id,
+          "type" => "authentication",
+          "app" => params[:app].presence || "web"
+        )
       }, status: 200
     end
 
@@ -147,5 +179,13 @@ class Api::V1::Users::SessionsController < Devise::SessionsController
         "reserved_team_seats" => company.reserved_team_seats,
         "team_member_limit_reached" => company.team_member_limit_reached?
       )
+    end
+
+    def passkey_login_required?(user)
+      user.passkey_required_for_login? && user.passkeys.exists? && params[:app].blank?
+    end
+
+    def passkey_login_unsupported?(user)
+      user.passkey_required_for_login? && user.passkeys.exists? && params[:app].present?
     end
 end

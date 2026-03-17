@@ -2,7 +2,7 @@ import { Paths } from "constants/index";
 
 import React, { useRef, useState } from "react";
 
-import { authenticationApi } from "apis/api";
+import { authenticationApi, passkeysApi } from "apis/api";
 import { InputErrors, InputField } from "common/FormikFields";
 import { useAuthDispatch } from "context/auth";
 import { Formik, Form, FormikProps } from "formik";
@@ -10,6 +10,7 @@ import { GithubIcon, GoogleSVG } from "miruIcons";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { dashboardUrl } from "utils/dashboardUrl";
+import { beginPasskeyAuthentication } from "utils/passkeys";
 
 import { signInFormInitialValues, signInFormValidationSchema } from "./utils";
 
@@ -30,40 +31,59 @@ const SignInForm = () => {
 
   const googleOauth = useRef(null);
   const githubOauth = useRef(null);
+  const [isPasskeyPending, setIsPasskeyPending] = useState(false);
   const csrfToken =
     document.querySelector('[name="csrf-token"]')?.getAttribute("content") ||
     "";
 
+  const completeLogin = ({ company, company_role, user }) => {
+    if (!user?.token) {
+      throw new Error("No authentication token received");
+    }
+
+    authDispatch({
+      type: "LOGIN",
+      payload: {
+        token: user.token,
+        email: user.email,
+      },
+    });
+
+    localStorage.setItem("user", JSON.stringify(user));
+    localStorage.setItem("company_role", company_role || "");
+    if (company) {
+      localStorage.setItem("company", JSON.stringify(company));
+    }
+
+    toast.success("Welcome back!");
+    setTimeout(() => {
+      window.location.href = dashboardUrl(company_role);
+    }, 500);
+  };
+
   const handleSignInFormSubmit = async (values: any, { setFieldError }) => {
     try {
       const res = await authenticationApi.signin(values);
-      const { user, company_role, company } = res.data;
 
-      if (user?.token) {
-        // Store auth credentials
-        authDispatch({
-          type: "LOGIN",
-          payload: {
-            token: user.token,
-            email: user.email,
-          },
+      if (res.data?.requires_passkey) {
+        setIsPasskeyPending(true);
+        toast.message("Complete passkey verification to finish signing in.");
+
+        const credential = await beginPasskeyAuthentication(
+          res.data.public_key
+        );
+
+        const passkeyResponse = await passkeysApi.authenticate({
+          credential,
+          pending_token: res.data.pending_token,
         });
 
-        // Store full user data for context
-        localStorage.setItem("user", JSON.stringify(user));
-        localStorage.setItem("company_role", company_role || "");
-        if (company) {
-          localStorage.setItem("company", JSON.stringify(company));
-        }
+        completeLogin(passkeyResponse.data);
 
-        // Navigate to home after successful login
-        toast.success("Welcome back!");
-        setTimeout(() => {
-          window.location.href = dashboardUrl(company_role);
-        }, 500);
-      } else {
-        throw new Error("No authentication token received");
+        return;
       }
+
+      completeLogin(res.data);
     } catch (error) {
       if (error?.response?.data?.unconfirmed) {
         navigate(`/email_confirmation?email=${values.email}`);
@@ -74,6 +94,8 @@ const SignInForm = () => {
       } else {
         toast.error("Login failed. Please try again.");
       }
+    } finally {
+      setIsPasskeyPending(false);
     }
   };
 
@@ -217,8 +239,9 @@ const SignInForm = () => {
                           ? "cursor-not-allowed border-border bg-muted text-muted-foreground"
                           : "cursor-pointer border-transparent bg-primary text-primary-foreground hover:bg-primary/90"
                       }`}
+                      disabled={isBtnDisabled(values) || isPasskeyPending}
                     >
-                      Sign in
+                      {isPasskeyPending ? "Waiting for passkey..." : "Sign in"}
                     </button>
                   </div>
                 </Form>

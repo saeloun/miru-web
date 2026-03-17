@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_03_11_124500) do
+ActiveRecord::Schema[8.0].define(version: 2026_03_17_120100) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_stat_statements"
@@ -541,6 +541,19 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_11_124500) do
     t.index ["user_id"], name: "index_notification_preferences_on_user_id"
   end
 
+  create_table "passkeys", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "external_id", null: false
+    t.text "public_key", null: false
+    t.bigint "sign_count", default: 0, null: false
+    t.string "nickname"
+    t.datetime "last_used_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["external_id"], name: "index_passkeys_on_external_id", unique: true
+    t.index ["user_id"], name: "index_passkeys_on_user_id"
+  end
+
   create_table "payments", force: :cascade do |t|
     t.bigint "invoice_id", null: false
     t.date "transaction_date", null: false
@@ -825,6 +838,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_11_124500) do
     t.string "token", limit: 50
     t.boolean "calendar_enabled", default: true
     t.boolean "calendar_connected", default: true
+    t.string "webauthn_id"
+    t.boolean "passkey_required_for_login", default: false, null: false
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token"
     t.index ["current_workspace_id"], name: "index_users_on_current_workspace_id"
     t.index ["discarded_at"], name: "index_users_on_discarded_at"
@@ -833,6 +848,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_11_124500) do
     t.index ["first_name"], name: "index_users_on_first_name_trgm", opclass: :gin_trgm_ops, using: :gin
     t.index ["last_name"], name: "index_users_on_last_name_trgm", opclass: :gin_trgm_ops, using: :gin
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
+    t.index ["webauthn_id"], name: "index_users_on_webauthn_id", unique: true
   end
 
   create_table "users_roles", id: false, force: :cascade do |t|
@@ -902,6 +918,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_11_124500) do
   add_foreign_key "leaves", "companies"
   add_foreign_key "notification_preferences", "companies"
   add_foreign_key "notification_preferences", "users"
+  add_foreign_key "passkeys", "users"
   add_foreign_key "payments", "invoices"
   add_foreign_key "payments_providers", "companies"
   add_foreign_key "previous_employments", "users"
