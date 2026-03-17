@@ -1,6 +1,6 @@
 import React, { Fragment, useEffect, useRef, useState } from "react";
 
-import { profileApi, teamsApi } from "apis/api";
+import { passkeysApi, profileApi, teamsApi } from "apis/api";
 import Loader from "common/Loader/index";
 import { MobileDetailsHeader } from "common/Mobile/MobileDetailsHeader";
 import EditHeader from "components/Profile/Common/EditHeader";
@@ -11,6 +11,8 @@ import utc from "dayjs/plugin/utc";
 import { useOutsideClick } from "helpers";
 import { teamsMapper } from "mapper/teams.mapper";
 import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "sonner";
+import { beginPasskeyRegistration } from "utils/passkeys";
 import worldCountries from "world-countries";
 import * as Yup from "yup";
 import { useCurrentUser } from "~/hooks/useCurrentUser";
@@ -69,6 +71,9 @@ const UserDetailsEdit = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [passkeys, setPasskeys] = useState([]);
+  const [passkeyRequiredForLogin, setPasskeyRequiredForLogin] = useState(false);
+  const [passkeysBusy, setPasskeysBusy] = useState(false);
 
   const navigateToPath = isCalledFromSettings
     ? "/settings"
@@ -144,6 +149,24 @@ const UserDetailsEdit = () => {
       getDetails();
     }
   }, [currentUserId]);
+
+  const syncPasskeys = data => {
+    setPasskeys(data.passkeys || []);
+    setPasskeyRequiredForLogin(!!data.passkey_required_for_login);
+  };
+
+  const loadPasskeys = async () => {
+    if (!isCalledFromSettings) return;
+
+    const response = await passkeysApi.index();
+    syncPasskeys(response.data);
+  };
+
+  useEffect(() => {
+    if (isCalledFromSettings && currentUserId) {
+      loadPasskeys();
+    }
+  }, [isCalledFromSettings, currentUserId]);
 
   const cancelPasswordChange = () => {
     setChangePassword(false);
@@ -320,6 +343,65 @@ const UserDetailsEdit = () => {
     await refetchCurrentUser();
   };
 
+  const handleRegisterPasskey = async () => {
+    try {
+      setPasskeysBusy(true);
+      const optionsResponse = await passkeysApi.registrationOptions();
+      const credential = await beginPasskeyRegistration(
+        optionsResponse.data.public_key
+      );
+
+      const response = await passkeysApi.create({
+        challenge_token: optionsResponse.data.challenge_token,
+        credential,
+      });
+
+      syncPasskeys(response.data);
+      toast.success("Passkey added");
+    } catch (error) {
+      toast.error(
+        error?.response?.data?.error ||
+          error.message ||
+          "Failed to add passkey."
+      );
+    } finally {
+      setPasskeysBusy(false);
+    }
+  };
+
+  const handleRemovePasskey = async id => {
+    try {
+      setPasskeysBusy(true);
+      const response = await passkeysApi.destroy(id);
+      syncPasskeys(response.data);
+      toast.success("Passkey removed");
+    } catch (error) {
+      toast.error(error?.response?.data?.error || "Failed to remove passkey.");
+    } finally {
+      setPasskeysBusy(false);
+    }
+  };
+
+  const handleTogglePasskeyRequirement = async required => {
+    try {
+      setPasskeysBusy(true);
+      const response = await passkeysApi.updateRequirement({ required });
+      syncPasskeys(response.data);
+      toast.success(
+        required
+          ? "Passkey requirement enabled"
+          : "Passkey requirement disabled"
+      );
+    } catch (error) {
+      toast.error(
+        error?.response?.data?.error ||
+          "Failed to update passkey sign-in requirement."
+      );
+    } finally {
+      setPasskeysBusy(false);
+    }
+  };
+
   return (
     <Fragment>
       {isDesktop && (
@@ -379,6 +461,13 @@ const UserDetailsEdit = () => {
               showCurrentPassword={showCurrentPassword}
               showDatePicker={showDatePicker}
               showPassword={showPassword}
+              canManagePasskeys={isCalledFromSettings}
+              onRegisterPasskey={handleRegisterPasskey}
+              onRemovePasskey={handleRemovePasskey}
+              onTogglePasskeyRequirement={handleTogglePasskeyRequirement}
+              passkeyRequiredForLogin={passkeyRequiredForLogin}
+              passkeys={passkeys}
+              passkeysBusy={passkeysBusy}
               updateBasicDetails={updateBasicDetails}
               wrapperRef={wrapperRef}
             />
@@ -435,6 +524,13 @@ const UserDetailsEdit = () => {
               showCurrentPassword={showCurrentPassword}
               showDatePicker={showDatePicker}
               showPassword={showPassword}
+              canManagePasskeys={isCalledFromSettings}
+              onRegisterPasskey={handleRegisterPasskey}
+              onRemovePasskey={handleRemovePasskey}
+              onTogglePasskeyRequirement={handleTogglePasskeyRequirement}
+              passkeyRequiredForLogin={passkeyRequiredForLogin}
+              passkeys={passkeys}
+              passkeysBusy={passkeysBusy}
               updateBasicDetails={updateBasicDetails}
               wrapperRef={wrapperRef}
             />

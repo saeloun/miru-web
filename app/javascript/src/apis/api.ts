@@ -115,6 +115,17 @@ export const authenticationApi = {
   },
 };
 
+export const passkeysApi = {
+  index: () => http.get("/users/passkeys"),
+  registrationOptions: () => http.post("/users/passkeys/registration_options"),
+  create: (payload: any) => http.post("/users/passkeys", payload),
+  authenticate: (payload: any) =>
+    http.post("/users/passkeys/authenticate", payload),
+  updateRequirement: (payload: any) =>
+    http.patch("/users/passkeys/requirement", payload),
+  destroy: (id: number) => http.delete(`/users/passkeys/${id}`),
+};
+
 // Clients
 const clientsPath = "/clients";
 const multipartHeaders = { headers: { "Content-Type": "multipart/form-data" } };
