@@ -17,6 +17,20 @@ import AppWithUserData from "../src/components/AppWithUserData";
 Rails.start();
 ActiveStorage.start();
 
+const THEME_STORAGE_KEY = "miru-theme";
+
+const applyInitialTheme = () => {
+  const savedTheme = window.localStorage.getItem(THEME_STORAGE_KEY);
+  const preferredTheme =
+    savedTheme === "light" || savedTheme === "dark"
+      ? savedTheme
+      : window.matchMedia("(prefers-color-scheme: dark)").matches
+      ? "dark"
+      : "light";
+
+  document.documentElement.classList.toggle("dark", preferredTheme === "dark");
+};
+
 // Create a client outside the component to avoid recreation
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -73,6 +87,7 @@ const App = (props: any) => (
 
 // React mounting function
 const mountReactApp = () => {
+  applyInitialTheme();
   const legacyContainer = document.getElementById("react-root");
   if (legacyContainer && !(legacyContainer as any)._reactRoot) {
     const propsData = legacyContainer.getAttribute("data-props");
