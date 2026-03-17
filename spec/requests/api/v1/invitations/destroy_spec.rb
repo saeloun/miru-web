@@ -8,6 +8,8 @@ RSpec.describe "Api::V1::Invitations#destroy", type: :request do
   let(:employee) { create(:user, current_workspace_id: company.id) }
   let(:book_keeper) { create(:user, current_workspace_id: company.id) }
   let!(:invitation) { create(:invitation, company:, sender: admin, role: :employee) }
+  let(:other_company) { create(:company) }
+  let!(:other_invitation) { create(:invitation, company: other_company, sender: create(:user), role: :employee) }
 
   before do
     create(:employment, company:, user: admin)
@@ -35,6 +37,12 @@ RSpec.describe "Api::V1::Invitations#destroy", type: :request do
       expect(response).to have_http_status(:ok)
       expect(json_response["id"]).to eq(invitation_id)
       expect(json_response["notice"]).to eq(I18n.t("invitation.delete.success.message"))
+    end
+
+    it "returns not found for an invitation from another company" do
+      send_request :delete, api_v1_invitation_path(other_invitation), headers: auth_headers(admin)
+
+      expect(response).to have_http_status(:not_found)
     end
   end
 

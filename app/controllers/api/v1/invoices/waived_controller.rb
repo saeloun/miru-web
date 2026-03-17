@@ -9,6 +9,6 @@ class Api::V1::Invoices::WaivedController < Api::V1::ApplicationController
   private
 
     def invoice
-      @_invoice ||= Invoice.includes(:client, :invoice_line_items).find(params[:id])
+      @_invoice ||= current_company.invoices.includes(:client, :invoice_line_items).find(params[:id])
     end
 end

@@ -36,11 +36,11 @@ class Api::V1::Users::DevicesController < Api::V1::ApplicationController
   private
 
     def set_user
-      @user ||= User.find(params[:user_id])
+      @user ||= current_company.users.find(params[:user_id])
     end
 
     def device
-      @device ||= Device.find(params[:id])
+      @device ||= @user.devices.find(params[:id])
     end
 
     def device_params

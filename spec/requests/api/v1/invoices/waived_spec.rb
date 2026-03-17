@@ -7,6 +7,9 @@ RSpec.describe "Api::V1::Invoices::Waived#update", type: :request do
   let(:user) { create(:user, current_workspace_id: company.id) }
   let(:client) { create(:client, company:) }
   let(:invoice) { create(:invoice, company:, client:, status: :sent) }
+  let(:other_company) { create(:company) }
+  let(:other_client) { create(:client, company: other_company) }
+  let(:other_invoice) { create(:invoice, company: other_company, client: other_client, status: :sent) }
 
   context "when user is an admin" do
     before do
@@ -20,6 +23,13 @@ RSpec.describe "Api::V1::Invoices::Waived#update", type: :request do
         headers: auth_headers(user)
       expect(response).to have_http_status(:no_content)
       expect(invoice.reload.status).to eq("waived")
+    end
+
+    it "returns not found for an invoice from another company" do
+      send_request :put, api_v1_invoices_waived_path(other_invoice),
+        headers: auth_headers(user)
+
+      expect(response).to have_http_status(:not_found)
     end
   end
 

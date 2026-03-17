@@ -11,6 +11,10 @@ RSpec.describe "Api::V1::TimeoffEntries#destroy", type: :request do
     allocation_value: 1, carry_forward_days: 30,)
 }
   let!(:timeoff_entry) { create(:timeoff_entry, user:, leave_type:) }
+  let(:other_company) { create(:company) }
+  let(:other_leave) { create(:leave, company: other_company) }
+  let!(:other_leave_type) { create(:leave_type, leave: other_leave) }
+  let!(:other_timeoff_entry) { create(:timeoff_entry, user: create(:user), leave_type: other_leave_type) }
 
   context "when user is an admin" do
     before do
@@ -24,6 +28,12 @@ RSpec.describe "Api::V1::TimeoffEntries#destroy", type: :request do
         send_request :delete, api_v1_timeoff_entry_path(id: timeoff_entry.id), headers: auth_headers(user)
         expect(response).to be_successful
         expect(company.timeoff_entries.discarded.pluck(:id).include?(timeoff_entry.id)).to eq(true)
+      end
+
+      it "returns not found for a timeoff entry from another company" do
+        send_request :delete, api_v1_timeoff_entry_path(id: other_timeoff_entry.id), headers: auth_headers(user)
+
+        expect(response).to have_http_status(:not_found)
       end
     end
   end
