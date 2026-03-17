@@ -6,6 +6,11 @@
 # and recreated between test runs. Don't rely on the data there!
 
 Rails.application.configure do
+  config.secret_key_base = ENV.fetch(
+    "SECRET_KEY_BASE",
+    "test-secret-key-base-for-ci-and-local-specs"
+  )
+
   error_logger = ActiveSupport::Logger.new($stderr)
   error_logger.level = Logger::ERROR
 

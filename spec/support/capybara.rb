@@ -41,7 +41,7 @@ cuprite_options = {
     "disable-software-rasterizer" => nil,
     "no-sandbox" => nil,
   },
-  process_timeout: ENV["CI"].present? ? 120 : 60,
+  process_timeout: ENV["CI"].present? ? 180 : 60,
   timeout: 20,
   js_errors: false,
   pending_connection_errors: false,
