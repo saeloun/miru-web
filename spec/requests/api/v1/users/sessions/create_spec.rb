@@ -5,7 +5,7 @@ require "webauthn/fake_client"
 
 RSpec.describe "Api::V1::Users::Sessions#create", type: :request do
   let(:company) { create(:company) }
-  let(:user) { create(:user, current_workspace_id: company.id, password: "welcome") }
+  let(:user) { create(:user, current_workspace_id: company.id, password: "welcome12") }
   let(:fake_client) { ::WebAuthn::FakeClient.new("http://localhost") }
   let(:relying_party) do
     ::WebAuthn::RelyingParty.new(

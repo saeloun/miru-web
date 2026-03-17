@@ -24,14 +24,18 @@ RSpec.describe "Api::V1::Users::Confirmations#create", type: :request do
 
       it "redirects to root_path" do
         post api_v1_users_resend_confirmation_email_path({ user: { email: user.email } })
-        expect(JSON.parse(response.body)).to include("error" => "Email was already confirmed, please try signing in")
+        expect(JSON.parse(response.body)).to include(
+          "notice" => "A confirmation email has been sent to #{user.email}."
+        )
       end
     end
 
     context "when user doesn't exist" do
       it "redirects to root_path" do
         post api_v1_users_resend_confirmation_email_path({ user: { email: "miru@example.com" } })
-        expect(JSON.parse(response.body)).to include("error" => "Email not found")
+        expect(JSON.parse(response.body)).to include(
+          "notice" => "A confirmation email has been sent to miru@example.com."
+        )
       end
     end
   end

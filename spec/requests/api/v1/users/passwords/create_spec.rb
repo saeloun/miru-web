@@ -20,8 +20,10 @@ RSpec.describe "Api::V1::Users::Passwords#create", type: :request do
       it "responds with error message" do
         send_request :post, api_v1_users_forgot_password_path,
           params: { user: { email: "invalid@example.com" } }
-        expect(response).to have_http_status(:unprocessable_content)
-        expect(JSON.parse(response.body)).to include("error" => "Email not found")
+        expect(response).to have_http_status(:ok)
+        expect(JSON.parse(response.body)).to include(
+          "notice" => I18n.t("password.create.success")
+        )
       end
     end
   end
