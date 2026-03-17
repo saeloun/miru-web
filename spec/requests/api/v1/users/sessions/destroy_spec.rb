@@ -4,7 +4,7 @@ require "rails_helper"
 
 RSpec.describe "Api::V1::Users::Sessions#destroy", type: :request do
   let(:company) { create(:company) }
-  let(:user) { create(:user, current_workspace_id: company.id, password: "welcome") }
+  let(:user) { create(:user, current_workspace_id: company.id, password: "welcome12") }
 
   context "when logged in with valid email and password" do
     before do
