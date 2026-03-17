@@ -6,7 +6,7 @@ import { useOutsideClick } from "../helpers/outsideClick";
 
 export const CustomTextareaAutosize = ({
   id,
-  inputBoxClassName = "form__input block w-full appearance-none bg-white p-4 text-sm lg:text-base h-16 border-border",
+  inputBoxClassName = "form__input block h-16 w-full appearance-none border-border bg-background p-4 text-sm text-foreground lg:text-base",
   name,
   value,
   onChange,
@@ -20,8 +20,8 @@ export const CustomTextareaAutosize = ({
   const [focused, setFocused] = useState<boolean>(false);
   const labelClassName =
     focused || value
-      ? "absolute duration-300 -top-2 -z-1 left-4 origin-0 bg-white text-xs font-normal text-muted-foreground"
-      : "absolute duration-300 -z-1 origin-0 top-3 left-4 text-muted-foreground bg-white text-sm lg:text-base font-medium";
+      ? "absolute -top-2 -z-1 left-4 origin-0 bg-background text-xs font-normal text-muted-foreground duration-300"
+      : "absolute -z-1 left-4 top-3 origin-0 bg-background text-sm font-medium text-muted-foreground duration-300 lg:text-base";
 
   useEffect(() => {
     if (id) {
