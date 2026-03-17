@@ -82,7 +82,10 @@ const EditProfilePage = ({
             <CardContent className="space-y-6">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <label className="text-xs font-geist-medium uppercase tracking-wider text-muted-foreground">
+                  <label
+                    htmlFor="first_name"
+                    className="text-xs font-geist-medium uppercase tracking-wider text-muted-foreground"
+                  >
                     First Name
                   </label>
                   <Input
@@ -113,7 +116,10 @@ const EditProfilePage = ({
                   )}
                 </div>
                 <div className="space-y-2">
-                  <label className="text-xs font-geist-medium uppercase tracking-wider text-muted-foreground">
+                  <label
+                    htmlFor="last_name"
+                    className="text-xs font-geist-medium uppercase tracking-wider text-muted-foreground"
+                  >
                     Last Name
                   </label>
                   <Input
@@ -146,7 +152,10 @@ const EditProfilePage = ({
               </div>
 
               <div className="space-y-2" ref={wrapperRef}>
-                <label className="text-xs font-geist-medium uppercase tracking-wider text-muted-foreground flex items-center gap-1">
+                <label
+                  htmlFor="date_of_birth"
+                  className="text-xs font-geist-medium uppercase tracking-wider text-muted-foreground flex items-center gap-1"
+                >
                   <Calendar className="h-3 w-3" weight="bold" />
                   Date of Birth
                 </label>
@@ -208,12 +217,18 @@ const EditProfilePage = ({
             <CardContent>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <label className="text-xs font-geist-medium uppercase tracking-wider text-muted-foreground flex items-center gap-1">
+                  <label
+                    htmlFor="phone_number"
+                    className="text-xs font-geist-medium uppercase tracking-wider text-muted-foreground flex items-center gap-1"
+                  >
                     <Phone className="h-3 w-3" weight="bold" />
                     Phone Number
                   </label>
                   <div className="relative flex h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
                     <PhoneInput
+                      id="phone_number"
+                      name="phone_number"
+                      aria-label="Phone Number"
                       className="input-phone-number w-full border-transparent focus:border-transparent focus:ring-0 font-geist-regular"
                       flags={flags}
                       value={
@@ -226,7 +241,10 @@ const EditProfilePage = ({
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <label className="text-xs font-geist-medium uppercase tracking-wider text-muted-foreground flex items-center gap-1">
+                  <label
+                    htmlFor="email_id"
+                    className="text-xs font-geist-medium uppercase tracking-wider text-muted-foreground flex items-center gap-1"
+                  >
                     <Envelope className="h-3 w-3" weight="bold" />
                     Personal Email
                   </label>
@@ -268,7 +286,10 @@ const EditProfilePage = ({
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <label className="text-xs font-geist-medium uppercase tracking-wider text-muted-foreground">
+                <label
+                  htmlFor="address_select"
+                  className="text-xs font-geist-medium uppercase tracking-wider text-muted-foreground"
+                >
                   Address Type
                 </label>
                 <CustomReactSelect
@@ -281,7 +302,10 @@ const EditProfilePage = ({
                 />
               </div>
               <div className="space-y-2">
-                <label className="text-xs font-geist-medium uppercase tracking-wider text-muted-foreground">
+                <label
+                  htmlFor="address_line_1"
+                  className="text-xs font-geist-medium uppercase tracking-wider text-muted-foreground"
+                >
                   Address Line 1
                 </label>
                 <Input
@@ -310,7 +334,10 @@ const EditProfilePage = ({
                 )}
               </div>
               <div className="space-y-2">
-                <label className="text-xs font-geist-medium uppercase tracking-wider text-muted-foreground">
+                <label
+                  htmlFor="address_line_2"
+                  className="text-xs font-geist-medium uppercase tracking-wider text-muted-foreground"
+                >
                   Address Line 2
                   <span className="ml-1 text-xs font-geist-regular normal-case text-muted-foreground/70">
                     (Optional)
@@ -333,7 +360,10 @@ const EditProfilePage = ({
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <label className="text-xs font-geist-medium uppercase tracking-wider text-muted-foreground">
+                  <label
+                    htmlFor="current_country_select"
+                    className="text-xs font-geist-medium uppercase tracking-wider text-muted-foreground"
+                  >
                     Country
                   </label>
                   <CustomReactSelect
@@ -356,7 +386,10 @@ const EditProfilePage = ({
                   )}
                 </div>
                 <div className="space-y-2">
-                  <label className="text-xs font-geist-medium uppercase tracking-wider text-muted-foreground">
+                  <label
+                    htmlFor="state"
+                    className="text-xs font-geist-medium uppercase tracking-wider text-muted-foreground"
+                  >
                     State
                   </label>
                   <Input
@@ -384,7 +417,10 @@ const EditProfilePage = ({
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <label className="text-xs font-geist-medium uppercase tracking-wider text-muted-foreground">
+                  <label
+                    htmlFor="city"
+                    className="text-xs font-geist-medium uppercase tracking-wider text-muted-foreground"
+                  >
                     City
                   </label>
                   <Input
@@ -410,7 +446,10 @@ const EditProfilePage = ({
                   )}
                 </div>
                 <div className="space-y-2">
-                  <label className="text-xs font-geist-medium uppercase tracking-wider text-muted-foreground">
+                  <label
+                    htmlFor="zipcode"
+                    className="text-xs font-geist-medium uppercase tracking-wider text-muted-foreground"
+                  >
                     Zip/Postal Code
                   </label>
                   <Input
@@ -464,7 +503,10 @@ const EditProfilePage = ({
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <label className="flex items-center gap-1 text-xs font-geist-medium uppercase tracking-wider text-muted-foreground">
+                <label
+                  htmlFor="linked_in"
+                  className="flex items-center gap-1 text-xs font-geist-medium uppercase tracking-wider text-muted-foreground"
+                >
                   <LinkedinLogo className="h-3 w-3" weight="bold" />
                   LinkedIn
                 </label>
@@ -481,7 +523,10 @@ const EditProfilePage = ({
                 />
               </div>
               <div className="space-y-2">
-                <label className="flex items-center gap-1 text-xs font-geist-medium uppercase tracking-wider text-muted-foreground">
+                <label
+                  htmlFor="github"
+                  className="flex items-center gap-1 text-xs font-geist-medium uppercase tracking-wider text-muted-foreground"
+                >
                   <GithubLogo className="h-3 w-3" weight="bold" />
                   GitHub
                 </label>
@@ -520,7 +565,10 @@ const EditProfilePage = ({
               {changePassword && (
                 <div className="space-y-4">
                   <div className="space-y-2">
-                    <label className="text-xs font-geist-medium uppercase tracking-wider text-muted-foreground">
+                    <label
+                      htmlFor="current_password"
+                      className="text-xs font-geist-medium uppercase tracking-wider text-muted-foreground"
+                    >
                       Current Password
                     </label>
                     <div className="relative">
@@ -569,7 +617,10 @@ const EditProfilePage = ({
                   <Separator className="my-4" />
 
                   <div className="space-y-2">
-                    <label className="text-xs font-geist-medium uppercase tracking-wider text-muted-foreground">
+                    <label
+                      htmlFor="password"
+                      className="text-xs font-geist-medium uppercase tracking-wider text-muted-foreground"
+                    >
                       New Password
                     </label>
                     <div className="relative">
@@ -613,7 +664,10 @@ const EditProfilePage = ({
                     )}
                   </div>
                   <div className="space-y-2">
-                    <label className="text-xs font-geist-medium uppercase tracking-wider text-muted-foreground">
+                    <label
+                      htmlFor="confirm_password"
+                      className="text-xs font-geist-medium uppercase tracking-wider text-muted-foreground"
+                    >
                       Confirm Password
                     </label>
                     <div className="relative">
