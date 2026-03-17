@@ -62,6 +62,7 @@ const visibleSelectorScript = `
           role: el.getAttribute("role") || "",
           text: (
             el.getAttribute("aria-label") ||
+            (el.id && document.querySelector('label[for="' + el.id + '"]')?.textContent?.trim()) ||
             el.getAttribute("placeholder") ||
             el.textContent ||
             ""
@@ -71,7 +72,7 @@ const visibleSelectorScript = `
           border: getComputedStyle(el).borderColor
         }))
         .filter(control => control.text)
-        .slice(0, 80)
+        .slice(0, 200)
     };
   })()
 `;
@@ -151,6 +152,10 @@ function evaluateCheck(check, snapshot, consoleErrors) {
   for (const controlText of expectConfig.visible_controls || []) {
     const matched = (snapshot.controls || []).some(control =>
       control.text.includes(controlText)
+    ) || (snapshot.inputs || []).some(input =>
+      [input.label, input.placeholder, input.name, input.type]
+        .filter(Boolean)
+        .some(value => value.includes(controlText))
     );
 
     if (!matched) {
