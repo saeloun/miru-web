@@ -9,6 +9,7 @@ RSpec.describe "Application Navigation", type: :system, js: true do
   let(:project) { create(:project, client:) }
 
   before do
+    company.update!(plan_tier: "paid", subscription_status: "active")
     create(:employment, company:, user:)
     user.add_role :admin, company
     create(:project_member, user:, project:)
