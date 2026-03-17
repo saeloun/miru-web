@@ -40,7 +40,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const location = useLocation();
-  const { companyRole, user, company } = useUserContext();
+  const { companyRole, user, company, avatarUrl } = useUserContext();
   const themeMode = useThemeMode();
   const logoStyle = useMemo(
     () => ({
@@ -295,6 +295,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
               user?.email ||
               "User",
             email: user?.email || "",
+            avatar: avatarUrl || user?.avatar_url || "",
           }}
         />
       </aside>

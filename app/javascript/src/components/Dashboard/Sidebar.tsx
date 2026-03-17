@@ -4,6 +4,7 @@ import { Link, useLocation } from "react-router-dom";
 import { CaretRight } from "phosphor-react";
 import { Badge } from "../ui/badge";
 import { Separator } from "../ui/separator";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import {
   Tooltip,
   TooltipContent,
@@ -38,6 +39,15 @@ interface SidebarProps {
     avatar?: string;
   };
 }
+
+const userInitials = (name: string) =>
+  name
+    .split(" ")
+    .filter(Boolean)
+    .map(part => part[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
 
 const SidebarItem: React.FC<{
   item: NavigationItem;
@@ -222,27 +232,21 @@ const Sidebar: React.FC<SidebarProps> = ({
       >
         {isCollapsed ? (
           <div className="flex justify-center">
-            <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-              <span className="text-xs font-medium text-primary">
-                {user.name
-                  .split(" ")
-                  .map(n => n[0])
-                  .join("")
-                  .slice(0, 2)}
-              </span>
-            </div>
+            <Avatar className="h-8 w-8">
+              <AvatarImage src={user.avatar} alt={user.name} />
+              <AvatarFallback className="bg-primary/10 text-xs font-medium text-primary">
+                {userInitials(user.name)}
+              </AvatarFallback>
+            </Avatar>
           </div>
         ) : (
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-              <span className="text-xs font-medium text-primary">
-                {user.name
-                  .split(" ")
-                  .map(n => n[0])
-                  .join("")
-                  .slice(0, 2)}
-              </span>
-            </div>
+            <Avatar className="h-8 w-8 flex-shrink-0">
+              <AvatarImage src={user.avatar} alt={user.name} />
+              <AvatarFallback className="bg-primary/10 text-xs font-medium text-primary">
+                {userInitials(user.name)}
+              </AvatarFallback>
+            </Avatar>
             <div className="flex-1 min-w-0">
               <div className="text-sm font-medium text-foreground truncate">
                 {user.name}

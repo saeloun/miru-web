@@ -127,4 +127,36 @@ RSpec.describe "Role access redirects", type: :system, js: true do
       end
     end
   end
+
+  context "when an owner has a profile photo" do
+    let(:owner) do
+      create(
+        :user,
+        current_workspace_id: company.id,
+        first_name: "Avatar",
+        last_name: "Owner",
+        email: "avatar.owner@example.com"
+      )
+    end
+
+    before do
+      create(:employment, company:, user: owner)
+      owner.add_role :owner, company
+      owner.avatar.attach(
+        io: Rails.root.join("spec/support/fixtures/test-image.png").open,
+        filename: "avatar-owner.png",
+        content_type: "image/png"
+      )
+      sign_in(owner)
+    end
+
+    it "shows the profile image in the dashboard sidebar" do
+      with_forgery_protection do
+        visit "/dashboard"
+
+        expect(page).to have_current_path("/dashboard", wait: 10)
+        expect(page).to have_css("aside img[alt='Avatar Owner']", wait: 10)
+      end
+    end
+  end
 end
