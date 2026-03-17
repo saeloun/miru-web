@@ -216,12 +216,12 @@ const ChartWithSummary: React.FC<ChartWithSummaryProps> = ({
   return (
     <div className="mb-8 mt-6">
       {/* Main container with chart (70%) and stats (30%) */}
-      <div className="flex gap-4">
+      <div className="flex flex-col gap-4 lg:flex-row">
         {/* Revenue Chart - 70% width */}
-        <div className="flex-1" style={{ flex: "0 0 70%" }}>
+        <div className="min-w-0 flex-1 lg:basis-[70%]">
           <div className="overflow-hidden rounded-xl border border-border bg-card shadow-lg transition-all duration-300 hover:shadow-xl">
             <div className="border-b border-border bg-muted/40 p-5">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                   <h3 className="text-xl font-bold text-foreground">
                     Yearly Revenue
@@ -381,7 +381,7 @@ const ChartWithSummary: React.FC<ChartWithSummaryProps> = ({
               </div>
 
               {/* Additional Stats Row */}
-              <div className="mt-4 grid grid-cols-3 gap-4 border-t border-border pt-4">
+              <div className="mt-4 grid grid-cols-1 gap-4 border-t border-border pt-4 sm:grid-cols-3">
                 <div className="text-center">
                   <p className="mb-1 text-xs uppercase tracking-wide text-muted-foreground">
                     Monthly Avg
@@ -418,12 +418,12 @@ const ChartWithSummary: React.FC<ChartWithSummaryProps> = ({
         </div>
 
         {/* Summary Cards - 30% width, vertical layout */}
-        <div className="flex flex-col gap-3" style={{ flex: "0 0 30%" }}>
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:flex lg:basis-[30%] lg:flex-col">
           {summaryItems.map(item => (
             <button
               key={item.label}
               onClick={item.onClick}
-              className={`${item.bgClass} flex-1 rounded-xl border border-border p-4 text-left transition-all duration-200 hover:scale-[1.02] hover:shadow-lg`}
+              className={`${item.bgClass} rounded-xl border border-border p-4 text-left transition-all duration-200 hover:shadow-lg lg:flex-1`}
             >
               <div className="flex justify-between items-start">
                 <div className="flex-1">

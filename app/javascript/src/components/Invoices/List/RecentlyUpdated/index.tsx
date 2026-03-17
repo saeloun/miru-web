@@ -37,10 +37,10 @@ const RecentlyUpdated = ({ recentlyUpdatedInvoices }) => {
 
   return (
     <div className="mt-8 mb-8">
-      <div className="flex items-center justify-between mb-4">
+      <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <h2 className="text-xl font-bold text-gray-900">Recently Updated</h2>
         {recentlyUpdatedInvoices?.length > 0 && (
-          <span className="text-sm text-gray-600 bg-gray-100 px-3 py-1 rounded-full">
+          <span className="rounded-full bg-muted px-3 py-1 text-sm text-muted-foreground">
             Showing {Math.min(visibleCount, recentlyUpdatedInvoices.length)} of{" "}
             {recentlyUpdatedInvoices.length}
           </span>
@@ -48,7 +48,7 @@ const RecentlyUpdated = ({ recentlyUpdatedInvoices }) => {
       </div>
       <div
         ref={scrollContainerRef}
-        className="flex overflow-x-auto overflow-y-visible pb-3 gap-3 scroll-smooth"
+        className="grid grid-cols-1 gap-3 pb-3 sm:grid-cols-2 lg:flex lg:overflow-x-auto lg:overflow-y-visible lg:scroll-smooth"
         style={{ scrollBehavior: "smooth" }}
       >
         {recentlyUpdatedInvoices.length > 0 ? (
@@ -57,20 +57,22 @@ const RecentlyUpdated = ({ recentlyUpdatedInvoices }) => {
               <RecentlyUpdatedCard invoice={invoice} key={invoice.id} />
             ))}
             {visibleCount < recentlyUpdatedInvoices.length && (
-              <div className="flex items-center justify-center w-40 h-44 flex-shrink-0 rounded-xl border border-dashed border-gray-300 bg-gray-50">
+              <div className="flex h-44 items-center justify-center rounded-xl border border-dashed border-border bg-muted/30 lg:w-40 lg:flex-shrink-0">
                 <div className="text-center">
-                  <p className="text-sm text-gray-500">Scroll for more</p>
-                  <p className="text-lg font-bold text-gray-700">
+                  <p className="text-sm text-muted-foreground">
+                    Scroll for more
+                  </p>
+                  <p className="text-lg font-bold text-foreground">
                     {recentlyUpdatedInvoices.length - visibleCount}
                   </p>
-                  <p className="text-xs text-gray-500">remaining</p>
+                  <p className="text-xs text-muted-foreground">remaining</p>
                 </div>
               </div>
             )}
           </>
         ) : (
           <div className="w-full py-12 text-center">
-            <p className="text-base text-gray-500">
+            <p className="text-base text-muted-foreground">
               No recently updated invoices
             </p>
           </div>

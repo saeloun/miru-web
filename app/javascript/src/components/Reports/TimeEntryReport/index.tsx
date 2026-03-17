@@ -91,7 +91,7 @@ const ReportGroupTable: React.FC<{
   return (
     <Card>
       <CardHeader>
-        <div className="flex justify-between items-center">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <CardTitle>{group.label}</CardTitle>
           <div className="flex items-center space-x-2">
             <span className="text-sm text-muted-foreground">Total:</span>
@@ -102,8 +102,8 @@ const ReportGroupTable: React.FC<{
         </div>
       </CardHeader>
       <CardContent>
-        <div className="rounded-md border">
-          <Table>
+        <div className="w-full overflow-x-auto rounded-md border">
+          <Table className="min-w-[640px]">
             <TableHeader>
               {table.getHeaderGroups().map(headerGroup => (
                 <TableRow key={headerGroup.id}>
@@ -422,8 +422,8 @@ const TimeEntryReport: React.FC = () => {
       {/* Header */}
       <div className="border-b bg-card shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
-            <div>
+          <div className="flex flex-col gap-4 py-4 lg:flex-row lg:items-center lg:justify-between">
+            <div className="min-w-0">
               <h1 className="text-2xl font-semibold text-foreground">
                 Time Entry Report
               </h1>
@@ -432,13 +432,13 @@ const TimeEntryReport: React.FC = () => {
               </p>
             </div>
 
-            <div className="flex items-center space-x-3">
+            <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-end">
               {/* Date Range Preset Selector */}
               <Select
                 value={dateRangePreset}
                 onValueChange={handleDateRangePreset}
               >
-                <SelectTrigger className="w-[180px]">
+                <SelectTrigger className="w-full sm:w-[180px]">
                   <SelectValue placeholder="Select period" />
                 </SelectTrigger>
                 <SelectContent>
@@ -458,7 +458,7 @@ const TimeEntryReport: React.FC = () => {
                   <Button
                     variant="outline"
                     className={cn(
-                      "w-[280px] justify-start text-left font-normal",
+                      "w-full justify-start text-left font-normal sm:w-[280px]",
                       !dateRange && "text-muted-foreground"
                     )}
                   >
@@ -500,7 +500,7 @@ const TimeEntryReport: React.FC = () => {
                 value={groupBy}
                 onValueChange={(value: any) => setGroupBy(value)}
               >
-                <SelectTrigger className="w-[180px]">
+                <SelectTrigger className="w-full sm:w-[180px]">
                   <SelectValue placeholder="Group by" />
                 </SelectTrigger>
                 <SelectContent>
@@ -515,7 +515,7 @@ const TimeEntryReport: React.FC = () => {
               {/* Export Dropdown */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="outline">
+                  <Button variant="outline" className="w-full sm:w-auto">
                     <Download className="mr-2 h-4 w-4" />
                     Export
                     <ChevronDown className="ml-2 h-4 w-4" />
