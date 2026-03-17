@@ -72,32 +72,11 @@ class Api::V1::InvoicesController < Api::V1::ApplicationController
       pagy_metadata, paginated_invoices = pagy(invoices.none, items: per_page, page: 1)
     end
 
-    # Calculate summary with proper amounts
     all_invoices = current_company.invoices.kept
-
-    # For draft invoices, sum the total amount
-    draft_amount = all_invoices.draft.sum(Arel.sql("COALESCE(NULLIF(base_currency_amount, 0), amount, 0)")).to_f.round(2)
-
-    # For outstanding, use the outstanding_amount or amount_due field
-    # Outstanding includes sent, viewed, and overdue invoices
-    outstanding_amount = all_invoices.where(status: [:sent, :viewed, :overdue]).sum { |invoice|
-      # Use outstanding_amount if available, otherwise use amount_due, fallback to amount
-      if invoice.outstanding_amount.to_f > 0
-        invoice.outstanding_amount.to_f
-      elsif invoice.amount_due.to_f > 0
-        invoice.amount_due.to_f
-      else
-        invoice.base_currency_amount.to_f > 0 ? invoice.base_currency_amount.to_f : invoice.amount.to_f
-      end
-    }.round(2)
-
-    # For overdue, only get overdue invoices
-    overdue_amount = all_invoices.overdue
-      .sum(
-        Arel.sql(
-          "COALESCE(NULLIF(outstanding_amount, 0), NULLIF(amount_due, 0), NULLIF(base_currency_amount, 0), amount, 0)"
-        )
-      ).to_f.round(2)
+    invoice_amounts = InvoiceAmountsSummary.process(all_invoices)
+    draft_amount = invoice_amounts[:draft_amount]
+    outstanding_amount = invoice_amounts[:outstanding_amount]
+    overdue_amount = invoice_amounts[:overdue_amount]
 
     # Calculate total amount for ALL status
     total_amount = (draft_amount + outstanding_amount + overdue_amount).round(2)
@@ -111,7 +90,7 @@ class Api::V1::InvoicesController < Api::V1::ApplicationController
     }
 
     # Get recently updated invoices
-    recently_updated_invoices = current_company.invoices.kept.order(updated_at: :desc).limit(10)
+    recently_updated_invoices = current_company.invoices.kept.includes(:client).order(updated_at: :desc).limit(10)
 
     render :index, locals: {
       invoices: paginated_invoices,

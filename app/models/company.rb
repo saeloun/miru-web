@@ -42,7 +42,7 @@ class Company < ApplicationRecord
   scope :with_kept_employments, -> { merge(Employment.kept) }
 
   def client_list
-    clients.kept.map do |client|
+    clients.kept.includes(:invoices, :addresses, client_members: :user).map do |client|
       {
         id: client.id, name: client.name, email: client.email, phone: client.phone, address: client.current_address,
         previousInvoiceNumber: client.invoices&.last&.invoice_number || 0,
@@ -53,28 +53,11 @@ class Company < ApplicationRecord
 
   def overdue_and_outstanding_and_draft_amount
     currency = base_currency
-    status_and_amount = invoices.kept.group_by(&:status).transform_values { |invoices|
-      invoices.sum { |invoice|
-        # Use amount_due for unpaid portion, not the full invoice amount
-        # Draft invoices should use full amount as they haven't been sent yet
-        amount_to_use = invoice.status == "draft" ? invoice.amount : (invoice.amount_due || invoice.amount)
-
-        # Apply currency conversion if needed
-        if invoice.base_currency_amount.to_f > 0.00
-          # Calculate the ratio of amount_due to full amount, then apply to base currency
-          ratio = invoice.status == "draft" ? 1.0 : (amount_to_use.to_f / invoice.amount.to_f)
-          ratio * invoice.base_currency_amount
-        else
-          amount_to_use
-        end
-      }
-    }
-    status_and_amount.default = 0
-    outstanding_amount = status_and_amount["sent"] + status_and_amount["viewed"] + status_and_amount["overdue"]
+    amounts = InvoiceAmountsSummary.process(invoices.kept)
     {
-      overdue_amount: status_and_amount["overdue"],
-      outstanding_amount:,
-      draft_amount: status_and_amount["draft"],
+      overdue_amount: amounts[:overdue_amount],
+      outstanding_amount: amounts[:outstanding_amount],
+      draft_amount: amounts[:draft_amount],
       currency:
     }
   end
