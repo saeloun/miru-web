@@ -113,6 +113,90 @@ groups:
         min_buttons: 10
         min_inputs: 10
 
+  owner_extended:
+    - name: owner_clients_dark
+      role: owner
+      theme: dark
+      path: /clients
+      wait_ms: 5000
+      expect:
+        final_path: /clients
+        contains_text:
+          - Clients
+          - Add Client
+        min_buttons: 8
+        min_inputs: 2
+    - name: owner_team_dark
+      role: owner
+      theme: dark
+      path: /team
+      wait_ms: 5000
+      expect:
+        final_path: /team
+        contains_text:
+          - Team
+          - Invite Member
+        min_buttons: 8
+        min_inputs: 1
+    - name: owner_project_detail_dark
+      role: owner
+      theme: dark
+      path: /projects/2
+      wait_ms: 5000
+      expect:
+        final_path: /projects/2
+        contains_text:
+          - Internal Project - Miru
+          - New invoice
+          - Manage team
+        min_buttons: 8
+        min_inputs: 1
+    - name: owner_org_settings_dark
+      role: owner
+      theme: dark
+      path: /settings/organization/edit
+      wait_ms: 4000
+      expect:
+        final_path: /settings/organization/edit
+        contains_text:
+          - Company Settings
+          - Save Changes
+        min_buttons: 10
+        min_inputs: 10
+    - name: owner_payment_settings_dark
+      role: owner
+      theme: dark
+      path: /settings/payment
+      wait_ms: 4000
+      expect:
+        final_path: /settings/payment
+        contains_text:
+          - Payment Settings
+          - Payment Providers
+        min_buttons: 6
+    - name: owner_preferences_dark
+      role: owner
+      theme: dark
+      path: /settings/preferences
+      wait_ms: 4000
+      expect:
+        final_path: /settings/preferences
+        contains_text:
+          - Preferences
+          - Email Preferences
+        min_buttons: 6
+    - name: owner_automation_dark
+      role: owner
+      theme: dark
+      path: /settings/automation
+      wait_ms: 4000
+      expect:
+        final_path: /settings/automation
+        contains_text:
+          - Automation and CLI
+          - Free for every plan
+        min_buttons: 6
+
   employee_core:
     - name: employee_time_tracking_dark
       role: employee
