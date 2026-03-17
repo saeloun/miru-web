@@ -12,7 +12,7 @@ module SessionHelpers
     company = user.companies.find(user.current_workspace_id)
     role = user.roles.where(resource: company).pick(:name)
 
-    visit "/login"
+    visit "/"
     wait_for_react_app
 
     page.execute_script <<~JS
