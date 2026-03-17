@@ -56,6 +56,13 @@ RSpec.describe "Settings", type: :system, js: true do
         date: Date.new(Date.current.year, 1, 1),
         category: "national")
     end
+    let!(:timeoff_entry) do
+      create(:timeoff_entry,
+        user:,
+        leave_type: annual_leave_type,
+        duration: 240,
+        leave_date: Date.new(Date.current.year, Date.current.month, 12))
+    end
 
     it "renders leaves and holidays views with configured context", :aggregate_failures do
       with_forgery_protection do
@@ -63,6 +70,12 @@ RSpec.describe "Settings", type: :system, js: true do
         expect(page).to have_css("#react-root", wait: 10)
         expect(page).to have_content("My Leaves", wait: 10)
         expect(page).to have_text(/Balance|Leave/i, wait: 10)
+        expect(page).to have_content("Leave calendar", wait: 10)
+        expect(page).to have_button("12", wait: 10)
+
+        click_button "12"
+        expect(page).to have_text("Annual Leave", wait: 10)
+        expect(page).to have_text("04:00", wait: 10)
 
         visit "/settings/holidays"
         expect(page).to have_css("#react-root", wait: 10)
