@@ -77,16 +77,10 @@ class Client < ApplicationRecord
   def client_overdue_and_outstanding_calculation
     currency = company.base_currency
     client_currency = self.currency
-    status_and_amount = invoices.group_by(&:status).transform_values { |invoices|
-      invoices.sum { |invoice|
-        invoice.base_currency_amount.to_f > 0.00 ? invoice.base_currency_amount : invoice.amount
-      }
-    }
-    status_and_amount.default = 0
-    outstanding_amount = status_and_amount["sent"] + status_and_amount["viewed"] + status_and_amount["overdue"]
+    amounts = InvoiceAmountsSummary.process(invoices.kept)
     {
-      overdue_amount: status_and_amount["overdue"],
-      outstanding_amount:,
+      overdue_amount: amounts[:overdue_amount],
+      outstanding_amount: amounts[:outstanding_amount],
       currency:,
       client_currency:
     }
@@ -111,16 +105,11 @@ class Client < ApplicationRecord
   end
 
   def payment_summary(duration)
-    status_and_amount = invoices.kept.during(duration).group_by(&:status).transform_values { |invoices|
-      invoices.sum { |invoice|
-        invoice.base_currency_amount.to_f > 0.00 ? invoice.base_currency_amount : invoice.amount
-      }
-    }
-    status_and_amount.default = 0
+    amounts = InvoiceAmountsSummary.process(invoices.kept.during(duration))
     {
-      paid_amount: status_and_amount["paid"],
-      outstanding_amount: status_and_amount["sent"] + status_and_amount["viewed"],
-      overdue_amount: status_and_amount["overdue"]
+      paid_amount: invoices.kept.during(duration).paid.sum(Arel.sql(InvoiceAmountsSummary::FULL_AMOUNT_SQL)).to_f.round(2),
+      outstanding_amount: amounts[:outstanding_amount],
+      overdue_amount: amounts[:overdue_amount]
     }
   end
 
@@ -131,18 +120,12 @@ class Client < ApplicationRecord
       .includes(:company)
       .select { |invoice| outstanding_overdue_statuses.include?(invoice.status) }
 
-    status_and_amount = invoices.kept.group_by(&:status).transform_values { |invoices|
-      invoices.sum { |invoice|
-        invoice.base_currency_amount.to_f > 0.00 ? invoice.base_currency_amount : invoice.amount
-      }
-    }
-
-    status_and_amount.default = 0
+    amounts = InvoiceAmountsSummary.process(invoices.kept)
 
     {
       invoices: filtered_invoices,
-      total_outstanding_amount: status_and_amount["sent"] + status_and_amount["viewed"],
-      total_overdue_amount: status_and_amount["overdue"]
+      total_outstanding_amount: amounts[:outstanding_amount] - amounts[:overdue_amount],
+      total_overdue_amount: amounts[:overdue_amount]
     }
   end
 

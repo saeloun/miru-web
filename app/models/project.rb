@@ -49,10 +49,7 @@ class Project < ApplicationRecord
   end
 
   def project_member_full_names
-    project_members.map do |member|
-      user = User.find(member.user_id)
-      user.full_name
-    end
+    project_members.includes(:user).filter_map { |member| member.user&.full_name }
   end
 
   def overdue_and_outstanding_amounts
@@ -67,16 +64,10 @@ class Project < ApplicationRecord
       )
       .distinct
       .select(:status, :amount, :base_currency_amount)
-    status_and_amount = invoices
-      .group_by(&:status)
-      .transform_values { |v|
-        v.sum { |inv| inv.base_currency_amount.to_f > 0.00 ? inv.base_currency_amount : inv.amount }
-      }
-    status_and_amount.default = 0
-    outstanding_amount = status_and_amount["sent"] + status_and_amount["viewed"] + status_and_amount["overdue"]
+    amounts = InvoiceAmountsSummary.process(invoices)
     {
-      overdue_amount: status_and_amount["overdue"],
-      outstanding_amount:,
+      overdue_amount: amounts[:overdue_amount],
+      outstanding_amount: amounts[:outstanding_amount],
       currency:,
       client_currency:
     }

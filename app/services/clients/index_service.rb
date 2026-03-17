@@ -25,9 +25,9 @@ module Clients
         base_clients = user_can_see_all_clients? ? current_company.clients.kept : user_assigned_clients
 
         if query.present?
-          search_clients(search_term, where_clause).includes(:logo_attachment)
+          search_clients(search_term, where_clause).includes(:logo_attachment, :invoices)
         else
-          base_clients.includes(:logo_attachment)
+          base_clients.includes(:logo_attachment, :invoices)
         end
       end
 
@@ -77,18 +77,17 @@ module Clients
       end
 
       def overdue_outstanding_amount
-        amounts = clients_list.includes(:invoices).sum do |client|
-          summary = client.client_overdue_and_outstanding_calculation
-          summary[:outstanding_amount].to_f
-        end
+        outstanding = 0.0
+        overdue = 0.0
 
-        overdue = clients_list.includes(:invoices).sum do |client|
+        clients_list.each do |client|
           summary = client.client_overdue_and_outstanding_calculation
-          summary[:overdue_amount].to_f
+          outstanding += summary[:outstanding_amount].to_f
+          overdue += summary[:overdue_amount].to_f
         end
 
         {
-          outstanding: amounts.round(2),
+          outstanding: outstanding.round(2),
           overdue: overdue.round(2),
           currency: current_company.base_currency
         }
