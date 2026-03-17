@@ -13,7 +13,7 @@ class Api::V1::ProfileController < Api::V1::ApplicationController
       params.require(:user).permit(
         :first_name, :last_name, :current_password, :password, :password_confirmation,
         :avatar, :date_of_birth, :phone, :personal_email_id,
-        social_accounts: {}
+        social_accounts: [:github_url, :linkedin_url]
       )
     end
 end

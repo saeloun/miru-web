@@ -8,7 +8,7 @@ class Api::V1::InvoicesController < Api::V1::ApplicationController
     authorize Invoice
 
     # Build query
-    invoices = current_company.invoices.kept
+    invoices = current_company.invoices.kept.includes(:client)
 
     # Apply search if present (support both query and search_term params)
     search_query = params[:query] || params[:search_term]
