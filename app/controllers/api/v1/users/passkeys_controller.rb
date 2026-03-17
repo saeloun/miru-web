@@ -10,12 +10,12 @@ class Api::V1::Users::PasskeysController < Api::V1::ApplicationController
   rescue_from ActiveRecord::RecordNotFound, with: :render_missing_passkey
 
   def index
-    skip_authorization
+    authorize current_user, policy_class: PasskeyPolicy
     render_passkeys
   end
 
   def registration_options
-    skip_authorization
+    authorize current_user, policy_class: PasskeyPolicy
     current_user.ensure_webauthn_id!
 
     options = relying_party.options_for_registration(
@@ -42,7 +42,7 @@ class Api::V1::Users::PasskeysController < Api::V1::ApplicationController
   end
 
   def create
-    skip_authorization
+    authorize current_user, policy_class: PasskeyPolicy
     payload = Passkeys::ChallengeToken.verify(passkey_params[:challenge_token])
     raise Passkeys::ChallengeToken::InvalidTokenError unless payload["type"] == "registration"
     raise ActiveRecord::RecordNotFound unless payload["user_id"].to_i == current_user.id
@@ -89,7 +89,7 @@ class Api::V1::Users::PasskeysController < Api::V1::ApplicationController
   end
 
   def update_requirement
-    skip_authorization
+    authorize current_user, policy_class: PasskeyPolicy
     required = ActiveModel::Type::Boolean.new.cast(requirement_params[:required])
 
     if required && current_user.passkeys.none?
@@ -102,7 +102,7 @@ class Api::V1::Users::PasskeysController < Api::V1::ApplicationController
   end
 
   def destroy
-    skip_authorization
+    authorize current_user, policy_class: PasskeyPolicy
     passkey = current_user.passkeys.find(params[:id])
     passkey.destroy!
 
