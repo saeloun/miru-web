@@ -1,5 +1,5 @@
 import { Roles, Paths } from "constants/index";
-import React from "react";
+import React, { lazy } from "react";
 
 import ErrorPage from "common/Error";
 import EmailVerification from "components/Authentication/EmailVerification";
@@ -7,32 +7,59 @@ import EmailVerificationSuccess from "components/Authentication/EmailVerificatio
 import ForgotPassword from "components/Authentication/ForgotPassword";
 import SignIn from "components/Authentication/SignIn";
 import SignUp from "components/Authentication/SignUp";
-import ExpenseDetails from "components/Expenses/Details";
-import ExpensesTable from "components/Expenses/ExpensesTable";
 import InvoiceEmail from "components/InvoiceEmail";
-import InvoicesRouteConfig from "components/Invoices/RouteConfig";
-import LeaveManagement from "components/LeaveManagement";
 import Success from "components/payments/Success";
-import ProfileRouteConfig from "components/Profile/Layout/RouteConfig";
-import ProjectsTable from "components/Projects/ProjectsTable";
-import AccountsAgingReport from "components/Reports/AccountsAgingReport";
 import InvalidLink from "components/Team/List/InvalidLink";
-import TeamsRouteConfig from "components/Team/TeamsRouteConfig";
-
-import ClientsTable from "../components/Clients/ClientsTable";
-import ClientDetails from "../components/Clients/Details";
-import DashboardHome from "../components/Dashboard/DashboardHome";
-import PaymentsTable from "../components/payments/PaymentsTable";
-import ProjectDetails from "../components/Projects/Details";
-import ReportsTable from "../components/Reports/ReportsTable";
-import OutstandingInvoiceReport from "../components/Reports/OutstandingInvoiceReport";
-import RevenueByClientReport from "../components/Reports/RevenueByClientReport";
-import TimeEntryReports from "../components/Reports/TimeEntryReport";
-import TotalHoursReport from "../components/Reports/totalHoursLogged";
-import PaymentReport from "../components/Reports/PaymentReport/CleanPaymentReport";
 import ReportsAccessGate from "../components/Reports/AccessGate";
-import PlanSelection from "../components/Subscriptions/PlanSelection";
-import TimeTracking from "../components/TimeTracking";
+
+const DashboardHome = lazy(
+  () => import("../components/Dashboard/DashboardHome")
+);
+const ClientsTable = lazy(() => import("../components/Clients/ClientsTable"));
+const ClientDetails = lazy(() => import("../components/Clients/Details"));
+const ExpenseDetails = lazy(() => import("components/Expenses/Details"));
+const ExpensesTable = lazy(() => import("components/Expenses/ExpensesTable"));
+const InvoicesRouteConfig = lazy(
+  () => import("components/Invoices/RouteConfig")
+);
+const LeaveManagement = lazy(() => import("components/LeaveManagement"));
+const ProfileRouteConfig = lazy(
+  () => import("components/Profile/Layout/RouteConfig")
+);
+const ProjectsTable = lazy(() => import("components/Projects/ProjectsTable"));
+const ProjectDetails = lazy(() => import("../components/Projects/Details"));
+const AccountsAgingReport = lazy(
+  () => import("components/Reports/AccountsAgingReport")
+);
+const TeamsRouteConfig = lazy(() => import("components/Team/TeamsRouteConfig"));
+const PaymentsTable = lazy(
+  () => import("../components/payments/PaymentsTable")
+);
+const ReportsTable = lazy(() => import("../components/Reports/ReportsTable"));
+const OutstandingInvoiceReport = lazy(
+  () => import("../components/Reports/OutstandingInvoiceReport")
+);
+
+const RevenueByClientReport = lazy(
+  () => import("../components/Reports/RevenueByClientReport")
+);
+
+const TimeEntryReports = lazy(
+  () => import("../components/Reports/TimeEntryReport")
+);
+
+const TotalHoursReport = lazy(
+  () => import("../components/Reports/totalHoursLogged")
+);
+
+const PaymentReport = lazy(
+  () => import("../components/Reports/PaymentReport/CleanPaymentReport")
+);
+
+const PlanSelection = lazy(
+  () => import("../components/Subscriptions/PlanSelection")
+);
+const TimeTracking = lazy(() => import("../components/TimeTracking"));
 
 const withReportsGate = Component => props =>
   React.createElement(
