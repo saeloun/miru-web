@@ -45,9 +45,33 @@ const visibleSelectorScript = `
           tag: el.tagName,
           type: el.getAttribute("type") || "",
           name: el.getAttribute("name") || "",
-          placeholder: el.getAttribute("placeholder") || ""
+          placeholder: el.getAttribute("placeholder") || "",
+          label:
+            el.getAttribute("aria-label") ||
+            (el.id && document.querySelector('label[for="' + el.id + '"]')?.textContent?.trim()) ||
+            "",
+          background: getComputedStyle(el).backgroundColor,
+          color: getComputedStyle(el).color,
+          border: getComputedStyle(el).borderColor
         }))
-        .slice(0, 30)
+        .slice(0, 40),
+      controls: [...document.querySelectorAll("button,a,[role='button'],input,textarea,select,[role='combobox']")]
+        .filter(visible)
+        .map(el => ({
+          tag: el.tagName,
+          role: el.getAttribute("role") || "",
+          text: (
+            el.getAttribute("aria-label") ||
+            el.getAttribute("placeholder") ||
+            el.textContent ||
+            ""
+          ).trim(),
+          background: getComputedStyle(el).backgroundColor,
+          color: getComputedStyle(el).color,
+          border: getComputedStyle(el).borderColor
+        }))
+        .filter(control => control.text)
+        .slice(0, 80)
     };
   })()
 `;
@@ -100,6 +124,30 @@ function evaluateCheck(check, snapshot, consoleErrors) {
 
   if (expectConfig.min_inputs && snapshot.inputs.length < expectConfig.min_inputs) {
     failures.push(`expected at least ${expectConfig.min_inputs} visible inputs, got ${snapshot.inputs.length}`);
+  }
+
+  for (const controlText of expectConfig.visible_controls || []) {
+    const matched = (snapshot.controls || []).some(control =>
+      control.text.includes(controlText)
+    );
+
+    if (!matched) {
+      failures.push(`missing visible control: ${controlText}`);
+    }
+  }
+
+  if (expectConfig.enforce_dark_inputs && snapshot.dark) {
+    const whiteInputs = (snapshot.inputs || []).filter(input =>
+      ["rgb(255, 255, 255)", "rgba(255, 255, 255, 1)"].includes(input.background)
+    );
+
+    if (whiteInputs.length > 0) {
+      failures.push(
+        `found ${whiteInputs.length} white inputs in dark mode: ${whiteInputs
+          .map(input => input.label || input.name || input.placeholder || input.type || input.tag)
+          .join(", ")}`
+      );
+    }
   }
 
   return {
