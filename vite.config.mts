@@ -70,8 +70,63 @@ export default defineConfig({
     sourcemap: true,
     rollupOptions: {
       output: {
-        manualChunks: {
-          react: ['react', 'react-dom']
+        manualChunks(id) {
+          if (!id.includes('node_modules')) return undefined
+
+          if (
+            id.includes('/react/') ||
+            id.includes('/react-dom/') ||
+            id.includes('/scheduler/')
+          ) {
+            return 'react'
+          }
+
+          if (
+            id.includes('/react-router/') ||
+            id.includes('/react-router-dom/')
+          ) {
+            return 'router'
+          }
+
+          if (
+            id.includes('/@tanstack/react-query/') ||
+            id.includes('/@tanstack/query-core/')
+          ) {
+            return 'react-query'
+          }
+
+          if (
+            id.includes('/recharts/') ||
+            id.includes('/victory-vendor/')
+          ) {
+            return 'charts'
+          }
+
+          if (
+            id.includes('/framer-motion/') ||
+            id.includes('/motion-dom/') ||
+            id.includes('/motion-utils/')
+          ) {
+            return 'motion'
+          }
+
+          if (
+            id.includes('/date-fns/') ||
+            id.includes('/dayjs/') ||
+            id.includes('/react-day-picker/')
+          ) {
+            return 'dates'
+          }
+
+          if (
+            id.includes('/@radix-ui/') ||
+            id.includes('/cmdk/') ||
+            id.includes('/embla-carousel-react/')
+          ) {
+            return 'ui-vendor'
+          }
+
+          return 'vendor'
         }
       }
     }

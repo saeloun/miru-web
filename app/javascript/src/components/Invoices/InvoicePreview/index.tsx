@@ -114,16 +114,16 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
       case "paid":
-        return "bg-green-100 text-green-800 border-green-200";
+        return "bg-green-100 text-green-800 border-green-200 dark:bg-green-950/30 dark:text-green-300 dark:border-green-900";
       case "sent":
       case "viewed":
-        return "bg-blue-100 text-blue-800 border-blue-200";
+        return "bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-950/30 dark:text-blue-300 dark:border-blue-900";
       case "overdue":
-        return "bg-red-100 text-red-800 border-red-200";
+        return "bg-red-100 text-red-800 border-red-200 dark:bg-red-950/30 dark:text-red-300 dark:border-red-900";
       case "draft":
-        return "bg-gray-100 text-gray-800 border-gray-200";
+        return "bg-gray-100 text-gray-800 border-gray-200 dark:bg-neutral-800 dark:text-neutral-200 dark:border-neutral-700";
       default:
-        return "bg-gray-100 text-gray-800 border-gray-200";
+        return "bg-gray-100 text-gray-800 border-gray-200 dark:bg-neutral-800 dark:text-neutral-200 dark:border-neutral-700";
     }
   };
 
@@ -339,7 +339,7 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
       )}
 
       {/* Invoice Preview Card */}
-      <Card className="bg-white p-8 shadow-sm">
+      <Card className="border-border bg-background p-8 text-foreground shadow-sm print:border-gray-200 print:bg-white print:text-gray-900 dark:border-neutral-800 dark:bg-neutral-950">
         {/* Header */}
         <div className="flex justify-between items-start mb-8">
           <div>
@@ -351,12 +351,12 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
               />
             ) : (
               <div className="mb-4">
-                <h1 className="text-2xl font-bold text-gray-900">
+                <h1 className="text-2xl font-bold text-foreground print:text-gray-900">
                   {invoice.company?.name || "Company Name"}
                 </h1>
               </div>
             )}
-            <div className="text-sm text-gray-600 space-y-1">
+            <div className="space-y-1 text-sm text-muted-foreground print:text-gray-600">
               {invoice.company.address && (
                 <p>{formatAddress(invoice.company.address)}</p>
               )}
@@ -373,28 +373,42 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
           </div>
 
           <div className="text-right">
-            <h2 className="text-3xl font-bold text-gray-900 mb-2">INVOICE</h2>
+            <h2 className="mb-2 text-3xl font-bold text-foreground print:text-gray-900">
+              INVOICE
+            </h2>
             <div className="text-sm space-y-1">
-              <p className="text-gray-600">Invoice Number</p>
-              <p className="font-semibold text-lg">#{invoice.invoiceNumber}</p>
+              <p className="text-muted-foreground print:text-gray-600">
+                Invoice Number
+              </p>
+              <p className="text-lg font-semibold text-foreground print:text-gray-900">
+                #{invoice.invoiceNumber}
+              </p>
             </div>
             <div className="mt-4 text-sm space-y-1">
               <div className="flex justify-between gap-4">
-                <span className="text-gray-600">Issue Date:</span>
-                <span className="font-medium">
+                <span className="text-muted-foreground print:text-gray-600">
+                  Issue Date:
+                </span>
+                <span className="font-medium text-foreground print:text-gray-900">
                   {formatDate(invoice.issueDate)}
                 </span>
               </div>
               <div className="flex justify-between gap-4">
-                <span className="text-gray-600">Due Date:</span>
-                <span className="font-medium">
+                <span className="text-muted-foreground print:text-gray-600">
+                  Due Date:
+                </span>
+                <span className="font-medium text-foreground print:text-gray-900">
                   {formatDate(invoice.dueDate)}
                 </span>
               </div>
               {invoice.reference && (
                 <div className="flex justify-between gap-4">
-                  <span className="text-gray-600">Reference:</span>
-                  <span className="font-medium">{invoice.reference}</span>
+                  <span className="text-muted-foreground print:text-gray-600">
+                    Reference:
+                  </span>
+                  <span className="font-medium text-foreground print:text-gray-900">
+                    {invoice.reference}
+                  </span>
                 </div>
               )}
             </div>
@@ -403,26 +417,32 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
 
         {/* Bill To */}
         <div className="mb-8">
-          <h3 className="text-sm font-semibold text-gray-600 uppercase tracking-wider mb-3">
+          <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-muted-foreground print:text-gray-600">
             Bill To
           </h3>
           <div className="text-sm space-y-1">
-            <p className="font-semibold text-lg text-gray-900">
+            <p className="text-lg font-semibold text-foreground print:text-gray-900">
               {invoice.client.name}
             </p>
             {invoice.client.address && (
-              <p className="text-gray-600">
+              <p className="text-muted-foreground print:text-gray-600">
                 {formatAddress(invoice.client.address)}
               </p>
             )}
             {invoice.client.email && (
-              <p className="text-gray-600">{invoice.client.email}</p>
+              <p className="text-muted-foreground print:text-gray-600">
+                {invoice.client.email}
+              </p>
             )}
             {invoice.client.phone && (
-              <p className="text-gray-600">{invoice.client.phone}</p>
+              <p className="text-muted-foreground print:text-gray-600">
+                {invoice.client.phone}
+              </p>
             )}
             {invoice.client.taxId && (
-              <p className="text-gray-600">Tax ID: {invoice.client.taxId}</p>
+              <p className="text-muted-foreground print:text-gray-600">
+                Tax ID: {invoice.client.taxId}
+              </p>
             )}
           </div>
         </div>
@@ -431,40 +451,43 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
         <div className="mb-8">
           <table className="w-full">
             <thead>
-              <tr className="border-b-2 border-gray-200">
-                <th className="text-left py-3 px-2 text-sm font-semibold text-gray-700">
+              <tr className="border-b-2 border-border print:border-gray-200">
+                <th className="px-2 py-3 text-left text-sm font-semibold text-foreground print:text-gray-700">
                   Description
                 </th>
-                <th className="text-center py-3 px-2 text-sm font-semibold text-gray-700">
+                <th className="px-2 py-3 text-center text-sm font-semibold text-foreground print:text-gray-700">
                   Date
                 </th>
-                <th className="text-center py-3 px-2 text-sm font-semibold text-gray-700">
+                <th className="px-2 py-3 text-center text-sm font-semibold text-foreground print:text-gray-700">
                   Qty
                 </th>
-                <th className="text-right py-3 px-2 text-sm font-semibold text-gray-700">
+                <th className="px-2 py-3 text-right text-sm font-semibold text-foreground print:text-gray-700">
                   Rate
                 </th>
-                <th className="text-right py-3 px-2 text-sm font-semibold text-gray-700">
+                <th className="px-2 py-3 text-right text-sm font-semibold text-foreground print:text-gray-700">
                   Amount
                 </th>
               </tr>
             </thead>
             <tbody>
               {invoice.lineItems.map((item, index) => (
-                <tr key={item.id || index} className="border-b border-gray-100">
-                  <td className="py-3 px-2 text-sm text-gray-900">
+                <tr
+                  key={item.id || index}
+                  className="border-b border-border/70 print:border-gray-100"
+                >
+                  <td className="px-2 py-3 text-sm text-foreground print:text-gray-900">
                     {item.description}
                   </td>
-                  <td className="py-3 px-2 text-sm text-center text-gray-600">
+                  <td className="px-2 py-3 text-center text-sm text-muted-foreground print:text-gray-600">
                     {item.date ? formatDate(item.date) : "-"}
                   </td>
-                  <td className="py-3 px-2 text-sm text-center text-gray-900">
+                  <td className="px-2 py-3 text-center text-sm text-foreground print:text-gray-900">
                     {item.quantity}
                   </td>
-                  <td className="py-3 px-2 text-sm text-right text-gray-900">
+                  <td className="px-2 py-3 text-right text-sm text-foreground print:text-gray-900">
                     {currencyFormat(currency, item.rate)}
                   </td>
-                  <td className="py-3 px-2 text-sm text-right font-medium text-gray-900">
+                  <td className="px-2 py-3 text-right text-sm font-medium text-foreground print:text-gray-900">
                     {currencyFormat(currency, item.amount)}
                   </td>
                 </tr>
@@ -478,8 +501,10 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
           <div className="w-80">
             <div className="space-y-2 text-sm">
               <div className="flex justify-between py-2">
-                <span className="text-gray-600">Subtotal</span>
-                <span className="font-medium text-gray-900">
+                <span className="text-muted-foreground print:text-gray-600">
+                  Subtotal
+                </span>
+                <span className="font-medium text-foreground print:text-gray-900">
                   {currencyFormat(currency, invoice.subtotal || invoice.amount)}
                 </span>
               </div>
@@ -493,18 +518,20 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
               )}
               {invoice.tax > 0 && (
                 <div className="flex justify-between py-2">
-                  <span className="text-gray-600">Tax</span>
-                  <span className="font-medium text-gray-900">
+                  <span className="text-muted-foreground print:text-gray-600">
+                    Tax
+                  </span>
+                  <span className="font-medium text-foreground print:text-gray-900">
                     {currencyFormat(currency, invoice.tax)}
                   </span>
                 </div>
               )}
               <Separator className="my-2" />
               <div className="flex justify-between py-2">
-                <span className="text-base font-semibold text-gray-900">
+                <span className="text-base font-semibold text-foreground print:text-gray-900">
                   Total Due
                 </span>
-                <span className="text-xl font-bold text-gray-900">
+                <span className="text-xl font-bold text-foreground print:text-gray-900">
                   {currencyFormat(currency, invoice.amount)}
                 </span>
               </div>
@@ -514,11 +541,13 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
 
         {/* Notes */}
         {invoice.notes && (
-          <div className="border-t pt-6">
-            <h3 className="text-sm font-semibold text-gray-600 uppercase tracking-wider mb-3">
+          <div className="border-t border-border pt-6 print:border-gray-200">
+            <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-muted-foreground print:text-gray-600">
               Notes
             </h3>
-            <p className="text-sm text-gray-600">{invoice.notes}</p>
+            <p className="text-sm text-muted-foreground print:text-gray-600">
+              {invoice.notes}
+            </p>
           </div>
         )}
 
@@ -526,11 +555,11 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
           invoice.company.bankAccountNumber ||
           invoice.company.bankRoutingNumber ||
           invoice.company.bankSwiftCode) && (
-          <div className="border-t pt-6">
-            <h3 className="text-sm font-semibold text-gray-600 uppercase tracking-wider mb-3">
+          <div className="border-t border-border pt-6 print:border-gray-200">
+            <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-muted-foreground print:text-gray-600">
               Payment Details
             </h3>
-            <div className="grid gap-2 text-sm text-gray-600 sm:grid-cols-2">
+            <div className="grid gap-2 text-sm text-muted-foreground print:text-gray-600 sm:grid-cols-2">
               {invoice.company.bankName && (
                 <p>Bank Name: {invoice.company.bankName}</p>
               )}
@@ -548,8 +577,8 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
         )}
 
         {/* Footer */}
-        <div className="mt-8 pt-6 border-t border-gray-200">
-          <div className="text-center text-xs text-gray-500">
+        <div className="mt-8 border-t border-border pt-6 print:border-gray-200">
+          <div className="text-center text-xs text-muted-foreground print:text-gray-500">
             <p>Thank you for your business!</p>
             {isEditing && (
               <p className="mt-2 text-amber-600">
