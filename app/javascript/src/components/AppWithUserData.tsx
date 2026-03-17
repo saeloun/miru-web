@@ -71,7 +71,6 @@ const AppWithUserData = (props: any) => {
           });
         }
       } catch (error) {
-        console.error("Failed to fetch user details:", error);
         setUserData({
           user: null,
           company: null,
