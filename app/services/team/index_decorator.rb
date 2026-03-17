@@ -38,7 +38,7 @@ class Team::IndexDecorator < ApplicationService
 
     def invitation_data
       invitations = current_company.invitations.valid_invitations
-      invitations = invitations.where("recipient_email ILIKE ?", "%#{query}%") if query.present?
+      invitations = invitations.where("recipient_email ILIKE ?", "%#{sanitized_query}%") if query.present?
 
       invitations.map do |invitation|
         build_invitation_data(invitation)
@@ -48,8 +48,12 @@ class Team::IndexDecorator < ApplicationService
     def apply_search_filter(employees)
       employees.where(
         "users.first_name ILIKE :query OR users.last_name ILIKE :query OR users.email ILIKE :query",
-        query: "%#{query}%"
+        query: "%#{sanitized_query}%"
       )
+    end
+
+    def sanitized_query
+      @_sanitized_query ||= ActiveRecord::Base.sanitize_sql_like(query.to_s)
     end
 
     def build_employee_data(user, employment)
