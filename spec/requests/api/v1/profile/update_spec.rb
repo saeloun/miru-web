@@ -3,7 +3,7 @@
 require "rails_helper"
 
 RSpec.describe "Api::V1::Profile#update", type: :request do
-  let(:user) { create(:user, :with_avatar, password: "testing") }
+  let(:user) { create(:user, :with_avatar, password: "testing12") }
   let(:company) { create(:company) }
 
   describe "update user details" do
@@ -24,8 +24,8 @@ RSpec.describe "Api::V1::Profile#update", type: :request do
     it "updates user data with password" do
       params = {
         user: {
-          first_name: "Example", last_name: "User", current_password: "testing", password: "123456",
-          password_confirmation: "123456"
+          first_name: "Example", last_name: "User", current_password: "testing12", password: "12345678",
+          password_confirmation: "12345678"
         }
       }
       send_request(:put, api_v1_profile_path, params:, headers: auth_headers(user))
@@ -76,8 +76,8 @@ RSpec.describe "Api::V1::Profile#update", type: :request do
     it "throws error when current password is incorrect" do
       params = {
         user: {
-          first_name: "Example", last_name: "User", current_password: "incorrect", password: "123456",
-          password_confirmation: "123456"
+          first_name: "Example", last_name: "User", current_password: "incorrect", password: "12345678",
+          password_confirmation: "12345678"
         }
       }
       send_request(:put, api_v1_profile_path, params:, headers: auth_headers(user))
@@ -88,8 +88,8 @@ RSpec.describe "Api::V1::Profile#update", type: :request do
     it "throws error when password_confirmation does not match password" do
       params = {
         user: {
-          first_name: "Example", last_name: "User", current_password: "testing", password: "123456",
-          password_confirmation: "123098"
+          first_name: "Example", last_name: "User", current_password: "testing12", password: "12345678",
+          password_confirmation: "87654321"
         }
       }
       send_request(:put, api_v1_profile_path, params:, headers: auth_headers(user))
@@ -97,16 +97,34 @@ RSpec.describe "Api::V1::Profile#update", type: :request do
       expect(json_response["errors"]).to eq(["Password confirmation doesn't match with new password"])
     end
 
-    it "throws error when password is less than 6 of characters" do
+    it "throws error when password is less than 8 characters" do
       params = {
         user: {
-          first_name: "Example", last_name: "User", current_password: "testing", password: "12345",
-          password_confirmation: "12345"
+          first_name: "Example", last_name: "User", current_password: "testing12", password: "1234567",
+          password_confirmation: "1234567"
         }
       }
       send_request(:put, api_v1_profile_path, params:, headers: auth_headers(user))
       expect(response).to have_http_status(:unprocessable_content)
-      expect(json_response["errors"]).to eq(["Password must be at least 6 characters long"])
+      expect(json_response["errors"]).to eq(["Password must be at least 8 characters long"])
+    end
+
+    it "ignores unexpected social account keys" do
+      params = {
+        user: {
+          social_accounts: {
+            github_url: "https://github.com/sam",
+            linkedin_url: "https://linkedin.com/in/sam",
+            admin: true
+          }
+        }
+      }
+      send_request(:put, api_v1_profile_path, params:, headers: auth_headers(user))
+      expect(response).to have_http_status(:ok)
+      expect(user.reload.social_accounts).to eq(
+        "github_url" => "https://github.com/sam",
+        "linkedin_url" => "https://linkedin.com/in/sam"
+      )
     end
   end
 end

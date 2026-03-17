@@ -7,9 +7,7 @@ RSpec.describe "Api::V1::Projects::Search#index", type: :request do
   let(:user) { create(:user, current_workspace_id: company.id) }
   let(:client) { create(:client, company:) }
   let!(:project) { create(:project, client:) }
-  let(:project_member) { create(:project_member, user:, project:, hourly_rate: 5000) }
-
-  # No setup needed - PG search doesn't require indexing
+  let!(:other_project) { create(:project, client:, name: "Restricted Project") }
 
   context "when user search with a valid search term" do
     before do
@@ -61,6 +59,30 @@ RSpec.describe "Api::V1::Projects::Search#index", type: :request do
       send_request :get, "/api/v1/projects/search?search_term=#{project.name}",
         headers: auth_headers(user)
       expect(response).to have_http_status(:ok)
+    end
+  end
+
+  context "when user is an employee" do
+    before do
+      create(:employment, company:, user:)
+      user.add_role :employee, company
+      create(:project_member, user:, project:, hourly_rate: 5000)
+      sign_in user
+    end
+
+    it "returns only assigned projects" do
+      send_request :get, "/api/v1/projects/search?search_term=#{project.name}", headers: auth_headers(user)
+
+      expect(response).to have_http_status(:ok)
+      expect(json_response["projects"].pluck("id")).to eq([project.id])
+    end
+  end
+
+  context "when user is unauthenticated" do
+    it "rejects the request" do
+      send_request :get, "/api/v1/projects/search?search_term=#{project.name}"
+
+      expect(response).to have_http_status(:unauthorized)
     end
   end
 end
