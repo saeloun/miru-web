@@ -98,6 +98,28 @@ async function login(page, roleConfig) {
   await page.waitForTimeout(1500);
 }
 
+async function clickVisibleControl(page, text) {
+  const button = page.getByRole("button", { name: text, exact: true });
+  if (await button.count()) {
+    await button.first().click();
+    return;
+  }
+
+  const link = page.getByRole("link", { name: text, exact: true });
+  if (await link.count()) {
+    await link.first().click();
+    return;
+  }
+
+  const fallback = page.locator("button, a, [role='button']").filter({ hasText: text });
+  if (await fallback.count()) {
+    await fallback.first().click();
+    return;
+  }
+
+  throw new Error(`Could not find clickable control: ${text}`);
+}
+
 function evaluateCheck(check, snapshot, consoleErrors) {
   const failures = [];
   const expectConfig = check.expect || {};
@@ -192,6 +214,12 @@ async function main() {
       }
 
       await gotoStable(page, `${baseUrl}${check.path}`, check.wait_ms || 2500);
+
+      for (const text of check.actions?.click_controls || []) {
+        await clickVisibleControl(page, text);
+        await page.waitForTimeout(check.actions?.wait_ms || 1200);
+      }
+
       const snapshot = await page.evaluate(visibleSelectorScript);
       const result = evaluateCheck(check, snapshot, consoleErrors);
 
