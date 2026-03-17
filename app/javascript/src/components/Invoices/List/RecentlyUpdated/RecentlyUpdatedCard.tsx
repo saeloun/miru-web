@@ -38,14 +38,14 @@ const RecentlyUpdatedCard = ({
 
   return (
     <div
-      className="group flex h-44 w-40 flex-shrink-0 cursor-pointer flex-col rounded-xl border bg-white border-gray-200 hover:bg-gray-50 p-4 transition-all duration-200 hover:shadow-lg hover:border-gray-300 hover:scale-[1.02]"
+      className="group flex h-44 w-full cursor-pointer flex-col rounded-xl border border-border bg-card p-4 transition-all duration-200 hover:border-primary/30 hover:bg-muted/30 hover:shadow-lg lg:w-40 lg:flex-shrink-0"
       onClick={() => navigate(`/invoices/${id}`)}
     >
       {/* Invoice number with status icon */}
       <div className="mb-3">
         <div className="flex items-center justify-between mb-1">
           <p
-            className="text-sm font-bold text-gray-900 truncate"
+            className="truncate text-sm font-bold text-foreground"
             title={invoiceNumber}
           >
             {invoiceNumber}
@@ -56,7 +56,7 @@ const RecentlyUpdatedCard = ({
 
       <div className="mb-auto">
         <p
-          className="text-sm text-gray-700 font-medium truncate"
+          className="truncate text-sm font-medium text-muted-foreground"
           title={client.name}
         >
           {client.name}
@@ -64,17 +64,17 @@ const RecentlyUpdatedCard = ({
       </div>
 
       {/* Amount at bottom */}
-      <div className="pt-3 border-t border-gray-100">
+      <div className="border-t border-border pt-3">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-xs text-gray-500 uppercase tracking-wide font-medium mb-0.5">
+            <p className="mb-0.5 text-xs font-medium uppercase tracking-wide text-muted-foreground">
               Amount
             </p>
-            <p className="text-base font-bold text-gray-900">
+            <p className="text-base font-bold text-foreground">
               {currencyFormat(currency, amount)}
             </p>
           </div>
-          <ArrowUpRight className="w-4 h-4 text-gray-400 group-hover:text-gray-600 transition-colors" />
+          <ArrowUpRight className="h-4 w-4 text-muted-foreground transition-colors group-hover:text-foreground" />
         </div>
       </div>
     </div>
