@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Api::V1::ExpensesController < ApplicationController
+class Api::V1::ExpensesController < Api::V1::ApplicationController
   before_action :set_expense, only: [:show, :update, :destroy, :approve, :reject, :mark_paid]
 
   def index
