@@ -4,9 +4,10 @@ module Api
   module V1
     module Dashboard
       class ActivitiesController < Api::V1::ApplicationController
-        after_action :verify_authorized, except: :index
+        after_action :verify_authorized
 
         def index
+          authorize :activity, policy_class: ::Dashboard::ActivityPolicy
           activities = fetch_activities
           paginated_activities = paginate_activities(activities)
 
