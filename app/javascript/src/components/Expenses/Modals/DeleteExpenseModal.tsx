@@ -39,6 +39,7 @@ const DeleteExpenseModal = ({
           className="mr-2 w-1/2"
           size="medium"
           style="secondary"
+          type="button"
           onClick={() => {
             setShowDeleteExpenseModal(false);
           }}
@@ -49,6 +50,7 @@ const DeleteExpenseModal = ({
           className="ml-2 w-1/2 bg-destructive xsm:text-white"
           size="medium"
           style="ternary"
+          type="button"
           onClick={handleDeleteExpense}
         >
           DELETE
