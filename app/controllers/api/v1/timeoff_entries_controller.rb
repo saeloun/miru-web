@@ -74,6 +74,6 @@ class Api::V1::TimeoffEntriesController < Api::V1::ApplicationController
     end
 
     def load_timeoff_entry!
-      @timeoff_entry ||= TimeoffEntry.find(params[:id])
+      @timeoff_entry ||= current_company.timeoff_entries.find(params[:id])
     end
 end

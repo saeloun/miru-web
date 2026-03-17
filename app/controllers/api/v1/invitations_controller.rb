@@ -51,6 +51,6 @@ class Api::V1::InvitationsController < Api::V1::ApplicationController
     end
 
     def set_invitation
-      @invitation = Invitation.find(params[:id])
+      @invitation = current_company.invitations.find(params[:id])
     end
 end
