@@ -71,7 +71,7 @@ const Header = ({
   return (
     <Card className="mb-6 w-full rounded-lg border border-border bg-card shadow-sm">
       <CardContent className="p-5">
-        <div className="flex w-full items-center justify-between gap-4">
+        <div className="flex w-full flex-wrap items-center justify-between gap-3 sm:flex-nowrap sm:gap-4">
           <Button
             variant="outline"
             size="sm"
@@ -81,21 +81,21 @@ const Header = ({
             Today
           </Button>
 
-          <div className="flex items-center gap-4">
+          <div className="flex min-w-0 flex-1 items-center justify-center gap-2 sm:gap-4">
             <Button
               variant="ghost"
               size="sm"
               onClick={getLeftArrowAction}
-              className="h-10 w-10 p-0 hover:bg-accent transition-all duration-200"
+              className="h-10 w-10 shrink-0 p-0 hover:bg-accent transition-all duration-200"
             >
               <CaretLeft className="h-5 w-5" />
             </Button>
             {!!dayInfo.length && (
               <>
-                <div className="flex items-center gap-3">
-                  <Calendar className="h-6 w-6 text-primary" />
+                <div className="flex min-w-0 items-center gap-2 sm:gap-3">
+                  <Calendar className="h-5 w-5 shrink-0 text-primary sm:h-6 sm:w-6" />
                   <h2
-                    className="cursor-pointer text-xl font-semibold tracking-tight text-foreground transition-colors hover:text-primary"
+                    className="cursor-pointer text-base font-semibold tracking-tight text-foreground transition-colors hover:text-primary sm:text-xl"
                     onClick={() => {
                       !isDesktop && setOpenOsCalendar(!openOsCalendar);
                     }}
@@ -126,13 +126,13 @@ const Header = ({
               variant="ghost"
               size="sm"
               onClick={getRightArrowAction}
-              className="h-10 w-10 p-0 hover:bg-accent transition-all duration-200"
+              className="h-10 w-10 shrink-0 p-0 hover:bg-accent transition-all duration-200"
             >
               <CaretRight className="h-5 w-5" />
             </Button>
           </div>
 
-          <div className="weekly-total rounded-lg border border-border bg-muted/40 px-4 py-2 text-right min-w-[96px]">
+          <div className="weekly-total ml-auto rounded-lg border border-border bg-muted/40 px-3 py-2 text-right min-w-0 shrink-0 sm:px-4">
             <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">
               Total
             </div>
