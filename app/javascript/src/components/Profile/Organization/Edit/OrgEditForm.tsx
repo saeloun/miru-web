@@ -97,15 +97,20 @@ const FormField = ({
   error,
   children,
   className = "",
+  htmlFor,
 }: {
   label: string;
   required?: boolean;
   error?: string;
   children: React.ReactNode;
   className?: string;
+  htmlFor?: string;
 }) => (
   <div className={cn("space-y-2", className)}>
-    <Label className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+    <Label
+      htmlFor={htmlFor}
+      className="text-xs font-medium uppercase tracking-wider text-muted-foreground"
+    >
       {label} {required && <span className="text-destructive">*</span>}
     </Label>
     {children}
@@ -277,8 +282,11 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                   label="Company Name"
                   required
                   error={errDetails.companyNameErr}
+                  htmlFor="company_name"
                 >
                   <Input
+                    id="company_name"
+                    aria-label="Company Name"
                     type="text"
                     value={companyName}
                     onChange={e =>
@@ -313,8 +321,12 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                   <FormField
                     label="Business Phone"
                     error={errDetails.companyPhoneErr}
+                    htmlFor="company_phone"
                   >
                     <PhoneInput
+                      id="company_phone"
+                      name="company_phone"
+                      aria-label="Business Phone"
                       className="phone-input-clean"
                       defaultCountry="US"
                       flags={flags}
@@ -338,8 +350,11 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                       required
                       error={errDetails.addressLine1Err}
                       className="md:col-span-2"
+                      htmlFor="company_address_line_1"
                     >
                       <Input
+                        id="company_address_line_1"
+                        aria-label="Address Line 1"
                         type="text"
                         value={companyAddr?.addressLine1 || ""}
                         onChange={e =>
@@ -353,8 +368,14 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                       />
                     </FormField>
 
-                    <FormField label="Address Line 2" className="md:col-span-2">
+                    <FormField
+                      label="Address Line 2"
+                      className="md:col-span-2"
+                      htmlFor="company_address_line_2"
+                    >
                       <Input
+                        id="company_address_line_2"
+                        aria-label="Address Line 2"
                         type="text"
                         value={companyAddr?.addressLine2 || ""}
                         onChange={e =>
@@ -381,7 +402,10 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                           }
                         }}
                       >
-                        <SelectTrigger className="border-border">
+                        <SelectTrigger
+                          aria-label="Country"
+                          className="border-border"
+                        >
                           <SelectValue placeholder="Select country" />
                         </SelectTrigger>
                         <SelectContent>
@@ -401,8 +425,11 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                       label="State/Province"
                       required
                       error={errDetails.stateErr}
+                      htmlFor="company_state"
                     >
                       <Input
+                        id="company_state"
+                        aria-label="State/Province"
                         type="text"
                         value={companyAddr?.state || ""}
                         onChange={handleStateChange}
@@ -414,8 +441,15 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                       />
                     </FormField>
 
-                    <FormField label="City" required error={errDetails.cityErr}>
+                    <FormField
+                      label="City"
+                      required
+                      error={errDetails.cityErr}
+                      htmlFor="company_city"
+                    >
                       <Input
+                        id="company_city"
+                        aria-label="City"
                         type="text"
                         value={companyAddr?.city || ""}
                         onChange={handleCityChange}
@@ -431,8 +465,11 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                       label="ZIP/Postal Code"
                       required
                       error={errDetails.zipcodeErr}
+                      htmlFor="company_zipcode"
                     >
                       <Input
+                        id="company_zipcode"
+                        aria-label="ZIP/Postal Code"
                         type="text"
                         value={companyAddr?.zipcode || ""}
                         onChange={handleZipcodeChange}
@@ -474,7 +511,10 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                         }
                       }}
                     >
-                      <SelectTrigger className="border-border">
+                      <SelectTrigger
+                        aria-label="Base Currency"
+                        className="border-border"
+                      >
                         <SelectValue placeholder="Select currency" />
                       </SelectTrigger>
                       <SelectContent>
@@ -494,12 +534,15 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                     label="Standard Rate"
                     required
                     error={errDetails.companyRateErr}
+                    htmlFor="company_rate"
                   >
                     <div className="relative">
                       <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
                         $
                       </span>
                       <Input
+                        id="company_rate"
+                        aria-label="Standard Rate"
                         type="number"
                         value={companyRate || ""}
                         onChange={e =>
@@ -537,7 +580,10 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                         }
                       }}
                     >
-                      <SelectTrigger className="border-border">
+                      <SelectTrigger
+                        aria-label="Fiscal Year End"
+                        className="border-border"
+                      >
                         <SelectValue placeholder="Select month" />
                       </SelectTrigger>
                       <SelectContent>
@@ -582,7 +628,10 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                         }
                       }}
                     >
-                      <SelectTrigger className="border-border">
+                      <SelectTrigger
+                        aria-label="Timezone"
+                        className="border-border"
+                      >
                         <SelectValue placeholder="Select timezone" />
                       </SelectTrigger>
                       <SelectContent>
@@ -614,7 +663,10 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                         }
                       }}
                     >
-                      <SelectTrigger className="border-border">
+                      <SelectTrigger
+                        aria-label="Date Format"
+                        className="border-border"
+                      >
                         <SelectValue placeholder="Select format" />
                       </SelectTrigger>
                       <SelectContent>
@@ -643,8 +695,14 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <FormField label="Working Days per Week" required>
+                  <FormField
+                    label="Working Days per Week"
+                    required
+                    htmlFor="company_working_days"
+                  >
                     <Input
+                      id="company_working_days"
+                      aria-label="Working Days per Week"
                       type="number"
                       value={companyWorkingDays || ""}
                       onChange={e =>
@@ -660,8 +718,14 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                     />
                   </FormField>
 
-                  <FormField label="Working Hours per Week" required>
+                  <FormField
+                    label="Working Hours per Week"
+                    required
+                    htmlFor="company_working_hours"
+                  >
                     <Input
+                      id="company_working_hours"
+                      aria-label="Working Hours per Week"
                       type="number"
                       value={companyWorkingHours || ""}
                       onChange={e =>
@@ -690,8 +754,10 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <FormField label="Bank Name">
+                  <FormField label="Bank Name" htmlFor="bank_name">
                     <Input
+                      id="bank_name"
+                      aria-label="Bank Name"
                       type="text"
                       value={bankName || ""}
                       onChange={e =>
@@ -702,8 +768,13 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                     />
                   </FormField>
 
-                  <FormField label="Account Number">
+                  <FormField
+                    label="Account Number"
+                    htmlFor="bank_account_number"
+                  >
                     <Input
+                      id="bank_account_number"
+                      aria-label="Account Number"
                       type="text"
                       value={bankAccountNumber || ""}
                       onChange={e =>
@@ -717,8 +788,13 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                     />
                   </FormField>
 
-                  <FormField label="Routing Number">
+                  <FormField
+                    label="Routing Number"
+                    htmlFor="bank_routing_number"
+                  >
                     <Input
+                      id="bank_routing_number"
+                      aria-label="Routing Number"
                       type="text"
                       value={bankRoutingNumber || ""}
                       onChange={e =>
@@ -732,8 +808,10 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                     />
                   </FormField>
 
-                  <FormField label="SWIFT Code">
+                  <FormField label="SWIFT Code" htmlFor="bank_swift_code">
                     <Input
+                      id="bank_swift_code"
+                      aria-label="SWIFT Code"
                       type="text"
                       value={bankSwiftCode || ""}
                       onChange={e =>
@@ -763,8 +841,10 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <FormField label="Tax ID">
+                  <FormField label="Tax ID" htmlFor="tax_id">
                     <Input
+                      id="tax_id"
+                      aria-label="Tax ID"
                       type="text"
                       value={taxId || ""}
                       onChange={e =>
@@ -775,8 +855,10 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                     />
                   </FormField>
 
-                  <FormField label="VAT Number">
+                  <FormField label="VAT Number" htmlFor="vat_number">
                     <Input
+                      id="vat_number"
+                      aria-label="VAT Number"
                       type="text"
                       value={vatNumber || ""}
                       onChange={e =>
@@ -787,8 +869,10 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                     />
                   </FormField>
 
-                  <FormField label="GST Number">
+                  <FormField label="GST Number" htmlFor="gst_number">
                     <Input
+                      id="gst_number"
+                      aria-label="GST Number"
                       type="text"
                       value={gstNumber || ""}
                       onChange={e =>
