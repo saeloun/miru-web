@@ -2,12 +2,11 @@ import React, { forwardRef, useEffect, useMemo, useRef } from "react";
 
 import { useUserContext } from "context/UserContext";
 import { PencilIcon, DeleteIcon } from "miruIcons";
-import PropTypes from "prop-types";
 import { useTable, useRowSelect } from "react-table";
 
 const IndeterminateCheckbox = forwardRef(
   ({ indeterminate, ...rest }: any, ref) => {
-    const defaultRef = useRef();
+    const defaultRef = useRef<HTMLInputElement | null>(null);
     const resolvedRef: any = ref || defaultRef;
 
     useEffect(() => {
@@ -64,6 +63,16 @@ const getTableCheckbox = hooks => {
   ]);
 };
 
+interface TableProps {
+  tableHeader: any[];
+  tableRowArray: any[];
+  hasCheckbox?: boolean;
+  hasRowIcons?: boolean;
+  handleDeleteClick?: (id: any) => void;
+  handleEditClick?: (id: any) => void;
+  rowOnClick?: (id: any) => void;
+}
+
 const Table = ({
   tableHeader,
   tableRowArray,
@@ -78,7 +87,7 @@ const Table = ({
   rowOnClick = _id => {
     /* Default empty handler */
   },
-}) => {
+}: TableProps) => {
   const data = useMemo(() => tableRowArray, [tableRowArray]);
   const columns = useMemo(() => tableHeader, [tableHeader]);
   const { isDesktop } = useUserContext();
@@ -174,16 +183,6 @@ const Table = ({
       </tbody>
     </table>
   );
-};
-
-Table.proptypes = {
-  tableHeader: PropTypes.array,
-  tableRowArray: PropTypes.array,
-  hasCheckbox: PropTypes.bool,
-  hasRowIcons: PropTypes.bool,
-  handleDeleteClick: PropTypes.func,
-  handleEditClick: PropTypes.func,
-  rowOnClick: PropTypes.func,
 };
 
 export default Table;
