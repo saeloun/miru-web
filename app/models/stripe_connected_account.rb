@@ -4,7 +4,7 @@ class StripeConnectedAccount < ApplicationRecord
   include Rails.application.routes.url_helpers
 
   before_create do
-    self.account_id = Stripe::Account.create(type: "standard").id
+    self.account_id ||= Stripe::Account.create(type: "standard").id
   end
 
   belongs_to :company
