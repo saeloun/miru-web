@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_03_18_123000) do
+ActiveRecord::Schema[8.0].define(version: 2026_03_18_133000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_stat_statements"
@@ -345,6 +345,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_18_123000) do
     t.string "category_name"
     t.datetime "discarded_at"
     t.index ["company_id"], name: "index_expenses_on_company_id"
+    t.index ["date"], name: "index_expenses_on_date"
     t.index ["description"], name: "index_expenses_on_description_trgm", opclass: :gin_trgm_ops, using: :gin
     t.index ["discarded_at"], name: "index_expenses_on_discarded_at"
     t.index ["expense_category_id"], name: "index_expenses_on_expense_category_id"
@@ -459,6 +460,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_18_123000) do
     t.decimal "exchange_rate", precision: 18, scale: 10
     t.date "exchange_rate_date"
     t.index ["client_id"], name: "index_invoices_on_client_id"
+    t.index ["company_id", "status"], name: "index_invoices_on_company_id_and_status"
     t.index ["company_id"], name: "index_invoices_on_company_id"
     t.index ["discarded_at"], name: "index_invoices_on_discarded_at"
     t.index ["due_date"], name: "index_invoices_on_due_date"
@@ -570,6 +572,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_18_123000) do
     t.date "exchange_rate_date"
     t.index ["invoice_id"], name: "index_payments_on_invoice_id"
     t.index ["status"], name: "index_payments_on_status"
+    t.index ["transaction_date"], name: "index_payments_on_transaction_date"
   end
 
   create_table "payments_providers", force: :cascade do |t|
@@ -806,6 +809,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_18_123000) do
     t.index ["discarded_at"], name: "index_timesheet_entries_on_discarded_at"
     t.index ["note"], name: "index_timesheet_entries_on_note_trgm", opclass: :gin_trgm_ops, using: :gin
     t.index ["project_id"], name: "index_timesheet_entries_on_project_id"
+    t.index ["user_id", "work_date"], name: "index_timesheet_entries_on_user_id_and_work_date"
     t.index ["user_id"], name: "index_timesheet_entries_on_user_id"
     t.index ["work_date"], name: "index_timesheet_entries_on_work_date"
   end
