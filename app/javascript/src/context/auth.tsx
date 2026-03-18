@@ -1,6 +1,5 @@
 import React, { createContext, useReducer, Dispatch } from "react";
 
-import PropTypes from "prop-types";
 import { getValueFromLocalStorage } from "utils/storage";
 
 import authReducer, { AuthAction, AuthState } from "../reducers/auth";
@@ -19,7 +18,7 @@ const initialState: AuthState = {
   authEmail: email || null,
 };
 
-const AuthProvider = ({ children }) => {
+const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [state, dispatch] = useReducer(authReducer, initialState);
 
   return (
@@ -53,9 +52,5 @@ const useAuth = (): [AuthState, Dispatch<AuthAction>] => [
   useAuthState(),
   useAuthDispatch(),
 ];
-
-AuthProvider.propTypes = {
-  children: PropTypes.node,
-};
 
 export { AuthProvider, useAuthState, useAuthDispatch, useAuth };
