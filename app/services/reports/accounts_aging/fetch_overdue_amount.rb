@@ -38,14 +38,24 @@ module Reports::AccountsAging
       end
 
       def grouped_amounts_by_client
-        outstanding_invoices.each_with_object(Hash.new { |hash, key| hash[key] = empty_bucket.dup }) do |invoice, totals|
-          amount = amount_due_in_base_currency(invoice)
-          bucket = bucket_key(invoice.due_date)
-
-          totals[invoice.client_id][bucket] += amount
-          totals[invoice.client_id][:total] += amount
-          totals[:total][bucket] += amount
-          totals[:total][:total] += amount
+        rows.each_with_object(Hash.new { |hash, key| hash[key] = empty_bucket.dup }) do |row, totals|
+          totals[row.client_id] = {
+            zero_to_thirty_days: row.zero_to_thirty_days.to_f,
+            thirty_one_to_sixty_days: row.thirty_one_to_sixty_days.to_f,
+            sixty_one_to_ninety_days: row.sixty_one_to_ninety_days.to_f,
+            ninety_plus_days: row.ninety_plus_days.to_f,
+            total: row.total.to_f
+          }
+        end.tap do |totals|
+          totals[:total] = totals.values.reduce(empty_bucket.dup) do |aggregate, bucket|
+            aggregate.merge(
+              zero_to_thirty_days: aggregate[:zero_to_thirty_days] + bucket[:zero_to_thirty_days],
+              thirty_one_to_sixty_days: aggregate[:thirty_one_to_sixty_days] + bucket[:thirty_one_to_sixty_days],
+              sixty_one_to_ninety_days: aggregate[:sixty_one_to_ninety_days] + bucket[:sixty_one_to_ninety_days],
+              ninety_plus_days: aggregate[:ninety_plus_days] + bucket[:ninety_plus_days],
+              total: aggregate[:total] + bucket[:total]
+            )
+          end
         end
       end
 
@@ -55,26 +65,29 @@ module Reports::AccountsAging
         ).kept.order(name: :asc).uniq
       end
 
-      def amount_due_in_base_currency(invoice)
-        return invoice.amount_due.to_f.round(2) unless invoice.base_currency_amount.to_f.positive?
-
-        proportion = invoice.amount.to_f.zero? ? 1.0 : invoice.amount_due.to_f / invoice.amount.to_f
-        (invoice.base_currency_amount * proportion).round(2)
-      end
-
-      def bucket_key(due_date)
+      def rows
         today = Date.current
+        amount_sql = <<~SQL.squish
+          CASE
+            WHEN COALESCE(base_currency_amount, 0) > 0 THEN
+              ROUND(
+                base_currency_amount * CASE WHEN amount = 0 THEN 1.0 ELSE amount_due / amount END,
+                2
+              )
+            ELSE ROUND(amount_due, 2)
+          END
+        SQL
 
-        case due_date
-        when 30.days.ago..today
-          :zero_to_thirty_days
-        when 60.days.ago...30.days.ago
-          :thirty_one_to_sixty_days
-        when 90.days.ago...60.days.ago
-          :sixty_one_to_ninety_days
-        else
-          :ninety_plus_days
-        end
+        outstanding_invoices
+          .group(:client_id)
+          .select(
+            :client_id,
+            "SUM(CASE WHEN due_date >= #{ActiveRecord::Base.connection.quote(30.days.ago.to_date)} AND due_date <= #{ActiveRecord::Base.connection.quote(today)} THEN #{amount_sql} ELSE 0 END) AS zero_to_thirty_days",
+            "SUM(CASE WHEN due_date >= #{ActiveRecord::Base.connection.quote(60.days.ago.to_date)} AND due_date < #{ActiveRecord::Base.connection.quote(30.days.ago.to_date)} THEN #{amount_sql} ELSE 0 END) AS thirty_one_to_sixty_days",
+            "SUM(CASE WHEN due_date >= #{ActiveRecord::Base.connection.quote(90.days.ago.to_date)} AND due_date < #{ActiveRecord::Base.connection.quote(60.days.ago.to_date)} THEN #{amount_sql} ELSE 0 END) AS sixty_one_to_ninety_days",
+            "SUM(CASE WHEN due_date < #{ActiveRecord::Base.connection.quote(90.days.ago.to_date)} THEN #{amount_sql} ELSE 0 END) AS ninety_plus_days",
+            "SUM(#{amount_sql}) AS total"
+          )
       end
 
       def empty_bucket
