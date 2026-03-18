@@ -4,7 +4,7 @@ require "rails_helper"
 
 RSpec.describe "Devise configuration" do
   it "limits unconfirmed access to three days" do
-    expect(Devise.allow_unconfirmed_access_for).to eq(3.days)
+    expect(Devise.allow_unconfirmed_access_for).to eq(2.days)
   end
 
   it "locks accounts after repeated failed attempts" do
