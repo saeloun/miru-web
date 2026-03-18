@@ -67,32 +67,7 @@ module TimeoffEntries
           net_duration = total_minutes + previous_year_carryforward - timeoff_entries_duration
           net_hours = net_duration / 60
           net_days = net_hours / @working_hours_per_day
-          extra_hours = net_hours % @working_hours_per_day
-
-          label = if net_hours.zero?
-            "0 hours"
-          elsif net_hours.negative?
-            total_overdrawn_hours = net_hours.abs
-            if total_overdrawn_hours < @working_hours_per_day
-              "Overdrawn by #{total_overdrawn_hours} #{'hour'.pluralize(total_overdrawn_hours)}"
-            else
-              overdrawn_days = total_overdrawn_hours / @working_hours_per_day
-              overdrawn_extra_hours = total_overdrawn_hours % @working_hours_per_day
-              if overdrawn_extra_hours.zero?
-                "Overdrawn by #{overdrawn_days} #{'day'.pluralize(overdrawn_days)}"
-              else
-                "Overdrawn by #{overdrawn_days} #{'day'.pluralize(overdrawn_days)} #{overdrawn_extra_hours} #{'hour'.pluralize(overdrawn_extra_hours)}"
-              end
-            end
-          elsif net_hours < @working_hours_per_day
-            "#{net_hours} #{'hour'.pluralize(net_hours)}"
-          else
-            if extra_hours.zero?
-              "#{net_days} #{'day'.pluralize(net_days)}"
-            else
-              "#{net_days} #{'day'.pluralize(net_days)} #{extra_hours} #{'hour'.pluralize(extra_hours)}"
-            end
-          end
+          label = TimeoffEntries::LeaveBalanceLabelService.process(net_hours, @working_hours_per_day)
 
           summary_object = {
             id: leave_type.id,
