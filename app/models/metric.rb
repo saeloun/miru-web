@@ -75,25 +75,10 @@ class Metric < ApplicationRecord
     self.data = calculate_metric_data
     self.calculated_at = Time.current
 
-    # Extract common values for quick access based on metric type
-    case metric_type
-    when "hours_logged"
-      self.value_sum = data["total_minutes"] || 0
-      self.value_count = data["entry_count"] || 0
-    when "invoice_summary", "client_revenue"
-      self.value_sum = data["total_amount"] || data["total_revenue"] || 0
-      self.value_count = data["count"] || data["invoice_count"] || 0
-    when "outstanding_amounts"
-      self.value_sum = data["total_outstanding"] || 0
-      self.value_count = data["overdue_count"] || 0
-    else
-      self.value_sum = data["total_value"] || 0
-      self.value_count = data["count"] || 0
-    end
-
-    if value_count > 0 && value_sum > 0
-      self.value_avg = value_sum / value_count
-    end
+    summary = Metrics::ValueSummary.build(metric_type, data)
+    self.value_sum = summary[:value_sum]
+    self.value_count = summary[:value_count]
+    self.value_avg = summary[:value_avg]
 
     save!
   end
