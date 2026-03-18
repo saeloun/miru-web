@@ -13,7 +13,7 @@
     "noEmit": true,
     "baseUrl": "./",
     "paths": {
-      "@/*": ["app/javascript/src/*"],
+      "@/*": ["app/javascript/*"],
       "~/*": ["app/javascript/src/*"],
       "components/*": ["app/javascript/src/components/*"],
       "apis/*": ["./app/javascript/src/apis/*"],
