@@ -23,9 +23,6 @@ importers:
       '@headlessui/react':
         specifier: ^1.4.2
         version: 1.7.19(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
-      '@heroicons/react':
-        specifier: ^1.0.5
-        version: 1.0.6(react@19.1.1)
       '@phosphor-icons/react':
         specifier: ^2.1.4
         version: 2.1.10(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
@@ -170,9 +167,6 @@ importers:
       phosphor-react:
         specifier: ^1.4.1
         version: 1.4.1(react@19.1.1)
-      prop-types:
-        specifier: ^15.8.1
-        version: 15.8.1
       rc-steps:
         specifier: ^6.0.0
         version: 6.0.1(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
@@ -808,11 +802,6 @@ packages:
     peerDependencies:
       react: 19.1.1
       react-dom: 19.1.1
-
-  '@heroicons/react@1.0.6':
-    resolution: {integrity: sha512-JJCXydOFWMDpCP4q13iEplA503MQO3xLoZiKum+955ZCtHINWnx26CUxVxxFQu/uLb4LW3ge15ZpzIkXKkJ8oQ==}
-    peerDependencies:
-      react: 19.1.1
 
   '@humanfs/core@0.19.1':
     resolution: {integrity: sha512-5DyQ4+1JEUzejeK1JGICcideyfUbGixgS9jNgex5nqkW+cY7WZhxBigmieN5Qnw9ZosSNVC9KQKyb+GUaGyKUA==}
@@ -5081,10 +5070,6 @@ snapshots:
       client-only: 0.0.1
       react: 19.1.1
       react-dom: 19.1.1(react@19.1.1)
-
-  '@heroicons/react@1.0.6(react@19.1.1)':
-    dependencies:
-      react: 19.1.1
 
   '@humanfs/core@0.19.1': {}
 
