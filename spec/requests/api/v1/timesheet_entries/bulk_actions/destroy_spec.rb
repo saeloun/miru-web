@@ -26,5 +26,18 @@ RSpec.describe "Api::V1::TimesheetEntry::BulkActionController#destroy", type: :r
       expect(TimesheetEntry.where(id: [timesheet_entry1.id, timesheet_entry2.id]).kept.count).to eq(0)
       expect(TimesheetEntry.where(id: timesheet_entry3.id).kept.count).to eq(1)
     end
+
+    it "rejects client users" do
+      client_user = create(:user, current_workspace_id: company.id)
+      create(:client_member, company:, user: client_user, client:)
+      client_user.add_role :client, company
+
+      sign_in client_user
+      send_request :delete, api_v1_bulk_action_path,
+        params: { source: { ids: [timesheet_entry1.id] } },
+        headers: auth_headers(client_user)
+
+      expect(response).to have_http_status(:forbidden)
+    end
   end
 end

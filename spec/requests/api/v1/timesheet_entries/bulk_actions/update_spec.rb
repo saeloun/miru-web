@@ -30,5 +30,18 @@ RSpec.describe "Api::V1::TimesheetEntry::BulkActionController#update", type: :re
 
       expect(TimesheetEntry.find(timesheet_entry3.id).project_id).to eq(project1.id)
     end
+
+    it "rejects client users" do
+      client_user = create(:user, current_workspace_id: company.id)
+      create(:client_member, company:, user: client_user, client:)
+      client_user.add_role :client, company
+
+      sign_in client_user
+      send_request :patch, api_v1_bulk_action_path,
+        params: { ids: [timesheet_entry1.id], project_id: project2.id },
+        headers: auth_headers(client_user)
+
+      expect(response).to have_http_status(:forbidden)
+    end
   end
 end
