@@ -3,7 +3,6 @@
 require "simplecov"
 require "pundit/rspec"
 require "webmock/rspec"
-require "rspec/retry"
 
 # Allow YAML to load and dump BigDecimal for test factories (Psych 5+ / Ruby 4.0+)
 require "yaml"
@@ -90,25 +89,4 @@ RSpec.configure do |config|
     process_num = ENV["TEST_ENV_NUMBER"].to_s.empty? ? "0" : ENV["TEST_ENV_NUMBER"]
     config.add_formatter "RspecJunitFormatter", "tmp/rspec#{process_num}.xml"
   end
-end
-
-RSpec.configure do |config|
-  config.verbose_retry = true
-  config.display_try_failure_messages = true
-
-  config.around do |example|
-    # Don't retry system tests as they use Playwright now
-    if example.metadata[:type] == :system
-      example.run
-    else
-      example.run_with_retry retry: 3
-    end
-  end
-
-  # config.retry_callback = proc do |ex|
-  #   # run some additional clean up task - can be filtered by example metadata
-  #   if ex.metadata[:js]
-  #     Capybara.reset!
-  #   end
-  # end
 end
