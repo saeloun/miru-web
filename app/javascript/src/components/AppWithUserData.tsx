@@ -10,6 +10,7 @@ const AUTH_PATH_PREFIXES = [
   "/signup",
   "/password/new",
   "/password/edit",
+  "/users/password/edit",
   "/email_confirmation",
 ];
 
