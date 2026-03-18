@@ -21,5 +21,5 @@ Rails.application.configure do
     end
   end
 
-  config.content_security_policy_report_only = true
+  config.content_security_policy_report_only = Rails.env.development?
 end
