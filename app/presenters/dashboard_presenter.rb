@@ -67,9 +67,8 @@ class DashboardPresenter
       previous_period_revenue = employee_scoped? ? 0 : calculate_previous_period_revenue
       revenue_trend = employee_scoped? ? 0 : calculate_trend(total_revenue, previous_period_revenue)
 
-      # Calculate projects
-      active_projects = scoped_projects.where(billable: true).count
-      previous_active_projects = calculate_previous_active_projects
+      active_projects = active_project_count_for(from_date..to_date)
+      previous_active_projects = active_project_count_for(previous_period_range)
       projects_trend = calculate_trend(active_projects, previous_active_projects)
 
       # Calculate hours
@@ -92,10 +91,10 @@ class DashboardPresenter
     def revenue_chart_data
       return [] if employee_scoped?
 
-      invoices = scoped_invoices.where(issue_date: from_date..to_date)
-
-      # Group by month
-      monthly_data = invoices.group_by { |i| i.issue_date.beginning_of_month }
+      monthly_data = scoped_invoices
+        .where(issue_date: from_date..to_date)
+        .group(Arel.sql("DATE_TRUNC('month', issue_date)"))
+        .sum(:amount)
 
       # Build chart data with cumulative revenue
       chart_data = []
@@ -103,15 +102,14 @@ class DashboardPresenter
       cumulative_revenue = 0
 
       while current_date <= to_date
-        month_invoices = monthly_data[current_date] || []
-        month_revenue = month_invoices.sum(&:amount)
+        month_revenue = monthly_data[current_date.beginning_of_month.in_time_zone] || 0
         cumulative_revenue += month_revenue
 
         chart_data << {
           month: current_date.strftime("%b"),
           revenue: cumulative_revenue.round(2),
           monthly_revenue: month_revenue.round(2),
-          invoices: month_invoices.count
+          invoices: invoice_count_for_month(current_date)
         }
         current_date = current_date.next_month
       end
@@ -122,16 +120,16 @@ class DashboardPresenter
     def revenue_by_customer_data
       return [] if employee_scoped? || client_scoped?
 
-      invoices = scoped_invoices.where(issue_date: from_date..to_date)
-
-      # Group by client
-      client_revenue = invoices.includes(:client).group_by(&:client)
-
-      # Calculate revenue per client
-      client_data = client_revenue.map do |client, client_invoices|
+      client_data = scoped_invoices
+        .joins(:client)
+        .where(issue_date: from_date..to_date)
+        .group("clients.id", "clients.name")
+        .sum(:amount)
+        .map do |(client_id, client_name), amount|
         {
-          name: client&.name || "Unknown",
-          revenue: client_invoices.sum(&:amount).round(2)
+          id: client_id,
+          name: client_name || "Unknown",
+          revenue: amount.round(2)
         }
       end
 
@@ -219,14 +217,25 @@ class DashboardPresenter
       scoped_invoices.where(issue_date: previous_from..previous_to).sum(:amount)
     end
 
-    def calculate_previous_active_projects
-      [scoped_projects.where(billable: true).count - 1, 0].max
-    end
-
     def calculate_trend(current_value, previous_value)
       return 0 if previous_value == 0
 
       ((current_value - previous_value) / previous_value * 100).round(1)
+    end
+
+    def previous_period_range
+      previous_to = from_date - 1.day
+      previous_from = previous_to - (to_date - from_date)
+
+      previous_from..previous_to
+    end
+
+    def active_project_count_for(date_range)
+      scoped_timesheet_entries.where(work_date: date_range).distinct.count(:project_id)
+    end
+
+    def invoice_count_for_month(date)
+      scoped_invoices.where(issue_date: date.beginning_of_month..date.end_of_month).count
     end
 
     def time_ago_in_words(time)
