@@ -37,6 +37,6 @@ FactoryBot.define do
     allocation_period { "days" }
     allocation_frequency { "per_year" }
     allocation_value { rand(1..10) }
-    carry_forward_days { rand(0..5) }
+    carry_forward_days { rand(0..[allocation_value.to_i, 0].max) }
   end
 end
