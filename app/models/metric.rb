@@ -43,7 +43,7 @@ class Metric < ApplicationRecord
         trackable: trackable,
         metric_type: metric_type,
         period: period,
-        period_date: period_date_for(period, date)
+        period_date: Metrics::Periods.period_date_for(period, date)
       )
 
       # Recalculate if stale (older than 1 hour for recent periods)
@@ -61,25 +61,6 @@ class Metric < ApplicationRecord
     end
 
     private
-
-      def period_date_for(period, date)
-        case period.to_s
-        when "day"
-          date.to_date
-        when "week"
-          date.beginning_of_week
-        when "month"
-          date.beginning_of_month
-        when "quarter"
-          date.beginning_of_quarter
-        when "year"
-          date.beginning_of_year
-        when "all_time"
-          nil
-        else
-          date.to_date
-        end
-      end
   end
 
   # Instance methods
@@ -87,22 +68,7 @@ class Metric < ApplicationRecord
     return true if new_record?
     return true if calculated_at.nil?
 
-    staleness_threshold = case period.to_s
-                          when "hour", "day"
-                            1.hour
-                          when "week"
-                            6.hours
-                          when "month"
-                            1.day
-                          when "quarter", "year"
-                            1.week
-                          when "all_time"
-                            1.day
-                          else
-                            1.hour
-    end
-
-    calculated_at < staleness_threshold.ago
+    calculated_at < Metrics::Periods.staleness_threshold(period).ago
   end
 
   def calculate!
@@ -252,22 +218,8 @@ class Metric < ApplicationRecord
     end
 
     def apply_period_filter(relation, date_column)
-      return relation if period == "all_time" || period_date.nil?
-
-      date_range = case period
-                   when "day"
-                     period_date.beginning_of_day..period_date.end_of_day
-                   when "week"
-                     period_date.beginning_of_week..period_date.end_of_week
-                   when "month"
-                     period_date.beginning_of_month..period_date.end_of_month
-                   when "quarter"
-                     period_date.beginning_of_quarter..period_date.end_of_quarter
-                   when "year"
-                     period_date.beginning_of_year..period_date.end_of_year
-                   else
-                     return relation
-      end
+      date_range = Metrics::Periods.date_range(period, period_date)
+      return relation unless date_range
 
       relation.where(date_column => date_range)
     end
