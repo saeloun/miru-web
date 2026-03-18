@@ -40,22 +40,25 @@ class Client < ApplicationRecord
     ).sum(:duration)
   end
 
-  def project_details(time_frame = "week")
-    projects.includes([:project_members]).kept.map do | project |
+  def project_details(time_frame = "week", duration_by_project_id: nil)
+    kept_projects = projects.kept.includes(project_members: :user)
+    duration_by_project_id ||= TimesheetEntry.kept.where(
+      project_id: kept_projects.map(&:id),
+      work_date: DateRangeService.new(timeframe: time_frame).process
+    ).group(:project_id).sum(:duration)
+
+    kept_projects.map do | project |
       {
         id: project.id,
         name: project.name,
         billable: project.billable,
         team: project.project_member_full_names,
-        minutes_spent: project.timesheet_entries.where(
-          work_date: DateRangeService.new(timeframe: time_frame).process,
-          discarded_at: nil
-        ).sum(:duration)
+        minutes_spent: duration_by_project_id.fetch(project.id, 0)
       }
     end
   end
 
-  def client_detail(time_frame = "week")
+  def client_detail(time_frame = "week", minutes_spent: nil)
     {
       id:,
       name:,
@@ -63,7 +66,7 @@ class Client < ApplicationRecord
       phone:,
       currency:,
       logo: logo_url,
-      minutes_spent: total_hours_logged(time_frame),
+      minutes_spent: minutes_spent || total_hours_logged(time_frame),
       address: current_address
     }
   end
