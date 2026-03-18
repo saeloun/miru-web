@@ -64,7 +64,7 @@ RSpec.describe "Api::V1::Clients#update", type: :request do
       end
 
       it "returns failed json response" do
-        expect(json_response["notice"]).to match("Failed to saved changes")
+        expect(json_response["notice"]).to match(I18n.t("errors.internal_server_error"))
       end
     end
   end
@@ -155,7 +155,7 @@ RSpec.describe "Api::V1::Clients#update", type: :request do
 
     it "redirects to root path and displays an error message" do
       expect(response).to have_http_status(:forbidden)
-      error_json = { "errors" => "User is unauthorized to modify this client's details" }
+      error_json = { "errors" => I18n.t("pundit.different_workspace") }
       expect(JSON.parse(response.body)).to eq(error_json)
     end
   end
