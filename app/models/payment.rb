@@ -35,6 +35,8 @@ class Payment < ApplicationRecord
   validates :amount, numericality: { greater_than: 0 }
 
   def settles?(invoice)
+    return false if invoice.blank? || amount.blank?
+
     invoice.amount_due <= amount
   end
 
@@ -45,7 +47,7 @@ class Payment < ApplicationRecord
   private
 
     def set_status
-      return if status.present?
+      return if status.present? || invoice.blank? || amount.blank?
 
       if settles?(invoice)
         self.status = :paid
@@ -55,6 +57,8 @@ class Payment < ApplicationRecord
     end
 
     def calculate_base_currency_amount
+      return if invoice.blank? || amount.blank?
+
       # Set payment currency if not set
       self.payment_currency ||= invoice&.currency
 
