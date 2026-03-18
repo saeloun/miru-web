@@ -7,6 +7,7 @@ import { BrowserRouter } from "react-router-dom";
 import { AuthProvider } from "../src/context/auth";
 import { Toaster } from "sonner";
 import queryClient from "../src/lib/queryClient";
+import AppErrorBoundary from "../src/common/AppErrorBoundary";
 // Geist font is loaded via CSS instead of npm package
 
 import "../settings";
@@ -33,32 +34,35 @@ const applyInitialTheme = () => {
 };
 
 const App = (props: any) => (
-  <QueryClientProvider client={queryClient}>
-    <BrowserRouter>
-      <AuthProvider>
-        <Toaster
-          richColors
-          duration={5000}
-          position="top-right"
-          toastOptions={{
-            classNames: {
-              toast:
-                "rounded-xl border border-border bg-card text-card-foreground shadow-lg",
-              title: "text-sm font-medium",
-              description: "text-xs text-muted-foreground",
-              success:
-                "border-emerald-500/20 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300",
-              error: "border-destructive/20 bg-destructive/10 text-destructive",
-              warning:
-                "border-amber-500/20 bg-amber-500/10 text-amber-700 dark:text-amber-300",
-              info: "border-primary/20 bg-primary/10 text-primary dark:text-primary",
-            },
-          }}
-        />
-        <AppWithUserData {...props} />
-      </AuthProvider>
-    </BrowserRouter>
-  </QueryClientProvider>
+  <AppErrorBoundary>
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter>
+        <AuthProvider>
+          <Toaster
+            richColors
+            duration={5000}
+            position="top-right"
+            toastOptions={{
+              classNames: {
+                toast:
+                  "rounded-xl border border-border bg-card text-card-foreground shadow-lg",
+                title: "text-sm font-medium",
+                description: "text-xs text-muted-foreground",
+                success:
+                  "border-emerald-500/20 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300",
+                error:
+                  "border-destructive/20 bg-destructive/10 text-destructive",
+                warning:
+                  "border-amber-500/20 bg-amber-500/10 text-amber-700 dark:text-amber-300",
+                info: "border-primary/20 bg-primary/10 text-primary dark:text-primary",
+              },
+            }}
+          />
+          <AppWithUserData {...props} />
+        </AuthProvider>
+      </BrowserRouter>
+    </QueryClientProvider>
+  </AppErrorBoundary>
 );
 
 // React mounting function
