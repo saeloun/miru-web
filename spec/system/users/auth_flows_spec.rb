@@ -35,4 +35,21 @@ RSpec.describe "Auth flows", type: :system, js: true do
       expect(page).to have_text(user.email)
     end
   end
+
+  it "accepts an invitation and opens the reset password screen for a new user" do
+    company = create(:company)
+    invitation = create(:invitation, company:)
+
+    with_forgery_protection do
+      visit invitations_accepts_path(token: invitation.token)
+
+      expect(page).to have_current_path(/\/users\/password\/edit\?reset_password_token=/)
+      expect(page).to have_text("Reset Password")
+      fill_in "password", with: "Password1!"
+      fill_in "confirm_password", with: "Password1!"
+      click_button "Reset password"
+
+      expect(page).to have_current_path("/").or have_current_path("/dashboard").or have_current_path("/time-tracking")
+    end
+  end
 end

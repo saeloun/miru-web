@@ -16,6 +16,10 @@ const ForgotPassword = lazy(
   () => import("components/Authentication/ForgotPassword")
 );
 
+const ResetPassword = lazy(
+  () => import("components/Authentication/ResetPassword")
+);
+
 const EmailVerification = lazy(
   () => import("components/Authentication/EmailVerification")
 );
@@ -110,6 +114,14 @@ const AppRouter: React.FC<AppRouterProps> = props => {
           <Route
             element={withSuspense(<ForgotPassword />)}
             path={Paths.FORGOT_PASSWORD}
+          />
+          <Route
+            element={withSuspense(<ResetPassword />)}
+            path={Paths.RESET_PASSWORD}
+          />
+          <Route
+            element={withSuspense(<ResetPassword />)}
+            path="/users/password/edit"
           />
           <Route
             element={withSuspense(<EmailVerification />)}

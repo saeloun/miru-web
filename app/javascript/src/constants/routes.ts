@@ -5,6 +5,7 @@ import ErrorPage from "common/Error";
 import EmailVerification from "components/Authentication/EmailVerification";
 import EmailVerificationSuccess from "components/Authentication/EmailVerification/EmailVerificationSuccess";
 import ForgotPassword from "components/Authentication/ForgotPassword";
+import ResetPassword from "components/Authentication/ResetPassword";
 import SignIn from "components/Authentication/SignIn";
 import SignUp from "components/Authentication/SignUp";
 import InvoiceEmail from "components/InvoiceEmail";
@@ -154,6 +155,14 @@ export const AUTH_ROUTES = [
   {
     path: "/password/new",
     component: ForgotPassword,
+  },
+  {
+    path: "/password/edit",
+    component: ResetPassword,
+  },
+  {
+    path: "/users/password/edit",
+    component: ResetPassword,
   },
   {
     path: "/email_confirmation",
