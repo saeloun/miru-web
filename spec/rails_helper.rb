@@ -58,7 +58,8 @@ RSpec.configure do |config|
   config.filter_rails_from_backtrace!
   config.include RequestHelper, type: :request
   config.include Devise::Test::ControllerHelpers, type: :controller
-  config.include Capybara::DSL
+  config.include Capybara::DSL, type: :system
+  config.include Capybara::DSL, type: :feature
   config.include SessionHelpers, type: :system
   config.before do
     Faker::UniqueGenerator.clear
