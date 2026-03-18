@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module TimeoffEntries
-  class IndexService < ApplicationService
+  class OverviewService < ApplicationService
     include EmployeeFetchingConcern
 
     attr_reader :current_company, :current_user, :user_id, :year, :previous_year, :working_days_per_week
@@ -44,8 +44,8 @@ module TimeoffEntries
 
       def process_leave_balance
         calculate_leave_balance
-        calculate_custom_leave_balance
-        calculate_holiday_balance
+        calculate_custom_leave_entries
+        calculate_holiday_entries
         leave_balance
       end
 
@@ -86,119 +86,28 @@ module TimeoffEntries
         end
       end
 
-      def calculate_custom_leave_balance
+      def calculate_custom_leave_entries
         leave = current_company.leaves&.kept&.find_by(year:)
-        return unless leave
-
-        # Get custom leaves assigned to this user
-        user_custom_leaves = leave.custom_leaves.joins(:custom_leave_users)
-          .where(custom_leave_users: { user_id: })
-
-        user_custom_leaves.each do |custom_leave|
-          total_days = calculate_custom_leave_allocation(custom_leave)
-          timeoff_entries_duration = custom_leave.timeoff_entries.kept.where(user_id:).sum(:duration)
-
-          total_minutes = total_days * @working_hours_per_day * 60
-          net_duration = total_minutes - timeoff_entries_duration
-          net_hours = net_duration / 60
-          net_days = net_hours.abs / @working_hours_per_day
-          extra_hours = net_hours.abs % @working_hours_per_day
-
-          if net_hours.abs < @working_hours_per_day
-            label = "#{net_hours} hours"
-          else
-            label = "#{net_days} days #{extra_hours} hours"
-          end
-
-          summary_object = {
-            id: custom_leave.id,
-            name: custom_leave.name,
-            icon: "custom",
-            color: "custom",
-            total_leave_type_days: total_days,
-            timeoff_entries_duration:,
-            net_duration:,
-            net_days:,
-            type: "custom_leave",
-            label:
-          }
-
-          leave_balance << summary_object
-        end
+        leave_balance.concat(
+          TimeoffEntries::CustomLeaveBalanceService.process(
+            leave:,
+            user_id:,
+            working_hours_per_day: @working_hours_per_day,
+            working_days_per_week:
+          )
+        )
       end
 
-      def calculate_custom_leave_allocation(custom_leave)
-        case custom_leave.allocation_period
-        when "days"
-          custom_leave.allocation_value
-        when "weeks"
-          custom_leave.allocation_value * @working_days_per_week
-        when "months"
-          custom_leave.allocation_value * @working_days_per_week * 4
-        else
-          custom_leave.allocation_value
-        end
-      end
-
-      def calculate_holiday_balance
+      def calculate_holiday_entries
         holiday = current_company.holidays.kept.find_by(year:)
-
-        return unless holiday
-
-        calculate_national_holiday_balance(holiday)
-        calculate_optional_holiday_balance(holiday)
-      end
-
-      def calculate_national_holiday_balance(holiday)
-        total_national_holidays = holiday.holiday_infos.national.count
-        @national_timeoff_entries = holiday.national_timeoff_entries.where(user: user_id)
-
-        national_holidays = {
-          id: "national",
-          name: "National Holidays",
-          icon: "national",
-          color: "national",
-          timeoff_entries_duration: national_timeoff_entries.sum(:duration),
-          type: "holiday",
-          category: "national",
-          label: "#{national_timeoff_entries.count} out of #{total_national_holidays}"
-        }
-
-        leave_balance << national_holidays
-      end
-
-      def calculate_optional_holiday_balance(holiday)
-        no_of_allowed_optional_holidays = holiday.no_of_allowed_optional_holidays
-        time_period_optional_holidays = holiday.time_period_optional_holidays
-        @optional_timeoff_entries = holiday.optional_timeoff_entries.where(user: user_id)
-
-        total_optional_entries = TimeoffEntries::CalculateOptionalHolidayTimeoffEntriesService.new(
-          time_period_optional_holidays,
-          holiday.optional_timeoff_entries,
-          Date.current,
-          user_id
-        ).process
-
-        if total_optional_entries >= no_of_allowed_optional_holidays
-          net_days = 0
-        else
-          net_days = no_of_allowed_optional_holidays - total_optional_entries
-        end
-
-        optional_holidays = {
-          id: "optional",
-          name: "Optional Holidays",
-          icon: "optional",
-          color: "optional",
-          net_duration: net_days * 60 * @working_hours_per_day,
-          net_days:,
-          timeoff_entries_duration: optional_timeoff_entries.sum(:duration),
-          type: "holiday",
-          category: "optional",
-          label: "#{total_optional_entries} out of #{no_of_allowed_optional_holidays} (this #{time_period_optional_holidays.to_s.gsub("per_", "")})"
-        }
-
-        leave_balance << optional_holidays
+        result = TimeoffEntries::HolidayBalanceService.process(
+          holiday:,
+          user_id:,
+          working_hours_per_day: @working_hours_per_day
+        )
+        self.optional_timeoff_entries = result[:optional_timeoff_entries]
+        self.national_timeoff_entries = result[:national_timeoff_entries]
+        leave_balance.concat(result[:leave_balance])
       end
 
       def calculate_total_duration(leave_type, passed_year)

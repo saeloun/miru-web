@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
+RSpec.describe TimeoffEntries::OverviewService do
   let(:company) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id) }
   let!(:leave) { create(:leave, company:, year: Date.today.year) }
@@ -33,7 +33,7 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
         year: Date.today.year
       }
 
-      service = TimeoffEntries::IndexService.new(user, company, params[:user_id], params[:year])
+      service = TimeoffEntries::OverviewService.new(user, company, params[:user_id], params[:year])
 
       expect(service.current_user.present?).to be true
       expect(service.current_company.present?).to be true
@@ -54,7 +54,7 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
         year: @year
       }
 
-      service = TimeoffEntries::IndexService.new(user, company, params[:user_id], params[:year])
+      service = TimeoffEntries::OverviewService.new(user, company, params[:user_id], params[:year])
       @data = service.process
     end
 
@@ -201,7 +201,7 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
         year: @year
       }
 
-      service = TimeoffEntries::IndexService.new(user, company, params[:user_id], params[:year])
+      service = TimeoffEntries::OverviewService.new(user, company, params[:user_id], params[:year])
 
       @data = service.process
     end
@@ -345,7 +345,7 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
         leave_type: zero_balance_leave_type
       )
 
-      service = TimeoffEntries::IndexService.new(user, company, user.id, @year)
+      service = TimeoffEntries::OverviewService.new(user, company, user.id, @year)
       @data = service.process
     end
 
@@ -391,7 +391,7 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
           leave_type: overdrawn_leave_type
         )
 
-        service = TimeoffEntries::IndexService.new(user, company, user.id, @year)
+        service = TimeoffEntries::OverviewService.new(user, company, user.id, @year)
         @data = service.process
       end
 
@@ -417,7 +417,7 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
           leave_type: overdrawn_leave_type
         )
 
-        service = TimeoffEntries::IndexService.new(user, company, user.id, @year)
+        service = TimeoffEntries::OverviewService.new(user, company, user.id, @year)
         @data = service.process
       end
 
@@ -459,7 +459,7 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
           year: @year
         }
 
-        service = TimeoffEntries::IndexService.new(
+        service = TimeoffEntries::OverviewService.new(
           custom_leave_user_record, custom_leave_company, params[:user_id],
           params[:year])
         @data = service.process
@@ -478,7 +478,7 @@ RSpec.describe TimeoffEntries::IndexService do # rubocop:disable RSpec/FilePath
           :timeoff_entry, duration: 480, leave_date: Date.today, user: custom_leave_user_record, custom_leave:,
           leave_type: nil)
 
-        service = TimeoffEntries::IndexService.new(
+        service = TimeoffEntries::OverviewService.new(
           custom_leave_user_record, custom_leave_company,
           custom_leave_user_record.id, @year)
         data = service.process
