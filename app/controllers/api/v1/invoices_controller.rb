@@ -6,101 +6,13 @@ class Api::V1::InvoicesController < Api::V1::ApplicationController
 
   def index
     authorize Invoice
-
-    # Build query
-    invoices = current_company.invoices.kept.includes(:client)
-
-    # Apply search if present (support both query and search_term params)
-    search_query = params[:query] || params[:search_term]
-    if search_query.present?
-      invoices = invoices.search(search_query)
-    elsif params[:q].is_a?(ActionController::Parameters) || params[:q].is_a?(Hash)
-      # Handle legacy ransack-style params
-      if params[:q][:client_id_eq].present?
-        invoices = invoices.where(client_id: params[:q][:client_id_eq])
-      end
-      if params[:q][:status_eq].present?
-        invoices = invoices.where(status: params[:q][:status_eq])
-      end
-      if params[:q][:invoice_number_cont].present?
-        search_term = ActiveRecord::Base.sanitize_sql_like(params[:q][:invoice_number_cont].to_s)
-        invoices = invoices.where("invoice_number ILIKE ?", "%#{search_term}%")
-      end
-    end
-
-    # Apply filters
-    # Status filter - support both status and statuses params
-    if params[:status].present?
-      invoices = invoices.where(status: params[:status])
-    elsif params[:statuses].present?
-      invoices = invoices.where(status: params[:statuses])
-    end
-
-    # Date range filter
-    if params[:date_range].present?
-      date_range = DateRangeService.new(
-        timeframe: params[:date_range],
-        from: params[:from_date_range],
-        to: params[:to_date_range]
-      ).process
-      invoices = invoices.where(issue_date: date_range)
-    end
-
-    # Handle client filtering - support client_id, client, and client_ids array parameters
-    if params[:client_id].present?
-      invoices = invoices.where(client_id: params[:client_id])
-    elsif params[:client].present?
-      client_ids = Array(params[:client])
-      invoices = invoices.where(client_id: client_ids) unless client_ids.empty?
-    elsif params[:client_ids].present?
-      client_ids = Array(params[:client_ids])
-      invoices = invoices.where(client_id: client_ids) unless client_ids.empty?
-    end
-
-    # Pagination with Pagy
-    page = (params[:page] || 1).to_i
-    page = 1 if page <= 0
-    per_page = (params[:invoices_per_page] || params[:per] || 10).to_i
-    per_page = 10 if per_page <= 0
-    per_page = 100 if per_page > 100
-
-    # Use Pagy for pagination with overflow handling
-    begin
-      pagy_metadata, paginated_invoices = pagy(invoices, items: per_page, page: page, overflow: :empty_page)
-    rescue Pagy::OverflowError
-      # Handle page overflow by returning empty result
-      pagy_metadata, paginated_invoices = pagy(invoices.none, items: per_page, page: 1)
-    end
-
-    all_invoices = current_company.invoices.kept
-    invoice_amounts = InvoiceAmountsSummary.process(all_invoices)
-    draft_amount = invoice_amounts[:draft_amount]
-    outstanding_amount = invoice_amounts[:outstanding_amount]
-    overdue_amount = invoice_amounts[:overdue_amount]
-
-    # Calculate total amount for ALL status
-    total_amount = (draft_amount + outstanding_amount + overdue_amount).round(2)
-
-    summary = {
-      draftAmount: draft_amount == 0 ? 0 : draft_amount.to_s,
-      outstandingAmount: outstanding_amount == 0 ? 0 : outstanding_amount.to_s,
-      overdueAmount: overdue_amount == 0 ? 0 : overdue_amount.to_s,
-      totalAmount: total_amount == 0 ? 0 : total_amount.to_s,
-      currency: current_company.base_currency
-    }
-
-    # Get recently updated invoices
-    recently_updated_invoices = current_company.invoices.kept.includes(:client).order(updated_at: :desc).limit(10)
+    response = Invoices::IndexService.process(current_company, params)
 
     render :index, locals: {
-      invoices: paginated_invoices,
-      pagination_details: {
-        page: pagy_metadata.page,
-        pages: pagy_metadata.pages,
-        total: pagy_metadata.count
-      },
-      summary: summary,
-      recently_updated_invoices: recently_updated_invoices
+      invoices: response[:invoices],
+      pagination_details: response[:pagination_details],
+      summary: response[:summary],
+      recently_updated_invoices: response[:recently_updated_invoices]
     }
   end
 
