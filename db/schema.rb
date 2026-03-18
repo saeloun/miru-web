@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_03_17_120100) do
+ActiveRecord::Schema[8.0].define(version: 2026_03_18_123000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_stat_statements"
@@ -840,6 +840,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_17_120100) do
     t.boolean "calendar_connected", default: true
     t.string "webauthn_id"
     t.boolean "passkey_required_for_login", default: false, null: false
+    t.integer "failed_attempts", default: 0, null: false
+    t.datetime "locked_at"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token"
     t.index ["current_workspace_id"], name: "index_users_on_current_workspace_id"
     t.index ["discarded_at"], name: "index_users_on_discarded_at"
@@ -847,6 +849,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_17_120100) do
     t.index ["email"], name: "index_users_on_email_trgm", opclass: :gin_trgm_ops, using: :gin
     t.index ["first_name"], name: "index_users_on_first_name_trgm", opclass: :gin_trgm_ops, using: :gin
     t.index ["last_name"], name: "index_users_on_last_name_trgm", opclass: :gin_trgm_ops, using: :gin
+    t.index ["locked_at"], name: "index_users_on_locked_at"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["webauthn_id"], name: "index_users_on_webauthn_id", unique: true
   end

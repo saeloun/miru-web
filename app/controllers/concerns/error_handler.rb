@@ -63,7 +63,7 @@ module ErrorHandler
         format.json {
           render json: {
                    errors: exception.record.errors.full_messages.first,
-                   notice: I18n.t("client.update.failure.message")
+                   notice: I18n.t("errors.internal_server_error")
                  },
             status: 422
         }
