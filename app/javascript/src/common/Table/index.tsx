@@ -1,8 +1,7 @@
-import React, { forwardRef, useEffect, useMemo, useRef } from "react";
+import React, { forwardRef, useEffect, useRef, useState } from "react";
 
 import { useUserContext } from "context/UserContext";
 import { PencilIcon, DeleteIcon } from "miruIcons";
-import { useTable, useRowSelect } from "react-table";
 
 const IndeterminateCheckbox = forwardRef(
   ({ indeterminate, ...rest }: any, ref) => {
@@ -44,25 +43,6 @@ const IndeterminateCheckbox = forwardRef(
   }
 );
 
-const getTableCheckbox = hooks => {
-  hooks.visibleColumns.push(columns => [
-    {
-      id: "selection",
-      Header: ({ getToggleAllRowsSelectedProps }) => (
-        <div>
-          <IndeterminateCheckbox {...getToggleAllRowsSelectedProps()} />
-        </div>
-      ),
-      Cell: ({ row }) => (
-        <div>
-          <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
-        </div>
-      ),
-    },
-    ...columns,
-  ]);
-};
-
 interface TableProps {
   tableHeader: any[];
   tableRowArray: any[];
@@ -72,6 +52,28 @@ interface TableProps {
   handleEditClick?: (id: any) => void;
   rowOnClick?: (id: any) => void;
 }
+
+const HeaderCheckbox = ({
+  rows,
+  selectedRows,
+  toggleAll,
+}: {
+  rows: any[];
+  selectedRows: Set<any>;
+  toggleAll: () => void;
+}) => {
+  const selectedCount = rows.filter(row => selectedRows.has(row.rowId)).length;
+  const allSelected = rows.length > 0 && selectedCount === rows.length;
+  const someSelected = selectedCount > 0 && !allSelected;
+
+  return (
+    <IndeterminateCheckbox
+      checked={allSelected}
+      indeterminate={someSelected}
+      onChange={toggleAll}
+    />
+  );
+};
 
 const Table = ({
   tableHeader,
@@ -88,68 +90,85 @@ const Table = ({
     /* Default empty handler */
   },
 }: TableProps) => {
-  const data = useMemo(() => tableRowArray, [tableRowArray]);
-  const columns = useMemo(() => tableHeader, [tableHeader]);
   const { isDesktop } = useUserContext();
+  const rows = tableRowArray || [];
+  const [selectedRows, setSelectedRows] = useState<Set<any>>(new Set());
 
-  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
-    useTable(
-      {
-        columns,
-        data,
-      },
-      useRowSelect,
-      hasCheckbox
-        ? getTableCheckbox
-        : () => {
-            /* No checkbox handler needed */
-          }
-    );
+  const toggleAll = () => {
+    const allSelected =
+      rows.length > 0 && rows.every(row => selectedRows.has(row.rowId));
+    if (allSelected) {
+      setSelectedRows(new Set());
+    } else {
+      setSelectedRows(new Set(rows.map(row => row.rowId)));
+    }
+  };
+
+  const toggleRow = (rowId: any) => {
+    setSelectedRows(previous => {
+      const next = new Set(previous);
+      if (next.has(rowId)) {
+        next.delete(rowId);
+      } else {
+        next.add(rowId);
+      }
+
+      return next;
+    });
+  };
 
   return (
-    <table
-      className="mt-4 min-w-full divide-y divide-gray-200 md:w-full md:table-fixed"
-      {...getTableProps()}
-    >
+    <table className="mt-4 min-w-full divide-y divide-gray-200 md:w-full md:table-fixed">
       <thead>
-        {headerGroups.map((headerGroup, index) => (
-          <tr {...headerGroup.getHeaderGroupProps()} key={index}>
-            {headerGroup.headers.map((column, idx) => (
-              <th
-                className={`table__header ${column.cssClass}`}
-                {...column.getHeaderProps()}
-                key={idx}
-              >
-                {column.render("Header")}
-              </th>
-            ))}
-            {hasRowIcons && isDesktop && (
-              <th className="table__header md:w-1/5" />
-            )}
-          </tr>
-        ))}
+        <tr>
+          {hasCheckbox && (
+            <th className="table__header">
+              <HeaderCheckbox
+                rows={rows}
+                selectedRows={selectedRows}
+                toggleAll={toggleAll}
+              />
+            </th>
+          )}
+          {tableHeader.map((column, idx) => (
+            <th
+              className={`table__header ${column.cssClass}`}
+              key={`${column.accessor}-${idx}`}
+            >
+              {column.Header}
+            </th>
+          ))}
+          {hasRowIcons && isDesktop && (
+            <th className="table__header md:w-1/5" />
+          )}
+        </tr>
       </thead>
-      <tbody {...getTableBodyProps()}>
-        {/* {rows.slice(0, 10).map((row, index) => {  // this will be used when we add the pagination. */}
+      <tbody>
         {rows.map((row, index) => {
-          prepareRow(row);
           const cssClassLastRow = rows.length - 1 !== index ? "border-b" : "";
           const cssClassRowHover = hasRowIcons ? "hoverIcon" : "";
 
           return (
             <tr
-              {...row.getRowProps()}
               className={`${cssClassLastRow} ${cssClassRowHover}`}
-              key={index}
-              onClick={() => rowOnClick(row.original.rowId)}
+              key={row.rowId || index}
+              onClick={() => rowOnClick(row.rowId)}
             >
-              {row.cells.map((cell, idx) => (
+              {hasCheckbox && (
+                <td className="table__cell md:w-1/3">
+                  <IndeterminateCheckbox
+                    checked={selectedRows.has(row.rowId)}
+                    indeterminate={false}
+                    onChange={() => toggleRow(row.rowId)}
+                  />
+                </td>
+              )}
+              {tableHeader.map((column, idx) => (
                 <td
                   className="table__cell md:w-1/3"
-                  {...cell.getCellProps()}
-                  key={idx}
+                  key={`${column.accessor}-${idx}`}
                 >
-                  {cell.render("Cell")}
+                  {row[column.accessor]}
                 </td>
               ))}
               {hasRowIcons && isDesktop && (
@@ -159,7 +178,7 @@ const Table = ({
                       onClick={e => {
                         e.preventDefault();
                         e.stopPropagation();
-                        handleEditClick(row.original.rowId);
+                        handleEditClick(row.rowId);
                       }}
                     >
                       <PencilIcon color="#5b34ea" size={16} weight="bold" />
@@ -169,7 +188,7 @@ const Table = ({
                       onClick={e => {
                         e.preventDefault();
                         e.stopPropagation();
-                        handleDeleteClick(row.original.rowId);
+                        handleDeleteClick(row.rowId);
                       }}
                     >
                       <DeleteIcon color="#5b34ea" size={16} weight="bold" />
