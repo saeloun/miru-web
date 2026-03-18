@@ -15,6 +15,8 @@ class Api::V1::Users::SessionsController < Devise::SessionsController
 
     if invalid_password?(user)
       render_invalid_password_error
+    elsif user.access_locked?
+      render_invalid_password_error
     elsif !user.confirmed?
       render_unconfirmed_user_error(user)
     elsif passkey_login_unsupported?(user)
@@ -24,7 +26,7 @@ class Api::V1::Users::SessionsController < Devise::SessionsController
     else
       handle_successful_sign_in(user)
     end
-  end
+end
 
   def destroy
     sign_out(current_user)
@@ -57,7 +59,9 @@ class Api::V1::Users::SessionsController < Devise::SessionsController
     end
 
     def invalid_password?(user)
-      user.blank? || !user.valid_password?(user_params[:password])
+      return true if user.blank?
+
+      !user.valid_for_authentication? { user.valid_password?(user_params[:password]) }
     end
 
     def render_invalid_password_error
@@ -78,6 +82,7 @@ class Api::V1::Users::SessionsController < Devise::SessionsController
     end
 
     def handle_successful_sign_in(user)
+      user.reset_failed_attempts! if user.respond_to?(:reset_failed_attempts!)
       sign_in(user)
 
       app = params[:app] || ""

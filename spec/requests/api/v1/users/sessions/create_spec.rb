@@ -64,6 +64,39 @@ RSpec.describe "Api::V1::Users::Sessions#create", type: :request do
     end
   end
 
+  context "when too many invalid password attempts happen" do
+    before do
+      10.times do
+        post api_v1_users_login_path, params: {
+          user: {
+            email: user.email,
+            password: "wrong-password"
+          }
+        }
+      end
+    end
+
+    it "locks the account" do
+      expect(user.reload.access_locked?).to eq(true)
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(json_response["error"]).to eq(I18n.t("sessions.failure.invalid"))
+    end
+
+    it "resets failed attempts after a successful sign in once unlocked" do
+      user.update!(locked_at: 31.minutes.ago)
+
+      post api_v1_users_login_path, params: {
+        user: {
+          email: user.email,
+          password: user.password
+        }
+      }
+
+      expect(response).to have_http_status(:ok)
+      expect(user.reload.failed_attempts).to eq(0)
+    end
+  end
+
   context "when logged in on miru desktop app with wrong combination of email and password" do
     it "not able to log in" do
       send_request :post, api_v1_users_login_path(app: "miru-desktop"), params: {

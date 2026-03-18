@@ -3,6 +3,16 @@
 require "active_support/core_ext/integer/time"
 
 Rails.application.configure do
+  app_base_url = ENV.fetch("APP_BASE_URL", "https://miru-production.onrender.com")
+  parsed_app_host = URI.parse(app_base_url).host rescue nil
+  allowed_hosts = [
+    parsed_app_host,
+    ENV["APP_HOST"],
+    ENV["RENDER_EXTERNAL_HOSTNAME"],
+    ENV["RENDER_HOSTNAME"],
+    "miru-production.onrender.com"
+  ].compact_blank.uniq
+
   # Settings specified here will take precedence over those in config/application.rb.
 
   # Code is not reloaded between requests.
@@ -59,7 +69,7 @@ Rails.application.configure do
   # config.action_mailer.raise_delivery_errors = false
 
   # Set host to be used by links generated in mailer templates.
-  config.action_mailer.default_url_options = { host: "example.com" }
+  config.action_mailer.default_url_options = { host: parsed_app_host || "miru-production.onrender.com" }
 
   # Specify outgoing SMTP server. Remember to add smtp/* credentials via rails credentials:edit.
   # config.action_mailer.smtp_settings = {
@@ -81,10 +91,7 @@ Rails.application.configure do
   config.active_record.attributes_for_inspect = [ :id ]
 
   # Enable DNS rebinding protection and other `Host` header attacks.
-  # config.hosts = [
-  #   "example.com",     # Allow requests from example.com
-  #   /.*\.example\.com/ # Allow requests from subdomains like `www.example.com`
-  # ]
+  config.hosts = allowed_hosts
   #
   # Skip DNS rebinding protection for the default health check endpoint.
   # config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
