@@ -43,7 +43,7 @@ cuprite_options = {
   },
   process_timeout: ENV["CI"].present? ? 600 : 60,
   timeout: ENV["CI"].present? ? 45 : 20,
-  js_errors: false,
+  js_errors: true,
   pending_connection_errors: false,
 }
 
