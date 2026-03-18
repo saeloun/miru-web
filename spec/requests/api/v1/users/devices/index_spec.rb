@@ -31,6 +31,16 @@ RSpec.describe "Devices#index", type: :request do
         expect(json_response["devices"][0]["name"]).to eq(device_of_user.name)
         expect(json_response["devices"][0]["serial_number"]).to eq(device_of_user.serial_number)
       end
+
+      it "returns not modified when the etag matches" do
+        etag = response.headers["ETag"]
+
+        send_request :get,
+          api_v1_user_devices_path(user),
+          headers: auth_headers(user).merge("If-None-Match" => etag)
+
+        expect(response).to have_http_status(:not_modified)
+      end
     end
 
     context "when owner wants to see record of an employee of his own workspace" do

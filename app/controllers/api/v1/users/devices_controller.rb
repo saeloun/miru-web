@@ -6,6 +6,8 @@ class Api::V1::Users::DevicesController < Api::V1::ApplicationController
   def index
     authorize @user, policy_class: Users::DevicePolicy
     devices = @user.devices
+    return unless stale?(**devices_index_cache_options(devices))
+
     render :index, locals: { devices: }, status: 200
   end
 
@@ -18,6 +20,8 @@ class Api::V1::Users::DevicesController < Api::V1::ApplicationController
 
   def show
     authorize device, policy_class: Users::DevicePolicy
+    return unless stale?(**device_cache_options(device))
+
     render :show, locals: { device: }, status: 200
   end
 
@@ -47,5 +51,21 @@ class Api::V1::Users::DevicesController < Api::V1::ApplicationController
       params.require(:device).permit(
         :device_type, :name, :serial_number, specifications: {}
       )
+    end
+
+    def devices_index_cache_options(devices)
+      {
+        etag: [current_company.cache_key_with_version, @user.cache_key_with_version, devices.cache_key_with_version],
+        last_modified: [@user.updated_at, devices.maximum(:updated_at)].compact.max,
+        public: false
+      }
+    end
+
+    def device_cache_options(device)
+      {
+        etag: [current_company.cache_key_with_version, @user.cache_key_with_version, device.cache_key_with_version],
+        last_modified: device.updated_at,
+        public: false
+      }
     end
 end
