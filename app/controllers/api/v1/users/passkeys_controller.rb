@@ -82,12 +82,12 @@ class Api::V1::Users::PasskeysController < Api::V1::ApplicationController
     passkey.update!(sign_count: credential.sign_count, last_used_at: Time.current)
     sign_in(user)
 
-    render json: {
+    render json: signed_in_payload(
+      user,
+      company: current_company,
       notice: I18n.t("devise.sessions.signed_in"),
-      user: safe_user_payload(user).merge(token: user.token),
-      company_role: user.roles.find_by(resource: current_company)&.name,
-      company: company_payload(current_company)
-    }, status: 200
+      include_token: true
+    ), status: 200
   end
 
   def update_requirement
