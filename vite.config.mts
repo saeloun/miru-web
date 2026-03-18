@@ -2,6 +2,8 @@ import { defineConfig } from 'vite'
 import RubyPlugin from 'vite-plugin-ruby'
 import path from 'path'
 
+const isTestBuild = process.env.RAILS_ENV === 'test' || process.env.NODE_ENV === 'test'
+
 export default defineConfig({
   plugins: [
     RubyPlugin()
@@ -71,6 +73,7 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks(id) {
+          if (isTestBuild) return undefined
           if (!id.includes('node_modules')) return undefined
 
           if (
@@ -108,14 +111,6 @@ export default defineConfig({
             id.includes('/motion-utils/')
           ) {
             return 'motion'
-          }
-
-          if (
-            id.includes('/date-fns/') ||
-            id.includes('/dayjs/') ||
-            id.includes('/react-day-picker/')
-          ) {
-            return 'dates'
           }
 
           if (
