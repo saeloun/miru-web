@@ -55,7 +55,6 @@
     "phosphor-react": "^1.4.1",
     "rc-steps": "^6.0.0",
     "react": "^19.1.1",
-    "react-calendar": "2.18.1",
     "react-circular-progressbar": "^2.1.0",
     "react-datepicker": "^4.11.0",
     "react-day-picker": "^9.8.1",
