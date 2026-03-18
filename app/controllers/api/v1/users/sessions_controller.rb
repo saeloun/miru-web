@@ -36,17 +36,7 @@ end
 
   def me
     if current_user
-      user_data = safe_user_payload(current_user).merge(
-        token: current_user.token,
-        avatar_url: current_user.avatar_url,
-        confirmed: current_user.confirmed?
-      )
-
-      render json: {
-        user: user_data,
-        company_role: current_user.roles.find_by(resource: current_company)&.name,
-        company: company_payload(current_company)
-      }, status: 200
+      render json: authenticated_user_payload(current_user, company: current_company), status: 200
     else
       render json: { error: "Not authenticated" }, status: 401
     end
@@ -97,16 +87,12 @@ end
     end
 
     def render_sign_in_response(user)
-      user_data = safe_user_payload(user).merge(
-        token: user.token,
-      )
-
-      render json: {
+      render json: signed_in_payload(
+        user,
+        company: current_company,
         notice: I18n.t("devise.sessions.signed_in"),
-        user: user_data,
-        company_role: user.roles.find_by(resource: current_company)&.name,
-        company: company_payload(current_company)
-      }, status: 200
+        include_token: true
+      ), status: 200
     end
 
     def render_passkey_challenge(user)
@@ -132,16 +118,14 @@ end
     end
 
     def render_sign_in_response_for_desktop(user)
-      initial_props = {
-        user: safe_user_payload(user),
-        avatar_url: current_user && current_user.avatar_url,
-        company_role: current_user && current_user.roles.find_by(resource: current_company)&.name,
-        confirmed_user: current_user && current_user.confirmed?,
-        company: company_payload(current_company),
-        google_oauth_success: @google_oauth_success.present?
-      }
-
-      render json: { notice: I18n.t("devise.sessions.signed_in"), **initial_props }, status: 200
+      render json: {
+        notice: I18n.t("devise.sessions.signed_in"),
+        **desktop_signed_in_payload(
+          user,
+          company: current_company,
+          google_oauth_success: @google_oauth_success.present?
+        )
+      }, status: 200
     end
 
     def render_sign_in_response_for_cli(user)
@@ -160,6 +144,7 @@ end
         }
       }, status: 200
     end
+
     def passkey_login_required?(user)
       user.passkey_required_for_login? && user.passkeys.exists? && params[:app].blank?
     end
