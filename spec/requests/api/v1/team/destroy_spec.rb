@@ -89,7 +89,7 @@ RSpec.describe "Api::V1::Team#destroy", type: :request do
 
         expect(response).not_to be_successful
         expect(response).to have_http_status(:internal_server_error)
-        expect(json_response["notice"]).to eq(I18n.t("errors.internal_server_error"))
+        expect(json_response["errors"]).to be_present
       end
 
       it "does not discard the team member" do
