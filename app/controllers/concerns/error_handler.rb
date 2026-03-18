@@ -29,10 +29,7 @@ module ErrorHandler
       error_key = policy.try(:error_message_key) || exception.query
 
       message = I18n.t("#{policy_name}.#{error_key}", scope: "pundit", default: :default)
-      case policy.try(:error_message_key)
-      when :different_workspace
-        message = I18n.t("client.update.failure.unauthorized")
-      end
+      message = I18n.t("pundit.different_workspace") if policy.try(:error_message_key) == :different_workspace
 
       respond_to do |format|
         format.html do

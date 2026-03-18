@@ -53,8 +53,8 @@ RSpec.describe "Devices#index", type: :request do
         send_request :get, api_v1_user_devices_path(employee), headers: auth_headers(user)
       end
 
-      it "is forbidden" do
-        expect(response).to have_http_status(:forbidden)
+      it "is not found" do
+        expect(response).to have_http_status(:not_found)
       end
     end
 

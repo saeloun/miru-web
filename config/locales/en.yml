@@ -253,6 +253,7 @@ en:
     confirm_password: confirm password
   pundit:
     default: You are not authorized to perform this action.
+    different_workspace: You are not authorized to access records outside your current workspace.
     client_policy:
       create?: You are not authorized to create client.
       update?: You are not authorized to update client.
