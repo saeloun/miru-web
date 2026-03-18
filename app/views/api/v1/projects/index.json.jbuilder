@@ -8,7 +8,7 @@ json.projects projects do |project|
   json.billable project.billable
   json.description project.description
   json.status project.discarded? ? "inactive" : "active"
-  json.totalHours project.timesheet_entries.sum(:duration) / 60.0
+  json.totalHours total_durations.fetch(project.id, 0).to_f / 60.0
   json.teamMembers project.project_members
     .sort_by(&:id)
     .uniq(&:user_id)

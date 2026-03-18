@@ -13,12 +13,14 @@ class Api::V1::ProjectsController < Api::V1::ApplicationController
       projects_scope
     end
 
-    projects = projects.includes(:client, :timesheet_entries, project_members: :user)
+    projects = projects.includes(:client, project_members: :user)
     clients = projects.filter_map(&:client).uniq(&:id)
+    total_durations = TimesheetEntry.kept.where(project_id: projects.select(:id)).group(:project_id).sum(:duration)
 
     render :index, locals: {
       projects: projects,
-      clients: clients
+      clients: clients,
+      total_durations: total_durations
     }, status: 200
   end
 

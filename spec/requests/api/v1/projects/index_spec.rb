@@ -10,6 +10,7 @@ RSpec.describe "Api::V1::Projects index", type: :request do
   let!(:other_client) { create(:client, company:, name: "Other Client") }
   let!(:assigned_project) { create(:project, client: assigned_client, name: "Assigned Project") }
   let!(:other_project) { create(:project, client: other_client, name: "Other Project") }
+  let!(:assigned_entry) { create(:timesheet_entry, user: employee, project: assigned_project, duration: 150) }
 
   before do
     employee.add_role :employee, company
@@ -26,5 +27,6 @@ RSpec.describe "Api::V1::Projects index", type: :request do
 
     expect(body["projects"].pluck("name")).to eq(["Assigned Project"])
     expect(body["clients"].pluck("name")).to eq(["Assigned Client"])
+    expect(body["projects"].first["totalHours"]).to eq(2.5)
   end
 end
