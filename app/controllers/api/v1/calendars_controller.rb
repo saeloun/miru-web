@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Api::V1::CalendarsController < ApplicationController
+class Api::V1::CalendarsController < Api::V1::ApplicationController
   before_action :set_client
 
   def redirect

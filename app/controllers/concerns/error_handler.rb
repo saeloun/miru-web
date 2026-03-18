@@ -45,10 +45,7 @@ module ErrorHandler
       message = exception.message
 
       respond_to do |format|
-        format.json {
-          render json: { errors: message, notice: I18n.t("errors.internal_server_error") },
-            status: 500
-        }
+        format.json { render json: { errors: message }, status: 500 }
         format.html { render file: "public/500.html", status: 500, layout: false, alert: message }
       end
     end
@@ -57,13 +54,7 @@ module ErrorHandler
       message = exception.message
 
       respond_to do |format|
-        format.json {
-          render json: {
-                   errors: exception.record.errors.full_messages.first,
-                   notice: I18n.t("errors.internal_server_error")
-                 },
-            status: 422
-        }
+        format.json { render json: { errors: exception.record.errors.full_messages.first }, status: 422 }
         format.html { render file: "public/422.html", status: 422, layout: false, alert: message }
       end
     end

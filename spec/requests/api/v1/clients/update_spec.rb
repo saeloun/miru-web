@@ -64,7 +64,7 @@ RSpec.describe "Api::V1::Clients#update", type: :request do
       end
 
       it "returns failed json response" do
-        expect(json_response["notice"]).to match(I18n.t("errors.internal_server_error"))
+        expect(json_response["errors"]).to be_present
       end
     end
   end
