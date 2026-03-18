@@ -220,6 +220,7 @@ gem "parallel_tests", group: [:development, :test]
 
 # CORS: https://github.com/cyu/rack-cors
 gem "rack-cors", "2.0.0"
+gem "rack-attack"
 
 # Administrate dashboard - removed
 # gem "administrate"
