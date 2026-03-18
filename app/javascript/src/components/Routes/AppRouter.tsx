@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense, lazy } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { Paths } from "constants/index";
 
@@ -7,24 +7,34 @@ import ProtectedRoute from "./ProtectedRoute";
 import PublicRoute from "./PublicRoute";
 
 // Authentication Components
-import SignIn from "components/Authentication/SignIn";
-import SignUp from "components/Authentication/SignUp";
-import ForgotPassword from "components/Authentication/ForgotPassword";
-import EmailVerification from "components/Authentication/EmailVerification";
-import EmailVerificationSuccess from "components/Authentication/EmailVerification/EmailVerificationSuccess";
-
-// Main Components
-import Dashboard from "components/Dashboard";
-import OrganizationSetup from "components/OrganizationSetup";
-import SignUpSuccess from "components/OrganizationSetup/SignUpSuccess";
-
-// Feature Components
-import Success from "components/payments/Success";
-import InvalidLink from "components/Team/List/InvalidLink";
-import InvoiceEmail from "components/InvoiceEmail";
-import ErrorPage from "common/Error";
 import RouteErrorBoundary from "common/RouteErrorBoundary";
 import { dashboardUrl } from "utils/dashboardUrl";
+
+const SignIn = lazy(() => import("components/Authentication/SignIn"));
+const SignUp = lazy(() => import("components/Authentication/SignUp"));
+const ForgotPassword = lazy(
+  () => import("components/Authentication/ForgotPassword")
+);
+
+const EmailVerification = lazy(
+  () => import("components/Authentication/EmailVerification")
+);
+
+const EmailVerificationSuccess = lazy(
+  () =>
+    import(
+      "components/Authentication/EmailVerification/EmailVerificationSuccess"
+    )
+);
+const Dashboard = lazy(() => import("components/Dashboard"));
+const OrganizationSetup = lazy(() => import("components/OrganizationSetup"));
+const SignUpSuccess = lazy(
+  () => import("components/OrganizationSetup/SignUpSuccess")
+);
+const Success = lazy(() => import("components/payments/Success"));
+const InvalidLink = lazy(() => import("components/Team/List/InvalidLink"));
+const InvoiceEmail = lazy(() => import("components/InvoiceEmail"));
+const ErrorPage = lazy(() => import("common/Error"));
 
 interface AppRouterProps {
   user?: any;
@@ -39,22 +49,38 @@ const AppRouter: React.FC<AppRouterProps> = props => {
   const needsOrganizationSetup =
     props.user && !props.user?.current_workspace_id;
   const defaultAuthedPath = dashboardUrl(props.companyRole);
+  const loadingFallback = (
+    <div className="flex min-h-[40vh] items-center justify-center px-6 text-sm text-muted-foreground">
+      Loading…
+    </div>
+  );
+
+  const withSuspense = (element: React.ReactNode) => (
+    <Suspense fallback={loadingFallback}>{element}</Suspense>
+  );
 
   return (
     <>
       <Routes>
-        {/* Public Routes - Available to everyone */}
-        <Route element={<Success />} path={Paths.PAYMENT_SUCCESS} />
-        <Route element={<InvalidLink />} path={Paths.INVALID_LINK} />
-        <Route element={<InvoiceEmail />} path={Paths.PUBLIC_INVOICE} />
+        <Route
+          element={withSuspense(<Success />)}
+          path={Paths.PAYMENT_SUCCESS}
+        />
+        <Route
+          element={withSuspense(<InvalidLink />)}
+          path={Paths.INVALID_LINK}
+        />
+        <Route
+          element={withSuspense(<InvoiceEmail />)}
+          path={Paths.PUBLIC_INVOICE}
+        />
 
-        {/* Root route handling - redirect based on auth state */}
         <Route
           element={
             props.user ? (
               needsOrganizationSetup ? (
                 <RouteErrorBoundary resetKey="organization-setup">
-                  <OrganizationSetup />
+                  {withSuspense(<OrganizationSetup />)}
                 </RouteErrorBoundary>
               ) : (
                 <Navigate replace to={defaultAuthedPath} />
@@ -67,47 +93,50 @@ const AppRouter: React.FC<AppRouterProps> = props => {
         />
 
         <Route
-          element={<EmailVerificationSuccess />}
+          element={withSuspense(<EmailVerificationSuccess />)}
           path={Paths.EMAIL_VERIFICATION_SUCCESS}
         />
-        <Route element={<EmailVerificationSuccess />} path="/email_confirmed" />
+        <Route
+          element={withSuspense(<EmailVerificationSuccess />)}
+          path="/email_confirmed"
+        />
 
-        {/* Auth Routes - Only for non-authenticated users */}
-        {/* These routes will redirect to dashboard if user is already logged in */}
         <Route
           element={<PublicRoute restricted redirectTo={defaultAuthedPath} />}
         >
-          <Route element={<SignIn />} path={Paths.SIGN_IN} />
-          <Route element={<SignIn />} path={Paths.LOGIN} />
-          <Route element={<SignUp />} path={Paths.SIGNUP} />
-          <Route element={<ForgotPassword />} path={Paths.FORGOT_PASSWORD} />
+          <Route element={withSuspense(<SignIn />)} path={Paths.SIGN_IN} />
+          <Route element={withSuspense(<SignIn />)} path={Paths.LOGIN} />
+          <Route element={withSuspense(<SignUp />)} path={Paths.SIGNUP} />
           <Route
-            element={<EmailVerification />}
+            element={withSuspense(<ForgotPassword />)}
+            path={Paths.FORGOT_PASSWORD}
+          />
+          <Route
+            element={withSuspense(<EmailVerification />)}
             path={Paths.EMAIL_VERIFICATION}
           />
         </Route>
 
-        {/* Protected Routes - Only for authenticated users */}
         <Route element={<ProtectedRoute />}>
           {needsOrganizationSetup && (
-            <Route element={<SignUpSuccess />} path={Paths.SIGNUP_SUCCESS} />
+            <Route
+              element={withSuspense(<SignUpSuccess />)}
+              path={Paths.SIGNUP_SUCCESS}
+            />
           )}
           {!needsOrganizationSetup && (
-            <>
-              <Route
-                element={
-                  <RouteErrorBoundary resetKey="dashboard-shell">
-                    <Dashboard {...props} />
-                  </RouteErrorBoundary>
-                }
-                path="/*"
-              />
-            </>
+            <Route
+              element={
+                <RouteErrorBoundary resetKey="dashboard-shell">
+                  {withSuspense(<Dashboard {...props} />)}
+                </RouteErrorBoundary>
+              }
+              path="/*"
+            />
           )}
         </Route>
 
-        {/* 404 - Catch all */}
-        <Route element={<ErrorPage />} path="*" />
+        <Route element={withSuspense(<ErrorPage />)} path="*" />
       </Routes>
     </>
   );
