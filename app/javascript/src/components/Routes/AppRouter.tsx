@@ -23,6 +23,7 @@ import Success from "components/payments/Success";
 import InvalidLink from "components/Team/List/InvalidLink";
 import InvoiceEmail from "components/InvoiceEmail";
 import ErrorPage from "common/Error";
+import RouteErrorBoundary from "common/RouteErrorBoundary";
 import { dashboardUrl } from "utils/dashboardUrl";
 
 interface AppRouterProps {
@@ -52,7 +53,9 @@ const AppRouter: React.FC<AppRouterProps> = props => {
           element={
             props.user ? (
               needsOrganizationSetup ? (
-                <OrganizationSetup />
+                <RouteErrorBoundary resetKey="organization-setup">
+                  <OrganizationSetup />
+                </RouteErrorBoundary>
               ) : (
                 <Navigate replace to={defaultAuthedPath} />
               )
@@ -91,8 +94,14 @@ const AppRouter: React.FC<AppRouterProps> = props => {
           )}
           {!needsOrganizationSetup && (
             <>
-              {/* Dashboard handles all authenticated routes with nested routing */}
-              <Route element={<Dashboard {...props} />} path="/*" />
+              <Route
+                element={
+                  <RouteErrorBoundary resetKey="dashboard-shell">
+                    <Dashboard {...props} />
+                  </RouteErrorBoundary>
+                }
+                path="/*"
+              />
             </>
           )}
         </Route>

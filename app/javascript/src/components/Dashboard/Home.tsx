@@ -4,8 +4,9 @@ import { ROUTES } from "constants/routes";
 import React, { Suspense } from "react";
 
 import ErrorPage from "common/Error";
+import RouteErrorBoundary from "common/RouteErrorBoundary";
 import Cookies from "js-cookie";
-import { Routes, Route, Outlet, Navigate } from "react-router-dom";
+import { Routes, Route, Outlet, Navigate, useLocation } from "react-router-dom";
 import { dashboardUrl } from "utils/dashboardUrl";
 
 const isSafeInternalPath = (p: string): boolean => {
@@ -71,6 +72,7 @@ const RootElement = ({ role }) => {
 const Home = (props: Iprops) => {
   const { companyRole, company_role } = props;
   const role = companyRole || company_role;
+  const location = useLocation();
 
   return (
     <div className="min-h-full font-geist">
@@ -91,15 +93,17 @@ const Home = (props: Iprops) => {
             {parentRoute.subRoutes.map(({ path, Component }) => (
               <Route
                 element={
-                  <Suspense
-                    fallback={
-                      <div className="flex min-h-[40vh] items-center justify-center px-6 text-sm text-muted-foreground">
-                        Loading…
-                      </div>
-                    }
-                  >
-                    <Component {...props} />
-                  </Suspense>
+                  <RouteErrorBoundary resetKey={location.pathname}>
+                    <Suspense
+                      fallback={
+                        <div className="flex min-h-[40vh] items-center justify-center px-6 text-sm text-muted-foreground">
+                          Loading…
+                        </div>
+                      }
+                    >
+                      <Component {...props} />
+                    </Suspense>
+                  </RouteErrorBoundary>
                 }
                 key={path}
                 path={path}
