@@ -53,7 +53,7 @@ RSpec.describe "Api::V1::Invitations#create", type: :request do
       end
 
       it "return error message" do
-        expect(json_response["notice"]).to eq("Failed to saved changes")
+        expect(json_response["notice"]).to eq("Something went wrong")
         expect(json_response["errors"]).to eq("First name is invalid")
       end
 
@@ -78,7 +78,7 @@ RSpec.describe "Api::V1::Invitations#create", type: :request do
       end
 
       it "return error message" do
-        expect(json_response["notice"]).to eq("Failed to saved changes")
+        expect(json_response["notice"]).to eq("Something went wrong")
         expect(json_response["errors"]).to eq("Recipient email is invalid")
       end
 
@@ -133,7 +133,7 @@ RSpec.describe "Api::V1::Invitations#create", type: :request do
       end
 
       it "return error message" do
-        expect(json_response["notice"]).to eq("Failed to saved changes")
+        expect(json_response["notice"]).to eq("Something went wrong")
         expect(json_response["errors"]).to eq("First name is invalid")
       end
 
@@ -160,7 +160,7 @@ RSpec.describe "Api::V1::Invitations#create", type: :request do
       end
 
       it "return error message" do
-        expect(json_response["notice"]).to eq("Failed to saved changes")
+        expect(json_response["notice"]).to eq("Something went wrong")
         expect(json_response["errors"]).to eq("Recipient email is invalid")
       end
 
@@ -187,7 +187,7 @@ RSpec.describe "Api::V1::Invitations#create", type: :request do
       end
 
       it "return error message" do
-        expect(json_response["notice"]).to eq("Failed to saved changes")
+        expect(json_response["notice"]).to eq("Something went wrong")
         expect(json_response["errors"]).to eq("Role can't be blank")
       end
 
