@@ -5,6 +5,8 @@ class Api::V1::TimesheetEntry::BulkActionController < Api::V1::ApplicationContro
   after_action :verify_policy_scoped, only: [:update, :destroy]
 
   def update
+    authorize TimesheetEntry, :bulk_update?
+
     ids = Array(params[:ids]).reject(&:blank?)
     return render json: { error: I18n.t("timesheet_entry.update.failure", default: "No entries selected") }, status: :unprocessable_entity if ids.empty?
 
@@ -19,6 +21,8 @@ class Api::V1::TimesheetEntry::BulkActionController < Api::V1::ApplicationContro
   end
 
   def destroy
+    authorize TimesheetEntry, :bulk_destroy?
+
     timesheet_entries = policy_scope(TimesheetEntry)
     entries_to_discard = timesheet_entries.where(id: ids_params)
     discarded_entries = entries_to_discard.discard_all
