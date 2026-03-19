@@ -181,6 +181,7 @@ RSpec.describe "Addresses#show", type: :request do
 
   context "when logged in user is an Employee" do
     before do
+      create(:employment, company:, user: employee)
       employee.add_role :employee, company
       sign_in employee
     end
@@ -219,8 +220,8 @@ RSpec.describe "Addresses#show", type: :request do
          headers: auth_headers(employee)
      end
 
-     it "is forbidden" do
-       expect(response).to have_http_status(:forbidden)
+     it "is not found" do
+       expect(response).to have_http_status(:not_found)
      end
    end
   end
