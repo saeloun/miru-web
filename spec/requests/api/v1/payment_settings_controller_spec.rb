@@ -68,17 +68,15 @@ RSpec.describe Api::V1::PaymentSettingsController, type: :request do
 
   describe "POST #connect_stripe" do
     it "returns stripe connect initiation message" do
-      # Stub the newly created account
-      allow_any_instance_of(StripeConnectedAccount).to receive(:account_id).and_return("acct_test_new")
       stub_stripe_account_retrieve("acct_test_new", details_submitted: false)
       stub_stripe_account_link_creation
+      allow(Stripe::Account).to receive(:create).and_return(OpenStruct.new(id: "acct_test_new"))
 
       post api_v1_payments_settings_stripe_connect_path
 
       expect(response).to have_http_status(:success)
 
       json_response = JSON.parse(response.body)
-      # The view returns accountLink, not message
       expect(json_response).to have_key("accountLink")
       expect(json_response["accountLink"]).to eq("https://connect.stripe.com/test_link")
     end
