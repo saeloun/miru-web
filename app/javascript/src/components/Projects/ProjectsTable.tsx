@@ -172,19 +172,19 @@ const ProjectsTable: React.FC = () => {
     switch (status) {
       case "active":
         return (
-          <Badge className="border-slate-900/70 bg-white text-slate-900 hover:bg-slate-50 dark:border-emerald-900/60 dark:bg-emerald-950/30 dark:text-emerald-300 dark:hover:bg-emerald-950/40">
+          <Badge className="border-slate-900/70 bg-white text-slate-900 hover:bg-slate-50 dark:border-slate-600 dark:bg-slate-950 dark:text-slate-100 dark:hover:bg-slate-900">
             Active
           </Badge>
         );
       case "paused":
         return (
-          <Badge className="border-slate-900/70 bg-white text-slate-900 hover:bg-slate-50 dark:border-amber-900/60 dark:bg-amber-950/30 dark:text-amber-300 dark:hover:bg-amber-950/40">
+          <Badge className="border-slate-900/70 bg-white text-slate-900 hover:bg-slate-50 dark:border-slate-600 dark:bg-slate-950 dark:text-slate-100 dark:hover:bg-slate-900">
             Paused
           </Badge>
         );
       case "completed":
         return (
-          <Badge className="border-slate-900/70 bg-white text-slate-900 hover:bg-slate-50 dark:border-sky-900/60 dark:bg-sky-950/30 dark:text-sky-300 dark:hover:bg-sky-950/40">
+          <Badge className="border-slate-900/70 bg-white text-slate-900 hover:bg-slate-50 dark:border-slate-600 dark:bg-slate-950 dark:text-slate-100 dark:hover:bg-slate-900">
             Completed
           </Badge>
         );
@@ -289,14 +289,14 @@ const ProjectsTable: React.FC = () => {
         row.original.billable ? (
           <Badge
             variant="outline"
-            className="border-slate-900/70 bg-white text-slate-900 hover:bg-slate-50 dark:border-indigo-900/60 dark:bg-indigo-950/30 dark:text-indigo-300"
+            className="border-slate-900/70 bg-white text-slate-900 hover:bg-slate-50 dark:border-slate-600 dark:bg-slate-950 dark:text-slate-100 dark:hover:bg-slate-900"
           >
             Billable
           </Badge>
         ) : (
           <Badge
             variant="outline"
-            className="border-slate-400 bg-slate-100 text-slate-800 dark:border-slate-800 dark:bg-slate-900/60 dark:text-slate-300"
+            className="border-slate-400 bg-slate-100 text-slate-800 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200"
           >
             Non-billable
           </Badge>
