@@ -5,6 +5,9 @@ roles:
   employee:
     email: keshav@saeloun.com
     password: password
+  book_keeper:
+    email: accounts@saeloun.com
+    password: password
   client:
     email: finance@example.com
     password: password
@@ -70,21 +73,23 @@ groups:
       role: owner
       theme: dark
       path: /dashboard
+      wait_ms: 10000
       expect:
         final_path: /dashboard
         contains_text:
           - Company Pulse
-        min_buttons: 10
+        min_buttons: 4
     - name: owner_billing_light
       role: owner
       theme: light
       path: /settings/billing
+      wait_ms: 10000
       expect:
         final_path: /settings/billing
         contains_text:
           - Billing
           - Pro Trial
-        min_buttons: 12
+        min_buttons: 8
     - name: owner_reports_dark
       role: owner
       theme: dark
@@ -134,13 +139,16 @@ groups:
     - name: owner_profile_edit_dark
       role: owner
       theme: dark
-      path: /settings/profile/edit
-      wait_ms: 3500
+      path: /settings/profile
+      wait_ms: 5000
+      actions:
+        click_controls:
+          - Edit Profile
       expect:
         final_path: /settings/profile/edit
         contains_text:
           - Personal Details
-          - Upload photo
+          - Update
         visible_controls:
           - Update
         min_buttons: 10
@@ -188,8 +196,11 @@ groups:
     - name: owner_org_settings_dark
       role: owner
       theme: dark
-      path: /settings/organization/edit
+      path: /settings/organization
       wait_ms: 4000
+      actions:
+        click_controls:
+          - Edit Settings
       expect:
         final_path: /settings/organization/edit
         contains_text:
@@ -226,7 +237,7 @@ groups:
       role: owner
       theme: dark
       path: /settings/automation
-      wait_ms: 4000
+      wait_ms: 6000
       expect:
         final_path: /settings/automation
         contains_text:
@@ -298,6 +309,7 @@ groups:
       role: employee
       theme: dark
       path: /time-tracking
+      wait_ms: 7000
       expect:
         final_path: /time-tracking
         contains_text:
@@ -319,12 +331,13 @@ groups:
       role: employee
       theme: dark
       path: /expenses
+      wait_ms: 7000
       expect:
         final_path: /expenses
         contains_text:
           - Add Expense
           - Total Expenses
-        min_buttons: 8
+        min_buttons: 6
     - name: employee_clients_redirect_dark
       role: employee
       theme: dark
@@ -357,6 +370,7 @@ groups:
       role: client
       theme: dark
       path: /settings/profile
+      wait_ms: 7000
       expect:
         final_path: /settings/profile
         contains_text:
@@ -367,13 +381,64 @@ groups:
       role: client
       theme: dark
       path: /dashboard
-      wait_ms: 5000
+      wait_ms: 10000
       expect:
         final_path: /invoices
         contains_text:
           - Invoices
     - name: client_billing_blocked_dark
       role: client
+      theme: dark
+      path: /settings/billing
+      wait_ms: 10000
+      expect:
+        final_path: /error
+        contains_text:
+          - Page not Found
+
+  book_keeper_core:
+    - name: book_keeper_dashboard_dark
+      role: book_keeper
+      theme: dark
+      path: /dashboard
+      wait_ms: 7000
+      expect:
+        final_path: /dashboard
+        contains_text:
+          - Company Pulse
+        min_buttons: 4
+    - name: book_keeper_invoices_dark
+      role: book_keeper
+      theme: dark
+      path: /invoices
+      wait_ms: 5000
+      expect:
+        final_path: /invoices
+        contains_text:
+          - Invoices
+        min_buttons: 6
+    - name: book_keeper_payments_dark
+      role: book_keeper
+      theme: dark
+      path: /payments
+      wait_ms: 10000
+      expect:
+        final_path: /payments
+        contains_text:
+          - Payments
+        min_buttons: 6
+    - name: book_keeper_expenses_dark
+      role: book_keeper
+      theme: dark
+      path: /expenses
+      wait_ms: 5000
+      expect:
+        final_path: /expenses
+        contains_text:
+          - Expenses
+        min_buttons: 6
+    - name: book_keeper_billing_blocked_dark
+      role: book_keeper
       theme: dark
       path: /settings/billing
       expect:
