@@ -266,8 +266,8 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
     <div className="w-full max-w-4xl mx-auto">
       {/* Action Bar */}
       {!isEditing && (
-        <div className="mb-4 flex items-center justify-between">
-          <div className="flex items-center gap-2">
+        <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-wrap items-center gap-2">
             <Badge className={cn("capitalize", getStatusColor(invoice.status))}>
               {invoice.status}
             </Badge>
@@ -282,7 +282,7 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
               </span>
             )}
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <Button
               variant="outline"
               size="sm"
@@ -339,9 +339,9 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
       )}
 
       {/* Invoice Preview Card */}
-      <Card className="border-border bg-background p-8 text-foreground shadow-sm print:border-gray-200 print:bg-white print:text-gray-900 dark:border-neutral-800 dark:bg-neutral-950">
+      <Card className="border-border bg-background p-4 text-foreground shadow-sm print:border-gray-200 print:bg-white print:text-gray-900 sm:p-8 dark:border-neutral-800 dark:bg-neutral-950">
         {/* Header */}
-        <div className="flex justify-between items-start mb-8">
+        <div className="mb-8 flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
           <div>
             {invoice.company?.logo ? (
               <img
@@ -356,7 +356,7 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
                 </h1>
               </div>
             )}
-            <div className="space-y-1 text-sm text-muted-foreground print:text-gray-600">
+            <div className="space-y-1 break-words text-sm text-muted-foreground print:text-gray-600">
               {invoice.company.address && (
                 <p>{formatAddress(invoice.company.address)}</p>
               )}
@@ -372,7 +372,7 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
             </div>
           </div>
 
-          <div className="text-right">
+          <div className="text-left sm:text-right">
             <h2 className="mb-2 text-3xl font-bold text-foreground print:text-gray-900">
               INVOICE
             </h2>
@@ -420,7 +420,7 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
           <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-muted-foreground print:text-gray-600">
             Bill To
           </h3>
-          <div className="text-sm space-y-1">
+          <div className="space-y-1 break-words text-sm">
             <p className="text-lg font-semibold text-foreground print:text-gray-900">
               {invoice.client.name}
             </p>
@@ -449,56 +449,104 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
 
         {/* Line Items Table */}
         <div className="mb-8">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b-2 border-border print:border-gray-200">
-                <th className="px-2 py-3 text-left text-sm font-semibold text-foreground print:text-gray-700">
-                  Description
-                </th>
-                <th className="px-2 py-3 text-center text-sm font-semibold text-foreground print:text-gray-700">
-                  Date
-                </th>
-                <th className="px-2 py-3 text-center text-sm font-semibold text-foreground print:text-gray-700">
-                  Qty
-                </th>
-                <th className="px-2 py-3 text-right text-sm font-semibold text-foreground print:text-gray-700">
-                  Rate
-                </th>
-                <th className="px-2 py-3 text-right text-sm font-semibold text-foreground print:text-gray-700">
-                  Amount
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {invoice.lineItems.map((item, index) => (
-                <tr
-                  key={item.id || index}
-                  className="border-b border-border/70 print:border-gray-100"
-                >
-                  <td className="px-2 py-3 text-sm text-foreground print:text-gray-900">
-                    {item.description}
-                  </td>
-                  <td className="px-2 py-3 text-center text-sm text-muted-foreground print:text-gray-600">
-                    {item.date ? formatDate(item.date) : "-"}
-                  </td>
-                  <td className="px-2 py-3 text-center text-sm text-foreground print:text-gray-900">
-                    {item.quantity}
-                  </td>
-                  <td className="px-2 py-3 text-right text-sm text-foreground print:text-gray-900">
-                    {currencyFormat(currency, item.rate)}
-                  </td>
-                  <td className="px-2 py-3 text-right text-sm font-medium text-foreground print:text-gray-900">
-                    {currencyFormat(currency, item.amount)}
-                  </td>
+          <div className="space-y-3 sm:hidden">
+            {invoice.lineItems.map((item, index) => (
+              <div
+                className="rounded-lg border border-border p-4"
+                key={item.id || index}
+              >
+                <p className="whitespace-pre-wrap break-words text-sm text-foreground print:text-gray-900">
+                  {item.description}
+                </p>
+                <dl className="mt-4 grid grid-cols-2 gap-3 text-sm">
+                  <div>
+                    <dt className="text-muted-foreground print:text-gray-600">
+                      Date
+                    </dt>
+                    <dd className="font-medium text-foreground print:text-gray-900">
+                      {item.date ? formatDate(item.date) : "-"}
+                    </dd>
+                  </div>
+                  <div>
+                    <dt className="text-muted-foreground print:text-gray-600">
+                      Qty
+                    </dt>
+                    <dd className="font-medium text-foreground print:text-gray-900">
+                      {item.quantity}
+                    </dd>
+                  </div>
+                  <div>
+                    <dt className="text-muted-foreground print:text-gray-600">
+                      Rate
+                    </dt>
+                    <dd className="font-medium text-foreground print:text-gray-900">
+                      {currencyFormat(currency, item.rate)}
+                    </dd>
+                  </div>
+                  <div>
+                    <dt className="text-muted-foreground print:text-gray-600">
+                      Amount
+                    </dt>
+                    <dd className="font-medium text-foreground print:text-gray-900">
+                      {currencyFormat(currency, item.amount)}
+                    </dd>
+                  </div>
+                </dl>
+              </div>
+            ))}
+          </div>
+          <div className="hidden sm:block">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b-2 border-border print:border-gray-200">
+                  <th className="px-2 py-3 text-left text-sm font-semibold text-foreground print:text-gray-700">
+                    Description
+                  </th>
+                  <th className="px-2 py-3 text-center text-sm font-semibold text-foreground print:text-gray-700">
+                    Date
+                  </th>
+                  <th className="px-2 py-3 text-center text-sm font-semibold text-foreground print:text-gray-700">
+                    Qty
+                  </th>
+                  <th className="px-2 py-3 text-right text-sm font-semibold text-foreground print:text-gray-700">
+                    Rate
+                  </th>
+                  <th className="px-2 py-3 text-right text-sm font-semibold text-foreground print:text-gray-700">
+                    Amount
+                  </th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {invoice.lineItems.map((item, index) => (
+                  <tr
+                    key={item.id || index}
+                    className="border-b border-border/70 print:border-gray-100"
+                  >
+                    <td className="px-2 py-3 text-sm text-foreground print:text-gray-900">
+                      {item.description}
+                    </td>
+                    <td className="px-2 py-3 text-center text-sm text-muted-foreground print:text-gray-600">
+                      {item.date ? formatDate(item.date) : "-"}
+                    </td>
+                    <td className="px-2 py-3 text-center text-sm text-foreground print:text-gray-900">
+                      {item.quantity}
+                    </td>
+                    <td className="px-2 py-3 text-right text-sm text-foreground print:text-gray-900">
+                      {currencyFormat(currency, item.rate)}
+                    </td>
+                    <td className="px-2 py-3 text-right text-sm font-medium text-foreground print:text-gray-900">
+                      {currencyFormat(currency, item.amount)}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
 
         {/* Totals */}
-        <div className="flex justify-end mb-8">
-          <div className="w-80">
+        <div className="mb-8 flex justify-end">
+          <div className="w-full sm:w-80">
             <div className="space-y-2 text-sm">
               <div className="flex justify-between py-2">
                 <span className="text-muted-foreground print:text-gray-600">
