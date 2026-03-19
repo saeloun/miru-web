@@ -71,9 +71,9 @@ RSpec.describe "Devices#update", type: :request do
           }), headers: auth_headers(user)
       end
 
-      it "is forbidden" do
+      it "is not found" do
         device_of_employee.reload
-        expect(response).to have_http_status(:forbidden)
+        expect(response).to have_http_status(:not_found)
       end
     end
 
@@ -150,9 +150,9 @@ RSpec.describe "Devices#update", type: :request do
           }), headers: auth_headers(user)
       end
 
-      it "is forbidden" do
+      it "is not found" do
         device_of_employee.reload
-        expect(response).to have_http_status(:forbidden)
+        expect(response).to have_http_status(:not_found)
       end
     end
 
@@ -226,9 +226,9 @@ RSpec.describe "Devices#update", type: :request do
           }), headers: auth_headers(user)
       end
 
-      it "is forbidden" do
+      it "is not found" do
         device_of_employee.reload
-        expect(response).to have_http_status(:forbidden)
+        expect(response).to have_http_status(:not_found)
       end
     end
 

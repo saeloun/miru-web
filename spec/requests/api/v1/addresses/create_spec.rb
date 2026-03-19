@@ -51,8 +51,8 @@ RSpec.describe "Addresses#create", type: :request do
           }), headers: auth_headers(user)
       end
 
-      it "is forbidden" do
-        expect(response).to have_http_status(:forbidden)
+      it "is not found" do
+        expect(response).to have_http_status(:not_found)
       end
     end
 
@@ -108,8 +108,8 @@ RSpec.describe "Addresses#create", type: :request do
           }), headers: auth_headers(user)
       end
 
-      it "is forbidden" do
-        expect(response).to have_http_status(:forbidden)
+      it "is not found" do
+        expect(response).to have_http_status(:not_found)
       end
     end
 
@@ -165,8 +165,8 @@ RSpec.describe "Addresses#create", type: :request do
           }), headers: auth_headers(employee)
       end
 
-      it "is forbidden" do
-        expect(response).to have_http_status(:forbidden)
+      it "is not found" do
+        expect(response).to have_http_status(:not_found)
       end
     end
   end
