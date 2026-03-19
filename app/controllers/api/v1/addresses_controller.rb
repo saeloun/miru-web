@@ -30,9 +30,14 @@ class Api::V1::AddressesController < Api::V1::ApplicationController
 
     def set_addressable
       if params[:user_id]
-        @addressable = current_company.users.find(params[:user_id])
+        @addressable =
+          if params[:user_id].to_s == current_user.id.to_s
+            current_user
+          else
+            current_company.users.find(params[:user_id])
+          end
       elsif params[:company_id]
-        @addressable = current_company
+        @addressable = Company.find(params[:company_id])
       end
     end
 
