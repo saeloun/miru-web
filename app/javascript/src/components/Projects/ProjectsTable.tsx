@@ -11,7 +11,6 @@ import {
   CardTitle,
 } from "../ui/card";
 import { Button } from "../ui/button";
-import { Badge } from "../ui/badge";
 import { DataTable } from "../ui/data-table";
 import {
   DropdownMenu,
@@ -172,24 +171,22 @@ const ProjectsTable: React.FC = () => {
     switch (status) {
       case "active":
         return (
-          <Badge className="border-slate-900/70 bg-white text-slate-900 hover:bg-slate-50 dark:border-slate-600 dark:bg-slate-950 dark:text-slate-100 dark:hover:bg-slate-900">
-            Active
-          </Badge>
+          <span className="text-sm font-medium text-foreground">Active</span>
         );
       case "paused":
         return (
-          <Badge className="border-slate-900/70 bg-white text-slate-900 hover:bg-slate-50 dark:border-slate-600 dark:bg-slate-950 dark:text-slate-100 dark:hover:bg-slate-900">
-            Paused
-          </Badge>
+          <span className="text-sm font-medium text-foreground">Paused</span>
         );
       case "completed":
         return (
-          <Badge className="border-slate-900/70 bg-white text-slate-900 hover:bg-slate-50 dark:border-slate-600 dark:bg-slate-950 dark:text-slate-100 dark:hover:bg-slate-900">
-            Completed
-          </Badge>
+          <span className="text-sm font-medium text-foreground">Completed</span>
         );
       default:
-        return <Badge variant="outline">Unknown</Badge>;
+        return (
+          <span className="text-sm font-medium text-muted-foreground">
+            Unknown
+          </span>
+        );
     }
   };
 
@@ -287,19 +284,11 @@ const ProjectsTable: React.FC = () => {
       header: "Type",
       cell: ({ row }) =>
         row.original.billable ? (
-          <Badge
-            variant="outline"
-            className="border-slate-900/70 bg-white text-slate-900 hover:bg-slate-50 dark:border-slate-600 dark:bg-slate-950 dark:text-slate-100 dark:hover:bg-slate-900"
-          >
-            Billable
-          </Badge>
+          <span className="text-sm font-medium text-foreground">Billable</span>
         ) : (
-          <Badge
-            variant="outline"
-            className="border-slate-400 bg-slate-100 text-slate-800 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200"
-          >
+          <span className="text-sm font-medium text-muted-foreground">
             Non-billable
-          </Badge>
+          </span>
         ),
     },
     {
