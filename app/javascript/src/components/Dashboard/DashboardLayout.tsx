@@ -314,7 +314,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
         </button>
 
         <header className="sticky top-0 z-10 border-b border-border bg-background/90 backdrop-blur">
-          <div className="flex items-center justify-between px-6 py-4 lg:px-8">
+          <div className="flex items-center justify-between gap-3 pl-20 pr-4 py-4 sm:px-6 lg:px-8">
             <div className="flex items-center gap-3">
               <h1 className="text-lg font-semibold text-foreground lg:text-xl">
                 {pageTitle}

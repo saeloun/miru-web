@@ -146,11 +146,23 @@ const ProjectsTable: React.FC = () => {
   const getStatusIcon = (status: string) => {
     switch (status) {
       case "active":
-        return <CircleWavyCheck size={16} className="text-green-600" />;
+        return (
+          <CircleWavyCheck
+            size={16}
+            className="text-emerald-600 dark:text-emerald-400"
+          />
+        );
       case "paused":
-        return <Pause size={16} className="text-yellow-600" />;
+        return (
+          <Pause size={16} className="text-amber-600 dark:text-amber-400" />
+        );
       case "completed":
-        return <CircleWavyCheck size={16} className="text-blue-600" />;
+        return (
+          <CircleWavyCheck
+            size={16}
+            className="text-sky-600 dark:text-sky-400"
+          />
+        );
       default:
         return <HourglassMedium size={16} className="text-muted-foreground" />;
     }
@@ -160,19 +172,19 @@ const ProjectsTable: React.FC = () => {
     switch (status) {
       case "active":
         return (
-          <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
+          <Badge className="border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 dark:border-emerald-900/60 dark:bg-emerald-950/30 dark:text-emerald-300 dark:hover:bg-emerald-950/40">
             Active
           </Badge>
         );
       case "paused":
         return (
-          <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-100">
+          <Badge className="border-amber-200 bg-amber-50 text-amber-700 hover:bg-amber-100 dark:border-amber-900/60 dark:bg-amber-950/30 dark:text-amber-300 dark:hover:bg-amber-950/40">
             Paused
           </Badge>
         );
       case "completed":
         return (
-          <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-100">
+          <Badge className="border-sky-200 bg-sky-50 text-sky-700 hover:bg-sky-100 dark:border-sky-900/60 dark:bg-sky-950/30 dark:text-sky-300 dark:hover:bg-sky-950/40">
             Completed
           </Badge>
         );
@@ -208,8 +220,8 @@ const ProjectsTable: React.FC = () => {
 
         return (
           <div className="flex items-center gap-3">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-muted">
-              <Briefcase size={16} className="text-muted-foreground" />
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-border/70 bg-slate-100 text-slate-600 dark:bg-slate-900/70 dark:text-slate-300">
+              <Briefcase size={16} />
             </div>
             <div>
               <p className="font-medium text-foreground">{project.name}</p>
@@ -282,7 +294,10 @@ const ProjectsTable: React.FC = () => {
             Billable
           </Badge>
         ) : (
-          <Badge variant="outline" className="text-muted-foreground">
+          <Badge
+            variant="outline"
+            className="border-slate-200 bg-slate-50 text-slate-700 dark:border-slate-800 dark:bg-slate-900/60 dark:text-slate-300"
+          >
             Non-billable
           </Badge>
         ),
@@ -381,7 +396,7 @@ const ProjectsTable: React.FC = () => {
   const uniqueTeamMembers = teamMembersSet.size;
 
   return (
-    <div className="mx-auto max-w-7xl space-y-6 p-6">
+    <div className="mx-auto max-w-7xl space-y-6 px-4 pb-6 pt-2 md:p-6">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
           <p className="text-sm text-muted-foreground md:text-base">
@@ -457,7 +472,7 @@ const ProjectsTable: React.FC = () => {
               onRowClick={project => navigate(`/projects/${project.id}`)}
             />
           ) : (
-            <div className="text-center py-12">
+            <div className="py-12 text-center">
               <Briefcase
                 size={48}
                 className="mx-auto mb-4 text-muted-foreground/50"
