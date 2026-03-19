@@ -172,19 +172,19 @@ const ProjectsTable: React.FC = () => {
     switch (status) {
       case "active":
         return (
-          <Badge className="border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 dark:border-emerald-900/60 dark:bg-emerald-950/30 dark:text-emerald-300 dark:hover:bg-emerald-950/40">
+          <Badge className="border-emerald-600 bg-emerald-600 text-white hover:bg-emerald-600 dark:border-emerald-900/60 dark:bg-emerald-950/30 dark:text-emerald-300 dark:hover:bg-emerald-950/40">
             Active
           </Badge>
         );
       case "paused":
         return (
-          <Badge className="border-amber-200 bg-amber-50 text-amber-700 hover:bg-amber-100 dark:border-amber-900/60 dark:bg-amber-950/30 dark:text-amber-300 dark:hover:bg-amber-950/40">
+          <Badge className="border-amber-500 bg-amber-500 text-white hover:bg-amber-500 dark:border-amber-900/60 dark:bg-amber-950/30 dark:text-amber-300 dark:hover:bg-amber-950/40">
             Paused
           </Badge>
         );
       case "completed":
         return (
-          <Badge className="border-sky-200 bg-sky-50 text-sky-700 hover:bg-sky-100 dark:border-sky-900/60 dark:bg-sky-950/30 dark:text-sky-300 dark:hover:bg-sky-950/40">
+          <Badge className="border-sky-600 bg-sky-600 text-white hover:bg-sky-600 dark:border-sky-900/60 dark:bg-sky-950/30 dark:text-sky-300 dark:hover:bg-sky-950/40">
             Completed
           </Badge>
         );
@@ -289,14 +289,14 @@ const ProjectsTable: React.FC = () => {
         row.original.billable ? (
           <Badge
             variant="outline"
-            className="border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-900/60 dark:bg-emerald-950/30 dark:text-emerald-300"
+            className="border-indigo-200 bg-indigo-50 text-indigo-700 dark:border-indigo-900/60 dark:bg-indigo-950/30 dark:text-indigo-300"
           >
             Billable
           </Badge>
         ) : (
           <Badge
             variant="outline"
-            className="border-slate-200 bg-slate-50 text-slate-700 dark:border-slate-800 dark:bg-slate-900/60 dark:text-slate-300"
+            className="border-slate-300 bg-slate-100 text-slate-700 dark:border-slate-800 dark:bg-slate-900/60 dark:text-slate-300"
           >
             Non-billable
           </Badge>
