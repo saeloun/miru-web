@@ -164,7 +164,7 @@ class InvoiceApiService {
       invoice: this.formatInvoiceForApi(invoiceData),
     });
 
-    return this.transformApiInvoice(response.data.invoice);
+    return this.transformApiInvoice(response.data.invoice || response.data);
   }
 
   /**
@@ -178,7 +178,7 @@ class InvoiceApiService {
       invoice: this.formatInvoiceForApi(invoiceData),
     });
 
-    return this.transformApiInvoice(response.data.invoice);
+    return this.transformApiInvoice(response.data.invoice || response.data);
   }
 
   /**
