@@ -605,9 +605,9 @@ const TimeEntryReport: React.FC = () => {
 
         {/* Report Tables */}
         <div className="space-y-6">
-          {data?.reports?.map(group => (
+          {data?.reports?.map((group, index) => (
             <ReportGroupTable
-              key={group.id}
+              key={group.id ?? `${group.label ?? "group"}-${index}`}
               group={group}
               columns={columns}
               getTotalHoursForGroup={getTotalHoursForGroup}
