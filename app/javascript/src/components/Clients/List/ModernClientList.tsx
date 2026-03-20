@@ -10,16 +10,16 @@ import { Avatar } from "StyledComponents";
 // Color palette for clients - generates consistent colors based on client name
 const generateClientColor = (name: string) => {
   const colors = [
-    "bg-blue-50 border-blue-200",
-    "bg-green-50 border-green-200",
-    "bg-purple-50 border-purple-200",
-    "bg-yellow-50 border-yellow-200",
-    "bg-pink-50 border-pink-200",
-    "bg-indigo-50 border-indigo-200",
-    "bg-red-50 border-red-200",
-    "bg-teal-50 border-teal-200",
-    "bg-orange-50 border-orange-200",
-    "bg-cyan-50 border-cyan-200",
+    "bg-card border-border",
+    "bg-muted/30 border-border",
+    "bg-card border-border",
+    "bg-muted/30 border-border",
+    "bg-card border-border",
+    "bg-muted/30 border-border",
+    "bg-card border-border",
+    "bg-muted/30 border-border",
+    "bg-card border-border",
+    "bg-muted/30 border-border",
   ];
 
   // Generate consistent index based on client name
@@ -93,18 +93,18 @@ const ModernClientList = ({
                     <div className="flex items-center space-x-4">
                       <Avatar classNameImg="h-12 w-12" url={client.logo} />
                       <div className="flex-1 min-w-0">
-                        <h3 className="text-lg font-semibold text-gray-900 truncate">
+                        <h3 className="truncate text-lg font-semibold text-foreground">
                           {typeof client.name === "string"
                             ? client.name
                             : "Client"}
                         </h3>
-                        <p className="text-sm text-gray-600">Client</p>
+                        <p className="text-sm text-muted-foreground">Client</p>
                       </div>
                     </div>
                     {isAdminUser && (
                       <div className="relative">
                         <button
-                          className="p-1 hover:bg-gray-100 rounded"
+                          className="rounded p-1 hover:bg-muted"
                           onClick={e => {
                             e.preventDefault();
                             e.stopPropagation();
@@ -112,7 +112,7 @@ const ModernClientList = ({
                           }}
                         >
                           <DotsThreeVerticalIcon
-                            className="h-5 w-5 text-gray-500"
+                            className="h-5 w-5 text-muted-foreground"
                             onClick={e => {
                               e.preventDefault();
                               e.stopPropagation();
@@ -126,7 +126,7 @@ const ModernClientList = ({
                   </div>
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium text-gray-600">
+                      <span className="text-sm font-medium text-muted-foreground">
                         Hours Logged:
                       </span>
                       <span className="text-lg font-bold text-primary">
@@ -154,12 +154,12 @@ const ModernClientList = ({
                     <div className="flex items-center space-x-3 flex-1 min-w-0">
                       <Avatar classNameImg="h-10 w-10" url={client.logo} />
                       <div className="flex-1 min-w-0">
-                        <h3 className="text-base font-semibold text-gray-900 truncate">
+                        <h3 className="truncate text-base font-semibold text-foreground">
                           {typeof client.name === "string"
                             ? client.name
                             : "Client"}
                         </h3>
-                        <div className="flex items-center text-sm text-gray-600 mt-1">
+                        <div className="mt-1 flex items-center text-sm text-muted-foreground">
                           <span className="font-medium">
                             {minToHHMM(client.minutes || 0)} hrs
                           </span>
@@ -172,7 +172,7 @@ const ModernClientList = ({
                       </span>
                       {isAdminUser && (
                         <DotsThreeVerticalIcon
-                          className="h-5 w-5 text-gray-500"
+                          className="h-5 w-5 text-muted-foreground"
                           onClick={e => {
                             e.preventDefault();
                             e.stopPropagation();
