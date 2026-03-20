@@ -18,11 +18,15 @@ WORKING_DATABASE_URL="${WORKING_DATABASE_URL:-postgres://localhost/${WORKING_DAT
 
 mkdir -p "$OUTPUT_DIR"
 
+run_schema_migrations() {
+  DATABASE_URL="$WORKING_DATABASE_URL" mise exec -- bundle exec rails runner 'ActiveRecord::Base.connection_pool.migration_context.migrate'
+}
+
 dropdb --if-exists "$WORKING_DATABASE" >/dev/null 2>&1 || true
 createdb "$WORKING_DATABASE"
 
 mise exec -- pg_restore --no-owner --no-privileges -d "$WORKING_DATABASE" "$SOURCE_DUMP"
-DATABASE_URL="$WORKING_DATABASE_URL" mise exec -- bundle exec rails db:migrate
+run_schema_migrations
 DATABASE_URL="$WORKING_DATABASE_URL" SUBSET_CONFIG="$CONFIG_PATH" mise exec -- bundle exec rails runner script/data_subsets/build.rb
 mise exec -- pg_dump -Fc --no-owner --no-privileges -d "$WORKING_DATABASE" -f "$ARTIFACT_PATH"
 

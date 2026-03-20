@@ -9,10 +9,12 @@ default: &default
 
 development:
   <<: *default
+  url: <%= ENV["DATABASE_URL"] if ENV["DATABASE_URL"].present? %>
   database: "miru_web_development"
 
 test:
   <<: *default
+  url: <%= ENV["DATABASE_URL"] if ENV["DATABASE_URL"].present? %>
   database: <%= ENV["TEST_ENV_NUMBER"].present? ? "miru_web_test_#{ENV["TEST_ENV_NUMBER"]}" : "miru_web_test" %>
 
 production:
