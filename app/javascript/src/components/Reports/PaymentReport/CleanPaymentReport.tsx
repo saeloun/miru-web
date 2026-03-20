@@ -318,9 +318,9 @@ const CleanPaymentReport: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-background p-6">
-      <div className="max-w-7xl mx-auto space-y-6">
+      <div className="mx-auto max-w-7xl space-y-6">
         {/* Header */}
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h1 className="text-2xl font-semibold text-foreground">
               Payment Report
@@ -407,16 +407,19 @@ const CleanPaymentReport: React.FC = () => {
         {/* Filters */}
         <Card>
           <CardContent className="p-4">
-            <div className="flex flex-wrap gap-4 items-center justify-between">
-              <div className="flex gap-3">
-                <Button variant="outline" className="flex items-center gap-2">
+            <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+              <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+                <Button
+                  variant="outline"
+                  className="flex w-full items-center justify-between gap-2 sm:w-auto"
+                >
                   <CalendarBlank className="w-4 h-4" />
                   Date Range
                   <CaretDown className="w-4 h-4" />
                 </Button>
 
                 <Select defaultValue="all">
-                  <SelectTrigger className="w-[180px]">
+                  <SelectTrigger className="w-full sm:w-[180px]">
                     <SelectValue placeholder="Payment Method" />
                   </SelectTrigger>
                   <SelectContent>
@@ -429,7 +432,7 @@ const CleanPaymentReport: React.FC = () => {
                 </Select>
 
                 <Select defaultValue="all">
-                  <SelectTrigger className="w-[150px]">
+                  <SelectTrigger className="w-full sm:w-[150px]">
                     <SelectValue placeholder="Status" />
                   </SelectTrigger>
                   <SelectContent>
@@ -443,7 +446,7 @@ const CleanPaymentReport: React.FC = () => {
 
               <Button
                 variant="outline"
-                className="flex items-center gap-2"
+                className="flex w-full items-center justify-center gap-2 sm:w-auto"
                 onClick={handleExportCSV}
                 disabled={isExporting}
               >
@@ -513,7 +516,7 @@ const CleanPaymentReport: React.FC = () => {
 
             {/* Pagination */}
             {data?.payments?.length > 0 && (
-              <div className="flex items-center justify-between px-6 py-4 border-t">
+              <div className="flex flex-col gap-3 border-t px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
                 <p className="text-sm text-gray-600">
                   Showing{" "}
                   {table.getState().pagination.pageIndex *
@@ -527,7 +530,7 @@ const CleanPaymentReport: React.FC = () => {
                   )}{" "}
                   of {data?.payments?.length || 0} payments
                 </p>
-                <div className="flex gap-2">
+                <div className="flex gap-2 self-start sm:self-auto">
                   <Button
                     variant="outline"
                     size="sm"
