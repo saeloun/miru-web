@@ -145,23 +145,11 @@ const ProjectsTable: React.FC = () => {
   const getStatusIcon = (status: string) => {
     switch (status) {
       case "active":
-        return (
-          <CircleWavyCheck
-            size={16}
-            className="text-emerald-600 dark:text-emerald-400"
-          />
-        );
+        return <CircleWavyCheck size={16} className="text-foreground" />;
       case "paused":
-        return (
-          <Pause size={16} className="text-amber-600 dark:text-amber-400" />
-        );
+        return <Pause size={16} className="text-muted-foreground" />;
       case "completed":
-        return (
-          <CircleWavyCheck
-            size={16}
-            className="text-sky-600 dark:text-sky-400"
-          />
-        );
+        return <CircleWavyCheck size={16} className="text-foreground" />;
       default:
         return <HourglassMedium size={16} className="text-muted-foreground" />;
     }
@@ -217,7 +205,7 @@ const ProjectsTable: React.FC = () => {
 
         return (
           <div className="flex items-center gap-3">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-border/70 bg-slate-100 text-slate-600 dark:bg-slate-900/70 dark:text-slate-300">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-border bg-muted text-muted-foreground">
               <Briefcase size={16} />
             </div>
             <div>

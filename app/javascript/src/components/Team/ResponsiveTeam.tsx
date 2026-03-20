@@ -46,7 +46,7 @@ export const ResponsiveTeamMemberCard: React.FC<any> = props => {
                   <span
                     className={`inline-flex items-center rounded-full px-2 py-1 text-xs ${
                       props.isActive
-                        ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-500/15 dark:text-emerald-300"
+                        ? "border border-border bg-card text-foreground"
                         : "bg-muted text-muted-foreground"
                     }`}
                   >
@@ -147,7 +147,7 @@ export const ResponsiveTeamMemberCard: React.FC<any> = props => {
         <span
           className={`rounded-full px-2 py-1 text-xs ${
             props.isActive
-              ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-500/15 dark:text-emerald-300"
+              ? "border border-border bg-card text-foreground"
               : "bg-muted text-muted-foreground"
           }`}
         >
@@ -192,7 +192,7 @@ export const ResponsiveTeamStats: React.FC<any> = props => {
             <p className="text-sm text-muted-foreground">Total Members</p>
           </div>
           <div>
-            <p className="text-2xl font-bold text-emerald-600 dark:text-emerald-300">
+            <p className="text-2xl font-bold text-foreground">
               {props.activeMembers}
             </p>
             <p className="text-sm text-muted-foreground">Active</p>
@@ -223,7 +223,7 @@ export const ResponsiveTeamStats: React.FC<any> = props => {
           <p className="text-xs text-muted-foreground">Total Members</p>
         </div>
         <div className="text-center">
-          <p className="text-xl font-bold text-emerald-600 dark:text-emerald-300">
+          <p className="text-xl font-bold text-foreground">
             {props.activeMembers}
           </p>
           <p className="text-xs text-muted-foreground">Active</p>
