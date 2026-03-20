@@ -272,20 +272,20 @@ const DashboardHome: React.FC<DashboardHomeProps> = ({
                         <TrendUp
                           size={12}
                           weight="bold"
-                          className="mr-1 text-green-600"
+                          className="mr-1 text-foreground"
                         />
                       ) : (
                         <TrendDown
                           size={12}
                           weight="bold"
-                          className="mr-1 text-red-600"
+                          className="mr-1 text-destructive"
                         />
                       )}
                       <span
                         className={
                           stat.trend.isPositive
-                            ? "text-green-600"
-                            : "text-red-600"
+                            ? "text-foreground"
+                            : "text-destructive"
                         }
                       >
                         {stat.trend.value}%
