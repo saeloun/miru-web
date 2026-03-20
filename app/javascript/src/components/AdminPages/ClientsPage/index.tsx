@@ -144,15 +144,15 @@ const ClientsPage: React.FC<ClientsPageProps> = ({
   const getStatusBadge = (status: string) => {
     const variants = {
       active: {
-        color: "bg-green-100 text-green-800 border-green-200",
+        color: "border-border bg-card text-card-foreground",
         icon: CheckCircle,
       },
       pending: {
-        color: "bg-yellow-100 text-yellow-800 border-yellow-200",
+        color: "border-border bg-muted text-foreground",
         icon: Warning,
       },
       inactive: {
-        color: "bg-muted text-foreground border-border",
+        color: "border-border bg-muted text-muted-foreground",
         icon: Warning,
       },
     };
@@ -309,7 +309,7 @@ const ClientsPage: React.FC<ClientsPageProps> = ({
         </div>
 
         {/* Status Funnel Tabs */}
-        <div className="flex w-full gap-1 overflow-x-auto rounded-lg bg-muted p-1 dark:bg-gray-800 sm:w-fit">
+        <div className="flex w-full gap-1 overflow-x-auto rounded-lg bg-muted p-1 sm:w-fit">
           {statusOptions.map(option => (
             <button
               key={option.value}
@@ -317,7 +317,7 @@ const ClientsPage: React.FC<ClientsPageProps> = ({
               className={cn(
                 "px-4 py-2 rounded-md text-sm font-medium transition-all duration-200",
                 selectedStatus === option.value
-                  ? "bg-background dark:bg-gray-700 text-foreground shadow-sm"
+                  ? "bg-background text-foreground shadow-sm"
                   : "text-muted-foreground hover:text-foreground"
               )}
             >
@@ -345,11 +345,11 @@ const ClientsPage: React.FC<ClientsPageProps> = ({
                     </Avatar>
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2">
-                        <h3 className="truncate font-semibold text-gray-900 transition-colors group-hover:text-primary dark:text-gray-100">
+                        <h3 className="truncate font-semibold text-foreground transition-colors group-hover:text-primary">
                           {client.name}
                         </h3>
                         {client.isVip && (
-                          <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
+                          <Star className="w-4 h-4 text-foreground fill-current" />
                         )}
                       </div>
                       <p className="text-sm text-muted-foreground">
@@ -380,8 +380,8 @@ const ClientsPage: React.FC<ClientsPageProps> = ({
                       className={cn(
                         "font-semibold",
                         client.outstandingAmount > 0
-                          ? "text-orange-600 dark:text-orange-400"
-                          : "text-green-600 dark:text-green-400"
+                          ? "text-foreground"
+                          : "text-muted-foreground"
                       )}
                     >
                       {currencyFormat(
@@ -403,7 +403,7 @@ const ClientsPage: React.FC<ClientsPageProps> = ({
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2 pt-2 border-t border-gray-100 border-border">
+                <div className="flex items-center gap-2 border-t border-border pt-2">
                   <div className="flex items-center gap-1 text-xs text-muted-foreground">
                     <Envelope className="w-3 h-3" />
                     <span className="truncate">{client.email}</span>

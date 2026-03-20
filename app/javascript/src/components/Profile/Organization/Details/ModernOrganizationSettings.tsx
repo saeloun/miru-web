@@ -230,9 +230,9 @@ const ModernOrganizationSettings: React.FC<ModernOrganizationSettingsProps> = ({
                         </p>
                         <Badge
                           variant="outline"
-                          className="mt-2 border-emerald-500/20 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 font-geist-medium"
+                          className="mt-2 border-border bg-card text-card-foreground font-geist-medium"
                         >
-                          <div className="mr-2 h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                          <div className="mr-2 h-1.5 w-1.5 rounded-full bg-foreground" />
                           Active
                         </Badge>
                       </div>
