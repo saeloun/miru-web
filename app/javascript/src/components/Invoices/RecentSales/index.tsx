@@ -34,27 +34,25 @@ const RecentSales: React.FC<RecentSalesProps> = ({ invoices, className }) => {
   const getStatusIcon = (status: string) => {
     switch (status.toLowerCase()) {
       case "paid":
-        return <TrendUp className="h-3 w-3 text-green-500" />;
+        return <TrendUp className="h-3 w-3 text-foreground" />;
       case "overdue":
-        return <TrendDown className="h-3 w-3 text-red-500" />;
+        return <TrendDown className="h-3 w-3 text-destructive" />;
       default:
-        return <ArrowUpRight className="h-3 w-3 text-blue-500" />;
+        return <ArrowUpRight className="h-3 w-3 text-muted-foreground" />;
     }
   };
 
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
-      case "paid":
-        return "bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400";
       case "overdue":
-        return "bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400";
+        return "border-destructive/40 bg-destructive/10 text-destructive";
+      case "paid":
       case "sent":
       case "viewed":
-        return "bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-400";
       case "draft":
-        return "bg-gray-100 text-gray-800 dark:bg-gray-900/20 dark:text-gray-400";
+        return "border-border bg-card text-card-foreground";
       default:
-        return "bg-gray-100 text-gray-800 dark:bg-gray-900/20 dark:text-gray-400";
+        return "border-border bg-card text-card-foreground";
     }
   };
 
@@ -106,7 +104,7 @@ const RecentSales: React.FC<RecentSalesProps> = ({ invoices, className }) => {
                     src={invoice.client.logo}
                     alt={invoice.client.name}
                   />
-                  <AvatarFallback className="bg-[#5E58F1]/10 text-[#5E58F1] text-xs font-medium">
+                  <AvatarFallback className="bg-muted text-muted-foreground text-xs font-medium">
                     {getInitials(invoice.client.name)}
                   </AvatarFallback>
                 </Avatar>
@@ -120,7 +118,9 @@ const RecentSales: React.FC<RecentSalesProps> = ({ invoices, className }) => {
                       {getStatusIcon(invoice.status)}
                       <Badge
                         variant="secondary"
-                        className={`text-xs ${getStatusColor(invoice.status)}`}
+                        className={`border text-xs ${getStatusColor(
+                          invoice.status
+                        )}`}
                       >
                         {invoice.status}
                       </Badge>
@@ -143,9 +143,7 @@ const RecentSales: React.FC<RecentSalesProps> = ({ invoices, className }) => {
                     {growth !== 0 && (
                       <div
                         className={`flex items-center space-x-1 text-xs ${
-                          growth > 0
-                            ? "text-green-600 dark:text-green-400"
-                            : "text-red-600 dark:text-red-400"
+                          growth > 0 ? "text-foreground" : "text-destructive"
                         }`}
                       >
                         {growth > 0 ? (
@@ -179,7 +177,7 @@ const RecentSales: React.FC<RecentSalesProps> = ({ invoices, className }) => {
           <div className="mt-4 pt-4 border-t border-border/40">
             <div className="flex items-center justify-between text-xs text-muted-foreground">
               <span>Showing {sortedInvoices.length} recent transactions</span>
-              <button className="text-[#5E58F1] hover:text-[#4D47E0] font-medium">
+              <button className="font-medium text-foreground hover:text-foreground/80">
                 View all →
               </button>
             </div>

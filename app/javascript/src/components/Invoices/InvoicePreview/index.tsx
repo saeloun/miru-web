@@ -113,17 +113,15 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
 
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
+      case "overdue":
+        return "border-destructive/40 bg-destructive/10 text-destructive";
       case "paid":
-        return "bg-green-100 text-green-800 border-green-200 dark:bg-green-950/30 dark:text-green-300 dark:border-green-900";
       case "sent":
       case "viewed":
-        return "bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-950/30 dark:text-blue-300 dark:border-blue-900";
-      case "overdue":
-        return "bg-red-100 text-red-800 border-red-200 dark:bg-red-950/30 dark:text-red-300 dark:border-red-900";
       case "draft":
-        return "bg-gray-100 text-gray-800 border-gray-200 dark:bg-neutral-800 dark:text-neutral-200 dark:border-neutral-700";
+        return "border-border bg-card text-card-foreground";
       default:
-        return "bg-gray-100 text-gray-800 border-gray-200 dark:bg-neutral-800 dark:text-neutral-200 dark:border-neutral-700";
+        return "border-border bg-card text-card-foreground";
     }
   };
 
