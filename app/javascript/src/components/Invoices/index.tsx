@@ -179,7 +179,9 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
 
   const handlePreview = (invoiceData: InvoiceFormData) => {
     // Convert form data to invoice preview format
-    const client = clients.find(c => c.id === invoiceData.clientId);
+    const client = clients.find(
+      c => String(c.id) === String(invoiceData.clientId)
+    );
     if (!client) return;
 
     const previewInvoice: Invoice = {
@@ -283,7 +285,9 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
       }
 
       // Then send the invoice
-      const client = clients.find(c => c.id === invoiceData.clientId);
+      const client = clients.find(
+        c => String(c.id) === String(invoiceData.clientId)
+      );
       if (client && invoiceId) {
         const response = await invoiceApi.sendInvoice(invoiceId, {
           subject: `Invoice ${invoiceData.invoiceNumber}`,
