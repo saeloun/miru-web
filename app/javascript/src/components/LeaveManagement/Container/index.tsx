@@ -36,11 +36,11 @@ const SummaryCard = ({ icon: Icon, label, value, tone = "default" }) => (
       <div
         className={`flex h-11 w-11 items-center justify-center rounded-2xl ${
           tone === "warning"
-            ? "bg-amber-500/10 text-amber-600"
+            ? "bg-muted text-foreground"
             : tone === "accent"
-            ? "bg-sky-500/10 text-sky-600"
+            ? "bg-muted text-foreground"
             : tone === "success"
-            ? "bg-emerald-500/10 text-emerald-600"
+            ? "bg-card text-foreground border border-border"
             : "bg-primary/10 text-primary"
         }`}
       >
@@ -176,10 +176,10 @@ const Container = ({
                 <span
                   className={`h-2.5 w-2.5 rounded-full ${
                     entry.holidayInfo?.category === "national"
-                      ? "bg-sky-500"
+                      ? "bg-foreground"
                       : entry.holidayInfo?.category === "optional"
-                      ? "bg-amber-500"
-                      : "bg-emerald-500"
+                      ? "bg-muted-foreground"
+                      : "bg-card-foreground"
                   }`}
                   key={`${entry.id}-${entry.leaveDateIso || entry.leaveDate}`}
                 />
@@ -210,10 +210,10 @@ const Container = ({
           <span
             className={`h-2.5 w-2.5 rounded-full ${
               entry.holidayInfo?.category === "national"
-                ? "bg-sky-500"
+                ? "bg-foreground"
                 : entry.holidayInfo?.category === "optional"
-                ? "bg-amber-500"
-                : "bg-emerald-500"
+                ? "bg-muted-foreground"
+                : "bg-card-foreground"
             }`}
             key={`${entry.id}-${entry.leaveDateIso || entry.leaveDate}-summary`}
           />
@@ -249,10 +249,10 @@ const Container = ({
 
     const tone =
       entry.holidayInfo?.category === "national"
-        ? "bg-sky-500/10 text-sky-700 dark:text-sky-200"
+        ? "border-border bg-card text-card-foreground"
         : entry.holidayInfo?.category === "optional"
-        ? "bg-amber-500/10 text-amber-700 dark:text-amber-200"
-        : "bg-emerald-500/10 text-emerald-700 dark:text-emerald-200";
+        ? "border-border bg-muted text-foreground"
+        : "border-border bg-card text-card-foreground";
 
     return (
       <div

@@ -136,11 +136,15 @@ const getTypeIcon = (type?: SearchItem["type"]) => {
     case "entry":
       return <Clock {...iconProps} />;
     case "expense":
-      return <Receipt {...iconProps} className="h-4 w-4 text-red-500" />;
+      return (
+        <Receipt {...iconProps} className="h-4 w-4 text-muted-foreground" />
+      );
     case "report":
-      return <Funnel {...iconProps} className="h-4 w-4 text-blue-500" />;
+      return (
+        <Funnel {...iconProps} className="h-4 w-4 text-muted-foreground" />
+      );
     case "task":
-      return <Clock {...iconProps} className="h-4 w-4 text-green-500" />;
+      return <Clock {...iconProps} className="h-4 w-4 text-muted-foreground" />;
     default:
       return <MagnifyingGlass {...iconProps} />;
   }
@@ -148,41 +152,25 @@ const getTypeIcon = (type?: SearchItem["type"]) => {
 
 const getTypeBadgeColor = (type?: SearchItem["type"]) => {
   switch (type) {
-    case "client":
-      return "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200";
-    case "project":
-      return "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200";
-    case "team":
-      return "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200";
-    case "invoice":
-      return "bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200";
-    case "payment":
-      return "bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200";
-    case "entry":
-      return "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200";
     case "expense":
-      return "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200";
-    case "report":
-      return "bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200";
-    case "task":
-      return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200";
+      return "border-destructive/40 bg-destructive/10 text-destructive";
     default:
-      return "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200";
+      return "border-border bg-card text-card-foreground";
   }
 };
 
 const getPriorityColor = (priority?: SearchItem["priority"]) => {
   switch (priority) {
     case "urgent":
-      return "bg-red-500 text-white";
+      return "border-destructive/40 bg-destructive/10 text-destructive";
     case "high":
-      return "bg-orange-500 text-white";
+      return "border-border bg-muted text-foreground";
     case "medium":
-      return "bg-yellow-500 text-white";
+      return "border-border bg-muted text-foreground";
     case "low":
-      return "bg-green-500 text-white";
+      return "border-border bg-card text-card-foreground";
     default:
-      return "bg-gray-500 text-white";
+      return "border-border bg-card text-card-foreground";
   }
 };
 
@@ -218,7 +206,10 @@ const DefaultSearchResultItem = memo(
 
       return parts.map((part, index) =>
         part.toLowerCase() === query.toLowerCase() ? (
-          <mark key={index} className="bg-yellow-200 dark:bg-yellow-800 px-0">
+          <mark
+            key={index}
+            className="rounded-sm bg-muted px-0 text-foreground"
+          >
             {part}
           </mark>
         ) : (
