@@ -126,6 +126,16 @@ export const passkeysApi = {
   destroy: (id: number) => http.delete(`/users/passkeys/${id}`),
 };
 
+export const totpApi = {
+  show: () => http.get("/users/totp"),
+  setup: () => http.post("/users/totp/setup"),
+  confirm: (payload: any) => http.post("/users/totp/confirm", payload),
+  authenticate: (payload: any) =>
+    http.post("/users/totp/authenticate", payload),
+  regenerateRecoveryCodes: () => http.post("/users/totp/recovery_codes"),
+  destroy: () => http.delete("/users/totp"),
+};
+
 // Clients
 const clientsPath = "/clients";
 const multipartHeaders = { headers: { "Content-Type": "multipart/form-data" } };

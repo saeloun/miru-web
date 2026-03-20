@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_03_18_133000) do
+ActiveRecord::Schema[8.0].define(version: 2026_03_20_100000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_stat_statements"
@@ -846,6 +846,11 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_18_133000) do
     t.boolean "passkey_required_for_login", default: false, null: false
     t.integer "failed_attempts", default: 0, null: false
     t.datetime "locked_at"
+    t.text "otp_secret_ciphertext"
+    t.boolean "otp_required_for_login", default: false, null: false
+    t.integer "otp_last_used_at"
+    t.jsonb "otp_recovery_codes_digest", default: [], null: false
+    t.datetime "otp_recovery_codes_generated_at"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token"
     t.index ["current_workspace_id"], name: "index_users_on_current_workspace_id"
     t.index ["discarded_at"], name: "index_users_on_discarded_at"

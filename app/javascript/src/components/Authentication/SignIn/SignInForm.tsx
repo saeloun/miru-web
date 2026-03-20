@@ -2,7 +2,7 @@ import { Paths } from "constants/index";
 
 import React, { useRef, useState } from "react";
 
-import { authenticationApi, passkeysApi } from "apis/api";
+import { authenticationApi, passkeysApi, totpApi } from "apis/api";
 import { InputErrors, InputField } from "common/FormikFields";
 import { useAuthDispatch } from "context/auth";
 import { Formik, Form, FormikProps } from "formik";
@@ -32,6 +32,10 @@ const SignInForm = () => {
   const googleOauth = useRef(null);
   const githubOauth = useRef(null);
   const [isPasskeyPending, setIsPasskeyPending] = useState(false);
+  const [isTotpPending, setIsTotpPending] = useState(false);
+  const [totpPendingToken, setTotpPendingToken] = useState("");
+  const [totpCode, setTotpCode] = useState("");
+  const [recoveryCode, setRecoveryCode] = useState("");
   const csrfToken =
     document.querySelector('[name="csrf-token"]')?.getAttribute("content") ||
     "";
@@ -83,6 +87,14 @@ const SignInForm = () => {
         return;
       }
 
+      if (res.data?.requires_totp) {
+        setTotpPendingToken(res.data.pending_token);
+        setIsTotpPending(true);
+        toast.message("Enter your authenticator code to finish signing in.");
+
+        return;
+      }
+
       completeLogin(res.data);
     } catch (error) {
       if (error?.response?.data?.unconfirmed) {
@@ -96,6 +108,20 @@ const SignInForm = () => {
       }
     } finally {
       setIsPasskeyPending(false);
+    }
+  };
+
+  const handleTotpVerification = async () => {
+    try {
+      const response = await totpApi.authenticate({
+        pending_token: totpPendingToken,
+        code: totpCode,
+        recovery_code: recoveryCode,
+      });
+
+      completeLogin(response.data);
+    } catch (error) {
+      toast.error(error?.response?.data?.error || "Invalid verification code.");
     }
   };
 
@@ -184,6 +210,72 @@ const SignInForm = () => {
           <div className="flex-grow border-t border-border" />
         </div>
         <div>
+          {isTotpPending && (
+            <div className="mb-6 space-y-4 rounded-2xl border border-border bg-card p-5 shadow-sm">
+              <div className="space-y-1">
+                <h3 className="text-base font-medium text-foreground">
+                  Verify with your authenticator app
+                </h3>
+                <p className="text-sm text-muted-foreground">
+                  Enter the 6-digit code from your authenticator app, or use a
+                  recovery code.
+                </p>
+              </div>
+              <div className="space-y-2">
+                <label
+                  className="text-sm font-medium text-foreground"
+                  htmlFor="totp_code"
+                >
+                  Authenticator code
+                </label>
+                <input
+                  id="totp_code"
+                  className="h-11 w-full rounded-xl border border-border bg-background px-3 text-foreground placeholder:text-muted-foreground"
+                  inputMode="numeric"
+                  onChange={event => setTotpCode(event.target.value)}
+                  placeholder="123456"
+                  value={totpCode}
+                />
+              </div>
+              <div className="space-y-2">
+                <label
+                  className="text-sm font-medium text-foreground"
+                  htmlFor="recovery_code"
+                >
+                  Recovery code
+                </label>
+                <input
+                  id="recovery_code"
+                  className="h-11 w-full rounded-xl border border-border bg-background px-3 text-foreground placeholder:text-muted-foreground"
+                  onChange={event => setRecoveryCode(event.target.value)}
+                  placeholder="ABCD-EFGH"
+                  value={recoveryCode}
+                />
+              </div>
+              <div className="flex gap-3">
+                <button
+                  type="button"
+                  className="flex-1 rounded-xl border border-transparent bg-primary px-4 py-3 text-sm font-medium text-primary-foreground transition hover:bg-primary/90"
+                  disabled={!(totpCode.trim() || recoveryCode.trim())}
+                  onClick={handleTotpVerification}
+                >
+                  Verify and sign in
+                </button>
+                <button
+                  type="button"
+                  className="rounded-xl border border-border px-4 py-3 text-sm font-medium text-foreground transition hover:bg-accent"
+                  onClick={() => {
+                    setIsTotpPending(false);
+                    setTotpPendingToken("");
+                    setTotpCode("");
+                    setRecoveryCode("");
+                  }}
+                >
+                  Back
+                </button>
+              </div>
+            </div>
+          )}
           <Formik
             initialValues={signInFormInitialValues}
             validateOnBlur={false}

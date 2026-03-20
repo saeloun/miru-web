@@ -94,6 +94,11 @@ class Api::V1::Users::PasskeysController < Api::V1::ApplicationController
     authorize current_user, policy_class: PasskeyPolicy
     required = ActiveModel::Type::Boolean.new.cast(requirement_params[:required])
 
+    if required && current_user.totp_enabled?
+      render json: { error: "Disable authenticator app 2FA before requiring passkey sign in." }, status: 422
+      return
+    end
+
     if required && current_user.passkeys.none?
       render json: { error: "Add a passkey before requiring it for sign in." }, status: 422
       return

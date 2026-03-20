@@ -20,6 +20,15 @@ namespace :api, defaults: { format: "json" } do
           patch :requirement, action: :update_requirement
         end
       end
+
+      resource :totp, only: [:show, :destroy], controller: "totp" do
+        collection do
+          post :setup
+          post :confirm
+          post :authenticate
+          post :recovery_codes, action: :regenerate_recovery_codes
+        end
+      end
     end
 
     resources :clients, only: [:index, :update, :destroy, :show, :create] do
