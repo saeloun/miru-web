@@ -31,6 +31,9 @@ const applyInitialTheme = () => {
       : "light";
 
   document.documentElement.classList.toggle("dark", preferredTheme === "dark");
+  const themeColor = preferredTheme === "dark" ? "#0a0a0a" : "#ffffff";
+  const themeMeta = document.querySelector('meta[name="theme-color"]');
+  if (themeMeta) themeMeta.setAttribute("content", themeColor);
 };
 
 const App = (props: any) => (
@@ -48,13 +51,11 @@ const App = (props: any) => (
                   "rounded-xl border border-border bg-card text-card-foreground shadow-lg",
                 title: "text-sm font-medium",
                 description: "text-xs text-muted-foreground",
-                success:
-                  "border-emerald-500/20 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300",
+                success: "border-border bg-card text-card-foreground",
                 error:
-                  "border-destructive/20 bg-destructive/10 text-destructive",
-                warning:
-                  "border-amber-500/20 bg-amber-500/10 text-amber-700 dark:text-amber-300",
-                info: "border-primary/20 bg-primary/10 text-primary dark:text-primary",
+                  "border-destructive/40 bg-destructive/10 text-destructive",
+                warning: "border-border bg-card text-card-foreground",
+                info: "border-border bg-card text-card-foreground",
               },
             }}
           />

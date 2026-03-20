@@ -30,122 +30,122 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({
       // Invoice statuses
       draft: {
         icon: <FileText size={12} weight="bold" />,
-        bg: "bg-gray-500",
-        text: "text-white",
+        bg: "border-border bg-muted",
+        text: "text-foreground",
         label: "Draft",
       },
       sent: {
         icon: <PaperPlaneTilt size={12} weight="bold" />,
-        bg: "bg-blue-500",
-        text: "text-white",
+        bg: "border-border bg-card",
+        text: "text-foreground",
         label: "Sent",
       },
       viewed: {
         icon: <Eye size={12} weight="bold" />,
-        bg: "bg-purple-500",
-        text: "text-white",
+        bg: "border-border bg-card",
+        text: "text-foreground",
         label: "Viewed",
       },
       paid: {
         icon: <CheckCircle size={12} weight="bold" />,
-        bg: "bg-green-500",
-        text: "text-white",
+        bg: "border-border bg-card",
+        text: "text-foreground",
         label: "Paid",
       },
       overdue: {
         icon: <Warning size={12} weight="bold" />,
-        bg: "bg-red-500",
-        text: "text-white",
+        bg: "border-destructive/40 bg-destructive/10",
+        text: "text-destructive",
         label: "Overdue",
       },
       pending: {
         icon: <Clock size={12} weight="bold" />,
-        bg: "bg-yellow-500",
-        text: "text-white",
+        bg: "border-border bg-muted",
+        text: "text-foreground",
         label: "Pending",
       },
 
       // Payment statuses
       completed: {
         icon: <CheckCircle size={12} weight="bold" />,
-        bg: "bg-green-500",
-        text: "text-white",
+        bg: "border-border bg-card",
+        text: "text-foreground",
         label: "Completed",
       },
       partially_paid: {
         icon: <ArrowCircleDown size={12} weight="bold" />,
-        bg: "bg-orange-500",
-        text: "text-white",
+        bg: "border-border bg-muted",
+        text: "text-foreground",
         label: "Partial",
       },
       failed: {
         icon: <XCircle size={12} weight="bold" />,
-        bg: "bg-red-500",
-        text: "text-white",
+        bg: "border-destructive/40 bg-destructive/10",
+        text: "text-destructive",
         label: "Failed",
       },
       refunded: {
         icon: <ArrowsCounterClockwise size={12} weight="bold" />,
-        bg: "bg-purple-500",
-        text: "text-white",
+        bg: "border-border bg-card",
+        text: "text-foreground",
         label: "Refunded",
       },
       processing: {
         icon: <CircleNotch size={12} weight="bold" className="animate-spin" />,
-        bg: "bg-indigo-500",
-        text: "text-white",
+        bg: "border-border bg-card",
+        text: "text-foreground",
         label: "Processing",
       },
       cancelled: {
         icon: <Prohibit size={12} weight="bold" />,
-        bg: "bg-gray-500",
-        text: "text-white",
+        bg: "border-border bg-muted",
+        text: "text-muted-foreground",
         label: "Cancelled",
       },
 
       // Billing statuses
       billed: {
         icon: <CurrencyDollar size={12} weight="bold" />,
-        bg: "bg-emerald-500",
-        text: "text-white",
+        bg: "border-border bg-card",
+        text: "text-foreground",
         label: "Billed",
       },
       unbilled: {
         icon: <Clock size={12} weight="bold" />,
-        bg: "bg-amber-500",
-        text: "text-white",
+        bg: "border-border bg-muted",
+        text: "text-foreground",
         label: "Unbilled",
       },
       waived: {
         icon: <Prohibit size={12} weight="bold" />,
-        bg: "bg-gray-500",
-        text: "text-white",
+        bg: "border-border bg-muted",
+        text: "text-muted-foreground",
         label: "Waived",
       },
       declined: {
         icon: <XCircle size={12} weight="bold" />,
-        bg: "bg-rose-500",
-        text: "text-white",
+        bg: "border-destructive/40 bg-destructive/10",
+        text: "text-destructive",
         label: "Declined",
       },
       sending: {
         icon: (
           <PaperPlaneTilt size={12} weight="bold" className="animate-pulse" />
         ),
-        bg: "bg-sky-500",
-        text: "text-white",
+        bg: "border-border bg-card",
+        text: "text-foreground",
         label: "Sending",
       },
       nonbilled: {
         icon: <FileText size={12} weight="bold" />,
-        bg: "bg-slate-500",
-        text: "text-white",
+        bg: "border-border bg-muted",
+        text: "text-muted-foreground",
         label: "Non-billed",
       },
       non_billable: {
         icon: <Prohibit size={12} weight="bold" />,
-        bg: "bg-zinc-500",
-        text: "text-white",
+        bg: "border-border bg-muted",
+        text: "text-muted-foreground",
         label: "Non-billable",
       },
     };
@@ -153,8 +153,8 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({
     return (
       statusConfigs[normalizedStatus] || {
         icon: <Warning size={12} weight="bold" />,
-        bg: "bg-gray-500",
-        text: "text-white",
+        bg: "border-border bg-muted",
+        text: "text-foreground",
         label: statusText,
       }
     );
@@ -164,7 +164,7 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({
 
   return (
     <span
-      className={`inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-semibold transition-all hover:shadow-md ${config.bg} ${config.text} ${className}`}
+      className={`inline-flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-xs font-semibold transition-colors ${config.bg} ${config.text} ${className}`}
     >
       {config.icon}
       <span className="uppercase tracking-wider">{config.label || status}</span>
