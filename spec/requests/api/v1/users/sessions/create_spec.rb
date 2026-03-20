@@ -222,4 +222,67 @@ RSpec.describe "Api::V1::Users::Sessions#create", type: :request do
       expect(json_response.dig("user", "token")).to be_present
     end
   end
+
+  context "when the account requires an authenticator code" do
+    before do
+      user.reset_totp_setup!
+      code = ROTP::TOTP.new(user.reload.otp_secret, issuer: User::TOTP_ISSUER).now
+      user.verify_totp_code!(code)
+      user.update!(otp_required_for_login: true)
+      @recovery_codes = user.generate_recovery_codes!
+    end
+
+    it "returns a totp challenge instead of signing in immediately" do
+      post api_v1_users_login_path, params: {
+        user: {
+          email: user.email,
+          password: user.password
+        }
+      }
+
+      expect(response).to have_http_status(:ok)
+      expect(json_response["requires_totp"]).to eq(true)
+      expect(json_response["pending_token"]).to be_present
+      expect(json_response).not_to have_key("user")
+    end
+
+    it "completes sign in with a valid authenticator code" do
+      post api_v1_users_login_path, params: {
+        user: {
+          email: user.email,
+          password: user.password
+        }
+      }
+
+      travel 31.seconds
+      code = ROTP::TOTP.new(user.reload.otp_secret, issuer: User::TOTP_ISSUER).now
+
+      post "/api/v1/users/totp/authenticate", params: {
+        pending_token: json_response["pending_token"],
+        code:
+      }
+
+      expect(response).to have_http_status(:ok)
+      expect(json_response["notice"]).to eq(I18n.t("devise.sessions.signed_in"))
+      expect(json_response.dig("user", "email")).to eq(user.email)
+    end
+
+    it "completes sign in with a valid recovery code" do
+      post api_v1_users_login_path, params: {
+        user: {
+          email: user.email,
+          password: user.password
+        }
+      }
+
+      post "/api/v1/users/totp/authenticate", params: {
+        pending_token: json_response["pending_token"],
+        recovery_code: @recovery_codes.first
+      }
+
+      expect(response).to have_http_status(:ok)
+      expect(json_response["notice"]).to eq(I18n.t("devise.sessions.signed_in"))
+      expect(json_response.dig("user", "email")).to eq(user.email)
+    end
+  end
 end

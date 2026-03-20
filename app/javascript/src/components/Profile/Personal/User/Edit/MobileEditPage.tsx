@@ -20,6 +20,7 @@ import { CustomReactSelect } from "common/CustomReactSelect";
 import { Divider } from "common/Divider";
 import { ErrorSpan } from "common/ErrorSpan";
 import PasskeysPanel from "./PasskeysPanel";
+import TotpPanel from "./TotpPanel";
 
 const inputClass =
   "form__input block h-12 w-full appearance-none bg-background p-4 text-sm focus-within:border-primary";
@@ -64,6 +65,18 @@ const MobileEditDetails = ({
   passkeyRequiredForLogin,
   passkeys,
   passkeysBusy,
+  onConfirmTotp,
+  onDisableTotp,
+  onGenerateRecoveryCodes,
+  onSetupTotp,
+  recoveryCodes,
+  recoveryCodesCount,
+  setTotpVerificationCode,
+  totpBusy,
+  totpEnabled,
+  totpProvisioningUri,
+  totpSecret,
+  totpVerificationCode,
 }) => {
   const handlePasswordChange = () => {
     if (changePassword) {
@@ -603,6 +616,23 @@ const MobileEditDetails = ({
         passkeyRequiredForLogin={passkeyRequiredForLogin}
         passkeys={passkeys}
       />
+      <div className="mt-6">
+        <TotpPanel
+          busy={totpBusy}
+          canManage={canManagePasskeys}
+          enabled={totpEnabled}
+          onConfirm={onConfirmTotp}
+          onDisable={onDisableTotp}
+          onGenerateRecoveryCodes={onGenerateRecoveryCodes}
+          onSetup={onSetupTotp}
+          provisioningUri={totpProvisioningUri}
+          recoveryCodes={recoveryCodes}
+          recoveryCodesCount={recoveryCodesCount}
+          secret={totpSecret}
+          setVerificationCode={setTotpVerificationCode}
+          verificationCode={totpVerificationCode}
+        />
+      </div>
       <Divider />
       <div className="flex flex-row justify-between py-4">
         <button

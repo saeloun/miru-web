@@ -24,6 +24,7 @@ import { Input } from "../../../../ui/input";
 import { Button } from "../../../../ui/button";
 import { Separator } from "../../../../ui/separator";
 import PasskeysPanel from "./PasskeysPanel";
+import TotpPanel from "./TotpPanel";
 
 const EditProfilePage = ({
   avatarSection,
@@ -65,6 +66,18 @@ const EditProfilePage = ({
   passkeyRequiredForLogin,
   passkeys,
   passkeysBusy,
+  onConfirmTotp,
+  onDisableTotp,
+  onGenerateRecoveryCodes,
+  onSetupTotp,
+  recoveryCodes,
+  recoveryCodesCount,
+  setTotpVerificationCode,
+  totpBusy,
+  totpEnabled,
+  totpProvisioningUri,
+  totpSecret,
+  totpVerificationCode,
 }) => (
   <div className="min-h-screen bg-background font-geist">
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -485,6 +498,21 @@ const EditProfilePage = ({
             onToggleRequirement={onTogglePasskeyRequirement}
             passkeyRequiredForLogin={passkeyRequiredForLogin}
             passkeys={passkeys}
+          />
+          <TotpPanel
+            busy={totpBusy}
+            canManage={canManagePasskeys}
+            enabled={totpEnabled}
+            onConfirm={onConfirmTotp}
+            onDisable={onDisableTotp}
+            onGenerateRecoveryCodes={onGenerateRecoveryCodes}
+            onSetup={onSetupTotp}
+            provisioningUri={totpProvisioningUri}
+            recoveryCodes={recoveryCodes}
+            recoveryCodesCount={recoveryCodesCount}
+            secret={totpSecret}
+            setVerificationCode={setTotpVerificationCode}
+            verificationCode={totpVerificationCode}
           />
         </div>
         {/* Side Column */}

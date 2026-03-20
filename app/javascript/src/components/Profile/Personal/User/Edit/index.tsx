@@ -1,6 +1,6 @@
 import React, { Fragment, useEffect, useRef, useState } from "react";
 
-import { passkeysApi, profileApi, teamsApi } from "apis/api";
+import { passkeysApi, profileApi, teamsApi, totpApi } from "apis/api";
 import Loader from "common/Loader/index";
 import { MobileDetailsHeader } from "common/Mobile/MobileDetailsHeader";
 import EditHeader from "components/Profile/Common/EditHeader";
@@ -74,6 +74,13 @@ const UserDetailsEdit = () => {
   const [passkeys, setPasskeys] = useState([]);
   const [passkeyRequiredForLogin, setPasskeyRequiredForLogin] = useState(false);
   const [passkeysBusy, setPasskeysBusy] = useState(false);
+  const [totpEnabled, setTotpEnabled] = useState(false);
+  const [totpBusy, setTotpBusy] = useState(false);
+  const [totpSecret, setTotpSecret] = useState("");
+  const [totpProvisioningUri, setTotpProvisioningUri] = useState("");
+  const [totpVerificationCode, setTotpVerificationCode] = useState("");
+  const [recoveryCodes, setRecoveryCodes] = useState([]);
+  const [recoveryCodesCount, setRecoveryCodesCount] = useState(0);
 
   const navigateToPath = isCalledFromSettings
     ? "/settings"
@@ -162,9 +169,25 @@ const UserDetailsEdit = () => {
     syncPasskeys(response.data);
   };
 
+  const syncTotp = data => {
+    setTotpEnabled(!!data.enabled);
+    setRecoveryCodesCount(data.recovery_codes_count || 0);
+    setTotpSecret(data.secret || "");
+    setTotpProvisioningUri(data.provisioning_uri || "");
+    setRecoveryCodes(data.recovery_codes || []);
+  };
+
+  const loadTotp = async () => {
+    if (!isCalledFromSettings) return;
+
+    const response = await totpApi.show();
+    syncTotp(response.data);
+  };
+
   useEffect(() => {
     if (isCalledFromSettings && currentUserId) {
       loadPasskeys();
+      loadTotp();
     }
   }, [isCalledFromSettings, currentUserId]);
 
@@ -402,6 +425,65 @@ const UserDetailsEdit = () => {
     }
   };
 
+  const handleSetupTotp = async () => {
+    try {
+      setTotpBusy(true);
+      const response = await totpApi.setup();
+      syncTotp(response.data);
+      setTotpVerificationCode("");
+      toast.success("Authenticator app setup is ready");
+    } catch (error) {
+      toast.error(error?.response?.data?.error || "Failed to start 2FA setup.");
+    } finally {
+      setTotpBusy(false);
+    }
+  };
+
+  const handleConfirmTotp = async () => {
+    try {
+      setTotpBusy(true);
+      const response = await totpApi.confirm({ code: totpVerificationCode });
+      syncTotp(response.data);
+      setTotpVerificationCode("");
+      toast.success("Authenticator app enabled");
+    } catch (error) {
+      toast.error(
+        error?.response?.data?.error || "Failed to enable authenticator app."
+      );
+    } finally {
+      setTotpBusy(false);
+    }
+  };
+
+  const handleDisableTotp = async () => {
+    try {
+      setTotpBusy(true);
+      const response = await totpApi.destroy();
+      syncTotp(response.data);
+      setTotpVerificationCode("");
+      toast.success("Authenticator app disabled");
+    } catch (error) {
+      toast.error(error?.response?.data?.error || "Failed to disable 2FA.");
+    } finally {
+      setTotpBusy(false);
+    }
+  };
+
+  const handleRegenerateRecoveryCodes = async () => {
+    try {
+      setTotpBusy(true);
+      const response = await totpApi.regenerateRecoveryCodes();
+      syncTotp(response.data);
+      toast.success("Recovery codes regenerated");
+    } catch (error) {
+      toast.error(
+        error?.response?.data?.error || "Failed to regenerate recovery codes."
+      );
+    } finally {
+      setTotpBusy(false);
+    }
+  };
+
   return (
     <Fragment>
       {isDesktop && (
@@ -468,6 +550,18 @@ const UserDetailsEdit = () => {
               passkeyRequiredForLogin={passkeyRequiredForLogin}
               passkeys={passkeys}
               passkeysBusy={passkeysBusy}
+              onConfirmTotp={handleConfirmTotp}
+              onDisableTotp={handleDisableTotp}
+              onGenerateRecoveryCodes={handleRegenerateRecoveryCodes}
+              onSetupTotp={handleSetupTotp}
+              recoveryCodes={recoveryCodes}
+              recoveryCodesCount={recoveryCodesCount}
+              setTotpVerificationCode={setTotpVerificationCode}
+              totpBusy={totpBusy}
+              totpEnabled={totpEnabled}
+              totpProvisioningUri={totpProvisioningUri}
+              totpSecret={totpSecret}
+              totpVerificationCode={totpVerificationCode}
               updateBasicDetails={updateBasicDetails}
               wrapperRef={wrapperRef}
             />
@@ -531,6 +625,18 @@ const UserDetailsEdit = () => {
               passkeyRequiredForLogin={passkeyRequiredForLogin}
               passkeys={passkeys}
               passkeysBusy={passkeysBusy}
+              onConfirmTotp={handleConfirmTotp}
+              onDisableTotp={handleDisableTotp}
+              onGenerateRecoveryCodes={handleRegenerateRecoveryCodes}
+              onSetupTotp={handleSetupTotp}
+              recoveryCodes={recoveryCodes}
+              recoveryCodesCount={recoveryCodesCount}
+              setTotpVerificationCode={setTotpVerificationCode}
+              totpBusy={totpBusy}
+              totpEnabled={totpEnabled}
+              totpProvisioningUri={totpProvisioningUri}
+              totpSecret={totpSecret}
+              totpVerificationCode={totpVerificationCode}
               updateBasicDetails={updateBasicDetails}
               wrapperRef={wrapperRef}
             />

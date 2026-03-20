@@ -23,6 +23,10 @@ class Api::V1::Users::SessionsController < Devise::SessionsController
       render_passkey_unsupported_error
     elsif passkey_login_required?(user)
       render_passkey_challenge(user)
+    elsif totp_login_unsupported?(user)
+      render_totp_unsupported_error
+    elsif totp_login_required?(user)
+      render_totp_challenge(user)
     else
       handle_successful_sign_in(user)
     end
@@ -71,6 +75,12 @@ end
       }, status: 422
     end
 
+    def render_totp_unsupported_error
+      render json: {
+        error: "This account requires an authenticator code. Sign in from the web app to continue."
+      }, status: 422
+    end
+
     def handle_successful_sign_in(user)
       user.reset_failed_attempts! if user.respond_to?(:reset_failed_attempts!)
       sign_in(user)
@@ -111,7 +121,20 @@ end
         pending_token: Passkeys::ChallengeToken.issue(
           "challenge" => options.challenge,
           "user_id" => user.id,
+          "company_id" => current_company&.id,
           "type" => "authentication",
+          "app" => params[:app].presence || "web"
+        )
+      }, status: 200
+    end
+
+    def render_totp_challenge(user)
+      render json: {
+        requires_totp: true,
+        pending_token: Passkeys::ChallengeToken.issue(
+          "user_id" => user.id,
+          "company_id" => current_company&.id,
+          "type" => "totp_authentication",
           "app" => params[:app].presence || "web"
         )
       }, status: 200
@@ -151,5 +174,13 @@ end
 
     def passkey_login_unsupported?(user)
       user.passkey_required_for_login? && user.passkeys.exists? && params[:app].present?
+    end
+
+    def totp_login_required?(user)
+      user.totp_enabled? && params[:app].blank?
+    end
+
+    def totp_login_unsupported?(user)
+      user.totp_enabled? && params[:app].present?
     end
 end

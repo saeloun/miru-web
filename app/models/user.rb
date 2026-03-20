@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
 class User < ApplicationRecord
+  TOTP_ISSUER = "Miru"
+  RECOVERY_CODES_COUNT = 8
+
   if defined?(T::Sig)
     extend T::Sig
   else
@@ -176,6 +179,92 @@ class User < ApplicationRecord
     webauthn_id
   end
 
+  def otp_secret
+    self[:otp_secret_ciphertext]
+  end
+
+  def otp_secret=(value)
+    self[:otp_secret_ciphertext] = value
+  end
+
+  def totp_enabled?
+    otp_required_for_login? && otp_secret.present?
+  end
+
+  def has_second_factor_requirement?
+    passkey_required_for_login? || totp_enabled?
+  end
+
+  def ensure_otp_secret!
+    return otp_secret if otp_secret.present?
+
+    update!(otp_secret: ::ROTP::Base32.random_base32)
+    otp_secret
+  end
+
+  def reset_totp_setup!
+    update!(
+      otp_secret: ::ROTP::Base32.random_base32,
+      otp_required_for_login: false,
+      otp_last_used_at: nil,
+      otp_recovery_codes_digest: [],
+      otp_recovery_codes_generated_at: nil
+    )
+  end
+
+  def totp_provisioning_uri
+    return nil if otp_secret.blank?
+
+    ::ROTP::TOTP.new(otp_secret, issuer: TOTP_ISSUER).provisioning_uri(email)
+  end
+
+  def verify_totp_code!(code)
+    return false if otp_secret.blank?
+
+    timestamp = ::ROTP::TOTP.new(otp_secret, issuer: TOTP_ISSUER).verify(
+      normalized_otp_code(code),
+      drift_behind: 30,
+      drift_ahead: 30,
+      after: otp_last_used_at
+    )
+
+    return false unless timestamp
+
+    update!(otp_last_used_at: timestamp.to_i)
+    true
+  end
+
+  def generate_recovery_codes!
+    codes = Array.new(RECOVERY_CODES_COUNT) { SecureRandom.hex(4).upcase.scan(/.{1,4}/).join("-") }
+
+    update!(
+      otp_recovery_codes_digest: codes.map { |value| digest_recovery_code(value) },
+      otp_recovery_codes_generated_at: Time.current
+    )
+
+    codes
+  end
+
+  def consume_recovery_code!(code)
+    normalized = normalized_recovery_code(code)
+    digest = digest_recovery_code(normalized)
+    digests = Array(otp_recovery_codes_digest)
+    return false unless digests.include?(digest)
+
+    update!(otp_recovery_codes_digest: digests - [digest])
+    true
+  end
+
+  def clear_totp!
+    update!(
+      otp_secret: nil,
+      otp_required_for_login: false,
+      otp_last_used_at: nil,
+      otp_recovery_codes_digest: [],
+      otp_recovery_codes_generated_at: nil
+    )
+  end
+
   private
 
     def set_token
@@ -214,5 +303,17 @@ class User < ApplicationRecord
 
     def send_to_hubspot
       HubspotIntegrationJob.perform_later(email, first_name, last_name)
+    end
+
+    def normalized_otp_code(code)
+      code.to_s.gsub(/\s+/, "")
+    end
+
+    def normalized_recovery_code(code)
+      code.to_s.upcase.gsub(/[^A-Z0-9]/, "")
+    end
+
+    def digest_recovery_code(code)
+      Digest::SHA256.hexdigest(normalized_recovery_code(code))
     end
 end

@@ -24,6 +24,7 @@ gem "jbuilder", "~> 2.11"
 # Use devise for authentication
 gem "devise"
 gem "webauthn"
+gem "rotp"
 
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
