@@ -69,8 +69,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
       description: "All time revenue",
       icon: CurrencyDollar,
       trend: { value: 12.5, isPositive: true },
-      color: "text-green-600",
-      bgColor: "bg-green-50",
+      color: "text-foreground",
+      bgColor: "bg-card",
     },
     {
       title: "Outstanding",
@@ -78,8 +78,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
       description: "Awaiting payment",
       icon: Clock,
       trend: { value: 8.2, isPositive: false },
-      color: "text-amber-600",
-      bgColor: "bg-amber-50",
+      color: "text-foreground",
+      bgColor: "bg-card",
       onClick: () =>
         applyFilter([
           { value: "sent", label: "SENT" },
@@ -93,8 +93,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
       description: "Requires attention",
       icon: Warning,
       trend: { value: 3.1, isPositive: false },
-      color: "text-red-600",
-      bgColor: "bg-red-50",
+      color: "text-foreground",
+      bgColor: "bg-card",
       onClick: () => applyFilter([{ value: "overdue", label: "OVERDUE" }]),
     },
     {
@@ -127,10 +127,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 <Download className="mr-2 h-4 w-4" />
                 Export
               </Button>
-              <Button
-                size="sm"
-                className="w-full bg-[#5E58F1] hover:bg-[#4D47E0] sm:w-auto"
-              >
+              <Button size="sm" className="w-full sm:w-auto">
                 <Plus className="mr-2 h-4 w-4" />
                 New Invoice
               </Button>
@@ -158,7 +155,12 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   <CardTitle className="text-sm font-medium text-muted-foreground">
                     {stat.title}
                   </CardTitle>
-                  <div className={cn("p-2 rounded-lg", stat.bgColor)}>
+                  <div
+                    className={cn(
+                      "rounded-lg border border-border p-2",
+                      stat.bgColor
+                    )}
+                  >
                     <Icon className={cn("h-4 w-4", stat.color)} />
                   </div>
                 </CardHeader>
@@ -170,7 +172,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                         className={cn(
                           "flex items-center text-xs font-medium",
                           stat.trend.isPositive
-                            ? "text-green-600"
+                            ? "text-foreground"
                             : "text-red-600"
                         )}
                       >
@@ -241,8 +243,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
             <CardContent>
               <div className="space-y-4">
                 <div className="flex items-center">
-                  <div className="w-9 h-9 rounded-lg bg-green-100 flex items-center justify-center">
-                    <CurrencyDollar className="h-5 w-5 text-green-600" />
+                  <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-card">
+                    <CurrencyDollar className="h-5 w-5 text-foreground" />
                   </div>
                   <div className="ml-4 flex-1">
                     <p className="text-sm font-medium">Paid</p>
@@ -252,15 +254,15 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   </div>
                   <Badge
                     variant="outline"
-                    className="bg-green-50 text-green-700 border-green-200"
+                    className="border-border bg-card text-card-foreground"
                   >
                     0%
                   </Badge>
                 </div>
 
                 <div className="flex items-center">
-                  <div className="w-9 h-9 rounded-lg bg-amber-100 flex items-center justify-center">
-                    <Clock className="h-5 w-5 text-amber-600" />
+                  <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-card">
+                    <Clock className="h-5 w-5 text-foreground" />
                   </div>
                   <div className="ml-4 flex-1">
                     <p className="text-sm font-medium">Outstanding</p>
@@ -270,7 +272,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   </div>
                   <Badge
                     variant="outline"
-                    className="bg-amber-50 text-amber-700 border-amber-200"
+                    className="border-border bg-card text-card-foreground"
                   >
                     {(
                       (summary.outstandingAmount /
@@ -282,8 +284,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 </div>
 
                 <div className="flex items-center">
-                  <div className="w-9 h-9 rounded-lg bg-red-100 flex items-center justify-center">
-                    <Warning className="h-5 w-5 text-red-600" />
+                  <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-card">
+                    <Warning className="h-5 w-5 text-foreground" />
                   </div>
                   <div className="ml-4 flex-1">
                     <p className="text-sm font-medium">Overdue</p>
@@ -293,7 +295,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   </div>
                   <Badge
                     variant="outline"
-                    className="bg-red-50 text-red-700 border-red-200"
+                    className="border-border bg-card text-card-foreground"
                   >
                     {(
                       (summary.overdueAmount /
@@ -423,14 +425,9 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                             <Badge
                               variant="outline"
                               className={cn(
-                                invoice.status === "paid" &&
-                                  "bg-green-50 text-green-700 border-green-200",
-                                invoice.status === "sent" &&
-                                  "bg-blue-50 text-blue-700 border-blue-200",
-                                invoice.status === "overdue" &&
-                                  "bg-red-50 text-red-700 border-red-200",
+                                "border-border bg-card text-card-foreground",
                                 invoice.status === "draft" &&
-                                  "bg-muted/40 text-muted-foreground border-border"
+                                  "bg-muted/40 text-muted-foreground"
                               )}
                             >
                               {invoice.status}
