@@ -22,17 +22,17 @@ const EnhancedStatusFilter = ({
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
       case "billed":
-        return "bg-green-100 text-green-700 border-green-200";
+        return "bg-card text-card-foreground border-border";
       case "unbilled":
-        return "bg-yellow-100 text-yellow-700 border-yellow-200";
+        return "bg-muted text-foreground border-border";
       case "overdue":
-        return "bg-red-100 text-red-700 border-red-200";
+        return "bg-card text-card-foreground border-border";
       case "paid":
-        return "bg-blue-100 text-blue-700 border-blue-200";
+        return "bg-card text-card-foreground border-border";
       case "pending":
-        return "bg-orange-100 text-orange-700 border-orange-200";
+        return "bg-muted text-foreground border-border";
       default:
-        return "bg-gray-100 text-gray-700 border-gray-200";
+        return "bg-card text-card-foreground border-border";
     }
   };
 
@@ -56,25 +56,25 @@ const EnhancedStatusFilter = ({
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen}>
       <CollapsibleTrigger className="w-full">
-        <div className="flex items-center justify-between py-3 px-4 rounded-lg hover:bg-gray-50 transition-colors">
+        <div className="flex items-center justify-between rounded-lg px-4 py-3 transition-colors hover:bg-muted">
           <div className="flex items-center gap-3">
             <div
               className={cn(
                 "p-1.5 rounded-md transition-colors",
-                activeCount > 0 ? "bg-[#5E58F1]/10" : "bg-gray-100"
+                activeCount > 0 ? "bg-primary/10" : "bg-muted"
               )}
             >
               <Activity
                 className={cn(
                   "h-4 w-4",
-                  activeCount > 0 ? "text-[#5E58F1]" : "text-gray-600"
+                  activeCount > 0 ? "text-primary" : "text-muted-foreground"
                 )}
               />
             </div>
             <div className="text-left">
-              <p className="text-sm font-medium text-gray-900">Status</p>
+              <p className="text-sm font-medium text-foreground">Status</p>
               {activeCount > 0 && (
-                <p className="text-xs text-gray-500 mt-0.5">
+                <p className="mt-0.5 text-xs text-muted-foreground">
                   {activeCount} selected
                 </p>
               )}
@@ -84,15 +84,15 @@ const EnhancedStatusFilter = ({
             {activeCount > 0 && (
               <Badge
                 variant="secondary"
-                className="h-5 px-1.5 bg-[#5E58F1] text-white text-xs"
+                className="h-5 bg-primary px-1.5 text-xs text-primary-foreground"
               >
                 {activeCount}
               </Badge>
             )}
             {isOpen ? (
-              <CaretUp className="h-4 w-4 text-gray-400" />
+              <CaretUp className="h-4 w-4 text-muted-foreground" />
             ) : (
-              <CaretDown className="h-4 w-4 text-gray-400" />
+              <CaretDown className="h-4 w-4 text-muted-foreground" />
             )}
           </div>
         </div>
@@ -111,22 +111,22 @@ const EnhancedStatusFilter = ({
                 onClick={() => handleSelectStatus(status)}
                 className={cn(
                   "flex items-center gap-3 p-2.5 rounded-md cursor-pointer transition-all",
-                  "hover:bg-gray-50 border",
+                  "hover:bg-muted border",
                   isChecked
-                    ? "border-[#5E58F1]/30 bg-[#5E58F1]/5"
+                    ? "border-primary/30 bg-primary/5"
                     : "border-transparent"
                 )}
               >
                 <Checkbox
                   id={`status-${status.value}`}
                   checked={isChecked}
-                  className="border-gray-300 data-[state=checked]:bg-[#5E58F1] data-[state=checked]:border-[#5E58F1]"
+                  className="border-border data-[state=checked]:border-primary data-[state=checked]:bg-primary"
                 />
                 <div className="flex items-center gap-2 flex-1">
                   <span className="text-lg">{getStatusIcon(status.label)}</span>
                   <Label
                     htmlFor={`status-${status.value}`}
-                    className="text-sm font-normal text-gray-700 cursor-pointer"
+                    className="cursor-pointer text-sm font-normal text-foreground"
                   >
                     {status.label}
                   </Label>
@@ -140,15 +140,15 @@ const EnhancedStatusFilter = ({
                 >
                   {status.label}
                 </Badge>
-                {isChecked && <Check className="h-4 w-4 text-[#5E58F1]" />}
+                {isChecked && <Check className="h-4 w-4 text-primary" />}
               </div>
             );
           })}
         </div>
 
         {/* Status Legend */}
-        <div className="mt-4 pt-3 border-t">
-          <p className="text-xs text-gray-500 mb-2">Status Guide:</p>
+        <div className="mt-4 border-t pt-3">
+          <p className="mb-2 text-xs text-muted-foreground">Status Guide:</p>
           <div className="grid grid-cols-2 gap-1 text-xs">
             {statusOptions.map(status => (
               <div
@@ -156,7 +156,7 @@ const EnhancedStatusFilter = ({
                 className="flex items-center gap-1"
               >
                 <span>{getStatusIcon(status.label)}</span>
-                <span className="text-gray-600">{status.label}</span>
+                <span className="text-muted-foreground">{status.label}</span>
               </div>
             ))}
           </div>
