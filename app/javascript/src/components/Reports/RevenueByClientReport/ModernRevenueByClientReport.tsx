@@ -159,7 +159,7 @@ export const ModernRevenueByClientReport: React.FC<
         const amount = parseFloat(row.getValue("paid_revenue"));
 
         return (
-          <div className="text-right font-medium text-green-600">
+          <div className="text-right font-medium text-foreground">
             {currencyFormat("USD", amount)}
           </div>
         );
@@ -181,7 +181,7 @@ export const ModernRevenueByClientReport: React.FC<
         const amount = parseFloat(row.getValue("outstanding_revenue"));
 
         return (
-          <div className="text-right font-medium text-orange-600">
+          <div className="text-right font-medium text-foreground">
             {currencyFormat("USD", amount)}
           </div>
         );
@@ -203,7 +203,7 @@ export const ModernRevenueByClientReport: React.FC<
         const amount = parseFloat(row.getValue("overdue_revenue"));
 
         return (
-          <div className="text-right font-medium text-red-600">
+          <div className="text-right font-medium text-foreground">
             {currencyFormat("USD", amount)}
           </div>
         );
@@ -312,10 +312,10 @@ export const ModernRevenueByClientReport: React.FC<
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Paid Revenue</CardTitle>
-            <TrendUp size={16} className="text-green-400" />
+            <TrendUp size={16} className="text-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-600">
+            <div className="text-2xl font-bold text-foreground">
               {currencyFormat("USD", summary.total_paid)}
             </div>
             <p className="mt-1 text-xs text-muted-foreground">Collected</p>
@@ -325,10 +325,10 @@ export const ModernRevenueByClientReport: React.FC<
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Outstanding</CardTitle>
-            <TrendUp size={16} className="text-orange-400" />
+            <TrendUp size={16} className="text-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-orange-600">
+            <div className="text-2xl font-bold text-foreground">
               {currencyFormat("USD", summary.total_outstanding)}
             </div>
             <p className="mt-1 text-xs text-muted-foreground">
@@ -340,10 +340,10 @@ export const ModernRevenueByClientReport: React.FC<
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Overdue</CardTitle>
-            <TrendUp size={16} className="text-red-400" />
+            <TrendUp size={16} className="text-destructive" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-red-600">
+            <div className="text-2xl font-bold text-destructive">
               {currencyFormat("USD", summary.total_overdue)}
             </div>
             <p className="mt-1 text-xs text-muted-foreground">Past due</p>
@@ -355,7 +355,7 @@ export const ModernRevenueByClientReport: React.FC<
             <CardTitle className="text-sm font-medium">
               Active Clients
             </CardTitle>
-            <TrendUp size={16} className="text-blue-400" />
+            <TrendUp size={16} className="text-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{summary.client_count}</div>
