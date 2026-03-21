@@ -114,6 +114,8 @@ RSpec.describe "Dashboard", type: :system, js: true do
         expect(page).to have_css("#react-root", wait: 10)
         expect(page).to have_content("Workspace Activity", wait: 10)
         expect(page).to have_content("No recent activity yet", wait: 10)
+        expect(page).to have_content("No recent activity", wait: 10)
+        expect(page).to have_no_content("0% Currently active", wait: 10)
       end
     end
   end

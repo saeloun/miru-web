@@ -138,7 +138,10 @@ const DashboardHome: React.FC<DashboardHomeProps> = ({
     {
       title: "Active Projects",
       value: statsData.active_projects.toString(),
-      description: "Currently active",
+      description:
+        statsData.active_projects > 0
+          ? "Currently active"
+          : "No recent activity",
       icon: Briefcase,
       trend: {
         value: statsData.projects_trend,
@@ -250,6 +253,7 @@ const DashboardHome: React.FC<DashboardHomeProps> = ({
       >
         {statsCards.map((stat, index) => {
           const Icon = stat.icon;
+          const showTrend = Boolean(stat.trend && stat.trend.value !== 0);
 
           return (
             <Card key={index} className="hover:shadow-md transition-shadow">
@@ -266,7 +270,7 @@ const DashboardHome: React.FC<DashboardHomeProps> = ({
               <CardContent>
                 <div className="text-2xl font-bold">{stat.value}</div>
                 <div className="flex items-center gap-2 mt-1">
-                  {stat.trend && (
+                  {showTrend && stat.trend && (
                     <div className="flex items-center text-xs text-muted-foreground">
                       {stat.trend.isPositive ? (
                         <TrendUp

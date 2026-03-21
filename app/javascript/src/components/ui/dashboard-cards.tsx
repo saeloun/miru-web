@@ -24,44 +24,48 @@ export const MetricCard: React.FC<MetricCardProps> = ({
   trend,
   className,
   onClick,
-}) => (
-  <Card
-    className={cn(
-      "hover:shadow-md transition-shadow cursor-pointer",
-      onClick && "hover:bg-accent/50",
-      className
-    )}
-    onClick={onClick}
-  >
-    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-      <CardTitle className="text-sm font-medium text-muted-foreground">
-        {title}
-      </CardTitle>
-      {Icon && <Icon className="h-4 w-4 text-muted-foreground" />}
-    </CardHeader>
-    <CardContent>
-      <div className="text-2xl font-bold">{value}</div>
-      {(description || trend) && (
-        <div className="flex items-center gap-2 text-xs text-muted-foreground mt-1">
-          {trend && (
-            <span
-              className={cn(
-                "font-medium",
-                trend.isPositive
-                  ? "text-green-600 dark:text-green-400"
-                  : "text-red-600 dark:text-red-400"
-              )}
-            >
-              {trend.isPositive ? "+" : ""}
-              {trend.value}%
-            </span>
-          )}
-          {description && <span>{description}</span>}
-        </div>
+}) => {
+  const showTrend = Boolean(trend && trend.value !== 0);
+
+  return (
+    <Card
+      className={cn(
+        "hover:shadow-md transition-shadow cursor-pointer",
+        onClick && "hover:bg-accent/50",
+        className
       )}
-    </CardContent>
-  </Card>
-);
+      onClick={onClick}
+    >
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+        <CardTitle className="text-sm font-medium text-muted-foreground">
+          {title}
+        </CardTitle>
+        {Icon && <Icon className="h-4 w-4 text-muted-foreground" />}
+      </CardHeader>
+      <CardContent>
+        <div className="text-2xl font-bold">{value}</div>
+        {(description || showTrend) && (
+          <div className="flex items-center gap-2 text-xs text-muted-foreground mt-1">
+            {showTrend && trend && (
+              <span
+                className={cn(
+                  "font-medium",
+                  trend.isPositive
+                    ? "text-green-600 dark:text-green-400"
+                    : "text-red-600 dark:text-red-400"
+                )}
+              >
+                {trend.isPositive ? "+" : ""}
+                {trend.value}%
+              </span>
+            )}
+            {description && <span>{description}</span>}
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+};
 
 interface DashboardGridProps {
   children: React.ReactNode;

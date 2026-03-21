@@ -51,6 +51,15 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const [selectedPeriod, setSelectedPeriod] = useState("month");
 
   const baseCurrency = invoices[0]?.company?.baseCurrency || "USD";
+  const invoiceStatusTotal = summary.outstandingAmount + summary.draftAmount;
+
+  const formatStatusShare = amount => {
+    if (invoiceStatusTotal <= 0 || amount <= 0) {
+      return "No data";
+    }
+
+    return `${((amount / invoiceStatusTotal) * 100).toFixed(0)}%`;
+  };
 
   const applyFilter = (status: any) => {
     setFilterParams({
@@ -256,7 +265,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     variant="outline"
                     className="border-border bg-card text-card-foreground"
                   >
-                    0%
+                    {formatStatusShare(0)}
                   </Badge>
                 </div>
 
@@ -274,12 +283,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     variant="outline"
                     className="border-border bg-card text-card-foreground"
                   >
-                    {(
-                      (summary.outstandingAmount /
-                        (summary.outstandingAmount + summary.draftAmount)) *
-                      100
-                    ).toFixed(0)}
-                    %
+                    {formatStatusShare(summary.outstandingAmount)}
                   </Badge>
                 </div>
 
@@ -297,12 +301,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     variant="outline"
                     className="border-border bg-card text-card-foreground"
                   >
-                    {(
-                      (summary.overdueAmount /
-                        (summary.outstandingAmount + summary.draftAmount)) *
-                      100
-                    ).toFixed(0)}
-                    %
+                    {formatStatusShare(summary.overdueAmount)}
                   </Badge>
                 </div>
 
@@ -320,12 +319,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     variant="outline"
                     className="bg-muted/40 text-muted-foreground border-border"
                   >
-                    {(
-                      (summary.draftAmount /
-                        (summary.outstandingAmount + summary.draftAmount)) *
-                      100
-                    ).toFixed(0)}
-                    %
+                    {formatStatusShare(summary.draftAmount)}
                   </Badge>
                 </div>
               </div>
