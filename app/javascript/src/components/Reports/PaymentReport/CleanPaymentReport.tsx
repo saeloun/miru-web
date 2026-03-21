@@ -150,7 +150,7 @@ const CleanPaymentReport: React.FC = () => {
   };
 
   const getPaymentMethodIcon = (method: string) => {
-    const iconClass = "w-4 h-4 text-gray-500";
+    const iconClass = "h-4 w-4 text-muted-foreground";
     const methodLower = method.toLowerCase();
 
     if (methodLower.includes("credit") || methodLower.includes("card")) {
@@ -186,7 +186,7 @@ const CleanPaymentReport: React.FC = () => {
       accessorKey: "invoice_number",
       header: "Invoice",
       cell: ({ row }) => (
-        <span className="text-blue-600 hover:underline cursor-pointer">
+        <span className="cursor-pointer text-foreground hover:underline">
           {row.getValue("invoice_number")}
         </span>
       ),
@@ -254,24 +254,24 @@ const CleanPaymentReport: React.FC = () => {
             lowerStatus === "completed" ||
             lowerStatus === "success"
           ) {
-            return "bg-green-50 text-green-700";
+            return "bg-card text-card-foreground border-border";
           } else if (
             lowerStatus === "partially_paid" ||
             lowerStatus === "pending"
           ) {
-            return "bg-yellow-50 text-yellow-700";
+            return "bg-muted text-foreground border-border";
           } else if (lowerStatus === "failed" || lowerStatus === "cancelled") {
-            return "bg-red-50 text-red-700";
+            return "bg-card text-card-foreground border-border";
           } else if (lowerStatus === "refunded") {
-            return "bg-gray-50 text-gray-700";
+            return "bg-card text-card-foreground border-border";
           }
 
-          return "bg-gray-50 text-gray-700";
+          return "bg-card text-card-foreground border-border";
         };
 
         return (
           <span
-            className={`inline-flex items-center px-2 py-1 rounded-md text-xs font-medium ${getStatusColor(
+            className={`inline-flex items-center rounded-md border px-2 py-1 text-xs font-medium ${getStatusColor(
               status
             )}`}
           >
@@ -307,7 +307,7 @@ const CleanPaymentReport: React.FC = () => {
     return (
       <div className="flex items-center justify-center h-96">
         <div className="text-center">
-          <p className="text-gray-600">Unable to load payment report</p>
+          <p className="text-muted-foreground">Unable to load payment report</p>
           <Button onClick={() => window.location.reload()} className="mt-4">
             Retry
           </Button>
@@ -337,17 +337,17 @@ const CleanPaymentReport: React.FC = () => {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-500">
+                  <p className="text-sm font-medium text-muted-foreground">
                     Total Revenue
                   </p>
-                  <p className="text-2xl font-semibold text-gray-900 mt-1">
+                  <p className="mt-1 text-2xl font-semibold text-foreground">
                     {currencyFormat(
                       data?.currency || "USD",
                       data?.summary?.total_amount || 0
                     )}
                   </p>
                 </div>
-                <CurrencyDollar className="w-8 h-8 text-gray-400" />
+                <CurrencyDollar className="h-8 w-8 text-muted-foreground" />
               </div>
             </CardContent>
           </Card>
@@ -356,14 +356,14 @@ const CleanPaymentReport: React.FC = () => {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-500">
+                  <p className="text-sm font-medium text-muted-foreground">
                     Total Payments
                   </p>
-                  <p className="text-2xl font-semibold text-gray-900 mt-1">
+                  <p className="mt-1 text-2xl font-semibold text-foreground">
                     {data?.summary?.payment_count || 0}
                   </p>
                 </div>
-                <Wallet className="w-8 h-8 text-gray-400" />
+                <Wallet className="h-8 w-8 text-muted-foreground" />
               </div>
             </CardContent>
           </Card>
@@ -372,17 +372,17 @@ const CleanPaymentReport: React.FC = () => {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-500">
+                  <p className="text-sm font-medium text-muted-foreground">
                     Average Payment
                   </p>
-                  <p className="text-2xl font-semibold text-gray-900 mt-1">
+                  <p className="mt-1 text-2xl font-semibold text-foreground">
                     {currencyFormat(
                       data?.currency || "USD",
                       data?.summary?.average_payment || 0
                     )}
                   </p>
                 </div>
-                <Bank className="w-8 h-8 text-gray-400" />
+                <Bank className="h-8 w-8 text-muted-foreground" />
               </div>
             </CardContent>
           </Card>
@@ -391,14 +391,14 @@ const CleanPaymentReport: React.FC = () => {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-500">
+                  <p className="text-sm font-medium text-muted-foreground">
                     Success Rate
                   </p>
-                  <p className="text-2xl font-semibold text-gray-900 mt-1">
+                  <p className="mt-1 text-2xl font-semibold text-foreground">
                     98.5%
                   </p>
                 </div>
-                <CreditCard className="w-8 h-8 text-gray-400" />
+                <CreditCard className="h-8 w-8 text-muted-foreground" />
               </div>
             </CardContent>
           </Card>
@@ -459,7 +459,7 @@ const CleanPaymentReport: React.FC = () => {
 
         {/* Table */}
         <Card>
-          <CardHeader className="border-b bg-gray-50/50">
+          <CardHeader className="border-b bg-muted/40">
             <CardTitle className="text-base font-medium">
               Payment Transactions
             </CardTitle>
@@ -473,7 +473,7 @@ const CleanPaymentReport: React.FC = () => {
                       {headerGroup.headers.map(header => (
                         <TableHead
                           key={header.id}
-                          className="font-medium text-gray-700"
+                          className="font-medium text-foreground"
                         >
                           {header.isPlaceholder
                             ? null
@@ -489,7 +489,7 @@ const CleanPaymentReport: React.FC = () => {
                 <TableBody>
                   {table.getRowModel().rows?.length ? (
                     table.getRowModel().rows.map(row => (
-                      <TableRow key={row.id} className="hover:bg-gray-50">
+                      <TableRow key={row.id} className="hover:bg-muted/40">
                         {row.getVisibleCells().map(cell => (
                           <TableCell key={cell.id}>
                             {flexRender(
@@ -506,7 +506,9 @@ const CleanPaymentReport: React.FC = () => {
                         colSpan={columns.length}
                         className="h-32 text-center"
                       >
-                        <div className="text-gray-500">No payments found</div>
+                        <div className="text-muted-foreground">
+                          No payments found
+                        </div>
                       </TableCell>
                     </TableRow>
                   )}
@@ -517,7 +519,7 @@ const CleanPaymentReport: React.FC = () => {
             {/* Pagination */}
             {data?.payments?.length > 0 && (
               <div className="flex flex-col gap-3 border-t px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-muted-foreground">
                   Showing{" "}
                   {table.getState().pagination.pageIndex *
                     table.getState().pagination.pageSize +
