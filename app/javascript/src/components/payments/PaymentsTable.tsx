@@ -185,11 +185,11 @@ const PaymentsTable: React.FC = () => {
     switch (status) {
       case "failed":
       case "cancelled":
-        return "bg-red-50 text-red-700 border-red-300";
+        return "bg-card text-card-foreground border-border";
       case "partially_paid":
-        return "bg-amber-50 text-amber-700 border-amber-300";
+        return "bg-muted text-foreground border-border";
       default:
-        return "bg-green-50 text-green-700 border-green-300";
+        return "bg-card text-card-foreground border-border";
     }
   };
 
