@@ -423,13 +423,13 @@ const ModernOutstandingInvoiceReport: React.FC = () => {
                 <CardTitle className="text-sm font-medium">
                   Total Outstanding
                 </CardTitle>
-                <Clock className="h-4 w-4 text-gray-400" />
+                <Clock className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
                 {isLoading ? (
                   <Skeleton className="h-8 w-24" />
                 ) : (
-                  <div className="text-2xl font-bold text-blue-600">
+                  <div className="text-2xl font-bold text-foreground">
                     {currencyFormat(
                       baseCurrency,
                       data?.summary.total_outstanding || 0
@@ -444,13 +444,13 @@ const ModernOutstandingInvoiceReport: React.FC = () => {
                 <CardTitle className="text-sm font-medium">
                   Total Overdue
                 </CardTitle>
-                <Warning className="h-4 w-4 text-red-500" />
+                <Warning className="h-4 w-4 text-destructive" />
               </CardHeader>
               <CardContent>
                 {isLoading ? (
                   <Skeleton className="h-8 w-24" />
                 ) : (
-                  <div className="text-2xl font-bold text-red-600">
+                  <div className="text-2xl font-bold text-destructive">
                     {currencyFormat(
                       baseCurrency,
                       data?.summary.total_overdue || 0
@@ -465,7 +465,7 @@ const ModernOutstandingInvoiceReport: React.FC = () => {
                 <CardTitle className="text-sm font-medium">
                   Total Invoices
                 </CardTitle>
-                <Receipt className="h-4 w-4 text-gray-400" />
+                <Receipt className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
                 {isLoading ? (
@@ -483,7 +483,7 @@ const ModernOutstandingInvoiceReport: React.FC = () => {
                 <CardTitle className="text-sm font-medium">
                   Total Amount
                 </CardTitle>
-                <CurrencyDollar className="h-4 w-4 text-gray-400" />
+                <CurrencyDollar className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
                 {isLoading ? (
