@@ -377,7 +377,7 @@ const ExpensesTable: React.FC = () => {
     type === "business" ? (
       <Badge
         variant="outline"
-        className="text-xs text-green-700 border-green-300 bg-green-50"
+        className="border-border bg-card text-xs text-card-foreground"
       >
         Business
       </Badge>
@@ -394,28 +394,28 @@ const ExpensesTable: React.FC = () => {
     status === "paid" ? (
       <Badge
         variant="outline"
-        className="border-emerald-300 bg-emerald-50 text-emerald-700"
+        className="border-border bg-card text-card-foreground"
       >
         Paid
       </Badge>
     ) : status === "approved" ? (
       <Badge
         variant="outline"
-        className="border-sky-300 bg-sky-50 text-sky-700"
+        className="border-border bg-card text-card-foreground"
       >
         Approved
       </Badge>
     ) : status === "rejected" ? (
       <Badge
         variant="outline"
-        className="border-rose-300 bg-rose-50 text-rose-700"
+        className="border-border bg-card text-card-foreground"
       >
         Rejected
       </Badge>
     ) : (
       <Badge
         variant="outline"
-        className="border-amber-300 bg-amber-50 text-amber-700"
+        className="border-border bg-muted text-foreground"
       >
         Submitted
       </Badge>
@@ -714,7 +714,7 @@ const ExpensesTable: React.FC = () => {
               <CardTitle className="text-sm font-medium text-muted-foreground">
                 Business
               </CardTitle>
-              <CheckCircle size={20} className="text-green-600" />
+              <CheckCircle size={20} className="text-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-semibold text-foreground">

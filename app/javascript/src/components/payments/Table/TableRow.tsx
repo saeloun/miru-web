@@ -33,49 +33,49 @@ const TableRow = ({ payment, baseCurrency }: TableRowProps) => {
       credit_card: {
         icon: <CreditCard className="h-4 w-4" />,
         text: "Card Payment",
-        color: "text-blue-600",
+        color: "text-foreground",
       },
       bank_transfer: {
         icon: <Buildings className="h-4 w-4" />,
         text: "Bank Transfer",
-        color: "text-green-600",
+        color: "text-foreground",
       },
       wire_transfer: {
         icon: <ArrowsLeftRight className="h-4 w-4" />,
         text: "Wire Transfer",
-        color: "text-purple-600",
+        color: "text-foreground",
       },
       ach: {
         icon: <Buildings className="h-4 w-4" />,
         text: "ACH Transfer",
-        color: "text-teal-600",
+        color: "text-foreground",
       },
       paypal: {
         icon: <Wallet className="h-4 w-4" />,
         text: "PayPal",
-        color: "text-blue-500",
+        color: "text-foreground",
       },
       stripe: {
         icon: <CreditCard className="h-4 w-4" />,
         text: "Stripe",
-        color: "text-indigo-600",
+        color: "text-foreground",
       },
       cash: {
         icon: <Money className="h-4 w-4" />,
         text: "Cash",
-        color: "text-green-700",
+        color: "text-foreground",
       },
       check: {
         icon: <Receipt className="h-4 w-4" />,
         text: "Check",
-        color: "text-gray-600",
+        color: "text-muted-foreground",
       },
     };
 
     const typeInfo = typeMap[type] || {
       icon: <Wallet className="h-4 w-4" />,
       text: type || "Payment",
-      color: "text-gray-600",
+      color: "text-muted-foreground",
     };
 
     return (
