@@ -204,7 +204,11 @@ const ImportModal = ({
               ) : (
                 <img alt="step" height="20px" src={Step} width="20px" />
               )}
-              <div className={step === 1 ? "text-primary" : "text-emerald-500"}>
+              <div
+                className={
+                  step === 1 ? "text-primary" : "text-muted-foreground"
+                }
+              >
                 Upload File
               </div>
               <div className="h-px min-w-24 border border-border bg-secondary" />
@@ -213,7 +217,11 @@ const ImportModal = ({
               ) : (
                 <img alt="step" height="20px" src={Step} width="20px" />
               )}
-              <div className={step <= 2 ? "text-primary " : "text-emerald-500"}>
+              <div
+                className={
+                  step <= 2 ? "text-primary " : "text-muted-foreground"
+                }
+              >
                 Map fields
               </div>
               <div className="h-px min-w-24 border border-border bg-secondary" />
@@ -222,7 +230,11 @@ const ImportModal = ({
               ) : (
                 <img alt="step" height="20px" src={Step} width="20px" />
               )}
-              <div className={step <= 3 ? "text-primary " : "text-emerald-500"}>
+              <div
+                className={
+                  step <= 3 ? "text-primary " : "text-muted-foreground"
+                }
+              >
                 Import
               </div>
             </div>

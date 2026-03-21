@@ -493,25 +493,25 @@ const ModernHolidaysEditor = ({
             </CardContent>
           </Card>
 
-          <Card className="border-amber-200 bg-amber-50 shadow-sm">
+          <Card className="border-border bg-card shadow-sm">
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-geist-semibold text-amber-900">
+              <CardTitle className="text-sm font-geist-semibold text-card-foreground">
                 Quick Tips
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <ul className="text-xs text-amber-800 space-y-2 font-geist-regular">
+              <ul className="space-y-2 text-xs text-muted-foreground font-geist-regular">
                 <li className="flex items-start gap-2">
-                  <span className="text-amber-600 mt-0.5">•</span>
+                  <span className="mt-0.5 text-foreground">•</span>
                   Public holidays apply to all employees automatically
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-amber-600 mt-0.5">•</span>
+                  <span className="mt-0.5 text-foreground">•</span>
                   Optional holidays can be chosen by employees based on their
                   preference
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-amber-600 mt-0.5">•</span>
+                  <span className="mt-0.5 text-foreground">•</span>
                   Set the allocation frequency to control how often employees
                   can use optional holidays
                 </li>
