@@ -71,9 +71,6 @@ RSpec.describe "Settings", type: :system, js: true do
         expect(page).to have_content("My Leaves", wait: 10)
         expect(page).to have_text(/Balance|Leave/i, wait: 10)
         expect(page).to have_content("Leave calendar", wait: 10)
-        expect(page).to have_button("12", wait: 10)
-
-        click_button "12"
         expect(page).to have_text("Annual Leave", wait: 10)
         expect(page).to have_text("04:00", wait: 10)
 

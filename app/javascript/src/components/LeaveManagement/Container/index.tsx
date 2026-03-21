@@ -3,29 +3,16 @@ import React, { useEffect, useState } from "react";
 import { useUserContext } from "context/UserContext";
 import { minToHHMM } from "helpers";
 import {
-  CaretLeft,
-  CaretRight,
   CalendarBlank,
   ClockCounterClockwise,
   StarFour,
   Sun,
   X,
 } from "phosphor-react";
-import {
-  addMonths,
-  eachDayOfInterval,
-  endOfMonth,
-  endOfWeek,
-  format,
-  isSameDay,
-  isSameMonth,
-  isToday,
-  startOfMonth,
-  startOfWeek,
-} from "date-fns";
+import { endOfMonth, format, startOfMonth } from "date-fns";
 import { Card, CardContent, CardHeader, CardTitle } from "../../ui/card";
 import { Badge } from "../../ui/badge";
-import { Button } from "../../ui/button";
+import { Calendar } from "../../ui/calendar";
 
 import LeaveBlock from "./LeaveBlock";
 import Table from "./Table";
@@ -112,88 +99,6 @@ const Container = ({
     "d MMM"
   )} - ${format(endOfMonth(selectedDate), "d MMM yyyy")}`;
 
-  const monthStart = startOfMonth(selectedDate);
-  const calendarGridStart = startOfWeek(monthStart, { weekStartsOn: 0 });
-  const calendarGridEnd = endOfWeek(endOfMonth(selectedDate), {
-    weekStartsOn: 0,
-  });
-
-  const calendarDays = eachDayOfInterval({
-    start: calendarGridStart,
-    end: calendarGridEnd,
-  });
-
-  const weeks = Array.from(
-    { length: Math.ceil(calendarDays.length / 7) },
-    (_, index) => calendarDays.slice(index * 7, index * 7 + 7)
-  );
-  const weekdayLabels = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-
-  const renderDayContent = day => {
-    const key = format(day, "yyyy-MM-dd");
-    const entries = timeoffEntriesByDate[key] || [];
-    const isCurrentMonth = isSameMonth(day, selectedDate);
-    const isSelected = isSameDay(day, selectedDate);
-    const isTodayDate = isToday(day);
-
-    return (
-      <button
-        className={`group flex min-h-24 w-full flex-col rounded-2xl border px-3 py-3 text-left transition ${
-          isSelected
-            ? "border-primary bg-primary/10 shadow-sm ring-2 ring-primary/20"
-            : isCurrentMonth
-            ? "border-border bg-background hover:border-primary/40 hover:bg-muted/60"
-            : "border-border/70 bg-muted/30 text-muted-foreground hover:bg-muted/50"
-        }`}
-        onClick={() => setSelectedDate(day)}
-        type="button"
-      >
-        <div className="flex items-start justify-between gap-3">
-          <span
-            className={`inline-flex h-9 min-w-9 items-center justify-center rounded-full px-2 text-sm font-semibold ${
-              isSelected
-                ? "bg-primary text-primary-foreground"
-                : isTodayDate
-                ? "bg-foreground text-background"
-                : isCurrentMonth
-                ? "bg-muted text-foreground"
-                : "bg-background text-muted-foreground"
-            }`}
-          >
-            {day.getDate()}
-          </span>
-          {entries.length > 0 && (
-            <Badge className="border-0 bg-primary/10 px-2 py-1 text-[11px] font-semibold text-primary hover:bg-primary/10">
-              {entries.length} item{entries.length > 1 ? "s" : ""}
-            </Badge>
-          )}
-        </div>
-        <div className="mt-4 flex items-center gap-1.5">
-          {entries.length > 0 ? (
-            entries
-              .slice(0, 4)
-              .map(entry => (
-                <span
-                  className={`h-2.5 w-2.5 rounded-full ${
-                    entry.holidayInfo?.category === "national"
-                      ? "bg-foreground"
-                      : entry.holidayInfo?.category === "optional"
-                      ? "bg-muted-foreground"
-                      : "bg-card-foreground"
-                  }`}
-                  key={`${entry.id}-${entry.leaveDateIso || entry.leaveDate}`}
-                />
-              ))
-          ) : isCurrentMonth ? (
-            <span className="h-2 w-2 rounded-full bg-muted-foreground/20" />
-          ) : (
-            <span className="h-2 w-2 rounded-full bg-transparent" />
-          )}
-        </div>
-      </button>
-    );
-  };
-
   const calendarDaySummary = day => {
     const key = format(day, "yyyy-MM-dd");
     const entries = timeoffEntriesByDate[key] || [];
@@ -222,23 +127,12 @@ const Container = ({
     );
   };
 
-  const changeMonth = offset => {
-    setSelectedDate(previousDate => addMonths(previousDate, offset));
-  };
-
   const selectedDateLabel = format(selectedDate, "EEE, d MMM");
 
-  const selectedDateSummary = (() => {
-    if (selectedDateEntries.length > 0) {
-      return "Recorded time away on this day";
-    }
-
-    if (!isSameMonth(selectedDate, monthStart)) {
-      return "This day falls outside the selected month view";
-    }
-
-    return "No leave or holiday marked for this day";
-  })();
+  const selectedDateSummary =
+    selectedDateEntries.length > 0
+      ? "Recorded time away on this day"
+      : "No leave or holiday marked for this day";
 
   const renderEntryCard = entry => {
     const label =
@@ -348,7 +242,7 @@ const Container = ({
         <CardContent className="grid gap-6 xl:grid-cols-[minmax(0,1.6fr)_minmax(18rem,24rem)]">
           <div className="rounded-2xl border border-border bg-card">
             <div className="border-b border-border px-5 py-4">
-              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div>
                 <div>
                   <p className="text-sm font-medium uppercase tracking-[0.2em] text-muted-foreground">
                     {format(selectedDate, "MMMM yyyy")}
@@ -357,46 +251,34 @@ const Container = ({
                     Select a day to inspect leave details and holiday usage.
                   </p>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Button
-                    className="h-10 w-10 rounded-full p-0"
-                    onClick={() => changeMonth(-1)}
-                    type="button"
-                    variant="outline"
-                  >
-                    <CaretLeft className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    className="h-10 w-10 rounded-full p-0"
-                    onClick={() => changeMonth(1)}
-                    type="button"
-                    variant="outline"
-                  >
-                    <CaretRight className="h-4 w-4" />
-                  </Button>
-                </div>
               </div>
             </div>
-            <div className="space-y-3 p-5">
-              <div className="grid grid-cols-7 gap-3">
-                {weekdayLabels.map(label => (
-                  <div
-                    className="px-1 text-center text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground"
-                    key={label}
-                  >
-                    {label}
-                  </div>
-                ))}
-              </div>
-              <div className="space-y-3">
-                {weeks.map((week, weekIndex) => (
-                  <div className="grid grid-cols-7 gap-3" key={weekIndex}>
-                    {week.map(day => (
-                      <div key={day.toISOString()}>{renderDayContent(day)}</div>
-                    ))}
-                  </div>
-                ))}
-              </div>
+            <div className="flex justify-center p-4 sm:p-5">
+              <Calendar
+                className="rounded-xl border border-border bg-background"
+                month={selectedDate}
+                onMonthChange={setSelectedDate}
+                onSelect={date => date && setSelectedDate(date)}
+                selected={selectedDate}
+                modifiers={{
+                  hasEntries: day =>
+                    (timeoffEntriesByDate[format(day, "yyyy-MM-dd")] || [])
+                      .length > 0,
+                }}
+                modifiersClassNames={{
+                  hasEntries:
+                    "relative after:absolute after:bottom-1 after:left-1/2 after:h-1.5 after:w-1.5 after:-translate-x-1/2 after:rounded-full after:bg-primary",
+                }}
+                classNames={{
+                  months: "flex flex-col",
+                  month: "space-y-4",
+                  table: "w-full border-collapse",
+                  head_cell:
+                    "text-muted-foreground rounded-md w-10 font-normal text-[0.8rem]",
+                  cell: "h-10 w-10 p-0 text-center text-sm relative",
+                  day: "h-10 w-10 p-0 font-normal",
+                }}
+              />
             </div>
           </div>
           <div className="rounded-2xl border border-border bg-card p-4 xl:sticky xl:top-6 xl:self-start">
