@@ -33,7 +33,7 @@ const ReportsPage: React.FC<ReportsPageProps> = ({ className }) => {
       name: "Financial Reports",
       description: "Revenue, billing, and payment analytics",
       icon: CurrencyDollar,
-      color: "bg-emerald-100 text-emerald-700",
+      color: "bg-card text-card-foreground border border-border",
       reports: [
         {
           title: "Revenue by Client",
@@ -66,7 +66,7 @@ const ReportsPage: React.FC<ReportsPageProps> = ({ className }) => {
       name: "Time & Productivity",
       description: "Time tracking and productivity insights",
       icon: Clock,
-      color: "bg-sky-100 text-sky-700",
+      color: "bg-card text-card-foreground border border-border",
       reports: [
         {
           title: "Time Entry Report",
@@ -300,7 +300,7 @@ const ReportsPage: React.FC<ReportsPageProps> = ({ className }) => {
                               {report.isPopular && (
                                 <Badge
                                   variant="secondary"
-                                  className="mt-1 bg-amber-100 text-amber-700 text-xs"
+                                  className="mt-1 text-xs"
                                 >
                                   Popular
                                 </Badge>
