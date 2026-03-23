@@ -67,6 +67,12 @@ Rails.application.configure do
   # Set this to true and configure the email server for immediate delivery to raise delivery errors.
   # config.action_mailer.raise_delivery_errors = false
 
+  if ENV["POSTMARK_API_TOKEN"].present?
+    config.action_mailer.delivery_method = :postmark
+  elsif ENV["EMAIL_DELIVERY_METHOD"].present? && ENV["EMAIL_DELIVERY_METHOD"] != "test"
+    config.action_mailer.delivery_method = ENV["EMAIL_DELIVERY_METHOD"].to_sym
+  end
+
   # Set host to be used by links generated in mailer templates.
   config.action_mailer.default_url_options = { host: parsed_app_host || "miru-production.onrender.com" }
 
