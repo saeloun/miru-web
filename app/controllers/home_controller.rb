@@ -12,7 +12,9 @@ class HomeController < ApplicationController
       respond_to do |format|
         format.html { render }
         format.json { render json: { status: "ok", authenticated: user_signed_in? } }
+        format.xml { render xml: { status: "ok", authenticated: user_signed_in? }.to_xml(root: "response") }
         format.js { head 404 }
+        format.any { head 406 }
       end
     end
   end
