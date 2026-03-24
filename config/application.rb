@@ -7,9 +7,14 @@ require "rails/all"
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
+require "active_storage/attached"
+require "active_storage/reflection"
 
 module MiruWeb
   class Application < Rails::Application
+    config.active_storage ||= ActiveSupport::OrderedOptions.new
+    config.active_storage.queues ||= ActiveSupport::InheritableOptions.new
+
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 8.0
 
@@ -51,5 +56,21 @@ module MiruWeb
     config.middleware.use Rack::Attack
 
     # Branding via I18n (see config/locales/branding.*.yml)
+
+    initializer "miru_web.active_storage_attached", after: "active_storage.attached" do
+      ActiveSupport.on_load(:active_record) do
+        include ActiveStorage::Attached::Model unless respond_to?(:has_one_attached)
+      end
+    end
+
+    initializer "miru_web.active_storage_reflection", after: "active_storage.reflection" do
+      ActiveSupport.on_load(:active_record) do
+        include ActiveStorage::Reflection::ActiveRecordExtensions unless respond_to?(:reflect_on_attachment)
+
+        unless ActiveRecord::Reflection.singleton_class.ancestors.include?(ActiveStorage::Reflection::ReflectionExtension)
+          ActiveRecord::Reflection.singleton_class.prepend(ActiveStorage::Reflection::ReflectionExtension)
+        end
+      end
+    end
   end
 end
