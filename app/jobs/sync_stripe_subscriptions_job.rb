@@ -5,7 +5,7 @@ class SyncStripeSubscriptionsJob < ApplicationJob
 
   def perform
     companies.find_each do |company|
-      Subscriptions::StripeSyncService.process(company:)
+      SyncStripeSubscriptionCompanyJob.perform_later(company.id)
     end
   end
 

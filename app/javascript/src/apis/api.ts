@@ -516,9 +516,24 @@ export const timesheetEntryApi = {
 
 // Time Tracking
 export const timeTrackingApi = {
-  get: async (userId?: number) =>
+  get: async ({
+    userId,
+    from,
+    to,
+    year,
+  }: {
+    userId?: number;
+    from?: string;
+    to?: string;
+    year?: number | string;
+  } = {}) =>
     http.get("/time-tracking", {
-      params: userId ? { user_id: userId } : undefined,
+      params: {
+        ...(userId ? { user_id: userId } : {}),
+        ...(from ? { from } : {}),
+        ...(to ? { to } : {}),
+        ...(year ? { year } : {}),
+      },
     }),
   getCurrentUserEntries: (from: any, to: any, year: any, uid: any) =>
     http.get(`/timesheet_entry`, {

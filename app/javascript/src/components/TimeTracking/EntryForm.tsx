@@ -29,7 +29,6 @@ import MobileEntryForm from "./MobileView/MobileEntryForm";
 
 const AddEntry: React.FC<Iprops> = ({
   selectedEmployeeId,
-  fetchEntries,
   setNewEntryView,
   clients,
   projects,
@@ -43,7 +42,7 @@ const AddEntry: React.FC<Iprops> = ({
   setSelectedFullDate,
   setUpdateView,
   handleDeleteEntry,
-  fetchEntriesofMonth,
+  refreshVisibleEntries,
   removeLocalStorageItems,
 }) => {
   const initialNote = getValueFromLocalStorage("note") || "";
@@ -73,6 +72,10 @@ const AddEntry: React.FC<Iprops> = ({
     company?.date_format || company?.dateFormat || "MM-DD-YYYY";
   const isNewEntry = !editEntryId;
   const debouncedNote = useDebounce(note, 500);
+  const parsedSelectedDate = dayjs(selectedFullDate);
+  const displaySelectedDate = parsedSelectedDate.isValid()
+    ? parsedSelectedDate.format(`dddd, ${dateFormat}`)
+    : selectedFullDate;
 
   const handleFillData = () => {
     if (!editEntryId) return;
@@ -93,10 +96,14 @@ const AddEntry: React.FC<Iprops> = ({
 
   useEffect(() => {
     if (!project) {
+      setProjectBillable(false);
+
       return setProjectId(0);
     }
 
     if (!projects || !projects[client]) {
+      setProjectBillable(false);
+
       return setProjectId(0);
     }
 
@@ -107,7 +114,7 @@ const AddEntry: React.FC<Iprops> = ({
       setProjectId(Number(selectedProject.id));
       setProjectBillable(Boolean(selectedProject.billable));
     }
-  }, [project, client]);
+  }, [project, client, projects]);
 
   const handleDurationChange = val => {
     setDuration(val);
@@ -148,13 +155,7 @@ const AddEntry: React.FC<Iprops> = ({
       setToLocalStorage("note", "");
       setToLocalStorage("duration", "");
 
-      const fetchEntriesRes = await fetchEntries(
-        selectedFullDate,
-        selectedFullDate
-      );
-      if (!isDesktop) {
-        fetchEntriesofMonth();
-      }
+      const fetchEntriesRes = await refreshVisibleEntries();
 
       if (fetchEntriesRes) {
         setNewEntryView(false);
@@ -174,10 +175,7 @@ const AddEntry: React.FC<Iprops> = ({
       });
 
       if (updateRes.status >= 200 && updateRes.status < 300) {
-        await fetchEntries(selectedFullDate, selectedFullDate);
-        if (!isDesktop) {
-          fetchEntriesofMonth();
-        }
+        await refreshVisibleEntries();
         setEditEntryId(0);
         setNewEntryView(false);
         setUpdateView(true);
@@ -222,6 +220,16 @@ const AddEntry: React.FC<Iprops> = ({
   return isDesktop ? (
     <Card className="weekly-entries w-full shadow-sm border border-border bg-card backdrop-blur-sm rounded-lg">
       <div className={`p-8 ${editEntryId ? "mt-4" : ""}`}>
+        <div className="mb-6 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border bg-muted/30 px-4 py-3">
+          <div className="space-y-1">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+              Entry Date
+            </p>
+            <p className="text-base font-semibold text-foreground">
+              {displaySelectedDate}
+            </p>
+          </div>
+        </div>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Left Column - Client and Project Selection */}
           <div className="lg:col-span-2 space-y-6">
@@ -436,8 +444,7 @@ const AddEntry: React.FC<Iprops> = ({
 
 interface Iprops {
   selectedEmployeeId: number;
-  fetchEntries: (from: string, to: string) => Promise<any>;
-  fetchEntriesofMonth: any;
+  refreshVisibleEntries: () => Promise<any>;
   setNewEntryView: React.Dispatch<React.SetStateAction<boolean>>;
   clients: any[];
   projects: object;

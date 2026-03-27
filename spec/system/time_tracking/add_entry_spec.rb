@@ -21,9 +21,34 @@ RSpec.describe "Time Tracking - Add Entry", type: :system, js: true do
     expect(page).to have_css("div[data-view='#{target}']", wait: 10)
   end
 
+  def combobox_for(label)
+    field = find("label", text: label, exact_text: true, wait: 10)
+      .find(:xpath, "./ancestor::div[contains(@class, 'space-y-2')][1]")
+
+    field.find("[role='combobox']", wait: 10)
+  end
+
   def select_radix(label, value)
-    find("button[aria-label='#{label}']", match: :first).click
+    combobox_for(label).click
+    expect(page).to have_css("[role='listbox']", wait: 10)
     find("[role='option']", text: value, match: :first, wait: 10).click
+    expect(combobox_for(label)).to have_text(value, wait: 10)
+  end
+
+  def formatted_entry_date(date)
+    formatted_date =
+      case company.date_format
+      when "DD-MM-YYYY"
+        date.strftime("%d-%m-%Y")
+      when "MM/DD/YYYY"
+        date.strftime("%m/%d/%Y")
+      when "DD/MM/YYYY"
+        date.strftime("%d/%m/%Y")
+      else
+        date.strftime("%m-%d-%Y")
+      end
+
+    "#{date.strftime('%A')}, #{formatted_date}"
   end
 
   it "adds a time entry from week view with project, duration, and notes" do
@@ -50,30 +75,21 @@ RSpec.describe "Time Tracking - Add Entry", type: :system, js: true do
     end
   end
 
-  it "keeps entries visible when switching between week and month views" do
-    entry = create(
-      :timesheet_entry,
-      user:,
-      project:,
-      work_date: Date.current,
-      duration: 150,
-      note: "Cross-view continuity"
-    )
+  it "keeps the selected day visible when switching between week and month views" do
+    target_date = Date.current
 
     visit "/time-tracking"
     expect(page).to have_css("#react-root", wait: 10)
 
     switch_to("Week")
-    all("button[aria-pressed]", minimum: 1).each do |day_button|
-      day_button.click
-      break if page.has_content?(entry.note, wait: 1)
-    end
-    expect(page).to have_content(entry.note, wait: 10)
+    target_button_label = "Select #{target_date.strftime('%a, %b %-d')}"
+    find("button[aria-label^='#{target_button_label}']", wait: 10).click
+    expect(page).to have_content(target_date.strftime("%A, %B %-d, %Y"), wait: 10)
 
     switch_to("Month")
     expect(page).to have_css(".week-view", wait: 10)
     expect(page).to have_content("Month")
-    expect(page).to have_content("Cross-view continuity")
+    expect(page).to have_content(target_date.strftime("%A, %B %-d, %Y"), wait: 10)
   end
 
   it "shows selected day total in month view and allows adding entry from the same screen" do
@@ -90,5 +106,72 @@ RSpec.describe "Time Tracking - Add Entry", type: :system, js: true do
 
     expect(page).to have_content("Monthly planning block", wait: 10)
     expect(page).to have_content("Harvest-style Project")
+  end
+
+  it "keeps restored client and project selections saveable and persists the created entry" do
+    target_date = Date.current.beginning_of_week(:monday).next_day
+    target_button_label = "Select #{target_date.strftime('%a, %b %-d')}"
+    entry_note = "Restored storage entry"
+    create(
+      :timesheet_entry,
+      user:,
+      project:,
+      work_date: target_date.beginning_of_week(:monday),
+      duration: 30,
+      note: "Existing week entry"
+    )
+
+    visit "/time-tracking"
+    expect(page).to have_css("#react-root", wait: 10)
+    switch_to("Week")
+
+    page.execute_script(<<~JS)
+      localStorage.setItem("client", "#{client.name}");
+      localStorage.setItem("project", "#{project.name}");
+      localStorage.setItem("projectId", "");
+      localStorage.setItem("taskType", "development");
+    JS
+
+    visit "/time-tracking"
+    expect(page).to have_css("#react-root", wait: 10)
+    switch_to("Week")
+
+    find("button[aria-label^='#{target_button_label}']", wait: 10).click
+    click_button "Add Entry"
+
+    expect(page).to have_text(/entry date/i, wait: 10)
+    expect(page).to have_content(formatted_entry_date(target_date))
+    expect(combobox_for("Client")).to have_text(client.name, wait: 10)
+    expect(combobox_for("Project")).to have_text(project.name, wait: 10)
+    expect(page).to have_button("Save Entry", disabled: true)
+
+    fill_in "timeInput", with: "01:00"
+    fill_in "notes", with: entry_note
+
+    expect(page).to have_button("Save Entry", disabled: false, wait: 10)
+    expect do
+      click_button "Save Entry"
+      expect(page).to have_button("Add Entry", wait: 10)
+    end.to change {
+      TimesheetEntry.where(
+        user:,
+        project:,
+        work_date: target_date,
+        note: entry_note
+      ).count
+    }.by(1)
+
+    visit "/time-tracking"
+    expect(page).to have_css("#react-root", wait: 10)
+    switch_to("Week")
+    find("button[aria-label^='#{target_button_label}']", wait: 10).click
+
+    created_entry = TimesheetEntry.find_by!(
+      user:,
+      project:,
+      work_date: target_date,
+      note: entry_note
+    )
+    expect(created_entry.duration).to eq(60)
   end
 end
