@@ -11,7 +11,7 @@ on:
 
 # Cancel previous Docker builds when new commits are pushed
 concurrency:
-  group: docker-${{ github.event.pull_request.number || github.ref }}
+  group: docker-${{ github.head_ref || github.ref_name }}
   cancel-in-progress: true
 
 env:
