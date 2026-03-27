@@ -16,6 +16,7 @@ gem "puma", "~> 6.6"
 
 # Reduces boot times through caching
 gem "bootsnap", ">= 1.18.0", require: false
+gem "json", ">= 2.19.2"
 
 
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
