@@ -8,12 +8,9 @@ RSpec.describe SyncStripeSubscriptionsJob, type: :job do
     company_two = create(:company, stripe_customer_id: "cus_2")
     create(:company, stripe_customer_id: nil)
 
-    allow(Subscriptions::StripeSyncService).to receive(:process).and_return(true)
-
-    described_class.perform_now
-
-    expect(Subscriptions::StripeSyncService).to have_received(:process).with(company: company_one)
-    expect(Subscriptions::StripeSyncService).to have_received(:process).with(company: company_two)
-    expect(Subscriptions::StripeSyncService).to have_received(:process).twice
+    expect {
+      described_class.perform_now
+    }.to have_enqueued_job(SyncStripeSubscriptionCompanyJob).with(company_one.id).on_queue("billing_sync")
+      .and have_enqueued_job(SyncStripeSubscriptionCompanyJob).with(company_two.id).on_queue("billing_sync")
   end
 end

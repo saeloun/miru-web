@@ -73,6 +73,10 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
   const [modalSelectedDate, setModalSelectedDate] = useState<string>("");
   const [view, setView] = useState<string>("week");
   const [runtimeError, setRuntimeError] = useState<string>("");
+  const [bootstrappedEmployeeId, setBootstrappedEmployeeId] = useState<
+    number | null
+  >(null);
+  const [loadedRangeKey, setLoadedRangeKey] = useState<string>("");
   const dateParseFormats = [
     dateFormat,
     "YYYY-MM-DD",
@@ -112,42 +116,30 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
 
   useEffect(() => {
     sendGAPageView();
-    fetchTimeTrackingData();
     const defaultView = "week";
     const savedView = localStorage.getItem("timeTrackingView");
     setView(savedView === "month" ? "month" : defaultView);
   }, []);
 
-  useEffect(() => {
-    const handleWindowError = (event: Event) => {
-      const errorEvent = event as Event & { message?: string };
-      setRuntimeError(errorEvent.message || "Time tracking failed to render");
-    };
-
-    const handleUnhandledRejection = (event: Event) => {
-      const rejectionEvent = event as Event & { reason?: { message?: string } };
-      const message =
-        (rejectionEvent.reason && rejectionEvent.reason.message) ||
-        "Unhandled promise rejection";
-      setRuntimeError(message);
-    };
-
-    window.addEventListener("error", handleWindowError);
-    window.addEventListener("unhandledrejection", handleUnhandledRejection);
-
-    return () => {
-      window.removeEventListener("error", handleWindowError);
-      window.removeEventListener(
-        "unhandledrejection",
-        handleUnhandledRejection
-      );
-    };
-  }, []);
-
-  const fetchTimeTrackingData = async (employeeId?: number) => {
+  const fetchTimeTrackingData = async ({
+    employeeId,
+    from,
+    to,
+    year,
+  }: {
+    employeeId?: number;
+    from?: string;
+    to?: string;
+    year?: number | string;
+  } = {}) => {
     try {
       const targetEmployeeId = employeeId || selectedEmployeeId || user.id;
-      const { data } = await timeTrackingApi.get(targetEmployeeId);
+      const { data } = await timeTrackingApi.get({
+        userId: targetEmployeeId,
+        from,
+        to,
+        year,
+      });
       const { clients, projects, entries, employees } = data;
 
       // Ensure clients is an array
@@ -169,14 +161,17 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
       const currentEmployeeEntries = {};
       currentEmployeeEntries[targetEmployeeId] = entriesObj;
       setAllEmployeesEntries(currentEmployeeEntries);
+      setBootstrappedEmployeeId(targetEmployeeId);
+      setRuntimeError("");
       setLoading(false);
     } catch (error) {
       Logger.error(error);
+      setRuntimeError("Unable to load time tracking right now.");
       setLoading(false);
     }
   };
 
-  const fetchEntriesOfMonths = () => {
+  const fetchEntriesOfMonths = (employeeId?: number) => {
     const firstDateOfTheMonth = `${currentYear}-${currentMonthNumber + 1}-01`;
     const startOfTheMonth = dayjs(firstDateOfTheMonth).format(dateFormat);
     const endOfTheMonth = dayjs(firstDateOfTheMonth)
@@ -189,9 +184,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
       .format("DD-MM-YYYY");
     const to = dayjs(endOfTheMonth).add(1, "month").format("DD-MM-YYYY");
 
-    // fetchEntriesOfMonths called for selectedEmployeeId and date range
-
-    fetchEntries(from, to);
+    return fetchEntries(from, to, employeeId);
   };
 
   // View is always "day" by default, user can change it manually
@@ -220,24 +213,75 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
   }, [selectDate, weekDay, updateView]);
 
   useEffect(() => {
-    if (selectedEmployeeId) {
-      fetchTimeTrackingData(selectedEmployeeId);
-      fetchEntriesOfMonths();
-    }
-  }, [selectedEmployeeId]);
+    if (!selectedEmployeeId) return;
 
-  // Fetch entries for the current week when week changes
-  useEffect(() => {
-    if (dayInfo.length > 0) {
-      // Get first and last day of the current week
+    const loadVisibleRange = async () => {
+      if (view === "month") {
+        const firstDateOfTheMonth = `${currentYear}-${
+          currentMonthNumber + 1
+        }-01`;
+        const startOfTheMonth = dayjs(firstDateOfTheMonth).format("DD-MM-YYYY");
+        const endOfTheMonth = dayjs(firstDateOfTheMonth)
+          .endOf("month")
+          .format("DD-MM-YYYY");
+        const rangeKey = `month:${selectedEmployeeId}:${currentYear}:${currentMonthNumber}`;
+
+        if (bootstrappedEmployeeId !== selectedEmployeeId) {
+          await fetchTimeTrackingData({
+            employeeId: selectedEmployeeId,
+            from: startOfTheMonth,
+            to: endOfTheMonth,
+            year: currentYear,
+          });
+          setLoadedRangeKey(rangeKey);
+
+          return;
+        }
+
+        if (loadedRangeKey === rangeKey) return;
+
+        await fetchEntriesOfMonths(selectedEmployeeId);
+        setLoadedRangeKey(rangeKey);
+
+        return;
+      }
+
       const firstDay = dayInfo[0]?.fullDate;
       const lastDay = dayInfo[6]?.fullDate;
 
-      if (firstDay && lastDay) {
-        fetchEntries(firstDay, lastDay);
+      if (!firstDay || !lastDay) return;
+
+      const rangeKey = `week:${selectedEmployeeId}:${firstDay}:${lastDay}`;
+
+      if (bootstrappedEmployeeId !== selectedEmployeeId) {
+        await fetchTimeTrackingData({
+          employeeId: selectedEmployeeId,
+          from: firstDay,
+          to: lastDay,
+          year: currentYear,
+        });
+        setLoadedRangeKey(rangeKey);
+
+        return;
       }
-    }
-  }, [weekDay, selectedEmployeeId]);
+
+      if (loadedRangeKey === rangeKey) return;
+
+      await fetchEntries(firstDay, lastDay, selectedEmployeeId);
+      setLoadedRangeKey(rangeKey);
+    };
+
+    loadVisibleRange();
+  }, [
+    selectedEmployeeId,
+    view,
+    currentMonthNumber,
+    currentYear,
+    dayInfo[0]?.fullDate,
+    dayInfo[6]?.fullDate,
+    bootstrappedEmployeeId,
+    loadedRangeKey,
+  ]);
 
   const handleWeekTodayButton = () => {
     setSelectDate(0);
@@ -264,17 +308,64 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
     setDayInfo(() => daysInWeek);
   };
 
-  const fetchEntries = async (from: string, to: string) => {
+  const fetchEntries = async (
+    from: string,
+    to: string,
+    employeeId?: number
+  ) => {
     try {
-      // Use the time_tracking API endpoint that's already authenticated
-      // This is called via fetchTimeTrackingData which sets the entries properly
-      await fetchTimeTrackingData(selectedEmployeeId);
+      const targetEmployeeId = employeeId || selectedEmployeeId || user.id;
+      const formattedFrom = dayjs(from, dateParseFormats, true).isValid()
+        ? dayjs(from, dateParseFormats, true).format("DD-MM-YYYY")
+        : from;
+
+      const formattedTo = dayjs(to, dateParseFormats, true).isValid()
+        ? dayjs(to, dateParseFormats, true).format("DD-MM-YYYY")
+        : to;
+
+      const res = await timeTrackingApi.getCurrentUserEntries(
+        formattedFrom,
+        formattedTo,
+        currentYear,
+        targetEmployeeId
+      );
+      const entriesObj = res.data?.entries || {};
+      setAllEmployeesEntries(pv => ({ ...pv, [targetEmployeeId]: entriesObj }));
+      setEntryList(entriesObj);
+      setRuntimeError("");
       setLoading(false);
+
+      return res;
     } catch (error) {
-      // Log error for debugging
       Logger.error(error);
+      setRuntimeError("Unable to load time tracking right now.");
       setLoading(false);
     }
+  };
+
+  const refreshVisibleEntries = async (employeeId?: number) => {
+    const targetEmployeeId = employeeId || selectedEmployeeId;
+
+    if (view === "month") {
+      await fetchEntriesOfMonths(targetEmployeeId);
+      setLoadedRangeKey(
+        `month:${targetEmployeeId}:${currentYear}:${currentMonthNumber}`
+      );
+
+      return true;
+    }
+
+    const firstDay = dayInfo[0]?.fullDate;
+    const lastDay = dayInfo[6]?.fullDate;
+
+    if (firstDay && lastDay) {
+      await fetchEntries(firstDay, lastDay, targetEmployeeId);
+      setLoadedRangeKey(`week:${targetEmployeeId}:${firstDay}:${lastDay}`);
+
+      return true;
+    }
+
+    return false;
   };
 
   const handleFilterEntry = async (date: string, entryId: string | number) => {
@@ -363,8 +454,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
       selectedEmployeeId
     );
     if (res.status === 200) {
-      await fetchEntries(selectedFullDate, selectedFullDate);
-      await fetchEntriesOfMonths();
+      await refreshVisibleEntries();
     }
   };
 
@@ -393,48 +483,18 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
 
   const handleNextDay = () => {
     setWeekDay(p => p + 1);
-    const from = dayjs().weekday(weekDay).format(dateFormat);
-
-    const to = dayjs()
-      .weekday(weekDay + 1)
-      .format(dateFormat);
-    fetchEntries(from, to);
   };
 
   const handlePreDay = () => {
     setWeekDay(p => p - 1);
-
-    const from = dayjs().weekday(weekDay).format(dateFormat);
-
-    const to = dayjs()
-      .weekday(weekDay - 1)
-      .format(dateFormat);
-
-    fetchEntries(from, to);
   };
 
   const handleNextWeek = () => {
     setWeekDay(p => p + 7);
-    const from = dayjs()
-      .weekday(weekDay + 7)
-      .format(dateFormat);
-
-    const to = dayjs()
-      .weekday(weekDay + 13)
-      .format(dateFormat);
-    fetchEntries(from, to);
   };
 
   const handlePrevWeek = () => {
     setWeekDay(p => p - 7);
-    const from = dayjs()
-      .weekday(weekDay - 7)
-      .format(dateFormat);
-
-    const to = dayjs()
-      .weekday(weekDay - 1)
-      .format(dateFormat);
-    fetchEntries(from, to);
   };
 
   const parseWeeklyViewData = () => {
@@ -512,8 +572,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
           timesheet_entry: payload,
         });
         if (res.status >= 200 && res.status < 300) {
-          await fetchEntries(formData.date, formData.date);
-          fetchEntriesOfMonths();
+          await refreshVisibleEntries();
         }
       } else {
         // Create new entry
@@ -525,8 +584,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
           selectedEmployeeId
         );
         if (res.status === 200) {
-          await fetchEntries(formData.date, formData.date);
-          fetchEntriesOfMonths();
+          await refreshVisibleEntries();
         }
       }
     } catch (error) {
@@ -536,8 +594,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
   };
 
   const handleTimerSaved = async () => {
-    await fetchEntries(selectedFullDate, selectedFullDate);
-    fetchEntriesOfMonths();
+    await refreshVisibleEntries();
   };
 
   if (loading) {
@@ -635,8 +692,6 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
             )}
             {view === "month" && (
               <MonthCalender
-                fetchEntries={fetchEntries}
-                selectedEmployeeId={selectedEmployeeId}
                 selectedFullDate={selectedFullDate}
                 setSelectedFullDate={setSelectedFullDate}
                 entryList={entryList}
@@ -658,8 +713,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
               clients={clients}
               editEntryId={editEntryId}
               entryList={entryList}
-              fetchEntries={fetchEntries}
-              fetchEntriesofMonth={fetchEntriesOfMonths}
+              refreshVisibleEntries={refreshVisibleEntries}
               handleAddEntryDateChange={handleAddEntryDateChange}
               handleDeleteEntry={handleDeleteEntry}
               handleFilterEntry={handleFilterEntry}
@@ -745,6 +799,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
         entryList={entryList}
         fetchEntries={fetchEntries}
         fetchEntriesofMonth={fetchEntriesOfMonths}
+        refreshVisibleEntries={refreshVisibleEntries}
         handleAddEntryDateChange={handleAddEntryDateChange}
         handleFilterEntry={handleFilterEntry}
         handleRelocateEntry={handleRelocateEntry}

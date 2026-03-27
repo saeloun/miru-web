@@ -29,6 +29,7 @@ interface EntryDetailsModalProps {
   entryList: EntryList;
   fetchEntries: (from: string, to: string) => void;
   fetchEntriesofMonth: (from: string, to: string) => void;
+  refreshVisibleEntries: () => Promise<boolean>;
   handleAddEntryDateChange: (date: string) => void;
   handleFilterEntry: (params: any) => void;
   handleRelocateEntry: (id: number, date: string) => void;
@@ -55,6 +56,7 @@ const EntryDetailsModal: React.FC<EntryDetailsModalProps> = ({
   entryList,
   fetchEntries,
   fetchEntriesofMonth,
+  refreshVisibleEntries,
   handleAddEntryDateChange,
   handleFilterEntry,
   handleRelocateEntry,
@@ -99,6 +101,7 @@ const EntryDetailsModal: React.FC<EntryDetailsModalProps> = ({
               entryList={entryList}
               fetchEntries={fetchEntries}
               fetchEntriesofMonth={fetchEntriesofMonth}
+              refreshVisibleEntries={refreshVisibleEntries}
               handleAddEntryDateChange={handleAddEntryDateChange}
               handleDeleteEntry={handleDeleteEntry}
               handleFilterEntry={handleFilterEntry}
@@ -126,6 +129,7 @@ const EntryDetailsModal: React.FC<EntryDetailsModalProps> = ({
                     entryList={entryList}
                     fetchEntries={fetchEntries}
                     fetchEntriesofMonth={fetchEntriesofMonth}
+                    refreshVisibleEntries={refreshVisibleEntries}
                     handleAddEntryDateChange={handleAddEntryDateChange}
                     handleDeleteEntry={handleDeleteEntry}
                     handleFilterEntry={handleFilterEntry}

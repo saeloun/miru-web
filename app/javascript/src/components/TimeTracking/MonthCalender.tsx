@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import dayjs from "dayjs";
 import { minToHHMM } from "helpers";
-import Logger from "js-logger";
 import { useUserContext } from "../../context/UserContext";
 import { Card, CardContent } from "../ui/card";
 import { cn } from "../../lib/utils";
@@ -12,8 +11,6 @@ import Header from "./Header";
 dayjs.Ls.en.weekStart = 1;
 
 interface Iprops {
-  fetchEntries: (from: string, to: string) => void;
-  selectedEmployeeId: number;
   selectedFullDate: string;
   setSelectedFullDate: any;
   entryList: object;
@@ -30,8 +27,6 @@ interface Iprops {
 }
 
 const MonthCalender: React.FC<Iprops> = ({
-  fetchEntries,
-  selectedEmployeeId,
   entryList,
   selectedFullDate,
   setSelectedFullDate,
@@ -127,49 +122,21 @@ const MonthCalender: React.FC<Iprops> = ({
     setMonthData(monthData);
   };
 
-  const handlePrevMonth = async () => {
-    try {
-      const startOfTheMonth2MonthsAgo = dayjs(startOfTheMonth, dateFormat)
-        .subtract(2, "month")
-        .format(dateFormat);
-
-      const endOfTheMonth2MonthsAgo = dayjs(endOfTheMonth, dateFormat)
-        .subtract(2, "month")
-        .format(dateFormat);
-      await fetchEntries(startOfTheMonth2MonthsAgo, endOfTheMonth2MonthsAgo);
-      if (currentMonthNumber === 0) {
-        setCurrentMonthNumber(11);
-        setCurrentYear(currentYear - 1);
-      } else {
-        setCurrentMonthNumber(cmn => cmn - 1);
-      }
-    } catch (error) {
-      Logger.error(error);
+  const handlePrevMonth = () => {
+    if (currentMonthNumber === 0) {
+      setCurrentMonthNumber(11);
+      setCurrentYear(currentYear - 1);
+    } else {
+      setCurrentMonthNumber(cmn => cmn - 1);
     }
   };
 
-  const handleNextMonth = async () => {
-    try {
-      const startOfTheMonth2MonthsLater = dayjs(startOfTheMonth, dateFormat)
-        .add(2, "month")
-        .format(dateFormat);
-
-      const endOfTheMonth2MonthsLater = dayjs(endOfTheMonth, dateFormat)
-        .add(2, "month")
-        .format(dateFormat);
-
-      await fetchEntries(
-        startOfTheMonth2MonthsLater,
-        endOfTheMonth2MonthsLater
-      );
-      if (currentMonthNumber === 11) {
-        setCurrentMonthNumber(0);
-        setCurrentYear(currentYear + 1);
-      } else {
-        setCurrentMonthNumber(currentMonthNumber + 1);
-      }
-    } catch (error) {
-      Logger.error(error);
+  const handleNextMonth = () => {
+    if (currentMonthNumber === 11) {
+      setCurrentMonthNumber(0);
+      setCurrentYear(currentYear + 1);
+    } else {
+      setCurrentMonthNumber(currentMonthNumber + 1);
     }
   };
 
