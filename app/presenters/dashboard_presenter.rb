@@ -6,9 +6,9 @@ class DashboardPresenter
   def initialize(company:, current_user:, timeframe: "year", from_date: nil, to_date: nil)
     @company = company
     @current_user = current_user
-    @timeframe = "year" # Always use year for consistent annual view
+    @timeframe = timeframe.presence || "year"
     @to_date = to_date || Date.current
-    @from_date = from_date || Date.current - 1.year
+    @from_date = from_date || calculate_from_date
   end
 
   def data
@@ -26,13 +26,15 @@ class DashboardPresenter
     def calculate_from_date
       case timeframe
       when "week"
-        Date.current - 7.days
+        to_date.beginning_of_week
+      when "quarter"
+        to_date.beginning_of_quarter
       when "month"
-        Date.current - 1.month
+        to_date.beginning_of_month
       when "year"
-        Date.current - 1.year
+        to_date.beginning_of_year
       else
-        Date.current - 1.month
+        to_date.beginning_of_year
       end
     end
 
@@ -202,8 +204,7 @@ class DashboardPresenter
     end
 
     def calculate_previous_billable_hours
-      previous_from = from_date - (to_date - from_date).days
-      previous_to = from_date - 1.day
+      previous_from, previous_to = previous_period_bounds
 
       timesheet_entries = scoped_timesheet_entries.where(work_date: previous_from..previous_to)
 
@@ -211,8 +212,7 @@ class DashboardPresenter
     end
 
     def calculate_previous_period_revenue
-      previous_from = from_date - (to_date - from_date).days
-      previous_to = from_date - 1.day
+      previous_from, previous_to = previous_period_bounds
 
       scoped_invoices.where(issue_date: previous_from..previous_to).sum(:amount)
     end
@@ -224,10 +224,32 @@ class DashboardPresenter
     end
 
     def previous_period_range
-      previous_to = from_date - 1.day
-      previous_from = previous_to - (to_date - from_date)
-
+      previous_from, previous_to = previous_period_bounds
       previous_from..previous_to
+    end
+
+    def previous_period_bounds
+      current_span = to_date - from_date
+
+      case timeframe
+      when "year"
+        previous_from = from_date.prev_year
+        previous_to = previous_from + current_span
+      when "quarter"
+        previous_from = from_date << 3
+        previous_to = previous_from + current_span
+      when "month"
+        previous_from = from_date.prev_month
+        previous_to = previous_from + current_span
+      when "week"
+        previous_from = from_date - 7.days
+        previous_to = previous_from + current_span
+      else
+        previous_to = from_date - 1.day
+        previous_from = previous_to - current_span
+      end
+
+      [previous_from, previous_to]
     end
 
     def active_project_count_for(date_range)

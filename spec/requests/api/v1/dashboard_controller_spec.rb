@@ -11,7 +11,10 @@ RSpec.describe Api::V1::DashboardController, type: :request do
     let!(:visible_project) { create(:project, client: visible_client, billable: true) }
     let!(:hidden_project) { create(:project, client: hidden_client, billable: true) }
     let!(:visible_invoice) do
-      create(:invoice, company: company, client: visible_client, status: :sent, amount: 1000, base_currency_amount: 1000, issue_date: Date.current - 1.month)
+      create(:invoice, company: company, client: visible_client, status: :sent, amount: 1000, base_currency_amount: 1000, issue_date: Date.current.beginning_of_year + 10.days)
+    end
+    let!(:older_visible_invoice) do
+      create(:invoice, company: company, client: visible_client, status: :sent, amount: 7000, base_currency_amount: 7000, issue_date: Date.current.prev_year.beginning_of_year + 10.days)
     end
     let!(:hidden_invoice) do
       create(:invoice, company: company, client: hidden_client, status: :sent, amount: 5000, base_currency_amount: 5000, issue_date: Date.current - 1.month)
@@ -37,6 +40,13 @@ RSpec.describe Api::V1::DashboardController, type: :request do
       expect(response.parsed_body.dig("stats", "active_projects")).to eq(1)
       expect(response.parsed_body.dig("stats", "billable_hours")).to eq("0.0")
       expect(response.parsed_body.fetch("revenue_by_customer")).to eq([])
+    end
+
+    it "defaults to year-to-date data instead of a rolling last-year window" do
+      get "/api/v1/dashboard"
+
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body.dig("stats", "total_revenue")).to eq("1000.0")
     end
   end
 end
