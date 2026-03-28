@@ -18,13 +18,15 @@ class Api::V1::Users::PreviousEmploymentsController < Api::V1::ApplicationContro
 
   def update
     authorize previous_employment, policy_class: Users::PreviousEmploymentPolicy
-    previous_employment.update!(previous_employment_params)
+    assign_previous_employment_attributes(previous_employment)
+    previous_employment.save!
     render :update, locals: { previous_employment: }, status: 200
   end
 
   def create
     authorize @user, policy_class: Users::PreviousEmploymentPolicy
-    previous_employment = @user.previous_employments.new(previous_employment_params)
+    previous_employment = @user.previous_employments.new
+    assign_previous_employment_attributes(previous_employment)
     previous_employment.save!
     render :create, locals: { previous_employment: }, status: 201
   end
@@ -39,9 +41,17 @@ class Api::V1::Users::PreviousEmploymentsController < Api::V1::ApplicationContro
       @previous_employment ||= @user.previous_employments.find(params[:id])
     end
 
-    def previous_employment_params
-      params.require(:previous_employment).permit(
-        :company_name, :role
-      )
+    def assign_previous_employment_attributes(previous_employment)
+      previous_employment.company_name = previous_employment_attributes[:company_name]
+      previous_employment.role = previous_employment_attributes[:role]
+    end
+
+    def previous_employment_attributes
+      previous_employment = params.require(:previous_employment)
+
+      {
+        company_name: previous_employment[:company_name],
+        role: previous_employment[:role],
+      }
     end
 end
