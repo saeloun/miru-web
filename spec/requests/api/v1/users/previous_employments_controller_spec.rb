@@ -110,6 +110,24 @@ RSpec.describe Api::V1::Users::PreviousEmploymentsController, type: :request do
         expect(json_response["company_name"]).to eq("New Company")
         expect(json_response["role"]).to eq("Software Engineer")
       end
+
+      it "ignores extra nested attributes" do
+        post api_v1_user_previous_employments_path(user_id: user.id),
+             params: {
+               previous_employment: {
+                 company_name: "New Company",
+                 role: "Software Engineer",
+                 user_id: other_user.id,
+               },
+             }
+
+        created_employment = PreviousEmployment.order(:created_at).last
+
+        expect(response).to have_http_status(:created)
+        expect(created_employment.user_id).to eq(user.id)
+        expect(created_employment.company_name).to eq("New Company")
+        expect(created_employment.role).to eq("Software Engineer")
+      end
     end
 
     context "with invalid parameters" do
@@ -161,6 +179,24 @@ RSpec.describe Api::V1::Users::PreviousEmploymentsController, type: :request do
         json_response = JSON.parse(response.body)
         expect(json_response["company_name"]).to eq("Updated Company")
         expect(json_response["role"]).to eq("Senior Developer")
+      end
+
+      it "ignores extra nested attributes" do
+        patch api_v1_user_previous_employment_path(user_id: user.id, id: previous_employment.id),
+              params: {
+                previous_employment: {
+                  company_name: "Updated Company",
+                  role: "Senior Developer",
+                  user_id: other_user.id,
+                },
+              }
+
+        previous_employment.reload
+
+        expect(response).to have_http_status(:success)
+        expect(previous_employment.user_id).to eq(user.id)
+        expect(previous_employment.company_name).to eq("Updated Company")
+        expect(previous_employment.role).to eq("Senior Developer")
       end
     end
 
