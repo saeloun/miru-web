@@ -119,6 +119,27 @@ RSpec.describe "Invoice listing", type: :system, js: true do
         expect(page).to have_content(client.name, wait: 10)
       end
     end
+
+    it "orders recently updated invoices by update time" do
+      recent_invoice = create(:invoice,
+        company:, client:, status: :sent,
+        invoice_number: "INV-RECENT-900",
+        issue_date: 4.months.ago.to_date,
+        updated_at: 30.minutes.ago)
+      older_invoice = create(:invoice,
+        company:, client:, status: :sent,
+        invoice_number: "INV-OLDER-100",
+        issue_date: Date.current,
+        updated_at: 3.days.ago)
+
+      with_forgery_protection do
+        visit "/invoices"
+
+        section = find(:xpath, "//h2[normalize-space()='Recently Updated']/ancestor::div[contains(@class, 'mt-8')][1]", wait: 10)
+
+        expect(section.text.index(recent_invoice.invoice_number)).to be < section.text.index(older_invoice.invoice_number)
+      end
+    end
   end
 
   context "with multiple clients" do

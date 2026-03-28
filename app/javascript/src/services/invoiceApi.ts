@@ -85,6 +85,7 @@ export interface InvoiceFormData {
 
 export interface InvoiceListResponse {
   invoices: Invoice[];
+  recentlyUpdatedInvoices: Invoice[];
   summary: {
     draftAmount: string | number;
     outstandingAmount: string | number;
@@ -135,6 +136,11 @@ class InvoiceApiService {
       invoices: (response.data.invoices || []).map((inv: any) =>
         this.transformApiInvoice(inv)
       ),
+      recentlyUpdatedInvoices: (
+        response.data.recentlyUpdatedInvoices ||
+        response.data.recently_updated_invoices ||
+        []
+      ).map((inv: any) => this.transformApiInvoice(inv)),
       summary: response.data.summary || {
         draftAmount: 0,
         outstandingAmount: 0,

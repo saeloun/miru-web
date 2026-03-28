@@ -38,7 +38,7 @@ Rails.application.routes.draw do
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 
   # For opening the email in the web browser in non production environments
-  if ENV["EMAIL_DELIVERY_METHOD"] == "letter_opener_web"
+  if ENV["EMAIL_DELIVERY_METHOD"] == "letter_opener_web" && !Rails.env.test? && defined?(LetterOpenerWeb)
     mount LetterOpenerWeb::Engine, at: "/sent_emails"
   end
 

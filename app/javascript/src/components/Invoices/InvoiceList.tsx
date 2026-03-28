@@ -97,11 +97,18 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
   // Use recentlyUpdatedInvoices from API or calculate fallback
   const recentInvoices =
     recentlyUpdatedInvoices ||
-    invoices
-      .sort(
-        (a, b) =>
-          new Date(b.issueDate).getTime() - new Date(a.issueDate).getTime()
-      )
+    [...invoices]
+      .sort((a, b) => {
+        const updatedAtA = new Date(
+          a.updatedAt || a.updated_at || a.createdAt || 0
+        ).getTime();
+
+        const updatedAtB = new Date(
+          b.updatedAt || b.updated_at || b.createdAt || 0
+        ).getTime();
+
+        return updatedAtB - updatedAtA;
+      })
       .slice(0, 10);
 
   const formatDate = (dateString: string) =>
