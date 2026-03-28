@@ -68,7 +68,9 @@ export enum LocalStorageKeys {
 }
 
 export const MIRU_APP_URL = "https://miru.so/";
-export const MIRU_APP_SUPPORT_EMAIL_ID = "mailto:hello@saeloun.com";
+export const MIRU_APP_SUPPORT_EMAIL = "hello@saeloun.com";
+export const MIRU_APP_SUPPORT_EMAIL_ID = `mailto:${MIRU_APP_SUPPORT_EMAIL}`;
+export const MIRU_GA_MEASUREMENT_ID = "G-29DMJEV7QX";
 export const GOOGLE_PRIVACY_URL =
   "https://policies.google.com/privacy?hl=en-US";
 export const AWS_PRIVACY_URL = "https://aws.amazon.com/privacy/";

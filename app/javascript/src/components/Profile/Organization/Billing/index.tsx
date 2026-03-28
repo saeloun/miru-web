@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 
-import { ApiStatus } from "constants/index";
+import {
+  ApiStatus,
+  MIRU_APP_SUPPORT_EMAIL,
+  MIRU_APP_SUPPORT_EMAIL_ID,
+} from "constants/index";
 import {
   ChartLineUp,
   CheckCircle,
@@ -713,9 +717,9 @@ const Billing = () => {
                 Talk to{" "}
                 <a
                   className="underline underline-offset-4"
-                  href="mailto:hello@saeloun.com"
+                  href={MIRU_APP_SUPPORT_EMAIL_ID}
                 >
-                  hello@saeloun.com
+                  {MIRU_APP_SUPPORT_EMAIL}
                 </a>
               </p>
               <div className="mt-4 space-y-2">
@@ -753,9 +757,9 @@ const Billing = () => {
                 Talk to{" "}
                 <a
                   className="underline underline-offset-4"
-                  href="mailto:hello@saeloun.com"
+                  href={MIRU_APP_SUPPORT_EMAIL_ID}
                 >
-                  hello@saeloun.com
+                  {MIRU_APP_SUPPORT_EMAIL}
                 </a>
               </p>
               <div className="mt-4 space-y-2">

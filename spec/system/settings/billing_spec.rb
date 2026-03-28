@@ -35,6 +35,7 @@ RSpec.describe "Settings billing", type: :system, js: true do
       expect(page).to have_content("$50/user/yr", wait: 10)
       expect(page).to have_content("Powered by Stripe", wait: 10)
       expect(page).to have_content("Reports and analytics", wait: 10)
+      expect(page).to have_link("hello@saeloun.com", href: "mailto:hello@saeloun.com", wait: 10)
     end
   end
 

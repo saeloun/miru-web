@@ -1,4 +1,8 @@
 import React from "react";
+import {
+  MIRU_APP_SUPPORT_EMAIL,
+  MIRU_APP_SUPPORT_EMAIL_ID,
+} from "constants/index";
 
 import { XIcon } from "miruIcons";
 import { Modal } from "StyledComponents";
@@ -91,9 +95,9 @@ const TermsOfServiceModal = ({ isOpen, onClose }) => (
         If you have any questions about these Terms, please contact us at
         <a
           className="form__link ml-2 inline cursor-pointer"
-          href="mailto:hello@saeloun.com"
+          href={MIRU_APP_SUPPORT_EMAIL_ID}
         >
-          hello@saeloun.com
+          {MIRU_APP_SUPPORT_EMAIL}
         </a>
       </p>
     </div>
