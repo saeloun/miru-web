@@ -52,4 +52,17 @@ RSpec.describe "Auth flows", type: :system, js: true do
       expect(page).to have_current_path("/").or have_current_path("/dashboard").or have_current_path("/time-tracking")
     end
   end
+
+  it "shows the support alias in privacy and terms modals" do
+    with_forgery_protection do
+      visit "/signup"
+
+      click_on "Privacy"
+      expect(page).to have_link("hello@saeloun.com", href: "mailto:hello@saeloun.com", wait: 10)
+
+      find("body").send_keys(:escape)
+      click_on "Terms"
+      expect(page).to have_link("hello@saeloun.com", href: "mailto:hello@saeloun.com", wait: 10)
+    end
+  end
 end
