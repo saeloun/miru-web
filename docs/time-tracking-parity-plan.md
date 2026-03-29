@@ -1,288 +1,288 @@
-# Miru Time Tracking Parity Plan
+# Miru Time Tracking Roadmap
 
 ## Goal
 
-Make Miru time tracking competitive with Harvest and FreshBooks for agencies and small service teams.
+Make Miru the fastest time tracker for service teams that also need invoicing, billing, and operations in the same product.
 
-This does not mean copying every screen. It means matching the workflows people actually depend on:
+This is not a clone project.
 
-- start time instantly
-- log time in bulk at the end of the day or week
-- reuse the same project rows repeatedly
-- review what was tracked without hunting
-- move time into billing without cleanup work
+It is a catch-up-and-surpass plan:
+
+- match the speed features people expect from leading time trackers
+- match the billing handoff people expect from service business tools
+- use Miru's existing invoicing and operations surface to beat both of them in one workflow
+
+## Product Thesis
+
+The best dedicated trackers win on speed.
+
+The best service-business tools win on making tracked time feel connected to revenue.
+
+Miru should win on both:
+
+- start tracking in one click
+- fill a missing day or week in seconds
+- review what is billable without hunting
+- move tracked work into invoicing without cleanup
+
+That is the whole game.
 
 ## Current Miru Position
 
-Miru already has a stronger base than it looks:
+Miru already has more foundation than the UI currently communicates:
 
 - week and month views
+- inline desktop timer
 - manual entry form
-- bulk weekly row editing
-- desktop inline web timer
-- mobile Expo scaffold
-- invoice and billing system in the same product
+- weekly bulk row editing
+- duplicate last entry
+- recent entry shortcuts
+- copy last week flow
+- invoices and billing in the same product
 - AI-tool metadata support on CLI time entries
+- mobile Expo scaffold with Today and Week preview directions
 
-What is still weak is speed and repeatability.
+The weak spots are still obvious:
 
-The current pain is not "Miru cannot track time."
+- the desktop page is still too split between timer, day, and week modes
+- repeat work is faster than before, but still not one-motion fast
+- day review is serviceable, not delightful
+- invoice handoff still feels like a separate system
+- manager workflows are still relatively thin
 
-The pain is:
+## What Strong Time Tracking Products Get Right
 
-- too many clicks to log common work
-- weak reuse of yesterday and last week patterns
-- timer is new, but the rest of the flow still behaves like manual data entry
-- day review is less obvious than in Harvest or FreshBooks
-- billing handoff is not yet tight enough
+Based on common product patterns across mature tools:
 
-## What Harvest And FreshBooks Do Well
+- favorites and recent combinations
+- timer-first capture
+- day, week, and calendar switching
+- reminders and manager visibility
+- simple copy behavior for repeated work
+- invoice generation from tracked time
 
-Based on current public product/help docs:
-
-- Harvest leans into favorites, fast timer starts, day/week/calendar views, reminders, approvals, and continuously saved timesheets.
-- FreshBooks leans into day/week/month entry, copy-the-last-timesheet behavior, timer persistence, team review, and invoice generation directly from tracked time.
-
-Useful references:
-
-- Harvest tracking time: https://support.getharvest.com/hc/en-us/articles/26871883335821-Tracking-time-in-Harvest
-- Harvest tracking members: https://support.getharvest.com/hc/en-us/articles/360048181612-Members-Tracking-time
-- Harvest reminders: https://support.getharvest.com/hc/en-us/articles/360058596112-Timesheet-reminders
-- FreshBooks tracking time: https://support.freshbooks.com/hc/en-us/articles/225525527-How-do-I-track-my-time
-- FreshBooks redesigned time tracking: https://www.freshbooks.com/hub/feature-news/redesigned-time-tracking-experience
-- FreshBooks invoice from time tracking: https://support.freshbooks.com/hc/en-us/articles/227602308-How-do-I-generate-an-invoice
-
-## Parity Matrix
+## Capability Matrix
 
 ### Fast Capture
 
-Harvest / FreshBooks:
+Leading products:
 
-- timer on the main time page
-- manual entry in day and week flows
-- recent or favorite project combinations
-- resume from an existing entry
-- fast note entry
+- timer on the main page
+- fast manual entry
+- recent or favorite client/project pairs
+- resume or duplicate familiar work
+- notes without modal churn
 
 Miru now:
 
 - inline desktop timer
-- manual entry
-- weekly row editing
+- desktop entry form
+- recent shortcuts
+- duplicate last entry
 
 Miru gap:
 
-- recent combos
-- resume and duplicate shortcuts
-- true day-first compact flow
+- favorites pinning
+- one-click resume from existing entry rows
+- tighter timer-to-entry bridge
+- stronger day-first compact mode
 
-### Repetition And Weekly Speed
+### Weekly Speed
 
-Harvest / FreshBooks:
+Leading products:
 
-- copy recent rows or timesheet structure
-- duplicate familiar work without reselecting everything
-- fast week navigation
+- copy recent rows
+- copy last week patterns
+- bulk week entry without feeling like spreadsheet punishment
 
 Miru now:
 
-- week selector
-- weekly bulk rows
+- weekly rows
+- copy last week
+- week navigation
 
 Miru gap:
 
-- copy last week rows
-- duplicate prior entry into selected day
-- faster entry presets
+- smarter week templates
+- faster row creation
+- keyboard-first duration flow
+- cleaner all-week review
 
-### Review And Team Visibility
+### Review And Visibility
 
-Harvest / FreshBooks:
+Leading products:
 
-- easy all-entries review
-- team rollups
-- visible day and week totals
+- clear day total
+- clear week total
+- easier all-entries review
 - approvals and reminders
 
 Miru now:
 
-- totals exist
-- admin employee switch exists
+- totals
+- employee switch
+- daily entry cards
 
 Miru gap:
 
-- cleaner all-entries review
-- reminders
-- approval workflow polish
+- all entries review mode
+- missing-time visibility
+- approvals
+- reminder loop
 
 ### Billing Handoff
 
-Harvest / FreshBooks:
+Leading products:
 
-- tracked time converts cleanly into invoice lines
-- billable vs non-billable is obvious
-- review before invoicing is straightforward
+- obvious billable state
+- invoice from tracked time
+- less cleanup before draft invoice
 
 Miru now:
 
-- invoices and subscriptions already exist in-product
-- billable status exists on entries
+- billable state exists
+- invoices are already in product
 
 Miru gap:
 
-- time-to-invoice bridge needs to feel intentional
-- service/task-type to invoice mapping is still weak
+- review tracked time by client/project before invoicing
+- invoice draft from selected entries
+- cleaner service/task mapping into invoice lines
 
-## Recommendation
+## Review Outcomes
 
-Do not chase literal parity feature-by-feature.
+### Product
 
-Build "best fast-path parity" first.
+- keep the scope selective
+- optimize for the full daily workflow, not feature bingo
+- frame Miru as the fastest path from tracked work to invoice
 
-That means:
+### Design
 
-1. Match the speed features users feel every day.
-2. Tighten billing handoff next.
-3. Only then expand approvals, reminders, and integrations.
+- keep the timer visible
+- keep the selected day explicit
+- keep shortcuts above the fold
+- put day review before the heavier weekly editor
 
-This is the right wedge because users judge time tracking in the first 20 seconds, not in the admin settings.
+See [time-tracking-design-shotgun.md](/Users/sward/saeloun/miru-web/docs/time-tracking-design-shotgun.md) for the concrete layout variants and recommended desktop wireframe.
 
-## Plan Review Verdict
+### Engineering
 
-### CEO Review
+- build on the existing `TimeTracking` surface
+- keep controllers thin
+- add billing handoff logic in services/models, not the controller layer
+- add smaller focused endpoints only when the current bootstrap payload becomes the bottleneck
 
-Selective expansion.
+### Main Risks
 
-The 10-star product is not "Miru but with every Harvest menu item."
-
-It is:
-
-- the fastest way for a services team to capture work
-- the cleanest path from tracked work to invoice
-- one product instead of disconnected timer plus billing tools
-
-### Engineering Review
-
-Do not rewrite time tracking.
-
-Use the existing `TimeTracking` surface as the control center and add missing primitives in small batches:
-
-- presets and recent combinations
-- row duplication
-- week copy
-- all-entries review mode
-- billable review and invoice handoff
-
-That keeps blast radius manageable and verification real.
+- duplicating state between timer, day list, and week rows
+- over-fetching when switching days and employees
+- making the page denser without making it faster
+- shipping invoice handoff without a stable billable-selection model
 
 ## Phase Plan
 
-## Phase 1: Fast Capture Parity
+## Phase 1, Fast Capture Parity
 
-Ship this first.
+### Scope
 
-### Features
-
-- recent project/task shortcuts in the entry form
-- duplicate last entry into the selected day
-- resume timer from an existing entry
-- compact day summary under the week selector
-- sticky inline timer on desktop
-- better date clarity:
-  - active week label
-  - selected save date
-  - last week jump
+- sticky inline timer
+- recent shortcuts
+- favorite shortcuts
+- duplicate last entry
+- resume timer from entry row
+- stronger day summary and date clarity
 
 ### Success Criteria
 
-- user can log a repeat entry in under 10 seconds
-- user can start a timer from the main time page with one click
-- user can reuse yesterday's work without reselecting client and project
+- repeat entry in under 10 seconds
+- timer start in one click
+- resume familiar work without reselecting client and project
 
-## Phase 2: Weekly Power-User Parity
+## Phase 2, Weekly Power-User Parity
 
-### Features
+### Scope
 
-- copy rows from most recent week
-- add multiple rows quickly
-- keyboard-first duration entry
-- editable recent rows without losing context
+- copy last week rows
+- copy selected row patterns
+- faster row add flow
+- keyboard-first duration editing
 - compact all-week review drawer
 
 ### Success Criteria
 
-- a user filling a whole week can do it without modal churn
-- repeated client/project rows are one action, not seven
+- a full week can be filled without modal churn
+- repeated client/project rows feel one-action, not seven-action
 
-## Phase 3: Billing Parity
+## Phase 3, Billing Parity
 
-### Features
+### Scope
 
-- review unbilled tracked time by project and client
-- generate invoice draft from selected tracked time
-- keep billable, billed, and non-billable status obvious
-- task type or service mapping into invoice lines
+- unbilled tracked time review by client and project
+- select tracked time and generate invoice draft
+- clear billed, unbilled, non-billable states
+- map service/task to invoice line cleanly
 
 ### Success Criteria
 
-- owner can move from tracked time to invoice draft in one flow
-- no spreadsheet-style cleanup needed before invoicing
+- owner can go from tracked time to invoice draft in one intentional flow
+- no spreadsheet cleanup before invoice generation
 
-## Phase 4: Team Management Parity
+## Phase 4, Team Management Parity
 
-### Features
+### Scope
 
-- timesheet reminders
-- submit and approve timesheets
+- reminders
+- submit timesheet
+- approve timesheet
 - manager review queue
-- overdue or missing-timesheet indicators
+- overdue indicators
 
 ### Success Criteria
 
-- admins can spot missing time without manual checking
+- admins can spot missing time quickly
 - team members know what still needs submission
 
-## Phase 5: Ecosystem Parity
+## Phase 5, Ecosystem And Migration
 
-### Features
+### Scope
 
-- browser extension or MCP-aware desktop capture
-- issue/task deep links on entries
-- import and migration helpers from Harvest/FreshBooks CSV exports
-- mobile parity for Today and Week capture flows
+- CSV import helper for external migrations
+- task and issue deep links on entries
+- MCP and desktop-capture aware entry metadata
+- mobile Today and Week coverage
 
 ### Success Criteria
 
-- teams can adopt Miru without losing existing capture habits
-- time can be started where work happens, not only inside Miru
+- migration into Miru is low-friction
+- people can start time near where they work
 
 ## Immediate Next Build
 
-The next implementation batch should stay small and high-value:
+The next batch should stay small and brutal:
 
-1. Recent project shortcuts in the desktop entry form.
-2. Duplicate last entry into selected day.
-3. Copy rows from most recent week.
+1. favorites on top of recent shortcuts
+2. resume timer from an existing entry row
+3. all-entries review mode for the active week
 
 That is enough to materially change how fast Miru feels without turning this into a rewrite.
 
 ## Non-Goals Right Now
 
 - full desktop native app
-- literal Harvest clone
-- literal FreshBooks clone
-- approvals, reminders, browser extension, and invoice bridge all in one batch
+- literal competitor clone
+- approvals, reminders, browser extension, invoice bridge, and mobile parity all in one implementation batch
 
 That would be scope cosplay.
 
 ## Release Framing
 
-This should be framed publicly as:
+Frame this publicly as:
 
 `Miru Time Tracking 3.1: faster capture, faster repeat work, faster billing`
 
 Not:
 
-`We added parity`
+`We made time tracking faster`
 
 Users care about time saved, not feature bingo.
