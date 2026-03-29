@@ -61,7 +61,15 @@ RSpec.describe "Api::V1::Expense#index", type: :request do
 
       it "returns pagination information in the response" do
         expect(json_response["pagy"]).to eq(
-          { "pages" => 1, "first" => true, "prev" => nil, "next" => nil, "last" => true })
+          {
+            "pages" => 1,
+            "first" => true,
+            "prev" => nil,
+            "next" => nil,
+            "last" => true,
+            "page" => 1,
+            "total" => 2
+          })
       end
 
       it "returns list of categories in the response" do
