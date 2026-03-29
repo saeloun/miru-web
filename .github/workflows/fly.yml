@@ -12,6 +12,11 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: superfly/flyctl-actions/setup-flyctl@master
-      - run:
-          flyctl deploy --config deployment/fly/fly.staging.toml --dockerfile
-          deployment/fly/Dockerfile --remote-only
+      - name: Deploy app
+        run: |
+          if ! grep -Eq '^app *= *".+"' deployment/fly/fly.staging.toml; then
+            echo "No Fly staging app configured in deployment/fly/fly.staging.toml; skipping deploy."
+            exit 0
+          fi
+
+          flyctl deploy --config deployment/fly/fly.staging.toml --dockerfile deployment/fly/Dockerfile --remote-only
