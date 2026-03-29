@@ -26,6 +26,9 @@ json.entries do
             json.project entry[:project]
             json.project_id entry[:project_id]
             json.team_member entry[:team_member]
+            json.source entry[:source]
+            json.source_label entry[:source_label]
+            json.source_metadata entry[:source_metadata]
           else
             json.type "leave"
             json.leave_date CompanyDateFormattingService.new(entry[:leave_date], company:).process

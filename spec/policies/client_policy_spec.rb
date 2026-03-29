@@ -4,7 +4,7 @@ require "rails_helper"
 
 RSpec.describe ClientPolicy, type: :policy do
   let(:company) { create(:company) }
-  let(:client) { create(:client, company:) }
+  let(:client) { create(:client, company:, name: "Beta") }
   let(:admin) { create(:user, current_workspace_id: company.id) }
   let(:employee) { create(:user, current_workspace_id: company.id) }
   let(:owner) { create(:user, current_workspace_id: company.id) }
@@ -81,7 +81,7 @@ RSpec.describe ClientPolicy, type: :policy do
 
   describe "policy_scope" do
     let(:another_company) { create(:company) }
-    let(:client_2) { create(:client, company:) }
+    let(:client_2) { create(:client, company:, name: "Zulu") }
     let!(:client_3) { create(:client, company:, name: "Alpha") }
     let(:client_4) { create(:client, company: another_company) }
     let(:project_1) { create(:project, client:) }
@@ -101,12 +101,12 @@ RSpec.describe ClientPolicy, type: :policy do
     context "when user is an admin/owner/book_keeper" do
       it "returns the list of allowed clients" do
         result = ClientPolicy::Scope.new(admin, company).resolve
-        expect(result.pluck(:id)).to eq([client_3.id, client.id])
+        expect(result.pluck(:name)).to eq(["Alpha", "Beta"])
       end
 
       it "returns the list of allowed clients for book keeper" do
         result = ClientPolicy::Scope.new(book_keeper, company).resolve
-        expect(result.pluck(:id)).to eq([client_3.id, client.id])
+        expect(result.pluck(:name)).to eq(["Alpha", "Beta"])
       end
     end
 
