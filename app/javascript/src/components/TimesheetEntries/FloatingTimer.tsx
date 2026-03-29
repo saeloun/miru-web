@@ -36,6 +36,7 @@ import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 
 interface FloatingTimerProps {
   onSaveEntry?: (entry: any) => void;
+  placement?: "floating" | "inline";
 }
 
 interface TimerState {
@@ -50,9 +51,13 @@ interface TimerState {
 
 const TIMER_STORAGE_KEY = "miru_timer_state";
 
-const FloatingTimer: React.FC<FloatingTimerProps> = ({ onSaveEntry }) => {
+const FloatingTimer: React.FC<FloatingTimerProps> = ({
+  onSaveEntry,
+  placement = "floating",
+}) => {
   const { user, company } = useUserContext();
   const queryClient = useQueryClient();
+  const isInline = placement === "inline";
 
   const [isMinimized, setIsMinimized] = useState(false);
   const [showSaveDialog, setShowSaveDialog] = useState(false);
@@ -255,6 +260,29 @@ const FloatingTimer: React.FC<FloatingTimerProps> = ({ onSaveEntry }) => {
     !timer.isRunning && timer.elapsedTime === 0 && !timer.project;
 
   if (isPristineTimer) {
+    if (isInline) {
+      return (
+        <Card className="mb-4 border border-border bg-card/95 shadow-sm">
+          <CardContent className="flex flex-col gap-3 p-4 lg:flex-row lg:items-center lg:justify-between">
+            <div className="space-y-1">
+              <div className="flex items-center gap-2 text-sm font-semibold text-foreground">
+                <Timer size={18} className="text-primary" />
+                <span>Web timer</span>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                Track live work like Harvest or Toggl, then save it straight
+                into today&apos;s entry list.
+              </p>
+            </div>
+            <Button onClick={startTimer} className="min-w-36 shadow-sm">
+              <Play size={16} className="mr-2" />
+              Start Timer
+            </Button>
+          </CardContent>
+        </Card>
+      );
+    }
+
     return (
       <div className="fixed bottom-6 left-6 z-50">
         <Button onClick={startTimer} className="shadow-lg">
@@ -262,6 +290,157 @@ const FloatingTimer: React.FC<FloatingTimerProps> = ({ onSaveEntry }) => {
           Start Timer
         </Button>
       </div>
+    );
+  }
+
+  if (isInline) {
+    return (
+      <>
+        <Card
+          className={cn(
+            "mb-4 border shadow-sm transition-all duration-300",
+            timer.isRunning
+              ? "border-green-500 bg-green-50/40"
+              : "border-border bg-card/95"
+          )}
+          data-testid="inline-web-timer"
+        >
+          <CardContent className="p-4">
+            <div className="flex flex-col gap-4">
+              <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+                <div className="flex items-center gap-3">
+                  <Timer
+                    size={20}
+                    className={
+                      timer.isRunning
+                        ? "text-green-600"
+                        : "text-muted-foreground"
+                    }
+                  />
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+                      Web Timer
+                    </p>
+                    <p className="font-mono text-3xl font-bold text-foreground">
+                      {formatTime(timer.elapsedTime)}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex flex-wrap gap-2">
+                  {timer.isRunning ? (
+                    <Button size="sm" onClick={pauseTimer} variant="outline">
+                      <Pause size={16} className="mr-1" />
+                      Pause
+                    </Button>
+                  ) : (
+                    <Button size="sm" onClick={startTimer}>
+                      <Play size={16} className="mr-1" />
+                      {timer.elapsedTime > 0 ? "Resume" : "Start"}
+                    </Button>
+                  )}
+                  <Button size="sm" onClick={stopTimer} variant="outline">
+                    <Stop size={16} className="mr-1" />
+                    Stop
+                  </Button>
+                  <Button size="sm" variant="ghost" onClick={discardTimer}>
+                    <X size={16} className="mr-1" />
+                    Reset
+                  </Button>
+                </div>
+              </div>
+
+              <div className="grid gap-3 lg:grid-cols-[minmax(0,280px)_1fr]">
+                <div className="space-y-2">
+                  <Label htmlFor="timer-project-inline" className="text-xs">
+                    Project
+                  </Label>
+                  <Select
+                    value={timer.project}
+                    onValueChange={handleProjectChange}
+                  >
+                    <SelectTrigger id="timer-project-inline" className="h-10">
+                      <SelectValue placeholder="Select project" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {projectsData?.projects.map(project => (
+                        <SelectItem key={project.id} value={project.name}>
+                          {project.name} ({project.client})
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="timer-description-inline" className="text-xs">
+                    Description
+                  </Label>
+                  <Textarea
+                    id="timer-description-inline"
+                    value={timer.description}
+                    onChange={e =>
+                      setTimer(prev => ({
+                        ...prev,
+                        description: e.target.value,
+                      }))
+                    }
+                    placeholder="What are you working on?"
+                    className="min-h-10 text-sm"
+                  />
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Dialog open={showSaveDialog} onOpenChange={setShowSaveDialog}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Save Time Entry</DialogTitle>
+              <DialogDescription>
+                You tracked {formatTime(timer.elapsedTime)}. Would you like to
+                save this as a time entry?
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="space-y-4">
+              <div>
+                <Label>Project</Label>
+                <p className="text-sm text-gray-600">
+                  {timer.project} ({timer.client})
+                </p>
+              </div>
+
+              <div>
+                <Label>Duration</Label>
+                <p className="text-sm text-gray-600">
+                  {formatTime(timer.elapsedTime)}
+                </p>
+              </div>
+
+              {timer.description && (
+                <div>
+                  <Label>Description</Label>
+                  <p className="text-sm text-gray-600">{timer.description}</p>
+                </div>
+              )}
+            </div>
+
+            <DialogFooter>
+              <Button variant="outline" onClick={discardTimer}>
+                Discard
+              </Button>
+              <Button
+                onClick={handleSaveEntry}
+                disabled={saveTimerMutation.isPending || !timer.project}
+              >
+                {saveTimerMutation.isPending ? "Saving..." : "Save Entry"}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      </>
     );
   }
 

@@ -673,6 +673,12 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
               setWeekDay={setWeekDay}
               weeklyTotalHours={weeklyTotalHours}
             />
+            {isDesktop && (
+              <FloatingTimer
+                onSaveEntry={handleTimerSaved}
+                placement="inline"
+              />
+            )}
             {view === "week" && (
               <WeekDaySelector
                 dayInfo={dayInfo}
@@ -808,7 +814,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
         setSelectedFullDate={setSelectedFullDate}
         setUpdateView={setUpdateView}
       />
-      <FloatingTimer onSaveEntry={handleTimerSaved} />
+      {!isDesktop && <FloatingTimer onSaveEntry={handleTimerSaved} />}
     </div>
   );
 
