@@ -21,6 +21,12 @@ interface EntryDetailsModalProps {
   setEditEntryId: (id: number) => void;
   handleDeleteEntry: (id: number) => void;
   handleDuplicate: (entry: TimeEntry) => void;
+  handleResumeTimer: (entry: {
+    client: string;
+    project: string;
+    projectId: number;
+    note?: string;
+  }) => void;
   setNewEntryView: (view: boolean) => void;
   newEntryView: boolean;
   // Form props
@@ -48,6 +54,7 @@ const EntryDetailsModal: React.FC<EntryDetailsModalProps> = ({
   setEditEntryId,
   handleDeleteEntry,
   handleDuplicate,
+  handleResumeTimer,
   setNewEntryView,
   newEntryView,
   // Form props
@@ -146,8 +153,10 @@ const EntryDetailsModal: React.FC<EntryDetailsModalProps> = ({
                 ) : (
                   <EntryCard
                     key={entry.id}
+                    projectId={entry.project_id}
                     handleDeleteEntry={handleDeleteEntry}
                     handleDuplicate={handleDuplicate}
+                    handleResumeTimer={handleResumeTimer}
                     setEditEntryId={setEditEntryId}
                     setNewEntryView={setNewEntryView}
                     {...entry}

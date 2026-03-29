@@ -24,6 +24,7 @@ import {
 import { Card } from "../ui/card";
 import { cn } from "../../lib/utils";
 import { getValueFromLocalStorage, setToLocalStorage } from "utils/storage";
+import { Star, StarHalf } from "phosphor-react";
 
 import MobileEntryForm from "./MobileView/MobileEntryForm";
 
@@ -76,6 +77,20 @@ const AddEntry: React.FC<Iprops> = ({
   const displaySelectedDate = parsedSelectedDate.isValid()
     ? parsedSelectedDate.format(`dddd, ${dateFormat}`)
     : selectedFullDate;
+  const favoriteStorageKey = `miru_time_entry_favorites_${selectedEmployeeId}`;
+  const [favoriteShortcutKeys, setFavoriteShortcutKeys] = useState<string[]>(
+    () => {
+      if (typeof window === "undefined") return [];
+
+      try {
+        const saved = localStorage.getItem(favoriteStorageKey);
+
+        return saved ? JSON.parse(saved) : [];
+      } catch {
+        return [];
+      }
+    }
+  );
 
   const allEntries = Object.values(entryList || {})
     .flat()
@@ -110,6 +125,13 @@ const AddEntry: React.FC<Iprops> = ({
     }, [])
     .slice(0, 4);
   const latestTrackedEntry = allEntries[0];
+  const favoriteEntryShortcuts = recentEntryShortcuts.filter(entry =>
+    favoriteShortcutKeys.includes(entry.shortcutKey)
+  );
+
+  const visibleRecentEntryShortcuts = recentEntryShortcuts.filter(
+    entry => !favoriteShortcutKeys.includes(entry.shortcutKey)
+  );
 
   const handleFillData = () => {
     if (!editEntryId) return;
@@ -264,6 +286,15 @@ const AddEntry: React.FC<Iprops> = ({
     }
   }, [debouncedNote, duration, client, project, projectId, taskType]);
 
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    localStorage.setItem(
+      favoriteStorageKey,
+      JSON.stringify(favoriteShortcutKeys)
+    );
+  }, [favoriteShortcutKeys, favoriteStorageKey]);
+
   const applyRecentEntry = entry => {
     setClient(entry.client);
     setProject(entry.project);
@@ -271,6 +302,14 @@ const AddEntry: React.FC<Iprops> = ({
     setTaskType(entry.task_type || "development");
     setNote(entry.note || "");
     setDuration(minToHHMM(entry.duration || 0));
+  };
+
+  const toggleFavoriteShortcut = shortcutKey => {
+    setFavoriteShortcutKeys(current =>
+      current.includes(shortcutKey)
+        ? current.filter(key => key !== shortcutKey)
+        : [...current, shortcutKey].slice(-6)
+    );
   };
 
   const handleDuplicateLastEntry = async () => {
@@ -332,7 +371,51 @@ const AddEntry: React.FC<Iprops> = ({
             </Button>
           )}
         </div>
-        {isNewEntry && recentEntryShortcuts.length > 0 && (
+        {isNewEntry && favoriteEntryShortcuts.length > 0 && (
+          <div className="mb-4 rounded-lg border border-border bg-card/60 px-4 py-4">
+            <div className="mb-3">
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+                Favorites
+              </p>
+              <p className="text-sm font-medium text-foreground">
+                Pin the combinations you use all the time.
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {favoriteEntryShortcuts.map(entry => (
+                <div
+                  key={entry.shortcutKey}
+                  className="flex max-w-full items-center gap-1 rounded-md border border-border bg-background p-1"
+                >
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    data-testid="favorite-entry-shortcut"
+                    className="h-auto max-w-full justify-start whitespace-normal px-3 py-2 text-left"
+                    onClick={() => applyRecentEntry(entry)}
+                  >
+                    <span className="truncate">
+                      {entry.client} / {entry.project} ·{" "}
+                      {minToHHMM(entry.duration)}
+                    </span>
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8 shrink-0"
+                    data-testid="favorite-entry-toggle"
+                    onClick={() => toggleFavoriteShortcut(entry.shortcutKey)}
+                  >
+                    <StarHalf className="h-4 w-4" weight="fill" />
+                  </Button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+        {isNewEntry && visibleRecentEntryShortcuts.length > 0 && (
           <div className="mb-6 rounded-lg border border-border bg-card/60 px-4 py-4">
             <div className="mb-3 flex items-center justify-between gap-3">
               <div>
@@ -346,21 +429,34 @@ const AddEntry: React.FC<Iprops> = ({
               </div>
             </div>
             <div className="flex flex-wrap gap-2">
-              {recentEntryShortcuts.map(entry => (
-                <Button
-                  key={entry.shortcutKey}
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  data-testid="recent-entry-shortcut"
-                  className="h-auto max-w-full justify-start whitespace-normal px-3 py-2 text-left"
-                  onClick={() => applyRecentEntry(entry)}
-                >
-                  <span className="truncate">
-                    {entry.client} / {entry.project} ·{" "}
-                    {minToHHMM(entry.duration)}
-                  </span>
-                </Button>
+              {visibleRecentEntryShortcuts.map(entry => (
+                <div key={entry.shortcutKey}>
+                  <div className="flex max-w-full items-center gap-1 rounded-md border border-border bg-background p-1">
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      data-testid="recent-entry-shortcut"
+                      className="h-auto max-w-full justify-start whitespace-normal px-3 py-2 text-left"
+                      onClick={() => applyRecentEntry(entry)}
+                    >
+                      <span className="truncate">
+                        {entry.client} / {entry.project} ·{" "}
+                        {minToHHMM(entry.duration)}
+                      </span>
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 shrink-0"
+                      data-testid="favorite-entry-toggle"
+                      onClick={() => toggleFavoriteShortcut(entry.shortcutKey)}
+                    >
+                      <Star className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
               ))}
             </div>
           </div>

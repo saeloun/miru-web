@@ -33,27 +33,33 @@ import { toast } from "sonner";
 import { useUserContext } from "../../context/UserContext";
 import { timesheetEntryApi } from "apis/api";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
+import {
+  loadStoredTimerState,
+  persistTimerState,
+  clearStoredTimerState,
+  defaultTimerState,
+} from "utils/timeTrackingTimer";
 
 interface FloatingTimerProps {
   onSaveEntry?: (entry: any) => void;
   placement?: "floating" | "inline";
+  externalSyncKey?: number;
+  resumeFromEntry?: {
+    client: string;
+    project: string;
+    projectId: number;
+    description?: string;
+    resumeAt: number;
+  } | null;
 }
 
-interface TimerState {
-  isRunning: boolean;
-  startTime: number | null;
-  elapsedTime: number;
-  project: string;
-  client: string;
-  description: string;
-  projectId: number;
-}
-
-const TIMER_STORAGE_KEY = "miru_timer_state";
+type TimerState = ReturnType<typeof defaultTimerState>;
 
 const FloatingTimer: React.FC<FloatingTimerProps> = ({
   onSaveEntry,
   placement = "floating",
+  externalSyncKey = 0,
+  resumeFromEntry = null,
 }) => {
   const { user, company } = useUserContext();
   const queryClient = useQueryClient();
@@ -61,27 +67,7 @@ const FloatingTimer: React.FC<FloatingTimerProps> = ({
 
   const [isMinimized, setIsMinimized] = useState(false);
   const [showSaveDialog, setShowSaveDialog] = useState(false);
-  const [timer, setTimer] = useState<TimerState>(() => {
-    const saved = localStorage.getItem(TIMER_STORAGE_KEY);
-    if (saved) {
-      const parsed = JSON.parse(saved);
-
-      return {
-        ...parsed,
-        startTime: parsed.isRunning ? Date.now() - parsed.elapsedTime : null,
-      };
-    }
-
-    return {
-      isRunning: false,
-      startTime: null,
-      elapsedTime: 0,
-      project: "",
-      client: "",
-      description: "",
-      projectId: 0,
-    };
-  });
+  const [timer, setTimer] = useState<TimerState>(() => loadStoredTimerState());
 
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
@@ -115,10 +101,27 @@ const FloatingTimer: React.FC<FloatingTimerProps> = ({
     },
   });
 
-  // Save timer state to localStorage
   useEffect(() => {
-    localStorage.setItem(TIMER_STORAGE_KEY, JSON.stringify(timer));
+    persistTimerState(timer);
   }, [timer]);
+
+  useEffect(() => {
+    setTimer(loadStoredTimerState());
+  }, [externalSyncKey]);
+
+  useEffect(() => {
+    if (!resumeFromEntry) return;
+
+    setTimer({
+      isRunning: true,
+      startTime: resumeFromEntry.resumeAt,
+      elapsedTime: 0,
+      client: resumeFromEntry.client,
+      project: resumeFromEntry.project,
+      description: resumeFromEntry.description || "",
+      projectId: resumeFromEntry.projectId,
+    });
+  }, [resumeFromEntry]);
 
   // Timer logic
   useEffect(() => {
@@ -183,16 +186,8 @@ const FloatingTimer: React.FC<FloatingTimerProps> = ({
   };
 
   const resetTimer = () => {
-    setTimer({
-      isRunning: false,
-      startTime: null,
-      elapsedTime: 0,
-      project: "",
-      client: "",
-      description: "",
-      projectId: 0,
-    });
-    localStorage.removeItem(TIMER_STORAGE_KEY);
+    setTimer(defaultTimerState());
+    clearStoredTimerState();
     toast.info("Timer reset");
   };
 
