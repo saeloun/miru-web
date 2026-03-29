@@ -77,6 +77,40 @@ const AddEntry: React.FC<Iprops> = ({
     ? parsedSelectedDate.format(`dddd, ${dateFormat}`)
     : selectedFullDate;
 
+  const allEntries = Object.values(entryList || {})
+    .flat()
+    .sort((left: any, right: any) => {
+      const leftTime = dayjs(left.work_date).valueOf();
+      const rightTime = dayjs(right.work_date).valueOf();
+
+      if (rightTime !== leftTime) return rightTime - leftTime;
+
+      return (right.id || 0) - (left.id || 0);
+    });
+
+  const recentEntryShortcuts = allEntries
+    .reduce((entries: any[], entry: any) => {
+      const shortcutKey = [
+        entry.project_id,
+        entry.task_type || "development",
+        (entry.note || "").trim(),
+        entry.duration,
+      ].join("|");
+
+      if (entries.some(item => item.shortcutKey === shortcutKey)) {
+        return entries;
+      }
+
+      entries.push({
+        ...entry,
+        shortcutKey,
+      });
+
+      return entries;
+    }, [])
+    .slice(0, 4);
+  const latestTrackedEntry = allEntries[0];
+
   const handleFillData = () => {
     if (!editEntryId) return;
     const isoDate = dayjs(selectedFullDate).format("YYYY-MM-DD");
@@ -217,6 +251,50 @@ const AddEntry: React.FC<Iprops> = ({
     }
   }, [debouncedNote, duration, client, project, projectId, taskType]);
 
+  const applyRecentEntry = entry => {
+    setClient(entry.client);
+    setProject(entry.project);
+    setProjectId(entry.project_id);
+    setTaskType(entry.task_type || "development");
+    setNote(entry.note || "");
+    setDuration(minToHHMM(entry.duration || 0));
+  };
+
+  const handleDuplicateLastEntry = async () => {
+    if (!latestTrackedEntry) return;
+
+    try {
+      setSubmitting(true);
+      const res = await timesheetEntryApi.create(
+        {
+          project_id: latestTrackedEntry.project_id,
+          timesheet_entry: {
+            work_date: dayjs(selectedFullDate).format("YYYY-MM-DD"),
+            duration: latestTrackedEntry.duration,
+            note: latestTrackedEntry.note,
+            task_type: latestTrackedEntry.task_type || "development",
+            bill_status:
+              latestTrackedEntry.bill_status === "billed"
+                ? "unbilled"
+                : latestTrackedEntry.bill_status,
+          },
+        },
+        selectedEmployeeId
+      );
+
+      if (res.status === 200) {
+        await refreshVisibleEntries();
+        setNewEntryView(false);
+        setUpdateView(true);
+        handleAddEntryDateChange(dayjs(selectedFullDate));
+      }
+    } catch (error) {
+      Toastr.error(error);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   return isDesktop ? (
     <Card className="weekly-entries w-full shadow-sm border border-border bg-card backdrop-blur-sm rounded-lg">
       <div className={`p-8 ${editEntryId ? "mt-4" : ""}`}>
@@ -229,7 +307,51 @@ const AddEntry: React.FC<Iprops> = ({
               {displaySelectedDate}
             </p>
           </div>
+          {isNewEntry && latestTrackedEntry && (
+            <Button
+              variant="outline"
+              size="sm"
+              data-testid="duplicate-last-entry"
+              disabled={submitting}
+              onClick={handleDuplicateLastEntry}
+            >
+              Duplicate Last Entry
+            </Button>
+          )}
         </div>
+        {isNewEntry && recentEntryShortcuts.length > 0 && (
+          <div className="mb-6 rounded-lg border border-border bg-card/60 px-4 py-4">
+            <div className="mb-3 flex items-center justify-between gap-3">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+                  Recent Shortcuts
+                </p>
+                <p className="text-sm font-medium text-foreground">
+                  Reuse recent work without reselecting the same client and
+                  project.
+                </p>
+              </div>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {recentEntryShortcuts.map(entry => (
+                <Button
+                  key={entry.shortcutKey}
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  data-testid="recent-entry-shortcut"
+                  className="h-auto max-w-full justify-start whitespace-normal px-3 py-2 text-left"
+                  onClick={() => applyRecentEntry(entry)}
+                >
+                  <span className="truncate">
+                    {entry.client} / {entry.project} ·{" "}
+                    {minToHHMM(entry.duration)}
+                  </span>
+                </Button>
+              ))}
+            </div>
+          </div>
+        )}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Left Column - Client and Project Selection */}
           <div className="lg:col-span-2 space-y-6">

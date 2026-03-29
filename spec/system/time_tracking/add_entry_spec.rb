@@ -208,4 +208,76 @@ RSpec.describe "Time Tracking - Add Entry", type: :system, js: true do
       /selected/i
     )
   end
+
+  it "prefills the form from a recent shortcut and duplicates the last entry into the selected day" do
+    recent_note = "Recent shortcut work"
+    create(
+      :timesheet_entry,
+      user:,
+      project:,
+      work_date: Date.current - 1.day,
+      duration: 95,
+      note: recent_note
+    )
+
+    visit "/time-tracking"
+    expect(page).to have_css("#react-root", wait: 10)
+    switch_to("Week")
+
+    click_button "Add Entry"
+    expect(page).to have_css("[data-testid='recent-entry-shortcut']", wait: 10)
+    first("[data-testid='recent-entry-shortcut']").click
+
+    expect(combobox_for("Client")).to have_text(client.name, wait: 10)
+    expect(combobox_for("Project")).to have_text(project.name, wait: 10)
+    expect(find("input[name='timeInput']", wait: 10).value).to eq("01:35")
+    expect(find("textarea[name='notes']", wait: 10).value).to eq(recent_note)
+
+    expect do
+      find("[data-testid='duplicate-last-entry']", wait: 10).click
+      expect(page).to have_content(recent_note, wait: 10)
+    end.to change {
+      TimesheetEntry.where(
+        user:,
+        project:,
+        work_date: Date.current,
+        note: recent_note
+      ).count
+    }.by(1)
+  end
+
+  it "copies last week's entries into the current week" do
+    source_note = "Copied from last week"
+    source_date = Date.current.beginning_of_week(:monday) - 5.days
+    target_date = source_date + 7.days
+
+    create(
+      :timesheet_entry,
+      user:,
+      project:,
+      work_date: source_date,
+      duration: 120,
+      note: source_note
+    )
+
+    visit "/time-tracking"
+    expect(page).to have_css("#react-root", wait: 10)
+    switch_to("Week")
+
+    expect do
+      find("[data-testid='copy-last-week']", wait: 10).click
+      expect(page).to have_content("Copied 1 entries from last week", wait: 10)
+    end.to change {
+      TimesheetEntry.where(
+        user:,
+        project:,
+        work_date: target_date,
+        note: source_note
+      ).count
+    }.by(1)
+
+    target_button_label = "Select #{target_date.strftime('%a, %b %-d')}"
+    find("button[aria-label^='#{target_button_label}']", wait: 10).click
+    expect(page).to have_content(source_note, wait: 10)
+  end
 end
