@@ -68,6 +68,23 @@ RSpec.describe "Time Tracking Entries", type: :system, js: true do
         expect(page).to have_content("github", wait: 10)
       end
     end
+
+    it "resumes the timer from an existing entry" do
+      with_forgery_protection do
+        visit "/time-tracking"
+
+        find("[data-testid='resume-timer-entry']", wait: 10).click
+
+        expect(page).to have_css("[data-testid='inline-web-timer']", wait: 10)
+        expect(page).to have_text("Pause", wait: 10)
+        expect(page).to have_text("Alpha Project", wait: 10)
+        expect(page).to have_field(
+          "timer-description-inline",
+          with: "Worked on feature implementation",
+          wait: 10
+        )
+      end
+    end
   end
 
   context "with multiple projects in the same day" do
