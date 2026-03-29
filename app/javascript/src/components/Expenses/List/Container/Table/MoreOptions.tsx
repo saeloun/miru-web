@@ -1,10 +1,9 @@
 import React from "react";
 
+import { DownloadAll } from "components/Expenses/utils";
 import { DeleteIcon, EditIcon, DownloadSimpleIcon } from "miruIcons";
 import { useNavigate } from "react-router-dom";
 import { Tooltip, Modal, Button } from "StyledComponents";
-
-import { DownloadAll } from "components/Expenses/utils";
 
 const MoreOptions = ({
   expense,
@@ -17,7 +16,7 @@ const MoreOptions = ({
 
   return isDesktop ? (
     <div
-      className="absolute bottom-16 right-0 hidden items-center justify-between rounded-xl border-2 border-miru-gray-200 bg-white lg:w-28 lg:p-2 lg:group-hover:flex xl:w-40 xl:p-3"
+      className="absolute bottom-16 right-0 hidden items-center justify-between rounded-xl border-2 border-border bg-white lg:w-28 lg:p-2 lg:group-hover:flex xl:w-40 xl:p-3"
       onClick={e => e.stopPropagation()}
     >
       <Tooltip content="Download">
@@ -33,7 +32,7 @@ const MoreOptions = ({
       </Tooltip>
       <Tooltip content="Edit">
         <Button
-          className="rounded p-2 text-miru-han-purple-1000 hover:bg-miru-gray-100"
+          className="rounded p-2 text-primary hover:bg-muted"
           style="ternary"
           onClick={e => {
             e.stopPropagation();
@@ -62,7 +61,7 @@ const MoreOptions = ({
       onClose={() => setShowMoreOptions(false)}
     >
       <ul className="shadow-2 w-full rounded-lg bg-white">
-        <li className="flex cursor-pointer items-center py-2 text-miru-han-purple-1000">
+        <li className="flex cursor-pointer items-center py-2 text-primary">
           <DownloadSimpleIcon className="mr-4" size={16} /> Download Expense
         </li>
       </ul>

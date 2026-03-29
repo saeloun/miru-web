@@ -23,7 +23,7 @@ const Header = ({ invoice }) => {
             }}
           >
             <ArrowLeftIcon
-              className="mr-4 text-miru-dark-purple-1000"
+              className="mr-4 text-foreground"
               size={16}
               weight="bold"
             />

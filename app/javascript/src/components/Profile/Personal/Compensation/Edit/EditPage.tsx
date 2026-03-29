@@ -9,7 +9,6 @@ import {
 } from "miruIcons";
 import "react-phone-number-input/style.css";
 import { Button } from "StyledComponents";
-
 import { CustomInputText } from "common/CustomInputText";
 import { ErrorSpan } from "common/ErrorSpan";
 
@@ -26,13 +25,11 @@ const EditPage = ({
   currency,
   errDetails,
 }) => (
-  <div className="mt-4 h-full bg-miru-gray-100 px-10">
-    <div className="flex border-b border-b-miru-gray-400 py-10">
+  <div className="mt-4 h-full bg-muted px-10">
+    <div className="flex border-b border-b-border py-10">
       <div className="flex w-1/5 pr-4">
         <img className="mr-4 mt-1 h-4 w-4" src={EarningsIconSVG} />
-        <span className="text-sm font-medium text-miru-dark-purple-1000">
-          Earnings
-        </span>
+        <span className="text-sm font-medium text-foreground">Earnings</span>
       </div>
       <div className="w-10/12">
         {earnings.length > 0 &&
@@ -55,7 +52,7 @@ const EditPage = ({
                   />
                   {errDetails.earning_type_err && (
                     <ErrorSpan
-                      className="text-xs text-red-600"
+                      className="text-xs text-destructive"
                       message={errDetails.earning_type_err}
                     />
                   )}
@@ -73,14 +70,14 @@ const EditPage = ({
                   />
                   {errDetails.earning_amount_err && (
                     <ErrorSpan
-                      className="text-xs text-red-600"
+                      className="text-xs text-destructive"
                       message={errDetails.earning_amount_err}
                     />
                   )}
                 </div>
               </div>
               <Button
-                className="rounded p-1vh hover:bg-miru-dark-purple-100"
+                className="rounded p-1vh hover:bg-muted"
                 style="ternary"
                 onClick={() => handleDeleteEarning(earning)}
               >
@@ -100,12 +97,10 @@ const EditPage = ({
         </div>
       </div>
     </div>
-    <div className="flex border-b border-b-miru-gray-400 py-10">
+    <div className="flex border-b border-b-border py-10">
       <div className="flex w-1/5 pr-4">
         <img className="mr-4 mt-1 h-4 w-4" src={DeductionIconSVG} />
-        <span className="text-sm font-medium text-miru-dark-purple-1000">
-          Deductions
-        </span>
+        <span className="text-sm font-medium text-foreground">Deductions</span>
       </div>
       <div className="w-10/12">
         {deductions.length > 0 &&
@@ -128,7 +123,7 @@ const EditPage = ({
                   />
                   {errDetails.deduction_type_err && (
                     <ErrorSpan
-                      className="text-xs text-red-600"
+                      className="text-xs text-destructive"
                       message={errDetails.deduction_type_err}
                     />
                   )}
@@ -146,14 +141,14 @@ const EditPage = ({
                   />
                   {errDetails.deduction_amount_err && (
                     <ErrorSpan
-                      className="text-xs text-red-600"
+                      className="text-xs text-destructive"
                       message={errDetails.deduction_amount_err}
                     />
                   )}
                 </div>
               </div>
               <Button
-                className="rounded p-1vh hover:bg-miru-dark-purple-100"
+                className="rounded p-1vh hover:bg-muted"
                 style="ternary"
                 onClick={() => handleDeleteDeduction(deduction)}
               >
@@ -176,16 +171,16 @@ const EditPage = ({
     <div className="flex py-10">
       <div className="flex w-1/2 py-5 lg:w-1/5 lg:py-0">
         <CoinsIcon
-          className="mr-4 mt-1 text-miru-dark-purple-1000"
+          className="mr-4 mt-1 text-foreground"
           size={16}
           weight="bold"
         />
-        <span className="flex flex-wrap text-sm font-medium text-miru-dark-purple-1000">
+        <span className="flex flex-wrap text-sm font-medium text-foreground">
           Total
         </span>
       </div>
       <div className="flex w-1/2 flex-col justify-center lg:w-full lg:items-end">
-        <span className="w-full text-xl font-medium text-miru-dark-purple-1000 lg:w-1/2 lg:text-2xl">
+        <span className="w-full text-xl font-medium text-foreground lg:w-1/2 lg:text-2xl">
           {currencyFormat(currency, total)}
         </span>
       </div>

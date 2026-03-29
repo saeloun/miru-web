@@ -1,16 +1,15 @@
 import React from "react";
 
+import { invoicesApi } from "apis/api";
 import { XIcon } from "miruIcons";
 import { useNavigate } from "react-router-dom";
 import { Modal, Toastr } from "StyledComponents";
-
-import invoicesApi from "apis/invoices";
 
 const ConnectPaymentGateway = ({
   setShowConnectPaymentDialog,
   showConnectPaymentDialog,
   invoice,
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
+
   setIsSending = _val => {},
   isInvoiceEmail = false,
 }) => {
@@ -42,7 +41,7 @@ const ConnectPaymentGateway = ({
       <div className="mt-2 mb-4 flex items-center justify-between">
         <h6 className="text-2xl font-bold">No payment gateway connected</h6>
         <button
-          className="text-miru-gray-1000"
+          className="text-foreground"
           type="button"
           onClick={() => setShowConnectPaymentDialog(false)}
         >

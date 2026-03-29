@@ -1,0 +1,31 @@
+version: "3.9"
+
+# Docker Compose for testing Solid Queue connection failure handling
+# Usage:
+#   1. Start: docker compose -f docker-compose.test-connection.yml up -d
+#   2. Run migrations: DB_HOST=localhost DB_USER=postgres DB_PASS=postgres bundle exec rails db:prepare
+#   3. Start Solid Queue: DB_HOST=localhost DB_USER=postgres DB_PASS=postgres bundle exec rake solid_queue:start
+#   4. Kill database: docker compose -f docker-compose.test-connection.yml kill test-postgres
+#   5. Observe Solid Queue behavior (should attempt reconnection)
+#   6. Restart database: docker compose -f docker-compose.test-connection.yml up -d test-postgres
+#   7. Cleanup: docker compose -f docker-compose.test-connection.yml down -v
+
+services:
+  test-postgres:
+    image: postgres:13.8
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: miru_web_development
+    volumes:
+      - test-postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  test-postgres-data:

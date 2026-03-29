@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-/* eslint-disable no-unused-vars */
-
 export enum ApiStatus {
   IDLE = "idle",
   LOADING = "loading",
@@ -23,19 +20,24 @@ export enum Paths {
   SIGNUP_SUCCESS = "/signup/success",
   LOGIN = "/login",
   SIGN_IN = "/user/sign_in",
+  DASHBOARD = "/dashboard",
   CLIENTS = "/clients",
   INVOICES = "/invoices/*",
   REPORTS = "/reports",
   PROJECTS = "/projects",
   SUBSCRIPTIONS = "/subscriptions",
   PAYMENTS = "/payments",
+  PAYMENT_SUCCESS = "/payments/success",
   TIME_TRACKING = "/time-tracking",
   TEAM = "/team/*",
-  TEAMS = "/teams/*",
   EXPENSES = "/expenses",
   SETTINGS = "/settings/*",
   AUTHORIZATION = "/authorization",
-  Leave_Management = "/leave-management",
+  Leave_Management = "/settings/leaves",
+  INVALID_LINK = "/invalid_link",
+  PUBLIC_INVOICE = "/invoice/:id",
+  EMAIL_VERIFICATION = "/email_confirmation",
+  EMAIL_VERIFICATION_SUCCESS = "/email_verification_success",
 }
 
 export enum BILL_STATUS {
@@ -66,7 +68,9 @@ export enum LocalStorageKeys {
 }
 
 export const MIRU_APP_URL = "https://miru.so/";
-export const MIRU_APP_SUPPORT_EMAIL_ID = "mailto:hello@saeloun.com";
+export const MIRU_APP_SUPPORT_EMAIL = "hello@saeloun.com";
+export const MIRU_APP_SUPPORT_EMAIL_ID = `mailto:${MIRU_APP_SUPPORT_EMAIL}`;
+export const MIRU_GA_MEASUREMENT_ID = "G-29DMJEV7QX";
 export const GOOGLE_PRIVACY_URL =
   "https://policies.google.com/privacy?hl=en-US";
 export const AWS_PRIVACY_URL = "https://aws.amazon.com/privacy/";

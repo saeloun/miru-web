@@ -14,7 +14,7 @@ const log = ({ logs }) => {
       return "p-0";
     }
 
-    return "pb-4 border-b border-miru-gray-200";
+    return "pb-4 border-b border-border";
   };
 
   return (
@@ -24,7 +24,7 @@ const log = ({ logs }) => {
           key={index}
           className={`${getPadding(
             index
-          )} relative border-l border-dashed border-miru-gray-1000 pl-6`}
+          )} relative border-l border-dashed border-border pl-6`}
         >
           <div
             className={`absolute ${index == 0 ? "top-0" : "top-5"} -left-2.5`}
@@ -41,10 +41,10 @@ const log = ({ logs }) => {
             </svg>
           </div>
           <div className={`flex flex-col ${getBorder(index)}`}>
-            <span className="font-base text-sm capitalize text-miru-dark-purple-1000">
+            <span className="font-base text-sm capitalize text-foreground">
               {log.message}
             </span>
-            <span className="mt-2 text-xs font-medium text-miru-dark-purple-200">
+            <span className="mt-2 text-xs font-medium text-muted-foreground">
               {log.time}
             </span>
           </div>

@@ -9,11 +9,18 @@ default: &default
         weekly_reminder:
           class: WeeklyReminderToUserJob
           schedule: '0 14 * * 1 Asia/Kolkata' # Runs every Monday at 14:00
+        sync_stripe_subscriptions:
+          class: SyncStripeSubscriptionsJob
+          schedule: '0 1 * * *'
   workers:
-    - queues: "*"
+    - queues: default
       threads: 5
       processes: 1
       polling_interval: 0.1
+    - queues: billing_sync
+      threads: 1
+      processes: 1
+      polling_interval: 0.5
 
 development:
  <<: *default
@@ -22,4 +29,28 @@ test:
  <<: *default
 
 production:
- <<: *default
+  dispatchers:
+    - polling_interval: <%= ENV.fetch("SOLID_QUEUE_DISPATCHER_POLLING_INTERVAL", "5").to_i %>
+      batch_size: <%= ENV.fetch("SOLID_QUEUE_DISPATCHER_BATCH_SIZE", "100").to_i %>
+      recurring_tasks:
+        update_invoice_status:
+          class: UpdateInvoiceStatusToOverdueJob
+          schedule: '0 0 * * *'
+        weekly_reminder:
+          class: WeeklyReminderToUserJob
+          schedule: '0 14 * * 1 Asia/Kolkata'
+        sync_stripe_subscriptions:
+          class: SyncStripeSubscriptionsJob
+          schedule: '0 1 * * *'
+        database_backup:
+          class: DatabaseBackupJob
+          schedule: '<%= ENV.fetch("DATABASE_BACKUP_CRON", "*/30 * * * *") %>'
+  workers:
+    - queues: default
+      threads: <%= ENV.fetch("SOLID_QUEUE_THREADS", "3").to_i %>
+      processes: <%= ENV.fetch("SOLID_QUEUE_PROCESSES", "1").to_i %>
+      polling_interval: <%= ENV.fetch("SOLID_QUEUE_WORKER_POLLING_INTERVAL", "0.5").to_f %>
+    - queues: billing_sync
+      threads: <%= ENV.fetch("SOLID_QUEUE_BILLING_SYNC_THREADS", "1").to_i %>
+      processes: 1
+      polling_interval: <%= ENV.fetch("SOLID_QUEUE_WORKER_POLLING_INTERVAL", "0.5").to_f %>

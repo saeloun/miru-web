@@ -12,6 +12,10 @@ class Users::DevicePolicy < ApplicationPolicy
     show?
   end
 
+  def destroy?
+    update?
+  end
+
   def index?
     (record.employed_at?(user.current_workspace_id) &&
     user.has_any_role?(

@@ -1,21 +1,18 @@
+import { currencyList } from "constants/currencyList";
+
 import React, { useCallback, useEffect, useState } from "react";
 
+import { companiesApi, companyProfileApi } from "apis/api";
+import Loader from "common/Loader/index";
+import { useUserContext } from "context/UserContext";
 import { useDropzone } from "react-dropzone";
 import { useNavigate } from "react-router-dom";
 import { Toastr } from "StyledComponents";
+import { sendGAPageView } from "utils/googleAnalytics";
 import worldCountries from "world-countries";
 import * as Yup from "yup";
 
-import companiesApi from "apis/companies";
-import companyProfileApi from "apis/companyProfile";
-import Loader from "common/Loader/index";
-import { currencyList } from "constants/currencyList";
-import { useUserContext } from "context/UserContext";
-import { sendGAPageView } from "utils/googleAnalytics";
-
-import { StaticPage } from "./StaticPage";
-
-import EditHeader from "../../Common/EditHeader";
+import OrgEditForm from "./OrgEditForm";
 
 const phoneRegExp =
   /^((\+\d{1,3}(-| )?\(?\d\)?(-| )?\d{1,3})|(\(?\d{2,3}\)?))(-| )?(\d{3,4})(-| )?(\d{4})(( x| ext)\d{1,5}){0,1}$/;
@@ -96,6 +93,13 @@ const initialState = {
   logo: null,
   companyWorkingHours: "0",
   companyWorkingDays: "0",
+  bankName: "",
+  bankAccountNumber: "",
+  bankRoutingNumber: "",
+  bankSwiftCode: "",
+  taxId: "",
+  vatNumber: "",
+  gstNumber: "",
 };
 
 const errorState = {
@@ -210,6 +214,13 @@ const OrgEdit = () => {
       logo: null,
       companyWorkingHours: companyDetails.working_hours,
       companyWorkingDays: companyDetails.working_days,
+      bankName: companyDetails.bank_name || "",
+      bankAccountNumber: companyDetails.bank_account_number || "",
+      bankRoutingNumber: companyDetails.bank_routing_number || "",
+      bankSwiftCode: companyDetails.bank_swift_code || "",
+      taxId: companyDetails.tax_id || "",
+      vatNumber: companyDetails.vat_number || "",
+      gstNumber: companyDetails.gst_number || "",
     };
 
     setOrgDetails(organizationSchema);
@@ -468,6 +479,24 @@ const OrgEdit = () => {
       formD.append("company[working_hours]", orgDetails.companyWorkingHours);
       formD.append("company[working_days]", orgDetails.companyWorkingDays);
 
+      // Bank information
+      formD.append("company[bank_name]", orgDetails.bankName || "");
+      formD.append(
+        "company[bank_account_number]",
+        orgDetails.bankAccountNumber || ""
+      );
+
+      formD.append(
+        "company[bank_routing_number]",
+        orgDetails.bankRoutingNumber || ""
+      );
+      formD.append("company[bank_swift_code]", orgDetails.bankSwiftCode || "");
+
+      // Tax information
+      formD.append("company[tax_id]", orgDetails.taxId || "");
+      formD.append("company[vat_number]", orgDetails.vatNumber || "");
+      formD.append("company[gst_number]", orgDetails.gstNumber || "");
+
       if (orgDetails.logo) {
         formD.append("company[logo]", orgDetails.logo);
       }
@@ -495,47 +524,36 @@ const OrgEdit = () => {
     }
   };
 
-  return (
-    <div className="flex w-full flex-col">
-      <EditHeader
-        showButtons
-        cancelAction={handleCancelAction}
-        isDisableUpdateBtn={!isDetailUpdated}
-        saveAction={handleUpdateOrgDetails}
-        subTitle=""
-        title="Organization Settings"
-      />
-      {isLoading ? (
-        <Loader className="min-h-70v" />
-      ) : (
-        <StaticPage
-          cancelAction={handleCancelAction}
-          countries={countries}
-          currenciesOption={currenciesOption}
-          dateFormatOptions={dateFormatOptions}
-          errDetails={errDetails}
-          fiscalYearOptions={fiscalYearOptions}
-          getInputProps={getInputProps}
-          getRootProps={getRootProps}
-          handleAddrChange={handleAddrChange}
-          handleChangeCompanyDetails={handleChangeCompanyDetails}
-          handleCityChange={handleCityChange}
-          handleCurrencyChange={handleCurrencyChange}
-          handleDateFormatChange={handleDateFormatChange}
-          handleDeleteLogo={handleDeleteLogo}
-          handleFiscalYearChange={handleFiscalYearChange}
-          handleOnChangeCountry={handleOnChangeCountry}
-          handleStateChange={handleStateChange}
-          handleTimezoneChange={handleTimezoneChange}
-          handleZipcodeChange={handleZipcodeChange}
-          isDragActive={isDragActive}
-          orgDetails={orgDetails}
-          saveAction={handleUpdateOrgDetails}
-          timezoneOption={timezoneOption}
-          onLogoChange={onLogoChange}
-        />
-      )}
-    </div>
+  return isLoading ? (
+    <Loader className="min-h-screen flex items-center justify-center" />
+  ) : (
+    <OrgEditForm
+      cancelAction={handleCancelAction}
+      countries={countries}
+      currenciesOption={currenciesOption}
+      dateFormatOptions={dateFormatOptions}
+      errDetails={errDetails}
+      fiscalYearOptions={fiscalYearOptions}
+      getInputProps={getInputProps}
+      getRootProps={getRootProps}
+      handleAddrChange={handleAddrChange}
+      handleChangeCompanyDetails={handleChangeCompanyDetails}
+      handleCityChange={handleCityChange}
+      handleCurrencyChange={handleCurrencyChange}
+      handleDateFormatChange={handleDateFormatChange}
+      handleDeleteLogo={handleDeleteLogo}
+      handleFiscalYearChange={handleFiscalYearChange}
+      handleOnChangeCountry={handleOnChangeCountry}
+      handleStateChange={handleStateChange}
+      handleTimezoneChange={handleTimezoneChange}
+      handleZipcodeChange={handleZipcodeChange}
+      isDragActive={isDragActive}
+      orgDetails={orgDetails}
+      saveAction={handleUpdateOrgDetails}
+      timezoneOption={timezoneOption}
+      onLogoChange={onLogoChange}
+      isDetailUpdated={isDetailUpdated}
+    />
   );
 };
 

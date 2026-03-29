@@ -2,10 +2,412 @@
 <html>
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <style></style>
-  </head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="supported-color-schemes" content="light dark" />
+    <style>
+      body,
+      table,
+      td,
+      a {
+        -webkit-text-size-adjust: 100%;
+        -ms-text-size-adjust: 100%;
+      }
 
+      table,
+      td {
+        mso-table-lspace: 0pt;
+        mso-table-rspace: 0pt;
+      }
+
+      img {
+        -ms-interpolation-mode: bicubic;
+        border: 0;
+        outline: none;
+        text-decoration: none;
+      }
+
+      body {
+        margin: 0;
+        padding: 0;
+        width: 100% !important;
+        min-width: 100%;
+        background-color: #020617;
+        color: #e2e8f0;
+        font-family: Geist, Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+
+      a {
+        color: #f8fafc;
+      }
+
+      .email-shell {
+        width: 100%;
+        background:
+          radial-gradient(circle at top, rgba(99, 102, 241, 0.18), transparent 34%),
+          linear-gradient(180deg, #0f172a 0%, #020617 100%);
+        padding: 32px 16px;
+      }
+
+      .email-card {
+        width: 100%;
+        max-width: 680px;
+        background-color: #0f172a;
+        border: 1px solid #1e293b;
+        border-radius: 28px;
+        overflow: hidden;
+        box-shadow: 0 24px 80px rgba(2, 6, 23, 0.45);
+      }
+
+      .email-card-inner {
+        padding: 40px;
+      }
+
+      .email-brand {
+        padding: 40px 40px 0;
+        text-align: center;
+      }
+
+      .email-brand-mark {
+        width: 56px;
+        height: 56px;
+        display: inline-block;
+        border-radius: 18px;
+        background: linear-gradient(180deg, #1e293b 0%, #111827 100%);
+        border: 1px solid #334155;
+      }
+
+      .email-eyebrow {
+        margin: 20px 0 0;
+        color: #94a3b8;
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+      }
+
+      .email-title {
+        margin: 12px 0 0;
+        color: #f8fafc;
+        font-size: 30px;
+        font-weight: 700;
+        line-height: 1.15;
+      }
+
+      .email-subtitle {
+        margin: 16px auto 0;
+        max-width: 560px;
+        color: #cbd5e1;
+        font-size: 16px;
+        line-height: 1.7;
+        overflow-wrap: anywhere;
+        word-break: break-word;
+      }
+
+      .email-body {
+        color: #cbd5e1;
+        font-size: 16px;
+        line-height: 1.7;
+        overflow-wrap: anywhere;
+        word-break: break-word;
+      }
+
+      .email-body p {
+        margin: 0 0 16px;
+      }
+
+      .email-body strong {
+        color: #f8fafc;
+      }
+
+      .email-list {
+        margin: 0;
+        padding-left: 20px;
+      }
+
+      .email-list li {
+        margin: 0 0 10px;
+      }
+
+      .email-panel {
+        margin: 24px 0;
+        padding: 20px 22px;
+        border-radius: 20px;
+        border: 1px solid #293548;
+        background-color: #111827;
+      }
+
+      .email-panel-soft {
+        background-color: #0b1220;
+      }
+
+      .email-panel-accent {
+        border-color: rgba(99, 102, 241, 0.5);
+        background: linear-gradient(180deg, rgba(79, 70, 229, 0.2) 0%, rgba(17, 24, 39, 0.95) 100%);
+      }
+
+      .email-panel-success {
+        border-color: rgba(34, 197, 94, 0.35);
+        background: linear-gradient(180deg, rgba(22, 163, 74, 0.18) 0%, rgba(17, 24, 39, 0.95) 100%);
+      }
+
+      .email-panel-warning {
+        border-color: rgba(251, 191, 36, 0.35);
+        background: linear-gradient(180deg, rgba(217, 119, 6, 0.18) 0%, rgba(17, 24, 39, 0.95) 100%);
+      }
+
+      .email-panel-danger {
+        border-color: rgba(248, 113, 113, 0.35);
+        background: linear-gradient(180deg, rgba(220, 38, 38, 0.18) 0%, rgba(17, 24, 39, 0.95) 100%);
+      }
+
+      .email-panel-title {
+        margin: 0 0 10px;
+        color: #f8fafc;
+        font-size: 16px;
+        font-weight: 600;
+        line-height: 1.4;
+      }
+
+      .email-muted {
+        color: #94a3b8;
+      }
+
+      .email-button {
+        display: inline-block;
+        padding: 14px 24px;
+        border-radius: 999px;
+        background: linear-gradient(180deg, #6366f1 0%, #4f46e5 100%);
+        color: #ffffff !important;
+        font-size: 15px;
+        font-weight: 700;
+        line-height: 1;
+        letter-spacing: 0.02em;
+        text-decoration: none;
+      }
+
+      .email-button-secondary {
+        background: #111827;
+        border: 1px solid #334155;
+      }
+
+      .email-divider {
+        height: 1px;
+        margin: 24px 0;
+        background-color: #1f2937;
+      }
+
+      .detail-grid {
+        width: 100%;
+      }
+
+      .detail-cell {
+        width: 50%;
+        padding: 0 8px 16px;
+        vertical-align: top;
+      }
+
+      .detail-card {
+        width: 100%;
+        border: 1px solid #293548;
+        border-radius: 20px;
+        background-color: #111827;
+      }
+
+      .detail-card td {
+        padding: 18px 20px;
+      }
+
+      .detail-label {
+        margin: 0 0 8px;
+        color: #94a3b8;
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .detail-value {
+        margin: 0;
+        color: #f8fafc;
+        font-size: 18px;
+        font-weight: 600;
+        line-height: 1.45;
+        overflow-wrap: anywhere;
+        word-break: break-word;
+      }
+
+      .detail-subvalue {
+        margin: 8px 0 0;
+        color: #cbd5e1;
+        font-size: 14px;
+        line-height: 1.6;
+        overflow-wrap: anywhere;
+        word-break: break-word;
+      }
+
+      .email-footer {
+        padding: 0 40px 32px;
+      }
+
+      .email-footer-card {
+        border-radius: 22px;
+        border: 1px solid #293548;
+        background: #0b1220;
+      }
+
+      .email-footer-card td {
+        padding: 20px 24px;
+        color: #94a3b8;
+        font-size: 13px;
+        line-height: 1.7;
+        text-align: center;
+        overflow-wrap: anywhere;
+        word-break: break-word;
+      }
+
+      .email-footer-link {
+        color: #e2e8f0 !important;
+        text-decoration: none;
+      }
+
+      .logo-lockup {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .logo-label {
+        color: #f8fafc;
+        font-size: 18px;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+      }
+
+      @media only screen and (max-width: 640px) {
+        .email-shell {
+          padding: 16px 10px !important;
+        }
+
+        .email-card {
+          border-radius: 22px !important;
+        }
+
+        .email-brand {
+          padding: 28px 24px 0 !important;
+        }
+
+        .email-card-inner {
+          padding: 28px 20px !important;
+        }
+
+        .email-footer {
+          padding: 0 20px 20px !important;
+        }
+
+        .email-title {
+          font-size: 26px !important;
+        }
+
+        .detail-cell,
+        .stack-cell {
+          display: block !important;
+          width: 100% !important;
+          padding-left: 0 !important;
+          padding-right: 0 !important;
+        }
+
+        .email-button {
+          display: block !important;
+          width: 100% !important;
+          box-sizing: border-box !important;
+          text-align: center !important;
+        }
+      }
+
+      @media (prefers-color-scheme: dark) {
+        body {
+          background-color: #020617 !important;
+          color: #e2e8f0 !important;
+        }
+
+        .email-card {
+          background-color: #0f172a !important;
+          border-color: #1e293b !important;
+        }
+
+        .email-panel,
+        .detail-card,
+        .email-footer-card {
+          background-color: #111827 !important;
+        }
+      }
+    </style>
+  </head>
   <body>
-    <%= yield %>
+    <% preheader = content_for?(:email_preheader) ? yield(:email_preheader).to_s.strip : "Miru update" %>
+    <div style="display: none; max-height: 0; overflow: hidden; opacity: 0; mso-hide: all;">
+      <%= preheader %>
+    </div>
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="email-shell">
+      <tr>
+        <td align="center">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="email-card">
+            <tr>
+              <td class="email-brand">
+                <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center">
+                  <tr>
+                    <td align="center">
+                      <% if content_for?(:email_badge) %>
+                        <%= yield :email_badge %>
+                      <% else %>
+                        <span class="logo-lockup">
+                          <span class="email-brand-mark">
+                            <img src="<%= "#{root_url}miru-logo.svg" %>" alt="Miru" width="56" height="56" style="display: block; width: 56px; height: 56px;" />
+                          </span>
+                          <span class="logo-label">Miru</span>
+                        </span>
+                      <% end %>
+                    </td>
+                  </tr>
+                </table>
+                <% if content_for?(:email_eyebrow) %>
+                  <p class="email-eyebrow"><%= yield :email_eyebrow %></p>
+                <% end %>
+                <% if content_for?(:email_title) %>
+                  <h1 class="email-title"><%= yield :email_title %></h1>
+                <% end %>
+                <% if content_for?(:email_subtitle) %>
+                  <div class="email-subtitle"><%= yield :email_subtitle %></div>
+                <% end %>
+              </td>
+            </tr>
+            <tr>
+              <td class="email-card-inner email-body">
+                <%= yield %>
+              </td>
+            </tr>
+            <tr>
+              <td class="email-footer">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="email-footer-card">
+                  <tr>
+                    <td>
+                      <div style="margin: 0 0 10px; color: #f8fafc; font-size: 14px; font-weight: 600;">Miru</div>
+                      <div>Time tracking, invoicing, payments, and team operations in one place.</div>
+                      <div style="margin-top: 12px;">
+                        <a href="https://app.miru.so" target="_blank" class="email-footer-link">app.miru.so</a>
+                        &nbsp;&middot;&nbsp;
+                        <a href="mailto:hello@saeloun.com" class="email-footer-link">hello@saeloun.com</a>
+                      </div>
+                      <div style="margin-top: 12px;">© Miru. All rights reserved.</div>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
   </body>
 </html>

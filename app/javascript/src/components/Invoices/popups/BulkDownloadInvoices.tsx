@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
 
+import { invoicesApi } from "apis/api";
 import dayjs from "dayjs";
 import { DownloadSimpleIcon, CheckCircleIcon } from "miruIcons";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import { v4 as uuidv4 } from "uuid";
-
-import invoicesApi from "apis/invoices";
 
 const BulkDownloadInvoices = ({
   selectedInvoices,
@@ -138,11 +137,9 @@ const BulkDownloadInvoices = ({
   }, [counter, isPolling, selectedInvoiceCounter]);
 
   return (
-    <div className="fixed right-20 bottom-16 flex items-center justify-center rounded bg-miru-dark-purple-1000 p-4">
-      <div className="mr-2.5 h-4 w-4 bg-miru-dark-purple-1000">
-        {downloadStatus.icon}
-      </div>
-      <span className="text-sm font-medium leading-5 text-miru-dark-purple-100">
+    <div className="fixed right-20 bottom-16 flex items-center justify-center rounded bg-card p-4">
+      <div className="mr-2.5 h-4 w-4 bg-card">{downloadStatus.icon}</div>
+      <span className="text-sm font-medium leading-5 text-muted-foreground">
         {downloadStatus.label}
       </span>
     </div>

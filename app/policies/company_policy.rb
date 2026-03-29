@@ -22,6 +22,18 @@ class CompanyPolicy < ApplicationPolicy
     user_owner_role? || user_admin_role?
   end
 
+  def checkout?
+    user_owner_role? || user_admin_role?
+  end
+
+  def portal?
+    user_owner_role? || user_admin_role?
+  end
+
+  def trial?
+    user_owner_role? || user_admin_role?
+  end
+
   def company_present?
     if user.present? && user.current_workspace.nil?
       @error_message_key = :company_not_present

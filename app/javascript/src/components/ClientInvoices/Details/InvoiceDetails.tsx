@@ -21,7 +21,7 @@ const InvoiceDetails = ({ invoice, company, lineItems, client, logo }) => {
   return (
     <>
       <CompanyInfo company={company} logo={logo} />
-      <div className="flex h-36 justify-between border-b-2 border-miru-gray-400 px-10 py-5">
+      <div className="flex h-36 justify-between border-b-2 border-border px-10 py-5">
         <ClientInfo client={client} />
         <InvoiceInfo
           company={company}

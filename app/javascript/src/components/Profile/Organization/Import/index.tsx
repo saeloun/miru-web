@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 import React, { Fragment, useState } from "react";
 
 import Loader from "common/Loader/index";
@@ -45,7 +44,7 @@ const importList = [
 const columnNames = [];
 
 const Import = () => {
-  const [isLoading, setisLoading] = useState(false); //eslint-disable-line
+  const [isLoading, setisLoading] = useState(false);
   const [file, setFile] = useState(null);
   const [showImportModal, setShowImportModal] = useState(false);
   const [step, setStep] = useState(1);
@@ -86,7 +85,7 @@ const Import = () => {
       {isLoading ? (
         <Loader className="min-h-70v" />
       ) : (
-        <div className="mt-4 min-h-70v bg-miru-gray-100 px-10 py-5">
+        <div className="mt-4 min-h-70v bg-muted px-10 py-5">
           {importList.map((item, index) => (
             <Fragment key={index}>
               <ImportCard

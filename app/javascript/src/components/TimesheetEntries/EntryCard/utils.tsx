@@ -1,9 +1,9 @@
+import { Roles } from "constants/index";
+
 import React from "react";
 
 import { DeleteIcon, EditIcon, CopyIcon } from "miruIcons";
 import { Button, BUTTON_STYLES } from "StyledComponents";
-
-import { Roles } from "constants/index";
 
 export const canEditTimeEntry = (billStatus, role) =>
   billStatus != "billed" || role == Roles["OWNER"] || role == Roles["ADMIN"];
@@ -17,7 +17,7 @@ export const showUpdateAction = (billStatus, role, id, setEditEntryId) => {
         style={BUTTON_STYLES.secondary}
         onClick={() => setEditEntryId(id)}
       >
-        <EditIcon className="text-miru-han-purple-1000" size={20} />
+        <EditIcon className="text-primary" size={20} />
       </Button>
     );
   }
@@ -34,7 +34,7 @@ export const showDeleteAction = (billStatus, role, id, handleDeleteEntry) => {
         style={BUTTON_STYLES.secondary}
         onClick={() => handleDeleteEntry(id)}
       >
-        <DeleteIcon className="text-miru-han-purple-1000" size={20} />
+        <DeleteIcon className="text-primary" size={20} />
       </Button>
     );
   }
@@ -50,7 +50,7 @@ export const showDuplicateAction = (billStatus, role, id, handleDuplicate) => {
         style={BUTTON_STYLES.secondary}
         onClick={() => handleDuplicate(id)}
       >
-        <CopyIcon className="text-miru-han-purple-1000" size={20} />
+        <CopyIcon className="text-primary" size={20} />
       </Button>
     );
   }

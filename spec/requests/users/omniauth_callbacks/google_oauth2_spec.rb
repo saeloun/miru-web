@@ -65,4 +65,25 @@ RSpec.describe "Users::OmniauthCallbacks#google_oauth2", type: :request do
         .to eq("There was a problem signing you in through Google. Please register or try signing in later.")
     end
   end
+
+  describe "oauth initiation host" do
+    around do |example|
+      original_app_base_url = ENV["APP_BASE_URL"]
+      original_full_host = OmniAuth.config.full_host
+      ENV["APP_BASE_URL"] = "https://app.miru.so"
+      OmniAuth.config.full_host = lambda do |_env|
+        ENV.fetch("APP_BASE_URL")
+      end
+      example.run
+    ensure
+      ENV["APP_BASE_URL"] = original_app_base_url
+      OmniAuth.config.full_host = original_full_host
+    end
+
+    it "uses APP_BASE_URL as the configured full host" do
+      full_host = OmniAuth.config.full_host.respond_to?(:call) ? OmniAuth.config.full_host.call(nil) : OmniAuth.config.full_host
+
+      expect(full_host).to eq("https://app.miru.so")
+    end
+  end
 end

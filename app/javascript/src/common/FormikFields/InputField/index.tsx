@@ -1,41 +1,34 @@
-/* eslint-disable import/exports-last */
+import React, { useState } from "react";
 
-import React, { useEffect, useState } from "react";
-
-import classNames from "classnames";
 import { Field } from "formik";
 import { PasswordIconSVG, PasswordIconTextSVG } from "miruIcons";
-
-const defaultInputBoxClassName =
-  "form__input block w-full appearance-none bg-white p-3.75 text-base lg:text-base h-12 border-miru-gray-1000";
-
-const defaultLabelClassname =
-  "absolute top-0.5 left-1 h-6 z-1 origin-0 bg-white p-2 text-sm lg:text-base font-medium text-miru-dark-purple-200 duration-300";
-const defaultWrapperClassName = "outline relative h-12";
+import { Input } from "../../../components/ui/input";
+import { Label } from "../../../components/ui/label";
+import { cn } from "../../../lib/utils";
 
 const InputField = ({
-  readOnly,
+  readOnly = false,
   label,
   id,
   name,
-  type,
-  autoFocus,
-  disabled,
-  inputBoxClassName,
-  labelClassName,
-  wrapperClassName,
-  autoComplete,
-  onChange,
-  onClick,
-  hasError,
-  resetErrorOnChange,
-  setFieldError,
-  setFieldValue,
-  marginBottom,
+  type = "text",
+  autoFocus = false,
+  disabled = false,
+  inputBoxClassName = "",
+  labelClassName = "",
+  wrapperClassName = "",
+  autoComplete = "on",
+  onChange = undefined,
+  onClick = undefined,
+  hasError = false,
+  resetErrorOnChange = true,
+  setFieldError = null,
+  setFieldValue = null,
+  marginBottom = "mb-2 xsm:mb-6",
 }) => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [defaultMarginBottom, setDefaultMarginBottom] =
-    useState<string>(marginBottom);
+  const effectiveMarginBottom = hasError ? "mb-2" : marginBottom;
+  const fieldId = id || name;
 
   const handleTogglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -47,15 +40,15 @@ const InputField = ({
     }
   };
 
-  const handleChange = e => {
-    if (resetErrorOnChange) {
-      if (hasError) {
-        clearErrorOnChange(name, setFieldError);
-      }
+  const handleFieldChange = (e, formikOnChange) => {
+    if (resetErrorOnChange && hasError) {
+      clearErrorOnChange(name, setFieldError);
+    }
 
-      if (setFieldValue && name) {
-        setFieldValue(name, e.target.value);
-      }
+    if (setFieldValue && name) {
+      setFieldValue(name, e.target.value);
+    } else {
+      formikOnChange(e);
     }
 
     if (onChange) {
@@ -63,85 +56,76 @@ const InputField = ({
     }
   };
 
-  useEffect(() => {
-    if (hasError) {
-      setDefaultMarginBottom("mb-2");
-    } else {
-      setDefaultMarginBottom(marginBottom);
-    }
-  }, [hasError]);
-
-  const optionalFieldProps =
-    resetErrorOnChange || onChange ? { onChange: e => handleChange(e) } : {};
-
   return (
-    <div
-      className={classNames(
-        defaultWrapperClassName,
-        "field relative",
-        wrapperClassName,
-        defaultMarginBottom
-      )}
-    >
-      <Field
-        autoComplete={autoComplete}
-        autoFocus={autoFocus}
-        disabled={disabled}
-        id={id}
-        name={name}
-        placeholder=" "
-        readOnly={readOnly}
-        type={type === "password" ? (showPassword ? "text" : "password") : type}
-        className={classNames(defaultInputBoxClassName, inputBoxClassName, {
-          "error-input border-miru-red-400": hasError,
-        })}
-        onChange={onChange}
-        onClick={onClick}
-        {...optionalFieldProps}
-      />
-      <label
-        className={classNames(defaultLabelClassname, labelClassName)}
-        htmlFor={name}
-      >
-        {label}
-      </label>
-      {type == "password" && (
-        <span
-          className="menuButton absolute right-2 top-1/4 z-30 cursor-pointer bg-white p-1.5"
-          onClick={handleTogglePasswordVisibility}
+    <div className={cn("relative", wrapperClassName, effectiveMarginBottom)}>
+      {label && (
+        <Label
+          htmlFor={fieldId}
+          className={cn(
+            "mb-2 block text-sm font-medium text-muted-foreground",
+            labelClassName
+          )}
         >
-          {!showPassword ? (
-            <img alt="pass_icon" height="12" src={PasswordIconSVG} width="12" />
-          ) : (
-            <img
-              alt="pass_icon_text"
-              height="12"
-              src={PasswordIconTextSVG}
-              width="12"
+          {label}
+        </Label>
+      )}
+      <div className="relative">
+        <Field name={name}>
+          {({ field }) => (
+            <Input
+              {...field}
+              autoComplete={autoComplete}
+              autoFocus={autoFocus}
+              disabled={disabled}
+              id={fieldId}
+              placeholder={label ? "" : " "}
+              readOnly={readOnly}
+              type={
+                type === "password"
+                  ? showPassword
+                    ? "text"
+                    : "password"
+                  : type
+              }
+              className={cn(
+                hasError && "border-red-500 focus-visible:ring-red-500",
+                inputBoxClassName
+              )}
+              onChange={e => handleFieldChange(e, field.onChange)}
+              onClick={onClick}
             />
           )}
-        </span>
-      )}
+        </Field>
+        {type === "password" && (
+          <button
+            type="button"
+            aria-label={showPassword ? "Hide password" : "Show password"}
+            aria-pressed={showPassword}
+            className="absolute right-3 top-1/2 -translate-y-1/2 p-1 hover:opacity-70"
+            onClick={handleTogglePasswordVisibility}
+          >
+            {!showPassword ? (
+              <img
+                alt=""
+                aria-hidden="true"
+                height="16"
+                src={PasswordIconSVG}
+                width="16"
+              />
+            ) : (
+              <img
+                alt=""
+                aria-hidden="true"
+                height="16"
+                src={PasswordIconTextSVG}
+                width="16"
+              />
+            )}
+          </button>
+        )}
+      </div>
     </div>
   );
-};
-
-InputField.defaultProps = {
-  type: "text",
-  inputBoxClassName: "",
-  labelClassName: "",
-  wrapperClassName: "",
-  disabled: false,
-  autoFocus: false,
-  autoComplete: "on",
-  readOnly: false,
-  onChange: undefined,
-  onClick: undefined,
-  hasError: false,
-  resetErrorOnChange: true,
-  setFieldError: null,
-  setFieldValue: null,
-  marginBottom: "mb-2 xsm:mb-6",
 };
 
 export default InputField;

@@ -2,7 +2,6 @@ import React from "react";
 
 import { currencyFormat } from "helpers";
 import { useNavigate } from "react-router-dom";
-
 import getStatusCssClass from "utils/getBadgeStatus";
 
 const SearchDataRow = ({ invoice }) => {
@@ -16,20 +15,20 @@ const SearchDataRow = ({ invoice }) => {
 
   return (
     <div
-      className="group flex cursor-pointer items-center py-2 last:border-b-0 hover:bg-miru-gray-100"
+      className="group flex cursor-pointer items-center py-2 last:border-b-0 hover:bg-muted"
       onClick={() => handleClick(invoice)}
     >
       <div className="w-5/12 p-0 font-medium tracking-wider">
-        <div className="pb-1 text-sm font-medium capitalize text-miru-dark-purple-1000">
+        <div className="pb-1 text-sm font-medium capitalize text-foreground">
           {client.name}
         </div>
-        <div className="text-sm font-normal text-miru-dark-purple-400">
+        <div className="text-sm font-normal text-muted-foreground">
           {invoiceNumber}
         </div>
       </div>
       <div className="w-4/12 px-2/100 font-bold tracking-wider">
         {currencyFormat(company.baseCurrency, amount)}
-        <div className="text-sm font-normal text-miru-dark-purple-400">
+        <div className="text-sm font-normal text-muted-foreground">
           {issueDate}
         </div>
       </div>

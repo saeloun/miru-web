@@ -2,10 +2,10 @@ import React from "react";
 
 import BulkActionsWrapper from "./BulkActionsWrapper";
 import NoInvoices from "./NoInvoices";
-import RecentlyUpdated from "./RecentlyUpdated";
+import InfiniteScrollRecentlyUpdated from "./RecentlyUpdated/InfiniteScrollRecentlyUpdated";
 import Table from "./Table";
 
-import InvoiceSummary from "../InvoiceSummary";
+import ChartWithSummary from "../ChartWithSummary";
 
 const Container = ({
   summary,
@@ -32,6 +32,10 @@ const Container = ({
   params,
   isStripeEnabled,
   setIsStripeEnabled,
+  hasMoreInvoices,
+  loadingMoreInvoices,
+  loadMoreTriggerRef,
+  totalInvoices,
 }) =>
   invoices.length > 0 ? (
     <div
@@ -39,14 +43,13 @@ const Container = ({
         isDesktop ? null : "overflow-x-scroll"
       } flex flex-col items-stretch`}
     >
-      <InvoiceSummary
-        baseCurrency={invoices[0].company.baseCurrency}
-        filterParams={filterParams}
-        isDesktop={isDesktop}
-        setFilterParams={setFilterParams}
+      <ChartWithSummary
         summary={summary}
+        baseCurrency={invoices[0]?.company?.baseCurrency || "USD"}
+        filterParams={filterParams}
+        setFilterParams={setFilterParams}
       />
-      <RecentlyUpdated recentlyUpdatedInvoices={recentlyUpdatedInvoices} />
+      <InfiniteScrollRecentlyUpdated />
       <BulkActionsWrapper
         clearCheckboxes={clearCheckboxes}
         downloading={downloading}
@@ -72,6 +75,21 @@ const Container = ({
         setIsStripeEnabled={setIsStripeEnabled}
         setShowDeleteDialog={setShowDeleteDialog}
       />
+      <div className="mt-4 flex flex-col items-center gap-2 pb-2 text-sm text-gray-500">
+        <span>
+          Showing {invoices.length} of {totalInvoices}
+        </span>
+        {!loadingMoreInvoices && hasMoreInvoices && (
+          <span>Scroll to load more invoices</span>
+        )}
+        {loadingMoreInvoices && <span>Loading more invoices...</span>}
+        {!loadingMoreInvoices && hasMoreInvoices && (
+          <div ref={loadMoreTriggerRef} className="h-8 w-full" />
+        )}
+        {!hasMoreInvoices && totalInvoices > 0 && (
+          <span>All invoices loaded</span>
+        )}
+      </div>
     </div>
   ) : (
     <NoInvoices

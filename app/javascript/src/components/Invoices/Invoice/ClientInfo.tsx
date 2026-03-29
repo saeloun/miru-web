@@ -5,15 +5,15 @@ const ClientInfo = ({ client }) => {
     client?.address ?? {};
 
   return (
-    <div className="relative mr-4 w-4/12 rounded border border-miru-gray-400 bg-miru-gray-100 px-4 py-3">
-      <p className="absolute left-2 -top-2 bg-miru-gray-100 px-2 text-xs font-medium text-miru-dark-purple-1000">
+    <div className="relative w-full rounded border border-border bg-muted px-4 py-3 lg:mr-4 lg:w-4/12">
+      <p className="absolute left-2 -top-2 bg-muted px-2 text-xs font-medium text-foreground">
         Billed to
       </p>
-      <div className="h-full overflow-y-scroll">
-        <p className="text-xl font-bold leading-7 text-miru-dark-purple-1000">
+      <div className="h-full overflow-y-auto">
+        <p className="text-xl font-bold leading-7 text-foreground">
           {client.name}
         </p>
-        <p className="w-52 text-sm font-normal text-miru-dark-purple-600">
+        <p className="w-full text-sm font-normal text-muted-foreground lg:w-52">
           {client?.address
             ? `${address_line_1}${
                 address_line_2 ? `, ${address_line_2}` : ""

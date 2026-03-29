@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if command -v nproc >/dev/null 2>&1; then
+  CPU_COUNT="$(nproc)"
+elif command -v getconf >/dev/null 2>&1; then
+  CPU_COUNT="$(getconf _NPROCESSORS_ONLN 2>/dev/null || true)"
+else
+  CPU_COUNT="4"
+fi
+
+PROCS="${PARALLEL_TEST_PROCESSORS:-$CPU_COUNT}"
+ARGS=("$@")
+RUNTIME_LOG="${PARALLEL_RUNTIME_LOG:-tmp/parallel_runtime_system.log}"
+QUIET="${SYSTEM_SPECS_QUIET:-1}"
+
+if [ "${#ARGS[@]}" -eq 0 ]; then
+  ARGS=("spec/system")
+fi
+
+echo "Preparing parallel test databases for ${PROCS} processes..."
+if command -v mise >/dev/null 2>&1; then
+  run_cmd() {
+    mise exec -- "$@"
+  }
+else
+  run_cmd() {
+    "$@"
+  }
+fi
+
+run_cmd bundle exec rake "parallel:create[${PROCS}]" "parallel:load_schema[${PROCS}]"
+
+echo "Running system specs in parallel (${PROCS} processes)..."
+BASE_CMD=(bundle exec parallel_rspec "${ARGS[@]}" -n "${PROCS}" --runtime-log "${RUNTIME_LOG}")
+
+if [ -f "${RUNTIME_LOG}" ] && [ "$(wc -l < "${RUNTIME_LOG}")" -ge "${#ARGS[@]}" ]; then
+  BASE_CMD+=(--group-by runtime)
+fi
+
+if [ "${QUIET}" = "1" ]; then
+  BASE_CMD+=(--serialize-stdout --combine-stderr --quiet --test-options "--format progress")
+fi
+
+CI=true run_cmd "${BASE_CMD[@]}"

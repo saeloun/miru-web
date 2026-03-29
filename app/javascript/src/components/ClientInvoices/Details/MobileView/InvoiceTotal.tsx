@@ -12,11 +12,11 @@ const InvoiceTotal = ({ invoice, lineItems, strikeAmount }) => {
 
   const AmountComponent = ({ label, value }) => (
     <div className="flex w-full items-center justify-between">
-      <span className="mb-2 w-1/2 text-right text-sm font-normal leading-5 text-miru-dark-purple-1000">
+      <span className="mb-2 w-1/2 text-right text-sm font-normal leading-5 text-foreground">
         {label}
       </span>
       <span
-        className={`text-right text-sm font-bold leading-5 text-miru-dark-purple-1000 ${strikeAmount}`}
+        className={`text-right text-sm font-bold leading-5 text-foreground ${strikeAmount}`}
       >
         {currencyFormat(currency, value)}
       </span>
@@ -25,7 +25,7 @@ const InvoiceTotal = ({ invoice, lineItems, strikeAmount }) => {
 
   return (
     <div className="py-6 px-4">
-      <div className="border-b border-miru-gray-400">
+      <div className="border-b border-border">
         <AmountComponent label="Sub total" value={subTotal} />
         <AmountComponent label="Discount" value={discount} />
       </div>

@@ -1,42 +1,32 @@
 # frozen_string_literal: true
 
-# == Schema Information
-#
-# Table name: timesheet_entries
-#
-#  id           :bigint           not null, primary key
-#  bill_status  :integer          not null
-#  discarded_at :datetime
-#  duration     :float            not null
-#  locked       :boolean          default(FALSE)
-#  note         :text             default("")
-#  work_date    :date             not null
-#  created_at   :datetime         not null
-#  updated_at   :datetime         not null
-#  project_id   :bigint           not null
-#  user_id      :bigint           not null
-#
-# Indexes
-#
-#  index_timesheet_entries_on_bill_status   (bill_status)
-#  index_timesheet_entries_on_discarded_at  (discarded_at)
-#  index_timesheet_entries_on_project_id    (project_id)
-#  index_timesheet_entries_on_user_id       (user_id)
-#  index_timesheet_entries_on_work_date     (work_date)
-#
-# Foreign Keys
-#
-#  fk_rails_...  (project_id => projects.id)
-#  fk_rails_...  (user_id => users.id)
-#
-
 class TimesheetEntry < ApplicationRecord
   include Discard::Model
-  extend Pagy::Searchkick
-  enum bill_status: [:non_billable, :unbilled, :billed]
+  include Searchable
+  enum :bill_status, [:non_billable, :unbilled, :billed]
+
+  SOURCES = %w[manual cli mcp automation import].freeze
+  SOURCE_METADATA_KEYS = %w[tool skill mcp_server].freeze
+  SOURCE_METADATA_MAX_LENGTH = 100
+  SOURCE_LABELS = {
+    "manual" => "Manual",
+    "cli" => "CLI",
+    "mcp" => "MCP",
+    "automation" => "Automation",
+    "import" => "Import"
+  }.freeze
 
   belongs_to :user
   belongs_to :project
+
+  pg_search_scope :pg_search,
+    against: [:note],
+    using: {
+      tsearch: {
+        prefix: true,
+        dictionary: "english"
+      }
+    }
 
   has_one :invoice_line_item, dependent: :destroy
   has_one :client, through: :project
@@ -45,9 +35,11 @@ class TimesheetEntry < ApplicationRecord
   before_validation :ensure_bill_status_is_set
   before_validation :ensure_bill_status_is_not_billed, on: :create
   before_validation :ensure_billed_status_should_not_be_changed, on: :update
+  before_validation :normalize_source_fields
 
   validates :duration, :work_date, :bill_status, presence: true
   validates :duration, numericality: { less_than_or_equal_to: 6000000, greater_than_or_equal_to: 0.0 }
+  validates :source, inclusion: { in: SOURCES }
   validate :validate_billable_project
   validate :prevent_edit_if_locked, on: :update
 
@@ -58,28 +50,13 @@ class TimesheetEntry < ApplicationRecord
   delegate :name, to: :client, prefix: true, allow_nil: true
   delegate :full_name, to: :user, prefix: true, allow_nil: true
 
+  # Alias for backward compatibility
+  def user_name
+    user_full_name
+  end
+
   scope :search_import, -> { includes(:project, :client, :user) }
 
-  searchkick filterable: [:user_name, :created_at, :project_name, :client_name, :bill_status ],
-    word_middle: [:user_name, :note]
-
-  def search_data
-    {
-      id: id.to_i,
-      project_id:,
-      client_id: self.project&.client_id,
-      user_id:,
-      work_date: work_date.to_time,
-      note:,
-      user_name: user.full_name,
-      project_name: project.name,
-      client_name: project.client.name,
-      bill_status:,
-      duration: duration.to_i,
-      created_at: created_at.to_time,
-      discarded_at:
-    }
-  end
 
   def snippet
     {
@@ -92,8 +69,29 @@ class TimesheetEntry < ApplicationRecord
       work_date:,
       bill_status:,
       team_member: user.full_name,
+      source:,
+      source_label:,
+      source_metadata:,
       type: "timesheet"
     }
+  end
+
+  def source_label
+    return nil if source == "manual" && source_tool.blank?
+
+    parts = []
+    parts << source_tool_label if source_tool.present?
+    parts << "via #{SOURCE_LABELS.fetch(source)}" if source != "manual"
+    parts << SOURCE_LABELS.fetch(source) if parts.empty?
+    parts.join(" ")
+  end
+
+  def source_tool
+    source_metadata["tool"].presence
+  end
+
+  def source_tool_label
+    source_tool.to_s.split(/[_-]/).reject(&:blank?).map(&:capitalize).join(" ")
   end
 
   def formatted_duration
@@ -142,5 +140,32 @@ class TimesheetEntry < ApplicationRecord
       if locked && Current.user.primary_role(Current.company) == "employee"
         errors.add(:base, "Cannot edit a locked timesheet entry. Please contact admin.")
       end
+    end
+
+    def normalize_source_fields
+      self.source_metadata = normalized_source_metadata
+      self.source = inferred_source
+    end
+
+    def normalized_source_metadata
+      return {} unless source_metadata.is_a?(Hash)
+
+      source_metadata.deep_stringify_keys
+        .slice(*SOURCE_METADATA_KEYS)
+        .transform_values { |value| normalized_source_metadata_value(value) }
+        .compact_blank
+    end
+
+    def normalized_source_metadata_value(value)
+      value.to_s.strip.presence&.slice(0, SOURCE_METADATA_MAX_LENGTH)
+    end
+
+    def inferred_source
+      return "mcp" if source_metadata["mcp_server"].present?
+      return "automation" if source_metadata["tool"].present?
+
+      normalized_source = source.to_s.presence || "manual"
+      normalized_source = normalized_source.downcase
+      SOURCES.include?(normalized_source) ? normalized_source : "manual"
     end
 end

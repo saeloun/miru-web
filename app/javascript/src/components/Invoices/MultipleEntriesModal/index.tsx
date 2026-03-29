@@ -143,11 +143,11 @@ const MultipleEntriesModal = ({
           teamMembers={teamMembers}
         />
         {loading ? (
-          <p className="tracking-wide flex items-center justify-center text-base font-medium text-miru-han-purple-1000">
+          <p className="tracking-wide flex items-center justify-center text-base font-medium text-primary">
             Loading...
           </p>
         ) : (
-          <div className="mx-6 flex-1 overflow-y-scroll">
+          <div className="mx-6 flex-1 overflow-y-auto">
             {lineItems.length > 0 ? (
               <Table
                 allCheckboxSelected={allCheckboxSelected}
@@ -157,7 +157,7 @@ const MultipleEntriesModal = ({
                 lineItems={lineItems}
               />
             ) : (
-              <p className="tracking-wide flex items-center justify-center text-base font-medium text-miru-han-purple-1000">
+              <p className="tracking-wide flex items-center justify-center text-base font-medium text-primary">
                 No Data Found
               </p>
             )}
@@ -186,11 +186,11 @@ const MultipleEntriesModal = ({
         teamMembers={teamMembers}
       />
       {loading ? (
-        <p className="tracking-wide flex items-center justify-center text-base font-medium text-miru-han-purple-1000">
+        <p className="tracking-wide flex items-center justify-center text-base font-medium text-primary">
           Loading...
         </p>
       ) : (
-        <div className="mx-2 flex-1 overflow-y-scroll">
+        <div className="mx-2 flex-1 overflow-y-auto">
           {lineItems.length > 0 ? (
             <Table
               allCheckboxSelected={allCheckboxSelected}
@@ -200,7 +200,7 @@ const MultipleEntriesModal = ({
               lineItems={lineItems}
             />
           ) : (
-            <p className="tracking-wide flex items-center justify-center text-base font-medium text-miru-han-purple-1000">
+            <p className="tracking-wide flex items-center justify-center text-base font-medium text-primary">
               No Data Found
             </p>
           )}

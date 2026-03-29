@@ -1,11 +1,10 @@
 import React from "react";
 
+import CustomRadioButton from "common/CustomRadio";
+import { InputField, InputErrors } from "common/FormikFields";
 import { Formik, Form, FormikProps } from "formik";
 import { XIcon } from "miruIcons";
 import { Button } from "StyledComponents";
-
-import CustomRadioButton from "common/CustomRadio";
-import { InputField, InputErrors } from "common/FormikFields";
 
 const TeamForm = ({
   initialValues,
@@ -25,7 +24,7 @@ const TeamForm = ({
 
   return (
     <div className="flex h-full w-full flex-col">
-      <div className="flex items-center justify-between bg-miru-han-purple-1000 p-3 text-white">
+      <div className="flex items-center justify-between bg-primary p-3 text-white">
         <span className="w-full pl-6 text-center text-base font-medium leading-5 text-white">
           {getLabel()}
         </span>
@@ -53,7 +52,7 @@ const TeamForm = ({
                 <InputField
                   autoComplete="off"
                   id="firstName"
-                  inputBoxClassName="border focus:border-miru-han-purple-1000"
+                  inputBoxClassName="border focus:border-primary"
                   label="First Name"
                   name="firstName"
                   setFieldError={setFieldError}
@@ -67,7 +66,7 @@ const TeamForm = ({
                 <InputField
                   autoComplete="off"
                   id="lastName"
-                  inputBoxClassName="border focus:border-miru-han-purple-1000"
+                  inputBoxClassName="border focus:border-primary"
                   label="Last Name"
                   name="lastName"
                   setFieldError={setFieldError}
@@ -90,7 +89,7 @@ const TeamForm = ({
                   inputBoxClassName={`border ${
                     errors.email && touched.email
                       ? "focus:border-red-600"
-                      : "focus:border-miru-han-purple-1000"
+                      : "focus:border-primary"
                   }`}
                 />
                 <InputErrors
@@ -98,13 +97,13 @@ const TeamForm = ({
                   fieldTouched={touched.email}
                 />
                 <div>
-                  <span className="text-xs font-normal text-miru-dark-purple-1000">
+                  <span className="text-xs font-normal text-foreground">
                     Role
                   </span>
                   <div className="flex">
                     <div>
                       <CustomRadioButton
-                        classNameLabel="font-medium text-sm leading-5 text-miru-dark-purple-1000"
+                        classNameLabel="font-medium text-sm leading-5 text-foreground"
                         classNameWrapper="py-3"
                         defaultCheck={values.role == "admin"}
                         groupName="roles"
@@ -117,7 +116,7 @@ const TeamForm = ({
                         }}
                       />
                       <CustomRadioButton
-                        classNameLabel="font-medium text-sm leading-5 text-miru-dark-purple-1000"
+                        classNameLabel="font-medium text-sm leading-5 text-foreground"
                         classNameWrapper="py-3"
                         defaultCheck={values.role == "employee"}
                         groupName="roles"
@@ -132,7 +131,7 @@ const TeamForm = ({
                     </div>
                     <div>
                       <CustomRadioButton
-                        classNameLabel="font-medium text-sm leading-5 text-miru-dark-purple-1000"
+                        classNameLabel="font-medium text-sm leading-5 text-foreground"
                         classNameWrapper="ml-10 px-5 py-3"
                         defaultCheck={values.role == "book_keeper"}
                         groupName="roles"
@@ -147,7 +146,7 @@ const TeamForm = ({
                         }
                       />
                       <CustomRadioButton
-                        classNameLabel="font-medium text-sm leading-5 text-miru-dark-purple-1000"
+                        classNameLabel="font-medium text-sm leading-5 text-foreground"
                         classNameWrapper="ml-10 px-5 py-3"
                         defaultCheck={values.role == "client"}
                         groupName="roles"
@@ -167,7 +166,7 @@ const TeamForm = ({
                 disabled={!(dirty && isValid)}
                 style="primary"
                 className={`w-full p-2 text-center text-base font-bold ${
-                  !isValid || (!dirty && "bg-miru-gray-400")
+                  !isValid || (!dirty && "bg-secondary")
                 }`}
               >
                 {isEdit ? "SAVE CHANGES" : "SEND INVITE"}

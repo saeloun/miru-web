@@ -1,18 +1,20 @@
 import React from "react";
 
-import { XIcon } from "miruIcons";
+import { X } from "phosphor-react";
 import { Link } from "react-router-dom";
 
 export const MobileDetailsHeader = ({
-  wrapperClassName = "w-full flex flex-row text-center justify-center items-center h-12 text-white bg-miru-han-purple-1000 fixed z-15",
+  wrapperClassName = "sticky top-0 z-20 flex h-14 w-full items-center justify-center border-b border-border bg-background/95 px-4 text-foreground backdrop-blur",
   title = "",
   href,
 }) => (
   <div className={wrapperClassName}>
-    <span>{title}</span>
-    <div className="absolute right-0 items-center pr-3 font-bold text-white">
+    <span className="text-sm font-semibold">{title}</span>
+    <div className="absolute right-4 flex items-center">
       <Link to={href}>
-        <XIcon className="" color="#FFFFFF" size={16} weight="bold" />
+        <span className="flex h-9 w-9 items-center justify-center rounded-full border border-border bg-card text-muted-foreground transition hover:bg-accent hover:text-foreground">
+          <X className="h-4 w-4" />
+        </span>
       </Link>
     </div>
   </div>

@@ -1,7 +1,7 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 import React, { Fragment } from "react";
 
-import { MiruLogoSVG, PurpleMiruLogoWithTextSVG } from "miruIcons";
+import useThemeMode from "common/useThemeMode";
+import { MiruLogoSVG, MiruLogoWithTextSVG } from "miruIcons";
 import { Link } from "react-router-dom";
 
 import { Roles, Paths } from "constants/index";
@@ -9,6 +9,7 @@ import { useUserContext } from "context/UserContext";
 
 const Header = ({ selectedTab }) => {
   const { user, companyRole } = useUserContext();
+  const themeMode = useThemeMode();
 
   const rootPath = () => {
     if (!user) {
@@ -47,7 +48,10 @@ const Header = ({ selectedTab }) => {
           <img
             alt="miru-logo"
             className="h-10 w-20"
-            src={PurpleMiruLogoWithTextSVG}
+            src={MiruLogoWithTextSVG}
+            style={{
+              filter: themeMode === "dark" ? "brightness(0) invert(1)" : "none",
+            }}
           />
         </Link>
       );
@@ -56,9 +60,16 @@ const Header = ({ selectedTab }) => {
     return (
       <Fragment>
         <Link className="flex items-center justify-center" to={rootPath()}>
-          <img alt="miru-logo" className="h-6 w-6" src={MiruLogoSVG} />
+          <img
+            alt="miru-logo"
+            className="h-6 w-6"
+            src={MiruLogoSVG}
+            style={{
+              filter: themeMode === "dark" ? "brightness(0) invert(1)" : "none",
+            }}
+          />
         </Link>
-        <span className="z-40 w-full pr-3 text-center text-base font-bold leading-5 text-miru-han-purple-1000">
+        <span className="z-40 w-full pr-3 text-center text-base font-bold leading-5 text-foreground">
           {selectedTab}
         </span>
       </Fragment>
@@ -66,7 +77,7 @@ const Header = ({ selectedTab }) => {
   };
 
   return (
-    <div className="sticky top-0 left-0 right-0 z-50 flex h-1/15 items-center bg-white px-4 shadow-lg">
+    <div className="sticky top-0 left-0 right-0 z-50 flex h-1/15 items-center bg-background px-4 shadow-lg">
       {getHeaderContent()}
     </div>
   );

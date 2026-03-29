@@ -10,8 +10,8 @@ const ViewToggler = ({ view, setView }) => {
           key={index}
           className={
             item === view
-              ? "mr-10 border-b-2 border-miru-han-purple-1000 font-bold tracking-widest text-miru-han-purple-1000"
-              : "mr-10 font-medium tracking-widest text-miru-han-purple-600"
+              ? "mr-10 border-b-2 border-primary font-bold tracking-widest text-primary"
+              : "mr-10 font-medium tracking-widest text-primary"
           }
           onClick={() => setView(item)}
         >

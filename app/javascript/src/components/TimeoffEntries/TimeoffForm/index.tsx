@@ -1,13 +1,12 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
+import { HOLIDAY_TYPES } from "constants/index";
+
 import React, { useState, useEffect } from "react";
 
-import dayjs from "dayjs";
-import { minFromHHMM, minToHHMM } from "helpers";
-
-import timeoffEntryApi from "apis/timeoff-entry";
-import { HOLIDAY_TYPES } from "constants/index";
+import { timeoffEntriesApi } from "apis/api";
 import { useTimesheetEntries } from "context/TimesheetEntries";
 import { useUserContext } from "context/UserContext";
+import dayjs from "dayjs";
+import { minFromHHMM, minToHHMM } from "helpers";
 
 import DesktopTimeoffForm from "./DesktopTimeoffForm";
 import MobileTimeoffForm from "./MobileTimeoffForm";
@@ -121,6 +120,18 @@ const TimeoffForm = ({ isDisplayEditTimeoffEntryForm = false }) => {
     leaveTypeId === HOLIDAY_TYPES.NATIONAL ||
     leaveTypeId === HOLIDAY_TYPES.OPTIONAL;
 
+  const isCustomLeaveEntry = () =>
+    typeof leaveTypeId === "string" &&
+    leaveTypeId.toString().startsWith("custom_");
+
+  const getCustomLeaveId = () => {
+    if (isCustomLeaveEntry()) {
+      return Number(leaveTypeId.toString().replace("custom_", ""));
+    }
+
+    return null;
+  };
+
   const handleFillData = () => {
     const timeoffEntry = entryList[selectedFullDate]?.find(
       entry => entry.id === editTimeoffEntryId
@@ -140,12 +151,20 @@ const TimeoffForm = ({ isDisplayEditTimeoffEntryForm = false }) => {
         setLeaveType(selectedLeaveType?.name);
         setHolidayId(currentHolidayId);
         setHoliday(currentHolidayDetails?.name);
+      } else if (timeoffEntry?.custom_leave_id) {
+        // Custom leave uses composite id format: "custom_<id>"
+        const compositeId = `custom_${timeoffEntry.custom_leave_id}`;
+        const selectedLeaveType = leaveTypes.find(
+          leaveType => leaveType.id === compositeId
+        );
+        setLeaveTypeId(compositeId);
+        setLeaveType(selectedLeaveType?.name || "");
       } else {
         const selectedLeaveType = leaveTypes.find(
           leaveType => leaveType.id === timeoffEntry.leave_type_id
         );
         setLeaveTypeId(timeoffEntry.leave_type_id);
-        setLeaveType(selectedLeaveType.name);
+        setLeaveType(selectedLeaveType?.name || "");
       }
     }
   };
@@ -170,7 +189,9 @@ const TimeoffForm = ({ isDisplayEditTimeoffEntryForm = false }) => {
 
   const isValidTimeEntry = () => {
     const isValidLeaveTypeOrHolidayId =
-      (isHolidayEntry() && Number(holidayId) > 0) || Number(leaveTypeId) > 0;
+      (isHolidayEntry() && Number(holidayId) > 0) ||
+      isCustomLeaveEntry() ||
+      Number(leaveTypeId) > 0;
 
     return (
       isValidLeaveTypeOrHolidayId &&
@@ -194,10 +215,17 @@ const TimeoffForm = ({ isDisplayEditTimeoffEntryForm = false }) => {
         payload["holiday_info_id"] =
           timeoffEntry?.holiday_info_id || Number(holidayId);
         payload["leave_type_id"] = null;
+        payload["custom_leave_id"] = null;
+      } else if (isCustomLeaveEntry()) {
+        payload["custom_leave_id"] =
+          timeoffEntry?.custom_leave_id || getCustomLeaveId();
+        payload["leave_type_id"] = null;
+        payload["holiday_info_id"] = null;
       } else {
         payload["leave_type_id"] =
           timeoffEntry?.leave_type_id || Number(leaveTypeId);
         payload["holiday_info_id"] = null;
+        payload["custom_leave_id"] = null;
       }
 
       return { timeoff_entry: { ...payload } };
@@ -215,7 +243,7 @@ const TimeoffForm = ({ isDisplayEditTimeoffEntryForm = false }) => {
   const handleSaveTimeoffEntry = async () => {
     const payload = getPayload();
     if (payload) {
-      const res = await timeoffEntryApi.create(payload, selectedEmployeeId);
+      const res = await timeoffEntriesApi.create(payload, selectedEmployeeId);
 
       if (res.status === 200) {
         const fetchEntriesRes = await fetchEntries(selectedDate, selectedDate);
@@ -237,7 +265,7 @@ const TimeoffForm = ({ isDisplayEditTimeoffEntryForm = false }) => {
     const payload = getPayload();
 
     if (payload) {
-      const updateRes = await timeoffEntryApi.update(
+      const updateRes = await timeoffEntriesApi.update(
         editTimeoffEntryId,
         payload
       );
@@ -271,7 +299,7 @@ const TimeoffForm = ({ isDisplayEditTimeoffEntryForm = false }) => {
     if (!timeoffEntryId) return;
     setEditTimeoffEntryId(0);
     setNewTimeoffEntryView(false);
-    const res = await timeoffEntryApi.destroy(timeoffEntryId);
+    const res = await timeoffEntriesApi.destroy(timeoffEntryId);
 
     if (res.status === 200) {
       await handleFilterEntry(selectedFullDate, timeoffEntryId);
@@ -289,7 +317,7 @@ const TimeoffForm = ({ isDisplayEditTimeoffEntryForm = false }) => {
     if (timeoffEntry) {
       const payload = getPayload(timeoffEntry);
       if (payload) {
-        const res = await timeoffEntryApi.create(payload, selectedEmployeeId);
+        const res = await timeoffEntriesApi.create(payload, selectedEmployeeId);
         if (res.status === 200) {
           await fetchEntries(selectedFullDate, selectedFullDate);
           await fetchEntriesOfMonths();

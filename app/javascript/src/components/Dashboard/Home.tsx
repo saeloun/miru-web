@@ -1,18 +1,46 @@
-import React from "react";
-
-import Cookies from "js-cookie";
-import { Routes, Route, Outlet, Navigate } from "react-router-dom";
-
-import ErrorPage from "common/Error";
 import { Roles, Paths } from "constants/index";
 import { ROUTES } from "constants/routes";
+
+import React, { Suspense } from "react";
+
+import ErrorPage from "common/Error";
+import RouteErrorBoundary from "common/RouteErrorBoundary";
+import Cookies from "js-cookie";
+import { Routes, Route, Outlet, Navigate, useLocation } from "react-router-dom";
 import { dashboardUrl } from "utils/dashboardUrl";
+
+const isSafeInternalPath = (p: string): boolean => {
+  const trimmed = (p || "").trim();
+  if (!trimmed.startsWith("/")) return false;
+
+  if (trimmed.startsWith("//")) return false; // scheme-relative
+
+  if (/^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(trimmed)) return false; // absolute schemes
+
+  return true;
+};
+
+const pathAllowedForRole = (path: string, role: Roles): boolean =>
+  ROUTES.some(route => {
+    if (!route.authorisedRoles.includes(role)) return false;
+
+    const basePath = route.path.replace("/*", "");
+    if (basePath === Paths.DASHBOARD) {
+      return path === Paths.DASHBOARD;
+    }
+
+    return path === basePath || path.startsWith(`${basePath}/`);
+  });
 
 const redirectUrl = role => {
   const lastVisitedPage = Cookies.get("lastVisitedPage");
   let url = dashboardUrl(role);
 
-  if (lastVisitedPage && lastVisitedPage !== "/") {
+  if (
+    lastVisitedPage &&
+    isSafeInternalPath(lastVisitedPage) &&
+    pathAllowedForRole(lastVisitedPage, role)
+  ) {
     url = lastVisitedPage;
   }
 
@@ -22,10 +50,8 @@ const redirectUrl = role => {
 };
 
 const RestrictedRoute = ({ user, role, authorisedRoles }) => {
-  if (!user) {
-    window.location.href = Paths.SIGN_IN;
-
-    return null;
+  if (!user || !role) {
+    return <Navigate to="/user/sign_in" />;
   }
 
   if (authorisedRoles.includes(role)) {
@@ -44,12 +70,14 @@ const RootElement = ({ role }) => {
 };
 
 const Home = (props: Iprops) => {
-  const { companyRole } = props;
+  const { companyRole, company_role } = props;
+  const role = companyRole || company_role;
+  const location = useLocation();
 
   return (
-    <div className="h-full overflow-x-scroll p-0 font-manrope lg:absolute lg:top-0 lg:bottom-0 lg:right-0 lg:w-5/6 lg:px-20 lg:py-3">
+    <div className="min-h-full font-geist">
       <Routes>
-        <Route element={<RootElement role={companyRole} />} path="/" />
+        <Route element={<RootElement role={role} />} path="/" />
         {ROUTES.map(parentRoute => (
           <Route
             key={parentRoute.path}
@@ -57,14 +85,26 @@ const Home = (props: Iprops) => {
             element={
               <RestrictedRoute
                 authorisedRoles={parentRoute.authorisedRoles}
-                role={companyRole}
+                role={role}
                 user={props.user}
               />
             }
           >
             {parentRoute.subRoutes.map(({ path, Component }) => (
               <Route
-                element={<Component {...props} />}
+                element={
+                  <RouteErrorBoundary resetKey={location.pathname}>
+                    <Suspense
+                      fallback={
+                        <div className="flex min-h-[40vh] items-center justify-center px-6 text-sm text-muted-foreground">
+                          Loading…
+                        </div>
+                      }
+                    >
+                      <Component {...props} />
+                    </Suspense>
+                  </RouteErrorBoundary>
+                }
                 key={path}
                 path={path}
               />

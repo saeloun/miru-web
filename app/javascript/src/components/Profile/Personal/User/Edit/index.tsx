@@ -1,24 +1,25 @@
-/* eslint-disable no-unused-vars */
 import React, { Fragment, useEffect, useRef, useState } from "react";
 
-import dayjs from "dayjs";
-import utc from "dayjs/plugin/utc";
-import { useOutsideClick } from "helpers";
-import { useNavigate } from "react-router-dom";
-import worldCountries from "world-countries";
-import * as Yup from "yup";
-
-import profileApi from "apis/profile";
-import teamsApi from "apis/teams";
+import { passkeysApi, profileApi, teamsApi, totpApi } from "apis/api";
 import Loader from "common/Loader/index";
 import { MobileDetailsHeader } from "common/Mobile/MobileDetailsHeader";
 import EditHeader from "components/Profile/Common/EditHeader";
 import { useProfileContext } from "context/Profile/ProfileContext";
 import { useUserContext } from "context/UserContext";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import { useOutsideClick } from "helpers";
 import { teamsMapper } from "mapper/teams.mapper";
+import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "sonner";
+import { beginPasskeyRegistration } from "utils/passkeys";
+import worldCountries from "world-countries";
+import * as Yup from "yup";
+import { useCurrentUser } from "~/hooks/useCurrentUser";
 
 import MobileEditPage from "./MobileEditPage";
-import StaticPage from "./StaticPage";
+import EditProfilePage from "./StaticPage";
+import ProfileImageCard from "./ProfileImageCard";
 import { userSchema } from "./validationSchema";
 
 dayjs.extend(utc);
@@ -43,11 +44,14 @@ const UserDetailsEdit = () => {
   };
 
   const navigate = useNavigate();
-  const { isDesktop } = useUserContext();
-  const {
-    personalDetails: { id },
-    isCalledFromSettings,
-  } = useProfileContext();
+  const { memberId } = useParams();
+  const { avatarUrl, user, isDesktop, setCurrentAvatarUrl } = useUserContext();
+  const { currentUser, refetch: refetchCurrentUser } = useCurrentUser();
+  const { personalDetails, isCalledFromSettings, updateDetails } =
+    useProfileContext();
+
+  // Get current user ID from _me endpoint when in settings, or use personalDetails.id for team view
+  const [currentUserId, setCurrentUserId] = useState(null);
 
   const wrapperRef = useRef(null);
 
@@ -58,7 +62,6 @@ const UserDetailsEdit = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [addrId, setAddrId] = useState();
   const [userId, setUserId] = useState();
-  const { updateDetails, personalDetails } = useProfileContext();
   const [changePassword, setChangePassword] = useState<boolean>(false);
   const [showCurrentPassword, setShowCurrentPassword] =
     useState<boolean>(false);
@@ -68,8 +71,20 @@ const UserDetailsEdit = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [passkeys, setPasskeys] = useState([]);
+  const [passkeyRequiredForLogin, setPasskeyRequiredForLogin] = useState(false);
+  const [passkeysBusy, setPasskeysBusy] = useState(false);
+  const [totpEnabled, setTotpEnabled] = useState(false);
+  const [totpBusy, setTotpBusy] = useState(false);
+  const [totpSecret, setTotpSecret] = useState("");
+  const [totpProvisioningUri, setTotpProvisioningUri] = useState("");
+  const [totpVerificationCode, setTotpVerificationCode] = useState("");
+  const [recoveryCodes, setRecoveryCodes] = useState([]);
+  const [recoveryCodesCount, setRecoveryCodesCount] = useState(0);
 
-  const navigateToPath = isCalledFromSettings ? "/settings" : `/team/${id}`;
+  const navigateToPath = isCalledFromSettings
+    ? "/settings"
+    : `/team/${currentUserId || personalDetails?.id}`;
 
   useOutsideClick(wrapperRef, () => setShowDatePicker({ visibility: false }));
   const assignCountries = async allCountries => {
@@ -82,28 +97,99 @@ const UserDetailsEdit = () => {
   };
 
   const getDetails = async () => {
-    const data = await teamsApi.get(id);
-    const addressData = await teamsApi.getAddress(id);
-    setUserId(data.data.id);
+    if (!currentUserId) return;
 
-    const userObj = teamsMapper(data.data, addressData.data.addresses[0]);
-    updateDetails("personalDetails", userObj);
-    if (userObj.addresses?.address_type?.length > 0) {
-      setAddrType(
-        addressOptions.find(
-          item => item.value === userObj.addresses.address_type
-        )
-      );
+    try {
+      let userData;
+
+      if (isCalledFromSettings) {
+        // Use fresh user data from _me endpoint for settings
+        userData = currentUser;
+        if (userData) {
+          setUserId(userData.id);
+        }
+      } else {
+        // Use teams API for team member view
+        const data = await teamsApi.get(currentUserId);
+        userData = data.data;
+        setUserId(userData.id);
+      }
+
+      if (userData) {
+        const addressData = await teamsApi.getAddress(userData.id);
+        const userObj = teamsMapper(userData, addressData.data.addresses[0]);
+
+        updateDetails("personalDetails", userObj);
+
+        if (userObj.addresses?.address_type?.length > 0) {
+          setAddrType(
+            addressOptions.find(
+              item => item.value === userObj.addresses.address_type
+            )
+          );
+        }
+        setAddrId(addressData.data.addresses[0]?.id);
+      }
+    } catch (error) {
+      console.error("Failed to fetch user details:", error);
     }
-    setAddrId(addressData.data.addresses[0]?.id);
+
     setIsLoading(false);
   };
 
+  // Effect to determine current user ID
   useEffect(() => {
-    setIsLoading(true);
-    assignCountries(worldCountries);
-    getDetails();
-  }, [id]);
+    if (isCalledFromSettings) {
+      // Use fresh user data from _me endpoint for settings
+      if (currentUser) {
+        setCurrentUserId(currentUser.id);
+      }
+    } else {
+      setCurrentUserId(memberId);
+    }
+  }, [isCalledFromSettings, currentUser, memberId]);
+
+  useEffect(() => {
+    if (currentUserId) {
+      setIsLoading(true);
+      assignCountries(worldCountries);
+      getDetails();
+    }
+  }, [currentUserId]);
+
+  const syncPasskeys = data => {
+    setPasskeys(data.passkeys || []);
+    setPasskeyRequiredForLogin(!!data.passkey_required_for_login);
+  };
+
+  const loadPasskeys = async () => {
+    if (!isCalledFromSettings) return;
+
+    const response = await passkeysApi.index();
+    syncPasskeys(response.data);
+  };
+
+  const syncTotp = data => {
+    setTotpEnabled(!!data.enabled);
+    setRecoveryCodesCount(data.recovery_codes_count || 0);
+    setTotpSecret(data.secret || "");
+    setTotpProvisioningUri(data.provisioning_uri || "");
+    setRecoveryCodes(data.recovery_codes || []);
+  };
+
+  const loadTotp = async () => {
+    if (!isCalledFromSettings) return;
+
+    const response = await totpApi.show();
+    syncTotp(response.data);
+  };
+
+  useEffect(() => {
+    if (isCalledFromSettings && currentUserId) {
+      loadPasskeys();
+      loadTotp();
+    }
+  }, [isCalledFromSettings, currentUserId]);
 
   const cancelPasswordChange = () => {
     setChangePassword(false);
@@ -221,7 +307,7 @@ const UserDetailsEdit = () => {
           user: userSchema,
         });
       } else {
-        await teamsApi.updateUser(id, {
+        await teamsApi.updateUser(currentUserId, {
           user: userSchema,
         });
       }
@@ -275,6 +361,129 @@ const UserDetailsEdit = () => {
     setConfirmPassword(event.target.value);
   };
 
+  const handleAvatarChange = async avatarUrl => {
+    setCurrentAvatarUrl(avatarUrl);
+    await refetchCurrentUser();
+  };
+
+  const handleRegisterPasskey = async () => {
+    try {
+      setPasskeysBusy(true);
+      const optionsResponse = await passkeysApi.registrationOptions();
+      const credential = await beginPasskeyRegistration(
+        optionsResponse.data.public_key
+      );
+
+      const response = await passkeysApi.create({
+        challenge_token: optionsResponse.data.challenge_token,
+        credential,
+      });
+
+      syncPasskeys(response.data);
+      toast.success("Passkey added");
+    } catch (error) {
+      toast.error(
+        error?.response?.data?.error ||
+          error.message ||
+          "Failed to add passkey."
+      );
+    } finally {
+      setPasskeysBusy(false);
+    }
+  };
+
+  const handleRemovePasskey = async id => {
+    try {
+      setPasskeysBusy(true);
+      const response = await passkeysApi.destroy(id);
+      syncPasskeys(response.data);
+      toast.success("Passkey removed");
+    } catch (error) {
+      toast.error(error?.response?.data?.error || "Failed to remove passkey.");
+    } finally {
+      setPasskeysBusy(false);
+    }
+  };
+
+  const handleTogglePasskeyRequirement = async required => {
+    try {
+      setPasskeysBusy(true);
+      const response = await passkeysApi.updateRequirement({ required });
+      syncPasskeys(response.data);
+      toast.success(
+        required
+          ? "Passkey requirement enabled"
+          : "Passkey requirement disabled"
+      );
+    } catch (error) {
+      toast.error(
+        error?.response?.data?.error ||
+          "Failed to update passkey sign-in requirement."
+      );
+    } finally {
+      setPasskeysBusy(false);
+    }
+  };
+
+  const handleSetupTotp = async () => {
+    try {
+      setTotpBusy(true);
+      const response = await totpApi.setup();
+      syncTotp(response.data);
+      setTotpVerificationCode("");
+      toast.success("Authenticator app setup is ready");
+    } catch (error) {
+      toast.error(error?.response?.data?.error || "Failed to start 2FA setup.");
+    } finally {
+      setTotpBusy(false);
+    }
+  };
+
+  const handleConfirmTotp = async () => {
+    try {
+      setTotpBusy(true);
+      const response = await totpApi.confirm({ code: totpVerificationCode });
+      syncTotp(response.data);
+      setTotpVerificationCode("");
+      toast.success("Authenticator app enabled");
+    } catch (error) {
+      toast.error(
+        error?.response?.data?.error || "Failed to enable authenticator app."
+      );
+    } finally {
+      setTotpBusy(false);
+    }
+  };
+
+  const handleDisableTotp = async () => {
+    try {
+      setTotpBusy(true);
+      const response = await totpApi.destroy();
+      syncTotp(response.data);
+      setTotpVerificationCode("");
+      toast.success("Authenticator app disabled");
+    } catch (error) {
+      toast.error(error?.response?.data?.error || "Failed to disable 2FA.");
+    } finally {
+      setTotpBusy(false);
+    }
+  };
+
+  const handleRegenerateRecoveryCodes = async () => {
+    try {
+      setTotpBusy(true);
+      const response = await totpApi.regenerateRecoveryCodes();
+      syncTotp(response.data);
+      toast.success("Recovery codes regenerated");
+    } catch (error) {
+      toast.error(
+        error?.response?.data?.error || "Failed to regenerate recovery codes."
+      );
+    } finally {
+      setTotpBusy(false);
+    }
+  };
+
   return (
     <Fragment>
       {isDesktop && (
@@ -290,25 +499,39 @@ const UserDetailsEdit = () => {
           {isLoading ? (
             <Loader className="min-h-70v" />
           ) : (
-            <StaticPage
+            <EditProfilePage
+              avatarSection={
+                isCalledFromSettings && currentUserId ? (
+                  <ProfileImageCard
+                    displayName={
+                      `${personalDetails.first_name || ""} ${
+                        personalDetails.last_name || ""
+                      }`.trim() || "User"
+                    }
+                    imageUrl={avatarUrl || currentUser?.avatar_url}
+                    onAvatarChange={handleAvatarChange}
+                    userId={currentUserId}
+                  />
+                ) : null
+              }
+              _confirmPassword={confirmPassword}
+              _currentPassword={currentPassword}
+              _getErr={getErr}
+              _handleConfirmPasswordChange={handleConfirmPasswordChange}
+              _handleCurrentPasswordChange={handleCurrentPasswordChange}
+              _handlePasswordChange={handlePasswordChange}
+              _password={password}
               addrType={addrType}
               addressOptions={addressOptions}
               cancelPasswordChange={cancelPasswordChange}
               changePassword={changePassword}
-              confirmPassword={confirmPassword}
               countries={countries}
-              currentPassword={currentPassword}
               dateFormat={personalDetails.date_format}
               errDetails={errDetails}
-              getErr={getErr}
-              handleConfirmPasswordChange={handleConfirmPasswordChange}
-              handleCurrentPasswordChange={handleCurrentPasswordChange}
               handleDatePicker={handleDatePicker}
               handleOnChangeAddrType={handleOnChangeAddrType}
               handleOnChangeCountry={handleOnChangeCountry}
-              handlePasswordChange={handlePasswordChange}
               handlePhoneNumberChange={handlePhoneNumberChange}
-              password={password}
               personalDetails={personalDetails}
               setChangePassword={setChangePassword}
               setErrDetails={setErrDetails}
@@ -320,6 +543,25 @@ const UserDetailsEdit = () => {
               showCurrentPassword={showCurrentPassword}
               showDatePicker={showDatePicker}
               showPassword={showPassword}
+              canManagePasskeys={isCalledFromSettings}
+              onRegisterPasskey={handleRegisterPasskey}
+              onRemovePasskey={handleRemovePasskey}
+              onTogglePasskeyRequirement={handleTogglePasskeyRequirement}
+              passkeyRequiredForLogin={passkeyRequiredForLogin}
+              passkeys={passkeys}
+              passkeysBusy={passkeysBusy}
+              onConfirmTotp={handleConfirmTotp}
+              onDisableTotp={handleDisableTotp}
+              onGenerateRecoveryCodes={handleRegenerateRecoveryCodes}
+              onSetupTotp={handleSetupTotp}
+              recoveryCodes={recoveryCodes}
+              recoveryCodesCount={recoveryCodesCount}
+              setTotpVerificationCode={setTotpVerificationCode}
+              totpBusy={totpBusy}
+              totpEnabled={totpEnabled}
+              totpProvisioningUri={totpProvisioningUri}
+              totpSecret={totpSecret}
+              totpVerificationCode={totpVerificationCode}
               updateBasicDetails={updateBasicDetails}
               wrapperRef={wrapperRef}
             />
@@ -336,6 +578,20 @@ const UserDetailsEdit = () => {
             <Loader className="min-h-70v" />
           ) : (
             <MobileEditPage
+              avatarSection={
+                isCalledFromSettings && currentUserId ? (
+                  <ProfileImageCard
+                    displayName={
+                      `${personalDetails.first_name || ""} ${
+                        personalDetails.last_name || ""
+                      }`.trim() || "User"
+                    }
+                    imageUrl={avatarUrl || currentUser?.avatar_url}
+                    onAvatarChange={handleAvatarChange}
+                    userId={currentUserId}
+                  />
+                ) : null
+              }
               addrType={addrType}
               addressOptions={addressOptions}
               cancelPasswordChange={cancelPasswordChange}
@@ -362,6 +618,25 @@ const UserDetailsEdit = () => {
               showCurrentPassword={showCurrentPassword}
               showDatePicker={showDatePicker}
               showPassword={showPassword}
+              canManagePasskeys={isCalledFromSettings}
+              onRegisterPasskey={handleRegisterPasskey}
+              onRemovePasskey={handleRemovePasskey}
+              onTogglePasskeyRequirement={handleTogglePasskeyRequirement}
+              passkeyRequiredForLogin={passkeyRequiredForLogin}
+              passkeys={passkeys}
+              passkeysBusy={passkeysBusy}
+              onConfirmTotp={handleConfirmTotp}
+              onDisableTotp={handleDisableTotp}
+              onGenerateRecoveryCodes={handleRegenerateRecoveryCodes}
+              onSetupTotp={handleSetupTotp}
+              recoveryCodes={recoveryCodes}
+              recoveryCodesCount={recoveryCodesCount}
+              setTotpVerificationCode={setTotpVerificationCode}
+              totpBusy={totpBusy}
+              totpEnabled={totpEnabled}
+              totpProvisioningUri={totpProvisioningUri}
+              totpSecret={totpSecret}
+              totpVerificationCode={totpVerificationCode}
               updateBasicDetails={updateBasicDetails}
               wrapperRef={wrapperRef}
             />

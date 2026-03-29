@@ -10,7 +10,15 @@ const getValueFromLocalStorage = key => {
   let response = "";
   try {
     const value = localStorage.getItem(key);
-    response = value ? JSON.parse(value) : "";
+    if (!value) {
+      response = "";
+    } else {
+      try {
+        response = JSON.parse(value);
+      } catch {
+        response = value;
+      }
+    }
   } catch (error) {
     Logger.error(error);
     response = "";

@@ -1,11 +1,11 @@
+import { ApiStatus as InvoiceStatus, LocalStorageKeys } from "constants/index";
+
 import React, { useEffect, useState } from "react";
 
+import { clientApi } from "apis/api";
+import { useUserContext } from "context/UserContext";
 import { useDebounce } from "helpers";
 import { XIcon, SearchIcon } from "miruIcons";
-
-import clientApi from "apis/clients";
-import { ApiStatus as InvoiceStatus, LocalStorageKeys } from "constants/index";
-import { useUserContext } from "context/UserContext";
 
 import SearchDropdown from "./InvoiceSearch/SearchDropdown";
 
@@ -98,7 +98,7 @@ const Header = ({ showSearch, params, setParams }) => {
             <div className="flex w-10/12 lg:w-1/2">
               <div className="relative w-11/12">
                 <input
-                  className="outline-none w-full rounded-full border-miru-gray-1000 bg-miru-gray-100 py-2 px-3 text-sm font-medium leading-5 focus:border focus:ring-1 focus:ring-miru-gray-1000"
+                  className="outline-none w-full rounded-full border-border bg-muted py-2 px-3 text-sm font-medium leading-5 focus:border focus:ring-1 focus:ring-ring"
                   placeholder="Search"
                   type="text"
                   value={searchQuery}
@@ -110,7 +110,7 @@ const Header = ({ showSearch, params, setParams }) => {
                     <XIcon size={12} weight="bold" onClick={onSearchClear} />
                   ) : (
                     <SearchIcon
-                      className="text-miru-gray-1000"
+                      className="text-foreground"
                       size={16}
                       weight="bold"
                     />
@@ -133,7 +133,7 @@ const Header = ({ showSearch, params, setParams }) => {
                 } ${isShrinkingSearchBox ? "scale-95" : ""}`}
               >
                 <input
-                  className="outline-none w-full rounded-full border-miru-gray-1000 bg-miru-gray-100 py-3 px-3 text-sm font-medium leading-5 focus:border focus:ring-1 focus:ring-miru-gray-1000"
+                  className="outline-none w-full rounded-full border-border bg-muted py-3 px-3 text-sm font-medium leading-5 focus:border focus:ring-1 focus:ring-ring"
                   placeholder="Search"
                   type="text"
                   value={searchQuery}
@@ -152,7 +152,7 @@ const Header = ({ showSearch, params, setParams }) => {
                     />
                   ) : (
                     <SearchIcon
-                      className="text-miru-gray-1000"
+                      className="text-foreground"
                       size={16}
                       weight="bold"
                     />

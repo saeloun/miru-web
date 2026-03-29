@@ -1,8 +1,7 @@
 import React from "react";
 
+import { paymentSettings } from "apis/api";
 import { Modal, Button } from "StyledComponents";
-
-import paymentSettings from "apis/payment-settings";
 
 interface IProps {
   setShowDisconnectDialog: any;
@@ -50,7 +49,7 @@ const DisconnectPayment = ({
           CANCEL
         </Button>
         <Button
-          className="ml-2 w-1/2 bg-miru-red-400 text-white"
+          className="ml-2 w-1/2 bg-destructive text-white"
           size="medium"
           onClick={() => {
             disconnectPayment();

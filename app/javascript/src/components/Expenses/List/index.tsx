@@ -1,22 +1,17 @@
 import React, { useEffect, useState } from "react";
 
-import { Toastr } from "StyledComponents";
-
-import expensesApi from "apis/expenses";
+import { expensesApi } from "apis/api";
 import Loader from "common/Loader/index";
 import withLayout from "common/Mobile/HOC/withLayout";
 import { useUserContext } from "context/UserContext";
+import { Toastr } from "StyledComponents";
 
 import Container from "./Container";
 import Header from "./Header";
 
 import AddExpenseModal from "../Modals/AddExpenseModal";
 import AddExpense from "../Modals/Mobile/AddExpense";
-import {
-  setCategoryData,
-  setVendorData,
-  unmapExpenseListForDropdown,
-} from "../utils";
+import { setCategoryData, unmapExpenseListForDropdown } from "../utils";
 
 const Expenses = () => {
   const { isDesktop } = useUserContext();
@@ -29,7 +24,6 @@ const Expenses = () => {
     const res = await expensesApi.index();
     const data = setCategoryData(res.data.categories);
     res.data.categories = data;
-    setVendorData(res.data.vendors);
     setExpenseData(res.data);
     setIsLoading(false);
   };
@@ -74,7 +68,7 @@ const Expenses = () => {
   }
 
   const ExpensesLayout = () => (
-    <div className="flex h-full flex-col justify-between p-4 lg:p-0 ">
+    <div className="flex h-full flex-col justify-between p-4 lg:p-0">
       <Header
         clearSearch={fetchExpenses}
         fetchSearchResults={fetchSearchResults}

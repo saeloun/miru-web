@@ -1,16 +1,18 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'/>
-  </head>
-  <body style="color:#1D1A31">
-  <p>Hi <%= @name %>, </p>
+<% content_for :email_preheader, "Update your Miru timesheet for the missing week." %>
+<% content_for :email_eyebrow, "Time tracking" %>
+<% content_for :email_title, "Complete your timesheet" %>
+<% content_for :email_subtitle do %>
+  Your logged hours for <%= @company %> are still below the expected weekly total.
+<% end %>
 
-  <p>This is a reminder to update your weekly timesheet for <%= @company %> on Miru.</p>
+<p>Hi <strong><%= @name %></strong>,</p>
 
-  <p>Your logged hours from <%= @starting_date %> to <%= @ending_date %> are less than 40 hours.
-  Please <%= link_to "log on to update", root_url + "time-tracking" , target: "_blank" %> your timesheet. </p>
+<p>Your logged hours from <strong><%= @starting_date %></strong> to <strong><%= @ending_date %></strong> are less than 40 hours.</p>
 
-  <p>Cheers,<br/>Team Miru</p>
-  </body>
-</html>
+<p>Open Miru and add the missing entries so your timesheet is up to date.</p>
+
+<%= render "shared/mailer/button", href: "#{root_url}time-tracking", label: "Open time tracking" %>
+
+<div class="email-divider"></div>
+
+<p>Cheers,<br><strong>Team Miru</strong></p>

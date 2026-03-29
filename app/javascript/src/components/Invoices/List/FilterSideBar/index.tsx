@@ -1,17 +1,18 @@
+import { LocalStorageKeys } from "constants/index";
+
 import React, { useEffect, useRef, useState } from "react";
 
+import { companiesApi } from "apis/api";
+import Loader from "common/Loader/index";
+import CustomCheckbox from "common/CustomCheckbox";
+import CustomDateRangePicker from "common/CustomDateRangePicker";
+import CustomRadioButton from "common/CustomRadio";
+import StatusBadge from "components/ui/status-badge";
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 import { useDebounce, useOutsideClick } from "helpers";
 import { XIcon, FilterIcon, PlusIcon, MinusIcon, SearchIcon } from "miruIcons";
-import { Badge, Button, SidePanel } from "StyledComponents";
-
-import companiesApi from "apis/companies";
-import CustomCheckbox from "common/CustomCheckbox";
-import CustomDateRangePicker from "common/CustomDateRangePicker";
-import CustomRadioButton from "common/CustomRadio";
-import { LocalStorageKeys } from "constants/index";
-import getStatusCssClass from "utils/getBadgeStatus";
+import { Button, SidePanel } from "StyledComponents";
 
 import { dateRangeOptions, statusOptions } from "./filterOptions";
 
@@ -197,7 +198,9 @@ const FilterSideBar = ({
   });
 
   const resetCustomDatePicker = () => {
-    defaultDateRange() && setFilters(setDefaultDateRange());
+    if (defaultDateRange()) {
+      setFilters(setDefaultDateRange());
+    }
     hideCustomFilter();
   };
 
@@ -219,9 +222,11 @@ const FilterSideBar = ({
       return;
     }
 
-    defaultDateRange()
-      ? setFilterParams(setDefaultDateRange())
-      : setFilterParams(filters);
+    if (defaultDateRange()) {
+      setFilterParams(setDefaultDateRange());
+    } else {
+      setFilterParams(filters);
+    }
 
     window.localStorage.setItem(
       LocalStorageKeys.INVOICE_FILTERS,
@@ -246,7 +251,7 @@ const FilterSideBar = ({
   }, [debouncedSearchQuery]);
 
   if (loading) {
-    return <div>Loading....</div>;
+    return <Loader className="min-h-[20rem]" />;
   }
 
   return (
@@ -255,7 +260,7 @@ const FilterSideBar = ({
       setFilterVisibilty={setIsFilterVisible}
     >
       <div>
-        <SidePanel.Header className="mb-2 flex h-12 items-center justify-between bg-miru-han-purple-1000 px-2 text-white lg:h-auto lg:bg-white lg:px-5 lg:py-5 lg:font-bold lg:text-miru-dark-purple-1000">
+        <SidePanel.Header className="mb-2 flex h-12 items-center justify-between bg-primary px-2 text-white lg:h-auto lg:bg-white lg:px-5 lg:py-5 lg:font-bold lg:text-foreground">
           {isDesktop ? (
             <h4 className="flex items-center text-base">
               <FilterIcon className="mr-2.5" size={16} /> <span>Filters</span>
@@ -266,15 +271,12 @@ const FilterSideBar = ({
             </span>
           )}
           <Button style="ternary" onClick={() => setIsFilterVisible(false)}>
-            <XIcon
-              className="text-white lg:text-miru-dark-purple-1000"
-              size={16}
-            />
+            <XIcon className="text-white lg:text-foreground" size={16} />
           </Button>
         </SidePanel.Header>
         <SidePanel.Body className="sidebar__filters max-h-70v min-h-70v overflow-y-auto lg:max-h-80v lg:min-h-80v">
           <ul>
-            <li className="relative cursor-pointer border-b border-miru-gray-200 pb-5 pt-6 text-miru-dark-purple-1000 hover:text-miru-han-purple-1000">
+            <li className="relative cursor-pointer border-b border-border pb-5 pt-6 text-foreground hover:text-primary">
               <div
                 className="flex items-center justify-between px-5"
                 onClick={() => {
@@ -288,7 +290,7 @@ const FilterSideBar = ({
                 </h5>
                 <div className="flex items-center">
                   {filters.dateRange.value != "all" && (
-                    <span className="mr-7 flex h-5 w-5 items-center justify-center rounded-full bg-miru-han-purple-1000 text-xs font-semibold text-white">
+                    <span className="mr-7 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs font-semibold text-white">
                       {1}
                     </span>
                   )}
@@ -319,7 +321,7 @@ const FilterSideBar = ({
               )}
               {showCustomFilter && (
                 <div
-                  className="absolute z-20 mt-1 ml-4 flex flex-col overflow-y-auto rounded-lg bg-miru-white-1000 shadow-c1"
+                  className="absolute z-20 mt-1 ml-4 flex flex-col overflow-y-auto rounded-lg bg-background shadow-c1"
                   ref={wrapperRef}
                 >
                   <CustomDateRangePicker
@@ -329,7 +331,7 @@ const FilterSideBar = ({
                     selectedInput={selectedInput}
                     onClickInput={onClickInput}
                   />
-                  <div className="flex h-full items-end justify-center bg-miru-white-1000 p-6 ">
+                  <div className="flex h-full items-end justify-center bg-background p-6 ">
                     <button
                       className="sidebar__reset"
                       onClick={resetCustomDatePicker}
@@ -351,9 +353,9 @@ const FilterSideBar = ({
                 </div>
               )}
             </li>
-            <li className="cursor-pointer border-b border-miru-gray-200 pb-5 pt-6 text-miru-dark-purple-1000">
+            <li className="cursor-pointer border-b border-border pb-5 pt-6 text-foreground">
               <div
-                className="flex items-center justify-between px-5 hover:text-miru-han-purple-1000"
+                className="flex items-center justify-between px-5 hover:text-primary"
                 onClick={() => {
                   setIsStatusOpen(false);
                   setIsDateRangeOpen(false);
@@ -365,7 +367,7 @@ const FilterSideBar = ({
                 </h5>
                 <div className="flex items-center">
                   {filters.clients.length > 0 && (
-                    <span className="mr-7 flex h-5 w-5 items-center justify-center rounded-full bg-miru-han-purple-1000 text-xs font-semibold text-white">
+                    <span className="mr-7 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs font-semibold text-white">
                       {filters.clients.length}
                     </span>
                   )}
@@ -383,8 +385,8 @@ const FilterSideBar = ({
                       placeholder="Search"
                       type="text"
                       value={searchQuery}
-                      className="focus:outline-none w-full rounded bg-miru-gray-100 p-2
-            text-sm font-medium focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
+                      className="focus:outline-none w-full rounded bg-muted p-2
+            text-sm font-medium focus:border-border focus:ring-1 focus:ring-ring"
                       onChange={e => {
                         setSearchQuery(e.target.value);
                       }}
@@ -414,7 +416,7 @@ const FilterSideBar = ({
                           labelClassName="ml-4"
                           name="clients"
                           text={client.label}
-                          wrapperClassName="py-3 px-5 flex items-center hover:bg-miru-gray-100 text-miru-dark-purple-1000"
+                          wrapperClassName="py-3 px-5 flex items-center hover:bg-muted text-foreground"
                           handleCheck={event =>
                             handleSelectFilter(client, event.target)
                           }
@@ -430,9 +432,9 @@ const FilterSideBar = ({
                 </div>
               )}
             </li>
-            <li className="cursor-pointer border-b border-miru-gray-200 pb-5 pt-6 text-miru-dark-purple-1000">
+            <li className="cursor-pointer border-b border-border pb-5 pt-6 text-foreground">
               <div
-                className="flex items-center justify-between px-5 hover:text-miru-han-purple-1000"
+                className="flex items-center justify-between px-5 hover:text-primary"
                 onClick={() => {
                   setIsDateRangeOpen(false);
                   setIsClientOpen(false);
@@ -444,7 +446,7 @@ const FilterSideBar = ({
                 </h5>
                 <div className="flex items-center">
                   {filters.status.length > 0 && (
-                    <span className="mr-7 flex h-5 w-5 items-center justify-center rounded-full bg-miru-han-purple-1000 text-xs font-semibold text-white">
+                    <span className="mr-7 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs font-semibold text-white">
                       {filters.status.length}
                     </span>
                   )}
@@ -465,19 +467,14 @@ const FilterSideBar = ({
                         key={status.value}
                         labelClassName="ml-4"
                         name="status"
-                        wrapperClassName="py-3 px-5 flex items-center hover:bg-miru-gray-100"
+                        wrapperClassName="py-3 px-5 flex items-center hover:bg-muted"
                         handleCheck={event =>
                           handleSelectFilter(status, event.target)
                         }
                         isChecked={filters.status.some(
                           e => e.value === status.value
                         )}
-                        text={
-                          <Badge
-                            className={getStatusCssClass(status.label)}
-                            text={status.label}
-                          />
-                        }
+                        text={<StatusBadge status={status.label} />}
                       />
                     ))}
                 </div>

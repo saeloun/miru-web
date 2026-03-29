@@ -7,27 +7,29 @@ class ActionDispatch::Routing::Mapper
 end
 
 Rails.application.routes.draw do
+  # Health check endpoint
+  get "/health", to: "health#index"
+
   if ENV["MISSION_CONTROL_ENABLED"] == "true"
     mount MissionControl::Jobs::Engine, at: "/jobs"
   end
 
-  namespace :admin do
-      resources :users
-      resources :timesheet_entries
-      resources :stripe_connected_accounts
-      resources :roles
-      resources :project_members
-      resources :projects
-      resources :payments
-      resources :invoice_line_items
-      resources :invoices
-      resources :invitations
-      resources :companies
-      resources :clients
-      resources :addresses
+  # Mount PgHero for database monitoring (restricted to super admins)
+  authenticate :user, lambda { |u| u.super_admin? } do
+    mount PgHero::Engine, at: "/pghero"
+  end
 
-      root to: "users#index"
+  # Analytics Dashboard (Super Admin and authorized users only)
+  authenticate :user, lambda { |u| u.has_analytics_access? } do
+    resources :analytics, only: [:index] do
+      collection do
+        get :revenue
+        get :activity
+        get :currency
+      end
     end
+  end
+
   devise_for :users, skip: [:sessions, :registrations], controllers: {
     confirmations: "users/confirmations",
     omniauth_callbacks: "users/omniauth_callbacks"
@@ -36,11 +38,10 @@ Rails.application.routes.draw do
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 
   # For opening the email in the web browser in non production environments
-  if ENV["EMAIL_DELIVERY_METHOD"] == "letter_opener_web"
+  if ENV["EMAIL_DELIVERY_METHOD"] == "letter_opener_web" && !Rails.env.test? && defined?(LetterOpenerWeb)
     mount LetterOpenerWeb::Engine, at: "/sent_emails"
   end
 
-  draw(:internal_api)
   draw(:api)
 
   resources :workspaces, only: [:update]
@@ -70,8 +71,9 @@ Rails.application.routes.draw do
 
   match "*path", via: :all, to: "home#index", constraints: lambda { |req|
     req.path.exclude?("rails/active_storage") &&
-    !req.path.include?("internal_api") &&
+    !req.path.start_with?("/api/") &&
     !req.path.include?("packs/") &&
-    !req.path.include?("assets/")
+    !req.path.include?("assets/") &&
+    !req.path.start_with?("/.well-known")
   }
 end

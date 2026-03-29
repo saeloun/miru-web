@@ -1,11 +1,10 @@
 import React, { Fragment, useEffect, useState } from "react";
 
-import Logger from "js-logger";
-import { useNavigate, useParams } from "react-router-dom";
-
-import expensesApi from "apis/expenses";
+import { expensesApi } from "apis/api";
 import Loader from "common/Loader/index";
 import { useUserContext } from "context/UserContext";
+import Logger from "js-logger";
+import { useNavigate, useParams } from "react-router-dom";
 
 import Expense from "./Expense";
 import Header from "./Header";
@@ -13,7 +12,7 @@ import Header from "./Header";
 import DeleteExpenseModal from "../Modals/DeleteExpenseModal";
 import EditExpenseModal from "../Modals/EditExpenseModal";
 import EditExpense from "../Modals/Mobile/EditExpense";
-import { setCategoryData, setVendorData } from "../utils";
+import { setCategoryData } from "../utils";
 
 const ExpenseDetails = () => {
   const [showDeleteExpenseModal, setShowDeleteExpenseModal] =
@@ -39,7 +38,6 @@ const ExpenseDetails = () => {
       const res = await expensesApi.index();
       const data = setCategoryData(res.data.categories);
       res.data.categories = data;
-      setVendorData(res.data.vendors);
       setExpenseData(res.data);
       setExpense(resData.data);
       setIsLoading(false);
@@ -54,7 +52,6 @@ const ExpenseDetails = () => {
       const res = await expensesApi.index();
       const data = setCategoryData(res.data.categories);
       res.data.categories = data;
-      setVendorData(res.data.vendors);
       setExpenseData(res.data);
     } catch (e) {
       Logger.error(e);

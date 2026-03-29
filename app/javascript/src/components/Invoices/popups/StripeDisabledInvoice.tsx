@@ -15,7 +15,7 @@ const StripeDisabledInvoice = ({
     <div className="mt-2 mb-4 flex items-center justify-between">
       <h6 className="text-2xl font-bold">Stripe disabled for this invoice</h6>
       <Button
-        className="text-miru-gray-1000"
+        className="text-foreground"
         style="ternary"
         onClick={() => setShowStripeDisabledDialog(false)}
       >
@@ -24,7 +24,7 @@ const StripeDisabledInvoice = ({
     </div>
     <div className="my-8 flex-col">
       <p className="mt-2 font-normal">
-        The sender hasn't enabled Stripe payments for this invoice.
+        The sender hasn&apos;t enabled Stripe payments for this invoice.
         <br />
         You can reach out to them to activate it, or choose an alternative
         payment method like ACH.

@@ -1,5 +1,27 @@
 # frozen_string_literal: true
 
+# == Schema Information
+#
+# Table name: holiday_infos
+#
+#  id           :bigint           not null, primary key
+#  category     :integer          default("national"), not null
+#  date         :date             not null
+#  discarded_at :datetime
+#  name         :string           not null
+#  created_at   :datetime         not null
+#  updated_at   :datetime         not null
+#  holiday_id   :bigint           not null
+#
+# Indexes
+#
+#  index_holiday_infos_on_discarded_at  (discarded_at)
+#  index_holiday_infos_on_holiday_id    (holiday_id)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (holiday_id => holidays.id)
+#
 require "rails_helper"
 
 RSpec.describe HolidayInfo, type: :model do
@@ -19,7 +41,19 @@ RSpec.describe HolidayInfo, type: :model do
     it { is_expected.to validate_presence_of(:name) }
     it { is_expected.to validate_length_of(:name).is_at_most(30) }
     it { is_expected.to allow_value("Valid Name").for(:name) }
+    it { is_expected.to allow_value("New Year's Day").for(:name) }
+    it { is_expected.to allow_value("Labor-Day").for(:name) }
     it { is_expected.not_to allow_value("Invalid Name!").for(:name) }
+    it { is_expected.not_to allow_value("Holiday@123").for(:name) }
+
+    it "returns descriptive error message for invalid name format" do
+      invalid_holiday_info = build(:holiday_info, holiday:, name: "Invalid@Name")
+      invalid_holiday_info.valid?
+      expect(invalid_holiday_info.errors[:name]).to include(
+        "can only contain letters, spaces, hyphens, and apostrophes"
+      )
+    end
+
     it { is_expected.to validate_presence_of(:date) }
     it { is_expected.to validate_presence_of(:category) }
 

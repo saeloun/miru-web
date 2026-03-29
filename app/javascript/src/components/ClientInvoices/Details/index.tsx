@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
 
-import { useParams } from "react-router-dom";
-
-import invoicesApi from "apis/invoices";
+import { invoicesApi } from "apis/api";
 import Loader from "common/Loader/index";
 import ConnectPaymentGateway from "components/Invoices/popups/ConnectPaymentGateway";
 import StripeDisabledInvoice from "components/Invoices/popups/StripeDisabledInvoice";
 import { useUserContext } from "context/UserContext";
+import { useParams } from "react-router-dom";
 
 import Header from "./Header";
 import InvoiceDetails from "./InvoiceDetails";
@@ -57,7 +56,7 @@ const ClientInvoiceDetails = () => {
 
     return isDesktop ? (
       <div className="flex flex-col justify-between">
-        <div className="font-manrope">
+        <div className="font-sans">
           <Header
             invoice={invoice}
             setShowConnectPaymentDialog={setShowConnectPaymentDialog}
@@ -65,7 +64,7 @@ const ClientInvoiceDetails = () => {
             stripeUrl={url}
             stripe_connected_account={stripe_connected_account}
           />
-          <div className="m-0 mt-5 mb-10 w-full bg-miru-gray-100 p-0">
+          <div className="m-0 mt-5 mb-10 w-full bg-muted p-0">
             <InvoiceDetails
               client={client}
               company={company}

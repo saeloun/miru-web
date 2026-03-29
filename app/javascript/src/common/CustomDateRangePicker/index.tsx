@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import React, { useEffect, useRef, useState } from "react";
 
 import { getMonth, getYear } from "date-fns";
@@ -24,8 +23,8 @@ const CustomDateRangePicker = ({
   onClickInput,
   selectedInput,
   dateRange,
-  setSelectedInput = (inputFieldName: string) => {}, // eslint-disable-line
-  setIsDisableDoneBtn = (isDisableDoneBtn: boolean) => {}, // eslint-disable-line
+  setSelectedInput = (inputFieldName: string) => {},
+  setIsDisableDoneBtn = (isDisableDoneBtn: boolean) => {},
 }) => {
   const fromInput = "from-input";
   const toInput = "to-input";
@@ -36,7 +35,7 @@ const CustomDateRangePicker = ({
   const [isValidDateRange, setIsValidDateRange] = useState<boolean>(true);
 
   const range = (start, end) =>
-    Array.from({ length: end - start }, (v, k) => k + start);
+    Array.from({ length: end - start }, (_v, k) => k + start);
 
   const years = range(1990, getYear(new Date()) + 1);
   const textInput = useRef(null);
@@ -46,7 +45,7 @@ const CustomDateRangePicker = ({
     setSelectedInput(fromInput);
     textInput.current.focus();
     resetErrors("fromInput");
-  }, []);
+  }, [setSelectedInput, resetErrors]);
 
   const handleDateInputOnBlur = (dateInput: string, fieldName: string) => {
     if (dateInput) {
@@ -223,7 +222,7 @@ const CustomDateRangePicker = ({
         prevMonthButtonDisabled,
         nextMonthButtonDisabled,
       }) => (
-        <div className="bg-miru-white-1000 ">
+        <div className="bg-background ">
           <div className="mt-2 flex justify-start">
             <button onClick={hideCustomFilter}>
               <LeftArrowIcon color="#5b34ea" size={10} />
@@ -238,9 +237,8 @@ const CustomDateRangePicker = ({
                 placeholder=" From "
                 ref={textInput}
                 type="text"
-                className={`mr-1 h-8 w-32 rounded bg-miru-gray-100 p-1 ${
-                  selectedInput === fromInput &&
-                  "border-2 border-miru-han-purple-1000"
+                className={`mr-1 h-8 w-32 rounded bg-muted p-1 ${
+                  selectedInput === fromInput && "border-2 border-primary"
                 }`}
                 value={
                   dateRange.from
@@ -264,9 +262,8 @@ const CustomDateRangePicker = ({
                 placeholder=" To "
                 ref={toInputRef}
                 type="text"
-                className={`ml-1 h-8 w-32 rounded bg-miru-gray-100 p-1 ${
-                  selectedInput === toInput &&
-                  "border-2 border-miru-han-purple-1000"
+                className={`ml-1 h-8 w-32 rounded bg-muted p-1 ${
+                  selectedInput === toInput && "border-2 border-primary"
                 }`}
                 value={
                   dateRange.to

@@ -1,14 +1,15 @@
 import React from "react";
 
+import MiruLogoWatermark from "common/MiruLogoWatermark";
 import { GreenCheckCircleIcon } from "miruIcons";
 import { useNavigate } from "react-router-dom";
-
-import MiruLogoWatermark from "common/MiruLogoWatermark";
+import { useUserContext } from "context/UserContext";
 
 const EmailVerificationSuccess = () => {
   const navigate = useNavigate();
+  const { user } = useUserContext();
 
-  const redirectToLoginPage = () => {
+  const handleContinue = () => {
     navigate("/");
   };
 
@@ -17,11 +18,11 @@ const EmailVerificationSuccess = () => {
       <div className="mx-auto min-h-full md:w-5/12 lg:w-352">
         <div>
           <img
-            className="d-block mx-auto mb-4 h-10 w-10 font-bold text-miru-chart-green-400 md:mb-10 md:h-16 md:w-16 lg:mb-11"
+            className="d-block mx-auto mb-4 h-10 w-10 font-bold text-emerald-500 md:mb-10 md:h-16 md:w-16 lg:mb-11"
             src={GreenCheckCircleIcon}
           />
         </div>
-        <h1 className="text-center font-manrope text-2xl font-extrabold text-miru-chart-green-400 md:text-3xl lg:text-4.5xl">
+        <h1 className="text-center font-geist text-2xl font-extrabold text-emerald-500 md:text-3xl lg:text-4.5xl">
           Email
           <br />
           Verification
@@ -29,15 +30,15 @@ const EmailVerificationSuccess = () => {
           Successful
         </h1>
         <div className="pt-10">
-          <p className="text-center font-manrope text-sm text-miru-dark-purple-1000 ">
+          <p className="text-center font-geist text-sm text-foreground ">
             Thanks for verifying your email.
           </p>
         </div>
-        <div className="pt-6 text-center font-manrope text-xs font-normal not-italic">
+        <div className="pt-6 text-center font-geist text-xs font-normal not-italic">
           <button
             className="form__button cursor-pointer whitespace-nowrap"
             type="submit"
-            onClick={redirectToLoginPage}
+            onClick={handleContinue}
           >
             Continue
           </button>

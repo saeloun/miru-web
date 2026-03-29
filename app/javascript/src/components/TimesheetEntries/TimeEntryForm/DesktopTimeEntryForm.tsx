@@ -1,15 +1,18 @@
 import React, { MutableRefObject, useRef } from "react";
 
-import { format } from "date-fns";
-import dayjs from "dayjs";
-import { useOutsideClick, validateTimesheetEntry } from "helpers";
-import { CheckedCheckboxSVG, UncheckedCheckboxSVG } from "miruIcons";
-import TextareaAutosize from "react-textarea-autosize";
-import { Button, BUTTON_STYLES, TimeInput } from "StyledComponents";
-
 import CustomDatePicker from "common/CustomDatePicker";
 import { useTimesheetEntries } from "context/TimesheetEntries";
 import { useTimeEntryForm } from "context/TimesheetEntries/TimeEntryFormContext";
+import dayjs from "dayjs";
+import { useOutsideClick, validateTimesheetEntry } from "helpers";
+import AnimatedTimeInput from "../../ui/animated-time-input";
+import AnimatedSelect from "../../ui/animated-select";
+import AnimatedTextarea from "../../ui/animated-textarea";
+import { AnimatedButton } from "../../ui/animated-button";
+import AnimatedDatePicker from "../../ui/animated-date-picker";
+import AnimatedCheckbox from "../../ui/animated-checkbox";
+import { Card } from "../../ui/card";
+import { cn } from "../../../lib/utils";
 
 const DesktopTimeEntryForm = () => {
   const {
@@ -69,168 +72,133 @@ const DesktopTimeEntryForm = () => {
     return false;
   };
 
+  const clientOptions =
+    clients?.map(client => ({
+      value: client.name,
+      label: client.name,
+    })) || [];
+
+  const projectOptions =
+    client && projects[client]
+      ? projects[client].map(project => ({
+          value: project.name,
+          label: project.name,
+          id: project.id,
+        }))
+      : [];
+
   return (
-    <div
-      className={`
-       hidden min-h-24 justify-between rounded-lg p-4 shadow-2xl lg:flex ${
-         editEntryId ? "mt-10" : ""
-       }`}
+    <Card
+      className={cn(
+        "hidden min-h-24 justify-between p-6 shadow-lg lg:flex",
+        editEntryId && "mt-10"
+      )}
     >
-      <div className="w-1/2">
-        <div className="mb-2 flex w-129 justify-between">
-          <select
-            className="h-8 w-64 rounded-sm bg-miru-gray-100"
-            id="client"
-            name="client"
-            value={client || "Client"}
-            onChange={e => {
-              setClient(e.target.value);
-              setProject(projects ? projects[e.target.value][0]?.name : "");
+      <div className="flex-1 space-y-6">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <AnimatedSelect
+            options={clientOptions}
+            value={client || ""}
+            placeholder="Select a client"
+            onChange={value => {
+              setClient(value);
+              if (projects && projects[value] && projects[value][0]) {
+                setProject(projects[value][0].name);
+              } else {
+                setProject("");
+              }
             }}
-          >
-            {!client && (
-              <option disabled selected className="text-miru-gray-100">
-                Client
-              </option>
-            )}
-            {clients?.map((client, i) => (
-              <option key={i.toString()}>{client["name"]}</option>
-            ))}
-          </select>
-          <select
-            className="h-8 w-64 rounded-sm bg-miru-gray-100"
-            id="project"
-            name="project"
-            value={project}
-            onChange={e => {
-              setProject(e.target.value);
-            }}
-          >
-            {!project && (
-              <option disabled selected className="text-miru-gray-100">
-                Project
-              </option>
-            )}
-            {client &&
-              projects[client]?.map((project, i) => (
-                <option data-project-id={project.id} key={i.toString()}>
-                  {project.name}
-                </option>
-              ))}
-          </select>
-        </div>
-        <TextareaAutosize
-          cols={60}
-          name="notes"
-          placeholder=" Notes"
-          rows={5}
-          value={note}
-          className={`
-            focus:miru-han-purple-1000 outline-none mt-2 w-129 resize-none overflow-y-auto rounded-sm bg-miru-gray-100 px-1 ${
-              editEntryId ? "h-auto" : "h-8"
-            }
-          `}
-          onChange={e => setNote(e.target["value"])}
-        />
-      </div>
-      <div className="w-60">
-        <div className="mb-2 flex justify-between">
-          <div>
-            {displayDatePicker && (
-              <div className="relative" ref={datePickerRef}>
-                <div className="h-100 w-100 absolute top-8 z-10">
-                  <CustomDatePicker
-                    date={dayjs(selectedDate).toDate()}
-                    handleChange={handleDateChangeFromDatePicker}
-                  />
-                </div>
-              </div>
-            )}
-            <div
-              className="formatted-date flex h-8 w-29 items-center justify-center rounded-sm bg-miru-gray-100 p-1 text-sm"
-              id="formattedDate"
-              onClick={() => {
-                setDisplayDatePicker(true);
-              }}
-            >
-              {format(new Date(selectedDate), "do MMM, yyyy")}
-            </div>
-          </div>
-          <TimeInput
-            className="h-8 w-20 rounded-sm bg-miru-gray-100 p-1 text-sm placeholder:text-miru-gray-1000"
-            initTime={duration}
-            name="timeInput"
-            onTimeChange={handleDurationChange}
+          />
+          <AnimatedSelect
+            options={projectOptions}
+            value={project || ""}
+            placeholder="Select a project"
+            disabled={!client}
+            onChange={setProject}
           />
         </div>
-        <div className="mt-2 flex items-center">
-          {billable ? (
-            <img
-              alt="checkbox"
-              className="inline"
-              id="check"
-              src={CheckedCheckboxSVG}
-              onClick={() => {
-                setBillable(false);
-              }}
-            />
-          ) : (
-            <img
-              alt="checkbox"
-              className="inline"
-              id="uncheck"
-              src={UncheckedCheckboxSVG}
-              onClick={() => {
-                if (projectBillable) setBillable(true);
-              }}
-            />
+        <AnimatedTextarea
+          name="notes"
+          placeholder="Add notes..."
+          value={note}
+          autoResize
+          className={cn(
+            "w-full resize-none",
+            editEntryId ? "min-h-[120px]" : "min-h-[80px]"
           )}
-          <h4>Billable</h4>
-        </div>
+          onChange={e => setNote(e.target.value)}
+        />
       </div>
-      <div className="max-w-min">
+
+      <div className="space-y-6 ml-8">
+        <div className="grid grid-cols-1 gap-4">
+          <AnimatedDatePicker
+            date={dayjs(selectedDate).toDate()}
+            onDateChange={handleDateChangeFromDatePicker}
+            className="w-[180px]"
+          >
+            <CustomDatePicker
+              date={dayjs(selectedDate).toDate()}
+              handleChange={handleDateChangeFromDatePicker}
+            />
+          </AnimatedDatePicker>
+
+          <div className="w-[180px]">
+            <AnimatedTimeInput
+              initTime={duration}
+              name="timeInput"
+              onTimeChange={handleDurationChange}
+              allowModeSwitch={false}
+              defaultMode="hhmm"
+              placeholder="Enter time"
+            />
+          </div>
+        </div>
+
+        <AnimatedCheckbox
+          id="billable"
+          checked={billable}
+          disabled={!projectBillable}
+          onCheckedChange={checked => setBillable(checked)}
+          label="Billable"
+          className="ml-1"
+        />
+      </div>
+
+      <div className="flex flex-col gap-3 ml-8">
         {editEntryId === 0 ? (
-          <Button
+          <AnimatedButton
             disabled={handleDisableBtn()}
-            style={BUTTON_STYLES.primary}
-            className={`mb-1 h-8 w-38 rounded border py-1 px-6 text-xs font-bold tracking-widest text-white ${
-              handleDisableBtn()
-                ? "cursor-not-allowed bg-miru-gray-1000"
-                : "bg-miru-han-purple-1000 hover:border-transparent"
-            }`}
+            loading={submitting}
+            animation="bounce"
             onClick={() => {
               setSubmitting(true);
               handleSave();
             }}
           >
-            SAVE
-          </Button>
+            Save Entry
+          </AnimatedButton>
         ) : (
-          <Button
+          <AnimatedButton
             disabled={handleDisableBtn()}
-            style={BUTTON_STYLES.primary}
-            className={`mb-1 h-8 w-38 rounded border py-1 px-6 text-xs font-bold tracking-widest text-white ${
-              handleDisableBtn()
-                ? "cursor-not-allowed bg-miru-gray-1000"
-                : "bg-miru-han-purple-1000 hover:border-transparent"
-            }`}
+            animation="bounce"
             onClick={() => handleEdit()}
           >
-            UPDATE
-          </Button>
+            Update Entry
+          </AnimatedButton>
         )}
-        <Button
-          className="mt-1 h-8 w-38 rounded border border-miru-han-purple-1000 bg-transparent py-1 px-6 text-xs font-bold tracking-widest text-miru-han-purple-600 hover:border-transparent hover:bg-miru-han-purple-1000 hover:text-white"
-          style={BUTTON_STYLES.secondary}
+        <AnimatedButton
+          variant="outline"
+          animation="scale"
           onClick={() => {
             setNewEntryView(false);
             setEditEntryId(0);
           }}
         >
-          CANCEL
-        </Button>
+          Cancel
+        </AnimatedButton>
       </div>
-    </div>
+    </Card>
   );
 };
 

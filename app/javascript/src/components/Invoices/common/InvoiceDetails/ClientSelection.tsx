@@ -41,7 +41,9 @@ const ClientSelection = ({
       const selection = clientList.filter(
         client => client.label == prePopulatedClient
       );
-      selection[0] && handleClientChange(selection[0]);
+      if (selection[0]) {
+        handleClientChange(selection[0]);
+      }
     }
 
     if (selectedClient) {
@@ -86,7 +88,9 @@ const ClientSelection = ({
   const handleClientChange = selection => {
     const client = clientList.find(client => client.id == selection.value);
     setSelectedClient(client);
-    setClientCurrency(client.clientCurrency);
+    if (setClientCurrency && client?.clientCurrency) {
+      setClientCurrency(client.clientCurrency);
+    }
     setIsClientVisible(false);
     setIsOptionSelected(true);
     autoGenerateInvoiceNumber(client);
@@ -115,7 +119,7 @@ const ClientSelection = ({
     selectedClient?.address ?? {};
 
   return (
-    <div className="group w-4/12 pr-4">
+    <div className="group w-full lg:w-4/12 lg:pr-4">
       <div
         className="relative h-full"
         onClick={() => {
@@ -129,12 +133,12 @@ const ClientSelection = ({
           value={
             isOptionSelected &&
             selectedClient && (
-              <div className="h-full overflow-y-scroll">
-                <p className="text-base font-bold text-miru-dark-purple-1000">
+              <div className="h-full overflow-y-auto">
+                <p className="text-base font-bold text-foreground">
                   {selectedClient.name}
                 </p>
                 {selectedClient?.address ? (
-                  <p className="w-52 text-sm font-normal text-miru-dark-purple-600">
+                  <p className="w-full text-sm font-normal text-muted-foreground lg:w-52">
                     {`${address_line_1}${
                       address_line_2 ? `, ${address_line_2}` : ""
                     }
@@ -158,7 +162,7 @@ const ClientSelection = ({
               defaultMenuIsOpen
               isSearchable
               className="client-select m-0 mt-2  w-full text-white"
-              classNamePrefix="m-0 truncate font-medium text-sm text-miru-dark-purple-1000 bg-white"
+              classNamePrefix="m-0 truncate font-medium text-sm text-foreground bg-white"
               components={{ DropdownIndicator, IndicatorSeparator: () => null }}
               defaultValue={null}
               inputId="clientSelect"

@@ -1,14 +1,15 @@
-import React from "react";
-
-import { XIcon } from "miruIcons";
-import { Modal } from "StyledComponents";
-
 import {
+  MIRU_APP_SUPPORT_EMAIL,
   MIRU_APP_SUPPORT_EMAIL_ID,
   GOOGLE_PRIVACY_URL,
   AWS_PRIVACY_URL,
   STRIPE_PRIVACY_URL,
 } from "constants/index";
+
+import React from "react";
+
+import { XIcon } from "miruIcons";
+import { Modal } from "StyledComponents";
 
 const PrivacyPolicyModal = ({ isOpen, onClose }) => (
   <Modal customStyle="max-w-screen-xl" isOpen={isOpen} onClose={onClose}>
@@ -16,7 +17,7 @@ const PrivacyPolicyModal = ({ isOpen, onClose }) => (
       <div className="mt-2 mb-6 flex items-center justify-between">
         <h2 className="text-lg font-bold">Privacy Policy for Miru Inc</h2>
         <button
-          className="left-0 text-miru-gray-1000"
+          className="left-0 text-foreground"
           type="button"
           onClick={onClose}
         >
@@ -168,7 +169,7 @@ const PrivacyPolicyModal = ({ isOpen, onClose }) => (
           className="form__link inline cursor-pointer"
           href={MIRU_APP_SUPPORT_EMAIL_ID}
         >
-          hello@saeloun.com.
+          {MIRU_APP_SUPPORT_EMAIL}.
         </a>
       </p>
       <h3 className="mt-2 text-lg font-semibold">
@@ -256,13 +257,13 @@ const PrivacyPolicyModal = ({ isOpen, onClose }) => (
       <p className="mt-2 text-justify text-sm">
         Miru follows a standard procedure of using log files. These files log
         visitors when they visit websites. All hosting companies do this as part
-        of hosting services' analytics. The information collected by log files
-        include internet protocol (IP) addresses, browser type, Internet Service
-        Provider (ISP), date and time stamp, referring/exit pages, and possibly
-        the number of clicks. These are not linked to any information that is
-        personally identifiable. The purpose of the information is for analyzing
-        trends, administering the site, tracking users' movement on the website,
-        and gathering demographic information.
+        of hosting services&apos; analytics. The information collected by log
+        files include internet protocol (IP) addresses, browser type, Internet
+        Service Provider (ISP), date and time stamp, referring/exit pages, and
+        possibly the number of clicks. These are not linked to any information
+        that is personally identifiable. The purpose of the information is for
+        analyzing trends, administering the site, tracking users&apos; movement
+        on the website, and gathering demographic information.
       </p>
       <h3 className="mt-2 text-lg font-semibold">
         Advertising Partners Privacy Policies
@@ -275,8 +276,8 @@ const PrivacyPolicyModal = ({ isOpen, onClose }) => (
         Third-party ad servers or ad networks use technologies like cookies,
         JavaScript, or Web Beacons that are used in their respective
         advertisements and links that appear on Miru, which are sent directly to
-        users' browsers. They automatically receive your IP address when this
-        occurs. These technologies are used to measure the effectiveness of
+        users&apos; browsers. They automatically receive your IP address when
+        this occurs. These technologies are used to measure the effectiveness of
         their advertising campaigns and/or to personalize the advertising
         content that you see on websites that you visit.
       </p>
@@ -288,16 +289,16 @@ const PrivacyPolicyModal = ({ isOpen, onClose }) => (
         Third Party Privacy Policies
       </h3>
       <p className="mt-2 text-justify text-sm">
-        Miru's Privacy Policy does not apply to other advertisers or websites.
-        Thus, we are advising you to consult the respective Privacy Policies of
-        these third-party ad servers for more detailed information. It may
-        include their practices and instructions about how to opt-out of certain
-        options.
+        Miru&apos;s Privacy Policy does not apply to other advertisers or
+        websites. Thus, we are advising you to consult the respective Privacy
+        Policies of these third-party ad servers for more detailed information.
+        It may include their practices and instructions about how to opt-out of
+        certain options.
       </p>
       <p className="mt-2 text-justify text-sm">
         You can choose to disable cookies through your individual browser
         options. To know more detailed information about cookie management with
-        specific web browsers, it can be found at the browsers' respective
+        specific web browsers, it can be found at the browsers&apos; respective
         websites.
       </p>
       <h3 className="mt-2 text-lg font-semibold">
@@ -309,7 +310,7 @@ const PrivacyPolicyModal = ({ isOpen, onClose }) => (
       </p>
       <ol className="ml-10 list-decimal">
         <li className="text-justify text-sm">
-          Request that a business that collects a consumer's personal data
+          Request that a business that collects a consumer&apos;s personal data
           disclose the categories and specific pieces of personal data that a
           business has collected about consumers.
         </li>
@@ -318,8 +319,8 @@ const PrivacyPolicyModal = ({ isOpen, onClose }) => (
           that a business has collected.
         </li>
         <li className="text-justify text-sm">
-          Request that a business that sells a consumer's personal data, not
-          sell the consumer's personal data.
+          Request that a business that sells a consumer&apos;s personal data,
+          not sell the consumer&apos;s personal data.
         </li>
         <li className="text-justify text-sm">
           If you make a request, we have one month to respond to you. If you
@@ -367,7 +368,9 @@ const PrivacyPolicyModal = ({ isOpen, onClose }) => (
           would like to exercise any of these rights, please contact us.
         </li>
       </ol>
-      <h3 className="mt-2 text-lg font-semibold">Children's Information</h3>
+      <h3 className="mt-2 text-lg font-semibold">
+        Children&apos;s Information
+      </h3>
       <p className="mt-2 text-justify text-sm">
         Another part of our priority is adding protection for children while
         using the internet. We encourage parents and guardians to observe,
@@ -419,7 +422,7 @@ const PrivacyPolicyModal = ({ isOpen, onClose }) => (
           className="form__link inline cursor-pointer"
           href={MIRU_APP_SUPPORT_EMAIL_ID}
         >
-          hello@saeloun.com.
+          {MIRU_APP_SUPPORT_EMAIL}.
         </a>
       </p>
     </div>

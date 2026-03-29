@@ -10,21 +10,21 @@ const InvoiceLineItems = ({
   strikeAmount = "",
 }) => {
   const getHeader = () => (
-    <thead className="border-b border-miru-gray-400">
+    <thead className="border-b border-border">
       <tr>
-        <th className="py-5 text-left text-xs font-medium tracking-widest text-miru-dark-purple-600 sm:w-1/2">
+        <th className="py-5 text-left text-xs font-medium tracking-widest text-muted-foreground sm:w-1/2">
           NAME
         </th>
-        <th className="px-3 py-5 text-right text-xs font-medium tracking-widest text-miru-dark-purple-600 sm:w-1/5">
+        <th className="px-3 py-5 text-right text-xs font-medium tracking-widest text-muted-foreground sm:w-1/5">
           DATE
         </th>
-        <th className="py-5 text-right text-xs font-medium tracking-widest text-miru-dark-purple-600">
+        <th className="py-5 text-right text-xs font-medium tracking-widest text-muted-foreground">
           RATE
         </th>
-        <th className="py-5 text-right text-xs font-medium tracking-widest text-miru-dark-purple-600">
+        <th className="py-5 text-right text-xs font-medium tracking-widest text-muted-foreground">
           QTY
         </th>
-        <th className="py-5 text-right text-xs font-medium tracking-widest text-miru-dark-purple-600">
+        <th className="py-5 text-right text-xs font-medium tracking-widest text-muted-foreground">
           LINE TOTAL
         </th>
       </tr>

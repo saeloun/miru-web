@@ -89,7 +89,7 @@ const InvoiceTable = ({
     }
 
     return (
-      <div className="flex h-10 items-center justify-center sm:h-48">
+      <div className="flex h-10 items-center justify-center rounded-md border border-border/60 bg-card px-4 text-sm text-muted-foreground sm:h-48">
         Please select Client to add line item.
       </div>
     );
@@ -102,17 +102,17 @@ const InvoiceTable = ({
           <td className="relative w-full pt-4 pr-10" colSpan={6}>
             <button
               disabled={!selectedClient}
-              className={`hoverButton w-full rounded-md border-2 border-dashed  bg-white py-1 pr-10 text-center text-base font-bold tracking-widest ${
+              className={`hoverButton w-full rounded-md border-2 border-dashed bg-card py-1 pr-10 text-center text-base font-bold tracking-widest transition-colors ${
                 selectedClient
-                  ? "border-miru-dark-purple-200 text-miru-dark-purple-200"
-                  : "border-miru-dark-purple-100 text-miru-dark-purple-100"
+                  ? "border-primary/40 text-foreground hover:border-primary/60 hover:bg-accent"
+                  : "border-border text-muted-foreground"
               }`}
               onClick={() => setAddNew(!addNew)}
             >
               + NEW LINE ITEM
             </button>
             {!selectedClient && (
-              <span className="invisible absolute top-full left-1/3 ml-10 rounded bg-miru-dark-purple-1000 p-2 text-sm font-bold text-miru-dark-purple-100">
+              <span className="invisible absolute top-full left-1/3 ml-10 rounded bg-card p-2 text-sm font-bold text-muted-foreground">
                 Please add client before adding line items
               </span>
             )}
@@ -143,7 +143,7 @@ const InvoiceTable = ({
     return (
       <tr>
         <td colSpan={5}>
-          <div className="shadow-2 mt-4 flex h-10 w-full items-center justify-center bg-white sm:h-48">
+          <div className="shadow-2 mt-4 flex h-10 w-full items-center justify-center rounded-md border border-border/60 bg-card px-4 text-sm text-muted-foreground sm:h-48">
             Please select Client to add line item.
           </div>
         </td>
@@ -153,41 +153,43 @@ const InvoiceTable = ({
 
   return (
     <Fragment>
-      <table className="bg-miru-han-1000 w-128 table-fixed sm:w-full">
-        <LineItemTableHeader />
-        <tbody className="w-full" ref={wrapperRef}>
-          {getAddNewButton()}
-          {addNew && getManualEntryItem()}
-          {manualEntryArr[0]?.name &&
-            manualEntryArr.map(
-              (item, index) =>
-                !item._destroy && (
-                  <NewLineItemRow
-                    clientCurrency={clientCurrency}
-                    dateFormat={dateFormat}
-                    item={item}
-                    key={index}
-                    selectedOption={manualEntryArr}
-                    setSelectedOption={setManualEntryArr}
-                  />
-                )
-            )}
-          {selectedLineItems.length > 0 &&
-            selectedLineItems.map(
-              (item, index) =>
-                !item._destroy && (
-                  <NewLineItemRow
-                    clientCurrency={clientCurrency}
-                    dateFormat={dateFormat}
-                    item={item}
-                    key={index}
-                    selectedOption={selectedLineItems}
-                    setSelectedOption={setSelectedLineItems}
-                  />
-                )
-            )}
-        </tbody>
-      </table>
+      <div className="w-full overflow-x-auto">
+        <table className="bg-card min-w-[48rem] table-fixed sm:min-w-full">
+          <LineItemTableHeader />
+          <tbody className="w-full" ref={wrapperRef}>
+            {getAddNewButton()}
+            {addNew && getManualEntryItem()}
+            {manualEntryArr[0]?.name &&
+              manualEntryArr.map(
+                (item, index) =>
+                  !item._destroy && (
+                    <NewLineItemRow
+                      clientCurrency={clientCurrency}
+                      dateFormat={dateFormat}
+                      item={item}
+                      key={index}
+                      selectedOption={manualEntryArr}
+                      setSelectedOption={setManualEntryArr}
+                    />
+                  )
+              )}
+            {selectedLineItems.length > 0 &&
+              selectedLineItems.map(
+                (item, index) =>
+                  !item._destroy && (
+                    <NewLineItemRow
+                      clientCurrency={clientCurrency}
+                      dateFormat={dateFormat}
+                      item={item}
+                      key={index}
+                      selectedOption={selectedLineItems}
+                      setSelectedOption={setSelectedLineItems}
+                    />
+                  )
+              )}
+          </tbody>
+        </table>
+      </div>
       <div>
         {multiLineItemModal && (
           <MultipleEntriesModal

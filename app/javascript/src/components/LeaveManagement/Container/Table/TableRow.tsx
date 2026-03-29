@@ -1,32 +1,55 @@
 import React from "react";
 
-import { minToHHMM } from "helpers";
-
 import {
   generateLeaveIcon,
   generateLeaveColor,
   generateHolidayIcon,
   generateHolidayColor,
 } from "components/Profile/Organization/Leaves/utils";
+import { minToHHMM } from "helpers";
+
+// Default color for custom leaves
+const CUSTOM_LEAVE_COLOR = { value: "#9B59B6", label: "custom" };
+const CUSTOM_LEAVE_ICON = { icon: null, value: "custom" };
 
 const TableRow = ({ timeoffEntry }) => {
-  const { leaveDate, duration, leaveType, holidayInfo } = timeoffEntry;
+  const { leaveDate, duration, leaveType, holidayInfo, customLeave } =
+    timeoffEntry;
 
-  const leaveIcon = leaveType?.icon
-    ? generateLeaveIcon(leaveType?.icon)
-    : generateHolidayIcon(holidayInfo?.category);
+  const getLeaveIcon = () => {
+    if (customLeave) {
+      return generateLeaveIcon(customLeave.icon) || CUSTOM_LEAVE_ICON;
+    }
 
-  const leaveColor = leaveType?.color
-    ? generateLeaveColor(leaveType?.color)
-    : generateHolidayColor(holidayInfo?.category);
-  const leaveName = leaveType?.name || holidayInfo?.name;
+    if (leaveType?.icon) {
+      return generateLeaveIcon(leaveType.icon);
+    }
+
+    return generateHolidayIcon(holidayInfo?.category);
+  };
+
+  const getLeaveColor = () => {
+    if (customLeave) {
+      return generateLeaveColor(customLeave.color) || CUSTOM_LEAVE_COLOR;
+    }
+
+    if (leaveType?.color) {
+      return generateLeaveColor(leaveType.color);
+    }
+
+    return generateHolidayColor(holidayInfo?.category);
+  };
+
+  const leaveIcon = getLeaveIcon();
+  const leaveColor = getLeaveColor();
+  const leaveName = customLeave?.name || leaveType?.name || holidayInfo?.name;
 
   return (
     <tr className="flex items-center justify-between py-4">
       <td className="flex text-left text-base font-normal tracking-widest lg:w-1/4">
         {leaveDate}
       </td>
-      <td className="flex w-1/3 items-center whitespace-pre-wrap py-2.5 text-left text-base font-normal text-miru-dark-purple-1000 lg:w-4/12">
+      <td className="flex w-1/3 items-center whitespace-pre-wrap py-2.5 text-left text-base font-normal text-foreground lg:w-4/12">
         <div
           className="mr-2 hidden h-6 w-6 items-center justify-center rounded-full text-white lg:flex"
           style={{ backgroundColor: leaveColor?.value }}

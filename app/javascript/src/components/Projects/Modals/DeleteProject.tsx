@@ -1,8 +1,15 @@
 import React from "react";
 
-import { Modal, Button } from "StyledComponents";
-
-import projectApi from "apis/projects";
+import { projectApi } from "apis/api";
+import { Button } from "components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "components/ui/dialog";
 
 interface IProps {
   project: any;
@@ -26,42 +33,41 @@ const DeleteProject = ({
   };
 
   return (
-    <Modal
-      customStyle="sm:my-8 sm:w-full sm:max-w-lg sm:align-middle"
-      isOpen={showDeleteDialog}
-      onClose={() => setShowDeleteDialog(false)}
+    <Dialog
+      open={showDeleteDialog}
+      onOpenChange={open => !open && setShowDeleteDialog(false)}
     >
-      <div className="my-8 flex-col">
-        <h6 className="mb-2 text-2xl font-bold">Delete Project</h6>
-        <p className="mt-2 font-normal">
-          Are you sure you want to delete project{" "}
-          <b className="font-bold">{project.name}</b>? This action cannot be
-          reversed.
-        </p>
-      </div>
-      <div className="flex justify-between">
-        <Button
-          className="mr-2 w-1/2"
-          size="medium"
-          style="secondary"
-          onClick={() => {
-            setShowDeleteDialog(false);
-          }}
-        >
-          CANCEL
-        </Button>
-        <Button
-          className="ml-2 w-1/2"
-          size="medium"
-          style="primary"
-          onClick={() => {
-            deleteProject(project);
-          }}
-        >
-          DELETE
-        </Button>
-      </div>
-    </Modal>
+      <DialogContent className="max-w-md">
+        <DialogHeader>
+          <DialogTitle>Delete project</DialogTitle>
+          <DialogDescription>
+            Remove{" "}
+            <span className="font-medium text-foreground">{project.name}</span>{" "}
+            from your workspace. This action cannot be reversed.
+          </DialogDescription>
+        </DialogHeader>
+        <DialogFooter className="gap-3 sm:justify-end">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => {
+              setShowDeleteDialog(false);
+            }}
+          >
+            Cancel
+          </Button>
+          <Button
+            type="button"
+            variant="destructive"
+            onClick={() => {
+              deleteProject(project);
+            }}
+          >
+            Delete project
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 };
 

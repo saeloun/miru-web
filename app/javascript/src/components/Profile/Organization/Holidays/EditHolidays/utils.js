@@ -4,11 +4,11 @@ export const customStyles = {
     backgroundColor: "#FFFFFF",
     minHeight: 48,
     padding: "0",
-    borderColor: state.isFocused ? "#5B34EA" : "#D7DEE5",
+    borderColor: state.isFocused ? "#5E58F1" : "#D7DEE5",
     borderWidth: state.isFocused ? "1px" : "1px",
-    boxShadow: state.isFocused && "0 0 0 1px #5B34EA",
+    boxShadow: state.isFocused && "0 0 0 1px #5E58F1",
     "&:hover": {
-      borderColor: "#5B34EA",
+      borderColor: "#5E58F1",
     },
   }),
   menu: provided => ({

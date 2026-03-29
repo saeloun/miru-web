@@ -1,14 +1,11 @@
 import React from "react";
 
 import { minToHHMM, currencyFormat } from "helpers";
-import { ArrowLeftIcon, DotsThreeVerticalIcon, PlusIcon } from "miruIcons";
+import { ArrowLeft, DotsThreeVertical, Plus } from "phosphor-react";
 import { useNavigate } from "react-router-dom";
-import {
-  Badge,
-  Button,
-  MobileMoreOptions,
-  SummaryDashboard,
-} from "StyledComponents";
+import { Badge } from "components/ui/badge";
+import { Button } from "components/ui/button";
+import { Dialog, DialogContent } from "components/ui/dialog";
 
 import EmptyStates from "common/EmptyStates";
 
@@ -44,87 +41,92 @@ const ProjectDetailsForm = ({
 
   return (
     <div className="flex w-full flex-col lg:hidden">
-      <div className="flex h-12 w-full items-center bg-white shadow-c1">
+      <div className="flex h-14 w-full items-center border-b border-border bg-background/95 px-2 backdrop-blur">
         <Button
-          className="p-3"
-          style="primary_disabled"
+          className="h-10 w-10 rounded-full"
+          size="icon"
+          type="button"
+          variant="ghost"
           onClick={() => {
             navigate("/projects");
           }}
         >
-          <ArrowLeftIcon
-            className="text-miru-dark-purple-1000"
-            size={16}
-            weight="bold"
-          />
+          <ArrowLeft className="text-foreground" size={18} />
         </Button>
-        <div className="flex w-full py-3">
-          <h2 className="mr-3 text-base font-medium text-miru-dark-purple-1000">
+        <div className="flex w-full items-center gap-3 px-2">
+          <h2 className="mr-1 text-base font-semibold text-foreground">
             {project?.name}
           </h2>
           {project?.is_billable && (
-            <Badge
-              bgColor="bg-miru-han-purple-100"
-              className="uppercase"
-              color="text-miru-han-purple-1000"
-              text="billable"
-            />
+            <Badge className="rounded-full bg-primary/10 px-2.5 py-0.5 text-xs text-primary hover:bg-primary/10">
+              Billable
+            </Badge>
           )}
         </div>
         <Button
-          className="p-3"
-          style="primary_disabled"
+          className="h-10 w-10 rounded-full"
+          size="icon"
+          type="button"
+          variant="ghost"
           onClick={() => setIsHeaderMenuVisible(true)}
         >
-          <DotsThreeVerticalIcon
-            className="text-miru-dark-purple-1000"
-            size={16}
-            weight="bold"
-          />
+          <DotsThreeVertical className="text-foreground" size={18} />
         </Button>
       </div>
-      {isHeaderMenuVisible && (
-        <MobileMoreOptions
-          className="p-0"
-          setVisibilty={setIsHeaderMenuVisible}
-          visibilty={isHeaderMenuVisible}
-        >
-          <HeaderMenuList
-            handleAddRemoveMembers={handleAddRemoveMembers}
-            handleEditProject={handleEditProject}
-            handleGenerateInvoice={handleGenerateInvoice}
-            setIsHeaderMenuVisible={setIsHeaderMenuVisible}
-            setShowDeleteDialog={setShowDeleteDialog}
-          />
-        </MobileMoreOptions>
-      )}
+      <Dialog open={isHeaderMenuVisible} onOpenChange={setIsHeaderMenuVisible}>
+        <DialogContent className="max-w-sm p-0 sm:rounded-3xl">
+          <div className="p-2">
+            <HeaderMenuList
+              handleAddRemoveMembers={handleAddRemoveMembers}
+              handleEditProject={handleEditProject}
+              handleGenerateInvoice={handleGenerateInvoice}
+              setIsHeaderMenuVisible={setIsHeaderMenuVisible}
+              setShowDeleteDialog={setShowDeleteDialog}
+            />
+          </div>
+        </DialogContent>
+      </Dialog>
       <div className="flex flex-1 flex-col p-4">
         {project?.members.length > 0 ? (
           <div>
             {project && (
-              <SummaryDashboard
-                bgColor="bg-miru-gray-100"
-                borderColor="border-miru-gray-200"
-                currency={project.overdueOutstandingAmount.currency}
-                summaryList={summaryList}
-                textColor="text-miru-dark-purple-1000"
-              />
+              <div className="grid gap-3 rounded-2xl border border-border bg-card p-4 sm:grid-cols-3">
+                {summaryList.map(summary => (
+                  <div
+                    className="rounded-xl border border-border bg-background px-4 py-3"
+                    key={summary.label}
+                  >
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+                      {summary.label}
+                    </p>
+                    <p className="mt-2 text-lg font-semibold text-foreground">
+                      {summary.hideCurrencySymbol
+                        ? summary.value
+                        : currencyFormat(
+                            project.overdueOutstandingAmount.currency,
+                            summary.value,
+                            summary.value > 999 ? "compact" : "standard"
+                          )}
+                    </p>
+                  </div>
+                ))}
+              </div>
             )}
             {project && (
-              <table className="w-full">
+              <table className="mt-4 w-full">
                 <thead>
                   <tr>
-                    <th className="w-1/4 py-3 text-left text-xs font-medium leading-4 tracking-widest text-miru-dark-purple-600">
+                    <th className="w-1/4 py-3 text-left text-xs font-medium leading-4 tracking-widest text-muted-foreground">
                       TEAM <br />
                       MEMBER
                     </th>
-                    <th className="py-3 text-right text-xs font-medium leading-4 tracking-widest text-miru-dark-purple-600">
+                    <th className="py-3 text-right text-xs font-medium leading-4 tracking-widest text-muted-foreground">
                       HOURLY <br /> RATE
                     </th>
-                    <th className="py-3 text-right text-xs font-medium leading-4 tracking-widest text-miru-dark-purple-600">
+                    <th className="py-3 text-right text-xs font-medium leading-4 tracking-widest text-muted-foreground">
                       HOURS <br /> LOGGED
                     </th>
-                    <th className="self-end py-3 text-right text-xs font-medium leading-4 tracking-widest text-miru-dark-purple-600">
+                    <th className="self-end py-3 text-right text-xs font-medium leading-4 tracking-widest text-muted-foreground">
                       COST
                     </th>
                   </tr>
@@ -133,16 +135,16 @@ const ProjectDetailsForm = ({
                   {project.members &&
                     project.members.map(member => (
                       <tr key={member.id}>
-                        <td className="py-3 text-left text-sm font-medium leading-5 text-miru-dark-purple-1000">
+                        <td className="py-3 text-left text-sm font-medium leading-5 text-foreground">
                           {member.name}
                         </td>
-                        <td className="py-3 text-right text-sm font-medium leading-5 text-miru-dark-purple-1000">
+                        <td className="py-3 text-right text-sm font-medium leading-5 text-foreground">
                           {currencyFormat(project.currency, member.hourlyRate)}
                         </td>
-                        <td className="py-3 text-right text-sm font-medium leading-5 text-miru-dark-purple-1000">
+                        <td className="py-3 text-right text-sm font-medium leading-5 text-foreground">
                           {minToHHMM(member.minutes)}
                         </td>
-                        <td className="py-3 text-right text-sm font-medium leading-5 text-miru-dark-purple-1000">
+                        <td className="py-3 text-right text-sm font-medium leading-5 text-foreground">
                           {currencyFormat(project.currency, member.cost)}
                         </td>
                       </tr>
@@ -158,12 +160,13 @@ const ProjectDetailsForm = ({
               showNoSearchResultState={false}
             >
               <Button
-                className="flex w-full items-center justify-center p-2 "
-                style="primary"
+                className="h-11 w-full"
+                type="button"
+                variant="default"
                 onClick={handleAddRemoveMembers}
               >
-                <PlusIcon className="mr-4 text-white" weight="bold" />
-                <span className="text-center text-base font-bold">
+                <Plus className="mr-2" size={16} />
+                <span className="text-center text-base font-medium">
                   Add Team Members
                 </span>
               </Button>

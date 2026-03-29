@@ -13,6 +13,14 @@ class TimesheetEntryPolicy < ApplicationPolicy
     user_owner_role? || user_admin_role? || user_employee_role?
   end
 
+  def bulk_update?
+    create?
+  end
+
+  def bulk_destroy?
+    create?
+  end
+
   def update?
     (record.user_id == user.id && !record.billed?) ||
       user.has_role?(:owner, record.project.client.company) || user.has_role?(:admin, record.project.client.company)
@@ -32,9 +40,9 @@ class TimesheetEntryPolicy < ApplicationPolicy
 
     def resolve
       if user_owner_role? || user_admin_role?
-        scope = user.current_workspace.timesheet_entries.kept
+        user.current_workspace.timesheet_entries.kept
       else
-        scope = user.timesheet_entries.kept.in_workspace(user.current_workspace)
+        user.timesheet_entries.kept.in_workspace(user.current_workspace)
       end
     end
   end

@@ -1,9 +1,8 @@
 import React from "react";
 
-import { VacationIcon } from "miruIcons";
-
 import TimeoffEntryManager from "components/TimeoffEntries/TimeoffEntryManager";
 import { useTimesheetEntries } from "context/TimesheetEntries";
+import { VacationIcon } from "miruIcons";
 
 import WeeklyEntries from "./WeeklyEntries";
 
@@ -38,13 +37,13 @@ const WeekView = () => {
       {!newTimeoffEntryView && (
         <div className="flex">
           <button
-            className="h-14 w-full border-2 border-miru-han-purple-600 p-4 text-lg font-bold tracking-widest text-miru-han-purple-600"
+            className="h-14 w-full border-2 border-primary p-4 text-lg font-bold tracking-widest text-primary"
             onClick={() => setNewRowView(true)}
           >
             + NEW ROW
           </button>
           <button
-            className="ml-2 flex h-10 w-full items-center justify-center rounded border-2 border-miru-han-purple-600 p-2 text-lg font-bold uppercase tracking-widest text-miru-han-purple-600 lg:h-14 lg:p-4"
+            className="ml-2 flex h-10 w-full items-center justify-center rounded border-2 border-primary p-2 text-lg font-bold uppercase tracking-widest text-primary lg:h-14 lg:p-4"
             onClick={() => {
               setNewTimeoffEntryView(true);
             }}

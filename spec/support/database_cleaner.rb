@@ -4,7 +4,6 @@ RSpec.configure do |config|
   config.before(:suite) do
     DatabaseCleaner.allow_remote_database_url = true
     DatabaseCleaner.url_allowlist = [ENV["DATABASE_URL"]]
-
     DatabaseCleaner.clean_with :truncation, except: %w(ar_internal_metadata)
   end
 
@@ -13,17 +12,23 @@ RSpec.configure do |config|
   end
 
   config.before(:each, type: :system) do
-    # Driver is probably for an external browser with an app
-    # under test that does *not* share a database connection with the
-    # specs, so use truncation strategy.
-    DatabaseCleaner.strategy = :truncation
+    DatabaseCleaner.strategy = [:truncation, { except: %w(ar_internal_metadata) }]
   end
 
   config.before do
-    DatabaseCleaner.start
+    DatabaseCleaner.start unless RSpec.current_example.metadata[:type] == :system
   end
 
   config.append_after do
-    DatabaseCleaner.clean
+    DatabaseCleaner.clean unless RSpec.current_example.metadata[:type] == :system
+  end
+
+  config.before(:each, type: :system) do
+    DatabaseCleaner.clean_with :truncation, except: %w(ar_internal_metadata)
+  end
+
+  config.append_after(:each, type: :system) do
+    Capybara.reset_sessions!
+    Warden.test_reset!
   end
 end

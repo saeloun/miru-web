@@ -1,0 +1,29 @@
+<% content_for :email_preheader, "A new invoice from #{@invoice.company.name} is ready to review." %>
+<% content_for :email_eyebrow, "Invoices" %>
+<% content_for :email_title, "Invoice ready to review" %>
+<% content_for :email_subtitle do %>
+  <strong><%= @invoice.company.name %></strong> has sent you invoice <strong><%= @invoice.invoice_number %></strong>.
+<% end %>
+
+<% if @message.present? %>
+  <div class="email-panel email-panel-soft">
+    <%= simple_format(@message, {}, wrapper_tag: "div") %>
+  </div>
+<% end %>
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="detail-grid">
+  <tr>
+    <%= render "shared/mailer/detail_card", label: "Issue date", value: @invoice.issue_date.strftime("%B %d, %Y") %>
+    <%= render "shared/mailer/detail_card", label: "Due date", value: @invoice.due_date.strftime("%B %d, %Y") %>
+  </tr>
+  <tr>
+    <%= render "shared/mailer/detail_card", label: "Invoice number", value: @invoice.invoice_number %>
+    <%= render "shared/mailer/detail_card", label: "Reference", value: @invoice.reference.presence || "-" %>
+  </tr>
+  <tr>
+    <%= render "shared/mailer/detail_card", label: "Total amount", value: @amount || "-" %>
+    <%= render "shared/mailer/detail_card", label: "Attachment", value: "PDF included", subvalue: "The invoice PDF is attached to this email for easy forwarding and accounting." %>
+  </tr>
+</table>
+
+<%= render "shared/mailer/button", href: @invoice_url, label: "View invoice online" %>

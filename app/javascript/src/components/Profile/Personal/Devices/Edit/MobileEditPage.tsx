@@ -2,20 +2,19 @@ import React from "react";
 
 import { DeleteIcon, MobileIcon } from "miruIcons";
 import "react-phone-number-input/style.css";
-import { Button } from "StyledComponents";
-
 import { CustomInputText } from "common/CustomInputText";
 import { CustomReactSelect } from "common/CustomReactSelect";
 import { Divider } from "common/Divider";
 import { ErrorSpan } from "common/ErrorSpan";
+import { Button } from "StyledComponents";
 
 import { deviceTypes } from "../helpers";
 
 const inputClass =
-  "form__input block w-full appearance-none bg-white p-4 text-sm h-12 focus-within:border-miru-han-purple-1000";
+  "form__input block h-12 w-full appearance-none bg-background p-4 text-sm focus-within:border-primary";
 
 const labelClass =
-  "absolute top-0.5 left-1 h-6 z-1 origin-0 bg-white p-2 text-sm font-medium duration-300";
+  "absolute top-0.5 left-1 z-1 h-6 origin-0 bg-background p-2 text-sm font-medium duration-300";
 
 const MobileEditPage = ({
   devices,
@@ -30,17 +29,15 @@ const MobileEditPage = ({
   };
 
   return (
-    <div className="flex h-full flex-col justify-between overflow-scroll bg-miru-gray-100 p-4">
+    <div className="flex h-full flex-col justify-between overflow-scroll bg-muted p-4">
       <div className="flex flex-col py-10">
         <div className="my-2 flex w-full px-2">
           <MobileIcon
-            className="mr-2 mt-1 text-miru-dark-purple-1000"
+            className="mr-2 mt-1 text-foreground"
             size={16}
             weight="bold"
           />
-          <span className="text-sm font-medium text-miru-dark-purple-1000">
-            Devices
-          </span>
+          <span className="text-sm font-medium text-foreground">Devices</span>
         </div>
         <div className="mt-6 w-full">
           {devices.map(device => {
@@ -62,7 +59,7 @@ const MobileEditPage = ({
                         />
                         {errDetails.device_type_err && (
                           <ErrorSpan
-                            className="text-xs text-red-600"
+                            className="text-xs text-destructive"
                             message={errDetails.device_type_err}
                           />
                         )}
@@ -76,18 +73,18 @@ const MobileEditPage = ({
                           value={name}
                           inputBoxClassName={`${inputClass} ${
                             errDetails.name_err
-                              ? "border-red-600"
-                              : "border-miru-gray-1000"
+                              ? "border-destructive"
+                              : "border-border"
                           }`}
                           labelClassName={`${labelClass} ${
                             errDetails.name_err
-                              ? "text-red-600"
-                              : "text-miru-dark-purple-200"
+                              ? "text-destructive"
+                              : "text-muted-foreground"
                           }`}
                         />
                         {errDetails.name_err && (
                           <ErrorSpan
-                            className="text-xs text-red-600"
+                            className="text-xs text-destructive"
                             message={errDetails.name_err}
                           />
                         )}
@@ -103,18 +100,18 @@ const MobileEditPage = ({
                           value={serial_number}
                           inputBoxClassName={`${inputClass} ${
                             errDetails.serial_number_err
-                              ? "border-red-600"
-                              : "border-miru-gray-1000"
+                              ? "border-destructive"
+                              : "border-border"
                           }`}
                           labelClassName={`${labelClass} ${
                             errDetails.serial_number_err
-                              ? "text-red-600"
-                              : "text-miru-dark-purple-200"
+                              ? "text-destructive"
+                              : "text-muted-foreground"
                           }`}
                         />
                         {errDetails.serial_number_err && (
                           <ErrorSpan
-                            className="text-xs text-red-600"
+                            className="text-xs text-destructive"
                             message={errDetails.serial_number_err}
                           />
                         )}
@@ -128,18 +125,18 @@ const MobileEditPage = ({
                           value={specifications.ram}
                           inputBoxClassName={`${inputClass} ${
                             errDetails.specifications_err.ram_err
-                              ? "border-red-600"
-                              : "border-miru-gray-1000"
+                              ? "border-destructive"
+                              : "border-border"
                           }`}
                           labelClassName={`${labelClass} ${
                             errDetails.specifications_err.ram_err
-                              ? "text-red-600"
-                              : "text-miru-dark-purple-200"
+                              ? "text-destructive"
+                              : "text-muted-foreground"
                           }`}
                         />
                         {errDetails.specifications_err.ram_err && (
                           <ErrorSpan
-                            className="text-xs text-red-600"
+                            className="text-xs text-destructive"
                             message={errDetails.specifications_err.ram_err}
                           />
                         )}
@@ -156,18 +153,18 @@ const MobileEditPage = ({
                             value={specifications.graphics}
                             inputBoxClassName={`${inputClass} ${
                               errDetails.specifications_err.graphics_err
-                                ? "border-red-600"
-                                : "border-miru-gray-1000"
+                                ? "border-destructive"
+                                : "border-border"
                             }`}
                             labelClassName={`${labelClass} ${
                               errDetails.specifications_err.graphics_err
-                                ? "text-red-600"
-                                : "text-miru-dark-purple-200"
+                                ? "text-destructive"
+                                : "text-muted-foreground"
                             }`}
                           />
                           {errDetails.specifications_err.graphics_err && (
                             <ErrorSpan
-                              className="text-xs text-red-600"
+                              className="text-xs text-destructive"
                               message={
                                 errDetails.specifications_err.graphics_err
                               }
@@ -185,18 +182,18 @@ const MobileEditPage = ({
                             value={specifications.processor}
                             inputBoxClassName={`${inputClass} ${
                               errDetails.specifications_err.processor_err
-                                ? "border-red-600"
-                                : "border-miru-gray-1000"
+                                ? "border-destructive"
+                                : "border-border"
                             }`}
                             labelClassName={`${labelClass} ${
                               errDetails.specifications_err.processor_err
-                                ? "text-red-600"
-                                : "text-miru-dark-purple-200"
+                                ? "text-destructive"
+                                : "text-muted-foreground"
                             }`}
                           />
                           {errDetails.specifications_err.processor_err && (
                             <ErrorSpan
-                              className="text-xs text-red-600"
+                              className="text-xs text-destructive"
                               message={
                                 errDetails.specifications_err.processor_err
                               }

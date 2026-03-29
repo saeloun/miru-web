@@ -38,7 +38,7 @@ const ContactsList = ({
         </button>
       </div>
     </div>
-    <div className="mt-4 text-base text-miru-dark-purple-400">
+    <div className="mt-4 text-base text-muted-foreground">
       {contacts.map((contact, index) => (
         <div className="mb-3 flex items-center justify-between" key={index}>
           <p

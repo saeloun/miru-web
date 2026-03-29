@@ -4,7 +4,7 @@ require "rails_helper"
 
 RSpec.describe SendPaymentReminderMailer, type: :mailer do
   describe "send_payment_reminder" do
-    let(:company) { create :company, :with_logo }
+    let(:company) { create :company }
     let(:client) { create :client, company: }
     let(:invoice) { create :invoice, client:, company:, status: "overdue" }
     let(:recipients) { [invoice.client.email, "miru@example.com"] }

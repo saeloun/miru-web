@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+CONFIG_PATH="${SUBSET_CONFIG:-$ROOT/config/data_subsets/miru.yml}"
+
+read_config() {
+  ruby -ryaml -e 'config = YAML.safe_load_file(ARGV[0]); puts config.fetch(ARGV[1])' "$CONFIG_PATH" "$1"
+}
+
+ARTIFACT_PREFIX_NAME="${ARTIFACT_PREFIX_NAME:-$(read_config artifact_name)}"
+OUTPUT_DIR="${OUTPUT_DIR:-$ROOT/tmp/data_subsets}"
+ARTIFACT_PATH="${ARTIFACT_PATH:-$OUTPUT_DIR/${ARTIFACT_PREFIX_NAME}.dump}"
+TARGET_DATABASE="${TARGET_DATABASE:-${1:-miru_web_development}}"
+TARGET_DATABASE_URL="${TARGET_DATABASE_URL:-postgres://localhost/${TARGET_DATABASE}}"
+RAILS_ENV_FOR_TASKS="${RAILS_ENV_FOR_TASKS:-development}"
+POST_RESTORE_NORMALIZE_USERS="${POST_RESTORE_NORMALIZE_USERS:-1}"
+
+mkdir -p "$OUTPUT_DIR"
+
+run_schema_migrations() {
+  DATABASE_URL="$TARGET_DATABASE_URL" RAILS_ENV="$RAILS_ENV_FOR_TASKS" mise exec -- bundle exec rails runner 'ActiveRecord::Base.connection_pool.migration_context.migrate'
+}
+
+if [[ "${DOWNLOAD_FROM_R2:-0}" == "1" ]]; then
+  mise exec -- bundle exec ruby script/data_subsets/r2.rb download-latest "$ARTIFACT_PATH"
+fi
+
+if [[ ! -f "$ARTIFACT_PATH" ]]; then
+  LATEST_MATCH="$(find "$OUTPUT_DIR" -maxdepth 1 -type f -name "${ARTIFACT_PREFIX_NAME}-*.dump" | sort | tail -n 1)"
+  if [[ -n "${LATEST_MATCH:-}" ]]; then
+    ARTIFACT_PATH="$LATEST_MATCH"
+  fi
+fi
+
+if [[ ! -f "$ARTIFACT_PATH" ]]; then
+  echo "Missing artifact: $ARTIFACT_PATH" >&2
+  echo "Set DOWNLOAD_FROM_R2=1 or provide ARTIFACT_PATH=<path-to-dump>." >&2
+  exit 1
+fi
+
+psql postgres -v ON_ERROR_STOP=1 -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '$TARGET_DATABASE' AND pid <> pg_backend_pid();" >/dev/null 2>&1 || true
+dropdb --if-exists "$TARGET_DATABASE"
+createdb "$TARGET_DATABASE"
+
+mise exec -- pg_restore --clean --if-exists --no-owner --no-privileges -d "$TARGET_DATABASE" "$ARTIFACT_PATH"
+run_schema_migrations
+DATABASE_URL="$TARGET_DATABASE_URL" RAILS_ENV="$RAILS_ENV_FOR_TASKS" mise exec -- bundle exec rails data:migrate
+
+if [[ "$POST_RESTORE_NORMALIZE_USERS" == "1" ]]; then
+  DATABASE_URL="$TARGET_DATABASE_URL" RAILS_ENV="$RAILS_ENV_FOR_TASKS" mise exec -- bundle exec rails runner script/data_subsets/post_restore.rb
+fi
+
+echo "Restored sanitized subset into $TARGET_DATABASE"

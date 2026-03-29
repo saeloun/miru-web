@@ -19,7 +19,7 @@ class TimeoffEntryPolicy < ApplicationPolicy
 
   def permitted_attributes
     [
-      :duration, :note, :leave_date, :user_id, :leave_type_id, :holiday_info_id
+      :duration, :note, :leave_date, :user_id, :leave_type_id, :holiday_info_id, :custom_leave_id
     ]
   end
 

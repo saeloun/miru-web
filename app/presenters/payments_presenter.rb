@@ -11,20 +11,35 @@ class PaymentsPresenter
   def index_data
     {
       payments:
-              payments.map do | payment |
+              payments.map do |payment|
                 {
                   id: payment.id,
-                  client_name: payment.invoice.client.name,
-                  invoice_number: payment.invoice.invoice_number,
-                  transaction_date: CompanyDateFormattingService.new(
+                  clientName: payment.invoice.client.name,
+                  invoiceNumber: payment.invoice.invoice_number,
+                  invoiceId: payment.invoice.id,
+                  transactionDate: CompanyDateFormattingService.new(
                     payment.transaction_date,
-                    company: current_company).process,
+                    company: current_company
+                  ).process,
                   note: payment.note,
-                  transaction_type: payment.transaction_type,
+                  transactionType: payment.transaction_type,
                   amount: payment.amount,
-                  status: payment.status
+                  status: payment.status,
+                  currency: attribute_value(payment, :payment_currency) || payment.invoice.currency || current_company.base_currency,
+                  exchangeRate: attribute_value(payment, :exchange_rate),
+                  baseCurrencyAmount: attribute_value(payment, :base_currency_amount)
                 }
-              end
+              end,
+      total: payments.size,
+      baseCurrency: current_company.base_currency
     }
   end
+
+  private
+
+    def attribute_value(record, attribute)
+      return unless record.respond_to?(attribute)
+
+      record.public_send(attribute)
+    end
 end

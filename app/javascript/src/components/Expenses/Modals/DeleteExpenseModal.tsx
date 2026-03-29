@@ -1,9 +1,8 @@
 import React from "react";
 
+import { expensesApi } from "apis/api";
 import { useNavigate } from "react-router-dom";
 import { Modal, Button } from "StyledComponents";
-
-import expensesApi from "apis/expenses";
 
 const DeleteExpenseModal = ({
   setShowDeleteExpenseModal,
@@ -40,6 +39,7 @@ const DeleteExpenseModal = ({
           className="mr-2 w-1/2"
           size="medium"
           style="secondary"
+          type="button"
           onClick={() => {
             setShowDeleteExpenseModal(false);
           }}
@@ -47,9 +47,10 @@ const DeleteExpenseModal = ({
           CANCEL
         </Button>
         <Button
-          className="ml-2 w-1/2 bg-miru-red-400 xsm:text-white"
+          className="ml-2 w-1/2 bg-destructive xsm:text-white"
           size="medium"
           style="ternary"
+          type="button"
           onClick={handleDeleteExpense}
         >
           DELETE

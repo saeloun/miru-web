@@ -1,22 +1,23 @@
 import React, { useEffect, useState } from "react";
+import { ArrowLeft, DotsThree, Receipt, UsersThree } from "phosphor-react";
 
-import { currencySymbol } from "helpers";
-import Logger from "js-logger";
-import {
-  ArrowLeftIcon,
-  DotsThreeVerticalIcon,
-  InvoicesIcon,
-  TeamsIcon,
-} from "miruIcons";
-import { useParams, useNavigate } from "react-router-dom";
-import { Badge, Tooltip } from "StyledComponents";
-
-import projectAPI from "apis/projects";
+import { projectApi } from "apis/api";
 import Loader from "common/Loader/index";
 import Table from "common/Table";
 import { useUserContext } from "context/UserContext";
+import { currencySymbol } from "helpers";
+import Logger from "js-logger";
 import { unmapper } from "mapper/mappedIndex";
+import { useParams, useNavigate } from "react-router-dom";
 import { sendGAPageView } from "utils/googleAnalytics";
+import { Badge } from "components/ui/badge";
+import { Button } from "components/ui/button";
+import { Card, CardContent } from "components/ui/card";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "components/ui/dropdown-menu";
 
 import EditMembersList from "./EditMembersList";
 import HeaderMenuList from "./HeadermenuList";
@@ -41,8 +42,6 @@ const ProjectDetails = () => {
   const [showProjectModal, setShowProjectModal] = useState<boolean>(false);
   const [timeframe, setTimeframe] = useState<any>("week");
   const [loading, setLoading] = useState<boolean>(true);
-  const [showToolTip, setShowToolTip] = useState<boolean>(true);
-  const [isButtonHovered, setIsButtonHovered] = useState(false);
   const [overdueOutstandingAmount, setOverdueOutstandingAmount] =
     useState<any>(null);
 
@@ -53,7 +52,7 @@ const ProjectDetails = () => {
 
   const fetchProject = async (timeframe = null) => {
     try {
-      const res = await projectAPI.show(params.projectId, timeframe);
+      const res = await projectApi.show(params.projectId, timeframe);
       const sanitized = unmapper(res.data.project_details);
       setProject(sanitized);
       setOverdueOutstandingAmount(sanitized.overdueOutstandingAmount);
@@ -64,17 +63,8 @@ const ProjectDetails = () => {
     }
   };
 
-  const handleButtonMouseEnter = () => {
-    setIsButtonHovered(true);
-  };
-
-  const handleButtonMouseLeave = () => {
-    setIsButtonHovered(false);
-  };
-
   const handleGenerateInvoice = () => {
-    setShowToolTip(false);
-    navigate(`/invoices/generate/?clientId=${project?.client?.id}`);
+    navigate(`/invoices/new?clientId=${project?.client?.id}`);
   };
 
   const currencySymb = currencySymbol(project?.client_currency);
@@ -92,14 +82,12 @@ const ProjectDetails = () => {
 
   const handleMenuVisibility = (e?: any, isMenuVisible?: boolean) => {
     e?.stopPropagation();
-    setShowToolTip(false);
     const tempIsMenuVisible = isMenuVisible ?? !isHeaderMenuVisible;
     setIsHeaderMenuVisible(tempIsMenuVisible);
   };
 
   const handleAddRemoveMembers = e => {
     e?.stopPropagation();
-    setShowToolTip(false);
     setShowAddMemberDialog(true);
     setIsHeaderMenuVisible(false);
   };
@@ -173,81 +161,61 @@ const ProjectDetails = () => {
         <div className="my-6">
           <div className="flex min-w-0 items-center justify-between">
             <div className="flex items-center">
-              <button
-                className="button-icon__back"
+              <Button
+                className="mr-3 h-10 w-10 rounded-full"
+                size="icon"
+                type="button"
+                variant="outline"
                 onClick={() => {
                   navigate(-1);
                 }}
               >
-                <ArrowLeftIcon color="#5b34ea" size={20} weight="bold" />
-              </button>
-              <h2 className="mr-6 py-1 text-3xl font-extrabold text-gray-900 sm:truncate sm:text-4xl">
+                <ArrowLeft size={18} />
+              </Button>
+              <h2 className="mr-6 py-1 text-3xl font-extrabold text-foreground sm:truncate sm:text-4xl">
                 {project?.name}
               </h2>
               {project?.is_billable && (
-                <Badge
-                  bgColor="bg-miru-han-purple-100"
-                  className="tracking-wide rounded-xl uppercase"
-                  color="text-miru-han-purple-1000"
-                  text="billable"
-                />
+                <Badge className="rounded-full bg-primary/10 px-3 py-1 text-primary hover:bg-primary/10">
+                  Billable
+                </Badge>
               )}
             </div>
-            <div className="flex h-8 items-center">
-              <Tooltip
-                placeBottom
-                className="tooltip tootlip-project px-3 py-2"
-                content="Generate Invoice"
-                show={showToolTip || isButtonHovered}
+            <div className="flex items-center gap-3">
+              <Button onClick={handleGenerateInvoice} variant="outline">
+                <Receipt size={16} />
+                <span>New invoice</span>
+              </Button>
+              <Button
+                id="addRemoveTeamMembers"
+                variant="outline"
+                onClick={handleAddRemoveMembers}
               >
-                <button
-                  className="menuButton__button mr-3 hover:bg-miru-gray-100"
-                  onClick={handleGenerateInvoice}
-                  onMouseEnter={handleButtonMouseEnter}
-                  onMouseLeave={handleButtonMouseLeave}
-                >
-                  <InvoicesIcon color="#5B34EA" size={20} weight="bold" />
-                </button>
-              </Tooltip>
-              <Tooltip
-                placeBottom
-                className="tooltip tootlip-project px-3 py-2"
-                content="Add/Remove Team Members"
-                show={showToolTip || isButtonHovered}
+                <UsersThree size={16} />
+                <span>Manage team</span>
+              </Button>
+              <DropdownMenu
+                open={isHeaderMenuVisible}
+                onOpenChange={open => handleMenuVisibility(undefined, open)}
               >
-                <button
-                  className="menuButton__button mr-3 hover:bg-miru-gray-100"
-                  id="addRemoveTeamMembers"
-                  onClick={handleAddRemoveMembers}
-                  onMouseEnter={handleButtonMouseEnter}
-                  onMouseLeave={handleButtonMouseLeave}
-                >
-                  <TeamsIcon color="#5b34ea" size={20} weight="bold" />
-                </button>
-              </Tooltip>
-              <div className="relative">
-                <button
-                  className="menuButton__button hover:bg-miru-gray-100"
-                  id="kebabMenu"
-                  onClick={handleMenuVisibility}
-                >
-                  <DotsThreeVerticalIcon color="#000000" size={20} />
-                </button>
-                {isHeaderMenuVisible && (
-                  <ul className="menuButton__wrapper">
-                    <HeaderMenuList
-                      handleAddRemoveMembers={handleAddRemoveMembers}
-                      handleEditProject={handleEditProject}
-                      handleGenerateInvoice={handleGenerateInvoice}
-                      setIsHeaderMenuVisible={setIsHeaderMenuVisible}
-                      setShowDeleteDialog={setShowDeleteDialog}
-                    />
-                  </ul>
-                )}
-              </div>
+                <DropdownMenuTrigger asChild>
+                  <Button id="kebabMenu" size="icon" variant="outline">
+                    <DotsThree size={18} />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  <HeaderMenuList
+                    handleAddRemoveMembers={handleAddRemoveMembers}
+                    handleEditProject={handleEditProject}
+                    handleGenerateInvoice={handleGenerateInvoice}
+                    setIsHeaderMenuVisible={setIsHeaderMenuVisible}
+                    setShowDeleteDialog={setShowDeleteDialog}
+                  />
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
-          <p className="ml-12 mt-1 text-xs text-miru-dark-purple-400">
+          <p className="ml-12 mt-1 text-xs text-muted-foreground">
             {project && project.client.name}
           </p>
         </div>
@@ -257,17 +225,26 @@ const ProjectDetails = () => {
           project={project}
           setTimeframe={setTimeframe}
         />
-        <div className="flex flex-col">
-          <div className="overflow-XIcon-auto -my-2 sm:-mx-6 lg:-mx-8">
-            <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-              <div className="overflow-hidden">
-                {project && (
-                  <Table tableHeader={tableHeader} tableRowArray={tableData} />
-                )}
+        <Card className="mt-6 border-border bg-card">
+          <CardContent className="p-0">
+            <div className="flex items-center justify-between border-b border-border px-6 py-4">
+              <div>
+                <h3 className="text-lg font-semibold text-foreground">
+                  Team members
+                </h3>
+                <p className="text-sm text-muted-foreground">
+                  Rates, tracked hours, and total project cost for this client
+                  work.
+                </p>
               </div>
             </div>
-          </div>
-        </div>
+            <div className="overflow-x-auto px-6 py-4">
+              {project && (
+                <Table tableHeader={tableHeader} tableRowArray={tableData} />
+              )}
+            </div>
+          </CardContent>
+        </Card>
       </div>
       {getMobileCurrentForm()}
       {showAddMemberDialog && isDesktop && (

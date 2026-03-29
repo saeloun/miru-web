@@ -1,8 +1,7 @@
 import React from "react";
 
-import { XIcon } from "miruIcons";
-
 import { useUserContext } from "context/UserContext";
+import { XIcon } from "miruIcons";
 
 import Filters from "./Filters";
 
@@ -22,7 +21,7 @@ const Header = ({
     <div>
       {isDesktop && (
         <div className="flex justify-between px-6 pb-2 pt-6">
-          <span className="text-base font-extrabold text-miru-dark-purple-1000">
+          <span className="text-base font-extrabold text-foreground">
             Select Time Entries
           </span>
           <button onClick={() => setMultiLineItemModal(false)}>

@@ -24,7 +24,7 @@ const BulkActionsWrapper = ({
   return (
     <div className="flex w-full flex-wrap items-center justify-between lg:mb-4">
       <div className="flex items-center justify-start">
-        <h1 className="text-base font-semibold text-miru-dark-purple-1000 lg:text-2xl lg:font-normal">
+        <h1 className="text-base font-semibold text-foreground lg:text-2xl lg:font-normal">
           All Invoices
         </h1>
         {isDesktop && (
@@ -48,7 +48,7 @@ const BulkActionsWrapper = ({
         {isMoreOptionsOpen && (
           <MoreOptions className="right-0" setVisibilty={setIsMoreOptionsOpen}>
             <li
-              className="flex cursor-pointer items-center py-2.5 px-4 text-xs font-medium text-miru-han-purple-1000 hover:bg-miru-gray-100 lg:text-sm"
+              className="flex cursor-pointer items-center py-2.5 px-4 text-xs font-medium text-primary hover:bg-muted lg:text-sm"
               onClick={() => {
                 setShowBulkDownloadDialog(true);
                 setIsMoreOptionsOpen(false);
@@ -58,7 +58,7 @@ const BulkActionsWrapper = ({
               Download
             </li>
             <li
-              className="flex cursor-pointer items-center py-2.5 px-4 text-xs font-medium text-miru-red-400 hover:bg-miru-gray-100 lg:text-sm"
+              className="flex cursor-pointer items-center py-2.5 px-4 text-xs font-medium text-destructive hover:bg-muted lg:text-sm"
               onClick={() => {
                 setShowBulkDeleteDialog(true);
               }}

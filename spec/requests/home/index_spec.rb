@@ -13,5 +13,24 @@ RSpec.describe "Root#index", type: :request do
       send_request :get, root_path
       expect(response).to be_successful
     end
+
+    it "returns health JSON for JSON format requests" do
+      send_request :get, root_path, headers: { "Accept" => "application/json" }
+      expect(response).to have_http_status(:ok)
+      expect(json_response).to eq({ "status" => "ok", "authenticated" => false })
+    end
+
+    it "returns health XML for XML format requests" do
+      send_request :get, root_path, headers: { "Accept" => "application/xml" }
+
+      expect(response).to have_http_status(:ok)
+      expect(response.media_type).to eq("application/xml")
+      expect(response.body).to include("<status>ok</status>")
+    end
+
+    it "returns not found for .well-known paths" do
+      send_request :get, "/.well-known/assetlinks.json"
+      expect(response).to have_http_status(:not_found)
+    end
   end
 end

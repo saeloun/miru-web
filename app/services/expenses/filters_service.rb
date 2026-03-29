@@ -37,6 +37,15 @@ class Expenses::FiltersService < ApplicationService
 
     def add_default_filters
       @where_clause[:company_id] = current_company.id
-      @where_clause[:discarded_at] = nil
+      @where_clause[:expense_type] = params[:expense_type] if params[:expense_type].present?
+
+      return if params[:date].blank? && (params[:from].blank? || params[:to].blank?)
+
+      @where_clause[:date] =
+        if params[:date].present?
+          params[:date]
+        else
+          Date.parse(params[:from])..Date.parse(params[:to])
+        end
     end
 end

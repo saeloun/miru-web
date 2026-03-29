@@ -1,41 +1,78 @@
 import dayjs from "dayjs";
 
 interface GenerateInvoiceClientList {
-  address: string;
+  address: any;
   id: number;
   name: string;
-  phone_number: number;
+  phone: string;
   email: string;
   currency: string;
   previousInvoiceNumber: string;
-  client_members: any;
+  client_members?: any;
+  clientMembers?: any;
 }
 
 interface CompanyDetails {
-  address: string;
+  address: any;
   country: string;
   id: number;
   logo: string;
   name: string;
-  phone_number: string;
+  business_phone?: string;
+  businessPhone?: string;
+  currency: string;
+  standard_price?: string;
+  standardPrice?: number;
+  fiscal_year_end?: string;
+  fiscalYearEnd?: string;
+  timezone: string;
+  date_format?: string;
+  dateFormat?: string;
+  calendar_enabled?: boolean;
+  calendarEnabled?: boolean;
+  logo_url?: string;
+  logoUrl?: string;
+  working_days?: any;
+  workingDays?: any;
+  working_hours?: any;
+  workingHours?: any;
 }
 
 const getClientList = (clientList: Array<GenerateInvoiceClientList>) =>
   clientList.map(client => ({
     address: client.address,
     id: client.id,
+    value: client.id, // Some components expect a 'value' property for dropdowns
     name: client.name,
-    phone: client.phone_number,
+    label: client.name, // Some components expect a 'label' property for dropdowns
+    phone: client.phone,
     clientCurrency: client.currency,
     previousInvoiceNumber: client.previousInvoiceNumber,
-    clientMembersEmails: client.client_members,
+    clientMembersEmails: client.client_members || client.clientMembers,
   }));
 
-const getCompanyDetails = (input: CompanyDetails) => input;
+const getCompanyDetails = (input: CompanyDetails) => ({
+  ...input,
+  // Normalize to camelCase for consistent usage in components
+  businessPhone: input.business_phone || input.businessPhone,
+  standardPrice: input.standard_price || input.standardPrice,
+  fiscalYearEnd: input.fiscal_year_end || input.fiscalYearEnd,
+  dateFormat: input.date_format || input.dateFormat,
+  calendarEnabled: input.calendar_enabled || input.calendarEnabled,
+  logoUrl: input.logo_url || input.logoUrl,
+  workingDays: input.working_days || input.workingDays,
+  workingHours: input.working_hours || input.workingHours,
+});
 
 const unmapGenerateInvoice = input => {
-  const companyDetails = getCompanyDetails(input.company_details);
-  const clientList = getClientList(input.company_client_list);
+  // Handle both snake_case (from API) and camelCase
+  const companyDetails = getCompanyDetails(
+    input.company_details || input.companyDetails
+  );
+
+  const clientList = getClientList(
+    input.company_client_list || input.companyClientList
+  );
 
   return {
     companyDetails,

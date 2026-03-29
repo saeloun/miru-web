@@ -1,16 +1,12 @@
 import React, { useEffect, useState } from "react";
 
-import { Outlet, useNavigate } from "react-router-dom";
+import { companiesApi } from "apis/api";
+import { useUserContext } from "context/UserContext";
+import { useNavigate } from "react-router-dom";
+import { sendGAPageView } from "utils/googleAnalytics";
 import worldCountries from "world-countries";
 
-import companiesApi from "apis/companies";
-import Loader from "common/Loader/index";
-import DetailsHeader from "components/Profile/Common/DetailsHeader";
-import { useUserContext } from "context/UserContext";
-import { sendGAPageView } from "utils/googleAnalytics";
-
-import MobileHeader from "./MobileHeader";
-import StaticPage from "./StaticPage";
+import ModernOrganizationSettings from "./ModernOrganizationSettings";
 
 const initialState = {
   id: null,
@@ -101,7 +97,7 @@ const OrgDetails = () => {
   }, []);
 
   const handleEditClick = () => {
-    navigate(`/settings/organization/edit`, { replace: true });
+    navigate(`/settings/profile/organization/edit`, { replace: true });
   };
 
   const handleBackBtnClick = () => {
@@ -110,31 +106,7 @@ const OrgDetails = () => {
     });
   };
 
-  return (
-    <div className="flex w-full flex-col">
-      {isDesktop ? (
-        <DetailsHeader
-          showButtons
-          editAction={handleEditClick}
-          isDisableUpdateBtn={false}
-          subTitle=""
-          title="Organization Settings"
-        />
-      ) : (
-        <MobileHeader
-          title="Organization Settings"
-          onBackArrowClick={handleBackBtnClick}
-          onEditBtnClick={handleEditClick}
-        />
-      )}
-      {isLoading ? (
-        <Loader className="min-h-70v" />
-      ) : (
-        <StaticPage orgDetails={orgDetails} />
-      )}
-      <Outlet />
-    </div>
-  );
+  return <ModernOrganizationSettings onBack={handleBackBtnClick} />;
 };
 
 export default OrgDetails;

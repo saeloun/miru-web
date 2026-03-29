@@ -15,17 +15,17 @@ const ClientMobileMoreOptions = ({
     visibilty={showMoreOptions}
   >
     <li
-      className="flex items-center px-2 pt-3 text-sm leading-5 text-miru-han-purple-1000"
+      className="flex items-center px-2 pt-3 text-sm leading-5 text-primary"
       onClick={() => {
         handleEditClick(clientId);
         setShowMoreOptions(false);
       }}
     >
-      <EditIcon className="mr-4" color="#5B34EA" size={16} />
+      <EditIcon className="mr-4" color="#5E58F1" size={16} />
       Edit
     </li>
     <li
-      className="flex items-center px-2 pt-3 text-sm leading-5 text-miru-red-400"
+      className="flex items-center px-2 pt-3 text-sm leading-5 text-destructive"
       onClick={() => {
         handleDeleteClick(clientId);
         setShowMoreOptions(false);

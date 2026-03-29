@@ -13,9 +13,9 @@ const TeamMembersFilter = ({
   handleSelectTeamMember,
   handleTeamMembersFilterToggle,
 }) => (
-  <div className="cursor-pointer border-b border-miru-gray-200 pb-5 pt-6 text-miru-dark-purple-1000">
+  <div className="cursor-pointer border-b border-border pb-5 pt-6 text-foreground">
     <div
-      className="flex items-center justify-between px-5 hover:text-miru-han-purple-1000"
+      className="flex items-center justify-between px-5 hover:text-primary"
       onClick={handleTeamMembersFilterToggle}
     >
       <h5 className="text-xs font-bold leading-4 tracking-wider">
@@ -23,7 +23,7 @@ const TeamMembersFilter = ({
       </h5>
       <div className="flex items-center">
         {selectedTeams.length > 0 && (
-          <span className="mr-7 flex h-5 w-5 items-center justify-center rounded-full bg-miru-han-purple-1000 text-xs font-semibold text-white">
+          <span className="mr-7 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs font-semibold text-white">
             {selectedTeams.length}
           </span>
         )}
@@ -37,8 +37,8 @@ const TeamMembersFilter = ({
             placeholder="Search"
             type="text"
             value={searchQuery}
-            className="focus:outline-none w-full rounded bg-miru-gray-100 p-2
-                text-sm font-medium focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
+            className="focus:outline-none w-full rounded bg-muted p-2
+                text-sm font-medium focus:border-border focus:ring-1 focus:ring-ring"
             onChange={e => {
               setSearchQuery(e.target.value);
             }}
@@ -69,7 +69,7 @@ const TeamMembersFilter = ({
                 labelClassName="ml-4"
                 name="clients"
                 text={team.label}
-                wrapperClassName="py-3 px-5 flex items-center lg:hover:bg-miru-gray-100 text-miru-dark-purple-1000"
+                wrapperClassName="py-3 px-5 flex items-center lg:hover:bg-muted text-foreground"
                 isChecked={
                   !!selectedTeams.find(
                     selectedTeam => selectedTeam.value === team.value

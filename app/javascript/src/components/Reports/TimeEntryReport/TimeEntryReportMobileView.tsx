@@ -18,17 +18,17 @@ interface ContainerProps {
 
 const ReportHeader = () => (
   <div className="grid grid-cols-10 items-center gap-2 border-b py-4">
-    <div className="col-span-4 text-left text-xs font-medium uppercase leading-4 tracking-widest text-miru-dark-purple-600">
+    <div className="col-span-4 text-left text-xs font-medium uppercase leading-4 tracking-widest text-muted-foreground">
       PROJECT/
       <br />
       CLIENT
     </div>
-    <div className="col-span-4 px-2 text-left text-xs font-medium uppercase leading-4 tracking-widest text-miru-dark-purple-600">
+    <div className="col-span-4 px-2 text-left text-xs font-medium uppercase leading-4 tracking-widest text-muted-foreground">
       TEAM MEMBER/
       <br />
       DATE
     </div>
-    <div className="col-span-2 text-right text-xs font-medium uppercase leading-4 tracking-widest text-miru-dark-purple-600">
+    <div className="col-span-2 text-right text-xs font-medium uppercase leading-4 tracking-widest text-muted-foreground">
       HOURS
       <br />
       LOGGED
@@ -63,7 +63,9 @@ export const TimeEntryReportMobileView = ({
     };
 
     return logo[groupedBy] ? (
-      <div className="mr-6 md:h-10 md:w-10">{logo[groupedBy]}</div>
+      <div className="mr-3 h-8 w-8 sm:mr-4 sm:h-10 sm:w-10">
+        {logo[groupedBy]}
+      </div>
     ) : null;
   };
 
@@ -97,18 +99,18 @@ export const TimeEntryReportMobileView = ({
           (report, index) => (
             <Fragment key={index}>
               {report.label !== "" && (
-                <div className="flex items-center justify-between border-b border-miru-han-purple-1000 py-2">
+                <div className="flex items-center justify-between border-b border-primary py-2">
                   <div className="flex items-center">
                     {getTableLogo(
                       selectedFilter?.groupBy?.value || null,
                       report.clientLogo
                     )}
-                    <span className="font-manrope text-lg font-bold text-miru-han-purple-1000">
+                    <span className="font-sans text-lg font-bold text-primary">
                       {report.label}
                     </span>
                   </div>
                   {report.entries?.length > 0 && (
-                    <p className="text-right font-manrope text-sm font-medium text-miru-dark-purple-1000">
+                    <p className="text-right font-sans text-sm font-medium text-foreground">
                       Total Hours :{` ${getTotalHoursLogged(report.entries)}`}
                     </p>
                   )}

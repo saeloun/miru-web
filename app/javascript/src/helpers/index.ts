@@ -5,30 +5,27 @@ import { currencyFormat } from "./currency";
 import { currencySymbol } from "./currencySymbol";
 import { getMonthFromString } from "./dateParser";
 import { useDebounce } from "./debounce";
+import { getDisplayAvatarUrl, getGravatarUrl } from "./gravatar";
 import { minFromHHMM, minToHHMM } from "./hhmmParser";
 import { lineTotalCalc } from "./lineTotalCalc";
 import { getNumberWithOrdinal } from "./ordinal";
 import { useOutsideClick } from "./outsideClick";
 import useKeypress from "./useKeyPress";
 import { validateTimesheetEntry } from "./validateTimesheetEntry";
-import {
-  separateAddressFields,
-  bankFieldValidationRequirements,
-} from "./wiseUtilityFunctions";
 
 export {
-  bankFieldValidationRequirements,
   bytesToSize,
   cashFormatter,
   companyDateFormater,
   currencyFormat,
   currencySymbol,
+  getDisplayAvatarUrl,
+  getGravatarUrl,
   getMonthFromString,
   getNumberWithOrdinal,
   minFromHHMM,
   minToHHMM,
   lineTotalCalc,
-  separateAddressFields,
   useDebounce,
   useOutsideClick,
   useKeypress,

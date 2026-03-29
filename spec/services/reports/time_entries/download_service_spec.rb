@@ -17,7 +17,6 @@ RSpec.describe Reports::TimeEntries::DownloadService do
       create(:employment, company:, user:)
       create(:timesheet_entry, project:, user:)
     end
-    TimesheetEntry.search_index.refresh
   end
 
   describe "#process" do
@@ -41,14 +40,16 @@ RSpec.describe Reports::TimeEntries::DownloadService do
       expect(data).to include(csv_headers)
     end
 
-    it "generates a PDF report using Pdf::HtmlGenerator" do
-      subject { described_class.new(report_entries, current_company) }
+    it "generates a PDF report using Reports::GeneratePdf" do
+      params = { group_by: "team_member", from: Date.current.beginning_of_month, to: Date.current.end_of_month, format: "pdf" }
+      service = described_class.new(params, company)
 
-      html_generator = instance_double("Pdf::HtmlGenerator")
-      allow(Pdf::HtmlGenerator).to receive(:new).and_return(html_generator)
+      pdf_generator = instance_double(Reports::GeneratePdf)
+      allow(Reports::GeneratePdf).to receive(:new).with(:time_entries, anything, company).and_return(pdf_generator)
+      allow(pdf_generator).to receive(:process).and_return("PDF content")
 
-      allow(html_generator).to receive(:make)
-      subject.process
+      result = service.process
+      expect(result).to eq("PDF content")
     end
   end
 end

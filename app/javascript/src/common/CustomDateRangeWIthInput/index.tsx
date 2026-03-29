@@ -1,10 +1,8 @@
-/* eslint-disable no-unused-vars */
 import React, { useEffect, useRef, useState } from "react";
 
 import { getMonth, getYear } from "date-fns";
 import dayjs from "dayjs";
 import { CaretCircleLeftIcon, CaretCircleRightIcon } from "miruIcons";
-import PropTypes from "prop-types";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -19,19 +17,33 @@ interface DateRange {
   to: string;
 }
 
+interface CustomDateRangeWithInputProps {
+  handleSelectDate: (value: any) => void;
+  onClickInput: () => void;
+  selectedInput: string;
+  dateRange: DateRange;
+  setSelectedInput?: (inputFieldName: string) => void;
+  setIsDisableDoneBtn?: (isDisableDoneBtn: boolean) => void;
+  submitCustomDatePicker: () => void;
+  wrapperRef: React.RefObject<HTMLDivElement>;
+  showCustomCalendar: boolean;
+  handleOpenDateCalendar: () => void;
+  setShowCustomCalendar: (open: boolean) => void;
+}
+
 const CustomDateRangeWithInput = ({
   handleSelectDate,
   onClickInput,
   selectedInput,
   dateRange,
-  setSelectedInput = (inputFieldName: string) => {}, // eslint-disable-line
-  setIsDisableDoneBtn = (isDisableDoneBtn: boolean) => {}, // eslint-disable-line
+  setSelectedInput = (inputFieldName: string) => {},
+  setIsDisableDoneBtn = (isDisableDoneBtn: boolean) => {},
   submitCustomDatePicker,
   wrapperRef,
   showCustomCalendar,
   handleOpenDateCalendar,
   setShowCustomCalendar,
-}) => {
+}: CustomDateRangeWithInputProps) => {
   const fromInput = "from-input";
   const toInput = "to-input";
   const [errors, setErrors] = useState({
@@ -41,7 +53,7 @@ const CustomDateRangeWithInput = ({
   const [isValidDateRange, setIsValidDateRange] = useState<boolean>(true);
 
   const range = (start, end) =>
-    Array.from({ length: end - start }, (v, k) => k + start);
+    Array.from({ length: end - start }, (_v, k) => k + start);
 
   const years = range(1990, getYear(new Date()) + 1);
   const textInput = useRef(null);
@@ -51,7 +63,7 @@ const CustomDateRangeWithInput = ({
     setSelectedInput(fromInput);
     textInput.current.focus();
     resetErrors("fromInput");
-  }, []);
+  }, [setSelectedInput, resetErrors]);
 
   useEffect(() => {
     if (
@@ -60,7 +72,7 @@ const CustomDateRangeWithInput = ({
     ) {
       setShowCustomCalendar(true);
     }
-  }, [document.activeElement]);
+  }, [setShowCustomCalendar]);
 
   const handleDateInputChange = (dateInput: string, fieldName: string) => {
     const showErrorMsg = !dateInput?.trim();
@@ -217,9 +229,8 @@ const CustomDateRangeWithInput = ({
             placeholder=" From "
             ref={textInput}
             type="text"
-            className={`mr-1 h-8 w-32 rounded bg-miru-gray-100 p-1 text-sm text-miru-dark-purple-1000 ${
-              selectedInput === fromInput &&
-              "border-2 border-miru-han-purple-1000"
+            className={`mr-1 h-8 w-32 rounded bg-muted p-1 text-sm text-foreground ${
+              selectedInput === fromInput && "border-2 border-primary"
             }`}
             value={
               dateRange.from ? dayjs(dateRange.from).format("DD MMM YYYY") : ""
@@ -240,9 +251,8 @@ const CustomDateRangeWithInput = ({
             placeholder=" To "
             ref={toInputRef}
             type="text"
-            className={`ml-1 h-8 w-32 rounded bg-miru-gray-100 p-1 text-sm text-miru-dark-purple-1000 ${
-              selectedInput === toInput &&
-              "border-2 border-miru-han-purple-1000"
+            className={`ml-1 h-8 w-32 rounded bg-muted p-1 text-sm text-foreground ${
+              selectedInput === toInput && "border-2 border-primary"
             }`}
             value={
               dateRange.to ? dayjs(dateRange.to).format("DD MMM YYYY") : ""
@@ -257,7 +267,7 @@ const CustomDateRangeWithInput = ({
           )}
         </div>
       </div>
-      <div className="absolute z-20 mt-1 ml-10 flex flex-col  overflow-y-auto rounded-lg bg-miru-white-1000 shadow-c1 lg:ml-2 xl:ml-10">
+      <div className="absolute z-20 mt-1 ml-10 flex flex-col  overflow-y-auto rounded-lg bg-background shadow-c1 lg:ml-2 xl:ml-10">
         {showCustomCalendar && (
           <DatePicker
             inline
@@ -282,7 +292,7 @@ const CustomDateRangeWithInput = ({
               prevMonthButtonDisabled,
               nextMonthButtonDisabled,
             }) => (
-              <div className="bg-miru-white-1000 ">
+              <div className="bg-background ">
                 <div className="headerWrapper mt-4">
                   <button
                     disabled={prevMonthButtonDisabled}
@@ -344,20 +354,6 @@ const CustomDateRangeWithInput = ({
       </div>
     </div>
   );
-};
-
-CustomDateRangeWithInput.propTypes = {
-  handleSelectDate: PropTypes.func,
-  onClickInput: PropTypes.func,
-  selectedInput: PropTypes.string,
-  dateRange: PropTypes.any,
-  setSelectedInput: PropTypes.func,
-  setIsDisableDoneBtn: PropTypes.func,
-  submitCustomDatePicker: PropTypes.func,
-  wrapperRef: PropTypes.any,
-  showCustomCalendar: PropTypes.bool,
-  handleOpenDateCalendar: PropTypes.any,
-  setShowCustomCalendar: PropTypes.any,
 };
 
 export default CustomDateRangeWithInput;

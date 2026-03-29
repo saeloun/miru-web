@@ -6,8 +6,7 @@ import Logger from "js-logger";
 import { FilterIcon, MinusIcon, PlusIcon, XIcon } from "miruIcons";
 import { Button, SidePanel } from "StyledComponents";
 
-import companiesApi from "apis/companies";
-import clientRevenueApi from "apis/reports/clientRevenue";
+import { companiesApi, clientRevenueApi } from "apis/api";
 import CustomDateRangePicker from "common/CustomDateRangePicker";
 import CustomRadioButton from "common/CustomRadio";
 import ClientFilter from "components/Reports/Filters/ClientFilter";
@@ -306,7 +305,7 @@ const FilterSideBar = ({
       setFilterVisibilty={setIsFilterVisible}
     >
       <div>
-        <SidePanel.Header className="mb-2 flex h-12 items-center justify-between bg-miru-han-purple-1000 px-2 text-white lg:h-auto lg:bg-white lg:px-5 lg:py-5 lg:font-bold lg:text-miru-dark-purple-1000">
+        <SidePanel.Header className="mb-2 flex h-12 items-center justify-between bg-primary px-2 text-white lg:h-auto lg:bg-white lg:px-5 lg:py-5 lg:font-bold lg:text-foreground">
           {isDesktop ? (
             <h4 className="flex items-center text-base font-extrabold">
               <FilterIcon className="mr-2.5" size={16} /> <span>Filters</span>
@@ -317,15 +316,12 @@ const FilterSideBar = ({
             </span>
           )}
           <Button style="ternary" onClick={() => setIsFilterVisible(false)}>
-            <XIcon
-              className="text-white lg:text-miru-dark-purple-1000"
-              size={16}
-            />
+            <XIcon className="text-white lg:text-foreground" size={16} />
           </Button>
         </SidePanel.Header>
         <SidePanel.Body className="sidebar__filters max-h-70v min-h-70v overflow-y-auto lg:max-h-80v lg:min-h-80v">
           <ul>
-            <li className="relative cursor-pointer border-b border-miru-gray-200 pb-5 pt-6 text-miru-dark-purple-1000 hover:text-miru-han-purple-1000">
+            <li className="relative cursor-pointer border-b border-border pb-5 pt-6 text-foreground hover:text-primary">
               <div
                 className="flex items-center justify-between px-5"
                 onClick={() => {
@@ -338,7 +334,7 @@ const FilterSideBar = ({
                 </h5>
                 <div className="flex items-center">
                   {filters.dateRange.value != "all" && (
-                    <span className="mr-7 flex h-5 w-5 items-center justify-center rounded-full bg-miru-han-purple-1000 text-xs font-semibold text-white">
+                    <span className="mr-7 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs font-semibold text-white">
                       {1}
                     </span>
                   )}
@@ -369,7 +365,7 @@ const FilterSideBar = ({
               )}
               {showCustomFilter && (
                 <div
-                  className="absolute z-20 mt-1 ml-4 flex flex-col overflow-y-auto rounded-lg bg-miru-white-1000 shadow-c1"
+                  className="absolute z-20 mt-1 ml-4 flex flex-col overflow-y-auto rounded-lg bg-background shadow-c1"
                   ref={wrapperRef}
                 >
                   <CustomDateRangePicker
@@ -379,7 +375,7 @@ const FilterSideBar = ({
                     selectedInput={selectedInput}
                     onClickInput={onClickInput}
                   />
-                  <div className="flex h-full items-end justify-center bg-miru-white-1000 p-6 ">
+                  <div className="flex h-full items-end justify-center bg-background p-6 ">
                     <button
                       className="sidebar__reset"
                       onClick={resetCustomDatePicker}

@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
-import { useSearchParams } from "react-router-dom";
-import { Pagination } from "StyledComponents";
-
-import clientApi from "apis/clients";
+import { clientApi } from "apis/api";
 import Loader from "common/Loader/index";
 import withLayout from "common/Mobile/HOC/withLayout";
 import { useUserContext } from "context/UserContext";
+import { useSearchParams } from "react-router-dom";
+import useInfiniteLoadTrigger from "../../hooks/useInfiniteLoadTrigger";
 
 import Header from "./Header";
 import List from "./List";
@@ -15,20 +14,27 @@ const ClientInvoices = () => {
   const { isDesktop } = useUserContext();
   const [searchParams, setSearchParams] = useSearchParams();
   const [loading, setLoading] = useState(true);
-  const [pagy, setPagy] = useState<any>(null);
   const [params, setParams] = useState<any>({
     invoices_per_page: searchParams.get("invoices_per_page") || 20,
-    page: searchParams.get("page") || 1,
     query: searchParams.get("query") || "",
   });
-  const [invoices, setInvoices] = useState<any>([]);
+  const [invoices, setInvoices] = useState<any[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalInvoices, setTotalInvoices] = useState(0);
+  const [hasMoreInvoices, setHasMoreInvoices] = useState(false);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
 
-  const queryParams = () => new URLSearchParams(params).toString();
+  const buildQueryParams = (page = 1) =>
+    new URLSearchParams({
+      invoices_per_page: String(params.invoices_per_page),
+      page: String(page),
+      ...(params.query ? { query: params.query } : {}),
+    }).toString();
 
   useEffect(() => {
     fetchInvoices();
     setSearchParams(cleanParams(params));
-  }, [params.invoices_per_page, params.page, params.query]);
+  }, [params.invoices_per_page, params.query]);
 
   const cleanParams = (params: any) => {
     const newParams = { ...params };
@@ -45,25 +51,55 @@ const ClientInvoices = () => {
     try {
       const {
         data: { invoices, pagy },
-      } = await clientApi.invoices(queryParams());
+      } = await clientApi.invoices(buildQueryParams(1));
       setInvoices(invoices);
-      setPagy(pagy);
+      setCurrentPage(pagy?.page || 1);
+      setTotalInvoices(pagy?.count || invoices.length);
+      setHasMoreInvoices(Boolean(pagy?.next));
       setLoading(false);
     } catch {
       setLoading(false);
     }
   };
 
-  const handlePageChange = page => {
-    if (page == "...") return;
+  const loadMoreInvoices = useCallback(async () => {
+    if (isLoadingMore || !hasMoreInvoices) return;
 
-    return setParams({ ...params, page });
-  };
+    setIsLoadingMore(true);
+    const nextPage = currentPage + 1;
+
+    try {
+      const {
+        data: { invoices: nextInvoices, pagy },
+      } = await clientApi.invoices(buildQueryParams(nextPage));
+
+      setInvoices(previousInvoices => [
+        ...previousInvoices,
+        ...nextInvoices.filter(
+          invoice =>
+            !previousInvoices.some(
+              existingInvoice => existingInvoice.id === invoice.id
+            )
+        ),
+      ]);
+      setCurrentPage(pagy?.page || nextPage);
+      setTotalInvoices(pagy?.count || totalInvoices);
+      setHasMoreInvoices(Boolean(pagy?.next));
+    } finally {
+      setIsLoadingMore(false);
+    }
+  }, [currentPage, hasMoreInvoices, isLoadingMore, params, totalInvoices]);
+
+  const loadMoreInvoicesRef = useInfiniteLoadTrigger({
+    enabled: hasMoreInvoices,
+    loading: isLoadingMore,
+    onLoadMore: loadMoreInvoices,
+  });
 
   const handleClickOnPerPage = e => {
     setParams({
-      page: 1,
       invoices_per_page: Number(e.target.value),
+      query: params.query,
     });
   };
 
@@ -80,19 +116,34 @@ const ClientInvoices = () => {
       />
       <List invoices={invoices} />
       {invoices.length > 0 && (
-        <Pagination
-          isPerPageVisible
-          currentPage={pagy?.page}
-          handleClick={handlePageChange}
-          handleClickOnPerPage={handleClickOnPerPage}
-          isFirstPage={pagy?.first}
-          isLastPage={pagy?.last}
-          itemsPerPage={pagy?.items}
-          nextPage={pagy?.next}
-          prevPage={pagy?.prev}
-          title="invoices/page"
-          totalPages={pagy?.pages}
-        />
+        <div className="mt-4 flex flex-col items-center gap-2 text-sm text-muted-foreground">
+          <span>
+            Showing {invoices.length} of {totalInvoices}
+          </span>
+          {hasMoreInvoices && <span>Scroll to load more invoices</span>}
+          {hasMoreInvoices && (
+            <div ref={loadMoreInvoicesRef} className="h-8 w-full" />
+          )}
+          {isLoadingMore && <span>Loading more invoices...</span>}
+          {!hasMoreInvoices && totalInvoices > 0 && (
+            <span>All invoices loaded</span>
+          )}
+          <div className="mt-2 flex items-center gap-2">
+            <label htmlFor="client-invoices-per-page">Invoices per page</label>
+            <select
+              id="client-invoices-per-page"
+              className="rounded-md border border-border bg-background px-2 py-1 text-sm"
+              onChange={handleClickOnPerPage}
+              value={params.invoices_per_page}
+            >
+              {[20, 50, 100].map(option => (
+                <option key={option} value={option}>
+                  {option}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
       )}
     </div>
   );

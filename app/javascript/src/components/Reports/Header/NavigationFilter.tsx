@@ -26,7 +26,7 @@ const NavigationFilter = () => {
 
   const filterHtml = (value, key, filterKey) => (
     <li
-      className="my-1 mr-4 flex rounded-xl bg-miru-gray-400 px-2 py-1 px-1 text-xs font-semibold tracking-widest tracking-widest text-miru-dark-purple-1000"
+      className="my-1 mr-4 flex rounded-xl bg-secondary px-2 py-1 px-1 text-xs font-semibold tracking-widest tracking-widest text-foreground"
       key={key}
     >
       <span className="whitespace-nowrap">

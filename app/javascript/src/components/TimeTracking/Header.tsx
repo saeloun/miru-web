@@ -1,33 +1,28 @@
 /* eslint-disable */
 import React, { useState, useRef } from "react";
 import dayjs from "dayjs";
+import { CaretLeft, CaretRight, Calendar, Clock } from "phosphor-react";
 
 import { minToHHMM } from "helpers";
 import { CaretCircleLeftIcon, CaretCircleRightIcon } from "miruIcons";
 import { useUserContext } from "context/UserContext";
+import { Button } from "../ui/button";
+import { Card, CardContent } from "../ui/card";
 import CustomDatePicker from "common/CustomDatePicker";
 
 const Header = ({
-  setWeekDay = ({}) => {},
-  setSelectDate = ({}) => {},
-  handlePreDay = () => {},
+  setWeekDay,
+  setSelectDate,
+  handlePreDay,
   dayInfo = [],
   selectDate = 0,
-  handleNextDay = () => {},
-  handleAddEntryDateChange = ({}) => {},
+  handleNextDay,
+  handleAddEntryDateChange,
   selectedFullDate = "",
   dailyTotalHours = [],
-  view = "",
-  totalMonthDuration = 0,
   weeklyTotalHours = "",
-  handleNextMonth = () => {},
-  handlePrevMonth = () => {},
-  handleMonthTodayButton = () => {},
-  handleNextWeek = () => {},
-  handlePrevWeek = () => {},
-  monthsAbbr = [],
-  currentMonthNumber = 0,
-  currentYear = 0,
+  handleNextWeek,
+  handlePrevWeek,
 }) => {
   const [openOsCalendar, setOpenOsCalendar] = useState(false);
 
@@ -35,152 +30,140 @@ const Header = ({
   const { isDesktop } = useUserContext();
 
   const getTodayAction = () => {
-    if (view === "month") {
-      handleMonthTodayButton();
-    } else {
-      setWeekDay(0);
-      setSelectDate(dayjs().weekday());
-    }
+    setWeekDay(0);
+    setSelectDate(dayjs().weekday());
+  };
+
+  const getLastWeekAction = () => {
+    setWeekDay(p => p - 7);
   };
 
   const getRightArrowAction = () => {
-    if (view === "month") {
-      handleNextMonth();
-    }
-    if (view === "day") {
-      isDesktop ? handleNextWeek() : handleNextDay();
-    }
-    if (view === "week") {
-      handleNextWeek();
-    }
+    isDesktop ? handleNextWeek() : handleNextDay();
   };
 
   const getLeftArrowAction = () => {
-    if (view === "month") {
-      handlePrevMonth();
-    }
-    if (view === "day") {
-      isDesktop ? handlePrevWeek() : handlePreDay();
-    }
-    if (view === "week") {
-      handlePrevWeek();
-    }
+    isDesktop ? handlePrevWeek() : handlePreDay();
   };
 
   const getLabel = () => {
-    if (view === "month") {
-      return (
-        <>
-          <span className="mr-2">
-            {monthsAbbr[Math.abs(currentMonthNumber)]}
-          </span>
-          <span>{currentYear}</span>
-        </>
-      );
-    }
-    if (view === "day") {
-      return isDesktop ? (
-        <>
-          <span>
-            {parseInt(dayInfo[0]["date"], 10)} {dayInfo[0]["month"]} -
-          </span>
-          <span className="mx-1">
-            {parseInt(dayInfo[6]["date"], 10)} {dayInfo[6]["month"]}
-          </span>
-          <span> {dayInfo[6]["year"]}</span>
-        </>
-      ) : (
-        <>
-          <span>{parseInt(dayInfo[selectDate]["date"], 10)}</span>
-          <span className="mx-1">{dayInfo[selectDate].month}</span>
-          <span>{dayInfo[selectDate]["year"]}</span>
-        </>
-      );
-    }
-    if (view === "week") {
-      return (
-        <>
-          <span>
-            {parseInt(dayInfo[0]["date"], 10)} {dayInfo[0]["month"]} -
-          </span>
-          <span className="mx-1">
-            {parseInt(dayInfo[6]["date"], 10)} {dayInfo[6]["month"]}
-          </span>
-          <span> {dayInfo[6]["year"]}</span>
-        </>
-      );
-    }
+    if (!dayInfo.length) return null;
+
+    return isDesktop ? (
+      <>
+        <span>Week of</span>
+        <span className="mx-1">
+          {dayInfo[0]["month"]} {parseInt(dayInfo[0]["date"], 10)}
+        </span>
+        <span>to</span>
+        <span className="mx-1">
+          {dayInfo[6]["month"]} {parseInt(dayInfo[6]["date"], 10)},
+        </span>
+        <span>{dayInfo[6]["year"]}</span>
+      </>
+    ) : (
+      <>
+        <span>{dayInfo[selectDate].day},</span>
+        <span className="mx-1">
+          {dayInfo[selectDate].month}{" "}
+          {parseInt(dayInfo[selectDate]["date"], 10)},
+        </span>
+        <span>{dayInfo[selectDate]["year"]}</span>
+      </>
+    );
   };
 
   const getTotal = () => {
-    if (view === "month") {
-      return minToHHMM(totalMonthDuration);
-    }
-    if (view === "day") {
-      return dailyTotalHours[selectDate];
-    }
-    if (view === "week") {
-      return weeklyTotalHours;
-    }
+    return isDesktop ? weeklyTotalHours : dailyTotalHours[selectDate];
   };
 
   return (
-    <div className="flex w-full items-center justify-between bg-miru-han-purple-1000 px-3 py-3 text-white lg:h-10 lg:p-2">
-      <button
-        className="items-center justify-center rounded border px-6 py-1 text-center text-xs font-bold leading-4"
-        onClick={getTodayAction}
-      >
-        TODAY
-      </button>
-      <div className="relative flex">
-        <button
-          className="flex flex-col items-center justify-center"
-          onClick={getLeftArrowAction}
-          id="prevMonth"
-        >
-          <CaretCircleLeftIcon size={20} />
-        </button>
-        {!!dayInfo.length && (
-          <>
-            <label
-              className="mx-3 text-center text-sm font-medium leading-5"
-              htmlFor="Os_calendar"
-              onClick={() => {
-                !isDesktop && setOpenOsCalendar(!openOsCalendar);
-              }}
+    <Card className="mb-6 w-full rounded-lg border border-border bg-card shadow-sm">
+      <CardContent className="p-5">
+        <div className="flex w-full flex-wrap items-center justify-between gap-3 sm:flex-nowrap sm:gap-4">
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={getTodayAction}
+              className="px-4 py-2 font-bold text-sm border-border hover:bg-accent hover:text-accent-foreground transition-all duration-200"
             >
-              {getLabel()}
-            </label>
-            <div className="absolute right-50 top-8" ref={datePickerRef}>
-              {openOsCalendar && (
-                <CustomDatePicker
-                  date={dayjs(selectedFullDate).toDate()}
-                  setVisibility={setOpenOsCalendar}
-                  wrapperRef={datePickerRef}
-                  handleChange={date => {
-                    setOpenOsCalendar(false);
-                    handleAddEntryDateChange(date);
-                  }}
-                />
-              )}
+              Today
+            </Button>
+            {isDesktop && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={getLastWeekAction}
+                className="px-3 py-2 text-sm font-semibold text-muted-foreground hover:bg-accent hover:text-foreground"
+              >
+                Last week
+              </Button>
+            )}
+          </div>
+
+          <div className="flex min-w-0 flex-1 items-center justify-center gap-2 sm:gap-4">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={getLeftArrowAction}
+              className="h-10 w-10 shrink-0 p-0 hover:bg-accent transition-all duration-200"
+            >
+              <CaretLeft className="h-5 w-5" />
+            </Button>
+            {!!dayInfo.length && (
+              <>
+                <div className="flex min-w-0 items-center gap-2 sm:gap-3">
+                  <Calendar className="h-5 w-5 shrink-0 text-primary sm:h-6 sm:w-6" />
+                  <h2
+                    className="cursor-pointer text-base font-semibold tracking-tight text-foreground transition-colors hover:text-primary sm:text-xl"
+                    onClick={() => {
+                      !isDesktop && setOpenOsCalendar(!openOsCalendar);
+                    }}
+                  >
+                    {getLabel()}
+                  </h2>
+                </div>
+                <div
+                  className="absolute right-50 top-12 z-50"
+                  ref={datePickerRef}
+                >
+                  {openOsCalendar && (
+                    <CustomDatePicker
+                      date={dayjs(selectedFullDate).toDate()}
+                      setVisibility={setOpenOsCalendar}
+                      wrapperRef={datePickerRef}
+                      handleChange={date => {
+                        setOpenOsCalendar(false);
+                        handleAddEntryDateChange(date);
+                      }}
+                    />
+                  )}
+                </div>
+              </>
+            )}
+
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={getRightArrowAction}
+              className="h-10 w-10 shrink-0 p-0 hover:bg-accent transition-all duration-200"
+            >
+              <CaretRight className="h-5 w-5" />
+            </Button>
+          </div>
+
+          <div className="weekly-total ml-auto rounded-lg border border-border bg-muted/40 px-3 py-2 text-right min-w-0 shrink-0 sm:px-4">
+            <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">
+              Total
             </div>
-          </>
-        )}
-        <button
-          className="flex flex-col items-center justify-center"
-          onClick={getRightArrowAction}
-          id="nextMonth"
-        >
-          <CaretCircleRightIcon size={20} />
-        </button>
-      </div>
-      <div className="flex items-center lg:pr-8">
-        <p className="mr-2 text-xs font-normal leading-4">Total</p>
-        <p className="text-right text-base font-extrabold leading-5">
-          {getTotal()}
-        </p>
-      </div>
-    </div>
+            <div className="text-lg font-bold tabular-nums text-foreground">
+              {getTotal() || "00:00"}
+            </div>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
   );
 };
 

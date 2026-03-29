@@ -2,20 +2,26 @@ default: &default
   adapter: postgresql
   encoding: unicode
   host: <%= ENV.fetch("DB_HOST") { "localhost" } %>
-  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  pool: <%= ENV.fetch("DB_POOL") { ENV.fetch("RAILS_MAX_THREADS", 3) } %>
   user: <%= ENV.fetch("DB_USER") { "" } %>
   password: <%= ENV.fetch("DB_PASS") { "" } %>
+  gssencmode: disable
 
 development:
   <<: *default
+  url: <%= ENV["DATABASE_URL"] if ENV["DATABASE_URL"].present? %>
   database: "miru_web_development"
 
 test:
   <<: *default
-  database: <%= "miru_web_test_#{ENV['TEST_ENV_NUMBER']}" %>
+  url: <%= ENV["DATABASE_URL"] if ENV["DATABASE_URL"].present? %>
+  database: <%= ENV["TEST_ENV_NUMBER"].present? ? "miru_web_test_#{ENV["TEST_ENV_NUMBER"]}" : "miru_web_test" %>
 
 production:
   adapter: postgresql
   encoding: unicode
-  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  pool: <%= ENV.fetch("DB_POOL") { ENV.fetch("RAILS_MAX_THREADS", 3) } %>
   url: <%= ENV['DATABASE_URL'] %>
+  checkout_timeout: 10
+  reaping_frequency: 10
+  idle_timeout: 300

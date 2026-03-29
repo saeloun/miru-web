@@ -4,12 +4,19 @@ const mapper = item => ({
   lastName: item.lastName,
   name: item.name,
   email: item.email,
+  phone: item.phone,
+  avatar: item.profilePicture,
   role: item.role,
+  designation: item.designation,
+  department: item.department,
   status: item.status,
   profilePicture: item.profilePicture,
   isTeamMember: item.isTeamMember,
   employmentType: item.employmentType,
   joinedAtDate: item.joinedAtDate,
+  hoursLogged: item.hoursLogged,
+  billableHours: item.billableHours,
+  projects: item.projects,
 });
 
 const unmapList = input => {

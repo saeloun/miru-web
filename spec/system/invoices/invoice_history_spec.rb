@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe "View Invoice Logs", type: :system do
+RSpec.describe "View Invoice Logs", type: :system, js: true do
   let!(:invoice) { create :invoice_with_invoice_line_items }
   let(:client) { invoice.client }
   let!(:company) { invoice.company }

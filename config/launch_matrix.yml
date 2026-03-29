@@ -1,0 +1,447 @@
+roles:
+  owner:
+    email: vipul@saeloun.com
+    password: password
+  employee:
+    email: keshav@saeloun.com
+    password: password
+  book_keeper:
+    email: accounts@saeloun.com
+    password: password
+  client:
+    email: finance@example.com
+    password: password
+
+groups:
+  auth:
+    - name: sign_in_light
+      role: guest
+      theme: light
+      path: /login
+      expect:
+        final_path: /login
+        contains_text:
+          - Sign in to your workspace
+          - Continue with Google
+          - Continue with GitHub
+        min_buttons: 8
+        min_inputs: 2
+    - name: sign_in_dark
+      role: guest
+      theme: dark
+      path: /login
+      expect:
+        final_path: /login
+        contains_text:
+          - Sign in to your workspace
+          - Continue with Google
+          - Continue with GitHub
+          - Email
+          - Password
+          - Sign in
+        min_buttons: 8
+        min_inputs: 2
+        enforce_dark_inputs: true
+    - name: sign_up_dark
+      role: guest
+      theme: dark
+      path: /signup
+      expect:
+        final_path: /signup
+        contains_text:
+          - Create your workspace
+          - Create account
+        min_buttons: 8
+        min_inputs: 5
+    - name: forgot_password_dark
+      role: guest
+      theme: dark
+      path: /password/new
+      expect:
+        final_path: /password/new
+        contains_text:
+          - Forgot Password
+          - Send password reset link
+        visible_controls:
+          - Send password reset link
+        min_buttons: 2
+        min_inputs: 1
+        enforce_dark_inputs: true
+
+  owner_core:
+    - name: owner_dashboard_dark
+      role: owner
+      theme: dark
+      path: /dashboard
+      wait_ms: 10000
+      expect:
+        final_path: /dashboard
+        contains_text:
+          - Company Pulse
+        min_buttons: 4
+    - name: owner_billing_light
+      role: owner
+      theme: light
+      path: /settings/billing
+      wait_ms: 10000
+      expect:
+        final_path: /settings/billing
+        contains_text:
+          - Billing
+          - Pro Trial
+        min_buttons: 8
+    - name: owner_reports_dark
+      role: owner
+      theme: dark
+      path: /reports
+      expect:
+        final_path: /reports
+        contains_text:
+          - Reports
+          - Export
+        visible_controls:
+          - Schedule reports
+          - All Reports
+        min_buttons: 10
+    - name: owner_invoice_new_light
+      role: owner
+      theme: light
+      path: /invoices/new?clientId=72
+      wait_ms: 7000
+      expect:
+        final_path: /invoices/new
+        contains_text:
+          - New invoice
+          - Send Invoice
+          - Line Items
+        visible_controls:
+          - Send Invoice
+          - Save
+        min_buttons: 10
+        min_inputs: 5
+    - name: owner_invoice_new_dark
+      role: owner
+      theme: dark
+      path: /invoices/new?clientId=72
+      wait_ms: 7000
+      expect:
+        final_path: /invoices/new
+        contains_text:
+          - New invoice
+          - Send Invoice
+          - Line Items
+        visible_controls:
+          - Send Invoice
+          - Save
+        min_buttons: 10
+        min_inputs: 5
+        enforce_dark_inputs: true
+    - name: owner_profile_edit_dark
+      role: owner
+      theme: dark
+      path: /settings/profile
+      wait_ms: 5000
+      actions:
+        click_controls:
+          - Edit Profile
+      expect:
+        final_path: /settings/profile/edit
+        contains_text:
+          - Personal Details
+          - Update
+        visible_controls:
+          - Update
+        min_buttons: 10
+        min_inputs: 10
+        enforce_dark_inputs: true
+
+  owner_extended:
+    - name: owner_clients_dark
+      role: owner
+      theme: dark
+      path: /clients
+      wait_ms: 5000
+      expect:
+        final_path: /clients
+        contains_text:
+          - Clients
+          - Add Client
+        min_buttons: 8
+        min_inputs: 2
+    - name: owner_team_dark
+      role: owner
+      theme: dark
+      path: /team
+      wait_ms: 5000
+      expect:
+        final_path: /team
+        contains_text:
+          - Team
+          - Invite Member
+        min_buttons: 8
+        min_inputs: 1
+    - name: owner_project_detail_dark
+      role: owner
+      theme: dark
+      path: /projects/2
+      wait_ms: 5000
+      expect:
+        final_path: /projects/2
+        contains_text:
+          - Internal Project - Miru
+          - New invoice
+          - Manage team
+        min_buttons: 8
+        min_inputs: 1
+    - name: owner_org_settings_dark
+      role: owner
+      theme: dark
+      path: /settings/organization
+      wait_ms: 4000
+      actions:
+        click_controls:
+          - Edit Settings
+      expect:
+        final_path: /settings/organization/edit
+        contains_text:
+          - Company Settings
+          - Save Changes
+        visible_controls:
+          - Save Changes
+        min_buttons: 10
+        min_inputs: 10
+        enforce_dark_inputs: true
+    - name: owner_payment_settings_dark
+      role: owner
+      theme: dark
+      path: /settings/payment
+      wait_ms: 4000
+      expect:
+        final_path: /settings/payment
+        contains_text:
+          - Payment Settings
+          - Payment Providers
+        min_buttons: 6
+    - name: owner_preferences_dark
+      role: owner
+      theme: dark
+      path: /settings/preferences
+      wait_ms: 4000
+      expect:
+        final_path: /settings/preferences
+        contains_text:
+          - Preferences
+          - Email Preferences
+        min_buttons: 6
+    - name: owner_automation_dark
+      role: owner
+      theme: dark
+      path: /settings/automation
+      wait_ms: 6000
+      expect:
+        final_path: /settings/automation
+        contains_text:
+          - Automation and CLI
+          - Free for every plan
+        min_buttons: 6
+
+  owner_actions:
+    - name: owner_payments_manual_entry_dark
+      role: owner
+      theme: dark
+      path: /payments
+      wait_ms: 4000
+      actions:
+        click_controls:
+          - Add manual entry
+      expect:
+        final_path: /payments
+        contains_text:
+          - Add Payment
+          - Record a manual payment against an invoice.
+        visible_controls:
+          - ADD PAYMENT
+        min_buttons: 10
+        min_inputs: 4
+        enforce_dark_inputs: true
+    - name: owner_expense_dialog_dark
+      role: owner
+      theme: dark
+      path: /expenses
+      wait_ms: 4000
+      actions:
+        click_controls:
+          - Add Expense
+      expect:
+        final_path: /expenses
+        contains_text:
+          - Add Expense
+          - Category
+          - Amount
+        visible_controls:
+          - Add Expense
+        min_buttons: 10
+        min_inputs: 4
+        enforce_dark_inputs: true
+    - name: owner_team_invite_dark
+      role: owner
+      theme: dark
+      path: /team
+      wait_ms: 4000
+      actions:
+        click_controls:
+          - Invite Member
+      expect:
+        final_path: /team
+        contains_text:
+          - Invite Member
+          - First name
+          - Last name
+          - Email
+        visible_controls:
+          - Invite Member
+        min_buttons: 10
+        min_inputs: 4
+        enforce_dark_inputs: true
+
+  employee_core:
+    - name: employee_time_tracking_dark
+      role: employee
+      theme: dark
+      path: /time-tracking
+      wait_ms: 7000
+      expect:
+        final_path: /time-tracking
+        contains_text:
+          - Time Tracking
+          - Add Entry
+        min_buttons: 10
+    - name: employee_projects_dark
+      role: employee
+      theme: dark
+      path: /projects
+      wait_ms: 6000
+      expect:
+        final_path: /projects
+        contains_text:
+          - All Projects
+          - Active Projects
+        min_buttons: 8
+    - name: employee_expenses_dark
+      role: employee
+      theme: dark
+      path: /expenses
+      wait_ms: 7000
+      expect:
+        final_path: /expenses
+        contains_text:
+          - Add Expense
+          - Total Expenses
+        min_buttons: 6
+    - name: employee_clients_redirect_dark
+      role: employee
+      theme: dark
+      path: /clients
+      expect:
+        final_path: /time-tracking
+        contains_text:
+          - Time Tracking
+    - name: employee_billing_blocked_dark
+      role: employee
+      theme: dark
+      path: /settings/billing
+      expect:
+        final_path: /error
+        contains_text:
+          - Page not Found
+
+  client_core:
+    - name: client_invoices_dark
+      role: client
+      theme: dark
+      path: /invoices
+      wait_ms: 6000
+      expect:
+        final_path: /invoices
+        contains_text:
+          - Invoices
+        min_buttons: 4
+    - name: client_profile_dark
+      role: client
+      theme: dark
+      path: /settings/profile
+      wait_ms: 7000
+      expect:
+        final_path: /settings/profile
+        contains_text:
+          - Profile
+          - Edit Profile
+        min_buttons: 5
+    - name: client_dashboard_redirect_dark
+      role: client
+      theme: dark
+      path: /dashboard
+      wait_ms: 10000
+      expect:
+        final_path: /invoices
+        contains_text:
+          - Invoices
+    - name: client_billing_blocked_dark
+      role: client
+      theme: dark
+      path: /settings/billing
+      wait_ms: 10000
+      expect:
+        final_path: /error
+        contains_text:
+          - Page not Found
+
+  book_keeper_core:
+    - name: book_keeper_dashboard_dark
+      role: book_keeper
+      theme: dark
+      path: /dashboard
+      wait_ms: 7000
+      expect:
+        final_path: /dashboard
+        contains_text:
+          - Company Pulse
+        min_buttons: 4
+    - name: book_keeper_invoices_dark
+      role: book_keeper
+      theme: dark
+      path: /invoices
+      wait_ms: 5000
+      expect:
+        final_path: /invoices
+        contains_text:
+          - Invoices
+        min_buttons: 6
+    - name: book_keeper_payments_dark
+      role: book_keeper
+      theme: dark
+      path: /payments
+      wait_ms: 10000
+      expect:
+        final_path: /payments
+        contains_text:
+          - Payments
+        min_buttons: 6
+    - name: book_keeper_expenses_dark
+      role: book_keeper
+      theme: dark
+      path: /expenses
+      wait_ms: 5000
+      expect:
+        final_path: /expenses
+        contains_text:
+          - Expenses
+        min_buttons: 6
+    - name: book_keeper_billing_blocked_dark
+      role: book_keeper
+      theme: dark
+      path: /settings/billing
+      expect:
+        final_path: /error
+        contains_text:
+          - Page not Found

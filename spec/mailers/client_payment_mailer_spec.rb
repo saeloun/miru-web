@@ -4,7 +4,7 @@ require "rails_helper"
 
 RSpec.describe ClientPaymentMailer, type: :mailer do
   describe "payment" do
-    let(:company) { create :company, :with_logo }
+    let(:company) { create :company }
     let(:client) { create :client, company: }
     let(:invoice) { create :invoice, client: }
     let(:user) { create(:user, current_workspace_id: company.id, companies: [company]) }
@@ -19,6 +19,19 @@ RSpec.describe ClientPaymentMailer, type: :mailer do
 
     it "renders the body" do
       expect(mail.body.encoded).to match("Payment receipt")
+    end
+
+    context "when client has no email" do
+      let(:client) { create :client, company:, email: nil }
+
+      it "does not send the email" do
+        expect(mail.message).to be_a(ActionMailer::Base::NullMail)
+      end
+
+      it "does not update client_payment_sent_at" do
+        mail.deliver_now
+        expect(invoice.reload.client_payment_sent_at).to be_nil
+      end
     end
   end
 end
