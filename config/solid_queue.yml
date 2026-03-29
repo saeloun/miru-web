@@ -42,6 +42,9 @@ production:
         sync_stripe_subscriptions:
           class: SyncStripeSubscriptionsJob
           schedule: '0 1 * * *'
+        database_backup:
+          class: DatabaseBackupJob
+          schedule: '<%= ENV.fetch("DATABASE_BACKUP_CRON", "*/30 * * * *") %>'
   workers:
     - queues: default
       threads: <%= ENV.fetch("SOLID_QUEUE_THREADS", "3").to_i %>
