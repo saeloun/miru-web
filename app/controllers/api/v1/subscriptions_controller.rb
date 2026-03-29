@@ -26,10 +26,14 @@ class Api::V1::SubscriptionsController < Api::V1::ApplicationController
     session = Stripe::Checkout::Session.create(
       mode: "subscription",
       customer: customer_id,
-      line_items: [{ price: price_id, quantity: 1 }],
+      line_items: [{ price: price_id, quantity: checkout_seat_quantity }],
       success_url: "#{request.base_url}/settings/billing?billing=success",
       cancel_url: "#{request.base_url}/settings/billing?billing=cancelled",
-      metadata: { company_id: current_company.id, billing_interval: billing_interval }
+      metadata: {
+        company_id: current_company.id,
+        billing_interval: billing_interval,
+        seat_quantity: checkout_seat_quantity
+      }
     )
 
     render json: { url: session.url }, status: 200
@@ -101,6 +105,7 @@ class Api::V1::SubscriptionsController < Api::V1::ApplicationController
       params["prefilled_email"] ||= current_user.email
       params["client_reference_id"] ||= current_company.id.to_s
       params["billing_interval"] ||= billing_interval
+      params["quantity"] ||= checkout_seat_quantity.to_s
       uri.query = params.to_query
       uri.to_s
     rescue URI::InvalidURIError
@@ -133,5 +138,9 @@ class Api::V1::SubscriptionsController < Api::V1::ApplicationController
       )
       current_company.update!(stripe_customer_id: customer.id)
       customer.id
+    end
+
+    def checkout_seat_quantity
+      @checkout_seat_quantity ||= current_company.billable_team_seats
     end
 end

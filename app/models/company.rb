@@ -98,6 +98,10 @@ class Company < ApplicationRecord
     used_team_seats + pending_team_seat_invites
   end
 
+  def billable_team_seats
+    [used_team_seats, 1].max
+  end
+
   def team_member_limit_reached?
     return false if team_member_limit.infinite?
 

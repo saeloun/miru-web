@@ -30,9 +30,9 @@ RSpec.describe "Settings billing", type: :system, js: true do
       expect(page).to have_button("Yearly", wait: 10)
       expect(page).to have_content("How many seats do you expect to need?", wait: 10)
       expect(page).to have_text(/Yearly discount/i, wait: 10)
-      expect(page).to have_content("$5/user/mo", wait: 10)
+      expect(page).to have_content("$1/team member/mo", wait: 10)
       click_button "Yearly"
-      expect(page).to have_content("$50/user/yr", wait: 10)
+      expect(page).to have_content("$10/team member/yr", wait: 10)
       expect(page).to have_content("Powered by Stripe", wait: 10)
       expect(page).to have_content("Reports and analytics", wait: 10)
       expect(page).to have_link("hello@saeloun.com", href: "mailto:hello@saeloun.com", wait: 10)

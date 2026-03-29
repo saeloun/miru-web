@@ -165,6 +165,8 @@ RSpec.describe Api::V1::SubscriptionsController, type: :request do
     it "returns stripe plan page url when configured" do
       allow(ENV).to receive(:[]).and_call_original
       allow(ENV).to receive(:[]).with("STRIPE_PLAN_PAGE_URL").and_return("https://buy.stripe.com/test_plan")
+      extra_user = create(:user, current_workspace_id: company.id)
+      create(:employment, company:, user: extra_user)
 
       post "/api/v1/subscription/checkout", params: { interval: "yearly" }, headers: headers
 
@@ -174,6 +176,7 @@ RSpec.describe Api::V1::SubscriptionsController, type: :request do
       expect(url).to include("prefilled_email=#{CGI.escape(user.email)}")
       expect(url).to include("client_reference_id=#{company.id}")
       expect(url).to include("billing_interval=yearly")
+      expect(url).to include("quantity=2")
     end
 
     it "returns 422 when stripe price is not configured" do
@@ -210,7 +213,11 @@ RSpec.describe Api::V1::SubscriptionsController, type: :request do
           line_items: [{ price: "price_monthly", quantity: 1 }],
           success_url: "http://www.example.com/settings/billing?billing=success",
           cancel_url: "http://www.example.com/settings/billing?billing=cancelled",
-          metadata: hash_including(company_id: company.id, billing_interval: "monthly")
+          metadata: hash_including(
+            company_id: company.id,
+            billing_interval: "monthly",
+            seat_quantity: 1
+          )
         )
       )
     end
@@ -220,6 +227,8 @@ RSpec.describe Api::V1::SubscriptionsController, type: :request do
       allow(ENV).to receive(:[]).with("STRIPE_PLAN_PAGE_URL").and_return(nil)
       allow(ENV).to receive(:[]).with("STRIPE_SUBSCRIPTION_PRICE_ID_YEARLY").and_return("price_yearly")
       allow(ENV).to receive(:[]).with("STRIPE_SUBSCRIPTION_PRICE_ID").and_return(nil)
+      extra_user = create(:user, current_workspace_id: company.id)
+      create(:employment, company:, user: extra_user)
 
       stripe_customer = OpenStruct.new(id: "cus_456")
       stripe_session = OpenStruct.new(url: "https://checkout.stripe.com/yearly")
@@ -233,10 +242,14 @@ RSpec.describe Api::V1::SubscriptionsController, type: :request do
       expect(JSON.parse(response.body)["url"]).to eq("https://checkout.stripe.com/yearly")
       expect(Stripe::Checkout::Session).to have_received(:create).with(
         hash_including(
-          line_items: [{ price: "price_yearly", quantity: 1 }],
+          line_items: [{ price: "price_yearly", quantity: 2 }],
           success_url: "http://www.example.com/settings/billing?billing=success",
           cancel_url: "http://www.example.com/settings/billing?billing=cancelled",
-          metadata: hash_including(company_id: company.id, billing_interval: "yearly")
+          metadata: hash_including(
+            company_id: company.id,
+            billing_interval: "yearly",
+            seat_quantity: 2
+          )
         )
       )
     end
