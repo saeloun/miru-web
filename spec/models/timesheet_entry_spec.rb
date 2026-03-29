@@ -47,6 +47,7 @@ RSpec.describe TimesheetEntry, type: :model do
   describe "Associations" do
     it { is_expected.to belong_to(:user) }
     it { is_expected.to belong_to(:project) }
+    it { is_expected.to belong_to(:agent).optional }
     it { is_expected.to have_one(:invoice_line_item).dependent(:destroy) }
   end
 
@@ -100,12 +101,60 @@ RSpec.describe TimesheetEntry, type: :model do
           note: timesheet_entry.note,
           work_date: timesheet_entry.work_date,
           bill_status: timesheet_entry.bill_status,
+          review_status: "not_required",
           team_member: timesheet_entry.user.full_name,
+          agent_id: nil,
+          agent_name: nil,
           source: "manual",
           source_label: nil,
           source_metadata: {},
+          proof_url: nil,
+          proof_metadata: {},
           type: "timesheet"
         }
+      )
+    end
+  end
+
+  describe "review defaults" do
+    it "marks agent-attributed entries as pending review" do
+      agent_user = create(:user, current_workspace_id: company.id)
+      create(:employment, company:, user: agent_user)
+      agent = create(:agent, company:, user: agent_user)
+      entry = build(:timesheet_entry, project: billable_project, user: agent_user, agent:)
+
+      entry.valid?
+
+      expect(entry.review_status).to eq("pending_review")
+    end
+
+    it "keeps human entries as not required" do
+      entry = build(:timesheet_entry, project: billable_project, user: timesheet_entry.user)
+
+      entry.valid?
+
+      expect(entry.review_status).to eq("not_required")
+    end
+  end
+
+  describe "proof metadata normalization" do
+    it "normalizes values into a bounded top-level hash" do
+      timesheet_entry.assign_attributes(
+        proof_metadata: {
+          artifact: "build-log",
+          attempts: 2,
+          ok: false,
+          nested: { ignored: "but stringified" }
+        }
+      )
+
+      timesheet_entry.valid?
+
+      expect(timesheet_entry.proof_metadata).to eq(
+        "artifact" => "build-log",
+        "attempts" => 2,
+        "ok" => false,
+        "nested" => "{\"ignored\" => \"but stringified\"}"
       )
     end
   end

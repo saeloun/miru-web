@@ -62,6 +62,10 @@ namespace :api, defaults: { format: "json" } do
       resources :expenses, only: [:index, :create]
       resources :timesheet_entries, only: [:create, :update, :destroy]
     end
+    namespace :agent do
+      resource :capabilities, only: [:show], controller: "capabilities"
+      resources :timesheet_entries, only: [:create]
+    end
     resources :projects, only: [:index, :show, :create, :update, :destroy] do
       collection do
         get "search", to: "projects/search#index"

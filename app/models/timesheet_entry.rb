@@ -4,10 +4,13 @@ class TimesheetEntry < ApplicationRecord
   include Discard::Model
   include Searchable
   enum :bill_status, [:non_billable, :unbilled, :billed]
+  enum :review_status, [:not_required, :pending_review, :approved, :rejected]
 
   SOURCES = %w[manual cli mcp automation import].freeze
   SOURCE_METADATA_KEYS = %w[tool skill mcp_server].freeze
   SOURCE_METADATA_MAX_LENGTH = 100
+  PROOF_METADATA_MAX_KEYS = 20
+  PROOF_METADATA_MAX_LENGTH = 200
   SOURCE_LABELS = {
     "manual" => "Manual",
     "cli" => "CLI",
@@ -18,6 +21,7 @@ class TimesheetEntry < ApplicationRecord
 
   belongs_to :user
   belongs_to :project
+  belongs_to :agent, optional: true
 
   pg_search_scope :pg_search,
     against: [:note],
@@ -33,14 +37,18 @@ class TimesheetEntry < ApplicationRecord
   has_one :company, through: :client
 
   before_validation :ensure_bill_status_is_set
+  before_validation :ensure_review_status_is_set
   before_validation :ensure_bill_status_is_not_billed, on: :create
   before_validation :ensure_billed_status_should_not_be_changed, on: :update
   before_validation :normalize_source_fields
+  before_validation :normalize_proof_metadata
 
-  validates :duration, :work_date, :bill_status, presence: true
+  validates :duration, :work_date, :bill_status, :review_status, presence: true
   validates :duration, numericality: { less_than_or_equal_to: 6000000, greater_than_or_equal_to: 0.0 }
   validates :source, inclusion: { in: SOURCES }
+  validates :proof_url, length: { maximum: 2000 }, allow_blank: true
   validate :validate_billable_project
+  validate :validate_agent_belongs_to_workspace
   validate :prevent_edit_if_locked, on: :update
 
   scope :in_workspace, -> (company) { where(project_id: company&.project_ids) }
@@ -68,10 +76,15 @@ class TimesheetEntry < ApplicationRecord
       note:,
       work_date:,
       bill_status:,
+      review_status:,
       team_member: user.full_name,
+      agent_id:,
+      agent_name: agent&.name,
       source:,
       source_label:,
       source_metadata:,
+      proof_url:,
+      proof_metadata:,
       type: "timesheet"
     }
   end
@@ -117,6 +130,17 @@ class TimesheetEntry < ApplicationRecord
       end
     end
 
+    def ensure_review_status_is_set
+      if agent.present?
+        self.review_status = :pending_review if review_status.blank? || review_status == "not_required"
+        return
+      end
+
+      return if review_status.present?
+
+      self.review_status = :not_required
+    end
+
     def ensure_bill_status_is_not_billed
       errors.add(:timesheet_entry, I18n.t(:errors)[:create_billed_entry]) if billed?
     end
@@ -134,6 +158,16 @@ class TimesheetEntry < ApplicationRecord
       end
     end
 
+    def validate_agent_belongs_to_workspace
+      return if agent.blank?
+
+      if company.blank? || agent.company_id != company.id
+        errors.add(:agent, "must belong to the same company")
+      end
+
+      errors.add(:user, "must match the agent user") if user_id.present? && agent.user_id != user_id
+    end
+
     def prevent_edit_if_locked
       return if Current.user.nil?
 
@@ -147,6 +181,10 @@ class TimesheetEntry < ApplicationRecord
       self.source = inferred_source
     end
 
+    def normalize_proof_metadata
+      self.proof_metadata = normalized_proof_metadata
+    end
+
     def normalized_source_metadata
       return {} unless source_metadata.is_a?(Hash)
 
@@ -158,6 +196,28 @@ class TimesheetEntry < ApplicationRecord
 
     def normalized_source_metadata_value(value)
       value.to_s.strip.presence&.slice(0, SOURCE_METADATA_MAX_LENGTH)
+    end
+
+    def normalized_proof_metadata
+      return {} unless proof_metadata.is_a?(Hash)
+
+      proof_metadata.deep_stringify_keys.each_with_object({}).with_index do |((key, value), acc), index|
+        break acc if index >= PROOF_METADATA_MAX_KEYS
+
+        normalized_value = normalized_proof_metadata_value(value)
+        next if normalized_value.blank? && normalized_value != false && normalized_value != 0
+
+        acc[key.to_s.slice(0, SOURCE_METADATA_MAX_LENGTH)] = normalized_value
+      end
+    end
+
+    def normalized_proof_metadata_value(value)
+      case value
+      when Numeric, TrueClass, FalseClass
+        value
+      else
+        value.to_s.strip.presence&.slice(0, PROOF_METADATA_MAX_LENGTH)
+      end
     end
 
     def inferred_source

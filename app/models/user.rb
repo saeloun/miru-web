@@ -31,6 +31,7 @@ class User < ApplicationRecord
   has_many :companies, through: :employments
   has_many :project_members, dependent: :destroy
   has_many :timesheet_entries
+  has_many :agents, dependent: :destroy
   has_many :identities, dependent: :delete_all
   has_many :previous_employments, dependent: :destroy
   has_one_attached :avatar
