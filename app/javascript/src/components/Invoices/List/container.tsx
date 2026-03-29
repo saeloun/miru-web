@@ -79,6 +79,9 @@ const Container = ({
         <span>
           Showing {invoices.length} of {totalInvoices}
         </span>
+        {!loadingMoreInvoices && hasMoreInvoices && (
+          <span>Scroll to load more invoices</span>
+        )}
         {loadingMoreInvoices && <span>Loading more invoices...</span>}
         {!loadingMoreInvoices && hasMoreInvoices && (
           <div ref={loadMoreTriggerRef} className="h-8 w-full" />

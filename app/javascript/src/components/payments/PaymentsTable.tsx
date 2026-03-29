@@ -518,6 +518,7 @@ const PaymentsTable: React.FC = () => {
                 <span>
                   Showing {visiblePayments.length} of {payments.length}
                 </span>
+                {hasMorePayments && <span>Scroll to load more payments</span>}
                 {hasMorePayments && (
                   <div ref={loadMorePaymentsRef} className="h-8 w-full" />
                 )}

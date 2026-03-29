@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { ColumnDef } from "@tanstack/react-table";
 import Loader from "common/Loader/index";
+import useInfiniteLoadTrigger from "../../hooks/useInfiniteLoadTrigger";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
@@ -83,11 +84,27 @@ interface ExpensesData {
   totalAmount: number;
   businessAmount: number;
   personalAmount: number;
+  paginationDetails: {
+    page: number;
+    pages: number;
+    total: number;
+    next: number | null;
+  };
 }
 
-const fetchExpenses = async (filter: string = "all"): Promise<ExpensesData> => {
+const fetchExpenses = async (
+  filter: string = "all",
+  page: number = 1,
+  perPage: number = 25
+): Promise<ExpensesData> => {
   const response = await expensesApi.index(
-    filter !== "all" ? `status=${filter}` : ""
+    [
+      filter !== "all" ? `status=${filter}` : "",
+      `page=${page}`,
+      `per=${perPage}`,
+    ]
+      .filter(Boolean)
+      .join("&")
   );
 
   const expenses = (response.data.expenses || []).map(expense => ({
@@ -125,10 +142,29 @@ const fetchExpenses = async (filter: string = "all"): Promise<ExpensesData> => {
     totalAmount,
     businessAmount,
     personalAmount,
+    paginationDetails: {
+      page:
+        Number(
+          response.data.pagy?.page || response.data.paginationDetails?.page
+        ) || page,
+      pages:
+        Number(
+          response.data.pagy?.pages || response.data.paginationDetails?.pages
+        ) || 1,
+      total:
+        Number(
+          response.data.pagy?.total || response.data.paginationDetails?.total
+        ) || expenses.length,
+      next:
+        response.data.pagy?.next ??
+        response.data.paginationDetails?.next ??
+        null,
+    },
   };
 };
 
 const ExpensesTable: React.FC = () => {
+  const EXPENSES_BATCH_SIZE = 25;
   const queryClient = useQueryClient();
   const { company, companyRole } = useUserContext();
   const [showAddDialog, setShowAddDialog] = useState(false);
@@ -137,6 +173,12 @@ const ExpensesTable: React.FC = () => {
   const [showReceiptsDialog, setShowReceiptsDialog] = useState(false);
   const [selectedExpense, setSelectedExpense] = useState<Expense | null>(null);
   const [receiptFiles, setReceiptFiles] = useState<File[]>([]);
+  const [visibleExpenses, setVisibleExpenses] = useState<Expense[]>([]);
+  const [visibleExpenseCount, setVisibleExpenseCount] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalExpenseCount, setTotalExpenseCount] = useState(0);
+  const [hasMoreExpenses, setHasMoreExpenses] = useState(false);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
 
   // Form state
   const [formData, setFormData] = useState({
@@ -151,7 +193,7 @@ const ExpensesTable: React.FC = () => {
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["expenses"],
-    queryFn: () => fetchExpenses("all"),
+    queryFn: () => fetchExpenses("all", 1, EXPENSES_BATCH_SIZE),
   });
 
   const deleteMutation = useMutation({
@@ -425,6 +467,63 @@ const ExpensesTable: React.FC = () => {
   const canManageReimbursements = ["admin", "owner", "book_keeper"].includes(
     companyRole || ""
   );
+  const categories = data?.categories || [];
+
+  useEffect(() => {
+    if (!data) return;
+
+    setVisibleExpenses(data.expenses || []);
+    setVisibleExpenseCount((data.expenses || []).length);
+    setCurrentPage(data.paginationDetails?.page || 1);
+    setTotalExpenseCount(data.paginationDetails?.total || data.expenses.length);
+    setHasMoreExpenses(Boolean(data.paginationDetails?.next));
+  }, [data]);
+
+  const loadMoreExpenses = useCallback(async () => {
+    if (isLoadingMore || !hasMoreExpenses) return;
+
+    setIsLoadingMore(true);
+
+    try {
+      const nextPage = currentPage + 1;
+      const nextData = await fetchExpenses(
+        "all",
+        nextPage,
+        EXPENSES_BATCH_SIZE
+      );
+
+      setVisibleExpenses(previousExpenses => {
+        const mergedExpenses = [...previousExpenses, ...nextData.expenses];
+        const dedupedExpenses = new Map();
+
+        mergedExpenses.forEach(expense => {
+          if (!dedupedExpenses.has(expense.id)) {
+            dedupedExpenses.set(expense.id, expense);
+          }
+        });
+
+        return Array.from(dedupedExpenses.values());
+      });
+
+      setVisibleExpenseCount(previousCount =>
+        Math.min(
+          previousCount + nextData.expenses.length,
+          nextData.paginationDetails.total
+        )
+      );
+      setCurrentPage(nextData.paginationDetails.page);
+      setTotalExpenseCount(nextData.paginationDetails.total);
+      setHasMoreExpenses(Boolean(nextData.paginationDetails.next));
+    } finally {
+      setIsLoadingMore(false);
+    }
+  }, [currentPage, hasMoreExpenses, isLoadingMore]);
+
+  const loadMoreExpensesRef = useInfiniteLoadTrigger({
+    enabled: hasMoreExpenses,
+    loading: isLoadingMore,
+    onLoadMore: loadMoreExpenses,
+  });
 
   const columns: ColumnDef<Expense>[] = [
     {
@@ -670,7 +769,7 @@ const ExpensesTable: React.FC = () => {
     );
   }
 
-  const expenses = data?.expenses || [];
+  const expenses = visibleExpenses;
   const totalAmount = data?.totalAmount || 0;
   const businessAmount = data?.businessAmount || 0;
   const personalAmount = data?.personalAmount || 0;
@@ -752,7 +851,7 @@ const ExpensesTable: React.FC = () => {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-semibold text-foreground">
-                {expenses.length}
+                {totalExpenseCount}
               </div>
               <p className="mt-1 text-xs text-muted-foreground">
                 Expense entries
@@ -765,11 +864,29 @@ const ExpensesTable: React.FC = () => {
         <Card className="border-0 shadow-sm">
           <CardContent>
             {expenses.length > 0 ? (
-              <DataTable
-                columns={columns}
-                data={expenses}
-                searchPlaceholder="Search expenses..."
-              />
+              <>
+                <DataTable
+                  columns={columns}
+                  data={expenses}
+                  searchPlaceholder="Search expenses..."
+                  showPagination={false}
+                />
+                <div className="flex flex-col items-center gap-2 pb-2 pt-4 text-sm text-muted-foreground">
+                  <span>
+                    Showing {visibleExpenseCount} of {totalExpenseCount}
+                  </span>
+                  {hasMoreExpenses && !isLoadingMore && (
+                    <span>Scroll to load more expenses</span>
+                  )}
+                  {hasMoreExpenses && !isLoadingMore && (
+                    <div ref={loadMoreExpensesRef} className="h-8 w-full" />
+                  )}
+                  {isLoadingMore && <span>Loading more expenses...</span>}
+                  {!hasMoreExpenses && totalExpenseCount > 0 && (
+                    <span>All expenses loaded</span>
+                  )}
+                </div>
+              </>
             ) : (
               <div className="text-center py-12">
                 <Receipt
@@ -860,7 +977,7 @@ const ExpensesTable: React.FC = () => {
                   <SelectValue placeholder="Select category" />
                 </SelectTrigger>
                 <SelectContent>
-                  {(data?.categories || []).map(category => (
+                  {categories.map(category => (
                     <SelectItem key={category.name} value={category.name}>
                       <div className="flex items-center gap-2">
                         <span
@@ -1049,7 +1166,7 @@ const ExpensesTable: React.FC = () => {
                   <SelectValue placeholder="Select category" />
                 </SelectTrigger>
                 <SelectContent>
-                  {(data?.categories || []).map(category => (
+                  {categories.map(category => (
                     <SelectItem key={category.name} value={category.name}>
                       <div className="flex items-center gap-2">
                         <span

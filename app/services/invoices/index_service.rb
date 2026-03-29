@@ -23,7 +23,8 @@ module Invoices
           total: pagy_metadata.count
         },
         summary: summary,
-        recently_updated_invoices: recently_updated_invoices
+        recently_updated_invoices: recently_updated_invoices,
+        recently_updated_total_count: pagy_metadata.count
       }
     end
 

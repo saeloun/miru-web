@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Loader from "common/Loader/index";
 import {
   CurrencyDollar as DollarSign,
@@ -34,6 +34,7 @@ import {
 } from "date-fns";
 import { DateRange } from "react-day-picker";
 import axios from "../../../apis/api";
+import useInfiniteLoadTrigger from "../../../hooks/useInfiniteLoadTrigger";
 import { Button } from "../../ui/button";
 import {
   Select,
@@ -90,6 +91,7 @@ const RevenueByClientReport: React.FC = () => {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+  const [visibleRowCount, setVisibleRowCount] = useState(25);
 
   const { data, isLoading, error } = useQuery<RevenueReportData>({
     queryKey: ["revenueByClient", dateRange, selectedClients],
@@ -256,6 +258,24 @@ const RevenueByClientReport: React.FC = () => {
     },
   ];
 
+  useEffect(() => {
+    setVisibleRowCount(25);
+  }, [data?.clients]);
+
+  const loadMoreRows = useCallback(() => {
+    setVisibleRowCount(previousCount => previousCount + 25);
+  }, []);
+
+  const totalRows = data?.clients?.length || 0;
+  const displayedRows = Math.min(visibleRowCount, totalRows);
+  const hasMoreRows = displayedRows < totalRows;
+
+  const loadMoreRowsRef = useInfiniteLoadTrigger({
+    enabled: hasMoreRows,
+    loading: false,
+    onLoadMore: loadMoreRows,
+  });
+
   const table = useReactTable({
     data: data?.clients || [],
     columns,
@@ -270,6 +290,10 @@ const RevenueByClientReport: React.FC = () => {
       sorting,
       columnFilters,
       columnVisibility,
+      pagination: {
+        pageIndex: 0,
+        pageSize: visibleRowCount,
+      },
     },
   });
 
@@ -526,23 +550,15 @@ const RevenueByClientReport: React.FC = () => {
             </div>
 
             {/* Pagination */}
-            <div className="flex items-center justify-end space-x-2 py-4">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => table.previousPage()}
-                disabled={!table.getCanPreviousPage()}
-              >
-                Previous
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => table.nextPage()}
-                disabled={!table.getCanNextPage()}
-              >
-                Next
-              </Button>
+            <div className="flex flex-col items-center gap-2 py-4 text-sm text-muted-foreground">
+              <span>
+                Showing {displayedRows} of {totalRows} clients
+              </span>
+              {hasMoreRows && <span>Scroll to load more clients</span>}
+              {hasMoreRows && (
+                <div ref={loadMoreRowsRef} className="h-8 w-full" />
+              )}
+              {!hasMoreRows && totalRows > 0 && <span>All clients loaded</span>}
             </div>
           </CardContent>
         </Card>

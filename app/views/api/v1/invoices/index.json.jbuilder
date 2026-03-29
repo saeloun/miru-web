@@ -64,3 +64,5 @@ json.recentlyUpdatedInvoices recently_updated_invoices do |invoice|
     json.logo invoice.client&.logo_url if invoice.client&.logo_url
   end
 end
+
+json.recentlyUpdatedTotalCount recently_updated_total_count
