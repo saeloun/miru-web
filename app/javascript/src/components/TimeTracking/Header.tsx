@@ -34,6 +34,10 @@ const Header = ({
     setSelectDate(dayjs().weekday());
   };
 
+  const getLastWeekAction = () => {
+    setWeekDay(p => p - 7);
+  };
+
   const getRightArrowAction = () => {
     isDesktop ? handleNextWeek() : handleNextDay();
   };
@@ -43,22 +47,27 @@ const Header = ({
   };
 
   const getLabel = () => {
+    if (!dayInfo.length) return null;
+
     return isDesktop ? (
-      // Week view label for desktop
       <>
-        <span>
-          {parseInt(dayInfo[0]["date"], 10)} {dayInfo[0]["month"]} -
-        </span>
+        <span>Week of</span>
         <span className="mx-1">
-          {parseInt(dayInfo[6]["date"], 10)} {dayInfo[6]["month"]}
+          {dayInfo[0]["month"]} {parseInt(dayInfo[0]["date"], 10)}
         </span>
-        <span> {dayInfo[6]["year"]}</span>
+        <span>to</span>
+        <span className="mx-1">
+          {dayInfo[6]["month"]} {parseInt(dayInfo[6]["date"], 10)},
+        </span>
+        <span>{dayInfo[6]["year"]}</span>
       </>
     ) : (
-      // Day view label for mobile
       <>
-        <span>{parseInt(dayInfo[selectDate]["date"], 10)}</span>
-        <span className="mx-1">{dayInfo[selectDate].month}</span>
+        <span>{dayInfo[selectDate].day},</span>
+        <span className="mx-1">
+          {dayInfo[selectDate].month}{" "}
+          {parseInt(dayInfo[selectDate]["date"], 10)},
+        </span>
         <span>{dayInfo[selectDate]["year"]}</span>
       </>
     );
@@ -72,14 +81,26 @@ const Header = ({
     <Card className="mb-6 w-full rounded-lg border border-border bg-card shadow-sm">
       <CardContent className="p-5">
         <div className="flex w-full flex-wrap items-center justify-between gap-3 sm:flex-nowrap sm:gap-4">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={getTodayAction}
-            className="px-4 py-2 font-bold text-sm border-border hover:bg-accent hover:text-accent-foreground transition-all duration-200"
-          >
-            Today
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={getTodayAction}
+              className="px-4 py-2 font-bold text-sm border-border hover:bg-accent hover:text-accent-foreground transition-all duration-200"
+            >
+              Today
+            </Button>
+            {isDesktop && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={getLastWeekAction}
+                className="px-3 py-2 text-sm font-semibold text-muted-foreground hover:bg-accent hover:text-foreground"
+              >
+                Last week
+              </Button>
+            )}
+          </div>
 
           <div className="flex min-w-0 flex-1 items-center justify-center gap-2 sm:gap-4">
             <Button

@@ -100,6 +100,11 @@ const WeekDaySelector: React.FC<WeekDaySelectorProps> = ({
           <p className="text-[9px] font-medium text-muted-foreground">
             {d.month}
           </p>
+          {isSelected && (
+            <p className="text-[9px] font-semibold uppercase tracking-[0.15em] text-primary">
+              Selected
+            </p>
+          )}
         </div>
       </button>
     );
