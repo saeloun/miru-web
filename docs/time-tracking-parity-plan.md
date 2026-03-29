@@ -267,6 +267,24 @@ The next batch should stay small and brutal:
 
 That is enough to materially change how fast Miru feels without turning this into a rewrite.
 
+## Immediate Ship Sequence
+
+Before expanding into billing parity or agent-ledger work, push the current parity batch all the way through:
+
+1. finish and verify the active time-tracking implementation batch
+2. ship:
+   - favorites above recents
+   - resume timer from an existing row
+   - all-entries review mode for the active week
+3. verify the shipped flow in the browser on the real app
+4. only then start the next time-tracking or agent-ledger phase
+
+Reason:
+
+The current parity batch is the foundation for everything after it.
+
+If Miru still feels slower than it should in the core time-tracking loop, adding billing or agent features on top will just stack weight on a weak surface.
+
 ## Non-Goals Right Now
 
 - full desktop native app

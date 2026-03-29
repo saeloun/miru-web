@@ -511,4 +511,20 @@ Implementation order inside Phase 1:
 4. pending review filter and actions
 5. invoice draft eligibility and handoff
 
+## Sequencing Note
+
+Push the current time-tracking parity fixes before starting this implementation batch.
+
+That means shipping the active parity work on:
+
+- favorites above recents
+- resume timer from an existing row
+- all-entries review mode for the active week
+
+Reason:
+
+Agent work will live inside the same time-tracking surface.
+
+If that surface is still mid-rewrite, Phase 1 agent work will either duplicate UI effort or harden the wrong structure.
+
 That is the whole move.
