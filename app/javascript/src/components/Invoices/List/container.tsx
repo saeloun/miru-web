@@ -32,6 +32,10 @@ const Container = ({
   params,
   isStripeEnabled,
   setIsStripeEnabled,
+  hasMoreInvoices,
+  loadingMoreInvoices,
+  loadMoreTriggerRef,
+  totalInvoices,
 }) =>
   invoices.length > 0 ? (
     <div
@@ -71,6 +75,18 @@ const Container = ({
         setIsStripeEnabled={setIsStripeEnabled}
         setShowDeleteDialog={setShowDeleteDialog}
       />
+      <div className="mt-4 flex flex-col items-center gap-2 pb-2 text-sm text-gray-500">
+        <span>
+          Showing {invoices.length} of {totalInvoices}
+        </span>
+        {loadingMoreInvoices && <span>Loading more invoices...</span>}
+        {!loadingMoreInvoices && hasMoreInvoices && (
+          <div ref={loadMoreTriggerRef} className="h-8 w-full" />
+        )}
+        {!hasMoreInvoices && totalInvoices > 0 && (
+          <span>All invoices loaded</span>
+        )}
+      </div>
     </div>
   ) : (
     <NoInvoices

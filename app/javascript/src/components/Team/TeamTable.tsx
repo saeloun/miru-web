@@ -41,10 +41,10 @@ import {
 } from "phosphor-react";
 import { useUserContext } from "../../context/UserContext";
 import { teamApi } from "apis/api";
-import { unmapList } from "../../mapper/team.mapper";
+import { unmapList, unmapPagyData } from "../../mapper/team.mapper";
 import { toast } from "sonner";
 import { Roles } from "../../constants/index";
-import { getGravatarUrl } from "../../helpers";
+import { getDisplayAvatarUrl } from "../../helpers";
 
 interface TeamMember {
   id: string;
@@ -78,12 +78,13 @@ interface TeamMemberFormState {
 }
 
 const fetchTeamMembers = async (): Promise<TeamData> => {
-  const response = await teamApi.get();
-  const sanitized = unmapList(response);
+  const response = await teamApi.get("page=1&items=1000");
+  const teamMembers = unmapList(response);
+  const pagy = unmapPagyData(response);
 
   return {
-    teamMembers: sanitized,
-    totalCount: sanitized.length,
+    teamMembers,
+    totalCount: pagy?.count || teamMembers.length,
   };
 };
 
@@ -327,13 +328,12 @@ const TeamTable: React.FC = () => {
       ),
       cell: ({ row }) => {
         const member = row.original;
-        const gravatarUrl = getGravatarUrl(member.email, 36);
+        const avatarUrl = getDisplayAvatarUrl(member.avatar, member.email, 36);
 
         return (
           <div className="flex items-center gap-3">
             <Avatar className="h-9 w-9">
-              <AvatarImage src={gravatarUrl} alt={member.name} />
-              <AvatarImage src={member.avatar} alt={member.name} />
+              <AvatarImage src={avatarUrl} alt={member.name} />
               <AvatarFallback className="bg-muted text-sm text-foreground">
                 {member.firstName?.[0]}
                 {member.lastName?.[0]}
@@ -507,6 +507,7 @@ const TeamTable: React.FC = () => {
   }
 
   const teamMembers = data?.teamMembers || [];
+  const totalCount = data?.totalCount || teamMembers.length;
   const activeMembers = teamMembers.filter(m => m.status === "active").length;
   const totalHours = teamMembers.reduce(
     (sum, m) => sum + (m.hoursLogged || 0),
@@ -560,7 +561,7 @@ const TeamTable: React.FC = () => {
             <Users size={20} className="text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{teamMembers.length}</div>
+            <div className="text-2xl font-bold">{totalCount}</div>
             <p className="mt-1 text-xs text-muted-foreground">
               {activeMembers} active
             </p>
@@ -627,6 +628,7 @@ const TeamTable: React.FC = () => {
               columns={columns}
               data={teamMembers}
               searchPlaceholder="Search team members..."
+              showPagination={false}
             />
           ) : (
             <div className="text-center py-12">

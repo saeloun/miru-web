@@ -13,7 +13,7 @@ class Api::V1::Invoices::RecentlyUpdatedController < Api::V1::ApplicationControl
     invoices = current_company.invoices
       .kept
       .includes(:client)
-      .order(updated_at: :desc)
+      .order(updated_at: :desc, id: :desc)
 
     # Apply status filter if provided
     if params[:status].present?
@@ -45,7 +45,7 @@ class Api::V1::Invoices::RecentlyUpdatedController < Api::V1::ApplicationControl
         status: invoice.status,
         issue_date: invoice.formatted_issue_date,
         due_date: invoice.formatted_due_date,
-        updated_at: invoice.updated_at.strftime("%b %d, %Y at %I:%M %p"),
+        updated_at: invoice.updated_at.iso8601,
         client: {
           id: invoice.client.id,
           name: invoice.client.name,

@@ -3,13 +3,14 @@ import React, { useEffect, useState } from "react";
 import { teamApi, teamsApi } from "apis/api";
 import { useProfileContext } from "context/Profile/ProfileContext";
 import { useUserContext } from "context/UserContext";
+import { getDisplayAvatarUrl } from "helpers";
 import { UserAvatarSVG, DeleteIcon, ImageIcon, EditIcon } from "miruIcons";
 import { MoreOptions, Toastr, Tooltip } from "StyledComponents";
 import { useCurrentUser } from "~/hooks/useCurrentUser";
 
 const UserInformation = () => {
   const {
-    personalDetails: { first_name, last_name, id },
+    personalDetails: { first_name, last_name, id, email_id },
     isCalledFromSettings,
   } = useProfileContext();
   const { avatarUrl, setCurrentAvatarUrl } = useUserContext();
@@ -17,6 +18,7 @@ const UserInformation = () => {
 
   const [showProfileOptions, setShowProfileOptions] = useState(false);
   const [imageUrl, setImageUrl] = useState(null);
+  const [uploadedImageUrl, setUploadedImageUrl] = useState(null);
 
   // Use current user data when in settings context
   const displayName =
@@ -25,16 +27,25 @@ const UserInformation = () => {
       : `${first_name} ${last_name}`;
 
   const userId = isCalledFromSettings && currentUser ? currentUser.id : id;
+  const displayImageUrl =
+    getDisplayAvatarUrl(
+      imageUrl,
+      isCalledFromSettings ? currentUser?.email : email_id,
+      96
+    ) || UserAvatarSVG;
 
   const getAvatar = async () => {
     if (!userId) return;
 
     try {
       if (isCalledFromSettings && currentUser) {
-        setImageUrl(avatarUrl || currentUser.avatar_url);
+        const nextImageUrl = avatarUrl || currentUser.avatar_url || null;
+        setImageUrl(nextImageUrl);
+        setUploadedImageUrl(currentUser.avatar_url || null);
       } else {
         const responseData = await teamsApi.get(userId);
-        setImageUrl(responseData.data.avatar_url);
+        setImageUrl(responseData.data.avatar_url || null);
+        setUploadedImageUrl(responseData.data.avatar_url || null);
       }
     } catch {
       Toastr.error("Error in getting Profile Image");
@@ -67,8 +78,11 @@ const UserInformation = () => {
       const file = e.target.files[0];
       validateFileSize(file);
       setImageUrl(URL.createObjectURL(file));
+      setUploadedImageUrl(URL.createObjectURL(file));
       const payload = createFormData(file);
       const response = await teamApi.updateTeamMemberAvatar(userId, payload);
+      setImageUrl(response.data.avatar_url);
+      setUploadedImageUrl(response.data.avatar_url);
       if (isCalledFromSettings) setCurrentAvatarUrl(response.data.avatar_url);
     } catch (error) {
       Toastr.error(error.message);
@@ -80,6 +94,7 @@ const UserInformation = () => {
       setShowProfileOptions(false);
       await teamApi.destroyTeamMemberAvatar(userId);
       setImageUrl(null);
+      setUploadedImageUrl(null);
       if (isCalledFromSettings) setCurrentAvatarUrl(null);
     } catch {
       Toastr.error("Error in deleting Profile Image");
@@ -94,7 +109,7 @@ const UserInformation = () => {
           <div className="relative">
             <img
               className="h-24 w-24 rounded-full border-4 border-background object-cover shadow-xl"
-              src={imageUrl || UserAvatarSVG}
+              src={displayImageUrl}
             />
             <button
               className="absolute right-0 bottom-0 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border border-border bg-card text-foreground shadow-md transition-transform duration-200 hover:scale-110 hover:bg-accent"
@@ -123,7 +138,7 @@ const UserInformation = () => {
                   type="file"
                   onChange={handleProfileImageChange}
                 />
-                {imageUrl && (
+                {uploadedImageUrl && (
                   <li
                     className="flex cursor-pointer flex-row items-center p-1.5 text-sm text-destructive"
                     onClick={handleDeleteProfileImage}

@@ -22,4 +22,15 @@ RSpec.describe Devise::Mailer, type: :mailer do
       expect(mail.body.encoded).to include("hello@saeloun.com")
     end
   end
+
+  describe "unlock_instructions" do
+    it "explains the timed lock behavior and points to sign in" do
+      user = create(:user)
+
+      mail = described_class.unlock_instructions(user, "preview-unlock-token")
+
+      expect(mail.body.encoded).to include("30 minutes")
+      expect(mail.body.encoded).to include("/login")
+    end
+  end
 end

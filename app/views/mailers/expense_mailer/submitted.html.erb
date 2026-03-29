@@ -1,13 +1,19 @@
-<!DOCTYPE html>
-<html>
-  <body style="font-family: Arial, sans-serif; color: #111827; line-height: 1.6;">
-    <p><strong><%= @expense.submitter_name %></strong> submitted a reimbursement request.</p>
-    <p>Amount: <%= FormatAmountService.new(@company.base_currency, @expense.amount).process %></p>
-    <p>Category: <%= @expense.display_category_name.presence || "-" %></p>
-    <p>Date: <%= @expense.formatted_date %></p>
-    <p>Description: <%= @expense.description.presence || "-" %></p>
-    <p>
-      <a href="<%= @expense_url %>" target="_blank" rel="noreferrer">Review expense</a>
-    </p>
-  </body>
-</html>
+<% content_for :email_preheader, "A new reimbursement request needs review." %>
+<% content_for :email_eyebrow, "Expenses" %>
+<% content_for :email_title, "New reimbursement request" %>
+<% content_for :email_subtitle do %>
+  <strong><%= @expense.submitter_name %></strong> submitted a reimbursement request that is ready for review.
+<% end %>
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="detail-grid">
+  <tr>
+    <%= render "shared/mailer/detail_card", label: "Amount", value: FormatAmountService.new(@company.base_currency, @expense.amount).process %>
+    <%= render "shared/mailer/detail_card", label: "Category", value: @expense.display_category_name.presence || "-" %>
+  </tr>
+  <tr>
+    <%= render "shared/mailer/detail_card", label: "Date", value: @expense.formatted_date %>
+    <%= render "shared/mailer/detail_card", label: "Description", value: @expense.description.presence || "-" %>
+  </tr>
+</table>
+
+<%= render "shared/mailer/button", href: @expense_url, label: "Review expense" %>

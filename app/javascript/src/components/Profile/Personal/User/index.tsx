@@ -8,6 +8,7 @@ import { useProfileContext } from "context/Profile/ProfileContext";
 import { useUserContext } from "context/UserContext";
 import { employmentMapper } from "mapper/teams.mapper";
 import { Outlet, useNavigate, useParams } from "react-router-dom";
+import { getDisplayAvatarUrl } from "helpers";
 import { sendGAPageView } from "utils/googleAnalytics";
 import { useCurrentUser } from "~/hooks/useCurrentUser";
 
@@ -71,6 +72,15 @@ const UserDetailsView = () => {
   }, [currentUserId]);
 
   const navigate = useNavigate();
+  const displayAvatarEmail = isCalledFromSettings
+    ? currentUser?.email || user?.email || personalDetails.email_id
+    : personalDetails.email_id;
+
+  const displayAvatarUrl = getDisplayAvatarUrl(
+    avatarUrl,
+    displayAvatarEmail,
+    isDesktop ? 128 : 96
+  );
 
   const handleEditClick = () => {
     navigate(`edit`, { replace: true });
@@ -91,7 +101,7 @@ const UserDetailsView = () => {
             <Loader className="min-h-70v" />
           ) : (
             <StaticPage
-              avatarUrl={avatarUrl}
+              avatarUrl={displayAvatarUrl}
               handleEditClick={handleEditClick}
               isCalledFromSettings={isCalledFromSettings}
               personalDetails={personalDetails}
@@ -112,7 +122,7 @@ const UserDetailsView = () => {
             <Loader className="min-h-70v" />
           ) : (
             <MobilePersonalDetails
-              avatarUrl={avatarUrl}
+              avatarUrl={displayAvatarUrl}
               handleEditClick={handleEditClick}
               isCalledFromSettings={isCalledFromSettings}
               personalDetails={personalDetails}

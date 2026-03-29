@@ -1,4 +1,5 @@
 import React from "react";
+import { format } from "date-fns";
 
 import { currencyFormat } from "helpers";
 import { useNavigate } from "react-router-dom";
@@ -13,9 +14,13 @@ import {
 } from "phosphor-react";
 
 const RecentlyUpdatedCard = ({
-  invoice: { client, currency, id, invoiceNumber, amount, status },
+  invoice: { client, currency, id, invoiceNumber, amount, status, updatedAt },
 }) => {
   const navigate = useNavigate();
+
+  const formattedUpdatedAt = updatedAt
+    ? format(new Date(updatedAt), "MMM dd, h:mm a")
+    : null;
 
   const getStatusIcon = () => {
     switch (status?.toLowerCase()) {
@@ -61,6 +66,11 @@ const RecentlyUpdatedCard = ({
         >
           {client.name}
         </p>
+        {formattedUpdatedAt && (
+          <p className="mt-1 truncate text-xs text-muted-foreground">
+            Updated {formattedUpdatedAt}
+          </p>
+        )}
       </div>
 
       {/* Amount at bottom */}

@@ -131,15 +131,13 @@ RSpec.describe "Dashboard", type: :system, js: true do
   end
 
   context "with timeframe selection" do
-    it "shows the timeframe label on the dashboard" do
+    it "shows year-to-date revenue trends on the dashboard" do
       with_forgery_protection do
         visit "/dashboard"
 
         expect(page).to have_css("#react-root", wait: 10)
         expect(page).to have_content("Year to date", wait: 10)
-          .or have_content("Quarter to date", wait: 10)
-          .or have_content("Month to date", wait: 10)
-          .or have_content("Week to date", wait: 10)
+        expect(page).to have_content("Month-by-month revenue year to date", wait: 10)
       end
     end
   end

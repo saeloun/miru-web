@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { ColumnDef } from "@tanstack/react-table";
 import Loader from "common/Loader/index";
+import useInfiniteLoadTrigger from "../../hooks/useInfiniteLoadTrigger";
 import {
   Card,
   CardContent,
@@ -124,12 +125,15 @@ const fetchPayments = async (): Promise<PaymentsData> => {
 };
 
 const PaymentsTable: React.FC = () => {
+  const PAYMENTS_BATCH_SIZE = 25;
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { isAdminUser, company } = useUserContext();
   const [showManualEntryModal, setShowManualEntryModal] = useState(false);
   const [invoiceList, setInvoiceList] = useState<any>([]);
   const [dateFormat, setDateFormat] = useState("");
+  const [visiblePaymentCount, setVisiblePaymentCount] =
+    useState(PAYMENTS_BATCH_SIZE);
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["payments"],
@@ -157,6 +161,28 @@ const PaymentsTable: React.FC = () => {
   };
 
   const baseCurrency = company?.baseCurrency || data?.baseCurrency || "USD";
+  const payments = data?.payments || [];
+
+  useEffect(() => {
+    setVisiblePaymentCount(PAYMENTS_BATCH_SIZE);
+  }, [payments.length]);
+
+  const visiblePayments = useMemo(
+    () => payments.slice(0, visiblePaymentCount),
+    [payments, visiblePaymentCount]
+  );
+  const hasMorePayments = visiblePaymentCount < payments.length;
+  const loadMorePayments = useCallback(() => {
+    setVisiblePaymentCount(previousCount =>
+      Math.min(previousCount + PAYMENTS_BATCH_SIZE, payments.length)
+    );
+  }, [payments.length]);
+
+  const loadMorePaymentsRef = useInfiniteLoadTrigger({
+    enabled: hasMorePayments,
+    loading: false,
+    onLoadMore: loadMorePayments,
+  });
 
   const getTransactionTypeBadge = (type: string) => {
     const typeLabels = {
@@ -480,12 +506,24 @@ const PaymentsTable: React.FC = () => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          {data?.payments && data.payments.length > 0 ? (
-            <DataTable
-              columns={columns}
-              data={data.payments}
-              searchPlaceholder="Search by invoice, client, method, or notes..."
-            />
+          {payments.length > 0 ? (
+            <div className="space-y-4">
+              <DataTable
+                columns={columns}
+                data={visiblePayments}
+                searchPlaceholder="Search by invoice, client, method, or notes..."
+                showPagination={false}
+              />
+              <div className="flex flex-col items-center gap-2 pb-2 text-sm text-muted-foreground">
+                <span>
+                  Showing {visiblePayments.length} of {payments.length}
+                </span>
+                {hasMorePayments && (
+                  <div ref={loadMorePaymentsRef} className="h-8 w-full" />
+                )}
+                {!hasMorePayments && <span>All payments loaded</span>}
+              </div>
+            </div>
           ) : (
             <div className="text-center py-12">
               <CreditCard className="mx-auto h-12 w-12 text-muted-foreground" />

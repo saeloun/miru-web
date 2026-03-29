@@ -136,7 +136,11 @@ module Invoices
       end
 
       def recently_updated_invoices
-        current_company.invoices.kept.includes(:client).order(updated_at: :desc).limit(10)
+        current_company.invoices
+          .kept
+          .includes(:client)
+          .order(updated_at: :desc, id: :desc)
+          .limit(10)
       end
   end
 end

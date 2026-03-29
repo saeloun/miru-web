@@ -135,7 +135,7 @@ RSpec.describe "Invoice listing", type: :system, js: true do
       with_forgery_protection do
         visit "/invoices"
 
-        section = find(:xpath, "//h2[normalize-space()='Recently Updated']/ancestor::div[contains(@class, 'mt-8')][1]", wait: 10)
+        section = find(:xpath, "//h2[normalize-space()='Recently Updated']/ancestor::div[1]/following-sibling::div[1]", wait: 10)
 
         expect(section.text.index(recent_invoice.invoice_number)).to be < section.text.index(older_invoice.invoice_number)
       end

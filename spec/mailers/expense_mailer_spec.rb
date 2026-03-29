@@ -7,7 +7,7 @@ RSpec.describe ExpenseMailer, type: :mailer do
     let(:company) { create(:company) }
     let(:employee) { create(:user, current_workspace_id: company.id, first_name: "Ava", last_name: "Jones") }
     let(:reviewer) { create(:user, current_workspace_id: company.id) }
-    let(:expense) { create(:expense, :with_receipts, company:, category_name: "Travel", user: employee, description: "Taxi reimbursement") }
+    let(:expense) { create(:expense, company:, category_name: "Travel", user: employee, description: "Taxi reimbursement") }
     let(:mail) { ExpenseMailer.with(expense_id: expense.id, recipients: [reviewer.email]).submitted }
 
     before do

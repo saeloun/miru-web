@@ -4,11 +4,12 @@ import { Toastr } from "StyledComponents";
 import RecentlyUpdatedCard from "./RecentlyUpdatedCard";
 
 interface Invoice {
-  id: number;
-  invoice_number: string;
+  id: number | string;
+  invoiceNumber: string;
   amount: number;
   currency: string;
   status: string;
+  updatedAt?: string;
   client: {
     name: string;
     logo?: string;
@@ -20,16 +21,45 @@ interface RecentlyUpdatedProps {
   initialInvoices?: Invoice[];
 }
 
+const compareInvoicesByUpdatedAt = (left: Invoice, right: Invoice) => {
+  const leftTimestamp = new Date(left.updatedAt || 0).getTime();
+  const rightTimestamp = new Date(right.updatedAt || 0).getTime();
+
+  if (rightTimestamp !== leftTimestamp) {
+    return rightTimestamp - leftTimestamp;
+  }
+
+  return Number(right.id) - Number(left.id);
+};
+
 const InfiniteScrollRecentlyUpdated: React.FC<RecentlyUpdatedProps> = ({
   initialInvoices = [],
 }) => {
   const [invoices, setInvoices] = useState<Invoice[]>(initialInvoices);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
-  const [hasMore, setHasMore] = useState(true);
+  const [hasMore, setHasMore] = useState(initialInvoices.length >= 10);
   const [error, setError] = useState<string | null>(null);
   const observerTarget = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const orderedInvoices = [...invoices].sort(compareInvoicesByUpdatedAt);
+
+  const normalizeInvoice = useCallback(
+    (invoice: any): Invoice => ({
+      id: invoice.id,
+      invoiceNumber: invoice.invoiceNumber || invoice.invoice_number,
+      amount: Number(invoice.amount || 0),
+      currency: invoice.currency,
+      status: invoice.status,
+      updatedAt: invoice.updatedAt || invoice.updated_at,
+      client: {
+        name: invoice.client?.name || "",
+        logo: invoice.client?.logo,
+        email: invoice.client?.email || "",
+      },
+    }),
+    []
+  );
 
   // Fetch invoices function
   const fetchInvoices = useCallback(
@@ -42,11 +72,21 @@ const InfiniteScrollRecentlyUpdated: React.FC<RecentlyUpdatedProps> = ({
       try {
         const response = await invoicesApi.getRecentlyUpdated(pageNum, 10);
         const data = response.data;
+        const nextInvoices = (data.invoices || []).map(normalizeInvoice);
 
         if (pageNum === 1) {
-          setInvoices(data.invoices);
+          setInvoices(nextInvoices);
         } else {
-          setInvoices(prev => [...prev, ...data.invoices]);
+          setInvoices(prev => {
+            const merged = [...prev, ...nextInvoices];
+            const deduped = merged.filter(
+              (invoice, index, array) =>
+                array.findIndex(candidate => candidate.id === invoice.id) ===
+                index
+            );
+
+            return deduped.sort(compareInvoicesByUpdatedAt);
+          });
         }
 
         setHasMore(data.meta.has_more);
@@ -61,7 +101,7 @@ const InfiniteScrollRecentlyUpdated: React.FC<RecentlyUpdatedProps> = ({
         setLoading(false);
       }
     },
-    [loading]
+    [loading, normalizeInvoice]
   );
 
   // Initial load
@@ -129,10 +169,10 @@ const InfiniteScrollRecentlyUpdated: React.FC<RecentlyUpdatedProps> = ({
         <h2 className="text-base font-semibold text-gray-900 lg:text-lg">
           Recently Updated
         </h2>
-        {invoices.length > 0 && (
+        {orderedInvoices.length > 0 && (
           <div className="flex items-center gap-2">
             <span className="text-xs text-gray-500">
-              {invoices.length} loaded
+              {orderedInvoices.length} loaded
             </span>
             {hasMore && (
               <span className="text-xs text-gray-400">• More available</span>
@@ -146,17 +186,10 @@ const InfiniteScrollRecentlyUpdated: React.FC<RecentlyUpdatedProps> = ({
         className="relative overflow-x-auto overflow-y-visible pb-2 -mx-1"
       >
         <div className="flex gap-0">
-          {invoices.map((invoice, index) => (
+          {orderedInvoices.map((invoice, index) => (
             <RecentlyUpdatedCard
               key={invoice.id}
-              invoice={{
-                id: invoice.id,
-                invoiceNumber: invoice.invoice_number,
-                amount: invoice.amount,
-                currency: invoice.currency,
-                status: invoice.status,
-                client: invoice.client,
-              }}
+              invoice={invoice}
               index={index}
             />
           ))}
@@ -212,7 +245,7 @@ const InfiniteScrollRecentlyUpdated: React.FC<RecentlyUpdatedProps> = ({
           )}
 
           {/* End of list indicator */}
-          {!hasMore && invoices.length > 0 && (
+          {!hasMore && orderedInvoices.length > 0 && (
             <div className="flex items-center justify-center mx-1.5 w-36 h-32 rounded-lg border border-gray-200 bg-gray-50">
               <div className="text-center p-3">
                 <svg

@@ -13,8 +13,6 @@ import { currencyFormat } from "../../helpers/currency";
 
 interface RevenueChartProps {
   data: any[];
-  timeframe: string;
-  onTimeframeChange: (value: string) => void;
   baseCurrency: string;
   loading?: boolean;
 }
@@ -39,8 +37,6 @@ const customerChartConfig = {
 
 export const RevenueAreaChart: React.FC<RevenueChartProps> = ({
   data,
-  timeframe,
-  onTimeframeChange,
   baseCurrency,
   loading,
 }) => (
@@ -54,7 +50,7 @@ export const RevenueAreaChart: React.FC<RevenueChartProps> = ({
           Revenue Momentum
         </CardTitle>
         <CardDescription className="text-sm text-muted-foreground font-medium">
-          Month-by-month revenue across the last 12 months
+          Month-by-month revenue year to date
         </CardDescription>
       </div>
     </CardHeader>
@@ -138,7 +134,9 @@ export const RevenueAreaChart: React.FC<RevenueChartProps> = ({
               cursor={{ stroke: "hsl(var(--border))", strokeWidth: 1 }}
               content={
                 <ChartTooltipContent
-                  labelFormatter={value => `${value} 2024`}
+                  labelFormatter={value =>
+                    `${value} ${new Date().getFullYear()}`
+                  }
                   formatter={(value: any) =>
                     currencyFormat(baseCurrency, value)
                   }
@@ -172,14 +170,12 @@ export const RevenueAreaChart: React.FC<RevenueChartProps> = ({
 
 interface CustomerRevenueChartProps {
   data: any[];
-  timeframe: string;
   baseCurrency: string;
   loading?: boolean;
 }
 
 export const CustomerRevenueChart: React.FC<CustomerRevenueChartProps> = ({
   data,
-  timeframe,
   baseCurrency,
   loading,
 }) => {

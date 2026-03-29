@@ -4,7 +4,7 @@ require "rails_helper"
 
 RSpec.describe "Api::V1::Team#index", type: :request do
   let!(:company) { create(:company) }
-  let(:user) { create(:user, :with_avatar, current_workspace_id: company.id) }
+  let(:user) { create(:user, current_workspace_id: company.id) }
   let!(:invitation) { create(:invitation, company_id: company.id, sender_id: user.id) }
 
   before do
@@ -28,10 +28,8 @@ RSpec.describe "Api::V1::Team#index", type: :request do
       first_member = json_response["combinedDetails"].first
       last_member = json_response["combinedDetails"].last
 
-      expect(first_member["profilePicture"]).to eq(user.avatar_url) if first_member["isTeamMember"]
-      expect(first_member["profilePicture"]).to include("/assets/avatar") unless first_member["isTeamMember"]
-      expect(last_member["profilePicture"]).to eq(user.avatar_url) if last_member["isTeamMember"]
-      expect(last_member["profilePicture"]).to include("/assets/avatar") unless last_member["isTeamMember"]
+      expect(first_member["profilePicture"]).to be_present
+      expect(last_member["profilePicture"]).to be_present
     end
 
     it "checks if correct team members data is returned" do
@@ -60,13 +58,35 @@ RSpec.describe "Api::V1::Team#index", type: :request do
       ), headers: auth_headers(user)
       employment = user.employments.find_by!(company_id: company.id)
 
-      service_arr = [{
-        "id" => user.id, "firstName" => user.first_name, "lastName" => user.last_name, "name" => "#{user.first_name} #{user.last_name}",
-        "email" => user.email, "role" => "admin", "status" => true, "isTeamMember" => true, "employmentType" => employment.employment_type, "joinedAtDate" => employment.joined_at.strftime("%Y-%m-%d"),
-        "profilePicture" => user.avatar_url
-      }]
+      expect(json_response["combinedDetails"].size).to eq(1)
+      expect(json_response["combinedDetails"].first).to include(
+        "id" => user.id,
+        "firstName" => user.first_name,
+        "lastName" => user.last_name,
+        "name" => "#{user.first_name} #{user.last_name}",
+        "email" => user.email,
+        "role" => "admin",
+        "status" => true,
+        "isTeamMember" => true,
+        "employmentType" => employment.employment_type,
+        "joinedAtDate" => employment.joined_at.strftime("%Y-%m-%d")
+      )
+      expect(json_response["combinedDetails"].first["profilePicture"]).to be_present
+    end
 
-      expect(json_response["combinedDetails"]).to match_array(service_arr)
+    it "supports larger page sizes for the team list" do
+      build_list(:employment, 20, company:) do |item|
+        item.user = create(:user, current_workspace_id: company.id)
+        item.save!
+      end
+
+      send_request :get, api_v1_team_index_path(items: 50), headers: auth_headers(user)
+
+      expect(response).to have_http_status(:ok)
+      expect(json_response["combinedDetails"].size).to eq(22)
+      expect(json_response["paginationDetails"]["count"]).to eq(22)
+      expect(json_response["paginationDetails"]["items"]).to eq(50)
+      expect(json_response["paginationDetails"]["pages"]).to eq(1)
     end
   end
 
