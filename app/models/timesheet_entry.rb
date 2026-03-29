@@ -3,6 +3,7 @@
 class TimesheetEntry < ApplicationRecord
   include Discard::Model
   include Searchable
+  attribute :review_status, :integer
   enum :bill_status, [:non_billable, :unbilled, :billed]
   enum :review_status, [:not_required, :pending_review, :approved, :rejected]
 
