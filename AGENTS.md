@@ -83,9 +83,9 @@ Scope: entire repository.
 ## Production And Deploy Discipline
 
 - Render deploys from the branch image build, not from git tags alone. Do not assume creating a tag ships anything by itself.
-- When syncing env vars from Fly to Render, treat `RAILS_MASTER_KEY` as branch-image specific. Do not blindly overwrite it just because other env vars should match.
+- When syncing env vars from another environment into Render, treat `RAILS_MASTER_KEY` as branch-image specific. Do not blindly overwrite it just because other env vars should match.
 - For raw production restores on Render:
-  - restore the fresh Fly dump
+  - restore the fresh production dump
   - run branch schema migrations
   - do not run `data:migrate` unless explicitly requested
   - do not run subset normalization

@@ -70,5 +70,5 @@ echo "Waiting 5 seconds for DNS propagation..."
 sleep 5
 
 # Test DNS resolution
-echo "Testing miru-2-0-upgrade.review.miru.so..."
-dig +short miru-2-0-upgrade.review.miru.so
+echo "Testing miru.review.miru.so..."
+dig +short miru.review.miru.so

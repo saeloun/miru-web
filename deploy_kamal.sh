@@ -69,7 +69,7 @@ echo -e "\n${YELLOW}🚢 Starting Kamal deployment...${NC}"
 kamal deploy
 
 echo -e "\n${GREEN}✅ Deployment complete!${NC}"
-echo "Application should be available at: https://miru-2-0-upgrade.review.miru.so"
+echo "Application should be available at: https://miru.review.miru.so"
 echo ""
 echo "Useful commands:"
 echo "  kamal logs        # View application logs"

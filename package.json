@@ -1,6 +1,6 @@
 {
   "name": "@saeloun/miru-web",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "dependencies": {
     "@fontsource-variable/inter": "^5.2.6",
     "@fontsource/plus-jakarta-sans": "^4.5.0",
@@ -153,6 +153,7 @@
       "@types/react-dom": "19.1.7"
     }
   },
+  "author": "Vipul A M",
   "license": "MIT",
   "packageManager": "pnpm@9.15.5",
   "private": true

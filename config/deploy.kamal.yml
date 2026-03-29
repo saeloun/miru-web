@@ -1,9 +1,8 @@
 # Kamal 2.0 Deployment Configuration for Hetzner
-# This is separate from Fly.io deployment
-service: miru-2-0-upgrade
+service: miru-web
 
 # Docker image configuration
-image: saeloun/miru-2-0-upgrade
+image: saeloun/miru-web
 
 # Deploy to Hetzner server
 servers:
@@ -17,7 +16,7 @@ servers:
 # Enable SSL and configure subdomain for this specific review app
 proxy:
   ssl: true
-  host: miru-2-0-upgrade.review.miru.so
+  host: miru.review.miru.so
   app_port: 3000
 
 # Docker registry configuration
@@ -51,7 +50,7 @@ env:
     # Solid Queue
     SOLID_QUEUE_IN_PROCESS: false
     # App specific namespace to avoid conflicts
-    APP_NAME: miru-2-0-upgrade
+    APP_NAME: miru-web
   secret:
     - RAILS_MASTER_KEY
     - DATABASE_URL
@@ -79,8 +78,8 @@ ssh:
 
 # Persistent volumes for storage
 volumes:
-  - "miru_2_0_upgrade_storage:/rails/storage"
-  - "miru_2_0_upgrade_public:/rails/public/uploads"
+  - "miru_web_storage:/rails/storage"
+  - "miru_web_public:/rails/public/uploads"
 
 # Asset fingerprinting bridge
 asset_path: /rails/public/assets
@@ -98,16 +97,16 @@ accessories:
     port: 5432
     env:
       clear:
-        POSTGRES_DB: miru_2_0_upgrade
-        POSTGRES_USER: miru_2_0_upgrade
+        POSTGRES_DB: miru_web
+        POSTGRES_USER: miru_web
       secret:
         - POSTGRES_PASSWORD
     directories:
-      - miru_2_0_upgrade_postgres:/var/lib/postgresql/data
+      - miru_web_postgres:/var/lib/postgresql/data
 
   redis:
     image: redis:7-alpine
     host: redacted-host.example
     port: 6379
     directories:
-      - miru_2_0_upgrade_redis:/data
+      - miru_web_redis:/data

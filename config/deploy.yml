@@ -1,9 +1,8 @@
 # Kamal 2.0 Deployment Configuration for Hetzner
-# This is separate from Fly.io deployment
-service: miru-2-0-upgrade
+service: miru-web
 
 # Docker image configuration
-image: vipulnsward/miru-2-0-upgrade
+image: vipulnsward/miru-web
 
 # Deploy to Hetzner server
 servers:
@@ -17,7 +16,7 @@ servers:
 # Enable SSL and configure subdomain for this specific review app
 proxy:
   ssl: true
-  host: miru-2-0-upgrade.review.miru.so
+  host: miru.review.miru.so
   app_port: 3000
   healthcheck:
     path: "/health"
@@ -55,9 +54,9 @@ env:
     # Solid Queue
     SOLID_QUEUE_IN_PROCESS: false
     # App specific namespace to avoid conflicts
-    APP_NAME: miru-2-0-upgrade
+    APP_NAME: miru-web
     # Redis connection for existing container
-    REDIS_URL: redis://miru-2-0-redis:6379
+    REDIS_URL: redis://miru-redis:6379
   secret:
     - RAILS_MASTER_KEY
     - DATABASE_URL
@@ -95,8 +94,8 @@ ssh:
 
 # Persistent volumes for storage
 volumes:
-  - "miru_2_0_upgrade_storage:/app/storage"
-  - "miru_2_0_upgrade_public:/app/public/uploads"
+  - "miru_web_storage:/app/storage"
+  - "miru_web_public:/app/public/uploads"
 
 # Asset fingerprinting bridge
 asset_path: /app/public/assets

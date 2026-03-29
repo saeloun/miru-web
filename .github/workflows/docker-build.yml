@@ -3,9 +3,9 @@ name: Build and Push Docker Images
 
 on:
   push:
-    branches: [develop, main, miru-2-0-upgrade-v2]
+    branches: [develop, main, stable-3-0, production]
   pull_request:
-    branches: [develop, main]
+    branches: [develop, main, production]
     types: [opened, synchronize, reopened]
   workflow_dispatch:
 
@@ -117,7 +117,7 @@ jobs:
           echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
 
       - name: Trigger Render image deploys
-        if: success() && github.event_name != 'pull_request' && github.ref == 'refs/heads/miru-2-0-upgrade-v2'
+        if: success() && github.event_name != 'pull_request' && github.ref == 'refs/heads/production'
         env:
           RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
         run: |

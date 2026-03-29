@@ -39,7 +39,7 @@ const config = {
           routeBasePath: "/",
           sidebarCollapsible: true,
           sidebarPath: require.resolve("./sidebars.js"),
-          editUrl: "https://github.com/saeloun/miru-web/blob/develop/docs/",
+          editUrl: "https://github.com/saeloun/miru-web/blob/production/docs/",
           showLastUpdateAuthor: true,
           showLastUpdateTime: true,
           breadcrumbs: true,
@@ -64,18 +64,6 @@ const config = {
           filename: 'sitemap.xml',
         },
       }),
-    ],
-  ],
-
-  plugins: [
-    [
-      '@docusaurus/plugin-sitemap',
-      {
-        changefreq: 'weekly',
-        priority: 0.5,
-        ignorePatterns: ['/tags/**'],
-        filename: 'sitemap.xml',
-      },
     ],
   ],
 
@@ -183,7 +171,7 @@ const config = {
       metadata: [
         {name: 'keywords', content: 'time tracking, invoice management, accounting, open source, small business, project management, billing, payments, reporting'},
         {name: 'description', content: 'Complete documentation for Miru - an open-source time tracking, invoice management, and accounting platform for small businesses worldwide.'},
-        {name: 'author', content: 'Saeloun'},
+        {name: 'author', content: 'Vipul A M'},
         {name: 'robots', content: 'index,follow'},
         {property: 'og:type', content: 'website'},
         {property: 'og:title', content: 'Miru Web Documentation - Open Source Time Tracking & Invoice Management'},
