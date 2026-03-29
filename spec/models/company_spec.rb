@@ -229,6 +229,20 @@ RSpec.describe Company, type: :model do
       end
     end
 
+    describe "#billable_team_seats" do
+      it "returns at least one seat for billing" do
+        expect(company.billable_team_seats).to eq([company.used_team_seats, 1].max)
+      end
+
+      it "matches the kept employment count when the team grows" do
+        baseline = company.used_team_seats
+        second_user = create(:user)
+        create(:employment, company:, user: second_user)
+
+        expect(company.billable_team_seats).to eq(baseline + 1)
+      end
+    end
+
     describe "#apply_stripe_subscription!" do
       it "marks the company as paid for active subscriptions" do
         company.apply_stripe_subscription!(

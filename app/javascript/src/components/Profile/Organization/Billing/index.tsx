@@ -164,15 +164,15 @@ const Billing = () => {
 
   const priceByInterval = {
     monthly: {
-      proPerSeat: 5,
-      pro: "$5/user/mo",
+      proPerSeat: 1,
+      pro: "$1/team member/mo",
       proSavings: "Billed month to month",
       enterprise: "Custom annual",
       hostedEnterprise: "$1,000/mo + usage",
     },
     yearly: {
-      proPerSeat: 50,
-      pro: "$50/user/yr",
+      proPerSeat: 10,
+      pro: "$10/team member/yr",
       proSavings: "Save 2 months per seat",
       enterprise: "Custom annual",
       hostedEnterprise: "$12,000/yr + usage",
@@ -187,7 +187,10 @@ const Billing = () => {
       ? Math.round(estimatedProSpend / 12)
       : estimatedProSpend;
 
-  const yearlySavings = seatEstimate * (5 * 12 - 50);
+  const yearlySavings =
+    seatEstimate *
+    (priceByInterval.monthly.proPerSeat * 12 -
+      priceByInterval.yearly.proPerSeat);
 
   const recommendation = (() => {
     if (seatEstimate <= 3) {
@@ -636,9 +639,7 @@ const Billing = () => {
                 <h3 className="text-base font-semibold text-foreground">Pro</h3>
                 <div className="flex items-center gap-2">
                   {billingInterval === "yearly" && (
-                    <Badge variant="secondary">
-                      Save ${10 * seatEstimate}/yr
-                    </Badge>
+                    <Badge variant="secondary">Save ${yearlySavings}/yr</Badge>
                   )}
                   <Badge>Recommended</Badge>
                 </div>
