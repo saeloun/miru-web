@@ -135,9 +135,10 @@ RSpec.describe "Invoice listing", type: :system, js: true do
       with_forgery_protection do
         visit "/invoices"
 
-        section = find(:xpath, "//h2[normalize-space()='Recently Updated']/ancestor::div[1]/following-sibling::div[1]", wait: 10)
+        recently_updated_cards = all("[data-testid='recently-updated-card']", wait: 10)
+        card_text = recently_updated_cards.map(&:text)
 
-        expect(section.text.index(recent_invoice.invoice_number)).to be < section.text.index(older_invoice.invoice_number)
+        expect(card_text.index { |text| text.include?(recent_invoice.invoice_number) }).to be < card_text.index { |text| text.include?(older_invoice.invoice_number) }
       end
     end
   end
@@ -164,6 +165,57 @@ RSpec.describe "Invoice listing", type: :system, js: true do
         expect(page).to have_content("Wayne Enterprises")
         expect(page).to have_content("INV-SI-001")
         expect(page).to have_content("INV-WE-002")
+      end
+    end
+  end
+
+  context "with more recently updated invoices than the first page" do
+    before do
+      12.times do |index|
+        create(:invoice,
+          company:,
+          client:,
+          status: :sent,
+          invoice_number: "INV-RECENT-#{index}",
+          updated_at: index.minutes.ago)
+      end
+    end
+
+    it "shows the update sort hint and load-more affordance" do
+      with_forgery_protection do
+        visit "/invoices"
+
+        expect(page).to have_css("#react-root", wait: 10)
+        expect(page).to have_content("Sorted by latest update time", wait: 10)
+        expect(page).to have_content("Showing 10 of 12", wait: 10)
+        expect(page).to have_content("Scroll for more", wait: 10)
+      end
+    end
+  end
+
+  context "with more invoices than the first table page" do
+    before do
+      55.times do |index|
+        create(:invoice,
+          company:,
+          client:,
+          status: :sent,
+          invoice_number: "INV-PAGED-#{index}",
+          updated_at: index.minutes.ago)
+      end
+    end
+
+    it "loads the next invoice page when the user scrolls down" do
+      with_forgery_protection do
+        visit "/invoices"
+
+        expect(page).to have_css("#react-root", wait: 10)
+        expect(page).to have_content("Loaded 50 of 55", wait: 10)
+
+        page.execute_script("window.scrollTo(0, document.body.scrollHeight)")
+
+        expect(page).to have_content("Loaded 55 of 55", wait: 10)
+        expect(page).to have_content("All invoices loaded", wait: 10)
       end
     end
   end

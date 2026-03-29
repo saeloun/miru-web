@@ -19,6 +19,7 @@ interface Invoice {
 
 interface RecentlyUpdatedProps {
   initialInvoices?: Invoice[];
+  initialTotalCount?: number;
 }
 
 const compareInvoicesByUpdatedAt = (left: Invoice, right: Invoice) => {
@@ -34,15 +35,30 @@ const compareInvoicesByUpdatedAt = (left: Invoice, right: Invoice) => {
 
 const InfiniteScrollRecentlyUpdated: React.FC<RecentlyUpdatedProps> = ({
   initialInvoices = [],
+  initialTotalCount = 0,
 }) => {
   const [invoices, setInvoices] = useState<Invoice[]>(initialInvoices);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(initialInvoices.length >= 10);
+  const [totalCount, setTotalCount] = useState(
+    initialTotalCount || initialInvoices.length
+  );
   const [error, setError] = useState<string | null>(null);
   const observerTarget = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const orderedInvoices = [...invoices].sort(compareInvoicesByUpdatedAt);
+
+  useEffect(() => {
+    if (initialInvoices.length === 0) return;
+
+    setInvoices(initialInvoices);
+    setTotalCount(initialTotalCount || initialInvoices.length);
+    setHasMore(
+      (initialTotalCount || initialInvoices.length) > initialInvoices.length
+    );
+    setPage(1);
+  }, [initialInvoices, initialTotalCount]);
 
   const normalizeInvoice = useCallback(
     (invoice: any): Invoice => ({
@@ -90,6 +106,7 @@ const InfiniteScrollRecentlyUpdated: React.FC<RecentlyUpdatedProps> = ({
         }
 
         setHasMore(data.meta.has_more);
+        setTotalCount(data.meta.total_count || nextInvoices.length);
         setPage(pageNum);
       } catch (err) {
         console.error("Error fetching recently updated invoices:", err);
@@ -109,7 +126,7 @@ const InfiniteScrollRecentlyUpdated: React.FC<RecentlyUpdatedProps> = ({
     if (initialInvoices.length === 0) {
       fetchInvoices(1);
     }
-  }, []);
+  }, [fetchInvoices, initialInvoices.length]);
 
   // Intersection Observer for infinite scroll
   useEffect(() => {
@@ -166,16 +183,21 @@ const InfiniteScrollRecentlyUpdated: React.FC<RecentlyUpdatedProps> = ({
   return (
     <div className="mt-6 mb-4">
       <div className="flex items-center justify-between mb-3">
-        <h2 className="text-base font-semibold text-gray-900 lg:text-lg">
-          Recently Updated
-        </h2>
+        <div>
+          <h2 className="text-base font-semibold text-gray-900 lg:text-lg">
+            Recently Updated
+          </h2>
+          <p className="text-xs text-muted-foreground">
+            Sorted by latest update time
+          </p>
+        </div>
         {orderedInvoices.length > 0 && (
           <div className="flex items-center gap-2">
             <span className="text-xs text-gray-500">
-              {orderedInvoices.length} loaded
+              Showing {orderedInvoices.length} of {totalCount}
             </span>
             {hasMore && (
-              <span className="text-xs text-gray-400">• More available</span>
+              <span className="text-xs text-gray-400">• Scroll for more</span>
             )}
           </div>
         )}

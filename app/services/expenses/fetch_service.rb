@@ -11,11 +11,12 @@ class Expenses::FetchService
   end
 
   def process
-    @expenses = search_expenses.includes(:company)
+    scoped_expenses = search_expenses.includes(:company)
+    @expenses = paginated_expenses(scoped_expenses)
 
     {
       expenses:,
-      pagination_details:,
+      pagination_details: pagination_details(scoped_expenses.count),
       categories: expense_categories
     }
   end
@@ -47,17 +48,7 @@ class Expenses::FetchService
 
       end
 
-      # Apply ordering
-      expenses = expenses.order(created_at: :desc)
-
-      # Apply pagination using simple offset/limit
-      page = (filters.page || 1).to_i
-      page = 1 if page <= 0
-      per_page = (filters.per_page || 10).to_i
-      per_page = 10 if per_page <= 0
-      expenses = expenses.limit(per_page).offset((page - 1) * per_page)
-
-      expenses
+      expenses.order(created_at: :desc)
     end
 
     def base_scope
@@ -70,15 +61,34 @@ class Expenses::FetchService
       expenses.where(user_id: current_user.id)
     end
 
-    def pagination_details
-      # Simplified pagination for compatibility
-      # Since we're using Pagy in controllers, not here
+    def current_page
+      parsed_page = (params[:page] || 1).to_i
+      parsed_page <= 0 ? 1 : parsed_page
+    end
+
+    def per_page
+      parsed_per_page = (params[:expenses_per_page] || params[:per] || 25).to_i
+      return 25 if parsed_per_page <= 0
+      return 100 if parsed_per_page > 100
+
+      parsed_per_page
+    end
+
+    def paginated_expenses(expenses)
+      expenses.limit(per_page).offset((current_page - 1) * per_page)
+    end
+
+    def pagination_details(total_count)
+      total_pages = [(total_count.to_f / per_page).ceil, 1].max
+
       {
-        pages: 1,
-        first: true,
-        prev: nil,
-        next: nil,
-        last: true
+        pages: total_pages,
+        first: current_page == 1,
+        prev: current_page > 1 ? current_page - 1 : nil,
+        next: current_page < total_pages ? current_page + 1 : nil,
+        last: current_page >= total_pages,
+        page: current_page,
+        total: total_count
       }
     end
 

@@ -105,6 +105,38 @@ RSpec.describe "Payments page", type: :system, js: true do
     end
   end
 
+  context "with more payments than the first batch" do
+    before do
+      26.times do |index|
+        invoice = create(:invoice,
+          company:,
+          client:,
+          status: :sent,
+          invoice_number: "INV-BATCH-#{index}",
+          amount: 1000.00 + index,
+          amount_due: 1000.00 + index,
+          outstanding_amount: 1000.00 + index)
+
+        create(:payment,
+          invoice:,
+          amount: 1000.00 + index,
+          status: :paid,
+          transaction_date: index.days.ago,
+          note: "Payment #{index}")
+      end
+    end
+
+    it "shows the scroll affordance for additional payments" do
+      with_forgery_protection do
+        visit "/payments"
+
+        expect(page).to have_css("#react-root", wait: 10)
+        expect(page).to have_content("Showing 25 of 26", wait: 10)
+        expect(page).to have_content("Scroll to load more payments", wait: 10)
+      end
+    end
+  end
+
   context "role access" do
     let(:employee) { create(:user, current_workspace_id: company.id) }
 

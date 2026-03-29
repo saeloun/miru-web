@@ -59,5 +59,22 @@ RSpec.describe Expenses::FetchService do
 
       expect(result[:expenses].map(&:id)).to eq([employee_expense.id])
     end
+
+    it "returns real pagination metadata" do
+      create_list(:expense, 30, company:, user: admin, expense_type: :business)
+
+      result = described_class.new(company, admin, { page: 2, per: 25 }).process
+
+      expect(result[:expenses].count).to eq(7)
+      expect(result[:pagination_details]).to include(
+        page: 2,
+        pages: 2,
+        prev: 1,
+        next: nil,
+        first: false,
+        last: true,
+        total: 32
+      )
+    end
   end
 end
