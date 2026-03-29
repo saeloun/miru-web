@@ -61,6 +61,14 @@ module AuthResponsePayload
       }
     end
 
+    def mobile_signed_in_payload(user, company:)
+      {
+        user: auth_user_payload(user, include_token: true, include_avatar: true, include_confirmed: true),
+        company_role: company_role_payload(user, company),
+        company: company_payload(company)
+      }
+    end
+
     def authenticated_user_payload(user, company:)
       {
         user: auth_user_payload(user, include_token: true, include_avatar: true, include_confirmed: true),

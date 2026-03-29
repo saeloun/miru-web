@@ -89,6 +89,8 @@ end
 
       if app == "miru-desktop"
         render_sign_in_response_for_desktop(user)
+      elsif app == "miru-mobile"
+        render_sign_in_response_for_mobile(user)
       elsif app == "miru-cli"
         render_sign_in_response_for_cli(user)
       else
@@ -148,6 +150,13 @@ end
           company: current_company,
           google_oauth_success: @google_oauth_success.present?
         )
+      }, status: 200
+    end
+
+    def render_sign_in_response_for_mobile(user)
+      render json: {
+        notice: I18n.t("devise.sessions.signed_in"),
+        **mobile_signed_in_payload(user, company: current_company)
       }, status: 200
     end
 

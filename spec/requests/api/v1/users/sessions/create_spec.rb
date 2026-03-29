@@ -51,6 +51,24 @@ RSpec.describe "Api::V1::Users::Sessions#create", type: :request do
     end
   end
 
+  context "when logged in on miru mobile app with valid email and password" do
+    it "logs the user successfully" do
+      send_request :post, api_v1_users_login_path(app: "miru-mobile"), params: {
+        user: {
+          email: user.email,
+          password: user.password
+        }
+      }
+      expect(response).to have_http_status(:ok)
+      expect(json_response["notice"]).to eq(I18n.t("devise.sessions.signed_in"))
+      expect(json_response.dig("user", "token")).to be_present
+      expect(json_response["user"]).to have_key("avatar_url")
+      expect(json_response.dig("user", "confirmed")).to eq(true)
+      expect(json_response).to have_key("company_role")
+      expect(json_response).to have_key("company")
+    end
+  end
+
   context "when logged in with wrong combination of email and password" do
     it "not able to log in" do
       send_request :post, api_v1_users_login_path, params: {
@@ -195,6 +213,18 @@ RSpec.describe "Api::V1::Users::Sessions#create", type: :request do
       expect(json_response["pending_token"]).to be_present
       expect(json_response.dig("public_key", "challenge")).to be_present
       expect(json_response).not_to have_key("user")
+    end
+
+    it "asks miru mobile users to continue on the web app" do
+      post api_v1_users_login_path(app: "miru-mobile"), params: {
+        user: {
+          email: user.email,
+          password: user.password
+        }
+      }
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(json_response["error"]).to eq("This account requires a passkey. Sign in from the web app to continue.")
     end
 
     it "completes sign in with a valid passkey assertion" do
