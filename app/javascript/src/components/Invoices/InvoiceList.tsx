@@ -43,8 +43,10 @@ import { useUserContext } from "../../context/UserContext";
 
 interface InvoiceListProps {
   invoices: Invoice[];
+  totalInvoices?: number;
   summary?: any;
   recentlyUpdatedInvoices?: Invoice[];
+  recentlyUpdatedTotalCount?: number;
   onCreateInvoice?: () => void;
   onViewInvoice?: (id: string) => void;
   onSendInvoice?: (id: string) => void;
@@ -59,8 +61,10 @@ interface InvoiceListProps {
 
 const InvoiceList: React.FC<InvoiceListProps> = ({
   invoices,
+  totalInvoices = invoices.length,
   summary,
   recentlyUpdatedInvoices,
+  recentlyUpdatedTotalCount = 0,
   onCreateInvoice,
   onViewInvoice,
   onSendInvoice,
@@ -211,6 +215,10 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
     return matchesSearch && matchesStatus;
   });
 
+  const hasActiveFilters =
+    searchTerm.trim().length > 0 ||
+    Boolean(filterParams.status && filterParams.status.length > 0);
+
   // Infinite scroll implementation
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -332,7 +340,10 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
 
       {/* Recently Updated Invoices */}
       {recentInvoices.length > 0 && (
-        <InfiniteScrollRecentlyUpdated initialInvoices={recentInvoices} />
+        <InfiniteScrollRecentlyUpdated
+          initialInvoices={recentInvoices}
+          initialTotalCount={recentlyUpdatedTotalCount}
+        />
       )}
 
       {/* Search Only */}
@@ -471,6 +482,23 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
 
       {/* Infinite scroll trigger */}
       <div ref={observerTarget} className="h-4" />
+
+      {filteredInvoices.length > 0 && (
+        <div className="flex flex-col items-center gap-2 pb-2 text-sm text-muted-foreground">
+          <span>
+            {hasActiveFilters
+              ? `Viewing ${filteredInvoices.length} matching invoices from ${invoices.length} loaded`
+              : `Loaded ${invoices.length} of ${totalInvoices}`}
+          </span>
+          {!hasActiveFilters && hasMore && !isLoadingMore && (
+            <span>Scroll to load more invoices</span>
+          )}
+          {!hasActiveFilters && hasMore && !isLoadingMore && (
+            <div className="h-8 w-full" />
+          )}
+          {!hasActiveFilters && !hasMore && <span>All invoices loaded</span>}
+        </div>
+      )}
 
       {/* Summary Stats */}
       {filteredInvoices.length > 0 && (

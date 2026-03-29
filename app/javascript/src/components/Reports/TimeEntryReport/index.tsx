@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import Loader from "common/Loader/index";
 import {
   Clock,
@@ -8,7 +8,7 @@ import {
   CaretDown as ChevronDown,
   Calendar as CalendarIcon,
 } from "@phosphor-icons/react";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useInfiniteQuery, useMutation } from "@tanstack/react-query";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -17,7 +17,6 @@ import {
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
-  getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
@@ -33,6 +32,7 @@ import {
 } from "date-fns";
 import { DateRange } from "react-day-picker";
 import axios from "../../../apis/api";
+import useInfiniteLoadTrigger from "../../../hooks/useInfiniteLoadTrigger";
 import { minToHHMM } from "../../../helpers";
 import { Button } from "../../ui/button";
 import {
@@ -77,7 +77,6 @@ const ReportGroupTable: React.FC<{
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
@@ -197,7 +196,6 @@ interface TimeEntryReportData {
 }
 
 const TimeEntryReport: React.FC = () => {
-  const [currentPage, setCurrentPage] = useState(1);
   const [groupBy, setGroupBy] = useState<"client" | "project" | "team_member">(
     "client"
   );
@@ -213,18 +211,25 @@ const TimeEntryReport: React.FC = () => {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
 
-  const { data, isLoading, error, refetch } = useQuery<TimeEntryReportData>({
+  const {
+    data,
+    isLoading,
+    error,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useInfiniteQuery<TimeEntryReportData>({
     queryKey: [
       "timeEntryReport",
-      currentPage,
       groupBy,
       dateRange,
       selectedClients,
       selectedTeamMembers,
     ],
-    queryFn: async () => {
+    initialPageParam: 1,
+    queryFn: async ({ pageParam = 1 }) => {
       const params = new URLSearchParams({
-        page: currentPage.toString(),
+        page: String(pageParam),
         group_by: groupBy,
         ...(dateRange?.from && { from: format(dateRange.from, "dd/MM/yyyy") }),
         ...(dateRange?.to && { to: format(dateRange.to, "dd/MM/yyyy") }),
@@ -241,6 +246,39 @@ const TimeEntryReport: React.FC = () => {
       );
 
       return response.data;
+    },
+    getNextPageParam: lastPage => lastPage.pagy?.next || undefined,
+  });
+
+  const lastPage = data?.pages?.[data.pages.length - 1];
+  const reportPages = data?.pages || [];
+  const reports = useMemo(() => {
+    const mergedReports = new Map<number | string, ReportGroup>();
+
+    reportPages.forEach(pageData => {
+      (pageData.reports || []).forEach(group => {
+        const groupKey = group.id ?? group.label;
+        const existingGroup = mergedReports.get(groupKey);
+
+        if (existingGroup) {
+          existingGroup.entries = [...existingGroup.entries, ...group.entries];
+        } else {
+          mergedReports.set(groupKey, {
+            ...group,
+            entries: [...group.entries],
+          });
+        }
+      });
+    });
+
+    return Array.from(mergedReports.values());
+  }, [reportPages]);
+
+  const loadMoreReportsRef = useInfiniteLoadTrigger({
+    enabled: Boolean(hasNextPage),
+    loading: isFetchingNextPage,
+    onLoadMore: () => {
+      fetchNextPage();
     },
   });
 
@@ -285,10 +323,6 @@ const TimeEntryReport: React.FC = () => {
   };
 
   const getTotalHoursForGroup = (group: ReportGroup): string => {
-    if (data?.groupByTotalDuration?.groupedDurations?.[group.id]) {
-      return minToHHMM(data.groupByTotalDuration.groupedDurations[group.id]);
-    }
-
     const totalMinutes = group.entries.reduce(
       (sum, entry) => sum + entry.duration,
       0
@@ -298,8 +332,8 @@ const TimeEntryReport: React.FC = () => {
   };
 
   const getTotalHoursOverall = (): string => {
-    if (!data?.reports) return "00:00";
-    const totalMinutes = data.reports.reduce((total, group) => {
+    if (!reports.length) return "00:00";
+    const totalMinutes = reports.reduce((total, group) => {
       const groupMinutes = group.entries.reduce(
         (sum, entry) => sum + entry.duration,
         0
@@ -569,10 +603,7 @@ const TimeEntryReport: React.FC = () => {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
-                {data?.reports?.reduce(
-                  (sum, group) => sum + group.entries.length,
-                  0
-                ) || 0}
+                {reports.reduce((sum, group) => sum + group.entries.length, 0)}
               </div>
               <p className="text-xs text-muted-foreground">
                 Time entries recorded
@@ -593,9 +624,7 @@ const TimeEntryReport: React.FC = () => {
               <Users className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">
-                {data?.reports?.length || 0}
-              </div>
+              <div className="text-2xl font-bold">{reports.length}</div>
               <p className="text-xs text-muted-foreground">
                 With recorded time
               </p>
@@ -605,7 +634,7 @@ const TimeEntryReport: React.FC = () => {
 
         {/* Report Tables */}
         <div className="space-y-6">
-          {data?.reports?.map((group, index) => (
+          {reports.map((group, index) => (
             <ReportGroupTable
               key={group.id ?? `${group.label ?? "group"}-${index}`}
               group={group}
@@ -615,37 +644,19 @@ const TimeEntryReport: React.FC = () => {
           ))}
         </div>
 
-        {/* Pagination */}
-        {data?.pagy && data.pagy.pages > 1 && (
-          <div className="mt-6 flex justify-center space-x-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setCurrentPage(currentPage - 1)}
-              disabled={!data.pagy.prev}
-            >
-              Previous
-            </Button>
-
-            {[...Array(data.pagy.pages)].map((_, i) => (
-              <Button
-                key={i + 1}
-                variant={currentPage === i + 1 ? "default" : "outline"}
-                size="sm"
-                onClick={() => setCurrentPage(i + 1)}
-              >
-                {i + 1}
-              </Button>
-            ))}
-
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setCurrentPage(currentPage + 1)}
-              disabled={!data.pagy.next}
-            >
-              Next
-            </Button>
+        {lastPage?.pagy?.pages && lastPage.pagy.pages > 1 && (
+          <div className="mt-6 flex flex-col items-center gap-2 text-sm text-muted-foreground">
+            <span>
+              Loaded {reportPages.length} of {lastPage.pagy.pages} report pages
+            </span>
+            {hasNextPage && !isFetchingNextPage && (
+              <span>Scroll to load more report rows</span>
+            )}
+            {hasNextPage && !isFetchingNextPage && (
+              <div ref={loadMoreReportsRef} className="h-8 w-full" />
+            )}
+            {isFetchingNextPage && <span>Loading more report rows...</span>}
+            {!hasNextPage && <span>All report rows loaded</span>}
           </div>
         )}
       </div>

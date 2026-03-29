@@ -43,6 +43,7 @@ const RecentlyUpdatedCard = ({
 
   return (
     <div
+      data-testid="recently-updated-card"
       className="group flex h-44 w-full cursor-pointer flex-col rounded-xl border border-border bg-card p-4 transition-all duration-200 hover:border-primary/30 hover:bg-muted/30 hover:shadow-lg lg:w-40 lg:flex-shrink-0"
       onClick={() => navigate(`/invoices/${id}`)}
     >
