@@ -1,10 +1,14 @@
 # frozen_string_literal: true
 
+require_relative "preview_support"
+
 class PaymentMailerPreview < ActionMailer::Preview
+  include PreviewSupport
+
   def payment
-    invoice = Invoice.first
+    invoice = sample_invoice
     PaymentMailer.with(
-      invoice:,
+      invoice_id: invoice.id,
       subject: "Payment details by #{invoice.client.name}").payment
   end
 end

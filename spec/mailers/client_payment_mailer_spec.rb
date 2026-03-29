@@ -4,7 +4,7 @@ require "rails_helper"
 
 RSpec.describe ClientPaymentMailer, type: :mailer do
   describe "payment" do
-    let(:company) { create :company, :with_logo }
+    let(:company) { create :company }
     let(:client) { create :client, company: }
     let(:invoice) { create :invoice, client: }
     let(:user) { create(:user, current_workspace_id: company.id, companies: [company]) }

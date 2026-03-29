@@ -5,6 +5,7 @@ import { CaretRight } from "phosphor-react";
 import { Badge } from "../ui/badge";
 import { Separator } from "../ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { getDisplayAvatarUrl } from "../../helpers";
 import {
   Tooltip,
   TooltipContent,
@@ -176,90 +177,94 @@ const Sidebar: React.FC<SidebarProps> = ({
   className,
   logo,
   user,
-}) => (
-  <div className={cn("flex h-full w-full flex-col bg-card", className)}>
-    {logo && (
-      <div
-        className={cn(
-          "flex items-center p-4 border-b border-border",
-          isCollapsed && "justify-center"
-        )}
-      >
-        {logo}
-      </div>
-    )}
+}) => {
+  const displayAvatarUrl = getDisplayAvatarUrl(user?.avatar, user?.email, 64);
 
-    <nav className="flex-1 space-y-4 p-4 overflow-y-auto">
-      {navigationGroups
-        ? navigationGroups.map((group, groupIndex) => (
-            <div key={`group-${groupIndex}`}>
-              {!isCollapsed && group.title && (
-                <h3 className="mb-2 px-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                  {group.title}
-                </h3>
-              )}
-              <div className="space-y-1">
-                {group.items.map((item, index) => (
-                  <SidebarItem
-                    key={`${item.href}-${index}`}
-                    item={item}
-                    isCollapsed={isCollapsed}
-                  />
-                ))}
-              </div>
-              {groupIndex < navigationGroups.length - 1 && (
-                <Separator className="my-4" />
-              )}
-            </div>
-          ))
-        : navigation
-        ? navigation.map((item, index) => (
-            <SidebarItem
-              key={`${item.href}-${index}`}
-              item={item}
-              isCollapsed={isCollapsed}
-            />
-          ))
-        : null}
-    </nav>
+  return (
+    <div className={cn("flex h-full w-full flex-col bg-card", className)}>
+      {logo && (
+        <div
+          className={cn(
+            "flex items-center p-4 border-b border-border",
+            isCollapsed && "justify-center"
+          )}
+        >
+          {logo}
+        </div>
+      )}
 
-    {user && (
-      <div
-        className={cn(
-          "border-t border-border p-4",
-          isCollapsed && "text-center"
-        )}
-      >
-        {isCollapsed ? (
-          <div className="flex justify-center">
-            <Avatar className="h-8 w-8">
-              <AvatarImage src={user.avatar} alt={user.name} />
-              <AvatarFallback className="bg-primary/10 text-xs font-medium text-primary">
-                {userInitials(user.name)}
-              </AvatarFallback>
-            </Avatar>
-          </div>
-        ) : (
-          <div className="flex items-center gap-3">
-            <Avatar className="h-8 w-8 flex-shrink-0">
-              <AvatarImage src={user.avatar} alt={user.name} />
-              <AvatarFallback className="bg-primary/10 text-xs font-medium text-primary">
-                {userInitials(user.name)}
-              </AvatarFallback>
-            </Avatar>
-            <div className="flex-1 min-w-0">
-              <div className="text-sm font-medium text-foreground truncate">
-                {user.name}
+      <nav className="flex-1 space-y-4 p-4 overflow-y-auto">
+        {navigationGroups
+          ? navigationGroups.map((group, groupIndex) => (
+              <div key={`group-${groupIndex}`}>
+                {!isCollapsed && group.title && (
+                  <h3 className="mb-2 px-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                    {group.title}
+                  </h3>
+                )}
+                <div className="space-y-1">
+                  {group.items.map((item, index) => (
+                    <SidebarItem
+                      key={`${item.href}-${index}`}
+                      item={item}
+                      isCollapsed={isCollapsed}
+                    />
+                  ))}
+                </div>
+                {groupIndex < navigationGroups.length - 1 && (
+                  <Separator className="my-4" />
+                )}
               </div>
-              <div className="text-xs text-muted-foreground truncate">
-                {user.email}
+            ))
+          : navigation
+          ? navigation.map((item, index) => (
+              <SidebarItem
+                key={`${item.href}-${index}`}
+                item={item}
+                isCollapsed={isCollapsed}
+              />
+            ))
+          : null}
+      </nav>
+
+      {user && (
+        <div
+          className={cn(
+            "border-t border-border p-4",
+            isCollapsed && "text-center"
+          )}
+        >
+          {isCollapsed ? (
+            <div className="flex justify-center">
+              <Avatar className="h-8 w-8">
+                <AvatarImage src={displayAvatarUrl} alt={user.name} />
+                <AvatarFallback className="bg-primary/10 text-xs font-medium text-primary">
+                  {userInitials(user.name)}
+                </AvatarFallback>
+              </Avatar>
+            </div>
+          ) : (
+            <div className="flex items-center gap-3">
+              <Avatar className="h-8 w-8 flex-shrink-0">
+                <AvatarImage src={displayAvatarUrl} alt={user.name} />
+                <AvatarFallback className="bg-primary/10 text-xs font-medium text-primary">
+                  {userInitials(user.name)}
+                </AvatarFallback>
+              </Avatar>
+              <div className="flex-1 min-w-0">
+                <div className="text-sm font-medium text-foreground truncate">
+                  {user.name}
+                </div>
+                <div className="text-xs text-muted-foreground truncate">
+                  {user.email}
+                </div>
               </div>
             </div>
-          </div>
-        )}
-      </div>
-    )}
-  </div>
-);
+          )}
+        </div>
+      )}
+    </div>
+  );
+};
 
 export default Sidebar;

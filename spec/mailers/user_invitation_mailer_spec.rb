@@ -21,7 +21,8 @@ RSpec.describe UserInvitationMailer, type: :mailer do
     end
 
     it "renders the body" do
-      expect(mail.body.encoded).to include("To get started, set your password by clicking the button below")
+      expect(mail.body.encoded).to include("Set your password, join the workspace, and start collaborating in Miru.")
+      expect(mail.body.encoded).to include("Join Miru")
       expect(mail.body.encoded).to include("hello@saeloun.com")
     end
   end

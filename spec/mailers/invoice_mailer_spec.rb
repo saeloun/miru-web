@@ -4,7 +4,7 @@ require "rails_helper"
 
 RSpec.describe InvoiceMailer, type: :mailer do
   describe "invoice" do
-    let(:company) { create :company, :with_logo }
+    let(:company) { create :company }
     let(:client) { create :client, company: }
     let(:invoice) { create :invoice, client:, company:, status: :sending }
     let(:recipients) { [invoice.client.email, "miru@example.com"] }
@@ -17,7 +17,8 @@ RSpec.describe InvoiceMailer, type: :mailer do
     end
 
     it "renders the body" do
-      expect(mail.body.encoded).to match("sent you an invoice")
+      expect(mail.body.encoded).to include("Invoice summary")
+      expect(mail.body.encoded).to include(invoice.invoice_number)
     end
 
     context "with notification preferences" do

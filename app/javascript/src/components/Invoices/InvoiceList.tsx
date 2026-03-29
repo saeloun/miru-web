@@ -37,7 +37,7 @@ import {
 
 import { Invoice } from "../../services/invoiceApi";
 import ChartWithSummary from "./ChartWithSummary";
-import RecentlyUpdated from "./List/RecentlyUpdated";
+import InfiniteScrollRecentlyUpdated from "./List/RecentlyUpdated/InfiniteScrollRecentlyUpdated";
 import { currencyFormat } from "../../helpers/currency";
 import { useUserContext } from "../../context/UserContext";
 
@@ -332,7 +332,7 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
 
       {/* Recently Updated Invoices */}
       {recentInvoices.length > 0 && (
-        <RecentlyUpdated recentlyUpdatedInvoices={recentInvoices} />
+        <InfiniteScrollRecentlyUpdated initialInvoices={recentInvoices} />
       )}
 
       {/* Search Only */}

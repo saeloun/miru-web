@@ -44,6 +44,30 @@ RSpec.describe Api::V1::Invoices::RecentlyUpdatedController, type: :request do
         expect(invoice_ids).not_to include(old_invoice.id) if json_response["invoices"].size <= 5
       end
 
+      it "returns ISO8601 updated_at values and uses id as a tie-breaker" do
+        first_tied_invoice = create(:invoice, client:, company:, updated_at: 2.hours.ago)
+        second_tied_invoice = create(:invoice, client:, company:, updated_at: 2.hours.ago)
+
+        get api_v1_invoices_recently_updated_index_path, params: { per_page: 20 }
+
+        expect(response).to have_http_status(:ok)
+
+        json_response = JSON.parse(response.body)
+        tied_invoices = json_response["invoices"].select do |invoice|
+          [first_tied_invoice.id, second_tied_invoice.id].include?(invoice["id"])
+        end
+
+        expect do
+          tied_invoices.each do |invoice|
+            Time.iso8601(invoice["updated_at"])
+          end
+        end.not_to raise_error
+
+        expect(tied_invoices.pluck("id")).to eq(
+          [second_tied_invoice.id, first_tied_invoice.id]
+        )
+      end
+
       it "paginates results" do
         get api_v1_invoices_recently_updated_index_path, params: { page: 1, per_page: 3 }
 

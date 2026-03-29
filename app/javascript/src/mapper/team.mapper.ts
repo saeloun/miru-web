@@ -5,6 +5,7 @@ const mapper = item => ({
   name: item.name,
   email: item.email,
   phone: item.phone,
+  avatar: item.profilePicture,
   role: item.role,
   designation: item.designation,
   department: item.department,

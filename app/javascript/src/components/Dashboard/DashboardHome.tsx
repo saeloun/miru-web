@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import {
   Card,
   CardContent,
@@ -35,7 +35,7 @@ const DashboardHome: React.FC<DashboardHomeProps> = ({
   companyRole,
   isDesktop,
 }) => {
-  const [timeframe, setTimeframe] = useState("year");
+  const timeframe = "year";
   const activitiesContainerRef = useRef<HTMLDivElement>(null);
 
   // TanStack Query hooks
@@ -311,8 +311,6 @@ const DashboardHome: React.FC<DashboardHomeProps> = ({
           <div className="lg:col-span-7">
             <RevenueAreaChart
               data={revenueData}
-              timeframe={timeframe}
-              onTimeframeChange={setTimeframe}
               baseCurrency={baseCurrency}
               loading={isDashboardLoading}
             />
@@ -320,7 +318,6 @@ const DashboardHome: React.FC<DashboardHomeProps> = ({
           <div className="lg:col-span-3">
             <CustomerRevenueChart
               data={customerRevenueData}
-              timeframe={timeframe}
               baseCurrency={baseCurrency}
               loading={isDashboardLoading}
             />
@@ -332,8 +329,6 @@ const DashboardHome: React.FC<DashboardHomeProps> = ({
         <div className="grid gap-4 lg:grid-cols-1">
           <RevenueAreaChart
             data={revenueData}
-            timeframe={timeframe}
-            onTimeframeChange={setTimeframe}
             baseCurrency={baseCurrency}
             loading={isDashboardLoading}
           />

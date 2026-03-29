@@ -1,52 +1,29 @@
-<!DOCTYPE html>
-<%= stylesheet_link_tag "application" %>
-<html>
-  <head>
-    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'/>
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  </head>
-  <body style="color:#1D1A31; margin: 0; padding: 0; font-family: 'Geist', Arial, sans-serif;">
-    <div style="max-width: 640px; margin: 0 auto;">
-      <!-- Header -->
-      <div style="padding: 30px 40px; background: white; border-bottom: 2px solid #E1E6EC; text-align: center;">
-        <div style="padding: 10px; display: inline-block; text-align: center;">
-          <img src="<%= "#{root_url}miru-logo.svg" %>" height="60" width="60" alt="Miru logo" />
-        </div>
-        <div style="margin-top: 10px;">
-          <span style="font-weight: bold; font-size: 24px; color: #5B34EA;">Welcome to Miru!</span>
-        </div>
-      </div>
+<% content_for :email_preheader, "Confirm your email address to finish setting up Miru." %>
+<% content_for :email_eyebrow, "Account setup" %>
+<% content_for :email_title, "Welcome to Miru" %>
+<% content_for :email_subtitle do %>
+  Confirm your email address to start tracking time, sending invoices, and managing your team from one place.
+<% end %>
 
-      <!-- Body -->
-      <div style="padding: 40px;">
-        <p style="font-size: 16px; line-height: 24px;">Hi <strong><%= @resource.first_name.titleize %> <%= @resource.last_name.titleize %></strong>,</p>
+<p>Hi <strong><%= @resource.first_name.titleize %> <%= @resource.last_name.titleize %></strong>,</p>
 
-        <p style="font-size: 16px; line-height: 24px;">We are so delighted to have you onboard. We want to let you know some of the best ways to get up and running on our portal:</p>
+<p>We are glad to have you onboard. Here are a few of the things you can do with Miru from day one:</p>
 
-        <div style="margin: 24px 0; padding: 20px; background: #F5F7F9; border-radius: 8px;">
-          <ul style="margin: 0; padding-left: 20px; font-size: 14px; line-height: 28px;">
-            <li>Send professional invoices instantly</li>
-            <li>Send and accept payments from clients seamlessly</li>
-            <li>Manage your team and track their progress</li>
-            <li>Track your time and overall expenses easily</li>
-          </ul>
-        </div>
+<div class="email-panel email-panel-soft">
+  <ul class="email-list">
+    <li>Send professional invoices with hosted payment links.</li>
+    <li>Track time, expenses, and utilization in one workflow.</li>
+    <li>Manage your team, clients, and billing from a single workspace.</li>
+    <li>Stay on top of revenue, overdue invoices, and payment activity.</li>
+  </ul>
+</div>
 
-        <p style="font-size: 16px; line-height: 24px;">We'd like to make sure we got your email address right!</p>
+<p>Use the button below to confirm your email address.</p>
 
-        <div style="text-align: center; margin: 32px 0;">
-          <%= link_to confirmation_url(@resource, confirmation_token: @token), target: "_blank", style: "cursor: pointer; font-weight: bold; font-size: 16px; color: white; letter-spacing: 1px; line-height: 22px; border-radius: 4px; border: none; padding: 12px 48px; text-decoration: none; background: #5B34EA; display: inline-block;" do %>
-            CONFIRM MY EMAIL ADDRESS
-          <% end %>
-        </div>
+<%= render "shared/mailer/button", href: confirmation_url(@resource, confirmation_token: @token), label: "Confirm email address" %>
 
-        <p style="font-size: 14px; line-height: 24px; color: #666;">If you didn't create an account with Miru, you can safely ignore this email.</p>
+<div class="email-divider"></div>
 
-        <p style="font-size: 16px; line-height: 24px; margin-top: 32px;">Cheers,<br/><strong>Team Miru</strong></p>
-      </div>
+<p class="email-muted">If you did not create a Miru account, you can safely ignore this message.</p>
 
-      <!-- Footer -->
-      <%= render "devise/shared/footer" %>
-    </div>
-  </body>
-</html>
+<p>Cheers,<br><strong>Team Miru</strong></p>

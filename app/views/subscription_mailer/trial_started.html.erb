@@ -1,12 +1,21 @@
-<p>Hello <%= @recipient.first_name.presence || @recipient.email %>,</p>
+<% content_for :email_preheader, "Your Miru Pro trial is now active." %>
+<% content_for :email_eyebrow, "Billing" %>
+<% content_for :email_title, "Your Miru Pro trial is live" %>
+<% content_for :email_subtitle do %>
+  Explore billing, reports, and the rest of the Pro workflow during your 30-day trial.
+<% end %>
 
-<p>Your 30-day Miru Pro trial for <%= @company.name %> is now active.</p>
+<p>Hello <strong><%= @recipient.first_name.presence || @recipient.email %></strong>,</p>
 
-<p>
-  Trial ends on <%= @trial_ends_at&.in_time_zone(@company.timezone.presence || Time.zone)&.strftime("%B %-d, %Y") %>.
-</p>
+<p>Your 30-day Miru Pro trial for <strong><%= @company.name %></strong> is now active.</p>
 
-<p>
-  You can review billing and upgrade any time from
-  <a href="<%= @billing_url %>"><%= @billing_url %></a>.
-</p>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="detail-grid" style="margin-top: 24px;">
+  <tr>
+    <%= render "shared/mailer/detail_card", label: "Workspace", value: @company.name %>
+    <%= render "shared/mailer/detail_card", label: "Trial ends", value: @trial_ends_at&.in_time_zone(@company.timezone.presence || Time.zone)&.strftime("%B %-d, %Y") %>
+  </tr>
+</table>
+
+<p>You can review billing and upgrade at any time from your billing settings.</p>
+
+<%= render "shared/mailer/button", href: @billing_url, label: "Open billing" %>

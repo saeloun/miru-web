@@ -1,41 +1,21 @@
-<!DOCTYPE html>
-<%= stylesheet_link_tag "application" %>
-<html>
-  <head>
-    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'/>
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  </head>
-  <body style="color:#1D1A31; margin: 0; padding: 0; font-family: 'Geist', Arial, sans-serif;">
-    <div style="max-width: 640px; margin: 0 auto;">
-      <!-- Header -->
-      <div style="padding: 30px 40px; background: white; border-bottom: 2px solid #E1E6EC; text-align: center;">
-        <div style="padding: 10px; display: inline-block; text-align: center;">
-          <img src="<%= "#{root_url}miru-logo.svg" %>" height="60" width="60" alt="Miru logo" />
-        </div>
-        <div style="margin-top: 10px;">
-          <span style="font-weight: bold; font-size: 24px; color: #5B34EA;">Email Address Changed</span>
-        </div>
-      </div>
+<% content_for :email_preheader, "Your Miru email address has changed." %>
+<% content_for :email_eyebrow, "Account security" %>
+<% content_for :email_title, "Email address updated" %>
+<% content_for :email_subtitle do %>
+  We are confirming a change to the email address associated with your Miru account.
+<% end %>
 
-      <!-- Body -->
-      <div style="padding: 40px;">
-        <p style="font-size: 16px; line-height: 24px;">Hello <strong><%= @email %></strong>,</p>
+<p>Hello <strong><%= @email %></strong>,</p>
 
-        <% if @resource.try(:unconfirmed_email?) %>
-          <p style="font-size: 16px; line-height: 24px;">We're contacting you to notify you that your email is being changed to <strong><%= @resource.unconfirmed_email %></strong>.</p>
-        <% else %>
-          <p style="font-size: 16px; line-height: 24px;">We're contacting you to notify you that your email has been changed to <strong><%= @resource.email %></strong>.</p>
-        <% end %>
+<% if @resource.try(:unconfirmed_email?) %>
+  <p>Your account email is being changed to <strong><%= @resource.unconfirmed_email %></strong>.</p>
+<% else %>
+  <p>Your account email has been changed to <strong><%= @resource.email %></strong>.</p>
+<% end %>
 
-        <div style="margin: 24px 0; padding: 20px; background: #FFF3CD; border-radius: 8px; border-left: 4px solid #FFC107;">
-          <p style="margin: 0; font-size: 14px; line-height: 24px; color: #856404;">If you did not make this change, please contact our support team immediately at <a href="mailto:hello@saeloun.com" style="color: #5B34EA;">hello@saeloun.com</a></p>
-        </div>
+<div class="email-panel email-panel-warning">
+  <p class="email-panel-title">Did not request this change?</p>
+  <p style="margin-bottom: 0;">Contact our support team immediately at <a href="mailto:hello@saeloun.com">hello@saeloun.com</a>.</p>
+</div>
 
-        <p style="font-size: 16px; line-height: 24px; margin-top: 32px;">Cheers,<br/><strong>Team Miru</strong></p>
-      </div>
-
-      <!-- Footer -->
-      <%= render "devise/shared/footer" %>
-    </div>
-  </body>
-</html>
+<p>Cheers,<br><strong>Team Miru</strong></p>

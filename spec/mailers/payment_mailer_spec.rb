@@ -4,7 +4,7 @@ require "rails_helper"
 
 RSpec.describe PaymentMailer, type: :mailer do
   describe "payment" do
-    let(:company) { create :company, :with_logo }
+    let(:company) { create :company }
     let(:client) { create :client, company: }
     let(:invoice) { create :invoice, client: }
     let(:user) { create(:user, current_workspace_id: company.id, companies: [company]) }
@@ -18,7 +18,8 @@ RSpec.describe PaymentMailer, type: :mailer do
     end
 
     it "renders the body" do
-      expect(mail.body.encoded).to match("sent you an invoice")
+      expect(mail.body.encoded).to include("Payment confirmation")
+      expect(mail.body.encoded).to include(invoice.invoice_number)
     end
   end
 end

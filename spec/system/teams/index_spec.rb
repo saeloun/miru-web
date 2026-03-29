@@ -17,13 +17,13 @@ RSpec.describe "Team Member", type: :system, js: true do
         sign_in(user)
       end
 
-      it "cannot see the pagination" do
+      it "shows the full team without pagination" do
         with_forgery_protection do
           visit "/team"
 
-          expect(page).not_to have_css(
-            "button.m-1.mx-4.p-1.text-base.font-bold.text-muted-foreground.text-primary", text: "1"
-          )
+          expect(page).to have_content("Total Members", wait: 10)
+          expect(page).to have_content("2", wait: 10)
+          expect(page).not_to have_content("Page 1 of")
         end
       end
     end
@@ -41,10 +41,13 @@ RSpec.describe "Team Member", type: :system, js: true do
         sign_in(user)
       end
 
-      it "shows pagination controls" do
+      it "shows the full team list without pagination controls" do
         with_forgery_protection do
           visit "/team"
-          expect(page).to have_content("Page 1 of", wait: 10)
+
+          expect(page).to have_content("Total Members", wait: 10)
+          expect(page).to have_content("22", wait: 10)
+          expect(page).not_to have_content("Page 1 of")
         end
       end
 
