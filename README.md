@@ -7,13 +7,14 @@ Miru is an open-source tool, designed to make time tracking, invoice management,
 and accounting easy for small businesses worldwide. It is a platform for
 organizations to help them streamline their workflow.
 
-![Github CI](https://github.com/saeloun/miru-web/actions/workflows/validations.yml/badge.svg?branch=develop)
+![Github CI](https://github.com/saeloun/miru-web/actions/workflows/validations.yml/badge.svg?branch=production)
 ![GitHub contributors](https://img.shields.io/github/contributors/saeloun/miru-web)
 [![GitHub stars](https://img.shields.io/github/stars/saeloun/miru-web)](https://github.com/saeloun/miru-web/stargazers)
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/saeloun/miru-web)
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/m/saeloun/miru-web)
 [![GitHub license](https://img.shields.io/github/license/saeloun/miru-web)](https://github.com/saeloun/miru-web)
 [![Twitter Follow](https://img.shields.io/twitter/follow/GetMiru?style=social)](https://x.com/getmiru)
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/saeloun/miru-web/tree/production)
 
 <img src="https://user-images.githubusercontent.com/22231095/170423540-e10ada9e-cf1b-4a05-bbb6-2342955f46b0.png"  width="100%" alt="Miru Monthly Timetracking page"/>
 
@@ -39,12 +40,13 @@ organizations to help them streamline their workflow.
 
 - 💳 **Integration with Payment Gateways**: Seamlessly connect with STRIPE for quick and secure payments. Accept payments directly through Miru.so to streamline invoicing and payment processing.
 
-## Branch Highlights (miru-2-0-upgrade)
+## Miru 3.0 Highlights
 
 - Rails 8 + Ruby 4.0.1 upgrade
-- Modernized React + TypeScript frontend and UI
-- Playwright-based E2E test suite
-- Kamal + Docker deployment workflow improvements
+- Modernized React + TypeScript frontend and UI refresh
+- Responsive email layouts with local preview coverage
+- Render-first deployment workflow for production and one-click setup
+- Playwright-based end-to-end verification and release QA
 
 ## Documentation
 
@@ -53,6 +55,33 @@ For detailed information on how to use Miru Web and its various features, please
 [Official Documentation](https://docs.miru.so)
 
 For local development on this branch, see CLAUDE.md and docs under `docs/`.
+
+## Deploy On Render
+
+Miru now ships with a Render Blueprint for one-click infrastructure setup.
+
+- Production branch: `production`
+- Release prep branch: `stable-3-0`
+- Deploy guide: [docs/docs/contributing-guide/deployment/render.md](docs/docs/contributing-guide/deployment/render.md)
+- Blueprint: [render.yaml](render.yaml)
+
+For a fresh Render workspace, use the button above or open:
+
+`https://render.com/deploy?repo=https://github.com/saeloun/miru-web/tree/production`
+
+The Blueprint provisions:
+
+- a web service
+- a worker service
+- a Postgres database
+- a Render Key Value instance
+
+After the stack is created, set your required app secrets and point your custom domain to the web service.
+
+## Release Ownership
+
+- Release owner for Miru 3.0: `Vipul A M`
+- Product and OSS stewardship: `Saeloun`
 
 ## Community Support
 
@@ -70,7 +99,7 @@ We encourage everyone to contribute to Miru Web! Check out
 
 Note: We are working on improving the documentation. So we created a
 docusaurus app for documentation. Check out the
-[Miru Docs](https://github.com/saeloun/miru-web/tree/develop/docs).
+[Miru Docs](https://github.com/saeloun/miru-web/tree/production/docs).
 
 ## Contributors ✨
 

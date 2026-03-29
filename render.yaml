@@ -1,0 +1,118 @@
+previews:
+  generation: off
+
+envVarGroups:
+  - name: miru-shared
+    envVars:
+      - key: RAILS_ENV
+        value: production
+      - key: NODE_ENV
+        value: production
+      - key: RAILS_SERVE_STATIC_FILES
+        value: "true"
+      - key: RAILS_LOG_TO_STDOUT
+        value: "true"
+      - key: WEB_CONCURRENCY
+        value: "2"
+      - key: RAILS_MAX_THREADS
+        value: "5"
+      - key: APP_BASE_URL
+        sync: false
+      - key: SECRET_KEY_BASE
+        generateValue: true
+      - key: DEFAULT_MAILER_SENDER
+        sync: false
+      - key: DEFAULT_FROM_EMAIL
+        sync: false
+      - key: REPLY_TO_EMAIL
+        sync: false
+      - key: EMAIL_DELIVERY_METHOD
+        value: postmark
+      - key: POSTMARK_API_TOKEN
+        sync: false
+      - key: SENTRY_DSN
+        sync: false
+      - key: STRIPE_SECRET_KEY
+        sync: false
+      - key: STRIPE_PUBLISHABLE_KEY
+        sync: false
+      - key: STRIPE_WEBHOOK_ENDPOINT_SECRET
+        sync: false
+      - key: STRIPE_SUBSCRIPTION_PRICE_ID
+        sync: false
+      - key: STRIPE_MONTHLY_PRICE_ID
+        sync: false
+      - key: STRIPE_YEARLY_PRICE_ID
+        sync: false
+      - key: STRIPE_PLAN_PAGE_URL
+        sync: false
+      - key: GOOGLE_OAUTH_CLIENT_ID
+        sync: false
+      - key: GOOGLE_OAUTH_CLIENT_SECRET
+        sync: false
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
+      - key: CLOUDFLARE_R2_ACCESS_KEY_ID
+        sync: false
+      - key: CLOUDFLARE_R2_SECRET_ACCESS_KEY
+        sync: false
+      - key: CLOUDFLARE_R2_BUCKET_NAME
+        sync: false
+      - key: CLOUDFLARE_R2_ENDPOINT
+        sync: false
+      - key: CLOUDFLARE_R2_REGION
+        sync: false
+
+services:
+  - type: web
+    name: miru-web
+    runtime: docker
+    plan: starter
+    branch: production
+    autoDeploy: false
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /health
+    envVars:
+      - fromGroup: miru-shared
+      - key: DATABASE_URL
+        fromDatabase:
+          name: miru-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          type: keyvalue
+          name: miru-redis
+          property: connectionString
+
+  - type: worker
+    name: miru-worker
+    runtime: docker
+    plan: starter
+    branch: production
+    autoDeploy: false
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    dockerCommand: bundle exec rake solid_queue:start
+    envVars:
+      - fromGroup: miru-shared
+      - key: DATABASE_URL
+        fromDatabase:
+          name: miru-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          type: keyvalue
+          name: miru-redis
+          property: connectionString
+
+  - type: keyvalue
+    name: miru-redis
+    ipAllowList: []
+
+databases:
+  - name: miru-db
+    plan: basic-256mb
+    databaseName: miru_production

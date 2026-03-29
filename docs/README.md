@@ -200,6 +200,14 @@ Override styles in `src/css/custom.css`:
 
 ## 📦 Deployment
 
+### Render
+
+Miru's application stack is now documented for Render-first deployment.
+
+- App deploy guide: [docs/docs/contributing-guide/deployment/render.md](docs/docs/contributing-guide/deployment/render.md)
+- One-click Blueprint: [`../render.yaml`](../render.yaml)
+- Production deploy branch: `production`
+
 ### GitHub Pages
 Automatic deployment is configured via GitHub Actions. Every push to `main` triggers a build and deploys to GitHub Pages.
 

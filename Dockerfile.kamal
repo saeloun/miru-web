@@ -2,7 +2,6 @@
 # check=error=true
 
 # Kamal-specific Dockerfile for Hetzner deployment
-# Separate from Fly.io deployment
 
 # Make sure RUBY_VERSION matches the Ruby version in .ruby-version
 ARG RUBY_VERSION=4.0.1
