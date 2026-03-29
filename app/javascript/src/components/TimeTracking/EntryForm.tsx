@@ -223,7 +223,7 @@ const AddEntry: React.FC<Iprops> = ({
         <div className="mb-6 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border bg-muted/30 px-4 py-3">
           <div className="space-y-1">
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-              Entry Date
+              Saving To
             </p>
             <p className="text-base font-semibold text-foreground">
               {displaySelectedDate}

@@ -51,14 +51,24 @@ RSpec.describe "Time Tracking - Add Entry", type: :system, js: true do
     "#{date.strftime('%A')}, #{formatted_date}"
   end
 
+  def formatted_week_range(anchor_date)
+    start_date = anchor_date.beginning_of_week(:monday)
+    end_date = start_date + 6.days
+
+    "Week of#{start_date.strftime('%b')} #{start_date.day}to#{end_date.strftime('%b')} #{end_date.day},#{end_date.year}"
+  end
+
   it "adds a time entry from week view with project, duration, and notes" do
     visit "/time-tracking"
     expect(page).to have_css("#react-root", wait: 10)
     expect(page).to have_button("Start Timer", wait: 10)
     switch_to("Week")
+    expect(page).to have_button("Last week", wait: 10)
+    expect(page).to have_content(/Week of/i, wait: 10)
 
     click_button "Add Entry"
     expect(page).to have_css(".weekly-entries", wait: 10)
+    expect(page).to have_text(/saving to/i, wait: 10)
 
     select_radix("Client", client.name)
     select_radix("Project", project.name)
@@ -139,7 +149,8 @@ RSpec.describe "Time Tracking - Add Entry", type: :system, js: true do
     find("button[aria-label^='#{target_button_label}']", wait: 10).click
     click_button "Add Entry"
 
-    expect(page).to have_text(/entry date/i, wait: 10)
+    expect(page).to have_button("Last week", wait: 10)
+    expect(page).to have_text(/saving to/i, wait: 10)
     expect(page).to have_content(formatted_entry_date(target_date))
     expect(combobox_for("Client")).to have_text(client.name, wait: 10)
     expect(combobox_for("Project")).to have_text(project.name, wait: 10)
@@ -173,5 +184,28 @@ RSpec.describe "Time Tracking - Add Entry", type: :system, js: true do
       note: entry_note
     )
     expect(created_entry.duration).to eq(60)
+  end
+
+  it "jumps to the prior week and keeps the save target in sync" do
+    visit "/time-tracking"
+    expect(page).to have_css("#react-root", wait: 10)
+    switch_to("Week")
+
+    original_range = find(".week-view h2", wait: 10).text
+    expected_previous_range = formatted_week_range(Date.current - 1.week)
+    click_button "Last week"
+
+    expect(page).to have_css(".week-view h2", wait: 10)
+    expect(find(".week-view h2").text).not_to eq(original_range)
+    expect(find(".week-view h2").text.delete(" ")).to eq(
+      expected_previous_range.delete(" ")
+    )
+
+    click_button "Add Entry"
+
+    expect(page).to have_text(/saving to/i, wait: 10)
+    expect(find("button[aria-pressed='true']", wait: 10)).to have_text(
+      /selected/i
+    )
   end
 end
