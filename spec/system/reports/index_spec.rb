@@ -44,6 +44,25 @@ RSpec.describe "Reports", type: :system, js: true do
     end
   end
 
+  it "loads more time-entry report rows on scroll" do
+    client = create(:client, company:, name: "Scroll Client")
+    project = create(:project, client:, name: "Scroll Project")
+    create(:project_member, user: admin, project:)
+    create_list(:timesheet_entry, 55, user: admin, project:, duration: 60, work_date: Date.current)
+
+    with_forgery_protection do
+      visit "/reports/time-entry"
+
+      expect_reports_shell("Time Entry Report")
+      expect(page).to have_content("Loaded 1 of 2 report pages", wait: 10)
+
+      page.execute_script("window.scrollTo(0, document.body.scrollHeight)")
+
+      expect(page).to have_content("Loaded 2 of 2 report pages", wait: 10)
+      expect(page).to have_content("All report rows loaded", wait: 10)
+    end
+  end
+
   it "loads the revenue by client report" do
     client = create(:client, company:, name: "Client Alpha")
     create(:invoice, company:, client:, status: :paid, amount: 1000, amount_paid: 1000, amount_due: 0)
@@ -53,6 +72,34 @@ RSpec.describe "Reports", type: :system, js: true do
 
       expect_reports_shell("Revenue by Client")
       expect(page).to have_content("Total Revenue", wait: 10)
+    end
+  end
+
+  it "loads more revenue rows on scroll" do
+    26.times do |index|
+      client = create(:client, company:, name: "Revenue Client #{index}")
+      create(:project, client:, billable: true, name: "Revenue Project #{index}")
+      create(
+        :invoice,
+        company:,
+        client:,
+        status: :paid,
+        amount: 1000 + index,
+        amount_paid: 1000 + index,
+        amount_due: 0
+      )
+    end
+
+    with_forgery_protection do
+      visit "/reports/revenue-by-client"
+
+      expect_reports_shell("Revenue by Client")
+      expect(page).to have_content("Showing 25 of 26 clients", wait: 10)
+
+      page.execute_script("window.scrollTo(0, document.body.scrollHeight)")
+
+      expect(page).to have_content("Showing 26 of 26 clients", wait: 10)
+      expect(page).to have_content("All clients loaded", wait: 10)
     end
   end
 
@@ -98,6 +145,33 @@ RSpec.describe "Reports", type: :system, js: true do
 
       expect(page).to have_css("#react-root", wait: 10)
       expect(page).to have_content("Payment", wait: 10)
+    end
+  end
+
+  it "loads more payments report rows on scroll" do
+    client = create(:client, company:, name: "Payment Scroll Client")
+    invoice = create(:invoice, company:, client:, status: :paid, amount: 2000, amount_paid: 2000, amount_due: 0)
+
+    26.times do |index|
+      create(
+        :payment,
+        invoice:,
+        amount: 100 + index,
+        status: :paid,
+        transaction_date: Date.current - index.days
+      )
+    end
+
+    with_forgery_protection do
+      visit "/reports/payments"
+
+      expect(page).to have_css("#react-root", wait: 10)
+      expect(page).to have_content("Showing 25 of 26 payments", wait: 10)
+
+      page.execute_script("window.scrollTo(0, document.body.scrollHeight)")
+
+      expect(page).to have_content("Showing 26 of 26 payments", wait: 10)
+      expect(page).to have_content("All payments loaded", wait: 10)
     end
   end
 

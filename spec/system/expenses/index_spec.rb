@@ -61,6 +61,32 @@ RSpec.describe "Expenses", type: :system, js: true do
     end
   end
 
+  it "loads more expenses on scroll" do
+    26.times do |index|
+      create(:expense,
+        company:,
+        user:,
+        category_name: "Travel",
+        vendor_name: "Vendor #{index}",
+        amount: 10 + index,
+        expense_type: :business,
+        description: "Expense #{index}",
+        date: index.days.ago)
+    end
+
+    with_forgery_protection do
+      visit "/expenses"
+
+      expect(page).to have_css("#react-root", wait: 10)
+      expect(page).to have_content("Showing 25 of 26", wait: 10)
+
+      page.execute_script("window.scrollTo(0, document.body.scrollHeight)")
+
+      expect(page).to have_content("Showing 26 of 26", wait: 10)
+      expect(page).to have_content("All expenses loaded", wait: 10)
+    end
+  end
+
   it "hides delete for paid expenses" do
     create(:expense,
       company:,

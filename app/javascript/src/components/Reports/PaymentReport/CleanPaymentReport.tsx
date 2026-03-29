@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Loader from "common/Loader/index";
 import {
   Download,
@@ -25,6 +25,7 @@ import {
 import { format } from "date-fns";
 import { DateRange } from "react-day-picker";
 import axios from "../../../apis/api";
+import useInfiniteLoadTrigger from "../../../hooks/useInfiniteLoadTrigger";
 import { Button } from "../../ui/button";
 import {
   Select,
@@ -77,6 +78,7 @@ const CleanPaymentReport: React.FC = () => {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [isExporting, setIsExporting] = useState(false);
+  const [visibleRowCount, setVisibleRowCount] = useState(25);
 
   const { data, isLoading, error } = useQuery<PaymentReportData>({
     queryKey: ["paymentReport", dateRange],
@@ -282,6 +284,24 @@ const CleanPaymentReport: React.FC = () => {
     },
   ];
 
+  useEffect(() => {
+    setVisibleRowCount(25);
+  }, [data?.payments]);
+
+  const loadMoreRows = useCallback(() => {
+    setVisibleRowCount(previousCount => previousCount + 25);
+  }, []);
+
+  const totalRows = data?.payments?.length || 0;
+  const displayedRows = Math.min(visibleRowCount, totalRows);
+  const hasMoreRows = displayedRows < totalRows;
+
+  const loadMoreRowsRef = useInfiniteLoadTrigger({
+    enabled: hasMoreRows,
+    loading: false,
+    onLoadMore: loadMoreRows,
+  });
+
   const table = useReactTable({
     data: data?.payments || [],
     columns,
@@ -296,6 +316,10 @@ const CleanPaymentReport: React.FC = () => {
       sorting,
       columnFilters,
       columnVisibility,
+      pagination: {
+        pageIndex: 0,
+        pageSize: visibleRowCount,
+      },
     },
   });
 
@@ -518,38 +542,17 @@ const CleanPaymentReport: React.FC = () => {
 
             {/* Pagination */}
             {data?.payments?.length > 0 && (
-              <div className="flex flex-col gap-3 border-t px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+              <div className="flex flex-col items-center gap-2 border-t px-4 py-4 text-sm text-muted-foreground sm:px-6">
                 <p className="text-sm text-muted-foreground">
-                  Showing{" "}
-                  {table.getState().pagination.pageIndex *
-                    table.getState().pagination.pageSize +
-                    1}{" "}
-                  to{" "}
-                  {Math.min(
-                    (table.getState().pagination.pageIndex + 1) *
-                      table.getState().pagination.pageSize,
-                    data?.payments?.length || 0
-                  )}{" "}
-                  of {data?.payments?.length || 0} payments
+                  Showing {displayedRows} of {totalRows} payments
                 </p>
-                <div className="flex gap-2 self-start sm:self-auto">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => table.previousPage()}
-                    disabled={!table.getCanPreviousPage()}
-                  >
-                    Previous
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => table.nextPage()}
-                    disabled={!table.getCanNextPage()}
-                  >
-                    Next
-                  </Button>
-                </div>
+                {hasMoreRows && <span>Scroll to load more payments</span>}
+                {hasMoreRows && (
+                  <div ref={loadMoreRowsRef} className="h-8 w-full" />
+                )}
+                {!hasMoreRows && totalRows > 0 && (
+                  <span>All payments loaded</span>
+                )}
               </div>
             )}
           </CardContent>

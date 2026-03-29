@@ -12,7 +12,8 @@ class Api::V1::InvoicesController < Api::V1::ApplicationController
       invoices: response[:invoices],
       pagination_details: response[:pagination_details],
       summary: response[:summary],
-      recently_updated_invoices: response[:recently_updated_invoices]
+      recently_updated_invoices: response[:recently_updated_invoices],
+      recently_updated_total_count: response[:recently_updated_total_count]
     }
   end
 

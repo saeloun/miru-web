@@ -21,6 +21,7 @@ RSpec.describe Invoices::IndexService do
       expect(response[:pagination_details]).to include(page: 1, pages: 2, total: 2)
       expect(response[:summary]).to include(:draftAmount, :outstandingAmount, :overdueAmount, :totalAmount, :currency)
       expect(response[:recently_updated_invoices].map(&:id)).to eq([invoice_two.id, invoice_one.id])
+      expect(response[:recently_updated_total_count]).to eq(2)
     end
 
     it "filters by search query" do

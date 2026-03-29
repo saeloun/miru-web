@@ -13,6 +13,7 @@ import {
 } from "../../services/invoiceApi";
 import { useUserContext } from "../../context/UserContext";
 import { toast } from "sonner";
+import { usePaginatedInvoices } from "./usePaginatedInvoices";
 
 type ViewMode = "list" | "edit" | "create" | "preview";
 
@@ -34,15 +35,29 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
     initialInvoiceId || null
   );
   const [previewData, setPreviewData] = useState<Invoice | null>(null);
-  const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [clients, setClients] = useState<Client[]>([]);
   const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
-  const [summary, setSummary] = useState<any>(null);
-  const [recentlyUpdatedInvoices, setRecentlyUpdatedInvoices] = useState<
-    Invoice[]
-  >([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const {
+    invoices,
+    totalInvoices,
+    summary,
+    recentlyUpdatedInvoices,
+    recentlyUpdatedTotalCount,
+    isLoading: isListLoading,
+    isLoadingMore,
+    hasMoreInvoices,
+    error: listError,
+    clearError: clearListError,
+    loadInvoices,
+    loadMoreInvoices,
+  } = usePaginatedInvoices();
+  const [isLoading, setIsLoading] = useState(false);
+  const [pageError, setPageError] = useState<string | null>(null);
+  const error = pageError || listError;
+  const clearError = () => {
+    setPageError(null);
+    clearListError();
+  };
 
   const fallbackCompany = {
     name: currentCompany?.name || "Miru Time Tracking",
@@ -89,25 +104,7 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
     if (initialMode === "preview") {
       handleViewInvoice(initialInvoiceId);
     }
-  }, [initialInvoiceId, initialMode]);
-
-  const loadInvoices = async () => {
-    try {
-      setIsLoading(true);
-      // Fetch more invoices to ensure we get all statuses including overdue
-      const response = await invoiceApi.getInvoices({ per: 50 } as any);
-      setInvoices(response.invoices);
-      setSummary(response.summary);
-      setRecentlyUpdatedInvoices(
-        (response.recentlyUpdatedInvoices || []).slice(0, 10)
-      );
-    } catch (err) {
-      setError("Failed to load invoices");
-      console.error("Error loading invoices:", err);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  }, [initialInvoiceId, initialMode, loadInvoices]);
 
   const loadClients = async () => {
     try {
@@ -149,7 +146,7 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
       setSelectedInvoice(invoice);
       setViewMode("preview");
     } catch (err) {
-      setError("Failed to load invoice");
+      setPageError("Failed to load invoice");
       console.error("Error loading invoice:", err);
     } finally {
       setIsLoading(false);
@@ -164,7 +161,7 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
       setSelectedInvoice(invoice);
       setViewMode("edit");
     } catch (err) {
-      setError("Failed to load invoice");
+      setPageError("Failed to load invoice");
       console.error("Error loading invoice:", err);
     } finally {
       setIsLoading(false);
@@ -257,9 +254,7 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
       } else {
         toast.error("Failed to save invoice. Please try again.");
       }
-      setError(null); // Don't show the error banner
-    } finally {
-      setIsLoading(false);
+      clearError();
     }
   };
 
@@ -312,9 +307,7 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
       } else {
         toast.error("Failed to send invoice. Please try again.");
       }
-      setError(null); // Don't show the error banner
-    } finally {
-      setIsLoading(false);
+      clearError();
     }
   };
 
@@ -322,7 +315,7 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
     try {
       const invoice = invoices.find(inv => inv.id === id) || selectedInvoice;
       if (!invoice) {
-        setError("Invoice not found");
+        setPageError("Invoice not found");
 
         return;
       }
@@ -344,7 +337,7 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
     try {
       const invoice = invoices.find(inv => inv.id === id) || selectedInvoice;
       if (!invoice) {
-        setError("Invoice not found");
+        setPageError("Invoice not found");
 
         return;
       }
@@ -388,7 +381,7 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
       await invoiceApi.updateInvoice(id, updatedInvoice);
       await loadInvoices(); // Refresh the invoice list
     } catch (err) {
-      setError("Failed to mark invoice as paid");
+      setPageError("Failed to mark invoice as paid");
       console.error("Error marking invoice as paid:", err);
     }
   };
@@ -422,7 +415,8 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
         window.URL.revokeObjectURL(url);
       }, 100);
     } catch (err) {
-      setError("Failed to download invoice");
+      setPageError("Failed to download invoice");
+      console.error("Error downloading invoice:", err);
     }
   };
 
@@ -431,7 +425,7 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
     setSelectedInvoiceId(null);
     setSelectedInvoice(null);
     setPreviewData(null);
-    setError(null);
+    clearError();
     navigate("/invoices");
   };
 
@@ -451,7 +445,7 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
           <Button
             variant="outline"
             onClick={() => {
-              setError(null);
+              clearError();
               loadInvoices();
             }}
             className="mt-4"
@@ -468,15 +462,20 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
       return (
         <InvoiceList
           invoices={invoices}
+          totalInvoices={totalInvoices}
           summary={summary}
           recentlyUpdatedInvoices={recentlyUpdatedInvoices}
+          recentlyUpdatedTotalCount={recentlyUpdatedTotalCount}
           onCreateInvoice={handleCreateInvoice}
           onViewInvoice={handleViewInvoice}
           onSendInvoice={handleSendInvoiceFromList}
           onSendReminder={handleSendReminderFromList}
           onMarkPaid={handleMarkPaid}
           onDownload={handleDownload}
-          isLoading={isLoading}
+          onLoadMore={loadMoreInvoices}
+          isLoading={isListLoading || isLoading}
+          isLoadingMore={isLoadingMore}
+          hasMore={hasMoreInvoices}
         />
       );
 
@@ -563,14 +562,14 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
             if (invoiceToPreview.id && invoiceToPreview.id !== "preview") {
               await handleDownload(invoiceToPreview.id);
             } else {
-              setError("Cannot download invoice - invalid ID");
+              setPageError("Cannot download invoice - invalid ID");
             }
             break;
           case "send":
             if (invoiceToPreview.id && invoiceToPreview.id !== "preview") {
               await handleSendInvoiceFromList(invoiceToPreview.id);
             } else {
-              setError("Cannot send invoice - invalid ID");
+              setPageError("Cannot send invoice - invalid ID");
             }
             break;
           case "edit":
