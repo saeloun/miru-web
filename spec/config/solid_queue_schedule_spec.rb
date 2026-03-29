@@ -25,4 +25,13 @@ RSpec.describe "Solid Queue schedule" do
       "schedule" => "0 1 * * *"
     )
   end
+
+  it "runs database backups every 30 minutes in production by default" do
+    production_task = config.dig("production", "dispatchers", 0, "recurring_tasks", "database_backup")
+
+    expect(production_task).to include(
+      "class" => "DatabaseBackupJob",
+      "schedule" => "*/30 * * * *"
+    )
+  end
 end

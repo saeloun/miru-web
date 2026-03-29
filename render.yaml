@@ -64,6 +64,22 @@ envVarGroups:
         sync: false
       - key: CLOUDFLARE_R2_REGION
         sync: false
+      - key: DATABASE_BACKUP_ENABLED
+        value: "true"
+      - key: DATABASE_BACKUP_CRON
+        value: "*/30 * * * *"
+      - key: DATABASE_BACKUP_R2_BUCKET_NAME
+        sync: false
+      - key: DATABASE_BACKUP_R2_ENDPOINT
+        sync: false
+      - key: DATABASE_BACKUP_R2_REGION
+        sync: false
+      - key: DATABASE_BACKUP_R2_ACCESS_KEY_ID
+        sync: false
+      - key: DATABASE_BACKUP_R2_SECRET_ACCESS_KEY
+        sync: false
+      - key: DATABASE_BACKUP_R2_PREFIX
+        value: miru/database-backups
 
 services:
   - type: web
