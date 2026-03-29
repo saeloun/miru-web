@@ -2,7 +2,7 @@
 
 ## Goal
 
-Make Miru the system of record for billable AI work.
+Make Miru the system of record for billable AI work from any agent runtime.
 
 Not "AI features."
 
@@ -92,7 +92,7 @@ Build this on top of the current timesheet and invoice model.
 
 Do not create a second billing system for agents.
 
-Add first-class actor metadata, machine auth, review state, and invoice grouping. Keep the existing invoice pipeline.
+Add first-class actor metadata, agent-key auth, review state, and invoice grouping. Keep the existing invoice pipeline.
 
 Engineering scorecard:
 
@@ -153,7 +153,7 @@ That keeps the rule legible.
 ### Build
 
 - `Agent` as a first-class entity
-- machine token auth for agent time ingestion
+- agent-key auth for agent time ingestion
 - agent-attributed timesheet entries
 - review state on agent work
 - proof metadata on entries
@@ -172,7 +172,7 @@ Add:
   - `default_project_id`
   - `billable_rate`
   - `active_at`
-- `agent_api_tokens`
+- `agent_keys`
   - `agent_id`
   - `token_digest`
   - `created_by_id`
@@ -217,7 +217,6 @@ Add a narrow ingestion API:
 
 Payload:
 
-- `agent_slug`
 - `project_id`
 - `work_date`
 - `duration`
@@ -229,13 +228,13 @@ Payload:
 
 Security rules:
 
-- machine token only
-- token scoped to one agent
-- token can be revoked
-- token use is auditable through `created_by_id` and `last_used_at`
+- agent key only
+- key scoped to one agent
+- key can be revoked
+- key use is auditable through `created_by_id` and `last_used_at`
 - server allowlists metadata keys
 - server does not trust caller-supplied billing status beyond permitted transitions
-- server derives agent identity from token, not caller input alone
+- server derives agent identity from the key, not caller input alone
 
 Review state rules:
 
@@ -307,16 +306,25 @@ That means invoice eligibility is:
 - `bill_status = unbilled`
 - not discarded
 
-## Phase 4, OpenClaw Integration
+## Phase 4, Generic Agent Integrations
 
-### First Integration
+### First Integration Shape
 
-OpenClaw is the right first integration because it is controlled, real, and already maps to persistent agents.
+The integration model must stay generic from day one.
+
+Miru should work with:
+
+- Claude Code
+- Codex
+- OpenClaw
+- custom internal runners
+- hosted agent platforms
 
 ### Build
 
-- OpenClaw worker or webhook to Miru ingestion API
-- map OpenClaw agent identity to Miru `Agent`
+- one narrow HTTP contract for all runtimes
+- one simple agent-key ingestion path that any runtime can call
+- one reference CLI/HTTP adapter that proves the end-to-end workflow
 - send:
   - duration
   - project/client mapping
@@ -326,11 +334,19 @@ OpenClaw is the right first integration because it is controlled, real, and alre
 
 Do not make provider-specific concepts part of the core accounting model.
 
-OpenClaw is the first integration, not the schema.
+The key is the integration surface, not the vendor.
+
+Phase 1 should prove one path:
+
+- an agent key
+- one HTTP ingestion contract
+- one reference adapter
+
+That is enough to support Claude Code, Codex, OpenClaw, or a custom runner without exploding scope on day one.
 
 ### Success
 
-- an OpenClaw agent finishes a task
+- an agent finishes a task
 - the work shows up in Miru as `Pending Review`
 - an owner approves it
 - it moves into invoice draft selection
@@ -339,9 +355,10 @@ OpenClaw is the first integration, not the schema.
 
 ### Later Integrations
 
-- Codex
-- Claude-based local agent workflows
-- custom MCP or CLI agent runners
+- Codex-specific helper adapter
+- Claude-based local workflow adapter
+- OpenClaw adapter
+- custom MCP or CLI runners
 
 ### Do Not Build First
 
@@ -446,7 +463,7 @@ Ship this in one narrow release:
 3. time-entry display for agents
 4. review queue
 5. invoice draft from approved agent work
-6. OpenClaw integration
+6. generic agent-key integration
 
 That is the lake.
 
@@ -465,11 +482,27 @@ Do not dilute it with:
 - confusing human and agent labor in the same list
 - approvals becoming a bottleneck if the review UI is weak
 
+## Stripe And Crypto
+
+Do not make Bitcoin or crypto a dependency for phase 1.
+
+Phase 1 should use the existing Stripe subscription flow that Miru already has.
+
+If Miru later adds crypto checkout:
+
+- treat it as an optional billing expansion
+- use Stripe's supported `crypto` payment method path, not Bitcoin-specific core logic
+- gate it behind account eligibility and explicit configuration
+
+Crypto can be a later checkout option.
+
+It is not required to make agent billing work.
+
 ## Guardrails
 
 - every agent entry starts as `pending_review`
 - invoice flow only includes `approved`
-- token auth is per-agent and revocable
+- agent keys are per-agent and revocable
 - metadata is allowlisted
 - proof link is optional but strongly encouraged for premium workflows
 
@@ -497,16 +530,16 @@ The upgrade trigger should happen before the object is created, not after the wo
 
 ## What To Do Next
 
-1. add the `Agent` and token data model
+1. add the `Agent` and agent-key data model
 2. build the ingestion API
 3. render agent entries in time tracking
 4. add review status and approval UI
-5. integrate OpenClaw first
+5. publish generic agent-key adapters first
 
 Implementation order inside Phase 1:
 
 1. schema and model changes
-2. token-backed ingestion API
+2. agent-key-backed ingestion API
 3. time-tracking feed rendering
 4. pending review filter and actions
 5. invoice draft eligibility and handoff
