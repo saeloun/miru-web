@@ -129,14 +129,16 @@ const AddEntry: React.FC<Iprops> = ({
   };
 
   useEffect(() => {
-    if (!project) {
+    if (!client) {
       setProjectBillable(false);
+      setProject("");
 
       return setProjectId(0);
     }
 
-    if (!projects || !projects[client]) {
+    if (!projects || !projects[client] || projects[client].length === 0) {
       setProjectBillable(false);
+      if (project) setProject("");
 
       return setProjectId(0);
     }
@@ -144,9 +146,20 @@ const AddEntry: React.FC<Iprops> = ({
     const selectedProject = projects[client].find(
       currentProject => currentProject.name === project
     );
+
     if (selectedProject) {
       setProjectId(Number(selectedProject.id));
       setProjectBillable(Boolean(selectedProject.billable));
+
+      return;
+    }
+
+    const fallbackProject = projects[client][0];
+
+    if (fallbackProject) {
+      setProject(fallbackProject.name);
+      setProjectId(Number(fallbackProject.id));
+      setProjectBillable(Boolean(fallbackProject.billable));
     }
   }, [project, client, projects]);
 

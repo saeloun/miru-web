@@ -186,6 +186,38 @@ RSpec.describe "Time Tracking - Add Entry", type: :system, js: true do
     expect(created_entry.duration).to eq(60)
   end
 
+  it "replaces a stale restored project with a valid project for the selected client" do
+    other_client = create(:client, company:, name: "Beta Client")
+    other_project = create(:project, client: other_client, name: "Beta Project")
+    create(:project_member, user:, project: other_project)
+
+    visit "/time-tracking"
+    expect(page).to have_css("#react-root", wait: 10)
+    switch_to("Week")
+
+    page.execute_script(<<~JS)
+      localStorage.setItem("client", "#{client.name}");
+      localStorage.setItem("project", "#{other_project.name}");
+      localStorage.setItem("projectId", "0");
+      localStorage.setItem("duration", "02:00");
+      localStorage.setItem("note", "Recovered stale project selection");
+      localStorage.setItem("taskType", "development");
+    JS
+
+    visit "/time-tracking"
+    expect(page).to have_css("#react-root", wait: 10)
+    switch_to("Week")
+    click_button "Add Entry"
+
+    expect(combobox_for("Client")).to have_text(client.name, wait: 10)
+    expect(combobox_for("Project")).to have_text(project.name, wait: 10)
+    expect(find("input[name='timeInput']", wait: 10).value).to eq("02:00")
+    expect(find("textarea[name='notes']", wait: 10).value).to eq(
+      "Recovered stale project selection"
+    )
+    expect(page).to have_button("Save Entry", disabled: false, wait: 10)
+  end
+
   it "jumps to the prior week and keeps the save target in sync" do
     visit "/time-tracking"
     expect(page).to have_css("#react-root", wait: 10)

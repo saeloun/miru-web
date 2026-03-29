@@ -556,7 +556,9 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
               </div>
               {invoice.discount > 0 && (
                 <div className="flex justify-between py-2">
-                  <span className="text-gray-600">Discount</span>
+                  <span className="text-muted-foreground print:text-gray-600">
+                    Discount
+                  </span>
                   <span className="font-medium text-red-600">
                     -{currencyFormat(currency, invoice.discount)}
                   </span>
