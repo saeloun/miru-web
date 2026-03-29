@@ -1,9 +1,8 @@
 import React from "react";
 
+import { useTimesheetEntries } from "context/TimesheetEntries";
 import dayjs from "dayjs";
 import { minToHHMM } from "helpers";
-
-import { useTimesheetEntries } from "context/TimesheetEntries";
 
 const CalendarCell = ({ dayNum, weekInfo, handleWeekday }) => {
   const today = dayjs().format("YYYY-MM-DD");
@@ -14,7 +13,7 @@ const CalendarCell = ({ dayNum, weekInfo, handleWeekday }) => {
       className={`flex h-14 w-16 cursor-pointer justify-end rounded-md border-2 bg-white p-1 xl:w-24
                     ${
                       weekInfo[dayNum]["date"] === selectedFullDate
-                        ? "border-miru-han-purple-1000"
+                        ? "border-primary"
                         : "border-transparent"
                     }`}
       onClick={() => {
@@ -27,14 +26,14 @@ const CalendarCell = ({ dayNum, weekInfo, handleWeekday }) => {
           <p
             className={`text-xs font-medium ${
               weekInfo[dayNum]["date"] === today
-                ? "rounded-xl bg-miru-han-purple-1000 px-2 text-miru-white-1000"
-                : "text-miru-dark-purple-200"
+                ? "rounded-xl bg-primary px-2 text-primary-foreground"
+                : "text-muted-foreground"
             }`}
           >
             {weekInfo[dayNum]["day"]}
           </p>
         </div>
-        <p className="mx-auto text-xl text-miru-dark-purple-1000 xl:mx-3 xl:text-2xl">
+        <p className="mx-auto text-xl text-foreground xl:mx-3 xl:text-2xl">
           {(() => {
             if (weekInfo[dayNum]["totalDuration"] > 0) {
               return minToHHMM(weekInfo[dayNum]["totalDuration"]);

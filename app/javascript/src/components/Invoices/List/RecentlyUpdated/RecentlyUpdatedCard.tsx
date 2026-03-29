@@ -1,41 +1,91 @@
 import React from "react";
+import { format } from "date-fns";
 
 import { currencyFormat } from "helpers";
 import { useNavigate } from "react-router-dom";
-import { Avatar, Badge } from "StyledComponents";
-
-import getStatusCssClass from "utils/getBadgeStatus";
+import {
+  CheckCircle,
+  PaperPlaneTilt,
+  Eye,
+  Warning,
+  FileText,
+  Clock,
+  ArrowUpRight,
+} from "phosphor-react";
 
 const RecentlyUpdatedCard = ({
-  invoice: { client, currency, id, invoiceNumber, amount, status },
-  index,
+  invoice: { client, currency, id, invoiceNumber, amount, status, updatedAt },
 }) => {
   const navigate = useNavigate();
 
+  const formattedUpdatedAt = updatedAt
+    ? format(new Date(updatedAt), "MMM dd, h:mm a")
+    : null;
+
+  const getStatusIcon = () => {
+    switch (status?.toLowerCase()) {
+      case "paid":
+        return <CheckCircle className="w-4 h-4 text-green-600" weight="fill" />;
+      case "sent":
+        return (
+          <PaperPlaneTilt className="w-4 h-4 text-blue-600" weight="fill" />
+        );
+      case "viewed":
+        return <Eye className="w-4 h-4 text-cyan-600" weight="fill" />;
+      case "overdue":
+        return <Warning className="w-4 h-4 text-red-600" weight="fill" />;
+      case "draft":
+        return <FileText className="w-4 h-4 text-gray-500" weight="fill" />;
+      default:
+        return <Clock className="w-4 h-4 text-gray-500" weight="fill" />;
+    }
+  };
+
   return (
     <div
-      className={`${
-        index == 0 ? "mr-1 lg:mr-2" : "mx-1 lg:mx-2"
-      } flex h-auto w-40 cursor-pointer flex-col justify-between rounded-xl border-2 border-miru-gray-200 p-4 text-center hover:shadow-c1`}
+      className="group flex h-44 w-full cursor-pointer flex-col rounded-xl border border-border bg-card p-4 transition-all duration-200 hover:border-primary/30 hover:bg-muted/30 hover:shadow-lg lg:w-40 lg:flex-shrink-0"
       onClick={() => navigate(`/invoices/${id}`)}
     >
-      <h3 className="mr-0.5 text-center text-xs font-normal text-miru-dark-purple-400">
-        {invoiceNumber}
-      </h3>
-      <div className="my-1 flex justify-center lg:my-3">
-        <Avatar url={client.logo} />
+      {/* Invoice number with status icon */}
+      <div className="mb-3">
+        <div className="flex items-center justify-between mb-1">
+          <p
+            className="truncate text-sm font-bold text-foreground"
+            title={invoiceNumber}
+          >
+            {invoiceNumber}
+          </p>
+          {getStatusIcon()}
+        </div>
       </div>
-      <div className="my-2 flex h-9 items-center justify-center text-center text-sm font-semibold capitalize leading-5 text-miru-dark-purple-1000 lg:mt-1 lg:mb-2.5 lg:h-11 lg:text-base">
-        <p className="truncateOverflowText">{client.name}</p>
+
+      <div className="mb-auto">
+        <p
+          className="truncate text-sm font-medium text-muted-foreground"
+          title={client.name}
+        >
+          {client.name}
+        </p>
+        {formattedUpdatedAt && (
+          <p className="mt-1 truncate text-xs text-muted-foreground">
+            Updated {formattedUpdatedAt}
+          </p>
+        )}
       </div>
-      <h1 className="mb-2 truncate text-base font-bold text-miru-dark-purple-1000 lg:text-xl">
-        {currencyFormat(currency, amount)}
-      </h1>
-      <div>
-        <Badge
-          className={`${getStatusCssClass(status)} mt-2 uppercase`}
-          text={status}
-        />
+
+      {/* Amount at bottom */}
+      <div className="border-t border-border pt-3">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="mb-0.5 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+              Amount
+            </p>
+            <p className="text-base font-bold text-foreground">
+              {currencyFormat(currency, amount)}
+            </p>
+          </div>
+          <ArrowUpRight className="h-4 w-4 text-muted-foreground transition-colors group-hover:text-foreground" />
+        </div>
       </div>
     </div>
   );

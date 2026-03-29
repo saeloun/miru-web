@@ -1,9 +1,7 @@
-/* eslint-disable @typescript-eslint/no-var-requires  */
 import dayjs from "dayjs";
+import quarterOfYear from "dayjs/plugin/quarterOfYear";
 
 import { month, quarters } from "../../../../utils/dateUtil";
-
-const quarterOfYear = require("dayjs/plugin/quarterOfYear");
 
 dayjs.extend(quarterOfYear);
 

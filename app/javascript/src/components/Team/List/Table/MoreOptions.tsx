@@ -1,13 +1,13 @@
+import { TeamModalType } from "constants/index";
+
 import React from "react";
 
-import { DeleteIcon, EditIcon, ResendInviteIcon } from "miruIcons";
-import { Button, MobileMoreOptions, Tooltip } from "StyledComponents";
-
-import teamApi from "apis/team";
+import { teamApi } from "apis/api";
 import HoverMoreOptions from "common/HoverMoreOptions";
-import { TeamModalType } from "constants/index";
 import { useList } from "context/TeamContext";
 import { useUserContext } from "context/UserContext";
+import { DeleteIcon, EditIcon, ResendInviteIcon } from "miruIcons";
+import { Button, MobileMoreOptions, Tooltip } from "StyledComponents";
 
 type Iprops = {
   item: any;
@@ -57,7 +57,7 @@ const MoreOptions = ({ item, setShowMoreOptions, showMoreOptions }: Iprops) => {
             handleAction(e, TeamModalType.DELETE);
           }}
         >
-          <DeleteIcon className="text-miru-red-400" size={16} weight="bold" />
+          <DeleteIcon className="text-destructive" size={16} weight="bold" />
         </Button>
       </Tooltip>
     </HoverMoreOptions>
@@ -67,17 +67,17 @@ const MoreOptions = ({ item, setShowMoreOptions, showMoreOptions }: Iprops) => {
       visibilty={showMoreOptions}
     >
       <li
-        className="flex items-center px-2 pt-3 text-sm leading-5 text-miru-han-purple-1000"
+        className="flex items-center px-2 pt-3 text-sm leading-5 text-primary"
         onClick={e => {
           setShowMoreOptions(false);
           handleAction(e, TeamModalType.ADD_EDIT);
         }}
       >
-        <EditIcon className="mr-4" color="#5B34EA" size={16} />
+        <EditIcon className="mr-4" color="#5E58F1" size={16} />
         Edit
       </li>
       <li
-        className="flex items-center px-2 pt-3 text-sm leading-5 text-miru-red-400"
+        className="flex items-center px-2 pt-3 text-sm leading-5 text-destructive"
         onClick={e => {
           setShowMoreOptions(false);
           handleAction(e, TeamModalType.DELETE);

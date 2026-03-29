@@ -1,13 +1,11 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 import React, { useEffect, useState } from "react";
 
+import { timeoffEntriesApi } from "apis/api";
+import { useTimesheetEntries } from "context/TimesheetEntries";
+import { useUserContext } from "context/UserContext";
 import { format } from "date-fns";
 import dayjs from "dayjs";
 import { minToHHMM } from "helpers";
-
-import timeoffEntryApi from "apis/timeoff-entry";
-import { useTimesheetEntries } from "context/TimesheetEntries";
-import { useUserContext } from "context/UserContext";
 
 import {
   showDeleteAction,
@@ -83,7 +81,7 @@ const TimeoffEntryCard = ({
 
     setNewEntryView(false);
     setEditEntryId(0);
-    const res = await timeoffEntryApi.destroy(timeoffEntryId);
+    const res = await timeoffEntriesApi.destroy(timeoffEntryId);
 
     if (res.status === 200) {
       await handleFilterEntry(selectedFullDate, timeoffEntryId);
@@ -101,7 +99,7 @@ const TimeoffEntryCard = ({
     if (timeoffEntry) {
       const payload = getPayload(timeoffEntry);
       if (payload) {
-        const res = await timeoffEntryApi.create(payload, selectedEmployeeId);
+        const res = await timeoffEntriesApi.create(payload, selectedEmployeeId);
         if (res.status === 200) {
           await fetchEntries(selectedFullDate, selectedFullDate);
           await fetchEntriesOfMonths();
@@ -112,7 +110,7 @@ const TimeoffEntryCard = ({
 
   return (
     <div
-      className="week-card flex w-full items-center justify-between border-b border-miru-gray-200 py-4 lg:mt-10 lg:rounded-lg lg:border-b-0 lg:p-6 lg:shadow-2xl"
+      className="week-card flex w-full items-center justify-between border-b border-border py-4 lg:mt-10 lg:rounded-lg lg:border-b-0 lg:p-6 lg:shadow-2xl"
       onClick={handleCardClick}
     >
       <div className="w-7/12 flex-auto">
@@ -136,7 +134,7 @@ const TimeoffEntryCard = ({
           )}
         </div>
         <div className="flex py-2 lg:hidden" />
-        <p className="max-h-32 overflow-auto whitespace-pre-wrap break-words text-sm text-miru-dark-purple-200 lg:w-160">
+        <p className="max-h-32 overflow-auto whitespace-pre-wrap break-words text-sm text-muted-foreground lg:w-160">
           {note}
         </p>
       </div>
@@ -146,7 +144,7 @@ const TimeoffEntryCard = ({
       <div className="hidden w-5/12 items-center justify-between lg:flex">
         <div className="flex w-7/12 items-center justify-between">
           <div className="w-1/3" />
-          <p className="mx-auto text-2xl xl:text-4xl">{minToHHMM(duration)}</p>
+          <p className="mx-auto text-2xl xl:text-2xl">{minToHHMM(duration)}</p>
         </div>
         <div className="flex w-5/12 items-center justify-evenly">
           {showDuplicateAction(

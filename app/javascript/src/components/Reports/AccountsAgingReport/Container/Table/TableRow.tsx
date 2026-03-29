@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 
-import { currencyFormat } from "helpers";
+import { currencyFormat } from "../../../../../helpers/currency";
 import { Avatar, Tooltip } from "StyledComponents";
 
 import { useUserContext } from "context/UserContext";
@@ -25,7 +25,7 @@ const TableRow = ({ currency, report }) => {
         {isDesktop ? (
           <Tooltip content={name} show={showToolTip}>
             <p
-              className="overflow-hidden text-ellipsis break-words pr-2 text-sm font-medium text-miru-dark-purple-1000 lg:whitespace-normal lg:text-base"
+              className="overflow-hidden text-ellipsis break-words pr-2 text-sm font-medium text-foreground lg:whitespace-normal lg:text-base"
               ref={toolTipRef}
               onMouseEnter={handleTooltip}
             >
@@ -34,7 +34,7 @@ const TableRow = ({ currency, report }) => {
           </Tooltip>
         ) : (
           <p
-            className="overflow-hidden text-ellipsis whitespace-normal pr-2 text-sm font-medium text-miru-dark-purple-1000 lg:whitespace-nowrap lg:text-base"
+            className="overflow-hidden text-ellipsis whitespace-normal pr-2 text-sm font-medium text-foreground lg:whitespace-nowrap lg:text-base"
             ref={toolTipRef}
             onMouseEnter={handleTooltip}
           >
@@ -42,43 +42,43 @@ const TableRow = ({ currency, report }) => {
           </p>
         )}
       </td>
-      <td className="flex items-center justify-between whitespace-pre-wrap py-2.5 text-right text-base font-normal text-miru-dark-purple-1000 lg:table-cell lg:w-2/12 lg:px-8">
-        <dt className="text-xs font-medium text-miru-dark-purple-400 lg:hidden">
+      <td className="flex items-center justify-between whitespace-pre-wrap py-2.5 text-right text-base font-normal text-foreground lg:table-cell lg:w-2/12 lg:px-8">
+        <dt className="text-xs font-medium text-muted-foreground lg:hidden">
           0 - 30 DAYS
         </dt>
-        <span className="text-sm font-medium text-miru-dark-purple-1000 lg:text-base">
+        <span className="text-sm font-medium text-foreground lg:text-base">
           {currencyFormat(currency, amount_overdue.zero_to_thirty_days)}
         </span>
       </td>
       <td className="flex items-center justify-between whitespace-nowrap py-2.5 text-right lg:table-cell lg:w-2/12 lg:px-8">
-        <dt className="text-xs font-medium text-miru-dark-purple-400 lg:hidden">
+        <dt className="text-xs font-medium text-muted-foreground lg:hidden">
           31 - 60 DAYS
         </dt>
-        <span className="text-sm font-medium text-miru-dark-purple-1000 lg:text-base">
+        <span className="text-sm font-medium text-foreground lg:text-base">
           {currencyFormat(currency, amount_overdue.thirty_one_to_sixty_days)}
         </span>
       </td>
       <td className="flex items-center justify-between whitespace-nowrap py-2.5 text-right lg:table-cell lg:w-2/12 lg:px-8">
-        <dt className="text-xs font-medium text-miru-dark-purple-400 lg:hidden">
+        <dt className="text-xs font-medium text-muted-foreground lg:hidden">
           61 - 90 DAYS
         </dt>
-        <span className="text-sm font-medium text-miru-dark-purple-1000 lg:text-base">
+        <span className="text-sm font-medium text-foreground lg:text-base">
           {currencyFormat(currency, amount_overdue.sixty_one_to_ninety_days)}
         </span>
       </td>
       <td className="flex items-center justify-between whitespace-nowrap py-2.5 text-right lg:table-cell lg:w-2/12 lg:px-8">
-        <dt className="text-xs font-medium text-miru-dark-purple-400 lg:hidden">
+        <dt className="text-xs font-medium text-muted-foreground lg:hidden">
           90+ DAYS
         </dt>
-        <span className="text-sm font-medium text-miru-dark-purple-1000 lg:text-base">
+        <span className="text-sm font-medium text-foreground lg:text-base">
           {currencyFormat(currency, amount_overdue.ninety_plus_days)}
         </span>
       </td>
-      <td className="flex items-center justify-between whitespace-nowrap pb-2.5 text-right text-xl font-bold text-miru-dark-purple-1000 lg:mt-0 lg:table-cell lg:w-2/12 lg:pl-8">
-        <dt className="text-xs font-bold text-miru-dark-purple-400 lg:hidden">
+      <td className="flex items-center justify-between whitespace-nowrap pb-2.5 text-right text-xl font-bold text-foreground lg:mt-0 lg:table-cell lg:w-2/12 lg:pl-8">
+        <dt className="text-xs font-bold text-muted-foreground lg:hidden">
           Total
         </dt>
-        <span className="text-sm font-bold text-miru-dark-purple-1000 lg:text-base">
+        <span className="text-sm font-bold text-foreground lg:text-base">
           {currencyFormat(currency, amount_overdue.total)}
         </span>
       </td>

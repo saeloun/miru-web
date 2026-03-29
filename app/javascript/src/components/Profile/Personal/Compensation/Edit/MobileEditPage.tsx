@@ -9,7 +9,6 @@ import {
 } from "miruIcons";
 import "react-phone-number-input/style.css";
 import { Button } from "StyledComponents";
-
 import { CustomInputText } from "common/CustomInputText";
 import { ErrorSpan } from "common/ErrorSpan";
 
@@ -28,13 +27,11 @@ const MobileEditPage = ({
   currency,
   errDetails,
 }) => (
-  <div className="bg-white p-4">
-    <div className="border-b border-b-miru-gray-400 pb-10">
+  <div className="bg-background p-4">
+    <div className="border-b border-b-border pb-10">
       <div className="mt-2 flex w-full">
         <img className="mr-4 mt-1 h-4 w-4" src={EarningsIconSVG} />
-        <span className="text-sm font-medium text-miru-dark-purple-1000">
-          Earnings
-        </span>
+        <span className="text-sm font-medium text-foreground">Earnings</span>
       </div>
       <div className="mt-6 w-full">
         {earnings.length > 0 ? (
@@ -57,13 +54,13 @@ const MobileEditPage = ({
                   />
                   {errDetails.earning_type_err && (
                     <ErrorSpan
-                      className="text-xs text-red-600"
+                      className="text-xs text-destructive"
                       message={errDetails.earning_type_err}
                     />
                   )}
                 </div>
                 <Button
-                  className="rounded p-1vh hover:bg-miru-dark-purple-100"
+                  className="rounded p-1vh hover:bg-muted"
                   style="ternary"
                   onClick={() => handleDeleteEarning(earning)}
                 >
@@ -83,7 +80,7 @@ const MobileEditPage = ({
                 />
                 {errDetails.earning_amount_err && (
                   <ErrorSpan
-                    className="text-xs text-red-600"
+                    className="text-xs text-destructive"
                     message={errDetails.earning_amount_err}
                   />
                 )}
@@ -104,12 +101,10 @@ const MobileEditPage = ({
         </div>
       </div>
     </div>
-    <div className="border-b border-b-miru-gray-400 py-10">
+    <div className="border-b border-b-border py-10">
       <div className="mt-2 flex w-full">
         <img className="mr-4 mt-1 h-4 w-4" src={DeductionIconSVG} />
-        <span className="text-sm font-medium text-miru-dark-purple-1000">
-          Deductions
-        </span>
+        <span className="text-sm font-medium text-foreground">Deductions</span>
       </div>
       <div className="mt-6 w-full">
         {deductions.length > 0 ? (
@@ -132,13 +127,13 @@ const MobileEditPage = ({
                   />
                   {errDetails.deduction_type_err && (
                     <ErrorSpan
-                      className="text-xs text-red-600"
+                      className="text-xs text-destructive"
                       message={errDetails.deduction_type_err}
                     />
                   )}
                 </div>
                 <Button
-                  className="rounded p-1vh hover:bg-miru-dark-purple-100"
+                  className="rounded p-1vh hover:bg-muted"
                   style="ternary"
                   onClick={() => handleDeleteDeduction(deduction)}
                 >
@@ -158,7 +153,7 @@ const MobileEditPage = ({
                 />
                 {errDetails.deduction_amount_err && (
                   <ErrorSpan
-                    className="text-xs text-red-600"
+                    className="text-xs text-destructive"
                     message={errDetails.deduction_amount_err}
                   />
                 )}
@@ -179,19 +174,19 @@ const MobileEditPage = ({
         </div>
       </div>
     </div>
-    <div className="flex border-b border-b-miru-gray-400 py-10">
+    <div className="flex border-b border-b-border py-10">
       <div className="flex w-1/2 py-5">
         <CoinsIcon
-          className="mr-4 mt-1 text-miru-dark-purple-1000"
+          className="mr-4 mt-1 text-foreground"
           size={16}
           weight="bold"
         />
-        <span className="flex flex-wrap text-sm font-medium text-miru-dark-purple-1000">
+        <span className="flex flex-wrap text-sm font-medium text-foreground">
           Total
         </span>
       </div>
       <div className="flex w-1/2 flex-col justify-center">
-        <span className="w-full text-xl font-medium text-miru-dark-purple-1000">
+        <span className="w-full text-xl font-medium text-foreground">
           {currencyFormat(currency, total)}
         </span>
       </div>

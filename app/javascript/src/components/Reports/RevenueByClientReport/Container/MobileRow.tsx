@@ -21,34 +21,32 @@ const MobileRow = ({ currency, report }) => {
       <div>
         <span className="flex items-center">
           <Avatar classNameImg="mr-2 lg:mr-6" url={logo} />
-          <p className="whitespace-normal text-base font-normal text-miru-dark-purple-1000">
+          <p className="whitespace-normal text-base font-normal text-foreground">
             {name}
           </p>
         </span>
       </div>
       <div className="mt-2.5 flex justify-between">
-        <p className="text-xs font-medium text-miru-dark-purple-400">Overdue</p>
-        <p className="text-sm font-medium text-miru-dark-purple-1000">
+        <p className="text-xs font-medium text-muted-foreground">Overdue</p>
+        <p className="text-sm font-medium text-foreground">
           {currencyFormat(currency, overdueAmount)}
         </p>
       </div>
       <div className="mt-2.5 flex justify-between">
-        <p className="text-xs font-medium text-miru-dark-purple-400">
-          Outstanding
-        </p>
-        <p className="text-sm font-medium text-miru-dark-purple-1000">
+        <p className="text-xs font-medium text-muted-foreground">Outstanding</p>
+        <p className="text-sm font-medium text-foreground">
           {currencyFormat(currency, outstandingAmount)}
         </p>
       </div>
       <div className="mt-2.5 flex justify-between">
-        <p className="text-xs font-medium text-miru-dark-purple-400">Paid</p>
-        <p className="text-sm font-medium text-miru-dark-purple-1000">
+        <p className="text-xs font-medium text-muted-foreground">Paid</p>
+        <p className="text-sm font-medium text-foreground">
           {currencyFormat(currency, paidAmount)}
         </p>
       </div>
       <div className="mt-2.5 mb-5 flex justify-between">
-        <p className="text-xs font-bold text-miru-dark-purple-400">Total</p>
-        <p className="text-sm font-bold text-miru-dark-purple-1000">
+        <p className="text-xs font-bold text-muted-foreground">Total</p>
+        <p className="text-sm font-bold text-foreground">
           {currencyFormat(currency, totalAmount)}
         </p>
       </div>

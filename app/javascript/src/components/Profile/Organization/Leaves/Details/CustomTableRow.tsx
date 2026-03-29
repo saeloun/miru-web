@@ -10,19 +10,19 @@ const CustomTableRow = ({ leave, key }) => {
 
   return (
     <tr className="flex w-full" key={key}>
-      <td className="flex w-4/12 cursor-pointer items-center border-b border-miru-gray-400 py-6 pr-2">
-        <span className="text-left text-sm font-medium text-miru-dark-purple-1000">
+      <td className="flex w-4/12 cursor-pointer items-center border-b border-border py-6 pr-2">
+        <span className="text-left text-sm font-medium text-foreground">
           {customLeaveType}
         </span>
       </td>
       <td
-        className="flex w-4/12 items-center border-b border-miru-gray-400 py-6 pr-2 text-left text-sm font-medium text-miru-dark-purple-1000"
+        className="flex w-4/12 items-center border-b border-border py-6 pr-2 text-left text-sm font-medium text-foreground"
         scope="col"
       >
         {customLeaveTotal} {customAllocationPeriod}
       </td>
       <td
-        className="flex w-4/12 flex-wrap items-center break-normal border-b border-miru-gray-400 py-6 pr-2 text-left text-sm font-medium text-miru-dark-purple-1000"
+        className="flex w-4/12 flex-wrap items-center break-normal border-b border-border py-6 pr-2 text-left text-sm font-medium text-foreground"
         scope="col"
       >
         {employees.map((emp, index) => (

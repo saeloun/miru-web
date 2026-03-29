@@ -1,7 +1,6 @@
 import React from "react";
 
 import cn from "classnames";
-
 import { CustomAdvanceInput } from "common/CustomAdvanceInput";
 import { CustomTextareaAutosize } from "common/CustomTextareaAutosize";
 
@@ -21,8 +20,8 @@ const EmailPreview = ({
   );
 
   return (
-    <div className="mt-4 h-full overflow-y-auto pb-10/100 xsm:mx-auto">
-      <div className="my-6 w-full xsm:px-2 lg:px-0">
+    <div className="pb-10/100 xsm:mx-auto mt-4 h-full overflow-y-auto">
+      <div className="xsm:px-2 my-6 w-full lg:px-0">
         <CustomAdvanceInput
           id="Email ID"
           label="Recipient Email ID"
@@ -35,7 +34,7 @@ const EmailPreview = ({
             >
               {emailParams.recipients.map(recipient => (
                 <div
-                  className="space-XIcon-2 m-0.5 mr-2 flex w-fit items-center rounded-full border bg-miru-gray-400 px-2 py-1"
+                  className="space-XIcon-2 m-0.5 mr-2 flex w-fit items-center rounded-full border bg-secondary px-2 py-1"
                   key={recipient}
                 >
                   <p>{recipient}</p>
@@ -45,7 +44,7 @@ const EmailPreview = ({
           }
         />
       </div>
-      <div className="mb-6 w-full xsm:px-2 lg:px-0">
+      <div className="xsm:px-2 mb-6 w-full lg:px-0">
         <CustomTextareaAutosize
           id="subject"
           label="Subject"
@@ -62,7 +61,7 @@ const EmailPreview = ({
           }
         />
       </div>
-      <div className="mb-6 w-full overflow-auto xsm:overflow-visible xsm:px-2.5 lg:px-0">
+      <div className="xsm:overflow-visible xsm:px-2.5 mb-6 w-full overflow-auto lg:px-0">
         <CustomAdvanceInput
           id="message"
           label="Message"

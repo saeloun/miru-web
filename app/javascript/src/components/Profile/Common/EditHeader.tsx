@@ -1,9 +1,11 @@
 import React from "react";
 
-import { getYear } from "date-fns";
-import { XIcon } from "miruIcons";
-
 import CustomYearPicker from "common/CustomYearPicker";
+import { getYear } from "date-fns";
+import { X } from "phosphor-react";
+import { useLocation } from "react-router-dom";
+
+import { Button } from "../../ui/button";
 
 const EditHeader = ({
   title,
@@ -15,53 +17,59 @@ const EditHeader = ({
   showYearPicker = false,
   currentYear = getYear(new Date()),
   setCurrentYear,
-}: Iprops) => (
-  <>
-    <div className="hidden h-16 items-center justify-between bg-miru-han-purple-1000 px-10 py-4 text-white md:flex">
-      <h1 className="text-2xl font-bold text-white">{title}</h1>
-      {subTitle && <span className="pt-2 text-sm font-normal">{subTitle}</span>}
-      {showYearPicker && (
-        <CustomYearPicker
-          currentYear={currentYear}
-          setCurrentYear={setCurrentYear}
-        />
-      )}
-      <div
-        className={`mt-1 text-center ${showButtons ? "visible" : "invisible"}`}
-      >
-        <div>
-          <button
-            className="mx-1 cursor-pointer rounded-md border border-white bg-miru-han-purple-1000 px-3 py-2 font-bold text-white hover:bg-miru-han-purple-600	"
-            onClick={cancelAction}
-          >
-            Cancel
-          </button>
-          <button
-            disabled={isDisableUpdateBtn}
-            className={`mx-1 w-20 cursor-pointer rounded-md border px-3 py-2 font-bold text-miru-han-purple-1000 hover:bg-miru-han-purple-600 hover:text-white
-              ${isDisableUpdateBtn ? "bg-miru-gray-1000" : "bg-white"}`}
-            onClick={saveAction}
-          >
-            Update
-          </button>
+}: Iprops) => {
+  const location = useLocation();
+  const isSettingsPage = location.pathname.startsWith("/settings");
+
+  return (
+    <>
+      <div className="mb-6 hidden flex-col gap-4 rounded-2xl border border-border bg-card p-5 shadow-sm md:flex md:flex-row md:items-center md:justify-between">
+        <div className="space-y-1">
+          <h1 className="text-2xl font-semibold tracking-tight text-foreground">
+            {title}
+          </h1>
+          {subTitle && (
+            <p className="text-sm text-muted-foreground">{subTitle}</p>
+          )}
+        </div>
+        <div className="flex flex-wrap items-center gap-3">
+          {showYearPicker && (
+            <CustomYearPicker
+              currentYear={currentYear}
+              setCurrentYear={setCurrentYear}
+            />
+          )}
+          {showButtons && (
+            <>
+              <Button onClick={cancelAction} type="button" variant="outline">
+                Cancel
+              </Button>
+              <Button
+                disabled={isDisableUpdateBtn}
+                onClick={saveAction}
+                type="button"
+              >
+                Update
+              </Button>
+            </>
+          )}
         </div>
       </div>
-    </div>
-    <div className="flex h-12 w-full items-center justify-between bg-miru-han-purple-1000 p-3 text-miru-white-1000 shadow-c1 md:hidden md:w-0">
-      <h1 className="mx-auto w-full text-center font-manrope text-base font-medium leading-5.5">
-        {title}
-      </h1>
-      <div>
+      <div className="sticky top-0 z-20 flex h-14 w-full items-center justify-between border-b border-border bg-background/95 px-4 text-foreground backdrop-blur md:hidden">
+        <h1 className="flex-1 text-center text-base font-semibold leading-6">
+          {title}
+        </h1>
         <button
-          className="outline-none border-none bg-transparent font-manrope font-bold capitalize text-miru-han-purple-1000"
+          className="ml-3 flex h-9 w-9 items-center justify-center rounded-full border border-border bg-card text-muted-foreground transition hover:bg-accent hover:text-foreground"
           onClick={cancelAction}
+          type="button"
         >
-          <XIcon color="#fff" size={16} />
+          <X className="h-4 w-4" />
         </button>
       </div>
-    </div>
-  </>
-);
+    </>
+  );
+};
 
 interface Iprops {
   title: string;

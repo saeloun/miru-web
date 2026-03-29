@@ -1,24 +1,24 @@
-import React, { createContext, useReducer } from "react";
-
-import PropTypes from "prop-types";
+import React, { createContext, useReducer, Dispatch } from "react";
 
 import { getValueFromLocalStorage } from "utils/storage";
 
-import authReducer from "../reducers/auth";
+import authReducer, { AuthAction, AuthState } from "../reducers/auth";
 
-const AuthStateContext = createContext({});
-const AuthDispatchContext = createContext({});
+const AuthStateContext = createContext<AuthState | undefined>(undefined);
+const AuthDispatchContext = createContext<Dispatch<AuthAction> | undefined>(
+  undefined
+);
 
 const token = getValueFromLocalStorage("authToken");
 const email = getValueFromLocalStorage("authEmail");
 
-const initialState = {
+const initialState: AuthState = {
   isLoggedIn: !!token,
   authToken: token || null,
   authEmail: email || null,
 };
 
-const AuthProvider = ({ children }) => {
+const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [state, dispatch] = useReducer(authReducer, initialState);
 
   return (
@@ -30,7 +30,7 @@ const AuthProvider = ({ children }) => {
   );
 };
 
-const useAuthState = () => {
+const useAuthState = (): AuthState => {
   const context = React.useContext(AuthStateContext);
   if (context === undefined) {
     throw new Error("useAuthState must be used within a AuthProvider");
@@ -39,7 +39,7 @@ const useAuthState = () => {
   return context;
 };
 
-const useAuthDispatch = () => {
+const useAuthDispatch = (): Dispatch<AuthAction> => {
   const context = React.useContext(AuthDispatchContext);
   if (context === undefined) {
     throw new Error("useAuthDispatch must be used within a AuthProvider");
@@ -48,10 +48,9 @@ const useAuthDispatch = () => {
   return context;
 };
 
-const useAuth = () => [useAuthState(), useAuthDispatch()];
-
-AuthProvider.propTypes = {
-  children: PropTypes.node,
-};
+const useAuth = (): [AuthState, Dispatch<AuthAction>] => [
+  useAuthState(),
+  useAuthDispatch(),
+];
 
 export { AuthProvider, useAuthState, useAuthDispatch, useAuth };

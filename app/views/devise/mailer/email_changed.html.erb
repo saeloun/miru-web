@@ -1,28 +1,21 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type'/>
-    <%= render 'shared/email_styles' %>
-    <style>
-      .purple { color: #5B34EA; }
-    </style>
-  </head>
-  <body>
-    <div class="mail">
-      <div class="container">
-        <%= image_tag "Banner.png", class: "banner", alt: "Miru welcome banner" %>
-        <p class="header">Email Address Changed</p>
-        <p>Hello <%= @email %>!</p>
-        <% if @resource.respond_to?(:pending_reconfirmation?) ? @resource.pending_reconfirmation? : (@resource.respond_to?(:unconfirmed_email) && @resource.unconfirmed_email.present?) %>
-        <p>We're contacting you to notify you that your email is being changed to <b><%= @resource.unconfirmed_email %></b>.</p>
-        <% else %>
-        <p>We're contacting you to notify you that your email has been changed to <b><%= @resource.email %></b>.</p>
-        <% end %>
-        <hr />
-        <p>If you did not make this change, please contact our help center immediately at <a href="mailto:hello@saeloun.com" class="purple">hello@saeloun.com</a></p>
-        <p>Cheers,<br/>Team Miru</p>
-      </div>
-      <%= render "shared/email_footer" %>
-    </div>
-  </body>
-</html>
+<% content_for :email_preheader, "Your Miru email address has changed." %>
+<% content_for :email_eyebrow, "Account security" %>
+<% content_for :email_title, "Email address updated" %>
+<% content_for :email_subtitle do %>
+  We are confirming a change to the email address associated with your Miru account.
+<% end %>
+
+<p>Hello <strong><%= @email %></strong>,</p>
+
+<% if @resource.try(:unconfirmed_email?) %>
+  <p>Your account email is being changed to <strong><%= @resource.unconfirmed_email %></strong>.</p>
+<% else %>
+  <p>Your account email has been changed to <strong><%= @resource.email %></strong>.</p>
+<% end %>
+
+<div class="email-panel email-panel-warning">
+  <p class="email-panel-title">Did not request this change?</p>
+  <p style="margin-bottom: 0;">Contact our support team immediately at <a href="mailto:hello@saeloun.com">hello@saeloun.com</a>.</p>
+</div>
+
+<p>Cheers,<br><strong>Team Miru</strong></p>

@@ -7,11 +7,11 @@ const Recipient: React.FC<{
   handleClick: any;
   recipientsCount: any;
 }> = ({ email, handleClick, recipientsCount }) => (
-  <div className="space-XIcon-2 m-0.5 mr-2 flex w-fit items-center rounded-full border bg-miru-gray-400 px-2 py-1">
+  <div className="space-XIcon-2 m-0.5 mr-2 flex w-fit items-center rounded-full border bg-secondary px-2 py-1">
     <p>{email}</p>
     {recipientsCount > 1 && (
       <button
-        className="ml-2 text-miru-black-1000 hover:text-miru-red-400"
+        className="ml-2 text-foreground hover:text-destructive"
         type="button"
         onClick={handleClick}
       >

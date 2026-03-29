@@ -11,12 +11,12 @@ const Footer = ({ selectedRowCount, handleSubmitModal, handleSelectAll }) => {
       style={{ boxShadow: "0px 0px 40px 0px rgba(0,0,0,0.1)" }}
     >
       <div className="flex items-center pt-3">
-        <span className="text-sm font-medium text-miru-dark-purple-1000">
+        <span className="text-sm font-medium text-foreground">
           {selectedRowCount} entries selected
         </span>
         {selectedRowCount > 0 && (
           <button
-            className="tracking-wide ml-4 text-base font-medium text-miru-han-purple-1000"
+            className="tracking-wide ml-4 text-base font-medium text-primary"
             onClick={handleSelectAll}
           >
             Reset Selected Entries
@@ -27,7 +27,7 @@ const Footer = ({ selectedRowCount, handleSubmitModal, handleSelectAll }) => {
         className={`rounded py-2 px-7 text-base font-bold tracking-widest text-white
           ${
             selectedRowCount
-              ? "cursor-pointer bg-miru-han-purple-1000"
+              ? "cursor-pointer bg-primary"
               : "cursor-not-allowed border-transparent bg-indigo-100 hover:border-transparent"
           }`}
         onClick={handleSubmitModal}
@@ -41,7 +41,7 @@ const Footer = ({ selectedRowCount, handleSubmitModal, handleSelectAll }) => {
         className={`w-full rounded py-2 px-7 text-base font-bold tracking-widest text-white
           ${
             selectedRowCount
-              ? "cursor-pointer bg-miru-han-purple-1000"
+              ? "cursor-pointer bg-primary"
               : "cursor-not-allowed border-transparent bg-indigo-100 hover:border-transparent"
           }`}
         onClick={handleSubmitModal}

@@ -1,36 +1,17 @@
 # frozen_string_literal: true
-# == Schema Information
-#
-# Table name: clients
-#
-#  id           :bigint           not null, primary key
-#  address      :string
-#  currency     :string           default("USD"), not null
-#  discarded_at :datetime
-#  email        :string
-#  name         :string           not null
-#  phone        :string
-#  created_at   :datetime         not null
-#  updated_at   :datetime         not null
-#  company_id   :bigint           not null
-#  stripe_id    :string
-#
-# Indexes
-#
-#  index_clients_on_company_id            (company_id)
-#  index_clients_on_discarded_at          (discarded_at)
-#  index_clients_on_email_and_company_id  (email,company_id) UNIQUE
-#  index_clients_on_name_and_company_id   (name,company_id) UNIQUE
-#
-# Foreign Keys
-#
-#  fk_rails_...  (company_id => companies.id)
-#
-
-# frozen_string_literal: true
 
 class Client < ApplicationRecord
   include Discard::Model
+  include Searchable
+  include MetricsTracking
+
+  # Configure pg_search
+  pg_search_scope :pg_search,
+    against: [:name, :email, :phone, :address],
+    using: {
+      tsearch: { prefix: true },
+      trigram: { threshold: 0.3 }
+    }
 
   has_many :projects
   has_many :timesheet_entries, through: :projects
@@ -48,18 +29,9 @@ class Client < ApplicationRecord
   # validates :email, presence: true, uniqueness: { scope: :company_id }, format: { with: Devise.email_regexp }
 
   after_discard :discard_projects
-  after_commit :reindex_projects
-  after_commit :refresh_client_index
 
   accepts_nested_attributes_for :addresses, reject_if: :address_attributes_blank?, allow_destroy: true
   scope :with_ids, -> (client_ids) { where(id: client_ids) if client_ids.present? }
-
-  searchkick filterable: [:name, :email, :discarded_at],
-    word_middle: [:name, :email]
-
-  def reindex_projects
-    projects.reindex
-  end
 
   def total_hours_logged(time_frame = "week")
     timesheet_entries.where(
@@ -68,22 +40,25 @@ class Client < ApplicationRecord
     ).sum(:duration)
   end
 
-  def project_details(time_frame = "week")
-    projects.includes([:project_members]).kept.map do | project |
+  def project_details(time_frame = "week", duration_by_project_id: nil)
+    kept_projects = projects.kept.includes(project_members: :user)
+    duration_by_project_id ||= TimesheetEntry.kept.where(
+      project_id: kept_projects.map(&:id),
+      work_date: DateRangeService.new(timeframe: time_frame).process
+    ).group(:project_id).sum(:duration)
+
+    kept_projects.map do | project |
       {
         id: project.id,
         name: project.name,
         billable: project.billable,
         team: project.project_member_full_names,
-        minutes_spent: project.timesheet_entries.where(
-          work_date: DateRangeService.new(timeframe: time_frame).process,
-          discarded_at: nil
-        ).sum(:duration)
+        minutes_spent: duration_by_project_id.fetch(project.id, 0)
       }
     end
   end
 
-  def client_detail(time_frame = "week")
+  def client_detail(time_frame = "week", minutes_spent: nil)
     {
       id:,
       name:,
@@ -91,7 +66,7 @@ class Client < ApplicationRecord
       phone:,
       currency:,
       logo: logo_url,
-      minutes_spent: total_hours_logged(time_frame),
+      minutes_spent: minutes_spent || total_hours_logged(time_frame),
       address: current_address
     }
   end
@@ -105,16 +80,10 @@ class Client < ApplicationRecord
   def client_overdue_and_outstanding_calculation
     currency = company.base_currency
     client_currency = self.currency
-    status_and_amount = invoices.group_by(&:status).transform_values { |invoices|
-      invoices.sum { |invoice|
-        invoice.base_currency_amount.to_f > 0.00 ? invoice.base_currency_amount : invoice.amount
-      }
-    }
-    status_and_amount.default = 0
-    outstanding_amount = status_and_amount["sent"] + status_and_amount["viewed"] + status_and_amount["overdue"]
+    amounts = InvoiceAmountsSummary.process(invoices.kept)
     {
-      overdue_amount: status_and_amount["overdue"],
-      outstanding_amount:,
+      overdue_amount: amounts[:overdue_amount],
+      outstanding_amount: amounts[:outstanding_amount],
       currency:,
       client_currency:
     }
@@ -139,16 +108,11 @@ class Client < ApplicationRecord
   end
 
   def payment_summary(duration)
-    status_and_amount = invoices.kept.during(duration).group_by(&:status).transform_values { |invoices|
-      invoices.sum { |invoice|
-        invoice.base_currency_amount.to_f > 0.00 ? invoice.base_currency_amount : invoice.amount
-      }
-    }
-    status_and_amount.default = 0
+    amounts = InvoiceAmountsSummary.process(invoices.kept.during(duration))
     {
-      paid_amount: status_and_amount["paid"],
-      outstanding_amount: status_and_amount["sent"] + status_and_amount["viewed"],
-      overdue_amount: status_and_amount["overdue"]
+      paid_amount: invoices.kept.during(duration).paid.sum(Arel.sql(InvoiceAmountsSummary::FULL_AMOUNT_SQL)).to_f.round(2),
+      outstanding_amount: amounts[:outstanding_amount],
+      overdue_amount: amounts[:overdue_amount]
     }
   end
 
@@ -159,18 +123,12 @@ class Client < ApplicationRecord
       .includes(:company)
       .select { |invoice| outstanding_overdue_statuses.include?(invoice.status) }
 
-    status_and_amount = invoices.kept.group_by(&:status).transform_values { |invoices|
-      invoices.sum { |invoice|
-        invoice.base_currency_amount.to_f > 0.00 ? invoice.base_currency_amount : invoice.amount
-      }
-    }
-
-    status_and_amount.default = 0
+    amounts = InvoiceAmountsSummary.process(invoices.kept)
 
     {
       invoices: filtered_invoices,
-      total_outstanding_amount: status_and_amount["sent"] + status_and_amount["viewed"],
-      total_overdue_amount: status_and_amount["overdue"]
+      total_outstanding_amount: amounts[:outstanding_amount] - amounts[:overdue_amount],
+      total_overdue_amount: amounts[:overdue_amount]
     }
   end
 
@@ -186,9 +144,6 @@ class Client < ApplicationRecord
     current_address&.formatted_address
   end
 
-  def refresh_client_index
-    Client.search_index.refresh
-  end
 
   def client_members_emails
     client_members.kept.includes(:user).pluck("users.email")

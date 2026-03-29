@@ -2,7 +2,6 @@ import React from "react";
 
 import { ReportsIcon } from "miruIcons";
 import { Badge, Tooltip } from "StyledComponents";
-
 import getStatusCssClass from "utils/getBadgeStatus";
 
 const Header = ({
@@ -16,7 +15,9 @@ const Header = ({
   <div className="mt-6 mb-3 sm:flex sm:items-center sm:justify-between">
     <div className="flex flex-row">
       <div className="mr-2 flex self-center">
-        <p className="text-4xl font-bold">Invoice #{invoice.invoice_number}</p>
+        <p className="text-2xl font-semibold tracking-tight">
+          Invoice #{invoice.invoice_number}
+        </p>
       </div>
       <div className="ml-2 flex self-center">
         <Badge
@@ -40,7 +41,7 @@ const Header = ({
                 <div className="mr-1">
                   <ReportsIcon color="white" size={16} weight="bold" />
                 </div>
-                <p className="ml-1 text-base font-bold tracking-widest text-miru-white-1000">
+                <p className="ml-1 text-base font-bold tracking-widest text-primary-foreground">
                   PAY
                 </p>
               </div>
@@ -53,7 +54,7 @@ const Header = ({
               ${
                 invoice.status == "paid"
                   ? "cursor-not-allowed bg-indigo-100"
-                  : "bg-miru-han-purple-1000"
+                  : "bg-primary"
               }`}
             onClick={() => {
               if (invoice.status != "paid") {
@@ -72,7 +73,7 @@ const Header = ({
               <div className="mr-1">
                 <ReportsIcon color="white" size={16} weight="bold" />
               </div>
-              <p className="ml-1 text-base font-bold tracking-widest text-miru-white-1000">
+              <p className="ml-1 text-base font-bold tracking-widest text-primary-foreground">
                 PAY
               </p>
             </div>

@@ -4,27 +4,7 @@ RSpec.configure do |config|
   config.before(:suite) do
     DatabaseCleaner.allow_remote_database_url = true
     DatabaseCleaner.url_allowlist = [ENV["DATABASE_URL"]]
-
-    # Disconnect all active connections to avoid deadlocks
-    ActiveRecord::Base.connection_pool.disconnect!
-
-    # Retry truncation if deadlock occurs
-    retries = 3
-    begin
-      DatabaseCleaner.clean_with :truncation, except: %w(ar_internal_metadata)
-    rescue ActiveRecord::Deadlocked => e
-      retries -= 1
-      if retries > 0
-        Rails.logger.warn("Deadlock detected during database cleanup, retrying... (#{retries} attempts left)")
-        sleep(0.5)
-        retry
-      else
-        raise e
-      end
-    end
-
-    # Reconnect after cleanup
-    ActiveRecord::Base.establish_connection
+    DatabaseCleaner.clean_with :truncation, except: %w(ar_internal_metadata)
   end
 
   config.before do
@@ -32,17 +12,23 @@ RSpec.configure do |config|
   end
 
   config.before(:each, type: :system) do
-    # Driver is probably for an external browser with an app
-    # under test that does *not* share a database connection with the
-    # specs, so use truncation strategy.
-    DatabaseCleaner.strategy = :truncation
+    DatabaseCleaner.strategy = [:truncation, { except: %w(ar_internal_metadata) }]
   end
 
   config.before do
-    DatabaseCleaner.start
+    DatabaseCleaner.start unless RSpec.current_example.metadata[:type] == :system
   end
 
   config.append_after do
-    DatabaseCleaner.clean
+    DatabaseCleaner.clean unless RSpec.current_example.metadata[:type] == :system
+  end
+
+  config.before(:each, type: :system) do
+    DatabaseCleaner.clean_with :truncation, except: %w(ar_internal_metadata)
+  end
+
+  config.append_after(:each, type: :system) do
+    Capybara.reset_sessions!
+    Warden.test_reset!
   end
 end

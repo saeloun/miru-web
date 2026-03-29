@@ -1,18 +1,23 @@
 import React, { useState, useRef, useEffect } from "react";
 
-import dayjs from "dayjs";
-import { currencyFormat, useOutsideClick } from "helpers";
-import { CalendarIcon, XIcon } from "miruIcons";
-import { Button, MobileMoreOptions, Modal, Toastr } from "StyledComponents";
-
-import payment from "apis/payments/payments";
+import { payment } from "apis/api";
 import CustomDatePicker from "common/CustomDatePicker";
 import { CustomInputText } from "common/CustomInputText";
-import CustomReactSelect from "common/CustomReactSelect";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../ui/select";
 import { CustomTextareaAutosize } from "common/CustomTextareaAutosize";
 import { transactionTypes } from "components/payments/Modals/constants";
 import { useUserContext } from "context/UserContext";
+import dayjs from "dayjs";
+import { currencyFormat, useOutsideClick } from "helpers";
 import { mapPayment } from "mapper/payment.mapper";
+import { CalendarIcon, XIcon } from "miruIcons";
+import { Button, MobileMoreOptions, Modal, Toastr } from "StyledComponents";
 
 const MarkInvoiceAsPaidModal = ({
   invoice,
@@ -94,13 +99,13 @@ const MarkInvoiceAsPaidModal = ({
             <CustomInputText
               disabled
               id="invoice"
-              inputBoxClassName="form__input block w-full appearance-none bg-white p-4 text-base h-12 focus-within:border-miru-han-purple-1000 border-miru-gray-1000 cursor-not-allowed"
+              inputBoxClassName="form__input block w-full appearance-none bg-white p-4 text-base h-12 focus-within:border-primary border-border cursor-not-allowed"
               label="Invoice"
-              labelClassName="absolute top-0.5 left-1 h-6 z-1 origin-0 bg-white p-2 text-base font-medium duration-300 text-miru-dark-purple-200"
+              labelClassName="absolute top-0.5 left-1 h-6 z-1 origin-0 bg-white p-2 text-base font-medium duration-300 text-muted-foreground"
               name="invoice"
               type="text"
               value={client}
-              onChange={() => {}} //eslint-disable-line
+              onChange={() => {}}
             />
           </div>
         </div>
@@ -120,11 +125,11 @@ const MarkInvoiceAsPaidModal = ({
             name="transactionDate"
             type="text"
             value={transactionDate && dayjs(transactionDate).format(dateFormat)}
-            onChange={() => {}} //eslint-disable-line
+            onChange={() => {}}
           />
           <CalendarIcon
             className="absolute top-0 bottom-0 right-1 mx-2 my-3 cursor-pointer "
-            color="#5B34EA"
+            color="#5E58F1"
             size={20}
           />
         </div>
@@ -137,36 +142,57 @@ const MarkInvoiceAsPaidModal = ({
       </div>
       <div className="relative mt-4">
         {isDesktop ? (
-          <CustomReactSelect
-            isSearchable
-            handleOnChange={e => setTransactionType(e.value)}
-            label="Transaction Type"
-            name="transactionType"
-            options={transactionTypes}
-            value={transactionTypes.find(type => type.value == transactionType)}
-          />
+          <div className="field relative">
+            <label className="absolute -top-1 left-0 z-1 ml-3 origin-0 bg-white px-1 text-xsm font-medium text-muted-foreground duration-300">
+              Transaction Type
+            </label>
+            <Select
+              value={transactionType || ""}
+              onValueChange={value => setTransactionType(value)}
+            >
+              <SelectTrigger className="mt-1">
+                <SelectValue placeholder="Select transaction type..." />
+              </SelectTrigger>
+              <SelectContent>
+                {transactionTypes.map((type: any) => (
+                  <SelectItem key={type.value} value={type.value}>
+                    {type.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         ) : (
           <>
-            <CustomReactSelect
-              isDisabled={showTransactionTypes}
-              label="Transaction Type"
-              name="transactionType"
-              options={transactionTypes}
-              value={transactionTypes.find(
-                type => type.value == transactionType
-              )}
-              onMenuOpen={() => {
-                setShowTransactionTypes(true);
-              }}
-            />
+            <div className="field relative">
+              <label className="absolute -top-1 left-0 z-1 ml-3 origin-0 bg-white px-1 text-xsm font-medium text-muted-foreground duration-300">
+                Transaction Type
+              </label>
+              <div
+                className="mt-1 flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm cursor-pointer"
+                onClick={() => setShowTransactionTypes(true)}
+              >
+                <span
+                  className={`${
+                    transactionType ? "" : "text-muted-foreground"
+                  }`}
+                >
+                  {transactionType
+                    ? transactionTypes.find(
+                        type => type.value == transactionType
+                      )?.label
+                    : "Select transaction type..."}
+                </span>
+              </div>
+            </div>
             <MobileMoreOptions
-              className="h-3/4 w-full overflow-scroll md:h-3/5 md:w-3/4 lg:h-1/4"
+              className="max-h-[70vh] w-full overflow-y-auto md:max-h-[60vh] md:w-3/4 lg:max-h-[40vh]"
               setVisibilty={setShowTransactionTypes}
               visibilty={showTransactionTypes}
             >
               {transactionTypes.map((transaction, index) => (
                 <li
-                  className="flex items-center pb-5 font-manrope text-sm font-normal capitalize leading-5 text-miru-dark-purple-1000 hover:bg-miru-gray-100"
+                  className="flex items-center pb-5 font-sans text-sm font-normal capitalize leading-5 text-foreground hover:bg-muted"
                   key={index}
                   onClick={() => {
                     if (transaction?.value) {
@@ -186,13 +212,13 @@ const MarkInvoiceAsPaidModal = ({
         <CustomInputText
           disabled
           id="paymentAmount"
-          inputBoxClassName="form__input block w-full appearance-none bg-white p-4 text-base h-12 focus-within:border-miru-han-purple-1000 border-miru-gray-1000 cursor-not-allowed"
+          inputBoxClassName="form__input block w-full appearance-none bg-white p-4 text-base h-12 focus-within:border-primary border-border cursor-not-allowed"
           label="Payment amount"
-          labelClassName="absolute top-0.5 left-1 h-6 z-1 origin-0 bg-white p-2 text-base font-medium duration-300 text-miru-dark-purple-200"
+          labelClassName="absolute top-0.5 left-1 h-6 z-1 origin-0 bg-white p-2 text-base font-medium duration-300 text-muted-foreground"
           name="paymentAmount"
           type="text"
           value={amount && baseCurrency && currencyFormat(baseCurrency, amount)}
-          onChange={() => {}} //eslint-disable-line
+          onChange={() => {}}
         />
       </div>
       <div className="mt-4">
@@ -209,7 +235,7 @@ const MarkInvoiceAsPaidModal = ({
       <div className="actions mx-auto mt-4 mb-4 w-full">
         {invoice && transactionDate && transactionType && amount ? (
           <Button
-            className="focus:outline-none flex h-10 w-full cursor-pointer items-center justify-center rounded border border-transparent bg-miru-han-purple-1000 py-1 px-4 font-sans text-base font-medium uppercase tracking-widest text-miru-white-1000 shadow-sm hover:bg-miru-han-purple-600"
+            className="focus:outline-none flex h-10 w-full cursor-pointer items-center justify-center rounded border border-transparent bg-primary py-1 px-4 font-sans text-base font-medium uppercase tracking-widest text-primary-foreground shadow-sm hover:bg-primary/90"
             disabled={isLoading}
             size="medium"
             type="submit"
@@ -223,7 +249,7 @@ const MarkInvoiceAsPaidModal = ({
         ) : (
           <Button
             disabled
-            className="focus:outline-none flex h-10 w-full cursor-not-allowed items-center justify-center rounded border border-transparent bg-miru-gray-1000 py-1 px-4 font-sans text-base font-medium uppercase tracking-widest text-miru-white-1000 shadow-sm"
+            className="focus:outline-none flex h-10 w-full cursor-not-allowed items-center justify-center rounded border border-transparent bg-secondary py-1 px-4 font-sans text-base font-medium uppercase tracking-widest text-primary-foreground shadow-sm"
             size="medium"
             type="submit"
           >

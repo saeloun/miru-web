@@ -1,0 +1,19 @@
+<% content_for :email_preheader, "Your reimbursement request has been marked as paid." %>
+<% content_for :email_eyebrow, "Expenses" %>
+<% content_for :email_title, "Reimbursement paid" %>
+<% content_for :email_subtitle do %>
+  Payment for your reimbursement request has been completed.
+<% end %>
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="detail-grid">
+  <tr>
+    <%= render "shared/mailer/detail_card", label: "Amount", value: FormatAmountService.new(@company.base_currency, @expense.amount).process %>
+    <%= render "shared/mailer/detail_card", label: "Category", value: @expense.display_category_name.presence || "-" %>
+  </tr>
+  <tr>
+    <%= render "shared/mailer/detail_card", label: "Date", value: @expense.formatted_date %>
+    <%= render "shared/mailer/detail_card", label: "Description", value: @expense.description.presence || "-" %>
+  </tr>
+</table>
+
+<%= render "shared/mailer/button", href: @expense_url, label: "View expense" %>

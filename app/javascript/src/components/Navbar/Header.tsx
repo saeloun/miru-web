@@ -1,13 +1,15 @@
+import { Roles, Paths } from "constants/index";
+
 import React from "react";
 
+import useThemeMode from "common/useThemeMode";
+import { useUserContext } from "context/UserContext";
 import { MiruLogoSVG } from "miruIcons";
 import { Link } from "react-router-dom";
 
-import { Roles, Paths } from "constants/index";
-import { useUserContext } from "context/UserContext";
-
 const Header = () => {
   const { user, companyRole } = useUserContext();
+  const themeMode = useThemeMode();
 
   const rootPath = () => {
     if (!user) {
@@ -37,9 +39,18 @@ const Header = () => {
   };
 
   return (
-    <div className="flex h-20 items-center justify-center bg-miru-gray-100">
+    <div className="relative flex h-20 items-center justify-center bg-muted">
       <Link to={rootPath()}>
-        <img alt="miru-logo" height="64px" src={MiruLogoSVG} width="64px" />
+        <img
+          alt="Miru"
+          className="transition"
+          height="64px"
+          src={MiruLogoSVG}
+          style={{
+            filter: themeMode === "dark" ? "brightness(0) invert(1)" : "none",
+          }}
+          width="64px"
+        />
       </Link>
     </div>
   );

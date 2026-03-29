@@ -1,50 +1,106 @@
+import { Roles, Paths } from "constants/index";
+import React, { lazy } from "react";
+
 import ErrorPage from "common/Error";
 import EmailVerification from "components/Authentication/EmailVerification";
 import EmailVerificationSuccess from "components/Authentication/EmailVerification/EmailVerificationSuccess";
 import ForgotPassword from "components/Authentication/ForgotPassword";
+import ResetPassword from "components/Authentication/ResetPassword";
 import SignIn from "components/Authentication/SignIn";
 import SignUp from "components/Authentication/SignUp";
-import ExpenseDetails from "components/Expenses/Details";
-import Expenses from "components/Expenses/List";
 import InvoiceEmail from "components/InvoiceEmail";
-import InvoicesRouteConfig from "components/Invoices/InvoicesRouteConfig";
-import LeaveManagement from "components/LeaveManagement";
 import Success from "components/payments/Success";
-import ProfileRouteConfig from "components/Profile/Layout/RouteConfig";
-import Projects from "components/Projects";
-import AccountsAgingReport from "components/Reports/AccountsAgingReport";
 import InvalidLink from "components/Team/List/InvalidLink";
-import TeamsRouteConfig from "components/Team/TeamsRouteConfig";
-import { Roles, Paths } from "constants/index";
+import ReportsAccessGate from "../components/Reports/AccessGate";
 
-import Clients from "../components/Clients";
-import ClientDetails from "../components/Clients/Details";
-import Payments from "../components/payments";
-import ProjectDetails from "../components/Projects/Details";
-import ReportList from "../components/Reports/List";
-import OutstandingInvoiceReport from "../components/Reports/OutstandingInvoiceReport";
-import RevenueByClientReport from "../components/Reports/RevenueByClientReport";
-import TimeEntryReports from "../components/Reports/TimeEntryReport";
-import TotalHoursReport from "../components/Reports/totalHoursLogged";
-import PlanSelection from "../components/Subscriptions/PlanSelection";
-import TimesheetEntries from "../components/TimesheetEntries";
+const DashboardHome = lazy(
+  () => import("../components/Dashboard/DashboardHome")
+);
+const ClientsTable = lazy(() => import("../components/Clients/ClientsTable"));
+const ClientDetails = lazy(() => import("../components/Clients/Details"));
+const ExpenseDetails = lazy(() => import("components/Expenses/Details"));
+const ExpensesTable = lazy(() => import("components/Expenses/ExpensesTable"));
+const InvoicesRouteConfig = lazy(
+  () => import("components/Invoices/RouteConfig")
+);
+const LeaveManagement = lazy(() => import("components/LeaveManagement"));
+const ProfileRouteConfig = lazy(
+  () => import("components/Profile/Layout/RouteConfig")
+);
+const ProjectsTable = lazy(() => import("components/Projects/ProjectsTable"));
+const ProjectDetails = lazy(() => import("../components/Projects/Details"));
+const AccountsAgingReport = lazy(
+  () => import("components/Reports/AccountsAgingReport")
+);
+const TeamsRouteConfig = lazy(() => import("components/Team/TeamsRouteConfig"));
+const PaymentsTable = lazy(
+  () => import("../components/payments/PaymentsTable")
+);
+const ReportsTable = lazy(() => import("../components/Reports/ReportsTable"));
+const OutstandingInvoiceReport = lazy(
+  () => import("../components/Reports/OutstandingInvoiceReport")
+);
+
+const RevenueByClientReport = lazy(
+  () => import("../components/Reports/RevenueByClientReport")
+);
+
+const TimeEntryReports = lazy(
+  () => import("../components/Reports/TimeEntryReport")
+);
+
+const TotalHoursReport = lazy(
+  () => import("../components/Reports/totalHoursLogged")
+);
+
+const PaymentReport = lazy(
+  () => import("../components/Reports/PaymentReport/CleanPaymentReport")
+);
+
+const PlanSelection = lazy(
+  () => import("../components/Subscriptions/PlanSelection")
+);
+const TimeTracking = lazy(() => import("../components/TimeTracking"));
+
+const withReportsGate = Component => props =>
+  React.createElement(
+    ReportsAccessGate,
+    null,
+    React.createElement(Component, props)
+  );
+
+const DashboardRoutes = [
+  { path: "", Component: DashboardHome },
+  { path: "*", Component: ErrorPage },
+];
 
 const ClientsRoutes = [
-  { path: "", Component: Clients },
+  { path: "", Component: ClientsTable },
   { path: ":clientId", Component: ClientDetails },
 ];
 
 const ReportsRoutes = [
-  { path: "", Component: ReportList },
-  { path: "time-entry", Component: TimeEntryReports },
-  { path: "revenue-by-client", Component: RevenueByClientReport },
-  { path: "outstanding-overdue-invoice", Component: OutstandingInvoiceReport },
-  { path: "total-hours", Component: TotalHoursReport },
-  { path: "accounts-aging", Component: AccountsAgingReport },
+  { path: "", Component: withReportsGate(ReportsTable) },
+  { path: "time-entry", Component: withReportsGate(TimeEntryReports) },
+  {
+    path: "revenue-by-client",
+    Component: withReportsGate(RevenueByClientReport),
+  },
+  {
+    path: "outstanding-overdue-invoices",
+    Component: withReportsGate(OutstandingInvoiceReport),
+  },
+  {
+    path: "outstanding-overdue-invoice",
+    Component: withReportsGate(OutstandingInvoiceReport),
+  },
+  { path: "total-hours", Component: withReportsGate(TotalHoursReport) },
+  { path: "accounts-aging", Component: withReportsGate(AccountsAgingReport) },
+  { path: "payments", Component: withReportsGate(PaymentReport) },
 ];
 
 const ProjectsRoutes = [
-  { path: "", Component: Projects },
+  { path: "", Component: ProjectsTable },
   { path: ":projectId", Component: ProjectDetails },
   { path: "*", Component: ErrorPage },
 ];
@@ -55,30 +111,28 @@ const SubscriptionsRoutes = [
 ];
 
 const PaymentsRoutes = [
-  { path: "", Component: Payments },
+  { path: "", Component: PaymentsTable },
   { path: "*", Component: ErrorPage },
 ];
 
 const TimeTrackingRoutes = [
-  { path: "", Component: TimesheetEntries },
+  { path: "", Component: TimeTracking },
   { path: "*", Component: ErrorPage },
 ];
 
 const LeaveManagementRoutes = [
-  { path: "", Component: LeaveManagement },
+  { path: "leaves", Component: LeaveManagement },
   { path: "*", Component: ErrorPage },
 ];
 
-const TeamRoutes = [{ path: "*", Component: ProfileRouteConfig }];
-
-const TeamsRoutes = [{ path: "*", Component: TeamsRouteConfig }];
+const TeamRoutes = [{ path: "*", Component: TeamsRouteConfig }];
 
 const InvoiceRoutes = [{ path: "*", Component: InvoicesRouteConfig }];
 
 const SettingsRoutes = [{ path: "*", Component: ProfileRouteConfig }];
 
 const ExpenseRoutes = [
-  { path: "", Component: Expenses },
+  { path: "", Component: ExpensesTable },
   { path: ":expenseId", Component: ExpenseDetails },
   { path: "*", Component: ErrorPage },
 ];
@@ -101,6 +155,14 @@ export const AUTH_ROUTES = [
   {
     path: "/password/new",
     component: ForgotPassword,
+  },
+  {
+    path: "/password/edit",
+    component: ResetPassword,
+  },
+  {
+    path: "/users/password/edit",
+    component: ResetPassword,
   },
   {
     path: "/email_confirmation",
@@ -129,9 +191,14 @@ export const PUBLIC_ROUTES = [
 
 export const ROUTES = [
   {
+    path: Paths.DASHBOARD,
+    subRoutes: DashboardRoutes,
+    authorisedRoles: [ADMIN, OWNER, BOOK_KEEPER],
+  },
+  {
     path: Paths.CLIENTS,
     subRoutes: ClientsRoutes,
-    authorisedRoles: [ADMIN, OWNER, EMPLOYEE],
+    authorisedRoles: [ADMIN, OWNER],
   },
   {
     path: Paths.INVOICES,
@@ -164,14 +231,9 @@ export const ROUTES = [
     authorisedRoles: [ADMIN, OWNER, EMPLOYEE],
   },
   {
-    path: Paths.TEAMS,
-    subRoutes: TeamsRoutes,
-    authorisedRoles: [ADMIN, OWNER, EMPLOYEE],
-  },
-  {
     path: Paths.TEAM,
     subRoutes: TeamRoutes,
-    authorisedRoles: [ADMIN, OWNER, EMPLOYEE],
+    authorisedRoles: [ADMIN, OWNER],
   },
   {
     path: Paths.SETTINGS,
@@ -181,11 +243,6 @@ export const ROUTES = [
   {
     path: Paths.EXPENSES,
     subRoutes: ExpenseRoutes,
-    authorisedRoles: [ADMIN, OWNER, BOOK_KEEPER],
-  },
-  {
-    path: Paths.Leave_Management,
-    subRoutes: LeaveManagementRoutes,
-    authorisedRoles: [ADMIN, OWNER, EMPLOYEE],
+    authorisedRoles: [ADMIN, OWNER, BOOK_KEEPER, EMPLOYEE],
   },
 ];

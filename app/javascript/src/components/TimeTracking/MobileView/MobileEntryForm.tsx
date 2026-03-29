@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 import React, { useState, useRef, useEffect } from "react";
 
 import dayjs from "dayjs";
@@ -20,12 +19,12 @@ import {
   TimeInput,
 } from "StyledComponents";
 
-import CustomCheckbox from "common/CustomCheckbox";
 import CustomDatePicker from "common/CustomDatePicker";
 import { CustomInputText } from "common/CustomInputText";
 import { CustomTextareaAutosize } from "common/CustomTextareaAutosize";
+import { useUserContext } from "../../../context/UserContext";
 
-import DeleteEntryModal from "./DeleteEntryModal";
+import DeleteEntryModal from "common/DeleteEntryModal";
 
 const AddEntryMobile = ({
   project,
@@ -36,8 +35,8 @@ const AddEntryMobile = ({
   clients,
   note,
   setNote,
-  billable,
-  setBillable,
+  taskType,
+  setTaskType,
   selectedDate,
   setSelectedDate,
   duration,
@@ -51,6 +50,9 @@ const AddEntryMobile = ({
   submitting,
   setSubmitting,
 }) => {
+  const { company } = useUserContext();
+  const dateFormat =
+    company?.date_format || company?.dateFormat || "MM-DD-YYYY";
   const [showClientList, setShowClientList] = useState<boolean>(false);
   const [clientList, setClientList] = useState<any>(clients);
   const [projectList, setProjectList] = useState<any>(projects[client]);
@@ -59,7 +61,7 @@ const AddEntryMobile = ({
   const [projectSearchQuery, setProjectSearchQuery] = useState<string>("");
   const [showDatePicker, setShowDatePicker] = useState<boolean>(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
-  const [isProjectBillable, setIsProjectBillable] = useState<boolean>(false);
+  const [showTaskTypeList, setShowTaskTypeList] = useState<boolean>(false);
   const datePickerRef = useRef(null);
   const debouncedSearchQuery = useDebounce(searchQuery, 500);
   const debouncedProjectSearchQuery = useDebounce(projectSearchQuery, 500);
@@ -95,17 +97,25 @@ const AddEntryMobile = ({
     setProjectList(projects[client]);
   }, [client]);
 
-  useEffect(() => {
-    if (projects[client]) {
-      const selectedProject = projects[client].find(
-        currentProject => currentProject.name === project
-      );
-      setIsProjectBillable(selectedProject?.billable);
-    }
-  }, [project, client]);
+  const taskTypes = [
+    { value: "development", label: "Development" },
+    { value: "meeting", label: "Meeting" },
+    { value: "research", label: "Research" },
+    { value: "planning", label: "Planning" },
+    { value: "testing", label: "Testing" },
+    { value: "documentation", label: "Documentation" },
+    { value: "review", label: "Code Review" },
+    { value: "debugging", label: "Debugging" },
+    { value: "deployment", label: "Deployment" },
+    { value: "support", label: "Support" },
+    { value: "training", label: "Training" },
+    { value: "other", label: "Other" },
+  ];
 
-  const handleBillableCheck = () => {
-    if (isProjectBillable) setBillable(!billable);
+  const getTaskTypeLabel = value => {
+    const taskType = taskTypes.find(type => type.value === value);
+
+    return taskType ? taskType.label : value;
   };
 
   const handleDatePicker = date => {
@@ -159,15 +169,12 @@ const AddEntryMobile = ({
         WrapperClassname="z-50 justify-content-between lg:hidden bg-white"
         setFilterVisibilty={setNewEntryView}
       >
-        <SidePanel.Header className="mb-2 flex items-center justify-between bg-miru-han-purple-1000 px-5 py-5 text-white lg:bg-white lg:font-bold lg:text-miru-dark-purple-1000">
+        <SidePanel.Header className="mb-2 flex items-center justify-between bg-primary px-5 py-5 text-white lg:bg-white lg:font-bold lg:text-foreground">
           <span className="flex w-full items-center justify-center pl-6 text-base font-medium leading-5">
             {editEntryId ? "Edit Time Entry" : "New Time Entry"}
           </span>
           <Button style="ternary" onClick={handleClose}>
-            <XIcon
-              className="text-white lg:text-miru-dark-purple-1000"
-              size={16}
-            />
+            <XIcon className="text-white lg:text-foreground" size={16} />
           </Button>
         </SidePanel.Header>
         <SidePanel.Body className="sidebar__filters flex h-full flex-col justify-between overflow-y-auto px-4">
@@ -191,7 +198,7 @@ const AddEntryMobile = ({
                   />
                   <CaretDownIcon
                     className="absolute top-0 bottom-0 right-1 mx-2 my-3 "
-                    color="#5B34EA"
+                    color="#5E58F1"
                     size={20}
                     weight="bold"
                   />
@@ -208,8 +215,8 @@ const AddEntryMobile = ({
                           placeholder="Search"
                           type="text"
                           value={searchQuery}
-                          className="focus:outline-none w-full rounded bg-miru-gray-100 p-2
-            text-sm font-medium focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
+                          className="focus:outline-none w-full rounded bg-muted p-2
+            text-sm font-medium focus:border-border focus:ring-1 focus:ring-ring"
                           onChange={e => {
                             setSearchQuery(e.target.value);
                           }}
@@ -234,7 +241,7 @@ const AddEntryMobile = ({
                       clientList.map((eachClient, index) => (
                         <li
                           key={index}
-                          className={`flex items-center px-2 pt-3 text-sm leading-5 text-miru-dark-purple-1000 hover:bg-miru-gray-100 ${
+                          className={`flex items-center px-2 pt-3 text-sm leading-5 text-foreground hover:bg-muted ${
                             eachClient.name == client
                               ? "font-bold"
                               : "font-normal"
@@ -274,7 +281,7 @@ const AddEntryMobile = ({
                   />
                   <CaretDownIcon
                     className="absolute top-0 bottom-0 right-1 mx-2 my-3 "
-                    color="#5B34EA"
+                    color="#5E58F1"
                     size={20}
                     weight="bold"
                   />
@@ -291,8 +298,8 @@ const AddEntryMobile = ({
                           placeholder="Search"
                           type="text"
                           value={projectSearchQuery}
-                          className="focus:outline-none w-full rounded bg-miru-gray-100 p-2
-            text-sm font-medium focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
+                          className="focus:outline-none w-full rounded bg-muted p-2
+            text-sm font-medium focus:border-border focus:ring-1 focus:ring-ring"
                           onChange={e => {
                             setProjectSearchQuery(e.target.value);
                           }}
@@ -317,7 +324,7 @@ const AddEntryMobile = ({
                       projectList.map((eachProject, index) => (
                         <li
                           key={index}
-                          className={`flex items-center px-2 pt-3 text-sm leading-5 text-miru-dark-purple-1000 hover:bg-miru-gray-100 ${
+                          className={`flex items-center px-2 pt-3 text-sm leading-5 text-foreground hover:bg-muted ${
                             eachProject.name == project
                               ? "font-bold"
                               : "font-normal"
@@ -370,7 +377,7 @@ const AddEntryMobile = ({
                   />
                   <CalendarIcon
                     className="absolute top-0 bottom-0 right-1 mx-2 my-3 "
-                    color="#5B34EA"
+                    color="#5E58F1"
                     size={20}
                     weight="bold"
                   />
@@ -385,37 +392,67 @@ const AddEntryMobile = ({
                 )}
               </div>
               <div className="py-3">
-                <CustomCheckbox
-                  checkboxValue={1}
-                  handleCheck={handleBillableCheck}
-                  id={1}
-                  isChecked={billable}
-                  text="Billable"
-                  wrapperClassName="flex items-center m-auto p-2"
-                  labelClassName={`${
-                    isProjectBillable
-                      ? "text-miru-dark-purple-1000"
-                      : "text-miru-gray-1000"
-                  } text-sm font-medium`}
-                />
+                <div
+                  className="relative flex w-full flex-col"
+                  onClick={() => {
+                    setShowTaskTypeList(true);
+                  }}
+                >
+                  <CustomInputText
+                    disabled={showTaskTypeList}
+                    id="TaskType"
+                    label="Task Type"
+                    name="TaskType"
+                    type="text"
+                    value={getTaskTypeLabel(taskType)}
+                  />
+                  <CaretDownIcon
+                    className="absolute top-0 bottom-0 right-1 mx-2 my-3"
+                    color="#5E58F1"
+                    size={20}
+                    weight="bold"
+                  />
+                </div>
+                {showTaskTypeList && (
+                  <MobileMoreOptions
+                    className="h-1/2"
+                    setVisibilty={setShowTaskTypeList}
+                    visibilty={showTaskTypeList}
+                  >
+                    {taskTypes.map((type, index) => (
+                      <li
+                        key={index}
+                        className={`flex items-center px-2 pt-3 text-sm leading-5 text-foreground hover:bg-muted ${
+                          type.value === taskType ? "font-bold" : "font-normal"
+                        }`}
+                        onClick={() => {
+                          setTaskType(type.value);
+                          setShowTaskTypeList(false);
+                        }}
+                      >
+                        {type.label}
+                      </li>
+                    ))}
+                  </MobileMoreOptions>
+                )}
               </div>
-              <div className="flex items-center justify-between rounded border border-miru-gray-1000">
+              <div className="flex items-center justify-between rounded border border-border">
                 <Button style="ternary" onClick={handleDecreaseTime}>
                   <MinusIcon
-                    className="m-4 text-miru-dark-purple-1000"
+                    className="m-4 text-foreground"
                     size={20}
                     weight="bold"
                   />
                 </Button>
                 <TimeInput
-                  className="focus:outline-none w-1/2 cursor-pointer rounded text-center text-xl font-bold text-miru-dark-purple-1000 placeholder:text-miru-dark-purple-200 focus:border-miru-gray-1000 focus:bg-white focus:ring-1 focus:ring-miru-gray-1000"
+                  className="focus:outline-none w-full max-w-[10rem] cursor-pointer rounded text-center text-xl font-bold text-foreground placeholder:text-muted-foreground focus:border-border focus:bg-white focus:ring-1 focus:ring-ring"
                   initTime={duration}
                   name="timeInput"
                   onTimeChange={handleDurationChange}
                 />
                 <Button style="ternary" onClick={handleIncreaseTime}>
                   <PlusIcon
-                    className="m-4 text-miru-dark-purple-1000"
+                    className="m-4 text-foreground"
                     size={20}
                     weight="bold"
                   />
@@ -423,25 +460,22 @@ const AddEntryMobile = ({
               </div>
             </div>
             {editEntryId ? (
-              <div className="flex w-full items-center justify-between">
+              <div className="flex w-full items-center gap-2">
                 <Button
-                  className="mr-1 flex w-1/2 items-center justify-center py-2 px-10/100"
+                  className="flex w-1/2 items-center justify-center py-2"
                   style="secondary"
                   onClick={handleDuplicate}
                 >
-                  <CopyIcon
-                    className="mr-2 text-miru-han-purple-1000"
-                    size={20}
-                  />
+                  <CopyIcon className="mr-2 text-primary" size={20} />
                   <span className="font-bold">Duplicate</span>
                 </Button>
                 <Button
-                  className="ml-1 flex w-1/2 items-center justify-center rounded border border-miru-red-400 py-2 px-10/100 text-miru-red-400"
+                  className="flex w-1/2 items-center justify-center rounded border border-destructive py-2 text-destructive"
                   onClick={() => {
                     setShowDeleteDialog(true);
                   }}
                 >
-                  <DeleteIcon className="mr-2 text-miru-red-400" size={20} />
+                  <DeleteIcon className="mr-2 text-destructive" size={20} />
                   <span className="font-bold">Delete</span>
                 </Button>
               </div>

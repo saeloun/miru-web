@@ -17,8 +17,8 @@ module ErrorHandler
       message = exception.message || I18n.t("errors.not_found")
 
       respond_to do |format|
-        format.json { render json: { errors: message }, status: :not_found }
-        format.html { render file: "public/404.html", status: :not_found, layout: false, alert: message }
+        format.json { render json: { errors: message }, status: 404 }
+        format.html { render file: "public/404.html", status: 404, layout: false, alert: message }
       end
     end
 
@@ -29,18 +29,15 @@ module ErrorHandler
       error_key = policy.try(:error_message_key) || exception.query
 
       message = I18n.t("#{policy_name}.#{error_key}", scope: "pundit", default: :default)
-      case policy.try(:error_message_key)
-      when :different_workspace
-        message = I18n.t("client.update.failure.unauthorized")
-      end
+      message = I18n.t("pundit.different_workspace") if policy.try(:error_message_key) == :different_workspace
 
       respond_to do |format|
         format.html do
           flash.now[:alert] = message
           redirect_to redirect_path
         end
-        format.json { render json: { errors: message }, status: :forbidden }
-        format.any(:pdf, :csv) { render json: { errors: message }, status: :forbidden }
+        format.json { render json: { errors: message }, status: 403 }
+        format.any(:pdf, :csv) { render json: { errors: message }, status: 403 }
       end
     end
 
@@ -48,11 +45,8 @@ module ErrorHandler
       message = exception.message
 
       respond_to do |format|
-        format.json {
-          render json: { errors: message, notice: I18n.t("errors.internal_server_error") },
-            status: :internal_server_error
-        }
-        format.html { render file: "public/500.html", status: :internal_server_error, layout: false, alert: message }
+        format.json { render json: { errors: message }, status: 500 }
+        format.html { render file: "public/500.html", status: 500, layout: false, alert: message }
       end
     end
 
@@ -60,14 +54,8 @@ module ErrorHandler
       message = exception.message
 
       respond_to do |format|
-        format.json {
-          render json: {
-                   errors: exception.record.errors.full_messages.first,
-                   notice: I18n.t("client.update.failure.message")
-                 },
-            status: :unprocessable_entity
-        }
-        format.html { render file: "public/422.html", status: :unprocessable_entity, layout: false, alert: message }
+        format.json { render json: { errors: exception.record.errors.full_messages.first }, status: 422 }
+        format.html { render file: "public/422.html", status: 422, layout: false, alert: message }
       end
     end
 
@@ -75,8 +63,8 @@ module ErrorHandler
       message = exception.message
 
       respond_to do |format|
-        format.json { render json: { errors: message }, status: :bad_request }
-        format.html { render file: "public/400.html", status: :bad_request, layout: false, alert: message }
+        format.json { render json: { errors: message }, status: 400 }
+        format.html { render file: "public/400.html", status: 400, layout: false, alert: message }
       end
     end
 end

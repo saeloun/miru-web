@@ -1,0 +1,13 @@
+<td class="detail-cell stack-cell">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="detail-card">
+    <tr>
+      <td>
+        <p class="detail-label"><%= label %></p>
+        <p class="detail-value"><%= value %></p>
+        <% if local_assigns[:subvalue].present? %>
+          <p class="detail-subvalue"><%= subvalue %></p>
+        <% end %>
+      </td>
+    </tr>
+  </table>
+</td>

@@ -1,11 +1,16 @@
 import React, { useEffect, useState } from "react";
 
-import dayjs from "dayjs";
-import { XIcon, SearchIcon } from "miruIcons";
-import Select from "react-select";
-
 import CustomDateRangePicker from "common/CustomDateRangePicker";
 import { useUserContext } from "context/UserContext";
+import dayjs from "dayjs";
+import { XIcon, SearchIcon } from "miruIcons";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../../ui/select";
 
 import { handleDateRangeOptions } from "./DateRange";
 import SearchTeamMembers from "./SearchTeamMembers";
@@ -73,11 +78,12 @@ const Filters = ({
         [field.name]: selectedValue,
       });
     } else {
-      selectedValue.value != "custom" &&
+      if (selectedValue.value !== "custom") {
         setFilters({
           ...filters,
           [field.name]: selectedValue,
         });
+      }
     }
   };
 
@@ -147,7 +153,9 @@ const Filters = ({
   });
 
   const resetCustomDatePicker = () => {
-    defaultDateRange() && setFilters(setDefaultDateRange());
+    if (defaultDateRange()) {
+      setFilters(setDefaultDateRange());
+    }
     hideCustomFilter();
   };
 
@@ -180,9 +188,9 @@ const Filters = ({
     }),
     option: (styles, { isSelected }) => ({
       ...styles,
-      backgroundColor: isSelected && "#5B34EA",
+      backgroundColor: isSelected && "#5E58F1",
       "&:hover": {
-        backgroundColor: isSelected ? "#5B34EA" : "#F5F7F9",
+        backgroundColor: isSelected ? "#5E58F1" : "#F5F7F9",
       },
     }),
   };
@@ -194,8 +202,8 @@ const Filters = ({
           placeholder="Search"
           type="text"
           value={filters.searchTerm}
-          className="focus:outline-none w-full rounded bg-miru-gray-100 p-2
-            text-sm font-medium focus:border-miru-gray-1000 focus:ring-1 focus:ring-miru-gray-1000"
+          className="focus:outline-none w-full rounded bg-muted p-2
+            text-sm font-medium focus:border-border focus:ring-1 focus:ring-ring"
           onChange={e => setFilters({ ...filters, searchTerm: e.target.value })}
         />
         {filters.searchTerm ? (
@@ -217,15 +225,28 @@ const Filters = ({
         />
         <div className="ml-2 w-1/2 lg:w-auto">
           <Select
-            classNamePrefix="react-select-filter"
             name="dateRange"
-            options={dateRangeOptions}
-            styles={customStyles}
-            value={filters.dateRange}
-            onChange={handleSelectFilter}
-          />
+            value={filters.dateRange?.value || ""}
+            onValueChange={value => {
+              const selectedOption = dateRangeOptions.find(
+                option => option.value === value
+              );
+              handleSelectFilter(selectedOption, { name: "dateRange" });
+            }}
+          >
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Select date range" />
+            </SelectTrigger>
+            <SelectContent>
+              {dateRangeOptions.map(option => (
+                <SelectItem key={option.value} value={option.value}>
+                  {option.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
           {showCustomFilter && (
-            <div className="absolute z-20 mt-1 flex flex-col rounded-lg bg-miru-white-1000 shadow-c1">
+            <div className="absolute z-20 mt-1 flex flex-col rounded-lg bg-background shadow-c1">
               <CustomDateRangePicker
                 dateRange={dateRange}
                 handleSelectDate={handleSelectDate}
@@ -233,7 +254,7 @@ const Filters = ({
                 selectedInput={selectedInput}
                 onClickInput={onClickInput}
               />
-              <div className="flex h-full items-end justify-center bg-miru-white-1000 p-6 ">
+              <div className="flex h-full items-end justify-center bg-background p-6 ">
                 <button
                   className="sidebar__reset"
                   onClick={resetCustomDatePicker}
@@ -259,10 +280,8 @@ const Filters = ({
       <div className="flex w-full items-center justify-between px-2 lg:w-2/12 lg:py-0">
         <button
           disabled={!isResetActive}
-          className={`text-base lg:hover:text-miru-han-purple-1000 ${
-            isResetActive
-              ? "text-miru-han-purple-1000"
-              : "text-miru-han-purple-100"
+          className={`text-base lg:hover:text-primary ${
+            isResetActive ? "text-primary" : "text-muted-foreground"
           }`}
           onClick={handleReset}
         >
@@ -270,10 +289,8 @@ const Filters = ({
         </button>
         <button
           disabled={!isResetActive}
-          className={`text-base lg:hover:text-miru-han-purple-1000 ${
-            isResetActive
-              ? "text-miru-han-purple-1000"
-              : "text-miru-han-purple-100"
+          className={`text-base lg:hover:text-primary ${
+            isResetActive ? "text-primary" : "text-muted-foreground"
           }`}
           onClick={handleApply}
         >

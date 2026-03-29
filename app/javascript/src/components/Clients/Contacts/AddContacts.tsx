@@ -1,12 +1,11 @@
 import React from "react";
 
+import { clientApi } from "apis/api";
+import { InputField, InputErrors } from "common/FormikFields";
 import { Formik, Form, FormikProps } from "formik";
 import { XIcon } from "miruIcons";
 import { Button, Modal } from "StyledComponents";
 import * as Yup from "yup";
-
-import clientApi from "apis/clients";
-import { InputField, InputErrors } from "common/FormikFields";
 
 const contactSchema = Yup.object().shape({
   firstName: Yup.string()
@@ -83,7 +82,7 @@ const AddContacts = ({
                   autoComplete="off"
                   hasError={errors.firstName && touched.firstName}
                   id="firstName"
-                  inputBoxClassName="border focus:border-miru-han-purple-1000"
+                  inputBoxClassName="border focus:border-primary"
                   label="First Name"
                   marginBottom={errors.firstName && "mb-0"}
                   name="firstName"
@@ -99,7 +98,7 @@ const AddContacts = ({
                   autoComplete="off"
                   hasError={errors.lastName && touched.lastName}
                   id="lastName"
-                  inputBoxClassName="border focus:border-miru-han-purple-1000"
+                  inputBoxClassName="border focus:border-primary"
                   label="Last Name"
                   marginBottom={errors.lastName && "mb-0"}
                   name="lastName"
@@ -125,7 +124,7 @@ const AddContacts = ({
                   inputBoxClassName={`border ${
                     errors.email && touched.email
                       ? "focus:border-red-600"
-                      : "focus:border-miru-han-purple-1000"
+                      : "focus:border-primary"
                   }`}
                 />
                 <InputErrors
@@ -138,7 +137,7 @@ const AddContacts = ({
                 style="primary"
                 type="submit"
                 className={`w-full p-2 text-center text-base font-bold ${
-                  !isValid || (!dirty && "bg-miru-gray-400")
+                  !isValid || (!dirty && "bg-secondary")
                 }`}
               >
                 Add Contact

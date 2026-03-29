@@ -1,5 +1,23 @@
+import { Roles } from "constants/index";
+
 import React from "react";
 
+import OrgDetails from "components/Profile/Organization/Details";
+import BankInfo from "components/Profile/Organization/BankInfo";
+import OrgEdit from "components/Profile/Organization/Edit";
+import Holidays from "components/Profile/Organization/Holidays";
+import Billing from "components/Profile/Organization/Billing";
+import PaymentSettings from "components/Profile/Organization/Payment";
+import AllocatedDevicesDetails from "components/Profile/Personal/Devices";
+import AllocatedDevicesEdit from "components/Profile/Personal/Devices/Edit";
+import EmploymentDetails from "components/Profile/Personal/Employment";
+import EmploymentDetailsEdit from "components/Profile/Personal/Employment/Edit";
+import NotificationPreferences from "components/Profile/Personal/NotificationPreferences";
+import PreferencesPage from "components/Settings/ModernPreferences";
+import Automation from "components/Profile/Personal/Automation";
+import UserDetailsView from "components/Profile/Personal/User";
+import UserDetailsEdit from "components/Profile/Personal/User/Edit";
+import LeaveManagement from "components/LeaveManagement";
 import {
   UserIcon,
   ProjectsIcon,
@@ -10,20 +28,6 @@ import {
   ClientsIcon,
   ReminderIcon,
 } from "miruIcons";
-
-import OrgDetails from "components/Profile/Organization/Details";
-import OrgEdit from "components/Profile/Organization/Edit";
-import Holidays from "components/Profile/Organization/Holidays";
-import Leaves from "components/Profile/Organization/Leaves";
-import PaymentSettings from "components/Profile/Organization/Payment";
-import AllocatedDevicesDetails from "components/Profile/Personal/Devices";
-import AllocatedDevicesEdit from "components/Profile/Personal/Devices/Edit";
-import EmploymentDetails from "components/Profile/Personal/Employment";
-import EmploymentDetailsEdit from "components/Profile/Personal/Employment/Edit";
-import NotificationPreferences from "components/Profile/Personal/NotificationPreferences";
-import UserDetailsView from "components/Profile/Personal/User";
-import UserDetailsEdit from "components/Profile/Personal/User/Edit";
-import { Roles } from "constants/index";
 
 const { ADMIN, OWNER, BOOK_KEEPER, EMPLOYEE, CLIENT } = Roles;
 
@@ -91,6 +95,24 @@ export const SETTINGS = [
     category: "personal",
     isTab: true,
   },
+  {
+    label: "PREFERENCES",
+    path: "preferences",
+    icon: <ReminderIcon className="mr-2" size={20} weight="bold" />,
+    authorisedRoles: [ADMIN, OWNER, BOOK_KEEPER, EMPLOYEE],
+    Component: PreferencesPage,
+    category: "personal",
+    isTab: false,
+  },
+  {
+    label: "AUTOMATION & CLI",
+    path: "automation",
+    icon: <MobileIcon className="mr-2" size={20} weight="bold" />,
+    authorisedRoles: [ADMIN, OWNER, BOOK_KEEPER, EMPLOYEE, CLIENT],
+    Component: Automation,
+    category: "personal",
+    isTab: true,
+  },
   // Uncomment when Integrating with API
   // {
   //   label: "COMPENSATION",
@@ -129,20 +151,20 @@ export const SETTINGS = [
     isTab: false,
   },
   {
-    label: "PAYMENT SETTINGS",
-    path: "payment",
+    label: "BANK & TAX INFO",
+    path: "bank-info",
     icon: <PaymentsIcon className="mr-2" size={20} weight="bold" />,
     authorisedRoles: [ADMIN, OWNER],
-    Component: PaymentSettings,
+    Component: BankInfo,
     category: "organization",
-    isTab: true,
+    isTab: false,
   },
   {
     label: "LEAVES",
     path: "leaves",
     icon: <CalendarIcon className="mr-2" size={20} weight="bold" />,
-    authorisedRoles: [ADMIN, OWNER],
-    Component: Leaves,
+    authorisedRoles: [ADMIN, OWNER, EMPLOYEE],
+    Component: LeaveManagement,
     category: "organization",
     isTab: true,
   },
@@ -152,6 +174,24 @@ export const SETTINGS = [
     icon: <CakeIcon className="mr-2" size={20} weight="bold" />,
     authorisedRoles: [ADMIN, OWNER],
     Component: Holidays,
+    category: "organization",
+    isTab: true,
+  },
+  {
+    label: "PAYMENT SETTINGS",
+    path: "payment",
+    icon: <PaymentsIcon className="mr-2" size={20} weight="bold" />,
+    authorisedRoles: [ADMIN, OWNER],
+    Component: PaymentSettings,
+    category: "organization",
+    isTab: true,
+  },
+  {
+    label: "BILLING",
+    path: "billing",
+    icon: <PaymentsIcon className="mr-2" size={20} weight="bold" />,
+    authorisedRoles: [ADMIN, OWNER],
+    Component: Billing,
     category: "organization",
     isTab: true,
   },
@@ -171,12 +211,5 @@ export const SETTINGS = [
   //   authorisedRoles: [ADMIN, OWNER],
   //   category: "organization",
   // isTab: false,
-  // },
-  // {
-  //   path: "/billing",
-  //   Component: Billing,
-  //   authorisedRoles: [ADMIN, OWNER],
-  //   category: "organization",
-  //isTab: false,
   // },
 ];

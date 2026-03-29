@@ -1,105 +1,157 @@
 name: CI Test Suite
 on:
   push:
-    branches: [develop, main]
+    branches: [develop, main, stable-3-0, production]
   pull_request:
+    branches: [develop, main, production]
     types: [labeled, opened, synchronize, reopened]
   workflow_dispatch:
+
+# Cancel in-progress runs on same branch
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: true
 
 jobs:
   tests:
     name: Running tests
-    runs-on: ubuntu-latest
-    if: ${{ !contains(github.event.head_commit.message, 'skip ci') }}
+    runs-on: ubuntu-latest  # Standard 2-core runner
+    timeout-minutes: 45
+    permissions:
+      contents: read
+    if: github.event_name != 'push' || !contains(github.event.head_commit.message, 'skip ci')
+    env:
+      RAILS_ENV: test
+      DB_HOST: localhost
+      DB_USER: root
+      DB_PASS: password
+      CI: true
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: miru_web_test
+          POSTGRES_USER: root
+          POSTGRES_PASSWORD: password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U root -d miru_web_test"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Setup PostgreSQL
-        uses: Harmon758/postgresql-action@v1.0.0
-        with:
-          postgresql version: 14.9-alpine3.18
-          postgresql db: miru_web_test_${{ github.event.number }}
-          postgresql user: root
-          postgresql password: "password"
-      - name: Setup ElasticSearch
-        run: |
-          wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
-          echo "deb https://artifacts.elastic.co/packages/7.x/apt stable main" | sudo tee /etc/apt/sources.list.d/elastic-7.x.list
-          sudo apt-get update
-          sudo apt-get install elasticsearch=7.13.3
-          sudo systemctl start elasticsearch
-          sleep 10
-      - name: Install Chrome for FerrumPdf
-        run: |
-          wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
-          echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list
-          sudo apt-get update
-          sudo apt-get install -y google-chrome-stable
-          google-chrome --version
-      - name: Check if Elasticsearch is reachable
-        run: |
-          curl --verbose --show-error http://localhost:9200
+        uses: actions/checkout@v4
+
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
-      - name: Ruby gem cache
-        uses: actions/cache@v4
         with:
-          path: vendor/bundle
-          key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-gems-
-      - name: Install gems
-        run: |
-          bundle config path vendor/bundle
-          bundle install --jobs 4 --retry 3
-      - name: Audit gems
-        run: |
-          bundle exec bundle-audit --update
-          bundle exec ruby-audit check
+          ruby-version: '4.0.1'
+          bundler-cache: true
+          bundler: latest
+
       - name: Setup Node
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v4
         with:
-          node-version: 20.18.2
-      - name: Find yarn cache location
-        id: yarn-cache
-        run: echo "::set-output name=dir::$(yarn cache dir)"
-      - name: JS package cache
+          node-version: 22
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9
+          run_install: false
+
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_OUTPUT
+
+      - name: Setup pnpm cache
         uses: actions/cache@v4
         with:
-          path: ${{ steps.yarn-cache.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          path: |
+            ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+            node_modules/.cache
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
-            ${{ runner.os }}-yarn-
-      - name: Install packages
+            ${{ runner.os }}-pnpm-
+
+      - name: Install pnpm packages
         run: |
-          yarn install --pure-lockfile
-      - name: Setup kernel for guard, increase watchers
-        run: |
-          echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
-      - name: Setup Env's
-        run: |
-          cp .env.example .env
-      - name: ffi pristine
-        run: bundle pristine ffi
-      - name: Setup test database
+          PUPPETEER_SKIP_DOWNLOAD=true pnpm install --frozen-lockfile
+
+      - name: Build Vite assets (sanity)
         env:
-          RAILS_ENV: test
-          DB_USER: root
-          DB_PASS: "password"
-          TEST_ENV_NUMBER: ${{ github.event.number }}
+          SECRET_KEY_BASE: dummy
         run: |
-          bundle exec rails db:prepare
+          timeout 180 bin/vite build
+
       - name: Run Rubocop
+        run: bundle exec rubocop
+
+      - name: Run ESLint
+        run: pnpm lint
+
+      - name: Setup test database
         run: |
-          bundle exec rubocop
-      - name: Run tests
+          bundle exec rake "parallel:create[2]" "parallel:load_schema[2]"
+
+      - name: Run CLI request specs
+        run: |
+          bundle exec rspec spec/requests/api/v1/cli
+
+      - name: Run parallel tests (excluding system specs)
         env:
-          RAILS_ENV: test
-          DB_USER: root
-          DB_PASS: "password"
-          TEST_ENV_NUMBER: ${{ github.event.number }}
-        run:
-          bundle exec rspec --exclude-pattern "spec/system/**/*_spec.rb"
-      - name: Run Eslint
+          PARALLEL_TEST_PROCESSORS: 2  # Optimal for standard runners
         run: |
-          npx eslint "./app/javascript/**/*.{ts,tsx,js,jsx,json}"
+          mkdir -p tmp
+
+          # Run specs with parallel_rspec, excluding system and system_skip specs
+          bundle exec parallel_rspec spec -n 2 --exclude-pattern "spec/(system|system_skip)/"
+
+          # Save failed specs list for debugging
+          if [ -f tmp/failing_specs.txt ]; then
+            echo "Failed specs:"
+            cat tmp/failing_specs.txt
+          fi
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: |
+            tmp/rspec_*.xml
+            tmp/rspec*.xml
+            tmp/capybara/*.png
+            tmp/failing_specs.txt
+            log/test.log
+          if-no-files-found: warn
+
+  security-audit:
+    name: Security audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '4.0.1'
+          bundler-cache: true
+          bundler: latest
+
+      - name: Run bundler-audit
+        run: |
+          gem install bundler-audit --no-document
+          bundler-audit check --update
+
+      - name: Run brakeman
+        run: |
+          bundle exec brakeman -q -w2

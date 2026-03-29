@@ -4,9 +4,7 @@ require "rails_helper"
 
 RSpec.describe Expense::ShowPresenter do
   let(:company) { create :company }
-  let(:expense_category) { create(:expense_category, company:) }
-  let(:vendor) { create(:vendor, company:) }
-  let(:expense) { create(:expense, :with_receipts, company:, expense_category:, vendor:) }
+  let(:expense) { create(:expense, :with_receipts, company:, category_name: "Travel", vendor_name: "Jetway") }
 
   describe "show_data" do
     before do
@@ -17,13 +15,16 @@ RSpec.describe Expense::ShowPresenter do
       expect(@data).to eq(
         {
           id: expense.id,
-          vendor_name: vendor.name,
-          category_name: expense_category.name,
+          vendor_name: "Jetway",
+          category_name: "Travel",
           amount: expense.amount,
           date: expense.formatted_date,
           description: expense.description,
           type: expense.expense_type,
-          receipts: expense.attached_receipts_urls
+          receipts: expense.attached_receipts_urls,
+          status: expense.status,
+          paid_at: expense.paid_at,
+          submitter_name: expense.submitter_name
         })
     end
   end

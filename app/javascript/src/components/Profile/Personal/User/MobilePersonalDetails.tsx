@@ -1,12 +1,12 @@
 import React from "react";
 
+import { Divider } from "common/Divider";
+import { InfoDescription } from "common/Mobile/InfoDescription";
 import dayjs from "dayjs";
 import { GlobeIcon, InfoIcon, KeyIcon, MapPinIcon, PhoneIcon } from "miruIcons";
 
-import { Divider } from "common/Divider";
-import { InfoDescription } from "common/Mobile/InfoDescription";
-
 const MobilePersonalDetails = ({
+  avatarUrl,
   personalDetails: {
     first_name,
     last_name,
@@ -33,10 +33,29 @@ const MobilePersonalDetails = ({
   return (
     <div className="mt-12 px-4 py-2">
       <div className="py-4">
-        <span className="flex flex-row items-center px-1 text-sm font-medium text-miru-dark-purple-1000">
+        <span className="flex flex-row items-center px-1 text-sm font-medium text-foreground">
           <InfoIcon className="mr-2" color="#1D1A31" size={13.5} /> Basic
           Details
         </span>
+        <div className="px-1 pb-4 pt-3">
+          <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-2xl bg-accent">
+            {avatarUrl ? (
+              <img
+                alt={
+                  `${first_name || ""} ${last_name || ""}`.trim() ||
+                  "Profile photo"
+                }
+                className="h-full w-full object-cover"
+                src={avatarUrl}
+              />
+            ) : (
+              <span className="text-xl font-semibold text-primary">
+                {first_name?.charAt(0)}
+                {last_name?.charAt(0)}
+              </span>
+            )}
+          </div>
+        </div>
         <div className="mt-2 flex w-full flex-row">
           <div className="w-1/2 px-1">
             <InfoDescription
@@ -57,7 +76,7 @@ const MobilePersonalDetails = ({
       </div>
       <Divider />
       <div className="py-4">
-        <span className="flex flex-row items-center px-1 text-sm font-medium text-miru-dark-purple-1000">
+        <span className="flex flex-row items-center px-1 text-sm font-medium text-foreground">
           <PhoneIcon className="mr-2" color="#1D1A31" size={13.5} /> Contact
           Details
         </span>
@@ -75,7 +94,7 @@ const MobilePersonalDetails = ({
       </div>
       <Divider />
       <div className="py-4">
-        <span className="flex flex-row items-center px-1 text-sm font-medium text-miru-dark-purple-1000">
+        <span className="flex flex-row items-center px-1 text-sm font-medium text-foreground">
           <MapPinIcon className="mr-2" color="#1D1A31" size={13.5} /> Address
         </span>
         <div className="mt-2 flex w-full flex-row">
@@ -96,7 +115,7 @@ const MobilePersonalDetails = ({
       </div>
       <Divider />
       <div className="py-4">
-        <span className="flex flex-row items-center px-1 text-sm font-medium text-miru-dark-purple-1000">
+        <span className="flex flex-row items-center px-1 text-sm font-medium text-foreground">
           <GlobeIcon className="mr-2" color="#1D1A31" size={13.5} />
           Social Profiles
         </span>
@@ -119,13 +138,13 @@ const MobilePersonalDetails = ({
       </div>
       {isCalledFromSettings && (
         <div className="flex items-center justify-between pr-4">
-          <span className="flex flex-row items-center text-sm font-medium text-miru-dark-purple-1000">
+          <span className="flex flex-row items-center text-sm font-medium text-foreground">
             <KeyIcon className="mr-2" color="#1D1A31" size={13.5} />
             Password
           </span>
           <div className="ml-2">
             <button
-              className="cursor-pointer p-1 text-xs font-bold text-miru-han-purple-600"
+              className="cursor-pointer p-1 text-xs font-bold text-primary"
               onClick={handleEditClick}
             >
               Change Password

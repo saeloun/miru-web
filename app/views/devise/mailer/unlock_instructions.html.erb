@@ -1,0 +1,21 @@
+<% content_for :email_preheader, "Unlock your Miru account after too many failed sign-in attempts." %>
+<% content_for :email_eyebrow, "Account security" %>
+<% content_for :email_title, "Your account is temporarily locked" %>
+<% content_for :email_subtitle do %>
+  We locked your Miru account after too many unsuccessful sign-in attempts.
+<% end %>
+
+<p>Hello <strong><%= @resource.email %></strong>,</p>
+
+<div class="email-panel email-panel-danger">
+  <p class="email-panel-title">Sign-in attempts exceeded the allowed limit.</p>
+  <p style="margin-bottom: 0;">Miru unlocks accounts automatically after 30 minutes. If you still need help, reset your password and then sign back in.</p>
+</div>
+
+<%= render "shared/mailer/button", href: "#{ENV.fetch("APP_BASE_URL", "http://127.0.0.1:3000")}/login", label: "Open sign in" %>
+
+<div class="email-divider"></div>
+
+<p class="email-muted">If you did not try to sign in, wait for the lock to expire and change your password immediately.</p>
+
+<p>Cheers,<br><strong>Team Miru</strong></p>

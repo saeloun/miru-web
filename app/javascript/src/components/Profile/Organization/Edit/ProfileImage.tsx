@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 
+import { useUserContext } from "context/UserContext";
 import { useKeypress } from "helpers";
 import { DeleteIcon, ImageIcon } from "miruIcons";
 import { MobileMoreOptions } from "StyledComponents";
-
-import { useUserContext } from "context/UserContext";
 
 export const ProfileImage = ({ src, handleDeleteLogo, onLogoChange }) => {
   const { isDesktop } = useUserContext();
@@ -22,7 +21,7 @@ export const ProfileImage = ({ src, handleDeleteLogo, onLogoChange }) => {
     <div
       className={`${
         isDesktop ? "profile-setting-image" : ""
-      } dashed-border relative flex h-20 w-20 flex-col items-center justify-center rounded border-miru-dark-purple-100 bg-white p-0.5 text-center text-xs md:h-120 md:w-30`}
+      } dashed-border relative flex h-20 w-20 flex-col items-center justify-center rounded border border-border bg-card p-0.5 text-center text-xs md:h-120 md:w-30`}
     >
       <img
         alt="org_logo"
@@ -32,7 +31,7 @@ export const ProfileImage = ({ src, handleDeleteLogo, onLogoChange }) => {
       />
       {isDesktop ? (
         <div className="hover-button absolute flex flex-col">
-          <div className=" flex cursor-pointer flex-row items-center text-miru-han-purple-1000">
+          <div className=" flex cursor-pointer flex-row items-center text-primary">
             <ImageIcon height="12px" size={16} weight="bold" width="12px" />
             <label
               className="ml-2 cursor-pointer text-xs font-bold"
@@ -48,7 +47,7 @@ export const ProfileImage = ({ src, handleDeleteLogo, onLogoChange }) => {
               onChange={onLogoChange}
             />
           </div>
-          <div className="flex cursor-pointer flex-row items-center text-miru-red-400">
+          <div className="flex cursor-pointer flex-row items-center text-destructive">
             <DeleteIcon height="12px" size={16} weight="bold" width="12px" />
             <button
               className="ml-2 text-xs font-bold "
@@ -72,9 +71,9 @@ export const ProfileImage = ({ src, handleDeleteLogo, onLogoChange }) => {
                   htmlFor="org-profile-image-input"
                 >
                   <div>
-                    <ImageIcon color="#5B34EA" size={16} />
+                    <ImageIcon color="currentColor" size={16} />
                   </div>
-                  <p className="font-manrope text-sm font-medium text-miru-han-purple-1000">
+                  <p className="font-sans text-sm font-medium text-primary">
                     Upload
                   </p>
                 </label>
@@ -95,9 +94,9 @@ export const ProfileImage = ({ src, handleDeleteLogo, onLogoChange }) => {
                 onClick={handleDeleteLogo}
               >
                 <div>
-                  <DeleteIcon color="#E04646" size={15} />
+                  <DeleteIcon color="currentColor" size={15} />
                 </div>
-                <p className="font-manrope text-sm font-medium text-miru-red-400">
+                <p className="font-sans text-sm font-medium text-destructive">
                   Delete
                 </p>
               </li>

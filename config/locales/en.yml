@@ -124,6 +124,14 @@ en:
     update:
       failure: "Failed to switch workspace"
       success: "Workspace switched successfully"
+  expenses:
+    create: Expense submitted successfully
+    update: Expense updated successfully
+    destroy: Expense deleted successfully
+    approve: Expense approved successfully
+    reject: Expense rejected successfully
+    mark_paid: Expense marked as paid
+    must_be_approved: Expense must be approved before marking it as paid
   team:
     team: Team
     new_user: NEW USER
@@ -182,8 +190,10 @@ en:
     remember_me: remember me
     or: or
     signup_with_google: sign up with google
+    signup_with_github: sign up with github
     signup_with_apple: sign up with apple
     signin_with_google: sign in with google
+    signin_with_github: sign in with github
   confirmation:
     send_instructions: "A confirmation email has been sent to %{email}."
   shared_links:
@@ -243,6 +253,7 @@ en:
     confirm_password: confirm password
   pundit:
     default: You are not authorized to perform this action.
+    different_workspace: You are not authorized to access records outside your current workspace.
     client_policy:
       create?: You are not authorized to create client.
       update?: You are not authorized to update client.
@@ -293,6 +304,3 @@ en:
   sessions:
     failure:
       invalid: Invalid email or password
-  expenses:
-    update: "Expense updated successfully"
-    destroy: "Expense deleted successfully"

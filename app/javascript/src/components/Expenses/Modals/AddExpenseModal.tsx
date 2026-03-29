@@ -19,7 +19,7 @@ const AddExpenseModal = ({
     <div className="modal__position m-0">
       <span className="modal__title">Add New Expense</span>
       <Button style="ternary" onClick={() => setShowAddExpenseModal(false)}>
-        <XIcon className="text-miru-dark-purple-1000" size={15} />
+        <XIcon className="text-foreground" size={15} />
       </Button>
     </div>
     <div className="modal__form m-0 flex-col">

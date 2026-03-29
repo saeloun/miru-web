@@ -1,11 +1,8 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
 
+import { useTimesheetEntries } from "context/TimesheetEntries";
 import dayjs from "dayjs";
 import { minToHHMM } from "helpers";
-
-import { useTimesheetEntries } from "context/TimesheetEntries";
 
 import CalendarCell from "./CalendarCell";
 import InvalidEmptyCalendarCell from "./InvalidEmptyCalendarCell";
@@ -62,29 +59,31 @@ const MonthCalender = () => {
   }, [currentMonthNumber, currentYear]);
 
   useEffect(() => {
-    entryList && handleMonthChange();
+    if (entryList) {
+      handleMonthChange();
+    }
   }, [entryList]);
 
   return (
     <div className="mb-6">
-      <div className="bg-miru-gray-100 p-4">
-        <div className="mb-4 flex justify-between bg-miru-gray-100">
+      <div className="bg-muted p-4">
+        <div className="mb-4 flex justify-between bg-muted">
           {DAYS.map(day => (
             <div
-              className="w-28 items-center rounded-xl text-center text-xs font-medium text-miru-dark-purple-1000"
+              className="w-28 items-center rounded-xl text-center text-xs font-medium text-foreground"
               key={day}
             >
               {day}
             </div>
           ))}
-          <div className="w-28 items-center rounded-xl text-center text-xs font-medium text-miru-dark-purple-1000">
+          <div className="w-28 items-center rounded-xl text-center text-xs font-medium text-foreground">
             Total
           </div>
         </div>
         {monthData?.length > 0
           ? monthData.map((weekInfo, index) => (
               <div
-                className="my-4 flex justify-between bg-miru-gray-100"
+                className="my-4 flex justify-between bg-muted"
                 key={`months-${index}`}
               >
                 {DAYS.map((_day, dayNum) =>

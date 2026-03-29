@@ -1,10 +1,8 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 import React from "react";
 
+import { useUserContext } from "context/UserContext";
 import { minToHHMM } from "helpers";
 import { Badge } from "StyledComponents";
-
-import { useUserContext } from "context/UserContext";
 import getStatusCssClass from "utils/getBadgeStatus";
 
 import {
@@ -36,7 +34,7 @@ const EntryCard = ({
 
   return (
     <div
-      className="week-card flex w-full items-center justify-between border-b border-miru-gray-200 py-4 lg:mt-10 lg:rounded-lg lg:border-b-0 lg:p-6 lg:shadow-2xl"
+      className="week-card flex w-full items-center justify-between border-b border-border py-4 lg:mt-10 lg:rounded-lg lg:border-b-0 lg:p-6 lg:shadow-2xl"
       onClick={handleCardClick}
     >
       <div className="w-7/12 flex-auto">
@@ -51,7 +49,7 @@ const EntryCard = ({
             text={bill_status}
           />
         </div>
-        <p className="max-h-32 overflow-auto whitespace-pre-wrap break-words text-sm text-miru-dark-purple-200 lg:w-160">
+        <p className="max-h-32 overflow-auto whitespace-pre-wrap break-words text-sm text-muted-foreground lg:w-160">
           {note}
         </p>
       </div>
@@ -66,7 +64,7 @@ const EntryCard = ({
               text={bill_status}
             />
           </div>
-          <p className="mx-auto text-2xl xl:text-4xl">{minToHHMM(duration)}</p>
+          <p className="mx-auto text-2xl xl:text-2xl">{minToHHMM(duration)}</p>
         </div>
         <div className="flex w-5/12 items-center justify-evenly">
           {showDuplicateAction(bill_status, companyRole, id, handleDuplicate)}
@@ -84,7 +82,7 @@ interface Iprops {
   project: string;
   note: string;
   duration: number;
-  handleDeleteEntry: (id: number) => void; // eslint-disable-line
+  handleDeleteEntry: (id: number) => void;
   setEditEntryId: React.Dispatch<React.SetStateAction<number>>;
   bill_status: string;
   setNewEntryView: any;

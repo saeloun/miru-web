@@ -40,15 +40,15 @@ const Step = (props: any) => {
             />
           </div>
         ) : (
-          <div className="rc-steps-item-icon bg-miru-han-purple-1000">
-            <span className="rc-steps-icon font-manrope">{stepNumber}</span>
+          <div className="rc-steps-item-icon bg-primary">
+            <span className="rc-steps-icon font-sans">{stepNumber}</span>
           </div>
         )}
       </div>
       <div className="rc-steps-item-content">
         <div
-          className={`rc-steps-item-title font-manrope text-xs md:text-sm ${
-            stepIsFinished(status) ? "text-miru-chart-green-400" : ""
+          className={`rc-steps-item-title font-sans text-xs md:text-sm ${
+            stepIsFinished(status) ? "text-emerald-500" : ""
           }`}
         >
           {title}

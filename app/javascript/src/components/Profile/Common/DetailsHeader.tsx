@@ -1,8 +1,10 @@
 import React from "react";
 
-import { getYear } from "date-fns";
-
 import CustomYearPicker from "common/CustomYearPicker";
+import { getYear } from "date-fns";
+import { useLocation } from "react-router-dom";
+
+import { Button } from "../../ui/button";
 
 const DetailsHeader = ({
   title,
@@ -13,31 +15,74 @@ const DetailsHeader = ({
   showYearPicker = false,
   currentYear = getYear(new Date()),
   setCurrentYear,
-}: Iprops) => (
-  <div className="flex h-16 items-center justify-between bg-miru-han-purple-1000 p-4 pl-10 text-white">
-    <span className="text-2xl font-bold">{title}</span>
-    {subTitle && <span className="pt-2 text-sm font-normal">{subTitle}</span>}
-    {showYearPicker && (
-      <CustomYearPicker
-        currentYear={currentYear}
-        setCurrentYear={setCurrentYear}
-      />
-    )}
-    <div
-      className={`mt-1 text-center ${showButtons ? "visible" : "invisible"}`}
-    >
-      <div>
-        <button
-          className="mx-1 w-20 cursor-pointer rounded-md border bg-miru-han-purple-1000 p-2 font-bold text-white hover:bg-miru-han-purple-600"
-          disabled={isDisableUpdateBtn}
-          onClick={editAction}
-        >
-          Edit
-        </button>
+}: Iprops) => {
+  const location = useLocation();
+  const isSettingsPage = location.pathname.startsWith("/settings");
+
+  if (isSettingsPage) {
+    return (
+      <div className="mb-6 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+        <div className="space-y-1">
+          <h1 className="text-2xl font-semibold tracking-tight text-foreground">
+            {title}
+          </h1>
+          {subTitle && (
+            <p className="text-sm text-muted-foreground">{subTitle}</p>
+          )}
+        </div>
+        <div className="flex flex-wrap items-center gap-3">
+          {showYearPicker && (
+            <CustomYearPicker
+              currentYear={currentYear}
+              setCurrentYear={setCurrentYear}
+            />
+          )}
+          {showButtons && (
+            <Button
+              disabled={isDisableUpdateBtn}
+              onClick={editAction}
+              type="button"
+              variant="outline"
+            >
+              Edit
+            </Button>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="mb-6 flex flex-col gap-4 rounded-2xl border border-border bg-card p-5 shadow-sm md:flex-row md:items-center md:justify-between">
+      <div className="space-y-1">
+        <h1 className="text-2xl font-semibold tracking-tight text-foreground">
+          {title}
+        </h1>
+        {subTitle && (
+          <p className="text-sm text-muted-foreground">{subTitle}</p>
+        )}
+      </div>
+      <div className="flex flex-wrap items-center gap-3">
+        {showYearPicker && (
+          <CustomYearPicker
+            currentYear={currentYear}
+            setCurrentYear={setCurrentYear}
+          />
+        )}
+        {showButtons && (
+          <Button
+            disabled={isDisableUpdateBtn}
+            onClick={editAction}
+            type="button"
+            variant="outline"
+          >
+            Edit
+          </Button>
+        )}
       </div>
     </div>
-  </div>
-);
+  );
+};
 
 interface Iprops {
   title: string;

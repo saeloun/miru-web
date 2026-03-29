@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe "Payments index page", type: :system do
+RSpec.describe "Payments index page", type: :system, js: true do
   let(:company) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id) }
   let(:client1) { create(:client, company:, name: "bob") }
@@ -10,6 +10,15 @@ RSpec.describe "Payments index page", type: :system do
   let(:client1_sent_invoice2) { create(:invoice, client: client1, company:, status: "sent") }
   let!(:payment1) { create(:payment, invoice: client1_sent_invoice1, status: "failed", note: "Payment failed") }
   let!(:payment2) { create(:payment, invoice: client1_sent_invoice1, status: "paid", note: "Paid invoice") }
+  let!(:stripe_payment) do
+    create(
+      :payment,
+      invoice: client1_sent_invoice2,
+      status: "paid",
+      transaction_type: "stripe",
+      note: "Stripe payment"
+    )
+  end
 
   context "when user is an admin" do
     before do
@@ -23,10 +32,21 @@ RSpec.describe "Payments index page", type: :system do
         with_forgery_protection do
           visit "/payments"
 
+          # Wait for the page to load and click on Payments in sidebar if needed
+          if page.has_content?("Time Tracking")
+            click_link "Payments"
+          end
+
+          # Wait for payments page to load
+          expect(page).to have_content("Payments")
+
           expect(page).to have_content("Payment failed")
           expect(page).to have_content("Paid invoice")
+          expect(page).to have_content("Stripe payment")
+          expect(page).to have_content("Stripe")
           expect(page).to have_content(payment1.invoice.invoice_number)
           expect(page).to have_content(payment2.invoice.invoice_number)
+          expect(page).to have_content(stripe_payment.invoice.invoice_number)
         end
       end
     end

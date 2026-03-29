@@ -1,6 +1,4 @@
 # frozen_string_literal: true
 
-class Api::V1::BaseController < ActionController::API
-  include Authenticable
-  include CurrentCompanyConcern
+class Api::V1::BaseController < Api::V1::ApplicationController
 end

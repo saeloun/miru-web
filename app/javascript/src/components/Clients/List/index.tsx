@@ -1,10 +1,9 @@
 import React from "react";
 
-import { PlusIcon } from "miruIcons";
-
 import EmptyStates from "common/EmptyStates";
 import Table from "common/Table";
 import { useUserContext } from "context/UserContext";
+import { PlusIcon } from "miruIcons";
 
 import TableData from "./TableData";
 
@@ -51,10 +50,8 @@ const ClientList = ({
                 handleDeleteClick={handleDeleteClick}
                 handleEditClick={handleEditClick}
                 hasRowIcons={isAdminUser}
+                rowOnClick={isAdminUser ? handleRowClick : () => {}}
                 tableRowArray={getTableData}
-                rowOnClick={
-                  isAdminUser ? handleRowClick : () => {} // eslint-disable-line  @typescript-eslint/no-empty-function
-                }
                 tableHeader={
                   isAdminUser && isDesktop
                     ? tableHeader
@@ -67,13 +64,13 @@ const ClientList = ({
               />
             ) : (
               <EmptyStates
-                Message="Looks like there aren’t any clients added yet."
+                Message="Looks like there aren't any clients added yet."
                 messageClassName="w-full lg:mt-5"
                 showNoSearchResultState={false}
                 wrapperClassName="mt-5"
               >
                 <button
-                  className="mt-4 mb-10 flex h-10 flex-row items-center justify-center rounded bg-miru-han-purple-1000 px-25 font-bold text-white"
+                  className="mt-4 mb-10 flex h-10 flex-row items-center justify-center rounded bg-primary px-25 font-bold text-white"
                   type="button"
                   onClick={() => {
                     setShowDialog(true);

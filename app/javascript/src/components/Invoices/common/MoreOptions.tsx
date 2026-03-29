@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import React, { FC } from "react";
 
 import {
@@ -21,10 +20,10 @@ const MoreOptions: FC<MoreOptionsProps> = ({
   sendInvoice,
   setIsMoreOptionsVisible,
 }) => (
-  <ul className="absolute right-20 z-10 rounded border-2 border-miru-gray-200 bg-white py-2 drop-shadow">
+  <ul className="absolute right-20 z-10 rounded border-2 border-border bg-white py-2 drop-shadow">
     {downloadInvoice != null && invoice.status != "draft" && (
       <li
-        className="flex cursor-pointer items-center py-2.5 px-4 text-miru-han-purple-1000 hover:bg-miru-gray-100"
+        className="flex cursor-pointer items-center py-2.5 px-4 text-primary hover:bg-muted"
         onClick={() => downloadInvoice(invoice)}
       >
         <DownloadSimpleIcon className="mr-4" size={16} weight="bold" />
@@ -32,7 +31,7 @@ const MoreOptions: FC<MoreOptionsProps> = ({
       </li>
     )}
     <li
-      className="flex cursor-pointer items-center py-2.5 px-4 text-miru-han-purple-1000 hover:bg-miru-gray-100"
+      className="flex cursor-pointer items-center py-2.5 px-4 text-primary hover:bg-muted"
       id="viewHistory"
       onClick={showHistory}
     >
@@ -42,14 +41,14 @@ const MoreOptions: FC<MoreOptionsProps> = ({
     {["sent", "overdue", "viewed"].includes(invoice?.status) && (
       <>
         <li
-          className="flex cursor-pointer items-center py-2 px-4 text-miru-han-purple-1000 hover:bg-miru-gray-100"
+          className="flex cursor-pointer items-center py-2 px-4 text-primary hover:bg-muted"
           onClick={() => markInvoiceAsPaid(invoice.id)}
         >
           <CurrencyCircleDollarIcon className="mr-4" size={16} weight="bold" />
           Mark as Paid
         </li>
         <li
-          className="flex cursor-pointer items-center py-2 px-4 text-miru-han-purple-1000 hover:bg-miru-gray-100"
+          className="flex cursor-pointer items-center py-2 px-4 text-primary hover:bg-muted"
           onClick={wavieInvoice}
         >
           <img className="mr-4" height="16px" src={WaiveSVG} width="16px" />
@@ -59,7 +58,9 @@ const MoreOptions: FC<MoreOptionsProps> = ({
     )}
     {invoice?.status === "overdue" && (
       <li
-        className="flex cursor-pointer items-center py-2 px-4 text-miru-han-purple-1000 hover:bg-miru-gray-100"
+        id="invoiceReminderAction"
+        data-testid="invoice-reminder-action"
+        className="flex cursor-pointer items-center py-2 px-4 text-primary hover:bg-muted"
         onClick={() => {
           setIsSendReminder(true);
           sendInvoice();
@@ -71,7 +72,7 @@ const MoreOptions: FC<MoreOptionsProps> = ({
       </li>
     )}
     <li
-      className="flex cursor-pointer items-center py-2 px-4 text-miru-red-400 hover:bg-miru-gray-100"
+      className="flex cursor-pointer items-center py-2 px-4 text-destructive hover:bg-muted"
       onClick={deleteInvoice}
     >
       <DeleteIcon className="mr-4" size={16} weight="bold" />

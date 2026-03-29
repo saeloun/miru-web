@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
 
-import Logger from "js-logger";
-
-import payment from "apis/payments/payments";
+import { payment } from "apis/api";
 import Loader from "common/Loader/index";
 import withLayout from "common/Mobile/HOC/withLayout";
 import { useUserContext } from "context/UserContext";
+import Logger from "js-logger";
 import { unmapPayment } from "mapper/mappedIndex";
 
 import Header from "./Header";
@@ -94,7 +93,7 @@ const Payments = () => {
   }
 
   const PaymentsLayout = () => (
-    <div className="h-full flex-col p-4" onKeyDown={handleEscKeyPress}>
+    <div className="h-full flex-col p-4 lg:p-0" onKeyDown={handleEscKeyPress}>
       <Header
         params={params}
         payments={paymentList}
@@ -112,7 +111,7 @@ const Payments = () => {
         <PaymentsEmptyState setShowManualEntryModal={setShowManualEntryModal} />
       ) : (
         <>
-          <div className="hidden md:block">
+          <div className="hidden md:block mt-4 lg:mt-6">
             <Table
               baseCurrency={baseCurrency}
               payments={
@@ -120,7 +119,7 @@ const Payments = () => {
               }
             />
           </div>
-          <div className="block md:hidden">
+          <div className="block md:hidden mt-4">
             <TableOnMobileView
               baseCurrency={baseCurrency}
               payments={

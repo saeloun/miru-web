@@ -21,7 +21,7 @@ const TimeEntryReportContext = {
     groupedDurations: {},
   },
   filterCounter: 0,
-  handleRemoveSingleFilter: (key, value) => {}, //eslint-disable-line
+  handleRemoveSingleFilter: (key, value) => {},
 };
 
 export default TimeEntryReportContext;

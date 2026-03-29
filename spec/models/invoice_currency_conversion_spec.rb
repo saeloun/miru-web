@@ -2,195 +2,260 @@
 
 require "rails_helper"
 
-RSpec.describe Invoice, type: :model do
-  describe "currency conversion" do
-    let(:company) { create(:company, base_currency: "USD") }
-    let(:client) { create(:client, company:, currency: "EUR") }
+RSpec.describe "Invoice Currency Conversion", type: :model do
+  let(:company) { create(:company, base_currency: "USD") }
+  let(:client) { create(:client, company: company, currency: "EUR") }
+  let(:invoice) { build(:invoice, client: client, company: company, currency: "EUR", amount: 1000.00) }
 
-    describe "callbacks" do
-      it { is_expected.to callback(:calculate_base_currency_amount).before(:validation) }
-    end
+  before do
+    # Stub currency conversion service for predictable tests
+    allow(CurrencyConversionService).to receive(:get_exchange_rate).and_return(1.18)
+  end
 
-    describe "#calculate_base_currency_amount" do
-      context "when invoice currency matches company base currency" do
-        let(:invoice) { build(:invoice, company:, client:, currency: "USD", amount: 100) }
-
-        it "does not calculate base_currency_amount" do
-          invoice.valid?
-          expect(invoice.base_currency_amount).to eq(100)
-        end
+  describe "automatic currency conversion on save" do
+    context "when invoice currency differs from company base currency" do
+      it "calculates base_currency_amount automatically" do
+        invoice.save!
+        expect(invoice.base_currency_amount).to eq(1180.00)
       end
 
-      context "when invoice currency differs from company base currency" do
-        before do
-          create(:currency_pair, from_currency: "EUR", to_currency: "USD", rate: 1.08, active: true)
-        end
-
-        let(:invoice) { build(:invoice, company:, client:, currency: "EUR", amount: 100) }
-
-        it "calculates base_currency_amount automatically" do
-          invoice.valid?
-          expect(invoice.base_currency_amount).to eq(108.0)
-        end
-
-        it "uses CurrencyConversionService" do
-          allow(CurrencyConversionService).to receive(:new).with(
-            amount: 100,
-            from_currency: "EUR",
-            to_currency: "USD"
-          ).and_call_original
-
-          invoice.valid?
-
-          expect(CurrencyConversionService).to have_received(:new).with(
-            amount: 100,
-            from_currency: "EUR",
-            to_currency: "USD"
-          )
-        end
-
-        it "updates base_currency_amount when amount changes" do
-          invoice.save!
-          invoice.amount = 200
-          invoice.valid?
-          expect(invoice.base_currency_amount).to eq(216.0)
-        end
-
-        it "updates base_currency_amount when currency changes" do
-          create(:currency_pair, from_currency: "GBP", to_currency: "USD", rate: 1.27, active: true)
-          invoice.save!
-          invoice.currency = "GBP"
-          invoice.valid?
-          expect(invoice.base_currency_amount).to eq(127.0)
-        end
+      it "stores the exchange rate used" do
+        invoice.save!
+        expect(invoice.exchange_rate).to eq(1.18)
       end
 
-      context "when amount is nil" do
-        let(:invoice) { build(:invoice, company:, client:, currency: "EUR", amount: nil) }
-
-        it "does not calculate base_currency_amount" do
-          expect(CurrencyConversionService).not_to receive(:new)
-          invoice.valid?
-        end
+      it "stores the exchange rate date" do
+        invoice.save!
+        expect(invoice.exchange_rate_date).to eq(invoice.issue_date || Date.current)
       end
 
-      context "when currency is blank" do
-        let(:invoice) { build(:invoice, company:, client:, currency: nil, amount: 100) }
+      it "creates an audit trail" do
+        expect { invoice.save! }.to change { Audited::Audit.count }.by(1)
 
-        it "does not calculate base_currency_amount" do
-          expect(CurrencyConversionService).not_to receive(:new)
-          invoice.valid?
-        end
-      end
-
-      context "when company is nil" do
-        let(:invoice) { build(:invoice, company: nil, client:, currency: "EUR", amount: 100) }
-
-        it "does not calculate base_currency_amount" do
-          expect(CurrencyConversionService).not_to receive(:new)
-          invoice.valid?
-        end
+        audit = invoice.audits.last
+        expect(audit.audited_changes).to include("base_currency_amount", "exchange_rate", "exchange_rate_date")
       end
     end
 
-    describe "validation" do
-      context "when currency differs from base currency" do
-        before do
-          create(:currency_pair, from_currency: "EUR", to_currency: "USD", rate: 1.08, active: true)
-        end
+    context "when invoice currency matches company base currency" do
+      let(:invoice) { build(:invoice, client: client, company: company, currency: "USD", amount: 1000.00) }
 
-        it "requires base_currency_amount" do
-          invoice = build(:invoice, company:, client:, currency: "EUR", amount: 100)
-          invoice.base_currency_amount = nil
-          invoice.valid?
-          # base_currency_amount should be calculated automatically
-          expect(invoice.base_currency_amount).not_to be_nil
-        end
-
-        it "allows invoice to be saved with foreign currency" do
-          invoice = build(:invoice, company:, client:, currency: "EUR", amount: 600)
-          expect(invoice).to be_valid
-          expect { invoice.save! }.not_to raise_error
-        end
-      end
-
-      context "when currency matches base currency" do
-        it "does not require base_currency_amount" do
-          invoice = build(:invoice, company:, client:, currency: "USD", amount: 100)
-          invoice.base_currency_amount = nil
-          expect(invoice).to be_valid
-        end
+      it "does not perform conversion" do
+        invoice.save!
+        expect(invoice.base_currency_amount).to eq(invoice.amount) # Should be same as amount
+        expect(invoice.exchange_rate).to be_nil
       end
     end
 
-    describe "#same_currency?" do
-      let(:invoice) { build(:invoice, company:, client:) }
-
-      context "when invoice currency is set" do
-        it "returns true when currencies match" do
-          invoice.currency = "USD"
-          expect(invoice.send(:same_currency?)).to be true
-        end
-
-        it "returns false when currencies differ" do
-          invoice.currency = "EUR"
-          expect(invoice.send(:same_currency?)).to be false
-        end
-      end
-
-      context "when invoice currency is not set" do
-        it "uses client currency" do
-          invoice.currency = nil
-          client.update(currency: "USD")
-          expect(invoice.send(:same_currency?)).to be true
-        end
-
-        it "returns false when client currency differs" do
-          invoice.currency = nil
-          client.update(currency: "EUR")
-          expect(invoice.send(:same_currency?)).to be false
-        end
-      end
-    end
-
-    describe "integration test" do
+    context "when exchange rate cannot be fetched" do
       before do
-        create(:currency_pair, from_currency: "EUR", to_currency: "USD", rate: 1.08, active: true)
+        allow(CurrencyConversionService).to receive(:get_exchange_rate).and_return(nil)
       end
 
-      it "creates invoice with automatic currency conversion" do
-        invoice = create(
-          :invoice,
-          company:,
-          client:,
-          currency: "EUR",
-          amount: 600,
-          issue_date: Date.today,
-          due_date: Date.today + 30.days
-        )
-
-        expect(invoice.persisted?).to be true
-        expect(invoice.amount).to eq(600)
-        expect(invoice.currency).to eq("EUR")
-        expect(invoice.base_currency_amount).to eq(648.0)
+      it "fails validation if base_currency_amount is not manually set" do
+        invoice.base_currency_amount = nil
+        expect(invoice).not_to be_valid
+        expect(invoice.errors[:base_currency_amount]).to include("can't be blank")
       end
 
-      it "handles invoice updates with currency changes" do
-        invoice = create(
-          :invoice,
-          company:,
-          client:,
-          currency: "EUR",
-          amount: 600
-        )
+      it "allows manual base_currency_amount entry" do
+        invoice.base_currency_amount = 1200.00
+        expect(invoice).to be_valid
+        invoice.save!
+        expect(invoice.base_currency_amount).to eq(1200.00)
+      end
+    end
 
-        create(:currency_pair, from_currency: "GBP", to_currency: "USD", rate: 1.27, active: true)
+    context "when updating invoice amount" do
+      before { invoice.save! }
 
-        invoice.update!(currency: "GBP", amount: 500)
+      it "recalculates base_currency_amount when amount changes" do
+        expect(invoice.base_currency_amount).to eq(1180.00)
 
-        expect(invoice.currency).to eq("GBP")
-        expect(invoice.amount).to eq(500)
-        expect(invoice.base_currency_amount).to eq(635.0)
+        invoice.amount = 2000.00
+        invoice.save!
+
+        expect(invoice.base_currency_amount).to eq(2360.00)
+      end
+
+      it "recalculates when currency changes" do
+        allow(CurrencyConversionService).to receive(:get_exchange_rate).with("GBP", "USD", anything).and_return(1.35)
+
+        invoice.currency = "GBP"
+        invoice.save!
+
+        expect(invoice.exchange_rate).to eq(1.35)
+        expect(invoice.base_currency_amount).to eq(1350.00) # 1000 * 1.35
+      end
+
+      it "creates audit entries for conversion changes" do
+        invoice.amount = 2000.00
+
+        expect { invoice.save! }.to change { invoice.audits.count }.by(1)
+
+        audit = invoice.audits.last
+        expect(audit.audited_changes["amount"]).to eq([1000.0, 2000.0])
+        expect(audit.audited_changes["base_currency_amount"]).to eq([1180.0, 2360.0])
+      end
+    end
+  end
+
+  describe "multi-currency invoice calculations" do
+    let!(:gbp_client) { create(:client, company: company, currency: "GBP") }
+    let!(:usd_client) { create(:client, company: company, currency: "USD") }
+
+    let!(:eur_invoice) { build(:invoice, client: client, company: company, currency: "EUR", amount: 1000.00, status: :sent) }
+    let!(:gbp_invoice) { build(:invoice, client: gbp_client, company: company, currency: "GBP", amount: 1000.00, status: :sent) }
+    let!(:usd_invoice) { build(:invoice, client: usd_client, company: company, currency: "USD", amount: 1000.00, status: :sent) }
+
+    before do
+      allow(CurrencyConversionService).to receive(:get_exchange_rate).with("EUR", "USD", anything).and_return(1.18)
+      allow(CurrencyConversionService).to receive(:get_exchange_rate).with("GBP", "USD", anything).and_return(1.35)
+
+      # Save with proper exchange rate mocking in place
+      eur_invoice.save!
+      gbp_invoice.save!
+      usd_invoice.save!
+    end
+
+    it "correctly calculates total in base currency" do
+      total = [eur_invoice, gbp_invoice, usd_invoice].sum do |invoice|
+        invoice.base_currency_amount.to_f > 0 ? invoice.base_currency_amount : invoice.amount
+      end
+
+      expect(total).to eq(1180.00 + 1350.00 + 1000.00) # EUR + GBP + USD (already in USD)
+    end
+
+    it "handles mixed currency aggregations" do
+      totals_by_currency = Invoice.where(id: [eur_invoice.id, gbp_invoice.id, usd_invoice.id])
+                                  .group(:currency)
+                                  .sum(:amount)
+
+      expect(totals_by_currency).to eq({
+        "EUR" => 1000.00,
+        "GBP" => 1000.00,
+        "USD" => 1000.00
+      })
+
+      # Total in base currency
+      total_base = Invoice.where(id: [eur_invoice.id, gbp_invoice.id, usd_invoice.id])
+                          .sum { |i| i.base_currency_amount.to_f > 0 ? i.base_currency_amount : i.amount }
+
+      expect(total_base).to eq(3530.00)
+    end
+  end
+
+  describe "currency conversion with historical rates" do
+    let!(:historical_rate) { create(:exchange_rate, from_currency: "EUR", to_currency: "USD", rate: 1.15, date: 30.days.ago) }
+    let!(:current_rate) { create(:exchange_rate, from_currency: "EUR", to_currency: "USD", rate: 1.18, date: Date.current) }
+
+    it "uses the rate from the invoice issue date" do
+      invoice.issue_date = 30.days.ago
+      invoice.due_date = 30.days.from_now  # Set a valid due date
+
+      allow(CurrencyConversionService).to receive(:get_exchange_rate)
+        .with("EUR", "USD", 30.days.ago.to_date)
+        .and_return(1.15)
+
+      invoice.save!
+
+      expect(invoice.exchange_rate).to eq(1.15)
+      expect(invoice.base_currency_amount).to eq(1150.00)
+    end
+
+    it "falls back to most recent rate if exact date not found" do
+      invoice.issue_date = 15.days.ago
+      invoice.due_date = 30.days.from_now  # Set a valid due date
+
+      allow(ExchangeRate).to receive(:rate_for)
+        .with("EUR", "USD", 15.days.ago.to_date)
+        .and_return(1.15) # Returns the 30-day-old rate as most recent
+
+      allow(CurrencyConversionService).to receive(:get_exchange_rate)
+        .with("EUR", "USD", 15.days.ago.to_date)
+        .and_return(1.15)
+
+      invoice.save!
+
+      expect(invoice.exchange_rate).to eq(1.15)
+    end
+  end
+
+  describe "validation scenarios" do
+    context "multi-currency invoice validation" do
+      it "requires base_currency_amount when currencies differ" do
+        invoice.base_currency_amount = nil
+        allow(CurrencyConversionService).to receive(:get_exchange_rate).and_return(nil)
+
+        expect(invoice).not_to be_valid
+        expect(invoice.errors[:base_currency_amount]).to be_present
+      end
+
+      it "does not require base_currency_amount when currencies match" do
+        invoice.currency = "USD"
+        invoice.base_currency_amount = nil
+
+        expect(invoice).to be_valid
+      end
+    end
+  end
+
+  describe "audit trail for currency conversions" do
+    it "tracks all currency-related changes" do
+      invoice.save!
+
+      # Change amount
+      invoice.amount = 2000.00
+      invoice.save!
+
+      # Change currency
+      allow(CurrencyConversionService).to receive(:get_exchange_rate).with("GBP", "USD", anything).and_return(1.35)
+      invoice.currency = "GBP"
+      invoice.save!
+
+      audits = invoice.audits
+      expect(audits.count).to eq(3)
+
+      # Check that currency conversions are tracked - look for the audit that has a currency change array
+      currency_change_audit = audits.find { |a| a.audited_changes.key?("currency") && a.audited_changes["currency"].is_a?(Array) }
+
+      # Currency change should be tracked as [old_value, new_value]
+      expect(currency_change_audit.audited_changes["currency"]).to eq(["EUR", "GBP"])
+      expect(currency_change_audit.audited_changes["exchange_rate"]).to eq([1.18, 1.35])
+    end
+  end
+
+  describe "edge cases" do
+    context "when dealing with very small amounts" do
+      it "handles small currency conversions accurately" do
+        invoice.amount = 0.01
+        invoice.save!
+
+        expect(invoice.base_currency_amount).to eq(0.01) # 0.01 * 1.18 rounded
+      end
+    end
+
+    context "when dealing with very large amounts" do
+      it "handles large currency conversions accurately" do
+        invoice.amount = 999_999_999.99
+        invoice.save!
+
+        # Allow for floating point precision differences with very large numbers
+        expect(invoice.base_currency_amount).to be_within(1.0).of(1_179_999_999.88)
+      end
+    end
+
+    context "with JPY (no decimal currency)" do
+      let(:jpy_client) { create(:client, company: company, currency: "JPY") }
+      let(:jpy_invoice) { build(:invoice, client: jpy_client, company: company, currency: "JPY", amount: 100000) }
+
+      before do
+        allow(CurrencyConversionService).to receive(:get_exchange_rate).with("JPY", "USD", anything).and_return(0.0068)
+      end
+
+      it "handles non-decimal currency conversion" do
+        jpy_invoice.save!
+        expect(jpy_invoice.base_currency_amount).to eq(680.00) # 100000 * 0.0068
       end
     end
   end

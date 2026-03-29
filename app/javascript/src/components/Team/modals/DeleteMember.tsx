@@ -1,15 +1,15 @@
+import { TeamModalType } from "constants/index";
+
 import React, { useRef } from "react";
 
+import { teamApi } from "apis/api";
+import { useList } from "context/TeamContext";
 import { useOutsideClick, useKeypress } from "helpers";
 import { XIcon } from "miruIcons";
 import { Toastr, Modal, Button } from "StyledComponents";
 
-import teamApi from "apis/team";
-import { TeamModalType } from "constants/index";
-import { useList } from "context/TeamContext";
-
 const DeleteMember = ({ user }) => {
-  const wrapperRef = useRef();
+  const wrapperRef = useRef<HTMLDivElement>(null);
 
   const { setModalState, modal, setTeamList, teamList } = useList();
 
@@ -60,11 +60,7 @@ const DeleteMember = ({ user }) => {
             setModalState(TeamModalType.NONE);
           }}
         >
-          <XIcon
-            className="text-miru-dark-purple-1000"
-            size={16}
-            weight="bold"
-          />
+          <XIcon className="text-foreground" size={16} weight="bold" />
         </Button>
       </div>
       <p className="mt-4 mb-10">

@@ -5,12 +5,16 @@ import { EditImageButtonSVG, deleteImageIcon } from "miruIcons";
 import PhoneInput from "react-phone-number-input";
 import flags from "react-phone-number-input/flags";
 import "react-phone-number-input/style.css";
-import Select, { components } from "react-select";
 import { Avatar } from "StyledComponents";
 import worldCountries from "world-countries";
-
-import companyProfileApi from "apis/companyProfile";
-import CustomReactSelect from "common/CustomReactSelect";
+import { companyProfileApi } from "apis/api";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../ui/select";
 import { InputErrors, InputField } from "common/FormikFields";
 
 import { CompanyDetailsFormProps, CompanyDetailsFormValues } from "./interface";
@@ -20,47 +24,6 @@ import {
 } from "./utils";
 
 import { i18n } from "../../../i18n";
-
-const { ValueContainer, Placeholder } = components;
-const customStyles = {
-  control: provided => ({
-    ...provided,
-    backgroundColor: "#FFFFFF",
-    color: "red",
-    minHeight: 48,
-    padding: "0",
-  }),
-  menu: provided => ({
-    ...provided,
-    fontSize: "12px",
-    letterSpacing: "handleCountryChange2px",
-  }),
-  valueContainer: provided => ({
-    ...provided,
-    overflow: "visible",
-  }),
-  placeholder: base => ({
-    ...base,
-    position: "absolute",
-    top: "-45%",
-    transition: "top 0.2s, font-size 0.2s",
-    fontSize: 10,
-    backgroundColor: "#FFFFFF",
-  }),
-};
-
-const CustomValueContainer = props => {
-  const { children } = props;
-
-  return (
-    <ValueContainer {...props}>
-      <Placeholder {...props}>{props.selectProps.placeholder}</Placeholder>
-      {React.Children.map(children, child =>
-        child && child.key !== "placeholder" ? child : null
-      )}
-    </ValueContainer>
-  );
-};
 
 const CompanyDetailsForm = ({
   onNextBtnClick,
@@ -98,7 +61,7 @@ const CompanyDetailsForm = ({
         : companyDetailsFormInitialValues?.country?.code || "US";
       getTimezonesOfCurrentCountry(selectedCountryCode);
     }
-  }, [allTimezones]); // eslint-disable-line
+  }, [allTimezones]);
 
   const getAllTimezones = async () => {
     const res = await companyProfileApi.get();
@@ -165,17 +128,14 @@ const CompanyDetailsForm = ({
 
   const LogoComponent = ({ values, setFieldValue }) => (
     <div className="my-4 flex flex-row">
-      <div className="mt-2 h-30 w-30 border border-dashed border-miru-dark-purple-400">
+      <div className="mt-2 h-30 w-30 border border-dashed border-border">
         <div className="profile-img relative m-auto h-30 w-30 cursor-pointer text-center text-xs font-semibold">
           <Avatar
             classNameImg="h-full w-full md:h-full md:w-full"
             url={values?.logo_url}
           />
-          <div className="hover-edit absolute top-0 left-0 h-full w-full bg-miru-white-1000 p-4 opacity-80">
-            <button
-              className="flex flex-row text-miru-han-purple-1000"
-              type="button"
-            >
+          <div className="hover-edit absolute top-0 left-0 h-full w-full bg-background p-4 opacity-80">
+            <button className="flex flex-row text-primary" type="button">
               <label className="flex cursor-pointer" htmlFor="file_input">
                 <img
                   alt="edit"
@@ -194,7 +154,7 @@ const CompanyDetailsForm = ({
               />
             </button>
             <button
-              className="flex flex-row pl-2 text-miru-red-400"
+              className="flex flex-row pl-2 text-destructive"
               type="button"
               onClick={() => setFieldValue("logo_url", null)}
             >
@@ -208,7 +168,7 @@ const CompanyDetailsForm = ({
           </div>
         </div>
       </div>
-      <div className="my-auto ml-6 text-xs font-normal text-miru-dark-purple-400">
+      <div className="my-auto ml-6 text-xs font-normal text-muted-foreground">
         <p>Accepted file formats: PNG, JPG, SVG.</p>
         <p>File size should be &#8826; 2MB.</p>
         <p>Image resolution should be 1:1.</p>
@@ -255,7 +215,7 @@ const CompanyDetailsForm = ({
                       />
                     ) : (
                       <div className="mt-2 flex flex-row">
-                        <div className="mt-2 h-30 w-30 border border-dashed border-miru-dark-purple-400 ">
+                        <div className="mt-2 h-30 w-30 border border-dashed border-border ">
                           <label
                             className="flex h-full w-full cursor-pointer justify-center"
                             htmlFor="file-input"
@@ -263,17 +223,13 @@ const CompanyDetailsForm = ({
                             <div className="m-auto cursor-pointer text-center text-xs font-semibold">
                               {isDesktop && (
                                 <>
-                                  <p className="text-miru-dark-purple-400">
+                                  <p className="text-muted-foreground">
                                     Drag logo
                                   </p>
-                                  <p className="text-miru-dark-purple-400">
-                                    or
-                                  </p>
+                                  <p className="text-muted-foreground">or</p>
                                 </>
                               )}
-                              <p className="text-miru-han-purple-1000">
-                                Select File
-                              </p>
+                              <p className="text-primary">Select File</p>
                             </div>
                           </label>
                           <input
@@ -284,7 +240,7 @@ const CompanyDetailsForm = ({
                             onChange={e => onLogoChange(e, setFieldValue)}
                           />
                         </div>
-                        <div className="my-auto ml-6 text-xs font-normal text-miru-dark-purple-400">
+                        <div className="my-auto ml-6 text-xs font-normal text-muted-foreground">
                           <p>Accepted file formats: PNG, JPG, SVG.</p>
                           <p>File size should be &#8826; 2MB.</p>
                           <p>Image resolution should be 1:1.</p>
@@ -297,94 +253,109 @@ const CompanyDetailsForm = ({
                   </div>
                 </div>
               </div>
-              <div className="field relative">
-                <InputField
-                  autoFocus
-                  resetErrorOnChange
-                  hasError={errors.company_name && touched.company_name}
-                  id="company_name"
-                  label="Company Name"
-                  name="company_name"
-                  setFieldValue={setFieldValue}
-                />
-                <InputErrors
-                  fieldErrors={errors.company_name}
-                  fieldTouched={touched.company_name}
-                />
-              </div>
-              <div className="field relative">
-                <div className="flex flex-col">
-                  <div className="outline relative flex h-12 flex-row rounded border border-miru-gray-1000 bg-white p-4 pt-2">
-                    <PhoneInput
-                      className="input-phone-number w-full border-transparent focus:border-transparent focus:ring-0"
-                      flags={flags}
-                      id="business_phone"
-                      inputClassName="form__input block w-full appearance-none bg-white border-0 focus:border-0 px-0 text-base border-transparent focus:border-transparent focus:ring-0 border-miru-gray-1000 w-full border-bottom-none "
-                      name="business_phone"
-                      value={values.business_phone}
-                      onChange={phone => {
-                        setFieldValue("business_phone", phone);
-                      }}
-                    />
-                    <label
-                      className="absolute -top-1 left-0 z-1 ml-3 origin-0 bg-white px-1 text-xsm font-medium text-miru-dark-purple-200 duration-300"
-                      htmlFor="business_phone"
-                    >
-                      Business Phone
-                    </label>
-                  </div>
+              <InputField
+                autoFocus
+                resetErrorOnChange
+                hasError={errors.company_name && touched.company_name}
+                id="company_name"
+                label="Company Name"
+                name="company_name"
+                setFieldValue={setFieldValue}
+              />
+              <InputErrors
+                fieldErrors={errors.company_name}
+                fieldTouched={touched.company_name}
+              />
+              <div className="mb-2 xsm:mb-6">
+                <label className="mb-2 block text-sm font-medium text-muted-foreground">
+                  Business Phone
+                </label>
+                <div className="flex h-10 w-full items-center rounded-md border border-input bg-background px-3 py-2">
+                  <PhoneInput
+                    className="input-phone-number w-full border-transparent focus:border-transparent focus:ring-0"
+                    flags={flags}
+                    id="business_phone"
+                    name="business_phone"
+                    value={values.business_phone}
+                    onChange={phone => {
+                      setFieldValue("business_phone", phone);
+                    }}
+                  />
                 </div>
                 <InputErrors
                   fieldErrors={errors.business_phone}
                   fieldTouched={touched.business_phone}
                 />
               </div>
-              <div className="field relative mt-4">
-                <InputField
-                  resetErrorOnChange
-                  hasError={errors.address_line_1 && touched.address_line_1}
-                  id="address_line_1"
-                  label="Address line 1"
-                  name="address_line_1"
-                  setFieldValue={setFieldValue}
-                />
-                <InputErrors
-                  fieldErrors={errors.address_line_1}
-                  fieldTouched={touched.address_line_1}
-                />
-              </div>
-              <div className="field relative mb-5">
-                <InputField
-                  resetErrorOnChange
-                  hasError={errors.address_line_2 && touched.address_line_2}
-                  id="address_line_2"
-                  label="Address line 2 (optional)"
-                  name="address_line_2"
-                  setFieldValue={setFieldValue}
-                />
-                <InputErrors
-                  fieldErrors={errors.address_line_2}
-                  fieldTouched={touched.address_line_2}
-                />
-              </div>
-              {/* Country */}
-              <div className="flex flex-row">
-                <div className="flex w-1/2 flex-col py-0 pr-2">
-                  <CustomReactSelect
-                    isErr={!!errors.country}
-                    label="Country"
-                    name="country"
-                    options={countries}
-                    value={values.country.value ? values.country : null}
-                    handleOnChange={e => {
-                      getTimezonesOfCurrentCountry(e.code, setFieldValue);
-                      setFieldValue("country", e);
-                      setFieldValue("state", "");
-                      setFieldValue("city", "");
+              <InputField
+                resetErrorOnChange
+                hasError={errors.address_line_1 && touched.address_line_1}
+                id="address_line_1"
+                label="Address line 1"
+                name="address_line_1"
+                setFieldValue={setFieldValue}
+              />
+              <InputErrors
+                fieldErrors={errors.address_line_1}
+                fieldTouched={touched.address_line_1}
+              />
+              <InputField
+                resetErrorOnChange
+                hasError={errors.address_line_2 && touched.address_line_2}
+                id="address_line_2"
+                label="Address line 2 (optional)"
+                name="address_line_2"
+                setFieldValue={setFieldValue}
+              />
+              <InputErrors
+                fieldErrors={errors.address_line_2}
+                fieldTouched={touched.address_line_2}
+              />
+              {/* Country and State */}
+              <div className="flex flex-row gap-4">
+                <div className="mb-2 xsm:mb-6 flex w-1/2 flex-col" id="country">
+                  <label className="mb-2 block text-sm font-medium text-muted-foreground">
+                    Country
+                  </label>
+                  <Select
+                    value={values.country?.value || ""}
+                    onValueChange={value => {
+                      const selectedCountry = countries.find(
+                        c => c.value === value
+                      );
+                      if (selectedCountry) {
+                        getTimezonesOfCurrentCountry(
+                          selectedCountry.code,
+                          setFieldValue
+                        );
+                        setFieldValue("country", selectedCountry);
+                        setFieldValue("state", "");
+                        setFieldValue("city", "");
+                      }
                     }}
-                  />
+                  >
+                    <SelectTrigger
+                      data-testid="select-trigger"
+                      className={`h-10 ${
+                        errors.country ? "border-red-500" : ""
+                      }`}
+                    >
+                      <SelectValue placeholder="Select country" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {countries.map(country => (
+                        <SelectItem
+                          key={country.value}
+                          value={country.value}
+                          data-testid="select-option"
+                        >
+                          {country.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
-                <div className="flex w-1/2 flex-col pl-2">
+                <div className="flex w-1/2 flex-col" id="state">
                   <InputField
                     resetErrorOnChange
                     hasError={errors.state && touched.state}
@@ -399,8 +370,9 @@ const CompanyDetailsForm = ({
                   />
                 </div>
               </div>
-              <div className="flex flex-row">
-                <div className="flex w-1/2 flex-col pr-2">
+              {/* City and Zipcode */}
+              <div className="flex flex-row gap-4">
+                <div className="flex w-1/2 flex-col" id="city">
                   <InputField
                     resetErrorOnChange
                     hasError={errors.city && touched.city}
@@ -414,12 +386,12 @@ const CompanyDetailsForm = ({
                     fieldTouched={touched.city}
                   />
                 </div>
-                <div className="flex w-1/2 flex-col pl-2">
+                <div className="flex w-1/2 flex-col">
                   <InputField
                     resetErrorOnChange
                     hasError={errors.zipcode && touched.zipcode}
                     id="zipcode"
-                    label="zipcode"
+                    label="Zipcode"
                     name="zipcode"
                     setFieldValue={setFieldValue}
                   />
@@ -430,31 +402,45 @@ const CompanyDetailsForm = ({
                 </div>
               </div>
               {/* Timezone */}
-              <div className="field relative">
-                <div className="outline relative">
-                  <Select
-                    className=""
-                    classNamePrefix="react-select-filter"
-                    name="timezone"
-                    options={timezonesOfSelectedCountry}
-                    placeholder="Timezone"
-                    styles={customStyles}
-                    components={{
-                      ValueContainer: CustomValueContainer,
-                    }}
-                    value={
-                      values.timezone.value
-                        ? values.timezone
-                        : timezonesOfSelectedCountry[0]
+              <div className="mb-2 xsm:mb-6">
+                <label className="mb-2 block text-sm font-medium text-muted-foreground">
+                  Timezone
+                </label>
+                <Select
+                  value={
+                    values.timezone?.value ||
+                    timezonesOfSelectedCountry?.[0]?.value ||
+                    ""
+                  }
+                  onValueChange={value => {
+                    const selectedTimezone = timezonesOfSelectedCountry.find(
+                      tz => tz.value === value
+                    );
+                    if (selectedTimezone) {
+                      setFieldValue("timezone", selectedTimezone);
                     }
-                    onChange={e => setFieldValue("timezone", e)}
-                  />
-                </div>
-                <div className="mx-0 mt-1 mb-5 block text-xs tracking-wider text-red-600">
-                  {errors.timezone && touched.timezone && (
-                    <div>{errors.timezone.value}</div>
-                  )}
-                </div>
+                  }}
+                >
+                  <SelectTrigger
+                    className={`h-10 ${
+                      errors.timezone ? "border-red-500" : ""
+                    }`}
+                  >
+                    <SelectValue placeholder="Select timezone" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {timezonesOfSelectedCountry?.map(timezone => (
+                      <SelectItem key={timezone.value} value={timezone.value}>
+                        {timezone.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {errors.timezone && touched.timezone && (
+                  <div className="mt-1 text-xs tracking-wider text-red-600">
+                    {errors.timezone.value}
+                  </div>
+                )}
               </div>
               {/* Next Button */}
               <div className="mb-3">

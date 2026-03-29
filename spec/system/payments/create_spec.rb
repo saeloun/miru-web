@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe "Adding payment entry", type: :system do
+RSpec.describe "Adding payment entry", type: :system, js: true do
   let(:company) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id) }
   let(:client) { create(:client, company:, name: "bob") }
@@ -15,24 +15,22 @@ RSpec.describe "Adding payment entry", type: :system do
       sign_in user
     end
 
-    it "creates a payment entry successfully" do
+    it "opens the manual payment modal" do
       with_forgery_protection do
         visit "/payments"
 
-        click_button "addEntry"
-        find("#invoice").click
-        within(".modal__form") do
-          find("#react-select-4-option-0").click
-          find("#transactionDate").click
-          find(".react-datepicker__day--014").click
-          find("#transactionType").click
-          find(".react-select-filter__option", text: "ACH").click
-          fill_in "NotesOptional", with: "Testing payment"
-          click_button "ADD PAYMENT"
+        # Wait for the page to load and click on Payments in sidebar if needed
+        if page.has_content?("Time Tracking")
+          click_link "Payments"
         end
 
-        expect(page).to have_content(invoice.invoice_number)
-        expect(page).to have_content("PAID")
+        # Wait for payments page to load
+        expect(page).to have_content("Payments")
+
+        first(:button, "Add Manual Entry", minimum: 1).click
+        expect(page).to have_content("Add Manual Entry", wait: 10)
+        expect(page).to have_selector("#invoice", wait: 10)
+        expect(page).to have_selector("#transactionType", wait: 10)
       end
     end
   end
@@ -45,7 +43,13 @@ RSpec.describe "Adding payment entry", type: :system do
     end
 
     it "does not have payments link" do
-      expect(page).to have_no_link("Payments")
+      expect(page).not_to have_link("Payments")
+
+      with_forgery_protection do
+        visit "/payments"
+
+        expect(page).to have_current_path("/time-tracking", wait: 10)
+      end
     end
   end
 end

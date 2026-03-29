@@ -1,12 +1,13 @@
+import { MIRU_APP_URL, Paths } from "constants/index";
+
 import React, { useEffect, useState } from "react";
 
-import { Form, Formik, FormikProps } from "formik";
-import { MiruLogoSVG } from "miruIcons";
-
-import authenticationApi from "apis/authentication";
+import { authenticationApi } from "apis/api";
 import { InputErrors, InputField } from "common/FormikFields";
 import MiruLogoWatermark from "common/MiruLogoWatermark";
-import { MIRU_APP_URL, Paths } from "constants/index";
+import useThemeMode from "common/useThemeMode";
+import { Form, Formik, FormikProps } from "formik";
+import { MiruLogoWithTextSVG } from "miruIcons";
 
 import PasswordResetLinkSentMsg from "./PasswordResetLinkSentMsg";
 import {
@@ -19,6 +20,7 @@ interface ForgotPasswordFormValues {
 }
 
 const ForgotPassword = () => {
+  const themeMode = useThemeMode();
   const [emailToSendResetPasswordLink, setEmailToSendResetPasswordLink] =
     useState<string>("");
 
@@ -43,18 +45,22 @@ const ForgotPassword = () => {
   }
 
   return (
-    <div className="relative min-h-screen w-full px-8 pt-10 pb-4 md:px-0 md:pt-36">
+    <div className="relative min-h-screen w-full bg-background px-8 pb-4 pt-10 text-foreground md:px-0 md:pt-36">
       <div className="mx-auto min-h-full md:w-1/2 lg:w-352">
         <div>
           <a href={MIRU_APP_URL} rel="noreferrer noopener">
             <img
-              alt="miru-logo"
-              className="d-block mx-auto mb-4 h-10 w-10 md:mb-10 md:h-16 md:w-16 lg:mb-20"
-              src={MiruLogoSVG}
+              alt="Miru"
+              className="d-block mx-auto mb-4 h-10 w-auto object-contain md:mb-10 lg:mb-20"
+              src={MiruLogoWithTextSVG}
+              style={{
+                filter:
+                  themeMode === "dark" ? "brightness(0) invert(1)" : "none",
+              }}
             />
           </a>
         </div>
-        <h1 className="text-center font-manrope text-2xl font-extrabold text-miru-han-purple-1000 md:text-3xl lg:text-4.5xl">
+        <h1 className="text-center font-geist text-2xl font-extrabold text-foreground md:text-3xl lg:text-4.5xl">
           Forgot Password
         </h1>
         <div className="pt-10 lg:pt-20">
@@ -91,14 +97,14 @@ const ForgotPassword = () => {
                       type="submit"
                       className={`form__button whitespace-nowrap ${
                         !values?.email?.trim()
-                          ? "cursor-not-allowed border-transparent bg-indigo-100 hover:border-transparent"
+                          ? "cursor-not-allowed border-transparent bg-muted text-muted-foreground hover:border-transparent"
                           : "cursor-pointer"
                       }`}
                     >
                       Send password reset link
                     </button>
                   </div>
-                  <p className="mb-3 mt-3 text-center font-manrope text-xs font-normal not-italic text-miru-dark-purple-1000">
+                  <p className="mb-3 mt-3 text-center font-geist text-xs font-normal not-italic text-foreground">
                     <span className="form__link inline cursor-pointer">
                       <a href={Paths.LOGIN}>
                         <span className="mr-2 inline-block font-bold">

@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
 
+import { invoicesApi } from "apis/api";
+import Loader from "common/Loader";
 import { LeftArrowIcon } from "miruIcons";
 import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "StyledComponents";
-
-import invoicesApi from "apis/invoices";
-import Loader from "common/Loader";
 
 const Success = () => {
   const [invoice, setInvoice] = useState<any>({});
@@ -67,11 +66,11 @@ const Success = () => {
           </div>
           <div className="py-16">
             <div className="flex flex-col items-center">
-              <p className="tracking-wide text-sm font-semibold uppercase text-indigo-600">{`Invoice ${invoice?.invoice_number}`}</p>
-              <h1 className="tracking-tight mt-2 text-4xl font-extrabold text-gray-900 sm:text-5xl">
+              <p className="text-sm font-semibold uppercase tracking-wide text-primary">{`Invoice ${invoice?.invoice_number}`}</p>
+              <h1 className="mt-2 text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
                 Payment was successful. 🎉
               </h1>
-              <p className="mt-2 text-base text-gray-500">
+              <p className="mt-2 text-base text-muted-foreground">
                 We have received your payment.
               </p>
               <Button

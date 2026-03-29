@@ -6,19 +6,19 @@ const TableData = (projects, isDesktop) => {
   if (projects && isDesktop) {
     return projects.map(project => ({
       col1: (
-        <div className="text-base capitalize text-miru-dark-purple-1000">
+        <div className="text-base capitalize text-foreground">
           {project.name}
         </div>
       ),
       col2: (
-        <div className="text-sm font-medium text-miru-dark-purple-1000">
+        <div className="text-sm font-medium text-foreground">
           {project.team.map((member, index) => (
             <span key={index}>{member},&nbsp;</span>
           ))}
         </div>
       ),
       col3: (
-        <div className="text-right text-lg font-bold text-miru-dark-purple-1000">
+        <div className="text-right text-lg font-bold text-foreground">
           {minToHHMM(project.minutes)}
         </div>
       ),
@@ -27,13 +27,13 @@ const TableData = (projects, isDesktop) => {
   } else if (projects && !isDesktop) {
     return projects.map(project => ({
       col1: (
-        <div className="text-base font-medium capitalize text-miru-dark-purple-1000">
+        <div className="text-base font-medium capitalize text-foreground">
           {project.name}
           <br />
           <div className="w-57.5">
             {project.team.map((member, index) => (
               <span
-                className="font-manrope text-xs text-miru-dark-purple-400"
+                className="font-sans text-xs text-muted-foreground"
                 key={index}
               >
                 {member},&nbsp;
@@ -43,7 +43,7 @@ const TableData = (projects, isDesktop) => {
         </div>
       ),
       col2: (
-        <div className="mr-4 text-right text-lg font-bold text-miru-dark-purple-1000">
+        <div className="mr-4 text-right text-lg font-bold text-foreground">
           {minToHHMM(project.minutes)}
         </div>
       ),

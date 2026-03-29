@@ -1,5 +1,8 @@
+import { Paths, LocalStorageKeys } from "constants/index";
+
 import React from "react";
 
+import { logoutApi } from "apis/api";
 import {
   TimeTrackingIcon,
   ClientsIcon,
@@ -14,9 +17,6 @@ import {
 } from "miruIcons";
 import { NavLink } from "react-router-dom";
 
-import { logoutApi } from "apis/logoutApi";
-import { Paths, LocalStorageKeys } from "constants/index";
-
 const navOptions = [
   {
     logo: <TimeTrackingIcon className="mr-0 md:mr-4" size={26} />,
@@ -28,7 +28,7 @@ const navOptions = [
     logo: <ClientsIcon className="mr-0 md:mr-4" size={26} />,
     label: "Clients",
     path: Paths.CLIENTS,
-    allowedRoles: ["admin", "employee", "owner"],
+    allowedRoles: ["admin", "owner"],
   },
   {
     logo: <ProjectsIcon className="mr-0 md:mr-4" size={26} />,
@@ -39,7 +39,7 @@ const navOptions = [
   {
     logo: <TeamsIcon className="mr-0 md:mr-4" size={26} />,
     label: "Team",
-    path: Paths.TEAMS,
+    path: Paths.TEAM.replace("/*", ""),
     allowedRoles: ["admin", "owner"],
   },
   {
@@ -83,7 +83,7 @@ const navAdminMobileOptions = [
   {
     logo: <TeamsIcon className="mr-0 md:mr-4" size={26} />,
     label: "Team",
-    path: Paths.TEAMS,
+    path: Paths.TEAM.replace("/*", ""),
   },
   {
     logo: <ClientsIcon className="mr-0 md:mr-4" size={26} />,
@@ -128,7 +128,7 @@ const navClientOptions = [
   {
     logo: <SettingIcon className="mr-0 md:mr-4" size={26} />,
     label: "Settings",
-    path: "/settings/profile",
+    path: Paths.SETTINGS.replace("/*", "/profile"),
     allowedRoles: ["admin", "owner", "book_keeper", "client"],
   },
   {
@@ -140,29 +140,29 @@ const navClientOptions = [
 ];
 
 const activeClassName =
-  "w-full py-3 px-2 md:px-4 flex items-center justify-center md:justify-start text-miru-han-purple-1000 bg-miru-gray-100  border-l-0 md:border-l-8 border-miru-han-purple-1000 font-extrabold";
+  "w-full py-3 px-2 md:px-4 flex items-center justify-center md:justify-start text-primary bg-muted  border-l-0 md:border-l-8 border-primary font-extrabold";
 
 const mobileActiveClassName =
-  "flex flex-col items-center justify-center text-miru-han-purple-1000 text-xs font-bold";
+  "flex flex-col items-center justify-center text-primary text-xs font-bold";
 
 const getMobileListClassName = (isActive, index, showMoreOptions) => {
   if (isActive && !showMoreOptions) return mobileActiveClassName;
 
   if (index > 3) {
-    return "w-full px-4 flex items-center justify-start hover:bg-miru-gray-100";
+    return "w-full px-4 flex items-center justify-start hover:bg-muted";
   }
 
-  return "w-full flex flex-col items-center justify-center hover:bg-miru-gray-100 text-xs font-medium";
+  return "w-full flex flex-col items-center justify-center hover:bg-muted text-xs font-medium";
 };
 
 const ListOption = ({ option, index }) => (
-  <li className="items-center hover:bg-miru-gray-100" key={index}>
+  <li className="items-center hover:bg-muted" key={index}>
     <NavLink
       to={option.path}
       className={({ isActive }) =>
         isActive
           ? activeClassName
-          : "flex items-center justify-center py-3 px-2 hover:bg-miru-gray-100 md:justify-start md:px-6"
+          : "flex items-center justify-center py-3 px-2 hover:bg-muted md:justify-start md:px-6"
       }
     >
       {option.logo} {option.label}
@@ -178,7 +178,7 @@ const MobileListOption = ({
   showMoreOptions,
 }) => (
   <li
-    className="flex items-center justify-start border-b border-miru-gray-100 py-3 text-base font-medium leading-5 last:border-b-0"
+    className="flex items-center justify-start border-b border-border py-3 text-base font-medium leading-5 last:border-b-0"
     key={index}
     onClick={() => setSelectedTab(option.label)}
   >
@@ -226,13 +226,32 @@ const MobileMenuOptions = ({
   </>
 );
 
-const handleLogout = async authDispatch => {
-  await logoutApi();
-  Object.values(LocalStorageKeys).forEach(key => {
-    localStorage.removeItem(key);
-  });
-  authDispatch({ type: "LOGOUT" });
-  window.location.href = "/";
+const handleLogout = async () => {
+  try {
+    // Call Rails logout API
+    await logoutApi();
+
+    // Clear local storage
+    Object.values(LocalStorageKeys).forEach(key => {
+      localStorage.removeItem(key);
+    });
+
+    // Clear auth token
+    localStorage.removeItem("authToken");
+    localStorage.removeItem("authEmail");
+
+    // Redirect to home/login page
+    window.location.href = "/";
+  } catch (error) {
+    console.error("Logout error:", error);
+    // Even if logout API fails, clear local storage and redirect
+    Object.values(LocalStorageKeys).forEach(key => {
+      localStorage.removeItem(key);
+    });
+    localStorage.removeItem("authToken");
+    localStorage.removeItem("authEmail");
+    window.location.href = "/";
+  }
 };
 
 export {

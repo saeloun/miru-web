@@ -1,34 +1,53 @@
 # frozen_string_literal: true
 
-class Api::V1::TimesheetEntryController < Api::V1::BaseController
-  before_action :ensure_project_member
+class Api::V1::TimesheetEntryController < Api::V1::ApplicationController
+  skip_after_action :verify_authorized, only: [:index]
+  after_action :verify_policy_scoped, only: [:index]
+
+  def index
+    timesheet_entries = policy_scope(TimesheetEntry)
+    timesheet_entries = timesheet_entries
+      .where(user_id: params[:user_id] || current_user.id)
+      .during(params[:from], params[:to])
+      .includes(:user, :project, :client)
+    entries = TimesheetEntriesPresenter.new(timesheet_entries).group_snippets_by_work_date
+    render json: { entries: }, status: 200
+  end
 
   def create
-    timesheet_entry = project.timesheet_entries.new(timesheet_entry_params)
-    timesheet_entry.user = current_user
-    timesheet_entry.save!
+    authorize TimesheetEntry
+    timesheet_entry = current_project.timesheet_entries.new(timesheet_entry_params)
+    timesheet_entry.user = current_company.users.find(params[:user_id])
     render json: {
       notice: I18n.t("timesheet_entry.create.message"),
       entry: timesheet_entry.snippet
-    }
+    } if timesheet_entry.save!
+  end
+
+  def update
+    authorize current_timesheet_entry
+    current_timesheet_entry.project = current_project
+    current_timesheet_entry.update!(timesheet_entry_params)
+    render json: { notice: I18n.t("timesheet_entry.update.message"), entry: current_timesheet_entry.snippet },
+      status: 200
+  end
+
+  def destroy
+    authorize current_timesheet_entry
+    render json: { notice: I18n.t("timesheet_entry.destroy.message") } if current_timesheet_entry.discard!
   end
 
   private
 
-    def project_member
-      ProjectMember.find_by(user_id: current_user.id, project_id: project.id)
+    def current_project
+      @_current_project ||= current_company.projects.kept.find(params[:project_id])
     end
 
-    def project
-      @_project ||= current_company.projects.kept.find(params[:timesheet_entry][:project_id])
+    def current_timesheet_entry
+      @_current_timesheet_entry ||= current_company.timesheet_entries.kept.find(params[:id])
     end
 
     def timesheet_entry_params
-      params.require(:timesheet_entry).permit(
-        :project_id, :duration, :work_date, :note, :bill_status)
-    end
-
-    def ensure_project_member
-      return render json: { notice: "User is not a project member." }, status: :forbidden if project_member.blank?
+      params.require(:timesheet_entry).permit(:project_id, :duration, :work_date, :note, :bill_status)
     end
 end

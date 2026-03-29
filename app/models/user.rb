@@ -1,59 +1,30 @@
-# == Schema Information
-#
-# Table name: users
-#
-#  id                     :bigint           not null, primary key
-#  calendar_connected     :boolean          default(TRUE)
-#  calendar_enabled       :boolean          default(TRUE)
-#  confirmation_sent_at   :datetime
-#  confirmation_token     :string
-#  confirmed_at           :datetime
-#  current_sign_in_at     :datetime
-#  current_sign_in_ip     :string
-#  date_of_birth          :date
-#  discarded_at           :datetime
-#  email                  :string           default(""), not null
-#  encrypted_password     :string           default(""), not null
-#  first_name             :string           not null
-#  last_name              :string           not null
-#  last_sign_in_at        :datetime
-#  last_sign_in_ip        :string
-#  phone                  :string
-#  remember_created_at    :datetime
-#  reset_password_sent_at :datetime
-#  reset_password_token   :string
-#  sign_in_count          :integer          default(0), not null
-#  social_accounts        :jsonb
-#  token                  :string(50)
-#  unconfirmed_email      :string
-#  created_at             :datetime         not null
-#  updated_at             :datetime         not null
-#  current_workspace_id   :bigint
-#  personal_email_id      :string
-#
-# Indexes
-#
-#  index_users_on_confirmation_token    (confirmation_token)
-#  index_users_on_current_workspace_id  (current_workspace_id)
-#  index_users_on_discarded_at          (discarded_at)
-#  index_users_on_email                 (email) UNIQUE
-#  index_users_on_reset_password_token  (reset_password_token) UNIQUE
-#
-# Foreign Keys
-#
-#  fk_rails_...  (current_workspace_id => companies.id)
-#
-
 # frozen_string_literal: true
 
 class User < ApplicationRecord
-  include Discard::Model
+  TOTP_ISSUER = "Miru"
+  RECOVERY_CODES_COUNT = 8
 
-  class SpamUserSignup < StandardError
-    def initialize(msg = "Spam User Login")
-      super
-    end
+  if defined?(T::Sig)
+    extend T::Sig
+  else
+    def self.sig(&block); end
   end
+  include Discard::Model
+  include Searchable
+  include SuperAdmin
+
+  # Configure pg_search
+  pg_search_scope :pg_search,
+    against: [:first_name, :last_name, :email],
+    using: {
+      tsearch: {
+        prefix: true,
+        dictionary: "simple"
+      },
+      trigram: {
+        threshold: 0.1
+      }
+    }
 
   # Associations
   has_many :employments, dependent: :destroy
@@ -61,11 +32,11 @@ class User < ApplicationRecord
   has_many :project_members, dependent: :destroy
   has_many :timesheet_entries
   has_many :identities, dependent: :delete_all
-  has_one :wise_account, dependent: :destroy
   has_many :previous_employments, dependent: :destroy
   has_one_attached :avatar
   has_many :addresses, as: :addressable, dependent: :destroy
   has_many :devices, dependent: :destroy
+  has_many :passkeys, dependent: :destroy
   has_many :invitations, foreign_key: "sender_id", dependent: :destroy
   has_secure_token :token, length: 50
   has_many :projects, through: :project_members
@@ -99,25 +70,35 @@ class User < ApplicationRecord
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable,
     :recoverable, :rememberable, :validatable,
-    :trackable, :confirmable,
-    :omniauthable, omniauth_providers: [:google_oauth2]
+    :trackable, :confirmable, :lockable,
+    :omniauthable, omniauth_providers: [:google_oauth2, :github]
+
+  # Devise session serialization fix
+  def self.serialize_into_session(record)
+    [record.id.to_s, record.authenticatable_salt]
+  end
+
+  def self.serialize_from_session(*args)
+    # Handle both old and new session formats
+    if args.length == 2
+      key, salt = args
+    elsif args.length > 2
+      # Extract just the first two arguments (id and salt)
+      key = args[0]
+      salt = args[1]
+    else
+      return nil
+    end
+
+    record = find_by(id: key)
+    record if record && record.authenticatable_salt == salt
+  end
 
   # Callbacks
-  before_validation :prevent_spam_user_sign_up
   after_discard :discard_project_members
   before_create :set_token
-  before_validation :validate_email_with_zerobounce, on: [:create, :update], if: :email_changed?
 
   after_commit :send_to_hubspot, on: :create
-
-  searchkick filterable: [:first_name, :last_name, :email],
-    word_middle: [:first_name, :last_name, :email]
-
-  def prevent_spam_user_sign_up
-    if self.email.include?("internetkeno")
-      raise SpamUserSignup.new("#{self.email} Spam User Signup")
-    end
-  end
 
   def primary_role(company)
     roles = self.roles.where(resource: company)
@@ -132,6 +113,7 @@ class User < ApplicationRecord
     end
   end
 
+  sig { returns(String) }
   def full_name
     "#{first_name} #{last_name}"
   end
@@ -142,13 +124,9 @@ class User < ApplicationRecord
   # 2.1 user is part of atleast one active employment OR
   # 2.2 initial phase i.e, user is owner and setting up the company
   #     and hence no associated company
+  sig { returns(T::Boolean) }
   def active_for_authentication?
     super and self.kept? and (!self.employments.kept.empty? or self.companies.empty?)
-  end
-
-  def joined_date_for_company(company)
-    employment = employments.find_by(company:)
-    employment&.joined_at
   end
 
   def inactive_message
@@ -194,6 +172,99 @@ class User < ApplicationRecord
     Rails.application.routes.url_helpers.polymorphic_url(avatar, only_path: true)
   end
 
+  def ensure_webauthn_id!
+    return webauthn_id if webauthn_id.present?
+
+    update!(webauthn_id: ::WebAuthn.generate_user_id)
+    webauthn_id
+  end
+
+  def otp_secret
+    self[:otp_secret_ciphertext]
+  end
+
+  def otp_secret=(value)
+    self[:otp_secret_ciphertext] = value
+  end
+
+  def totp_enabled?
+    otp_required_for_login? && otp_secret.present?
+  end
+
+  def has_second_factor_requirement?
+    passkey_required_for_login? || totp_enabled?
+  end
+
+  def ensure_otp_secret!
+    return otp_secret if otp_secret.present?
+
+    update!(otp_secret: ::ROTP::Base32.random_base32)
+    otp_secret
+  end
+
+  def reset_totp_setup!
+    update!(
+      otp_secret: ::ROTP::Base32.random_base32,
+      otp_required_for_login: false,
+      otp_last_used_at: nil,
+      otp_recovery_codes_digest: [],
+      otp_recovery_codes_generated_at: nil
+    )
+  end
+
+  def totp_provisioning_uri
+    return nil if otp_secret.blank?
+
+    ::ROTP::TOTP.new(otp_secret, issuer: TOTP_ISSUER).provisioning_uri(email)
+  end
+
+  def verify_totp_code!(code)
+    return false if otp_secret.blank?
+
+    timestamp = ::ROTP::TOTP.new(otp_secret, issuer: TOTP_ISSUER).verify(
+      normalized_otp_code(code),
+      drift_behind: 30,
+      drift_ahead: 30,
+      after: otp_last_used_at
+    )
+
+    return false unless timestamp
+
+    update!(otp_last_used_at: timestamp.to_i)
+    true
+  end
+
+  def generate_recovery_codes!
+    codes = Array.new(RECOVERY_CODES_COUNT) { SecureRandom.hex(4).upcase.scan(/.{1,4}/).join("-") }
+
+    update!(
+      otp_recovery_codes_digest: codes.map { |value| digest_recovery_code(value) },
+      otp_recovery_codes_generated_at: Time.current
+    )
+
+    codes
+  end
+
+  def consume_recovery_code!(code)
+    normalized = normalized_recovery_code(code)
+    digest = digest_recovery_code(normalized)
+    digests = Array(otp_recovery_codes_digest)
+    return false unless digests.include?(digest)
+
+    update!(otp_recovery_codes_digest: digests - [digest])
+    true
+  end
+
+  def clear_totp!
+    update!(
+      otp_secret: nil,
+      otp_required_for_login: false,
+      otp_last_used_at: nil,
+      otp_recovery_codes_digest: [],
+      otp_recovery_codes_generated_at: nil
+    )
+  end
+
   private
 
     def set_token
@@ -234,24 +305,15 @@ class User < ApplicationRecord
       HubspotIntegrationJob.perform_later(email, first_name, last_name)
     end
 
-    def validate_email_with_zerobounce
-      return unless email.present?
+    def normalized_otp_code(code)
+      code.to_s.gsub(/\s+/, "")
+    end
 
-      result = ZerobounceCircuitBreaker.execute(email)
+    def normalized_recovery_code(code)
+      code.to_s.upcase.gsub(/[^A-Z0-9]/, "")
+    end
 
-      # Skip validation if circuit breaker is open or validation is disabled
-      if result[:skip]
-        Rails.logger.info("[User] Zerobounce validation skipped: #{result[:reason]}")
-        return
-      end
-
-      # Process successful API response
-      if result[:success] && result[:response]
-        response = result[:response]
-
-        if response["status"] != "valid"
-          errors.add(:email, "Email is not valid or undeliverable.")
-        end
-      end
+    def digest_recovery_code(code)
+      Digest::SHA256.hexdigest(normalized_recovery_code(code))
     end
 end

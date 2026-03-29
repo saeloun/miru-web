@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe "Team Member", type: :system do
+RSpec.describe "Team Member", type: :system, js: true do
   let(:company) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id) }
   let(:employee_user) { create(:user, current_workspace_id: company.id) }
@@ -17,19 +17,21 @@ RSpec.describe "Team Member", type: :system do
         sign_in(user)
       end
 
-      it "cannot see the pagination" do
+      it "shows the full team without pagination" do
         with_forgery_protection do
-          visit "/teams"
+          visit "/team"
 
-          expect(page).not_to have_css(
-            "button.m-1.mx-4.p-1.text-base.font-bold.text-miru-dark-purple-400.text-miru-han-purple-1000", text: "1"
-          )
+          expect(page).to have_content("Total Members", wait: 10)
+          expect(page).to have_content("2", wait: 10)
+          expect(page).not_to have_content("Page 1 of")
         end
       end
     end
 
     context "with more than ten members" do
       before do
+        create(:employment, company:, user:)
+        create(:employment, company:, user: employee_user)
         build_list(:employment, 20, company:) do |item|
           item.user = create(:user, current_workspace_id: company.id)
           item.save!
@@ -39,58 +41,65 @@ RSpec.describe "Team Member", type: :system do
         sign_in(user)
       end
 
-      it "can view pagination" do
+      it "shows the full team list without pagination controls" do
         with_forgery_protection do
-          visit "/teams"
-          sleep 1
-          pagination_number = find(
-            "button.m-1.mx-4.p-1.text-base.font-bold.text-miru-dark-purple-400.text-miru-han-purple-1000"
-          ).text
+          visit "/team"
 
-          expect(pagination_number).to eq("1")
+          expect(page).to have_content("Total Members", wait: 10)
+          expect(page).to have_content("22", wait: 10)
+          expect(page).not_to have_content("Page 1 of")
         end
       end
 
-      it "can paginate to the next page" do
+      it "shows team table with members" do
         with_forgery_protection do
-          visit "/teams"
-          sleep 1
-          click_button "2"
-
-          sleep 1
-          pagination_number = find(
-            "button.m-1.mx-4.p-1.text-base.font-bold.text-miru-dark-purple-400.text-miru-han-purple-1000"
-          ).text
-
-          expect(pagination_number).to eq("2")
+          visit "/team"
+          expect(page).to have_content("Team Member", wait: 10)
+          expect(page).to have_content("Role", wait: 10)
         end
       end
+    end
 
-      it "displays ten users by default" do
-        with_forgery_protection do
-          visit "/teams"
-          sleep 1
+    context "when free plan seat limit is reached" do
+      let(:company) { create(:company, plan_tier: "free") }
 
-          within("tbody") do
-            expect(page).to have_xpath(".//tr", count: 10)
-          end
-        end
+      before do
+        create(:employment, company:, user:)
+        create(:employment, company:, user: employee_user)
+        extra_user = create(:user, current_workspace_id: company.id)
+        create(:employment, company:, user: extra_user)
+        user.add_role :admin, company
+        employee_user.add_role :employee, company
+        extra_user.add_role :employee, company
+        sign_in(user)
       end
 
-      it "can change number of users to show" do
+      it "disables inviting more members and prompts an upgrade" do
         with_forgery_protection do
-          visit "/teams"
-          sleep 1
+          visit "/team"
 
-          within("tbody") do
-            expect(page).to have_xpath(".//tr", count: 10)
-          end
+          expect(page).to have_button("Upgrade to invite more", disabled: true, wait: 10)
+          expect(page).to have_button("View plans and upgrade.", wait: 10)
+        end
+      end
+    end
 
-          find(".p-2.text-xs.font-bold.text-miru-han-purple-1000 option[value='20']").select_option
-          sleep 1
-          within("tbody") do
-            expect(page).to have_xpath(".//tr", count: 20)
-          end
+    context "when editing a team member profile" do
+      before do
+        create(:employment, company:, user:)
+        create(:employment, company:, user: employee_user)
+        user.add_role :admin, company
+        employee_user.add_role :employee, company
+        sign_in(user)
+      end
+
+      it "prefills the member details form" do
+        with_forgery_protection do
+          visit "/team/#{employee_user.id}/profile/edit"
+
+          expect(page).to have_field("first_name", with: employee_user.first_name, wait: 10)
+          expect(page).to have_field("last_name", with: employee_user.last_name)
+          expect(page).to have_field("email_id", with: employee_user.personal_email_id)
         end
       end
     end

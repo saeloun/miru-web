@@ -14,14 +14,46 @@ class InvoiceMailer < ApplicationMailer
     @amount = FormatAmountService.new(@invoice.currency, @invoice.amount).process
 
     if can_send_invoice?
-      pdf_service = PdfGeneration::InvoiceService.new(@invoice, @company_logo, root_url)
-      pdf = pdf_service.process
+      pdf = InvoicePayment::PdfGeneration.process(@invoice, @company_logo, root_url)
       attachments["invoice_#{@invoice.invoice_number}.pdf"] = pdf
 
       mail(to: recipients, subject:, reply_to: ENV["REPLY_TO_EMAIL"])
 
       @invoice.update_columns(sent_at: DateTime.current)
     end
+  end
+
+  def send_invoice
+    @invoice = params[:invoice]
+    recipients = params[:recipients]
+    subject = params[:subject]
+    @message = params[:message]
+
+    # Decode PDF data if it was encoded as base64
+    pdf_data = if params[:pdf_encoded]
+      Base64.strict_decode64(params[:pdf_data])
+    else
+      params[:pdf_data]
+    end
+
+    @invoice_url = "#{ENV['APP_BASE_URL']}/invoices/#{@invoice.external_view_key}/view"
+    @company = @invoice.company
+    @company_logo = @invoice.company.logo.attached? ?
+      polymorphic_url(@invoice.company.logo) : ""
+    @amount = FormatAmountService.new(@invoice.currency, @invoice.amount).process
+
+    # Attach the PDF
+    attachments["#{@invoice.invoice_number}.pdf"] = {
+      mime_type: "application/pdf",
+      content: pdf_data
+    }
+
+    mail(
+      to: recipients,
+      from: ENV["DEFAULT_FROM_EMAIL"] || "noreply@example.com",
+      subject: subject,
+      reply_to: ENV["REPLY_TO_EMAIL"]
+    )
   end
 
   private

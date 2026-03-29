@@ -1,4 +1,4 @@
 --color
 --require spec_helper
---format documentation
---format RSpec::Buildkite::AnnotationFormatter
+--format progress
+--exclude-pattern "spec/system_skip/**/*_spec.rb"

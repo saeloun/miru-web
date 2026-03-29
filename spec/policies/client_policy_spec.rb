@@ -4,7 +4,7 @@ require "rails_helper"
 
 RSpec.describe ClientPolicy, type: :policy do
   let(:company) { create(:company) }
-  let(:client) { create(:client, company:) }
+  let(:client) { create(:client, company:, name: "Beta") }
   let(:admin) { create(:user, current_workspace_id: company.id) }
   let(:employee) { create(:user, current_workspace_id: company.id) }
   let(:owner) { create(:user, current_workspace_id: company.id) }
@@ -18,14 +18,14 @@ RSpec.describe ClientPolicy, type: :policy do
   end
 
   permissions :index? do
-    it "grants permission to an admin, employee and owner" do
+    it "grants permission to an admin, owner and book keeper" do
       expect(described_class).to permit(owner)
       expect(described_class).to permit(admin)
-      expect(described_class).to permit(employee)
+      expect(described_class).to permit(book_keeper)
     end
 
-    it "does not grants permission to book_keeper" do
-      expect(described_class).not_to permit(book_keeper)
+    it "denies permission to an employee" do
+      expect(described_class).not_to permit(employee)
     end
   end
 
@@ -81,7 +81,7 @@ RSpec.describe ClientPolicy, type: :policy do
 
   describe "policy_scope" do
     let(:another_company) { create(:company) }
-    let(:client_2) { create(:client, company:) }
+    let(:client_2) { create(:client, company:, name: "Zulu") }
     let!(:client_3) { create(:client, company:, name: "Alpha") }
     let(:client_4) { create(:client, company: another_company) }
     let(:project_1) { create(:project, client:) }
@@ -98,10 +98,15 @@ RSpec.describe ClientPolicy, type: :policy do
       project_membership.discard!
     end
 
-    context "when user is an admin/owner" do
+    context "when user is an admin/owner/book_keeper" do
       it "returns the list of allowed clients" do
         result = ClientPolicy::Scope.new(admin, company).resolve
-        expect(result.pluck(:id)).to eq([client_3.id, client.id])
+        expect(result.pluck(:name)).to eq(["Alpha", "Beta"])
+      end
+
+      it "returns the list of allowed clients for book keeper" do
+        result = ClientPolicy::Scope.new(book_keeper, company).resolve
+        expect(result.pluck(:name)).to eq(["Alpha", "Beta"])
       end
     end
 

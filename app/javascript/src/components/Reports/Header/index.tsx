@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 import React, { Fragment, useState } from "react";
 
 import {
@@ -15,6 +14,13 @@ import { Link } from "react-router-dom";
 import { MobileMoreOptions } from "StyledComponents";
 
 import { useUserContext } from "context/UserContext";
+import { Button } from "components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "components/ui/dropdown-menu";
 
 import { getReports } from "./fetchReport";
 import NavigationFilter from "./NavigationFilter";
@@ -80,18 +86,24 @@ const Header = ({
 
   return (
     <div>
-      <div className="sticky top-0 right-0 left-0 mt-0 mb-3 flex items-center justify-between bg-white px-4 py-2 shadow-c1 lg:static lg:mt-6 lg:bg-transparent lg:px-0 lg:shadow-none">
+      <div className="sticky top-0 right-0 left-0 z-20 mt-0 mb-3 flex items-center justify-between border-b border-border bg-background/95 px-4 py-2 shadow-c1 backdrop-blur lg:static lg:mt-6 lg:border-b-0 lg:bg-transparent lg:px-0 lg:shadow-none lg:backdrop-blur-none">
         <div className="flex w-full items-center justify-between lg:w-auto">
-          <Link to="/reports" type="button">
+          <Link
+            to="/reports"
+            type="button"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-md text-foreground transition-colors hover:bg-muted"
+            aria-label="Back to reports"
+          >
             <ArrowLeftIcon />
           </Link>
-          <span className="w-full py-1 px-3 text-left text-base font-medium leading-5 text-miru-dark-purple-1000 lg:ml-5 lg:truncate lg:px-0 lg:text-center lg:text-3.5xl lg:font-bold  lg:leading-10">
+          <span className="w-full py-1 px-3 text-left text-base font-medium leading-5 text-foreground lg:ml-5 lg:truncate lg:px-0 lg:text-center lg:text-3.5xl lg:font-bold  lg:leading-10">
             {type}
           </span>
           {showFilterIcon && (
             <button
-              className="relative rounded p-3 hover:bg-miru-gray-1000 lg:ml-7"
+              className="relative rounded-md p-3 text-foreground transition-colors hover:bg-muted lg:ml-7"
               onClick={() => handleFilterBtnClick(isDesktop)}
+              aria-label="Toggle report filters"
             >
               {isDesktop ? (
                 <>
@@ -119,7 +131,7 @@ const Header = ({
               visibilty={showMoreOptions}
             >
               <li
-                className="flex items-center py-2 text-sm text-miru-han-purple-1000"
+                className="flex items-center py-2 text-sm text-primary"
                 onClick={() => {
                   setIsFilterVisible(!isFilterVisible);
                   setShowMoreOptions(false);
@@ -132,25 +144,25 @@ const Header = ({
                 <Fragment>
                   <li>
                     <button
-                      className="menuButton__list-item px-0"
+                      className="menuButton__list-item px-0 text-foreground"
                       onMouseDown={() => {
                         setShowExportOptions(false);
                         handleDownload("csv");
                       }}
                     >
-                      <FileCsvIcon color="#5B34EA" size={16} weight="bold" />
+                      <FileCsvIcon color="#5E58F1" size={16} weight="bold" />
                       <span className="ml-3 text-sm">Export as CSV</span>
                     </button>
                   </li>
                   <li>
                     <button
-                      className="menuButton__list-item px-0"
+                      className="menuButton__list-item px-0 text-foreground"
                       onMouseDown={() => {
                         setShowExportOptions(false);
                         handleDownload("pdf");
                       }}
                     >
-                      <FilePdfIcon color="#5B34EA" size={16} weight="bold" />
+                      <FilePdfIcon color="#5E58F1" size={16} weight="bold" />
                       <span className="ml-3 text-sm">Export as PDF</span>
                     </button>
                   </li>
@@ -160,67 +172,45 @@ const Header = ({
           )}
         </div>
         {showExportButon && isDesktop && (
-          <div
-            className="mt-10 inline-flex lg:mt-0"
-            onBlur={() => setShowExportOptions(false)}
-          >
-            <div className="relative px-3">
-              <button
-                className="menuButton__button inline-flex justify-center rounded-md border border-miru-han-purple-1000 bg-white p-2 text-miru-han-purple-1000 hover:bg-gray-50"
-                onClick={() => setShowExportOptions(!showExportOptions)}
-              >
-                <ShareIcon className="" size={20} weight="bold" />
-                <p className="mx-2 text-base font-medium uppercase tracking-wider">
-                  Export
-                </p>
-                <CaretDownIcon size={20} weight="bold" />
-              </button>
-              {showExportOptions && (
-                <ul className="menuButton__wrapper">
-                  <li>
-                    <button
-                      className="menuButton__list-item"
-                      onMouseDown={() => {
-                        setShowExportOptions(false);
-                        handleDownload("csv");
-                      }}
-                    >
-                      <FileCsvIcon color="#5B34EA" size={16} weight="bold" />
-                      <span className="ml-3">Export as CSV</span>
-                    </button>
-                  </li>
-                  <li>
-                    <button
-                      className="menuButton__list-item"
-                      onMouseDown={() => {
-                        setShowExportOptions(false);
-                        handleDownload("pdf");
-                      }}
-                    >
-                      <FilePdfIcon color="#5B34EA" size={16} weight="bold" />
-                      <span className="ml-3">Export as PDF</span>
-                    </button>
-                  </li>
-                  {/* <li>
-                    <button
-                      className="menuButton__list-item"
-                      onClick={() => window.print()}
-                    >
-                      <PrinterIcon color="#5B34EA" size={16} weight="bold" />
-                      <span className="ml-3">Print</span>
-                    </button>
-                  </li> */}
-                </ul>
-              )}
-            </div>
-            {/* <div>
-              <button className="inline-flex justify-center rounded-md border border-miru-han-purple-1000 bg-white p-2 text-miru-han-purple-1000 hover:bg-gray-50">
-                <PaperPlaneTiltIcon size={20} weight="bold" />
-                <p className="mx-2 text-base font-medium uppercase tracking-wider">
-                  Share
-                </p>
-              </button>
-            </div> */}
+          <div className="mt-10 inline-flex lg:mt-0">
+            <DropdownMenu
+              open={showExportOptions}
+              onOpenChange={setShowExportOptions}
+            >
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="outline"
+                  className="gap-2 border-border bg-background text-foreground hover:bg-muted"
+                  aria-label={`Export ${type}`}
+                >
+                  <ShareIcon size={18} weight="bold" />
+                  <span className="text-sm font-semibold uppercase tracking-[0.18em]">
+                    Export
+                  </span>
+                  <CaretDownIcon size={18} weight="bold" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuItem
+                  onSelect={() => {
+                    setShowExportOptions(false);
+                    handleDownload("csv");
+                  }}
+                >
+                  <FileCsvIcon color="currentColor" size={16} weight="bold" />
+                  <span className="ml-2">Export as CSV</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onSelect={() => {
+                    setShowExportOptions(false);
+                    handleDownload("pdf");
+                  }}
+                >
+                  <FilePdfIcon color="currentColor" size={16} weight="bold" />
+                  <span className="ml-2">Export as PDF</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         )}
       </div>
@@ -236,11 +226,11 @@ const Header = ({
                 >
                   <XIcon
                     className="inline-block"
-                    color="#5B34EA"
+                    color="#5E58F1"
                     size={12}
                     weight="bold"
                   />
-                  <span className="ml-1 whitespace-nowrap text-xs font-bold tracking-widest text-miru-han-purple-1000">
+                  <span className="ml-1 whitespace-nowrap text-xs font-bold tracking-widest text-primary">
                     CLEAR ALL
                   </span>
                 </button>

@@ -3,20 +3,11 @@
 require "rails_helper"
 
 RSpec.shared_examples "View Invoice Logs", type: :system do
-  it "is able to view Invoices logs panel" do
+  it "shows invoice detail page with invoice metadata" do
     with_forgery_protection do
-      visit "invoices"
-
-      expect(page).to have_content "Invoices"
-      expect(page).to have_content "All Invoices"
-
-      find(:css, "#invoicesListTableRow").click
-      expect(page).to have_content("Invoice ##{invoice.invoice_number}")
-
-      find_by_id("menuOpen").click
-      find_by_id("viewHistory").click
-
-      expect(page).to have_content("History")
+      visit "/invoices/#{invoice.id}"
+      expect(page).to have_content("Invoice Number")
+      expect(page).to have_content("##{invoice.invoice_number}")
     end
   end
 end

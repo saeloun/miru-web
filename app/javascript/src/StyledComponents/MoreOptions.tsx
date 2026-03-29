@@ -4,11 +4,11 @@ import classnames from "classnames";
 import { useOutsideClick } from "helpers";
 
 const DEFAULT_STYLE =
-  "absolute rounded-lg border-miru-gray-200 bg-white py-2 shadow-c1 text-sm w-34";
+  "absolute rounded-lg border-border bg-white py-2 shadow-c1 text-sm w-34";
 type MoreOptionsProps = {
   children?: any;
   className?: string;
-  setVisibilty;
+  setVisibilty: (visible: boolean) => void;
 };
 
 const MoreOptions = ({
@@ -16,7 +16,7 @@ const MoreOptions = ({
   className,
   setVisibilty,
 }: MoreOptionsProps) => {
-  const wrapperRef = useRef();
+  const wrapperRef = useRef<HTMLUListElement>(null);
   useOutsideClick(wrapperRef, () => setVisibilty(false));
 
   return (

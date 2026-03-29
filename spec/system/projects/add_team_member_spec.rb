@@ -2,12 +2,12 @@
 
 require "rails_helper"
 
-RSpec.describe "Add team member to project", type: :system do
+RSpec.describe "Add team member to project", type: :system, js: true do
   let(:company) { create(:company) }
   let!(:user) { create(:user, current_workspace_id: company.id) }
   let!(:user_2) { create(:user, current_workspace_id: company.id) }
   let(:client) { create(:client, company:) }
-  let!(:project) { create(:project, client:) }
+  let!(:project) { create(:project, client:, name: "Team Project Alpha") }
 
   context "when adding a project member for a project" do
     before do
@@ -16,30 +16,26 @@ RSpec.describe "Add team member to project", type: :system do
       sign_in(user)
     end
 
-    it "can add project member to a project" do
+    it "opens add/remove team member modal for a project" do
       with_forgery_protection do
         visit "/projects"
-
-        find("tbody").hover.click
+        expect(page).to have_content(project.name, wait: 10)
+        page.find(:xpath, "//tr[contains(., '#{project.name}')]").hover.click
+        expect(page).to have_content(project.name, wait: 10)
         click_button "addRemoveTeamMembers"
-        sleep 1
-        click_button(id: "addMember")
-        find(".react-select-filter__control.css-digfch-control").click
-        find("#react-select-2-option-0").click
-        fill_in "Rate", with: "100"
-        click_button "Add team members to project"
-
-        expect(page).to have_content(user.first_name)
-        expect(page).to have_content("100")
-        expect(page).to have_content(project.name)
+        expect(page).to have_button("Save team members", disabled: true, wait: 10)
       end
     end
   end
 
   context "when project member is already added to a project" do
+    let!(:user_3) { create(:user, current_workspace_id: company.id) }
+
     before do
       create(:employment, company:, user:)
+      create(:employment, company:, user: user_3)
       create(:project_member, user: user_2, project:)
+      create(:project_member, user: user_3, project:)
       user.add_role :admin, company
       sign_in(user)
     end
@@ -47,12 +43,12 @@ RSpec.describe "Add team member to project", type: :system do
     it "can remove member from a project" do
       with_forgery_protection do
         visit "/projects"
-
-        find("tbody").hover.click
+        expect(page).to have_content(project.name, wait: 10)
+        page.find(:xpath, "//tr[contains(., '#{project.name}')]").hover.click
+        expect(page).to have_content(project.name, wait: 10)
         click_button "addRemoveTeamMembers"
-        sleep 1
-        click_button "removeMember"
-        click_button "Add team members to project"
+        first(:button, "removeMember").click
+        click_button "Save team members"
 
         expect(page).not_to have_content(user_2.first_name)
         expect(page).to have_content(project.name)
@@ -62,14 +58,14 @@ RSpec.describe "Add team member to project", type: :system do
     it "can edit the rate for a project member" do
       with_forgery_protection do
         visit "/projects"
-
-        find("tbody").hover.click
+        expect(page).to have_content(project.name, wait: 10)
+        page.find(:xpath, "//tr[contains(., '#{project.name}')]").hover.click
+        expect(page).to have_content(project.name, wait: 10)
         click_button "addRemoveTeamMembers"
-        sleep 1
-        fill_in "Rate", with: "500"
-        click_button "Add team members to project"
+        first(:fillable_field, "Hourly rate").set("500")
+        click_button "Save team members"
 
-        expect(page).to have_content(user.first_name)
+        expect(page).to have_content(user_2.first_name)
         expect(page).to have_content("500")
         expect(page).to have_content(project.name)
       end

@@ -12,28 +12,30 @@ module Clients
     end
 
     def process
+      clients = clients_list.to_a
+
       {
-        client_details:,
-        total_minutes:,
-        overdue_outstanding_amount:
+        client_details: client_details(clients),
+        total_minutes: total_minutes(clients),
+        overdue_outstanding_amount: overdue_outstanding_amount(clients)
       }
     end
 
     private
 
       def clients_list
-        base_clients = user_can_see_all_clients? ? current_company.clients : user_assigned_clients
+        base_clients = user_can_see_all_clients? ? current_company.clients.kept : user_assigned_clients
 
-        if query.present?
-          search_clients(search_term, where_clause).includes(:logo_attachment)
+        clients = if query.present?
+          search_clients(search_term, where_clause)
         else
-          base_clients.includes(:logo_attachment)
+          base_clients
         end
+
+        clients.includes(:addresses, :invoices, logo_attachment: :blob)
       end
 
       def user_assigned_clients
-        # Get clients only from projects where user has active (not soft-deleted) memberships
-        # Scoped to current company to prevent cross-tenant data leakage
         Client.kept
           .joins(projects: :project_members)
           .where(company_id: current_company.id)
@@ -59,27 +61,75 @@ module Clients
           current_user.has_role?(:book_keeper, current_company)
       end
 
-      def search_clients(search_term, where_clause)
+      def search_clients(term, where_query)
         Client.search(
-          search_term,
+          term,
           fields: [:name, :email],
           match: :word_middle,
-          where: where_clause
+          where: where_query
         )
       end
 
-      def client_details
-        @_client_details ||= clients_list.where(discarded_at: nil).map { |client|
-                                client.client_detail(time_frame)
-                              }
+      def client_details(clients)
+        minutes_by_client = total_minutes_by_client(clients)
+
+        clients.map do |client|
+          client.client_detail(time_frame, minutes_spent: minutes_by_client.fetch(client.id, 0))
+        end
       end
 
-      def total_minutes
-        (client_details.map { |client| client[:minutes_spent] }).sum
+      def total_minutes(clients)
+        total_minutes_by_client(clients).values.sum
       end
 
-      def overdue_outstanding_amount
-        current_company.overdue_and_outstanding_and_draft_amount
+      def overdue_outstanding_amount(clients)
+        invoice_totals = invoice_totals_by_client(clients)
+        outstanding = invoice_totals.values.sum { |amounts| amounts[:outstanding_amount] }
+        overdue = invoice_totals.values.sum { |amounts| amounts[:overdue_amount] }
+
+        {
+          outstanding: outstanding.round(2),
+          overdue: overdue.round(2),
+          currency: current_company.base_currency
+        }
+      end
+
+      def total_minutes_by_client(clients)
+        client_ids = clients.map(&:id)
+        return {} if client_ids.empty?
+
+        TimesheetEntry.kept
+          .joins(project: :client)
+          .where(projects: { client_id: client_ids })
+          .where(work_date: DateRangeService.new(timeframe: time_frame).process)
+          .group("projects.client_id")
+          .sum(:duration)
+      end
+
+      def invoice_totals_by_client(clients)
+        client_ids = clients.map(&:id)
+        return {} if client_ids.empty?
+
+        full_amount_sql = InvoiceAmountsSummary::FULL_AMOUNT_SQL
+        overdue_status = Invoice.statuses.fetch("overdue")
+        unpaid_statuses = InvoiceAmountsSummary::UNPAID_STATUSES.map do |status|
+          Invoice.statuses.fetch(status)
+        end.join(", ")
+
+        current_company.invoices.kept
+          .where(client_id: client_ids)
+          .group(:client_id)
+          .pluck(
+            :client_id,
+            Arel.sql("SUM(CASE WHEN status = #{overdue_status} THEN #{full_amount_sql} ELSE 0 END)"),
+            Arel.sql("SUM(CASE WHEN status IN (#{unpaid_statuses}) THEN #{full_amount_sql} ELSE 0 END)")
+          )
+          .each_with_object({}) do |(client_id, overdue_amount, outstanding_amount), totals|
+            totals[client_id] = {
+              overdue_amount: overdue_amount.to_f.round(2),
+              outstanding_amount: outstanding_amount.to_f.round(2)
+            }
+          end
       end
   end
 end

@@ -1,5 +1,25 @@
 # frozen_string_literal: true
 
+# == Schema Information
+#
+# Table name: identities
+#
+#  id         :bigint           not null, primary key
+#  provider   :string
+#  uid        :string
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#  user_id    :bigint           not null
+#
+# Indexes
+#
+#  index_identities_on_provider  (provider)
+#  index_identities_on_user_id   (user_id)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (user_id => users.id)
+#
 require "rails_helper"
 
 RSpec.describe Identity, type: :model do
@@ -19,6 +39,20 @@ RSpec.describe Identity, type: :model do
 
       it "excludes identities where provider is google_oauth2" do
         expect(described_class.google_auth).not_to include(identity3)
+      end
+    end
+
+    describe ".github_auth" do
+      let(:identity1) { create(:identity, provider: "github") }
+      let(:identity2) { create(:identity, provider: "github") }
+      let(:identity3) { create(:identity, provider: "google_oauth2") }
+
+      it "returns identities where provider is github" do
+        expect(described_class.github_auth).to include(identity2, identity1)
+      end
+
+      it "excludes identities where provider is github" do
+        expect(described_class.github_auth).not_to include(identity3)
       end
     end
   end

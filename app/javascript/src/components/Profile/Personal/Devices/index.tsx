@@ -1,13 +1,11 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
-import { useNavigate, useParams } from "react-router-dom";
-
-import deviceApi from "apis/devices";
+import { deviceApi } from "apis/api";
 import Loader from "common/Loader/index";
 import { MobileEditHeader } from "common/Mobile/MobileEditHeader";
-import DetailsHeader from "components/Profile/Common/DetailsHeader";
 import { useProfileContext } from "context/Profile/ProfileContext";
 import { useUserContext } from "context/UserContext";
+import { useNavigate, useParams } from "react-router-dom";
 
 import { Device } from "./Device";
 import StaticPage from "./StaticPage";
@@ -17,52 +15,67 @@ const AllocatedDevicesDetails = () => {
   const { isCalledFromSettings } = useProfileContext();
   const navigate = useNavigate();
   const { memberId } = useParams();
-  const currentUserId = isCalledFromSettings ? user.id : memberId;
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [devices, setDevices] = useState<Device[]>([]);
+  // Determine current user ID based on context
+  const isFromSettings = window.location.pathname.startsWith("/settings");
+  const currentUserId = isFromSettings ? user?.id : memberId;
 
   const getDevicesDetail = async () => {
-    const res: any = await deviceApi.get(currentUserId);
-    const devicesDetails: Device[] = res.data.devices;
-    setDevices(devicesDetails);
+    if (!currentUserId) return;
+
+    try {
+      const res: any = await deviceApi.get(currentUserId);
+      const devicesDetails: Device[] = res.data.devices;
+      setDevices(devicesDetails);
+    } catch (error) {
+      console.error("Failed to fetch devices:", error);
+    }
     setIsLoading(false);
   };
 
   useEffect(() => {
-    setIsLoading(true);
-    getDevicesDetail();
-  }, []);
+    if (currentUserId) {
+      setIsLoading(true);
+      getDevicesDetail();
+    }
+  }, [currentUserId, isFromSettings]);
 
   const handleEdit = () => {
     navigate(`edit`, { replace: true });
   };
 
   return (
-    <Fragment>
-      {isDesktop ? (
-        <DetailsHeader
-          editAction={handleEdit}
-          isDisableUpdateBtn={false}
-          showButtons={false}
-          subTitle=""
-          title="Allocated Devices"
-        />
-      ) : (
-        <MobileEditHeader
-          backHref={isCalledFromSettings ? "/settings/" : `/team/${memberId}`}
-          href="edit"
-          title="Allocated Devices"
-        />
-      )}
-      {isLoading ? (
-        <div className="flex min-h-70v items-center justify-center">
-          <Loader />
-        </div>
-      ) : (
-        <StaticPage devices={devices} />
-      )}
-    </Fragment>
+    <div className="min-h-screen bg-background">
+      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+        {isDesktop ? (
+          <div className="mb-6 flex justify-end">
+            <button
+              onClick={handleEdit}
+              className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+            >
+              {devices.length > 0 ? "Edit Devices" : "Add Devices"}
+            </button>
+          </div>
+        ) : (
+          <MobileEditHeader
+            href="edit"
+            title="Allocated Devices"
+            backHref={
+              isCalledFromSettings
+                ? "/settings/"
+                : `/team/${currentUserId || memberId}`
+            }
+          />
+        )}
+        {isLoading ? (
+          <Loader className="min-h-[60vh]" />
+        ) : (
+          <StaticPage devices={devices} />
+        )}
+      </div>
+    </div>
   );
 };
 

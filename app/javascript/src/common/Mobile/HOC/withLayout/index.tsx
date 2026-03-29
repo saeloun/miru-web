@@ -1,14 +1,19 @@
 /* eslint-disable */
 import React from "react";
 
-import PropTypes from "prop-types";
-
 import Header from "components/Navbar/Mobile/Header";
 import Navigation from "components/Navbar/Mobile/Navigation";
 import { useUserContext } from "context/UserContext";
 
+type WrappedComponentType = React.ComponentType<any>;
+
 const WithLayout =
-  (WrappedComponent, includeNavbar, includeSidebar) => props => {
+  (
+    WrappedComponent: WrappedComponentType,
+    includeNavbar: boolean,
+    includeSidebar: boolean
+  ) =>
+  props => {
     const { selectedTab, setSelectedTab, companyRole } = useUserContext();
 
     return (
@@ -19,12 +24,6 @@ const WithLayout =
       </div>
     );
   };
-
-WithLayout.propTypes = {
-  WrappedComponent: PropTypes.any,
-  includeNavbar: PropTypes.bool.isRequired,
-  includeSidebar: PropTypes.bool.isRequired,
-};
 
 WithLayout.displayName = "WithLayout";
 

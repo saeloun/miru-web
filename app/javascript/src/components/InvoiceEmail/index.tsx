@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from "react";
 
-import { InstagramSVG, TwitterSVG, MiruLogoWithTextSVG } from "miruIcons";
-import { useParams, useNavigate } from "react-router-dom";
-
-import invoicesApi from "apis/invoices";
+import { invoicesApi } from "apis/api";
 import Loader from "common/Loader";
 import MobileView from "components/ClientInvoices/Details/MobileView";
 import ConnectPaymentGateway from "components/Invoices/popups/ConnectPaymentGateway";
 import StripeDisabledInvoice from "components/Invoices/popups/StripeDisabledInvoice";
 import { useUserContext } from "context/UserContext";
+import { InstagramSVG, TwitterSVG, MiruLogoWithTextSVG } from "miruIcons";
+import { useParams, useNavigate } from "react-router-dom";
 
 import Header from "./Header";
 import InvoiceDetails from "./InvoiceDetails";
@@ -55,10 +54,10 @@ const InvoiceEmail = () => {
 
   return isDesktop ? (
     <div className="flex flex-col justify-between">
-      <div className="flex h-16 justify-start bg-miru-han-purple-1000 px-24 font-manrope text-white">
+      <div className="flex h-16 justify-start bg-primary px-24 font-sans text-white">
         <img src={MiruLogoWithTextSVG} />
       </div>
-      <div className="mx-auto max-w-6xl px-2 font-manrope md:px-11">
+      <div className="mx-auto max-w-6xl px-2 font-sans md:px-11">
         <Header
           invoice={invoice}
           isStripeConnected={isStripeConnected}
@@ -67,7 +66,7 @@ const InvoiceEmail = () => {
           setShowStripeDisabledDialog={setShowStripeDisabledDialog}
           stripeUrl={url}
         />
-        <div className="m-0 mt-5 mb-10 w-full bg-miru-gray-100 p-0">
+        <div className="m-0 mt-5 mb-10 w-full bg-muted p-0">
           <InvoiceDetails
             client={client}
             company={company}
@@ -91,7 +90,7 @@ const InvoiceEmail = () => {
           />
         )}
       </div>
-      <div className="flex justify-between bg-miru-han-purple-1000 px-28 py-3 font-manrope text-white">
+      <div className="flex justify-between bg-primary px-28 py-3 font-sans text-white">
         <span className="text-center text-xs font-normal leading-4">
           © Miru. All rights reserved.
         </span>

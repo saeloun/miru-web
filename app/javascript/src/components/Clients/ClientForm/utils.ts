@@ -24,14 +24,10 @@ export const formatFormData = (
   formData.append(`${addressPrefix}[country]`, values.country?.value);
   formData.append(`${addressPrefix}[pin]`, values.zipcode);
 
-  if (clientLogo && isNewForm) formData.append("client[logo]", clientLogo);
-
-  if (clientLogoUrl && clientLogo && !isNewForm) {
+  if (clientLogo && clientLogo instanceof File) {
     formData.append("client[logo]", clientLogo);
-  }
-
-  if (!clientLogoUrl && !clientLogo && !isNewForm) {
-    formData.append("client[logo]", clientLogo);
+  } else if (!clientLogoUrl && !isNewForm) {
+    formData.append("client[logo]", "");
   }
 
   return formData;

@@ -1,10 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import Logger from "js-logger";
-import { PlusIcon } from "miruIcons";
-import { useParams, useNavigate } from "react-router-dom";
-
-import clientApi from "apis/clients";
+import { clientApi } from "apis/api";
 import EmptyStates from "common/EmptyStates";
 import Loader from "common/Loader/index";
 import Table from "common/Table";
@@ -12,8 +8,11 @@ import ProjectForm from "components/Projects/List/Mobile/ProjectForm";
 import AddEditProject from "components/Projects/Modals/AddEditProject";
 import DeleteProject from "components/Projects/Modals/DeleteProject";
 import { useUserContext } from "context/UserContext";
+import Logger from "js-logger";
 import { unmapClientInvoices } from "mapper/client.mapper";
 import { unmapClientDetails } from "mapper/mappedIndex";
+import { PlusIcon } from "miruIcons";
+import { useParams, useNavigate } from "react-router-dom";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import { tableHeader, mobileTableHeader } from "./constants";
@@ -154,11 +153,9 @@ const ClientDetails = ({ isAdminUser }) => {
                     hasRowIcons
                     handleDeleteClick={handleDeleteClick}
                     handleEditClick={handleEditClick}
+                    rowOnClick={isAdminUser ? handleRowClick : () => {}}
                     tableHeader={isDesktop ? tableHeader : mobileTableHeader}
                     tableRowArray={tableData}
-                    rowOnClick={
-                      isAdminUser ? handleRowClick : () => {} // eslint-disable-line  @typescript-eslint/no-empty-function
-                    }
                   />
                 ) : (
                   <EmptyStates
@@ -168,7 +165,7 @@ const ClientDetails = ({ isAdminUser }) => {
                     wrapperClassName="mt-5"
                   >
                     <button
-                      className="mt-4 mb-10 flex h-10 flex-row items-center justify-center rounded bg-miru-han-purple-1000 px-25 font-bold text-white"
+                      className="mt-4 mb-10 flex h-10 flex-row items-center justify-center rounded bg-primary px-25 font-bold text-white"
                       type="button"
                       onClick={handleAddProject}
                     >

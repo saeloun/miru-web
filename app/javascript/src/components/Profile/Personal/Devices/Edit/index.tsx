@@ -1,119 +1,113 @@
-/* eslint-disable no-unused-vars */
-import React, { Fragment, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
-import { useNavigate, useParams } from "react-router-dom";
-
-import deviceApi from "apis/devices";
+import { deviceApi } from "apis/api";
 import Loader from "common/Loader/index";
-import { MobileDetailsHeader } from "common/Mobile/MobileDetailsHeader";
-import EditHeader from "components/Profile/Common/EditHeader";
 import { useProfileContext } from "context/Profile/ProfileContext";
 import { useUserContext } from "context/UserContext";
+import { useNavigate, useParams } from "react-router-dom";
+import { Toastr } from "StyledComponents";
 
-import EditPage from "./EditPage";
-import MobileEditPage from "./MobileEditPage";
+import ModernEditPage from "./ModernEditPage";
 
 import { Device } from "../Device";
 
 const AllocatedDevicesEdit = () => {
-  const initialErrState = {
-    device_type_err: "",
-    name_err: "",
-    serial_number_err: "",
-    specifications_err: {
-      ram_err: "",
-      graphics_err: "",
-      processor_err: "",
-    },
-  };
   const navigate = useNavigate();
-  const { isDesktop, user } = useUserContext();
+  const { user } = useUserContext();
   const { memberId } = useParams();
   const { isCalledFromSettings } = useProfileContext();
-  const navigateToPath = isCalledFromSettings
+
+  // Determine if we're in settings based on URL path as fallback
+  const isInSettings = window.location.pathname.includes("/settings/");
+  const shouldUseCurrentUser = isCalledFromSettings || isInSettings;
+
+  const navigateToPath = shouldUseCurrentUser
     ? "/settings"
     : `/team/${memberId}`;
 
-  const currentUserId = isCalledFromSettings ? user.id : memberId;
+  const currentUserId = shouldUseCurrentUser ? user?.id : memberId;
   const [isLoading, setIsLoading] = useState(false);
   const [devices, setDevices] = useState<Device[]>([]);
-  const [errDetails, setErrDetails] = useState(initialErrState);
+  const [initialDevices, setInitialDevices] = useState<Device[]>([]);
 
   useEffect(() => {
-    setIsLoading(true);
-    getDevicesDetail();
-  }, []);
+    if (currentUserId) {
+      setIsLoading(true);
+      getDevicesDetail();
+    }
+  }, [currentUserId]);
 
   const getDevicesDetail = async () => {
-    const res: any = await deviceApi.get(currentUserId);
-    const devicesDetails: Device[] = res.data.devices;
-    setDevices(devicesDetails);
-    setIsLoading(false);
+    if (!currentUserId) return;
+
+    try {
+      const res: any = await deviceApi.get(currentUserId);
+      const devicesDetails: Device[] = res.data.devices;
+      setDevices(devicesDetails);
+      setInitialDevices(devicesDetails);
+    } catch (error) {
+      console.error("Failed to fetch devices:", error);
+      setDevices([]);
+      setInitialDevices([]);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const handleUpdateDetails = () => {
-    //Todo: API integration for update details
+  const devicePayload = (device: Device) => ({
+    device: {
+      device_type: device.device_type,
+      name: device.name,
+      serial_number: device.serial_number,
+      specifications: device.specifications,
+    },
+  });
+
+  const handleUpdateDetails = async (updatedDevices: Device[]) => {
+    try {
+      setIsLoading(true);
+      const persistedDevices = updatedDevices.filter(device => device.id);
+      const newDevices = updatedDevices.filter(device => !device.id);
+      const removedDevices = initialDevices.filter(
+        device =>
+          device.id && !updatedDevices.some(updated => updated.id === device.id)
+      );
+
+      await Promise.all([
+        ...persistedDevices.map(device =>
+          deviceApi.update(currentUserId, device.id, devicePayload(device))
+        ),
+        ...newDevices.map(device =>
+          deviceApi.create(currentUserId, devicePayload(device))
+        ),
+        ...removedDevices.map(device =>
+          deviceApi.destroy(currentUserId, device.id)
+        ),
+      ]);
+
+      Toastr.success("Devices updated successfully");
+      navigate(`${navigateToPath}/devices`, { replace: true });
+    } catch (error) {
+      Toastr.error("Failed to update devices");
+      console.error("Update error:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleCancelDetails = () => {
-    setIsLoading(true);
     navigate(`${navigateToPath}/devices`, { replace: true });
   };
 
-  const addAnotherDevice = () => {
-    setDevices([
-      ...devices,
-      {
-        device_type: "",
-        name: "",
-        serial_number: "",
-        specifications: {
-          graphics: "",
-          processor: "",
-          ram: "",
-        },
-      },
-    ]);
-  };
-
-  return (
-    <Fragment>
-      {isDesktop && (
-        <Fragment>
-          <EditHeader
-            showButtons
-            cancelAction={handleCancelDetails}
-            isDisableUpdateBtn={false}
-            saveAction={handleUpdateDetails}
-            subTitle=""
-            title="Personal Details"
-          />
-          {isLoading ? (
-            <Loader className="min-h-70v" />
-          ) : (
-            <EditPage addAnotherDevice={addAnotherDevice} devices={devices} />
-          )}
-        </Fragment>
-      )}
-      {!isDesktop && (
-        <Fragment>
-          <MobileDetailsHeader
-            href={`${navigateToPath}/devices`}
-            title="Allocated Devices"
-          />
-          {isLoading ? (
-            <Loader className="min-h-70v" />
-          ) : (
-            <MobileEditPage
-              addAnotherDevice={addAnotherDevice}
-              devices={devices}
-              errDetails={errDetails}
-              handleCancelDetails={handleCancelDetails}
-            />
-          )}
-        </Fragment>
-      )}
-    </Fragment>
+  return isLoading ? (
+    <Loader className="min-h-screen flex items-center justify-center" />
+  ) : (
+    <ModernEditPage
+      devices={devices}
+      onSave={handleUpdateDetails}
+      onCancel={handleCancelDetails}
+      isLoading={isLoading}
+    />
   );
 };
 

@@ -43,7 +43,7 @@ class TimeTrackingIndexService
     end
 
     def fetch_timesheet_entries
-      user.timesheet_entries.kept.includes([:project, :user])
+      user.timesheet_entries.kept.includes(:user, project: :client)
         .in_workspace(current_company)
         .during(from, to)
     end
@@ -54,13 +54,18 @@ class TimeTrackingIndexService
     end
 
     def set_clients
-      @clients = ClientPolicy::Scope.new(current_user, current_company).resolve.includes(:projects, :addresses)
+      @clients = ClientPolicy::Scope.new(current_user, current_company).resolve.includes(:addresses)
     end
 
     def set_projects
-      @projects = {}
-      user_projects = ProjectPolicy::Scope.new(current_user, current_company).resolve
-      clients.each { |client| @projects[client.name] = client.projects.kept & user_projects }
+      user_projects_by_client = ProjectPolicy::Scope.new(current_user, current_company)
+        .resolve
+        .kept
+        .group_by(&:client_id)
+
+      @projects = clients.each_with_object({}) do |client, grouped_projects|
+        grouped_projects[client.name] = user_projects_by_client[client.id] || []
+      end
     end
 
     def timeoff_entries
@@ -79,7 +84,13 @@ class TimeTrackingIndexService
 
     def leave_types
       leave = current_company.leaves.find_by(year:)
-      leave&.leave_types&.kept || []
+      return [] unless leave
+
+      regular_leave_types = leave.leave_types&.kept || []
+      user_custom_leaves = leave.custom_leaves.joins(:custom_leave_users)
+        .where(custom_leave_users: { user_id: user.id })
+
+      regular_leave_types + user_custom_leaves
     end
 
     def holiday_infos

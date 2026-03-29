@@ -14,15 +14,15 @@ type SummaryDashboardProps = {
 };
 
 const DEFAULT_STYLE =
-  "py-4 lg:py-10 flex flex-wrap md:flex-nowrap lg:overflow-x-auto rounded-2xl";
+  "py-4 lg:py-6 flex flex-wrap md:flex-nowrap lg:overflow-x-auto rounded-2xl";
 
 const SummaryDashboard = ({
   summaryList,
   currency,
   wrapperClassName = "",
-  bgColor = "bg-miru-han-purple-1000",
+  bgColor = "bg-primary",
   textColor = "text-white",
-  borderColor = "border-miru-han-purple-600",
+  borderColor = "border-primary",
   showPointer = true,
 }: SummaryDashboardProps) => (
   <ul
@@ -34,7 +34,7 @@ const SummaryDashboard = ({
         className={classnames(
           `page-display__box w-auto flex-1 ${
             showPointer ? `cursor-pointer` : ""
-          } pt-4 md:w-full lg:mt-6 ${
+          } pt-3 md:w-full lg:mt-3 ${
             summaryList.length > 3
               ? "w-1/2 flex-auto border-b pb-2 md:w-full md:border-b-0"
               : null
@@ -43,10 +43,10 @@ const SummaryDashboard = ({
         )}
         onClick={summary.onClick}
       >
-        <p className="truncate text-xxs font-semibold uppercase tracking-semiWidest lg:text-sm lg:tracking-widest">
+        <p className="truncate text-xxs font-semibold uppercase tracking-semiWidest lg:text-sm lg:tracking-wider">
           {summary.label}
         </p>
-        <p className="mt-2 truncate text-lg font-medium md:text-2xl lg:text-4.5xl lg:font-semibold">
+        <p className="mt-1 truncate text-lg font-medium md:text-xl lg:text-3xl lg:font-semibold">
           {summary.hideCurrencySymbol
             ? summary.value
             : currencyFormat(

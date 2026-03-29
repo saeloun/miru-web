@@ -1,5 +1,37 @@
 # frozen_string_literal: true
 
+# == Schema Information
+#
+# Table name: timesheet_entries
+#
+#  id           :bigint           not null, primary key
+#  bill_status  :integer          not null
+#  discarded_at :datetime
+#  duration     :float            not null
+#  locked       :boolean          default(FALSE)
+#  note         :text             default("")
+#  source       :string           default("manual"), not null
+#  source_metadata :jsonb         not null
+#  work_date    :date             not null
+#  created_at   :datetime         not null
+#  updated_at   :datetime         not null
+#  project_id   :bigint           not null
+#  user_id      :bigint           not null
+#
+# Indexes
+#
+#  index_timesheet_entries_on_bill_status   (bill_status)
+#  index_timesheet_entries_on_discarded_at  (discarded_at)
+#  index_timesheet_entries_on_note_trgm     (note) USING gin
+#  index_timesheet_entries_on_project_id    (project_id)
+#  index_timesheet_entries_on_user_id       (user_id)
+#  index_timesheet_entries_on_work_date     (work_date)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (project_id => projects.id)
+#  fk_rails_...  (user_id => users.id)
+#
 require "rails_helper"
 
 RSpec.describe TimesheetEntry, type: :model do
@@ -69,9 +101,68 @@ RSpec.describe TimesheetEntry, type: :model do
           work_date: timesheet_entry.work_date,
           bill_status: timesheet_entry.bill_status,
           team_member: timesheet_entry.user.full_name,
+          source: "manual",
+          source_label: nil,
+          source_metadata: {},
           type: "timesheet"
         }
       )
+    end
+  end
+
+  describe "source normalization" do
+    it "normalizes blank and unknown sources to manual" do
+      timesheet_entry.assign_attributes(source: "unknown", source_metadata: { tool: "", skill: nil, extra: "ignore-me" })
+      timesheet_entry.valid?
+
+      expect(timesheet_entry.source).to eq("manual")
+      expect(timesheet_entry.source_metadata).to eq({})
+      expect(timesheet_entry.source_label).to be_nil
+    end
+
+    it "builds readable labels for AI-assisted entries" do
+      timesheet_entry.assign_attributes(
+        source: "automation",
+        source_metadata: {
+          tool: "claude-code",
+          skill: "gstack-review"
+        }
+      )
+      timesheet_entry.valid?
+
+      expect(timesheet_entry.source).to eq("automation")
+      expect(timesheet_entry.source_label).to eq("Claude Code via Automation")
+    end
+
+    it "persists only allowlisted source metadata keys" do
+      timesheet_entry.assign_attributes(
+        source: "mcp",
+        source_metadata: {
+          tool: "codex",
+          skill: "gstack-qa",
+          mcp_server: "github",
+          pii: "should-not-stick"
+        }
+      )
+      timesheet_entry.valid?
+
+      expect(timesheet_entry.source_metadata).to eq(
+        "tool" => "codex",
+        "skill" => "gstack-qa",
+        "mcp_server" => "github"
+      )
+    end
+
+    it "truncates source metadata values to the supported length" do
+      long_value = "x" * 140
+
+      timesheet_entry.assign_attributes(
+        source: "mcp",
+        source_metadata: { tool: long_value }
+      )
+      timesheet_entry.valid?
+
+      expect(timesheet_entry.source_metadata["tool"]).to eq("x" * 100)
     end
   end
 

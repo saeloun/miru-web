@@ -2,22 +2,37 @@ import React from "react";
 
 import classnames from "classnames";
 
-const CustomCheckbox = ({
+interface CustomCheckboxProps {
+  text?: string;
+  isChecked?: boolean;
+  checkboxValue: any;
+  id: any;
+  handleCheck: any;
+  handleOnClick?: any;
+  name?: string;
+  wrapperClassName?: string;
+  labelClassName?: string;
+  isUpdatedDesign?: any;
+}
+
+const CustomCheckbox: React.FC<CustomCheckboxProps> = ({
   text = undefined,
   isChecked = false,
   checkboxValue,
   id,
   handleCheck,
-  handleOnClick,
+  handleOnClick = () => {
+    // Default empty click handler - can be overridden by parent component
+  },
   name = "",
   wrapperClassName = "",
   labelClassName = "",
-  isUpdatedDesign,
+  isUpdatedDesign = false,
 }) => (
   <div className={classnames(wrapperClassName)}>
     <div
       className={classnames(
-        "grid grid-cols-1 grid-rows-1 content-center justify-items-center"
+        "relative grid grid-cols-1 grid-rows-1 content-center justify-items-center"
       )}
     >
       <input
@@ -26,16 +41,16 @@ const CustomCheckbox = ({
         name={name}
         type="checkbox"
         value={checkboxValue}
-        className={`custom__checkbox col-start-1 row-start-1 grid ${
+        className={`custom__checkbox col-start-1 row-start-1 ${
           isUpdatedDesign ? "h-4 w-4" : "h-3 w-3 md:h-5 md:w-5"
-        } cursor-pointer opacity-0`}
+        } relative z-10 cursor-pointer opacity-0`}
         onChange={handleCheck}
         onClick={handleOnClick}
       />
       <div
-        className={`col-start-1 row-start-1 ${
+        className={`pointer-events-none col-start-1 row-start-1 ${
           isUpdatedDesign ? "mr-0 h-4 w-4" : "mr-2 h-3 w-3 md:h-5 md:w-5"
-        } grid flex-shrink-0 content-center justify-items-center rounded-sm border border-miru-han-purple-1000 bg-white focus-within:border-blue-500 md:border-2`}
+        } grid flex-shrink-0 content-center justify-items-center rounded-sm border border-primary bg-white focus-within:border-blue-500 md:border-2`}
       >
         {!isUpdatedDesign ? (
           <svg
@@ -43,7 +58,7 @@ const CustomCheckbox = ({
             viewBox="0 0 17 12"
             xmlns="http://www.w3.org/2000/svg"
             className={classnames(
-              "pointer-events-none h-2 w-2 fill-current text-miru-han-purple-1000",
+              "pointer-events-none h-2 w-2 fill-current text-primary",
               { hidden: !isChecked }
             )}
           >
@@ -65,7 +80,7 @@ const CustomCheckbox = ({
             width="10"
             xmlns="http://www.w3.org/2000/svg"
             className={classnames(
-              "bold pointer-events-none h-4 w-4 fill-current text-miru-han-purple-1000",
+              "bold pointer-events-none h-4 w-4 fill-current text-primary",
               { hidden: !isChecked }
             )}
           >
@@ -89,10 +104,5 @@ const CustomCheckbox = ({
     )}
   </div>
 );
-
-CustomCheckbox.defaultProps = {
-  handleOnClick: () => {}, //eslint-disable-line
-  isUpdatedDesign: false,
-};
 
 export default CustomCheckbox;

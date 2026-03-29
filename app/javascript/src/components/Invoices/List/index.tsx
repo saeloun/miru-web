@@ -1,15 +1,15 @@
+import { ApiStatus as InvoicesStatus, LocalStorageKeys } from "constants/index";
+
 import React, { Fragment, useEffect, useState } from "react";
 
-import Logger from "js-logger";
-import { useSearchParams } from "react-router-dom";
-import { Pagination, Toastr } from "StyledComponents";
-
-import invoicesApi from "apis/invoices";
-import PaymentsProviders from "apis/payments/providers";
+import { invoicesApi, PaymentsProviders } from "apis/api";
 import Loader from "common/Loader/index";
 import withLayout from "common/Mobile/HOC/withLayout";
-import { ApiStatus as InvoicesStatus, LocalStorageKeys } from "constants/index";
 import { useUserContext } from "context/UserContext";
+import useInfiniteLoadTrigger from "hooks/useInfiniteLoadTrigger";
+import Logger from "js-logger";
+import { useSearchParams } from "react-router-dom";
+import { Toastr } from "StyledComponents";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import Container from "./container";
@@ -21,6 +21,7 @@ import BulkDownloadInvoices from "../popups/BulkDownloadInvoices";
 import DeleteInvoice from "../popups/DeleteInvoice";
 
 const Invoices = () => {
+  const DEFAULT_BATCH_SIZE = 20;
   const filterIntialValues = {
     dateRange: { label: "All", value: "all", from: "", to: "" },
     clients: [],
@@ -33,8 +34,8 @@ const Invoices = () => {
   const [pagy, setPagy] = useState<any>(null);
   const [searchParams, setSearchParams] = useSearchParams();
   const [params, setParams] = useState<any>({
-    invoices_per_page: searchParams.get("invoices_per_page") || 20,
-    page: searchParams.get("page") || 1,
+    invoices_per_page:
+      Number(searchParams.get("invoices_per_page")) || DEFAULT_BATCH_SIZE,
     query: searchParams.get("query") || "",
   });
 
@@ -69,7 +70,115 @@ const Invoices = () => {
   const [selectedInvoiceCounter, setSelectedInvoiceCounter] =
     useState<number>(selectedInvoiceCount);
 
+  const [loadingMoreInvoices, setLoadingMoreInvoices] =
+    useState<boolean>(false);
+  const [nextPage, setNextPage] = useState<number>(2);
+  const [hasMoreInvoices, setHasMoreInvoices] = useState<boolean>(false);
+
   const { isDesktop, handleOverlayVisibility } = useUserContext();
+
+  const buildFilterParams = () => {
+    let filterQueryParams = "";
+
+    filterParams.clients.forEach(client => {
+      filterQueryParams += `&client[]=${client.value}`;
+    });
+
+    filterParams.status.forEach(status => {
+      filterQueryParams += `&status[]=${status.value}`;
+    });
+
+    const { value, from, to } = filterParams.dateRange;
+
+    if (value != "all" && value != "custom") {
+      filterQueryParams += `&date_range=${value}`;
+    }
+
+    if (value === "custom" && from && to) {
+      filterQueryParams += `&date_range=${value}`;
+      filterQueryParams += `&from_date_range=${from}`;
+      filterQueryParams += `&to_date_range=${to}`;
+    }
+
+    setFilterParamsStr(filterQueryParams);
+
+    return filterQueryParams;
+  };
+
+  const buildQueryParams = (
+    page = 1,
+    invoicesPerPage = params.invoices_per_page
+  ) => {
+    const queryParams = new URLSearchParams();
+
+    if (invoicesPerPage) {
+      queryParams.set("invoices_per_page", String(invoicesPerPage));
+    }
+
+    queryParams.set("page", String(page));
+
+    if (params.query?.trim()) {
+      queryParams.set("query", params.query.trim());
+    }
+
+    return queryParams.toString().concat(buildFilterParams());
+  };
+
+  const loadInvoices = async ({
+    page = 1,
+    append = false,
+    preserveSelection = false,
+    silent = false,
+    invoicesPerPage = params.invoices_per_page,
+  } = {}) => {
+    try {
+      if (append) {
+        setLoadingMoreInvoices(true);
+      } else if (!silent) {
+        setStatus(InvoicesStatus.LOADING);
+      }
+
+      const {
+        data: {
+          invoices: nextInvoices,
+          pagy: nextPagy,
+          summary,
+          recentlyUpdatedInvoices,
+        },
+      } = await invoicesApi.get(buildQueryParams(page, invoicesPerPage));
+
+      setInvoices(previousInvoices => {
+        if (!append) {
+          return nextInvoices;
+        }
+
+        const merged = [...previousInvoices, ...nextInvoices];
+
+        return merged.filter(
+          (invoice, index, array) =>
+            array.findIndex(candidate => candidate.id === invoice.id) === index
+        );
+      });
+      setSummary(summary);
+      setPagy(nextPagy);
+      setRecentlyUpdatedInvoices(recentlyUpdatedInvoices);
+      setHasMoreInvoices((nextPagy?.page || page) < (nextPagy?.pages || 1));
+      setNextPage((nextPagy?.page || page) + 1);
+
+      if (!preserveSelection) {
+        setSelectedInvoices([]);
+      }
+
+      setStatus(InvoicesStatus.SUCCESS);
+    } catch (error) {
+      Logger.error(error);
+      if (!append) {
+        setStatus(InvoicesStatus.ERROR);
+      }
+    } finally {
+      setLoadingMoreInvoices(false);
+    }
+  };
 
   useEffect(() => sendGAPageView(), []);
 
@@ -94,10 +203,10 @@ const Invoices = () => {
       LocalStorageKeys.INVOICE_SEARCH_PARAM,
       params.query
     );
-    fetchInvoices();
+    loadInvoices();
     fetchPaymentsProvidersSettings();
     setSearchParams(cleanParams(params));
-  }, [params.invoices_per_page, params.page, params.query, filterParams]);
+  }, [params.invoices_per_page, params.query, filterParams]);
 
   const cleanParams = (params: any) => {
     const newParams = { ...params };
@@ -124,36 +233,17 @@ const Invoices = () => {
   );
 
   const fetchInvoicesWithoutRefresh = async () => {
-    try {
-      const {
-        data: { invoices, pagy, summary, recentlyUpdatedInvoices },
-      } = await invoicesApi.get(queryParams().concat(handleFilterParams()));
-
-      setInvoices(invoices);
-      setSummary(summary);
-      setPagy(pagy);
-      setRecentlyUpdatedInvoices(recentlyUpdatedInvoices);
-    } catch (e) {
-      Logger.error(e);
-    }
+    const loadedInvoiceCount = invoices.length || params.invoices_per_page;
+    await loadInvoices({
+      page: 1,
+      invoicesPerPage: Math.min(loadedInvoiceCount, 100),
+      preserveSelection: true,
+      silent: true,
+    });
   };
 
   const fetchInvoices = async () => {
-    try {
-      setStatus(InvoicesStatus.LOADING);
-      const {
-        data: { invoices, pagy, summary, recentlyUpdatedInvoices },
-      } = await invoicesApi.get(queryParams().concat(handleFilterParams()));
-
-      setInvoices(invoices);
-      setSummary(summary);
-      setPagy(pagy);
-      setRecentlyUpdatedInvoices(recentlyUpdatedInvoices);
-      setSelectedInvoices([]);
-      setStatus(InvoicesStatus.SUCCESS);
-    } catch {
-      setStatus(InvoicesStatus.ERROR);
-    }
+    await loadInvoices();
   };
 
   const fetchPaymentsProvidersSettings = async () => {
@@ -165,34 +255,6 @@ const Invoices = () => {
     } catch {
       Toastr.error("ERROR! CONNECTING TO PAYMENTS");
     }
-  };
-
-  const handleFilterParams = () => {
-    let filterQueryParams = "";
-
-    filterParams.clients.forEach(client => {
-      filterQueryParams += `&client[]=${client.value}`;
-    });
-
-    filterParams.status.forEach(status => {
-      filterQueryParams += `&status[]=${status.value}`;
-    });
-
-    const { value, from, to } = filterParams.dateRange;
-
-    if (value != "all" && value != "custom") {
-      filterQueryParams += `&date_range=${value}`;
-    }
-
-    if (value === "custom" && from && to) {
-      filterQueryParams += `&date_range=${value}`;
-      filterQueryParams += `&from_date_range=${from}`;
-      filterQueryParams += `&to_date_range=${to}`;
-    }
-
-    setFilterParamsStr(filterQueryParams);
-
-    return `${filterQueryParams}`;
   };
 
   const selectInvoices = (invoiceIds: number[]) => {
@@ -224,22 +286,22 @@ const Invoices = () => {
     setParams({ ...params, page: 1 });
   };
 
+  const loadMoreTriggerRef = useInfiniteLoadTrigger({
+    enabled: hasMoreInvoices,
+    loading: loadingMoreInvoices,
+    onLoadMore: () => {
+      loadInvoices({
+        page: nextPage,
+        append: true,
+        preserveSelection: true,
+        silent: true,
+      });
+    },
+  });
+
   if (status === InvoicesStatus.LOADING) {
     return <Loader />;
   }
-
-  const handlePageChange = page => {
-    if (page == "...") return;
-
-    return setParams({ ...params, page });
-  };
-
-  const handleClickOnPerPage = e => {
-    setParams({
-      invoices_per_page: Number(e.target.value),
-      page: 1,
-    });
-  };
 
   const InvoicesLayout = () => (
     <div className="h-full p-4 lg:p-0" id="invoice-list-page">
@@ -280,6 +342,10 @@ const Invoices = () => {
             clearCheckboxes={() =>
               deselectInvoices(invoices.map(invoice => invoice.id))
             }
+            hasMoreInvoices={hasMoreInvoices}
+            loadingMoreInvoices={loadingMoreInvoices}
+            loadMoreTriggerRef={loadMoreTriggerRef}
+            totalInvoices={pagy?.total || invoices.length}
           />
           {isFilterVisible && (
             <FilterSideBar
@@ -291,21 +357,6 @@ const Invoices = () => {
               setFilterParams={setFilterParams}
               setIsFilterVisible={setIsFilterVisible}
               setSelectedInput={setSelectedInput}
-            />
-          )}
-          {invoices.length > 0 && (
-            <Pagination
-              isPerPageVisible
-              currentPage={pagy?.page}
-              handleClick={handlePageChange}
-              handleClickOnPerPage={handleClickOnPerPage}
-              isFirstPage={pagy?.first}
-              isLastPage={pagy?.last}
-              itemsPerPage={params?.invoices_per_page}
-              nextPage={pagy?.next}
-              prevPage={pagy?.prev}
-              title="invoices/page"
-              totalPages={pagy?.pages}
             />
           )}
           {showDeleteDialog && (
@@ -336,7 +387,7 @@ const Invoices = () => {
         </Fragment>
       ) : (
         status === InvoicesStatus.ERROR && (
-          <div className="tracking-wide mt-50 flex items-center justify-center text-2xl font-medium text-miru-han-purple-1000">
+          <div className="tracking-wide mt-50 flex items-center justify-center text-2xl font-medium text-primary">
             Something went Wrong!
           </div>
         )

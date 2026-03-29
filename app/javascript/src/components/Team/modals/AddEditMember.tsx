@@ -1,17 +1,17 @@
+import { TeamModalType } from "constants/index";
+
 import React, { useState, useRef } from "react";
 
+import { teamApi } from "apis/api";
+import CustomRadioButton from "common/CustomRadio";
+import { InputErrors, InputField } from "common/FormikFields";
+import { useList } from "context/TeamContext";
+import { useUserContext } from "context/UserContext";
 import { Formik, Form, FormikProps } from "formik";
 import { useOutsideClick, useKeypress } from "helpers";
 import { XIcon } from "miruIcons";
 import { Button, Modal } from "StyledComponents";
 import * as Yup from "yup";
-
-import teamApi from "apis/team";
-import CustomRadioButton from "common/CustomRadio";
-import { InputErrors, InputField } from "common/FormikFields";
-import { TeamModalType } from "constants/index";
-import { useList } from "context/TeamContext";
-import { useUserContext } from "context/UserContext";
 
 import TeamForm from "./TeamForm";
 
@@ -50,10 +50,10 @@ interface Props {
 }
 
 const EditClient = ({ user = {}, isEdit = false }: Props) => {
-  const [apiError, setApiError] = useState<string>(""); // eslint-disable-line
+  const [apiError, setApiError] = useState<string>("");
   const { setModalState, modal, setTeamList, teamList } = useList();
-  const wrapperRef = useRef();
-  const { isDesktop } = useUserContext();
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const { isDesktop, company } = useUserContext();
 
   const updateTeamList = updatedUser => {
     const updatedTeamList = teamList.map(member => {
@@ -136,11 +136,7 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
         <div className="flex items-center justify-between">
           <h6 className="text-base font-extrabold">{getLabel()}</h6>
           <Button style="ternary" onClick={handleCloseModal}>
-            <XIcon
-              className="text-miru-dark-purple-1000"
-              size={16}
-              weight="bold"
-            />
+            <XIcon className="text-foreground" size={16} weight="bold" />
           </Button>
         </div>
         <Formik
@@ -158,6 +154,12 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
               setFieldError,
               setFieldValue,
             } = props;
+
+            const teamSeatLimitReached =
+              !company?.pro_access &&
+              Boolean(company?.team_member_limit_reached) &&
+              !isEdit &&
+              values.role !== "client";
 
             return (
               <Form>
@@ -209,12 +211,12 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
                   />
                 </div>
                 <div className="field">
-                  <label className="text-xs font-normal text-miru-dark-purple-1000">
+                  <label className="text-xs font-normal text-foreground">
                     Role
                   </label>
                   <div className="mt-2 flex items-center gap-6">
                     <CustomRadioButton
-                      classNameLabel="font-medium text-sm text-miru-dark-purple-1000"
+                      classNameLabel="font-medium text-sm text-foreground"
                       classNameWrapper="py-2 pr-2 rounded"
                       defaultCheck={values.role == "admin"}
                       groupName="role"
@@ -227,7 +229,7 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
                       }}
                     />
                     <CustomRadioButton
-                      classNameLabel="font-medium text-sm text-miru-dark-purple-1000"
+                      classNameLabel="font-medium text-sm text-foreground"
                       classNameWrapper="py-2 pr-2 rounded"
                       defaultCheck={values.role == "employee"}
                       groupName="role"
@@ -240,7 +242,7 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
                       }}
                     />
                     <CustomRadioButton
-                      classNameLabel="font-medium text-sm text-miru-dark-purple-1000"
+                      classNameLabel="font-medium text-sm text-foreground"
                       classNameWrapper="py-2 pr-2 rounded"
                       defaultCheck={values.role == "book_keeper"}
                       groupName="role"
@@ -253,7 +255,7 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
                       }}
                     />
                     <CustomRadioButton
-                      classNameLabel="font-medium text-sm text-miru-dark-purple-1000"
+                      classNameLabel="font-medium text-sm text-foreground"
                       classNameWrapper="py-2 pr-2 rounded"
                       defaultCheck={values.role == "client"}
                       groupName="role"
@@ -268,12 +270,18 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
                   </div>
                 </div>
                 <div className="actions mt-6">
+                  {teamSeatLimitReached && (
+                    <p className="mb-3 text-sm text-muted-foreground">
+                      Free workspaces are limited to 3 team seats. Upgrade to
+                      Pro to invite more members.
+                    </p>
+                  )}
                   <Button
-                    disabled={!(dirty && isValid)}
+                    disabled={!(dirty && isValid) || teamSeatLimitReached}
                     type="submit"
                     className={
-                      !isValid || !dirty
-                        ? "focus:outline-none flex h-10 w-full justify-center rounded border border-transparent bg-miru-gray-1000 text-base font-medium tracking-widest text-miru-white-1000 shadow-sm"
+                      !isValid || !dirty || teamSeatLimitReached
+                        ? "focus:outline-none flex h-10 w-full justify-center rounded border border-transparent bg-secondary text-base font-medium tracking-widest text-primary-foreground shadow-sm"
                         : "form__input_submit"
                     }
                   >

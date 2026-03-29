@@ -2,13 +2,12 @@ import React from "react";
 
 import { currencyFormat } from "helpers";
 import { Badge, Button } from "StyledComponents";
-
 import getStatusCssClass from "utils/getBadgeStatus";
 
 const MobileInvoiceRow = ({ invoice, isLast }) => {
   const {
     amount,
-    currency,
+    company,
     dueDate,
     invoiceNumber,
     issueDate,
@@ -16,10 +15,12 @@ const MobileInvoiceRow = ({ invoice, isLast }) => {
     externalViewKey,
   } = invoice;
 
+  const { baseCurrency } = company;
+
   return (
     <div
       className={`${
-        isLast ? "border-0" : "mb-10 border-b border-miru-gray-200"
+        isLast ? "border-0" : "mb-10 border-b border-border"
       } grid grid-cols-2 gap-4`}
     >
       <div>
@@ -36,7 +37,7 @@ const MobileInvoiceRow = ({ invoice, isLast }) => {
       </div>
       <div>
         <span>AMOUNT</span>
-        <div>{currencyFormat(currency, amount)}</div>
+        <div>{currencyFormat(baseCurrency, amount)}</div>
       </div>
       <div>
         <span>STATUS</span>
@@ -50,7 +51,7 @@ const MobileInvoiceRow = ({ invoice, isLast }) => {
       <div className="pb-8">
         <span />
         <div>
-          <Button className="py-2 px-5 text-base" style="primary">
+          <Button className="px-5 py-2 text-base" style="primary">
             <a
               href={`/invoices/${externalViewKey}/view`}
               rel="noreferrer"

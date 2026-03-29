@@ -1,0 +1,56 @@
+# frozen_string_literal: true
+
+class Api::V1::InvitationsController < Api::V1::ApplicationController
+  before_action :set_invitation, only: [:update, :destroy, :resend]
+
+  def create
+    authorize :invitation
+
+    if current_company.pro_access? == false && !current_company.can_add_team_member_role?(invitation_params[:role])
+      return render json: {
+        notice: "Upgrade required",
+        errors: "Free workspaces are limited to 3 team seats. Upgrade to Pro to invite more members."
+      }, status: 403
+    end
+
+    invitation = Invitations::CreateInvitationService.new(invitation_params, current_company, current_user).process
+    render :create, locals: {
+                      invitation:
+                    },
+      status: 201
+  end
+
+  def update
+    authorize @invitation
+
+    @invitation.update!(invitation_params)
+    render :update, locals: {
+      invitation: @invitation
+    }, status: 200
+  end
+
+  def destroy
+    authorize @invitation
+
+    invitation_id = @invitation.id
+    @invitation.destroy!
+    render json: { id: invitation_id, notice: I18n.t("invitation.delete.success.message") }, status: 200
+  end
+
+  def resend
+    authorize @invitation
+
+    @invitation.resend_invitation
+    render json: { notice: I18n.t("invitation.resent.success.message") }, status: 200
+  end
+
+  private
+
+    def invitation_params
+      params.permit(policy(:invitation).permitted_attributes)
+    end
+
+    def set_invitation
+      @invitation = current_company.invitations.find(params[:id])
+    end
+end

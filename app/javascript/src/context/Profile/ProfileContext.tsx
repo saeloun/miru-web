@@ -12,11 +12,11 @@ export const ProfileContext = createContext({
   deviceDetails: {},
   compensationDetails: CompensationDetailsState,
   reimburstmentDetails: {},
-  updateDetails: (key, payload) => {}, //eslint-disable-line
+  updateDetails: (key, payload) => {},
   isCalledFromSettings: false,
-  setIsCalledFromSettings: val => {}, //eslint-disable-line
+  setIsCalledFromSettings: val => {},
   isCalledFromTeam: false,
-  setIsCalledFromTeam: val => {}, //eslint-disable-line
+  setIsCalledFromTeam: val => {},
 });
 
 // Custom Hooks

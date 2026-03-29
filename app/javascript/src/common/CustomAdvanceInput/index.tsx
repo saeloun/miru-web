@@ -1,5 +1,3 @@
-/* eslint-disable import/exports-last */
-
 import React, { useEffect, useState, useRef } from "react";
 
 import classNames from "classnames";
@@ -19,13 +17,13 @@ type CustomAdvanceInputProps = {
 
 const getDefaultInputBoxClassName = focused =>
   `form__input block w-full h-full appearance-none p-4 text-base bg-white ${
-    focused ? "border-miru-han-purple-1000" : "border-miru-gray-1000"
+    focused ? "border-primary" : "border-border"
   }`;
 
 const getDefaultLabelClassName = (focused, value) =>
   focused || value
-    ? "absolute duration-300 -top-2 -z-1 left-4 origin-0 text-xs font-normal text-miru-dark-purple-400 bg-white"
-    : "absolute duration-300 -z-1 origin-0 top-3 left-4 text-miru-dark-purple-200 bg-white text-sm lg:text-base font-medium";
+    ? "absolute duration-300 -top-2 -z-1 left-4 origin-0 text-xs font-normal text-muted-foreground bg-white"
+    : "absolute duration-300 -z-1 origin-0 top-3 left-4 text-muted-foreground bg-white text-sm lg:text-base font-medium";
 
 export const CustomAdvanceInput = ({
   id,
@@ -43,10 +41,15 @@ export const CustomAdvanceInput = ({
   const defaultLabelClassName = getDefaultLabelClassName(focused, value);
 
   useEffect(() => {
-    focused
-      ? document.getElementById(id).focus()
-      : document.getElementById(id).blur();
-  }, [focused]);
+    if (id) {
+      const element = document.getElementById(id);
+      if (focused && element) {
+        element.focus();
+      } else if (element) {
+        element.blur();
+      }
+    }
+  }, [focused, id]);
 
   useOutsideClick(inputRef, () => setFocused(false));
 

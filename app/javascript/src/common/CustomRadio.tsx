@@ -4,11 +4,10 @@ import classnames from "classnames";
 
 const DEFAULT_STYLE_WRAPPER = "flex items-center cursor-pointer";
 
-const DEFAULT_STYLE_LABEL =
-  "text-sm text-miru-dark-purple-1000 font-normal leading-5";
+const DEFAULT_STYLE_LABEL = "text-sm text-foreground font-normal leading-5";
 const DEFAULT_STYLE_INPUT = "hidden w-3 h-3 custom__radio";
 const DEFAULT_STYLE_RADIO_ICON =
-  "w-3 h-3 inline-block mr-2 rounded-full border border-miru-han-purple-1000";
+  "w-3 h-3 inline-block mr-2 rounded-full border border-primary";
 
 type RadioProps = {
   id?: string;
@@ -33,7 +32,9 @@ const CustomRadioButton = ({
   classNameInput = "",
   classNameWrapper = "",
   classNameRadioIcon = "",
-  handleOnChange = () => {}, //eslint-disable-line
+  handleOnChange = () => {
+    /* Default empty handler */
+  },
 }: RadioProps) => (
   <div className={classnames(DEFAULT_STYLE_WRAPPER, classNameWrapper)}>
     <input

@@ -1,14 +1,13 @@
 import React, { Fragment } from "react";
 
 import cn from "classnames";
-import { CaretCircleLeftIcon, CaretCircleRightIcon } from "miruIcons";
-
 import { useUserContext } from "context/UserContext";
+import { CaretCircleLeftIcon, CaretCircleRightIcon } from "miruIcons";
 
 import { usePagination } from "./usePagination";
 
 type Iprops = {
-  handleClick: (e: any) => void; // eslint-disable-line
+  handleClick: (_page: any) => void;
   totalPages: number;
   currentPage: number;
   isFirstPage: boolean;
@@ -18,7 +17,7 @@ type Iprops = {
   isPerPageVisible?: boolean;
   title?: string;
   itemsPerPage?: number;
-  handleClickOnPerPage?: (e: any) => void; // eslint-disable-line
+  handleClickOnPerPage?: (_e: any) => void;
 };
 
 const Pagination = ({
@@ -53,8 +52,8 @@ const Pagination = ({
               <button
                 disabled={isFirstPage}
                 className={cn("m-1 mx-4 font-bold", {
-                  "text-miru-gray-400": isFirstPage,
-                  "text-miru-han-purple-1000": !isFirstPage,
+                  "text-muted-foreground": isFirstPage,
+                  "text-primary": !isFirstPage,
                 })}
                 onClick={() => {
                   handleClick(prevPage);
@@ -70,9 +69,9 @@ const Pagination = ({
                     disabled={currentPage === page}
                     key={page}
                     className={cn(
-                      "m-1 mx-4 p-1 text-base font-bold text-miru-dark-purple-400",
+                      "m-1 mx-4 p-1 text-base font-bold text-muted-foreground",
                       {
-                        "text-miru-han-purple-1000": prevPage + 1 === page,
+                        "text-primary": prevPage + 1 === page,
                       }
                     )}
                     onClick={() => {
@@ -88,8 +87,8 @@ const Pagination = ({
               <button
                 disabled={isLastPage}
                 className={cn("m-1 mx-4 font-bold", {
-                  "text-miru-gray-400": isLastPage,
-                  "text-miru-han-purple-1000": !isLastPage,
+                  "text-muted-foreground": isLastPage,
+                  "text-primary": !isLastPage,
                 })}
                 onClick={() => {
                   handleClick(nextPage);
@@ -104,7 +103,7 @@ const Pagination = ({
       {isDesktop && isPerPageVisible && (
         <div className="flex items-center justify-end">
           <select
-            className="p-2 text-xs font-bold text-miru-han-purple-1000"
+            className="p-2 text-xs font-bold text-primary"
             value={itemsPerPage}
             onChange={handleClickOnPerPage}
           >

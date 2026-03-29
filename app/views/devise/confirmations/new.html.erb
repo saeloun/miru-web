@@ -1,35 +1,67 @@
-<div class="bg-miru-dark-purple-1000 h-screen font-manrope">
+<div class="bg-card min-h-screen font-geist">
   <div class="min-h-full flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
     <div class="max-w-md w-full space-y-8">
       <div>
-        <img class="mx-auto h-16 w-auto" src="/miru-logo.png" alt="miru login page">
+        <img class="mx-auto h-16 w-auto" src="/miru-logo.svg" alt="Miru logo">
         <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-          <div class="bg-miru-white-1000 py-6 px-6 shadow sm:rounded-lg sm:px-10">
-            <div class="space-y-3">
-              <h2 class="text-xl font-sans font-medium tracking-normal text-miru-dark-purple-1000">
-                Password Reset Link Sent
-              </h2>
-              <%= form_for(resource, as: resource_name, url: confirmation_path(resource_name), html: { method: :post }) do |f| %>
-                <%= render "devise/shared/error_messages", resource: resource %>
+          <div class="bg-white py-8 px-8 shadow-lg rounded-xl">
+            <div class="space-y-6">
+              <div class="text-center">
+                <h2 class="text-2xl font-bold tracking-tight text-gray-900">
+                  Email Confirmation Required
+                </h2>
+                <p class="mt-2 text-sm text-gray-600">
+                  Your confirmation link has expired or is invalid. Please request a new one.
+                </p>
+              </div>
 
-                <div class="field">
-                  <%= f.label :email, class: "tracking-wider block text-sm font-normal text-miru-dark-purple-1000" %>
+              <%= form_for(resource, as: resource_name, url: confirmation_path(resource_name), html: { method: :post, class: "space-y-6" }) do |f| %>
+                <% if resource.errors.any? %>
+                  <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+                    <div class="flex">
+                      <div class="flex-shrink-0">
+                        <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                        </svg>
+                      </div>
+                      <div class="ml-3">
+                        <p class="text-sm text-red-700">
+                          <%= resource.errors.full_messages.first %>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                <% end %>
+
+                <div>
+                  <%= f.label :email, class: "block text-sm font-medium text-gray-700" %>
                   <div class="mt-1">
-                  <%= f.email_field :email, autofocus: true, autocomplete: "email", value: (resource.pending_reconfirmation? ? resource.unconfirmed_email : resource.email), class: "block text-base font-bold text-miru-dark-purple-1000" %>
+                    <%= f.email_field :email,
+                        autofocus: true,
+                        autocomplete: "email",
+                        value: (resource.pending_reconfirmation? ? resource.unconfirmed_email : resource.email),
+                        class: "appearance-none block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-base" %>
                   </div>
                 </div>
 
-                <div class="actions mt-4">
-                  <%= f.submit "Resend confirmation instructions", class: "tracking-widest h-10 w-full flex justify-center py-1 px-4 border border-transparent shadow-sm text-lg font-sans font-medium text-miru-white-1000 bg-miru-han-purple-1000 hover:bg-miru-han-purple-600 focus:outline-none rounded cursor-pointer" %>
+                <div>
+                  <%= f.submit "Resend Confirmation Email",
+                      class: "w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 cursor-pointer transition-colors" %>
                 </div>
               <% end %>
 
-              <%# <%= render "devise/shared/links" %>
+              <div class="text-center">
+                <p class="text-sm text-gray-600">
+                  Remember your password?
+                  <a href="/login" class="font-medium text-indigo-600 hover:text-indigo-500">
+                    Sign in
+                  </a>
+                </p>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-</div>
 </div>

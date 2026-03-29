@@ -4,11 +4,11 @@ class ExpensePolicy < ApplicationPolicy
   attr_reader :error_message_key
 
   def index?
-    admin_access?
+    elevated_access? || employee_access?
   end
 
   def create?
-    admin_access?
+    elevated_access? || employee_access?
   end
 
   def show?
@@ -20,21 +20,48 @@ class ExpensePolicy < ApplicationPolicy
   end
 
   def destroy?
-    authorize_current_user
+    return false unless same_workspace?
+    return false if record.paid?
+
+    user_owner_role? || user_admin_role? || own_submitted_expense?
+  end
+
+  def mark_paid?
+    same_workspace? && elevated_access?
+  end
+
+  def approve?
+    same_workspace? && elevated_access?
+  end
+
+  def reject?
+    same_workspace? && elevated_access?
   end
 
   def authorize_current_user
-    unless user.current_workspace_id == record.company_id
+    unless same_workspace?
       @error_message_key = :different_workspace
       return false
     end
 
-    admin_access?
+    elevated_access? || own_submitted_expense?
   end
 
   private
 
-    def admin_access?
-      user_owner_role? || user_admin_role?
+    def same_workspace?
+      user.current_workspace_id == record.company_id
+    end
+
+    def elevated_access?
+      user_owner_role? || user_admin_role? || user_book_keeper_role?
+    end
+
+    def employee_access?
+      user_employee_role?
+    end
+
+    def own_submitted_expense?
+      record.user_id.present? && record.user_id == user.id
     end
 end

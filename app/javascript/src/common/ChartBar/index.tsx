@@ -7,14 +7,14 @@ import "react-tooltip/dist/react-tooltip.css";
 import { IChartBarGraph, ISingleClient } from "./interface";
 
 const Client = ({ element, totalMinutes, index }: ISingleClient) => {
-  const chartColor = [
-    "miru-chart-green",
-    "miru-chart-blue",
-    "miru-chart-pink",
-    "miru-chart-orange",
+  const chartColors = [
+    "hsl(var(--foreground) / 0.7)",
+    "hsl(var(--foreground) / 0.58)",
+    "hsl(var(--foreground) / 0.46)",
+    "hsl(var(--foreground) / 0.34)",
   ];
   const chartColorIndex = index % 4;
-  const randomColor = chartColor[chartColorIndex];
+  const color = chartColors[chartColorIndex];
   const hourPercentage = (element.minutes * 100) / totalMinutes;
   const finalHourPercentage =
     hourPercentage > 1 ? hourPercentage : Math.ceil(hourPercentage);
@@ -35,8 +35,9 @@ const Client = ({ element, totalMinutes, index }: ISingleClient) => {
       </Tooltip>
       <button
         data-tip
-        className={`bg-${randomColor}-600 block h-4 w-full border-b border-t hover:border-transparent`}
+        className="block h-4 w-full border-b border-t border-transparent hover:border-border"
         id={`registerTip-${index}`}
+        style={{ backgroundColor: color }}
         type="button"
       />
     </div>
@@ -50,11 +51,13 @@ const GetClientBar = ({ data, totalMinutes }: IChartBarGraph) => {
   return (
     <section>
       <div className="hidden md:block">
-        <p className="mb-3 text-tiny tracking-widest text-miru-dark-purple-600">
+        <p className="mb-3 text-tiny tracking-wider text-muted-foreground">
           TOTAL HOURS:{" "}
-          <span className="font-medium">{minToHHMM(totalMinutes)}</span>
+          <span className="font-medium text-foreground">
+            {minToHHMM(totalMinutes)}
+          </span>
         </p>
-        <div className="flex h-1 w-full bg-gray-200">
+        <div className="flex h-1 w-full bg-muted/60">
           {dataWithMinutes.map((element, index) => {
             if (element.minutes > 0) {
               return (
@@ -68,7 +71,7 @@ const GetClientBar = ({ data, totalMinutes }: IChartBarGraph) => {
             }
           })}
         </div>
-        <div className="mt-3 flex justify-between pb-6 text-tiny tracking-widest text-miru-dark-purple-400">
+        <div className="mt-3 flex justify-between pb-6 text-tiny tracking-wider text-muted-foreground">
           <span>0</span>
           <span>{minToHHMM(totalMinutes)}</span>
         </div>

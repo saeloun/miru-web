@@ -23,9 +23,9 @@ const FilterSideBar = ({
   handleApplyFilter,
   onClickInput,
   selectedInput,
-  setCustomDateRange = (dateRange: any) => {}, // eslint-disable-line
+  setCustomDateRange = (dateRange: any) => {},
   customDateRange = { from: "", to: "" },
-  setSelectedInput = (inputFieldName: string) => {}, // eslint-disable-line
+  setSelectedInput = (inputFieldName: string) => {},
 }) => {
   const { timeEntryReport } = useEntry();
   const [filters, setFilters] = useState(timeEntryReport.selectedFilter);
@@ -105,7 +105,7 @@ const FilterSideBar = ({
       <div
         ref={innerRef}
         {...innerProps}
-        className="cursor-pointer py-1 px-2 hover:bg-miru-gray-100"
+        className="cursor-pointer py-1 px-2 hover:bg-muted"
       >
         <span
           className={`${getStatusCssClass(
@@ -169,7 +169,7 @@ const FilterSideBar = ({
                 onChange={handleSelectFilter}
               />
               {showCustomFilter && (
-                <div className="absolute z-20 mt-1 flex flex-col rounded-lg bg-miru-white-1000 shadow-c1">
+                <div className="absolute z-20 mt-1 flex flex-col rounded-lg bg-background shadow-c1">
                   <CustomDateRangePicker
                     dateRange={dateRange}
                     handleSelectDate={handleSelectDate}
@@ -187,7 +187,7 @@ const FilterSideBar = ({
                       {errorMessage.toDateErr}
                     </span>
                   </div>
-                  <div className="flex h-full items-end justify-center bg-miru-white-1000 p-6 ">
+                  <div className="flex h-full items-end justify-center bg-background p-6 ">
                     <button
                       className="sidebar__reset cursor-pointer"
                       onClick={resetCustomDatePicker}

@@ -1,0 +1,171 @@
+# frozen_string_literal: true
+
+class Api::V1::InvoicesController < Api::V1::ApplicationController
+  before_action :load_client, only: [:create, :update]
+  after_action :track_event, only: [:create, :update, :destroy, :send_invoice, :download]
+
+  def index
+    authorize Invoice
+    response = Invoices::IndexService.process(current_company, params)
+
+    render :index, locals: {
+      invoices: response[:invoices],
+      pagination_details: response[:pagination_details],
+      summary: response[:summary],
+      recently_updated_invoices: response[:recently_updated_invoices]
+    }
+  end
+
+  def create
+    authorize Invoice
+    @invoice = current_company.invoices.create!(invoice_params)
+    render :create, locals: {
+      invoice: @invoice,
+      client: @client,
+      client_member_emails: @invoice.client.send_invoice_emails(@virtual_verified_invitations_allowed)
+    }
+  end
+
+  def edit
+    authorize invoice
+    render :edit, locals: {
+      invoice:,
+      client: invoice.client,
+      client_list: current_company.clients.kept,
+      client_member_emails: invoice.client.send_invoice_emails(@virtual_verified_invitations_allowed)
+    }
+  end
+
+  def update
+    authorize invoice
+    invoice.update!(invoice_params)
+    render :update, locals: {
+      invoice:,
+      client: @client
+    }
+  end
+
+  def show
+    authorize invoice
+    render :show, locals: {
+      invoice:,
+      client: invoice.client,
+      client_member_emails: invoice.client.send_invoice_emails(@virtual_verified_invitations_allowed)
+    }
+  end
+
+  def destroy
+    authorize invoice
+    invoice.discard!
+  end
+
+  def send_invoice
+    authorize invoice
+
+    # Validate parameters
+    recipients = invoice_email_params[:recipients] || []
+    # Filter out blank entries
+    recipients = recipients.reject(&:blank?)
+
+    if recipients.empty?
+      return render json: { error: "Recipients are required" }, status: 422
+    end
+
+    # Check recipient limit
+    if recipients.size > 5
+      return render json: { error: "Email can only be sent to 5 recipients." }, status: 422
+    end
+
+    # Don't send if already paid
+    if invoice.paid?
+      return render json: { error: "Invoice is already paid" }, status: 422
+    end
+
+    # Generate PDF
+    begin
+      pdf_data = InvoicePayment::PdfGeneration.process(invoice, current_company.company_logo, root_url)
+    rescue StandardError => e
+      Rails.logger.error "Failed to generate PDF: #{e.message}"
+      return render json: { error: "Failed to generate PDF" }, status: 500
+    end
+
+    # Send email with PDF attachment
+    # Encode PDF data as base64 to avoid encoding issues in job queue
+    InvoiceMailer.with(
+      invoice: invoice,
+      pdf_data: Base64.strict_encode64(pdf_data),
+      pdf_encoded: true,
+      subject: invoice_email_params[:subject],
+      recipients: recipients,
+      message: invoice_email_params[:message]
+    ).send_invoice.deliver_later
+
+    # Update invoice status and sent_at in a single query
+    attrs = {}
+    attrs[:status] = "sent" if invoice.draft?
+    attrs[:sent_at] = Time.current if invoice.sent_at.nil?
+    invoice.update!(attrs) if attrs.any?
+
+    render json: { message: "Invoice has been sent successfully" }, status: 200
+  end
+
+  def send_reminder
+    authorize invoice
+
+    if invoice.overdue?
+      SendReminderMailer.with(
+        invoice:,
+        subject: invoice_email_params[:subject],
+        recipients: invoice_email_params[:recipients],
+        message: invoice_email_params[:message]
+      ).send_reminder.deliver_later
+
+      render json: { message: "A reminder has been sent" }, status: 202
+    else
+      render json: { error: "Reminders can only be sent for overdue invoices" }, status: 422
+    end
+  end
+
+  def download
+    authorize invoice
+
+    pdf_data = InvoicePayment::PdfGeneration.process(invoice, current_company.company_logo, root_url)
+    send_data pdf_data,
+              type: "application/pdf",
+              disposition: "attachment",
+              filename: "#{invoice.invoice_number}.pdf"
+  rescue Pundit::NotAuthorizedError
+    raise # Re-raise authorization errors
+  rescue StandardError => e
+    Rails.logger.error "Failed to generate PDF for invoice #{invoice.id}: #{e.message}"
+    render json: { error: "Failed to generate PDF" }, status: 500
+  end
+
+  private
+
+    def load_client
+      client = invoice_params[:client_id] || invoice[:client_id]
+      @client = current_company.clients.find(client)
+    end
+
+    def invoice
+      @_invoice ||= current_company.invoices.kept.includes(
+        :client,
+        { invoice_line_items: :timesheet_entry },
+        { company: { logo_attachment: :blob } }
+         )
+        .find(params[:id])
+    end
+
+    def invoice_params
+      params.require(:invoice).permit(policy(Invoice).permitted_attributes)
+    end
+
+    def invoice_email_params
+      params.require(:invoice_email).permit(:subject, :message, recipients: [])
+    end
+
+    def track_event
+      Invoices::EventTrackerService.new(params[:action], @invoice || invoice, params).process
+    end
+end

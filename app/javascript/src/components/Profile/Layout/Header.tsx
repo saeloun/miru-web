@@ -1,10 +1,9 @@
 import React from "react";
 
+import { Button } from "components/ui/button";
+import { useProfileContext } from "context/Profile/ProfileContext";
 import { ArrowLeftIcon } from "miruIcons";
 import { useNavigate } from "react-router-dom";
-import { Button } from "StyledComponents";
-
-import { useProfileContext } from "context/Profile/ProfileContext";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -12,19 +11,21 @@ const Header = () => {
 
   const getHeaderContent = () => {
     if (isCalledFromSettings) {
-      return <span className="text-32 font-bold">Profile & Settings</span>;
+      return null;
     }
 
     return (
       <div className="flex items-center">
         <Button
           className="mr-4"
-          style="ternary"
+          size="icon"
+          type="button"
+          variant="outline"
           onClick={() => navigate("/teams")}
         >
           <ArrowLeftIcon size={20} />
         </Button>
-        <span className="text-32 font-bold">
+        <span className="text-3xl font-bold tracking-tight text-foreground">
           {`${personalDetails.first_name} ${personalDetails.last_name}`}
         </span>
       </div>

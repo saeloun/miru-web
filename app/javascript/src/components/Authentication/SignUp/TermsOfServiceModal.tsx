@@ -1,4 +1,8 @@
 import React from "react";
+import {
+  MIRU_APP_SUPPORT_EMAIL,
+  MIRU_APP_SUPPORT_EMAIL_ID,
+} from "constants/index";
 
 import { XIcon } from "miruIcons";
 import { Modal } from "StyledComponents";
@@ -9,7 +13,7 @@ const TermsOfServiceModal = ({ isOpen, onClose }) => (
       <div className="mt-2 mb-6 flex items-center justify-between">
         <h2 className="text-lg font-bold">Terms of Service</h2>
         <button
-          className="left-0 text-miru-gray-1000"
+          className="left-0 text-foreground"
           type="button"
           onClick={onClose}
         >
@@ -17,9 +21,9 @@ const TermsOfServiceModal = ({ isOpen, onClose }) => (
         </button>
       </div>
       <p className="text-justify text-sm">
-        Welcome to our online open source B2B SAAS Application ("Service"). By
-        accessing or using our Service, you agree to be bound by these Terms of
-        Service ("Terms")
+        Welcome to our online open source B2B SAAS Application
+        (&quot;Service&quot;). By accessing or using our Service, you agree to
+        be bound by these Terms of Service (&quot;Terms&quot;)
       </p>
       <ol className="ml-4 mt-4 list-decimal">
         <li className="mt-4 text-justify text-sm font-bold">Use of Service</li>
@@ -59,9 +63,10 @@ const TermsOfServiceModal = ({ isOpen, onClose }) => (
           Disclaimer of Warranties
         </li>
         <p className="mt-2 text-justify text-sm">
-          Our Service is provided "as is" and "as available" without any
-          representation or warranty, express or implied. We do not warrant that
-          the Service will be uninterrupted, error-free, or completely secure.
+          Our Service is provided &quot;as is&quot; and &quot;as available&quot;
+          without any representation or warranty, express or implied. We do not
+          warrant that the Service will be uninterrupted, error-free, or
+          completely secure.
         </p>
         <li className="mt-4 text-justify text-sm font-bold">
           Limitation of Liability
@@ -90,9 +95,9 @@ const TermsOfServiceModal = ({ isOpen, onClose }) => (
         If you have any questions about these Terms, please contact us at
         <a
           className="form__link ml-2 inline cursor-pointer"
-          href="mailto:hello@saeloun.com"
+          href={MIRU_APP_SUPPORT_EMAIL_ID}
         >
-          hello@saeloun.com
+          {MIRU_APP_SUPPORT_EMAIL}
         </a>
       </p>
     </div>

@@ -8,12 +8,13 @@ module PdfGeneration
       @invoice = invoice
       @company_logo_url = company_logo_url
 
+      # Set up template and locals for invoice
       super(
         "pdfs/invoices",
         layout: "layouts/pdf",
         locals: build_invoice_locals,
         options: invoice_pdf_options,
-        root_url:
+        root_url: root_url
       )
     end
 
@@ -21,7 +22,7 @@ module PdfGeneration
 
       def build_invoice_locals
         {
-          invoice:,
+          invoice: invoice,
           invoice_amount: format_currency(invoice.amount),
           invoice_tax: format_currency(invoice.tax),
           invoice_amount_due: format_currency(invoice.amount_due),
@@ -58,11 +59,13 @@ module PdfGeneration
 
       def invoice_pdf_options
         {
-          format: :A4,
-          margin_top: 0.25,
-          margin_bottom: 0.25,
-          margin_left: 0.25,
-          margin_right: 0.25,
+          format: "A4",
+          margin: {
+            top: 18,
+            bottom: 18,
+            left: 18,
+            right: 18
+          },
           print_background: true,
           prefer_css_page_size: false
         }

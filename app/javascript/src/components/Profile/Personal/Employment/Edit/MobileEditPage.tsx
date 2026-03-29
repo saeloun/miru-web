@@ -4,17 +4,16 @@ import dayjs from "dayjs";
 import { CalendarIcon, DeleteIcon, ProjectsIcon } from "miruIcons";
 import "react-phone-number-input/style.css";
 import { Button } from "StyledComponents";
-
 import CustomDatePicker from "common/CustomDatePicker";
 import { CustomInputText } from "common/CustomInputText";
 import { CustomReactSelect } from "common/CustomReactSelect";
 import { ErrorSpan } from "common/ErrorSpan";
 
 const inputClass =
-  "form__input block w-full appearance-none bg-white p-4 text-sm h-12 focus-within:border-miru-han-purple-1000";
+  "form__input block h-12 w-full appearance-none bg-background p-4 text-sm focus-within:border-primary";
 
 const labelClass =
-  "absolute top-0.5 left-1 h-6 z-1 origin-0 bg-white p-2 text-sm font-medium duration-300";
+  "absolute top-0.5 left-1 z-1 h-6 origin-0 bg-background p-2 text-sm font-medium duration-300";
 
 const MobileEditPage = ({
   employeeTypes,
@@ -46,15 +45,15 @@ const MobileEditPage = ({
   const getDOR = resignedAt && dayjs(resignedAt, dateFormat).format(dateFormat);
 
   return (
-    <div className="h-full bg-miru-gray-100 p-4">
-      <div className="border-b border-b-miru-gray-400 py-10">
+    <div className="h-full bg-muted p-4">
+      <div className="border-b border-b-border py-10">
         <div className="mt-2 flex w-full">
           <ProjectsIcon
-            className="mr-4 mt-1 text-miru-dark-purple-1000"
+            className="mr-4 mt-1 text-foreground"
             size={16}
             weight="bold"
           />
-          <span className="text-sm font-medium text-miru-dark-purple-1000">
+          <span className="text-sm font-medium text-foreground">
             Current Employment
           </span>
         </div>
@@ -68,13 +67,13 @@ const MobileEditPage = ({
               value={employmentDetails.current_employment.employee_id}
               inputBoxClassName={`${inputClass} ${
                 errDetails.employee_id_err
-                  ? "border-red-600"
-                  : "border-miru-gray-1000"
+                  ? "border-destructive"
+                  : "border-border"
               }`}
               labelClassName={`${labelClass} ${
                 errDetails.employee_id_err
-                  ? "text-red-600"
-                  : "text-miru-dark-purple-200"
+                  ? "text-destructive"
+                  : "text-muted-foreground"
               }`}
               onChange={e => {
                 updateCurrentEmploymentDetails(e.target.value, "employee_id");
@@ -82,7 +81,7 @@ const MobileEditPage = ({
             />
             {errDetails.employee_id_err && (
               <ErrorSpan
-                className="text-xs text-red-600"
+                className="text-xs text-destructive"
                 message={errDetails.employee_id_err}
               />
             )}
@@ -96,13 +95,13 @@ const MobileEditPage = ({
               value={employmentDetails.current_employment.designation}
               inputBoxClassName={`${inputClass} ${
                 errDetails.designation_err
-                  ? "border-red-600"
-                  : "border-miru-gray-1000"
+                  ? "border-destructive"
+                  : "border-border"
               }`}
               labelClassName={`${labelClass} ${
                 errDetails.designation_err
-                  ? "text-red-600"
-                  : "text-miru-dark-purple-200"
+                  ? "text-destructive"
+                  : "text-muted-foreground"
               }`}
               onChange={e => {
                 updateCurrentEmploymentDetails(e.target.value, "designation");
@@ -110,7 +109,7 @@ const MobileEditPage = ({
             />
             {errDetails.designation_err && (
               <ErrorSpan
-                className="text-xs text-red-600"
+                className="text-xs text-destructive"
                 message={errDetails.designation_err}
               />
             )}
@@ -124,14 +123,12 @@ const MobileEditPage = ({
               type="text"
               value={employmentDetails.current_employment.email}
               inputBoxClassName={`${inputClass} ${
-                errDetails.email_err
-                  ? "border-red-600"
-                  : "border-miru-gray-1000"
+                errDetails.email_err ? "border-destructive" : "border-border"
               }`}
               labelClassName={`${labelClass} ${
                 errDetails.email_err
-                  ? "text-red-600"
-                  : "text-miru-dark-purple-200"
+                  ? "text-destructive"
+                  : "text-muted-foreground"
               }`}
               onChange={e => {
                 updateCurrentEmploymentDetails(e.target.value, "email");
@@ -139,7 +136,7 @@ const MobileEditPage = ({
             />
             {errDetails.email_err && (
               <ErrorSpan
-                className="text-xs text-red-600"
+                className="text-xs text-destructive"
                 message={errDetails.email_err}
               />
             )}
@@ -155,7 +152,7 @@ const MobileEditPage = ({
             />
             {errDetails.employment_err && (
               <ErrorSpan
-                className="text-xs text-red-600"
+                className="text-xs text-destructive"
                 message={errDetails.employment_err}
               />
             )}
@@ -180,13 +177,13 @@ const MobileEditPage = ({
               />
               <CalendarIcon
                 className="absolute top-0 bottom-0 right-4 my-auto"
-                color="#5B34EA"
+                color="#5E58F1"
                 size={20}
               />
             </div>
             {errDetails.joined_at_err && (
               <ErrorSpan
-                className="text-xs text-red-600"
+                className="text-xs text-destructive"
                 message={errDetails.joined_at_err}
               />
             )}
@@ -218,13 +215,13 @@ const MobileEditPage = ({
               />
               <CalendarIcon
                 className="absolute top-0 bottom-0 right-4 my-auto"
-                color="#5B34EA"
+                color="#5E58F1"
                 size={20}
               />
             </div>
             {errDetails.resigned_at_err && (
               <ErrorSpan
-                className="text-xs text-red-600"
+                className="text-xs text-destructive"
                 message={errDetails.resigned_at_err}
               />
             )}
@@ -238,14 +235,14 @@ const MobileEditPage = ({
           </div>
         </div>
       </div>
-      <div className="border-b border-b-miru-gray-400 py-10">
+      <div className="border-b border-b-border py-10">
         <div className="mt-2 flex w-full">
           <ProjectsIcon
-            className="mr-4 mt-1 text-miru-dark-purple-1000"
+            className="mr-4 mt-1 text-foreground"
             size={16}
             weight="bold"
           />
-          <span className="text-sm font-medium text-miru-dark-purple-1000">
+          <span className="text-sm font-medium text-foreground">
             Previous Employment
           </span>
         </div>
@@ -283,7 +280,7 @@ const MobileEditPage = ({
                   </div>
                 </div>
                 <Button
-                  className="rounded p-1vh hover:bg-miru-dark-purple-100"
+                  className="rounded p-1vh hover:bg-muted"
                   style="ternary"
                   onClick={() => handleDeletePreviousEmployment(previous)}
                 >
