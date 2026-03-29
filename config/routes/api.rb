@@ -31,6 +31,8 @@ namespace :api, defaults: { format: "json" } do
       end
     end
 
+    resource :chatbase_token, only: [:show]
+
     resources :clients, only: [:index, :update, :destroy, :show, :create] do
       collection do
         get "invoices", to: "clients/invoices#index"
