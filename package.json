@@ -139,6 +139,11 @@
   "scripts": {
     "prepare": "node -e \"if (process.env.NODE_ENV !== 'production') { require('child_process').execSync('lefthook install', {stdio: 'inherit'}); }\"",
     "lint": "eslint ./app/javascript",
+    "mobile:start": "pnpm --dir apps/mobile start",
+    "mobile:android": "pnpm --dir apps/mobile android",
+    "mobile:ios": "pnpm --dir apps/mobile ios",
+    "mobile:web": "pnpm --dir apps/mobile web",
+    "mobile:typecheck": "pnpm --dir apps/mobile exec tsc --noEmit",
     "postinstall": "node -e \"if (process.env.NODE_ENV !== 'production') { require('child_process').execSync('lefthook install', {stdio: 'inherit'}); }\"",
     "build": "vite build --outDir public"
   },
