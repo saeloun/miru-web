@@ -49,6 +49,25 @@ RSpec.describe "Time Tracking Entries", type: :system, js: true do
           .or have_content("8h", wait: 10)
       end
     end
+
+    it "shows AI source badges for assisted entries" do
+      entry.update!(
+        source: "mcp",
+        source_metadata: {
+          tool: "codex",
+          skill: "gstack-qa",
+          mcp_server: "github"
+        }
+      )
+
+      with_forgery_protection do
+        visit "/time-tracking"
+
+        expect(page).to have_content("Codex via MCP", wait: 10)
+        expect(page).to have_content("gstack-qa", wait: 10)
+        expect(page).to have_content("github", wait: 10)
+      end
+    end
   end
 
   context "with multiple projects in the same day" do

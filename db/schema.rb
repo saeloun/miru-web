@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_03_20_110033) do
+ActiveRecord::Schema[8.0].define(version: 2026_03_29_144500) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_stat_statements"
@@ -805,10 +805,13 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_20_110033) do
     t.datetime "updated_at", null: false
     t.datetime "discarded_at"
     t.boolean "locked", default: false
+    t.string "source", default: "manual", null: false
+    t.jsonb "source_metadata", default: {}, null: false
     t.index ["bill_status"], name: "index_timesheet_entries_on_bill_status"
     t.index ["discarded_at"], name: "index_timesheet_entries_on_discarded_at"
     t.index ["note"], name: "index_timesheet_entries_on_note_trgm", opclass: :gin_trgm_ops, using: :gin
     t.index ["project_id"], name: "index_timesheet_entries_on_project_id"
+    t.index ["source"], name: "index_timesheet_entries_on_source"
     t.index ["user_id", "work_date"], name: "index_timesheet_entries_on_user_id_and_work_date"
     t.index ["user_id"], name: "index_timesheet_entries_on_user_id"
     t.index ["work_date"], name: "index_timesheet_entries_on_work_date"

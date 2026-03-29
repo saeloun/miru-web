@@ -11,8 +11,8 @@ class Api::V1::TimeTrackingController < Api::V1::ApplicationController
       current_user: current_user,
       user: @user,
       company: current_company,
-      from: params[:from] || 1.month.ago.beginning_of_month,
-      to: params[:to] || 1.month.since.end_of_month,
+      from: parsed_date_param(:from) || 1.month.ago.beginning_of_month,
+      to: parsed_date_param(:to) || 1.month.since.end_of_month,
       year: params[:year] || Date.today.year
     ).process
 
@@ -32,5 +32,39 @@ class Api::V1::TimeTrackingController < Api::V1::ApplicationController
     def set_user
       user_id = params[:user_id] || current_user.id
       @user = current_company.users.find(user_id)
+    end
+
+    def parsed_date_param(key)
+      value = params[key]
+      return if value.blank?
+
+      date_formats.each do |format|
+        return Date.strptime(value.to_s, format)
+      rescue ArgumentError
+        next
+      end
+
+      Date.iso8601(value.to_s)
+    rescue ArgumentError
+      nil
+    end
+
+    def date_formats
+      [
+        company_date_format_for_strptime,
+        "%Y-%m-%d",
+        "%m-%d-%Y",
+        "%d-%m-%Y",
+        "%m/%d/%Y",
+        "%d/%m/%Y"
+      ].compact.uniq
+    end
+
+    def company_date_format_for_strptime
+      {
+        "DD-MM-YYYY" => "%d-%m-%Y",
+        "MM-DD-YYYY" => "%m-%d-%Y",
+        "YYYY-MM-DD" => "%Y-%m-%d"
+      }[current_company.date_format]
     end
 end

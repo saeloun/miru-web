@@ -8,7 +8,9 @@ class Api::V1::Cli::TimesheetEntriesController < Api::V1::Cli::BaseController
       duration: cli_timesheet_entry_params[:duration_minutes],
       work_date: cli_timesheet_entry_params[:work_date],
       note: cli_timesheet_entry_params[:note],
-      bill_status: cli_timesheet_entry_params[:bill_status]
+      bill_status: cli_timesheet_entry_params[:bill_status],
+      source: "cli",
+      source_metadata: cli_timesheet_entry_params[:source_metadata]
     )
     timesheet_entry.user = current_user
     timesheet_entry.save!
@@ -27,7 +29,9 @@ class Api::V1::Cli::TimesheetEntriesController < Api::V1::Cli::BaseController
       duration: cli_timesheet_entry_params[:duration_minutes],
       work_date: cli_timesheet_entry_params[:work_date],
       note: cli_timesheet_entry_params[:note],
-      bill_status: cli_timesheet_entry_params[:bill_status]
+      bill_status: cli_timesheet_entry_params[:bill_status],
+      source: "cli",
+      source_metadata: cli_timesheet_entry_params[:source_metadata]
     )
 
     render json: {
@@ -55,6 +59,13 @@ class Api::V1::Cli::TimesheetEntriesController < Api::V1::Cli::BaseController
     end
 
     def cli_timesheet_entry_params
-      params.require(:timesheet_entry).permit(:project_id, :duration_minutes, :work_date, :note, :bill_status)
+      params.require(:timesheet_entry).permit(
+        :project_id,
+        :duration_minutes,
+        :work_date,
+        :note,
+        :bill_status,
+        source_metadata: {}
+      )
     end
 end

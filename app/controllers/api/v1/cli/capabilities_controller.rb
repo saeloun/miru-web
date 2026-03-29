@@ -8,7 +8,8 @@ class Api::V1::Cli::CapabilitiesController < Api::V1::Cli::BaseController
       commands: [
         {
           name: "time create",
-          description: "Create a timesheet entry for the authenticated user"
+          description: "Create a timesheet entry for the authenticated user, including optional AI tool metadata for Claude, Codex, MCP, and other automations",
+          supports_source_metadata: true
         },
         {
           name: "time list",
@@ -16,7 +17,8 @@ class Api::V1::Cli::CapabilitiesController < Api::V1::Cli::BaseController
         },
         {
           name: "time update",
-          description: "Update one of the authenticated user's timesheet entries"
+          description: "Update one of the authenticated user's timesheet entries and preserve or change AI tool metadata",
+          supports_source_metadata: true
         },
         {
           name: "time delete",

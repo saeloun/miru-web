@@ -5,6 +5,17 @@ class TimesheetEntry < ApplicationRecord
   include Searchable
   enum :bill_status, [:non_billable, :unbilled, :billed]
 
+  SOURCES = %w[manual cli mcp automation import].freeze
+  SOURCE_METADATA_KEYS = %w[tool skill mcp_server].freeze
+  SOURCE_METADATA_MAX_LENGTH = 100
+  SOURCE_LABELS = {
+    "manual" => "Manual",
+    "cli" => "CLI",
+    "mcp" => "MCP",
+    "automation" => "Automation",
+    "import" => "Import"
+  }.freeze
+
   belongs_to :user
   belongs_to :project
 
@@ -24,9 +35,11 @@ class TimesheetEntry < ApplicationRecord
   before_validation :ensure_bill_status_is_set
   before_validation :ensure_bill_status_is_not_billed, on: :create
   before_validation :ensure_billed_status_should_not_be_changed, on: :update
+  before_validation :normalize_source_fields
 
   validates :duration, :work_date, :bill_status, presence: true
   validates :duration, numericality: { less_than_or_equal_to: 6000000, greater_than_or_equal_to: 0.0 }
+  validates :source, inclusion: { in: SOURCES }
   validate :validate_billable_project
   validate :prevent_edit_if_locked, on: :update
 
@@ -56,8 +69,29 @@ class TimesheetEntry < ApplicationRecord
       work_date:,
       bill_status:,
       team_member: user.full_name,
+      source:,
+      source_label:,
+      source_metadata:,
       type: "timesheet"
     }
+  end
+
+  def source_label
+    return nil if source == "manual" && source_tool.blank?
+
+    parts = []
+    parts << source_tool_label if source_tool.present?
+    parts << "via #{SOURCE_LABELS.fetch(source)}" if source != "manual"
+    parts << SOURCE_LABELS.fetch(source) if parts.empty?
+    parts.join(" ")
+  end
+
+  def source_tool
+    source_metadata["tool"].presence
+  end
+
+  def source_tool_label
+    source_tool.to_s.split(/[_-]/).reject(&:blank?).map(&:capitalize).join(" ")
   end
 
   def formatted_duration
@@ -106,5 +140,32 @@ class TimesheetEntry < ApplicationRecord
       if locked && Current.user.primary_role(Current.company) == "employee"
         errors.add(:base, "Cannot edit a locked timesheet entry. Please contact admin.")
       end
+    end
+
+    def normalize_source_fields
+      self.source_metadata = normalized_source_metadata
+      self.source = inferred_source
+    end
+
+    def normalized_source_metadata
+      return {} unless source_metadata.is_a?(Hash)
+
+      source_metadata.deep_stringify_keys
+        .slice(*SOURCE_METADATA_KEYS)
+        .transform_values { |value| normalized_source_metadata_value(value) }
+        .compact_blank
+    end
+
+    def normalized_source_metadata_value(value)
+      value.to_s.strip.presence&.slice(0, SOURCE_METADATA_MAX_LENGTH)
+    end
+
+    def inferred_source
+      return "mcp" if source_metadata["mcp_server"].present?
+      return "automation" if source_metadata["tool"].present?
+
+      normalized_source = source.to_s.presence || "manual"
+      normalized_source = normalized_source.downcase
+      SOURCES.include?(normalized_source) ? normalized_source : "manual"
     end
 end

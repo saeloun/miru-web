@@ -20,5 +20,11 @@ RSpec.describe "Api::V1::Cli::Capabilities#show", type: :request do
     expect(json_response["commands"].pluck("name")).to include(
       "time create", "time list", "project list", "invoice list", "invoice show", "payment list", "payment show"
     )
+    expect(
+      json_response["commands"].find { |command| command["name"] == "time create" }
+    ).to include("supports_source_metadata" => true)
+    expect(
+      json_response["commands"].find { |command| command["name"] == "time update" }
+    ).to include("supports_source_metadata" => true)
   end
 end

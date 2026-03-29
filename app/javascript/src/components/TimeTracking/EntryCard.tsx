@@ -3,6 +3,7 @@ import { minToHHMM } from "helpers";
 import { Trash, PencilSimple, Clock, Briefcase } from "phosphor-react";
 import { Card, CardContent } from "../ui/card";
 import { Button } from "../ui/button";
+import { Badge } from "../ui/badge";
 import { cn } from "../../lib/utils";
 import { useUserContext } from "context/UserContext";
 import { Roles } from "../../constants";
@@ -13,6 +14,8 @@ interface props {
   project: string;
   note: string;
   duration: number;
+  source_label?: string;
+  source_metadata?: Record<string, string>;
   handleDeleteEntry: (id: number) => void;
   setEditEntryId: React.Dispatch<React.SetStateAction<number>>;
   bill_status: string;
@@ -29,6 +32,8 @@ const EntryCard: React.FC<props> = ({
   project,
   note,
   duration,
+  source_label,
+  source_metadata,
   handleDeleteEntry,
   setEditEntryId,
   bill_status,
@@ -36,6 +41,8 @@ const EntryCard: React.FC<props> = ({
   handleDuplicate,
 }) => {
   const { isDesktop, companyRole } = useUserContext();
+  const sourceSkill = source_metadata?.skill;
+  const sourceServer = source_metadata?.mcp_server;
 
   const handleCardClick = () => {
     if (!isDesktop) {
@@ -74,6 +81,19 @@ const EntryCard: React.FC<props> = ({
                         {project}
                       </span>
                     </div>
+                    {(source_label || sourceSkill || sourceServer) && (
+                      <div className="mt-2 flex flex-wrap items-center gap-2">
+                        {source_label && (
+                          <Badge variant="secondary">{source_label}</Badge>
+                        )}
+                        {sourceSkill && (
+                          <Badge variant="outline">{sourceSkill}</Badge>
+                        )}
+                        {sourceServer && (
+                          <Badge variant="outline">{sourceServer}</Badge>
+                        )}
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
