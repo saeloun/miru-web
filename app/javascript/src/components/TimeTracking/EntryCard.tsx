@@ -1,6 +1,6 @@
 import React from "react";
 import { minToHHMM } from "helpers";
-import { Trash, PencilSimple, Clock, Briefcase } from "phosphor-react";
+import { Trash, PencilSimple, Clock, Briefcase, Play } from "phosphor-react";
 import { Card, CardContent } from "../ui/card";
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
@@ -12,6 +12,7 @@ interface props {
   id: number;
   client: string;
   project: string;
+  projectId: number;
   note: string;
   duration: number;
   source_label?: string;
@@ -21,6 +22,12 @@ interface props {
   bill_status: string;
   setNewEntryView: any;
   handleDuplicate: any;
+  handleResumeTimer: (entry: {
+    client: string;
+    project: string;
+    projectId: number;
+    note: string;
+  }) => void;
 }
 
 const canEditTimeEntry = (billStatus, role) =>
@@ -30,6 +37,7 @@ const EntryCard: React.FC<props> = ({
   id,
   client,
   project,
+  projectId,
   note,
   duration,
   source_label,
@@ -39,6 +47,7 @@ const EntryCard: React.FC<props> = ({
   bill_status,
   setNewEntryView,
   handleDuplicate,
+  handleResumeTimer,
 }) => {
   const { isDesktop, companyRole } = useUserContext();
   const sourceSkill = source_metadata?.skill;
@@ -172,32 +181,48 @@ const EntryCard: React.FC<props> = ({
             </div>
 
             {canEditTimeEntry(bill_status, companyRole) && (
-              <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all duration-200">
+              <div className="flex items-center gap-2">
                 <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-9 w-9 hover:bg-accent hover:text-primary"
+                  variant="outline"
+                  size="sm"
+                  className="h-9"
+                  data-testid="resume-timer-entry"
                   onClick={e => {
                     e.stopPropagation();
-                    setEditEntryId(id);
-                    setNewEntryView(true);
+                    handleResumeTimer({ client, project, projectId, note });
                   }}
-                  title="Edit entry"
+                  title="Resume timer"
                 >
-                  <PencilSimple className="h-4 w-4" />
+                  <Play className="mr-1 h-4 w-4" />
+                  Resume
                 </Button>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-9 w-9 hover:bg-destructive/10 hover:text-destructive"
-                  onClick={e => {
-                    e.stopPropagation();
-                    handleDeleteEntry(id);
-                  }}
-                  title="Delete entry"
-                >
-                  <Trash className="h-4 w-4" />
-                </Button>
+                <div className="flex items-center gap-1 opacity-0 transition-all duration-200 group-hover:opacity-100">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-9 w-9 hover:bg-accent hover:text-primary"
+                    onClick={e => {
+                      e.stopPropagation();
+                      setEditEntryId(id);
+                      setNewEntryView(true);
+                    }}
+                    title="Edit entry"
+                  >
+                    <PencilSimple className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-9 w-9 hover:bg-destructive/10 hover:text-destructive"
+                    onClick={e => {
+                      e.stopPropagation();
+                      handleDeleteEntry(id);
+                    }}
+                    title="Delete entry"
+                  >
+                    <Trash className="h-4 w-4" />
+                  </Button>
+                </div>
               </div>
             )}
           </div>

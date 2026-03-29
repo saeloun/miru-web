@@ -280,4 +280,63 @@ RSpec.describe "Time Tracking - Add Entry", type: :system, js: true do
     find("button[aria-label^='#{target_button_label}']", wait: 10).click
     expect(page).to have_content(source_note, wait: 10)
   end
+
+  it "pins a recent shortcut into favorites" do
+    recent_note = "Pinned shortcut work"
+    create(
+      :timesheet_entry,
+      user:,
+      project:,
+      work_date: Date.current - 1.day,
+      duration: 45,
+      note: recent_note
+    )
+
+    visit "/time-tracking"
+    expect(page).to have_css("#react-root", wait: 10)
+    switch_to("Week")
+
+    click_button "Add Entry"
+    expect(page).to have_css("[data-testid='recent-entry-shortcut']", wait: 10)
+    first("[data-testid='favorite-entry-toggle']").click
+
+    expect(page).to have_text(/Favorites/i, wait: 10)
+    expect(page).to have_css("[data-testid='favorite-entry-shortcut']", wait: 10)
+    expect(page).to have_css("[data-testid='favorite-entry-shortcut']", wait: 10)
+    expect(page).to have_content("Acme Client / Harvest-style Project · 00:45", wait: 10)
+  end
+
+  it "switches to week review and shows entries from multiple days" do
+    monday = Date.current.beginning_of_week(:monday)
+    wednesday = monday + 2.days
+
+    create(
+      :timesheet_entry,
+      user:,
+      project:,
+      work_date: monday,
+      duration: 60,
+      note: "Monday batch"
+    )
+    create(
+      :timesheet_entry,
+      user:,
+      project:,
+      work_date: wednesday,
+      duration: 90,
+      note: "Wednesday batch"
+    )
+
+    travel_to(wednesday.in_time_zone.change(hour: 12)) do
+      visit "/time-tracking"
+      expect(page).to have_css("#react-root", wait: 10)
+      switch_to("Week")
+
+      find("[data-testid='time-review-week']", wait: 10).click
+
+      expect(page).to have_content("Monday batch", wait: 10)
+      expect(page).to have_content("Wednesday batch", wait: 10)
+      expect(page).to have_content(/Week Total/i, wait: 10)
+    end
+  end
 end

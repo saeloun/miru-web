@@ -15,6 +15,7 @@ import { sendGAPageView } from "utils/googleAnalytics";
 import { Button } from "../ui/button";
 import { Toastr } from "../ui/toastr";
 import FloatingTimer from "../TimesheetEntries/FloatingTimer";
+import { startTimerFromEntry } from "utils/timeTrackingTimer";
 
 import WeekDaySelector from "./WeekDaySelector";
 import EntryForm from "./EntryForm";
@@ -79,6 +80,8 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
   >(null);
   const [loadedRangeKey, setLoadedRangeKey] = useState<string>("");
   const [copyingLastWeek, setCopyingLastWeek] = useState<boolean>(false);
+  const [timerSyncKey, setTimerSyncKey] = useState<number>(0);
+  const [resumeTimerEntry, setResumeTimerEntry] = useState<any>(null);
   const dateParseFormats = [
     dateFormat,
     "YYYY-MM-DD",
@@ -599,6 +602,34 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
     await refreshVisibleEntries();
   };
 
+  const handleResumeTimer = ({
+    client,
+    project,
+    projectId,
+    note,
+  }: {
+    client: string;
+    project: string;
+    projectId: number;
+    note?: string;
+  }) => {
+    startTimerFromEntry({
+      client,
+      project,
+      projectId,
+      description: note,
+    });
+    setTimerSyncKey(current => current + 1);
+    setResumeTimerEntry({
+      client,
+      project,
+      projectId,
+      description: note,
+      resumeAt: Date.now(),
+    });
+    Toastr.success("Timer resumed from entry");
+  };
+
   const handleCopyLastWeek = async () => {
     if (view !== "week" || dayInfo.length === 0) return;
 
@@ -779,6 +810,8 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
               <FloatingTimer
                 onSaveEntry={handleTimerSaved}
                 placement="inline"
+                externalSyncKey={timerSyncKey}
+                resumeFromEntry={resumeTimerEntry}
               />
             )}
             {view === "week" && (
@@ -873,8 +906,11 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
               entryList={entryList}
               handleDeleteEntry={handleDeleteEntry}
               handleDuplicate={handleDuplicate}
+              handleResumeTimer={handleResumeTimer}
               setEditEntryId={setEditEntryId}
               setNewEntryView={setNewEntryView}
+              dayInfo={dayInfo}
+              view={view}
             />
           </div>
         )}
@@ -902,6 +938,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
         setEditEntryId={setEditEntryId}
         handleDeleteEntry={handleDeleteEntry}
         handleDuplicate={handleDuplicate}
+        handleResumeTimer={handleResumeTimer}
         setNewEntryView={setNewEntryView}
         newEntryView={newEntryView}
         // Form props
@@ -919,7 +956,13 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
         setSelectedFullDate={setSelectedFullDate}
         setUpdateView={setUpdateView}
       />
-      {!isDesktop && <FloatingTimer onSaveEntry={handleTimerSaved} />}
+      {!isDesktop && (
+        <FloatingTimer
+          onSaveEntry={handleTimerSaved}
+          externalSyncKey={timerSyncKey}
+          resumeFromEntry={resumeTimerEntry}
+        />
+      )}
     </div>
   );
 
