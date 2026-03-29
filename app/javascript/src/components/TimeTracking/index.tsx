@@ -13,6 +13,7 @@ import { minFromHHMM, minToHHMM } from "helpers";
 import Logger from "js-logger";
 import { sendGAPageView } from "utils/googleAnalytics";
 import { Button } from "../ui/button";
+import { Toastr } from "../ui/toastr";
 import FloatingTimer from "../TimesheetEntries/FloatingTimer";
 
 import WeekDaySelector from "./WeekDaySelector";
@@ -77,6 +78,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
     number | null
   >(null);
   const [loadedRangeKey, setLoadedRangeKey] = useState<string>("");
+  const [copyingLastWeek, setCopyingLastWeek] = useState<boolean>(false);
   const dateParseFormats = [
     dateFormat,
     "YYYY-MM-DD",
@@ -597,6 +599,106 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
     await refreshVisibleEntries();
   };
 
+  const handleCopyLastWeek = async () => {
+    if (view !== "week" || dayInfo.length === 0) return;
+
+    const currentWeekStart = dayjs(
+      dayInfo[0]?.fullDate,
+      dateParseFormats,
+      true
+    );
+
+    if (!currentWeekStart.isValid()) return;
+
+    try {
+      setCopyingLastWeek(true);
+
+      const previousWeekStart = currentWeekStart.subtract(7, "day");
+      const previousWeekEnd = previousWeekStart.add(6, "day");
+      const response = await timesheetEntryApi.list(
+        previousWeekStart.format("YYYY-MM-DD"),
+        previousWeekEnd.format("YYYY-MM-DD"),
+        selectedEmployeeId
+      );
+
+      const previousWeekEntries = Object.values(
+        response.data?.entries || {}
+      ).flat();
+
+      if (!previousWeekEntries.length) {
+        Toastr.warning("No entries found in last week.");
+
+        return;
+      }
+
+      const currentEntriesByDate = Object.entries(entryList || {}).reduce(
+        (accumulator, [date, entries]: [string, any[]]) => {
+          const normalizedDate = dayjs(date, dateParseFormats, true).isValid()
+            ? dayjs(date, dateParseFormats, true).format("YYYY-MM-DD")
+            : date;
+
+          accumulator[normalizedDate] = entries || [];
+
+          return accumulator;
+        },
+        {}
+      );
+
+      const entriesToCreate = previousWeekEntries.filter((entry: any) => {
+        const targetDate = dayjs(entry.work_date)
+          .add(7, "day")
+          .format("YYYY-MM-DD");
+        const matchingEntries = currentEntriesByDate[targetDate] || [];
+
+        return !matchingEntries.some(
+          (currentEntry: any) =>
+            currentEntry.project_id === entry.project_id &&
+            currentEntry.duration === entry.duration &&
+            (currentEntry.note || "") === (entry.note || "") &&
+            (currentEntry.task_type || "development") ===
+              (entry.task_type || "development")
+        );
+      });
+
+      if (!entriesToCreate.length) {
+        Toastr.warning("This week already has those entries.");
+
+        return;
+      }
+
+      await Promise.all(
+        entriesToCreate.map((entry: any) =>
+          timesheetEntryApi.create(
+            {
+              project_id: entry.project_id,
+              timesheet_entry: {
+                work_date: dayjs(entry.work_date)
+                  .add(7, "day")
+                  .format("YYYY-MM-DD"),
+                duration: entry.duration,
+                note: entry.note,
+                task_type: entry.task_type || "development",
+                bill_status:
+                  entry.bill_status === "billed"
+                    ? "unbilled"
+                    : entry.bill_status,
+              },
+            },
+            selectedEmployeeId
+          )
+        )
+      );
+
+      await refreshVisibleEntries();
+      Toastr.success(`Copied ${entriesToCreate.length} entries from last week`);
+    } catch (error) {
+      Logger.error(error);
+      Toastr.error("Failed to copy last week's entries.");
+    } finally {
+      setCopyingLastWeek(false);
+    }
+  };
+
   if (loading) {
     return <Loader />;
   }
@@ -735,9 +837,12 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
             />
           )}
           <AddEntryButton
+            copyingLastWeek={copyingLastWeek}
+            handleCopyLastWeek={handleCopyLastWeek}
             newEntryView={newEntryView}
             handleOpenModernForm={handleOpenModernForm}
             setNewEntryView={setNewEntryView}
+            showCopyLastWeek={isDesktop && view === "week"}
           />
           {newRowView && (
             <WeeklyEntries
