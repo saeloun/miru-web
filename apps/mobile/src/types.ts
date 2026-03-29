@@ -40,6 +40,10 @@ export interface TimeTrackingEntry {
   project?: string;
   projectId?: number;
   billStatus?: string;
+  teamMember?: string;
+  source?: string | null;
+  sourceLabel?: string | null;
+  sourceMetadata?: Record<string, string> | null;
 }
 
 export interface TimeTrackingResponse {
