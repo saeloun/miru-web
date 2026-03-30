@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 import { timesheetEntryApi, timeTrackingApi } from "apis/api";
 import Loader from "common/Loader/index";
@@ -64,6 +64,8 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
   const [clients, setClients] = useState<any>({});
   const [projects, setProjects] = useState<any>({});
   const [employees, setEmployees] = useState<any>([]);
+  const [leaveTypes, setLeaveTypes] = useState<any[]>([]);
+  const [holidayList, setHolidayList] = useState<any[]>([]);
   const [currentMonthNumber, setCurrentMonthNumber] = useState<number>(
     dayjs().month()
   );
@@ -95,6 +97,26 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
     value: `${e["id"]}`,
     label: `${e["first_name"]} ${e["last_name"]}`,
   }));
+
+  const leaveTypeHashObj = useMemo(
+    () =>
+      leaveTypes.reduce((accumulator, leaveType) => {
+        if (leaveType?.id) accumulator[leaveType.id] = leaveType;
+
+        return accumulator;
+      }, {}),
+    [leaveTypes]
+  );
+
+  const holidaysHashObj = useMemo(
+    () =>
+      holidayList.reduce((accumulator, holidayInfo) => {
+        if (holidayInfo?.id) accumulator[holidayInfo.id] = holidayInfo;
+
+        return accumulator;
+      }, {}),
+    [holidayList]
+  );
 
   const getEntriesForDate = (dateValue: string) => {
     if (!dateValue || !entryList) return [];
@@ -145,7 +167,15 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
         to,
         year,
       });
-      const { clients, projects, entries, employees } = data;
+
+      const {
+        clients,
+        projects,
+        entries,
+        employees,
+        leave_types,
+        holiday_infos,
+      } = data;
 
       // Ensure clients is an array
       const clientsArray = Array.isArray(clients) ? clients : [];
@@ -158,6 +188,8 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
       // Ensure employees is an array
       const employeesArray = Array.isArray(employees) ? employees : [];
       setEmployees(employeesArray);
+      setLeaveTypes(Array.isArray(leave_types) ? leave_types : []);
+      setHolidayList(Array.isArray(holiday_infos) ? holiday_infos : []);
 
       // Ensure entries is an object
       const entriesObj = entries || {};
@@ -337,6 +369,13 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
       const entriesObj = res.data?.entries || {};
       setAllEmployeesEntries(pv => ({ ...pv, [targetEmployeeId]: entriesObj }));
       setEntryList(entriesObj);
+      setLeaveTypes(
+        Array.isArray(res.data?.leave_types) ? res.data.leave_types : []
+      );
+
+      setHolidayList(
+        Array.isArray(res.data?.holiday_infos) ? res.data.holiday_infos : []
+      );
       setRuntimeError("");
       setLoading(false);
 
@@ -904,6 +943,8 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
             <TimeEntriesDisplay
               selectedFullDate={selectedFullDate}
               entryList={entryList}
+              leaveTypeHashObj={leaveTypeHashObj}
+              holidaysHashObj={holidaysHashObj}
               handleDeleteEntry={handleDeleteEntry}
               handleDuplicate={handleDuplicate}
               handleResumeTimer={handleResumeTimer}
