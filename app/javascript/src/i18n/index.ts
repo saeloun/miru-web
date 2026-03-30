@@ -62,7 +62,7 @@ export const LANGUAGE_OPTIONS: { value: SupportedLocale; label: string }[] = [
   { value: "zh-CN", label: "简体中文" },
 ];
 
-const translations = {
+const translationOverrides = {
   en: {
     invalidImageFormatSize:
       "Incorrect file format. Please upload an image of type PNG or JPG. Max size (%{fileSize}KB)",
@@ -1168,7 +1168,42 @@ const translations = {
   },
 } as const;
 
-const i18n = new I18n(translations);
+const deepMergeTranslations = (
+  base: Record<string, any>,
+  override?: Record<string, any>
+): Record<string, any> => {
+  if (!override) return { ...base };
+
+  return Object.entries(base).reduce<Record<string, any>>(
+    (result, [key, value]) => {
+      const nextValue = override[key];
+
+      if (
+        value &&
+        typeof value === "object" &&
+        !Array.isArray(value) &&
+        nextValue &&
+        typeof nextValue === "object" &&
+        !Array.isArray(nextValue)
+      ) {
+        result[key] = deepMergeTranslations(value, nextValue);
+
+        return result;
+      }
+
+      result[key] = nextValue ?? value;
+
+      return result;
+    },
+    { ...override }
+  );
+};
+
+const loadedLocales = new Set<SupportedLocale>(["en"]);
+
+const i18n = new I18n({
+  en: translationOverrides.en,
+});
 i18n.enableFallback = true;
 i18n.defaultLocale = "en";
 i18n.locale = "en";
@@ -1253,6 +1288,19 @@ export const getStoredLocale = (): SupportedLocale | null => {
 
 export const applyLocale = (locale?: string | null): SupportedLocale => {
   const normalizedLocale = normalizeLocale(locale || getStoredLocale());
+
+  if (!loadedLocales.has(normalizedLocale)) {
+    i18n.store({
+      [normalizedLocale]: deepMergeTranslations(
+        translationOverrides.en,
+        translationOverrides[
+          normalizedLocale as keyof typeof translationOverrides
+        ]
+      ),
+    });
+    loadedLocales.add(normalizedLocale);
+  }
+
   i18n.locale = normalizedLocale;
 
   if (canUseWindow()) {
