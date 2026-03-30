@@ -4,7 +4,7 @@ module AuthResponsePayload
   private
 
     def safe_user_payload(user)
-      user.as_json(only: [:id, :email, :first_name, :last_name, :current_workspace_id])
+      user.as_json(only: [:id, :email, :first_name, :last_name, :current_workspace_id, :locale])
     end
 
     def auth_user_payload(user, include_token: false, include_avatar: false, include_confirmed: false)

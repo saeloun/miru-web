@@ -21,6 +21,7 @@ import { useUserContext } from "context/UserContext";
 import useThemeMode from "common/useThemeMode";
 import { cn } from "../../lib/utils";
 import { Paths } from "constants/index";
+import { t } from "../../i18n";
 // Branding inlined per request
 import { logoutApi } from "apis/api";
 
@@ -30,69 +31,6 @@ interface NavItem {
   icon: React.ElementType;
   allowedRoles: string[];
 }
-
-const navigationItems: NavItem[] = [
-  {
-    label: "Dashboard",
-    path: "/",
-    icon: House,
-    allowedRoles: ["admin", "owner", "book_keeper"],
-  },
-  {
-    label: "Time Tracking",
-    path: Paths.TIME_TRACKING,
-    icon: Clock,
-    allowedRoles: ["admin", "employee", "owner"],
-  },
-  {
-    label: "Clients",
-    path: Paths.CLIENTS,
-    icon: Users,
-    allowedRoles: ["admin", "owner"],
-  },
-  {
-    label: "Projects",
-    path: Paths.PROJECTS,
-    icon: FolderOpen,
-    allowedRoles: ["admin", "employee", "owner"],
-  },
-  {
-    label: "Team",
-    path: Paths.TEAM.replace("/*", ""),
-    icon: UserPlus,
-    allowedRoles: ["admin", "owner"],
-  },
-  {
-    label: "Invoices",
-    path: "/invoices",
-    icon: FileText,
-    allowedRoles: ["admin", "owner", "book_keeper", "client"],
-  },
-  {
-    label: "Reports",
-    path: Paths.REPORTS,
-    icon: BarChart3,
-    allowedRoles: ["admin", "owner", "book_keeper"],
-  },
-  {
-    label: "Payments",
-    path: Paths.PAYMENTS,
-    icon: CreditCard,
-    allowedRoles: ["admin", "owner", "book_keeper"],
-  },
-  {
-    label: "Leaves & Holidays",
-    path: Paths.Leave_Management,
-    icon: Calendar,
-    allowedRoles: ["admin", "owner", "employee"],
-  },
-  {
-    label: "Expenses",
-    path: Paths.EXPENSES,
-    icon: Receipt,
-    allowedRoles: ["admin", "owner", "book_keeper"],
-  },
-];
 
 export const ModernNavbar: React.FC = () => {
   const { user, companyRole, isDesktop: contextIsDesktop } = useUserContext();
@@ -121,6 +59,69 @@ export const ModernNavbar: React.FC = () => {
       setIsSidebarOpen(false);
     }
   }, [location.pathname, isDesktop]);
+
+  const navigationItems: NavItem[] = [
+    {
+      label: t("nav.dashboard"),
+      path: "/",
+      icon: House,
+      allowedRoles: ["admin", "owner", "book_keeper"],
+    },
+    {
+      label: t("nav.timeTracking"),
+      path: Paths.TIME_TRACKING,
+      icon: Clock,
+      allowedRoles: ["admin", "employee", "owner"],
+    },
+    {
+      label: t("nav.clients"),
+      path: Paths.CLIENTS,
+      icon: Users,
+      allowedRoles: ["admin", "owner"],
+    },
+    {
+      label: t("nav.projects"),
+      path: Paths.PROJECTS,
+      icon: FolderOpen,
+      allowedRoles: ["admin", "employee", "owner"],
+    },
+    {
+      label: t("nav.team"),
+      path: Paths.TEAM.replace("/*", ""),
+      icon: UserPlus,
+      allowedRoles: ["admin", "owner"],
+    },
+    {
+      label: t("nav.invoices"),
+      path: "/invoices",
+      icon: FileText,
+      allowedRoles: ["admin", "owner", "book_keeper", "client"],
+    },
+    {
+      label: t("nav.reports"),
+      path: Paths.REPORTS,
+      icon: BarChart3,
+      allowedRoles: ["admin", "owner", "book_keeper"],
+    },
+    {
+      label: t("nav.payments"),
+      path: Paths.PAYMENTS,
+      icon: CreditCard,
+      allowedRoles: ["admin", "owner", "book_keeper"],
+    },
+    {
+      label: t("nav.leavesAndHolidays"),
+      path: Paths.Leave_Management,
+      icon: Calendar,
+      allowedRoles: ["admin", "owner", "employee"],
+    },
+    {
+      label: t("nav.expenses"),
+      path: Paths.EXPENSES,
+      icon: Receipt,
+      allowedRoles: ["admin", "owner", "book_keeper"],
+    },
+  ];
 
   const filteredNavItems = navigationItems.filter(item =>
     item.allowedRoles.includes(companyRole || "")
@@ -198,14 +199,14 @@ export const ModernNavbar: React.FC = () => {
           className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-muted transition-colors"
         >
           <Gear className="h-5 w-5 text-muted-foreground" />
-          <span className="text-sm text-foreground">Settings</span>
+          <span className="text-sm text-foreground">{t("nav.settings")}</span>
         </NavLink>
         <button
           onClick={handleLogout}
           className="w-full flex items-center gap-3 rounded-lg px-3 py-2.5 transition-colors hover:bg-destructive/10 hover:text-destructive"
         >
           <SignOut className="h-5 w-5" />
-          <span className="text-sm">Logout</span>
+          <span className="text-sm">{t("nav.logout")}</span>
         </button>
         {user && (
           <div className="flex items-center gap-3 px-3 py-2 mt-4 bg-background rounded-lg">

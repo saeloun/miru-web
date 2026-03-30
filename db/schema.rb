@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_29_190002) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_30_062553) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_stat_statements"
@@ -878,6 +878,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_29_190002) do
     t.string "last_name", null: false
     t.datetime "last_sign_in_at"
     t.string "last_sign_in_ip"
+    t.string "locale", default: "en", null: false
     t.datetime "locked_at"
     t.integer "otp_last_used_at"
     t.jsonb "otp_recovery_codes_digest", default: [], null: false
@@ -903,6 +904,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_29_190002) do
     t.index ["email"], name: "index_users_on_email_trgm", opclass: :gin_trgm_ops, using: :gin
     t.index ["first_name"], name: "index_users_on_first_name_trgm", opclass: :gin_trgm_ops, using: :gin
     t.index ["last_name"], name: "index_users_on_last_name_trgm", opclass: :gin_trgm_ops, using: :gin
+    t.index ["locale"], name: "index_users_on_locale"
     t.index ["locked_at"], name: "index_users_on_locked_at"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["webauthn_id"], name: "index_users_on_webauthn_id", unique: true

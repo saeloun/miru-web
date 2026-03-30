@@ -1,4 +1,8 @@
 import { CountryList } from "constants/countryList";
+import {
+  getStoredBrowserCountry,
+  getStoredBrowserTimeZone,
+} from "../../../i18n";
 
 import * as Yup from "yup";
 
@@ -62,6 +66,17 @@ export const groupedCountryListOptions = [
   },
 ];
 
+const browserCountry = getStoredBrowserCountry();
+const defaultCountry = mostSelectedCountries.find(
+  country => country.code === browserCountry
+) || {
+  label:
+    CountryList.find(country => country.code === browserCountry)?.name ||
+    mostSelectedCountries[0].label,
+  value: browserCountry,
+  code: browserCountry,
+};
+
 export const companyDetailsFormInitialValues = {
   company_name: "",
   business_phone: "",
@@ -69,12 +84,12 @@ export const companyDetailsFormInitialValues = {
   address_line_2: "",
   logo_url: null,
   logo: null,
-  country: mostSelectedCountries[0], //{ value: null, label: null, code: null },
+  country: defaultCountry,
   state: "",
   city: "",
   zipcode: "",
   timezone: {
-    label: "(GMT-05:00) Eastern Time (US & Canada)",
-    value: "(GMT-05:00) Eastern Time (US & Canada)",
+    label: getStoredBrowserTimeZone(),
+    value: getStoredBrowserTimeZone(),
   },
 };

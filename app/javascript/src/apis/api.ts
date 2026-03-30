@@ -1,5 +1,6 @@
 import axios from "axios";
 import { Toastr } from "StyledComponents";
+import { getActiveLocale } from "../i18n";
 
 import {
   clearCredentialsFromLocalStorage,
@@ -78,6 +79,8 @@ class ApiHandler {
           delete config.headers["Content-Type"];
         }
 
+        config.headers["X-Miru-Locale"] = getActiveLocale();
+
         return config;
       },
       (error: any) => Promise.reject(error)
@@ -94,8 +97,20 @@ const http = Api.axios;
 
 // Auth
 export const authenticationApi = {
-  signin: (payload: any) => http.post("/users/login", { user: payload }),
-  signup: (payload: any) => http.post("/users/signup", { user: payload }),
+  signin: (payload: any) =>
+    http.post("/users/login", {
+      user: {
+        ...payload,
+        locale: getActiveLocale(),
+      },
+    }),
+  signup: (payload: any) =>
+    http.post("/users/signup", {
+      user: {
+        ...payload,
+        locale: getActiveLocale(),
+      },
+    }),
   forgotPassword: (payload: any) =>
     http.post("/users/forgot_password", { user: payload }),
   resetPassword: (payload: any) =>
