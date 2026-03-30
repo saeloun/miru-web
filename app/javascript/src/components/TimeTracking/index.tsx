@@ -4,6 +4,7 @@ import { timesheetEntryApi, timeTrackingApi } from "apis/api";
 import Loader from "common/Loader/index";
 import withLayout from "common/Mobile/HOC/withLayout";
 import SearchTimeEntries from "common/SearchTimeEntries";
+import { TimesheetEntriesContext } from "context/TimesheetEntries";
 import { useUserContext } from "context/UserContext";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
@@ -15,6 +16,7 @@ import { sendGAPageView } from "utils/googleAnalytics";
 import { Button } from "../ui/button";
 import { Toastr } from "../ui/toastr";
 import FloatingTimer from "../TimesheetEntries/FloatingTimer";
+import TimeoffForm from "../TimeoffEntries/TimeoffForm";
 import { startTimerFromEntry } from "utils/timeTrackingTimer";
 
 import WeekDaySelector from "./WeekDaySelector";
@@ -44,6 +46,8 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
 
   const [dayInfo, setDayInfo] = useState<any[]>([]);
   const [newEntryView, setNewEntryView] = useState<boolean>(false);
+  const [newTimeoffEntryView, setNewTimeoffEntryView] =
+    useState<boolean>(false);
   const [newRowView, setNewRowView] = useState<boolean>(false);
   const [selectDate, setSelectDate] = useState<number>(dayjs().weekday());
   const [weekDay, setWeekDay] = useState<number>(0);
@@ -54,6 +58,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
     dayjs().format("YYYY-MM-DD")
   );
   const [editEntryId, setEditEntryId] = useState<number>(0);
+  const [editTimeoffEntryId, setEditTimeoffEntryId] = useState<number>(0);
   const [weeklyData, setWeeklyData] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [isWeeklyEditing, setIsWeeklyEditing] = useState<boolean>(false);
@@ -116,6 +121,12 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
         return accumulator;
       }, {}),
     [holidayList]
+  );
+  const hasNationalHoliday = holidayList.some(
+    holidayInfo => holidayInfo?.category === "national"
+  );
+  const hasOptionalHoliday = holidayList.some(
+    holidayInfo => holidayInfo?.category === "optional"
   );
 
   const getEntriesForDate = (dateValue: string) => {
@@ -595,6 +606,13 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
     setShowModernForm(true);
   };
 
+  const handleOpenTimeoffForm = () => {
+    setEditEntryId(0);
+    setEditTimeoffEntryId(0);
+    setNewEntryView(false);
+    setNewTimeoffEntryView(true);
+  };
+
   const handleCloseModernForm = () => {
     setShowModernForm(false);
     setModernFormEntry(null);
@@ -785,7 +803,36 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
   }
 
   const TimeTrackingLayout = () => (
-    <div className="pb-14">
+    <TimesheetEntriesContext.Provider
+      value={{
+        entryList,
+        selectedFullDate,
+        setUpdateView,
+        setNewTimeoffEntryView,
+        selectedEmployeeId,
+        fetchEntries,
+        fetchEntriesOfMonths,
+        handleAddEntryDateChange,
+        refreshVisibleEntries,
+        editTimeoffEntryId,
+        setEditTimeoffEntryId,
+        handleFilterEntry,
+        handleRelocateEntry,
+        setSelectedFullDate,
+        holidayList,
+        holidaysHashObj,
+        hasNationalHoliday,
+        hasOptionalHoliday,
+        leaveTypes,
+        setLeaveTypes,
+        editEntryId,
+        newEntryView,
+        setEditEntryId,
+        setNewEntryView,
+        isDesktop,
+      }}
+    >
+      <div className="pb-14">
       <div className="mt-0 h-full p-4 lg:mt-6 lg:p-0">
         <div className="mb-6 flex items-center justify-between">
           {isDesktop && (
@@ -910,11 +957,14 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
               setUpdateView={setUpdateView}
             />
           )}
+          {newTimeoffEntryView && <TimeoffForm />}
           <AddEntryButton
             copyingLastWeek={copyingLastWeek}
             handleCopyLastWeek={handleCopyLastWeek}
             newEntryView={newEntryView}
+            newTimeoffEntryView={newTimeoffEntryView}
             handleOpenModernForm={handleOpenModernForm}
+            handleOpenTimeoffForm={handleOpenTimeoffForm}
             setNewEntryView={setNewEntryView}
             showCopyLastWeek={isDesktop && view === "week"}
           />
@@ -1006,7 +1056,8 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
           resumeFromEntry={resumeTimerEntry}
         />
       )}
-    </div>
+      </div>
+    </TimesheetEntriesContext.Provider>
   );
 
   const Main = withLayout(TimeTrackingLayout, !isDesktop, !isDesktop);
