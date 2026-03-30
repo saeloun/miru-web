@@ -4,13 +4,29 @@ module LocaleConfig
   DEFAULT_LOCALE = "en"
   SUPPORTED_LOCALES = [
     "en",
+    "en-GB",
+    "en-US",
     "hi",
     "mr",
+    "bn",
+    "gu",
+    "kn",
+    "ml",
+    "pa",
+    "ta",
+    "te",
+    "ur",
     "es",
     "fr",
     "de",
+    "it",
+    "nl",
+    "id",
     "pt-BR",
+    "tr",
+    "ar",
     "ja",
+    "ko",
     "zh-CN"
   ].freeze
 
@@ -21,7 +37,12 @@ module LocaleConfig
     return DEFAULT_LOCALE if value.blank?
 
     match = SUPPORTED_LOCALES.find { |supported| supported.casecmp?(value) }
-    match || DEFAULT_LOCALE
+    return match if match
+
+    base = value.split("-").first
+    base_match = SUPPORTED_LOCALES.find { |supported| supported.casecmp?(base) }
+
+    base_match || DEFAULT_LOCALE
   end
 
   def supported?(locale)
