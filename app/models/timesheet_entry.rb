@@ -4,6 +4,7 @@ class TimesheetEntry < ApplicationRecord
   include Discard::Model
   include Searchable
   attribute :agent_id, :integer
+  attribute :proof_url, :string
   attribute :source, :string, default: "manual"
   attribute :source_metadata, :json, default: {}
   attribute :proof_metadata, :json, default: {}

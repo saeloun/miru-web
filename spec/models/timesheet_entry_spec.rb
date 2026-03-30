@@ -114,6 +114,10 @@ RSpec.describe TimesheetEntry, type: :model do
         }
       )
     end
+
+    it "declares proof_url as a typed attribute" do
+      expect(described_class.attribute_types["proof_url"]).to be_a(ActiveModel::Type::String)
+    end
   end
 
   describe "review defaults" do
