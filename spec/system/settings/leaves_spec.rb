@@ -83,6 +83,21 @@ RSpec.describe "Settings", type: :system, js: true do
 
   context "employee access" do
     let(:employee) { create(:user, current_workspace_id: company.id) }
+    let!(:holiday) do
+      create(:holiday,
+        company:,
+        year: Date.current.year,
+        enable_optional_holidays: true,
+        no_of_allowed_optional_holidays: 2,
+        holiday_types: ["national", "optional"])
+    end
+    let!(:national_holiday) do
+      create(:holiday_info,
+        holiday:,
+        name: "Republic Day",
+        date: Date.new(Date.current.year, 1, 26),
+        category: "national")
+    end
 
     before do
       create(:employment, company:, user: employee)
@@ -91,15 +106,22 @@ RSpec.describe "Settings", type: :system, js: true do
       sign_in(employee)
     end
 
-    it "employee can access personal settings but not org/payment admin settings", :aggregate_failures do
+    it "employee can access leaves and holiday calendar but not admin-only settings", :aggregate_failures do
       with_forgery_protection do
         visit "/settings/profile"
         expect(page).to have_css("#react-root", wait: 10)
 
         visit "/settings/leaves"
         expect(page).to have_css("#react-root", wait: 10)
+        expect(page).to have_content("Leave calendar", wait: 10)
 
-        ["/settings/organization", "/settings/holidays", "/settings/payment"].each do |path|
+        visit "/settings/holidays"
+        expect(page).to have_css("#react-root", wait: 10)
+        expect(page).to have_content("Public Holidays", wait: 10)
+        expect(page).to have_field(with: "Republic Day", disabled: true, wait: 10)
+        expect(page).not_to have_button("Save Changes")
+
+        ["/settings/organization", "/settings/payment"].each do |path|
           visit path
           expect(page).to have_css("#react-root", wait: 10)
           if page.has_current_path?("/settings/profile", wait: 2)

@@ -172,7 +172,7 @@ export const SETTINGS = [
     label: "HOLIDAYS",
     path: "holidays",
     icon: <CakeIcon className="mr-2" size={20} weight="bold" />,
-    authorisedRoles: [ADMIN, OWNER],
+    authorisedRoles: [ADMIN, OWNER, EMPLOYEE],
     Component: Holidays,
     category: "organization",
     isTab: true,
