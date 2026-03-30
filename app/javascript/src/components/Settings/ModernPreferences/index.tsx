@@ -120,7 +120,9 @@ const ModernPreferences: React.FC = () => {
           category: "billing",
           dbField: "payment_email_notifications",
         },
-      ].filter(pref => companyRole !== "employee" || pref.category !== "billing");
+      ].filter(
+        pref => companyRole !== "employee" || pref.category !== "billing"
+      );
 
       setPreferences(prefs);
       setSavedPreferences(JSON.parse(JSON.stringify(prefs)));

@@ -122,6 +122,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
       }, {}),
     [holidayList]
   );
+
   const hasNationalHoliday = holidayList.some(
     holidayInfo => holidayInfo?.category === "national"
   );
@@ -833,20 +834,20 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
       }}
     >
       <div className="pb-14">
-      <div className="mt-0 h-full p-4 lg:mt-6 lg:p-0">
-        <div className="mb-6 flex items-center justify-between">
-          {isDesktop && (
-            <div className="flex flex-col items-start gap-3">
-              <p className="text-sm text-muted-foreground">
-                Log work by week or month. Keep entries clear and current.
-              </p>
-            </div>
-          )}
-          {!isDesktop && isAdminUser && (
-            <h3 className="text-lg font-bold leading-6 text-foreground">
-              Time entries for
-            </h3>
-          )}
+        <div className="mt-0 h-full p-4 lg:mt-6 lg:p-0">
+          <div className="mb-6 flex items-center justify-between">
+            {isDesktop && (
+              <div className="flex flex-col items-start gap-3">
+                <p className="text-sm text-muted-foreground">
+                  Log work by week or month. Keep entries clear and current.
+                </p>
+              </div>
+            )}
+            {!isDesktop && isAdminUser && (
+              <h3 className="text-lg font-bold leading-6 text-foreground">
+                Time entries for
+              </h3>
+            )}
           {isAdminUser && employeeOptions.length > 0 && (
             <SearchTimeEntries
               employeeList={employeeOptions}
