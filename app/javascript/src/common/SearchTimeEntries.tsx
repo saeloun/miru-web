@@ -54,7 +54,7 @@ const SearchTimeEntries = ({
         handleEmployeeChange(selectedEmployee);
       }}
     >
-      <SelectTrigger className="w-52">
+      <SelectTrigger className="w-52" data-testid="user-select">
         <SelectValue placeholder={currentUser?.label || "Select team member"} />
       </SelectTrigger>
       <SelectContent>

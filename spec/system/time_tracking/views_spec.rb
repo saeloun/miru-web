@@ -127,7 +127,7 @@ RSpec.describe "Time Tracking Views", type: :system, js: true do
       visit "/time-tracking"
 
       expect(page).to have_css("#react-root", wait: 10)
-      find('[data-testid="user-select"], [role="combobox"]', match: :first, wait: 10).click
+      find('[data-testid="user-select"]', wait: 10).click
       find('[role="option"]', text: employee.full_name, wait: 10).click
 
       expect(page).to have_content("Backend refactoring work", wait: 10)
@@ -154,7 +154,7 @@ RSpec.describe "Time Tracking Views", type: :system, js: true do
       visit "/time-tracking"
 
       expect(page).to have_css("#react-root", wait: 10)
-      find('[data-testid="user-select"], [role="combobox"]', match: :first, wait: 10).click
+      find('[data-testid="user-select"]', wait: 10).click
       find('[role="option"]', text: employee.full_name, wait: 10).click
 
       expect(page).to have_content("Leave", wait: 10)

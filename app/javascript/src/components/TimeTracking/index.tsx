@@ -831,20 +831,22 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
             ))}
           </div>
           <div className="mb-6 week-view" data-view={view}>
-            <Header
-              dailyTotalHours={dailyTotalHours}
-              dayInfo={dayInfo}
-              handleAddEntryDateChange={handleAddEntryDateChange}
-              handleNextDay={handleNextDay}
-              handleNextWeek={handleNextWeek}
-              handlePreDay={handlePreDay}
-              handlePrevWeek={handlePrevWeek}
-              selectDate={selectDate}
-              selectedFullDate={selectedFullDate}
-              setSelectDate={setSelectDate}
-              setWeekDay={setWeekDay}
-              weeklyTotalHours={weeklyTotalHours}
-            />
+            {view === "week" && (
+              <Header
+                dailyTotalHours={dailyTotalHours}
+                dayInfo={dayInfo}
+                handleAddEntryDateChange={handleAddEntryDateChange}
+                handleNextDay={handleNextDay}
+                handleNextWeek={handleNextWeek}
+                handlePreDay={handlePreDay}
+                handlePrevWeek={handlePrevWeek}
+                selectDate={selectDate}
+                selectedFullDate={selectedFullDate}
+                setSelectDate={setSelectDate}
+                setWeekDay={setWeekDay}
+                weeklyTotalHours={weeklyTotalHours}
+              />
+            )}
             {isDesktop && (
               <FloatingTimer
                 onSaveEntry={handleTimerSaved}
