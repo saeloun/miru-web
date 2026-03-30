@@ -126,6 +126,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
   const hasNationalHoliday = holidayList.some(
     holidayInfo => holidayInfo?.category === "national"
   );
+
   const hasOptionalHoliday = holidayList.some(
     holidayInfo => holidayInfo?.category === "optional"
   );
