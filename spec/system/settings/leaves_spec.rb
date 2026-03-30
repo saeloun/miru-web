@@ -79,6 +79,18 @@ RSpec.describe "Settings", type: :system, js: true do
         expect(page).to have_content(Date.current.year.to_s, wait: 10)
       end
     end
+
+    it "renders the legacy my leaves route", :aggregate_failures do
+      with_forgery_protection do
+        visit "/my-leaves"
+
+        expect(page).to have_css("#react-root", wait: 10)
+        expect(page).to have_current_path("/my-leaves", wait: 10)
+        expect(page).to have_content("My Leaves", wait: 10)
+        expect(page).to have_content("Leave calendar", wait: 10)
+        expect(page).to have_text("Annual Leave", wait: 10)
+      end
+    end
   end
 
   context "employee access" do
@@ -113,6 +125,11 @@ RSpec.describe "Settings", type: :system, js: true do
 
         visit "/settings/leaves"
         expect(page).to have_css("#react-root", wait: 10)
+        expect(page).to have_content("Leave calendar", wait: 10)
+
+        visit "/my-leaves"
+        expect(page).to have_css("#react-root", wait: 10)
+        expect(page).to have_current_path("/my-leaves", wait: 10)
         expect(page).to have_content("Leave calendar", wait: 10)
 
         visit "/settings/holidays"

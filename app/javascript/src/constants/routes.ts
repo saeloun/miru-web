@@ -125,6 +125,11 @@ const LeaveManagementRoutes = [
   { path: "*", Component: ErrorPage },
 ];
 
+const MyLeavesRoutes = [
+  { path: "", Component: LeaveManagement },
+  { path: "*", Component: ErrorPage },
+];
+
 const TeamRoutes = [{ path: "*", Component: TeamsRouteConfig }];
 
 const InvoiceRoutes = [{ path: "*", Component: InvoicesRouteConfig }];
@@ -239,6 +244,11 @@ export const ROUTES = [
     path: Paths.SETTINGS,
     subRoutes: SettingsRoutes,
     authorisedRoles: [ADMIN, OWNER, EMPLOYEE, BOOK_KEEPER, CLIENT],
+  },
+  {
+    path: Paths.MY_LEAVES,
+    subRoutes: MyLeavesRoutes,
+    authorisedRoles: [ADMIN, OWNER, EMPLOYEE],
   },
   {
     path: Paths.EXPENSES,
