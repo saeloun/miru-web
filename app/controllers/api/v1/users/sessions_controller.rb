@@ -198,6 +198,7 @@ end
       locale = user_params[:locale].presence || request.headers["X-Miru-Locale"].presence
       normalized_locale = LocaleConfig.normalize(locale)
       return if normalized_locale.blank? || user.locale == normalized_locale
+      return unless User.column_names.include?("locale")
 
       user.update_column(:locale, normalized_locale)
     end
