@@ -61,6 +61,58 @@ RSpec.describe "Api::V1::Invoices#index", type: :request do
         expect(json_response["invoices"].size).to eq(5)
       end
 
+      it "returns newest invoices first" do
+        client = company.clients.first || create(:client, company:)
+        oldest_invoice = create(:invoice, company:, client:, invoice_number: "INV-OLD-001", issue_date: 3.days.ago.to_date)
+        newer_invoice = create(:invoice, company:, client:, invoice_number: "INV-NEW-002", issue_date: 1.day.ago.to_date)
+        newest_invoice = create(:invoice, company:, client:, invoice_number: "INV-NEWEST-003", issue_date: Date.current)
+
+        send_request :get, api_v1_invoices_path(page: 1, invoices_per_page: 10), headers: auth_headers(book_keeper)
+
+        returned_ids = json_response["invoices"].pluck("id")
+
+        expect(returned_ids.index(newest_invoice.id)).to be < returned_ids.index(newer_invoice.id)
+        expect(returned_ids.index(newer_invoice.id)).to be < returned_ids.index(oldest_invoice.id)
+      end
+
+      it "uses updated_at and id as tie-breakers for the same issue date" do
+        client = company.clients.first || create(:client, company:)
+        same_issue_date = Date.current
+        same_updated_at = 45.minutes.ago.change(usec: 0)
+
+        newer_updated_invoice = create(
+          :invoice,
+          company:,
+          client:,
+          invoice_number: "INV-TIE-API-001",
+          issue_date: same_issue_date,
+          updated_at: 10.minutes.ago.change(usec: 0)
+        )
+        lower_id_invoice = create(
+          :invoice,
+          company:,
+          client:,
+          invoice_number: "INV-TIE-API-002",
+          issue_date: same_issue_date,
+          updated_at: same_updated_at
+        )
+        higher_id_invoice = create(
+          :invoice,
+          company:,
+          client:,
+          invoice_number: "INV-TIE-API-003",
+          issue_date: same_issue_date,
+          updated_at: same_updated_at
+        )
+
+        send_request :get, api_v1_invoices_path(page: 1, invoices_per_page: 20), headers: auth_headers(book_keeper)
+
+        returned_ids = json_response["invoices"].pluck("id")
+
+        expect(returned_ids.index(newer_updated_invoice.id)).to be < returned_ids.index(higher_id_invoice.id)
+        expect(returned_ids.index(higher_id_invoice.id)).to be < returned_ids.index(lower_id_invoice.id)
+      end
+
       it "return invoices offset by page one if page is less than or equal to zero" do
         page, invoices_per_page = -1, 5
         send_request :get, api_v1_invoices_path(page:, invoices_per_page:), headers: auth_headers(book_keeper)

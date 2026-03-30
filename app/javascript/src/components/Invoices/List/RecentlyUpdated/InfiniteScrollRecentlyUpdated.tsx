@@ -205,9 +205,9 @@ const InfiniteScrollRecentlyUpdated: React.FC<RecentlyUpdatedProps> = ({
 
       <div
         ref={scrollContainerRef}
-        className="relative overflow-x-auto overflow-y-visible pb-2 -mx-1"
+        className="relative overflow-x-auto overflow-y-visible pb-3"
       >
-        <div className="flex gap-0">
+        <div className="flex gap-3 px-1">
           {orderedInvoices.map((invoice, index) => (
             <RecentlyUpdatedCard
               key={invoice.id}

@@ -12,7 +12,7 @@
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="detail-grid" style="margin-top: 24px;">
   <tr>
     <%= render "shared/mailer/detail_card", label: "Workspace", value: @company.name %>
-    <%= render "shared/mailer/detail_card", label: "Trial ends", value: @trial_ends_at&.in_time_zone(@company.timezone.presence || Time.zone)&.strftime("%B %-d, %Y") %>
+    <%= render "shared/mailer/detail_card", label: "Trial ends", value: @trial_end_date_text %>
   </tr>
 </table>
 

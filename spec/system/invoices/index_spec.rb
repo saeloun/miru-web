@@ -75,12 +75,47 @@ RSpec.describe "Invoice listing", type: :system, js: true do
       end
     end
 
+    it "shows the newest invoice first in the list" do
+      newest_invoice = create(:invoice,
+        company:, client:, status: :sent,
+        invoice_number: "INV-NEWEST-999",
+        issue_date: Date.current,
+        updated_at: 1.minute.ago)
+      create(:invoice,
+        company:, client:, status: :sent,
+        invoice_number: "INV-OLDER-111",
+        issue_date: 2.months.ago.to_date,
+        updated_at: 5.minutes.ago)
+
+      with_forgery_protection do
+        visit "/invoices"
+
+        rows = all("[data-testid^='invoice-row-']", wait: 10)
+
+        expect(rows.first).to have_text(newest_invoice.invoice_number)
+      end
+    end
+
     it "shows the client name for invoices" do
       with_forgery_protection do
         visit "/invoices"
 
         expect(page).to have_css("#react-root", wait: 10)
         expect(page).to have_content("Stark Industries", wait: 10)
+      end
+    end
+
+    it "filters the invoice list from the search field" do
+      with_forgery_protection do
+        visit "/invoices"
+
+        fill_in "Search Invoices...", with: "INV-OVER-004"
+
+        within("table") do
+          expect(page).to have_content("INV-OVER-004", wait: 10)
+          expect(page).not_to have_content("INV-DRAFT-001")
+          expect(page).not_to have_content("INV-SENT-002")
+        end
       end
     end
 
