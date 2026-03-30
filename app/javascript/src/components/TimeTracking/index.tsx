@@ -848,215 +848,215 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
                 Time entries for
               </h3>
             )}
-          {isAdminUser && employeeOptions.length > 0 && (
-            <SearchTimeEntries
-              employeeList={employeeOptions}
-              selectedEmployeeId={selectedEmployeeId}
-              setSelectedEmployeeId={setSelectedEmployeeId}
-            />
-          )}
-          {!isAdminUser && user && (
-            <div className="text-sm text-muted-foreground">
-              Entries for {user.first_name} {user.last_name}
-            </div>
-          )}
-        </div>
-        <div>
-          <div className="mb-4 flex items-center gap-2" role="tablist">
-            {["week", "month"].map(currentView => (
-              <Button
-                key={currentView}
-                variant={view === currentView ? "default" : "outline"}
-                size="sm"
-                data-view={currentView}
-                onClick={() => {
-                  setView(currentView);
-                  localStorage.setItem("timeTrackingView", currentView);
-                }}
-              >
-                {currentView.charAt(0).toUpperCase() + currentView.slice(1)}
-              </Button>
-            ))}
+            {isAdminUser && employeeOptions.length > 0 && (
+              <SearchTimeEntries
+                employeeList={employeeOptions}
+                selectedEmployeeId={selectedEmployeeId}
+                setSelectedEmployeeId={setSelectedEmployeeId}
+              />
+            )}
+            {!isAdminUser && user && (
+              <div className="text-sm text-muted-foreground">
+                Entries for {user.first_name} {user.last_name}
+              </div>
+            )}
           </div>
-          <div className="mb-6 week-view" data-view={view}>
-            {view === "week" && (
-              <Header
-                dailyTotalHours={dailyTotalHours}
-                dayInfo={dayInfo}
-                handleAddEntryDateChange={handleAddEntryDateChange}
-                handleNextDay={handleNextDay}
-                handleNextWeek={handleNextWeek}
-                handlePreDay={handlePreDay}
-                handlePrevWeek={handlePrevWeek}
-                selectDate={selectDate}
-                selectedFullDate={selectedFullDate}
-                setSelectDate={setSelectDate}
-                setWeekDay={setWeekDay}
-                weeklyTotalHours={weeklyTotalHours}
-              />
-            )}
-            {isDesktop && (
-              <FloatingTimer
-                onSaveEntry={handleTimerSaved}
-                placement="inline"
-                externalSyncKey={timerSyncKey}
-                resumeFromEntry={resumeTimerEntry}
-              />
-            )}
-            {view === "week" && (
-              <WeekDaySelector
-                dayInfo={dayInfo}
-                selectDate={selectDate}
-                setSelectDate={index => {
-                  setSelectDate(index);
-                  const selectedDayInfo = dayInfo[index];
-                  if (selectedDayInfo) {
-                    const formattedDate = dayjs(
-                      selectedDayInfo.fullDate,
-                      dateFormat
-                    ).format("YYYY-MM-DD");
-                    setSelectedFullDate(formattedDate);
-                  }
-                }}
-              />
-            )}
-            {view === "month" && (
-              <MonthCalender
-                selectedFullDate={selectedFullDate}
-                setSelectedFullDate={setSelectedFullDate}
+          <div>
+            <div className="mb-4 flex items-center gap-2" role="tablist">
+              {["week", "month"].map(currentView => (
+                <Button
+                  key={currentView}
+                  variant={view === currentView ? "default" : "outline"}
+                  size="sm"
+                  data-view={currentView}
+                  onClick={() => {
+                    setView(currentView);
+                    localStorage.setItem("timeTrackingView", currentView);
+                  }}
+                >
+                  {currentView.charAt(0).toUpperCase() + currentView.slice(1)}
+                </Button>
+              ))}
+            </div>
+            <div className="mb-6 week-view" data-view={view}>
+              {view === "week" && (
+                <Header
+                  dailyTotalHours={dailyTotalHours}
+                  dayInfo={dayInfo}
+                  handleAddEntryDateChange={handleAddEntryDateChange}
+                  handleNextDay={handleNextDay}
+                  handleNextWeek={handleNextWeek}
+                  handlePreDay={handlePreDay}
+                  handlePrevWeek={handlePrevWeek}
+                  selectDate={selectDate}
+                  selectedFullDate={selectedFullDate}
+                  setSelectDate={setSelectDate}
+                  setWeekDay={setWeekDay}
+                  weeklyTotalHours={weeklyTotalHours}
+                />
+              )}
+              {isDesktop && (
+                <FloatingTimer
+                  onSaveEntry={handleTimerSaved}
+                  placement="inline"
+                  externalSyncKey={timerSyncKey}
+                  resumeFromEntry={resumeTimerEntry}
+                />
+              )}
+              {view === "week" && (
+                <WeekDaySelector
+                  dayInfo={dayInfo}
+                  selectDate={selectDate}
+                  setSelectDate={index => {
+                    setSelectDate(index);
+                    const selectedDayInfo = dayInfo[index];
+                    if (selectedDayInfo) {
+                      const formattedDate = dayjs(
+                        selectedDayInfo.fullDate,
+                        dateFormat
+                      ).format("YYYY-MM-DD");
+                      setSelectedFullDate(formattedDate);
+                    }
+                  }}
+                />
+              )}
+              {view === "month" && (
+                <MonthCalender
+                  selectedFullDate={selectedFullDate}
+                  setSelectedFullDate={setSelectedFullDate}
+                  entryList={entryList}
+                  handleWeekTodayButton={handleWeekTodayButton}
+                  monthsAbbr={monthsAbbr}
+                  setWeekDay={setWeekDay}
+                  setSelectDate={setSelectDate}
+                  currentMonthNumber={currentMonthNumber}
+                  setCurrentMonthNumber={setCurrentMonthNumber}
+                  currentYear={currentYear}
+                  setCurrentYear={setCurrentYear}
+                  dayInfo={dayInfo}
+                  setUpdateView={setUpdateView}
+                />
+              )}
+            </div>
+            {(editEntryId || newEntryView) && (
+              <EntryForm
+                clients={clients}
+                editEntryId={editEntryId}
                 entryList={entryList}
-                handleWeekTodayButton={handleWeekTodayButton}
-                monthsAbbr={monthsAbbr}
-                setWeekDay={setWeekDay}
-                setSelectDate={setSelectDate}
-                currentMonthNumber={currentMonthNumber}
-                setCurrentMonthNumber={setCurrentMonthNumber}
-                currentYear={currentYear}
-                setCurrentYear={setCurrentYear}
-                dayInfo={dayInfo}
+                refreshVisibleEntries={refreshVisibleEntries}
+                handleAddEntryDateChange={handleAddEntryDateChange}
+                handleDeleteEntry={handleDeleteEntry}
+                handleFilterEntry={handleFilterEntry}
+                handleRelocateEntry={handleRelocateEntry}
+                projects={projects}
+                removeLocalStorageItems={removeLocalStorageItems}
+                selectedEmployeeId={selectedEmployeeId}
+                selectedFullDate={selectedFullDate}
+                setEditEntryId={setEditEntryId}
+                setNewEntryView={setNewEntryView}
+                setSelectedFullDate={setSelectedFullDate}
                 setUpdateView={setUpdateView}
               />
             )}
-          </div>
-          {(editEntryId || newEntryView) && (
-            <EntryForm
-              clients={clients}
-              editEntryId={editEntryId}
-              entryList={entryList}
-              refreshVisibleEntries={refreshVisibleEntries}
-              handleAddEntryDateChange={handleAddEntryDateChange}
-              handleDeleteEntry={handleDeleteEntry}
-              handleFilterEntry={handleFilterEntry}
-              handleRelocateEntry={handleRelocateEntry}
-              projects={projects}
-              removeLocalStorageItems={removeLocalStorageItems}
-              selectedEmployeeId={selectedEmployeeId}
-              selectedFullDate={selectedFullDate}
-              setEditEntryId={setEditEntryId}
+            {newTimeoffEntryView && <TimeoffForm />}
+            <AddEntryButton
+              copyingLastWeek={copyingLastWeek}
+              handleCopyLastWeek={handleCopyLastWeek}
+              newEntryView={newEntryView}
+              newTimeoffEntryView={newTimeoffEntryView}
+              handleOpenModernForm={handleOpenModernForm}
+              handleOpenTimeoffForm={handleOpenTimeoffForm}
               setNewEntryView={setNewEntryView}
-              setSelectedFullDate={setSelectedFullDate}
-              setUpdateView={setUpdateView}
+              showCopyLastWeek={isDesktop && view === "week"}
             />
-          )}
-          {newTimeoffEntryView && <TimeoffForm />}
-          <AddEntryButton
-            copyingLastWeek={copyingLastWeek}
-            handleCopyLastWeek={handleCopyLastWeek}
-            newEntryView={newEntryView}
-            newTimeoffEntryView={newTimeoffEntryView}
-            handleOpenModernForm={handleOpenModernForm}
-            handleOpenTimeoffForm={handleOpenTimeoffForm}
-            setNewEntryView={setNewEntryView}
-            showCopyLastWeek={isDesktop && view === "week"}
-          />
-          {newRowView && (
-            <WeeklyEntries
-              clientName=""
-              clients={clients}
-              dayInfo={dayInfo}
-              entries={[]}
-              entryList={entryList}
-              isWeeklyEditing={isWeeklyEditing}
-              key={0}
-              newRowView={newRowView}
-              projectId={null}
-              projectName=""
-              projects={projects}
-              selectedEmployeeId={selectedEmployeeId}
-              setEntryList={setEntryList}
-              setIsWeeklyEditing={setIsWeeklyEditing}
-              setNewRowView={setNewRowView}
-              setWeeklyData={setWeeklyData}
-              weeklyData={weeklyData}
-            />
+            {newRowView && (
+              <WeeklyEntries
+                clientName=""
+                clients={clients}
+                dayInfo={dayInfo}
+                entries={[]}
+                entryList={entryList}
+                isWeeklyEditing={isWeeklyEditing}
+                key={0}
+                newRowView={newRowView}
+                projectId={null}
+                projectName=""
+                projects={projects}
+                selectedEmployeeId={selectedEmployeeId}
+                setEntryList={setEntryList}
+                setIsWeeklyEditing={setIsWeeklyEditing}
+                setNewRowView={setNewRowView}
+                setWeeklyData={setWeeklyData}
+                weeklyData={weeklyData}
+              />
+            )}
+          </div>
+          {(view === "week" || view === "month" || !isDesktop) && (
+            <div className="mt-4" data-view={view}>
+              <TimeEntriesDisplay
+                selectedFullDate={selectedFullDate}
+                entryList={entryList}
+                leaveTypeHashObj={leaveTypeHashObj}
+                holidaysHashObj={holidaysHashObj}
+                handleDeleteEntry={handleDeleteEntry}
+                handleDuplicate={handleDuplicate}
+                handleResumeTimer={handleResumeTimer}
+                setEditEntryId={setEditEntryId}
+                setNewEntryView={setNewEntryView}
+                dayInfo={dayInfo}
+                view={view}
+              />
+            </div>
           )}
         </div>
-        {(view === "week" || view === "month" || !isDesktop) && (
-          <div className="mt-4" data-view={view}>
-            <TimeEntriesDisplay
-              selectedFullDate={selectedFullDate}
-              entryList={entryList}
-              leaveTypeHashObj={leaveTypeHashObj}
-              holidaysHashObj={holidaysHashObj}
-              handleDeleteEntry={handleDeleteEntry}
-              handleDuplicate={handleDuplicate}
-              handleResumeTimer={handleResumeTimer}
-              setEditEntryId={setEditEntryId}
-              setNewEntryView={setNewEntryView}
-              dayInfo={dayInfo}
-              view={view}
-            />
-          </div>
-        )}
-      </div>
-      <ModernTimeEntryForm
-        isOpen={showModernForm}
-        onClose={handleCloseModernForm}
-        onSave={handleSaveModernEntry}
-        selectedDate={dayjs(selectedFullDate).toDate()}
-        existingEntry={modernFormEntry}
-        projects={Object.values(projects).flat()}
-        clients={clients}
-      />
-
-      <EntryDetailsModal
-        isOpen={showEntryModal}
-        onClose={() => {
-          setShowEntryModal(false);
-          setNewEntryView(false);
-          setEditEntryId(0);
-        }}
-        selectedDate={modalSelectedDate}
-        entries={getEntriesForDate(modalSelectedDate)}
-        editEntryId={editEntryId}
-        setEditEntryId={setEditEntryId}
-        handleDeleteEntry={handleDeleteEntry}
-        handleDuplicate={handleDuplicate}
-        handleResumeTimer={handleResumeTimer}
-        setNewEntryView={setNewEntryView}
-        newEntryView={newEntryView}
-        // Form props
-        clients={clients}
-        projects={projects}
-        entryList={entryList}
-        fetchEntries={fetchEntries}
-        fetchEntriesofMonth={fetchEntriesOfMonths}
-        refreshVisibleEntries={refreshVisibleEntries}
-        handleAddEntryDateChange={handleAddEntryDateChange}
-        handleFilterEntry={handleFilterEntry}
-        handleRelocateEntry={handleRelocateEntry}
-        removeLocalStorageItems={removeLocalStorageItems}
-        selectedEmployeeId={selectedEmployeeId}
-        setSelectedFullDate={setSelectedFullDate}
-        setUpdateView={setUpdateView}
-      />
-      {!isDesktop && (
-        <FloatingTimer
-          onSaveEntry={handleTimerSaved}
-          externalSyncKey={timerSyncKey}
-          resumeFromEntry={resumeTimerEntry}
+        <ModernTimeEntryForm
+          isOpen={showModernForm}
+          onClose={handleCloseModernForm}
+          onSave={handleSaveModernEntry}
+          selectedDate={dayjs(selectedFullDate).toDate()}
+          existingEntry={modernFormEntry}
+          projects={Object.values(projects).flat()}
+          clients={clients}
         />
-      )}
+
+        <EntryDetailsModal
+          isOpen={showEntryModal}
+          onClose={() => {
+            setShowEntryModal(false);
+            setNewEntryView(false);
+            setEditEntryId(0);
+          }}
+          selectedDate={modalSelectedDate}
+          entries={getEntriesForDate(modalSelectedDate)}
+          editEntryId={editEntryId}
+          setEditEntryId={setEditEntryId}
+          handleDeleteEntry={handleDeleteEntry}
+          handleDuplicate={handleDuplicate}
+          handleResumeTimer={handleResumeTimer}
+          setNewEntryView={setNewEntryView}
+          newEntryView={newEntryView}
+          // Form props
+          clients={clients}
+          projects={projects}
+          entryList={entryList}
+          fetchEntries={fetchEntries}
+          fetchEntriesofMonth={fetchEntriesOfMonths}
+          refreshVisibleEntries={refreshVisibleEntries}
+          handleAddEntryDateChange={handleAddEntryDateChange}
+          handleFilterEntry={handleFilterEntry}
+          handleRelocateEntry={handleRelocateEntry}
+          removeLocalStorageItems={removeLocalStorageItems}
+          selectedEmployeeId={selectedEmployeeId}
+          setSelectedFullDate={setSelectedFullDate}
+          setUpdateView={setUpdateView}
+        />
+        {!isDesktop && (
+          <FloatingTimer
+            onSaveEntry={handleTimerSaved}
+            externalSyncKey={timerSyncKey}
+            resumeFromEntry={resumeTimerEntry}
+          />
+        )}
       </div>
     </TimesheetEntriesContext.Provider>
   );
