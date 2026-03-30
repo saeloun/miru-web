@@ -49,7 +49,7 @@ end
   private
 
     def user_params
-      params.require(:user).permit(:email, :password)
+      params.require(:user).permit(:email, :password, :locale)
     end
 
     def invalid_password?(user)
@@ -82,6 +82,7 @@ end
     end
 
     def handle_successful_sign_in(user)
+      persist_locale_preference(user)
       user.reset_failed_attempts! if user.respond_to?(:reset_failed_attempts!)
       sign_in(user)
 
@@ -191,5 +192,13 @@ end
 
     def totp_login_unsupported?(user)
       user.totp_enabled? && params[:app].present?
+    end
+
+    def persist_locale_preference(user)
+      locale = user_params[:locale].presence || request.headers["X-Miru-Locale"].presence
+      normalized_locale = LocaleConfig.normalize(locale)
+      return if normalized_locale.blank? || user.locale == normalized_locale
+
+      user.update_column(:locale, normalized_locale)
     end
 end

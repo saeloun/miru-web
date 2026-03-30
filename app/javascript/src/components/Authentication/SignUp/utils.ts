@@ -1,4 +1,5 @@
 import * as Yup from "yup";
+import { t } from "../../../i18n";
 
 export const signUpFormInitialValues = {
   first_name: "",
@@ -9,35 +10,39 @@ export const signUpFormInitialValues = {
   confirm_password: "",
 };
 
-export const signUpFormValidationSchema = Yup.object().shape({
-  first_name: Yup.string()
-    .matches(/^[A-Za-z ]*$/, "Please enter valid first name")
-    .max(20, "Maximum 20 characters are allowed")
-    .required("First name cannot be blank"),
-  last_name: Yup.string()
-    .matches(/^[A-Za-z ]*$/, "Please enter valid last name")
-    .max(20, "Maximum 20 characters are allowed")
-    .required("Last name cannot be blank"),
-  email: Yup.string()
-    .email("Invalid email ID")
-    .required("Email ID cannot be blank"),
-  password: Yup.string()
-    .matches(/^\S.*\S$/, "Password cannot start or end with a blank space")
-    .matches(
-      /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[_\W\s\x00-\x1F\x7F])[\S\s]{8,}$/, // eslint-disable-line
-      "Must Contain at least 8 Characters, One Uppercase, One Lowercase, One Number and One Special Character"
-    )
-    .required("Password cannot be blank"),
-  confirm_password: Yup.string()
-    .matches(/^\S.*\S$/, "Password cannot start or end with a blank space")
-    .matches(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[_\w\s\x00-\x1F\x7F])[\S]{8,}$/, // eslint-disable-line
-      "Must Contain at least 8 Characters, One Uppercase, One Lowercase, One Number and One Special Character"
-    )
-    .oneOf([Yup.ref("password"), null], "Passwords must match")
-    .required("Confirm Password cannot be blank"),
-  isAgreedTermsOfServices: Yup.boolean().oneOf(
-    [true],
-    "Please agree to the terms and privacy policy to continue"
-  ),
-});
+export const buildSignUpFormValidationSchema = () =>
+  Yup.object().shape({
+    first_name: Yup.string()
+      .matches(/^[A-Za-z ]*$/, t("auth.validation.firstNameInvalid"))
+      .max(20, t("auth.validation.firstNameMax"))
+      .required(t("auth.validation.firstNameRequired")),
+    last_name: Yup.string()
+      .matches(/^[A-Za-z ]*$/, t("auth.validation.lastNameInvalid"))
+      .max(20, t("auth.validation.lastNameMax"))
+      .required(t("auth.validation.lastNameRequired")),
+    email: Yup.string()
+      .email(t("auth.validation.invalidEmail"))
+      .required(t("auth.validation.emailRequired")),
+    password: Yup.string()
+      .matches(/^\S.*\S$/, t("auth.validation.passwordSpace"))
+      .matches(
+        /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[_\W\s\x00-\x1F\x7F])[\S\s]{8,}$/, // eslint-disable-line
+        t("auth.validation.passwordComplexity")
+      )
+      .required(t("auth.validation.passwordRequired")),
+    confirm_password: Yup.string()
+      .matches(/^\S.*\S$/, t("auth.validation.passwordSpace"))
+      .matches(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[_\w\s\x00-\x1F\x7F])[\S]{8,}$/, // eslint-disable-line
+        t("auth.validation.passwordComplexity")
+      )
+      .oneOf(
+        [Yup.ref("password"), null],
+        t("auth.validation.passwordsMustMatch")
+      )
+      .required(t("auth.validation.confirmPasswordRequired")),
+    isAgreedTermsOfServices: Yup.boolean().oneOf(
+      [true],
+      t("auth.validation.acceptTerms")
+    ),
+  });

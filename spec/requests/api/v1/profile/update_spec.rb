@@ -3,7 +3,7 @@
 require "rails_helper"
 
 RSpec.describe "Api::V1::Profile#update", type: :request do
-  let(:user) { create(:user, :with_avatar, password: "testing12") }
+  let(:user) { create(:user, password: "testing12") }
   let(:company) { create(:company) }
 
   describe "update user details" do
@@ -18,6 +18,16 @@ RSpec.describe "Api::V1::Profile#update", type: :request do
       expect(response).to have_http_status(:ok)
       expect(user.first_name).to eq("Sam")
       expect(user.last_name).to eq("Smith")
+      expect(json_response["notice"]).to eq("User updated")
+    end
+
+    it "updates the preferred locale" do
+      params = { user: { locale: "mr" } }
+
+      send_request(:put, api_v1_profile_path, params:, headers: auth_headers(user))
+
+      expect(response).to have_http_status(:ok)
+      expect(user.reload.locale).to eq("mr")
       expect(json_response["notice"]).to eq("User updated")
     end
 

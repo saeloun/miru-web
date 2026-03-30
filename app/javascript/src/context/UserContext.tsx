@@ -2,6 +2,8 @@ import { createContext, useContext } from "react";
 
 const UserContext = createContext({
   isAdminUser: false,
+  locale: "en",
+  setLocale: value => {},
   user: {
     current_workspace_id: null,
     email: "",
@@ -9,6 +11,7 @@ const UserContext = createContext({
     first_name: "",
     last_name: "",
     id: "",
+    locale: "en",
   },
   avatarUrl: "",
   setCurrentAvatarUrl: value => {},

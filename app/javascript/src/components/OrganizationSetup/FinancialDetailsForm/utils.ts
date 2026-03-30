@@ -1,4 +1,9 @@
 import { currencyList } from "constants/currencyList";
+import {
+  defaultCurrencyForCountry,
+  defaultDateFormatForCountry,
+  getStoredBrowserCountry,
+} from "../../../i18n";
 
 import * as Yup from "yup";
 
@@ -60,12 +65,21 @@ export const dateFormatOptions = [
 
 export const financialDetailsFormInitialValues = {
   base_currency: {
-    label: `${currencyList[0].symbol} (${currencyList[0].code})`,
-    value: currencyList[0].code,
+    label: `${
+      currencyList.find(
+        currency =>
+          currency.code === defaultCurrencyForCountry(getStoredBrowserCountry())
+      )?.symbol || currencyList[0].symbol
+    } (${defaultCurrencyForCountry(getStoredBrowserCountry())})`,
+    value: defaultCurrencyForCountry(getStoredBrowserCountry()),
   },
   standard_rate: "00.00",
   year_end: fiscalYearEndOptions[0],
-  date_format: dateFormatOptions[0],
+  date_format:
+    dateFormatOptions.find(
+      option =>
+        option.value === defaultDateFormatForCountry(getStoredBrowserCountry())
+    ) || dateFormatOptions[0],
   working_days: "5",
   working_hours: "40",
 };

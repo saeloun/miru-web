@@ -23,7 +23,7 @@ import {
   companyDetailsFormValidationSchema,
 } from "./utils";
 
-import { i18n } from "../../../i18n";
+import { getStoredBrowserTimeZone, i18n } from "../../../i18n";
 
 const CompanyDetailsForm = ({
   onNextBtnClick,
@@ -32,11 +32,16 @@ const CompanyDetailsForm = ({
   formType = "New",
   isDesktop,
 }: CompanyDetailsFormProps) => {
+  const defaultInitialValues = isFormAlreadySubmitted
+    ? previousSubmittedValues
+    : companyDetailsFormInitialValues;
   const [allTimezones, setAllTimezones] = useState({});
   const [timezonesOfSelectedCountry, setTimezonesOfSelectedCountry] = useState(
     []
   );
   const [fileUploadError, setFileUploadError] = useState<string>("");
+  const [formInitialValues, setFormInitialValues] =
+    useState<CompanyDetailsFormValues>(defaultInitialValues);
 
   const [countries, setCountries] = useState([]);
 
@@ -55,11 +60,35 @@ const CompanyDetailsForm = ({
   }, []);
 
   useEffect(() => {
+    setFormInitialValues(defaultInitialValues);
+  }, [isFormAlreadySubmitted, previousSubmittedValues]);
+
+  useEffect(() => {
     if (Object.keys(allTimezones || {})?.length) {
       const selectedCountryCode = isFormAlreadySubmitted
         ? previousSubmittedValues.country?.value
         : companyDetailsFormInitialValues?.country?.code || "US";
-      getTimezonesOfCurrentCountry(selectedCountryCode);
+      const timezoneOfSelectedCountry = allTimezones[selectedCountryCode];
+      const formattedTimeZoneOptions = timezoneOfSelectedCountry?.map(
+        timezone => ({ value: timezone, label: timezone })
+      );
+      const browserTimeZone = getStoredBrowserTimeZone();
+      const preferredTimeZone =
+        formattedTimeZoneOptions?.find(
+          timezone => timezone.value === browserTimeZone
+        ) || formattedTimeZoneOptions?.[0];
+
+      setTimezonesOfSelectedCountry(formattedTimeZoneOptions);
+      setFormInitialValues(previousValues => ({
+        ...previousValues,
+        timezone:
+          previousValues?.timezone?.value &&
+          formattedTimeZoneOptions?.some(
+            timezone => timezone.value === previousValues.timezone.value
+          )
+            ? previousValues.timezone
+            : preferredTimeZone || previousValues.timezone,
+      }));
     }
   }, [allTimezones]);
 
@@ -78,7 +107,12 @@ const CompanyDetailsForm = ({
       timezone => ({ value: timezone, label: timezone })
     );
     if (setFieldValue) {
-      setFieldValue("timezone", formattedTimeZoneOptions[0]);
+      const browserTimeZone = getStoredBrowserTimeZone();
+      const preferredTimeZone =
+        formattedTimeZoneOptions?.find(
+          timezone => timezone.value === browserTimeZone
+        ) || formattedTimeZoneOptions?.[0];
+      setFieldValue("timezone", preferredTimeZone);
     }
     setTimezonesOfSelectedCountry(formattedTimeZoneOptions);
   };
@@ -186,13 +220,10 @@ const CompanyDetailsForm = ({
   return (
     <div>
       <Formik
+        enableReinitialize
         validateOnBlur={false}
         validationSchema={companyDetailsFormValidationSchema}
-        initialValues={
-          isFormAlreadySubmitted
-            ? previousSubmittedValues
-            : companyDetailsFormInitialValues
-        }
+        initialValues={formInitialValues}
         onSubmit={onNextBtnClick}
       >
         {(props: FormikProps<CompanyDetailsFormValues>) => {

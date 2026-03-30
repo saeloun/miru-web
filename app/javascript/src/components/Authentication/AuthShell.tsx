@@ -9,6 +9,8 @@ import paymentsPreview from "@/assets/images/auth/payments-preview.png";
 import paymentsPreviewDark from "@/assets/images/auth/payments-preview-dark.png";
 import timeTrackingPreview from "@/assets/images/auth/time-tracking-preview.png";
 import timeTrackingPreviewDark from "@/assets/images/auth/time-tracking-preview-dark.png";
+import { useUserContext } from "context/UserContext";
+import { LANGUAGE_OPTIONS, t } from "../../i18n";
 import AuthThemeToggle from "./AuthThemeToggle";
 
 interface AuthShellProps {
@@ -17,60 +19,56 @@ interface AuthShellProps {
   title: string;
 }
 
-const slides = [
-  {
-    id: "dashboard",
-    image: dashboardPreview,
-    darkImage: dashboardPreviewDark,
-    title: "Company pulse",
-    description:
-      "See revenue, active projects, and team momentum without digging for it.",
-    mainPosition: "24% 12%",
-    cardPosition: "20% 10%",
-    mainScale: 1.18,
-    cardScale: 1.12,
-  },
-  {
-    id: "invoices",
-    image: invoicesPreview,
-    darkImage: invoicesPreviewDark,
-    title: "Billing command",
-    description:
-      "Keep drafts, overdue balances, and paid work in the same place.",
-    mainPosition: "30% 14%",
-    cardPosition: "28% 12%",
-    mainScale: 1.2,
-    cardScale: 1.14,
-  },
-  {
-    id: "time-tracking",
-    image: timeTrackingPreview,
-    darkImage: timeTrackingPreviewDark,
-    title: "Clear weekly flow",
-    description:
-      "Week-by-week time entry stays current without turning into busywork.",
-    mainPosition: "34% 18%",
-    cardPosition: "34% 16%",
-    mainScale: 1.18,
-    cardScale: 1.12,
-  },
-  {
-    id: "payments",
-    image: paymentsPreview,
-    darkImage: paymentsPreviewDark,
-    title: "Cash ledger",
-    description:
-      "Every payment lands in one ledger with method, status, and source.",
-    mainPosition: "36% 16%",
-    cardPosition: "38% 12%",
-    mainScale: 1.22,
-    cardScale: 1.16,
-  },
-];
-
 const AuthShell = ({ children, description, title }: AuthShellProps) => {
+  const { locale, setLocale } = useUserContext();
   const [activeSlide, setActiveSlide] = useState(0);
   const [theme, setTheme] = useState<"light" | "dark">("light");
+  const slides = [
+    {
+      id: "dashboard",
+      image: dashboardPreview,
+      darkImage: dashboardPreviewDark,
+      title: t("auth.slides.dashboard.title"),
+      description: t("auth.slides.dashboard.description"),
+      mainPosition: "24% 12%",
+      cardPosition: "20% 10%",
+      mainScale: 1.18,
+      cardScale: 1.12,
+    },
+    {
+      id: "invoices",
+      image: invoicesPreview,
+      darkImage: invoicesPreviewDark,
+      title: t("auth.slides.invoices.title"),
+      description: t("auth.slides.invoices.description"),
+      mainPosition: "30% 14%",
+      cardPosition: "28% 12%",
+      mainScale: 1.2,
+      cardScale: 1.14,
+    },
+    {
+      id: "time-tracking",
+      image: timeTrackingPreview,
+      darkImage: timeTrackingPreviewDark,
+      title: t("auth.slides.timeTracking.title"),
+      description: t("auth.slides.timeTracking.description"),
+      mainPosition: "34% 18%",
+      cardPosition: "34% 16%",
+      mainScale: 1.18,
+      cardScale: 1.12,
+    },
+    {
+      id: "payments",
+      image: paymentsPreview,
+      darkImage: paymentsPreviewDark,
+      title: t("auth.slides.payments.title"),
+      description: t("auth.slides.payments.description"),
+      mainPosition: "36% 16%",
+      cardPosition: "38% 12%",
+      mainScale: 1.22,
+      cardScale: 1.16,
+    },
+  ];
   const activePreview = slides[activeSlide];
 
   useEffect(() => {
@@ -102,7 +100,22 @@ const AuthShell = ({ children, description, title }: AuthShellProps) => {
 
   return (
     <div className="relative min-h-screen bg-background text-foreground">
-      <div className="absolute right-4 top-4 z-30">
+      <div className="absolute right-4 top-4 z-30 flex items-center gap-3">
+        <label className="sr-only" htmlFor="auth-locale">
+          {t("common.language")}
+        </label>
+        <select
+          id="auth-locale"
+          className="h-10 rounded-xl border border-border bg-card px-3 text-sm text-foreground shadow-sm"
+          onChange={event => setLocale(event.target.value)}
+          value={locale}
+        >
+          {LANGUAGE_OPTIONS.map(option => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
         <AuthThemeToggle />
       </div>
       <div className="mx-auto flex min-h-screen w-full max-w-7xl items-center px-4 py-8 sm:px-6 lg:px-8">
@@ -139,11 +152,10 @@ const AuthShell = ({ children, description, title }: AuthShellProps) => {
               <div className="mb-5 flex items-start justify-between gap-6">
                 <div className="space-y-2">
                   <h2 className="text-3xl font-semibold tracking-tight text-foreground">
-                    One place for time, invoices, and payments
+                    {t("auth.heroTitle")}
                   </h2>
                   <p className="max-w-xl text-sm leading-6 text-muted-foreground">
-                    Keep the day clear, keep billing moving, and keep cash
-                    visible.
+                    {t("auth.heroDescription")}
                   </p>
                 </div>
               </div>

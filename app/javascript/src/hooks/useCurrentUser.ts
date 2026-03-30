@@ -5,6 +5,7 @@ interface User {
   first_name: string;
   last_name: string;
   email: string;
+  locale?: string;
   avatar_url?: string;
   confirmed?: boolean;
   calendar_enabled?: boolean;

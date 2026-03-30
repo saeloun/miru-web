@@ -1,0 +1,26 @@
+base_locale: en
+locales:
+  - en
+  - hi
+  - mr
+  - es
+  - fr
+  - de
+  - pt-BR
+  - ja
+  - zh-CN
+
+data:
+  read:
+    - config/locales/%{locale}.yml
+    - config/locales/*.%{locale}.yml
+  write:
+    - config/locales/%{locale}.yml
+
+search:
+  paths:
+    - app/
+    - config/
+  exclude:
+    - app/assets
+    - app/javascript/src/i18n/index.ts

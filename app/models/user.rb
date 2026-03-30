@@ -66,6 +66,7 @@ class User < ApplicationRecord
     presence: true,
     format: { with: /\A[a-zA-Z\s]+\z/ },
     length: { maximum: 20 }
+  validates :locale, inclusion: { in: LocaleConfig::SUPPORTED_LOCALES }
 
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
@@ -98,6 +99,7 @@ class User < ApplicationRecord
   # Callbacks
   after_discard :discard_project_members
   before_create :set_token
+  before_validation :normalize_locale
 
   after_commit :send_to_hubspot, on: :create
 
@@ -267,6 +269,10 @@ class User < ApplicationRecord
   end
 
   private
+
+    def normalize_locale
+      self.locale = LocaleConfig.normalize(locale)
+    end
 
     def set_token
       self.token = SecureRandom.base58(50)
