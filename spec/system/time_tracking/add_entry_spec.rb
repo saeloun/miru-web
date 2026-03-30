@@ -8,6 +8,12 @@ RSpec.describe "Time Tracking - Add Entry", type: :system, js: true do
   let(:client) { create(:client, company:, name: "Acme Client") }
   let(:project) { create(:project, client:, name: "Harvest-style Project") }
 
+  around do |example|
+    with_forgery_protection do
+      example.run
+    end
+  end
+
   before do
     create(:employment, user:, company:)
     create(:project_member, user:, project:)
@@ -18,7 +24,7 @@ RSpec.describe "Time Tracking - Add Entry", type: :system, js: true do
   def switch_to(view)
     target = view.downcase
     find("button[data-view='#{target}']", wait: 10).click
-    expect(page).to have_css("div[data-view='#{target}']", wait: 10)
+    expect(page).to have_css(".week-view[data-view='#{target}']", wait: 10)
   end
 
   def combobox_for(label)
@@ -196,6 +202,25 @@ RSpec.describe "Time Tracking - Add Entry", type: :system, js: true do
 
     expect(page).to have_content("Monthly planning block", wait: 10)
     expect(page).to have_content("Harvest-style Project")
+  end
+
+  it "navigates between previous, next, and current month in month view" do
+    current_label = Date.current.strftime("%b %Y")
+    next_label = Date.current.next_month.strftime("%b %Y")
+
+    visit "/time-tracking"
+    expect(page).to have_css("#react-root", wait: 10)
+    switch_to("Month")
+    expect(page).to have_content(current_label, wait: 10)
+
+    find("[data-testid='time-nav-next']", wait: 10).click
+    expect(page).to have_content(next_label, wait: 10)
+
+    find("[data-testid='time-nav-prev']", wait: 10).click
+    expect(page).to have_content(current_label, wait: 10)
+
+    find("[data-testid='time-nav-today']", wait: 10).click
+    expect(page).to have_content(current_label, wait: 10)
   end
 
   it "keeps restored client and project selections saveable and persists the created entry" do

@@ -21,6 +21,7 @@ import {
 import { RevenueAreaChart, CustomerRevenueChart } from "./MonochromeCharts";
 import { currencyFormat } from "../../helpers/currency";
 import { useDashboardData, useActivities } from "../../hooks/useDashboard";
+import { getActiveLocale, t } from "../../i18n";
 
 interface DashboardHomeProps {
   user?: any;
@@ -56,19 +57,20 @@ const DashboardHome: React.FC<DashboardHomeProps> = ({
   const baseCurrency = company?.baseCurrency || "USD";
   const isEmployee = companyRole === "employee";
   const isClient = companyRole === "client";
+  const activeLocale = getActiveLocale();
 
   const timeframeLabel = (() => {
     switch (timeframe) {
       case "year":
-        return "Year to date";
+        return t("dashboard.timeframe.year");
       case "quarter":
-        return "Quarter to date";
+        return t("dashboard.timeframe.quarter");
       case "month":
-        return "Month to date";
+        return t("dashboard.timeframe.month");
       case "week":
-        return "Week to date";
+        return t("dashboard.timeframe.week");
       default:
-        return "Year to date";
+        return t("dashboard.timeframe.year");
     }
   })();
 
@@ -126,7 +128,7 @@ const DashboardHome: React.FC<DashboardHomeProps> = ({
 
   const financialStatsCards = [
     {
-      title: "Revenue",
+      title: t("dashboard.stats.revenue"),
       value: currencyFormat(baseCurrency, statsData.total_revenue),
       description: timeframeLabel,
       icon: CurrencyCircleDollar,
@@ -136,12 +138,12 @@ const DashboardHome: React.FC<DashboardHomeProps> = ({
       },
     },
     {
-      title: "Active Projects",
+      title: t("dashboard.stats.activeProjects"),
       value: statsData.active_projects.toString(),
       description:
         statsData.active_projects > 0
-          ? "Currently active"
-          : "No recent activity",
+          ? t("dashboard.stats.currentlyActive")
+          : t("dashboard.stats.noRecentActivity"),
       icon: Briefcase,
       trend: {
         value: statsData.projects_trend,
@@ -149,14 +151,14 @@ const DashboardHome: React.FC<DashboardHomeProps> = ({
       },
     },
     {
-      title: "Team Size",
+      title: t("dashboard.stats.teamSize"),
       value: statsData.team_size.toString(),
-      description: "Teammates",
+      description: t("dashboard.stats.teammates"),
       icon: UsersThree,
     },
     {
-      title: "Hours Tracked",
-      value: Math.round(statsData.billable_hours).toLocaleString(),
+      title: t("dashboard.stats.hoursTracked"),
+      value: Math.round(statsData.billable_hours).toLocaleString(activeLocale),
       description: timeframeLabel,
       icon: Timer,
       trend: {
@@ -168,14 +170,14 @@ const DashboardHome: React.FC<DashboardHomeProps> = ({
 
   const employeeStatsCards = [
     {
-      title: "Assigned Projects",
+      title: t("dashboard.stats.assignedProjects"),
       value: statsData.active_projects.toString(),
-      description: "Projects you can work on",
+      description: t("dashboard.stats.projectsYouCanWorkOn"),
       icon: Briefcase,
     },
     {
-      title: "Hours Tracked",
-      value: Math.round(statsData.billable_hours).toLocaleString(),
+      title: t("dashboard.stats.hoursTracked"),
+      value: Math.round(statsData.billable_hours).toLocaleString(activeLocale),
       description: timeframeLabel,
       icon: Timer,
       trend: {
@@ -187,25 +189,25 @@ const DashboardHome: React.FC<DashboardHomeProps> = ({
 
   const clientStatsCards = [
     {
-      title: "Total Invoiced",
+      title: t("dashboard.stats.totalInvoiced"),
       value: currencyFormat(baseCurrency, statsData.total_revenue),
       description: timeframeLabel,
       icon: CurrencyCircleDollar,
     },
     {
-      title: "Open Invoices",
+      title: t("dashboard.stats.openInvoices"),
       value: (statsData.open_invoices || 0).toString(),
-      description: "Awaiting payment",
+      description: t("dashboard.stats.awaitingPayment"),
       icon: Receipt,
     },
     {
-      title: "Paid Invoices",
+      title: t("dashboard.stats.paidInvoices"),
       value: (statsData.paid_invoices || 0).toString(),
-      description: "Already settled",
+      description: t("dashboard.stats.alreadySettled"),
       icon: Receipt,
     },
     {
-      title: "Payments Received",
+      title: t("dashboard.stats.paymentsReceived"),
       value: currencyFormat(baseCurrency, statsData.payments_received || 0),
       description: timeframeLabel,
       icon: CurrencyCircleDollar,
@@ -215,13 +217,13 @@ const DashboardHome: React.FC<DashboardHomeProps> = ({
   const roleGuidance = (() => {
     switch (companyRole) {
       case "employee":
-        return "Track your week, submit accurate entries, and keep work moving.";
+        return t("dashboard.roleGuidance.employee");
       case "book_keeper":
-        return "Review incoming payments, reconcile invoices, and keep cash flow clear.";
+        return t("dashboard.roleGuidance.bookKeeper");
       case "client":
-        return "Check invoice status and payment history for your account.";
+        return t("dashboard.roleGuidance.client");
       default:
-        return "Revenue, projects, and team momentum at a glance.";
+        return t("dashboard.roleGuidance.default");
     }
   })();
 
@@ -236,11 +238,15 @@ const DashboardHome: React.FC<DashboardHomeProps> = ({
       <div className="border rounded-lg p-6 bg-card">
         <div className="max-w-3xl">
           <p className="text-sm font-medium text-muted-foreground tracking-wider mb-1">
-            Company Pulse
+            {t("dashboard.companyPulse")}
           </p>
           <h1 className="text-3xl font-bold mb-2 text-foreground">
-            Welcome back,{" "}
-            {user?.first_name || user?.name?.split(" ")[0] || "there"}
+            {t("dashboard.welcomeBack", {
+              name:
+                user?.first_name ||
+                user?.name?.split(" ")[0] ||
+                t("dashboard.there"),
+            })}
           </h1>
           <p className="text-muted-foreground">{roleGuidance}</p>
         </div>
@@ -340,12 +346,14 @@ const DashboardHome: React.FC<DashboardHomeProps> = ({
           <div className="flex items-center justify-between">
             <div>
               <CardTitle className="text-lg font-semibold text-foreground">
-                {isClient ? "Recent Activity" : "Workspace Activity"}
+                {isClient
+                  ? t("dashboard.recentActivity")
+                  : t("dashboard.workspaceActivity")}
               </CardTitle>
               <CardDescription className="text-sm text-muted-foreground mt-1">
                 {isEmployee
-                  ? "Your dashboard is focused on time tracking and assigned work."
-                  : "Latest updates across your invoices and payments"}
+                  ? t("dashboard.employeeActivityDescription")
+                  : t("dashboard.activityDescription")}
               </CardDescription>
             </div>
           </div>
@@ -362,7 +370,7 @@ const DashboardHome: React.FC<DashboardHomeProps> = ({
                     size={48}
                     className="mx-auto mb-3 text-muted-foreground/50"
                   />
-                  <p>No recent activity yet</p>
+                  <p>{t("dashboard.noRecentActivityYet")}</p>
                 </div>
               ) : (
                 allActivities.map(activity => {
@@ -422,10 +430,10 @@ const DashboardHome: React.FC<DashboardHomeProps> = ({
                     {isFetchingNextPage ? (
                       <>
                         <SpinnerGap size={16} className="animate-spin mr-2" />
-                        Loading...
+                        {t("common.loading")}
                       </>
                     ) : (
-                      "Load more"
+                      t("dashboard.loadMore")
                     )}
                   </Button>
                 </div>
@@ -433,7 +441,7 @@ const DashboardHome: React.FC<DashboardHomeProps> = ({
 
               {!hasNextPage && allActivities.length > 0 && (
                 <div className="text-center py-4 text-muted-foreground/70 text-sm">
-                  You’re all caught up
+                  {t("dashboard.caughtUp")}
                 </div>
               )}
             </div>

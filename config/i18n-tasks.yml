@@ -1,13 +1,29 @@
 base_locale: en
 locales:
   - en
+  - en-GB
+  - en-US
   - hi
   - mr
+  - bn
+  - gu
+  - kn
+  - ml
+  - pa
+  - ta
+  - te
+  - ur
   - es
   - fr
   - de
+  - it
+  - nl
+  - id
   - pt-BR
+  - tr
+  - ar
   - ja
+  - ko
   - zh-CN
 
 data:

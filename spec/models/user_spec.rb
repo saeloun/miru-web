@@ -96,6 +96,22 @@ RSpec.describe User, type: :model do
 
       expect(user.locale).to eq("en")
     end
+
+    it "normalizes regional locales before validation" do
+      user.locale = "en-gb"
+
+      user.valid?
+
+      expect(user.locale).to eq("en-GB")
+    end
+
+    it "normalizes major language locales from browser-style codes" do
+      user.locale = "ur-PK"
+
+      user.valid?
+
+      expect(user.locale).to eq("ur")
+    end
   end
 
   describe "Callbacks" do
