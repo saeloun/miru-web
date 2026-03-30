@@ -8,7 +8,7 @@ import {
   Check,
   X,
 } from "@phosphor-icons/react";
-import { preferencesApi, profileApi } from "apis/api";
+import { preferencesApi } from "apis/api";
 import Loader from "common/Loader/index";
 import { useUserContext } from "context/UserContext";
 import {
@@ -25,14 +25,6 @@ import { Badge } from "../../ui/badge";
 import { Button } from "../../ui/button";
 import { Alert, AlertDescription, AlertTitle } from "../../ui/alert";
 import { cn } from "../../../lib/utils";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../../ui/select";
-import { LANGUAGE_OPTIONS, t } from "../../../i18n";
 
 interface PreferenceItem {
   id: string;
@@ -46,7 +38,7 @@ interface PreferenceItem {
 }
 
 const ModernPreferences: React.FC = () => {
-  const { user, companyRole, locale, setLocale } = useUserContext();
+  const { user, companyRole } = useUserContext();
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [preferences, setPreferences] = useState<PreferenceItem[]>([]);
@@ -54,21 +46,14 @@ const ModernPreferences: React.FC = () => {
   const [savedPreferences, setSavedPreferences] = useState<PreferenceItem[]>(
     []
   );
-  const [selectedLocale, setSelectedLocale] = useState(locale);
-  const [savedLocale, setSavedLocale] = useState(locale);
   const [unsubscribedAll, setUnsubscribedAll] = useState(false);
   const [showUnsubscribeConfirm, setShowUnsubscribeConfirm] = useState(false);
-
-  useEffect(() => {
-    setSelectedLocale(locale);
-    setSavedLocale(locale);
-  }, [user?.id]);
 
   useEffect(() => {
     if (user?.id) {
       fetchPreferences();
     }
-  }, [user, locale]);
+  }, [user]);
 
   const fetchPreferences = async () => {
     try {
@@ -81,48 +66,56 @@ const ModernPreferences: React.FC = () => {
       const prefs: PreferenceItem[] = [
         {
           id: "weekly_reminder",
-          title: t("preferences.weeklyReminderTitle"),
-          description: t("preferences.weeklyReminderDescription"),
+          title: "Weekly Timesheet Reminder",
+          description:
+            "Receive weekly reminders every Monday about pending timesheet entries",
           enabled: !isUnsubscribed && (res.data.notification_enabled || false),
           icon: <Mail className="h-4 w-4" />,
-          category: "timesheet",
-          badge: t("preferences.activeBadge"),
+          category: "Timesheet Notifications",
+          badge: "Active",
           dbField: "notification_enabled",
         },
         {
           id: "timesheet_reminder",
-          title: t("preferences.missingEntryTitle"),
-          description: t("preferences.missingEntryDescription"),
+          title: "Missing Entry Reminders",
+          description:
+            "Get notified when you haven't logged time for more than 2 days",
           enabled:
             !isUnsubscribed && res.data.timesheet_reminder_enabled !== false,
           icon: <Clock className="h-4 w-4" />,
-          category: "timesheet",
+          category: "Timesheet Notifications",
           dbField: "timesheet_reminder_enabled",
         },
         {
           id: "invoice_notifications",
-          title: t("preferences.invoiceTitle"),
-          description: t("preferences.invoiceDescription"),
+          title: "Invoice Email Notifications",
+          description:
+            "Receive emails when invoices are created, sent, or updated",
           enabled:
             !isUnsubscribed && res.data.invoice_email_notifications !== false,
           icon: <FileText className="h-4 w-4" />,
-          category: "billing",
-          badge: t("preferences.importantBadge"),
+          category: "Billing Notifications",
+          badge: "Important",
           dbField: "invoice_email_notifications",
         },
         {
           id: "payment_notifications",
-          title: t("preferences.paymentTitle"),
-          description: t("preferences.paymentDescription"),
+          title: "Payment Email Notifications",
+          description:
+            "Get notified when payments are received or payment status changes",
           enabled:
             !isUnsubscribed && res.data.payment_email_notifications !== false,
           icon: <FileText className="h-4 w-4" />,
-          category: "billing",
+          category: "Billing Notifications",
           dbField: "payment_email_notifications",
         },
-      ].filter(
-        pref => companyRole !== "employee" || pref.category !== "billing"
-      );
+      ].filter(pref => {
+        if (companyRole === "employee") {
+          return pref.category !== "Billing Notifications";
+        }
+
+        return true;
+      });
 
       setPreferences(prefs);
       setSavedPreferences(JSON.parse(JSON.stringify(prefs)));
@@ -144,8 +137,7 @@ const ModernPreferences: React.FC = () => {
     // Check if there are changes
     const hasChanges =
       JSON.stringify(updatedPreferences) !== JSON.stringify(savedPreferences) ||
-      unsubscribedAll ||
-      selectedLocale !== savedLocale;
+      unsubscribedAll;
     setHasChanges(hasChanges);
   };
 
@@ -164,12 +156,8 @@ const ModernPreferences: React.FC = () => {
       }
 
       await preferencesApi.updatePreference(user.id, payload);
-      if (selectedLocale !== savedLocale) {
-        await profileApi.update({ user: { locale: selectedLocale } });
-      }
 
       setSavedPreferences(JSON.parse(JSON.stringify(preferences)));
-      setSavedLocale(selectedLocale);
       setHasChanges(false);
       setIsSaving(false);
     } catch (error) {
@@ -180,8 +168,6 @@ const ModernPreferences: React.FC = () => {
 
   const handleCancel = () => {
     setPreferences(JSON.parse(JSON.stringify(savedPreferences)));
-    setSelectedLocale(savedLocale);
-    setLocale(savedLocale);
     setHasChanges(false);
     setUnsubscribedAll(false);
     setShowUnsubscribeConfirm(false);
@@ -205,8 +191,8 @@ const ModernPreferences: React.FC = () => {
       preferences.map(p => ({
         ...p,
         enabled:
-          p.badge === t("preferences.importantBadge") ||
-          p.badge === t("preferences.activeBadge") ||
+          p.badge === "Important" ||
+          p.badge === "Active" ||
           p.dbField === "timesheet_reminder_enabled",
       }))
     );
@@ -223,9 +209,9 @@ const ModernPreferences: React.FC = () => {
   }, {} as Record<string, PreferenceItem[]>);
 
   const getCategoryIcon = (category: string) => {
-    if (category === "timesheet") {
+    if (category.includes("Timesheet")) {
       return <Clock className="h-5 w-5 text-primary" />;
-    } else if (category === "billing") {
+    } else if (category.includes("Billing")) {
       return <FileText className="h-5 w-5 text-primary" />;
     }
 
@@ -233,23 +219,13 @@ const ModernPreferences: React.FC = () => {
   };
 
   const getCategoryDescription = (category: string) => {
-    if (category === "timesheet") {
-      return t("preferences.timesheetCategoryDescription");
-    } else if (category === "billing") {
-      return t("preferences.billingCategoryDescription");
+    if (category.includes("Timesheet")) {
+      return "Manage notifications related to time tracking and timesheets";
+    } else if (category.includes("Billing")) {
+      return "Control invoice and payment notifications";
     }
 
     return "";
-  };
-
-  const handleLocaleChange = (nextLocale: string) => {
-    setSelectedLocale(nextLocale);
-    setLocale(nextLocale);
-    setHasChanges(
-      JSON.stringify(preferences) !== JSON.stringify(savedPreferences) ||
-        unsubscribedAll ||
-        nextLocale !== savedLocale
-    );
   };
 
   if (isLoading) {
@@ -264,10 +240,10 @@ const ModernPreferences: React.FC = () => {
           <div className="flex justify-between items-center py-4">
             <div>
               <h1 className="text-2xl font-semibold text-foreground">
-                {t("preferences.title")}
+                Email Preferences
               </h1>
               <p className="mt-1 text-sm text-muted-foreground">
-                {t("preferences.description")}
+                Manage your email notification settings
               </p>
             </div>
             {hasChanges && (
@@ -277,7 +253,7 @@ const ModernPreferences: React.FC = () => {
                   onClick={handleCancel}
                   disabled={isSaving}
                 >
-                  {t("common.cancel")}
+                  Cancel
                 </Button>
                 <Button
                   onClick={handleSave}
@@ -287,12 +263,12 @@ const ModernPreferences: React.FC = () => {
                   {isSaving ? (
                     <>
                       <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
-                      {t("common.saving")}
+                      Saving...
                     </>
                   ) : (
                     <>
                       <Check className="h-4 w-4 mr-2" />
-                      {t("common.saveChanges")}
+                      Save Changes
                     </>
                   )}
                 </Button>
@@ -305,49 +281,18 @@ const ModernPreferences: React.FC = () => {
       {/* Content */}
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="space-y-6">
-          <Card className="border-border shadow-sm">
-            <CardHeader>
-              <CardTitle className="text-lg font-semibold">
-                {t("preferences.languageTitle")}
-              </CardTitle>
-              <CardDescription className="text-sm text-muted-foreground">
-                {t("preferences.languageDescription")}
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="max-w-sm">
-                <Select
-                  onValueChange={handleLocaleChange}
-                  value={selectedLocale}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder={t("common.language")} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {LANGUAGE_OPTIONS.map(option => (
-                      <SelectItem key={option.value} value={option.value}>
-                        {option.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <p className="text-xs text-muted-foreground">
-                {t("preferences.languageHelp")}
-              </p>
-            </CardContent>
-          </Card>
-
           {/* Unsubscribe Confirmation Dialog */}
           {showUnsubscribeConfirm && (
             <Alert className="border-destructive/30 bg-destructive/5 text-foreground">
               <AlertTriangle className="h-4 w-4 text-destructive" />
               <AlertTitle className="text-foreground">
-                {t("preferences.confirmUnsubscribeTitle")}
+                Confirm Unsubscribe from All Emails
               </AlertTitle>
               <AlertDescription className="text-muted-foreground">
                 <p className="mb-4">
-                  {t("preferences.confirmUnsubscribeBody")}
+                  Are you sure you want to unsubscribe from all email
+                  notifications? You will not receive any emails including
+                  important billing and invoice notifications.
                 </p>
                 <div className="flex space-x-3">
                   <Button
@@ -355,14 +300,14 @@ const ModernPreferences: React.FC = () => {
                     variant="destructive"
                     onClick={confirmUnsubscribeAll}
                   >
-                    {t("preferences.confirmUnsubscribeAction")}
+                    Yes, Unsubscribe from All
                   </Button>
                   <Button
                     size="sm"
                     variant="outline"
                     onClick={() => setShowUnsubscribeConfirm(false)}
                   >
-                    {t("common.cancel")}
+                    Cancel
                   </Button>
                 </div>
               </AlertDescription>
@@ -374,10 +319,13 @@ const ModernPreferences: React.FC = () => {
             <Alert className="border-border bg-card text-foreground">
               <AlertTriangle className="h-4 w-4 text-primary" />
               <AlertTitle className="text-foreground">
-                {t("preferences.unsubscribedTitle")}
+                You're Unsubscribed from All Emails
               </AlertTitle>
               <AlertDescription className="text-muted-foreground">
-                <p className="mb-4">{t("preferences.unsubscribedBody")}</p>
+                <p className="mb-4">
+                  You are currently unsubscribed from all email notifications.
+                  You won't receive any emails from Miru.
+                </p>
                 <Button
                   size="sm"
                   variant="outline"
@@ -385,7 +333,7 @@ const ModernPreferences: React.FC = () => {
                   className="border-border text-foreground hover:bg-accent"
                 >
                   <Mail className="h-4 w-4 mr-2" />
-                  {t("preferences.resubscribeAction")}
+                  Re-enable Email Notifications
                 </Button>
               </AlertDescription>
             </Alert>
@@ -406,7 +354,7 @@ const ModernPreferences: React.FC = () => {
                     {getCategoryIcon(category)}
                     <div>
                       <CardTitle className="text-lg font-semibold">
-                        {getCategoryTitle(category)}
+                        {category}
                       </CardTitle>
                       <CardDescription className="text-sm text-muted-foreground">
                         {getCategoryDescription(category)}
@@ -415,10 +363,8 @@ const ModernPreferences: React.FC = () => {
                   </div>
                   {!unsubscribedAll && (
                     <Badge variant="secondary" className="text-xs">
-                      {t("preferences.enabledCount", {
-                        enabled: items.filter(i => i.enabled).length,
-                        total: items.length,
-                      })}
+                      {items.filter(i => i.enabled).length} of {items.length}{" "}
+                      enabled
                     </Badge>
                   )}
                 </div>
@@ -454,12 +400,9 @@ const ModernPreferences: React.FC = () => {
                           {preference.badge && !unsubscribedAll && (
                             <Badge
                               variant={
-                                preference.badge === "Important" ||
-                                preference.badge ===
-                                  t("preferences.importantBadge")
+                                preference.badge === "Important"
                                   ? "destructive"
-                                  : preference.badge ===
-                                    t("preferences.activeBadge")
+                                  : preference.badge === "Active"
                                   ? "default"
                                   : "secondary"
                               }
@@ -499,7 +442,7 @@ const ModernPreferences: React.FC = () => {
             <CardHeader>
               <CardTitle className="text-lg flex items-center gap-2">
                 <Mail className="h-5 w-5 text-primary" />
-                {t("preferences.deliveryTitle")}
+                Email Delivery Settings
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -507,7 +450,7 @@ const ModernPreferences: React.FC = () => {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm font-medium text-foreground">
-                      {t("preferences.emailAddress")}
+                      Email Address
                     </p>
                     <p className="text-sm text-muted-foreground">
                       {user?.email}
@@ -516,7 +459,8 @@ const ModernPreferences: React.FC = () => {
                 </div>
                 <Separator />
                 <p className="text-xs text-muted-foreground">
-                  {t("preferences.emailAddressHelp")}
+                  All notifications will be sent to this email address. To
+                  change your email, please update it in your profile settings.
                 </p>
               </div>
             </CardContent>
@@ -526,14 +470,15 @@ const ModernPreferences: React.FC = () => {
           {!unsubscribedAll && (
             <Card className="border-border">
               <CardHeader>
-                <CardTitle className="text-lg">
-                  {t("preferences.unsubscribeTitle")}
-                </CardTitle>
+                <CardTitle className="text-lg">Unsubscribe</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
                   <p className="text-sm text-muted-foreground">
-                    {t("preferences.unsubscribeBody")}
+                    If you no longer wish to receive any emails from Miru, you
+                    can unsubscribe from all notifications. This will stop all
+                    email communications including important billing and invoice
+                    notifications.
                   </p>
                   <Button
                     variant="outline"
@@ -541,7 +486,7 @@ const ModernPreferences: React.FC = () => {
                     className="border-destructive/30 text-destructive hover:bg-destructive/10"
                   >
                     <X className="h-4 w-4 mr-2" />
-                    {t("preferences.unsubscribeAction")}
+                    Unsubscribe from All Emails
                   </Button>
                 </div>
               </CardContent>
@@ -554,14 +499,3 @@ const ModernPreferences: React.FC = () => {
 };
 
 export default ModernPreferences;
-const getCategoryTitle = (category: string) => {
-  if (category === "timesheet") {
-    return t("preferences.timesheetCategory");
-  }
-
-  if (category === "billing") {
-    return t("preferences.billingCategory");
-  }
-
-  return category;
-};
