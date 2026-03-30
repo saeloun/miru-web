@@ -41,7 +41,7 @@ end
   def me
     if current_user
       render json: {
-        user: safe_user_payload(current_user).merge(
+        user: authenticated_user_payload(current_user, company: current_company)[:user].merge(
           "date_of_birth" => current_user.date_of_birth,
           "phone" => current_user.phone,
           "personal_email_id" => current_user.personal_email_id,
