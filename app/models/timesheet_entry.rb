@@ -3,6 +3,10 @@
 class TimesheetEntry < ApplicationRecord
   include Discard::Model
   include Searchable
+  attribute :agent_id, :integer
+  attribute :source, :string, default: "manual"
+  attribute :source_metadata, :json, default: {}
+  attribute :proof_metadata, :json, default: {}
   attribute :review_status, :integer
   enum :bill_status, [:non_billable, :unbilled, :billed]
   enum :review_status, [:not_required, :pending_review, :approved, :rejected]

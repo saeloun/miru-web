@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class Api::V1::ChatbaseTokensController < Api::V1::BaseController
-  skip_before_action :authenticate_user!, only: [:show]
-  skip_before_action :authenticate_user_using_x_auth_token, only: [:show]
   skip_after_action :verify_authorized, only: [:show]
 
   def show
