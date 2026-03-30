@@ -77,7 +77,8 @@ class HandleStripeCheckoutEventService
           Subscriptions::StripeSyncService.process(
             company:,
             stripe_customer_id: checkout_session.customer,
-            stripe_subscription_id: checkout_session.subscription
+            stripe_subscription_id: checkout_session.subscription,
+            notify_plan_purchase: true
           )
 
         if success

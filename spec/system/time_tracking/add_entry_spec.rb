@@ -85,6 +85,86 @@ RSpec.describe "Time Tracking - Add Entry", type: :system, js: true do
     end
   end
 
+  it "restores a running timer after leaving the page and coming back" do
+    visit "/time-tracking"
+    expect(page).to have_css("#react-root", wait: 10)
+    expect(page).to have_button("Start Timer", wait: 10)
+
+    click_button "Start Timer"
+    expect(page).to have_css("[data-testid='inline-web-timer']", wait: 10)
+
+    select_radix("Project", project.name)
+    fill_in "timer-description-inline", with: "Cross-page restore work"
+
+    visit "/projects"
+    expect(page).to have_css("#react-root", wait: 10)
+
+    visit "/time-tracking"
+
+    expect(page).to have_css("[data-testid='inline-web-timer']", wait: 10)
+    expect(page).to have_text("Pause", wait: 10)
+    expect(page).to have_text(project.name, wait: 10)
+    expect(page).to have_field(
+      "timer-description-inline",
+      with: "Cross-page restore work",
+      wait: 10
+    )
+  end
+
+  it "saves a restored running timer into today's entries" do
+    note = "Persisted timer save path"
+
+    visit "/time-tracking"
+    expect(page).to have_css("#react-root", wait: 10)
+
+    page.execute_script(<<~JS)
+      localStorage.setItem(
+        "miru_timer_state",
+        JSON.stringify({
+          isRunning: true,
+          startTime: Date.now() - 120000,
+          elapsedTime: 120000,
+          project: "#{project.name}",
+          client: "#{client.name}",
+          description: "#{note}",
+          projectId: #{project.id}
+        })
+      );
+    JS
+
+    visit "/time-tracking"
+
+    expect(page).to have_css("[data-testid='inline-web-timer']", wait: 10)
+    expect(page).to have_text("Pause", wait: 10)
+    expect(page).to have_text(project.name, wait: 10)
+    expect(page).to have_field("timer-description-inline", with: note, wait: 10)
+
+    expect do
+      click_button "Stop"
+      expect(page).to have_text("Save Time Entry", wait: 10)
+      click_button "Save Entry"
+      expect(page).to have_content("Time entry saved successfully", wait: 10)
+      expect(page).to have_button("Start Timer", wait: 10)
+      expect(page).to have_content(note, wait: 10)
+    end.to change {
+      TimesheetEntry.where(
+        user:,
+        project:,
+        work_date: Date.current,
+        note:
+      ).count
+    }.by(1)
+
+    created_entry = TimesheetEntry.find_by!(
+      user:,
+      project:,
+      work_date: Date.current,
+      note:
+    )
+
+    expect(created_entry.duration).to eq(2)
+  end
+
   it "keeps the selected day visible when switching between week and month views" do
     target_date = Date.current
 
@@ -247,7 +327,7 @@ RSpec.describe "Time Tracking - Add Entry", type: :system, js: true do
       :timesheet_entry,
       user:,
       project:,
-      work_date: Date.current - 1.day,
+      work_date: Date.current.beginning_of_week(:monday),
       duration: 95,
       note: recent_note
     )
@@ -308,8 +388,7 @@ RSpec.describe "Time Tracking - Add Entry", type: :system, js: true do
       ).count
     }.by(1)
 
-    target_button_label = "Select #{target_date.strftime('%a, %b %-d')}"
-    find("button[aria-label^='#{target_button_label}']", wait: 10).click
+    find("[data-testid='time-review-week']", wait: 10).click
     expect(page).to have_content(source_note, wait: 10)
   end
 
@@ -319,7 +398,7 @@ RSpec.describe "Time Tracking - Add Entry", type: :system, js: true do
       :timesheet_entry,
       user:,
       project:,
-      work_date: Date.current - 1.day,
+      work_date: Date.current.beginning_of_week(:monday),
       duration: 45,
       note: recent_note
     )

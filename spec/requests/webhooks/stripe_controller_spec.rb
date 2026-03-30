@@ -28,7 +28,8 @@ RSpec.describe "Stripe webhooks", type: :request do
     expect(Subscriptions::StripeSyncService).to have_received(:process).with(
       company:,
       stripe_customer_id: "cus_123",
-      stripe_subscription_id: "sub_123"
+      stripe_subscription_id: "sub_123",
+      notify_plan_purchase: true
     )
   end
 
