@@ -15,6 +15,7 @@ const i18n = new I18n({ en });
 i18n.defaultLocale = "en";
 i18n.locale = "en";
 i18n.enableFallback = true;
+i18n.missingBehavior = "guess";
 
 const t = (key: string, options?: Record<string, unknown>) =>
   i18n.t(key, options);
@@ -33,7 +34,8 @@ async function loadLocale(locale: string): Promise<boolean> {
 
   try {
     const module = await import(/* @vite-ignore */ `./locales/${locale}.ts`);
-    i18n.store(module.default);
+    const translations = module.default;
+    i18n.store({ [locale]: translations });
     i18n.locale = locale;
     return true;
   } catch (error) {
