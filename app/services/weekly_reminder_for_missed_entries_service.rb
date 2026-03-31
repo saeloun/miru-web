@@ -6,7 +6,7 @@ class WeeklyReminderForMissedEntriesService
       company.users.kept.find_each do |user|
         notification_preference = NotificationPreference.find_by(user_id: user.id, company_id: company.id)
 
-        if notification_preference.present? && notification_preference.notification_enabled
+        if notification_preference&.can_receive_weekly_reminder?
           check_entries_and_send_mail(user, company)
         end
       end
