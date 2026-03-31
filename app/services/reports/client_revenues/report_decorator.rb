@@ -45,7 +45,8 @@ class Reports::ClientRevenues::ReportDecorator < ApplicationService
     def client_ids
       @client_ids ||= if params[:client_ids].present?
         if params[:client_ids].is_a?(String)
-          JSON.parse(params[:client_ids])
+          value = params[:client_ids].to_s
+          value.strip.start_with?("[") ? JSON.parse(value) : value.split(",").map(&:strip)
         else
           params[:client_ids]
         end

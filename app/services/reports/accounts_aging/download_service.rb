@@ -12,7 +12,7 @@ module Reports::AccountsAging
     private
 
       def fetch_complete_report
-        @reports = FetchOverdueAmount.new(current_company).process
+        @reports = FetchOverdueAmount.new(current_company, params).process
       end
 
       def generate_pdf

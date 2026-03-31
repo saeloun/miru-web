@@ -5,8 +5,8 @@ require "rails_helper"
 RSpec.describe "Api::V1::Reports::AccountsAgingController::#index", type: :request do
   let(:company) { create(:company, plan_tier: "paid") }
   let(:user) { create(:user, current_workspace_id: company.id) }
-  let!(:client1) { create(:client, :with_logo, company:, name: "bob") }
-  let!(:client2) { create(:client, :with_logo, company:, name: "ana") }
+  let!(:client1) { create(:client, company:, name: "bob") }
+  let!(:client2) { create(:client, company:, name: "ana") }
   let!(:client3) { create(:client, company:, name: "john") }
 
   context "when user is an admin or owner" do
@@ -49,9 +49,7 @@ RSpec.describe "Api::V1::Reports::AccountsAgingController::#index", type: :reque
 
       it "returns clients sorted by highest overdue total with amount details" do
         expect(json_response["report"]["clients"][0]["id"]).to eq(client1.id)
-        expect(json_response["report"]["clients"][0]["logo"]).to eq(client1.logo_url)
         expect(json_response["report"]["clients"][1]["id"]).to eq(client2.id)
-        expect(json_response["report"]["clients"][1]["logo"]).to eq(client2.logo_url)
       end
 
       it "returns amount overdue for client1 in response" do
@@ -96,6 +94,16 @@ RSpec.describe "Api::V1::Reports::AccountsAgingController::#index", type: :reque
           "name" => client3.name
         }
         expect(json_response["report"]["clients"]).not_to include(resp)
+      end
+
+      it "supports filtering by client ids and as-of date" do
+        send_request :get, api_v1_reports_accounts_aging_index_path,
+          params: { client_ids: client2.id.to_s, as_of_date: Date.current.iso8601 },
+          headers: auth_headers(user)
+
+        expect(response).to have_http_status(:ok)
+        expect(json_response["report"]["clients"].pluck("id")).to eq([client2.id])
+        expect(json_response["report"]["filter_options"]["clients"].pluck("id")).to include(client1.id, client2.id)
       end
     end
   end

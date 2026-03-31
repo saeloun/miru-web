@@ -1,5 +1,6 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 import {
   Card,
   CardContent,
@@ -13,6 +14,13 @@ import { Label } from "../../ui/label";
 import { Badge } from "../../ui/badge";
 import { Skeleton } from "../../ui/skeleton";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../ui/select";
+import {
   Table,
   TableBody,
   TableCell,
@@ -21,9 +29,17 @@ import {
   TableRow,
 } from "../../ui/table";
 import { Receipt, Warning, Clock, CurrencyDollar } from "phosphor-react";
+import { useSearchParams } from "react-router-dom";
 import { currencyFormat } from "../../../helpers/currency";
 import { useUserContext } from "../../../context/UserContext";
 import { invoicesApi } from "apis/api";
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from "../../ui/chart";
+import ShareReportButton from "../ShareReportButton";
+import { buildSearchParams } from "../filterUtils";
 
 interface Invoice {
   id: string;
@@ -59,6 +75,16 @@ interface FetchFilters {
 }
 
 const outstandingStatuses = ["sent", "viewed", "overdue"];
+const outstandingStatusChartConfig = {
+  outstanding: {
+    label: "Outstanding",
+    color: "hsl(var(--primary))",
+  },
+  overdue: {
+    label: "Overdue",
+    color: "hsl(var(--destructive))",
+  },
+};
 
 const parseDate = (value?: string) => {
   if (!value) return null;
@@ -203,18 +229,25 @@ const fetchOutstandingInvoices = async (filters: FetchFilters = {}) => {
 
 const ModernOutstandingInvoiceReport: React.FC = () => {
   const { company } = useUserContext();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [activeTab, setActiveTab] = useState<"outstanding" | "overdue">(
-    "outstanding"
+    searchParams.get("tab") === "overdue" ? "overdue" : "outstanding"
   );
-  const [fromDate, setFromDate] = useState("");
-  const [toDate, setToDate] = useState("");
-  const [pendingFromDate, setPendingFromDate] = useState("");
-  const [pendingToDate, setPendingToDate] = useState("");
-  const [currencyFilter, setCurrencyFilter] = useState("ALL");
-  const [pendingCurrencyFilter, setPendingCurrencyFilter] = useState("ALL");
+  const initialFromDate = searchParams.get("from") || "";
+  const initialToDate = searchParams.get("to") || "";
+  const initialCurrency = searchParams.get("currency") || "ALL";
+  const [fromDate, setFromDate] = useState(initialFromDate);
+  const [toDate, setToDate] = useState(initialToDate);
+  const [pendingFromDate, setPendingFromDate] = useState(initialFromDate);
+  const [pendingToDate, setPendingToDate] = useState(initialToDate);
+  const [currencyFilter, setCurrencyFilter] = useState(initialCurrency);
+  const [pendingCurrencyFilter, setPendingCurrencyFilter] =
+    useState(initialCurrency);
   const [exportFormat, setExportFormat] = useState("CSV");
   const [exportNotice, setExportNotice] = useState("");
-  const [selectedClientId, setSelectedClientId] = useState<string | null>(null);
+  const [selectedClientId, setSelectedClientId] = useState<string | null>(
+    searchParams.get("clientId")
+  );
 
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: ["outstanding-invoices", fromDate, toDate, currencyFilter],
@@ -227,11 +260,33 @@ const ModernOutstandingInvoiceReport: React.FC = () => {
   });
 
   const baseCurrency = data?.currency || company?.baseCurrency || "USD";
+  const statusChartData = [
+    {
+      label: "Outstanding",
+      outstanding: data?.summary.total_outstanding || 0,
+      overdue: 0,
+    },
+    {
+      label: "Overdue",
+      outstanding: 0,
+      overdue: data?.summary.total_overdue || 0,
+    },
+  ];
 
   const overdueInvoices = useMemo(
     () =>
       (data?.invoices || []).filter(invoice => invoice.status === "overdue"),
     [data?.invoices]
+  );
+
+  const visibleInvoices = useMemo(
+    () =>
+      activeTab === "overdue"
+        ? overdueInvoices
+        : (data?.invoices || []).filter(invoice =>
+            ["sent", "viewed"].includes(invoice.status)
+          ),
+    [activeTab, data?.invoices, overdueInvoices]
   );
 
   const overdueAging = useMemo(() => {
@@ -279,6 +334,14 @@ const ModernOutstandingInvoiceReport: React.FC = () => {
     [data?.clients]
   );
 
+  const visibleClients = useMemo(
+    () =>
+      activeTab === "overdue"
+        ? sortedClients.filter(client => client.total_overdue > 0)
+        : sortedClients.filter(client => client.total_outstanding > 0),
+    [activeTab, sortedClients]
+  );
+
   const selectedClient = useMemo(() => {
     if (!selectedClientId) return null;
 
@@ -306,13 +369,39 @@ const ModernOutstandingInvoiceReport: React.FC = () => {
   const exportReport = (format: string) => {
     const normalized = format.toLowerCase();
     const apiFormat = normalized === "excel" ? "csv" : normalized;
-    const params = new URLSearchParams({ format: apiFormat });
+    const params = buildSearchParams({
+      format: apiFormat,
+      from: fromDate || null,
+      to: toDate || null,
+      currency: currencyFilter !== "ALL" ? currencyFilter : null,
+    });
+
     window.open(
       `/api/v1/reports/outstanding_overdue_invoices/download?${params.toString()}`,
       "_blank"
     );
     setExportNotice(`Generating ${format.toUpperCase()}`);
   };
+
+  useEffect(() => {
+    setSearchParams(
+      buildSearchParams({
+        tab: activeTab,
+        from: fromDate || null,
+        to: toDate || null,
+        currency: currencyFilter !== "ALL" ? currencyFilter : null,
+        clientId: selectedClientId || null,
+      }),
+      { replace: true }
+    );
+  }, [
+    activeTab,
+    currencyFilter,
+    fromDate,
+    selectedClientId,
+    setSearchParams,
+    toDate,
+  ]);
 
   if (error) {
     return (
@@ -352,6 +441,7 @@ const ModernOutstandingInvoiceReport: React.FC = () => {
           <Button variant="outline" onClick={refreshData}>
             Refresh
           </Button>
+          <ShareReportButton />
         </div>
       </div>
 
@@ -364,20 +454,25 @@ const ModernOutstandingInvoiceReport: React.FC = () => {
           <div className="grid gap-4 md:grid-cols-3">
             <div className="space-y-2">
               <Label htmlFor="currency-filter">Currency Filter</Label>
-              <select
-                id="currency-filter"
-                aria-label="Currency Filter"
-                className="h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+              <Select
                 value={pendingCurrencyFilter}
-                onChange={e => setPendingCurrencyFilter(e.target.value)}
+                onValueChange={setPendingCurrencyFilter}
               >
-                <option value="ALL">All</option>
-                {(data?.currencies || []).map(currency => (
-                  <option key={currency} value={currency}>
-                    {currency}
-                  </option>
-                ))}
-              </select>
+                <SelectTrigger
+                  id="currency-filter"
+                  aria-label="Currency Filter"
+                >
+                  <SelectValue placeholder="All currencies" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="ALL">All</SelectItem>
+                  {(data?.currencies || []).map(currency => (
+                    <SelectItem key={currency} value={currency}>
+                      {currency}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
 
             <div className="space-y-2">
@@ -404,9 +499,27 @@ const ModernOutstandingInvoiceReport: React.FC = () => {
           </div>
 
           <div className="flex flex-wrap gap-2">
-            <Button onClick={applyCurrencyFilter}>Apply Filter</Button>
-            <Button onClick={applyDateFilter} variant="outline">
-              Apply Date Filter
+            <Button
+              onClick={() => {
+                applyCurrencyFilter();
+                applyDateFilter();
+              }}
+            >
+              Apply Filters
+            </Button>
+            <Button
+              onClick={() => {
+                setPendingCurrencyFilter("ALL");
+                setPendingFromDate("");
+                setPendingToDate("");
+                setCurrencyFilter("ALL");
+                setFromDate("");
+                setToDate("");
+                setSelectedClientId(null);
+              }}
+              variant="outline"
+            >
+              Reset
             </Button>
           </div>
         </CardContent>
@@ -510,17 +623,16 @@ const ModernOutstandingInvoiceReport: React.FC = () => {
           <div className="flex flex-wrap gap-2 items-end">
             <div className="w-48 space-y-2">
               <Label htmlFor="export-format">Format</Label>
-              <select
-                id="export-format"
-                aria-label="Format"
-                className="h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                value={exportFormat}
-                onChange={e => setExportFormat(e.target.value)}
-              >
-                <option value="CSV">CSV</option>
-                <option value="PDF">PDF</option>
-                <option value="Excel">Excel</option>
-              </select>
+              <Select value={exportFormat} onValueChange={setExportFormat}>
+                <SelectTrigger id="export-format" aria-label="Format">
+                  <SelectValue placeholder="Format" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="CSV">CSV</SelectItem>
+                  <SelectItem value="PDF">PDF</SelectItem>
+                  <SelectItem value="Excel">Excel</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
             <Button onClick={() => exportReport(exportFormat)}>Download</Button>
             <Button variant="outline" onClick={() => exportReport("PDF")}>
@@ -528,12 +640,6 @@ const ModernOutstandingInvoiceReport: React.FC = () => {
             </Button>
             <Button variant="outline" onClick={() => exportReport("CSV")}>
               Export CSV
-            </Button>
-            <Button
-              variant="outline"
-              onClick={() => setExportNotice("Export started")}
-            >
-              Export
             </Button>
           </div>
           {exportNotice ? <p>{exportNotice}</p> : null}
@@ -545,14 +651,43 @@ const ModernOutstandingInvoiceReport: React.FC = () => {
           <CardTitle>Status Overview</CardTitle>
         </CardHeader>
         <CardContent>
-          <div data-chart="outstanding-overdue" className="text-sm">
-            Outstanding:{" "}
-            {currencyFormat(baseCurrency, data?.summary.total_outstanding || 0)}
-          </div>
-          <div className="text-sm">
-            Overdue:{" "}
-            {currencyFormat(baseCurrency, data?.summary.total_overdue || 0)}
-          </div>
+          <ChartContainer
+            config={outstandingStatusChartConfig}
+            className="h-[260px] w-full"
+          >
+            <BarChart
+              data={statusChartData}
+              margin={{ top: 8, right: 16, left: 16, bottom: 8 }}
+            >
+              <CartesianGrid vertical={false} />
+              <XAxis dataKey="label" tickLine={false} axisLine={false} />
+              <YAxis
+                tickFormatter={value =>
+                  currencyFormat(baseCurrency, Number(value))
+                }
+              />
+              <ChartTooltip
+                cursor={false}
+                content={
+                  <ChartTooltipContent
+                    formatter={value =>
+                      currencyFormat(baseCurrency, Number(value))
+                    }
+                  />
+                }
+              />
+              <Bar
+                dataKey="outstanding"
+                fill="var(--color-outstanding)"
+                radius={[6, 6, 0, 0]}
+              />
+              <Bar
+                dataKey="overdue"
+                fill="var(--color-overdue)"
+                radius={[6, 6, 0, 0]}
+              />
+            </BarChart>
+          </ChartContainer>
         </CardContent>
       </Card>
 
@@ -575,7 +710,7 @@ const ModernOutstandingInvoiceReport: React.FC = () => {
           <CardTitle>Top Clients</CardTitle>
         </CardHeader>
         <CardContent className="space-y-2">
-          {sortedClients.map(client => (
+          {visibleClients.map(client => (
             <div
               key={client.client_id}
               className="flex items-center justify-between"
@@ -708,8 +843,8 @@ const ModernOutstandingInvoiceReport: React.FC = () => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {(data?.invoices || []).length ? (
-                    (data?.invoices || []).map(invoice => (
+                  {visibleInvoices.length ? (
+                    visibleInvoices.map(invoice => (
                       <TableRow key={invoice.id}>
                         <TableCell>
                           <a

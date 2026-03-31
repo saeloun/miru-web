@@ -2,10 +2,11 @@
 
 module Reports::AccountsAging
   class FetchOverdueAmount < ApplicationService
-    attr_reader :current_company
+    attr_reader :current_company, :params
 
-    def initialize(current_company)
+    def initialize(current_company, params = {})
       @current_company = current_company
+      @params = params
     end
 
     def process
@@ -14,11 +15,27 @@ module Reports::AccountsAging
       {
         clients: fetch_client_details(grouped_amounts),
         total_amount_overdue_by_date_range: grouped_amounts.delete(:total),
-        base_currency: current_company.base_currency
+        base_currency: current_company.base_currency,
+        filter_options: {
+          clients: all_billable_clients.map { |client| { id: client.id, name: client.name } }
+        }
       }
     end
 
     private
+
+      def as_of_date
+        @as_of_date ||= begin
+          value = params[:as_of_date]
+          value.present? ? Date.parse(value.to_s) : Date.current
+        rescue ArgumentError
+          Date.current
+        end
+      end
+
+      def selected_client_ids
+        @selected_client_ids ||= params[:client_ids].to_s.split(",").map(&:strip).reject(&:blank?).map(&:to_i)
+      end
 
       def fetch_client_details(grouped_amounts)
         clients.map do |client|
@@ -60,13 +77,28 @@ module Reports::AccountsAging
       end
 
       def clients
-        @_clients ||= current_company.clients.joins(:projects).where(
-          projects: { billable: true }
-        ).kept.order(name: :asc).uniq
+        @_clients ||= begin
+          scope = all_billable_clients
+
+          selected_client_ids.present? ? scope.where(id: selected_client_ids) : scope
+        end
+      end
+
+      def all_billable_clients
+        @_all_billable_clients ||= begin
+          client_ids = current_company.clients.joins(:projects).where(
+            projects: { billable: true }
+          ).kept.distinct.pluck(:id)
+
+          current_company.clients.kept.where(id: client_ids).order(name: :asc)
+        end
       end
 
       def rows
-        today = Date.current
+        today = as_of_date
+        zero_to_thirty_start = today - 30.days
+        thirty_one_to_sixty_start = today - 60.days
+        sixty_one_to_ninety_start = today - 90.days
         amount_sql = <<~SQL.squish
           CASE
             WHEN COALESCE(base_currency_amount, 0) > 0 THEN
@@ -82,10 +114,10 @@ module Reports::AccountsAging
           .group(:client_id)
           .select(
             :client_id,
-            "SUM(CASE WHEN due_date >= #{ActiveRecord::Base.connection.quote(30.days.ago.to_date)} AND due_date <= #{ActiveRecord::Base.connection.quote(today)} THEN #{amount_sql} ELSE 0 END) AS zero_to_thirty_days",
-            "SUM(CASE WHEN due_date >= #{ActiveRecord::Base.connection.quote(60.days.ago.to_date)} AND due_date < #{ActiveRecord::Base.connection.quote(30.days.ago.to_date)} THEN #{amount_sql} ELSE 0 END) AS thirty_one_to_sixty_days",
-            "SUM(CASE WHEN due_date >= #{ActiveRecord::Base.connection.quote(90.days.ago.to_date)} AND due_date < #{ActiveRecord::Base.connection.quote(60.days.ago.to_date)} THEN #{amount_sql} ELSE 0 END) AS sixty_one_to_ninety_days",
-            "SUM(CASE WHEN due_date < #{ActiveRecord::Base.connection.quote(90.days.ago.to_date)} THEN #{amount_sql} ELSE 0 END) AS ninety_plus_days",
+            "SUM(CASE WHEN due_date >= #{ActiveRecord::Base.connection.quote(zero_to_thirty_start)} AND due_date <= #{ActiveRecord::Base.connection.quote(today)} THEN #{amount_sql} ELSE 0 END) AS zero_to_thirty_days",
+            "SUM(CASE WHEN due_date >= #{ActiveRecord::Base.connection.quote(thirty_one_to_sixty_start)} AND due_date < #{ActiveRecord::Base.connection.quote(zero_to_thirty_start)} THEN #{amount_sql} ELSE 0 END) AS thirty_one_to_sixty_days",
+            "SUM(CASE WHEN due_date >= #{ActiveRecord::Base.connection.quote(sixty_one_to_ninety_start)} AND due_date < #{ActiveRecord::Base.connection.quote(thirty_one_to_sixty_start)} THEN #{amount_sql} ELSE 0 END) AS sixty_one_to_ninety_days",
+            "SUM(CASE WHEN due_date < #{ActiveRecord::Base.connection.quote(sixty_one_to_ninety_start)} THEN #{amount_sql} ELSE 0 END) AS ninety_plus_days",
             "SUM(#{amount_sql}) AS total"
           )
       end

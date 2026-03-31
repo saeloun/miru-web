@@ -5,8 +5,8 @@ require "rails_helper"
 RSpec.describe "Api::V1::Reports::ClientRevenuesController::#index", type: :request do
   let(:company) { create(:company, plan_tier: "paid") }
   let(:user) { create(:user, current_workspace_id: company.id) }
-  let!(:client1) { create(:client, :with_logo, company:, name: "Alpha") }
-  let!(:client2) { create(:client, :with_logo, company:, name: "Delta") }
+  let!(:client1) { create(:client, company:, name: "Alpha") }
+  let!(:client2) { create(:client, company:, name: "Delta") }
   let(:client3) { create(:client, company:, name: "john") }
   let!(:client1_sent_invoice1) { create(:invoice, client: client1, status: "sent", issue_date: 2.weeks.ago) }
   let!(:client1_sent_invoice2) { create(:invoice, client: client1, status: "sent", issue_date: 2.weeks.ago) }
@@ -41,6 +41,7 @@ RSpec.describe "Api::V1::Reports::ClientRevenuesController::#index", type: :requ
         @client2_unpaid_amount = client2_sent_invoice2.amount + client2_viewed_invoice1.amount
         @expected_clients =
           [{
+            id: client1.id,
             logo: client1.logo_url,
             name: client1.name,
             paid_amount: @client1_paid_amount,
@@ -49,6 +50,7 @@ RSpec.describe "Api::V1::Reports::ClientRevenuesController::#index", type: :requ
             overdue_amount: @client1_overdue_amount
           },
            {
+             id: client2.id,
              logo: client2.logo_url,
              name: client2.name,
              paid_amount: @client2_paid_amount,
@@ -111,6 +113,7 @@ RSpec.describe "Api::V1::Reports::ClientRevenuesController::#index", type: :requ
         expected_clients =
           [
             {
+              id: client1.id,
               name: client1.name,
               logo: client1.logo_url,
               paid_amount: @client1_paid_amount,
@@ -134,6 +137,15 @@ RSpec.describe "Api::V1::Reports::ClientRevenuesController::#index", type: :requ
           totalOverdueAmount: @client1_unpaid_amount + @client1_overdue_amount
         }
         expect(json_response["summary"]).to eq(JSON.parse(expected_summary.to_json))
+      end
+
+      it "accepts comma-separated client ids for filtering" do
+        send_request :get, api_v1_reports_client_revenues_path,
+          params: { client_ids: client1.id.to_s, from_date: 1.month.ago, to_date: Date.today },
+          headers: auth_headers(user)
+
+        expect(response).to have_http_status(:ok)
+        expect(json_response["clients"].pluck("name")).to eq([client1.name])
       end
     end
   end

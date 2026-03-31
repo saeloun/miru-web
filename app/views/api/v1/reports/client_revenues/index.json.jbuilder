@@ -2,6 +2,7 @@
 
 json.currency current_company.base_currency
 json.clients client_revenues do |client|
+  json.id client[:id]
   json.name client[:name]
   json.logo client[:logo]
   paid = client[:paid_amount] || 0
@@ -18,4 +19,10 @@ json.summary do
   json.totalOutstandingAmount summary[:total_outstanding_amount]
   json.totalRevenue summary[:total_revenue]
   json.totalOverdueAmount summary[:total_outstanding] # Add overdue amount for summary
+end
+json.filterOptions do
+  json.clients current_company.billable_clients do |client|
+    json.id client.id
+    json.name client.name
+  end
 end
