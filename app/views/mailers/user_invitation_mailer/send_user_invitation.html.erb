@@ -1,6 +1,6 @@
 <% content_for :email_preheader, "You have been invited to join a team on Miru." %>
 <% content_for :email_eyebrow, "Invitation" %>
-<% content_for :email_title, "You have been invited to Miru" %>
+<% content_for :email_title, "You're invited to Miru" %>
 <% content_for :email_subtitle do %>
   <strong><%= @sender_details&.[](:name) %></strong> invited you to join <strong><%= @company_details&.[](:name) %></strong>.
 <% end %>
@@ -20,16 +20,16 @@
 
 <div class="email-panel email-panel-accent">
   <p class="email-panel-title">Get started</p>
-  <p style="margin-bottom: 0;">Set your password, join the workspace, and start collaborating in Miru.</p>
+  <p style="margin-bottom: 0;">Accept the invitation, set your password, and join the workspace in a few minutes.</p>
 </div>
 
 <%= render "shared/mailer/button", href: invitations_accepts_url(token: @token), label: "Join Miru" %>
 
 <div class="email-divider"></div>
 
-<p>If this invitation was not expected, please flag it with our team at <a href="mailto:hello@saeloun.com">hello@saeloun.com</a>.</p>
+<p>If you were not expecting this invitation, contact our team at <a href="mailto:hello@saeloun.com">hello@saeloun.com</a>.</p>
 
 <div class="email-panel email-panel-soft">
   <p class="email-panel-title">About Miru</p>
-  <p style="margin-bottom: 0;">Miru helps teams track time, send invoices, collect payments, and manage day-to-day billing operations without leaving a single workspace.</p>
+  <p style="margin-bottom: 0;">Miru helps teams track time, send invoices, collect payments, and manage day-to-day operations from one workspace.</p>
 </div>

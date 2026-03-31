@@ -16,12 +16,12 @@ RSpec.describe UserInvitationMailer, type: :mailer do
 }
 
     it "renders the headers" do
-      expect(mail.subject).to eq("Welcome to Miru!")
+      expect(mail.subject).to eq("You're invited to join Miru")
       expect(mail.to).to include(invitation.recipient_email)
     end
 
     it "renders the body" do
-      expect(mail.body.encoded).to include("Set your password, join the workspace, and start collaborating in Miru.")
+      expect(mail.body.encoded).to include("Accept the invitation, set your password, and join the workspace in a few minutes.")
       expect(mail.body.encoded).to include("Join Miru")
       expect(mail.body.encoded).to include("hello@saeloun.com")
     end

@@ -2,7 +2,7 @@
 <% content_for :email_eyebrow, "Invoices" %>
 <% content_for :email_title, "Payment reminder" %>
 <% content_for :email_subtitle do %>
-  Review the invoices below and complete any outstanding payments.
+  Review the invoices below and pay any balances that are still outstanding.
 <% end %>
 
 <div class="email-panel email-panel-warning">
@@ -20,10 +20,10 @@
         <%= render "shared/mailer/detail_card", label: "Due date", value: invoice.due_date.strftime("%B %d, %Y") %>
       </tr>
       <tr>
-        <%= render "shared/mailer/detail_card", label: "Amount", value: FormatAmountService.new(@company.base_currency, invoice.amount).process %>
+        <%= render "shared/mailer/detail_card", label: "Amount due", value: FormatAmountService.new(@company.base_currency, invoice.amount).process %>
         <%= render "shared/mailer/detail_card", label: "Status", value: invoice.status.humanize %>
       </tr>
     </table>
-    <%= render "shared/mailer/button", href: "#{ENV['APP_BASE_URL']}/invoices/#{invoice.external_view_key}/view", label: "View invoice" %>
+    <%= render "shared/mailer/button", href: "#{ENV['APP_BASE_URL']}/invoices/#{invoice.external_view_key}/view", label: "Review invoice" %>
   </div>
 <% end %>

@@ -2,17 +2,17 @@
 <% content_for :email_eyebrow, "Time tracking" %>
 <% content_for :email_title, "Complete your timesheet" %>
 <% content_for :email_subtitle do %>
-  Your logged hours for <%= @company %> are still below the expected weekly total.
+  Your time entries for <%= @company %> are still below the expected weekly total.
 <% end %>
 
 <p>Hi <strong><%= @name %></strong>,</p>
 
-<p>Your logged hours from <strong><%= @starting_date %></strong> to <strong><%= @ending_date %></strong> are less than 40 hours.</p>
+<p>You logged fewer than 40 hours between <strong><%= @starting_date %></strong> and <strong><%= @ending_date %></strong>.</p>
 
-<p>Open Miru and add the missing entries so your timesheet is up to date.</p>
+<p>Open Miru, add the missing entries, and bring your timesheet up to date.</p>
 
 <%= render "shared/mailer/button", href: "#{root_url}time-tracking", label: "Open time tracking" %>
 
 <div class="email-divider"></div>
 
-<p>Cheers,<br><strong>Team Miru</strong></p>
+<p>Thanks,<br><strong>Team Miru</strong></p>

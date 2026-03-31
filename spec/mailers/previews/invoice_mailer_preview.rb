@@ -20,6 +20,7 @@ class InvoiceMailerPreview < ActionMailer::Preview
 
   def invoice
     invoice = sample_invoice
+    invoice.update_columns(status: Invoice.statuses[:sending], sent_at: preview_timestamp)
 
     InvoiceMailer.with(
       invoice_id: invoice.id,

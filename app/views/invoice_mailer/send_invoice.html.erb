@@ -2,7 +2,7 @@
 <% content_for :email_eyebrow, "Invoices" %>
 <% content_for :email_title, "Invoice ready to review" %>
 <% content_for :email_subtitle do %>
-  <strong><%= @invoice.company.name %></strong> has sent you invoice <strong><%= @invoice.invoice_number %></strong>.
+  <strong><%= @invoice.company.name %></strong> sent invoice <strong><%= @invoice.invoice_number %></strong> and attached the PDF for your records.
 <% end %>
 
 <% if @message.present? %>
@@ -22,8 +22,8 @@
   </tr>
   <tr>
     <%= render "shared/mailer/detail_card", label: "Total amount", value: @amount || "-" %>
-    <%= render "shared/mailer/detail_card", label: "Attachment", value: "PDF included", subvalue: "The invoice PDF is attached to this email for easy forwarding and accounting." %>
+    <%= render "shared/mailer/detail_card", label: "Attachment", value: "PDF included", subvalue: "The invoice PDF is attached so it is easy to forward or file." %>
   </tr>
 </table>
 
-<%= render "shared/mailer/button", href: @invoice_url, label: "View invoice online" %>
+<%= render "shared/mailer/button", href: @invoice_url, label: "Review invoice online" %>
