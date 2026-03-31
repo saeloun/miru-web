@@ -48,8 +48,6 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
     invoices,
     totalInvoices,
     summary,
-    recentlyUpdatedInvoices,
-    recentlyUpdatedTotalCount,
     isLoading: isListLoading,
     isLoadingMore,
     hasMoreInvoices,
@@ -471,8 +469,6 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
           invoices={invoices}
           totalInvoices={totalInvoices}
           summary={summary}
-          recentlyUpdatedInvoices={recentlyUpdatedInvoices}
-          recentlyUpdatedTotalCount={recentlyUpdatedTotalCount}
           onCreateInvoice={handleCreateInvoice}
           onViewInvoice={handleViewInvoice}
           onSendInvoice={handleSendInvoiceFromList}

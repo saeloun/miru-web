@@ -37,7 +37,6 @@ import {
 
 import { Invoice } from "../../services/invoiceApi";
 import ChartWithSummary from "./ChartWithSummary";
-import InfiniteScrollRecentlyUpdated from "./List/RecentlyUpdated/InfiniteScrollRecentlyUpdated";
 import { currencyFormat } from "../../helpers/currency";
 import { useUserContext } from "../../context/UserContext";
 
@@ -45,8 +44,6 @@ interface InvoiceListProps {
   invoices: Invoice[];
   totalInvoices?: number;
   summary?: any;
-  recentlyUpdatedInvoices?: Invoice[];
-  recentlyUpdatedTotalCount?: number;
   onCreateInvoice?: () => void;
   onViewInvoice?: (id: string) => void;
   onSendInvoice?: (id: string) => void;
@@ -63,8 +60,6 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
   invoices,
   totalInvoices = invoices.length,
   summary,
-  recentlyUpdatedInvoices,
-  recentlyUpdatedTotalCount = 0,
   onCreateInvoice,
   onViewInvoice,
   onSendInvoice,
@@ -97,23 +92,6 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
       .filter(inv => inv.status === "draft")
       .reduce((sum, inv) => sum + (inv.amount || 0), 0),
   };
-
-  // Use recentlyUpdatedInvoices from API or calculate fallback
-  const recentInvoices =
-    recentlyUpdatedInvoices ||
-    [...invoices]
-      .sort((a, b) => {
-        const updatedAtA = new Date(
-          a.updatedAt || a.updated_at || a.createdAt || 0
-        ).getTime();
-
-        const updatedAtB = new Date(
-          b.updatedAt || b.updated_at || b.createdAt || 0
-        ).getTime();
-
-        return updatedAtB - updatedAtA;
-      })
-      .slice(0, 10);
 
   const formatDate = (dateString: string) =>
     new Date(dateString).toLocaleDateString("en-US", {
@@ -221,13 +199,8 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
     matchesInvoiceFilters(invoice)
   );
 
-  const filteredRecentInvoices = recentInvoices.filter(invoice =>
-    matchesInvoiceFilters(invoice)
-  );
-
   const hasActiveFilters =
-    searchTerm.trim().length > 0 ||
-    Boolean(filterParams.status && filterParams.status.length > 0);
+    searchTerm.trim().length > 0 || filterParams.status.length > 0;
 
   // Infinite scroll implementation
   useEffect(() => {
@@ -345,19 +318,6 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
           baseCurrency={summary?.currency || invoices[0]?.currency || "USD"}
           filterParams={filterParams}
           setFilterParams={setFilterParams}
-        />
-      )}
-
-      {/* Recently Updated Invoices */}
-      {recentInvoices.length > 0 && (
-        <InfiniteScrollRecentlyUpdated
-          initialInvoices={filteredRecentInvoices}
-          initialTotalCount={
-            hasActiveFilters
-              ? filteredRecentInvoices.length
-              : recentlyUpdatedTotalCount
-          }
-          disableAutoFetch={hasActiveFilters}
         />
       )}
 
