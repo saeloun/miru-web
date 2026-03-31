@@ -3,6 +3,7 @@ import React from "react";
 import { XIcon } from "miruIcons";
 import { Button, Modal } from "StyledComponents";
 
+import { i18n } from "../../../i18n";
 import ExpenseForm from "./ExpenseForm";
 
 const AddExpenseModal = ({
@@ -17,7 +18,7 @@ const AddExpenseModal = ({
     onClose={() => setShowAddExpenseModal(false)}
   >
     <div className="modal__position m-0">
-      <span className="modal__title">Add New Expense</span>
+      <span className="modal__title">{i18n.t("expenses.newExpense")}</span>
       <Button style="ternary" onClick={() => setShowAddExpenseModal(false)}>
         <XIcon className="text-foreground" size={15} />
       </Button>

@@ -6,6 +6,7 @@ import { PlusIcon, DotsThreeVerticalIcon } from "miruIcons";
 import { useUserContext } from "context/UserContext";
 import EmptyStates from "common/EmptyStates";
 import { Avatar } from "StyledComponents";
+import { i18n } from "../../../i18n";
 
 // Color palette for clients - generates consistent colors based on client name
 const generateClientColor = (name: string) => {
@@ -51,7 +52,7 @@ const ModernClientList = ({
     return (
       <div className="mx-auto flex w-full flex-col px-4">
         <EmptyStates
-          Message="Looks like there aren't any clients added yet."
+          Message={i18n.t("clients.noClientsYet")}
           messageClassName="w-full lg:mt-5"
           showNoSearchResultState={false}
           wrapperClassName="mt-5"
@@ -65,7 +66,7 @@ const ModernClientList = ({
             }}
           >
             <PlusIcon size={20} weight="bold" />
-            <span className="ml-2 inline-block text-xl">Add Clients</span>
+            <span className="ml-2 inline-block text-xl">{i18n.t("clients.addClients")}</span>
           </button>
         </EmptyStates>
       </div>
@@ -96,9 +97,9 @@ const ModernClientList = ({
                         <h3 className="truncate text-lg font-semibold text-foreground">
                           {typeof client.name === "string"
                             ? client.name
-                            : "Client"}
+                            : i18n.t("client")}
                         </h3>
-                        <p className="text-sm text-muted-foreground">Client</p>
+                        <p className="text-sm text-muted-foreground">{i18n.t("client")}</p>
                       </div>
                     </div>
                     {isAdminUser && (
@@ -127,7 +128,7 @@ const ModernClientList = ({
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
                       <span className="text-sm font-medium text-muted-foreground">
-                        Hours Logged:
+                        {i18n.t("clients.hoursTracked")}:
                       </span>
                       <span className="text-lg font-bold text-primary">
                         {minToHHMM(client.minutes || 0)}
@@ -157,11 +158,11 @@ const ModernClientList = ({
                         <h3 className="truncate text-base font-semibold text-foreground">
                           {typeof client.name === "string"
                             ? client.name
-                            : "Client"}
+                            : i18n.t("client")}
                         </h3>
                         <div className="mt-1 flex items-center text-sm text-muted-foreground">
                           <span className="font-medium">
-                            {minToHHMM(client.minutes || 0)} hrs
+                            {minToHHMM(client.minutes || 0)} {i18n.t("hours")}
                           </span>
                         </div>
                       </div>

@@ -2,6 +2,7 @@ import React from "react";
 
 import { PencilIcon } from "miruIcons";
 import { Link } from "react-router-dom";
+import { i18n } from "../../../i18n";
 
 const EditButton = ({ editInvoiceLink }) => (
   <div className="edit-button-container mx-1 flex flex-col justify-items-center">
@@ -15,7 +16,7 @@ const EditButton = ({ editInvoiceLink }) => (
           <PencilIcon color="#5E58F1" size={16} weight="bold" />
         </div>
         <p className="ml-1 text-base font-bold tracking-widest text-primary">
-          EDIT
+          {i18n.t("edit").toUpperCase()}
         </p>
       </div>
     </Link>

@@ -61,7 +61,7 @@ class Api::V1::Users::PasskeysController < Api::V1::ApplicationController
       nickname: passkey_params[:nickname].presence || default_nickname
     )
 
-    render_passkeys(status: :created, notice: "Passkey added")
+    render_passkeys(status: :created, notice: I18n.t("passkeys.added"))
   end
 
   def authenticate
@@ -95,17 +95,17 @@ class Api::V1::Users::PasskeysController < Api::V1::ApplicationController
     required = ActiveModel::Type::Boolean.new.cast(requirement_params[:required])
 
     if required && current_user.totp_enabled?
-      render json: { error: "Disable authenticator app 2FA before requiring passkey sign in." }, status: 422
+      render json: { error: I18n.t("passkeys.disable_totp_first") }, status: 422
       return
     end
 
     if required && current_user.passkeys.none?
-      render json: { error: "Add a passkey before requiring it for sign in." }, status: 422
+      render json: { error: I18n.t("passkeys.add_passkey_first") }, status: 422
       return
     end
 
     current_user.update!(passkey_required_for_login: required)
-    render_passkeys(notice: required ? "Passkey requirement enabled" : "Passkey requirement disabled")
+    render_passkeys(notice: required ? I18n.t("passkeys.requirement_enabled") : I18n.t("passkeys.requirement_disabled"))
   end
 
   def destroy
@@ -117,7 +117,7 @@ class Api::V1::Users::PasskeysController < Api::V1::ApplicationController
       current_user.update!(passkey_required_for_login: false)
     end
 
-    render_passkeys(notice: "Passkey removed")
+    render_passkeys(notice: I18n.t("passkeys.removed"))
   end
 
   private
@@ -165,14 +165,14 @@ class Api::V1::Users::PasskeysController < Api::V1::ApplicationController
     end
 
     def render_invalid_passkey_token
-      render json: { error: "Passkey session expired. Please try again." }, status: 422
+      render json: { error: I18n.t("passkeys.session_expired") }, status: 422
     end
 
     def render_invalid_passkey_response(error)
-      render json: { error: error.message.presence || "Passkey verification failed." }, status: 422
+      render json: { error: error.message.presence || I18n.t("passkeys.verification_failed") }, status: 422
     end
 
     def render_missing_passkey
-      render json: { error: "Passkey not found." }, status: 404
+      render json: { error: I18n.t("passkeys.not_found") }, status: 404
     end
 end

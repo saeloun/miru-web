@@ -3,6 +3,7 @@ import React from "react";
 import { useUserContext } from "context/UserContext";
 import dayjs from "dayjs";
 import { minToHHMM } from "helpers";
+import { i18n } from "../../../i18n";
 
 const CheckboxIcon = () => (
   <div className="mr-2 flex h-4 w-4 flex-shrink-0 items-center justify-center border-2 border-primary bg-white focus-within:border-blue-500 lg:h-5 lg:w-5">
@@ -46,10 +47,10 @@ const Table = ({
                 <CheckboxIcon />
               </div>
             </th>
-            <th className="table__header w-1/5 p-3 text-left">NAME</th>
-            <th className="table__header w-3/5 p-3 text-left">DESCRIPTION</th>
-            <th className="table__header p-3 text-right">DATE</th>
-            <th className="table__header w-1/12 p-3 text-right">TIME</th>
+            <th className="table__header w-1/5 p-3 text-left">{i18n.t("invoices.nameHeader")}</th>
+            <th className="table__header w-3/5 p-3 text-left">{i18n.t("invoices.descriptionHeader")}</th>
+            <th className="table__header p-3 text-right">{i18n.t("invoices.dateHeader")}</th>
+            <th className="table__header w-1/12 p-3 text-right">{i18n.t("invoices.timeHeader")}</th>
           </tr>
         </thead>
       ) : (
@@ -67,14 +68,10 @@ const Table = ({
               </div>
             </th>
             <th className="table__header w-1/2 p-3 text-left">
-              NAME/
-              <br />
-              DESCRIPTION
+              {i18n.t("invoices.nameDescription")}
             </th>
             <th className="table__header p-3 text-right">
-              DATE/
-              <br />
-              TIME
+              {i18n.t("invoices.dateTime")}
             </th>
           </tr>
         </thead>

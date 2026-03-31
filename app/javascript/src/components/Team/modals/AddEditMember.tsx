@@ -9,6 +9,7 @@ import { useList } from "context/TeamContext";
 import { useUserContext } from "context/UserContext";
 import { Formik, Form, FormikProps } from "formik";
 import { useOutsideClick, useKeypress } from "helpers";
+import { i18n } from "../../../i18n";
 import { XIcon } from "miruIcons";
 import { Button, Modal } from "StyledComponents";
 import * as Yup from "yup";
@@ -17,16 +18,16 @@ import TeamForm from "./TeamForm";
 
 const TeamMemberSchema = Yup.object().shape({
   firstName: Yup.string()
-    .matches(/^[a-zA-Z]+$/, "First Name must contain only letters")
-    .max(20, "Maximum 20 characters are allowed")
-    .required("First Name cannot be blank"),
+    .matches(/^[a-zA-Z]+$/, i18n.t("team.firstNameLettersOnly") as string)
+    .max(20, i18n.t("team.maxCharacters", { count: 20 }) as string)
+    .required(i18n.t("team.firstNameRequired") as string),
   lastName: Yup.string()
-    .matches(/^[a-zA-Z]+$/, "Last Name must contain only letters")
-    .max(20, "Maximum 20 characters are allowed")
-    .required("Last Name cannot be blank"),
+    .matches(/^[a-zA-Z]+$/, i18n.t("team.lastNameLettersOnly") as string)
+    .max(20, i18n.t("team.maxCharacters", { count: 20 }) as string)
+    .required(i18n.t("team.lastNameRequired") as string),
   email: Yup.string()
-    .email("Invalid email ID")
-    .required("Email ID cannot be blank"),
+    .email(i18n.t("team.invalidEmail") as string)
+    .required(i18n.t("team.emailRequired") as string),
 });
 
 const getInitialvalues = user => ({
@@ -108,14 +109,10 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
 
   const getLabel = () => {
     if (isEdit) {
-      if (user.isTeamMember) {
-        return "Edit User Details";
-      }
-
-      return "Edit Invitation";
+      return i18n.t("team.editMember");
     }
 
-    return "Create New User";
+    return i18n.t("team.inviteMember");
   };
 
   const handleCloseModal = () => {
@@ -168,7 +165,7 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
                     <InputField
                       hasError={errors.firstName && touched.firstName}
                       id="firstName"
-                      label="First Name"
+                      label={i18n.t("contacts.firstName")}
                       name="firstName"
                       setFieldError={setFieldError}
                       setFieldValue={setFieldValue}
@@ -183,7 +180,7 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
                     <InputField
                       hasError={errors.lastName && touched.lastName}
                       id="lastName"
-                      label="Last Name"
+                      label={i18n.t("contacts.lastName")}
                       name="lastName"
                       setFieldError={setFieldError}
                       setFieldValue={setFieldValue}
@@ -200,7 +197,7 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
                     autoFocus
                     hasError={errors.email && touched.email}
                     id="email"
-                    label="Email"
+                    label={i18n.t("email")}
                     name="email"
                     setFieldError={setFieldError}
                     setFieldValue={setFieldValue}
@@ -212,7 +209,7 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
                 </div>
                 <div className="field">
                   <label className="text-xs font-normal text-foreground">
-                    Role
+                    {i18n.t("role")}
                   </label>
                   <div className="mt-2 flex items-center gap-6">
                     <CustomRadioButton
@@ -222,7 +219,7 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
                       groupName="role"
                       id="admin"
                       key="admin"
-                      label="Admin"
+                      label={i18n.t("team.admin")}
                       value={values.role}
                       handleOnChange={() => {
                         setFieldValue("role", "admin", true);
@@ -235,7 +232,7 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
                       groupName="role"
                       id="employee"
                       key="employee"
-                      label="Employee"
+                      label={i18n.t("team.employee")}
                       value={values.role}
                       handleOnChange={() => {
                         setFieldValue("role", "employee", true);
@@ -248,7 +245,7 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
                       groupName="role"
                       id="book_keeper"
                       key="book_keeper"
-                      label="Bookkeeper"
+                      label={i18n.t("team.bookkeeper")}
                       value={values.role}
                       handleOnChange={() => {
                         setFieldValue("role", "book_keeper", true);
@@ -261,7 +258,7 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
                       groupName="role"
                       id="client"
                       key="client"
-                      label="Client"
+                      label={i18n.t("team.clientRole")}
                       value={values.role}
                       handleOnChange={() => {
                         setFieldValue("role", "client", true);
@@ -272,8 +269,7 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
                 <div className="actions mt-6">
                   {teamSeatLimitReached && (
                     <p className="mb-3 text-sm text-muted-foreground">
-                      Free workspaces are limited to 3 team seats. Upgrade to
-                      Pro to invite more members.
+                      {i18n.t("team.seatLimitReached")}
                     </p>
                   )}
                   <Button
@@ -285,7 +281,7 @@ const EditClient = ({ user = {}, isEdit = false }: Props) => {
                         : "form__input_submit"
                     }
                   >
-                    {isEdit ? "SAVE CHANGES" : "SEND INVITE"}
+                    {isEdit ? i18n.t("save") : i18n.t("team.inviteMember")}
                   </Button>
                 </div>
               </Form>

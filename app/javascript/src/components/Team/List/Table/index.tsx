@@ -2,6 +2,7 @@ import React, { Fragment } from "react";
 
 import EmptyStates from "common/EmptyStates";
 import { useList } from "context/TeamContext";
+import { i18n } from "../../../../i18n";
 
 import TableHead from "./TableHead";
 import TableRow from "./TableRow";
@@ -23,7 +24,7 @@ const Table = () => {
       ) : (
         <EmptyStates
           showNoSearchResultState
-          Message="No team member(s) found"
+          Message={i18n.t("noResultsFound")}
         />
       )}
     </Fragment>

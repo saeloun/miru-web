@@ -5,6 +5,7 @@ import { ClientsIcon } from "miruIcons";
 import { Avatar, Pagination } from "StyledComponents";
 
 import EmptyStates from "common/EmptyStates";
+import { i18n } from "../../../i18n";
 
 import ReportMobileRow from "./ReportMobileRow";
 
@@ -19,19 +20,13 @@ interface ContainerProps {
 const ReportHeader = () => (
   <div className="grid grid-cols-10 items-center gap-2 border-b py-4">
     <div className="col-span-4 text-left text-xs font-medium uppercase leading-4 tracking-widest text-muted-foreground">
-      PROJECT/
-      <br />
-      CLIENT
+      {i18n.t("reports.projectClient")}
     </div>
     <div className="col-span-4 px-2 text-left text-xs font-medium uppercase leading-4 tracking-widest text-muted-foreground">
-      TEAM MEMBER/
-      <br />
-      DATE
+      {i18n.t("reports.teamMemberDate")}
     </div>
     <div className="col-span-2 text-right text-xs font-medium uppercase leading-4 tracking-widest text-muted-foreground">
-      HOURS
-      <br />
-      LOGGED
+      {i18n.t("reports.hoursLogged")}
     </div>
   </div>
 );
@@ -111,7 +106,7 @@ export const TimeEntryReportMobileView = ({
                   </div>
                   {report.entries?.length > 0 && (
                     <p className="text-right font-sans text-sm font-medium text-foreground">
-                      Total Hours :{` ${getTotalHoursLogged(report.entries)}`}
+                      {i18n.t("reports.totalHours")} :{` ${getTotalHoursLogged(report.entries)}`}
                     </p>
                   )}
                 </div>
@@ -129,8 +124,8 @@ export const TimeEntryReportMobileView = ({
           showNoSearchResultState={timeEntryReport.filterCounter > 0}
           Message={
             timeEntryReport.filterCounter > 0
-              ? "No results match current filters. Try removing some filters."
-              : "There are no time entries added yet. You’ll see a summary of time entries added by your team."
+              ? i18n.t("reports.noResultsMatchFilters")
+              : i18n.t("reports.noTimeEntriesYet")
           }
         />
       )}

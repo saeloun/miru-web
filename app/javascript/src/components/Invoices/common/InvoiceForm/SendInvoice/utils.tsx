@@ -3,6 +3,7 @@ import { ApiStatus as InvoiceStatus } from "constants/index";
 import dayjs from "dayjs";
 import { currencyFormat } from "helpers";
 import * as Yup from "yup";
+import { i18n } from "../../../../../i18n";
 
 export const isEmailValid = (email: string): boolean => {
   const schema = Yup.string().email();
@@ -12,10 +13,10 @@ export const isEmailValid = (email: string): boolean => {
 
 export const emailSubject = (invoice: any, isSendReminder = false): string => {
   if (isSendReminder) {
-    return `Reminder to complete payments for unpaid invoice (${invoice.invoiceNumber})`;
+    return i18n.t("invoices.reminderSubject", { number: invoice.invoiceNumber });
   }
 
-  return `${invoice.company.name} sent you an invoice (${invoice.invoiceNumber})`;
+  return i18n.t("invoices.invoiceSentSubject", { company: invoice.company.name, number: invoice.invoiceNumber });
 };
 
 export const emailBody = (invoice: any, isSendReminder = false): string => {
@@ -29,10 +30,10 @@ export const emailBody = (invoice: any, isSendReminder = false): string => {
   );
 
   if (isSendReminder) {
-    return `${invoice.company.name} has sent you a reminder for invoice (${invoice.invoiceNumber}) that's due on ${dueDate}.`;
+    return i18n.t("invoices.reminderBody", { company: invoice.company.name, number: invoice.invoiceNumber, dueDate });
   }
 
-  return `${invoice.company.name} has sent you an invoice (${invoice.invoiceNumber}) for ${formattedAmount} that's due on ${dueDate}.`;
+  return i18n.t("invoices.invoiceSentBody", { company: invoice.company.name, number: invoice.invoiceNumber, amount: formattedAmount, dueDate });
 };
 
 export const isDisabled = (status: string): boolean =>
@@ -41,10 +42,10 @@ export const isDisabled = (status: string): boolean =>
 export const buttonText = (status: string): string => {
   switch (status) {
     case InvoiceStatus.SUCCESS:
-      return "🎉 Invoice will be sent!";
+      return i18n.t("invoices.invoiceWillBeSent");
     case InvoiceStatus.LOADING:
-      return "processing...";
+      return i18n.t("invoices.processing");
     default:
-      return "Send Invoice";
+      return i18n.t("invoices.sendInvoice");
   }
 };

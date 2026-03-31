@@ -2,6 +2,7 @@ import React from "react";
 
 import { invoicesApi } from "apis/api";
 import { Modal, Button } from "StyledComponents";
+import { i18n } from "../../../i18n";
 
 interface IProps {
   invoices_ids: any;
@@ -31,10 +32,9 @@ const BulkDeleteInvoices = ({
       }}
     >
       <div className="mb-8 mt-4 flex-col">
-        <h6 className="mb-2 text-2xl font-bold">Delete Invoices</h6>
+        <h6 className="mb-2 text-2xl font-bold">{i18n.t("invoices.deleteInvoices")}</h6>
         <p className="mt-2 font-normal">
-          Are you sure you want to delete these invoice?
-          <b className="font-bold" /> This action cannot be reversed.
+          {i18n.t("invoices.deleteInvoicesConfirm")}
         </p>
       </div>
       <div className="flex flex-col gap-2 sm:flex-row sm:gap-0">
@@ -46,7 +46,7 @@ const BulkDeleteInvoices = ({
             setShowBulkDeleteDialog(false);
           }}
         >
-          CANCEL
+          {i18n.t("cancel").toUpperCase()}
         </Button>
         <Button
           className="w-full sm:ml-2 sm:w-1/2"
@@ -56,7 +56,7 @@ const BulkDeleteInvoices = ({
             destroyInvoices(invoices_ids);
           }}
         >
-          DELETE
+          {i18n.t("delete").toUpperCase()}
         </Button>
       </div>
     </Modal>

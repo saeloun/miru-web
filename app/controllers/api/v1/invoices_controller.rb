@@ -69,17 +69,17 @@ class Api::V1::InvoicesController < Api::V1::ApplicationController
     recipients = recipients.reject(&:blank?)
 
     if recipients.empty?
-      return render json: { error: "Recipients are required" }, status: 422
+      return render json: { error: I18n.t("invoices_controller.send_invoice.recipients_required") }, status: 422
     end
 
     # Check recipient limit
     if recipients.size > 5
-      return render json: { error: "Email can only be sent to 5 recipients." }, status: 422
+      return render json: { error: I18n.t("invoices_controller.send_invoice.recipient_limit") }, status: 422
     end
 
     # Don't send if already paid
     if invoice.paid?
-      return render json: { error: "Invoice is already paid" }, status: 422
+      return render json: { error: I18n.t("invoices_controller.send_invoice.already_paid") }, status: 422
     end
 
     # Generate PDF
@@ -87,7 +87,7 @@ class Api::V1::InvoicesController < Api::V1::ApplicationController
       pdf_data = InvoicePayment::PdfGeneration.process(invoice, current_company.company_logo, root_url)
     rescue StandardError => e
       Rails.logger.error "Failed to generate PDF: #{e.message}"
-      return render json: { error: "Failed to generate PDF" }, status: 500
+      return render json: { error: I18n.t("invoices_controller.send_invoice.pdf_failed") }, status: 500
     end
 
     # Send email with PDF attachment
@@ -107,7 +107,7 @@ class Api::V1::InvoicesController < Api::V1::ApplicationController
     attrs[:sent_at] = Time.current if invoice.sent_at.nil?
     invoice.update!(attrs) if attrs.any?
 
-    render json: { message: "Invoice has been sent successfully" }, status: 200
+    render json: { message: I18n.t("invoices_controller.send_invoice.success") }, status: 200
   end
 
   def send_reminder
@@ -121,9 +121,9 @@ class Api::V1::InvoicesController < Api::V1::ApplicationController
         message: invoice_email_params[:message]
       ).send_reminder.deliver_later
 
-      render json: { message: "A reminder has been sent" }, status: 202
+      render json: { message: I18n.t("invoices_controller.send_reminder.success") }, status: 202
     else
-      render json: { error: "Reminders can only be sent for overdue invoices" }, status: 422
+      render json: { error: I18n.t("invoices_controller.send_reminder.overdue_only") }, status: 422
     end
   end
 
@@ -139,7 +139,7 @@ class Api::V1::InvoicesController < Api::V1::ApplicationController
     raise # Re-raise authorization errors
   rescue StandardError => e
     Rails.logger.error "Failed to generate PDF for invoice #{invoice.id}: #{e.message}"
-    render json: { error: "Failed to generate PDF" }, status: 500
+    render json: { error: I18n.t("invoices_controller.download.pdf_failed") }, status: 500
   end
 
   private

@@ -9,6 +9,7 @@ import { Button, Modal } from "StyledComponents";
 
 import Recipient from "./Recipient";
 import { emailSubject, emailBody, isDisabled, buttonText } from "./utils";
+import { i18n } from "../../../../../i18n";
 
 const SendInvoice = ({
   status,
@@ -61,8 +62,8 @@ const SendInvoice = ({
         <div className="mt-2 mb-6 flex items-center justify-between">
           <h6 className="form__title">
             {isSendReminder
-              ? "Send Invoice Reminder"
-              : `Send Invoice #${invoice.invoiceNumber}`}
+              ? i18n.t("invoices.sendInvoiceReminder")
+              : `${i18n.t("invoices.sendInvoice")} #${invoice.invoiceNumber}`}
           </h6>
           <button
             className="text-foreground"
@@ -81,13 +82,13 @@ const SendInvoice = ({
         </div>
         {!invoiceEmail?.recipients?.length && (
           <div className="mb-6 w-full items-center justify-center rounded bg-rose-100 p-2 text-center font-sans text-xs tracking-xs-widest text-rose-700">
-            <p>Please add email from client settings page</p>
+            <p>{i18n.t("invoices.addEmailFromClientSettings")}</p>
           </div>
         )}
         <form className="space-y-4">
           <fieldset className="field_with_errors flex flex-col">
             <label className="form__label mb-2" htmlFor="to">
-              To
+              {i18n.t("to")}
             </label>
             <div
               className={cn(`flex flex-wrap rounded bg-muted p-1.5`, {
@@ -106,7 +107,7 @@ const SendInvoice = ({
           </fieldset>
           <fieldset className="field_with_errors flex flex-col">
             <label className="form__label mb-2" htmlFor="subject">
-              Subject
+              {i18n.t("invoices.subject")}
             </label>
             <input
               className="rounded bg-muted p-1.5"
@@ -123,7 +124,7 @@ const SendInvoice = ({
           </fieldset>
           <fieldset className="field_with_errors flex flex-col">
             <label className="form__label mb-2" htmlFor="body">
-              Message
+              {i18n.t("invoices.message")}
             </label>
             <textarea
               className="rounded bg-muted p-1.5"
@@ -153,7 +154,7 @@ const SendInvoice = ({
               }
               onClick={e => handleSubmit(e, invoiceEmail)}
             >
-              {isSendReminder ? "Send Reminder" : buttonText(status)}
+              {isSendReminder ? i18n.t("invoices.sendReminder") : buttonText(status)}
             </Button>
           </div>
         </form>

@@ -1,6 +1,7 @@
 import React from "react";
 
 import { projectApi } from "apis/api";
+import { i18n } from "../../../i18n";
 import { Button } from "components/ui/button";
 import {
   Dialog,
@@ -39,11 +40,9 @@ const DeleteProject = ({
     >
       <DialogContent className="max-w-md">
         <DialogHeader>
-          <DialogTitle>Delete project</DialogTitle>
+          <DialogTitle>{i18n.t("projects.deleteProject")}</DialogTitle>
           <DialogDescription>
-            Remove{" "}
-            <span className="font-medium text-foreground">{project.name}</span>{" "}
-            from your workspace. This action cannot be reversed.
+            {i18n.t("projects.deleteProjectConfirm", { name: project.name })}
           </DialogDescription>
         </DialogHeader>
         <DialogFooter className="gap-3 sm:justify-end">
@@ -54,7 +53,7 @@ const DeleteProject = ({
               setShowDeleteDialog(false);
             }}
           >
-            Cancel
+            {i18n.t("cancel")}
           </Button>
           <Button
             type="button"
@@ -63,7 +62,7 @@ const DeleteProject = ({
               deleteProject(project);
             }}
           >
-            Delete project
+            {i18n.t("projects.deleteProject")}
           </Button>
         </DialogFooter>
       </DialogContent>

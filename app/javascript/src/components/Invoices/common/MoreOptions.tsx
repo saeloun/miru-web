@@ -8,6 +8,7 @@ import {
   DownloadSimpleIcon,
   ReminderIcon,
 } from "miruIcons";
+import { i18n } from "../../../i18n";
 
 const MoreOptions: FC<MoreOptionsProps> = ({
   deleteInvoice,
@@ -27,7 +28,7 @@ const MoreOptions: FC<MoreOptionsProps> = ({
         onClick={() => downloadInvoice(invoice)}
       >
         <DownloadSimpleIcon className="mr-4" size={16} weight="bold" />
-        Download
+        {i18n.t("download")}
       </li>
     )}
     <li
@@ -36,7 +37,7 @@ const MoreOptions: FC<MoreOptionsProps> = ({
       onClick={showHistory}
     >
       <ClockIcon className="mr-4" size={16} weight="bold" />
-      View History
+      {i18n.t("invoices.viewHistory")}
     </li>
     {["sent", "overdue", "viewed"].includes(invoice?.status) && (
       <>
@@ -45,14 +46,14 @@ const MoreOptions: FC<MoreOptionsProps> = ({
           onClick={() => markInvoiceAsPaid(invoice.id)}
         >
           <CurrencyCircleDollarIcon className="mr-4" size={16} weight="bold" />
-          Mark as Paid
+          {i18n.t("invoices.markAsPaid")}
         </li>
         <li
           className="flex cursor-pointer items-center py-2 px-4 text-primary hover:bg-muted"
           onClick={wavieInvoice}
         >
           <img className="mr-4" height="16px" src={WaiveSVG} width="16px" />
-          Waive Off
+          {i18n.t("invoices.waiveOff")}
         </li>
       </>
     )}
@@ -68,7 +69,7 @@ const MoreOptions: FC<MoreOptionsProps> = ({
         }}
       >
         <ReminderIcon className="mr-4" id="reminderIcon" size={16} />
-        Send Reminder
+        {i18n.t("invoices.sendReminder")}
       </li>
     )}
     <li
@@ -76,7 +77,7 @@ const MoreOptions: FC<MoreOptionsProps> = ({
       onClick={deleteInvoice}
     >
       <DeleteIcon className="mr-4" size={16} weight="bold" />
-      Delete
+      {i18n.t("delete")}
     </li>
   </ul>
 );

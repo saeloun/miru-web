@@ -6,6 +6,7 @@ import { MagnifyingGlass, X } from "phosphor-react";
 
 import { projectApi } from "apis/api";
 import CustomRadioButton from "common/CustomRadio";
+import { i18n } from "../../../../i18n";
 import { InputField, InputErrors } from "common/FormikFields";
 import { Button } from "components/ui/button";
 import {
@@ -152,7 +153,7 @@ const ProjectForm = ({
     <div className="z-50 flex h-full w-full flex-col">
       <div className="flex items-center justify-between border-b border-border bg-background px-4 py-3">
         <span className="w-full pl-6 text-center text-base font-semibold leading-5 text-foreground">
-          {editProjectData?.id ? "Edit Project Details" : "Add New Project"}
+          {editProjectData?.id ? i18n.t("projects.editProjectDetails") : i18n.t("projects.addNewProject")}
         </span>
         <X
           className="cursor-pointer text-foreground"
@@ -178,7 +179,7 @@ const ProjectForm = ({
                   autoComplete="off"
                   id="client"
                   inputBoxClassName="border focus:border-primary"
-                  label="Client"
+                  label={i18n.t("client")}
                   name="client"
                   setFieldError={setFieldError}
                   setFieldValue={values.client}
@@ -194,11 +195,11 @@ const ProjectForm = ({
                 <Dialog open={showClientList} onOpenChange={setShowClientList}>
                   <DialogContent className="max-w-sm">
                     <DialogHeader>
-                      <DialogTitle>Select client</DialogTitle>
+                      <DialogTitle>{i18n.t("projects.selectClient")}</DialogTitle>
                     </DialogHeader>
                     <div className="relative mt-2 flex w-full items-center">
                       <input
-                        placeholder="Search"
+                        placeholder={i18n.t("search")}
                         type="text"
                         value={clientName}
                         className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm font-medium text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
@@ -238,7 +239,7 @@ const ProjectForm = ({
                         ))
                       ) : (
                         <span className="px-3 py-4 text-sm text-muted-foreground">
-                          No clients present
+                          {i18n.t("projects.noClientsPresent")}
                         </span>
                       )}
                     </div>
@@ -248,7 +249,7 @@ const ProjectForm = ({
                   autoComplete="off"
                   id="project"
                   inputBoxClassName="border focus:border-primary"
-                  label="Project Name"
+                  label={i18n.t("projects.projectName")}
                   name="project"
                   readOnly={false}
                   setFieldError={setFieldError}
@@ -261,7 +262,7 @@ const ProjectForm = ({
                 />
                 <div>
                   <span className="text-base font-normal text-foreground">
-                    Project Type
+                    {i18n.t("projects.projectType")}
                   </span>
                   <div className="flex">
                     <CustomRadioButton
@@ -271,7 +272,7 @@ const ProjectForm = ({
                       groupName="projectType"
                       id="Billable"
                       key="Billable"
-                      label="Billable"
+                      label={i18n.t("billable")}
                       value={values.isBillable ? "Billable" : "Non-Billable"}
                       handleOnChange={() => {
                         setFieldValue("isBillable", true, true);
@@ -284,7 +285,7 @@ const ProjectForm = ({
                       groupName="projectType"
                       id="Non-Billable"
                       key="Non-Billable"
-                      label="Non-Billable"
+                      label={i18n.t("nonBillable")}
                       value={values.isBillable ? "Billable" : "Non-Billable"}
                       handleOnChange={() => {
                         setFieldValue("isBillable", false, true);
@@ -298,7 +299,7 @@ const ProjectForm = ({
                 className="h-11 w-full text-base font-semibold"
                 type="submit"
               >
-                {isEdit ? "Edit Project" : "Add Project"}
+                {isEdit ? i18n.t("projects.editProject") : i18n.t("projects.addProject")}
               </Button>
             </Form>
           );

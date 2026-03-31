@@ -3,6 +3,7 @@ import { LocalStorageKeys } from "constants/index";
 import React from "react";
 
 import { XIcon } from "miruIcons";
+import { i18n } from "../../../../i18n";
 
 const AppliedFilters = ({
   filterParams,
@@ -80,7 +81,7 @@ const AppliedFilters = ({
             setFilterParams(filterIntialValues);
           }}
         >
-          <XIcon size={12} /> Clear all
+          <XIcon size={12} /> {i18n.t("invoices.resetFilters")}
         </span>
       )}
     </div>

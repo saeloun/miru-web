@@ -1,6 +1,13 @@
 import { Roles } from "../constants/index";
 import React, { useEffect, useState } from "react";
 import UserContext from "../context/UserContext";
+import { LocaleProvider } from "../context/LocaleContext";
+import {
+  loadLocale,
+  getStoredLocale,
+  setStoredLocale,
+  detectBrowserLocale,
+} from "../i18n";
 import Loader from "../common/Loader/index";
 import Main from "./Main";
 import { applyLocale, initializeLocale } from "../i18n";
@@ -27,6 +34,8 @@ const AppWithUserData = (props: any) => {
     companyRole: null,
     loading: !isAuthPage,
   });
+  const [localeReady, setLocaleReady] = useState(false);
+  const [initialLocale, setInitialLocale] = useState("en");
 
   // Fetch user details from _me endpoint on mount
   useEffect(() => {
@@ -94,6 +103,26 @@ const AppWithUserData = (props: any) => {
     fetchUserDetails();
   }, []);
 
+  useEffect(() => {
+    const initLocale = async () => {
+      let locale = "en";
+      if (userData.user?.locale) {
+        locale = userData.user.locale;
+      } else {
+        const stored = getStoredLocale();
+        locale = stored !== "en" ? stored : detectBrowserLocale();
+      }
+      await loadLocale(locale);
+      setStoredLocale(locale);
+      setInitialLocale(locale);
+      setLocaleReady(true);
+    };
+
+    if (!userData.loading) {
+      initLocale();
+    }
+  }, [userData.loading, userData.user?.locale]);
+
   const { user, company, companyRole, loading } = userData;
 
   const confirmedUser = user?.confirmed;
@@ -141,8 +170,7 @@ const AppWithUserData = (props: any) => {
     }
   }, [company]);
 
-  // Show loading spinner while fetching user data
-  if (loading) {
+  if (loading || !localeReady) {
     return <Loader className="h-screen" />;
   }
 
@@ -152,6 +180,7 @@ const AppWithUserData = (props: any) => {
   };
 
   return (
+    <LocaleProvider initialLocale={initialLocale}>
     <UserContext.Provider
       value={{
         locale,
@@ -185,6 +214,7 @@ const AppWithUserData = (props: any) => {
         user={user}
       />
     </UserContext.Provider>
+    </LocaleProvider>
   );
 };
 

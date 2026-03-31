@@ -7,6 +7,7 @@ import Header from "./Header";
 import Table from "./Table";
 
 import { fetchMultipleNewLineItems } from "../common/utils";
+import { i18n } from "../../../i18n";
 
 const MultipleEntriesModal = ({
   selectedClient,
@@ -144,7 +145,7 @@ const MultipleEntriesModal = ({
         />
         {loading ? (
           <p className="tracking-wide flex items-center justify-center text-base font-medium text-primary">
-            Loading...
+            {i18n.t("loading")}
           </p>
         ) : (
           <div className="mx-6 flex-1 overflow-y-auto">
@@ -158,7 +159,7 @@ const MultipleEntriesModal = ({
               />
             ) : (
               <p className="tracking-wide flex items-center justify-center text-base font-medium text-primary">
-                No Data Found
+                {i18n.t("noResultsFound")}
               </p>
             )}
           </div>
@@ -187,7 +188,7 @@ const MultipleEntriesModal = ({
       />
       {loading ? (
         <p className="tracking-wide flex items-center justify-center text-base font-medium text-primary">
-          Loading...
+          {i18n.t("loading")}
         </p>
       ) : (
         <div className="mx-2 flex-1 overflow-y-auto">
@@ -201,7 +202,7 @@ const MultipleEntriesModal = ({
             />
           ) : (
             <p className="tracking-wide flex items-center justify-center text-base font-medium text-primary">
-              No Data Found
+              {i18n.t("noResultsFound")}
             </p>
           )}
         </div>

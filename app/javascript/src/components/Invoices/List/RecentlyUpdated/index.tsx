@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 
 import RecentlyUpdatedCard from "./RecentlyUpdatedCard";
+import { i18n } from "../../../../i18n";
 
 const RecentlyUpdated = ({ recentlyUpdatedInvoices }) => {
   const [visibleCount, setVisibleCount] = useState(10);
@@ -38,11 +39,10 @@ const RecentlyUpdated = ({ recentlyUpdatedInvoices }) => {
   return (
     <div className="mt-8 mb-8">
       <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <h2 className="text-xl font-bold text-gray-900">Recently Updated</h2>
+        <h2 className="text-xl font-bold text-gray-900">{i18n.t("invoices.recentlyUpdated")}</h2>
         {recentlyUpdatedInvoices?.length > 0 && (
           <span className="rounded-full bg-muted px-3 py-1 text-sm text-muted-foreground">
-            Showing {Math.min(visibleCount, recentlyUpdatedInvoices.length)} of{" "}
-            {recentlyUpdatedInvoices.length}
+            {i18n.t("invoices.showingOf", { shown: Math.min(visibleCount, recentlyUpdatedInvoices.length), total: recentlyUpdatedInvoices.length })}
           </span>
         )}
       </div>
@@ -60,12 +60,12 @@ const RecentlyUpdated = ({ recentlyUpdatedInvoices }) => {
               <div className="flex h-44 items-center justify-center rounded-xl border border-dashed border-border bg-muted/30 lg:w-40 lg:flex-shrink-0">
                 <div className="text-center">
                   <p className="text-sm text-muted-foreground">
-                    Scroll for more
+                    {i18n.t("invoices.scrollForMore")}
                   </p>
                   <p className="text-lg font-bold text-foreground">
                     {recentlyUpdatedInvoices.length - visibleCount}
                   </p>
-                  <p className="text-xs text-muted-foreground">remaining</p>
+                  <p className="text-xs text-muted-foreground"></p>
                 </div>
               </div>
             )}
@@ -73,7 +73,7 @@ const RecentlyUpdated = ({ recentlyUpdatedInvoices }) => {
         ) : (
           <div className="w-full py-12 text-center">
             <p className="text-base text-muted-foreground">
-              No recently updated invoices
+              {i18n.t("invoices.noRecentlyUpdated")}
             </p>
           </div>
         )}

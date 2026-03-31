@@ -10,11 +10,12 @@ import getStatusCssClass from "utils/getBadgeStatus";
 import { dateRangeOptions, statusOption, groupBy } from "./filterOptions";
 import { customStyles } from "./style";
 
+import { i18n } from "../../../i18n";
 import { useEntry } from "../context/EntryContext";
 
 const dateSchema = Yup.object().shape({
-  fromDate: Yup.string().required("Must include From date"),
-  toDate: Yup.string().required("Must include To date"),
+  fromDate: Yup.string().required(i18n.t("reports.mustIncludeFromDate")),
+  toDate: Yup.string().required(i18n.t("reports.mustIncludeToDate")),
 });
 
 const FilterSideBar = ({
@@ -151,7 +152,7 @@ const FilterSideBar = ({
     <div className="sidebar__container flex flex-col overflow-y-auto">
       <div>
         <div className="mb-7 flex items-center justify-between px-5 pt-5">
-          <h4 className="text-base font-bold">Filters</h4>
+          <h4 className="text-base font-bold">{i18n.t("filters")}</h4>
           <button onClick={() => setIsFilterVisible(false)}>
             <XIcon size={12} />
           </button>
@@ -159,7 +160,7 @@ const FilterSideBar = ({
         <div className="sidebar__filters">
           <ul>
             <li className="px-5 pb-5">
-              <h5 className="text-xs font-normal">Date Range</h5>
+              <h5 className="text-xs font-normal">{i18n.t("dateRange")}</h5>
               <Select
                 classNamePrefix="react-select-filter"
                 name="dateRange"
@@ -192,7 +193,7 @@ const FilterSideBar = ({
                       className="sidebar__reset cursor-pointer"
                       onClick={resetCustomDatePicker}
                     >
-                      Cancel
+                      {i18n.t("cancel")}
                     </button>
                     <button
                       className={
@@ -209,14 +210,14 @@ const FilterSideBar = ({
                       }
                       onClick={submitCustomDatePicker}
                     >
-                      Done
+                      {i18n.t("done")}
                     </button>
                   </div>
                 </div>
               )}
             </li>
             <li className="px-5 pb-5">
-              <h5 className="text-xs font-normal">Clients</h5>
+              <h5 className="text-xs font-normal">{i18n.t("reports.clients")}</h5>
               <Select
                 isMulti
                 classNamePrefix="react-select-filter"
@@ -228,7 +229,7 @@ const FilterSideBar = ({
               />
             </li>
             <li className="px-5 pb-5">
-              <h5 className="text-xs font-normal">Team Members</h5>
+              <h5 className="text-xs font-normal">{i18n.t("reports.teamMembers")}</h5>
               <Select
                 isMulti
                 classNamePrefix="react-select-filter"
@@ -240,7 +241,7 @@ const FilterSideBar = ({
               />
             </li>
             <li className="px-5 pb-5">
-              <h5 className="text-xs font-normal">Status</h5>
+              <h5 className="text-xs font-normal">{i18n.t("status")}</h5>
               <Select
                 isMulti
                 classNamePrefix="react-select-filter"
@@ -253,7 +254,7 @@ const FilterSideBar = ({
               />
             </li>
             <li className="px-5 pb-5">
-              <h5 className="text-xs font-normal">Group By</h5>
+              <h5 className="text-xs font-normal">{i18n.t("reports.groupBy")}</h5>
               <Select
                 classNamePrefix="react-select-filter"
                 name="groupBy"
@@ -268,7 +269,7 @@ const FilterSideBar = ({
       </div>
       <div className="sidebar__footer">
         <button className="sidebar__reset" onClick={resetFilter}>
-          RESET
+          {i18n.t("reset")}
         </button>
         <button
           disabled={handleApplyBtnDisable()}
@@ -279,7 +280,7 @@ const FilterSideBar = ({
           }
           onClick={submitApplyFilter}
         >
-          APPLY
+          {i18n.t("apply")}
         </button>
       </div>
     </div>

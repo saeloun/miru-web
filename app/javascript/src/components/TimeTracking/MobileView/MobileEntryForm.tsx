@@ -23,6 +23,7 @@ import CustomDatePicker from "common/CustomDatePicker";
 import { CustomInputText } from "common/CustomInputText";
 import { CustomTextareaAutosize } from "common/CustomTextareaAutosize";
 import { useUserContext } from "../../../context/UserContext";
+import { i18n } from "../../../i18n";
 
 import DeleteEntryModal from "common/DeleteEntryModal";
 
@@ -98,18 +99,18 @@ const AddEntryMobile = ({
   }, [client]);
 
   const taskTypes = [
-    { value: "development", label: "Development" },
-    { value: "meeting", label: "Meeting" },
-    { value: "research", label: "Research" },
-    { value: "planning", label: "Planning" },
-    { value: "testing", label: "Testing" },
-    { value: "documentation", label: "Documentation" },
-    { value: "review", label: "Code Review" },
-    { value: "debugging", label: "Debugging" },
-    { value: "deployment", label: "Deployment" },
-    { value: "support", label: "Support" },
-    { value: "training", label: "Training" },
-    { value: "other", label: "Other" },
+    { value: "development", label: i18n.t("taskTypes.development") },
+    { value: "meeting", label: i18n.t("taskTypes.meeting") },
+    { value: "research", label: i18n.t("taskTypes.research") },
+    { value: "planning", label: i18n.t("taskTypes.planning") },
+    { value: "testing", label: i18n.t("taskTypes.testing") },
+    { value: "documentation", label: i18n.t("taskTypes.documentation") },
+    { value: "review", label: i18n.t("taskTypes.codeReview") },
+    { value: "debugging", label: i18n.t("taskTypes.debugging") },
+    { value: "deployment", label: i18n.t("taskTypes.deployment") },
+    { value: "support", label: i18n.t("taskTypes.support") },
+    { value: "training", label: i18n.t("taskTypes.training") },
+    { value: "other", label: i18n.t("taskTypes.other") },
   ];
 
   const getTaskTypeLabel = value => {
@@ -171,7 +172,7 @@ const AddEntryMobile = ({
       >
         <SidePanel.Header className="mb-2 flex items-center justify-between bg-primary px-5 py-5 text-white lg:bg-white lg:font-bold lg:text-foreground">
           <span className="flex w-full items-center justify-center pl-6 text-base font-medium leading-5">
-            {editEntryId ? "Edit Time Entry" : "New Time Entry"}
+            {editEntryId ? i18n.t("timeTracking.editTimeEntry") : i18n.t("timeTracking.newTimeEntry")}
           </span>
           <Button style="ternary" onClick={handleClose}>
             <XIcon className="text-white lg:text-foreground" size={16} />
@@ -191,7 +192,7 @@ const AddEntryMobile = ({
                     autoFocus
                     disabled={showClientList}
                     id="Client"
-                    label="Client"
+                    label={i18n.t("client")}
                     name="Client"
                     type="text"
                     value={client && client}
@@ -212,7 +213,7 @@ const AddEntryMobile = ({
                     {clientList.length > 0 && (
                       <div className="relative mt-2 flex w-full items-center">
                         <input
-                          placeholder="Search"
+                          placeholder={i18n.t("search")}
                           type="text"
                           value={searchQuery}
                           className="focus:outline-none w-full rounded bg-muted p-2
@@ -258,7 +259,7 @@ const AddEntryMobile = ({
                       ))
                     ) : (
                       <div className="mt-5 text-center">
-                        No Clients present.
+                        {i18n.t("timeTracking.selectClient")}
                       </div>
                     )}
                   </MobileMoreOptions>
@@ -274,7 +275,7 @@ const AddEntryMobile = ({
                   <CustomInputText
                     disabled={showProjectList}
                     id="Project"
-                    label="Project"
+                    label={i18n.t("project")}
                     name="Project"
                     type="text"
                     value={project}
@@ -295,7 +296,7 @@ const AddEntryMobile = ({
                     {client && projectList.length > 0 && (
                       <div className="relative mt-2 flex w-full items-center">
                         <input
-                          placeholder="Search"
+                          placeholder={i18n.t("search")}
                           type="text"
                           value={projectSearchQuery}
                           className="focus:outline-none w-full rounded bg-muted p-2
@@ -341,8 +342,8 @@ const AddEntryMobile = ({
                     ) : (
                       <div className="mt-5 text-center">
                         {client
-                          ? "No project(s) present for selected client."
-                          : "Please select client."}
+                          ? i18n.t("timeTracking.selectProject")
+                          : i18n.t("timeTracking.selectClientFirst")}
                       </div>
                     )}
                   </MobileMoreOptions>
@@ -351,7 +352,7 @@ const AddEntryMobile = ({
               <div className="py-3">
                 <CustomTextareaAutosize
                   id="Description"
-                  label="Description"
+                  label={i18n.t("description")}
                   maxRows={12}
                   name="Description"
                   rows={5}
@@ -367,7 +368,7 @@ const AddEntryMobile = ({
                   <CustomInputText
                     disabled
                     id="date"
-                    label="Date"
+                    label={i18n.t("date")}
                     name="date"
                     type="text"
                     value={dayjs(selectedDate).format("MM.DD.YYYY")}
@@ -401,7 +402,7 @@ const AddEntryMobile = ({
                   <CustomInputText
                     disabled={showTaskTypeList}
                     id="TaskType"
-                    label="Task Type"
+                    label={i18n.t("timeTracking.taskType")}
                     name="TaskType"
                     type="text"
                     value={getTaskTypeLabel(taskType)}
@@ -467,7 +468,7 @@ const AddEntryMobile = ({
                   onClick={handleDuplicate}
                 >
                   <CopyIcon className="mr-2 text-primary" size={20} />
-                  <span className="font-bold">Duplicate</span>
+                  <span className="font-bold">{i18n.t("timeTracking.copyLastWeek")}</span>
                 </Button>
                 <Button
                   className="flex w-1/2 items-center justify-center rounded border border-destructive py-2 text-destructive"
@@ -476,7 +477,7 @@ const AddEntryMobile = ({
                   }}
                 >
                   <DeleteIcon className="mr-2 text-destructive" size={20} />
-                  <span className="font-bold">Delete</span>
+                  <span className="font-bold">{i18n.t("delete")}</span>
                 </Button>
               </div>
             ) : null}
@@ -489,7 +490,7 @@ const AddEntryMobile = ({
                 style="primary"
                 onClick={handleEdit}
               >
-                Save Changes
+                {i18n.t("timeTracking.saveChanges")}
               </Button>
             ) : (
               <Button
@@ -501,7 +502,7 @@ const AddEntryMobile = ({
                   handleSave();
                 }}
               >
-                Add Entry
+                {i18n.t("timeTracking.addEntry")}
               </Button>
             )}
           </SidePanel.Footer>

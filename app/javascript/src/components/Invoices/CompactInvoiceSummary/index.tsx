@@ -7,6 +7,7 @@ import {
   ArrowCounterClockwise,
   ArrowUpRight,
 } from "phosphor-react";
+import { i18n } from "../../../i18n";
 
 interface CompactInvoiceSummaryProps {
   summary: {
@@ -44,7 +45,7 @@ const CompactInvoiceSummary: React.FC<CompactInvoiceSummaryProps> = ({
   const summaryItems = [
     {
       id: "all",
-      label: "All Invoices",
+      label: i18n.t("invoiceDashboard.allInvoices"),
       value:
         summary.overdueAmount + summary.outstandingAmount + summary.draftAmount,
       icon: ArrowCounterClockwise,
@@ -55,7 +56,7 @@ const CompactInvoiceSummary: React.FC<CompactInvoiceSummaryProps> = ({
     },
     {
       id: "overdue",
-      label: "Overdue",
+      label: i18n.t("invoices.overdue"),
       value: summary.overdueAmount,
       icon: AlertTriangle,
       colorClass: "text-red-600",
@@ -64,7 +65,7 @@ const CompactInvoiceSummary: React.FC<CompactInvoiceSummaryProps> = ({
     },
     {
       id: "outstanding",
-      label: "Outstanding",
+      label: i18n.t("invoices.outstanding"),
       value: summary.outstandingAmount,
       icon: Clock,
       colorClass: "text-amber-600",
@@ -78,7 +79,7 @@ const CompactInvoiceSummary: React.FC<CompactInvoiceSummaryProps> = ({
     },
     {
       id: "draft",
-      label: "Draft",
+      label: i18n.t("invoices.draft"),
       value: summary.draftAmount,
       icon: FileText,
       colorClass: "text-gray-600",
@@ -91,7 +92,7 @@ const CompactInvoiceSummary: React.FC<CompactInvoiceSummaryProps> = ({
     <div className={`${className}`}>
       <div className="flex flex-col lg:flex-row gap-3">
         <h3 className="text-sm font-medium text-gray-700 lg:hidden">
-          Invoice Summary
+          {i18n.t("invoices.invoices")}
         </h3>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
           {summaryItems.map(item => {
@@ -118,7 +119,7 @@ const CompactInvoiceSummary: React.FC<CompactInvoiceSummaryProps> = ({
                       className={`text-lg font-semibold ${item.colorClass} truncate`}
                     >
                       {item.isReset ? (
-                        <span className="text-sm">Reset filters</span>
+                        <span className="text-sm">{i18n.t("invoices.resetFilters")}</span>
                       ) : (
                         currencyFormat(baseCurrency, item.value)
                       )}

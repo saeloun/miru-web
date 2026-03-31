@@ -25,6 +25,7 @@ import {
 import { getReports } from "./fetchReport";
 import NavigationFilter from "./NavigationFilter";
 
+import { i18n } from "../../../i18n";
 import { useEntry } from "../context/EntryContext";
 import { REVENUE_REPORT_PAGE } from "../RevenueByClientReport/util";
 import { TIME_ENTRY_REPORT_PAGE } from "../TimeEntryReport/utils";
@@ -92,7 +93,7 @@ const Header = ({
             to="/reports"
             type="button"
             className="inline-flex h-10 w-10 items-center justify-center rounded-md text-foreground transition-colors hover:bg-muted"
-            aria-label="Back to reports"
+            aria-label={i18n.t("reports.backToReports")}
           >
             <ArrowLeftIcon />
           </Link>
@@ -103,7 +104,7 @@ const Header = ({
             <button
               className="relative rounded-md p-3 text-foreground transition-colors hover:bg-muted lg:ml-7"
               onClick={() => handleFilterBtnClick(isDesktop)}
-              aria-label="Toggle report filters"
+              aria-label={i18n.t("reports.toggleReportFilters")}
             >
               {isDesktop ? (
                 <>
@@ -138,7 +139,7 @@ const Header = ({
                 }}
               >
                 <FilterIcon className="mr-4" color="#7C5DEE" size={16} />{" "}
-                Filters
+                {i18n.t("filters")}
               </li>
               {showExportButon && (
                 <Fragment>
@@ -151,7 +152,7 @@ const Header = ({
                       }}
                     >
                       <FileCsvIcon color="#5E58F1" size={16} weight="bold" />
-                      <span className="ml-3 text-sm">Export as CSV</span>
+                      <span className="ml-3 text-sm">{i18n.t("reports.exportAsCsv")}</span>
                     </button>
                   </li>
                   <li>
@@ -163,7 +164,7 @@ const Header = ({
                       }}
                     >
                       <FilePdfIcon color="#5E58F1" size={16} weight="bold" />
-                      <span className="ml-3 text-sm">Export as PDF</span>
+                      <span className="ml-3 text-sm">{i18n.t("reports.exportAsPdf")}</span>
                     </button>
                   </li>
                 </Fragment>
@@ -185,7 +186,7 @@ const Header = ({
                 >
                   <ShareIcon size={18} weight="bold" />
                   <span className="text-sm font-semibold uppercase tracking-[0.18em]">
-                    Export
+                    {i18n.t("reports.export")}
                   </span>
                   <CaretDownIcon size={18} weight="bold" />
                 </Button>
@@ -198,7 +199,7 @@ const Header = ({
                   }}
                 >
                   <FileCsvIcon color="currentColor" size={16} weight="bold" />
-                  <span className="ml-2">Export as CSV</span>
+                  <span className="ml-2">{i18n.t("reports.exportAsCsv")}</span>
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onSelect={() => {
@@ -207,7 +208,7 @@ const Header = ({
                   }}
                 >
                   <FilePdfIcon color="currentColor" size={16} weight="bold" />
-                  <span className="ml-2">Export as PDF</span>
+                  <span className="ml-2">{i18n.t("reports.exportAsPdf")}</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -231,7 +232,7 @@ const Header = ({
                     weight="bold"
                   />
                   <span className="ml-1 whitespace-nowrap text-xs font-bold tracking-widest text-primary">
-                    CLEAR ALL
+                    {i18n.t("reports.clearAll")}
                   </span>
                 </button>
               </li>

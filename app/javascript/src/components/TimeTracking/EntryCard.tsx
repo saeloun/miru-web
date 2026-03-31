@@ -7,6 +7,7 @@ import { Badge } from "../ui/badge";
 import { cn } from "../../lib/utils";
 import { useUserContext } from "context/UserContext";
 import { Roles } from "../../constants";
+import { i18n } from "../../i18n";
 
 interface props {
   id: number;
@@ -113,7 +114,7 @@ const EntryCard: React.FC<props> = ({
                     {minToHHMM(duration)}
                   </div>
                   <div className="text-xs uppercase tracking-wider text-muted-foreground">
-                    hours
+                    {i18n.t("hours")}
                   </div>
                 </div>
               </div>
@@ -171,7 +172,7 @@ const EntryCard: React.FC<props> = ({
                 </div>
                 <div>
                   <div className="mb-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                    Time Logged
+                    {i18n.t("timeTracking.timeLogged")}
                   </div>
                   <div className="text-3xl font-bold text-foreground tabular-nums">
                     {minToHHMM(duration)}
@@ -191,10 +192,10 @@ const EntryCard: React.FC<props> = ({
                     e.stopPropagation();
                     handleResumeTimer({ client, project, projectId, note });
                   }}
-                  title="Resume timer"
+                  title={i18n.t("timeTracking.resumeTimer")}
                 >
                   <Play className="mr-1 h-4 w-4" />
-                  Resume
+                  {i18n.t("timeTracking.resume")}
                 </Button>
                 <div className="flex items-center gap-1 opacity-0 transition-all duration-200 group-hover:opacity-100">
                   <Button
@@ -206,7 +207,7 @@ const EntryCard: React.FC<props> = ({
                       setEditEntryId(id);
                       setNewEntryView(true);
                     }}
-                    title="Edit entry"
+                    title={i18n.t("timeTracking.editEntry")}
                   >
                     <PencilSimple className="h-4 w-4" />
                   </Button>
@@ -218,7 +219,7 @@ const EntryCard: React.FC<props> = ({
                       e.stopPropagation();
                       handleDeleteEntry(id);
                     }}
-                    title="Delete entry"
+                    title={i18n.t("timeTracking.deleteEntry")}
                   >
                     <Trash className="h-4 w-4" />
                   </Button>

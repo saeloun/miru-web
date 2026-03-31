@@ -15,6 +15,7 @@ import { useNavigate } from "react-router-dom";
 import { Button, Toastr, Tooltip } from "StyledComponents";
 
 import MoreOptions from "../MoreOptions";
+import { i18n } from "../../../../i18n";
 
 const TableRow = ({
   invoice,
@@ -155,7 +156,7 @@ const TableRow = ({
               {issueDate}
             </h1>
             <h3 className="text-xs font-normal text-muted-foreground lg:text-sm">
-              Due on {dueDate}
+              {i18n.t("invoices.dueDate")}: {dueDate}
             </h3>
           </td>
         )}
@@ -247,7 +248,7 @@ const TableRow = ({
                 <ArrowLeftIcon className="text-white" size={16} weight="bold" />
               </Button>
               <div className="flex h-12 w-full items-center justify-center bg-primary px-3 text-white">
-                {isSendReminder ? "Send Invoice Reminder" : "Send Invoice"}
+                {isSendReminder ? i18n.t("invoices.sendInvoiceReminder") : i18n.t("invoices.sendInvoice")}
               </div>
               <button
                 className="mr-4 text-foreground"

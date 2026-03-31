@@ -8,6 +8,7 @@ import ManualEntry from "../ManualEntry";
 import NewLineItemRow from "../NewLineItemRow";
 import NewLineItemTable from "../NewLineItemTable";
 import { fetchNewLineItems } from "../utils";
+import { i18n } from "../../../../i18n";
 
 const InvoiceTable = ({
   clientCurrency,
@@ -90,7 +91,7 @@ const InvoiceTable = ({
 
     return (
       <div className="flex h-10 items-center justify-center rounded-md border border-border/60 bg-card px-4 text-sm text-muted-foreground sm:h-48">
-        Please select Client to add line item.
+        {i18n.t("invoices.selectAClient")}
       </div>
     );
   };
@@ -109,11 +110,11 @@ const InvoiceTable = ({
               }`}
               onClick={() => setAddNew(!addNew)}
             >
-              + NEW LINE ITEM
+              + {i18n.t("invoices.lineItems").toUpperCase()}
             </button>
             {!selectedClient && (
               <span className="invisible absolute top-full left-1/3 ml-10 rounded bg-card p-2 text-sm font-bold text-muted-foreground">
-                Please add client before adding line items
+                {i18n.t("invoices.selectAClient")}
               </span>
             )}
           </td>
@@ -144,7 +145,7 @@ const InvoiceTable = ({
       <tr>
         <td colSpan={5}>
           <div className="shadow-2 mt-4 flex h-10 w-full items-center justify-center rounded-md border border-border/60 bg-card px-4 text-sm text-muted-foreground sm:h-48">
-            Please select Client to add line item.
+            {i18n.t("invoices.selectAClient")}
           </div>
         </td>
       </tr>

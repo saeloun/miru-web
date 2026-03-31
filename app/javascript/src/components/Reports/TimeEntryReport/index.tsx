@@ -58,6 +58,7 @@ import {
 } from "../../ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from "../../ui/card";
 import { cn } from "../../../lib/utils";
+import { i18n } from "../../../i18n";
 import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
 import { Calendar as CalendarComponent } from "../../ui/calendar";
 
@@ -93,7 +94,7 @@ const ReportGroupTable: React.FC<{
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <CardTitle>{group.label}</CardTitle>
           <div className="flex items-center space-x-2">
-            <span className="text-sm text-muted-foreground">Total:</span>
+            <span className="text-sm text-muted-foreground">{i18n.t("reports.totalLabel")}</span>
             <span className="text-lg font-bold text-indigo-600">
               {getTotalHoursForGroup(group)}
             </span>
@@ -142,7 +143,7 @@ const ReportGroupTable: React.FC<{
                     colSpan={columns.length}
                     className="h-24 text-center"
                   >
-                    No results.
+                    {i18n.t("reports.noResults")}
                   </TableCell>
                 </TableRow>
               )}
@@ -385,7 +386,7 @@ const TimeEntryReport: React.FC = () => {
   const columns: ColumnDef<TimeEntry>[] = [
     {
       accessorKey: "workDate",
-      header: "Date",
+      header: i18n.t("reports.dateHeader"),
       cell: ({ row }) => {
         const workDate = row.getValue("workDate");
         try {
@@ -414,23 +415,23 @@ const TimeEntryReport: React.FC = () => {
     },
     {
       accessorKey: "teamMember",
-      header: "Team Member",
+      header: i18n.t("reports.teamMemberHeader"),
       cell: ({ row }) =>
-        row.original.teamMember || row.getValue("teamMember") || "Unknown User",
+        row.original.teamMember || row.getValue("teamMember") || i18n.t("reports.unknownUser"),
     },
     {
       accessorKey: "project",
-      header: "Project",
+      header: i18n.t("reports.projectHeader"),
       cell: ({ row }) =>
-        row.original.project || row.getValue("project") || "Unknown Project",
+        row.original.project || row.getValue("project") || i18n.t("reports.unknownProject"),
     },
     {
       accessorKey: "note",
-      header: "Note",
+      header: i18n.t("reports.noteColumnHeader"),
     },
     {
       accessorKey: "duration",
-      header: () => <div className="text-right">Hours</div>,
+      header: () => <div className="text-right">{i18n.t("reports.hoursHeader")}</div>,
       cell: ({ row }) => (
         <div className="text-right font-medium">
           {minToHHMM(row.getValue("duration"))}
@@ -446,7 +447,7 @@ const TimeEntryReport: React.FC = () => {
   if (error) {
     return (
       <div className="text-center text-red-600 py-8">
-        Error loading report data. Please try again.
+        {i18n.t("reports.errorLoadingReportData")}
       </div>
     );
   }
@@ -459,10 +460,10 @@ const TimeEntryReport: React.FC = () => {
           <div className="flex flex-col gap-4 py-4 lg:flex-row lg:items-center lg:justify-between">
             <div className="min-w-0">
               <h1 className="text-2xl font-semibold text-foreground">
-                Time Entry Report
+                {i18n.t("reports.timeReports")}
               </h1>
               <p className="text-sm text-muted-foreground">
-                Review hours logged by person, client, and project.
+                {i18n.t("reports.reviewHoursLogged")}
               </p>
             </div>
 
@@ -473,16 +474,16 @@ const TimeEntryReport: React.FC = () => {
                 onValueChange={handleDateRangePreset}
               >
                 <SelectTrigger className="w-full sm:w-[180px]">
-                  <SelectValue placeholder="Select period" />
+                  <SelectValue placeholder={i18n.t("selectPeriod")} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="this_month">This Month</SelectItem>
-                  <SelectItem value="last_month">Last Month</SelectItem>
-                  <SelectItem value="this_quarter">This Quarter</SelectItem>
-                  <SelectItem value="this_year">This Year</SelectItem>
-                  <SelectItem value="last_7_days">Last 7 Days</SelectItem>
-                  <SelectItem value="last_30_days">Last 30 Days</SelectItem>
-                  <SelectItem value="custom">Custom Range</SelectItem>
+                  <SelectItem value="this_month">{i18n.t("thisMonth")}</SelectItem>
+                  <SelectItem value="last_month">{i18n.t("lastMonth")}</SelectItem>
+                  <SelectItem value="this_quarter">{i18n.t("thisQuarter")}</SelectItem>
+                  <SelectItem value="this_year">{i18n.t("thisYear")}</SelectItem>
+                  <SelectItem value="last_7_days">{i18n.t("reports.lastSevenDaysPreset")}</SelectItem>
+                  <SelectItem value="last_30_days">{i18n.t("reports.lastThirtyDaysPreset")}</SelectItem>
+                  <SelectItem value="custom">{i18n.t("customRange")}</SelectItem>
                 </SelectContent>
               </Select>
 
@@ -507,7 +508,7 @@ const TimeEntryReport: React.FC = () => {
                         format(dateRange.from, "LLL dd, y")
                       )
                     ) : (
-                      <span>Pick a date range</span>
+                      <span>{i18n.t("pickADateRange")}</span>
                     )}
                   </Button>
                 </PopoverTrigger>
@@ -535,13 +536,13 @@ const TimeEntryReport: React.FC = () => {
                 onValueChange={(value: any) => setGroupBy(value)}
               >
                 <SelectTrigger className="w-full sm:w-[180px]">
-                  <SelectValue placeholder="Group by" />
+                  <SelectValue placeholder={i18n.t("reports.groupBy")} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="client">Group by Client</SelectItem>
-                  <SelectItem value="project">Group by Project</SelectItem>
+                  <SelectItem value="client">{i18n.t("reports.groupByClient")}</SelectItem>
+                  <SelectItem value="project">{i18n.t("reports.groupByProject")}</SelectItem>
                   <SelectItem value="team_member">
-                    Group by Team Member
+                    {i18n.t("reports.teamMembers")}
                   </SelectItem>
                 </SelectContent>
               </Select>
@@ -551,7 +552,7 @@ const TimeEntryReport: React.FC = () => {
                 <DropdownMenuTrigger asChild>
                   <Button variant="outline" className="w-full sm:w-auto">
                     <Download className="mr-2 h-4 w-4" />
-                    Export
+                    {i18n.t("reports.export")}
                     <ChevronDown className="ml-2 h-4 w-4" />
                   </Button>
                 </DropdownMenuTrigger>
@@ -559,12 +560,12 @@ const TimeEntryReport: React.FC = () => {
                   <DropdownMenuItem
                     onClick={() => downloadMutation.mutate("csv")}
                   >
-                    Export as CSV
+                    {i18n.t("reports.exportAsCsv")}
                   </DropdownMenuItem>
                   <DropdownMenuItem
                     onClick={() => downloadMutation.mutate("pdf")}
                   >
-                    Export as PDF
+                    {i18n.t("reports.exportAsPdf")}
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -578,7 +579,7 @@ const TimeEntryReport: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Hours</CardTitle>
+              <CardTitle className="text-sm font-medium">{i18n.t("reports.totalHours")}</CardTitle>
               <Clock className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
@@ -589,7 +590,7 @@ const TimeEntryReport: React.FC = () => {
                       dateRange.to,
                       "MMM d, yyyy"
                     )}`
-                  : "All time"}
+                  : i18n.t("allTime")}
               </p>
             </CardContent>
           </Card>
@@ -597,7 +598,7 @@ const TimeEntryReport: React.FC = () => {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">
-                Total Entries
+                {i18n.t("reports.totalEntries")}
               </CardTitle>
               <Building2 className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
@@ -606,7 +607,7 @@ const TimeEntryReport: React.FC = () => {
                 {reports.reduce((sum, group) => sum + group.entries.length, 0)}
               </div>
               <p className="text-xs text-muted-foreground">
-                Time entries recorded
+                {i18n.t("reports.timeEntriesRecorded")}
               </p>
             </CardContent>
           </Card>
@@ -614,19 +615,18 @@ const TimeEntryReport: React.FC = () => {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">
-                Active{" "}
                 {groupBy === "client"
-                  ? "Clients"
+                  ? i18n.t("reports.activeClients")
                   : groupBy === "project"
-                  ? "Projects"
-                  : "Team Members"}
+                  ? i18n.t("reports.activeProjects")
+                  : i18n.t("reports.activeTeamMembers")}
               </CardTitle>
               <Users className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{reports.length}</div>
               <p className="text-xs text-muted-foreground">
-                With recorded time
+                {i18n.t("reports.withRecordedTime")}
               </p>
             </CardContent>
           </Card>
@@ -647,16 +647,16 @@ const TimeEntryReport: React.FC = () => {
         {lastPage?.pagy?.pages && lastPage.pagy.pages > 1 && (
           <div className="mt-6 flex flex-col items-center gap-2 text-sm text-muted-foreground">
             <span>
-              Loaded {reportPages.length} of {lastPage.pagy.pages} report pages
+              {i18n.t("reports.loadedPages", { loaded: reportPages.length, total: lastPage.pagy.pages })}
             </span>
             {hasNextPage && !isFetchingNextPage && (
-              <span>Scroll to load more report rows</span>
+              <span>{i18n.t("reports.scrollToLoadMoreRows")}</span>
             )}
             {hasNextPage && !isFetchingNextPage && (
               <div ref={loadMoreReportsRef} className="h-8 w-full" />
             )}
-            {isFetchingNextPage && <span>Loading more report rows...</span>}
-            {!hasNextPage && <span>All report rows loaded</span>}
+            {isFetchingNextPage && <span>{i18n.t("reports.loadingMoreRows")}</span>}
+            {!hasNextPage && <span>{i18n.t("reports.allRowsLoaded")}</span>}
           </div>
         )}
       </div>

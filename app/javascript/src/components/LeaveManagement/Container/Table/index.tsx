@@ -1,5 +1,6 @@
 import React from "react";
 
+import { i18n } from "../../../../i18n";
 import TableHeader from "./TableHeader";
 import TableRow from "./TableRow";
 
@@ -13,7 +14,7 @@ const Table = ({ timeoffEntries = [] }) => (
         ))
       ) : (
         <tr className="tracking-wide flex items-center justify-center text-base font-medium text-primary md:h-50">
-          <td>No Data Found</td>
+          <td>{i18n.t("reports.noDataFound")}</td>
         </tr>
       )}
     </tbody>

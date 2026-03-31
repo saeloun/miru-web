@@ -1,6 +1,7 @@
 import React from "react";
 
 import { useUserContext } from "context/UserContext";
+import { i18n } from "../../../i18n";
 
 const Footer = ({ selectedRowCount, handleSubmitModal, handleSelectAll }) => {
   const { isDesktop } = useUserContext();
@@ -12,14 +13,14 @@ const Footer = ({ selectedRowCount, handleSubmitModal, handleSelectAll }) => {
     >
       <div className="flex items-center pt-3">
         <span className="text-sm font-medium text-foreground">
-          {selectedRowCount} entries selected
+          {selectedRowCount} {i18n.t("invoices.entriesSelected", { count: selectedRowCount })}
         </span>
         {selectedRowCount > 0 && (
           <button
             className="tracking-wide ml-4 text-base font-medium text-primary"
             onClick={handleSelectAll}
           >
-            Reset Selected Entries
+            {i18n.t("invoices.resetSelectedEntries")}
           </button>
         )}
       </div>
@@ -32,7 +33,7 @@ const Footer = ({ selectedRowCount, handleSubmitModal, handleSelectAll }) => {
           }`}
         onClick={handleSubmitModal}
       >
-        ADD ENTRIES
+        {i18n.t("invoices.addEntries")}
       </button>
     </div>
   ) : (
@@ -46,8 +47,9 @@ const Footer = ({ selectedRowCount, handleSubmitModal, handleSelectAll }) => {
           }`}
         onClick={handleSubmitModal}
       >
-        {`Add ${selectedRowCount || ""}`}
-        {selectedRowCount == 1 ? " entry" : " entries"}
+        {selectedRowCount == 1
+          ? i18n.t("invoices.addEntry", { count: selectedRowCount })
+          : i18n.t("invoices.addEntries_plural", { count: selectedRowCount || "" })}
       </button>
     </div>
   );

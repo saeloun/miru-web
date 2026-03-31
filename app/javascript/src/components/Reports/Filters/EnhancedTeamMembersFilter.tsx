@@ -8,6 +8,7 @@ import {
   Check,
 } from "phosphor-react";
 
+import { i18n } from "../../../i18n";
 import { cn } from "../../../lib/utils";
 import {
   Collapsible,
@@ -60,10 +61,10 @@ const EnhancedTeamMembersFilter = ({
               />
             </div>
             <div className="text-left">
-              <p className="text-sm font-medium text-gray-900">Team Members</p>
+              <p className="text-sm font-medium text-gray-900">{i18n.t("reports.teamMembers")}</p>
               {activeCount > 0 && (
                 <p className="text-xs text-gray-500 mt-0.5">
-                  {activeCount} selected
+                  {i18n.t("reports.selected", { count: activeCount })}
                 </p>
               )}
             </div>
@@ -92,7 +93,7 @@ const EnhancedTeamMembersFilter = ({
           <div className="relative">
             <MagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
             <Input
-              placeholder="Search Team Members..."
+              placeholder={i18n.t("reports.searchTeamMembersFilter")}
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
               className="pl-9 pr-9 h-9 text-sm border-gray-200 focus:border-[#5E58F1] focus:ring-[#5E58F1]"
@@ -151,7 +152,7 @@ const EnhancedTeamMembersFilter = ({
                 })
               ) : (
                 <div className="text-center py-4 text-sm text-gray-500">
-                  No team members found
+                  {i18n.t("noResultsFound")}
                 </div>
               )}
             </div>
@@ -161,8 +162,7 @@ const EnhancedTeamMembersFilter = ({
           {filteredTeamsList.length > 0 && (
             <div className="pt-2 border-t">
               <p className="text-xs text-gray-500">
-                {activeCount} of {filteredTeamsList.length} team members
-                selected
+                {i18n.t("reports.ofTeamMembersSelected", { active: activeCount, total: filteredTeamsList.length })}
               </p>
             </div>
           )}

@@ -12,6 +12,7 @@ import {
 } from "recharts";
 import { currencyFormat } from "helpers";
 import { Toastr } from "StyledComponents";
+import { i18n } from "../../../i18n";
 
 interface MonthlyRevenueData {
   month: string;
@@ -52,18 +53,18 @@ const MonthlyRevenueChart: React.FC<MonthlyRevenueChartProps> = ({
   const generateMockData = () => {
     // Generate mock data for the last 12 months
     const months = [
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec",
+      i18n.t("monthJan"),
+      i18n.t("monthFeb"),
+      i18n.t("monthMar"),
+      i18n.t("monthApr"),
+      i18n.t("monthMay"),
+      i18n.t("monthJun"),
+      i18n.t("monthJul"),
+      i18n.t("monthAug"),
+      i18n.t("monthSep"),
+      i18n.t("monthOct"),
+      i18n.t("monthNov"),
+      i18n.t("monthDec"),
     ];
     const currentMonth = new Date().getMonth();
     const mockData: MonthlyRevenueData[] = [];
@@ -104,7 +105,7 @@ const MonthlyRevenueChart: React.FC<MonthlyRevenueChartProps> = ({
       setIsLoading(false);
     } catch (error) {
       console.error("Error fetching monthly revenue:", error);
-      Toastr.error("Failed to load revenue data");
+      Toastr.error(i18n.t("invoices.failedToLoadRevenueData"));
       setChartData([]);
       setIsLoading(false);
     }
@@ -149,10 +150,10 @@ const MonthlyRevenueChart: React.FC<MonthlyRevenueChartProps> = ({
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-6">
         <div className="flex-1">
           <h3 className="text-lg font-semibold text-foreground">
-            Monthly Revenue
+            {i18n.t("invoiceDashboard.revenueOverview")}
           </h3>
           <p className="mt-1 text-sm text-muted-foreground">
-            Revenue trend over the last 12 months
+            
           </p>
         </div>
 
@@ -161,7 +162,7 @@ const MonthlyRevenueChart: React.FC<MonthlyRevenueChartProps> = ({
           <div className="flex items-center gap-6">
             <div>
               <p className="text-xs uppercase tracking-wider text-muted-foreground">
-                Total
+                {i18n.t("total")}
               </p>
               <p className="text-lg font-semibold text-foreground">
                 {currencyFormat(currency, totalRevenue, "compact")}
@@ -169,7 +170,7 @@ const MonthlyRevenueChart: React.FC<MonthlyRevenueChartProps> = ({
             </div>
             <div>
               <p className="text-xs uppercase tracking-wider text-muted-foreground">
-                Average
+                {i18n.t("invoiceDashboard.revenueOverview")}
               </p>
               <p className="text-lg font-semibold text-foreground">
                 {currencyFormat(currency, averageRevenue, "compact")}
@@ -178,7 +179,7 @@ const MonthlyRevenueChart: React.FC<MonthlyRevenueChartProps> = ({
             {trend !== 0 && (
               <div>
                 <p className="text-xs uppercase tracking-wider text-muted-foreground">
-                  Trend
+                  {i18n.t("invoices.trend")}
                 </p>
                 <p
                   className={`text-lg font-semibold ${
@@ -199,14 +200,14 @@ const MonthlyRevenueChart: React.FC<MonthlyRevenueChartProps> = ({
           className="flex items-center justify-center"
           style={{ height: `${height}px` }}
         >
-          <div className="text-muted-foreground">Loading chart data...</div>
+          <div className="text-muted-foreground">{i18n.t("invoices.loadingChartData")}</div>
         </div>
       ) : chartData.length === 0 ? (
         <div
           className="flex items-center justify-center"
           style={{ height: `${height}px` }}
         >
-          <div className="text-muted-foreground">No invoice data available</div>
+          <div className="text-muted-foreground">{i18n.t("invoices.noInvoiceData")}</div>
         </div>
       ) : (
         <div className="w-full" style={{ height: `${height}px` }}>
@@ -308,7 +309,7 @@ const MonthlyRevenueChart: React.FC<MonthlyRevenueChartProps> = ({
                 : "bg-muted text-muted-foreground hover:bg-accent hover:text-foreground"
             }`}
           >
-            Area Chart
+            {i18n.t("invoiceDashboard.revenueOverview")}
           </button>
           <button
             onClick={() => onChartTypeChange("bar")}
@@ -318,7 +319,7 @@ const MonthlyRevenueChart: React.FC<MonthlyRevenueChartProps> = ({
                 : "bg-muted text-muted-foreground hover:bg-accent hover:text-foreground"
             }`}
           >
-            Bar Chart
+            {i18n.t("invoiceDashboard.revenueOverview")}
           </button>
         </div>
       )}

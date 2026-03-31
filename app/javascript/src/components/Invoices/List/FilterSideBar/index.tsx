@@ -15,6 +15,7 @@ import { XIcon, FilterIcon, PlusIcon, MinusIcon, SearchIcon } from "miruIcons";
 import { Button, SidePanel } from "StyledComponents";
 
 import { dateRangeOptions, statusOptions } from "./filterOptions";
+import { i18n } from "../../../../i18n";
 
 dayjs.extend(advancedFormat);
 
@@ -263,11 +264,11 @@ const FilterSideBar = ({
         <SidePanel.Header className="mb-2 flex h-12 items-center justify-between bg-primary px-2 text-white lg:h-auto lg:bg-white lg:px-5 lg:py-5 lg:font-bold lg:text-foreground">
           {isDesktop ? (
             <h4 className="flex items-center text-base">
-              <FilterIcon className="mr-2.5" size={16} /> <span>Filters</span>
+              <FilterIcon className="mr-2.5" size={16} /> <span>{i18n.t("filters")}</span>
             </h4>
           ) : (
             <span className="flex w-full items-center justify-center pl-6 text-base font-medium leading-5">
-              Filters
+              {i18n.t("filters")}
             </span>
           )}
           <Button style="ternary" onClick={() => setIsFilterVisible(false)}>
@@ -286,7 +287,7 @@ const FilterSideBar = ({
                 }}
               >
                 <h5 className="text-xs font-bold leading-4 tracking-wider">
-                  DATE RANGE
+                  {i18n.t("dateRange")}
                 </h5>
                 <div className="flex items-center">
                   {filters.dateRange.value != "all" && (
@@ -336,7 +337,7 @@ const FilterSideBar = ({
                       className="sidebar__reset"
                       onClick={resetCustomDatePicker}
                     >
-                      Cancel
+                      {i18n.t("cancel")}
                     </button>
                     <button
                       disabled={disableDateBtn}
@@ -347,7 +348,7 @@ const FilterSideBar = ({
                       }`}
                       onClick={submitCustomDatePicker}
                     >
-                      Done
+                      {i18n.t("done")}
                     </button>
                   </div>
                 </div>
@@ -363,7 +364,7 @@ const FilterSideBar = ({
                 }}
               >
                 <h5 className="text-xs font-bold leading-4 tracking-wider">
-                  CLIENTS
+                  {i18n.t("client").toUpperCase()}
                 </h5>
                 <div className="flex items-center">
                   {filters.clients.length > 0 && (
@@ -382,7 +383,7 @@ const FilterSideBar = ({
                 <div className="lg:mt-7">
                   <div className="relative mt-2 flex w-full items-center px-5">
                     <input
-                      placeholder="Search"
+                      placeholder={i18n.t("search")}
                       type="text"
                       value={searchQuery}
                       className="focus:outline-none w-full rounded bg-muted p-2
@@ -426,7 +427,7 @@ const FilterSideBar = ({
                         />
                       ))
                     ) : (
-                      <div className="m-5">No results found</div>
+                      <div className="m-5">{i18n.t("noResultsFound")}</div>
                     )}
                   </div>
                 </div>
@@ -442,7 +443,7 @@ const FilterSideBar = ({
                 }}
               >
                 <h5 className="text-xs font-bold leading-4 tracking-wider">
-                  STATUS
+                  {i18n.t("status").toUpperCase()}
                 </h5>
                 <div className="flex items-center">
                   {filters.status.length > 0 && (
@@ -489,7 +490,7 @@ const FilterSideBar = ({
           style="secondary"
           onClick={handleReset}
         >
-          RESET
+          {i18n.t("reset")}
         </Button>
         <Button
           disabled={disableApplyBtn}
@@ -500,7 +501,7 @@ const FilterSideBar = ({
           } px-10 py-2.5 text-base font-bold leading-5`}
           onClick={handleApply}
         >
-          APPLY
+          {i18n.t("apply").toUpperCase()}
         </Button>
       </SidePanel.Footer>
     </SidePanel>

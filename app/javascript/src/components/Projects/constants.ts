@@ -1,23 +1,25 @@
+import { i18n } from "../../i18n";
+
 export const tableHeader = [
   {
-    Header: "TEAM MEMBER",
-    accessor: "col1", // accessor is the "key" in the data
+    Header: i18n.t("projects.teamMember").toUpperCase(),
+    accessor: "col1",
     cssClass: "",
   },
   {
-    Header: "HOURLY RATE",
+    Header: i18n.t("projects.hourlyRate").toUpperCase(),
     accessor: "col2",
     cssClass: "text-right",
   },
   {
-    Header: "HOURS LOGGED",
+    Header: i18n.t("projects.hoursLogged").toUpperCase(),
     accessor: "col3",
-    cssClass: "text-right", // accessor is the "key" in the data
+    cssClass: "text-right",
   },
   {
-    Header: "COST",
+    Header: i18n.t("projects.cost").toUpperCase(),
     accessor: "col4",
-    cssClass: "text-right", // accessor is the "key" in the data
+    cssClass: "text-right",
   },
 ];
 
@@ -27,12 +29,12 @@ export const getAmountBox = (
   overdueOutstandingAmount: any
 ) => [
   {
-    title: "OVERDUE",
+    title: i18n.t("projects.overdue"),
     amount:
       currencySymb + cashFormatter(overdueOutstandingAmount?.overdue_amount),
   },
   {
-    title: "OUTSTANDING",
+    title: i18n.t("projects.outstanding"),
     amount:
       currencySymb +
       cashFormatter(overdueOutstandingAmount?.outstanding_amount),

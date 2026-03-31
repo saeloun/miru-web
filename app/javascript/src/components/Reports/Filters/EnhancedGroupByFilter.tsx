@@ -1,6 +1,7 @@
 import React from "react";
 import { Stack, CaretDown, CaretUp } from "phosphor-react";
 
+import { i18n } from "../../../i18n";
 import { cn } from "../../../lib/utils";
 import {
   Collapsible,
@@ -11,38 +12,38 @@ import { RadioGroup, RadioGroupItem } from "../../ui/radio-group";
 import { Label } from "../../ui/label";
 import { Badge } from "../../ui/badge";
 
-const groupByOptions = [
+const getGroupByOptions = () => [
   {
     value: "none",
-    label: "No Grouping",
+    label: i18n.t("reports.noGrouping"),
     icon: "🚫",
-    description: "Show all entries",
+    description: i18n.t("reports.showAllEntries"),
   },
   {
     value: "client",
-    label: "By Client",
+    label: i18n.t("reports.byClient"),
     icon: "👥",
-    description: "Group by client name",
+    description: i18n.t("reports.groupByClientName"),
   },
   {
     value: "project",
-    label: "By Project",
+    label: i18n.t("reports.byProject"),
     icon: "📁",
-    description: "Group by project",
+    description: i18n.t("reports.groupByProjectDesc"),
   },
   {
     value: "member",
-    label: "By Team Member",
+    label: i18n.t("reports.byTeamMember"),
     icon: "👤",
-    description: "Group by assignee",
+    description: i18n.t("reports.groupByAssignee"),
   },
-  { value: "date", label: "By Date", icon: "📅", description: "Group by date" },
-  { value: "week", label: "By Week", icon: "📆", description: "Group by week" },
+  { value: "date", label: i18n.t("reports.byDate"), icon: "📅", description: i18n.t("reports.groupByDate") },
+  { value: "week", label: i18n.t("reports.byWeek"), icon: "📆", description: i18n.t("reports.groupByWeek") },
   {
     value: "month",
-    label: "By Month",
+    label: i18n.t("reports.byMonth"),
     icon: "🗓️",
-    description: "Group by month",
+    description: i18n.t("reports.groupByMonth"),
   },
 ];
 
@@ -50,7 +51,7 @@ const EnhancedGroupByFilter = ({ filters, handleSelectFilter }) => {
   const [isOpen, setIsOpen] = React.useState(false);
   const currentValue = filters.groupBy?.value || "none";
   const isActive = currentValue !== "none";
-  const currentOption = groupByOptions.find(opt => opt.value === currentValue);
+  const currentOption = getGroupByOptions().find(opt => opt.value === currentValue);
 
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen}>
@@ -71,7 +72,7 @@ const EnhancedGroupByFilter = ({ filters, handleSelectFilter }) => {
               />
             </div>
             <div className="text-left">
-              <p className="text-sm font-medium text-gray-900">Group By</p>
+              <p className="text-sm font-medium text-gray-900">{i18n.t("reports.groupBy")}</p>
               {isActive && currentOption && (
                 <p className="text-xs text-gray-500 mt-0.5">
                   {currentOption.label}
@@ -101,14 +102,14 @@ const EnhancedGroupByFilter = ({ filters, handleSelectFilter }) => {
         <RadioGroup
           value={currentValue}
           onValueChange={value => {
-            const option = groupByOptions.find(opt => opt.value === value);
+            const option = getGroupByOptions().find(opt => opt.value === value);
             if (option) {
               handleSelectFilter(option);
             }
           }}
           className="mt-3 space-y-1"
         >
-          {groupByOptions.map(option => (
+          {getGroupByOptions().map(option => (
             <div
               key={option.value}
               className={cn(
@@ -150,18 +151,18 @@ const EnhancedGroupByFilter = ({ filters, handleSelectFilter }) => {
         {/* Visual Preview */}
         {currentValue !== "none" && (
           <div className="mt-4 p-3 bg-gray-50 rounded-lg">
-            <p className="text-xs text-gray-600 mb-2">Preview:</p>
+            <p className="text-xs text-gray-600 mb-2">{i18n.t("reports.previewLabel")}</p>
             <div className="space-y-1">
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 bg-[#5E58F1] rounded-full" />
                 <span className="text-xs text-gray-700">
-                  Entries will be grouped {currentOption?.label.toLowerCase()}
+                  {i18n.t("reports.entriesWillBeGrouped", { grouping: currentOption?.label.toLowerCase() })}
                 </span>
               </div>
               <div className="flex items-center gap-2 ml-4">
                 <div className="w-1 h-1 bg-gray-400 rounded-full" />
                 <span className="text-xs text-gray-500">
-                  Subtotals will be shown for each group
+                  {i18n.t("reports.subtotalsShownForEachGroup")}
                 </span>
               </div>
             </div>

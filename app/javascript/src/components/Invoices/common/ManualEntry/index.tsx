@@ -16,6 +16,7 @@ import {
 } from "helpers";
 import { DeleteIcon } from "miruIcons";
 import TextareaAutosize from "react-textarea-autosize";
+import { i18n } from "../../../../i18n";
 
 const ManualEntry = ({
   addNew,
@@ -113,7 +114,7 @@ const ManualEntry = ({
               <TooltipTrigger asChild>
                 <input
                   className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                  placeholder="Enter name"
+                  placeholder={i18n.t("invoices.enterName")}
                   type="text"
                   value={name}
                   onChange={e => setName(e.target.value)}
@@ -122,7 +123,7 @@ const ManualEntry = ({
                 />
               </TooltipTrigger>
               <TooltipContent>
-                <p>Enter the name for this line item</p>
+                <p>{i18n.t("invoices.enterNameTooltip")}</p>
               </TooltipContent>
             </Tooltip>
           </td>
@@ -133,7 +134,7 @@ const ManualEntry = ({
                   <DatePicker
                     date={selectedDate}
                     onSelect={handleDateSelect}
-                    placeholder="Select Date"
+                    placeholder={i18n.t("invoices.selectDate")}
                     className="w-full text-sm"
                   />
                 </div>
@@ -205,7 +206,7 @@ const ManualEntry = ({
                 </button>
               </TooltipTrigger>
               <TooltipContent>
-                <p>Delete this line item</p>
+                <p>{i18n.t("invoices.deleteLineItem")}</p>
               </TooltipContent>
             </Tooltip>
           </td>
@@ -228,14 +229,14 @@ const ManualEntry = ({
               <TooltipTrigger asChild>
                 <TextareaAutosize
                   className="focus:outline-none w-full rounded bg-white p-1 px-2 text-sm font-medium text-foreground focus:border-border focus:ring-1 focus:ring-ring"
-                  placeholder="Enter Description"
+                  placeholder={i18n.t("invoices.enterDescription")}
                   value={description}
                   onChange={e => setDescription(e.target["value"])}
                   onKeyDown={handleEnter}
                 />
               </TooltipTrigger>
               <TooltipContent>
-                <p>Add detailed description for this line item</p>
+                <p>{i18n.t("invoices.descriptionTooltip")}</p>
               </TooltipContent>
             </Tooltip>
           </td>

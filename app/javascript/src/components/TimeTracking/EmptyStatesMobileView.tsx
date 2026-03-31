@@ -2,10 +2,11 @@ import React from "react";
 
 import EmptyStates from "common/EmptyStates";
 import { PlusIcon } from "miruIcons";
+import { i18n } from "../../i18n";
 
 export const EmptyStatesMobileView = ({ setNewEntryView, setEditEntryId }) => (
   <EmptyStates
-    Message="No time entries for this day yet."
+    Message={i18n.t("timeTracking.noEntriesForDay")}
     messageClassName="w-full"
     showNoSearchResultState={false}
     wrapperClassName="pt-8 mt-4"
@@ -19,7 +20,7 @@ export const EmptyStatesMobileView = ({ setNewEntryView, setEditEntryId }) => (
       }}
     >
       <PlusIcon size={18} weight="bold" />
-      <span className="ml-3 inline-block text-lg">New Time Entry</span>
+      <span className="ml-3 inline-block text-lg">{i18n.t("timeTracking.newTimeEntry")}</span>
     </button>
   </EmptyStates>
 );

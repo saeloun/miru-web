@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 import { currencyFormat } from "helpers";
+import { i18n } from "../../../../i18n";
 
 const InvoiceTotal = ({
   currency,
@@ -60,7 +61,7 @@ const InvoiceTotal = ({
         <tbody>
           <tr>
             <td className="pr-4 text-right text-base font-normal text-foreground sm:pr-10">
-              Sub total
+              {i18n.t("total")}
             </td>
             <td className="text-right text-base font-bold text-foreground ">
               {subTotal
@@ -72,13 +73,13 @@ const InvoiceTotal = ({
             {discount ? (
               <td className="py-2 pr-4 text-right text-base font-normal text-foreground sm:pr-10">
                 <label className="cursor-pointer" htmlFor="Discount">
-                  Discount
+                  {i18n.t("invoices.discount")}
                 </label>
               </td>
             ) : (
               <td className="cursor-pointer pt-2 pr-4 pb-3 text-right text-xs font-bold tracking-widest text-primary sm:pr-10">
                 <label className="cursor-pointer" htmlFor="Discount">
-                  ADD DISCOUNT
+                  {i18n.t("invoices.discount").toUpperCase()}
                 </label>
               </td>
             )}
@@ -96,7 +97,7 @@ const InvoiceTotal = ({
           <tr className="cursor-pointer">
             <td className="pt-4 pr-4 text-right text-base font-normal text-foreground sm:pr-10">
               <label className="cursor-pointer" htmlFor="Tax">
-                Tax
+                {i18n.t("invoices.tax")}
               </label>
             </td>
             <td className="w-22 pt-4 text-right text-base font-bold text-foreground">
@@ -112,7 +113,7 @@ const InvoiceTotal = ({
           </tr>
           <tr>
             <td className="pt-1 pr-4 text-right text-base font-normal text-foreground sm:pr-10">
-              Total
+              {i18n.t("total")}
             </td>
             <td className="text-right text-base font-bold text-foreground">
               {total ? currencyFormat(clientCurrency, total) : 0}
@@ -123,13 +124,13 @@ const InvoiceTotal = ({
               {baseCurrencyAmount ? (
                 <td className="py-2 pr-4 text-right text-base font-normal text-foreground sm:pr-10">
                   <label className="cursor-pointer" htmlFor="baseCurrency">
-                    Amount in {currency}
+                    {i18n.t("amount")} {currency}
                   </label>
                 </td>
               ) : (
                 <td className="cursor-pointer pt-2 pr-4 pb-3 text-right text-xs font-bold tracking-widest text-primary sm:pr-10">
                   <label className="cursor-pointer" htmlFor="baseCurrency">
-                    ADD AMOUNT IN {currency}
+                    {i18n.t("amount").toUpperCase()} {currency}
                   </label>
                 </td>
               )}
@@ -147,7 +148,7 @@ const InvoiceTotal = ({
           )}
           <tr>
             <td className="pt-1 pr-4 text-right text-base font-normal text-foreground sm:pr-10">
-              Amount Paid
+              {i18n.t("invoices.paid")}
             </td>
             <td className="text-right text-base font-bold text-foreground ">
               {amountPaid ? currencyFormat(clientCurrency, amountPaid) : 0}
@@ -155,7 +156,7 @@ const InvoiceTotal = ({
           </tr>
           <tr>
             <td className="pt-1 pr-4 text-right text-base font-normal text-foreground sm:pr-10">
-              Amount Due
+              {i18n.t("invoices.outstanding")}
             </td>
             <td className="text-right text-base font-bold text-foreground">
               {amountDue ? currencyFormat(clientCurrency, amountDue) : 0}

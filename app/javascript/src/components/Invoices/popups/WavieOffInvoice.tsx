@@ -3,6 +3,7 @@ import React from "react";
 import { invoicesApi } from "apis/api";
 import { useNavigate } from "react-router-dom";
 import { Modal, Button } from "StyledComponents";
+import { i18n } from "../../../i18n";
 
 interface IProps {
   invoice: any;
@@ -37,11 +38,9 @@ const WavieOffInvoice = ({
       onClose={() => setShowWavieDialog(false)}
     >
       <div className="mb-8 mt-4 flex-col">
-        <h6 className="mb-2 text-2xl font-bold">Waive Off Invoice</h6>
+        <h6 className="mb-2 text-2xl font-bold">{i18n.t("invoices.waiveOffInvoice")}</h6>
         <p className="mt-2 font-normal">
-          Are you sure you want to waive off invoice{" "}
-          <b className="font-bold">#{invoiceNumber}</b>? This action cannot be
-          reversed.
+          {i18n.t("invoices.waiveOffConfirm", { number: invoiceNumber })}
         </p>
       </div>
       <div className="flex flex-col gap-2 sm:flex-row sm:gap-0">
@@ -53,7 +52,7 @@ const WavieOffInvoice = ({
             setShowWavieDialog(false);
           }}
         >
-          CANCEL
+          {i18n.t("cancel").toUpperCase()}
         </Button>
         <Button
           className="w-full sm:ml-2 sm:w-1/2"
@@ -63,7 +62,7 @@ const WavieOffInvoice = ({
             wavieInvoice(invoice);
           }}
         >
-          Waive Off
+          {i18n.t("invoices.waiveOff")}
         </Button>
       </div>
     </Modal>

@@ -3,6 +3,7 @@ import React from "react";
 import AmountBoxContainer from "common/AmountBox";
 import ChartBar from "common/ChartBar";
 import { cashFormatter } from "helpers";
+import { i18n } from "../../../i18n";
 
 import { getAmountBox } from "../constants";
 
@@ -35,9 +36,9 @@ const TotalHoursChart = ({
           ease-in-out"
           onChange={({ target: { value } }) => setTimeframe(value)}
         >
-          <option value="week">THIS WEEK</option>
-          <option value="month">THIS MONTH</option>
-          <option value="year">THIS YEAR</option>
+          <option value="week">{i18n.t("thisWeek").toUpperCase()}</option>
+          <option value="month">{i18n.t("thisMonth").toUpperCase()}</option>
+          <option value="year">{i18n.t("thisYear").toUpperCase()}</option>
         </select>
       </div>
       {project && (

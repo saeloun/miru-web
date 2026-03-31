@@ -7,13 +7,13 @@ class Api::V1::LeaveTypesController < Api::V1::ApplicationController
   def create
     authorize LeaveType
     leave.leave_types.create!(leave_type_params)
-    render json: { notice: "Added leave type successfully" }, status: 200
+    render json: { notice: I18n.t("leave_types.create.success") }, status: 200
   end
 
   def update
     authorize leave_type
     leave_type.update!(leave_type_params)
-    render json: { notice: "Updated leave type successfully" }, status: 200
+    render json: { notice: I18n.t("leave_types.update.success") }, status: 200
   end
 
   private

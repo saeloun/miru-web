@@ -1,6 +1,7 @@
 import React from "react";
 
 import { SummaryDashboard } from "StyledComponents";
+import { i18n } from "../../../i18n";
 
 const InvoiceSummary = ({
   summary,
@@ -18,27 +19,27 @@ const InvoiceSummary = ({
 
   const summaryList = [
     {
-      label: "ALL",
+      label: i18n.t("all").toUpperCase(),
       value: summary.totalAmount,
       onClick: () => applyFilter([]), // Clear all filters to show all invoices
     },
     {
-      label: "OVERDUE",
+      label: i18n.t("invoices.overdue").toUpperCase(),
       value: summary.overdueAmount,
-      onClick: () => applyFilter([{ value: "overdue", label: "OVERDUE" }]),
+      onClick: () => applyFilter([{ value: "overdue", label: i18n.t("invoices.overdue").toUpperCase() }]),
     },
     {
-      label: "OUTSTANDING",
+      label: i18n.t("invoices.outstanding").toUpperCase(),
       value: summary.outstandingAmount,
       onClick: () =>
         applyFilter([
           { value: "sent", label: "SENT" },
           { value: "viewed", label: "VIEWED" },
-          { value: "overdue", label: "OVERDUE" },
+          { value: "overdue", label: i18n.t("invoices.overdue").toUpperCase() },
         ]),
     },
     {
-      label: isDesktop ? "AMOUNT IN DRAFT" : "DRAFT",
+      label: isDesktop ? i18n.t("invoices.draft").toUpperCase() : i18n.t("invoices.draft").toUpperCase(),
       value: summary.draftAmount,
       onClick: () => applyFilter([{ value: "draft", label: "DRAFT" }]),
     },

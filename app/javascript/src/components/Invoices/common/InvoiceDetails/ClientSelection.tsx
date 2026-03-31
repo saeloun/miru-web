@@ -7,6 +7,7 @@ import Select, { components, DropdownIndicatorProps } from "react-select";
 import { CustomAdvanceInput } from "common/CustomAdvanceInput";
 
 import { reactSelectStyles } from "./Styles";
+import { i18n } from "../../../../i18n";
 
 const ClientSelection = ({
   clientList,
@@ -128,7 +129,7 @@ const ClientSelection = ({
       >
         <CustomAdvanceInput
           id="BilledTo"
-          label="Billed to"
+          label={i18n.t("invoices.billedTo")}
           wrapperClassName="h-full cursor-pointer"
           value={
             isOptionSelected &&
@@ -167,7 +168,7 @@ const ClientSelection = ({
               defaultValue={null}
               inputId="clientSelect"
               options={createClientList()}
-              placeholder="Search"
+              placeholder={i18n.t("search")}
               styles={reactSelectStyles.InvoiceDetails}
               onChange={handleClientChange}
             />

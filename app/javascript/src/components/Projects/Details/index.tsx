@@ -13,6 +13,7 @@ import { sendGAPageView } from "utils/googleAnalytics";
 import { Badge } from "components/ui/badge";
 import { Button } from "components/ui/button";
 import { Card, CardContent } from "components/ui/card";
+import { i18n } from "../../../i18n";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -177,14 +178,14 @@ const ProjectDetails = () => {
               </h2>
               {project?.is_billable && (
                 <Badge className="rounded-full bg-primary/10 px-3 py-1 text-primary hover:bg-primary/10">
-                  Billable
+                  {i18n.t("billable")}
                 </Badge>
               )}
             </div>
             <div className="flex items-center gap-3">
               <Button onClick={handleGenerateInvoice} variant="outline">
                 <Receipt size={16} />
-                <span>New invoice</span>
+                <span>{i18n.t("projects.newInvoice")}</span>
               </Button>
               <Button
                 id="addRemoveTeamMembers"
@@ -192,7 +193,7 @@ const ProjectDetails = () => {
                 onClick={handleAddRemoveMembers}
               >
                 <UsersThree size={16} />
-                <span>Manage team</span>
+                <span>{i18n.t("projects.manageTeam")}</span>
               </Button>
               <DropdownMenu
                 open={isHeaderMenuVisible}
@@ -230,11 +231,10 @@ const ProjectDetails = () => {
             <div className="flex items-center justify-between border-b border-border px-6 py-4">
               <div>
                 <h3 className="text-lg font-semibold text-foreground">
-                  Team members
+                  {i18n.t("projects.teamMembers")}
                 </h3>
                 <p className="text-sm text-muted-foreground">
-                  Rates, tracked hours, and total project cost for this client
-                  work.
+                  {i18n.t("projects.teamMembersDescription")}
                 </p>
               </div>
             </div>
