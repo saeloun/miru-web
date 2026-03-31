@@ -9,6 +9,7 @@ class Api::V1::UsersController < Api::V1::BaseController
           email: current_user.email,
           first_name: current_user.first_name,
           last_name: current_user.last_name,
+          locale: current_user.locale,
           avatar_url: current_user.avatar.attached? ? url_for(current_user.avatar) : nil,
           confirmed: current_user.confirmed?,
           calendar_enabled: current_user.calendar_enabled,

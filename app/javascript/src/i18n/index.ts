@@ -1271,8 +1271,18 @@ export const initializeLocale = (preferredLocale?: string | null) => {
   );
 };
 
-export const t = (key: string, options?: Record<string, unknown>) =>
-  i18n.t(key, options);
+const isMissingTranslation = (value: unknown): value is string =>
+  typeof value === "string" && value.startsWith("[missing ");
+
+export const t = (key: string, options?: Record<string, unknown>) => {
+  const translated = i18n.t(key, options);
+  if (!isMissingTranslation(translated)) return translated;
+
+  const englishFallback = i18n.t(key, { ...options, locale: "en" });
+  if (!isMissingTranslation(englishFallback)) return englishFallback;
+
+  return key.split(".").pop() || key;
+};
 
 const COUNTRY_TO_CURRENCY: Record<string, string> = {
   AU: "AUD",

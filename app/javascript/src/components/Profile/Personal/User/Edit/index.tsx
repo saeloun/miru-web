@@ -270,6 +270,7 @@ const UserDetailsEdit = () => {
       const userSchema = {
         first_name: personalDetails.first_name,
         last_name: personalDetails.last_name,
+        locale: personalDetails.locale,
         date_of_birth: personalDetails.date_of_birth
           ? dayjs
               .utc(personalDetails.date_of_birth, personalDetails.date_format)

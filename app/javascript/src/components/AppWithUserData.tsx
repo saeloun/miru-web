@@ -3,7 +3,13 @@ import React, { useEffect, useState } from "react";
 import UserContext from "../context/UserContext";
 import Loader from "../common/Loader/index";
 import Main from "./Main";
-import { applyLocale, initializeLocale } from "../i18n";
+import { profileApi } from "../apis/api";
+import {
+  applyLocale,
+  detectBrowserLocale,
+  getStoredLocale,
+  initializeLocale,
+} from "../i18n";
 
 const AUTH_PATH_PREFIXES = [
   "/user/sign_in",
@@ -61,6 +67,16 @@ const AppWithUserData = (props: any) => {
         if (response.ok) {
           const data = await response.json();
           const resolvedLocale = initializeLocale(data.user?.locale);
+          const storedLocale = getStoredLocale();
+          const browserLocale = detectBrowserLocale();
+          const backfillLocale = storedLocale || browserLocale;
+
+          if (!data.user?.locale && backfillLocale) {
+            profileApi
+              .update({ user: { locale: backfillLocale } })
+              .catch(() => null);
+          }
+
           setLocaleState(resolvedLocale);
           setUserData({
             user: data.user,

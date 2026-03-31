@@ -23,6 +23,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "../../../../ui/card";
 import { Input } from "../../../../ui/input";
 import { Button } from "../../../../ui/button";
 import { Separator } from "../../../../ui/separator";
+import { LANGUAGE_OPTIONS, t } from "../../../../../i18n";
 import PasskeysPanel from "./PasskeysPanel";
 import TotpPanel from "./TotpPanel";
 
@@ -282,6 +283,33 @@ const EditProfilePage = ({
                       message={errDetails.email_id_err}
                     />
                   )}
+                </div>
+                <div className="space-y-2">
+                  <label
+                    htmlFor="locale"
+                    className="text-xs font-geist-medium uppercase tracking-wider text-muted-foreground flex items-center gap-1"
+                  >
+                    <Globe className="h-3 w-3" weight="bold" />
+                    {t("common.language")}
+                  </label>
+                  <CustomReactSelect
+                    handleOnChange={option => {
+                      updateBasicDetails(
+                        option?.value || "en",
+                        "locale",
+                        false
+                      );
+                    }}
+                    label={t("common.language")}
+                    name="locale"
+                    options={LANGUAGE_OPTIONS}
+                    value={
+                      LANGUAGE_OPTIONS.find(
+                        option => option.value === personalDetails.locale
+                      ) || LANGUAGE_OPTIONS[0]
+                    }
+                    className="font-geist-regular"
+                  />
                 </div>
               </div>
             </CardContent>

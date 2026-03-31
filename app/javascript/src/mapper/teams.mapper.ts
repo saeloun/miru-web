@@ -4,6 +4,7 @@ export const teamsMapper = (user, address) => ({
   id: user.id,
   first_name: user.first_name,
   last_name: user.last_name,
+  locale: user.locale,
   date_of_birth:
     user.date_of_birth && dayjs(user.date_of_birth).format(user.date_format),
   phone_number: user.phone,
