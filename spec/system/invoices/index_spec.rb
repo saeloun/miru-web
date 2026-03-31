@@ -155,6 +155,29 @@ RSpec.describe "Invoice listing", type: :system, js: true do
       end
     end
 
+    it "filters the table and recently updated invoices from the summary cards" do
+      with_forgery_protection do
+        visit "/invoices"
+
+        find("button", text: /\AOverdue/i, match: :first).click
+
+        within("table") do
+          expect(page).to have_content("INV-OVER-004", wait: 10)
+          expect(page).not_to have_content("INV-DRAFT-001")
+          expect(page).not_to have_content("INV-SENT-002")
+          expect(page).not_to have_content("INV-PAID-003")
+        end
+
+        recently_updated_cards = all("[data-testid='recently-updated-card']", wait: 10)
+        card_text = recently_updated_cards.map(&:text).join(" ")
+
+        expect(card_text).to include("INV-OVER-004")
+        expect(card_text).not_to include("INV-DRAFT-001")
+        expect(card_text).not_to include("INV-SENT-002")
+        expect(page).to have_content("Showing 1 of 1", wait: 10)
+      end
+    end
+
     it "orders recently updated invoices by update time" do
       recent_invoice = create(:invoice,
         company:, client:, status: :sent,

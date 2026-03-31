@@ -20,6 +20,7 @@ interface Invoice {
 interface RecentlyUpdatedProps {
   initialInvoices?: Invoice[];
   initialTotalCount?: number;
+  disableAutoFetch?: boolean;
 }
 
 const compareInvoicesByUpdatedAt = (left: Invoice, right: Invoice) => {
@@ -36,6 +37,7 @@ const compareInvoicesByUpdatedAt = (left: Invoice, right: Invoice) => {
 const InfiniteScrollRecentlyUpdated: React.FC<RecentlyUpdatedProps> = ({
   initialInvoices = [],
   initialTotalCount = 0,
+  disableAutoFetch = false,
 }) => {
   const [invoices, setInvoices] = useState<Invoice[]>(initialInvoices);
   const [page, setPage] = useState(1);
@@ -123,10 +125,10 @@ const InfiniteScrollRecentlyUpdated: React.FC<RecentlyUpdatedProps> = ({
 
   // Initial load
   useEffect(() => {
-    if (initialInvoices.length === 0) {
+    if (!disableAutoFetch && initialInvoices.length === 0) {
       fetchInvoices(1);
     }
-  }, [fetchInvoices, initialInvoices.length]);
+  }, [disableAutoFetch, fetchInvoices, initialInvoices.length]);
 
   // Intersection Observer for infinite scroll
   useEffect(() => {

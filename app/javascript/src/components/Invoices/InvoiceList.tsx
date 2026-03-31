@@ -199,12 +199,14 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
     );
   };
 
-  const filteredInvoices = invoices.filter(invoice => {
+  const matchesInvoiceFilters = (invoice: Invoice) => {
+    const invoiceNumber = invoice.invoiceNumber?.toLowerCase() || "";
+    const clientName = invoice.client?.name?.toLowerCase() || "";
+    const normalizedSearch = searchTerm.toLowerCase();
     const matchesSearch =
-      invoice.invoiceNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      invoice.client.name.toLowerCase().includes(searchTerm.toLowerCase());
+      invoiceNumber.includes(normalizedSearch) ||
+      clientName.includes(normalizedSearch);
 
-    // Only check filterParams.status (from ChartWithSummary cards)
     let matchesStatus = true;
     if (filterParams.status && filterParams.status.length > 0) {
       matchesStatus = filterParams.status.some(
@@ -213,7 +215,15 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
     }
 
     return matchesSearch && matchesStatus;
-  });
+  };
+
+  const filteredInvoices = invoices.filter(invoice =>
+    matchesInvoiceFilters(invoice)
+  );
+
+  const filteredRecentInvoices = recentInvoices.filter(invoice =>
+    matchesInvoiceFilters(invoice)
+  );
 
   const hasActiveFilters =
     searchTerm.trim().length > 0 ||
@@ -341,8 +351,13 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
       {/* Recently Updated Invoices */}
       {recentInvoices.length > 0 && (
         <InfiniteScrollRecentlyUpdated
-          initialInvoices={recentInvoices}
-          initialTotalCount={recentlyUpdatedTotalCount}
+          initialInvoices={filteredRecentInvoices}
+          initialTotalCount={
+            hasActiveFilters
+              ? filteredRecentInvoices.length
+              : recentlyUpdatedTotalCount
+          }
+          disableAutoFetch={hasActiveFilters}
         />
       )}
 
