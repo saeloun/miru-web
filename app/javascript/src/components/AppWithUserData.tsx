@@ -10,7 +10,6 @@ import {
 } from "../i18n";
 import Loader from "../common/Loader/index";
 import Main from "./Main";
-import { applyLocale, initializeLocale } from "../i18n";
 
 const AUTH_PATH_PREFIXES = [
   "/user/sign_in",
@@ -27,7 +26,6 @@ const isAuthPagePath = (pathname: string) =>
 
 const AppWithUserData = (props: any) => {
   const isAuthPage = isAuthPagePath(window.location.pathname);
-  const [locale, setLocaleState] = useState(() => initializeLocale());
   const [userData, setUserData] = useState({
     user: null,
     company: null,
@@ -42,8 +40,6 @@ const AppWithUserData = (props: any) => {
     const fetchUserDetails = async () => {
       // Skip fetching if we're on an auth page
       if (isAuthPage) {
-        const authLocale = initializeLocale();
-        setLocaleState(authLocale);
         // On auth pages, don't fetch user data
         setUserData({
           user: null,
@@ -69,8 +65,6 @@ const AppWithUserData = (props: any) => {
 
         if (response.ok) {
           const data = await response.json();
-          const resolvedLocale = initializeLocale(data.user?.locale);
-          setLocaleState(resolvedLocale);
           setUserData({
             user: data.user,
             company: data.company,
@@ -78,8 +72,6 @@ const AppWithUserData = (props: any) => {
             loading: false,
           });
         } else {
-          const unauthenticatedLocale = initializeLocale();
-          setLocaleState(unauthenticatedLocale);
           // Not authenticated - just set loading to false
           setUserData({
             user: null,
@@ -89,8 +81,6 @@ const AppWithUserData = (props: any) => {
           });
         }
       } catch (error) {
-        const fallbackLocale = initializeLocale();
-        setLocaleState(fallbackLocale);
         setUserData({
           user: null,
           company: null,
@@ -174,17 +164,10 @@ const AppWithUserData = (props: any) => {
     return <Loader className="h-screen" />;
   }
 
-  const handleLocaleChange = (nextLocale: string) => {
-    const resolvedLocale = applyLocale(nextLocale);
-    setLocaleState(resolvedLocale);
-  };
-
   return (
     <LocaleProvider initialLocale={initialLocale}>
     <UserContext.Provider
       value={{
-        locale,
-        setLocale: handleLocaleChange,
         user,
         avatarUrl: currentAvatarUrl,
         setCurrentAvatarUrl,

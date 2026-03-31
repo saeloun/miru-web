@@ -3,7 +3,6 @@ import { GlobeSimple, CaretDown, Spinner } from "phosphor-react";
 import { toast } from "sonner";
 
 import { useLocale } from "../../context/LocaleContext";
-import { setStoredLocale } from "../../i18n";
 import { getLocaleShortCode } from "./localeData";
 import LocaleDropdown from "./LocaleDropdown";
 
@@ -36,7 +35,6 @@ const LocaleSelector: React.FC<LocaleSelectorProps> = ({
 
       try {
         await setLocale(newLocale);
-        setStoredLocale(newLocale);
 
         if (onLocaleChange) {
           await onLocaleChange(newLocale);
