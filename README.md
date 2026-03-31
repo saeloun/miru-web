@@ -53,27 +53,31 @@ Miru is built for teams that bill by the hour and want the full money workflow i
   <a href="https://github.com/saeloun/miru-web">View on GitHub</a>
 </p>
 
+<p align="center">
+  <img src="docs/static/img/readme/hero-current.png" alt="Miru current homepage and app preview" />
+</p>
+
 ## Product Preview
 
 <table>
   <tr>
     <td width="50%">
-      <img src="docs/static/img/readme/dashboard-preview.png" alt="Miru dashboard preview" />
+      <img src="docs/static/img/readme/dashboard-current.webp" alt="Miru dashboard screenshot" />
       <p><strong>Dashboard</strong><br/>Revenue, projects, and team momentum in one place.</p>
     </td>
     <td width="50%">
-      <img src="docs/static/img/readme/invoices-preview.png" alt="Miru invoices preview" />
+      <img src="docs/static/img/readme/invoices-current.webp" alt="Miru invoices screenshot" />
       <p><strong>Invoices</strong><br/>Track status, amounts, and cash flow from a single view.</p>
     </td>
   </tr>
   <tr>
     <td width="50%">
-      <img src="docs/static/img/readme/invoice-builder-preview.png" alt="Miru invoice builder preview" />
-      <p><strong>Invoice Builder</strong><br/>Turn billable work into polished invoices without extra tools.</p>
+      <img src="docs/static/img/readme/reports-current.webp" alt="Miru billing and plan screenshot" />
+      <p><strong>Billing & Reporting</strong><br/>See pricing, billing, and operational visibility in the same product.</p>
     </td>
     <td width="50%">
-      <img src="docs/static/img/readme/reports-preview.png" alt="Miru reports preview" />
-      <p><strong>Reports</strong><br/>See outstanding revenue, overdue amounts, and what needs action.</p>
+      <img src="docs/static/img/readme/time-tracking-current.webp" alt="Miru time tracking screenshot" />
+      <p><strong>Time Tracking</strong><br/>Track work as it happens and keep billable time visible.</p>
     </td>
   </tr>
 </table>
