@@ -14,7 +14,10 @@ const NewLineItemStatic = ({
   selectedOption,
   dateFormat,
 }) => {
-  const strName = item.name || `${item.first_name} ${item.last_name}`;
+  const strName =
+    item.name ||
+    [item.first_name, item.last_name].filter(Boolean).join(" ") ||
+    "";
   const [name, setName] = useState<string>(strName);
   const [lineItemDate, setLineItemDate] = useState(
     dayjs(item.date, "YYYY-MM-DD").format(dateFormat)
@@ -22,7 +25,9 @@ const NewLineItemStatic = ({
   const [description, setDescription] = useState<string>(item.description);
   const [rate, setRate] = useState<number>(item.rate);
   const [quantity, setQuantity] = useState<any>(minToHHMM(item.quantity));
-  const [lineTotal, setLineTotal] = useState<string>(item.lineTotal);
+  const [lineTotal, setLineTotal] = useState<string>(
+    item.lineTotal ?? item.amount ?? lineTotalCalc(item.quantity, item.rate)
+  );
   const [showDatePicker, setShowDatePicker] = useState<boolean>(false);
   const [showCalendarIcon, setShowCalendarIcon] = useState<boolean>(false);
   const datePickerRef = useRef(null);

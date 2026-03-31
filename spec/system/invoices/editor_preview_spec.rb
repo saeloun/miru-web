@@ -37,9 +37,11 @@ RSpec.describe "Invoice editor preview", type: :system, js: true do
 
       expect(page).to have_css("#react-root", wait: 10)
       expect(page).to have_content("Description", wait: 10)
+      expect(page).not_to have_text("undefined undefined", wait: 1)
       expect(page).to have_text("15:00", wait: 10)
       expect(page).to have_text("$1,500.00", wait: 10)
       expect(page).not_to have_text("$90,000.00", wait: 1)
+      expect(page).not_to have_text("$0.00", wait: 1)
     end
   end
 end
