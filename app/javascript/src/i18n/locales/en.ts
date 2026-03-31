@@ -1443,6 +1443,8 @@ const en = {
       acceptTerms: "You must accept the terms",
     },
     miruLogo: "Miru",
+    heroTitle: "One place for time, invoices, and payments",
+    heroDescription: "Keep the day clear, keep billing moving, and keep cash visible.",
     companyPulse: "Company pulse",
     billingCommand: "Billing command",
     clearWeeklyFlow: "Clear weekly flow",
