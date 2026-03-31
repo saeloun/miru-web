@@ -8,7 +8,7 @@
     </div>
   <% else %>
     <div class="text-center mt-2">
-        <%= link_to t('shared_links.back_to_login').upcase, new_session_path(resource_name), class: "text-center text-primary font-sans font-normal text-base hover:text-primary" %>
+        <%= link_to t('shared_links.back_to_login').upcase, "/login", class: "text-center text-primary font-sans font-normal text-base hover:text-primary" %>
     </div>
   <%end%>
 <% end %>
