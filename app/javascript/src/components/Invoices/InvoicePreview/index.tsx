@@ -15,6 +15,7 @@ import { cn } from "../../../lib/utils";
 import { invoiceApi } from "../../../services/invoiceApi";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
+import { lineTotalCalc, minToHHMM } from "../../../helpers";
 
 interface InvoicePreviewProps {
   invoice: {
@@ -124,6 +125,14 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
         return "border-border bg-card text-card-foreground";
     }
   };
+
+  const formatQuantity = (quantity: number) => minToHHMM(Number(quantity) || 0);
+
+  const formatLineAmount = (item: { amount?: number; quantity: number; rate: number }) =>
+    currencyFormat(
+      currency,
+      Number(item.amount ?? lineTotalCalc(item.quantity, item.rate))
+    );
 
   const currency = invoice.currency || invoice.company.baseCurrency || "USD";
 
@@ -470,7 +479,7 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
                       Qty
                     </dt>
                     <dd className="font-medium text-foreground print:text-gray-900">
-                      {item.quantity}
+                      {formatQuantity(item.quantity)}
                     </dd>
                   </div>
                   <div>
@@ -486,7 +495,7 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
                       Amount
                     </dt>
                     <dd className="font-medium text-foreground print:text-gray-900">
-                      {currencyFormat(currency, item.amount)}
+                      {formatLineAmount(item)}
                     </dd>
                   </div>
                 </dl>
@@ -527,13 +536,13 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
                       {item.date ? formatDate(item.date) : "-"}
                     </td>
                     <td className="px-2 py-3 text-center text-sm text-foreground print:text-gray-900">
-                      {item.quantity}
+                      {formatQuantity(item.quantity)}
                     </td>
                     <td className="px-2 py-3 text-right text-sm text-foreground print:text-gray-900">
                       {currencyFormat(currency, item.rate)}
                     </td>
                     <td className="px-2 py-3 text-right text-sm font-medium text-foreground print:text-gray-900">
-                      {currencyFormat(currency, item.amount)}
+                      {formatLineAmount(item)}
                     </td>
                   </tr>
                 ))}
