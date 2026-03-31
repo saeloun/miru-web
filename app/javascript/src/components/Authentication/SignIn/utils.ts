@@ -1,5 +1,6 @@
 import * as Yup from "yup";
-import { t } from "../../../i18n";
+import { i18n } from "../../../i18n";
+const t = (key: string, opts?: Record<string, unknown>) => i18n.t(key, opts);
 
 export const signInFormInitialValues = {
   email: "",
