@@ -382,13 +382,13 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
       const entriesObj = res.data?.entries || {};
       setAllEmployeesEntries(pv => ({ ...pv, [targetEmployeeId]: entriesObj }));
       setEntryList(entriesObj);
-      setLeaveTypes(
-        Array.isArray(res.data?.leave_types) ? res.data.leave_types : []
-      );
+      if (Array.isArray(res.data?.leave_types)) {
+        setLeaveTypes(res.data.leave_types);
+      }
 
-      setHolidayList(
-        Array.isArray(res.data?.holiday_infos) ? res.data.holiday_infos : []
-      );
+      if (Array.isArray(res.data?.holiday_infos)) {
+        setHolidayList(res.data.holiday_infos);
+      }
       setRuntimeError("");
       setLoading(false);
 
