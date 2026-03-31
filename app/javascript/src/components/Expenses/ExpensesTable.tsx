@@ -191,16 +191,18 @@ const ExpensesTable: React.FC = () => {
     notes: "",
   });
 
-  const parseExpenseAmount = (value: string) => {
+  const normalizeExpenseAmount = (value: string) => {
     const normalizedValue = value.replace(/[^0-9,.-]/g, "").replace(/,/g, "");
 
-    if (!normalizedValue || normalizedValue === "-" || normalizedValue === ".") {
-      return null;
+    if (
+      !normalizedValue ||
+      normalizedValue === "-" ||
+      normalizedValue === "."
+    ) {
+      return value.trim();
     }
 
-    const parsedValue = Number.parseFloat(normalizedValue);
-
-    return Number.isFinite(parsedValue) ? parsedValue : null;
+    return normalizedValue;
   };
 
   const hasAmount = formData.amount.trim().length > 0;
@@ -358,21 +360,16 @@ const ExpensesTable: React.FC = () => {
 
   const buildExpensePayload = async () => {
     const trimmedCategory = formData.category.trim();
-    const parsedAmount = parseExpenseAmount(formData.amount);
 
     if (!trimmedCategory) {
       throw new Error("invalid-category");
-    }
-
-    if (parsedAmount === null) {
-      throw new Error("invalid-amount");
     }
 
     const payload = new FormData();
 
     payload.append("expense[date]", formData.date);
     payload.append("expense[description]", formData.description);
-    payload.append("expense[amount]", String(parsedAmount));
+    payload.append("expense[amount]", normalizeExpenseAmount(formData.amount));
     payload.append("expense[category_name]", trimmedCategory);
     payload.append("expense[expense_type]", formData.expenseType);
 

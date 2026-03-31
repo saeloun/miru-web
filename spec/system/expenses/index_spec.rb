@@ -176,4 +176,20 @@ RSpec.describe "Expenses", type: :system, js: true do
       expect(Expense.order(:id).last.amount.to_f).to eq(100.0)
     end
   end
+
+  it "keeps the add action enabled for non-numeric amount text" do
+    with_forgery_protection do
+      visit "/expenses"
+
+      find("button", text: "Add Expense", match: :first).click
+
+      fill_in "description", with: "Free-form amount expense"
+      fill_in "amount", with: "approx one hundred"
+
+      find("label[for='category']", wait: 10).find(:xpath, "..").find("button").click
+      find("[role='option']", match: :first, wait: 10).click
+
+      expect(page).to have_button("Add Expense", disabled: false, wait: 10)
+    end
+  end
 end
