@@ -98,9 +98,9 @@ const zhCN = {
   // Date validation
   dateCannotBeBlank: "日期不能为空",
   fromDateMustBeLessThanToDate:
-    ""开始"日期必须小于或等于"结束"日期",
+    "\u201C开始\u201D日期必须小于或等于\u201C结束\u201D日期",
   toDateMustBeGreaterThanFromDate:
-    ""结束"日期必须大于或等于"开始"日期",
+    "\u201C结束\u201D日期必须大于或等于\u201C开始\u201D日期",
   invalidDate: "请输入有效的日期",
 
   // Month abbreviations
