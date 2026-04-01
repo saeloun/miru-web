@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "StyledComponents";
 import { i18n } from "../../../i18n";
 
-const Header = ({
+const InvoiceListHeader = ({
   setIsFilterVisible,
   params,
   setParams,
@@ -124,4 +124,4 @@ const Header = ({
   );
 };
 
-export default Header;
+export default InvoiceListHeader;

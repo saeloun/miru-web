@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import CustomCheckbox from "common/CustomCheckbox";
 import { i18n } from "../../../../i18n";
 
-const TableHeader = ({
+const InvoiceListTableHeader = ({
   invoices,
   selectedInvoices,
   selectInvoices,
@@ -69,7 +69,7 @@ const TableHeader = ({
         className="hidden px-2 py-5 text-right text-xs font-medium tracking-widest text-foreground lg:table-cell lg:px-6"
         scope="col"
       >
-{i18n.t("invoices.statusHeader")}
+        {i18n.t("invoices.statusHeader")}
       </th>
       <th
         className="table-cell px-2 py-5 text-right text-xs font-medium leading-4 tracking-widest text-foreground lg:hidden lg:px-6"
@@ -81,4 +81,4 @@ const TableHeader = ({
   );
 };
 
-export default TableHeader;
+export default InvoiceListTableHeader;

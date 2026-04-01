@@ -14,7 +14,7 @@ import { sendGAPageView } from "utils/googleAnalytics";
 
 import Container from "./container";
 import FilterSidebar from "./FilterSidebar";
-import Header from "./Header";
+import InvoiceListHeader from "./InvoiceListHeader";
 
 import BulkDeleteInvoices from "../popups/BulkDeleteInvoices";
 import BulkDownloadInvoices from "../popups/BulkDownloadInvoices";
@@ -306,7 +306,7 @@ const Invoices = () => {
 
   const InvoicesLayout = () => (
     <div className="h-full p-4 lg:p-0" id="invoice-list-page">
-      <Header
+      <InvoiceListHeader
         filterParamsStr={filterParamsStr}
         handleOverlayVisibility={handleOverlayVisibility}
         isDesktop={isDesktop}

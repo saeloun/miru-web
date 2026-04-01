@@ -1,6 +1,6 @@
 import React from "react";
 
-import TableHeader from "./TableHeader";
+import InvoiceListTableHeader from "./InvoiceListTableHeader";
 import TableRow from "./TableRow";
 
 const Table = ({
@@ -20,7 +20,7 @@ const Table = ({
     id="invoicesListTable"
   >
     <thead>
-      <TableHeader
+      <InvoiceListTableHeader
         deselectInvoices={deselectInvoices}
         invoices={invoices}
         isDesktop={isDesktop}
