@@ -1,7 +1,7 @@
 import React from "react";
 import { i18n } from "../../../../i18n";
 
-const NewLineItemTableHeader = ({ setShowMultilineModal, setLineItem }) => (
+const TimeEntryPickerHeader = ({ setShowMultilineModal, setLineItem }) => (
   <div className="flex items-center justify-center px-3 pt-6 pb-2 lg:justify-start">
     <button
       className="hidden text-xs font-bold tracking-widest text-primary lg:inline"
@@ -24,4 +24,4 @@ const NewLineItemTableHeader = ({ setShowMultilineModal, setLineItem }) => (
   </div>
 );
 
-export default NewLineItemTableHeader;
+export default TimeEntryPickerHeader;

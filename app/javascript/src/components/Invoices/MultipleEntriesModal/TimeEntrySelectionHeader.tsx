@@ -6,7 +6,7 @@ import { XIcon } from "miruIcons";
 import Filters from "./Filters";
 import { i18n } from "../../../i18n";
 
-const Header = ({
+const TimeEntrySelectionHeader = ({
   setMultiLineItemModal,
   teamMembers,
   filterParams,
@@ -43,4 +43,4 @@ const Header = ({
   );
 };
 
-export default Header;
+export default TimeEntrySelectionHeader;

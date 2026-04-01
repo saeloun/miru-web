@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useUserContext } from "context/UserContext";
 
 import Footer from "./Footer";
-import Header from "./Header";
+import TimeEntrySelectionHeader from "./TimeEntrySelectionHeader";
 import Table from "./Table";
 
 import { fetchMultipleNewLineItems } from "../common/utils";
@@ -133,7 +133,7 @@ const MultipleEntriesModal = ({
       style={{ background: "rgba(29, 26, 49,0.6)" }}
     >
       <div className="flex h-160 w-full flex-col justify-between rounded-lg bg-white">
-        <Header
+        <TimeEntrySelectionHeader
           filterIntialValues={filterIntialValues}
           filterParams={filterParams}
           handleSelectAll={handleSelectAll}
@@ -176,7 +176,7 @@ const MultipleEntriesModal = ({
       className="flex w-full flex-col"
       style={{ height: "calc(100vh - 48px)" }}
     >
-      <Header
+      <TimeEntrySelectionHeader
         filterIntialValues={filterIntialValues}
         filterParams={filterParams}
         handleSelectAll={handleSelectAll}

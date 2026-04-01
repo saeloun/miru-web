@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 import dayjs from "dayjs";
 import { lineTotalCalc, minToHHMM } from "helpers";
 
-import NewLineItemTableHeader from "./Header";
+import TimeEntryPickerHeader from "./TimeEntryPickerHeader";
 
 const NewLineItemTable = ({
   setAddNew,
@@ -37,7 +37,7 @@ const NewLineItemTable = ({
   return (
     <div className="flex h-full flex-col">
       {filteredLineItems.length > 0 && (
-        <NewLineItemTableHeader
+        <TimeEntryPickerHeader
           setLineItem={setLineItem}
           setShowMultilineModal={setMultiLineItemModal}
         />
