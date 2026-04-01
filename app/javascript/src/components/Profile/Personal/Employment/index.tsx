@@ -10,7 +10,7 @@ import { employmentMapper } from "mapper/teams.mapper";
 import { useNavigate, useParams } from "react-router-dom";
 import { useCurrentUser } from "~/hooks/useCurrentUser";
 
-import StaticPage from "./StaticPage";
+import EmploymentSummary from "./EmploymentSummary";
 
 const EmploymentDetails = () => {
   const { user, isDesktop } = useUserContext();
@@ -87,7 +87,7 @@ const EmploymentDetails = () => {
       {isLoading ? (
         <Loader className="min-h-70v" />
       ) : (
-        <StaticPage employmentDetails={employmentDetails} />
+        <EmploymentSummary employmentDetails={employmentDetails} />
       )}
     </Fragment>
   );

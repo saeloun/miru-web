@@ -7,7 +7,7 @@ import { useUserContext } from "context/UserContext";
 import { useNavigate, useParams } from "react-router-dom";
 import { useCurrentUser } from "~/hooks/useCurrentUser";
 
-import StaticPage from "./StaticPage";
+import CompensationSummary from "./CompensationSummary";
 
 import DetailsHeader from "../../Common/DetailsHeader";
 
@@ -84,7 +84,7 @@ const CompensationDetails = () => {
       {isLoading ? (
         <Loader className="min-h-70v" />
       ) : (
-        <StaticPage
+        <CompensationSummary
           compensationDetails={compensationDetails}
           currency={company?.base_currency}
         />

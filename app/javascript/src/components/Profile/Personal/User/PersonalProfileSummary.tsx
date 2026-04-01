@@ -19,7 +19,7 @@ import { Badge } from "../../../ui/badge";
 
 dayjs.extend(customParseFormat);
 
-const StaticPage = ({
+const PersonalProfileSummary = ({
   avatarUrl,
   personalDetails,
   handleEditClick,
@@ -58,7 +58,6 @@ const StaticPage = ({
           </Button>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Profile Overview Card */}
           <Card className="border-border shadow-sm lg:col-span-2">
             <CardHeader className="pb-4">
               <CardTitle className="text-lg font-geist-semibold flex items-center gap-2">
@@ -68,7 +67,6 @@ const StaticPage = ({
             </CardHeader>
             <CardContent>
               <div className="space-y-6">
-                {/* Name and Basic Info */}
                 <div className="flex items-start gap-4">
                   <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-lg bg-accent">
                     {avatarUrl ? (
@@ -111,7 +109,6 @@ const StaticPage = ({
 
                 <Separator />
 
-                {/* Contact Information */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="text-xs font-geist-medium uppercase tracking-wider text-muted-foreground flex items-center gap-1">
@@ -133,7 +130,6 @@ const StaticPage = ({
                   </div>
                 </div>
 
-                {/* Address */}
                 <div>
                   <label className="text-xs font-geist-medium uppercase tracking-wider text-muted-foreground flex items-center gap-1">
                     <MapPin className="h-3 w-3" />
@@ -147,7 +143,6 @@ const StaticPage = ({
             </CardContent>
           </Card>
 
-          {/* Social Profiles Card */}
           <div className="space-y-6">
             <Card className="border-border shadow-sm">
               <CardHeader className="pb-4">
@@ -180,7 +175,6 @@ const StaticPage = ({
               </CardContent>
             </Card>
 
-            {/* Security Card - Only show in settings */}
             {isCalledFromSettings && (
               <Card className="border-border shadow-sm">
                 <CardHeader className="pb-4">
@@ -223,4 +217,4 @@ const StaticPage = ({
   );
 };
 
-export default StaticPage;
+export default PersonalProfileSummary;

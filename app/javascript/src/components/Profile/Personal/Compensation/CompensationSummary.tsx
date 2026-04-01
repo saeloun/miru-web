@@ -3,7 +3,7 @@ import React from "react";
 import { currencyFormat } from "helpers";
 import { EarningsIconSVG, DeductionIconSVG, CoinsIcon } from "miruIcons";
 
-const StaticPage = ({ compensationDetails, currency }) => {
+const CompensationSummary = ({ compensationDetails, currency }) => {
   const { earnings, deductions, total } = compensationDetails;
 
   return (
@@ -91,4 +91,4 @@ const StaticPage = ({ compensationDetails, currency }) => {
   );
 };
 
-export default StaticPage;
+export default CompensationSummary;
