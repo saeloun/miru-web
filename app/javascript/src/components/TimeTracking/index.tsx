@@ -10,7 +10,7 @@ import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import updateLocale from "dayjs/plugin/updateLocale";
 import weekday from "dayjs/plugin/weekday";
-import { minFromHHMM, minToHHMM } from "helpers";
+import { minToHHMM } from "helpers";
 import Logger from "js-logger";
 import { sendGAPageView } from "utils/googleAnalytics";
 import { Button } from "../ui/button";
@@ -21,7 +21,6 @@ import { startTimerFromEntry } from "utils/timeTrackingTimer";
 
 import WeekDaySelector from "./WeekDaySelector";
 import EntryForm from "./EntryForm";
-import { TimeTrackingEntryDialog } from "./ModernTimeEntryForm";
 import Header from "./Header";
 import WeeklyEntries from "./WeeklyEntries";
 import EntryDetailsModal from "./EntryDetailsModal";
@@ -76,8 +75,6 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
   );
   const [currentYear, setCurrentYear] = useState<number>(dayjs().year());
   const [updateView, setUpdateView] = useState(true);
-  const [showModernForm, setShowModernForm] = useState<boolean>(false);
-  const [modernFormEntry, setModernFormEntry] = useState<any>(null);
   const [showEntryModal, setShowEntryModal] = useState<boolean>(false);
   const [modalSelectedDate, setModalSelectedDate] = useState<string>("");
   const [view, setView] = useState<string>("week");
@@ -603,58 +600,11 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
     setCurrentYear(dayjs(date).year());
   };
 
-  const handleOpenModernForm = (entry = null) => {
-    setModernFormEntry(entry);
-    setShowModernForm(true);
-  };
-
   const handleOpenTimeoffForm = () => {
     setEditEntryId(0);
     setEditTimeoffEntryId(0);
     setNewEntryView(false);
     setNewTimeoffEntryView(true);
-  };
-
-  const handleCloseModernForm = () => {
-    setShowModernForm(false);
-    setModernFormEntry(null);
-  };
-
-  const handleSaveModernEntry = async (formData: any) => {
-    try {
-      const payload = {
-        work_date: formData.date,
-        duration: minFromHHMM(formData.duration),
-        note: formData.note,
-        bill_status: formData.billable ? "unbilled" : "non_billable",
-      };
-
-      if (modernFormEntry) {
-        // Update existing entry
-        const res = await timesheetEntryApi.update(modernFormEntry.id, {
-          project_id: formData.projectId,
-          timesheet_entry: payload,
-        });
-        if (res.status >= 200 && res.status < 300) {
-          await refreshVisibleEntries();
-        }
-      } else {
-        // Create new entry
-        const res = await timesheetEntryApi.create(
-          {
-            project_id: formData.projectId,
-            timesheet_entry: payload,
-          },
-          selectedEmployeeId
-        );
-        if (res.status === 200) {
-          await refreshVisibleEntries();
-        }
-      }
-    } catch (error) {
-      console.error("Error saving entry:", error);
-      throw error;
-    }
   };
 
   const handleTimerSaved = async () => {
@@ -965,7 +915,6 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
               handleCopyLastWeek={handleCopyLastWeek}
               newEntryView={newEntryView}
               newTimeoffEntryView={newTimeoffEntryView}
-              handleOpenModernForm={handleOpenModernForm}
               handleOpenTimeoffForm={handleOpenTimeoffForm}
               setNewEntryView={setNewEntryView}
               showCopyLastWeek={isDesktop && view === "week"}
@@ -1010,16 +959,6 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
             </div>
           )}
         </div>
-        <TimeTrackingEntryDialog
-          isOpen={showModernForm}
-          onClose={handleCloseModernForm}
-          onSave={handleSaveModernEntry}
-          selectedDate={dayjs(selectedFullDate).toDate()}
-          existingEntry={modernFormEntry}
-          projects={Object.values(projects).flat()}
-          clients={clients}
-        />
-
         <EntryDetailsModal
           isOpen={showEntryModal}
           onClose={() => {

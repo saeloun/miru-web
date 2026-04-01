@@ -6,7 +6,6 @@ interface AddEntryButtonProps {
   newTimeoffEntryView?: boolean;
   showCopyLastWeek?: boolean;
   copyingLastWeek?: boolean;
-  handleOpenModernForm?: () => void;
   handleOpenTimeoffForm?: () => void;
   handleCopyLastWeek?: () => void;
   setNewEntryView: (value: boolean) => void;
@@ -17,7 +16,6 @@ const AddEntryButton: React.FC<AddEntryButtonProps> = ({
   newTimeoffEntryView = false,
   showCopyLastWeek = false,
   copyingLastWeek = false,
-  handleOpenModernForm,
   handleOpenTimeoffForm,
   handleCopyLastWeek,
   setNewEntryView,
