@@ -83,7 +83,7 @@ const presets = [
   { label: "All Time", value: "all_time" },
 ];
 
-export const ModernRevenueByClientReport: React.FC<
+export const RevenueByClientWorkspaceView: React.FC<
   RevenueByClientReportProps
 > = ({
   data = [],
@@ -523,4 +523,4 @@ export const ModernRevenueByClientReport: React.FC<
   );
 };
 
-export default ModernRevenueByClientReport;
+export default RevenueByClientWorkspaceView;

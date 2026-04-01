@@ -27,7 +27,7 @@ interface Iprops {
   setUpdateView: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const MonthCalender: React.FC<Iprops> = ({
+const MonthCalendar: React.FC<Iprops> = ({
   entryList,
   selectedFullDate,
   setSelectedFullDate,
@@ -192,7 +192,6 @@ const MonthCalender: React.FC<Iprops> = ({
       />
       <Card className="mt-4">
         <CardContent className="p-6">
-          {/* Days of week header */}
           <div className="grid grid-cols-8 gap-4 mb-4">
             {[
               i18n.t("timeTracking.dayAbbr.mon"),
@@ -203,19 +202,17 @@ const MonthCalender: React.FC<Iprops> = ({
               i18n.t("timeTracking.dayAbbr.sat"),
               i18n.t("timeTracking.dayAbbr.sun"),
             ].map((day, index) => (
-                <div
-                  key={index}
-                  className="text-center text-sm font-semibold text-muted-foreground"
-                >
-                  {day}
-                </div>
-              )
-            )}
+              <div
+                key={index}
+                className="text-center text-sm font-semibold text-muted-foreground"
+              >
+                {day}
+              </div>
+            ))}
             <div className="text-center text-sm font-semibold text-muted-foreground">
               {i18n.t("total")}
             </div>
           </div>
-          {/* Calendar grid */}
           {monthData.map((weekInfo, weekIndex) => (
             <div key={weekIndex} className="grid grid-cols-8 gap-4 mb-3">
               {Array.from(Array(7).keys()).map(dayNum =>
@@ -269,7 +266,6 @@ const MonthCalender: React.FC<Iprops> = ({
                   <div key={dayNum} className="h-20" />
                 )
               )}
-              {/* Week total */}
               <div className="h-20 rounded-lg bg-muted/50 border-2 border-border flex items-end justify-end p-2">
                 <span className="text-lg font-bold">
                   {(() => {
@@ -289,4 +285,4 @@ const MonthCalender: React.FC<Iprops> = ({
   );
 };
 
-export default MonthCalender;
+export default MonthCalendar;

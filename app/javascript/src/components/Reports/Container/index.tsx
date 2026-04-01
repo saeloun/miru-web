@@ -15,7 +15,7 @@ interface ContainerProps {
   selectedFilter?: any;
 }
 
-const ReportHeader = () => (
+const GroupedTimeEntryHeader = () => (
   <div className="grid grid-cols-5 items-center gap-2 border-b">
     <div className="py-5 pr-6 text-left text-xs font-medium uppercase leading-4 tracking-widest text-muted-foreground">
       {i18n.t("reports.projectClient")}
@@ -32,7 +32,7 @@ const ReportHeader = () => (
   </div>
 );
 
-const Container = ({ selectedFilter }: ContainerProps) => {
+const GroupedTimeEntryResults = ({ selectedFilter }: ContainerProps) => {
   const { timeEntryReport } = useEntry();
 
   const getTotalHoursLogged = id => {
@@ -100,7 +100,7 @@ const Container = ({ selectedFilter }: ContainerProps) => {
                     )}
                   </div>
                 )}
-                <ReportHeader />
+                <GroupedTimeEntryHeader />
                 <div className="mb-6">
                   {entries.length > 0 && getEntryList(entries)}
                 </div>
@@ -122,4 +122,4 @@ const Container = ({ selectedFilter }: ContainerProps) => {
   );
 };
 
-export default Container;
+export default GroupedTimeEntryResults;

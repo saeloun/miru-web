@@ -72,7 +72,7 @@ interface PaymentReportData {
   };
 }
 
-const CleanPaymentReport: React.FC = () => {
+const PaymentReportTable: React.FC = () => {
   const [dateRange, setDateRange] = useState<DateRange | undefined>();
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -562,4 +562,4 @@ const CleanPaymentReport: React.FC = () => {
   );
 };
 
-export default CleanPaymentReport;
+export default PaymentReportTable;

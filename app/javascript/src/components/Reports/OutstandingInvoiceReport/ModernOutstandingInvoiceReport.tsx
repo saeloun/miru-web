@@ -145,7 +145,9 @@ const fetchOutstandingInvoices = async (filters: FetchFilters = {}) => {
   filteredInvoices.forEach(invoice => {
     const clientId = invoice.client_id;
     const clientName =
-      invoice.client_name || invoice.client?.name || i18n.t("reports.unknownClient");
+      invoice.client_name ||
+      invoice.client?.name ||
+      i18n.t("reports.unknownClient");
 
     if (!clientsMap.has(clientId)) {
       clientsMap.set(clientId, {
@@ -202,7 +204,7 @@ const fetchOutstandingInvoices = async (filters: FetchFilters = {}) => {
   };
 };
 
-const ModernOutstandingInvoiceReport: React.FC = () => {
+const OutstandingInvoicesWorkspaceView: React.FC = () => {
   const { company } = useUserContext();
   const [activeTab, setActiveTab] = useState<"outstanding" | "overdue">(
     "outstanding"
@@ -312,7 +314,10 @@ const ModernOutstandingInvoiceReport: React.FC = () => {
       `/api/v1/reports/outstanding_overdue_invoices/download?${params.toString()}`,
       "_blank"
     );
-    setExportNotice(i18n.t("reports.generatingExport", { format: format.toUpperCase() }));
+
+    setExportNotice(
+      i18n.t("reports.generatingExport", { format: format.toUpperCase() })
+    );
   };
 
   if (error) {
@@ -320,7 +325,9 @@ const ModernOutstandingInvoiceReport: React.FC = () => {
       <div className="flex h-96 items-center justify-center">
         <div className="text-center">
           <Warning size={48} className="mx-auto mb-4 text-muted-foreground" />
-          <p className="text-muted-foreground">{i18n.t("reports.failedToLoadReportData")}</p>
+          <p className="text-muted-foreground">
+            {i18n.t("reports.failedToLoadReportData")}
+          </p>
         </div>
       </div>
     );
@@ -364,7 +371,9 @@ const ModernOutstandingInvoiceReport: React.FC = () => {
         <CardContent className="space-y-4">
           <div className="grid gap-4 md:grid-cols-3">
             <div className="space-y-2">
-              <Label htmlFor="currency-filter">{i18n.t("reports.currencyFilter")}</Label>
+              <Label htmlFor="currency-filter">
+                {i18n.t("reports.currencyFilter")}
+              </Label>
               <select
                 id="currency-filter"
                 aria-label={i18n.t("reports.currencyFilter")}
@@ -405,7 +414,9 @@ const ModernOutstandingInvoiceReport: React.FC = () => {
           </div>
 
           <div className="flex flex-wrap gap-2">
-            <Button onClick={applyCurrencyFilter}>{i18n.t("reports.applyFilter")}</Button>
+            <Button onClick={applyCurrencyFilter}>
+              {i18n.t("reports.applyFilter")}
+            </Button>
             <Button onClick={applyDateFilter} variant="outline">
               {i18n.t("reports.applyDateFilter")}
             </Button>
@@ -510,7 +521,9 @@ const ModernOutstandingInvoiceReport: React.FC = () => {
         <CardContent className="space-y-3">
           <div className="flex flex-wrap gap-2 items-end">
             <div className="w-48 space-y-2">
-              <Label htmlFor="export-format">{i18n.t("reports.formatLabel")}</Label>
+              <Label htmlFor="export-format">
+                {i18n.t("reports.formatLabel")}
+              </Label>
               <select
                 id="export-format"
                 aria-label={i18n.t("reports.formatLabel")}
@@ -523,7 +536,9 @@ const ModernOutstandingInvoiceReport: React.FC = () => {
                 <option value="Excel">Excel</option>
               </select>
             </div>
-            <Button onClick={() => exportReport(exportFormat)}>{i18n.t("download")}</Button>
+            <Button onClick={() => exportReport(exportFormat)}>
+              {i18n.t("download")}
+            </Button>
             <Button variant="outline" onClick={() => exportReport("PDF")}>
               {i18n.t("reports.exportPdfBtn")}
             </Button>
@@ -648,7 +663,9 @@ const ModernOutstandingInvoiceReport: React.FC = () => {
       {activeTab === "overdue" ? (
         <Card data-testid="overdue-aging">
           <CardHeader>
-            <CardTitle>{i18n.t("reports.overdueAgingTitle", { currency: baseCurrency })}</CardTitle>
+            <CardTitle>
+              {i18n.t("reports.overdueAgingTitle", { currency: baseCurrency })}
+            </CardTitle>
           </CardHeader>
           <CardContent className="space-y-2">
             {Object.entries(overdueAging).map(([label, total]) => (
@@ -686,7 +703,9 @@ const ModernOutstandingInvoiceReport: React.FC = () => {
           <CardDescription>
             {currencyFilter === "ALL"
               ? i18n.t("reports.allCurrencies")
-              : i18n.t("reports.filteredByCurrency", { currency: currencyFilter })}
+              : i18n.t("reports.filteredByCurrency", {
+                  currency: currencyFilter,
+                })}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -759,4 +778,4 @@ const ModernOutstandingInvoiceReport: React.FC = () => {
   );
 };
 
-export default ModernOutstandingInvoiceReport;
+export default OutstandingInvoicesWorkspaceView;

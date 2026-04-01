@@ -135,7 +135,7 @@ const getPaymentMethodColor = (method: string) => {
   return "bg-gradient-to-r from-gray-500 to-gray-600 text-white";
 };
 
-const EnhancedPaymentReport: React.FC = () => {
+const PaymentReportWorkspaceView: React.FC = () => {
   const [dateRange, setDateRange] = useState<DateRange | undefined>({
     from: startOfYear(new Date()),
     to: new Date(),
@@ -913,4 +913,4 @@ const EnhancedPaymentReport: React.FC = () => {
   );
 };
 
-export default EnhancedPaymentReport;
+export default PaymentReportWorkspaceView;

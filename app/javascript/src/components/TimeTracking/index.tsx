@@ -27,7 +27,7 @@ import WeeklyEntries from "./WeeklyEntries";
 import EntryDetailsModal from "./EntryDetailsModal";
 import TimeEntriesDisplay from "./TimeEntriesDisplay";
 import AddEntryButton from "./AddEntryButton";
-import MonthCalender from "./MonthCalender";
+import MonthCalendar from "./MonthCalendar";
 
 dayjs.extend(updateLocale);
 dayjs.extend(weekday);
@@ -804,7 +804,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
     );
   }
 
-  const TimeTrackingLayout = () => (
+  const TimeTrackingContent = () => (
     <TimesheetEntriesContext.Provider
       value={{
         entryList,
@@ -922,7 +922,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
                 />
               )}
               {view === "month" && (
-                <MonthCalender
+                <MonthCalendar
                   selectedFullDate={selectedFullDate}
                   setSelectedFullDate={setSelectedFullDate}
                   entryList={entryList}
@@ -1062,9 +1062,9 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
     </TimesheetEntriesContext.Provider>
   );
 
-  const Main = withLayout(TimeTrackingLayout, !isDesktop, !isDesktop);
+  const Main = withLayout(TimeTrackingContent, !isDesktop, !isDesktop);
 
-  return isDesktop ? TimeTrackingLayout() : <Main />;
+  return isDesktop ? TimeTrackingContent() : <Main />;
 };
 
 interface Iprops {

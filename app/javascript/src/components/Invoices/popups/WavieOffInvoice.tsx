@@ -7,23 +7,23 @@ import { i18n } from "../../../i18n";
 
 interface IProps {
   invoice: any;
-  setShowWavieDialog: any;
-  showWavieDialog: boolean;
+  setShowWaiveDialog: any;
+  showWaiveDialog: boolean;
   fetchInvoices?: any;
   invoiceNumber?: any;
 }
 
-const WavieOffInvoice = ({
+const WaiveOffInvoice = ({
   invoice,
-  setShowWavieDialog,
+  setShowWaiveDialog,
   fetchInvoices,
-  showWavieDialog,
+  showWaiveDialog,
   invoiceNumber,
 }: IProps) => {
   const navigate = useNavigate();
-  const wavieInvoice = async invoice => {
+  const waiveInvoice = async invoice => {
     await invoicesApi.waiveInvoice(invoice);
-    setShowWavieDialog(false);
+    setShowWaiveDialog(false);
     if (fetchInvoices) {
       fetchInvoices();
     } else {
@@ -34,11 +34,13 @@ const WavieOffInvoice = ({
   return (
     <Modal
       customStyle="sm:my-8 sm:w-full sm:max-w-lg sm:align-middle"
-      isOpen={showWavieDialog}
-      onClose={() => setShowWavieDialog(false)}
+      isOpen={showWaiveDialog}
+      onClose={() => setShowWaiveDialog(false)}
     >
       <div className="mb-8 mt-4 flex-col">
-        <h6 className="mb-2 text-2xl font-bold">{i18n.t("invoices.waiveOffInvoice")}</h6>
+        <h6 className="mb-2 text-2xl font-bold">
+          {i18n.t("invoices.waiveOffInvoice")}
+        </h6>
         <p className="mt-2 font-normal">
           {i18n.t("invoices.waiveOffConfirm", { number: invoiceNumber })}
         </p>
@@ -49,7 +51,7 @@ const WavieOffInvoice = ({
           size="medium"
           style="secondary"
           onClick={() => {
-            setShowWavieDialog(false);
+            setShowWaiveDialog(false);
           }}
         >
           {i18n.t("cancel").toUpperCase()}
@@ -59,7 +61,7 @@ const WavieOffInvoice = ({
           size="medium"
           style="primary"
           onClick={() => {
-            wavieInvoice(invoice);
+            waiveInvoice(invoice);
           }}
         >
           {i18n.t("invoices.waiveOff")}
@@ -68,4 +70,4 @@ const WavieOffInvoice = ({
     </Modal>
   );
 };
-export default WavieOffInvoice;
+export default WaiveOffInvoice;

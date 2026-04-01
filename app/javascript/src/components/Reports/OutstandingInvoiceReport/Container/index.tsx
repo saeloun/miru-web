@@ -8,7 +8,7 @@ import { useUserContext } from "context/UserContext";
 
 import Table from "./Table";
 
-const Container = () => {
+const OutstandingInvoiceResults = () => {
   const { outstandingOverdueInvoice } = useEntry();
   const { isDesktop } = useUserContext();
 
@@ -64,4 +64,4 @@ const Container = () => {
   );
 };
 
-export default Container;
+export default OutstandingInvoiceResults;

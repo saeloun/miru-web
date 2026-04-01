@@ -22,7 +22,7 @@ const Header = ({
   invoiceNumber = null,
   id = null,
   deleteInvoice = null,
-  wavieInvoice = null,
+  waiveInvoice = null,
   setIsSendReminder = _value => {},
   showMoreButton = false,
   invoice = null,
@@ -73,7 +73,9 @@ const Header = ({
           onClick={handleSaveInvoice}
         >
           <FloppyDiskIcon color="white" size={18} />
-          <span className="ml-2 inline-block">{i18n.t("save").toUpperCase()}</span>
+          <span className="ml-2 inline-block">
+            {i18n.t("save").toUpperCase()}
+          </span>
         </button>
         <button
           className="header__button my-0 w-full bg-primary p-0 text-white hover:text-white md:my-0 md:w-1/3"
@@ -99,7 +101,7 @@ const Header = ({
                 sendInvoice={handleSendInvoice}
                 setIsSendReminder={setIsSendReminder}
                 showHistory={showHistory}
-                wavieInvoice={wavieInvoice}
+                waiveInvoice={waiveInvoice}
               />
             )}
           </div>

@@ -11,7 +11,7 @@ import TableRow from "./TableRow";
 
 import { summaryList } from "../util";
 
-const TableHeader = () => (
+const RevenueByClientTableHeader = () => (
   <thead>
     <tr className="flex flex-row items-center">
       <th
@@ -48,7 +48,7 @@ const TableHeader = () => (
   </thead>
 );
 
-const Container = () => {
+const RevenueByClientResults = () => {
   const { revenueByClientReport } = useEntry();
   const { isDesktop } = useUserContext();
 
@@ -63,7 +63,7 @@ const Container = () => {
       {isDesktop ? (
         <div className="overflow-x-auto">
           <table className="mt-4 min-w-[56rem] table-auto divide-y divide-gray-200 lg:min-w-full">
-            <TableHeader />
+            <RevenueByClientTableHeader />
             <tbody className="divide-y divide-gray-200 bg-white">
               {revenueByClientReport.clientList.length &&
                 revenueByClientReport.currency &&
@@ -108,4 +108,4 @@ const Container = () => {
   );
 };
 
-export default Container;
+export default RevenueByClientResults;

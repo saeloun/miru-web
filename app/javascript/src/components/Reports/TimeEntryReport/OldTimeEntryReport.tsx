@@ -10,17 +10,17 @@ import { TimeEntryReportMobileView } from "./TimeEntryReportMobileView";
 import { TIME_ENTRY_REPORT_PAGE } from "./utils";
 
 import { applyFilter, getQueryParams } from "../api/applyFilter";
-import Container from "../Container";
+import GroupedTimeEntryResults from "../Container";
 import AccountsAgingReportContext from "../context/AccountsAgingReportContext";
 import EntryContext from "../context/EntryContext";
 import OutstandingOverdueInvoiceContext from "../context/outstandingOverdueInvoiceContext";
 import RevenueByClientReportContext from "../context/RevenueByClientContext";
 import { getMonth } from "../Filters/filterOptions";
-import FilterSideBar from "../Filters/FilterSideBar";
+import ReportFilterSidebar from "../Filters/FilterSideBar";
 import Header from "../Header";
 import { ITimeEntry } from "../interface";
 
-const TimeEntryReport = () => {
+const ClassicTimeEntryReport = () => {
   const filterIntialValues = {
     dateRange: { label: getMonth(true), value: "this_month" },
     clients: [],
@@ -214,7 +214,7 @@ const TimeEntryReport = () => {
         />
         {isDesktop ? (
           <>
-            <Container selectedFilter={selectedFilter} />
+            <GroupedTimeEntryResults selectedFilter={selectedFilter} />
             <Pagination
               currentPage={paginationDetails?.page}
               handleClick={handlePageClick}
@@ -232,7 +232,7 @@ const TimeEntryReport = () => {
           />
         )}
         {isFilterVisible && (
-          <FilterSideBar
+          <ReportFilterSidebar
             handleApplyFilter={handleApplyFilter}
             resetFilter={resetFilter}
             selectedFilter={selectedFilter}
@@ -247,4 +247,4 @@ const TimeEntryReport = () => {
   );
 };
 
-export default TimeEntryReport;
+export default ClassicTimeEntryReport;

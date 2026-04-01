@@ -18,7 +18,7 @@ import DatesInWeek from "./DatesInWeek";
 import { EmptyStatesMobileView } from "./EmptyStatesMobileView";
 import EntryForm from "./TimeEntryForm";
 import Header from "./Header";
-import MonthCalender from "./MonthCalendar";
+import MonthCalendar from "./MonthCalendar";
 import TimeEntryManager from "./TimeEntryManager";
 import ViewToggler from "./ViewToggler";
 import { TimesheetEntriesContext } from "context/TimesheetEntries";
@@ -724,7 +724,7 @@ const TimesheetEntries = ({ user, isAdminUser }: Iprops) => {
             <div className="mb-6">
               {isDesktop && <Header />}
 
-              {view === "month" ? <MonthCalender /> : <DatesInWeek />}
+              {view === "month" ? <MonthCalendar /> : <DatesInWeek />}
             </div>
             {!editEntryId && newEntryView && view !== "week" && <EntryForm />}
             {newTimeoffEntryView && <TimeoffForm />}

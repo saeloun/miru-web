@@ -10,7 +10,7 @@ const Header = ({
   setShowDeleteDialog,
   setInvoiceToWaive,
   setInvoiceToDelete,
-  setShowWavieDialog,
+  setShowWaiveDialog,
   setIsSendReminder,
   setShowConnectPaymentDialog,
   isStripeEnabled,
@@ -39,8 +39,8 @@ const Header = ({
             setShowDeleteDialog(true);
             setInvoiceToDelete(invoice.id);
           }}
-          wavieInvoice={() => {
-            setShowWavieDialog(true);
+          waiveInvoice={() => {
+            setShowWaiveDialog(true);
             setInvoiceToWaive(invoice.id);
           }}
         />
