@@ -64,7 +64,10 @@ const DesktopTimeoffForm = ({
             options={leaveTypeOptions}
             value={leaveTypeId.toString()}
             placeholder="Select leave type"
-            onChange={value => setLeaveTypeId(Number(value) || 0)}
+            onChange={value => {
+              const numVal = Number(value);
+              setLeaveTypeId(isNaN(numVal) ? value : numVal);
+            }}
           />
 
           {isHolidayEntry() && (
@@ -72,7 +75,10 @@ const DesktopTimeoffForm = ({
               options={holidayOptionsFormatted}
               value={holidayId.toString()}
               placeholder="Select holiday"
-              onChange={value => setHolidayId(Number(value) || 0)}
+              onChange={value => {
+                const numVal = Number(value);
+                setHolidayId(isNaN(numVal) ? value : numVal);
+              }}
             />
           )}
         </div>
