@@ -115,7 +115,7 @@ const TeamTable: React.FC = () => {
 
   const deleteMutation = useMutation({
     mutationFn: async (memberId: string) => {
-      await teamApi.destroy(memberId);
+      await teamApi.destroyTeamMember(memberId);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["team"] });
@@ -501,7 +501,9 @@ const TeamTable: React.FC = () => {
       <div className="flex items-center justify-center h-96">
         <div className="text-center">
           <Users size={48} className="mx-auto mb-4 text-muted-foreground" />
-          <p className="text-muted-foreground">{i18n.t("team.failedToLoadTeamMembers")}</p>
+          <p className="text-muted-foreground">
+            {i18n.t("team.failedToLoadTeamMembers")}
+          </p>
         </div>
       </div>
     );
@@ -556,7 +558,9 @@ const TeamTable: React.FC = () => {
       <div className="grid gap-4 md:grid-cols-4">
         <Card className="border-border">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{i18n.t("team.totalMembers")}</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              {i18n.t("team.totalMembers")}
+            </CardTitle>
             <Users size={20} className="text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -569,12 +573,16 @@ const TeamTable: React.FC = () => {
 
         <Card className="border-border">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{i18n.t("team.totalHours")}</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              {i18n.t("team.totalHours")}
+            </CardTitle>
             <Calendar size={20} className="text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{totalHours.toFixed(0)}h</div>
-            <p className="mt-1 text-xs text-muted-foreground">{i18n.t("thisMonth")}</p>
+            <p className="mt-1 text-xs text-muted-foreground">
+              {i18n.t("thisMonth")}
+            </p>
           </CardContent>
         </Card>
 
@@ -614,7 +622,9 @@ const TeamTable: React.FC = () => {
                 : 0}
               %
             </div>
-            <p className="mt-1 text-xs text-muted-foreground">{i18n.t("team.billableHours")}</p>
+            <p className="mt-1 text-xs text-muted-foreground">
+              {i18n.t("team.billableHours")}
+            </p>
           </CardContent>
         </Card>
       </div>
@@ -632,7 +642,9 @@ const TeamTable: React.FC = () => {
           ) : (
             <div className="text-center py-12">
               <Users size={48} className="mx-auto mb-4 text-muted-foreground" />
-              <p className="mb-4 text-muted-foreground">{i18n.t("team.noTeamMembersYet")}</p>
+              <p className="mb-4 text-muted-foreground">
+                {i18n.t("team.noTeamMembersYet")}
+              </p>
               {isAdminUser && (
                 <Button
                   variant="outline"
@@ -669,7 +681,9 @@ const TeamTable: React.FC = () => {
               onClick={confirmDelete}
               disabled={deleteMutation.isPending}
             >
-              {deleteMutation.isPending ? i18n.t("team.removing") : i18n.t("delete")}
+              {deleteMutation.isPending
+                ? i18n.t("team.removing")
+                : i18n.t("delete")}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -748,9 +762,15 @@ const TeamTable: React.FC = () => {
                 className="flex h-11 w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground outline-none ring-offset-background focus-visible:ring-2 focus-visible:ring-ring"
               >
                 <option value={Roles.ADMIN}>{i18n.t("team.admin")}</option>
-                <option value={Roles.EMPLOYEE}>{i18n.t("team.employee")}</option>
-                <option value={Roles.BOOK_KEEPER}>{i18n.t("team.bookkeeper")}</option>
-                <option value={Roles.CLIENT}>{i18n.t("team.clientRole")}</option>
+                <option value={Roles.EMPLOYEE}>
+                  {i18n.t("team.employee")}
+                </option>
+                <option value={Roles.BOOK_KEEPER}>
+                  {i18n.t("team.bookkeeper")}
+                </option>
+                <option value={Roles.CLIENT}>
+                  {i18n.t("team.clientRole")}
+                </option>
               </select>
             </div>
           </div>
@@ -844,9 +864,15 @@ const TeamTable: React.FC = () => {
                 className="flex h-11 w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground outline-none ring-offset-background focus-visible:ring-2 focus-visible:ring-ring"
               >
                 <option value={Roles.ADMIN}>{i18n.t("team.admin")}</option>
-                <option value={Roles.EMPLOYEE}>{i18n.t("team.employee")}</option>
-                <option value={Roles.BOOK_KEEPER}>{i18n.t("team.bookkeeper")}</option>
-                <option value={Roles.CLIENT}>{i18n.t("team.clientRole")}</option>
+                <option value={Roles.EMPLOYEE}>
+                  {i18n.t("team.employee")}
+                </option>
+                <option value={Roles.BOOK_KEEPER}>
+                  {i18n.t("team.bookkeeper")}
+                </option>
+                <option value={Roles.CLIENT}>
+                  {i18n.t("team.clientRole")}
+                </option>
               </select>
             </div>
           </div>
