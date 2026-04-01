@@ -25,15 +25,14 @@ const CompactLocaleSwitcher: React.FC = () => {
   const handleChange = async (nextLocale: SupportedLocale) => {
     const previousLocale = selectedLocale;
     setSelectedLocale(nextLocale);
-    setLocale(nextLocale);
     setIsSaving(true);
 
     try {
       await profileApi.update({ user: { locale: nextLocale } });
+      setLocale(nextLocale);
+      window.location.reload();
     } catch (_error) {
       setSelectedLocale(previousLocale);
-      setLocale(previousLocale);
-    } finally {
       setIsSaving(false);
     }
   };

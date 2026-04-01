@@ -111,9 +111,19 @@ function defaultDateFormatForCountry(countryCode?: string): string {
   return "MM-DD-YYYY";
 }
 
+const LOCALE_LABELS: Record<string, string> = {
+  en: "English", "en-GB": "English (UK)", "en-US": "English (US)",
+  hi: "हिन्दी", mr: "मराठी", bn: "বাংলা", gu: "ગુજરાતી",
+  kn: "ಕನ್ನಡ", ml: "മലയാളം", pa: "ਪੰਜਾਬੀ", ta: "தமிழ்",
+  te: "తెలుగు", ur: "اردو",
+  es: "Español", fr: "Français", de: "Deutsch", it: "Italiano",
+  nl: "Nederlands", id: "Bahasa Indonesia", "pt-BR": "Português (BR)",
+  tr: "Türkçe", ja: "日本語", ko: "한국어", "zh-CN": "中文简体",
+};
+
 const LANGUAGE_OPTIONS = SUPPORTED_LOCALES.map(code => ({
   value: code,
-  label: code,
+  label: LOCALE_LABELS[code] || code,
 }));
 
 export {
