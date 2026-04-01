@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { GlobeHemisphereWest, SpinnerGap } from "phosphor-react";
 import { profileApi } from "apis/api";
 import { useUserContext } from "context/UserContext";
-import { LANGUAGE_OPTIONS, SupportedLocale, t } from "../../i18n";
+import { LANGUAGE_OPTIONS, SupportedLocale, setStoredLocale, t } from "../../i18n";
 import {
   Select,
   SelectContent,
@@ -23,18 +23,19 @@ const CompactLocaleSwitcher: React.FC = () => {
   }, [locale]);
 
   const handleChange = async (nextLocale: SupportedLocale) => {
-    const previousLocale = selectedLocale;
     setSelectedLocale(nextLocale);
+    setStoredLocale(nextLocale);
     setIsSaving(true);
 
     try {
       await profileApi.update({ user: { locale: nextLocale } });
-      setLocale(nextLocale);
-      window.location.reload();
     } catch (_error) {
-      setSelectedLocale(previousLocale);
-      setIsSaving(false);
+      // On auth pages, profile API fails (no session) - that's OK,
+      // locale is already saved to localStorage
     }
+
+    setLocale(nextLocale);
+    window.location.reload();
   };
 
   return (
