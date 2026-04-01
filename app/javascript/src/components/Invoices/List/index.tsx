@@ -12,7 +12,7 @@ import { useSearchParams } from "react-router-dom";
 import { Toastr } from "StyledComponents";
 import { sendGAPageView } from "utils/googleAnalytics";
 
-import Container from "./container";
+import InvoiceListContent from "./InvoiceListContent";
 import FilterSidebar from "./FilterSidebar";
 import InvoiceListHeader from "./InvoiceListHeader";
 
@@ -316,7 +316,7 @@ const Invoices = () => {
       />
       {status === InvoicesStatus.SUCCESS ? (
         <Fragment>
-          <Container
+          <InvoiceListContent
             deselectInvoices={deselectInvoices}
             downloading={downloading}
             fetchInvoices={fetchInvoices}

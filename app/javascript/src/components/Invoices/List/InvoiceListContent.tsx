@@ -3,12 +3,12 @@ import React from "react";
 import BulkActionsWrapper from "./BulkActionsWrapper";
 import NoInvoices from "./NoInvoices";
 import InfiniteScrollRecentlyUpdated from "./RecentlyUpdated/InfiniteScrollRecentlyUpdated";
-import Table from "./Table";
+import InvoiceListTable from "./Table/InvoiceListTable";
 
 import ChartWithSummary from "../ChartWithSummary";
 import { i18n } from "../../../i18n";
 
-const Container = ({
+const InvoiceListContent = ({
   summary,
   invoices,
   selectedInvoices,
@@ -64,7 +64,7 @@ const Container = ({
         setShowBulkDeleteDialog={setShowBulkDeleteDialog}
         setShowBulkDownloadDialog={setShowBulkDownloadDialog}
       />
-      <Table
+      <InvoiceListTable
         deselectInvoices={deselectInvoices}
         fetchInvoices={fetchInvoices}
         invoices={invoices}
@@ -83,7 +83,9 @@ const Container = ({
         {!loadingMoreInvoices && hasMoreInvoices && (
           <span>{i18n.t("invoices.scrollToLoadMore")}</span>
         )}
-        {loadingMoreInvoices && <span>{i18n.t("invoices.loadingMoreInvoices")}</span>}
+        {loadingMoreInvoices && (
+          <span>{i18n.t("invoices.loadingMoreInvoices")}</span>
+        )}
         {!loadingMoreInvoices && hasMoreInvoices && (
           <div ref={loadMoreTriggerRef} className="h-8 w-full" />
         )}
@@ -101,4 +103,4 @@ const Container = ({
     />
   );
 
-export default Container;
+export default InvoiceListContent;

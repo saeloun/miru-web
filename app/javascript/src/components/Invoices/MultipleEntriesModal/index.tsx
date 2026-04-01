@@ -4,7 +4,7 @@ import { useUserContext } from "context/UserContext";
 
 import Footer from "./Footer";
 import TimeEntrySelectionHeader from "./TimeEntrySelectionHeader";
-import Table from "./Table";
+import TimeEntrySelectionTable from "./TimeEntrySelectionTable";
 
 import { fetchMultipleNewLineItems } from "../common/utils";
 import { i18n } from "../../../i18n";
@@ -150,7 +150,7 @@ const MultipleEntriesModal = ({
         ) : (
           <div className="mx-6 flex-1 overflow-y-auto">
             {lineItems.length > 0 ? (
-              <Table
+              <TimeEntrySelectionTable
                 allCheckboxSelected={allCheckboxSelected}
                 dateFormat={dateFormat}
                 handleItemSelection={handleItemSelection}
@@ -193,7 +193,7 @@ const MultipleEntriesModal = ({
       ) : (
         <div className="mx-2 flex-1 overflow-y-auto">
           {lineItems.length > 0 ? (
-            <Table
+            <TimeEntrySelectionTable
               allCheckboxSelected={allCheckboxSelected}
               dateFormat={dateFormat}
               handleItemSelection={handleItemSelection}

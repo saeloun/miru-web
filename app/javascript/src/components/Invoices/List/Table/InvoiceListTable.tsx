@@ -3,7 +3,7 @@ import React from "react";
 import InvoiceListTableHeader from "./InvoiceListTableHeader";
 import TableRow from "./TableRow";
 
-const Table = ({
+const InvoiceListTable = ({
   invoices,
   selectInvoices,
   deselectInvoices,
@@ -49,4 +49,4 @@ const Table = ({
   </table>
 );
 
-export default Table;
+export default InvoiceListTable;

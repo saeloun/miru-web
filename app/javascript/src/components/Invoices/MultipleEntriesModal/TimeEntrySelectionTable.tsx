@@ -22,7 +22,7 @@ const CheckboxIcon = () => (
   </div>
 );
 
-const Table = ({
+const TimeEntrySelectionTable = ({
   lineItems,
   handleItemSelection,
   handleSelectAll,
@@ -47,10 +47,18 @@ const Table = ({
                 <CheckboxIcon />
               </div>
             </th>
-            <th className="table__header w-1/5 p-3 text-left">{i18n.t("invoices.nameHeader")}</th>
-            <th className="table__header w-3/5 p-3 text-left">{i18n.t("invoices.descriptionHeader")}</th>
-            <th className="table__header p-3 text-right">{i18n.t("invoices.dateHeader")}</th>
-            <th className="table__header w-1/12 p-3 text-right">{i18n.t("invoices.timeHeader")}</th>
+            <th className="table__header w-1/5 p-3 text-left">
+              {i18n.t("invoices.nameHeader")}
+            </th>
+            <th className="table__header w-3/5 p-3 text-left">
+              {i18n.t("invoices.descriptionHeader")}
+            </th>
+            <th className="table__header p-3 text-right">
+              {i18n.t("invoices.dateHeader")}
+            </th>
+            <th className="table__header w-1/12 p-3 text-right">
+              {i18n.t("invoices.timeHeader")}
+            </th>
           </tr>
         </thead>
       ) : (
@@ -149,4 +157,4 @@ const Table = ({
   );
 };
 
-export default Table;
+export default TimeEntrySelectionTable;
