@@ -14,7 +14,7 @@ const TotalHoursReport = () => (
       revenueFilterCounter={() => {}}
       type="Total Hours Logged"
     />
-    <div>{/** Container will be listed here */}</div>
+    <div />
   </div>
 );
 
