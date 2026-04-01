@@ -13,7 +13,7 @@ import { Toastr } from "StyledComponents";
 import { sendGAPageView } from "utils/googleAnalytics";
 
 import Container from "./container";
-import FilterSideBar from "./FilterSideBar";
+import FilterSidebar from "./FilterSidebar";
 import Header from "./Header";
 
 import BulkDeleteInvoices from "../popups/BulkDeleteInvoices";
@@ -349,7 +349,7 @@ const Invoices = () => {
             totalInvoices={pagy?.total || invoices.length}
           />
           {isFilterVisible && (
-            <FilterSideBar
+            <FilterSidebar
               filterParams={filterParams}
               handleReset={handleReset}
               isDesktop={isDesktop}
