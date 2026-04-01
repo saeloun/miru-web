@@ -15,7 +15,7 @@ const inputClass =
 const labelClass =
   "absolute top-0.5 left-1 z-1 h-6 origin-0 bg-background p-2 text-base font-medium duration-300";
 
-const StaticPage = ({
+const EmploymentEditor = ({
   employeeTypes,
   employeeType,
   handleOnChangeEmployeeType,
@@ -308,4 +308,4 @@ const StaticPage = ({
   );
 };
 
-export default StaticPage;
+export default EmploymentEditor;

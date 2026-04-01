@@ -15,7 +15,7 @@ const inputClass =
 const labelClass =
   "absolute top-0.5 left-1 z-1 h-6 origin-0 bg-background p-2 text-sm font-medium duration-300";
 
-const MobileEditPage = ({
+const MobileEmploymentEditor = ({
   employeeTypes,
   employeeType,
   handleOnChangeEmployeeType,
@@ -320,4 +320,4 @@ const MobileEditPage = ({
   );
 };
 
-export default MobileEditPage;
+export default MobileEmploymentEditor;
