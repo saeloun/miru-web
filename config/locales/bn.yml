@@ -1,0 +1,366 @@
+---
+bn:
+  activerecord:
+    errors:
+      models:
+        client:
+          attributes:
+            name:
+              format: "%{message}"
+        project:
+          attributes:
+            name:
+              format: "%{message}"
+  application_controller:
+    not_found: রুট খুঁজে পাওয়া যায়নি
+  avatar:
+    destroy:
+      success: অবতার সফলভাবে মুছে ফেলা হয়েছে
+    update:
+      success: অবতার সফলভাবে আপডেট করা হয়েছে
+  client:
+    add: ক্লায়েন্ট যোগ করুন
+    address:
+      label: ঠিকানা
+      placeholder: ঠিকানা লিখুন
+    create:
+      failure: ক্লায়েন্ট তৈরি ব্যর্থ হয়েছে
+      success: ক্লায়েন্ট সফলভাবে যুক্ত করা হয়েছে
+    delete:
+      success:
+        message: ক্লায়েন্ট সফলভাবে সরানো হয়েছে
+    email:
+      label: ইমেল
+      placeholder: ইমেল আইডি প্রবেশ করান
+    name:
+      label: নাম
+      placeholder: নাম লিখুন
+    phone:
+      label: ফোন নম্বর
+      placeholder: ফোন নম্বর লিখুন
+    update:
+      failure:
+        message: পরিবর্তনগুলি সংরক্ষণ করতে ব্যর্থ হয়েছে
+        unauthorized: ব্যবহারকারী এই ক্লায়েন্টের বিবরণ পরিবর্তন করার জন্য অনুমোদিত
+          নন।
+      success:
+        message: পরিবর্তনগুলি সফলভাবে সংরক্ষিত হয়েছে
+  clients:
+    add_client_contact:
+      success: আমন্ত্রণপত্র সফলভাবে পাঠানো হয়েছে।
+    send_payment_reminder:
+      success: পেমেন্ট রিমাইন্ডার পাঠানো হয়েছে
+  companies:
+    create:
+      failure: কোম্পানি গঠন ব্যর্থ হয়েছে
+      success: কোম্পানি সফলভাবে তৈরি করা হয়েছে
+    purge_logo:
+      destroy:
+        success: কোম্পানির লোগো সফলভাবে সরানো হয়েছে
+    update:
+      success: পরিবর্তনগুলি সফলভাবে সংরক্ষিত হয়েছে
+  company:
+    address: ঠিকানা
+    base_currency: ভিত্তি মুদ্রা
+    business_phone: ব্যবসায়িক ফোন
+    cancel: বাতিল করুন
+    company: কোম্পানি
+    country: দেশ
+    date_format: তারিখের বিন্যাস
+    fiscal_year: অর্থবছর
+    logo: লোগো
+    save: সংরক্ষণ করুন
+    save_org: সংস্থার বিবরণ সংরক্ষণ করুন
+    setup: সংস্থা স্থাপন করুন
+    standard_price: সাধারণ মূল্য
+    timezone: সময় অঞ্চল
+  confirmation:
+    send_instructions: "%{email}-কে একটি নিশ্চিতকরণ ইমেল পাঠানো হয়েছে।"
+  currency_pairs:
+    from_to_required: থেকে এবং প্রতি প্রয়োজন
+    rate_not_found: রেট খুঁজে পাওয়া যায়নি
+  custom_leaves:
+    update:
+      success: কাস্টম লিভস সফলভাবে আপডেট করা হয়েছে
+  employment:
+    update:
+      success: কর্মসংস্থান সফলভাবে আপডেট করা হয়েছে
+  errors:
+    bill_status_billed: যে এন্ট্রির বিল ইতিমধ্যে করা হয়েছে, তার জন্য আপনি নতুন করে
+      বিল করতে পারবেন না।
+    can't change status: পরিশোধিত চালান পরিবর্তন করা যাবে না।
+    create_billed_entry: আপনি বিলযোগ্য টাইমশিট এন্ট্রি তৈরি করতে পারবেন না।
+    internal_server_error: কিছু একটা ভুল হয়েছে
+    not_found: আপনি যে রিসোর্সটি খুঁজছেন তা উপলব্ধ নেই।
+    prevent_draft_to_waived: মওকুফ করা যাবে না
+    unauthorized: শুধুমাত্র মালিক বা অ্যাডমিন ব্যবহারকারীরাই এই কাজটি করার জন্য অনুমোদিত।
+    updation_not_allowed: আপডেট করার অনুমতি নেই
+    user_already_member: ইমেল আইডিটি ইতিমধ্যেই ব্যবহৃত হচ্ছে। অনুগ্রহ করে অন্য একটি
+      ইমেল আইডি প্রবেশ করান।
+    validate_billable_project: যেসব প্রজেক্টের বিল করা যায় না, সেগুলোর জন্য আপনি
+      কোনো অবিলম্বিত এন্ট্রি তৈরি করতে পারবেন না।
+  expenses:
+    approve: ব্যয় সফলভাবে অনুমোদিত হয়েছে
+    create: খরচ সফলভাবে জমা দেওয়া হয়েছে
+    destroy: খরচ সফলভাবে মুছে ফেলা হয়েছে
+    mark_paid: ব্যয় পরিশোধিত হিসাবে চিহ্নিত করা হয়েছে
+    must_be_approved: ব্যয়টিকে পরিশোধিত হিসাবে চিহ্নিত করার আগে অবশ্যই অনুমোদন করতে
+      হবে।
+    reject: ব্যয় সফলভাবে প্রত্যাখ্যান করা হয়েছে
+    update: ব্যয় সফলভাবে আপডেট করা হয়েছে
+  holidays:
+    update:
+      success: ছুটির তথ্য সফলভাবে আপডেট করা হয়েছে
+  invitation:
+    create:
+      success:
+        message: আমন্ত্রণ সফলভাবে পাঠানো হয়েছে
+    delete:
+      success:
+        message: আমন্ত্রণ সফলভাবে সরানো হয়েছে
+    resent:
+      success:
+        message: আমন্ত্রণ সফলভাবে পাঠানো হয়েছে
+    update:
+      success:
+        message: পরিবর্তনগুলি সফলভাবে সংরক্ষিত হয়েছে
+  invitations:
+    accept:
+      index:
+        success: আমন্ত্রণ গৃহীত হয়েছে
+      show:
+        success: আমন্ত্রণ গৃহীত হয়েছে
+      success: আমন্ত্রণ গৃহীত হয়েছে
+    create:
+      failure: পরিবর্তনগুলি সংরক্ষণ করতে ব্যর্থ হয়েছে
+      success: আমন্ত্রণপত্র পাঠানো হবে
+    destroy:
+      failure: আমন্ত্রণ মুছে ফেলতে ব্যর্থ হয়েছে
+      success: আমন্ত্রণ মুছে ফেলা হয়েছে
+    update:
+      failure: পরিবর্তনগুলি সংরক্ষণ করতে ব্যর্থ হয়েছে
+      success: আমন্ত্রণ আপডেট করা হয়েছে
+  invoices:
+    payments:
+      success:
+        failure: কিছু একটা ভুল হয়েছে, অনুগ্রহ করে সাপোর্টে যোগাযোগ করুন।
+        success: পেমেন্ট সফল হয়েছে
+  invoices_controller:
+    download:
+      pdf_failed: পিডিএফ তৈরি করতে ব্যর্থ হয়েছে
+    send_invoice:
+      already_paid: চালানটি ইতিমধ্যেই পরিশোধ করা হয়েছে।
+      pdf_failed: পিডিএফ তৈরি করতে ব্যর্থ হয়েছে
+      recipient_limit: শুধুমাত্র ৫ জন প্রাপককে ইমেল পাঠানো যাবে।
+      recipients_required: প্রাপকদের প্রয়োজন
+      success: চালানটি সফলভাবে পাঠানো হয়েছে।
+    send_reminder:
+      overdue_only: শুধুমাত্র বকেয়া ইনভয়েসের জন্যই রিমাইন্ডার পাঠানো যাবে।
+      success: একটি অনুস্মারক পাঠানো হয়েছে।
+  invoices_view:
+    not_found: কোন চালান পাওয়া যায়নি
+  leave_types:
+    create:
+      success: ছুটির ধরণ সফলভাবে যোগ করা হয়েছে
+    update:
+      success: ছুটির ধরণ সফলভাবে আপডেট করা হয়েছে
+  leave_with_leave_types:
+    update:
+      success: পাতাগুলি সফলভাবে আপডেট করা হয়েছে
+  leaves:
+    create:
+      success: সফলভাবে ছুটি তৈরি করা হয়েছে
+    update:
+      success: ছুটি সফলভাবে আপডেট করা হয়েছে
+  navbar:
+    clients: ক্লায়েন্টরা
+    help: সাহায্য
+    invoices: চালান
+    logout: লগআউট
+    payments: পেমেন্ট
+    profile: প্রোফাইল
+    projects: প্রকল্প
+    reports: প্রতিবেদন
+    settings: সেটিংস
+    team: দল
+    time_tracking: সময় ট্র্যাকিং
+    view_notifications: বিজ্ঞপ্তিগুলি দেখুন
+  passkeys:
+    add_passkey_first: সাইন ইন করার জন্য পাসকি প্রয়োজন হওয়ার আগে একটি পাসকি যোগ
+      করুন।
+    added: পাসকি যোগ করা হয়েছে
+    disable_totp_first: পাসকি দিয়ে সাইন ইন করার প্রয়োজন হওয়ার আগে অথেন্টিকেটর অ্যাপের
+      ২এফএ নিষ্ক্রিয় করুন।
+    not_found: পাসকি খুঁজে পাওয়া যায়নি।
+    removed: পাসকি সরানো হয়েছে
+    requirement_disabled: পাসকি প্রয়োজনীয়তা নিষ্ক্রিয় করা হয়েছে
+    requirement_enabled: পাসকি আবশ্যকতা সক্রিয় করা হয়েছে
+    session_expired: পাসকি সেশনের মেয়াদ শেষ হয়ে গেছে। অনুগ্রহ করে আবার চেষ্টা করুন।
+    verification_failed: পাসকি যাচাইকরণ ব্যর্থ হয়েছে।
+  password:
+    create:
+      success: আপনার পাসওয়ার্ড রিসেট করার নির্দেশাবলী আপনার ইমেইলে পাঠানো হয়েছে।
+    update:
+      success: আপনার পাসওয়ার্ড হালনাগাদ করা হয়েছে।
+  projects:
+    add_new_project: নতুন প্রকল্প যোগ করুন
+    add_project: প্রকল্প যোগ করুন
+    billable: বিলযোগ্য
+    client: ক্লায়েন্ট
+    create:
+      failure: প্রকল্প তৈরি ব্যর্থ হয়েছে।
+      success: প্রকল্পটি সফলভাবে যুক্ত করা হয়েছে।
+    delete:
+      success:
+        message: প্রকল্পটি সফলভাবে সরানো হয়েছে
+    edit: সম্পাদনা
+    hours_logged: লগ করা ঘন্টা
+    new_project: নতুন প্রকল্প
+    non_billable: বিলযোগ্য নয়
+    project: প্রকল্প
+    project_name: প্রকল্পের নাম
+    projects: প্রকল্প
+    update:
+      success: পরিবর্তনগুলি সফলভাবে সংরক্ষিত হয়েছে।
+    update_members:
+      failure:
+        message: পরিবর্তনগুলি সংরক্ষণ করতে ব্যর্থ হয়েছে
+        unauthorized: এই প্রকল্পের বিবরণ পরিবর্তন করার অনুমতি ব্যবহারকারীর নেই।
+      success:
+        message: পরিবর্তনগুলি সফলভাবে সংরক্ষিত হয়েছে
+  pundit:
+    client_policy:
+      create?: আপনি ক্লায়েন্ট তৈরি করার জন্য অনুমোদিত নন।
+      show?: এই পৃষ্ঠাটি অ্যাক্সেস করার জন্য আপনার অনুমতি নেই। সাহায্যের জন্য অনুগ্রহ
+        করে আপনার প্রশাসকের সাথে যোগাযোগ করুন।
+      update?: ক্লায়েন্ট আপডেট করার জন্য আপনি অনুমোদিত নন।
+    company_policy:
+      create?: আপনার কোম্পানি তৈরি করার অনুমোদন নেই।
+      new?: আপনি নতুন কোম্পানি তৈরি করার জন্য অনুমোদিত নন।
+      show?: কোম্পানিটি দেখার জন্য আপনার অনুমোদন নেই।
+      update?: কোম্পানি আপডেট করার জন্য আপনি অনুমোদিত নন।
+    current_company_policy:
+      company_not_present: কোম্পানি উপস্থিত নেই।
+    default: এই কাজটি করার জন্য আপনার অনুমোদন নেই।
+    different_workspace: আপনার বর্তমান কর্মক্ষেত্রের বাইরের রেকর্ড অ্যাক্সেস করার
+      অনুমতি আপনার নেই।
+    project_policy:
+      create?: প্রকল্পটি তৈরি করার জন্য আপনার অনুমোদন নেই।
+      show?: এই পৃষ্ঠাটি অ্যাক্সেস করার জন্য আপনার অনুমতি নেই। সাহায্যের জন্য অনুগ্রহ
+        করে আপনার প্রশাসকের সাথে যোগাযোগ করুন।
+    team_policy:
+      destroy?: দলটিকে ধ্বংস করার অনুমতি আপনার নেই।
+      edit?: টিম সম্পাদনা করার জন্য আপনার অনুমোদন নেই।
+      update?: টিম আপডেট করার জন্য আপনার অনুমোদন নেই।
+  registration:
+    confirm_password: পাসওয়ার্ড নিশ্চিত করুন
+    email_id: ইমেইল
+    first_name: প্রথম নাম
+    last_name: শেষ নাম
+    name: নাম
+    or: অথবা
+    password: পাসওয়ার্ড
+    remember_me: আমাকে মনে রেখো
+    sign_in: সাইন ইন করুন
+    sign_up: সাইন আপ করুন
+    signin_with_github: গিটহাব দিয়ে সাইন ইন করুন
+    signin_with_google: গুগল দিয়ে সাইন ইন করুন
+    signup_with_apple: অ্যাপলের সাথে সাইন আপ করুন
+    signup_with_github: গিটহাবে সাইন আপ করুন
+    signup_with_google: গুগলে সাইন আপ করুন
+  reports:
+    heading: সময় এন্ট্রি রিপোর্ট
+  sessions:
+    failure:
+      invalid: ইমেল বা পাসওয়ার্ডটি ভুল।
+  settings:
+    cancel: বাতিল করুন
+    change_password: পাসওয়ার্ড পরিবর্তন করুন
+    confirm_password: পাসওয়ার্ড নিশ্চিত করুন
+    current_password: বর্তমান পাসওয়ার্ড
+    email: ইমেইল
+    name: নাম
+    organization_setting: সংগঠন সেটিংস
+    password: পাসওয়ার্ড
+    payment_setting: পেমেন্ট সেটিংস
+    profile_picture: প্রোফাইল ছবি
+    profile_setting: প্রোফাইল সেটিংস
+    save: সংরক্ষণ করুন
+    settings: সেটিংস
+  shared_links:
+    already_have_an_account: আপনার কি ইতিমধ্যেই একটি অ্যাকাউন্ট আছে?
+    back_to_login: লগইনে ফিরে যান
+    confirmation_instruction: নিশ্চিতকরণ নির্দেশাবলী পাননি?
+    dont_have_an_account: আপনার কি অ্যাকাউন্ট নেই?
+    forgot_password: পাসওয়ার্ড ভুলে গেছেন?
+    unlock_instruction: আনলক করার নির্দেশাবলী পাননি?
+  subscriptions:
+    no_billing_customer: এই কোম্পানির কোনো বিলিং গ্রাহক নেই।
+    pricing_not_configured: স্ট্রাইপ সাবস্ক্রিপশন মূল্য নির্ধারণ কনফিগার করা হয়নি
+    trial_not_eligible: আপনার ওয়ার্কস্পেসটি প্রো ট্রায়ালের জন্য উপযুক্ত নয়।
+    trial_started: আপনার ৩০-দিনের প্রো ট্রায়াল শুরু হয়েছে।
+  team:
+    changed_email: ইমেল পরিবর্তন করা হয়েছে
+    create_new_user: নতুন ব্যবহারকারী তৈরি করুন
+    current_email: বর্তমান ইমেল
+    delete:
+      success:
+        message: টিম সদস্যকে সফলভাবে অপসারণ করা হয়েছে
+    email: ইমেল
+    email_id: ইমেইল আইডি
+    first_name: প্রথম নাম
+    form_admin: প্রশাসক
+    form_book_keeper: হিসাবরক্ষক
+    form_email: ইমেল
+    form_employee: কর্মচারী
+    form_name: নাম
+    form_role: ভূমিকা
+    invitation: আমন্ত্রণ প্রক্রিয়াধীন
+    last_name: শেষ নাম
+    name: নাম
+    new_user: নতুন ব্যবহারকারী
+    profile_picture: ছবি
+    reconfirmation: পুনঃনিশ্চিতকরণ বিচারাধীন
+    role: ভূমিকা
+    team: দল
+    update:
+      error:
+        role: ভূমিকা হালনাগাদ করার সময় একটি ত্রুটি হয়েছিল।
+      success:
+        message: পরিবর্তনগুলি সফলভাবে সংরক্ষিত হয়েছে
+    update_user: ব্যবহারকারীকে আপডেট করুন
+  timeoff_entries:
+    create:
+      success: সফলভাবে ছুটি যোগ করা হয়েছে
+    destroy:
+      success: ছুটি সফলভাবে মুছে ফেলা হয়েছে
+    update:
+      success: ছুটির সময় সফলভাবে আপডেট করা হয়েছে
+  timesheet_entry:
+    create:
+      message: টাইমশিট তৈরি করা হয়েছে
+    destroy:
+      failure: টাইমশিট এন্ট্রিগুলি মুছে ফেলা সম্ভব হয়নি
+      message: টাইমশিট মুছে ফেলা হয়েছে
+    update:
+      failure: টাইমশিট এন্ট্রি আপডেট করতে ব্যর্থ হয়েছে
+      message: টাইমশিট আপডেট করা হয়েছে
+  totp:
+    disable_passkey_first: অথেন্টিকেটর অ্যাপের ২এফএ চালু করার আগে প্রয়োজনীয় পাসকি
+      দিয়ে সাইন-ইন নিষ্ক্রিয় করুন।
+    disabled: প্রমাণীকরণ অ্যাপ নিষ্ক্রিয় করা হয়েছে
+    enabled: প্রমাণীকরণ অ্যাপ সক্রিয় করা হয়েছে
+    invalid_code: অবৈধ প্রমাণীকরণ কোড।
+    invalid_verification: অবৈধ যাচাইকরণ কোড।
+    not_enabled: প্রথমে অথেন্টিকেটর অ্যাপের 2FA চালু করুন।
+    recovery_codes_regenerated: পুনরুদ্ধার কোডগুলি পুনরায় তৈরি করা হয়েছে
+    session_expired: সেই যাচাইকরণ অনুরোধটি আর বৈধ নয়। অনুগ্রহ করে আবার সাইন ইন করুন।
+  user:
+    login:
+      failure:
+        disabled: আপনার প্রবেশাধিকার নিষ্ক্রিয় করা হয়েছে।
+        pending_invitation: আপনার অ্যাকাউন্টটি এখনো সক্রিয় করা হয়নি।
+  workspaces:
+    update:
+      failure: কর্মক্ষেত্র পরিবর্তন করতে ব্যর্থ হয়েছে
+      success: ওয়ার্কস্পেস সফলভাবে স্থানান্তরিত হয়েছে

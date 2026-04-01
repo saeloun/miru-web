@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { ColumnDef } from "@tanstack/react-table";
 import Loader from "common/Loader/index";
+import { i18n } from "../../i18n";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
@@ -118,11 +119,11 @@ const TeamTable: React.FC = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["team"] });
-      toast.success("Team member removed successfully");
+      toast.success(i18n.t("team.deleteUser"));
       setShowDeleteDialog(false);
     },
     onError: () => {
-      toast.error("Failed to remove team member");
+      toast.error(i18n.t("team.failedToLoadTeamMembers"));
     },
   });
 
@@ -137,7 +138,7 @@ const TeamTable: React.FC = () => {
       }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["team"] });
-      toast.success("Team member invited successfully");
+      toast.success(i18n.t("team.inviteMember"));
       setShowInviteDialog(false);
       setMemberForm({
         firstName: "",
@@ -148,7 +149,7 @@ const TeamTable: React.FC = () => {
     },
     onError: error => {
       toast.error(
-        error?.response?.data?.errors || "Failed to invite team member"
+        error?.response?.data?.errors || i18n.t("team.failedToLoadTeamMembers")
       );
     },
   });
@@ -176,13 +177,13 @@ const TeamTable: React.FC = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["team"] });
-      toast.success("Team member updated successfully");
+      toast.success(i18n.t("team.editMember"));
       setShowEditDialog(false);
       setSelectedMember(null);
     },
     onError: error => {
       toast.error(
-        error?.response?.data?.errors || "Failed to update team member"
+        error?.response?.data?.errors || i18n.t("team.failedToLoadTeamMembers")
       );
     },
   });
@@ -253,25 +254,25 @@ const TeamTable: React.FC = () => {
       case Roles.OWNER:
         return (
           <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-100">
-            Owner
+            {i18n.t("team.owner")}
           </Badge>
         );
       case Roles.ADMIN:
         return (
           <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-100">
-            Admin
+            {i18n.t("team.admin")}
           </Badge>
         );
       case Roles.BOOK_KEEPER:
         return (
           <Badge className="bg-purple-100 text-purple-800 hover:bg-purple-100">
-            Bookkeeper
+            {i18n.t("team.bookkeeper")}
           </Badge>
         );
       case Roles.EMPLOYEE:
         return (
           <Badge className="border-border bg-muted text-foreground hover:bg-muted">
-            Employee
+            {i18n.t("team.employee")}
           </Badge>
         );
       default:
@@ -284,19 +285,19 @@ const TeamTable: React.FC = () => {
       case "active":
         return (
           <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
-            Active
+            {i18n.t("active")}
           </Badge>
         );
       case "inactive":
         return (
           <Badge className="border-border bg-muted text-muted-foreground hover:bg-muted">
-            Inactive
+            {i18n.t("inactive")}
           </Badge>
         );
       case "invited":
         return (
           <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-100">
-            Invited
+            {i18n.t("invited")}
           </Badge>
         );
       default:
@@ -313,7 +314,7 @@ const TeamTable: React.FC = () => {
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           className="-ml-4"
         >
-          Team Member
+          {i18n.t("team.team")}
           {column.getIsSorted() === "asc" ? (
             <ArrowUp size={16} className="ml-2" />
           ) : column.getIsSorted() === "desc" ? (
@@ -355,7 +356,7 @@ const TeamTable: React.FC = () => {
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           className="-ml-4"
         >
-          Role
+          {i18n.t("role")}
           {column.getIsSorted() === "asc" ? (
             <ArrowUp size={16} className="ml-2" />
           ) : column.getIsSorted() === "desc" ? (
@@ -372,7 +373,7 @@ const TeamTable: React.FC = () => {
     },
     {
       accessorKey: "designation",
-      header: "Position",
+      header: i18n.t("team.position"),
       cell: ({ row }) => {
         const member = row.original;
 
@@ -390,13 +391,13 @@ const TeamTable: React.FC = () => {
     },
     {
       accessorKey: "projects",
-      header: "Projects",
+      header: i18n.t("projects"),
       cell: ({ row }) => {
         const projects = row.original.projects || 0;
 
         return (
           <div className="text-sm text-muted-foreground">
-            {projects} {projects === 1 ? "project" : "projects"}
+            {projects} {i18n.t("projects")}
           </div>
         );
       },
@@ -409,7 +410,7 @@ const TeamTable: React.FC = () => {
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           className="-ml-4"
         >
-          Hours
+          {i18n.t("hours")}
           {column.getIsSorted() === "asc" ? (
             <ArrowUp size={16} className="ml-2" />
           ) : column.getIsSorted() === "desc" ? (
@@ -435,7 +436,7 @@ const TeamTable: React.FC = () => {
               {totalHours.toFixed(1)}h
             </p>
             <p className="text-xs text-muted-foreground">
-              {billablePercentage.toFixed(0)}% billable
+              {billablePercentage.toFixed(0)}% {i18n.t("billable")}
             </p>
           </div>
         );
@@ -443,7 +444,7 @@ const TeamTable: React.FC = () => {
     },
     {
       accessorKey: "status",
-      header: "Status",
+      header: i18n.t("status"),
       cell: ({ row }) => getStatusBadge(row.original.status),
     },
     {
@@ -458,31 +459,31 @@ const TeamTable: React.FC = () => {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="h-8 w-8 p-0">
-                <span className="sr-only">Open menu</span>
+                <span className="sr-only">{i18n.t("openMenu")}</span>
                 <DotsThree size={20} />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DropdownMenuLabel>{i18n.t("actions")}</DropdownMenuLabel>
               <DropdownMenuItem
                 onClick={() => navigator.clipboard.writeText(member.email)}
               >
-                Copy email
+                {i18n.t("team.copyEmail")}
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={() => navigate(`/team/${member.id}`)}>
-                View profile
+                {i18n.t("team.viewProfile")}
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => handleEdit(member)}>
                 <PencilSimple size={16} className="mr-2" />
-                Edit member
+                {i18n.t("team.editMember")}
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() => handleDelete(member)}
                 className="text-destructive"
               >
                 <Trash size={16} className="mr-2" />
-                Remove member
+                {i18n.t("team.deleteUser")}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -500,7 +501,7 @@ const TeamTable: React.FC = () => {
       <div className="flex items-center justify-center h-96">
         <div className="text-center">
           <Users size={48} className="mx-auto mb-4 text-muted-foreground" />
-          <p className="text-muted-foreground">Failed to load team members</p>
+          <p className="text-muted-foreground">{i18n.t("team.failedToLoadTeamMembers")}</p>
         </div>
       </div>
     );
@@ -525,7 +526,7 @@ const TeamTable: React.FC = () => {
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
           <p className="mt-1 text-muted-foreground">
-            Manage your team members and their roles
+            {i18n.t("team.teamOverview")}
           </p>
         </div>
         {isAdminUser && (
@@ -536,9 +537,7 @@ const TeamTable: React.FC = () => {
               disabled={teamSeatLimitReached}
             >
               <UserPlus size={20} className="mr-2" />
-              {teamSeatLimitReached
-                ? "Upgrade to invite more"
-                : "Invite Member"}
+              {i18n.t("team.inviteMember")}
             </Button>
             {teamSeatLimitReached && (
               <button
@@ -546,7 +545,7 @@ const TeamTable: React.FC = () => {
                 className="text-sm font-medium text-primary hover:underline"
                 onClick={() => navigate("/settings/billing")}
               >
-                Free includes 3 seats. View plans and upgrade.
+                {i18n.t("team.upgradePlan")}
               </button>
             )}
           </div>
@@ -557,39 +556,39 @@ const TeamTable: React.FC = () => {
       <div className="grid gap-4 md:grid-cols-4">
         <Card className="border-border">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Members</CardTitle>
+            <CardTitle className="text-sm font-medium">{i18n.t("team.totalMembers")}</CardTitle>
             <Users size={20} className="text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{totalCount}</div>
             <p className="mt-1 text-xs text-muted-foreground">
-              {activeMembers} active
+              {activeMembers} {i18n.t("active")}
             </p>
           </CardContent>
         </Card>
 
         <Card className="border-border">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Hours</CardTitle>
+            <CardTitle className="text-sm font-medium">{i18n.t("team.totalHours")}</CardTitle>
             <Calendar size={20} className="text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{totalHours.toFixed(0)}h</div>
-            <p className="mt-1 text-xs text-muted-foreground">This month</p>
+            <p className="mt-1 text-xs text-muted-foreground">{i18n.t("thisMonth")}</p>
           </CardContent>
         </Card>
 
         <Card className="border-border">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
-              Active Projects
+              {i18n.t("team.activeProjects")}
             </CardTitle>
             <Crown size={20} className="text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{totalProjects}</div>
             <p className="mt-1 text-xs text-muted-foreground">
-              Across all members
+              {i18n.t("team.acrossAllMembers")}
             </p>
           </CardContent>
         </Card>
@@ -597,7 +596,7 @@ const TeamTable: React.FC = () => {
         <Card className="border-border">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
-              Avg Utilization
+              {i18n.t("team.avgUtilization")}
             </CardTitle>
             <Shield size={20} className="text-muted-foreground" />
           </CardHeader>
@@ -615,7 +614,7 @@ const TeamTable: React.FC = () => {
                 : 0}
               %
             </div>
-            <p className="mt-1 text-xs text-muted-foreground">Billable hours</p>
+            <p className="mt-1 text-xs text-muted-foreground">{i18n.t("team.billableHours")}</p>
           </CardContent>
         </Card>
       </div>
@@ -627,13 +626,13 @@ const TeamTable: React.FC = () => {
             <DataTable
               columns={columns}
               data={teamMembers}
-              searchPlaceholder="Search team members..."
+              searchPlaceholder={i18n.t("search")}
               showPagination={false}
             />
           ) : (
             <div className="text-center py-12">
               <Users size={48} className="mx-auto mb-4 text-muted-foreground" />
-              <p className="mb-4 text-muted-foreground">No team members yet</p>
+              <p className="mb-4 text-muted-foreground">{i18n.t("team.noTeamMembersYet")}</p>
               {isAdminUser && (
                 <Button
                   variant="outline"
@@ -641,9 +640,7 @@ const TeamTable: React.FC = () => {
                   disabled={teamSeatLimitReached}
                 >
                   <UserPlus size={20} className="mr-2" />
-                  {teamSeatLimitReached
-                    ? "Upgrade to invite more"
-                    : "Invite Your First Team Member"}
+                  {i18n.t("team.inviteMember")}
                 </Button>
               )}
             </div>
@@ -655,10 +652,9 @@ const TeamTable: React.FC = () => {
       <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Remove Team Member</DialogTitle>
+            <DialogTitle>{i18n.t("team.deleteUser")}</DialogTitle>
             <DialogDescription>
-              Are you sure you want to remove {selectedMember?.name} from your
-              team? This action cannot be undone.
+              {i18n.t("team.deleteUserConfirm", { name: selectedMember?.name })}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
@@ -666,14 +662,14 @@ const TeamTable: React.FC = () => {
               variant="outline"
               onClick={() => setShowDeleteDialog(false)}
             >
-              Cancel
+              {i18n.t("cancel")}
             </Button>
             <Button
               variant="destructive"
               onClick={confirmDelete}
               disabled={deleteMutation.isPending}
             >
-              {deleteMutation.isPending ? "Removing..." : "Remove"}
+              {deleteMutation.isPending ? i18n.t("team.removing") : i18n.t("delete")}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -685,9 +681,9 @@ const TeamTable: React.FC = () => {
       >
         <DialogContent className="border-border bg-card text-foreground sm:max-w-xl">
           <DialogHeader>
-            <DialogTitle>Invite Member</DialogTitle>
+            <DialogTitle>{i18n.t("team.inviteMember")}</DialogTitle>
             <DialogDescription className="text-muted-foreground">
-              Add a new teammate to your workspace and choose their role.
+              {i18n.t("team.teamOverview")}
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 sm:grid-cols-2">
@@ -696,7 +692,7 @@ const TeamTable: React.FC = () => {
                 htmlFor="invite-member-first-name"
                 className="text-sm font-medium text-foreground"
               >
-                First name
+                {i18n.t("contacts.firstName")}
               </label>
               <input
                 id="invite-member-first-name"
@@ -711,7 +707,7 @@ const TeamTable: React.FC = () => {
                 htmlFor="invite-member-last-name"
                 className="text-sm font-medium text-foreground"
               >
-                Last name
+                {i18n.t("contacts.lastName")}
               </label>
               <input
                 id="invite-member-last-name"
@@ -726,7 +722,7 @@ const TeamTable: React.FC = () => {
                 htmlFor="invite-member-email"
                 className="text-sm font-medium text-foreground"
               >
-                Email
+                {i18n.t("email")}
               </label>
               <input
                 id="invite-member-email"
@@ -742,7 +738,7 @@ const TeamTable: React.FC = () => {
                 htmlFor="invite-member-role"
                 className="text-sm font-medium text-foreground"
               >
-                Role
+                {i18n.t("role")}
               </label>
               <select
                 id="invite-member-role"
@@ -751,10 +747,10 @@ const TeamTable: React.FC = () => {
                 onChange={handleMemberFormChange("role")}
                 className="flex h-11 w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground outline-none ring-offset-background focus-visible:ring-2 focus-visible:ring-ring"
               >
-                <option value={Roles.ADMIN}>Admin</option>
-                <option value={Roles.EMPLOYEE}>Employee</option>
-                <option value={Roles.BOOK_KEEPER}>Bookkeeper</option>
-                <option value={Roles.CLIENT}>Client</option>
+                <option value={Roles.ADMIN}>{i18n.t("team.admin")}</option>
+                <option value={Roles.EMPLOYEE}>{i18n.t("team.employee")}</option>
+                <option value={Roles.BOOK_KEEPER}>{i18n.t("team.bookkeeper")}</option>
+                <option value={Roles.CLIENT}>{i18n.t("team.clientRole")}</option>
               </select>
             </div>
           </div>
@@ -763,13 +759,13 @@ const TeamTable: React.FC = () => {
               variant="outline"
               onClick={() => setShowInviteDialog(false)}
             >
-              Cancel
+              {i18n.t("cancel")}
             </Button>
             <Button
               onClick={() => inviteMutation.mutate(memberForm)}
               disabled={!memberFormComplete || inviteMutation.isPending}
             >
-              {inviteMutation.isPending ? "Inviting..." : "Invite Member"}
+              {i18n.t("team.inviteMember")}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -781,9 +777,9 @@ const TeamTable: React.FC = () => {
       >
         <DialogContent className="border-border bg-card text-foreground sm:max-w-xl">
           <DialogHeader>
-            <DialogTitle>Edit Member</DialogTitle>
+            <DialogTitle>{i18n.t("team.editMember")}</DialogTitle>
             <DialogDescription className="text-muted-foreground">
-              Update team member details and role for this workspace.
+              {i18n.t("team.teamOverview")}
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 sm:grid-cols-2">
@@ -792,7 +788,7 @@ const TeamTable: React.FC = () => {
                 htmlFor="edit-member-first-name"
                 className="text-sm font-medium text-foreground"
               >
-                First name
+                {i18n.t("contacts.firstName")}
               </label>
               <input
                 id="edit-member-first-name"
@@ -807,7 +803,7 @@ const TeamTable: React.FC = () => {
                 htmlFor="edit-member-last-name"
                 className="text-sm font-medium text-foreground"
               >
-                Last name
+                {i18n.t("contacts.lastName")}
               </label>
               <input
                 id="edit-member-last-name"
@@ -822,7 +818,7 @@ const TeamTable: React.FC = () => {
                 htmlFor="edit-member-email"
                 className="text-sm font-medium text-foreground"
               >
-                Email
+                {i18n.t("email")}
               </label>
               <input
                 id="edit-member-email"
@@ -838,7 +834,7 @@ const TeamTable: React.FC = () => {
                 htmlFor="edit-member-role"
                 className="text-sm font-medium text-foreground"
               >
-                Role
+                {i18n.t("role")}
               </label>
               <select
                 id="edit-member-role"
@@ -847,22 +843,22 @@ const TeamTable: React.FC = () => {
                 onChange={handleMemberFormChange("role")}
                 className="flex h-11 w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground outline-none ring-offset-background focus-visible:ring-2 focus-visible:ring-ring"
               >
-                <option value={Roles.ADMIN}>Admin</option>
-                <option value={Roles.EMPLOYEE}>Employee</option>
-                <option value={Roles.BOOK_KEEPER}>Bookkeeper</option>
-                <option value={Roles.CLIENT}>Client</option>
+                <option value={Roles.ADMIN}>{i18n.t("team.admin")}</option>
+                <option value={Roles.EMPLOYEE}>{i18n.t("team.employee")}</option>
+                <option value={Roles.BOOK_KEEPER}>{i18n.t("team.bookkeeper")}</option>
+                <option value={Roles.CLIENT}>{i18n.t("team.clientRole")}</option>
               </select>
             </div>
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowEditDialog(false)}>
-              Cancel
+              {i18n.t("cancel")}
             </Button>
             <Button
               onClick={() => editMutation.mutate(memberForm)}
               disabled={!memberFormComplete || editMutation.isPending}
             >
-              {editMutation.isPending ? "Saving..." : "Save changes"}
+              {i18n.t("save")}
             </Button>
           </DialogFooter>
         </DialogContent>

@@ -24,6 +24,7 @@ import UploadLogo from "./UploadLogo";
 import { disableBtn, formatFormData } from "./utils";
 
 import { currencyListOptions } from "../../OrganizationSetup/FinancialDetailsForm/utils";
+import { i18n } from "../../../i18n";
 
 const ClientForm = ({
   client,
@@ -74,7 +75,7 @@ const ClientForm = ({
         setClientData([...clientData, { ...res.data.client, minutes: 0 }]);
         setSubmitting(false);
         setnewClient(false);
-        Toastr.success("Client added successfully");
+        Toastr.success(i18n.t("clients.clientAddedSuccessfully"));
       } catch {
         setSubmitting(false);
       }
@@ -84,7 +85,7 @@ const ClientForm = ({
         setSubmitting(false);
         setShowEditDialog(false);
         fetchDetails();
-        Toastr.success("Client updated successfully");
+        Toastr.success(i18n.t("clients.clientUpdatedSuccessfully"));
       } catch {
         setSubmitting(false);
       }
@@ -133,7 +134,7 @@ const ClientForm = ({
               transition={{ duration: 0.3, delay: 0 }}
             >
               <Label htmlFor="name">
-                Name <span className="text-red-500">*</span>
+                {i18n.t("name")} <span className="text-red-500">*</span>
               </Label>
               <Input
                 autoFocus
@@ -150,7 +151,7 @@ const ClientForm = ({
             </motion.div>
             {/* Phone Field */}
             <div className="space-y-2">
-              <Label htmlFor="phone">Phone</Label>
+              <Label htmlFor="phone">{i18n.t("phone")}</Label>
               <div className="relative">
                 <PhoneInput
                   className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
@@ -167,7 +168,7 @@ const ClientForm = ({
             </div>
             {/* Address Line 1 */}
             <div className="space-y-2">
-              <Label htmlFor="address1">Address Line 1</Label>
+              <Label htmlFor="address1">{i18n.t("clients.addressLine1")}</Label>
               <Input
                 id="address1"
                 name="address1"
@@ -184,7 +185,7 @@ const ClientForm = ({
             </div>
             {/* Address Line 2 */}
             <div className="space-y-2">
-              <Label htmlFor="address2">Address Line 2 (optional)</Label>
+              <Label htmlFor="address2">{i18n.t("clients.addressLine2")}</Label>
               <Input
                 id="address2"
                 name="address2"
@@ -203,7 +204,7 @@ const ClientForm = ({
             <div className="grid grid-cols-2 gap-4">
               {/* Country */}
               <div className="space-y-2">
-                <Label htmlFor="country">Country</Label>
+                <Label htmlFor="country">{i18n.t("country")}</Label>
                 <Select
                   value={values.country?.value || ""}
                   onValueChange={value => {
@@ -221,7 +222,7 @@ const ClientForm = ({
                       errors.country && touched.country ? "border-red-500" : ""
                     }
                   >
-                    <SelectValue placeholder="Select country..." />
+                    <SelectValue placeholder={i18n.t("clients.selectCountry")} />
                   </SelectTrigger>
                   <SelectContent>
                     {countries.map((country: any) => (
@@ -237,7 +238,7 @@ const ClientForm = ({
               </div>
               {/* State */}
               <div className="space-y-2">
-                <Label htmlFor="state">State</Label>
+                <Label htmlFor="state">{i18n.t("state")}</Label>
                 <Input
                   id="state"
                   name="state"
@@ -257,7 +258,7 @@ const ClientForm = ({
             <div className="grid grid-cols-2 gap-4">
               {/* City */}
               <div className="space-y-2">
-                <Label htmlFor="city">City</Label>
+                <Label htmlFor="city">{i18n.t("city")}</Label>
                 <Input
                   id="city"
                   name="city"
@@ -274,7 +275,7 @@ const ClientForm = ({
               </div>
               {/* Zipcode */}
               <div className="space-y-2">
-                <Label htmlFor="zipcode">Zipcode</Label>
+                <Label htmlFor="zipcode">{i18n.t("zipcode")}</Label>
                 <Input
                   id="zipcode"
                   name="zipcode"
@@ -292,7 +293,7 @@ const ClientForm = ({
             </div>
             {/* Currency */}
             <div className="space-y-2">
-              <Label htmlFor="currency">Currency</Label>
+              <Label htmlFor="currency">{i18n.t("currency")}</Label>
               <Select
                 value={values.currency?.value || ""}
                 onValueChange={value => {
@@ -307,7 +308,7 @@ const ClientForm = ({
                     errors.currency && touched.currency ? "border-red-500" : ""
                   }
                 >
-                  <SelectValue placeholder="Select currency..." />
+                  <SelectValue placeholder={i18n.t("clients.selectCurrency")} />
                 </SelectTrigger>
                 <SelectContent>
                   {currencyListOptions.map((currency: any) => (
@@ -329,10 +330,10 @@ const ClientForm = ({
                 disabled={disableBtn(values, errors, submitting)}
               >
                 {submitting
-                  ? "Saving..."
+                  ? i18n.t("timeTracking.saving")
                   : formType === "edit"
-                  ? "Update Client"
-                  : "Add Client"}
+                  ? i18n.t("clients.editClient")
+                  : i18n.t("clients.addNewClient")}
               </Button>
             </div>
           </Form>

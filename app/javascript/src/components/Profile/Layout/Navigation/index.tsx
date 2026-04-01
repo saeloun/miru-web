@@ -15,8 +15,9 @@ import { SETTINGS } from "../routes";
 const SideNav = () => {
   const { isCalledFromSettings, updateDetails } = useProfileContext();
   const { isAdminUser, companyRole, user } = useUserContext();
-  const personalSettings = SETTINGS.filter(
-    ({ category }) => category === "personal"
+  const accessibleSettings = SETTINGS.filter(
+    ({ isTab, authorisedRoles }) =>
+      isTab && authorisedRoles.includes(companyRole)
   );
   const { memberId } = useParams();
   const UserId = window.location.pathname.startsWith("/settings")
@@ -24,7 +25,7 @@ const SideNav = () => {
     : memberId;
 
   const EmployeeNav = () => (
-    <List companyRole={companyRole} settingsList={personalSettings} />
+    <List companyRole={companyRole} settingsList={accessibleSettings} />
   );
 
   const fetchPersonalDetails = async () => {

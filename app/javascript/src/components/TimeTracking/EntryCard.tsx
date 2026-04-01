@@ -1,17 +1,19 @@
 import React from "react";
 import { minToHHMM } from "helpers";
-import { Trash, PencilSimple, Clock, Briefcase } from "phosphor-react";
+import { Trash, PencilSimple, Clock, Briefcase, Play } from "phosphor-react";
 import { Card, CardContent } from "../ui/card";
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
 import { cn } from "../../lib/utils";
 import { useUserContext } from "context/UserContext";
 import { Roles } from "../../constants";
+import { i18n } from "../../i18n";
 
 interface props {
   id: number;
   client: string;
   project: string;
+  projectId: number;
   note: string;
   duration: number;
   source_label?: string;
@@ -21,6 +23,12 @@ interface props {
   bill_status: string;
   setNewEntryView: any;
   handleDuplicate: any;
+  handleResumeTimer: (entry: {
+    client: string;
+    project: string;
+    projectId: number;
+    note: string;
+  }) => void;
 }
 
 const canEditTimeEntry = (billStatus, role) =>
@@ -30,6 +38,7 @@ const EntryCard: React.FC<props> = ({
   id,
   client,
   project,
+  projectId,
   note,
   duration,
   source_label,
@@ -39,6 +48,7 @@ const EntryCard: React.FC<props> = ({
   bill_status,
   setNewEntryView,
   handleDuplicate,
+  handleResumeTimer,
 }) => {
   const { isDesktop, companyRole } = useUserContext();
   const sourceSkill = source_metadata?.skill;
@@ -62,22 +72,22 @@ const EntryCard: React.FC<props> = ({
       onClick={handleCardClick}
     >
       <CardContent className="p-6">
-        <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
-          <div className="flex-1 lg:flex-[2] space-y-4">
+        <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
+          <div className="min-w-0 flex-1 space-y-4 lg:flex-[2]">
             {/* Header Row with Client, Project, and Mobile Duration */}
-            <div className="flex items-start justify-between">
-              <div className="flex-1">
-                <div className="flex items-center gap-3 mb-2">
+            <div className="flex items-start justify-between gap-4">
+              <div className="min-w-0 flex-1">
+                <div className="mb-2 flex min-w-0 items-center gap-3">
                   <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 shadow-sm">
                     <Briefcase className="h-6 w-6 text-primary" />
                   </div>
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-base font-bold text-foreground">
+                  <div className="min-w-0">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="min-w-0 break-words text-base font-bold text-foreground">
                         {client}
                       </span>
-                      <span className="text-border">|</span>
-                      <span className="text-base font-medium text-muted-foreground">
+                      <span className="shrink-0 text-border">|</span>
+                      <span className="min-w-0 break-words text-base font-medium text-muted-foreground">
                         {project}
                       </span>
                     </div>
@@ -104,7 +114,7 @@ const EntryCard: React.FC<props> = ({
                     {minToHHMM(duration)}
                   </div>
                   <div className="text-xs uppercase tracking-wider text-muted-foreground">
-                    hours
+                    {i18n.t("hours")}
                   </div>
                 </div>
               </div>
@@ -115,7 +125,7 @@ const EntryCard: React.FC<props> = ({
               <div className="relative">
                 <div className="absolute bottom-0 left-0 top-0 w-1 rounded-full bg-gradient-to-b from-primary/40 to-transparent"></div>
                 <div className="pl-6">
-                  <p className="max-w-4xl whitespace-pre-wrap text-base leading-relaxed text-muted-foreground">
+                  <p className="max-w-4xl whitespace-pre-wrap break-words text-base leading-relaxed text-muted-foreground">
                     {note.split("\n").map((line, index) => {
                       if (line.trim().startsWith("•")) {
                         return (
@@ -132,7 +142,7 @@ const EntryCard: React.FC<props> = ({
                         return (
                           <span
                             key={index}
-                            className="mb-3 block text-lg font-bold text-foreground"
+                            className="mb-3 block break-words text-lg font-bold text-foreground"
                           >
                             {line}
                           </span>
@@ -142,7 +152,7 @@ const EntryCard: React.FC<props> = ({
                       return (
                         <span
                           key={index}
-                          className="mb-1.5 block leading-relaxed text-muted-foreground"
+                          className="mb-1.5 block break-words leading-relaxed text-muted-foreground"
                         >
                           {line}
                         </span>
@@ -162,7 +172,7 @@ const EntryCard: React.FC<props> = ({
                 </div>
                 <div>
                   <div className="mb-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                    Time Logged
+                    {i18n.t("timeTracking.timeLogged")}
                   </div>
                   <div className="text-3xl font-bold text-foreground tabular-nums">
                     {minToHHMM(duration)}
@@ -172,32 +182,48 @@ const EntryCard: React.FC<props> = ({
             </div>
 
             {canEditTimeEntry(bill_status, companyRole) && (
-              <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all duration-200">
+              <div className="flex items-center gap-2">
                 <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-9 w-9 hover:bg-accent hover:text-primary"
+                  variant="outline"
+                  size="sm"
+                  className="h-9"
+                  data-testid="resume-timer-entry"
                   onClick={e => {
                     e.stopPropagation();
-                    setEditEntryId(id);
-                    setNewEntryView(true);
+                    handleResumeTimer({ client, project, projectId, note });
                   }}
-                  title="Edit entry"
+                  title={i18n.t("timeTracking.resumeTimer")}
                 >
-                  <PencilSimple className="h-4 w-4" />
+                  <Play className="mr-1 h-4 w-4" />
+                  {i18n.t("timeTracking.resume")}
                 </Button>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-9 w-9 hover:bg-destructive/10 hover:text-destructive"
-                  onClick={e => {
-                    e.stopPropagation();
-                    handleDeleteEntry(id);
-                  }}
-                  title="Delete entry"
-                >
-                  <Trash className="h-4 w-4" />
-                </Button>
+                <div className="flex items-center gap-1 opacity-0 transition-all duration-200 group-hover:opacity-100">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-9 w-9 hover:bg-accent hover:text-primary"
+                    onClick={e => {
+                      e.stopPropagation();
+                      setEditEntryId(id);
+                      setNewEntryView(true);
+                    }}
+                    title={i18n.t("timeTracking.editEntry")}
+                  >
+                    <PencilSimple className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-9 w-9 hover:bg-destructive/10 hover:text-destructive"
+                    onClick={e => {
+                      e.stopPropagation();
+                      handleDeleteEntry(id);
+                    }}
+                    title={i18n.t("timeTracking.deleteEntry")}
+                  >
+                    <Trash className="h-4 w-4" />
+                  </Button>
+                </div>
               </div>
             )}
           </div>

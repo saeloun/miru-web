@@ -31,29 +31,36 @@ import {
 import { cn } from "../../lib/utils";
 import { toast } from "sonner";
 import { useUserContext } from "../../context/UserContext";
+import { i18n } from "../../i18n";
 import { timesheetEntryApi } from "apis/api";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
+import {
+  loadStoredTimerState,
+  persistTimerState,
+  clearStoredTimerState,
+  defaultTimerState,
+} from "utils/timeTrackingTimer";
 
 interface FloatingTimerProps {
   onSaveEntry?: (entry: any) => void;
   placement?: "floating" | "inline";
+  externalSyncKey?: number;
+  resumeFromEntry?: {
+    client: string;
+    project: string;
+    projectId: number;
+    description?: string;
+    resumeAt: number;
+  } | null;
 }
 
-interface TimerState {
-  isRunning: boolean;
-  startTime: number | null;
-  elapsedTime: number;
-  project: string;
-  client: string;
-  description: string;
-  projectId: number;
-}
-
-const TIMER_STORAGE_KEY = "miru_timer_state";
+type TimerState = ReturnType<typeof defaultTimerState>;
 
 const FloatingTimer: React.FC<FloatingTimerProps> = ({
   onSaveEntry,
   placement = "floating",
+  externalSyncKey = 0,
+  resumeFromEntry = null,
 }) => {
   const { user, company } = useUserContext();
   const queryClient = useQueryClient();
@@ -61,27 +68,7 @@ const FloatingTimer: React.FC<FloatingTimerProps> = ({
 
   const [isMinimized, setIsMinimized] = useState(false);
   const [showSaveDialog, setShowSaveDialog] = useState(false);
-  const [timer, setTimer] = useState<TimerState>(() => {
-    const saved = localStorage.getItem(TIMER_STORAGE_KEY);
-    if (saved) {
-      const parsed = JSON.parse(saved);
-
-      return {
-        ...parsed,
-        startTime: parsed.isRunning ? Date.now() - parsed.elapsedTime : null,
-      };
-    }
-
-    return {
-      isRunning: false,
-      startTime: null,
-      elapsedTime: 0,
-      project: "",
-      client: "",
-      description: "",
-      projectId: 0,
-    };
-  });
+  const [timer, setTimer] = useState<TimerState>(() => loadStoredTimerState());
 
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
@@ -115,10 +102,27 @@ const FloatingTimer: React.FC<FloatingTimerProps> = ({
     },
   });
 
-  // Save timer state to localStorage
   useEffect(() => {
-    localStorage.setItem(TIMER_STORAGE_KEY, JSON.stringify(timer));
+    persistTimerState(timer);
   }, [timer]);
+
+  useEffect(() => {
+    setTimer(loadStoredTimerState());
+  }, [externalSyncKey]);
+
+  useEffect(() => {
+    if (!resumeFromEntry) return;
+
+    setTimer({
+      isRunning: true,
+      startTime: resumeFromEntry.resumeAt,
+      elapsedTime: 0,
+      client: resumeFromEntry.client,
+      project: resumeFromEntry.project,
+      description: resumeFromEntry.description || "",
+      projectId: resumeFromEntry.projectId,
+    });
+  }, [resumeFromEntry]);
 
   // Timer logic
   useEffect(() => {
@@ -162,7 +166,7 @@ const FloatingTimer: React.FC<FloatingTimerProps> = ({
       isRunning: true,
       startTime: Date.now() - prev.elapsedTime,
     }));
-    toast.success("Timer started");
+    toast.success(i18n.t("timer.timerStarted"));
   };
 
   const pauseTimer = () => {
@@ -171,7 +175,7 @@ const FloatingTimer: React.FC<FloatingTimerProps> = ({
       isRunning: false,
       startTime: null,
     }));
-    toast.info("Timer paused");
+    toast.info(i18n.t("timer.timerPaused"));
   };
 
   const stopTimer = () => {
@@ -183,17 +187,9 @@ const FloatingTimer: React.FC<FloatingTimerProps> = ({
   };
 
   const resetTimer = () => {
-    setTimer({
-      isRunning: false,
-      startTime: null,
-      elapsedTime: 0,
-      project: "",
-      client: "",
-      description: "",
-      projectId: 0,
-    });
-    localStorage.removeItem(TIMER_STORAGE_KEY);
-    toast.info("Timer reset");
+    setTimer(defaultTimerState());
+    clearStoredTimerState();
+    toast.info(i18n.t("timer.timerReset"));
   };
 
   const discardTimer = () => {
@@ -205,7 +201,7 @@ const FloatingTimer: React.FC<FloatingTimerProps> = ({
     mutationFn: async () => {
       const duration = Math.floor(timer.elapsedTime / 1000 / 60); // Convert to minutes
       if (duration < 1) {
-        throw new Error("Duration must be at least 1 minute");
+        throw new Error(i18n.t("timer.durationAtLeastOneMinute"));
       }
 
       const entry = {
@@ -228,7 +224,7 @@ const FloatingTimer: React.FC<FloatingTimerProps> = ({
     },
     onSuccess: data => {
       queryClient.invalidateQueries({ queryKey: ["timeEntries"] });
-      toast.success("Time entry saved successfully");
+      toast.success(i18n.t("timer.timeEntrySavedSuccessfully"));
       resetTimer();
       setShowSaveDialog(false);
       if (onSaveEntry) {
@@ -236,7 +232,7 @@ const FloatingTimer: React.FC<FloatingTimerProps> = ({
       }
     },
     onError: (error: any) => {
-      toast.error(error.message || "Failed to save time entry");
+      toast.error(error.message || i18n.t("timer.failedToSaveTimeEntry"));
     },
   });
 
@@ -267,16 +263,15 @@ const FloatingTimer: React.FC<FloatingTimerProps> = ({
             <div className="space-y-1">
               <div className="flex items-center gap-2 text-sm font-semibold text-foreground">
                 <Timer size={18} className="text-primary" />
-                <span>Web timer</span>
+                <span>{i18n.t("timer.webTimer")}</span>
               </div>
               <p className="text-sm text-muted-foreground">
-                Track live work like Harvest or Toggl, then save it straight
-                into today&apos;s entry list.
+                {i18n.t("timer.trackLiveWork")}
               </p>
             </div>
             <Button onClick={startTimer} className="min-w-36 shadow-sm">
               <Play size={16} className="mr-2" />
-              Start Timer
+              {i18n.t("timer.startTimer")}
             </Button>
           </CardContent>
         </Card>
@@ -319,7 +314,7 @@ const FloatingTimer: React.FC<FloatingTimerProps> = ({
                   />
                   <div>
                     <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-                      Web Timer
+                      {i18n.t("timer.webTimerLabel")}
                     </p>
                     <p className="font-mono text-3xl font-bold text-foreground">
                       {formatTime(timer.elapsedTime)}
@@ -331,21 +326,21 @@ const FloatingTimer: React.FC<FloatingTimerProps> = ({
                   {timer.isRunning ? (
                     <Button size="sm" onClick={pauseTimer} variant="outline">
                       <Pause size={16} className="mr-1" />
-                      Pause
+                      {i18n.t("timer.pause")}
                     </Button>
                   ) : (
                     <Button size="sm" onClick={startTimer}>
                       <Play size={16} className="mr-1" />
-                      {timer.elapsedTime > 0 ? "Resume" : "Start"}
+                      {timer.elapsedTime > 0 ? i18n.t("timer.resume") : i18n.t("timer.start")}
                     </Button>
                   )}
                   <Button size="sm" onClick={stopTimer} variant="outline">
                     <Stop size={16} className="mr-1" />
-                    Stop
+                    {i18n.t("timer.stop")}
                   </Button>
                   <Button size="sm" variant="ghost" onClick={discardTimer}>
                     <X size={16} className="mr-1" />
-                    Reset
+                    {i18n.t("timer.reset")}
                   </Button>
                 </div>
               </div>
@@ -353,14 +348,14 @@ const FloatingTimer: React.FC<FloatingTimerProps> = ({
               <div className="grid gap-3 lg:grid-cols-[minmax(0,280px)_1fr]">
                 <div className="space-y-2">
                   <Label htmlFor="timer-project-inline" className="text-xs">
-                    Project
+                    {i18n.t("project")}
                   </Label>
                   <Select
                     value={timer.project}
                     onValueChange={handleProjectChange}
                   >
                     <SelectTrigger id="timer-project-inline" className="h-10">
-                      <SelectValue placeholder="Select project" />
+                      <SelectValue placeholder={i18n.t("timer.selectProject")} />
                     </SelectTrigger>
                     <SelectContent>
                       {projectsData?.projects.map(project => (
@@ -374,7 +369,7 @@ const FloatingTimer: React.FC<FloatingTimerProps> = ({
 
                 <div className="space-y-2">
                   <Label htmlFor="timer-description-inline" className="text-xs">
-                    Description
+                    {i18n.t("description")}
                   </Label>
                   <Textarea
                     id="timer-description-inline"
@@ -385,7 +380,7 @@ const FloatingTimer: React.FC<FloatingTimerProps> = ({
                         description: e.target.value,
                       }))
                     }
-                    placeholder="What are you working on?"
+                    placeholder={i18n.t("timer.whatAreYouWorkingOn")}
                     className="min-h-10 text-sm"
                   />
                 </div>
@@ -397,23 +392,22 @@ const FloatingTimer: React.FC<FloatingTimerProps> = ({
         <Dialog open={showSaveDialog} onOpenChange={setShowSaveDialog}>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Save Time Entry</DialogTitle>
+              <DialogTitle>{i18n.t("timer.saveTimeEntry")}</DialogTitle>
               <DialogDescription>
-                You tracked {formatTime(timer.elapsedTime)}. Would you like to
-                save this as a time entry?
+                {i18n.t("timer.saveTimeEntryDescription", { time: formatTime(timer.elapsedTime) })}
               </DialogDescription>
             </DialogHeader>
 
             <div className="space-y-4">
               <div>
-                <Label>Project</Label>
+                <Label>{i18n.t("project")}</Label>
                 <p className="text-sm text-gray-600">
                   {timer.project} ({timer.client})
                 </p>
               </div>
 
               <div>
-                <Label>Duration</Label>
+                <Label>{i18n.t("timeTracking.duration")}</Label>
                 <p className="text-sm text-gray-600">
                   {formatTime(timer.elapsedTime)}
                 </p>
@@ -421,7 +415,7 @@ const FloatingTimer: React.FC<FloatingTimerProps> = ({
 
               {timer.description && (
                 <div>
-                  <Label>Description</Label>
+                  <Label>{i18n.t("description")}</Label>
                   <p className="text-sm text-gray-600">{timer.description}</p>
                 </div>
               )}
@@ -429,13 +423,13 @@ const FloatingTimer: React.FC<FloatingTimerProps> = ({
 
             <DialogFooter>
               <Button variant="outline" onClick={discardTimer}>
-                Discard
+                {i18n.t("timer.discard")}
               </Button>
               <Button
                 onClick={handleSaveEntry}
                 disabled={saveTimerMutation.isPending || !timer.project}
               >
-                {saveTimerMutation.isPending ? "Saving..." : "Save Entry"}
+                {saveTimerMutation.isPending ? i18n.t("timeTracking.saving") : i18n.t("timeTracking.saveEntry")}
               </Button>
             </DialogFooter>
           </DialogContent>
@@ -500,7 +494,7 @@ const FloatingTimer: React.FC<FloatingTimerProps> = ({
                         timer.isRunning ? "text-green-600" : "text-gray-400"
                       }
                     />
-                    <span className="font-semibold">Timer</span>
+                    <span className="font-semibold">{i18n.t("timer.timer")}</span>
                   </div>
                   <div className="flex gap-1">
                     <Button
@@ -524,17 +518,17 @@ const FloatingTimer: React.FC<FloatingTimerProps> = ({
                     {timer.isRunning ? (
                       <Button size="sm" onClick={pauseTimer} variant="outline">
                         <Pause size={16} className="mr-1" />
-                        Pause
+                        {i18n.t("timer.pause")}
                       </Button>
                     ) : (
                       <Button size="sm" onClick={startTimer}>
                         <Play size={16} className="mr-1" />
-                        Start
+                        {i18n.t("timer.start")}
                       </Button>
                     )}
                     <Button size="sm" onClick={stopTimer} variant="outline">
                       <Stop size={16} className="mr-1" />
-                      Stop
+                      {i18n.t("timer.stop")}
                     </Button>
                   </div>
                 </div>
@@ -542,14 +536,14 @@ const FloatingTimer: React.FC<FloatingTimerProps> = ({
                 <div className="space-y-2">
                   <div>
                     <Label htmlFor="timer-project" className="text-xs">
-                      Project
+                      {i18n.t("project")}
                     </Label>
                     <Select
                       value={timer.project}
                       onValueChange={handleProjectChange}
                     >
                       <SelectTrigger className="h-8">
-                        <SelectValue placeholder="Select project" />
+                        <SelectValue placeholder={i18n.t("timer.selectProject")} />
                       </SelectTrigger>
                       <SelectContent>
                         {projectsData?.projects.map(project => (
@@ -563,7 +557,7 @@ const FloatingTimer: React.FC<FloatingTimerProps> = ({
 
                   <div>
                     <Label htmlFor="timer-description" className="text-xs">
-                      Description
+                      {i18n.t("description")}
                     </Label>
                     <Textarea
                       id="timer-description"
@@ -574,7 +568,7 @@ const FloatingTimer: React.FC<FloatingTimerProps> = ({
                           description: e.target.value,
                         }))
                       }
-                      placeholder="What are you working on?"
+                      placeholder={i18n.t("timer.whatAreYouWorkingOn")}
                       className="h-16 text-sm"
                     />
                   </div>
@@ -589,23 +583,22 @@ const FloatingTimer: React.FC<FloatingTimerProps> = ({
       <Dialog open={showSaveDialog} onOpenChange={setShowSaveDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Save Time Entry</DialogTitle>
+            <DialogTitle>{i18n.t("timer.saveTimeEntry")}</DialogTitle>
             <DialogDescription>
-              You tracked {formatTime(timer.elapsedTime)}. Would you like to
-              save this as a time entry?
+              {i18n.t("timer.saveTimeEntryDescription", { time: formatTime(timer.elapsedTime) })}
             </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-4">
             <div>
-              <Label>Project</Label>
+              <Label>{i18n.t("project")}</Label>
               <p className="text-sm text-gray-600">
                 {timer.project} ({timer.client})
               </p>
             </div>
 
             <div>
-              <Label>Duration</Label>
+              <Label>{i18n.t("timeTracking.duration")}</Label>
               <p className="text-sm text-gray-600">
                 {formatTime(timer.elapsedTime)}
               </p>
@@ -613,7 +606,7 @@ const FloatingTimer: React.FC<FloatingTimerProps> = ({
 
             {timer.description && (
               <div>
-                <Label>Description</Label>
+                <Label>{i18n.t("description")}</Label>
                 <p className="text-sm text-gray-600">{timer.description}</p>
               </div>
             )}
@@ -621,13 +614,13 @@ const FloatingTimer: React.FC<FloatingTimerProps> = ({
 
           <DialogFooter>
             <Button variant="outline" onClick={discardTimer}>
-              Discard
+              {i18n.t("timer.discard")}
             </Button>
             <Button
               onClick={handleSaveEntry}
               disabled={saveTimerMutation.isPending || !timer.project}
             >
-              {saveTimerMutation.isPending ? "Saving..." : "Save Entry"}
+              {saveTimerMutation.isPending ? i18n.t("timeTracking.saving") : i18n.t("timeTracking.saveEntry")}
             </Button>
           </DialogFooter>
         </DialogContent>

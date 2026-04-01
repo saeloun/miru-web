@@ -5,6 +5,7 @@ import { ClientsIcon } from "miruIcons";
 import { Avatar } from "StyledComponents";
 
 import EmptyStates from "common/EmptyStates";
+import { i18n } from "../../../i18n";
 
 import ReportRow from "./ReportRow";
 
@@ -17,22 +18,16 @@ interface ContainerProps {
 const ReportHeader = () => (
   <div className="grid grid-cols-5 items-center gap-2 border-b">
     <div className="py-5 pr-6 text-left text-xs font-medium uppercase leading-4 tracking-widest text-muted-foreground">
-      PROJECT/
-      <br />
-      CLIENT
+      {i18n.t("reports.projectClient")}
     </div>
     <div className="col-span-2 px-6 py-5 text-left text-xs font-medium uppercase leading-4 tracking-widest text-muted-foreground">
-      NOTE
+      {i18n.t("reports.noteHeader")}
     </div>
     <div className="px-6 py-5 text-left text-xs font-medium uppercase leading-4 tracking-widest text-muted-foreground">
-      TEAM MEMBER/
-      <br />
-      DATE
+      {i18n.t("reports.teamMemberDate")}
     </div>
     <div className="py-5 pl-6 text-right text-xs font-medium uppercase leading-4 tracking-widest text-muted-foreground">
-      HOURS
-      <br />
-      LOGGED
+      {i18n.t("reports.hoursLogged")}
     </div>
   </div>
 );
@@ -99,7 +94,7 @@ const Container = ({ selectedFilter }: ContainerProps) => {
                     </div>
                     {entries?.length > 0 && (
                       <p className="text-right font-sans text-base font-medium text-foreground">
-                        Total Hours for {label} : &nbsp;
+                        {i18n.t("reports.totalHours")} {label} : &nbsp;
                         {getTotalHoursLogged(id)}
                       </p>
                     )}
@@ -118,8 +113,8 @@ const Container = ({ selectedFilter }: ContainerProps) => {
           showNoSearchResultState={timeEntryReport.filterCounter > 0}
           Message={
             timeEntryReport.filterCounter > 0
-              ? "No results match current filters. Try removing some filters."
-              : "There are no time entries added yet. You’ll see a summary of time entries added by your team."
+              ? i18n.t("reports.noResultsMatchFilters")
+              : i18n.t("reports.noTimeEntriesYet")
           }
         />
       )}

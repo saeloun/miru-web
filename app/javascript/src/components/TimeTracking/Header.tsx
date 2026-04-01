@@ -23,6 +23,11 @@ const Header = ({
   weeklyTotalHours = "",
   handleNextWeek,
   handlePrevWeek,
+  handleTodayButton,
+  handleNextButton,
+  handlePrevButton,
+  text,
+  totalMonthDuration,
 }) => {
   const [openOsCalendar, setOpenOsCalendar] = useState(false);
 
@@ -30,6 +35,11 @@ const Header = ({
   const { isDesktop } = useUserContext();
 
   const getTodayAction = () => {
+    if (handleTodayButton) {
+      handleTodayButton();
+      return;
+    }
+
     setWeekDay(0);
     setSelectDate(dayjs().weekday());
   };
@@ -39,14 +49,25 @@ const Header = ({
   };
 
   const getRightArrowAction = () => {
+    if (handleNextButton) {
+      handleNextButton();
+      return;
+    }
+
     isDesktop ? handleNextWeek() : handleNextDay();
   };
 
   const getLeftArrowAction = () => {
+    if (handlePrevButton) {
+      handlePrevButton();
+      return;
+    }
+
     isDesktop ? handlePrevWeek() : handlePreDay();
   };
 
   const getLabel = () => {
+    if (text) return text;
     if (!dayInfo.length) return null;
 
     return isDesktop ? (
@@ -74,6 +95,8 @@ const Header = ({
   };
 
   const getTotal = () => {
+    if (typeof totalMonthDuration === "number")
+      return minToHHMM(totalMonthDuration);
     return isDesktop ? weeklyTotalHours : dailyTotalHours[selectDate];
   };
 
@@ -86,11 +109,12 @@ const Header = ({
               variant="outline"
               size="sm"
               onClick={getTodayAction}
+              data-testid="time-nav-today"
               className="px-4 py-2 font-bold text-sm border-border hover:bg-accent hover:text-accent-foreground transition-all duration-200"
             >
               Today
             </Button>
-            {isDesktop && (
+            {isDesktop && !handleTodayButton && (
               <Button
                 variant="ghost"
                 size="sm"
@@ -107,11 +131,12 @@ const Header = ({
               variant="ghost"
               size="sm"
               onClick={getLeftArrowAction}
+              data-testid="time-nav-prev"
               className="h-10 w-10 shrink-0 p-0 hover:bg-accent transition-all duration-200"
             >
               <CaretLeft className="h-5 w-5" />
             </Button>
-            {!!dayInfo.length && (
+            {(!!dayInfo.length || text) && (
               <>
                 <div className="flex min-w-0 items-center gap-2 sm:gap-3">
                   <Calendar className="h-5 w-5 shrink-0 text-primary sm:h-6 sm:w-6" />
@@ -135,7 +160,7 @@ const Header = ({
                       wrapperRef={datePickerRef}
                       handleChange={date => {
                         setOpenOsCalendar(false);
-                        handleAddEntryDateChange(date);
+                        handleAddEntryDateChange?.(date);
                       }}
                     />
                   )}
@@ -147,6 +172,7 @@ const Header = ({
               variant="ghost"
               size="sm"
               onClick={getRightArrowAction}
+              data-testid="time-nav-next"
               className="h-10 w-10 shrink-0 p-0 hover:bg-accent transition-all duration-200"
             >
               <CaretRight className="h-5 w-5" />

@@ -80,6 +80,38 @@ RSpec.describe User, type: :model do
     it { is_expected.not_to allow_value("foo&23423").for(:last_name) }
     it { is_expected.to validate_length_of(:first_name).is_at_most(20) }
     it { is_expected.to validate_length_of(:last_name).is_at_most(20) }
+
+    it "normalizes locale before validation" do
+      user.locale = "HI"
+
+      user.valid?
+
+      expect(user.locale).to eq("hi")
+    end
+
+    it "falls back to the default locale when locale is unsupported" do
+      user.locale = "unsupported"
+
+      user.valid?
+
+      expect(user.locale).to eq("en")
+    end
+
+    it "normalizes regional locales before validation" do
+      user.locale = "en-gb"
+
+      user.valid?
+
+      expect(user.locale).to eq("en-GB")
+    end
+
+    it "normalizes major language locales from browser-style codes" do
+      user.locale = "ur-PK"
+
+      user.valid?
+
+      expect(user.locale).to eq("ur")
+    end
   end
 
   describe "Callbacks" do

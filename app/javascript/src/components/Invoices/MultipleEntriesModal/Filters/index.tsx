@@ -14,6 +14,7 @@ import {
 
 import { handleDateRangeOptions } from "./DateRange";
 import SearchTeamMembers from "./SearchTeamMembers";
+import { i18n } from "../../../../i18n";
 
 const Filters = ({
   teamMembers,
@@ -199,7 +200,7 @@ const Filters = ({
     <div className="flex flex-col items-center justify-between px-2 pt-2 pb-4 lg:flex-row lg:px-6">
       <div className="relative flex w-full items-center lg:w-4/12 lg:py-0">
         <input
-          placeholder="Search"
+          placeholder={i18n.t("search")}
           type="text"
           value={filters.searchTerm}
           className="focus:outline-none w-full rounded bg-muted p-2
@@ -235,7 +236,7 @@ const Filters = ({
             }}
           >
             <SelectTrigger className="w-full">
-              <SelectValue placeholder="Select date range" />
+              <SelectValue placeholder={i18n.t("selectDateRange")} />
             </SelectTrigger>
             <SelectContent>
               {dateRangeOptions.map(option => (
@@ -259,7 +260,7 @@ const Filters = ({
                   className="sidebar__reset"
                   onClick={resetCustomDatePicker}
                 >
-                  Cancel
+                  {i18n.t("cancel")}
                 </button>
                 <button
                   disabled={disableDateBtn}
@@ -270,7 +271,7 @@ const Filters = ({
                   }`}
                   onClick={submitCustomDatePicker}
                 >
-                  Done
+                  {i18n.t("done")}
                 </button>
               </div>
             </div>
@@ -285,7 +286,7 @@ const Filters = ({
           }`}
           onClick={handleReset}
         >
-          RESET
+          {i18n.t("reset")}
         </button>
         <button
           disabled={!isResetActive}
@@ -294,7 +295,7 @@ const Filters = ({
           }`}
           onClick={handleApply}
         >
-          APPLY
+          {i18n.t("apply").toUpperCase()}
         </button>
       </div>
     </div>

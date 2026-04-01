@@ -11,6 +11,7 @@ import {
 } from "recharts";
 import { Calendar, TrendUp, CurrencyDollar } from "phosphor-react";
 import { useQuery } from "@tanstack/react-query";
+import { i18n } from "../../../i18n";
 
 interface ChartWithSummaryProps {
   summary: {
@@ -145,7 +146,7 @@ const ChartWithSummary: React.FC<ChartWithSummaryProps> = ({
 
   const summaryItems = [
     {
-      label: "All",
+      label: i18n.t("all"),
       value: totalAmount,
       colorClass: "text-foreground",
       bgClass: "bg-muted/40 hover:bg-accent",
@@ -153,14 +154,14 @@ const ChartWithSummary: React.FC<ChartWithSummaryProps> = ({
       isReset: true,
     },
     {
-      label: "Overdue",
+      label: i18n.t("invoices.overdue"),
       value: overdueAmount,
       colorClass: "text-foreground",
       bgClass: "bg-muted/40 hover:bg-accent",
       onClick: () => applyFilter([{ value: "overdue", label: "OVERDUE" }]),
     },
     {
-      label: "Outstanding",
+      label: i18n.t("invoices.outstanding"),
       value: outstandingAmount,
       colorClass: "text-foreground",
       bgClass: "bg-muted/40 hover:bg-accent",
@@ -172,7 +173,7 @@ const ChartWithSummary: React.FC<ChartWithSummaryProps> = ({
         ]),
     },
     {
-      label: "Draft",
+      label: i18n.t("invoices.draft"),
       value: draftAmount,
       colorClass: "text-muted-foreground",
       bgClass: "bg-muted/40 hover:bg-accent",
@@ -181,9 +182,9 @@ const ChartWithSummary: React.FC<ChartWithSummaryProps> = ({
   ];
 
   const revenueFilters = [
-    { label: "Monthly", value: "month", icon: Calendar },
-    { label: "Quarterly", value: "quarter", icon: TrendUp },
-    { label: "Yearly", value: "year", icon: CurrencyDollar },
+    { label: i18n.t("invoices.monthly"), value: "month", icon: Calendar },
+    { label: i18n.t("invoices.quarterly"), value: "quarter", icon: TrendUp },
+    { label: i18n.t("invoices.yearly"), value: "year", icon: CurrencyDollar },
   ];
 
   const CustomTooltip = ({ active, payload, label }) => {
@@ -224,11 +225,10 @@ const ChartWithSummary: React.FC<ChartWithSummaryProps> = ({
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                   <h3 className="text-xl font-bold text-foreground">
-                    Yearly Revenue
+                    {i18n.t("invoiceDashboard.revenueOverview")}
                   </h3>
                   <p className="mt-1 text-sm text-muted-foreground">
-                    Monthly revenue breakdown
-                  </p>
+                                      </p>
                 </div>
                 <div className="flex items-center gap-3">
                   <div className="flex items-center gap-2 rounded-lg bg-card px-3 py-2">
@@ -254,8 +254,7 @@ const ChartWithSummary: React.FC<ChartWithSummaryProps> = ({
                       %
                     </span>
                     <span className="text-xs text-muted-foreground">
-                      vs last year
-                    </span>
+                                          </span>
                   </div>
                 </div>
               </div>
@@ -384,7 +383,7 @@ const ChartWithSummary: React.FC<ChartWithSummaryProps> = ({
               <div className="mt-4 grid grid-cols-1 gap-4 border-t border-border pt-4 sm:grid-cols-3">
                 <div className="text-center">
                   <p className="mb-1 text-xs uppercase tracking-wide text-muted-foreground">
-                    Monthly Avg
+                    {i18n.t("invoiceDashboard.revenueOverview")}
                   </p>
                   <p className="text-base font-bold text-foreground">
                     {currencyFormat(baseCurrency, monthlyAvg)}
@@ -392,8 +391,7 @@ const ChartWithSummary: React.FC<ChartWithSummaryProps> = ({
                 </div>
                 <div className="text-center">
                   <p className="mb-1 text-xs uppercase tracking-wide text-muted-foreground">
-                    Peak Month
-                  </p>
+                                      </p>
                   <p className="text-base font-bold text-foreground">
                     {revenueData.reduce(
                       (max, item) => (item.revenue > max.revenue ? item : max),
@@ -403,7 +401,7 @@ const ChartWithSummary: React.FC<ChartWithSummaryProps> = ({
                 </div>
                 <div className="text-center">
                   <p className="mb-1 text-xs uppercase tracking-wide text-muted-foreground">
-                    Total Invoices
+                    {i18n.t("invoices.invoices")}
                   </p>
                   <p className="text-base font-bold text-foreground">
                     {revenueData.reduce(

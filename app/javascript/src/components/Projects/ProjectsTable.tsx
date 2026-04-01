@@ -48,6 +48,7 @@ import {
 import { useUserContext } from "../../context/UserContext";
 import { projectApi } from "apis/api";
 import { toast } from "sonner";
+import { i18n } from "../../i18n";
 import AddEditProject from "./Modals/AddEditProject";
 
 interface TeamMember {
@@ -110,11 +111,11 @@ const ProjectsTable: React.FC = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["projects"] });
-      toast.success("Project deleted successfully");
+      toast.success(i18n.t("projects.projectDeletedSuccessfully"));
       setShowDeleteDialog(false);
     },
     onError: () => {
-      toast.error("Failed to delete project");
+      toast.error(i18n.t("projects.failedToDeleteProject"));
     },
   });
 
@@ -159,20 +160,20 @@ const ProjectsTable: React.FC = () => {
     switch (status) {
       case "active":
         return (
-          <span className="text-sm font-medium text-foreground">Active</span>
+          <span className="text-sm font-medium text-foreground">{i18n.t("projects.active")}</span>
         );
       case "paused":
         return (
-          <span className="text-sm font-medium text-foreground">Paused</span>
+          <span className="text-sm font-medium text-foreground">{i18n.t("projects.paused")}</span>
         );
       case "completed":
         return (
-          <span className="text-sm font-medium text-foreground">Completed</span>
+          <span className="text-sm font-medium text-foreground">{i18n.t("projects.completed")}</span>
         );
       default:
         return (
           <span className="text-sm font-medium text-muted-foreground">
-            Unknown
+            {i18n.t("projects.unknown")}
           </span>
         );
     }
@@ -187,7 +188,7 @@ const ProjectsTable: React.FC = () => {
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           className="-ml-4"
         >
-          PROJECT/CLIENT
+          {i18n.t("projects.projectClient")}
           {column.getIsSorted() === "asc" ? (
             <ArrowUp size={16} className="ml-2" />
           ) : column.getIsSorted() === "desc" ? (
@@ -222,10 +223,10 @@ const ProjectsTable: React.FC = () => {
     },
     {
       accessorKey: "client_name",
-      header: "Client",
+      header: i18n.t("client"),
       cell: ({ row }) => {
         const clientName =
-          row.original.client_name || row.original.client?.name || "No Client";
+          row.original.client_name || row.original.client?.name || i18n.t("projects.noClient");
 
         return (
           <span className="text-sm font-medium text-foreground">
@@ -236,7 +237,7 @@ const ProjectsTable: React.FC = () => {
     },
     {
       accessorKey: "totalHours",
-      header: "HOURS LOGGED",
+      header: i18n.t("projects.hoursLogged"),
       cell: ({ row }) => {
         const hours = Number(row.original.totalHours || 0);
 
@@ -245,7 +246,7 @@ const ProjectsTable: React.FC = () => {
     },
     {
       accessorKey: "teamMembers",
-      header: "Team",
+      header: i18n.t("projects.team"),
       cell: ({ row }) => {
         const members = row.original.teamMembers || [];
         const displayCount = 3;
@@ -260,7 +261,7 @@ const ProjectsTable: React.FC = () => {
             ))}
             {remainingCount > 0 && (
               <span className="text-sm text-muted-foreground">
-                +{remainingCount} more
+                +{remainingCount} {i18n.t("projects.more")}
               </span>
             )}
           </div>
@@ -269,13 +270,13 @@ const ProjectsTable: React.FC = () => {
     },
     {
       accessorKey: "billable",
-      header: "Type",
+      header: i18n.t("type"),
       cell: ({ row }) =>
         row.original.billable ? (
-          <span className="text-sm font-medium text-foreground">Billable</span>
+          <span className="text-sm font-medium text-foreground">{i18n.t("billable")}</span>
         ) : (
           <span className="text-sm font-medium text-muted-foreground">
-            Non-billable
+            {i18n.t("nonBillable")}
           </span>
         ),
     },
@@ -287,7 +288,7 @@ const ProjectsTable: React.FC = () => {
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           className="-ml-4"
         >
-          Status
+          {i18n.t("status")}
           {column.getIsSorted() === "asc" ? (
             <ArrowUp size={16} className="ml-2" />
           ) : column.getIsSorted() === "desc" ? (
@@ -314,33 +315,33 @@ const ProjectsTable: React.FC = () => {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button id="kebabMenu" variant="ghost" className="h-8 w-8 p-0">
-                <span className="sr-only">Open menu</span>
+                <span className="sr-only">{i18n.t("openMenu")}</span>
                 <DotsThree size={20} />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DropdownMenuLabel>{i18n.t("actions")}</DropdownMenuLabel>
               <DropdownMenuItem
                 onClick={() => navigator.clipboard.writeText(project.id)}
               >
-                Copy project ID
+                {i18n.t("projects.copyProjectId")}
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 onClick={() => navigate(`/projects/${project.id}`)}
               >
-                View details
+                {i18n.t("projects.viewDetails")}
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => handleEdit(project)}>
                 <PencilSimple size={16} className="mr-2" />
-                Edit project
+                {i18n.t("projects.editProject")}
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() => handleDelete(project)}
                 className="text-destructive focus:text-destructive"
               >
                 <Trash size={16} className="mr-2" />
-                Delete Project
+                {i18n.t("projects.deleteProject")}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -358,7 +359,7 @@ const ProjectsTable: React.FC = () => {
       <div className="flex items-center justify-center h-96">
         <div className="text-center">
           <Warning size={48} className="mx-auto mb-4 text-muted-foreground" />
-          <p className="text-muted-foreground">Failed to load projects</p>
+          <p className="text-muted-foreground">{i18n.t("projects.failedToLoadProjects")}</p>
         </div>
       </div>
     );
@@ -377,13 +378,13 @@ const ProjectsTable: React.FC = () => {
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
           <p className="text-sm text-muted-foreground md:text-base">
-            Manage your projects and track progress
+            {i18n.t("projects.manageProjectsDescription")}
           </p>
         </div>
         {isAdminUser && (
           <Button onClick={() => setShowNewProjectDialog(true)}>
             <Plus size={20} className="mr-2" />
-            New Project
+            {i18n.t("projects.newProject")}
           </Button>
         )}
       </div>
@@ -393,40 +394,40 @@ const ProjectsTable: React.FC = () => {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
-              Active Projects
+              {i18n.t("projects.activeProjects")}
             </CardTitle>
             <Briefcase size={20} className="text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{activeProjects}</div>
             <p className="mt-1 text-xs text-muted-foreground">
-              of {projects.length} total projects
+              {i18n.t("projects.ofTotalProjects", { count: projects.length })}
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Hours</CardTitle>
+            <CardTitle className="text-sm font-medium">{i18n.t("projects.totalHours")}</CardTitle>
             <Timer size={20} className="text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{totalHours.toFixed(0)}h</div>
             <p className="mt-1 text-xs text-muted-foreground">
-              Tracked across all projects
+              {i18n.t("projects.trackedAcrossAllProjects")}
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Team Members</CardTitle>
+            <CardTitle className="text-sm font-medium">{i18n.t("projects.teamMembers")}</CardTitle>
             <Users size={20} className="text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{uniqueTeamMembers}</div>
             <p className="mt-1 text-xs text-muted-foreground">
-              Working on projects
+              {i18n.t("projects.workingOnProjects")}
             </p>
           </CardContent>
         </Card>
@@ -434,10 +435,9 @@ const ProjectsTable: React.FC = () => {
 
       <Card>
         <CardHeader>
-          <CardTitle>All Projects</CardTitle>
+          <CardTitle>{i18n.t("projects.allProjects")}</CardTitle>
           <CardDescription>
-            A comprehensive list of all your projects with team assignments and
-            progress tracking.
+            {i18n.t("projects.allProjectsDescription")}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -445,7 +445,7 @@ const ProjectsTable: React.FC = () => {
             <DataTable
               columns={columns}
               data={projects}
-              searchPlaceholder="Search projects..."
+              searchPlaceholder={i18n.t("projects.searchProjects")}
               onRowClick={project => navigate(`/projects/${project.id}`)}
             />
           ) : (
@@ -455,7 +455,7 @@ const ProjectsTable: React.FC = () => {
                 className="mx-auto mb-4 text-muted-foreground/50"
               />
               <p className="mb-4 text-muted-foreground">
-                Looks like there aren't any projects added yet.
+                {i18n.t("projects.noProjectsYet")}
               </p>
               {isAdminUser && (
                 <Button
@@ -463,7 +463,7 @@ const ProjectsTable: React.FC = () => {
                   onClick={() => setShowNewProjectDialog(true)}
                 >
                   <Plus size={20} className="mr-2" />
-                  Create Your First Project
+                  {i18n.t("projects.createFirstProject")}
                 </Button>
               )}
             </div>
@@ -475,10 +475,9 @@ const ProjectsTable: React.FC = () => {
       <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Delete Project</DialogTitle>
+            <DialogTitle>{i18n.t("projects.deleteProject")}</DialogTitle>
             <DialogDescription>
-              Are you sure you want to delete "{selectedProject?.name}"? This
-              action cannot be undone.
+              {i18n.t("projects.deleteProjectConfirm", { name: selectedProject?.name })}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
@@ -486,14 +485,14 @@ const ProjectsTable: React.FC = () => {
               variant="outline"
               onClick={() => setShowDeleteDialog(false)}
             >
-              Cancel
+              {i18n.t("cancel")}
             </Button>
             <Button
               variant="destructive"
               onClick={confirmDelete}
               disabled={deleteMutation.isPending}
             >
-              {deleteMutation.isPending ? "Deleting..." : "DELETE"}
+              {deleteMutation.isPending ? i18n.t("projects.deleting") : i18n.t("delete")}
             </Button>
           </DialogFooter>
         </DialogContent>

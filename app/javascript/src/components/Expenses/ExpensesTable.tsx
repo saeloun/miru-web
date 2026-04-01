@@ -191,6 +191,22 @@ const ExpensesTable: React.FC = () => {
     notes: "",
   });
 
+  const normalizeExpenseAmount = (value: string) => {
+    const normalizedValue = value.replace(/[^0-9,.-]/g, "").replace(/,/g, "");
+
+    if (
+      !normalizedValue ||
+      normalizedValue === "-" ||
+      normalizedValue === "."
+    ) {
+      return value.trim();
+    }
+
+    return normalizedValue;
+  };
+
+  const hasAmount = formData.amount.trim().length > 0;
+
   const { data, isLoading, error } = useQuery({
     queryKey: ["expenses"],
     queryFn: () => fetchExpenses("all", 1, EXPENSES_BATCH_SIZE),
@@ -344,14 +360,16 @@ const ExpensesTable: React.FC = () => {
 
   const buildExpensePayload = async () => {
     const trimmedCategory = formData.category.trim();
+
     if (!trimmedCategory) {
       throw new Error("invalid-category");
     }
+
     const payload = new FormData();
 
     payload.append("expense[date]", formData.date);
     payload.append("expense[description]", formData.description);
-    payload.append("expense[amount]", String(parseFloat(formData.amount)));
+    payload.append("expense[amount]", normalizeExpenseAmount(formData.amount));
     payload.append("expense[category_name]", trimmedCategory);
     payload.append("expense[expense_type]", formData.expenseType);
 
@@ -953,8 +971,8 @@ const ExpensesTable: React.FC = () => {
               </Label>
               <Input
                 id="amount"
-                type="number"
-                step="0.01"
+                type="text"
+                inputMode="decimal"
                 value={formData.amount}
                 onChange={e =>
                   setFormData({ ...formData, amount: e.target.value })
@@ -1089,7 +1107,7 @@ const ExpensesTable: React.FC = () => {
               onClick={handleSubmitAdd}
               disabled={
                 !formData.description ||
-                !formData.amount ||
+                !hasAmount ||
                 !formData.category ||
                 createMutation.isPending
               }
@@ -1142,8 +1160,8 @@ const ExpensesTable: React.FC = () => {
               </Label>
               <Input
                 id="edit-amount"
-                type="number"
-                step="0.01"
+                type="text"
+                inputMode="decimal"
                 value={formData.amount}
                 onChange={e =>
                   setFormData({ ...formData, amount: e.target.value })
@@ -1288,7 +1306,7 @@ const ExpensesTable: React.FC = () => {
               onClick={handleSubmitEdit}
               disabled={
                 !formData.description ||
-                !formData.amount ||
+                !hasAmount ||
                 !formData.category ||
                 updateMutation.isPending
               }

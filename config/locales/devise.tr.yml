@@ -1,0 +1,104 @@
+---
+tr:
+  activerecord:
+    errors:
+      models:
+        user:
+          attributes:
+            email:
+              blank: E-posta adresi boş bırakılamaz.
+              invalid: Geçersiz E-posta Adresi
+              taken: E-posta adresi zaten mevcut.
+            first_name:
+              blank: boş olamaz
+              invalid: Yalnızca harf veya boşluk içermelidir.
+            last_name:
+              blank: boş olamaz
+              invalid: Yalnızca harf veya boşluk içermelidir.
+            password:
+              blank: boş olamaz
+              too_short: En az %{count} karakter uzunluğunda olmalıdır
+            password_confirmation:
+              confirmation: Yeni şifreyle eşleşmiyor
+  devise:
+    confirmations:
+      confirmed: E-posta adresiniz başarıyla doğrulandı.
+      send_instructions: Birkaç dakika içinde e-posta adresinizi nasıl doğrulayacağınıza
+        dair talimatlar içeren bir e-posta alacaksınız.
+      send_paranoid_instructions: E-posta adresiniz veritabanımızda kayıtlıysa, birkaç
+        dakika içinde e-posta adresinizi nasıl doğrulayacağınıza dair talimatlar içeren
+        bir e-posta alacaksınız.
+    failure:
+      already_authenticated: Zaten oturum açmış durumdasınız.
+      inactive: Hesabınız henüz aktif edilmedi.
+      invalid: Geçersiz %{authentication_keys} veya parola.
+      last_attempt: Hesabınız kilitlenmeden önce bir deneme hakkınız daha var.
+      locked: Hesabınız kilitlendi.
+      not_found_in_database: Geçersiz %{authentication_keys} veya parola.
+      timeout: Oturumunuzun süresi doldu. Devam etmek için lütfen tekrar giriş yapın.
+      unauthenticated: Devam etmeden önce giriş yapmanız veya kayıt olmanız gerekiyor.
+      unconfirmed: Devam etmeden önce e-posta adresinizi onaylamanız gerekiyor.
+    mailer:
+      confirmation_instructions:
+        subject: Onay talimatları
+      email_changed:
+        subject: E-posta adresi değiştirildi
+      password_change:
+        subject: Miru şifresi başarıyla sıfırlandı!
+      reset_password_instructions:
+        subject: Miru şifrenizi sıfırlayın
+      unlock_instructions:
+        subject: Kilidi açma talimatları
+    omniauth_callbacks:
+      failure: '"%{reason}" nedeniyle %{kind}''dan kimliğiniz doğrulanamadı.'
+      success: "%{kind} hesabından kimlik doğrulama başarıyla tamamlandı."
+    passwords:
+      no_token: Bu sayfaya şifre sıfırlama e-postası olmadan erişemezsiniz. Şifre
+        sıfırlama e-postası ile geliyorsanız, lütfen verilen tam URL'yi kullandığınızdan
+        emin olun.
+      send_instructions: Birkaç dakika içinde parolanızı nasıl sıfırlayacağınıza dair
+        talimatlar içeren bir e-posta alacaksınız.
+      send_paranoid_instructions: E-posta adresiniz veritabanımızda kayıtlıysa, birkaç
+        dakika içinde e-posta adresinize bir parola kurtarma bağlantısı gönderilecektir.
+      updated: Parolanız başarıyla değiştirildi. Artık oturum açmış durumdasınız.
+      updated_not_active: Parolanız başarıyla değiştirildi.
+    registrations:
+      destroyed: Hoşçakalın! Hesabınız başarıyla iptal edildi. Yakında tekrar görüşmeyi
+        umuyoruz.
+      signed_up: Hoş geldiniz! Başarıyla kayıt oldunuz.
+      signed_up_but_inactive: Kayıt işleminiz başarıyla tamamlandı. Ancak hesabınız
+        henüz aktif olmadığı için oturum açma işlemini gerçekleştiremedik.
+      signed_up_but_locked: Kayıt işleminiz başarıyla tamamlandı. Ancak hesabınız
+        kilitli olduğu için oturum açmanız mümkün olmadı.
+      signed_up_but_unconfirmed: ''
+      update_needs_confirmation: Hesabınızı başarıyla güncellediniz, ancak yeni e-posta
+        adresinizi doğrulamamız gerekiyor. Lütfen e-postanızı kontrol edin ve yeni
+        e-posta adresinizi onaylamak için onay bağlantısını takip edin.
+      updated: Değişiklikler başarıyla kaydedildi.
+      updated_but_not_signed_in: Hesabınız başarıyla güncellendi, ancak şifreniz değiştirildiği
+        için tekrar giriş yapmanız gerekiyor.
+      user:
+        signed_up_but_Your access has been disabled: Lütfen e-postanızı kontrol edin
+          ve e-posta adresinizi onaylamak için onay bağlantısını takip edin.
+    sessions:
+      already_signed_out: Başarılı bir şekilde oturumdan çıkış yapıldı.
+      signed_in: Başarıyla giriş yapıldı.
+      signed_out: Başarılı bir şekilde oturumdan çıkış yapıldı.
+    unlocks:
+      send_instructions: Hesabınızın kilidini nasıl açacağınıza dair talimatları içeren
+        bir e-posta birkaç dakika içinde alacaksınız.
+      send_paranoid_instructions: Hesabınız mevcutsa, birkaç dakika içinde hesabınızın
+        kilidini nasıl açacağınıza dair talimatlar içeren bir e-posta alacaksınız.
+      unlocked: Hesabınızın kilidi başarıyla açıldı. Devam etmek için lütfen giriş
+        yapın.
+  errors:
+    messages:
+      already_confirmed: Onaylandı, lütfen giriş yapmayı deneyin.
+      confirmation_period_expired: "%{period} içinde onaylanması gerekiyor, lütfen
+        yenisini talep edin."
+      expired: Süresi doldu, lütfen yenisini talep edin.
+      not_found: bulunamadı
+      not_locked: kilitli değildi
+      not_saved:
+        one: '1 hata bu %{resource}''ın kaydedilmesini engelledi:'
+        other: "%{count} hataları bu %{resource}'in kaydedilmesini engelledi:"

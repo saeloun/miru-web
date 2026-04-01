@@ -1,0 +1,361 @@
+---
+ar:
+  activerecord:
+    errors:
+      models:
+        client:
+          attributes:
+            name:
+              format: "%{message}"
+        project:
+          attributes:
+            name:
+              format: "%{message}"
+  application_controller:
+    not_found: لم يتم العثور على المسار
+  avatar:
+    destroy:
+      success: تم حذف الصورة الرمزية بنجاح
+    update:
+      success: تم تحديث الصورة الرمزية بنجاح
+  client:
+    add: إضافة عميل
+    address:
+      label: عنوان
+      placeholder: أدخل العنوان
+    create:
+      failure: فشل إنشاء العميل
+      success: تمت إضافة العميل بنجاح
+    delete:
+      success:
+        message: تمت إزالة العميل بنجاح
+    email:
+      label: بريد إلكتروني
+      placeholder: أدخل معرف البريد الإلكتروني
+    name:
+      label: اسم
+      placeholder: أدخل الاسم
+    phone:
+      label: رقم التليفون
+      placeholder: أدخل رقم الهاتف
+    update:
+      failure:
+        message: فشل حفظ التغييرات
+        unauthorized: لا يحق للمستخدم تعديل بيانات هذا العميل
+      success:
+        message: تم حفظ التغييرات بنجاح
+  clients:
+    add_client_contact:
+      success: تم إرسال الدعوة بنجاح.
+    send_payment_reminder:
+      success: تم إرسال تذكير بالدفع
+  companies:
+    create:
+      failure: فشل إنشاء الشركة
+      success: شركة تم إنشاؤها بنجاح
+    purge_logo:
+      destroy:
+        success: تمت إزالة شعار الشركة بنجاح
+    update:
+      success: تم حفظ التغييرات بنجاح
+  company:
+    address: عنوان
+    base_currency: العملة الأساسية
+    business_phone: هاتف العمل
+    cancel: يلغي
+    company: شركة
+    country: دولة
+    date_format: تنسيق التاريخ
+    fiscal_year: السنة المالية
+    logo: شعار
+    save: يحفظ
+    save_org: حفظ تفاصيل المنظمة
+    setup: إعداد المؤسسة
+    standard_price: السعر القياسي
+    timezone: المنطقة الزمنية
+  confirmation:
+    send_instructions: تم إرسال بريد إلكتروني للتأكيد إلى %{email}.
+  currency_pairs:
+    from_to_required: يلزم وجود من وإلى
+    rate_not_found: لم يتم العثور على السعر
+  custom_leaves:
+    update:
+      success: تم تحديث الأوراق المخصصة بنجاح
+  employment:
+    update:
+      success: تم تحديث بيانات التوظيف بنجاح
+  errors:
+    bill_status_billed: لا يمكنك إصدار فاتورة مقابل بند تم إصدار فاتورة له بالفعل.
+    can't change status: لا يمكن تغيير الفاتورة المدفوعة
+    create_billed_entry: لا يمكنك إنشاء إدخال جدول زمني مُفوتر
+    internal_server_error: حدث خطأ ما
+    not_found: المورد الذي تبحث عنه غير متوفر
+    prevent_draft_to_waived: لا يمكن تغييرها إلى إعفاء
+    unauthorized: لا يُسمح إلا للمالكين أو المستخدمين الإداريين بتنفيذ هذا الإجراء
+    updation_not_allowed: التحديث غير مسموح به
+    user_already_member: البريد الإلكتروني مستخدم بالفعل. يرجى إدخال بريد إلكتروني
+      آخر.
+    validate_billable_project: لا يمكنك إنشاء إدخال غير مُفوتر للمشاريع غير القابلة
+      للفوترة
+  expenses:
+    approve: تمت الموافقة على المصروفات بنجاح
+    create: تم تقديم المصروفات بنجاح
+    destroy: تم حذف المصروف بنجاح
+    mark_paid: تم وضع علامة "مدفوع" على المصروفات
+    must_be_approved: يجب الموافقة على المصروفات قبل وضع علامة عليها كمدفوعة
+    reject: تم رفض المصروفات بنجاح
+    update: تم تحديث المصروفات بنجاح
+  holidays:
+    update:
+      success: تم تحديث معلومات العطلات بنجاح
+  invitation:
+    create:
+      success:
+        message: تم إرسال الدعوة بنجاح
+    delete:
+      success:
+        message: تمت إزالة الدعوة بنجاح
+    resent:
+      success:
+        message: تم إعادة إرسال الدعوة بنجاح
+    update:
+      success:
+        message: تم حفظ التغييرات بنجاح
+  invitations:
+    accept:
+      index:
+        success: تم قبول الدعوة
+      show:
+        success: تم قبول الدعوة
+      success: تم قبول الدعوة
+    create:
+      failure: فشل حفظ التغييرات
+      success: سيتم إرسال الدعوة
+    destroy:
+      failure: فشل حذف الدعوة
+      success: تم حذف الدعوة
+    update:
+      failure: فشل حفظ التغييرات
+      success: تم تحديث الدعوة
+  invoices:
+    payments:
+      success:
+        failure: حدث خطأ ما، يرجى الاتصال بالدعم
+        success: تمت عملية الدفع بنجاح
+  invoices_controller:
+    download:
+      pdf_failed: فشل إنشاء ملف PDF
+    send_invoice:
+      already_paid: تم دفع الفاتورة بالفعل
+      pdf_failed: فشل إنشاء ملف PDF
+      recipient_limit: لا يمكن إرسال البريد الإلكتروني إلا إلى 5 مستلمين.
+      recipients_required: المستلمون مطلوبون
+      success: تم إرسال الفاتورة بنجاح
+    send_reminder:
+      overdue_only: لا يمكن إرسال التذكيرات إلا للفواتير المتأخرة.
+      success: تم إرسال تذكير
+  invoices_view:
+    not_found: لم يتم العثور على فاتورة
+  leave_types:
+    create:
+      success: تمت إضافة نوع الإجازة بنجاح
+    update:
+      success: تم تحديث نوع الإجازة بنجاح
+  leave_with_leave_types:
+    update:
+      success: تم تحديث الأوراق بنجاح
+  leaves:
+    create:
+      success: تم إنشاء الإجازة بنجاح
+    update:
+      success: تم تحديث الملف بنجاح
+  navbar:
+    clients: العملاء
+    help: يساعد
+    invoices: الفواتير
+    logout: تسجيل الخروج
+    payments: المدفوعات
+    profile: حساب تعريفي
+    projects: المشاريع
+    reports: التقارير
+    settings: إعدادات
+    team: فريق
+    time_tracking: تتبع الوقت
+    view_notifications: عرض الإشعارات
+  passkeys:
+    add_passkey_first: أضف رمز مرور قبل طلبه لتسجيل الدخول.
+    added: تمت إضافة مفتاح المرور
+    disable_totp_first: قم بتعطيل خاصية المصادقة الثنائية (2FA) لتطبيق المصادقة قبل
+      طلب تسجيل الدخول باستخدام رمز المرور.
+    not_found: لم يتم العثور على مفتاح المرور.
+    removed: تم إزالة مفتاح المرور
+    requirement_disabled: تم تعطيل شرط مفتاح المرور
+    requirement_enabled: تم تفعيل شرط رمز المرور
+    session_expired: انتهت صلاحية جلسة مفتاح المرور. يرجى المحاولة مرة أخرى.
+    verification_failed: فشلت عملية التحقق من رمز المرور.
+  password:
+    create:
+      success: تم إرسال تعليمات إعادة تعيين كلمة المرور الخاصة بك إلى بريدك الإلكتروني.
+    update:
+      success: تم تحديث كلمة مرورك.
+  projects:
+    add_new_project: إضافة مشروع جديد
+    add_project: إضافة مشروع
+    billable: قابل للفوترة
+    client: عميل
+    create:
+      failure: فشل إنشاء المشروع.
+      success: تمت إضافة المشروع بنجاح.
+    delete:
+      success:
+        message: تمت إزالة المشروع بنجاح
+    edit: يحرر
+    hours_logged: الساعات المسجلة
+    new_project: مشروع جديد
+    non_billable: غير قابل للفوترة
+    project: مشروع
+    project_name: اسم المشروع
+    projects: المشاريع
+    update:
+      success: تم حفظ التغييرات بنجاح.
+    update_members:
+      failure:
+        message: فشل حفظ التغييرات
+        unauthorized: لا يحق للمستخدم تعديل تفاصيل هذا المشروع
+      success:
+        message: تم حفظ التغييرات بنجاح
+  pundit:
+    client_policy:
+      create?: أنت غير مخول بإنشاء عميل.
+      show?: ليس لديك صلاحية الوصول إلى هذه الصفحة. يرجى التواصل مع مسؤول النظام للحصول
+        على المساعدة.
+      update?: أنت غير مخول بتحديث بيانات العميل.
+    company_policy:
+      create?: أنت غير مخول بإنشاء شركة.
+      new?: أنت غير مخول بإنشاء شركة جديدة.
+      show?: أنت غير مخوّل بالاطلاع على معلومات الشركة.
+      update?: أنت غير مخول بتحديث بيانات الشركة.
+    current_company_policy:
+      company_not_present: الشركة غير موجودة.
+    default: أنت غير مخول بتنفيذ هذا الإجراء.
+    different_workspace: أنت غير مخول بالوصول إلى السجلات خارج مساحة عملك الحالية.
+    project_policy:
+      create?: أنت غير مخول بإنشاء مشروع.
+      show?: ليس لديك صلاحية الوصول إلى هذه الصفحة. يرجى التواصل مع مسؤول النظام للحصول
+        على المساعدة.
+    team_policy:
+      destroy?: أنت غير مخوّل بتدمير الفريق.
+      edit?: أنت غير مخوّل بتعديل الفريق.
+      update?: أنت غير مخوّل بتحديث الفريق.
+  registration:
+    confirm_password: تأكيد كلمة المرور
+    email_id: بريد إلكتروني
+    first_name: الاسم الأول
+    last_name: اسم العائلة
+    name: اسم
+    or: أو
+    password: كلمة المرور
+    remember_me: تذكرنى
+    sign_in: تسجيل الدخول
+    sign_up: اشتراك
+    signin_with_github: سجّل الدخول باستخدام GitHub
+    signin_with_google: تسجيل الدخول باستخدام جوجل
+    signup_with_apple: سجل باستخدام Apple
+    signup_with_github: سجل في GitHub
+    signup_with_google: سجل باستخدام جوجل
+  reports:
+    heading: تقرير تسجيل الوقت
+  sessions:
+    failure:
+      invalid: بريد إلكتروني أو كلمة مرور غير صحيحة
+  settings:
+    cancel: يلغي
+    change_password: تغيير كلمة المرور
+    confirm_password: تأكيد كلمة المرور
+    current_password: كلمة المرور الحالية
+    email: بريد إلكتروني
+    name: اسم
+    organization_setting: إعدادات المؤسسة
+    password: كلمة المرور
+    payment_setting: إعدادات الدفع
+    profile_picture: صورة الملف الشخصي
+    profile_setting: إعدادات الملف الشخصي
+    save: يحفظ
+    settings: إعدادات
+  shared_links:
+    already_have_an_account: هل لديك حساب بالفعل؟
+    back_to_login: العودة إلى صفحة تسجيل الدخول
+    confirmation_instruction: ألم تتلق تعليمات التأكيد؟
+    dont_have_an_account: ليس لديك حساب؟
+    forgot_password: هل نسيت كلمة السر ؟
+    unlock_instruction: ألم تستلم تعليمات فتح القفل؟
+  subscriptions:
+    no_billing_customer: لا يوجد عميل فوترة لهذه الشركة
+    pricing_not_configured: لم يتم ضبط أسعار اشتراكات Stripe
+    trial_not_eligible: مساحة عملك غير مؤهلة لتجربة النسخة التجريبية الاحترافية
+    trial_started: لقد بدأت فترة تجربتك المجانية لمدة 30 يومًا لـ Pro
+  team:
+    changed_email: تم تغيير البريد الإلكتروني
+    create_new_user: إنشاء مستخدمين جدد
+    current_email: البريد الإلكتروني الحالي
+    delete:
+      success:
+        message: تمت إزالة عضو الفريق بنجاح
+    email: بريد إلكتروني
+    email_id: معرف البريد الإلكتروني
+    first_name: الاسم الأول
+    form_admin: مسؤل
+    form_book_keeper: محاسب
+    form_email: بريد إلكتروني
+    form_employee: موظف
+    form_name: اسم
+    form_role: دور
+    invitation: الدعوة قيد الانتظار
+    last_name: اسم العائلة
+    name: اسم
+    new_user: مستخدم جديد
+    profile_picture: صورة
+    reconfirmation: إعادة التأكيد قيد الانتظار
+    role: دور
+    team: فريق
+    update:
+      error:
+        role: حدث خطأ أثناء تحديث الدور
+      success:
+        message: تم حفظ التغييرات بنجاح
+    update_user: تحديث المستخدمين
+  timeoff_entries:
+    create:
+      success: تمت إضافة الإجازة بنجاح
+    destroy:
+      success: تم حذف الإجازة بنجاح
+    update:
+      success: تم تحديث وقت الإجازة بنجاح
+  timesheet_entry:
+    create:
+      message: تم إنشاء جدول زمني
+    destroy:
+      failure: فشل حذف إدخالات جدول الدوام
+      message: تم حذف جدول الدوام
+    update:
+      failure: فشل تحديث إدخالات جدول الدوام
+      message: تم تحديث جدول الدوام
+  totp:
+    disable_passkey_first: قم بتعطيل تسجيل الدخول باستخدام رمز المرور المطلوب قبل
+      تفعيل المصادقة الثنائية لتطبيق المصادقة.
+    disabled: تم تعطيل تطبيق المصادقة
+    enabled: تم تفعيل تطبيق المصادقة
+    invalid_code: رمز المصادقة غير صالح.
+    invalid_verification: رمز التحقق غير صالح.
+    not_enabled: قم بتفعيل خاصية المصادقة الثنائية (2FA) لتطبيق المصادقة أولاً.
+    recovery_codes_regenerated: تمت إعادة إنشاء رموز الاسترداد
+    session_expired: طلب التحقق هذا لم يعد صالحاً. يرجى تسجيل الدخول مرة أخرى.
+  user:
+    login:
+      failure:
+        disabled: تم تعطيل وصولك.
+        pending_invitation: لم يتم تفعيل حسابك بعد.
+  workspaces:
+    update:
+      failure: فشل تبديل مساحة العمل
+      success: تم تبديل مساحة العمل بنجاح

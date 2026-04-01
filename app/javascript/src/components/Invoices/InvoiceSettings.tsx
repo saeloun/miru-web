@@ -15,6 +15,7 @@ import {
   StripeLogoSVG,
   VisaSVG,
 } from "miruIcons";
+import { i18n } from "../../i18n";
 
 interface IProvider {
   id: number;
@@ -109,13 +110,13 @@ const InvoiceSettings = ({
       <div className="sidebar__container flex flex-col justify-between p-6">
         <div>
           <span className="mb-3 flex justify-between text-base font-extrabold leading-5 text-foreground">
-            Invoice Settings
+            {i18n.t("invoices.settings")}
             <button onClick={() => setShowInvoiceSetting(false)}>
               <XIcon color="#CDD6DF" size={15} />
             </button>
           </span>
           <span className="my-3 text-sm font-normal leading-5 text-foreground">
-            Accept Online Payments
+            {i18n.t("invoices.acceptCreditCards")}
           </span>
           {(!!stripe && stripe.connected) || isPaypalConnected ? (
             <div className="mt-4 items-center bg-muted p-4">
@@ -171,7 +172,7 @@ const InvoiceSettings = ({
                         }
                       }}
                     />
-                    <h4 className="pl-2">Accept Credit Cards</h4>
+                    <h4 className="pl-2">{i18n.t("invoices.acceptCreditCards")}</h4>
                   </div>
                   <div className="mt-6 flex justify-between">
                     <img src={VisaSVG} />
@@ -192,8 +193,7 @@ const InvoiceSettings = ({
                 width="64px"
               />
               <span className="text-sm font-normal leading-5 text-foreground">
-                Connect with your existing stripe account or create a new
-                account
+                {i18n.t("settings.paymentSettings")}
               </span>
               <img
                 className="mt-4 cursor-pointer"

@@ -1,6 +1,7 @@
 import React from "react";
 
 import { currencyFormat } from "helpers";
+import { i18n } from "../../../i18n";
 
 const InvoiceTotalSummary = ({ invoice, strikeAmount = "" }) => {
   const subTotal = invoice.invoiceLineItems.reduce(
@@ -17,7 +18,7 @@ const InvoiceTotalSummary = ({ invoice, strikeAmount = "" }) => {
         <tbody>
           <tr>
             <td className="pr-4 text-right text-base font-normal text-foreground sm:pr-10">
-              Sub total
+              {i18n.t("invoices.lineItems")}
             </td>
             <td
               className={`text-right text-base font-bold text-foreground ${strikeAmount}`}
@@ -30,7 +31,7 @@ const InvoiceTotalSummary = ({ invoice, strikeAmount = "" }) => {
           </tr>
           <tr className="border-b-2 border-border pb-5 ">
             <td className="py-2 pr-4 text-right text-base font-normal text-foreground sm:pr-10">
-              Discount
+              {i18n.t("invoices.discount")}
             </td>
             <td
               className={`text-right text-base font-bold text-foreground ${strikeAmount}`}
@@ -43,7 +44,7 @@ const InvoiceTotalSummary = ({ invoice, strikeAmount = "" }) => {
           </tr>
           <tr>
             <td className="pt-4 pr-4 text-right text-base font-normal text-foreground sm:pr-10">
-              Tax
+              {i18n.t("invoices.tax")}
             </td>
             <td
               className={`w-22 pt-4 text-right text-base font-bold text-foreground ${strikeAmount}`}
@@ -53,7 +54,7 @@ const InvoiceTotalSummary = ({ invoice, strikeAmount = "" }) => {
           </tr>
           <tr>
             <td className="pt-1 pr-4 text-right text-base font-normal text-foreground sm:pr-10">
-              Total
+              {i18n.t("total")}
             </td>
             <td
               className={`text-right text-base font-bold text-foreground ${strikeAmount}`}
@@ -64,7 +65,7 @@ const InvoiceTotalSummary = ({ invoice, strikeAmount = "" }) => {
           {invoice.currency !== invoice.company.currency && (
             <tr>
               <td className="pt-1 pr-4 text-right text-base font-normal text-foreground sm:pr-10">
-                Amount in {invoice.company.currency}
+                {i18n.t("amount")} {invoice.company.currency}
               </td>
               <td
                 className={`text-right text-base font-bold text-foreground ${strikeAmount}`}
@@ -78,7 +79,7 @@ const InvoiceTotalSummary = ({ invoice, strikeAmount = "" }) => {
           )}
           <tr>
             <td className="pt-1 pr-4 text-right text-base font-normal text-foreground sm:pr-10">
-              Amount Paid
+              {i18n.t("invoices.markAsPaid")}
             </td>
             <td
               className={`text-right text-base font-bold text-foreground ${strikeAmount}`}
@@ -88,7 +89,7 @@ const InvoiceTotalSummary = ({ invoice, strikeAmount = "" }) => {
           </tr>
           <tr>
             <td className="pt-1 pr-4 text-right text-base font-normal text-foreground sm:pr-10">
-              Amount Due
+              {i18n.t("invoices.dueDate")}
             </td>
             <td
               className={`text-right text-base font-bold text-foreground ${strikeAmount}`}

@@ -1,4 +1,5 @@
 import React from "react";
+import { i18n } from "../../i18n";
 import { useMediaQuery } from "../../hooks/use-media-query";
 
 interface ResponsiveTeamProps {
@@ -34,13 +35,13 @@ export const ResponsiveTeamMemberCard: React.FC<any> = props => {
             <div className="mt-3 flex gap-4">
               <div>
                 <p className="text-xs uppercase text-muted-foreground">
-                  Department
+                  {i18n.t("department")}
                 </p>
                 <p className="text-sm font-medium">{props.department}</p>
               </div>
               <div>
                 <p className="text-xs uppercase text-muted-foreground">
-                  Status
+                  {i18n.t("active")}
                 </p>
                 <p className="text-sm">
                   <span
@@ -50,7 +51,7 @@ export const ResponsiveTeamMemberCard: React.FC<any> = props => {
                         : "bg-muted text-muted-foreground"
                     }`}
                   >
-                    {props.isActive ? "Active" : "Inactive"}
+                    {props.isActive ? i18n.t("active") : i18n.t("inactive")}
                   </span>
                 </p>
               </div>
@@ -104,7 +105,7 @@ export const ResponsiveTeamMemberCard: React.FC<any> = props => {
         {props.projects && props.projects.length > 0 && (
           <div className="mt-4 border-t border-border pt-4">
             <p className="mb-2 text-xs uppercase text-muted-foreground">
-              Current Projects
+              {i18n.t("team.currentProjects")}
             </p>
             <div className="flex flex-wrap gap-2">
               {props.projects.map((project, index) => (
@@ -151,7 +152,7 @@ export const ResponsiveTeamMemberCard: React.FC<any> = props => {
               : "bg-muted text-muted-foreground"
           }`}
         >
-          {props.isActive ? "Active" : "Inactive"}
+          {props.isActive ? i18n.t("active") : i18n.t("inactive")}
         </span>
       </div>
 
@@ -168,7 +169,7 @@ export const ResponsiveTeamMemberCard: React.FC<any> = props => {
             ))}
             {props.projects.length > 3 && (
               <span className="rounded bg-muted px-2 py-1 text-xs text-muted-foreground">
-                +{props.projects.length - 3} more
+                {i18n.t("team.nMore", { count: props.projects.length - 3 })}
               </span>
             )}
           </div>
@@ -185,29 +186,29 @@ export const ResponsiveTeamStats: React.FC<any> = props => {
   if (isDesktop) {
     return (
       <div className="rounded-lg border border-border bg-card p-6 shadow-sm">
-        <h3 className="text-lg font-semibold mb-4">Team Overview</h3>
+        <h3 className="text-lg font-semibold mb-4">{i18n.t("team.teamOverview")}</h3>
         <div className="grid grid-cols-4 gap-6">
           <div>
             <p className="text-2xl font-bold">{props.totalMembers}</p>
-            <p className="text-sm text-muted-foreground">Total Members</p>
+            <p className="text-sm text-muted-foreground">{i18n.t("team.totalMembers")}</p>
           </div>
           <div>
             <p className="text-2xl font-bold text-foreground">
               {props.activeMembers}
             </p>
-            <p className="text-sm text-muted-foreground">Active</p>
+            <p className="text-sm text-muted-foreground">{i18n.t("active")}</p>
           </div>
           <div>
             <p className="text-2xl font-bold text-primary">
               {props.totalProjects}
             </p>
-            <p className="text-sm text-muted-foreground">Projects</p>
+            <p className="text-sm text-muted-foreground">{i18n.t("projects")}</p>
           </div>
           <div>
             <p className="text-2xl font-bold text-foreground">
               {props.totalHours}h
             </p>
-            <p className="text-sm text-muted-foreground">This Month</p>
+            <p className="text-sm text-muted-foreground">{i18n.t("thisMonth")}</p>
           </div>
         </div>
       </div>
@@ -216,29 +217,29 @@ export const ResponsiveTeamStats: React.FC<any> = props => {
 
   return (
     <div className="border-b border-border bg-card p-4">
-      <h3 className="font-semibold mb-3">Team Overview</h3>
+      <h3 className="font-semibold mb-3">{i18n.t("team.teamOverview")}</h3>
       <div className="grid grid-cols-2 gap-4">
         <div className="text-center">
           <p className="text-xl font-bold">{props.totalMembers}</p>
-          <p className="text-xs text-muted-foreground">Total Members</p>
+          <p className="text-xs text-muted-foreground">{i18n.t("team.totalMembers")}</p>
         </div>
         <div className="text-center">
           <p className="text-xl font-bold text-foreground">
             {props.activeMembers}
           </p>
-          <p className="text-xs text-muted-foreground">Active</p>
+          <p className="text-xs text-muted-foreground">{i18n.t("active")}</p>
         </div>
         <div className="text-center">
           <p className="text-xl font-bold text-primary">
             {props.totalProjects}
           </p>
-          <p className="text-xs text-muted-foreground">Projects</p>
+          <p className="text-xs text-muted-foreground">{i18n.t("projects")}</p>
         </div>
         <div className="text-center">
           <p className="text-xl font-bold text-foreground">
             {props.totalHours}h
           </p>
-          <p className="text-xs text-muted-foreground">This Month</p>
+          <p className="text-xs text-muted-foreground">{i18n.t("thisMonth")}</p>
         </div>
       </div>
     </div>

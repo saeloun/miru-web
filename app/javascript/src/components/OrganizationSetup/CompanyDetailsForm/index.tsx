@@ -23,7 +23,7 @@ import {
   companyDetailsFormValidationSchema,
 } from "./utils";
 
-import { i18n } from "../../../i18n";
+import { getStoredBrowserTimeZone, i18n } from "../../../i18n";
 
 const CompanyDetailsForm = ({
   onNextBtnClick,
@@ -32,11 +32,16 @@ const CompanyDetailsForm = ({
   formType = "New",
   isDesktop,
 }: CompanyDetailsFormProps) => {
+  const defaultInitialValues = isFormAlreadySubmitted
+    ? previousSubmittedValues
+    : companyDetailsFormInitialValues;
   const [allTimezones, setAllTimezones] = useState({});
   const [timezonesOfSelectedCountry, setTimezonesOfSelectedCountry] = useState(
     []
   );
   const [fileUploadError, setFileUploadError] = useState<string>("");
+  const [formInitialValues, setFormInitialValues] =
+    useState<CompanyDetailsFormValues>(defaultInitialValues);
 
   const [countries, setCountries] = useState([]);
 
@@ -55,11 +60,35 @@ const CompanyDetailsForm = ({
   }, []);
 
   useEffect(() => {
+    setFormInitialValues(defaultInitialValues);
+  }, [isFormAlreadySubmitted, previousSubmittedValues]);
+
+  useEffect(() => {
     if (Object.keys(allTimezones || {})?.length) {
       const selectedCountryCode = isFormAlreadySubmitted
         ? previousSubmittedValues.country?.value
         : companyDetailsFormInitialValues?.country?.code || "US";
-      getTimezonesOfCurrentCountry(selectedCountryCode);
+      const timezoneOfSelectedCountry = allTimezones[selectedCountryCode];
+      const formattedTimeZoneOptions = timezoneOfSelectedCountry?.map(
+        timezone => ({ value: timezone, label: timezone })
+      );
+      const browserTimeZone = getStoredBrowserTimeZone();
+      const preferredTimeZone =
+        formattedTimeZoneOptions?.find(
+          timezone => timezone.value === browserTimeZone
+        ) || formattedTimeZoneOptions?.[0];
+
+      setTimezonesOfSelectedCountry(formattedTimeZoneOptions);
+      setFormInitialValues(previousValues => ({
+        ...previousValues,
+        timezone:
+          previousValues?.timezone?.value &&
+          formattedTimeZoneOptions?.some(
+            timezone => timezone.value === previousValues.timezone.value
+          )
+            ? previousValues.timezone
+            : preferredTimeZone || previousValues.timezone,
+      }));
     }
   }, [allTimezones]);
 
@@ -78,7 +107,12 @@ const CompanyDetailsForm = ({
       timezone => ({ value: timezone, label: timezone })
     );
     if (setFieldValue) {
-      setFieldValue("timezone", formattedTimeZoneOptions[0]);
+      const browserTimeZone = getStoredBrowserTimeZone();
+      const preferredTimeZone =
+        formattedTimeZoneOptions?.find(
+          timezone => timezone.value === browserTimeZone
+        ) || formattedTimeZoneOptions?.[0];
+      setFieldValue("timezone", preferredTimeZone);
     }
     setTimezonesOfSelectedCountry(formattedTimeZoneOptions);
   };
@@ -143,7 +177,7 @@ const CompanyDetailsForm = ({
                   src={EditImageButtonSVG}
                   style={{ minWidth: "40px" }}
                 />
-                <p className="my-auto">Edit</p>
+                <p className="my-auto">{i18n.t("edit")}</p>
               </label>
               <input
                 className="hidden"
@@ -163,15 +197,15 @@ const CompanyDetailsForm = ({
                 src={deleteImageIcon}
                 style={{ minWidth: "20px" }}
               />
-              <p className="pl-3">Delete</p>
+              <p className="pl-3">{i18n.t("delete")}</p>
             </button>
           </div>
         </div>
       </div>
       <div className="my-auto ml-6 text-xs font-normal text-muted-foreground">
-        <p>Accepted file formats: PNG, JPG, SVG.</p>
-        <p>File size should be &#8826; 2MB.</p>
-        <p>Image resolution should be 1:1.</p>
+        <p>{i18n.t("orgSetup.acceptedFileFormats")}</p>
+        <p>{i18n.t("orgSetup.fileSizeLimit")}</p>
+        <p>{i18n.t("orgSetup.imageResolution")}</p>
       </div>
       <input
         className="hidden"
@@ -186,13 +220,10 @@ const CompanyDetailsForm = ({
   return (
     <div>
       <Formik
+        enableReinitialize
         validateOnBlur={false}
         validationSchema={companyDetailsFormValidationSchema}
-        initialValues={
-          isFormAlreadySubmitted
-            ? previousSubmittedValues
-            : companyDetailsFormInitialValues
-        }
+        initialValues={formInitialValues}
         onSubmit={onNextBtnClick}
       >
         {(props: FormikProps<CompanyDetailsFormValues>) => {
@@ -224,12 +255,12 @@ const CompanyDetailsForm = ({
                               {isDesktop && (
                                 <>
                                   <p className="text-muted-foreground">
-                                    Drag logo
+                                    {i18n.t("orgSetup.dragLogo")}
                                   </p>
-                                  <p className="text-muted-foreground">or</p>
+                                  <p className="text-muted-foreground">{i18n.t("or")}</p>
                                 </>
                               )}
-                              <p className="text-primary">Select File</p>
+                              <p className="text-primary">{i18n.t("orgSetup.selectFile")}</p>
                             </div>
                           </label>
                           <input
@@ -241,9 +272,9 @@ const CompanyDetailsForm = ({
                           />
                         </div>
                         <div className="my-auto ml-6 text-xs font-normal text-muted-foreground">
-                          <p>Accepted file formats: PNG, JPG, SVG.</p>
-                          <p>File size should be &#8826; 2MB.</p>
-                          <p>Image resolution should be 1:1.</p>
+                          <p>{i18n.t("orgSetup.acceptedFileFormats")}</p>
+                          <p>{i18n.t("orgSetup.fileSizeLimit")}</p>
+                          <p>{i18n.t("orgSetup.imageResolution")}</p>
                         </div>
                       </div>
                     )}
@@ -258,7 +289,7 @@ const CompanyDetailsForm = ({
                 resetErrorOnChange
                 hasError={errors.company_name && touched.company_name}
                 id="company_name"
-                label="Company Name"
+                label={i18n.t("orgSetup.companyName")}
                 name="company_name"
                 setFieldValue={setFieldValue}
               />
@@ -268,7 +299,7 @@ const CompanyDetailsForm = ({
               />
               <div className="mb-2 xsm:mb-6">
                 <label className="mb-2 block text-sm font-medium text-muted-foreground">
-                  Business Phone
+                  {i18n.t("orgSetup.businessPhone")}
                 </label>
                 <div className="flex h-10 w-full items-center rounded-md border border-input bg-background px-3 py-2">
                   <PhoneInput
@@ -291,7 +322,7 @@ const CompanyDetailsForm = ({
                 resetErrorOnChange
                 hasError={errors.address_line_1 && touched.address_line_1}
                 id="address_line_1"
-                label="Address line 1"
+                label={i18n.t("clients.addressLine1")}
                 name="address_line_1"
                 setFieldValue={setFieldValue}
               />
@@ -303,7 +334,7 @@ const CompanyDetailsForm = ({
                 resetErrorOnChange
                 hasError={errors.address_line_2 && touched.address_line_2}
                 id="address_line_2"
-                label="Address line 2 (optional)"
+                label={i18n.t("clients.addressLine2")}
                 name="address_line_2"
                 setFieldValue={setFieldValue}
               />
@@ -315,7 +346,7 @@ const CompanyDetailsForm = ({
               <div className="flex flex-row gap-4">
                 <div className="mb-2 xsm:mb-6 flex w-1/2 flex-col" id="country">
                   <label className="mb-2 block text-sm font-medium text-muted-foreground">
-                    Country
+                    {i18n.t("country")}
                   </label>
                   <Select
                     value={values.country?.value || ""}
@@ -340,7 +371,7 @@ const CompanyDetailsForm = ({
                         errors.country ? "border-red-500" : ""
                       }`}
                     >
-                      <SelectValue placeholder="Select country" />
+                      <SelectValue placeholder={i18n.t("clients.selectCountry")} />
                     </SelectTrigger>
                     <SelectContent>
                       {countries.map(country => (
@@ -360,7 +391,7 @@ const CompanyDetailsForm = ({
                     resetErrorOnChange
                     hasError={errors.state && touched.state}
                     id="state"
-                    label="State"
+                    label={i18n.t("state")}
                     name="state"
                     setFieldValue={setFieldValue}
                   />
@@ -377,7 +408,7 @@ const CompanyDetailsForm = ({
                     resetErrorOnChange
                     hasError={errors.city && touched.city}
                     id="city"
-                    label="City"
+                    label={i18n.t("city")}
                     name="city"
                     setFieldValue={setFieldValue}
                   />
@@ -391,7 +422,7 @@ const CompanyDetailsForm = ({
                     resetErrorOnChange
                     hasError={errors.zipcode && touched.zipcode}
                     id="zipcode"
-                    label="Zipcode"
+                    label={i18n.t("zipcode")}
                     name="zipcode"
                     setFieldValue={setFieldValue}
                   />
@@ -404,7 +435,7 @@ const CompanyDetailsForm = ({
               {/* Timezone */}
               <div className="mb-2 xsm:mb-6">
                 <label className="mb-2 block text-sm font-medium text-muted-foreground">
-                  Timezone
+                  {i18n.t("orgSetup.timezone")}
                 </label>
                 <Select
                   value={
@@ -426,7 +457,7 @@ const CompanyDetailsForm = ({
                       errors.timezone ? "border-red-500" : ""
                     }`}
                   >
-                    <SelectValue placeholder="Select timezone" />
+                    <SelectValue placeholder={i18n.t("orgSetup.selectTimezone")} />
                   </SelectTrigger>
                   <SelectContent>
                     {timezonesOfSelectedCountry?.map(timezone => (
@@ -453,7 +484,7 @@ const CompanyDetailsForm = ({
                       : "cursor-pointer"
                   }`}
                 >
-                  Next
+                  {i18n.t("next")}
                 </button>
               </div>
             </Form>

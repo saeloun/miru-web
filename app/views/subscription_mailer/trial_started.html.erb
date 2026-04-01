@@ -12,10 +12,10 @@
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="detail-grid" style="margin-top: 24px;">
   <tr>
     <%= render "shared/mailer/detail_card", label: "Workspace", value: @company.name %>
-    <%= render "shared/mailer/detail_card", label: "Trial ends", value: @trial_ends_at&.in_time_zone(@company.timezone.presence || Time.zone)&.strftime("%B %-d, %Y") %>
+    <%= render "shared/mailer/detail_card", label: "Trial ends", value: @trial_end_date_text %>
   </tr>
 </table>
 
-<p>You can review billing and upgrade at any time from your billing settings.</p>
+<p>You can review billing, compare plans, and upgrade at any time from your billing settings.</p>
 
 <%= render "shared/mailer/button", href: @billing_url, label: "Open billing" %>

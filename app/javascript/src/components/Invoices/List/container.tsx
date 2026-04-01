@@ -6,6 +6,7 @@ import InfiniteScrollRecentlyUpdated from "./RecentlyUpdated/InfiniteScrollRecen
 import Table from "./Table";
 
 import ChartWithSummary from "../ChartWithSummary";
+import { i18n } from "../../../i18n";
 
 const Container = ({
   summary,
@@ -77,17 +78,17 @@ const Container = ({
       />
       <div className="mt-4 flex flex-col items-center gap-2 pb-2 text-sm text-gray-500">
         <span>
-          Showing {invoices.length} of {totalInvoices}
+          {i18n.t("invoices.invoices")}: {invoices.length} / {totalInvoices}
         </span>
         {!loadingMoreInvoices && hasMoreInvoices && (
-          <span>Scroll to load more invoices</span>
+          <span>{i18n.t("invoices.scrollToLoadMore")}</span>
         )}
-        {loadingMoreInvoices && <span>Loading more invoices...</span>}
+        {loadingMoreInvoices && <span>{i18n.t("invoices.loadingMoreInvoices")}</span>}
         {!loadingMoreInvoices && hasMoreInvoices && (
           <div ref={loadMoreTriggerRef} className="h-8 w-full" />
         )}
         {!hasMoreInvoices && totalInvoices > 0 && (
-          <span>All invoices loaded</span>
+          <span>{i18n.t("invoices.allInvoicesLoaded")}</span>
         )}
       </div>
     </div>

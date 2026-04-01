@@ -14,6 +14,7 @@ import {
 import { useUserContext } from "../../context/UserContext";
 import { toast } from "sonner";
 import { usePaginatedInvoices } from "./usePaginatedInvoices";
+import { lineTotalCalc } from "../../helpers";
 
 type ViewMode = "list" | "edit" | "create" | "preview";
 
@@ -28,6 +29,12 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
   initialInvoiceId,
   initialClientId,
 }) => {
+  const resolveLineAmount = (item: {
+    amount?: number;
+    quantity: number;
+    rate: number;
+  }) => Number(item.amount ?? lineTotalCalc(item.quantity, item.rate));
+
   const navigate = useNavigate();
   const { company: currentCompany } = useUserContext();
   const [viewMode, setViewMode] = useState<ViewMode>(initialMode);
@@ -41,8 +48,6 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
     invoices,
     totalInvoices,
     summary,
-    recentlyUpdatedInvoices,
-    recentlyUpdatedTotalCount,
     isLoading: isListLoading,
     isLoadingMore,
     hasMoreInvoices,
@@ -183,7 +188,7 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
       issueDate: invoiceData.issueDate,
       dueDate: invoiceData.dueDate,
       amount: invoiceData.invoiceLineItems.reduce(
-        (sum, item) => sum + item.amount,
+        (sum, item) => sum + resolveLineAmount(item),
         0
       ),
       currency: invoiceData.currency,
@@ -464,8 +469,6 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
           invoices={invoices}
           totalInvoices={totalInvoices}
           summary={summary}
-          recentlyUpdatedInvoices={recentlyUpdatedInvoices}
-          recentlyUpdatedTotalCount={recentlyUpdatedTotalCount}
           onCreateInvoice={handleCreateInvoice}
           onViewInvoice={handleViewInvoice}
           onSendInvoice={handleSendInvoiceFromList}
@@ -592,7 +595,7 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
         lineItems: invoiceToPreview.invoiceLineItems || [],
         subtotal:
           invoiceToPreview.invoiceLineItems?.reduce(
-            (sum, item) => sum + item.amount,
+            (sum, item) => sum + resolveLineAmount(item),
             0
           ) || invoiceToPreview.amount,
         company: invoiceToPreview.company || {

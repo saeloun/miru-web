@@ -21,6 +21,7 @@ import UploadLogo from "./UploadLogo";
 import { formatFormData, disableBtn } from "./utils";
 
 import { currencyListOptions } from "../../OrganizationSetup/FinancialDetailsForm/utils";
+import { i18n } from "../../../i18n";
 
 const MobileClientForm = ({
   client,
@@ -72,7 +73,7 @@ const MobileClientForm = ({
         const res = await clientApi.create(formData);
         setClientData([...clientData, { ...res.data, minutes: 0 }]);
         setnewClient(false);
-        Toastr.success("Client added successfully");
+        Toastr.success(i18n.t("clients.clientAddedSuccessfully"));
       } catch {
         setSubmitting(false);
       }
@@ -94,7 +95,7 @@ const MobileClientForm = ({
     >
       <SidePanel.Header className="mb-2 flex items-center justify-between bg-primary px-5 py-5 text-white lg:bg-white lg:font-bold lg:text-foreground">
         <span className="flex w-full items-center justify-center pl-6 text-base font-medium leading-5">
-          {client?.id ? "Edit Client" : "Add New Client"}
+          {client?.id ? i18n.t("clients.editClient") : i18n.t("clients.addNewClient")}
         </span>
         <Button style="ternary" onClick={() => setShowDialog(false)}>
           <XIcon className="text-white lg:text-foreground" size={16} />
@@ -135,7 +136,7 @@ const MobileClientForm = ({
                     autoFocus
                     resetErrorOnChange
                     id="name"
-                    label="Name"
+                    label={i18n.t("name")}
                     marginBottom="mb-0"
                     name="name"
                     setFieldValue={setFieldValue}
@@ -164,7 +165,7 @@ const MobileClientForm = ({
                           className="absolute -top-1 left-0 z-1 ml-3 origin-0 bg-white px-1 text-xsm font-medium text-muted-foreground duration-300"
                           htmlFor="phone"
                         >
-                          Phone
+                          {i18n.t("phone")}
                         </label>
                       </div>
                     </div>
@@ -179,7 +180,7 @@ const MobileClientForm = ({
                     <InputField
                       resetErrorOnChange
                       id="address1"
-                      label="Address line 1"
+                      label={i18n.t("clients.addressLine1")}
                       name="address1"
                       setFieldValue={setFieldValue}
                     />
@@ -194,7 +195,7 @@ const MobileClientForm = ({
                     <InputField
                       resetErrorOnChange
                       id="address2"
-                      label="Address line 2 (optional)"
+                      label={i18n.t("clients.addressLine2")}
                       name="address2"
                       setFieldValue={setFieldValue}
                     />
@@ -208,7 +209,7 @@ const MobileClientForm = ({
                   <div className="flex w-1/2 flex-col py-0 pr-2">
                     <div className="field relative">
                       <label className="absolute -top-1 left-0 z-1 ml-3 origin-0 bg-white px-1 text-xsm font-medium text-muted-foreground duration-300">
-                        Country
+                        {i18n.t("country")}
                       </label>
                       <Select
                         value={values.country?.value || ""}
@@ -231,7 +232,7 @@ const MobileClientForm = ({
                               : ""
                           }`}
                         >
-                          <SelectValue placeholder="Select country" />
+                          <SelectValue placeholder={i18n.t("clients.selectCountry")} />
                         </SelectTrigger>
                         <SelectContent>
                           {countries.map(country => (
@@ -250,7 +251,7 @@ const MobileClientForm = ({
                     <InputField
                       resetErrorOnChange
                       id="state"
-                      label="State"
+                      label={i18n.t("state")}
                       name="state"
                       setFieldValue={setFieldValue}
                     />
@@ -266,7 +267,7 @@ const MobileClientForm = ({
                     <InputField
                       resetErrorOnChange
                       id="city"
-                      label="City"
+                      label={i18n.t("city")}
                       name="city"
                       setFieldValue={setFieldValue}
                     />
@@ -279,7 +280,7 @@ const MobileClientForm = ({
                     <InputField
                       resetErrorOnChange
                       id="zipcode"
-                      label="Zipcode"
+                      label={i18n.t("zipcode")}
                       name="zipcode"
                       setFieldValue={setFieldValue}
                     />
@@ -292,7 +293,7 @@ const MobileClientForm = ({
                 <div className="mt-4">
                   <div className="field relative mb-5">
                     <label className="absolute -top-1 left-0 z-1 ml-3 origin-0 bg-white px-1 text-xsm font-medium text-muted-foreground duration-300">
-                      Currency
+                      {i18n.t("currency")}
                     </label>
                     <Select
                       value={values.currency?.value || ""}
@@ -312,7 +313,7 @@ const MobileClientForm = ({
                             : ""
                         }`}
                       >
-                        <SelectValue placeholder="Select currency" />
+                        <SelectValue placeholder={i18n.t("clients.selectCurrency")} />
                       </SelectTrigger>
                       <SelectContent>
                         {currencyListOptions.map(currency => (
@@ -336,7 +337,7 @@ const MobileClientForm = ({
                       type="submit"
                       onClick={handleEdit}
                     >
-                      Save Changes
+                      {i18n.t("timeTracking.saveChanges")}
                     </Button>
                   ) : (
                     <Button
@@ -349,7 +350,7 @@ const MobileClientForm = ({
                         setSubmitting(true);
                       }}
                     >
-                      Add Client
+                      {i18n.t("clients.addNewClient")}
                     </Button>
                   )}
                 </div>

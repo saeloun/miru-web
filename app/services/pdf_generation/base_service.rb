@@ -38,6 +38,7 @@ module PdfGeneration
         opts = {
           headless: true,
           timeout: 30,
+          process_timeout: ferrum_process_timeout,
           browser_options: browser_options
         }
 
@@ -48,6 +49,14 @@ module PdfGeneration
         end
 
         Ferrum::Browser.new(**opts)
+      end
+
+      def ferrum_process_timeout
+        configured_timeout = ENV["FERRUM_PROCESS_TIMEOUT"]
+        parsed_timeout = configured_timeout.to_i
+        return parsed_timeout if configured_timeout.present? && parsed_timeout.positive?
+
+        ENV["CI"].present? ? 30 : 10
       end
 
       def browser_options

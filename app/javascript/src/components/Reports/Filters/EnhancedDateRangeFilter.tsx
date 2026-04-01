@@ -2,6 +2,7 @@ import React from "react";
 import { Calendar, CaretDown, CaretUp } from "phosphor-react";
 
 import CustomDateRangeWithInput from "common/CustomDateRangeWIthInput";
+import { i18n } from "../../../i18n";
 import { cn } from "../../../lib/utils";
 import {
   Collapsible,
@@ -49,7 +50,7 @@ const EnhancedDateRangeFilter = ({
               />
             </div>
             <div className="text-left">
-              <p className="text-sm font-medium text-gray-900">Date Range</p>
+              <p className="text-sm font-medium text-gray-900">{i18n.t("dateRange")}</p>
               {isActive && (
                 <p className="text-xs text-gray-500 mt-0.5">
                   {filters.dateRange.label}

@@ -8,6 +8,7 @@ import { Outlet, useNavigate } from "react-router-dom";
 
 import List from "./List";
 import UserInformation from "./UserInformation";
+import { t } from "../../../../i18n";
 
 import { SETTINGS } from "../routes";
 
@@ -62,11 +63,13 @@ const MobileNav = () => {
       <div className="list-none min-h-50v text-sm font-medium leading-5 tracking-wider">
         {isAdminUser ? (
           <Fragment>
-            {renderSection("Personal", personalSettings)}
+            {renderSection(t("settings.categories.personal"), personalSettings)}
             {renderSection(currentWorkspace.name, organizationalSettings)}
           </Fragment>
         ) : (
-          <Fragment>{renderSection("Personal", personalSettings)} </Fragment>
+          <Fragment>
+            {renderSection(t("settings.categories.personal"), personalSettings)}{" "}
+          </Fragment>
         )}
       </div>
       <Outlet />

@@ -17,58 +17,60 @@ import {
 } from "miruIcons";
 import { NavLink } from "react-router-dom";
 
+import { i18n } from "../../i18n";
+
 const navOptions = [
   {
     logo: <TimeTrackingIcon className="mr-0 md:mr-4" size={26} />,
-    label: "Time Tracking",
+    label: i18n.t("navbar.timeTracking"),
     path: Paths.TIME_TRACKING,
     allowedRoles: ["admin", "employee", "owner"],
   },
   {
     logo: <ClientsIcon className="mr-0 md:mr-4" size={26} />,
-    label: "Clients",
+    label: i18n.t("navbar.clients"),
     path: Paths.CLIENTS,
     allowedRoles: ["admin", "owner"],
   },
   {
     logo: <ProjectsIcon className="mr-0 md:mr-4" size={26} />,
-    label: "Projects",
+    label: i18n.t("navbar.projects"),
     path: Paths.PROJECTS,
     allowedRoles: ["admin", "employee", "owner"],
   },
   {
     logo: <TeamsIcon className="mr-0 md:mr-4" size={26} />,
-    label: "Team",
+    label: i18n.t("navbar.team"),
     path: Paths.TEAM.replace("/*", ""),
     allowedRoles: ["admin", "owner"],
   },
   {
     logo: <InvoicesIcon className="mr-0 md:mr-4" size={26} />,
-    label: "Invoices",
+    label: i18n.t("navbar.invoices"),
     path: "/invoices",
     allowedRoles: ["admin", "owner", "book_keeper", "client"],
   },
   {
     logo: <ReportsIcon className="mr-0 md:mr-4" size={26} />,
-    label: "Reports",
+    label: i18n.t("navbar.reports"),
     path: Paths.REPORTS,
     allowedRoles: ["admin", "owner", "book_keeper"],
   },
   {
     logo: <PaymentsIcon className="mr-0 md:mr-4" size={26} />,
-    label: "Payments",
+    label: i18n.t("navbar.payments"),
     path: Paths.PAYMENTS,
     allowedRoles: ["admin", "owner", "book_keeper"],
   },
   {
     logo: <CalendarIcon className="mr-0 md:mr-4" size={26} />,
-    label: "Leaves & Holidays",
+    label: i18n.t("navbar.leavesAndHolidays"),
     path: Paths.Leave_Management,
     allowedRoles: ["admin", "owner", "employee"],
   },
   {
     logo: <CoinsIcon className="mr-0 md:mr-4" size={26} />,
-    label: "Expenses",
+    label: i18n.t("navbar.expenses"),
     path: Paths.EXPENSES,
     allowedRoles: ["admin", "owner", "book_keeper"],
   },
@@ -77,42 +79,42 @@ const navOptions = [
 const navAdminMobileOptions = [
   {
     logo: <TimeTrackingIcon className="mr-0 md:mr-4" size={26} />,
-    label: "Time Tracking",
+    label: i18n.t("navbar.timeTracking"),
     path: Paths.TIME_TRACKING,
   },
   {
     logo: <TeamsIcon className="mr-0 md:mr-4" size={26} />,
-    label: "Team",
+    label: i18n.t("navbar.team"),
     path: Paths.TEAM.replace("/*", ""),
   },
   {
     logo: <ClientsIcon className="mr-0 md:mr-4" size={26} />,
-    label: "Clients",
+    label: i18n.t("navbar.clients"),
     path: Paths.CLIENTS,
   },
   {
     logo: <InvoicesIcon className="mr-0 md:mr-4" size={26} />,
-    label: "Invoices",
+    label: i18n.t("navbar.invoices"),
     path: Paths.INVOICES,
   },
   {
     logo: <ProjectsIcon className="mr-4" size={26} />,
-    label: "Projects",
+    label: i18n.t("navbar.projects"),
     path: Paths.PROJECTS,
   },
   {
     logo: <ReportsIcon className="mr-4" size={26} />,
-    label: "Reports",
+    label: i18n.t("navbar.reports"),
     path: Paths.REPORTS,
   },
   {
     logo: <PaymentsIcon className="mr-4" size={26} />,
-    label: "Payments",
+    label: i18n.t("navbar.payments"),
     path: Paths.PAYMENTS,
   },
   {
     logo: <CoinsIcon className="mr-0 md:mr-4" size={26} />,
-    label: "Expenses",
+    label: i18n.t("navbar.expenses"),
     dataCy: "expenses-tab",
     path: Paths.EXPENSES,
   },
@@ -121,19 +123,19 @@ const navAdminMobileOptions = [
 const navClientOptions = [
   {
     logo: <InvoicesIcon className="mr-0 md:mr-4" size={26} />,
-    label: "Invoices",
+    label: i18n.t("navbar.invoices"),
     path: "/invoices",
     allowedRoles: ["admin", "owner", "book_keeper", "client"],
   },
   {
     logo: <SettingIcon className="mr-0 md:mr-4" size={26} />,
-    label: "Settings",
+    label: i18n.t("navbar.settings"),
     path: Paths.SETTINGS.replace("/*", "/profile"),
     allowedRoles: ["admin", "owner", "book_keeper", "client"],
   },
   {
     logo: <CoinsIcon className="mr-0 md:mr-4" size={26} />,
-    label: "Expenses",
+    label: i18n.t("navbar.expenses"),
     dataCy: "expenses-tab",
     path: Paths.EXPENSES,
   },

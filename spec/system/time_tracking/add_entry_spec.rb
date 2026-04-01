@@ -8,6 +8,12 @@ RSpec.describe "Time Tracking - Add Entry", type: :system, js: true do
   let(:client) { create(:client, company:, name: "Acme Client") }
   let(:project) { create(:project, client:, name: "Harvest-style Project") }
 
+  around do |example|
+    with_forgery_protection do
+      example.run
+    end
+  end
+
   before do
     create(:employment, user:, company:)
     create(:project_member, user:, project:)
@@ -18,7 +24,7 @@ RSpec.describe "Time Tracking - Add Entry", type: :system, js: true do
   def switch_to(view)
     target = view.downcase
     find("button[data-view='#{target}']", wait: 10).click
-    expect(page).to have_css("div[data-view='#{target}']", wait: 10)
+    expect(page).to have_css(".week-view[data-view='#{target}']", wait: 10)
   end
 
   def combobox_for(label)
@@ -85,6 +91,86 @@ RSpec.describe "Time Tracking - Add Entry", type: :system, js: true do
     end
   end
 
+  it "restores a running timer after leaving the page and coming back" do
+    visit "/time-tracking"
+    expect(page).to have_css("#react-root", wait: 10)
+    expect(page).to have_button("Start Timer", wait: 10)
+
+    click_button "Start Timer"
+    expect(page).to have_css("[data-testid='inline-web-timer']", wait: 10)
+
+    select_radix("Project", project.name)
+    fill_in "timer-description-inline", with: "Cross-page restore work"
+
+    visit "/projects"
+    expect(page).to have_css("#react-root", wait: 10)
+
+    visit "/time-tracking"
+
+    expect(page).to have_css("[data-testid='inline-web-timer']", wait: 10)
+    expect(page).to have_text("Pause", wait: 10)
+    expect(page).to have_text(project.name, wait: 10)
+    expect(page).to have_field(
+      "timer-description-inline",
+      with: "Cross-page restore work",
+      wait: 10
+    )
+  end
+
+  it "saves a restored running timer into today's entries" do
+    note = "Persisted timer save path"
+
+    visit "/time-tracking"
+    expect(page).to have_css("#react-root", wait: 10)
+
+    page.execute_script(<<~JS)
+      localStorage.setItem(
+        "miru_timer_state",
+        JSON.stringify({
+          isRunning: true,
+          startTime: Date.now() - 120000,
+          elapsedTime: 120000,
+          project: "#{project.name}",
+          client: "#{client.name}",
+          description: "#{note}",
+          projectId: #{project.id}
+        })
+      );
+    JS
+
+    visit "/time-tracking"
+
+    expect(page).to have_css("[data-testid='inline-web-timer']", wait: 10)
+    expect(page).to have_text("Pause", wait: 10)
+    expect(page).to have_text(project.name, wait: 10)
+    expect(page).to have_field("timer-description-inline", with: note, wait: 10)
+
+    expect do
+      click_button "Stop"
+      expect(page).to have_text("Save Time Entry", wait: 10)
+      click_button "Save Entry"
+      expect(page).to have_content("Time entry saved successfully", wait: 10)
+      expect(page).to have_button("Start Timer", wait: 10)
+      expect(page).to have_content(note, wait: 10)
+    end.to change {
+      TimesheetEntry.where(
+        user:,
+        project:,
+        work_date: Date.current,
+        note:
+      ).count
+    }.by(1)
+
+    created_entry = TimesheetEntry.find_by!(
+      user:,
+      project:,
+      work_date: Date.current,
+      note:
+    )
+
+    expect(created_entry.duration).to eq(2)
+  end
+
   it "keeps the selected day visible when switching between week and month views" do
     target_date = Date.current
 
@@ -116,6 +202,25 @@ RSpec.describe "Time Tracking - Add Entry", type: :system, js: true do
 
     expect(page).to have_content("Monthly planning block", wait: 10)
     expect(page).to have_content("Harvest-style Project")
+  end
+
+  it "navigates between previous, next, and current month in month view" do
+    current_label = Date.current.strftime("%b %Y")
+    next_label = Date.current.next_month.strftime("%b %Y")
+
+    visit "/time-tracking"
+    expect(page).to have_css("#react-root", wait: 10)
+    switch_to("Month")
+    expect(page).to have_content(current_label, wait: 10)
+
+    find("[data-testid='time-nav-next']", wait: 10).click
+    expect(page).to have_content(next_label, wait: 10)
+
+    find("[data-testid='time-nav-prev']", wait: 10).click
+    expect(page).to have_content(current_label, wait: 10)
+
+    find("[data-testid='time-nav-today']", wait: 10).click
+    expect(page).to have_content(current_label, wait: 10)
   end
 
   it "keeps restored client and project selections saveable and persists the created entry" do
@@ -186,6 +291,38 @@ RSpec.describe "Time Tracking - Add Entry", type: :system, js: true do
     expect(created_entry.duration).to eq(60)
   end
 
+  it "replaces a stale restored project with a valid project for the selected client" do
+    other_client = create(:client, company:, name: "Beta Client")
+    other_project = create(:project, client: other_client, name: "Beta Project")
+    create(:project_member, user:, project: other_project)
+
+    visit "/time-tracking"
+    expect(page).to have_css("#react-root", wait: 10)
+    switch_to("Week")
+
+    page.execute_script(<<~JS)
+      localStorage.setItem("client", "#{client.name}");
+      localStorage.setItem("project", "#{other_project.name}");
+      localStorage.setItem("projectId", "0");
+      localStorage.setItem("duration", "02:00");
+      localStorage.setItem("note", "Recovered stale project selection");
+      localStorage.setItem("taskType", "development");
+    JS
+
+    visit "/time-tracking"
+    expect(page).to have_css("#react-root", wait: 10)
+    switch_to("Week")
+    click_button "Add Entry"
+
+    expect(combobox_for("Client")).to have_text(client.name, wait: 10)
+    expect(combobox_for("Project")).to have_text(project.name, wait: 10)
+    expect(find("input[name='timeInput']", wait: 10).value).to eq("02:00")
+    expect(find("textarea[name='notes']", wait: 10).value).to eq(
+      "Recovered stale project selection"
+    )
+    expect(page).to have_button("Save Entry", disabled: false, wait: 10)
+  end
+
   it "jumps to the prior week and keeps the save target in sync" do
     visit "/time-tracking"
     expect(page).to have_css("#react-root", wait: 10)
@@ -215,7 +352,7 @@ RSpec.describe "Time Tracking - Add Entry", type: :system, js: true do
       :timesheet_entry,
       user:,
       project:,
-      work_date: Date.current - 1.day,
+      work_date: Date.current.beginning_of_week(:monday),
       duration: 95,
       note: recent_note
     )
@@ -276,8 +413,66 @@ RSpec.describe "Time Tracking - Add Entry", type: :system, js: true do
       ).count
     }.by(1)
 
-    target_button_label = "Select #{target_date.strftime('%a, %b %-d')}"
-    find("button[aria-label^='#{target_button_label}']", wait: 10).click
+    find("[data-testid='time-review-week']", wait: 10).click
     expect(page).to have_content(source_note, wait: 10)
+  end
+
+  it "pins a recent shortcut into favorites" do
+    recent_note = "Pinned shortcut work"
+    create(
+      :timesheet_entry,
+      user:,
+      project:,
+      work_date: Date.current.beginning_of_week(:monday),
+      duration: 45,
+      note: recent_note
+    )
+
+    visit "/time-tracking"
+    expect(page).to have_css("#react-root", wait: 10)
+    switch_to("Week")
+
+    click_button "Add Entry"
+    expect(page).to have_css("[data-testid='recent-entry-shortcut']", wait: 10)
+    first("[data-testid='favorite-entry-toggle']").click
+
+    expect(page).to have_text(/Favorites/i, wait: 10)
+    expect(page).to have_css("[data-testid='favorite-entry-shortcut']", wait: 10)
+    expect(page).to have_css("[data-testid='favorite-entry-shortcut']", wait: 10)
+    expect(page).to have_content("Acme Client / Harvest-style Project · 00:45", wait: 10)
+  end
+
+  it "switches to week review and shows entries from multiple days" do
+    monday = Date.current.beginning_of_week(:monday)
+    wednesday = monday + 2.days
+
+    create(
+      :timesheet_entry,
+      user:,
+      project:,
+      work_date: monday,
+      duration: 60,
+      note: "Monday batch"
+    )
+    create(
+      :timesheet_entry,
+      user:,
+      project:,
+      work_date: wednesday,
+      duration: 90,
+      note: "Wednesday batch"
+    )
+
+    travel_to(wednesday.in_time_zone.change(hour: 12)) do
+      visit "/time-tracking"
+      expect(page).to have_css("#react-root", wait: 10)
+      switch_to("Week")
+
+      find("[data-testid='time-review-week']", wait: 10).click
+
+      expect(page).to have_content("Monday batch", wait: 10)
+      expect(page).to have_content("Wednesday batch", wait: 10)
+      expect(page).to have_content(/Week Total/i, wait: 10)
+    end
   end
 end

@@ -7,6 +7,7 @@ import { SidePanel, Button } from "StyledComponents";
 import CustomCheckbox from "common/CustomCheckbox";
 import { useEntry } from "components/Reports/context/EntryContext";
 import { useUserContext } from "context/UserContext";
+import { i18n } from "../../../../i18n";
 
 const Filters = ({
   setIsFilterVisible,
@@ -67,11 +68,11 @@ const Filters = ({
       <SidePanel.Header className="mb-2 flex items-center justify-between bg-primary px-5 py-5 text-white lg:bg-white lg:font-bold lg:text-foreground">
         {isDesktop ? (
           <h4 className="flex items-center text-base">
-            <FilterIcon className="mr-2.5" size={16} /> <span>Filters</span>
+            <FilterIcon className="mr-2.5" size={16} /> <span>{i18n.t("filters")}</span>
           </h4>
         ) : (
           <span className="flex w-full items-center justify-center pl-6 text-base font-medium leading-5">
-            Filters
+            {i18n.t("filters")}
           </span>
         )}
         <Button style="ternary" onClick={() => setIsFilterVisible(false)}>
@@ -87,7 +88,7 @@ const Filters = ({
             }}
           >
             <h5 className="text-xs font-bold leading-4 tracking-wider">
-              CLIENTS
+              {i18n.t("reports.clients").toUpperCase()}
             </h5>
             <div className="flex items-center">
               {selectedClients.length > 0 && (
@@ -102,7 +103,7 @@ const Filters = ({
             <div className="md:mt-7">
               <div className="relative mt-4 flex w-full items-center px-5 lg:mt-2">
                 <input
-                  placeholder="Search"
+                  placeholder={i18n.t("search")}
                   type="text"
                   value={searchQuery}
                   className="focus:outline-none w-full rounded bg-muted p-2
@@ -142,7 +143,7 @@ const Filters = ({
                     />
                   ))
                 ) : (
-                  <div className="m-5">No results found</div>
+                  <div className="m-5">{i18n.t("noResultsFound")}</div>
                 )}
               </div>
             </div>
@@ -156,10 +157,10 @@ const Filters = ({
           style="secondary"
           onClick={resetFilter}
         >
-          RESET
+          {i18n.t("reset")}
         </Button>
         <Button size="medium" style="primary" onClick={handleApply}>
-          APPLY
+          {i18n.t("apply")}
         </Button>
       </SidePanel.Footer>
     </SidePanel>

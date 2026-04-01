@@ -8,6 +8,7 @@ import { PlusIcon } from "miruIcons";
 import { Button } from "StyledComponents";
 
 import SearchDataRow from "common/SearchDataRow";
+import { i18n } from "../../../i18n";
 
 const Header = ({ setnewClient, isAdminUser, setShowDialog }) => {
   const fetchClients = useCallback(async searchString => {
@@ -39,13 +40,13 @@ const Header = ({ setnewClient, isAdminUser, setShowDialog }) => {
       }`}
     >
       <h2 className="header__title ml-4 hidden text-2xl font-bold lg:inline">
-        Clients
+        {i18n.t("navbar.clients")}
       </h2>
       {isAdminUser && (
         <Fragment>
           <UnifiedSearch
             searchAction={fetchClients}
-            placeholder="Search clients..."
+            placeholder={i18n.t("searchClients")}
             renderItem={item => (
               <SearchDataRow
                 item={item}
@@ -72,7 +73,7 @@ const Header = ({ setnewClient, isAdminUser, setShowDialog }) => {
           >
             <PlusIcon size={16} weight="bold" />
             <span className="ml-2 text-base font-bold tracking-widest">
-              NEW CLIENT
+              {i18n.t("clients.addNewClient").toUpperCase()}
             </span>
           </Button>
         </Fragment>

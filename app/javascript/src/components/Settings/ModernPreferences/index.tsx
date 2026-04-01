@@ -38,7 +38,7 @@ interface PreferenceItem {
 }
 
 const ModernPreferences: React.FC = () => {
-  const { user } = useUserContext();
+  const { user, companyRole } = useUserContext();
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [preferences, setPreferences] = useState<PreferenceItem[]>([]);
@@ -109,7 +109,13 @@ const ModernPreferences: React.FC = () => {
           category: "Billing Notifications",
           dbField: "payment_email_notifications",
         },
-      ];
+      ].filter(pref => {
+        if (companyRole === "employee") {
+          return pref.category !== "Billing Notifications";
+        }
+
+        return true;
+      });
 
       setPreferences(prefs);
       setSavedPreferences(JSON.parse(JSON.stringify(prefs)));

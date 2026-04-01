@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import { invoicesApi } from "apis/api";
 import { Toastr } from "StyledComponents";
 import RecentlyUpdatedCard from "./RecentlyUpdatedCard";
+import { i18n } from "../../../../i18n";
 
 interface Invoice {
   id: number | string;
@@ -20,6 +21,7 @@ interface Invoice {
 interface RecentlyUpdatedProps {
   initialInvoices?: Invoice[];
   initialTotalCount?: number;
+  disableAutoFetch?: boolean;
 }
 
 const compareInvoicesByUpdatedAt = (left: Invoice, right: Invoice) => {
@@ -36,6 +38,7 @@ const compareInvoicesByUpdatedAt = (left: Invoice, right: Invoice) => {
 const InfiniteScrollRecentlyUpdated: React.FC<RecentlyUpdatedProps> = ({
   initialInvoices = [],
   initialTotalCount = 0,
+  disableAutoFetch = false,
 }) => {
   const [invoices, setInvoices] = useState<Invoice[]>(initialInvoices);
   const [page, setPage] = useState(1);
@@ -110,9 +113,13 @@ const InfiniteScrollRecentlyUpdated: React.FC<RecentlyUpdatedProps> = ({
         setPage(pageNum);
       } catch (err) {
         console.error("Error fetching recently updated invoices:", err);
-        setError("Failed to load invoices");
+        setError(i18n.t("invoices.failedToLoad"));
         if (pageNum === 1) {
-          Toastr.error("Failed to load recently updated invoices");
+          Toastr.error(
+            `${i18n.t("invoices.failedToLoad")} ${i18n.t(
+              "invoices.recentlyUpdated"
+            ).toLowerCase()}`
+          );
         }
       } finally {
         setLoading(false);
@@ -123,10 +130,10 @@ const InfiniteScrollRecentlyUpdated: React.FC<RecentlyUpdatedProps> = ({
 
   // Initial load
   useEffect(() => {
-    if (initialInvoices.length === 0) {
+    if (!disableAutoFetch && initialInvoices.length === 0) {
       fetchInvoices(1);
     }
-  }, [fetchInvoices, initialInvoices.length]);
+  }, [disableAutoFetch, fetchInvoices, initialInvoices.length]);
 
   // Intersection Observer for infinite scroll
   useEffect(() => {
@@ -159,7 +166,6 @@ const InfiniteScrollRecentlyUpdated: React.FC<RecentlyUpdatedProps> = ({
     };
   }, [page, hasMore, loading, fetchInvoices]);
 
-  // Retry function for error state
   const handleRetry = () => {
     fetchInvoices(page);
   };
@@ -170,11 +176,11 @@ const InfiniteScrollRecentlyUpdated: React.FC<RecentlyUpdatedProps> = ({
       <div className="mt-6 mb-4">
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-base font-semibold text-gray-900 lg:text-lg">
-            Recently Updated
+            {i18n.t("invoices.recentlyUpdated")}
           </h2>
         </div>
         <div className="w-full py-8 text-center bg-gray-50 rounded-lg">
-          <p className="text-sm text-gray-500">No recently updated invoices</p>
+          <p className="text-sm text-gray-500">{i18n.t("invoices.noRecentlyUpdated")}</p>
         </div>
       </div>
     );
@@ -185,19 +191,19 @@ const InfiniteScrollRecentlyUpdated: React.FC<RecentlyUpdatedProps> = ({
       <div className="flex items-center justify-between mb-3">
         <div>
           <h2 className="text-base font-semibold text-gray-900 lg:text-lg">
-            Recently Updated
+            {i18n.t("invoices.recentlyUpdated")}
           </h2>
           <p className="text-xs text-muted-foreground">
-            Sorted by latest update time
+            {i18n.t("invoices.sortedByLatestUpdate")}
           </p>
         </div>
         {orderedInvoices.length > 0 && (
           <div className="flex items-center gap-2">
             <span className="text-xs text-gray-500">
-              Showing {orderedInvoices.length} of {totalCount}
+              {i18n.t("invoices.showingOf", { shown: orderedInvoices.length, total: totalCount })}
             </span>
             {hasMore && (
-              <span className="text-xs text-gray-400">• Scroll for more</span>
+              <span className="text-xs text-gray-400">• {i18n.t("invoices.scrollForMore")}</span>
             )}
           </div>
         )}
@@ -205,9 +211,9 @@ const InfiniteScrollRecentlyUpdated: React.FC<RecentlyUpdatedProps> = ({
 
       <div
         ref={scrollContainerRef}
-        className="relative overflow-x-auto overflow-y-visible pb-2 -mx-1"
+        className="relative overflow-x-auto overflow-y-visible pb-3"
       >
-        <div className="flex gap-0">
+        <div className="flex gap-3 px-1">
           {orderedInvoices.map((invoice, index) => (
             <RecentlyUpdatedCard
               key={invoice.id}
@@ -221,7 +227,7 @@ const InfiniteScrollRecentlyUpdated: React.FC<RecentlyUpdatedProps> = ({
             <div className="flex items-center justify-center mx-1.5 w-36 h-32 rounded-lg border border-gray-200 bg-gray-50 animate-pulse">
               <div className="text-center">
                 <div className="inline-block h-6 w-6 animate-spin rounded-full border-2 border-solid border-[#5E58F1] border-r-transparent"></div>
-                <p className="mt-2 text-xs text-gray-500">Loading...</p>
+                <p className="mt-2 text-xs text-gray-500">{i18n.t("loading")}</p>
               </div>
             </div>
           )}
@@ -230,12 +236,12 @@ const InfiniteScrollRecentlyUpdated: React.FC<RecentlyUpdatedProps> = ({
           {error && !loading && (
             <div className="flex items-center justify-center mx-1.5 w-36 h-32 rounded-lg border border-red-200 bg-red-50">
               <div className="text-center p-3">
-                <p className="text-xs text-red-600 mb-2">Failed to load</p>
+                <p className="text-xs text-red-600 mb-2">{i18n.t("invoices.failedToLoad")}</p>
                 <button
                   onClick={handleRetry}
                   className="text-xs text-[#5E58F1] hover:underline"
                 >
-                  Retry
+                  {i18n.t("common.retry")}
                 </button>
               </div>
             </div>
@@ -261,7 +267,7 @@ const InfiniteScrollRecentlyUpdated: React.FC<RecentlyUpdatedProps> = ({
                     d="M9 5l7 7-7 7"
                   />
                 </svg>
-                <p className="text-xs text-gray-500">Scroll for more</p>
+                <p className="text-xs text-gray-500">{i18n.t("invoices.scrollForMore")}</p>
               </div>
             </div>
           )}
@@ -283,7 +289,7 @@ const InfiniteScrollRecentlyUpdated: React.FC<RecentlyUpdatedProps> = ({
                     d="M5 13l4 4L19 7"
                   />
                 </svg>
-                <p className="text-xs text-gray-500">All caught up!</p>
+                <p className="text-xs text-gray-500">{i18n.t("invoices.allCaughtUp")}</p>
               </div>
             </div>
           )}

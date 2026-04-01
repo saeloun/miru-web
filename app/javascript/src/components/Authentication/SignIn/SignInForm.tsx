@@ -5,6 +5,7 @@ import React, { useRef, useState } from "react";
 import { authenticationApi, passkeysApi, totpApi } from "apis/api";
 import { InputErrors, InputField } from "common/FormikFields";
 import { useAuthDispatch } from "context/auth";
+import { useUserContext } from "context/UserContext";
 import { Formik, Form, FormikProps } from "formik";
 import { GithubIcon, GoogleSVG } from "miruIcons";
 import { useNavigate } from "react-router-dom";
@@ -12,7 +13,11 @@ import { toast } from "sonner";
 import { dashboardUrl } from "utils/dashboardUrl";
 import { beginPasskeyAuthentication } from "utils/passkeys";
 
-import { signInFormInitialValues, signInFormValidationSchema } from "./utils";
+import { t } from "../../../i18n";
+import {
+  buildSignInFormValidationSchema,
+  signInFormInitialValues,
+} from "./utils";
 
 import AuthShell from "../AuthShell";
 import PrivacyPolicyModal from "../SignUp/PrivacyPolicyModal";
@@ -24,6 +29,7 @@ interface SignInFormValues {
 }
 
 const SignInForm = () => {
+  const { locale } = useUserContext();
   const [privacyModal, setPrivacyModal] = useState(false);
   const [termsOfServiceModal, setTermsOfServiceModal] = useState(false);
   const authDispatch = useAuthDispatch();
@@ -59,7 +65,7 @@ const SignInForm = () => {
       localStorage.setItem("company", JSON.stringify(company));
     }
 
-    toast.success("Welcome back!");
+    toast.success(t("auth.signIn.welcomeBack"));
     setTimeout(() => {
       window.location.href = dashboardUrl(company_role);
     }, 500);
@@ -71,7 +77,7 @@ const SignInForm = () => {
 
       if (res.data?.requires_passkey) {
         setIsPasskeyPending(true);
-        toast.message("Complete passkey verification to finish signing in.");
+        toast.message(t("auth.signIn.passkeyPrompt"));
 
         const credential = await beginPasskeyAuthentication(
           res.data.public_key
@@ -90,7 +96,7 @@ const SignInForm = () => {
       if (res.data?.requires_totp) {
         setTotpPendingToken(res.data.pending_token);
         setIsTotpPending(true);
-        toast.message("Enter your authenticator code to finish signing in.");
+        toast.message(t("auth.signIn.totpPrompt"));
 
         return;
       }
@@ -104,7 +110,7 @@ const SignInForm = () => {
         setFieldError("password", error.response.data.error);
         toast.error(error.response.data.error);
       } else {
-        toast.error("Login failed. Please try again.");
+        toast.error(t("auth.signIn.loginFailed"));
       }
     } finally {
       setIsPasskeyPending(false);
@@ -150,8 +156,8 @@ const SignInForm = () => {
 
   return (
     <AuthShell
-      description="Track work, send invoices, and keep cash flow clear from one place."
-      title="Sign in to your workspace"
+      description={t("auth.signIn.description")}
+      title={t("auth.signIn.title")}
     >
       <div>
         <Formik
@@ -178,7 +184,7 @@ const SignInForm = () => {
                   onClick={handleGoogleAuth}
                 >
                   <img alt="" className="mr-2" src={GoogleSVG} />
-                  Continue with Google
+                  {t("auth.signIn.continueWithGoogle")}
                 </button>
               </Form>
               <Form action="/users/auth/github" method="post" ref={githubOauth}>
@@ -196,7 +202,7 @@ const SignInForm = () => {
                     className="mr-2 h-4 w-4 text-foreground"
                     weight="fill"
                   />
-                  Continue with GitHub
+                  {t("auth.signIn.continueWithGitHub")}
                 </button>
               </Form>
             </div>
@@ -205,7 +211,7 @@ const SignInForm = () => {
         <div className="relative mb-6 flex items-center">
           <div className="flex-grow border-t border-border" />
           <span className="mx-4 flex-shrink text-xs uppercase tracking-[0.18em] text-muted-foreground">
-            or use email
+            {t("auth.signIn.orUseEmail")}
           </span>
           <div className="flex-grow border-t border-border" />
         </div>
@@ -214,11 +220,10 @@ const SignInForm = () => {
             <div className="mb-6 space-y-4 rounded-2xl border border-border bg-card p-5 shadow-sm">
               <div className="space-y-1">
                 <h3 className="text-base font-medium text-foreground">
-                  Verify with your authenticator app
+                  {t("auth.signIn.totpTitle")}
                 </h3>
                 <p className="text-sm text-muted-foreground">
-                  Enter the 6-digit code from your authenticator app, or use a
-                  recovery code.
+                  {t("auth.signIn.totpDescription")}
                 </p>
               </div>
               <div className="space-y-2">
@@ -226,7 +231,7 @@ const SignInForm = () => {
                   className="text-sm font-medium text-foreground"
                   htmlFor="totp_code"
                 >
-                  Authenticator code
+                  {t("auth.signIn.totpCode")}
                 </label>
                 <input
                   id="totp_code"
@@ -242,7 +247,7 @@ const SignInForm = () => {
                   className="text-sm font-medium text-foreground"
                   htmlFor="recovery_code"
                 >
-                  Recovery code
+                  {t("auth.signIn.recoveryCode")}
                 </label>
                 <input
                   id="recovery_code"
@@ -259,7 +264,7 @@ const SignInForm = () => {
                   disabled={!(totpCode.trim() || recoveryCode.trim())}
                   onClick={handleTotpVerification}
                 >
-                  Verify and sign in
+                  {t("auth.signIn.verifyAndSignIn")}
                 </button>
                 <button
                   type="button"
@@ -271,16 +276,17 @@ const SignInForm = () => {
                     setRecoveryCode("");
                   }}
                 >
-                  Back
+                  {t("auth.signIn.back")}
                 </button>
               </div>
             </div>
           )}
           <Formik
+            key={locale}
             initialValues={signInFormInitialValues}
             validateOnBlur={false}
             validateOnChange={false}
-            validationSchema={signInFormValidationSchema}
+            validationSchema={buildSignInFormValidationSchema()}
             onSubmit={handleSignInFormSubmit}
           >
             {(props: FormikProps<SignInFormValues>) => {
@@ -294,7 +300,7 @@ const SignInForm = () => {
                       autoFocus
                       hasError={errors.email && touched.email}
                       id="email"
-                      label="Email"
+                      label={t("auth.signIn.email")}
                       labelClassName="p-0 text-foreground"
                       name="email"
                       inputBoxClassName="h-11 border-border bg-background text-foreground placeholder:text-muted-foreground focus:border-primary focus-visible:ring-ring"
@@ -310,7 +316,7 @@ const SignInForm = () => {
                     <InputField
                       hasError={errors.password && touched.password}
                       id="password"
-                      label="Password"
+                      label={t("auth.signIn.password")}
                       labelClassName="p-0 text-foreground"
                       name="password"
                       inputBoxClassName="h-11 border-border bg-background text-foreground placeholder:text-muted-foreground focus:border-primary focus-visible:ring-ring"
@@ -333,7 +339,9 @@ const SignInForm = () => {
                       }`}
                       disabled={isBtnDisabled(values) || isPasskeyPending}
                     >
-                      {isPasskeyPending ? "Waiting for passkey..." : "Sign in"}
+                      {isPasskeyPending
+                        ? t("auth.signIn.waitingForPasskey")
+                        : t("auth.signIn.submit")}
                     </button>
                   </div>
                 </Form>
@@ -358,17 +366,17 @@ const SignInForm = () => {
             <span className="form__link inline cursor-pointer">
               <a href={Paths.FORGOT_PASSWORD}>
                 <span className="inline-block text-foreground hover:text-primary">
-                  Forgot password?
+                  {t("auth.signIn.forgotPassword")}
                 </span>
               </a>
             </span>
           </p>
           <p className="text-center text-sm text-muted-foreground">
-            Don&apos;t have an account?{" "}
+            {t("auth.signIn.noAccount")}{" "}
             <span className="inline cursor-pointer">
               <a href={Paths.SIGNUP}>
                 <span className="inline-block text-foreground hover:text-primary">
-                  Sign up
+                  {t("auth.signIn.signUp")}
                 </span>
               </a>
             </span>
@@ -379,7 +387,7 @@ const SignInForm = () => {
               onClick={handlePrivacyPolicy}
               type="button"
             >
-              Privacy
+              {t("auth.signIn.privacy")}
             </button>
             <span>•</span>
             <button
@@ -387,7 +395,7 @@ const SignInForm = () => {
               onClick={handleTermsOfService}
               type="button"
             >
-              Terms
+              {t("auth.signIn.terms")}
             </button>
           </div>
         </div>

@@ -1,6 +1,7 @@
 import React from "react";
 
 import { DeleteIcon } from "miruIcons";
+import { i18n } from "../../../i18n";
 
 const DeleteButton = ({ onClick }) => (
   <div className="delete-button-container mr-1 flex flex-row justify-items-center">
@@ -13,7 +14,7 @@ const DeleteButton = ({ onClick }) => (
           <DeleteIcon color="#E04646" size={16} weight="bold" />
         </div>
         <p className="ml-1 text-base font-bold tracking-widest text-destructive">
-          DELETE
+          {i18n.t("delete").toUpperCase()}
         </p>
       </div>
     </button>

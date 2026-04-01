@@ -5,6 +5,7 @@ import React, { useRef } from "react";
 import { teamApi } from "apis/api";
 import { useList } from "context/TeamContext";
 import { useOutsideClick, useKeypress } from "helpers";
+import { i18n } from "../../../i18n";
 import { XIcon } from "miruIcons";
 import { Toastr, Modal, Button } from "StyledComponents";
 
@@ -51,7 +52,7 @@ const DeleteMember = ({ user }) => {
     >
       <div className="flex items-center justify-between">
         <h6 className="text-2xl font-bold">
-          {user.isTeamMember ? "Delete User" : "Delete Invite"}
+          {user.isTeamMember ? i18n.t("team.deleteUser") : i18n.t("team.deleteInvite")}
         </h6>
         <Button
           style="ternary"
@@ -64,8 +65,7 @@ const DeleteMember = ({ user }) => {
         </Button>
       </div>
       <p className="mt-4 mb-10">
-        Are you sure you want to delete user <b> {user?.name}</b>? <br />
-        This action cannot be reversed.
+        {i18n.t("team.deleteUserConfirm", { name: user?.name })}
       </p>
       <div className="flex justify-between">
         <Button
@@ -74,7 +74,7 @@ const DeleteMember = ({ user }) => {
           style="secondary"
           onClick={() => setModalState(TeamModalType.NONE)}
         >
-          CANCEL
+          {i18n.t("cancel")}
         </Button>
         <Button
           className="ml-2 w-1/2"
@@ -82,7 +82,7 @@ const DeleteMember = ({ user }) => {
           style="delete"
           onClick={() => deleteTeamMember()}
         >
-          DELETE
+          {i18n.t("delete")}
         </Button>
       </div>
     </Modal>

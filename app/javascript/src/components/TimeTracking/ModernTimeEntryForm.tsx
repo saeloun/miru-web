@@ -27,6 +27,7 @@ import {
   SelectValue,
 } from "../ui/select";
 import { useUserContext } from "../../context/UserContext";
+import { i18n } from "../../i18n";
 
 interface TimeEntryFormProps {
   isOpen: boolean;
@@ -83,9 +84,9 @@ export const ModernTimeEntryForm: React.FC<TimeEntryFormProps> = ({
 
     // Validate
     const newErrors: any = {};
-    if (!formData.duration) newErrors.duration = "Duration is required";
+    if (!formData.duration) newErrors.duration = i18n.t("timeTracking.durationRequired");
 
-    if (!formData.project) newErrors.project = "Project is required";
+    if (!formData.project) newErrors.project = i18n.t("timeTracking.projectRequired");
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
@@ -129,7 +130,7 @@ export const ModernTimeEntryForm: React.FC<TimeEntryFormProps> = ({
               </div>
               <div>
                 <CardTitle className="h2">
-                  {existingEntry ? "Edit Time Entry" : "New Time Entry"}
+                  {existingEntry ? i18n.t("timeTracking.editTimeEntry") : i18n.t("timeTracking.newTimeEntry")}
                 </CardTitle>
                 <p className="text-base text-muted-foreground font-medium">
                   {dayjs(formData.date).format("dddd, MMMM D, YYYY")}
@@ -153,7 +154,7 @@ export const ModernTimeEntryForm: React.FC<TimeEntryFormProps> = ({
               <div className="space-y-3">
                 <Label className="flex items-center gap-2 text-base font-semibold">
                   <Timer className="h-4 w-4 text-primary" />
-                  Duration *
+                  {i18n.t("timeTracking.duration")} *
                 </Label>
                 <div className="relative">
                   <Input
@@ -168,7 +169,7 @@ export const ModernTimeEntryForm: React.FC<TimeEntryFormProps> = ({
                     )}
                   />
                   <span className="absolute right-4 top-1/2 -translate-y-1/2 text-base text-muted-foreground font-medium">
-                    hours
+                    {i18n.t("hours")}
                   </span>
                 </div>
                 {errors.duration && (
@@ -180,7 +181,7 @@ export const ModernTimeEntryForm: React.FC<TimeEntryFormProps> = ({
               <div className="space-y-3">
                 <Label className="flex items-center gap-2 text-base font-semibold">
                   <Calendar className="h-4 w-4 text-primary" />
-                  Date
+                  {i18n.t("date")}
                 </Label>
                 <DatePicker
                   selected={new Date(formData.date)}
@@ -200,7 +201,7 @@ export const ModernTimeEntryForm: React.FC<TimeEntryFormProps> = ({
               <div className="space-y-2">
                 <label className="flex items-center gap-2 text-base font-semibold text-foreground">
                   <Briefcase className="h-4 w-4 text-muted-foreground" />
-                  Project *
+                  {i18n.t("project")} *
                 </label>
                 <Select
                   value={formData.project?.value || formData.project || ""}
@@ -220,7 +221,7 @@ export const ModernTimeEntryForm: React.FC<TimeEntryFormProps> = ({
                       errors.project ? "border-red-500" : ""
                     }`}
                   >
-                    <SelectValue placeholder="Select project" />
+                    <SelectValue placeholder={i18n.t("timeTracking.selectProject")} />
                   </SelectTrigger>
                   <SelectContent>
                     {projects.map((project: any) => (
@@ -242,7 +243,7 @@ export const ModernTimeEntryForm: React.FC<TimeEntryFormProps> = ({
               <div className="space-y-2">
                 <label className="flex items-center gap-2 text-base font-semibold text-foreground">
                   <User className="h-4 w-4 text-muted-foreground" />
-                  Client
+                  {i18n.t("client")}
                 </label>
                 <Select
                   value={formData.client?.value || formData.client || ""}
@@ -258,7 +259,7 @@ export const ModernTimeEntryForm: React.FC<TimeEntryFormProps> = ({
                   }}
                 >
                   <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select client" />
+                    <SelectValue placeholder={i18n.t("timeTracking.selectClient")} />
                   </SelectTrigger>
                   <SelectContent>
                     {clients.map((client: any) => (
@@ -277,14 +278,14 @@ export const ModernTimeEntryForm: React.FC<TimeEntryFormProps> = ({
             <div className="space-y-2">
               <label className="flex items-center gap-2 text-sm font-medium text-foreground">
                 <FileText className="h-4 w-4 text-muted-foreground" />
-                Note
+                {i18n.t("timeTracking.note")}
               </label>
               <textarea
                 value={formData.note}
                 onChange={e =>
                   setFormData({ ...formData, note: e.target.value })
                 }
-                placeholder="What did you work on?"
+                placeholder={i18n.t("timeTracking.whatDidYouWorkOn")}
                 rows={3}
                 className="w-full px-4 py-3 rounded-lg border border-border hover:border-border focus:outline-none focus:ring-2 focus:ring-ring/40 transition-all resize-none"
               />
@@ -306,7 +307,7 @@ export const ModernTimeEntryForm: React.FC<TimeEntryFormProps> = ({
                 >
                   <CurrencyDollar className="h-4 w-4" />
                   <span className="text-base font-medium">
-                    {formData.billable ? "Billable" : "Non-billable"}
+                    {formData.billable ? i18n.t("billable") : i18n.t("nonBillable")}
                   </span>
                 </button>
                 <button
@@ -314,7 +315,7 @@ export const ModernTimeEntryForm: React.FC<TimeEntryFormProps> = ({
                   className="flex items-center gap-2 px-4 py-2 rounded-lg bg-muted text-muted-foreground hover:bg-secondary transition-all"
                 >
                   <Tag className="h-4 w-4" />
-                  <span className="text-base font-medium">Add Tags</span>
+                  <span className="text-base font-medium">{i18n.t("timeTracking.addTags")}</span>
                 </button>
               </div>
               {existingEntry && (
@@ -331,7 +332,7 @@ export const ModernTimeEntryForm: React.FC<TimeEntryFormProps> = ({
         {/* Footer */}
         <div className="flex justify-end gap-3 px-6 py-4 border-t border-border bg-background rounded-b-2xl">
           <Button variant="outline" onClick={onClose} className="px-6">
-            Cancel
+            {i18n.t("cancel")}
           </Button>
           <Button
             onClick={handleSubmit}
@@ -341,12 +342,12 @@ export const ModernTimeEntryForm: React.FC<TimeEntryFormProps> = ({
             {isSubmitting ? (
               <span className="flex items-center gap-2">
                 <div className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                Saving...
+                {i18n.t("timeTracking.saving")}
               </span>
             ) : (
               <span className="flex items-center gap-2">
                 <FloppyDisk className="h-4 w-4" />
-                {existingEntry ? "Update Entry" : "FloppyDisk Entry"}
+                {existingEntry ? i18n.t("timeTracking.updateEntry") : i18n.t("timeTracking.saveEntry")}
               </span>
             )}
           </Button>
@@ -375,10 +376,10 @@ export const ModernTimeOffForm: React.FC<{
   });
 
   const timeOffTypes = [
-    { value: "vacation", label: "Vacation", icon: "🏖️" },
-    { value: "sick", label: "Sick Leave", icon: "🏥" },
-    { value: "personal", label: "Personal Day", icon: "👤" },
-    { value: "holiday", label: "Holiday", icon: "🎉" },
+    { value: "vacation", label: i18n.t("timeOffTypes.vacation"), icon: "🏖️" },
+    { value: "sick", label: i18n.t("timeOffTypes.sickLeave"), icon: "🏥" },
+    { value: "personal", label: i18n.t("timeOffTypes.personalDay"), icon: "👤" },
+    { value: "holiday", label: i18n.t("timeOffTypes.holiday"), icon: "🎉" },
   ];
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -399,7 +400,7 @@ export const ModernTimeOffForm: React.FC<{
                 <Calendar className="h-5 w-5 text-amber-600" />
               </div>
               <div>
-                <CardTitle className="text-lg">Mark Time Off</CardTitle>
+                <CardTitle className="text-lg">{i18n.t("timeTracking.markTimeOff")}</CardTitle>
                 <p className="text-sm text-muted-foreground">
                   {dayjs(formData.date).format("dddd, MMMM D, YYYY")}
                 </p>
@@ -420,7 +421,7 @@ export const ModernTimeOffForm: React.FC<{
             {/* Time Off Type */}
             <div className="space-y-2">
               <label className="text-sm font-medium text-foreground">
-                Type of Time Off
+                {i18n.t("timeTracking.typeOfTimeOff")}
               </label>
               <div className="grid grid-cols-2 gap-3">
                 {timeOffTypes.map(type => (
@@ -446,7 +447,7 @@ export const ModernTimeOffForm: React.FC<{
             {/* Duration */}
             <div className="space-y-2">
               <label className="text-sm font-medium text-foreground">
-                Duration
+                {i18n.t("timeTracking.duration")}
               </label>
               <div className="flex gap-3">
                 <button
@@ -459,7 +460,7 @@ export const ModernTimeOffForm: React.FC<{
                       : "border-border hover:border-border"
                   )}
                 >
-                  Full Day
+                  {i18n.t("fullDay")}
                 </button>
                 <button
                   type="button"
@@ -471,14 +472,14 @@ export const ModernTimeOffForm: React.FC<{
                       : "border-border hover:border-border"
                   )}
                 >
-                  Half Day
+                  {i18n.t("halfDay")}
                 </button>
               </div>
             </div>
             {/* Date */}
             <div className="space-y-2">
               <label className="text-sm font-medium text-foreground">
-                Date
+                {i18n.t("date")}
               </label>
               <input
                 type="date"
@@ -492,14 +493,14 @@ export const ModernTimeOffForm: React.FC<{
             {/* Note */}
             <div className="space-y-2">
               <label className="text-sm font-medium text-foreground">
-                Note (Optional)
+                {i18n.t("timeTracking.noteOptional")}
               </label>
               <textarea
                 value={formData.note}
                 onChange={e =>
                   setFormData({ ...formData, note: e.target.value })
                 }
-                placeholder="Add any additional details..."
+                placeholder={i18n.t("timeTracking.addAdditionalDetails")}
                 rows={3}
                 className="w-full px-4 py-2 rounded-lg border border-border hover:border-border focus:outline-none focus:ring-2 focus:ring-ring/40 resize-none"
               />
@@ -509,13 +510,13 @@ export const ModernTimeOffForm: React.FC<{
         {/* Footer */}
         <div className="flex justify-end gap-3 px-6 py-4 border-t border-border bg-background rounded-b-2xl">
           <Button variant="outline" onClick={onClose} className="px-6">
-            Cancel
+            {i18n.t("cancel")}
           </Button>
           <Button
             onClick={handleSubmit}
             className="px-6 bg-amber-600 hover:bg-amber-700"
           >
-            Mark Time Off
+            {i18n.t("timeTracking.markTimeOff")}
           </Button>
         </div>
       </Card>

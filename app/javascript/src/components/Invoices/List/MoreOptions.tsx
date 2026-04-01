@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 import { Tooltip, Modal } from "StyledComponents";
 
 import { handleDownloadInvoice } from "../common/utils";
+import { i18n } from "../../../i18n";
 
 const MoreOptions = ({
   setShowDeleteDialog,
@@ -40,7 +41,7 @@ const MoreOptions = ({
         className="absolute bottom-16 right-0 hidden items-center justify-between rounded-xl border-2 border-border bg-white lg:w-28 lg:p-2 lg:group-hover:flex xl:w-40 xl:p-3"
         onClick={e => e.stopPropagation()}
       >
-        <Tooltip content="Send To">
+        <Tooltip content={i18n.t("invoices.sendTo")}>
           <button
             className="rounded p-2 text-primary hover:bg-muted"
             id="sendInvoiceButton"
@@ -60,7 +61,7 @@ const MoreOptions = ({
             />
           </button>
         </Tooltip>
-        <Tooltip content="Download">
+        <Tooltip content={i18n.t("download")}>
           <button
             disabled={invoice.status == "draft"}
             className={
@@ -76,7 +77,7 @@ const MoreOptions = ({
             <DownloadSimpleIcon size={16} weight="bold" />
           </button>
         </Tooltip>
-        <Tooltip content="Edit">
+        <Tooltip content={i18n.t("edit")}>
           <button
             className="rounded p-2 text-primary hover:bg-muted"
             id="editInvoiceButton"
@@ -88,7 +89,7 @@ const MoreOptions = ({
             <PenIcon size={16} weight="bold" />
           </button>
         </Tooltip>
-        <Tooltip content="More">
+        <Tooltip content={i18n.t("actions")}>
           <button
             id="openMenu"
             className={`rounded p-2 text-primary  hover:bg-muted ${
@@ -130,7 +131,7 @@ const MoreOptions = ({
                   size={16}
                   weight="bold"
                 />
-                Send Reminder
+                {i18n.t("invoices.sendReminder")}
               </li>
             )}
             {showPrint && (
@@ -140,7 +141,7 @@ const MoreOptions = ({
                   size={16}
                   weight="bold"
                 />
-                Print
+                {i18n.t("invoices.invoice")}
               </li>
             )}
             <li
@@ -155,7 +156,7 @@ const MoreOptions = ({
                 size={16}
                 weight="bold"
               />
-              Delete
+              {i18n.t("delete")}
             </li>
             {showSendLink && (
               <li className="flex cursor-pointer items-center px-5 text-sm text-primary hover:bg-muted lg:py-1 xl:py-2">
@@ -164,7 +165,7 @@ const MoreOptions = ({
                   size={16}
                   weight="bold"
                 />
-                Send link
+                {i18n.t("invoices.sendInvoice")}
               </li>
             )}
           </ul>
@@ -194,7 +195,7 @@ const MoreOptions = ({
               }
             }}
           >
-            <PaperPlaneTiltIcon className="mr-4" size={16} /> Send Invoice
+            <PaperPlaneTiltIcon className="mr-4" size={16} /> {i18n.t("invoices.sendInvoice")}
           </button>
         </li>
         <li className="flex cursor-pointer items-center py-2">
@@ -207,7 +208,7 @@ const MoreOptions = ({
             }
             onClick={() => handleDownloadInvoice(invoice)}
           >
-            <DownloadSimpleIcon className="mr-4" size={16} /> Download Invoice
+            <DownloadSimpleIcon className="mr-4" size={16} /> {i18n.t("download")}
           </button>
         </li>
         <li>
@@ -218,7 +219,7 @@ const MoreOptions = ({
               navigate(`/invoices/${invoice.id}/edit`);
             }}
           >
-            <PenIcon className="mr-4" size={16} /> Edit Invoice
+            <PenIcon className="mr-4" size={16} /> {i18n.t("invoices.editInvoice")}
           </button>
         </li>
         {invoice?.status === "overdue" && (
@@ -230,19 +231,19 @@ const MoreOptions = ({
             }}
           >
             <ReminderIcon className="mr-4" size={16} weight="bold" />
-            Send Reminder
+            {i18n.t("invoices.sendReminder")}
           </li>
         )}
         {showPrint && (
           <li className="flex cursor-pointer items-center py-2 text-primary">
             <PrinterIcon className="mr-4" size={16} />
-            Print
+            {i18n.t("invoices.invoice")}
           </li>
         )}
         {showSendLink && (
           <li className="flex cursor-pointer items-center py-2 text-primary">
             <PaperPlaneTiltIcon className="mr-4" size={16} />
-            Send link
+            {i18n.t("invoices.sendInvoice")}
           </li>
         )}
         <li
@@ -253,7 +254,7 @@ const MoreOptions = ({
           }}
         >
           <DeleteIcon className="mr-4 text-destructive" size={16} />
-          Delete
+          {i18n.t("delete")}
         </li>
       </ul>
     </Modal>

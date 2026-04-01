@@ -10,6 +10,7 @@ import {
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "../ui/chart";
 
 import { currencyFormat } from "../../helpers/currency";
+import { t } from "../../i18n";
 
 interface RevenueChartProps {
   data: any[];
@@ -19,18 +20,18 @@ interface RevenueChartProps {
 
 const chartConfig = {
   revenue: {
-    label: "Revenue",
+    label: t("dashboard.stats.revenue"),
     color: "hsl(var(--primary))",
   },
   invoices: {
-    label: "Invoices",
+    label: t("nav.invoices"),
     color: "hsl(var(--primary) / 0.6)",
   },
 };
 
 const customerChartConfig = {
   revenue: {
-    label: "Revenue",
+    label: t("dashboard.stats.revenue"),
     color: "hsl(var(--primary))",
   },
 };
@@ -44,13 +45,13 @@ export const RevenueAreaChart: React.FC<RevenueChartProps> = ({
     <CardHeader className="border-b border-border pb-6 bg-card">
       <div className="grid flex-1 gap-2">
         <p className="text-xs font-semibold text-primary uppercase tracking-wider">
-          Revenue Trend
+          {t("dashboard.charts.revenueTrendEyebrow")}
         </p>
         <CardTitle className="text-xl font-semibold tracking-tight text-foreground">
-          Revenue Momentum
+          {t("dashboard.charts.revenueMomentumTitle")}
         </CardTitle>
         <CardDescription className="text-sm text-muted-foreground font-medium">
-          Month-by-month revenue year to date
+          {t("dashboard.charts.revenueMomentumDescription")}
         </CardDescription>
       </div>
     </CardHeader>
@@ -192,13 +193,13 @@ export const CustomerRevenueChart: React.FC<CustomerRevenueChartProps> = ({
       <CardHeader className="border-b border-border pb-6 bg-card">
         <div className="grid flex-1 gap-2">
           <p className="text-xs font-semibold text-primary uppercase tracking-wider">
-            Top Customers
+            {t("dashboard.charts.topCustomersEyebrow")}
           </p>
           <CardTitle className="text-xl font-semibold tracking-tight text-foreground">
-            Revenue Leaders
+            {t("dashboard.charts.revenueLeadersTitle")}
           </CardTitle>
           <CardDescription className="text-sm text-muted-foreground font-medium">
-            Your highest revenue contributors
+            {t("dashboard.charts.revenueLeadersDescription")}
           </CardDescription>
         </div>
       </CardHeader>
@@ -225,7 +226,9 @@ export const CustomerRevenueChart: React.FC<CustomerRevenueChartProps> = ({
                 <div className="space-y-1.5">
                   <div className="flex justify-between items-center">
                     <span className="text-xs text-muted-foreground font-medium">
-                      {customer.percentage}% of total
+                      {t("dashboard.charts.ofTotal", {
+                        percentage: customer.percentage,
+                      })}
                     </span>
                   </div>
                   <div className="w-full bg-muted rounded-full h-2 overflow-hidden">
@@ -255,7 +258,7 @@ export const CustomerRevenueChart: React.FC<CustomerRevenueChartProps> = ({
         ) : (
           <div className="text-center text-muted-foreground py-8">
             <div className="text-2xl mb-3">📊</div>
-            No revenue yet for this period
+            {t("dashboard.charts.noRevenue")}
           </div>
         )}
       </CardContent>

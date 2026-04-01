@@ -1,0 +1,372 @@
+---
+es:
+  activerecord:
+    errors:
+      models:
+        client:
+          attributes:
+            name:
+              format: "%{message}"
+        project:
+          attributes:
+            name:
+              format: "%{message}"
+  application_controller:
+    not_found: Ruta no encontrada
+  avatar:
+    destroy:
+      success: Avatar eliminado correctamente
+    update:
+      success: Avatar actualizado correctamente
+  client:
+    add: AÑADIR CLIENTE
+    address:
+      label: DIRECCIÓN
+      placeholder: Introduzca la dirección
+    create:
+      failure: Falló la creación del cliente.
+      success: Cliente añadido correctamente
+    delete:
+      success:
+        message: El cliente fue eliminado correctamente.
+    email:
+      label: Correo electrónico
+      placeholder: Ingrese su dirección de correo electrónico.
+    name:
+      label: Nombre
+      placeholder: Ingrese su nombre
+    phone:
+      label: Número de teléfono
+      placeholder: Ingrese su número de teléfono
+    update:
+      failure:
+        message: No se pudieron guardar los cambios.
+        unauthorized: El usuario no está autorizado a modificar los datos de este
+          cliente.
+      success:
+        message: Cambios guardados correctamente
+  clients:
+    add_client_contact:
+      success: Invitación enviada correctamente.
+    send_payment_reminder:
+      success: Se ha enviado un recordatorio de pago.
+  companies:
+    create:
+      failure: La creación de la empresa fracasó.
+      success: Empresa creada con éxito
+    purge_logo:
+      destroy:
+        success: Logotipo de la empresa eliminado correctamente
+    update:
+      success: Cambios guardados correctamente
+  company:
+    address: DIRECCIÓN
+    base_currency: moneda base
+    business_phone: teléfono de negocios
+    cancel: Cancelar
+    company: compañía
+    country: país
+    date_format: Formato de fecha
+    fiscal_year: año fiscal
+    logo: logo
+    save: ahorrar
+    save_org: guardar detalles de la organización
+    setup: organización de configuración
+    standard_price: precio estándar
+    timezone: zona horaria
+  confirmation:
+    send_instructions: Se ha enviado un correo electrónico de confirmación a %{email}.
+  currency_pairs:
+    from_to_required: Se requieren desde y hasta
+    rate_not_found: No se encontró la tasa
+  custom_leaves:
+    update:
+      success: Hojas personalizadas actualizadas correctamente
+  employment:
+    update:
+      success: Empleo actualizado con éxito
+  errors:
+    bill_status_billed: No se puede facturar una entrada que ya ha sido facturada.
+    can't change status: No se puede modificar una factura pagada.
+    create_billed_entry: No puedes crear una entrada de hoja de horas facturada.
+    internal_server_error: Algo salió mal
+    not_found: El recurso que busca no está disponible.
+    prevent_draft_to_waived: no se puede cambiar a renunciado
+    unauthorized: Solo los usuarios propietarios o administradores están autorizados
+      a realizar esta acción.
+    updation_not_allowed: No se permiten actualizaciones.
+    user_already_member: Esta dirección de correo electrónico ya está en uso. Por
+      favor, introduzca otra dirección de correo electrónico.
+    validate_billable_project: No se puede crear una entrada no facturada para proyectos
+      no facturables.
+  expenses:
+    approve: Gasto aprobado con éxito
+    create: Gasto enviado correctamente
+    destroy: Gasto eliminado correctamente
+    mark_paid: Gasto marcado como pagado
+    must_be_approved: El gasto debe ser aprobado antes de marcarlo como pagado.
+    reject: Gasto rechazado correctamente
+    update: Gasto actualizado correctamente
+  holidays:
+    update:
+      success: Información sobre las vacaciones actualizada correctamente
+  invitation:
+    create:
+      success:
+        message: Invitación enviada correctamente
+    delete:
+      success:
+        message: Invitación eliminada correctamente
+    resent:
+      success:
+        message: Invitación reenviada con éxito
+    update:
+      success:
+        message: Cambios guardados correctamente
+  invitations:
+    accept:
+      index:
+        success: Invitación aceptada
+      show:
+        success: Invitación aceptada
+      success: Invitación aceptada
+    create:
+      failure: No se pudieron guardar los cambios.
+      success: Se enviará la invitación.
+    destroy:
+      failure: No se pudo eliminar la invitación.
+      success: Invitación eliminada
+    update:
+      failure: No se pudieron guardar los cambios.
+      success: Invitación actualizada
+  invoices:
+    payments:
+      success:
+        failure: Algo salió mal, por favor contacta con soporte
+        success: Pago realizado con éxito
+  invoices_controller:
+    download:
+      pdf_failed: No se pudo generar el PDF.
+    send_invoice:
+      already_paid: La factura ya está pagada.
+      pdf_failed: No se pudo generar el PDF.
+      recipient_limit: El correo electrónico solo se puede enviar a 5 destinatarios.
+      recipients_required: Se requieren destinatarios
+      success: La factura se ha enviado correctamente.
+    send_reminder:
+      overdue_only: Solo se pueden enviar recordatorios para facturas vencidas.
+      success: Se ha enviado un recordatorio.
+  invoices_view:
+    not_found: No se encontró ninguna factura.
+  leave_types:
+    create:
+      success: Se agregó correctamente el tipo de permiso
+    update:
+      success: Tipo de permiso actualizado correctamente
+  leave_with_leave_types:
+    update:
+      success: Hojas actualizadas correctamente
+  leaves:
+    create:
+      success: Permiso creado correctamente
+    update:
+      success: Salida actualizada correctamente
+  navbar:
+    clients: Clientela
+    help: Ayuda
+    invoices: Facturas
+    logout: Cerrar sesión
+    payments: Pagos
+    profile: Perfil
+    projects: Proyectos
+    reports: Informes
+    settings: Ajustes
+    team: Equipo
+    time_tracking: Control del tiempo
+    view_notifications: Ver notificaciones
+  passkeys:
+    add_passkey_first: Agregue una clave de acceso antes de que sea necesaria para
+      iniciar sesión.
+    added: Clave de acceso añadida
+    disable_totp_first: Desactive la autenticación de dos factores (2FA) de la aplicación
+      de autenticación antes de requerir el inicio de sesión con clave de acceso.
+    not_found: Contraseña no encontrada.
+    removed: Clave de acceso eliminada
+    requirement_disabled: Requisito de clave de acceso desactivado
+    requirement_enabled: Requisito de clave de acceso habilitado
+    session_expired: La sesión con clave de acceso ha caducado. Inténtelo de nuevo.
+    verification_failed: Falló la verificación de la clave de acceso.
+  password:
+    create:
+      success: Las instrucciones para restablecer su contraseña se han enviado a su
+        correo electrónico.
+    update:
+      success: Tu contraseña ha sido actualizada.
+  projects:
+    add_new_project: Agregar nuevo proyecto
+    add_project: Agregar proyecto
+    billable: Facturable
+    client: Cliente
+    create:
+      failure: La creación del proyecto falló.
+      success: Proyecto añadido correctamente.
+    delete:
+      success:
+        message: Proyecto eliminado correctamente
+    edit: editar
+    hours_logged: HORAS REGISTRADAS
+    new_project: NUEVO PROYECTO
+    non_billable: No facturable
+    project: Proyecto
+    project_name: Nombre del proyecto
+    projects: Proyectos
+    update:
+      success: Cambios guardados correctamente.
+    update_members:
+      failure:
+        message: No se pudieron guardar los cambios.
+        unauthorized: El usuario no está autorizado a modificar los detalles de este
+          proyecto.
+      success:
+        message: Cambios guardados correctamente
+  pundit:
+    client_policy:
+      create?: No tienes autorización para crear clientes.
+      show?: No tienes autorización para acceder a esta página. Ponte en contacto
+        con tu administrador para obtener ayuda.
+      update?: No tienes autorización para actualizar el cliente.
+    company_policy:
+      create?: No estás autorizado a crear una empresa.
+      new?: No estás autorizado a crear una nueva empresa.
+      show?: No tienes autorización para ver la información de la empresa.
+      update?: No estás autorizado a actualizar la información de la empresa.
+    current_company_policy:
+      company_not_present: Empresa no presente.
+    default: Usted no está autorizado a realizar esta acción.
+    different_workspace: No tiene autorización para acceder a registros fuera de su
+      espacio de trabajo actual.
+    project_policy:
+      create?: No tienes autorización para crear proyectos.
+      show?: No tienes autorización para acceder a esta página. Ponte en contacto
+        con tu administrador para obtener ayuda.
+    team_policy:
+      destroy?: No estás autorizado a destruir el equipo.
+      edit?: No tienes autorización para editar el equipo.
+      update?: No tienes autorización para actualizar el equipo.
+  registration:
+    confirm_password: confirmar Contraseña
+    email_id: correo electrónico
+    first_name: nombre de pila
+    last_name: apellido
+    name: nombre
+    or: o
+    password: contraseña
+    remember_me: Acuérdate de mí
+    sign_in: iniciar sesión
+    sign_up: inscribirse
+    signin_with_github: Iniciar sesión con GitHub
+    signin_with_google: Iniciar sesión con Google
+    signup_with_apple: Regístrate con Apple.
+    signup_with_github: Regístrate en GitHub.
+    signup_with_google: Regístrate con Google.
+  reports:
+    heading: Informe de registro de horas trabajadas
+  sessions:
+    failure:
+      invalid: Correo electrónico o contraseña incorrectos
+  settings:
+    cancel: Cancelar
+    change_password: cambiar la contraseña
+    confirm_password: confirmar Contraseña
+    current_password: Contraseña actual
+    email: correo electrónico
+    name: nombre
+    organization_setting: entornos de la organización
+    password: contraseña
+    payment_setting: configuración de pago
+    profile_picture: foto de perfil
+    profile_setting: configuración del perfil
+    save: ahorrar
+    settings: ajustes
+  shared_links:
+    already_have_an_account: "¿Ya tienes una cuenta?"
+    back_to_login: Volver a la página de inicio de sesión
+    confirmation_instruction: "¿No recibió las instrucciones de confirmación?"
+    dont_have_an_account: "¿No tienes una cuenta?"
+    forgot_password: Has olvidado tu contraseña ?
+    unlock_instruction: "¿No recibió las instrucciones para desbloquearlo?"
+  subscriptions:
+    no_billing_customer: Esta empresa no tiene ningún cliente facturable.
+    pricing_not_configured: La configuración de precios de suscripción de Stripe no
+      está establecida.
+    trial_not_eligible: Tu espacio de trabajo no cumple los requisitos para una prueba
+      Pro.
+    trial_started: Tu prueba Pro de 30 días ha comenzado.
+  team:
+    changed_email: Correo electrónico cambiado
+    create_new_user: Crear nuevo usuario
+    current_email: Correo electrónico actual
+    delete:
+      success:
+        message: Miembro del equipo eliminado correctamente
+    email: Correo electrónico
+    email_id: ID DE CORREO ELECTRÓNICO
+    first_name: Nombre de pila
+    form_admin: Administración
+    form_book_keeper: Contable
+    form_email: Correo electrónico
+    form_employee: Empleado
+    form_name: Nombre
+    form_role: Role
+    invitation: INVITACIÓN PENDIENTE
+    last_name: Apellido
+    name: NOMBRE
+    new_user: NUEVO USUARIO
+    profile_picture: FOTO
+    reconfirmation: RECONFIRMACIÓN PENDIENTE
+    role: ROLE
+    team: Equipo
+    update:
+      error:
+        role: Se produjo un error al actualizar el rol.
+      success:
+        message: Cambios guardados correctamente
+    update_user: Actualizar usuario
+  timeoff_entries:
+    create:
+      success: Tiempo libre añadido con éxito
+    destroy:
+      success: Se eliminó el tiempo libre correctamente.
+    update:
+      success: Tiempo libre actualizado correctamente
+  timesheet_entry:
+    create:
+      message: Hoja de horas creada
+    destroy:
+      failure: No se pudieron eliminar las entradas de la hoja de horas.
+      message: Hoja de horas eliminada
+    update:
+      failure: No se pudieron actualizar las entradas de la hoja de horas.
+      message: Hoja de horas actualizada
+  totp:
+    disable_passkey_first: Desactive el inicio de sesión con clave de acceso obligatoria
+      antes de habilitar la autenticación de dos factores (2FA) de la aplicación de
+      autenticación.
+    disabled: Aplicación de autenticación desactivada
+    enabled: Aplicación de autenticación habilitada
+    invalid_code: Código de autenticación no válido.
+    invalid_verification: Código de verificación no válido.
+    not_enabled: Primero, habilita la autenticación de dos factores (2FA) de la aplicación
+      de autenticación.
+    recovery_codes_regenerated: Códigos de recuperación regenerados
+    session_expired: Esa solicitud de verificación ya no es válida. Por favor, inicie
+      sesión de nuevo.
+  user:
+    login:
+      failure:
+        disabled: Tu acceso ha sido desactivado.
+        pending_invitation: Tu cuenta aún no está activada.
+  workspaces:
+    update:
+      failure: No se pudo cambiar de espacio de trabajo
+      success: El cambio de espacio de trabajo se realizó correctamente.

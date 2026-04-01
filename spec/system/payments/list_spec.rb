@@ -91,6 +91,20 @@ RSpec.describe "Payments page", type: :system, js: true do
         expect(page).to have_content("Add manual entry")
       end
     end
+
+    it "shows transaction type options in the manual entry modal" do
+      with_forgery_protection do
+        visit "/payments?invoiceId=#{sent_invoice.id}"
+
+        find("button", text: "Add manual entry", match: :first, wait: 10).click
+        within("#transactionType") do
+          find("button", text: "Select Transaction Type", match: :first, wait: 10).click
+        end
+
+        expect(page).to have_css("[role='option']", text: "Bank Transfer", wait: 10)
+        expect(page).to have_css("[role='option']", text: "Credit Card", wait: 10)
+      end
+    end
   end
 
   context "when there are no payments" do

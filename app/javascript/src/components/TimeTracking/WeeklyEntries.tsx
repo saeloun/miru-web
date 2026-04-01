@@ -4,6 +4,7 @@ import { timesheetEntryApi } from "apis/api";
 import { Toastr } from "StyledComponents";
 import { Card, CardContent } from "../ui/card";
 import { Alert, AlertDescription } from "../ui/alert";
+import { i18n } from "../../i18n";
 
 import SelectProject from "./SelectProject";
 import WeeklyEntriesCard from "./WeeklyEntriesCard";
@@ -109,7 +110,7 @@ const WeeklyEntries: React.FC<Props> = ({
       setIsLoading(true);
       const ids = getIds();
       if (ids.length === 0) {
-        Toastr.warning("No entries to update");
+        Toastr.warning(i18n.t("timeTracking.noEntriesToUpdate"));
 
         return;
       }
@@ -138,11 +139,11 @@ const WeeklyEntries: React.FC<Props> = ({
         });
 
         parseWeeklyViewData?.();
-        Toastr.success("Entries updated successfully");
+        Toastr.success(i18n.t("timeTracking.entriesUpdatedSuccessfully"));
       }
     } catch (error) {
       console.error("Error updating entries:", error);
-      Toastr.error("Failed to update entries");
+      Toastr.error(i18n.t("timeTracking.failedToUpdateEntries"));
     } finally {
       setIsLoading(false);
     }
@@ -150,7 +151,7 @@ const WeeklyEntries: React.FC<Props> = ({
 
   const handleAddRow = () => {
     if (!projectSelected || currentProjectId === -1) {
-      Toastr.warning("Please select a project first");
+      Toastr.warning(i18n.t("timeTracking.selectProjectFirst"));
 
       return;
     }
@@ -168,10 +169,10 @@ const WeeklyEntries: React.FC<Props> = ({
             </div>
             <div>
               <h3 className="text-lg font-semibold text-foreground">
-                Add New Project Entry
+                {i18n.t("timeTracking.addEntry")}
               </h3>
               <p className="mt-0.5 text-sm text-muted-foreground">
-                Select a client and project to start tracking time
+                {i18n.t("timeTracking.selectClient")}
               </p>
             </div>
           </div>
@@ -239,7 +240,7 @@ const WeeklyEntries: React.FC<Props> = ({
             <Alert className="max-w-md">
               <Warning className="h-4 w-4" />
               <AlertDescription>
-                Editing mode is active. Complete your changes above.
+                {i18n.t("timeTracking.editingModeActive")}
               </AlertDescription>
             </Alert>
           </div>

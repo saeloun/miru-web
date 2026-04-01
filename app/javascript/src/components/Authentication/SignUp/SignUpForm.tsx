@@ -4,13 +4,18 @@ import React, { useRef, useState } from "react";
 
 import { authenticationApi } from "apis/api";
 import { InputErrors, InputField } from "common/FormikFields";
+import { useUserContext } from "context/UserContext";
 import { Formik, Form, FormikProps } from "formik";
 import { GithubIcon, GoogleSVG } from "miruIcons";
 import { useNavigate } from "react-router-dom";
 
 import PrivacyPolicyModal from "./PrivacyPolicyModal";
 import TermsOfServiceModal from "./TermsOfServiceModal";
-import { signUpFormInitialValues, signUpFormValidationSchema } from "./utils";
+import { t } from "../../../i18n";
+import {
+  buildSignUpFormValidationSchema,
+  signUpFormInitialValues,
+} from "./utils";
 import AuthShell from "../AuthShell";
 
 interface SignUpFormValues {
@@ -23,6 +28,7 @@ interface SignUpFormValues {
 }
 
 const SignUpForm = () => {
+  const { locale } = useUserContext();
   const [privacyModal, setPrivacyModal] = useState(false);
   const [termsOfServiceModal, setTermsOfServiceModal] = useState(false);
   const navigate = useNavigate();
@@ -101,8 +107,8 @@ const SignUpForm = () => {
 
   return (
     <AuthShell
-      description="Set up clients, projects, invoices, and payments in one clear operating system."
-      title="Create your workspace"
+      description={t("auth.signUp.description")}
+      title={t("auth.signUp.title")}
     >
       <div>
         <Formik
@@ -129,7 +135,7 @@ const SignUpForm = () => {
                   onClick={handleGoogleAuth}
                 >
                   <img alt="" className="mr-2" src={GoogleSVG} />
-                  Continue with Google
+                  {t("auth.signUp.continueWithGoogle")}
                 </button>
               </Form>
               <Form action="/users/auth/github" method="post" ref={githubOauth}>
@@ -147,7 +153,7 @@ const SignUpForm = () => {
                     className="mr-2 h-4 w-4 text-foreground"
                     weight="fill"
                   />
-                  Continue with GitHub
+                  {t("auth.signUp.continueWithGitHub")}
                 </button>
               </Form>
             </div>
@@ -156,16 +162,17 @@ const SignUpForm = () => {
         <div className="relative mb-6 flex items-center">
           <div className="flex-grow border-t border-border" />
           <span className="mx-4 flex-shrink text-xs uppercase tracking-[0.18em] text-muted-foreground">
-            or use email
+            {t("auth.signUp.orUseEmail")}
           </span>
           <div className="flex-grow border-t border-border" />
         </div>
         <div>
           <Formik
+            key={locale}
             validateOnBlur
             initialValues={signUpFormInitialValues}
             validateOnChange={false}
-            validationSchema={signUpFormValidationSchema}
+            validationSchema={buildSignUpFormValidationSchema()}
             onSubmit={handleSignUpFormSubmit}
           >
             {(props: FormikProps<SignUpFormValues>) => {
@@ -185,7 +192,7 @@ const SignUpForm = () => {
                       <InputField
                         hasError={errors.first_name && touched.first_name}
                         id="first_name"
-                        label="First Name"
+                        label={t("auth.signUp.firstName")}
                         labelClassName="p-0 text-foreground"
                         name="first_name"
                         inputBoxClassName="h-11 border-border bg-background text-foreground placeholder:text-muted-foreground focus:border-primary focus-visible:ring-ring"
@@ -201,7 +208,7 @@ const SignUpForm = () => {
                       <InputField
                         hasError={errors.last_name && touched.last_name}
                         id="last_name"
-                        label="Last Name"
+                        label={t("auth.signUp.lastName")}
                         labelClassName="p-0 text-foreground"
                         name="last_name"
                         inputBoxClassName="h-11 border-border bg-background text-foreground placeholder:text-muted-foreground focus:border-primary focus-visible:ring-ring"
@@ -218,7 +225,7 @@ const SignUpForm = () => {
                     <InputField
                       hasError={errors.email && touched.email}
                       id="email"
-                      label="Email"
+                      label={t("auth.signUp.email")}
                       labelClassName="p-0 text-foreground"
                       name="email"
                       inputBoxClassName="h-11 border-border bg-background text-foreground placeholder:text-muted-foreground focus:border-primary focus-visible:ring-ring"
@@ -234,7 +241,7 @@ const SignUpForm = () => {
                     <InputField
                       hasError={errors.password && touched.password}
                       id="password"
-                      label="Password"
+                      label={t("auth.signUp.password")}
                       labelClassName="p-0 text-foreground"
                       name="password"
                       inputBoxClassName="h-11 border-border bg-background text-foreground placeholder:text-muted-foreground focus:border-primary focus-visible:ring-ring"
@@ -251,7 +258,7 @@ const SignUpForm = () => {
                   <div className="field">
                     <InputField
                       id="confirm_password"
-                      label="Confirm Password"
+                      label={t("auth.signUp.confirmPassword")}
                       labelClassName="p-0 text-foreground"
                       marginBottom="mb-2"
                       name="confirm_password"
@@ -265,8 +272,7 @@ const SignUpForm = () => {
                     />
                     {showPasswordCriteria(errors, touched) && (
                       <p className="text-xs font-medium leading-4 text-muted-foreground">
-                        Min. 8 characters, 1 uppercase, 1 lowercase, 1 number
-                        and 1 special character
+                        {t("auth.signUp.passwordCriteria")}
                       </p>
                     )}
                     <InputErrors
@@ -290,21 +296,21 @@ const SignUpForm = () => {
                       type="checkbox"
                     />
                     <label className="leading-5" htmlFor="termsOfService">
-                      I agree to the{" "}
+                      {t("auth.signUp.agreePrefix")}{" "}
                       <button
                         className="text-foreground hover:text-primary"
                         onClick={handleTermsOfService}
                         type="button"
                       >
-                        Terms of Service
+                        {t("auth.signUp.termsOfService")}
                       </button>{" "}
-                      and{" "}
+                      {t("auth.signUp.and")}{" "}
                       <button
                         className="text-foreground hover:text-primary"
                         onClick={handlePrivacyPolicy}
                         type="button"
                       >
-                        Privacy Policy
+                        {t("auth.signUp.privacyPolicy")}
                       </button>
                     </label>
                   </div>
@@ -321,7 +327,7 @@ const SignUpForm = () => {
                           : "cursor-pointer border-transparent bg-primary text-primary-foreground hover:bg-primary/90"
                       }`}
                     >
-                      Create account
+                      {t("auth.signUp.submit")}
                     </button>
                   </div>
                 </Form>
@@ -343,11 +349,11 @@ const SignUpForm = () => {
             )}
           </div>
           <p className="pt-3 text-center text-sm text-muted-foreground">
-            Already have an account?{" "}
+            {t("auth.signUp.alreadyHaveAccount")}{" "}
             <span className="inline cursor-pointer">
               <a href={Paths.LOGIN}>
                 <span className="inline-block text-foreground hover:text-primary">
-                  Sign in
+                  {t("auth.signUp.signIn")}
                 </span>
               </a>
             </span>
@@ -358,7 +364,7 @@ const SignUpForm = () => {
               onClick={handlePrivacyPolicy}
               type="button"
             >
-              Privacy
+              {t("auth.signIn.privacy")}
             </button>
             <span>•</span>
             <button
@@ -366,7 +372,7 @@ const SignUpForm = () => {
               onClick={handleTermsOfService}
               type="button"
             >
-              Terms
+              {t("auth.signIn.terms")}
             </button>
           </div>
         </div>

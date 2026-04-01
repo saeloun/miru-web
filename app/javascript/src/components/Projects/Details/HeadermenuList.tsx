@@ -3,6 +3,7 @@ import React, { useRef } from "react";
 import { useUserContext } from "context/UserContext";
 import { useOutsideClick } from "helpers";
 import { PencilSimple, Trash, Receipt, UsersThree } from "phosphor-react";
+import { i18n } from "../../../i18n";
 import {
   DropdownMenuItem,
   DropdownMenuSeparator,
@@ -26,11 +27,11 @@ const HeaderMenuList = ({
         <>
           <DropdownMenuItem onClick={handleGenerateInvoice}>
             <Receipt size={16} />
-            <span>New invoice</span>
+            <span>{i18n.t("projects.newInvoice")}</span>
           </DropdownMenuItem>
           <DropdownMenuItem onClick={handleAddRemoveMembers}>
             <UsersThree size={16} />
-            <span>Manage team</span>
+            <span>{i18n.t("projects.manageTeam")}</span>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
         </>
@@ -43,7 +44,7 @@ const HeaderMenuList = ({
         }}
       >
         <PencilSimple size={16} />
-        <span>Edit project</span>
+        <span>{i18n.t("projects.editProject")}</span>
       </DropdownMenuItem>
       <DropdownMenuSeparator />
       <DropdownMenuItem
@@ -51,7 +52,7 @@ const HeaderMenuList = ({
         onClick={() => setShowDeleteDialog(true)}
       >
         <Trash size={16} />
-        <span>Delete project</span>
+        <span>{i18n.t("projects.deleteProject")}</span>
       </DropdownMenuItem>
     </div>
   );

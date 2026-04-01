@@ -1,0 +1,364 @@
+---
+kn:
+  activerecord:
+    errors:
+      models:
+        client:
+          attributes:
+            name:
+              format: ಎಕ್ಸ್__0
+        project:
+          attributes:
+            name:
+              format: ಎಕ್ಸ್__0
+  application_controller:
+    not_found: ಮಾರ್ಗ ಕಂಡುಬಂದಿಲ್ಲ.
+  avatar:
+    destroy:
+      success: ಅವತಾರ್ ಅನ್ನು ಯಶಸ್ವಿಯಾಗಿ ಅಳಿಸಲಾಗಿದೆ
+    update:
+      success: ಅವತಾರ್ ಅನ್ನು ಯಶಸ್ವಿಯಾಗಿ ನವೀಕರಿಸಲಾಗಿದೆ
+  client:
+    add: ಕ್ಲೈಂಟ್ ಸೇರಿಸಿ
+    address:
+      label: ವಿಳಾಸ
+      placeholder: ವಿಳಾಸವನ್ನು ನಮೂದಿಸಿ
+    create:
+      failure: ಕ್ಲೈಂಟ್ ರಚನೆ ವಿಫಲವಾಗಿದೆ
+      success: ಕ್ಲೈಂಟ್ ಅನ್ನು ಯಶಸ್ವಿಯಾಗಿ ಸೇರಿಸಲಾಗಿದೆ
+    delete:
+      success:
+        message: ಕ್ಲೈಂಟ್ ಅನ್ನು ಯಶಸ್ವಿಯಾಗಿ ತೆಗೆದುಹಾಕಲಾಗಿದೆ
+    email:
+      label: ಇಮೇಲ್
+      placeholder: ಇಮೇಲ್ ಐಡಿ ನಮೂದಿಸಿ
+    name:
+      label: ಹೆಸರು
+      placeholder: ಹೆಸರನ್ನು ನಮೂದಿಸಿ
+    phone:
+      label: ದೂರವಾಣಿ ಸಂಖ್ಯೆ
+      placeholder: ಫೋನ್ ಸಂಖ್ಯೆಯನ್ನು ನಮೂದಿಸಿ
+    update:
+      failure:
+        message: ಬದಲಾವಣೆಗಳನ್ನು ಉಳಿಸಲು ವಿಫಲವಾಗಿದೆ
+        unauthorized: ಈ ಕ್ಲೈಂಟ್‌ನ ವಿವರಗಳನ್ನು ಮಾರ್ಪಡಿಸಲು ಬಳಕೆದಾರರಿಗೆ ಅಧಿಕಾರವಿಲ್ಲ.
+      success:
+        message: ಬದಲಾವಣೆಗಳನ್ನು ಯಶಸ್ವಿಯಾಗಿ ಉಳಿಸಲಾಗಿದೆ.
+  clients:
+    add_client_contact:
+      success: ಆಹ್ವಾನವನ್ನು ಯಶಸ್ವಿಯಾಗಿ ಕಳುಹಿಸಲಾಗಿದೆ.
+    send_payment_reminder:
+      success: ಪಾವತಿ ಜ್ಞಾಪನೆಯನ್ನು ಕಳುಹಿಸಲಾಗಿದೆ.
+  companies:
+    create:
+      failure: ಕಂಪನಿ ರಚನೆ ವಿಫಲವಾಗಿದೆ
+      success: ಕಂಪನಿಯನ್ನು ಯಶಸ್ವಿಯಾಗಿ ರಚಿಸಲಾಗಿದೆ
+    purge_logo:
+      destroy:
+        success: ಕಂಪನಿ ಲೋಗೋವನ್ನು ಯಶಸ್ವಿಯಾಗಿ ತೆಗೆದುಹಾಕಲಾಗಿದೆ.
+    update:
+      success: ಬದಲಾವಣೆಗಳನ್ನು ಯಶಸ್ವಿಯಾಗಿ ಉಳಿಸಲಾಗಿದೆ.
+  company:
+    address: ವಿಳಾಸ
+    base_currency: ಮೂಲ ಕರೆನ್ಸಿ
+    business_phone: ವ್ಯಾಪಾರ ಫೋನ್
+    cancel: ರದ್ದುಮಾಡಿ
+    company: ಕಂಪನಿ
+    country: ದೇಶ
+    date_format: ದಿನಾಂಕ ಸ್ವರೂಪ
+    fiscal_year: ಹಣಕಾಸು ವರ್ಷ
+    logo: ಲೋಗೋ
+    save: ಉಳಿಸು
+    save_org: ಸಂಸ್ಥೆಯ ವಿವರಗಳನ್ನು ಉಳಿಸಿ
+    setup: ಸೆಟಪ್ ಸಂಸ್ಥೆ
+    standard_price: ಪ್ರಮಾಣಿತ ಬೆಲೆ
+    timezone: ಸಮಯ ವಲಯ
+  confirmation:
+    send_instructions: "%{email} ಗೆ ದೃಢೀಕರಣ ಇಮೇಲ್ ಕಳುಹಿಸಲಾಗಿದೆ."
+  currency_pairs:
+    from_to_required: ನಿಂದ ಮತ್ತು ವರೆಗೆ ಅಗತ್ಯವಿದೆ
+    rate_not_found: ದರ ಕಂಡುಬಂದಿಲ್ಲ.
+  custom_leaves:
+    update:
+      success: ಕಸ್ಟಮ್ ಲೀವ್‌ಗಳನ್ನು ಯಶಸ್ವಿಯಾಗಿ ನವೀಕರಿಸಲಾಗಿದೆ
+  employment:
+    update:
+      success: ಉದ್ಯೋಗವನ್ನು ಯಶಸ್ವಿಯಾಗಿ ನವೀಕರಿಸಲಾಗಿದೆ
+  errors:
+    bill_status_billed: ಈಗಾಗಲೇ ಬಿಲ್ ಮಾಡಲಾದ ನಮೂದನ್ನು ನೀವು ಬಿಲ್ ಮಾಡಲು ಸಾಧ್ಯವಿಲ್ಲ.
+    can't change status: ಪಾವತಿಸಿದ ಇನ್‌ವಾಯ್ಸ್ ಅನ್ನು ಬದಲಾಯಿಸಲಾಗುವುದಿಲ್ಲ.
+    create_billed_entry: ನೀವು ಬಿಲ್ ಮಾಡಿದ ಟೈಮ್‌ಶೀಟ್ ನಮೂದನ್ನು ರಚಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ.
+    internal_server_error: ಏನೋ ತಪ್ಪಾಗಿದೆ.
+    not_found: ನೀವು ಹುಡುಕುತ್ತಿರುವ ಸಂಪನ್ಮೂಲ ಲಭ್ಯವಿಲ್ಲ.
+    prevent_draft_to_waived: ಬಿಟ್ಟುಕೊಟ್ಟಂತೆ ಬದಲಾಯಿಸಲಾಗುವುದಿಲ್ಲ.
+    unauthorized: ಈ ಕ್ರಿಯೆಯನ್ನು ನಿರ್ವಹಿಸಲು ಮಾಲೀಕರು ಅಥವಾ ನಿರ್ವಾಹಕ ಬಳಕೆದಾರರಿಗೆ ಮಾತ್ರ
+      ಅಧಿಕಾರವಿದೆ.
+    updation_not_allowed: ನವೀಕರಣಕ್ಕೆ ಅವಕಾಶವಿಲ್ಲ.
+    user_already_member: ಇಮೇಲ್ ಐಡಿ ಈಗಾಗಲೇ ಬಳಕೆಯಲ್ಲಿದೆ. ದಯವಿಟ್ಟು ಇನ್ನೊಂದು ಇಮೇಲ್ ಐಡಿ
+      ನಮೂದಿಸಿ.
+    validate_billable_project: ಬಿಲ್ ಮಾಡಲಾಗದ ಯೋಜನೆಗಳಿಗೆ ನೀವು ಬಿಲ್ ಮಾಡದ ನಮೂದನ್ನು ರಚಿಸಲು
+      ಸಾಧ್ಯವಿಲ್ಲ.
+  expenses:
+    approve: ವೆಚ್ಚವನ್ನು ಯಶಸ್ವಿಯಾಗಿ ಅನುಮೋದಿಸಲಾಗಿದೆ.
+    create: ವೆಚ್ಚವನ್ನು ಯಶಸ್ವಿಯಾಗಿ ಸಲ್ಲಿಸಲಾಗಿದೆ
+    destroy: ವೆಚ್ಚವನ್ನು ಯಶಸ್ವಿಯಾಗಿ ಅಳಿಸಲಾಗಿದೆ
+    mark_paid: ವೆಚ್ಚವನ್ನು ಪಾವತಿಸಲಾಗಿದೆ ಎಂದು ಗುರುತಿಸಲಾಗಿದೆ
+    must_be_approved: ವೆಚ್ಚವನ್ನು ಪಾವತಿಸಲಾಗಿದೆ ಎಂದು ಗುರುತಿಸುವ ಮೊದಲು ಅದನ್ನು ಅನುಮೋದಿಸಬೇಕು.
+    reject: ವೆಚ್ಚವನ್ನು ಯಶಸ್ವಿಯಾಗಿ ತಿರಸ್ಕರಿಸಲಾಗಿದೆ.
+    update: ವೆಚ್ಚವನ್ನು ಯಶಸ್ವಿಯಾಗಿ ನವೀಕರಿಸಲಾಗಿದೆ
+  holidays:
+    update:
+      success: ರಜಾ ಮಾಹಿತಿಯನ್ನು ಯಶಸ್ವಿಯಾಗಿ ನವೀಕರಿಸಲಾಗಿದೆ
+  invitation:
+    create:
+      success:
+        message: ಆಹ್ವಾನವನ್ನು ಯಶಸ್ವಿಯಾಗಿ ಕಳುಹಿಸಲಾಗಿದೆ
+    delete:
+      success:
+        message: ಆಹ್ವಾನವನ್ನು ಯಶಸ್ವಿಯಾಗಿ ತೆಗೆದುಹಾಕಲಾಗಿದೆ
+    resent:
+      success:
+        message: ಆಹ್ವಾನವನ್ನು ಯಶಸ್ವಿಯಾಗಿ ಮರು ಕಳುಹಿಸಲಾಗಿದೆ
+    update:
+      success:
+        message: ಬದಲಾವಣೆಗಳನ್ನು ಯಶಸ್ವಿಯಾಗಿ ಉಳಿಸಲಾಗಿದೆ.
+  invitations:
+    accept:
+      index:
+        success: ಆಹ್ವಾನವನ್ನು ಸ್ವೀಕರಿಸಲಾಗಿದೆ
+      show:
+        success: ಆಹ್ವಾನವನ್ನು ಸ್ವೀಕರಿಸಲಾಗಿದೆ
+      success: ಆಹ್ವಾನವನ್ನು ಸ್ವೀಕರಿಸಲಾಗಿದೆ
+    create:
+      failure: ಬದಲಾವಣೆಗಳನ್ನು ಉಳಿಸಲು ವಿಫಲವಾಗಿದೆ
+      success: ಆಹ್ವಾನ ಕಳುಹಿಸಲಾಗುವುದು
+    destroy:
+      failure: ಆಹ್ವಾನವನ್ನು ಅಳಿಸಲು ವಿಫಲವಾಗಿದೆ.
+      success: ಆಹ್ವಾನ ಅಳಿಸಲಾಗಿದೆ
+    update:
+      failure: ಬದಲಾವಣೆಗಳನ್ನು ಉಳಿಸಲು ವಿಫಲವಾಗಿದೆ
+      success: ಆಹ್ವಾನವನ್ನು ನವೀಕರಿಸಲಾಗಿದೆ
+  invoices:
+    payments:
+      success:
+        failure: ಏನೋ ತಪ್ಪಾಗಿದೆ, ದಯವಿಟ್ಟು ಬೆಂಬಲವನ್ನು ಸಂಪರ್ಕಿಸಿ.
+        success: ಪಾವತಿ ಯಶಸ್ವಿಯಾಗಿದೆ
+  invoices_controller:
+    download:
+      pdf_failed: PDF ರಚಿಸಲು ವಿಫಲವಾಗಿದೆ
+    send_invoice:
+      already_paid: ಇನ್‌ವಾಯ್ಸ್ ಈಗಾಗಲೇ ಪಾವತಿಸಲಾಗಿದೆ.
+      pdf_failed: PDF ರಚಿಸಲು ವಿಫಲವಾಗಿದೆ
+      recipient_limit: ಇಮೇಲ್ ಅನ್ನು 5 ಸ್ವೀಕರಿಸುವವರಿಗೆ ಮಾತ್ರ ಕಳುಹಿಸಬಹುದು.
+      recipients_required: ಸ್ವೀಕರಿಸುವವರು ಅಗತ್ಯವಿದೆ
+      success: ಇನ್‌ವಾಯ್ಸ್ ಅನ್ನು ಯಶಸ್ವಿಯಾಗಿ ಕಳುಹಿಸಲಾಗಿದೆ.
+    send_reminder:
+      overdue_only: ಬಾಕಿ ಉಳಿದಿರುವ ಇನ್‌ವಾಯ್ಸ್‌ಗಳಿಗೆ ಮಾತ್ರ ಜ್ಞಾಪನೆಗಳನ್ನು ಕಳುಹಿಸಬಹುದು.
+      success: ಜ್ಞಾಪನೆಯನ್ನು ಕಳುಹಿಸಲಾಗಿದೆ.
+  invoices_view:
+    not_found: ಯಾವುದೇ ಇನ್‌ವಾಯ್ಸ್ ಕಂಡುಬಂದಿಲ್ಲ.
+  leave_types:
+    create:
+      success: ರಜೆ ಪ್ರಕಾರವನ್ನು ಯಶಸ್ವಿಯಾಗಿ ಸೇರಿಸಲಾಗಿದೆ
+    update:
+      success: ರಜೆ ಪ್ರಕಾರವನ್ನು ಯಶಸ್ವಿಯಾಗಿ ನವೀಕರಿಸಲಾಗಿದೆ
+  leave_with_leave_types:
+    update:
+      success: ಎಲೆಗಳನ್ನು ಯಶಸ್ವಿಯಾಗಿ ನವೀಕರಿಸಲಾಗಿದೆ
+  leaves:
+    create:
+      success: ರಜೆಯನ್ನು ಯಶಸ್ವಿಯಾಗಿ ರಚಿಸಲಾಗಿದೆ
+    update:
+      success: ಯಶಸ್ವಿಯಾಗಿ ನವೀಕರಿಸಲಾಗಿದೆ ಬಿಡಿ
+  navbar:
+    clients: ಗ್ರಾಹಕರು
+    help: ಸಹಾಯ
+    invoices: ಇನ್‌ವಾಯ್ಸ್‌ಗಳು
+    logout: ಲಾಗ್ಔಟ್
+    payments: ಪಾವತಿಗಳು
+    profile: ಪ್ರೊಫೈಲ್
+    projects: ಯೋಜನೆಗಳು
+    reports: ವರದಿಗಳು
+    settings: ಸೆಟ್ಟಿಂಗ್‌ಗಳು
+    team: ತಂಡ
+    time_tracking: ಸಮಯ ಟ್ರ್ಯಾಕಿಂಗ್
+    view_notifications: ಅಧಿಸೂಚನೆಗಳನ್ನು ವೀಕ್ಷಿಸಿ
+  passkeys:
+    add_passkey_first: ಸೈನ್ ಇನ್ ಮಾಡಲು ಪಾಸ್‌ಕೀ ಅಗತ್ಯಗೊಳಿಸುವ ಮೊದಲು ಅದನ್ನು ಸೇರಿಸಿ.
+    added: ಪಾಸ್‌ಕೀ ಸೇರಿಸಲಾಗಿದೆ
+    disable_totp_first: ಪಾಸ್‌ಕೀ ಸೈನ್ ಇನ್ ಮಾಡುವ ಮೊದಲು ಅಥೆಂಟಿಕೇಟರ್ ಅಪ್ಲಿಕೇಶನ್ 2FA ಅನ್ನು
+      ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಿ.
+    not_found: ಪಾಸ್‌ಕೀ ಕಂಡುಬಂದಿಲ್ಲ.
+    removed: ಪಾಸ್‌ಕೀ ತೆಗೆದುಹಾಕಲಾಗಿದೆ
+    requirement_disabled: ಪಾಸ್‌ಕೀ ಅವಶ್ಯಕತೆಯನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ
+    requirement_enabled: ಪಾಸ್‌ಕೀ ಅವಶ್ಯಕತೆಯನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ
+    session_expired: ಪಾಸ್‌ಕೀ ಅವಧಿ ಮುಗಿದಿದೆ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.
+    verification_failed: ಪಾಸ್‌ಕೀ ಪರಿಶೀಲನೆ ವಿಫಲವಾಗಿದೆ.
+  password:
+    create:
+      success: ನಿಮ್ಮ ಪಾಸ್‌ವರ್ಡ್ ಅನ್ನು ಮರುಹೊಂದಿಸಲು ಸೂಚನೆಗಳನ್ನು ನಿಮ್ಮ ಇಮೇಲ್‌ಗೆ ಕಳುಹಿಸಲಾಗಿದೆ.
+    update:
+      success: ನಿಮ್ಮ ಪಾಸ್‌ವರ್ಡ್ ಅನ್ನು ನವೀಕರಿಸಲಾಗಿದೆ.
+  projects:
+    add_new_project: ಹೊಸ ಯೋಜನೆಯನ್ನು ಸೇರಿಸಿ
+    add_project: ಯೋಜನೆಯನ್ನು ಸೇರಿಸಿ
+    billable: ಬಿಲ್ ಮಾಡಬಹುದಾದ
+    client: ಕ್ಲೈಂಟ್
+    create:
+      failure: ಯೋಜನೆಯ ರಚನೆ ವಿಫಲವಾಗಿದೆ.
+      success: ಯೋಜನೆಯನ್ನು ಯಶಸ್ವಿಯಾಗಿ ಸೇರಿಸಲಾಗಿದೆ.
+    delete:
+      success:
+        message: ಯೋಜನೆಯನ್ನು ಯಶಸ್ವಿಯಾಗಿ ತೆಗೆದುಹಾಕಲಾಗಿದೆ
+    edit: ಸಂಪಾದಿಸಿ
+    hours_logged: ಗಂಟೆಗಳು ಲಾಗ್ ಆಗಿವೆ
+    new_project: ಹೊಸ ಯೋಜನೆ
+    non_billable: ಬಿಲ್ ಮಾಡಲಾಗದ
+    project: ಯೋಜನೆ
+    project_name: ಯೋಜನೆಯ ಹೆಸರು
+    projects: ಯೋಜನೆಗಳು
+    update:
+      success: ಬದಲಾವಣೆಗಳನ್ನು ಯಶಸ್ವಿಯಾಗಿ ಉಳಿಸಲಾಗಿದೆ.
+    update_members:
+      failure:
+        message: ಬದಲಾವಣೆಗಳನ್ನು ಉಳಿಸಲು ವಿಫಲವಾಗಿದೆ
+        unauthorized: ಈ ಯೋಜನೆಯ ವಿವರಗಳನ್ನು ಮಾರ್ಪಡಿಸಲು ಬಳಕೆದಾರರಿಗೆ ಅಧಿಕಾರವಿಲ್ಲ.
+      success:
+        message: ಬದಲಾವಣೆಗಳನ್ನು ಯಶಸ್ವಿಯಾಗಿ ಉಳಿಸಲಾಗಿದೆ.
+  pundit:
+    client_policy:
+      create?: ನೀವು ಕ್ಲೈಂಟ್ ಅನ್ನು ರಚಿಸಲು ಅಧಿಕಾರ ಹೊಂದಿಲ್ಲ.
+      show?: ಪುಟವನ್ನು ಪ್ರವೇಶಿಸಲು ನಿಮಗೆ ಅಧಿಕಾರವಿಲ್ಲ. ಸಹಾಯಕ್ಕಾಗಿ ದಯವಿಟ್ಟು ನಿಮ್ಮ ನಿರ್ವಾಹಕರನ್ನು
+        ಸಂಪರ್ಕಿಸಿ.
+      update?: ಕ್ಲೈಂಟ್ ಅನ್ನು ನವೀಕರಿಸಲು ನಿಮಗೆ ಅಧಿಕಾರವಿಲ್ಲ.
+    company_policy:
+      create?: ನಿಮಗೆ ಕಂಪನಿಯನ್ನು ರಚಿಸಲು ಅಧಿಕಾರವಿಲ್ಲ.
+      new?: ಹೊಸ ಕಂಪನಿಯನ್ನು ರಚಿಸಲು ನಿಮಗೆ ಅಧಿಕಾರವಿಲ್ಲ.
+      show?: ಕಂಪನಿಯನ್ನು ವೀಕ್ಷಿಸಲು ನಿಮಗೆ ಅಧಿಕಾರವಿಲ್ಲ.
+      update?: ಕಂಪನಿಯನ್ನು ನವೀಕರಿಸಲು ನಿಮಗೆ ಅಧಿಕಾರವಿಲ್ಲ.
+    current_company_policy:
+      company_not_present: ಕಂಪನಿ ಹಾಜರಿಲ್ಲ.
+    default: ಈ ಕ್ರಿಯೆಯನ್ನು ನಿರ್ವಹಿಸಲು ನಿಮಗೆ ಅಧಿಕಾರವಿಲ್ಲ.
+    different_workspace: ನಿಮ್ಮ ಪ್ರಸ್ತುತ ಕಾರ್ಯಸ್ಥಳದ ಹೊರಗೆ ದಾಖಲೆಗಳನ್ನು ಪ್ರವೇಶಿಸಲು ನಿಮಗೆ
+      ಅಧಿಕಾರವಿಲ್ಲ.
+    project_policy:
+      create?: ನೀವು ಯೋಜನೆಯನ್ನು ರಚಿಸಲು ಅಧಿಕಾರ ಹೊಂದಿಲ್ಲ.
+      show?: ಪುಟವನ್ನು ಪ್ರವೇಶಿಸಲು ನಿಮಗೆ ಅಧಿಕಾರವಿಲ್ಲ. ಸಹಾಯಕ್ಕಾಗಿ ದಯವಿಟ್ಟು ನಿಮ್ಮ ನಿರ್ವಾಹಕರನ್ನು
+        ಸಂಪರ್ಕಿಸಿ.
+    team_policy:
+      destroy?: ತಂಡವನ್ನು ನಾಶಮಾಡಲು ನಿಮಗೆ ಅಧಿಕಾರವಿಲ್ಲ.
+      edit?: ತಂಡವನ್ನು ಸಂಪಾದಿಸಲು ನಿಮಗೆ ಅಧಿಕಾರವಿಲ್ಲ.
+      update?: ತಂಡವನ್ನು ನವೀಕರಿಸಲು ನಿಮಗೆ ಅಧಿಕಾರವಿಲ್ಲ.
+  registration:
+    confirm_password: ಪಾಸ್‌ವರ್ಡ್ ದೃಢೀಕರಿಸಿ
+    email_id: ಇಮೇಲ್
+    first_name: ಮೊದಲ ಹೆಸರು
+    last_name: ಕೊನೆಯ ಹೆಸರು
+    name: ಹೆಸರು
+    or: ಅಥವಾ
+    password: ಪಾಸ್ವರ್ಡ್
+    remember_me: ನನ್ನನ್ನು ನೆನಪಿಡಿ
+    sign_in: ಸೈನ್ ಇನ್ ಮಾಡಿ
+    sign_up: ಸೈನ್ ಅಪ್ ಮಾಡಿ
+    signin_with_github: ಗಿಥಬ್ ಬಳಸಿ ಸೈನ್ ಇನ್ ಮಾಡಿ
+    signin_with_google: ಗೂಗಲ್ ಜೊತೆ ಸೈನ್ ಇನ್ ಮಾಡಿ
+    signup_with_apple: ಆಪಲ್ ಜೊತೆ ಸೈನ್ ಅಪ್ ಮಾಡಿ
+    signup_with_github: ಗಿಥಬ್‌ನೊಂದಿಗೆ ಸೈನ್ ಅಪ್ ಮಾಡಿ
+    signup_with_google: ಗೂಗಲ್ ನಲ್ಲಿ ಸೈನ್ ಅಪ್ ಮಾಡಿ
+  reports:
+    heading: ಸಮಯ ನಮೂದು ವರದಿ
+  sessions:
+    failure:
+      invalid: ಅಮಾನ್ಯ ಇಮೇಲ್ ಅಥವಾ ಪಾಸ್‌ವರ್ಡ್
+  settings:
+    cancel: ರದ್ದುಮಾಡಿ
+    change_password: ಪಾಸ್‌ವರ್ಡ್ ಬದಲಾಯಿಸಿ
+    confirm_password: ಪಾಸ್‌ವರ್ಡ್ ದೃಢೀಕರಿಸಿ
+    current_password: ಪ್ರಸ್ತುತ ಪಾಸ್‌ವರ್ಡ್
+    email: ಇಮೇಲ್
+    name: ಹೆಸರು
+    organization_setting: ಸಂಸ್ಥೆಯ ಸೆಟ್ಟಿಂಗ್‌ಗಳು
+    password: ಪಾಸ್ವರ್ಡ್
+    payment_setting: ಪಾವತಿ ಸೆಟ್ಟಿಂಗ್‌ಗಳು
+    profile_picture: ಪ್ರೊಫೈಲ್ ಚಿತ್ರ
+    profile_setting: ಪ್ರೊಫೈಲ್ ಸೆಟ್ಟಿಂಗ್‌ಗಳು
+    save: ಉಳಿಸು
+    settings: ಸೆಟ್ಟಿಂಗ್‌ಗಳು
+  shared_links:
+    already_have_an_account: ಈಗಾಗಲೇ ಖಾತೆ ಇದೆಯೇ?
+    back_to_login: ಲಾಗಿನ್‌ಗೆ ಹಿಂತಿರುಗಿ
+    confirmation_instruction: ದೃಢೀಕರಣ ಸೂಚನೆಗಳು ಸಿಗಲಿಲ್ಲವೇ?
+    dont_have_an_account: ಖಾತೆ ಇಲ್ಲವೇ?
+    forgot_password: ಪಾಸ್ವರ್ಡ್ ಮರೆತಿರಾ?
+    unlock_instruction: ಅನ್‌ಲಾಕ್ ಸೂಚನೆಗಳು ಸಿಗಲಿಲ್ಲವೇ?
+  subscriptions:
+    no_billing_customer: ಈ ಕಂಪನಿಗೆ ಯಾವುದೇ ಬಿಲ್ಲಿಂಗ್ ಗ್ರಾಹಕರು ಅಸ್ತಿತ್ವದಲ್ಲಿಲ್ಲ.
+    pricing_not_configured: ಸ್ಟ್ರೈಪ್ ಚಂದಾದಾರಿಕೆ ಬೆಲೆಯನ್ನು ಕಾನ್ಫಿಗರ್ ಮಾಡಲಾಗಿಲ್ಲ.
+    trial_not_eligible: ನಿಮ್ಮ ಕಾರ್ಯಸ್ಥಳವು ವೃತ್ತಿಪರ ಪ್ರಯೋಗಕ್ಕೆ ಅರ್ಹವಾಗಿಲ್ಲ.
+    trial_started: ನಿಮ್ಮ 30-ದಿನಗಳ ಪ್ರೊ ಪ್ರಯೋಗ ಪ್ರಾರಂಭವಾಗಿದೆ.
+  team:
+    changed_email: ಇಮೇಲ್ ಬದಲಾಯಿಸಲಾಗಿದೆ
+    create_new_user: ಹೊಸ ಬಳಕೆದಾರರನ್ನು ರಚಿಸಿ
+    current_email: ಪ್ರಸ್ತುತ ಇಮೇಲ್
+    delete:
+      success:
+        message: ತಂಡದ ಸದಸ್ಯರನ್ನು ಯಶಸ್ವಿಯಾಗಿ ತೆಗೆದುಹಾಕಲಾಗಿದೆ.
+    email: ಇಮೇಲ್
+    email_id: ಇಮೇಲ್ ಐಡಿ
+    first_name: ಹೆಸರು
+    form_admin: ನಿರ್ವಾಹಕ
+    form_book_keeper: ಪುಸ್ತಕ ಕೀಪರ್
+    form_email: ಇಮೇಲ್
+    form_employee: ಉದ್ಯೋಗಿ
+    form_name: ಹೆಸರು
+    form_role: ಪಾತ್ರ
+    invitation: ಆಹ್ವಾನ ಬಾಕಿ ಇದೆ
+    last_name: ಕೊನೆಯ ಹೆಸರು
+    name: ಹೆಸರು
+    new_user: ಹೊಸ ಬಳಕೆದಾರ
+    profile_picture: ಫೋಟೋ
+    reconfirmation: ಮರು ದೃಢೀಕರಣ ಬಾಕಿ ಇದೆ
+    role: ಪಾತ್ರ
+    team: ತಂಡ
+    update:
+      error:
+        role: ಪಾತ್ರವನ್ನು ನವೀಕರಿಸುವಾಗ ದೋಷ ಕಂಡುಬಂದಿದೆ.
+      success:
+        message: ಬದಲಾವಣೆಗಳನ್ನು ಯಶಸ್ವಿಯಾಗಿ ಉಳಿಸಲಾಗಿದೆ.
+    update_user: ಬಳಕೆದಾರರನ್ನು ನವೀಕರಿಸಿ
+  timeoff_entries:
+    create:
+      success: ಯಶಸ್ವಿಯಾಗಿ ವಿರಾಮ ಸಮಯವನ್ನು ಸೇರಿಸಲಾಗಿದೆ
+    destroy:
+      success: ರಜೆಯ ಸಮಯವನ್ನು ಯಶಸ್ವಿಯಾಗಿ ಅಳಿಸಲಾಗಿದೆ.
+    update:
+      success: ರಜೆಯ ಸಮಯವನ್ನು ಯಶಸ್ವಿಯಾಗಿ ನವೀಕರಿಸಲಾಗಿದೆ.
+  timesheet_entry:
+    create:
+      message: ಟೈಮ್‌ಶೀಟ್ ರಚಿಸಲಾಗಿದೆ
+    destroy:
+      failure: ಟೈಮ್‌ಶೀಟ್ ನಮೂದುಗಳನ್ನು ಅಳಿಸಲು ವಿಫಲವಾಗಿದೆ.
+      message: ಟೈಮ್‌ಶೀಟ್ ಅಳಿಸಲಾಗಿದೆ
+    update:
+      failure: ಟೈಮ್‌ಶೀಟ್ ನಮೂದುಗಳನ್ನು ನವೀಕರಿಸಲು ವಿಫಲವಾಗಿದೆ.
+      message: ಟೈಮ್‌ಶೀಟ್ ಅನ್ನು ನವೀಕರಿಸಲಾಗಿದೆ
+  totp:
+    disable_passkey_first: ದೃಢೀಕರಣ ಅಪ್ಲಿಕೇಶನ್ 2FA ಅನ್ನು ಸಕ್ರಿಯಗೊಳಿಸುವ ಮೊದಲು ಅಗತ್ಯವಿರುವ
+      ಪಾಸ್‌ಕೀ ಸೈನ್ ಇನ್ ಅನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಿ.
+    disabled: ಪ್ರಮಾಣೀಕರಣ ಅಪ್ಲಿಕೇಶನ್ ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ
+    enabled: ಪ್ರಮಾಣೀಕರಣ ಅಪ್ಲಿಕೇಶನ್ ಸಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ
+    invalid_code: ಅಮಾನ್ಯವಾದ ದೃಢೀಕರಣ ಕೋಡ್.
+    invalid_verification: ಅಮಾನ್ಯ ಪರಿಶೀಲನಾ ಕೋಡ್.
+    not_enabled: ಮೊದಲು ಅಥೆಂಟಿಕೇಟರ್ ಆ್ಯಪ್ 2FA ಅನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಿ.
+    recovery_codes_regenerated: ಮರುಪಡೆಯುವಿಕೆ ಕೋಡ್‌ಗಳನ್ನು ಪುನರುಜ್ಜೀವನಗೊಳಿಸಲಾಗಿದೆ
+    session_expired: ಆ ಪರಿಶೀಲನಾ ವಿನಂತಿಯು ಇನ್ನು ಮುಂದೆ ಮಾನ್ಯವಾಗಿಲ್ಲ. ದಯವಿಟ್ಟು ಮತ್ತೆ
+      ಸೈನ್ ಇನ್ ಮಾಡಿ.
+  user:
+    login:
+      failure:
+        disabled: ನಿಮ್ಮ ಪ್ರವೇಶವನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ.
+        pending_invitation: ನಿಮ್ಮ ಖಾತೆ ಇನ್ನೂ ಸಕ್ರಿಯಗೊಂಡಿಲ್ಲ.
+  workspaces:
+    update:
+      failure: ಕಾರ್ಯಸ್ಥಳ ಬದಲಾಯಿಸಲು ವಿಫಲವಾಗಿದೆ
+      success: ಕಾರ್ಯಸ್ಥಳವನ್ನು ಯಶಸ್ವಿಯಾಗಿ ಬದಲಾಯಿಸಲಾಗಿದೆ

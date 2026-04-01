@@ -3,6 +3,7 @@ import React from "react";
 import { Trash, Plus } from "phosphor-react";
 
 import { Button } from "components/ui/button";
+import { i18n } from "../../../i18n";
 import { Input } from "components/ui/input";
 import { Label } from "components/ui/label";
 import {
@@ -44,7 +45,7 @@ const EditMembersListForm = ({
     if (value === "" || Number(value) < 0 || Number.isNaN(Number(value))) {
       setErrors(currentErrors => ({
         ...currentErrors,
-        [memberIndex]: "Please enter a valid rate",
+        [memberIndex]: i18n.t("projects.enterValidRate"),
       }));
     } else {
       setErrors(currentErrors => {
@@ -80,7 +81,7 @@ const EditMembersListForm = ({
               className="grid gap-4 rounded-xl border border-border bg-card p-4 md:grid-cols-[1.5fr_1fr_auto]"
             >
               <div className="space-y-2">
-                <Label htmlFor={`member-${memberIndex}`}>Team member</Label>
+                <Label htmlFor={`member-${memberIndex}`}>{i18n.t("projects.teamMember")}</Label>
                 {member.isExisting ? (
                   <Input
                     disabled
@@ -96,7 +97,7 @@ const EditMembersListForm = ({
                     }
                   >
                     <SelectTrigger id={`member-${memberIndex}`}>
-                      <SelectValue placeholder="Select teammate" />
+                      <SelectValue placeholder={i18n.t("projects.selectTeammate")} />
                     </SelectTrigger>
                     <SelectContent>
                       {availableMembers
@@ -120,7 +121,7 @@ const EditMembersListForm = ({
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor={`rate-${memberIndex}`}>Hourly rate</Label>
+                <Label htmlFor={`rate-${memberIndex}`}>{i18n.t("projects.hourlyRate")}</Label>
                 <div className="relative">
                   <span className="pointer-events-none absolute inset-y-0 left-3 flex items-center text-sm text-muted-foreground">
                     {currencySymbol}
@@ -171,13 +172,13 @@ const EditMembersListForm = ({
         >
           <Plus size={16} />
           <span>
-            {members.length > 0 ? "Add another team member" : "Add team member"}
+            {members.length > 0 ? i18n.t("projects.addAnotherTeamMember") : i18n.t("projects.addTeamMember")}
           </span>
         </Button>
 
         <div className="flex gap-3">
           <Button type="submit" disabled={isSubmitDisabled}>
-            Save team members
+            {i18n.t("projects.saveTeamMembers")}
           </Button>
         </div>
       </div>

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 
 import { projectApi } from "apis/api";
 import Logger from "js-logger";
+import { i18n } from "../../../i18n";
 import { Input } from "../../ui/input";
 import { Label } from "../../ui/label";
 import { Button } from "../../ui/button";
@@ -141,22 +142,21 @@ const AddEditProject = ({
       <DialogContent className="max-w-lg">
         <DialogHeader>
           <DialogTitle>
-            {isEdit ? "Edit project" : "Create project"}
+            {isEdit ? i18n.t("projects.editProject") : i18n.t("projects.createProject")}
           </DialogTitle>
           <DialogDescription>
-            Choose the client, name the project, and set whether the work is
-            billable.
+            {i18n.t("projects.createProjectDescription")}
           </DialogDescription>
         </DialogHeader>
         <div className="flex flex-col space-y-5">
           <div className="space-y-2">
-            <Label htmlFor="client">Client</Label>
+            <Label htmlFor="client">{i18n.t("client")}</Label>
             <Select
               value={client ? client.toString() : ""}
               onValueChange={value => setClient(Number(value))}
             >
               <SelectTrigger id="client">
-                <SelectValue placeholder="Select client" />
+                <SelectValue placeholder={i18n.t("projects.selectClient")} />
               </SelectTrigger>
               <SelectContent>
                 {clientList &&
@@ -173,10 +173,10 @@ const AddEditProject = ({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="project-name">Project name</Label>
+            <Label htmlFor="project-name">{i18n.t("projects.projectName")}</Label>
             <Input
               id="project-name"
-              placeholder="Enter project name"
+              placeholder={i18n.t("projects.enterProjectName")}
               type="text"
               value={projectName}
               onChange={event => setProjectName(event.target.value)}
@@ -184,7 +184,7 @@ const AddEditProject = ({
           </div>
 
           <div className="space-y-3">
-            <Label>Project type</Label>
+            <Label>{i18n.t("projects.projectType")}</Label>
             <RadioGroup
               className="grid gap-3"
               value={projectType}
@@ -193,10 +193,10 @@ const AddEditProject = ({
               <div className="flex items-center justify-between rounded-xl border border-border bg-card px-4 py-3">
                 <div>
                   <Label className="text-sm font-medium" htmlFor="billable">
-                    Billable
+                    {i18n.t("billable")}
                   </Label>
                   <p className="text-sm text-muted-foreground">
-                    Use this for client work that turns into invoices.
+                    {i18n.t("projects.billableDescription")}
                   </p>
                 </div>
                 <RadioGroupItem value="Billable" id="billable" />
@@ -204,10 +204,10 @@ const AddEditProject = ({
               <div className="flex items-center justify-between rounded-xl border border-border bg-card px-4 py-3">
                 <div>
                   <Label className="text-sm font-medium" htmlFor="non-billable">
-                    Non-billable
+                    {i18n.t("nonBillable")}
                   </Label>
                   <p className="text-sm text-muted-foreground">
-                    Use this for internal work, admin tasks, or research.
+                    {i18n.t("projects.nonBillableDescription")}
                   </p>
                 </div>
                 <RadioGroupItem value="Non-Billable" id="non-billable" />
@@ -224,14 +224,14 @@ const AddEditProject = ({
                 setShowProjectModal(false);
               }}
             >
-              Cancel
+              {i18n.t("cancel")}
             </Button>
             <Button
               disabled={!isFormFilled}
               type="button"
               onClick={handleSubmit}
             >
-              {isEdit ? "Save changes" : "Create project"}
+              {isEdit ? i18n.t("projects.saveChanges") : i18n.t("projects.createProject")}
             </Button>
           </div>
         </div>

@@ -4,6 +4,7 @@ import { MinusIcon, PlusIcon } from "miruIcons";
 
 import CustomDateRangeWithInput from "common/CustomDateRangeWIthInput";
 import CustomRadioButton from "common/CustomRadio";
+import { i18n } from "../../../i18n";
 
 const DateRangeFilter = ({
   isDateRangeOpen,
@@ -27,7 +28,7 @@ const DateRangeFilter = ({
       className="flex items-center justify-between px-5"
       onClick={handleDateRangeToggle}
     >
-      <h5 className="text-xs font-bold leading-4 tracking-wider">DATE RANGE</h5>
+      <h5 className="text-xs font-bold leading-4 tracking-wider">{i18n.t("dateRange").toUpperCase()}</h5>
       <div className="flex items-center">
         {filters.dateRange.value != "all" && (
           <span className="mr-7 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs font-semibold text-white">

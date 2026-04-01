@@ -1,6 +1,7 @@
 import React, { useState, useEffect, Fragment } from "react";
 
 import { useUserContext } from "context/UserContext";
+import { i18n } from "../../../../../i18n";
 
 import TableHeader from "./TableHeader";
 import TableRow from "./TableRow";
@@ -48,7 +49,7 @@ const Table = ({ accountsAgingReport }) => {
         <tbody className="flex flex-col divide-y divide-gray-200 bg-white">
           {loading ? (
             <tr className="tracking-wide flex items-center justify-center text-base font-medium text-primary">
-              <td>Loading...</td>
+              <td>{i18n.t("loading")}</td>
             </tr>
           ) : clientList.length ? (
             clientList.map((client, index) => (
@@ -62,7 +63,7 @@ const Table = ({ accountsAgingReport }) => {
             ))
           ) : (
             <tr className="tracking-wide flex items-center justify-center text-base font-medium text-primary md:h-50">
-              <td>No Data Found</td>
+              <td>{i18n.t("reports.noDataFound")}</td>
             </tr>
           )}
           {clientList.length > 0 && isDesktop && (

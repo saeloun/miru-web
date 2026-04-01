@@ -6,7 +6,7 @@ class Api::V1::CustomLeavesController < Api::V1::ApplicationController
   def update
     authorize current_user, policy_class: LeaveWithLeaveTypesPolicy
     CustomLeavesService.new(@leave, update_params).process
-    render json: { notice: "Custom Leaves updated successfully" }, status: 200
+    render json: { notice: I18n.t("custom_leaves.update.success") }, status: 200
   end
 
   private

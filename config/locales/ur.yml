@@ -1,0 +1,367 @@
+---
+ur:
+  activerecord:
+    errors:
+      models:
+        client:
+          attributes:
+            name:
+              format: "%{message}"
+        project:
+          attributes:
+            name:
+              format: "%{message}"
+  application_controller:
+    not_found: راستہ نہیں ملا
+  avatar:
+    destroy:
+      success: اوتار کامیابی سے حذف ہو گیا۔
+    update:
+      success: اوتار کامیابی کے ساتھ اپ ڈیٹ ہو گیا۔
+  client:
+    add: کلائنٹ شامل کریں۔
+    address:
+      label: پتہ
+      placeholder: پتہ درج کریں۔
+    create:
+      failure: کلائنٹ کی تخلیق ناکام ہوگئی
+      success: کلائنٹ کامیابی کے ساتھ شامل ہو گیا۔
+    delete:
+      success:
+        message: کلائنٹ کو کامیابی سے ہٹا دیا گیا۔
+    email:
+      label: ای میل
+      placeholder: ای میل آئی ڈی درج کریں۔
+    name:
+      label: نام
+      placeholder: نام درج کریں۔
+    phone:
+      label: فون نمبر
+      placeholder: فون نمبر درج کریں۔
+    update:
+      failure:
+        message: تبدیلیاں محفوظ کرنے میں ناکام
+        unauthorized: صارف کے پاس اس کلائنٹ کی تفصیلات میں ترمیم کرنے کی اجازت نہیں
+          ہے۔
+      success:
+        message: تبدیلیاں کامیابی سے محفوظ ہو گئیں۔
+  clients:
+    add_client_contact:
+      success: دعوت نامہ کامیابی سے بھیج دیا گیا۔
+    send_payment_reminder:
+      success: ادائیگی کی یاد دہانی بھیج دی گئی ہے۔
+  companies:
+    create:
+      failure: کمپنی کی تخلیق ناکام ہوگئی
+      success: کمپنی کامیابی کے ساتھ بنائی گئی۔
+    purge_logo:
+      destroy:
+        success: کمپنی کا لوگو کامیابی سے ہٹا دیا گیا۔
+    update:
+      success: تبدیلیاں کامیابی سے محفوظ ہو گئیں۔
+  company:
+    address: پتہ
+    base_currency: بنیادی کرنسی
+    business_phone: کاروباری فون
+    cancel: منسوخ
+    company: کمپنی
+    country: ملک
+    date_format: تاریخ کی شکل
+    fiscal_year: مالی سال
+    logo: لوگو
+    save: محفوظ کریں
+    save_org: org کی تفصیلات محفوظ کریں۔
+    setup: سیٹ اپ org
+    standard_price: معیاری قیمت
+    timezone: ٹائم زون
+  confirmation:
+    send_instructions: ایک تصدیقی ای میل %{email} پر بھیج دیا گیا ہے۔
+  currency_pairs:
+    from_to_required: سے اور تک کی ضرورت ہے۔
+    rate_not_found: ریٹ نہیں ملا
+  custom_leaves:
+    update:
+      success: حسب ضرورت پتے کامیابی کے ساتھ اپ ڈیٹ ہو گئے۔
+  employment:
+    update:
+      success: ملازمت کامیابی کے ساتھ اپ ڈیٹ ہو گئی۔
+  errors:
+    bill_status_billed: آپ کسی ایسے اندراج کو بل نہیں دے سکتے جس کا پہلے ہی بل ہو
+      چکا ہو۔
+    can't change status: ادا شدہ رسید کو تبدیل نہیں کیا جا سکتا
+    create_billed_entry: آپ بل شدہ ٹائم شیٹ اندراج نہیں بنا سکتے
+    internal_server_error: کچھ غلط ہو گیا۔
+    not_found: آپ جس وسائل کی تلاش کر رہے ہیں وہ دستیاب نہیں ہے۔
+    prevent_draft_to_waived: معافی میں تبدیل نہیں کیا جا سکتا
+    unauthorized: صرف مالک یا منتظم صارفین ہی اس کارروائی کو انجام دینے کے مجاز ہیں۔
+    updation_not_allowed: اپ ڈیٹ کی اجازت نہیں ہے
+    user_already_member: ای میل آئی ڈی پہلے ہی استعمال میں ہے۔ براہ کرم کوئی اور ای
+      میل آئی ڈی درج کریں۔
+    validate_billable_project: آپ غیر بل کے قابل پروجیکٹس کے لیے بغیر بل کے اندراج
+      نہیں بنا سکتے
+  expenses:
+    approve: اخراجات کامیابی کے ساتھ منظور ہو گئے۔
+    create: اخراجات کامیابی کے ساتھ جمع کرائے گئے۔
+    destroy: خرچ کامیابی سے حذف ہو گیا۔
+    mark_paid: اخراجات بطور ادا شدہ نشان زد ہیں۔
+    must_be_approved: اخراجات کو بطور ادا شدہ نشان زد کرنے سے پہلے منظور ہونا ضروری
+      ہے۔
+    reject: اخراجات کو کامیابی سے مسترد کر دیا گیا۔
+    update: اخراجات کامیابی کے ساتھ اپ ڈیٹ ہو گئے۔
+  holidays:
+    update:
+      success: چھٹیوں کی معلومات کامیابی کے ساتھ اپ ڈیٹ ہو گئی۔
+  invitation:
+    create:
+      success:
+        message: دعوت نامہ کامیابی سے بھیج دیا گیا۔
+    delete:
+      success:
+        message: دعوت کامیابی کے ساتھ ہٹا دی گئی۔
+    resent:
+      success:
+        message: دعوت نامہ کامیابی کے ساتھ دوبارہ بھیجا گیا۔
+    update:
+      success:
+        message: تبدیلیاں کامیابی سے محفوظ ہو گئیں۔
+  invitations:
+    accept:
+      index:
+        success: دعوت قبول کر لی
+      show:
+        success: دعوت قبول کر لی
+      success: دعوت قبول کر لی
+    create:
+      failure: تبدیلیاں محفوظ کرنے میں ناکام
+      success: دعوت نامہ بھیجا جائے گا۔
+    destroy:
+      failure: دعوت نامہ حذف کرنے میں ناکام
+      success: دعوت نامہ حذف کر دیا گیا۔
+    update:
+      failure: تبدیلیاں محفوظ کرنے میں ناکام
+      success: دعوت نامہ اپ ڈیٹ ہو گیا۔
+  invoices:
+    payments:
+      success:
+        failure: کچھ غلط ہو گیا، براہ کرم سپورٹ سے رابطہ کریں۔
+        success: ادائیگی کامیاب
+  invoices_controller:
+    download:
+      pdf_failed: پی ڈی ایف بنانے میں ناکام
+    send_invoice:
+      already_paid: رسید پہلے ہی ادا کر دی گئی ہے۔
+      pdf_failed: پی ڈی ایف بنانے میں ناکام
+      recipient_limit: ای میل صرف 5 وصول کنندگان کو بھیجا جا سکتا ہے۔
+      recipients_required: وصول کنندگان کی ضرورت ہے۔
+      success: رسید کامیابی کے ساتھ بھیج دی گئی ہے۔
+    send_reminder:
+      overdue_only: یاد دہانیاں صرف زائد المیعاد رسیدوں کے لیے بھیجی جا سکتی ہیں۔
+      success: ایک یاد دہانی بھیجی گئی ہے۔
+  invoices_view:
+    not_found: کوئی رسید نہیں ملی
+  leave_types:
+    create:
+      success: چھٹی کی قسم کامیابی کے ساتھ شامل کر دی گئی۔
+    update:
+      success: چھٹی کی قسم کو کامیابی کے ساتھ اپ ڈیٹ کر دیا گیا۔
+  leave_with_leave_types:
+    update:
+      success: پتے کامیابی سے اپ ڈیٹ ہو گئے۔
+  leaves:
+    create:
+      success: چھوڑیں کامیابی کے ساتھ بن گئیں۔
+    update:
+      success: کامیابی سے اپ ڈیٹ ہونے کو چھوڑ دیں۔
+  navbar:
+    clients: کلائنٹس
+    help: مدد
+    invoices: رسیدیں
+    logout: لاگ آؤٹ
+    payments: ادائیگیاں
+    profile: پروفائل
+    projects: پروجیکٹس
+    reports: رپورٹس
+    settings: ترتیبات
+    team: ٹیم
+    time_tracking: ٹائم ٹریکنگ
+    view_notifications: اطلاعات دیکھیں
+  passkeys:
+    add_passkey_first: سائن ان کرنے کی ضرورت سے پہلے پاسکی شامل کریں۔
+    added: پاسکی شامل کی گئی۔
+    disable_totp_first: پاس کی سائن ان کی ضرورت سے پہلے تصدیق کنندہ ایپ 2FA کو غیر
+      فعال کریں۔
+    not_found: پاسکی نہیں ملی۔
+    removed: پاسکی ہٹا دی گئی۔
+    requirement_disabled: پاسکی کی ضرورت غیر فعال ہے۔
+    requirement_enabled: پاسکی کی ضرورت فعال ہے۔
+    session_expired: پاسکی سیشن کی میعاد ختم ہو گئی۔ براہ کرم دوبارہ کوشش کریں۔
+    verification_failed: پاسکی کی تصدیق ناکام ہوگئی۔
+  password:
+    create:
+      success: آپ کے پاس ورڈ کو دوبارہ ترتیب دینے کی ہدایات آپ کے ای میل پر بھیج دی
+        گئی ہیں۔
+    update:
+      success: آپ کا پاس ورڈ اپ ڈیٹ کر دیا گیا ہے۔
+  projects:
+    add_new_project: نیا پروجیکٹ شامل کریں۔
+    add_project: پروجیکٹ شامل کریں۔
+    billable: قابل بل
+    client: کلائنٹ
+    create:
+      failure: پروجیکٹ کی تخلیق ناکام ہوگئی۔
+      success: پروجیکٹ کامیابی کے ساتھ شامل ہو گیا۔
+    delete:
+      success:
+        message: پروجیکٹ کو کامیابی سے ہٹا دیا گیا۔
+    edit: ترمیم کریں
+    hours_logged: گھنٹے لاگ ان
+    new_project: نیا پروجیکٹ
+    non_billable: ناقابل بل
+    project: پروجیکٹ
+    project_name: پروجیکٹ کا نام
+    projects: پروجیکٹس
+    update:
+      success: تبدیلیاں کامیابی سے محفوظ ہو گئیں۔
+    update_members:
+      failure:
+        message: تبدیلیاں محفوظ کرنے میں ناکام
+        unauthorized: صارف اس پروجیکٹ کی تفصیلات میں ترمیم کرنے کے لیے غیر مجاز ہے۔
+      success:
+        message: تبدیلیاں کامیابی سے محفوظ ہو گئیں۔
+  pundit:
+    client_policy:
+      create?: آپ کو کلائنٹ بنانے کا اختیار نہیں ہے۔
+      show?: آپ صفحہ تک رسائی کے مجاز نہیں ہیں۔ براہ کرم مدد کے لیے اپنے منتظم سے
+        رابطہ کریں۔
+      update?: آپ کلائنٹ کو اپ ڈیٹ کرنے کے مجاز نہیں ہیں۔
+    company_policy:
+      create?: آپ کمپنی بنانے کے مجاز نہیں ہیں۔
+      new?: آپ کو نئی کمپنی بنانے کا اختیار نہیں ہے۔
+      show?: آپ کو کمپنی دیکھنے کا اختیار نہیں ہے۔
+      update?: آپ کمپنی کو اپ ڈیٹ کرنے کے مجاز نہیں ہیں۔
+    current_company_policy:
+      company_not_present: کمپنی موجود نہیں ہے۔
+    default: آپ اس عمل کو انجام دینے کے مجاز نہیں ہیں۔
+    different_workspace: آپ اپنے موجودہ ورک اسپیس سے باہر کے ریکارڈ تک رسائی کے مجاز
+      نہیں ہیں۔
+    project_policy:
+      create?: آپ پروجیکٹ بنانے کے مجاز نہیں ہیں۔
+      show?: آپ صفحہ تک رسائی کے مجاز نہیں ہیں۔ براہ کرم مدد کے لیے اپنے منتظم سے
+        رابطہ کریں۔
+    team_policy:
+      destroy?: آپ ٹیم کو تباہ کرنے کے مجاز نہیں ہیں۔
+      edit?: آپ ٹیم میں ترمیم کرنے کے مجاز نہیں ہیں۔
+      update?: آپ ٹیم کو اپ ڈیٹ کرنے کے مجاز نہیں ہیں۔
+  registration:
+    confirm_password: پاس ورڈ کی تصدیق کریں
+    email_id: ای میل
+    first_name: پہلا نام
+    last_name: آخری نام
+    name: نام
+    or: یا
+    password: پاس ورڈ
+    remember_me: مجھے یاد رکھیں
+    sign_in: سائن ان کریں
+    sign_up: سائن اپ کریں
+    signin_with_github: github کے ساتھ سائن ان کریں۔
+    signin_with_google: گوگل کے ساتھ سائن ان کریں۔
+    signup_with_apple: ایپل کے ساتھ سائن اپ کریں۔
+    signup_with_github: github کے ساتھ سائن اپ کریں۔
+    signup_with_google: گوگل کے ساتھ سائن اپ کریں۔
+  reports:
+    heading: وقت کے اندراج کی رپورٹ
+  sessions:
+    failure:
+      invalid: غلط ای میل یا پاس ورڈ
+  settings:
+    cancel: منسوخ
+    change_password: پاس ورڈ تبدیل کریں
+    confirm_password: پاس ورڈ کی تصدیق کریں
+    current_password: موجودہ پاس ورڈ
+    email: ای میل
+    name: نام
+    organization_setting: تنظیم کی ترتیبات
+    password: پاس ورڈ
+    payment_setting: ادائیگی کی ترتیبات
+    profile_picture: پروفائل تصویر
+    profile_setting: پروفائل کی ترتیبات
+    save: محفوظ کریں
+    settings: ترتیبات
+  shared_links:
+    already_have_an_account: پہلے سے اکاؤنٹ ہے؟
+    back_to_login: لاگ ان پر واپس
+    confirmation_instruction: تصدیقی ہدایات موصول نہیں ہوئیں؟
+    dont_have_an_account: اکاؤنٹ نہیں ہے؟
+    forgot_password: پاس ورڈ بھول گئے؟
+    unlock_instruction: غیر مقفل کرنے کی ہدایات موصول نہیں ہوئیں؟
+  subscriptions:
+    no_billing_customer: اس کمپنی کے لیے کوئی بلنگ کسٹمر موجود نہیں ہے۔
+    pricing_not_configured: پٹی سبسکرپشن کی قیمتوں کا تعین کنفیگر نہیں ہے۔
+    trial_not_eligible: آپ کی ورک اسپیس پرو ٹرائل کے لیے اہل نہیں ہے۔
+    trial_started: آپ کا 30 دن کا پرو ٹرائل شروع ہو گیا ہے۔
+  team:
+    changed_email: تبدیل شدہ ای میل
+    create_new_user: نیا صارف بنائیں
+    current_email: موجودہ ای میل
+    delete:
+      success:
+        message: ٹیم ممبر کو کامیابی سے ہٹا دیا گیا۔
+    email: ای میل
+    email_id: ای میل آئی ڈی
+    first_name: پہلا نام
+    form_admin: ایڈمن
+    form_book_keeper: بک کیپر
+    form_email: ای میل
+    form_employee: ملازم
+    form_name: نام
+    form_role: کردار
+    invitation: دعوت نامہ زیر التواء ہے۔
+    last_name: آخری نام
+    name: NAME
+    new_user: نیا صارف
+    profile_picture: تصویر
+    reconfirmation: دوبارہ تصدیق زیر التواء ہے۔
+    role: رول
+    team: ٹیم
+    update:
+      error:
+        role: کردار کو اپ ڈیٹ کرتے وقت ایک خرابی تھی۔
+      success:
+        message: تبدیلیاں کامیابی سے محفوظ ہو گئیں۔
+    update_user: صارف کو اپ ڈیٹ کریں۔
+  timeoff_entries:
+    create:
+      success: کامیابی سے چھٹی کا وقت شامل کر دیا گیا۔
+    destroy:
+      success: ٹائم آف کامیابی سے حذف کر دیا گیا۔
+    update:
+      success: ٹائم آف کامیابی کے ساتھ اپ ڈیٹ ہو گیا۔
+  timesheet_entry:
+    create:
+      message: ٹائم شیٹ بنائی گئی۔
+    destroy:
+      failure: ٹائم شیٹ کے اندراجات کو حذف کرنے میں ناکام
+      message: ٹائم شیٹ حذف کر دی گئی۔
+    update:
+      failure: ٹائم شیٹ اندراجات کو اپ ڈیٹ کرنے میں ناکام
+      message: ٹائم شیٹ کو اپ ڈیٹ کر دیا گیا۔
+  totp:
+    disable_passkey_first: مستند ایپ 2FA کو فعال کرنے سے پہلے مطلوبہ پاسکی سائن ان
+      کو غیر فعال کریں۔
+    disabled: Authenticator ایپ غیر فعال ہے۔
+    enabled: Authenticator ایپ فعال ہے۔
+    invalid_code: غلط تصدیق کنندہ کوڈ۔
+    invalid_verification: غلط توثیقی کوڈ۔
+    not_enabled: پہلے توثیق کار ایپ 2FA کو فعال کریں۔
+    recovery_codes_regenerated: ریکوری کوڈز دوبارہ تخلیق کیے گئے۔
+    session_expired: وہ توثیق کی درخواست اب درست نہیں ہے۔ براہ کرم دوبارہ سائن ان
+      کریں۔
+  user:
+    login:
+      failure:
+        disabled: آپ کی رسائی کو غیر فعال کر دیا گیا ہے۔
+        pending_invitation: آپ کا اکاؤنٹ ابھی تک فعال نہیں ہوا ہے۔
+  workspaces:
+    update:
+      failure: ورک اسپیس کو تبدیل کرنے میں ناکام
+      success: ورک اسپیس کو کامیابی سے تبدیل کر دیا گیا۔

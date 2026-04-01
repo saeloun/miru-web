@@ -3,6 +3,7 @@ import React from "react";
 import { companyUsersApi, projectMembersApi } from "apis/api";
 import Logger from "js-logger";
 import { toast } from "sonner";
+import { i18n } from "../../../i18n";
 
 import {
   Dialog,
@@ -106,7 +107,7 @@ const EditMembersList = ({
       setExistingMembers(members);
       handleAddProjectDetails();
       closeAddRemoveMembers();
-      toast.success("Team members updated");
+      toast.success(i18n.t("projects.teamMembersUpdated"));
     } catch (error) {
       Logger.error(error);
     }
@@ -116,9 +117,9 @@ const EditMembersList = ({
     <Dialog open onOpenChange={open => !open && closeAddRemoveMembers()}>
       <DialogContent className="max-w-2xl">
         <DialogHeader>
-          <DialogTitle>Manage project members</DialogTitle>
+          <DialogTitle>{i18n.t("projects.manageProjectMembers")}</DialogTitle>
           <DialogDescription>
-            Add teammates, update rates, or remove members from this project.
+            {i18n.t("projects.manageProjectMembersDescription")}
           </DialogDescription>
         </DialogHeader>
         <EditMembersListForm

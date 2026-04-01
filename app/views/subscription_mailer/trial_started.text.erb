@@ -2,6 +2,6 @@ Hello <%= @recipient.first_name.presence || @recipient.email %>,
 
 Your 30-day Miru Pro trial for <%= @company.name %> is now active.
 
-Trial ends on <%= @trial_ends_at&.in_time_zone(@company.timezone.presence || Time.zone)&.strftime("%B %-d, %Y") %>.
+Trial ends on <%= @trial_end_date_text %>.
 
 Review billing at <%= @billing_url %>.

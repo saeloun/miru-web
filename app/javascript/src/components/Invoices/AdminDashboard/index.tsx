@@ -24,6 +24,7 @@ import { cn } from "@/lib/utils";
 import MonthlyRevenueChart from "../MonthlyRevenueChart";
 import InfiniteScrollRecentlyUpdated from "../List/RecentlyUpdated/InfiniteScrollRecentlyUpdated";
 import { currencyFormat } from "helpers/currency";
+import { i18n } from "../../../i18n";
 
 interface AdminDashboardProps {
   summary: {
@@ -55,7 +56,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
   const formatStatusShare = amount => {
     if (invoiceStatusTotal <= 0 || amount <= 0) {
-      return "No data";
+      return i18n.t("invoices.noData");
     }
 
     return `${((amount / invoiceStatusTotal) * 100).toFixed(0)}%`;
@@ -70,21 +71,21 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
   const statsCards = [
     {
-      title: "Total Revenue",
+      title: i18n.t("reports.totalRevenue"),
       value: currencyFormat(
         baseCurrency,
         summary.outstandingAmount + summary.draftAmount
       ),
-      description: "All time revenue",
+      description: "",
       icon: CurrencyDollar,
       trend: { value: 12.5, isPositive: true },
       color: "text-foreground",
       bgColor: "bg-card",
     },
     {
-      title: "Outstanding",
+      title: i18n.t("invoices.outstanding"),
       value: currencyFormat(baseCurrency, summary.outstandingAmount),
-      description: "Awaiting payment",
+      description: "",
       icon: Clock,
       trend: { value: 8.2, isPositive: false },
       color: "text-foreground",
@@ -97,9 +98,9 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
         ]),
     },
     {
-      title: "Overdue",
+      title: i18n.t("invoices.overdue"),
       value: currencyFormat(baseCurrency, summary.overdueAmount),
-      description: "Requires attention",
+      description: "",
       icon: Warning,
       trend: { value: 3.1, isPositive: false },
       color: "text-foreground",
@@ -107,9 +108,9 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
       onClick: () => applyFilter([{ value: "overdue", label: "OVERDUE" }]),
     },
     {
-      title: "Draft",
+      title: i18n.t("invoices.draft"),
       value: currencyFormat(baseCurrency, summary.draftAmount),
-      description: "Not yet sent",
+      description: "",
       icon: FileText,
       color: "text-muted-foreground",
       bgColor: "bg-muted/40",
@@ -125,20 +126,19 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
           <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             <div>
               <h1 className="text-xl font-semibold text-foreground sm:text-2xl">
-                Invoice Dashboard
+                {i18n.t("invoices.invoices")}
               </h1>
               <p className="text-sm text-muted-foreground mt-1">
-                Track and manage your invoices efficiently
-              </p>
+                              </p>
             </div>
             <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-center lg:w-auto">
               <Button className="w-full sm:w-auto" variant="outline" size="sm">
                 <Download className="mr-2 h-4 w-4" />
-                Export
+                {i18n.t("reports.export")}
               </Button>
               <Button size="sm" className="w-full sm:w-auto">
                 <Plus className="mr-2 h-4 w-4" />
-                New Invoice
+                {i18n.t("invoices.generateInvoice")}
               </Button>
             </div>
           </div>
@@ -209,9 +209,9 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
             <CardHeader>
               <div className="flex items-center justify-between">
                 <div>
-                  <CardTitle>Revenue Overview</CardTitle>
+                  <CardTitle>{i18n.t("invoiceDashboard.revenueOverview")}</CardTitle>
                   <CardDescription>
-                    Monthly revenue for the last 12 months
+                    
                   </CardDescription>
                 </div>
                 <div className="flex gap-2">
@@ -220,14 +220,14 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     size="sm"
                     onClick={() => setChartType("area")}
                   >
-                    Area
+                    {i18n.t("invoices.area")}
                   </Button>
                   <Button
                     variant={chartType === "bar" ? "default" : "outline"}
                     size="sm"
                     onClick={() => setChartType("bar")}
                   >
-                    Bar
+                    {i18n.t("invoices.bar")}
                   </Button>
                 </div>
               </div>
@@ -244,9 +244,9 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
           <Card className="md:col-span-3">
             <CardHeader>
-              <CardTitle>Revenue by Status</CardTitle>
+              <CardTitle>{i18n.t("invoiceDashboard.revenueByStatus")}</CardTitle>
               <CardDescription>
-                Distribution of invoice statuses
+                
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -256,7 +256,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     <CurrencyDollar className="h-5 w-5 text-foreground" />
                   </div>
                   <div className="ml-4 flex-1">
-                    <p className="text-sm font-medium">Paid</p>
+                    <p className="text-sm font-medium">{i18n.t("invoices.paid")}</p>
                     <p className="text-2xl font-bold">
                       {currencyFormat(baseCurrency, 0)}
                     </p>
@@ -274,7 +274,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     <Clock className="h-5 w-5 text-foreground" />
                   </div>
                   <div className="ml-4 flex-1">
-                    <p className="text-sm font-medium">Outstanding</p>
+                    <p className="text-sm font-medium">{i18n.t("invoices.outstanding")}</p>
                     <p className="text-2xl font-bold">
                       {currencyFormat(baseCurrency, summary.outstandingAmount)}
                     </p>
@@ -292,7 +292,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     <Warning className="h-5 w-5 text-foreground" />
                   </div>
                   <div className="ml-4 flex-1">
-                    <p className="text-sm font-medium">Overdue</p>
+                    <p className="text-sm font-medium">{i18n.t("invoices.overdue")}</p>
                     <p className="text-2xl font-bold">
                       {currencyFormat(baseCurrency, summary.overdueAmount)}
                     </p>
@@ -310,7 +310,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     <FileText className="h-5 w-5 text-muted-foreground" />
                   </div>
                   <div className="ml-4 flex-1">
-                    <p className="text-sm font-medium">Draft</p>
+                    <p className="text-sm font-medium">{i18n.t("invoices.draft")}</p>
                     <p className="text-2xl font-bold">
                       {currencyFormat(baseCurrency, summary.draftAmount)}
                     </p>
@@ -332,13 +332,13 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
           <CardHeader>
             <div className="flex items-center justify-between">
               <div>
-                <CardTitle>Recent Activity</CardTitle>
+                <CardTitle>{i18n.t("invoiceDashboard.recentActivity")}</CardTitle>
                 <CardDescription>
-                  Latest invoice updates and changes
+                  
                 </CardDescription>
               </div>
               <Button variant="outline" size="sm">
-                View All
+                {i18n.t("all")}
               </Button>
             </div>
           </CardHeader>
@@ -352,25 +352,25 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
           <CardHeader>
             <div className="flex items-center justify-between">
               <div>
-                <CardTitle>All Invoices</CardTitle>
+                <CardTitle>{i18n.t("invoiceDashboard.allInvoices")}</CardTitle>
                 <CardDescription>
-                  A list of all invoices including their status and amount.
+                  
                 </CardDescription>
               </div>
               <Button variant="outline" size="sm">
                 <Funnel className="mr-2 h-4 w-4" />
-                Funnel
+                {i18n.t("filters")}
               </Button>
             </div>
           </CardHeader>
           <CardContent>
             <Tabs defaultValue="all" className="w-full">
               <TabsList>
-                <TabsTrigger value="all">All</TabsTrigger>
-                <TabsTrigger value="paid">Paid</TabsTrigger>
-                <TabsTrigger value="outstanding">Outstanding</TabsTrigger>
-                <TabsTrigger value="overdue">Overdue</TabsTrigger>
-                <TabsTrigger value="draft">Draft</TabsTrigger>
+                <TabsTrigger value="all">{i18n.t("all")}</TabsTrigger>
+                <TabsTrigger value="paid">{i18n.t("invoices.paid")}</TabsTrigger>
+                <TabsTrigger value="outstanding">{i18n.t("invoices.outstanding")}</TabsTrigger>
+                <TabsTrigger value="overdue">{i18n.t("invoices.overdue")}</TabsTrigger>
+                <TabsTrigger value="draft">{i18n.t("invoices.draft")}</TabsTrigger>
               </TabsList>
               <TabsContent value="all" className="mt-4">
                 <div className="rounded-md border">
@@ -378,22 +378,22 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     <thead>
                       <tr className="border-b bg-muted/40">
                         <th className="p-3 text-left text-sm font-medium text-foreground">
-                          Invoice
+                          {i18n.t("invoices.invoice")}
                         </th>
                         <th className="p-3 text-left text-sm font-medium text-foreground">
-                          Client
+                          {i18n.t("client")}
                         </th>
                         <th className="p-3 text-left text-sm font-medium text-foreground">
-                          Amount
+                          {i18n.t("amount")}
                         </th>
                         <th className="p-3 text-left text-sm font-medium text-foreground">
-                          Status
+                          {i18n.t("status")}
                         </th>
                         <th className="p-3 text-left text-sm font-medium text-foreground">
-                          Date
+                          {i18n.t("date")}
                         </th>
                         <th className="p-3 text-left text-sm font-medium text-foreground">
-                          Actions
+                          {i18n.t("actions")}
                         </th>
                       </tr>
                     </thead>
@@ -432,7 +432,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                           </td>
                           <td className="p-3">
                             <Button variant="ghost" size="sm">
-                              View
+                              {i18n.t("invoices.invoice")}
                             </Button>
                           </td>
                         </tr>

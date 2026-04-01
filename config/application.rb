@@ -48,6 +48,7 @@ module MiruWeb
     config.action_mailer.postmark_settings = { api_token: ENV["POSTMARK_API_TOKEN"] }
 
     config.active_model.i18n_customize_full_message = true
+    config.i18n.fallbacks = true
     # Props handling managed in React components
 
     # Use a real queuing backend for Active Job (and separate queues per environment).

@@ -10,6 +10,7 @@ import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 import { cn } from "../../lib/utils";
+import { i18n } from "../../i18n";
 
 interface Client {
   id: number;
@@ -125,14 +126,14 @@ const SelectProject: React.FC<Iprops> = ({
         {/* Client Select */}
         <div>
           <label className="mb-1.5 block text-sm font-medium text-foreground">
-            Client
+            {i18n.t("client")}
           </label>
           <Select
             value={client || undefined}
             onValueChange={handleClientChange}
           >
             <SelectTrigger className="w-full">
-              <SelectValue placeholder="Select a client" />
+              <SelectValue placeholder={i18n.t("timeTracking.selectClient")} />
             </SelectTrigger>
             <SelectContent>
               {Array.isArray(clients) &&
@@ -147,7 +148,7 @@ const SelectProject: React.FC<Iprops> = ({
         {/* Project Select */}
         <div>
           <label className="mb-1.5 block text-sm font-medium text-foreground">
-            Project
+            {i18n.t("project")}
           </label>
           <Select
             value={project || undefined}
@@ -165,7 +166,7 @@ const SelectProject: React.FC<Iprops> = ({
             >
               <SelectValue
                 placeholder={
-                  client ? "Select a project" : "Select a client first"
+                  client ? i18n.t("timeTracking.selectProject") : i18n.t("timeTracking.selectClientFirst")
                 }
               />
             </SelectTrigger>
@@ -185,7 +186,7 @@ const SelectProject: React.FC<Iprops> = ({
       {/* Time Duration */}
       <div>
         <label className="mb-1.5 block text-sm font-medium text-foreground">
-          Duration
+          {i18n.t("timeTracking.duration")}
         </label>
         <div className="flex gap-2">
           <div className="flex-1">
@@ -200,7 +201,7 @@ const SelectProject: React.FC<Iprops> = ({
                 className="pr-12"
               />
               <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
-                hours
+                {i18n.t("hours")}
               </span>
             </div>
           </div>
@@ -216,7 +217,7 @@ const SelectProject: React.FC<Iprops> = ({
                 className="pr-12"
               />
               <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
-                mins
+                {i18n.t("mins")}
               </span>
             </div>
           </div>
@@ -226,25 +227,25 @@ const SelectProject: React.FC<Iprops> = ({
       {/* Description */}
       <div>
         <label className="mb-1.5 block text-sm font-medium text-foreground">
-          Description
+          {i18n.t("description")}
         </label>
         <Textarea
           value={description}
           onChange={e => setDescription(e.target.value)}
-          placeholder="What did you work on?"
+          placeholder={i18n.t("timeTracking.whatDidYouWorkOn")}
           className="min-h-[80px] resize-none"
         />
       </div>
       {/* Action Buttons */}
       <div className="flex justify-end gap-3 pt-2">
         <Button variant="outline" onClick={handleCancelButton}>
-          Cancel
+          {i18n.t("cancel")}
         </Button>
         <Button
           onClick={handleSaveButton}
           disabled={!client || !project || (!hours && !minutes)}
         >
-          Add Entry
+          {i18n.t("timeTracking.addEntry")}
         </Button>
       </div>
     </div>

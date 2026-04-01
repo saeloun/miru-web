@@ -46,6 +46,71 @@ RSpec.describe "Time Tracking Views", type: :system, js: true do
     end
   end
 
+  it "shows leave and holiday entries in the review panel" do
+    leave = create(:leave, company:, year: Date.current.year)
+    leave_type = create(:leave_type, leave:, name: "Paid Time Off")
+    holiday = create(:holiday, company:, year: Date.current.year)
+    holiday_info = create(
+      :holiday_info,
+      holiday:,
+      name: "Foundation Day",
+      date: Date.current
+    )
+
+    create(
+      :timeoff_entry,
+      user:,
+      leave_type:,
+      leave_date: Date.current,
+      duration: 480,
+      note: "Planned PTO"
+    )
+    create(
+      :timeoff_entry,
+      user:,
+      leave_type: nil,
+      holiday_info:,
+      leave_date: Date.current,
+      duration: 240,
+      note: "Company holiday"
+    )
+
+    with_forgery_protection do
+      visit "/time-tracking"
+
+      expect(page).to have_css("[data-testid='timeoff-entry-card']", count: 2, wait: 10)
+      expect(page).to have_content("Leave", wait: 10)
+      expect(page).to have_content("Paid Time Off", wait: 10)
+      expect(page).to have_content("Planned PTO", wait: 10)
+      expect(page).to have_content("Holiday", wait: 10)
+      expect(page).to have_content("Foundation Day", wait: 10)
+      expect(page).to have_content("Company holiday", wait: 10)
+    end
+  end
+
+  it "shows leave entries in week review even when the selected day is empty" do
+    leave = create(:leave, company:, year: Date.current.year)
+    leave_type = create(:leave_type, leave:, name: "Paid Time Off")
+    leave_date = Date.current.beginning_of_week + 1.day
+    create(
+      :timeoff_entry,
+      user:,
+      leave_type:,
+      leave_date:,
+      duration: 480,
+      note: "Week review PTO"
+    )
+
+    with_forgery_protection do
+      visit "/time-tracking"
+      find("[data-testid='time-review-week']", wait: 10).click
+
+      expect(page).to have_content("Week review PTO", wait: 10)
+      expect(page).to have_content("Paid Time Off", wait: 10)
+      expect(page).to have_content(leave_date.strftime("%a, %b %-d"), wait: 10)
+    end
+  end
+
   it "lets an admin switch to another user" do
     employee = create(:user, first_name: "Jane", last_name: "Developer", current_workspace_id: company.id)
     create(:employment, company:, user: employee)
@@ -62,11 +127,59 @@ RSpec.describe "Time Tracking Views", type: :system, js: true do
       visit "/time-tracking"
 
       expect(page).to have_css("#react-root", wait: 10)
-      find('[data-testid="user-select"], [role="combobox"]', match: :first, wait: 10).click
+      find('[data-testid="user-select"]', wait: 10).click
       find('[role="option"]', text: employee.full_name, wait: 10).click
 
       expect(page).to have_content("Backend refactoring work", wait: 10)
         .or have_content("08:00", wait: 10)
+    end
+  end
+
+  it "shows another employee's leave entries after switching users" do
+    employee = create(:user, first_name: "Jane", last_name: "Developer", current_workspace_id: company.id)
+    leave = create(:leave, company:, year: Date.current.year)
+    leave_type = create(:leave_type, leave:, name: "Sick Leave")
+    create(:employment, company:, user: employee)
+    create(
+      :timeoff_entry,
+      user: employee,
+      leave_type:,
+      leave_date: Date.current,
+      duration: 480,
+      note: "Employee PTO verification"
+    )
+    employee.add_role :employee, company
+
+    with_forgery_protection do
+      visit "/time-tracking"
+
+      expect(page).to have_css("#react-root", wait: 10)
+      find('[data-testid="user-select"]', wait: 10).click
+      find('[role="option"]', text: employee.full_name, wait: 10).click
+
+      expect(page).to have_content("Leave", wait: 10)
+      expect(page).to have_content("Sick Leave", wait: 10)
+      expect(page).to have_content("Employee PTO verification", wait: 10)
+    end
+  end
+
+  it "keeps leave types available after navigating to the previous week" do
+    leave = create(:leave, company:, year: Date.current.year)
+    create(:leave_type, leave:, name: "PTO")
+
+    with_forgery_protection do
+      visit "/time-tracking"
+
+      find("[data-testid='mark-time-off-button']", wait: 10).click
+      find("button", text: "Select leave type", wait: 10).click
+      expect(page).to have_content("PTO", wait: 10)
+
+      find("button", text: "Cancel", wait: 10).click
+      find("[data-testid='time-nav-prev']", wait: 10).click
+      find("[data-testid='mark-time-off-button']", wait: 10).click
+      find("button", text: "Select leave type", wait: 10).click
+
+      expect(page).to have_content("PTO", wait: 10)
     end
   end
 

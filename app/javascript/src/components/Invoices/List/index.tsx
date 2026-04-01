@@ -19,6 +19,7 @@ import Header from "./Header";
 import BulkDeleteInvoices from "../popups/BulkDeleteInvoices";
 import BulkDownloadInvoices from "../popups/BulkDownloadInvoices";
 import DeleteInvoice from "../popups/DeleteInvoice";
+import { i18n } from "../../../i18n";
 
 const Invoices = () => {
   const DEFAULT_BATCH_SIZE = 20;
@@ -253,7 +254,7 @@ const Invoices = () => {
       const stripe = paymentsProviders.find(p => p.name === "stripe");
       setIsStripeEnabled(!!stripe && stripe.enabled);
     } catch {
-      Toastr.error("ERROR! CONNECTING TO PAYMENTS");
+      Toastr.error(i18n.t("invoices.errorConnectingPayments"));
     }
   };
 
@@ -388,7 +389,7 @@ const Invoices = () => {
       ) : (
         status === InvoicesStatus.ERROR && (
           <div className="tracking-wide mt-50 flex items-center justify-center text-2xl font-medium text-primary">
-            Something went Wrong!
+            {i18n.t("somethingWentWrong")}
           </div>
         )
       )}

@@ -27,6 +27,8 @@ import { logoutApi } from "apis/api";
 import ThemeToggle from "../../common/ThemeToggle";
 import useThemeMode from "../../common/useThemeMode";
 import { hasProAccess } from "../../lib/planAccess";
+import { t } from "../../i18n";
+import CompactLocaleSwitcher from "../common/CompactLocaleSwitcher";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -40,7 +42,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const location = useLocation();
-  const { companyRole, user, company, avatarUrl } = useUserContext();
+  const { companyRole, user, company, avatarUrl, locale } = useUserContext();
   const themeMode = useThemeMode();
   const logoStyle = useMemo(
     () => ({
@@ -51,58 +53,58 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
 
   const navigationGroups = [
     {
-      title: "Main",
+      title: t("sidebar.main"),
       items: [
         {
-          label: "Dashboard",
+          label: t("nav.dashboard"),
           href: "/dashboard",
           icon: House,
           roles: ["admin", "owner", "book_keeper"],
         },
         {
-          label: "Time Tracking",
+          label: t("nav.timeTracking"),
           href: "/time-tracking",
           icon: Timer,
           roles: ["admin", "owner", "employee"],
         },
         {
-          label: "Clients",
+          label: t("nav.clients"),
           href: "/clients",
           icon: UsersThree,
           roles: ["admin", "owner"],
         },
         {
-          label: "Projects",
+          label: t("nav.projects"),
           href: "/projects",
           icon: Briefcase,
           roles: ["admin", "owner", "employee"],
         },
         {
-          label: "Team",
+          label: t("nav.team"),
           href: "/team",
           icon: Users,
           roles: ["admin", "owner"],
         },
         {
-          label: "Invoices",
+          label: t("nav.invoices"),
           href: "/invoices",
           icon: Receipt,
           roles: ["admin", "owner", "book_keeper", "client"],
         },
         {
-          label: "Payments",
+          label: t("nav.payments"),
           href: "/payments",
           icon: Wallet,
           roles: ["admin", "owner", "book_keeper"],
         },
         {
-          label: "Reports",
+          label: t("nav.reports"),
           href: "/reports",
           icon: ChartLine,
           roles: ["admin", "owner", "book_keeper"],
         },
         {
-          label: "Expenses",
+          label: t("nav.expenses"),
           href: "/expenses",
           icon: CurrencyCircleDollar,
           roles: ["admin", "owner", "book_keeper", "employee"],
@@ -110,28 +112,28 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
       ],
     },
     {
-      title: "Organization",
+      title: t("sidebar.organization"),
       items: [
         {
-          label: "Holiday Calendar",
+          label: t("sidebar.holidayCalendar"),
           href: "/settings/holidays",
           icon: Calendar,
           roles: ["admin", "owner"],
         },
         {
-          label: "Company Settings",
+          label: t("sidebar.companySettings"),
           href: "/settings/organization",
           icon: Buildings,
           roles: ["admin", "owner"],
         },
         {
-          label: "Payment Settings",
+          label: t("sidebar.paymentSettings"),
           href: "/settings/payment",
           icon: Wallet,
           roles: ["admin", "owner"],
         },
         {
-          label: "Billing",
+          label: t("sidebar.billing"),
           href: "/settings/billing",
           icon: Wallet,
           roles: ["admin", "owner"],
@@ -139,29 +141,29 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
       ],
     },
     {
-      title: "Personal Settings",
+      title: t("sidebar.personalSettings"),
       items: [
-        { label: "Profile", href: "/settings/profile", icon: User },
+        { label: t("sidebar.profile"), href: "/settings/profile", icon: User },
         {
-          label: "Preferences",
+          label: t("settings.labels.preferences"),
           href: "/settings/preferences",
           icon: Gear,
           roles: ["admin", "owner", "book_keeper", "employee"],
         },
         {
-          label: "Devices",
+          label: t("sidebar.devices"),
           href: "/settings/devices",
           icon: Buildings,
           roles: ["admin", "owner"],
         },
         {
-          label: "My Leaves",
+          label: t("sidebar.myLeaves"),
           href: "/settings/leaves",
           icon: Tree,
           roles: ["admin", "owner", "employee"],
         },
         {
-          label: "Bank & Tax Info",
+          label: t("sidebar.bankTaxInfo"),
           href: "/settings/bank-info",
           icon: CurrencyCircleDollar,
           roles: ["admin", "owner"],
@@ -180,14 +182,17 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
   });
 
   // prettier-ignore
-  const filteredNavigation = useMemo(() => navigationGroups.map(filterNavigationGroup), [companyRole, company?.pro_access]);
+  const filteredNavigation = useMemo(
+    () => navigationGroups.map(filterNavigationGroup),
+    [companyRole, company?.pro_access, locale]
+  );
 
   const pageTitle = useMemo(() => {
     const item = filteredNavigation
       .flatMap(group => group.items)
       .find(navItem => location.pathname.startsWith(navItem.href));
 
-    return item?.label || "Dashboard";
+    return item?.label || t("nav.dashboard");
   }, [location.pathname, filteredNavigation]);
 
   const handleLogout = async () => {
@@ -274,7 +279,9 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
             <button
               onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
               className="flex w-full items-center gap-3 rounded-lg p-2 transition-colors hover:bg-accent"
-              title={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+              title={
+                sidebarCollapsed ? t("sidebar.expand") : t("sidebar.collapse")
+              }
             >
               <img
                 src={MiruLogoSVG}
@@ -321,6 +328,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
               </h1>
             </div>
             <div className="flex items-center gap-2">
+              <CompactLocaleSwitcher />
               <ThemeToggle compact />
               <button
                 type="button"
@@ -328,7 +336,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
                 className="inline-flex items-center gap-2 rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground transition hover:bg-accent"
               >
                 <SignOut size={16} />
-                <span className="hidden sm:inline">Logout</span>
+                <span className="hidden sm:inline">{t("nav.logout")}</span>
               </button>
             </div>
           </div>

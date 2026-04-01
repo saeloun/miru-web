@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { companyUsersApi, projectMembersApi } from "apis/api";
 import { toast } from "sonner";
 import { X } from "phosphor-react";
+import { i18n } from "../../../../i18n";
 import { Button } from "components/ui/button";
 import {
   Dialog,
@@ -73,7 +74,7 @@ const MembersListForm = ({
       setExistingMembers(members);
       handleAddProjectDetails();
       closeAddRemoveMembers();
-      toast.success("Team members updated");
+      toast.success(i18n.t("projects.teamMembersUpdated"));
     }
   };
 
@@ -111,10 +112,9 @@ const MembersListForm = ({
         <DialogHeader className="border-b border-border px-4 py-4 text-left">
           <div className="flex items-start justify-between gap-3">
             <div>
-              <DialogTitle>Manage project members</DialogTitle>
+              <DialogTitle>{i18n.t("projects.manageProjectMembers")}</DialogTitle>
               <DialogDescription>
-                Add teammates, update rates, or remove members from this
-                project.
+                {i18n.t("projects.manageProjectMembersDescription")}
               </DialogDescription>
             </div>
             <Button

@@ -1,6 +1,7 @@
 import React from "react";
 
 import { UnifiedSearch } from "../../ui/enhanced-search";
+import { i18n } from "../../../i18n";
 import { useUserContext } from "context/UserContext";
 import { currencyFormat } from "helpers";
 import { PlusIcon } from "miruIcons";
@@ -65,11 +66,11 @@ const Header = ({
   return (
     <div className="mt-6 mb-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
       <h2 className="header__title hidden lg:inline" data-cy="header__invoices">
-        Expenses
+        {i18n.t("expenses.expenses")}
       </h2>
       <UnifiedSearch
         searchAction={searchAction}
-        placeholder="Search expenses..."
+        placeholder={i18n.t("expenses.searchExpenses")}
         onSelect={handleSelect}
         renderItem={item => <SearchDataRow item={item} />}
         clearSearch={clearSearch}
@@ -92,7 +93,7 @@ const Header = ({
       >
         <PlusIcon size={16} weight="bold" />
         <span className="ml-2 hidden text-base font-medium tracking-widest lg:inline-block">
-          Add Expense
+          {i18n.t("expenses.addExpense")}
         </span>
       </Button>
     </div>

@@ -31,7 +31,10 @@ module Invoices
     private
 
       def base_invoices
-        current_company.invoices.kept.includes(:client)
+        current_company.invoices
+          .kept
+          .includes(:client)
+          .order(issue_date: :desc, updated_at: :desc, id: :desc)
       end
 
       def filtered_invoices

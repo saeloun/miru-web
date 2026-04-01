@@ -1,6 +1,7 @@
 import React from "react";
 
 import LineItem from "./LineItem";
+import { i18n } from "../../../i18n";
 
 const InvoiceLineItems = ({
   currency,
@@ -13,19 +14,19 @@ const InvoiceLineItems = ({
     <thead className="border-b border-border">
       <tr>
         <th className="py-5 text-left text-xs font-medium tracking-widest text-muted-foreground sm:w-1/2">
-          NAME
+          {i18n.t("invoices.nameHeader")}
         </th>
         <th className="px-3 py-5 text-right text-xs font-medium tracking-widest text-muted-foreground sm:w-1/5">
-          DATE
+          {i18n.t("invoices.dateHeader")}
         </th>
         <th className="py-5 text-right text-xs font-medium tracking-widest text-muted-foreground">
-          RATE
+          {i18n.t("invoices.rate")}
         </th>
         <th className="py-5 text-right text-xs font-medium tracking-widest text-muted-foreground">
-          QTY
+          {i18n.t("invoices.quantity")}
         </th>
         <th className="py-5 text-right text-xs font-medium tracking-widest text-muted-foreground">
-          LINE TOTAL
+          {i18n.t("total").toUpperCase()}
         </th>
       </tr>
     </thead>

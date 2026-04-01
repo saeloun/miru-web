@@ -10,8 +10,8 @@ import {
   Warning,
   FileText,
   Clock,
-  ArrowUpRight,
 } from "phosphor-react";
+import { i18n } from "../../../../i18n";
 
 const RecentlyUpdatedCard = ({
   invoice: { client, currency, id, invoiceNumber, amount, status, updatedAt },
@@ -44,14 +44,13 @@ const RecentlyUpdatedCard = ({
   return (
     <div
       data-testid="recently-updated-card"
-      className="group flex h-44 w-full cursor-pointer flex-col rounded-xl border border-border bg-card p-4 transition-all duration-200 hover:border-primary/30 hover:bg-muted/30 hover:shadow-lg lg:w-40 lg:flex-shrink-0"
+      className="group flex min-h-[13.5rem] w-full cursor-pointer flex-col rounded-2xl border border-border bg-card px-5 py-4 transition-all duration-200 hover:border-primary/30 hover:bg-muted/30 hover:shadow-lg lg:w-[18rem] lg:flex-shrink-0"
       onClick={() => navigate(`/invoices/${id}`)}
     >
-      {/* Invoice number with status icon */}
-      <div className="mb-3">
-        <div className="flex items-center justify-between mb-1">
+      <div className="mb-4">
+        <div className="flex items-start justify-between gap-4">
           <p
-            className="truncate text-sm font-bold text-foreground"
+            className="truncate pr-2 text-sm font-bold tracking-wide text-foreground"
             title={invoiceNumber}
           >
             {invoiceNumber}
@@ -60,33 +59,27 @@ const RecentlyUpdatedCard = ({
         </div>
       </div>
 
-      <div className="mb-auto">
+      <div className="mb-auto space-y-2">
         <p
-          className="truncate text-sm font-medium text-muted-foreground"
+          className="truncate text-base font-medium text-muted-foreground"
           title={client.name}
         >
           {client.name}
         </p>
         {formattedUpdatedAt && (
-          <p className="mt-1 truncate text-xs text-muted-foreground">
-            Updated {formattedUpdatedAt}
+          <p className="truncate text-sm text-muted-foreground">
+            {i18n.t("invoices.updatedAt", { date: formattedUpdatedAt })}
           </p>
         )}
       </div>
 
-      {/* Amount at bottom */}
-      <div className="border-t border-border pt-3">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="mb-0.5 text-xs font-medium uppercase tracking-wide text-muted-foreground">
-              Amount
-            </p>
-            <p className="text-base font-bold text-foreground">
-              {currencyFormat(currency, amount)}
-            </p>
-          </div>
-          <ArrowUpRight className="h-4 w-4 text-muted-foreground transition-colors group-hover:text-foreground" />
-        </div>
+      <div className="mt-5 border-t border-border pt-4">
+        <p className="mb-1 text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">
+          {i18n.t("amount")}
+        </p>
+        <p className="text-2xl font-bold leading-none text-foreground">
+          {currencyFormat(currency, amount)}
+        </p>
       </div>
     </div>
   );

@@ -30,7 +30,8 @@ RSpec.describe Devise::Mailer, type: :mailer do
       mail = described_class.unlock_instructions(user, "preview-unlock-token")
 
       expect(mail.body.encoded).to include("30 minutes")
-      expect(mail.body.encoded).to include("/login")
+      expect(mail.body.encoded).to include("/password/new")
+      expect(mail.body.encoded).to include("secure once the lock expires")
     end
   end
 end

@@ -3,6 +3,7 @@ import React from "react";
 import CustomRadioButton from "common/CustomRadio";
 import { InputField, InputErrors } from "common/FormikFields";
 import { Formik, Form, FormikProps } from "formik";
+import { i18n } from "../../../i18n";
 import { XIcon } from "miruIcons";
 import { Button } from "StyledComponents";
 
@@ -53,7 +54,7 @@ const TeamForm = ({
                   autoComplete="off"
                   id="firstName"
                   inputBoxClassName="border focus:border-primary"
-                  label="First Name"
+                  label={i18n.t("contacts.firstName")}
                   name="firstName"
                   setFieldError={setFieldError}
                   setFieldValue={setFieldValue}
@@ -67,7 +68,7 @@ const TeamForm = ({
                   autoComplete="off"
                   id="lastName"
                   inputBoxClassName="border focus:border-primary"
-                  label="Last Name"
+                  label={i18n.t("contacts.lastName")}
                   name="lastName"
                   setFieldError={setFieldError}
                   setFieldValue={setFieldValue}
@@ -80,7 +81,7 @@ const TeamForm = ({
                 <InputField
                   autoComplete="off"
                   id="email"
-                  label="Email"
+                  label={i18n.t("email")}
                   name="email"
                   readOnly={false}
                   setFieldError={setFieldError}
@@ -98,7 +99,7 @@ const TeamForm = ({
                 />
                 <div>
                   <span className="text-xs font-normal text-foreground">
-                    Role
+                    {i18n.t("role")}
                   </span>
                   <div className="flex">
                     <div>
@@ -109,7 +110,7 @@ const TeamForm = ({
                         groupName="roles"
                         id="Admin"
                         key="Admin"
-                        label="Admin"
+                        label={i18n.t("team.admin")}
                         value={values.role == "admin" ? "admin" : ""}
                         handleOnChange={() => {
                           setFieldValue("role", "admin", true);
@@ -122,7 +123,7 @@ const TeamForm = ({
                         groupName="roles"
                         id="Employee"
                         key="Employee"
-                        label="Employee"
+                        label={i18n.t("team.employee")}
                         value={values.role == "employee" ? "employee" : ""}
                         handleOnChange={() => {
                           setFieldValue("role", "employee", true);
@@ -137,7 +138,7 @@ const TeamForm = ({
                         groupName="roles"
                         id="Book Keeper"
                         key="Book Keeper"
-                        label="Bookkeeper"
+                        label={i18n.t("team.bookkeeper")}
                         handleOnChange={() => {
                           setFieldValue("role", "book_keeper", true);
                         }}
@@ -152,7 +153,7 @@ const TeamForm = ({
                         groupName="roles"
                         id="Client"
                         key="Client"
-                        label="Client"
+                        label={i18n.t("team.clientRole")}
                         value={values.role == "client" ? "client" : ""}
                         handleOnChange={() => {
                           setFieldValue("role", "client", true);
@@ -169,7 +170,7 @@ const TeamForm = ({
                   !isValid || (!dirty && "bg-secondary")
                 }`}
               >
-                {isEdit ? "SAVE CHANGES" : "SEND INVITE"}
+                {isEdit ? i18n.t("save") : i18n.t("team.inviteMember")}
               </Button>
             </Form>
           );

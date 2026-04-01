@@ -31,6 +31,7 @@ class User < ApplicationRecord
   has_many :companies, through: :employments
   has_many :project_members, dependent: :destroy
   has_many :timesheet_entries
+  has_many :agents, dependent: :destroy
   has_many :identities, dependent: :delete_all
   has_many :previous_employments, dependent: :destroy
   has_one_attached :avatar
@@ -57,6 +58,7 @@ class User < ApplicationRecord
   store_accessor :social_accounts, :github_url, :linkedin_url
 
   # Attribute accessor
+  attribute :locale, :string, default: "en"
   attr_accessor :current_company, :role, :skip_password_validation
 
   # Validations
@@ -65,6 +67,7 @@ class User < ApplicationRecord
     presence: true,
     format: { with: /\A[a-zA-Z\s]+\z/ },
     length: { maximum: 20 }
+  validates :locale, inclusion: { in: LocaleConfig::SUPPORTED_LOCALES }
 
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
@@ -97,6 +100,7 @@ class User < ApplicationRecord
   # Callbacks
   after_discard :discard_project_members
   before_create :set_token
+  before_validation :normalize_locale
 
   after_commit :send_to_hubspot, on: :create
 
@@ -266,6 +270,10 @@ class User < ApplicationRecord
   end
 
   private
+
+    def normalize_locale
+      self.locale = LocaleConfig.normalize(locale)
+    end
 
     def set_token
       self.token = SecureRandom.base58(50)

@@ -1,4 +1,5 @@
 import React from "react";
+import { i18n } from "../../../../i18n";
 
 const NewLineItemTableHeader = ({ setShowMultilineModal, setLineItem }) => (
   <div className="flex items-center justify-center px-3 pt-6 pb-2 lg:justify-start">
@@ -9,7 +10,7 @@ const NewLineItemTableHeader = ({ setShowMultilineModal, setLineItem }) => (
         setLineItem({});
       }}
     >
-      CLICK TO ADD MULTIPLE ENTRIES
+      {i18n.t("invoices.selectTimeEntries")}
     </button>
     <button
       className="text-xs font-bold tracking-widest text-primary lg:hidden"
@@ -18,7 +19,7 @@ const NewLineItemTableHeader = ({ setShowMultilineModal, setLineItem }) => (
         setLineItem({});
       }}
     >
-      Add multiple entries
+      {i18n.t("invoices.selectTimeEntries")}
     </button>
   </div>
 );

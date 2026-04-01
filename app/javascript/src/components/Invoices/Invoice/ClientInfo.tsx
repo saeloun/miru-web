@@ -1,4 +1,5 @@
 import React from "react";
+import { i18n } from "../../../i18n";
 
 const ClientInfo = ({ client }) => {
   const { address_line_1, address_line_2, city, state, country, pin } =
@@ -7,7 +8,7 @@ const ClientInfo = ({ client }) => {
   return (
     <div className="relative w-full rounded border border-border bg-muted px-4 py-3 lg:mr-4 lg:w-4/12">
       <p className="absolute left-2 -top-2 bg-muted px-2 text-xs font-medium text-foreground">
-        Billed to
+        {i18n.t("invoices.billedTo")}
       </p>
       <div className="h-full overflow-y-auto">
         <p className="text-xl font-bold leading-7 text-foreground">
@@ -20,7 +21,7 @@ const ClientInfo = ({ client }) => {
               }\n${
                 address_line_2 ? "," : ""
               }\n${city}, ${state}, ${country},\n${pin}`
-            : "No address found"}
+            : i18n.t("noResultsFound")}
           <br />
           {client.phone}
         </p>

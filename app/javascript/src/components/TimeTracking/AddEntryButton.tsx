@@ -3,22 +3,26 @@ import { Button } from "../ui/button";
 
 interface AddEntryButtonProps {
   newEntryView: boolean;
+  newTimeoffEntryView?: boolean;
   showCopyLastWeek?: boolean;
   copyingLastWeek?: boolean;
   handleOpenModernForm?: () => void;
+  handleOpenTimeoffForm?: () => void;
   handleCopyLastWeek?: () => void;
   setNewEntryView: (value: boolean) => void;
 }
 
 const AddEntryButton: React.FC<AddEntryButtonProps> = ({
   newEntryView,
+  newTimeoffEntryView = false,
   showCopyLastWeek = false,
   copyingLastWeek = false,
   handleOpenModernForm,
+  handleOpenTimeoffForm,
   handleCopyLastWeek,
   setNewEntryView,
 }) => {
-  if (newEntryView) {
+  if (newEntryView || newTimeoffEntryView) {
     return null;
   }
 
@@ -48,6 +52,17 @@ const AddEntryButton: React.FC<AddEntryButtonProps> = ({
         <span className="mr-2 text-lg">+</span>
         Add Entry
       </Button>
+      {handleOpenTimeoffForm && (
+        <Button
+          size="default"
+          variant="outline"
+          className="h-10 w-full rounded-lg text-sm font-medium md:w-auto md:min-w-40"
+          data-testid="mark-time-off-button"
+          onClick={handleOpenTimeoffForm}
+        >
+          Mark Time Off
+        </Button>
+      )}
     </div>
   );
 };

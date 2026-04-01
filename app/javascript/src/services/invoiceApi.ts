@@ -5,7 +5,7 @@ export interface InvoiceItem {
   description: string;
   quantity: number;
   rate: number;
-  amount: number;
+  amount?: number;
   taxRate?: number;
 }
 
@@ -365,7 +365,12 @@ class InvoiceApiService {
         description: item.description || item.name,
         quantity: parseFloat(item.quantity || 0),
         rate: parseFloat(item.rate || 0),
-        amount: parseFloat(item.amount || 0),
+        amount:
+          item.amount === null ||
+          item.amount === undefined ||
+          item.amount === ""
+            ? undefined
+            : parseFloat(item.amount),
       })),
       company: {
         ...apiInvoice.company,

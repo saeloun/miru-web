@@ -21,6 +21,7 @@ import {
 import { formatCurrency } from "../../utils/currencyFormatter";
 import { formatDate, getHumanDate } from "../../utils/dateHelpers";
 import { cn } from "../../lib/utils";
+import { i18n } from "../../i18n";
 
 export interface Invoice {
   id: string;
@@ -61,32 +62,32 @@ export interface ModernInvoiceCardProps {
 
 const statusConfig = {
   draft: {
-    label: "Draft",
+    label: i18n.t("invoices.draft"),
     className: "bg-gray-100 text-gray-800 hover:bg-gray-100/80",
     dotClassName: "bg-gray-500",
   },
   sent: {
-    label: "Sent",
+    label: i18n.t("invoices.sent"),
     className: "bg-blue-100 text-blue-800 hover:bg-blue-100/80",
     dotClassName: "bg-blue-500",
   },
   viewed: {
-    label: "Viewed",
+    label: i18n.t("invoices.viewed"),
     className: "bg-purple-100 text-purple-800 hover:bg-purple-100/80",
     dotClassName: "bg-purple-500",
   },
   paid: {
-    label: "Paid",
+    label: i18n.t("invoices.paid"),
     className: "bg-green-100 text-green-800 hover:bg-green-100/80",
     dotClassName: "bg-green-500",
   },
   overdue: {
-    label: "Overdue",
+    label: i18n.t("invoices.overdue"),
     className: "bg-red-100 text-red-800 hover:bg-red-100/80",
     dotClassName: "bg-red-500",
   },
   cancelled: {
-    label: "Cancelled",
+    label: i18n.t("invoices.cancelled"),
     className: "bg-gray-100 text-gray-600 hover:bg-gray-100/80",
     dotClassName: "bg-gray-400",
   },
@@ -153,7 +154,7 @@ export const ModernInvoiceCard: React.FC<ModernInvoiceCardProps> = ({
               {formatCurrency(invoice.amount, invoice.currency)}
             </div>
             <div className="text-xs text-muted-foreground">
-              Due {getHumanDate(invoice.dueDate)}
+              {i18n.t("invoices.due", { date: getHumanDate(invoice.dueDate) })}
             </div>
           </div>
 
@@ -167,19 +168,19 @@ export const ModernInvoiceCard: React.FC<ModernInvoiceCardProps> = ({
               {onView && (
                 <DropdownMenuItem onClick={handleAction(() => onView(invoice))}>
                   <Eye className="mr-2 h-4 w-4" />
-                  View
+                  {i18n.t("invoices.invoice")}
                 </DropdownMenuItem>
               )}
               {onEdit && invoice.status === "draft" && (
                 <DropdownMenuItem onClick={handleAction(() => onEdit(invoice))}>
                   <PencilSimple className="mr-2 h-4 w-4" />
-                  Edit
+                  {i18n.t("edit")}
                 </DropdownMenuItem>
               )}
               {onSend && invoice.status === "draft" && (
                 <DropdownMenuItem onClick={handleAction(() => onSend(invoice))}>
                   <PaperPlaneTilt className="mr-2 h-4 w-4" />
-                  Send
+                  {i18n.t("invoices.send")}
                 </DropdownMenuItem>
               )}
               {onDownload && (
@@ -187,7 +188,7 @@ export const ModernInvoiceCard: React.FC<ModernInvoiceCardProps> = ({
                   onClick={handleAction(() => onDownload(invoice))}
                 >
                   <DownloadSimple className="mr-2 h-4 w-4" />
-                  Download
+                  {i18n.t("download")}
                 </DropdownMenuItem>
               )}
               {onDuplicate && (
@@ -195,7 +196,7 @@ export const ModernInvoiceCard: React.FC<ModernInvoiceCardProps> = ({
                   onClick={handleAction(() => onDuplicate(invoice))}
                 >
                   <Copy className="mr-2 h-4 w-4" />
-                  Duplicate
+                  {i18n.t("duplicate")}
                 </DropdownMenuItem>
               )}
               <DropdownMenuSeparator />
@@ -205,7 +206,7 @@ export const ModernInvoiceCard: React.FC<ModernInvoiceCardProps> = ({
                   className="text-red-600"
                 >
                   <Trash className="mr-2 h-4 w-4" />
-                  Delete
+                  {i18n.t("delete")}
                 </DropdownMenuItem>
               )}
             </DropdownMenuContent>
@@ -256,19 +257,19 @@ export const ModernInvoiceCard: React.FC<ModernInvoiceCardProps> = ({
               {onView && (
                 <DropdownMenuItem onClick={handleAction(() => onView(invoice))}>
                   <Eye className="mr-2 h-4 w-4" />
-                  View Invoice
+                  {i18n.t("invoices.invoice")}
                 </DropdownMenuItem>
               )}
               {onEdit && invoice.status === "draft" && (
                 <DropdownMenuItem onClick={handleAction(() => onEdit(invoice))}>
                   <PencilSimple className="mr-2 h-4 w-4" />
-                  Edit Invoice
+                  {i18n.t("invoices.editInvoice")}
                 </DropdownMenuItem>
               )}
               {onSend && invoice.status === "draft" && (
                 <DropdownMenuItem onClick={handleAction(() => onSend(invoice))}>
                   <PaperPlaneTilt className="mr-2 h-4 w-4" />
-                  Send Invoice
+                  {i18n.t("invoices.sendInvoice")}
                 </DropdownMenuItem>
               )}
               {onDownload && (
@@ -276,7 +277,7 @@ export const ModernInvoiceCard: React.FC<ModernInvoiceCardProps> = ({
                   onClick={handleAction(() => onDownload(invoice))}
                 >
                   <DownloadSimple className="mr-2 h-4 w-4" />
-                  Download PDF
+                  {i18n.t("download")}
                 </DropdownMenuItem>
               )}
               {onDuplicate && (
@@ -284,7 +285,7 @@ export const ModernInvoiceCard: React.FC<ModernInvoiceCardProps> = ({
                   onClick={handleAction(() => onDuplicate(invoice))}
                 >
                   <Copy className="mr-2 h-4 w-4" />
-                  Duplicate
+                  {i18n.t("duplicate")}
                 </DropdownMenuItem>
               )}
 
@@ -298,7 +299,7 @@ export const ModernInvoiceCard: React.FC<ModernInvoiceCardProps> = ({
                       )}
                       className="text-green-600"
                     >
-                      Mark as Paid
+                      i18n.t("invoices.markAsPaid")
                     </DropdownMenuItem>
                   )}
                   {invoice.status === "draft" && (
@@ -308,7 +309,7 @@ export const ModernInvoiceCard: React.FC<ModernInvoiceCardProps> = ({
                       )}
                       className="text-blue-600"
                     >
-                      Mark as Sent
+                      i18n.t("invoices.sent")
                     </DropdownMenuItem>
                   )}
                   {(invoice.status === "sent" ||
@@ -319,7 +320,7 @@ export const ModernInvoiceCard: React.FC<ModernInvoiceCardProps> = ({
                       )}
                       className="text-gray-600"
                     >
-                      Cancel Invoice
+                      i18n.t("invoices.deleteInvoice")
                     </DropdownMenuItem>
                   )}
                 </>
@@ -333,7 +334,7 @@ export const ModernInvoiceCard: React.FC<ModernInvoiceCardProps> = ({
                     className="text-red-600 focus:text-red-600 focus:bg-red-50"
                   >
                     <Trash className="mr-2 h-4 w-4" />
-                    Delete Invoice
+                    {i18n.t("invoices.deleteInvoice")}
                   </DropdownMenuItem>
                 </>
               )}
@@ -351,25 +352,23 @@ export const ModernInvoiceCard: React.FC<ModernInvoiceCardProps> = ({
 
         <div className="flex items-center justify-between pt-2 border-t">
           <div className="space-y-1">
-            <p className="text-xs text-muted-foreground">Amount</p>
+            <p className="text-xs text-muted-foreground">{i18n.t("amount")}</p>
             <p className="text-2xl font-bold">
               {formatCurrency(invoice.amount, invoice.currency)}
             </p>
           </div>
 
           <div className="text-right space-y-1">
-            <p className="text-xs text-muted-foreground">Due Date</p>
+            <p className="text-xs text-muted-foreground">{i18n.t("invoices.dueDate")}</p>
             <p className="text-sm font-medium">
               {formatDate(invoice.dueDate, "DD MMM YYYY")}
             </p>
             {isOverdue && (
               <p className="text-xs text-red-600 font-medium">
-                Overdue by{" "}
-                {Math.floor(
+                {i18n.t("invoices.overdueDays", { days: Math.floor(
                   (new Date().getTime() - new Date(invoice.dueDate).getTime()) /
                     (1000 * 60 * 60 * 24)
-                )}{" "}
-                days
+                )})}
               </p>
             )}
           </div>
@@ -383,7 +382,7 @@ export const ModernInvoiceCard: React.FC<ModernInvoiceCardProps> = ({
               onClick={handleAction(() => onSend(invoice))}
             >
               <PaperPlaneTilt className="mr-2 h-4 w-4" />
-              Send Invoice
+              {i18n.t("invoices.sendInvoice")}
             </Button>
             {onEdit && (
               <Button
@@ -392,7 +391,7 @@ export const ModernInvoiceCard: React.FC<ModernInvoiceCardProps> = ({
                 onClick={handleAction(() => onEdit(invoice))}
               >
                 <PencilSimple className="mr-2 h-4 w-4" />
-                Edit
+                {i18n.t("edit")}
               </Button>
             )}
           </div>
@@ -401,7 +400,7 @@ export const ModernInvoiceCard: React.FC<ModernInvoiceCardProps> = ({
         {invoice.status === "paid" && invoice.paidDate && (
           <div className="bg-green-50 dark:bg-green-950/20 rounded-lg p-3">
             <p className="text-sm text-green-800 dark:text-green-400">
-              Paid on {formatDate(invoice.paidDate, "DD MMM YYYY")}
+              {i18n.t("invoices.paidOn", { date: formatDate(invoice.paidDate, "DD MMM YYYY") })}
             </p>
           </div>
         )}

@@ -186,6 +186,7 @@ group :development, :test, :ci do
   # To record response of outgoing API calls
   gem "vcr", "~> 6.4.0"
   gem "webmock", "~> 3.26.0"
+  gem "i18n-tasks", require: false
 end
 
 group :development do

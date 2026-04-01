@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 import { timesheetEntryApi, timeTrackingApi } from "apis/api";
 import Loader from "common/Loader/index";
 import withLayout from "common/Mobile/HOC/withLayout";
 import SearchTimeEntries from "common/SearchTimeEntries";
+import { TimesheetEntriesContext } from "context/TimesheetEntries";
 import { useUserContext } from "context/UserContext";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
@@ -15,6 +16,8 @@ import { sendGAPageView } from "utils/googleAnalytics";
 import { Button } from "../ui/button";
 import { Toastr } from "../ui/toastr";
 import FloatingTimer from "../TimesheetEntries/FloatingTimer";
+import TimeoffForm from "../TimeoffEntries/TimeoffForm";
+import { startTimerFromEntry } from "utils/timeTrackingTimer";
 
 import WeekDaySelector from "./WeekDaySelector";
 import EntryForm from "./EntryForm";
@@ -43,6 +46,8 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
 
   const [dayInfo, setDayInfo] = useState<any[]>([]);
   const [newEntryView, setNewEntryView] = useState<boolean>(false);
+  const [newTimeoffEntryView, setNewTimeoffEntryView] =
+    useState<boolean>(false);
   const [newRowView, setNewRowView] = useState<boolean>(false);
   const [selectDate, setSelectDate] = useState<number>(dayjs().weekday());
   const [weekDay, setWeekDay] = useState<number>(0);
@@ -53,6 +58,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
     dayjs().format("YYYY-MM-DD")
   );
   const [editEntryId, setEditEntryId] = useState<number>(0);
+  const [editTimeoffEntryId, setEditTimeoffEntryId] = useState<number>(0);
   const [weeklyData, setWeeklyData] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [isWeeklyEditing, setIsWeeklyEditing] = useState<boolean>(false);
@@ -63,6 +69,8 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
   const [clients, setClients] = useState<any>({});
   const [projects, setProjects] = useState<any>({});
   const [employees, setEmployees] = useState<any>([]);
+  const [leaveTypes, setLeaveTypes] = useState<any[]>([]);
+  const [holidayList, setHolidayList] = useState<any[]>([]);
   const [currentMonthNumber, setCurrentMonthNumber] = useState<number>(
     dayjs().month()
   );
@@ -79,6 +87,8 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
   >(null);
   const [loadedRangeKey, setLoadedRangeKey] = useState<string>("");
   const [copyingLastWeek, setCopyingLastWeek] = useState<boolean>(false);
+  const [timerSyncKey, setTimerSyncKey] = useState<number>(0);
+  const [resumeTimerEntry, setResumeTimerEntry] = useState<any>(null);
   const dateParseFormats = [
     dateFormat,
     "YYYY-MM-DD",
@@ -92,6 +102,34 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
     value: `${e["id"]}`,
     label: `${e["first_name"]} ${e["last_name"]}`,
   }));
+
+  const leaveTypeHashObj = useMemo(
+    () =>
+      leaveTypes.reduce((accumulator, leaveType) => {
+        if (leaveType?.id) accumulator[leaveType.id] = leaveType;
+
+        return accumulator;
+      }, {}),
+    [leaveTypes]
+  );
+
+  const holidaysHashObj = useMemo(
+    () =>
+      holidayList.reduce((accumulator, holidayInfo) => {
+        if (holidayInfo?.id) accumulator[holidayInfo.id] = holidayInfo;
+
+        return accumulator;
+      }, {}),
+    [holidayList]
+  );
+
+  const hasNationalHoliday = holidayList.some(
+    holidayInfo => holidayInfo?.category === "national"
+  );
+
+  const hasOptionalHoliday = holidayList.some(
+    holidayInfo => holidayInfo?.category === "optional"
+  );
 
   const getEntriesForDate = (dateValue: string) => {
     if (!dateValue || !entryList) return [];
@@ -142,7 +180,15 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
         to,
         year,
       });
-      const { clients, projects, entries, employees } = data;
+
+      const {
+        clients,
+        projects,
+        entries,
+        employees,
+        leave_types,
+        holiday_infos,
+      } = data;
 
       // Ensure clients is an array
       const clientsArray = Array.isArray(clients) ? clients : [];
@@ -155,6 +201,8 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
       // Ensure employees is an array
       const employeesArray = Array.isArray(employees) ? employees : [];
       setEmployees(employeesArray);
+      setLeaveTypes(Array.isArray(leave_types) ? leave_types : []);
+      setHolidayList(Array.isArray(holiday_infos) ? holiday_infos : []);
 
       // Ensure entries is an object
       const entriesObj = entries || {};
@@ -334,6 +382,13 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
       const entriesObj = res.data?.entries || {};
       setAllEmployeesEntries(pv => ({ ...pv, [targetEmployeeId]: entriesObj }));
       setEntryList(entriesObj);
+      if (Array.isArray(res.data?.leave_types)) {
+        setLeaveTypes(res.data.leave_types);
+      }
+
+      if (Array.isArray(res.data?.holiday_infos)) {
+        setHolidayList(res.data.holiday_infos);
+      }
       setRuntimeError("");
       setLoading(false);
 
@@ -553,6 +608,13 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
     setShowModernForm(true);
   };
 
+  const handleOpenTimeoffForm = () => {
+    setEditEntryId(0);
+    setEditTimeoffEntryId(0);
+    setNewEntryView(false);
+    setNewTimeoffEntryView(true);
+  };
+
   const handleCloseModernForm = () => {
     setShowModernForm(false);
     setModernFormEntry(null);
@@ -597,6 +659,34 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
 
   const handleTimerSaved = async () => {
     await refreshVisibleEntries();
+  };
+
+  const handleResumeTimer = ({
+    client,
+    project,
+    projectId,
+    note,
+  }: {
+    client: string;
+    project: string;
+    projectId: number;
+    note?: string;
+  }) => {
+    startTimerFromEntry({
+      client,
+      project,
+      projectId,
+      description: note,
+    });
+    setTimerSyncKey(current => current + 1);
+    setResumeTimerEntry({
+      client,
+      project,
+      projectId,
+      description: note,
+      resumeAt: Date.now(),
+    });
+    Toastr.success("Timer resumed from entry");
   };
 
   const handleCopyLastWeek = async () => {
@@ -715,212 +805,261 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
   }
 
   const TimeTrackingLayout = () => (
-    <div className="pb-14">
-      <div className="mt-0 h-full p-4 lg:mt-6 lg:p-0">
-        <div className="mb-6 flex items-center justify-between">
-          {isDesktop && (
-            <div className="flex flex-col items-start gap-3">
-              <p className="text-sm text-muted-foreground">
-                Log work by week or month. Keep entries clear and current.
-              </p>
-            </div>
-          )}
-          {!isDesktop && isAdminUser && (
-            <h3 className="text-lg font-bold leading-6 text-foreground">
-              Time entries for
-            </h3>
-          )}
-          {isAdminUser && employeeOptions.length > 0 && (
-            <SearchTimeEntries
-              employeeList={employeeOptions}
-              selectedEmployeeId={selectedEmployeeId}
-              setSelectedEmployeeId={setSelectedEmployeeId}
-            />
-          )}
-          {!isAdminUser && user && (
-            <div className="text-sm text-muted-foreground">
-              Entries for {user.first_name} {user.last_name}
-            </div>
-          )}
-        </div>
-        <div>
-          <div className="mb-4 flex items-center gap-2" role="tablist">
-            {["week", "month"].map(currentView => (
-              <Button
-                key={currentView}
-                variant={view === currentView ? "default" : "outline"}
-                size="sm"
-                data-view={currentView}
-                onClick={() => {
-                  setView(currentView);
-                  localStorage.setItem("timeTrackingView", currentView);
-                }}
-              >
-                {currentView.charAt(0).toUpperCase() + currentView.slice(1)}
-              </Button>
-            ))}
-          </div>
-          <div className="mb-6 week-view" data-view={view}>
-            <Header
-              dailyTotalHours={dailyTotalHours}
-              dayInfo={dayInfo}
-              handleAddEntryDateChange={handleAddEntryDateChange}
-              handleNextDay={handleNextDay}
-              handleNextWeek={handleNextWeek}
-              handlePreDay={handlePreDay}
-              handlePrevWeek={handlePrevWeek}
-              selectDate={selectDate}
-              selectedFullDate={selectedFullDate}
-              setSelectDate={setSelectDate}
-              setWeekDay={setWeekDay}
-              weeklyTotalHours={weeklyTotalHours}
-            />
+    <TimesheetEntriesContext.Provider
+      value={{
+        entryList,
+        selectedFullDate,
+        setUpdateView,
+        setNewTimeoffEntryView,
+        selectedEmployeeId,
+        fetchEntries,
+        fetchEntriesOfMonths,
+        handleAddEntryDateChange,
+        refreshVisibleEntries,
+        editTimeoffEntryId,
+        setEditTimeoffEntryId,
+        handleFilterEntry,
+        handleRelocateEntry,
+        setSelectedFullDate,
+        holidayList,
+        holidaysHashObj,
+        hasNationalHoliday,
+        hasOptionalHoliday,
+        leaveTypes,
+        setLeaveTypes,
+        editEntryId,
+        newEntryView,
+        setEditEntryId,
+        setNewEntryView,
+        isDesktop,
+      }}
+    >
+      <div className="pb-14">
+        <div className="mt-0 h-full p-4 lg:mt-6 lg:p-0">
+          <div className="mb-6 flex items-center justify-between">
             {isDesktop && (
-              <FloatingTimer
-                onSaveEntry={handleTimerSaved}
-                placement="inline"
+              <div className="flex flex-col items-start gap-3">
+                <p className="text-sm text-muted-foreground">
+                  Log work by week or month. Keep entries clear and current.
+                </p>
+              </div>
+            )}
+            {!isDesktop && isAdminUser && (
+              <h3 className="text-lg font-bold leading-6 text-foreground">
+                Time entries for
+              </h3>
+            )}
+            {isAdminUser && employeeOptions.length > 0 && (
+              <SearchTimeEntries
+                employeeList={employeeOptions}
+                selectedEmployeeId={selectedEmployeeId}
+                setSelectedEmployeeId={setSelectedEmployeeId}
               />
             )}
-            {view === "week" && (
-              <WeekDaySelector
-                dayInfo={dayInfo}
-                selectDate={selectDate}
-                setSelectDate={index => {
-                  setSelectDate(index);
-                  const selectedDayInfo = dayInfo[index];
-                  if (selectedDayInfo) {
-                    const formattedDate = dayjs(
-                      selectedDayInfo.fullDate,
-                      dateFormat
-                    ).format("YYYY-MM-DD");
-                    setSelectedFullDate(formattedDate);
-                  }
-                }}
-              />
+            {!isAdminUser && user && (
+              <div className="text-sm text-muted-foreground">
+                Entries for {user.first_name} {user.last_name}
+              </div>
             )}
-            {view === "month" && (
-              <MonthCalender
-                selectedFullDate={selectedFullDate}
-                setSelectedFullDate={setSelectedFullDate}
+          </div>
+          <div>
+            <div className="mb-4 flex items-center gap-2" role="tablist">
+              {["week", "month"].map(currentView => (
+                <Button
+                  key={currentView}
+                  variant={view === currentView ? "default" : "outline"}
+                  size="sm"
+                  data-view={currentView}
+                  onClick={() => {
+                    setView(currentView);
+                    localStorage.setItem("timeTrackingView", currentView);
+                  }}
+                >
+                  {currentView.charAt(0).toUpperCase() + currentView.slice(1)}
+                </Button>
+              ))}
+            </div>
+            <div className="mb-6 week-view" data-view={view}>
+              {view === "week" && (
+                <Header
+                  dailyTotalHours={dailyTotalHours}
+                  dayInfo={dayInfo}
+                  handleAddEntryDateChange={handleAddEntryDateChange}
+                  handleNextDay={handleNextDay}
+                  handleNextWeek={handleNextWeek}
+                  handlePreDay={handlePreDay}
+                  handlePrevWeek={handlePrevWeek}
+                  selectDate={selectDate}
+                  selectedFullDate={selectedFullDate}
+                  setSelectDate={setSelectDate}
+                  setWeekDay={setWeekDay}
+                  weeklyTotalHours={weeklyTotalHours}
+                />
+              )}
+              {isDesktop && (
+                <FloatingTimer
+                  onSaveEntry={handleTimerSaved}
+                  placement="inline"
+                  externalSyncKey={timerSyncKey}
+                  resumeFromEntry={resumeTimerEntry}
+                />
+              )}
+              {view === "week" && (
+                <WeekDaySelector
+                  dayInfo={dayInfo}
+                  selectDate={selectDate}
+                  setSelectDate={index => {
+                    setSelectDate(index);
+                    const selectedDayInfo = dayInfo[index];
+                    if (selectedDayInfo) {
+                      const formattedDate = dayjs(
+                        selectedDayInfo.fullDate,
+                        dateFormat
+                      ).format("YYYY-MM-DD");
+                      setSelectedFullDate(formattedDate);
+                    }
+                  }}
+                />
+              )}
+              {view === "month" && (
+                <MonthCalender
+                  selectedFullDate={selectedFullDate}
+                  setSelectedFullDate={setSelectedFullDate}
+                  entryList={entryList}
+                  handleWeekTodayButton={handleWeekTodayButton}
+                  monthsAbbr={monthsAbbr}
+                  setWeekDay={setWeekDay}
+                  setSelectDate={setSelectDate}
+                  currentMonthNumber={currentMonthNumber}
+                  setCurrentMonthNumber={setCurrentMonthNumber}
+                  currentYear={currentYear}
+                  setCurrentYear={setCurrentYear}
+                  dayInfo={dayInfo}
+                  setUpdateView={setUpdateView}
+                />
+              )}
+            </div>
+            {(editEntryId || newEntryView) && (
+              <EntryForm
+                clients={clients}
+                editEntryId={editEntryId}
                 entryList={entryList}
-                handleWeekTodayButton={handleWeekTodayButton}
-                monthsAbbr={monthsAbbr}
-                setWeekDay={setWeekDay}
-                setSelectDate={setSelectDate}
-                currentMonthNumber={currentMonthNumber}
-                setCurrentMonthNumber={setCurrentMonthNumber}
-                currentYear={currentYear}
-                setCurrentYear={setCurrentYear}
-                dayInfo={dayInfo}
+                refreshVisibleEntries={refreshVisibleEntries}
+                handleAddEntryDateChange={handleAddEntryDateChange}
+                handleDeleteEntry={handleDeleteEntry}
+                handleFilterEntry={handleFilterEntry}
+                handleRelocateEntry={handleRelocateEntry}
+                projects={projects}
+                removeLocalStorageItems={removeLocalStorageItems}
+                selectedEmployeeId={selectedEmployeeId}
+                selectedFullDate={selectedFullDate}
+                setEditEntryId={setEditEntryId}
+                setNewEntryView={setNewEntryView}
+                setSelectedFullDate={setSelectedFullDate}
                 setUpdateView={setUpdateView}
               />
             )}
-          </div>
-          {(editEntryId || newEntryView) && (
-            <EntryForm
-              clients={clients}
-              editEntryId={editEntryId}
-              entryList={entryList}
-              refreshVisibleEntries={refreshVisibleEntries}
-              handleAddEntryDateChange={handleAddEntryDateChange}
-              handleDeleteEntry={handleDeleteEntry}
-              handleFilterEntry={handleFilterEntry}
-              handleRelocateEntry={handleRelocateEntry}
-              projects={projects}
-              removeLocalStorageItems={removeLocalStorageItems}
-              selectedEmployeeId={selectedEmployeeId}
-              selectedFullDate={selectedFullDate}
-              setEditEntryId={setEditEntryId}
+            {newTimeoffEntryView && <TimeoffForm />}
+            <AddEntryButton
+              copyingLastWeek={copyingLastWeek}
+              handleCopyLastWeek={handleCopyLastWeek}
+              newEntryView={newEntryView}
+              newTimeoffEntryView={newTimeoffEntryView}
+              handleOpenModernForm={handleOpenModernForm}
+              handleOpenTimeoffForm={handleOpenTimeoffForm}
               setNewEntryView={setNewEntryView}
-              setSelectedFullDate={setSelectedFullDate}
-              setUpdateView={setUpdateView}
+              showCopyLastWeek={isDesktop && view === "week"}
             />
-          )}
-          <AddEntryButton
-            copyingLastWeek={copyingLastWeek}
-            handleCopyLastWeek={handleCopyLastWeek}
-            newEntryView={newEntryView}
-            handleOpenModernForm={handleOpenModernForm}
-            setNewEntryView={setNewEntryView}
-            showCopyLastWeek={isDesktop && view === "week"}
-          />
-          {newRowView && (
-            <WeeklyEntries
-              clientName=""
-              clients={clients}
-              dayInfo={dayInfo}
-              entries={[]}
-              entryList={entryList}
-              isWeeklyEditing={isWeeklyEditing}
-              key={0}
-              newRowView={newRowView}
-              projectId={null}
-              projectName=""
-              projects={projects}
-              selectedEmployeeId={selectedEmployeeId}
-              setEntryList={setEntryList}
-              setIsWeeklyEditing={setIsWeeklyEditing}
-              setNewRowView={setNewRowView}
-              setWeeklyData={setWeeklyData}
-              weeklyData={weeklyData}
-            />
+            {newRowView && (
+              <WeeklyEntries
+                clientName=""
+                clients={clients}
+                dayInfo={dayInfo}
+                entries={[]}
+                entryList={entryList}
+                isWeeklyEditing={isWeeklyEditing}
+                key={0}
+                newRowView={newRowView}
+                projectId={null}
+                projectName=""
+                projects={projects}
+                selectedEmployeeId={selectedEmployeeId}
+                setEntryList={setEntryList}
+                setIsWeeklyEditing={setIsWeeklyEditing}
+                setNewRowView={setNewRowView}
+                setWeeklyData={setWeeklyData}
+                weeklyData={weeklyData}
+              />
+            )}
+          </div>
+          {(view === "week" || view === "month" || !isDesktop) && (
+            <div className="mt-4" data-view={view}>
+              <TimeEntriesDisplay
+                selectedFullDate={selectedFullDate}
+                entryList={entryList}
+                leaveTypeHashObj={leaveTypeHashObj}
+                holidaysHashObj={holidaysHashObj}
+                handleDeleteEntry={handleDeleteEntry}
+                handleDuplicate={handleDuplicate}
+                handleResumeTimer={handleResumeTimer}
+                setEditEntryId={setEditEntryId}
+                setNewEntryView={setNewEntryView}
+                dayInfo={dayInfo}
+                view={view}
+              />
+            </div>
           )}
         </div>
-        {(view === "week" || view === "month" || !isDesktop) && (
-          <div className="mt-4" data-view={view}>
-            <TimeEntriesDisplay
-              selectedFullDate={selectedFullDate}
-              entryList={entryList}
-              handleDeleteEntry={handleDeleteEntry}
-              handleDuplicate={handleDuplicate}
-              setEditEntryId={setEditEntryId}
-              setNewEntryView={setNewEntryView}
-            />
-          </div>
+        <ModernTimeEntryForm
+          isOpen={showModernForm}
+          onClose={handleCloseModernForm}
+          onSave={handleSaveModernEntry}
+          selectedDate={dayjs(selectedFullDate).toDate()}
+          existingEntry={modernFormEntry}
+          projects={Object.values(projects).flat()}
+          clients={clients}
+        />
+
+        <EntryDetailsModal
+          isOpen={showEntryModal}
+          onClose={() => {
+            setShowEntryModal(false);
+            setNewEntryView(false);
+            setEditEntryId(0);
+          }}
+          selectedDate={modalSelectedDate}
+          entries={getEntriesForDate(modalSelectedDate)}
+          editEntryId={editEntryId}
+          setEditEntryId={setEditEntryId}
+          handleDeleteEntry={handleDeleteEntry}
+          handleDuplicate={handleDuplicate}
+          handleResumeTimer={handleResumeTimer}
+          setNewEntryView={setNewEntryView}
+          newEntryView={newEntryView}
+          // Form props
+          clients={clients}
+          projects={projects}
+          entryList={entryList}
+          fetchEntries={fetchEntries}
+          fetchEntriesofMonth={fetchEntriesOfMonths}
+          refreshVisibleEntries={refreshVisibleEntries}
+          handleAddEntryDateChange={handleAddEntryDateChange}
+          handleFilterEntry={handleFilterEntry}
+          handleRelocateEntry={handleRelocateEntry}
+          removeLocalStorageItems={removeLocalStorageItems}
+          selectedEmployeeId={selectedEmployeeId}
+          setSelectedFullDate={setSelectedFullDate}
+          setUpdateView={setUpdateView}
+        />
+        {!isDesktop && (
+          <FloatingTimer
+            onSaveEntry={handleTimerSaved}
+            externalSyncKey={timerSyncKey}
+            resumeFromEntry={resumeTimerEntry}
+          />
         )}
       </div>
-      <ModernTimeEntryForm
-        isOpen={showModernForm}
-        onClose={handleCloseModernForm}
-        onSave={handleSaveModernEntry}
-        selectedDate={dayjs(selectedFullDate).toDate()}
-        existingEntry={modernFormEntry}
-        projects={Object.values(projects).flat()}
-        clients={clients}
-      />
-
-      <EntryDetailsModal
-        isOpen={showEntryModal}
-        onClose={() => {
-          setShowEntryModal(false);
-          setNewEntryView(false);
-          setEditEntryId(0);
-        }}
-        selectedDate={modalSelectedDate}
-        entries={getEntriesForDate(modalSelectedDate)}
-        editEntryId={editEntryId}
-        setEditEntryId={setEditEntryId}
-        handleDeleteEntry={handleDeleteEntry}
-        handleDuplicate={handleDuplicate}
-        setNewEntryView={setNewEntryView}
-        newEntryView={newEntryView}
-        // Form props
-        clients={clients}
-        projects={projects}
-        entryList={entryList}
-        fetchEntries={fetchEntries}
-        fetchEntriesofMonth={fetchEntriesOfMonths}
-        refreshVisibleEntries={refreshVisibleEntries}
-        handleAddEntryDateChange={handleAddEntryDateChange}
-        handleFilterEntry={handleFilterEntry}
-        handleRelocateEntry={handleRelocateEntry}
-        removeLocalStorageItems={removeLocalStorageItems}
-        selectedEmployeeId={selectedEmployeeId}
-        setSelectedFullDate={setSelectedFullDate}
-        setUpdateView={setUpdateView}
-      />
-      {!isDesktop && <FloatingTimer onSaveEntry={handleTimerSaved} />}
-    </div>
+    </TimesheetEntriesContext.Provider>
   );
 
   const Main = withLayout(TimeTrackingLayout, !isDesktop, !isDesktop);

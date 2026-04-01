@@ -53,8 +53,9 @@ const Holidays = () => {
     Record<number, Record<string, string[]>>
   >({});
 
-  const { isDesktop, company } = useUserContext();
+  const { isDesktop, company, companyRole } = useUserContext();
   const dateFormat = companyDateFormat(company?.date_format);
+  const canManageHolidays = companyRole === "admin" || companyRole === "owner";
 
   const navigate = useNavigate();
 
@@ -296,6 +297,8 @@ const Holidays = () => {
   };
 
   const handleUpdateHolidayDetails = () => {
+    if (!canManageHolidays) return;
+
     const totalHolidayList = makePayload(
       [...holidayList, ...optionalHolidaysList],
       dateFormat
@@ -483,6 +486,7 @@ const Holidays = () => {
         currentYear={currentYear}
         dateFormat={dateFormat}
         enableOptionalHolidays={enableOptionalHolidays}
+        canManageHolidays={canManageHolidays}
         handleAddHoliday={handleAddHoliday}
         handleCancelAction={handleCancelAction}
         handleChangeRepetitionOpHoliday={handleChangeRepetitionOpHoliday}

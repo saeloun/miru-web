@@ -8,7 +8,7 @@ class UserInvitationMailer < ApplicationMailer
     @company_details = params[:company_details]
     @sender_details = params[:sender_details]
     @user_already_exists = params[:user_already_exists]
-    subject = "Welcome to Miru!"
+    subject = "You're invited to join Miru"
 
     mail(to: recipient, subject:, reply_to: ENV["REPLY_TO_EMAIL"])
   end

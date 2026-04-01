@@ -6,13 +6,10 @@ class SendWeeklyReminderToUserMailer < ApplicationMailer
     @company = params[:company_name]
     @name = params[:name]
 
-    @starting_date = params[:start_date]
-    @starting_date = @starting_date.ordinalize(year: false)
+    @starting_date = params[:start_date].strftime("%B %-d")
+    @ending_date = params[:end_date].strftime("%B %-d, %Y")
 
-    @ending_date = params[:end_date]
-    @ending_date = @ending_date.ordinalize(year: false)
-
-    subject = "Reminder to Update your Timesheet on Miru"
+    subject = "Complete your Miru timesheet for last week"
 
     mail(to: recipients, subject:, reply_to: ENV["REPLY_TO_EMAIL"])
   end

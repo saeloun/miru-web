@@ -2,6 +2,7 @@ import React, { Fragment } from "react";
 
 import { XIcon } from "miruIcons";
 
+import { i18n } from "../../../i18n";
 import { getReports } from "./fetchReport";
 
 import { useEntry } from "../context/EntryContext";
@@ -30,7 +31,7 @@ const NavigationFilter = () => {
       key={key}
     >
       <span className="whitespace-nowrap">
-        {filterKey === "groupBy" && "Group By:"} {value}
+        {filterKey === "groupBy" && `${i18n.t("reports.groupBy")}:`} {value}
       </span>
       <button
         className="ml-1 inline-block"

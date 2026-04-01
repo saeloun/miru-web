@@ -1,0 +1,364 @@
+---
+ml:
+  activerecord:
+    errors:
+      models:
+        client:
+          attributes:
+            name:
+              format: എക്സ്__0
+        project:
+          attributes:
+            name:
+              format: എക്സ്__0
+  application_controller:
+    not_found: റൂട്ട് കണ്ടെത്തിയില്ല.
+  avatar:
+    destroy:
+      success: അവതാർ വിജയകരമായി ഇല്ലാതാക്കി
+    update:
+      success: അവതാർ വിജയകരമായി അപ്ഡേറ്റ് ചെയ്തു
+  client:
+    add: ക്ലയന്റിനെ ചേർക്കുക
+    address:
+      label: വിലാസം
+      placeholder: വിലാസം നൽകുക
+    create:
+      failure: ക്ലയന്റ് സൃഷ്ടിക്കൽ പരാജയപ്പെട്ടു
+      success: ക്ലയന്റിനെ വിജയകരമായി ചേർത്തു
+    delete:
+      success:
+        message: ക്ലയന്റിനെ വിജയകരമായി നീക്കം ചെയ്തു
+    email:
+      label: ഇമെയിൽ
+      placeholder: ഇമെയിൽ ഐഡി നൽകുക
+    name:
+      label: പേര്
+      placeholder: പേര് നൽകുക
+    phone:
+      label: ഫോൺ നമ്പർ
+      placeholder: ഫോൺ നമ്പർ നൽകുക
+    update:
+      failure:
+        message: മാറ്റങ്ങൾ സംരക്ഷിക്കാനായില്ല
+        unauthorized: ഈ ക്ലയന്റിന്റെ വിവരങ്ങൾ പരിഷ്കരിക്കാൻ ഉപയോക്താവിന് അധികാരമില്ല.
+      success:
+        message: മാറ്റങ്ങൾ വിജയകരമായി സംരക്ഷിച്ചു.
+  clients:
+    add_client_contact:
+      success: ക്ഷണം വിജയകരമായി അയച്ചു.
+    send_payment_reminder:
+      success: പേയ്‌മെന്റ് ഓർമ്മപ്പെടുത്തൽ അയച്ചു.
+  companies:
+    create:
+      failure: കമ്പനി സൃഷ്ടിക്കൽ പരാജയപ്പെട്ടു
+      success: കമ്പനി വിജയകരമായി സൃഷ്ടിച്ചു
+    purge_logo:
+      destroy:
+        success: കമ്പനി ലോഗോ വിജയകരമായി നീക്കം ചെയ്തു
+    update:
+      success: മാറ്റങ്ങൾ വിജയകരമായി സംരക്ഷിച്ചു.
+  company:
+    address: വിലാസം
+    base_currency: അടിസ്ഥാന കറൻസി
+    business_phone: ബിസിനസ് ഫോൺ
+    cancel: റദ്ദാക്കുക
+    company: കമ്പനി
+    country: രാജ്യം
+    date_format: തീയതി ഫോർമാറ്റ്
+    fiscal_year: സാമ്പത്തിക വർഷം
+    logo: ലോഗോ
+    save: രക്ഷിക്കൂ
+    save_org: സ്ഥാപന വിശദാംശങ്ങൾ സംരക്ഷിക്കുക
+    setup: സജ്ജീകരണ സംഘടന
+    standard_price: സ്റ്റാൻഡേർഡ് വില
+    timezone: സമയമേഖല
+  confirmation:
+    send_instructions: "%{email} എന്ന വിലാസത്തിലേക്ക് ഒരു സ്ഥിരീകരണ ഇമെയിൽ അയച്ചിട്ടുണ്ട്."
+  currency_pairs:
+    from_to_required: മുതൽ വരെ ആവശ്യമാണ്
+    rate_not_found: നിരക്ക് കണ്ടെത്തിയില്ല.
+  custom_leaves:
+    update:
+      success: ഇഷ്ടാനുസൃത ഇലകൾ വിജയകരമായി അപ്ഡേറ്റ് ചെയ്തു
+  employment:
+    update:
+      success: തൊഴിൽ വിജയകരമായി അപ്ഡേറ്റ് ചെയ്തു
+  errors:
+    bill_status_billed: ഇതിനകം ബിൽ ചെയ്ത ഒരു എൻട്രി നിങ്ങൾക്ക് ബിൽ ചെയ്യാൻ കഴിയില്ല.
+    can't change status: പണമടച്ചുള്ള ഇൻവോയ്‌സിൽ മാറ്റം വരുത്താൻ കഴിയില്ല.
+    create_billed_entry: നിങ്ങൾക്ക് ഒരു ബിൽ ചെയ്ത ടൈംഷീറ്റ് എൻട്രി സൃഷ്ടിക്കാൻ കഴിയില്ല.
+    internal_server_error: എന്തോ കുഴപ്പം സംഭവിച്ചു.
+    not_found: നിങ്ങൾ തിരയുന്ന ഉറവിടം ലഭ്യമല്ല.
+    prevent_draft_to_waived: ഒഴിവാക്കിയതായി മാറ്റാൻ കഴിയില്ല.
+    unauthorized: ഈ പ്രവൃത്തി ചെയ്യാൻ ഉടമയ്‌ക്കോ അഡ്‌മിൻ ഉപയോക്താക്കൾക്കോ മാത്രമേ
+      അധികാരമുള്ളൂ.
+    updation_not_allowed: അപ്ഡേറ്റ് അനുവദനീയമല്ല.
+    user_already_member: ഇമെയിൽ ഐഡി ഇതിനകം ഉപയോഗത്തിലുണ്ട്. ദയവായി മറ്റൊരു ഇമെയിൽ
+      ഐഡി നൽകുക.
+    validate_billable_project: ബിൽ ചെയ്യാത്ത പ്രോജക്റ്റുകൾക്ക് നിങ്ങൾക്ക് ഒരു അൺബിൽഡ്
+      എൻട്രി സൃഷ്ടിക്കാൻ കഴിയില്ല.
+  expenses:
+    approve: ചെലവ് വിജയകരമായി അംഗീകരിച്ചു
+    create: ചെലവ് വിജയകരമായി സമർപ്പിച്ചു
+    destroy: ചെലവ് വിജയകരമായി ഇല്ലാതാക്കി
+    mark_paid: ചെലവ് അടച്ചതായി അടയാളപ്പെടുത്തി
+    must_be_approved: അടച്ചതായി അടയാളപ്പെടുത്തുന്നതിന് മുമ്പ് ചെലവ് അംഗീകരിക്കണം.
+    reject: ചെലവ് വിജയകരമായി നിരസിച്ചു
+    update: ചെലവ് വിജയകരമായി അപ്ഡേറ്റ് ചെയ്തു
+  holidays:
+    update:
+      success: അവധിക്കാല വിവരങ്ങൾ വിജയകരമായി അപ്‌ഡേറ്റ് ചെയ്‌തു
+  invitation:
+    create:
+      success:
+        message: ക്ഷണം വിജയകരമായി അയച്ചു
+    delete:
+      success:
+        message: ക്ഷണം വിജയകരമായി നീക്കം ചെയ്തു
+    resent:
+      success:
+        message: ക്ഷണം വീണ്ടും അയച്ചു
+    update:
+      success:
+        message: മാറ്റങ്ങൾ വിജയകരമായി സംരക്ഷിച്ചു.
+  invitations:
+    accept:
+      index:
+        success: ക്ഷണം സ്വീകരിച്ചു
+      show:
+        success: ക്ഷണം സ്വീകരിച്ചു
+      success: ക്ഷണം സ്വീകരിച്ചു
+    create:
+      failure: മാറ്റങ്ങൾ സംരക്ഷിക്കാനായില്ല
+      success: ക്ഷണം അയയ്ക്കും
+    destroy:
+      failure: ക്ഷണം ഇല്ലാതാക്കാനായില്ല
+      success: ക്ഷണം ഇല്ലാതാക്കി
+    update:
+      failure: മാറ്റങ്ങൾ സംരക്ഷിക്കാനായില്ല
+      success: ക്ഷണം അപ്ഡേറ്റ് ചെയ്തു
+  invoices:
+    payments:
+      success:
+        failure: എന്തോ കുഴപ്പം സംഭവിച്ചു, പിന്തുണയെ ബന്ധപ്പെടുക.
+        success: പേയ്‌മെന്റ് വിജയകരം
+  invoices_controller:
+    download:
+      pdf_failed: PDF സൃഷ്ടിക്കുന്നതിൽ പരാജയപ്പെട്ടു
+    send_invoice:
+      already_paid: ഇൻവോയ്സ് ഇതിനകം അടച്ചു കഴിഞ്ഞു.
+      pdf_failed: PDF സൃഷ്ടിക്കുന്നതിൽ പരാജയപ്പെട്ടു
+      recipient_limit: 5 സ്വീകർത്താക്കൾക്ക് മാത്രമേ ഇമെയിൽ അയയ്ക്കാൻ കഴിയൂ.
+      recipients_required: സ്വീകർത്താക്കളെ നിർബന്ധമാണ്
+      success: ഇൻവോയ്സ് വിജയകരമായി അയച്ചു.
+    send_reminder:
+      overdue_only: കാലാവധി കഴിഞ്ഞ ഇൻവോയ്‌സുകൾക്ക് മാത്രമേ റിമൈൻഡറുകൾ അയയ്ക്കാൻ കഴിയൂ.
+      success: ഒരു ഓർമ്മപ്പെടുത്തൽ അയച്ചു.
+  invoices_view:
+    not_found: ഇൻവോയ്‌സൊന്നും കണ്ടെത്തിയില്ല
+  leave_types:
+    create:
+      success: ലീവ് തരം വിജയകരമായി ചേർത്തു
+    update:
+      success: ലീവ് തരം വിജയകരമായി അപ്ഡേറ്റ് ചെയ്തു
+  leave_with_leave_types:
+    update:
+      success: ഇലകൾ വിജയകരമായി അപ്ഡേറ്റ് ചെയ്തു
+  leaves:
+    create:
+      success: ലീവ് വിജയകരമായി സൃഷ്ടിച്ചു
+    update:
+      success: വിജയകരമായി അപ്ഡേറ്റ് ചെയ്തു വിടുക
+  navbar:
+    clients: ക്ലയന്റുകൾ
+    help: സഹായം
+    invoices: ഇൻവോയ്‌സുകൾ
+    logout: ലോഗ്ഔട്ട് ചെയ്യുക
+    payments: പേയ്‌മെന്റുകൾ
+    profile: പ്രൊഫൈൽ
+    projects: പദ്ധതികൾ
+    reports: റിപ്പോർട്ടുകൾ
+    settings: ക്രമീകരണങ്ങൾ
+    team: ടീം
+    time_tracking: സമയ ട്രാക്കിംഗ്
+    view_notifications: അറിയിപ്പുകൾ കാണുക
+  passkeys:
+    add_passkey_first: സൈൻ ഇൻ ചെയ്യുന്നതിന് മുമ്പ് ഒരു പാസ്‌കീ ചേർക്കുക.
+    added: പാസ്‌കീ ചേർത്തു
+    disable_totp_first: പാസ്‌കീ സൈൻ ഇൻ ആവശ്യപ്പെടുന്നതിന് മുമ്പ് ഓതന്റിക്കേറ്റർ ആപ്പ്
+      2FA പ്രവർത്തനരഹിതമാക്കുക.
+    not_found: പാസ്‌കീ കണ്ടെത്തിയില്ല.
+    removed: പാസ്‌കീ നീക്കം ചെയ്‌തു
+    requirement_disabled: പാസ്‌കീ ആവശ്യകത പ്രവർത്തനരഹിതമാക്കി
+    requirement_enabled: പാസ്‌കീ ആവശ്യകത പ്രവർത്തനക്ഷമമാക്കി
+    session_expired: പാസ്‌കീ സെഷൻ കാലഹരണപ്പെട്ടു. വീണ്ടും ശ്രമിക്കുക.
+    verification_failed: പാസ്‌കീ പരിശോധന പരാജയപ്പെട്ടു.
+  password:
+    create:
+      success: നിങ്ങളുടെ പാസ്‌വേഡ് പുനഃസജ്ജമാക്കുന്നതിനുള്ള നിർദ്ദേശങ്ങൾ നിങ്ങളുടെ
+        ഇമെയിലിലേക്ക് അയച്ചിട്ടുണ്ട്.
+    update:
+      success: നിങ്ങളുടെ പാസ്‌വേഡ് അപ്‌ഡേറ്റ് ചെയ്‌തു.
+  projects:
+    add_new_project: പുതിയ പ്രോജക്റ്റ് ചേർക്കുക
+    add_project: പ്രോജക്റ്റ് ചേർക്കുക
+    billable: ബിൽ ചെയ്യാവുന്നത്
+    client: ക്ലയന്റ്
+    create:
+      failure: പ്രോജക്റ്റ് സൃഷ്ടിക്കൽ പരാജയപ്പെട്ടു.
+      success: പ്രോജക്റ്റ് വിജയകരമായി ചേർത്തു.
+    delete:
+      success:
+        message: പ്രോജക്റ്റ് വിജയകരമായി നീക്കം ചെയ്തു
+    edit: എഡിറ്റ് ചെയ്യുക
+    hours_logged: മണിക്കൂറുകൾ ലോഗ് ചെയ്തു
+    new_project: പുതിയ പദ്ധതി
+    non_billable: ബില്ലുചെയ്യാൻ പാടില്ലാത്തത്
+    project: പദ്ധതി
+    project_name: പ്രോജക്റ്റ് നാമം
+    projects: പദ്ധതികൾ
+    update:
+      success: മാറ്റങ്ങൾ വിജയകരമായി സംരക്ഷിച്ചു.
+    update_members:
+      failure:
+        message: മാറ്റങ്ങൾ സംരക്ഷിക്കാനായില്ല
+        unauthorized: ഈ പ്രോജക്റ്റിന്റെ വിശദാംശങ്ങൾ പരിഷ്കരിക്കാൻ ഉപയോക്താവിന് അധികാരമില്ല.
+      success:
+        message: മാറ്റങ്ങൾ വിജയകരമായി സംരക്ഷിച്ചു.
+  pundit:
+    client_policy:
+      create?: നിങ്ങൾക്ക് ക്ലയന്റിനെ സൃഷ്ടിക്കാൻ അധികാരമില്ല.
+      show?: നിങ്ങൾക്ക് പേജ് ആക്‌സസ് ചെയ്യാൻ അധികാരമില്ല. സഹായത്തിനായി നിങ്ങളുടെ അഡ്മിനിസ്ട്രേറ്ററെ
+        ബന്ധപ്പെടുക.
+      update?: ക്ലയന്റ് അപ്ഡേറ്റ് ചെയ്യാൻ നിങ്ങൾക്ക് അധികാരമില്ല.
+    company_policy:
+      create?: നിങ്ങൾക്ക് കമ്പനി സൃഷ്ടിക്കാൻ അധികാരമില്ല.
+      new?: പുതിയ കമ്പനി സൃഷ്ടിക്കാൻ നിങ്ങൾക്ക് അധികാരമില്ല.
+      show?: കമ്പനി കാണാൻ നിങ്ങൾക്ക് അധികാരമില്ല.
+      update?: കമ്പനി അപ്‌ഡേറ്റ് ചെയ്യാൻ നിങ്ങൾക്ക് അധികാരമില്ല.
+    current_company_policy:
+      company_not_present: കമ്പനി ഹാജരായിട്ടില്ല.
+    default: ഈ പ്രവൃത്തി ചെയ്യാൻ നിങ്ങൾക്ക് അധികാരമില്ല.
+    different_workspace: നിങ്ങളുടെ നിലവിലെ വർക്ക്‌സ്‌പെയ്‌സിന് പുറത്ത് റെക്കോർഡുകൾ
+      ആക്‌സസ് ചെയ്യാൻ നിങ്ങൾക്ക് അധികാരമില്ല.
+    project_policy:
+      create?: പ്രോജക്റ്റ് സൃഷ്ടിക്കാൻ നിങ്ങൾക്ക് അധികാരമില്ല.
+      show?: നിങ്ങൾക്ക് പേജ് ആക്‌സസ് ചെയ്യാൻ അധികാരമില്ല. സഹായത്തിനായി നിങ്ങളുടെ അഡ്മിനിസ്ട്രേറ്ററെ
+        ബന്ധപ്പെടുക.
+    team_policy:
+      destroy?: ടീമിനെ നശിപ്പിക്കാൻ നിങ്ങൾക്ക് അധികാരമില്ല.
+      edit?: ടീമിനെ എഡിറ്റ് ചെയ്യാൻ നിങ്ങൾക്ക് അധികാരമില്ല.
+      update?: ടീമിനെ അപ്ഡേറ്റ് ചെയ്യാൻ നിങ്ങൾക്ക് അധികാരമില്ല.
+  registration:
+    confirm_password: പാസ്വേഡ് സ്ഥിരീകരിക്കുക
+    email_id: ഇമെയിൽ
+    first_name: പേരിന്റെ ആദ്യഭാഗം
+    last_name: പേരിന്റെ അവസാന ഭാഗം
+    name: പേര്
+    or: അല്ലെങ്കിൽ
+    password: പാസ്‌വേഡ്
+    remember_me: എന്നെ ഓർമ്മിക്കുക
+    sign_in: സൈൻ ഇൻ
+    sign_up: സൈൻ അപ്പ് ചെയ്യുക
+    signin_with_github: ഗിത്തബ് ഉപയോഗിച്ച് സൈൻ ഇൻ ചെയ്യുക
+    signin_with_google: ഗൂഗിളിൽ സൈൻ ഇൻ ചെയ്യുക
+    signup_with_apple: ആപ്പിളിൽ സൈൻ അപ്പ് ചെയ്യുക
+    signup_with_github: ഗിത്തബിൽ സൈൻ അപ്പ് ചെയ്യുക
+    signup_with_google: ഗൂഗിളിൽ സൈൻ അപ്പ് ചെയ്യുക
+  reports:
+    heading: സമയ എൻട്രി റിപ്പോർട്ട്
+  sessions:
+    failure:
+      invalid: അസാധുവായ ഇമെയിൽ അല്ലെങ്കിൽ പാസ്‌വേഡ്
+  settings:
+    cancel: റദ്ദാക്കുക
+    change_password: പാസ്വേഡ് മാറ്റുക
+    confirm_password: പാസ്വേഡ് സ്ഥിരീകരിക്കുക
+    current_password: നിലവിലെ പാസ്വേഡ്
+    email: ഇമെയിൽ
+    name: പേര്
+    organization_setting: സ്ഥാപന ക്രമീകരണങ്ങൾ
+    password: പാസ്‌വേഡ്
+    payment_setting: പേയ്‌മെന്റ് ക്രമീകരണങ്ങൾ
+    profile_picture: പ്രൊഫൈൽ ചിത്രം
+    profile_setting: പ്രൊഫൈൽ ക്രമീകരണങ്ങൾ
+    save: രക്ഷിക്കൂ
+    settings: ക്രമീകരണങ്ങൾ
+  shared_links:
+    already_have_an_account: ഇതിനകം ഒരു അക്കൗണ്ട് ഉണ്ടോ?
+    back_to_login: ലോഗിൻ ചെയ്യലിലേക്ക് തിരികെ പോകുക
+    confirmation_instruction: സ്ഥിരീകരണ നിർദ്ദേശങ്ങൾ ലഭിച്ചില്ലേ?
+    dont_have_an_account: അക്കൗണ്ട് ഇല്ലേ?
+    forgot_password: പാസ്വേഡ് മറന്നോ ?
+    unlock_instruction: അൺലോക്ക് നിർദ്ദേശങ്ങൾ ലഭിച്ചില്ലേ?
+  subscriptions:
+    no_billing_customer: ഈ കമ്പനിക്ക് ഒരു ബില്ലിംഗ് ഉപഭോക്താവും നിലവിലില്ല.
+    pricing_not_configured: സ്ട്രൈപ്പ് സബ്‌സ്‌ക്രിപ്‌ഷൻ വിലനിർണ്ണയം കോൺഫിഗർ ചെയ്‌തിട്ടില്ല.
+    trial_not_eligible: നിങ്ങളുടെ വർക്ക്‌സ്‌പെയ്‌സ് പ്രൊഫഷണൽ ട്രയലിന് യോഗ്യമല്ല.
+    trial_started: നിങ്ങളുടെ 30 ദിവസത്തെ പ്രോ ട്രയൽ ആരംഭിച്ചു.
+  team:
+    changed_email: ഇമെയിൽ മാറ്റി
+    create_new_user: പുതിയ ഉപയോക്താവിനെ സൃഷ്ടിക്കുക
+    current_email: നിലവിലെ ഇമെയിൽ
+    delete:
+      success:
+        message: ടീം അംഗത്തെ വിജയകരമായി നീക്കം ചെയ്തു
+    email: ഇമെയിൽ
+    email_id: ഇമെയിൽ ഐഡി
+    first_name: പേരിന്റെ ആദ്യഭാഗം
+    form_admin: അഡ്മിൻ
+    form_book_keeper: ബുക്ക് കീപ്പർ
+    form_email: ഇമെയിൽ
+    form_employee: ജീവനക്കാരൻ
+    form_name: പേര്
+    form_role: പങ്ക്
+    invitation: ക്ഷണം തീർച്ചപ്പെടുത്തിയിട്ടില്ല
+    last_name: പേരിന്റെ അവസാന ഭാഗം
+    name: പേര്
+    new_user: പുതിയ ഉപയോക്താവ്
+    profile_picture: ഫോട്ടോ
+    reconfirmation: പുനഃസ്ഥാപിക്കൽ പൂർത്തിയായിട്ടില്ല
+    role: റോൾ
+    team: ടീം
+    update:
+      error:
+        role: റോൾ അപ്ഡേറ്റ് ചെയ്യുന്നതിൽ ഒരു പിശക് സംഭവിച്ചു.
+      success:
+        message: മാറ്റങ്ങൾ വിജയകരമായി സംരക്ഷിച്ചു.
+    update_user: ഉപയോക്താവിനെ അപ്ഡേറ്റ് ചെയ്യുക
+  timeoff_entries:
+    create:
+      success: വിജയകരമായി ഒഴിവു സമയം ചേർത്തു
+    destroy:
+      success: ഒഴിവു സമയം വിജയകരമായി ഇല്ലാതാക്കി
+    update:
+      success: വിജയകരമായി അവധി സമയം അപ്ഡേറ്റ് ചെയ്തു
+  timesheet_entry:
+    create:
+      message: ടൈംഷീറ്റ് സൃഷ്ടിച്ചു
+    destroy:
+      failure: ടൈംഷീറ്റ് എൻട്രികൾ ഇല്ലാതാക്കാനായില്ല
+      message: ടൈംഷീറ്റ് ഇല്ലാതാക്കി
+    update:
+      failure: ടൈംഷീറ്റ് എൻട്രികൾ അപ്ഡേറ്റ് ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു
+      message: ടൈംഷീറ്റ് അപ്ഡേറ്റ് ചെയ്തു
+  totp:
+    disable_passkey_first: ഓതന്റിക്കേറ്റർ ആപ്പ് 2FA പ്രവർത്തനക്ഷമമാക്കുന്നതിന് മുമ്പ്
+      ആവശ്യമായ പാസ്‌കീ സൈൻ ഇൻ പ്രവർത്തനരഹിതമാക്കുക.
+    disabled: ഓതന്റിക്കേറ്റർ ആപ്പ് പ്രവർത്തനരഹിതമാക്കി
+    enabled: ഓതന്റിക്കേറ്റർ ആപ്പ് പ്രവർത്തനക്ഷമമാക്കി
+    invalid_code: ഓതന്റിക്കേറ്റർ കോഡ് അസാധുവാണ്.
+    invalid_verification: അസാധുവായ സ്ഥിരീകരണ കോഡ്.
+    not_enabled: ആദ്യം ഓതന്റിക്കേറ്റർ ആപ്പ് 2FA പ്രവർത്തനക്ഷമമാക്കുക.
+    recovery_codes_regenerated: വീണ്ടെടുക്കൽ കോഡുകൾ പുനഃസൃഷ്ടിച്ചു
+    session_expired: ആ സ്ഥിരീകരണ അഭ്യർത്ഥന ഇനി സാധുവല്ല. വീണ്ടും സൈൻ ഇൻ ചെയ്യുക.
+  user:
+    login:
+      failure:
+        disabled: നിങ്ങളുടെ ആക്‌സസ് അപ്രാപ്‌തമാക്കി.
+        pending_invitation: നിങ്ങളുടെ അക്കൗണ്ട് ഇതുവരെ സജീവമാക്കിയിട്ടില്ല.
+  workspaces:
+    update:
+      failure: വർക്ക്‌സ്‌പെയ്‌സ് മാറ്റുന്നതിൽ പരാജയപ്പെട്ടു
+      success: വർക്ക്‌സ്‌പെയ്‌സ് വിജയകരമായി മാറ്റി

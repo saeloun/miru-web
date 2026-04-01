@@ -1,0 +1,50 @@
+base_locale: en
+locales:
+  - en
+  - en-GB
+  - en-US
+  - hi
+  - mr
+  - bn
+  - gu
+  - kn
+  - ml
+  - pa
+  - ta
+  - te
+  - ur
+  - es
+  - fr
+  - de
+  - it
+  - nl
+  - id
+  - pt-BR
+  - tr
+  # ar (Arabic) deferred - requires RTL layout support
+  - ja
+  - ko
+  - zh-CN
+data:
+  read:
+    - config/locales/%{locale}.yml
+    - config/locales/*.%{locale}.yml
+  router: conservative_router
+  write:
+    - ['devise.*', 'config/locales/devise.%{locale}.yml']
+    - ['branding.*', 'config/locales/branding.%{locale}.yml']
+    - ['activerecord.*', 'config/locales/activerecord.%{locale}.yml']
+    - ['errors.*', 'config/locales/errors.%{locale}.yml']
+    - 'config/locales/%{locale}.yml'
+search:
+  paths:
+    - app/
+    - config/
+    - lib/
+  prism: rails
+  strict: false
+translation:
+  backend: <%= ENV.fetch("I18N_TRANSLATION_BACKEND", "google") %>
+  google_translate_api_key: <%= ENV["GOOGLE_TRANSLATE_API_KEY"] %>
+  openai_api_key: <%= ENV["OPENAI_API_KEY"] %>
+  openai_model: <%= ENV["OPENAI_MODEL"] %>

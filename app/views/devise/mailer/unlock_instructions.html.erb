@@ -9,13 +9,13 @@
 
 <div class="email-panel email-panel-danger">
   <p class="email-panel-title">Sign-in attempts exceeded the allowed limit.</p>
-  <p style="margin-bottom: 0;">Miru unlocks accounts automatically after 30 minutes. If you still need help, reset your password and then sign back in.</p>
+  <p style="margin-bottom: 0;">Miru unlocks accounts automatically after 30 minutes. If you do not recognize these attempts, reset your password so your account is secure once the lock expires.</p>
 </div>
 
-<%= render "shared/mailer/button", href: "#{ENV.fetch("APP_BASE_URL", "http://127.0.0.1:3000")}/login", label: "Open sign in" %>
+<%= render "shared/mailer/button", href: "#{ENV.fetch("APP_BASE_URL", "http://127.0.0.1:3000")}/password/new", label: "Reset password" %>
 
 <div class="email-divider"></div>
 
 <p class="email-muted">If you did not try to sign in, wait for the lock to expire and change your password immediately.</p>
 
-<p>Cheers,<br><strong>Team Miru</strong></p>
+<p>Thanks,<br><strong>Team Miru</strong></p>

@@ -24,8 +24,10 @@ import {
 import { Card } from "../ui/card";
 import { cn } from "../../lib/utils";
 import { getValueFromLocalStorage, setToLocalStorage } from "utils/storage";
+import { Star, StarHalf } from "phosphor-react";
 
 import MobileEntryForm from "./MobileView/MobileEntryForm";
+import { i18n } from "../../i18n";
 
 const AddEntry: React.FC<Iprops> = ({
   selectedEmployeeId,
@@ -76,6 +78,20 @@ const AddEntry: React.FC<Iprops> = ({
   const displaySelectedDate = parsedSelectedDate.isValid()
     ? parsedSelectedDate.format(`dddd, ${dateFormat}`)
     : selectedFullDate;
+  const favoriteStorageKey = `miru_time_entry_favorites_${selectedEmployeeId}`;
+  const [favoriteShortcutKeys, setFavoriteShortcutKeys] = useState<string[]>(
+    () => {
+      if (typeof window === "undefined") return [];
+
+      try {
+        const saved = localStorage.getItem(favoriteStorageKey);
+
+        return saved ? JSON.parse(saved) : [];
+      } catch {
+        return [];
+      }
+    }
+  );
 
   const allEntries = Object.values(entryList || {})
     .flat()
@@ -110,6 +126,13 @@ const AddEntry: React.FC<Iprops> = ({
     }, [])
     .slice(0, 4);
   const latestTrackedEntry = allEntries[0];
+  const favoriteEntryShortcuts = recentEntryShortcuts.filter(entry =>
+    favoriteShortcutKeys.includes(entry.shortcutKey)
+  );
+
+  const visibleRecentEntryShortcuts = recentEntryShortcuts.filter(
+    entry => !favoriteShortcutKeys.includes(entry.shortcutKey)
+  );
 
   const handleFillData = () => {
     if (!editEntryId) return;
@@ -129,14 +152,16 @@ const AddEntry: React.FC<Iprops> = ({
   };
 
   useEffect(() => {
-    if (!project) {
+    if (!client) {
       setProjectBillable(false);
+      setProject("");
 
       return setProjectId(0);
     }
 
-    if (!projects || !projects[client]) {
+    if (!projects || !projects[client] || projects[client].length === 0) {
       setProjectBillable(false);
+      if (project) setProject("");
 
       return setProjectId(0);
     }
@@ -144,9 +169,20 @@ const AddEntry: React.FC<Iprops> = ({
     const selectedProject = projects[client].find(
       currentProject => currentProject.name === project
     );
+
     if (selectedProject) {
       setProjectId(Number(selectedProject.id));
       setProjectBillable(Boolean(selectedProject.billable));
+
+      return;
+    }
+
+    const fallbackProject = projects[client][0];
+
+    if (fallbackProject) {
+      setProject(fallbackProject.name);
+      setProjectId(Number(fallbackProject.id));
+      setProjectBillable(Boolean(fallbackProject.billable));
     }
   }, [project, client, projects]);
 
@@ -190,6 +226,7 @@ const AddEntry: React.FC<Iprops> = ({
       setToLocalStorage("duration", "");
 
       const fetchEntriesRes = await refreshVisibleEntries();
+      await handleRelocateEntry(selectedFullDate, res.data.entry);
 
       if (fetchEntriesRes) {
         setNewEntryView(false);
@@ -251,6 +288,15 @@ const AddEntry: React.FC<Iprops> = ({
     }
   }, [debouncedNote, duration, client, project, projectId, taskType]);
 
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    localStorage.setItem(
+      favoriteStorageKey,
+      JSON.stringify(favoriteShortcutKeys)
+    );
+  }, [favoriteShortcutKeys, favoriteStorageKey]);
+
   const applyRecentEntry = entry => {
     setClient(entry.client);
     setProject(entry.project);
@@ -258,6 +304,14 @@ const AddEntry: React.FC<Iprops> = ({
     setTaskType(entry.task_type || "development");
     setNote(entry.note || "");
     setDuration(minToHHMM(entry.duration || 0));
+  };
+
+  const toggleFavoriteShortcut = shortcutKey => {
+    setFavoriteShortcutKeys(current =>
+      current.includes(shortcutKey)
+        ? current.filter(key => key !== shortcutKey)
+        : [...current, shortcutKey].slice(-6)
+    );
   };
 
   const handleDuplicateLastEntry = async () => {
@@ -301,7 +355,7 @@ const AddEntry: React.FC<Iprops> = ({
         <div className="mb-6 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border bg-muted/30 px-4 py-3">
           <div className="space-y-1">
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-              Saving To
+              {i18n.t("timeTracking.savingTo")}
             </p>
             <p className="text-base font-semibold text-foreground">
               {displaySelectedDate}
@@ -315,39 +369,95 @@ const AddEntry: React.FC<Iprops> = ({
               disabled={submitting}
               onClick={handleDuplicateLastEntry}
             >
-              Duplicate Last Entry
+              {i18n.t("timeTracking.copyLastWeek")}
             </Button>
           )}
         </div>
-        {isNewEntry && recentEntryShortcuts.length > 0 && (
+        {isNewEntry && favoriteEntryShortcuts.length > 0 && (
+          <div className="mb-4 rounded-lg border border-border bg-card/60 px-4 py-4">
+            <div className="mb-3">
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+                {i18n.t("timeTracking.favorites")}
+              </p>
+              <p className="text-sm font-medium text-foreground">
+                {i18n.t("timeTracking.favoriteShortcutsHint")}
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {favoriteEntryShortcuts.map(entry => (
+                <div
+                  key={entry.shortcutKey}
+                  className="flex max-w-full items-center gap-1 rounded-md border border-border bg-background p-1"
+                >
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    data-testid="favorite-entry-shortcut"
+                    className="h-auto max-w-full justify-start whitespace-normal px-3 py-2 text-left"
+                    onClick={() => applyRecentEntry(entry)}
+                  >
+                    <span className="truncate">
+                      {entry.client} / {entry.project} ·{" "}
+                      {minToHHMM(entry.duration)}
+                    </span>
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8 shrink-0"
+                    data-testid="favorite-entry-toggle"
+                    onClick={() => toggleFavoriteShortcut(entry.shortcutKey)}
+                  >
+                    <StarHalf className="h-4 w-4" weight="fill" />
+                  </Button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+        {isNewEntry && visibleRecentEntryShortcuts.length > 0 && (
           <div className="mb-6 rounded-lg border border-border bg-card/60 px-4 py-4">
             <div className="mb-3 flex items-center justify-between gap-3">
               <div>
                 <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-                  Recent Shortcuts
+                  {i18n.t("timeTracking.recentShortcuts")}
                 </p>
                 <p className="text-sm font-medium text-foreground">
-                  Reuse recent work without reselecting the same client and
-                  project.
+                  {i18n.t("timeTracking.recentShortcutsHint")}
                 </p>
               </div>
             </div>
             <div className="flex flex-wrap gap-2">
-              {recentEntryShortcuts.map(entry => (
-                <Button
-                  key={entry.shortcutKey}
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  data-testid="recent-entry-shortcut"
-                  className="h-auto max-w-full justify-start whitespace-normal px-3 py-2 text-left"
-                  onClick={() => applyRecentEntry(entry)}
-                >
-                  <span className="truncate">
-                    {entry.client} / {entry.project} ·{" "}
-                    {minToHHMM(entry.duration)}
-                  </span>
-                </Button>
+              {visibleRecentEntryShortcuts.map(entry => (
+                <div key={entry.shortcutKey}>
+                  <div className="flex max-w-full items-center gap-1 rounded-md border border-border bg-background p-1">
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      data-testid="recent-entry-shortcut"
+                      className="h-auto max-w-full justify-start whitespace-normal px-3 py-2 text-left"
+                      onClick={() => applyRecentEntry(entry)}
+                    >
+                      <span className="truncate">
+                        {entry.client} / {entry.project} ·{" "}
+                        {minToHHMM(entry.duration)}
+                      </span>
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 shrink-0"
+                      data-testid="favorite-entry-toggle"
+                      onClick={() => toggleFavoriteShortcut(entry.shortcutKey)}
+                    >
+                      <Star className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
               ))}
             </div>
           </div>
@@ -361,26 +471,27 @@ const AddEntry: React.FC<Iprops> = ({
                   htmlFor="client"
                   className="text-sm font-semibold text-foreground"
                 >
-                  Client
+                  {i18n.t("client")}
                 </Label>
                 <Select
                   value={client}
                   onValueChange={value => {
+                    const defaultProject =
+                      (projects && projects[value] && projects[value][0]) ||
+                      null;
+
                     setClient(value);
-                    setProject(
-                      (projects &&
-                        projects[value] &&
-                        projects[value][0]?.name) ||
-                        ""
-                    );
+                    setProject(defaultProject?.name || "");
+                    setProjectId(defaultProject ? Number(defaultProject.id) : 0);
+                    setProjectBillable(Boolean(defaultProject?.billable));
                   }}
                 >
                   <SelectTrigger
                     id="client"
-                    aria-label="Client"
+                    aria-label={i18n.t("client")}
                     className="h-12 client-select"
                   >
-                    <SelectValue placeholder="Select a client" />
+                    <SelectValue placeholder={i18n.t("timeTracking.selectClient")} />
                   </SelectTrigger>
                   <SelectContent>
                     {Array.isArray(clients) &&
@@ -398,22 +509,31 @@ const AddEntry: React.FC<Iprops> = ({
                   htmlFor="project"
                   className="text-sm font-semibold text-foreground"
                 >
-                  Project
+                  {i18n.t("project")}
                 </Label>
                 <Select
                   value={project}
-                  onValueChange={setProject}
+                  onValueChange={value => {
+                    const selectedProject =
+                      client &&
+                      projects[client] &&
+                      projects[client].find(currentProject => currentProject.name === value);
+
+                    setProject(value);
+                    setProjectId(selectedProject ? Number(selectedProject.id) : 0);
+                    setProjectBillable(Boolean(selectedProject?.billable));
+                  }}
                   disabled={!client}
                 >
                   <SelectTrigger
                     id="project"
-                    aria-label="Project"
+                    aria-label={i18n.t("project")}
                     className={cn(
                       "h-12 project-select",
                       !client && "opacity-50 cursor-not-allowed"
                     )}
                   >
-                    <SelectValue placeholder="Select a project" />
+                    <SelectValue placeholder={i18n.t("timeTracking.selectProject")} />
                   </SelectTrigger>
                   <SelectContent>
                     {client &&
@@ -433,11 +553,11 @@ const AddEntry: React.FC<Iprops> = ({
                 htmlFor="notes"
                 className="text-sm font-semibold text-foreground"
               >
-                Description
+                {i18n.t("description")}
               </Label>
               <Textarea
                 name="notes"
-                placeholder="What did you work on? Add your notes here..."
+                placeholder={i18n.t("timeTracking.addNoteHere")}
                 value={note}
                 className={cn(
                   "w-full resize-none min-h-[120px] text-base",
@@ -456,7 +576,7 @@ const AddEntry: React.FC<Iprops> = ({
                   htmlFor="duration"
                   className="text-sm font-semibold text-foreground"
                 >
-                  Time Spent
+                  {i18n.t("timeTracking.timeSpent")}
                 </Label>
                 <TimeInput
                   className="h-12 w-full px-4 text-base font-mono"
@@ -471,25 +591,25 @@ const AddEntry: React.FC<Iprops> = ({
                   htmlFor="taskType"
                   className="text-sm font-semibold text-foreground"
                 >
-                  Task Type
+                  {i18n.t("timeTracking.taskType")}
                 </Label>
                 <Select value={taskType} onValueChange={setTaskType}>
                   <SelectTrigger className="h-12">
-                    <SelectValue placeholder="Select task type" />
+                    <SelectValue placeholder={i18n.t("timeTracking.selectTaskType")} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="development">Development</SelectItem>
-                    <SelectItem value="meeting">Meeting</SelectItem>
-                    <SelectItem value="research">Research</SelectItem>
-                    <SelectItem value="planning">Planning</SelectItem>
-                    <SelectItem value="testing">Testing</SelectItem>
-                    <SelectItem value="documentation">Documentation</SelectItem>
-                    <SelectItem value="review">Code Review</SelectItem>
-                    <SelectItem value="debugging">Debugging</SelectItem>
-                    <SelectItem value="deployment">Deployment</SelectItem>
-                    <SelectItem value="support">Support</SelectItem>
-                    <SelectItem value="training">Training</SelectItem>
-                    <SelectItem value="other">Other</SelectItem>
+                    <SelectItem value="development">{i18n.t("taskTypes.development")}</SelectItem>
+                    <SelectItem value="meeting">{i18n.t("taskTypes.meeting")}</SelectItem>
+                    <SelectItem value="research">{i18n.t("taskTypes.research")}</SelectItem>
+                    <SelectItem value="planning">{i18n.t("taskTypes.planning")}</SelectItem>
+                    <SelectItem value="testing">{i18n.t("taskTypes.testing")}</SelectItem>
+                    <SelectItem value="documentation">{i18n.t("taskTypes.documentation")}</SelectItem>
+                    <SelectItem value="review">{i18n.t("taskTypes.codeReview")}</SelectItem>
+                    <SelectItem value="debugging">{i18n.t("taskTypes.debugging")}</SelectItem>
+                    <SelectItem value="deployment">{i18n.t("taskTypes.deployment")}</SelectItem>
+                    <SelectItem value="support">{i18n.t("taskTypes.support")}</SelectItem>
+                    <SelectItem value="training">{i18n.t("taskTypes.training")}</SelectItem>
+                    <SelectItem value="other">{i18n.t("taskTypes.other")}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -506,7 +626,7 @@ const AddEntry: React.FC<Iprops> = ({
                   }}
                   className="h-12 text-base font-semibold"
                 >
-                  Save Entry
+                  {i18n.t("timeTracking.saveEntry")}
                 </Button>
               ) : (
                 <Button
@@ -517,7 +637,7 @@ const AddEntry: React.FC<Iprops> = ({
                   }}
                   className="h-12 text-base font-semibold"
                 >
-                  Update Entry
+                  {i18n.t("timeTracking.updateEntry")}
                 </Button>
               )}
               <Button
@@ -529,7 +649,7 @@ const AddEntry: React.FC<Iprops> = ({
                 }}
                 className="h-12 text-base"
               >
-                Cancel
+                {i18n.t("cancel")}
               </Button>
             </div>
           </div>

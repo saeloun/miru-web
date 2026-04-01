@@ -3,49 +3,70 @@
 module PreviewSupport
   private
 
-    def sample_company
-      latest_company = Company.order(updated_at: :desc).first
-      latest_company = nil if latest_company&.timezone.present? && ActiveSupport::TimeZone[latest_company.timezone].blank?
+    def preview_timestamp
+      @preview_timestamp ||= Time.zone.local(2026, 3, 1, 12, 0, 0)
+    end
 
-      @sample_company ||= latest_company || Company.create!(
-        name: "Miru Studio",
-        business_phone: "+14155550101",
-        base_currency: "USD",
-        standard_price: 125,
-        fiscal_year_end: "December",
-        date_format: "MM-DD-YYYY",
-        country: "US",
-        timezone: "Eastern Time (US & Canada)",
-        working_days: "5",
-        working_hours: "40"
-      )
+    def sample_company
+      @sample_company ||= begin
+        company = Company.find_by(name: "Miru Preview Studio")
+        unless company
+          company = Company.create!(
+            name: "Miru Preview Studio",
+            business_phone: "+14155550101",
+            base_currency: "USD",
+            standard_price: 125,
+            fiscal_year_end: "December",
+            date_format: "MM-DD-YYYY",
+            country: "US",
+            timezone: "Eastern Time (US & Canada)",
+            working_days: "5",
+            working_hours: "40"
+          )
+          company.addresses.create!(
+            address_type: :current,
+            address_line_1: "548 Market Street",
+            address_line_2: "Suite 42112",
+            city: "San Francisco",
+            state: "California",
+            country: "US",
+            pin: "94104"
+          )
+        end
+        company
+      end
     end
 
     def sample_user
-      @sample_user ||= User.order(updated_at: :desc).first || User.create!(
-        first_name: "Vipul",
-        last_name: "Amler",
-        email: "vipul-preview@miru.so",
-        password: "Preview@1234!",
-        confirmed_at: Time.current,
-        date_of_birth: Date.new(1994, 1, 1),
-        phone: "+14155550111",
-        personal_email_id: "vipul.personal@miru.so",
-        current_workspace: sample_company
-      )
+      @sample_user ||= begin
+        user = User.find_by(email: "vipul-preview@miru.so")
+        user ||= User.create!(
+          first_name: "Vipul",
+          last_name: "Amler",
+          email: "vipul-preview@miru.so",
+          password: "Preview@1234!",
+          confirmed_at: preview_timestamp,
+          date_of_birth: Date.new(1994, 1, 1),
+          phone: "+14155550111",
+          personal_email_id: "vipul.personal@miru.so",
+          current_workspace: sample_company
+        )
+        user.add_role(:owner, sample_company) unless user.has_role?(:owner, sample_company)
+        user
+      end
     end
 
     def sample_client
-      @sample_client ||= sample_company.clients.kept.order(updated_at: :desc).first || sample_company.clients.create!(
-        name: "Northwind Studio",
-        email: "billing@northwind.example",
-        phone: "+14155550121",
-        currency: sample_company.base_currency
-      )
+      @sample_client ||= sample_company.clients.kept.find_by(email: "billing@northwind.example") || sample_company.clients.create!(
+          name: "Northwind Studio",
+          email: "billing@northwind.example",
+          phone: "+14155550121",
+          currency: sample_company.base_currency
+        )
     end
 
     def sample_invoice
-      @sample_invoice ||= Invoice.order(updated_at: :desc).first || build_sample_invoice
+      @sample_invoice ||= build_sample_invoice
     end
 
     def sample_expense
@@ -88,16 +109,22 @@ module PreviewSupport
     end
 
     def build_sample_invoice
+      invoice = sample_company.invoices.find_by(invoice_number: "PREVIEW-001")
+      return invoice if invoice
+
       invoice = sample_company.invoices.create!(
         client: sample_client,
-        issue_date: Date.current - 7.days,
-        due_date: Date.current + 14.days,
-        invoice_number: "PR-#{SecureRandom.hex(2).upcase}",
+        invoice_number: "PREVIEW-001",
+        issue_date: Date.new(2026, 3, 24),
+        due_date: Date.new(2026, 4, 7),
         reference: "PREVIEW",
         amount: 3200,
         amount_due: 3200,
         outstanding_amount: 3200,
-        status: :draft,
+        status: :sending,
+        sent_at: preview_timestamp,
+        payment_sent_at: nil,
+        client_payment_sent_at: nil,
         base_currency_amount: 3200,
         currency: sample_company.base_currency
       )
@@ -106,7 +133,7 @@ module PreviewSupport
         name: "Design retainer",
         description: "Weekly product design and engineering support",
         date: invoice.issue_date,
-        quantity: 240,
+        quantity: 16,
         rate: 200
       )
 

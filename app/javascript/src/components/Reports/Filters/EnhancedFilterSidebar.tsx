@@ -6,6 +6,7 @@ import { useEntry } from "components/Reports/context/EntryContext";
 import { useUserContext } from "context/UserContext";
 import { useDebounce, useOutsideClick } from "helpers";
 
+import { i18n } from "../../../i18n";
 import { cn } from "../../../lib/utils";
 import { Button } from "../../ui/button";
 import { ScrollArea } from "../../ui/scroll-area";
@@ -329,13 +330,13 @@ const EnhancedFilterSidebar = ({
               <div className="rounded-lg bg-primary/10 p-2">
                 <Funnel className="h-4 w-4 text-primary" />
               </div>
-              <span>Filters</span>
+              <span>{i18n.t("filters")}</span>
               {activeFilterCount > 0 && (
                 <Badge
                   variant="secondary"
                   className="ml-2 bg-primary text-white hover:bg-primary/90"
                 >
-                  {activeFilterCount} active
+                  {i18n.t("reports.activeCount", { count: activeFilterCount })}
                 </Badge>
               )}
             </SheetTitle>
@@ -413,14 +414,14 @@ const EnhancedFilterSidebar = ({
               className="flex-1 font-medium border-gray-200 hover:bg-gray-50"
             >
               <ArrowCounterClockwise className="h-4 w-4 mr-2" />
-              Reset
+              {i18n.t("reset")}
             </Button>
             <Button
               onClick={handleApply}
               disabled={disableApplyBtn}
               className="flex-1 bg-primary font-medium text-white hover:bg-primary/90"
             >
-              Apply Filters
+              {i18n.t("reports.applyFilter")}
             </Button>
           </div>
         </SheetFooter>

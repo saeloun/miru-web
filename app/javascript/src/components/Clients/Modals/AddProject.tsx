@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { projectApi } from "apis/api";
 import { XIcon } from "miruIcons";
 import { Modal } from "StyledComponents";
+import { i18n } from "../../../i18n";
 
 const AddProject = ({
   showProjectModal,
@@ -33,7 +34,7 @@ const AddProject = ({
       onClose={() => setShowProjectModal(false)}
     >
       <div className="modal__position">
-        <h6 className="modal__title"> Add New Project </h6>
+        <h6 className="modal__title"> {i18n.t("clients.addNewProject")} </h6>
         <div className="modal__close">
           <button
             className="modal__button"
@@ -50,7 +51,7 @@ const AddProject = ({
           <div className="field">
             <div className="field_with_errors">
               <label className="block text-xs font-normal tracking-wider text-foreground">
-                Client
+                {i18n.t("client")}
               </label>
             </div>
             <div className="mt-1">
@@ -59,7 +60,7 @@ const AddProject = ({
                 defaultValue={client}
                 onChange={e => setClient(e.target.value)}
               >
-                <option value="0">Select Client</option>
+                <option value="0">{i18n.t("projects.selectClient")}</option>
                 <option value={clientDetails.id}>{clientDetails.name}</option>
               </select>
             </div>
@@ -69,13 +70,13 @@ const AddProject = ({
           <div className="field">
             <div className="field_with_errors">
               <label className="block text-xs font-normal tracking-wider text-foreground">
-                Project Name
+                {i18n.t("projects.projectName")}
               </label>
             </div>
             <div className="mt-1">
               <input
                 className="block h-8 w-full appearance-none rounded border-0 bg-muted px-3 py-2 text-sm font-medium text-foreground focus:outline-none sm:text-base"
-                placeholder=" Enter Project Name"
+                placeholder={i18n.t("projects.enterProjectName")}
                 type="text"
                 value={projectName}
                 onChange={e => setProjectName(e.target.value)}
@@ -86,7 +87,7 @@ const AddProject = ({
         <div className="mt-4">
           <div className="field">
             <label className="block text-xs font-normal tracking-wider text-foreground">
-              Project Type
+              {i18n.t("projects.projectType")}
             </label>
             <div className="mt-1">
               <div className="sm:space-XIcon-10 w-57.5 flex items-center justify-between space-y-4 sm:space-y-0">
@@ -103,7 +104,7 @@ const AddProject = ({
                     className="ml-3 block text-sm font-medium text-foreground"
                     htmlFor="billable"
                   >
-                    Billable
+                    {i18n.t("billable")}
                   </label>
                 </div>
                 <div className="flex items-center">
@@ -119,7 +120,7 @@ const AddProject = ({
                     className="ml-3 block text-sm font-medium text-foreground "
                     htmlFor="non-billable"
                   >
-                    Non-billable
+                    {i18n.t("nonBillable")}
                   </label>
                 </div>
               </div>
@@ -134,7 +135,7 @@ const AddProject = ({
               onClick={() => handleSubmit()}
             >
               {" "}
-              ADD PROJECT{" "}
+              {i18n.t("clients.addProject").toUpperCase()}{" "}
             </button>
           ) : (
             <button
@@ -143,7 +144,7 @@ const AddProject = ({
               type="submit"
             >
               {" "}
-              ADD PROJECT{" "}
+              {i18n.t("clients.addProject").toUpperCase()}{" "}
             </button>
           )}
         </div>

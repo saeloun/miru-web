@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 import CustomCheckbox from "common/CustomCheckbox";
+import { i18n } from "../../../../i18n";
 
 const TableHeader = ({
   invoices,
@@ -48,34 +49,33 @@ const TableHeader = ({
         className="whitespace-nowrap py-5 pr-0 text-left text-xs font-medium tracking-widest text-foreground lg:w-1/3 lg:pr-2"
         scope="col"
       >
-        CLIENT / INVOICE NO.
+        {i18n.t("invoices.clientInvoiceNo")}
       </th>
       {isDesktop && (
         <th
           className="w-1/5 px-4 py-5 text-left text-xs font-medium tracking-widest text-foreground lg:px-6"
           scope="col"
         >
-          ISSUED DATE / DUE DATE
+          {i18n.t("invoices.issueDateDueDate")}
         </th>
       )}
       <th
         className="hidden w-1/6 px-2 py-5 text-right text-xs font-medium tracking-widest text-foreground lg:table-cell lg:px-6"
         scope="col"
       >
-        AMOUNT
+        {i18n.t("invoices.amountHeader")}
       </th>
       <th
         className="hidden px-2 py-5 text-right text-xs font-medium tracking-widest text-foreground lg:table-cell lg:px-6"
         scope="col"
       >
-        STATUS
+{i18n.t("invoices.statusHeader")}
       </th>
       <th
         className="table-cell px-2 py-5 text-right text-xs font-medium leading-4 tracking-widest text-foreground lg:hidden lg:px-6"
         scope="col"
       >
-        STATUS/ <br />
-        AMOUNT
+        {i18n.t("payments.statusAmount")}
       </th>
     </tr>
   );

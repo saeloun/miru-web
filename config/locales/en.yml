@@ -232,6 +232,10 @@ en:
       failure: Failed to delete invitation
     accept:
       success: Invitation accepted
+      index:
+        success: Invitation accepted
+      show:
+        success: Invitation accepted
   invoices:
     payments:
       success:
@@ -293,8 +297,10 @@ en:
       message: "Timesheet created"
     update:
       message: "Timesheet updated"
+      failure: "Failed to update timesheet entries"
     destroy:
       message: "Timesheet deleted"
+      failure: "Failed to delete timesheet entries"
   password:
     create:
       success:
@@ -304,3 +310,82 @@ en:
   sessions:
     failure:
       invalid: Invalid email or password
+  leaves:
+    create:
+      success: Leave created successfully
+    update:
+      success: Leave updated successfully
+  timeoff_entries:
+    create:
+      success: Added time off successfully
+    update:
+      success: Updated time off successfully
+    destroy:
+      success: Deleted time off successfully
+  leave_with_leave_types:
+    update:
+      success: Leaves updated successfully
+  avatar:
+    update:
+      success: Avatar updated successfully
+    destroy:
+      success: Avatar deleted successfully
+  clients:
+    add_client_contact:
+      success: "Invitation sent successfully."
+    send_payment_reminder:
+      success: Payment reminder has been sent
+  leave_types:
+    create:
+      success: Added leave type successfully
+    update:
+      success: Updated leave type successfully
+  custom_leaves:
+    update:
+      success: Custom Leaves updated successfully
+  holidays:
+    update:
+      success: Holiday Info updated successfully
+  invoices_controller:
+    send_invoice:
+      recipients_required: Recipients are required
+      recipient_limit: "Email can only be sent to 5 recipients."
+      already_paid: Invoice is already paid
+      pdf_failed: Failed to generate PDF
+      success: Invoice has been sent successfully
+    send_reminder:
+      success: A reminder has been sent
+      overdue_only: Reminders can only be sent for overdue invoices
+    download:
+      pdf_failed: Failed to generate PDF
+  application_controller:
+    not_found: Route not found
+  invoices_view:
+    not_found: No invoice found
+  subscriptions:
+    pricing_not_configured: Stripe subscription pricing is not configured
+    no_billing_customer: No billing customer exists for this company
+    trial_started: "Your 30-day Pro trial has started"
+    trial_not_eligible: Your workspace is not eligible for a Pro trial
+  passkeys:
+    added: Passkey added
+    removed: Passkey removed
+    requirement_enabled: Passkey requirement enabled
+    requirement_disabled: Passkey requirement disabled
+    disable_totp_first: "Disable authenticator app 2FA before requiring passkey sign in."
+    add_passkey_first: "Add a passkey before requiring it for sign in."
+    session_expired: "Passkey session expired. Please try again."
+    verification_failed: "Passkey verification failed."
+    not_found: "Passkey not found."
+  totp:
+    disable_passkey_first: "Disable required passkey sign in before enabling authenticator app 2FA."
+    invalid_code: "Invalid authenticator code."
+    enabled: Authenticator app enabled
+    not_enabled: "Enable authenticator app 2FA first."
+    recovery_codes_regenerated: Recovery codes regenerated
+    disabled: Authenticator app disabled
+    invalid_verification: "Invalid verification code."
+    session_expired: "That verification request is no longer valid. Please sign in again."
+  currency_pairs:
+    from_to_required: from and to are required
+    rate_not_found: Rate not found
