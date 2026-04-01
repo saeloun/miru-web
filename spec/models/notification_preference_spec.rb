@@ -6,6 +6,7 @@
 #
 #  id                          :bigint           not null, primary key
 #  invoice_email_notifications :boolean          default(TRUE), not null
+#  monthly_report_digest_enabled :boolean        default(FALSE), not null
 #  notification_enabled        :boolean          default(FALSE), not null
 #  payment_email_notifications :boolean          default(TRUE), not null
 #  timesheet_reminder_enabled  :boolean          default(TRUE), not null
@@ -53,9 +54,35 @@ RSpec.describe NotificationPreference, type: :model do
       pref = NotificationPreference.new
       expect(pref.notification_enabled).to eq(false)
       expect(pref.invoice_email_notifications).to eq(true)
+      expect(pref.monthly_report_digest_enabled).to eq(false)
       expect(pref.payment_email_notifications).to eq(true)
       expect(pref.timesheet_reminder_enabled).to eq(true)
       expect(pref.unsubscribed_from_all).to eq(false)
+    end
+  end
+
+  describe "#resubscribe!" do
+    before do
+      notification_preference.update!(
+        unsubscribed_from_all: true,
+        notification_enabled: false,
+        invoice_email_notifications: false,
+        payment_email_notifications: false,
+        timesheet_reminder_enabled: false,
+        monthly_report_digest_enabled: false
+      )
+    end
+
+    it "restores the default notification settings" do
+      notification_preference.resubscribe!
+      notification_preference.reload
+
+      expect(notification_preference.unsubscribed_from_all).to be false
+      expect(notification_preference.notification_enabled).to be true
+      expect(notification_preference.invoice_email_notifications).to be true
+      expect(notification_preference.payment_email_notifications).to be true
+      expect(notification_preference.timesheet_reminder_enabled).to be true
+      expect(notification_preference.monthly_report_digest_enabled).to be true
     end
   end
 

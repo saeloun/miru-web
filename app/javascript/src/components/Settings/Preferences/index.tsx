@@ -109,6 +109,18 @@ const PreferencesSettingsPage: React.FC = () => {
           category: "Billing Notifications",
           dbField: "payment_email_notifications",
         },
+        {
+          id: "monthly_report_digest",
+          title: "Monthly Cash Flow Digest",
+          description:
+            "Receive a monthly cash flow summary with net change, money in, and money out",
+          enabled:
+            !isUnsubscribed && res.data.monthly_report_digest_enabled === true,
+          icon: <FileText className="h-4 w-4" />,
+          category: "Billing Notifications",
+          badge: "Monthly",
+          dbField: "monthly_report_digest_enabled",
+        },
       ].filter(pref => {
         if (companyRole === "employee") {
           return pref.category !== "Billing Notifications";
@@ -186,13 +198,13 @@ const PreferencesSettingsPage: React.FC = () => {
 
   const handleResubscribe = () => {
     setUnsubscribedAll(false);
-    // Re-enable default preferences
     setPreferences(
       preferences.map(p => ({
         ...p,
         enabled:
           p.badge === "Important" ||
           p.badge === "Active" ||
+          p.badge === "Monthly" ||
           p.dbField === "timesheet_reminder_enabled",
       }))
     );
