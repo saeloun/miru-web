@@ -1,6 +1,6 @@
 import React from "react";
 
-import NewLineItemStatic from "./NewLineItemStatic";
+import LineItemEditorRow from "./LineItemEditorRow";
 
 const NewLineItemRow = ({
   clientCurrency,
@@ -32,7 +32,7 @@ const NewLineItemRow = ({
   };
 
   return (
-    <NewLineItemStatic
+    <LineItemEditorRow
       clientCurrency={clientCurrency}
       dateFormat={dateFormat}
       handleDelete={handleDelete}

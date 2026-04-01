@@ -7,7 +7,7 @@ import { DeleteIcon, CalendarIcon } from "miruIcons";
 import TextareaAutosize from "react-textarea-autosize";
 import { i18n } from "../../../../i18n";
 
-const NewLineItemStatic = ({
+const LineItemEditorRow = ({
   clientCurrency,
   item,
   handleDelete,
@@ -188,4 +188,4 @@ const NewLineItemStatic = ({
   );
 };
 
-export default NewLineItemStatic;
+export default LineItemEditorRow;
