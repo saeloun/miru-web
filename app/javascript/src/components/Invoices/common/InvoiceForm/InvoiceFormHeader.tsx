@@ -10,11 +10,11 @@ import {
 import { Link } from "react-router-dom";
 import { Button } from "StyledComponents";
 
-import MoreButton from "../../MoreButton";
-import MoreOptions from "../../MoreOptions";
-import { i18n } from "../../../../../i18n";
+import MoreButton from "../MoreButton";
+import MoreOptions from "../MoreOptions";
+import { i18n } from "../../../../i18n";
 
-const Header = ({
+const InvoiceFormHeader = ({
   formType = "generate",
   handleSaveInvoice,
   handleSendInvoice,
@@ -111,4 +111,4 @@ const Header = ({
   );
 };
 
-export default Header;
+export default InvoiceFormHeader;

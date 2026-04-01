@@ -4,7 +4,7 @@ import BackButton from "./BackButton";
 import InvoiceActions from "./InvoiceActions";
 import InvoiceStatus from "./InvoiceStatus";
 
-const Header = ({
+const InvoiceDetailHeader = ({
   invoice,
   handleSendInvoice,
   setShowDeleteDialog,
@@ -49,4 +49,4 @@ const Header = ({
   );
 };
 
-export default Header;
+export default InvoiceDetailHeader;
