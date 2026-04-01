@@ -13,7 +13,7 @@ import Header from "./Header";
 import ClientList from "./List";
 import DeleteClient from "./Modals/DeleteClient";
 import EditClient from "./Modals/EditClient";
-import NewClient from "./Modals/NewClient";
+import CreateClientModal from "./Modals/CreateClientModal";
 import TotalHoursChart from "./TotalHoursChart";
 
 const Clients = ({ isAdminUser }) => {
@@ -132,7 +132,7 @@ const Clients = ({ isAdminUser }) => {
         />
       )}
       {isClient && showDialog && (
-        <NewClient
+        <CreateClientModal
           clientData={clientData}
           clientLogo={clientLogo}
           clientLogoUrl={clientLogoUrl}
