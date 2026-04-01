@@ -1508,7 +1508,7 @@ const en = {
       revenueLeadersTitle: "Revenue Leaders",
       revenueLeadersDescription: "Top clients by revenue contribution",
       topCustomersEyebrow: "TOP CUSTOMERS",
-      ofTotal: "%{percent} of total",
+      ofTotal: "%{percentage} of total",
       noRevenue: "No revenue data available",
     },
     roleGuidance: {
