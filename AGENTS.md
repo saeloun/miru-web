@@ -11,7 +11,7 @@ Scope: entire repository.
 3. For JavaScript or TypeScript changes, always run `mise exec -- timeout 30 bin/vite build` before handoff.
 4. Use `mise exec --` for runtime-sensitive commands.
 5. Never add AI or tool attribution to git commits.
-6. Do not interact with external systems like GitHub comments without explicit user approval.
+6. When fixing a bug that has a GitHub issue, always post a comment on the issue with the commit SHA, what was fixed, and how it was verified. Close the issue after verification. Do not interact with other external systems without explicit user approval.
 7. Keep changes minimal, focused, and aligned with existing repo patterns.
 8. If a change is verified and there is no explicit reason to hold it back, commit and push it instead of letting the working tree drift.
 9. Do not stop after a trivial sub-step when the user asked for a larger verified batch. Keep going until the batch is done, there is a real blocker, or the next action would be risky without user input.
