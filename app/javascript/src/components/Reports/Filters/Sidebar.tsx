@@ -20,11 +20,11 @@ import {
 import { Separator } from "../../ui/separator";
 import { Badge } from "../../ui/badge";
 
-import SidebarDateRangeFilter from "./EnhancedDateRangeFilter";
-import SidebarClientFilter from "./EnhancedClientFilter";
-import SidebarTeamMembersFilter from "./EnhancedTeamMembersFilter";
-import SidebarStatusFilter from "./EnhancedStatusFilter";
-import SidebarGroupByFilter from "./EnhancedGroupByFilter";
+import SidebarDateRangeFilter from "./SidebarDateRangeFilter";
+import SidebarClientFilter from "./SidebarClientFilter";
+import SidebarTeamMembersFilter from "./SidebarTeamMembersFilter";
+import SidebarStatusFilter from "./SidebarStatusFilter";
+import SidebarGroupByFilter from "./SidebarGroupByFilter";
 import { statusOption } from "./filterOptions";
 import { dateRangeOptions } from "./FilterSidebarOptions";
 
