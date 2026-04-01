@@ -129,5 +129,17 @@ RSpec.describe "Api::V1::Invoices::LineItems#index", type: :request do
       expect(json_response["filter_options"]).to eq(JSON.parse(filter_options.to_json))
       expect(json_response["new_line_item_entries"]).to be_empty
     end
+
+    it "returns not found when the client does not belong to the current workspace" do
+      other_company = create(:company)
+      other_client = create(:client, company: other_company)
+
+      send_request :get,
+        api_v1_line_items_invoices_path(client_id: other_client.id),
+        headers: auth_headers(user)
+
+      expect(response).to have_http_status(:not_found)
+      expect(json_response["error"]).to eq("Client not found")
+    end
   end
 end

@@ -49,6 +49,20 @@ RSpec.describe BulkHolidayService, type: :service do
       it "creates holiday info records" do
         expect { subject.process }.to change(HolidayInfo, :count).by(2)
       end
+
+      context "when holiday attributes are omitted from the payload" do
+        let(:holiday_params) do
+          {
+            add_holiday_infos: [],
+            update_holiday_infos: [],
+            remove_holiday_infos: []
+          }
+        end
+
+        it "updates the existing holiday without raising" do
+          expect(subject.process).to be true
+        end
+      end
     end
 
     context "when updating holiday info" do

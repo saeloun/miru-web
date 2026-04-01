@@ -2,6 +2,11 @@
 
 class Api::V1::Invoices::LineItemsController < Api::V1::ApplicationController
   def index
+    unless client
+      skip_authorization
+      return render json: { error: "Client not found" }, status: 404
+    end
+
     authorize client, policy_class: InvoiceLineItemPolicy
     render "api/v1/invoices/line_items/index",
       locals: GenerateInvoice::NewLineItemsService.process(client, params),
@@ -11,6 +16,6 @@ class Api::V1::Invoices::LineItemsController < Api::V1::ApplicationController
   private
 
     def client
-      @_client ||= Client.find_by(id: params[:client_id])
+      @_client ||= current_company.clients.find_by(id: params[:client_id])
     end
 end
