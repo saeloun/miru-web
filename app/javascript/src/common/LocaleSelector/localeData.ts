@@ -55,21 +55,20 @@ export const LOCALE_GROUPS: LocaleGroup[] = [
   },
   {
     label: "SOUTHEAST ASIAN",
-    locales: [
-      { code: "id", nativeName: "Bahasa Indonesia" },
-    ],
+    locales: [{ code: "id", nativeName: "Bahasa Indonesia" }],
   },
 ];
 
 export function getLocaleDisplayName(code: string): string {
   for (const group of LOCALE_GROUPS) {
-    const locale = group.locales.find((l) => l.code === code);
+    const locale = group.locales.find(l => l.code === code);
     if (locale) {
       return locale.englishName
         ? `${locale.nativeName} (${locale.englishName})`
         : locale.nativeName;
     }
   }
+
   return code;
 }
 
