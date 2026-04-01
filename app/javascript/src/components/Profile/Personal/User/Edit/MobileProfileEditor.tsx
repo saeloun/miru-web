@@ -19,6 +19,7 @@ import { CustomInputText } from "common/CustomInputText";
 import { CustomReactSelect } from "common/CustomReactSelect";
 import { Divider } from "common/Divider";
 import { ErrorSpan } from "common/ErrorSpan";
+import { i18n } from "../../../../../i18n";
 import PasskeysPanel from "./PasskeysPanel";
 import TotpPanel from "./TotpPanel";
 
@@ -28,7 +29,7 @@ const inputClass =
 const labelClass =
   "absolute top-0.5 left-1 z-1 h-6 origin-0 bg-background p-2 text-sm font-medium duration-300";
 
-const MobileEditDetails = ({
+const MobileProfileEditor = ({
   avatarSection,
   addrType,
   addressOptions,
@@ -96,14 +97,14 @@ const MobileEditDetails = ({
       {avatarSection && <div className="pb-4">{avatarSection}</div>}
       <div className="py-4">
         <span className="flex flex-row items-center px-1 text-sm font-medium text-foreground">
-          <InfoIcon className="mr-2" color="#1D1A31" size={13.5} /> Basic
-          Details
+          <InfoIcon className="mr-2" color="#1D1A31" size={13.5} />{" "}
+          {i18n.t("profile.basicDetails")}
         </span>
         <div className="mt-2 flex w-full flex-row">
           <div className="w-1/2 px-1">
             <CustomInputText
               id="first_name"
-              label="First name"
+              label={i18n.t("profile.firstName")}
               name="first_name"
               type="text"
               value={personalDetails.first_name}
@@ -131,7 +132,7 @@ const MobileEditDetails = ({
           <div className="w-1/2 px-1">
             <CustomInputText
               id="last_name"
-              label="Last name"
+              label={i18n.t("profile.lastName")}
               name="last_name"
               type="text"
               value={personalDetails.last_name}
@@ -169,7 +170,7 @@ const MobileEditDetails = ({
                 readOnly
                 id="date_of_birth"
                 inputBoxClassName={`${inputClass} border-border`}
-                label="Date of Birth"
+                label={i18n.t("profile.dateOfBirth")}
                 name="date_of_birth"
                 type="text"
                 value={personalDetails.date_of_birth || ""}
@@ -200,8 +201,8 @@ const MobileEditDetails = ({
       <Divider />
       <div className="py-4">
         <span className="flex flex-row items-center px-1 text-sm font-medium text-foreground">
-          <PhoneIcon className="mr-2" color="#1D1A31" size={13.5} /> Contact
-          Details
+          <PhoneIcon className="mr-2" color="#1D1A31" size={13.5} />{" "}
+          {i18n.t("profile.contactInformation")}
         </span>
         <div className="mt-2 flex w-full flex-row">
           <div className="w-1/2 px-1">
@@ -220,14 +221,14 @@ const MobileEditDetails = ({
                 className="absolute -top-1 left-0 z-1 ml-3 origin-0 bg-background px-1 text-xsm font-medium text-muted-foreground duration-300"
                 htmlFor="phone_number"
               >
-                Phone number
+                {i18n.t("clients.phoneNumber")}
               </label>
             </div>
           </div>
           <div className="w-1/2 px-1">
             <CustomInputText
               id="email_id"
-              label="Email ID (Personal)"
+              label={i18n.t("profile.personalEmail")}
               name="email_id"
               type="email"
               value={personalDetails.email_id}
@@ -255,13 +256,14 @@ const MobileEditDetails = ({
       <Divider />
       <div className="py-4">
         <span className="flex flex-row items-center px-1 text-sm font-medium text-foreground">
-          <MapPinIcon className="mr-2" color="#1D1A31" size={13.5} /> Address
+          <MapPinIcon className="mr-2" color="#1D1A31" size={13.5} />{" "}
+          {i18n.t("address")}
         </span>
         <div className="mt-2 flex w-full flex-col">
           <div className="px-1 py-1">
             <CustomReactSelect
               handleOnChange={handleOnChangeAddrType}
-              label="Address type"
+              label={i18n.t("profile.addressType")}
               name="address_select"
               options={addressOptions}
               value={addrType.value ? addrType : addressOptions[0]}
@@ -270,7 +272,7 @@ const MobileEditDetails = ({
           <div className="px-1 py-1">
             <CustomInputText
               id="address_line_1"
-              label="Address line 1"
+              label={i18n.t("profile.addressLine1")}
               name="address_line_1"
               type="text"
               inputBoxClassName={`${inputClass} ${
@@ -302,7 +304,9 @@ const MobileEditDetails = ({
             <CustomInputText
               id="address_line_2"
               inputBoxClassName={`${inputClass} border-border`}
-              label="Address line 2 (optional)"
+              label={`${i18n.t("profile.addressLine2")} ${i18n.t(
+                "profile.optionalSuffix"
+              )}`}
               labelClassName={`${labelClass} text-muted-foreground`}
               name="address_line_2"
               type="text"
@@ -320,7 +324,7 @@ const MobileEditDetails = ({
               <CustomReactSelect
                 handleOnChange={value => handleOnChangeCountry(value)}
                 isErr={!!errDetails.country_err}
-                label="Country"
+                label={i18n.t("country")}
                 name="current_country_select"
                 options={countries}
                 value={{
@@ -338,7 +342,7 @@ const MobileEditDetails = ({
             <div className="flex w-1/2 flex-col px-2 py-3">
               <CustomInputText
                 id="state"
-                label="State"
+                label={i18n.t("state")}
                 name="state"
                 type="text"
                 value={personalDetails.addresses.state}
@@ -366,7 +370,7 @@ const MobileEditDetails = ({
             <div className="flex w-1/2 flex-col px-2 py-3">
               <CustomInputText
                 id="city"
-                label="City"
+                label={i18n.t("city")}
                 name="city"
                 type="text"
                 value={personalDetails.addresses.city}
@@ -392,7 +396,7 @@ const MobileEditDetails = ({
             <div className="flex w-1/2 flex-col px-2 py-3">
               <CustomInputText
                 id="zipcode"
-                label="Zipcode"
+                label={i18n.t("profile.zipPostalCode")}
                 name="zipcode"
                 type="text"
                 value={personalDetails.addresses.pin}
@@ -422,14 +426,14 @@ const MobileEditDetails = ({
       <div className="py-4">
         <span className="flex flex-row items-center px-1 text-sm font-medium text-foreground">
           <GlobeIcon className="mr-2" color="#1D1A31" size={13.5} />
-          Social Profiles
+          {i18n.t("profile.socialProfiles")}
         </span>
         <div className="mt-2 flex w-full flex-row">
           <div className="flex w-1/2 flex-col px-1">
             <CustomInputText
               id="linkedin"
               inputBoxClassName={`${inputClass} border-border`}
-              label="LinkedIn"
+              label={i18n.t("profile.linkedin")}
               labelClassName={`${labelClass} text-muted-foreground`}
               name="linkedin"
               type="text"
@@ -443,7 +447,7 @@ const MobileEditDetails = ({
             <CustomInputText
               id="github"
               inputBoxClassName={`${inputClass} border-border`}
-              label="Github"
+              label={i18n.t("profile.github")}
               labelClassName={`${labelClass} text-muted-foreground`}
               name="github"
               type="text"
@@ -459,14 +463,16 @@ const MobileEditDetails = ({
         <div className="flex items-center justify-between pr-4">
           <span className="flex flex-row items-center text-sm font-medium text-foreground">
             <KeyIcon className="mr-2" color="#1D1A31" size={13.5} />
-            Password
+            {i18n.t("profile.security")}
           </span>
           <div className="ml-2">
             <button
               className="cursor-pointer p-1 text-xs font-bold text-primary"
               onClick={handlePasswordChange}
             >
-              {changePassword ? "Cancel Password" : "Change Password"}
+              {changePassword
+                ? i18n.t("profile.cancelPasswordChange")
+                : i18n.t("settings.changePassword")}
             </button>
           </div>
         </div>
@@ -477,7 +483,7 @@ const MobileEditDetails = ({
                 <div className="relative flex flex-col px-2 py-3">
                   <CustomInputText
                     id="current_password"
-                    label="Current Password"
+                    label={i18n.t("settings.currentPassword")}
                     name="current_password"
                     type={showCurrentPassword ? "text" : "password"}
                     value={currentPassword}
@@ -514,7 +520,7 @@ const MobileEditDetails = ({
                   <div className="relative flex flex-col px-2">
                     <CustomInputText
                       id="password"
-                      label="Password"
+                      label={i18n.t("profile.newPassword")}
                       name="password"
                       type={showPassword ? "text" : "password"}
                       value={personalDetails.password}
@@ -558,7 +564,7 @@ const MobileEditDetails = ({
                     <div className="relative flex flex-col px-2">
                       <CustomInputText
                         id="confirm_password"
-                        label="Confirm Password"
+                        label={i18n.t("settings.confirmPassword")}
                         name="confirm_password"
                         type={showConfirmPassword ? "text" : "password"}
                         value={personalDetails.confirmPassword}
@@ -639,17 +645,17 @@ const MobileEditDetails = ({
           className="h-10	 w-38 rounded border border-primary bg-transparent py-2 px-6 text-xs font-bold tracking-widest text-primary "
           onClick={handleCancelDetails}
         >
-          CANCEL
+          {i18n.t("cancel").toUpperCase()}
         </button>
         <button
           className="h-10 w-38 rounded border border-primary bg-primary px-6 py-2 text-xs font-bold tracking-widest text-primary-foreground"
           onClick={handleUpdateDetails}
         >
-          SAVE
+          {i18n.t("save").toUpperCase()}
         </button>
       </div>
     </div>
   );
 };
 
-export default MobileEditDetails;
+export default MobileProfileEditor;

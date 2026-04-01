@@ -12,6 +12,7 @@ import {
   LinkedinLogo,
   GithubLogo,
   Envelope,
+  GlobeSimple,
 } from "phosphor-react";
 import PhoneInput from "react-phone-number-input";
 import flags from "react-phone-number-input/flags";
@@ -19,6 +20,7 @@ import "react-phone-number-input/style.css";
 import CustomDatePicker from "common/CustomDatePicker";
 import CustomReactSelect from "common/CustomReactSelect";
 import { ErrorSpan } from "common/ErrorSpan";
+import { i18n } from "../../../../../i18n";
 import { Card, CardContent, CardHeader, CardTitle } from "../../../../ui/card";
 import { Input } from "../../../../ui/input";
 import { Button } from "../../../../ui/button";
@@ -26,9 +28,8 @@ import { Separator } from "../../../../ui/separator";
 import PasskeysPanel from "./PasskeysPanel";
 import TotpPanel from "./TotpPanel";
 import LocaleSelector from "../../../../../common/LocaleSelector";
-import { GlobeSimple } from "phosphor-react";
 
-const EditProfilePage = ({
+const ProfileEditor = ({
   avatarSection,
   addressOptions,
   addrType,
@@ -91,7 +92,7 @@ const EditProfilePage = ({
             <CardHeader className="pb-4">
               <CardTitle className="text-lg font-geist-semibold flex items-center gap-2">
                 <User className="h-5 w-5 text-muted-foreground" weight="bold" />
-                Personal Information
+                {i18n.t("profile.personalInformation")}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
@@ -101,7 +102,7 @@ const EditProfilePage = ({
                     htmlFor="first_name"
                     className="text-xs font-geist-medium uppercase tracking-wider text-muted-foreground"
                   >
-                    First Name
+                    {i18n.t("profile.firstName")}
                   </label>
                   <Input
                     className={`font-geist-regular ${
@@ -112,7 +113,7 @@ const EditProfilePage = ({
                     id="first_name"
                     name="first_name"
                     type="text"
-                    placeholder="Enter your first name"
+                    placeholder={i18n.t("profile.firstNamePlaceholder")}
                     value={personalDetails.first_name || ""}
                     onChange={e => {
                       updateBasicDetails(
@@ -135,7 +136,7 @@ const EditProfilePage = ({
                     htmlFor="last_name"
                     className="text-xs font-geist-medium uppercase tracking-wider text-muted-foreground"
                   >
-                    Last Name
+                    {i18n.t("profile.lastName")}
                   </label>
                   <Input
                     className={`font-geist-regular ${
@@ -146,7 +147,7 @@ const EditProfilePage = ({
                     id="last_name"
                     name="last_name"
                     type="text"
-                    placeholder="Enter your last name"
+                    placeholder={i18n.t("profile.lastNamePlaceholder")}
                     value={personalDetails.last_name || ""}
                     onChange={e => {
                       updateBasicDetails(
@@ -172,7 +173,7 @@ const EditProfilePage = ({
                   className="text-xs font-geist-medium uppercase tracking-wider text-muted-foreground flex items-center gap-1"
                 >
                   <Calendar className="h-3 w-3" weight="bold" />
-                  Date of Birth
+                  {i18n.t("profile.dateOfBirth")}
                 </label>
                 <div
                   className="relative cursor-pointer"
@@ -188,7 +189,7 @@ const EditProfilePage = ({
                     id="date_of_birth"
                     name="date_of_birth"
                     type="text"
-                    placeholder="Select your birth date"
+                    placeholder={i18n.t("profile.birthDatePlaceholder")}
                     value={personalDetails.date_of_birth || ""}
                     onChange={e => {
                       updateBasicDetails(
@@ -226,7 +227,7 @@ const EditProfilePage = ({
                   className="h-5 w-5 text-muted-foreground"
                   weight="bold"
                 />
-                Contact Information
+                {i18n.t("profile.contactInformation")}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -237,13 +238,13 @@ const EditProfilePage = ({
                     className="text-xs font-geist-medium uppercase tracking-wider text-muted-foreground flex items-center gap-1"
                   >
                     <Phone className="h-3 w-3" weight="bold" />
-                    Phone Number
+                    {i18n.t("clients.phoneNumber")}
                   </label>
                   <div className="relative flex h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
                     <PhoneInput
                       id="phone_number"
                       name="phone_number"
-                      aria-label="Phone Number"
+                      aria-label={i18n.t("profile.phoneAriaLabel")}
                       className="input-phone-number w-full border-transparent focus:border-transparent focus:ring-0 font-geist-regular"
                       flags={flags}
                       value={
@@ -261,7 +262,7 @@ const EditProfilePage = ({
                     className="text-xs font-geist-medium uppercase tracking-wider text-muted-foreground flex items-center gap-1"
                   >
                     <Envelope className="h-3 w-3" weight="bold" />
-                    Personal Email
+                    {i18n.t("profile.personalEmail")}
                   </label>
                   <Input
                     className={`font-geist-regular ${
@@ -272,7 +273,7 @@ const EditProfilePage = ({
                     id="email_id"
                     name="email_id"
                     type="email"
-                    placeholder="your.email@example.com"
+                    placeholder={i18n.t("profile.personalEmailPlaceholder")}
                     value={personalDetails.email_id || ""}
                     onChange={e => {
                       updateBasicDetails(e.target.value, "email_id", false);
@@ -296,7 +297,7 @@ const EditProfilePage = ({
                   className="h-5 w-5 text-muted-foreground"
                   weight="bold"
                 />
-                Address
+                {i18n.t("address")}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -305,11 +306,11 @@ const EditProfilePage = ({
                   htmlFor="address_select"
                   className="text-xs font-geist-medium uppercase tracking-wider text-muted-foreground"
                 >
-                  Address Type
+                  {i18n.t("profile.addressType")}
                 </label>
                 <CustomReactSelect
                   handleOnChange={handleOnChangeAddrType}
-                  label="Address type"
+                  label={i18n.t("profile.addressType")}
                   name="address_select"
                   options={addressOptions}
                   value={addrType.value ? addrType : addressOptions[0]}
@@ -321,7 +322,7 @@ const EditProfilePage = ({
                   htmlFor="address_line_1"
                   className="text-xs font-geist-medium uppercase tracking-wider text-muted-foreground"
                 >
-                  Address Line 1
+                  {i18n.t("profile.addressLine1")}
                 </label>
                 <Input
                   className={`font-geist-regular ${
@@ -332,7 +333,7 @@ const EditProfilePage = ({
                   id="address_line_1"
                   name="address_line_1"
                   type="text"
-                  placeholder="Street address"
+                  placeholder={i18n.t("profile.streetAddressPlaceholder")}
                   value={
                     personalDetails.addresses &&
                     personalDetails.addresses.address_line_1
@@ -353,9 +354,9 @@ const EditProfilePage = ({
                   htmlFor="address_line_2"
                   className="text-xs font-geist-medium uppercase tracking-wider text-muted-foreground"
                 >
-                  Address Line 2
+                  {i18n.t("profile.addressLine2")}
                   <span className="ml-1 text-xs font-geist-regular normal-case text-muted-foreground/70">
-                    (Optional)
+                    {i18n.t("profile.optionalSuffix")}
                   </span>
                 </label>
                 <Input
@@ -363,7 +364,7 @@ const EditProfilePage = ({
                   id="address_line_2"
                   name="address_line_2"
                   type="text"
-                  placeholder="Apartment, suite, unit, etc."
+                  placeholder={i18n.t("profile.addressLine2Placeholder")}
                   value={
                     personalDetails.addresses &&
                     personalDetails.addresses.address_line_2
@@ -379,12 +380,12 @@ const EditProfilePage = ({
                     htmlFor="current_country_select"
                     className="text-xs font-geist-medium uppercase tracking-wider text-muted-foreground"
                   >
-                    Country
+                    {i18n.t("country")}
                   </label>
                   <CustomReactSelect
                     handleOnChange={value => handleOnChangeCountry(value)}
                     isErr={!!errDetails.country_err}
-                    label="Country"
+                    label={i18n.t("country")}
                     name="current_country_select"
                     options={countries}
                     value={{
@@ -405,7 +406,7 @@ const EditProfilePage = ({
                     htmlFor="state"
                     className="text-xs font-geist-medium uppercase tracking-wider text-muted-foreground"
                   >
-                    State
+                    {i18n.t("state")}
                   </label>
                   <Input
                     className={`font-geist-regular ${
@@ -416,7 +417,7 @@ const EditProfilePage = ({
                     id="state"
                     name="state"
                     type="text"
-                    placeholder="State or province"
+                    placeholder={i18n.t("profile.statePlaceholder")}
                     value={personalDetails.addresses.state}
                     onChange={e => {
                       updateBasicDetails(e.target.value, "state", true);
@@ -436,7 +437,7 @@ const EditProfilePage = ({
                     htmlFor="city"
                     className="text-xs font-geist-medium uppercase tracking-wider text-muted-foreground"
                   >
-                    City
+                    {i18n.t("city")}
                   </label>
                   <Input
                     className={`font-geist-regular ${
@@ -447,7 +448,7 @@ const EditProfilePage = ({
                     id="city"
                     name="city"
                     type="text"
-                    placeholder="City"
+                    placeholder={i18n.t("profile.cityPlaceholder")}
                     value={personalDetails.addresses.city}
                     onChange={e => {
                       updateBasicDetails(e.target.value, "city", true);
@@ -465,7 +466,7 @@ const EditProfilePage = ({
                     htmlFor="zipcode"
                     className="text-xs font-geist-medium uppercase tracking-wider text-muted-foreground"
                   >
-                    Zip/Postal Code
+                    {i18n.t("profile.zipPostalCode")}
                   </label>
                   <Input
                     className={`font-geist-regular ${
@@ -476,7 +477,7 @@ const EditProfilePage = ({
                     id="zipcode"
                     name="zipcode"
                     type="text"
-                    placeholder="12345"
+                    placeholder={i18n.t("profile.zipPlaceholder")}
                     value={personalDetails.addresses.pin}
                     onChange={e => {
                       updateBasicDetails(e.target.value, "pin", true);
@@ -528,7 +529,7 @@ const EditProfilePage = ({
                   className="h-5 w-5 text-muted-foreground"
                   weight="bold"
                 />
-                Social Profiles
+                {i18n.t("profile.socialProfiles")}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -538,7 +539,7 @@ const EditProfilePage = ({
                   className="flex items-center gap-1 text-xs font-geist-medium uppercase tracking-wider text-muted-foreground"
                 >
                   <LinkedinLogo className="h-3 w-3" weight="bold" />
-                  LinkedIn
+                  {i18n.t("profile.linkedin")}
                 </label>
                 <Input
                   className="font-geist-regular"
@@ -558,7 +559,7 @@ const EditProfilePage = ({
                   className="flex items-center gap-1 text-xs font-geist-medium uppercase tracking-wider text-muted-foreground"
                 >
                   <GithubLogo className="h-3 w-3" weight="bold" />
-                  GitHub
+                  {i18n.t("profile.github")}
                 </label>
                 <Input
                   className="font-geist-regular"
@@ -582,21 +583,23 @@ const EditProfilePage = ({
                   className="h-5 w-5 text-muted-foreground"
                   weight="bold"
                 />
-                Language
+                {i18n.t("common.language")}
               </CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-sm text-muted-foreground mb-3">
-                Choose your preferred language for the interface.
+                {i18n.t("profile.languageDescription")}
               </p>
               <LocaleSelector
                 dropdownDirection="down"
                 showLabel
-                onLocaleChange={async (newLocale) => {
+                onLocaleChange={async newLocale => {
                   try {
-                    const csrfToken = document
-                      .querySelector('[name="csrf-token"]')
-                      ?.getAttribute("content") || "";
+                    const csrfToken =
+                      document
+                        .querySelector('[name="csrf-token"]')
+                        ?.getAttribute("content") || "";
+
                     await fetch("/api/v1/profile", {
                       method: "PATCH",
                       headers: {
@@ -618,7 +621,7 @@ const EditProfilePage = ({
             <CardHeader className="pb-4">
               <CardTitle className="text-lg font-geist-semibold flex items-center gap-2">
                 <Lock className="h-5 w-5 text-muted-foreground" weight="bold" />
-                Security
+                {i18n.t("profile.security")}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -628,7 +631,7 @@ const EditProfilePage = ({
                   onClick={() => setChangePassword(true)}
                   className="w-full font-geist-medium"
                 >
-                  Change Password
+                  {i18n.t("settings.changePassword")}
                 </Button>
               )}
               {changePassword && (
@@ -638,7 +641,7 @@ const EditProfilePage = ({
                       htmlFor="current_password"
                       className="text-xs font-geist-medium uppercase tracking-wider text-muted-foreground"
                     >
-                      Current Password
+                      {i18n.t("settings.currentPassword")}
                     </label>
                     <div className="relative">
                       <Input
@@ -650,7 +653,9 @@ const EditProfilePage = ({
                         id="current_password"
                         name="current_password"
                         type={showCurrentPassword ? "text" : "password"}
-                        placeholder="Enter current password"
+                        placeholder={i18n.t(
+                          "profile.currentPasswordPlaceholder"
+                        )}
                         value={personalDetails.currentPassword}
                         onChange={e => {
                           updateBasicDetails(
@@ -690,7 +695,7 @@ const EditProfilePage = ({
                       htmlFor="password"
                       className="text-xs font-geist-medium uppercase tracking-wider text-muted-foreground"
                     >
-                      New Password
+                      {i18n.t("profile.newPassword")}
                     </label>
                     <div className="relative">
                       <Input
@@ -702,7 +707,7 @@ const EditProfilePage = ({
                         id="password"
                         name="password"
                         type={showPassword ? "text" : "password"}
-                        placeholder="Enter new password"
+                        placeholder={i18n.t("profile.newPasswordPlaceholder")}
                         value={personalDetails.password}
                         onChange={e => {
                           updateBasicDetails(
@@ -737,7 +742,7 @@ const EditProfilePage = ({
                       htmlFor="confirm_password"
                       className="text-xs font-geist-medium uppercase tracking-wider text-muted-foreground"
                     >
-                      Confirm Password
+                      {i18n.t("settings.confirmPassword")}
                     </label>
                     <div className="relative">
                       <Input
@@ -749,7 +754,9 @@ const EditProfilePage = ({
                         id="confirm_password"
                         name="confirm_password"
                         type={showConfirmPassword ? "text" : "password"}
-                        placeholder="Re-enter new password"
+                        placeholder={i18n.t(
+                          "profile.confirmPasswordPlaceholder"
+                        )}
                         value={personalDetails.confirmPassword}
                         onChange={e => {
                           updateBasicDetails(
@@ -793,7 +800,7 @@ const EditProfilePage = ({
                       cancelPasswordChange();
                     }}
                   >
-                    Cancel Password Change
+                    {i18n.t("profile.cancelPasswordChange")}
                   </Button>
                 </div>
               )}
@@ -805,4 +812,4 @@ const EditProfilePage = ({
   </div>
 );
 
-export default EditProfilePage;
+export default ProfileEditor;

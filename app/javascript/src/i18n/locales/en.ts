@@ -184,10 +184,13 @@ const en = {
     entry: "entry",
     entries: "entries",
     noEntriesForSelectedDay: "No entries for the selected day",
-    weekReviewHint: "Switch to This Week to review everything you logged this week.",
+    weekReviewHint:
+      "Switch to This Week to review everything you logged this week.",
     noTimeEntriesYet: "No time entries yet",
-    firstEntryHint: 'Click "Add Entry" to log your first time entry for this day',
-    logWorkByWeekOrMonth: "Log work by week or month. Keep entries clear and current.",
+    firstEntryHint:
+      'Click "Add Entry" to log your first time entry for this day',
+    logWorkByWeekOrMonth:
+      "Log work by week or month. Keep entries clear and current.",
     entriesFor: "Entries for %{name}",
     timeEntriesFor: "Time entries for",
     unableToLoad: "Unable to load time tracking right now.",
@@ -329,7 +332,8 @@ const en = {
     searchProjects: "Search projects...",
     createFirstProject: "Create your first project to get started.",
     noProjectsYet: "No projects yet",
-    workingOnProjects: "Track billable and non-billable work across your projects.",
+    workingOnProjects:
+      "Track billable and non-billable work across your projects.",
     active: "Active",
     paused: "Paused",
     completed: "Completed",
@@ -352,14 +356,16 @@ const en = {
     nonBillableDescription: "Track time without billing the client",
     noClientsPresent: "No clients present",
     teamMembersUpdated: "Team members updated successfully",
-    manageProjectMembersDescription: "Add or remove team members and set their hourly rates.",
+    manageProjectMembersDescription:
+      "Add or remove team members and set their hourly rates.",
     enterValidRate: "Please enter a valid rate",
     addAnotherTeamMember: "Add Another Member",
     addTeamMember: "Add Team Member",
     saveTeamMembers: "Save Members",
     noTeamMembersAdded: "No team members have been added yet.",
     addTeamMembers: "Add Team Members",
-    teamMembersDescription: "View and manage team members assigned to this project.",
+    teamMembersDescription:
+      "View and manage team members assigned to this project.",
   },
 
   // Team
@@ -470,8 +476,7 @@ const en = {
     addEntry: "Add %{count} entry",
     addEntries_plural: "Add %{count} entries",
     thankYouForBusiness: "Thank you for your business!",
-    previewNote:
-      "This is a preview. Changes will be reflected once saved.",
+    previewNote: "This is a preview. Changes will be reflected once saved.",
     noInvoiceGenerated: "No invoice has been generated yet.",
     acceptCreditCards: "Accept Credit Cards",
     sendTo: "SEND TO",
@@ -501,15 +506,11 @@ const en = {
     recipientEmailId: "Recipient Email ID",
     subject: "Subject",
     message: "Message",
-    addEmailFromClientSettings:
-      "Please add email from client settings page",
-    reminderSubject:
-      "Reminder to complete payments for unpaid invoice",
+    addEmailFromClientSettings: "Please add email from client settings page",
+    reminderSubject: "Reminder to complete payments for unpaid invoice",
     invoiceSentSubject: "%{company} sent you an invoice (%{number})",
-    reminderBody:
-      "%{company} has sent you a reminder for invoice %{number}",
-    invoiceSentBody:
-      "%{company} has sent you an invoice (%{number})",
+    reminderBody: "%{company} has sent you a reminder for invoice %{number}",
+    invoiceSentBody: "%{company} has sent you an invoice (%{number})",
     invoiceWillBeSent: "Invoice will be sent!",
     processing: "processing...",
 
@@ -583,7 +584,8 @@ const en = {
 
     // Counters
     showingOf: "Showing %{shown} of %{total}",
-    viewingMatching: "Viewing %{filtered} matching invoices from %{loaded} loaded",
+    viewingMatching:
+      "Viewing %{filtered} matching invoices from %{loaded} loaded",
     loadedOf: "Loaded %{loaded} of %{total}",
     showingRecentTransactions: "Showing %{count} recent transactions",
     updatedAt: "Updated %{date}",
@@ -595,12 +597,16 @@ const en = {
 
     // Invoice reminder email
     invoiceReminder: "Invoice Reminder: %{number}",
-    reminderMessage: "This is a reminder about your outstanding invoice. Please find the details attached.",
+    reminderMessage:
+      "This is a reminder about your outstanding invoice. Please find the details attached.",
     invoiceAttached: "Please find your invoice attached.",
-    reminderPaymentMessage: "This is a reminder about your overdue invoice. Please complete payment.",
+    reminderPaymentMessage:
+      "This is a reminder about your overdue invoice. Please complete payment.",
     invoiceSubject: "Invoice %{number}",
-    reminderPaymentSubject: "Reminder to complete payment for invoice %{number}",
-    markAsPaidConfirm: "Mark this invoice as paid? This action affects accounting records.",
+    reminderPaymentSubject:
+      "Reminder to complete payment for invoice %{number}",
+    markAsPaidConfirm:
+      "Mark this invoice as paid? This action affects accounting records.",
     failedToLoadInvoice: "Failed to load invoice",
     invoiceNotFound: "Invoice not found",
     failedToMarkAsPaid: "Failed to mark invoice as paid",
@@ -672,7 +678,8 @@ const en = {
   timer: {
     webTimer: "Web timer",
     webTimerLabel: "Web Timer",
-    trackLiveWork: "Track live work in real time, then save it straight into today's entry list.",
+    trackLiveWork:
+      "Track live work in real time, then save it straight into today's entry list.",
     startTimer: "Start Timer",
     pause: "Pause",
     resume: "Resume",
@@ -681,7 +688,8 @@ const en = {
     reset: "Reset",
     timer: "Timer",
     saveTimeEntry: "Save Time Entry",
-    saveTimeEntryDescription: "You tracked %{time}. Would you like to save this as a time entry?",
+    saveTimeEntryDescription:
+      "You tracked %{time}. Would you like to save this as a time entry?",
     discard: "Discard",
     timerStarted: "Timer started",
     timerPaused: "Timer paused",
@@ -778,7 +786,8 @@ const en = {
     invoiceAgingDetails: "Invoice Aging Details",
     noDataFound: "No Data Found",
     accountsAgingReport: "Accounts Aging Report",
-    analysisOfOutstandingReceivables: "Analysis of outstanding receivables by aging period",
+    analysisOfOutstandingReceivables:
+      "Analysis of outstanding receivables by aging period",
     asOf: "As of %{date}",
     zeroToThirtyDays: "0-30 Days",
     thirtyOneToSixtyDays: "31-60 Days",
@@ -791,8 +800,10 @@ const en = {
     noteHeader: "NOTE",
     teamMemberDate: "TEAM MEMBER/ DATE",
     hoursLogged: "HOURS LOGGED",
-    noResultsMatchFilters: "No results match current filters. Try removing some filters.",
-    noTimeEntriesYet: "There are no time entries added yet. You'll see a summary of time entries added by your team.",
+    noResultsMatchFilters:
+      "No results match current filters. Try removing some filters.",
+    noTimeEntriesYet:
+      "There are no time entries added yet. You'll see a summary of time entries added by your team.",
     selected: "%{count} selected",
     showingClientsCount: "Showing %{shown} of %{total} clients",
     ofTeamMembersSelected: "%{active} of %{total} team members selected",
@@ -818,13 +829,16 @@ const en = {
     timeEntryReportTitle: "Time Entry Report",
     timeEntryReportDesc: "A summary of the time entries added by your team.",
     invoicesReport: "Invoices Report",
-    invoicesReportDesc: "A detailed summary of outstanding and overdue of all clients for a period of time.",
+    invoicesReportDesc:
+      "A detailed summary of outstanding and overdue of all clients for a period of time.",
     totalHoursLoggedTitle: "Total hours logged",
-    totalHoursLoggedDesc: "A detailed summary of billed, unbilled and non-billable hours by team grouped by project.",
+    totalHoursLoggedDesc:
+      "A detailed summary of billed, unbilled and non-billable hours by team grouped by project.",
     revenueReport: "Revenue Report",
     revenueReportDesc: "A detailed report of revenue from each client.",
     accountsAging: "Accounts Aging",
-    accountsAgingDesc: "Find out which client have been taking a long time to pay",
+    accountsAgingDesc:
+      "Find out which client have been taking a long time to pay",
     clearAll: "CLEAR ALL",
     outstandingAndOverdue: "Outstanding and Overdue",
     followUpOnInvoices: "Follow up on invoices that still need attention.",
@@ -845,21 +859,29 @@ const en = {
     filteredByCurrency: "Filtered by %{currency}",
     overdueAgingTitle: "Overdue Aging (%{currency})",
     averageDays: "Average Days:",
-    timeReportsDesc: "A comprehensive summary of time entries added by your team members",
+    timeReportsDesc:
+      "A comprehensive summary of time entries added by your team members",
     outstandingOverdueInvoicesTitle: "Outstanding & Overdue Invoices",
-    outstandingOverdueInvoicesDesc: "Detailed overview of outstanding and overdue invoices across all clients",
+    outstandingOverdueInvoicesDesc:
+      "Detailed overview of outstanding and overdue invoices across all clients",
     revenueByClient: "Revenue by Client",
-    revenueByClientDesc: "Revenue breakdown by client with trends and comparisons",
-    accountsAgingTableDesc: "Age analysis of outstanding receivables by time period",
+    revenueByClientDesc:
+      "Revenue breakdown by client with trends and comparisons",
+    accountsAgingTableDesc:
+      "Age analysis of outstanding receivables by time period",
     paymentReportTitle: "Payment Report",
-    paymentReportDesc: "Track all payments received with detailed transaction history",
+    paymentReportDesc:
+      "Track all payments received with detailed transaction history",
     teamUtilization: "Team Utilization",
     teamUtilizationDesc: "Team member utilization rates and capacity analysis",
     projectProfitability: "Project Profitability",
-    projectProfitabilityDesc: "Profitability analysis by project with cost breakdown",
+    projectProfitabilityDesc:
+      "Profitability analysis by project with cost breakdown",
     clientSummaryTitle: "Client Summary",
-    clientSummaryDesc: "Comprehensive client performance and engagement metrics",
-    understandReportsAtGlance: "Understand revenue, time, and outstanding work at a glance.",
+    clientSummaryDesc:
+      "Comprehensive client performance and engagement metrics",
+    understandReportsAtGlance:
+      "Understand revenue, time, and outstanding work at a glance.",
     scheduleReports: "Schedule reports",
     availableReports: "Available Reports",
     revenueAndBilling: "Revenue and billing",
@@ -1061,6 +1083,27 @@ const en = {
   passkeys: {
     noPasskeyResponse: "No passkey response received.",
     passkeysNotSupported: "Passkeys are not supported in this browser.",
+    title: "Passkeys",
+    addTitle: "Add a passkey for this account",
+    addDescription:
+      "Use Face ID, Touch ID, Windows Hello, or a hardware security key.",
+    addAction: "Add passkey",
+    requirementTitle: "Require passkey on sign in",
+    requirementDescription:
+      "After your password, Miru will require a passkey to complete sign in.",
+    emptyState: "No passkeys added yet.",
+    fallbackName: "Passkey",
+    addedAt: "Added %{time}",
+    lastUsedAt: "Last used %{time}",
+    removeAction: "Remove",
+    addedSuccess: "Passkey added",
+    removedSuccess: "Passkey removed",
+    requirementEnabled: "Passkey requirement enabled",
+    requirementDisabled: "Passkey requirement disabled",
+    addFailed: "Failed to add passkey.",
+    removeFailed: "Failed to remove passkey.",
+    updateRequirementFailed: "Failed to update passkey sign-in requirement.",
+    neverUsed: "Never used",
   },
 
   // Organization setup
@@ -1094,6 +1137,12 @@ const en = {
   // Profile
   profile: {
     personalDetails: "Personal Details",
+    personalInformation: "Personal Information",
+    basicDetails: "Basic Details",
+    contactInformation: "Contact Information",
+    addressType: "Address Type",
+    current: "Current",
+    permanent: "Permanent",
     employmentDetails: "Employment Details",
     compensationDetails: "Compensation Details",
     devices: "Devices",
@@ -1104,9 +1153,80 @@ const en = {
     department: "Department",
     dateOfJoining: "Date of Joining",
     dateOfBirth: "Date of Birth",
+    birthDatePlaceholder: "Select your birth date",
     socialProfiles: "Social Profiles",
     linkedin: "LinkedIn",
     github: "GitHub",
+    firstName: "First Name",
+    lastName: "Last Name",
+    firstNamePlaceholder: "Enter your first name",
+    lastNamePlaceholder: "Enter your last name",
+    personalEmail: "Personal Email",
+    personalEmailPlaceholder: "your.email@example.com",
+    phoneAriaLabel: "Phone number",
+    addressLine1: "Address Line 1",
+    addressLine2: "Address Line 2",
+    optionalSuffix: "(Optional)",
+    streetAddressPlaceholder: "Street address",
+    addressLine2Placeholder: "Apartment, suite, unit, etc.",
+    statePlaceholder: "State or province",
+    cityPlaceholder: "City",
+    zipPostalCode: "Zip/Postal Code",
+    zipPlaceholder: "12345",
+    languageDescription: "Choose your preferred language for the interface.",
+    security: "Security",
+    userFallback: "User",
+    currentPasswordPlaceholder: "Enter current password",
+    newPassword: "New Password",
+    newPasswordPlaceholder: "Enter new password",
+    confirmPasswordPlaceholder: "Re-enter new password",
+    cancelPasswordChange: "Cancel Password Change",
+    profilePhoto: "Profile photo",
+    profilePhotoDescription:
+      "Upload a square photo for your workspace profile.",
+    uploadPhoto: "Upload photo",
+    removePhoto: "Remove photo",
+    uploadPhotoFailed: "Failed to upload profile image.",
+    removePhotoFailed: "Failed to remove profile image.",
+    adjustProfilePhoto: "Adjust profile photo",
+    adjustProfilePhotoDescription:
+      "Choose the part of the image you want to keep.",
+    noImageSelected: "No image selected",
+    savePhoto: "Save photo",
+    zoom: "Zoom",
+  },
+
+  twoFactor: {
+    title: "Authenticator App 2FA",
+    addTitle: "Add an authenticator app",
+    addDescription:
+      "Use Google Authenticator, 1Password, Bitwarden, Authy, or any TOTP-compatible app.",
+    setupAction: "Set up 2FA",
+    finishTitle: "Finish authenticator setup",
+    finishDescription:
+      "Add this key to your authenticator app, then enter the current 6-digit code to enable 2FA.",
+    manualEntryKey: "Manual entry key",
+    verificationCode: "Verification code",
+    verificationCodePlaceholder: "123456",
+    enableAction: "Enable 2FA",
+    resetKeyAction: "Reset key",
+    enabledTitle: "Authenticator app protection is on",
+    enabledDescription:
+      "You will need an authenticator code after your password when you sign in.",
+    recoveryCodesAvailable: "%{count} recovery codes available",
+    regenerateRecoveryCodes: "Regenerate recovery codes",
+    disableAction: "Disable 2FA",
+    saveRecoveryCodes: "Save these recovery codes",
+    saveRecoveryCodesDescription:
+      "Each code works once. Store them somewhere safe.",
+    setupReadySuccess: "Authenticator app setup is ready",
+    enabledSuccess: "Authenticator app enabled",
+    disabledSuccess: "Authenticator app disabled",
+    regeneratedSuccess: "Recovery codes regenerated",
+    setupFailed: "Failed to start 2FA setup.",
+    enableFailed: "Failed to enable authenticator app.",
+    disableFailed: "Failed to disable 2FA.",
+    regenerateFailed: "Failed to regenerate recovery codes.",
   },
 
   // Leave Management
@@ -1134,8 +1254,10 @@ const en = {
     publicHolidays: "Public holidays",
     zeroUsed: "0 used",
     leaveCalendar: "Leave calendar",
-    trackLeaveUsage: "Track leave and holiday usage month by month for %{year}.",
-    selectDayToInspect: "Select a day to inspect leave details and holiday usage.",
+    trackLeaveUsage:
+      "Track leave and holiday usage month by month for %{year}.",
+    selectDayToInspect:
+      "Select a day to inspect leave details and holiday usage.",
     nothingBooked: "Nothing booked",
     nothingBookedForDate: "Nothing booked for this date.",
     recordedTimeAway: "Recorded time away on this day",
@@ -1157,12 +1279,14 @@ const en = {
     numberOfTeamMembers: "Number of Team Members:",
     plan: "Plan",
     basicPlan: "Basic Plan",
-    basicPlanDescription: "Basic plan includes all features. This is a one-time charge.",
+    basicPlanDescription:
+      "Basic plan includes all features. This is a one-time charge.",
     chargedOnce: "charged once",
     addOns: "Add-Ons",
     oneTeamMember: "1 team member",
     chargedEveryMonth: "charged every month",
-    basicPlanPerUser: "Basic plan comes with additional %{rate}$ per user per month.",
+    basicPlanPerUser:
+      "Basic plan comes with additional %{rate}$ per user per month.",
     plusTaxes: "plus taxes",
     reviewAndPay: "REVIEW AND PAY",
   },
@@ -1211,18 +1335,23 @@ const en = {
   // Common extras
   common: {
     retry: "Retry",
-    pageUnavailable: "This page is unavailable or the link is no longer valid for your workspace.",
+    pageUnavailable:
+      "This page is unavailable or the link is no longer valid for your workspace.",
     goToDashboard: "Go to dashboard",
     language: "Language",
     loading: "Loading...",
     saving: "Saving...",
+    failedToChangeLanguage: "Failed to change language",
+    searchLanguages: "Search languages...",
+    noLanguagesFound: "No languages found",
   },
 
   // Auth sign in (deeply nested for upstream compatibility)
   auth: {
     signIn: {
       title: "Sign in to your workspace",
-      description: "Track work, send invoices, and keep cash flow clear from one place.",
+      description:
+        "Track work, send invoices, and keep cash flow clear from one place.",
       continueWithGoogle: "Continue with Google",
       continueWithGitHub: "Continue with GitHub",
       orUseEmail: "or use email",
@@ -1248,7 +1377,8 @@ const en = {
     },
     signUp: {
       title: "Create your workspace",
-      description: "Set up clients, projects, invoices, and payments in one clear operating system.",
+      description:
+        "Set up clients, projects, invoices, and payments in one clear operating system.",
       continueWithGoogle: "Continue with Google",
       continueWithGitHub: "Continue with GitHub",
       orUseEmail: "or use email",
@@ -1257,7 +1387,8 @@ const en = {
       email: "Email",
       password: "Password",
       confirmPassword: "Confirm Password",
-      passwordCriteria: "At least 8 characters with one uppercase, one lowercase, and one number",
+      passwordCriteria:
+        "At least 8 characters with one uppercase, one lowercase, and one number",
       submit: "Create account",
       alreadyHaveAccount: "Already have an account? ",
       signIn: "Sign in",
@@ -1269,26 +1400,31 @@ const en = {
     slides: {
       dashboard: {
         title: "Company pulse",
-        description: "See revenue, active projects, and team momentum without digging for it.",
+        description:
+          "See revenue, active projects, and team momentum without digging for it.",
       },
       invoices: {
         title: "Billing command",
-        description: "Keep drafts, overdue balances, and paid work in the same place.",
+        description:
+          "Keep drafts, overdue balances, and paid work in the same place.",
       },
       timeTracking: {
         title: "Clear weekly flow",
-        description: "Week-by-week time entry stays current without turning into busywork.",
+        description:
+          "Week-by-week time entry stays current without turning into busywork.",
       },
       payments: {
         title: "Cash ledger",
-        description: "Every payment lands in one ledger with method, status, and source.",
+        description:
+          "Every payment lands in one ledger with method, status, and source.",
       },
     },
     validation: {
       emailRequired: "Email is required",
       invalidEmail: "Invalid email address",
       passwordRequired: "Password is required",
-      passwordComplexity: "Password must be at least 8 characters with uppercase, lowercase, and number",
+      passwordComplexity:
+        "Password must be at least 8 characters with uppercase, lowercase, and number",
       passwordSpace: "Password cannot contain spaces",
       confirmPasswordRequired: "Confirm password is required",
       passwordsMustMatch: "Passwords must match",
@@ -1302,7 +1438,8 @@ const en = {
     },
     miruLogo: "Miru",
     heroTitle: "One place for time, invoices, and payments",
-    heroDescription: "Keep the day clear, keep billing moving, and keep cash visible.",
+    heroDescription:
+      "Keep the day clear, keep billing moving, and keep cash visible.",
     companyPulse: "Company pulse",
     billingCommand: "Billing command",
     clearWeeklyFlow: "Clear weekly flow",
@@ -1310,8 +1447,10 @@ const en = {
     signOut: "Sign out",
     signInToWorkspace: "Sign in to your workspace",
     createYourWorkspace: "Create your workspace",
-    signInDescription: "Track work, send invoices, and keep cash flow clear from one place.",
-    signUpDescription: "Set up clients, projects, invoices, and payments in one clear operating system.",
+    signInDescription:
+      "Track work, send invoices, and keep cash flow clear from one place.",
+    signUpDescription:
+      "Set up clients, projects, invoices, and payments in one clear operating system.",
     firstName: "First Name",
     lastName: "Last Name",
     password: "Password",
@@ -1319,7 +1458,8 @@ const en = {
     forgotPassword: "Forgot password?",
     enterRegisteredEmail: "Enter your registered email ID",
     resetPassword: "Reset Password",
-    resetPasswordInstructions: "Enter the email address associated with your account and we'll send you a link to reset your password.",
+    resetPasswordInstructions:
+      "Enter the email address associated with your account and we'll send you a link to reset your password.",
     sendResetLink: "Send Reset Link",
     backToLogin: "Back to login",
     alreadyHaveAccount: "Already have an account?",
@@ -1327,26 +1467,34 @@ const en = {
     rememberMe: "Remember me",
     totpPlaceholder: "ABCD-EFGH",
     noAuthTokenReceived: "No authentication token received",
-    slideDashboardDescription: "See revenue, active projects, and team momentum without digging for it.",
-    slideInvoicesDescription: "Keep drafts, overdue balances, and paid work in the same place.",
-    slideTimeTrackingDescription: "Week-by-week time entry stays current without turning into busywork.",
-    slidePaymentsDescription: "Every payment lands in one ledger with method, status, and source.",
+    slideDashboardDescription:
+      "See revenue, active projects, and team momentum without digging for it.",
+    slideInvoicesDescription:
+      "Keep drafts, overdue balances, and paid work in the same place.",
+    slideTimeTrackingDescription:
+      "Week-by-week time entry stays current without turning into busywork.",
+    slidePaymentsDescription:
+      "Every payment lands in one ledger with method, status, and source.",
     slideShowPrefix: "Show",
     continueWithGoogle: "Continue with Google",
     continueWithGithub: "Continue with GitHub",
     orUseEmail: "or use email",
     verifyWithAuthenticator: "Verify with your authenticator app",
-    authenticatorInstructions: "Enter the 6-digit code from your authenticator app, or use a recovery code.",
+    authenticatorInstructions:
+      "Enter the 6-digit code from your authenticator app, or use a recovery code.",
     authenticatorCode: "Authenticator code",
     recoveryCode: "Recovery code",
     verifyAndSignIn: "Verify and sign in",
-    completePasskeyVerification: "Complete passkey verification to finish signing in.",
-    enterAuthenticatorCode: "Enter your authenticator code to finish signing in.",
+    completePasskeyVerification:
+      "Complete passkey verification to finish signing in.",
+    enterAuthenticatorCode:
+      "Enter your authenticator code to finish signing in.",
     invalidVerificationCode: "Invalid verification code.",
     privacy: "Privacy",
     terms: "Terms",
     createAccount: "Create account",
-    passwordCriteria: "Min. 8 characters, 1 uppercase, 1 lowercase, 1 number and 1 special character",
+    passwordCriteria:
+      "Min. 8 characters, 1 uppercase, 1 lowercase, 1 number and 1 special character",
     agreeToTerms: "I agree to the",
     termsOfService: "Terms of Service",
     privacyPolicy: "Privacy Policy",
@@ -1449,7 +1597,8 @@ const en = {
     welcomeBack: "Welcome back, %{name}",
     recentActivity: "Recent Activity",
     workspaceActivity: "Workspace Activity",
-    activityDescription: "Latest invoices, payments, and team updates across your workspace",
+    activityDescription:
+      "Latest invoices, payments, and team updates across your workspace",
     employeeActivityDescription: "Your recent time entries and project updates",
     noRecentActivityYet: "No recent activity yet",
     loadMore: "Load more",
@@ -1473,9 +1622,12 @@ const en = {
     paidInvoices: "Paid Invoices",
     alreadySettled: "Already settled",
     paymentsReceived: "Payments Received",
-    employeeGuidance: "Track your week, submit accurate entries, and keep work moving.",
-    bookKeeperGuidance: "Review incoming payments, reconcile invoices, and keep cash flow clear.",
-    clientGuidance: "Check invoice status and payment history for your account.",
+    employeeGuidance:
+      "Track your week, submit accurate entries, and keep work moving.",
+    bookKeeperGuidance:
+      "Review incoming payments, reconcile invoices, and keep cash flow clear.",
+    clientGuidance:
+      "Check invoice status and payment history for your account.",
     defaultGuidance: "Revenue, projects, and team momentum at a glance.",
     allCaughtUp: "You're all caught up",
     timeframe: {

@@ -1,12 +1,13 @@
 import React from "react";
 
 import { Fingerprint, ShieldCheck, Trash } from "phosphor-react";
+import { i18n } from "../../../../../i18n";
 import { Button } from "../../../../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../../../../ui/card";
 import { Switch } from "../../../../ui/switch";
 
 const formatTimestamp = (value?: string | null) => {
-  if (!value) return "Never used";
+  if (!value) return i18n.t("passkeys.neverUsed");
 
   return new Intl.DateTimeFormat(undefined, {
     dateStyle: "medium",
@@ -33,21 +34,21 @@ const PasskeysPanel = ({
             className="h-5 w-5 text-muted-foreground"
             weight="bold"
           />
-          Passkeys
+          {i18n.t("passkeys.title")}
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-5">
         <div className="flex flex-col gap-3 rounded-2xl border border-border bg-muted/40 p-4 sm:flex-row sm:items-start sm:justify-between">
           <div className="space-y-1">
             <p className="text-sm font-geist-medium text-foreground">
-              Add a passkey for this account
+              {i18n.t("passkeys.addTitle")}
             </p>
             <p className="text-sm text-muted-foreground">
-              Use Face ID, Touch ID, Windows Hello, or a hardware security key.
+              {i18n.t("passkeys.addDescription")}
             </p>
           </div>
           <Button disabled={busy} onClick={onRegister} type="button">
-            Add passkey
+            {i18n.t("passkeys.addAction")}
           </Button>
         </div>
 
@@ -55,11 +56,10 @@ const PasskeysPanel = ({
           <div className="space-y-1">
             <div className="flex items-center gap-2 text-sm font-geist-medium text-foreground">
               <ShieldCheck className="h-4 w-4 text-primary" weight="bold" />
-              Require passkey on sign in
+              {i18n.t("passkeys.requirementTitle")}
             </div>
             <p className="text-sm text-muted-foreground">
-              After your password, Miru will require a passkey to complete sign
-              in.
+              {i18n.t("passkeys.requirementDescription")}
             </p>
           </div>
           <Switch
@@ -72,7 +72,7 @@ const PasskeysPanel = ({
         <div className="space-y-3">
           {passkeys.length === 0 ? (
             <div className="rounded-2xl border border-dashed border-border px-4 py-6 text-sm text-muted-foreground">
-              No passkeys added yet.
+              {i18n.t("passkeys.emptyState")}
             </div>
           ) : (
             passkeys.map(passkey => (
@@ -82,13 +82,17 @@ const PasskeysPanel = ({
               >
                 <div className="space-y-1">
                   <p className="text-sm font-geist-medium text-foreground">
-                    {passkey.nickname || "Passkey"}
+                    {passkey.nickname || i18n.t("passkeys.fallbackName")}
                   </p>
                   <p className="text-xs text-muted-foreground">
-                    Added {formatTimestamp(passkey.created_at)}
+                    {i18n.t("passkeys.addedAt", {
+                      time: formatTimestamp(passkey.created_at),
+                    })}
                   </p>
                   <p className="text-xs text-muted-foreground">
-                    Last used {formatTimestamp(passkey.last_used_at)}
+                    {i18n.t("passkeys.lastUsedAt", {
+                      time: formatTimestamp(passkey.last_used_at),
+                    })}
                   </p>
                 </div>
                 <Button
@@ -99,7 +103,7 @@ const PasskeysPanel = ({
                   variant="outline"
                 >
                   <Trash className="mr-2 h-4 w-4" weight="bold" />
-                  Remove
+                  {i18n.t("passkeys.removeAction")}
                 </Button>
               </div>
             ))

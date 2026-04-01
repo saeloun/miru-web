@@ -34,6 +34,7 @@ RSpec.describe "Api::V1::Users#me", type: :request do
       expect(json_response["user"]["last_name"]).to eq(user.last_name)
       expect(json_response["user"]["phone"]).to eq(user.phone)
       expect(json_response["user"]["personal_email_id"]).to eq(user.personal_email_id)
+      expect(json_response["user"]["locale"]).to eq(user.locale)
       expect(json_response["user"]["social_accounts"]).to eq(user.social_accounts)
       expect(json_response["user"]["date_format"]).to eq(company.date_format)
     end
