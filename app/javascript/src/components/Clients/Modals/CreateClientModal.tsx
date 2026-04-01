@@ -5,8 +5,8 @@ import { XIcon } from "miruIcons";
 import { Modal } from "StyledComponents";
 import { i18n } from "../../../i18n";
 
-import ClientForm from "../ClientForm";
-import MobileClientForm from "../ClientForm/MobileClientForm";
+import ClientEditor from "../ClientForm/ClientEditor";
+import MobileClientEditor from "../ClientForm/MobileClientEditor";
 
 const CreateClientModal = ({
   setnewClient,
@@ -49,7 +49,7 @@ const CreateClientModal = ({
           <XIcon color="#CDD6DF" size={16} weight="bold" />
         </button>
       </div>
-      <ClientForm
+      <ClientEditor
         clientData={clientData}
         clientLogo={clientLogo}
         clientLogoUrl={clientLogoUrl}
@@ -63,7 +63,7 @@ const CreateClientModal = ({
       />
     </Modal>
   ) : (
-    <MobileClientForm
+    <MobileClientEditor
       clientData={clientData}
       clientLogo={clientLogo}
       clientLogoUrl={clientLogoUrl}

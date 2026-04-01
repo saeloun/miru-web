@@ -23,7 +23,7 @@ import { formatFormData, disableBtn } from "./utils";
 import { currencyListOptions } from "../../OrganizationSetup/FinancialDetailsForm/utils";
 import { i18n } from "../../../i18n";
 
-const MobileClientForm = ({
+const MobileClientEditor = ({
   client,
   clientLogoUrl,
   handleDeleteLogo,
@@ -40,7 +40,7 @@ const MobileClientForm = ({
   handleEdit,
   setShowDialog,
   fetchDetails,
-}: IClientForm) => {
+}: MobileClientEditorProps) => {
   const [fileUploadError, setFileUploadError] = useState<string>("");
   const [countries, setCountries] = useState([]);
 
@@ -95,7 +95,9 @@ const MobileClientForm = ({
     >
       <SidePanel.Header className="mb-2 flex items-center justify-between bg-primary px-5 py-5 text-white lg:bg-white lg:font-bold lg:text-foreground">
         <span className="flex w-full items-center justify-center pl-6 text-base font-medium leading-5">
-          {client?.id ? i18n.t("clients.editClient") : i18n.t("clients.addNewClient")}
+          {client?.id
+            ? i18n.t("clients.editClient")
+            : i18n.t("clients.addNewClient")}
         </span>
         <Button style="ternary" onClick={() => setShowDialog(false)}>
           <XIcon className="text-white lg:text-foreground" size={16} />
@@ -232,7 +234,9 @@ const MobileClientForm = ({
                               : ""
                           }`}
                         >
-                          <SelectValue placeholder={i18n.t("clients.selectCountry")} />
+                          <SelectValue
+                            placeholder={i18n.t("clients.selectCountry")}
+                          />
                         </SelectTrigger>
                         <SelectContent>
                           {countries.map(country => (
@@ -313,7 +317,9 @@ const MobileClientForm = ({
                             : ""
                         }`}
                       >
-                        <SelectValue placeholder={i18n.t("clients.selectCurrency")} />
+                        <SelectValue
+                          placeholder={i18n.t("clients.selectCurrency")}
+                        />
                       </SelectTrigger>
                       <SelectContent>
                         {currencyListOptions.map(currency => (
@@ -363,7 +369,7 @@ const MobileClientForm = ({
   );
 };
 
-interface IClientForm {
+interface MobileClientEditorProps {
   client?: any;
   clientLogoUrl: string;
   handleDeleteLogo: any;
@@ -395,4 +401,4 @@ interface FormValues {
   logo: any;
 }
 
-export default MobileClientForm;
+export default MobileClientEditor;

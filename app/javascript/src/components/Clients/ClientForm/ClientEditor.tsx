@@ -26,7 +26,7 @@ import { disableBtn, formatFormData } from "./utils";
 import { currencyListOptions } from "../../OrganizationSetup/FinancialDetailsForm/utils";
 import { i18n } from "../../../i18n";
 
-const ClientForm = ({
+const ClientEditor = ({
   client,
   clientLogoUrl,
   handleDeleteLogo,
@@ -41,7 +41,7 @@ const ClientForm = ({
   submitting,
   setSubmitting,
   fetchDetails,
-}: IClientForm) => {
+}: ClientEditorProps) => {
   const [fileUploadError, setFileUploadError] = useState<string>("");
   const [countries, setCountries] = useState([]);
 
@@ -222,7 +222,9 @@ const ClientForm = ({
                       errors.country && touched.country ? "border-red-500" : ""
                     }
                   >
-                    <SelectValue placeholder={i18n.t("clients.selectCountry")} />
+                    <SelectValue
+                      placeholder={i18n.t("clients.selectCountry")}
+                    />
                   </SelectTrigger>
                   <SelectContent>
                     {countries.map((country: any) => (
@@ -343,7 +345,7 @@ const ClientForm = ({
   );
 };
 
-interface IClientForm {
+interface ClientEditorProps {
   client?: any;
   clientLogoUrl: string;
   handleDeleteLogo: any;
@@ -373,4 +375,4 @@ interface FormValues {
   logo: any;
 }
 
-export default ClientForm;
+export default ClientEditor;
