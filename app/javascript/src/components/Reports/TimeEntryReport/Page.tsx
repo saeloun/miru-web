@@ -10,7 +10,7 @@ import { TimeEntryReportMobileView } from "./TimeEntryReportMobileView";
 import { TIME_ENTRY_REPORT_PAGE } from "./utils";
 
 import { applyFilter, getQueryParams } from "../api/applyFilter";
-import GroupedTimeEntryResults from "../Container";
+import GroupedTimeEntryResults from "../GroupedTimeEntryResults";
 import AccountsAgingReportContext from "../context/AccountsAgingReportContext";
 import EntryContext from "../context/EntryContext";
 import OutstandingOverdueInvoiceContext from "../context/outstandingOverdueInvoiceContext";
