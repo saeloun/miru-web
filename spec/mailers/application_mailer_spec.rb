@@ -46,6 +46,21 @@ RSpec.describe ApplicationMailer, type: :mailer do
         mailer = ApplicationMailer.new
         expect(mailer.private_methods).to include(:handle_inactive_recipient)
       end
+
+      it "also exposes a class-level inactive recipient handler" do
+        expect(ApplicationMailer).to respond_to(:handle_inactive_recipient)
+      end
+    end
+
+    describe "inactive recipient handling" do
+      it "does not raise when bounce persistence is unavailable" do
+        message = "Found inactive addresses: ashik@saeloun.com."
+        exception = Postmark::InactiveRecipientError.new(message)
+
+        expect {
+          ApplicationMailer.send(:handle_inactive_recipient, exception)
+        }.not_to raise_error
+      end
     end
   end
 end

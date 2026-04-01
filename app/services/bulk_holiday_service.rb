@@ -30,10 +30,11 @@ class BulkHolidayService
 
     def create_or_update_holiday
       @holiday = current_company.holidays.find_by(year:)
+      holiday_attributes = holiday_params[:holiday] || { year: }
       if holiday
-        @holiday.update!(holiday_params[:holiday])
+        @holiday.update!(holiday_attributes)
       else
-        @holiday = current_company.holidays.create!(holiday_params[:holiday])
+        @holiday = current_company.holidays.create!(holiday_attributes)
       end
     end
 

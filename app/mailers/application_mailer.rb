@@ -5,17 +5,19 @@ class ApplicationMailer < ActionMailer::Base
   default from: ENV["DEFAULT_MAILER_SENDER"] || "test@example.com"
   layout "mailer"
 
-  rescue_from Postmark::InactiveRecipientError, with: :handle_inactive_recipient
+  rescue_from Postmark::InactiveRecipientError do |exception|
+    self.class.handle_inactive_recipient(exception)
+  end
 
   class << self
+    def handle_inactive_recipient(exception)
+      inactive_emails = extract_inactive_emails(exception.message)
+
+      Rails.logger.warn("Email delivery failed - Inactive recipient(s): #{inactive_emails.join(', ')}")
+      Rails.logger.warn("Error details: #{exception.message}")
+    end
+
     private
-
-      def handle_inactive_recipient(exception)
-        inactive_emails = extract_inactive_emails(exception.message)
-
-        Rails.logger.warn("Email delivery failed - Inactive recipient(s): #{inactive_emails.join(', ')}")
-        Rails.logger.warn("Error details: #{exception.message}")
-      end
 
       def extract_inactive_emails(message)
         message
@@ -29,7 +31,7 @@ class ApplicationMailer < ActionMailer::Base
   private
 
     def handle_inactive_recipient(exception)
-      self.class.send(:handle_inactive_recipient, exception)
+      self.class.handle_inactive_recipient(exception)
     end
 
     def extract_inactive_emails(message)
