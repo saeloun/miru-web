@@ -8,12 +8,12 @@ import { i18n } from "../../../i18n";
 import ClientForm from "../ClientForm";
 import MobileClientForm from "../ClientForm/MobileClientForm";
 
-const EditClient = ({
+const EditClientModal = ({
   client,
   fetchDetails,
   setShowEditDialog,
   showEditDialog,
-}: IEditClient) => {
+}: EditClientModalProps) => {
   const [clientLogoUrl, setClientLogoUrl] = useState<string>(
     client?.logo || ""
   );
@@ -34,7 +34,9 @@ const EditClient = ({
       onClose={() => setShowEditDialog(false)}
     >
       <div className="flex items-center justify-between">
-        <h6 className="text-base font-extrabold">{i18n.t("clients.editClientDetails")}</h6>
+        <h6 className="text-base font-extrabold">
+          {i18n.t("clients.editClientDetails")}
+        </h6>
         <button
           className="modal__button"
           type="button"
@@ -77,11 +79,11 @@ const EditClient = ({
   );
 };
 
-interface IEditClient {
+interface EditClientModalProps {
   setShowEditDialog: any;
   client: any;
   showEditDialog: boolean;
   fetchDetails?: any;
 }
 
-export default EditClient;
+export default EditClientModal;

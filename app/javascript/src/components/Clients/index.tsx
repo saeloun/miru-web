@@ -12,7 +12,7 @@ import ClientMobileMoreOptions from "./ClientMobileMoreOptions";
 import Header from "./Header";
 import ClientList from "./List";
 import DeleteClient from "./Modals/DeleteClient";
-import EditClient from "./Modals/EditClient";
+import EditClientModal from "./Modals/EditClientModal";
 import CreateClientModal from "./Modals/CreateClientModal";
 import TotalHoursChart from "./TotalHoursChart";
 
@@ -117,7 +117,7 @@ const Clients = ({ isAdminUser }) => {
         />
       </div>
       {showEditDialog && (
-        <EditClient
+        <EditClientModal
           client={clientToEdit}
           fetchDetails={fetchClientDetails}
           setShowEditDialog={setShowEditDialog}
