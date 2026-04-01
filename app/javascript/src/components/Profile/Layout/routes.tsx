@@ -13,7 +13,7 @@ import AllocatedDevicesEdit from "components/Profile/Personal/Devices/Edit";
 import EmploymentDetails from "components/Profile/Personal/Employment";
 import EmploymentDetailsEdit from "components/Profile/Personal/Employment/Edit";
 import NotificationPreferences from "components/Profile/Personal/NotificationPreferences";
-import PreferencesSettingsPage from "components/Settings/ModernPreferences";
+import PreferencesSettingsPage from "components/Settings/Preferences";
 import Automation from "components/Profile/Personal/Automation";
 import UserDetailsView from "components/Profile/Personal/User";
 import UserDetailsEdit from "components/Profile/Personal/User/Edit";

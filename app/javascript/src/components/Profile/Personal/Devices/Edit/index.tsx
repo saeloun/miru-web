@@ -7,7 +7,7 @@ import { useUserContext } from "context/UserContext";
 import { useNavigate, useParams } from "react-router-dom";
 import { Toastr } from "StyledComponents";
 
-import DeviceEditPage from "./ModernEditPage";
+import DeviceEditPage from "./Page";
 
 import { Device } from "../Device";
 
