@@ -3,7 +3,7 @@ import { useUserContext } from "context/UserContext";
 import { useNavigate } from "react-router-dom";
 import { sendGAPageView } from "utils/googleAnalytics";
 
-import OrganizationPaymentSettingsPage from "./ModernPaymentSettings";
+import OrganizationPaymentSettingsPage from "./Page";
 
 const PaymentSettings = () => {
   const navigate = useNavigate();

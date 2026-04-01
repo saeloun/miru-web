@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { Toastr } from "StyledComponents";
 import { sendGAPageView } from "utils/googleAnalytics";
 
-import OrganizationHolidaysEditor from "./ModernHolidaysEditor";
+import OrganizationHolidaysEditor from "./Editor";
 import { companyDateFormat, makePayload } from "./utils";
 
 const Holidays = () => {

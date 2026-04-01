@@ -3,7 +3,7 @@ import { useUserContext } from "context/UserContext";
 import { useNavigate } from "react-router-dom";
 import { sendGAPageView } from "utils/googleAnalytics";
 
-import OrganizationSettingsPage from "./ModernOrganizationSettings";
+import OrganizationSettingsPage from "./Page";
 
 const OrgDetails = () => {
   const navigate = useNavigate();
