@@ -43,7 +43,7 @@ interface Device {
   specifications: DeviceSpec;
 }
 
-interface ModernEditPageProps {
+interface DeviceEditPageProps {
   devices: Device[];
   onSave: (devices: Device[]) => void;
   onCancel: () => void;
@@ -62,7 +62,7 @@ const getDeviceIcon = (type: string) => {
   return <Icon className="h-5 w-5" />;
 };
 
-const ModernEditPage: React.FC<ModernEditPageProps> = ({
+const DeviceEditPage: React.FC<DeviceEditPageProps> = ({
   devices: initialDevices,
   onSave,
   onCancel,
@@ -387,4 +387,4 @@ const ModernEditPage: React.FC<ModernEditPageProps> = ({
   );
 };
 
-export default ModernEditPage;
+export default DeviceEditPage;

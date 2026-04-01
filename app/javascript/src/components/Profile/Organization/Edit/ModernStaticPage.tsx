@@ -30,7 +30,7 @@ const FormSection = ({ children, className = "" }) => (
   </div>
 );
 
-export const ModernStaticPage = ({
+export const OrganizationEditPage = ({
   orgDetails: {
     companyAddr,
     logoUrl,
@@ -350,4 +350,4 @@ export const ModernStaticPage = ({
   </div>
 );
 
-export default ModernStaticPage;
+export default OrganizationEditPage;

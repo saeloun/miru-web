@@ -7,7 +7,7 @@ import { useUserContext } from "context/UserContext";
 import { useNavigate } from "react-router-dom";
 import { sendGAPageView } from "utils/googleAnalytics";
 
-import ModernPaymentSettings from "./ModernPaymentSettings";
+import OrganizationPaymentSettingsPage from "./ModernPaymentSettings";
 
 const PaymentSettings = () => {
   const [status, setStatus] = React.useState<PaymentSettingsStatus>(
@@ -52,7 +52,7 @@ const PaymentSettings = () => {
     navigate(isDesktop ? "/settings/profile" : "/settings", { replace: true });
   };
 
-  return <ModernPaymentSettings onBack={handleBackBtnClick} />;
+  return <OrganizationPaymentSettingsPage onBack={handleBackBtnClick} />;
 };
 
 export default PaymentSettings;

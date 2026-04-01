@@ -31,13 +31,13 @@ import { paymentSettings } from "apis/api";
 import { ApiStatus as PaymentSettingsStatus } from "../../../../constants/index";
 import { Skeleton } from "../../../ui/skeleton";
 
-interface ModernPaymentSettingsProps {
+interface OrganizationPaymentSettingsPageProps {
   onBack?: () => void;
 }
 
-const ModernPaymentSettings: React.FC<ModernPaymentSettingsProps> = ({
-  onBack,
-}) => {
+const OrganizationPaymentSettingsPage: React.FC<
+  OrganizationPaymentSettingsPageProps
+> = ({ onBack }) => {
   const [status, setStatus] = useState<PaymentSettingsStatus>(
     PaymentSettingsStatus.IDLE
   );
@@ -350,4 +350,4 @@ const ModernPaymentSettings: React.FC<ModernPaymentSettingsProps> = ({
   );
 };
 
-export default ModernPaymentSettings;
+export default OrganizationPaymentSettingsPage;

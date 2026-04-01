@@ -19,7 +19,7 @@ import SingleYearDatePicker from "common/CustomYearPicker/SingleYearDatePicker";
 import { allocationFrequency } from "constants/leaveType";
 import { customStyles } from "./EditHolidays/utils";
 
-const ModernHolidaysEditor = ({
+const OrganizationHolidaysEditor = ({
   canManageHolidays,
   isDesktop,
   dateFormat,
@@ -551,4 +551,4 @@ const ModernHolidaysEditor = ({
   </div>
 );
 
-export default ModernHolidaysEditor;
+export default OrganizationHolidaysEditor;

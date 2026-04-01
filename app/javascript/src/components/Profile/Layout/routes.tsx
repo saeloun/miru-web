@@ -13,7 +13,7 @@ import AllocatedDevicesEdit from "components/Profile/Personal/Devices/Edit";
 import EmploymentDetails from "components/Profile/Personal/Employment";
 import EmploymentDetailsEdit from "components/Profile/Personal/Employment/Edit";
 import NotificationPreferences from "components/Profile/Personal/NotificationPreferences";
-import PreferencesPage from "components/Settings/ModernPreferences";
+import PreferencesSettingsPage from "components/Settings/ModernPreferences";
 import Automation from "components/Profile/Personal/Automation";
 import UserDetailsView from "components/Profile/Personal/User";
 import UserDetailsEdit from "components/Profile/Personal/User/Edit";
@@ -100,7 +100,7 @@ export const SETTINGS = [
     path: "preferences",
     icon: <ReminderIcon className="mr-2" size={20} weight="bold" />,
     authorisedRoles: [ADMIN, OWNER, BOOK_KEEPER, EMPLOYEE],
-    Component: PreferencesPage,
+    Component: PreferencesSettingsPage,
     category: "personal",
     isTab: false,
   },

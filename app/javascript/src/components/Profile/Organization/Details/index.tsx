@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { sendGAPageView } from "utils/googleAnalytics";
 import worldCountries from "world-countries";
 
-import ModernOrganizationSettings from "./ModernOrganizationSettings";
+import OrganizationSettingsPage from "./ModernOrganizationSettings";
 
 const initialState = {
   id: null,
@@ -106,7 +106,7 @@ const OrgDetails = () => {
     });
   };
 
-  return <ModernOrganizationSettings onBack={handleBackBtnClick} />;
+  return <OrganizationSettingsPage onBack={handleBackBtnClick} />;
 };
 
 export default OrgDetails;

@@ -37,7 +37,7 @@ interface PreferenceItem {
   dbField: string;
 }
 
-const ModernPreferences: React.FC = () => {
+const PreferencesSettingsPage: React.FC = () => {
   const { user, companyRole } = useUserContext();
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -498,4 +498,4 @@ const ModernPreferences: React.FC = () => {
   );
 };
 
-export default ModernPreferences;
+export default PreferencesSettingsPage;

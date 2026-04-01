@@ -32,7 +32,7 @@ interface NavItem {
   allowedRoles: string[];
 }
 
-export const ModernNavbar: React.FC = () => {
+export const AppNavbar: React.FC = () => {
   const { user, companyRole, isDesktop: contextIsDesktop } = useUserContext();
   const themeMode = useThemeMode();
   const location = useLocation();
@@ -317,4 +317,4 @@ export const ModernNavbar: React.FC = () => {
   );
 };
 
-export default ModernNavbar;
+export default AppNavbar;

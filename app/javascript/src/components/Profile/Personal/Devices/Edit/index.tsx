@@ -7,7 +7,7 @@ import { useUserContext } from "context/UserContext";
 import { useNavigate, useParams } from "react-router-dom";
 import { Toastr } from "StyledComponents";
 
-import ModernEditPage from "./ModernEditPage";
+import DeviceEditPage from "./ModernEditPage";
 
 import { Device } from "../Device";
 
@@ -102,7 +102,7 @@ const AllocatedDevicesEdit = () => {
   return isLoading ? (
     <Loader className="min-h-screen flex items-center justify-center" />
   ) : (
-    <ModernEditPage
+    <DeviceEditPage
       devices={devices}
       onSave={handleUpdateDetails}
       onCancel={handleCancelDetails}

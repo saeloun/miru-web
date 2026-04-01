@@ -35,11 +35,11 @@ interface OrganizationDetails {
   companyWorkingDays: string;
 }
 
-interface ModernOrganizationSettingsProps {
+interface OrganizationSettingsPageProps {
   onBack?: () => void;
 }
 
-const ModernOrganizationSettings: React.FC<ModernOrganizationSettingsProps> = ({
+const OrganizationSettingsPage: React.FC<OrganizationSettingsPageProps> = ({
   onBack,
 }) => {
   const navigate = useNavigate();
@@ -392,4 +392,4 @@ const ModernOrganizationSettings: React.FC<ModernOrganizationSettingsProps> = ({
   );
 };
 
-export default ModernOrganizationSettings;
+export default OrganizationSettingsPage;
