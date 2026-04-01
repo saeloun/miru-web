@@ -1569,6 +1569,14 @@ const en = {
     totalHours: "TOTAL HOURS",
     revenueOverview: "Revenue Overview",
     there: "there",
+    companyPulse: "COMPANY PULSE",
+    welcomeBack: "Welcome back, %{name}",
+    recentActivity: "Recent Activity",
+    workspaceActivity: "Workspace Activity",
+    activityDescription: "Latest invoices, payments, and team updates across your workspace",
+    employeeActivityDescription: "Your recent time entries and project updates",
+    noRecentActivityYet: "No recent activity yet",
+    loadMore: "Load more",
     caughtUp: "All caught up!",
     timeframe: {
       week: "This Week",
@@ -1600,6 +1608,7 @@ const en = {
       revenueLeadersTitle: "Revenue Leaders",
       revenueLeadersDescription: "Top clients by revenue contribution",
       topCustomersEyebrow: "TOP CUSTOMERS",
+      ofTotal: "%{percent} of total",
       noRevenue: "No revenue data available",
     },
     roleGuidance: {

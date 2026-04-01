@@ -1,0 +1,355 @@
+---
+ja:
+  activerecord:
+    errors:
+      models:
+        client:
+          attributes:
+            name:
+              format: "%{message}"
+        project:
+          attributes:
+            name:
+              format: "%{message}"
+  application_controller:
+    not_found: ルートが見つかりません
+  avatar:
+    destroy:
+      success: アバターは正常に削除されました
+    update:
+      success: アバターの更新に成功しました
+  client:
+    add: クライアントを追加
+    address:
+      label: 住所
+      placeholder: 住所を入力してください
+    create:
+      failure: クライアントの作成に失敗しました
+      success: クライアントが正常に追加されました
+    delete:
+      success:
+        message: クライアントは正常に削除されました
+    email:
+      label: メール
+      placeholder: メールアドレスを入力してください
+    name:
+      label: 名前
+      placeholder: 名前を入力してください
+    phone:
+      label: 電話番号
+      placeholder: 電話番号を入力してください
+    update:
+      failure:
+        message: 変更の保存に失敗しました
+        unauthorized: ユーザーはこのクライアントの詳細を変更する権限がありません
+      success:
+        message: 変更は正常に保存されました
+  clients:
+    add_client_contact:
+      success: 招待状が正常に送信されました。
+    send_payment_reminder:
+      success: 支払い催促状が送信されました
+  companies:
+    create:
+      failure: 会社設立に失敗した
+      success: 会社設立に成功
+    purge_logo:
+      destroy:
+        success: 会社ロゴは正常に削除されました
+    update:
+      success: 変更は正常に保存されました
+  company:
+    address: 住所
+    base_currency: 基本通貨
+    business_phone: ビジネス用電話
+    cancel: キャンセル
+    company: 会社
+    country: 国
+    date_format: 日付形式
+    fiscal_year: 会計年度
+    logo: ロゴ
+    save: 保存
+    save_org: 組織の詳細を保存する
+    setup: セットアップ組織
+    standard_price: 標準価格
+    timezone: タイムゾーン
+  confirmation:
+    send_instructions: "%{email}宛に確認メールが送信されました。"
+  currency_pairs:
+    from_to_required: 開始と終了は必須です
+    rate_not_found: 評価が見つかりません
+  custom_leaves:
+    update:
+      success: カスタムリーフの更新に成功しました
+  employment:
+    update:
+      success: 雇用情報が正常に更新されました
+  errors:
+    bill_status_billed: 既に請求済みの項目については、再度請求することはできません。
+    can't change status: 支払い済みの請求書は変更できません
+    create_billed_entry: 請求対象のタイムシートエントリを作成することはできません
+    internal_server_error: 何らかの問題が発生しました
+    not_found: お探しのリソースは利用できません
+    prevent_draft_to_waived: 免除に変更することはできません
+    unauthorized: この操作を実行できるのは、所有者または管理者ユーザーのみです。
+    updation_not_allowed: 更新は許可されていません
+    user_already_member: メールアドレスは既に使用されています。別のメールアドレスを入力してください。
+    validate_billable_project: 請求対象外のプロジェクトに対して、未請求エントリを作成することはできません。
+  expenses:
+    approve: 経費の承認は正常に完了しました。
+    create: 経費の提出は正常に完了しました。
+    destroy: 経費は正常に削除されました
+    mark_paid: 支払い済みとしてマークされた費用
+    must_be_approved: 経費は、支払い済みとしてマークする前に承認を受ける必要があります。
+    reject: 経費申請は正常に却下されました
+    update: 経費の更新に成功しました
+  holidays:
+    update:
+      success: 祝日情報が正常に更新されました
+  invitation:
+    create:
+      success:
+        message: 招待状が正常に送信されました
+    delete:
+      success:
+        message: 招待状は正常に削除されました
+    resent:
+      success:
+        message: 招待状の再送信に成功しました
+    update:
+      success:
+        message: 変更は正常に保存されました
+  invitations:
+    accept:
+      index:
+        success: 招待を受け入れました
+      show:
+        success: 招待を受け入れました
+      success: 招待を受け入れました
+    create:
+      failure: 変更の保存に失敗しました
+      success: 招待状が送付されます
+    destroy:
+      failure: 招待状の削除に失敗しました
+      success: 招待状が削除されました
+    update:
+      failure: 変更の保存に失敗しました
+      success: 招待状が更新されました
+  invoices:
+    payments:
+      success:
+        failure: 問題が発生しました。サポートにお問い合わせください。
+        success: 支払いが完了しました
+  invoices_controller:
+    download:
+      pdf_failed: PDFの生成に失敗しました
+    send_invoice:
+      already_paid: 請求書は既に支払われています
+      pdf_failed: PDFの生成に失敗しました
+      recipient_limit: メールは最大5名までしか送信できません。
+      recipients_required: 受給者は
+      success: 請求書が正常に送信されました
+    send_reminder:
+      overdue_only: 督促状は、支払期限を過ぎた請求書に対してのみ送信できます。
+      success: リマインダーが送信されました
+  invoices_view:
+    not_found: 請求書が見つかりませんでした
+  leave_types:
+    create:
+      success: 休暇タイプを正常に追加しました
+    update:
+      success: 休暇タイプの更新に成功しました
+  leave_with_leave_types:
+    update:
+      success: 葉の更新が正常に完了しました
+  leaves:
+    create:
+      success: 休暇が正常に作成されました
+    update:
+      success: 更新が完了しました
+  navbar:
+    clients: クライアント
+    help: ヘルプ
+    invoices: 請求書
+    logout: ログアウト
+    payments: 支払い
+    profile: プロフィール
+    projects: プロジェクト
+    reports: 報告書
+    settings: 設定
+    team: チーム
+    time_tracking: 時間追跡
+    view_notifications: 通知を表示する
+  passkeys:
+    add_passkey_first: サインイン時にパスキーを要求する前に、パスキーを追加してください。
+    added: Passkeyが追加されました
+    disable_totp_first: パスキーによるサインインを要求する前に、認証アプリの2段階認証を無効にしてください。
+    not_found: パスキーが見つかりません。
+    removed: パスキーが削除されました
+    requirement_disabled: パスキー要件は無効になっています
+    requirement_enabled: パスキー要件が有効になっています
+    session_expired: パスキーセッションの有効期限が切れました。もう一度お試しください。
+    verification_failed: パスキー認証に失敗しました。
+  password:
+    create:
+      success: パスワードのリセット方法に関する手順をメールでお送りしました。
+    update:
+      success: パスワードが更新されました。
+  projects:
+    add_new_project: 新しいプロジェクトを追加する
+    add_project: プロジェクトを追加
+    billable: 請求可能
+    client: クライアント
+    create:
+      failure: プロジェクトの作成に失敗しました。
+      success: プロジェクトが正常に追加されました。
+    delete:
+      success:
+        message: プロジェクトは正常に削除されました。
+    edit: 編集
+    hours_logged: 記録された時間
+    new_project: 新プロジェクト
+    non_billable: 請求対象外
+    project: プロジェクト
+    project_name: プロジェクト名
+    projects: プロジェクト
+    update:
+      success: 変更は正常に保存されました。
+    update_members:
+      failure:
+        message: 変更の保存に失敗しました
+        unauthorized: ユーザーはこのプロジェクトの詳細を変更する権限がありません
+      success:
+        message: 変更は正常に保存されました
+  pundit:
+    client_policy:
+      create?: クライアントを作成する権限がありません。
+      show?: このページへのアクセス権限がありません。管理者にお問い合わせください。
+      update?: クライアントをアップデートする権限がありません。
+    company_policy:
+      create?: あなたには会社を設立する権限がありません。
+      new?: あなたは新しい会社を設立する権限を持っていません。
+      show?: あなたは会社情報を閲覧する権限がありません。
+      update?: あなたには会社情報を更新する権限がありません。
+    current_company_policy:
+      company_not_present: 会社関係者は不在です。
+    default: あなたにはこの操作を行う権限がありません。
+    different_workspace: あなたは、現在のワークスペース外の記録にアクセスする権限がありません。
+    project_policy:
+      create?: プロジェクトを作成する権限がありません。
+      show?: このページへのアクセス権限がありません。管理者にお問い合わせください。
+    team_policy:
+      destroy?: あなたはチームを破壊する権限を持っていません。
+      edit?: あなたはチームを編集する権限がありません。
+      update?: チームを更新する権限がありません。
+  registration:
+    confirm_password: パスワードを認証する
+    email_id: メール
+    first_name: ファーストネーム
+    last_name: 苗字
+    name: 名前
+    or: または
+    password: パスワード
+    remember_me: 私を覚えてますか
+    sign_in: サインイン
+    sign_up: サインアップ
+    signin_with_github: GitHubでサインイン
+    signin_with_google: Googleでログイン
+    signup_with_apple: Appleでサインアップ
+    signup_with_github: GitHubにサインアップする
+    signup_with_google: Googleでサインアップする
+  reports:
+    heading: タイムエントリーレポート
+  sessions:
+    failure:
+      invalid: メールアドレスまたはパスワードが無効です。
+  settings:
+    cancel: キャンセル
+    change_password: パスワードを変更する
+    confirm_password: パスワードを認証する
+    current_password: 現在のパスワード
+    email: メール
+    name: 名前
+    organization_setting: 組織設定
+    password: パスワード
+    payment_setting: 支払い設定
+    profile_picture: プロフィール写真
+    profile_setting: プロフィール設定
+    save: 保存
+    settings: 設定
+  shared_links:
+    already_have_an_account: 既にアカウントをお持ちですか？
+    back_to_login: ログイン画面に戻る
+    confirmation_instruction: 確認の手順が届きませんでしたか？
+    dont_have_an_account: アカウントをお持ちではありませんか？
+    forgot_password: パスワードをお忘れですか ？
+    unlock_instruction: ロック解除の手順を受け取っていませんか？
+  subscriptions:
+    no_billing_customer: この会社には請求先顧客が存在しません。
+    pricing_not_configured: Stripeのサブスクリプション料金が設定されていません
+    trial_not_eligible: お客様のワークスペースはProトライアルの対象外です
+    trial_started: 30日間のProトライアルが開始されました
+  team:
+    changed_email: メールアドレスを変更しました
+    create_new_user: 新規ユーザーを作成する
+    current_email: 現在のメール
+    delete:
+      success:
+        message: チームメンバーの削除に成功しました
+    email: メール
+    email_id: メールアドレス
+    first_name: ファーストネーム
+    form_admin: 管理者
+    form_book_keeper: 経理担当者
+    form_email: メール
+    form_employee: 従業員
+    form_name: 名前
+    form_role: 役割
+    invitation: 招待状待ち
+    last_name: 苗字
+    name: 名前
+    new_user: 新規ユーザー
+    profile_picture: 写真
+    reconfirmation: 再確認待ち
+    role: 役割
+    team: チーム
+    update:
+      error:
+        role: 役割の更新中にエラーが発生しました
+      success:
+        message: 変更は正常に保存されました
+    update_user: ユーザー情報の更新
+  timeoff_entries:
+    create:
+      success: 休暇の追加に成功しました
+    destroy:
+      success: 休暇の削除に成功しました。
+    update:
+      success: 休暇の更新に成功しました
+  timesheet_entry:
+    create:
+      message: タイムシートが作成されました
+    destroy:
+      failure: タイムシートエントリの削除に失敗しました
+      message: タイムシートが削除されました
+    update:
+      failure: タイムシートのエントリの更新に失敗しました
+      message: タイムシートが更新されました
+  totp:
+    disable_passkey_first: 認証アプリの2要素認証を有効にする前に、パスキーによるサインインを無効にしてください。
+    disabled: 認証アプリが無効になっています
+    enabled: 認証アプリが有効になっています
+    invalid_code: 認証コードが無効です。
+    invalid_verification: 認証コードが無効です。
+    not_enabled: まず、認証アプリの2段階認証を有効にしてください。
+    recovery_codes_regenerated: リカバリーコードが再生成されました
+    session_expired: その認証リクエストは無効です。再度ログインしてください。
+  user:
+    login:
+      failure:
+        disabled: アクセス権限が無効になっています。
+        pending_invitation: アカウントはまだ有効化されていません。
+  workspaces:
+    update:
+      failure: ワークスペースの切り替えに失敗しました
+      success: ワークスペースの切り替えに成功しました

@@ -1,0 +1,362 @@
+---
+te:
+  activerecord:
+    errors:
+      models:
+        client:
+          attributes:
+            name:
+              format: "%{message}"
+        project:
+          attributes:
+            name:
+              format: "%{message}"
+  application_controller:
+    not_found: మార్గం కనుగొనబడలేదు
+  avatar:
+    destroy:
+      success: అవతార్ విజయవంతంగా తొలగించబడింది
+    update:
+      success: అవతార్ విజయవంతంగా నవీకరించబడింది
+  client:
+    add: క్లయింట్‌ను జోడించండి
+    address:
+      label: చిరునామా
+      placeholder: చిరునామాను నమోదు చేయండి
+    create:
+      failure: క్లయింట్ సృష్టి విఫలమైంది
+      success: క్లయింట్ విజయవంతంగా జోడించబడింది
+    delete:
+      success:
+        message: క్లయింట్ విజయవంతంగా తొలగించబడింది
+    email:
+      label: ఇమెయిల్
+      placeholder: ఇమెయిల్ ఐడిని నమోదు చేయండి
+    name:
+      label: పేరు
+      placeholder: పేరును నమోదు చేయండి
+    phone:
+      label: ఫోన్ నంబర్
+      placeholder: ఫోన్ నంబర్ నమోదు చేయండి
+    update:
+      failure:
+        message: మార్పులను సేవ్ చేయడంలో విఫలమయ్యారు
+        unauthorized: ఈ క్లయింట్ వివరాలను సవరించడానికి వినియోగదారుకు అధికారం లేదు
+      success:
+        message: మార్పులు విజయవంతంగా సేవ్ చేయబడ్డాయి
+  clients:
+    add_client_contact:
+      success: ఆహ్వానం విజయవంతంగా పంపబడింది.
+    send_payment_reminder:
+      success: చెల్లింపు రిమైండర్ పంపబడింది
+  companies:
+    create:
+      failure: కంపెనీ ఏర్పాటు విఫలమైంది
+      success: కంపెనీ విజయవంతంగా స్థాపించబడింది
+    purge_logo:
+      destroy:
+        success: కంపెనీ లోగో విజయవంతంగా తొలగించబడింది
+    update:
+      success: మార్పులు విజయవంతంగా సేవ్ చేయబడ్డాయి
+  company:
+    address: చిరునామా
+    base_currency: ఆధార కరెన్సీ
+    business_phone: వ్యాపార ఫోన్
+    cancel: రద్దు చేయండి
+    company: కంపెనీ
+    country: దేశం
+    date_format: తేదీ ఫార్మాట్
+    fiscal_year: ఆర్థిక సంవత్సరం
+    logo: లోగో
+    save: సేవ్ చేయండి
+    save_org: సంస్థ వివరాలను సేవ్ చేయండి
+    setup: సెటప్ సంస్థ
+    standard_price: ప్రామాణిక ధర
+    timezone: సమయ మండలం
+  confirmation:
+    send_instructions: "%{email}కు నిర్ధారణ ఇమెయిల్ పంపబడింది."
+  currency_pairs:
+    from_to_required: నుండి మరియు వరకు అవసరం
+    rate_not_found: రేటు కనుగొనబడలేదు
+  custom_leaves:
+    update:
+      success: కస్టమ్ లీవ్స్ విజయవంతంగా అప్‌డేట్ చేయబడ్డాయి
+  employment:
+    update:
+      success: ఉద్యోగ ప్రకటన విజయవంతంగా నవీకరించబడింది
+  errors:
+    bill_status_billed: ఇప్పటికే బిల్ చేయబడిన ఎంట్రీకి మీరు మళ్లీ బిల్ చేయలేరు.
+    can't change status: చెల్లించిన ఇన్‌వాయిస్‌ను మార్చడం సాధ్యపడదు
+    create_billed_entry: మీరు బిల్ చేయబడిన టైమ్‌షీట్ ఎంట్రీని సృష్టించలేరు
+    internal_server_error: ఏదో తప్పు జరిగింది
+    not_found: మీరు వెతుకుతున్న వనరు అందుబాటులో లేదు
+    prevent_draft_to_waived: మినహాయింపుగా మార్చబడదు
+    unauthorized: యజమాని లేదా నిర్వాహక వినియోగదారులకు మాత్రమే ఈ చర్యను నిర్వహించడానికి
+      అధికారం ఉంది
+    updation_not_allowed: నవీకరణకు అనుమతి లేదు
+    user_already_member: ఈమెయిల్ ఐడి ఇప్పటికే వాడుకలో ఉంది. దయచేసి వేరొక ఈమెయిల్ ఐడిని
+      నమోదు చేయండి.
+    validate_billable_project: బిల్ చేయలేని ప్రాజెక్ట్‌ల కోసం మీరు బిల్ చేయని ఎంట్రీని
+      సృష్టించలేరు
+  expenses:
+    approve: ఖర్చు విజయవంతంగా ఆమోదించబడింది
+    create: ఖర్చు విజయవంతంగా సమర్పించబడింది
+    destroy: ఖర్చు విజయవంతంగా తొలగించబడింది
+    mark_paid: చెల్లించినట్లుగా గుర్తించబడిన ఖర్చు
+    must_be_approved: ఖర్చును చెల్లించినట్లుగా గుర్తించే ముందు దానికి ఆమోదం పొందాలి.
+    reject: ఖర్చు విజయవంతంగా తిరస్కరించబడింది
+    update: ఖర్చు విజయవంతంగా నవీకరించబడింది
+  holidays:
+    update:
+      success: సెలవు సమాచారం విజయవంతంగా నవీకరించబడింది
+  invitation:
+    create:
+      success:
+        message: ఆహ్వానం విజయవంతంగా పంపబడింది
+    delete:
+      success:
+        message: ఆహ్వానం విజయవంతంగా తొలగించబడింది
+    resent:
+      success:
+        message: ఆహ్వానం విజయవంతంగా తిరిగి పంపబడింది
+    update:
+      success:
+        message: మార్పులు విజయవంతంగా సేవ్ చేయబడ్డాయి
+  invitations:
+    accept:
+      index:
+        success: ఆహ్వానం అంగీకరించబడింది
+      show:
+        success: ఆహ్వానం అంగీకరించబడింది
+      success: ఆహ్వానం అంగీకరించబడింది
+    create:
+      failure: మార్పులను సేవ్ చేయడంలో విఫలమయ్యారు
+      success: ఆహ్వానం పంపబడుతుంది
+    destroy:
+      failure: ఆహ్వానాన్ని తొలగించడంలో విఫలమయ్యారు
+      success: ఆహ్వానం తొలగించబడింది
+    update:
+      failure: మార్పులను సేవ్ చేయడంలో విఫలమయ్యారు
+      success: ఆహ్వానం నవీకరించబడింది
+  invoices:
+    payments:
+      success:
+        failure: ఏదో సమస్య వచ్చింది, దయచేసి సపోర్ట్‌ను సంప్రదించండి.
+        success: చెల్లింపు విజయవంతమైంది
+  invoices_controller:
+    download:
+      pdf_failed: PDFని రూపొందించడంలో విఫలమైంది
+    send_invoice:
+      already_paid: ఇన్‌వాయిస్ ఇప్పటికే చెల్లించబడింది
+      pdf_failed: PDFని రూపొందించడంలో విఫలమైంది
+      recipient_limit: ఇమెయిల్‌ను 5 మంది గ్రహీతలకు మాత్రమే పంపవచ్చు.
+      recipients_required: గ్రహీతలు అవసరం
+      success: ఇన్‌వాయిస్ విజయవంతంగా పంపబడింది
+    send_reminder:
+      overdue_only: గడువు దాటిన ఇన్‌వాయిస్‌లకు మాత్రమే రిమైండర్‌లను పంపవచ్చు
+      success: రిమైండర్ పంపబడింది
+  invoices_view:
+    not_found: ఇన్‌వాయిస్ కనుగొనబడలేదు
+  leave_types:
+    create:
+      success: సెలవు రకం విజయవంతంగా జోడించబడింది
+    update:
+      success: సెలవు రకం విజయవంతంగా నవీకరించబడింది
+  leave_with_leave_types:
+    update:
+      success: ఆకులు విజయవంతంగా నవీకరించబడ్డాయి
+  leaves:
+    create:
+      success: సెలవు విజయవంతంగా సృష్టించబడింది
+    update:
+      success: నిష్క్రమణ విజయవంతంగా నవీకరించబడింది
+  navbar:
+    clients: క్లయింట్లు
+    help: సహాయం
+    invoices: ఇన్‌వాయిస్‌లు
+    logout: లాగౌట్
+    payments: చెల్లింపులు
+    profile: ప్రొఫైల్
+    projects: ప్రాజెక్టులు
+    reports: నివేదికలు
+    settings: సెట్టింగ్‌లు
+    team: జట్టు
+    time_tracking: సమయ ట్రాకింగ్
+    view_notifications: నోటిఫికేషన్‌లను వీక్షించండి
+  passkeys:
+    add_passkey_first: సైన్ ఇన్ కోసం పాస్‌కీ అవసరమయ్యే ముందు దాన్ని జోడించండి.
+    added: పాస్‌కీ జోడించబడింది
+    disable_totp_first: పాస్‌కీ సైన్ ఇన్ అవసరమయ్యే ముందు అథెంటికేటర్ యాప్ 2FAను నిలిపివేయండి.
+    not_found: పాస్‌కీ కనుగొనబడలేదు.
+    removed: పాస్‌కీ తొలగించబడింది
+    requirement_disabled: పాస్‌కీ అవసరం నిలిపివేయబడింది
+    requirement_enabled: పాస్‌కీ అవసరం ప్రారంభించబడింది
+    session_expired: పాస్‌కీ సెషన్ గడువు ముగిసింది. దయచేసి మళ్ళీ ప్రయత్నించండి.
+    verification_failed: పాస్‌కీ ధృవీకరణ విఫలమైంది.
+  password:
+    create:
+      success: మీ పాస్‌వర్డ్‌ను రీసెట్ చేయడానికి సంబంధించిన సూచనలు మీ ఇమెయిల్‌కు పంపబడ్డాయి.
+    update:
+      success: మీ పాస్‌వర్డ్ నవీకరించబడింది.
+  projects:
+    add_new_project: కొత్త ప్రాజెక్ట్‌ను జోడించండి
+    add_project: ప్రాజెక్ట్‌ను జోడించండి
+    billable: బిల్ చేయదగినది
+    client: క్లయింట్
+    create:
+      failure: ప్రాజెక్ట్ సృష్టి విఫలమైంది.
+      success: ప్రాజెక్ట్ విజయవంతంగా జోడించబడింది.
+    delete:
+      success:
+        message: ప్రాజెక్ట్ విజయవంతంగా తొలగించబడింది
+    edit: సవరించు
+    hours_logged: నమోదు చేయబడిన గంటలు
+    new_project: కొత్త ప్రాజెక్ట్
+    non_billable: బిల్లు చేయలేనిది
+    project: ప్రాజెక్ట్
+    project_name: ప్రాజెక్ట్ పేరు
+    projects: ప్రాజెక్టులు
+    update:
+      success: మార్పులు విజయవంతంగా సేవ్ చేయబడ్డాయి.
+    update_members:
+      failure:
+        message: మార్పులను సేవ్ చేయడంలో విఫలమయ్యారు
+        unauthorized: ఈ ప్రాజెక్ట్ వివరాలను సవరించడానికి వినియోగదారుకు అధికారం లేదు
+      success:
+        message: మార్పులు విజయవంతంగా సేవ్ చేయబడ్డాయి
+  pundit:
+    client_policy:
+      create?: మీకు క్లయింట్‌ను సృష్టించే అధికారం లేదు.
+      show?: మీకు ఈ పేజీని యాక్సెస్ చేసే అధికారం లేదు. దయచేసి సహాయం కోసం మీ అడ్మినిస్ట్రేటర్‌ను
+        సంప్రదించండి.
+      update?: మీకు క్లయింట్‌ను అప్‌డేట్ చేసే అధికారం లేదు.
+    company_policy:
+      create?: మీకు కంపెనీని స్థాపించే అధికారం లేదు.
+      new?: మీకు కొత్త కంపెనీని సృష్టించే అధికారం లేదు.
+      show?: మీకు కంపెనీని వీక్షించే అధికారం లేదు.
+      update?: మీకు కంపెనీని అప్‌డేట్ చేసే అధికారం లేదు.
+    current_company_policy:
+      company_not_present: కంపెనీ హాజరు కాలేదు.
+    default: ఈ చర్యను నిర్వహించడానికి మీకు అధికారం లేదు.
+    different_workspace: మీ ప్రస్తుత కార్యస్థలం వెలుపల ఉన్న రికార్డులను యాక్సెస్ చేయడానికి
+      మీకు అధికారం లేదు.
+    project_policy:
+      create?: మీకు ప్రాజెక్ట్‌ను సృష్టించే అధికారం లేదు.
+      show?: మీకు ఈ పేజీని యాక్సెస్ చేసే అధికారం లేదు. దయచేసి సహాయం కోసం మీ అడ్మినిస్ట్రేటర్‌ను
+        సంప్రదించండి.
+    team_policy:
+      destroy?: జట్టును నాశనం చేయడానికి మీకు అధికారం లేదు.
+      edit?: మీకు జట్టును సవరించడానికి అధికారం లేదు.
+      update?: మీకు జట్టును నవీకరించే అధికారం లేదు.
+  registration:
+    confirm_password: పాస్‌వర్డ్‌ను నిర్ధారించండి
+    email_id: ఇమెయిల్
+    first_name: మొదటి పేరు
+    last_name: చివరి పేరు
+    name: పేరు
+    or: లేదా
+    password: పాస్‌వర్డ్
+    remember_me: నన్ను గుర్తుంచుకో
+    sign_in: సైన్ ఇన్
+    sign_up: సైన్ అప్
+    signin_with_github: గిట్‌హబ్‌తో సైన్ ఇన్ చేయండి
+    signin_with_google: గూగుల్‌తో సైన్ ఇన్ చేయండి
+    signup_with_apple: ఆపిల్‌తో సైన్ అప్ చేయండి
+    signup_with_github: గిట్‌హబ్‌తో సైన్ అప్ చేయండి
+    signup_with_google: గూగుల్‌తో సైన్ అప్ చేయండి
+  reports:
+    heading: సమయ నమోదు నివేదిక
+  sessions:
+    failure:
+      invalid: చెల్లని ఇమెయిల్ లేదా పాస్‌వర్డ్
+  settings:
+    cancel: రద్దు చేయండి
+    change_password: పాస్‌వర్డ్‌ను మార్చండి
+    confirm_password: పాస్‌వర్డ్‌ను నిర్ధారించండి
+    current_password: ప్రస్తుత పాస్‌వర్డ్
+    email: ఇమెయిల్
+    name: పేరు
+    organization_setting: సంస్థ సెట్టింగ్‌లు
+    password: పాస్‌వర్డ్
+    payment_setting: చెల్లింపు సెట్టింగ్‌లు
+    profile_picture: ప్రొఫైల్ చిత్రం
+    profile_setting: ప్రొఫైల్ సెట్టింగ్‌లు
+    save: సేవ్ చేయండి
+    settings: సెట్టింగ్‌లు
+  shared_links:
+    already_have_an_account: మీకు ఇప్పటికే ఖాతా ఉందా?
+    back_to_login: లాగిన్‌కు తిరిగి వెళ్లండి
+    confirmation_instruction: ధృవీకరణ సూచనలు అందలేదా?
+    dont_have_an_account: మీకు ఖాతా లేదా?
+    forgot_password: పాస్‌వర్డ్ మర్చిపోయారా?
+    unlock_instruction: అన్‌లాక్ సూచనలు అందలేదా?
+  subscriptions:
+    no_billing_customer: ఈ కంపెనీకి బిల్లింగ్ కస్టమర్ ఎవరూ లేరు
+    pricing_not_configured: స్ట్రైప్ సబ్‌స్క్రిప్షన్ ధర కాన్ఫిగర్ చేయబడలేదు
+    trial_not_eligible: మీ వర్క్‌స్పేస్ ప్రో ట్రయల్‌కు అర్హత పొందలేదు
+    trial_started: మీ 30-రోజుల ప్రో ట్రయల్ ప్రారంభమైంది
+  team:
+    changed_email: ఇమెయిల్ మార్చబడింది
+    create_new_user: కొత్త వినియోగదారుని సృష్టించండి
+    current_email: ప్రస్తుత ఇమెయిల్
+    delete:
+      success:
+        message: జట్టు సభ్యుడిని విజయవంతంగా తొలగించారు
+    email: ఇమెయిల్
+    email_id: ఇమెయిల్ ఐడి
+    first_name: మొదటి పేరు
+    form_admin: నిర్వాహకుడు
+    form_book_keeper: బుక్ కీపర్
+    form_email: ఇమెయిల్
+    form_employee: ఉద్యోగి
+    form_name: పేరు
+    form_role: పాత్ర
+    invitation: ఆహ్వానం పెండింగ్‌లో ఉంది
+    last_name: చివరి పేరు
+    name: పేరు
+    new_user: కొత్త వినియోగదారు
+    profile_picture: ఫోటో
+    reconfirmation: పునఃధృవీకరణ పెండింగ్‌లో ఉంది
+    role: పాత్ర
+    team: జట్టు
+    update:
+      error:
+        role: పాత్రను నవీకరించేటప్పుడు లోపం సంభవించింది
+      success:
+        message: మార్పులు విజయవంతంగా సేవ్ చేయబడ్డాయి
+    update_user: వినియోగదారుని నవీకరించండి
+  timeoff_entries:
+    create:
+      success: విజయవంతంగా సెలవు జోడించబడింది
+    destroy:
+      success: సెలవు సమయం విజయవంతంగా తొలగించబడింది
+    update:
+      success: సెలవు సమయం విజయవంతంగా నవీకరించబడింది
+  timesheet_entry:
+    create:
+      message: టైమ్‌షీట్ సృష్టించబడింది
+    destroy:
+      failure: టైమ్‌షీట్ ఎంట్రీలను తొలగించడంలో విఫలమయ్యారు
+      message: టైమ్‌షీట్ తొలగించబడింది
+    update:
+      failure: టైమ్‌షీట్ ఎంట్రీలను అప్‌డేట్ చేయడంలో విఫలమయ్యారు
+      message: టైమ్‌షీట్ నవీకరించబడింది
+  totp:
+    disable_passkey_first: అథెంటికేటర్ యాప్ 2FAను ఎనేబుల్ చేసే ముందు, అవసరమైన పాస్‌కీ
+      సైన్-ఇన్‌ను డిసేబుల్ చేయండి.
+    disabled: అథెంటికేటర్ యాప్ నిలిపివేయబడింది
+    enabled: అథెంటికేటర్ యాప్ ప్రారంభించబడింది
+    invalid_code: చెల్లని ప్రమాణీకరణ కోడ్.
+    invalid_verification: చెల్లని ధృవీకరణ కోడ్.
+    not_enabled: ముందుగా అథెంటికేటర్ యాప్ 2FAను ఎనేబుల్ చేయండి.
+    recovery_codes_regenerated: రికవరీ కోడ్‌లు పునరుత్పత్తి చేయబడ్డాయి
+    session_expired: ఆ ధృవీకరణ అభ్యర్థన ఇక చెల్లదు. దయచేసి మళ్ళీ సైన్ ఇన్ చేయండి.
+  user:
+    login:
+      failure:
+        disabled: మీ యాక్సెస్ నిలిపివేయబడింది.
+        pending_invitation: మీ ఖాతా ఇంకా యాక్టివేట్ కాలేదు.
+  workspaces:
+    update:
+      failure: వర్క్‌స్పేస్‌ను మార్చడంలో విఫలమయ్యారు
+      success: వర్క్‌స్పేస్ విజయవంతంగా మార్చబడింది

@@ -1,0 +1,109 @@
+---
+de:
+  activerecord:
+    errors:
+      models:
+        user:
+          attributes:
+            email:
+              blank: Die E-Mail-Adresse darf nicht leer sein.
+              invalid: Ungültige E-Mail-Adresse
+              taken: Die E-Mail-Adresse existiert bereits.
+            first_name:
+              blank: darf nicht leer sein
+              invalid: Darf nur Buchstaben oder Leerzeichen enthalten
+            last_name:
+              blank: darf nicht leer sein
+              invalid: Darf nur Buchstaben oder Leerzeichen enthalten
+            password:
+              blank: darf nicht leer sein
+              too_short: muss mindestens %{count} Zeichen lang sein
+            password_confirmation:
+              confirmation: stimmt nicht mit dem neuen Passwort überein
+  devise:
+    confirmations:
+      confirmed: Ihre E-Mail-Adresse wurde erfolgreich bestätigt.
+      send_instructions: Sie erhalten in wenigen Minuten eine E-Mail mit Anweisungen
+        zur Bestätigung Ihrer E-Mail-Adresse.
+      send_paranoid_instructions: Wenn Ihre E-Mail-Adresse in unserer Datenbank vorhanden
+        ist, erhalten Sie in wenigen Minuten eine E-Mail mit Anweisungen zur Bestätigung
+        Ihrer E-Mail-Adresse.
+    failure:
+      already_authenticated: Sie sind bereits angemeldet.
+      inactive: Ihr Konto ist noch nicht aktiviert.
+      invalid: Ungültiges %{authentication_keys} oder Passwort.
+      last_attempt: Sie haben noch einen Versuch, bevor Ihr Konto gesperrt wird.
+      locked: Ihr Konto ist gesperrt.
+      not_found_in_database: Ungültiges %{authentication_keys} oder Passwort.
+      timeout: Ihre Sitzung ist abgelaufen. Bitte melden Sie sich erneut an, um fortzufahren.
+      unauthenticated: Sie müssen sich anmelden oder registrieren, bevor Sie fortfahren
+        können.
+      unconfirmed: Sie müssen Ihre E-Mail-Adresse bestätigen, bevor Sie fortfahren
+        können.
+    mailer:
+      confirmation_instructions:
+        subject: Bestätigungsanweisungen
+      email_changed:
+        subject: E-Mail-Adresse geändert
+      password_change:
+        subject: Miru-Passwort erfolgreich zurückgesetzt!
+      reset_password_instructions:
+        subject: Setzen Sie Ihr Miru-Passwort zurück.
+      unlock_instructions:
+        subject: Entsperranleitung
+    omniauth_callbacks:
+      failure: Die Authentifizierung von %{kind} aus ist fehlgeschlagen, da "%{reason}"
+        angezeigt wird.
+      success: Die Authentifizierung vom Konto %{kind} war erfolgreich.
+    passwords:
+      no_token: Diese Seite ist nur über eine E-Mail zum Zurücksetzen des Passworts
+        erreichbar. Sollten Sie über eine solche E-Mail auf diese Seite gelangen,
+        stellen Sie bitte sicher, dass Sie die vollständige URL verwendet haben.
+      send_instructions: Sie erhalten in wenigen Minuten eine E-Mail mit Anweisungen
+        zum Zurücksetzen Ihres Passworts.
+      send_paranoid_instructions: Wenn Ihre E-Mail-Adresse in unserer Datenbank vorhanden
+        ist, erhalten Sie in wenigen Minuten einen Link zur Passwortwiederherstellung
+        an Ihre E-Mail-Adresse.
+      updated: Ihr Passwort wurde erfolgreich geändert. Sie sind jetzt angemeldet.
+      updated_not_active: Ihr Passwort wurde erfolgreich geändert.
+    registrations:
+      destroyed: Tschüss! Ihr Konto wurde erfolgreich gekündigt. Wir hoffen, Sie bald
+        wiederzusehen.
+      signed_up: Herzlich willkommen! Sie haben sich erfolgreich angemeldet.
+      signed_up_but_inactive: Sie haben sich erfolgreich registriert. Wir konnten
+        Sie jedoch nicht anmelden, da Ihr Konto noch nicht aktiviert ist.
+      signed_up_but_locked: Sie haben sich erfolgreich registriert. Wir konnten Sie
+        jedoch nicht anmelden, da Ihr Konto gesperrt ist.
+      signed_up_but_unconfirmed: ''
+      update_needs_confirmation: Sie haben Ihr Konto erfolgreich aktualisiert, wir
+        müssen jedoch Ihre neue E-Mail-Adresse bestätigen. Bitte überprüfen Sie Ihre
+        E-Mails und folgen Sie dem Bestätigungslink, um Ihre neue E-Mail-Adresse zu
+        bestätigen.
+      updated: Änderungen erfolgreich gespeichert
+      updated_but_not_signed_in: Ihr Konto wurde erfolgreich aktualisiert, aber da
+        Ihr Passwort geändert wurde, müssen Sie sich erneut anmelden.
+      user:
+        signed_up_but_Your access has been disabled: Bitte überprüfen Sie Ihre E-Mails
+          und folgen Sie dem Bestätigungslink, um Ihre E-Mail-Adresse zu bestätigen.
+    sessions:
+      already_signed_out: Erfolgreich abgemeldet.
+      signed_in: Anmeldung erfolgreich.
+      signed_out: Erfolgreich abgemeldet.
+    unlocks:
+      send_instructions: Sie erhalten in wenigen Minuten eine E-Mail mit Anweisungen
+        zum Entsperren Ihres Kontos.
+      send_paranoid_instructions: Falls Ihr Konto existiert, erhalten Sie in wenigen
+        Minuten eine E-Mail mit Anweisungen zum Entsperren.
+      unlocked: Ihr Konto wurde erfolgreich entsperrt. Bitte melden Sie sich an, um
+        fortzufahren.
+  errors:
+    messages:
+      already_confirmed: wurde bereits bestätigt, bitte versuchen Sie, sich anzumelden.
+      confirmation_period_expired: muss innerhalb von %{period} bestätigt werden,
+        bitte fordern Sie eine neue an
+      expired: ist abgelaufen, bitte fordern Sie ein neues an
+      not_found: nicht gefunden
+      not_locked: war nicht gesperrt
+      not_saved:
+        one: 'Ein Fehler verhinderte das Speichern von %{resource}:'
+        other: "%{count}-Fehler verhinderten das Speichern dieses %{resource}:"

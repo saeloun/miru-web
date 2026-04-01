@@ -232,6 +232,10 @@ en:
       failure: Failed to delete invitation
     accept:
       success: Invitation accepted
+      index:
+        success: Invitation accepted
+      show:
+        success: Invitation accepted
   invoices:
     payments:
       success:
@@ -293,8 +297,10 @@ en:
       message: "Timesheet created"
     update:
       message: "Timesheet updated"
+      failure: "Failed to update timesheet entries"
     destroy:
       message: "Timesheet deleted"
+      failure: "Failed to delete timesheet entries"
   password:
     create:
       success:

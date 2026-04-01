@@ -1,0 +1,370 @@
+---
+nl:
+  activerecord:
+    errors:
+      models:
+        client:
+          attributes:
+            name:
+              format: "%{message}"
+        project:
+          attributes:
+            name:
+              format: "%{message}"
+  application_controller:
+    not_found: Route niet gevonden
+  avatar:
+    destroy:
+      success: Avatar succesvol verwijderd
+    update:
+      success: Avatar succesvol bijgewerkt
+  client:
+    add: KLANT TOEVOEGEN
+    address:
+      label: Adres
+      placeholder: Voer het adres in
+    create:
+      failure: Client aanmaken mislukt
+      success: Klant succesvol toegevoegd
+    delete:
+      success:
+        message: Klant succesvol verwijderd
+    email:
+      label: E-mail
+      placeholder: Voer uw e-mailadres in
+    name:
+      label: Naam
+      placeholder: Voer naam in
+    phone:
+      label: Telefoonnummer
+      placeholder: Voer telefoonnummer in
+    update:
+      failure:
+        message: Het opslaan van de wijzigingen is mislukt.
+        unauthorized: De gebruiker is niet bevoegd om de gegevens van deze klant te
+          wijzigen.
+      success:
+        message: Wijzigingen succesvol opgeslagen
+  clients:
+    add_client_contact:
+      success: Uitnodiging succesvol verzonden.
+    send_payment_reminder:
+      success: Er is een betalingsherinnering verzonden.
+  companies:
+    create:
+      failure: Bedrijfsoprichting mislukt
+      success: Het bedrijf is succesvol opgericht.
+    purge_logo:
+      destroy:
+        success: Bedrijfslogo succesvol verwijderd
+    update:
+      success: Wijzigingen succesvol opgeslagen
+  company:
+    address: adres
+    base_currency: basisvaluta
+    business_phone: zakelijke telefoon
+    cancel: annuleren
+    company: bedrijf
+    country: land
+    date_format: datumformaat
+    fiscal_year: fiscaal jaar
+    logo: logo
+    save: 'redden '
+    save_org: sla organisatiegegevens op
+    setup: setup org
+    standard_price: standaardprijs
+    timezone: tijdzone
+  confirmation:
+    send_instructions: Er is een bevestigingsmail verzonden naar %{email}.
+  currency_pairs:
+    from_to_required: "'Van' en 'Naar' zijn vereist."
+    rate_not_found: Tarief niet gevonden
+  custom_leaves:
+    update:
+      success: Aangepaste bladeren succesvol bijgewerkt
+  employment:
+    update:
+      success: Werkgelegenheid succesvol bijgewerkt
+  errors:
+    bill_status_billed: Je kunt geen factuur sturen voor een item dat al eerder gefactureerd
+      is.
+    can't change status: Kan niet worden gewijzigd na betaling van een factuur.
+    create_billed_entry: Je kunt geen gefactureerde urenregistratie aanmaken.
+    internal_server_error: Er is iets misgegaan.
+    not_found: De bron waarnaar u op zoek bent, is niet beschikbaar.
+    prevent_draft_to_waived: kan niet worden gewijzigd naar kwijtgescholden
+    unauthorized: Alleen de eigenaar of beheerder is gemachtigd om deze actie uit
+      te voeren.
+    updation_not_allowed: Updaten is niet toegestaan.
+    user_already_member: Dit e-mailadres is al in gebruik. Voer een ander e-mailadres
+      in.
+    validate_billable_project: Je kunt geen niet-gefactureerde post aanmaken voor
+      projecten die niet gefactureerd worden.
+  expenses:
+    approve: Declaratie succesvol goedgekeurd
+    create: Declaratie succesvol ingediend
+    destroy: Uitgave succesvol verwijderd
+    mark_paid: Uitgave gemarkeerd als betaald
+    must_be_approved: Een onkostenpost moet worden goedgekeurd voordat deze als betaald
+      kan worden gemarkeerd.
+    reject: Onkosten succesvol afgewezen
+    update: Kosten succesvol bijgewerkt
+  holidays:
+    update:
+      success: Vakantie-informatie succesvol bijgewerkt
+  invitation:
+    create:
+      success:
+        message: Uitnodiging succesvol verzonden
+    delete:
+      success:
+        message: Uitnodiging succesvol verwijderd
+    resent:
+      success:
+        message: Uitnodiging opnieuw succesvol verzonden
+    update:
+      success:
+        message: Wijzigingen succesvol opgeslagen
+  invitations:
+    accept:
+      index:
+        success: Uitnodiging geaccepteerd
+      show:
+        success: Uitnodiging geaccepteerd
+      success: Uitnodiging geaccepteerd
+    create:
+      failure: Het opslaan van de wijzigingen is mislukt.
+      success: De uitnodiging wordt verzonden.
+    destroy:
+      failure: Het verwijderen van de uitnodiging is mislukt.
+      success: Uitnodiging verwijderd
+    update:
+      failure: Het opslaan van de wijzigingen is mislukt.
+      success: Uitnodiging bijgewerkt
+  invoices:
+    payments:
+      success:
+        failure: Er is iets misgegaan, neem contact op met de supportafdeling.
+        success: Betaling succesvol
+  invoices_controller:
+    download:
+      pdf_failed: Het genereren van het PDF-bestand is mislukt.
+    send_invoice:
+      already_paid: De factuur is reeds betaald.
+      pdf_failed: Het genereren van het PDF-bestand is mislukt.
+      recipient_limit: Een e-mail kan maximaal naar 5 ontvangers worden verzonden.
+      recipients_required: Ontvangers zijn vereist
+      success: De factuur is succesvol verzonden.
+    send_reminder:
+      overdue_only: Herinneringen kunnen alleen worden verzonden voor achterstallige
+        facturen.
+      success: Er is een herinnering verzonden.
+  invoices_view:
+    not_found: Geen factuur gevonden
+  leave_types:
+    create:
+      success: Verloftype succesvol toegevoegd
+    update:
+      success: Het verloftype is succesvol bijgewerkt.
+  leave_with_leave_types:
+    update:
+      success: Bladeren succesvol bijgewerkt
+  leaves:
+    create:
+      success: Verlof succesvol aangemaakt
+    update:
+      success: Laat de update succesvol verlopen
+  navbar:
+    clients: Klanten
+    help: Hulp
+    invoices: Facturen
+    logout: Uitloggen
+    payments: Betalingen
+    profile: Profiel
+    projects: Projecten
+    reports: Rapporten
+    settings: Instellingen
+    team: Team
+    time_tracking: Tijdregistratie
+    view_notifications: Meldingen bekijken
+  passkeys:
+    add_passkey_first: Voeg een wachtwoord toe voordat u dit vereist voor het inloggen.
+    added: Wachtwoord toegevoegd
+    disable_totp_first: Schakel 2FA van de authenticatie-app uit voordat u een wachtwoord
+      vereist om in te loggen.
+    not_found: Wachtwoord niet gevonden.
+    removed: Wachtwoord verwijderd
+    requirement_disabled: Wachtwoordvereiste uitgeschakeld
+    requirement_enabled: Wachtwoordvereiste ingeschakeld
+    session_expired: De Passkey-sessie is verlopen. Probeer het opnieuw.
+    verification_failed: Wachtwoordverificatie is mislukt.
+  password:
+    create:
+      success: Instructies voor het opnieuw instellen van uw wachtwoord zijn naar
+        uw e-mailadres verzonden.
+    update:
+      success: Je wachtwoord is bijgewerkt.
+  projects:
+    add_new_project: Nieuw project toevoegen
+    add_project: Project toevoegen
+    billable: Factureerbaar
+    client: Cliënt
+    create:
+      failure: Het aanmaken van het project is mislukt.
+      success: Project succesvol toegevoegd.
+    delete:
+      success:
+        message: Project succesvol verwijderd
+    edit: bewerking
+    hours_logged: GEREGISTREERDE UREN
+    new_project: NIEUW PROJECT
+    non_billable: Niet-factureerbaar
+    project: Project
+    project_name: Projectnaam
+    projects: Projecten
+    update:
+      success: Wijzigingen succesvol opgeslagen.
+    update_members:
+      failure:
+        message: Het opslaan van de wijzigingen is mislukt.
+        unauthorized: De gebruiker is niet bevoegd om de details van dit project te
+          wijzigen.
+      success:
+        message: Wijzigingen succesvol opgeslagen
+  pundit:
+    client_policy:
+      create?: U bent niet gemachtigd om een client aan te maken.
+      show?: U hebt geen toegang tot deze pagina. Neem contact op met uw beheerder
+        voor hulp.
+      update?: U bent niet gemachtigd om de client bij te werken.
+    company_policy:
+      create?: U bent niet gemachtigd om een bedrijf op te richten.
+      new?: U bent niet gemachtigd om een nieuw bedrijf op te richten.
+      show?: U bent niet gemachtigd om het bedrijf te bekijken.
+      update?: U bent niet gemachtigd om bedrijfsgegevens bij te werken.
+    current_company_policy:
+      company_not_present: Bedrijf niet aanwezig.
+    default: U bent niet gemachtigd om deze handeling uit te voeren.
+    different_workspace: U bent niet gemachtigd om toegang te krijgen tot gegevens
+      buiten uw huidige werkruimte.
+    project_policy:
+      create?: Je hebt geen toestemming om een project aan te maken.
+      show?: U hebt geen toegang tot deze pagina. Neem contact op met uw beheerder
+        voor hulp.
+    team_policy:
+      destroy?: Je bent niet gemachtigd om het team te vernietigen.
+      edit?: Je hebt geen toestemming om het team te bewerken.
+      update?: Je bent niet gemachtigd om het team bij te werken.
+  registration:
+    confirm_password: wachtwoord bevestigen
+    email_id: e-mail
+    first_name: voornaam
+    last_name: achternaam
+    name: naam
+    or: of
+    password: wachtwoord
+    remember_me: Onthoud mij
+    sign_in: inloggen
+    sign_up: aanmelden
+    signin_with_github: Aanmelden met GitHub
+    signin_with_google: Aanmelden met Google
+    signup_with_apple: Meld je aan bij Apple
+    signup_with_github: Meld je aan bij GitHub
+    signup_with_google: aanmelden met Google
+  reports:
+    heading: Urenregistratierapport
+  sessions:
+    failure:
+      invalid: Ongeldig e-mailadres of wachtwoord
+  settings:
+    cancel: annuleren
+    change_password: wachtwoord wijzigen
+    confirm_password: wachtwoord bevestigen
+    current_password: huidig wachtwoord
+    email: e-mail
+    name: naam
+    organization_setting: organisatie-instellingen
+    password: wachtwoord
+    payment_setting: betalingsinstellingen
+    profile_picture: profielfoto
+    profile_setting: profielinstellingen
+    save: 'redden '
+    settings: instellingen
+  shared_links:
+    already_have_an_account: Heb je al een account?
+    back_to_login: terug naar inloggen
+    confirmation_instruction: Heb je geen bevestigingsinstructies ontvangen?
+    dont_have_an_account: Heb je nog geen account?
+    forgot_password: Wachtwoord vergeten?
+    unlock_instruction: Heb je geen ontgrendelingsinstructies ontvangen?
+  subscriptions:
+    no_billing_customer: Er bestaat geen factuurklant voor dit bedrijf.
+    pricing_not_configured: De abonnementsprijzen van Stripe zijn niet geconfigureerd.
+    trial_not_eligible: Uw werkruimte komt niet in aanmerking voor een Pro-proefperiode.
+    trial_started: Je 30-daagse Pro-proefperiode is begonnen.
+  team:
+    changed_email: E-mailadres gewijzigd
+    create_new_user: Nieuwe gebruiker aanmaken
+    current_email: Huidig e-mailadres
+    delete:
+      success:
+        message: Teamlid succesvol verwijderd
+    email: E-mail
+    email_id: E-MAILADRES
+    first_name: Voornaam
+    form_admin: Beheerder
+    form_book_keeper: Boekhouder
+    form_email: E-mail
+    form_employee: Medewerker
+    form_name: Naam
+    form_role: Rol
+    invitation: UITNODIGING IN AFWACHTING
+    last_name: Achternaam
+    name: NAAM
+    new_user: NIEUWE GEBRUIKER
+    profile_picture: FOTO
+    reconfirmation: HERBEVESTIGING IN AFWACHTING
+    role: ROL
+    team: Team
+    update:
+      error:
+        role: Er is een fout opgetreden tijdens het bijwerken van de rol.
+      success:
+        message: Wijzigingen succesvol opgeslagen
+    update_user: Gebruiker bijwerken
+  timeoff_entries:
+    create:
+      success: Tijd succesvol toegevoegd
+    destroy:
+      success: Verlof succesvol verwijderd
+    update:
+      success: Tijdsverlof succesvol bijgewerkt
+  timesheet_entry:
+    create:
+      message: Urenregistratie aangemaakt
+    destroy:
+      failure: Het verwijderen van urenregistraties is mislukt.
+      message: Urenregistratie verwijderd
+    update:
+      failure: Het bijwerken van de urenregistratie is mislukt.
+      message: Urenregistratie bijgewerkt
+  totp:
+    disable_passkey_first: Schakel de vereiste wachtwoordaanmelding uit voordat u
+      2FA (tweefactorauthenticatie) via de authenticatie-app inschakelt.
+    disabled: Authenticator-app uitgeschakeld
+    enabled: Authenticator-app ingeschakeld
+    invalid_code: Ongeldige authenticatiecode.
+    invalid_verification: Ongeldige verificatiecode.
+    not_enabled: Schakel eerst tweefactorauthenticatie (2FA) in via de authenticatie-app.
+    recovery_codes_regenerated: Herstelcodes opnieuw gegenereerd
+    session_expired: Dat verificatieverzoek is niet langer geldig. Meld u opnieuw
+      aan.
+  user:
+    login:
+      failure:
+        disabled: Je toegang is geblokkeerd.
+        pending_invitation: Je account is nog niet geactiveerd.
+  workspaces:
+    update:
+      failure: Het wisselen van werkruimte is mislukt.
+      success: Werkruimte succesvol overgeschakeld

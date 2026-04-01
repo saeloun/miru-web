@@ -1,0 +1,366 @@
+---
+id:
+  activerecord:
+    errors:
+      models:
+        client:
+          attributes:
+            name:
+              format: "%{message}"
+        project:
+          attributes:
+            name:
+              format: "%{message}"
+  application_controller:
+    not_found: Rute tidak ditemukan
+  avatar:
+    destroy:
+      success: Avatar berhasil dihapus.
+    update:
+      success: Avatar berhasil diperbarui.
+  client:
+    add: TAMBAHKAN KLIEN
+    address:
+      label: Alamat
+      placeholder: Masukkan alamat
+    create:
+      failure: Pembuatan klien gagal
+      success: Klien berhasil ditambahkan.
+    delete:
+      success:
+        message: Klien berhasil dihapus.
+    email:
+      label: E-mail
+      placeholder: Masukkan alamat email
+    name:
+      label: Nama
+      placeholder: Masukkan nama
+    phone:
+      label: Nomor telepon
+      placeholder: Masukkan nomor telepon
+    update:
+      failure:
+        message: Gagal menyimpan perubahan
+        unauthorized: Pengguna tidak berwenang untuk mengubah detail klien ini.
+      success:
+        message: Perubahan berhasil disimpan
+  clients:
+    add_client_contact:
+      success: Undangan berhasil dikirim.
+    send_payment_reminder:
+      success: Pengingat pembayaran telah dikirim.
+  companies:
+    create:
+      failure: Pendirian perusahaan gagal
+      success: Perusahaan berhasil didirikan
+    purge_logo:
+      destroy:
+        success: Logo perusahaan berhasil dihapus.
+    update:
+      success: Perubahan berhasil disimpan
+  company:
+    address: alamat
+    base_currency: mata uang dasar
+    business_phone: telepon bisnis
+    cancel: membatalkan
+    company: perusahaan
+    country: negara
+    date_format: Format tanggal
+    fiscal_year: tahun fiskal
+    logo: logo
+    save: menyimpan
+    save_org: simpan detail organisasi
+    setup: menyiapkan organisasi
+    standard_price: harga standar
+    timezone: zona waktu
+  confirmation:
+    send_instructions: Email konfirmasi telah dikirim ke %{email}.
+  currency_pairs:
+    from_to_required: dari dan ke diperlukan
+    rate_not_found: Tarif tidak ditemukan
+  custom_leaves:
+    update:
+      success: Pembaruan Daun Kustom berhasil dilakukan
+  employment:
+    update:
+      success: Informasi lowongan kerja berhasil diperbarui.
+  errors:
+    bill_status_billed: Anda tidak dapat menagih entri yang sudah ditagih sebelumnya.
+    can't change status: Tidak dapat diubah pada faktur yang sudah dibayar.
+    create_billed_entry: Anda tidak dapat membuat entri lembar waktu yang ditagih.
+    internal_server_error: Terjadi kesalahan.
+    not_found: Sumber daya yang Anda cari tidak tersedia.
+    prevent_draft_to_waived: tidak bisa diubah menjadi dibebaskan
+    unauthorized: Hanya pengguna pemilik atau admin yang berwenang untuk melakukan
+      tindakan ini.
+    updation_not_allowed: Pembaruan tidak diperbolehkan.
+    user_already_member: Alamat email sudah digunakan. Silakan masukkan alamat email
+      lain.
+    validate_billable_project: Anda tidak dapat membuat entri yang belum ditagih untuk
+      proyek yang tidak dapat ditagih.
+  expenses:
+    approve: Pengeluaran berhasil disetujui.
+    create: Pengeluaran berhasil diajukan.
+    destroy: Pengeluaran berhasil dihapus.
+    mark_paid: Biaya ditandai sebagai telah dibayar
+    must_be_approved: Pengeluaran harus disetujui sebelum ditandai sebagai telah dibayar.
+    reject: Pengeluaran berhasil ditolak
+    update: Pengeluaran berhasil diperbarui.
+  holidays:
+    update:
+      success: Informasi liburan berhasil diperbarui.
+  invitation:
+    create:
+      success:
+        message: Undangan berhasil dikirim
+    delete:
+      success:
+        message: Undangan berhasil dihapus.
+    resent:
+      success:
+        message: Undangan berhasil dikirim ulang
+    update:
+      success:
+        message: Perubahan berhasil disimpan
+  invitations:
+    accept:
+      index:
+        success: Undangan diterima
+      show:
+        success: Undangan diterima
+      success: Undangan diterima
+    create:
+      failure: Gagal menyimpan perubahan
+      success: Undangan akan dikirim
+    destroy:
+      failure: Undangan gagal dihapus.
+      success: Undangan dihapus
+    update:
+      failure: Gagal menyimpan perubahan
+      success: Undangan diperbarui
+  invoices:
+    payments:
+      success:
+        failure: Terjadi kesalahan, silakan hubungi dukungan.
+        success: Pembayaran berhasil
+  invoices_controller:
+    download:
+      pdf_failed: Gagal membuat PDF
+    send_invoice:
+      already_paid: Faktur sudah dibayar
+      pdf_failed: Gagal membuat PDF
+      recipient_limit: Email hanya dapat dikirim ke 5 penerima.
+      recipients_required: Penerima diwajibkan
+      success: Faktur telah berhasil dikirim.
+    send_reminder:
+      overdue_only: Pengingat hanya dapat dikirim untuk faktur yang jatuh tempo.
+      success: Pengingat telah dikirim.
+  invoices_view:
+    not_found: Tidak ditemukan faktur.
+  leave_types:
+    create:
+      success: Jenis cuti berhasil ditambahkan.
+    update:
+      success: Jenis cuti berhasil diperbarui.
+  leave_with_leave_types:
+    update:
+      success: Pembaruan daun berhasil dilakukan.
+  leaves:
+    create:
+      success: Cuti berhasil dibuat.
+    update:
+      success: Pembaruan cuti berhasil dilakukan.
+  navbar:
+    clients: Klien
+    help: Membantu
+    invoices: Faktur
+    logout: Keluar
+    payments: Pembayaran
+    profile: Profil
+    projects: Proyek
+    reports: Laporan
+    settings: Pengaturan
+    team: Tim
+    time_tracking: Pencatatan Waktu
+    view_notifications: Lihat Notifikasi
+  passkeys:
+    add_passkey_first: Tambahkan kata sandi sebelum mewajibkannya untuk masuk.
+    added: Kata sandi telah ditambahkan
+    disable_totp_first: Nonaktifkan otentikasi dua faktor (2FA) aplikasi otentikasi
+      sebelum mewajibkan masuk dengan kata sandi.
+    not_found: Kata sandi tidak ditemukan.
+    removed: Kata sandi telah dihapus.
+    requirement_disabled: Persyaratan kata sandi dinonaktifkan
+    requirement_enabled: Persyaratan kata sandi diaktifkan
+    session_expired: Sesi kata sandi telah kedaluwarsa. Silakan coba lagi.
+    verification_failed: Verifikasi kata sandi gagal.
+  password:
+    create:
+      success: Petunjuk untuk mengatur ulang kata sandi Anda telah dikirim ke email
+        Anda.
+    update:
+      success: Kata sandi Anda telah diperbarui.
+  projects:
+    add_new_project: Tambahkan proyek baru
+    add_project: Tambahkan proyek
+    billable: Dapat ditagih
+    client: Klien
+    create:
+      failure: Pembuatan proyek gagal.
+      success: Proyek berhasil ditambahkan.
+    delete:
+      success:
+        message: Proyek berhasil dihapus.
+    edit: sunting
+    hours_logged: JAM YANG DICATAT
+    new_project: PROYEK BARU
+    non_billable: Tidak Dapat Ditagih
+    project: Proyek
+    project_name: Nama proyek
+    projects: Proyek
+    update:
+      success: Perubahan berhasil disimpan.
+    update_members:
+      failure:
+        message: Gagal menyimpan perubahan
+        unauthorized: Pengguna tidak berwenang untuk mengubah detail proyek ini.
+      success:
+        message: Perubahan berhasil disimpan
+  pundit:
+    client_policy:
+      create?: Anda tidak berwenang untuk membuat klien.
+      show?: Anda tidak berwenang mengakses halaman ini. Silakan hubungi administrator
+        Anda untuk mendapatkan bantuan.
+      update?: Anda tidak berwenang untuk memperbarui klien.
+    company_policy:
+      create?: Anda tidak berwenang untuk mendirikan perusahaan.
+      new?: Anda tidak berwenang untuk membuat perusahaan baru.
+      show?: Anda tidak berwenang untuk melihat informasi perusahaan.
+      update?: Anda tidak berwenang untuk memperbarui perusahaan.
+    current_company_policy:
+      company_not_present: Perusahaan tidak hadir.
+    default: Anda tidak berwenang untuk melakukan tindakan ini.
+    different_workspace: Anda tidak berwenang mengakses catatan di luar ruang kerja
+      Anda saat ini.
+    project_policy:
+      create?: Anda tidak berwenang untuk membuat proyek.
+      show?: Anda tidak berwenang mengakses halaman ini. Silakan hubungi administrator
+        Anda untuk mendapatkan bantuan.
+    team_policy:
+      destroy?: Anda tidak berwenang untuk menghancurkan tim.
+      edit?: Anda tidak berwenang untuk mengedit tim.
+      update?: Anda tidak berwenang untuk memperbarui tim.
+  registration:
+    confirm_password: konfirmasi kata sandi
+    email_id: e-mail
+    first_name: nama depan
+    last_name: nama belakang
+    name: nama
+    or: atau
+    password: kata sandi
+    remember_me: ingat aku
+    sign_in: masuk
+    sign_up: mendaftar
+    signin_with_github: Masuk dengan GitHub
+    signin_with_google: Masuk dengan Google
+    signup_with_apple: Daftar dengan Apple
+    signup_with_github: Daftar dengan GitHub
+    signup_with_google: Daftar dengan Google
+  reports:
+    heading: Laporan pencatatan waktu
+  sessions:
+    failure:
+      invalid: Email atau kata sandi tidak valid
+  settings:
+    cancel: membatalkan
+    change_password: ubah kata sandi
+    confirm_password: konfirmasi kata sandi
+    current_password: kata sandi saat ini
+    email: e-mail
+    name: nama
+    organization_setting: pengaturan organisasi
+    password: kata sandi
+    payment_setting: pengaturan pembayaran
+    profile_picture: foto profil
+    profile_setting: pengaturan profil
+    save: menyimpan
+    settings: pengaturan
+  shared_links:
+    already_have_an_account: Sudah punya akun?
+    back_to_login: kembali ke halaman login
+    confirmation_instruction: Tidak menerima instruksi konfirmasi?
+    dont_have_an_account: Belum punya akun?
+    forgot_password: Lupa kata sandi?
+    unlock_instruction: Tidak menerima petunjuk pembukaan kunci?
+  subscriptions:
+    no_billing_customer: Tidak ada pelanggan yang terdaftar untuk perusahaan ini.
+    pricing_not_configured: Harga langganan Stripe belum dikonfigurasi.
+    trial_not_eligible: Ruang kerja Anda tidak memenuhi syarat untuk uji coba Pro.
+    trial_started: Masa uji coba Pro 30 hari Anda telah dimulai.
+  team:
+    changed_email: Email telah diubah.
+    create_new_user: Buat Pengguna Baru
+    current_email: Email Saat Ini
+    delete:
+      success:
+        message: Anggota tim berhasil dihapus.
+    email: E-mail
+    email_id: ALAMAT EMAIL
+    first_name: Nama depan
+    form_admin: Admin
+    form_book_keeper: Petugas Pembukuan
+    form_email: E-mail
+    form_employee: Karyawan
+    form_name: Nama
+    form_role: Peran
+    invitation: UNDANGAN SEDANG DIPROSES
+    last_name: Nama Belakang
+    name: NAMA
+    new_user: PENGGUNA BARU
+    profile_picture: FOTO
+    reconfirmation: KONFIRMASI ULANG SEDANG DIPERLUKAN
+    role: PERAN
+    team: Tim
+    update:
+      error:
+        role: Terjadi kesalahan saat memperbarui peran.
+      success:
+        message: Perubahan berhasil disimpan
+    update_user: Perbarui Pengguna
+  timeoff_entries:
+    create:
+      success: Cuti tambahan berhasil diajukan
+    destroy:
+      success: Cuti berhasil dihapus.
+    update:
+      success: Perpanjangan cuti berhasil dilakukan
+  timesheet_entry:
+    create:
+      message: Lembar waktu telah dibuat.
+    destroy:
+      failure: Gagal menghapus entri lembar waktu.
+      message: Lembar waktu dihapus
+    update:
+      failure: Gagal memperbarui entri lembar waktu.
+      message: Lembar waktu telah diperbarui.
+  totp:
+    disable_passkey_first: Nonaktifkan persyaratan kata sandi saat masuk sebelum mengaktifkan
+      otentikasi dua faktor (2FA) aplikasi otentikator.
+    disabled: Aplikasi otentikasi dinonaktifkan
+    enabled: Aplikasi otentikasi diaktifkan
+    invalid_code: Kode otentikasi tidak valid.
+    invalid_verification: Kode verifikasi tidak valid.
+    not_enabled: Aktifkan otentikasi dua faktor (2FA) pada aplikasi otentikasi terlebih
+      dahulu.
+    recovery_codes_regenerated: Kode pemulihan dibuat ulang
+    session_expired: Permintaan verifikasi tersebut sudah tidak valid. Silakan masuk
+      kembali.
+  user:
+    login:
+      failure:
+        disabled: Akses Anda telah dinonaktifkan.
+        pending_invitation: Akun Anda belum diaktifkan.
+  workspaces:
+    update:
+      failure: Gagal beralih ruang kerja
+      success: Ruang kerja berhasil dialihkan.

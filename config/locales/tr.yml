@@ -1,0 +1,364 @@
+---
+tr:
+  activerecord:
+    errors:
+      models:
+        client:
+          attributes:
+            name:
+              format: "%{message}"
+        project:
+          attributes:
+            name:
+              format: "%{message}"
+  application_controller:
+    not_found: Rota bulunamadı.
+  avatar:
+    destroy:
+      success: Avatar başarıyla silindi.
+    update:
+      success: Avatar başarıyla güncellendi.
+  client:
+    add: MÜŞTERİ EKLE
+    address:
+      label: Adres
+      placeholder: Adresinizi girin
+    create:
+      failure: İstemci oluşturma başarısız oldu.
+      success: Müşteri başarıyla eklendi.
+    delete:
+      success:
+        message: Müşteri başarıyla kaldırıldı.
+    email:
+      label: E-posta
+      placeholder: E-posta adresinizi girin
+    name:
+      label: İsim
+      placeholder: Adınızı girin
+    phone:
+      label: Telefon numarası
+      placeholder: Telefon numarasını girin
+    update:
+      failure:
+        message: Değişiklikler kaydedilemedi.
+        unauthorized: Kullanıcının bu müşterinin bilgilerini değiştirme yetkisi yok.
+      success:
+        message: Değişiklikler başarıyla kaydedildi.
+  clients:
+    add_client_contact:
+      success: Davetiye başarıyla gönderildi.
+    send_payment_reminder:
+      success: Ödeme hatırlatması gönderildi.
+  companies:
+    create:
+      failure: Şirket kurma girişimi başarısız oldu.
+      success: Şirket başarıyla kuruldu.
+    purge_logo:
+      destroy:
+        success: Şirket logosu başarıyla kaldırıldı.
+    update:
+      success: Değişiklikler başarıyla kaydedildi.
+  company:
+    address: adres
+    base_currency: temel para birimi
+    business_phone: iş telefonu
+    cancel: iptal etmek
+    company: şirket
+    country: ülke
+    date_format: Tarih Formatı
+    fiscal_year: mali yıl
+    logo: logo
+    save: kaydetmek
+    save_org: kuruluş ayrıntılarını kaydet
+    setup: kurulum organizasyonu
+    standard_price: standart fiyat
+    timezone: saat dilimi
+  confirmation:
+    send_instructions: "%{email} adresine bir onay e-postası gönderildi."
+  currency_pairs:
+    from_to_required: '"From" ve "to" ifadeleri gereklidir.'
+    rate_not_found: Oran bulunamadı.
+  custom_leaves:
+    update:
+      success: Özel Yapraklar başarıyla güncellendi.
+  employment:
+    update:
+      success: İstihdam bilgileri başarıyla güncellendi.
+  errors:
+    bill_status_billed: Daha önce faturalandırılmış bir işlem için tekrar fatura kesemezsiniz.
+    can't change status: Ödenmiş bir faturada değişiklik yapılamaz.
+    create_billed_entry: Faturalandırılmış zaman çizelgesi girişi oluşturamazsınız.
+    internal_server_error: Bir şeyler ters gitti.
+    not_found: Aradığınız kaynak mevcut değil.
+    prevent_draft_to_waived: feragat olarak değiştirilemez
+    unauthorized: Bu işlemi yalnızca sahip veya yönetici kullanıcılar gerçekleştirebilir.
+    updation_not_allowed: Güncellemeye izin verilmiyor.
+    user_already_member: E-posta adresi zaten kullanımda. Lütfen başka bir e-posta
+      adresi girin.
+    validate_billable_project: Faturalandırılmayan projeler için faturalandırılmamış
+      giriş oluşturamazsınız.
+  expenses:
+    approve: Masraf başarıyla onaylandı
+    create: Masraf başarıyla gönderildi.
+    destroy: Masraf başarıyla silindi.
+    mark_paid: Gider ödenmiş olarak işaretlendi.
+    must_be_approved: Masrafın ödenmiş olarak işaretlenmesinden önce onaylanması gerekir.
+    reject: Masraf başarıyla reddedildi.
+    update: Gider bilgileri başarıyla güncellendi.
+  holidays:
+    update:
+      success: Tatil bilgileri başarıyla güncellendi.
+  invitation:
+    create:
+      success:
+        message: Davetiye başarıyla gönderildi.
+    delete:
+      success:
+        message: Davetiye başarıyla kaldırıldı.
+    resent:
+      success:
+        message: Davetiye başarıyla yeniden gönderildi.
+    update:
+      success:
+        message: Değişiklikler başarıyla kaydedildi.
+  invitations:
+    accept:
+      index:
+        success: Davet kabul edildi.
+      show:
+        success: Davet kabul edildi.
+      success: Davet kabul edildi.
+    create:
+      failure: Değişiklikler kaydedilemedi.
+      success: Davetiye gönderilecektir.
+    destroy:
+      failure: Davetiyeyi silme işlemi başarısız oldu.
+      success: Davetiye silindi
+    update:
+      failure: Değişiklikler kaydedilemedi.
+      success: Davetiye güncellendi
+  invoices:
+    payments:
+      success:
+        failure: Bir sorun oluştu, lütfen destek ekibiyle iletişime geçin.
+        success: Ödeme başarılı
+  invoices_controller:
+    download:
+      pdf_failed: PDF oluşturulamadı.
+    send_invoice:
+      already_paid: Fatura zaten ödendi.
+      pdf_failed: PDF oluşturulamadı.
+      recipient_limit: E-posta yalnızca 5 kişiye gönderilebilir.
+      recipients_required: 'Alıcıların şunlardan sorumlu olması gerekmektedir:'
+      success: Fatura başarıyla gönderildi.
+    send_reminder:
+      overdue_only: Hatırlatma mesajları yalnızca vadesi geçmiş faturalar için gönderilebilir.
+      success: Bir hatırlatma gönderildi.
+  invoices_view:
+    not_found: Fatura bulunamadı.
+  leave_types:
+    create:
+      success: İzin türü başarıyla eklendi.
+    update:
+      success: İzin türü başarıyla güncellendi.
+  leave_with_leave_types:
+    update:
+      success: Yapraklar başarıyla güncellendi.
+  leaves:
+    create:
+      success: İzin başarıyla oluşturuldu.
+    update:
+      success: Sayfa başarıyla güncellendi.
+  navbar:
+    clients: Müşteriler
+    help: Yardım
+    invoices: Faturalar
+    logout: Çıkış yap
+    payments: Ödemeler
+    profile: Profil
+    projects: Projeler
+    reports: Raporlar
+    settings: Ayarlar
+    team: Takım
+    time_tracking: Zaman Takibi
+    view_notifications: Bildirimleri Görüntüle
+  passkeys:
+    add_passkey_first: Oturum açma işlemi için gerekli olmadan önce bir parola ekleyin.
+    added: Parola eklendi.
+    disable_totp_first: Parola ile oturum açmayı gerektirmeden önce kimlik doğrulama
+      uygulamasının iki faktörlü kimlik doğrulamasını devre dışı bırakın.
+    not_found: Parola bulunamadı.
+    removed: Parola kaldırıldı.
+    requirement_disabled: Parola gereksinimi devre dışı bırakıldı.
+    requirement_enabled: Parola gereksinimi etkinleştirildi.
+    session_expired: Parola oturumunun süresi doldu. Lütfen tekrar deneyin.
+    verification_failed: Parola doğrulama başarısız oldu.
+  password:
+    create:
+      success: Parolanızı sıfırlama talimatları e-posta adresinize gönderildi.
+    update:
+      success: Parolanız güncellendi.
+  projects:
+    add_new_project: Yeni proje ekle
+    add_project: Proje ekle
+    billable: Faturalandırılabilir
+    client: Müşteri
+    create:
+      failure: Proje oluşturma başarısız oldu.
+      success: Proje başarıyla eklendi.
+    delete:
+      success:
+        message: Proje başarıyla kaldırıldı.
+    edit: düzenlemek
+    hours_logged: KAYITLI SAATLER
+    new_project: YENİ PROJE
+    non_billable: Faturalandırılmayan
+    project: Proje
+    project_name: Proje adı
+    projects: Projeler
+    update:
+      success: Değişiklikler başarıyla kaydedildi.
+    update_members:
+      failure:
+        message: Değişiklikler kaydedilemedi.
+        unauthorized: Kullanıcının bu projenin ayrıntılarını değiştirme yetkisi yoktur.
+      success:
+        message: Değişiklikler başarıyla kaydedildi.
+  pundit:
+    client_policy:
+      create?: Müşteri oluşturma yetkiniz yok.
+      show?: Bu sayfaya erişim yetkiniz yok. Lütfen yardım için yöneticinizle iletişime
+        geçin.
+      update?: İstemciyi güncelleme yetkiniz yok.
+    company_policy:
+      create?: Şirket kurma yetkiniz yok.
+      new?: Yeni şirket kurma yetkiniz yok.
+      show?: Şirket görüntülerine erişim yetkiniz yok.
+      update?: Şirket bilgilerini güncelleme yetkiniz yok.
+    current_company_policy:
+      company_not_present: Şirket mevcut değil.
+    default: Bu işlemi gerçekleştirme yetkiniz yok.
+    different_workspace: Mevcut çalışma alanınızın dışındaki kayıtlara erişim yetkiniz
+      bulunmamaktadır.
+    project_policy:
+      create?: Proje oluşturma yetkiniz yok.
+      show?: Bu sayfaya erişim yetkiniz yok. Lütfen yardım için yöneticinizle iletişime
+        geçin.
+    team_policy:
+      destroy?: Takımı yok etme yetkiniz yok.
+      edit?: Takım üzerinde düzenleme yapma yetkiniz yok.
+      update?: Ekibi güncelleme yetkiniz yok.
+  registration:
+    confirm_password: şifreyi onayla
+    email_id: e-posta
+    first_name: ilk adı
+    last_name: soy isim
+    name: isim
+    or: veya
+    password: şifre
+    remember_me: Beni hatırla
+    sign_in: Giriş yap
+    sign_up: üye olmak
+    signin_with_github: GitHub ile giriş yapın
+    signin_with_google: Google ile giriş yap
+    signup_with_apple: Apple ile kaydolun
+    signup_with_github: GitHub ile kaydolun
+    signup_with_google: Google ile kaydolun
+  reports:
+    heading: Zaman giriş raporu
+  sessions:
+    failure:
+      invalid: Geçersiz e-posta veya şifre
+  settings:
+    cancel: iptal etmek
+    change_password: şifre değiştir
+    confirm_password: şifreyi onayla
+    current_password: Mevcut Şifre
+    email: e-posta
+    name: isim
+    organization_setting: organizasyon ayarları
+    password: şifre
+    payment_setting: ödeme ayarları
+    profile_picture: profil resmi
+    profile_setting: profil ayarları
+    save: kaydetmek
+    settings: ayarlar
+  shared_links:
+    already_have_an_account: Zaten hesabınız var mı?
+    back_to_login: Giriş sayfasına geri dön
+    confirmation_instruction: Onay talimatlarını almadınız mı?
+    dont_have_an_account: Hesabınız yok mu?
+    forgot_password: Parolanızı mı unuttunuz ?
+    unlock_instruction: Kilidi açma talimatlarını almadınız mı?
+  subscriptions:
+    no_billing_customer: Bu şirketin faturalandırılacak müşterisi bulunmamaktadır.
+    pricing_not_configured: Stripe abonelik fiyatlandırması yapılandırılmamış.
+    trial_not_eligible: Çalışma alanınız Pro deneme sürümü için uygun değil.
+    trial_started: 30 günlük Pro deneme sürümünüz başladı.
+  team:
+    changed_email: E-posta adresi değiştirildi
+    create_new_user: Yeni Kullanıcı Oluştur
+    current_email: Mevcut E-posta
+    delete:
+      success:
+        message: Ekip üyesi başarıyla kaldırıldı.
+    email: E-posta
+    email_id: E-POSTA ADRESİ
+    first_name: İlk adı
+    form_admin: Yönetici
+    form_book_keeper: Muhasebeci
+    form_email: E-posta
+    form_employee: Çalışan
+    form_name: İsim
+    form_role: Rol
+    invitation: DAVET BEKLEMEDE
+    last_name: Soy isim
+    name: İSİM
+    new_user: YENİ KULLANICI
+    profile_picture: FOTOĞRAF
+    reconfirmation: ONAY BEKLENİYOR
+    role: ROL
+    team: Takım
+    update:
+      error:
+        role: Rol güncellenirken bir hata oluştu.
+      success:
+        message: Değişiklikler başarıyla kaydedildi.
+    update_user: Kullanıcıyı Güncelle
+  timeoff_entries:
+    create:
+      success: İzin süresi başarıyla eklendi.
+    destroy:
+      success: İzin süresi başarıyla silindi.
+    update:
+      success: Güncellenen izin süresi başarıyla tamamlandı.
+  timesheet_entry:
+    create:
+      message: Çalışma saatleri çizelgesi oluşturuldu.
+    destroy:
+      failure: Zaman çizelgesi girişlerini silme işlemi başarısız oldu.
+      message: Çalışma saatleri çizelgesi silindi
+    update:
+      failure: Zaman çizelgesi girişlerinin güncellenmesi başarısız oldu.
+      message: Çalışma saatleri çizelgesi güncellendi.
+  totp:
+    disable_passkey_first: Kimlik doğrulama uygulamasının 2FA'sını etkinleştirmeden
+      önce parola ile oturum açma zorunluluğunu devre dışı bırakın.
+    disabled: Kimlik doğrulama uygulaması devre dışı bırakıldı
+    enabled: Kimlik doğrulama uygulaması etkinleştirildi
+    invalid_code: Geçersiz kimlik doğrulama kodu.
+    invalid_verification: Geçersiz doğrulama kodu.
+    not_enabled: Öncelikle kimlik doğrulama uygulamasındaki iki faktörlü kimlik doğrulamayı
+      etkinleştirin.
+    recovery_codes_regenerated: Kurtarma kodları yeniden oluşturuldu.
+    session_expired: Bu doğrulama isteği artık geçerli değil. Lütfen tekrar giriş
+      yapın.
+  user:
+    login:
+      failure:
+        disabled: Erişiminiz devre dışı bırakıldı.
+        pending_invitation: Hesabınız henüz aktif edilmedi.
+  workspaces:
+    update:
+      failure: Çalışma alanını değiştirme başarısız oldu.
+      success: Çalışma alanı başarıyla değiştirildi.

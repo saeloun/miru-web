@@ -1,0 +1,365 @@
+---
+pa:
+  activerecord:
+    errors:
+      models:
+        client:
+          attributes:
+            name:
+              format: "%{message}"
+        project:
+          attributes:
+            name:
+              format: "%{message}"
+  application_controller:
+    not_found: ਰਸਤਾ ਨਹੀਂ ਮਿਲਿਆ
+  avatar:
+    destroy:
+      success: ਅਵਤਾਰ ਸਫਲਤਾਪੂਰਵਕ ਮਿਟਾਇਆ ਗਿਆ
+    update:
+      success: ਅਵਤਾਰ ਸਫਲਤਾਪੂਰਵਕ ਅੱਪਡੇਟ ਕੀਤਾ ਗਿਆ
+  client:
+    add: ਕਲਾਇੰਟ ਸ਼ਾਮਲ ਕਰੋ
+    address:
+      label: ਪਤਾ
+      placeholder: ਪਤਾ ਦਰਜ ਕਰੋ
+    create:
+      failure: ਕਲਾਇੰਟ ਬਣਾਉਣਾ ਅਸਫਲ ਰਿਹਾ
+      success: ਕਲਾਇੰਟ ਸਫਲਤਾਪੂਰਵਕ ਜੋੜਿਆ ਗਿਆ
+    delete:
+      success:
+        message: ਕਲਾਇੰਟ ਨੂੰ ਸਫਲਤਾਪੂਰਵਕ ਹਟਾਇਆ ਗਿਆ
+    email:
+      label: ਈਮੇਲ
+      placeholder: ਈਮੇਲ ਆਈਡੀ ਦਰਜ ਕਰੋ
+    name:
+      label: ਨਾਮ
+      placeholder: ਨਾਮ ਦਰਜ ਕਰੋ
+    phone:
+      label: ਫੋਨ ਨੰਬਰ
+      placeholder: ਫ਼ੋਨ ਨੰਬਰ ਦਰਜ ਕਰੋ
+    update:
+      failure:
+        message: ਬਦਲਾਵਾਂ ਨੂੰ ਸੁਰੱਖਿਅਤ ਕਰਨ ਵਿੱਚ ਅਸਫਲ
+        unauthorized: ਉਪਭੋਗਤਾ ਇਸ ਕਲਾਇੰਟ ਦੇ ਵੇਰਵਿਆਂ ਨੂੰ ਸੋਧਣ ਲਈ ਅਣਅਧਿਕਾਰਤ ਹੈ।
+      success:
+        message: ਬਦਲਾਅ ਸਫਲਤਾਪੂਰਵਕ ਸੁਰੱਖਿਅਤ ਕੀਤੇ ਗਏ
+  clients:
+    add_client_contact:
+      success: ਸੱਦਾ ਸਫਲਤਾਪੂਰਵਕ ਭੇਜਿਆ ਗਿਆ।
+    send_payment_reminder:
+      success: ਭੁਗਤਾਨ ਰੀਮਾਈਂਡਰ ਭੇਜਿਆ ਗਿਆ ਹੈ।
+  companies:
+    create:
+      failure: ਕੰਪਨੀ ਬਣਾਉਣਾ ਅਸਫਲ ਰਿਹਾ
+      success: ਕੰਪਨੀ ਸਫਲਤਾਪੂਰਵਕ ਬਣਾਈ ਗਈ
+    purge_logo:
+      destroy:
+        success: ਕੰਪਨੀ ਦਾ ਲੋਗੋ ਸਫਲਤਾਪੂਰਵਕ ਹਟਾਇਆ ਗਿਆ
+    update:
+      success: ਬਦਲਾਅ ਸਫਲਤਾਪੂਰਵਕ ਸੁਰੱਖਿਅਤ ਕੀਤੇ ਗਏ
+  company:
+    address: ਪਤਾ
+    base_currency: ਮੂਲ ਮੁਦਰਾ
+    business_phone: ਕਾਰੋਬਾਰੀ ਫ਼ੋਨ
+    cancel: ਰੱਦ ਕਰੋ
+    company: ਕੰਪਨੀ
+    country: ਦੇਸ਼
+    date_format: ਮਿਤੀ ਫਾਰਮੈਟ
+    fiscal_year: ਵਿੱਤੀ ਸਾਲ
+    logo: ਲੋਗੋ
+    save: ਸੇਵ
+    save_org: ਸੰਗਠਨ ਵੇਰਵੇ ਸੇਵ ਕਰੋ
+    setup: ਸੈੱਟਅੱਪ ਸੰਗਠਨ
+    standard_price: ਮਿਆਰੀ ਕੀਮਤ
+    timezone: ਸਮਾਂ ਖੇਤਰ
+  confirmation:
+    send_instructions: "%{email} ਤੇ ਇੱਕ ਪੁਸ਼ਟੀਕਰਨ ਈਮੇਲ ਭੇਜੀ ਗਈ ਹੈ।"
+  currency_pairs:
+    from_to_required: ਤੋਂ ਅਤੇ ਤੱਕ ਜ਼ਰੂਰੀ ਹਨ
+    rate_not_found: ਦਰ ਨਹੀਂ ਮਿਲੀ
+  custom_leaves:
+    update:
+      success: ਕਸਟਮ ਪੱਤੇ ਸਫਲਤਾਪੂਰਵਕ ਅੱਪਡੇਟ ਕੀਤੇ ਗਏ
+  employment:
+    update:
+      success: ਰੁਜ਼ਗਾਰ ਸਫਲਤਾਪੂਰਵਕ ਅੱਪਡੇਟ ਕੀਤਾ ਗਿਆ
+  errors:
+    bill_status_billed: ਤੁਸੀਂ ਉਸ ਐਂਟਰੀ ਨੂੰ ਬਿਲ ਨਹੀਂ ਕਰ ਸਕਦੇ ਜਿਸਦਾ ਪਹਿਲਾਂ ਹੀ ਬਿਲ ਕੀਤਾ
+      ਜਾ ਚੁੱਕਾ ਹੈ।
+    can't change status: ਭੁਗਤਾਨ ਕੀਤੇ ਇਨਵੌਇਸ ਨੂੰ ਬਦਲਿਆ ਨਹੀਂ ਜਾ ਸਕਦਾ
+    create_billed_entry: ਤੁਸੀਂ ਬਿਲ ਕੀਤੀ ਟਾਈਮਸ਼ੀਟ ਐਂਟਰੀ ਨਹੀਂ ਬਣਾ ਸਕਦੇ।
+    internal_server_error: ਕੁਝ ਗਲਤ ਹੋ ਗਿਆ।
+    not_found: ਜਿਸ ਸਰੋਤ ਦੀ ਤੁਸੀਂ ਭਾਲ ਕਰ ਰਹੇ ਹੋ ਉਹ ਉਪਲਬਧ ਨਹੀਂ ਹੈ।
+    prevent_draft_to_waived: ਛੋਟ ਵਿੱਚ ਬਦਲਿਆ ਨਹੀਂ ਜਾ ਸਕਦਾ
+    unauthorized: ਸਿਰਫ਼ ਮਾਲਕ ਜਾਂ ਪ੍ਰਸ਼ਾਸਕ ਵਰਤੋਂਕਾਰ ਹੀ ਇਹ ਕਾਰਵਾਈ ਕਰਨ ਲਈ ਅਧਿਕਾਰਤ ਹਨ।
+    updation_not_allowed: ਅੱਪਡੇਟ ਦੀ ਇਜਾਜ਼ਤ ਨਹੀਂ ਹੈ।
+    user_already_member: ਈਮੇਲ ਆਈਡੀ ਪਹਿਲਾਂ ਹੀ ਵਰਤੋਂ ਵਿੱਚ ਹੈ। ਕਿਰਪਾ ਕਰਕੇ ਕੋਈ ਹੋਰ ਈਮੇਲ
+      ਆਈਡੀ ਦਰਜ ਕਰੋ।
+    validate_billable_project: ਤੁਸੀਂ ਗੈਰ-ਬਿਲਯੋਗ ਪ੍ਰੋਜੈਕਟਾਂ ਲਈ ਇੱਕ ਅਨਬਿਲਡ ਐਂਟਰੀ ਨਹੀਂ
+      ਬਣਾ ਸਕਦੇ।
+  expenses:
+    approve: ਖਰਚਾ ਸਫਲਤਾਪੂਰਵਕ ਮਨਜ਼ੂਰ ਹੋ ਗਿਆ
+    create: ਖਰਚ ਸਫਲਤਾਪੂਰਵਕ ਜਮ੍ਹਾਂ ਹੋ ਗਿਆ
+    destroy: ਖਰਚ ਸਫਲਤਾਪੂਰਵਕ ਮਿਟਾਇਆ ਗਿਆ
+    mark_paid: ਖਰਚੇ ਨੂੰ ਭੁਗਤਾਨ ਕੀਤੇ ਵਜੋਂ ਚਿੰਨ੍ਹਿਤ ਕੀਤਾ ਗਿਆ
+    must_be_approved: ਖਰਚੇ ਨੂੰ ਭੁਗਤਾਨ ਕੀਤੇ ਵਜੋਂ ਚਿੰਨ੍ਹਿਤ ਕਰਨ ਤੋਂ ਪਹਿਲਾਂ ਇਸਨੂੰ ਮਨਜ਼ੂਰੀ
+      ਦੇਣੀ ਜ਼ਰੂਰੀ ਹੈ।
+    reject: ਖਰਚਾ ਸਫਲਤਾਪੂਰਵਕ ਰੱਦ ਕੀਤਾ ਗਿਆ
+    update: ਖਰਚਾ ਸਫਲਤਾਪੂਰਵਕ ਅੱਪਡੇਟ ਕੀਤਾ ਗਿਆ
+  holidays:
+    update:
+      success: ਛੁੱਟੀਆਂ ਦੀ ਜਾਣਕਾਰੀ ਸਫਲਤਾਪੂਰਵਕ ਅੱਪਡੇਟ ਕੀਤੀ ਗਈ
+  invitation:
+    create:
+      success:
+        message: ਸੱਦਾ ਸਫਲਤਾਪੂਰਵਕ ਭੇਜਿਆ ਗਿਆ
+    delete:
+      success:
+        message: ਸੱਦਾ ਸਫਲਤਾਪੂਰਵਕ ਹਟਾਇਆ ਗਿਆ
+    resent:
+      success:
+        message: ਸੱਦਾ ਸਫਲਤਾਪੂਰਵਕ ਮੁੜ ਭੇਜਿਆ ਗਿਆ
+    update:
+      success:
+        message: ਬਦਲਾਅ ਸਫਲਤਾਪੂਰਵਕ ਸੁਰੱਖਿਅਤ ਕੀਤੇ ਗਏ
+  invitations:
+    accept:
+      index:
+        success: ਸੱਦਾ ਸਵੀਕਾਰ ਕੀਤਾ ਗਿਆ
+      show:
+        success: ਸੱਦਾ ਸਵੀਕਾਰ ਕੀਤਾ ਗਿਆ
+      success: ਸੱਦਾ ਸਵੀਕਾਰ ਕੀਤਾ ਗਿਆ
+    create:
+      failure: ਬਦਲਾਵਾਂ ਨੂੰ ਸੁਰੱਖਿਅਤ ਕਰਨ ਵਿੱਚ ਅਸਫਲ
+      success: ਸੱਦਾ ਭੇਜਿਆ ਜਾਵੇਗਾ।
+    destroy:
+      failure: ਸੱਦਾ ਮਿਟਾਉਣਾ ਅਸਫਲ ਰਿਹਾ
+      success: ਸੱਦਾ ਮਿਟਾਇਆ ਗਿਆ
+    update:
+      failure: ਬਦਲਾਵਾਂ ਨੂੰ ਸੁਰੱਖਿਅਤ ਕਰਨ ਵਿੱਚ ਅਸਫਲ
+      success: ਸੱਦਾ ਅੱਪਡੇਟ ਕੀਤਾ ਗਿਆ
+  invoices:
+    payments:
+      success:
+        failure: ਕੁਝ ਗਲਤ ਹੋ ਗਿਆ, ਕਿਰਪਾ ਕਰਕੇ ਸਹਾਇਤਾ ਨਾਲ ਸੰਪਰਕ ਕਰੋ
+        success: ਭੁਗਤਾਨ ਸਫਲ ਰਿਹਾ
+  invoices_controller:
+    download:
+      pdf_failed: PDF ਤਿਆਰ ਕਰਨ ਵਿੱਚ ਅਸਫਲ
+    send_invoice:
+      already_paid: ਇਨਵੌਇਸ ਪਹਿਲਾਂ ਹੀ ਅਦਾ ਕਰ ਦਿੱਤਾ ਗਿਆ ਹੈ
+      pdf_failed: PDF ਤਿਆਰ ਕਰਨ ਵਿੱਚ ਅਸਫਲ
+      recipient_limit: ਈਮੇਲ ਸਿਰਫ਼ 5 ਪ੍ਰਾਪਤਕਰਤਾਵਾਂ ਨੂੰ ਭੇਜੀ ਜਾ ਸਕਦੀ ਹੈ।
+      recipients_required: ਪ੍ਰਾਪਤਕਰਤਾ ਲੋੜੀਂਦੇ ਹਨ
+      success: ਇਨਵੌਇਸ ਸਫਲਤਾਪੂਰਵਕ ਭੇਜਿਆ ਗਿਆ ਹੈ।
+    send_reminder:
+      overdue_only: ਰੀਮਾਈਂਡਰ ਸਿਰਫ਼ ਬਕਾਇਆ ਇਨਵੌਇਸਾਂ ਲਈ ਭੇਜੇ ਜਾ ਸਕਦੇ ਹਨ
+      success: ਇੱਕ ਯਾਦ-ਪੱਤਰ ਭੇਜਿਆ ਗਿਆ ਹੈ।
+  invoices_view:
+    not_found: ਕੋਈ ਇਨਵੌਇਸ ਨਹੀਂ ਮਿਲਿਆ
+  leave_types:
+    create:
+      success: ਛੁੱਟੀ ਦੀ ਕਿਸਮ ਸਫਲਤਾਪੂਰਵਕ ਸ਼ਾਮਲ ਕੀਤੀ ਗਈ
+    update:
+      success: ਛੁੱਟੀ ਦੀ ਕਿਸਮ ਸਫਲਤਾਪੂਰਵਕ ਅੱਪਡੇਟ ਕੀਤੀ ਗਈ
+  leave_with_leave_types:
+    update:
+      success: ਪੱਤੇ ਸਫਲਤਾਪੂਰਵਕ ਅੱਪਡੇਟ ਕੀਤੇ ਗਏ
+  leaves:
+    create:
+      success: ਪੱਤਾ ਸਫਲਤਾਪੂਰਵਕ ਬਣਾਇਆ ਗਿਆ
+    update:
+      success: ਛੁੱਟੀ ਸਫਲਤਾਪੂਰਵਕ ਅੱਪਡੇਟ ਕੀਤੀ ਗਈ
+  navbar:
+    clients: ਕਲਾਇੰਟ
+    help: ਮਦਦ ਕਰੋ
+    invoices: ਇਨਵੌਇਸ
+    logout: ਲਾਗਆਉਟ
+    payments: ਭੁਗਤਾਨ
+    profile: ਪ੍ਰੋਫਾਈਲ
+    projects: ਪ੍ਰੋਜੈਕਟ
+    reports: ਰਿਪੋਰਟਾਂ
+    settings: ਸੈਟਿੰਗਾਂ
+    team: ਟੀਮ
+    time_tracking: ਸਮਾਂ ਟਰੈਕਿੰਗ
+    view_notifications: ਸੂਚਨਾਵਾਂ ਵੇਖੋ
+  passkeys:
+    add_passkey_first: ਸਾਈਨ ਇਨ ਕਰਨ ਲਈ ਇੱਕ ਪਾਸਕੁੰਜੀ ਦੀ ਲੋੜ ਤੋਂ ਪਹਿਲਾਂ ਇਸਨੂੰ ਸ਼ਾਮਲ ਕਰੋ।
+    added: ਪਾਸਕੀ ਜੋੜੀ ਗਈ
+    disable_totp_first: ਪਾਸਕੀ ਸਾਈਨ ਇਨ ਦੀ ਲੋੜ ਤੋਂ ਪਹਿਲਾਂ ਪ੍ਰਮਾਣਕ ਐਪ 2FA ਨੂੰ ਅਯੋਗ ਕਰੋ।
+    not_found: ਪਾਸਕੀ ਨਹੀਂ ਮਿਲੀ।
+    removed: ਪਾਸਕੀ ਹਟਾਈ ਗਈ
+    requirement_disabled: ਪਾਸਕੀ ਲੋੜ ਅਯੋਗ ਹੈ
+    requirement_enabled: ਪਾਸਕੀ ਲੋੜ ਯੋਗ ਬਣਾਈ ਗਈ
+    session_expired: ਪਾਸਕੀ ਸੈਸ਼ਨ ਦੀ ਮਿਆਦ ਪੁੱਗ ਗਈ ਹੈ। ਕਿਰਪਾ ਕਰਕੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।
+    verification_failed: ਪਾਸਕੀ ਪੁਸ਼ਟੀਕਰਨ ਅਸਫਲ ਰਿਹਾ।
+  password:
+    create:
+      success: ਤੁਹਾਡਾ ਪਾਸਵਰਡ ਰੀਸੈਟ ਕਰਨ ਦੀਆਂ ਹਦਾਇਤਾਂ ਤੁਹਾਡੀ ਈਮੇਲ 'ਤੇ ਭੇਜ ਦਿੱਤੀਆਂ ਗਈਆਂ
+        ਹਨ।
+    update:
+      success: ਤੁਹਾਡਾ ਪਾਸਵਰਡ ਅੱਪਡੇਟ ਕਰ ਦਿੱਤਾ ਗਿਆ ਹੈ।
+  projects:
+    add_new_project: ਨਵਾਂ ਪ੍ਰੋਜੈਕਟ ਸ਼ਾਮਲ ਕਰੋ
+    add_project: ਪ੍ਰੋਜੈਕਟ ਸ਼ਾਮਲ ਕਰੋ
+    billable: ਬਿੱਲ ਕਰਨ ਯੋਗ
+    client: ਕਲਾਇੰਟ
+    create:
+      failure: ਪ੍ਰੋਜੈਕਟ ਬਣਾਉਣਾ ਅਸਫਲ ਰਿਹਾ।
+      success: ਪ੍ਰੋਜੈਕਟ ਸਫਲਤਾਪੂਰਵਕ ਜੋੜਿਆ ਗਿਆ।
+    delete:
+      success:
+        message: ਪ੍ਰੋਜੈਕਟ ਸਫਲਤਾਪੂਰਵਕ ਹਟਾਇਆ ਗਿਆ
+    edit: ਸੋਧੋ
+    hours_logged: ਘੰਟੇ ਲੌਗ ਕੀਤੇ ਗਏ
+    new_project: ਨਵਾਂ ਪ੍ਰੋਜੈਕਟ
+    non_billable: ਗੈਰ-ਬਿਲਯੋਗ
+    project: ਪ੍ਰੋਜੈਕਟ
+    project_name: ਪ੍ਰੋਜੈਕਟ ਦਾ ਨਾਮ
+    projects: ਪ੍ਰੋਜੈਕਟ
+    update:
+      success: ਬਦਲਾਅ ਸਫਲਤਾਪੂਰਵਕ ਸੁਰੱਖਿਅਤ ਕੀਤੇ ਗਏ।
+    update_members:
+      failure:
+        message: ਬਦਲਾਵਾਂ ਨੂੰ ਸੁਰੱਖਿਅਤ ਕਰਨ ਵਿੱਚ ਅਸਫਲ
+        unauthorized: ਉਪਭੋਗਤਾ ਇਸ ਪ੍ਰੋਜੈਕਟ ਦੇ ਵੇਰਵਿਆਂ ਨੂੰ ਸੋਧਣ ਲਈ ਅਣਅਧਿਕਾਰਤ ਹੈ।
+      success:
+        message: ਬਦਲਾਅ ਸਫਲਤਾਪੂਰਵਕ ਸੁਰੱਖਿਅਤ ਕੀਤੇ ਗਏ
+  pundit:
+    client_policy:
+      create?: ਤੁਹਾਨੂੰ ਕਲਾਇੰਟ ਬਣਾਉਣ ਦਾ ਅਧਿਕਾਰ ਨਹੀਂ ਹੈ।
+      show?: ਤੁਹਾਨੂੰ ਪੰਨੇ ਤੱਕ ਪਹੁੰਚ ਕਰਨ ਦਾ ਅਧਿਕਾਰ ਨਹੀਂ ਹੈ। ਕਿਰਪਾ ਕਰਕੇ ਮਦਦ ਲਈ ਆਪਣੇ
+        ਪ੍ਰਸ਼ਾਸਕ ਨਾਲ ਸੰਪਰਕ ਕਰੋ।
+      update?: ਤੁਹਾਨੂੰ ਕਲਾਇੰਟ ਅੱਪਡੇਟ ਕਰਨ ਦਾ ਅਧਿਕਾਰ ਨਹੀਂ ਹੈ।
+    company_policy:
+      create?: ਤੁਹਾਨੂੰ ਕੰਪਨੀ ਬਣਾਉਣ ਦਾ ਅਧਿਕਾਰ ਨਹੀਂ ਹੈ।
+      new?: ਤੁਹਾਨੂੰ ਨਵੀਂ ਕੰਪਨੀ ਬਣਾਉਣ ਦਾ ਅਧਿਕਾਰ ਨਹੀਂ ਹੈ।
+      show?: ਤੁਹਾਨੂੰ ਕੰਪਨੀ ਦੇਖਣ ਦਾ ਅਧਿਕਾਰ ਨਹੀਂ ਹੈ।
+      update?: ਤੁਹਾਨੂੰ ਕੰਪਨੀ ਨੂੰ ਅੱਪਡੇਟ ਕਰਨ ਦਾ ਅਧਿਕਾਰ ਨਹੀਂ ਹੈ।
+    current_company_policy:
+      company_not_present: ਕੰਪਨੀ ਮੌਜੂਦ ਨਹੀਂ ਹੈ।
+    default: ਤੁਸੀਂ ਇਹ ਕਾਰਵਾਈ ਕਰਨ ਲਈ ਅਧਿਕਾਰਤ ਨਹੀਂ ਹੋ।
+    different_workspace: ਤੁਹਾਨੂੰ ਆਪਣੇ ਮੌਜੂਦਾ ਵਰਕਸਪੇਸ ਤੋਂ ਬਾਹਰ ਰਿਕਾਰਡਾਂ ਤੱਕ ਪਹੁੰਚ ਕਰਨ
+      ਦਾ ਅਧਿਕਾਰ ਨਹੀਂ ਹੈ।
+    project_policy:
+      create?: ਤੁਹਾਨੂੰ ਪ੍ਰੋਜੈਕਟ ਬਣਾਉਣ ਦਾ ਅਧਿਕਾਰ ਨਹੀਂ ਹੈ।
+      show?: ਤੁਹਾਨੂੰ ਪੰਨੇ ਤੱਕ ਪਹੁੰਚ ਕਰਨ ਦਾ ਅਧਿਕਾਰ ਨਹੀਂ ਹੈ। ਕਿਰਪਾ ਕਰਕੇ ਮਦਦ ਲਈ ਆਪਣੇ
+        ਪ੍ਰਸ਼ਾਸਕ ਨਾਲ ਸੰਪਰਕ ਕਰੋ।
+    team_policy:
+      destroy?: ਤੁਹਾਨੂੰ ਟੀਮ ਨੂੰ ਤਬਾਹ ਕਰਨ ਦਾ ਅਧਿਕਾਰ ਨਹੀਂ ਹੈ।
+      edit?: ਤੁਹਾਨੂੰ ਟੀਮ ਨੂੰ ਸੰਪਾਦਿਤ ਕਰਨ ਦਾ ਅਧਿਕਾਰ ਨਹੀਂ ਹੈ।
+      update?: ਤੁਹਾਨੂੰ ਟੀਮ ਨੂੰ ਅੱਪਡੇਟ ਕਰਨ ਦਾ ਅਧਿਕਾਰ ਨਹੀਂ ਹੈ।
+  registration:
+    confirm_password: ਪਾਸਵਰਡ ਪੱਕਾ ਕਰੋ
+    email_id: ਈਮੇਲ
+    first_name: ਪਹਿਲਾ ਨਾਂ
+    last_name: ਆਖਰੀ ਨਾਂਮ
+    name: ਨਾਮ
+    or: ਜਾਂ
+    password: ਪਾਸਵਰਡ
+    remember_me: ਮੇਰੀ ਯਾਦ ਹੈ
+    sign_in: ਸਾਈਨ - ਇਨ
+    sign_up: ਸਾਇਨ ਅਪ
+    signin_with_github: ਗਿਥਬ ਨਾਲ ਸਾਈਨ ਇਨ ਕਰੋ
+    signin_with_google: ਗੂਗਲ ਨਾਲ ਸਾਈਨ ਇਨ ਕਰੋ
+    signup_with_apple: ਐਪਲ ਨਾਲ ਸਾਈਨ ਅੱਪ ਕਰੋ
+    signup_with_github: ਗਿਥਬ ਨਾਲ ਸਾਈਨ ਅੱਪ ਕਰੋ
+    signup_with_google: ਗੂਗਲ ਨਾਲ ਸਾਈਨ ਅੱਪ ਕਰੋ
+  reports:
+    heading: ਸਮਾਂ ਐਂਟਰੀ ਰਿਪੋਰਟ
+  sessions:
+    failure:
+      invalid: ਗਲਤ ਈਮੇਲ ਜਾਂ ਪਾਸਵਰਡ
+  settings:
+    cancel: ਰੱਦ ਕਰੋ
+    change_password: ਪਾਸਵਰਡ ਬਦਲੋ
+    confirm_password: ਪਾਸਵਰਡ ਪੱਕਾ ਕਰੋ
+    current_password: ਵਰਤਮਾਨ ਪਾਸਵਰਡ
+    email: ਈਮੇਲ
+    name: ਨਾਮ
+    organization_setting: ਸੰਗਠਨ ਸੈਟਿੰਗਾਂ
+    password: ਪਾਸਵਰਡ
+    payment_setting: ਭੁਗਤਾਨ ਸੈਟਿੰਗਾਂ
+    profile_picture: ਪ੍ਰੋਫਾਈਲ ਤਸਵੀਰ
+    profile_setting: ਪ੍ਰੋਫਾਈਲ ਸੈਟਿੰਗਾਂ
+    save: ਸੇਵ
+    settings: ਸੈਟਿੰਗਾਂ
+  shared_links:
+    already_have_an_account: ਕੀ ਪਹਿਲਾਂ ਹੀ ਖਾਤਾ ਹੈ?
+    back_to_login: ਲੌਗਇਨ ਤੇ ਵਾਪਸ ਜਾਓ
+    confirmation_instruction: ਪੁਸ਼ਟੀਕਰਨ ਨਿਰਦੇਸ਼ ਨਹੀਂ ਮਿਲੇ?
+    dont_have_an_account: ਕੀ ਤੁਹਾਡਾ ਕੋਈ ਖਾਤਾ ਨਹੀਂ ਹੈ?
+    forgot_password: ਪਾਸਵਰਡ ਭੁੱਲ ਗਏ ?
+    unlock_instruction: ਕੀ ਤੁਹਾਨੂੰ ਅਨਲੌਕ ਨਿਰਦੇਸ਼ ਨਹੀਂ ਮਿਲੇ?
+  subscriptions:
+    no_billing_customer: ਇਸ ਕੰਪਨੀ ਲਈ ਕੋਈ ਬਿਲਿੰਗ ਗਾਹਕ ਮੌਜੂਦ ਨਹੀਂ ਹੈ।
+    pricing_not_configured: ਸਟ੍ਰਾਈਪ ਗਾਹਕੀ ਦੀ ਕੀਮਤ ਕੌਂਫਿਗਰ ਨਹੀਂ ਕੀਤੀ ਗਈ ਹੈ
+    trial_not_eligible: ਤੁਹਾਡਾ ਵਰਕਸਪੇਸ ਪ੍ਰੋ ਟ੍ਰਾਇਲ ਲਈ ਯੋਗ ਨਹੀਂ ਹੈ
+    trial_started: ਤੁਹਾਡਾ 30-ਦਿਨਾਂ ਦਾ ਪ੍ਰੋ ਟ੍ਰਾਇਲ ਸ਼ੁਰੂ ਹੋ ਗਿਆ ਹੈ
+  team:
+    changed_email: ਈਮੇਲ ਬਦਲਿਆ ਗਿਆ
+    create_new_user: ਨਵਾਂ ਯੂਜ਼ਰ ਬਣਾਓ
+    current_email: ਮੌਜੂਦਾ ਈਮੇਲ
+    delete:
+      success:
+        message: ਟੀਮ ਮੈਂਬਰ ਨੂੰ ਸਫਲਤਾਪੂਰਵਕ ਹਟਾਇਆ ਗਿਆ
+    email: ਈਮੇਲ
+    email_id: ਈਮੇਲ ਆਈਡੀ
+    first_name: ਪਹਿਲਾ ਨਾਂ
+    form_admin: ਐਡਮਿਨ
+    form_book_keeper: ਬੁੱਕ ਕੀਪਰ
+    form_email: ਈਮੇਲ
+    form_employee: ਕਰਮਚਾਰੀ
+    form_name: ਨਾਮ
+    form_role: ਭੂਮਿਕਾ
+    invitation: ਸੱਦਾ ਪੱਤਰ ਲੰਬਿਤ ਹੈ
+    last_name: ਆਖਰੀ ਨਾਂਮ
+    name: ਨਾਮ
+    new_user: ਨਵਾਂ ਉਪਭੋਗਤਾ
+    profile_picture: ਫੋਟੋ
+    reconfirmation: ਮੁੜ-ਪੁਸ਼ਟੀ ਬਕਾਇਆ ਹੈ
+    role: ਭੂਮਿਕਾ
+    team: ਟੀਮ
+    update:
+      error:
+        role: ਭੂਮਿਕਾ ਨੂੰ ਅੱਪਡੇਟ ਕਰਨ ਵੇਲੇ ਇੱਕ ਗਲਤੀ ਹੋਈ।
+      success:
+        message: ਬਦਲਾਅ ਸਫਲਤਾਪੂਰਵਕ ਸੁਰੱਖਿਅਤ ਕੀਤੇ ਗਏ
+    update_user: ਵਰਤੋਂਕਾਰ ਨੂੰ ਅੱਪਡੇਟ ਕਰੋ
+  timeoff_entries:
+    create:
+      success: ਛੁੱਟੀ ਸਫਲਤਾਪੂਰਵਕ ਜੋੜੀ ਗਈ
+    destroy:
+      success: ਛੁੱਟੀ ਦਾ ਸਮਾਂ ਸਫਲਤਾਪੂਰਵਕ ਮਿਟਾ ਦਿੱਤਾ ਗਿਆ
+    update:
+      success: ਛੁੱਟੀ ਦਾ ਸਮਾਂ ਸਫਲਤਾਪੂਰਵਕ ਅੱਪਡੇਟ ਕੀਤਾ ਗਿਆ
+  timesheet_entry:
+    create:
+      message: ਟਾਈਮਸ਼ੀਟ ਬਣਾਈ ਗਈ
+    destroy:
+      failure: ਟਾਈਮਸ਼ੀਟ ਐਂਟਰੀਆਂ ਨੂੰ ਮਿਟਾਉਣਾ ਅਸਫਲ ਰਿਹਾ
+      message: ਟਾਈਮਸ਼ੀਟ ਮਿਟਾਈ ਗਈ
+    update:
+      failure: ਟਾਈਮਸ਼ੀਟ ਐਂਟਰੀਆਂ ਨੂੰ ਅੱਪਡੇਟ ਕਰਨ ਵਿੱਚ ਅਸਫਲ ਰਿਹਾ
+      message: ਟਾਈਮਸ਼ੀਟ ਅੱਪਡੇਟ ਕੀਤੀ ਗਈ
+  totp:
+    disable_passkey_first: ਪ੍ਰਮਾਣਕ ਐਪ 2FA ਨੂੰ ਸਮਰੱਥ ਬਣਾਉਣ ਤੋਂ ਪਹਿਲਾਂ ਲੋੜੀਂਦੇ ਪਾਸਕੀ
+      ਸਾਈਨ ਇਨ ਨੂੰ ਅਯੋਗ ਕਰੋ।
+    disabled: ਪ੍ਰਮਾਣਕ ਐਪ ਬੰਦ ਕੀਤੀ ਗਈ
+    enabled: ਪ੍ਰਮਾਣਕ ਐਪ ਚਾਲੂ ਹੈ
+    invalid_code: ਅਵੈਧ ਪ੍ਰਮਾਣੀਕਰਤਾ ਕੋਡ।
+    invalid_verification: ਅਵੈਧ ਪੁਸ਼ਟੀਕਰਨ ਕੋਡ।
+    not_enabled: ਪਹਿਲਾਂ ਪ੍ਰਮਾਣਕ ਐਪ 2FA ਨੂੰ ਸਮਰੱਥ ਬਣਾਓ।
+    recovery_codes_regenerated: ਰਿਕਵਰੀ ਕੋਡ ਦੁਬਾਰਾ ਤਿਆਰ ਕੀਤੇ ਗਏ
+    session_expired: ਉਹ ਪੁਸ਼ਟੀਕਰਨ ਬੇਨਤੀ ਹੁਣ ਵੈਧ ਨਹੀਂ ਹੈ। ਕਿਰਪਾ ਕਰਕੇ ਦੁਬਾਰਾ ਸਾਈਨ ਇਨ
+      ਕਰੋ।
+  user:
+    login:
+      failure:
+        disabled: ਤੁਹਾਡੀ ਪਹੁੰਚ ਨੂੰ ਅਯੋਗ ਕਰ ਦਿੱਤਾ ਗਿਆ ਹੈ।
+        pending_invitation: ਤੁਹਾਡਾ ਖਾਤਾ ਅਜੇ ਕਿਰਿਆਸ਼ੀਲ ਨਹੀਂ ਹੋਇਆ ਹੈ।
+  workspaces:
+    update:
+      failure: ਵਰਕਸਪੇਸ ਬਦਲਣ ਵਿੱਚ ਅਸਫਲ ਰਿਹਾ
+      success: ਵਰਕਸਪੇਸ ਸਫਲਤਾਪੂਰਵਕ ਬਦਲਿਆ ਗਿਆ

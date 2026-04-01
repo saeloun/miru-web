@@ -1,0 +1,106 @@
+---
+it:
+  activerecord:
+    errors:
+      models:
+        user:
+          attributes:
+            email:
+              blank: L'indirizzo email non può essere vuoto.
+              invalid: Indirizzo email non valido
+              taken: L'indirizzo email esiste già
+            first_name:
+              blank: non può essere vuoto
+              invalid: deve contenere solo lettere o spazi
+            last_name:
+              blank: non può essere vuoto
+              invalid: deve contenere solo lettere o spazi
+            password:
+              blank: non può essere vuoto
+              too_short: deve essere lungo almeno %{count} caratteri
+            password_confirmation:
+              confirmation: non corrisponde alla nuova password
+  devise:
+    confirmations:
+      confirmed: Il tuo indirizzo email è stato confermato con successo.
+      send_instructions: Tra pochi minuti riceverai un'email con le istruzioni per
+        confermare il tuo indirizzo email.
+      send_paranoid_instructions: Se il tuo indirizzo email è presente nel nostro
+        database, riceverai un'email con le istruzioni per confermarlo entro pochi
+        minuti.
+    failure:
+      already_authenticated: Hai già effettuato l'accesso.
+      inactive: Il tuo account non è ancora attivo.
+      invalid: "%{authentication_keys} o password non validi."
+      last_attempt: Hai ancora un tentativo prima che il tuo account venga bloccato.
+      locked: Il tuo account è bloccato.
+      not_found_in_database: "%{authentication_keys} o password non validi."
+      timeout: La tua sessione è scaduta. Effettua nuovamente l'accesso per continuare.
+      unauthenticated: È necessario accedere o registrarsi prima di continuare.
+      unconfirmed: È necessario confermare il proprio indirizzo email prima di poter
+        continuare.
+    mailer:
+      confirmation_instructions:
+        subject: Istruzioni di conferma
+      email_changed:
+        subject: Indirizzo email modificato
+      password_change:
+        subject: Password di Miru reimpostata con successo!
+      reset_password_instructions:
+        subject: Reimposta la tua password di Miru
+      unlock_instructions:
+        subject: Istruzioni di sblocco
+    omniauth_callbacks:
+      failure: Impossibile autenticarti da %{kind} perché "%{reason}".
+      success: Autenticazione avvenuta con successo dall'account %{kind}.
+    passwords:
+      no_token: Non è possibile accedere a questa pagina senza aver ricevuto un'email
+        di reimpostazione della password. Se hai ricevuto un'email di reimpostazione
+        della password, assicurati di utilizzare l'URL completo fornito.
+      send_instructions: Tra pochi minuti riceverai un'email con le istruzioni su
+        come reimpostare la password.
+      send_paranoid_instructions: Se il tuo indirizzo email è presente nel nostro
+        database, riceverai un link per il recupero della password entro pochi minuti.
+      updated: La tua password è stata modificata con successo. Ora hai effettuato
+        l'accesso.
+      updated_not_active: La tua password è stata modificata con successo.
+    registrations:
+      destroyed: Arrivederci! Il tuo account è stato cancellato con successo. Speriamo
+        di rivederti presto.
+      signed_up: Benvenuto! La registrazione è andata a buon fine.
+      signed_up_but_inactive: La registrazione è andata a buon fine. Tuttavia, non
+        è stato possibile effettuare l'accesso perché l'account non è ancora attivo.
+      signed_up_but_locked: La registrazione è andata a buon fine. Tuttavia, non è
+        stato possibile effettuare l'accesso perché l'account è bloccato.
+      signed_up_but_unconfirmed: ''
+      update_needs_confirmation: Hai aggiornato correttamente il tuo account, ma dobbiamo
+        verificare il tuo nuovo indirizzo email. Controlla la tua casella di posta
+        e segui il link di conferma per convalidare il nuovo indirizzo.
+      updated: Modifiche salvate correttamente
+      updated_but_not_signed_in: Il tuo account è stato aggiornato correttamente,
+        ma poiché la tua password è stata modificata, devi accedere di nuovo.
+      user:
+        signed_up_but_Your access has been disabled: Controlla la tua casella di posta
+          elettronica e segui il link di conferma per convalidare il tuo indirizzo
+          email.
+    sessions:
+      already_signed_out: Disconnessione effettuata con successo.
+      signed_in: Accesso effettuato con successo.
+      signed_out: Disconnessione effettuata con successo.
+    unlocks:
+      send_instructions: Riceverai un'email con le istruzioni su come sbloccare il
+        tuo account tra pochi minuti.
+      send_paranoid_instructions: Se il tuo account esiste, riceverai un'email con
+        le istruzioni per sbloccarlo tra pochi minuti.
+      unlocked: Il tuo account è stato sbloccato con successo. Accedi per continuare.
+  errors:
+    messages:
+      already_confirmed: è già stato confermato, prova ad accedere
+      confirmation_period_expired: deve essere confermato all'interno di %{period},
+        si prega di richiederne uno nuovo
+      expired: è scaduto, si prega di richiederne uno nuovo
+      not_found: non trovato
+      not_locked: non era chiuso a chiave
+      not_saved:
+        one: '1 errore ha impedito il salvataggio di questo %{resource}:'
+        other: 'Gli errori %{count} hanno impedito il salvataggio di questo %{resource}:'

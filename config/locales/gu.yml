@@ -1,0 +1,364 @@
+---
+gu:
+  activerecord:
+    errors:
+      models:
+        client:
+          attributes:
+            name:
+              format: "%{message}"
+        project:
+          attributes:
+            name:
+              format: "%{message}"
+  application_controller:
+    not_found: રસ્તો મળ્યો નથી
+  avatar:
+    destroy:
+      success: અવતાર સફળતાપૂર્વક કાઢી નાખ્યો
+    update:
+      success: અવતાર સફળતાપૂર્વક અપડેટ થયો
+  client:
+    add: ક્લાયન્ટ ઉમેરો
+    address:
+      label: સરનામું
+      placeholder: સરનામું દાખલ કરો
+    create:
+      failure: ક્લાયન્ટ બનાવવું નિષ્ફળ ગયું
+      success: ક્લાયન્ટ સફળતાપૂર્વક ઉમેરાયો
+    delete:
+      success:
+        message: ક્લાયન્ટ સફળતાપૂર્વક દૂર કરવામાં આવ્યું
+    email:
+      label: ઇમેઇલ
+      placeholder: ઇમેઇલ આઈડી દાખલ કરો
+    name:
+      label: નામ
+      placeholder: નામ દાખલ કરો
+    phone:
+      label: ફોન નંબર
+      placeholder: ફોન નંબર દાખલ કરો
+    update:
+      failure:
+        message: ફેરફારો સાચવવામાં નિષ્ફળ થયાં
+        unauthorized: વપરાશકર્તા આ ક્લાયન્ટની વિગતોમાં ફેરફાર કરવા માટે અનધિકૃત છે.
+      success:
+        message: ફેરફારો સફળતાપૂર્વક સાચવ્યા
+  clients:
+    add_client_contact:
+      success: આમંત્રણ સફળતાપૂર્વક મોકલ્યું.
+    send_payment_reminder:
+      success: ચુકવણી રિમાઇન્ડર મોકલવામાં આવ્યું છે.
+  companies:
+    create:
+      failure: કંપની બનાવવાનું નિષ્ફળ ગયું
+      success: કંપની સફળતાપૂર્વક બનાવવામાં આવી
+    purge_logo:
+      destroy:
+        success: કંપનીનો લોગો સફળતાપૂર્વક દૂર કરવામાં આવ્યો
+    update:
+      success: ફેરફારો સફળતાપૂર્વક સાચવ્યા
+  company:
+    address: સરનામું
+    base_currency: મૂળ ચલણ
+    business_phone: બિઝનેસ ફોન
+    cancel: રદ કરો
+    company: કંપની
+    country: દેશ
+    date_format: તારીખ ફોર્મેટ
+    fiscal_year: નાણાકીય વર્ષ
+    logo: લોગો
+    save: સાચવો
+    save_org: સંસ્થાની વિગતો સાચવો
+    setup: સેટઅપ સંસ્થા
+    standard_price: માનક કિંમત
+    timezone: સમય ઝોન
+  confirmation:
+    send_instructions: "%{email} પર એક પુષ્ટિકરણ ઇમેઇલ મોકલવામાં આવ્યો છે."
+  currency_pairs:
+    from_to_required: થી અને થી જરૂરી છે
+    rate_not_found: દર મળ્યો નથી
+  custom_leaves:
+    update:
+      success: કસ્ટમ પાંદડા સફળતાપૂર્વક અપડેટ થયા
+  employment:
+    update:
+      success: રોજગાર સફળતાપૂર્વક અપડેટ થયો
+  errors:
+    bill_status_billed: તમે એવી એન્ટ્રી બિલ કરી શકતા નથી જે પહેલાથી જ બિલ થઈ ગઈ હોય.
+    can't change status: ચૂકવેલ ઇન્વોઇસ બદલી શકાતો નથી
+    create_billed_entry: તમે બિલવાળી ટાઇમશીટ એન્ટ્રી બનાવી શકતા નથી.
+    internal_server_error: કંઈક ખોટું થયું.
+    not_found: તમે જે સંસાધન શોધી રહ્યા છો તે ઉપલબ્ધ નથી.
+    prevent_draft_to_waived: માફીથી બદલી શકાતી નથી
+    unauthorized: ફક્ત માલિક અથવા એડમિન વપરાશકર્તાઓ જ આ ક્રિયા કરવા માટે અધિકૃત છે.
+    updation_not_allowed: અપડેટ કરવાની મંજૂરી નથી.
+    user_already_member: ઇમેઇલ આઈડી પહેલાથી જ ઉપયોગમાં છે. કૃપા કરીને બીજો ઇમેઇલ આઈડી
+      દાખલ કરો.
+    validate_billable_project: તમે બિન-બિલપાત્ર પ્રોજેક્ટ્સ માટે બિન-બિલ એન્ટ્રી બનાવી
+      શકતા નથી.
+  expenses:
+    approve: ખર્ચ સફળતાપૂર્વક મંજૂર થયો
+    create: ખર્ચ સફળતાપૂર્વક સબમિટ કર્યો
+    destroy: ખર્ચ સફળતાપૂર્વક કાઢી નાખ્યો
+    mark_paid: ખર્ચ ચૂકવેલ તરીકે ચિહ્નિત કર્યો
+    must_be_approved: ખર્ચને ચૂકવેલ તરીકે ચિહ્નિત કરતા પહેલા તેને મંજૂર કરવો આવશ્યક
+      છે.
+    reject: ખર્ચ સફળતાપૂર્વક નકારવામાં આવ્યો
+    update: ખર્ચ સફળતાપૂર્વક અપડેટ થયો
+  holidays:
+    update:
+      success: રજાઓની માહિતી સફળતાપૂર્વક અપડેટ કરવામાં આવી
+  invitation:
+    create:
+      success:
+        message: આમંત્રણ સફળતાપૂર્વક મોકલ્યું
+    delete:
+      success:
+        message: આમંત્રણ સફળતાપૂર્વક દૂર કર્યું
+    resent:
+      success:
+        message: આમંત્રણ સફળતાપૂર્વક ફરીથી મોકલવામાં આવ્યું
+    update:
+      success:
+        message: ફેરફારો સફળતાપૂર્વક સાચવ્યા
+  invitations:
+    accept:
+      index:
+        success: આમંત્રણ સ્વીકાર્યું
+      show:
+        success: આમંત્રણ સ્વીકાર્યું
+      success: આમંત્રણ સ્વીકાર્યું
+    create:
+      failure: ફેરફારો સાચવવામાં નિષ્ફળ થયાં
+      success: આમંત્રણ મોકલવામાં આવશે
+    destroy:
+      failure: આમંત્રણ કાઢી નાખવામાં નિષ્ફળ થયાં
+      success: આમંત્રણ કાઢી નાખ્યું
+    update:
+      failure: ફેરફારો સાચવવામાં નિષ્ફળ થયાં
+      success: આમંત્રણ અપડેટ કર્યું
+  invoices:
+    payments:
+      success:
+        failure: કંઈક ખોટું થયું, કૃપા કરીને સપોર્ટનો સંપર્ક કરો
+        success: ચુકવણી સફળ થઈ
+  invoices_controller:
+    download:
+      pdf_failed: PDF જનરેટ કરવામાં નિષ્ફળ
+    send_invoice:
+      already_paid: ઇન્વોઇસ પહેલેથી જ ચૂકવી દેવામાં આવ્યો છે
+      pdf_failed: PDF જનરેટ કરવામાં નિષ્ફળ
+      recipient_limit: ઇમેઇલ ફક્ત 5 પ્રાપ્તકર્તાઓને જ મોકલી શકાય છે.
+      recipients_required: પ્રાપ્તકર્તાઓ જરૂરી છે
+      success: ઇન્વોઇસ સફળતાપૂર્વક મોકલવામાં આવ્યો છે.
+    send_reminder:
+      overdue_only: રિમાઇન્ડર્સ ફક્ત મુદતવીતી ઇન્વોઇસ માટે જ મોકલી શકાય છે
+      success: એક રિમાઇન્ડર મોકલવામાં આવ્યું છે.
+  invoices_view:
+    not_found: કોઈ ઇન્વોઇસ મળ્યું નથી
+  leave_types:
+    create:
+      success: રજાનો પ્રકાર સફળતાપૂર્વક ઉમેર્યો
+    update:
+      success: રજાનો પ્રકાર સફળતાપૂર્વક અપડેટ કર્યો
+  leave_with_leave_types:
+    update:
+      success: પાંદડા સફળતાપૂર્વક અપડેટ થયા
+  leaves:
+    create:
+      success: રજા સફળતાપૂર્વક બનાવી
+    update:
+      success: રજા સફળતાપૂર્વક અપડેટ થઈ
+  navbar:
+    clients: ગ્રાહકો
+    help: મદદ
+    invoices: ઇન્વોઇસ
+    logout: લોગઆઉટ
+    payments: ચુકવણીઓ
+    profile: પ્રોફાઇલ
+    projects: પ્રોજેક્ટ્સ
+    reports: અહેવાલો
+    settings: સેટિંગ્સ
+    team: ટીમ
+    time_tracking: સમય ટ્રેકિંગ
+    view_notifications: સૂચનાઓ જુઓ
+  passkeys:
+    add_passkey_first: સાઇન ઇન માટે પાસકીની જરૂર પડે તે પહેલાં તેને ઉમેરો.
+    added: પાસકી ઉમેરી
+    disable_totp_first: પાસકી સાઇન ઇનની જરૂર પડે તે પહેલાં પ્રમાણકર્તા એપ્લિકેશન 2FA
+      ને અક્ષમ કરો.
+    not_found: પાસકી મળી નથી.
+    removed: પાસકી દૂર કરી
+    requirement_disabled: પાસકી આવશ્યકતા અક્ષમ કરી
+    requirement_enabled: પાસકી આવશ્યકતા સક્ષમ કરી
+    session_expired: પાસકી સત્ર સમાપ્ત થયું. કૃપા કરીને ફરી પ્રયાસ કરો.
+    verification_failed: પાસકી ચકાસણી નિષ્ફળ ગઈ.
+  password:
+    create:
+      success: તમારો પાસવર્ડ રીસેટ કરવા માટેની સૂચનાઓ તમારા ઇમેઇલ પર મોકલવામાં આવી
+        છે.
+    update:
+      success: તમારો પાસવર્ડ અપડેટ કરવામાં આવ્યો છે.
+  projects:
+    add_new_project: નવો પ્રોજેક્ટ ઉમેરો
+    add_project: પ્રોજેક્ટ ઉમેરો
+    billable: બિલ કરવા યોગ્ય
+    client: ક્લાયન્ટ
+    create:
+      failure: પ્રોજેક્ટ બનાવવામાં નિષ્ફળ ગયા.
+      success: પ્રોજેક્ટ સફળતાપૂર્વક ઉમેરાયો.
+    delete:
+      success:
+        message: પ્રોજેક્ટ સફળતાપૂર્વક દૂર કરવામાં આવ્યો
+    edit: ફેરફાર કરો
+    hours_logged: કલાકો લૉગ થયા
+    new_project: નવો પ્રોજેક્ટ
+    non_billable: બિલપાત્ર નથી
+    project: પ્રોજેક્ટ
+    project_name: પ્રોજેક્ટનું નામ
+    projects: પ્રોજેક્ટ્સ
+    update:
+      success: ફેરફારો સફળતાપૂર્વક સાચવ્યા.
+    update_members:
+      failure:
+        message: ફેરફારો સાચવવામાં નિષ્ફળ થયાં
+        unauthorized: વપરાશકર્તા આ પ્રોજેક્ટની વિગતોમાં ફેરફાર કરવા માટે અનધિકૃત છે.
+      success:
+        message: ફેરફારો સફળતાપૂર્વક સાચવ્યા
+  pundit:
+    client_policy:
+      create?: તમે ક્લાયંટ બનાવવા માટે અધિકૃત નથી.
+      show?: તમને આ પેજ ઍક્સેસ કરવાની પરવાનગી નથી. કૃપા કરીને મદદ માટે તમારા એડમિનિસ્ટ્રેટરનો
+        સંપર્ક કરો.
+      update?: તમે ક્લાયંટને અપડેટ કરવા માટે અધિકૃત નથી.
+    company_policy:
+      create?: તમને કંપની બનાવવા માટે અધિકૃત નથી.
+      new?: તમને નવી કંપની બનાવવા માટે અધિકૃત નથી.
+      show?: તમને કંપની જોવા માટે અધિકૃત નથી.
+      update?: તમને કંપની અપડેટ કરવા માટે અધિકૃત નથી.
+    current_company_policy:
+      company_not_present: કંપની હાજર નથી.
+    default: તમે આ ક્રિયા કરવા માટે અધિકૃત નથી.
+    different_workspace: તમને તમારા વર્તમાન કાર્યસ્થળની બહારના રેકોર્ડ્સ ઍક્સેસ કરવા
+      માટે અધિકૃત નથી.
+    project_policy:
+      create?: તમે પ્રોજેક્ટ બનાવવા માટે અધિકૃત નથી.
+      show?: તમને આ પેજ ઍક્સેસ કરવાની પરવાનગી નથી. કૃપા કરીને મદદ માટે તમારા એડમિનિસ્ટ્રેટરનો
+        સંપર્ક કરો.
+    team_policy:
+      destroy?: તમને ટીમનો નાશ કરવાનો અધિકાર નથી.
+      edit?: તમને ટીમમાં ફેરફાર કરવા માટે અધિકૃત નથી.
+      update?: તમને ટીમ અપડેટ કરવા માટે અધિકૃત નથી.
+  registration:
+    confirm_password: પાસવર્ડ કન્ફર્મ કરો
+    email_id: ઇમેઇલ
+    first_name: પ્રથમ નામ
+    last_name: છેલ્લું નામ
+    name: નામ
+    or: અથવા
+    password: પાસવર્ડ
+    remember_me: મને યાદ રાખો
+    sign_in: સાઇન ઇન કરો
+    sign_up: સાઇન અપ કરો
+    signin_with_github: ગીથબ સાથે સાઇન ઇન કરો
+    signin_with_google: ગુગલ વડે સાઇન ઇન કરો
+    signup_with_apple: એપલ સાથે સાઇન અપ કરો
+    signup_with_github: ગીથબ સાથે સાઇન અપ કરો
+    signup_with_google: ગુગલ સાથે સાઇન અપ કરો
+  reports:
+    heading: સમય પ્રવેશ અહેવાલ
+  sessions:
+    failure:
+      invalid: અમાન્ય ઇમેઇલ અથવા પાસવર્ડ
+  settings:
+    cancel: રદ કરો
+    change_password: પાસવર્ડ બદલો
+    confirm_password: પાસવર્ડ કન્ફર્મ કરો
+    current_password: વર્તમાન પાસવર્ડ
+    email: ઇમેઇલ
+    name: નામ
+    organization_setting: સંસ્થા સેટિંગ્સ
+    password: પાસવર્ડ
+    payment_setting: ચુકવણી સેટિંગ્સ
+    profile_picture: પ્રોફાઇલ ચિત્ર
+    profile_setting: પ્રોફાઇલ સેટિંગ્સ
+    save: સાચવો
+    settings: સેટિંગ્સ
+  shared_links:
+    already_have_an_account: પહેલેથી જ ખાતું છે?
+    back_to_login: લોગિન પર પાછા જાઓ
+    confirmation_instruction: પુષ્ટિકરણ સૂચનાઓ મળી નથી?
+    dont_have_an_account: ખાતું નથી?
+    forgot_password: પાસવર્ડ ભૂલી ગયા છો?
+    unlock_instruction: અનલૉક સૂચનાઓ મળી નથી?
+  subscriptions:
+    no_billing_customer: આ કંપની માટે કોઈ બિલિંગ ગ્રાહક અસ્તિત્વમાં નથી.
+    pricing_not_configured: સ્ટ્રાઇપ સબ્સ્ક્રિપ્શન કિંમત ગોઠવેલ નથી
+    trial_not_eligible: તમારું કાર્યસ્થળ પ્રો ટ્રાયલ માટે યોગ્યતા ધરાવતું નથી
+    trial_started: તમારી 30-દિવસની પ્રો ટ્રાયલ શરૂ થઈ ગઈ છે.
+  team:
+    changed_email: બદલાયેલ ઇમેઇલ
+    create_new_user: નવો વપરાશકર્તા બનાવો
+    current_email: હાલનો ઇમેઇલ
+    delete:
+      success:
+        message: ટીમ સભ્યને સફળતાપૂર્વક દૂર કરવામાં આવ્યો
+    email: ઇમેઇલ
+    email_id: ઈમેલ આઈડી
+    first_name: પ્રથમ નામ
+    form_admin: એડમિન
+    form_book_keeper: બુક કીપર
+    form_email: ઇમેઇલ
+    form_employee: કર્મચારી
+    form_name: નામ
+    form_role: ભૂમિકા
+    invitation: આમંત્રણ બાકી છે
+    last_name: છેલ્લું નામ
+    name: નામ
+    new_user: નવો વપરાશકર્તા
+    profile_picture: ફોટો
+    reconfirmation: પુનઃપુષ્ટિ બાકી છે
+    role: ભૂમિકા
+    team: ટીમ
+    update:
+      error:
+        role: ભૂમિકા અપડેટ કરતી વખતે ભૂલ આવી હતી.
+      success:
+        message: ફેરફારો સફળતાપૂર્વક સાચવ્યા
+    update_user: વપરાશકર્તા અપડેટ કરો
+  timeoff_entries:
+    create:
+      success: સફળતાપૂર્વક રજા ઉમેરી
+    destroy:
+      success: રજા સફળતાપૂર્વક કાઢી નાખી
+    update:
+      success: રજાનો સમય સફળતાપૂર્વક અપડેટ કર્યો
+  timesheet_entry:
+    create:
+      message: ટાઇમશીટ બનાવી
+    destroy:
+      failure: ટાઇમશીટ એન્ટ્રીઓ કાઢી નાખવામાં નિષ્ફળ થયાં
+      message: ટાઇમશીટ કાઢી નાખી
+    update:
+      failure: ટાઇમશીટ એન્ટ્રીઓ અપડેટ કરવામાં નિષ્ફળ થયાં
+      message: ટાઇમશીટ અપડેટ કરી
+  totp:
+    disable_passkey_first: પ્રમાણકર્તા એપ્લિકેશન 2FA સક્ષમ કરતા પહેલા જરૂરી પાસકી
+      સાઇન ઇનને અક્ષમ કરો.
+    disabled: પ્રમાણકર્તા ઍપ બંધ કરી
+    enabled: પ્રમાણકર્તા એપ્લિકેશન સક્ષમ કરી
+    invalid_code: અમાન્ય પ્રમાણકર્તા કોડ.
+    invalid_verification: અમાન્ય ચકાસણી કોડ.
+    not_enabled: પહેલા ઓથેન્ટિકેટર એપ 2FA ને સક્ષમ કરો.
+    recovery_codes_regenerated: પુનઃપ્રાપ્તિ કોડ્સ ફરીથી ઉત્પન્ન થયા
+    session_expired: તે ચકાસણી વિનંતી હવે માન્ય નથી. કૃપા કરીને ફરીથી સાઇન ઇન કરો.
+  user:
+    login:
+      failure:
+        disabled: તમારી ઍક્સેસ અક્ષમ કરવામાં આવી છે.
+        pending_invitation: તમારું ખાતું હજુ સુધી સક્રિય થયું નથી.
+  workspaces:
+    update:
+      failure: વર્કસ્પેસ સ્વિચ કરવામાં નિષ્ફળ થયાં
+      success: વર્કસ્પેસ સફળતાપૂર્વક સ્વિચ કર્યું

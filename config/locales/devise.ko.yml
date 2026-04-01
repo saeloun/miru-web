@@ -1,0 +1,92 @@
+---
+ko:
+  activerecord:
+    errors:
+      models:
+        user:
+          attributes:
+            email:
+              blank: 이메일은 비워둘 수 없습니다.
+              invalid: 잘못된 이메일 주소입니다
+              taken: 이메일 ID가 이미 존재합니다.
+            first_name:
+              blank: 빈칸일 수 없습니다
+              invalid: 문자 또는 공백만 포함해야 합니다.
+            last_name:
+              blank: 빈칸일 수 없습니다
+              invalid: 문자 또는 공백만 포함해야 합니다.
+            password:
+              blank: 빈칸일 수 없습니다
+              too_short: 최소 %{count}자 이상이어야 합니다.
+            password_confirmation:
+              confirmation: 새 비밀번호와 일치하지 않습니다
+  devise:
+    confirmations:
+      confirmed: 귀하의 이메일 주소가 성공적으로 확인되었습니다.
+      send_instructions: 몇 분 안에 이메일 주소 확인 방법에 대한 안내 이메일을 받으실 겁니다.
+      send_paranoid_instructions: 귀하의 이메일 주소가 당사 데이터베이스에 등록되어 있는 경우, 몇 분 안에 이메일 주소
+        확인 방법에 대한 안내 이메일을 받게 됩니다.
+    failure:
+      already_authenticated: 이미 로그인되어 있습니다.
+      inactive: 귀하의 계정은 아직 활성화되지 않았습니다.
+      invalid: 잘못된 %{authentication_keys} 또는 비밀번호입니다.
+      last_attempt: 계정이 잠기기 전에 한 번 더 시도할 수 있습니다.
+      locked: 계정이 잠겼습니다.
+      not_found_in_database: 잘못된 %{authentication_keys} 또는 비밀번호입니다.
+      timeout: 세션이 만료되었습니다. 계속하려면 다시 로그인하세요.
+      unauthenticated: 계속하려면 로그인하거나 회원가입을 해야 합니다.
+      unconfirmed: 계속 진행하기 전에 이메일 주소를 확인해야 합니다.
+    mailer:
+      confirmation_instructions:
+        subject: 확인 안내
+      email_changed:
+        subject: 이메일 주소가 변경되었습니다
+      password_change:
+        subject: Miru 비밀번호 재설정에 성공했습니다!
+      reset_password_instructions:
+        subject: Miru 비밀번호를 재설정하세요
+      unlock_instructions:
+        subject: 잠금 해제 방법
+    omniauth_callbacks:
+      failure: '"%{reason}" 때문에 %{kind}에서 귀하를 인증할 수 없습니다.'
+      success: "%{kind} 계정에서 인증에 성공했습니다."
+    passwords:
+      no_token: 비밀번호 재설정 이메일을 통해서만 이 페이지에 접속할 수 있습니다. 비밀번호 재설정 이메일을 통해 접속하신 경우, 이메일에
+        포함된 전체 URL을 사용했는지 확인해 주세요.
+      send_instructions: 몇 분 안에 비밀번호 재설정 방법에 대한 안내 이메일을 받으실 겁니다.
+      send_paranoid_instructions: 귀하의 이메일 주소가 당사 데이터베이스에 등록되어 있는 경우, 몇 분 안에 해당 이메일
+        주소로 비밀번호 복구 링크가 전송됩니다.
+      updated: 비밀번호가 성공적으로 변경되었습니다. 이제 로그인되었습니다.
+      updated_not_active: 비밀번호가 성공적으로 변경되었습니다.
+    registrations:
+      destroyed: 안녕히 계세요! 회원님의 계정이 성공적으로 해지되었습니다. 곧 다시 뵙기를 바랍니다.
+      signed_up: 환영합니다! 회원가입이 성공적으로 완료되었습니다.
+      signed_up_but_inactive: 회원가입은 성공적으로 완료되었습니다. 하지만 계정이 아직 활성화되지 않아 로그인할 수 없습니다.
+      signed_up_but_locked: 회원가입은 성공적으로 완료되었습니다. 하지만 계정이 잠겨 있어 로그인할 수 없습니다.
+      signed_up_but_unconfirmed: ''
+      update_needs_confirmation: 계정 업데이트가 성공적으로 완료되었지만, 새 이메일 주소를 확인해야 합니다. 이메일을 확인하시고,
+        첨부된 링크를 클릭하여 새 이메일 주소를 인증해 주세요.
+      updated: 변경 사항이 성공적으로 저장되었습니다.
+      updated_but_not_signed_in: 계정 정보가 성공적으로 업데이트되었습니다. 하지만 비밀번호가 변경되었으므로 다시 로그인해야
+        합니다.
+      user:
+        signed_up_but_Your access has been disabled: 이메일을 확인하시고 확인 링크를 클릭하여 이메일 주소를
+          인증해 주세요.
+    sessions:
+      already_signed_out: 성공적으로 로그아웃되었습니다.
+      signed_in: 로그인에 성공했습니다.
+      signed_out: 성공적으로 로그아웃되었습니다.
+    unlocks:
+      send_instructions: 몇 분 안에 계정 잠금 해제 방법에 대한 안내 이메일을 받으실 겁니다.
+      send_paranoid_instructions: 계정이 있는 경우 몇 분 안에 계정 잠금 해제 방법에 대한 안내 이메일을 받게 됩니다.
+      unlocked: 계정 잠금 해제가 성공적으로 완료되었습니다. 계속하려면 로그인하세요.
+  errors:
+    messages:
+      already_confirmed: 이미 확인되었습니다. 다시 로그인해 주세요.
+      confirmation_period_expired: "%{period} 이내에 확인이 필요합니다. 새 제품을 요청해 주세요."
+      expired: 만료되었습니다. 새 라이선스를 신청해 주세요.
+      not_found: 찾을 수 없음
+      not_locked: 잠겨 있지 않았습니다
+      not_saved:
+        one: 오류 1개로 인해 이 %{resource}을 저장할 수 없습니다.
+        other: "%{count}개의 오류로 인해 이 %{resource}을 저장할 수 없었습니다."

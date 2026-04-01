@@ -1,0 +1,367 @@
+---
+fr:
+  activerecord:
+    errors:
+      models:
+        client:
+          attributes:
+            name:
+              format: "%{message}"
+        project:
+          attributes:
+            name:
+              format: "%{message}"
+  application_controller:
+    not_found: Route introuvable
+  avatar:
+    destroy:
+      success: Avatar supprimé avec succès
+    update:
+      success: Avatar mis à jour avec succès
+  client:
+    add: AJOUTER UN CLIENT
+    address:
+      label: Adresse
+      placeholder: Saisissez l'adresse
+    create:
+      failure: La création du client a échoué
+      success: Client ajouté avec succès
+    delete:
+      success:
+        message: Client supprimé avec succès
+    email:
+      label: E-mail
+      placeholder: Saisissez votre adresse e-mail
+    name:
+      label: Nom
+      placeholder: Entrez le nom
+    phone:
+      label: Numéro de téléphone
+      placeholder: Saisissez le numéro de téléphone
+    update:
+      failure:
+        message: Échec de l'enregistrement des modifications
+        unauthorized: L'utilisateur n'est pas autorisé à modifier les informations
+          de ce client.
+      success:
+        message: Modifications enregistrées avec succès
+  clients:
+    add_client_contact:
+      success: Invitation envoyée avec succès.
+    send_payment_reminder:
+      success: Un rappel de paiement a été envoyé.
+  companies:
+    create:
+      failure: La création de l'entreprise a échoué
+      success: Entreprise créée avec succès
+    purge_logo:
+      destroy:
+        success: Logo de l'entreprise supprimé avec succès
+    update:
+      success: Modifications enregistrées avec succès
+  company:
+    address: adresse
+    base_currency: monnaie de base
+    business_phone: téléphone professionnel
+    cancel: Annuler
+    company: entreprise
+    country: pays
+    date_format: Format de date
+    fiscal_year: exercice fiscal
+    logo: logo
+    save: sauvegarder
+    save_org: enregistrer les détails de l'organisation
+    setup: org de configuration
+    standard_price: prix standard
+    timezone: fuseau horaire
+  confirmation:
+    send_instructions: Un courriel de confirmation a été envoyé à %{email}.
+  currency_pairs:
+    from_to_required: Les champs « de » et « à » sont requis.
+    rate_not_found: Taux introuvable
+  custom_leaves:
+    update:
+      success: Les feuilles personnalisées ont été mises à jour avec succès.
+  employment:
+    update:
+      success: L'emploi a été mis à jour avec succès
+  errors:
+    bill_status_billed: Vous ne pouvez pas facturer une entrée qui a déjà été facturée.
+    can't change status: Une facture payée ne peut être modifiée.
+    create_billed_entry: Vous ne pouvez pas créer d'entrée de feuille de temps facturée.
+    internal_server_error: Quelque chose s'est mal passé
+    not_found: La ressource que vous recherchez n'est pas disponible.
+    prevent_draft_to_waived: ne peut pas être transformé en dispense
+    unauthorized: Seuls les propriétaires ou les administrateurs sont autorisés à
+      effectuer cette action.
+    updation_not_allowed: La mise à jour n'est pas autorisée
+    user_already_member: Cette adresse e-mail est déjà utilisée. Veuillez saisir une
+      autre adresse e-mail.
+    validate_billable_project: Vous ne pouvez pas créer d'entrée non facturée pour
+      les projets non facturables.
+  expenses:
+    approve: Dépense approuvée avec succès
+    create: Dépense soumise avec succès
+    destroy: Dépense supprimée avec succès
+    mark_paid: Dépense marquée comme payée
+    must_be_approved: La dépense doit être approuvée avant d'être marquée comme payée.
+    reject: Dépense rejetée avec succès
+    update: Dépense mise à jour avec succès
+  holidays:
+    update:
+      success: Informations sur les jours fériés mises à jour avec succès
+  invitation:
+    create:
+      success:
+        message: Invitation envoyée avec succès
+    delete:
+      success:
+        message: Invitation supprimée avec succès
+    resent:
+      success:
+        message: L'invitation a été renvoyée avec succès.
+    update:
+      success:
+        message: Modifications enregistrées avec succès
+  invitations:
+    accept:
+      index:
+        success: Invitation acceptée
+      show:
+        success: Invitation acceptée
+      success: Invitation acceptée
+    create:
+      failure: Échec de l'enregistrement des modifications
+      success: Une invitation sera envoyée
+    destroy:
+      failure: Impossible de supprimer l'invitation
+      success: Invitation supprimée
+    update:
+      failure: Échec de l'enregistrement des modifications
+      success: Invitation mise à jour
+  invoices:
+    payments:
+      success:
+        failure: Un problème est survenu, veuillez contacter l'assistance.
+        success: Paiement réussi
+  invoices_controller:
+    download:
+      pdf_failed: Échec de la génération du PDF
+    send_invoice:
+      already_paid: La facture a déjà été payée.
+      pdf_failed: Échec de la génération du PDF
+      recipient_limit: L'e-mail ne peut être envoyé qu'à 5 destinataires.
+      recipients_required: Les bénéficiaires sont requis
+      success: La facture a été envoyée avec succès.
+    send_reminder:
+      overdue_only: Les rappels ne peuvent être envoyés que pour les factures impayées.
+      success: Un rappel a été envoyé
+  invoices_view:
+    not_found: Aucune facture trouvée
+  leave_types:
+    create:
+      success: Type de congé ajouté avec succès
+    update:
+      success: Type de congé mis à jour avec succès
+  leave_with_leave_types:
+    update:
+      success: Mise à jour des feuilles réussie
+  leaves:
+    create:
+      success: Congé créé avec succès
+    update:
+      success: Mise à jour réussie
+  navbar:
+    clients: Clients
+    help: Aide
+    invoices: Factures
+    logout: Déconnexion
+    payments: Paiements
+    profile: Profil
+    projects: Projets
+    reports: Rapports
+    settings: Paramètres
+    team: Équipe
+    time_tracking: Suivi du temps
+    view_notifications: Afficher les notifications
+  passkeys:
+    add_passkey_first: Ajoutez un code d'accès avant de l'exiger pour la connexion.
+    added: Clé d'accès ajoutée
+    disable_totp_first: Désactivez l'authentification à deux facteurs (2FA) de l'application
+      d'authentification avant d'exiger une connexion par mot de passe.
+    not_found: Clé d'accès introuvable.
+    removed: Clé d'accès supprimée
+    requirement_disabled: Exigence de mot de passe désactivée
+    requirement_enabled: Exigence de mot de passe activée
+    session_expired: La session par mot de passe a expiré. Veuillez réessayer.
+    verification_failed: La vérification du code d'accès a échoué.
+  password:
+    create:
+      success: Les instructions pour réinitialiser votre mot de passe ont été envoyées
+        à votre adresse électronique.
+    update:
+      success: Votre mot de passe a été mis à jour.
+  projects:
+    add_new_project: Ajouter un nouveau projet
+    add_project: Ajouter un projet
+    billable: Facturable
+    client: Client
+    create:
+      failure: La création du projet a échoué.
+      success: Projet ajouté avec succès.
+    delete:
+      success:
+        message: Projet supprimé avec succès
+    edit: modifier
+    hours_logged: HEURES ENREGISTRÉES
+    new_project: NOUVEAU PROJET
+    non_billable: Non facturable
+    project: Projet
+    project_name: Nom du projet
+    projects: Projets
+    update:
+      success: Modifications enregistrées avec succès.
+    update_members:
+      failure:
+        message: Échec de l'enregistrement des modifications
+        unauthorized: L'utilisateur n'est pas autorisé à modifier les détails de ce
+          projet.
+      success:
+        message: Modifications enregistrées avec succès
+  pundit:
+    client_policy:
+      create?: Vous n'êtes pas autorisé à créer de client.
+      show?: Vous n'êtes pas autorisé à accéder à cette page. Veuillez contacter votre
+        administrateur pour obtenir de l'aide.
+      update?: Vous n'êtes pas autorisé à mettre à jour le client.
+    company_policy:
+      create?: Vous n'êtes pas autorisé à créer une société.
+      new?: Vous n'êtes pas autorisé à créer une nouvelle société.
+      show?: Vous n'êtes pas autorisé à consulter l'entreprise.
+      update?: Vous n'êtes pas autorisé à mettre à jour l'entreprise.
+    current_company_policy:
+      company_not_present: Compagnie absente.
+    default: Vous n'êtes pas autorisé à effectuer cette action.
+    different_workspace: Vous n'êtes pas autorisé à accéder aux enregistrements situés
+      en dehors de votre espace de travail actuel.
+    project_policy:
+      create?: Vous n'êtes pas autorisé à créer ce projet.
+      show?: Vous n'êtes pas autorisé à accéder à cette page. Veuillez contacter votre
+        administrateur pour obtenir de l'aide.
+    team_policy:
+      destroy?: Vous n'êtes pas autorisé à détruire l'équipe.
+      edit?: Vous n'êtes pas autorisé à modifier l'équipe.
+      update?: Vous n'êtes pas autorisé à mettre à jour l'équipe.
+  registration:
+    confirm_password: Confirmez le mot de passe
+    email_id: e-mail
+    first_name: prénom
+    last_name: nom de famille
+    name: nom
+    or: ou
+    password: mot de passe
+    remember_me: souviens-toi de moi
+    sign_in: se connecter
+    sign_up: s'inscrire
+    signin_with_github: se connecter avec github
+    signin_with_google: Se connecter avec Google
+    signup_with_apple: Inscrivez-vous avec Apple
+    signup_with_github: Inscrivez-vous sur GitHub
+    signup_with_google: Inscrivez-vous avec Google
+  reports:
+    heading: Rapport de saisie du temps
+  sessions:
+    failure:
+      invalid: Adresse e-mail ou mot de passe invalide
+  settings:
+    cancel: Annuler
+    change_password: changer le mot de passe
+    confirm_password: Confirmez le mot de passe
+    current_password: mot de passe actuel
+    email: e-mail
+    name: nom
+    organization_setting: paramètres d'organisation
+    password: mot de passe
+    payment_setting: paramètres de paiement
+    profile_picture: photo de profil
+    profile_setting: paramètres de profil
+    save: sauvegarder
+    settings: paramètres
+  shared_links:
+    already_have_an_account: Vous avez déjà un compte ?
+    back_to_login: Retour à la page de connexion
+    confirmation_instruction: Vous n'avez pas reçu les instructions de confirmation ?
+    dont_have_an_account: Vous n'avez pas de compte ?
+    forgot_password: Mot de passe oublié ?
+    unlock_instruction: Vous n'avez pas reçu les instructions de déverrouillage ?
+  subscriptions:
+    no_billing_customer: Aucun client facturé n'existe pour cette entreprise.
+    pricing_not_configured: La tarification de l'abonnement Stripe n'est pas configurée.
+    trial_not_eligible: Votre espace de travail n'est pas éligible à un essai Pro.
+    trial_started: Votre essai gratuit de 30 jours de la version Pro a commencé.
+  team:
+    changed_email: Adresse e-mail modifiée
+    create_new_user: Créer un nouvel utilisateur
+    current_email: Courriel actuel
+    delete:
+      success:
+        message: Membre de l'équipe supprimé avec succès
+    email: E-mail
+    email_id: ID EMAIL
+    first_name: Prénom
+    form_admin: Administrateur
+    form_book_keeper: Comptable
+    form_email: E-mail
+    form_employee: Employé
+    form_name: Nom
+    form_role: Rôle
+    invitation: INVITATION EN ATTENTE
+    last_name: Nom de famille
+    name: NOM
+    new_user: NOUVEL UTILISATEUR
+    profile_picture: PHOTO
+    reconfirmation: RECONFIRMATION EN ATTENTE
+    role: RÔLE
+    team: Équipe
+    update:
+      error:
+        role: Une erreur s'est produite lors de la mise à jour du rôle
+      success:
+        message: Modifications enregistrées avec succès
+    update_user: Mise à jour de l'utilisateur
+  timeoff_entries:
+    create:
+      success: Ajout de congés réussi
+    destroy:
+      success: Congé supprimé avec succès
+    update:
+      success: Mise à jour des congés effectuée avec succès
+  timesheet_entry:
+    create:
+      message: Feuille de temps créée
+    destroy:
+      failure: Échec de la suppression des entrées de la feuille de temps
+      message: Feuille de temps supprimée
+    update:
+      failure: Échec de la mise à jour des entrées de la feuille de temps
+      message: Feuille de temps mise à jour
+  totp:
+    disable_passkey_first: Désactivez la connexion par code d'accès requis avant d'activer
+      l'authentification à deux facteurs (2FA) de l'application d'authentification.
+    disabled: L'application d'authentification est désactivée.
+    enabled: Application d'authentification activée
+    invalid_code: Code d'authentification invalide.
+    invalid_verification: Code de vérification invalide.
+    not_enabled: Activez d'abord l'authentification à deux facteurs (2FA) de l'application.
+    recovery_codes_regenerated: Codes de récupération régénérés
+    session_expired: Cette demande de vérification n'est plus valide. Veuillez vous
+      reconnecter.
+  user:
+    login:
+      failure:
+        disabled: Votre accès a été désactivé.
+        pending_invitation: Votre compte n'est pas encore activé.
+  workspaces:
+    update:
+      failure: Impossible de changer d'espace de travail
+      success: Changement d'espace de travail réussi

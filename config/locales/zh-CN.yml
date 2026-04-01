@@ -1,0 +1,355 @@
+---
+zh-CN:
+  activerecord:
+    errors:
+      models:
+        client:
+          attributes:
+            name:
+              format: "%{message}"
+        project:
+          attributes:
+            name:
+              format: "%{message}"
+  application_controller:
+    not_found: 未找到路线
+  avatar:
+    destroy:
+      success: 头像已成功删除
+    update:
+      success: 头像已成功更新
+  client:
+    add: 添加客户
+    address:
+      label: 地址
+      placeholder: 输入地址
+    create:
+      failure: 客户端创建失败
+      success: 客户已成功添加。
+    delete:
+      success:
+        message: 客户已成功移除
+    email:
+      label: 电子邮件
+      placeholder: 请输入您的电子邮件地址
+    name:
+      label: 姓名
+      placeholder: 输入姓名
+    phone:
+      label: 电话号码
+      placeholder: 请输入电话号码
+    update:
+      failure:
+        message: 保存更改失败
+        unauthorized: 用户无权修改此客户的详细信息。
+      success:
+        message: 更改已成功保存
+  clients:
+    add_client_contact:
+      success: 邀请已成功发送。
+    send_payment_reminder:
+      success: 已发送付款提醒
+  companies:
+    create:
+      failure: 公司创建失败
+      success: 公司创建成功
+    purge_logo:
+      destroy:
+        success: 公司标志已成功移除
+    update:
+      success: 更改已成功保存
+  company:
+    address: 地址
+    base_currency: 基础货币
+    business_phone: 商务电话
+    cancel: 取消
+    company: 公司
+    country: 国家
+    date_format: 日期格式
+    fiscal_year: 财政年度
+    logo: 标识
+    save: 节省
+    save_org: 保存组织详细信息
+    setup: 设置组织
+    standard_price: 标准价格
+    timezone: 时区
+  confirmation:
+    send_instructions: 已向 %{email} 发送确认邮件。
+  currency_pairs:
+    from_to_required: 需要提供起始地址和结束地址。
+    rate_not_found: 未找到费率
+  custom_leaves:
+    update:
+      success: 自定义叶子已成功更新
+  employment:
+    update:
+      success: 就业信息已成功更新
+  errors:
+    bill_status_billed: 已经计费过的条目不能再次计费。
+    can't change status: 已付款的发票无法更改
+    create_billed_entry: 您无法创建已计费的工时表条目
+    internal_server_error: 出问题了
+    not_found: 您要查找的资源不可用。
+    prevent_draft_to_waived: 不能改为豁免
+    unauthorized: 只有所有者或管理员用户才有权执行此操作
+    updation_not_allowed: 不允许更新。
+    user_already_member: 邮箱地址已被使用。请输入另一个邮箱地址。
+    validate_billable_project: 您无法为不可计费项目创建未开票条目。
+  expenses:
+    approve: 费用已获批准
+    create: 费用已成功提交
+    destroy: 费用已成功删除
+    mark_paid: 费用标记为已支付
+    must_be_approved: 费用必须先获得批准才能标记为已支付。
+    reject: 费用申请已成功拒绝
+    update: 费用已成功更新
+  holidays:
+    update:
+      success: 假日信息已成功更新
+  invitation:
+    create:
+      success:
+        message: 邀请已成功发送
+    delete:
+      success:
+        message: 邀请已成功移除
+    resent:
+      success:
+        message: 邀请已成功重新发送。
+    update:
+      success:
+        message: 更改已成功保存
+  invitations:
+    accept:
+      index:
+        success: 已接受邀请
+      show:
+        success: 已接受邀请
+      success: 已接受邀请
+    create:
+      failure: 保存更改失败
+      success: 邀请函将发出
+    destroy:
+      failure: 删除邀请失败
+      success: 邀请已删除
+    update:
+      failure: 保存更改失败
+      success: 邀请函已更新
+  invoices:
+    payments:
+      success:
+        failure: 出现错误，请联系客服。
+        success: 付款成功
+  invoices_controller:
+    download:
+      pdf_failed: 生成 PDF 文件失败
+    send_invoice:
+      already_paid: 发票已支付
+      pdf_failed: 生成 PDF 文件失败
+      recipient_limit: 邮件最多只能发送给 5 个收件人。
+      recipients_required: 收件人是必需的
+      success: 发票已成功发送
+    send_reminder:
+      overdue_only: 只能对逾期发票发送催款通知。
+      success: 已发送提醒
+  invoices_view:
+    not_found: 未找到发票
+  leave_types:
+    create:
+      success: 添加请假类型已成功
+    update:
+      success: 请假类型已成功更新
+  leave_with_leave_types:
+    update:
+      success: 叶片已成功更新
+  leaves:
+    create:
+      success: 请假创建成功
+    update:
+      success: 休假信息已成功更新
+  navbar:
+    clients: 客户
+    help: 帮助
+    invoices: 发票
+    logout: 注销
+    payments: 付款
+    profile: 轮廓
+    projects: 项目
+    reports: 报告
+    settings: 设置
+    team: 团队
+    time_tracking: 时间跟踪
+    view_notifications: 查看通知
+  passkeys:
+    add_passkey_first: 在要求登录时输入密码之前，请先添加密码。
+    added: 已添加通行密钥
+    disable_totp_first: 在要求使用密码登录之前，请禁用身份验证器应用程序的双因素身份验证。
+    not_found: 未找到通行密钥。
+    removed: 密码已移除
+    requirement_disabled: 已禁用通行密钥要求
+    requirement_enabled: 已启用通行密钥要求
+    session_expired: 密码会话已过期，请重试。
+    verification_failed: 密码验证失败。
+  password:
+    create:
+      success: 重置密码的说明已发送到您的邮箱。
+    update:
+      success: 您的密码已更新。
+  projects:
+    add_new_project: 添加新项目
+    add_project: 添加项目
+    billable: 可计费
+    client: 客户
+    create:
+      failure: 项目创建失败。
+      success: 项目添加成功。
+    delete:
+      success:
+        message: 项目已成功移除
+    edit: 编辑
+    hours_logged: 已记录工时
+    new_project: 新项目
+    non_billable: 不计费
+    project: 项目
+    project_name: 项目名称
+    projects: 项目
+    update:
+      success: 更改已成功保存。
+    update_members:
+      failure:
+        message: 保存更改失败
+        unauthorized: 用户无权修改此项目的详细信息。
+      success:
+        message: 更改已成功保存
+  pundit:
+    client_policy:
+      create?: 您没有权限创建客户端。
+      show?: 您无权访问此页面。请联系您的管理员寻求帮助。
+      update?: 您没有权限更新客户端。
+    company_policy:
+      create?: 您没有创建公司的权限。
+      new?: 您无权创建新公司。
+      show?: 您无权查看公司信息。
+      update?: 您无权更新公司信息。
+    current_company_policy:
+      company_not_present: 公司未到场。
+    default: 您无权执行此操作。
+    different_workspace: 您无权访问当前工作区以外的记录。
+    project_policy:
+      create?: 您没有创建项目的权限。
+      show?: 您无权访问此页面。请联系您的管理员寻求帮助。
+    team_policy:
+      destroy?: 你没有权限摧毁团队。
+      edit?: 您没有权限编辑团队信息。
+      update?: 您没有权限更新团队信息。
+  registration:
+    confirm_password: 确认密码
+    email_id: 电子邮件
+    first_name: 名
+    last_name: 姓
+    name: 姓名
+    or: 或者
+    password: 密码
+    remember_me: 记住账号
+    sign_in: 登入
+    sign_up: 报名
+    signin_with_github: 使用 GitHub 登录
+    signin_with_google: 使用谷歌账号登录
+    signup_with_apple: 使用 Apple 注册
+    signup_with_github: 使用 GitHub 注册
+    signup_with_google: 使用谷歌账号注册
+  reports:
+    heading: 时间录入报告
+  sessions:
+    failure:
+      invalid: 无效的电子邮件地址或密码
+  settings:
+    cancel: 取消
+    change_password: 更改密码
+    confirm_password: 确认密码
+    current_password: 当前密码
+    email: 电子邮件
+    name: 姓名
+    organization_setting: 组织设置
+    password: 密码
+    payment_setting: 支付设置
+    profile_picture: 头像
+    profile_setting: 个人资料设置
+    save: 节省
+    settings: 设置
+  shared_links:
+    already_have_an_account: 已有账号？
+    back_to_login: 返回登录
+    confirmation_instruction: 没有收到确认说明？
+    dont_have_an_account: 还没有账号？
+    forgot_password: 忘记密码 ？
+    unlock_instruction: 没有收到解锁说明？
+  subscriptions:
+    no_billing_customer: 这家公司没有计费客户。
+    pricing_not_configured: Stripe订阅定价尚未配置
+    trial_not_eligible: 您的工作区不符合专业版试用条件。
+    trial_started: 您的 30 天专业版试用期已开始
+  team:
+    changed_email: 更改电子邮件
+    create_new_user: 创建新用户
+    current_email: 当前电子邮件
+    delete:
+      success:
+        message: 团队成员已成功移除
+    email: 电子邮件
+    email_id: 电子邮箱
+    first_name: 名
+    form_admin: 行政
+    form_book_keeper: 簿记员
+    form_email: 电子邮件
+    form_employee: 员工
+    form_name: 姓名
+    form_role: 角色
+    invitation: 邀请待定
+    last_name: 姓
+    name: 姓名
+    new_user: 新用户
+    profile_picture: 照片
+    reconfirmation: 待重新确认
+    role: 角色
+    team: 团队
+    update:
+      error:
+        role: 更新角色时出错
+      success:
+        message: 更改已成功保存
+    update_user: 更新用户
+  timeoff_entries:
+    create:
+      success: 成功添加休假时间
+    destroy:
+      success: 已成功删除休假时间
+    update:
+      success: 休假时间已成功更新
+  timesheet_entry:
+    create:
+      message: 创建工时表
+    destroy:
+      failure: 删除工时表条目失败
+      message: 已删除工时表
+    update:
+      failure: 更新工时表条目失败
+      message: 工时表已更新
+  totp:
+    disable_passkey_first: 启用身份验证器应用程序双因素身份验证之前，请先禁用所需的密码密钥登录。
+    disabled: 身份验证器应用已禁用
+    enabled: 已启用身份验证器应用程序
+    invalid_code: 验证码无效。
+    invalid_verification: 验证码无效。
+    not_enabled: 请先启用身份验证器应用程序的双重验证。
+    recovery_codes_regenerated: 恢复代码已重新生成
+    session_expired: 该验证请求已失效，请重新登录。
+  user:
+    login:
+      failure:
+        disabled: 您的访问权限已被禁用。
+        pending_invitation: 您的账户尚未激活。
+  workspaces:
+    update:
+      failure: 切换工作区失败
+      success: 工作区切换成功

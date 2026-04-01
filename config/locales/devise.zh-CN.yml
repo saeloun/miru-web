@@ -1,0 +1,86 @@
+---
+zh-CN:
+  activerecord:
+    errors:
+      models:
+        user:
+          attributes:
+            email:
+              blank: 电子邮件地址不能为空。
+              invalid: 无效的电子邮件地址
+              taken: 邮箱地址已存在
+            first_name:
+              blank: 不能为空
+              invalid: 只能包含字母或空格
+            last_name:
+              blank: 不能为空
+              invalid: 只能包含字母或空格
+            password:
+              blank: 不能为空
+              too_short: 长度必须至少为 %{count} 个字符
+            password_confirmation:
+              confirmation: 与新密码不匹配
+  devise:
+    confirmations:
+      confirmed: 您的电子邮件地址已成功验证。
+      send_instructions: 几分钟后，您将收到一封电子邮件，其中包含如何确认您的电子邮件地址的说明。
+      send_paranoid_instructions: 如果您的电子邮件地址已存在于我们的数据库中，您将在几分钟内收到一封电子邮件，其中包含如何确认您的电子邮件地址的说明。
+    failure:
+      already_authenticated: 您已登录。
+      inactive: 您的账户尚未激活。
+      invalid: "%{authentication_keys} 或密码无效。"
+      last_attempt: 你的账号将被锁定，你还有最后一次尝试机会。
+      locked: 您的账户已被锁定。
+      not_found_in_database: "%{authentication_keys} 或密码无效。"
+      timeout: 您的会话已过期。请重新登录以继续。
+      unauthenticated: 您需要先登录或注册才能继续。
+      unconfirmed: 您必须先确认您的电子邮件地址才能继续。
+    mailer:
+      confirmation_instructions:
+        subject: 确认说明
+      email_changed:
+        subject: 电子邮件已更改
+      password_change:
+        subject: Miru密码重置成功！
+      reset_password_instructions:
+        subject: 重置您的 Miru 密码
+      unlock_instructions:
+        subject: 解锁说明
+    omniauth_callbacks:
+      failure: 无法从 %{kind} 验证您的身份，因为“%{reason}”。
+      success: 已成功通过 %{kind} 帐户进行身份验证。
+    passwords:
+      no_token: 您必须通过密码重置邮件才能访问此页面。如果您是通过密码重置邮件访问的，请确保您使用了邮件中提供的完整URL。
+      send_instructions: 几分钟后，您将收到一封电子邮件，其中包含重置密码的说明。
+      send_paranoid_instructions: 如果您的电子邮件地址存在于我们的数据库中，您将在几分钟内收到一封包含密码恢复链接的电子邮件。
+      updated: 您的密码已成功更改。您现在已登录。
+      updated_not_active: 您的密码已成功更改。
+    registrations:
+      destroyed: 再见！您的账户已成功注销。希望很快能再次见到您。
+      signed_up: 欢迎！您已成功注册。
+      signed_up_but_inactive: 您已成功注册。但是，由于您的帐户尚未激活，我们无法让您登录。
+      signed_up_but_locked: 您已成功注册。但是，由于您的帐户已被锁定，我们无法让您登录。
+      signed_up_but_unconfirmed: ''
+      update_needs_confirmation: 您已成功更新账户，但我们需要验证您的新邮箱地址。请查看您的邮箱并点击确认链接以验证您的新邮箱地址。
+      updated: 更改已成功保存
+      updated_but_not_signed_in: 您的账户已成功更新，但由于您的密码已更改，您需要重新登录。
+      user:
+        signed_up_but_Your access has been disabled: 请查收您的电子邮件，并点击确认链接以确认您的电子邮件地址。
+    sessions:
+      already_signed_out: 已成功登出。
+      signed_in: 登录成功。
+      signed_out: 已成功登出。
+    unlocks:
+      send_instructions: 几分钟后，您将收到一封电子邮件，其中包含解锁帐户的说明。
+      send_paranoid_instructions: 如果您的账户存在，您将在几分钟内收到一封电子邮件，其中包含解锁账户的说明。
+      unlocked: 您的账户已成功解锁。请登录以继续。
+  errors:
+    messages:
+      already_confirmed: 已确认，请尝试登录。
+      confirmation_period_expired: 需要在 %{period} 天内确认，请申请新的确认。
+      expired: 已过期，请申请新的。
+      not_found: 未找到
+      not_locked: 未锁定
+      not_saved:
+        one: 1 个错误导致此 %{resource} 无法保存：
+        other: "%{count} 错误导致此 %{resource} 无法保存："

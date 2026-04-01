@@ -1,0 +1,105 @@
+---
+nl:
+  activerecord:
+    errors:
+      models:
+        user:
+          attributes:
+            email:
+              blank: Een e-mailadres mag niet leeg zijn.
+              invalid: Ongeldig e-mailadres
+              taken: Het e-mailadres bestaat al
+            first_name:
+              blank: mag niet leeg zijn
+              invalid: mag alleen letters of spaties bevatten
+            last_name:
+              blank: mag niet leeg zijn
+              invalid: mag alleen letters of spaties bevatten
+            password:
+              blank: mag niet leeg zijn
+              too_short: moet minimaal %{count} tekens lang zijn
+            password_confirmation:
+              confirmation: komt niet overeen met het nieuwe wachtwoord
+  devise:
+    confirmations:
+      confirmed: Je e-mailadres is succesvol bevestigd.
+      send_instructions: Je ontvangt binnen enkele minuten een e-mail met instructies
+        voor het bevestigen van je e-mailadres.
+      send_paranoid_instructions: Als uw e-mailadres in onze database staat, ontvangt
+        u binnen enkele minuten een e-mail met instructies voor het bevestigen van
+        uw e-mailadres.
+    failure:
+      already_authenticated: Je bent al ingelogd.
+      inactive: Je account is nog niet geactiveerd.
+      invalid: Ongeldige %{authentication_keys} of wachtwoord.
+      last_attempt: Je hebt nog één poging voordat je account wordt geblokkeerd.
+      locked: Je account is geblokkeerd.
+      not_found_in_database: Ongeldige %{authentication_keys} of wachtwoord.
+      timeout: Je sessie is verlopen. Meld je opnieuw aan om verder te gaan.
+      unauthenticated: Je moet je aanmelden of registreren voordat je verder kunt
+        gaan.
+      unconfirmed: Je moet je e-mailadres bevestigen voordat je verder kunt gaan.
+    mailer:
+      confirmation_instructions:
+        subject: Bevestigingsinstructies
+      email_changed:
+        subject: E-mailadres gewijzigd
+      password_change:
+        subject: Miru-wachtwoord succesvol gereset!
+      reset_password_instructions:
+        subject: Stel uw Miru-wachtwoord opnieuw in.
+      unlock_instructions:
+        subject: Instructies voor ontgrendelen
+    omniauth_callbacks:
+      failure: Authenticatie vanaf %{kind} is niet mogelijk omdat "%{reason}" niet
+        werkt.
+      success: Succesvol geverifieerd vanaf account %{kind}.
+    passwords:
+      no_token: Je hebt geen toegang tot deze pagina als je niet via een e-mail voor
+        het opnieuw instellen van je wachtwoord op deze pagina terecht bent gekomen.
+        Als je via zo'n e-mail komt, zorg er dan voor dat je de volledige URL gebruikt.
+      send_instructions: Je ontvangt binnen enkele minuten een e-mail met instructies
+        voor het opnieuw instellen van je wachtwoord.
+      send_paranoid_instructions: Als uw e-mailadres in onze database staat, ontvangt
+        u binnen enkele minuten een link voor wachtwoordherstel op uw e-mailadres.
+      updated: Je wachtwoord is succesvol gewijzigd. Je bent nu ingelogd.
+      updated_not_active: Je wachtwoord is succesvol gewijzigd.
+    registrations:
+      destroyed: Tot ziens! Je account is succesvol geannuleerd. We hopen je snel
+        weer te zien.
+      signed_up: Welkom! Je hebt je succesvol aangemeld.
+      signed_up_but_inactive: Je hebt je succesvol aangemeld. We konden je echter
+        niet inloggen omdat je account nog niet is geactiveerd.
+      signed_up_but_locked: Je hebt je succesvol aangemeld. We konden je echter niet
+        inloggen omdat je account is geblokkeerd.
+      signed_up_but_unconfirmed: ''
+      update_needs_confirmation: Je account is succesvol bijgewerkt, maar we moeten
+        je nieuwe e-mailadres nog verifiëren. Controleer je e-mail en volg de link
+        om je nieuwe e-mailadres te bevestigen.
+      updated: Wijzigingen succesvol opgeslagen
+      updated_but_not_signed_in: Je account is succesvol bijgewerkt, maar omdat je
+        wachtwoord is gewijzigd, moet je opnieuw inloggen.
+      user:
+        signed_up_but_Your access has been disabled: Controleer uw e-mail en volg
+          de bevestigingslink om uw e-mailadres te bevestigen.
+    sessions:
+      already_signed_out: Succesvol uitgelogd.
+      signed_in: Succesvol ingelogd.
+      signed_out: Succesvol uitgelogd.
+    unlocks:
+      send_instructions: Je ontvangt binnen enkele minuten een e-mail met instructies
+        voor het ontgrendelen van je account.
+      send_paranoid_instructions: Als uw account bestaat, ontvangt u binnen enkele
+        minuten een e-mail met instructies voor het ontgrendelen ervan.
+      unlocked: Je account is succesvol ontgrendeld. Log in om verder te gaan.
+  errors:
+    messages:
+      already_confirmed: Dit is al bevestigd, probeer opnieuw in te loggen.
+      confirmation_period_expired: Dit moet binnen %{period} worden bevestigd; vraag
+        een nieuwe aan.
+      expired: is verlopen, vraag een nieuwe aan.
+      not_found: niet gevonden
+      not_locked: was niet vergrendeld
+      not_saved:
+        one: '1 fout heeft ervoor gezorgd dat deze %{resource} niet kon worden opgeslagen:'
+        other: "%{count}-fouten verhinderden dat deze %{resource} kon worden opgeslagen:"
