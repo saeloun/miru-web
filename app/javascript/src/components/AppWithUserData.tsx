@@ -121,13 +121,13 @@ const AppWithUserData = (props: any) => {
 
   useEffect(() => {
     const initLocale = async () => {
-      let locale = "en";
-      if (userData.user?.locale) {
-        locale = userData.user.locale;
-      } else {
-        const stored = getStoredLocale();
-        locale = stored !== "en" ? stored : detectBrowserLocale();
-      }
+      // Priority: localStorage (most recent user choice) > DB > browser detection
+      const stored = getStoredLocale();
+      const dbLocale = userData.user?.locale;
+      const locale = (stored && stored !== "en") ? stored
+        : (dbLocale && dbLocale !== "en") ? dbLocale
+        : stored || dbLocale || detectBrowserLocale();
+
       await loadLocale(locale);
       setStoredLocale(locale);
       setInitialLocale(locale);
@@ -137,7 +137,7 @@ const AppWithUserData = (props: any) => {
     if (!userData.loading) {
       initLocale();
     }
-  }, [userData.loading, userData.user?.locale]);
+  }, [userData.loading]);
 
   const { user, company, companyRole, loading } = userData;
 
