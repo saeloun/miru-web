@@ -62,7 +62,6 @@ const ko = {
   inactive: "비활성",
   invited: "초대됨",
   department: "부서",
-  projects: "프로젝트",
   theme: "테마",
   summary: "요약",
   format: "형식",
@@ -185,10 +184,12 @@ const ko = {
     entry: "항목",
     entries: "항목",
     noEntriesForSelectedDay: "선택한 날의 항목이 없습니다",
-    weekReviewHint: "이번 주에 기록한 모든 것을 검토하려면 이번 주로 전환하세요.",
+    weekReviewHint:
+      "이번 주에 기록한 모든 것을 검토하려면 이번 주로 전환하세요.",
     noTimeEntriesYet: "아직 시간 항목이 없습니다",
     firstEntryHint: '"항목 추가"를 클릭하여 이 날의 첫 시간 항목을 기록하세요',
-    logWorkByWeekOrMonth: "주 또는 월별로 작업을 기록하세요. 항목을 명확하고 최신 상태로 유지하세요.",
+    logWorkByWeekOrMonth:
+      "주 또는 월별로 작업을 기록하세요. 항목을 명확하고 최신 상태로 유지하세요.",
     entriesFor: "%{name}의 항목",
     timeEntriesFor: "시간 항목",
     unableToLoad: "현재 시간 추적을 로드할 수 없습니다.",
@@ -206,7 +207,8 @@ const ko = {
     entriesUpdatedSuccessfully: "항목이 성공적으로 업데이트되었습니다",
     failedToUpdateEntries: "항목 업데이트에 실패했습니다",
     selectProjectFirst: "먼저 프로젝트를 선택하세요",
-    editingModeActive: "편집 모드가 활성 상태입니다. 위의 변경사항을 완료하세요.",
+    editingModeActive:
+      "편집 모드가 활성 상태입니다. 위의 변경사항을 완료하세요.",
     dayAbbr: {
       mon: "월",
       tue: "화",
@@ -330,7 +332,8 @@ const ko = {
     searchProjects: "프로젝트 검색...",
     createFirstProject: "시작하려면 첫 프로젝트를 만드세요.",
     noProjectsYet: "아직 프로젝트가 없습니다",
-    workingOnProjects: "프로젝트 전반의 청구 가능 및 청구 불가 작업을 추적하세요.",
+    workingOnProjects:
+      "프로젝트 전반의 청구 가능 및 청구 불가 작업을 추적하세요.",
     active: "활성",
     paused: "일시 중지",
     completed: "완료",
@@ -353,7 +356,8 @@ const ko = {
     nonBillableDescription: "고객에게 청구하지 않고 시간 추적",
     noClientsPresent: "고객이 없습니다",
     teamMembersUpdated: "팀원이 성공적으로 업데이트되었습니다",
-    manageProjectMembersDescription: "팀원을 추가 또는 제거하고 시간당 요율을 설정하세요.",
+    manageProjectMembersDescription:
+      "팀원을 추가 또는 제거하고 시간당 요율을 설정하세요.",
     enterValidRate: "유효한 요율을 입력하세요",
     addAnotherTeamMember: "다른 멤버 추가",
     addTeamMember: "팀원 추가",
@@ -471,8 +475,7 @@ const ko = {
     addEntry: "%{count}개 항목 추가",
     addEntries_plural: "%{count}개 항목 추가",
     thankYouForBusiness: "거래해 주셔서 감사합니다!",
-    previewNote:
-      "미리보기입니다. 저장 후 변경사항이 반영됩니다.",
+    previewNote: "미리보기입니다. 저장 후 변경사항이 반영됩니다.",
     noInvoiceGenerated: "아직 생성된 청구서가 없습니다.",
     acceptCreditCards: "신용카드 결제 수락",
     sendTo: "받는 사람",
@@ -502,15 +505,11 @@ const ko = {
     recipientEmailId: "수신자 이메일 주소",
     subject: "제목",
     message: "메시지",
-    addEmailFromClientSettings:
-      "고객 설정 페이지에서 이메일을 추가하세요",
-    reminderSubject:
-      "미결제 청구서 결제 알림",
+    addEmailFromClientSettings: "고객 설정 페이지에서 이메일을 추가하세요",
+    reminderSubject: "미결제 청구서 결제 알림",
     invoiceSentSubject: "%{company}에서 청구서를 보냈습니다 (%{number})",
-    reminderBody:
-      "%{company}에서 청구서 %{number}에 대한 알림을 보냈습니다",
-    invoiceSentBody:
-      "%{company}에서 청구서를 보냈습니다 (%{number})",
+    reminderBody: "%{company}에서 청구서 %{number}에 대한 알림을 보냈습니다",
+    invoiceSentBody: "%{company}에서 청구서를 보냈습니다 (%{number})",
     invoiceWillBeSent: "청구서가 발송됩니다!",
     processing: "처리 중...",
 
@@ -596,17 +595,21 @@ const ko = {
 
     // Invoice reminder email
     invoiceReminder: "청구서 알림: %{number}",
-    reminderMessage: "미결제 청구서에 대한 알림입니다. 첨부된 세부정보를 확인하세요.",
+    reminderMessage:
+      "미결제 청구서에 대한 알림입니다. 첨부된 세부정보를 확인하세요.",
     invoiceAttached: "청구서를 첨부했으니 확인하세요.",
-    reminderPaymentMessage: "연체 청구서에 대한 알림입니다. 결제를 완료해 주세요.",
+    reminderPaymentMessage:
+      "연체 청구서에 대한 알림입니다. 결제를 완료해 주세요.",
     invoiceSubject: "청구서 %{number}",
     reminderPaymentSubject: "청구서 %{number} 결제 알림",
-    markAsPaidConfirm: "이 청구서를 결제 완료로 표시하시겠습니까? 이 작업은 회계 기록에 영향을 미칩니다.",
+    markAsPaidConfirm:
+      "이 청구서를 결제 완료로 표시하시겠습니까? 이 작업은 회계 기록에 영향을 미칩니다.",
     failedToLoadInvoice: "청구서 로딩에 실패했습니다",
     invoiceNotFound: "청구서를 찾을 수 없습니다",
     failedToMarkAsPaid: "청구서 결제 완료 표시에 실패했습니다",
     failedToDownloadInvoice: "청구서 다운로드에 실패했습니다",
-    cannotDownloadInvalidId: "청구서를 다운로드할 수 없습니다 - 유효하지 않은 ID",
+    cannotDownloadInvalidId:
+      "청구서를 다운로드할 수 없습니다 - 유효하지 않은 ID",
     cannotSendInvalidId: "청구서를 발송할 수 없습니다 - 유효하지 않은 ID",
     payment: "결제 #%{id}",
   },
@@ -680,7 +683,8 @@ const ko = {
   timer: {
     webTimer: "웹 타이머",
     webTimerLabel: "웹 타이머",
-    trackLiveWork: "실시간으로 작업을 추적한 후 오늘의 항목 목록에 바로 저장하세요.",
+    trackLiveWork:
+      "실시간으로 작업을 추적한 후 오늘의 항목 목록에 바로 저장하세요.",
     startTimer: "타이머 시작",
     pause: "일시 정지",
     resume: "재개",
@@ -689,7 +693,8 @@ const ko = {
     reset: "초기화",
     timer: "타이머",
     saveTimeEntry: "시간 항목 저장",
-    saveTimeEntryDescription: "%{time}을 추적했습니다. 시간 항목으로 저장하시겠습니까?",
+    saveTimeEntryDescription:
+      "%{time}을 추적했습니다. 시간 항목으로 저장하시겠습니까?",
     discard: "삭제",
     timerStarted: "타이머가 시작되었습니다",
     timerPaused: "타이머가 일시 정지되었습니다",
@@ -799,8 +804,10 @@ const ko = {
     noteHeader: "메모",
     teamMemberDate: "팀원/ 날짜",
     hoursLogged: "기록된 시간",
-    noResultsMatchFilters: "현재 필터와 일치하는 결과가 없습니다. 일부 필터를 제거해 보세요.",
-    noTimeEntriesYet: "아직 추가된 시간 항목이 없습니다. 팀이 추가한 시간 항목의 요약이 여기에 표시됩니다.",
+    noResultsMatchFilters:
+      "현재 필터와 일치하는 결과가 없습니다. 일부 필터를 제거해 보세요.",
+    noTimeEntriesYet:
+      "아직 추가된 시간 항목이 없습니다. 팀이 추가한 시간 항목의 요약이 여기에 표시됩니다.",
     selected: "%{count}개 선택됨",
     showingClientsCount: "%{shown} / %{total} 고객 표시 중",
     ofTeamMembersSelected: "%{total}명 중 %{active}명의 팀원이 선택됨",
@@ -826,9 +833,11 @@ const ko = {
     timeEntryReportTitle: "시간 항목 보고서",
     timeEntryReportDesc: "팀이 추가한 시간 항목의 요약입니다.",
     invoicesReport: "청구서 보고서",
-    invoicesReportDesc: "일정 기간 동안 모든 고객의 미결제 및 연체에 대한 상세 요약입니다.",
+    invoicesReportDesc:
+      "일정 기간 동안 모든 고객의 미결제 및 연체에 대한 상세 요약입니다.",
     totalHoursLoggedTitle: "총 기록 시간",
-    totalHoursLoggedDesc: "프로젝트별로 그룹화된 팀의 청구, 미청구 및 청구 불가 시간의 상세 요약입니다.",
+    totalHoursLoggedDesc:
+      "프로젝트별로 그룹화된 팀의 청구, 미청구 및 청구 불가 시간의 상세 요약입니다.",
     revenueReport: "매출 보고서",
     revenueReportDesc: "각 고객의 매출에 대한 상세 보고서입니다.",
     accountsAging: "매출채권 경과",
@@ -855,7 +864,8 @@ const ko = {
     averageDays: "평균 일수:",
     timeReportsDesc: "팀원이 추가한 시간 항목의 종합 요약",
     outstandingOverdueInvoicesTitle: "미결제 및 연체 청구서",
-    outstandingOverdueInvoicesDesc: "모든 고객의 미결제 및 연체 청구서에 대한 상세 보기",
+    outstandingOverdueInvoicesDesc:
+      "모든 고객의 미결제 및 연체 청구서에 대한 상세 보기",
     revenueByClient: "고객별 매출",
     revenueByClientDesc: "추세 및 비교를 포함한 고객별 매출 분석",
     accountsAgingTableDesc: "기간별 미수금의 경과 분석",
@@ -1123,13 +1133,16 @@ const ko = {
     paidInvoices: "결제된 청구서",
     alreadySettled: "이미 정산됨",
     paymentsReceived: "수령한 결제",
-    employeeGuidance: "주간 작업을 추적하고 정확한 항목을 제출하며 업무를 진행하세요.",
-    bookKeeperGuidance: "수령한 결제를 검토하고 청구서를 대조하며 현금 흐름을 명확히 하세요.",
+    employeeGuidance:
+      "주간 작업을 추적하고 정확한 항목을 제출하며 업무를 진행하세요.",
+    bookKeeperGuidance:
+      "수령한 결제를 검토하고 청구서를 대조하며 현금 흐름을 명확히 하세요.",
     clientGuidance: "계정의 청구서 상태와 결제 기록을 확인하세요.",
     defaultGuidance: "매출, 프로젝트, 팀 모멘텀을 한눈에 파악하세요.",
     recentActivity: "최근 활동",
     workspaceActivity: "워크스페이스 활동",
-    employeeActivityDescription: "대시보드는 시간 추적과 할당된 작업에 초점을 맞추고 있습니다.",
+    employeeActivityDescription:
+      "대시보드는 시간 추적과 할당된 작업에 초점을 맞추고 있습니다.",
     activityDescription: "청구서 및 결제의 최신 업데이트",
     noRecentActivityYet: "아직 최근 활동이 없습니다",
     loadMore: "더 불러오기",
@@ -1174,25 +1187,32 @@ const ko = {
     heroTitle: "시간, 청구서, 결제를 한 곳에서",
     heroDescription: "일과를 명확히 하고 청구를 진행하며 현금을 가시화하세요.",
     slideShowPrefix: "보기",
-    slideDashboardDescription: "매출, 활성 프로젝트, 팀 모멘텀을 한눈에 확인하세요.",
-    slideInvoicesDescription: "초안, 연체 잔액, 결제된 작업을 같은 곳에서 관리하세요.",
-    slideTimeTrackingDescription: "주간 시간 입력이 번거로움 없이 최신 상태를 유지합니다.",
-    slidePaymentsDescription: "모든 결제가 방법, 상태, 출처와 함께 하나의 원장에 기록됩니다.",
+    slideDashboardDescription:
+      "매출, 활성 프로젝트, 팀 모멘텀을 한눈에 확인하세요.",
+    slideInvoicesDescription:
+      "초안, 연체 잔액, 결제된 작업을 같은 곳에서 관리하세요.",
+    slideTimeTrackingDescription:
+      "주간 시간 입력이 번거로움 없이 최신 상태를 유지합니다.",
+    slidePaymentsDescription:
+      "모든 결제가 방법, 상태, 출처와 함께 하나의 원장에 기록됩니다.",
     continueWithGoogle: "Google로 계속",
     continueWithGithub: "GitHub로 계속",
     orUseEmail: "또는 이메일 사용",
     verifyWithAuthenticator: "인증 앱으로 확인",
-    authenticatorInstructions: "인증 앱의 6자리 코드를 입력하거나 복구 코드를 사용하세요.",
+    authenticatorInstructions:
+      "인증 앱의 6자리 코드를 입력하거나 복구 코드를 사용하세요.",
     authenticatorCode: "인증 코드",
     recoveryCode: "복구 코드",
     verifyAndSignIn: "확인 후 로그인",
-    completePasskeyVerification: "로그인을 완료하려면 패스키 인증을 완료하세요.",
+    completePasskeyVerification:
+      "로그인을 완료하려면 패스키 인증을 완료하세요.",
     enterAuthenticatorCode: "로그인을 완료하려면 인증 코드를 입력하세요.",
     invalidVerificationCode: "유효하지 않은 인증 코드입니다.",
     privacy: "개인정보",
     terms: "약관",
     createAccount: "계정 만들기",
-    passwordCriteria: "최소 8자, 대문자 1개, 소문자 1개, 숫자 1개, 특수문자 1개",
+    passwordCriteria:
+      "최소 8자, 대문자 1개, 소문자 1개, 숫자 1개, 특수문자 1개",
     agreeToTerms: "동의합니다",
     termsOfService: "서비스 약관",
     privacyPolicy: "개인정보 처리방침",
@@ -1277,7 +1297,8 @@ const ko = {
     zeroUsed: "0 사용",
     leaveCalendar: "휴가 달력",
     trackLeaveUsage: "%{year}의 휴가 및 공휴일 사용 현황을 월별로 추적하세요.",
-    selectDayToInspect: "휴가 세부정보와 공휴일 사용 현황을 확인할 날짜를 선택하세요.",
+    selectDayToInspect:
+      "휴가 세부정보와 공휴일 사용 현황을 확인할 날짜를 선택하세요.",
     nothingBooked: "예약 없음",
     nothingBookedForDate: "이 날짜에 예약된 것이 없습니다.",
     recordedTimeAway: "이 날 기록된 부재 시간",
@@ -1299,12 +1320,14 @@ const ko = {
     numberOfTeamMembers: "팀원 수:",
     plan: "플랜",
     basicPlan: "기본 플랜",
-    basicPlanDescription: "기본 플랜에는 모든 기능이 포함되어 있습니다. 일회성 요금입니다.",
+    basicPlanDescription:
+      "기본 플랜에는 모든 기능이 포함되어 있습니다. 일회성 요금입니다.",
     chargedOnce: "일회성 요금",
     addOns: "추가 기능",
     oneTeamMember: "팀원 1명",
     chargedEveryMonth: "매월 청구",
-    basicPlanPerUser: "기본 플랜에는 사용자당 월 %{rate}$ 추가 요금이 포함됩니다.",
+    basicPlanPerUser:
+      "기본 플랜에는 사용자당 월 %{rate}$ 추가 요금이 포함됩니다.",
     plusTaxes: "세금 별도",
     reviewAndPay: "검토 및 결제",
   },

@@ -62,7 +62,6 @@ const te = {
   inactive: "Inactive",
   invited: "Invited",
   department: "Department",
-  projects: "Projects",
   theme: "Theme",
   summary: "Summary",
   format: "Format",

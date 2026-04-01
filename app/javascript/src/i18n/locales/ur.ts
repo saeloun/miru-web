@@ -2,7 +2,8 @@ const ur = {
   // Image validation
   invalidImageFormatSize:
     "غلط فائل فارمیٹ۔ براہ کرم PNG یا JPG قسم کی تصویر اپ لوڈ کریں۔ زیادہ سے زیادہ سائز (%{fileSize}KB)",
-  invalidImageSize: "فائل کا سائز %{fileSize}KB کی زیادہ سے زیادہ حد سے تجاوز کر گیا۔",
+  invalidImageSize:
+    "فائل کا سائز %{fileSize}KB کی زیادہ سے زیادہ حد سے تجاوز کر گیا۔",
   invalidImageFormat:
     "غلط فائل فارمیٹ۔ براہ کرم PNG یا JPG قسم کی تصویر اپ لوڈ کریں",
 
@@ -62,7 +63,6 @@ const ur = {
   inactive: "غیر فعال",
   invited: "مدعو",
   department: "شعبہ",
-  projects: "پراجیکٹس",
   theme: "تھیم",
   summary: "خلاصہ",
   format: "فارمیٹ",
@@ -185,10 +185,13 @@ const ur = {
     entry: "اندراج",
     entries: "اندراجات",
     noEntriesForSelectedDay: "منتخب دن کے لیے کوئی اندراجات نہیں",
-    weekReviewHint: "اس ہفتے پر سوئچ کریں تاکہ آپ جو کچھ اس ہفتے درج کیا ہے اس کا جائزہ لیں۔",
+    weekReviewHint:
+      "اس ہفتے پر سوئچ کریں تاکہ آپ جو کچھ اس ہفتے درج کیا ہے اس کا جائزہ لیں۔",
     noTimeEntriesYet: "ابھی تک کوئی وقت کے اندراجات نہیں",
-    firstEntryHint: 'اس دن کا پہلا وقت کا اندراج درج کرنے کے لیے "اندراج شامل کریں" پر کلک کریں',
-    logWorkByWeekOrMonth: "ہفتے یا ماہ کے لحاظ سے کام درج کریں۔ اندراجات واضح اور تازہ رکھیں۔",
+    firstEntryHint:
+      'اس دن کا پہلا وقت کا اندراج درج کرنے کے لیے "اندراج شامل کریں" پر کلک کریں',
+    logWorkByWeekOrMonth:
+      "ہفتے یا ماہ کے لحاظ سے کام درج کریں۔ اندراجات واضح اور تازہ رکھیں۔",
     entriesFor: "%{name} کے اندراجات",
     timeEntriesFor: "وقت کے اندراجات برائے",
     unableToLoad: "ابھی ٹائم ٹریکنگ لوڈ کرنے سے قاصر ہے۔",
@@ -321,7 +324,8 @@ const ur = {
     projectDeletedSuccessfully: "پراجیکٹ کامیابی سے حذف ہو گیا",
     viewDetails: "تفصیلات دیکھیں",
     copyProjectId: "پراجیکٹ آئی ڈی کاپی کریں",
-    manageProjectsDescription: "اپنے پراجیکٹس کا انتظام کریں اور پیشرفت ٹریک کریں",
+    manageProjectsDescription:
+      "اپنے پراجیکٹس کا انتظام کریں اور پیشرفت ٹریک کریں",
     newProject: "نیا پراجیکٹ",
     activeProjects: "فعال پراجیکٹس",
     ofTotalProjects: "کل %{count} پراجیکٹس میں سے",
@@ -330,7 +334,8 @@ const ur = {
     searchProjects: "پراجیکٹس تلاش کریں...",
     createFirstProject: "شروع کرنے کے لیے اپنا پہلا پراجیکٹ بنائیں۔",
     noProjectsYet: "ابھی تک کوئی پراجیکٹس نہیں",
-    workingOnProjects: "اپنے پراجیکٹس میں قابل بل اور غیر قابل بل کام ٹریک کریں۔",
+    workingOnProjects:
+      "اپنے پراجیکٹس میں قابل بل اور غیر قابل بل کام ٹریک کریں۔",
     active: "فعال",
     paused: "موقوف",
     completed: "مکمل",
@@ -346,21 +351,25 @@ const ur = {
     outstanding: "بقایا",
     deleting: "حذف ہو رہا ہے...",
     createProject: "پراجیکٹ بنائیں",
-    createProjectDescription: "ایک نیا پراجیکٹ ترتیب دیں اور اسے کلائنٹ کو تفویض کریں۔",
+    createProjectDescription:
+      "ایک نیا پراجیکٹ ترتیب دیں اور اسے کلائنٹ کو تفویض کریں۔",
     editProjectDetails: "پراجیکٹ کی تفصیلات ترمیم کریں",
     saveChanges: "تبدیلیاں محفوظ کریں",
-    billableDescription: "اس پراجیکٹ کے لیے وقت ٹریک کریں اور کلائنٹ کو بل کریں",
+    billableDescription:
+      "اس پراجیکٹ کے لیے وقت ٹریک کریں اور کلائنٹ کو بل کریں",
     nonBillableDescription: "کلائنٹ کو بل کیے بغیر وقت ٹریک کریں",
     noClientsPresent: "کوئی کلائنٹس موجود نہیں",
     teamMembersUpdated: "ٹیم ممبرز کامیابی سے اپ ڈیٹ ہو گئے",
-    manageProjectMembersDescription: "ٹیم ممبرز شامل کریں یا ہٹائیں اور ان کی فی گھنٹہ شرح مقرر کریں۔",
+    manageProjectMembersDescription:
+      "ٹیم ممبرز شامل کریں یا ہٹائیں اور ان کی فی گھنٹہ شرح مقرر کریں۔",
     enterValidRate: "براہ کرم درست شرح درج کریں",
     addAnotherTeamMember: "ایک اور ممبر شامل کریں",
     addTeamMember: "ٹیم ممبر شامل کریں",
     saveTeamMembers: "ممبرز محفوظ کریں",
     noTeamMembersAdded: "ابھی تک کوئی ٹیم ممبرز شامل نہیں کیے گئے۔",
     addTeamMembers: "ٹیم ممبرز شامل کریں",
-    teamMembersDescription: "اس پراجیکٹ کے لیے تفویض شدہ ٹیم ممبرز دیکھیں اور ان کا انتظام کریں۔",
+    teamMembersDescription:
+      "اس پراجیکٹ کے لیے تفویض شدہ ٹیم ممبرز دیکھیں اور ان کا انتظام کریں۔",
   },
 
   // Team
@@ -471,8 +480,7 @@ const ur = {
     addEntry: "%{count} اندراج شامل کریں",
     addEntries_plural: "%{count} اندراجات شامل کریں",
     thankYouForBusiness: "آپ کے کاروبار کا شکریہ!",
-    previewNote:
-      "یہ ایک پیش نظارہ ہے۔ تبدیلیاں محفوظ ہونے کے بعد ظاہر ہوں گی۔",
+    previewNote: "یہ ایک پیش نظارہ ہے۔ تبدیلیاں محفوظ ہونے کے بعد ظاہر ہوں گی۔",
     noInvoiceGenerated: "ابھی تک کوئی انوائس تیار نہیں کی گئی۔",
     acceptCreditCards: "کریڈٹ کارڈز قبول کریں",
     sendTo: "بھیجیں بنام",
@@ -504,13 +512,10 @@ const ur = {
     message: "پیغام",
     addEmailFromClientSettings:
       "براہ کرم کلائنٹ ترتیبات صفحے سے ای میل شامل کریں",
-    reminderSubject:
-      "غیر ادا شدہ انوائس کی ادائیگی مکمل کرنے کی یاد دہانی",
+    reminderSubject: "غیر ادا شدہ انوائس کی ادائیگی مکمل کرنے کی یاد دہانی",
     invoiceSentSubject: "%{company} نے آپ کو ایک انوائس بھیجی (%{number})",
-    reminderBody:
-      "%{company} نے آپ کو انوائس %{number} کی یاد دہانی بھیجی ہے",
-    invoiceSentBody:
-      "%{company} نے آپ کو ایک انوائس بھیجی (%{number})",
+    reminderBody: "%{company} نے آپ کو انوائس %{number} کی یاد دہانی بھیجی ہے",
+    invoiceSentBody: "%{company} نے آپ کو ایک انوائس بھیجی (%{number})",
     invoiceWillBeSent: "انوائس بھیجی جائے گی!",
     processing: "کارروائی جاری ہے...",
 
@@ -580,11 +585,13 @@ const ur = {
     errorConnectingPayments: "ادائیگیوں سے جڑنے میں خرابی",
     invoiceCreated: "انوائس کامیابی سے بنائی گئی",
     invoiceUpdated: "انوائس کامیابی سے اپ ڈیٹ ہو گئی",
-    failedToSaveInvoice: "انوائس محفوظ کرنے میں ناکامی۔ براہ کرم دوبارہ کوشش کریں۔",
+    failedToSaveInvoice:
+      "انوائس محفوظ کرنے میں ناکامی۔ براہ کرم دوبارہ کوشش کریں۔",
 
     // Counters
     showingOf: "%{total} میں سے %{shown} دکھائی جا رہی ہیں",
-    viewingMatching: "%{loaded} لوڈ شدہ میں سے %{filtered} ملتی انوائسز دیکھی جا رہی ہیں",
+    viewingMatching:
+      "%{loaded} لوڈ شدہ میں سے %{filtered} ملتی انوائسز دیکھی جا رہی ہیں",
     loadedOf: "%{total} میں سے %{loaded} لوڈ شدہ",
     showingRecentTransactions: "%{count} حالیہ لین دین دکھائے جا رہے ہیں",
     updatedAt: "%{date} اپ ڈیٹ شدہ",
@@ -596,12 +603,16 @@ const ur = {
 
     // Invoice reminder email
     invoiceReminder: "انوائس یاد دہانی: %{number}",
-    reminderMessage: "یہ آپ کی بقایا انوائس کے بارے میں ایک یاد دہانی ہے۔ براہ کرم منسلک تفصیلات دیکھیں۔",
+    reminderMessage:
+      "یہ آپ کی بقایا انوائس کے بارے میں ایک یاد دہانی ہے۔ براہ کرم منسلک تفصیلات دیکھیں۔",
     invoiceAttached: "براہ کرم اپنی انوائس منسلک دیکھیں۔",
-    reminderPaymentMessage: "یہ آپ کی واجب الادا انوائس کے بارے میں ایک یاد دہانی ہے۔ براہ کرم ادائیگی مکمل کریں۔",
+    reminderPaymentMessage:
+      "یہ آپ کی واجب الادا انوائس کے بارے میں ایک یاد دہانی ہے۔ براہ کرم ادائیگی مکمل کریں۔",
     invoiceSubject: "انوائس %{number}",
-    reminderPaymentSubject: "انوائس %{number} کی ادائیگی مکمل کرنے کی یاد دہانی",
-    markAsPaidConfirm: "اس انوائس کو ادا شدہ نشان زد کریں؟ یہ عمل اکاؤنٹنگ ریکارڈز کو متاثر کرتا ہے۔",
+    reminderPaymentSubject:
+      "انوائس %{number} کی ادائیگی مکمل کرنے کی یاد دہانی",
+    markAsPaidConfirm:
+      "اس انوائس کو ادا شدہ نشان زد کریں؟ یہ عمل اکاؤنٹنگ ریکارڈز کو متاثر کرتا ہے۔",
     failedToLoadInvoice: "انوائس لوڈ کرنے میں ناکامی",
     invoiceNotFound: "انوائس نہیں ملی",
     failedToMarkAsPaid: "ادا شدہ نشان زد کرنے میں ناکامی",
@@ -680,7 +691,8 @@ const ur = {
   timer: {
     webTimer: "ویب ٹائمر",
     webTimerLabel: "ویب ٹائمر",
-    trackLiveWork: "حقیقی وقت میں لائیو کام ٹریک کریں، پھر اسے آج کی اندراج فہرست میں محفوظ کریں۔",
+    trackLiveWork:
+      "حقیقی وقت میں لائیو کام ٹریک کریں، پھر اسے آج کی اندراج فہرست میں محفوظ کریں۔",
     startTimer: "ٹائمر شروع کریں",
     pause: "روکیں",
     resume: "جاری رکھیں",
@@ -689,7 +701,8 @@ const ur = {
     reset: "ری سیٹ کریں",
     timer: "ٹائمر",
     saveTimeEntry: "وقت کا اندراج محفوظ کریں",
-    saveTimeEntryDescription: "آپ نے %{time} ٹریک کیا۔ کیا آپ اسے وقت کے اندراج کے طور پر محفوظ کرنا چاہیں گے؟",
+    saveTimeEntryDescription:
+      "آپ نے %{time} ٹریک کیا۔ کیا آپ اسے وقت کے اندراج کے طور پر محفوظ کرنا چاہیں گے؟",
     discard: "رد کریں",
     timerStarted: "ٹائمر شروع ہو گیا",
     timerPaused: "ٹائمر موقوف ہو گیا",
@@ -786,21 +799,26 @@ const ur = {
     invoiceAgingDetails: "انوائس ایجنگ تفصیلات",
     noDataFound: "کوئی ڈیٹا نہیں ملا",
     accountsAgingReport: "اکاؤنٹس ایجنگ رپورٹ",
-    analysisOfOutstandingReceivables: "ایجنگ مدت کے لحاظ سے بقایا وصولیوں کا تجزیہ",
+    analysisOfOutstandingReceivables:
+      "ایجنگ مدت کے لحاظ سے بقایا وصولیوں کا تجزیہ",
     asOf: "%{date} تک",
     zeroToThirtyDays: "0-30 دن",
     thirtyOneToSixtyDays: "31-60 دن",
     sixtyOneToNinetyDays: "61-90 دن",
     ninetyPlusDays: "90+ دن",
     noClientsWithOutstandingBalances: "بقایا بیلنس والے کوئی کلائنٹس نہیں۔",
-    showingOfClients: "%{total} میں سے %{displayed} کلائنٹس دکھائے جا رہے ہیں...",
-    errorLoadingReportData: "رپورٹ ڈیٹا لوڈ کرنے میں خرابی۔ براہ کرم دوبارہ کوشش کریں۔",
+    showingOfClients:
+      "%{total} میں سے %{displayed} کلائنٹس دکھائے جا رہے ہیں...",
+    errorLoadingReportData:
+      "رپورٹ ڈیٹا لوڈ کرنے میں خرابی۔ براہ کرم دوبارہ کوشش کریں۔",
     projectClient: "پراجیکٹ/ کلائنٹ",
     noteHeader: "نوٹ",
     teamMemberDate: "ٹیم ممبر/ تاریخ",
     hoursLogged: "درج شدہ گھنٹے",
-    noResultsMatchFilters: "موجودہ فلٹرز سے کوئی نتائج نہیں ملتے۔ کچھ فلٹرز ہٹانے کی کوشش کریں۔",
-    noTimeEntriesYet: "ابھی تک کوئی وقت کے اندراجات شامل نہیں ہوئے۔ آپ کو اپنی ٹیم کے شامل کردہ وقت کے اندراجات کا خلاصہ نظر آئے گا۔",
+    noResultsMatchFilters:
+      "موجودہ فلٹرز سے کوئی نتائج نہیں ملتے۔ کچھ فلٹرز ہٹانے کی کوشش کریں۔",
+    noTimeEntriesYet:
+      "ابھی تک کوئی وقت کے اندراجات شامل نہیں ہوئے۔ آپ کو اپنی ٹیم کے شامل کردہ وقت کے اندراجات کا خلاصہ نظر آئے گا۔",
     selected: "%{count} منتخب",
     showingClientsCount: "%{total} میں سے %{shown} کلائنٹس دکھائے جا رہے ہیں",
     ofTeamMembersSelected: "%{total} میں سے %{active} ٹیم ممبرز منتخب",
@@ -826,13 +844,16 @@ const ur = {
     timeEntryReportTitle: "وقت کے اندراج کی رپورٹ",
     timeEntryReportDesc: "آپ کی ٹیم کے شامل کردہ وقت کے اندراجات کا خلاصہ۔",
     invoicesReport: "انوائسز رپورٹ",
-    invoicesReportDesc: "ایک مدت کے لیے تمام کلائنٹس کے بقایا اور واجب الادا کا تفصیلی خلاصہ۔",
+    invoicesReportDesc:
+      "ایک مدت کے لیے تمام کلائنٹس کے بقایا اور واجب الادا کا تفصیلی خلاصہ۔",
     totalHoursLoggedTitle: "کل درج شدہ گھنٹے",
-    totalHoursLoggedDesc: "پراجیکٹ کے لحاظ سے گروپ شدہ ٹیم کے بل شدہ، غیر بل شدہ اور غیر قابل بل گھنٹوں کا تفصیلی خلاصہ۔",
+    totalHoursLoggedDesc:
+      "پراجیکٹ کے لحاظ سے گروپ شدہ ٹیم کے بل شدہ، غیر بل شدہ اور غیر قابل بل گھنٹوں کا تفصیلی خلاصہ۔",
     revenueReport: "آمدنی کی رپورٹ",
     revenueReportDesc: "ہر کلائنٹ سے آمدنی کی تفصیلی رپورٹ۔",
     accountsAging: "اکاؤنٹس ایجنگ",
-    accountsAgingDesc: "معلوم کریں کہ کون سے کلائنٹ ادائیگی میں زیادہ وقت لے رہے ہیں",
+    accountsAgingDesc:
+      "معلوم کریں کہ کون سے کلائنٹ ادائیگی میں زیادہ وقت لے رہے ہیں",
     clearAll: "سب صاف کریں",
     outstandingAndOverdue: "بقایا اور واجب الادا",
     followUpOnInvoices: "ان انوائسز پر فالو اپ کریں جن پر ابھی توجہ درکار ہے۔",
@@ -848,23 +869,29 @@ const ur = {
     formatLabel: "فارمیٹ",
     exportPdfBtn: "PDF برآمد کریں",
     exportCsvBtn: "CSV برآمد کریں",
-    noOutstandingOrOverdueInvoices: "کوئی بقایا یا واجب الادا انوائسز نہیں ملیں۔",
+    noOutstandingOrOverdueInvoices:
+      "کوئی بقایا یا واجب الادا انوائسز نہیں ملیں۔",
     allCurrencies: "تمام کرنسیاں",
     filteredByCurrency: "%{currency} کے لحاظ سے فلٹر شدہ",
     overdueAgingTitle: "واجب الادا ایجنگ (%{currency})",
     averageDays: "اوسط دن:",
-    timeReportsDesc: "آپ کی ٹیم کے ممبرز کے شامل کردہ وقت کے اندراجات کا جامع خلاصہ",
+    timeReportsDesc:
+      "آپ کی ٹیم کے ممبرز کے شامل کردہ وقت کے اندراجات کا جامع خلاصہ",
     outstandingOverdueInvoicesTitle: "بقایا اور واجب الادا انوائسز",
-    outstandingOverdueInvoicesDesc: "تمام کلائنٹس کی بقایا اور واجب الادا انوائسز کا تفصیلی جائزہ",
+    outstandingOverdueInvoicesDesc:
+      "تمام کلائنٹس کی بقایا اور واجب الادا انوائسز کا تفصیلی جائزہ",
     revenueByClient: "کلائنٹ کے لحاظ سے آمدنی",
-    revenueByClientDesc: "رجحانات اور موازنوں کے ساتھ کلائنٹ کے لحاظ سے آمدنی کی تفصیل",
+    revenueByClientDesc:
+      "رجحانات اور موازنوں کے ساتھ کلائنٹ کے لحاظ سے آمدنی کی تفصیل",
     accountsAgingTableDesc: "وقت کی مدت کے لحاظ سے بقایا وصولیوں کا عمر تجزیہ",
     paymentReportTitle: "ادائیگی رپورٹ",
-    paymentReportDesc: "تفصیلی لین دین کی تاریخ کے ساتھ تمام موصول شدہ ادائیگیاں ٹریک کریں",
+    paymentReportDesc:
+      "تفصیلی لین دین کی تاریخ کے ساتھ تمام موصول شدہ ادائیگیاں ٹریک کریں",
     teamUtilization: "ٹیم کا استعمال",
     teamUtilizationDesc: "ٹیم ممبرز کے استعمال کی شرح اور صلاحیت کا تجزیہ",
     projectProfitability: "پراجیکٹ منافع",
-    projectProfitabilityDesc: "لاگت کی تفصیل کے ساتھ پراجیکٹ کے لحاظ سے منافع کا تجزیہ",
+    projectProfitabilityDesc:
+      "لاگت کی تفصیل کے ساتھ پراجیکٹ کے لحاظ سے منافع کا تجزیہ",
     clientSummaryTitle: "کلائنٹ خلاصہ",
     clientSummaryDesc: "جامع کلائنٹ کارکردگی اور مصروفیت کے میٹرکس",
     understandReportsAtGlance: "آمدنی، وقت، اور بقایا کام ایک نظر میں سمجھیں۔",
@@ -878,7 +905,8 @@ const ur = {
     viewOverdueInvoices: "واجب الادا انوائسز دیکھیں",
     monthlyRevenueReport: "ماہانہ آمدنی رپورٹ",
     openReport: "%{title} رپورٹ کھولیں",
-    reviewHoursLogged: "شخص، کلائنٹ، اور پراجیکٹ کے لحاظ سے درج شدہ گھنٹوں کا جائزہ لیں۔",
+    reviewHoursLogged:
+      "شخص، کلائنٹ، اور پراجیکٹ کے لحاظ سے درج شدہ گھنٹوں کا جائزہ لیں۔",
     lastSevenDaysPreset: "آخری 7 دن",
     lastThirtyDaysPreset: "آخری 30 دن",
     totalEntries: "کل اندراجات",
@@ -1123,13 +1151,17 @@ const ur = {
     paidInvoices: "ادا شدہ انوائسز",
     alreadySettled: "پہلے سے طے شدہ",
     paymentsReceived: "موصول شدہ ادائیگیاں",
-    employeeGuidance: "اپنے ہفتے کو ٹریک کریں، درست اندراجات جمع کریں، اور کام جاری رکھیں۔",
-    bookKeeperGuidance: "آنے والی ادائیگیوں کا جائزہ لیں، انوائسز کی مطابقت کریں، اور نقد بہاؤ واضح رکھیں۔",
-    clientGuidance: "اپنے اکاؤنٹ کی انوائس کی حیثیت اور ادائیگی کی تاریخ دیکھیں۔",
+    employeeGuidance:
+      "اپنے ہفتے کو ٹریک کریں، درست اندراجات جمع کریں، اور کام جاری رکھیں۔",
+    bookKeeperGuidance:
+      "آنے والی ادائیگیوں کا جائزہ لیں، انوائسز کی مطابقت کریں، اور نقد بہاؤ واضح رکھیں۔",
+    clientGuidance:
+      "اپنے اکاؤنٹ کی انوائس کی حیثیت اور ادائیگی کی تاریخ دیکھیں۔",
     defaultGuidance: "آمدنی، پراجیکٹس، اور ٹیم کی رفتار ایک نظر میں۔",
     recentActivity: "حالیہ سرگرمی",
     workspaceActivity: "ورک سپیس سرگرمی",
-    employeeActivityDescription: "آپ کا ڈیش بورڈ ٹائم ٹریکنگ اور تفویض شدہ کام پر مرکوز ہے۔",
+    employeeActivityDescription:
+      "آپ کا ڈیش بورڈ ٹائم ٹریکنگ اور تفویض شدہ کام پر مرکوز ہے۔",
     activityDescription: "آپ کی انوائسز اور ادائیگیوں کی تازہ ترین اپ ڈیٹس",
     noRecentActivityYet: "ابھی تک کوئی حالیہ سرگرمی نہیں",
     loadMore: "مزید لوڈ کریں",
@@ -1174,25 +1206,33 @@ const ur = {
     heroTitle: "وقت، انوائسز، اور ادائیگیوں کے لیے ایک جگہ",
     heroDescription: "دن واضح رکھیں، بلنگ جاری رکھیں، اور نقدی نظر میں رکھیں۔",
     slideShowPrefix: "دکھائیں",
-    slideDashboardDescription: "آمدنی، فعال پراجیکٹس، اور ٹیم کی رفتار بغیر تلاش کیے دیکھیں۔",
-    slideInvoicesDescription: "مسودے، واجب الادا بیلنس، اور ادا شدہ کام ایک جگہ رکھیں۔",
-    slideTimeTrackingDescription: "ہفتہ وار وقت کا اندراج مصروف کام میں بدلے بغیر تازہ رہتا ہے۔",
-    slidePaymentsDescription: "ہر ادائیگی ایک لیجر میں طریقہ، حیثیت، اور ذریعے کے ساتھ آتی ہے۔",
+    slideDashboardDescription:
+      "آمدنی، فعال پراجیکٹس، اور ٹیم کی رفتار بغیر تلاش کیے دیکھیں۔",
+    slideInvoicesDescription:
+      "مسودے، واجب الادا بیلنس، اور ادا شدہ کام ایک جگہ رکھیں۔",
+    slideTimeTrackingDescription:
+      "ہفتہ وار وقت کا اندراج مصروف کام میں بدلے بغیر تازہ رہتا ہے۔",
+    slidePaymentsDescription:
+      "ہر ادائیگی ایک لیجر میں طریقہ، حیثیت، اور ذریعے کے ساتھ آتی ہے۔",
     continueWithGoogle: "Google کے ساتھ جاری رکھیں",
     continueWithGithub: "GitHub کے ساتھ جاری رکھیں",
     orUseEmail: "یا ای میل استعمال کریں",
     verifyWithAuthenticator: "اپنی تصدیق کنندہ ایپ سے تصدیق کریں",
-    authenticatorInstructions: "اپنی تصدیق کنندہ ایپ سے 6 ہندسوں کا کوڈ درج کریں، یا ریکوری کوڈ استعمال کریں۔",
+    authenticatorInstructions:
+      "اپنی تصدیق کنندہ ایپ سے 6 ہندسوں کا کوڈ درج کریں، یا ریکوری کوڈ استعمال کریں۔",
     authenticatorCode: "تصدیق کنندہ کوڈ",
     recoveryCode: "ریکوری کوڈ",
     verifyAndSignIn: "تصدیق کریں اور سائن ان کریں",
-    completePasskeyVerification: "سائن ان مکمل کرنے کے لیے پاس کی تصدیق مکمل کریں۔",
-    enterAuthenticatorCode: "سائن ان مکمل کرنے کے لیے اپنا تصدیق کنندہ کوڈ درج کریں۔",
+    completePasskeyVerification:
+      "سائن ان مکمل کرنے کے لیے پاس کی تصدیق مکمل کریں۔",
+    enterAuthenticatorCode:
+      "سائن ان مکمل کرنے کے لیے اپنا تصدیق کنندہ کوڈ درج کریں۔",
     invalidVerificationCode: "غلط تصدیقی کوڈ۔",
     privacy: "رازداری",
     terms: "شرائط",
     createAccount: "اکاؤنٹ بنائیں",
-    passwordCriteria: "کم از کم 8 حروف، 1 بڑا حرف، 1 چھوٹا حرف، 1 نمبر اور 1 خاص حرف",
+    passwordCriteria:
+      "کم از کم 8 حروف، 1 بڑا حرف، 1 چھوٹا حرف، 1 نمبر اور 1 خاص حرف",
     agreeToTerms: "میں متفق ہوں",
     termsOfService: "سروس کی شرائط",
     privacyPolicy: "رازداری کی پالیسی",
@@ -1276,8 +1316,10 @@ const ur = {
     publicHolidays: "عام تعطیلات",
     zeroUsed: "0 استعمال شدہ",
     leaveCalendar: "رخصت کا کیلنڈر",
-    trackLeaveUsage: "%{year} کے لیے ماہ بہ ماہ رخصت اور تعطیلات کے استعمال کو ٹریک کریں۔",
-    selectDayToInspect: "رخصت کی تفصیلات اور تعطیلات کے استعمال کا معائنہ کرنے کے لیے ایک دن منتخب کریں۔",
+    trackLeaveUsage:
+      "%{year} کے لیے ماہ بہ ماہ رخصت اور تعطیلات کے استعمال کو ٹریک کریں۔",
+    selectDayToInspect:
+      "رخصت کی تفصیلات اور تعطیلات کے استعمال کا معائنہ کرنے کے لیے ایک دن منتخب کریں۔",
     nothingBooked: "کچھ بک نہیں ہے",
     nothingBookedForDate: "اس تاریخ کے لیے کچھ بک نہیں ہے۔",
     recordedTimeAway: "اس دن درج شدہ غیر حاضری",
@@ -1299,12 +1341,14 @@ const ur = {
     numberOfTeamMembers: "ٹیم ممبرز کی تعداد:",
     plan: "پلان",
     basicPlan: "بنیادی پلان",
-    basicPlanDescription: "بنیادی پلان میں تمام خصوصیات شامل ہیں۔ یہ ایک بار کا چارج ہے۔",
+    basicPlanDescription:
+      "بنیادی پلان میں تمام خصوصیات شامل ہیں۔ یہ ایک بار کا چارج ہے۔",
     chargedOnce: "ایک بار چارج",
     addOns: "ایڈ آنز",
     oneTeamMember: "1 ٹیم ممبر",
     chargedEveryMonth: "ہر ماہ چارج",
-    basicPlanPerUser: "بنیادی پلان اضافی %{rate}$ فی صارف فی ماہ کے ساتھ آتا ہے۔",
+    basicPlanPerUser:
+      "بنیادی پلان اضافی %{rate}$ فی صارف فی ماہ کے ساتھ آتا ہے۔",
     plusTaxes: "ٹیکس علاوہ",
     reviewAndPay: "جائزہ لیں اور ادا کریں",
   },

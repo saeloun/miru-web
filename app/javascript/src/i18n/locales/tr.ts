@@ -62,7 +62,6 @@ const tr = {
   inactive: "Pasif",
   invited: "Davet edildi",
   department: "Departman",
-  projects: "Projeler",
   theme: "Tema",
   summary: "Özet",
   format: "Format",
@@ -159,7 +158,8 @@ const tr = {
     editEntry: "Kaydı düzenle",
     deleteEntry: "Kaydı sil",
     deleteTimeEntry: "Zaman Kaydını Sil",
-    deleteTimeEntryConfirm: "Bu zaman kaydını silmek istediğinizden emin misiniz?",
+    deleteTimeEntryConfirm:
+      "Bu zaman kaydını silmek istediğinizden emin misiniz?",
     durationRequired: "Süre gereklidir",
     projectRequired: "Proje gereklidir",
     duration: "Süre",
@@ -167,7 +167,8 @@ const tr = {
     noteOptional: "Not (İsteğe bağlı)",
     addTags: "Etiket Ekle",
     favorites: "Favoriler",
-    favoriteShortcutsHint: "Her zaman kullandığınız kombinasyonları sabitleyin.",
+    favoriteShortcutsHint:
+      "Her zaman kullandığınız kombinasyonları sabitleyin.",
     recentShortcuts: "Son Kısayollar",
     recentShortcutsHint:
       "Aynı müşteri ve projeyi tekrar seçmeden son çalışmaları yeniden kullanın.",
@@ -185,10 +186,13 @@ const tr = {
     entry: "kayıt",
     entries: "kayıt",
     noEntriesForSelectedDay: "Seçili gün için kayıt yok",
-    weekReviewHint: "Bu hafta kaydettiğiniz her şeyi gözden geçirmek için Bu Hafta'ya geçin.",
+    weekReviewHint:
+      "Bu hafta kaydettiğiniz her şeyi gözden geçirmek için Bu Hafta'ya geçin.",
     noTimeEntriesYet: "Henüz zaman kaydı yok",
-    firstEntryHint: 'Bu gün için ilk zaman kaydınızı girmek için "Kayıt Ekle"ye tıklayın',
-    logWorkByWeekOrMonth: "Hafta veya ay bazında çalışma kaydedin. Kayıtları net ve güncel tutun.",
+    firstEntryHint:
+      'Bu gün için ilk zaman kaydınızı girmek için "Kayıt Ekle"ye tıklayın',
+    logWorkByWeekOrMonth:
+      "Hafta veya ay bazında çalışma kaydedin. Kayıtları net ve güncel tutun.",
     entriesFor: "%{name} kayıtları",
     timeEntriesFor: "Zaman kayıtları",
     unableToLoad: "Şu anda zaman takibi yüklenemiyor.",
@@ -206,7 +210,8 @@ const tr = {
     entriesUpdatedSuccessfully: "Kayıtlar başarıyla güncellendi",
     failedToUpdateEntries: "Kayıtlar güncellenemedi",
     selectProjectFirst: "Lütfen önce bir proje seçin",
-    editingModeActive: "Düzenleme modu aktif. Yukarıdaki değişikliklerinizi tamamlayın.",
+    editingModeActive:
+      "Düzenleme modu aktif. Yukarıdaki değişikliklerinizi tamamlayın.",
     dayAbbr: {
       mon: "Pzt",
       tue: "Sal",
@@ -330,7 +335,8 @@ const tr = {
     searchProjects: "Proje ara...",
     createFirstProject: "Başlamak için ilk projenizi oluşturun.",
     noProjectsYet: "Henüz proje yok",
-    workingOnProjects: "Projelerinizde faturalanabilir ve faturalanmaz çalışmayı takip edin.",
+    workingOnProjects:
+      "Projelerinizde faturalanabilir ve faturalanmaz çalışmayı takip edin.",
     active: "Aktif",
     paused: "Duraklatılmış",
     completed: "Tamamlandı",
@@ -349,18 +355,21 @@ const tr = {
     createProjectDescription: "Yeni bir proje kurun ve bir müşteriye atayın.",
     editProjectDetails: "Proje Detaylarını Düzenle",
     saveChanges: "Değişiklikleri Kaydet",
-    billableDescription: "Bu proje için süre takip edin ve müşteriye faturalayın",
+    billableDescription:
+      "Bu proje için süre takip edin ve müşteriye faturalayın",
     nonBillableDescription: "Müşteriye faturalamadan süre takip edin",
     noClientsPresent: "Müşteri bulunmuyor",
     teamMembersUpdated: "Ekip üyeleri başarıyla güncellendi",
-    manageProjectMembersDescription: "Ekip üyelerini ekleyin veya çıkarın ve saatlik ücretlerini belirleyin.",
+    manageProjectMembersDescription:
+      "Ekip üyelerini ekleyin veya çıkarın ve saatlik ücretlerini belirleyin.",
     enterValidRate: "Lütfen geçerli bir ücret girin",
     addAnotherTeamMember: "Başka Üye Ekle",
     addTeamMember: "Ekip Üyesi Ekle",
     saveTeamMembers: "Üyeleri Kaydet",
     noTeamMembersAdded: "Henüz ekip üyesi eklenmemiş.",
     addTeamMembers: "Ekip Üyeleri Ekle",
-    teamMembersDescription: "Bu projeye atanmış ekip üyelerini görüntüleyin ve yönetin.",
+    teamMembersDescription:
+      "Bu projeye atanmış ekip üyelerini görüntüleyin ve yönetin.",
   },
 
   // Team
@@ -504,13 +513,11 @@ const tr = {
     message: "Mesaj",
     addEmailFromClientSettings:
       "Lütfen müşteri ayarları sayfasından e-posta ekleyin",
-    reminderSubject:
-      "Ödenmemiş fatura için ödeme hatırlatması",
+    reminderSubject: "Ödenmemiş fatura için ödeme hatırlatması",
     invoiceSentSubject: "%{company} size bir fatura gönderdi (%{number})",
     reminderBody:
       "%{company} size %{number} numaralı fatura için hatırlatma gönderdi",
-    invoiceSentBody:
-      "%{company} size bir fatura gönderdi (%{number})",
+    invoiceSentBody: "%{company} size bir fatura gönderdi (%{number})",
     invoiceWillBeSent: "Fatura gönderilecek!",
     processing: "işleniyor...",
 
@@ -584,7 +591,8 @@ const tr = {
 
     // Counters
     showingOf: "%{shown} / %{total} gösteriliyor",
-    viewingMatching: "%{loaded} yüklenenden %{filtered} eşleşen fatura görüntüleniyor",
+    viewingMatching:
+      "%{loaded} yüklenenden %{filtered} eşleşen fatura görüntüleniyor",
     loadedOf: "%{loaded} / %{total} yüklendi",
     showingRecentTransactions: "%{count} son işlem gösteriliyor",
     updatedAt: "%{date} güncellendi",
@@ -596,12 +604,15 @@ const tr = {
 
     // Invoice reminder email
     invoiceReminder: "Fatura Hatırlatması: %{number}",
-    reminderMessage: "Bu, ödenmemiş faturanız hakkında bir hatırlatmadır. Lütfen ekteki ayrıntıları inceleyin.",
+    reminderMessage:
+      "Bu, ödenmemiş faturanız hakkında bir hatırlatmadır. Lütfen ekteki ayrıntıları inceleyin.",
     invoiceAttached: "Lütfen ekteki faturanızı inceleyin.",
-    reminderPaymentMessage: "Bu, gecikmiş faturanız hakkında bir hatırlatmadır. Lütfen ödemeyi tamamlayın.",
+    reminderPaymentMessage:
+      "Bu, gecikmiş faturanız hakkında bir hatırlatmadır. Lütfen ödemeyi tamamlayın.",
     invoiceSubject: "Fatura %{number}",
     reminderPaymentSubject: "%{number} numaralı fatura için ödeme hatırlatması",
-    markAsPaidConfirm: "Bu faturayı ödendi olarak işaretleyin? Bu işlem muhasebe kayıtlarını etkiler.",
+    markAsPaidConfirm:
+      "Bu faturayı ödendi olarak işaretleyin? Bu işlem muhasebe kayıtlarını etkiler.",
     failedToLoadInvoice: "Fatura yüklenemedi",
     invoiceNotFound: "Fatura bulunamadı",
     failedToMarkAsPaid: "Fatura ödendi olarak işaretlenemedi",
@@ -680,7 +691,8 @@ const tr = {
   timer: {
     webTimer: "Web zamanlayıcı",
     webTimerLabel: "Web Zamanlayıcı",
-    trackLiveWork: "Canlı çalışmayı gerçek zamanlı takip edin, sonra doğrudan bugünün giriş listesine kaydedin.",
+    trackLiveWork:
+      "Canlı çalışmayı gerçek zamanlı takip edin, sonra doğrudan bugünün giriş listesine kaydedin.",
     startTimer: "Zamanlayıcıyı Başlat",
     pause: "Duraklat",
     resume: "Sürdür",
@@ -689,7 +701,8 @@ const tr = {
     reset: "Sıfırla",
     timer: "Zamanlayıcı",
     saveTimeEntry: "Zaman Kaydını Kaydet",
-    saveTimeEntryDescription: "%{time} takip ettiniz. Bunu zaman kaydı olarak kaydetmek ister misiniz?",
+    saveTimeEntryDescription:
+      "%{time} takip ettiniz. Bunu zaman kaydı olarak kaydetmek ister misiniz?",
     discard: "Sil",
     timerStarted: "Zamanlayıcı başlatıldı",
     timerPaused: "Zamanlayıcı duraklatıldı",
@@ -786,7 +799,8 @@ const tr = {
     invoiceAgingDetails: "Fatura Yaşlandırma Detayları",
     noDataFound: "Veri Bulunamadı",
     accountsAgingReport: "Hesap Yaşlandırma Raporu",
-    analysisOfOutstandingReceivables: "Yaşlandırma dönemine göre ödenmemiş alacak analizi",
+    analysisOfOutstandingReceivables:
+      "Yaşlandırma dönemine göre ödenmemiş alacak analizi",
     asOf: "%{date} itibarıyla",
     zeroToThirtyDays: "0-30 Gün",
     thirtyOneToSixtyDays: "31-60 Gün",
@@ -794,13 +808,16 @@ const tr = {
     ninetyPlusDays: "90+ Gün",
     noClientsWithOutstandingBalances: "Ödenmemiş bakiyesi olan müşteri yok.",
     showingOfClients: "%{displayed} / %{total} müşteri gösteriliyor...",
-    errorLoadingReportData: "Rapor verileri yüklenirken hata. Lütfen tekrar deneyin.",
+    errorLoadingReportData:
+      "Rapor verileri yüklenirken hata. Lütfen tekrar deneyin.",
     projectClient: "PROJE/ MÜŞTERİ",
     noteHeader: "NOT",
     teamMemberDate: "EKİP ÜYESİ/ TARİH",
     hoursLogged: "KAYDEDİLEN SAATLER",
-    noResultsMatchFilters: "Mevcut filtrelerle eşleşen sonuç yok. Bazı filtreleri kaldırmayı deneyin.",
-    noTimeEntriesYet: "Henüz eklenen zaman kaydı yok. Ekibiniz tarafından eklenen zaman kayıtlarının özetini burada göreceksiniz.",
+    noResultsMatchFilters:
+      "Mevcut filtrelerle eşleşen sonuç yok. Bazı filtreleri kaldırmayı deneyin.",
+    noTimeEntriesYet:
+      "Henüz eklenen zaman kaydı yok. Ekibiniz tarafından eklenen zaman kayıtlarının özetini burada göreceksiniz.",
     selected: "%{count} seçildi",
     showingClientsCount: "%{shown} / %{total} müşteri gösteriliyor",
     ofTeamMembersSelected: "%{total} ekip üyesinden %{active} seçili",
@@ -824,11 +841,14 @@ const tr = {
     entriesWillBeGrouped: "Kayıtlar %{grouping} olarak gruplandırılacak",
     subtotalsShownForEachGroup: "Her grup için alt toplamlar gösterilecek",
     timeEntryReportTitle: "Zaman Kaydı Raporu",
-    timeEntryReportDesc: "Ekibiniz tarafından eklenen zaman kayıtlarının özeti.",
+    timeEntryReportDesc:
+      "Ekibiniz tarafından eklenen zaman kayıtlarının özeti.",
     invoicesReport: "Fatura Raporu",
-    invoicesReportDesc: "Belirli bir dönem için tüm müşterilerin ödenmemiş ve gecikmiş faturalarının detaylı özeti.",
+    invoicesReportDesc:
+      "Belirli bir dönem için tüm müşterilerin ödenmemiş ve gecikmiş faturalarının detaylı özeti.",
     totalHoursLoggedTitle: "Toplam kaydedilen saatler",
-    totalHoursLoggedDesc: "Projeye göre gruplanmış, faturalanmış, faturalanmamış ve faturalanmaz saatlerin ekip bazında detaylı özeti.",
+    totalHoursLoggedDesc:
+      "Projeye göre gruplanmış, faturalanmış, faturalanmamış ve faturalanmaz saatlerin ekip bazında detaylı özeti.",
     revenueReport: "Gelir Raporu",
     revenueReportDesc: "Her müşteriden elde edilen gelirin detaylı raporu.",
     accountsAging: "Hesap Yaşlandırma",
@@ -848,26 +868,34 @@ const tr = {
     formatLabel: "Format",
     exportPdfBtn: "PDF Dışa Aktar",
     exportCsvBtn: "CSV Dışa Aktar",
-    noOutstandingOrOverdueInvoices: "Ödenmemiş veya gecikmiş fatura bulunamadı.",
+    noOutstandingOrOverdueInvoices:
+      "Ödenmemiş veya gecikmiş fatura bulunamadı.",
     allCurrencies: "Tüm para birimleri",
     filteredByCurrency: "%{currency} ile filtrelendi",
     overdueAgingTitle: "Gecikme Yaşlandırması (%{currency})",
     averageDays: "Ortalama Gün:",
-    timeReportsDesc: "Ekip üyeleriniz tarafından eklenen zaman kayıtlarının kapsamlı özeti",
+    timeReportsDesc:
+      "Ekip üyeleriniz tarafından eklenen zaman kayıtlarının kapsamlı özeti",
     outstandingOverdueInvoicesTitle: "Ödenmemiş ve Gecikmiş Faturalar",
-    outstandingOverdueInvoicesDesc: "Tüm müşterilerdeki ödenmemiş ve gecikmiş faturaların detaylı görünümü",
+    outstandingOverdueInvoicesDesc:
+      "Tüm müşterilerdeki ödenmemiş ve gecikmiş faturaların detaylı görünümü",
     revenueByClient: "Müşteriye Göre Gelir",
-    revenueByClientDesc: "Eğilimler ve karşılaştırmalarla müşteriye göre gelir dağılımı",
-    accountsAgingTableDesc: "Zaman dilimine göre ödenmemiş alacakların yaşlandırma analizi",
+    revenueByClientDesc:
+      "Eğilimler ve karşılaştırmalarla müşteriye göre gelir dağılımı",
+    accountsAgingTableDesc:
+      "Zaman dilimine göre ödenmemiş alacakların yaşlandırma analizi",
     paymentReportTitle: "Ödeme Raporu",
-    paymentReportDesc: "Detaylı işlem geçmişiyle alınan tüm ödemeleri takip edin",
+    paymentReportDesc:
+      "Detaylı işlem geçmişiyle alınan tüm ödemeleri takip edin",
     teamUtilization: "Ekip Kullanımı",
     teamUtilizationDesc: "Ekip üyesi kullanım oranları ve kapasite analizi",
     projectProfitability: "Proje Kârlılığı",
-    projectProfitabilityDesc: "Maliyet dağılımıyla projeye göre kârlılık analizi",
+    projectProfitabilityDesc:
+      "Maliyet dağılımıyla projeye göre kârlılık analizi",
     clientSummaryTitle: "Müşteri Özeti",
     clientSummaryDesc: "Kapsamlı müşteri performansı ve etkileşim metrikleri",
-    understandReportsAtGlance: "Geliri, süreyi ve bekleyen işleri bir bakışta anlayın.",
+    understandReportsAtGlance:
+      "Geliri, süreyi ve bekleyen işleri bir bakışta anlayın.",
     scheduleReports: "Raporları planla",
     availableReports: "Mevcut Raporlar",
     revenueAndBilling: "Gelir ve faturalama",
@@ -878,7 +906,8 @@ const tr = {
     viewOverdueInvoices: "Gecikmiş Faturaları Görüntüle",
     monthlyRevenueReport: "Aylık Gelir Raporu",
     openReport: "%{title} raporunu aç",
-    reviewHoursLogged: "Kişi, müşteri ve projeye göre kaydedilen saatleri inceleyin.",
+    reviewHoursLogged:
+      "Kişi, müşteri ve projeye göre kaydedilen saatleri inceleyin.",
     lastSevenDaysPreset: "Son 7 Gün",
     lastThirtyDaysPreset: "Son 30 Gün",
     totalEntries: "Toplam Kayıt",
@@ -1123,13 +1152,17 @@ const tr = {
     paidInvoices: "Ödenen Faturalar",
     alreadySettled: "Zaten ödenmiş",
     paymentsReceived: "Alınan Ödemeler",
-    employeeGuidance: "Haftanızı takip edin, doğru girişler gönderin ve işleri ilerletin.",
-    bookKeeperGuidance: "Gelen ödemeleri inceleyin, faturaları uzlaştırın ve nakit akışını net tutun.",
-    clientGuidance: "Hesabınızın fatura durumunu ve ödeme geçmişini kontrol edin.",
+    employeeGuidance:
+      "Haftanızı takip edin, doğru girişler gönderin ve işleri ilerletin.",
+    bookKeeperGuidance:
+      "Gelen ödemeleri inceleyin, faturaları uzlaştırın ve nakit akışını net tutun.",
+    clientGuidance:
+      "Hesabınızın fatura durumunu ve ödeme geçmişini kontrol edin.",
     defaultGuidance: "Gelir, projeler ve ekip ivmesi bir bakışta.",
     recentActivity: "Son Etkinlik",
     workspaceActivity: "Çalışma Alanı Etkinliği",
-    employeeActivityDescription: "Panonuz zaman takibi ve atanan işlere odaklıdır.",
+    employeeActivityDescription:
+      "Panonuz zaman takibi ve atanan işlere odaklıdır.",
     activityDescription: "Faturalarınız ve ödemelerinizdeki son güncellemeler",
     noRecentActivityYet: "Henüz son etkinlik yok",
     loadMore: "Daha fazla yükle",
@@ -1172,27 +1205,36 @@ const tr = {
     cashLedger: "Kasa defteri",
     miruLogo: "Miru",
     heroTitle: "Zaman, faturalar ve ödemeler için tek yer",
-    heroDescription: "Günü net tutun, faturalamayı ilerletin ve nakdi görünür kılın.",
+    heroDescription:
+      "Günü net tutun, faturalamayı ilerletin ve nakdi görünür kılın.",
     slideShowPrefix: "Göster",
-    slideDashboardDescription: "Geliri, aktif projeleri ve ekip ivmesini aramadan görün.",
-    slideInvoicesDescription: "Taslakları, gecikmiş bakiyeleri ve ödenmiş işleri aynı yerde tutun.",
-    slideTimeTrackingDescription: "Haftalık zaman girişi angarya haline gelmeden güncel kalır.",
-    slidePaymentsDescription: "Her ödeme yöntem, durum ve kaynakla tek deftere düşer.",
+    slideDashboardDescription:
+      "Geliri, aktif projeleri ve ekip ivmesini aramadan görün.",
+    slideInvoicesDescription:
+      "Taslakları, gecikmiş bakiyeleri ve ödenmiş işleri aynı yerde tutun.",
+    slideTimeTrackingDescription:
+      "Haftalık zaman girişi angarya haline gelmeden güncel kalır.",
+    slidePaymentsDescription:
+      "Her ödeme yöntem, durum ve kaynakla tek deftere düşer.",
     continueWithGoogle: "Google ile devam et",
     continueWithGithub: "GitHub ile devam et",
     orUseEmail: "veya e-posta kullanın",
     verifyWithAuthenticator: "Kimlik doğrulayıcı uygulamanızla doğrulayın",
-    authenticatorInstructions: "Kimlik doğrulayıcı uygulamanızdan 6 haneli kodu girin veya kurtarma kodu kullanın.",
+    authenticatorInstructions:
+      "Kimlik doğrulayıcı uygulamanızdan 6 haneli kodu girin veya kurtarma kodu kullanın.",
     authenticatorCode: "Kimlik doğrulayıcı kodu",
     recoveryCode: "Kurtarma kodu",
     verifyAndSignIn: "Doğrula ve giriş yap",
-    completePasskeyVerification: "Giriş yapmayı tamamlamak için geçiş anahtarı doğrulamasını tamamlayın.",
-    enterAuthenticatorCode: "Giriş yapmayı tamamlamak için kimlik doğrulayıcı kodunuzu girin.",
+    completePasskeyVerification:
+      "Giriş yapmayı tamamlamak için geçiş anahtarı doğrulamasını tamamlayın.",
+    enterAuthenticatorCode:
+      "Giriş yapmayı tamamlamak için kimlik doğrulayıcı kodunuzu girin.",
     invalidVerificationCode: "Geçersiz doğrulama kodu.",
     privacy: "Gizlilik",
     terms: "Koşullar",
     createAccount: "Hesap oluştur",
-    passwordCriteria: "Min. 8 karakter, 1 büyük harf, 1 küçük harf, 1 rakam ve 1 özel karakter",
+    passwordCriteria:
+      "Min. 8 karakter, 1 büyük harf, 1 küçük harf, 1 rakam ve 1 özel karakter",
     agreeToTerms: "Kabul ediyorum",
     termsOfService: "Hizmet Şartları",
     privacyPolicy: "Gizlilik Politikası",
@@ -1276,8 +1318,10 @@ const tr = {
     publicHolidays: "Resmi tatiller",
     zeroUsed: "0 kullanıldı",
     leaveCalendar: "İzin takvimi",
-    trackLeaveUsage: "%{year} için aylar halinde izin ve tatil kullanımını takip edin.",
-    selectDayToInspect: "İzin detaylarını ve tatil kullanımını incelemek için bir gün seçin.",
+    trackLeaveUsage:
+      "%{year} için aylar halinde izin ve tatil kullanımını takip edin.",
+    selectDayToInspect:
+      "İzin detaylarını ve tatil kullanımını incelemek için bir gün seçin.",
     nothingBooked: "Kayıt yok",
     nothingBookedForDate: "Bu tarih için kayıt yok.",
     recordedTimeAway: "Bu gün için kayıtlı izin süresi",
@@ -1299,7 +1343,8 @@ const tr = {
     numberOfTeamMembers: "Ekip Üyesi Sayısı:",
     plan: "Plan",
     basicPlan: "Temel Plan",
-    basicPlanDescription: "Temel plan tüm özellikleri içerir. Bu tek seferlik bir ücrettir.",
+    basicPlanDescription:
+      "Temel plan tüm özellikleri içerir. Bu tek seferlik bir ücrettir.",
     chargedOnce: "tek seferlik ücret",
     addOns: "Eklentiler",
     oneTeamMember: "1 ekip üyesi",

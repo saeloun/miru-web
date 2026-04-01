@@ -3,8 +3,7 @@ const zhCN = {
   invalidImageFormatSize:
     "文件格式不正确。请上传PNG或JPG格式的图片。最大尺寸（%{fileSize}KB）",
   invalidImageSize: "文件大小超过了%{fileSize}KB的最大限制。",
-  invalidImageFormat:
-    "文件格式不正确。请上传PNG或JPG格式的图片",
+  invalidImageFormat: "文件格式不正确。请上传PNG或JPG格式的图片",
 
   // Common actions
   save: "保存",
@@ -62,7 +61,6 @@ const zhCN = {
   inactive: "非活跃",
   invited: "已邀请",
   department: "部门",
-  projects: "项目",
   theme: "主题",
   summary: "摘要",
   format: "格式",
@@ -121,8 +119,7 @@ const zhCN = {
   pageNotFound: "页面未找到",
   clickHere: "点击这里",
   somethingWentWrong: "出现了问题",
-  refreshPageMessage:
-    "刷新页面重试。如果问题持续存在，请重新登录或联系支持。",
+  refreshPageMessage: "刷新页面重试。如果问题持续存在，请重新登录或联系支持。",
   reloadPage: "重新加载页面",
   loadingWorkspace: "加载工作区中...",
 
@@ -169,8 +166,7 @@ const zhCN = {
     favorites: "收藏夹",
     favoriteShortcutsHint: "固定你常用的组合。",
     recentShortcuts: "最近的快捷方式",
-    recentShortcutsHint:
-      "无需重新选择相同的客户和项目即可复用最近的工作。",
+    recentShortcutsHint: "无需重新选择相同的客户和项目即可复用最近的工作。",
     saving: "保存中...",
     saveChanges: "保存更改",
     taskType: "任务类型",
@@ -249,8 +245,7 @@ const zhCN = {
     editClient: "编辑客户",
     editClientDetails: "编辑客户详情",
     deleteClient: "删除客户",
-    deleteClientConfirm:
-      "确定要删除客户%{name}吗？此操作无法撤销。",
+    deleteClientConfirm: "确定要删除客户%{name}吗？此操作无法撤销。",
     clientDetails: "客户详情",
     clientLogo: "客户标志",
     phoneNumber: "电话号码",
@@ -282,8 +277,7 @@ const zhCN = {
     addContacts: "添加联系人",
     editContact: "编辑联系人",
     deleteContact: "删除联系人",
-    deleteContactConfirm:
-      "确定要删除联系人%{name}吗？此操作无法撤销。",
+    deleteContactConfirm: "确定要删除联系人%{name}吗？此操作无法撤销。",
     firstName: "名",
     lastName: "姓",
     updateContact: "更新联系人",
@@ -302,8 +296,7 @@ const zhCN = {
     addNewProject: "添加新项目",
     editProject: "编辑项目",
     deleteProject: "删除项目",
-    deleteProjectConfirm:
-      "从工作区移除%{name}。此操作无法撤销。",
+    deleteProjectConfirm: "从工作区移除%{name}。此操作无法撤销。",
     projectName: "项目名称",
     enterProjectName: "输入项目名称",
     selectClient: "选择客户",
@@ -373,8 +366,7 @@ const zhCN = {
     editMember: "编辑成员",
     deleteUser: "删除用户",
     deleteInvite: "删除邀请",
-    deleteUserConfirm:
-      "确定要删除用户%{name}吗？此操作无法撤销。",
+    deleteUserConfirm: "确定要删除用户%{name}吗？此操作无法撤销。",
     admin: "管理员",
     employee: "员工",
     bookkeeper: "会计",
@@ -400,8 +392,7 @@ const zhCN = {
     position: "职位",
     currentProjects: "当前项目",
     nMore: "+%{count}更多",
-    seatLimitReached:
-      "免费工作区限制3个团队席位。升级到Pro以邀请更多成员。",
+    seatLimitReached: "免费工作区限制3个团队席位。升级到Pro以邀请更多成员。",
     firstNameLettersOnly: "名只能包含字母",
     lastNameLettersOnly: "姓只能包含字母",
     maxCharacters: "最多允许%{count}个字符",
@@ -420,13 +411,10 @@ const zhCN = {
     createNewInvoice: "创建新发票",
     deleteInvoice: "删除发票",
     deleteInvoices: "删除发票",
-    deleteInvoiceConfirm:
-      "确定要删除此发票吗？此操作无法撤销。",
-    deleteInvoicesConfirm:
-      "确定要删除这些发票吗？此操作无法撤销。",
+    deleteInvoiceConfirm: "确定要删除此发票吗？此操作无法撤销。",
+    deleteInvoicesConfirm: "确定要删除这些发票吗？此操作无法撤销。",
     waiveOffInvoice: "免除发票",
-    waiveOffConfirm:
-      "确定要免除发票%{number}吗？此操作无法撤销。",
+    waiveOffConfirm: "确定要免除发票%{number}吗？此操作无法撤销。",
     waiveOff: "免除",
     markAsPaid: "标记为已付",
     markInvoiceAsPaid: "将发票标记为已付",
@@ -471,8 +459,7 @@ const zhCN = {
     addEntry: "添加%{count}个条目",
     addEntries_plural: "添加%{count}个条目",
     thankYouForBusiness: "感谢您的惠顾！",
-    previewNote:
-      "这是预览。更改将在保存后生效。",
+    previewNote: "这是预览。更改将在保存后生效。",
     noInvoiceGenerated: "尚未生成发票。",
     acceptCreditCards: "接受信用卡",
     sendTo: "发送给",
@@ -502,22 +489,17 @@ const zhCN = {
     recipientEmailId: "收件人邮箱",
     subject: "主题",
     message: "消息",
-    addEmailFromClientSettings:
-      "请从客户设置页面添加邮箱",
-    reminderSubject:
-      "未付发票付款提醒",
+    addEmailFromClientSettings: "请从客户设置页面添加邮箱",
+    reminderSubject: "未付发票付款提醒",
     invoiceSentSubject: "%{company}向您发送了发票（%{number}）",
-    reminderBody:
-      "%{company}向您发送了发票%{number}的提醒",
-    invoiceSentBody:
-      "%{company}向您发送了发票（%{number}）",
+    reminderBody: "%{company}向您发送了发票%{number}的提醒",
+    invoiceSentBody: "%{company}向您发送了发票（%{number}）",
     invoiceWillBeSent: "发票将被发送！",
     processing: "处理中...",
 
     // No payment gateway
     noPaymentGateway: "未连接支付网关",
-    paymentGatewayError:
-      "错误。请联系发票发送者连接支付网关以便您完成发票付款",
+    paymentGatewayError: "错误。请联系发票发送者连接支付网关以便您完成发票付款",
     paymentGatewayWarning:
       "您尚未将任何支付网关与Miru连接。是否要在没有支付网关的情况下发送发票？",
     goToPaymentSettings: "前往支付设置",
@@ -612,8 +594,7 @@ const zhCN = {
   },
   common: {
     retry: "重试",
-    pageUnavailable:
-      "此页面不可用或链接对您的工作区已不再有效。",
+    pageUnavailable: "此页面不可用或链接对您的工作区已不再有效。",
     goToDashboard: "前往仪表盘",
   },
 
@@ -828,7 +809,8 @@ const zhCN = {
     invoicesReport: "发票报告",
     invoicesReportDesc: "一段时间内所有客户的未结和逾期发票详细摘要。",
     totalHoursLoggedTitle: "总记录小时",
-    totalHoursLoggedDesc: "按项目分组的团队已计费、未计费和非计费小时的详细摘要。",
+    totalHoursLoggedDesc:
+      "按项目分组的团队已计费、未计费和非计费小时的详细摘要。",
     revenueReport: "收入报告",
     revenueReportDesc: "每个客户收入的详细报告。",
     accountsAging: "应收账款账龄",
@@ -914,10 +896,8 @@ const zhCN = {
     newExpense: "新建费用",
     editExpense: "编辑费用",
     deleteExpense: "删除费用",
-    deleteExpenseConfirm:
-      "确定要删除此费用吗？此操作无法撤销。",
-    deleteExpenseConfirmUndone:
-      "确定要删除此费用吗？此操作无法撤回。",
+    deleteExpenseConfirm: "确定要删除此费用吗？此操作无法撤销。",
+    deleteExpenseConfirmUndone: "确定要删除此费用吗？此操作无法撤回。",
     expenseDetails: "费用详情",
     category: "类别",
     selectCategory: "选择类别",
@@ -1146,10 +1126,8 @@ const zhCN = {
     noAuthTokenReceived: "未收到认证令牌",
     signInToWorkspace: "登录到您的工作区",
     createYourWorkspace: "创建您的工作区",
-    signInDescription:
-      "追踪工作、发送发票、一处管理现金流。",
-    signUpDescription:
-      "在一个清晰的系统中设置客户、项目、发票和支付。",
+    signInDescription: "追踪工作、发送发票、一处管理现金流。",
+    signUpDescription: "在一个清晰的系统中设置客户、项目、发票和支付。",
     firstName: "名",
     lastName: "姓",
     password: "密码",
@@ -1192,7 +1170,8 @@ const zhCN = {
     privacy: "隐私",
     terms: "条款",
     createAccount: "创建账户",
-    passwordCriteria: "至少8个字符，包含1个大写字母、1个小写字母、1个数字和1个特殊字符",
+    passwordCriteria:
+      "至少8个字符，包含1个大写字母、1个小写字母、1个数字和1个特殊字符",
     agreeToTerms: "我同意",
     termsOfService: "服务条款",
     privacyPolicy: "隐私政策",

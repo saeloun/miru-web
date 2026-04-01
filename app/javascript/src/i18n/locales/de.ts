@@ -62,7 +62,6 @@ const de = {
   inactive: "Inaktiv",
   invited: "Eingeladen",
   department: "Abteilung",
-  projects: "Projekte",
   theme: "Design",
   summary: "Zusammenfassung",
   format: "Format",
@@ -148,7 +147,8 @@ const de = {
     selectProject: "Projekt auswählen",
     selectClientFirst: "Wählen Sie zuerst einen Kunden",
     whatDidYouWorkOn: "Woran haben Sie gearbeitet?",
-    addNoteHere: "Woran haben Sie gearbeitet? Fügen Sie hier Ihre Notizen hinzu...",
+    addNoteHere:
+      "Woran haben Sie gearbeitet? Fügen Sie hier Ihre Notizen hinzu...",
     addANote: "Notiz hinzufügen...",
     timeSpent: "Aufgewendete Zeit",
     saveEntry: "Eintrag speichern",
@@ -159,7 +159,8 @@ const de = {
     editEntry: "Eintrag bearbeiten",
     deleteEntry: "Eintrag löschen",
     deleteTimeEntry: "Zeiteintrag löschen",
-    deleteTimeEntryConfirm: "Sind Sie sicher, dass Sie diesen Zeiteintrag löschen möchten?",
+    deleteTimeEntryConfirm:
+      "Sind Sie sicher, dass Sie diesen Zeiteintrag löschen möchten?",
     durationRequired: "Dauer ist erforderlich",
     projectRequired: "Projekt ist erforderlich",
     duration: "Dauer",
@@ -167,7 +168,8 @@ const de = {
     noteOptional: "Notiz (Optional)",
     addTags: "Tags hinzufügen",
     favorites: "Favoriten",
-    favoriteShortcutsHint: "Pinnen Sie die Kombinationen an, die Sie ständig verwenden.",
+    favoriteShortcutsHint:
+      "Pinnen Sie die Kombinationen an, die Sie ständig verwenden.",
     recentShortcuts: "Letzte Shortcuts",
     recentShortcutsHint:
       "Verwenden Sie kürzliche Arbeit wieder, ohne denselben Kunden und dasselbe Projekt erneut auszuwählen.",
@@ -185,10 +187,13 @@ const de = {
     entry: "Eintrag",
     entries: "Einträge",
     noEntriesForSelectedDay: "Keine Einträge für den ausgewählten Tag",
-    weekReviewHint: "Wechseln Sie zu Diese Woche, um alles zu überprüfen, was Sie diese Woche erfasst haben.",
+    weekReviewHint:
+      "Wechseln Sie zu Diese Woche, um alles zu überprüfen, was Sie diese Woche erfasst haben.",
     noTimeEntriesYet: "Noch keine Zeiteinträge",
-    firstEntryHint: 'Klicken Sie auf "Eintrag hinzufügen", um Ihren ersten Zeiteintrag für diesen Tag zu erfassen',
-    logWorkByWeekOrMonth: "Erfassen Sie Arbeit nach Woche oder Monat. Halten Sie Einträge klar und aktuell.",
+    firstEntryHint:
+      'Klicken Sie auf "Eintrag hinzufügen", um Ihren ersten Zeiteintrag für diesen Tag zu erfassen',
+    logWorkByWeekOrMonth:
+      "Erfassen Sie Arbeit nach Woche oder Monat. Halten Sie Einträge klar und aktuell.",
     entriesFor: "Einträge für %{name}",
     timeEntriesFor: "Zeiteinträge für",
     unableToLoad: "Zeiterfassung kann derzeit nicht geladen werden.",
@@ -196,7 +201,8 @@ const de = {
     noEntriesInLastWeek: "Keine Einträge in der letzten Woche gefunden.",
     alreadyHasEntries: "Diese Woche hat bereits diese Einträge.",
     copiedEntries: "%{count} Einträge von letzter Woche kopiert",
-    failedToCopyLastWeek: "Kopieren der Einträge der letzten Woche fehlgeschlagen.",
+    failedToCopyLastWeek:
+      "Kopieren der Einträge der letzten Woche fehlgeschlagen.",
     week: "Woche",
     month: "Monat",
     holiday: "Feiertag",
@@ -206,7 +212,8 @@ const de = {
     entriesUpdatedSuccessfully: "Einträge erfolgreich aktualisiert",
     failedToUpdateEntries: "Aktualisierung der Einträge fehlgeschlagen",
     selectProjectFirst: "Bitte wählen Sie zuerst ein Projekt",
-    editingModeActive: "Bearbeitungsmodus ist aktiv. Schließen Sie Ihre Änderungen oben ab.",
+    editingModeActive:
+      "Bearbeitungsmodus ist aktiv. Schließen Sie Ihre Änderungen oben ab.",
     dayAbbr: {
       mon: "Mo",
       tue: "Di",
@@ -315,13 +322,15 @@ const de = {
     teamMembers: "Teammitglieder",
     team: "Team",
     allProjects: "Alle Projekte",
-    allProjectsDescription: "Verwalten Sie Ihre Projekte und verfolgen Sie den Fortschritt",
+    allProjectsDescription:
+      "Verwalten Sie Ihre Projekte und verfolgen Sie den Fortschritt",
     failedToLoadProjects: "Projekte konnten nicht geladen werden",
     failedToDeleteProject: "Projekt konnte nicht gelöscht werden",
     projectDeletedSuccessfully: "Projekt erfolgreich gelöscht",
     viewDetails: "Details anzeigen",
     copyProjectId: "Projekt-ID kopieren",
-    manageProjectsDescription: "Verwalten Sie Ihre Projekte und verfolgen Sie den Fortschritt",
+    manageProjectsDescription:
+      "Verwalten Sie Ihre Projekte und verfolgen Sie den Fortschritt",
     newProject: "Neues Projekt",
     activeProjects: "Aktive Projekte",
     ofTotalProjects: "von %{count} Projekten gesamt",
@@ -330,7 +339,8 @@ const de = {
     searchProjects: "Projekte suchen...",
     createFirstProject: "Erstellen Sie Ihr erstes Projekt, um loszulegen.",
     noProjectsYet: "Noch keine Projekte",
-    workingOnProjects: "Verfolgen Sie abrechenbare und nicht abrechenbare Arbeit über Ihre Projekte.",
+    workingOnProjects:
+      "Verfolgen Sie abrechenbare und nicht abrechenbare Arbeit über Ihre Projekte.",
     active: "Aktiv",
     paused: "Pausiert",
     completed: "Abgeschlossen",
@@ -346,21 +356,25 @@ const de = {
     outstanding: "AUSSTEHEND",
     deleting: "Wird gelöscht...",
     createProject: "Projekt erstellen",
-    createProjectDescription: "Richten Sie ein neues Projekt ein und weisen Sie es einem Kunden zu.",
+    createProjectDescription:
+      "Richten Sie ein neues Projekt ein und weisen Sie es einem Kunden zu.",
     editProjectDetails: "Projektdetails bearbeiten",
     saveChanges: "Änderungen speichern",
-    billableDescription: "Erfassen Sie Zeit und stellen Sie dem Kunden dieses Projekt in Rechnung",
+    billableDescription:
+      "Erfassen Sie Zeit und stellen Sie dem Kunden dieses Projekt in Rechnung",
     nonBillableDescription: "Erfassen Sie Zeit ohne Abrechnung an den Kunden",
     noClientsPresent: "Keine Kunden vorhanden",
     teamMembersUpdated: "Teammitglieder erfolgreich aktualisiert",
-    manageProjectMembersDescription: "Fügen Sie Teammitglieder hinzu oder entfernen Sie sie und legen Sie deren Stundensätze fest.",
+    manageProjectMembersDescription:
+      "Fügen Sie Teammitglieder hinzu oder entfernen Sie sie und legen Sie deren Stundensätze fest.",
     enterValidRate: "Bitte geben Sie einen gültigen Satz ein",
     addAnotherTeamMember: "Weiteres Mitglied hinzufügen",
     addTeamMember: "Teammitglied hinzufügen",
     saveTeamMembers: "Mitglieder speichern",
     noTeamMembersAdded: "Es wurden noch keine Teammitglieder hinzugefügt.",
     addTeamMembers: "Teammitglieder hinzufügen",
-    teamMembersDescription: "Sehen und verwalten Sie die diesem Projekt zugewiesenen Teammitglieder.",
+    teamMembersDescription:
+      "Sehen und verwalten Sie die diesem Projekt zugewiesenen Teammitglieder.",
   },
 
   // Team
@@ -461,7 +475,8 @@ const de = {
     selectDate: "Datum auswählen",
     deleteLineItem: "Diese Position löschen",
     enterDescription: "Beschreibung eingeben",
-    descriptionTooltip: "Fügen Sie eine detaillierte Beschreibung für diese Position hinzu",
+    descriptionTooltip:
+      "Fügen Sie eine detaillierte Beschreibung für diese Position hinzu",
     rate: "Satz",
     quantity: "Menge",
     selectTimeEntries: "Zeiteinträge auswählen",
@@ -504,13 +519,12 @@ const de = {
     message: "Nachricht",
     addEmailFromClientSettings:
       "Bitte fügen Sie die E-Mail über die Kundeneinstellungen hinzu",
-    reminderSubject:
-      "Erinnerung zur Begleichung unbezahlter Rechnung",
-    invoiceSentSubject: "%{company} hat Ihnen eine Rechnung gesendet (%{number})",
+    reminderSubject: "Erinnerung zur Begleichung unbezahlter Rechnung",
+    invoiceSentSubject:
+      "%{company} hat Ihnen eine Rechnung gesendet (%{number})",
     reminderBody:
       "%{company} hat Ihnen eine Erinnerung für Rechnung %{number} gesendet",
-    invoiceSentBody:
-      "%{company} hat Ihnen eine Rechnung gesendet (%{number})",
+    invoiceSentBody: "%{company} hat Ihnen eine Rechnung gesendet (%{number})",
     invoiceWillBeSent: "Die Rechnung wird gesendet!",
     processing: "wird verarbeitet...",
 
@@ -571,7 +585,8 @@ const de = {
     invoiceSentSuccessfully: "Rechnung erfolgreich gesendet",
     reminderSentSuccessfully: "Erinnerung erfolgreich gesendet",
     failedToDownload: "Rechnung konnte nicht heruntergeladen werden",
-    failedToSend: "Rechnung konnte nicht gesendet werden. Bitte versuchen Sie es erneut.",
+    failedToSend:
+      "Rechnung konnte nicht gesendet werden. Bitte versuchen Sie es erneut.",
     cannotDownloadPreview: "Vorschaurechnung kann nicht heruntergeladen werden",
     cannotSendPreview: "Vorschaurechnung kann nicht gesendet werden",
     cannotEditPreview: "Vorschaurechnung kann nicht bearbeitet werden",
@@ -580,11 +595,13 @@ const de = {
     errorConnectingPayments: "Fehler bei der Verbindung zu Zahlungen",
     invoiceCreated: "Rechnung erfolgreich erstellt",
     invoiceUpdated: "Rechnung erfolgreich aktualisiert",
-    failedToSaveInvoice: "Rechnung konnte nicht gespeichert werden. Bitte versuchen Sie es erneut.",
+    failedToSaveInvoice:
+      "Rechnung konnte nicht gespeichert werden. Bitte versuchen Sie es erneut.",
 
     // Counters
     showingOf: "%{shown} von %{total} angezeigt",
-    viewingMatching: "%{filtered} passende Rechnungen von %{loaded} geladenen werden angezeigt",
+    viewingMatching:
+      "%{filtered} passende Rechnungen von %{loaded} geladenen werden angezeigt",
     loadedOf: "%{loaded} von %{total} geladen",
     showingRecentTransactions: "%{count} letzte Transaktionen werden angezeigt",
     updatedAt: "Aktualisiert %{date}",
@@ -596,17 +613,21 @@ const de = {
 
     // Invoice reminder email
     invoiceReminder: "Rechnungserinnerung: %{number}",
-    reminderMessage: "Dies ist eine Erinnerung an Ihre ausstehende Rechnung. Bitte finden Sie die Details im Anhang.",
+    reminderMessage:
+      "Dies ist eine Erinnerung an Ihre ausstehende Rechnung. Bitte finden Sie die Details im Anhang.",
     invoiceAttached: "Bitte finden Sie Ihre Rechnung im Anhang.",
-    reminderPaymentMessage: "Dies ist eine Erinnerung an Ihre überfällige Rechnung. Bitte begleichen Sie die Zahlung.",
+    reminderPaymentMessage:
+      "Dies ist eine Erinnerung an Ihre überfällige Rechnung. Bitte begleichen Sie die Zahlung.",
     invoiceSubject: "Rechnung %{number}",
     reminderPaymentSubject: "Erinnerung zur Begleichung von Rechnung %{number}",
-    markAsPaidConfirm: "Diese Rechnung als bezahlt markieren? Diese Aktion wirkt sich auf die Buchhaltung aus.",
+    markAsPaidConfirm:
+      "Diese Rechnung als bezahlt markieren? Diese Aktion wirkt sich auf die Buchhaltung aus.",
     failedToLoadInvoice: "Rechnung konnte nicht geladen werden",
     invoiceNotFound: "Rechnung nicht gefunden",
     failedToMarkAsPaid: "Rechnung konnte nicht als bezahlt markiert werden",
     failedToDownloadInvoice: "Rechnung konnte nicht heruntergeladen werden",
-    cannotDownloadInvalidId: "Rechnung kann nicht heruntergeladen werden - ungültige ID",
+    cannotDownloadInvalidId:
+      "Rechnung kann nicht heruntergeladen werden - ungültige ID",
     cannotSendInvalidId: "Rechnung kann nicht gesendet werden - ungültige ID",
     payment: "Zahlung #%{id}",
   },
@@ -680,7 +701,8 @@ const de = {
   timer: {
     webTimer: "Web-Timer",
     webTimerLabel: "Web-Timer",
-    trackLiveWork: "Verfolgen Sie Live-Arbeit in Echtzeit und speichern Sie sie direkt in der heutigen Eintragsliste.",
+    trackLiveWork:
+      "Verfolgen Sie Live-Arbeit in Echtzeit und speichern Sie sie direkt in der heutigen Eintragsliste.",
     startTimer: "Timer starten",
     pause: "Pausieren",
     resume: "Fortsetzen",
@@ -689,7 +711,8 @@ const de = {
     reset: "Zurücksetzen",
     timer: "Timer",
     saveTimeEntry: "Zeiteintrag speichern",
-    saveTimeEntryDescription: "Sie haben %{time} erfasst. Möchten Sie dies als Zeiteintrag speichern?",
+    saveTimeEntryDescription:
+      "Sie haben %{time} erfasst. Möchten Sie dies als Zeiteintrag speichern?",
     discard: "Verwerfen",
     timerStarted: "Timer gestartet",
     timerPaused: "Timer pausiert",
@@ -786,7 +809,8 @@ const de = {
     invoiceAgingDetails: "Details zur Rechnungsalterung",
     noDataFound: "Keine Daten gefunden",
     accountsAgingReport: "Forderungsalterungsbericht",
-    analysisOfOutstandingReceivables: "Analyse ausstehender Forderungen nach Altersperiode",
+    analysisOfOutstandingReceivables:
+      "Analyse ausstehender Forderungen nach Altersperiode",
     asOf: "Stand %{date}",
     zeroToThirtyDays: "0-30 Tage",
     thirtyOneToSixtyDays: "31-60 Tage",
@@ -794,13 +818,16 @@ const de = {
     ninetyPlusDays: "90+ Tage",
     noClientsWithOutstandingBalances: "Keine Kunden mit ausstehenden Salden.",
     showingOfClients: "%{displayed} von %{total} Kunden werden angezeigt...",
-    errorLoadingReportData: "Fehler beim Laden der Berichtsdaten. Bitte versuchen Sie es erneut.",
+    errorLoadingReportData:
+      "Fehler beim Laden der Berichtsdaten. Bitte versuchen Sie es erneut.",
     projectClient: "PROJEKT/ KUNDE",
     noteHeader: "NOTIZ",
     teamMemberDate: "TEAMMITGLIED/ DATUM",
     hoursLogged: "ERFASSTE STUNDEN",
-    noResultsMatchFilters: "Keine Ergebnisse entsprechen den aktuellen Filtern. Versuchen Sie, einige Filter zu entfernen.",
-    noTimeEntriesYet: "Es wurden noch keine Zeiteinträge hinzugefügt. Sie sehen eine Zusammenfassung der von Ihrem Team hinzugefügten Zeiteinträge.",
+    noResultsMatchFilters:
+      "Keine Ergebnisse entsprechen den aktuellen Filtern. Versuchen Sie, einige Filter zu entfernen.",
+    noTimeEntriesYet:
+      "Es wurden noch keine Zeiteinträge hinzugefügt. Sie sehen eine Zusammenfassung der von Ihrem Team hinzugefügten Zeiteinträge.",
     selected: "%{count} ausgewählt",
     showingClientsCount: "%{shown} von %{total} Kunden werden angezeigt",
     ofTeamMembersSelected: "%{active} von %{total} Teammitgliedern ausgewählt",
@@ -822,20 +849,27 @@ const de = {
     groupByMonth: "Nach Monat gruppieren",
     previewLabel: "Vorschau:",
     entriesWillBeGrouped: "Einträge werden gruppiert nach %{grouping}",
-    subtotalsShownForEachGroup: "Zwischensummen werden für jede Gruppe angezeigt",
+    subtotalsShownForEachGroup:
+      "Zwischensummen werden für jede Gruppe angezeigt",
     timeEntryReportTitle: "Zeiteintragsbericht",
-    timeEntryReportDesc: "Eine Zusammenfassung der von Ihrem Team hinzugefügten Zeiteinträge.",
+    timeEntryReportDesc:
+      "Eine Zusammenfassung der von Ihrem Team hinzugefügten Zeiteinträge.",
     invoicesReport: "Rechnungsbericht",
-    invoicesReportDesc: "Eine detaillierte Zusammenfassung ausstehender und überfälliger Rechnungen aller Kunden für einen Zeitraum.",
+    invoicesReportDesc:
+      "Eine detaillierte Zusammenfassung ausstehender und überfälliger Rechnungen aller Kunden für einen Zeitraum.",
     totalHoursLoggedTitle: "Gesamte erfasste Stunden",
-    totalHoursLoggedDesc: "Eine detaillierte Zusammenfassung abgerechneter, nicht abgerechneter und nicht abrechenbarer Stunden nach Team, gruppiert nach Projekt.",
+    totalHoursLoggedDesc:
+      "Eine detaillierte Zusammenfassung abgerechneter, nicht abgerechneter und nicht abrechenbarer Stunden nach Team, gruppiert nach Projekt.",
     revenueReport: "Umsatzbericht",
-    revenueReportDesc: "Ein detaillierter Bericht über den Umsatz jedes Kunden.",
+    revenueReportDesc:
+      "Ein detaillierter Bericht über den Umsatz jedes Kunden.",
     accountsAging: "Forderungsalterung",
-    accountsAgingDesc: "Finden Sie heraus, welche Kunden lange für die Zahlung brauchen",
+    accountsAgingDesc:
+      "Finden Sie heraus, welche Kunden lange für die Zahlung brauchen",
     clearAll: "ALLES LÖSCHEN",
     outstandingAndOverdue: "Ausstehend und überfällig",
-    followUpOnInvoices: "Verfolgen Sie Rechnungen nach, die noch Aufmerksamkeit erfordern.",
+    followUpOnInvoices:
+      "Verfolgen Sie Rechnungen nach, die noch Aufmerksamkeit erfordern.",
     outstanding: "Ausstehend",
     overdue: "Überfällig",
     refresh: "Aktualisieren",
@@ -848,26 +882,35 @@ const de = {
     formatLabel: "Format",
     exportPdfBtn: "PDF exportieren",
     exportCsvBtn: "CSV exportieren",
-    noOutstandingOrOverdueInvoices: "Keine ausstehenden oder überfälligen Rechnungen gefunden.",
+    noOutstandingOrOverdueInvoices:
+      "Keine ausstehenden oder überfälligen Rechnungen gefunden.",
     allCurrencies: "Alle Währungen",
     filteredByCurrency: "Gefiltert nach %{currency}",
     overdueAgingTitle: "Überfälligkeitsalterung (%{currency})",
     averageDays: "Durchschnittliche Tage:",
-    timeReportsDesc: "Eine umfassende Zusammenfassung der von Ihren Teammitgliedern hinzugefügten Zeiteinträge",
+    timeReportsDesc:
+      "Eine umfassende Zusammenfassung der von Ihren Teammitgliedern hinzugefügten Zeiteinträge",
     outstandingOverdueInvoicesTitle: "Ausstehende und überfällige Rechnungen",
-    outstandingOverdueInvoicesDesc: "Detaillierter Überblick über ausstehende und überfällige Rechnungen aller Kunden",
+    outstandingOverdueInvoicesDesc:
+      "Detaillierter Überblick über ausstehende und überfällige Rechnungen aller Kunden",
     revenueByClient: "Umsatz nach Kunde",
-    revenueByClientDesc: "Umsatzaufschlüsselung nach Kunde mit Trends und Vergleichen",
-    accountsAgingTableDesc: "Altersanalyse ausstehender Forderungen nach Zeitraum",
+    revenueByClientDesc:
+      "Umsatzaufschlüsselung nach Kunde mit Trends und Vergleichen",
+    accountsAgingTableDesc:
+      "Altersanalyse ausstehender Forderungen nach Zeitraum",
     paymentReportTitle: "Zahlungsbericht",
-    paymentReportDesc: "Verfolgen Sie alle eingegangenen Zahlungen mit detailliertem Transaktionsverlauf",
+    paymentReportDesc:
+      "Verfolgen Sie alle eingegangenen Zahlungen mit detailliertem Transaktionsverlauf",
     teamUtilization: "Teamauslastung",
-    teamUtilizationDesc: "Auslastungsraten und Kapazitätsanalyse der Teammitglieder",
+    teamUtilizationDesc:
+      "Auslastungsraten und Kapazitätsanalyse der Teammitglieder",
     projectProfitability: "Projektrentabilität",
-    projectProfitabilityDesc: "Rentabilitätsanalyse nach Projekt mit Kostenaufschlüsselung",
+    projectProfitabilityDesc:
+      "Rentabilitätsanalyse nach Projekt mit Kostenaufschlüsselung",
     clientSummaryTitle: "Kundenübersicht",
     clientSummaryDesc: "Umfassende Kennzahlen zur Kundenleistung und -bindung",
-    understandReportsAtGlance: "Verstehen Sie Umsatz, Zeit und ausstehende Arbeit auf einen Blick.",
+    understandReportsAtGlance:
+      "Verstehen Sie Umsatz, Zeit und ausstehende Arbeit auf einen Blick.",
     scheduleReports: "Berichte planen",
     availableReports: "Verfügbare Berichte",
     revenueAndBilling: "Umsatz und Abrechnung",
@@ -878,7 +921,8 @@ const de = {
     viewOverdueInvoices: "Überfällige Rechnungen anzeigen",
     monthlyRevenueReport: "Monatlicher Umsatzbericht",
     openReport: "Bericht %{title} öffnen",
-    reviewHoursLogged: "Überprüfen Sie die erfassten Stunden nach Person, Kunde und Projekt.",
+    reviewHoursLogged:
+      "Überprüfen Sie die erfassten Stunden nach Person, Kunde und Projekt.",
     lastSevenDaysPreset: "Letzte 7 Tage",
     lastThirtyDaysPreset: "Letzte 30 Tage",
     totalEntries: "Einträge gesamt",
@@ -1123,13 +1167,17 @@ const de = {
     paidInvoices: "Bezahlte Rechnungen",
     alreadySettled: "Bereits beglichen",
     paymentsReceived: "Erhaltene Zahlungen",
-    employeeGuidance: "Erfassen Sie Ihre Woche, reichen Sie genaue Einträge ein und halten Sie die Arbeit in Bewegung.",
-    bookKeeperGuidance: "Überprüfen Sie eingehende Zahlungen, gleichen Sie Rechnungen ab und halten Sie den Cashflow klar.",
-    clientGuidance: "Überprüfen Sie den Rechnungsstatus und die Zahlungshistorie für Ihr Konto.",
+    employeeGuidance:
+      "Erfassen Sie Ihre Woche, reichen Sie genaue Einträge ein und halten Sie die Arbeit in Bewegung.",
+    bookKeeperGuidance:
+      "Überprüfen Sie eingehende Zahlungen, gleichen Sie Rechnungen ab und halten Sie den Cashflow klar.",
+    clientGuidance:
+      "Überprüfen Sie den Rechnungsstatus und die Zahlungshistorie für Ihr Konto.",
     defaultGuidance: "Umsatz, Projekte und Teamdynamik auf einen Blick.",
     recentActivity: "Letzte Aktivitäten",
     workspaceActivity: "Arbeitsbereichsaktivität",
-    employeeActivityDescription: "Ihr Dashboard konzentriert sich auf Zeiterfassung und zugewiesene Arbeit.",
+    employeeActivityDescription:
+      "Ihr Dashboard konzentriert sich auf Zeiterfassung und zugewiesene Arbeit.",
     activityDescription: "Neueste Updates zu Ihren Rechnungen und Zahlungen",
     noRecentActivityYet: "Noch keine kürzlichen Aktivitäten",
     loadMore: "Mehr laden",
@@ -1172,27 +1220,36 @@ const de = {
     cashLedger: "Kassenbuch",
     miruLogo: "Miru",
     heroTitle: "Ein Ort für Zeit, Rechnungen und Zahlungen",
-    heroDescription: "Halten Sie den Tag klar, die Abrechnung in Bewegung und die Kasse sichtbar.",
+    heroDescription:
+      "Halten Sie den Tag klar, die Abrechnung in Bewegung und die Kasse sichtbar.",
     slideShowPrefix: "Zeigen",
-    slideDashboardDescription: "Sehen Sie Umsatz, aktive Projekte und Teamdynamik, ohne danach suchen zu müssen.",
-    slideInvoicesDescription: "Halten Sie Entwürfe, überfällige Salden und bezahlte Arbeit am selben Ort.",
-    slideTimeTrackingDescription: "Wöchentliche Zeiterfassung bleibt aktuell, ohne zur Last zu werden.",
-    slidePaymentsDescription: "Jede Zahlung landet in einem Buch mit Methode, Status und Quelle.",
+    slideDashboardDescription:
+      "Sehen Sie Umsatz, aktive Projekte und Teamdynamik, ohne danach suchen zu müssen.",
+    slideInvoicesDescription:
+      "Halten Sie Entwürfe, überfällige Salden und bezahlte Arbeit am selben Ort.",
+    slideTimeTrackingDescription:
+      "Wöchentliche Zeiterfassung bleibt aktuell, ohne zur Last zu werden.",
+    slidePaymentsDescription:
+      "Jede Zahlung landet in einem Buch mit Methode, Status und Quelle.",
     continueWithGoogle: "Weiter mit Google",
     continueWithGithub: "Weiter mit GitHub",
     orUseEmail: "oder E-Mail verwenden",
     verifyWithAuthenticator: "Mit Ihrer Authenticator-App verifizieren",
-    authenticatorInstructions: "Geben Sie den 6-stelligen Code aus Ihrer Authenticator-App ein oder verwenden Sie einen Wiederherstellungscode.",
+    authenticatorInstructions:
+      "Geben Sie den 6-stelligen Code aus Ihrer Authenticator-App ein oder verwenden Sie einen Wiederherstellungscode.",
     authenticatorCode: "Authenticator-Code",
     recoveryCode: "Wiederherstellungscode",
     verifyAndSignIn: "Verifizieren und anmelden",
-    completePasskeyVerification: "Schließen Sie die Passkey-Verifizierung ab, um die Anmeldung abzuschließen.",
-    enterAuthenticatorCode: "Geben Sie Ihren Authenticator-Code ein, um die Anmeldung abzuschließen.",
+    completePasskeyVerification:
+      "Schließen Sie die Passkey-Verifizierung ab, um die Anmeldung abzuschließen.",
+    enterAuthenticatorCode:
+      "Geben Sie Ihren Authenticator-Code ein, um die Anmeldung abzuschließen.",
     invalidVerificationCode: "Ungültiger Verifizierungscode.",
     privacy: "Datenschutz",
     terms: "AGB",
     createAccount: "Konto erstellen",
-    passwordCriteria: "Mind. 8 Zeichen, 1 Großbuchstabe, 1 Kleinbuchstabe, 1 Zahl und 1 Sonderzeichen",
+    passwordCriteria:
+      "Mind. 8 Zeichen, 1 Großbuchstabe, 1 Kleinbuchstabe, 1 Zahl und 1 Sonderzeichen",
     agreeToTerms: "Ich stimme den",
     termsOfService: "Nutzungsbedingungen",
     privacyPolicy: "Datenschutzrichtlinie",
@@ -1202,7 +1259,8 @@ const de = {
   // Passkeys
   passkeys: {
     noPasskeyResponse: "Keine Passkey-Antwort erhalten.",
-    passkeysNotSupported: "Passkeys werden in diesem Browser nicht unterstützt.",
+    passkeysNotSupported:
+      "Passkeys werden in diesem Browser nicht unterstützt.",
   },
 
   // Organization setup
@@ -1276,8 +1334,10 @@ const de = {
     publicHolidays: "Gesetzliche Feiertage",
     zeroUsed: "0 genutzt",
     leaveCalendar: "Urlaubskalender",
-    trackLeaveUsage: "Verfolgen Sie die Urlaubs- und Feiertagsnutzung Monat für Monat für %{year}.",
-    selectDayToInspect: "Wählen Sie einen Tag aus, um Urlaubsdetails und Feiertagsnutzung zu prüfen.",
+    trackLeaveUsage:
+      "Verfolgen Sie die Urlaubs- und Feiertagsnutzung Monat für Monat für %{year}.",
+    selectDayToInspect:
+      "Wählen Sie einen Tag aus, um Urlaubsdetails und Feiertagsnutzung zu prüfen.",
     nothingBooked: "Nichts gebucht",
     nothingBookedForDate: "Nichts für dieses Datum gebucht.",
     recordedTimeAway: "Erfasste Abwesenheit an diesem Tag",
@@ -1299,12 +1359,14 @@ const de = {
     numberOfTeamMembers: "Anzahl der Teammitglieder:",
     plan: "Plan",
     basicPlan: "Basisplan",
-    basicPlanDescription: "Der Basisplan enthält alle Funktionen. Dies ist eine einmalige Gebühr.",
+    basicPlanDescription:
+      "Der Basisplan enthält alle Funktionen. Dies ist eine einmalige Gebühr.",
     chargedOnce: "einmalig berechnet",
     addOns: "Zusatzoptionen",
     oneTeamMember: "1 Teammitglied",
     chargedEveryMonth: "monatlich berechnet",
-    basicPlanPerUser: "Der Basisplan beinhaltet zusätzlich %{rate}$ pro Benutzer pro Monat.",
+    basicPlanPerUser:
+      "Der Basisplan beinhaltet zusätzlich %{rate}$ pro Benutzer pro Monat.",
     plusTaxes: "zzgl. Steuern",
     reviewAndPay: "PRÜFEN UND BEZAHLEN",
   },
