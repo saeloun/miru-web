@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 
 import { timesheetEntryApi, timeTrackingApi } from "apis/api";
 import Loader from "common/Loader/index";
@@ -83,6 +83,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
     number | null
   >(null);
   const [loadedRangeKey, setLoadedRangeKey] = useState<string>("");
+  const latestRequestKeyRef = useRef<string>("");
   const [copyingLastWeek, setCopyingLastWeek] = useState<boolean>(false);
   const [timerSyncKey, setTimerSyncKey] = useState<number>(0);
   const [resumeTimerEntry, setResumeTimerEntry] = useState<any>(null);
@@ -163,20 +164,31 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
     from,
     to,
     year,
+    requestKey,
   }: {
     employeeId?: number;
     from?: string;
     to?: string;
     year?: number | string;
+    requestKey?: string;
   } = {}) => {
+    const targetEmployeeId = employeeId || selectedEmployeeId || user.id;
+    const activeRequestKey =
+      requestKey ||
+      `bootstrap:${targetEmployeeId}:${from || "default"}:${to || "default"}:${
+        year || currentYear
+      }`;
+
     try {
-      const targetEmployeeId = employeeId || selectedEmployeeId || user.id;
+      latestRequestKeyRef.current = activeRequestKey;
       const { data } = await timeTrackingApi.get({
         userId: targetEmployeeId,
         from,
         to,
         year,
       });
+
+      if (latestRequestKeyRef.current !== activeRequestKey) return false;
 
       const {
         clients,
@@ -211,14 +223,20 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
       setBootstrappedEmployeeId(targetEmployeeId);
       setRuntimeError("");
       setLoading(false);
+
+      return true;
     } catch (error) {
+      if (latestRequestKeyRef.current !== activeRequestKey) return false;
+
       Logger.error(error);
       setRuntimeError("Unable to load time tracking right now.");
       setLoading(false);
+
+      return false;
     }
   };
 
-  const fetchEntriesOfMonths = (employeeId?: number) => {
+  const fetchEntriesOfMonths = (employeeId?: number, requestKey?: string) => {
     const firstDateOfTheMonth = `${currentYear}-${currentMonthNumber + 1}-01`;
     const startOfTheMonth = dayjs(firstDateOfTheMonth).format(dateFormat);
     const endOfTheMonth = dayjs(firstDateOfTheMonth)
@@ -231,7 +249,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
       .format("DD-MM-YYYY");
     const to = dayjs(endOfTheMonth).add(1, "month").format("DD-MM-YYYY");
 
-    return fetchEntries(from, to, employeeId);
+    return fetchEntries(from, to, employeeId, requestKey);
   };
 
   // View is always "day" by default, user can change it manually
@@ -274,21 +292,25 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
         const rangeKey = `month:${selectedEmployeeId}:${currentYear}:${currentMonthNumber}`;
 
         if (bootstrappedEmployeeId !== selectedEmployeeId) {
-          await fetchTimeTrackingData({
+          const didLoadRange = await fetchTimeTrackingData({
             employeeId: selectedEmployeeId,
             from: startOfTheMonth,
             to: endOfTheMonth,
             year: currentYear,
+            requestKey: rangeKey,
           });
-          setLoadedRangeKey(rangeKey);
+          if (didLoadRange) setLoadedRangeKey(rangeKey);
 
           return;
         }
 
         if (loadedRangeKey === rangeKey) return;
 
-        await fetchEntriesOfMonths(selectedEmployeeId);
-        setLoadedRangeKey(rangeKey);
+        const didLoadRange = await fetchEntriesOfMonths(
+          selectedEmployeeId,
+          rangeKey
+        );
+        if (didLoadRange) setLoadedRangeKey(rangeKey);
 
         return;
       }
@@ -301,21 +323,27 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
       const rangeKey = `week:${selectedEmployeeId}:${firstDay}:${lastDay}`;
 
       if (bootstrappedEmployeeId !== selectedEmployeeId) {
-        await fetchTimeTrackingData({
+        const didLoadRange = await fetchTimeTrackingData({
           employeeId: selectedEmployeeId,
           from: firstDay,
           to: lastDay,
           year: currentYear,
+          requestKey: rangeKey,
         });
-        setLoadedRangeKey(rangeKey);
+        if (didLoadRange) setLoadedRangeKey(rangeKey);
 
         return;
       }
 
       if (loadedRangeKey === rangeKey) return;
 
-      await fetchEntries(firstDay, lastDay, selectedEmployeeId);
-      setLoadedRangeKey(rangeKey);
+      const didLoadRange = await fetchEntries(
+        firstDay,
+        lastDay,
+        selectedEmployeeId,
+        rangeKey
+      );
+      if (didLoadRange) setLoadedRangeKey(rangeKey);
     };
 
     loadVisibleRange();
@@ -358,17 +386,24 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
   const fetchEntries = async (
     from: string,
     to: string,
-    employeeId?: number
+    employeeId?: number,
+    requestKey?: string
   ) => {
-    try {
-      const targetEmployeeId = employeeId || selectedEmployeeId || user.id;
-      const formattedFrom = dayjs(from, dateParseFormats, true).isValid()
-        ? dayjs(from, dateParseFormats, true).format("DD-MM-YYYY")
-        : from;
+    const targetEmployeeId = employeeId || selectedEmployeeId || user.id;
+    const formattedFrom = dayjs(from, dateParseFormats, true).isValid()
+      ? dayjs(from, dateParseFormats, true).format("DD-MM-YYYY")
+      : from;
 
-      const formattedTo = dayjs(to, dateParseFormats, true).isValid()
-        ? dayjs(to, dateParseFormats, true).format("DD-MM-YYYY")
-        : to;
+    const formattedTo = dayjs(to, dateParseFormats, true).isValid()
+      ? dayjs(to, dateParseFormats, true).format("DD-MM-YYYY")
+      : to;
+
+    const activeRequestKey =
+      requestKey ||
+      `range:${targetEmployeeId}:${formattedFrom}:${formattedTo}:${currentYear}`;
+
+    try {
+      latestRequestKeyRef.current = activeRequestKey;
 
       const res = await timeTrackingApi.getCurrentUserEntries(
         formattedFrom,
@@ -376,6 +411,9 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
         currentYear,
         targetEmployeeId
       );
+
+      if (latestRequestKeyRef.current !== activeRequestKey) return false;
+
       const entriesObj = res.data?.entries || {};
       setAllEmployeesEntries(pv => ({ ...pv, [targetEmployeeId]: entriesObj }));
       setEntryList(entriesObj);
@@ -389,11 +427,15 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
       setRuntimeError("");
       setLoading(false);
 
-      return res;
+      return true;
     } catch (error) {
+      if (latestRequestKeyRef.current !== activeRequestKey) return false;
+
       Logger.error(error);
       setRuntimeError("Unable to load time tracking right now.");
       setLoading(false);
+
+      return false;
     }
   };
 
@@ -401,22 +443,30 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
     const targetEmployeeId = employeeId || selectedEmployeeId;
 
     if (view === "month") {
-      await fetchEntriesOfMonths(targetEmployeeId);
-      setLoadedRangeKey(
-        `month:${targetEmployeeId}:${currentYear}:${currentMonthNumber}`
-      );
+      const didLoadRange = await fetchEntriesOfMonths(targetEmployeeId);
+      if (didLoadRange) {
+        setLoadedRangeKey(
+          `month:${targetEmployeeId}:${currentYear}:${currentMonthNumber}`
+        );
+      }
 
-      return true;
+      return didLoadRange;
     }
 
     const firstDay = dayInfo[0]?.fullDate;
     const lastDay = dayInfo[6]?.fullDate;
 
     if (firstDay && lastDay) {
-      await fetchEntries(firstDay, lastDay, targetEmployeeId);
-      setLoadedRangeKey(`week:${targetEmployeeId}:${firstDay}:${lastDay}`);
+      const didLoadRange = await fetchEntries(
+        firstDay,
+        lastDay,
+        targetEmployeeId
+      );
+      if (didLoadRange) {
+        setLoadedRangeKey(`week:${targetEmployeeId}:${firstDay}:${lastDay}`);
+      }
 
-      return true;
+      return didLoadRange;
     }
 
     return false;

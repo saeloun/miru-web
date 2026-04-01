@@ -39,7 +39,8 @@ class Api::V1::TimeTrackingController < Api::V1::ApplicationController
       return if value.blank?
 
       date_formats.each do |format|
-        return Date.strptime(value.to_s, format)
+        parsed_date = Date.strptime(value.to_s, format)
+        return parsed_date if parsed_date.strftime(format) == value.to_s
       rescue ArgumentError
         next
       end
