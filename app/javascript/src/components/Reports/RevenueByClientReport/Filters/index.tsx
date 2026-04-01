@@ -15,7 +15,7 @@ import { useUserContext } from "context/UserContext";
 
 import { dateRangeOptions } from "./filterOptions";
 
-const FilterSideBar = ({
+const RevenueByClientReportFilters = ({
   dateRange,
   setDateRange,
   setIsFilterVisible,
@@ -434,4 +434,4 @@ const FilterSideBar = ({
   );
 };
 
-export default FilterSideBar;
+export default RevenueByClientReportFilters;
