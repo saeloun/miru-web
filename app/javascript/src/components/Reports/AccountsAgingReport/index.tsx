@@ -44,6 +44,7 @@ import {
 } from "../../ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from "../../ui/card";
 import { cn } from "../../../lib/utils";
+import { i18n } from "../../../i18n";
 import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
 import { Calendar as CalendarComponent } from "../../ui/calendar";
 import { currencyFormat } from "../../../helpers/currency";
@@ -197,14 +198,14 @@ const AccountsAgingReport: React.FC = () => {
   const columns: ColumnDef<ClientAging>[] = [
     {
       accessorKey: "name",
-      header: "Client",
+      header: i18n.t("reports.clientHeader"),
       cell: ({ row }) => (
         <div className="font-medium">{row.getValue("name")}</div>
       ),
     },
     {
       accessorKey: "amount_overdue.total",
-      header: () => <div className="text-right">Total Due</div>,
+      header: () => <div className="text-right">{i18n.t("reports.totalDue")}</div>,
       cell: ({ row }) => (
         <div className="text-right font-bold whitespace-nowrap">
           {currencyFormat(
@@ -217,7 +218,7 @@ const AccountsAgingReport: React.FC = () => {
     {
       accessorKey: "amount_overdue.zero_to_thirty_days",
       header: () => (
-        <div className="text-right whitespace-nowrap">0-30 Days</div>
+        <div className="text-right whitespace-nowrap">{i18n.t("reports.zeroToThirtyDays")}</div>
       ),
       cell: ({ row }) => {
         const value = row.original.amount_overdue.zero_to_thirty_days;
@@ -237,7 +238,7 @@ const AccountsAgingReport: React.FC = () => {
     {
       accessorKey: "amount_overdue.thirty_one_to_sixty_days",
       header: () => (
-        <div className="text-right whitespace-nowrap">31-60 Days</div>
+        <div className="text-right whitespace-nowrap">{i18n.t("reports.thirtyOneToSixtyDays")}</div>
       ),
       cell: ({ row }) => {
         const value = row.original.amount_overdue.thirty_one_to_sixty_days;
@@ -257,7 +258,7 @@ const AccountsAgingReport: React.FC = () => {
     {
       accessorKey: "amount_overdue.sixty_one_to_ninety_days",
       header: () => (
-        <div className="text-right whitespace-nowrap">61-90 Days</div>
+        <div className="text-right whitespace-nowrap">{i18n.t("reports.sixtyOneToNinetyDays")}</div>
       ),
       cell: ({ row }) => {
         const value = row.original.amount_overdue.sixty_one_to_ninety_days;
@@ -277,7 +278,7 @@ const AccountsAgingReport: React.FC = () => {
     {
       accessorKey: "amount_overdue.ninety_plus_days",
       header: () => (
-        <div className="text-right whitespace-nowrap">90+ Days</div>
+        <div className="text-right whitespace-nowrap">{i18n.t("reports.ninetyPlusDays")}</div>
       ),
       cell: ({ row }) => {
         const value = row.original.amount_overdue.ninety_plus_days;
@@ -345,7 +346,7 @@ const AccountsAgingReport: React.FC = () => {
   if (error) {
     return (
       <div className="text-center text-red-600 py-8">
-        Error loading report data. Please try again.
+        {i18n.t("reports.errorLoadingReportData")}
       </div>
     );
   }
@@ -356,10 +357,10 @@ const AccountsAgingReport: React.FC = () => {
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">
-            Accounts Aging Report
+            {i18n.t("reports.accountsAgingReport")}
           </h1>
           <p className="text-gray-600 mt-1">
-            Analysis of outstanding receivables by aging period
+            {i18n.t("reports.analysisOfOutstandingReceivables")}
           </p>
         </div>
 
@@ -375,7 +376,7 @@ const AccountsAgingReport: React.FC = () => {
                 )}
               >
                 <CalendarIcon className="mr-2 h-4 w-4" />
-                As of {format(asOfDate, "LLL dd, y")}
+                {i18n.t("reports.asOf", { date: format(asOfDate, "LLL dd, y") })}
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0" align="start">
@@ -434,16 +435,16 @@ const AccountsAgingReport: React.FC = () => {
             <DropdownMenuTrigger asChild>
               <Button variant="outline" className="bg-white">
                 <Download className="mr-2 h-4 w-4" />
-                Export
+                {i18n.t("reports.export")}
                 <ChevronDown className="ml-2 h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem onClick={() => downloadMutation.mutate("csv")}>
-                Export as CSV
+                {i18n.t("reports.exportAsCsv")}
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => downloadMutation.mutate("pdf")}>
-                Export as PDF
+                {i18n.t("reports.exportAsPdf")}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -456,7 +457,7 @@ const AccountsAgingReport: React.FC = () => {
       <div className="grid gap-4 md:grid-cols-5">
         <Card className="border-gray-200">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Due</CardTitle>
+            <CardTitle className="text-sm font-medium">{i18n.t("reports.totalDue")}</CardTitle>
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -471,7 +472,7 @@ const AccountsAgingReport: React.FC = () => {
 
         <Card className="border-gray-200">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">0-30 Days</CardTitle>
+            <CardTitle className="text-sm font-medium">{i18n.t("reports.zeroToThirtyDays")}</CardTitle>
             <Calendar className="h-4 w-4 text-gray-500" />
           </CardHeader>
           <CardContent>
@@ -486,7 +487,7 @@ const AccountsAgingReport: React.FC = () => {
 
         <Card className="border-gray-200">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">31-60 Days</CardTitle>
+            <CardTitle className="text-sm font-medium">{i18n.t("reports.thirtyOneToSixtyDays")}</CardTitle>
             <Calendar className="h-4 w-4 text-gray-600" />
           </CardHeader>
           <CardContent>
@@ -502,7 +503,7 @@ const AccountsAgingReport: React.FC = () => {
 
         <Card className="border-gray-200">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">61-90 Days</CardTitle>
+            <CardTitle className="text-sm font-medium">{i18n.t("reports.sixtyOneToNinetyDays")}</CardTitle>
             <AlertCircle className="h-4 w-4 text-gray-700" />
           </CardHeader>
           <CardContent>
@@ -518,7 +519,7 @@ const AccountsAgingReport: React.FC = () => {
 
         <Card className="border-gray-200">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">90+ Days</CardTitle>
+            <CardTitle className="text-sm font-medium">{i18n.t("reports.ninetyPlusDays")}</CardTitle>
             <AlertCircle className="h-4 w-4 text-gray-800" />
           </CardHeader>
           <CardContent>
@@ -575,7 +576,7 @@ const AccountsAgingReport: React.FC = () => {
       {/* Aging Table */}
       <Card className="border-gray-200">
         <CardHeader>
-          <CardTitle>Invoice Aging Details</CardTitle>
+          <CardTitle>{i18n.t("reports.invoiceAgingDetails")}</CardTitle>
         </CardHeader>
         <CardContent>
           <div
@@ -622,7 +623,7 @@ const AccountsAgingReport: React.FC = () => {
                       colSpan={columns.length}
                       className="h-24 text-center"
                     >
-                      No clients with outstanding balances.
+                      {i18n.t("reports.noClientsWithOutstandingBalances")}
                     </TableCell>
                   </TableRow>
                 )}
@@ -634,7 +635,7 @@ const AccountsAgingReport: React.FC = () => {
           {displayedItems < allClients.length && (
             <div className="flex justify-center py-4">
               <div className="text-sm text-muted-foreground">
-                Showing {displayedItems} of {allClients.length} clients...
+                {i18n.t("reports.showingOfClients", { displayed: displayedItems, total: allClients.length })}
               </div>
             </div>
           )}

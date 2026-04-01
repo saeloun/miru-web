@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { useUserContext } from "context/UserContext";
 import { XIcon } from "miruIcons";
 import { Modal } from "StyledComponents";
+import { i18n } from "../../../i18n";
 
 import ClientForm from "../ClientForm";
 import MobileClientForm from "../ClientForm/MobileClientForm";
@@ -34,7 +35,7 @@ const NewClient = ({
       onClose={() => setShowDialog(false)}
     >
       <div className="flex items-center justify-between">
-        <h6 className="text-base font-extrabold">Add New Client</h6>
+        <h6 className="text-base font-extrabold">{i18n.t("clients.addNewClient")}</h6>
         <button
           className="modal__button"
           type="button"

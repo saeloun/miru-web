@@ -32,6 +32,7 @@ import {
 import InvoiceTable from "../common/InvoiceTable";
 import InvoicePreview from "../InvoicePreview";
 import { fetchNewLineItems } from "../common/utils";
+import { lineTotalCalc } from "../../../helpers";
 
 interface InvoiceEditorProps {
   invoice?: any;
@@ -173,7 +174,11 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
       if (!item._destroy) {
         return (
           sum +
-          (item.lineTotal || item.amount || item.quantity * item.rate || 0)
+          Number(
+            item.lineTotal ??
+              item.amount ??
+              lineTotalCalc(item.quantity, item.rate)
+          )
         );
       }
 
@@ -184,7 +189,11 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
       if (!item._destroy) {
         return (
           sum +
-          (item.lineTotal || item.amount || item.quantity * item.rate || 0)
+          Number(
+            item.lineTotal ??
+              item.amount ??
+              lineTotalCalc(item.quantity, item.rate)
+          )
         );
       }
 

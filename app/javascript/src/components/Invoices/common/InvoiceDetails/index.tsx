@@ -7,6 +7,7 @@ import { currencyFormat } from "helpers";
 import { CalendarIcon } from "miruIcons";
 
 import ClientSelection from "./ClientSelection";
+import { i18n } from "../../../../i18n";
 
 const InvoiceDetails = ({
   clientCurrency,
@@ -70,7 +71,7 @@ const InvoiceDetails = ({
         <CustomInputText
           id="invoiceNumber"
           inputBoxClassName="border focus:border-primary cursor-pointer"
-          label="Invoice Number"
+          label={i18n.t("invoices.invoiceNumber")}
           labelClassName="cursor-pointer"
           name="invoiceNumber"
           type="text"
@@ -80,7 +81,7 @@ const InvoiceDetails = ({
         <CustomInputText
           id="Reference"
           inputBoxClassName="focus:border-primary cursor-pointer"
-          label="Reference"
+          label={i18n.t("invoices.reference")}
           labelClassName="cursor-pointer"
           name="Reference"
           type="text"
@@ -98,7 +99,7 @@ const InvoiceDetails = ({
               readOnly
               id="Date of Issue"
               inputBoxClassName="focus:border-primary cursor-pointer pr-9 truncate"
-              label="Date of Issue"
+              label={i18n.t("invoices.dateOfIssue")}
               name="Date of Issue"
               type="text"
               value={getIssuedDate}
@@ -127,7 +128,7 @@ const InvoiceDetails = ({
               readOnly
               id="Due Date"
               inputBoxClassName="focus:border-primary cursor-pointer pr-9 truncate"
-              label="Due Date"
+              label={i18n.t("invoices.dueDate")}
               name="Due Date"
               type="text"
               value={getDueDate}
@@ -153,7 +154,7 @@ const InvoiceDetails = ({
       </div>
       <div className="w-full pt-1 lg:w-4/12 lg:pl-4">
         <p className="text-left text-xs font-normal text-foreground lg:text-right">
-          Amount
+          {i18n.t("amount")}
         </p>
         <p className="mt-2 text-left text-2xl font-normal tracking-tight text-foreground lg:mt-6 lg:text-right">
           {currencyFormat(clientCurrency, amount)}

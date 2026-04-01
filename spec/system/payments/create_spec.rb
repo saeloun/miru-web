@@ -33,6 +33,28 @@ RSpec.describe "Adding payment entry", type: :system, js: true do
         expect(page).to have_selector("#transactionType", wait: 10)
       end
     end
+
+    it "creates a manual payment after selecting a desktop transaction type" do
+      with_forgery_protection do
+        visit "/payments?invoiceId=#{invoice.id}"
+
+        first(:button, "Add Manual Entry", minimum: 1).click
+        within("#transactionType") do
+          find("button", text: "Select Transaction Type", match: :first, wait: 10).click
+        end
+        find("[role='option']", text: "Bank Transfer", wait: 10).click
+
+        expect do
+          click_button "ADD PAYMENT"
+          expect(page).to have_content("Manual entry added successfully.", wait: 10)
+        end.to change(Payment, :count).by(1)
+
+        payment = Payment.order(:id).last
+
+        expect(payment.invoice_id).to eq(invoice.id)
+        expect(payment.transaction_type).to eq("bank_transfer")
+      end
+    end
   end
 
   context "when user is an employee" do

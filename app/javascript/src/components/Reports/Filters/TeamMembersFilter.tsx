@@ -3,6 +3,7 @@ import React from "react";
 import { MinusIcon, PlusIcon, SearchIcon, XIcon } from "miruIcons";
 
 import ClickableCheckboxText from "common/ClickableCheckboxText";
+import { i18n } from "../../../i18n";
 
 const TeamMembersFilter = ({
   isTeamMemberOpen,
@@ -19,7 +20,7 @@ const TeamMembersFilter = ({
       onClick={handleTeamMembersFilterToggle}
     >
       <h5 className="text-xs font-bold leading-4 tracking-wider">
-        TEAM MEMBERS
+        {i18n.t("reports.teamMembers").toUpperCase()}
       </h5>
       <div className="flex items-center">
         {selectedTeams.length > 0 && (
@@ -34,7 +35,7 @@ const TeamMembersFilter = ({
       <div className="md:mt-7">
         <div className="relative mt-4 flex w-full items-center px-5 lg:mt-2">
           <input
-            placeholder="Search"
+            placeholder={i18n.t("search")}
             type="text"
             value={searchQuery}
             className="focus:outline-none w-full rounded bg-muted p-2
@@ -78,7 +79,7 @@ const TeamMembersFilter = ({
               />
             ))
           ) : (
-            <div className="m-5">No results found</div>
+            <div className="m-5">{i18n.t("noResultsFound")}</div>
           )}
         </div>
       </div>

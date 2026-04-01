@@ -33,11 +33,15 @@ class Api::V1::ApplicationController < ActionController::API
     def switch_locale(&action)
       locale = LocaleConfig.normalize(
         params[:locale].presence ||
-        current_user&.locale.presence ||
+        current_user_locale ||
         request.headers["X-Miru-Locale"].presence ||
         LocaleConfig.from_accept_language(request.headers["Accept-Language"])
       ).to_sym
 
       I18n.with_locale(locale, &action)
+    end
+
+    def current_user_locale
+      current_user&.respond_to?(:locale) ? current_user&.locale.presence : nil
     end
 end

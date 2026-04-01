@@ -1,54 +1,56 @@
+import { i18n } from "../../i18n";
+
 export const tableHeader = [
   {
-    Header: "CLIENT",
-    accessor: "col1", // accessor is the "key" in the data
+    Header: i18n.t("client").toUpperCase(),
+    accessor: "col1",
     cssClass: "md:w-1/3 capitalize",
   },
   {
-    Header: "HOURS LOGGED",
+    Header: i18n.t("clients.hoursTracked").toUpperCase(),
     accessor: "col2",
-    cssClass: "text-right md:w-1/5", // accessor is the "key" in the data
+    cssClass: "text-right md:w-1/5",
   },
 ];
 
 export const employeeTableHeader = [
   {
-    Header: "CLIENT",
-    accessor: "col1", // accessor is the "key" in the data
+    Header: i18n.t("client").toUpperCase(),
+    accessor: "col1",
     cssClass: "",
   },
   {
-    Header: "HOURS LOGGED",
+    Header: i18n.t("clients.hoursTracked").toUpperCase(),
     accessor: "col2",
-    cssClass: "text-right", // accessor is the "key" in the data
+    cssClass: "text-right",
   },
 ];
 export const mobileEmployeeTableHeader = [
   {
-    Header: "CLIENT",
-    accessor: "col1", // accessor is the "key" in the data
+    Header: i18n.t("client").toUpperCase(),
+    accessor: "col1",
     cssClass: "",
   },
   {
-    Header: "HOURS LOGGED",
+    Header: i18n.t("clients.hoursTracked").toUpperCase(),
     accessor: "col3",
-    cssClass: "text-right", // accessor is the "key" in the data
+    cssClass: "text-right",
   },
 ];
 export const mobileTableHeader = [
   {
-    Header: "CLIENT",
-    accessor: "col1", // accessor is the "key" in the data
+    Header: i18n.t("client").toUpperCase(),
+    accessor: "col1",
     cssClass: "table__header font-medium",
   },
   {
-    Header: "HOURS",
+    Header: i18n.t("hours").toUpperCase(),
     accessor: "col3",
-    cssClass: "table__header font-medium text-right", // accessor is the "key" in the data
+    cssClass: "table__header font-medium text-right",
   },
   {
     Header: "",
     accessor: "col4",
-    cssClass: "font-medium text-right", // accessor is the "key" in the data
+    cssClass: "font-medium text-right",
   },
 ];

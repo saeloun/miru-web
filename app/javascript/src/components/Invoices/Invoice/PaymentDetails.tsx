@@ -9,6 +9,7 @@ import {
   CurrencyDollar,
   CheckCircle,
 } from "phosphor-react";
+import { i18n } from "../../../i18n";
 
 interface PaymentDetailsProps {
   invoice: any;
@@ -57,7 +58,7 @@ const PaymentDetails: React.FC<PaymentDetailsProps> = ({ invoice }) => {
       <div className="mb-4">
         <h3 className="flex items-center gap-2 text-lg font-semibold text-foreground">
           <CreditCard className="h-5 w-5" />
-          Payment History
+          {i18n.t("payments.paymentHistory")}
         </h3>
       </div>
 
@@ -72,7 +73,7 @@ const PaymentDetails: React.FC<PaymentDetailsProps> = ({ invoice }) => {
                 <div className="mb-2 flex items-center gap-3">
                   <CheckCircle className="h-4 w-4 text-green-600" />
                   <span className="text-sm font-medium text-foreground">
-                    Payment #{payment.id}
+                    {i18n.t("invoices.payment", { id: payment.id })}
                   </span>
                   <StatusBadge status={payment.status} />
                 </div>
@@ -80,7 +81,7 @@ const PaymentDetails: React.FC<PaymentDetailsProps> = ({ invoice }) => {
                 <div className="grid grid-cols-3 gap-4 text-sm">
                   <div className="flex items-center gap-2">
                     <Calendar className="h-4 w-4 text-muted-foreground" />
-                    <span className="text-muted-foreground">Date:</span>
+                    <span className="text-muted-foreground">{i18n.t("date")}:</span>
                     <span className="font-medium text-foreground">
                       {payment.transactionDate}
                     </span>
@@ -88,14 +89,14 @@ const PaymentDetails: React.FC<PaymentDetailsProps> = ({ invoice }) => {
 
                   <div className="flex items-center gap-2">
                     <CurrencyDollar className="h-4 w-4 text-muted-foreground" />
-                    <span className="text-muted-foreground">Amount:</span>
+                    <span className="text-muted-foreground">{i18n.t("amount")}:</span>
                     <span className="font-semibold text-foreground">
                       {currencyFormat(invoice.currency, payment.amount)}
                     </span>
                   </div>
 
                   <div>
-                    <span className="text-muted-foreground">Type:</span>
+                    <span className="text-muted-foreground">{i18n.t("type")}:</span>
                     <span className="ml-2 font-medium text-foreground">
                       {payment.transactionType}
                     </span>
@@ -104,7 +105,7 @@ const PaymentDetails: React.FC<PaymentDetailsProps> = ({ invoice }) => {
 
                 {payment.note && (
                   <div className="mt-2 text-sm text-muted-foreground">
-                    <span className="font-medium">Note:</span> {payment.note}
+                    <span className="font-medium">{i18n.t("notes")}:</span> {payment.note}
                   </div>
                 )}
               </div>
@@ -113,7 +114,7 @@ const PaymentDetails: React.FC<PaymentDetailsProps> = ({ invoice }) => {
                 to="/payments"
                 className="text-sm text-primary hover:text-primary hover:underline"
               >
-                View in Payments
+                {i18n.t("payments.payments")}
               </Link>
             </div>
           </div>
@@ -123,7 +124,7 @@ const PaymentDetails: React.FC<PaymentDetailsProps> = ({ invoice }) => {
       <div className="mt-4 border-t border-border pt-4">
         <div className="flex justify-between items-center">
           <span className="text-sm font-medium text-muted-foreground">
-            Total Paid:
+            {i18n.t("invoices.paid")}:
           </span>
           <span className="text-lg font-bold text-foreground">
             {currencyFormat(invoice.currency, invoice.amountPaid)}
@@ -132,7 +133,7 @@ const PaymentDetails: React.FC<PaymentDetailsProps> = ({ invoice }) => {
         {invoice.amountDue > 0 && (
           <div className="flex justify-between items-center mt-2">
             <span className="text-sm font-medium text-muted-foreground">
-              Remaining Due:
+              {i18n.t("invoices.dueDate")}:
             </span>
             <span className="text-lg font-bold text-red-600">
               {currencyFormat(invoice.currency, invoice.amountDue)}

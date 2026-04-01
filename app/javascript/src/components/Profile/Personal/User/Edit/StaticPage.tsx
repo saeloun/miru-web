@@ -182,7 +182,7 @@ const EditProfilePage = ({
                   }}
                 >
                   <Input
-                    disabled
+                    readOnly
                     className="cursor-pointer font-geist-regular"
                     id="date_of_birth"
                     name="date_of_birth"
@@ -560,7 +560,7 @@ const EditProfilePage = ({
             <CardContent className="space-y-4">
               <div className="space-y-2">
                 <label
-                  htmlFor="linked_in"
+                  htmlFor="linkedin"
                   className="flex items-center gap-1 text-xs font-geist-medium uppercase tracking-wider text-muted-foreground"
                 >
                   <LinkedinLogo className="h-3 w-3" weight="bold" />
@@ -568,8 +568,8 @@ const EditProfilePage = ({
                 </label>
                 <Input
                   className="font-geist-regular"
-                  id="linked_in"
-                  name="linked_in"
+                  id="linkedin"
+                  name="linkedin"
                   type="text"
                   placeholder="linkedin.com/in/username"
                   value={personalDetails.linkedin}

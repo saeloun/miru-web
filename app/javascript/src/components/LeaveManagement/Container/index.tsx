@@ -14,6 +14,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "../../ui/card";
 import { Badge } from "../../ui/badge";
 import { Calendar } from "../../ui/calendar";
 
+import { i18n } from "../../../i18n";
 import LeaveBlock from "./LeaveBlock";
 import Table from "./Table";
 
@@ -105,7 +106,7 @@ const Container = ({
 
     if (entries.length === 0) {
       return (
-        <span className="text-xs text-muted-foreground">Nothing booked</span>
+        <span className="text-xs text-muted-foreground">{i18n.t("leaveManagement.nothingBooked")}</span>
       );
     }
 
@@ -131,15 +132,15 @@ const Container = ({
 
   const selectedDateSummary =
     selectedDateEntries.length > 0
-      ? "Recorded time away on this day"
-      : "No leave or holiday marked for this day";
+      ? i18n.t("leaveManagement.recordedTimeAway")
+      : i18n.t("leaveManagement.noLeaveOrHoliday");
 
   const renderEntryCard = entry => {
     const label =
       entry.customLeave?.name ||
       entry.leaveType?.name ||
       entry.holidayInfo?.name ||
-      "Time off";
+      i18n.t("leaveManagement.timeOff");
 
     const tone =
       entry.holidayInfo?.category === "national"
@@ -166,8 +167,8 @@ const Container = ({
             {entry.holidayInfo?.category
               ? entry.holidayInfo.category
               : entry.customLeave
-              ? "custom leave"
-              : "leave"}
+              ? i18n.t("leaveManagement.customLeave")
+              : i18n.t("leaveManagement.leave")}
           </span>
         </div>
       </div>
@@ -179,28 +180,28 @@ const Container = ({
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <SummaryCard
           icon={ClockCounterClockwise}
-          label="Time away used"
+          label={i18n.t("leaveManagement.timeAwayUsed")}
           value={`${minToHHMM(
             totalTimeoffEntriesDuration || 0
-          )} (${leaveDayCount.toFixed(1)} days)`}
+          )} (${leaveDayCount.toFixed(1)} ${i18n.t("allocationPeriods.days")})`}
         />
         <SummaryCard
           icon={StarFour}
-          label="Leave remaining"
+          label={i18n.t("leaveManagement.leaveRemaining")}
           tone="success"
           value={minToHHMM(remainingLeaveMinutes)}
         />
         <SummaryCard
           icon={CalendarBlank}
-          label="Optional holidays"
+          label={i18n.t("leaveManagement.optionalHolidays")}
           tone="warning"
-          value={optionalHolidaySummary?.label || "0 used"}
+          value={optionalHolidaySummary?.label || i18n.t("leaveManagement.zeroUsed")}
         />
         <SummaryCard
           icon={Sun}
-          label="Public holidays"
+          label={i18n.t("leaveManagement.publicHolidays")}
           tone="accent"
-          value={nationalHolidaySummary?.label || "0 used"}
+          value={nationalHolidaySummary?.label || i18n.t("leaveManagement.zeroUsed")}
         />
       </div>
 
@@ -228,10 +229,10 @@ const Container = ({
           <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
             <div>
               <CardTitle className="text-xl font-semibold">
-                Leave calendar
+                {i18n.t("leaveManagement.leaveCalendar")}
               </CardTitle>
               <p className="mt-1 text-sm text-muted-foreground">
-                Track leave and holiday usage month by month for {currentYear}.
+                {i18n.t("leaveManagement.trackLeaveUsage", { year: currentYear })}
               </p>
             </div>
             <Badge className="w-fit border-border bg-muted text-foreground hover:bg-muted">
@@ -248,7 +249,7 @@ const Container = ({
                     {format(selectedDate, "MMMM yyyy")}
                   </p>
                   <p className="mt-1 text-sm text-muted-foreground">
-                    Select a day to inspect leave details and holiday usage.
+                    {i18n.t("leaveManagement.selectDayToInspect")}
                   </p>
                 </div>
               </div>
@@ -298,7 +299,7 @@ const Container = ({
                 selectedDateEntries.map(renderEntryCard)
               ) : (
                 <div className="rounded-2xl border border-dashed border-border bg-background px-4 py-6 text-sm text-muted-foreground">
-                  Nothing booked for this date.
+                  {i18n.t("leaveManagement.nothingBookedForDate")}
                 </div>
               )}
             </div>
@@ -313,7 +314,7 @@ const Container = ({
             <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
               <div className="flex flex-wrap items-center gap-3">
                 <CardTitle className="text-xl font-semibold">
-                  Leave History
+                  {i18n.t("leaveManagement.leaveHistory")}
                 </CardTitle>
                 {selectedLeaveType && (
                   <div className="inline-flex min-h-10 items-center gap-2 rounded-full border border-border bg-muted px-3 py-2 text-sm">
@@ -328,7 +329,7 @@ const Container = ({
                 )}
               </div>
               <div className="text-sm text-muted-foreground lg:text-right">
-                Total:{" "}
+                {i18n.t("total")}:{" "}
                 <span className="font-semibold text-foreground">
                   {minToHHMM(totalTimeoffEntriesDuration || 0)}
                 </span>

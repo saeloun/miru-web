@@ -6,6 +6,7 @@ import { Button } from "../ui/button";
 import { Card, CardContent } from "../ui/card";
 import { Badge } from "../ui/badge";
 import { minToHHMM } from "../../helpers";
+import { i18n } from "../../i18n";
 
 dayjs.extend(customParseFormat);
 
@@ -46,7 +47,18 @@ const TimeEntriesDisplay: React.FC<TimeEntriesDisplayProps> = ({
   ];
   const parsedDate = dayjs(selectedFullDate, dateFormats, true);
   const isoDate = parsedDate.format("YYYY-MM-DD");
-  const entries = entryList[isoDate];
+  const entryDateCandidates = [
+    selectedFullDate,
+    isoDate,
+    parsedDate.format("MM-DD-YYYY"),
+    parsedDate.format("DD-MM-YYYY"),
+    parsedDate.format("MM/DD/YYYY"),
+    parsedDate.format("DD/MM/YYYY"),
+  ].filter(Boolean);
+  const entryKey = entryDateCandidates.find(candidate =>
+    Array.isArray(entryList[candidate])
+  );
+  const entries = entryKey ? entryList[entryKey] : undefined;
   const hasEntries = entries && entries.length > 0;
   const weekEntries = (dayInfo || []).flatMap(day => {
     const dayDate = dayjs(day.fullDate, dateFormats, true);
@@ -68,9 +80,9 @@ const TimeEntriesDisplay: React.FC<TimeEntriesDisplayProps> = ({
       const entryKey = entry?.id ? `leave-${entry.id}` : `leave-${index}`;
       const holidayDetails = holidaysHashObj[entry.holiday_info_id];
       const leaveTypeDetails = leaveTypeHashObj[entry.leave_type_id];
-      const title = holidayDetails ? "Holiday" : "Leave";
+      const title = holidayDetails ? i18n.t("timeTracking.holiday") : i18n.t("timeTracking.leave");
       const subtitle =
-        holidayDetails?.name || leaveTypeDetails?.name || "Time off";
+        holidayDetails?.name || leaveTypeDetails?.name || i18n.t("timeTracking.timeOff");
 
       const entryDate =
         entry.display_date || entry.leave_date || selectedFullDate;
@@ -107,7 +119,7 @@ const TimeEntriesDisplay: React.FC<TimeEntriesDisplayProps> = ({
               </div>
               <div className="rounded-2xl border border-border bg-muted/40 px-5 py-4 text-right">
                 <div className="mb-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                  Time Off
+                  {i18n.t("timeTracking.timeOff")}
                 </div>
                 <div className="text-2xl font-semibold text-foreground tabular-nums">
                   {minToHHMM(entry.duration)}
@@ -177,7 +189,7 @@ const TimeEntriesDisplay: React.FC<TimeEntriesDisplayProps> = ({
                   data-testid="time-review-day"
                   onClick={() => setReviewMode("day")}
                 >
-                  Selected Day
+                  {i18n.t("timeTracking.selectedDay")}
                 </Button>
                 <Button
                   type="button"
@@ -186,20 +198,24 @@ const TimeEntriesDisplay: React.FC<TimeEntriesDisplayProps> = ({
                   data-testid="time-review-week"
                   onClick={() => setReviewMode("week")}
                 >
-                  This Week
+                  {i18n.t("timeTracking.thisWeek")}
                 </Button>
               </div>
             )}
             <div className="rounded-2xl border border-border bg-muted/40 px-8 py-4 text-right">
               <div className="mb-2 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-                {reviewMode === "week" ? "Week Total" : "Day Total"}
+                {reviewMode === "week"
+                  ? i18n.t("timeTracking.weekTotal")
+                  : i18n.t("timeTracking.dayTotal")}
               </div>
               <div className="text-2xl font-semibold tracking-tight text-primary tabular-nums">
                 {totalHours}h {totalMinutes > 0 ? `${totalMinutes}m` : ""}
               </div>
               <div className="mt-2 text-sm font-medium text-muted-foreground">
                 {reviewEntries.length}{" "}
-                {reviewEntries.length === 1 ? "entry" : "entries"}
+                {reviewEntries.length === 1
+                  ? i18n.t("timeTracking.entry")
+                  : i18n.t("timeTracking.entries")}
               </div>
             </div>
           </div>
@@ -212,10 +228,10 @@ const TimeEntriesDisplay: React.FC<TimeEntriesDisplayProps> = ({
             <div className="rounded-xl border-2 border-dashed border-border bg-muted/30 p-12 text-center">
               <div className="mx-auto max-w-md">
                 <h3 className="mb-2 text-xl font-semibold text-foreground">
-                  No entries for the selected day
+                  {i18n.t("timeTracking.noEntriesForSelectedDay")}
                 </h3>
                 <p className="text-sm text-muted-foreground">
-                  Switch to This Week to review everything you logged this week.
+                  {i18n.t("timeTracking.weekReviewHint")}
                 </p>
               </div>
             </div>
@@ -244,13 +260,13 @@ const TimeEntriesDisplay: React.FC<TimeEntriesDisplayProps> = ({
           </svg>
         </div>
         <h3 className="mb-2 text-xl font-semibold text-foreground">
-          No time entries yet
+          {i18n.t("timeTracking.noTimeEntriesYet")}
         </h3>
         <p className="mb-1 text-muted-foreground">
           {parsedDate.format("dddd, MMMM D, YYYY")}
         </p>
         <p className="mt-4 text-sm text-muted-foreground">
-          Click "Add Entry" to log your first time entry for this day
+          {i18n.t("timeTracking.firstEntryHint")}
         </p>
       </div>
     </div>

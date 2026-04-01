@@ -6,18 +6,19 @@ import { Formik, Form, FormikProps } from "formik";
 import { XIcon } from "miruIcons";
 import { Button, Modal } from "StyledComponents";
 import * as Yup from "yup";
+import { i18n } from "../../../i18n";
 
 const contactSchema = Yup.object().shape({
   firstName: Yup.string()
-    .matches(/^[a-zA-Z]+$/, "First Name must contain only letters")
-    .max(20, "Maximum 20 characters are allowed")
-    .required("First Name cannot be blank"),
+    .matches(/^[a-zA-Z]+$/, i18n.t("contacts.firstNameOnlyLetters"))
+    .max(20, i18n.t("contacts.maxCharacters"))
+    .required(i18n.t("contacts.firstNameRequired")),
   lastName: Yup.string()
-    .matches(/^[a-zA-Z]+$/, "Last Name must contain only letters")
-    .max(20, "Maximum 20 characters are allowed"),
+    .matches(/^[a-zA-Z]+$/, i18n.t("contacts.lastNameOnlyLetters"))
+    .max(20, i18n.t("contacts.maxCharacters")),
   email: Yup.string()
-    .email("Invalid email ID")
-    .required("Email ID cannot be blank"),
+    .email(i18n.t("contacts.invalidEmailId"))
+    .required(i18n.t("contacts.emailRequired")),
 });
 
 const AddContacts = ({
@@ -48,7 +49,7 @@ const AddContacts = ({
       onClose={() => setShowContactModal(false)}
     >
       <div className="modal__position">
-        <h6 className="modal__title"> Add Contact </h6>
+        <h6 className="modal__title"> {i18n.t("contacts.addContact")} </h6>
         <div className="modal__close">
           <button
             className="modal__button"
@@ -83,7 +84,7 @@ const AddContacts = ({
                   hasError={errors.firstName && touched.firstName}
                   id="firstName"
                   inputBoxClassName="border focus:border-primary"
-                  label="First Name"
+                  label={i18n.t("contacts.firstName")}
                   marginBottom={errors.firstName && "mb-0"}
                   name="firstName"
                   setFieldError={setFieldError}
@@ -99,7 +100,7 @@ const AddContacts = ({
                   hasError={errors.lastName && touched.lastName}
                   id="lastName"
                   inputBoxClassName="border focus:border-primary"
-                  label="Last Name"
+                  label={i18n.t("contacts.lastName")}
                   marginBottom={errors.lastName && "mb-0"}
                   name="lastName"
                   setFieldError={setFieldError}
@@ -114,7 +115,7 @@ const AddContacts = ({
                   autoComplete="off"
                   hasError={errors.email && touched.email}
                   id="email"
-                  label="Email"
+                  label={i18n.t("email")}
                   marginBottom={errors.email && "mb-0"}
                   name="email"
                   readOnly={false}
@@ -140,7 +141,7 @@ const AddContacts = ({
                   !isValid || (!dirty && "bg-secondary")
                 }`}
               >
-                Add Contact
+                {i18n.t("contacts.addContact")}
               </Button>
             </Form>
           );

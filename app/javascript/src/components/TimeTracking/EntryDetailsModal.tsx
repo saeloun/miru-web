@@ -11,6 +11,7 @@ import {
   Project,
   EntryList,
 } from "../../types/timeTracking";
+import { i18n } from "../../i18n";
 
 interface EntryDetailsModalProps {
   isOpen: boolean;
@@ -82,7 +83,7 @@ const EntryDetailsModal: React.FC<EntryDetailsModalProps> = ({
           <DialogTitle className="flex items-center justify-between">
             <span>{dayjs(selectedDate).format("dddd, MMMM D, YYYY")}</span>
             <span className="text-sm font-normal text-muted-foreground">
-              Total: {minToHHMM(totalDuration)}
+              {i18n.t("total")}: {minToHHMM(totalDuration)}
             </span>
           </DialogTitle>
         </DialogHeader>
@@ -96,7 +97,7 @@ const EntryDetailsModal: React.FC<EntryDetailsModalProps> = ({
               variant="outline"
             >
               <span className="mr-2">+</span>
-              Add Entry
+              {i18n.t("timeTracking.addEntry")}
             </Button>
           )}
 
@@ -168,7 +169,7 @@ const EntryDetailsModal: React.FC<EntryDetailsModalProps> = ({
             !newEntryView &&
             !editEntryId && (
               <div className="text-center py-8 text-muted-foreground">
-                No entries for this day
+                {i18n.t("timeTracking.noEntriesForDayShort")}
               </div>
             )
           )}

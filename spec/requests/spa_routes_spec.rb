@@ -19,7 +19,8 @@ RSpec.describe "SPA routes", type: :request do
     "/settings/employment",
     "/settings/organization",
     "/settings/holidays",
-    "/settings/leaves"
+    "/settings/leaves",
+    "/my-leaves"
   ].each do |path|
     it "renders the SPA shell for #{path}" do
       get path

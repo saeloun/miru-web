@@ -9,6 +9,7 @@ import {
   SelectValue,
 } from "../../ui/select";
 
+import { i18n } from "../../../i18n";
 import {
   FinancialDetailsFormProps,
   FinancialDetailsFormValues,
@@ -68,7 +69,7 @@ const FinancialDetailsForm = ({
               {/* Base Currency */}
               <div className="mb-2 xsm:mb-6">
                 <label className="mb-2 block text-sm font-medium text-muted-foreground">
-                  Base Currency
+                  {i18n.t("orgSetup.baseCurrency")}
                 </label>
                 <Select
                   value={values.base_currency?.value || ""}
@@ -90,7 +91,7 @@ const FinancialDetailsForm = ({
                       errors.base_currency ? "border-red-500" : ""
                     }`}
                   >
-                    <SelectValue placeholder="Select base currency" />
+                    <SelectValue placeholder={i18n.t("orgSetup.selectBaseCurrency")} />
                   </SelectTrigger>
                   <SelectContent>
                     {currencyListOptions.map(currency => (
@@ -110,7 +111,7 @@ const FinancialDetailsForm = ({
               {/* Standard Rate */}
               <div className="mb-2 xsm:mb-6">
                 <label className="mb-2 block text-sm font-medium text-muted-foreground">
-                  Standard Rate (per hour)
+                  {i18n.t("orgSetup.standardPrice")}
                 </label>
                 <Field
                   name="standard_rate"
@@ -140,7 +141,7 @@ const FinancialDetailsForm = ({
               {/* Fiscal Year End */}
               <div className="mb-2 xsm:mb-6">
                 <label className="mb-2 block text-sm font-medium text-muted-foreground">
-                  Fiscal Year End
+                  {i18n.t("orgSetup.fiscalYear")}
                 </label>
                 <Select
                   value={values.year_end?.value || ""}
@@ -159,7 +160,7 @@ const FinancialDetailsForm = ({
                       errors.year_end ? "border-red-500" : ""
                     }`}
                   >
-                    <SelectValue placeholder="Select fiscal year end" />
+                    <SelectValue placeholder={i18n.t("orgSetup.selectFiscalYearEnd")} />
                   </SelectTrigger>
                   <SelectContent>
                     {fiscalYearEndOptions.map(yearEnd => (
@@ -179,7 +180,7 @@ const FinancialDetailsForm = ({
               {/* Date Format */}
               <div className="mb-2 xsm:mb-6">
                 <label className="mb-2 block text-sm font-medium text-muted-foreground">
-                  Date Format
+                  {i18n.t("orgSetup.dateFormat")}
                 </label>
                 <Select
                   value={values.date_format?.value || ""}
@@ -201,7 +202,7 @@ const FinancialDetailsForm = ({
                       errors.date_format ? "border-red-500" : ""
                     }`}
                   >
-                    <SelectValue placeholder="Select date format" />
+                    <SelectValue placeholder={i18n.t("orgSetup.selectDateFormat")} />
                   </SelectTrigger>
                   <SelectContent>
                     {dateFormatOptions.map(dateFormat => (
@@ -224,7 +225,7 @@ const FinancialDetailsForm = ({
               {/* Working Days */}
               <div className="mb-2 xsm:mb-6">
                 <label className="mb-2 block text-sm font-medium text-muted-foreground">
-                  Working Days (per week)
+                  {i18n.t("orgSetup.workingDaysPerWeek")}
                 </label>
                 <Field
                   name="working_days"
@@ -250,7 +251,7 @@ const FinancialDetailsForm = ({
               {/* Working Hours */}
               <div className="mb-2 xsm:mb-6">
                 <label className="mb-2 block text-sm font-medium text-muted-foreground">
-                  Working Hours (per week)
+                  {i18n.t("orgSetup.workingHoursPerWeek")}
                 </label>
                 <Field
                   name="working_hours"
@@ -283,7 +284,7 @@ const FinancialDetailsForm = ({
                       : "cursor-pointer"
                   }`}
                 >
-                  Save Org Details
+                  {i18n.t("orgSetup.saveOrgDetails")}
                 </button>
               </div>
             </Form>

@@ -5,6 +5,7 @@ import { MoreOptions } from "StyledComponents";
 
 import AppliedFilters from "./AppliedFilters";
 import BulkActions from "./BulkActions";
+import { i18n } from "../../../../i18n";
 
 const BulkActionsWrapper = ({
   clearCheckboxes,
@@ -25,7 +26,7 @@ const BulkActionsWrapper = ({
     <div className="flex w-full flex-wrap items-center justify-between lg:mb-4">
       <div className="flex items-center justify-start">
         <h1 className="text-base font-semibold text-foreground lg:text-2xl lg:font-normal">
-          All Invoices
+          {i18n.t("invoiceDashboard.allInvoices")}
         </h1>
         {isDesktop && (
           <AppliedFilters
@@ -55,7 +56,7 @@ const BulkActionsWrapper = ({
               }}
             >
               <DownloadSimpleIcon className="mr-2" size={16} weight="bold" />{" "}
-              Download
+              {i18n.t("download")}
             </li>
             <li
               className="flex cursor-pointer items-center py-2.5 px-4 text-xs font-medium text-destructive hover:bg-muted lg:text-sm"
@@ -63,7 +64,7 @@ const BulkActionsWrapper = ({
                 setShowBulkDeleteDialog(true);
               }}
             >
-              <DeleteIcon className="mr-2" size={16} weight="bold" /> Delete
+              <DeleteIcon className="mr-2" size={16} weight="bold" /> {i18n.t("delete")}
             </li>
           </MoreOptions>
         )}

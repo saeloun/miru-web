@@ -7,6 +7,7 @@ import Loader from "common/Loader/index";
 import withLayout from "common/Mobile/HOC/withLayout";
 import { ListContext } from "context/TeamContext";
 import { useUserContext } from "context/UserContext";
+import { i18n } from "../../../i18n";
 import Logger from "js-logger";
 import { unmapList, unmapPagyData } from "mapper/team.mapper";
 import { Pagination } from "StyledComponents";
@@ -114,7 +115,7 @@ const TeamList = () => {
               itemsPerPage={pagy?.items}
               nextPage={pagy?.next}
               prevPage={pagy?.prev}
-              title="users/page"
+              title={i18n.t("team.usersPerPage")}
               totalPages={pagy?.pages}
             />
           </div>

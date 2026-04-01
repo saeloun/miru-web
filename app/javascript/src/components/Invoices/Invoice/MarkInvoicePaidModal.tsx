@@ -18,6 +18,7 @@ import { currencyFormat, useOutsideClick } from "helpers";
 import { mapPayment } from "mapper/payment.mapper";
 import { CalendarIcon, XIcon } from "miruIcons";
 import { Button, MobileMoreOptions, Modal, Toastr } from "StyledComponents";
+import { i18n } from "../../../i18n";
 
 const MarkInvoiceAsPaidModal = ({
   invoice,
@@ -65,7 +66,7 @@ const MarkInvoiceAsPaidModal = ({
       note,
     });
     await payment.create(sanitized);
-    Toastr.success("Invoice marked as paid successfully");
+    Toastr.success(i18n.t("invoices.invoiceMarkedAsPaid"));
     setIsLoading(false);
     setShowManualEntryModal(false);
     fetchInvoice();
@@ -83,7 +84,7 @@ const MarkInvoiceAsPaidModal = ({
       onClose={() => setShowManualEntryModal(false)}
     >
       <div className="modal__position m-0">
-        <h6 className="modal__title"> Mark Invoice As Paid</h6>
+        <h6 className="modal__title"> {i18n.t("invoices.markInvoiceAsPaid")}</h6>
         <div className="modal__close">
           <button
             className="modal__button"
@@ -100,7 +101,7 @@ const MarkInvoiceAsPaidModal = ({
               disabled
               id="invoice"
               inputBoxClassName="form__input block w-full appearance-none bg-white p-4 text-base h-12 focus-within:border-primary border-border cursor-not-allowed"
-              label="Invoice"
+              label={i18n.t("invoices.invoice")}
               labelClassName="absolute top-0.5 left-1 h-6 z-1 origin-0 bg-white p-2 text-base font-medium duration-300 text-muted-foreground"
               name="invoice"
               type="text"
@@ -121,7 +122,7 @@ const MarkInvoiceAsPaidModal = ({
             readOnly
             id="transactionDate"
             inputBoxClassName="cursor-pointer"
-            label="Transaction Date"
+            label={i18n.t("payments.transactionDate")}
             name="transactionDate"
             type="text"
             value={transactionDate && dayjs(transactionDate).format(dateFormat)}
@@ -144,14 +145,14 @@ const MarkInvoiceAsPaidModal = ({
         {isDesktop ? (
           <div className="field relative">
             <label className="absolute -top-1 left-0 z-1 ml-3 origin-0 bg-white px-1 text-xsm font-medium text-muted-foreground duration-300">
-              Transaction Type
+              {i18n.t("payments.transactionType")}
             </label>
             <Select
               value={transactionType || ""}
               onValueChange={value => setTransactionType(value)}
             >
               <SelectTrigger className="mt-1">
-                <SelectValue placeholder="Select transaction type..." />
+                <SelectValue placeholder={i18n.t("payments.selectTransactionType")} />
               </SelectTrigger>
               <SelectContent>
                 {transactionTypes.map((type: any) => (
@@ -166,7 +167,7 @@ const MarkInvoiceAsPaidModal = ({
           <>
             <div className="field relative">
               <label className="absolute -top-1 left-0 z-1 ml-3 origin-0 bg-white px-1 text-xsm font-medium text-muted-foreground duration-300">
-                Transaction Type
+                {i18n.t("payments.transactionType")}
               </label>
               <div
                 className="mt-1 flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm cursor-pointer"
@@ -181,7 +182,7 @@ const MarkInvoiceAsPaidModal = ({
                     ? transactionTypes.find(
                         type => type.value == transactionType
                       )?.label
-                    : "Select transaction type..."}
+                    : i18n.t("payments.selectTransactionType")}
                 </span>
               </div>
             </div>
@@ -213,7 +214,7 @@ const MarkInvoiceAsPaidModal = ({
           disabled
           id="paymentAmount"
           inputBoxClassName="form__input block w-full appearance-none bg-white p-4 text-base h-12 focus-within:border-primary border-border cursor-not-allowed"
-          label="Payment amount"
+          label={i18n.t("payments.paymentAmount")}
           labelClassName="absolute top-0.5 left-1 h-6 z-1 origin-0 bg-white p-2 text-base font-medium duration-300 text-muted-foreground"
           name="paymentAmount"
           type="text"
@@ -224,7 +225,7 @@ const MarkInvoiceAsPaidModal = ({
       <div className="mt-4">
         <CustomTextareaAutosize
           id="NotesOptional"
-          label="Notes (optional)"
+          label={i18n.t("payments.notesOptional")}
           maxRows={12}
           name="NotesOptional"
           rows={5}
@@ -244,7 +245,7 @@ const MarkInvoiceAsPaidModal = ({
               handleAddPayment();
             }}
           >
-            MARK AS PAID
+            {i18n.t("invoices.markAsPaid").toUpperCase()}
           </Button>
         ) : (
           <Button
@@ -253,7 +254,7 @@ const MarkInvoiceAsPaidModal = ({
             size="medium"
             type="submit"
           >
-            MARK AS PAID
+            {i18n.t("invoices.markAsPaid").toUpperCase()}
           </Button>
         )}
       </div>

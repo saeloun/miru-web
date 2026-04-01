@@ -3,6 +3,7 @@ import React from "react";
 import { clientApi } from "apis/api";
 import { useNavigate } from "react-router-dom";
 import { Modal, Button } from "StyledComponents";
+import { i18n } from "../../../i18n";
 
 interface IProps {
   client: any;
@@ -34,11 +35,9 @@ const DeleteClient = ({
       onClose={() => setShowDeleteDialog(false)}
     >
       <div className="flex-col">
-        <h6 className="text-2xl font-bold">Delete Client</h6>
+        <h6 className="text-2xl font-bold">{i18n.t("clients.deleteClient")}</h6>
         <p className="mt-4 mb-10 font-normal xsm:text-sm">
-          Are you sure you want to delete client{" "}
-          <b className="font-bold">{client.name}</b>? This action cannot be
-          reversed.
+          {i18n.t("clients.deleteClientConfirm", { name: client.name })}
         </p>
       </div>
       <div className="flex justify-between">
@@ -50,7 +49,7 @@ const DeleteClient = ({
             setShowDeleteDialog(false);
           }}
         >
-          CANCEL
+          {i18n.t("cancel").toUpperCase()}
         </Button>
         <Button
           className="ml-2 w-1/2"
@@ -60,7 +59,7 @@ const DeleteClient = ({
             deleteClient(client);
           }}
         >
-          DELETE
+          {i18n.t("delete").toUpperCase()}
         </Button>
       </div>
     </Modal>

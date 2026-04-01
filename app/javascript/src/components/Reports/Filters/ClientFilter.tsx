@@ -3,6 +3,7 @@ import React from "react";
 import { MinusIcon, PlusIcon, SearchIcon, XIcon } from "miruIcons";
 
 import ClickableCheckboxText from "common/ClickableCheckboxText";
+import { i18n } from "../../../i18n";
 
 const ClientFilter = ({
   isClientOpen,
@@ -18,7 +19,7 @@ const ClientFilter = ({
       className="flex items-center justify-between px-5 hover:text-primary"
       onClick={handleClientFilterToggle}
     >
-      <h5 className="text-xs font-bold leading-4 tracking-wider">CLIENTS</h5>
+      <h5 className="text-xs font-bold leading-4 tracking-wider">{i18n.t("reports.clients").toUpperCase()}</h5>
       <div className="flex items-center">
         {selectedClients.length > 0 &&
           selectedClients[0].label != "All Clients" && (
@@ -33,7 +34,7 @@ const ClientFilter = ({
       <div className="md:mt-7">
         <div className="relative mt-4 flex w-full items-center px-5 lg:mt-2">
           <input
-            placeholder="Search"
+            placeholder={i18n.t("search")}
             type="text"
             value={searchQuery}
             className="focus:outline-none w-full rounded bg-muted p-2
@@ -79,7 +80,7 @@ const ClientFilter = ({
               </div>
             ))
           ) : (
-            <div className="m-5">No results found</div>
+            <div className="m-5">{i18n.t("noResultsFound")}</div>
           )}
         </div>
       </div>

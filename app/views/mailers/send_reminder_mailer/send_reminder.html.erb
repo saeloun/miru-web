@@ -2,7 +2,7 @@
 <% content_for :email_eyebrow, "Invoices" %>
 <% content_for :email_title, "Payment reminder" %>
 <% content_for :email_subtitle do %>
-  This is a reminder for invoice <strong><%= @invoice.invoice_number %></strong> from <strong><%= @invoice.company.name %></strong>.
+  Invoice <strong><%= @invoice.invoice_number %></strong> from <strong><%= @invoice.company.name %></strong> is still awaiting payment.
 <% end %>
 
 <% if @message.present? %>
@@ -13,8 +13,8 @@
 
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="detail-grid">
   <tr>
-    <%= render "shared/mailer/detail_card", label: "Issue date", value: @invoice.issue_date.ordinalize %>
-    <%= render "shared/mailer/detail_card", label: "Due date", value: @invoice.due_date.ordinalize %>
+    <%= render "shared/mailer/detail_card", label: "Issue date", value: @invoice.issue_date.strftime("%B %d, %Y") %>
+    <%= render "shared/mailer/detail_card", label: "Due date", value: @invoice.due_date.strftime("%B %d, %Y") %>
   </tr>
   <tr>
     <%= render "shared/mailer/detail_card", label: "Invoice number", value: @invoice.invoice_number %>
@@ -26,4 +26,4 @@
   </tr>
 </table>
 
-<%= render "shared/mailer/button", href: @invoice_url, label: "View invoice" %>
+<%= render "shared/mailer/button", href: @invoice_url, label: "Review invoice" %>

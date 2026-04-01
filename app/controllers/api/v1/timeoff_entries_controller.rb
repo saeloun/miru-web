@@ -26,21 +26,21 @@ class Api::V1::TimeoffEntriesController < Api::V1::ApplicationController
     authorize TimeoffEntry
 
     timeoff_entry = @user.timeoff_entries.create!(timeoff_params)
-    render json: { notice: "Added time off successfully", timeoff_entry: }, status: 200
+    render json: { notice: I18n.t("timeoff_entries.create.success"), timeoff_entry: }, status: 200
   end
 
   def update
     authorize @timeoff_entry
 
     @timeoff_entry.update!(timeoff_params)
-    render json: { notice: "Updated time off successfully", timeoff_entry: @timeoff_entry }, status: 200
+    render json: { notice: I18n.t("timeoff_entries.update.success"), timeoff_entry: @timeoff_entry }, status: 200
   end
 
   def destroy
     authorize @timeoff_entry
 
     @timeoff_entry.discard!
-    render json: { notice: "Deleted time off successfully", timeoff_entry: @timeoff_entry }, status: 200
+    render json: { notice: I18n.t("timeoff_entries.destroy.success"), timeoff_entry: @timeoff_entry }, status: 200
   end
 
   private

@@ -5,6 +5,7 @@ import React, { useCallback } from "react";
 import { teamApi } from "apis/api";
 import { UnifiedSearch } from "../../ui/enhanced-search";
 import { useList } from "context/TeamContext";
+import { i18n } from "../../../i18n";
 import { unmapList } from "mapper/team.mapper";
 import { PlusIcon } from "miruIcons";
 import { Button } from "StyledComponents";
@@ -38,10 +39,10 @@ const Header = () => {
 
   return (
     <div className="mt-6 mb-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-      <h2 className="header__title hidden lg:inline">Team</h2>
+      <h2 className="header__title hidden lg:inline">{i18n.t("team.team")}</h2>
       <UnifiedSearch
         searchAction={fetchTeamList}
-        placeholder="Search team members..."
+        placeholder={i18n.t("search")}
         onSelect={member => {
           // Handle team member selection if needed
         }}
@@ -58,7 +59,7 @@ const Header = () => {
         >
           <PlusIcon size={16} weight="bold" />
           <span className="ml-2 hidden text-base font-bold tracking-widest lg:inline-block">
-            New User
+            {i18n.t("team.inviteMember")}
           </span>
         </Button>
       </div>

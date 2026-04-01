@@ -8,6 +8,7 @@ import { useUserContext } from "context/UserContext";
 import dayjs from "dayjs";
 import { minFromHHMM, minToHHMM } from "helpers";
 
+import { i18n } from "../../../i18n";
 import DesktopTimeoffForm from "./DesktopTimeoffForm";
 import MobileTimeoffForm from "./MobileTimeoffForm";
 
@@ -25,6 +26,7 @@ const TimeoffForm = ({ isDisplayEditTimeoffEntryForm = false }) => {
     fetchEntries,
     fetchEntriesOfMonths,
     handleAddEntryDateChange,
+    refreshVisibleEntries,
     editTimeoffEntryId,
     setEditTimeoffEntryId,
     handleFilterEntry,
@@ -38,7 +40,7 @@ const TimeoffForm = ({ isDisplayEditTimeoffEntryForm = false }) => {
 
   const [note, setNote] = useState<string>("");
   const [displayDatePicker, setDisplayDatePicker] = useState<boolean>(false);
-  const [duration, setDuration] = useState<string>("");
+  const [duration, setDuration] = useState<string>("08:00");
   const [selectedDate, setSelectedDate] = useState<string>(selectedFullDate);
   const [leaveTypeId, setLeaveTypeId] = useState<number | string>("");
   const [leaveType, setLeaveType] = useState<string>("");
@@ -58,7 +60,7 @@ const TimeoffForm = ({ isDisplayEditTimeoffEntryForm = false }) => {
       if (!isNationalHolidayAlreadyAdded) {
         const nationalHolidayLeaveTypeObj = {
           id: HOLIDAY_TYPES.NATIONAL,
-          name: "National Holiday",
+          name: i18n.t("leaveManagement.nationalHoliday"),
           category: HOLIDAY_TYPES.NATIONAL,
         };
         tempLeaveTypes.push({ ...nationalHolidayLeaveTypeObj });
@@ -72,7 +74,7 @@ const TimeoffForm = ({ isDisplayEditTimeoffEntryForm = false }) => {
       if (!isOptionalHolidayAlreadyAdded) {
         const optionalHolidayLeaveTypeObj = {
           id: HOLIDAY_TYPES.OPTIONAL,
-          name: "Optional Holiday",
+          name: i18n.t("leaveManagement.optionalHoliday"),
           category: HOLIDAY_TYPES.OPTIONAL,
         };
         tempLeaveTypes.push({ ...optionalHolidayLeaveTypeObj });
@@ -246,11 +248,9 @@ const TimeoffForm = ({ isDisplayEditTimeoffEntryForm = false }) => {
       const res = await timeoffEntriesApi.create(payload, selectedEmployeeId);
 
       if (res.status === 200) {
-        const fetchEntriesRes = await fetchEntries(selectedDate, selectedDate);
-
-        if (!isDesktop) {
-          fetchEntriesOfMonths();
-        }
+        const fetchEntriesRes =
+          (await refreshVisibleEntries?.(selectedEmployeeId)) ||
+          (await fetchEntries(selectedDate, selectedDate));
 
         if (fetchEntriesRes) {
           setNewTimeoffEntryView(false);

@@ -8,6 +8,7 @@ import { SettingIcon, SignOutIcon, Switcher } from "miruIcons";
 import { NavLink } from "react-router-dom";
 import { Avatar, Tooltip } from "StyledComponents";
 
+import { i18n } from "../../i18n";
 import { activeClassName, handleLogout } from "./utils";
 
 const UserActions = setVisiblity => {
@@ -65,7 +66,7 @@ const UserActions = setVisiblity => {
       ref={wrapperRef}
     >
       <span className="px-4 text-xs font-medium leading-4 tracking-wider text-muted-foreground">
-        SELECT WORKSPACE
+        {i18n.t("navbar.selectWorkspace")}
       </span>
       {workSpaceList.map(workspace => (
         <li
@@ -109,7 +110,7 @@ const UserActions = setVisiblity => {
           }}
         >
           <SettingIcon className="mr-4" size={26} />
-          Settings
+          {i18n.t("navbar.settings")}
         </NavLink>
       </li>
       <li
@@ -118,7 +119,7 @@ const UserActions = setVisiblity => {
         onClick={() => handleLogout()}
       >
         <SignOutIcon className="mr-4" size={26} />
-        Logout
+        {i18n.t("navbar.logout")}
       </li>
       <Tooltip content={currentWorkspace.name} show={showToolTip}>
         <li

@@ -1,0 +1,362 @@
+---
+en-US:
+  activerecord:
+    errors:
+      models:
+        client:
+          attributes:
+            name:
+              format: "%{message}"
+        project:
+          attributes:
+            name:
+              format: "%{message}"
+  application_controller:
+    not_found: Route not found
+  avatar:
+    destroy:
+      success: Avatar deleted successfully
+    update:
+      success: Avatar updated successfully
+  client:
+    add: ADD CLIENT
+    address:
+      label: Address
+      placeholder: Enter address
+    create:
+      failure: Client creation failed
+      success: Client added successfully
+    delete:
+      success:
+        message: Client removed successfully
+    email:
+      label: Email
+      placeholder: Enter email ID
+    name:
+      label: Name
+      placeholder: Enter name
+    phone:
+      label: Phone number
+      placeholder: Enter phone number
+    update:
+      failure:
+        message: Failed to saved changes
+        unauthorized: User is unauthorized to modify this client's details
+      success:
+        message: Changes saved successfully
+  clients:
+    add_client_contact:
+      success: Invitation sent successfully.
+    send_payment_reminder:
+      success: Payment reminder has been sent
+  companies:
+    create:
+      failure: Company creation failed
+      success: Company created successfully
+    purge_logo:
+      destroy:
+        success: Company Logo successfully removed
+    update:
+      success: Changes saved successfully
+  company:
+    address: address
+    base_currency: base currency
+    business_phone: business phone
+    cancel: cancel
+    company: company
+    country: country
+    date_format: date Format
+    fiscal_year: fiscal year
+    logo: logo
+    save: save
+    save_org: save org details
+    setup: setup org
+    standard_price: standard price
+    timezone: timezone
+  confirmation:
+    send_instructions: A confirmation email has been sent to %{email}.
+  currency_pairs:
+    from_to_required: from and to are required
+    rate_not_found: Rate not found
+  custom_leaves:
+    update:
+      success: Custom Leaves updated successfully
+  employment:
+    update:
+      success: Employment updated successfully
+  errors:
+    bill_status_billed: You can't bill an entry that has already been billed
+    can't change status: can't be changed of a paid invoice
+    create_billed_entry: You can't create a billed timesheet entry
+    internal_server_error: Something went wrong
+    not_found: The resource you're looking for is not available
+    prevent_draft_to_waived: can't be changed to waived
+    unauthorized: Only owner or admin users are authorized to perform this action
+    updation_not_allowed: updation is not allowed
+    user_already_member: Email id is already in use. Please enter another email id
+    validate_billable_project: You can't create an unbilled entry for non-billable
+      projects
+  expenses:
+    approve: Expense approved successfully
+    create: Expense submitted successfully
+    destroy: Expense deleted successfully
+    mark_paid: Expense marked as paid
+    must_be_approved: Expense must be approved before marking it as paid
+    reject: Expense rejected successfully
+    update: Expense updated successfully
+  holidays:
+    update:
+      success: Holiday Info updated successfully
+  invitation:
+    create:
+      success:
+        message: Invitation Sent successfully
+    delete:
+      success:
+        message: Invitation removed successfully
+    resent:
+      success:
+        message: Invitation resent successfully
+    update:
+      success:
+        message: Changes saved successfully
+  invitations:
+    accept:
+      index:
+        success: Invitation accepted
+      show:
+        success: Invitation accepted
+      success: Invitation accepted
+    create:
+      failure: Failed to saved changes
+      success: Invitation will be sent
+    destroy:
+      failure: Failed to delete invitation
+      success: Invitation deleted
+    update:
+      failure: Failed to saved changes
+      success: Invitation updated
+  invoices:
+    payments:
+      success:
+        failure: Something went wrong, please contact support
+        success: Payment successful
+  invoices_controller:
+    download:
+      pdf_failed: Failed to generate PDF
+    send_invoice:
+      already_paid: Invoice is already paid
+      pdf_failed: Failed to generate PDF
+      recipient_limit: Email can only be sent to 5 recipients.
+      recipients_required: Recipients are required
+      success: Invoice has been sent successfully
+    send_reminder:
+      overdue_only: Reminders can only be sent for overdue invoices
+      success: A reminder has been sent
+  invoices_view:
+    not_found: No invoice found
+  leave_types:
+    create:
+      success: Added leave type successfully
+    update:
+      success: Updated leave type successfully
+  leave_with_leave_types:
+    update:
+      success: Leaves updated successfully
+  leaves:
+    create:
+      success: Leave created successfully
+    update:
+      success: Leave updated successfully
+  navbar:
+    clients: Clients
+    help: Help
+    invoices: Invoices
+    logout: Logout
+    payments: Payments
+    profile: Profile
+    projects: Projects
+    reports: Reports
+    settings: Settings
+    team: Team
+    time_tracking: Time Tracking
+    view_notifications: View Notifications
+  passkeys:
+    add_passkey_first: Add a passkey before requiring it for sign in.
+    added: Passkey added
+    disable_totp_first: Disable authenticator app 2FA before requiring passkey sign
+      in.
+    not_found: Passkey not found.
+    removed: Passkey removed
+    requirement_disabled: Passkey requirement disabled
+    requirement_enabled: Passkey requirement enabled
+    session_expired: Passkey session expired. Please try again.
+    verification_failed: Passkey verification failed.
+  password:
+    create:
+      success: Instructions for resetting your password have been sent to your email.
+    update:
+      success: Your password has been updated.
+  projects:
+    add_new_project: Add new project
+    add_project: Add project
+    billable: Billable
+    client: Client
+    create:
+      failure: Project creation failed.
+      success: Project added successfully.
+    delete:
+      success:
+        message: Project removed successfully
+    edit: edit
+    hours_logged: HOURS LOGGED
+    new_project: NEW PROJECT
+    non_billable: Non-Billable
+    project: Project
+    project_name: Project name
+    projects: Projects
+    update:
+      success: Changes saved successfully.
+    update_members:
+      failure:
+        message: Failed to saved changes
+        unauthorized: User is unauthorized to modify this project's details
+      success:
+        message: Changes saved successfully
+  pundit:
+    client_policy:
+      create?: You are not authorized to create client.
+      show?: You are not authorized to access the page. Please reach out to your administrator
+        for help.
+      update?: You are not authorized to update client.
+    company_policy:
+      create?: You are not authorized to create company.
+      new?: You are not authorized to create new company.
+      show?: You are not authorized to view company.
+      update?: You are not authorized to update company.
+    current_company_policy:
+      company_not_present: Company not present.
+    default: You are not authorized to perform this action.
+    different_workspace: You are not authorized to access records outside your current
+      workspace.
+    project_policy:
+      create?: You are not authorized to create project.
+      show?: You are not authorized to access the page. Please reach out to your administrator
+        for help.
+    team_policy:
+      destroy?: You are not authorized to destroy team.
+      edit?: You are not authorized to edit team.
+      update?: You are not authorized to update team.
+  registration:
+    confirm_password: confirm password
+    email_id: email
+    first_name: first name
+    last_name: last name
+    name: name
+    or: or
+    password: password
+    remember_me: remember me
+    sign_in: sign in
+    sign_up: sign up
+    signin_with_github: sign in with github
+    signin_with_google: sign in with google
+    signup_with_apple: sign up with apple
+    signup_with_github: sign up with github
+    signup_with_google: sign up with google
+  reports:
+    heading: Time entry report
+  sessions:
+    failure:
+      invalid: Invalid email or password
+  settings:
+    cancel: cancel
+    change_password: change password
+    confirm_password: confirm password
+    current_password: current password
+    email: email
+    name: name
+    organization_setting: organization settings
+    password: password
+    payment_setting: payment settings
+    profile_picture: profile picture
+    profile_setting: profile settings
+    save: save
+    settings: settings
+  shared_links:
+    already_have_an_account: already have an account?
+    back_to_login: back to login
+    confirmation_instruction: didn't receive confirmation instructions?
+    dont_have_an_account: don't have an account?
+    forgot_password: forgot password ?
+    unlock_instruction: didn't receive unlock instructions?
+  subscriptions:
+    no_billing_customer: No billing customer exists for this company
+    pricing_not_configured: Stripe subscription pricing is not configured
+    trial_not_eligible: Your workspace is not eligible for a Pro trial
+    trial_started: Your 30-day Pro trial has started
+  team:
+    changed_email: Changed Email
+    create_new_user: Create New User
+    current_email: Current Email
+    delete:
+      success:
+        message: Team Member removed successfully
+    email: Email
+    email_id: EMAIL ID
+    first_name: First Name
+    form_admin: Admin
+    form_book_keeper: Book Keeper
+    form_email: Email
+    form_employee: Employee
+    form_name: Name
+    form_role: Role
+    invitation: INVITATION PENDING
+    last_name: Last Name
+    name: NAME
+    new_user: NEW USER
+    profile_picture: PHOTO
+    reconfirmation: RECONFIRMATION PENDING
+    role: ROLE
+    team: Team
+    update:
+      error:
+        role: There was an error while updating role
+      success:
+        message: Changes saved successfully
+    update_user: Update User
+  timeoff_entries:
+    create:
+      success: Added time off successfully
+    destroy:
+      success: Deleted time off successfully
+    update:
+      success: Updated time off successfully
+  timesheet_entry:
+    create:
+      message: Timesheet created
+    destroy:
+      failure: Failed to delete timesheet entries
+      message: Timesheet deleted
+    update:
+      failure: Failed to update timesheet entries
+      message: Timesheet updated
+  totp:
+    disable_passkey_first: Disable required passkey sign in before enabling authenticator
+      app 2FA.
+    disabled: Authenticator app disabled
+    enabled: Authenticator app enabled
+    invalid_code: Invalid authenticator code.
+    invalid_verification: Invalid verification code.
+    not_enabled: Enable authenticator app 2FA first.
+    recovery_codes_regenerated: Recovery codes regenerated
+    session_expired: That verification request is no longer valid. Please sign in
+      again.
+  user:
+    login:
+      failure:
+        disabled: Your access has been disabled.
+        pending_invitation: Your account is not activated yet.
+  workspaces:
+    update:
+      failure: Failed to switch workspace
+      success: Workspace switched successfully

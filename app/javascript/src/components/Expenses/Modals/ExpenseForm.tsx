@@ -16,6 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../ui/select";
+import { i18n } from "../../../i18n";
 
 const ExpenseForm = ({
   dateFormat,
@@ -94,7 +95,7 @@ const ExpenseForm = ({
           </div>
           <div className="ml-4 mr-2 flex w-full flex-col items-start truncate">
             <span className="text-sm font-medium">
-              {receipt.name || "Receipt"}
+              {receipt.name || i18n.t("expenses.receipt")}
             </span>
             {receipt.size && (
               <div className="flex items-center text-xs font-medium text-muted-foreground">
@@ -117,7 +118,7 @@ const ExpenseForm = ({
     >
       <FileIcon className="text-muted-foreground" size={16} weight="bold" />
       <span className="text-center text-base font-bold text-muted-foreground">
-        Upload file
+        {i18n.t("expenses.uploadFile")}
       </span>
       <input
         multiple
@@ -146,7 +147,7 @@ const ExpenseForm = ({
               readOnly
               id="transactionDate"
               inputBoxClassName="cursor-pointer"
-              label="Transaction Date"
+              label={i18n.t("payments.transactionDate")}
               name="transactionDate"
               type="text"
               value={expenseDate && dayjs(expenseDate).format(dateFormat)}
@@ -168,7 +169,7 @@ const ExpenseForm = ({
         <div className="mt-6">
           <CustomInputText
             id="vendor"
-            label="Vendor"
+            label={i18n.t("expenses.vendor")}
             name="vendor"
             type="text"
             value={vendor}
@@ -179,7 +180,7 @@ const ExpenseForm = ({
         <div className="mt-6">
           <CustomInputText
             id="amount"
-            label="Amount"
+            label={i18n.t("amount")}
             name="amount"
             type="text"
             value={amount}
@@ -189,7 +190,7 @@ const ExpenseForm = ({
         </div>
         <div className="mt-6">
           <label className="text-base font-medium text-muted-foreground">
-            Category
+            {i18n.t("expenses.category")}
           </label>
           <div className="mt-1">
             <Select
@@ -197,7 +198,7 @@ const ExpenseForm = ({
               onValueChange={value => setCategory(value)}
             >
               <SelectTrigger>
-                <SelectValue placeholder="Select category..." />
+                <SelectValue placeholder={i18n.t("expenses.selectCategoryEllipsis")} />
               </SelectTrigger>
               <SelectContent>
                 {expenseData.categories?.map(categoryOption => (
@@ -218,7 +219,7 @@ const ExpenseForm = ({
         <div className="mt-6">
           <CustomTextareaAutosize
             id="description"
-            label="Description (optional)"
+            label={i18n.t("expenses.descriptionOptional")}
             maxRows={12}
             name="description"
             rows={5}
@@ -228,7 +229,7 @@ const ExpenseForm = ({
         </div>
         <div className="mt-6 flex flex-col">
           <span className="text-base font-medium text-muted-foreground">
-            Expense Type
+            {i18n.t("expenses.expenseType")}
           </span>
           <div className="flex">
             <CustomRadioButton
@@ -239,7 +240,7 @@ const ExpenseForm = ({
               groupName="expenseType"
               id="Business"
               key="Business"
-              label="Business"
+              label={i18n.t("expenses.business")}
               value={expenseType}
               handleOnChange={() => setExpenseType("business")}
             />
@@ -251,7 +252,7 @@ const ExpenseForm = ({
               groupName="expenseType"
               id="Personal"
               key="Personal"
-              label="Personal"
+              label={i18n.t("expenses.personal")}
               value={expenseType}
               handleOnChange={() => setExpenseType("personal")}
             />
@@ -259,7 +260,7 @@ const ExpenseForm = ({
         </div>
         <div className="mt-6">
           <span className="text-base font-medium text-muted-foreground">
-            Receipt (optional)
+            {i18n.t("expenses.receiptOptional")}
           </span>
           {receipts.length > 0 ? <ReceiptCard /> : <UploadCard />}
         </div>
@@ -270,7 +271,7 @@ const ExpenseForm = ({
           disabled={isFormActionDisabled}
           onClick={handleSubmit}
         >
-          {expense ? "Save Changes" : "Add Expense"}
+          {expense ? i18n.t("expenses.saveChanges") : i18n.t("expenses.addExpense")}
         </Button>
       </div>
     </div>

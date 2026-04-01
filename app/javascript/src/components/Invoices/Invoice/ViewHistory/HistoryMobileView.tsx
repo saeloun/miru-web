@@ -6,6 +6,7 @@ import { Button } from "StyledComponents";
 
 import History from "./History";
 import { getHistory } from "./utils";
+import { i18n } from "../../../../i18n";
 
 const HistoryMobileView = ({ setShowHistory, invoice }) => {
   const [logs, setLogs] = useState([]);
@@ -25,7 +26,7 @@ const HistoryMobileView = ({ setShowHistory, invoice }) => {
       <div className="sticky top-0 left-0 right-0 z-50 flex h-12 items-center bg-primary px-4 shadow-c1">
         <div className="flex w-full items-center justify-between">
           <span className="ml-4 flex w-full justify-center text-base font-medium text-white">
-            History
+            {i18n.t("invoices.history")}
           </span>
           <Button
             className=""

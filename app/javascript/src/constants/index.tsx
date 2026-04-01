@@ -29,6 +29,7 @@ export enum Paths {
   PAYMENTS = "/payments",
   PAYMENT_SUCCESS = "/payments/success",
   TIME_TRACKING = "/time-tracking",
+  MY_LEAVES = "/my-leaves",
   TEAM = "/team/*",
   EXPENSES = "/expenses",
   SETTINGS = "/settings/*",

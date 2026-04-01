@@ -1,0 +1,366 @@
+---
+mr:
+  activerecord:
+    errors:
+      models:
+        client:
+          attributes:
+            name:
+              format: "%{message}"
+        project:
+          attributes:
+            name:
+              format: "%{message}"
+  application_controller:
+    not_found: मार्ग सापडला नाही
+  avatar:
+    destroy:
+      success: अवतार यशस्वीरित्या हटवला गेला.
+    update:
+      success: अवतार यशस्वीरित्या अपडेट झाला.
+  client:
+    add: क्लायंट जोडा
+    address:
+      label: पत्ता
+      placeholder: पत्ता प्रविष्ट करा
+    create:
+      failure: क्लायंट निर्मिती अयशस्वी झाली
+      success: क्लायंट यशस्वीरित्या जोडला गेला.
+    delete:
+      success:
+        message: क्लायंट यशस्वीरित्या काढून टाकण्यात आला.
+    email:
+      label: ईमेल
+      placeholder: ईमेल आयडी प्रविष्ट करा
+    name:
+      label: नाव
+      placeholder: नाव प्रविष्ट करा
+    phone:
+      label: फोन नंबर
+      placeholder: फोन नंबर प्रविष्ट करा
+    update:
+      failure:
+        message: बदल जतन करण्यात अयशस्वी झाले
+        unauthorized: वापरकर्त्याला या क्लायंटचा तपशील बदलण्याचा अधिकार नाही.
+      success:
+        message: बदल यशस्वीरित्या जतन केले गेले.
+  clients:
+    add_client_contact:
+      success: आमंत्रण यशस्वीरित्या पाठवण्यात आले आहे.
+    send_payment_reminder:
+      success: पेमेंटची आठवण करून देणारा संदेश पाठवण्यात आला आहे.
+  companies:
+    create:
+      failure: कंपनी निर्मिती अयशस्वी झाली.
+      success: कंपनीची यशस्वीपणे स्थापना झाली.
+    purge_logo:
+      destroy:
+        success: कंपनीचा लोगो यशस्वीरित्या काढण्यात आला.
+    update:
+      success: बदल यशस्वीरित्या जतन केले गेले.
+  company:
+    address: पत्ता
+    base_currency: आधार चलन
+    business_phone: व्यवसाय फोन
+    cancel: रद्द करा
+    company: कंपनी
+    country: देश
+    date_format: तारीख स्वरूप
+    fiscal_year: आर्थिक वर्ष
+    logo: लोगो
+    save: जतन करा
+    save_org: संस्थेचा तपशील जतन करा
+    setup: सेटअप ऑर्ग
+    standard_price: मानक किंमत
+    timezone: टाइमझोन
+  confirmation:
+    send_instructions: "%{email} यांना पुष्टीकरण ईमेल पाठवण्यात आला आहे."
+  currency_pairs:
+    from_to_required: पासून आणि पर्यंत आवश्यक आहेत
+    rate_not_found: दर आढळला नाही
+  custom_leaves:
+    update:
+      success: सानुकूलित पाने यशस्वीरित्या अद्ययावत केली.
+  employment:
+    update:
+      success: रोजगार यशस्वीरित्या अद्ययावत झाला.
+  errors:
+    bill_status_billed: ज्या नोंदीचे बिल आधीच आकारले गेले आहे, तिचे बिल तुम्ही पुन्हा
+      आकारू शकत नाही.
+    can't change status: पैसे भरलेल्या बिलामध्ये बदल करता येत नाही.
+    create_billed_entry: तुम्ही बिल केलेली टाइमशीट नोंद तयार करू शकत नाही.
+    internal_server_error: काहीतरी चूक झाली
+    not_found: तुम्ही शोधत असलेले संसाधन उपलब्ध नाही.
+    prevent_draft_to_waived: माफ केले असे बदलता येणार नाही
+    unauthorized: केवळ मालक किंवा प्रशासक वापरकर्त्यांनाच ही कृती करण्याचा अधिकार
+      आहे.
+    updation_not_allowed: अद्ययावतीकरणास परवानगी नाही
+    user_already_member: ईमेल आयडी आधीच वापरला गेला आहे. कृपया दुसरा ईमेल आयडी प्रविष्ट
+      करा.
+    validate_billable_project: बिल न आकारता येणाऱ्या प्रकल्पांसाठी तुम्ही बिल न आकारलेली
+      नोंद तयार करू शकत नाही.
+  expenses:
+    approve: खर्च यशस्वीरित्या मंजूर झाला.
+    create: खर्च यशस्वीरित्या सादर झाला.
+    destroy: खर्च यशस्वीरित्या हटवला गेला.
+    mark_paid: खर्च अदा झाल्याचे नमूद केले आहे
+    must_be_approved: खर्च अदा केल्याचे नमूद करण्यापूर्वी त्याला मंजुरी मिळणे आवश्यक
+      आहे.
+    reject: खर्च यशस्वीरित्या नाकारण्यात आला.
+    update: खर्च यशस्वीरित्या अद्ययावत झाला.
+  holidays:
+    update:
+      success: सुट्टीची माहिती यशस्वीरित्या अद्ययावत केली गेली.
+  invitation:
+    create:
+      success:
+        message: आमंत्रण यशस्वीरित्या पाठवले आहे.
+    delete:
+      success:
+        message: आमंत्रण यशस्वीरित्या काढून टाकण्यात आले.
+    resent:
+      success:
+        message: आमंत्रण यशस्वीरित्या पुन्हा पाठवले गेले.
+    update:
+      success:
+        message: बदल यशस्वीरित्या जतन केले गेले.
+  invitations:
+    accept:
+      index:
+        success: आमंत्रण स्वीकारले.
+      show:
+        success: आमंत्रण स्वीकारले.
+      success: आमंत्रण स्वीकारले.
+    create:
+      failure: बदल जतन करण्यात अयशस्वी झाले
+      success: आमंत्रण पाठवले जाईल
+    destroy:
+      failure: आमंत्रण हटवण्यात अयशस्वी झाले.
+      success: आमंत्रण हटवले
+    update:
+      failure: बदल जतन करण्यात अयशस्वी झाले
+      success: आमंत्रण अद्ययावत केले
+  invoices:
+    payments:
+      success:
+        failure: काहीतरी चूक झाली आहे, कृपया सपोर्टशी संपर्क साधा.
+        success: पेमेंट यशस्वी झाले.
+  invoices_controller:
+    download:
+      pdf_failed: पीडीएफ तयार करण्यात अयशस्वी झाले
+    send_invoice:
+      already_paid: बिल आधीच भरले आहे.
+      pdf_failed: पीडीएफ तयार करण्यात अयशस्वी झाले
+      recipient_limit: ईमेल फक्त ५ प्राप्तकर्त्यांनाच पाठवता येतो.
+      recipients_required: प्राप्तकर्त्यांना आवश्यक आहे
+      success: इनव्हॉइस यशस्वीरित्या पाठवण्यात आले आहे.
+    send_reminder:
+      overdue_only: केवळ थकीत बिलांसाठीच स्मरणपत्रे पाठवली जाऊ शकतात.
+      success: स्मरणपत्र पाठवण्यात आले आहे.
+  invoices_view:
+    not_found: कोणतेही बिल आढळले नाही
+  leave_types:
+    create:
+      success: रजेचा प्रकार यशस्वीरित्या जोडला गेला.
+    update:
+      success: रजेचा प्रकार यशस्वीरित्या अद्ययावत केला.
+  leave_with_leave_types:
+    update:
+      success: पाने यशस्वीरित्या अद्ययावत झाली.
+  leaves:
+    create:
+      success: रजा यशस्वीरित्या तयार केली.
+    update:
+      success: रजा यशस्वीरित्या अद्यतनित झाली.
+  navbar:
+    clients: ग्राहक
+    help: मदत
+    invoices: पावत्या
+    logout: लॉगआउट
+    payments: पेमेंट
+    profile: प्रोफाइल
+    projects: प्रकल्प
+    reports: अहवाल
+    settings: सेटिंग्ज
+    team: संघ
+    time_tracking: वेळ ट्रॅकिंग
+    view_notifications: सूचना पहा
+  passkeys:
+    add_passkey_first: साइन इन करण्यासाठी पासकी आवश्यक करण्यापूर्वी ती जोडा.
+    added: पासकी जोडली
+    disable_totp_first: पासकी साइन इन अनिवार्य करण्यापूर्वी ऑथेंटिकेटर ॲपचे २एफए (2FA)
+      अक्षम करा.
+    not_found: पासकी सापडली नाही.
+    removed: पासकी काढली
+    requirement_disabled: पासकीची आवश्यकता अक्षम केली आहे
+    requirement_enabled: पासकीची आवश्यकता सक्षम केली आहे
+    session_expired: पासकी सत्र कालबाह्य झाले आहे. कृपया पुन्हा प्रयत्न करा.
+    verification_failed: पासकी पडताळणी अयशस्वी झाली.
+  password:
+    create:
+      success: तुमचा पासवर्ड रीसेट करण्याच्या सूचना तुमच्या ईमेलवर पाठवण्यात आल्या
+        आहेत.
+    update:
+      success: तुमचा पासवर्ड बदलण्यात आला आहे.
+  projects:
+    add_new_project: नवीन प्रकल्प जोडा
+    add_project: प्रकल्प जोडा
+    billable: बिल करण्यायोग्य
+    client: क्लायंट
+    create:
+      failure: प्रकल्प निर्मिती अयशस्वी झाली.
+      success: प्रकल्प यशस्वीरित्या जोडला गेला.
+    delete:
+      success:
+        message: प्रकल्प यशस्वीरित्या काढून टाकला.
+    edit: संपादन
+    hours_logged: नोंदवलेले तास
+    new_project: नवीन प्रकल्प
+    non_billable: बिल न करण्यायोग्य
+    project: प्रकल्प
+    project_name: प्रकल्पाचे नाव
+    projects: प्रकल्प
+    update:
+      success: बदल यशस्वीरित्या जतन झाले.
+    update_members:
+      failure:
+        message: बदल जतन करण्यात अयशस्वी झाले
+        unauthorized: वापरकर्त्याला या प्रकल्पाच्या तपशिलात बदल करण्याचा अधिकार नाही.
+      success:
+        message: बदल यशस्वीरित्या जतन केले गेले.
+  pundit:
+    client_policy:
+      create?: तुम्हाला क्लायंट तयार करण्याचा अधिकार नाही.
+      show?: तुम्हाला हे पान पाहण्याची परवानगी नाही. कृपया मदतीसाठी तुमच्या प्रशासकाशी
+        संपर्क साधा.
+      update?: तुम्हाला क्लायंट अद्ययावत करण्याचा अधिकार नाही.
+    company_policy:
+      create?: तुम्हाला कंपनी स्थापन करण्याचा अधिकार नाही.
+      new?: तुम्हाला नवीन कंपनी स्थापन करण्याचा अधिकार नाही.
+      show?: तुम्हाला कंपनी पाहण्याची परवानगी नाही.
+      update?: तुम्हाला कंपनी अद्ययावत करण्याचा अधिकार नाही.
+    current_company_policy:
+      company_not_present: कंपनी उपस्थित नाही.
+    default: तुम्हाला ही कृती करण्याचा अधिकार नाही.
+    different_workspace: तुम्हाला तुमच्या सध्याच्या कार्यक्षेत्राबाहेरील नोंदी पाहण्याची
+      परवानगी नाही.
+    project_policy:
+      create?: तुम्हाला प्रकल्प तयार करण्याचा अधिकार नाही.
+      show?: तुम्हाला हे पान पाहण्याची परवानगी नाही. कृपया मदतीसाठी तुमच्या प्रशासकाशी
+        संपर्क साधा.
+    team_policy:
+      destroy?: तुम्हाला संघ नष्ट करण्याचा अधिकार नाही.
+      edit?: तुम्हाला संघ संपादित करण्याचा अधिकार नाही.
+      update?: तुम्हाला टीम अपडेट करण्याचा अधिकार नाही.
+  registration:
+    confirm_password: पासवर्डची पुष्टी करा
+    email_id: ईमेल
+    first_name: पहिले नाव
+    last_name: आडनाव
+    name: नाव
+    or: किंवा
+    password: पासवर्ड
+    remember_me: मला लक्षात ठेवा
+    sign_in: साइन इन करा
+    sign_up: नोंदणी करा
+    signin_with_github: गिटहबसह साइन इन करा
+    signin_with_google: गुगलने साइन इन करा
+    signup_with_apple: ॲपलसोबत साइन अप करा
+    signup_with_github: गिटहबद्वारे साइन अप करा
+    signup_with_google: गुगलद्वारे साइन अप करा
+  reports:
+    heading: वेळ नोंद अहवाल
+  sessions:
+    failure:
+      invalid: चुकीचा ईमेल किंवा पासवर्ड
+  settings:
+    cancel: रद्द करा
+    change_password: पासवर्ड बदला
+    confirm_password: पासवर्डची पुष्टी करा
+    current_password: सध्याचा पासवर्ड
+    email: ईमेल
+    name: नाव
+    organization_setting: संस्थात्मक सेटिंग्ज
+    password: पासवर्ड
+    payment_setting: पेमेंट सेटिंग्ज
+    profile_picture: प्रोफाइल चित्र
+    profile_setting: प्रोफाइल सेटिंग्ज
+    save: जतन करा
+    settings: सेटिंग्ज
+  shared_links:
+    already_have_an_account: तुमचे खाते आधीच आहे का?
+    back_to_login: लॉगिनवर परत जा
+    confirmation_instruction: पुष्टीकरणाच्या सूचना मिळाल्या नाहीत का?
+    dont_have_an_account: तुमचे खाते नाही का?
+    forgot_password: पासवर्ड विसरलात का?
+    unlock_instruction: अनलॉक करण्याच्या सूचना मिळाल्या नाहीत का?
+  subscriptions:
+    no_billing_customer: या कंपनीसाठी कोणताही बिलिंग ग्राहक अस्तित्वात नाही.
+    pricing_not_configured: स्ट्राइप सबस्क्रिप्शनची किंमत कॉन्फिगर केलेली नाही.
+    trial_not_eligible: तुमचा वर्कस्पेस प्रो ट्रायलसाठी पात्र नाही.
+    trial_started: तुमची ३० दिवसांची प्रो चाचणी सुरू झाली आहे.
+  team:
+    changed_email: ईमेल बदलला
+    create_new_user: नवीन वापरकर्ता तयार करा
+    current_email: सध्याचा ईमेल
+    delete:
+      success:
+        message: संघ सदस्य यशस्वीरित्या काढून टाकण्यात आला.
+    email: ईमेल
+    email_id: ईमेल आयडी
+    first_name: पहिले नाव
+    form_admin: प्रशासक
+    form_book_keeper: बुक कीपर
+    form_email: ईमेल
+    form_employee: कर्मचारी
+    form_name: नाव
+    form_role: भूमिका
+    invitation: आमंत्रण प्रलंबित आहे
+    last_name: आडनाव
+    name: नाव
+    new_user: नवीन वापरकर्ता
+    profile_picture: फोटो
+    reconfirmation: पुनर्पुष्टीकरण प्रलंबित आहे
+    role: भूमिका
+    team: संघ
+    update:
+      error:
+        role: भूमिका अद्ययावत करताना त्रुटी आली.
+      success:
+        message: बदल यशस्वीरित्या जतन केले गेले.
+    update_user: वापरकर्ता अपडेट करा
+  timeoff_entries:
+    create:
+      success: यशस्वीरित्या रजा जोडली
+    destroy:
+      success: रजा यशस्वीरित्या रद्द केली.
+    update:
+      success: रजा यशस्वीरित्या अद्यतनित केली.
+  timesheet_entry:
+    create:
+      message: टाइमशीट तयार केली
+    destroy:
+      failure: टाइमशीट नोंदी हटवण्यात अयशस्वी झाले.
+      message: टाइमशीट हटवली
+    update:
+      failure: टाइमशीट नोंदी अद्ययावत करण्यात अयशस्वी झाले.
+      message: टाइमशीट अद्ययावत केली.
+  totp:
+    disable_passkey_first: ऑथेंटिकेटर ॲपचे २एफए (2FA) सक्षम करण्यापूर्वी आवश्यक पासकी
+      साइन इन अक्षम करा.
+    disabled: ऑथेंटिकेटर अॅप अक्षम केले
+    enabled: ऑथेंटिकेटर अॅप सक्षम केले
+    invalid_code: अवैध प्रमाणीकरण कोड.
+    invalid_verification: अवैध पडताळणी कोड.
+    not_enabled: सर्वप्रथम ऑथेंटिकेटर ॲपचे २एफए (2FA) सक्षम करा.
+    recovery_codes_regenerated: रिकव्हरी कोड पुन्हा तयार केले गेले.
+    session_expired: ती पडताळणी विनंती आता वैध नाही. कृपया पुन्हा साइन इन करा.
+  user:
+    login:
+      failure:
+        disabled: तुमचा प्रवेश अक्षम करण्यात आला आहे.
+        pending_invitation: तुमचे खाते अद्याप सक्रिय झालेले नाही.
+  workspaces:
+    update:
+      failure: कार्यक्षेत्र बदलण्यात अयशस्वी झाले
+      success: कार्यक्षेत्र यशस्वीरित्या बदलले.

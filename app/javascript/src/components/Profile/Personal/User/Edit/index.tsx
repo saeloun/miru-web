@@ -100,20 +100,9 @@ const UserDetailsEdit = () => {
     if (!currentUserId) return;
 
     try {
-      let userData;
-
-      if (isCalledFromSettings) {
-        // Use fresh user data from _me endpoint for settings
-        userData = currentUser;
-        if (userData) {
-          setUserId(userData.id);
-        }
-      } else {
-        // Use teams API for team member view
-        const data = await teamsApi.get(currentUserId);
-        userData = data.data;
-        setUserId(userData.id);
-      }
+      const data = await teamsApi.get(currentUserId);
+      const userData = data.data;
+      setUserId(userData.id);
 
       if (userData) {
         const addressData = await teamsApi.getAddress(userData.id);

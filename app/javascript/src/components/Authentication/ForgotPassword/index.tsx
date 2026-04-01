@@ -9,6 +9,7 @@ import useThemeMode from "common/useThemeMode";
 import { Form, Formik, FormikProps } from "formik";
 import { MiruLogoWithTextSVG } from "miruIcons";
 
+import { i18n } from "../../../i18n";
 import PasswordResetLinkSentMsg from "./PasswordResetLinkSentMsg";
 import {
   forgotPasswordFormInitialValues,
@@ -50,7 +51,7 @@ const ForgotPassword = () => {
         <div>
           <a href={MIRU_APP_URL} rel="noreferrer noopener">
             <img
-              alt="Miru"
+              alt={i18n.t("auth.miruLogo")}
               className="d-block mx-auto mb-4 h-10 w-auto object-contain md:mb-10 lg:mb-20"
               src={MiruLogoWithTextSVG}
               style={{
@@ -61,7 +62,7 @@ const ForgotPassword = () => {
           </a>
         </div>
         <h1 className="text-center font-geist text-2xl font-extrabold text-foreground md:text-3xl lg:text-4.5xl">
-          Forgot Password
+          {i18n.t("auth.forgotPassword")}
         </h1>
         <div className="pt-10 lg:pt-20">
           <Formik
@@ -81,7 +82,7 @@ const ForgotPassword = () => {
                     <InputField
                       hasError={errors.email && touched.email}
                       id="email"
-                      label="Enter your registered email ID"
+                      label={i18n.t("auth.enterRegisteredEmail")}
                       labelClassName="p-0"
                       name="email"
                       setFieldError={setFieldError}
@@ -101,14 +102,14 @@ const ForgotPassword = () => {
                           : "cursor-pointer"
                       }`}
                     >
-                      Send password reset link
+                      {i18n.t("auth.sendResetLink")}
                     </button>
                   </div>
                   <p className="mb-3 mt-3 text-center font-geist text-xs font-normal not-italic text-foreground">
                     <span className="form__link inline cursor-pointer">
                       <a href={Paths.LOGIN}>
                         <span className="mr-2 inline-block font-bold">
-                          Back to Login
+                          {i18n.t("auth.backToLogin")}
                         </span>
                       </a>
                     </span>

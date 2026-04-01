@@ -1,6 +1,7 @@
 import React from "react";
 
 import { currencyFormat } from "helpers";
+import { i18n } from "../../../../../i18n";
 
 const TableTotal = ({ currency, clientList }) => {
   const report = clientList.reduce(
@@ -37,7 +38,7 @@ const TableTotal = ({ currency, clientList }) => {
     <tr className="flex flex-row items-center py-4">
       <td className="flex w-2/12 items-center whitespace-nowrap pr-8 text-left">
         <p className="whitespace-normal text-base font-bold text-foreground">
-          Total
+          {i18n.t("total")}
         </p>
       </td>
       <td className="w-2/12 whitespace-pre-wrap px-8 text-right text-base font-normal text-foreground">

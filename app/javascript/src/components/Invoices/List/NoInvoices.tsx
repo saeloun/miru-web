@@ -4,6 +4,7 @@ import EmptyStates from "common/EmptyStates";
 import { PlusIcon } from "miruIcons";
 import { useNavigate } from "react-router-dom";
 import { Button } from "StyledComponents";
+import { i18n } from "../../../i18n";
 
 const NoInvoices = ({ isDesktop, filterParamsStr, handleReset, params }) => {
   const navigate = useNavigate();
@@ -16,8 +17,8 @@ const NoInvoices = ({ isDesktop, filterParamsStr, handleReset, params }) => {
       showNoSearchResultState={appliedFilter || appliedSearch}
       Message={
         appliedFilter || appliedSearch
-          ? "No results found"
-          : "No invoice has been generated yet."
+          ? i18n.t("noResultsFound")
+          : i18n.t("invoices.noInvoiceGenerated")
       }
     >
       {appliedFilter ? (
@@ -27,7 +28,7 @@ const NoInvoices = ({ isDesktop, filterParamsStr, handleReset, params }) => {
           style="primary"
           onClick={() => handleReset()}
         >
-          <span>RESET</span>
+          <span>{i18n.t("reset")}</span>
         </Button>
       ) : (
         !appliedSearch && (
@@ -38,7 +39,7 @@ const NoInvoices = ({ isDesktop, filterParamsStr, handleReset, params }) => {
             onClick={() => navigate("/invoices/new")}
           >
             <PlusIcon className="mr-2.5" size={isDesktop ? 16 : 12} />
-            <span>Create New Invoice</span>
+            <span>{i18n.t("invoices.createNewInvoice")}</span>
           </Button>
         )
       )}

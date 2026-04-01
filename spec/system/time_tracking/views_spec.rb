@@ -163,6 +163,26 @@ RSpec.describe "Time Tracking Views", type: :system, js: true do
     end
   end
 
+  it "keeps leave types available after navigating to the previous week" do
+    leave = create(:leave, company:, year: Date.current.year)
+    create(:leave_type, leave:, name: "PTO")
+
+    with_forgery_protection do
+      visit "/time-tracking"
+
+      find("[data-testid='mark-time-off-button']", wait: 10).click
+      find("button", text: "Select leave type", wait: 10).click
+      expect(page).to have_content("PTO", wait: 10)
+
+      find("button", text: "Cancel", wait: 10).click
+      find("[data-testid='time-nav-prev']", wait: 10).click
+      find("[data-testid='mark-time-off-button']", wait: 10).click
+      find("button", text: "Select leave type", wait: 10).click
+
+      expect(page).to have_content("PTO", wait: 10)
+    end
+  end
+
   it "shows the empty state when no entries exist" do
     with_forgery_protection do
       visit "/time-tracking"

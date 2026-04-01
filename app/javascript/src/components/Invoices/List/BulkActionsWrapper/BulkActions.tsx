@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 
 import { CaretDownIcon, XIcon } from "miruIcons";
+import { i18n } from "../../../../i18n";
 
 const BulkActions = ({
   clearCheckboxes,
@@ -19,8 +20,8 @@ const BulkActions = ({
       <div className="flex items-center justify-end">
         <span className="text-xs font-semibold leading-4 text-foreground lg:text-sm lg:leading-5">
           {selectedInvoiceCount > 1
-            ? `${selectedInvoiceCount} invoices selected`
-            : `${selectedInvoiceCount} invoice selected`}
+            ? `${selectedInvoiceCount} ${i18n.t("invoices.invoices").toLowerCase()}`
+            : `${selectedInvoiceCount} ${i18n.t("invoices.invoice").toLowerCase()}`}
         </span>
         <button
           className="ml-2 p-1 hover:bg-muted lg:ml-4"
@@ -44,7 +45,7 @@ const BulkActions = ({
             }`}
             onClick={() => setIsMoreOptionsOpen(!isMoreOptionsOpen)}
           >
-            <span className="mr-2.5">Actions</span>
+            <span className="mr-2.5">{i18n.t("actions")}</span>
             <CaretDownIcon className="font-bold" size={18} weight="bold" />
           </button>
         </div>

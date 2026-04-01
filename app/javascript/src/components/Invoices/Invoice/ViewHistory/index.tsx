@@ -7,6 +7,7 @@ import { Button, SidePanel } from "StyledComponents";
 
 import History from "./History";
 import { getHistory } from "./utils";
+import { i18n } from "../../../../i18n";
 
 const ViewHistory = ({ setShowHistory, invoice }) => {
   const [loading, setLoading] = useState(false);
@@ -38,7 +39,7 @@ const ViewHistory = ({ setShowHistory, invoice }) => {
       <SidePanel.Header className="flex justify-between">
         <div className="flex items-center">
           <ClockIcon className="mr-2" size={16} weight="bold" />
-          <span>History</span>
+          <span>{i18n.t("invoices.history")}</span>
         </div>
         <Button
           style="ternary"

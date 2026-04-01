@@ -1,0 +1,368 @@
+---
+it:
+  activerecord:
+    errors:
+      models:
+        client:
+          attributes:
+            name:
+              format: "%{message}"
+        project:
+          attributes:
+            name:
+              format: "%{message}"
+  application_controller:
+    not_found: Percorso non trovato
+  avatar:
+    destroy:
+      success: Avatar eliminato con successo
+    update:
+      success: Aggiornamento dell'avatar riuscito
+  client:
+    add: AGGIUNGI CLIENTE
+    address:
+      label: Indirizzo
+      placeholder: Inserisci l'indirizzo
+    create:
+      failure: Creazione del client non riuscita
+      success: Cliente aggiunto con successo
+    delete:
+      success:
+        message: Cliente rimosso con successo
+    email:
+      label: E-mail
+      placeholder: Inserisci l'indirizzo email
+    name:
+      label: Nome
+      placeholder: Inserisci il nome
+    phone:
+      label: Numero di telefono
+      placeholder: Inserisci il numero di telefono
+    update:
+      failure:
+        message: Impossibile salvare le modifiche
+        unauthorized: L'utente non è autorizzato a modificare i dati di questo cliente.
+      success:
+        message: Modifiche salvate correttamente
+  clients:
+    add_client_contact:
+      success: Invito inviato con successo.
+    send_payment_reminder:
+      success: È stato inviato un promemoria di pagamento.
+  companies:
+    create:
+      failure: Creazione dell'azienda fallita
+      success: Azienda creata con successo
+    purge_logo:
+      destroy:
+        success: Logo aziendale rimosso con successo
+    update:
+      success: Modifiche salvate correttamente
+  company:
+    address: indirizzo
+    base_currency: valuta di base
+    business_phone: telefono aziendale
+    cancel: cancellare
+    company: azienda
+    country: Paese
+    date_format: Formato data
+    fiscal_year: anno fiscale
+    logo: logo
+    save: salva
+    save_org: salva i dettagli dell'organizzazione
+    setup: configurazione org
+    standard_price: prezzo standard
+    timezone: fuso orario
+  confirmation:
+    send_instructions: È stata inviata un'email di conferma a %{email}.
+  currency_pairs:
+    from_to_required: da e a sono richiesti
+    rate_not_found: Tariffa non trovata
+  custom_leaves:
+    update:
+      success: Aggiornamento delle foglie personalizzate riuscito
+  employment:
+    update:
+      success: Aggiornamento dello stato occupazionale completato con successo.
+  errors:
+    bill_status_billed: Non è possibile fatturare una voce che è già stata fatturata
+    can't change status: non può essere modificato una fattura pagata
+    create_billed_entry: Non è possibile creare una voce di foglio presenze fatturabile
+    internal_server_error: Qualcosa è andato storto
+    not_found: La risorsa che stai cercando non è disponibile
+    prevent_draft_to_waived: non può essere modificato in rinunciato
+    unauthorized: Solo gli utenti proprietari o amministratori sono autorizzati a
+      eseguire questa azione.
+    updation_not_allowed: L'aggiornamento non è consentito
+    user_already_member: L'indirizzo email è già in uso. Inserisci un altro indirizzo
+      email.
+    validate_billable_project: Non è possibile creare una voce non fatturata per progetti
+      non fatturabili.
+  expenses:
+    approve: Spesa approvata con successo
+    create: Spesa inviata correttamente
+    destroy: Spesa eliminata con successo
+    mark_paid: Spesa contrassegnata come pagata
+    must_be_approved: La spesa deve essere approvata prima di poterla contrassegnare
+      come pagata.
+    reject: Spesa rifiutata con successo
+    update: Spesa aggiornata con successo
+  holidays:
+    update:
+      success: Informazioni sulle festività aggiornate con successo
+  invitation:
+    create:
+      success:
+        message: Invito inviato con successo
+    delete:
+      success:
+        message: Invito rimosso con successo
+    resent:
+      success:
+        message: Invito reinviato con successo
+    update:
+      success:
+        message: Modifiche salvate correttamente
+  invitations:
+    accept:
+      index:
+        success: Invito accettato
+      show:
+        success: Invito accettato
+      success: Invito accettato
+    create:
+      failure: Impossibile salvare le modifiche
+      success: L'invito verrà inviato
+    destroy:
+      failure: Impossibile eliminare l'invito
+      success: Invito cancellato
+    update:
+      failure: Impossibile salvare le modifiche
+      success: Invito aggiornato
+  invoices:
+    payments:
+      success:
+        failure: Si è verificato un problema, si prega di contattare l'assistenza.
+        success: Pagamento effettuato con successo
+  invoices_controller:
+    download:
+      pdf_failed: Impossibile generare il PDF
+    send_invoice:
+      already_paid: La fattura è già stata pagata.
+      pdf_failed: Impossibile generare il PDF
+      recipient_limit: È possibile inviare email a un massimo di 5 destinatari.
+      recipients_required: I destinatari sono tenuti
+      success: La fattura è stata inviata correttamente.
+    send_reminder:
+      overdue_only: È possibile inviare solleciti solo per le fatture scadute.
+      success: È stato inviato un promemoria
+  invoices_view:
+    not_found: Nessuna fattura trovata
+  leave_types:
+    create:
+      success: Tipo di congedo aggiunto correttamente
+    update:
+      success: Tipo di congedo aggiornato con successo
+  leave_with_leave_types:
+    update:
+      success: Foglie aggiornate con successo
+  leaves:
+    create:
+      success: Uscita creata con successo
+    update:
+      success: Uscita aggiornata correttamente
+  navbar:
+    clients: Clienti
+    help: Aiuto
+    invoices: Fattura
+    logout: Disconnettiti
+    payments: Pagamenti
+    profile: Profilo
+    projects: Eventi
+    reports: Rapporti
+    settings: Impostazioni
+    team: Squadra
+    time_tracking: Monitoraggio del tempo
+    view_notifications: Visualizza le notifiche
+  passkeys:
+    add_passkey_first: Aggiungi una password prima di richiederla per l'accesso.
+    added: Parkey ha aggiunto
+    disable_totp_first: Disattiva l'autenticazione a due fattori (2FA) dell'app di
+      autenticazione prima di richiedere l'accesso tramite password.
+    not_found: Password non trovata.
+    removed: Password rimossa
+    requirement_disabled: Richiesta di password disabilitata
+    requirement_enabled: Richiesta di password abilitata
+    session_expired: La sessione della password è scaduta. Riprova.
+    verification_failed: Verifica della password non riuscita.
+  password:
+    create:
+      success: Le istruzioni per reimpostare la password sono state inviate al tuo
+        indirizzo email.
+    update:
+      success: La tua password è stata aggiornata.
+  projects:
+    add_new_project: Aggiungi nuovo progetto
+    add_project: Aggiungi progetto
+    billable: Fatturabile
+    client: Cliente
+    create:
+      failure: Creazione del progetto non riuscita.
+      success: Progetto aggiunto con successo.
+    delete:
+      success:
+        message: Progetto rimosso con successo
+    edit: modificare
+    hours_logged: ORE REGISTRATE
+    new_project: NUOVO PROGETTO
+    non_billable: Non fatturabile
+    project: Progetto
+    project_name: Nome del progetto
+    projects: Eventi
+    update:
+      success: Modifiche salvate correttamente.
+    update_members:
+      failure:
+        message: Impossibile salvare le modifiche
+        unauthorized: L'utente non è autorizzato a modificare i dettagli di questo
+          progetto.
+      success:
+        message: Modifiche salvate correttamente
+  pundit:
+    client_policy:
+      create?: Non sei autorizzato a creare un client.
+      show?: Non sei autorizzato ad accedere alla pagina. Contatta il tuo amministratore
+        per ricevere assistenza.
+      update?: Non si dispone dell'autorizzazione per aggiornare il client.
+    company_policy:
+      create?: Non sei autorizzato a costituire una società.
+      new?: Non sei autorizzato a creare una nuova società.
+      show?: Non sei autorizzato a visualizzare i contenuti aziendali.
+      update?: Non sei autorizzato ad aggiornare i dati aziendali.
+    current_company_policy:
+      company_not_present: L'azienda non era presente.
+    default: Non sei autorizzato a eseguire questa azione.
+    different_workspace: Non sei autorizzato ad accedere ai record al di fuori del
+      tuo attuale spazio di lavoro.
+    project_policy:
+      create?: Non sei autorizzato a creare il progetto.
+      show?: Non sei autorizzato ad accedere alla pagina. Contatta il tuo amministratore
+        per ricevere assistenza.
+    team_policy:
+      destroy?: Non sei autorizzato a distruggere la squadra.
+      edit?: Non sei autorizzato a modificare la squadra.
+      update?: Non sei autorizzato ad aggiornare il team.
+  registration:
+    confirm_password: Conferma password
+    email_id: e-mail
+    first_name: nome di battesimo
+    last_name: cognome
+    name: nome
+    or: O
+    password: password
+    remember_me: Ricordati di me
+    sign_in: registrazione
+    sign_up: iscrizione
+    signin_with_github: Accedi con GitHub
+    signin_with_google: Accedi con Google
+    signup_with_apple: iscriviti con Apple
+    signup_with_github: registrati con GitHub
+    signup_with_google: registrati con Google
+  reports:
+    heading: Report delle ore lavorate
+  sessions:
+    failure:
+      invalid: Indirizzo email o password non validi
+  settings:
+    cancel: cancellare
+    change_password: cambiare la password
+    confirm_password: Conferma password
+    current_password: password attuale
+    email: e-mail
+    name: nome
+    organization_setting: impostazioni organizzative
+    password: password
+    payment_setting: impostazioni di pagamento
+    profile_picture: immagine del profilo
+    profile_setting: impostazioni del profilo
+    save: salva
+    settings: impostazioni
+  shared_links:
+    already_have_an_account: Hai già un account?
+    back_to_login: Torna alla pagina di accesso
+    confirmation_instruction: Non hai ricevuto le istruzioni di conferma?
+    dont_have_an_account: Non hai un account?
+    forgot_password: Ha dimenticato la password ?
+    unlock_instruction: Non hai ricevuto le istruzioni per lo sblocco?
+  subscriptions:
+    no_billing_customer: Per questa azienda non esiste alcun cliente di fatturazione.
+    pricing_not_configured: Il prezzo dell'abbonamento Stripe non è configurato
+    trial_not_eligible: Il tuo spazio di lavoro non è idoneo per una prova Pro.
+    trial_started: La tua prova gratuita di 30 giorni di Pro è iniziata.
+  team:
+    changed_email: Email modificata
+    create_new_user: Crea un nuovo utente
+    current_email: Indirizzo email attuale
+    delete:
+      success:
+        message: Membro del team rimosso con successo
+    email: E-mail
+    email_id: INDIRIZZO EMAIL
+    first_name: Nome di battesimo
+    form_admin: Amministratore
+    form_book_keeper: Contabile
+    form_email: E-mail
+    form_employee: Dipendente
+    form_name: Nome
+    form_role: Ruolo
+    invitation: INVITO IN SOSPESO
+    last_name: Cognome
+    name: NOME
+    new_user: NUOVO UTENTE
+    profile_picture: FOTO
+    reconfirmation: CONFERMA IN SOSPESO
+    role: RUOLO
+    team: Squadra
+    update:
+      error:
+        role: Si è verificato un errore durante l'aggiornamento del ruolo
+      success:
+        message: Modifiche salvate correttamente
+    update_user: Aggiorna utente
+  timeoff_entries:
+    create:
+      success: Tempo di ferie aggiunto con successo
+    destroy:
+      success: Tempo di assenza eliminato con successo
+    update:
+      success: Aggiornamento delle ferie riuscito
+  timesheet_entry:
+    create:
+      message: Foglio presenze creato
+    destroy:
+      failure: Impossibile eliminare le voci del foglio presenze
+      message: Foglio presenze eliminato
+    update:
+      failure: Impossibile aggiornare le voci del foglio presenze.
+      message: Foglio presenze aggiornato
+  totp:
+    disable_passkey_first: Disabilita l'accesso tramite password prima di abilitare
+      l'autenticazione a due fattori (2FA) nell'app di autenticazione.
+    disabled: App di autenticazione disabilitata
+    enabled: App di autenticazione abilitata
+    invalid_code: Codice di autenticazione non valido.
+    invalid_verification: Codice di verifica non valido.
+    not_enabled: Per prima cosa, abilita l'autenticazione a due fattori (2FA) nell'app
+      di autenticazione.
+    recovery_codes_regenerated: Codici di ripristino rigenerati
+    session_expired: La richiesta di verifica non è più valida. Effettua nuovamente
+      l'accesso.
+  user:
+    login:
+      failure:
+        disabled: Il tuo accesso è stato disabilitato.
+        pending_invitation: Il tuo account non è ancora attivo.
+  workspaces:
+    update:
+      failure: Impossibile cambiare area di lavoro
+      success: Passaggio dell'area di lavoro riuscito.

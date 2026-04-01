@@ -2,6 +2,7 @@ import React from "react";
 
 import { DeleteIcon, EditIcon } from "miruIcons";
 import { MobileMoreOptions } from "StyledComponents";
+import { i18n } from "../../i18n";
 
 const ClientMobileMoreOptions = ({
   clientId,
@@ -22,7 +23,7 @@ const ClientMobileMoreOptions = ({
       }}
     >
       <EditIcon className="mr-4" color="#5E58F1" size={16} />
-      Edit
+      {i18n.t("edit")}
     </li>
     <li
       className="flex items-center px-2 pt-3 text-sm leading-5 text-destructive"
@@ -32,7 +33,7 @@ const ClientMobileMoreOptions = ({
       }}
     >
       <DeleteIcon className="mr-4" size={16} />
-      Delete
+      {i18n.t("delete")}
     </li>
   </MobileMoreOptions>
 );

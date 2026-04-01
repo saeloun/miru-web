@@ -11,6 +11,7 @@ import { Badge } from "../../ui/badge";
 import { currencyFormat } from "helpers/currency";
 import { format, parseISO } from "date-fns";
 import { TrendUp, TrendDown, ArrowUpRight, User } from "phosphor-react";
+import { i18n } from "../../../i18n";
 
 interface RecentSalesProps {
   invoices: Array<{
@@ -81,9 +82,9 @@ const RecentSales: React.FC<RecentSalesProps> = ({ invoices, className }) => {
   return (
     <Card className={className}>
       <CardHeader>
-        <CardTitle className="text-lg font-semibold">Recent Sales</CardTitle>
+        <CardTitle className="text-lg font-semibold">{i18n.t("invoiceDashboard.recentSales")}</CardTitle>
         <CardDescription className="text-sm text-muted-foreground">
-          Latest invoice transactions and updates
+          
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -129,7 +130,7 @@ const RecentSales: React.FC<RecentSalesProps> = ({ invoices, className }) => {
 
                   <div className="flex items-center justify-between">
                     <p className="text-xs text-muted-foreground">
-                      Invoice #{invoice.invoiceNumber}
+                      {i18n.t("invoices.invoiceHash", { number: invoice.invoiceNumber })}
                     </p>
                     <p className="text-sm font-medium">
                       {currencyFormat(invoice.currency, invoice.amount)}
@@ -164,10 +165,10 @@ const RecentSales: React.FC<RecentSalesProps> = ({ invoices, className }) => {
             <div className="flex flex-col items-center justify-center py-8 text-center">
               <User className="h-12 w-12 text-muted-foreground/50 mb-2" />
               <p className="text-sm font-medium text-muted-foreground">
-                No recent sales
+                {i18n.t("noResultsFound")}
               </p>
               <p className="text-xs text-muted-foreground">
-                Sales will appear here once you create invoices
+                
               </p>
             </div>
           )}
@@ -176,9 +177,9 @@ const RecentSales: React.FC<RecentSalesProps> = ({ invoices, className }) => {
         {sortedInvoices.length > 0 && (
           <div className="mt-4 pt-4 border-t border-border/40">
             <div className="flex items-center justify-between text-xs text-muted-foreground">
-              <span>Showing {sortedInvoices.length} recent transactions</span>
+              <span>{i18n.t("invoices.showingRecentTransactions", { count: sortedInvoices.length })}</span>
               <button className="font-medium text-foreground hover:text-foreground/80">
-                View all →
+                {i18n.t("all")} →
               </button>
             </div>
           </div>

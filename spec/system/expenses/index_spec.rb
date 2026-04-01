@@ -151,4 +151,45 @@ RSpec.describe "Expenses", type: :system, js: true do
       expect(page).not_to have_content("Mark as paid", wait: 2)
     end
   end
+
+  it "accepts currency symbols in the amount field when adding an expense" do
+    with_forgery_protection do
+      visit "/expenses"
+
+      find("button", text: "Add Expense", match: :first).click
+
+      fill_in "description", with: "Currency symbol expense"
+      fill_in "amount", with: "$100"
+
+      find("label[for='category']", wait: 10).find(:xpath, "..").find("button").click
+      find("[role='option']", match: :first, wait: 10).click
+
+      expect(page).to have_button("Add Expense", disabled: false, wait: 10)
+
+      dialog = find("[role='dialog']", wait: 10)
+
+      expect do
+        dialog.click_button "Add Expense"
+        expect(page).to have_content("Expense created successfully", wait: 10)
+      end.to change(Expense, :count).by(1)
+
+      expect(Expense.order(:id).last.amount.to_f).to eq(100.0)
+    end
+  end
+
+  it "keeps the add action enabled for non-numeric amount text" do
+    with_forgery_protection do
+      visit "/expenses"
+
+      find("button", text: "Add Expense", match: :first).click
+
+      fill_in "description", with: "Free-form amount expense"
+      fill_in "amount", with: "approx one hundred"
+
+      find("label[for='category']", wait: 10).find(:xpath, "..").find("button").click
+      find("[role='option']", match: :first, wait: 10).click
+
+      expect(page).to have_button("Add Expense", disabled: false, wait: 10)
+    end
+  end
 end

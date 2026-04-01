@@ -4,6 +4,7 @@ import { invoicesApi } from "apis/api";
 import { XIcon } from "miruIcons";
 import { useNavigate } from "react-router-dom";
 import { Modal, Toastr } from "StyledComponents";
+import { i18n } from "../../../i18n";
 
 const ConnectPaymentGateway = ({
   setShowConnectPaymentDialog,
@@ -39,7 +40,7 @@ const ConnectPaymentGateway = ({
       onClose={() => setShowConnectPaymentDialog(false)}
     >
       <div className="mt-2 mb-4 flex items-center justify-between">
-        <h6 className="text-2xl font-bold">No payment gateway connected</h6>
+        <h6 className="text-2xl font-bold">{i18n.t("invoices.noPaymentGateway")}</h6>
         <button
           className="text-foreground"
           type="button"
@@ -51,16 +52,14 @@ const ConnectPaymentGateway = ({
       {isInvoiceEmail ? (
         <div className="my-8 flex-col">
           <p className="mt-2 font-normal">
-            Error. Please reach out to the invoice sender to connect a payment
-            gateway to enable you to make invoice payment
+            {i18n.t("invoices.paymentGatewayError")}
           </p>
         </div>
       ) : (
         <>
           <div className="my-8 flex-col">
             <p className="mt-2 font-normal">
-              You have not connected any payment gateway with Miru. Do you want
-              to send invoice without a payment gateway?
+              {i18n.t("invoices.paymentGatewayWarning")}
             </p>
           </div>
           <div className="text-center">
@@ -73,7 +72,7 @@ const ConnectPaymentGateway = ({
                 navigate("/settings/payment");
               }}
             >
-              Go to Payment Settings
+              {i18n.t("invoices.goToPaymentSettings")}
             </button>
             <button
               className="button__bg_purple w-full text-xs sm:text-base"
@@ -83,7 +82,7 @@ const ConnectPaymentGateway = ({
                 setShowConnectPaymentDialog(false);
               }}
             >
-              Send Without Payment Gateway
+              {i18n.t("invoices.sendWithoutPaymentGateway")}
             </button>
           </div>
         </>

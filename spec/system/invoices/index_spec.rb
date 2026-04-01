@@ -116,6 +116,10 @@ RSpec.describe "Invoice listing", type: :system, js: true do
           expect(page).not_to have_content("INV-DRAFT-001")
           expect(page).not_to have_content("INV-SENT-002")
         end
+        expect(page).to have_content(
+          "Viewing 1 matching invoices from 5 loaded",
+          wait: 10
+        )
       end
     end
 
@@ -146,34 +150,22 @@ RSpec.describe "Invoice listing", type: :system, js: true do
       end
     end
 
-    it "shows recently updated invoices section" do
+    it "filters the table from the summary cards" do
       with_forgery_protection do
         visit "/invoices"
 
-        expect(page).to have_css("#react-root", wait: 10)
-        expect(page).to have_content(client.name, wait: 10)
-      end
-    end
+        find("button", text: /\AOverdue/i, match: :first).click
 
-    it "orders recently updated invoices by update time" do
-      recent_invoice = create(:invoice,
-        company:, client:, status: :sent,
-        invoice_number: "INV-RECENT-900",
-        issue_date: 4.months.ago.to_date,
-        updated_at: 30.minutes.ago)
-      older_invoice = create(:invoice,
-        company:, client:, status: :sent,
-        invoice_number: "INV-OLDER-100",
-        issue_date: Date.current,
-        updated_at: 3.days.ago)
-
-      with_forgery_protection do
-        visit "/invoices"
-
-        recently_updated_cards = all("[data-testid='recently-updated-card']", wait: 10)
-        card_text = recently_updated_cards.map(&:text)
-
-        expect(card_text.index { |text| text.include?(recent_invoice.invoice_number) }).to be < card_text.index { |text| text.include?(older_invoice.invoice_number) }
+        within("table") do
+          expect(page).to have_content("INV-OVER-004", wait: 10)
+          expect(page).not_to have_content("INV-DRAFT-001")
+          expect(page).not_to have_content("INV-SENT-002")
+          expect(page).not_to have_content("INV-PAID-003")
+        end
+        expect(page).to have_content(
+          "Viewing 1 matching invoices from 5 loaded",
+          wait: 10
+        )
       end
     end
   end
@@ -200,30 +192,6 @@ RSpec.describe "Invoice listing", type: :system, js: true do
         expect(page).to have_content("Wayne Enterprises")
         expect(page).to have_content("INV-SI-001")
         expect(page).to have_content("INV-WE-002")
-      end
-    end
-  end
-
-  context "with more recently updated invoices than the first page" do
-    before do
-      12.times do |index|
-        create(:invoice,
-          company:,
-          client:,
-          status: :sent,
-          invoice_number: "INV-RECENT-#{index}",
-          updated_at: index.minutes.ago)
-      end
-    end
-
-    it "shows the update sort hint and load-more affordance" do
-      with_forgery_protection do
-        visit "/invoices"
-
-        expect(page).to have_css("#react-root", wait: 10)
-        expect(page).to have_content("Sorted by latest update time", wait: 10)
-        expect(page).to have_content("Showing 10 of 12", wait: 10)
-        expect(page).to have_content("Scroll for more", wait: 10)
       end
     end
   end

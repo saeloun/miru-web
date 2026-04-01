@@ -5,6 +5,7 @@ import dayjs from "dayjs";
 import { minFromHHMM, minToHHMM, lineTotalCalc, currencyFormat } from "helpers";
 import { DeleteIcon, CalendarIcon } from "miruIcons";
 import TextareaAutosize from "react-textarea-autosize";
+import { i18n } from "../../../../i18n";
 
 const NewLineItemStatic = ({
   clientCurrency,
@@ -14,7 +15,10 @@ const NewLineItemStatic = ({
   selectedOption,
   dateFormat,
 }) => {
-  const strName = item.name || `${item.first_name} ${item.last_name}`;
+  const strName =
+    item.name ||
+    [item.first_name, item.last_name].filter(Boolean).join(" ") ||
+    "";
   const [name, setName] = useState<string>(strName);
   const [lineItemDate, setLineItemDate] = useState(
     dayjs(item.date, "YYYY-MM-DD").format(dateFormat)
@@ -22,7 +26,9 @@ const NewLineItemStatic = ({
   const [description, setDescription] = useState<string>(item.description);
   const [rate, setRate] = useState<number>(item.rate);
   const [quantity, setQuantity] = useState<any>(minToHHMM(item.quantity));
-  const [lineTotal, setLineTotal] = useState<string>(item.lineTotal);
+  const [lineTotal, setLineTotal] = useState<string>(
+    item.lineTotal ?? item.amount ?? lineTotalCalc(item.quantity, item.rate)
+  );
   const [showDatePicker, setShowDatePicker] = useState<boolean>(false);
   const [showCalendarIcon, setShowCalendarIcon] = useState<boolean>(false);
   const datePickerRef = useRef(null);
@@ -98,7 +104,7 @@ const NewLineItemStatic = ({
           <div onClick={() => setShowDatePicker(!showDatePicker)}>
             <input
               readOnly
-              placeholder="Select Date"
+              placeholder={i18n.t("invoices.selectDate")}
               type="text"
               value={lineItemDate}
               className={`focus:outline-none w-full cursor-pointer appearance-none rounded border-0 border-transparent bg-transparent p-1 pl-2 text-right text-sm font-medium text-foreground focus:bg-white focus:bg-white focus:ring-1 focus:ring-ring ${
@@ -131,7 +137,7 @@ const NewLineItemStatic = ({
         <td className="px-1 py-3 text-right text-base font-normal text-foreground ">
           <input
             className="focus:outline-none w-full rounded bg-transparent p-1 text-right text-sm font-medium text-foreground focus:border-border focus:bg-white focus:ring-1 focus:ring-ring"
-            placeholder="Rate"
+            placeholder={i18n.t("invoices.rate")}
             type="text"
             value={rate}
             onChange={handleSetRate}
@@ -141,7 +147,7 @@ const NewLineItemStatic = ({
         <td className="px-1 py-3 text-right text-base font-normal text-foreground ">
           <input
             className="focus:outline-none w-full rounded bg-transparent p-1 text-right text-sm font-medium text-foreground focus:border-border focus:bg-white focus:ring-1 focus:ring-ring"
-            placeholder="Quantity"
+            placeholder={i18n.t("invoices.quantity")}
             type="text"
             value={quantity}
             onChange={handleSetQuantity}
@@ -170,7 +176,7 @@ const NewLineItemStatic = ({
         >
           <TextareaAutosize
             className="focus:outline-none w-full rounded bg-transparent p-1 text-sm font-medium text-muted-foreground focus:border-border focus:bg-white focus:ring-1 focus:ring-ring"
-            placeholder="Enter Description"
+            placeholder={i18n.t("invoices.enterDescription")}
             value={description}
             onChange={e => setDescription(e.target["value"])}
             onKeyDown={closeEditField}

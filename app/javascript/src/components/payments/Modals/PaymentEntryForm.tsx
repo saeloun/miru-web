@@ -310,18 +310,28 @@ const PaymentEntryForm = ({
               onClick={() => setFieldValue("showTransactionTypes", true)}
             >
               {isDesktop ? (
-                <CustomReactSelect
-                  isSearchable
-                  label="Transaction Type"
-                  name="transactionType"
-                  options={transactionTypes}
-                  handleOnChange={e =>
-                    setFieldValue("transactionType", e.value)
-                  }
-                  value={transactionTypes.find(
-                    type => type.value == transactionType
-                  )}
-                />
+                <div className="field relative">
+                  <label className="absolute -top-1 left-0 z-1 ml-3 origin-0 bg-background px-1 text-xsm font-medium text-muted-foreground duration-300">
+                    Transaction Type
+                  </label>
+                  <Select
+                    value={transactionType || ""}
+                    onValueChange={value =>
+                      setFieldValue("transactionType", value)
+                    }
+                  >
+                    <SelectTrigger className="mt-1 bg-background text-foreground">
+                      <SelectValue placeholder="Select Transaction Type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {transactionTypes.map(type => (
+                        <SelectItem key={type.value} value={type.value}>
+                          {type.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
               ) : (
                 <>
                   <CustomReactSelect

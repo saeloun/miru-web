@@ -11,6 +11,7 @@ import {
   FileText,
   Clock,
 } from "phosphor-react";
+import { i18n } from "../../../../i18n";
 
 const RecentlyUpdatedCard = ({
   invoice: { client, currency, id, invoiceNumber, amount, status, updatedAt },
@@ -67,14 +68,14 @@ const RecentlyUpdatedCard = ({
         </p>
         {formattedUpdatedAt && (
           <p className="truncate text-sm text-muted-foreground">
-            Updated {formattedUpdatedAt}
+            {i18n.t("invoices.updatedAt", { date: formattedUpdatedAt })}
           </p>
         )}
       </div>
 
       <div className="mt-5 border-t border-border pt-4">
         <p className="mb-1 text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">
-          Amount
+          {i18n.t("amount")}
         </p>
         <p className="text-2xl font-bold leading-none text-foreground">
           {currencyFormat(currency, amount)}

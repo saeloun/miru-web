@@ -4,6 +4,7 @@ import EmptyStates from "common/EmptyStates";
 import Table from "common/Table";
 import { useUserContext } from "context/UserContext";
 import { PlusIcon } from "miruIcons";
+import { i18n } from "../../../i18n";
 
 import TableData from "./TableData";
 
@@ -64,7 +65,7 @@ const ClientList = ({
               />
             ) : (
               <EmptyStates
-                Message="Looks like there aren't any clients added yet."
+                Message={i18n.t("clients.noClientsYet")}
                 messageClassName="w-full lg:mt-5"
                 showNoSearchResultState={false}
                 wrapperClassName="mt-5"
@@ -78,7 +79,7 @@ const ClientList = ({
                   }}
                 >
                   <PlusIcon size={20} weight="bold" />
-                  <span className="ml-2 inline-block text-xl">Add Clients</span>
+                  <span className="ml-2 inline-block text-xl">{i18n.t("clients.addClients")}</span>
                 </button>
               </EmptyStates>
             )}

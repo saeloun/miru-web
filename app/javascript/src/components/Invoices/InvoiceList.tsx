@@ -37,16 +37,14 @@ import {
 
 import { Invoice } from "../../services/invoiceApi";
 import ChartWithSummary from "./ChartWithSummary";
-import InfiniteScrollRecentlyUpdated from "./List/RecentlyUpdated/InfiniteScrollRecentlyUpdated";
 import { currencyFormat } from "../../helpers/currency";
 import { useUserContext } from "../../context/UserContext";
+import { i18n } from "../../i18n";
 
 interface InvoiceListProps {
   invoices: Invoice[];
   totalInvoices?: number;
   summary?: any;
-  recentlyUpdatedInvoices?: Invoice[];
-  recentlyUpdatedTotalCount?: number;
   onCreateInvoice?: () => void;
   onViewInvoice?: (id: string) => void;
   onSendInvoice?: (id: string) => void;
@@ -63,8 +61,6 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
   invoices,
   totalInvoices = invoices.length,
   summary,
-  recentlyUpdatedInvoices,
-  recentlyUpdatedTotalCount = 0,
   onCreateInvoice,
   onViewInvoice,
   onSendInvoice,
@@ -98,23 +94,6 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
       .reduce((sum, inv) => sum + (inv.amount || 0), 0),
   };
 
-  // Use recentlyUpdatedInvoices from API or calculate fallback
-  const recentInvoices =
-    recentlyUpdatedInvoices ||
-    [...invoices]
-      .sort((a, b) => {
-        const updatedAtA = new Date(
-          a.updatedAt || a.updated_at || a.createdAt || 0
-        ).getTime();
-
-        const updatedAtB = new Date(
-          b.updatedAt || b.updated_at || b.createdAt || 0
-        ).getTime();
-
-        return updatedAtB - updatedAtA;
-      })
-      .slice(0, 10);
-
   const formatDate = (dateString: string) =>
     new Date(dateString).toLocaleDateString("en-US", {
       month: "short",
@@ -129,42 +108,42 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
         bgColor: "#dcfce7",
         textColor: "#166534",
         borderColor: "#86efac",
-        label: "Paid",
+        label: i18n.t("invoices.paid"),
       },
       sent: {
         icon: PaperPlaneTilt,
         bgColor: "#dbeafe",
         textColor: "#1e40af",
         borderColor: "#93c5fd",
-        label: "Sent",
+        label: i18n.t("invoices.sent"),
       },
       overdue: {
         icon: Warning,
         bgColor: "#fee2e2",
         textColor: "#991b1b",
         borderColor: "#fca5a5",
-        label: "Overdue",
+        label: i18n.t("invoices.overdue"),
       },
       draft: {
         icon: FileText,
         bgColor: "#f3f4f6",
         textColor: "#374151",
         borderColor: "#d1d5db",
-        label: "Draft",
+        label: i18n.t("invoices.draft"),
       },
       viewed: {
         icon: Eye,
         bgColor: "#e0e7ff",
         textColor: "#3730a3",
         borderColor: "#a5b4fc",
-        label: "Viewed",
+        label: i18n.t("invoices.sent"),
       },
       pending: {
         icon: Hourglass,
         bgColor: "#fef3c7",
         textColor: "#92400e",
         borderColor: "#fde047",
-        label: "Pending",
+        label: i18n.t("invoices.outstanding"),
       },
     };
 
@@ -199,12 +178,14 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
     );
   };
 
-  const filteredInvoices = invoices.filter(invoice => {
+  const matchesInvoiceFilters = (invoice: Invoice) => {
+    const invoiceNumber = invoice.invoiceNumber?.toLowerCase() || "";
+    const clientName = invoice.client?.name?.toLowerCase() || "";
+    const normalizedSearch = searchTerm.toLowerCase();
     const matchesSearch =
-      invoice.invoiceNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      invoice.client.name.toLowerCase().includes(searchTerm.toLowerCase());
+      invoiceNumber.includes(normalizedSearch) ||
+      clientName.includes(normalizedSearch);
 
-    // Only check filterParams.status (from ChartWithSummary cards)
     let matchesStatus = true;
     if (filterParams.status && filterParams.status.length > 0) {
       matchesStatus = filterParams.status.some(
@@ -213,11 +194,14 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
     }
 
     return matchesSearch && matchesStatus;
-  });
+  };
+
+  const filteredInvoices = invoices.filter(invoice =>
+    matchesInvoiceFilters(invoice)
+  );
 
   const hasActiveFilters =
-    searchTerm.trim().length > 0 ||
-    Boolean(filterParams.status && filterParams.status.length > 0);
+    searchTerm.trim().length > 0 || filterParams.status.length > 0;
 
   // Infinite scroll implementation
   useEffect(() => {
@@ -266,14 +250,14 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
           onClick={() => onViewInvoice?.(invoice.id)}
         >
           <Eye className="h-4 w-4 mr-2" />
-          View
+          {i18n.t("invoices.invoice")}
         </DropdownMenuItem>
         <DropdownMenuItem
           data-testid={`invoice-action-download-${invoice.id}`}
           onClick={() => onDownload?.(invoice.id)}
         >
           <Download className="h-4 w-4 mr-2" />
-          Download
+          {i18n.t("download")}
         </DropdownMenuItem>
         {canManageInvoices && (
           <>
@@ -284,7 +268,7 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
                 onClick={() => onSendInvoice?.(invoice.id)}
               >
                 <PaperPlaneTilt className="h-4 w-4 mr-2" />
-                Send Invoice
+                {i18n.t("invoices.sendInvoice")}
               </DropdownMenuItem>
             )}
             {invoice.status === "overdue" && (
@@ -293,7 +277,7 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
                 onClick={() => onSendReminder?.(invoice.id)}
               >
                 <PaperPlaneTilt className="h-4 w-4 mr-2" />
-                Send Reminder
+                {i18n.t("invoices.sendReminder")}
               </DropdownMenuItem>
             )}
             {invoice.status !== "paid" && (
@@ -302,7 +286,7 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
                 onClick={() => onMarkPaid?.(invoice.id)}
               >
                 <CheckCircle className="h-4 w-4 mr-2" />
-                Mark as Paid
+                {i18n.t("invoices.markAsPaid")}
               </DropdownMenuItem>
             )}
           </>
@@ -317,13 +301,13 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
       <div className="flex items-center justify-between">
         <div>
           <p className="text-sm text-muted-foreground md:text-base">
-            Manage your invoices and track payments
+            {i18n.t("invoices.invoices")}
           </p>
         </div>
         {canManageInvoices && (
           <Button onClick={onCreateInvoice}>
             <Plus className="h-4 w-4 mr-2" />
-            Create New Invoice
+            {i18n.t("invoices.createNewInvoice")}
           </Button>
         )}
       </div>
@@ -338,14 +322,6 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
         />
       )}
 
-      {/* Recently Updated Invoices */}
-      {recentInvoices.length > 0 && (
-        <InfiniteScrollRecentlyUpdated
-          initialInvoices={recentInvoices}
-          initialTotalCount={recentlyUpdatedTotalCount}
-        />
-      )}
-
       {/* Search Only */}
       <Card>
         <CardContent className="p-4">
@@ -355,7 +331,7 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
               <div className="relative">
                 <MagnifyingGlass className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                 <Input
-                  placeholder="Search Invoices..."
+                  placeholder={i18n.t("searchInvoices")}
                   value={searchTerm}
                   onChange={e => setSearchTerm(e.target.value)}
                   className="pl-9"
@@ -392,12 +368,12 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Invoice</TableHead>
-                <TableHead>Client</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Issue Date</TableHead>
-                <TableHead>Due Date</TableHead>
-                <TableHead className="text-right">Amount</TableHead>
+                <TableHead>{i18n.t("invoices.invoice")}</TableHead>
+                <TableHead>{i18n.t("client")}</TableHead>
+                <TableHead>{i18n.t("status")}</TableHead>
+                <TableHead>{i18n.t("invoices.issueDate")}</TableHead>
+                <TableHead>{i18n.t("invoices.dueDate")}</TableHead>
+                <TableHead className="text-right">{i18n.t("amount")}</TableHead>
                 <TableHead className="w-12"></TableHead>
               </TableRow>
             </TableHeader>
@@ -405,7 +381,7 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
               {isLoading ? (
                 <TableRow>
                   <TableCell colSpan={8} className="text-center py-8">
-                    Loading invoices...
+                    {i18n.t("loading")}
                   </TableCell>
                 </TableRow>
               ) : filteredInvoices.length === 0 ? (
@@ -415,8 +391,8 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
                     className="text-center py-8 text-muted-foreground"
                   >
                     {searchTerm
-                      ? "No invoices match your search"
-                      : "No invoices yet"}
+                      ? i18n.t("noResultsFound")
+                      : i18n.t("invoices.noInvoiceGenerated")}
                   </TableCell>
                 </TableRow>
               ) : (
@@ -468,7 +444,7 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
                       <TableCell colSpan={8} className="text-center py-4">
                         <CircleNotch className="h-6 w-6 mx-auto animate-spin text-blue-600" />
                         <span className="text-sm text-muted-foreground mt-2 block">
-                          Loading more invoices...
+                          {i18n.t("invoices.loadingMoreInvoices")}
                         </span>
                       </TableCell>
                     </TableRow>
@@ -487,16 +463,16 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
         <div className="flex flex-col items-center gap-2 pb-2 text-sm text-muted-foreground">
           <span>
             {hasActiveFilters
-              ? `Viewing ${filteredInvoices.length} matching invoices from ${invoices.length} loaded`
-              : `Loaded ${invoices.length} of ${totalInvoices}`}
+              ? i18n.t("invoices.viewingMatching", { filtered: filteredInvoices.length, loaded: invoices.length })
+              : i18n.t("invoices.loadedOf", { loaded: invoices.length, total: totalInvoices })}
           </span>
           {!hasActiveFilters && hasMore && !isLoadingMore && (
-            <span>Scroll to load more invoices</span>
+            <span>{i18n.t("invoices.scrollToLoadMore")}</span>
           )}
           {!hasActiveFilters && hasMore && !isLoadingMore && (
             <div className="h-8 w-full" />
           )}
-          {!hasActiveFilters && !hasMore && <span>All invoices loaded</span>}
+          {!hasActiveFilters && !hasMore && <span>{i18n.t("invoices.allInvoicesLoaded")}</span>}
         </div>
       )}
 
@@ -508,7 +484,7 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
               <div className="text-2xl font-bold">
                 {filteredInvoices.filter(inv => inv.status === "draft").length}
               </div>
-              <div className="text-sm text-muted-foreground">Draft</div>
+              <div className="text-sm text-muted-foreground">{i18n.t("invoices.draft")}</div>
             </CardContent>
           </Card>
           <Card>
@@ -516,7 +492,7 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
               <div className="text-2xl font-bold">
                 {filteredInvoices.filter(inv => inv.status === "sent").length}
               </div>
-              <div className="text-sm text-muted-foreground">Sent</div>
+              <div className="text-sm text-muted-foreground">{i18n.t("invoices.sent")}</div>
             </CardContent>
           </Card>
           <Card>
@@ -527,7 +503,7 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
                     .length
                 }
               </div>
-              <div className="text-sm text-muted-foreground">Overdue</div>
+              <div className="text-sm text-muted-foreground">{i18n.t("invoices.overdue")}</div>
             </CardContent>
           </Card>
           <Card>
@@ -540,7 +516,7 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
                     .reduce((sum, inv) => sum + inv.amount, 0)
                 )}
               </div>
-              <div className="text-sm text-muted-foreground">Collected</div>
+              <div className="text-sm text-muted-foreground">{i18n.t("invoices.collected")}</div>
             </CardContent>
           </Card>
         </div>

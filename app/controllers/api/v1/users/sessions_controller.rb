@@ -40,7 +40,17 @@ end
 
   def me
     if current_user
-      render json: authenticated_user_payload(current_user, company: current_company), status: 200
+      render json: {
+        user: safe_user_payload(current_user).merge(
+          "date_of_birth" => current_user.date_of_birth,
+          "phone" => current_user.phone,
+          "personal_email_id" => current_user.personal_email_id,
+          "social_accounts" => current_user.social_accounts,
+          "date_format" => current_company&.date_format
+        ),
+        company_role: company_role_payload(current_user, current_company),
+        company: company_payload(current_company)
+      }, status: 200
     else
       render json: { error: "Not authenticated" }, status: 401
     end

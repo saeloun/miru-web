@@ -1,0 +1,373 @@
+---
+de:
+  activerecord:
+    errors:
+      models:
+        client:
+          attributes:
+            name:
+              format: "%{message}"
+        project:
+          attributes:
+            name:
+              format: "%{message}"
+  application_controller:
+    not_found: Route nicht gefunden
+  avatar:
+    destroy:
+      success: Avatar erfolgreich gelöscht
+    update:
+      success: Avatar erfolgreich aktualisiert
+  client:
+    add: Client hinzufügen
+    address:
+      label: Adresse
+      placeholder: Adresse eingeben
+    create:
+      failure: Client-Erstellung fehlgeschlagen
+      success: Client erfolgreich hinzugefügt
+    delete:
+      success:
+        message: Client erfolgreich entfernt
+    email:
+      label: E-Mail
+      placeholder: E-Mail-Adresse eingeben
+    name:
+      label: Name
+      placeholder: Name eingeben
+    phone:
+      label: Telefonnummer
+      placeholder: Telefonnummer eingeben
+    update:
+      failure:
+        message: Änderungen konnten nicht gespeichert werden
+        unauthorized: Der Benutzer ist nicht berechtigt, die Daten dieses Kunden zu
+          ändern.
+      success:
+        message: Änderungen erfolgreich gespeichert
+  clients:
+    add_client_contact:
+      success: Einladung erfolgreich versendet.
+    send_payment_reminder:
+      success: Zahlungserinnerung wurde versendet
+  companies:
+    create:
+      failure: Unternehmensgründung gescheitert
+      success: Unternehmen erfolgreich gegründet
+    purge_logo:
+      destroy:
+        success: Firmenlogo erfolgreich entfernt
+    update:
+      success: Änderungen erfolgreich gespeichert
+  company:
+    address: Adresse
+    base_currency: Basiswährung
+    business_phone: Geschäftstelefon
+    cancel: stornieren
+    company: Unternehmen
+    country: Land
+    date_format: Datumsformat
+    fiscal_year: Geschäftsjahr
+    logo: Logo
+    save: speichern
+    save_org: Organisationsdetails speichern
+    setup: setup org
+    standard_price: Standardpreis
+    timezone: Zeitzone
+  confirmation:
+    send_instructions: Eine Bestätigungs-E-Mail wurde an %{email} gesendet.
+  currency_pairs:
+    from_to_required: von und nach sind erforderlich
+    rate_not_found: Bewertung nicht gefunden
+  custom_leaves:
+    update:
+      success: Benutzerdefinierte Blätter erfolgreich aktualisiert
+  employment:
+    update:
+      success: Die Aktualisierung der Beschäftigungsverhältnisse war erfolgreich.
+  errors:
+    bill_status_billed: Eine bereits abgerechnete Buchung kann nicht erneut in Rechnung
+      gestellt werden.
+    can't change status: Eine bezahlte Rechnung kann nicht geändert werden.
+    create_billed_entry: Sie können keinen abgerechneten Stundenzetteleintrag erstellen.
+    internal_server_error: Etwas ist schiefgelaufen.
+    not_found: Die gesuchte Ressource ist nicht verfügbar.
+    prevent_draft_to_waived: kann nicht in „verzichtbar“ geändert werden.
+    unauthorized: Nur Eigentümer oder Administratoren sind berechtigt, diese Aktion
+      durchzuführen.
+    updation_not_allowed: Aktualisierungen sind nicht erlaubt
+    user_already_member: Diese E-Mail-Adresse wird bereits verwendet. Bitte geben
+      Sie eine andere E-Mail-Adresse ein.
+    validate_billable_project: Für nicht abrechnungsfähige Projekte können keine nicht
+      abgerechneten Einträge erstellt werden.
+  expenses:
+    approve: Ausgaben wurden erfolgreich genehmigt
+    create: Spesenabrechnung erfolgreich eingereicht
+    destroy: Ausgabe erfolgreich gelöscht
+    mark_paid: Ausgabe als bezahlt markiert
+    must_be_approved: Die Ausgabe muss genehmigt werden, bevor sie als bezahlt markiert
+      werden kann.
+    reject: Spesenabrechnung erfolgreich abgelehnt
+    update: Ausgaben erfolgreich aktualisiert
+  holidays:
+    update:
+      success: Urlaubsinformationen erfolgreich aktualisiert
+  invitation:
+    create:
+      success:
+        message: Einladung erfolgreich versendet
+    delete:
+      success:
+        message: Einladung erfolgreich entfernt
+    resent:
+      success:
+        message: Einladung erfolgreich versendet
+    update:
+      success:
+        message: Änderungen erfolgreich gespeichert
+  invitations:
+    accept:
+      index:
+        success: Einladung angenommen
+      show:
+        success: Einladung angenommen
+      success: Einladung angenommen
+    create:
+      failure: Änderungen konnten nicht gespeichert werden
+      success: Die Einladung wird verschickt.
+    destroy:
+      failure: Einladung konnte nicht gelöscht werden
+      success: Einladung gelöscht
+    update:
+      failure: Änderungen konnten nicht gespeichert werden
+      success: Einladung aktualisiert
+  invoices:
+    payments:
+      success:
+        failure: Es ist ein Fehler aufgetreten. Bitte kontaktieren Sie den Support.
+        success: Zahlung erfolgreich
+  invoices_controller:
+    download:
+      pdf_failed: PDF konnte nicht generiert werden
+    send_invoice:
+      already_paid: Die Rechnung ist bereits bezahlt.
+      pdf_failed: PDF konnte nicht generiert werden
+      recipient_limit: E-Mails können nur an 5 Empfänger gesendet werden.
+      recipients_required: Empfänger werden benötigt
+      success: Die Rechnung wurde erfolgreich versendet.
+    send_reminder:
+      overdue_only: Zahlungserinnerungen können nur für überfällige Rechnungen versendet
+        werden.
+      success: Es wurde eine Erinnerung versendet.
+  invoices_view:
+    not_found: Keine Rechnung gefunden
+  leave_types:
+    create:
+      success: Urlaubsart erfolgreich hinzugefügt
+    update:
+      success: Urlaubsart erfolgreich aktualisiert
+  leave_with_leave_types:
+    update:
+      success: Blätter erfolgreich aktualisiert
+  leaves:
+    create:
+      success: Urlaub erfolgreich erstellt
+    update:
+      success: Urlaub erfolgreich aktualisiert
+  navbar:
+    clients: Kunden
+    help: Helfen
+    invoices: Rechnungen
+    logout: Abmelden
+    payments: Zahlungen
+    profile: Profil
+    projects: Projekte
+    reports: Berichte
+    settings: Einstellungen
+    team: Team
+    time_tracking: Zeiterfassung
+    view_notifications: Benachrichtigungen anzeigen
+  passkeys:
+    add_passkey_first: Fügen Sie einen Passkey hinzu, bevor Sie ihn für die Anmeldung
+      anfordern.
+    added: Passkey hinzugefügt
+    disable_totp_first: Deaktivieren Sie die Zwei-Faktor-Authentifizierung der Authentifizierungs-App,
+      bevor die Anmeldung mit Passkey erforderlich ist.
+    not_found: Passkey nicht gefunden.
+    removed: Passkey entfernt
+    requirement_disabled: Passwortabfrage deaktiviert
+    requirement_enabled: Passkey-Anforderung aktiviert
+    session_expired: Die Passkey-Sitzung ist abgelaufen. Bitte versuchen Sie es erneut.
+    verification_failed: Die Passkey-Überprüfung ist fehlgeschlagen.
+  password:
+    create:
+      success: Die Anweisungen zum Zurücksetzen Ihres Passworts wurden Ihnen per E-Mail
+        zugesandt.
+    update:
+      success: Ihr Passwort wurde aktualisiert.
+  projects:
+    add_new_project: Neues Projekt hinzufügen
+    add_project: Projekt hinzufügen
+    billable: Abrechnungsfähig
+    client: Kunde
+    create:
+      failure: Projekterstellung fehlgeschlagen.
+      success: Projekt erfolgreich hinzugefügt.
+    delete:
+      success:
+        message: Projekt erfolgreich entfernt
+    edit: bearbeiten
+    hours_logged: GESAMMELTE STUNDEN
+    new_project: NEUES PROJEKT
+    non_billable: Nicht abrechenbar
+    project: Projekt
+    project_name: Projektname
+    projects: Projekte
+    update:
+      success: Änderungen erfolgreich gespeichert.
+    update_members:
+      failure:
+        message: Änderungen konnten nicht gespeichert werden
+        unauthorized: Dem Nutzer ist es nicht gestattet, die Details dieses Projekts
+          zu ändern.
+      success:
+        message: Änderungen erfolgreich gespeichert
+  pundit:
+    client_policy:
+      create?: Sie sind nicht berechtigt, einen Kunden anzulegen.
+      show?: Sie sind nicht berechtigt, auf diese Seite zuzugreifen. Bitte wenden
+        Sie sich an Ihren Administrator.
+      update?: Sie sind nicht berechtigt, den Client zu aktualisieren.
+    company_policy:
+      create?: Sie sind nicht berechtigt, ein Unternehmen zu gründen.
+      new?: Sie sind nicht berechtigt, ein neues Unternehmen zu gründen.
+      show?: Sie sind nicht berechtigt, das Unternehmen einzusehen.
+      update?: Sie sind nicht berechtigt, Unternehmensdaten zu aktualisieren.
+    current_company_policy:
+      company_not_present: Firma nicht anwesend.
+    default: Sie sind nicht befugt, diese Aktion durchzuführen.
+    different_workspace: Sie sind nicht berechtigt, auf Datensätze außerhalb Ihres
+      aktuellen Arbeitsbereichs zuzugreifen.
+    project_policy:
+      create?: Sie sind nicht berechtigt, ein Projekt zu erstellen.
+      show?: Sie sind nicht berechtigt, auf diese Seite zuzugreifen. Bitte wenden
+        Sie sich an Ihren Administrator.
+    team_policy:
+      destroy?: Sie sind nicht befugt, das Team zu zerstören.
+      edit?: Sie sind nicht berechtigt, das Team zu bearbeiten.
+      update?: Sie sind nicht berechtigt, das Team zu aktualisieren.
+  registration:
+    confirm_password: Passwort bestätigen
+    email_id: E-Mail
+    first_name: Vorname
+    last_name: Nachname
+    name: Name
+    or: oder
+    password: Passwort
+    remember_me: erinnere dich an mich
+    sign_in: anmelden
+    sign_up: Melden Sie sich an
+    signin_with_github: Mit GitHub anmelden
+    signin_with_google: Mit Google anmelden
+    signup_with_apple: Bei Apple anmelden
+    signup_with_github: Melde dich bei GitHub an
+    signup_with_google: Melde dich bei Google an
+  reports:
+    heading: Zeiterfassungsbericht
+  sessions:
+    failure:
+      invalid: Ungültige E-Mail-Adresse oder ungültiges Passwort
+  settings:
+    cancel: stornieren
+    change_password: Kennwort ändern
+    confirm_password: Passwort bestätigen
+    current_password: aktuelles Passwort
+    email: E-Mail
+    name: Name
+    organization_setting: Organisationseinstellungen
+    password: Passwort
+    payment_setting: Zahlungseinstellungen
+    profile_picture: Profilbild
+    profile_setting: Profileinstellungen
+    save: speichern
+    settings: Einstellungen
+  shared_links:
+    already_have_an_account: Sie haben bereits ein Konto?
+    back_to_login: Zurück zum Login
+    confirmation_instruction: Haben Sie keine Bestätigungsanweisungen erhalten?
+    dont_have_an_account: Sie haben noch kein Konto?
+    forgot_password: Passwort vergessen?
+    unlock_instruction: Sie haben keine Entsperranleitung erhalten?
+  subscriptions:
+    no_billing_customer: Für dieses Unternehmen existiert kein Rechnungskunde.
+    pricing_not_configured: Die Stripe-Abonnementpreise sind nicht konfiguriert.
+    trial_not_eligible: Ihr Arbeitsbereich ist nicht für eine Pro-Testversion berechtigt.
+    trial_started: Ihre 30-tägige Pro-Testphase hat begonnen.
+  team:
+    changed_email: E-Mail-Adresse geändert
+    create_new_user: Neuen Benutzer erstellen
+    current_email: Aktuelle E-Mail-Adresse
+    delete:
+      success:
+        message: Teammitglied erfolgreich entfernt
+    email: E-Mail
+    email_id: E-Mail-Adresse
+    first_name: Vorname
+    form_admin: Administrator
+    form_book_keeper: Buchhalter
+    form_email: E-Mail
+    form_employee: Mitarbeiter
+    form_name: Name
+    form_role: Rolle
+    invitation: EINLADUNG AUSSTEHEND
+    last_name: Nachname
+    name: NAME
+    new_user: NEUER BENUTZER
+    profile_picture: FOTO
+    reconfirmation: Bestätigung ausstehend
+    role: ROLLE
+    team: Team
+    update:
+      error:
+        role: Beim Aktualisieren der Rolle ist ein Fehler aufgetreten.
+      success:
+        message: Änderungen erfolgreich gespeichert
+    update_user: Benutzer aktualisieren
+  timeoff_entries:
+    create:
+      success: Urlaub erfolgreich hinzugefügt
+    destroy:
+      success: Abwesenheit erfolgreich gelöscht
+    update:
+      success: Die Abwesenheitszeiten wurden erfolgreich aktualisiert.
+  timesheet_entry:
+    create:
+      message: Stundenzettel erstellt
+    destroy:
+      failure: Fehler beim Löschen der Stundenzetteleinträge
+      message: Stundenzettel gelöscht
+    update:
+      failure: Fehler beim Aktualisieren der Stundenzetteleinträge
+      message: Stundenzettel aktualisiert
+  totp:
+    disable_passkey_first: Deaktivieren Sie die Anmeldung mit erforderlichem Passkey,
+      bevor Sie die Zwei-Faktor-Authentifizierung (2FA) der Authentifizierungs-App
+      aktivieren.
+    disabled: Authentifizierungs-App deaktiviert
+    enabled: Authentifizierungs-App aktiviert
+    invalid_code: Ungültiger Authentifizierungscode.
+    invalid_verification: Ungültiger Bestätigungscode.
+    not_enabled: Aktivieren Sie zuerst die Zwei-Faktor-Authentifizierung (2FA) der
+      Authentifizierungs-App.
+    recovery_codes_regenerated: Wiederherstellungscodes wurden neu generiert
+    session_expired: Diese Verifizierungsanfrage ist ungültig. Bitte melden Sie sich
+      erneut an.
+  user:
+    login:
+      failure:
+        disabled: Ihr Zugang wurde deaktiviert.
+        pending_invitation: Ihr Konto ist noch nicht aktiviert.
+  workspaces:
+    update:
+      failure: Arbeitsbereich konnte nicht gewechselt werden
+      success: Arbeitsbereich erfolgreich gewechselt

@@ -5,7 +5,14 @@ interface User {
   first_name: string;
   last_name: string;
   email: string;
-  locale?: string;
+  date_of_birth?: string | null;
+  phone?: string | null;
+  personal_email_id?: string | null;
+  social_accounts?: {
+    github_url?: string | null;
+    linkedin_url?: string | null;
+  } | null;
+  date_format?: string | null;
   avatar_url?: string;
   confirmed?: boolean;
   calendar_enabled?: boolean;

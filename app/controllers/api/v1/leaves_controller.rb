@@ -14,13 +14,13 @@ class Api::V1::LeavesController < Api::V1::ApplicationController
   def create
     authorize Leave
     current_company.leaves.create!(leave_params)
-    render json: { notice: "Leave created successfully" }, status: 200
+    render json: { notice: I18n.t("leaves.create.success") }, status: 200
   end
 
   def update
     authorize leave
     leave.update!(leave_params)
-    render json: { notice: "Leave updated successfully" }, status: 200
+    render json: { notice: I18n.t("leaves.update.success") }, status: 200
   end
 
   private

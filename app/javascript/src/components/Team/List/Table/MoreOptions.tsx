@@ -6,6 +6,7 @@ import { teamApi } from "apis/api";
 import HoverMoreOptions from "common/HoverMoreOptions";
 import { useList } from "context/TeamContext";
 import { useUserContext } from "context/UserContext";
+import { i18n } from "../../../../i18n";
 import { DeleteIcon, EditIcon, ResendInviteIcon } from "miruIcons";
 import { Button, MobileMoreOptions, Tooltip } from "StyledComponents";
 
@@ -31,7 +32,7 @@ const MoreOptions = ({ item, setShowMoreOptions, showMoreOptions }: Iprops) => {
 
   return isDesktop ? (
     <HoverMoreOptions position="bottom-10 right-0">
-      <Tooltip content="Re-Invite">
+      <Tooltip content={i18n.t("team.resendInvite")}>
         <Button
           disabled={item.status}
           style="ternary"
@@ -40,7 +41,7 @@ const MoreOptions = ({ item, setShowMoreOptions, showMoreOptions }: Iprops) => {
           <ResendInviteIcon size={16} weight="bold" />
         </Button>
       </Tooltip>
-      <Tooltip content="Edit">
+      <Tooltip content={i18n.t("edit")}>
         <Button
           style="ternary"
           onClick={e => {
@@ -50,7 +51,7 @@ const MoreOptions = ({ item, setShowMoreOptions, showMoreOptions }: Iprops) => {
           <EditIcon size={16} weight="bold" />
         </Button>
       </Tooltip>
-      <Tooltip content="Delete">
+      <Tooltip content={i18n.t("delete")}>
         <Button
           style="ternary"
           onClick={e => {
@@ -74,7 +75,7 @@ const MoreOptions = ({ item, setShowMoreOptions, showMoreOptions }: Iprops) => {
         }}
       >
         <EditIcon className="mr-4" color="#5E58F1" size={16} />
-        Edit
+        {i18n.t("edit")}
       </li>
       <li
         className="flex items-center px-2 pt-3 text-sm leading-5 text-destructive"
@@ -84,7 +85,7 @@ const MoreOptions = ({ item, setShowMoreOptions, showMoreOptions }: Iprops) => {
         }}
       >
         <DeleteIcon className="mr-4" size={16} />
-        Delete
+        {i18n.t("delete")}
       </li>
     </MobileMoreOptions>
   );

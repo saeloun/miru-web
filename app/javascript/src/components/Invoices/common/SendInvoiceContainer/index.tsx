@@ -17,6 +17,7 @@ import {
   isDisabled,
 } from "components/Invoices/common/InvoiceForm/SendInvoice/utils";
 import { ApiStatus as InvoiceStatus } from "constants/index";
+import { i18n } from "../../../../i18n";
 
 const SendInvoiceContainer = ({
   invoice,
@@ -79,7 +80,7 @@ const SendInvoiceContainer = ({
         if (res.status === 200) {
           handleSendInvoice(res.data.id);
         } else {
-          Toastr.error("Send invoice failed");
+          Toastr.error(i18n.t("invoices.sendInvoiceFailed"));
           setStatus(InvoiceStatus.ERROR);
         }
       } else {
@@ -140,7 +141,7 @@ const SendInvoiceContainer = ({
                 <div className="mb-6">
                   <CustomAdvanceInput
                     id="Email ID"
-                    label="Email ID"
+                    label={i18n.t("invoices.recipientEmailId")}
                     wrapperClassName="h-full"
                     value={
                       <div
@@ -167,7 +168,7 @@ const SendInvoiceContainer = ({
                 <div className="mb-6">
                   <CustomTextareaAutosize
                     id="subject"
-                    label="Subject"
+                    label={i18n.t("invoices.subject")}
                     maxRows={12}
                     name="subject"
                     rows={5}
@@ -187,7 +188,7 @@ const SendInvoiceContainer = ({
                 <div className="mb-6">
                   <CustomTextareaAutosize
                     id="message"
-                    label="Message"
+                    label={i18n.t("invoices.message")}
                     maxRows={12}
                     name="message"
                     rows={5}
@@ -228,7 +229,7 @@ const SendInvoiceContainer = ({
                 }
                 onClick={handleSubmit}
               >
-                {isSendReminder ? "Send Reminder" : buttonText(status)}
+                {isSendReminder ? i18n.t("invoices.sendReminder") : buttonText(status)}
               </button>
             </Form>
           );

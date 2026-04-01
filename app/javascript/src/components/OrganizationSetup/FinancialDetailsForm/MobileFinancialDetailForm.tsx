@@ -9,6 +9,7 @@ import {
   SelectValue,
 } from "../../ui/select";
 
+import { i18n } from "../../../i18n";
 import {
   FinancialDetailsFormProps,
   FinancialDetailsFormValues,
@@ -66,7 +67,7 @@ const MobileFinancialDetailForm = ({
                 {/* Base Currency */}
                 <div className="field relative">
                   <label className="absolute -top-1 left-0 z-1 ml-3 origin-0 bg-white px-1 text-xsm font-medium text-muted-foreground duration-300">
-                    Base Currency
+                    {i18n.t("orgSetup.baseCurrency")}
                   </label>
                   <Select
                     value={values.base_currency?.value || ""}
@@ -84,7 +85,7 @@ const MobileFinancialDetailForm = ({
                     }}
                   >
                     <SelectTrigger className="h-12">
-                      <SelectValue placeholder="Select base currency" />
+                      <SelectValue placeholder={i18n.t("orgSetup.selectBaseCurrency")} />
                     </SelectTrigger>
                     <SelectContent>
                       {currencyListOptions.map(currency => (
@@ -120,7 +121,7 @@ const MobileFinancialDetailForm = ({
                       className="absolute top-0 z-1 origin-0 bg-white p-3 text-base font-medium text-muted-foreground duration-300"
                       htmlFor="standard_rate"
                     >
-                      Standard Rate (per hour)
+                      {i18n.t("orgSetup.standardPrice")}
                     </label>
                   </div>
                   <div className="mx-0 mt-1 mb-5 block text-xs tracking-wider text-red-600">
@@ -132,7 +133,7 @@ const MobileFinancialDetailForm = ({
                 {/* Fiscal Year End  */}
                 <div className="field relative">
                   <label className="absolute -top-1 left-0 z-1 ml-3 origin-0 bg-white px-1 text-xsm font-medium text-muted-foreground duration-300">
-                    Fiscal Year End
+                    {i18n.t("orgSetup.fiscalYear")}
                   </label>
                   <Select
                     value={values.year_end?.value || ""}
@@ -147,7 +148,7 @@ const MobileFinancialDetailForm = ({
                     }}
                   >
                     <SelectTrigger className="h-12">
-                      <SelectValue placeholder="Select fiscal year end" />
+                      <SelectValue placeholder={i18n.t("orgSetup.selectFiscalYearEnd")} />
                     </SelectTrigger>
                     <SelectContent>
                       {fiscalYearEndOptions.map(yearEnd => (
@@ -161,7 +162,7 @@ const MobileFinancialDetailForm = ({
                 {/* Date Format */}
                 <div className="field relative">
                   <label className="absolute -top-1 left-0 z-1 ml-3 origin-0 bg-white px-1 text-xsm font-medium text-muted-foreground duration-300">
-                    Date Format
+                    {i18n.t("orgSetup.dateFormat")}
                   </label>
                   <Select
                     value={values.date_format?.value || ""}
@@ -179,7 +180,7 @@ const MobileFinancialDetailForm = ({
                     }}
                   >
                     <SelectTrigger className="h-12">
-                      <SelectValue placeholder="Select date format" />
+                      <SelectValue placeholder={i18n.t("orgSetup.selectDateFormat")} />
                     </SelectTrigger>
                     <SelectContent>
                       {dateFormatOptions.map(dateFormat => (
@@ -204,7 +205,7 @@ const MobileFinancialDetailForm = ({
                       : "cursor-pointer"
                   }`}
                 >
-                  Save Org Details
+                  {i18n.t("orgSetup.saveOrgDetails")}
                 </button>
               </div>
             </Form>

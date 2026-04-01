@@ -3,6 +3,7 @@ import React from "react";
 import { minToHHMM, currencyFormat } from "helpers";
 import { ArrowLeft, DotsThreeVertical, Plus } from "phosphor-react";
 import { useNavigate } from "react-router-dom";
+import { i18n } from "../../../../i18n";
 import { Badge } from "components/ui/badge";
 import { Button } from "components/ui/button";
 import { Dialog, DialogContent } from "components/ui/dialog";
@@ -24,16 +25,16 @@ const ProjectDetailsForm = ({
   const summaryList = project
     ? [
         {
-          label: "TOTAL HOURS",
+          label: i18n.t("projects.totalHours").toUpperCase(),
           value: parseInt(minToHHMM(project.totalMinutes)),
           hideCurrencySymbol: true,
         },
         {
-          label: "OVERDUE",
+          label: i18n.t("projects.overdue"),
           value: parseInt(project.overdueOutstandingAmount.overdue_amount),
         },
         {
-          label: "OUTSTANDING",
+          label: i18n.t("projects.outstanding"),
           value: parseInt(project.overdueOutstandingAmount.outstanding_amount),
         },
       ]
@@ -59,7 +60,7 @@ const ProjectDetailsForm = ({
           </h2>
           {project?.is_billable && (
             <Badge className="rounded-full bg-primary/10 px-2.5 py-0.5 text-xs text-primary hover:bg-primary/10">
-              Billable
+              {i18n.t("billable")}
             </Badge>
           )}
         </div>
@@ -117,17 +118,16 @@ const ProjectDetailsForm = ({
                 <thead>
                   <tr>
                     <th className="w-1/4 py-3 text-left text-xs font-medium leading-4 tracking-widest text-muted-foreground">
-                      TEAM <br />
-                      MEMBER
+                      {i18n.t("projects.teamMember").toUpperCase()}
                     </th>
                     <th className="py-3 text-right text-xs font-medium leading-4 tracking-widest text-muted-foreground">
-                      HOURLY <br /> RATE
+                      {i18n.t("projects.hourlyRate").toUpperCase()}
                     </th>
                     <th className="py-3 text-right text-xs font-medium leading-4 tracking-widest text-muted-foreground">
-                      HOURS <br /> LOGGED
+                      {i18n.t("projects.hoursLogged").toUpperCase()}
                     </th>
                     <th className="self-end py-3 text-right text-xs font-medium leading-4 tracking-widest text-muted-foreground">
-                      COST
+                      {i18n.t("projects.cost")}
                     </th>
                   </tr>
                 </thead>
@@ -156,7 +156,7 @@ const ProjectDetailsForm = ({
         ) : (
           <div className="h-full">
             <EmptyStates
-              Message="No team member has been added to this project yet."
+              Message={i18n.t("projects.noTeamMembersAdded")}
               showNoSearchResultState={false}
             >
               <Button
@@ -167,7 +167,7 @@ const ProjectDetailsForm = ({
               >
                 <Plus className="mr-2" size={16} />
                 <span className="text-center text-base font-medium">
-                  Add Team Members
+                  {i18n.t("projects.addTeamMembers")}
                 </span>
               </Button>
             </EmptyStates>

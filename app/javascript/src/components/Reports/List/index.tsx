@@ -15,49 +15,48 @@ import {
 
 import withLayout from "common/Mobile/HOC/withLayout";
 import { useUserContext } from "context/UserContext";
+import { i18n } from "../../../i18n";
 
 import ReportCard from "./reportCard";
 
-const listDetails = [
+const getListDetails = () => [
   {
     icon: ReportcalendarIcon,
     iconHover: CalendarHoverIcon,
-    title: "Time Entry Report",
-    description: "A summary of the time entries added by your team.",
+    title: i18n.t("reports.timeEntryReportTitle"),
+    description: i18n.t("reports.timeEntryReportDesc"),
     url: "time-entry",
     show: true,
   },
   {
     icon: OverdueOutstandingIcon,
     iconHover: OverdueOutstandingHoverIcon,
-    title: "Invoices Report",
-    description:
-      "A detailed summary of outstanding and overdue of all clients for a period of time.",
+    title: i18n.t("reports.invoicesReport"),
+    description: i18n.t("reports.invoicesReportDesc"),
     url: "outstanding-overdue-invoices",
     show: true,
   },
   {
     icon: HoursIcon,
     iconHover: HoursHoverIcon,
-    title: "Total hours logged",
-    description:
-      "A detailed summary of billed, unbilled and non-billable hours by team grouped by project.",
+    title: i18n.t("reports.totalHoursLoggedTitle"),
+    description: i18n.t("reports.totalHoursLoggedDesc"),
     url: "total-hours",
     show: false,
   },
   {
     icon: RevenueIcon,
     iconHover: RevenueHoverIcon,
-    title: "Revenue Report",
-    description: "A detailed report of revenue from each client.",
+    title: i18n.t("reports.revenueReport"),
+    description: i18n.t("reports.revenueReportDesc"),
     url: "revenue-by-client",
     show: true,
   },
   {
     icon: AccountsAgingIcon,
     iconHover: AccountsAgingHoverIcon,
-    title: "Accounts Aging",
-    description: "Find out which client have been taking a long time to pay",
+    title: i18n.t("reports.accountsAging"),
+    description: i18n.t("reports.accountsAgingDesc"),
     url: "accounts-aging",
     show: true,
   },
@@ -68,9 +67,9 @@ const List = () => {
 
   const ReportsLayout = () => (
     <div className="p-4">
-      {isDesktop && <div className="mt-4 text-3xl font-bold">Reports</div>}
+      {isDesktop && <div className="mt-4 text-3xl font-bold">{i18n.t("reports.reports")}</div>}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:gap-4">
-        {listDetails.map(
+        {getListDetails().map(
           (item, key) =>
             item.show && (
               <div key={key}>

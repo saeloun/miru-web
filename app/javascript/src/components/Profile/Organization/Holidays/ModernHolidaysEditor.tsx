@@ -20,6 +20,7 @@ import { allocationFrequency } from "constants/leaveType";
 import { customStyles } from "./EditHolidays/utils";
 
 const ModernHolidaysEditor = ({
+  canManageHolidays,
   isDesktop,
   dateFormat,
   currentYear,
@@ -77,13 +78,15 @@ const ModernHolidaysEditor = ({
         >
           Cancel
         </Button>
-        <Button
-          onClick={updateHolidayDetails}
-          disabled={isDisableUpdateBtn}
-          className="font-geist-medium"
-        >
-          Save Changes
-        </Button>
+        {canManageHolidays ? (
+          <Button
+            onClick={updateHolidayDetails}
+            disabled={isDisableUpdateBtn}
+            className="font-geist-medium"
+          >
+            Save Changes
+          </Button>
+        ) : null}
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Public Holidays */}
@@ -112,6 +115,8 @@ const ModernHolidaysEditor = ({
                             <div
                               className="relative cursor-pointer"
                               onClick={() => {
+                                if (!canManageHolidays) return;
+
                                 setShowDatePicker({
                                   visibility: !showDatePicker.visibility,
                                   index,
@@ -125,6 +130,7 @@ const ModernHolidaysEditor = ({
                                     ? "border-destructive"
                                     : ""
                                 }`}
+                                disabled={!canManageHolidays}
                                 placeholder="Select date"
                                 value={holiday.date}
                               />
@@ -168,6 +174,7 @@ const ModernHolidaysEditor = ({
                                   ? "border-destructive"
                                   : ""
                               }`}
+                              disabled={!canManageHolidays}
                               placeholder="Enter holiday name"
                               value={holiday.name}
                               onChange={e =>
@@ -181,25 +188,29 @@ const ModernHolidaysEditor = ({
                             )}
                           </div>
                         </div>
-                        <Button
-                          aria-label="Delete holiday"
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleDeleteHoliday(false, index)}
-                          className="mt-7 text-destructive hover:bg-destructive/10 hover:text-destructive"
-                        >
-                          <Trash size={16} weight="bold" />
-                        </Button>
+                        {canManageHolidays ? (
+                          <Button
+                            aria-label="Delete holiday"
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleDeleteHoliday(false, index)}
+                            className="mt-7 text-destructive hover:bg-destructive/10 hover:text-destructive"
+                          >
+                            <Trash size={16} weight="bold" />
+                          </Button>
+                        ) : null}
                       </div>
                     ))}
-                    <Button
-                      variant="outline"
-                      onClick={() => handleAddHoliday(false)}
-                      className="w-full border-dashed border-border font-geist-medium text-muted-foreground hover:border-primary/40 hover:text-foreground"
-                    >
-                      <Plus size={16} weight="bold" className="mr-2" />
-                      Add Holiday
-                    </Button>
+                    {canManageHolidays ? (
+                      <Button
+                        variant="outline"
+                        onClick={() => handleAddHoliday(false)}
+                        className="w-full border-dashed border-border font-geist-medium text-muted-foreground hover:border-primary/40 hover:text-foreground"
+                      >
+                        <Plus size={16} weight="bold" className="mr-2" />
+                        Add Holiday
+                      </Button>
+                    ) : null}
                   </>
                 ) : (
                   <div className="text-center py-8">
@@ -211,14 +222,16 @@ const ModernHolidaysEditor = ({
                     <p className="text-muted-foreground font-geist-regular mb-3">
                       No public holidays configured
                     </p>
-                    <Button
-                      variant="outline"
-                      onClick={() => handleAddHoliday(false)}
-                      className="font-geist-medium"
-                    >
-                      <Plus size={16} weight="bold" className="mr-2" />
-                      Add First Holiday
-                    </Button>
+                    {canManageHolidays ? (
+                      <Button
+                        variant="outline"
+                        onClick={() => handleAddHoliday(false)}
+                        className="font-geist-medium"
+                      >
+                        <Plus size={16} weight="bold" className="mr-2" />
+                        Add First Holiday
+                      </Button>
+                    ) : null}
                   </div>
                 )}
               </div>
@@ -239,6 +252,8 @@ const ModernHolidaysEditor = ({
                 <button
                   onClick={handleCheckboxClick}
                   className="transition-colors"
+                  disabled={!canManageHolidays}
+                  type="button"
                 >
                   {enableOptionalHolidays ? (
                     <ToggleRight
@@ -269,6 +284,7 @@ const ModernHolidaysEditor = ({
                         type="number"
                         min={0}
                         className="font-geist-regular mt-1"
+                        disabled={!canManageHolidays}
                         placeholder="Enter number"
                         value={totalOptionalHolidays}
                         onChange={handleChangeTotalOpHoliday}
@@ -280,6 +296,7 @@ const ModernHolidaysEditor = ({
                       </Label>
                       <div className="mt-1">
                         <CustomReactSelect
+                          isDisabled={!canManageHolidays}
                           handleOnChange={handleChangeRepetitionOpHoliday}
                           id="allocationFrequency"
                           label=""
@@ -319,13 +336,15 @@ const ModernHolidaysEditor = ({
                                 </Label>
                                 <div
                                   className="relative cursor-pointer"
-                                  onClick={() =>
+                                  onClick={() => {
+                                    if (!canManageHolidays) return;
+
                                     setShowOptionalDatePicker({
                                       visibility:
                                         !showOptionalDatePicker.visibility,
                                       index,
-                                    })
-                                  }
+                                    });
+                                  }}
                                 >
                                   <Input
                                     readOnly
@@ -334,6 +353,7 @@ const ModernHolidaysEditor = ({
                                         ? "border-destructive"
                                         : ""
                                     }`}
+                                    disabled={!canManageHolidays}
                                     placeholder="Select date"
                                     value={optionalHoliday.date}
                                   />
@@ -381,6 +401,7 @@ const ModernHolidaysEditor = ({
                                       ? "border-destructive"
                                       : ""
                                   }`}
+                                  disabled={!canManageHolidays}
                                   placeholder="Enter holiday name"
                                   value={optionalHoliday.name}
                                   onChange={e =>
@@ -396,25 +417,29 @@ const ModernHolidaysEditor = ({
                                 )}
                               </div>
                             </div>
-                            <Button
-                              aria-label="Delete holiday"
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => handleDeleteHoliday(true, index)}
-                              className="mt-7 text-destructive hover:bg-destructive/10 hover:text-destructive"
-                            >
-                              <Trash size={16} weight="bold" />
-                            </Button>
+                            {canManageHolidays ? (
+                              <Button
+                                aria-label="Delete holiday"
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => handleDeleteHoliday(true, index)}
+                                className="mt-7 text-destructive hover:bg-destructive/10 hover:text-destructive"
+                              >
+                                <Trash size={16} weight="bold" />
+                              </Button>
+                            ) : null}
                           </div>
                         ))}
-                        <Button
-                          variant="outline"
-                          onClick={() => handleAddHoliday(true)}
-                          className="w-full border-dashed border-border font-geist-medium text-muted-foreground hover:border-primary/40 hover:text-foreground"
-                        >
-                          <Plus size={16} weight="bold" className="mr-2" />
-                          Add Optional Holiday
-                        </Button>
+                        {canManageHolidays ? (
+                          <Button
+                            variant="outline"
+                            onClick={() => handleAddHoliday(true)}
+                            className="w-full border-dashed border-border font-geist-medium text-muted-foreground hover:border-primary/40 hover:text-foreground"
+                          >
+                            <Plus size={16} weight="bold" className="mr-2" />
+                            Add Optional Holiday
+                          </Button>
+                        ) : null}
                       </>
                     ) : (
                       <div className="text-center py-6">
@@ -426,15 +451,17 @@ const ModernHolidaysEditor = ({
                         <p className="text-sm text-muted-foreground font-geist-regular mb-3">
                           No optional holidays configured
                         </p>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleAddHoliday(true)}
-                          className="font-geist-medium"
-                        >
-                          <Plus size={14} weight="bold" className="mr-1" />
-                          Add Optional Holiday
-                        </Button>
+                        {canManageHolidays ? (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleAddHoliday(true)}
+                            className="font-geist-medium"
+                          >
+                            <Plus size={14} weight="bold" className="mr-1" />
+                            Add Optional Holiday
+                          </Button>
+                        ) : null}
                       </div>
                     )}
                   </div>

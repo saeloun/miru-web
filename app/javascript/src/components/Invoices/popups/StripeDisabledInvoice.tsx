@@ -2,6 +2,7 @@ import React from "react";
 
 import { XIcon } from "miruIcons";
 import { Button, Modal } from "StyledComponents";
+import { i18n } from "../../../i18n";
 
 const StripeDisabledInvoice = ({
   showStripeDisabledDialog,
@@ -13,7 +14,7 @@ const StripeDisabledInvoice = ({
     onClose={() => setShowStripeDisabledDialog(false)}
   >
     <div className="mt-2 mb-4 flex items-center justify-between">
-      <h6 className="text-2xl font-bold">Stripe disabled for this invoice</h6>
+      <h6 className="text-2xl font-bold">{i18n.t("invoices.stripeDisabled")}</h6>
       <Button
         className="text-foreground"
         style="ternary"
@@ -24,10 +25,7 @@ const StripeDisabledInvoice = ({
     </div>
     <div className="my-8 flex-col">
       <p className="mt-2 font-normal">
-        The sender hasn&apos;t enabled Stripe payments for this invoice.
-        <br />
-        You can reach out to them to activate it, or choose an alternative
-        payment method like ACH.
+        {i18n.t("invoices.stripeDisabledMessage")}
       </p>
     </div>
   </Modal>

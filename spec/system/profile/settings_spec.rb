@@ -3,12 +3,18 @@
 require "rails_helper"
 
 RSpec.describe "Profile Settings", type: :system, js: true do
-  let(:company) { create(:company, name: "TestCorp") }
+  let(:company) { create(:company, name: "TestCorp", date_format: "DD-MM-YYYY") }
   let(:user) do
     create(:user,
       first_name: "Jane",
       last_name: "Doe",
       email: "jane.doe@example.com",
+      personal_email_id: "jane.personal@example.com",
+      date_of_birth: Date.new(1992, 4, 10),
+      social_accounts: {
+        github_url: "https://github.com/janedoe",
+        linkedin_url: "https://linkedin.com/in/janedoe"
+      },
       current_workspace_id: company.id)
   end
 
@@ -117,6 +123,42 @@ RSpec.describe "Profile Settings", type: :system, js: true do
       expect(page).to have_content("Require passkey on sign in", wait: 10)
       expect(page).to have_content("Authenticator App 2FA", wait: 10)
       expect(page).to have_button("Set up 2FA", wait: 10)
+    end
+  end
+
+  it "prefills existing values on the profile edit page" do
+    with_forgery_protection do
+      visit "/settings/profile/edit"
+
+      expect(page).to have_css("#react-root", wait: 10)
+      expect(page).to have_field("first_name", with: "Jane", wait: 10)
+      expect(page).to have_field("last_name", with: "Doe")
+      expect(page).to have_field("email_id", with: "jane.personal@example.com")
+      expect(page).to have_field("date_of_birth", with: "10-04-1992")
+      expect(page).to have_field("linkedin", with: "https://linkedin.com/in/janedoe")
+      expect(page).to have_field("github", with: "https://github.com/janedoe")
+    end
+  end
+
+  it "hides billing notification controls for employees" do
+    employee_user = create(:user,
+      first_name: "John",
+      last_name: "Worker",
+      email: "john.worker@example.com",
+      current_workspace_id: company.id)
+    create(:employment, company:, user: employee_user, designation: "Junior Developer", employment_type: "Contractor")
+    employee_user.add_role :employee, company
+    sign_in(employee_user)
+
+    with_forgery_protection do
+      visit "/settings/preferences"
+
+      expect(page).to have_css("#react-root", wait: 10)
+      expect(page).to have_content("Weekly Timesheet Reminder", wait: 10)
+      expect(page).to have_content("Missing Entry Reminders", wait: 10)
+      expect(page).not_to have_content("Billing Notifications")
+      expect(page).not_to have_content("Invoice Email Notifications")
+      expect(page).not_to have_content("Payment Email Notifications")
     end
   end
 end

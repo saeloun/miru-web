@@ -12,6 +12,7 @@ import { Button } from "StyledComponents";
 
 import MoreButton from "../../MoreButton";
 import MoreOptions from "../../MoreOptions";
+import { i18n } from "../../../../../i18n";
 
 const Header = ({
   formType = "generate",
@@ -42,8 +43,8 @@ const Header = ({
       <div className="flex flex-wrap items-center gap-2">
         <h2 className="header__title font-bold">
           {formType == "edit"
-            ? `Edit Invoice #${invoiceNumber}`
-            : "Generate Invoice"}
+            ? `${i18n.t("invoices.editInvoice", { number: invoiceNumber })}`
+            : i18n.t("invoices.generateInvoice")}
         </h2>
         <Button
           className="ml-0 flex items-center text-xs font-bold leading-4 tracking-widest text-primary sm:ml-5"
@@ -51,7 +52,7 @@ const Header = ({
           onClick={() => setShowInvoiceSetting(true)}
         >
           <SettingIcon className="mr-2.5" color="#5E58F1" size={15} />
-          Settings
+          {i18n.t("invoices.settings")}
         </Button>
       </div>
       <div className="mt-3 flex w-full flex-col gap-2 sm:mt-0 md:w-2/5 md:flex-row md:gap-0">
@@ -62,7 +63,7 @@ const Header = ({
         >
           <XIcon size={12} />
           <span className="ml-2 inline-block" id="cancelEditInvoiceButton">
-            CANCEL
+            {i18n.t("cancel").toUpperCase()}
           </span>
         </Link>
         <button
@@ -72,7 +73,7 @@ const Header = ({
           onClick={handleSaveInvoice}
         >
           <FloppyDiskIcon color="white" size={18} />
-          <span className="ml-2 inline-block">SAVE</span>
+          <span className="ml-2 inline-block">{i18n.t("save").toUpperCase()}</span>
         </button>
         <button
           className="header__button my-0 w-full bg-primary p-0 text-white hover:text-white md:my-0 md:w-1/3"
@@ -81,7 +82,7 @@ const Header = ({
         >
           <PaperPlaneTiltIcon color="White" size={18} />
           <span className="ml-2 inline-block truncate" id="sendInvoiceButton">
-            SEND TO
+            {i18n.t("invoices.sendTo")}
           </span>
         </button>
         {showMoreButton && (

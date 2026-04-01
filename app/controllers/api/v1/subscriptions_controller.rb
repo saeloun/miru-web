@@ -18,7 +18,7 @@ class Api::V1::SubscriptionsController < Api::V1::ApplicationController
 
     price_id = checkout_price_id
     if price_id.blank?
-      render json: { errors: "Stripe subscription pricing is not configured" }, status: 422
+      render json: { errors: I18n.t("subscriptions.pricing_not_configured") }, status: 422
       return
     end
 
@@ -45,7 +45,7 @@ class Api::V1::SubscriptionsController < Api::V1::ApplicationController
     authorize current_company, policy_class: CompanyPolicy
 
     if current_company.stripe_customer_id.blank?
-      render json: { errors: "No billing customer exists for this company" }, status: 422
+      render json: { errors: I18n.t("subscriptions.no_billing_customer") }, status: 422
       return
     end
 
@@ -65,9 +65,9 @@ class Api::V1::SubscriptionsController < Api::V1::ApplicationController
     current_company.start_pro_trial!
     SubscriptionMailer.with(company_id: current_company.id, recipient_id: current_user.id).trial_started.deliver_later
 
-    render_summary(notice: "Your 30-day Pro trial has started")
+    render_summary(notice: I18n.t("subscriptions.trial_started"))
   rescue ArgumentError
-    render json: { errors: "Your workspace is not eligible for a Pro trial" }, status: 422
+    render json: { errors: I18n.t("subscriptions.trial_not_eligible") }, status: 422
   end
 
   private

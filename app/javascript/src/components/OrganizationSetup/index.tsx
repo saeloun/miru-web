@@ -19,6 +19,7 @@ import MobileFinancialDetailForm from "./FinancialDetailsForm/MobileFinancialDet
 import { financialDetailsFormInitialValues } from "./FinancialDetailsForm/utils";
 import Step from "./Step";
 import { organizationSetupSteps, TOTAL_NUMBER_OF_STEPS } from "./utils";
+import { i18n } from "../../i18n";
 
 import Toastr from "../../StyledComponents/Toastr";
 
@@ -148,12 +149,12 @@ const OrganizationSetup = () => {
       <div className="org-setup-form-wrapper mx-auto h-full md:w-1/2 lg:w-352">
         {isDesktop ? (
           <h1 className="text-center font-sans text-4.75xl font-bold not-italic text-primary">
-            Setup Org
+            {i18n.t("orgSetup.setupOrganization")}
           </h1>
         ) : (
           <div className="w-full text-center font-sans text-2xl font-bold not-italic text-primary">
             {" "}
-            Setup Org
+            {i18n.t("orgSetup.setupOrganization")}
           </div>
         )}
         <div className="mx-auto mt-6 mb-11 w-full">

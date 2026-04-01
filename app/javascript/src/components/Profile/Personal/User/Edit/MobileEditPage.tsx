@@ -167,7 +167,7 @@ const MobileEditDetails = ({
               }
             >
               <CustomInputText
-                disabled
+                readOnly
                 id="date_of_birth"
                 inputBoxClassName={`${inputClass} border-border`}
                 label="Date of Birth"
@@ -443,11 +443,11 @@ const MobileEditDetails = ({
         <div className="mt-2 flex w-full flex-row">
           <div className="flex w-1/2 flex-col px-1">
             <CustomInputText
-              id="linked_in"
+              id="linkedin"
               inputBoxClassName={`${inputClass} border-border`}
               label="LinkedIn"
               labelClassName={`${labelClass} text-muted-foreground`}
-              name="linked_in"
+              name="linkedin"
               type="text"
               value={personalDetails.linkedin}
               onChange={e => {

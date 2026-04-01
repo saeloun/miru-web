@@ -16,7 +16,7 @@ class Api::V1::Users::TotpController < Api::V1::ApplicationController
     authorize current_user, policy_class: TotpPolicy
 
     if current_user.passkey_required_for_login?
-      render json: { error: "Disable required passkey sign in before enabling authenticator app 2FA." }, status: 422
+      render json: { error: I18n.t("totp.disable_passkey_first") }, status: 422
       return
     end
 
@@ -32,7 +32,7 @@ class Api::V1::Users::TotpController < Api::V1::ApplicationController
     authorize current_user, policy_class: TotpPolicy
 
     unless current_user.verify_totp_code!(params[:code])
-      render json: { error: "Invalid authenticator code." }, status: 422
+      render json: { error: I18n.t("totp.invalid_code") }, status: 422
       return
     end
 
@@ -40,7 +40,7 @@ class Api::V1::Users::TotpController < Api::V1::ApplicationController
     current_user.update!(otp_required_for_login: true)
 
     render json: totp_state.merge(
-      notice: "Authenticator app enabled",
+      notice: I18n.t("totp.enabled"),
       recovery_codes:
     ), status: 200
   end
@@ -49,14 +49,14 @@ class Api::V1::Users::TotpController < Api::V1::ApplicationController
     authorize current_user, policy_class: TotpPolicy
 
     unless current_user.totp_enabled?
-      render json: { error: "Enable authenticator app 2FA first." }, status: 422
+      render json: { error: I18n.t("totp.not_enabled") }, status: 422
       return
     end
 
     recovery_codes = current_user.generate_recovery_codes!
 
     render json: totp_state.merge(
-      notice: "Recovery codes regenerated",
+      notice: I18n.t("totp.recovery_codes_regenerated"),
       recovery_codes:
     ), status: 200
   end
@@ -64,7 +64,7 @@ class Api::V1::Users::TotpController < Api::V1::ApplicationController
   def destroy
     authorize current_user, policy_class: TotpPolicy
     current_user.clear_totp!
-    render json: totp_state.merge(notice: "Authenticator app disabled"), status: 200
+    render json: totp_state.merge(notice: I18n.t("totp.disabled")), status: 200
   end
 
   def authenticate
@@ -76,7 +76,7 @@ class Api::V1::Users::TotpController < Api::V1::ApplicationController
     company = Company.find_by(id: payload["company_id"]) || user.current_workspace
 
     unless valid_second_factor?(user)
-      render json: { error: "Invalid verification code." }, status: 422
+      render json: { error: I18n.t("totp.invalid_verification") }, status: 422
       return
     end
 
@@ -109,6 +109,6 @@ class Api::V1::Users::TotpController < Api::V1::ApplicationController
     end
 
     def render_invalid_token
-      render json: { error: "That verification request is no longer valid. Please sign in again." }, status: 422
+      render json: { error: I18n.t("totp.session_expired") }, status: 422
     end
 end

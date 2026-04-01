@@ -25,6 +25,7 @@ import {
   CreditCard,
 } from "phosphor-react";
 import { cn } from "../../lib/utils";
+import { i18n } from "../../i18n";
 
 interface ReportCard {
   id: string;
@@ -36,12 +37,11 @@ interface ReportCard {
   category: "time" | "financial" | "client" | "team";
 }
 
-const reportCards: ReportCard[] = [
+const getReportCards = (): ReportCard[] => [
   {
     id: "time-entry",
-    title: "Time Entry Report",
-    description:
-      "A comprehensive summary of time entries added by your team members",
+    title: i18n.t("reports.timeReports"),
+    description: i18n.t("reports.timeReportsDesc"),
     icon: Clock,
     url: "/reports/time-entry",
     available: true,
@@ -49,9 +49,8 @@ const reportCards: ReportCard[] = [
   },
   {
     id: "invoices",
-    title: "Outstanding & Overdue Invoices",
-    description:
-      "Detailed overview of outstanding and overdue invoices across all clients",
+    title: i18n.t("reports.outstandingOverdueInvoicesTitle"),
+    description: i18n.t("reports.outstandingOverdueInvoicesDesc"),
     icon: Receipt,
     url: "/reports/outstanding-overdue-invoices",
     available: true,
@@ -59,8 +58,8 @@ const reportCards: ReportCard[] = [
   },
   {
     id: "revenue",
-    title: "Revenue by Client",
-    description: "Revenue breakdown by client with trends and comparisons",
+    title: i18n.t("reports.revenueByClient"),
+    description: i18n.t("reports.revenueByClientDesc"),
     icon: TrendUp,
     url: "/reports/revenue-by-client",
     available: true,
@@ -68,8 +67,8 @@ const reportCards: ReportCard[] = [
   },
   {
     id: "accounts-aging",
-    title: "Accounts Aging",
-    description: "Age analysis of outstanding receivables by time period",
+    title: i18n.t("reports.accountsAging"),
+    description: i18n.t("reports.accountsAgingTableDesc"),
     icon: Calendar,
     url: "/reports/accounts-aging",
     available: true,
@@ -77,9 +76,8 @@ const reportCards: ReportCard[] = [
   },
   {
     id: "payments",
-    title: "Payment Report",
-    description:
-      "Track all payments received with detailed transaction history",
+    title: i18n.t("reports.paymentReportTitle"),
+    description: i18n.t("reports.paymentReportDesc"),
     icon: CreditCard,
     url: "/reports/payments",
     available: true,
@@ -87,8 +85,8 @@ const reportCards: ReportCard[] = [
   },
   {
     id: "team-utilization",
-    title: "Team Utilization",
-    description: "Team member utilization rates and capacity analysis",
+    title: i18n.t("reports.teamUtilization"),
+    description: i18n.t("reports.teamUtilizationDesc"),
     icon: Users,
     url: "/reports/team-utilization",
     available: false,
@@ -96,8 +94,8 @@ const reportCards: ReportCard[] = [
   },
   {
     id: "project-profitability",
-    title: "Project Profitability",
-    description: "Profitability analysis by project with cost breakdown",
+    title: i18n.t("reports.projectProfitability"),
+    description: i18n.t("reports.projectProfitabilityDesc"),
     icon: Briefcase,
     url: "/reports/project-profitability",
     available: false,
@@ -105,8 +103,8 @@ const reportCards: ReportCard[] = [
   },
   {
     id: "client-summary",
-    title: "Client Summary",
-    description: "Comprehensive client performance and engagement metrics",
+    title: i18n.t("reports.clientSummaryTitle"),
+    description: i18n.t("reports.clientSummaryDesc"),
     icon: FileText,
     url: "/reports/client-summary",
     available: false,
@@ -117,6 +115,7 @@ const reportCards: ReportCard[] = [
 const ReportsTable: React.FC = () => {
   const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const reportCards = getReportCards();
 
   const handleReportKeyDown = (
     event: React.KeyboardEvent<HTMLDivElement>,
@@ -155,7 +154,7 @@ const ReportsTable: React.FC = () => {
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
           <p className="mt-1 text-sm text-muted-foreground">
-            Understand revenue, time, and outstanding work at a glance.
+            {i18n.t("reports.understandReportsAtGlance")}
           </p>
         </div>
         <Button
@@ -163,7 +162,7 @@ const ReportsTable: React.FC = () => {
           className="border-border bg-card text-foreground"
         >
           <Calendar size={20} className="mr-2" />
-          Schedule reports
+          {i18n.t("reports.scheduleReports")}
         </Button>
       </div>
 
@@ -172,38 +171,38 @@ const ReportsTable: React.FC = () => {
         <Card className="border-border">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
-              Available Reports
+              {i18n.t("reports.availableReports")}
             </CardTitle>
             <ChartBar size={20} className="text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.totalReports}</div>
-            <p className="mt-1 text-xs text-muted-foreground">Ready to run</p>
+            <p className="mt-1 text-xs text-muted-foreground">{i18n.t("reports.readyToRun")}</p>
           </CardContent>
         </Card>
 
         <Card className="border-border">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Time Reports</CardTitle>
+            <CardTitle className="text-sm font-medium">{i18n.t("reports.timeReports")}</CardTitle>
             <Clock size={20} className="text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.timeReports}</div>
-            <p className="mt-1 text-xs text-muted-foreground">Hours and time</p>
+            <p className="mt-1 text-xs text-muted-foreground">{i18n.t("reports.hoursAndTime")}</p>
           </CardContent>
         </Card>
 
         <Card className="border-border">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
-              Financial Reports
+              {i18n.t("reports.financial")}
             </CardTitle>
             <CurrencyDollar size={20} className="text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.financialReports}</div>
             <p className="mt-1 text-xs text-muted-foreground">
-              Revenue and billing
+              {i18n.t("reports.revenueAndBilling")}
             </p>
           </CardContent>
         </Card>
@@ -211,13 +210,13 @@ const ReportsTable: React.FC = () => {
         <Card className="border-border">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
-              Recently Viewed
+              {i18n.t("reports.recentlyViewed")}
             </CardTitle>
             <FileText size={20} className="text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.recentlyViewed}</div>
-            <p className="mt-1 text-xs text-muted-foreground">Last 7 days</p>
+            <p className="mt-1 text-xs text-muted-foreground">{i18n.t("reports.lastSevenDays")}</p>
           </CardContent>
         </Card>
       </div>
@@ -225,11 +224,11 @@ const ReportsTable: React.FC = () => {
       {/* Category Tabs */}
       <Tabs value={selectedCategory} onValueChange={setSelectedCategory}>
         <TabsList className="grid h-auto w-full max-w-2xl grid-cols-2 gap-2 bg-muted p-1 md:grid-cols-5">
-          <TabsTrigger value="all">All Reports</TabsTrigger>
-          <TabsTrigger value="time">Time</TabsTrigger>
-          <TabsTrigger value="financial">Financial</TabsTrigger>
-          <TabsTrigger value="client">Client</TabsTrigger>
-          <TabsTrigger value="team">Team</TabsTrigger>
+          <TabsTrigger value="all">{i18n.t("reports.allReports")}</TabsTrigger>
+          <TabsTrigger value="time">{i18n.t("reports.time")}</TabsTrigger>
+          <TabsTrigger value="financial">{i18n.t("reports.financial")}</TabsTrigger>
+          <TabsTrigger value="client">{i18n.t("client")}</TabsTrigger>
+          <TabsTrigger value="team">{i18n.t("team.team")}</TabsTrigger>
         </TabsList>
       </Tabs>
 
@@ -237,7 +236,7 @@ const ReportsTable: React.FC = () => {
       {availableReports.length > 0 && (
         <div className="space-y-4">
           <h2 className="text-lg font-semibold text-foreground">
-            Available Reports
+            {i18n.t("reports.availableReports")}
           </h2>
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {availableReports.map(report => {
@@ -253,7 +252,7 @@ const ReportsTable: React.FC = () => {
                   }
                   role="button"
                   tabIndex={0}
-                  aria-label={`Open ${report.title} report`}
+                  aria-label={i18n.t("reports.openReport", { title: report.title })}
                 >
                   <CardHeader>
                     <div className="flex items-start justify-between">
@@ -287,7 +286,7 @@ const ReportsTable: React.FC = () => {
                       </Badge>
                       <span className="inline-flex items-center text-sm text-muted-foreground">
                         <Download size={16} className="mr-1" />
-                        Export
+                        {i18n.t("reports.export")}
                       </span>
                     </div>
                   </CardContent>
@@ -301,7 +300,7 @@ const ReportsTable: React.FC = () => {
       {/* Coming Soon Reports */}
       {comingSoonReports.length > 0 && (
         <div className="space-y-4">
-          <h2 className="text-lg font-semibold text-foreground">Coming Soon</h2>
+          <h2 className="text-lg font-semibold text-foreground">{i18n.t("reports.comingSoon")}</h2>
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {comingSoonReports.map(report => {
               const Icon = report.icon;
@@ -317,7 +316,7 @@ const ReportsTable: React.FC = () => {
                         <Icon size={24} className="text-muted-foreground" />
                       </div>
                       <Badge className="border-border bg-background text-muted-foreground hover:bg-background">
-                        Coming Soon
+                        {i18n.t("reports.comingSoon")}
                       </Badge>
                     </div>
                     <CardTitle className="mt-4 text-lg text-foreground/80">
@@ -337,9 +336,9 @@ const ReportsTable: React.FC = () => {
       {/* Quick Actions */}
       <Card className="border-border bg-muted/30">
         <CardHeader>
-          <CardTitle>Quick Actions</CardTitle>
+          <CardTitle>{i18n.t("reports.quickActions")}</CardTitle>
           <CardDescription>
-            Common reporting tasks and shortcuts
+            {i18n.t("reports.commonReportingTasks")}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -350,7 +349,7 @@ const ReportsTable: React.FC = () => {
               onClick={() => navigate("/reports/time-entry")}
             >
               <Clock size={20} className="mr-2" />
-              Generate Weekly Timesheet
+              {i18n.t("reports.generateWeeklyTimesheet")}
             </Button>
             <Button
               variant="outline"
@@ -358,7 +357,7 @@ const ReportsTable: React.FC = () => {
               onClick={() => navigate("/reports/outstanding-overdue-invoices")}
             >
               <Receipt size={20} className="mr-2" />
-              View Overdue Invoices
+              {i18n.t("reports.viewOverdueInvoices")}
             </Button>
             <Button
               variant="outline"
@@ -366,7 +365,7 @@ const ReportsTable: React.FC = () => {
               onClick={() => navigate("/reports/revenue-by-client")}
             >
               <TrendUp size={20} className="mr-2" />
-              Monthly Revenue Report
+              {i18n.t("reports.monthlyRevenueReport")}
             </Button>
           </div>
         </CardContent>

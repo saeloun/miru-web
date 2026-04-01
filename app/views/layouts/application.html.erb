@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="<%= I18n.locale %>">
   <head>
   <% page_title = content_for?(:title) ? yield(:title) : "#{t('app.name')} | Time tracking and invoicing" %>
   <% page_description = content_for?(:meta_description) ? yield(:meta_description) : "#{t('app.name')} is an open-source platform for time tracking, invoicing, payments, and operations for agencies and small companies." %>

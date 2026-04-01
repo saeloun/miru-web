@@ -7,6 +7,7 @@ import { UnifiedSearch } from "../../ui/enhanced-search";
 import { PlusIcon, FilterIcon } from "miruIcons";
 import { useNavigate } from "react-router-dom";
 import { Button } from "StyledComponents";
+import { i18n } from "../../../i18n";
 
 const Header = ({
   setIsFilterVisible,
@@ -73,17 +74,17 @@ const Header = ({
       {isDesktop && (
         <div>
           <h2 className="text-2xl font-semibold tracking-tight text-foreground">
-            Invoices
+            {i18n.t("invoices.invoices")}
           </h2>
           <p className="text-sm text-muted-foreground">
-            Draft, send, and track payments.
+            {i18n.t("invoices.invoices")}
           </p>
         </div>
       )}
       <div className="flex w-full items-center gap-2 sm:flex-1 sm:max-w-2xl lg:max-w-lg">
         <UnifiedSearch
           searchAction={fetchInvoices}
-          placeholder="Search invoices..."
+          placeholder={i18n.t("searchInvoices")}
           onSelect={handleInvoiceSelect}
           handleEnter={handleEnterKey}
           clearSearch={handleClearSearch}
@@ -116,7 +117,7 @@ const Header = ({
       >
         <PlusIcon size={16} weight="bold" />
         <span className="ml-2 hidden text-sm font-bold tracking-wide lg:inline-block">
-          New invoice
+          {i18n.t("invoices.generateInvoice")}
         </span>
       </Button>
     </div>

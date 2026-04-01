@@ -5,6 +5,7 @@ import MobileAmountBox from "common/AmountBox/MobileAmountBox";
 import ChartBar from "common/ChartBar";
 import { useUserContext } from "context/UserContext";
 import { cashFormatter, currencySymbol } from "helpers";
+import { i18n } from "../../i18n";
 
 interface OverdueOutstanding {
   currency?: string;
@@ -42,11 +43,11 @@ const TotalHoursChart: React.FC<TotalHoursChartProps> = ({
 
   const amountBox = [
     {
-      title: "OVERDUE",
+      title: i18n.t("dashboard.overdue"),
       amount: formattedOverdueAmount,
     },
     {
-      title: "OUTSTANDING",
+      title: i18n.t("dashboard.outstanding"),
       amount: formattedOutstandingAmount,
     },
   ];
@@ -71,9 +72,9 @@ const TotalHoursChart: React.FC<TotalHoursChartProps> = ({
             ease-in-out"
               onChange={e => fetchClientDetails(e.target.value)}
             >
-              <option value="week">THIS WEEK</option>
-              <option value="month">THIS MONTH</option>
-              <option value="year">THIS YEAR</option>
+              <option value="week">{i18n.t("thisWeek").toUpperCase()}</option>
+              <option value="month">{i18n.t("thisMonth").toUpperCase()}</option>
+              <option value="year">{i18n.t("thisYear").toUpperCase()}</option>
             </select>
           </div>
           {clientData && (

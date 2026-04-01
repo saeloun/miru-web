@@ -1,6 +1,7 @@
 import React from "react";
 
 import { PaperPlaneTiltIcon } from "miruIcons";
+import { i18n } from "../../../i18n";
 
 const SendButton = ({ onClick }) => (
   <div className="send-button-container ml-1 flex flex-row justify-items-center">
@@ -15,7 +16,7 @@ const SendButton = ({ onClick }) => (
           <PaperPlaneTiltIcon color="#FFFFFF" size={16} weight="bold" />
         </div>
         <p className="ml-1 text-base font-bold tracking-widest text-primary-foreground">
-          SEND
+          {i18n.t("invoices.send")}
         </p>
       </div>
     </button>

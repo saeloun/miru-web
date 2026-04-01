@@ -1,0 +1,367 @@
+---
+hi:
+  activerecord:
+    errors:
+      models:
+        client:
+          attributes:
+            name:
+              format: "%{message}"
+        project:
+          attributes:
+            name:
+              format: "%{message}"
+  application_controller:
+    not_found: मार्ग नहीं मिला
+  avatar:
+    destroy:
+      success: अवतार सफलतापूर्वक हटा दिया गया
+    update:
+      success: अवतार सफलतापूर्वक अपडेट हो गया
+  client:
+    add: ग्राहक जोड़ें
+    address:
+      label: पता
+      placeholder: पता दर्ज करें
+    create:
+      failure: क्लाइंट निर्माण विफल रहा
+      success: ग्राहक सफलतापूर्वक जुड़ गया
+    delete:
+      success:
+        message: ग्राहक को सफलतापूर्वक हटा दिया गया
+    email:
+      label: ईमेल
+      placeholder: ईमेल आईडी दर्ज करें
+    name:
+      label: नाम
+      placeholder: नाम दर्ज करें
+    phone:
+      label: फ़ोन नंबर
+      placeholder: फ़ोन नंबर दर्ज करें
+    update:
+      failure:
+        message: परिवर्तन सहेजने में विफल
+        unauthorized: उपयोगकर्ता को इस क्लाइंट के विवरण में संशोधन करने का अधिकार
+          नहीं है।
+      success:
+        message: परिवर्तनों को सफलतापूर्वक सहेजा
+  clients:
+    add_client_contact:
+      success: निमंत्रण सफलतापूर्वक भेज दिया गया।
+    send_payment_reminder:
+      success: भुगतान अनुस्मारक भेज दिया गया है
+  companies:
+    create:
+      failure: कंपनी बनाने का प्रयास विफल रहा।
+      success: कंपनी सफलतापूर्वक स्थापित हो गई
+    purge_logo:
+      destroy:
+        success: कंपनी का लोगो सफलतापूर्वक हटा दिया गया
+    update:
+      success: परिवर्तनों को सफलतापूर्वक सहेजा
+  company:
+    address: पता
+    base_currency: आधार मुद्रा
+    business_phone: व्यापार फ़ोन
+    cancel: रद्द करना
+    company: कंपनी
+    country: देश
+    date_format: तारिख का प्रारूप
+    fiscal_year: वित्तीय वर्ष
+    logo: प्रतीक चिन्ह
+    save: बचाना
+    save_org: संगठन के विवरण सहेजें
+    setup: संगठन स्थापित करें
+    standard_price: साधारण मूल्य
+    timezone: समय क्षेत्र
+  confirmation:
+    send_instructions: "%{email} को एक पुष्टिकरण ईमेल भेजा गया है।"
+  currency_pairs:
+    from_to_required: से और तक की आवश्यकता है
+    rate_not_found: दर नहीं मिली
+  custom_leaves:
+    update:
+      success: कस्टम लीव्स सफलतापूर्वक अपडेट हो गईं
+  employment:
+    update:
+      success: रोजगार संबंधी जानकारी सफलतापूर्वक अपडेट हो गई है।
+  errors:
+    bill_status_billed: आप उस प्रविष्टि का बिल नहीं बना सकते जिसका बिल पहले ही बन
+      चुका है।
+    can't change status: भुगतान किए गए बिल में बदलाव नहीं किया जा सकता।
+    create_billed_entry: आप बिलिंग के आधार पर टाइमशीट प्रविष्टि नहीं बना सकते।
+    internal_server_error: कुछ गलत हो गया
+    not_found: आप जिस संसाधन की तलाश कर रहे हैं वह उपलब्ध नहीं है।
+    prevent_draft_to_waived: इसे माफ नहीं किया जा सकता
+    unauthorized: केवल मालिक या व्यवस्थापक उपयोगकर्ता ही इस कार्रवाई को करने के लिए
+      अधिकृत हैं।
+    updation_not_allowed: अपडेट की अनुमति नहीं है
+    user_already_member: यह ईमेल आईडी पहले से ही उपयोग में है। कृपया कोई दूसरी ईमेल
+      आईडी दर्ज करें।
+    validate_billable_project: आप गैर-बिल योग्य परियोजनाओं के लिए बिना बिल वाली प्रविष्टि
+      नहीं बना सकते।
+  expenses:
+    approve: व्यय सफलतापूर्वक स्वीकृत हो गया
+    create: व्यय सफलतापूर्वक जमा हो गया
+    destroy: व्यय सफलतापूर्वक हटा दिया गया
+    mark_paid: भुगतान किए गए व्यय के रूप में चिह्नित
+    must_be_approved: भुगतान के रूप में चिह्नित करने से पहले व्यय को अनुमोदित किया
+      जाना आवश्यक है।
+    reject: व्यय सफलतापूर्वक अस्वीकृत
+    update: व्यय सफलतापूर्वक अपडेट हो गया
+  holidays:
+    update:
+      success: छुट्टियों की जानकारी सफलतापूर्वक अपडेट कर दी गई है।
+  invitation:
+    create:
+      success:
+        message: निमंत्रण सफलतापूर्वक भेजा गया
+    delete:
+      success:
+        message: निमंत्रण सफलतापूर्वक हटा दिया गया
+    resent:
+      success:
+        message: निमंत्रण सफलतापूर्वक पुनः भेजा गया
+    update:
+      success:
+        message: परिवर्तनों को सफलतापूर्वक सहेजा
+  invitations:
+    accept:
+      index:
+        success: निमंत्रण स्वीकार कर लिया गया
+      show:
+        success: निमंत्रण स्वीकार कर लिया गया
+      success: निमंत्रण स्वीकार कर लिया गया
+    create:
+      failure: परिवर्तन सहेजने में विफल
+      success: निमंत्रण भेजा जाएगा
+    destroy:
+      failure: निमंत्रण हटाने में विफल
+      success: निमंत्रण हटा दिया गया
+    update:
+      failure: परिवर्तन सहेजने में विफल
+      success: निमंत्रण अपडेट किया गया
+  invoices:
+    payments:
+      success:
+        failure: कुछ गड़बड़ हो गई है, कृपया सहायता टीम से संपर्क करें।
+        success: भुगतान सफल रहा
+  invoices_controller:
+    download:
+      pdf_failed: पीडीएफ जनरेट करने में विफल
+    send_invoice:
+      already_paid: बिल का भुगतान पहले ही हो चुका है।
+      pdf_failed: पीडीएफ जनरेट करने में विफल
+      recipient_limit: ईमेल केवल 5 प्राप्तकर्ताओं को भेजा जा सकता है।
+      recipients_required: प्राप्तकर्ताओं को आवश्यक है
+      success: इनवॉइस सफलतापूर्वक भेज दिया गया है।
+    send_reminder:
+      overdue_only: केवल बकाया बिलों के लिए ही रिमाइंडर भेजे जा सकते हैं।
+      success: एक रिमाइंडर भेजा गया है
+  invoices_view:
+    not_found: कोई बिल नहीं मिला
+  leave_types:
+    create:
+      success: छुट्टी का प्रकार सफलतापूर्वक जोड़ दिया गया
+    update:
+      success: छुट्टी का प्रकार सफलतापूर्वक अपडेट हो गया
+  leave_with_leave_types:
+    update:
+      success: छुट्टियाँ सफलतापूर्वक अपडेट हो गईं
+  leaves:
+    create:
+      success: छुट्टी सफलतापूर्वक बन गई
+    update:
+      success: छुट्टी सफलतापूर्वक अपडेट हो गई
+  navbar:
+    clients: ग्राहकों
+    help: मदद
+    invoices: चालान
+    logout: लॉग आउट
+    payments: भुगतान
+    profile: प्रोफ़ाइल
+    projects: परियोजनाओं
+    reports: रिपोर्टों
+    settings: सेटिंग्स
+    team: टीम
+    time_tracking: समय ट्रैकिंग
+    view_notifications: सूचनाएं देखें
+  passkeys:
+    add_passkey_first: साइन इन करने से पहले पासकी जोड़ें।
+    added: पासकी जोड़ी गई
+    disable_totp_first: पासकी साइन इन की आवश्यकता से पहले ऑथेंटिकेटर ऐप 2FA को डिसेबल
+      करें।
+    not_found: पासवर्ड नहीं मिला।
+    removed: पासकी हटा दी गई
+    requirement_disabled: पासकी की आवश्यकता अक्षम
+    requirement_enabled: पासकी की आवश्यकता सक्षम
+    session_expired: पासकी सत्र समाप्त हो गया है। कृपया पुनः प्रयास करें।
+    verification_failed: पासवर्ड सत्यापन विफल रहा।
+  password:
+    create:
+      success: आपका पासवर्ड रीसेट करने के निर्देश आपके ईमेल पर भेज दिए गए हैं।
+    update:
+      success: आपका पासवर्ड बदला जा चुका है।
+  projects:
+    add_new_project: नया प्रोजेक्ट जोड़ें
+    add_project: प्रोजेक्ट जोड़ें
+    billable: बिल योग्य
+    client: ग्राहक
+    create:
+      failure: प्रोजेक्ट निर्माण विफल रहा।
+      success: प्रोजेक्ट सफलतापूर्वक जोड़ दिया गया।
+    delete:
+      success:
+        message: प्रोजेक्ट सफलतापूर्वक हटा दिया गया
+    edit: संपादन करना
+    hours_logged: लॉग किए गए घंटे
+    new_project: नई परियोजना
+    non_billable: बिल योग्य नहीं
+    project: परियोजना
+    project_name: परियोजना का नाम
+    projects: परियोजनाओं
+    update:
+      success: परिवर्तनों को सफलतापूर्वक सहेजा।
+    update_members:
+      failure:
+        message: परिवर्तन सहेजने में विफल
+        unauthorized: उपयोगकर्ता को इस प्रोजेक्ट के विवरण में बदलाव करने का अधिकार
+          नहीं है।
+      success:
+        message: परिवर्तनों को सफलतापूर्वक सहेजा
+  pundit:
+    client_policy:
+      create?: आपको क्लाइंट बनाने का अधिकार नहीं है।
+      show?: आपको इस पेज तक पहुंचने की अनुमति नहीं है। कृपया सहायता के लिए अपने प्रशासक
+        से संपर्क करें।
+      update?: आपको क्लाइंट को अपडेट करने का अधिकार नहीं है।
+    company_policy:
+      create?: आपको कंपनी बनाने का अधिकार नहीं है।
+      new?: आपको नई कंपनी बनाने का अधिकार नहीं है।
+      show?: आपको कंपनी को देखने का अधिकार नहीं है।
+      update?: आपको कंपनी को अपडेट करने का अधिकार नहीं है।
+    current_company_policy:
+      company_not_present: कंपनी उपस्थित नहीं थी।
+    default: आपको यह कार्य करने का अधिकार नहीं है।
+    different_workspace: आपको अपने वर्तमान कार्यक्षेत्र के बाहर के रिकॉर्ड तक पहुंचने
+      का अधिकार नहीं है।
+    project_policy:
+      create?: आपको प्रोजेक्ट बनाने का अधिकार नहीं है।
+      show?: आपको इस पेज तक पहुंचने की अनुमति नहीं है। कृपया सहायता के लिए अपने प्रशासक
+        से संपर्क करें।
+    team_policy:
+      destroy?: आपको टीम को नष्ट करने का अधिकार नहीं है।
+      edit?: आपको टीम में बदलाव करने का अधिकार नहीं है।
+      update?: आपको टीम को अपडेट करने का अधिकार नहीं है।
+  registration:
+    confirm_password: पासवर्ड की पुष्टि कीजिये
+    email_id: ईमेल
+    first_name: पहला नाम
+    last_name: उपनाम
+    name: नाम
+    or: या
+    password: पासवर्ड
+    remember_me: मुझे याद करो
+    sign_in: दाखिल करना
+    sign_up: साइन अप करें
+    signin_with_github: GitHub से साइन इन करें
+    signin_with_google: गूगल से साइन इन करें
+    signup_with_apple: Apple के साथ साइन अप करें
+    signup_with_github: GitHub से साइन अप करें
+    signup_with_google: गूगल से साइन अप करें
+  reports:
+    heading: समय प्रविष्टि रिपोर्ट
+  sessions:
+    failure:
+      invalid: अमान्य ईमेल या पासवर्ड
+  settings:
+    cancel: रद्द करना
+    change_password: पासवर्ड बदलें
+    confirm_password: पासवर्ड की पुष्टि कीजिये
+    current_password: वर्तमान पासवर्ड
+    email: ईमेल
+    name: नाम
+    organization_setting: संगठन सेटिंग्स
+    password: पासवर्ड
+    payment_setting: भुगतान सेटिंग्स
+    profile_picture: प्रोफ़ाइल फोटो
+    profile_setting: प्रोफ़ाइल सेटिंग्स
+    save: बचाना
+    settings: सेटिंग्स
+  shared_links:
+    already_have_an_account: क्या आपके पास पहले से एक खाता मौजूद है?
+    back_to_login: लॉगिन पर वापस जाएं
+    confirmation_instruction: क्या आपको पुष्टि संबंधी निर्देश प्राप्त नहीं हुए?
+    dont_have_an_account: क्या आपके पास खाता नहीं है?
+    forgot_password: पासवर्ड भूल गए?
+    unlock_instruction: क्या आपको अनलॉक करने के निर्देश नहीं मिले?
+  subscriptions:
+    no_billing_customer: इस कंपनी के लिए कोई बिलिंग ग्राहक मौजूद नहीं है।
+    pricing_not_configured: स्ट्राइप सब्सक्रिप्शन की कीमत कॉन्फ़िगर नहीं की गई है।
+    trial_not_eligible: आपका वर्कस्पेस प्रो ट्रायल के लिए योग्य नहीं है।
+    trial_started: आपका 30-दिवसीय प्रो ट्रायल शुरू हो गया है।
+  team:
+    changed_email: बदला हुआ ईमेल
+    create_new_user: नया उपयोगकर्ता बनाएँ
+    current_email: वर्तमान ईमेल
+    delete:
+      success:
+        message: टीम सदस्य को सफलतापूर्वक हटा दिया गया
+    email: ईमेल
+    email_id: ईमेल आईडी
+    first_name: पहला नाम
+    form_admin: व्यवस्थापक
+    form_book_keeper: बहीखाता रक्षक
+    form_email: ईमेल
+    form_employee: कर्मचारी
+    form_name: नाम
+    form_role: भूमिका
+    invitation: निमंत्रण लंबित है
+    last_name: उपनाम
+    name: नाम
+    new_user: नए उपयोगकर्ता
+    profile_picture: तस्वीर
+    reconfirmation: पुनः पुष्टि लंबित है
+    role: भूमिका
+    team: टीम
+    update:
+      error:
+        role: भूमिका को अपडेट करते समय एक त्रुटि आई।
+      success:
+        message: परिवर्तनों को सफलतापूर्वक सहेजा
+    update_user: उपयोगकर्ता को अपडेट करें
+  timeoff_entries:
+    create:
+      success: अवकाश सफलतापूर्वक जोड़ा गया
+    destroy:
+      success: अवकाश सफलतापूर्वक हटा दिया गया
+    update:
+      success: अवकाश का समय सफलतापूर्वक अपडेट हो गया है।
+  timesheet_entry:
+    create:
+      message: टाइमशीट बनाई गई
+    destroy:
+      failure: टाइमशीट प्रविष्टियों को हटाने में विफलता
+      message: टाइमशीट हटा दी गई
+    update:
+      failure: टाइमशीट प्रविष्टियों को अपडेट करने में विफल
+      message: टाइमशीट अपडेट हो गई
+  totp:
+    disable_passkey_first: ऑथेंटिकेटर ऐप 2FA को सक्षम करने से पहले आवश्यक पासकी साइन
+      इन को अक्षम करें।
+    disabled: प्रमाणीकरण ऐप अक्षम कर दिया गया है
+    enabled: प्रमाणीकरण ऐप सक्षम
+    invalid_code: अमान्य प्रमाणीकरण कोड।
+    invalid_verification: अवैध सत्यापन संकेत।
+    not_enabled: सबसे पहले ऑथेंटिकेटर ऐप 2FA को सक्षम करें।
+    recovery_codes_regenerated: रिकवरी कोड पुनः उत्पन्न किए गए
+    session_expired: वह सत्यापन अनुरोध अब मान्य नहीं है। कृपया दोबारा लॉग इन करें।
+  user:
+    login:
+      failure:
+        disabled: आपकी पहुंच अक्षम कर दी गई है।
+        pending_invitation: आपका खाता अभी तक सक्रिय नहीं हुआ है।
+  workspaces:
+    update:
+      failure: कार्यक्षेत्र बदलने में विफल
+      success: कार्यक्षेत्र सफलतापूर्वक बदल गया

@@ -54,6 +54,7 @@ import useThemeMode from "common/useThemeMode";
 import { WorkspaceApi } from "apis/api";
 import { MiruLogoSVG } from "miruIcons";
 import { Paths, Roles } from "../../constants";
+import { i18n } from "../../i18n";
 
 const Sidebar: React.FC = () => {
   const location = useLocation();
@@ -70,67 +71,67 @@ const Sidebar: React.FC = () => {
   const mainNavItems = [
     {
       icon: <Clock className="h-5 w-5" />,
-      label: "Time Tracking",
+      label: i18n.t("navbar.timeTracking"),
       path: Paths.TIME_TRACKING,
       allowedRoles: [Roles.ADMIN, Roles.OWNER, Roles.EMPLOYEE],
       badge: null,
-      description: "Track time across projects",
+      description: i18n.t("navbar.timeTrackingDescription"),
     },
     {
       icon: <UserCircle className="h-5 w-5" />,
-      label: "Clients",
+      label: i18n.t("navbar.clients"),
       path: Paths.CLIENTS,
       allowedRoles: [Roles.ADMIN, Roles.OWNER, Roles.EMPLOYEE],
       badge: null,
-      description: "Manage client relationships",
+      description: i18n.t("navbar.clientsDescription"),
     },
     {
       icon: <FolderOpen className="h-5 w-5" />,
-      label: "Projects",
+      label: i18n.t("navbar.projects"),
       path: Paths.PROJECTS,
       allowedRoles: [Roles.ADMIN, Roles.OWNER, Roles.EMPLOYEE],
       badge: null,
-      description: "Organize and track projects",
+      description: i18n.t("navbar.projectsDescription"),
     },
     {
       icon: <FileText className="h-5 w-5" />,
-      label: "Invoices",
+      label: i18n.t("navbar.invoices"),
       path: Paths.INVOICES.replace("/*", ""),
       allowedRoles: [Roles.ADMIN, Roles.OWNER, Roles.BOOK_KEEPER, Roles.CLIENT],
       badge: null,
-      description: "Create and manage invoices",
+      description: i18n.t("navbar.invoicesDescription"),
     },
     {
       icon: <BarChart3 className="h-5 w-5" />,
-      label: "Reports",
+      label: i18n.t("navbar.reports"),
       path: Paths.REPORTS,
       allowedRoles: [Roles.ADMIN, Roles.OWNER, Roles.BOOK_KEEPER],
       badge: null,
-      description: "Analytics and insights",
+      description: i18n.t("navbar.reportsDescription"),
     },
     {
       icon: <CreditCard className="h-5 w-5" />,
-      label: "Payments",
+      label: i18n.t("navbar.payments"),
       path: Paths.PAYMENTS,
       allowedRoles: [Roles.ADMIN, Roles.OWNER, Roles.BOOK_KEEPER],
       badge: null,
-      description: "Track payment history",
+      description: i18n.t("navbar.paymentsDescription"),
     },
     {
       icon: <Calendar className="h-5 w-5" />,
-      label: "Leaves & Holidays",
+      label: i18n.t("navbar.leavesAndHolidays"),
       path: Paths.Leave_Management,
       allowedRoles: [Roles.ADMIN, Roles.OWNER, Roles.EMPLOYEE],
       badge: null,
-      description: "Manage time off requests",
+      description: i18n.t("navbar.leavesDescription"),
     },
     {
       icon: <Receipt className="h-5 w-5" />,
-      label: "Expenses",
+      label: i18n.t("navbar.expenses"),
       path: Paths.EXPENSES,
       allowedRoles: [Roles.ADMIN, Roles.OWNER, Roles.BOOK_KEEPER],
       badge: null,
-      description: "Track business expenses",
+      description: i18n.t("navbar.expensesDescription"),
     },
   ];
 
@@ -138,7 +139,7 @@ const Sidebar: React.FC = () => {
   const personalSettingsItems = [
     {
       icon: <User className="h-5 w-5" />,
-      label: "Profile Settings",
+      label: i18n.t("navbar.profileSettings"),
       path: "/settings/profile",
       allowedRoles: [
         Roles.ADMIN,
@@ -150,7 +151,7 @@ const Sidebar: React.FC = () => {
     },
     {
       icon: <Briefcase className="h-5 w-5" />,
-      label: "Employment Details",
+      label: i18n.t("navbar.employmentDetails"),
       path: "/settings/employment",
       allowedRoles: [
         Roles.ADMIN,
@@ -161,7 +162,7 @@ const Sidebar: React.FC = () => {
     },
     {
       icon: <DeviceMobile className="h-5 w-5" />,
-      label: "Allocated Devices",
+      label: i18n.t("navbar.allocatedDevices"),
       path: "/settings/devices",
       allowedRoles: [
         Roles.ADMIN,
@@ -172,7 +173,7 @@ const Sidebar: React.FC = () => {
     },
     {
       icon: <Bell className="h-5 w-5" />,
-      label: "Notification Settings",
+      label: i18n.t("navbar.notificationSettings"),
       path: "/settings/notifications",
       allowedRoles: [
         Roles.ADMIN,
@@ -187,31 +188,31 @@ const Sidebar: React.FC = () => {
   const orgSettingsItems = [
     {
       icon: <Buildings className="h-5 w-5" />,
-      label: "Org. Settings",
+      label: i18n.t("navbar.orgSettings"),
       path: "/settings/organization",
       allowedRoles: [Roles.ADMIN, Roles.OWNER],
     },
     {
       icon: <UsersRound className="h-5 w-5" />,
-      label: "Team",
+      label: i18n.t("navbar.team"),
       path: Paths.TEAM.replace("/*", ""),
       allowedRoles: [Roles.ADMIN, Roles.OWNER],
     },
     {
       icon: <Wallet className="h-5 w-5" />,
-      label: "Payment Settings",
+      label: i18n.t("navbar.paymentSettings"),
       path: "/settings/payment",
       allowedRoles: [Roles.ADMIN, Roles.OWNER],
     },
     {
       icon: <Palmtree className="h-5 w-5" />,
-      label: "Leaves",
+      label: i18n.t("navbar.leaves"),
       path: "/settings/leaves",
       allowedRoles: [Roles.ADMIN, Roles.OWNER],
     },
     {
       icon: <PartyPopper className="h-5 w-5" />,
-      label: "Holidays",
+      label: i18n.t("navbar.holidays"),
       path: "/settings/holidays",
       allowedRoles: [Roles.ADMIN, Roles.OWNER],
     },
@@ -333,7 +334,7 @@ const Sidebar: React.FC = () => {
         <div className="flex h-16 items-center justify-between border-b px-4">
           <NavLink className="flex items-center gap-2" to={Paths.TIME_TRACKING}>
             <img
-              alt="Miru"
+              alt={i18n.t("auth.miruLogo")}
               src={MiruLogoSVG}
               className={cn(
                 "transition-all",
@@ -389,7 +390,7 @@ const Sidebar: React.FC = () => {
                         className="w-full justify-between px-3 py-2 h-auto font-semibold text-muted-foreground hover:text-foreground"
                       >
                         <span className="text-xs uppercase tracking-wider">
-                          Personal Settings
+                          {i18n.t("navbar.personalSettings")}
                         </span>
                         <CaretDown
                           className={cn(
@@ -434,7 +435,7 @@ const Sidebar: React.FC = () => {
                         className="w-full justify-between px-3 py-2 h-auto font-semibold text-muted-foreground hover:text-foreground"
                       >
                         <span className="text-xs uppercase tracking-wider">
-                          Organization
+                          {i18n.t("navbar.organization")}
                         </span>
                         <CaretDown
                           className={cn(
@@ -485,7 +486,7 @@ const Sidebar: React.FC = () => {
                       {!isCollapsed && (
                         <div className="flex-1 text-left min-w-0">
                           <p className="text-xs text-muted-foreground">
-                            Workspace
+                            {i18n.t("navbar.workspace")}
                           </p>
                           <p className="text-sm font-medium truncate">
                             {currentWorkspace.name}
@@ -505,7 +506,7 @@ const Sidebar: React.FC = () => {
                 >
                   <DropdownMenuLabel className="flex items-center gap-2">
                     <Buildings className="h-4 w-4" />
-                    Switch Workspace
+                    {i18n.t("navbar.switchWorkspace")}
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   {workspaces.map(workspace => (
@@ -528,7 +529,7 @@ const Sidebar: React.FC = () => {
                       </div>
                       {workspace.id === currentWorkspace.id && (
                         <Badge variant="secondary" className="ml-auto">
-                          Active
+                          {i18n.t("navbar.active")}
                         </Badge>
                       )}
                     </DropdownMenuItem>
@@ -536,7 +537,7 @@ const Sidebar: React.FC = () => {
                   <DropdownMenuSeparator />
                   <DropdownMenuItem className="cursor-pointer">
                     <span className="text-xs text-muted-foreground">
-                      Create New Workspace
+                      {i18n.t("navbar.createNewWorkspace")}
                     </span>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
@@ -561,7 +562,7 @@ const Sidebar: React.FC = () => {
                   }}
                 >
                   <SignOut className="h-5 w-5" />
-                  {!isCollapsed && <span>Sign Out</span>}
+                  {!isCollapsed && <span>{i18n.t("auth.signOut")}</span>}
                 </Button>
               </TooltipTrigger>
               {isCollapsed && (
@@ -570,7 +571,7 @@ const Sidebar: React.FC = () => {
                   className="bg-card text-primary-foreground border-border shadow-xl px-3 py-2"
                 >
                   <p className="font-semibold text-primary-foreground">
-                    Sign Out
+                    {i18n.t("auth.signOut")}
                   </p>
                 </TooltipContent>
               )}

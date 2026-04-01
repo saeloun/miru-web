@@ -1,6 +1,7 @@
 import React from "react";
 import { SearchResults } from "../../../ui/search-results";
 import SearchedDataRow from "./SearchedDataRow";
+import { i18n } from "../../../../i18n";
 
 const SearchDropdown = ({ list = [], status, display, searchRef = null }) => (
   <SearchResults
@@ -9,7 +10,7 @@ const SearchDropdown = ({ list = [], status, display, searchRef = null }) => (
     isOpen={display}
     containerRef={searchRef}
     renderItem={invoice => <SearchedDataRow invoice={invoice} />}
-    emptyMessage="No matching results found"
+    emptyMessage={i18n.t("noResultsFound")}
     className="px-4"
   />
 );

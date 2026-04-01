@@ -1,0 +1,105 @@
+---
+pt-BR:
+  activerecord:
+    errors:
+      models:
+        user:
+          attributes:
+            email:
+              blank: O e-mail não pode estar em branco.
+              invalid: ID de e-mail inválido
+              taken: O endereço de e-mail já existe.
+            first_name:
+              blank: não pode estar em branco
+              invalid: deve conter apenas letras ou espaços
+            last_name:
+              blank: não pode estar em branco
+              invalid: deve conter apenas letras ou espaços
+            password:
+              blank: não pode estar em branco
+              too_short: deve ter pelo menos %{count} caracteres
+            password_confirmation:
+              confirmation: não corresponde à nova senha
+  devise:
+    confirmations:
+      confirmed: Seu endereço de e-mail foi confirmado com sucesso.
+      send_instructions: Você receberá um e-mail com instruções sobre como confirmar
+        seu endereço de e-mail em alguns minutos.
+      send_paranoid_instructions: Se o seu endereço de e-mail estiver em nosso banco
+        de dados, você receberá um e-mail com instruções sobre como confirmá-lo em
+        alguns minutos.
+    failure:
+      already_authenticated: Você já está conectado.
+      inactive: Sua conta ainda não foi ativada.
+      invalid: "%{authentication_keys} ou senha inválidos."
+      last_attempt: Você tem mais uma tentativa antes que sua conta seja bloqueada.
+      locked: Sua conta está bloqueada.
+      not_found_in_database: "%{authentication_keys} ou senha inválidos."
+      timeout: Sua sessão expirou. Faça login novamente para continuar.
+      unauthenticated: Você precisa fazer login ou se cadastrar antes de continuar.
+      unconfirmed: Você precisa confirmar seu endereço de e-mail antes de continuar.
+    mailer:
+      confirmation_instructions:
+        subject: Instruções de confirmação
+      email_changed:
+        subject: E-mail alterado
+      password_change:
+        subject: Senha do Miru redefinida com sucesso!
+      reset_password_instructions:
+        subject: Redefina sua senha do Miru
+      unlock_instructions:
+        subject: Instruções de desbloqueio
+    omniauth_callbacks:
+      failure: Não foi possível autenticá-lo em %{kind} porque "%{reason}".
+      success: Autenticação realizada com sucesso na conta %{kind}.
+    passwords:
+      no_token: Você não pode acessar esta página sem ter vindo de um e-mail de redefinição
+        de senha. Se você veio de um e-mail de redefinição de senha, certifique-se
+        de usar o URL completo fornecido.
+      send_instructions: Você receberá um e-mail com instruções sobre como redefinir
+        sua senha em alguns minutos.
+      send_paranoid_instructions: Se o seu endereço de e-mail estiver em nosso banco
+        de dados, você receberá um link para recuperação de senha em seu e-mail em
+        alguns minutos.
+      updated: Sua senha foi alterada com sucesso. Você agora está conectado.
+      updated_not_active: Sua senha foi alterada com sucesso.
+    registrations:
+      destroyed: Até logo! Sua conta foi cancelada com sucesso. Esperamos vê-lo(a)
+        novamente em breve.
+      signed_up: Bem-vindo(a)! Seu cadastro foi realizado com sucesso.
+      signed_up_but_inactive: Você se cadastrou com sucesso. No entanto, não foi possível
+        efetuar o login porque sua conta ainda não foi ativada.
+      signed_up_but_locked: Você se cadastrou com sucesso. No entanto, não foi possível
+        acessar sua conta porque ela está bloqueada.
+      signed_up_but_unconfirmed: ''
+      update_needs_confirmation: Você atualizou sua conta com sucesso, mas precisamos
+        verificar seu novo endereço de e-mail. Por favor, verifique sua caixa de entrada
+        e clique no link de confirmação para confirmar seu novo endereço de e-mail.
+      updated: Alterações salvas com sucesso
+      updated_but_not_signed_in: Sua conta foi atualizada com sucesso, mas como sua
+        senha foi alterada, você precisa fazer login novamente.
+      user:
+        signed_up_but_Your access has been disabled: Por favor, verifique seu e-mail
+          e siga o link de confirmação para confirmar seu endereço de e-mail.
+    sessions:
+      already_signed_out: Sessão encerrada com sucesso.
+      signed_in: Login efetuado com sucesso.
+      signed_out: Sessão encerrada com sucesso.
+    unlocks:
+      send_instructions: Você receberá um e-mail com instruções sobre como desbloquear
+        sua conta em alguns minutos.
+      send_paranoid_instructions: Se a sua conta existir, você receberá um e-mail
+        com instruções sobre como desbloqueá-la em alguns minutos.
+      unlocked: Sua conta foi desbloqueada com sucesso. Faça login para continuar.
+  errors:
+    messages:
+      already_confirmed: A confirmação já foi feita, por favor, tente iniciar sessão
+        novamente.
+      confirmation_period_expired: Precisa ser confirmado dentro de %{period}, por
+        favor, solicite um novo.
+      expired: expirou, solicite uma nova.
+      not_found: não encontrado
+      not_locked: não estava trancado
+      not_saved:
+        one: '1 erro impediu que este %{resource} fosse salvo:'
+        other: "%{count} erros impediram que este %{resource} fosse salvo:"

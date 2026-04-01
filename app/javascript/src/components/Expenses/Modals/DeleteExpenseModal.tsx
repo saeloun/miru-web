@@ -1,6 +1,7 @@
 import React from "react";
 
 import { expensesApi } from "apis/api";
+import { i18n } from "../../../i18n";
 import { useNavigate } from "react-router-dom";
 import { Modal, Button } from "StyledComponents";
 
@@ -28,10 +29,9 @@ const DeleteExpenseModal = ({
       onClose={() => setShowDeleteExpenseModal(false)}
     >
       <div className="my-8 flex-col">
-        <h6 className="mb-2 text-2xl font-bold">Delete Expense</h6>
+        <h6 className="mb-2 text-2xl font-bold">{i18n.t("expenses.deleteExpense")}</h6>
         <p className="mt-2 font-normal">
-          Are you sure you want to delete this expense?
-          <br /> This action cannot be reversed.
+          {i18n.t("expenses.deleteExpenseConfirm")}
         </p>
       </div>
       <div className="flex justify-between">
@@ -44,7 +44,7 @@ const DeleteExpenseModal = ({
             setShowDeleteExpenseModal(false);
           }}
         >
-          CANCEL
+          {i18n.t("cancel").toUpperCase()}
         </Button>
         <Button
           className="ml-2 w-1/2 bg-destructive xsm:text-white"
@@ -53,7 +53,7 @@ const DeleteExpenseModal = ({
           type="button"
           onClick={handleDeleteExpense}
         >
-          DELETE
+          {i18n.t("delete").toUpperCase()}
         </Button>
       </div>
     </Modal>

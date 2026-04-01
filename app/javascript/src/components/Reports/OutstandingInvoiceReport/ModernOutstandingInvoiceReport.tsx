@@ -1,6 +1,5 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 import {
   Card,
   CardContent,
@@ -14,13 +13,6 @@ import { Label } from "../../ui/label";
 import { Badge } from "../../ui/badge";
 import { Skeleton } from "../../ui/skeleton";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../../ui/select";
-import {
   Table,
   TableBody,
   TableCell,
@@ -29,17 +21,10 @@ import {
   TableRow,
 } from "../../ui/table";
 import { Receipt, Warning, Clock, CurrencyDollar } from "phosphor-react";
-import { useSearchParams } from "react-router-dom";
 import { currencyFormat } from "../../../helpers/currency";
 import { useUserContext } from "../../../context/UserContext";
+import { i18n } from "../../../i18n";
 import { invoicesApi } from "apis/api";
-import {
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "../../ui/chart";
-import ShareReportButton from "../ShareReportButton";
-import { buildSearchParams } from "../filterUtils";
 
 interface Invoice {
   id: string;
@@ -75,16 +60,6 @@ interface FetchFilters {
 }
 
 const outstandingStatuses = ["sent", "viewed", "overdue"];
-const outstandingStatusChartConfig = {
-  outstanding: {
-    label: "Outstanding",
-    color: "hsl(var(--primary))",
-  },
-  overdue: {
-    label: "Overdue",
-    color: "hsl(var(--destructive))",
-  },
-};
 
 const parseDate = (value?: string) => {
   if (!value) return null;
@@ -170,7 +145,7 @@ const fetchOutstandingInvoices = async (filters: FetchFilters = {}) => {
   filteredInvoices.forEach(invoice => {
     const clientId = invoice.client_id;
     const clientName =
-      invoice.client_name || invoice.client?.name || "Unknown Client";
+      invoice.client_name || invoice.client?.name || i18n.t("reports.unknownClient");
 
     if (!clientsMap.has(clientId)) {
       clientsMap.set(clientId, {
@@ -229,25 +204,18 @@ const fetchOutstandingInvoices = async (filters: FetchFilters = {}) => {
 
 const ModernOutstandingInvoiceReport: React.FC = () => {
   const { company } = useUserContext();
-  const [searchParams, setSearchParams] = useSearchParams();
   const [activeTab, setActiveTab] = useState<"outstanding" | "overdue">(
-    searchParams.get("tab") === "overdue" ? "overdue" : "outstanding"
+    "outstanding"
   );
-  const initialFromDate = searchParams.get("from") || "";
-  const initialToDate = searchParams.get("to") || "";
-  const initialCurrency = searchParams.get("currency") || "ALL";
-  const [fromDate, setFromDate] = useState(initialFromDate);
-  const [toDate, setToDate] = useState(initialToDate);
-  const [pendingFromDate, setPendingFromDate] = useState(initialFromDate);
-  const [pendingToDate, setPendingToDate] = useState(initialToDate);
-  const [currencyFilter, setCurrencyFilter] = useState(initialCurrency);
-  const [pendingCurrencyFilter, setPendingCurrencyFilter] =
-    useState(initialCurrency);
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
+  const [pendingFromDate, setPendingFromDate] = useState("");
+  const [pendingToDate, setPendingToDate] = useState("");
+  const [currencyFilter, setCurrencyFilter] = useState("ALL");
+  const [pendingCurrencyFilter, setPendingCurrencyFilter] = useState("ALL");
   const [exportFormat, setExportFormat] = useState("CSV");
   const [exportNotice, setExportNotice] = useState("");
-  const [selectedClientId, setSelectedClientId] = useState<string | null>(
-    searchParams.get("clientId")
-  );
+  const [selectedClientId, setSelectedClientId] = useState<string | null>(null);
 
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: ["outstanding-invoices", fromDate, toDate, currencyFilter],
@@ -260,33 +228,11 @@ const ModernOutstandingInvoiceReport: React.FC = () => {
   });
 
   const baseCurrency = data?.currency || company?.baseCurrency || "USD";
-  const statusChartData = [
-    {
-      label: "Outstanding",
-      outstanding: data?.summary.total_outstanding || 0,
-      overdue: 0,
-    },
-    {
-      label: "Overdue",
-      outstanding: 0,
-      overdue: data?.summary.total_overdue || 0,
-    },
-  ];
 
   const overdueInvoices = useMemo(
     () =>
       (data?.invoices || []).filter(invoice => invoice.status === "overdue"),
     [data?.invoices]
-  );
-
-  const visibleInvoices = useMemo(
-    () =>
-      activeTab === "overdue"
-        ? overdueInvoices
-        : (data?.invoices || []).filter(invoice =>
-            ["sent", "viewed"].includes(invoice.status)
-          ),
-    [activeTab, data?.invoices, overdueInvoices]
   );
 
   const overdueAging = useMemo(() => {
@@ -334,14 +280,6 @@ const ModernOutstandingInvoiceReport: React.FC = () => {
     [data?.clients]
   );
 
-  const visibleClients = useMemo(
-    () =>
-      activeTab === "overdue"
-        ? sortedClients.filter(client => client.total_overdue > 0)
-        : sortedClients.filter(client => client.total_outstanding > 0),
-    [activeTab, sortedClients]
-  );
-
   const selectedClient = useMemo(() => {
     if (!selectedClientId) return null;
 
@@ -363,52 +301,26 @@ const ModernOutstandingInvoiceReport: React.FC = () => {
 
   const refreshData = async () => {
     await refetch();
-    setExportNotice("Data refreshed");
+    setExportNotice(i18n.t("reports.dataRefreshed"));
   };
 
   const exportReport = (format: string) => {
     const normalized = format.toLowerCase();
     const apiFormat = normalized === "excel" ? "csv" : normalized;
-    const params = buildSearchParams({
-      format: apiFormat,
-      from: fromDate || null,
-      to: toDate || null,
-      currency: currencyFilter !== "ALL" ? currencyFilter : null,
-    });
-
+    const params = new URLSearchParams({ format: apiFormat });
     window.open(
       `/api/v1/reports/outstanding_overdue_invoices/download?${params.toString()}`,
       "_blank"
     );
-    setExportNotice(`Generating ${format.toUpperCase()}`);
+    setExportNotice(i18n.t("reports.generatingExport", { format: format.toUpperCase() }));
   };
-
-  useEffect(() => {
-    setSearchParams(
-      buildSearchParams({
-        tab: activeTab,
-        from: fromDate || null,
-        to: toDate || null,
-        currency: currencyFilter !== "ALL" ? currencyFilter : null,
-        clientId: selectedClientId || null,
-      }),
-      { replace: true }
-    );
-  }, [
-    activeTab,
-    currencyFilter,
-    fromDate,
-    selectedClientId,
-    setSearchParams,
-    toDate,
-  ]);
 
   if (error) {
     return (
       <div className="flex h-96 items-center justify-center">
         <div className="text-center">
           <Warning size={48} className="mx-auto mb-4 text-muted-foreground" />
-          <p className="text-muted-foreground">Failed to load report data</p>
+          <p className="text-muted-foreground">{i18n.t("reports.failedToLoadReportData")}</p>
         </div>
       </div>
     );
@@ -419,10 +331,10 @@ const ModernOutstandingInvoiceReport: React.FC = () => {
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold text-foreground">
-            Outstanding and Overdue
+            {i18n.t("reports.outstandingAndOverdue")}
           </h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            Follow up on invoices that still need attention.
+            {i18n.t("reports.followUpOnInvoices")}
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
@@ -430,56 +342,50 @@ const ModernOutstandingInvoiceReport: React.FC = () => {
             variant={activeTab === "outstanding" ? "default" : "outline"}
             onClick={() => setActiveTab("outstanding")}
           >
-            Outstanding
+            {i18n.t("reports.outstanding")}
           </Button>
           <Button
             variant={activeTab === "overdue" ? "default" : "outline"}
             onClick={() => setActiveTab("overdue")}
           >
-            Overdue
+            {i18n.t("reports.overdue")}
           </Button>
           <Button variant="outline" onClick={refreshData}>
-            Refresh
+            {i18n.t("reports.refresh")}
           </Button>
-          <ShareReportButton />
         </div>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Filters</CardTitle>
+          <CardTitle>{i18n.t("filters")}</CardTitle>
           <CardDescription>{baseCurrency}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid gap-4 md:grid-cols-3">
             <div className="space-y-2">
-              <Label htmlFor="currency-filter">Currency Filter</Label>
-              <Select
+              <Label htmlFor="currency-filter">{i18n.t("reports.currencyFilter")}</Label>
+              <select
+                id="currency-filter"
+                aria-label={i18n.t("reports.currencyFilter")}
+                className="h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
                 value={pendingCurrencyFilter}
-                onValueChange={setPendingCurrencyFilter}
+                onChange={e => setPendingCurrencyFilter(e.target.value)}
               >
-                <SelectTrigger
-                  id="currency-filter"
-                  aria-label="Currency Filter"
-                >
-                  <SelectValue placeholder="All currencies" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="ALL">All</SelectItem>
-                  {(data?.currencies || []).map(currency => (
-                    <SelectItem key={currency} value={currency}>
-                      {currency}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                <option value="ALL">All</option>
+                {(data?.currencies || []).map(currency => (
+                  <option key={currency} value={currency}>
+                    {currency}
+                  </option>
+                ))}
+              </select>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="from-date">From Date</Label>
+              <Label htmlFor="from-date">{i18n.t("reports.fromDate")}</Label>
               <Input
                 id="from-date"
-                aria-label="From Date"
+                aria-label={i18n.t("reports.fromDate")}
                 type="date"
                 value={pendingFromDate}
                 onChange={e => setPendingFromDate(e.target.value)}
@@ -487,10 +393,10 @@ const ModernOutstandingInvoiceReport: React.FC = () => {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="to-date">To Date</Label>
+              <Label htmlFor="to-date">{i18n.t("reports.toDate")}</Label>
               <Input
                 id="to-date"
-                aria-label="To Date"
+                aria-label={i18n.t("reports.toDate")}
                 type="date"
                 value={pendingToDate}
                 onChange={e => setPendingToDate(e.target.value)}
@@ -499,27 +405,9 @@ const ModernOutstandingInvoiceReport: React.FC = () => {
           </div>
 
           <div className="flex flex-wrap gap-2">
-            <Button
-              onClick={() => {
-                applyCurrencyFilter();
-                applyDateFilter();
-              }}
-            >
-              Apply Filters
-            </Button>
-            <Button
-              onClick={() => {
-                setPendingCurrencyFilter("ALL");
-                setPendingFromDate("");
-                setPendingToDate("");
-                setCurrencyFilter("ALL");
-                setFromDate("");
-                setToDate("");
-                setSelectedClientId(null);
-              }}
-              variant="outline"
-            >
-              Reset
+            <Button onClick={applyCurrencyFilter}>{i18n.t("reports.applyFilter")}</Button>
+            <Button onClick={applyDateFilter} variant="outline">
+              {i18n.t("reports.applyDateFilter")}
             </Button>
           </div>
         </CardContent>
@@ -527,14 +415,14 @@ const ModernOutstandingInvoiceReport: React.FC = () => {
 
       <Card data-testid="report-summary">
         <CardHeader>
-          <CardTitle>Summary</CardTitle>
+          <CardTitle>{i18n.t("summary")}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid gap-4 md:grid-cols-4">
             <Card data-testid="outstanding-summary">
               <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <CardTitle className="text-sm font-medium">
-                  Total Outstanding
+                  {i18n.t("reports.totalOutstanding")}
                 </CardTitle>
                 <Clock className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
@@ -555,7 +443,7 @@ const ModernOutstandingInvoiceReport: React.FC = () => {
             <Card data-testid="overdue-summary">
               <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <CardTitle className="text-sm font-medium">
-                  Total Overdue
+                  {i18n.t("reports.totalOverdue")}
                 </CardTitle>
                 <Warning className="h-4 w-4 text-destructive" />
               </CardHeader>
@@ -576,7 +464,7 @@ const ModernOutstandingInvoiceReport: React.FC = () => {
             <Card>
               <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <CardTitle className="text-sm font-medium">
-                  Total Invoices
+                  {i18n.t("reports.totalInvoices")}
                 </CardTitle>
                 <Receipt className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
@@ -594,7 +482,7 @@ const ModernOutstandingInvoiceReport: React.FC = () => {
             <Card data-testid="filtered-summary">
               <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <CardTitle className="text-sm font-medium">
-                  Total Amount
+                  {i18n.t("reports.totalAmount")}
                 </CardTitle>
                 <CurrencyDollar className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
@@ -617,29 +505,36 @@ const ModernOutstandingInvoiceReport: React.FC = () => {
 
       <Card>
         <CardHeader>
-          <CardTitle>Export</CardTitle>
+          <CardTitle>{i18n.t("reports.exportSection")}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
           <div className="flex flex-wrap gap-2 items-end">
             <div className="w-48 space-y-2">
-              <Label htmlFor="export-format">Format</Label>
-              <Select value={exportFormat} onValueChange={setExportFormat}>
-                <SelectTrigger id="export-format" aria-label="Format">
-                  <SelectValue placeholder="Format" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="CSV">CSV</SelectItem>
-                  <SelectItem value="PDF">PDF</SelectItem>
-                  <SelectItem value="Excel">Excel</SelectItem>
-                </SelectContent>
-              </Select>
+              <Label htmlFor="export-format">{i18n.t("reports.formatLabel")}</Label>
+              <select
+                id="export-format"
+                aria-label={i18n.t("reports.formatLabel")}
+                className="h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                value={exportFormat}
+                onChange={e => setExportFormat(e.target.value)}
+              >
+                <option value="CSV">CSV</option>
+                <option value="PDF">PDF</option>
+                <option value="Excel">Excel</option>
+              </select>
             </div>
-            <Button onClick={() => exportReport(exportFormat)}>Download</Button>
+            <Button onClick={() => exportReport(exportFormat)}>{i18n.t("download")}</Button>
             <Button variant="outline" onClick={() => exportReport("PDF")}>
-              Export PDF
+              {i18n.t("reports.exportPdfBtn")}
             </Button>
             <Button variant="outline" onClick={() => exportReport("CSV")}>
-              Export CSV
+              {i18n.t("reports.exportCsvBtn")}
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => setExportNotice(i18n.t("reports.exportStarted"))}
+            >
+              {i18n.t("reports.export")}
             </Button>
           </div>
           {exportNotice ? <p>{exportNotice}</p> : null}
@@ -648,52 +543,23 @@ const ModernOutstandingInvoiceReport: React.FC = () => {
 
       <Card data-testid="status-chart">
         <CardHeader>
-          <CardTitle>Status Overview</CardTitle>
+          <CardTitle>{i18n.t("reports.statusOverview")}</CardTitle>
         </CardHeader>
         <CardContent>
-          <ChartContainer
-            config={outstandingStatusChartConfig}
-            className="h-[260px] w-full"
-          >
-            <BarChart
-              data={statusChartData}
-              margin={{ top: 8, right: 16, left: 16, bottom: 8 }}
-            >
-              <CartesianGrid vertical={false} />
-              <XAxis dataKey="label" tickLine={false} axisLine={false} />
-              <YAxis
-                tickFormatter={value =>
-                  currencyFormat(baseCurrency, Number(value))
-                }
-              />
-              <ChartTooltip
-                cursor={false}
-                content={
-                  <ChartTooltipContent
-                    formatter={value =>
-                      currencyFormat(baseCurrency, Number(value))
-                    }
-                  />
-                }
-              />
-              <Bar
-                dataKey="outstanding"
-                fill="var(--color-outstanding)"
-                radius={[6, 6, 0, 0]}
-              />
-              <Bar
-                dataKey="overdue"
-                fill="var(--color-overdue)"
-                radius={[6, 6, 0, 0]}
-              />
-            </BarChart>
-          </ChartContainer>
+          <div data-chart="outstanding-overdue" className="text-sm">
+            {i18n.t("reports.outstanding")}:{" "}
+            {currencyFormat(baseCurrency, data?.summary.total_outstanding || 0)}
+          </div>
+          <div className="text-sm">
+            {i18n.t("reports.overdue")}:{" "}
+            {currencyFormat(baseCurrency, data?.summary.total_overdue || 0)}
+          </div>
         </CardContent>
       </Card>
 
       <Card data-testid="currency-chart">
         <CardHeader>
-          <CardTitle>Currency Distribution</CardTitle>
+          <CardTitle>{i18n.t("reports.currencyDistribution")}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-2">
           {currencyBreakdown.map(([currency, total]) => (
@@ -707,10 +573,10 @@ const ModernOutstandingInvoiceReport: React.FC = () => {
 
       <Card data-testid="client-chart">
         <CardHeader>
-          <CardTitle>Top Clients</CardTitle>
+          <CardTitle>{i18n.t("reports.topClients")}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-2">
-          {visibleClients.map(client => (
+          {sortedClients.map(client => (
             <div
               key={client.client_id}
               className="flex items-center justify-between"
@@ -744,11 +610,11 @@ const ModernOutstandingInvoiceReport: React.FC = () => {
             </CardHeader>
             <CardContent>
               <p>
-                Outstanding:{" "}
+                {i18n.t("reports.outstanding")}:{" "}
                 {currencyFormat(baseCurrency, selectedClient.total_outstanding)}
               </p>
               <p>
-                Overdue:{" "}
+                {i18n.t("reports.overdue")}:{" "}
                 {currencyFormat(baseCurrency, selectedClient.total_overdue)}
               </p>
             </CardContent>
@@ -756,12 +622,12 @@ const ModernOutstandingInvoiceReport: React.FC = () => {
 
           <Card data-testid="client-analysis">
             <CardHeader>
-              <CardTitle>Client Analysis</CardTitle>
+              <CardTitle>{i18n.t("reports.clientAnalysis")}</CardTitle>
             </CardHeader>
             <CardContent>
-              <p>Payment Behavior</p>
+              <p>{i18n.t("reports.paymentBehavior")}</p>
               <p>
-                Average Days:{" "}
+                {i18n.t("reports.averageDays")}{" "}
                 {Math.round(
                   selectedClient.invoices
                     .filter(invoice => invoice.status === "overdue")
@@ -782,7 +648,7 @@ const ModernOutstandingInvoiceReport: React.FC = () => {
       {activeTab === "overdue" ? (
         <Card data-testid="overdue-aging">
           <CardHeader>
-            <CardTitle>Overdue Aging ({baseCurrency})</CardTitle>
+            <CardTitle>{i18n.t("reports.overdueAgingTitle", { currency: baseCurrency })}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-2">
             {Object.entries(overdueAging).map(([label, total]) => (
@@ -798,7 +664,7 @@ const ModernOutstandingInvoiceReport: React.FC = () => {
       {activeTab === "overdue" ? (
         <Card data-testid="overdue-details">
           <CardHeader>
-            <CardTitle>Overdue Details</CardTitle>
+            <CardTitle>{i18n.t("reports.overdueDetails")}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-2">
             {overdueInvoices.map(invoice => (
@@ -816,11 +682,11 @@ const ModernOutstandingInvoiceReport: React.FC = () => {
 
       <Card data-testid="client-breakdown">
         <CardHeader>
-          <CardTitle>Client Breakdown</CardTitle>
+          <CardTitle>{i18n.t("reports.clientBreakdown")}</CardTitle>
           <CardDescription>
             {currencyFilter === "ALL"
-              ? "All currencies"
-              : `Filtered by ${currencyFilter}`}
+              ? i18n.t("reports.allCurrencies")
+              : i18n.t("reports.filteredByCurrency", { currency: currencyFilter })}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -835,16 +701,16 @@ const ModernOutstandingInvoiceReport: React.FC = () => {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Client</TableHead>
-                    <TableHead>Invoice</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Original Amount</TableHead>
-                    <TableHead>Base Amount</TableHead>
+                    <TableHead>{i18n.t("reports.clientHeader")}</TableHead>
+                    <TableHead>{i18n.t("reports.invoiceHeader")}</TableHead>
+                    <TableHead>{i18n.t("status")}</TableHead>
+                    <TableHead>{i18n.t("reports.originalAmount")}</TableHead>
+                    <TableHead>{i18n.t("reports.baseAmount")}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {visibleInvoices.length ? (
-                    visibleInvoices.map(invoice => (
+                  {(data?.invoices || []).length ? (
+                    (data?.invoices || []).map(invoice => (
                       <TableRow key={invoice.id}>
                         <TableCell>
                           <a
@@ -879,7 +745,7 @@ const ModernOutstandingInvoiceReport: React.FC = () => {
                   ) : (
                     <TableRow>
                       <TableCell colSpan={5} className="h-24 text-center">
-                        No outstanding or overdue invoices found.
+                        {i18n.t("reports.noOutstandingOrOverdueInvoices")}
                       </TableCell>
                     </TableRow>
                   )}

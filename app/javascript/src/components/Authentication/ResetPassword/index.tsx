@@ -10,6 +10,7 @@ import { Formik, Form, FormikProps } from "formik";
 import { MiruLogoWithTextSVG } from "miruIcons";
 import { setToLocalStorage } from "utils/storage";
 
+import { i18n } from "../../../i18n";
 import {
   resetPasswordFormInitialValues,
   resetPasswordFormValidationSchema,
@@ -56,7 +57,7 @@ const ResetPassword = () => {
         <div>
           <a href={MIRU_APP_URL} rel="noreferrer noopener">
             <img
-              alt="Miru"
+              alt={i18n.t("auth.miruLogo")}
               className="d-block mx-auto mb-4 h-10 w-auto object-contain md:mb-10 lg:mb-20"
               src={MiruLogoWithTextSVG}
               style={{
@@ -67,7 +68,7 @@ const ResetPassword = () => {
           </a>
         </div>
         <h1 className="text-center font-geist text-2xl font-extrabold text-foreground md:text-3xl lg:text-4.5xl">
-          Reset Password
+          {i18n.t("auth.resetPassword")}
         </h1>
         <div className="pt-10 lg:pt-20">
           <Formik
@@ -87,7 +88,7 @@ const ResetPassword = () => {
                     <InputField
                       hasError={errors.password && touched.password}
                       id="password"
-                      label="Password"
+                      label={i18n.t("auth.password")}
                       labelClassName="p-0"
                       name="password"
                       setFieldError={setFieldError}
@@ -102,7 +103,7 @@ const ResetPassword = () => {
                   <div className="field">
                     <InputField
                       id="confirm_password"
-                      label="Confirm Password"
+                      label={i18n.t("auth.confirmPassword")}
                       labelClassName="p-0"
                       name="confirm_password"
                       setFieldError={setFieldError}
@@ -127,13 +128,13 @@ const ResetPassword = () => {
                           : "cursor-pointer"
                       }`}
                     >
-                      Reset password
+                      {i18n.t("auth.resetPassword")}
                     </button>
                   </div>
                   <p className="mb-3 mt-3 text-center font-geist text-xs font-normal not-italic text-foreground">
                     <span className="form__link inline cursor-pointer">
                       <a href={Paths.LOGIN}>
-                        <span className="mr-2 inline-block">Back to Login</span>
+                        <span className="mr-2 inline-block">{i18n.t("auth.backToLogin")}</span>
                       </a>
                     </span>
                   </p>

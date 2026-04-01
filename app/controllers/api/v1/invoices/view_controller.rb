@@ -24,7 +24,7 @@ class Api::V1::Invoices::ViewController < Api::V1::ApplicationController
     end
 
     def render_invoice_not_found
-      render json: { error: "No invoice found" }, status: 422
+      render json: { error: I18n.t("invoices_view.not_found") }, status: 422
     end
 
     def stripe_connected_account

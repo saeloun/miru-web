@@ -1,0 +1,355 @@
+---
+ko:
+  activerecord:
+    errors:
+      models:
+        client:
+          attributes:
+            name:
+              format: "%{message}"
+        project:
+          attributes:
+            name:
+              format: "%{message}"
+  application_controller:
+    not_found: 경로를 찾을 수 없습니다
+  avatar:
+    destroy:
+      success: 아바타가 성공적으로 삭제되었습니다.
+    update:
+      success: 아바타가 성공적으로 업데이트되었습니다.
+  client:
+    add: 클라이언트 추가
+    address:
+      label: 주소
+      placeholder: 주소를 입력하세요
+    create:
+      failure: 클라이언트 생성 실패
+      success: 클라이언트가 성공적으로 추가되었습니다.
+    delete:
+      success:
+        message: 클라이언트가 성공적으로 삭제되었습니다.
+    email:
+      label: 이메일
+      placeholder: 이메일 주소를 입력하세요
+    name:
+      label: 이름
+      placeholder: 이름을 입력하세요
+    phone:
+      label: 전화 번호
+      placeholder: 전화번호를 입력하세요
+    update:
+      failure:
+        message: 변경 사항 저장에 실패했습니다.
+        unauthorized: 이 사용자는 해당 고객의 정보를 수정할 권한이 없습니다.
+      success:
+        message: 변경 사항이 성공적으로 저장되었습니다.
+  clients:
+    add_client_contact:
+      success: 초대장이 성공적으로 전송되었습니다.
+    send_payment_reminder:
+      success: 결제 안내 메일이 발송되었습니다.
+  companies:
+    create:
+      failure: 회사 설립 실패
+      success: 회사가 성공적으로 설립되었습니다
+    purge_logo:
+      destroy:
+        success: 회사 로고가 성공적으로 제거되었습니다.
+    update:
+      success: 변경 사항이 성공적으로 저장되었습니다.
+  company:
+    address: 주소
+    base_currency: 기본 통화
+    business_phone: 업무용 전화
+    cancel: 취소
+    company: 회사
+    country: 국가
+    date_format: 날짜 형식
+    fiscal_year: 회계연도
+    logo: 심벌 마크
+    save: 구하다
+    save_org: 조직 정보 저장
+    setup: 설정 조직
+    standard_price: 표준 가격
+    timezone: 시간대
+  confirmation:
+    send_instructions: "%{email}님께 확인 이메일이 발송되었습니다."
+  currency_pairs:
+    from_to_required: 출발지와 도착지는 필수 입력 사항입니다.
+    rate_not_found: 요금을 찾을 수 없습니다.
+  custom_leaves:
+    update:
+      success: 사용자 지정 잎 업데이트가 완료되었습니다.
+  employment:
+    update:
+      success: 고용 정보가 성공적으로 업데이트되었습니다.
+  errors:
+    bill_status_billed: 이미 청구된 항목에 대해서는 다시 청구할 수 없습니다.
+    can't change status: 이미 지불된 송장은 변경할 수 없습니다.
+    create_billed_entry: 청구 가능한 근무 시간 항목을 생성할 수 없습니다.
+    internal_server_error: 뭔가 잘못됐어요
+    not_found: 찾으시는 자료를 이용할 수 없습니다.
+    prevent_draft_to_waived: 면제로 변경할 수 없습니다
+    unauthorized: 소유자 또는 관리자 사용자만 이 작업을 수행할 권한이 있습니다.
+    updation_not_allowed: 업데이트가 허용되지 않습니다.
+    user_already_member: 해당 이메일 주소는 이미 사용 중입니다. 다른 이메일 주소를 입력해 주세요.
+    validate_billable_project: 청구 불가능한 프로젝트에 대해서는 미청구 항목을 생성할 수 없습니다.
+  expenses:
+    approve: 경비 승인 완료
+    create: 경비 청구가 성공적으로 제출되었습니다.
+    destroy: 비용이 성공적으로 삭제되었습니다.
+    mark_paid: 지불 완료로 표시된 비용
+    must_be_approved: 경비는 지불 완료로 표시하기 전에 승인을 받아야 합니다.
+    reject: 비용 청구가 성공적으로 거부되었습니다.
+    update: 비용 정보가 성공적으로 업데이트되었습니다.
+  holidays:
+    update:
+      success: 휴일 정보가 성공적으로 업데이트되었습니다.
+  invitation:
+    create:
+      success:
+        message: 초대장이 성공적으로 전송되었습니다.
+    delete:
+      success:
+        message: 초대장이 성공적으로 삭제되었습니다.
+    resent:
+      success:
+        message: 초대장이 성공적으로 재전송되었습니다.
+    update:
+      success:
+        message: 변경 사항이 성공적으로 저장되었습니다.
+  invitations:
+    accept:
+      index:
+        success: 초대 수락
+      show:
+        success: 초대 수락
+      success: 초대 수락
+    create:
+      failure: 변경 사항 저장에 실패했습니다.
+      success: 초대장이 발송될 예정입니다
+    destroy:
+      failure: 초대장을 삭제하는 데 실패했습니다.
+      success: 초대장 삭제됨
+    update:
+      failure: 변경 사항 저장에 실패했습니다
+      success: 초대장 업데이트됨
+  invoices:
+    payments:
+      success:
+        failure: 문제가 발생했습니다. 고객 지원팀에 문의해 주세요.
+        success: 결제 완료
+  invoices_controller:
+    download:
+      pdf_failed: PDF 생성에 실패했습니다.
+    send_invoice:
+      already_paid: 송장은 이미 지불되었습니다.
+      pdf_failed: PDF 생성에 실패했습니다.
+      recipient_limit: 이메일은 최대 5명의 수신자에게만 보낼 수 있습니다.
+      recipients_required: 수령인은 필수입니다.
+      success: 송장이 성공적으로 발송되었습니다.
+    send_reminder:
+      overdue_only: 연체된 청구서에 대해서만 알림 메시지를 보낼 수 있습니다.
+      success: 알림 메시지가 전송되었습니다.
+  invoices_view:
+    not_found: 송장을 찾을 수 없습니다.
+  leave_types:
+    create:
+      success: 휴가 유형이 성공적으로 추가되었습니다.
+    update:
+      success: 휴가 유형이 성공적으로 업데이트되었습니다.
+  leave_with_leave_types:
+    update:
+      success: 잎사귀 정보가 성공적으로 업데이트되었습니다.
+  leaves:
+    create:
+      success: 휴가 신청이 성공적으로 완료되었습니다.
+    update:
+      success: 업데이트가 성공적으로 완료되었습니다.
+  navbar:
+    clients: 고객들
+    help: 돕다
+    invoices: 송장
+    logout: 로그아웃
+    payments: 결제
+    profile: 윤곽
+    projects: 프로젝트
+    reports: 보고서
+    settings: 설정
+    team: 팀
+    time_tracking: 시간 추적
+    view_notifications: 알림 보기
+  passkeys:
+    add_passkey_first: 로그인 시 암호를 요구하기 전에 암호를 추가하세요.
+    added: 암호키가 추가되었습니다
+    disable_totp_first: 암호키 로그인을 요구하기 전에 인증 앱의 2단계 인증을 비활성화하세요.
+    not_found: 암호를 찾을 수 없습니다.
+    removed: 암호가 삭제되었습니다
+    requirement_disabled: 암호키 요구 사항 비활성화됨
+    requirement_enabled: 암호키 요구 사항이 활성화됨
+    session_expired: 패스키 세션이 만료되었습니다. 다시 시도해 주세요.
+    verification_failed: 암호 키 인증에 실패했습니다.
+  password:
+    create:
+      success: 비밀번호 재설정 방법이 이메일로 발송되었습니다.
+    update:
+      success: 비밀번호가 업데이트되었습니다.
+  projects:
+    add_new_project: 새 프로젝트 추가
+    add_project: 프로젝트 추가
+    billable: 청구 가능
+    client: 고객
+    create:
+      failure: 프로젝트 생성에 실패했습니다.
+      success: 프로젝트가 성공적으로 추가되었습니다.
+    delete:
+      success:
+        message: 프로젝트가 성공적으로 삭제되었습니다.
+    edit: 편집하다
+    hours_logged: 근무 시간
+    new_project: 새로운 프로젝트
+    non_billable: 청구 불가
+    project: 프로젝트
+    project_name: 프로젝트명
+    projects: 프로젝트
+    update:
+      success: 변경 사항이 성공적으로 저장되었습니다.
+    update_members:
+      failure:
+        message: 변경 사항 저장에 실패했습니다.
+        unauthorized: 사용자는 이 프로젝트의 세부 정보를 수정할 권한이 없습니다.
+      success:
+        message: 변경 사항이 성공적으로 저장되었습니다.
+  pundit:
+    client_policy:
+      create?: 클라이언트를 생성할 권한이 없습니다.
+      show?: 해당 페이지에 접근할 권한이 없습니다. 관리자에게 문의하여 도움을 받으세요.
+      update?: 클라이언트를 업데이트할 권한이 없습니다.
+    company_policy:
+      create?: 귀하는 회사를 생성할 권한이 없습니다.
+      new?: 귀하는 새로운 회사를 생성할 권한이 없습니다.
+      show?: 귀하는 회사 정보를 볼 권한이 없습니다.
+      update?: 귀하는 회사 정보를 업데이트할 권한이 없습니다.
+    current_company_policy:
+      company_not_present: 회사 관계자가 불참했습니다.
+    default: 귀하는 이 작업을 수행할 권한이 없습니다.
+    different_workspace: 현재 작업 공간 외부의 기록에 접근할 권한이 없습니다.
+    project_policy:
+      create?: 프로젝트를 생성할 권한이 없습니다.
+      show?: 해당 페이지에 접근할 권한이 없습니다. 관리자에게 문의하여 도움을 받으세요.
+    team_policy:
+      destroy?: 당신은 팀을 파괴할 권한이 없습니다.
+      edit?: 팀 편집 권한이 없습니다.
+      update?: 팀 정보를 업데이트할 권한이 없습니다.
+  registration:
+    confirm_password: 비밀번호 확인
+    email_id: 이메일
+    first_name: 이름
+    last_name: 성
+    name: 이름
+    or: 또는
+    password: 비밀번호
+    remember_me: 나를 기억해줘
+    sign_in: 로그인
+    sign_up: 가입하기
+    signin_with_github: GitHub로 로그인
+    signin_with_google: 구글 계정으로 로그인
+    signup_with_apple: 애플로 가입하세요
+    signup_with_github: GitHub로 가입하세요
+    signup_with_google: 구글 계정으로 가입하세요
+  reports:
+    heading: 시간 입력 보고서
+  sessions:
+    failure:
+      invalid: 잘못된 이메일 또는 비밀번호입니다.
+  settings:
+    cancel: 취소
+    change_password: 비밀번호 변경
+    confirm_password: 비밀번호 확인
+    current_password: 현재 비밀번호
+    email: 이메일
+    name: 이름
+    organization_setting: 조직 설정
+    password: 비밀번호
+    payment_setting: 결제 설정
+    profile_picture: 프로필 사진
+    profile_setting: 프로필 설정
+    save: 구하다
+    settings: 설정
+  shared_links:
+    already_have_an_account: 이미 계정이 있으신가요?
+    back_to_login: 로그인 페이지로 돌아가기
+    confirmation_instruction: 확인 안내를 받지 못하셨나요?
+    dont_have_an_account: 계정이 없으신가요?
+    forgot_password: 비밀번호를 잊으셨나요?
+    unlock_instruction: 잠금 해제 안내를 받지 못하셨나요?
+  subscriptions:
+    no_billing_customer: 이 회사에는 청구 고객이 없습니다.
+    pricing_not_configured: Stripe 구독 요금이 설정되어 있지 않습니다.
+    trial_not_eligible: 귀하의 작업 공간은 Pro 체험판을 이용할 수 없습니다.
+    trial_started: 30일 프로 체험판이 시작되었습니다.
+  team:
+    changed_email: 이메일 주소가 변경되었습니다
+    create_new_user: 새 사용자 생성
+    current_email: 현재 이메일
+    delete:
+      success:
+        message: 팀원 삭제가 성공적으로 완료되었습니다.
+    email: 이메일
+    email_id: 이메일 ID
+    first_name: 이름
+    form_admin: 관리자
+    form_book_keeper: 회계 담당자
+    form_email: 이메일
+    form_employee: 직원
+    form_name: 이름
+    form_role: 역할
+    invitation: 초대 예정
+    last_name: 성
+    name: 이름
+    new_user: 신규 사용자
+    profile_picture: 사진
+    reconfirmation: 재확인 대기 중
+    role: 역할
+    team: 팀
+    update:
+      error:
+        role: 역할 업데이트 중 오류가 발생했습니다.
+      success:
+        message: 변경 사항이 성공적으로 저장되었습니다.
+    update_user: 사용자 업데이트
+  timeoff_entries:
+    create:
+      success: 휴가 신청이 성공적으로 완료되었습니다.
+    destroy:
+      success: 휴가 시간이 성공적으로 삭제되었습니다.
+    update:
+      success: 휴가 시간 업데이트가 성공적으로 완료되었습니다.
+  timesheet_entry:
+    create:
+      message: 근무 시간표가 생성되었습니다
+    destroy:
+      failure: 근무 시간 기록 항목을 삭제하는 데 실패했습니다.
+      message: 근무 시간표 삭제됨
+    update:
+      failure: 근무 시간표 항목 업데이트에 실패했습니다.
+      message: 근무 시간표가 업데이트되었습니다.
+  totp:
+    disable_passkey_first: 인증 앱의 2단계 인증을 활성화하기 전에 필수 암호 키 로그인을 비활성화하세요.
+    disabled: 인증 앱이 비활성화되었습니다
+    enabled: 인증 앱 활성화됨
+    invalid_code: 인증 코드가 잘못되었습니다.
+    invalid_verification: 잘못된 인증 코드입니다.
+    not_enabled: 먼저 인증 앱의 2단계 인증을 활성화하세요.
+    recovery_codes_regenerated: 복구 코드가 재생성되었습니다
+    session_expired: 해당 인증 요청은 더 이상 유효하지 않습니다. 다시 로그인해 주세요.
+  user:
+    login:
+      failure:
+        disabled: 접근 권한이 비활성화되었습니다.
+        pending_invitation: 귀하의 계정은 아직 활성화되지 않았습니다.
+  workspaces:
+    update:
+      failure: 작업 공간 전환에 실패했습니다
+      success: 작업 공간이 성공적으로 전환되었습니다.

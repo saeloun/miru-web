@@ -15,21 +15,9 @@ class ApplicationMailer < ActionMailer::Base
 
       Rails.logger.warn("Email delivery failed - Inactive recipient(s): #{inactive_emails.join(', ')}")
       Rails.logger.warn("Error details: #{exception.message}")
-
-      persist_inactive_emails(inactive_emails)
     end
 
     private
-
-      def persist_inactive_emails(inactive_emails)
-        return unless defined?(SesInvalidEmail)
-        return unless ActiveRecord::Base.connection.data_source_exists?("ses_invalid_emails")
-
-        inactive_emails.each do |email|
-          record = SesInvalidEmail.find_or_create_by(email: email.downcase)
-          Rails.logger.info("Added #{email} to invalid emails list (Postmark inactive)") if record.previously_new_record?
-        end
-      end
 
       def extract_inactive_emails(message)
         message
@@ -48,5 +36,10 @@ class ApplicationMailer < ActionMailer::Base
 
     def extract_inactive_emails(message)
       self.class.send(:extract_inactive_emails, message)
+    end
+
+    def with_recipient_locale(user, &block)
+      locale = user&.locale.presence || I18n.default_locale
+      I18n.with_locale(locale, &block)
     end
 end

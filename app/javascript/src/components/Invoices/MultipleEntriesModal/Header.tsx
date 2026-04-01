@@ -4,6 +4,7 @@ import { useUserContext } from "context/UserContext";
 import { XIcon } from "miruIcons";
 
 import Filters from "./Filters";
+import { i18n } from "../../../i18n";
 
 const Header = ({
   setMultiLineItemModal,
@@ -22,7 +23,7 @@ const Header = ({
       {isDesktop && (
         <div className="flex justify-between px-6 pb-2 pt-6">
           <span className="text-base font-extrabold text-foreground">
-            Select Time Entries
+            {i18n.t("invoices.selectTimeEntries")}
           </span>
           <button onClick={() => setMultiLineItemModal(false)}>
             <XIcon color="#CDD6DF" size={16} />

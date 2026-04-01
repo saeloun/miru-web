@@ -33,7 +33,7 @@ class Api::V1::ClientsController < Api::V1::ApplicationController
     )
 
     invitation_service.process
-    render json: { notice: "Invitation sent successfully." }, status: 200
+    render json: { notice: I18n.t("clients.add_client_contact.success") }, status: 200
   end
 
   def show
@@ -89,7 +89,7 @@ class Api::V1::ClientsController < Api::V1::ApplicationController
       subject: client_email_params[:email_params][:subject],
     ).send_payment_reminder.deliver_later
 
-    render json: { notice: "Payment reminder has been sent" }, status: 202
+    render json: { notice: I18n.t("clients.send_payment_reminder.success") }, status: 202
   end
 
   private

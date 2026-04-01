@@ -11,6 +11,7 @@ import { Card, CardContent } from "../ui/card";
 import { Textarea } from "../ui/textarea";
 import { Label } from "../ui/label";
 import { cn } from "../../lib/utils";
+import { i18n } from "../../i18n";
 
 const WeeklyEntriesCard = ({
   client,
@@ -245,7 +246,7 @@ const WeeklyEntriesCard = ({
               <CardContent className="p-0">
                 <Textarea
                   className="min-h-[100px] rounded-b-none border-0 resize-none focus-visible:ring-0"
-                  placeholder="Add a note..."
+                  placeholder={i18n.t("timeTracking.addANote")}
                   value={note}
                   onChange={e => {
                     setNote(e.target.value);
@@ -271,7 +272,7 @@ const WeeklyEntriesCard = ({
                           "text-muted-foreground cursor-not-allowed"
                       )}
                     >
-                      Billable
+                      {i18n.t("billable")}
                     </Label>
                   </div>
                   <div className="flex gap-2">
@@ -287,7 +288,7 @@ const WeeklyEntriesCard = ({
                         setIsWeeklyEditing(false);
                       }}
                     >
-                      Cancel
+                      {i18n.t("cancel")}
                     </Button>
                     {currentEntries[selectedInputBox] ? (
                       <Button
@@ -295,7 +296,7 @@ const WeeklyEntriesCard = ({
                         disabled={!(dataChanged && duration)}
                         onClick={handleUpdateEntry}
                       >
-                        Update
+                        {i18n.t("timeTracking.updateEntry")}
                       </Button>
                     ) : (
                       <Button
@@ -303,7 +304,7 @@ const WeeklyEntriesCard = ({
                         disabled={!(dataChanged && duration && note)}
                         onClick={handleSaveEntry}
                       >
-                        Save
+                        {i18n.t("save")}
                       </Button>
                     )}
                   </div>

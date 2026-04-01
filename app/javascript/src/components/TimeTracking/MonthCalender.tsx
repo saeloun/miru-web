@@ -4,6 +4,7 @@ import { minToHHMM } from "helpers";
 import { useUserContext } from "../../context/UserContext";
 import { Card, CardContent } from "../ui/card";
 import { cn } from "../../lib/utils";
+import { i18n } from "../../i18n";
 
 import Header from "./Header";
 
@@ -193,8 +194,15 @@ const MonthCalender: React.FC<Iprops> = ({
         <CardContent className="p-6">
           {/* Days of week header */}
           <div className="grid grid-cols-8 gap-4 mb-4">
-            {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map(
-              (day, index) => (
+            {[
+              i18n.t("timeTracking.dayAbbr.mon"),
+              i18n.t("timeTracking.dayAbbr.tue"),
+              i18n.t("timeTracking.dayAbbr.wed"),
+              i18n.t("timeTracking.dayAbbr.thu"),
+              i18n.t("timeTracking.dayAbbr.fri"),
+              i18n.t("timeTracking.dayAbbr.sat"),
+              i18n.t("timeTracking.dayAbbr.sun"),
+            ].map((day, index) => (
                 <div
                   key={index}
                   className="text-center text-sm font-semibold text-muted-foreground"
@@ -204,7 +212,7 @@ const MonthCalender: React.FC<Iprops> = ({
               )
             )}
             <div className="text-center text-sm font-semibold text-muted-foreground">
-              Total
+              {i18n.t("total")}
             </div>
           </div>
           {/* Calendar grid */}

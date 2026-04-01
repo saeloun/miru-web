@@ -65,7 +65,7 @@ class Reports::ClientRevenues::ReportDecorator < ApplicationService
     def client_revenues_data
       @client_revenues_data ||= clients.includes(:invoices, :projects).map do |client|
         build_client_revenue_data(client)
-      end.sort_by { |data| -data[:revenue].to_f }
+      end.sort_by { |data| data[:name].to_s.downcase }
     end
 
     def build_client_revenue_data(client)
