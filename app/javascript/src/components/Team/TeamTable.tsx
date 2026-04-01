@@ -391,13 +391,13 @@ const TeamTable: React.FC = () => {
     },
     {
       accessorKey: "projects",
-      header: i18n.t("projects"),
+      header: i18n.t("navbar.projects"),
       cell: ({ row }) => {
         const projects = row.original.projects || 0;
 
         return (
           <div className="text-sm text-muted-foreground">
-            {projects} {i18n.t("projects")}
+            {projects} {i18n.t("navbar.projects")}
           </div>
         );
       },

@@ -202,7 +202,7 @@ export const ResponsiveTeamStats: React.FC<any> = props => {
             <p className="text-2xl font-bold text-primary">
               {props.totalProjects}
             </p>
-            <p className="text-sm text-muted-foreground">{i18n.t("projects")}</p>
+            <p className="text-sm text-muted-foreground">{i18n.t("navbar.projects")}</p>
           </div>
           <div>
             <p className="text-2xl font-bold text-foreground">
@@ -233,7 +233,7 @@ export const ResponsiveTeamStats: React.FC<any> = props => {
           <p className="text-xl font-bold text-primary">
             {props.totalProjects}
           </p>
-          <p className="text-xs text-muted-foreground">{i18n.t("projects")}</p>
+          <p className="text-xs text-muted-foreground">{i18n.t("navbar.projects")}</p>
         </div>
         <div className="text-center">
           <p className="text-xl font-bold text-foreground">
