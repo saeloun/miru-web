@@ -25,6 +25,8 @@ import { Button } from "../../../../ui/button";
 import { Separator } from "../../../../ui/separator";
 import PasskeysPanel from "./PasskeysPanel";
 import TotpPanel from "./TotpPanel";
+import LocaleSelector from "../../../../../common/LocaleSelector";
+import { GlobeSimple } from "phosphor-react";
 
 const EditProfilePage = ({
   avatarSection,
@@ -570,6 +572,45 @@ const EditProfilePage = ({
                   }}
                 />
               </div>
+            </CardContent>
+          </Card>
+          {/* Language Card */}
+          <Card className="border-border shadow-sm">
+            <CardHeader className="pb-4">
+              <CardTitle className="text-lg font-geist-semibold flex items-center gap-2">
+                <GlobeSimple
+                  className="h-5 w-5 text-muted-foreground"
+                  weight="bold"
+                />
+                Language
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-muted-foreground mb-3">
+                Choose your preferred language for the interface.
+              </p>
+              <LocaleSelector
+                dropdownDirection="down"
+                showLabel
+                onLocaleChange={async (newLocale) => {
+                  try {
+                    const csrfToken = document
+                      .querySelector('[name="csrf-token"]')
+                      ?.getAttribute("content") || "";
+                    await fetch("/api/v1/profile", {
+                      method: "PATCH",
+                      headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": csrfToken,
+                      },
+                      credentials: "include",
+                      body: JSON.stringify({ user: { locale: newLocale } }),
+                    });
+                  } catch {
+                    // locale still changes locally even if save fails
+                  }
+                }}
+              />
             </CardContent>
           </Card>
           {/* Password Card */}

@@ -34,14 +34,15 @@ const LocaleSelector: React.FC<LocaleSelectorProps> = ({
       setIsOpen(false);
 
       try {
-        await setLocale(newLocale);
-
         if (onLocaleChange) {
           await onLocaleChange(newLocale);
         }
+
+        await setLocale(newLocale);
+
+        window.location.reload();
       } catch {
         toast.error("Failed to change language");
-      } finally {
         setIsSaving(false);
       }
     },
