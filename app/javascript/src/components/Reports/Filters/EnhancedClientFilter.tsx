@@ -21,7 +21,7 @@ import { Label } from "../../ui/label";
 import { Badge } from "../../ui/badge";
 import { ScrollArea } from "../../ui/scroll-area";
 
-const EnhancedClientFilter = ({
+const SidebarClientFilter = ({
   searchQuery,
   setSearchQuery,
   filteredClientList,
@@ -52,7 +52,9 @@ const EnhancedClientFilter = ({
               />
             </div>
             <div className="text-left">
-              <p className="text-sm font-medium text-gray-900">{i18n.t("reports.clients")}</p>
+              <p className="text-sm font-medium text-gray-900">
+                {i18n.t("reports.clients")}
+              </p>
               {isActive && (
                 <p className="text-xs text-gray-500 mt-0.5">
                   {i18n.t("reports.selected", { count: activeCount })}
@@ -147,7 +149,10 @@ const EnhancedClientFilter = ({
           {filteredClientList.length > 0 && (
             <div className="pt-2 border-t">
               <p className="text-xs text-gray-500">
-                {i18n.t("reports.showingClientsCount", { shown: filteredClientList.length, total: filteredClientList.length })}
+                {i18n.t("reports.showingClientsCount", {
+                  shown: filteredClientList.length,
+                  total: filteredClientList.length,
+                })}
               </p>
             </div>
           )}
@@ -157,4 +162,4 @@ const EnhancedClientFilter = ({
   );
 };
 
-export default EnhancedClientFilter;
+export default SidebarClientFilter;

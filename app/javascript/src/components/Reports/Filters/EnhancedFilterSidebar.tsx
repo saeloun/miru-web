@@ -20,15 +20,15 @@ import {
 import { Separator } from "../../ui/separator";
 import { Badge } from "../../ui/badge";
 
-import EnhancedDateRangeFilter from "./EnhancedDateRangeFilter";
-import EnhancedClientFilter from "./EnhancedClientFilter";
-import EnhancedTeamMembersFilter from "./EnhancedTeamMembersFilter";
-import EnhancedStatusFilter from "./EnhancedStatusFilter";
-import EnhancedGroupByFilter from "./EnhancedGroupByFilter";
+import SidebarDateRangeFilter from "./EnhancedDateRangeFilter";
+import SidebarClientFilter from "./EnhancedClientFilter";
+import SidebarTeamMembersFilter from "./EnhancedTeamMembersFilter";
+import SidebarStatusFilter from "./EnhancedStatusFilter";
+import SidebarGroupByFilter from "./EnhancedGroupByFilter";
 import { statusOption } from "./filterOptions";
 import { dateRangeOptions } from "./FilterSidebarOptions";
 
-const EnhancedFilterSidebar = ({
+const ReportFiltersPanel = ({
   setIsFilterVisible,
   selectedFilter,
   setFilterCounter,
@@ -353,7 +353,7 @@ const EnhancedFilterSidebar = ({
 
         <ScrollArea className="flex-1 px-6">
           <div className="space-y-1 py-4">
-            <EnhancedDateRangeFilter
+            <SidebarDateRangeFilter
               dateRange={dateRange}
               dateRangeList={dateRangeOptions}
               filters={filters}
@@ -371,7 +371,7 @@ const EnhancedFilterSidebar = ({
 
             <Separator className="my-2" />
 
-            <EnhancedClientFilter
+            <SidebarClientFilter
               filteredClientList={filteredClientList}
               handleSelectClient={handleSelectClient}
               searchQuery={searchQuery}
@@ -381,7 +381,7 @@ const EnhancedFilterSidebar = ({
 
             <Separator className="my-2" />
 
-            <EnhancedTeamMembersFilter
+            <SidebarTeamMembersFilter
               filteredTeamsList={filteredTeamsList}
               handleSelectTeamMember={handleSelectTeamMember}
               searchQuery={teamMemberSearchQuery}
@@ -391,7 +391,7 @@ const EnhancedFilterSidebar = ({
 
             <Separator className="my-2" />
 
-            <EnhancedStatusFilter
+            <SidebarStatusFilter
               filters={filters}
               handleSelectStatus={handleSelectStatus}
               statusOptions={statusOption}
@@ -399,7 +399,7 @@ const EnhancedFilterSidebar = ({
 
             <Separator className="my-2" />
 
-            <EnhancedGroupByFilter
+            <SidebarGroupByFilter
               filters={filters}
               handleSelectFilter={handleSelectGroupByFilter}
             />
@@ -430,4 +430,4 @@ const EnhancedFilterSidebar = ({
   );
 };
 
-export default EnhancedFilterSidebar;
+export default ReportFiltersPanel;

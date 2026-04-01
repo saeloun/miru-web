@@ -22,7 +22,7 @@ import { Badge } from "../../ui/badge";
 import { ScrollArea } from "../../ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "../../ui/avatar";
 
-const EnhancedTeamMembersFilter = ({
+const SidebarTeamMembersFilter = ({
   searchQuery,
   setSearchQuery,
   filteredTeamsList,
@@ -61,7 +61,9 @@ const EnhancedTeamMembersFilter = ({
               />
             </div>
             <div className="text-left">
-              <p className="text-sm font-medium text-gray-900">{i18n.t("reports.teamMembers")}</p>
+              <p className="text-sm font-medium text-gray-900">
+                {i18n.t("reports.teamMembers")}
+              </p>
               {activeCount > 0 && (
                 <p className="text-xs text-gray-500 mt-0.5">
                   {i18n.t("reports.selected", { count: activeCount })}
@@ -162,7 +164,10 @@ const EnhancedTeamMembersFilter = ({
           {filteredTeamsList.length > 0 && (
             <div className="pt-2 border-t">
               <p className="text-xs text-gray-500">
-                {i18n.t("reports.ofTeamMembersSelected", { active: activeCount, total: filteredTeamsList.length })}
+                {i18n.t("reports.ofTeamMembersSelected", {
+                  active: activeCount,
+                  total: filteredTeamsList.length,
+                })}
               </p>
             </div>
           )}
@@ -172,4 +177,4 @@ const EnhancedTeamMembersFilter = ({
   );
 };
 
-export default EnhancedTeamMembersFilter;
+export default SidebarTeamMembersFilter;

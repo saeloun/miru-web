@@ -12,7 +12,7 @@ import { Checkbox } from "../../ui/checkbox";
 import { Label } from "../../ui/label";
 import { Badge } from "../../ui/badge";
 
-const EnhancedStatusFilter = ({
+const SidebarStatusFilter = ({
   filters,
   handleSelectStatus,
   statusOptions,
@@ -73,7 +73,9 @@ const EnhancedStatusFilter = ({
               />
             </div>
             <div className="text-left">
-              <p className="text-sm font-medium text-foreground">{i18n.t("status")}</p>
+              <p className="text-sm font-medium text-foreground">
+                {i18n.t("status")}
+              </p>
               {activeCount > 0 && (
                 <p className="mt-0.5 text-xs text-muted-foreground">
                   {i18n.t("reports.selected", { count: activeCount })}
@@ -149,7 +151,9 @@ const EnhancedStatusFilter = ({
 
         {/* Status Legend */}
         <div className="mt-4 border-t pt-3">
-          <p className="mb-2 text-xs text-muted-foreground">{i18n.t("reports.statusGuide")}</p>
+          <p className="mb-2 text-xs text-muted-foreground">
+            {i18n.t("reports.statusGuide")}
+          </p>
           <div className="grid grid-cols-2 gap-1 text-xs">
             {statusOptions.map(status => (
               <div
@@ -167,4 +171,4 @@ const EnhancedStatusFilter = ({
   );
 };
 
-export default EnhancedStatusFilter;
+export default SidebarStatusFilter;

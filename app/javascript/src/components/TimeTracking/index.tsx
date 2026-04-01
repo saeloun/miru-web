@@ -21,7 +21,7 @@ import { startTimerFromEntry } from "utils/timeTrackingTimer";
 
 import WeekDaySelector from "./WeekDaySelector";
 import EntryForm from "./EntryForm";
-import { ModernTimeEntryForm } from "./ModernTimeEntryForm";
+import { TimeTrackingEntryDialog } from "./ModernTimeEntryForm";
 import Header from "./Header";
 import WeeklyEntries from "./WeeklyEntries";
 import EntryDetailsModal from "./EntryDetailsModal";
@@ -1010,7 +1010,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
             </div>
           )}
         </div>
-        <ModernTimeEntryForm
+        <TimeTrackingEntryDialog
           isOpen={showModernForm}
           onClose={handleCloseModernForm}
           onSave={handleSaveModernEntry}

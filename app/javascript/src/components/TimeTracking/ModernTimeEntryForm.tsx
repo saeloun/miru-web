@@ -39,7 +39,7 @@ interface TimeEntryFormProps {
   clients?: any[];
 }
 
-export const ModernTimeEntryForm: React.FC<TimeEntryFormProps> = ({
+export const TimeTrackingEntryDialog: React.FC<TimeEntryFormProps> = ({
   isOpen,
   onClose,
   onSave,
@@ -84,9 +84,13 @@ export const ModernTimeEntryForm: React.FC<TimeEntryFormProps> = ({
 
     // Validate
     const newErrors: any = {};
-    if (!formData.duration) newErrors.duration = i18n.t("timeTracking.durationRequired");
+    if (!formData.duration) {
+      newErrors.duration = i18n.t("timeTracking.durationRequired");
+    }
 
-    if (!formData.project) newErrors.project = i18n.t("timeTracking.projectRequired");
+    if (!formData.project) {
+      newErrors.project = i18n.t("timeTracking.projectRequired");
+    }
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
@@ -130,7 +134,9 @@ export const ModernTimeEntryForm: React.FC<TimeEntryFormProps> = ({
               </div>
               <div>
                 <CardTitle className="h2">
-                  {existingEntry ? i18n.t("timeTracking.editTimeEntry") : i18n.t("timeTracking.newTimeEntry")}
+                  {existingEntry
+                    ? i18n.t("timeTracking.editTimeEntry")
+                    : i18n.t("timeTracking.newTimeEntry")}
                 </CardTitle>
                 <p className="text-base text-muted-foreground font-medium">
                   {dayjs(formData.date).format("dddd, MMMM D, YYYY")}
@@ -221,7 +227,9 @@ export const ModernTimeEntryForm: React.FC<TimeEntryFormProps> = ({
                       errors.project ? "border-red-500" : ""
                     }`}
                   >
-                    <SelectValue placeholder={i18n.t("timeTracking.selectProject")} />
+                    <SelectValue
+                      placeholder={i18n.t("timeTracking.selectProject")}
+                    />
                   </SelectTrigger>
                   <SelectContent>
                     {projects.map((project: any) => (
@@ -259,7 +267,9 @@ export const ModernTimeEntryForm: React.FC<TimeEntryFormProps> = ({
                   }}
                 >
                   <SelectTrigger className="w-full">
-                    <SelectValue placeholder={i18n.t("timeTracking.selectClient")} />
+                    <SelectValue
+                      placeholder={i18n.t("timeTracking.selectClient")}
+                    />
                   </SelectTrigger>
                   <SelectContent>
                     {clients.map((client: any) => (
@@ -307,7 +317,9 @@ export const ModernTimeEntryForm: React.FC<TimeEntryFormProps> = ({
                 >
                   <CurrencyDollar className="h-4 w-4" />
                   <span className="text-base font-medium">
-                    {formData.billable ? i18n.t("billable") : i18n.t("nonBillable")}
+                    {formData.billable
+                      ? i18n.t("billable")
+                      : i18n.t("nonBillable")}
                   </span>
                 </button>
                 <button
@@ -315,7 +327,9 @@ export const ModernTimeEntryForm: React.FC<TimeEntryFormProps> = ({
                   className="flex items-center gap-2 px-4 py-2 rounded-lg bg-muted text-muted-foreground hover:bg-secondary transition-all"
                 >
                   <Tag className="h-4 w-4" />
-                  <span className="text-base font-medium">{i18n.t("timeTracking.addTags")}</span>
+                  <span className="text-base font-medium">
+                    {i18n.t("timeTracking.addTags")}
+                  </span>
                 </button>
               </div>
               {existingEntry && (
@@ -347,7 +361,9 @@ export const ModernTimeEntryForm: React.FC<TimeEntryFormProps> = ({
             ) : (
               <span className="flex items-center gap-2">
                 <FloppyDisk className="h-4 w-4" />
-                {existingEntry ? i18n.t("timeTracking.updateEntry") : i18n.t("timeTracking.saveEntry")}
+                {existingEntry
+                  ? i18n.t("timeTracking.updateEntry")
+                  : i18n.t("timeTracking.saveEntry")}
               </span>
             )}
           </Button>
@@ -358,7 +374,7 @@ export const ModernTimeEntryForm: React.FC<TimeEntryFormProps> = ({
 };
 
 // Mark Time Off Form Component
-export const ModernTimeOffForm: React.FC<{
+export const TimeTrackingTimeOffDialog: React.FC<{
   isOpen: boolean;
   onClose: () => void;
   onSave: (data: any) => void;
@@ -378,7 +394,11 @@ export const ModernTimeOffForm: React.FC<{
   const timeOffTypes = [
     { value: "vacation", label: i18n.t("timeOffTypes.vacation"), icon: "🏖️" },
     { value: "sick", label: i18n.t("timeOffTypes.sickLeave"), icon: "🏥" },
-    { value: "personal", label: i18n.t("timeOffTypes.personalDay"), icon: "👤" },
+    {
+      value: "personal",
+      label: i18n.t("timeOffTypes.personalDay"),
+      icon: "👤",
+    },
     { value: "holiday", label: i18n.t("timeOffTypes.holiday"), icon: "🎉" },
   ];
 
@@ -400,7 +420,9 @@ export const ModernTimeOffForm: React.FC<{
                 <Calendar className="h-5 w-5 text-amber-600" />
               </div>
               <div>
-                <CardTitle className="text-lg">{i18n.t("timeTracking.markTimeOff")}</CardTitle>
+                <CardTitle className="text-lg">
+                  {i18n.t("timeTracking.markTimeOff")}
+                </CardTitle>
                 <p className="text-sm text-muted-foreground">
                   {dayjs(formData.date).format("dddd, MMMM D, YYYY")}
                 </p>
@@ -524,4 +546,4 @@ export const ModernTimeOffForm: React.FC<{
   );
 };
 
-export default ModernTimeEntryForm;
+export default TimeTrackingEntryDialog;

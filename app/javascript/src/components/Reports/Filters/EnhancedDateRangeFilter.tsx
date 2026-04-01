@@ -13,7 +13,7 @@ import { RadioGroup, RadioGroupItem } from "../../ui/radio-group";
 import { Label } from "../../ui/label";
 import { Badge } from "../../ui/badge";
 
-const EnhancedDateRangeFilter = ({
+const SidebarDateRangeFilter = ({
   filters,
   dateRangeList,
   showCustomFilter,
@@ -50,7 +50,9 @@ const EnhancedDateRangeFilter = ({
               />
             </div>
             <div className="text-left">
-              <p className="text-sm font-medium text-gray-900">{i18n.t("dateRange")}</p>
+              <p className="text-sm font-medium text-gray-900">
+                {i18n.t("dateRange")}
+              </p>
               {isActive && (
                 <p className="text-xs text-gray-500 mt-0.5">
                   {filters.dateRange.label}
@@ -124,4 +126,4 @@ const EnhancedDateRangeFilter = ({
   );
 };
 
-export default EnhancedDateRangeFilter;
+export default SidebarDateRangeFilter;

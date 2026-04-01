@@ -37,8 +37,18 @@ const getGroupByOptions = () => [
     icon: "👤",
     description: i18n.t("reports.groupByAssignee"),
   },
-  { value: "date", label: i18n.t("reports.byDate"), icon: "📅", description: i18n.t("reports.groupByDate") },
-  { value: "week", label: i18n.t("reports.byWeek"), icon: "📆", description: i18n.t("reports.groupByWeek") },
+  {
+    value: "date",
+    label: i18n.t("reports.byDate"),
+    icon: "📅",
+    description: i18n.t("reports.groupByDate"),
+  },
+  {
+    value: "week",
+    label: i18n.t("reports.byWeek"),
+    icon: "📆",
+    description: i18n.t("reports.groupByWeek"),
+  },
   {
     value: "month",
     label: i18n.t("reports.byMonth"),
@@ -47,11 +57,13 @@ const getGroupByOptions = () => [
   },
 ];
 
-const EnhancedGroupByFilter = ({ filters, handleSelectFilter }) => {
+const SidebarGroupByFilter = ({ filters, handleSelectFilter }) => {
   const [isOpen, setIsOpen] = React.useState(false);
   const currentValue = filters.groupBy?.value || "none";
   const isActive = currentValue !== "none";
-  const currentOption = getGroupByOptions().find(opt => opt.value === currentValue);
+  const currentOption = getGroupByOptions().find(
+    opt => opt.value === currentValue
+  );
 
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen}>
@@ -72,7 +84,9 @@ const EnhancedGroupByFilter = ({ filters, handleSelectFilter }) => {
               />
             </div>
             <div className="text-left">
-              <p className="text-sm font-medium text-gray-900">{i18n.t("reports.groupBy")}</p>
+              <p className="text-sm font-medium text-gray-900">
+                {i18n.t("reports.groupBy")}
+              </p>
               {isActive && currentOption && (
                 <p className="text-xs text-gray-500 mt-0.5">
                   {currentOption.label}
@@ -151,12 +165,16 @@ const EnhancedGroupByFilter = ({ filters, handleSelectFilter }) => {
         {/* Visual Preview */}
         {currentValue !== "none" && (
           <div className="mt-4 p-3 bg-gray-50 rounded-lg">
-            <p className="text-xs text-gray-600 mb-2">{i18n.t("reports.previewLabel")}</p>
+            <p className="text-xs text-gray-600 mb-2">
+              {i18n.t("reports.previewLabel")}
+            </p>
             <div className="space-y-1">
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 bg-[#5E58F1] rounded-full" />
                 <span className="text-xs text-gray-700">
-                  {i18n.t("reports.entriesWillBeGrouped", { grouping: currentOption?.label.toLowerCase() })}
+                  {i18n.t("reports.entriesWillBeGrouped", {
+                    grouping: currentOption?.label.toLowerCase(),
+                  })}
                 </span>
               </div>
               <div className="flex items-center gap-2 ml-4">
@@ -173,4 +191,4 @@ const EnhancedGroupByFilter = ({ filters, handleSelectFilter }) => {
   );
 };
 
-export default EnhancedGroupByFilter;
+export default SidebarGroupByFilter;

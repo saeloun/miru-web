@@ -20,7 +20,7 @@ import ReportFilterSidebar from "../Filters/FilterSideBar";
 import Header from "../Header";
 import { ITimeEntry } from "../interface";
 
-const ClassicTimeEntryReport = () => {
+const TimeEntryReportPage = () => {
   const filterIntialValues = {
     dateRange: { label: getMonth(true), value: "this_month" },
     clients: [],
@@ -247,4 +247,4 @@ const ClassicTimeEntryReport = () => {
   );
 };
 
-export default ClassicTimeEntryReport;
+export default TimeEntryReportPage;
