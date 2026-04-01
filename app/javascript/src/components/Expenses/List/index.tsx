@@ -6,7 +6,7 @@ import withLayout from "common/Mobile/HOC/withLayout";
 import { useUserContext } from "context/UserContext";
 import { Toastr } from "StyledComponents";
 
-import Container from "./Container";
+import ExpenseListContent from "./ExpenseListContent";
 import Header from "./Header";
 
 import AddExpenseModal from "../Modals/AddExpenseModal";
@@ -74,7 +74,10 @@ const Expenses = () => {
         fetchSearchResults={fetchSearchResults}
         setShowAddExpenseModal={setShowAddExpenseModal}
       />
-      <Container expenseData={expenseData} fetchExpenses={fetchExpenses} />
+      <ExpenseListContent
+        expenseData={expenseData}
+        fetchExpenses={fetchExpenses}
+      />
       {/* TODO: Fix pagination backend (missing attributes: items,page) and uncomment
       <Pagination
         isPerPageVisible

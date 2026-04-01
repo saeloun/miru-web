@@ -10,13 +10,13 @@ import {
   X,
 } from "phosphor-react";
 import { endOfMonth, format, startOfMonth } from "date-fns";
-import { Card, CardContent, CardHeader, CardTitle } from "../../ui/card";
-import { Badge } from "../../ui/badge";
-import { Calendar } from "../../ui/calendar";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import { Badge } from "../ui/badge";
+import { Calendar } from "../ui/calendar";
 
-import { i18n } from "../../../i18n";
-import LeaveBlock from "./LeaveBlock";
-import Table from "./Table";
+import { i18n } from "../../i18n";
+import LeaveBlock from "./Container/LeaveBlock";
+import Table from "./Container/Table";
 
 const SummaryCard = ({ icon: Icon, label, value, tone = "default" }) => (
   <Card className="border-border shadow-sm">
@@ -42,7 +42,7 @@ const SummaryCard = ({ icon: Icon, label, value, tone = "default" }) => (
   </Card>
 );
 
-const Container = ({
+const LeaveManagementContent = ({
   currentYear,
   getLeaveBalanaceDateText,
   leaveBalance,
@@ -106,7 +106,9 @@ const Container = ({
 
     if (entries.length === 0) {
       return (
-        <span className="text-xs text-muted-foreground">{i18n.t("leaveManagement.nothingBooked")}</span>
+        <span className="text-xs text-muted-foreground">
+          {i18n.t("leaveManagement.nothingBooked")}
+        </span>
       );
     }
 
@@ -195,13 +197,17 @@ const Container = ({
           icon={CalendarBlank}
           label={i18n.t("leaveManagement.optionalHolidays")}
           tone="warning"
-          value={optionalHolidaySummary?.label || i18n.t("leaveManagement.zeroUsed")}
+          value={
+            optionalHolidaySummary?.label || i18n.t("leaveManagement.zeroUsed")
+          }
         />
         <SummaryCard
           icon={Sun}
           label={i18n.t("leaveManagement.publicHolidays")}
           tone="accent"
-          value={nationalHolidaySummary?.label || i18n.t("leaveManagement.zeroUsed")}
+          value={
+            nationalHolidaySummary?.label || i18n.t("leaveManagement.zeroUsed")
+          }
         />
       </div>
 
@@ -232,7 +238,9 @@ const Container = ({
                 {i18n.t("leaveManagement.leaveCalendar")}
               </CardTitle>
               <p className="mt-1 text-sm text-muted-foreground">
-                {i18n.t("leaveManagement.trackLeaveUsage", { year: currentYear })}
+                {i18n.t("leaveManagement.trackLeaveUsage", {
+                  year: currentYear,
+                })}
               </p>
             </div>
             <Badge className="w-fit border-border bg-muted text-foreground hover:bg-muted">
@@ -345,4 +353,4 @@ const Container = ({
   );
 };
 
-export default Container;
+export default LeaveManagementContent;

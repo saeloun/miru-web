@@ -2,9 +2,9 @@ import React from "react";
 
 import EmptyStates from "common/EmptyStates";
 
-import Table from "./Table";
+import Table from "./Container/Table";
 
-const Container = ({ expenseData, fetchExpenses }) => (
+const ExpenseListContent = ({ expenseData, fetchExpenses }) => (
   <div className="mt-4 lg:mt-6 h-full">
     {/* TODO: Uncomment and integrate when API is ready
       <ExpensesSummary />
@@ -22,4 +22,4 @@ const Container = ({ expenseData, fetchExpenses }) => (
   </div>
 );
 
-export default Container;
+export default ExpenseListContent;
