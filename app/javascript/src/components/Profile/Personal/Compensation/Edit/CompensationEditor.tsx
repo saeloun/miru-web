@@ -12,7 +12,7 @@ import { Button } from "StyledComponents";
 import { CustomInputText } from "common/CustomInputText";
 import { ErrorSpan } from "common/ErrorSpan";
 
-const EditPage = ({
+const CompensationEditor = ({
   handleAddEarning,
   handleAddDeduction,
   updateDeductionValues,
@@ -188,4 +188,4 @@ const EditPage = ({
   </div>
 );
 
-export default EditPage;
+export default CompensationEditor;

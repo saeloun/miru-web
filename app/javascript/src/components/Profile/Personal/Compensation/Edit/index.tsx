@@ -6,8 +6,8 @@ import { useProfileContext } from "context/Profile/ProfileContext";
 import { useUserContext } from "context/UserContext";
 import { useNavigate, useParams } from "react-router-dom";
 
-import EditPage from "./EditPage";
-import MobileEditPage from "./MobileEditPage";
+import CompensationEditor from "./CompensationEditor";
+import MobileCompensationEditor from "./MobileCompensationEditor";
 
 import Header from "../../../Common/EditHeader";
 
@@ -120,7 +120,7 @@ const CompensationEditPage = () => {
       ) : (
         <Fragment>
           {isDesktop && (
-            <EditPage
+            <CompensationEditor
               currency={company.base_currency}
               deductions={deductions}
               earnings={earnings}
@@ -135,7 +135,7 @@ const CompensationEditPage = () => {
             />
           )}
           {!isDesktop && (
-            <MobileEditPage
+            <MobileCompensationEditor
               currency={company.base_currency}
               deductions={deductions}
               earnings={earnings}

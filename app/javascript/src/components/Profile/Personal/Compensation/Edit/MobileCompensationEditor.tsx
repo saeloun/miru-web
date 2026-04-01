@@ -12,7 +12,7 @@ import { Button } from "StyledComponents";
 import { CustomInputText } from "common/CustomInputText";
 import { ErrorSpan } from "common/ErrorSpan";
 
-const MobileEditPage = ({
+const MobileCompensationEditor = ({
   handleAddEarning,
   handleAddDeduction,
   updateDeductionValues,
@@ -210,4 +210,4 @@ const MobileEditPage = ({
   </div>
 );
 
-export default MobileEditPage;
+export default MobileCompensationEditor;
