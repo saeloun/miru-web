@@ -26,6 +26,7 @@ RSpec.describe "Invoice editor preview", type: :system, js: true do
 
     create(:invoice_line_item,
       invoice:,
+      timesheet_entry: nil,
       name: "Backend Development",
       description: "API integration work",
       rate: 100.00,

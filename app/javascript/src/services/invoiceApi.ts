@@ -276,21 +276,26 @@ class InvoiceApiService {
       discount: invoiceData.discount || 0,
       currency: invoiceData.currency,
       status: invoiceData.status,
-      invoice_line_items_attributes: invoiceData.invoiceLineItems.map(
-        (item, index) => ({
-          id: item.id === "new" || !item.id ? undefined : item.id,
-          name:
-            item.name ||
-            item.description ||
-            `${item.first_name || ""} ${item.last_name || ""}`.trim(),
-          description: item.description || "",
-          quantity: item.quantity || 0,
-          rate: item.rate || 0,
-          amount:
-            item.amount || item.lineTotal || item.quantity * item.rate || 0,
-          _destroy: item._destroy || false,
-        })
-      ),
+      invoice_line_items_attributes: invoiceData.invoiceLineItems.map(item => ({
+        id:
+          invoiceData.id &&
+          item.id &&
+          item.id !== "new" &&
+          !String(item.id).startsWith("draft-")
+            ? item.id
+            : undefined,
+        name:
+          item.name ||
+          item.description ||
+          `${item.first_name || ""} ${item.last_name || ""}`.trim(),
+        description: item.description || "",
+        date: item.date || item.work_date,
+        timesheet_entry_id: item.timesheet_entry_id,
+        quantity: item.quantity || 0,
+        rate: item.rate || 0,
+        amount: item.amount || item.lineTotal || item.quantity * item.rate || 0,
+        _destroy: item._destroy || false,
+      })),
     };
   }
 

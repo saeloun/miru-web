@@ -39,11 +39,14 @@ const ManualEntry = ({
   const [qtyInHHrMin, setQtyInHHrMin] = useState<any>(minToHHMM(quantity));
   const [isEnter, setIsEnter] = useState<boolean>(false);
   const wrapperRef = useRef(null);
+  const draftIdRef = useRef(
+    `draft-${globalThis.crypto?.randomUUID?.() || `${Date.now()}`}`
+  );
 
   useEffect(() => {
     setLineItem({
       ...lineItem,
-      id: manualEntryArr.length + 1,
+      id: draftIdRef.current,
       name,
       date: dayjs(selectedDate).format("YYYY-MM-DD"),
       description,
@@ -64,7 +67,7 @@ const ManualEntry = ({
     const tempManualEntryArr = [...manualEntryArr];
 
     const indexOfItem = tempManualEntryArr.findIndex(
-      object => object.id === manualEntryArr.length + 1
+      object => object.id === draftIdRef.current
     );
     if (indexOfItem !== -1) {
       tempManualEntryArr.splice(indexOfItem, 1);

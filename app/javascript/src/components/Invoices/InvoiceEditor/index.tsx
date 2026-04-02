@@ -105,6 +105,7 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
     invoice?.invoiceLineItems || invoice?.lineItems || []
   );
   const [manualEntryArr, setManualEntryArr] = useState([]);
+  const [pendingManualEntry, setPendingManualEntry] = useState(null);
 
   const [hasChanges, setHasChanges] = useState(false);
   const initialStateRef = useRef<string | null>(null);
@@ -145,23 +146,53 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
     return formattedClient;
   }, [formData.clientId, clients]);
 
+  const committedLineItems = useMemo(
+    () =>
+      [...selectedLineItems, ...manualEntryArr]
+        .filter(Boolean)
+        .filter(item => !item._destroy),
+    [selectedLineItems, manualEntryArr]
+  );
+
+  const activeLineItems = useMemo(
+    () =>
+      pendingManualEntry && !pendingManualEntry._destroy
+        ? [...committedLineItems, pendingManualEntry]
+        : committedLineItems,
+    [committedLineItems, pendingManualEntry]
+  );
+
+  const hasPendingManualEntry = useMemo(
+    () =>
+      Boolean(
+        pendingManualEntry &&
+          (pendingManualEntry.name ||
+            pendingManualEntry.description ||
+            Number(pendingManualEntry.quantity) > 0 ||
+            Number(pendingManualEntry.rate) > 0)
+      ),
+    [pendingManualEntry]
+  );
+
   useEffect(() => {
     const snapshot = JSON.stringify({
       ...formData,
       issueDate: ensureValidDate(formData.issueDate).toISOString(),
       dueDate: ensureValidDate(formData.dueDate).toISOString(),
-      selectedLineItems,
-      manualEntryArr,
+      lineItems: committedLineItems,
     });
 
     if (initialStateRef.current === null) {
       initialStateRef.current = snapshot;
-      setHasChanges(false);
+      setHasChanges(hasPendingManualEntry);
 
       return;
     }
-    setHasChanges(snapshot !== initialStateRef.current);
-  }, [formData, selectedLineItems, manualEntryArr]);
+
+    setHasChanges(
+      hasPendingManualEntry || snapshot !== initialStateRef.current
+    );
+  }, [formData, committedLineItems, hasPendingManualEntry]);
 
   useEffect(() => {
     if (selectedClient && selectedClient.id) {
@@ -169,39 +200,35 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
     }
   }, [selectedClient?.id]);
 
-  const subtotal = useMemo(() => {
-    const selectedTotal = selectedLineItems.reduce((sum, item) => {
-      if (!item._destroy) {
-        return (
+  const committedSubtotal = useMemo(
+    () =>
+      committedLineItems.reduce(
+        (sum, item) =>
           sum +
           Number(
             item.lineTotal ??
               item.amount ??
               lineTotalCalc(item.quantity, item.rate)
-          )
-        );
-      }
+          ),
+        0
+      ),
+    [committedLineItems]
+  );
 
-      return sum;
-    }, 0);
+  const pendingManualSubtotal = useMemo(() => {
+    if (!hasPendingManualEntry) return 0;
 
-    const manualTotal = manualEntryArr.reduce((sum, item) => {
-      if (!item._destroy) {
-        return (
-          sum +
-          Number(
-            item.lineTotal ??
-              item.amount ??
-              lineTotalCalc(item.quantity, item.rate)
-          )
-        );
-      }
+    return Number(
+      pendingManualEntry.lineTotal ??
+        pendingManualEntry.amount ??
+        lineTotalCalc(pendingManualEntry.quantity, pendingManualEntry.rate)
+    );
+  }, [hasPendingManualEntry, pendingManualEntry]);
 
-      return sum;
-    }, 0);
-
-    return selectedTotal + manualTotal;
-  }, [selectedLineItems, manualEntryArr]);
+  const subtotal = useMemo(
+    () => committedSubtotal + pendingManualSubtotal,
+    [committedSubtotal, pendingManualSubtotal]
+  );
 
   const total = useMemo(
     () => subtotal - formData.discount + formData.tax,
@@ -235,9 +262,7 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
     subtotal,
     currency: company?.baseCurrency || "USD",
     client: selectedClient,
-    lineItems: [...selectedLineItems, ...manualEntryArr].filter(
-      item => !item._destroy
-    ),
+    lineItems: activeLineItems,
     company: company
       ? {
           name: company.name || "Company Name",
@@ -312,10 +337,7 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
                   onSave &&
                   onSave({
                     ...formData,
-                    invoiceLineItems: [
-                      ...selectedLineItems,
-                      ...manualEntryArr,
-                    ].filter(item => !item._destroy),
+                    invoiceLineItems: activeLineItems,
                   })
                 }
                 variant="outline"
@@ -332,10 +354,7 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
                   onSend({
                     ...formData,
                     status: "sent",
-                    invoiceLineItems: [
-                      ...selectedLineItems,
-                      ...manualEntryArr,
-                    ].filter(item => !item._destroy),
+                    invoiceLineItems: activeLineItems,
                   })
                 }
                 size="sm"
@@ -505,6 +524,7 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
                     setSelectedLineItems={setSelectedLineItems}
                     manualEntryArr={manualEntryArr}
                     setManualEntryArr={setManualEntryArr}
+                    onDraftChange={setPendingManualEntry}
                   />
                 </div>
               </CardContent>
