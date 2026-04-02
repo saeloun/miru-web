@@ -128,7 +128,11 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
 
   const formatQuantity = (quantity: number) => minToHHMM(Number(quantity) || 0);
 
-  const formatLineAmount = (item: { amount?: number; quantity: number; rate: number }) =>
+  const formatLineAmount = (item: {
+    amount?: number;
+    quantity: number;
+    rate: number;
+  }) =>
     currencyFormat(
       currency,
       Number(item.amount ?? lineTotalCalc(item.quantity, item.rate))
@@ -346,7 +350,7 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
       )}
 
       {/* Invoice Preview Card */}
-      <Card className="border-border bg-background p-4 text-foreground shadow-sm print:border-gray-200 print:bg-white print:text-gray-900 sm:p-8 dark:border-neutral-800 dark:bg-neutral-950">
+      <Card className="border-border bg-background p-4 text-foreground shadow-sm print:border-gray-200 print:bg-white print:text-gray-900 sm:p-8">
         {/* Header */}
         <div className="mb-8 flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
           <div>
