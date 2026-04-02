@@ -3,42 +3,54 @@
 class ExpenseMailer < ApplicationMailer
   def submitted
     load_expense
+    recipients = params[:recipients]
 
-    mail(
-      to: params[:recipients],
-      subject: "#{@expense.submitter_name} submitted a reimbursement request",
-      reply_to: ENV["REPLY_TO_EMAIL"]
-    )
+    with_recipient_locale(recipient_user_from(recipients)) do
+      mail(
+        to: recipients,
+        subject: I18n.t("mailers.expense_mailer.submitted.subject", submitter_name: @expense.submitter_name),
+        reply_to: ENV["REPLY_TO_EMAIL"]
+      )
+    end
   end
 
   def paid
     load_expense
+    recipients = params[:recipients]
 
-    mail(
-      to: params[:recipients],
-      subject: "Your reimbursement has been marked as paid",
-      reply_to: ENV["REPLY_TO_EMAIL"]
-    )
+    with_recipient_locale(recipient_user_from(recipients)) do
+      mail(
+        to: recipients,
+        subject: I18n.t("mailers.expense_mailer.paid.subject"),
+        reply_to: ENV["REPLY_TO_EMAIL"]
+      )
+    end
   end
 
   def approved
     load_expense
+    recipients = params[:recipients]
 
-    mail(
-      to: params[:recipients],
-      subject: "Your reimbursement has been approved",
-      reply_to: ENV["REPLY_TO_EMAIL"]
-    )
+    with_recipient_locale(recipient_user_from(recipients)) do
+      mail(
+        to: recipients,
+        subject: I18n.t("mailers.expense_mailer.approved.subject"),
+        reply_to: ENV["REPLY_TO_EMAIL"]
+      )
+    end
   end
 
   def rejected
     load_expense
+    recipients = params[:recipients]
 
-    mail(
-      to: params[:recipients],
-      subject: "Your reimbursement needs updates before approval",
-      reply_to: ENV["REPLY_TO_EMAIL"]
-    )
+    with_recipient_locale(recipient_user_from(recipients)) do
+      mail(
+        to: recipients,
+        subject: I18n.t("mailers.expense_mailer.rejected.subject"),
+        reply_to: ENV["REPLY_TO_EMAIL"]
+      )
+    end
   end
 
   private

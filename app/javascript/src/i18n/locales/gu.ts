@@ -581,6 +581,14 @@ const gu = {
     invoiceCreated: "Invoice created successfully",
     invoiceUpdated: "Invoice updated successfully",
     failedToSaveInvoice: "Failed to save invoice. Please try again.",
+    newInvoicePage: "નવી ઇન્વૉઇસ",
+    editInvoicePage: "ઇન્વૉઇસ સંપાદિત કરો",
+    editorSubtitle: "ઇન્વૉઇસ મોકલતા પહેલાં વિગતો भरो અને પૂર્વાવલોકન જુઓ.",
+    saving: "સાચવી રહ્યું છે...",
+    sending: "મોકલી રહ્યું છે...",
+    alreadySent: "પહેલેથી મોકલાઈ ગઈ છે",
+    downloading: "ડાઉનલોડ થઈ રહ્યું છે...",
+    selectClientBeforeSending: "ઇન્વૉઇસ મોકલતા પહેલાં ક્લાયન્ટ પસંદ કરો.",
 
     // Counters
     showingOf: "Showing %{shown} of %{total}",

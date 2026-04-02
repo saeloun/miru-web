@@ -19,6 +19,8 @@ RSpec.describe SendReminderMailer, type: :mailer do
     it "renders the body" do
       expect(mail.body.encoded).to include("Payment reminder")
       expect(mail.body.encoded).to include(invoice.invoice_number)
+      expect(mail.body.encoded).to include("is still open")
+      expect(mail.body.encoded).to include("Open invoice")
     end
   end
 end

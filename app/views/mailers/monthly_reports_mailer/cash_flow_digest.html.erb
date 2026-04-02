@@ -1,15 +1,15 @@
-<p class="email-eyebrow">Monthly Digest</p>
-<h1 class="email-title"><%= @company.name %>'s <%= @digest[:month_label] %> cash flow digest</h1>
-<p class="email-subtitle">
-  Here's your snapshot of money moving through Miru for <%= @digest[:month_year_label] %>.
-</p>
+<% content_for :email_preheader, t("mailers.monthly_reports_mailer.cash_flow_digest.preheader", company_name: @company.name, month_label: @digest[:month_label]) %>
+<% content_for :email_eyebrow, t("mailers.monthly_reports_mailer.cash_flow_digest.eyebrow") %>
+<% content_for :email_title, t("mailers.monthly_reports_mailer.cash_flow_digest.title", company_name: @company.name, month_label: @digest[:month_label]) %>
+<% content_for :email_subtitle do %>
+  <%= t("mailers.monthly_reports_mailer.cash_flow_digest.subtitle", month_year_label: @digest[:month_year_label]) %>
+<% end %>
 
 <div class="email-panel <%= @digest[:net_change] >= 0 ? "email-panel-success" : "email-panel-danger" %>">
-  <p class="digest-kicker">Net change in <%= @digest[:month_label] %></p>
+  <p class="digest-kicker"><%= t("mailers.monthly_reports_mailer.cash_flow_digest.net_change", month_label: @digest[:month_label]) %></p>
   <p class="digest-value"><%= FormatAmountService.new(@digest[:currency], @digest[:net_change]).process %></p>
   <p class="digest-caption">
-    Average daily net change
-    <strong><%= FormatAmountService.new(@digest[:currency], @digest[:average_daily_net_change]).process %></strong>
+    <%= t("mailers.monthly_reports_mailer.cash_flow_digest.average_daily_net_change_html", amount: FormatAmountService.new(@digest[:currency], @digest[:average_daily_net_change]).process).html_safe %>
   </p>
 
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="digest-trend-table">
@@ -34,18 +34,18 @@
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="detail-grid">
   <tr>
     <%= render "shared/mailer/detail_card",
-      label: "Money in",
+      label: t("mailers.monthly_reports_mailer.cash_flow_digest.money_in"),
       value: FormatAmountService.new(@digest[:currency], @digest[:money_in_total]).process,
-      subvalue: "vs. #{FormatAmountService.new(@digest[:currency], @digest[:previous_money_in_total]).process} in #{@digest[:period_start].prev_month.strftime('%B')}" %>
+      subvalue: t("mailers.monthly_reports_mailer.cash_flow_digest.compare_to_previous", amount: FormatAmountService.new(@digest[:currency], @digest[:previous_money_in_total]).process, month_label: l(@digest[:period_start].prev_month.to_date, format: "%B")) %>
     <%= render "shared/mailer/detail_card",
-      label: "Money out",
+      label: t("mailers.monthly_reports_mailer.cash_flow_digest.money_out"),
       value: FormatAmountService.new(@digest[:currency], @digest[:money_out_total]).process,
-      subvalue: "vs. #{FormatAmountService.new(@digest[:currency], @digest[:previous_money_out_total]).process} in #{@digest[:period_start].prev_month.strftime('%B')}" %>
+      subvalue: t("mailers.monthly_reports_mailer.cash_flow_digest.compare_to_previous", amount: FormatAmountService.new(@digest[:currency], @digest[:previous_money_out_total]).process, month_label: l(@digest[:period_start].prev_month.to_date, format: "%B")) %>
   </tr>
 </table>
 
 <div class="email-panel email-panel-soft">
-  <p class="email-panel-title">Top money-in sources</p>
+  <p class="email-panel-title"><%= t("mailers.monthly_reports_mailer.cash_flow_digest.top_money_in_sources") %></p>
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
     <% if @digest[:top_money_in_sources].any? %>
       <% @digest[:top_money_in_sources].each do |source| %>
@@ -56,14 +56,14 @@
       <% end %>
     <% else %>
       <tr>
-        <td class="digest-empty-state">No payments were recorded in Miru for <%= @digest[:month_year_label] %>.</td>
+        <td class="digest-empty-state"><%= t("mailers.monthly_reports_mailer.cash_flow_digest.no_money_in", month_year_label: @digest[:month_year_label]) %></td>
       </tr>
     <% end %>
   </table>
 </div>
 
 <div class="email-panel email-panel-soft">
-  <p class="email-panel-title">Top money-out buckets</p>
+  <p class="email-panel-title"><%= t("mailers.monthly_reports_mailer.cash_flow_digest.top_money_out_sources") %></p>
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
     <% if @digest[:top_money_out_sources].any? %>
       <% @digest[:top_money_out_sources].each do |source| %>
@@ -74,10 +74,10 @@
       <% end %>
     <% else %>
       <tr>
-        <td class="digest-empty-state">No paid expenses were recorded in Miru for <%= @digest[:month_year_label] %>.</td>
+        <td class="digest-empty-state"><%= t("mailers.monthly_reports_mailer.cash_flow_digest.no_money_out", month_year_label: @digest[:month_year_label]) %></td>
       </tr>
     <% end %>
   </table>
 </div>
 
-<%= render "shared/mailer/button", href: @reports_url, label: "View reports in Miru" %>
+<%= render "shared/mailer/button", href: @reports_url, label: t("mailers.actions.view_reports") %>

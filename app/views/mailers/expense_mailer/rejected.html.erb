@@ -1,24 +1,24 @@
-<% content_for :email_preheader, "Your reimbursement request needs updates." %>
-<% content_for :email_eyebrow, "Expenses" %>
-<% content_for :email_title, "Reimbursement needs updates" %>
+<% content_for :email_preheader, t("mailers.expense_mailer.rejected.preheader") %>
+<% content_for :email_eyebrow, t("mailers.expense_mailer.rejected.eyebrow") %>
+<% content_for :email_title, t("mailers.expense_mailer.rejected.title") %>
 <% content_for :email_subtitle do %>
-  Please review the request details, make the needed changes, and resubmit it.
+  <%= t("mailers.expense_mailer.rejected.subtitle") %>
 <% end %>
 
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="detail-grid">
   <tr>
-    <%= render "shared/mailer/detail_card", label: "Amount", value: FormatAmountService.new(@company.base_currency, @expense.amount).process %>
-    <%= render "shared/mailer/detail_card", label: "Category", value: @expense.display_category_name.presence || "-" %>
+    <%= render "shared/mailer/detail_card", label: t("mailers.labels.amount"), value: FormatAmountService.new(@company.base_currency, @expense.amount).process %>
+    <%= render "shared/mailer/detail_card", label: t("mailers.labels.category"), value: @expense.display_category_name.presence || "-" %>
   </tr>
   <tr>
-    <%= render "shared/mailer/detail_card", label: "Date", value: @expense.formatted_date %>
-    <%= render "shared/mailer/detail_card", label: "Description", value: @expense.description.presence || "-" %>
+    <%= render "shared/mailer/detail_card", label: t("mailers.labels.date"), value: @expense.formatted_date %>
+    <%= render "shared/mailer/detail_card", label: t("mailers.labels.description"), value: @expense.description.presence || "-" %>
   </tr>
 </table>
 
 <div class="email-panel email-panel-warning">
-  <p class="email-panel-title">Next step</p>
-  <p style="margin-bottom: 0;">Open the expense, update any required fields, and submit it again for review.</p>
+  <p class="email-panel-title"><%= t("mailers.expense_mailer.rejected.next_step_title") %></p>
+  <p style="margin-bottom: 0;"><%= t("mailers.expense_mailer.rejected.next_step_body") %></p>
 </div>
 
-<%= render "shared/mailer/button", href: @expense_url, label: "Update expense" %>
+<%= render "shared/mailer/button", href: @expense_url, label: t("mailers.actions.open_expense") %>

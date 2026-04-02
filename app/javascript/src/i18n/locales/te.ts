@@ -581,6 +581,14 @@ const te = {
     invoiceCreated: "Invoice created successfully",
     invoiceUpdated: "Invoice updated successfully",
     failedToSaveInvoice: "Failed to save invoice. Please try again.",
+    newInvoicePage: "కొత్త ఇన్వాయిస్",
+    editInvoicePage: "ఇన్వాయిస్‌ను సవరించండి",
+    editorSubtitle: "ఇన్వాయిస్‌ను పంపించే ముందు వివరాలు నింపి ప్రివ్యూ చూడండి.",
+    saving: "సేవ్ చేస్తోంది...",
+    sending: "పంపిస్తోంది...",
+    alreadySent: "ఇప్పటికే పంపబడింది",
+    downloading: "డౌన్‌లోడ్ చేస్తోంది...",
+    selectClientBeforeSending: "ఇన్వాయిస్ పంపించే ముందు క్లయింట్‌ను ఎంచుకోండి.",
 
     // Counters
     showingOf: "Showing %{shown} of %{total}",

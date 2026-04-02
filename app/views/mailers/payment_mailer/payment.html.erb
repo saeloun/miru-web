@@ -1,8 +1,8 @@
-<% content_for :email_preheader, "Payment confirmation for invoice #{@invoice.invoice_number}." %>
-<% content_for :email_eyebrow, "Payments" %>
-<% content_for :email_title, "Payment confirmation" %>
+<% content_for :email_preheader, t("mailers.payment_mailer.payment.preheader", invoice_number: @invoice.invoice_number) %>
+<% content_for :email_eyebrow, t("mailers.payment_mailer.payment.eyebrow") %>
+<% content_for :email_title, t("mailers.payment_mailer.payment.title") %>
 <% content_for :email_subtitle do %>
-  <strong><%= @invoice.client.name %></strong> has completed payment for invoice <strong><%= @invoice.invoice_number %></strong>.
+  <%= t("mailers.payment_mailer.payment.subtitle_html", client_name: @invoice.client.name, invoice_number: @invoice.invoice_number).html_safe %>
 <% end %>
 
 <div class="email-panel email-panel-success">
@@ -11,15 +11,15 @@
 
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="detail-grid">
   <tr>
-    <%= render "shared/mailer/detail_card", label: "Invoice", value: @invoice.invoice_number %>
-    <%= render "shared/mailer/detail_card", label: "Amount paid", value: @amount %>
+    <%= render "shared/mailer/detail_card", label: t("mailers.labels.invoice"), value: @invoice.invoice_number %>
+    <%= render "shared/mailer/detail_card", label: t("mailers.labels.amount_paid"), value: @amount %>
   </tr>
   <tr>
     <%= render "shared/mailer/detail_card",
-      label: "Payment method",
+      label: t("mailers.labels.payment_method"),
       value: @invoice.payments.any?(&:present?) ? @invoice.payments.pluck(:transaction_type).to_sentence.upcase : "STRIPE" %>
-    <%= render "shared/mailer/detail_card", label: "Client", value: @invoice.client.name %>
+    <%= render "shared/mailer/detail_card", label: t("mailers.labels.client"), value: @invoice.client.name %>
   </tr>
 </table>
 
-<%= render "shared/mailer/button", href: @invoice_url, label: "View invoice" %>
+<%= render "shared/mailer/button", href: @invoice_url, label: t("mailers.actions.open_invoice") %>

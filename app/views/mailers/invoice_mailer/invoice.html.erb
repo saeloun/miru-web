@@ -1,23 +1,23 @@
-<% content_for :email_preheader, "Invoice #{@invoice.invoice_number} from #{@invoice.company.name}." %>
-<% content_for :email_eyebrow, "Invoices" %>
-<% content_for :email_title, "Invoice ready to review" %>
+<% content_for :email_preheader, t("mailers.invoice_mailer.invoice.preheader", invoice_number: @invoice.invoice_number, company_name: @invoice.company.name) %>
+<% content_for :email_eyebrow, t("mailers.invoice_mailer.invoice.eyebrow") %>
+<% content_for :email_title, t("mailers.invoice_mailer.invoice.title") %>
 <% content_for :email_subtitle do %>
-  <strong><%= @invoice.company.name %></strong> sent invoice <strong><%= @invoice.invoice_number %></strong> and it is ready to review.
+  <%= t("mailers.invoice_mailer.invoice.subtitle_html", company_name: @invoice.company.name, invoice_number: @invoice.invoice_number).html_safe %>
 <% end %>
 
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="detail-grid">
   <tr>
-    <%= render "shared/mailer/detail_card", label: "Issue date", value: @invoice.issue_date.strftime("%B %d, %Y") %>
-    <%= render "shared/mailer/detail_card", label: "Due date", value: @invoice.due_date.strftime("%B %d, %Y") %>
+    <%= render "shared/mailer/detail_card", label: t("mailers.labels.issue_date"), value: l(@invoice.issue_date.to_date, format: :long) %>
+    <%= render "shared/mailer/detail_card", label: t("mailers.labels.due_date"), value: l(@invoice.due_date.to_date, format: :long) %>
   </tr>
   <tr>
-    <%= render "shared/mailer/detail_card", label: "Invoice number", value: @invoice.invoice_number %>
-    <%= render "shared/mailer/detail_card", label: "Reference", value: @invoice.reference.presence || "-" %>
+    <%= render "shared/mailer/detail_card", label: t("mailers.labels.invoice_number"), value: @invoice.invoice_number %>
+    <%= render "shared/mailer/detail_card", label: t("mailers.labels.reference"), value: @invoice.reference.presence || "-" %>
   </tr>
   <tr>
-    <%= render "shared/mailer/detail_card", label: "Amount due", value: @amount || "-" %>
-    <%= render "shared/mailer/detail_card", label: "Payment link", value: "Secure invoice page", subvalue: "Open the invoice to review line items and pay online." %>
+    <%= render "shared/mailer/detail_card", label: t("mailers.labels.amount_due"), value: @amount || "-" %>
+    <%= render "shared/mailer/detail_card", label: t("mailers.labels.payment_link"), value: t("mailers.invoice_mailer.invoice.payment_link_value"), subvalue: t("mailers.invoice_mailer.invoice.payment_link_subvalue") %>
   </tr>
 </table>
 
-<%= render "shared/mailer/button", href: @invoice_url, label: "Review invoice" %>
+<%= render "shared/mailer/button", href: @invoice_url, label: t("mailers.actions.open_invoice") %>

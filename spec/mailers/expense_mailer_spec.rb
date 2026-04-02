@@ -24,7 +24,7 @@ RSpec.describe ExpenseMailer, type: :mailer do
 
     it "renders the body" do
       expect(mail.body.encoded).to include("Taxi reimbursement")
-      expect(mail.body.encoded).to include("Review expense")
+      expect(mail.body.encoded).to include("Open expense")
     end
   end
 

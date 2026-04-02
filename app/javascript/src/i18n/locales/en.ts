@@ -581,6 +581,15 @@ const en = {
     invoiceCreated: "Invoice created successfully",
     invoiceUpdated: "Invoice updated successfully",
     failedToSaveInvoice: "Failed to save invoice. Please try again.",
+    newInvoicePage: "New invoice",
+    editInvoicePage: "Edit invoice",
+    editorSubtitle:
+      "Fill in the details and preview the invoice before sending it.",
+    saving: "Saving...",
+    sending: "Sending...",
+    alreadySent: "Already sent",
+    downloading: "Downloading...",
+    selectClientBeforeSending: "Select a client before sending the invoice.",
 
     // Counters
     showingOf: "Showing %{shown} of %{total}",

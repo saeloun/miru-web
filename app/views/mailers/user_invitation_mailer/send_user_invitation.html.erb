@@ -1,35 +1,35 @@
-<% content_for :email_preheader, "You have been invited to join a team on Miru." %>
-<% content_for :email_eyebrow, "Invitation" %>
-<% content_for :email_title, "You're invited to Miru" %>
+<% content_for :email_preheader, t("mailers.user_invitation_mailer.send_user_invitation.preheader") %>
+<% content_for :email_eyebrow, t("mailers.user_invitation_mailer.send_user_invitation.eyebrow") %>
+<% content_for :email_title, t("mailers.user_invitation_mailer.send_user_invitation.title") %>
 <% content_for :email_subtitle do %>
-  <strong><%= @sender_details&.[](:name) %></strong> invited you to join <strong><%= @company_details&.[](:name) %></strong>.
+  <%= t("mailers.user_invitation_mailer.send_user_invitation.subtitle_html", sender_name: @sender_details&.[](:name), company_name: @company_details&.[](:name)).html_safe %>
 <% end %>
 
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="detail-grid">
   <tr>
     <%= render "shared/mailer/detail_card",
-      label: "Invited by",
+      label: t("mailers.labels.invited_by"),
       value: @sender_details&.[](:name),
       subvalue: @sender_details&.[](:email) %>
     <%= render "shared/mailer/detail_card",
-      label: "Workspace",
+      label: t("mailers.labels.workspace"),
       value: @company_details&.[](:name),
-      subvalue: "#{@company_details&.[](:employee_count)} members" %>
+      subvalue: t("mailers.user_invitation_mailer.send_user_invitation.workspace_members", count: @company_details&.[](:employee_count)) %>
   </tr>
 </table>
 
 <div class="email-panel email-panel-accent">
-  <p class="email-panel-title">Get started</p>
-  <p style="margin-bottom: 0;">Accept the invitation, set your password, and join the workspace in a few minutes.</p>
+  <p class="email-panel-title"><%= t("mailers.user_invitation_mailer.send_user_invitation.get_started_title") %></p>
+  <p style="margin-bottom: 0;"><%= t("mailers.user_invitation_mailer.send_user_invitation.get_started_body") %></p>
 </div>
 
-<%= render "shared/mailer/button", href: invitations_accepts_url(token: @token), label: "Join Miru" %>
+<%= render "shared/mailer/button", href: invitations_accepts_url(token: @token), label: t("mailers.actions.join_miru") %>
 
 <div class="email-divider"></div>
 
-<p>If you were not expecting this invitation, contact our team at <a href="mailto:hello@saeloun.com">hello@saeloun.com</a>.</p>
+<p><%= t("mailers.user_invitation_mailer.send_user_invitation.support_html", support_email: t("mailers.layout.footer_contact")).html_safe %></p>
 
 <div class="email-panel email-panel-soft">
-  <p class="email-panel-title">About Miru</p>
-  <p style="margin-bottom: 0;">Miru helps teams track time, send invoices, collect payments, and manage day-to-day operations from one workspace.</p>
+  <p class="email-panel-title"><%= t("mailers.user_invitation_mailer.send_user_invitation.about_title") %></p>
+  <p style="margin-bottom: 0;"><%= t("mailers.user_invitation_mailer.send_user_invitation.about_body") %></p>
 </div>

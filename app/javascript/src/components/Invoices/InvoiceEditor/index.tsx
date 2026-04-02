@@ -33,6 +33,7 @@ import InvoiceTable from "../common/InvoiceTable";
 import InvoicePreview from "../InvoicePreview";
 import { fetchNewLineItems } from "../common/utils";
 import { lineTotalCalc } from "../../../helpers";
+import { i18n } from "../../../i18n";
 
 interface InvoiceEditorProps {
   invoice?: any;
@@ -327,10 +328,12 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div>
               <h1 className="text-2xl font-semibold text-foreground">
-                {invoice ? "Edit invoice" : "New invoice"}
+                {invoice
+                  ? i18n.t("invoices.editInvoicePage")
+                  : i18n.t("invoices.newInvoicePage")}
               </h1>
               <p className="mt-1 text-sm text-muted-foreground">
-                Fill in the details and preview the invoice before sending it.
+                {i18n.t("invoices.editorSubtitle")}
               </p>
             </div>
             <div className="flex flex-wrap gap-2 sm:gap-3">
@@ -347,7 +350,7 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
                 )}
               </Button>
               <Button variant="outline" size="sm" onClick={onCancel}>
-                Cancel
+                {i18n.t("cancel")}
               </Button>
               <Button
                 onClick={() => {
@@ -364,10 +367,14 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
               >
                 <FloppyDisk className="mr-1.5 h-4 w-4" />
                 <span className="hidden sm:inline">
-                  {submitIntent === "save" && isLoading ? "Saving..." : "Save"}
+                  {submitIntent === "save" && isLoading
+                    ? i18n.t("invoices.saving")
+                    : i18n.t("save")}
                 </span>
                 <span className="sm:hidden">
-                  {submitIntent === "save" && isLoading ? "Saving..." : "Save"}
+                  {submitIntent === "save" && isLoading
+                    ? i18n.t("invoices.saving")
+                    : i18n.t("save")}
                 </span>
               </Button>
               <Button
@@ -386,17 +393,17 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
                 <PaperPlaneTilt className="mr-1.5 h-4 w-4" />
                 <span className="hidden sm:inline">
                   {submitIntent === "send" && isLoading
-                    ? "Sending..."
+                    ? i18n.t("invoices.sending")
                     : isSentInvoice
-                    ? "Already Sent"
-                    : "Send Invoice"}
+                    ? i18n.t("invoices.alreadySent")
+                    : i18n.t("invoices.sendInvoice")}
                 </span>
                 <span className="sm:hidden">
                   {submitIntent === "send" && isLoading
-                    ? "Sending..."
+                    ? i18n.t("invoices.sending")
                     : isSentInvoice
-                    ? "Sent"
-                    : "Send"}
+                    ? i18n.t("invoices.sent")
+                    : i18n.t("invoices.send")}
                 </span>
               </Button>
             </div>

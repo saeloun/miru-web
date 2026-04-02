@@ -6,11 +6,15 @@ class SendWeeklyReminderToUserMailer < ApplicationMailer
     @company = params[:company_name]
     @name = params[:name]
 
-    @starting_date = params[:start_date].strftime("%B %-d")
-    @ending_date = params[:end_date].strftime("%B %-d, %Y")
+    @starting_date = params[:start_date].to_date
+    @ending_date = params[:end_date].to_date
 
-    subject = "Complete your Miru timesheet for last week"
-
-    mail(to: recipients, subject:, reply_to: ENV["REPLY_TO_EMAIL"])
+    with_recipient_locale(recipient_user_from(recipients)) do
+      mail(
+        to: recipients,
+        subject: I18n.t("mailers.send_weekly_reminder_to_user_mailer.notify_user_about_missed_entries.subject"),
+        reply_to: ENV["REPLY_TO_EMAIL"]
+      )
+    end
   end
 end

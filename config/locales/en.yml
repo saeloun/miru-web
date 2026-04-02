@@ -389,3 +389,154 @@ en:
   currency_pairs:
     from_to_required: from and to are required
     rate_not_found: Rate not found
+  mailers:
+    layout:
+      preheader: Miru update
+      brand: Miru
+      footer_body: Time, invoices, payments, and operations in one calm workspace.
+      footer_site: app.miru.so
+      footer_contact: hello@saeloun.com
+      footer_copyright: © Miru. All rights reserved.
+    actions:
+      open_invoice: Open invoice
+      open_expense: Open expense
+      open_time_tracking: Open time tracking
+      view_reports: View reports in Miru
+      join_miru: Join Miru
+    labels:
+      issue_date: Issue date
+      due_date: Due date
+      invoice_number: Invoice number
+      reference: Reference
+      total_amount: Total amount
+      attachment: Attachment
+      amount_due: Amount due
+      payment_link: Payment link
+      outstanding_amount: Outstanding amount
+      status: Status
+      invoice: Invoice
+      payment_method: Payment method
+      amount_paid: Amount paid
+      client: Client
+      issued_to: Issued to
+      paid_on: Paid on
+      amount: Amount
+      category: Category
+      date: Date
+      description: Description
+      invited_by: Invited by
+      workspace: Workspace
+    invoice_mailer:
+      send_invoice:
+        subject: "Invoice %{invoice_number} from %{company_name}"
+        preheader: "Invoice %{invoice_number} from %{company_name} is ready."
+        eyebrow: Invoices
+        title: Your invoice is ready
+        subtitle_html: "<strong>%{company_name}</strong> sent invoice <strong>%{invoice_number}</strong>. The PDF is attached for your records."
+        attachment_value: PDF attached
+        attachment_subvalue: Keep it, forward it, or file it.
+      invoice:
+        subject: "Invoice %{invoice_number}"
+        preheader: "Invoice %{invoice_number} from %{company_name}."
+        eyebrow: Invoices
+        title: Your invoice is ready
+        subtitle_html: "<strong>%{company_name}</strong> sent invoice <strong>%{invoice_number}</strong>. You can review it and pay online."
+        payment_link_value: Secure invoice page
+        payment_link_subvalue: Review the line items and pay online.
+    send_reminder_mailer:
+      send_reminder:
+        subject: "Reminder for invoice %{invoice_number} from %{company_name}"
+        preheader: "Reminder for invoice %{invoice_number} from %{company_name}."
+        eyebrow: Invoices
+        title: Payment reminder
+        subtitle_html: "Invoice <strong>%{invoice_number}</strong> from <strong>%{company_name}</strong> is still open."
+    send_payment_reminder_mailer:
+      send_payment_reminder:
+        subject: "Payment reminder for %{company_name}"
+        preheader: "Payment reminder for %{company_name} invoices."
+        eyebrow: Invoices
+        title: Payment reminder
+        subtitle: Review the invoices below and clear any remaining balances.
+    payment_mailer:
+      payment:
+        subject: "Payment details for invoice %{invoice_number}"
+        preheader: "Payment confirmation for invoice %{invoice_number}."
+        eyebrow: Payments
+        title: Payment confirmation
+        subtitle_html: "<strong>%{client_name}</strong> has completed payment for invoice <strong>%{invoice_number}</strong>."
+    client_payment_mailer:
+      payment:
+        subject: "Payment receipt for invoice %{invoice_number}"
+        preheader: "Payment receipt for invoice %{invoice_number}."
+        eyebrow: Payments
+        title: Payment receipt
+        subtitle_html: "We received your payment for invoice <strong>%{invoice_number}</strong>."
+    expense_mailer:
+      submitted:
+        subject: "%{submitter_name} submitted a reimbursement request"
+        preheader: A new reimbursement request needs review.
+        eyebrow: Expenses
+        title: New reimbursement request
+        subtitle_html: "<strong>%{submitter_name}</strong> submitted a reimbursement request that is ready for review."
+      approved:
+        subject: Your reimbursement has been approved
+        preheader: Your reimbursement request has been approved.
+        eyebrow: Expenses
+        title: Reimbursement approved
+        subtitle: Your reimbursement request has been reviewed and approved.
+      paid:
+        subject: Your reimbursement has been marked as paid
+        preheader: Your reimbursement request has been marked as paid.
+        eyebrow: Expenses
+        title: Reimbursement paid
+        subtitle: Payment for your reimbursement request has been completed.
+      rejected:
+        subject: Your reimbursement needs updates before approval
+        preheader: Your reimbursement request needs updates.
+        eyebrow: Expenses
+        title: Reimbursement needs updates
+        subtitle: Please review the request details, make the needed changes, and resubmit it.
+        next_step_title: Next step
+        next_step_body: Open the expense, make the updates, and submit it again.
+    send_weekly_reminder_to_user_mailer:
+      notify_user_about_missed_entries:
+        subject: Complete your Miru timesheet for last week
+        preheader: Update your Miru timesheet for the missing week.
+        eyebrow: Time tracking
+        title: Complete your timesheet
+        subtitle: Your time entries for %{company_name} are still below the expected weekly total.
+        greeting_html: "Hi <strong>%{name}</strong>,"
+        body_html: "You logged fewer than 40 hours between <strong>%{starting_date}</strong> and <strong>%{ending_date}</strong>."
+        follow_up: Open Miru, add the missing entries, and close the week out.
+        signoff_html: "Thanks,<br><strong>Miru</strong>"
+    user_invitation_mailer:
+      send_user_invitation:
+        subject: You're invited to join Miru
+        preheader: You have been invited to join a team on Miru.
+        eyebrow: Invitation
+        title: You're invited to Miru
+        subtitle_html: "<strong>%{sender_name}</strong> invited you to join <strong>%{company_name}</strong>."
+        workspace_members:
+          one: "1 member"
+          other: "%{count} members"
+        get_started_title: Get started
+        get_started_body: Accept the invite, set your password, and you are in.
+        support_html: "If you were not expecting this invitation, contact our team at <a href=\"mailto:%{support_email}\">%{support_email}</a>."
+        about_title: About Miru
+        about_body: Miru brings time, invoices, payments, and day-to-day operations into one workspace.
+    monthly_reports_mailer:
+      cash_flow_digest:
+        subject: "%{company_name}'s %{month_label} cash flow digest"
+        preheader: "%{company_name}'s %{month_label} cash flow digest"
+        eyebrow: Monthly Digest
+        title: "%{company_name}'s %{month_label} cash flow digest"
+        subtitle: "Here's your snapshot of money moving through Miru for %{month_year_label}."
+        net_change: "Net change in %{month_label}"
+        average_daily_net_change_html: "Average daily net change <strong>%{amount}</strong>"
+        money_in: Money in
+        money_out: Money out
+        compare_to_previous: "vs. %{amount} in %{month_label}"
+        top_money_in_sources: Top money-in sources
+        top_money_out_sources: Top money-out buckets
+        no_money_in: "No payments were recorded in Miru for %{month_year_label}."
+        no_money_out: "No paid expenses were recorded in Miru for %{month_year_label}."

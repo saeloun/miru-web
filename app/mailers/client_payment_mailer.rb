@@ -3,7 +3,6 @@
 class ClientPaymentMailer < ApplicationMailer
   def payment
     @invoice = Invoice.find(params[:invoice_id])
-    subject = params[:subject]
     @invoice_url = "#{ENV['APP_BASE_URL']}/invoices/#{@invoice.external_view_key}/view"
     @company = @invoice.company
     @company_logo = company_logo
@@ -11,7 +10,11 @@ class ClientPaymentMailer < ApplicationMailer
     @message = email_message
 
     if can_send_mail?
-      mail(to: @invoice.client.email, subject:, reply_to: ENV["REPLY_TO_EMAIL"])
+      mail(
+        to: @invoice.client.email,
+        subject: params[:subject].presence || I18n.t("mailers.client_payment_mailer.payment.subject", invoice_number: @invoice.invoice_number),
+        reply_to: ENV["REPLY_TO_EMAIL"]
+      )
 
       @invoice.update_columns(client_payment_sent_at: DateTime.current)
     end

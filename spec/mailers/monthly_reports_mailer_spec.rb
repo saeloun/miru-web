@@ -47,7 +47,7 @@ RSpec.describe MonthlyReportsMailer, type: :mailer do
     end
 
     it "renders the body" do
-      expect(mail.body.encoded).to include("Saeloun Inc's March cash flow digest")
+      expect(mail.body.encoded).to include("March cash flow digest")
       expect(mail.body.encoded).to include("Top money-in sources")
       expect(mail.body.encoded).to include("Haul Hub Inc")
       expect(mail.body.encoded).to include("Saeloun Payroll")

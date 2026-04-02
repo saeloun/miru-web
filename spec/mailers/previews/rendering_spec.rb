@@ -21,7 +21,15 @@ RSpec.describe "Mailer previews", type: :mailer do
     expect(payment_mail.body.encoded).to include("Payment confirmation")
 
     expect(invoice_mail.subject).to include("Invoice PREVIEW-001")
-    expect(invoice_mail.body.encoded).to include("Invoice ready to review")
+    expect(invoice_mail.body.encoded).to include("Your invoice is ready")
+  end
+
+  it "includes the shared responsive mailer hooks" do
+    invoice_mail = InvoiceMailerPreview.new.invoice
+
+    expect(invoice_mail.body.encoded).to include("@media only screen and (max-width: 640px)")
+    expect(invoice_mail.body.encoded).to include("email-button-wrap")
+    expect(invoice_mail.body.encoded).to include("detail-cell")
   end
 
   it "renders the shared preview support mailers with html content" do

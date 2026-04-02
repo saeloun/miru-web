@@ -6,7 +6,6 @@ class InvoiceMailer < ApplicationMailer
   def invoice
     @invoice = Invoice.find(params[:invoice_id])
     recipients = params[:recipients]
-    subject = params[:subject]
     @message = params[:message]
     @invoice_url = "#{ENV['APP_BASE_URL']}/invoices/#{@invoice.external_view_key}/view"
     @company = @invoice.company
@@ -17,7 +16,11 @@ class InvoiceMailer < ApplicationMailer
       pdf = InvoicePayment::PdfGeneration.process(@invoice, @company_logo, root_url)
       attachments["invoice_#{@invoice.invoice_number}.pdf"] = pdf
 
-      mail(to: recipients, subject:, reply_to: ENV["REPLY_TO_EMAIL"])
+      mail(
+        to: recipients,
+        subject: params[:subject].presence || I18n.t("mailers.invoice_mailer.invoice.subject", invoice_number: @invoice.invoice_number),
+        reply_to: ENV["REPLY_TO_EMAIL"]
+      )
 
       @invoice.update_columns(sent_at: DateTime.current)
     end
@@ -26,7 +29,6 @@ class InvoiceMailer < ApplicationMailer
   def send_invoice
     @invoice = params[:invoice]
     recipients = params[:recipients]
-    subject = params[:subject]
     @message = params[:message]
 
     # Decode PDF data if it was encoded as base64
@@ -51,7 +53,7 @@ class InvoiceMailer < ApplicationMailer
     mail(
       to: recipients,
       from: ENV["DEFAULT_FROM_EMAIL"] || "noreply@example.com",
-      subject: subject,
+      subject: params[:subject].presence || I18n.t("mailers.invoice_mailer.send_invoice.subject", invoice_number: @invoice.invoice_number, company_name: @invoice.company.name),
       reply_to: ENV["REPLY_TO_EMAIL"]
     )
   end

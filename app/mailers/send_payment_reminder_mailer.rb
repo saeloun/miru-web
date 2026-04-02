@@ -4,7 +4,6 @@ class SendPaymentReminderMailer < ApplicationMailer
   def send_payment_reminder
     @invoices = Invoice.where(id: params[:selected_invoices])
     recipients = params[:recipients]
-    subject = params[:subject]
     @message = params[:message]
     @company = @invoices.first.company
     @company_logo = company_logo
@@ -13,7 +12,11 @@ class SendPaymentReminderMailer < ApplicationMailer
     # pdf = InvoicePayment::PdfGeneration.process(@invoice, @company_logo, root_url)
     # attachments["invoice_#{@invoice.invoice_number}.pdf"] = pdf
 
-    mail(to: recipients, subject:, reply_to: ENV["REPLY_TO_EMAIL"])
+    mail(
+      to: recipients,
+      subject: params[:subject].presence || I18n.t("mailers.send_payment_reminder_mailer.send_payment_reminder.subject", company_name: @company.name),
+      reply_to: ENV["REPLY_TO_EMAIL"]
+    )
   end
 
   private

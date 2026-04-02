@@ -8,10 +8,16 @@ class MonthlyReportsMailer < ApplicationMailer
     @digest = Reports::MonthlyCashFlowDigest.new(company: @company, month: @month).process
     @reports_url = "#{ENV['APP_BASE_URL']}/reports"
     recipients = Array(params[:recipients]).presence || Array(@recipient&.email)
-    subject = "#{@company.name}'s #{@digest[:month_label]} cash flow digest"
-
     with_recipient_locale(@recipient) do
-      mail(to: recipients, subject:, reply_to: ENV["REPLY_TO_EMAIL"])
+      mail(
+        to: recipients,
+        subject: I18n.t(
+          "mailers.monthly_reports_mailer.cash_flow_digest.subject",
+          company_name: @company.name,
+          month_label: @digest[:month_label]
+        ),
+        reply_to: ENV["REPLY_TO_EMAIL"]
+      )
     end
   end
 end

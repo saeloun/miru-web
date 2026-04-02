@@ -42,4 +42,8 @@ class ApplicationMailer < ActionMailer::Base
       locale = user&.locale.presence || I18n.default_locale
       I18n.with_locale(locale, &block)
     end
+
+    def recipient_user_from(recipients)
+      User.find_by(email: Array(recipients).compact.first)
+    end
 end
