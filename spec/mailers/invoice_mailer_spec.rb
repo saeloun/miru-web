@@ -17,7 +17,7 @@ RSpec.describe InvoiceMailer, type: :mailer do
     end
 
     it "renders the body" do
-      expect(mail.body.encoded).to include("Invoice ready to review")
+      expect(mail.body.encoded).to include("Your invoice is ready")
       expect(mail.body.encoded).to include(invoice.invoice_number)
     end
 

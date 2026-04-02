@@ -2,7 +2,8 @@ const es = {
   // Image validation
   invalidImageFormatSize:
     "Formato de archivo incorrecto. Por favor, suba una imagen de tipo PNG o JPG. Tamaño máx. (%{fileSize}KB)",
-  invalidImageSize: "El tamaño del archivo excedió el límite máximo de %{fileSize}KB.",
+  invalidImageSize:
+    "El tamaño del archivo excedió el límite máximo de %{fileSize}KB.",
   invalidImageFormat:
     "Formato de archivo incorrecto. Por favor, suba una imagen de tipo PNG o JPG",
 
@@ -62,7 +63,6 @@ const es = {
   inactive: "Inactivo",
   invited: "Invitado",
   department: "Departamento",
-  projects: "Proyectos",
   theme: "Tema",
   summary: "Resumen",
   format: "Formato",
@@ -159,7 +159,8 @@ const es = {
     editEntry: "Editar entrada",
     deleteEntry: "Eliminar entrada",
     deleteTimeEntry: "Eliminar entrada de tiempo",
-    deleteTimeEntryConfirm: "¿Está seguro de que desea eliminar esta entrada de tiempo?",
+    deleteTimeEntryConfirm:
+      "¿Está seguro de que desea eliminar esta entrada de tiempo?",
     durationRequired: "La duración es obligatoria",
     projectRequired: "El proyecto es obligatorio",
     duration: "Duración",
@@ -185,10 +186,13 @@ const es = {
     entry: "entrada",
     entries: "entradas",
     noEntriesForSelectedDay: "Sin entradas para el día seleccionado",
-    weekReviewHint: "Cambie a Esta semana para revisar todo lo que registró esta semana.",
+    weekReviewHint:
+      "Cambie a Esta semana para revisar todo lo que registró esta semana.",
     noTimeEntriesYet: "Aún no hay entradas de tiempo",
-    firstEntryHint: 'Haga clic en "Agregar entrada" para registrar su primera entrada de tiempo para este día',
-    logWorkByWeekOrMonth: "Registre trabajo por semana o mes. Mantenga las entradas claras y actualizadas.",
+    firstEntryHint:
+      'Haga clic en "Agregar entrada" para registrar su primera entrada de tiempo para este día',
+    logWorkByWeekOrMonth:
+      "Registre trabajo por semana o mes. Mantenga las entradas claras y actualizadas.",
     entriesFor: "Entradas para %{name}",
     timeEntriesFor: "Entradas de tiempo para",
     unableToLoad: "No se pudo cargar el seguimiento de tiempo en este momento.",
@@ -206,7 +210,8 @@ const es = {
     entriesUpdatedSuccessfully: "Entradas actualizadas correctamente",
     failedToUpdateEntries: "Error al actualizar las entradas",
     selectProjectFirst: "Por favor, seleccione un proyecto primero",
-    editingModeActive: "El modo de edición está activo. Complete sus cambios arriba.",
+    editingModeActive:
+      "El modo de edición está activo. Complete sus cambios arriba.",
     dayAbbr: {
       mon: "Lun",
       tue: "Mar",
@@ -330,7 +335,8 @@ const es = {
     searchProjects: "Buscar proyectos...",
     createFirstProject: "Cree su primer proyecto para comenzar.",
     noProjectsYet: "Aún no hay proyectos",
-    workingOnProjects: "Rastree trabajo facturable y no facturable en sus proyectos.",
+    workingOnProjects:
+      "Rastree trabajo facturable y no facturable en sus proyectos.",
     active: "Activo",
     paused: "Pausado",
     completed: "Completado",
@@ -346,21 +352,25 @@ const es = {
     outstanding: "PENDIENTE",
     deleting: "Eliminando...",
     createProject: "Crear proyecto",
-    createProjectDescription: "Configure un nuevo proyecto y asígnelo a un cliente.",
+    createProjectDescription:
+      "Configure un nuevo proyecto y asígnelo a un cliente.",
     editProjectDetails: "Editar detalles del proyecto",
     saveChanges: "Guardar cambios",
-    billableDescription: "Registre tiempo y facture al cliente por este proyecto",
+    billableDescription:
+      "Registre tiempo y facture al cliente por este proyecto",
     nonBillableDescription: "Registre tiempo sin facturar al cliente",
     noClientsPresent: "No hay clientes disponibles",
     teamMembersUpdated: "Miembros del equipo actualizados correctamente",
-    manageProjectMembersDescription: "Agregue o elimine miembros del equipo y establezca sus tarifas por hora.",
+    manageProjectMembersDescription:
+      "Agregue o elimine miembros del equipo y establezca sus tarifas por hora.",
     enterValidRate: "Por favor, ingrese una tarifa válida",
     addAnotherTeamMember: "Agregar otro miembro",
     addTeamMember: "Agregar miembro del equipo",
     saveTeamMembers: "Guardar miembros",
     noTeamMembersAdded: "Aún no se han agregado miembros del equipo.",
     addTeamMembers: "Agregar miembros del equipo",
-    teamMembersDescription: "Vea y administre los miembros del equipo asignados a este proyecto.",
+    teamMembersDescription:
+      "Vea y administre los miembros del equipo asignados a este proyecto.",
   },
 
   // Team
@@ -504,13 +514,11 @@ const es = {
     message: "Mensaje",
     addEmailFromClientSettings:
       "Por favor, agregue el correo desde la configuración del cliente",
-    reminderSubject:
-      "Recordatorio para completar pagos de factura pendiente",
+    reminderSubject: "Recordatorio para completar pagos de factura pendiente",
     invoiceSentSubject: "%{company} le envió una factura (%{number})",
     reminderBody:
       "%{company} le ha enviado un recordatorio para la factura %{number}",
-    invoiceSentBody:
-      "%{company} le ha enviado una factura (%{number})",
+    invoiceSentBody: "%{company} le ha enviado una factura (%{number})",
     invoiceWillBeSent: "¡La factura será enviada!",
     processing: "procesando...",
 
@@ -580,11 +588,13 @@ const es = {
     errorConnectingPayments: "Error al conectar con pagos",
     invoiceCreated: "Factura creada correctamente",
     invoiceUpdated: "Factura actualizada correctamente",
-    failedToSaveInvoice: "Error al guardar la factura. Por favor, intente de nuevo.",
+    failedToSaveInvoice:
+      "Error al guardar la factura. Por favor, intente de nuevo.",
 
     // Counters
     showingOf: "Mostrando %{shown} de %{total}",
-    viewingMatching: "Viendo %{filtered} facturas coincidentes de %{loaded} cargadas",
+    viewingMatching:
+      "Viendo %{filtered} facturas coincidentes de %{loaded} cargadas",
     loadedOf: "Cargadas %{loaded} de %{total}",
     showingRecentTransactions: "Mostrando %{count} transacciones recientes",
     updatedAt: "Actualizada %{date}",
@@ -596,12 +606,16 @@ const es = {
 
     // Invoice reminder email
     invoiceReminder: "Recordatorio de factura: %{number}",
-    reminderMessage: "Este es un recordatorio sobre su factura pendiente. Por favor, encuentre los detalles adjuntos.",
+    reminderMessage:
+      "Este es un recordatorio sobre su factura pendiente. Por favor, encuentre los detalles adjuntos.",
     invoiceAttached: "Por favor, encuentre su factura adjunta.",
-    reminderPaymentMessage: "Este es un recordatorio sobre su factura vencida. Por favor, complete el pago.",
+    reminderPaymentMessage:
+      "Este es un recordatorio sobre su factura vencida. Por favor, complete el pago.",
     invoiceSubject: "Factura %{number}",
-    reminderPaymentSubject: "Recordatorio para completar el pago de la factura %{number}",
-    markAsPaidConfirm: "¿Marcar esta factura como pagada? Esta acción afecta los registros contables.",
+    reminderPaymentSubject:
+      "Recordatorio para completar el pago de la factura %{number}",
+    markAsPaidConfirm:
+      "¿Marcar esta factura como pagada? Esta acción afecta los registros contables.",
     failedToLoadInvoice: "Error al cargar la factura",
     invoiceNotFound: "Factura no encontrada",
     failedToMarkAsPaid: "Error al marcar la factura como pagada",
@@ -680,7 +694,8 @@ const es = {
   timer: {
     webTimer: "Temporizador web",
     webTimerLabel: "Temporizador web",
-    trackLiveWork: "Registre trabajo en vivo en tiempo real, luego guárdelo directamente en la lista de entradas de hoy.",
+    trackLiveWork:
+      "Registre trabajo en vivo en tiempo real, luego guárdelo directamente en la lista de entradas de hoy.",
     startTimer: "Iniciar temporizador",
     pause: "Pausar",
     resume: "Reanudar",
@@ -689,7 +704,8 @@ const es = {
     reset: "Restablecer",
     timer: "Temporizador",
     saveTimeEntry: "Guardar entrada de tiempo",
-    saveTimeEntryDescription: "Registró %{time}. ¿Desea guardar esto como una entrada de tiempo?",
+    saveTimeEntryDescription:
+      "Registró %{time}. ¿Desea guardar esto como una entrada de tiempo?",
     discard: "Descartar",
     timerStarted: "Temporizador iniciado",
     timerPaused: "Temporizador pausado",
@@ -786,7 +802,8 @@ const es = {
     invoiceAgingDetails: "Detalles de antigüedad de facturas",
     noDataFound: "No se encontraron datos",
     accountsAgingReport: "Reporte de antigüedad de cuentas",
-    analysisOfOutstandingReceivables: "Análisis de cuentas por cobrar pendientes por período de antigüedad",
+    analysisOfOutstandingReceivables:
+      "Análisis de cuentas por cobrar pendientes por período de antigüedad",
     asOf: "Al %{date}",
     zeroToThirtyDays: "0-30 días",
     thirtyOneToSixtyDays: "31-60 días",
@@ -794,16 +811,20 @@ const es = {
     ninetyPlusDays: "90+ días",
     noClientsWithOutstandingBalances: "No hay clientes con saldos pendientes.",
     showingOfClients: "Mostrando %{displayed} de %{total} clientes...",
-    errorLoadingReportData: "Error al cargar datos del reporte. Por favor, intente de nuevo.",
+    errorLoadingReportData:
+      "Error al cargar datos del reporte. Por favor, intente de nuevo.",
     projectClient: "PROYECTO/ CLIENTE",
     noteHeader: "NOTA",
     teamMemberDate: "MIEMBRO DEL EQUIPO/ FECHA",
     hoursLogged: "HORAS REGISTRADAS",
-    noResultsMatchFilters: "Ningún resultado coincide con los filtros actuales. Intente eliminar algunos filtros.",
-    noTimeEntriesYet: "Aún no se han agregado entradas de tiempo. Verá un resumen de las entradas de tiempo agregadas por su equipo.",
+    noResultsMatchFilters:
+      "Ningún resultado coincide con los filtros actuales. Intente eliminar algunos filtros.",
+    noTimeEntriesYet:
+      "Aún no se han agregado entradas de tiempo. Verá un resumen de las entradas de tiempo agregadas por su equipo.",
     selected: "%{count} seleccionados",
     showingClientsCount: "Mostrando %{shown} de %{total} clientes",
-    ofTeamMembersSelected: "%{active} de %{total} miembros del equipo seleccionados",
+    ofTeamMembersSelected:
+      "%{active} de %{total} miembros del equipo seleccionados",
     statusGuide: "Guía de estados:",
     activeCount: "%{count} activos",
     noGrouping: "Sin agrupación",
@@ -824,18 +845,22 @@ const es = {
     entriesWillBeGrouped: "Las entradas se agruparán %{grouping}",
     subtotalsShownForEachGroup: "Se mostrarán subtotales para cada grupo",
     timeEntryReportTitle: "Reporte de entradas de tiempo",
-    timeEntryReportDesc: "Un resumen de las entradas de tiempo agregadas por su equipo.",
+    timeEntryReportDesc:
+      "Un resumen de las entradas de tiempo agregadas por su equipo.",
     invoicesReport: "Reporte de facturas",
-    invoicesReportDesc: "Un resumen detallado de facturas pendientes y vencidas de todos los clientes para un período de tiempo.",
+    invoicesReportDesc:
+      "Un resumen detallado de facturas pendientes y vencidas de todos los clientes para un período de tiempo.",
     totalHoursLoggedTitle: "Total de horas registradas",
-    totalHoursLoggedDesc: "Un resumen detallado de horas facturadas, no facturadas y no facturables por equipo agrupado por proyecto.",
+    totalHoursLoggedDesc:
+      "Un resumen detallado de horas facturadas, no facturadas y no facturables por equipo agrupado por proyecto.",
     revenueReport: "Reporte de ingresos",
     revenueReportDesc: "Un reporte detallado de ingresos de cada cliente.",
     accountsAging: "Antigüedad de cuentas",
     accountsAgingDesc: "Descubra qué clientes han tardado mucho en pagar",
     clearAll: "BORRAR TODO",
     outstandingAndOverdue: "Pendientes y vencidas",
-    followUpOnInvoices: "Haga seguimiento de facturas que aún necesitan atención.",
+    followUpOnInvoices:
+      "Haga seguimiento de facturas que aún necesitan atención.",
     outstanding: "Pendiente",
     overdue: "Vencida",
     refresh: "Actualizar",
@@ -848,26 +873,36 @@ const es = {
     formatLabel: "Formato",
     exportPdfBtn: "Exportar PDF",
     exportCsvBtn: "Exportar CSV",
-    noOutstandingOrOverdueInvoices: "No se encontraron facturas pendientes o vencidas.",
+    noOutstandingOrOverdueInvoices:
+      "No se encontraron facturas pendientes o vencidas.",
     allCurrencies: "Todas las monedas",
     filteredByCurrency: "Filtrado por %{currency}",
     overdueAgingTitle: "Antigüedad de vencimiento (%{currency})",
     averageDays: "Promedio de días:",
-    timeReportsDesc: "Un resumen completo de las entradas de tiempo agregadas por los miembros de su equipo",
+    timeReportsDesc:
+      "Un resumen completo de las entradas de tiempo agregadas por los miembros de su equipo",
     outstandingOverdueInvoicesTitle: "Facturas pendientes y vencidas",
-    outstandingOverdueInvoicesDesc: "Descripción detallada de facturas pendientes y vencidas en todos los clientes",
+    outstandingOverdueInvoicesDesc:
+      "Descripción detallada de facturas pendientes y vencidas en todos los clientes",
     revenueByClient: "Ingresos por cliente",
-    revenueByClientDesc: "Desglose de ingresos por cliente con tendencias y comparaciones",
-    accountsAgingTableDesc: "Análisis de antigüedad de cuentas por cobrar pendientes por período",
+    revenueByClientDesc:
+      "Desglose de ingresos por cliente con tendencias y comparaciones",
+    accountsAgingTableDesc:
+      "Análisis de antigüedad de cuentas por cobrar pendientes por período",
     paymentReportTitle: "Reporte de pagos",
-    paymentReportDesc: "Rastree todos los pagos recibidos con historial de transacciones detallado",
+    paymentReportDesc:
+      "Rastree todos los pagos recibidos con historial de transacciones detallado",
     teamUtilization: "Utilización del equipo",
-    teamUtilizationDesc: "Tasas de utilización y análisis de capacidad de los miembros del equipo",
+    teamUtilizationDesc:
+      "Tasas de utilización y análisis de capacidad de los miembros del equipo",
     projectProfitability: "Rentabilidad del proyecto",
-    projectProfitabilityDesc: "Análisis de rentabilidad por proyecto con desglose de costos",
+    projectProfitabilityDesc:
+      "Análisis de rentabilidad por proyecto con desglose de costos",
     clientSummaryTitle: "Resumen del cliente",
-    clientSummaryDesc: "Métricas completas de rendimiento y participación del cliente",
-    understandReportsAtGlance: "Comprenda ingresos, tiempo y trabajo pendiente de un vistazo.",
+    clientSummaryDesc:
+      "Métricas completas de rendimiento y participación del cliente",
+    understandReportsAtGlance:
+      "Comprenda ingresos, tiempo y trabajo pendiente de un vistazo.",
     scheduleReports: "Programar reportes",
     availableReports: "Reportes disponibles",
     revenueAndBilling: "Ingresos y facturación",
@@ -878,7 +913,8 @@ const es = {
     viewOverdueInvoices: "Ver facturas vencidas",
     monthlyRevenueReport: "Reporte de ingresos mensual",
     openReport: "Abrir reporte %{title}",
-    reviewHoursLogged: "Revise las horas registradas por persona, cliente y proyecto.",
+    reviewHoursLogged:
+      "Revise las horas registradas por persona, cliente y proyecto.",
     lastSevenDaysPreset: "Últimos 7 días",
     lastThirtyDaysPreset: "Últimos 30 días",
     totalEntries: "Total de entradas",
@@ -1123,13 +1159,17 @@ const es = {
     paidInvoices: "Facturas pagadas",
     alreadySettled: "Ya liquidadas",
     paymentsReceived: "Pagos recibidos",
-    employeeGuidance: "Registre su semana, envíe entradas precisas y mantenga el trabajo en movimiento.",
-    bookKeeperGuidance: "Revise pagos entrantes, concilie facturas y mantenga el flujo de caja claro.",
-    clientGuidance: "Consulte el estado de facturas e historial de pagos de su cuenta.",
+    employeeGuidance:
+      "Registre su semana, envíe entradas precisas y mantenga el trabajo en movimiento.",
+    bookKeeperGuidance:
+      "Revise pagos entrantes, concilie facturas y mantenga el flujo de caja claro.",
+    clientGuidance:
+      "Consulte el estado de facturas e historial de pagos de su cuenta.",
     defaultGuidance: "Ingresos, proyectos y impulso del equipo de un vistazo.",
     recentActivity: "Actividad reciente",
     workspaceActivity: "Actividad del espacio de trabajo",
-    employeeActivityDescription: "Su panel está enfocado en seguimiento de tiempo y trabajo asignado.",
+    employeeActivityDescription:
+      "Su panel está enfocado en seguimiento de tiempo y trabajo asignado.",
     activityDescription: "Últimas actualizaciones de sus facturas y pagos",
     noRecentActivityYet: "Aún no hay actividad reciente",
     loadMore: "Cargar más",
@@ -1172,27 +1212,36 @@ const es = {
     cashLedger: "Libro de caja",
     miruLogo: "Miru",
     heroTitle: "Un lugar para tiempo, facturas y pagos",
-    heroDescription: "Mantenga el día claro, la facturación en movimiento y el efectivo visible.",
+    heroDescription:
+      "Mantenga el día claro, la facturación en movimiento y el efectivo visible.",
     slideShowPrefix: "Mostrar",
-    slideDashboardDescription: "Vea ingresos, proyectos activos e impulso del equipo sin tener que buscarlo.",
-    slideInvoicesDescription: "Mantenga borradores, saldos vencidos y trabajo pagado en el mismo lugar.",
-    slideTimeTrackingDescription: "Las entradas de tiempo semana a semana se mantienen actualizadas sin convertirse en trabajo tedioso.",
-    slidePaymentsDescription: "Cada pago llega a un libro mayor con método, estado y origen.",
+    slideDashboardDescription:
+      "Vea ingresos, proyectos activos e impulso del equipo sin tener que buscarlo.",
+    slideInvoicesDescription:
+      "Mantenga borradores, saldos vencidos y trabajo pagado en el mismo lugar.",
+    slideTimeTrackingDescription:
+      "Las entradas de tiempo semana a semana se mantienen actualizadas sin convertirse en trabajo tedioso.",
+    slidePaymentsDescription:
+      "Cada pago llega a un libro mayor con método, estado y origen.",
     continueWithGoogle: "Continuar con Google",
     continueWithGithub: "Continuar con GitHub",
     orUseEmail: "o use correo electrónico",
     verifyWithAuthenticator: "Verifique con su aplicación de autenticación",
-    authenticatorInstructions: "Ingrese el código de 6 dígitos de su aplicación de autenticación o use un código de recuperación.",
+    authenticatorInstructions:
+      "Ingrese el código de 6 dígitos de su aplicación de autenticación o use un código de recuperación.",
     authenticatorCode: "Código de autenticación",
     recoveryCode: "Código de recuperación",
     verifyAndSignIn: "Verificar e iniciar sesión",
-    completePasskeyVerification: "Complete la verificación de llave de acceso para terminar de iniciar sesión.",
-    enterAuthenticatorCode: "Ingrese su código de autenticación para terminar de iniciar sesión.",
+    completePasskeyVerification:
+      "Complete la verificación de llave de acceso para terminar de iniciar sesión.",
+    enterAuthenticatorCode:
+      "Ingrese su código de autenticación para terminar de iniciar sesión.",
     invalidVerificationCode: "Código de verificación inválido.",
     privacy: "Privacidad",
     terms: "Términos",
     createAccount: "Crear cuenta",
-    passwordCriteria: "Mín. 8 caracteres, 1 mayúscula, 1 minúscula, 1 número y 1 carácter especial",
+    passwordCriteria:
+      "Mín. 8 caracteres, 1 mayúscula, 1 minúscula, 1 número y 1 carácter especial",
     agreeToTerms: "Acepto los",
     termsOfService: "Términos de servicio",
     privacyPolicy: "Política de privacidad",
@@ -1202,7 +1251,8 @@ const es = {
   // Passkeys
   passkeys: {
     noPasskeyResponse: "No se recibió respuesta de llave de acceso.",
-    passkeysNotSupported: "Las llaves de acceso no son compatibles con este navegador.",
+    passkeysNotSupported:
+      "Las llaves de acceso no son compatibles con este navegador.",
   },
 
   // Organization setup
@@ -1276,8 +1326,10 @@ const es = {
     publicHolidays: "Feriados públicos",
     zeroUsed: "0 usadas",
     leaveCalendar: "Calendario de licencias",
-    trackLeaveUsage: "Rastree el uso de licencias y feriados mes a mes para %{year}.",
-    selectDayToInspect: "Seleccione un día para inspeccionar detalles de licencias y uso de feriados.",
+    trackLeaveUsage:
+      "Rastree el uso de licencias y feriados mes a mes para %{year}.",
+    selectDayToInspect:
+      "Seleccione un día para inspeccionar detalles de licencias y uso de feriados.",
     nothingBooked: "Nada reservado",
     nothingBookedForDate: "Nada reservado para esta fecha.",
     recordedTimeAway: "Tiempo libre registrado en este día",
@@ -1299,12 +1351,14 @@ const es = {
     numberOfTeamMembers: "Número de miembros del equipo:",
     plan: "Plan",
     basicPlan: "Plan básico",
-    basicPlanDescription: "El plan básico incluye todas las funciones. Este es un cargo único.",
+    basicPlanDescription:
+      "El plan básico incluye todas las funciones. Este es un cargo único.",
     chargedOnce: "cargo único",
     addOns: "Complementos",
     oneTeamMember: "1 miembro del equipo",
     chargedEveryMonth: "cargo mensual",
-    basicPlanPerUser: "El plan básico incluye un cargo adicional de %{rate}$ por usuario al mes.",
+    basicPlanPerUser:
+      "El plan básico incluye un cargo adicional de %{rate}$ por usuario al mes.",
     plusTaxes: "más impuestos",
     reviewAndPay: "REVISAR Y PAGAR",
   },
@@ -1318,7 +1372,8 @@ const es = {
   selectOption: "Seleccionar",
   editLabel: "Editar",
   noPasskeyResponse: "No se recibió respuesta de llave de acceso.",
-  passkeysNotSupported: "Las llaves de acceso no son compatibles con este navegador.",
+  passkeysNotSupported:
+    "Las llaves de acceso no son compatibles con este navegador.",
 
   // Table headers (common)
   tableHeaders: {

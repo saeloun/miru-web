@@ -2,7 +2,8 @@ const it = {
   // Image validation
   invalidImageFormatSize:
     "Formato file non corretto. Carica un'immagine di tipo PNG o JPG. Dimensione max. (%{fileSize}KB)",
-  invalidImageSize: "La dimensione del file ha superato il limite massimo di %{fileSize}KB.",
+  invalidImageSize:
+    "La dimensione del file ha superato il limite massimo di %{fileSize}KB.",
   invalidImageFormat:
     "Formato file non corretto. Carica un'immagine di tipo PNG o JPG",
 
@@ -62,7 +63,6 @@ const it = {
   inactive: "Inattivo",
   invited: "Invitato",
   department: "Reparto",
-  projects: "Progetti",
   theme: "Tema",
   summary: "Riepilogo",
   format: "Formato",
@@ -159,7 +159,8 @@ const it = {
     editEntry: "Modifica voce",
     deleteEntry: "Elimina voce",
     deleteTimeEntry: "Elimina voce di tempo",
-    deleteTimeEntryConfirm: "Sei sicuro di voler eliminare questa voce di tempo?",
+    deleteTimeEntryConfirm:
+      "Sei sicuro di voler eliminare questa voce di tempo?",
     durationRequired: "La durata è obbligatoria",
     projectRequired: "Il progetto è obbligatorio",
     duration: "Durata",
@@ -185,13 +186,17 @@ const it = {
     entry: "voce",
     entries: "voci",
     noEntriesForSelectedDay: "Nessuna voce per il giorno selezionato",
-    weekReviewHint: "Passa a Questa settimana per rivedere tutto ciò che hai registrato questa settimana.",
+    weekReviewHint:
+      "Passa a Questa settimana per rivedere tutto ciò che hai registrato questa settimana.",
     noTimeEntriesYet: "Nessuna voce di tempo ancora",
-    firstEntryHint: 'Clicca su "Aggiungi voce" per registrare la tua prima voce di tempo per questo giorno',
-    logWorkByWeekOrMonth: "Registra il lavoro per settimana o mese. Mantieni le voci chiare e aggiornate.",
+    firstEntryHint:
+      'Clicca su "Aggiungi voce" per registrare la tua prima voce di tempo per questo giorno',
+    logWorkByWeekOrMonth:
+      "Registra il lavoro per settimana o mese. Mantieni le voci chiare e aggiornate.",
     entriesFor: "Voci per %{name}",
     timeEntriesFor: "Voci di tempo per",
-    unableToLoad: "Impossibile caricare il tracciamento del tempo in questo momento.",
+    unableToLoad:
+      "Impossibile caricare il tracciamento del tempo in questo momento.",
     timerResumedFromEntry: "Timer ripreso dalla voce",
     noEntriesInLastWeek: "Nessuna voce trovata nella settimana scorsa.",
     alreadyHasEntries: "Questa settimana ha già queste voci.",
@@ -206,7 +211,8 @@ const it = {
     entriesUpdatedSuccessfully: "Voci aggiornate con successo",
     failedToUpdateEntries: "Impossibile aggiornare le voci",
     selectProjectFirst: "Seleziona prima un progetto",
-    editingModeActive: "La modalità di modifica è attiva. Completa le modifiche sopra.",
+    editingModeActive:
+      "La modalità di modifica è attiva. Completa le modifiche sopra.",
     dayAbbr: {
       mon: "Lun",
       tue: "Mar",
@@ -321,7 +327,8 @@ const it = {
     projectDeletedSuccessfully: "Progetto eliminato con successo",
     viewDetails: "Visualizza dettagli",
     copyProjectId: "Copia ID progetto",
-    manageProjectsDescription: "Gestisci i tuoi progetti e monitora i progressi",
+    manageProjectsDescription:
+      "Gestisci i tuoi progetti e monitora i progressi",
     newProject: "Nuovo progetto",
     activeProjects: "Progetti attivi",
     ofTotalProjects: "di %{count} progetti totali",
@@ -330,7 +337,8 @@ const it = {
     searchProjects: "Cerca progetti...",
     createFirstProject: "Crea il tuo primo progetto per iniziare.",
     noProjectsYet: "Ancora nessun progetto",
-    workingOnProjects: "Traccia il lavoro fatturabile e non fatturabile sui tuoi progetti.",
+    workingOnProjects:
+      "Traccia il lavoro fatturabile e non fatturabile sui tuoi progetti.",
     active: "Attivo",
     paused: "In pausa",
     completed: "Completato",
@@ -346,21 +354,25 @@ const it = {
     outstanding: "IN SOSPESO",
     deleting: "Eliminazione...",
     createProject: "Crea progetto",
-    createProjectDescription: "Configura un nuovo progetto e assegnalo a un cliente.",
+    createProjectDescription:
+      "Configura un nuovo progetto e assegnalo a un cliente.",
     editProjectDetails: "Modifica dettagli progetto",
     saveChanges: "Salva modifiche",
-    billableDescription: "Traccia il tempo e fattura al cliente per questo progetto",
+    billableDescription:
+      "Traccia il tempo e fattura al cliente per questo progetto",
     nonBillableDescription: "Traccia il tempo senza fatturare al cliente",
     noClientsPresent: "Nessun cliente disponibile",
     teamMembersUpdated: "Membri del team aggiornati con successo",
-    manageProjectMembersDescription: "Aggiungi o rimuovi membri del team e imposta le loro tariffe orarie.",
+    manageProjectMembersDescription:
+      "Aggiungi o rimuovi membri del team e imposta le loro tariffe orarie.",
     enterValidRate: "Inserisci una tariffa valida",
     addAnotherTeamMember: "Aggiungi un altro membro",
     addTeamMember: "Aggiungi membro del team",
     saveTeamMembers: "Salva membri",
     noTeamMembersAdded: "Nessun membro del team è stato ancora aggiunto.",
     addTeamMembers: "Aggiungi membri del team",
-    teamMembersDescription: "Visualizza e gestisci i membri del team assegnati a questo progetto.",
+    teamMembersDescription:
+      "Visualizza e gestisci i membri del team assegnati a questo progetto.",
   },
 
   // Team
@@ -509,8 +521,7 @@ const it = {
     invoiceSentSubject: "%{company} ti ha inviato una fattura (%{number})",
     reminderBody:
       "%{company} ti ha inviato un promemoria per la fattura %{number}",
-    invoiceSentBody:
-      "%{company} ti ha inviato una fattura (%{number})",
+    invoiceSentBody: "%{company} ti ha inviato una fattura (%{number})",
     invoiceWillBeSent: "La fattura verrà inviata!",
     processing: "elaborazione...",
 
@@ -584,9 +595,11 @@ const it = {
 
     // Counters
     showingOf: "Visualizzazione di %{shown} su %{total}",
-    viewingMatching: "Visualizzazione di %{filtered} fatture corrispondenti su %{loaded} caricate",
+    viewingMatching:
+      "Visualizzazione di %{filtered} fatture corrispondenti su %{loaded} caricate",
     loadedOf: "Caricate %{loaded} su %{total}",
-    showingRecentTransactions: "Visualizzazione di %{count} transazioni recenti",
+    showingRecentTransactions:
+      "Visualizzazione di %{count} transazioni recenti",
     updatedAt: "Aggiornata %{date}",
     invoiceHash: "Fattura #%{number}",
 
@@ -596,12 +609,16 @@ const it = {
 
     // Invoice reminder email
     invoiceReminder: "Promemoria fattura: %{number}",
-    reminderMessage: "Questo è un promemoria sulla tua fattura in sospeso. Trova i dettagli in allegato.",
+    reminderMessage:
+      "Questo è un promemoria sulla tua fattura in sospeso. Trova i dettagli in allegato.",
     invoiceAttached: "Trova la tua fattura in allegato.",
-    reminderPaymentMessage: "Questo è un promemoria sulla tua fattura scaduta. Completa il pagamento.",
+    reminderPaymentMessage:
+      "Questo è un promemoria sulla tua fattura scaduta. Completa il pagamento.",
     invoiceSubject: "Fattura %{number}",
-    reminderPaymentSubject: "Promemoria per completare il pagamento della fattura %{number}",
-    markAsPaidConfirm: "Segnare questa fattura come pagata? Questa azione influisce sui registri contabili.",
+    reminderPaymentSubject:
+      "Promemoria per completare il pagamento della fattura %{number}",
+    markAsPaidConfirm:
+      "Segnare questa fattura come pagata? Questa azione influisce sui registri contabili.",
     failedToLoadInvoice: "Impossibile caricare la fattura",
     invoiceNotFound: "Fattura non trovata",
     failedToMarkAsPaid: "Impossibile segnare la fattura come pagata",
@@ -680,7 +697,8 @@ const it = {
   timer: {
     webTimer: "Timer web",
     webTimerLabel: "Timer web",
-    trackLiveWork: "Traccia il lavoro in tempo reale, poi salvalo direttamente nell'elenco delle voci di oggi.",
+    trackLiveWork:
+      "Traccia il lavoro in tempo reale, poi salvalo direttamente nell'elenco delle voci di oggi.",
     startTimer: "Avvia timer",
     pause: "Pausa",
     resume: "Riprendi",
@@ -689,7 +707,8 @@ const it = {
     reset: "Reimposta",
     timer: "Timer",
     saveTimeEntry: "Salva voce di tempo",
-    saveTimeEntryDescription: "Hai tracciato %{time}. Vuoi salvarlo come voce di tempo?",
+    saveTimeEntryDescription:
+      "Hai tracciato %{time}. Vuoi salvarlo come voce di tempo?",
     discard: "Scarta",
     timerStarted: "Timer avviato",
     timerPaused: "Timer in pausa",
@@ -786,7 +805,8 @@ const it = {
     invoiceAgingDetails: "Dettagli sull'anzianità delle fatture",
     noDataFound: "Nessun dato trovato",
     accountsAgingReport: "Report anzianità crediti",
-    analysisOfOutstandingReceivables: "Analisi dei crediti in sospeso per periodo di anzianità",
+    analysisOfOutstandingReceivables:
+      "Analisi dei crediti in sospeso per periodo di anzianità",
     asOf: "Al %{date}",
     zeroToThirtyDays: "0-30 giorni",
     thirtyOneToSixtyDays: "31-60 giorni",
@@ -794,13 +814,16 @@ const it = {
     ninetyPlusDays: "90+ giorni",
     noClientsWithOutstandingBalances: "Nessun cliente con saldi in sospeso.",
     showingOfClients: "Visualizzazione di %{displayed} su %{total} clienti...",
-    errorLoadingReportData: "Errore nel caricamento dei dati del report. Riprova.",
+    errorLoadingReportData:
+      "Errore nel caricamento dei dati del report. Riprova.",
     projectClient: "PROGETTO/ CLIENTE",
     noteHeader: "NOTA",
     teamMemberDate: "MEMBRO DEL TEAM/ DATA",
     hoursLogged: "ORE REGISTRATE",
-    noResultsMatchFilters: "Nessun risultato corrisponde ai filtri attuali. Prova a rimuovere alcuni filtri.",
-    noTimeEntriesYet: "Non sono ancora state aggiunte voci di tempo. Vedrai un riepilogo delle voci di tempo aggiunte dal tuo team.",
+    noResultsMatchFilters:
+      "Nessun risultato corrisponde ai filtri attuali. Prova a rimuovere alcuni filtri.",
+    noTimeEntriesYet:
+      "Non sono ancora state aggiunte voci di tempo. Vedrai un riepilogo delle voci di tempo aggiunte dal tuo team.",
     selected: "%{count} selezionati",
     showingClientsCount: "Visualizzazione di %{shown} su %{total} clienti",
     ofTeamMembersSelected: "%{active} su %{total} membri del team selezionati",
@@ -824,18 +847,22 @@ const it = {
     entriesWillBeGrouped: "Le voci saranno raggruppate %{grouping}",
     subtotalsShownForEachGroup: "I subtotali saranno mostrati per ogni gruppo",
     timeEntryReportTitle: "Report voci di tempo",
-    timeEntryReportDesc: "Un riepilogo delle voci di tempo aggiunte dal tuo team.",
+    timeEntryReportDesc:
+      "Un riepilogo delle voci di tempo aggiunte dal tuo team.",
     invoicesReport: "Report fatture",
-    invoicesReportDesc: "Un riepilogo dettagliato delle fatture in sospeso e scadute di tutti i clienti per un periodo di tempo.",
+    invoicesReportDesc:
+      "Un riepilogo dettagliato delle fatture in sospeso e scadute di tutti i clienti per un periodo di tempo.",
     totalHoursLoggedTitle: "Ore totali registrate",
-    totalHoursLoggedDesc: "Un riepilogo dettagliato delle ore fatturate, non fatturate e non fatturabili per team raggruppato per progetto.",
+    totalHoursLoggedDesc:
+      "Un riepilogo dettagliato delle ore fatturate, non fatturate e non fatturabili per team raggruppato per progetto.",
     revenueReport: "Report ricavi",
     revenueReportDesc: "Un report dettagliato dei ricavi di ogni cliente.",
     accountsAging: "Anzianità crediti",
     accountsAgingDesc: "Scopri quali clienti impiegano molto tempo a pagare",
     clearAll: "CANCELLA TUTTO",
     outstandingAndOverdue: "In sospeso e scadute",
-    followUpOnInvoices: "Segui le fatture che necessitano ancora di attenzione.",
+    followUpOnInvoices:
+      "Segui le fatture che necessitano ancora di attenzione.",
     outstanding: "In sospeso",
     overdue: "Scaduta",
     refresh: "Aggiorna",
@@ -848,26 +875,36 @@ const it = {
     formatLabel: "Formato",
     exportPdfBtn: "Esporta PDF",
     exportCsvBtn: "Esporta CSV",
-    noOutstandingOrOverdueInvoices: "Nessuna fattura in sospeso o scaduta trovata.",
+    noOutstandingOrOverdueInvoices:
+      "Nessuna fattura in sospeso o scaduta trovata.",
     allCurrencies: "Tutte le valute",
     filteredByCurrency: "Filtrato per %{currency}",
     overdueAgingTitle: "Anzianità scaduti (%{currency})",
     averageDays: "Media giorni:",
-    timeReportsDesc: "Un riepilogo completo delle voci di tempo aggiunte dai membri del tuo team",
+    timeReportsDesc:
+      "Un riepilogo completo delle voci di tempo aggiunte dai membri del tuo team",
     outstandingOverdueInvoicesTitle: "Fatture in sospeso e scadute",
-    outstandingOverdueInvoicesDesc: "Panoramica dettagliata delle fatture in sospeso e scadute di tutti i clienti",
+    outstandingOverdueInvoicesDesc:
+      "Panoramica dettagliata delle fatture in sospeso e scadute di tutti i clienti",
     revenueByClient: "Ricavi per cliente",
-    revenueByClientDesc: "Ripartizione dei ricavi per cliente con tendenze e confronti",
-    accountsAgingTableDesc: "Analisi dell'anzianità dei crediti in sospeso per periodo",
+    revenueByClientDesc:
+      "Ripartizione dei ricavi per cliente con tendenze e confronti",
+    accountsAgingTableDesc:
+      "Analisi dell'anzianità dei crediti in sospeso per periodo",
     paymentReportTitle: "Report pagamenti",
-    paymentReportDesc: "Traccia tutti i pagamenti ricevuti con storico transazioni dettagliato",
+    paymentReportDesc:
+      "Traccia tutti i pagamenti ricevuti con storico transazioni dettagliato",
     teamUtilization: "Utilizzo del team",
-    teamUtilizationDesc: "Tassi di utilizzo e analisi della capacità dei membri del team",
+    teamUtilizationDesc:
+      "Tassi di utilizzo e analisi della capacità dei membri del team",
     projectProfitability: "Redditività del progetto",
-    projectProfitabilityDesc: "Analisi della redditività per progetto con ripartizione dei costi",
+    projectProfitabilityDesc:
+      "Analisi della redditività per progetto con ripartizione dei costi",
     clientSummaryTitle: "Riepilogo del cliente",
-    clientSummaryDesc: "Metriche complete di performance e coinvolgimento del cliente",
-    understandReportsAtGlance: "Comprendi ricavi, tempo e lavoro in sospeso a colpo d'occhio.",
+    clientSummaryDesc:
+      "Metriche complete di performance e coinvolgimento del cliente",
+    understandReportsAtGlance:
+      "Comprendi ricavi, tempo e lavoro in sospeso a colpo d'occhio.",
     scheduleReports: "Pianifica report",
     availableReports: "Report disponibili",
     revenueAndBilling: "Ricavi e fatturazione",
@@ -878,7 +915,8 @@ const it = {
     viewOverdueInvoices: "Visualizza fatture scadute",
     monthlyRevenueReport: "Report ricavi mensile",
     openReport: "Apri report %{title}",
-    reviewHoursLogged: "Controlla le ore registrate per persona, cliente e progetto.",
+    reviewHoursLogged:
+      "Controlla le ore registrate per persona, cliente e progetto.",
     lastSevenDaysPreset: "Ultimi 7 giorni",
     lastThirtyDaysPreset: "Ultimi 30 giorni",
     totalEntries: "Voci totali",
@@ -1123,13 +1161,17 @@ const it = {
     paidInvoices: "Fatture pagate",
     alreadySettled: "Già saldate",
     paymentsReceived: "Pagamenti ricevuti",
-    employeeGuidance: "Traccia la tua settimana, invia voci accurate e mantieni il lavoro in movimento.",
-    bookKeeperGuidance: "Esamina i pagamenti in entrata, riconcilia le fatture e mantieni il flusso di cassa chiaro.",
-    clientGuidance: "Controlla lo stato delle fatture e lo storico dei pagamenti del tuo account.",
+    employeeGuidance:
+      "Traccia la tua settimana, invia voci accurate e mantieni il lavoro in movimento.",
+    bookKeeperGuidance:
+      "Esamina i pagamenti in entrata, riconcilia le fatture e mantieni il flusso di cassa chiaro.",
+    clientGuidance:
+      "Controlla lo stato delle fatture e lo storico dei pagamenti del tuo account.",
     defaultGuidance: "Ricavi, progetti e slancio del team a colpo d'occhio.",
     recentActivity: "Attività recente",
     workspaceActivity: "Attività dell'area di lavoro",
-    employeeActivityDescription: "La tua dashboard è focalizzata sul tracciamento del tempo e sul lavoro assegnato.",
+    employeeActivityDescription:
+      "La tua dashboard è focalizzata sul tracciamento del tempo e sul lavoro assegnato.",
     activityDescription: "Ultimi aggiornamenti sulle tue fatture e pagamenti",
     noRecentActivityYet: "Nessuna attività recente per ora",
     loadMore: "Carica altro",
@@ -1172,27 +1214,36 @@ const it = {
     cashLedger: "Libro cassa",
     miruLogo: "Miru",
     heroTitle: "Un unico posto per tempo, fatture e pagamenti",
-    heroDescription: "Mantieni la giornata chiara, la fatturazione in movimento e la cassa visibile.",
+    heroDescription:
+      "Mantieni la giornata chiara, la fatturazione in movimento e la cassa visibile.",
     slideShowPrefix: "Mostra",
-    slideDashboardDescription: "Visualizza ricavi, progetti attivi e slancio del team senza dover cercare.",
-    slideInvoicesDescription: "Mantieni bozze, saldi scaduti e lavoro pagato nello stesso posto.",
-    slideTimeTrackingDescription: "Il tracciamento del tempo settimana per settimana rimane aggiornato senza diventare tedioso.",
-    slidePaymentsDescription: "Ogni pagamento arriva in un registro con metodo, stato e origine.",
+    slideDashboardDescription:
+      "Visualizza ricavi, progetti attivi e slancio del team senza dover cercare.",
+    slideInvoicesDescription:
+      "Mantieni bozze, saldi scaduti e lavoro pagato nello stesso posto.",
+    slideTimeTrackingDescription:
+      "Il tracciamento del tempo settimana per settimana rimane aggiornato senza diventare tedioso.",
+    slidePaymentsDescription:
+      "Ogni pagamento arriva in un registro con metodo, stato e origine.",
     continueWithGoogle: "Continua con Google",
     continueWithGithub: "Continua con GitHub",
     orUseEmail: "o usa l'e-mail",
     verifyWithAuthenticator: "Verifica con la tua app di autenticazione",
-    authenticatorInstructions: "Inserisci il codice a 6 cifre dalla tua app di autenticazione, o usa un codice di recupero.",
+    authenticatorInstructions:
+      "Inserisci il codice a 6 cifre dalla tua app di autenticazione, o usa un codice di recupero.",
     authenticatorCode: "Codice di autenticazione",
     recoveryCode: "Codice di recupero",
     verifyAndSignIn: "Verifica e accedi",
-    completePasskeyVerification: "Completa la verifica passkey per terminare l'accesso.",
-    enterAuthenticatorCode: "Inserisci il codice di autenticazione per terminare l'accesso.",
+    completePasskeyVerification:
+      "Completa la verifica passkey per terminare l'accesso.",
+    enterAuthenticatorCode:
+      "Inserisci il codice di autenticazione per terminare l'accesso.",
     invalidVerificationCode: "Codice di verifica non valido.",
     privacy: "Privacy",
     terms: "Termini",
     createAccount: "Crea account",
-    passwordCriteria: "Min. 8 caratteri, 1 maiuscola, 1 minuscola, 1 numero e 1 carattere speciale",
+    passwordCriteria:
+      "Min. 8 caratteri, 1 maiuscola, 1 minuscola, 1 numero e 1 carattere speciale",
     agreeToTerms: "Accetto i",
     termsOfService: "Termini di servizio",
     privacyPolicy: "Informativa sulla privacy",
@@ -1276,8 +1327,10 @@ const it = {
     publicHolidays: "Festivi pubblici",
     zeroUsed: "0 usati",
     leaveCalendar: "Calendario permessi",
-    trackLeaveUsage: "Traccia l'utilizzo di permessi e festivi mese per mese per %{year}.",
-    selectDayToInspect: "Seleziona un giorno per controllare i dettagli dei permessi e l'utilizzo dei festivi.",
+    trackLeaveUsage:
+      "Traccia l'utilizzo di permessi e festivi mese per mese per %{year}.",
+    selectDayToInspect:
+      "Seleziona un giorno per controllare i dettagli dei permessi e l'utilizzo dei festivi.",
     nothingBooked: "Nulla prenotato",
     nothingBookedForDate: "Nulla prenotato per questa data.",
     recordedTimeAway: "Assenza registrata in questo giorno",
@@ -1299,12 +1352,14 @@ const it = {
     numberOfTeamMembers: "Numero di membri del team:",
     plan: "Piano",
     basicPlan: "Piano base",
-    basicPlanDescription: "Il piano base include tutte le funzionalità. Questo è un addebito una tantum.",
+    basicPlanDescription:
+      "Il piano base include tutte le funzionalità. Questo è un addebito una tantum.",
     chargedOnce: "addebitato una volta",
     addOns: "Componenti aggiuntivi",
     oneTeamMember: "1 membro del team",
     chargedEveryMonth: "addebitato ogni mese",
-    basicPlanPerUser: "Il piano base include un costo aggiuntivo di %{rate}$ per utente al mese.",
+    basicPlanPerUser:
+      "Il piano base include un costo aggiuntivo di %{rate}$ per utente al mese.",
     plusTaxes: "più tasse",
     reviewAndPay: "RIVEDI E PAGA",
   },

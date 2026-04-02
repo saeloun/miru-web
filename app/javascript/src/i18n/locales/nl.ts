@@ -2,7 +2,8 @@ const nl = {
   // Image validation
   invalidImageFormatSize:
     "Onjuweldig bestandsformaat. Upload een afbeelding van het type PNG of JPG. Max grootte (%{fileSize}KB)",
-  invalidImageSize: "Bestandsgrootte overschrijdt de maximale limiet van %{fileSize}KB.",
+  invalidImageSize:
+    "Bestandsgrootte overschrijdt de maximale limiet van %{fileSize}KB.",
   invalidImageFormat:
     "Onjuweldig bestandsformaat. Upload een afbeelding van het type PNG of JPG",
 
@@ -62,7 +63,6 @@ const nl = {
   inactive: "Inactief",
   invited: "Uitgenodigd",
   department: "Afdeling",
-  projects: "Projecten",
   theme: "Thema",
   summary: "Samenvatting",
   format: "Formaat",
@@ -159,7 +159,8 @@ const nl = {
     editEntry: "Bewerk invoer",
     deleteEntry: "Verwijder invoer",
     deleteTimeEntry: "Verwijder Tijd Invoer",
-    deleteTimeEntryConfirm: "Weet je zeker dat je deze tijdinvoer wilt verwijderen?",
+    deleteTimeEntryConfirm:
+      "Weet je zeker dat je deze tijdinvoer wilt verwijderen?",
     durationRequired: "Duur is vereist",
     projectRequired: "Project is vereist",
     duration: "Duur",
@@ -185,10 +186,13 @@ const nl = {
     entry: "invoer",
     entries: "invoeren",
     noEntriesForSelectedDay: "Geen invoeren voor de geselecteerde dag",
-    weekReviewHint: "Schakel over naar Deze Week om alles te bekijken wat je deze week hebt gelogd.",
+    weekReviewHint:
+      "Schakel over naar Deze Week om alles te bekijken wat je deze week hebt gelogd.",
     noTimeEntriesYet: "Nog geen tijdinvoeren",
-    firstEntryHint: 'Klik op "Voeg Invoer Toe" om je eerste tijdinvoer voor deze dag te loggen',
-    logWorkByWeekOrMonth: "Log werk per week of maand. Houd invoeren duidelijk en actueel.",
+    firstEntryHint:
+      'Klik op "Voeg Invoer Toe" om je eerste tijdinvoer voor deze dag te loggen',
+    logWorkByWeekOrMonth:
+      "Log werk per week of maand. Houd invoeren duidelijk en actueel.",
     entriesFor: "Invoeren voor %{name}",
     timeEntriesFor: "Tijdinvoeren voor",
     unableToLoad: "Kan tijdregistratie momenteel niet laden.",
@@ -206,7 +210,8 @@ const nl = {
     entriesUpdatedSuccessfully: "Invoeren succesvol bijgewerkt",
     failedToUpdateEntries: "Kon invoeren niet bijwerken",
     selectProjectFirst: "Selecteer eerst een project",
-    editingModeActive: "Bewerkmodus is actief. Voltooi je wijzigingen hierboven.",
+    editingModeActive:
+      "Bewerkmodus is actief. Voltooi je wijzigingen hierboven.",
     dayAbbr: {
       mon: "Ma",
       tue: "Di",
@@ -330,7 +335,8 @@ const nl = {
     searchProjects: "Zoek projecten...",
     createFirstProject: "Maak je eerste project aan om te beginnen.",
     noProjectsYet: "Nog geen projecten",
-    workingOnProjects: "Volg factureerbaar en niet-factureerbaar werk over je projecten.",
+    workingOnProjects:
+      "Volg factureerbaar en niet-factureerbaar werk over je projecten.",
     active: "Actief",
     paused: "Pauze",
     completed: "Voltooid",
@@ -346,21 +352,24 @@ const nl = {
     outstanding: "UITSTAANDE",
     deleting: "Verwijderen...",
     createProject: "Maak project aan",
-    createProjectDescription: "Stel een nieuw project in en wijs het toe aan een klant.",
+    createProjectDescription:
+      "Stel een nieuw project in en wijs het toe aan een klant.",
     editProjectDetails: "Bewerk Projectgegevens",
     saveChanges: "Wijzigingen Opslaan",
     billableDescription: "Volg tijd en factureer de klant voor dit project",
     nonBillableDescription: "Volg tijd zonder de klant te factureren",
     noClientsPresent: "Geen klanten aanwezig",
     teamMembersUpdated: "Teamleden succesvol bijgewerkt",
-    manageProjectMembersDescription: "Voeg teamleden toe of verwijder ze en stel hun uurtarieven in.",
+    manageProjectMembersDescription:
+      "Voeg teamleden toe of verwijder ze en stel hun uurtarieven in.",
     enterValidRate: "Voer een geldig tarief in",
     addAnotherTeamMember: "Voeg Nog Een Lid Toe",
     addTeamMember: "Voeg Teamlid Toe",
     saveTeamMembers: "Sla Leden Op",
     noTeamMembersAdded: "Er zijn nog geen teamleden toegevoegd.",
     addTeamMembers: "Voeg Teamleden Toe",
-    teamMembersDescription: "Bekijk en beheer teamleden die aan dit project zijn toegewezen.",
+    teamMembersDescription:
+      "Bekijk en beheer teamleden die aan dit project zijn toegewezen.",
   },
 
   // Team
@@ -461,7 +470,8 @@ const nl = {
     selectDate: "Selecteer Datum",
     deleteLineItem: "Verwijder dit regelitem",
     enterDescription: "Voer Beschrijving in",
-    descriptionTooltip: "Voeg gedetailleerde beschrijving toe voor dit regelitem",
+    descriptionTooltip:
+      "Voeg gedetailleerde beschrijving toe voor dit regelitem",
     rate: "Tarief",
     quantity: "Hoeveelheid",
     selectTimeEntries: "Selecteer Tijdinvoeren",
@@ -509,8 +519,7 @@ const nl = {
     invoiceSentSubject: "%{company} heeft je een factuur gestuurd (%{number})",
     reminderBody:
       "%{company} heeft je een herinnering gestuurd voor factuur %{number}",
-    invoiceSentBody:
-      "%{company} heeft je een factuur gestuurd (%{number})",
+    invoiceSentBody: "%{company} heeft je een factuur gestuurd (%{number})",
     invoiceWillBeSent: "Factuur zal worden verzonden!",
     processing: "verwerken...",
 
@@ -584,7 +593,8 @@ const nl = {
 
     // Counters
     showingOf: "Toont %{shown} van %{total}",
-    viewingMatching: "Bekijken %{filtered} overeenkomende facturen van %{loaded} geladen",
+    viewingMatching:
+      "Bekijken %{filtered} overeenkomende facturen van %{loaded} geladen",
     loadedOf: "Gelaagd %{loaded} van %{total}",
     showingRecentTransactions: "Toont %{count} recente transacties",
     updatedAt: "Bijgewerkt %{date}",
@@ -596,12 +606,16 @@ const nl = {
 
     // Invoice reminder email
     invoiceReminder: "Factuurherinnering: %{number}",
-    reminderMessage: "Dit is een herinnering over je openstaande factuur. Zie de details in de bijlage.",
+    reminderMessage:
+      "Dit is een herinnering over je openstaande factuur. Zie de details in de bijlage.",
     invoiceAttached: "Zie je factuur in de bijlage.",
-    reminderPaymentMessage: "Dit is een herinnering over je vervallen factuur. Voltooi de betaling alstublieft.",
+    reminderPaymentMessage:
+      "Dit is een herinnering over je vervallen factuur. Voltooi de betaling alstublieft.",
     invoiceSubject: "Factuur %{number}",
-    reminderPaymentSubject: "Herinnering om betaling voor factuur %{number} te voltooien",
-    markAsPaidConfirm: "Deze factuur als betaald markeren? Deze actie heeft invloed op de boekhoudrecords.",
+    reminderPaymentSubject:
+      "Herinnering om betaling voor factuur %{number} te voltooien",
+    markAsPaidConfirm:
+      "Deze factuur als betaald markeren? Deze actie heeft invloed op de boekhoudrecords.",
     failedToLoadInvoice: "Kon factuur niet laden",
     invoiceNotFound: "Factuur niet gevonden",
     failedToMarkAsPaid: "Kon factuur niet als betaald markeren",
@@ -680,7 +694,8 @@ const nl = {
   timer: {
     webTimer: "Webtimer",
     webTimerLabel: "Web Timer",
-    trackLiveWork: "Volg live werk in real-time, en sla het vervolgens direct op in de invoerlijst van vandaag.",
+    trackLiveWork:
+      "Volg live werk in real-time, en sla het vervolgens direct op in de invoerlijst van vandaag.",
     startTimer: "Start Timer",
     pause: "Pauze",
     resume: "Hervatten",
@@ -689,7 +704,8 @@ const nl = {
     reset: "Reset",
     timer: "Timer",
     saveTimeEntry: "Sla Tijd Invoer Op",
-    saveTimeEntryDescription: "Je hebt %{time} getrackt. Wil je dit opslaan als een tijdinvoer?",
+    saveTimeEntryDescription:
+      "Je hebt %{time} getrackt. Wil je dit opslaan als een tijdinvoer?",
     discard: "Verwerpen",
     timerStarted: "Timer gestart",
     timerPaused: "Timer gepauzeerd",
@@ -786,7 +802,8 @@ const nl = {
     invoiceAgingDetails: "Factuur Verouderingsdetails",
     noDataFound: "Geen Gegevens Gevonden",
     accountsAgingReport: "Verouderingsrapport",
-    analysisOfOutstandingReceivables: "Analyse van uitstaande vorderingen per verouderingsperiode",
+    analysisOfOutstandingReceivables:
+      "Analyse van uitstaande vorderingen per verouderingsperiode",
     asOf: "Per %{date}",
     zeroToThirtyDays: "0-30 Dagen",
     thirtyOneToSixtyDays: "31-60 Dagen",
@@ -794,13 +811,16 @@ const nl = {
     ninetyPlusDays: "90+ Dagen",
     noClientsWithOutstandingBalances: "Geen klanten met uitstaande saldi.",
     showingOfClients: "Toont %{displayed} van %{total} klanten...",
-    errorLoadingReportData: "Fout bij het laden van rapportgegevens. Probeer het opnieuw.",
+    errorLoadingReportData:
+      "Fout bij het laden van rapportgegevens. Probeer het opnieuw.",
     projectClient: "PROJECT/ KLANT",
     noteHeader: "NOTITIE",
     teamMemberDate: "TEAMLEDEN/ DATUM",
     hoursLogged: "UREN GELOGD",
-    noResultsMatchFilters: "Geen resultaten die overeenkomen met de huidige filters. Probeer enkele filters te verwijderen.",
-    noTimeEntriesYet: "Er zijn nog geen tijdinvoeren toegevoegd. Je ziet een samenvatting van tijdinvoeren die door je team zijn toegevoegd.",
+    noResultsMatchFilters:
+      "Geen resultaten die overeenkomen met de huidige filters. Probeer enkele filters te verwijderen.",
+    noTimeEntriesYet:
+      "Er zijn nog geen tijdinvoeren toegevoegd. Je ziet een samenvatting van tijdinvoeren die door je team zijn toegevoegd.",
     selected: "%{count} geselecteerd",
     showingClientsCount: "Toont %{shown} van %{total} klanten",
     ofTeamMembersSelected: "%{active} van %{total} teamleden geselecteerd",
@@ -824,13 +844,17 @@ const nl = {
     entriesWillBeGrouped: "Invoeren worden gegroepeerd %{grouping}",
     subtotalsShownForEachGroup: "Subtotaal wordt weergegeven voor elke groep",
     timeEntryReportTitle: "Tijd Invoer Rapport",
-    timeEntryReportDesc: "Een samenvatting van de tijdinvoeren die door je team zijn toegevoegd.",
+    timeEntryReportDesc:
+      "Een samenvatting van de tijdinvoeren die door je team zijn toegevoegd.",
     invoicesReport: "Facturen Rapport",
-    invoicesReportDesc: "Een gedetailleerde samenvatting van uitstaande en vervallen facturen van alle klanten voor een bepaalde periode.",
+    invoicesReportDesc:
+      "Een gedetailleerde samenvatting van uitstaande en vervallen facturen van alle klanten voor een bepaalde periode.",
     totalHoursLoggedTitle: "Totaal uren gelogd",
-    totalHoursLoggedDesc: "Een gedetailleerde samenvatting van gefactureerde, niet-gefactureerde en niet-factureerbare uren per team, gegroepeerd per project.",
+    totalHoursLoggedDesc:
+      "Een gedetailleerde samenvatting van gefactureerde, niet-gefactureerde en niet-factureerbare uren per team, gegroepeerd per project.",
     revenueReport: "Inkomsten Rapport",
-    revenueReportDesc: "Een gedetailleerd rapport van inkomsten van elke klant.",
+    revenueReportDesc:
+      "Een gedetailleerd rapport van inkomsten van elke klant.",
     accountsAging: "Veroudering van rekeningen",
     accountsAgingDesc: "Ontdek welke klanten langzamerhand betalen",
     clearAll: "ALLES WISSEN",
@@ -848,26 +872,36 @@ const nl = {
     formatLabel: "Formaat",
     exportPdfBtn: "Exporteer PDF",
     exportCsvBtn: "Exporteer CSV",
-    noOutstandingOrOverdueInvoices: "Geen uitstaande of vervallen facturen gevonden.",
+    noOutstandingOrOverdueInvoices:
+      "Geen uitstaande of vervallen facturen gevonden.",
     allCurrencies: "Alle valuta's",
     filteredByCurrency: "Gefilterd op %{currency}",
     overdueAgingTitle: "Vervallen Veroudering (%{currency})",
     averageDays: "Gemiddelde Dagen:",
-    timeReportsDesc: "Een uitgebreide samenvatting van tijdinvoeren die door je teamleden zijn toegevoegd",
+    timeReportsDesc:
+      "Een uitgebreide samenvatting van tijdinvoeren die door je teamleden zijn toegevoegd",
     outstandingOverdueInvoicesTitle: "Uitstaande & Vervallen Facturen",
-    outstandingOverdueInvoicesDesc: "Gedetailleerd overzicht van uitstaande en vervallen facturen van alle klanten",
+    outstandingOverdueInvoicesDesc:
+      "Gedetailleerd overzicht van uitstaande en vervallen facturen van alle klanten",
     revenueByClient: "Inkomsten per Klant",
-    revenueByClientDesc: "Inkomstenoverzicht per klant met trends en vergelijkingen",
-    accountsAgingTableDesc: "Verouderingsanalyse van uitstaande vorderingen per tijdsperiode",
+    revenueByClientDesc:
+      "Inkomstenoverzicht per klant met trends en vergelijkingen",
+    accountsAgingTableDesc:
+      "Verouderingsanalyse van uitstaande vorderingen per tijdsperiode",
     paymentReportTitle: "Betalingsrapport",
-    paymentReportDesc: "Volg alle ontvangen betalingen met gedetailleerde transactiegeschiedenis",
+    paymentReportDesc:
+      "Volg alle ontvangen betalingen met gedetailleerde transactiegeschiedenis",
     teamUtilization: "Team Benutting",
-    teamUtilizationDesc: "Benuttingstarieven en capaciteitsanalyse van teamleden",
+    teamUtilizationDesc:
+      "Benuttingstarieven en capaciteitsanalyse van teamleden",
     projectProfitability: "Project Winstgevendheid",
-    projectProfitabilityDesc: "Winstgevendheidsanalyse per project met kostenoverzicht",
+    projectProfitabilityDesc:
+      "Winstgevendheidsanalyse per project met kostenoverzicht",
     clientSummaryTitle: "Klant Samenvatting",
-    clientSummaryDesc: "Uitgebreide klantprestaties en betrokkenheidsstatistieken",
-    understandReportsAtGlance: "Begrijp inkomsten, tijd en uitstaand werk in één oogopslag.",
+    clientSummaryDesc:
+      "Uitgebreide klantprestaties en betrokkenheidsstatistieken",
+    understandReportsAtGlance:
+      "Begrijp inkomsten, tijd en uitstaand werk in één oogopslag.",
     scheduleReports: "Plan rapporten",
     availableReports: "Beschikbare Rapporten",
     revenueAndBilling: "Inkomsten en facturering",
@@ -1123,13 +1157,17 @@ const nl = {
     paidInvoices: "Betaalde Facturen",
     alreadySettled: "Al geregeld",
     paymentsReceived: "Ontvangen Betalingen",
-    employeeGuidance: "Volg je week, dien nauwkeurige invoeren in en houd het werk in beweging.",
-    bookKeeperGuidance: "Bekijk binnenkomende betalingen, verzoen facturen en houd de cashflow helder.",
-    clientGuidance: "Controleer de status van facturen en betalingsgeschiedenis voor je account.",
+    employeeGuidance:
+      "Volg je week, dien nauwkeurige invoeren in en houd het werk in beweging.",
+    bookKeeperGuidance:
+      "Bekijk binnenkomende betalingen, verzoen facturen en houd de cashflow helder.",
+    clientGuidance:
+      "Controleer de status van facturen en betalingsgeschiedenis voor je account.",
     defaultGuidance: "Inkomsten, projecten en teammomentum in één oogopslag.",
     recentActivity: "Recente Activiteit",
     workspaceActivity: "Werkruimte Activiteit",
-    employeeActivityDescription: "Je dashboard is gericht op tijdregistratie en toegewezen werk.",
+    employeeActivityDescription:
+      "Je dashboard is gericht op tijdregistratie en toegewezen werk.",
     activityDescription: "Laatste updates over je facturen en betalingen",
     noRecentActivityYet: "Nog geen recente activiteit",
     loadMore: "Laad meer",
@@ -1172,27 +1210,35 @@ const nl = {
     cashLedger: "Kasboek",
     miruLogo: "Miru",
     heroTitle: "Één plek voor tijd, facturen en betalingen",
-    heroDescription: "Houd de dag helder, houd de facturering in beweging en houd cash zichtbaar.",
+    heroDescription:
+      "Houd de dag helder, houd de facturering in beweging en houd cash zichtbaar.",
     slideShowPrefix: "Toon",
-    slideDashboardDescription: "Zie inkomsten, actieve projecten en teammomentum zonder ervoor te graven.",
-    slideInvoicesDescription: "Houd concepten, vervallen saldi en betaalde werkzaamheden op dezelfde plek.",
-    slideTimeTrackingDescription: "Week na week blijft tijdinvoer actueel zonder in drukte te veranderen.",
-    slidePaymentsDescription: "Elke betaling komt in één kasboek met methode, status en bron.",
+    slideDashboardDescription:
+      "Zie inkomsten, actieve projecten en teammomentum zonder ervoor te graven.",
+    slideInvoicesDescription:
+      "Houd concepten, vervallen saldi en betaalde werkzaamheden op dezelfde plek.",
+    slideTimeTrackingDescription:
+      "Week na week blijft tijdinvoer actueel zonder in drukte te veranderen.",
+    slidePaymentsDescription:
+      "Elke betaling komt in één kasboek met methode, status en bron.",
     continueWithGoogle: "Ga verder met Google",
     continueWithGithub: "Ga verder met GitHub",
     orUseEmail: "of gebruik e-mail",
     verifyWithAuthenticator: "Verifieer met je authenticator-app",
-    authenticatorInstructions: "Voer de 6-cijferige code in van je authenticator-app, of gebruik een herstelcode.",
+    authenticatorInstructions:
+      "Voer de 6-cijferige code in van je authenticator-app, of gebruik een herstelcode.",
     authenticatorCode: "Authenticator-code",
     recoveryCode: "Herstelcode",
     verifyAndSignIn: "Verifieer en log in",
-    completePasskeyVerification: "Voltooi toegangscode verificatie om in te loggen.",
+    completePasskeyVerification:
+      "Voltooi toegangscode verificatie om in te loggen.",
     enterAuthenticatorCode: "Voer je authenticator-code in om in te loggen.",
     invalidVerificationCode: "Ongeldige verificatiecode.",
     privacy: "Privacy",
     terms: "Voorwaarden",
     createAccount: "Account Aanmaken",
-    passwordCriteria: "Min. 8 tekens, 1 hoofdletter, 1 kleine letter, 1 cijfer en 1 speciaal teken",
+    passwordCriteria:
+      "Min. 8 tekens, 1 hoofdletter, 1 kleine letter, 1 cijfer en 1 speciaal teken",
     agreeToTerms: "Ik ga akkoord met de",
     termsOfService: "Servicevoorwaarden",
     privacyPolicy: "Privacybeleid",
@@ -1202,7 +1248,8 @@ const nl = {
   // Passkeys
   passkeys: {
     noPasskeyResponse: "Geen toegangscode reactie ontvangen.",
-    passkeysNotSupported: "Toegangscodes worden niet ondersteund in deze browser.",
+    passkeysNotSupported:
+      "Toegangscodes worden niet ondersteund in deze browser.",
   },
 
   // Organization setup
@@ -1276,8 +1323,10 @@ const nl = {
     publicHolidays: "Feestdagen",
     zeroUsed: "0 gebruikt",
     leaveCalendar: "Verlof kalender",
-    trackLeaveUsage: "Volg verlof- en vakantiegebruik maand voor maand voor %{year}.",
-    selectDayToInspect: "Selecteer een dag om verlofgegevens en vakantiegebruik te inspecteren.",
+    trackLeaveUsage:
+      "Volg verlof- en vakantiegebruik maand voor maand voor %{year}.",
+    selectDayToInspect:
+      "Selecteer een dag om verlofgegevens en vakantiegebruik te inspecteren.",
     nothingBooked: "Niets geboekt",
     nothingBookedForDate: "Niets geboekt voor deze datum.",
     recordedTimeAway: "Geregistreerde tijd weg op deze dag",
@@ -1299,12 +1348,14 @@ const nl = {
     numberOfTeamMembers: "Aantal Teamleden:",
     plan: "Plan",
     basicPlan: "Basisplan",
-    basicPlanDescription: "Basisplan omvat alle functies. Dit is een eenmalige kosten.",
+    basicPlanDescription:
+      "Basisplan omvat alle functies. Dit is een eenmalige kosten.",
     chargedOnce: "eenmalig in rekening gebracht",
     addOns: "Add-Ons",
     oneTeamMember: "1 teamlid",
     chargedEveryMonth: "maandelijks in rekening gebracht",
-    basicPlanPerUser: "Basisplan komt met extra %{rate}$ per gebruiker per maand.",
+    basicPlanPerUser:
+      "Basisplan komt met extra %{rate}$ per gebruiker per maand.",
     plusTaxes: "plus belastingen",
     reviewAndPay: "BEKIJK EN BETALEN",
   },
@@ -1318,7 +1369,8 @@ const nl = {
   selectOption: "Selecteer",
   editLabel: "Bewerken",
   noPasskeyResponse: "Geen toegangscode reactie ontvangen.",
-  passkeysNotSupported: "Toegangscodes worden niet ondersteund in deze browser.",
+  passkeysNotSupported:
+    "Toegangscodes worden niet ondersteund in deze browser.",
 
   // Table headers (common)
   tableHeaders: {

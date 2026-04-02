@@ -3,8 +3,6 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="color-scheme" content="light dark" />
-    <meta name="supported-color-schemes" content="light dark" />
     <style>
       body,
       table,
@@ -32,40 +30,42 @@
         padding: 0;
         width: 100% !important;
         min-width: 100%;
-        background-color: #020617;
-        color: #e2e8f0;
-        font-family: Geist, Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background-color: #eef4ff;
+        color: #0f172a;
+        font-family: "Aptos", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
       }
 
       a {
-        color: #f8fafc;
+        color: #1d4ed8;
       }
 
       .email-shell {
         width: 100%;
         background:
-          radial-gradient(circle at top, rgba(99, 102, 241, 0.18), transparent 34%),
-          linear-gradient(180deg, #0f172a 0%, #020617 100%);
-        padding: 32px 16px;
+          radial-gradient(circle at top, rgba(37, 99, 235, 0.14), transparent 30%),
+          linear-gradient(180deg, #f8fbff 0%, #eff5ff 52%, #e7eef9 100%);
+        padding: 40px 16px;
       }
 
       .email-card {
         width: 100%;
-        max-width: 680px;
-        background-color: #0f172a;
-        border: 1px solid #1e293b;
+        max-width: 640px;
+        background-color: #ffffff;
+        border: 1px solid #d6e3f5;
         border-radius: 28px;
         overflow: hidden;
-        box-shadow: 0 24px 80px rgba(2, 6, 23, 0.45);
+        box-shadow: 0 22px 60px rgba(15, 23, 42, 0.09);
       }
 
       .email-card-inner {
-        padding: 40px;
+        padding: 36px 38px 38px;
       }
 
       .email-brand {
-        padding: 40px 40px 0;
+        padding: 22px 40px 24px;
         text-align: center;
+        background: linear-gradient(180deg, #edf4ff 0%, #f7faff 64%, #ffffff 100%);
+        border-bottom: 1px solid #e2ebf6;
       }
 
       .email-brand-mark {
@@ -73,41 +73,43 @@
         height: 56px;
         display: inline-block;
         border-radius: 18px;
-        background: linear-gradient(180deg, #1e293b 0%, #111827 100%);
-        border: 1px solid #334155;
+        background: #ffffff;
+        border: 1px solid #bfdbfe;
+        box-shadow: 0 8px 18px rgba(29, 78, 216, 0.1);
       }
 
       .email-eyebrow {
-        margin: 20px 0 0;
-        color: #94a3b8;
-        font-size: 12px;
-        font-weight: 600;
-        letter-spacing: 0.16em;
+        margin: 16px 0 0;
+        color: #2563eb;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.18em;
         text-transform: uppercase;
       }
 
       .email-title {
         margin: 12px 0 0;
-        color: #f8fafc;
-        font-size: 30px;
+        color: #0f172a;
+        font-size: 38px;
         font-weight: 700;
-        line-height: 1.15;
+        line-height: 1.04;
+        letter-spacing: -0.03em;
       }
 
       .email-subtitle {
         margin: 16px auto 0;
-        max-width: 560px;
-        color: #cbd5e1;
-        font-size: 16px;
+        max-width: 520px;
+        color: #475569;
+        font-size: 15px;
         line-height: 1.7;
         overflow-wrap: anywhere;
         word-break: break-word;
       }
 
       .email-body {
-        color: #cbd5e1;
+        color: #334155;
         font-size: 16px;
-        line-height: 1.7;
+        line-height: 1.75;
         overflow-wrap: anywhere;
         word-break: break-word;
       }
@@ -117,7 +119,7 @@
       }
 
       .email-body strong {
-        color: #f8fafc;
+        color: #0f172a;
       }
 
       .email-list {
@@ -131,70 +133,82 @@
 
       .email-panel {
         margin: 24px 0;
-        padding: 20px 22px;
-        border-radius: 20px;
-        border: 1px solid #293548;
-        background-color: #111827;
+        padding: 22px 24px;
+        border-radius: 24px;
+        border: 1px solid #dbe7f3;
+        background-color: #f8fbff;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
       }
 
       .email-panel-soft {
-        background-color: #0b1220;
+        background: linear-gradient(180deg, #fbfdff 0%, #f5f9ff 100%);
       }
 
       .email-panel-accent {
-        border-color: rgba(99, 102, 241, 0.5);
-        background: linear-gradient(180deg, rgba(79, 70, 229, 0.2) 0%, rgba(17, 24, 39, 0.95) 100%);
+        border-color: rgba(37, 99, 235, 0.2);
+        background: linear-gradient(180deg, rgba(59, 130, 246, 0.12) 0%, rgba(239, 246, 255, 0.98) 100%);
       }
 
       .email-panel-success {
-        border-color: rgba(34, 197, 94, 0.35);
-        background: linear-gradient(180deg, rgba(22, 163, 74, 0.18) 0%, rgba(17, 24, 39, 0.95) 100%);
+        border-color: rgba(34, 197, 94, 0.24);
+        background: linear-gradient(180deg, rgba(34, 197, 94, 0.08) 0%, rgba(240, 253, 244, 0.95) 100%);
       }
 
       .email-panel-warning {
-        border-color: rgba(251, 191, 36, 0.35);
-        background: linear-gradient(180deg, rgba(217, 119, 6, 0.18) 0%, rgba(17, 24, 39, 0.95) 100%);
+        border-color: rgba(245, 158, 11, 0.24);
+        background: linear-gradient(180deg, rgba(245, 158, 11, 0.08) 0%, rgba(255, 251, 235, 0.95) 100%);
       }
 
       .email-panel-danger {
-        border-color: rgba(248, 113, 113, 0.35);
-        background: linear-gradient(180deg, rgba(220, 38, 38, 0.18) 0%, rgba(17, 24, 39, 0.95) 100%);
+        border-color: rgba(239, 68, 68, 0.24);
+        background: linear-gradient(180deg, rgba(239, 68, 68, 0.08) 0%, rgba(254, 242, 242, 0.95) 100%);
       }
 
       .email-panel-title {
         margin: 0 0 10px;
-        color: #f8fafc;
+        color: #0f172a;
         font-size: 16px;
         font-weight: 600;
-        line-height: 1.4;
+        line-height: 1.45;
       }
 
       .email-muted {
-        color: #94a3b8;
+        color: #64748b;
+      }
+
+      .email-button-wrap {
+        margin: 28px 0 0;
+      }
+
+      .email-button-cell {
+        width: auto;
       }
 
       .email-button {
         display: inline-block;
-        padding: 14px 24px;
+        padding: 14px 22px;
         border-radius: 999px;
-        background: linear-gradient(180deg, #6366f1 0%, #4f46e5 100%);
+        background: linear-gradient(180deg, #2563eb 0%, #1d4ed8 100%);
         color: #ffffff !important;
         font-size: 15px;
         font-weight: 700;
         line-height: 1;
-        letter-spacing: 0.02em;
+        letter-spacing: 0.01em;
         text-decoration: none;
+        box-shadow: 0 8px 18px rgba(37, 99, 235, 0.22);
       }
 
       .email-button-secondary {
-        background: #111827;
-        border: 1px solid #334155;
+        background: #ffffff;
+        border: 1px solid #cbd5e1;
+        color: #0f172a !important;
+        box-shadow: none;
       }
 
       .email-divider {
         height: 1px;
-        margin: 24px 0;
-        background-color: #1f2937;
+        margin: 26px 0;
+        background-color: #e2e8f0;
       }
 
       .detail-grid {
@@ -209,9 +223,10 @@
 
       .detail-card {
         width: 100%;
-        border: 1px solid #293548;
-        border-radius: 20px;
-        background-color: #111827;
+        border: 1px solid #d6e3f5;
+        border-radius: 22px;
+        background-color: #ffffff;
+        box-shadow: 0 8px 18px rgba(15, 23, 42, 0.04);
       }
 
       .detail-card td {
@@ -220,16 +235,16 @@
 
       .detail-label {
         margin: 0 0 8px;
-        color: #94a3b8;
+        color: #64748b;
         font-size: 12px;
-        font-weight: 600;
+        font-weight: 700;
         letter-spacing: 0.12em;
         text-transform: uppercase;
       }
 
       .detail-value {
         margin: 0;
-        color: #f8fafc;
+        color: #0f172a;
         font-size: 18px;
         font-weight: 600;
         line-height: 1.45;
@@ -239,7 +254,7 @@
 
       .detail-subvalue {
         margin: 8px 0 0;
-        color: #cbd5e1;
+        color: #475569;
         font-size: 14px;
         line-height: 1.6;
         overflow-wrap: anywhere;
@@ -247,58 +262,125 @@
       }
 
       .email-footer {
-        padding: 0 40px 32px;
+        padding: 0 38px 32px;
       }
 
       .email-footer-card {
         border-radius: 22px;
-        border: 1px solid #293548;
-        background: #0b1220;
+        border: 1px solid #dbe7f3;
+        background: linear-gradient(180deg, #f7fbff 0%, #f0f6ff 100%);
       }
 
       .email-footer-card td {
         padding: 20px 24px;
-        color: #94a3b8;
+        color: #64748b;
         font-size: 13px;
-        line-height: 1.7;
+        line-height: 1.75;
         text-align: center;
         overflow-wrap: anywhere;
         word-break: break-word;
       }
 
       .email-footer-link {
-        color: #e2e8f0 !important;
+        color: #334155 !important;
         text-decoration: none;
       }
 
+      .digest-kicker {
+        margin: 0 0 8px;
+        color: #475569;
+        font-size: 13px;
+        font-weight: 600;
+      }
+
+      .digest-value {
+        margin: 0;
+        color: #111827;
+        font-size: 40px;
+        font-weight: 700;
+        line-height: 1.05;
+      }
+
+      .digest-caption {
+        margin: 12px 0 0;
+        color: #475569;
+        font-size: 14px;
+        line-height: 1.6;
+      }
+
+      .digest-trend-table {
+        margin-top: 20px;
+      }
+
+      .digest-trend-cell {
+        height: 88px;
+        padding: 0 2px;
+        vertical-align: bottom;
+      }
+
+      .digest-trend-bar {
+        width: 100%;
+        border-radius: 999px 999px 4px 4px;
+        background: linear-gradient(180deg, rgba(129, 140, 248, 0.95) 0%, rgba(99, 102, 241, 0.45) 100%);
+      }
+
+      .digest-trend-labels {
+        margin-top: 8px;
+        color: #64748b;
+        font-size: 12px;
+      }
+
+      .digest-source-name {
+        padding: 10px 0;
+        color: #111827;
+        font-size: 14px;
+        line-height: 1.5;
+        border-bottom: 1px solid #e2e8f0;
+      }
+
+      .digest-source-amount {
+        padding: 10px 0 10px 16px;
+        color: #15803d;
+        font-size: 14px;
+        font-weight: 600;
+        line-height: 1.5;
+        border-bottom: 1px solid #e2e8f0;
+        white-space: nowrap;
+      }
+
+      .digest-empty-state {
+        color: #64748b;
+        font-size: 14px;
+        line-height: 1.6;
+      }
+
       .logo-lockup {
-        display: inline-flex;
-        align-items: center;
-        gap: 12px;
+        display: inline-table;
       }
 
       .logo-label {
-        color: #f8fafc;
-        font-size: 18px;
+        color: #0f172a;
+        font-size: 19px;
         font-weight: 700;
         letter-spacing: -0.02em;
+        white-space: nowrap;
       }
 
       @media only screen and (max-width: 640px) {
         .email-shell {
-          padding: 16px 10px !important;
+          padding: 18px 10px !important;
         }
 
         .email-card {
-          border-radius: 22px !important;
+          border-radius: 24px !important;
         }
 
         .email-brand {
-          padding: 28px 24px 0 !important;
+          padding: 24px 24px 22px !important;
         }
 
         .email-card-inner {
-          padding: 28px 20px !important;
+          padding: 30px 20px !important;
         }
 
         .email-footer {
@@ -306,7 +388,7 @@
         }
 
         .email-title {
-          font-size: 26px !important;
+          font-size: 30px !important;
         }
 
         .detail-cell,
@@ -323,29 +405,17 @@
           box-sizing: border-box !important;
           text-align: center !important;
         }
-      }
 
-      @media (prefers-color-scheme: dark) {
-        body {
-          background-color: #020617 !important;
-          color: #e2e8f0 !important;
-        }
-
-        .email-card {
-          background-color: #0f172a !important;
-          border-color: #1e293b !important;
-        }
-
-        .email-panel,
-        .detail-card,
-        .email-footer-card {
-          background-color: #111827 !important;
+        .email-button-wrap,
+        .email-button-cell {
+          width: 100% !important;
         }
       }
+
     </style>
   </head>
   <body>
-    <% preheader = content_for?(:email_preheader) ? yield(:email_preheader).to_s.strip : "Miru update" %>
+    <% preheader = content_for?(:email_preheader) ? yield(:email_preheader).to_s.strip : t("mailers.layout.preheader") %>
     <div style="display: none; max-height: 0; overflow: hidden; opacity: 0; mso-hide: all;">
       <%= preheader %>
     </div>
@@ -361,12 +431,18 @@
                       <% if content_for?(:email_badge) %>
                         <%= yield :email_badge %>
                       <% else %>
-                        <span class="logo-lockup">
-                          <span class="email-brand-mark">
-                            <img src="<%= "#{root_url}miru-logo.svg" %>" alt="Miru" width="56" height="56" style="display: block; width: 56px; height: 56px;" />
-                          </span>
-                          <span class="logo-label">Miru</span>
-                        </span>
+                        <table role="presentation" cellpadding="0" cellspacing="0" border="0" class="logo-lockup">
+                          <tr>
+                            <td>
+                              <span class="email-brand-mark">
+                                <img src="<%= "#{root_url}miru-logo.svg" %>" alt="<%= t("mailers.layout.brand") %>" width="56" height="56" style="display: block; width: 56px; height: 56px;" />
+                              </span>
+                            </td>
+                            <td style="padding-left: 12px;">
+                              <span class="logo-label"><%= t("mailers.layout.brand") %></span>
+                            </td>
+                          </tr>
+                        </table>
                       <% end %>
                     </td>
                   </tr>
@@ -392,14 +468,14 @@
                 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="email-footer-card">
                   <tr>
                     <td>
-                      <div style="margin: 0 0 10px; color: #f8fafc; font-size: 14px; font-weight: 600;">Miru</div>
-                      <div>Track time, send invoices, collect payments, and keep operations moving from one workspace.</div>
+                      <div style="margin: 0 0 10px; color: #111827; font-size: 14px; font-weight: 600;"><%= t("mailers.layout.brand") %></div>
+                      <div><%= t("mailers.layout.footer_body") %></div>
                       <div style="margin-top: 12px;">
-                        <a href="https://app.miru.so" target="_blank" class="email-footer-link">app.miru.so</a>
+                        <a href="https://app.miru.so" target="_blank" class="email-footer-link"><%= t("mailers.layout.footer_site") %></a>
                         &nbsp;&middot;&nbsp;
-                        <a href="mailto:hello@saeloun.com" class="email-footer-link">hello@saeloun.com</a>
+                        <a href="mailto:<%= t("mailers.layout.footer_contact") %>" class="email-footer-link"><%= t("mailers.layout.footer_contact") %></a>
                       </div>
-                      <div style="margin-top: 12px;">© Miru. All rights reserved.</div>
+                      <div style="margin-top: 12px;"><%= t("mailers.layout.footer_copyright") %></div>
                     </td>
                   </tr>
                 </table>

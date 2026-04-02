@@ -119,7 +119,7 @@ RSpec.describe "Api::V1::Invoices::LineItems#index", type: :request do
     end
 
     it "excludes entries already used by another draft invoice" do
-      create(:invoice_line_item, timesheet_entry_id: timesheet_entry.id)
+      create(:invoice_line_item, invoice: create(:invoice, client:, company: client.company), timesheet_entry:)
 
       send_request :get, api_v1_line_items_invoices_path(client_id: client.id), params: {
         params: @search_params

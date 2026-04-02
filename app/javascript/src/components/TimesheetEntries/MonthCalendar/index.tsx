@@ -10,7 +10,7 @@ import InvalidEmptyCalendarCell from "./InvalidEmptyCalendarCell";
 // Day start from monday
 dayjs.Ls.en.weekStart = 1;
 
-const MonthCalender = () => {
+const MonthCalendar = () => {
   const {
     monthData,
     entryList,
@@ -118,4 +118,4 @@ const MonthCalender = () => {
     </div>
   );
 };
-export default MonthCalender;
+export default MonthCalendar;

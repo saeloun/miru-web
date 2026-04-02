@@ -90,7 +90,7 @@ module PreviewSupport
         company_details: {
           name: sample_company.name,
           logo: sample_company.company_logo,
-          employee_count: sample_company.employees_without_client_role.count
+          employee_count: [sample_company.used_team_seats, 1].max
         },
         sender_details: {
           email: sample_user.email,

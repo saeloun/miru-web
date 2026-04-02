@@ -12,6 +12,7 @@ class Api::V1::UsersController < Api::V1::BaseController
           date_of_birth: current_user.date_of_birth,
           phone: current_user.phone,
           personal_email_id: current_user.personal_email_id,
+          locale: current_user.locale,
           social_accounts: current_user.social_accounts,
           date_format: current_company&.date_format,
           avatar_url: current_user.avatar.attached? ? url_for(current_user.avatar) : nil,

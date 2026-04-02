@@ -3,8 +3,8 @@ import React, { useEffect, useState } from "react";
 import { useUserContext } from "context/UserContext";
 
 import Footer from "./Footer";
-import Header from "./Header";
-import Table from "./Table";
+import TimeEntrySelectionHeader from "./TimeEntrySelectionHeader";
+import TimeEntrySelectionTable from "./TimeEntrySelectionTable";
 
 import { fetchMultipleNewLineItems } from "../common/utils";
 import { i18n } from "../../../i18n";
@@ -133,7 +133,7 @@ const MultipleEntriesModal = ({
       style={{ background: "rgba(29, 26, 49,0.6)" }}
     >
       <div className="flex h-160 w-full flex-col justify-between rounded-lg bg-white">
-        <Header
+        <TimeEntrySelectionHeader
           filterIntialValues={filterIntialValues}
           filterParams={filterParams}
           handleSelectAll={handleSelectAll}
@@ -150,7 +150,7 @@ const MultipleEntriesModal = ({
         ) : (
           <div className="mx-6 flex-1 overflow-y-auto">
             {lineItems.length > 0 ? (
-              <Table
+              <TimeEntrySelectionTable
                 allCheckboxSelected={allCheckboxSelected}
                 dateFormat={dateFormat}
                 handleItemSelection={handleItemSelection}
@@ -176,7 +176,7 @@ const MultipleEntriesModal = ({
       className="flex w-full flex-col"
       style={{ height: "calc(100vh - 48px)" }}
     >
-      <Header
+      <TimeEntrySelectionHeader
         filterIntialValues={filterIntialValues}
         filterParams={filterParams}
         handleSelectAll={handleSelectAll}
@@ -193,7 +193,7 @@ const MultipleEntriesModal = ({
       ) : (
         <div className="mx-2 flex-1 overflow-y-auto">
           {lineItems.length > 0 ? (
-            <Table
+            <TimeEntrySelectionTable
               allCheckboxSelected={allCheckboxSelected}
               dateFormat={dateFormat}
               handleItemSelection={handleItemSelection}

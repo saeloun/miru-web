@@ -63,7 +63,6 @@ const pa = {
   inactive: "ਅਕਿਰਿਆਸ਼ੀਲ",
   invited: "ਸੱਦਾ ਦਿੱਤਾ",
   department: "ਵਿਭਾਗ",
-  projects: "ਪ੍ਰੋਜੈਕਟ",
   theme: "ਥੀਮ",
   summary: "ਸਾਰ",
   format: "ਫਾਰਮੈਟ",

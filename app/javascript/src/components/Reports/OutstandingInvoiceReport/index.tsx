@@ -1,13 +1,13 @@
 import React, { useEffect } from "react";
 import { sendGAPageView } from "utils/googleAnalytics";
-import ModernOutstandingInvoiceReport from "./ModernOutstandingInvoiceReport";
+import OutstandingInvoicesWorkspaceView from "./WorkspaceView";
 
 const OutstandingInvoiceReport = () => {
   useEffect(() => {
     sendGAPageView();
   }, []);
 
-  return <ModernOutstandingInvoiceReport />;
+  return <OutstandingInvoicesWorkspaceView />;
 };
 
 export default OutstandingInvoiceReport;

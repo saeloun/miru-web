@@ -1,22 +1,16 @@
 import { Roles } from "../constants/index";
 import React, { useEffect, useState } from "react";
 import UserContext from "../context/UserContext";
-import { LocaleProvider } from "../context/LocaleContext";
+import { LocaleProvider, useLocale } from "../context/LocaleContext";
 import {
   loadLocale,
+  getActiveLocale,
   getStoredLocale,
   setStoredLocale,
   detectBrowserLocale,
 } from "../i18n";
 import Loader from "../common/Loader/index";
 import Main from "./Main";
-import { profileApi } from "../apis/api";
-import {
-  applyLocale,
-  detectBrowserLocale,
-  getStoredLocale,
-  initializeLocale,
-} from "../i18n";
 
 const AUTH_PATH_PREFIXES = [
   "/user/sign_in",
@@ -31,9 +25,41 @@ const AUTH_PATH_PREFIXES = [
 const isAuthPagePath = (pathname: string) =>
   AUTH_PATH_PREFIXES.some(path => pathname.startsWith(path));
 
+const resolvePreferredLocale = (dbLocale?: string | null) => {
+  const storedLocale = getStoredLocale();
+  const browserLocale = detectBrowserLocale();
+
+  if (storedLocale && storedLocale !== "en") return storedLocale;
+
+  if (dbLocale && dbLocale !== "en") return dbLocale;
+
+  return storedLocale || dbLocale || browserLocale;
+};
+
+const AppUserContextProvider = ({
+  children,
+  value,
+}: {
+  children: React.ReactNode;
+  value: any;
+}) => {
+  const { locale, setLocale } = useLocale();
+
+  return (
+    <UserContext.Provider
+      value={{
+        ...value,
+        locale,
+        setLocale,
+      }}
+    >
+      {children}
+    </UserContext.Provider>
+  );
+};
+
 const AppWithUserData = (props: any) => {
   const isAuthPage = isAuthPagePath(window.location.pathname);
-  const [locale, setLocaleState] = useState(() => initializeLocale());
   const [userData, setUserData] = useState({
     user: null,
     company: null,
@@ -48,9 +74,6 @@ const AppWithUserData = (props: any) => {
     const fetchUserDetails = async () => {
       // Skip fetching if we're on an auth page
       if (isAuthPage) {
-        const authLocale = initializeLocale();
-        setLocaleState(authLocale);
-        // On auth pages, don't fetch user data
         setUserData({
           user: null,
           company: null,
@@ -75,18 +98,6 @@ const AppWithUserData = (props: any) => {
 
         if (response.ok) {
           const data = await response.json();
-          const resolvedLocale = initializeLocale(data.user?.locale);
-          const storedLocale = getStoredLocale();
-          const browserLocale = detectBrowserLocale();
-          const backfillLocale = storedLocale || browserLocale;
-
-          if (!data.user?.locale && backfillLocale) {
-            profileApi
-              .update({ user: { locale: backfillLocale } })
-              .catch(() => null);
-          }
-
-          setLocaleState(resolvedLocale);
           setUserData({
             user: data.user,
             company: data.company,
@@ -94,9 +105,6 @@ const AppWithUserData = (props: any) => {
             loading: false,
           });
         } else {
-          const unauthenticatedLocale = initializeLocale();
-          setLocaleState(unauthenticatedLocale);
-          // Not authenticated - just set loading to false
           setUserData({
             user: null,
             company: null,
@@ -105,8 +113,6 @@ const AppWithUserData = (props: any) => {
           });
         }
       } catch (error) {
-        const fallbackLocale = initializeLocale();
-        setLocaleState(fallbackLocale);
         setUserData({
           user: null,
           company: null,
@@ -121,16 +127,12 @@ const AppWithUserData = (props: any) => {
 
   useEffect(() => {
     const initLocale = async () => {
-      // Priority: localStorage (most recent user choice) > DB > browser detection
-      const stored = getStoredLocale();
-      const dbLocale = userData.user?.locale;
-      const locale = (stored && stored !== "en") ? stored
-        : (dbLocale && dbLocale !== "en") ? dbLocale
-        : stored || dbLocale || detectBrowserLocale();
+      const preferredLocale = resolvePreferredLocale(userData.user?.locale);
 
-      await loadLocale(locale);
-      setStoredLocale(locale);
-      setInitialLocale(locale);
+      await loadLocale(preferredLocale);
+      const activeLocale = getActiveLocale();
+      setStoredLocale(activeLocale);
+      setInitialLocale(activeLocale);
       setLocaleReady(true);
     };
 
@@ -190,46 +192,39 @@ const AppWithUserData = (props: any) => {
     return <Loader className="h-screen" />;
   }
 
-  const handleLocaleChange = (nextLocale: string) => {
-    const resolvedLocale = applyLocale(nextLocale);
-    setLocaleState(resolvedLocale);
-  };
-
   return (
     <LocaleProvider initialLocale={initialLocale}>
-    <UserContext.Provider
-      value={{
-        locale,
-        setLocale: handleLocaleChange,
-        user,
-        avatarUrl: currentAvatarUrl,
-        setCurrentAvatarUrl,
-        companyRole,
-        isAdminUser,
-        calendarEnabled,
-        calendarConnected,
-        confirmedUser,
-        googleOauthSuccess,
-        isDesktop,
-        handleOverlayVisibility,
-        selectedTab,
-        setSelectedTab,
-        company: resolvedCompany,
-        setCompany,
-        loading,
-      }}
-    >
-      <Main
-        {...props}
-        company={company}
-        companyRole={companyRole}
-        googleOauthSuccess={googleOauthSuccess}
-        isAdminUser={isAdminUser}
-        isDesktop={isDesktop}
-        setIsDesktop={setIsDesktop}
-        user={user}
-      />
-    </UserContext.Provider>
+      <AppUserContextProvider
+        value={{
+          user,
+          avatarUrl: currentAvatarUrl,
+          setCurrentAvatarUrl,
+          companyRole,
+          isAdminUser,
+          calendarEnabled,
+          calendarConnected,
+          confirmedUser,
+          googleOauthSuccess,
+          isDesktop,
+          handleOverlayVisibility,
+          selectedTab,
+          setSelectedTab,
+          company: resolvedCompany,
+          setCompany,
+          loading,
+        }}
+      >
+        <Main
+          {...props}
+          company={company}
+          companyRole={companyRole}
+          googleOauthSuccess={googleOauthSuccess}
+          isAdminUser={isAdminUser}
+          isDesktop={isDesktop}
+          setIsDesktop={setIsDesktop}
+          user={user}
+        />
+      </AppUserContextProvider>
     </LocaleProvider>
   );
 };

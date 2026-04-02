@@ -62,7 +62,6 @@ const bn = {
   inactive: "নিষ্ক্রিয়",
   invited: "আমন্ত্রিত",
   department: "বিভাগ",
-  projects: "প্রকল্পসমূহ",
   theme: "থিম",
   summary: "সারসংক্ষেপ",
   format: "ফরম্যাট",
@@ -159,7 +158,8 @@ const bn = {
     editEntry: "এন্ট্রি সম্পাদনা করুন",
     deleteEntry: "এন্ট্রি মুছুন",
     deleteTimeEntry: "সময় এন্ট্রি মুছুন",
-    deleteTimeEntryConfirm: "আপনি কি নিশ্চিত যে আপনি এই সময় এন্ট্রি মুছতে চান?",
+    deleteTimeEntryConfirm:
+      "আপনি কি নিশ্চিত যে আপনি এই সময় এন্ট্রি মুছতে চান?",
     durationRequired: "সময়কাল আবশ্যক",
     projectRequired: "প্রকল্প আবশ্যক",
     duration: "সময়কাল",
@@ -167,7 +167,8 @@ const bn = {
     noteOptional: "নোট (ঐচ্ছিক)",
     addTags: "ট্যাগ যোগ করুন",
     favorites: "পছন্দসমূহ",
-    favoriteShortcutsHint: "আপনি সর্বদা ব্যবহার করেন এমন সংমিশ্রণগুলি পিন করুন।",
+    favoriteShortcutsHint:
+      "আপনি সর্বদা ব্যবহার করেন এমন সংমিশ্রণগুলি পিন করুন।",
     recentShortcuts: "সাম্প্রতিক শর্টকাট",
     recentShortcutsHint:
       "একই ক্লায়েন্ট এবং প্রকল্প পুনরায় নির্বাচন না করে সাম্প্রতিক কাজ পুনরায় ব্যবহার করুন।",
@@ -185,10 +186,13 @@ const bn = {
     entry: "এন্ট্রি",
     entries: "এন্ট্রিসমূহ",
     noEntriesForSelectedDay: "নির্বাচিত দিনের জন্য কোনো এন্ট্রি নেই",
-    weekReviewHint: "এই সপ্তাহে লগ করা সব কিছু পর্যালোচনা করতে এই সপ্তাহে স্যুইচ করুন।",
+    weekReviewHint:
+      "এই সপ্তাহে লগ করা সব কিছু পর্যালোচনা করতে এই সপ্তাহে স্যুইচ করুন।",
     noTimeEntriesYet: "এখনও কোনো সময় এন্ট্রি নেই",
-    firstEntryHint: 'এই দিনের জন্য আপনার প্রথম সময় এন্ট্রি লগ করতে "এন্ট্রি যোগ করুন" এ ক্লিক করুন',
-    logWorkByWeekOrMonth: "সপ্তাহ বা মাস অনুযায়ী কাজ লগ করুন। এন্ট্রিগুলি স্পষ্ট এবং আপ টু ডেট রাখুন।",
+    firstEntryHint:
+      'এই দিনের জন্য আপনার প্রথম সময় এন্ট্রি লগ করতে "এন্ট্রি যোগ করুন" এ ক্লিক করুন',
+    logWorkByWeekOrMonth:
+      "সপ্তাহ বা মাস অনুযায়ী কাজ লগ করুন। এন্ট্রিগুলি স্পষ্ট এবং আপ টু ডেট রাখুন।",
     entriesFor: "%{name} এর জন্য এন্ট্রিসমূহ",
     timeEntriesFor: "এর জন্য সময় এন্ট্রি",
     unableToLoad: "এই মুহূর্তে সময় ট্র্যাকিং লোড করা যাচ্ছে না।",
@@ -206,7 +210,8 @@ const bn = {
     entriesUpdatedSuccessfully: "এন্ট্রিগুলি সফলভাবে আপডেট হয়েছে",
     failedToUpdateEntries: "এন্ট্রি আপডেট করতে ব্যর্থ",
     selectProjectFirst: "অনুগ্রহ করে প্রথমে একটি প্রকল্প নির্বাচন করুন",
-    editingModeActive: "সম্পাদনা মোড সক্রিয়। উপরে আপনার পরিবর্তনগুলি সম্পূর্ণ করুন।",
+    editingModeActive:
+      "সম্পাদনা মোড সক্রিয়। উপরে আপনার পরিবর্তনগুলি সম্পূর্ণ করুন।",
     dayAbbr: {
       mon: "সোম",
       tue: "মঙ্গল",
@@ -315,13 +320,15 @@ const bn = {
     teamMembers: "দলের সদস্য",
     team: "দল",
     allProjects: "সব প্রকল্প",
-    allProjectsDescription: "আপনার প্রকল্পগুলি পরিচালনা করুন এবং অগ্রগতি ট্র্যাক করুন",
+    allProjectsDescription:
+      "আপনার প্রকল্পগুলি পরিচালনা করুন এবং অগ্রগতি ট্র্যাক করুন",
     failedToLoadProjects: "প্রকল্প লোড করতে ব্যর্থ",
     failedToDeleteProject: "প্রকল্প মুছতে ব্যর্থ",
     projectDeletedSuccessfully: "প্রকল্প সফলভাবে মুছে ফেলা হয়েছে",
     viewDetails: "বিবরণ দেখুন",
     copyProjectId: "প্রকল্প আইডি কপি করুন",
-    manageProjectsDescription: "আপনার প্রকল্পগুলি পরিচালনা করুন এবং অগ্রগতি ট্র্যাক করুন",
+    manageProjectsDescription:
+      "আপনার প্রকল্পগুলি পরিচালনা করুন এবং অগ্রগতি ট্র্যাক করুন",
     newProject: "নতুন প্রকল্প",
     activeProjects: "সক্রিয় প্রকল্প",
     ofTotalProjects: "মোট %{count}টি প্রকল্পের মধ্যে",
@@ -330,7 +337,8 @@ const bn = {
     searchProjects: "প্রকল্প খুঁজুন...",
     createFirstProject: "শুরু করতে আপনার প্রথম প্রকল্প তৈরি করুন।",
     noProjectsYet: "এখনও কোনো প্রকল্প নেই",
-    workingOnProjects: "আপনার প্রকল্পগুলিতে বিলযোগ্য এবং বিল-অযোগ্য কাজ ট্র্যাক করুন।",
+    workingOnProjects:
+      "আপনার প্রকল্পগুলিতে বিলযোগ্য এবং বিল-অযোগ্য কাজ ট্র্যাক করুন।",
     active: "সক্রিয়",
     paused: "বিরতিপ্রাপ্ত",
     completed: "সম্পন্ন",
@@ -346,21 +354,25 @@ const bn = {
     outstanding: "বকেয়া",
     deleting: "মুছে ফেলা হচ্ছে...",
     createProject: "প্রকল্প তৈরি করুন",
-    createProjectDescription: "একটি নতুন প্রকল্প সেট আপ করুন এবং এটি একটি ক্লায়েন্টকে বরাদ্দ করুন।",
+    createProjectDescription:
+      "একটি নতুন প্রকল্প সেট আপ করুন এবং এটি একটি ক্লায়েন্টকে বরাদ্দ করুন।",
     editProjectDetails: "প্রকল্পের বিবরণ সম্পাদনা করুন",
     saveChanges: "পরিবর্তন সংরক্ষণ করুন",
-    billableDescription: "এই প্রকল্পের জন্য সময় ট্র্যাক করুন এবং ক্লায়েন্টকে বিল করুন",
+    billableDescription:
+      "এই প্রকল্পের জন্য সময় ট্র্যাক করুন এবং ক্লায়েন্টকে বিল করুন",
     nonBillableDescription: "ক্লায়েন্টকে বিল না করে সময় ট্র্যাক করুন",
     noClientsPresent: "কোনো ক্লায়েন্ট উপস্থিত নেই",
     teamMembersUpdated: "দলের সদস্য সফলভাবে আপডেট হয়েছে",
-    manageProjectMembersDescription: "দলের সদস্য যোগ বা সরান এবং তাদের ঘণ্টাপ্রতি হার সেট করুন।",
+    manageProjectMembersDescription:
+      "দলের সদস্য যোগ বা সরান এবং তাদের ঘণ্টাপ্রতি হার সেট করুন।",
     enterValidRate: "অনুগ্রহ করে একটি বৈধ হার লিখুন",
     addAnotherTeamMember: "আরেকজন সদস্য যোগ করুন",
     addTeamMember: "দলের সদস্য যোগ করুন",
     saveTeamMembers: "সদস্য সংরক্ষণ করুন",
     noTeamMembersAdded: "এখনও কোনো দলের সদস্য যোগ করা হয়নি।",
     addTeamMembers: "দলের সদস্য যোগ করুন",
-    teamMembersDescription: "এই প্রকল্পে বরাদ্দকৃত দলের সদস্যদের দেখুন এবং পরিচালনা করুন।",
+    teamMembersDescription:
+      "এই প্রকল্পে বরাদ্দকৃত দলের সদস্যদের দেখুন এবং পরিচালনা করুন।",
   },
 
   // Team
@@ -471,8 +483,7 @@ const bn = {
     addEntry: "%{count}টি এন্ট্রি যোগ করুন",
     addEntries_plural: "%{count}টি এন্ট্রি যোগ করুন",
     thankYouForBusiness: "আপনার ব্যবসার জন্য ধন্যবাদ!",
-    previewNote:
-      "এটি একটি পূর্বরূপ। সংরক্ষণের পরে পরিবর্তনগুলি প্রতিফলিত হবে।",
+    previewNote: "এটি একটি পূর্বরূপ। সংরক্ষণের পরে পরিবর্তনগুলি প্রতিফলিত হবে।",
     noInvoiceGenerated: "এখনও কোনো ইনভয়েস তৈরি হয়নি।",
     acceptCreditCards: "ক্রেডিট কার্ড গ্রহণ করুন",
     sendTo: "পাঠান",
@@ -504,13 +515,11 @@ const bn = {
     message: "বার্তা",
     addEmailFromClientSettings:
       "অনুগ্রহ করে ক্লায়েন্ট সেটিংস পৃষ্ঠা থেকে ইমেইল যোগ করুন",
-    reminderSubject:
-      "অপরিশোধিত ইনভয়েসের জন্য পেমেন্ট সম্পূর্ণ করার স্মরণিকা",
+    reminderSubject: "অপরিশোধিত ইনভয়েসের জন্য পেমেন্ট সম্পূর্ণ করার স্মরণিকা",
     invoiceSentSubject: "%{company} আপনাকে একটি ইনভয়েস পাঠিয়েছে (%{number})",
     reminderBody:
       "%{company} আপনাকে ইনভয়েস %{number} এর জন্য একটি স্মরণিকা পাঠিয়েছে",
-    invoiceSentBody:
-      "%{company} আপনাকে একটি ইনভয়েস পাঠিয়েছে (%{number})",
+    invoiceSentBody: "%{company} আপনাকে একটি ইনভয়েস পাঠিয়েছে (%{number})",
     invoiceWillBeSent: "ইনভয়েস পাঠানো হবে!",
     processing: "প্রক্রিয়াকরণ হচ্ছে...",
 
@@ -580,11 +589,13 @@ const bn = {
     errorConnectingPayments: "পেমেন্টে সংযোগ করতে ত্রুটি",
     invoiceCreated: "ইনভয়েস সফলভাবে তৈরি হয়েছে",
     invoiceUpdated: "ইনভয়েস সফলভাবে আপডেট হয়েছে",
-    failedToSaveInvoice: "ইনভয়েস সংরক্ষণ করতে ব্যর্থ। অনুগ্রহ করে আবার চেষ্টা করুন।",
+    failedToSaveInvoice:
+      "ইনভয়েস সংরক্ষণ করতে ব্যর্থ। অনুগ্রহ করে আবার চেষ্টা করুন।",
 
     // Counters
     showingOf: "%{total} এর মধ্যে %{shown}টি দেখানো হচ্ছে",
-    viewingMatching: "%{loaded}টি লোড করা থেকে %{filtered}টি মিলে যাওয়া ইনভয়েস দেখা হচ্ছে",
+    viewingMatching:
+      "%{loaded}টি লোড করা থেকে %{filtered}টি মিলে যাওয়া ইনভয়েস দেখা হচ্ছে",
     loadedOf: "%{total} এর মধ্যে %{loaded}টি লোড হয়েছে",
     showingRecentTransactions: "%{count}টি সাম্প্রতিক লেনদেন দেখানো হচ্ছে",
     updatedAt: "%{date} তারিখে আপডেট হয়েছে",
@@ -596,12 +607,16 @@ const bn = {
 
     // Invoice reminder email
     invoiceReminder: "ইনভয়েস স্মরণিকা: %{number}",
-    reminderMessage: "এটি আপনার বকেয়া ইনভয়েস সম্পর্কে একটি স্মরণিকা। অনুগ্রহ করে সংযুক্ত বিবরণ দেখুন।",
+    reminderMessage:
+      "এটি আপনার বকেয়া ইনভয়েস সম্পর্কে একটি স্মরণিকা। অনুগ্রহ করে সংযুক্ত বিবরণ দেখুন।",
     invoiceAttached: "অনুগ্রহ করে আপনার সংযুক্ত ইনভয়েসটি দেখুন।",
-    reminderPaymentMessage: "এটি আপনার বিলম্বিত ইনভয়েস সম্পর্কে একটি স্মরণিকা। অনুগ্রহ করে পেমেন্ট সম্পূর্ণ করুন।",
+    reminderPaymentMessage:
+      "এটি আপনার বিলম্বিত ইনভয়েস সম্পর্কে একটি স্মরণিকা। অনুগ্রহ করে পেমেন্ট সম্পূর্ণ করুন।",
     invoiceSubject: "ইনভয়েস %{number}",
-    reminderPaymentSubject: "ইনভয়েস %{number} এর জন্য পেমেন্ট সম্পূর্ণ করার স্মরণিকা",
-    markAsPaidConfirm: "এই ইনভয়েসটি পরিশোধিত হিসেবে চিহ্নিত করবেন? এই কাজটি হিসাব রেকর্ডকে প্রভাবিত করে।",
+    reminderPaymentSubject:
+      "ইনভয়েস %{number} এর জন্য পেমেন্ট সম্পূর্ণ করার স্মরণিকা",
+    markAsPaidConfirm:
+      "এই ইনভয়েসটি পরিশোধিত হিসেবে চিহ্নিত করবেন? এই কাজটি হিসাব রেকর্ডকে প্রভাবিত করে।",
     failedToLoadInvoice: "ইনভয়েস লোড করতে ব্যর্থ",
     invoiceNotFound: "ইনভয়েস পাওয়া যায়নি",
     failedToMarkAsPaid: "পরিশোধিত হিসেবে চিহ্নিত করতে ব্যর্থ",
@@ -680,7 +695,8 @@ const bn = {
   timer: {
     webTimer: "ওয়েব টাইমার",
     webTimerLabel: "ওয়েব টাইমার",
-    trackLiveWork: "রিয়েল টাইমে লাইভ কাজ ট্র্যাক করুন, তারপর এটি সরাসরি আজকের এন্ট্রি তালিকায় সংরক্ষণ করুন।",
+    trackLiveWork:
+      "রিয়েল টাইমে লাইভ কাজ ট্র্যাক করুন, তারপর এটি সরাসরি আজকের এন্ট্রি তালিকায় সংরক্ষণ করুন।",
     startTimer: "টাইমার শুরু করুন",
     pause: "বিরতি",
     resume: "পুনরায় শুরু করুন",
@@ -689,7 +705,8 @@ const bn = {
     reset: "রিসেট",
     timer: "টাইমার",
     saveTimeEntry: "সময় এন্ট্রি সংরক্ষণ করুন",
-    saveTimeEntryDescription: "আপনি %{time} ট্র্যাক করেছেন। আপনি কি এটি একটি সময় এন্ট্রি হিসেবে সংরক্ষণ করতে চান?",
+    saveTimeEntryDescription:
+      "আপনি %{time} ট্র্যাক করেছেন। আপনি কি এটি একটি সময় এন্ট্রি হিসেবে সংরক্ষণ করতে চান?",
     discard: "বাতিল করুন",
     timerStarted: "টাইমার শুরু হয়েছে",
     timerPaused: "টাইমার বিরতিতে আছে",
@@ -786,24 +803,31 @@ const bn = {
     invoiceAgingDetails: "ইনভয়েস এজিং বিবরণ",
     noDataFound: "কোনো ডেটা পাওয়া যায়নি",
     accountsAgingReport: "অ্যাকাউন্টস এজিং প্রতিবেদন",
-    analysisOfOutstandingReceivables: "এজিং সময়কাল অনুযায়ী বকেয়া প্রাপ্যের বিশ্লেষণ",
+    analysisOfOutstandingReceivables:
+      "এজিং সময়কাল অনুযায়ী বকেয়া প্রাপ্যের বিশ্লেষণ",
     asOf: "%{date} পর্যন্ত",
     zeroToThirtyDays: "০-৩০ দিন",
     thirtyOneToSixtyDays: "৩১-৬০ দিন",
     sixtyOneToNinetyDays: "৬১-৯০ দিন",
     ninetyPlusDays: "৯০+ দিন",
-    noClientsWithOutstandingBalances: "বকেয়া ব্যালেন্স সহ কোনো ক্লায়েন্ট নেই।",
-    showingOfClients: "%{total} এর মধ্যে %{displayed}টি ক্লায়েন্ট দেখানো হচ্ছে...",
-    errorLoadingReportData: "প্রতিবেদন ডেটা লোড করতে ত্রুটি। অনুগ্রহ করে আবার চেষ্টা করুন।",
+    noClientsWithOutstandingBalances:
+      "বকেয়া ব্যালেন্স সহ কোনো ক্লায়েন্ট নেই।",
+    showingOfClients:
+      "%{total} এর মধ্যে %{displayed}টি ক্লায়েন্ট দেখানো হচ্ছে...",
+    errorLoadingReportData:
+      "প্রতিবেদন ডেটা লোড করতে ত্রুটি। অনুগ্রহ করে আবার চেষ্টা করুন।",
     projectClient: "প্রকল্প/ ক্লায়েন্ট",
     noteHeader: "নোট",
     teamMemberDate: "দলের সদস্য/ তারিখ",
     hoursLogged: "লগ করা ঘণ্টা",
-    noResultsMatchFilters: "বর্তমান ফিল্টারের সাথে কোনো ফলাফল মেলে না। কিছু ফিল্টার সরানোর চেষ্টা করুন।",
-    noTimeEntriesYet: "এখনও কোনো সময় এন্ট্রি যোগ করা হয়নি। আপনি আপনার দলের যোগ করা সময় এন্ট্রির সারসংক্ষেপ দেখতে পাবেন।",
+    noResultsMatchFilters:
+      "বর্তমান ফিল্টারের সাথে কোনো ফলাফল মেলে না। কিছু ফিল্টার সরানোর চেষ্টা করুন।",
+    noTimeEntriesYet:
+      "এখনও কোনো সময় এন্ট্রি যোগ করা হয়নি। আপনি আপনার দলের যোগ করা সময় এন্ট্রির সারসংক্ষেপ দেখতে পাবেন।",
     selected: "%{count}টি নির্বাচিত",
     showingClientsCount: "%{total} এর মধ্যে %{shown}টি ক্লায়েন্ট দেখানো হচ্ছে",
-    ofTeamMembersSelected: "%{total} এর মধ্যে %{active} জন দলের সদস্য নির্বাচিত",
+    ofTeamMembersSelected:
+      "%{total} এর মধ্যে %{active} জন দলের সদস্য নির্বাচিত",
     statusGuide: "অবস্থা নির্দেশিকা:",
     activeCount: "%{count}টি সক্রিয়",
     noGrouping: "কোনো গ্রুপিং নেই",
@@ -826,16 +850,19 @@ const bn = {
     timeEntryReportTitle: "সময় এন্ট্রি প্রতিবেদন",
     timeEntryReportDesc: "আপনার দলের যোগ করা সময় এন্ট্রির সারসংক্ষেপ।",
     invoicesReport: "ইনভয়েস প্রতিবেদন",
-    invoicesReportDesc: "একটি সময়কালের জন্য সব ক্লায়েন্টের বকেয়া এবং বিলম্বিতের বিস্তারিত সারসংক্ষেপ।",
+    invoicesReportDesc:
+      "একটি সময়কালের জন্য সব ক্লায়েন্টের বকেয়া এবং বিলম্বিতের বিস্তারিত সারসংক্ষেপ।",
     totalHoursLoggedTitle: "মোট লগ করা ঘণ্টা",
-    totalHoursLoggedDesc: "প্রকল্প অনুযায়ী দলের বিল করা, অবিল করা এবং বিল-অযোগ্য ঘণ্টার বিস্তারিত সারসংক্ষেপ।",
+    totalHoursLoggedDesc:
+      "প্রকল্প অনুযায়ী দলের বিল করা, অবিল করা এবং বিল-অযোগ্য ঘণ্টার বিস্তারিত সারসংক্ষেপ।",
     revenueReport: "রাজস্ব প্রতিবেদন",
     revenueReportDesc: "প্রতিটি ক্লায়েন্ট থেকে রাজস্বের বিস্তারিত প্রতিবেদন।",
     accountsAging: "অ্যাকাউন্টস এজিং",
     accountsAgingDesc: "কোন ক্লায়েন্ট পেমেন্ট করতে দীর্ঘ সময় নিচ্ছে তা জানুন",
     clearAll: "সব মুছুন",
     outstandingAndOverdue: "বকেয়া এবং বিলম্বিত",
-    followUpOnInvoices: "যেসব ইনভয়েসে এখনও মনোযোগ দেওয়া দরকার সেগুলির অনুসরণ করুন।",
+    followUpOnInvoices:
+      "যেসব ইনভয়েসে এখনও মনোযোগ দেওয়া দরকার সেগুলির অনুসরণ করুন।",
     outstanding: "বকেয়া",
     overdue: "বিলম্বিত",
     refresh: "রিফ্রেশ",
@@ -848,23 +875,29 @@ const bn = {
     formatLabel: "ফরম্যাট",
     exportPdfBtn: "PDF রপ্তানি করুন",
     exportCsvBtn: "CSV রপ্তানি করুন",
-    noOutstandingOrOverdueInvoices: "কোনো বকেয়া বা বিলম্বিত ইনভয়েস পাওয়া যায়নি।",
+    noOutstandingOrOverdueInvoices:
+      "কোনো বকেয়া বা বিলম্বিত ইনভয়েস পাওয়া যায়নি।",
     allCurrencies: "সব মুদ্রা",
     filteredByCurrency: "%{currency} দ্বারা ফিল্টার করা",
     overdueAgingTitle: "বিলম্বিত এজিং (%{currency})",
     averageDays: "গড় দিন:",
-    timeReportsDesc: "আপনার দলের সদস্যদের দ্বারা যোগ করা সময় এন্ট্রির বিস্তৃত সারসংক্ষেপ",
+    timeReportsDesc:
+      "আপনার দলের সদস্যদের দ্বারা যোগ করা সময় এন্ট্রির বিস্তৃত সারসংক্ষেপ",
     outstandingOverdueInvoicesTitle: "বকেয়া এবং বিলম্বিত ইনভয়েস",
-    outstandingOverdueInvoicesDesc: "সব ক্লায়েন্ট জুড়ে বকেয়া এবং বিলম্বিত ইনভয়েসের বিস্তারিত বিবরণ",
+    outstandingOverdueInvoicesDesc:
+      "সব ক্লায়েন্ট জুড়ে বকেয়া এবং বিলম্বিত ইনভয়েসের বিস্তারিত বিবরণ",
     revenueByClient: "ক্লায়েন্ট অনুযায়ী রাজস্ব",
-    revenueByClientDesc: "প্রবণতা এবং তুলনা সহ ক্লায়েন্ট অনুযায়ী রাজস্ব বিশ্লেষণ",
+    revenueByClientDesc:
+      "প্রবণতা এবং তুলনা সহ ক্লায়েন্ট অনুযায়ী রাজস্ব বিশ্লেষণ",
     accountsAgingTableDesc: "সময়কাল অনুযায়ী বকেয়া প্রাপ্যের বয়স বিশ্লেষণ",
     paymentReportTitle: "পেমেন্ট প্রতিবেদন",
-    paymentReportDesc: "বিস্তারিত লেনদেন ইতিহাস সহ প্রাপ্ত সব পেমেন্ট ট্র্যাক করুন",
+    paymentReportDesc:
+      "বিস্তারিত লেনদেন ইতিহাস সহ প্রাপ্ত সব পেমেন্ট ট্র্যাক করুন",
     teamUtilization: "দলের ব্যবহার",
     teamUtilizationDesc: "দলের সদস্যদের ব্যবহার হার এবং সক্ষমতা বিশ্লেষণ",
     projectProfitability: "প্রকল্প লাভযোগ্যতা",
-    projectProfitabilityDesc: "খরচ বিশ্লেষণ সহ প্রকল্প অনুযায়ী লাভযোগ্যতা বিশ্লেষণ",
+    projectProfitabilityDesc:
+      "খরচ বিশ্লেষণ সহ প্রকল্প অনুযায়ী লাভযোগ্যতা বিশ্লেষণ",
     clientSummaryTitle: "ক্লায়েন্ট সারসংক্ষেপ",
     clientSummaryDesc: "বিস্তৃত ক্লায়েন্ট কর্মক্ষমতা এবং সম্পৃক্ততা মেট্রিক্স",
     understandReportsAtGlance: "এক নজরে রাজস্ব, সময় এবং বকেয়া কাজ বুঝুন।",
@@ -878,7 +911,8 @@ const bn = {
     viewOverdueInvoices: "বিলম্বিত ইনভয়েস দেখুন",
     monthlyRevenueReport: "মাসিক রাজস্ব প্রতিবেদন",
     openReport: "%{title} প্রতিবেদন খুলুন",
-    reviewHoursLogged: "ব্যক্তি, ক্লায়েন্ট এবং প্রকল্প অনুযায়ী লগ করা ঘণ্টা পর্যালোচনা করুন।",
+    reviewHoursLogged:
+      "ব্যক্তি, ক্লায়েন্ট এবং প্রকল্প অনুযায়ী লগ করা ঘণ্টা পর্যালোচনা করুন।",
     lastSevenDaysPreset: "গত ৭ দিন",
     lastThirtyDaysPreset: "গত ৩০ দিন",
     totalEntries: "মোট এন্ট্রি",
@@ -1123,13 +1157,17 @@ const bn = {
     paidInvoices: "পরিশোধিত ইনভয়েস",
     alreadySettled: "ইতিমধ্যে নিষ্পত্তি হয়েছে",
     paymentsReceived: "প্রাপ্ত পেমেন্ট",
-    employeeGuidance: "আপনার সপ্তাহ ট্র্যাক করুন, সঠিক এন্ট্রি জমা দিন এবং কাজ চালিয়ে যান।",
-    bookKeeperGuidance: "আগত পেমেন্ট পর্যালোচনা করুন, ইনভয়েস মেলান এবং নগদ প্রবাহ স্পষ্ট রাখুন।",
-    clientGuidance: "আপনার অ্যাকাউন্টের জন্য ইনভয়েস অবস্থা এবং পেমেন্ট ইতিহাস পরীক্ষা করুন।",
+    employeeGuidance:
+      "আপনার সপ্তাহ ট্র্যাক করুন, সঠিক এন্ট্রি জমা দিন এবং কাজ চালিয়ে যান।",
+    bookKeeperGuidance:
+      "আগত পেমেন্ট পর্যালোচনা করুন, ইনভয়েস মেলান এবং নগদ প্রবাহ স্পষ্ট রাখুন।",
+    clientGuidance:
+      "আপনার অ্যাকাউন্টের জন্য ইনভয়েস অবস্থা এবং পেমেন্ট ইতিহাস পরীক্ষা করুন।",
     defaultGuidance: "এক নজরে রাজস্ব, প্রকল্প এবং দলের গতি।",
     recentActivity: "সাম্প্রতিক কার্যক্রম",
     workspaceActivity: "ওয়ার্কস্পেস কার্যক্রম",
-    employeeActivityDescription: "আপনার ড্যাশবোর্ড সময় ট্র্যাকিং এবং বরাদ্দকৃত কাজে কেন্দ্রীভূত।",
+    employeeActivityDescription:
+      "আপনার ড্যাশবোর্ড সময় ট্র্যাকিং এবং বরাদ্দকৃত কাজে কেন্দ্রীভূত।",
     activityDescription: "আপনার ইনভয়েস এবং পেমেন্টের সর্বশেষ আপডেট",
     noRecentActivityYet: "এখনও কোনো সাম্প্রতিক কার্যক্রম নেই",
     loadMore: "আরো লোড করুন",
@@ -1172,27 +1210,36 @@ const bn = {
     cashLedger: "নগদ খাতা",
     miruLogo: "Miru",
     heroTitle: "সময়, ইনভয়েস এবং পেমেন্টের জন্য এক জায়গা",
-    heroDescription: "দিনকে স্পষ্ট রাখুন, বিলিং চালু রাখুন এবং নগদ দৃশ্যমান রাখুন।",
+    heroDescription:
+      "দিনকে স্পষ্ট রাখুন, বিলিং চালু রাখুন এবং নগদ দৃশ্যমান রাখুন।",
     slideShowPrefix: "দেখান",
-    slideDashboardDescription: "না খুঁজেই রাজস্ব, সক্রিয় প্রকল্প এবং দলের গতি দেখুন।",
-    slideInvoicesDescription: "খসড়া, বিলম্বিত ব্যালেন্স এবং পরিশোধিত কাজ এক জায়গায় রাখুন।",
-    slideTimeTrackingDescription: "সাপ্তাহিক সময় এন্ট্রি ব্যস্ততায় পরিণত না হয়ে আপ টু ডেট থাকে।",
-    slidePaymentsDescription: "প্রতিটি পেমেন্ট পদ্ধতি, অবস্থা এবং উৎস সহ এক খাতায় আসে।",
+    slideDashboardDescription:
+      "না খুঁজেই রাজস্ব, সক্রিয় প্রকল্প এবং দলের গতি দেখুন।",
+    slideInvoicesDescription:
+      "খসড়া, বিলম্বিত ব্যালেন্স এবং পরিশোধিত কাজ এক জায়গায় রাখুন।",
+    slideTimeTrackingDescription:
+      "সাপ্তাহিক সময় এন্ট্রি ব্যস্ততায় পরিণত না হয়ে আপ টু ডেট থাকে।",
+    slidePaymentsDescription:
+      "প্রতিটি পেমেন্ট পদ্ধতি, অবস্থা এবং উৎস সহ এক খাতায় আসে।",
     continueWithGoogle: "Google দিয়ে চালিয়ে যান",
     continueWithGithub: "GitHub দিয়ে চালিয়ে যান",
     orUseEmail: "অথবা ইমেইল ব্যবহার করুন",
     verifyWithAuthenticator: "আপনার অথেন্টিকেটর অ্যাপ দিয়ে যাচাই করুন",
-    authenticatorInstructions: "আপনার অথেন্টিকেটর অ্যাপ থেকে ৬-সংখ্যার কোড লিখুন, অথবা রিকভারি কোড ব্যবহার করুন।",
+    authenticatorInstructions:
+      "আপনার অথেন্টিকেটর অ্যাপ থেকে ৬-সংখ্যার কোড লিখুন, অথবা রিকভারি কোড ব্যবহার করুন।",
     authenticatorCode: "অথেন্টিকেটর কোড",
     recoveryCode: "রিকভারি কোড",
     verifyAndSignIn: "যাচাই করুন এবং সাইন ইন করুন",
-    completePasskeyVerification: "সাইন ইন সম্পূর্ণ করতে পাসকি যাচাই সম্পূর্ণ করুন।",
-    enterAuthenticatorCode: "সাইন ইন সম্পূর্ণ করতে আপনার অথেন্টিকেটর কোড লিখুন।",
+    completePasskeyVerification:
+      "সাইন ইন সম্পূর্ণ করতে পাসকি যাচাই সম্পূর্ণ করুন।",
+    enterAuthenticatorCode:
+      "সাইন ইন সম্পূর্ণ করতে আপনার অথেন্টিকেটর কোড লিখুন।",
     invalidVerificationCode: "অবৈধ যাচাই কোড।",
     privacy: "গোপনীয়তা",
     terms: "শর্তাবলী",
     createAccount: "অ্যাকাউন্ট তৈরি করুন",
-    passwordCriteria: "ন্যূনতম ৮ অক্ষর, ১টি বড় হাতের, ১টি ছোট হাতের, ১টি সংখ্যা এবং ১টি বিশেষ অক্ষর",
+    passwordCriteria:
+      "ন্যূনতম ৮ অক্ষর, ১টি বড় হাতের, ১টি ছোট হাতের, ১টি সংখ্যা এবং ১টি বিশেষ অক্ষর",
     agreeToTerms: "আমি সম্মত",
     termsOfService: "সেবার শর্তাবলী",
     privacyPolicy: "গোপনীয়তা নীতি",
@@ -1276,8 +1323,10 @@ const bn = {
     publicHolidays: "সরকারি ছুটির দিন",
     zeroUsed: "০ ব্যবহৃত",
     leaveCalendar: "ছুটির ক্যালেন্ডার",
-    trackLeaveUsage: "%{year} এর জন্য মাসে মাসে ছুটি এবং ছুটির দিনের ব্যবহার ট্র্যাক করুন।",
-    selectDayToInspect: "ছুটির বিবরণ এবং ছুটির দিনের ব্যবহার দেখতে একটি দিন নির্বাচন করুন।",
+    trackLeaveUsage:
+      "%{year} এর জন্য মাসে মাসে ছুটি এবং ছুটির দিনের ব্যবহার ট্র্যাক করুন।",
+    selectDayToInspect:
+      "ছুটির বিবরণ এবং ছুটির দিনের ব্যবহার দেখতে একটি দিন নির্বাচন করুন।",
     nothingBooked: "কিছুই বুক করা হয়নি",
     nothingBookedForDate: "এই তারিখের জন্য কিছুই বুক করা হয়নি।",
     recordedTimeAway: "এই দিনে রেকর্ড করা অবকাশ সময়",
@@ -1299,12 +1348,14 @@ const bn = {
     numberOfTeamMembers: "দলের সদস্য সংখ্যা:",
     plan: "পরিকল্পনা",
     basicPlan: "বেসিক পরিকল্পনা",
-    basicPlanDescription: "বেসিক পরিকল্পনায় সব ফিচার অন্তর্ভুক্ত। এটি একবারের চার্জ।",
+    basicPlanDescription:
+      "বেসিক পরিকল্পনায় সব ফিচার অন্তর্ভুক্ত। এটি একবারের চার্জ।",
     chargedOnce: "একবার চার্জ করা হয়",
     addOns: "অ্যাড-অন",
     oneTeamMember: "১ জন দলের সদস্য",
     chargedEveryMonth: "প্রতি মাসে চার্জ করা হয়",
-    basicPlanPerUser: "বেসিক পরিকল্পনা প্রতি ব্যবহারকারী প্রতি মাসে অতিরিক্ত %{rate}$ সহ আসে।",
+    basicPlanPerUser:
+      "বেসিক পরিকল্পনা প্রতি ব্যবহারকারী প্রতি মাসে অতিরিক্ত %{rate}$ সহ আসে।",
     plusTaxes: "কর সহ",
     reviewAndPay: "পর্যালোচনা করুন এবং পরিশোধ করুন",
   },

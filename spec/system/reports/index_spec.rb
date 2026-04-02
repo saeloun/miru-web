@@ -26,10 +26,22 @@ RSpec.describe "Reports", type: :system, js: true do
         visit "/reports"
 
         expect_reports_shell
-        expect(page).to have_content("Time Entry Report", wait: 10)
-        expect(page).to have_content("Revenue", wait: 10)
+        expect(page).to have_content("Time Reports", wait: 10)
+        expect(page).to have_content("Revenue by Client", wait: 10)
         expect(page).to have_content("Accounts Aging", wait: 10)
         expect(page).to have_content("Outstanding", wait: 10)
+      end
+    end
+
+    it "routes schedule reports to preferences" do
+      with_forgery_protection do
+        visit "/reports"
+
+        expect_reports_shell
+        click_button "Schedule reports"
+
+        expect(page).to have_current_path("/settings/preferences", wait: 10)
+        expect(page).to have_content("Monthly Cash Flow Digest", wait: 10)
       end
     end
 
@@ -42,7 +54,7 @@ RSpec.describe "Reports", type: :system, js: true do
       with_forgery_protection do
         visit "/reports/time-entry"
 
-        expect_reports_shell("Time Entry Report")
+        expect_reports_shell("Time Reports")
         expect(page).to have_content("Total Hours", wait: 10)
         expect(page).to have_content("Export", wait: 10)
       end
@@ -57,7 +69,7 @@ RSpec.describe "Reports", type: :system, js: true do
       with_forgery_protection do
         visit "/reports/time-entry"
 
-        expect_reports_shell("Time Entry Report")
+        expect_reports_shell("Time Reports")
         expect(page).to have_content("Loaded 1 of 2 report pages", wait: 10)
 
         page.execute_script("window.scrollTo(0, document.body.scrollHeight)")
@@ -80,7 +92,7 @@ RSpec.describe "Reports", type: :system, js: true do
       with_forgery_protection do
         visit "/reports/time-entry?clients=#{included_client.id}&groupBy=client&preset=custom&from=#{Date.current.iso8601}&to=#{Date.current.iso8601}"
 
-        expect_reports_shell("Time Entry Report")
+        expect_reports_shell("Time Reports")
         expect(page).to have_content("Filtered Alpha Client", wait: 10)
         expect(page).to have_no_content("Filtered Beta Client")
       end
@@ -280,7 +292,7 @@ RSpec.describe "Reports", type: :system, js: true do
       visit "/reports"
 
       expect(page).to have_css("#react-root", wait: 10)
-      expect(page).to have_no_content("Time Entry Report", wait: 5).or have_current_path("/time-tracking", wait: 10)
+      expect(page).to have_no_content("Time Reports", wait: 5).or have_current_path("/time-tracking", wait: 10)
     end
   end
 

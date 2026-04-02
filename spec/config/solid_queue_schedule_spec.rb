@@ -26,6 +26,20 @@ RSpec.describe "Solid Queue schedule" do
     )
   end
 
+  it "runs monthly report delivery on the first day of the month in default and production" do
+    default_task = config.dig("default", "dispatchers", 0, "recurring_tasks", "monthly_reports_delivery")
+    production_task = config.dig("production", "dispatchers", 0, "recurring_tasks", "monthly_reports_delivery")
+
+    expect(default_task).to include(
+      "class" => "MonthlyReportsDeliveryJob",
+      "schedule" => "0 14 1 * * Asia/Kolkata"
+    )
+    expect(production_task).to include(
+      "class" => "MonthlyReportsDeliveryJob",
+      "schedule" => "0 14 1 * * Asia/Kolkata"
+    )
+  end
+
   it "runs database backups every 30 minutes in production by default" do
     production_task = config.dig("production", "dispatchers", 0, "recurring_tasks", "database_backup")
 

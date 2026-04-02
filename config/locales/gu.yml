@@ -78,6 +78,172 @@ gu:
   currency_pairs:
     from_to_required: થી અને થી જરૂરી છે
     rate_not_found: દર મળ્યો નથી
+  mailers:
+    layout:
+      preheader: મિરુ તરફથી વિચારપૂર્વકનું અપડેટ.
+      brand: Miru
+      footer_body: Miru સમય, ઇન્વોઇસ, ચુકવણીઓ અને દૈનિક કામગીરીને એક સ્પષ્ટ વર્કસ્પેસમાં રાખે છે.
+      footer_site: app.miru.so
+      footer_contact: support@getmiru.com
+      footer_copyright: © Miru. સર્વ હક્કો સુરક્ષિત.
+    actions:
+      open_invoice: ઇન્વોઇસ ખોલો
+      open_expense: ખર્ચ ખોલો
+      open_time_tracking: સમય ટ્રેકિંગ ખોલો
+      view_reports: Miru માં રિપોર્ટ જુઓ
+      join_miru: Miru જોડાઓ
+    labels:
+      issue_date: જારી તારીખ
+      due_date: નિયત તારીખ
+      invoice_number: ઇન્વોઇસ નંબર
+      reference: સંદર્ભ
+      total_amount: કુલ રકમ
+      attachment: જોડાણ
+      amount_due: બાકી રકમ
+      payment_link: ચુકવણી લિંક
+      outstanding_amount: બાકી રકમ
+      status: સ્થિતિ
+      invoice: ઇન્વોઇસ
+      payment_method: ચુકવણી પદ્ધતિ
+      amount_paid: ચૂકવેલ રકમ
+      client: ક્લાયન્ટ
+      issued_to: જેને જારી કરાયું
+      paid_on: ચુકવેલ તારીખ
+      amount: રકમ
+      category: શ્રેણી
+      date: તારીખ
+      description: વર્ણન
+      invited_by: આમંત્રિત કરનાર
+      workspace: વર્કસ્પેસ
+    invoice_mailer:
+      send_invoice:
+        subject: "%{company_name} તરફથી ઇન્વોઇસ %{invoice_number}"
+        preheader: "%{company_name} તરફથી ઇન્વોઇસ %{invoice_number} તૈયાર છે."
+        eyebrow: ઇન્વોઇસ
+        title: તમારું ઇન્વોઇસ તૈયાર છે
+        subtitle_html: "<strong>%{company_name}</strong> એ ઇન્વોઇસ <strong>%{invoice_number}</strong> મોકલ્યો છે. PDF તમારા રેકોર્ડ માટે જોડાયેલ છે."
+        note_title: "%{company_name} તરફથી એક નોંધ"
+        next_steps_title: હવે આગળ શું
+        next_steps_body: ઇન્વોઇસની વિગતો જોવા, PDF ડાઉનલોડ કરવા અને તમે તૈયાર હો ત્યારે સુરક્ષિત રીતે ચૂકવણી કરવા ઇન્વોઇસ ખોલો.
+        attachment_value: PDF જોડાયેલ છે
+        attachment_subvalue: સાચવો, આગળ મોકલો અથવા ફાઇલમાં મૂકો.
+        support_html: "મદદ જોઈએ છે? આ ઇમેઇલનો જવાબ આપો અથવા <a href=\"mailto:%{support_email}\">%{support_email}</a> નો સંપર્ક કરો."
+      invoice:
+        subject: "ઇન્વોઇસ %{invoice_number}"
+        preheader: "%{company_name} તરફથી ઇન્વોઇસ %{invoice_number}."
+        eyebrow: ઇન્વોઇસ
+        title: તમારું ઇન્વોઇસ તૈયાર છે
+        subtitle_html: "<strong>%{company_name}</strong> એ ઇન્વોઇસ <strong>%{invoice_number}</strong> મોકલ્યો છે. તમે તેને સમીક્ષી શકો છો અને ઓનલાઈન ચુકવણી કરી શકો છો."
+        ready_title: તમે તૈયાર હો ત્યારે
+        ready_body: લાઇન આઇટમ્સ જોવા, બાકી રકમ ખાતરી કરવા અને ઓનલાઈન ચુકવણી કરવા સુરક્ષિત ઇન્વોઇસ પેજ ખોલો.
+        payment_link_value: સુરક્ષિત ઇન્વોઇસ પેજ
+        payment_link_subvalue: લાઇન આઇટમ્સ જુઓ અને ઓનલાઈન ચુકવો.
+        support_html: "આ ઇન્વોઇસ વિશે પ્રશ્નો છે? આ ઇમેઇલનો જવાબ આપો અથવા <a href=\"mailto:%{support_email}\">%{support_email}</a> નો સંપર્ક કરો."
+    send_reminder_mailer:
+      send_reminder:
+        subject: "%{company_name} તરફથી ઇન્વોઇસ %{invoice_number} માટે સ્મરણપત્ર"
+        preheader: "%{company_name} તરફથી ઇન્વોઇસ %{invoice_number} માટે સ્મરણપત્ર."
+        eyebrow: ઇન્વોઇસ
+        title: ચુકવણી સ્મરણપત્ર
+        subtitle_html: "<strong>%{company_name}</strong> તરફથી ઇન્વોઇસ <strong>%{invoice_number}</strong> હજી બાકી છે."
+    send_payment_reminder_mailer:
+      send_payment_reminder:
+        subject: "%{company_name} માટે ચુકવણી સ્મરણપત્ર"
+        preheader: "%{company_name} ના ઇન્વોઇસ માટે ચુકવણી સ્મરણપત્ર."
+        eyebrow: ઇન્વોઇસ
+        title: ચુકવણી સ્મરણપત્ર
+        subtitle: નીચેના ઇન્વોઇસ જુઓ અને બાકી ચૂકવણીઓ પૂર્ણ કરો.
+    payment_mailer:
+      payment:
+        subject: "ઇન્વોઇસ %{invoice_number} માટે ચુકવણી વિગતો"
+        preheader: "ઇન્વોઇસ %{invoice_number} માટે ચુકવણી પુષ્ટિ."
+        eyebrow: ચુકવણીઓ
+        title: ચુકવણી પુષ્ટિ
+        subtitle_html: "<strong>%{client_name}</strong> એ ઇન્વોઇસ <strong>%{invoice_number}</strong> માટે ચુકવણી પૂર્ણ કરી છે."
+        received_title: ચુકવણી પ્રાપ્ત થઈ
+        summary_html: "<strong>%{client_name}</strong> એ ઇન્વોઇસ <strong>%{invoice_number}</strong> માટે <strong>%{amount}</strong> ચૂકવ્યા છે. આ ઇન્વોઇસ હવે સંપૂર્ણ રીતે ચૂકવાઈ ગયો છે."
+        follow_up_title: હવે આગળ શું
+        follow_up_body: નોંધાયેલ ચુકવણી ચકાસવા, થ્રેડ આર્કાઇવ કરવા અથવા આગળની કાર્યવાહી ચાલુ રાખવા ઇન્વોઇસ ખોલો.
+    client_payment_mailer:
+      payment:
+        subject: "ઇન્વોઇસ %{invoice_number} માટે ચુકવણી રસીદ"
+        preheader: "ઇન્વોઇસ %{invoice_number} માટે ચુકવણી રસીદ."
+        eyebrow: ચુકવણીઓ
+        title: ચુકવણી રસીદ
+        subtitle_html: "અમને ઇન્વોઇસ <strong>%{invoice_number}</strong> માટે તમારી ચુકવણી મળી ગઈ છે."
+        receipt_title: ચુકવણી મળી ગઈ
+        summary_html: "અમને <strong>%{paid_on}</strong> ના રોજ ઇન્વોઇસ <strong>%{invoice_number}</strong> માટે <strong>%{amount}</strong> મળ્યા."
+        records_title: આને તમારા રેકોર્ડ માટે સાચવો
+        records_body: આ ઇમેઇલ તમારી ચુકવણીની પુષ્ટિ કરે છે. રસીદની વિગતો ફરી જોઈએ તો તમે કોઈ પણ સમયે ઇન્વોઇસ ફરી ખોલી શકો છો.
+    expense_mailer:
+      submitted:
+        subject: "%{submitter_name} એ રીઇમ્બર્સમેન્ટ વિનંતી સબમિટ કરી"
+        preheader: નવી રીઇમ્બર્સમેન્ટ વિનંતીને સમીક્ષા જોઈએ.
+        eyebrow: ખર્ચ
+        title: નવી રીઇમ્બર્સમેન્ટ વિનંતી
+        subtitle_html: "<strong>%{submitter_name}</strong> એ સમીક્ષા માટે તૈયાર રીઇમ્બર્સમેન્ટ વિનંતી સબમિટ કરી છે."
+      approved:
+        subject: તમારી રીઇમ્બર્સમેન્ટ મંજૂર થઈ
+        preheader: તમારી રીઇમ્બર્સમેન્ટ વિનંતી મંજૂર થઈ ગઈ છે.
+        eyebrow: ખર્ચ
+        title: રીઇમ્બર્સમેન્ટ મંજૂર
+        subtitle: તમારી રીઇમ્બર્સમેન્ટ વિનંતીની સમીક્ષા કરીને તેને મંજૂર કરવામાં આવી છે.
+      paid:
+        subject: તમારી રીઇમ્બર્સમેન્ટને ચૂકવેલ તરીકે ચિહ્નિત કરવામાં આવી
+        preheader: તમારી રીઇમ્બર્સમેન્ટ વિનંતીને ચૂકવેલ તરીકે ચિહ્નિત કરવામાં આવી છે.
+        eyebrow: ખર્ચ
+        title: રીઇમ્બર્સમેન્ટ ચૂકવાઈ
+        subtitle: તમારી રીઇમ્બર્સમેન્ટ વિનંતી માટે ચુકવણી પૂર્ણ થઈ ગઈ છે.
+      rejected:
+        subject: તમારી રીઇમ્બર્સમેન્ટને મંજૂરી પહેલાં સુધારાઓ જોઈએ
+        preheader: તમારી રીઇમ્બર્સમેન્ટ વિનંતીને સુધારાઓ જોઈએ.
+        eyebrow: ખર્ચ
+        title: રીઇમ્બર્સમેન્ટને સુધારાઓ જોઈએ
+        subtitle: કૃપા કરીને વિનંતીની વિગતો જુઓ, જરૂરી ફેરફારો કરો અને ફરી સબમિટ કરો.
+        next_step_title: આગળનું પગલું
+        next_step_body: ખર્ચ ખોલો, જરૂરી ફેરફારો કરો અને ફરી સબમિટ કરો.
+    send_weekly_reminder_to_user_mailer:
+      notify_user_about_missed_entries:
+        subject: "છેલ્લા અઠવાડિયા માટે તમારો Miru ટાઇમશીટ પૂર્ણ કરો"
+        preheader: "ગુમ થયેલા અઠવાડિયા માટે તમારો Miru ટાઇમશીટ અપડેટ કરો."
+        eyebrow: સમય ટ્રેકિંગ
+        title: તમારો ટાઇમશીટ પૂર્ણ કરો
+        subtitle: "%{company_name} માટેના તમારા સમય દાખલાઓ હજી અપેક્ષિત સાપ્તાહિક કુલથી ઓછા છે."
+        greeting_html: "હાય <strong>%{name}</strong>,"
+        body_html: "તમે <strong>%{starting_date}</strong> અને <strong>%{ending_date}</strong> વચ્ચે 40 કલાકથી ઓછો સમય નોંધાવ્યો છે."
+        follow_up: Miru ખોલો, બાકી દાખલાઓ ઉમેરો અને અઠવાડિયું પૂર્ણ કરો.
+        signoff_html: "આભાર,<br><strong>Miru</strong>"
+    user_invitation_mailer:
+      send_user_invitation:
+        subject: તમને Miru જોડાવા માટે આમંત્રણ આપવામાં આવ્યું છે
+        preheader: તમને Miru પરની એક ટીમમાં જોડાવા માટે આમંત્રિત કરવામાં આવ્યા છે.
+        eyebrow: આમંત્રણ
+        title: તમને Miru માટે આમંત્રણ છે
+        subtitle_html: "<strong>%{sender_name}</strong> એ તમને <strong>%{company_name}</strong> સાથે જોડાવા માટે આમંત્રિત કર્યા છે."
+        workspace_members:
+          one: "1 સભ્ય"
+          other: "%{count} સભ્યો"
+        get_started_title: શરૂઆત કરો
+        get_started_body: આમંત્રણ સ્વીકારો, પાસવર્ડ સેટ કરો, અને તમે તૈયાર છો.
+        support_html: "જો તમે આ આમંત્રણની અપેક્ષા રાખતા ન હો, તો અમારી ટીમનો સંપર્ક કરો: <a href=\"mailto:%{support_email}\">%{support_email}</a>."
+        about_title: Miru વિશે
+        about_body: Miru સમય, ઇન્વોઇસ, ચુકવણીઓ અને દૈનિક કામગીરીને એક જ વર્કસ્પેસમાં લાવે છે.
+    monthly_reports_mailer:
+      cash_flow_digest:
+        subject: "%{company_name} નો %{month_label} કેશ ફ્લો ડાઇજેસ્ટ"
+        preheader: "%{company_name} નો %{month_label} કેશ ફ્લો ડાઇજેસ્ટ"
+        eyebrow: માસિક ડાઇજેસ્ટ
+        title: "%{company_name} નો %{month_label} કેશ ફ્લો ડાઇજેસ્ટ"
+        subtitle: "%{month_year_label} માટે Miru માંથી પૈસા કેવી રીતે વહે છે તેનો સંક્ષિપ્ત અહેવાલ અહીં છે."
+        net_change: "%{month_label} માં નેટ ફેરફાર"
+        average_daily_net_change_html: "સરેરાશ દૈનિક નેટ ફેરફાર <strong>%{amount}</strong>"
+        money_in: આવક
+        money_out: જાવક
+        compare_to_previous: "%{month_label} માં %{amount} ની સરખામણીમાં"
+        top_money_in_sources: ટોચના આવક સ્રોતો
+        top_money_out_sources: ટોચના ખર્ચ વર્ગો
+        no_money_in: "%{month_year_label} માટે Miru માં કોઈ ચુકવણી નોંધાઈ નથી."
+        no_money_out: "%{month_year_label} માટે Miru માં કોઈ ચૂકવેલા ખર્ચ નોંધાયા નથી."
   custom_leaves:
     update:
       success: કસ્ટમ પાંદડા સફળતાપૂર્વક અપડેટ થયા

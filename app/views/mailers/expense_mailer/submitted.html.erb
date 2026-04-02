@@ -1,19 +1,19 @@
-<% content_for :email_preheader, "A new reimbursement request needs review." %>
-<% content_for :email_eyebrow, "Expenses" %>
-<% content_for :email_title, "New reimbursement request" %>
+<% content_for :email_preheader, t("mailers.expense_mailer.submitted.preheader") %>
+<% content_for :email_eyebrow, t("mailers.expense_mailer.submitted.eyebrow") %>
+<% content_for :email_title, t("mailers.expense_mailer.submitted.title") %>
 <% content_for :email_subtitle do %>
-  <strong><%= @expense.submitter_name %></strong> submitted a reimbursement request that is ready for review.
+  <%= t("mailers.expense_mailer.submitted.subtitle_html", submitter_name: @expense.submitter_name).html_safe %>
 <% end %>
 
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="detail-grid">
   <tr>
-    <%= render "shared/mailer/detail_card", label: "Amount", value: FormatAmountService.new(@company.base_currency, @expense.amount).process %>
-    <%= render "shared/mailer/detail_card", label: "Category", value: @expense.display_category_name.presence || "-" %>
+    <%= render "shared/mailer/detail_card", label: t("mailers.labels.amount"), value: FormatAmountService.new(@company.base_currency, @expense.amount).process %>
+    <%= render "shared/mailer/detail_card", label: t("mailers.labels.category"), value: @expense.display_category_name.presence || "-" %>
   </tr>
   <tr>
-    <%= render "shared/mailer/detail_card", label: "Date", value: @expense.formatted_date %>
-    <%= render "shared/mailer/detail_card", label: "Description", value: @expense.description.presence || "-" %>
+    <%= render "shared/mailer/detail_card", label: t("mailers.labels.date"), value: @expense.formatted_date %>
+    <%= render "shared/mailer/detail_card", label: t("mailers.labels.description"), value: @expense.description.presence || "-" %>
   </tr>
 </table>
 
-<%= render "shared/mailer/button", href: @expense_url, label: "Review expense" %>
+<%= render "shared/mailer/button", href: @expense_url, label: t("mailers.actions.open_expense") %>

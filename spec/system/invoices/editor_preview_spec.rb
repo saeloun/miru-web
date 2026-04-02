@@ -4,7 +4,8 @@ require "rails_helper"
 
 RSpec.describe "Invoice editor preview", type: :system, js: true do
   let(:company) { create(:company, name: "Wayne Enterprises", base_currency: "USD") }
-  let(:user) { create(:user, current_workspace_id: company.id) }
+  let(:user_locale) { "en" }
+  let(:user) { create(:user, current_workspace_id: company.id, locale: user_locale) }
   let(:client) { create(:client, company:, name: "Gotham City Council") }
 
   before do
@@ -26,6 +27,7 @@ RSpec.describe "Invoice editor preview", type: :system, js: true do
 
     create(:invoice_line_item,
       invoice:,
+      timesheet_entry: nil,
       name: "Backend Development",
       description: "API integration work",
       rate: 100.00,
@@ -36,12 +38,48 @@ RSpec.describe "Invoice editor preview", type: :system, js: true do
       visit "/invoices/#{invoice.id}/edit"
 
       expect(page).to have_css("#react-root", wait: 10)
+      expect(page).to have_text("Edit invoice", wait: 10)
+      expect(page).to have_text("Fill in the details and preview the invoice before sending it.", wait: 10)
       expect(page).to have_content("Description", wait: 10)
       expect(page).not_to have_text("undefined undefined", wait: 1)
       expect(page).to have_text("15:00", wait: 10)
       expect(page).to have_text("$1,500.00", wait: 10)
       expect(page).not_to have_text("$90,000.00", wait: 1)
       expect(page).not_to have_text("$0.00", wait: 1)
+    end
+  end
+
+  context "when the signed-in user uses a translated locale" do
+    let(:user_locale) { "te" }
+
+    it "renders the editor copy without missing translation text" do
+      invoice = create(:invoice,
+        company:,
+        client:,
+        status: :draft,
+        invoice_number: "INV-2024-901",
+        amount: 250.00,
+        amount_due: 250.00,
+        issue_date: Date.new(2024, 1, 15),
+        due_date: Date.new(2024, 2, 15))
+
+      create(:invoice_line_item,
+        invoice:,
+        timesheet_entry: nil,
+        name: "Design review",
+        description: "QA polish",
+        rate: 100.00,
+        quantity: 150,
+        date: Date.new(2024, 1, 10))
+
+      with_forgery_protection do
+        visit "/invoices/#{invoice.id}/edit"
+
+        expect(page).to have_css("#react-root", wait: 10)
+        expect(page).to have_text("ఇన్వాయిస్‌ను సవరించండి", wait: 10)
+        expect(page).to have_text("ఇన్వాయిస్‌ను పంపించే ముందు వివరాలు నింపి ప్రివ్యూ చూడండి.", wait: 10)
+        expect(page).not_to have_text("[missing", wait: 1)
+      end
     end
   end
 end

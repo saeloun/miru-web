@@ -12,9 +12,9 @@ import { useSearchParams } from "react-router-dom";
 import { Toastr } from "StyledComponents";
 import { sendGAPageView } from "utils/googleAnalytics";
 
-import Container from "./container";
-import FilterSideBar from "./FilterSideBar";
-import Header from "./Header";
+import InvoiceListContent from "./InvoiceListContent";
+import FilterSidebar from "./FilterSidebar";
+import InvoiceListHeader from "./InvoiceListHeader";
 
 import BulkDeleteInvoices from "../popups/BulkDeleteInvoices";
 import BulkDownloadInvoices from "../popups/BulkDownloadInvoices";
@@ -306,7 +306,7 @@ const Invoices = () => {
 
   const InvoicesLayout = () => (
     <div className="h-full p-4 lg:p-0" id="invoice-list-page">
-      <Header
+      <InvoiceListHeader
         filterParamsStr={filterParamsStr}
         handleOverlayVisibility={handleOverlayVisibility}
         isDesktop={isDesktop}
@@ -316,7 +316,7 @@ const Invoices = () => {
       />
       {status === InvoicesStatus.SUCCESS ? (
         <Fragment>
-          <Container
+          <InvoiceListContent
             deselectInvoices={deselectInvoices}
             downloading={downloading}
             fetchInvoices={fetchInvoices}
@@ -349,7 +349,7 @@ const Invoices = () => {
             totalInvoices={pagy?.total || invoices.length}
           />
           {isFilterVisible && (
-            <FilterSideBar
+            <FilterSidebar
               filterParams={filterParams}
               handleReset={handleReset}
               isDesktop={isDesktop}

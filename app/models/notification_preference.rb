@@ -31,6 +31,10 @@ class NotificationPreference < ApplicationRecord
     can_receive_emails? && timesheet_reminder_enabled
   end
 
+  def can_receive_monthly_report_digest?
+    can_receive_emails? && monthly_report_digest_enabled
+  end
+
   # Unsubscribe from all emails
   def unsubscribe_all!
     update!(unsubscribed_from_all: true)
@@ -43,7 +47,8 @@ class NotificationPreference < ApplicationRecord
       notification_enabled: true,
       invoice_email_notifications: true,
       payment_email_notifications: true,
-      timesheet_reminder_enabled: true
+      timesheet_reminder_enabled: true,
+      monthly_report_digest_enabled: true
     )
   end
 end

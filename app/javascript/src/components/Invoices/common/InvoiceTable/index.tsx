@@ -20,6 +20,7 @@ const InvoiceTable = ({
   setSelectedLineItems,
   manualEntryArr,
   setManualEntryArr,
+  onDraftChange,
 }) => {
   const [addNew, setAddNew] = useState<boolean>(false);
   const [showNewLineItemTable, setShowNewLineItemTable] =
@@ -60,6 +61,12 @@ const InvoiceTable = ({
   };
 
   useEffect(() => handleAddEntry(), [addNew]);
+
+  useEffect(() => {
+    if (!onDraftChange) return;
+
+    onDraftChange(addNew && lineItem.name ? lineItem : null);
+  }, [addNew, lineItem, onDraftChange]);
 
   useOutsideClick(
     wrapperRef,

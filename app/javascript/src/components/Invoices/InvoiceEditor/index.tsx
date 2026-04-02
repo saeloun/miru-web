@@ -33,6 +33,7 @@ import InvoiceTable from "../common/InvoiceTable";
 import InvoicePreview from "../InvoicePreview";
 import { fetchNewLineItems } from "../common/utils";
 import { lineTotalCalc } from "../../../helpers";
+import { i18n } from "../../../i18n";
 
 interface InvoiceEditorProps {
   invoice?: any;
@@ -72,6 +73,10 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
   isLoading = false,
 }) => {
   const [showPreview, setShowPreview] = useState(true);
+  const [submitIntent, setSubmitIntent] = useState<"save" | "send" | null>(
+    null
+  );
+
   // Helper function to ensure valid Date object
   const ensureValidDate = (date: any): Date => {
     if (!date) return new Date();
@@ -105,6 +110,7 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
     invoice?.invoiceLineItems || invoice?.lineItems || []
   );
   const [manualEntryArr, setManualEntryArr] = useState([]);
+  const [pendingManualEntry, setPendingManualEntry] = useState(null);
 
   const [hasChanges, setHasChanges] = useState(false);
   const initialStateRef = useRef<string | null>(null);
@@ -145,23 +151,60 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
     return formattedClient;
   }, [formData.clientId, clients]);
 
+  const committedLineItems = useMemo(
+    () =>
+      [...selectedLineItems, ...manualEntryArr]
+        .filter(Boolean)
+        .filter(item => !item._destroy),
+    [selectedLineItems, manualEntryArr]
+  );
+
+  const activeLineItems = useMemo(
+    () =>
+      pendingManualEntry && !pendingManualEntry._destroy
+        ? [...committedLineItems, pendingManualEntry]
+        : committedLineItems,
+    [committedLineItems, pendingManualEntry]
+  );
+
+  const hasPendingManualEntry = useMemo(
+    () =>
+      Boolean(
+        pendingManualEntry &&
+          (pendingManualEntry.name ||
+            pendingManualEntry.description ||
+            Number(pendingManualEntry.quantity) > 0 ||
+            Number(pendingManualEntry.rate) > 0)
+      ),
+    [pendingManualEntry]
+  );
+
+  const canSubmitInvoice =
+    Boolean(formData.clientId) && activeLineItems.length > 0;
+
+  const isSentInvoice = ["sent", "viewed", "overdue", "paid"].includes(
+    formData.status
+  );
+
   useEffect(() => {
     const snapshot = JSON.stringify({
       ...formData,
       issueDate: ensureValidDate(formData.issueDate).toISOString(),
       dueDate: ensureValidDate(formData.dueDate).toISOString(),
-      selectedLineItems,
-      manualEntryArr,
+      lineItems: committedLineItems,
     });
 
     if (initialStateRef.current === null) {
       initialStateRef.current = snapshot;
-      setHasChanges(false);
+      setHasChanges(hasPendingManualEntry);
 
       return;
     }
-    setHasChanges(snapshot !== initialStateRef.current);
-  }, [formData, selectedLineItems, manualEntryArr]);
+
+    setHasChanges(
+      hasPendingManualEntry || snapshot !== initialStateRef.current
+    );
+  }, [formData, committedLineItems, hasPendingManualEntry]);
 
   useEffect(() => {
     if (selectedClient && selectedClient.id) {
@@ -169,39 +212,41 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
     }
   }, [selectedClient?.id]);
 
-  const subtotal = useMemo(() => {
-    const selectedTotal = selectedLineItems.reduce((sum, item) => {
-      if (!item._destroy) {
-        return (
+  useEffect(() => {
+    if (!isLoading) {
+      setSubmitIntent(null);
+    }
+  }, [isLoading]);
+
+  const committedSubtotal = useMemo(
+    () =>
+      committedLineItems.reduce(
+        (sum, item) =>
           sum +
           Number(
             item.lineTotal ??
               item.amount ??
               lineTotalCalc(item.quantity, item.rate)
-          )
-        );
-      }
+          ),
+        0
+      ),
+    [committedLineItems]
+  );
 
-      return sum;
-    }, 0);
+  const pendingManualSubtotal = useMemo(() => {
+    if (!hasPendingManualEntry) return 0;
 
-    const manualTotal = manualEntryArr.reduce((sum, item) => {
-      if (!item._destroy) {
-        return (
-          sum +
-          Number(
-            item.lineTotal ??
-              item.amount ??
-              lineTotalCalc(item.quantity, item.rate)
-          )
-        );
-      }
+    return Number(
+      pendingManualEntry.lineTotal ??
+        pendingManualEntry.amount ??
+        lineTotalCalc(pendingManualEntry.quantity, pendingManualEntry.rate)
+    );
+  }, [hasPendingManualEntry, pendingManualEntry]);
 
-      return sum;
-    }, 0);
-
-    return selectedTotal + manualTotal;
-  }, [selectedLineItems, manualEntryArr]);
+  const subtotal = useMemo(
+    () => committedSubtotal + pendingManualSubtotal,
+    [committedSubtotal, pendingManualSubtotal]
+  );
 
   const total = useMemo(
     () => subtotal - formData.discount + formData.tax,
@@ -235,9 +280,7 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
     subtotal,
     currency: company?.baseCurrency || "USD",
     client: selectedClient,
-    lineItems: [...selectedLineItems, ...manualEntryArr].filter(
-      item => !item._destroy
-    ),
+    lineItems: activeLineItems,
     company: company
       ? {
           name: company.name || "Company Name",
@@ -285,10 +328,12 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div>
               <h1 className="text-2xl font-semibold text-foreground">
-                {invoice ? "Edit invoice" : "New invoice"}
+                {invoice
+                  ? i18n.t("invoices.editInvoicePage")
+                  : i18n.t("invoices.newInvoicePage")}
               </h1>
               <p className="mt-1 text-sm text-muted-foreground">
-                Fill in the details and preview the invoice before sending it.
+                {i18n.t("invoices.editorSubtitle")}
               </p>
             </div>
             <div className="flex flex-wrap gap-2 sm:gap-3">
@@ -305,45 +350,61 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
                 )}
               </Button>
               <Button variant="outline" size="sm" onClick={onCancel}>
-                Cancel
+                {i18n.t("cancel")}
               </Button>
               <Button
-                onClick={() =>
+                onClick={() => {
+                  setSubmitIntent("save");
                   onSave &&
-                  onSave({
-                    ...formData,
-                    invoiceLineItems: [
-                      ...selectedLineItems,
-                      ...manualEntryArr,
-                    ].filter(item => !item._destroy),
-                  })
-                }
+                    onSave({
+                      ...formData,
+                      invoiceLineItems: activeLineItems,
+                    });
+                }}
                 variant="outline"
                 size="sm"
-                disabled={isLoading || !hasChanges}
+                disabled={isLoading || !hasChanges || !canSubmitInvoice}
               >
                 <FloppyDisk className="mr-1.5 h-4 w-4" />
-                <span className="hidden sm:inline">Save</span>
-                <span className="sm:hidden">Save</span>
+                <span className="hidden sm:inline">
+                  {submitIntent === "save" && isLoading
+                    ? i18n.t("invoices.saving")
+                    : i18n.t("save")}
+                </span>
+                <span className="sm:hidden">
+                  {submitIntent === "save" && isLoading
+                    ? i18n.t("invoices.saving")
+                    : i18n.t("save")}
+                </span>
               </Button>
               <Button
-                onClick={() =>
+                onClick={() => {
+                  setSubmitIntent("send");
                   onSend &&
-                  onSend({
-                    ...formData,
-                    status: "sent",
-                    invoiceLineItems: [
-                      ...selectedLineItems,
-                      ...manualEntryArr,
-                    ].filter(item => !item._destroy),
-                  })
-                }
+                    onSend({
+                      ...formData,
+                      status: "sent",
+                      invoiceLineItems: activeLineItems,
+                    });
+                }}
                 size="sm"
-                disabled={isLoading}
+                disabled={isLoading || !canSubmitInvoice || isSentInvoice}
               >
                 <PaperPlaneTilt className="mr-1.5 h-4 w-4" />
-                <span className="hidden sm:inline">Send Invoice</span>
-                <span className="sm:hidden">Send</span>
+                <span className="hidden sm:inline">
+                  {submitIntent === "send" && isLoading
+                    ? i18n.t("invoices.sending")
+                    : isSentInvoice
+                    ? i18n.t("invoices.alreadySent")
+                    : i18n.t("invoices.sendInvoice")}
+                </span>
+                <span className="sm:hidden">
+                  {submitIntent === "send" && isLoading
+                    ? i18n.t("invoices.sending")
+                    : isSentInvoice
+                    ? i18n.t("invoices.sent")
+                    : i18n.t("invoices.send")}
+                </span>
               </Button>
             </div>
           </div>
@@ -505,6 +566,7 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
                     setSelectedLineItems={setSelectedLineItems}
                     manualEntryArr={manualEntryArr}
                     setManualEntryArr={setManualEntryArr}
+                    onDraftChange={setPendingManualEntry}
                   />
                 </div>
               </CardContent>

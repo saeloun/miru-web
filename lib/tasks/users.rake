@@ -2,7 +2,7 @@
 
 namespace :users do
   desc "Normalize and backfill locale for existing users"
-  task backfill_locale: :environment do
+  task backfill_locales: :environment do
     counts = {
       scanned: 0,
       updated: 0,
@@ -25,4 +25,6 @@ namespace :users do
 
     puts "scanned=#{counts[:scanned]} updated=#{counts[:updated]} already_valid=#{counts[:already_valid]}"
   end
+
+  task backfill_locale: :backfill_locales
 end

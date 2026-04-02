@@ -138,6 +138,10 @@ const ReportsTable: React.FC = () => {
   const availableReports = filteredReports.filter(r => r.available);
   const comingSoonReports = filteredReports.filter(r => !r.available);
 
+  const openReportScheduleSettings = () => {
+    navigate("/settings/preferences");
+  };
+
   const stats = {
     totalReports: reportCards.filter(r => r.available).length,
     timeReports: reportCards.filter(r => r.category === "time" && r.available)
@@ -160,6 +164,7 @@ const ReportsTable: React.FC = () => {
         <Button
           variant="outline"
           className="border-border bg-card text-foreground"
+          onClick={openReportScheduleSettings}
         >
           <Calendar size={20} className="mr-2" />
           {i18n.t("reports.scheduleReports")}
@@ -177,18 +182,24 @@ const ReportsTable: React.FC = () => {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.totalReports}</div>
-            <p className="mt-1 text-xs text-muted-foreground">{i18n.t("reports.readyToRun")}</p>
+            <p className="mt-1 text-xs text-muted-foreground">
+              {i18n.t("reports.readyToRun")}
+            </p>
           </CardContent>
         </Card>
 
         <Card className="border-border">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{i18n.t("reports.timeReports")}</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              {i18n.t("reports.timeReports")}
+            </CardTitle>
             <Clock size={20} className="text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.timeReports}</div>
-            <p className="mt-1 text-xs text-muted-foreground">{i18n.t("reports.hoursAndTime")}</p>
+            <p className="mt-1 text-xs text-muted-foreground">
+              {i18n.t("reports.hoursAndTime")}
+            </p>
           </CardContent>
         </Card>
 
@@ -216,7 +227,9 @@ const ReportsTable: React.FC = () => {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.recentlyViewed}</div>
-            <p className="mt-1 text-xs text-muted-foreground">{i18n.t("reports.lastSevenDays")}</p>
+            <p className="mt-1 text-xs text-muted-foreground">
+              {i18n.t("reports.lastSevenDays")}
+            </p>
           </CardContent>
         </Card>
       </div>
@@ -226,7 +239,9 @@ const ReportsTable: React.FC = () => {
         <TabsList className="grid h-auto w-full max-w-2xl grid-cols-2 gap-2 bg-muted p-1 md:grid-cols-5">
           <TabsTrigger value="all">{i18n.t("reports.allReports")}</TabsTrigger>
           <TabsTrigger value="time">{i18n.t("reports.time")}</TabsTrigger>
-          <TabsTrigger value="financial">{i18n.t("reports.financial")}</TabsTrigger>
+          <TabsTrigger value="financial">
+            {i18n.t("reports.financial")}
+          </TabsTrigger>
           <TabsTrigger value="client">{i18n.t("client")}</TabsTrigger>
           <TabsTrigger value="team">{i18n.t("team.team")}</TabsTrigger>
         </TabsList>
@@ -252,7 +267,9 @@ const ReportsTable: React.FC = () => {
                   }
                   role="button"
                   tabIndex={0}
-                  aria-label={i18n.t("reports.openReport", { title: report.title })}
+                  aria-label={i18n.t("reports.openReport", {
+                    title: report.title,
+                  })}
                 >
                   <CardHeader>
                     <div className="flex items-start justify-between">
@@ -300,7 +317,9 @@ const ReportsTable: React.FC = () => {
       {/* Coming Soon Reports */}
       {comingSoonReports.length > 0 && (
         <div className="space-y-4">
-          <h2 className="text-lg font-semibold text-foreground">{i18n.t("reports.comingSoon")}</h2>
+          <h2 className="text-lg font-semibold text-foreground">
+            {i18n.t("reports.comingSoon")}
+          </h2>
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {comingSoonReports.map(report => {
               const Icon = report.icon;

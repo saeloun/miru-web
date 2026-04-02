@@ -10,6 +10,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../../../../ui/dialog";
+import { i18n } from "../../../../../i18n";
 import { Button } from "../../../../ui/button";
 import { Camera, Trash, UploadSimple } from "phosphor-react";
 import { toast } from "sonner";
@@ -48,7 +49,7 @@ const createCroppedFile = async (
   canvas.height = 512;
 
   const context = canvas.getContext("2d");
-  if (!context) throw new Error("Failed to prepare image crop");
+  if (!context) throw new Error(i18n.t("profile.adjustProfilePhoto"));
 
   context.drawImage(
     image,
@@ -131,13 +132,13 @@ const ProfileImageCard = ({
     if (!file) return;
 
     if (!file.type.startsWith("image/")) {
-      toast.error("Please choose an image file.");
+      toast.error(i18n.t("invalidImageFormat"));
 
       return;
     }
 
     if (file.size > MAX_FILE_SIZE) {
-      toast.error("Profile image must be smaller than 5 MB.");
+      toast.error(i18n.t("invalidImageSize", { fileSize: 5120 }));
 
       return;
     }
@@ -162,7 +163,7 @@ const ProfileImageCard = ({
       setIsUploading(true);
 
       if (!cropAreaPixels) {
-        throw new Error("Please adjust the image before saving.");
+        throw new Error(i18n.t("profile.adjustProfilePhotoDescription"));
       }
 
       const croppedFile = await createCroppedFile(
@@ -183,7 +184,7 @@ const ProfileImageCard = ({
       toast.error(
         error?.response?.data?.error ||
           error.message ||
-          "Failed to upload profile image."
+          i18n.t("profile.uploadPhotoFailed")
       );
     } finally {
       setIsUploading(false);
@@ -200,7 +201,7 @@ const ProfileImageCard = ({
       toast.error(
         error?.response?.data?.error ||
           error.message ||
-          "Failed to remove profile image."
+          i18n.t("profile.removePhotoFailed")
       );
     } finally {
       setIsUploading(false);
@@ -227,10 +228,10 @@ const ProfileImageCard = ({
           </div>
           <div className="space-y-1">
             <h2 className="text-base font-semibold text-foreground">
-              Profile photo
+              {i18n.t("profile.profilePhoto")}
             </h2>
             <p className="text-sm text-muted-foreground">
-              Upload a square photo for your workspace profile.
+              {i18n.t("profile.profilePhotoDescription")}
             </p>
           </div>
           <div className="flex w-full flex-col gap-2">
@@ -241,7 +242,7 @@ const ProfileImageCard = ({
               variant="outline"
             >
               <UploadSimple className="mr-2 h-4 w-4" />
-              Upload photo
+              {i18n.t("profile.uploadPhoto")}
             </Button>
             {previewUrl && (
               <Button
@@ -252,7 +253,7 @@ const ProfileImageCard = ({
                 variant="ghost"
               >
                 <Trash className="mr-2 h-4 w-4" />
-                Remove photo
+                {i18n.t("profile.removePhoto")}
               </Button>
             )}
           </div>
@@ -270,9 +271,9 @@ const ProfileImageCard = ({
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="max-w-2xl">
           <DialogHeader>
-            <DialogTitle>Adjust profile photo</DialogTitle>
+            <DialogTitle>{i18n.t("profile.adjustProfilePhoto")}</DialogTitle>
             <DialogDescription>
-              Choose the part of the image you want to keep.
+              {i18n.t("profile.adjustProfilePhotoDescription")}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-5">
@@ -297,14 +298,14 @@ const ProfileImageCard = ({
               ) : (
                 <div className="flex h-[22rem] items-center justify-center text-sm text-muted-foreground">
                   <Camera className="mr-2 h-4 w-4" />
-                  No image selected
+                  {i18n.t("profile.noImageSelected")}
                 </div>
               )}
             </div>
             <label className="space-y-2 text-sm text-foreground">
-              Zoom
+              {i18n.t("profile.zoom")}
               <input
-                aria-label="Zoom"
+                aria-label={i18n.t("profile.zoom")}
                 className="w-full accent-foreground"
                 max={3}
                 min={1}
@@ -322,14 +323,14 @@ const ProfileImageCard = ({
               type="button"
               variant="outline"
             >
-              Cancel
+              {i18n.t("cancel")}
             </Button>
             <Button
               disabled={isUploading || !sourceUrl}
               onClick={handleCropUpload}
               type="button"
             >
-              Save photo
+              {i18n.t("profile.savePhoto")}
             </Button>
           </DialogFooter>
         </DialogContent>

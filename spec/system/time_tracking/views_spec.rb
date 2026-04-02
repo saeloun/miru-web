@@ -36,7 +36,6 @@ RSpec.describe "Time Tracking Views", type: :system, js: true do
 
     with_forgery_protection do
       visit "/time-tracking"
-      find("button[aria-label*='#{Date.current.strftime("%b")} #{Date.current.day}']", wait: 10).click
 
       expect(page).to have_css("#react-root", wait: 10)
       expect(page).to have_content("Acme Corp", wait: 10)
@@ -160,6 +159,54 @@ RSpec.describe "Time Tracking Views", type: :system, js: true do
       expect(page).to have_content("Leave", wait: 10)
       expect(page).to have_content("Sick Leave", wait: 10)
       expect(page).to have_content("Employee PTO verification", wait: 10)
+    end
+  end
+
+  it "keeps the latest selected employee data when earlier requests finish later" do
+    slow_employee = create(:user, first_name: "Slow", last_name: "Responder", current_workspace_id: company.id)
+    fast_employee = create(:user, first_name: "Fast", last_name: "Responder", current_workspace_id: company.id)
+    create(:employment, company:, user: slow_employee)
+    create(:employment, company:, user: fast_employee)
+    create(:project_member, user: slow_employee, project:)
+    create(:project_member, user: fast_employee, project:)
+    slow_employee.add_role :employee, company
+    fast_employee.add_role :employee, company
+
+    create(
+      :timesheet_entry,
+      user: slow_employee,
+      project:,
+      duration: 120,
+      note: "Slow employee entry",
+      work_date: Date.current
+    )
+    create(
+      :timesheet_entry,
+      user: fast_employee,
+      project:,
+      duration: 240,
+      note: "Fast employee entry",
+      work_date: Date.current
+    )
+
+    allow_any_instance_of(TimeTrackingIndexService).to receive(:process).and_wrap_original do |original, *args|
+      service = original.receiver
+      sleep 1 if service.user.id == slow_employee.id
+      original.call(*args)
+    end
+
+    with_forgery_protection do
+      visit "/time-tracking"
+
+      expect(page).to have_css("#react-root", wait: 10)
+      find('[data-testid="user-select"]', wait: 10).click
+      find('[role="option"]', text: slow_employee.full_name, wait: 10).click
+
+      find('[data-testid="user-select"]', wait: 10).click
+      find('[role="option"]', text: fast_employee.full_name, wait: 10).click
+
+      expect(page).to have_content("Fast employee entry", wait: 10)
+      expect(page).not_to have_content("Slow employee entry")
     end
   end
 

@@ -55,11 +55,13 @@ const TimeEntriesDisplay: React.FC<TimeEntriesDisplayProps> = ({
     parsedDate.format("MM/DD/YYYY"),
     parsedDate.format("DD/MM/YYYY"),
   ].filter(Boolean);
+
   const entryKey = entryDateCandidates.find(candidate =>
     Array.isArray(entryList[candidate])
   );
   const entries = entryKey ? entryList[entryKey] : undefined;
   const hasEntries = entries && entries.length > 0;
+
   const weekEntries = (dayInfo || []).flatMap(day => {
     const dayDate = dayjs(day.fullDate, dateFormats, true);
     const dayKey = dayDate.isValid()
@@ -80,9 +82,14 @@ const TimeEntriesDisplay: React.FC<TimeEntriesDisplayProps> = ({
       const entryKey = entry?.id ? `leave-${entry.id}` : `leave-${index}`;
       const holidayDetails = holidaysHashObj[entry.holiday_info_id];
       const leaveTypeDetails = leaveTypeHashObj[entry.leave_type_id];
-      const title = holidayDetails ? i18n.t("timeTracking.holiday") : i18n.t("timeTracking.leave");
+      const title = holidayDetails
+        ? i18n.t("timeTracking.holiday")
+        : i18n.t("timeTracking.leave");
+
       const subtitle =
-        holidayDetails?.name || leaveTypeDetails?.name || i18n.t("timeTracking.timeOff");
+        holidayDetails?.name ||
+        leaveTypeDetails?.name ||
+        i18n.t("timeTracking.timeOff");
 
       const entryDate =
         entry.display_date || entry.leave_date || selectedFullDate;

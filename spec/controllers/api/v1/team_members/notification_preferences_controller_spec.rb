@@ -22,6 +22,7 @@ RSpec.describe Api::V1::TeamMembers::NotificationPreferencesController, type: :r
           invoice_email_notifications: false,
           payment_email_notifications: true,
           timesheet_reminder_enabled: false,
+          monthly_report_digest_enabled: true,
           unsubscribed_from_all: false
         )
       end
@@ -34,6 +35,7 @@ RSpec.describe Api::V1::TeamMembers::NotificationPreferencesController, type: :r
         expect(json_response["invoice_email_notifications"]).to be false
         expect(json_response["payment_email_notifications"]).to be true
         expect(json_response["timesheet_reminder_enabled"]).to be false
+        expect(json_response["monthly_report_digest_enabled"]).to be true
         expect(json_response["unsubscribed_from_all"]).to be false
       end
     end
@@ -47,6 +49,7 @@ RSpec.describe Api::V1::TeamMembers::NotificationPreferencesController, type: :r
         expect(json_response["invoice_email_notifications"]).to be true
         expect(json_response["payment_email_notifications"]).to be true
         expect(json_response["timesheet_reminder_enabled"]).to be true
+        expect(json_response["monthly_report_digest_enabled"]).to be false
         expect(json_response["unsubscribed_from_all"]).to be false
       end
     end
@@ -81,7 +84,8 @@ RSpec.describe Api::V1::TeamMembers::NotificationPreferencesController, type: :r
               notification_enabled: true,
               invoice_email_notifications: false,
               payment_email_notifications: false,
-              timesheet_reminder_enabled: true
+              timesheet_reminder_enabled: true,
+              monthly_report_digest_enabled: true
             }
           }
 
@@ -92,6 +96,7 @@ RSpec.describe Api::V1::TeamMembers::NotificationPreferencesController, type: :r
         expect(notification_preference.invoice_email_notifications).to be false
         expect(notification_preference.payment_email_notifications).to be false
         expect(notification_preference.timesheet_reminder_enabled).to be true
+        expect(notification_preference.monthly_report_digest_enabled).to be true
       end
     end
 
@@ -104,6 +109,31 @@ RSpec.describe Api::V1::TeamMembers::NotificationPreferencesController, type: :r
 
         expect(response).to have_http_status(:ok)
         expect(json_response["notification_enabled"]).to be true
+      end
+    end
+
+    context "when an employee updates their own preferences" do
+      before do
+        Warden.test_reset!
+        another_user.add_role(:employee, company)
+        sign_in(another_user)
+      end
+
+      it "does not allow enabling the monthly digest" do
+        patch "/api/v1/team/#{another_user.id}/notification_preferences",
+          params: {
+            notification_preference: {
+              monthly_report_digest_enabled: true,
+              notification_enabled: true
+            }
+          }
+
+        expect(response).to have_http_status(:ok)
+        expect(json_response["monthly_report_digest_enabled"]).to be false
+
+        preference = NotificationPreference.find_by(user: another_user, company: company)
+        expect(preference.monthly_report_digest_enabled).to be false
+        expect(preference.notification_enabled).to be true
       end
     end
 

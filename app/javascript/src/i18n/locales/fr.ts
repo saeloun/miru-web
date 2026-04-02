@@ -2,7 +2,8 @@ const fr = {
   // Image validation
   invalidImageFormatSize:
     "Format de fichier incorrect. Veuillez télécharger une image de type PNG ou JPG. Taille max. (%{fileSize}Ko)",
-  invalidImageSize: "La taille du fichier a dépassé la limite maximale de %{fileSize}Ko.",
+  invalidImageSize:
+    "La taille du fichier a dépassé la limite maximale de %{fileSize}Ko.",
   invalidImageFormat:
     "Format de fichier incorrect. Veuillez télécharger une image de type PNG ou JPG",
 
@@ -62,7 +63,6 @@ const fr = {
   inactive: "Inactif",
   invited: "Invité",
   department: "Département",
-  projects: "Projets",
   theme: "Thème",
   summary: "Résumé",
   format: "Format",
@@ -159,7 +159,8 @@ const fr = {
     editEntry: "Modifier l'entrée",
     deleteEntry: "Supprimer l'entrée",
     deleteTimeEntry: "Supprimer l'entrée de temps",
-    deleteTimeEntryConfirm: "Êtes-vous sûr de vouloir supprimer cette entrée de temps ?",
+    deleteTimeEntryConfirm:
+      "Êtes-vous sûr de vouloir supprimer cette entrée de temps ?",
     durationRequired: "La durée est requise",
     projectRequired: "Le projet est requis",
     duration: "Durée",
@@ -167,7 +168,8 @@ const fr = {
     noteOptional: "Note (Facultatif)",
     addTags: "Ajouter des étiquettes",
     favorites: "Favoris",
-    favoriteShortcutsHint: "Épinglez les combinaisons que vous utilisez tout le temps.",
+    favoriteShortcutsHint:
+      "Épinglez les combinaisons que vous utilisez tout le temps.",
     recentShortcuts: "Raccourcis récents",
     recentShortcutsHint:
       "Réutilisez le travail récent sans resélectionner le même client et projet.",
@@ -185,10 +187,13 @@ const fr = {
     entry: "entrée",
     entries: "entrées",
     noEntriesForSelectedDay: "Aucune entrée pour le jour sélectionné",
-    weekReviewHint: "Passez à Cette semaine pour revoir tout ce que vous avez enregistré cette semaine.",
+    weekReviewHint:
+      "Passez à Cette semaine pour revoir tout ce que vous avez enregistré cette semaine.",
     noTimeEntriesYet: "Pas encore d'entrées de temps",
-    firstEntryHint: 'Cliquez sur "Ajouter une entrée" pour enregistrer votre première entrée de temps pour ce jour',
-    logWorkByWeekOrMonth: "Enregistrez le travail par semaine ou par mois. Gardez les entrées claires et à jour.",
+    firstEntryHint:
+      'Cliquez sur "Ajouter une entrée" pour enregistrer votre première entrée de temps pour ce jour',
+    logWorkByWeekOrMonth:
+      "Enregistrez le travail par semaine ou par mois. Gardez les entrées claires et à jour.",
     entriesFor: "Entrées pour %{name}",
     timeEntriesFor: "Entrées de temps pour",
     unableToLoad: "Impossible de charger le suivi du temps en ce moment.",
@@ -196,7 +201,8 @@ const fr = {
     noEntriesInLastWeek: "Aucune entrée trouvée la semaine dernière.",
     alreadyHasEntries: "Cette semaine a déjà ces entrées.",
     copiedEntries: "%{count} entrées copiées de la semaine dernière",
-    failedToCopyLastWeek: "Échec de la copie des entrées de la semaine dernière.",
+    failedToCopyLastWeek:
+      "Échec de la copie des entrées de la semaine dernière.",
     week: "Semaine",
     month: "Mois",
     holiday: "Jour férié",
@@ -206,7 +212,8 @@ const fr = {
     entriesUpdatedSuccessfully: "Entrées mises à jour avec succès",
     failedToUpdateEntries: "Échec de la mise à jour des entrées",
     selectProjectFirst: "Veuillez d'abord sélectionner un projet",
-    editingModeActive: "Le mode édition est actif. Terminez vos modifications ci-dessus.",
+    editingModeActive:
+      "Le mode édition est actif. Terminez vos modifications ci-dessus.",
     dayAbbr: {
       mon: "Lun",
       tue: "Mar",
@@ -330,7 +337,8 @@ const fr = {
     searchProjects: "Rechercher des projets...",
     createFirstProject: "Créez votre premier projet pour commencer.",
     noProjectsYet: "Pas encore de projets",
-    workingOnProjects: "Suivez le travail facturable et non facturable sur vos projets.",
+    workingOnProjects:
+      "Suivez le travail facturable et non facturable sur vos projets.",
     active: "Actif",
     paused: "En pause",
     completed: "Terminé",
@@ -346,21 +354,24 @@ const fr = {
     outstanding: "EN ATTENTE",
     deleting: "Suppression...",
     createProject: "Créer un projet",
-    createProjectDescription: "Configurez un nouveau projet et assignez-le à un client.",
+    createProjectDescription:
+      "Configurez un nouveau projet et assignez-le à un client.",
     editProjectDetails: "Modifier les détails du projet",
     saveChanges: "Enregistrer les modifications",
     billableDescription: "Suivez le temps et facturez le client pour ce projet",
     nonBillableDescription: "Suivez le temps sans facturer le client",
     noClientsPresent: "Aucun client disponible",
     teamMembersUpdated: "Membres de l'équipe mis à jour avec succès",
-    manageProjectMembersDescription: "Ajoutez ou retirez des membres de l'équipe et définissez leurs taux horaires.",
+    manageProjectMembersDescription:
+      "Ajoutez ou retirez des membres de l'équipe et définissez leurs taux horaires.",
     enterValidRate: "Veuillez entrer un taux valide",
     addAnotherTeamMember: "Ajouter un autre membre",
     addTeamMember: "Ajouter un membre de l'équipe",
     saveTeamMembers: "Enregistrer les membres",
     noTeamMembersAdded: "Aucun membre de l'équipe n'a encore été ajouté.",
     addTeamMembers: "Ajouter des membres de l'équipe",
-    teamMembersDescription: "Consultez et gérez les membres de l'équipe assignés à ce projet.",
+    teamMembersDescription:
+      "Consultez et gérez les membres de l'équipe assignés à ce projet.",
   },
 
   // Team
@@ -455,13 +466,15 @@ const fr = {
     taxDiscountNotes: "Taxe, remise et notes",
     discount: "Remise",
     tax: "Taxe",
-    additionalNotesPlaceholder: "Notes supplémentaires ou instructions de paiement",
+    additionalNotesPlaceholder:
+      "Notes supplémentaires ou instructions de paiement",
     enterName: "Entrez le nom",
     enterNameTooltip: "Entrez le nom de cette ligne de facture",
     selectDate: "Sélectionner la date",
     deleteLineItem: "Supprimer cette ligne de facture",
     enterDescription: "Entrez la description",
-    descriptionTooltip: "Ajoutez une description détaillée pour cette ligne de facture",
+    descriptionTooltip:
+      "Ajoutez une description détaillée pour cette ligne de facture",
     rate: "Taux",
     quantity: "Quantité",
     selectTimeEntries: "Sélectionner les entrées de temps",
@@ -504,13 +517,11 @@ const fr = {
     message: "Message",
     addEmailFromClientSettings:
       "Veuillez ajouter l'e-mail depuis les paramètres du client",
-    reminderSubject:
-      "Rappel pour compléter les paiements de facture impayée",
+    reminderSubject: "Rappel pour compléter les paiements de facture impayée",
     invoiceSentSubject: "%{company} vous a envoyé une facture (%{number})",
     reminderBody:
       "%{company} vous a envoyé un rappel pour la facture %{number}",
-    invoiceSentBody:
-      "%{company} vous a envoyé une facture (%{number})",
+    invoiceSentBody: "%{company} vous a envoyé une facture (%{number})",
     invoiceWillBeSent: "La facture sera envoyée !",
     processing: "traitement...",
 
@@ -580,11 +591,13 @@ const fr = {
     errorConnectingPayments: "Erreur de connexion aux paiements",
     invoiceCreated: "Facture créée avec succès",
     invoiceUpdated: "Facture mise à jour avec succès",
-    failedToSaveInvoice: "Échec de l'enregistrement de la facture. Veuillez réessayer.",
+    failedToSaveInvoice:
+      "Échec de l'enregistrement de la facture. Veuillez réessayer.",
 
     // Counters
     showingOf: "Affichage de %{shown} sur %{total}",
-    viewingMatching: "Affichage de %{filtered} factures correspondantes sur %{loaded} chargées",
+    viewingMatching:
+      "Affichage de %{filtered} factures correspondantes sur %{loaded} chargées",
     loadedOf: "Chargées %{loaded} sur %{total}",
     showingRecentTransactions: "Affichage de %{count} transactions récentes",
     updatedAt: "Mise à jour %{date}",
@@ -596,17 +609,22 @@ const fr = {
 
     // Invoice reminder email
     invoiceReminder: "Rappel de facture : %{number}",
-    reminderMessage: "Ceci est un rappel concernant votre facture en attente. Veuillez trouver les détails ci-joints.",
+    reminderMessage:
+      "Ceci est un rappel concernant votre facture en attente. Veuillez trouver les détails ci-joints.",
     invoiceAttached: "Veuillez trouver votre facture ci-jointe.",
-    reminderPaymentMessage: "Ceci est un rappel concernant votre facture en retard. Veuillez effectuer le paiement.",
+    reminderPaymentMessage:
+      "Ceci est un rappel concernant votre facture en retard. Veuillez effectuer le paiement.",
     invoiceSubject: "Facture %{number}",
-    reminderPaymentSubject: "Rappel pour compléter le paiement de la facture %{number}",
-    markAsPaidConfirm: "Marquer cette facture comme payée ? Cette action affecte les registres comptables.",
+    reminderPaymentSubject:
+      "Rappel pour compléter le paiement de la facture %{number}",
+    markAsPaidConfirm:
+      "Marquer cette facture comme payée ? Cette action affecte les registres comptables.",
     failedToLoadInvoice: "Échec du chargement de la facture",
     invoiceNotFound: "Facture non trouvée",
     failedToMarkAsPaid: "Échec du marquage de la facture comme payée",
     failedToDownloadInvoice: "Échec du téléchargement de la facture",
-    cannotDownloadInvalidId: "Impossible de télécharger la facture - ID invalide",
+    cannotDownloadInvalidId:
+      "Impossible de télécharger la facture - ID invalide",
     cannotSendInvalidId: "Impossible d'envoyer la facture - ID invalide",
     payment: "Paiement #%{id}",
   },
@@ -680,7 +698,8 @@ const fr = {
   timer: {
     webTimer: "Minuteur web",
     webTimerLabel: "Minuteur web",
-    trackLiveWork: "Suivez le travail en direct en temps réel, puis enregistrez-le directement dans la liste des entrées du jour.",
+    trackLiveWork:
+      "Suivez le travail en direct en temps réel, puis enregistrez-le directement dans la liste des entrées du jour.",
     startTimer: "Démarrer le minuteur",
     pause: "Pause",
     resume: "Reprendre",
@@ -689,7 +708,8 @@ const fr = {
     reset: "Réinitialiser",
     timer: "Minuteur",
     saveTimeEntry: "Enregistrer l'entrée de temps",
-    saveTimeEntryDescription: "Vous avez suivi %{time}. Voulez-vous enregistrer ceci comme une entrée de temps ?",
+    saveTimeEntryDescription:
+      "Vous avez suivi %{time}. Voulez-vous enregistrer ceci comme une entrée de temps ?",
     discard: "Abandonner",
     timerStarted: "Minuteur démarré",
     timerPaused: "Minuteur en pause",
@@ -729,7 +749,8 @@ const fr = {
 
     // Time entry report
     totalHours: "Heures totales",
-    scrollToLoadMoreRows: "Faites défiler pour charger plus de lignes de rapport",
+    scrollToLoadMoreRows:
+      "Faites défiler pour charger plus de lignes de rapport",
     loadingMoreRows: "Chargement de plus de lignes de rapport...",
     allRowsLoaded: "Toutes les lignes de rapport chargées",
 
@@ -786,7 +807,8 @@ const fr = {
     invoiceAgingDetails: "Détails de l'ancienneté des factures",
     noDataFound: "Aucune donnée trouvée",
     accountsAgingReport: "Rapport d'ancienneté des comptes",
-    analysisOfOutstandingReceivables: "Analyse des créances impayées par période d'ancienneté",
+    analysisOfOutstandingReceivables:
+      "Analyse des créances impayées par période d'ancienneté",
     asOf: "Au %{date}",
     zeroToThirtyDays: "0-30 jours",
     thirtyOneToSixtyDays: "31-60 jours",
@@ -794,16 +816,20 @@ const fr = {
     ninetyPlusDays: "90+ jours",
     noClientsWithOutstandingBalances: "Aucun client avec des soldes impayés.",
     showingOfClients: "Affichage de %{displayed} sur %{total} clients...",
-    errorLoadingReportData: "Erreur lors du chargement des données du rapport. Veuillez réessayer.",
+    errorLoadingReportData:
+      "Erreur lors du chargement des données du rapport. Veuillez réessayer.",
     projectClient: "PROJET/ CLIENT",
     noteHeader: "NOTE",
     teamMemberDate: "MEMBRE DE L'ÉQUIPE/ DATE",
     hoursLogged: "HEURES ENREGISTRÉES",
-    noResultsMatchFilters: "Aucun résultat ne correspond aux filtres actuels. Essayez de retirer certains filtres.",
-    noTimeEntriesYet: "Aucune entrée de temps n'a encore été ajoutée. Vous verrez un résumé des entrées de temps ajoutées par votre équipe.",
+    noResultsMatchFilters:
+      "Aucun résultat ne correspond aux filtres actuels. Essayez de retirer certains filtres.",
+    noTimeEntriesYet:
+      "Aucune entrée de temps n'a encore été ajoutée. Vous verrez un résumé des entrées de temps ajoutées par votre équipe.",
     selected: "%{count} sélectionnés",
     showingClientsCount: "Affichage de %{shown} sur %{total} clients",
-    ofTeamMembersSelected: "%{active} sur %{total} membres de l'équipe sélectionnés",
+    ofTeamMembersSelected:
+      "%{active} sur %{total} membres de l'équipe sélectionnés",
     statusGuide: "Guide des statuts :",
     activeCount: "%{count} actifs",
     noGrouping: "Sans regroupement",
@@ -822,20 +848,25 @@ const fr = {
     groupByMonth: "Grouper par mois",
     previewLabel: "Aperçu :",
     entriesWillBeGrouped: "Les entrées seront groupées %{grouping}",
-    subtotalsShownForEachGroup: "Les sous-totaux seront affichés pour chaque groupe",
+    subtotalsShownForEachGroup:
+      "Les sous-totaux seront affichés pour chaque groupe",
     timeEntryReportTitle: "Rapport d'entrées de temps",
-    timeEntryReportDesc: "Un résumé des entrées de temps ajoutées par votre équipe.",
+    timeEntryReportDesc:
+      "Un résumé des entrées de temps ajoutées par votre équipe.",
     invoicesReport: "Rapport de factures",
-    invoicesReportDesc: "Un résumé détaillé des factures en attente et en retard de tous les clients pour une période donnée.",
+    invoicesReportDesc:
+      "Un résumé détaillé des factures en attente et en retard de tous les clients pour une période donnée.",
     totalHoursLoggedTitle: "Total des heures enregistrées",
-    totalHoursLoggedDesc: "Un résumé détaillé des heures facturées, non facturées et non facturables par équipe groupé par projet.",
+    totalHoursLoggedDesc:
+      "Un résumé détaillé des heures facturées, non facturées et non facturables par équipe groupé par projet.",
     revenueReport: "Rapport de revenus",
     revenueReportDesc: "Un rapport détaillé des revenus de chaque client.",
     accountsAging: "Ancienneté des comptes",
     accountsAgingDesc: "Découvrez quels clients mettent longtemps à payer",
     clearAll: "TOUT EFFACER",
     outstandingAndOverdue: "En attente et en retard",
-    followUpOnInvoices: "Suivez les factures qui nécessitent encore votre attention.",
+    followUpOnInvoices:
+      "Suivez les factures qui nécessitent encore votre attention.",
     outstanding: "En attente",
     overdue: "En retard",
     refresh: "Actualiser",
@@ -848,26 +879,36 @@ const fr = {
     formatLabel: "Format",
     exportPdfBtn: "Exporter PDF",
     exportCsvBtn: "Exporter CSV",
-    noOutstandingOrOverdueInvoices: "Aucune facture en attente ou en retard trouvée.",
+    noOutstandingOrOverdueInvoices:
+      "Aucune facture en attente ou en retard trouvée.",
     allCurrencies: "Toutes les devises",
     filteredByCurrency: "Filtré par %{currency}",
     overdueAgingTitle: "Ancienneté des retards (%{currency})",
     averageDays: "Jours moyens :",
-    timeReportsDesc: "Un résumé complet des entrées de temps ajoutées par les membres de votre équipe",
+    timeReportsDesc:
+      "Un résumé complet des entrées de temps ajoutées par les membres de votre équipe",
     outstandingOverdueInvoicesTitle: "Factures en attente et en retard",
-    outstandingOverdueInvoicesDesc: "Aperçu détaillé des factures en attente et en retard de tous les clients",
+    outstandingOverdueInvoicesDesc:
+      "Aperçu détaillé des factures en attente et en retard de tous les clients",
     revenueByClient: "Revenus par client",
-    revenueByClientDesc: "Répartition des revenus par client avec tendances et comparaisons",
-    accountsAgingTableDesc: "Analyse de l'ancienneté des créances impayées par période",
+    revenueByClientDesc:
+      "Répartition des revenus par client avec tendances et comparaisons",
+    accountsAgingTableDesc:
+      "Analyse de l'ancienneté des créances impayées par période",
     paymentReportTitle: "Rapport de paiements",
-    paymentReportDesc: "Suivez tous les paiements reçus avec un historique détaillé des transactions",
+    paymentReportDesc:
+      "Suivez tous les paiements reçus avec un historique détaillé des transactions",
     teamUtilization: "Utilisation de l'équipe",
-    teamUtilizationDesc: "Taux d'utilisation et analyse de capacité des membres de l'équipe",
+    teamUtilizationDesc:
+      "Taux d'utilisation et analyse de capacité des membres de l'équipe",
     projectProfitability: "Rentabilité du projet",
-    projectProfitabilityDesc: "Analyse de rentabilité par projet avec répartition des coûts",
+    projectProfitabilityDesc:
+      "Analyse de rentabilité par projet avec répartition des coûts",
     clientSummaryTitle: "Résumé du client",
-    clientSummaryDesc: "Métriques complètes de performance et d'engagement du client",
-    understandReportsAtGlance: "Comprenez les revenus, le temps et le travail en attente en un coup d'œil.",
+    clientSummaryDesc:
+      "Métriques complètes de performance et d'engagement du client",
+    understandReportsAtGlance:
+      "Comprenez les revenus, le temps et le travail en attente en un coup d'œil.",
     scheduleReports: "Planifier des rapports",
     availableReports: "Rapports disponibles",
     revenueAndBilling: "Revenus et facturation",
@@ -878,7 +919,8 @@ const fr = {
     viewOverdueInvoices: "Voir les factures en retard",
     monthlyRevenueReport: "Rapport de revenus mensuel",
     openReport: "Ouvrir le rapport %{title}",
-    reviewHoursLogged: "Consultez les heures enregistrées par personne, client et projet.",
+    reviewHoursLogged:
+      "Consultez les heures enregistrées par personne, client et projet.",
     lastSevenDaysPreset: "7 derniers jours",
     lastThirtyDaysPreset: "30 derniers jours",
     totalEntries: "Total des entrées",
@@ -1123,13 +1165,18 @@ const fr = {
     paidInvoices: "Factures payées",
     alreadySettled: "Déjà réglées",
     paymentsReceived: "Paiements reçus",
-    employeeGuidance: "Suivez votre semaine, soumettez des entrées précises et gardez le travail en mouvement.",
-    bookKeeperGuidance: "Examinez les paiements entrants, rapprochez les factures et gardez le flux de trésorerie clair.",
-    clientGuidance: "Consultez le statut des factures et l'historique des paiements de votre compte.",
-    defaultGuidance: "Revenus, projets et dynamique de l'équipe en un coup d'œil.",
+    employeeGuidance:
+      "Suivez votre semaine, soumettez des entrées précises et gardez le travail en mouvement.",
+    bookKeeperGuidance:
+      "Examinez les paiements entrants, rapprochez les factures et gardez le flux de trésorerie clair.",
+    clientGuidance:
+      "Consultez le statut des factures et l'historique des paiements de votre compte.",
+    defaultGuidance:
+      "Revenus, projets et dynamique de l'équipe en un coup d'œil.",
     recentActivity: "Activité récente",
     workspaceActivity: "Activité de l'espace de travail",
-    employeeActivityDescription: "Votre tableau de bord est axé sur le suivi du temps et le travail assigné.",
+    employeeActivityDescription:
+      "Votre tableau de bord est axé sur le suivi du temps et le travail assigné.",
     activityDescription: "Dernières mises à jour de vos factures et paiements",
     noRecentActivityYet: "Aucune activité récente pour le moment",
     loadMore: "Charger plus",
@@ -1172,27 +1219,37 @@ const fr = {
     cashLedger: "Grand livre de caisse",
     miruLogo: "Miru",
     heroTitle: "Un seul endroit pour le temps, les factures et les paiements",
-    heroDescription: "Gardez la journée claire, la facturation en mouvement et la trésorerie visible.",
+    heroDescription:
+      "Gardez la journée claire, la facturation en mouvement et la trésorerie visible.",
     slideShowPrefix: "Afficher",
-    slideDashboardDescription: "Consultez les revenus, les projets actifs et la dynamique de l'équipe sans avoir à chercher.",
-    slideInvoicesDescription: "Gardez les brouillons, les soldes en retard et le travail payé au même endroit.",
-    slideTimeTrackingDescription: "Le suivi du temps semaine après semaine reste à jour sans devenir fastidieux.",
-    slidePaymentsDescription: "Chaque paiement arrive dans un grand livre avec méthode, statut et source.",
+    slideDashboardDescription:
+      "Consultez les revenus, les projets actifs et la dynamique de l'équipe sans avoir à chercher.",
+    slideInvoicesDescription:
+      "Gardez les brouillons, les soldes en retard et le travail payé au même endroit.",
+    slideTimeTrackingDescription:
+      "Le suivi du temps semaine après semaine reste à jour sans devenir fastidieux.",
+    slidePaymentsDescription:
+      "Chaque paiement arrive dans un grand livre avec méthode, statut et source.",
     continueWithGoogle: "Continuer avec Google",
     continueWithGithub: "Continuer avec GitHub",
     orUseEmail: "ou utilisez l'e-mail",
-    verifyWithAuthenticator: "Vérifiez avec votre application d'authentification",
-    authenticatorInstructions: "Entrez le code à 6 chiffres de votre application d'authentification, ou utilisez un code de récupération.",
+    verifyWithAuthenticator:
+      "Vérifiez avec votre application d'authentification",
+    authenticatorInstructions:
+      "Entrez le code à 6 chiffres de votre application d'authentification, ou utilisez un code de récupération.",
     authenticatorCode: "Code d'authentification",
     recoveryCode: "Code de récupération",
     verifyAndSignIn: "Vérifier et se connecter",
-    completePasskeyVerification: "Complétez la vérification de la clé d'accès pour terminer la connexion.",
-    enterAuthenticatorCode: "Entrez votre code d'authentification pour terminer la connexion.",
+    completePasskeyVerification:
+      "Complétez la vérification de la clé d'accès pour terminer la connexion.",
+    enterAuthenticatorCode:
+      "Entrez votre code d'authentification pour terminer la connexion.",
     invalidVerificationCode: "Code de vérification invalide.",
     privacy: "Confidentialité",
     terms: "Conditions",
     createAccount: "Créer un compte",
-    passwordCriteria: "Min. 8 caractères, 1 majuscule, 1 minuscule, 1 chiffre et 1 caractère spécial",
+    passwordCriteria:
+      "Min. 8 caractères, 1 majuscule, 1 minuscule, 1 chiffre et 1 caractère spécial",
     agreeToTerms: "J'accepte les",
     termsOfService: "Conditions d'utilisation",
     privacyPolicy: "Politique de confidentialité",
@@ -1202,7 +1259,8 @@ const fr = {
   // Passkeys
   passkeys: {
     noPasskeyResponse: "Aucune réponse de clé d'accès reçue.",
-    passkeysNotSupported: "Les clés d'accès ne sont pas prises en charge dans ce navigateur.",
+    passkeysNotSupported:
+      "Les clés d'accès ne sont pas prises en charge dans ce navigateur.",
   },
 
   // Organization setup
@@ -1276,8 +1334,10 @@ const fr = {
     publicHolidays: "Jours fériés",
     zeroUsed: "0 utilisés",
     leaveCalendar: "Calendrier des congés",
-    trackLeaveUsage: "Suivez l'utilisation des congés et des jours fériés mois par mois pour %{year}.",
-    selectDayToInspect: "Sélectionnez un jour pour inspecter les détails des congés et l'utilisation des jours fériés.",
+    trackLeaveUsage:
+      "Suivez l'utilisation des congés et des jours fériés mois par mois pour %{year}.",
+    selectDayToInspect:
+      "Sélectionnez un jour pour inspecter les détails des congés et l'utilisation des jours fériés.",
     nothingBooked: "Rien de réservé",
     nothingBookedForDate: "Rien de réservé pour cette date.",
     recordedTimeAway: "Temps d'absence enregistré ce jour",
@@ -1299,12 +1359,14 @@ const fr = {
     numberOfTeamMembers: "Nombre de membres de l'équipe :",
     plan: "Plan",
     basicPlan: "Plan basique",
-    basicPlanDescription: "Le plan basique inclut toutes les fonctionnalités. C'est un frais unique.",
+    basicPlanDescription:
+      "Le plan basique inclut toutes les fonctionnalités. C'est un frais unique.",
     chargedOnce: "facturé une fois",
     addOns: "Modules complémentaires",
     oneTeamMember: "1 membre de l'équipe",
     chargedEveryMonth: "facturé chaque mois",
-    basicPlanPerUser: "Le plan basique inclut un supplément de %{rate}$ par utilisateur par mois.",
+    basicPlanPerUser:
+      "Le plan basique inclut un supplément de %{rate}$ par utilisateur par mois.",
     plusTaxes: "plus taxes",
     reviewAndPay: "VÉRIFIER ET PAYER",
   },
@@ -1318,7 +1380,8 @@ const fr = {
   selectOption: "Sélectionner",
   editLabel: "Modifier",
   noPasskeyResponse: "Aucune réponse de clé d'accès reçue.",
-  passkeysNotSupported: "Les clés d'accès ne sont pas prises en charge dans ce navigateur.",
+  passkeysNotSupported:
+    "Les clés d'accès ne sont pas prises en charge dans ce navigateur.",
 
   // Table headers (common)
   tableHeaders: {

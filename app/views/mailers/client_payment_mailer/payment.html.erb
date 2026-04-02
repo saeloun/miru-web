@@ -1,25 +1,31 @@
-<% content_for :email_preheader, "Payment receipt for invoice #{@invoice.invoice_number}." %>
-<% content_for :email_eyebrow, "Payments" %>
-<% content_for :email_title, "Payment receipt" %>
+<% content_for :email_preheader, t("mailers.client_payment_mailer.payment.preheader", invoice_number: @invoice.invoice_number) %>
+<% content_for :email_eyebrow, t("mailers.client_payment_mailer.payment.eyebrow") %>
+<% content_for :email_title, t("mailers.client_payment_mailer.payment.title") %>
 <% content_for :email_subtitle do %>
-  We received your payment for invoice <strong><%= @invoice.invoice_number %></strong>.
+  <%= t("mailers.client_payment_mailer.payment.subtitle_html", invoice_number: @invoice.invoice_number).html_safe %>
 <% end %>
 
 <div class="email-panel email-panel-success">
+  <p class="email-panel-title"><%= t("mailers.client_payment_mailer.payment.receipt_title") %></p>
   <%= sanitize @message %>
 </div>
 
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="detail-grid">
   <tr>
     <%= render "shared/mailer/detail_card",
-      label: "Payment method",
+      label: t("mailers.labels.payment_method"),
       value: @invoice.payments.any?(&:present?) ? @invoice.payments.pluck(:transaction_type).to_sentence.upcase : "STRIPE" %>
-    <%= render "shared/mailer/detail_card", label: "Amount paid", value: @amount %>
+    <%= render "shared/mailer/detail_card", label: t("mailers.labels.amount_paid"), value: @amount %>
   </tr>
   <tr>
-    <%= render "shared/mailer/detail_card", label: "Issued to", value: @invoice.client.name %>
-    <%= render "shared/mailer/detail_card", label: "Paid on", value: @invoice.updated_at.strftime("%B %d, %Y") %>
+    <%= render "shared/mailer/detail_card", label: t("mailers.labels.issued_to"), value: @invoice.client.name %>
+    <%= render "shared/mailer/detail_card", label: t("mailers.labels.paid_on"), value: l(@invoice.updated_at.to_date, format: :long) %>
   </tr>
 </table>
 
-<%= render "shared/mailer/button", href: @invoice_url, label: "View invoice" %>
+<%= render "shared/mailer/button", href: @invoice_url, label: t("mailers.actions.open_invoice") %>
+
+<div class="email-panel email-panel-soft">
+  <p class="email-panel-title"><%= t("mailers.client_payment_mailer.payment.records_title") %></p>
+  <p style="margin-bottom: 0;"><%= t("mailers.client_payment_mailer.payment.records_body") %></p>
+</div>

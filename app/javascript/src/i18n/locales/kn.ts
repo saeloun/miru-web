@@ -62,7 +62,6 @@ const kn = {
   inactive: "ನಿಷ್ಕ್ರಿಯ",
   invited: "ಆಹ್ವಾನಿತ",
   department: "ವಿಭಾಗ",
-  projects: "ಯೋಜನೆಗಳು",
   theme: "ಥೀಮ್",
   summary: "ಸಾರಾಂಶ",
   format: "ಫಾರ್ಮ್ಯಾಟ್",
@@ -148,7 +147,8 @@ const kn = {
     selectProject: "ಯೋಜನೆ ಆಯ್ಕೆಮಾಡಿ",
     selectClientFirst: "ಮೊದಲು ಗ್ರಾಹಕರನ್ನು ಆಯ್ಕೆಮಾಡಿ",
     whatDidYouWorkOn: "ನೀವು ಯಾವುದರ ಮೇಲೆ ಕೆಲಸ ಮಾಡಿದ್ದೀರಿ?",
-    addNoteHere: "ನೀವು ಯಾವುದರ ಮೇಲೆ ಕೆಲಸ ಮಾಡಿದ್ದೀರಿ? ನಿಮ್ಮ ಟಿಪ್ಪಣಿಗಳನ್ನು ಇಲ್ಲಿ ಸೇರಿಸಿ...",
+    addNoteHere:
+      "ನೀವು ಯಾವುದರ ಮೇಲೆ ಕೆಲಸ ಮಾಡಿದ್ದೀರಿ? ನಿಮ್ಮ ಟಿಪ್ಪಣಿಗಳನ್ನು ಇಲ್ಲಿ ಸೇರಿಸಿ...",
     addANote: "ಟಿಪ್ಪಣಿ ಸೇರಿಸಿ...",
     timeSpent: "ವ್ಯಯಿಸಿದ ಸಮಯ",
     saveEntry: "ನಮೂದು ಉಳಿಸಿ",
@@ -185,10 +185,13 @@ const kn = {
     entry: "ನಮೂದು",
     entries: "ನಮೂದುಗಳು",
     noEntriesForSelectedDay: "ಆಯ್ಕೆಮಾಡಿದ ದಿನಕ್ಕೆ ಯಾವುದೇ ನಮೂದುಗಳಿಲ್ಲ",
-    weekReviewHint: "ಈ ವಾರ ನೀವು ದಾಖಲಿಸಿದ ಎಲ್ಲವನ್ನೂ ಪರಿಶೀಲಿಸಲು ಈ ವಾರಕ್ಕೆ ಬದಲಾಯಿಸಿ.",
+    weekReviewHint:
+      "ಈ ವಾರ ನೀವು ದಾಖಲಿಸಿದ ಎಲ್ಲವನ್ನೂ ಪರಿಶೀಲಿಸಲು ಈ ವಾರಕ್ಕೆ ಬದಲಾಯಿಸಿ.",
     noTimeEntriesYet: "ಇನ್ನೂ ಯಾವುದೇ ಸಮಯ ನಮೂದುಗಳಿಲ್ಲ",
-    firstEntryHint: 'ಈ ದಿನದ ನಿಮ್ಮ ಮೊದಲ ಸಮಯ ನಮೂದನ್ನು ದಾಖಲಿಸಲು "ನಮೂದು ಸೇರಿಸಿ" ಕ್ಲಿಕ್ ಮಾಡಿ',
-    logWorkByWeekOrMonth: "ವಾರ ಅಥವಾ ತಿಂಗಳಿನ ಪ್ರಕಾರ ಕೆಲಸ ದಾಖಲಿಸಿ. ನಮೂದುಗಳನ್ನು ಸ್ಪಷ್ಟ ಮತ್ತು ಪ್ರಸ್ತುತವಾಗಿಡಿ.",
+    firstEntryHint:
+      'ಈ ದಿನದ ನಿಮ್ಮ ಮೊದಲ ಸಮಯ ನಮೂದನ್ನು ದಾಖಲಿಸಲು "ನಮೂದು ಸೇರಿಸಿ" ಕ್ಲಿಕ್ ಮಾಡಿ',
+    logWorkByWeekOrMonth:
+      "ವಾರ ಅಥವಾ ತಿಂಗಳಿನ ಪ್ರಕಾರ ಕೆಲಸ ದಾಖಲಿಸಿ. ನಮೂದುಗಳನ್ನು ಸ್ಪಷ್ಟ ಮತ್ತು ಪ್ರಸ್ತುತವಾಗಿಡಿ.",
     entriesFor: "%{name} ಗಾಗಿ ನಮೂದುಗಳು",
     timeEntriesFor: "ಸಮಯ ನಮೂದುಗಳು",
     unableToLoad: "ಸಮಯ ಟ್ರ್ಯಾಕಿಂಗ್ ಅನ್ನು ಈಗ ಲೋಡ್ ಮಾಡಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ.",
@@ -206,7 +209,8 @@ const kn = {
     entriesUpdatedSuccessfully: "ನಮೂದುಗಳನ್ನು ಯಶಸ್ವಿಯಾಗಿ ನವೀಕರಿಸಲಾಗಿದೆ",
     failedToUpdateEntries: "ನಮೂದುಗಳನ್ನು ನವೀಕರಿಸಲು ವಿಫಲವಾಗಿದೆ",
     selectProjectFirst: "ದಯವಿಟ್ಟು ಮೊದಲು ಯೋಜನೆ ಆಯ್ಕೆಮಾಡಿ",
-    editingModeActive: "ಸಂಪಾದನೆ ಮೋಡ್ ಸಕ್ರಿಯವಾಗಿದೆ. ಮೇಲಿನ ನಿಮ್ಮ ಬದಲಾವಣೆಗಳನ್ನು ಪೂರ್ಣಗೊಳಿಸಿ.",
+    editingModeActive:
+      "ಸಂಪಾದನೆ ಮೋಡ್ ಸಕ್ರಿಯವಾಗಿದೆ. ಮೇಲಿನ ನಿಮ್ಮ ಬದಲಾವಣೆಗಳನ್ನು ಪೂರ್ಣಗೊಳಿಸಿ.",
     dayAbbr: {
       mon: "ಸೋಮ",
       tue: "ಮಂಗಳ",
@@ -315,13 +319,15 @@ const kn = {
     teamMembers: "ತಂಡದ ಸದಸ್ಯರು",
     team: "ತಂಡ",
     allProjects: "ಎಲ್ಲಾ ಯೋಜನೆಗಳು",
-    allProjectsDescription: "ನಿಮ್ಮ ಯೋಜನೆಗಳನ್ನು ನಿರ್ವಹಿಸಿ ಮತ್ತು ಪ್ರಗತಿಯನ್ನು ಟ್ರ್ಯಾಕ್ ಮಾಡಿ",
+    allProjectsDescription:
+      "ನಿಮ್ಮ ಯೋಜನೆಗಳನ್ನು ನಿರ್ವಹಿಸಿ ಮತ್ತು ಪ್ರಗತಿಯನ್ನು ಟ್ರ್ಯಾಕ್ ಮಾಡಿ",
     failedToLoadProjects: "ಯೋಜನೆಗಳನ್ನು ಲೋಡ್ ಮಾಡಲು ವಿಫಲವಾಗಿದೆ",
     failedToDeleteProject: "ಯೋಜನೆ ಅಳಿಸಲು ವಿಫಲವಾಗಿದೆ",
     projectDeletedSuccessfully: "ಯೋಜನೆ ಯಶಸ್ವಿಯಾಗಿ ಅಳಿಸಲಾಗಿದೆ",
     viewDetails: "ವಿವರಗಳನ್ನು ವೀಕ್ಷಿಸಿ",
     copyProjectId: "ಯೋಜನೆ ಐಡಿ ನಕಲಿಸಿ",
-    manageProjectsDescription: "ನಿಮ್ಮ ಯೋಜನೆಗಳನ್ನು ನಿರ್ವಹಿಸಿ ಮತ್ತು ಪ್ರಗತಿಯನ್ನು ಟ್ರ್ಯಾಕ್ ಮಾಡಿ",
+    manageProjectsDescription:
+      "ನಿಮ್ಮ ಯೋಜನೆಗಳನ್ನು ನಿರ್ವಹಿಸಿ ಮತ್ತು ಪ್ರಗತಿಯನ್ನು ಟ್ರ್ಯಾಕ್ ಮಾಡಿ",
     newProject: "ಹೊಸ ಯೋಜನೆ",
     activeProjects: "ಸಕ್ರಿಯ ಯೋಜನೆಗಳು",
     ofTotalProjects: "ಒಟ್ಟು %{count} ಯೋಜನೆಗಳಲ್ಲಿ",
@@ -330,7 +336,8 @@ const kn = {
     searchProjects: "ಯೋಜನೆಗಳನ್ನು ಹುಡುಕಿ...",
     createFirstProject: "ಪ್ರಾರಂಭಿಸಲು ನಿಮ್ಮ ಮೊದಲ ಯೋಜನೆಯನ್ನು ರಚಿಸಿ.",
     noProjectsYet: "ಇನ್ನೂ ಯಾವುದೇ ಯೋಜನೆಗಳಿಲ್ಲ",
-    workingOnProjects: "ನಿಮ್ಮ ಯೋಜನೆಗಳಾದ್ಯಂತ ಬಿಲ್ ಮಾಡಬಹುದಾದ ಮತ್ತು ಬಿಲ್ ಮಾಡಲಾಗದ ಕೆಲಸವನ್ನು ಟ್ರ್ಯಾಕ್ ಮಾಡಿ.",
+    workingOnProjects:
+      "ನಿಮ್ಮ ಯೋಜನೆಗಳಾದ್ಯಂತ ಬಿಲ್ ಮಾಡಬಹುದಾದ ಮತ್ತು ಬಿಲ್ ಮಾಡಲಾಗದ ಕೆಲಸವನ್ನು ಟ್ರ್ಯಾಕ್ ಮಾಡಿ.",
     active: "ಸಕ್ರಿಯ",
     paused: "ವಿರಾಮಗೊಂಡಿದೆ",
     completed: "ಪೂರ್ಣಗೊಂಡಿದೆ",
@@ -349,18 +356,21 @@ const kn = {
     createProjectDescription: "ಹೊಸ ಯೋಜನೆ ಸ್ಥಾಪಿಸಿ ಮತ್ತು ಗ್ರಾಹಕರಿಗೆ ನಿಯೋಜಿಸಿ.",
     editProjectDetails: "ಯೋಜನೆ ವಿವರಗಳನ್ನು ಸಂಪಾದಿಸಿ",
     saveChanges: "ಬದಲಾವಣೆಗಳನ್ನು ಉಳಿಸಿ",
-    billableDescription: "ಈ ಯೋಜನೆಗೆ ಸಮಯ ಟ್ರ್ಯಾಕ್ ಮಾಡಿ ಮತ್ತು ಗ್ರಾಹಕರಿಗೆ ಬಿಲ್ ಮಾಡಿ",
+    billableDescription:
+      "ಈ ಯೋಜನೆಗೆ ಸಮಯ ಟ್ರ್ಯಾಕ್ ಮಾಡಿ ಮತ್ತು ಗ್ರಾಹಕರಿಗೆ ಬಿಲ್ ಮಾಡಿ",
     nonBillableDescription: "ಗ್ರಾಹಕರಿಗೆ ಬಿಲ್ ಮಾಡದೆ ಸಮಯ ಟ್ರ್ಯಾಕ್ ಮಾಡಿ",
     noClientsPresent: "ಯಾವುದೇ ಗ್ರಾಹಕರಿಲ್ಲ",
     teamMembersUpdated: "ತಂಡದ ಸದಸ್ಯರನ್ನು ಯಶಸ್ವಿಯಾಗಿ ನವೀಕರಿಸಲಾಗಿದೆ",
-    manageProjectMembersDescription: "ತಂಡದ ಸದಸ್ಯರನ್ನು ಸೇರಿಸಿ ಅಥವಾ ತೆಗೆದುಹಾಕಿ ಮತ್ತು ಅವರ ಗಂಟೆಯ ದರಗಳನ್ನು ಹೊಂದಿಸಿ.",
+    manageProjectMembersDescription:
+      "ತಂಡದ ಸದಸ್ಯರನ್ನು ಸೇರಿಸಿ ಅಥವಾ ತೆಗೆದುಹಾಕಿ ಮತ್ತು ಅವರ ಗಂಟೆಯ ದರಗಳನ್ನು ಹೊಂದಿಸಿ.",
     enterValidRate: "ದಯವಿಟ್ಟು ಮಾನ್ಯ ದರವನ್ನು ನಮೂದಿಸಿ",
     addAnotherTeamMember: "ಇನ್ನೊಬ್ಬ ಸದಸ್ಯರನ್ನು ಸೇರಿಸಿ",
     addTeamMember: "ತಂಡದ ಸದಸ್ಯರನ್ನು ಸೇರಿಸಿ",
     saveTeamMembers: "ಸದಸ್ಯರನ್ನು ಉಳಿಸಿ",
     noTeamMembersAdded: "ಇನ್ನೂ ಯಾವುದೇ ತಂಡದ ಸದಸ್ಯರನ್ನು ಸೇರಿಸಿಲ್ಲ.",
     addTeamMembers: "ತಂಡದ ಸದಸ್ಯರನ್ನು ಸೇರಿಸಿ",
-    teamMembersDescription: "ಈ ಯೋಜನೆಗೆ ನಿಯೋಜಿತ ತಂಡದ ಸದಸ್ಯರನ್ನು ವೀಕ್ಷಿಸಿ ಮತ್ತು ನಿರ್ವಹಿಸಿ.",
+    teamMembersDescription:
+      "ಈ ಯೋಜನೆಗೆ ನಿಯೋಜಿತ ತಂಡದ ಸದಸ್ಯರನ್ನು ವೀಕ್ಷಿಸಿ ಮತ್ತು ನಿರ್ವಹಿಸಿ.",
   },
 
   // Team
@@ -471,8 +481,7 @@ const kn = {
     addEntry: "%{count} ನಮೂದು ಸೇರಿಸಿ",
     addEntries_plural: "%{count} ನಮೂದುಗಳನ್ನು ಸೇರಿಸಿ",
     thankYouForBusiness: "ನಿಮ್ಮ ವ್ಯಾಪಾರಕ್ಕಾಗಿ ಧನ್ಯವಾದಗಳು!",
-    previewNote:
-      "ಇದು ಪೂರ್ವವೀಕ್ಷಣೆ. ಉಳಿಸಿದ ನಂತರ ಬದಲಾವಣೆಗಳು ಪ್ರತಿಫಲಿಸುತ್ತವೆ.",
+    previewNote: "ಇದು ಪೂರ್ವವೀಕ್ಷಣೆ. ಉಳಿಸಿದ ನಂತರ ಬದಲಾವಣೆಗಳು ಪ್ರತಿಫಲಿಸುತ್ತವೆ.",
     noInvoiceGenerated: "ಇನ್ನೂ ಯಾವುದೇ ಇನ್‌ವಾಯ್ಸ್ ರಚಿಸಲಾಗಿಲ್ಲ.",
     acceptCreditCards: "ಕ್ರೆಡಿಟ್ ಕಾರ್ಡ್‌ಗಳನ್ನು ಸ್ವೀಕರಿಸಿ",
     sendTo: "ಕಳುಹಿಸಿ",
@@ -504,13 +513,10 @@ const kn = {
     message: "ಸಂದೇಶ",
     addEmailFromClientSettings:
       "ದಯವಿಟ್ಟು ಗ್ರಾಹಕ ಸೆಟ್ಟಿಂಗ್‌ಗಳ ಪುಟದಿಂದ ಇಮೇಲ್ ಸೇರಿಸಿ",
-    reminderSubject:
-      "ಪಾವತಿಸದ ಇನ್‌ವಾಯ್ಸ್‌ಗೆ ಪಾವತಿ ಪೂರ್ಣಗೊಳಿಸಲು ಜ್ಞಾಪನೆ",
+    reminderSubject: "ಪಾವತಿಸದ ಇನ್‌ವಾಯ್ಸ್‌ಗೆ ಪಾವತಿ ಪೂರ್ಣಗೊಳಿಸಲು ಜ್ಞಾಪನೆ",
     invoiceSentSubject: "%{company} ನಿಮಗೆ ಇನ್‌ವಾಯ್ಸ್ (%{number}) ಕಳುಹಿಸಿದೆ",
-    reminderBody:
-      "%{company} ಇನ್‌ವಾಯ್ಸ್ %{number} ಗೆ ನಿಮಗೆ ಜ್ಞಾಪನೆ ಕಳುಹಿಸಿದೆ",
-    invoiceSentBody:
-      "%{company} ನಿಮಗೆ ಇನ್‌ವಾಯ್ಸ್ (%{number}) ಕಳುಹಿಸಿದೆ",
+    reminderBody: "%{company} ಇನ್‌ವಾಯ್ಸ್ %{number} ಗೆ ನಿಮಗೆ ಜ್ಞಾಪನೆ ಕಳುಹಿಸಿದೆ",
+    invoiceSentBody: "%{company} ನಿಮಗೆ ಇನ್‌ವಾಯ್ಸ್ (%{number}) ಕಳುಹಿಸಿದೆ",
     invoiceWillBeSent: "ಇನ್‌ವಾಯ್ಸ್ ಕಳುಹಿಸಲಾಗುವುದು!",
     processing: "ಪ್ರಕ್ರಿಯೆಗೊಳಿಸಲಾಗುತ್ತಿದೆ...",
 
@@ -566,7 +572,8 @@ const kn = {
     cancelled: "ರದ್ದುಮಾಡಲಾಗಿದೆ",
 
     // Toast / confirmation messages
-    invoiceMarkedAsPaid: "ಇನ್‌ವಾಯ್ಸ್ ಅನ್ನು ಯಶಸ್ವಿಯಾಗಿ ಪಾವತಿಯಾಗಿದೆ ಎಂದು ಗುರುತಿಸಲಾಗಿದೆ",
+    invoiceMarkedAsPaid:
+      "ಇನ್‌ವಾಯ್ಸ್ ಅನ್ನು ಯಶಸ್ವಿಯಾಗಿ ಪಾವತಿಯಾಗಿದೆ ಎಂದು ಗುರುತಿಸಲಾಗಿದೆ",
     invoiceDownloaded: "ಇನ್‌ವಾಯ್ಸ್ ಯಶಸ್ವಿಯಾಗಿ ಡೌನ್‌ಲೋಡ್ ಆಗಿದೆ",
     invoiceSentSuccessfully: "ಇನ್‌ವಾಯ್ಸ್ ಯಶಸ್ವಿಯಾಗಿ ಕಳುಹಿಸಲಾಗಿದೆ",
     reminderSentSuccessfully: "ಜ್ಞಾಪನೆ ಯಶಸ್ವಿಯಾಗಿ ಕಳುಹಿಸಲಾಗಿದೆ",
@@ -580,13 +587,16 @@ const kn = {
     errorConnectingPayments: "ಪಾವತಿಗಳಿಗೆ ಸಂಪರ್ಕಿಸುವಲ್ಲಿ ದೋಷ",
     invoiceCreated: "ಇನ್‌ವಾಯ್ಸ್ ಯಶಸ್ವಿಯಾಗಿ ರಚಿಸಲಾಗಿದೆ",
     invoiceUpdated: "ಇನ್‌ವಾಯ್ಸ್ ಯಶಸ್ವಿಯಾಗಿ ನವೀಕರಿಸಲಾಗಿದೆ",
-    failedToSaveInvoice: "ಇನ್‌ವಾಯ್ಸ್ ಉಳಿಸಲು ವಿಫಲವಾಗಿದೆ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.",
+    failedToSaveInvoice:
+      "ಇನ್‌ವಾಯ್ಸ್ ಉಳಿಸಲು ವಿಫಲವಾಗಿದೆ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.",
 
     // Counters
     showingOf: "%{total} ರಲ್ಲಿ %{shown} ತೋರಿಸಲಾಗುತ್ತಿದೆ",
-    viewingMatching: "%{loaded} ಲೋಡ್ ಮಾಡಿದವುಗಳಿಂದ %{filtered} ಹೊಂದಾಣಿಕೆಯ ಇನ್‌ವಾಯ್ಸ್‌ಗಳನ್ನು ವೀಕ್ಷಿಸಲಾಗುತ್ತಿದೆ",
+    viewingMatching:
+      "%{loaded} ಲೋಡ್ ಮಾಡಿದವುಗಳಿಂದ %{filtered} ಹೊಂದಾಣಿಕೆಯ ಇನ್‌ವಾಯ್ಸ್‌ಗಳನ್ನು ವೀಕ್ಷಿಸಲಾಗುತ್ತಿದೆ",
     loadedOf: "%{total} ರಲ್ಲಿ %{loaded} ಲೋಡ್ ಆಗಿದೆ",
-    showingRecentTransactions: "%{count} ಇತ್ತೀಚಿನ ವಹಿವಾಟುಗಳನ್ನು ತೋರಿಸಲಾಗುತ್ತಿದೆ",
+    showingRecentTransactions:
+      "%{count} ಇತ್ತೀಚಿನ ವಹಿವಾಟುಗಳನ್ನು ತೋರಿಸಲಾಗುತ್ತಿದೆ",
     updatedAt: "%{date} ರಂದು ನವೀಕರಿಸಲಾಗಿದೆ",
     invoiceHash: "ಇನ್‌ವಾಯ್ಸ್ #%{number}",
 
@@ -596,12 +606,16 @@ const kn = {
 
     // Invoice reminder email
     invoiceReminder: "ಇನ್‌ವಾಯ್ಸ್ ಜ್ಞಾಪನೆ: %{number}",
-    reminderMessage: "ನಿಮ್ಮ ಬಾಕಿ ಇನ್‌ವಾಯ್ಸ್ ಬಗ್ಗೆ ಇದು ಜ್ಞಾಪನೆ. ದಯವಿಟ್ಟು ಲಗತ್ತಿಸಿದ ವಿವರಗಳನ್ನು ನೋಡಿ.",
+    reminderMessage:
+      "ನಿಮ್ಮ ಬಾಕಿ ಇನ್‌ವಾಯ್ಸ್ ಬಗ್ಗೆ ಇದು ಜ್ಞಾಪನೆ. ದಯವಿಟ್ಟು ಲಗತ್ತಿಸಿದ ವಿವರಗಳನ್ನು ನೋಡಿ.",
     invoiceAttached: "ದಯವಿಟ್ಟು ಲಗತ್ತಿಸಿದ ನಿಮ್ಮ ಇನ್‌ವಾಯ್ಸ್ ನೋಡಿ.",
-    reminderPaymentMessage: "ನಿಮ್ಮ ಅವಧಿ ಮೀರಿದ ಇನ್‌ವಾಯ್ಸ್ ಬಗ್ಗೆ ಇದು ಜ್ಞಾಪನೆ. ದಯವಿಟ್ಟು ಪಾವತಿ ಪೂರ್ಣಗೊಳಿಸಿ.",
+    reminderPaymentMessage:
+      "ನಿಮ್ಮ ಅವಧಿ ಮೀರಿದ ಇನ್‌ವಾಯ್ಸ್ ಬಗ್ಗೆ ಇದು ಜ್ಞಾಪನೆ. ದಯವಿಟ್ಟು ಪಾವತಿ ಪೂರ್ಣಗೊಳಿಸಿ.",
     invoiceSubject: "ಇನ್‌ವಾಯ್ಸ್ %{number}",
-    reminderPaymentSubject: "ಇನ್‌ವಾಯ್ಸ್ %{number} ಗೆ ಪಾವತಿ ಪೂರ್ಣಗೊಳಿಸಲು ಜ್ಞಾಪನೆ",
-    markAsPaidConfirm: "ಈ ಇನ್‌ವಾಯ್ಸ್ ಅನ್ನು ಪಾವತಿಯಾಗಿದೆ ಎಂದು ಗುರುತಿಸುವುದೇ? ಈ ಕ್ರಿಯೆ ಲೆಕ್ಕಪತ್ರ ದಾಖಲೆಗಳ ಮೇಲೆ ಪರಿಣಾಮ ಬೀರುತ್ತದೆ.",
+    reminderPaymentSubject:
+      "ಇನ್‌ವಾಯ್ಸ್ %{number} ಗೆ ಪಾವತಿ ಪೂರ್ಣಗೊಳಿಸಲು ಜ್ಞಾಪನೆ",
+    markAsPaidConfirm:
+      "ಈ ಇನ್‌ವಾಯ್ಸ್ ಅನ್ನು ಪಾವತಿಯಾಗಿದೆ ಎಂದು ಗುರುತಿಸುವುದೇ? ಈ ಕ್ರಿಯೆ ಲೆಕ್ಕಪತ್ರ ದಾಖಲೆಗಳ ಮೇಲೆ ಪರಿಣಾಮ ಬೀರುತ್ತದೆ.",
     failedToLoadInvoice: "ಇನ್‌ವಾಯ್ಸ್ ಲೋಡ್ ಮಾಡಲು ವಿಫಲವಾಗಿದೆ",
     invoiceNotFound: "ಇನ್‌ವಾಯ್ಸ್ ಕಂಡುಬಂದಿಲ್ಲ",
     failedToMarkAsPaid: "ಪಾವತಿಯಾಗಿದೆ ಎಂದು ಗುರುತಿಸಲು ವಿಫಲವಾಗಿದೆ",
@@ -680,7 +694,8 @@ const kn = {
   timer: {
     webTimer: "ವೆಬ್ ಟೈಮರ್",
     webTimerLabel: "ವೆಬ್ ಟೈಮರ್",
-    trackLiveWork: "ನೈಜ ಸಮಯದಲ್ಲಿ ನೇರ ಕೆಲಸವನ್ನು ಟ್ರ್ಯಾಕ್ ಮಾಡಿ, ನಂತರ ಅದನ್ನು ಇಂದಿನ ನಮೂದು ಪಟ್ಟಿಯಲ್ಲಿ ಉಳಿಸಿ.",
+    trackLiveWork:
+      "ನೈಜ ಸಮಯದಲ್ಲಿ ನೇರ ಕೆಲಸವನ್ನು ಟ್ರ್ಯಾಕ್ ಮಾಡಿ, ನಂತರ ಅದನ್ನು ಇಂದಿನ ನಮೂದು ಪಟ್ಟಿಯಲ್ಲಿ ಉಳಿಸಿ.",
     startTimer: "ಟೈಮರ್ ಪ್ರಾರಂಭಿಸಿ",
     pause: "ವಿರಾಮ",
     resume: "ಪುನರಾರಂಭಿಸಿ",
@@ -689,7 +704,8 @@ const kn = {
     reset: "ಮರುಹೊಂದಿಸಿ",
     timer: "ಟೈಮರ್",
     saveTimeEntry: "ಸಮಯ ನಮೂದು ಉಳಿಸಿ",
-    saveTimeEntryDescription: "ನೀವು %{time} ಟ್ರ್ಯಾಕ್ ಮಾಡಿದ್ದೀರಿ. ಇದನ್ನು ಸಮಯ ನಮೂದಾಗಿ ಉಳಿಸಲು ಬಯಸುವಿರಾ?",
+    saveTimeEntryDescription:
+      "ನೀವು %{time} ಟ್ರ್ಯಾಕ್ ಮಾಡಿದ್ದೀರಿ. ಇದನ್ನು ಸಮಯ ನಮೂದಾಗಿ ಉಳಿಸಲು ಬಯಸುವಿರಾ?",
     discard: "ತಿರಸ್ಕರಿಸಿ",
     timerStarted: "ಟೈಮರ್ ಪ್ರಾರಂಭವಾಗಿದೆ",
     timerPaused: "ಟೈಮರ್ ವಿರಾಮಗೊಂಡಿದೆ",
@@ -786,7 +802,8 @@ const kn = {
     invoiceAgingDetails: "ಇನ್‌ವಾಯ್ಸ್ ಏಜಿಂಗ್ ವಿವರಗಳು",
     noDataFound: "ಡೇಟಾ ಕಂಡುಬಂದಿಲ್ಲ",
     accountsAgingReport: "ಖಾತೆಗಳ ಏಜಿಂಗ್ ವರದಿ",
-    analysisOfOutstandingReceivables: "ಏಜಿಂಗ್ ಅವಧಿಯ ಪ್ರಕಾರ ಬಾಕಿ ಸ್ವೀಕೃತಿಗಳ ವಿಶ್ಲೇಷಣೆ",
+    analysisOfOutstandingReceivables:
+      "ಏಜಿಂಗ್ ಅವಧಿಯ ಪ್ರಕಾರ ಬಾಕಿ ಸ್ವೀಕೃತಿಗಳ ವಿಶ್ಲೇಷಣೆ",
     asOf: "%{date} ರ ಹಾಗೆ",
     zeroToThirtyDays: "0-30 ದಿನಗಳು",
     thirtyOneToSixtyDays: "31-60 ದಿನಗಳು",
@@ -794,13 +811,16 @@ const kn = {
     ninetyPlusDays: "90+ ದಿನಗಳು",
     noClientsWithOutstandingBalances: "ಬಾಕಿ ಶಿಲ್ಕುಗಳಿರುವ ಯಾವುದೇ ಗ್ರಾಹಕರಿಲ್ಲ.",
     showingOfClients: "%{total} ಗ್ರಾಹಕರಲ್ಲಿ %{displayed} ತೋರಿಸಲಾಗುತ್ತಿದೆ...",
-    errorLoadingReportData: "ವರದಿ ಡೇಟಾ ಲೋಡ್ ಮಾಡುವಲ್ಲಿ ದೋಷ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.",
+    errorLoadingReportData:
+      "ವರದಿ ಡೇಟಾ ಲೋಡ್ ಮಾಡುವಲ್ಲಿ ದೋಷ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.",
     projectClient: "ಯೋಜನೆ/ ಗ್ರಾಹಕ",
     noteHeader: "ಟಿಪ್ಪಣಿ",
     teamMemberDate: "ತಂಡದ ಸದಸ್ಯ/ ದಿನಾಂಕ",
     hoursLogged: "ದಾಖಲಾದ ಗಂಟೆಗಳು",
-    noResultsMatchFilters: "ಪ್ರಸ್ತುತ ಫಿಲ್ಟರ್‌ಗಳಿಗೆ ಯಾವುದೇ ಫಲಿತಾಂಶಗಳು ಹೊಂದಿಕೆಯಾಗಿಲ್ಲ. ಕೆಲವು ಫಿಲ್ಟರ್‌ಗಳನ್ನು ತೆಗೆದುಹಾಕಲು ಪ್ರಯತ್ನಿಸಿ.",
-    noTimeEntriesYet: "ಇನ್ನೂ ಯಾವುದೇ ಸಮಯ ನಮೂದುಗಳನ್ನು ಸೇರಿಸಿಲ್ಲ. ನಿಮ್ಮ ತಂಡವು ಸೇರಿಸಿದ ಸಮಯ ನಮೂದುಗಳ ಸಾರಾಂಶವನ್ನು ನೀವು ನೋಡುತ್ತೀರಿ.",
+    noResultsMatchFilters:
+      "ಪ್ರಸ್ತುತ ಫಿಲ್ಟರ್‌ಗಳಿಗೆ ಯಾವುದೇ ಫಲಿತಾಂಶಗಳು ಹೊಂದಿಕೆಯಾಗಿಲ್ಲ. ಕೆಲವು ಫಿಲ್ಟರ್‌ಗಳನ್ನು ತೆಗೆದುಹಾಕಲು ಪ್ರಯತ್ನಿಸಿ.",
+    noTimeEntriesYet:
+      "ಇನ್ನೂ ಯಾವುದೇ ಸಮಯ ನಮೂದುಗಳನ್ನು ಸೇರಿಸಿಲ್ಲ. ನಿಮ್ಮ ತಂಡವು ಸೇರಿಸಿದ ಸಮಯ ನಮೂದುಗಳ ಸಾರಾಂಶವನ್ನು ನೀವು ನೋಡುತ್ತೀರಿ.",
     selected: "%{count} ಆಯ್ಕೆಮಾಡಲಾಗಿದೆ",
     showingClientsCount: "%{total} ಗ್ರಾಹಕರಲ್ಲಿ %{shown} ತೋರಿಸಲಾಗುತ್ತಿದೆ",
     ofTeamMembersSelected: "%{total} ತಂಡದ ಸದಸ್ಯರಲ್ಲಿ %{active} ಆಯ್ಕೆಮಾಡಲಾಗಿದೆ",
@@ -826,13 +846,16 @@ const kn = {
     timeEntryReportTitle: "ಸಮಯ ನಮೂದು ವರದಿ",
     timeEntryReportDesc: "ನಿಮ್ಮ ತಂಡವು ಸೇರಿಸಿದ ಸಮಯ ನಮೂದುಗಳ ಸಾರಾಂಶ.",
     invoicesReport: "ಇನ್‌ವಾಯ್ಸ್ ವರದಿ",
-    invoicesReportDesc: "ಒಂದು ಅವಧಿಯ ಎಲ್ಲಾ ಗ್ರಾಹಕರ ಬಾಕಿ ಮತ್ತು ಅವಧಿ ಮೀರಿದ ವಿವರವಾದ ಸಾರಾಂಶ.",
+    invoicesReportDesc:
+      "ಒಂದು ಅವಧಿಯ ಎಲ್ಲಾ ಗ್ರಾಹಕರ ಬಾಕಿ ಮತ್ತು ಅವಧಿ ಮೀರಿದ ವಿವರವಾದ ಸಾರಾಂಶ.",
     totalHoursLoggedTitle: "ದಾಖಲಾದ ಒಟ್ಟು ಗಂಟೆಗಳು",
-    totalHoursLoggedDesc: "ಯೋಜನೆಯ ಪ್ರಕಾರ ಗುಂಪು ಮಾಡಿದ ಬಿಲ್ ಮಾಡಲಾದ, ಬಿಲ್ ಮಾಡದ ಮತ್ತು ಬಿಲ್ ಮಾಡಲಾಗದ ಗಂಟೆಗಳ ವಿವರವಾದ ಸಾರಾಂಶ.",
+    totalHoursLoggedDesc:
+      "ಯೋಜನೆಯ ಪ್ರಕಾರ ಗುಂಪು ಮಾಡಿದ ಬಿಲ್ ಮಾಡಲಾದ, ಬಿಲ್ ಮಾಡದ ಮತ್ತು ಬಿಲ್ ಮಾಡಲಾಗದ ಗಂಟೆಗಳ ವಿವರವಾದ ಸಾರಾಂಶ.",
     revenueReport: "ಆದಾಯ ವರದಿ",
     revenueReportDesc: "ಪ್ರತಿ ಗ್ರಾಹಕರಿಂದ ಆದಾಯದ ವಿವರವಾದ ವರದಿ.",
     accountsAging: "ಖಾತೆಗಳ ಏಜಿಂಗ್",
-    accountsAgingDesc: "ಯಾವ ಗ್ರಾಹಕರು ಪಾವತಿಸಲು ದೀರ್ಘ ಸಮಯ ತೆಗೆದುಕೊಳ್ಳುತ್ತಿದ್ದಾರೆ ಎಂದು ತಿಳಿಯಿರಿ",
+    accountsAgingDesc:
+      "ಯಾವ ಗ್ರಾಹಕರು ಪಾವತಿಸಲು ದೀರ್ಘ ಸಮಯ ತೆಗೆದುಕೊಳ್ಳುತ್ತಿದ್ದಾರೆ ಎಂದು ತಿಳಿಯಿರಿ",
     clearAll: "ಎಲ್ಲಾ ತೆರವುಗೊಳಿಸಿ",
     outstandingAndOverdue: "ಬಾಕಿ ಮತ್ತು ಅವಧಿ ಮೀರಿದ",
     followUpOnInvoices: "ಇನ್ನೂ ಗಮನ ಬೇಕಾದ ಇನ್‌ವಾಯ್ಸ್‌ಗಳ ಅನುಸರಣೆ.",
@@ -848,26 +871,32 @@ const kn = {
     formatLabel: "ಫಾರ್ಮ್ಯಾಟ್",
     exportPdfBtn: "PDF ರಫ್ತು ಮಾಡಿ",
     exportCsvBtn: "CSV ರಫ್ತು ಮಾಡಿ",
-    noOutstandingOrOverdueInvoices: "ಯಾವುದೇ ಬಾಕಿ ಅಥವಾ ಅವಧಿ ಮೀರಿದ ಇನ್‌ವಾಯ್ಸ್‌ಗಳು ಕಂಡುಬಂದಿಲ್ಲ.",
+    noOutstandingOrOverdueInvoices:
+      "ಯಾವುದೇ ಬಾಕಿ ಅಥವಾ ಅವಧಿ ಮೀರಿದ ಇನ್‌ವಾಯ್ಸ್‌ಗಳು ಕಂಡುಬಂದಿಲ್ಲ.",
     allCurrencies: "ಎಲ್ಲಾ ಕರೆನ್ಸಿಗಳು",
     filteredByCurrency: "%{currency} ಮೂಲಕ ಫಿಲ್ಟರ್ ಮಾಡಲಾಗಿದೆ",
     overdueAgingTitle: "ಅವಧಿ ಮೀರಿದ ಏಜಿಂಗ್ (%{currency})",
     averageDays: "ಸರಾಸರಿ ದಿನಗಳು:",
     timeReportsDesc: "ನಿಮ್ಮ ತಂಡದ ಸದಸ್ಯರು ಸೇರಿಸಿದ ಸಮಯ ನಮೂದುಗಳ ಸಮಗ್ರ ಸಾರಾಂಶ",
     outstandingOverdueInvoicesTitle: "ಬಾಕಿ ಮತ್ತು ಅವಧಿ ಮೀರಿದ ಇನ್‌ವಾಯ್ಸ್‌ಗಳು",
-    outstandingOverdueInvoicesDesc: "ಎಲ್ಲಾ ಗ್ರಾಹಕರಾದ್ಯಂತ ಬಾಕಿ ಮತ್ತು ಅವಧಿ ಮೀರಿದ ಇನ್‌ವಾಯ್ಸ್‌ಗಳ ವಿವರವಾದ ಅವಲೋಕನ",
+    outstandingOverdueInvoicesDesc:
+      "ಎಲ್ಲಾ ಗ್ರಾಹಕರಾದ್ಯಂತ ಬಾಕಿ ಮತ್ತು ಅವಧಿ ಮೀರಿದ ಇನ್‌ವಾಯ್ಸ್‌ಗಳ ವಿವರವಾದ ಅವಲೋಕನ",
     revenueByClient: "ಗ್ರಾಹಕರ ಪ್ರಕಾರ ಆದಾಯ",
-    revenueByClientDesc: "ಪ್ರವೃತ್ತಿಗಳು ಮತ್ತು ಹೋಲಿಕೆಗಳೊಂದಿಗೆ ಗ್ರಾಹಕರ ಪ್ರಕಾರ ಆದಾಯ ವಿಭಜನೆ",
+    revenueByClientDesc:
+      "ಪ್ರವೃತ್ತಿಗಳು ಮತ್ತು ಹೋಲಿಕೆಗಳೊಂದಿಗೆ ಗ್ರಾಹಕರ ಪ್ರಕಾರ ಆದಾಯ ವಿಭಜನೆ",
     accountsAgingTableDesc: "ಸಮಯಾವಧಿಯ ಪ್ರಕಾರ ಬಾಕಿ ಸ್ವೀಕೃತಿಗಳ ವಯಸ್ಸು ವಿಶ್ಲೇಷಣೆ",
     paymentReportTitle: "ಪಾವತಿ ವರದಿ",
-    paymentReportDesc: "ವಿವರವಾದ ವಹಿವಾಟು ಇತಿಹಾಸದೊಂದಿಗೆ ಸ್ವೀಕರಿಸಿದ ಎಲ್ಲಾ ಪಾವತಿಗಳನ್ನು ಟ್ರ್ಯಾಕ್ ಮಾಡಿ",
+    paymentReportDesc:
+      "ವಿವರವಾದ ವಹಿವಾಟು ಇತಿಹಾಸದೊಂದಿಗೆ ಸ್ವೀಕರಿಸಿದ ಎಲ್ಲಾ ಪಾವತಿಗಳನ್ನು ಟ್ರ್ಯಾಕ್ ಮಾಡಿ",
     teamUtilization: "ತಂಡ ಬಳಕೆ",
     teamUtilizationDesc: "ತಂಡದ ಸದಸ್ಯರ ಬಳಕೆ ದರಗಳು ಮತ್ತು ಸಾಮರ್ಥ್ಯ ವಿಶ್ಲೇಷಣೆ",
     projectProfitability: "ಯೋಜನೆ ಲಾಭದಾಯಕತೆ",
     projectProfitabilityDesc: "ವೆಚ್ಚ ವಿಭಜನೆಯೊಂದಿಗೆ ಯೋಜನೆಯ ಲಾಭದಾಯಕತೆ ವಿಶ್ಲೇಷಣೆ",
     clientSummaryTitle: "ಗ್ರಾಹಕ ಸಾರಾಂಶ",
-    clientSummaryDesc: "ಸಮಗ್ರ ಗ್ರಾಹಕ ಕಾರ್ಯಕ್ಷಮತೆ ಮತ್ತು ತೊಡಗಿಸಿಕೊಳ್ಳುವಿಕೆ ಮೆಟ್ರಿಕ್‌ಗಳು",
-    understandReportsAtGlance: "ಆದಾಯ, ಸಮಯ, ಮತ್ತು ಬಾಕಿ ಕೆಲಸವನ್ನು ಒಂದೇ ನೋಟದಲ್ಲಿ ಅರ್ಥಮಾಡಿಕೊಳ್ಳಿ.",
+    clientSummaryDesc:
+      "ಸಮಗ್ರ ಗ್ರಾಹಕ ಕಾರ್ಯಕ್ಷಮತೆ ಮತ್ತು ತೊಡಗಿಸಿಕೊಳ್ಳುವಿಕೆ ಮೆಟ್ರಿಕ್‌ಗಳು",
+    understandReportsAtGlance:
+      "ಆದಾಯ, ಸಮಯ, ಮತ್ತು ಬಾಕಿ ಕೆಲಸವನ್ನು ಒಂದೇ ನೋಟದಲ್ಲಿ ಅರ್ಥಮಾಡಿಕೊಳ್ಳಿ.",
     scheduleReports: "ವರದಿಗಳನ್ನು ಶೆಡ್ಯೂಲ್ ಮಾಡಿ",
     availableReports: "ಲಭ್ಯ ವರದಿಗಳು",
     revenueAndBilling: "ಆದಾಯ ಮತ್ತು ಬಿಲ್ಲಿಂಗ್",
@@ -878,7 +907,8 @@ const kn = {
     viewOverdueInvoices: "ಅವಧಿ ಮೀರಿದ ಇನ್‌ವಾಯ್ಸ್‌ಗಳನ್ನು ವೀಕ್ಷಿಸಿ",
     monthlyRevenueReport: "ಮಾಸಿಕ ಆದಾಯ ವರದಿ",
     openReport: "%{title} ವರದಿ ತೆರೆಯಿರಿ",
-    reviewHoursLogged: "ವ್ಯಕ್ತಿ, ಗ್ರಾಹಕ, ಮತ್ತು ಯೋಜನೆಯ ಪ್ರಕಾರ ದಾಖಲಾದ ಗಂಟೆಗಳನ್ನು ಪರಿಶೀಲಿಸಿ.",
+    reviewHoursLogged:
+      "ವ್ಯಕ್ತಿ, ಗ್ರಾಹಕ, ಮತ್ತು ಯೋಜನೆಯ ಪ್ರಕಾರ ದಾಖಲಾದ ಗಂಟೆಗಳನ್ನು ಪರಿಶೀಲಿಸಿ.",
     lastSevenDaysPreset: "ಕಳೆದ 7 ದಿನಗಳು",
     lastThirtyDaysPreset: "ಕಳೆದ 30 ದಿನಗಳು",
     totalEntries: "ಒಟ್ಟು ನಮೂದುಗಳು",
@@ -1123,14 +1153,19 @@ const kn = {
     paidInvoices: "ಪಾವತಿಯಾದ ಇನ್‌ವಾಯ್ಸ್‌ಗಳು",
     alreadySettled: "ಈಗಾಗಲೇ ಇತ್ಯರ್ಥವಾಗಿದೆ",
     paymentsReceived: "ಸ್ವೀಕರಿಸಿದ ಪಾವತಿಗಳು",
-    employeeGuidance: "ನಿಮ್ಮ ವಾರವನ್ನು ಟ್ರ್ಯಾಕ್ ಮಾಡಿ, ನಿಖರ ನಮೂದುಗಳನ್ನು ಸಲ್ಲಿಸಿ, ಮತ್ತು ಕೆಲಸವನ್ನು ಮುಂದುವರಿಸಿ.",
-    bookKeeperGuidance: "ಬರುವ ಪಾವತಿಗಳನ್ನು ಪರಿಶೀಲಿಸಿ, ಇನ್‌ವಾಯ್ಸ್‌ಗಳನ್ನು ಸಮನ್ವಯಗೊಳಿಸಿ, ಮತ್ತು ಹಣದ ಹರಿವನ್ನು ಸ್ಪಷ್ಟವಾಗಿಡಿ.",
-    clientGuidance: "ನಿಮ್ಮ ಖಾತೆಯ ಇನ್‌ವಾಯ್ಸ್ ಸ್ಥಿತಿ ಮತ್ತು ಪಾವತಿ ಇತಿಹಾಸವನ್ನು ಪರಿಶೀಲಿಸಿ.",
+    employeeGuidance:
+      "ನಿಮ್ಮ ವಾರವನ್ನು ಟ್ರ್ಯಾಕ್ ಮಾಡಿ, ನಿಖರ ನಮೂದುಗಳನ್ನು ಸಲ್ಲಿಸಿ, ಮತ್ತು ಕೆಲಸವನ್ನು ಮುಂದುವರಿಸಿ.",
+    bookKeeperGuidance:
+      "ಬರುವ ಪಾವತಿಗಳನ್ನು ಪರಿಶೀಲಿಸಿ, ಇನ್‌ವಾಯ್ಸ್‌ಗಳನ್ನು ಸಮನ್ವಯಗೊಳಿಸಿ, ಮತ್ತು ಹಣದ ಹರಿವನ್ನು ಸ್ಪಷ್ಟವಾಗಿಡಿ.",
+    clientGuidance:
+      "ನಿಮ್ಮ ಖಾತೆಯ ಇನ್‌ವಾಯ್ಸ್ ಸ್ಥಿತಿ ಮತ್ತು ಪಾವತಿ ಇತಿಹಾಸವನ್ನು ಪರಿಶೀಲಿಸಿ.",
     defaultGuidance: "ಆದಾಯ, ಯೋಜನೆಗಳು, ಮತ್ತು ತಂಡದ ಚಲನಶೀಲತೆ ಒಂದೇ ನೋಟದಲ್ಲಿ.",
     recentActivity: "ಇತ್ತೀಚಿನ ಚಟುವಟಿಕೆ",
     workspaceActivity: "ಕಾರ್ಯಕ್ಷೇತ್ರ ಚಟುವಟಿಕೆ",
-    employeeActivityDescription: "ನಿಮ್ಮ ಡ್ಯಾಶ್‌ಬೋರ್ಡ್ ಸಮಯ ಟ್ರ್ಯಾಕಿಂಗ್ ಮತ್ತು ನಿಯೋಜಿತ ಕೆಲಸದ ಮೇಲೆ ಕೇಂದ್ರೀಕೃತವಾಗಿದೆ.",
-    activityDescription: "ನಿಮ್ಮ ಇನ್‌ವಾಯ್ಸ್‌ಗಳು ಮತ್ತು ಪಾವತಿಗಳಾದ್ಯಂತ ಇತ್ತೀಚಿನ ನವೀಕರಣಗಳು",
+    employeeActivityDescription:
+      "ನಿಮ್ಮ ಡ್ಯಾಶ್‌ಬೋರ್ಡ್ ಸಮಯ ಟ್ರ್ಯಾಕಿಂಗ್ ಮತ್ತು ನಿಯೋಜಿತ ಕೆಲಸದ ಮೇಲೆ ಕೇಂದ್ರೀಕೃತವಾಗಿದೆ.",
+    activityDescription:
+      "ನಿಮ್ಮ ಇನ್‌ವಾಯ್ಸ್‌ಗಳು ಮತ್ತು ಪಾವತಿಗಳಾದ್ಯಂತ ಇತ್ತೀಚಿನ ನವೀಕರಣಗಳು",
     noRecentActivityYet: "ಇನ್ನೂ ಯಾವುದೇ ಇತ್ತೀಚಿನ ಚಟುವಟಿಕೆ ಇಲ್ಲ",
     loadMore: "ಇನ್ನಷ್ಟು ಲೋಡ್ ಮಾಡಿ",
     allCaughtUp: "ನೀವು ಎಲ್ಲವನ್ನೂ ನವೀಕೃತವಾಗಿಸಿದ್ದೀರಿ",
@@ -1172,27 +1207,36 @@ const kn = {
     cashLedger: "ನಗದು ಖಾತೆ ಪುಸ್ತಕ",
     miruLogo: "Miru",
     heroTitle: "ಸಮಯ, ಇನ್‌ವಾಯ್ಸ್‌ಗಳು, ಮತ್ತು ಪಾವತಿಗಳಿಗೆ ಒಂದೇ ಸ್ಥಳ",
-    heroDescription: "ದಿನವನ್ನು ಸ್ಪಷ್ಟವಾಗಿಡಿ, ಬಿಲ್ಲಿಂಗ್ ಮುಂದುವರಿಸಿ, ಮತ್ತು ನಗದು ಗೋಚರವಾಗಿಡಿ.",
+    heroDescription:
+      "ದಿನವನ್ನು ಸ್ಪಷ್ಟವಾಗಿಡಿ, ಬಿಲ್ಲಿಂಗ್ ಮುಂದುವರಿಸಿ, ಮತ್ತು ನಗದು ಗೋಚರವಾಗಿಡಿ.",
     slideShowPrefix: "ತೋರಿಸಿ",
-    slideDashboardDescription: "ಆದಾಯ, ಸಕ್ರಿಯ ಯೋಜನೆಗಳು, ಮತ್ತು ತಂಡದ ಚಲನಶೀಲತೆಯನ್ನು ಹುಡುಕದೆ ನೋಡಿ.",
-    slideInvoicesDescription: "ಕರಡುಗಳು, ಅವಧಿ ಮೀರಿದ ಬಾಕಿಗಳು, ಮತ್ತು ಪಾವತಿಯಾದ ಕೆಲಸವನ್ನು ಒಂದೇ ಸ್ಥಳದಲ್ಲಿಡಿ.",
-    slideTimeTrackingDescription: "ಸಾಪ್ತಾಹಿಕ ಸಮಯ ನಮೂದು ಕೆಲಸವಾಗದೆ ಪ್ರಸ್ತುತವಾಗಿರುತ್ತದೆ.",
-    slidePaymentsDescription: "ಪ್ರತಿ ಪಾವತಿ ವಿಧಾನ, ಸ್ಥಿತಿ, ಮತ್ತು ಮೂಲದೊಂದಿಗೆ ಒಂದೇ ಖಾತೆ ಪುಸ್ತಕದಲ್ಲಿ ಬರುತ್ತದೆ.",
+    slideDashboardDescription:
+      "ಆದಾಯ, ಸಕ್ರಿಯ ಯೋಜನೆಗಳು, ಮತ್ತು ತಂಡದ ಚಲನಶೀಲತೆಯನ್ನು ಹುಡುಕದೆ ನೋಡಿ.",
+    slideInvoicesDescription:
+      "ಕರಡುಗಳು, ಅವಧಿ ಮೀರಿದ ಬಾಕಿಗಳು, ಮತ್ತು ಪಾವತಿಯಾದ ಕೆಲಸವನ್ನು ಒಂದೇ ಸ್ಥಳದಲ್ಲಿಡಿ.",
+    slideTimeTrackingDescription:
+      "ಸಾಪ್ತಾಹಿಕ ಸಮಯ ನಮೂದು ಕೆಲಸವಾಗದೆ ಪ್ರಸ್ತುತವಾಗಿರುತ್ತದೆ.",
+    slidePaymentsDescription:
+      "ಪ್ರತಿ ಪಾವತಿ ವಿಧಾನ, ಸ್ಥಿತಿ, ಮತ್ತು ಮೂಲದೊಂದಿಗೆ ಒಂದೇ ಖಾತೆ ಪುಸ್ತಕದಲ್ಲಿ ಬರುತ್ತದೆ.",
     continueWithGoogle: "Google ನೊಂದಿಗೆ ಮುಂದುವರಿಸಿ",
     continueWithGithub: "GitHub ನೊಂದಿಗೆ ಮುಂದುವರಿಸಿ",
     orUseEmail: "ಅಥವಾ ಇಮೇಲ್ ಬಳಸಿ",
     verifyWithAuthenticator: "ನಿಮ್ಮ ಅಥೆಂಟಿಕೇಟರ್ ಅಪ್ಲಿಕೇಶನ್‌ನೊಂದಿಗೆ ಪರಿಶೀಲಿಸಿ",
-    authenticatorInstructions: "ನಿಮ್ಮ ಅಥೆಂಟಿಕೇಟರ್ ಅಪ್ಲಿಕೇಶನ್‌ನಿಂದ 6-ಅಂಕಿ ಕೋಡ್ ನಮೂದಿಸಿ, ಅಥವಾ ರಿಕವರಿ ಕೋಡ್ ಬಳಸಿ.",
+    authenticatorInstructions:
+      "ನಿಮ್ಮ ಅಥೆಂಟಿಕೇಟರ್ ಅಪ್ಲಿಕೇಶನ್‌ನಿಂದ 6-ಅಂಕಿ ಕೋಡ್ ನಮೂದಿಸಿ, ಅಥವಾ ರಿಕವರಿ ಕೋಡ್ ಬಳಸಿ.",
     authenticatorCode: "ಅಥೆಂಟಿಕೇಟರ್ ಕೋಡ್",
     recoveryCode: "ರಿಕವರಿ ಕೋಡ್",
     verifyAndSignIn: "ಪರಿಶೀಲಿಸಿ ಮತ್ತು ಸೈನ್ ಇನ್ ಮಾಡಿ",
-    completePasskeyVerification: "ಸೈನ್ ಇನ್ ಪೂರ್ಣಗೊಳಿಸಲು ಪಾಸ್‌ಕೀ ಪರಿಶೀಲನೆ ಪೂರ್ಣಗೊಳಿಸಿ.",
-    enterAuthenticatorCode: "ಸೈನ್ ಇನ್ ಪೂರ್ಣಗೊಳಿಸಲು ನಿಮ್ಮ ಅಥೆಂಟಿಕೇಟರ್ ಕೋಡ್ ನಮೂದಿಸಿ.",
+    completePasskeyVerification:
+      "ಸೈನ್ ಇನ್ ಪೂರ್ಣಗೊಳಿಸಲು ಪಾಸ್‌ಕೀ ಪರಿಶೀಲನೆ ಪೂರ್ಣಗೊಳಿಸಿ.",
+    enterAuthenticatorCode:
+      "ಸೈನ್ ಇನ್ ಪೂರ್ಣಗೊಳಿಸಲು ನಿಮ್ಮ ಅಥೆಂಟಿಕೇಟರ್ ಕೋಡ್ ನಮೂದಿಸಿ.",
     invalidVerificationCode: "ಅಮಾನ್ಯ ಪರಿಶೀಲನೆ ಕೋಡ್.",
     privacy: "ಗೌಪ್ಯತೆ",
     terms: "ನಿಯಮಗಳು",
     createAccount: "ಖಾತೆ ರಚಿಸಿ",
-    passwordCriteria: "ಕನಿಷ್ಠ 8 ಅಕ್ಷರಗಳು, 1 ದೊಡ್ಡ ಅಕ್ಷರ, 1 ಸಣ್ಣ ಅಕ್ಷರ, 1 ಸಂಖ್ಯೆ ಮತ್ತು 1 ವಿಶೇಷ ಅಕ್ಷರ",
+    passwordCriteria:
+      "ಕನಿಷ್ಠ 8 ಅಕ್ಷರಗಳು, 1 ದೊಡ್ಡ ಅಕ್ಷರ, 1 ಸಣ್ಣ ಅಕ್ಷರ, 1 ಸಂಖ್ಯೆ ಮತ್ತು 1 ವಿಶೇಷ ಅಕ್ಷರ",
     agreeToTerms: "ನಾನು ಒಪ್ಪುತ್ತೇನೆ",
     termsOfService: "ಸೇವಾ ನಿಯಮಗಳು",
     privacyPolicy: "ಗೌಪ್ಯತೆ ನೀತಿ",
@@ -1276,8 +1320,10 @@ const kn = {
     publicHolidays: "ಸಾರ್ವಜನಿಕ ರಜಾದಿನಗಳು",
     zeroUsed: "0 ಬಳಸಲಾಗಿದೆ",
     leaveCalendar: "ರಜೆ ಕ್ಯಾಲೆಂಡರ್",
-    trackLeaveUsage: "%{year} ಗಾಗಿ ತಿಂಗಳ ಪ್ರಕಾರ ರಜೆ ಮತ್ತು ರಜಾದಿನ ಬಳಕೆಯನ್ನು ಟ್ರ್ಯಾಕ್ ಮಾಡಿ.",
-    selectDayToInspect: "ರಜೆ ವಿವರಗಳು ಮತ್ತು ರಜಾದಿನ ಬಳಕೆಯನ್ನು ಪರಿಶೀಲಿಸಲು ದಿನವನ್ನು ಆಯ್ಕೆಮಾಡಿ.",
+    trackLeaveUsage:
+      "%{year} ಗಾಗಿ ತಿಂಗಳ ಪ್ರಕಾರ ರಜೆ ಮತ್ತು ರಜಾದಿನ ಬಳಕೆಯನ್ನು ಟ್ರ್ಯಾಕ್ ಮಾಡಿ.",
+    selectDayToInspect:
+      "ರಜೆ ವಿವರಗಳು ಮತ್ತು ರಜಾದಿನ ಬಳಕೆಯನ್ನು ಪರಿಶೀಲಿಸಲು ದಿನವನ್ನು ಆಯ್ಕೆಮಾಡಿ.",
     nothingBooked: "ಏನೂ ಬುಕ್ ಮಾಡಲಾಗಿಲ್ಲ",
     nothingBookedForDate: "ಈ ದಿನಾಂಕಕ್ಕೆ ಏನೂ ಬುಕ್ ಮಾಡಲಾಗಿಲ್ಲ.",
     recordedTimeAway: "ಈ ದಿನ ದಾಖಲಾದ ರಜೆ ಸಮಯ",
@@ -1299,12 +1345,14 @@ const kn = {
     numberOfTeamMembers: "ತಂಡದ ಸದಸ್ಯರ ಸಂಖ್ಯೆ:",
     plan: "ಯೋಜನೆ",
     basicPlan: "ಮೂಲ ಯೋಜನೆ",
-    basicPlanDescription: "ಮೂಲ ಯೋಜನೆ ಎಲ್ಲಾ ವೈಶಿಷ್ಟ್ಯಗಳನ್ನು ಒಳಗೊಂಡಿದೆ. ಇದು ಒಂದು ಬಾರಿಯ ಶುಲ್ಕ.",
+    basicPlanDescription:
+      "ಮೂಲ ಯೋಜನೆ ಎಲ್ಲಾ ವೈಶಿಷ್ಟ್ಯಗಳನ್ನು ಒಳಗೊಂಡಿದೆ. ಇದು ಒಂದು ಬಾರಿಯ ಶುಲ್ಕ.",
     chargedOnce: "ಒಂದು ಬಾರಿ ಶುಲ್ಕ",
     addOns: "ಆಡ್-ಆನ್‌ಗಳು",
     oneTeamMember: "1 ತಂಡದ ಸದಸ್ಯ",
     chargedEveryMonth: "ಪ್ರತಿ ತಿಂಗಳು ಶುಲ್ಕ",
-    basicPlanPerUser: "ಮೂಲ ಯೋಜನೆ ಪ್ರತಿ ಬಳಕೆದಾರರಿಗೆ ಪ್ರತಿ ತಿಂಗಳು ಹೆಚ್ಚುವರಿ %{rate}$ ಒಳಗೊಂಡಿದೆ.",
+    basicPlanPerUser:
+      "ಮೂಲ ಯೋಜನೆ ಪ್ರತಿ ಬಳಕೆದಾರರಿಗೆ ಪ್ರತಿ ತಿಂಗಳು ಹೆಚ್ಚುವರಿ %{rate}$ ಒಳಗೊಂಡಿದೆ.",
     plusTaxes: "ತೆರಿಗೆಗಳನ್ನು ಹೊರತುಪಡಿಸಿ",
     reviewAndPay: "ಪರಿಶೀಲಿಸಿ ಮತ್ತು ಪಾವತಿಸಿ",
   },

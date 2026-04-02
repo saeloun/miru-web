@@ -62,7 +62,6 @@ const ja = {
   inactive: "非アクティブ",
   invited: "招待済み",
   department: "部署",
-  projects: "プロジェクト",
   theme: "テーマ",
   summary: "概要",
   format: "形式",
@@ -185,10 +184,13 @@ const ja = {
     entry: "エントリー",
     entries: "エントリー",
     noEntriesForSelectedDay: "選択した日のエントリーはありません",
-    weekReviewHint: "今週記録したすべてを確認するには「今週」に切り替えてください。",
+    weekReviewHint:
+      "今週記録したすべてを確認するには「今週」に切り替えてください。",
     noTimeEntriesYet: "タイムエントリーはまだありません",
-    firstEntryHint: "「エントリーを追加」をクリックして、この日の最初のタイムエントリーを記録してください",
-    logWorkByWeekOrMonth: "週または月ごとに作業を記録しましょう。エントリーを明確で最新の状態に保ちましょう。",
+    firstEntryHint:
+      "「エントリーを追加」をクリックして、この日の最初のタイムエントリーを記録してください",
+    logWorkByWeekOrMonth:
+      "週または月ごとに作業を記録しましょう。エントリーを明確で最新の状態に保ちましょう。",
     entriesFor: "%{name}のエントリー",
     timeEntriesFor: "タイムエントリー",
     unableToLoad: "現在タイムトラッキングを読み込めません。",
@@ -206,7 +208,8 @@ const ja = {
     entriesUpdatedSuccessfully: "エントリーが正常に更新されました",
     failedToUpdateEntries: "エントリーの更新に失敗しました",
     selectProjectFirst: "まずプロジェクトを選択してください",
-    editingModeActive: "編集モードがアクティブです。上の変更を完了してください。",
+    editingModeActive:
+      "編集モードがアクティブです。上の変更を完了してください。",
     dayAbbr: {
       mon: "月",
       tue: "火",
@@ -330,7 +333,8 @@ const ja = {
     searchProjects: "プロジェクトを検索...",
     createFirstProject: "最初のプロジェクトを作成して始めましょう。",
     noProjectsYet: "まだプロジェクトがありません",
-    workingOnProjects: "プロジェクト全体で請求可能・請求不可の作業を追跡しましょう。",
+    workingOnProjects:
+      "プロジェクト全体で請求可能・請求不可の作業を追跡しましょう。",
     active: "アクティブ",
     paused: "一時停止",
     completed: "完了",
@@ -346,21 +350,24 @@ const ja = {
     outstanding: "未払い",
     deleting: "削除中...",
     createProject: "プロジェクトを作成",
-    createProjectDescription: "新しいプロジェクトを設定してクライアントに割り当てます。",
+    createProjectDescription:
+      "新しいプロジェクトを設定してクライアントに割り当てます。",
     editProjectDetails: "プロジェクト詳細を編集",
     saveChanges: "変更を保存",
     billableDescription: "このプロジェクトの時間を追跡してクライアントに請求",
     nonBillableDescription: "クライアントに請求せずに時間を追跡",
     noClientsPresent: "クライアントがいません",
     teamMembersUpdated: "チームメンバーが正常に更新されました",
-    manageProjectMembersDescription: "チームメンバーを追加・削除し、時間単価を設定します。",
+    manageProjectMembersDescription:
+      "チームメンバーを追加・削除し、時間単価を設定します。",
     enterValidRate: "有効な単価を入力してください",
     addAnotherTeamMember: "別のメンバーを追加",
     addTeamMember: "チームメンバーを追加",
     saveTeamMembers: "メンバーを保存",
     noTeamMembersAdded: "まだチームメンバーが追加されていません。",
     addTeamMembers: "チームメンバーを追加",
-    teamMembersDescription: "このプロジェクトに割り当てられたチームメンバーを表示・管理します。",
+    teamMembersDescription:
+      "このプロジェクトに割り当てられたチームメンバーを表示・管理します。",
   },
 
   // Team
@@ -471,8 +478,7 @@ const ja = {
     addEntry: "%{count}件のエントリーを追加",
     addEntries_plural: "%{count}件のエントリーを追加",
     thankYouForBusiness: "お取引ありがとうございます！",
-    previewNote:
-      "これはプレビューです。変更は保存後に反映されます。",
+    previewNote: "これはプレビューです。変更は保存後に反映されます。",
     noInvoiceGenerated: "まだ請求書が作成されていません。",
     acceptCreditCards: "クレジットカードを受け付ける",
     sendTo: "送信先",
@@ -504,13 +510,10 @@ const ja = {
     message: "メッセージ",
     addEmailFromClientSettings:
       "クライアント設定ページからメールアドレスを追加してください",
-    reminderSubject:
-      "未払い請求書の支払いリマインダー",
+    reminderSubject: "未払い請求書の支払いリマインダー",
     invoiceSentSubject: "%{company}から請求書が届きました（%{number}）",
-    reminderBody:
-      "%{company}から請求書%{number}のリマインダーが届きました",
-    invoiceSentBody:
-      "%{company}から請求書が届きました（%{number}）",
+    reminderBody: "%{company}から請求書%{number}のリマインダーが届きました",
+    invoiceSentBody: "%{company}から請求書が届きました（%{number}）",
     invoiceWillBeSent: "請求書が送信されます！",
     processing: "処理中...",
 
@@ -596,12 +599,15 @@ const ja = {
 
     // Invoice reminder email
     invoiceReminder: "請求書リマインダー: %{number}",
-    reminderMessage: "未払いの請求書についてのリマインダーです。添付の詳細をご確認ください。",
+    reminderMessage:
+      "未払いの請求書についてのリマインダーです。添付の詳細をご確認ください。",
     invoiceAttached: "請求書を添付しましたのでご確認ください。",
-    reminderPaymentMessage: "期限超過の請求書についてのリマインダーです。お支払いをお願いします。",
+    reminderPaymentMessage:
+      "期限超過の請求書についてのリマインダーです。お支払いをお願いします。",
     invoiceSubject: "請求書 %{number}",
     reminderPaymentSubject: "請求書%{number}の支払いリマインダー",
-    markAsPaidConfirm: "この請求書を支払い済みにしますか？この操作は会計記録に影響します。",
+    markAsPaidConfirm:
+      "この請求書を支払い済みにしますか？この操作は会計記録に影響します。",
     failedToLoadInvoice: "請求書の読み込みに失敗しました",
     invoiceNotFound: "請求書が見つかりません",
     failedToMarkAsPaid: "請求書の支払い済みマークに失敗しました",
@@ -680,7 +686,8 @@ const ja = {
   timer: {
     webTimer: "Webタイマー",
     webTimerLabel: "Webタイマー",
-    trackLiveWork: "リアルタイムで作業を追跡し、今日のエントリーリストに直接保存します。",
+    trackLiveWork:
+      "リアルタイムで作業を追跡し、今日のエントリーリストに直接保存します。",
     startTimer: "タイマーを開始",
     pause: "一時停止",
     resume: "再開",
@@ -689,7 +696,8 @@ const ja = {
     reset: "リセット",
     timer: "タイマー",
     saveTimeEntry: "タイムエントリーを保存",
-    saveTimeEntryDescription: "%{time}を記録しました。タイムエントリーとして保存しますか？",
+    saveTimeEntryDescription:
+      "%{time}を記録しました。タイムエントリーとして保存しますか？",
     discard: "破棄",
     timerStarted: "タイマーが開始されました",
     timerPaused: "タイマーが一時停止されました",
@@ -792,18 +800,23 @@ const ja = {
     thirtyOneToSixtyDays: "31-60日",
     sixtyOneToNinetyDays: "61-90日",
     ninetyPlusDays: "90日以上",
-    noClientsWithOutstandingBalances: "未払い残高のあるクライアントはいません。",
+    noClientsWithOutstandingBalances:
+      "未払い残高のあるクライアントはいません。",
     showingOfClients: "%{displayed} / %{total}クライアントを表示中...",
-    errorLoadingReportData: "レポートデータの読み込みエラー。再試行してください。",
+    errorLoadingReportData:
+      "レポートデータの読み込みエラー。再試行してください。",
     projectClient: "プロジェクト/ クライアント",
     noteHeader: "メモ",
     teamMemberDate: "チームメンバー/ 日付",
     hoursLogged: "記録時間",
-    noResultsMatchFilters: "現在のフィルターに一致する結果がありません。一部のフィルターを削除してみてください。",
-    noTimeEntriesYet: "まだタイムエントリーが追加されていません。チームが追加したタイムエントリーの概要がここに表示されます。",
+    noResultsMatchFilters:
+      "現在のフィルターに一致する結果がありません。一部のフィルターを削除してみてください。",
+    noTimeEntriesYet:
+      "まだタイムエントリーが追加されていません。チームが追加したタイムエントリーの概要がここに表示されます。",
     selected: "%{count}件選択中",
     showingClientsCount: "%{shown} / %{total}クライアントを表示中",
-    ofTeamMembersSelected: "%{total}人中%{active}人のチームメンバーが選択されています",
+    ofTeamMembersSelected:
+      "%{total}人中%{active}人のチームメンバーが選択されています",
     statusGuide: "ステータスガイド:",
     activeCount: "%{count}件アクティブ",
     noGrouping: "グループ化なし",
@@ -826,9 +839,11 @@ const ja = {
     timeEntryReportTitle: "タイムエントリーレポート",
     timeEntryReportDesc: "チームが追加したタイムエントリーの概要。",
     invoicesReport: "請求書レポート",
-    invoicesReportDesc: "一定期間のすべてのクライアントの未払いおよび期限超過の詳細な概要。",
+    invoicesReportDesc:
+      "一定期間のすべてのクライアントの未払いおよび期限超過の詳細な概要。",
     totalHoursLoggedTitle: "総記録時間",
-    totalHoursLoggedDesc: "プロジェクト別にグループ化された、チームの請求済み、未請求、請求不可の時間の詳細な概要。",
+    totalHoursLoggedDesc:
+      "プロジェクト別にグループ化された、チームの請求済み、未請求、請求不可の時間の詳細な概要。",
     revenueReport: "収益レポート",
     revenueReportDesc: "各クライアントからの収益の詳細レポート。",
     accountsAging: "売掛金エイジング",
@@ -848,14 +863,16 @@ const ja = {
     formatLabel: "形式",
     exportPdfBtn: "PDFエクスポート",
     exportCsvBtn: "CSVエクスポート",
-    noOutstandingOrOverdueInvoices: "未払いまたは期限超過の請求書が見つかりません。",
+    noOutstandingOrOverdueInvoices:
+      "未払いまたは期限超過の請求書が見つかりません。",
     allCurrencies: "すべての通貨",
     filteredByCurrency: "%{currency}でフィルター済み",
     overdueAgingTitle: "期限超過エイジング（%{currency}）",
     averageDays: "平均日数:",
     timeReportsDesc: "チームメンバーが追加したタイムエントリーの包括的な概要",
     outstandingOverdueInvoicesTitle: "未払い・期限超過請求書",
-    outstandingOverdueInvoicesDesc: "すべてのクライアントの未払いおよび期限超過請求書の詳細ビュー",
+    outstandingOverdueInvoicesDesc:
+      "すべてのクライアントの未払いおよび期限超過請求書の詳細ビュー",
     revenueByClient: "クライアント別収益",
     revenueByClientDesc: "トレンドと比較によるクライアント別の収益内訳",
     accountsAgingTableDesc: "期間別の未回収売掛金のエイジング分析",
@@ -866,8 +883,10 @@ const ja = {
     projectProfitability: "プロジェクト収益性",
     projectProfitabilityDesc: "コスト内訳によるプロジェクト別の収益性分析",
     clientSummaryTitle: "クライアント概要",
-    clientSummaryDesc: "包括的なクライアントパフォーマンスとエンゲージメント指標",
-    understandReportsAtGlance: "収益、時間、未完了の作業を一目で把握しましょう。",
+    clientSummaryDesc:
+      "包括的なクライアントパフォーマンスとエンゲージメント指標",
+    understandReportsAtGlance:
+      "収益、時間、未完了の作業を一目で把握しましょう。",
     scheduleReports: "レポートをスケジュール",
     availableReports: "利用可能なレポート",
     revenueAndBilling: "収益と請求",
@@ -1123,13 +1142,17 @@ const ja = {
     paidInvoices: "支払い済み請求書",
     alreadySettled: "清算済み",
     paymentsReceived: "受領した支払い",
-    employeeGuidance: "週の作業を追跡し、正確なエントリーを提出し、作業を進めましょう。",
-    bookKeeperGuidance: "入金を確認し、請求書を照合し、キャッシュフローを明確にしましょう。",
-    clientGuidance: "アカウントの請求書ステータスと支払い履歴を確認しましょう。",
+    employeeGuidance:
+      "週の作業を追跡し、正確なエントリーを提出し、作業を進めましょう。",
+    bookKeeperGuidance:
+      "入金を確認し、請求書を照合し、キャッシュフローを明確にしましょう。",
+    clientGuidance:
+      "アカウントの請求書ステータスと支払い履歴を確認しましょう。",
     defaultGuidance: "収益、プロジェクト、チームの勢いを一目で把握。",
     recentActivity: "最近の活動",
     workspaceActivity: "ワークスペースの活動",
-    employeeActivityDescription: "ダッシュボードはタイムトラッキングと割り当て作業に焦点を当てています。",
+    employeeActivityDescription:
+      "ダッシュボードはタイムトラッキングと割り当て作業に焦点を当てています。",
     activityDescription: "請求書と支払いの最新の更新",
     noRecentActivityYet: "最近の活動はまだありません",
     loadMore: "もっと読み込む",
@@ -1174,20 +1197,27 @@ const ja = {
     heroTitle: "時間、請求書、支払いを一か所で",
     heroDescription: "日々を明確に、請求を前進させ、キャッシュフローを可視化。",
     slideShowPrefix: "表示",
-    slideDashboardDescription: "収益、アクティブなプロジェクト、チームの勢いを簡単に確認。",
-    slideInvoicesDescription: "下書き、延滞残高、支払い済みの作業を同じ場所で管理。",
-    slideTimeTrackingDescription: "週ごとのタイムエントリーが手間をかけずに最新の状態を維持。",
-    slidePaymentsDescription: "すべての支払いが方法、ステータス、ソースと共に一つの台帳に記録。",
+    slideDashboardDescription:
+      "収益、アクティブなプロジェクト、チームの勢いを簡単に確認。",
+    slideInvoicesDescription:
+      "下書き、延滞残高、支払い済みの作業を同じ場所で管理。",
+    slideTimeTrackingDescription:
+      "週ごとのタイムエントリーが手間をかけずに最新の状態を維持。",
+    slidePaymentsDescription:
+      "すべての支払いが方法、ステータス、ソースと共に一つの台帳に記録。",
     continueWithGoogle: "Googleで続ける",
     continueWithGithub: "GitHubで続ける",
     orUseEmail: "またはメールを使用",
     verifyWithAuthenticator: "認証アプリで認証",
-    authenticatorInstructions: "認証アプリの6桁のコードを入力するか、リカバリーコードを使用してください。",
+    authenticatorInstructions:
+      "認証アプリの6桁のコードを入力するか、リカバリーコードを使用してください。",
     authenticatorCode: "認証コード",
     recoveryCode: "リカバリーコード",
     verifyAndSignIn: "認証してサインイン",
-    completePasskeyVerification: "サインインを完了するにはパスキー認証を完了してください。",
-    enterAuthenticatorCode: "サインインを完了するには認証コードを入力してください。",
+    completePasskeyVerification:
+      "サインインを完了するにはパスキー認証を完了してください。",
+    enterAuthenticatorCode:
+      "サインインを完了するには認証コードを入力してください。",
     invalidVerificationCode: "無効な認証コードです。",
     privacy: "プライバシー",
     terms: "利用規約",
@@ -1277,7 +1307,8 @@ const ja = {
     zeroUsed: "0使用",
     leaveCalendar: "休暇カレンダー",
     trackLeaveUsage: "%{year}の休暇と祝日の使用状況を月ごとに追跡。",
-    selectDayToInspect: "休暇の詳細と祝日の使用状況を確認する日を選択してください。",
+    selectDayToInspect:
+      "休暇の詳細と祝日の使用状況を確認する日を選択してください。",
     nothingBooked: "予約なし",
     nothingBookedForDate: "この日付に予約はありません。",
     recordedTimeAway: "この日に記録された休暇時間",
@@ -1299,12 +1330,14 @@ const ja = {
     numberOfTeamMembers: "チームメンバー数:",
     plan: "プラン",
     basicPlan: "ベーシックプラン",
-    basicPlanDescription: "ベーシックプランにはすべての機能が含まれています。一回限りの料金です。",
+    basicPlanDescription:
+      "ベーシックプランにはすべての機能が含まれています。一回限りの料金です。",
     chargedOnce: "一回限りの料金",
     addOns: "アドオン",
     oneTeamMember: "チームメンバー1名",
     chargedEveryMonth: "毎月課金",
-    basicPlanPerUser: "ベーシックプランにはユーザーごとに月額%{rate}$の追加料金が含まれます。",
+    basicPlanPerUser:
+      "ベーシックプランにはユーザーごとに月額%{rate}$の追加料金が含まれます。",
     plusTaxes: "税別",
     reviewAndPay: "確認して支払い",
   },

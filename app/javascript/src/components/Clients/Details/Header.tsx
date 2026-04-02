@@ -19,7 +19,7 @@ import { MobileMoreOptions, Modal } from "StyledComponents";
 
 import Contacts from "../Contacts";
 import DeleteClient from "../Modals/DeleteClient";
-import EditClient from "../Modals/EditClient";
+import EditClientModal from "../Modals/EditClientModal";
 
 const Header = ({
   clientDetails,
@@ -169,7 +169,7 @@ const Header = ({
         />
       )}
       {showEditDialog && (
-        <EditClient
+        <EditClientModal
           client={clientDetails}
           fetchDetails={fetchDetails}
           setShowEditDialog={setShowEditDialog}

@@ -39,7 +39,7 @@ interface TimeEntry {
   projectId: number;
 }
 
-interface EnhancedTimeEntryDialogProps {
+interface TimesheetEntryDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   entry?: TimeEntry | null;
@@ -52,7 +52,7 @@ interface EnhancedTimeEntryDialogProps {
   };
 }
 
-const EnhancedTimeEntryDialog: React.FC<EnhancedTimeEntryDialogProps> = ({
+const TimesheetEntryDialog: React.FC<TimesheetEntryDialogProps> = ({
   open,
   onOpenChange,
   entry = null,
@@ -447,4 +447,4 @@ const EnhancedTimeEntryDialog: React.FC<EnhancedTimeEntryDialogProps> = ({
   );
 };
 
-export default EnhancedTimeEntryDialog;
+export default TimesheetEntryDialog;

@@ -12,7 +12,7 @@ import { i18n } from "../../../i18n";
 
 const MoreOptions: FC<MoreOptionsProps> = ({
   deleteInvoice,
-  wavieInvoice,
+  waiveInvoice,
   downloadInvoice,
   showHistory,
   invoice = null,
@@ -50,7 +50,7 @@ const MoreOptions: FC<MoreOptionsProps> = ({
         </li>
         <li
           className="flex cursor-pointer items-center py-2 px-4 text-primary hover:bg-muted"
-          onClick={wavieInvoice}
+          onClick={waiveInvoice}
         >
           <img className="mr-4" height="16px" src={WaiveSVG} width="16px" />
           {i18n.t("invoices.waiveOff")}
@@ -84,7 +84,7 @@ const MoreOptions: FC<MoreOptionsProps> = ({
 
 interface MoreOptionsProps {
   deleteInvoice: () => void;
-  wavieInvoice: () => void;
+  waiveInvoice: () => void;
   downloadInvoice: (invoice: any) => void;
   invoice: any;
   markInvoiceAsPaid: (id: number) => void;

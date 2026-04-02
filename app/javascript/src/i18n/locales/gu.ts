@@ -62,7 +62,6 @@ const gu = {
   inactive: "Inactive",
   invited: "Invited",
   department: "Department",
-  projects: "Projects",
   theme: "Theme",
   summary: "Summary",
   format: "Format",
@@ -185,10 +184,13 @@ const gu = {
     entry: "entry",
     entries: "entries",
     noEntriesForSelectedDay: "No entries for the selected day",
-    weekReviewHint: "Switch to This Week to review everything you logged this week.",
+    weekReviewHint:
+      "Switch to This Week to review everything you logged this week.",
     noTimeEntriesYet: "No time entries yet",
-    firstEntryHint: 'Click "Add Entry" to log your first time entry for this day',
-    logWorkByWeekOrMonth: "Log work by week or month. Keep entries clear and current.",
+    firstEntryHint:
+      'Click "Add Entry" to log your first time entry for this day',
+    logWorkByWeekOrMonth:
+      "Log work by week or month. Keep entries clear and current.",
     entriesFor: "Entries for %{name}",
     timeEntriesFor: "Time entries for",
     unableToLoad: "Unable to load time tracking right now.",
@@ -330,7 +332,8 @@ const gu = {
     searchProjects: "Search projects...",
     createFirstProject: "Create your first project to get started.",
     noProjectsYet: "No projects yet",
-    workingOnProjects: "Track billable and non-billable work across your projects.",
+    workingOnProjects:
+      "Track billable and non-billable work across your projects.",
     active: "Active",
     paused: "Paused",
     completed: "Completed",
@@ -353,14 +356,16 @@ const gu = {
     nonBillableDescription: "Track time without billing the client",
     noClientsPresent: "No clients present",
     teamMembersUpdated: "Team members updated successfully",
-    manageProjectMembersDescription: "Add or remove team members and set their hourly rates.",
+    manageProjectMembersDescription:
+      "Add or remove team members and set their hourly rates.",
     enterValidRate: "Please enter a valid rate",
     addAnotherTeamMember: "Add Another Member",
     addTeamMember: "Add Team Member",
     saveTeamMembers: "Save Members",
     noTeamMembersAdded: "No team members have been added yet.",
     addTeamMembers: "Add Team Members",
-    teamMembersDescription: "View and manage team members assigned to this project.",
+    teamMembersDescription:
+      "View and manage team members assigned to this project.",
   },
 
   // Team
@@ -471,8 +476,7 @@ const gu = {
     addEntry: "Add %{count} entry",
     addEntries_plural: "Add %{count} entries",
     thankYouForBusiness: "Thank you for your business!",
-    previewNote:
-      "This is a preview. Changes will be reflected once saved.",
+    previewNote: "This is a preview. Changes will be reflected once saved.",
     noInvoiceGenerated: "No invoice has been generated yet.",
     acceptCreditCards: "Accept Credit Cards",
     sendTo: "SEND TO",
@@ -502,15 +506,11 @@ const gu = {
     recipientEmailId: "Recipient Email ID",
     subject: "Subject",
     message: "Message",
-    addEmailFromClientSettings:
-      "Please add email from client settings page",
-    reminderSubject:
-      "Reminder to complete payments for unpaid invoice",
+    addEmailFromClientSettings: "Please add email from client settings page",
+    reminderSubject: "Reminder to complete payments for unpaid invoice",
     invoiceSentSubject: "%{company} sent you an invoice (%{number})",
-    reminderBody:
-      "%{company} has sent you a reminder for invoice %{number}",
-    invoiceSentBody:
-      "%{company} has sent you an invoice (%{number})",
+    reminderBody: "%{company} has sent you a reminder for invoice %{number}",
+    invoiceSentBody: "%{company} has sent you an invoice (%{number})",
     invoiceWillBeSent: "Invoice will be sent!",
     processing: "processing...",
 
@@ -581,10 +581,19 @@ const gu = {
     invoiceCreated: "Invoice created successfully",
     invoiceUpdated: "Invoice updated successfully",
     failedToSaveInvoice: "Failed to save invoice. Please try again.",
+    newInvoicePage: "નવી ઇન્વૉઇસ",
+    editInvoicePage: "ઇન્વૉઇસ સંપાદિત કરો",
+    editorSubtitle: "ઇન્વૉઇસ મોકલતા પહેલાં વિગતો भरो અને પૂર્વાવલોકન જુઓ.",
+    saving: "સાચવી રહ્યું છે...",
+    sending: "મોકલી રહ્યું છે...",
+    alreadySent: "પહેલેથી મોકલાઈ ગઈ છે",
+    downloading: "ડાઉનલોડ થઈ રહ્યું છે...",
+    selectClientBeforeSending: "ઇન્વૉઇસ મોકલતા પહેલાં ક્લાયન્ટ પસંદ કરો.",
 
     // Counters
     showingOf: "Showing %{shown} of %{total}",
-    viewingMatching: "Viewing %{filtered} matching invoices from %{loaded} loaded",
+    viewingMatching:
+      "Viewing %{filtered} matching invoices from %{loaded} loaded",
     loadedOf: "Loaded %{loaded} of %{total}",
     showingRecentTransactions: "Showing %{count} recent transactions",
     updatedAt: "Updated %{date}",
@@ -596,12 +605,16 @@ const gu = {
 
     // Invoice reminder email
     invoiceReminder: "Invoice Reminder: %{number}",
-    reminderMessage: "This is a reminder about your outstanding invoice. Please find the details attached.",
+    reminderMessage:
+      "This is a reminder about your outstanding invoice. Please find the details attached.",
     invoiceAttached: "Please find your invoice attached.",
-    reminderPaymentMessage: "This is a reminder about your overdue invoice. Please complete payment.",
+    reminderPaymentMessage:
+      "This is a reminder about your overdue invoice. Please complete payment.",
     invoiceSubject: "Invoice %{number}",
-    reminderPaymentSubject: "Reminder to complete payment for invoice %{number}",
-    markAsPaidConfirm: "Mark this invoice as paid? This action affects accounting records.",
+    reminderPaymentSubject:
+      "Reminder to complete payment for invoice %{number}",
+    markAsPaidConfirm:
+      "Mark this invoice as paid? This action affects accounting records.",
     failedToLoadInvoice: "Failed to load invoice",
     invoiceNotFound: "Invoice not found",
     failedToMarkAsPaid: "Failed to mark invoice as paid",
@@ -610,13 +623,6 @@ const gu = {
     cannotSendInvalidId: "Cannot send invoice - invalid ID",
     payment: "Payment #%{id}",
   },
-  common: {
-    retry: "Retry",
-    pageUnavailable:
-      "This page is unavailable or the link is no longer valid for your workspace.",
-    goToDashboard: "Go to dashboard",
-  },
-
   // Invoice admin dashboard
   invoiceDashboard: {
     revenueOverview: "Revenue Overview",
@@ -680,7 +686,8 @@ const gu = {
   timer: {
     webTimer: "Web timer",
     webTimerLabel: "Web Timer",
-    trackLiveWork: "Track live work in real time, then save it straight into today's entry list.",
+    trackLiveWork:
+      "Track live work in real time, then save it straight into today's entry list.",
     startTimer: "Start Timer",
     pause: "Pause",
     resume: "Resume",
@@ -689,7 +696,8 @@ const gu = {
     reset: "Reset",
     timer: "Timer",
     saveTimeEntry: "Save Time Entry",
-    saveTimeEntryDescription: "You tracked %{time}. Would you like to save this as a time entry?",
+    saveTimeEntryDescription:
+      "You tracked %{time}. Would you like to save this as a time entry?",
     discard: "Discard",
     timerStarted: "Timer started",
     timerPaused: "Timer paused",
@@ -786,7 +794,8 @@ const gu = {
     invoiceAgingDetails: "Invoice Aging Details",
     noDataFound: "No Data Found",
     accountsAgingReport: "Accounts Aging Report",
-    analysisOfOutstandingReceivables: "Analysis of outstanding receivables by aging period",
+    analysisOfOutstandingReceivables:
+      "Analysis of outstanding receivables by aging period",
     asOf: "As of %{date}",
     zeroToThirtyDays: "0-30 Days",
     thirtyOneToSixtyDays: "31-60 Days",
@@ -799,8 +808,10 @@ const gu = {
     noteHeader: "NOTE",
     teamMemberDate: "TEAM MEMBER/ DATE",
     hoursLogged: "HOURS LOGGED",
-    noResultsMatchFilters: "No results match current filters. Try removing some filters.",
-    noTimeEntriesYet: "There are no time entries added yet. You'll see a summary of time entries added by your team.",
+    noResultsMatchFilters:
+      "No results match current filters. Try removing some filters.",
+    noTimeEntriesYet:
+      "There are no time entries added yet. You'll see a summary of time entries added by your team.",
     selected: "%{count} selected",
     showingClientsCount: "Showing %{shown} of %{total} clients",
     ofTeamMembersSelected: "%{active} of %{total} team members selected",
@@ -826,13 +837,16 @@ const gu = {
     timeEntryReportTitle: "Time Entry Report",
     timeEntryReportDesc: "A summary of the time entries added by your team.",
     invoicesReport: "Invoices Report",
-    invoicesReportDesc: "A detailed summary of outstanding and overdue of all clients for a period of time.",
+    invoicesReportDesc:
+      "A detailed summary of outstanding and overdue of all clients for a period of time.",
     totalHoursLoggedTitle: "Total hours logged",
-    totalHoursLoggedDesc: "A detailed summary of billed, unbilled and non-billable hours by team grouped by project.",
+    totalHoursLoggedDesc:
+      "A detailed summary of billed, unbilled and non-billable hours by team grouped by project.",
     revenueReport: "Revenue Report",
     revenueReportDesc: "A detailed report of revenue from each client.",
     accountsAging: "Accounts Aging",
-    accountsAgingDesc: "Find out which client have been taking a long time to pay",
+    accountsAgingDesc:
+      "Find out which client have been taking a long time to pay",
     clearAll: "CLEAR ALL",
     outstandingAndOverdue: "Outstanding and Overdue",
     followUpOnInvoices: "Follow up on invoices that still need attention.",
@@ -853,21 +867,29 @@ const gu = {
     filteredByCurrency: "Filtered by %{currency}",
     overdueAgingTitle: "Overdue Aging (%{currency})",
     averageDays: "Average Days:",
-    timeReportsDesc: "A comprehensive summary of time entries added by your team members",
+    timeReportsDesc:
+      "A comprehensive summary of time entries added by your team members",
     outstandingOverdueInvoicesTitle: "Outstanding & Overdue Invoices",
-    outstandingOverdueInvoicesDesc: "Detailed overview of outstanding and overdue invoices across all clients",
+    outstandingOverdueInvoicesDesc:
+      "Detailed overview of outstanding and overdue invoices across all clients",
     revenueByClient: "Revenue by Client",
-    revenueByClientDesc: "Revenue breakdown by client with trends and comparisons",
-    accountsAgingTableDesc: "Age analysis of outstanding receivables by time period",
+    revenueByClientDesc:
+      "Revenue breakdown by client with trends and comparisons",
+    accountsAgingTableDesc:
+      "Age analysis of outstanding receivables by time period",
     paymentReportTitle: "Payment Report",
-    paymentReportDesc: "Track all payments received with detailed transaction history",
+    paymentReportDesc:
+      "Track all payments received with detailed transaction history",
     teamUtilization: "Team Utilization",
     teamUtilizationDesc: "Team member utilization rates and capacity analysis",
     projectProfitability: "Project Profitability",
-    projectProfitabilityDesc: "Profitability analysis by project with cost breakdown",
+    projectProfitabilityDesc:
+      "Profitability analysis by project with cost breakdown",
     clientSummaryTitle: "Client Summary",
-    clientSummaryDesc: "Comprehensive client performance and engagement metrics",
-    understandReportsAtGlance: "Understand revenue, time, and outstanding work at a glance.",
+    clientSummaryDesc:
+      "Comprehensive client performance and engagement metrics",
+    understandReportsAtGlance:
+      "Understand revenue, time, and outstanding work at a glance.",
     scheduleReports: "Schedule reports",
     availableReports: "Available Reports",
     revenueAndBilling: "Revenue and billing",
@@ -988,36 +1010,6 @@ const gu = {
     expenseActionsFor: "Expense actions for %{description}",
   },
 
-  // Settings
-  settings: {
-    settings: "Settings",
-    profileSettings: "Profile Settings",
-    organizationSettings: "Organization Settings",
-    paymentSettings: "Payment Settings",
-    profilePicture: "Profile picture",
-    changePassword: "Change password",
-    currentPassword: "Current password",
-    password: "Password",
-    confirmPassword: "Confirm password",
-    billing: "Billing",
-    integrations: "Integrations",
-    leaves: "Leaves",
-    import: "Import",
-    general: "General",
-    profile: "Profile",
-    organization: "Organization",
-    payment: "Payment",
-    allocateLeaves: "Allocate Leaves",
-    customLeaves: "Custom Leaves",
-    addCustomLeave: "Add Custom Leave",
-    editCustomLeave: "Edit Custom Leave",
-    leaveType: "Leave Type",
-    enterLeaveType: "Enter leave type",
-    allocationValue: "Allocation Value",
-    allocationPeriod: "Allocation Period",
-    allocationFrequency: "Allocation Frequency",
-  },
-
   // Leave types
   leaveTypes: {
     annualLeaves: "Annual leaves",
@@ -1093,110 +1085,6 @@ const gu = {
     paymentsDescription: "Track payment history",
     leavesDescription: "Manage time off requests",
     expensesDescription: "Track business expenses",
-  },
-
-  // Dashboard
-  dashboard: {
-    dashboard: "Dashboard",
-    overdue: "OVERDUE",
-    outstanding: "OUTSTANDING",
-    totalHours: "TOTAL HOURS",
-    revenueOverview: "Revenue Overview",
-    welcomeBack: "Welcome back, %{name}",
-    companyPulse: "Company Pulse",
-    yearToDate: "Year to date",
-    quarterToDate: "Quarter to date",
-    monthToDate: "Month to date",
-    weekToDate: "Week to date",
-    revenue: "Revenue",
-    activeProjects: "Active Projects",
-    currentlyActive: "Currently active",
-    noRecentActivity: "No recent activity",
-    teamSize: "Team Size",
-    teammates: "Teammates",
-    hoursTracked: "Hours Tracked",
-    assignedProjects: "Assigned Projects",
-    projectsYouCanWorkOn: "Projects you can work on",
-    totalInvoiced: "Total Invoiced",
-    openInvoices: "Open Invoices",
-    awaitingPayment: "Awaiting payment",
-    paidInvoices: "Paid Invoices",
-    alreadySettled: "Already settled",
-    paymentsReceived: "Payments Received",
-    employeeGuidance: "Track your week, submit accurate entries, and keep work moving.",
-    bookKeeperGuidance: "Review incoming payments, reconcile invoices, and keep cash flow clear.",
-    clientGuidance: "Check invoice status and payment history for your account.",
-    defaultGuidance: "Revenue, projects, and team momentum at a glance.",
-    recentActivity: "Recent Activity",
-    workspaceActivity: "Workspace Activity",
-    employeeActivityDescription: "Your dashboard is focused on time tracking and assigned work.",
-    activityDescription: "Latest updates across your invoices and payments",
-    noRecentActivityYet: "No recent activity yet",
-    loadMore: "Load more",
-    allCaughtUp: "You're all caught up",
-  },
-
-  // Authentication
-  auth: {
-    signIn: "Sign in",
-    signUp: "Sign up",
-    signOut: "Sign out",
-    welcomeBack: "Welcome back!",
-    loginFailed: "Login failed. Please try again.",
-    noAuthTokenReceived: "No authentication token received",
-    signInToWorkspace: "Sign in to your workspace",
-    createYourWorkspace: "Create your workspace",
-    signInDescription:
-      "Track work, send invoices, and keep cash flow clear from one place.",
-    signUpDescription:
-      "Set up clients, projects, invoices, and payments in one clear operating system.",
-    firstName: "First Name",
-    lastName: "Last Name",
-    password: "Password",
-    confirmPassword: "Confirm Password",
-    waitingForPasskey: "Waiting for passkey...",
-    forgotPassword: "Forgot password?",
-    enterRegisteredEmail: "Enter your registered email ID",
-    resetPassword: "Reset Password",
-    resetPasswordInstructions:
-      "Enter the email address associated with your account and we'll send you a link to reset your password.",
-    sendResetLink: "Send Reset Link",
-    backToLogin: "Back to login",
-    alreadyHaveAccount: "Already have an account?",
-    dontHaveAccount: "Don't have an account?",
-    rememberMe: "Remember me",
-    totpPlaceholder: "ABCD-EFGH",
-    companyPulse: "Company pulse",
-    billingCommand: "Billing command",
-    clearWeeklyFlow: "Clear weekly flow",
-    cashLedger: "Cash ledger",
-    miruLogo: "Miru",
-    heroTitle: "One place for time, invoices, and payments",
-    heroDescription: "Keep the day clear, keep billing moving, and keep cash visible.",
-    slideShowPrefix: "Show",
-    slideDashboardDescription: "See revenue, active projects, and team momentum without digging for it.",
-    slideInvoicesDescription: "Keep drafts, overdue balances, and paid work in the same place.",
-    slideTimeTrackingDescription: "Week-by-week time entry stays current without turning into busywork.",
-    slidePaymentsDescription: "Every payment lands in one ledger with method, status, and source.",
-    continueWithGoogle: "Continue with Google",
-    continueWithGithub: "Continue with GitHub",
-    orUseEmail: "or use email",
-    verifyWithAuthenticator: "Verify with your authenticator app",
-    authenticatorInstructions: "Enter the 6-digit code from your authenticator app, or use a recovery code.",
-    authenticatorCode: "Authenticator code",
-    recoveryCode: "Recovery code",
-    verifyAndSignIn: "Verify and sign in",
-    completePasskeyVerification: "Complete passkey verification to finish signing in.",
-    enterAuthenticatorCode: "Enter your authenticator code to finish signing in.",
-    invalidVerificationCode: "Invalid verification code.",
-    privacy: "Privacy",
-    terms: "Terms",
-    createAccount: "Create account",
-    passwordCriteria: "Min. 8 characters, 1 uppercase, 1 lowercase, 1 number and 1 special character",
-    agreeToTerms: "I agree to the",
-    termsOfService: "Terms of Service",
-    privacyPolicy: "Privacy Policy",
-    and: "and",
   },
 
   // Passkeys
@@ -1276,8 +1164,10 @@ const gu = {
     publicHolidays: "Public holidays",
     zeroUsed: "0 used",
     leaveCalendar: "Leave calendar",
-    trackLeaveUsage: "Track leave and holiday usage month by month for %{year}.",
-    selectDayToInspect: "Select a day to inspect leave details and holiday usage.",
+    trackLeaveUsage:
+      "Track leave and holiday usage month by month for %{year}.",
+    selectDayToInspect:
+      "Select a day to inspect leave details and holiday usage.",
     nothingBooked: "Nothing booked",
     nothingBookedForDate: "Nothing booked for this date.",
     recordedTimeAway: "Recorded time away on this day",
@@ -1299,12 +1189,14 @@ const gu = {
     numberOfTeamMembers: "Number of Team Members:",
     plan: "Plan",
     basicPlan: "Basic Plan",
-    basicPlanDescription: "Basic plan includes all features. This is a one-time charge.",
+    basicPlanDescription:
+      "Basic plan includes all features. This is a one-time charge.",
     chargedOnce: "charged once",
     addOns: "Add-Ons",
     oneTeamMember: "1 team member",
     chargedEveryMonth: "charged every month",
-    basicPlanPerUser: "Basic plan comes with additional %{rate}$ per user per month.",
+    basicPlanPerUser:
+      "Basic plan comes with additional %{rate}$ per user per month.",
     plusTaxes: "plus taxes",
     reviewAndPay: "REVIEW AND PAY",
   },
@@ -1353,7 +1245,8 @@ const gu = {
   // Common extras
   common: {
     retry: "Retry",
-    pageUnavailable: "This page is unavailable or the link is no longer valid for your workspace.",
+    pageUnavailable:
+      "This page is unavailable or the link is no longer valid for your workspace.",
     goToDashboard: "Go to dashboard",
     language: "Language",
     loading: "Loading...",
@@ -1364,7 +1257,8 @@ const gu = {
   auth: {
     signIn: {
       title: "Sign in to your workspace",
-      description: "Track work, send invoices, and keep cash flow clear from one place.",
+      description:
+        "Track work, send invoices, and keep cash flow clear from one place.",
       continueWithGoogle: "Continue with Google",
       continueWithGitHub: "Continue with GitHub",
       orUseEmail: "or use email",
@@ -1390,7 +1284,8 @@ const gu = {
     },
     signUp: {
       title: "Create your workspace",
-      description: "Set up clients, projects, invoices, and payments in one clear operating system.",
+      description:
+        "Set up clients, projects, invoices, and payments in one clear operating system.",
       continueWithGoogle: "Continue with Google",
       continueWithGitHub: "Continue with GitHub",
       orUseEmail: "or use email",
@@ -1399,7 +1294,8 @@ const gu = {
       email: "Email",
       password: "Password",
       confirmPassword: "Confirm Password",
-      passwordCriteria: "At least 8 characters with one uppercase, one lowercase, and one number",
+      passwordCriteria:
+        "At least 8 characters with one uppercase, one lowercase, and one number",
       submit: "Create account",
       alreadyHaveAccount: "Already have an account? ",
       signIn: "Sign in",
@@ -1411,26 +1307,31 @@ const gu = {
     slides: {
       dashboard: {
         title: "Company pulse",
-        description: "See revenue, active projects, and team momentum without digging for it.",
+        description:
+          "See revenue, active projects, and team momentum without digging for it.",
       },
       invoices: {
         title: "Billing command",
-        description: "Keep drafts, overdue balances, and paid work in the same place.",
+        description:
+          "Keep drafts, overdue balances, and paid work in the same place.",
       },
       timeTracking: {
         title: "Clear weekly flow",
-        description: "Week-by-week time entry stays current without turning into busywork.",
+        description:
+          "Week-by-week time entry stays current without turning into busywork.",
       },
       payments: {
         title: "Cash ledger",
-        description: "Every payment lands in one ledger with method, status, and source.",
+        description:
+          "Every payment lands in one ledger with method, status, and source.",
       },
     },
     validation: {
       emailRequired: "Email is required",
       invalidEmail: "Invalid email address",
       passwordRequired: "Password is required",
-      passwordComplexity: "Password must be at least 8 characters with uppercase, lowercase, and number",
+      passwordComplexity:
+        "Password must be at least 8 characters with uppercase, lowercase, and number",
       passwordSpace: "Password cannot contain spaces",
       confirmPasswordRequired: "Confirm password is required",
       passwordsMustMatch: "Passwords must match",
@@ -1453,8 +1354,10 @@ const gu = {
     welcomeBack_flat: "Welcome back!",
     signInToWorkspace: "Sign in to your workspace",
     createYourWorkspace: "Create your workspace",
-    signInDescription: "Track work, send invoices, and keep cash flow clear from one place.",
-    signUpDescription: "Set up clients, projects, invoices, and payments in one clear operating system.",
+    signInDescription:
+      "Track work, send invoices, and keep cash flow clear from one place.",
+    signUpDescription:
+      "Set up clients, projects, invoices, and payments in one clear operating system.",
     firstName: "First Name",
     lastName: "Last Name",
     password: "Password",
@@ -1463,7 +1366,8 @@ const gu = {
     forgotPassword: "Forgot password?",
     enterRegisteredEmail: "Enter your registered email ID",
     resetPassword: "Reset Password",
-    resetPasswordInstructions: "Enter the email address associated with your account and we'll send you a link to reset your password.",
+    resetPasswordInstructions:
+      "Enter the email address associated with your account and we'll send you a link to reset your password.",
     sendResetLink: "Send Reset Link",
     backToLogin: "Back to login",
     alreadyHaveAccount: "Already have an account?",
@@ -1472,10 +1376,14 @@ const gu = {
     totpPlaceholder: "ABCD-EFGH",
     loginFailed_flat: "Login failed. Please try again.",
     noAuthTokenReceived: "No authentication token received",
-    slideDashboardDescription: "See revenue, active projects, and team momentum without digging for it.",
-    slideInvoicesDescription: "Keep drafts, overdue balances, and paid work in the same place.",
-    slideTimeTrackingDescription: "Week-by-week time entry stays current without turning into busywork.",
-    slidePaymentsDescription: "Every payment lands in one ledger with method, status, and source.",
+    slideDashboardDescription:
+      "See revenue, active projects, and team momentum without digging for it.",
+    slideInvoicesDescription:
+      "Keep drafts, overdue balances, and paid work in the same place.",
+    slideTimeTrackingDescription:
+      "Week-by-week time entry stays current without turning into busywork.",
+    slidePaymentsDescription:
+      "Every payment lands in one ledger with method, status, and source.",
   },
 
   // Navigation (upstream uses nav.* prefix)

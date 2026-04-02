@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Check, MagnifyingGlass } from "phosphor-react";
 
+import { t } from "../../i18n";
 import { LOCALE_GROUPS, type LocaleInfo } from "./localeData";
 
 interface LocaleDropdownProps {
@@ -33,31 +34,35 @@ const LocaleDropdown: React.FC<LocaleDropdownProps> = ({
         onClose();
       }
     };
+
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
     };
     document.addEventListener("mousedown", handleClickOutside);
     document.addEventListener("keydown", handleEscape);
+
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
       document.removeEventListener("keydown", handleEscape);
     };
   }, [onClose]);
 
-  const filteredGroups = LOCALE_GROUPS.map((group) => ({
+  const filteredGroups = LOCALE_GROUPS.map(group => ({
     ...group,
-    locales: group.locales.filter((locale) => {
+    locales: group.locales.filter(locale => {
       const q = search.toLowerCase();
+
       return (
         locale.nativeName.toLowerCase().includes(q) ||
         locale.code.toLowerCase().includes(q) ||
         (locale.englishName && locale.englishName.toLowerCase().includes(q))
       );
     }),
-  })).filter((group) => group.locales.length > 0);
+  })).filter(group => group.locales.length > 0);
 
   const renderLocaleItem = (locale: LocaleInfo) => {
     const isSelected = locale.code === currentLocale;
+
     return (
       <button
         key={locale.code}
@@ -90,7 +95,7 @@ const LocaleDropdown: React.FC<LocaleDropdownProps> = ({
         direction === "up" ? "bottom-full mb-1" : "top-full mt-1"
       }`}
       role="listbox"
-      aria-label="Select language"
+      aria-label={t("common.language")}
     >
       <div className="border-b border-border px-3 py-2">
         <div className="flex items-center gap-2">
@@ -99,8 +104,8 @@ const LocaleDropdown: React.FC<LocaleDropdownProps> = ({
             ref={searchRef}
             type="text"
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search languages..."
+            onChange={e => setSearch(e.target.value)}
+            placeholder={t("common.searchLanguages")}
             className="flex-1 bg-transparent text-sm text-foreground placeholder:text-muted-foreground outline-none"
           />
         </div>
@@ -119,7 +124,7 @@ const LocaleDropdown: React.FC<LocaleDropdownProps> = ({
         ))}
         {filteredGroups.length === 0 && (
           <div className="px-3 py-4 text-sm text-muted-foreground text-center">
-            No languages found
+            {t("common.noLanguagesFound")}
           </div>
         )}
       </div>
