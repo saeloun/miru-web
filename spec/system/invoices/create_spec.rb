@@ -27,6 +27,9 @@ RSpec.describe "Invoice creation", type: :system, js: true do
       find("input[placeholder='00:00']").fill_in with: "02:00"
       find("textarea[placeholder='Enter Description']").fill_in with: "Local save check"
 
+      expect(page).to have_text("Manual item", wait: 10)
+      expect(page).to have_text("Local save check", wait: 10)
+
       click_button "Save"
 
       expect(page).to have_text("Invoice created successfully", wait: 10)

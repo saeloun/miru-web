@@ -56,6 +56,7 @@ interface InvoicePreviewProps {
     };
     lineItems: Array<{
       id: string;
+      name?: string;
       description: string;
       quantity: number;
       rate: number;
@@ -484,9 +485,18 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
                 className="rounded-lg border border-border p-4"
                 key={item.id || index}
               >
-                <p className="whitespace-pre-wrap break-words text-sm text-foreground print:text-gray-900">
-                  {item.description}
-                </p>
+                <div className="space-y-1">
+                  {item.name && (
+                    <p className="whitespace-pre-wrap break-words text-sm font-semibold text-foreground print:text-gray-900">
+                      {item.name}
+                    </p>
+                  )}
+                  {item.description && (
+                    <p className="whitespace-pre-wrap break-words text-sm text-muted-foreground print:text-gray-700">
+                      {item.description}
+                    </p>
+                  )}
+                </div>
                 <dl className="mt-4 grid grid-cols-2 gap-3 text-sm">
                   <div>
                     <dt className="text-muted-foreground print:text-gray-600">
@@ -552,7 +562,16 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
                     className="border-b border-border/70 print:border-gray-100"
                   >
                     <td className="px-2 py-3 text-sm text-foreground print:text-gray-900">
-                      {item.description}
+                      <div className="space-y-1">
+                        {item.name && (
+                          <p className="font-medium">{item.name}</p>
+                        )}
+                        {item.description && (
+                          <p className="whitespace-pre-wrap break-words text-muted-foreground print:text-gray-600">
+                            {item.description}
+                          </p>
+                        )}
+                      </div>
                     </td>
                     <td className="px-2 py-3 text-center text-sm text-muted-foreground print:text-gray-600">
                       {item.date ? formatDate(item.date) : "-"}
