@@ -7,9 +7,15 @@
 
 <% if @message.present? %>
   <div class="email-panel email-panel-soft">
+    <p class="email-panel-title"><%= t("mailers.invoice_mailer.send_invoice.note_title", company_name: @invoice.company.name) %></p>
     <%= simple_format(@message, {}, wrapper_tag: "div") %>
   </div>
 <% end %>
+
+<div class="email-panel email-panel-accent">
+  <p class="email-panel-title"><%= t("mailers.invoice_mailer.send_invoice.next_steps_title") %></p>
+  <p style="margin-bottom: 0;"><%= t("mailers.invoice_mailer.send_invoice.next_steps_body") %></p>
+</div>
 
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="detail-grid">
   <tr>
@@ -27,3 +33,7 @@
 </table>
 
 <%= render "shared/mailer/button", href: @invoice_url, label: t("mailers.actions.open_invoice") %>
+
+<div class="email-divider"></div>
+
+<p><%= t("mailers.invoice_mailer.send_invoice.support_html", support_email: t("mailers.layout.footer_contact")).html_safe %></p>

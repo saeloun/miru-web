@@ -391,11 +391,11 @@ en:
     rate_not_found: Rate not found
   mailers:
     layout:
-      preheader: Miru update
+      preheader: A thoughtful update from Miru.
       brand: Miru
-      footer_body: Time, invoices, payments, and operations in one calm workspace.
+      footer_body: Miru keeps time, invoices, payments, and operations in one clear workspace.
       footer_site: app.miru.so
-      footer_contact: hello@saeloun.com
+      footer_contact: support@getmiru.com
       footer_copyright: © Miru. All rights reserved.
     actions:
       open_invoice: Open invoice
@@ -433,16 +433,23 @@ en:
         eyebrow: Invoices
         title: Your invoice is ready
         subtitle_html: "<strong>%{company_name}</strong> sent invoice <strong>%{invoice_number}</strong>. The PDF is attached for your records."
+        note_title: "A note from %{company_name}"
+        next_steps_title: What happens next
+        next_steps_body: Open the invoice to review the details, download the PDF, and pay securely when you are ready.
         attachment_value: PDF attached
         attachment_subvalue: Keep it, forward it, or file it.
+        support_html: "Need a hand? Reply to this email or contact <a href=\"mailto:%{support_email}\">%{support_email}</a>."
       invoice:
         subject: "Invoice %{invoice_number}"
         preheader: "Invoice %{invoice_number} from %{company_name}."
         eyebrow: Invoices
         title: Your invoice is ready
         subtitle_html: "<strong>%{company_name}</strong> sent invoice <strong>%{invoice_number}</strong>. You can review it and pay online."
+        ready_title: Ready when you are
+        ready_body: Open the secure invoice page to review the line items, confirm the amount due, and pay online.
         payment_link_value: Secure invoice page
         payment_link_subvalue: Review the line items and pay online.
+        support_html: "Questions about this invoice? Reply to this email or contact <a href=\"mailto:%{support_email}\">%{support_email}</a>."
     send_reminder_mailer:
       send_reminder:
         subject: "Reminder for invoice %{invoice_number} from %{company_name}"
@@ -464,6 +471,10 @@ en:
         eyebrow: Payments
         title: Payment confirmation
         subtitle_html: "<strong>%{client_name}</strong> has completed payment for invoice <strong>%{invoice_number}</strong>."
+        received_title: Payment received
+        summary_html: "<strong>%{client_name}</strong> paid <strong>%{amount}</strong> for invoice <strong>%{invoice_number}</strong>. This invoice is now fully paid."
+        follow_up_title: What to do next
+        follow_up_body: Open the invoice to confirm the recorded payment, archive the thread, or continue with any follow-up work.
     client_payment_mailer:
       payment:
         subject: "Payment receipt for invoice %{invoice_number}"
@@ -471,6 +482,10 @@ en:
         eyebrow: Payments
         title: Payment receipt
         subtitle_html: "We received your payment for invoice <strong>%{invoice_number}</strong>."
+        receipt_title: Payment received
+        summary_html: "We received <strong>%{amount}</strong> on <strong>%{paid_on}</strong> for invoice <strong>%{invoice_number}</strong>."
+        records_title: Keep this for your records
+        records_body: This email confirms your payment. You can reopen the invoice anytime if you need the receipt details again.
     expense_mailer:
       submitted:
         subject: "%{submitter_name} submitted a reimbursement request"

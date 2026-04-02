@@ -5,6 +5,11 @@
   <%= t("mailers.invoice_mailer.invoice.subtitle_html", company_name: @invoice.company.name, invoice_number: @invoice.invoice_number).html_safe %>
 <% end %>
 
+<div class="email-panel email-panel-accent">
+  <p class="email-panel-title"><%= t("mailers.invoice_mailer.invoice.ready_title") %></p>
+  <p style="margin-bottom: 0;"><%= t("mailers.invoice_mailer.invoice.ready_body") %></p>
+</div>
+
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="detail-grid">
   <tr>
     <%= render "shared/mailer/detail_card", label: t("mailers.labels.issue_date"), value: l(@invoice.issue_date.to_date, format: :long) %>
@@ -21,3 +26,7 @@
 </table>
 
 <%= render "shared/mailer/button", href: @invoice_url, label: t("mailers.actions.open_invoice") %>
+
+<div class="email-divider"></div>
+
+<p><%= t("mailers.invoice_mailer.invoice.support_html", support_email: t("mailers.layout.footer_contact")).html_safe %></p>

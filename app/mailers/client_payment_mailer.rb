@@ -33,7 +33,12 @@ class ClientPaymentMailer < ApplicationMailer
     end
 
     def email_message
-      "Receipt of payment of #{@amount} on #{format_date} through online payment<br>against invoice number #{@invoice.invoice_number}"
+      I18n.t(
+        "mailers.client_payment_mailer.payment.summary_html",
+        amount: @amount,
+        paid_on: format_date,
+        invoice_number: @invoice.invoice_number
+      )
     end
 
     def can_send_mail?

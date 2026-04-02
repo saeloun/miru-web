@@ -6,6 +6,7 @@
 <% end %>
 
 <div class="email-panel email-panel-success">
+  <p class="email-panel-title"><%= t("mailers.payment_mailer.payment.received_title") %></p>
   <%= sanitize @message %>
 </div>
 
@@ -23,3 +24,8 @@
 </table>
 
 <%= render "shared/mailer/button", href: @invoice_url, label: t("mailers.actions.open_invoice") %>
+
+<div class="email-panel email-panel-soft">
+  <p class="email-panel-title"><%= t("mailers.payment_mailer.payment.follow_up_title") %></p>
+  <p style="margin-bottom: 0;"><%= t("mailers.payment_mailer.payment.follow_up_body") %></p>
+</div>

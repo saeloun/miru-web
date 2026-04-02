@@ -30,40 +30,42 @@
         padding: 0;
         width: 100% !important;
         min-width: 100%;
-        background-color: #f3f4f6;
-        color: #1f2937;
-        font-family: Geist, Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background-color: #eef4ff;
+        color: #0f172a;
+        font-family: "Aptos", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
       }
 
       a {
-        color: #1f2937;
+        color: #1d4ed8;
       }
 
       .email-shell {
         width: 100%;
         background:
-          radial-gradient(circle at top, rgba(79, 70, 229, 0.12), transparent 34%),
-          linear-gradient(180deg, #f8fafc 0%, #eef2ff 100%);
-        padding: 32px 16px;
+          radial-gradient(circle at top, rgba(37, 99, 235, 0.14), transparent 30%),
+          linear-gradient(180deg, #f8fbff 0%, #eff5ff 52%, #e7eef9 100%);
+        padding: 40px 16px;
       }
 
       .email-card {
         width: 100%;
-        max-width: 680px;
+        max-width: 640px;
         background-color: #ffffff;
-        border: 1px solid #dbe3ee;
+        border: 1px solid #d6e3f5;
         border-radius: 28px;
         overflow: hidden;
-        box-shadow: 0 24px 80px rgba(15, 23, 42, 0.12);
+        box-shadow: 0 22px 60px rgba(15, 23, 42, 0.09);
       }
 
       .email-card-inner {
-        padding: 40px;
+        padding: 36px 38px 38px;
       }
 
       .email-brand {
-        padding: 40px 40px 0;
+        padding: 22px 40px 24px;
         text-align: center;
+        background: linear-gradient(180deg, #edf4ff 0%, #f7faff 64%, #ffffff 100%);
+        border-bottom: 1px solid #e2ebf6;
       }
 
       .email-brand-mark {
@@ -71,41 +73,43 @@
         height: 56px;
         display: inline-block;
         border-radius: 18px;
-        background: linear-gradient(180deg, #eef2ff 0%, #e0e7ff 100%);
-        border: 1px solid #c7d2fe;
+        background: #ffffff;
+        border: 1px solid #bfdbfe;
+        box-shadow: 0 8px 18px rgba(29, 78, 216, 0.1);
       }
 
       .email-eyebrow {
-        margin: 20px 0 0;
-        color: #64748b;
-        font-size: 12px;
-        font-weight: 600;
-        letter-spacing: 0.16em;
+        margin: 16px 0 0;
+        color: #2563eb;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.18em;
         text-transform: uppercase;
       }
 
       .email-title {
         margin: 12px 0 0;
-        color: #111827;
-        font-size: 30px;
+        color: #0f172a;
+        font-size: 38px;
         font-weight: 700;
-        line-height: 1.15;
+        line-height: 1.04;
+        letter-spacing: -0.03em;
       }
 
       .email-subtitle {
         margin: 16px auto 0;
-        max-width: 560px;
+        max-width: 520px;
         color: #475569;
-        font-size: 16px;
+        font-size: 15px;
         line-height: 1.7;
         overflow-wrap: anywhere;
         word-break: break-word;
       }
 
       .email-body {
-        color: #475569;
+        color: #334155;
         font-size: 16px;
-        line-height: 1.7;
+        line-height: 1.75;
         overflow-wrap: anywhere;
         word-break: break-word;
       }
@@ -115,7 +119,7 @@
       }
 
       .email-body strong {
-        color: #111827;
+        color: #0f172a;
       }
 
       .email-list {
@@ -129,19 +133,20 @@
 
       .email-panel {
         margin: 24px 0;
-        padding: 20px 22px;
-        border-radius: 20px;
-        border: 1px solid #dbe3ee;
-        background-color: #f8fafc;
+        padding: 22px 24px;
+        border-radius: 24px;
+        border: 1px solid #dbe7f3;
+        background-color: #f8fbff;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
       }
 
       .email-panel-soft {
-        background-color: #f8fafc;
+        background: linear-gradient(180deg, #fbfdff 0%, #f5f9ff 100%);
       }
 
       .email-panel-accent {
-        border-color: rgba(79, 70, 229, 0.22);
-        background: linear-gradient(180deg, rgba(99, 102, 241, 0.08) 0%, rgba(238, 242, 255, 0.92) 100%);
+        border-color: rgba(37, 99, 235, 0.2);
+        background: linear-gradient(180deg, rgba(59, 130, 246, 0.12) 0%, rgba(239, 246, 255, 0.98) 100%);
       }
 
       .email-panel-success {
@@ -161,10 +166,10 @@
 
       .email-panel-title {
         margin: 0 0 10px;
-        color: #111827;
+        color: #0f172a;
         font-size: 16px;
         font-weight: 600;
-        line-height: 1.4;
+        line-height: 1.45;
       }
 
       .email-muted {
@@ -181,25 +186,28 @@
 
       .email-button {
         display: inline-block;
-        padding: 14px 24px;
+        padding: 14px 22px;
         border-radius: 999px;
-        background: linear-gradient(180deg, #6366f1 0%, #4f46e5 100%);
+        background: linear-gradient(180deg, #2563eb 0%, #1d4ed8 100%);
         color: #ffffff !important;
         font-size: 15px;
         font-weight: 700;
         line-height: 1;
-        letter-spacing: 0.02em;
+        letter-spacing: 0.01em;
         text-decoration: none;
+        box-shadow: 0 8px 18px rgba(37, 99, 235, 0.22);
       }
 
       .email-button-secondary {
         background: #ffffff;
         border: 1px solid #cbd5e1;
+        color: #0f172a !important;
+        box-shadow: none;
       }
 
       .email-divider {
         height: 1px;
-        margin: 24px 0;
+        margin: 26px 0;
         background-color: #e2e8f0;
       }
 
@@ -215,9 +223,10 @@
 
       .detail-card {
         width: 100%;
-        border: 1px solid #dbe3ee;
-        border-radius: 20px;
+        border: 1px solid #d6e3f5;
+        border-radius: 22px;
         background-color: #ffffff;
+        box-shadow: 0 8px 18px rgba(15, 23, 42, 0.04);
       }
 
       .detail-card td {
@@ -228,14 +237,14 @@
         margin: 0 0 8px;
         color: #64748b;
         font-size: 12px;
-        font-weight: 600;
+        font-weight: 700;
         letter-spacing: 0.12em;
         text-transform: uppercase;
       }
 
       .detail-value {
         margin: 0;
-        color: #111827;
+        color: #0f172a;
         font-size: 18px;
         font-weight: 600;
         line-height: 1.45;
@@ -253,20 +262,20 @@
       }
 
       .email-footer {
-        padding: 0 40px 32px;
+        padding: 0 38px 32px;
       }
 
       .email-footer-card {
         border-radius: 22px;
-        border: 1px solid #dbe3ee;
-        background: #f8fafc;
+        border: 1px solid #dbe7f3;
+        background: linear-gradient(180deg, #f7fbff 0%, #f0f6ff 100%);
       }
 
       .email-footer-card td {
         padding: 20px 24px;
         color: #64748b;
         font-size: 13px;
-        line-height: 1.7;
+        line-height: 1.75;
         text-align: center;
         overflow-wrap: anywhere;
         word-break: break-word;
@@ -350,8 +359,8 @@
       }
 
       .logo-label {
-        color: #111827;
-        font-size: 18px;
+        color: #0f172a;
+        font-size: 19px;
         font-weight: 700;
         letter-spacing: -0.02em;
         white-space: nowrap;
@@ -359,19 +368,19 @@
 
       @media only screen and (max-width: 640px) {
         .email-shell {
-          padding: 16px 10px !important;
+          padding: 18px 10px !important;
         }
 
         .email-card {
-          border-radius: 22px !important;
+          border-radius: 24px !important;
         }
 
         .email-brand {
-          padding: 28px 24px 0 !important;
+          padding: 24px 24px 22px !important;
         }
 
         .email-card-inner {
-          padding: 28px 20px !important;
+          padding: 30px 20px !important;
         }
 
         .email-footer {
@@ -379,7 +388,7 @@
         }
 
         .email-title {
-          font-size: 26px !important;
+          font-size: 30px !important;
         }
 
         .detail-cell,
@@ -464,7 +473,7 @@
                       <div style="margin-top: 12px;">
                         <a href="https://app.miru.so" target="_blank" class="email-footer-link"><%= t("mailers.layout.footer_site") %></a>
                         &nbsp;&middot;&nbsp;
-                        <a href="mailto:hello@saeloun.com" class="email-footer-link"><%= t("mailers.layout.footer_contact") %></a>
+                        <a href="mailto:<%= t("mailers.layout.footer_contact") %>" class="email-footer-link"><%= t("mailers.layout.footer_contact") %></a>
                       </div>
                       <div style="margin-top: 12px;"><%= t("mailers.layout.footer_copyright") %></div>
                     </td>
