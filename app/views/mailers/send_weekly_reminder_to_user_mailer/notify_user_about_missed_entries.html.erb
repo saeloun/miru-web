@@ -1,18 +1,18 @@
-<% content_for :email_preheader, "Update your Miru timesheet for the missing week." %>
-<% content_for :email_eyebrow, "Time tracking" %>
-<% content_for :email_title, "Complete your timesheet" %>
+<% content_for :email_preheader, t("mailers.send_weekly_reminder_to_user_mailer.notify_user_about_missed_entries.preheader") %>
+<% content_for :email_eyebrow, t("mailers.send_weekly_reminder_to_user_mailer.notify_user_about_missed_entries.eyebrow") %>
+<% content_for :email_title, t("mailers.send_weekly_reminder_to_user_mailer.notify_user_about_missed_entries.title") %>
 <% content_for :email_subtitle do %>
-  Your time entries for <%= @company %> are still below the expected weekly total.
+  <%= t("mailers.send_weekly_reminder_to_user_mailer.notify_user_about_missed_entries.subtitle", company_name: @company) %>
 <% end %>
 
-<p>Hi <strong><%= @name %></strong>,</p>
+<p><%= t("mailers.send_weekly_reminder_to_user_mailer.notify_user_about_missed_entries.greeting_html", name: @name).html_safe %></p>
 
-<p>You logged fewer than 40 hours between <strong><%= @starting_date %></strong> and <strong><%= @ending_date %></strong>.</p>
+<p><%= t("mailers.send_weekly_reminder_to_user_mailer.notify_user_about_missed_entries.body_html", starting_date: l(@starting_date, format: :long), ending_date: l(@ending_date, format: :long)).html_safe %></p>
 
-<p>Open Miru, add the missing entries, and bring your timesheet up to date.</p>
+<p><%= t("mailers.send_weekly_reminder_to_user_mailer.notify_user_about_missed_entries.follow_up") %></p>
 
-<%= render "shared/mailer/button", href: "#{root_url}time-tracking", label: "Open time tracking" %>
+<%= render "shared/mailer/button", href: "#{root_url}time-tracking", label: t("mailers.actions.open_time_tracking") %>
 
 <div class="email-divider"></div>
 
-<p>Thanks,<br><strong>Team Miru</strong></p>
+<p><%= t("mailers.send_weekly_reminder_to_user_mailer.notify_user_about_missed_entries.signoff_html").html_safe %></p>

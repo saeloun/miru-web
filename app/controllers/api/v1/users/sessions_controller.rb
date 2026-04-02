@@ -30,7 +30,7 @@ class Api::V1::Users::SessionsController < Devise::SessionsController
     else
       handle_successful_sign_in(user)
     end
-end
+  end
 
   def destroy
     sign_out(current_user)
@@ -59,7 +59,7 @@ end
   private
 
     def user_params
-      params.require(:user).permit(:email, :password)
+      params.require(:user).permit(:email, :password, :locale)
     end
 
     def invalid_password?(user)
@@ -92,6 +92,7 @@ end
     end
 
     def handle_successful_sign_in(user)
+      persist_requested_locale(user)
       user.reset_failed_attempts! if user.respond_to?(:reset_failed_attempts!)
       sign_in(user)
 
@@ -201,5 +202,15 @@ end
 
     def totp_login_unsupported?(user)
       user.totp_enabled? && params[:app].present?
+    end
+
+    def persist_requested_locale(user)
+      requested_locale = user_params[:locale].presence
+      return if requested_locale.blank?
+
+      normalized_locale = LocaleConfig.normalize(requested_locale)
+      return if user.locale == normalized_locale
+
+      user.update!(locale: normalized_locale)
     end
 end

@@ -18,7 +18,7 @@ const dateSchema = Yup.object().shape({
   toDate: Yup.string().required(i18n.t("reports.mustIncludeToDate")),
 });
 
-const FilterSideBar = ({
+const TimeEntryReportFilters = ({
   setIsFilterVisible,
   resetFilter,
   handleApplyFilter,
@@ -217,7 +217,9 @@ const FilterSideBar = ({
               )}
             </li>
             <li className="px-5 pb-5">
-              <h5 className="text-xs font-normal">{i18n.t("reports.clients")}</h5>
+              <h5 className="text-xs font-normal">
+                {i18n.t("reports.clients")}
+              </h5>
               <Select
                 isMulti
                 classNamePrefix="react-select-filter"
@@ -229,7 +231,9 @@ const FilterSideBar = ({
               />
             </li>
             <li className="px-5 pb-5">
-              <h5 className="text-xs font-normal">{i18n.t("reports.teamMembers")}</h5>
+              <h5 className="text-xs font-normal">
+                {i18n.t("reports.teamMembers")}
+              </h5>
               <Select
                 isMulti
                 classNamePrefix="react-select-filter"
@@ -254,7 +258,9 @@ const FilterSideBar = ({
               />
             </li>
             <li className="px-5 pb-5">
-              <h5 className="text-xs font-normal">{i18n.t("reports.groupBy")}</h5>
+              <h5 className="text-xs font-normal">
+                {i18n.t("reports.groupBy")}
+              </h5>
               <Select
                 classNamePrefix="react-select-filter"
                 name="groupBy"
@@ -287,4 +293,4 @@ const FilterSideBar = ({
   );
 };
 
-export default FilterSideBar;
+export default TimeEntryReportFilters;

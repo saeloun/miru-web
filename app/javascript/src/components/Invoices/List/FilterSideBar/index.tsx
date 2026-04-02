@@ -19,7 +19,7 @@ import { i18n } from "../../../../i18n";
 
 dayjs.extend(advancedFormat);
 
-const FilterSideBar = ({
+const FilterSidebar = ({
   setIsFilterVisible,
   filterParams,
   setFilterParams,
@@ -264,7 +264,8 @@ const FilterSideBar = ({
         <SidePanel.Header className="mb-2 flex h-12 items-center justify-between bg-primary px-2 text-white lg:h-auto lg:bg-white lg:px-5 lg:py-5 lg:font-bold lg:text-foreground">
           {isDesktop ? (
             <h4 className="flex items-center text-base">
-              <FilterIcon className="mr-2.5" size={16} /> <span>{i18n.t("filters")}</span>
+              <FilterIcon className="mr-2.5" size={16} />{" "}
+              <span>{i18n.t("filters")}</span>
             </h4>
           ) : (
             <span className="flex w-full items-center justify-center pl-6 text-base font-medium leading-5">
@@ -508,4 +509,4 @@ const FilterSideBar = ({
   );
 };
 
-export default FilterSideBar;
+export default FilterSidebar;

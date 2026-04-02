@@ -56,7 +56,7 @@ FactoryBot.define do
     end
 
     company
-    client
+    client { association(:client, company:) }
     issue_date { Faker::Date.between(from: "2019-04-01", to: Date.today) }
     due_date { Faker::Date.between(from: self.issue_date, to: Date.today) }
     invoice_number { Faker::Alphanumeric.unique.alpha(number: 4) }
@@ -74,7 +74,25 @@ FactoryBot.define do
       transient do
         length { 5 }
       end
-      invoice_line_items { Array.new(length) { association(:invoice_line_item) } }
+
+      after(:build) do |invoice, evaluator|
+        next if invoice.invoice_line_items.present?
+
+        invoice.invoice_line_items = build_list(:invoice_line_item, evaluator.length, invoice:)
+      end
+
+      after(:create) do |invoice, evaluator|
+        invoice.invoice_line_items = build_list(:invoice_line_item, evaluator.length, invoice:) if invoice.invoice_line_items.empty?
+        invoice.invoice_line_items.each { |invoice_line_item| invoice_line_item.save! unless invoice_line_item.persisted? }
+      end
+    end
+
+    after(:build) do |invoice|
+      if invoice.client.present?
+        invoice.company = invoice.client.company
+      elsif invoice.company.present?
+        invoice.client ||= build(:client, company: invoice.company)
+      end
     end
   end
 end

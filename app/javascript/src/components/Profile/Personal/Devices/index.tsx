@@ -8,7 +8,7 @@ import { useUserContext } from "context/UserContext";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { Device } from "./Device";
-import StaticPage from "./StaticPage";
+import DeviceInventorySummary from "./DeviceInventorySummary";
 
 const AllocatedDevicesDetails = () => {
   const { user, isDesktop } = useUserContext();
@@ -72,7 +72,7 @@ const AllocatedDevicesDetails = () => {
         {isLoading ? (
           <Loader className="min-h-[60vh]" />
         ) : (
-          <StaticPage devices={devices} />
+          <DeviceInventorySummary devices={devices} />
         )}
       </div>
     </div>

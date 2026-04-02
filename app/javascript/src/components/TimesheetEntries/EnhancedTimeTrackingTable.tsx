@@ -48,7 +48,7 @@ import { timesheetEntryApi } from "apis/api";
 import { minToHHMM } from "../../helpers";
 import { toast } from "sonner";
 import FloatingTimer from "./FloatingTimer";
-import EnhancedTimeEntryDialog from "./EnhancedTimeEntryDialog";
+import TimesheetEntryDialog from "./EnhancedTimeEntryDialog";
 
 dayjs.extend(weekday);
 dayjs.extend(isoWeek);
@@ -99,7 +99,7 @@ const fetchTimeEntries = async (
   };
 };
 
-const EnhancedTimeTrackingTable: React.FC = () => {
+const TimeTrackingTable: React.FC = () => {
   const queryClient = useQueryClient();
   const { isAdminUser, user } = useUserContext();
 
@@ -741,14 +741,14 @@ const EnhancedTimeTrackingTable: React.FC = () => {
       <FloatingTimer />
 
       {/* Add/Edit Entry Dialog */}
-      <EnhancedTimeEntryDialog
+      <TimesheetEntryDialog
         open={showAddDialog}
         onOpenChange={setShowAddDialog}
         entry={selectedEntry}
         selectedDate={selectedDate}
       />
 
-      <EnhancedTimeEntryDialog
+      <TimesheetEntryDialog
         open={showEditDialog}
         onOpenChange={setShowEditDialog}
         entry={selectedEntry}
@@ -757,4 +757,4 @@ const EnhancedTimeTrackingTable: React.FC = () => {
   );
 };
 
-export default EnhancedTimeTrackingTable;
+export default TimeTrackingTable;

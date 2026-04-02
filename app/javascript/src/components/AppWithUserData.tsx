@@ -1,9 +1,10 @@
 import { Roles } from "../constants/index";
 import React, { useEffect, useState } from "react";
 import UserContext from "../context/UserContext";
-import { LocaleProvider } from "../context/LocaleContext";
+import { LocaleProvider, useLocale } from "../context/LocaleContext";
 import {
   loadLocale,
+  getActiveLocale,
   getStoredLocale,
   setStoredLocale,
   detectBrowserLocale,
@@ -23,6 +24,28 @@ const AUTH_PATH_PREFIXES = [
 
 const isAuthPagePath = (pathname: string) =>
   AUTH_PATH_PREFIXES.some(path => pathname.startsWith(path));
+
+const AppUserContextProvider = ({
+  children,
+  value,
+}: {
+  children: React.ReactNode;
+  value: any;
+}) => {
+  const { locale, setLocale } = useLocale();
+
+  return (
+    <UserContext.Provider
+      value={{
+        ...value,
+        locale,
+        setLocale,
+      }}
+    >
+      {children}
+    </UserContext.Provider>
+  );
+};
 
 const AppWithUserData = (props: any) => {
   const isAuthPage = isAuthPagePath(window.location.pathname);
@@ -98,13 +121,17 @@ const AppWithUserData = (props: any) => {
       // Priority: localStorage (most recent user choice) > DB > browser detection
       const stored = getStoredLocale();
       const dbLocale = userData.user?.locale;
-      const locale = (stored && stored !== "en") ? stored
-        : (dbLocale && dbLocale !== "en") ? dbLocale
-        : stored || dbLocale || detectBrowserLocale();
+      const locale =
+        stored && stored !== "en"
+          ? stored
+          : dbLocale && dbLocale !== "en"
+          ? dbLocale
+          : stored || dbLocale || detectBrowserLocale();
 
       await loadLocale(locale);
-      setStoredLocale(locale);
-      setInitialLocale(locale);
+      const activeLocale = getActiveLocale();
+      setStoredLocale(activeLocale);
+      setInitialLocale(activeLocale);
       setLocaleReady(true);
     };
 
@@ -166,37 +193,37 @@ const AppWithUserData = (props: any) => {
 
   return (
     <LocaleProvider initialLocale={initialLocale}>
-    <UserContext.Provider
-      value={{
-        user,
-        avatarUrl: currentAvatarUrl,
-        setCurrentAvatarUrl,
-        companyRole,
-        isAdminUser,
-        calendarEnabled,
-        calendarConnected,
-        confirmedUser,
-        googleOauthSuccess,
-        isDesktop,
-        handleOverlayVisibility,
-        selectedTab,
-        setSelectedTab,
-        company: resolvedCompany,
-        setCompany,
-        loading,
-      }}
-    >
-      <Main
-        {...props}
-        company={company}
-        companyRole={companyRole}
-        googleOauthSuccess={googleOauthSuccess}
-        isAdminUser={isAdminUser}
-        isDesktop={isDesktop}
-        setIsDesktop={setIsDesktop}
-        user={user}
-      />
-    </UserContext.Provider>
+      <AppUserContextProvider
+        value={{
+          user,
+          avatarUrl: currentAvatarUrl,
+          setCurrentAvatarUrl,
+          companyRole,
+          isAdminUser,
+          calendarEnabled,
+          calendarConnected,
+          confirmedUser,
+          googleOauthSuccess,
+          isDesktop,
+          handleOverlayVisibility,
+          selectedTab,
+          setSelectedTab,
+          company: resolvedCompany,
+          setCompany,
+          loading,
+        }}
+      >
+        <Main
+          {...props}
+          company={company}
+          companyRole={companyRole}
+          googleOauthSuccess={googleOauthSuccess}
+          isAdminUser={isAdminUser}
+          isDesktop={isDesktop}
+          setIsDesktop={setIsDesktop}
+          user={user}
+        />
+      </AppUserContextProvider>
     </LocaleProvider>
   );
 };

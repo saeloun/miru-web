@@ -16,6 +16,7 @@ import { invoiceApi } from "../../../services/invoiceApi";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { lineTotalCalc, minToHHMM } from "../../../helpers";
+import { i18n } from "../../../i18n";
 
 interface InvoicePreviewProps {
   invoice: {
@@ -55,6 +56,7 @@ interface InvoicePreviewProps {
     };
     lineItems: Array<{
       id: string;
+      name?: string;
       description: string;
       quantity: number;
       rate: number;
@@ -128,7 +130,11 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
 
   const formatQuantity = (quantity: number) => minToHHMM(Number(quantity) || 0);
 
-  const formatLineAmount = (item: { amount?: number; quantity: number; rate: number }) =>
+  const formatLineAmount = (item: {
+    amount?: number;
+    quantity: number;
+    rate: number;
+  }) =>
     currencyFormat(
       currency,
       Number(item.amount ?? lineTotalCalc(item.quantity, item.rate))
@@ -138,7 +144,7 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
 
   const handleDownload = async () => {
     if (!invoice.id || invoice.id === "preview") {
-      toast.error("Cannot download preview invoice");
+      toast.error(i18n.t("invoices.cannotDownloadPreview"));
 
       return;
     }
@@ -164,10 +170,10 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
         window.URL.revokeObjectURL(url);
       }, 100);
 
-      toast.success("Invoice downloaded successfully");
+      toast.success(i18n.t("invoices.invoiceDownloaded"));
     } catch (error) {
       console.error("Download failed:", error);
-      toast.error("Failed to download invoice");
+      toast.error(i18n.t("invoices.failedToDownload"));
     } finally {
       setIsDownloading(false);
     }
@@ -175,7 +181,7 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
 
   const handleSend = async () => {
     if (!invoice.id || invoice.id === "preview") {
-      toast.error("Cannot send preview invoice");
+      toast.error(i18n.t("invoices.cannotSendPreview"));
 
       return;
     }
@@ -210,8 +216,8 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
       } else {
         toast.success(
           invoice.status === "draft"
-            ? "Invoice sent successfully"
-            : "Reminder sent successfully"
+            ? i18n.t("invoices.invoiceSentSuccessfully")
+            : i18n.t("invoices.reminderSentSuccessfully")
         );
       }
     } catch (error: any) {
@@ -228,7 +234,7 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
       } else if (error.message) {
         toast.error(error.message);
       } else {
-        toast.error("Failed to send invoice. Please try again.");
+        toast.error(i18n.t("invoices.failedToSend"));
       }
     } finally {
       setIsSending(false);
@@ -241,16 +247,27 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
 
   const handleEdit = () => {
     if (!invoice.id || invoice.id === "preview") {
-      toast.error("Cannot edit preview invoice");
+      toast.error(i18n.t("invoices.cannotEditPreview"));
 
       return;
     }
     navigate(`/invoices/${invoice.id}/edit`);
   };
 
-  const handleAction = (action: string) => {
+  const handleAction = async (action: string) => {
     if (onAction) {
-      onAction(action);
+      if (action === "send") {
+        setIsSending(true);
+        try {
+          await onAction(action);
+        } finally {
+          setIsSending(false);
+        }
+
+        return;
+      }
+
+      await onAction(action);
     } else {
       switch (action) {
         case "download":
@@ -293,38 +310,42 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
             <Button
               variant="outline"
               size="sm"
-              onClick={() => handleAction("download")}
+              onClick={() => void handleAction("download")}
               disabled={isDownloading}
             >
               <Download className="h-4 w-4 mr-2" />
-              {isDownloading ? "Downloading..." : "Download"}
+              {isDownloading
+                ? i18n.t("invoices.downloading")
+                : i18n.t("download")}
             </Button>
             <Button
               variant="outline"
               size="sm"
-              onClick={() => handleAction("print")}
+              onClick={() => void handleAction("print")}
             >
               <Printer className="h-4 w-4 mr-2" />
-              Print
+              {i18n.t("print")}
             </Button>
             <Button
               variant="outline"
               size="sm"
-              onClick={() => handleAction("edit")}
+              onClick={() => void handleAction("edit")}
             >
               <PencilSimple className="h-4 w-4 mr-2" />
-              Edit
+              {i18n.t("edit")}
             </Button>
             {invoice.status === "draft" && (
               <Button
                 data-testid="invoice-preview-send-action"
                 size="sm"
                 className="bg-[#5E58F1] hover:bg-[#4D47E0]"
-                onClick={() => handleAction("send")}
+                onClick={() => void handleAction("send")}
                 disabled={isSending}
               >
                 <PaperPlaneTilt className="h-4 w-4 mr-2" />
-                {isSending ? "Sending..." : "Send Invoice"}
+                {isSending
+                  ? i18n.t("invoices.sending")
+                  : i18n.t("invoices.sendInvoice")}
               </Button>
             )}
             {(invoice.status === "sent" ||
@@ -334,11 +355,13 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
                 data-testid="invoice-preview-reminder-action"
                 size="sm"
                 className="bg-[#5E58F1] hover:bg-[#4D47E0]"
-                onClick={() => handleAction("send")}
+                onClick={() => void handleAction("send")}
                 disabled={isSending}
               >
                 <PaperPlaneTilt className="h-4 w-4 mr-2" />
-                {isSending ? "Sending..." : "Send Reminder"}
+                {isSending
+                  ? i18n.t("invoices.sending")
+                  : i18n.t("invoices.sendReminder")}
               </Button>
             )}
           </div>
@@ -346,7 +369,7 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
       )}
 
       {/* Invoice Preview Card */}
-      <Card className="border-border bg-background p-4 text-foreground shadow-sm print:border-gray-200 print:bg-white print:text-gray-900 sm:p-8 dark:border-neutral-800 dark:bg-neutral-950">
+      <Card className="border-border bg-background p-4 text-foreground shadow-sm print:border-gray-200 print:bg-white print:text-gray-900 sm:p-8">
         {/* Header */}
         <div className="mb-8 flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
           <div>
@@ -462,9 +485,18 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
                 className="rounded-lg border border-border p-4"
                 key={item.id || index}
               >
-                <p className="whitespace-pre-wrap break-words text-sm text-foreground print:text-gray-900">
-                  {item.description}
-                </p>
+                <div className="space-y-1">
+                  {item.name && (
+                    <p className="whitespace-pre-wrap break-words text-sm font-semibold text-foreground print:text-gray-900">
+                      {item.name}
+                    </p>
+                  )}
+                  {item.description && (
+                    <p className="whitespace-pre-wrap break-words text-sm text-muted-foreground print:text-gray-700">
+                      {item.description}
+                    </p>
+                  )}
+                </div>
                 <dl className="mt-4 grid grid-cols-2 gap-3 text-sm">
                   <div>
                     <dt className="text-muted-foreground print:text-gray-600">
@@ -530,7 +562,16 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
                     className="border-b border-border/70 print:border-gray-100"
                   >
                     <td className="px-2 py-3 text-sm text-foreground print:text-gray-900">
-                      {item.description}
+                      <div className="space-y-1">
+                        {item.name && (
+                          <p className="font-medium">{item.name}</p>
+                        )}
+                        {item.description && (
+                          <p className="whitespace-pre-wrap break-words text-muted-foreground print:text-gray-600">
+                            {item.description}
+                          </p>
+                        )}
+                      </div>
                     </td>
                     <td className="px-2 py-3 text-center text-sm text-muted-foreground print:text-gray-600">
                       {item.date ? formatDate(item.date) : "-"}

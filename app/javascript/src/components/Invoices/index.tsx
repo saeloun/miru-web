@@ -15,6 +15,7 @@ import { useUserContext } from "../../context/UserContext";
 import { toast } from "sonner";
 import { usePaginatedInvoices } from "./usePaginatedInvoices";
 import { lineTotalCalc } from "../../helpers";
+import { i18n } from "../../i18n";
 
 type ViewMode = "list" | "edit" | "create" | "preview";
 
@@ -62,6 +63,16 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
   const clearError = () => {
     setPageError(null);
     clearListError();
+  };
+
+  const syncInvoiceState = (invoice: Invoice) => {
+    if (String(selectedInvoiceId) === String(invoice.id)) {
+      setSelectedInvoice(invoice);
+    }
+
+    if (String(previewData?.id) === String(invoice.id)) {
+      setPreviewData(invoice);
+    }
   };
 
   const fallbackCompany = {
@@ -230,14 +241,14 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
         toast.success(
           response?.notice ||
             response?.message ||
-            "Invoice updated successfully"
+            i18n.t("invoices.invoiceUpdated")
         );
       } else {
         const response = await invoiceApi.createInvoice(invoiceData);
         toast.success(
           response?.notice ||
             response?.message ||
-            "Invoice created successfully"
+            i18n.t("invoices.invoiceCreated")
         );
       }
 
@@ -257,9 +268,11 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
       } else if (err.message) {
         toast.error(err.message);
       } else {
-        toast.error("Failed to save invoice. Please try again.");
+        toast.error(i18n.t("invoices.failedToSaveInvoice"));
       }
       clearError();
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -267,22 +280,28 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
     try {
       setIsLoading(true);
 
+      const client = clients.find(
+        c => String(c.id) === String(invoiceData.clientId)
+      );
+      if (!client) {
+        toast.error(i18n.t("invoices.selectClientBeforeSending"));
+
+        return;
+      }
+
       // First save the invoice if it's new
       let invoiceId = invoiceData.id;
       if (!invoiceId) {
         const newInvoice = await invoiceApi.createInvoice(invoiceData);
         invoiceId = newInvoice.id;
-        toast.success("Invoice created successfully");
+        toast.success(i18n.t("invoices.invoiceCreated"));
       } else {
         await invoiceApi.updateInvoice(invoiceId, invoiceData);
-        toast.success("Invoice updated successfully");
+        toast.success(i18n.t("invoices.invoiceUpdated"));
       }
 
       // Then send the invoice
-      const client = clients.find(
-        c => String(c.id) === String(invoiceData.clientId)
-      );
-      if (client && invoiceId) {
+      if (invoiceId) {
         const response = await invoiceApi.sendInvoice(invoiceId, {
           subject: `Invoice ${invoiceData.invoiceNumber}`,
           message: "Please find your invoice attached.",
@@ -290,7 +309,9 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
         });
 
         toast.success(
-          response?.notice || response?.message || "Invoice sent successfully"
+          response?.notice ||
+            response?.message ||
+            i18n.t("invoices.invoiceSentSuccessfully")
         );
       }
 
@@ -310,9 +331,11 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
       } else if (err.message) {
         toast.error(err.message);
       } else {
-        toast.error("Failed to send invoice. Please try again.");
+        toast.error(i18n.t("invoices.failedToSend"));
       }
       clearError();
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -330,11 +353,21 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
         message: "Please find your invoice attached.",
         recipients: [invoice.client.email],
       });
-      toast.success(response?.message || "Invoice sent successfully");
 
+      toast.success(
+        response?.message || i18n.t("invoices.invoiceSentSuccessfully")
+      );
+
+      if (
+        String(selectedInvoiceId) === String(id) ||
+        String(previewData?.id) === String(id)
+      ) {
+        const refreshedInvoice = await invoiceApi.getInvoice(id);
+        syncInvoiceState(refreshedInvoice);
+      }
       await loadInvoices(); // Refresh the invoice list
     } catch (err) {
-      toast.error("Failed to send invoice");
+      toast.error(i18n.t("invoices.failedToSend"));
     }
   };
 
@@ -353,7 +386,10 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
           "This is a reminder about your overdue invoice. Please complete payment.",
         recipients: [invoice.client.email],
       });
-      toast.success(response?.message || "Reminder sent successfully");
+
+      toast.success(
+        response?.message || i18n.t("invoices.reminderSentSuccessfully")
+      );
 
       await loadInvoices();
     } catch (err) {

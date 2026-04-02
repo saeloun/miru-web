@@ -6,8 +6,8 @@ import withLayout from "common/Mobile/HOC/withLayout";
 import { useUserContext } from "context/UserContext";
 import { getYear, format } from "date-fns";
 
-import Container from "./Container";
 import Header from "./Header";
+import LeaveManagementContent from "./LeaveManagementContent";
 
 const LeaveManagement = () => {
   const { isDesktop, user, isAdminUser } = useUserContext();
@@ -150,7 +150,7 @@ const LeaveManagement = () => {
             setCurrentYear={setCurrentYear}
             setSelectedEmployeeId={setSelectedEmployeeId}
           />
-          <Container
+          <LeaveManagementContent
             getLeaveBalanaceDateText={getLeaveBalanaceDateText}
             leaveBalance={leaveBalance}
             currentYear={currentYear}

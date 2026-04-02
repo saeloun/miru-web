@@ -109,7 +109,10 @@ RSpec.describe "Invoice listing", type: :system, js: true do
       with_forgery_protection do
         visit "/invoices"
 
-        fill_in "Search Invoices...", with: "INV-OVER-004"
+        find_field(placeholder: "Search invoices...").send_keys(
+          "INV-OVER-004",
+          :enter
+        )
 
         within("table") do
           expect(page).to have_content("INV-OVER-004", wait: 10)

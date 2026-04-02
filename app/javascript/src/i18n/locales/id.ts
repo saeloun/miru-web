@@ -62,7 +62,6 @@ const id_ID = {
   inactive: "Nonaktif",
   invited: "Diundang",
   department: "Departemen",
-  projects: "Proyek",
   theme: "Tema",
   summary: "Ringkasan",
   format: "Format",
@@ -159,7 +158,8 @@ const id_ID = {
     editEntry: "Edit entri",
     deleteEntry: "Hapus entri",
     deleteTimeEntry: "Hapus Entri Waktu",
-    deleteTimeEntryConfirm: "Apakah Anda yakin ingin menghapus entri waktu ini?",
+    deleteTimeEntryConfirm:
+      "Apakah Anda yakin ingin menghapus entri waktu ini?",
     durationRequired: "Durasi diperlukan",
     projectRequired: "Proyek diperlukan",
     duration: "Durasi",
@@ -185,10 +185,13 @@ const id_ID = {
     entry: "entri",
     entries: "entri",
     noEntriesForSelectedDay: "Tidak ada entri untuk hari yang dipilih",
-    weekReviewHint: "Beralih ke Pekan Ini untuk meninjau semua yang Anda catat pekan ini.",
+    weekReviewHint:
+      "Beralih ke Pekan Ini untuk meninjau semua yang Anda catat pekan ini.",
     noTimeEntriesYet: "Belum ada entri waktu",
-    firstEntryHint: 'Klik "Tambah Entri" untuk mencatat entri waktu pertama Anda untuk hari ini',
-    logWorkByWeekOrMonth: "Catat pekerjaan per pekan atau bulan. Jaga entri tetap jelas dan terkini.",
+    firstEntryHint:
+      'Klik "Tambah Entri" untuk mencatat entri waktu pertama Anda untuk hari ini',
+    logWorkByWeekOrMonth:
+      "Catat pekerjaan per pekan atau bulan. Jaga entri tetap jelas dan terkini.",
     entriesFor: "Entri untuk %{name}",
     timeEntriesFor: "Entri waktu untuk",
     unableToLoad: "Tidak dapat memuat pelacakan waktu saat ini.",
@@ -206,7 +209,8 @@ const id_ID = {
     entriesUpdatedSuccessfully: "Entri berhasil diperbarui",
     failedToUpdateEntries: "Gagal memperbarui entri",
     selectProjectFirst: "Silakan pilih proyek terlebih dahulu",
-    editingModeActive: "Mode pengeditan aktif. Selesaikan perubahan Anda di atas.",
+    editingModeActive:
+      "Mode pengeditan aktif. Selesaikan perubahan Anda di atas.",
     dayAbbr: {
       mon: "Sen",
       tue: "Sel",
@@ -330,7 +334,8 @@ const id_ID = {
     searchProjects: "Cari proyek...",
     createFirstProject: "Buat proyek pertama Anda untuk memulai.",
     noProjectsYet: "Belum ada proyek",
-    workingOnProjects: "Lacak pekerjaan yang dapat ditagih dan tidak dapat ditagih di seluruh proyek Anda.",
+    workingOnProjects:
+      "Lacak pekerjaan yang dapat ditagih dan tidak dapat ditagih di seluruh proyek Anda.",
     active: "Aktif",
     paused: "Dijeda",
     completed: "Selesai",
@@ -353,14 +358,16 @@ const id_ID = {
     nonBillableDescription: "Lacak waktu tanpa menagih klien",
     noClientsPresent: "Tidak ada klien",
     teamMembersUpdated: "Anggota tim berhasil diperbarui",
-    manageProjectMembersDescription: "Tambah atau hapus anggota tim dan atur tarif per jam mereka.",
+    manageProjectMembersDescription:
+      "Tambah atau hapus anggota tim dan atur tarif per jam mereka.",
     enterValidRate: "Silakan masukkan tarif yang valid",
     addAnotherTeamMember: "Tambah Anggota Lain",
     addTeamMember: "Tambah Anggota Tim",
     saveTeamMembers: "Simpan Anggota",
     noTeamMembersAdded: "Belum ada anggota tim yang ditambahkan.",
     addTeamMembers: "Tambah Anggota Tim",
-    teamMembersDescription: "Lihat dan kelola anggota tim yang ditugaskan ke proyek ini.",
+    teamMembersDescription:
+      "Lihat dan kelola anggota tim yang ditugaskan ke proyek ini.",
   },
 
   // Team
@@ -509,8 +516,7 @@ const id_ID = {
     invoiceSentSubject: "%{company} mengirimkan Anda faktur (%{number})",
     reminderBody:
       "%{company} mengirimkan Anda pengingat untuk faktur %{number}",
-    invoiceSentBody:
-      "%{company} mengirimkan Anda faktur (%{number})",
+    invoiceSentBody: "%{company} mengirimkan Anda faktur (%{number})",
     invoiceWillBeSent: "Faktur akan dikirim!",
     processing: "memproses...",
 
@@ -584,7 +590,8 @@ const id_ID = {
 
     // Counters
     showingOf: "Menampilkan %{shown} dari %{total}",
-    viewingMatching: "Melihat %{filtered} faktur yang cocok dari %{loaded} yang dimuat",
+    viewingMatching:
+      "Melihat %{filtered} faktur yang cocok dari %{loaded} yang dimuat",
     loadedOf: "Dimuat %{loaded} dari %{total}",
     showingRecentTransactions: "Menampilkan %{count} transaksi terbaru",
     updatedAt: "Diperbarui %{date}",
@@ -596,12 +603,16 @@ const id_ID = {
 
     // Invoice reminder email
     invoiceReminder: "Pengingat Faktur: %{number}",
-    reminderMessage: "Ini adalah pengingat tentang faktur Anda yang belum dibayar. Silakan lihat detail terlampir.",
+    reminderMessage:
+      "Ini adalah pengingat tentang faktur Anda yang belum dibayar. Silakan lihat detail terlampir.",
     invoiceAttached: "Silakan temukan faktur Anda terlampir.",
-    reminderPaymentMessage: "Ini adalah pengingat tentang faktur Anda yang sudah jatuh tempo. Silakan selesaikan pembayaran.",
+    reminderPaymentMessage:
+      "Ini adalah pengingat tentang faktur Anda yang sudah jatuh tempo. Silakan selesaikan pembayaran.",
     invoiceSubject: "Faktur %{number}",
-    reminderPaymentSubject: "Pengingat untuk menyelesaikan pembayaran faktur %{number}",
-    markAsPaidConfirm: "Tandai faktur ini sebagai lunas? Tindakan ini mempengaruhi catatan akuntansi.",
+    reminderPaymentSubject:
+      "Pengingat untuk menyelesaikan pembayaran faktur %{number}",
+    markAsPaidConfirm:
+      "Tandai faktur ini sebagai lunas? Tindakan ini mempengaruhi catatan akuntansi.",
     failedToLoadInvoice: "Gagal memuat faktur",
     invoiceNotFound: "Faktur tidak ditemukan",
     failedToMarkAsPaid: "Gagal menandai faktur sebagai lunas",
@@ -680,7 +691,8 @@ const id_ID = {
   timer: {
     webTimer: "Timer web",
     webTimerLabel: "Timer Web",
-    trackLiveWork: "Lacak pekerjaan langsung secara real time, lalu simpan langsung ke daftar entri hari ini.",
+    trackLiveWork:
+      "Lacak pekerjaan langsung secara real time, lalu simpan langsung ke daftar entri hari ini.",
     startTimer: "Mulai Timer",
     pause: "Jeda",
     resume: "Lanjutkan",
@@ -689,7 +701,8 @@ const id_ID = {
     reset: "Reset",
     timer: "Timer",
     saveTimeEntry: "Simpan Entri Waktu",
-    saveTimeEntryDescription: "Anda melacak %{time}. Apakah Anda ingin menyimpannya sebagai entri waktu?",
+    saveTimeEntryDescription:
+      "Anda melacak %{time}. Apakah Anda ingin menyimpannya sebagai entri waktu?",
     discard: "Buang",
     timerStarted: "Timer dimulai",
     timerPaused: "Timer dijeda",
@@ -786,21 +799,25 @@ const id_ID = {
     invoiceAgingDetails: "Detail Aging Faktur",
     noDataFound: "Data Tidak Ditemukan",
     accountsAgingReport: "Laporan Aging Piutang",
-    analysisOfOutstandingReceivables: "Analisis piutang yang belum terbayar berdasarkan periode aging",
+    analysisOfOutstandingReceivables:
+      "Analisis piutang yang belum terbayar berdasarkan periode aging",
     asOf: "Per %{date}",
     zeroToThirtyDays: "0-30 Hari",
     thirtyOneToSixtyDays: "31-60 Hari",
     sixtyOneToNinetyDays: "61-90 Hari",
     ninetyPlusDays: "90+ Hari",
-    noClientsWithOutstandingBalances: "Tidak ada klien dengan saldo belum terbayar.",
+    noClientsWithOutstandingBalances:
+      "Tidak ada klien dengan saldo belum terbayar.",
     showingOfClients: "Menampilkan %{displayed} dari %{total} klien...",
     errorLoadingReportData: "Error memuat data laporan. Silakan coba lagi.",
     projectClient: "PROYEK/ KLIEN",
     noteHeader: "CATATAN",
     teamMemberDate: "ANGGOTA TIM/ TANGGAL",
     hoursLogged: "JAM TERCATAT",
-    noResultsMatchFilters: "Tidak ada hasil yang cocok dengan filter saat ini. Coba hapus beberapa filter.",
-    noTimeEntriesYet: "Belum ada entri waktu yang ditambahkan. Anda akan melihat ringkasan entri waktu yang ditambahkan oleh tim Anda.",
+    noResultsMatchFilters:
+      "Tidak ada hasil yang cocok dengan filter saat ini. Coba hapus beberapa filter.",
+    noTimeEntriesYet:
+      "Belum ada entri waktu yang ditambahkan. Anda akan melihat ringkasan entri waktu yang ditambahkan oleh tim Anda.",
     selected: "%{count} dipilih",
     showingClientsCount: "Menampilkan %{shown} dari %{total} klien",
     ofTeamMembersSelected: "%{active} dari %{total} anggota tim dipilih",
@@ -822,20 +839,26 @@ const id_ID = {
     groupByMonth: "Kelompokkan berdasarkan bulan",
     previewLabel: "Pratinjau:",
     entriesWillBeGrouped: "Entri akan dikelompokkan %{grouping}",
-    subtotalsShownForEachGroup: "Subtotal akan ditampilkan untuk setiap kelompok",
+    subtotalsShownForEachGroup:
+      "Subtotal akan ditampilkan untuk setiap kelompok",
     timeEntryReportTitle: "Laporan Entri Waktu",
-    timeEntryReportDesc: "Ringkasan entri waktu yang ditambahkan oleh tim Anda.",
+    timeEntryReportDesc:
+      "Ringkasan entri waktu yang ditambahkan oleh tim Anda.",
     invoicesReport: "Laporan Faktur",
-    invoicesReportDesc: "Ringkasan terperinci faktur yang belum dibayar dan terlambat dari semua klien untuk periode waktu tertentu.",
+    invoicesReportDesc:
+      "Ringkasan terperinci faktur yang belum dibayar dan terlambat dari semua klien untuk periode waktu tertentu.",
     totalHoursLoggedTitle: "Total jam tercatat",
-    totalHoursLoggedDesc: "Ringkasan terperinci jam yang ditagih, belum ditagih, dan tidak dapat ditagih oleh tim yang dikelompokkan berdasarkan proyek.",
+    totalHoursLoggedDesc:
+      "Ringkasan terperinci jam yang ditagih, belum ditagih, dan tidak dapat ditagih oleh tim yang dikelompokkan berdasarkan proyek.",
     revenueReport: "Laporan Pendapatan",
     revenueReportDesc: "Laporan terperinci pendapatan dari setiap klien.",
     accountsAging: "Aging Piutang",
-    accountsAgingDesc: "Temukan klien mana yang membutuhkan waktu lama untuk membayar",
+    accountsAgingDesc:
+      "Temukan klien mana yang membutuhkan waktu lama untuk membayar",
     clearAll: "HAPUS SEMUA",
     outstandingAndOverdue: "Belum Dibayar dan Terlambat",
-    followUpOnInvoices: "Tindak lanjuti faktur yang masih memerlukan perhatian.",
+    followUpOnInvoices:
+      "Tindak lanjuti faktur yang masih memerlukan perhatian.",
     outstanding: "Belum Dibayar",
     overdue: "Terlambat",
     refresh: "Segarkan",
@@ -848,26 +871,35 @@ const id_ID = {
     formatLabel: "Format",
     exportPdfBtn: "Ekspor PDF",
     exportCsvBtn: "Ekspor CSV",
-    noOutstandingOrOverdueInvoices: "Tidak ditemukan faktur yang belum dibayar atau terlambat.",
+    noOutstandingOrOverdueInvoices:
+      "Tidak ditemukan faktur yang belum dibayar atau terlambat.",
     allCurrencies: "Semua mata uang",
     filteredByCurrency: "Difilter berdasarkan %{currency}",
     overdueAgingTitle: "Aging Terlambat (%{currency})",
     averageDays: "Rata-rata Hari:",
-    timeReportsDesc: "Ringkasan komprehensif entri waktu yang ditambahkan oleh anggota tim Anda",
+    timeReportsDesc:
+      "Ringkasan komprehensif entri waktu yang ditambahkan oleh anggota tim Anda",
     outstandingOverdueInvoicesTitle: "Faktur Belum Dibayar & Terlambat",
-    outstandingOverdueInvoicesDesc: "Ikhtisar terperinci faktur yang belum dibayar dan terlambat di seluruh klien",
+    outstandingOverdueInvoicesDesc:
+      "Ikhtisar terperinci faktur yang belum dibayar dan terlambat di seluruh klien",
     revenueByClient: "Pendapatan berdasarkan Klien",
-    revenueByClientDesc: "Rincian pendapatan berdasarkan klien dengan tren dan perbandingan",
-    accountsAgingTableDesc: "Analisis usia piutang yang belum terbayar berdasarkan periode waktu",
+    revenueByClientDesc:
+      "Rincian pendapatan berdasarkan klien dengan tren dan perbandingan",
+    accountsAgingTableDesc:
+      "Analisis usia piutang yang belum terbayar berdasarkan periode waktu",
     paymentReportTitle: "Laporan Pembayaran",
-    paymentReportDesc: "Lacak semua pembayaran yang diterima dengan riwayat transaksi terperinci",
+    paymentReportDesc:
+      "Lacak semua pembayaran yang diterima dengan riwayat transaksi terperinci",
     teamUtilization: "Utilisasi Tim",
     teamUtilizationDesc: "Tingkat utilisasi anggota tim dan analisis kapasitas",
     projectProfitability: "Profitabilitas Proyek",
-    projectProfitabilityDesc: "Analisis profitabilitas berdasarkan proyek dengan rincian biaya",
+    projectProfitabilityDesc:
+      "Analisis profitabilitas berdasarkan proyek dengan rincian biaya",
     clientSummaryTitle: "Ringkasan Klien",
-    clientSummaryDesc: "Metrik kinerja dan keterlibatan klien yang komprehensif",
-    understandReportsAtGlance: "Pahami pendapatan, waktu, dan pekerjaan yang belum selesai dalam sekejap.",
+    clientSummaryDesc:
+      "Metrik kinerja dan keterlibatan klien yang komprehensif",
+    understandReportsAtGlance:
+      "Pahami pendapatan, waktu, dan pekerjaan yang belum selesai dalam sekejap.",
     scheduleReports: "Jadwalkan laporan",
     availableReports: "Laporan Tersedia",
     revenueAndBilling: "Pendapatan dan penagihan",
@@ -878,7 +910,8 @@ const id_ID = {
     viewOverdueInvoices: "Lihat Faktur Terlambat",
     monthlyRevenueReport: "Laporan Pendapatan Bulanan",
     openReport: "Buka laporan %{title}",
-    reviewHoursLogged: "Tinjau jam yang dicatat berdasarkan orang, klien, dan proyek.",
+    reviewHoursLogged:
+      "Tinjau jam yang dicatat berdasarkan orang, klien, dan proyek.",
     lastSevenDaysPreset: "7 Hari Terakhir",
     lastThirtyDaysPreset: "30 Hari Terakhir",
     totalEntries: "Total Entri",
@@ -1123,14 +1156,19 @@ const id_ID = {
     paidInvoices: "Faktur Lunas",
     alreadySettled: "Sudah diselesaikan",
     paymentsReceived: "Pembayaran Diterima",
-    employeeGuidance: "Lacak pekan Anda, ajukan entri yang akurat, dan jaga pekerjaan tetap berjalan.",
-    bookKeeperGuidance: "Tinjau pembayaran masuk, rekonsiliasi faktur, dan jaga arus kas tetap jelas.",
-    clientGuidance: "Periksa status faktur dan riwayat pembayaran untuk akun Anda.",
+    employeeGuidance:
+      "Lacak pekan Anda, ajukan entri yang akurat, dan jaga pekerjaan tetap berjalan.",
+    bookKeeperGuidance:
+      "Tinjau pembayaran masuk, rekonsiliasi faktur, dan jaga arus kas tetap jelas.",
+    clientGuidance:
+      "Periksa status faktur dan riwayat pembayaran untuk akun Anda.",
     defaultGuidance: "Pendapatan, proyek, dan momentum tim dalam sekejap.",
     recentActivity: "Aktivitas Terbaru",
     workspaceActivity: "Aktivitas Workspace",
-    employeeActivityDescription: "Dasbor Anda difokuskan pada pelacakan waktu dan pekerjaan yang ditugaskan.",
-    activityDescription: "Pembaruan terbaru di seluruh faktur dan pembayaran Anda",
+    employeeActivityDescription:
+      "Dasbor Anda difokuskan pada pelacakan waktu dan pekerjaan yang ditugaskan.",
+    activityDescription:
+      "Pembaruan terbaru di seluruh faktur dan pembayaran Anda",
     noRecentActivityYet: "Belum ada aktivitas terbaru",
     loadMore: "Muat lebih banyak",
     allCaughtUp: "Anda sudah up to date",
@@ -1172,27 +1210,36 @@ const id_ID = {
     cashLedger: "Buku kas",
     miruLogo: "Miru",
     heroTitle: "Satu tempat untuk waktu, faktur, dan pembayaran",
-    heroDescription: "Jaga hari tetap jelas, jaga penagihan tetap berjalan, dan jaga kas tetap terlihat.",
+    heroDescription:
+      "Jaga hari tetap jelas, jaga penagihan tetap berjalan, dan jaga kas tetap terlihat.",
     slideShowPrefix: "Tampilkan",
-    slideDashboardDescription: "Lihat pendapatan, proyek aktif, dan momentum tim tanpa perlu mencari.",
-    slideInvoicesDescription: "Simpan draf, saldo terlambat, dan pekerjaan yang sudah dibayar di satu tempat.",
-    slideTimeTrackingDescription: "Entri waktu per pekan tetap terkini tanpa menjadi pekerjaan yang membosankan.",
-    slidePaymentsDescription: "Setiap pembayaran tercatat dalam satu buku besar dengan metode, status, dan sumber.",
+    slideDashboardDescription:
+      "Lihat pendapatan, proyek aktif, dan momentum tim tanpa perlu mencari.",
+    slideInvoicesDescription:
+      "Simpan draf, saldo terlambat, dan pekerjaan yang sudah dibayar di satu tempat.",
+    slideTimeTrackingDescription:
+      "Entri waktu per pekan tetap terkini tanpa menjadi pekerjaan yang membosankan.",
+    slidePaymentsDescription:
+      "Setiap pembayaran tercatat dalam satu buku besar dengan metode, status, dan sumber.",
     continueWithGoogle: "Lanjutkan dengan Google",
     continueWithGithub: "Lanjutkan dengan GitHub",
     orUseEmail: "atau gunakan email",
     verifyWithAuthenticator: "Verifikasi dengan aplikasi autentikator Anda",
-    authenticatorInstructions: "Masukkan kode 6 digit dari aplikasi autentikator Anda, atau gunakan kode pemulihan.",
+    authenticatorInstructions:
+      "Masukkan kode 6 digit dari aplikasi autentikator Anda, atau gunakan kode pemulihan.",
     authenticatorCode: "Kode autentikator",
     recoveryCode: "Kode pemulihan",
     verifyAndSignIn: "Verifikasi dan masuk",
-    completePasskeyVerification: "Selesaikan verifikasi passkey untuk menyelesaikan proses masuk.",
-    enterAuthenticatorCode: "Masukkan kode autentikator Anda untuk menyelesaikan proses masuk.",
+    completePasskeyVerification:
+      "Selesaikan verifikasi passkey untuk menyelesaikan proses masuk.",
+    enterAuthenticatorCode:
+      "Masukkan kode autentikator Anda untuk menyelesaikan proses masuk.",
     invalidVerificationCode: "Kode verifikasi tidak valid.",
     privacy: "Privasi",
     terms: "Ketentuan",
     createAccount: "Buat akun",
-    passwordCriteria: "Min. 8 karakter, 1 huruf besar, 1 huruf kecil, 1 angka dan 1 karakter khusus",
+    passwordCriteria:
+      "Min. 8 karakter, 1 huruf besar, 1 huruf kecil, 1 angka dan 1 karakter khusus",
     agreeToTerms: "Saya setuju dengan",
     termsOfService: "Ketentuan Layanan",
     privacyPolicy: "Kebijakan Privasi",
@@ -1276,12 +1323,15 @@ const id_ID = {
     publicHolidays: "Hari libur nasional",
     zeroUsed: "0 terpakai",
     leaveCalendar: "Kalender cuti",
-    trackLeaveUsage: "Lacak penggunaan cuti dan hari libur bulan demi bulan untuk %{year}.",
-    selectDayToInspect: "Pilih hari untuk memeriksa detail cuti dan penggunaan hari libur.",
+    trackLeaveUsage:
+      "Lacak penggunaan cuti dan hari libur bulan demi bulan untuk %{year}.",
+    selectDayToInspect:
+      "Pilih hari untuk memeriksa detail cuti dan penggunaan hari libur.",
     nothingBooked: "Tidak ada yang dipesan",
     nothingBookedForDate: "Tidak ada yang dipesan untuk tanggal ini.",
     recordedTimeAway: "Waktu istirahat tercatat pada hari ini",
-    noLeaveOrHoliday: "Tidak ada cuti atau hari libur yang ditandai untuk hari ini",
+    noLeaveOrHoliday:
+      "Tidak ada cuti atau hari libur yang ditandai untuk hari ini",
     timeOff: "Cuti",
     customLeave: "cuti kustom",
     leave: "cuti",
@@ -1299,12 +1349,14 @@ const id_ID = {
     numberOfTeamMembers: "Jumlah Anggota Tim:",
     plan: "Paket",
     basicPlan: "Paket Dasar",
-    basicPlanDescription: "Paket dasar mencakup semua fitur. Ini adalah biaya satu kali.",
+    basicPlanDescription:
+      "Paket dasar mencakup semua fitur. Ini adalah biaya satu kali.",
     chargedOnce: "ditagih sekali",
     addOns: "Add-On",
     oneTeamMember: "1 anggota tim",
     chargedEveryMonth: "ditagih setiap bulan",
-    basicPlanPerUser: "Paket dasar dilengkapi tambahan %{rate}$ per pengguna per bulan.",
+    basicPlanPerUser:
+      "Paket dasar dilengkapi tambahan %{rate}$ per pengguna per bulan.",
     plusTaxes: "ditambah pajak",
     reviewAndPay: "TINJAU DAN BAYAR",
   },

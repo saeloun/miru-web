@@ -9,6 +9,7 @@ import { useUserContext } from "context/UserContext";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import { useOutsideClick } from "helpers";
+import { i18n } from "../../../../../i18n";
 import { teamsMapper } from "mapper/teams.mapper";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
@@ -17,16 +18,16 @@ import worldCountries from "world-countries";
 import * as Yup from "yup";
 import { useCurrentUser } from "~/hooks/useCurrentUser";
 
-import MobileEditPage from "./MobileEditPage";
-import EditProfilePage from "./StaticPage";
+import MobileProfileEditor from "./MobileProfileEditor";
+import ProfileEditor from "./ProfileEditor";
 import ProfileImageCard from "./ProfileImageCard";
 import { userSchema } from "./validationSchema";
 
 dayjs.extend(utc);
 
 const addressOptions = [
-  { label: "Current", value: "current" },
-  { label: "Permanent", value: "permanent" },
+  { label: i18n.t("profile.current"), value: "current" },
+  { label: i18n.t("profile.permanent"), value: "permanent" },
 ];
 
 const schema = Yup.object().shape(userSchema);
@@ -120,7 +121,7 @@ const UserDetailsEdit = () => {
         setAddrId(addressData.data.addresses[0]?.id);
       }
     } catch (error) {
-      console.error("Failed to fetch user details:", error);
+      console.error(i18n.t("profile.editProfile"), error);
     }
 
     setIsLoading(false);
@@ -369,12 +370,12 @@ const UserDetailsEdit = () => {
       });
 
       syncPasskeys(response.data);
-      toast.success("Passkey added");
+      toast.success(i18n.t("passkeys.addedSuccess"));
     } catch (error) {
       toast.error(
         error?.response?.data?.error ||
           error.message ||
-          "Failed to add passkey."
+          i18n.t("passkeys.addFailed")
       );
     } finally {
       setPasskeysBusy(false);
@@ -386,9 +387,11 @@ const UserDetailsEdit = () => {
       setPasskeysBusy(true);
       const response = await passkeysApi.destroy(id);
       syncPasskeys(response.data);
-      toast.success("Passkey removed");
+      toast.success(i18n.t("passkeys.removedSuccess"));
     } catch (error) {
-      toast.error(error?.response?.data?.error || "Failed to remove passkey.");
+      toast.error(
+        error?.response?.data?.error || i18n.t("passkeys.removeFailed")
+      );
     } finally {
       setPasskeysBusy(false);
     }
@@ -401,13 +404,13 @@ const UserDetailsEdit = () => {
       syncPasskeys(response.data);
       toast.success(
         required
-          ? "Passkey requirement enabled"
-          : "Passkey requirement disabled"
+          ? i18n.t("passkeys.requirementEnabled")
+          : i18n.t("passkeys.requirementDisabled")
       );
     } catch (error) {
       toast.error(
         error?.response?.data?.error ||
-          "Failed to update passkey sign-in requirement."
+          i18n.t("passkeys.updateRequirementFailed")
       );
     } finally {
       setPasskeysBusy(false);
@@ -420,9 +423,11 @@ const UserDetailsEdit = () => {
       const response = await totpApi.setup();
       syncTotp(response.data);
       setTotpVerificationCode("");
-      toast.success("Authenticator app setup is ready");
+      toast.success(i18n.t("twoFactor.setupReadySuccess"));
     } catch (error) {
-      toast.error(error?.response?.data?.error || "Failed to start 2FA setup.");
+      toast.error(
+        error?.response?.data?.error || i18n.t("twoFactor.setupFailed")
+      );
     } finally {
       setTotpBusy(false);
     }
@@ -434,10 +439,10 @@ const UserDetailsEdit = () => {
       const response = await totpApi.confirm({ code: totpVerificationCode });
       syncTotp(response.data);
       setTotpVerificationCode("");
-      toast.success("Authenticator app enabled");
+      toast.success(i18n.t("twoFactor.enabledSuccess"));
     } catch (error) {
       toast.error(
-        error?.response?.data?.error || "Failed to enable authenticator app."
+        error?.response?.data?.error || i18n.t("twoFactor.enableFailed")
       );
     } finally {
       setTotpBusy(false);
@@ -450,9 +455,11 @@ const UserDetailsEdit = () => {
       const response = await totpApi.destroy();
       syncTotp(response.data);
       setTotpVerificationCode("");
-      toast.success("Authenticator app disabled");
+      toast.success(i18n.t("twoFactor.disabledSuccess"));
     } catch (error) {
-      toast.error(error?.response?.data?.error || "Failed to disable 2FA.");
+      toast.error(
+        error?.response?.data?.error || i18n.t("twoFactor.disableFailed")
+      );
     } finally {
       setTotpBusy(false);
     }
@@ -463,10 +470,10 @@ const UserDetailsEdit = () => {
       setTotpBusy(true);
       const response = await totpApi.regenerateRecoveryCodes();
       syncTotp(response.data);
-      toast.success("Recovery codes regenerated");
+      toast.success(i18n.t("twoFactor.regeneratedSuccess"));
     } catch (error) {
       toast.error(
-        error?.response?.data?.error || "Failed to regenerate recovery codes."
+        error?.response?.data?.error || i18n.t("twoFactor.regenerateFailed")
       );
     } finally {
       setTotpBusy(false);
@@ -483,19 +490,19 @@ const UserDetailsEdit = () => {
             isDisableUpdateBtn={false}
             saveAction={handleUpdateDetails}
             subTitle=""
-            title="Personal Details"
+            title={i18n.t("profile.personalDetails")}
           />
           {isLoading ? (
             <Loader className="min-h-70v" />
           ) : (
-            <EditProfilePage
+            <ProfileEditor
               avatarSection={
                 isCalledFromSettings && currentUserId ? (
                   <ProfileImageCard
                     displayName={
                       `${personalDetails.first_name || ""} ${
                         personalDetails.last_name || ""
-                      }`.trim() || "User"
+                      }`.trim() || i18n.t("profile.userFallback")
                     }
                     imageUrl={avatarUrl || currentUser?.avatar_url}
                     onAvatarChange={handleAvatarChange}
@@ -561,19 +568,19 @@ const UserDetailsEdit = () => {
         <Fragment>
           <MobileDetailsHeader
             href={`${navigateToPath}/profile`}
-            title="Personal Details"
+            title={i18n.t("profile.personalDetails")}
           />
           {isLoading ? (
             <Loader className="min-h-70v" />
           ) : (
-            <MobileEditPage
+            <MobileProfileEditor
               avatarSection={
                 isCalledFromSettings && currentUserId ? (
                   <ProfileImageCard
                     displayName={
                       `${personalDetails.first_name || ""} ${
                         personalDetails.last_name || ""
-                      }`.trim() || "User"
+                      }`.trim() || i18n.t("profile.userFallback")
                     }
                     imageUrl={avatarUrl || currentUser?.avatar_url}
                     onAvatarChange={handleAvatarChange}

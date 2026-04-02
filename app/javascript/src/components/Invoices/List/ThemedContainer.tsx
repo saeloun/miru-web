@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import Container from "./container";
+import InvoiceListContent from "./InvoiceListContent";
 import AdminDashboard from "../AdminDashboard";
 import ThemeToggle from "../ThemeToggle";
 
@@ -25,7 +25,7 @@ const ThemedContainer = props => {
   return (
     <>
       {theme === "classic" ? (
-        <Container {...props} />
+        <InvoiceListContent {...props} />
       ) : (
         <AdminDashboard
           summary={props.summary}

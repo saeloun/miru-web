@@ -93,7 +93,7 @@ class Invitation < ApplicationRecord
       company_details = {
         name: company.name,
         logo: company.company_logo,
-        employee_count: company.employees_without_client_role.count
+        employee_count: [company.used_team_seats, 1].max
       }
 
       sender_details = {

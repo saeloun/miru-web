@@ -9,6 +9,7 @@ class InvoiceLineItem < ApplicationRecord
   validates :name, :date, :rate, :quantity, presence: true
   validates :rate, numericality: { greater_than_or_equal_to: 0 }
   validates :quantity, numericality: { greater_than_or_equal_to: 0 }
+  validate :timesheet_entry_belongs_to_invoice_company
 
   def self.total_cost_of_all_line_items
     (self.sum("quantity * rate") / 60.0).round(3)
@@ -45,6 +46,13 @@ class InvoiceLineItem < ApplicationRecord
   end
 
   private
+
+    def timesheet_entry_belongs_to_invoice_company
+      return if timesheet_entry.blank? || invoice.blank?
+      return if timesheet_entry.company&.id == invoice.company_id
+
+      errors.add(:timesheet_entry, "must belong to the same company")
+    end
 
     def unlock_timesheet_entry
       if invoice.draft?

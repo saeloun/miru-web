@@ -17,7 +17,7 @@ import GroupByFilter from "./GroupByFilter";
 import StatusFilter from "./StatusFilter";
 import TeamMembersFilter from "./TeamMembersFilter";
 
-const FilterSidebar = ({
+const TimeEntryReportFilterSidebar = ({
   setIsFilterVisible,
   selectedFilter,
   setFilterCounter,
@@ -36,7 +36,7 @@ const FilterSidebar = ({
     status: statusList,
   } = selectedContextFilter;
 
-  const { clients: selctedClientList, teamMembers: teamMembersList } =
+  const { clients: selectedClientList, teamMembers: teamMembersList } =
     filterOptions;
   const [isStatusOpen, setIsStatusOpen] = useState<boolean>(false);
   const [isGroupByOpen, setIsGroupByOpen] = useState<boolean>(false);
@@ -49,19 +49,19 @@ const FilterSidebar = ({
   const [isClientOpen, setIsClientOpen] = useState<boolean>(false);
   const [isTeamMemberOpen, setIsTeamMemberOpen] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [TeamMembersearchQuery, setTeamMemberSearchQuery] = useState("");
+  const [teamMemberSearchQuery, setTeamMemberSearchQuery] = useState("");
   const [selectedClients, setSelectedClients] = useState<any[]>(clientList);
   const [selectedTeams, setSelectedTeams] = useState<any[]>(teamMemberList);
   const [selectedStatus, setSelectedStatus] = useState<any[]>(statusList);
 
   const [filteredClientList, setFilteredClientList] =
-    useState<any[]>(selctedClientList);
+    useState<any[]>(selectedClientList);
 
   const [filteredTeamsList, setFilteredTeamsList] =
     useState<any[]>(teamMembersList);
   const [dateRange, setDateRange] = useState<any>(filters.customDateFilter);
   const debouncedSearchQuery = useDebounce(searchQuery, 500);
-  const debouncedTeamsSearchQuery = useDebounce(TeamMembersearchQuery, 500);
+  const debouncedTeamsSearchQuery = useDebounce(teamMemberSearchQuery, 500);
   const { isDesktop } = useUserContext();
   const [disableDateBtn, setDisableDateBtn] = useState<boolean>(true);
   const [disableApplyBtn, setDisableApplyBtn] = useState(false);
@@ -121,7 +121,7 @@ const FilterSidebar = ({
       }
     } else {
       if (!debouncedSearchQuery) {
-        setFilteredClientList(selctedClientList);
+        setFilteredClientList(selectedClientList);
       }
     }
   }, [debouncedSearchQuery]);
@@ -378,7 +378,8 @@ const FilterSidebar = ({
         <SidePanel.Header className="mb-2 flex h-12 items-center justify-between bg-primary px-2 text-white lg:h-auto lg:bg-white lg:px-5 lg:py-5 lg:font-bold lg:text-foreground">
           {isDesktop ? (
             <h4 className="flex items-center text-base">
-              <FilterIcon className="mr-2.5" size={16} /> <span>{i18n.t("filters")}</span>
+              <FilterIcon className="mr-2.5" size={16} />{" "}
+              <span>{i18n.t("filters")}</span>
             </h4>
           ) : (
             <span className="flex w-full items-center justify-center pl-6 text-base font-medium leading-5">
@@ -421,7 +422,7 @@ const FilterSidebar = ({
             handleSelectTeamMember={handleSelectTeamMember}
             handleTeamMembersFilterToggle={handleTeamMembersFilterToggle}
             isTeamMemberOpen={isTeamMemberOpen}
-            searchQuery={TeamMembersearchQuery}
+            searchQuery={teamMemberSearchQuery}
             selectedTeams={selectedTeams}
             setSearchQuery={setTeamMemberSearchQuery}
           />
@@ -462,4 +463,4 @@ const FilterSidebar = ({
   );
 };
 
-export default FilterSidebar;
+export default TimeEntryReportFilterSidebar;

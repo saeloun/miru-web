@@ -3,6 +3,7 @@ import { GlobeSimple, CaretDown, Spinner } from "phosphor-react";
 import { toast } from "sonner";
 
 import { useLocale } from "../../context/LocaleContext";
+import { t } from "../../i18n";
 import { getLocaleShortCode } from "./localeData";
 import LocaleDropdown from "./LocaleDropdown";
 
@@ -27,6 +28,7 @@ const LocaleSelector: React.FC<LocaleSelectorProps> = ({
     async (newLocale: string) => {
       if (newLocale === locale) {
         setIsOpen(false);
+
         return;
       }
 
@@ -42,7 +44,7 @@ const LocaleSelector: React.FC<LocaleSelectorProps> = ({
 
         window.location.reload();
       } catch {
-        toast.error("Failed to change language");
+        toast.error(t("common.failedToChangeLanguage"));
         setIsSaving(false);
       }
     },
@@ -54,7 +56,7 @@ const LocaleSelector: React.FC<LocaleSelectorProps> = ({
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center gap-1.5 rounded-lg border border-transparent px-2 py-1.5 text-sm text-muted-foreground hover:bg-muted transition-colors"
-        aria-label="Select language"
+        aria-label={t("common.language")}
         disabled={isSaving || !isLocaleReady}
       >
         {isSaving ? (

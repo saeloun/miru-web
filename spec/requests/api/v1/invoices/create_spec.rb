@@ -45,6 +45,85 @@ RSpec.describe "Api::V1::Invoices#create", type: :request do
         assert_equal ["SAI-C1-03"], Invoice.search("SAI-C1-03").map(&:invoice_number)
       end
 
+      it "creates invoice line items with date and timesheet entry associations" do
+        client = company.clients.first
+        project = create(:project, client:)
+        timesheet_entry = create(
+          :timesheet_entry,
+          user:,
+          project:,
+          work_date: Date.current,
+          duration: 120
+        )
+
+        send_request :post, api_v1_invoices_path(
+          invoice: {
+            client_id: client.id,
+            invoice_number: "INV-TIMESHEET-001",
+            issue_date: Date.current.iso8601,
+            due_date: 30.days.from_now.to_date.iso8601,
+            status: "draft",
+            currency: company.base_currency,
+            invoice_line_items_attributes: [
+              {
+                name: "Timesheet entry",
+                description: "Linked entry",
+                date: timesheet_entry.work_date.iso8601,
+                rate: 100,
+                quantity: 120,
+                timesheet_entry_id: timesheet_entry.id
+              }
+            ]
+          }), headers: auth_headers(user)
+
+        expect(response).to have_http_status(:ok)
+
+        invoice = Invoice.find_by!(invoice_number: "INV-TIMESHEET-001")
+        line_item = invoice.invoice_line_items.last
+
+        expect(line_item.date).to eq(timesheet_entry.work_date)
+        expect(line_item.timesheet_entry_id).to eq(timesheet_entry.id)
+      end
+
+      it "rejects timesheet entries from another company" do
+        client = company.clients.first
+        other_company = create(:company)
+        other_client = create(:client, company: other_company)
+        other_project = create(:project, client: other_client)
+        other_user = create(:user, current_workspace_id: other_company.id)
+        create(:employment, company: other_company, user: other_user)
+        other_timesheet_entry = create(
+          :timesheet_entry,
+          user: other_user,
+          project: other_project,
+          work_date: Date.current,
+          duration: 60
+        )
+
+        send_request :post, api_v1_invoices_path(
+          invoice: {
+            client_id: client.id,
+            invoice_number: "INV-CROSS-WORKSPACE-001",
+            issue_date: Date.current.iso8601,
+            due_date: 30.days.from_now.to_date.iso8601,
+            status: "draft",
+            currency: company.base_currency,
+            invoice_line_items_attributes: [
+              {
+                name: "Cross workspace entry",
+                description: "Should fail",
+                date: other_timesheet_entry.work_date.iso8601,
+                rate: 100,
+                quantity: 60,
+                timesheet_entry_id: other_timesheet_entry.id
+              }
+            ]
+          }), headers: auth_headers(user)
+
+        expect(response).to have_http_status(:unprocessable_content)
+        expect(response.body).to include("same company")
+      end
+
       context "when client doesn't exist" do
         it "throws 404" do
           send_request :post, api_v1_invoices_path(

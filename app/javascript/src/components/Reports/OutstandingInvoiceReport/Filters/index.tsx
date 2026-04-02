@@ -16,7 +16,7 @@ const dateSchema = Yup.object().shape({
   toDate: Yup.string().required("Must include To date"),
 });
 
-const FilterSideBar = ({
+const OutstandingInvoiceReportFilters = ({
   setIsFilterVisible,
   resetFilter,
   handleApplyFilter,
@@ -166,4 +166,4 @@ const FilterSideBar = ({
   );
 };
 
-export default FilterSideBar;
+export default OutstandingInvoiceReportFilters;

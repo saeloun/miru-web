@@ -68,6 +68,28 @@ RSpec.describe "Profile Settings", type: :system, js: true do
     end
   end
 
+  it "re-enables the monthly digest when resubscribing to emails" do
+    with_forgery_protection do
+      visit "/settings/preferences"
+
+      expect(page).to have_css("#react-root", wait: 10)
+      click_button "Unsubscribe from All Emails"
+      click_button "Yes, Unsubscribe from All"
+      click_button "Save Changes"
+
+      expect(page).to have_button("Re-enable Email Notifications", wait: 10)
+      click_button "Re-enable Email Notifications"
+
+      expect(page).to have_content("Monthly Cash Flow Digest", wait: 10)
+      monthly_switch = all('button[role="switch"]', wait: 10).last
+
+      expect(monthly_switch["aria-checked"]).to eq("true")
+
+      click_button "Save Changes"
+      expect(page).to have_button("Unsubscribe from All Emails", wait: 10)
+    end
+  end
+
   it "lets an employee access personal settings pages" do
     employee_user = create(:user,
       first_name: "John",

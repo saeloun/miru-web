@@ -4,7 +4,6 @@ class PaymentMailer < ApplicationMailer
   def payment
     @invoice = Invoice.find(params[:invoice_id])
     recipients = recipients_with_role
-    subject = params[:subject]
     @invoice_url = "#{ENV['APP_BASE_URL']}/invoices/#{@invoice.external_view_key}/view"
     @company = @invoice.company
     @company_logo = company_logo
@@ -12,7 +11,13 @@ class PaymentMailer < ApplicationMailer
     @message = email_message
 
     if can_send_mail?
-      mail(to: recipients, subject:, reply_to: ENV["REPLY_TO_EMAIL"])
+      with_recipient_locale(recipient_user_from(recipients)) do
+        mail(
+          to: recipients,
+          subject: params[:subject].presence || I18n.t("mailers.payment_mailer.payment.subject", invoice_number: @invoice.invoice_number),
+          reply_to: ENV["REPLY_TO_EMAIL"]
+        )
+      end
 
       @invoice.update_columns(payment_sent_at: DateTime.current)
     end
@@ -32,7 +37,12 @@ class PaymentMailer < ApplicationMailer
     end
 
     def email_message
-      "#{@invoice.client.name} has made a payment of #{@amount} for<br>invoice #{@invoice.invoice_number} through Stripe. The invoice is paid in full now"
+      I18n.t(
+        "mailers.payment_mailer.payment.summary_html",
+        client_name: @invoice.client.name,
+        amount: @amount,
+        invoice_number: @invoice.invoice_number
+      )
     end
 
     def can_send_mail?

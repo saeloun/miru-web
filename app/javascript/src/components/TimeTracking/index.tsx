@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 
 import { timesheetEntryApi, timeTrackingApi } from "apis/api";
 import Loader from "common/Loader/index";
@@ -10,7 +10,7 @@ import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import updateLocale from "dayjs/plugin/updateLocale";
 import weekday from "dayjs/plugin/weekday";
-import { minFromHHMM, minToHHMM } from "helpers";
+import { minToHHMM } from "helpers";
 import Logger from "js-logger";
 import { sendGAPageView } from "utils/googleAnalytics";
 import { Button } from "../ui/button";
@@ -21,13 +21,12 @@ import { startTimerFromEntry } from "utils/timeTrackingTimer";
 
 import WeekDaySelector from "./WeekDaySelector";
 import EntryForm from "./EntryForm";
-import { ModernTimeEntryForm } from "./ModernTimeEntryForm";
 import Header from "./Header";
 import WeeklyEntries from "./WeeklyEntries";
 import EntryDetailsModal from "./EntryDetailsModal";
 import TimeEntriesDisplay from "./TimeEntriesDisplay";
 import AddEntryButton from "./AddEntryButton";
-import MonthCalender from "./MonthCalender";
+import MonthCalendar from "./MonthCalendar";
 
 dayjs.extend(updateLocale);
 dayjs.extend(weekday);
@@ -76,8 +75,6 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
   );
   const [currentYear, setCurrentYear] = useState<number>(dayjs().year());
   const [updateView, setUpdateView] = useState(true);
-  const [showModernForm, setShowModernForm] = useState<boolean>(false);
-  const [modernFormEntry, setModernFormEntry] = useState<any>(null);
   const [showEntryModal, setShowEntryModal] = useState<boolean>(false);
   const [modalSelectedDate, setModalSelectedDate] = useState<string>("");
   const [view, setView] = useState<string>("week");
@@ -86,6 +83,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
     number | null
   >(null);
   const [loadedRangeKey, setLoadedRangeKey] = useState<string>("");
+  const latestRequestKeyRef = useRef<string>("");
   const [copyingLastWeek, setCopyingLastWeek] = useState<boolean>(false);
   const [timerSyncKey, setTimerSyncKey] = useState<number>(0);
   const [resumeTimerEntry, setResumeTimerEntry] = useState<any>(null);
@@ -166,20 +164,31 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
     from,
     to,
     year,
+    requestKey,
   }: {
     employeeId?: number;
     from?: string;
     to?: string;
     year?: number | string;
+    requestKey?: string;
   } = {}) => {
+    const targetEmployeeId = employeeId || selectedEmployeeId || user.id;
+    const activeRequestKey =
+      requestKey ||
+      `bootstrap:${targetEmployeeId}:${from || "default"}:${to || "default"}:${
+        year || currentYear
+      }`;
+
     try {
-      const targetEmployeeId = employeeId || selectedEmployeeId || user.id;
+      latestRequestKeyRef.current = activeRequestKey;
       const { data } = await timeTrackingApi.get({
         userId: targetEmployeeId,
         from,
         to,
         year,
       });
+
+      if (latestRequestKeyRef.current !== activeRequestKey) return false;
 
       const {
         clients,
@@ -214,14 +223,20 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
       setBootstrappedEmployeeId(targetEmployeeId);
       setRuntimeError("");
       setLoading(false);
+
+      return true;
     } catch (error) {
+      if (latestRequestKeyRef.current !== activeRequestKey) return false;
+
       Logger.error(error);
       setRuntimeError("Unable to load time tracking right now.");
       setLoading(false);
+
+      return false;
     }
   };
 
-  const fetchEntriesOfMonths = (employeeId?: number) => {
+  const fetchEntriesOfMonths = (employeeId?: number, requestKey?: string) => {
     const firstDateOfTheMonth = `${currentYear}-${currentMonthNumber + 1}-01`;
     const startOfTheMonth = dayjs(firstDateOfTheMonth).format(dateFormat);
     const endOfTheMonth = dayjs(firstDateOfTheMonth)
@@ -234,7 +249,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
       .format("DD-MM-YYYY");
     const to = dayjs(endOfTheMonth).add(1, "month").format("DD-MM-YYYY");
 
-    return fetchEntries(from, to, employeeId);
+    return fetchEntries(from, to, employeeId, requestKey);
   };
 
   // View is always "day" by default, user can change it manually
@@ -277,21 +292,25 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
         const rangeKey = `month:${selectedEmployeeId}:${currentYear}:${currentMonthNumber}`;
 
         if (bootstrappedEmployeeId !== selectedEmployeeId) {
-          await fetchTimeTrackingData({
+          const didLoadRange = await fetchTimeTrackingData({
             employeeId: selectedEmployeeId,
             from: startOfTheMonth,
             to: endOfTheMonth,
             year: currentYear,
+            requestKey: rangeKey,
           });
-          setLoadedRangeKey(rangeKey);
+          if (didLoadRange) setLoadedRangeKey(rangeKey);
 
           return;
         }
 
         if (loadedRangeKey === rangeKey) return;
 
-        await fetchEntriesOfMonths(selectedEmployeeId);
-        setLoadedRangeKey(rangeKey);
+        const didLoadRange = await fetchEntriesOfMonths(
+          selectedEmployeeId,
+          rangeKey
+        );
+        if (didLoadRange) setLoadedRangeKey(rangeKey);
 
         return;
       }
@@ -304,21 +323,27 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
       const rangeKey = `week:${selectedEmployeeId}:${firstDay}:${lastDay}`;
 
       if (bootstrappedEmployeeId !== selectedEmployeeId) {
-        await fetchTimeTrackingData({
+        const didLoadRange = await fetchTimeTrackingData({
           employeeId: selectedEmployeeId,
           from: firstDay,
           to: lastDay,
           year: currentYear,
+          requestKey: rangeKey,
         });
-        setLoadedRangeKey(rangeKey);
+        if (didLoadRange) setLoadedRangeKey(rangeKey);
 
         return;
       }
 
       if (loadedRangeKey === rangeKey) return;
 
-      await fetchEntries(firstDay, lastDay, selectedEmployeeId);
-      setLoadedRangeKey(rangeKey);
+      const didLoadRange = await fetchEntries(
+        firstDay,
+        lastDay,
+        selectedEmployeeId,
+        rangeKey
+      );
+      if (didLoadRange) setLoadedRangeKey(rangeKey);
     };
 
     loadVisibleRange();
@@ -361,17 +386,24 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
   const fetchEntries = async (
     from: string,
     to: string,
-    employeeId?: number
+    employeeId?: number,
+    requestKey?: string
   ) => {
-    try {
-      const targetEmployeeId = employeeId || selectedEmployeeId || user.id;
-      const formattedFrom = dayjs(from, dateParseFormats, true).isValid()
-        ? dayjs(from, dateParseFormats, true).format("DD-MM-YYYY")
-        : from;
+    const targetEmployeeId = employeeId || selectedEmployeeId || user.id;
+    const formattedFrom = dayjs(from, dateParseFormats, true).isValid()
+      ? dayjs(from, dateParseFormats, true).format("DD-MM-YYYY")
+      : from;
 
-      const formattedTo = dayjs(to, dateParseFormats, true).isValid()
-        ? dayjs(to, dateParseFormats, true).format("DD-MM-YYYY")
-        : to;
+    const formattedTo = dayjs(to, dateParseFormats, true).isValid()
+      ? dayjs(to, dateParseFormats, true).format("DD-MM-YYYY")
+      : to;
+
+    const activeRequestKey =
+      requestKey ||
+      `range:${targetEmployeeId}:${formattedFrom}:${formattedTo}:${currentYear}`;
+
+    try {
+      latestRequestKeyRef.current = activeRequestKey;
 
       const res = await timeTrackingApi.getCurrentUserEntries(
         formattedFrom,
@@ -379,6 +411,9 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
         currentYear,
         targetEmployeeId
       );
+
+      if (latestRequestKeyRef.current !== activeRequestKey) return false;
+
       const entriesObj = res.data?.entries || {};
       setAllEmployeesEntries(pv => ({ ...pv, [targetEmployeeId]: entriesObj }));
       setEntryList(entriesObj);
@@ -392,11 +427,15 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
       setRuntimeError("");
       setLoading(false);
 
-      return res;
+      return true;
     } catch (error) {
+      if (latestRequestKeyRef.current !== activeRequestKey) return false;
+
       Logger.error(error);
       setRuntimeError("Unable to load time tracking right now.");
       setLoading(false);
+
+      return false;
     }
   };
 
@@ -404,22 +443,30 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
     const targetEmployeeId = employeeId || selectedEmployeeId;
 
     if (view === "month") {
-      await fetchEntriesOfMonths(targetEmployeeId);
-      setLoadedRangeKey(
-        `month:${targetEmployeeId}:${currentYear}:${currentMonthNumber}`
-      );
+      const didLoadRange = await fetchEntriesOfMonths(targetEmployeeId);
+      if (didLoadRange) {
+        setLoadedRangeKey(
+          `month:${targetEmployeeId}:${currentYear}:${currentMonthNumber}`
+        );
+      }
 
-      return true;
+      return didLoadRange;
     }
 
     const firstDay = dayInfo[0]?.fullDate;
     const lastDay = dayInfo[6]?.fullDate;
 
     if (firstDay && lastDay) {
-      await fetchEntries(firstDay, lastDay, targetEmployeeId);
-      setLoadedRangeKey(`week:${targetEmployeeId}:${firstDay}:${lastDay}`);
+      const didLoadRange = await fetchEntries(
+        firstDay,
+        lastDay,
+        targetEmployeeId
+      );
+      if (didLoadRange) {
+        setLoadedRangeKey(`week:${targetEmployeeId}:${firstDay}:${lastDay}`);
+      }
 
-      return true;
+      return didLoadRange;
     }
 
     return false;
@@ -603,58 +650,11 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
     setCurrentYear(dayjs(date).year());
   };
 
-  const handleOpenModernForm = (entry = null) => {
-    setModernFormEntry(entry);
-    setShowModernForm(true);
-  };
-
   const handleOpenTimeoffForm = () => {
     setEditEntryId(0);
     setEditTimeoffEntryId(0);
     setNewEntryView(false);
     setNewTimeoffEntryView(true);
-  };
-
-  const handleCloseModernForm = () => {
-    setShowModernForm(false);
-    setModernFormEntry(null);
-  };
-
-  const handleSaveModernEntry = async (formData: any) => {
-    try {
-      const payload = {
-        work_date: formData.date,
-        duration: minFromHHMM(formData.duration),
-        note: formData.note,
-        bill_status: formData.billable ? "unbilled" : "non_billable",
-      };
-
-      if (modernFormEntry) {
-        // Update existing entry
-        const res = await timesheetEntryApi.update(modernFormEntry.id, {
-          project_id: formData.projectId,
-          timesheet_entry: payload,
-        });
-        if (res.status >= 200 && res.status < 300) {
-          await refreshVisibleEntries();
-        }
-      } else {
-        // Create new entry
-        const res = await timesheetEntryApi.create(
-          {
-            project_id: formData.projectId,
-            timesheet_entry: payload,
-          },
-          selectedEmployeeId
-        );
-        if (res.status === 200) {
-          await refreshVisibleEntries();
-        }
-      }
-    } catch (error) {
-      console.error("Error saving entry:", error);
-      throw error;
-    }
   };
 
   const handleTimerSaved = async () => {
@@ -804,7 +804,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
     );
   }
 
-  const TimeTrackingLayout = () => (
+  const TimeTrackingContent = () => (
     <TimesheetEntriesContext.Provider
       value={{
         entryList,
@@ -922,7 +922,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
                 />
               )}
               {view === "month" && (
-                <MonthCalender
+                <MonthCalendar
                   selectedFullDate={selectedFullDate}
                   setSelectedFullDate={setSelectedFullDate}
                   entryList={entryList}
@@ -965,7 +965,6 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
               handleCopyLastWeek={handleCopyLastWeek}
               newEntryView={newEntryView}
               newTimeoffEntryView={newTimeoffEntryView}
-              handleOpenModernForm={handleOpenModernForm}
               handleOpenTimeoffForm={handleOpenTimeoffForm}
               setNewEntryView={setNewEntryView}
               showCopyLastWeek={isDesktop && view === "week"}
@@ -1010,16 +1009,6 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
             </div>
           )}
         </div>
-        <ModernTimeEntryForm
-          isOpen={showModernForm}
-          onClose={handleCloseModernForm}
-          onSave={handleSaveModernEntry}
-          selectedDate={dayjs(selectedFullDate).toDate()}
-          existingEntry={modernFormEntry}
-          projects={Object.values(projects).flat()}
-          clients={clients}
-        />
-
         <EntryDetailsModal
           isOpen={showEntryModal}
           onClose={() => {
@@ -1062,9 +1051,9 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
     </TimesheetEntriesContext.Provider>
   );
 
-  const Main = withLayout(TimeTrackingLayout, !isDesktop, !isDesktop);
+  const Main = withLayout(TimeTrackingContent, !isDesktop, !isDesktop);
 
-  return isDesktop ? TimeTrackingLayout() : <Main />;
+  return isDesktop ? TimeTrackingContent() : <Main />;
 };
 
 interface Iprops {

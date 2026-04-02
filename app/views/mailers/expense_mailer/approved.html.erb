@@ -1,19 +1,19 @@
-<% content_for :email_preheader, "Your reimbursement request has been approved." %>
-<% content_for :email_eyebrow, "Expenses" %>
-<% content_for :email_title, "Reimbursement approved" %>
+<% content_for :email_preheader, t("mailers.expense_mailer.approved.preheader") %>
+<% content_for :email_eyebrow, t("mailers.expense_mailer.approved.eyebrow") %>
+<% content_for :email_title, t("mailers.expense_mailer.approved.title") %>
 <% content_for :email_subtitle do %>
-  Your reimbursement request has been reviewed and approved.
+  <%= t("mailers.expense_mailer.approved.subtitle") %>
 <% end %>
 
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="detail-grid">
   <tr>
-    <%= render "shared/mailer/detail_card", label: "Amount", value: FormatAmountService.new(@company.base_currency, @expense.amount).process %>
-    <%= render "shared/mailer/detail_card", label: "Category", value: @expense.display_category_name.presence || "-" %>
+    <%= render "shared/mailer/detail_card", label: t("mailers.labels.amount"), value: FormatAmountService.new(@company.base_currency, @expense.amount).process %>
+    <%= render "shared/mailer/detail_card", label: t("mailers.labels.category"), value: @expense.display_category_name.presence || "-" %>
   </tr>
   <tr>
-    <%= render "shared/mailer/detail_card", label: "Date", value: @expense.formatted_date %>
-    <%= render "shared/mailer/detail_card", label: "Description", value: @expense.description.presence || "-" %>
+    <%= render "shared/mailer/detail_card", label: t("mailers.labels.date"), value: @expense.formatted_date %>
+    <%= render "shared/mailer/detail_card", label: t("mailers.labels.description"), value: @expense.description.presence || "-" %>
   </tr>
 </table>
 
-<%= render "shared/mailer/button", href: @expense_url, label: "View expense" %>
+<%= render "shared/mailer/button", href: @expense_url, label: t("mailers.actions.open_expense") %>

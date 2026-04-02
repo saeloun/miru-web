@@ -14,15 +14,24 @@ class TimeTrackingIndexService
     @to = to
     @year = year
     @entries = {}
-    setup_data
   end
 
   def process
+    setup_data
+
     {
       clients:,
       projects:,
       entries: format_entries,
       employees:,
+      leave_types:,
+      holiday_infos:
+    }
+  end
+
+  def entries_payload
+    {
+      entries: format_entries,
       leave_types:,
       holiday_infos:
     }

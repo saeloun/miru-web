@@ -13,7 +13,7 @@ import { sendGAPageView } from "utils/googleAnalytics";
 import { useCurrentUser } from "~/hooks/useCurrentUser";
 
 import MobilePersonalDetails from "./MobilePersonalDetails";
-import StaticPage from "./StaticPage";
+import PersonalProfileSummary from "./PersonalProfileSummary";
 
 const UserDetailsView = () => {
   const { updateDetails, personalDetails, isCalledFromSettings } =
@@ -100,7 +100,7 @@ const UserDetailsView = () => {
           {isLoading ? (
             <Loader className="min-h-70v" />
           ) : (
-            <StaticPage
+            <PersonalProfileSummary
               avatarUrl={displayAvatarUrl}
               handleEditClick={handleEditClick}
               isCalledFromSettings={isCalledFromSettings}

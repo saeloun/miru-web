@@ -1,8 +1,8 @@
-<% content_for :email_preheader, "Payment reminder for #{@company.name} invoices." %>
-<% content_for :email_eyebrow, "Invoices" %>
-<% content_for :email_title, "Payment reminder" %>
+<% content_for :email_preheader, t("mailers.send_payment_reminder_mailer.send_payment_reminder.preheader", company_name: @company.name) %>
+<% content_for :email_eyebrow, t("mailers.send_payment_reminder_mailer.send_payment_reminder.eyebrow") %>
+<% content_for :email_title, t("mailers.send_payment_reminder_mailer.send_payment_reminder.title") %>
 <% content_for :email_subtitle do %>
-  Review the invoices below and pay any balances that are still outstanding.
+  <%= t("mailers.send_payment_reminder_mailer.send_payment_reminder.subtitle") %>
 <% end %>
 
 <div class="email-panel email-panel-warning">
@@ -15,15 +15,15 @@
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="detail-grid">
       <tr>
         <%= render "shared/mailer/detail_card",
-          label: "Issue date",
+          label: t("mailers.labels.issue_date"),
           value: CompanyDateFormattingService.new(invoice.issue_date, company: @company).process %>
-        <%= render "shared/mailer/detail_card", label: "Due date", value: invoice.due_date.strftime("%B %d, %Y") %>
+        <%= render "shared/mailer/detail_card", label: t("mailers.labels.due_date"), value: l(invoice.due_date.to_date, format: :long) %>
       </tr>
       <tr>
-        <%= render "shared/mailer/detail_card", label: "Amount due", value: FormatAmountService.new(@company.base_currency, invoice.amount).process %>
-        <%= render "shared/mailer/detail_card", label: "Status", value: invoice.status.humanize %>
+        <%= render "shared/mailer/detail_card", label: t("mailers.labels.amount_due"), value: FormatAmountService.new(@company.base_currency, invoice.amount).process %>
+        <%= render "shared/mailer/detail_card", label: t("mailers.labels.status"), value: invoice.status.humanize %>
       </tr>
     </table>
-    <%= render "shared/mailer/button", href: "#{ENV['APP_BASE_URL']}/invoices/#{invoice.external_view_key}/view", label: "Review invoice" %>
+    <%= render "shared/mailer/button", href: "#{ENV['APP_BASE_URL']}/invoices/#{invoice.external_view_key}/view", label: t("mailers.actions.open_invoice") %>
   </div>
 <% end %>

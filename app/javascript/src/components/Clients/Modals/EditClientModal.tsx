@@ -1,0 +1,89 @@
+import React, { useState } from "react";
+
+import { useUserContext } from "context/UserContext";
+import { XIcon } from "miruIcons";
+import { Modal } from "StyledComponents";
+import { i18n } from "../../../i18n";
+
+import ClientEditor from "../ClientForm/ClientEditor";
+import MobileClientEditor from "../ClientForm/MobileClientEditor";
+
+const EditClientModal = ({
+  client,
+  fetchDetails,
+  setShowEditDialog,
+  showEditDialog,
+}: EditClientModalProps) => {
+  const [clientLogoUrl, setClientLogoUrl] = useState<string>(
+    client?.logo || ""
+  );
+  const [clientLogo, setClientLogo] = useState("");
+  const [submitting, setSubmitting] = useState<boolean>(false);
+  const { isDesktop } = useUserContext();
+
+  const handleDeleteLogo = event => {
+    event.preventDefault();
+    setClientLogo("");
+    setClientLogoUrl("");
+  };
+
+  return isDesktop ? (
+    <Modal
+      customStyle="sm:my-8 sm:w-full sm:max-w-lg sm:align-middle overflow-visible"
+      isOpen={showEditDialog}
+      onClose={() => setShowEditDialog(false)}
+    >
+      <div className="flex items-center justify-between">
+        <h6 className="text-base font-extrabold">
+          {i18n.t("clients.editClientDetails")}
+        </h6>
+        <button
+          className="modal__button"
+          type="button"
+          onClick={() => {
+            setShowEditDialog(false);
+          }}
+        >
+          <XIcon color="#CDD6DF" size={16} weight="bold" />
+        </button>
+      </div>
+      <ClientEditor
+        client={client}
+        clientLogo={clientLogo}
+        clientLogoUrl={clientLogoUrl}
+        fetchDetails={fetchDetails}
+        formType="edit"
+        handleDeleteLogo={handleDeleteLogo}
+        setClientLogo={setClientLogo}
+        setClientLogoUrl={setClientLogoUrl}
+        setShowEditDialog={setShowEditDialog}
+        setSubmitting={setSubmitting}
+        submitting={submitting}
+      />
+    </Modal>
+  ) : (
+    <MobileClientEditor
+      client={client}
+      clientLogo={clientLogo}
+      clientLogoUrl={clientLogoUrl}
+      fetchDetails={fetchDetails}
+      formType="edit"
+      handleDeleteLogo={handleDeleteLogo}
+      setClientLogo={setClientLogo}
+      setClientLogoUrl={setClientLogoUrl}
+      setShowDialog={setShowEditDialog}
+      setShowEditDialog={setShowEditDialog}
+      setSubmitting={setSubmitting}
+      submitting={submitting}
+    />
+  );
+};
+
+interface EditClientModalProps {
+  setShowEditDialog: any;
+  client: any;
+  showEditDialog: boolean;
+  fetchDetails?: any;
+}
+
+export default EditClientModal;

@@ -15,8 +15,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import * as Yup from "yup";
 import { useCurrentUser } from "~/hooks/useCurrentUser";
 
-import MobileEditPage from "./MobileEditPage";
-import StaticPage from "./StaticPage";
+import MobileEmploymentEditor from "./MobileEmploymentEditor";
+import EmploymentEditor from "./EmploymentEditor";
 
 import { employeeTypes } from "../helpers";
 
@@ -315,7 +315,7 @@ const EmploymentDetailsEdit = () => {
           {isLoading ? (
             <Loader className="min-h-70v" />
           ) : (
-            <StaticPage
+            <EmploymentEditor
               DOJRef={DOJRef}
               DORRef={DORRef}
               dateFormat={dateFormat}
@@ -350,7 +350,7 @@ const EmploymentDetailsEdit = () => {
           {isLoading ? (
             <Loader className="min-h-70v" />
           ) : (
-            <MobileEditPage
+            <MobileEmploymentEditor
               DOJRef={DOJRef}
               DORRef={DORRef}
               dateFormat={dateFormat}

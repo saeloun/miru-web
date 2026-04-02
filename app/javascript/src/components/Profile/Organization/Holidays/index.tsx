@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { Toastr } from "StyledComponents";
 import { sendGAPageView } from "utils/googleAnalytics";
 
-import ModernHolidaysEditor from "./ModernHolidaysEditor";
+import OrganizationHolidaysEditor from "./Editor";
 import { companyDateFormat, makePayload } from "./utils";
 
 const Holidays = () => {
@@ -482,7 +482,7 @@ const Holidays = () => {
 
   return (
     <div className="flex h-full w-full flex-col">
-      <ModernHolidaysEditor
+      <OrganizationHolidaysEditor
         currentYear={currentYear}
         dateFormat={dateFormat}
         enableOptionalHolidays={enableOptionalHolidays}

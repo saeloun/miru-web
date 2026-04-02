@@ -78,6 +78,172 @@ te:
   currency_pairs:
     from_to_required: నుండి మరియు వరకు అవసరం
     rate_not_found: రేటు కనుగొనబడలేదు
+  mailers:
+    layout:
+      preheader: Miru నుంచి ఆలోచించి పంపిన అప్‌డేట్.
+      brand: Miru
+      footer_body: Miru సమయం, ఇన్వాయిస్‌లు, చెల్లింపులు, రోజువారీ పనిని ఒక స్పష్టమైన వర్క్‌స్పేస్‌లో ఉంచుతుంది.
+      footer_site: app.miru.so
+      footer_contact: support@getmiru.com
+      footer_copyright: © Miru. అన్ని హక్కులు కలవు.
+    actions:
+      open_invoice: ఇన్వాయిస్ తెరవండి
+      open_expense: ఖర్చు తెరవండి
+      open_time_tracking: టైమ్ ట్రాకింగ్ తెరవండి
+      view_reports: Miru లో నివేదికలు చూడండి
+      join_miru: Miru లో చేరండి
+    labels:
+      issue_date: జారీ తేదీ
+      due_date: గడువు తేదీ
+      invoice_number: ఇన్వాయిస్ నంబర్
+      reference: సూచన
+      total_amount: మొత్తం
+      attachment: జోడింపు
+      amount_due: బాకీ మొత్తం
+      payment_link: చెల్లింపు లింక్
+      outstanding_amount: మిగిలిన మొత్తం
+      status: స్థితి
+      invoice: ఇన్వాయిస్
+      payment_method: చెల్లింపు విధానం
+      amount_paid: చెల్లించిన మొత్తం
+      client: క్లయింట్
+      issued_to: జారీ చేసినవారు
+      paid_on: చెల్లించిన తేదీ
+      amount: మొత్తం
+      category: వర్గం
+      date: తేదీ
+      description: వివరణ
+      invited_by: ఆహ్వానించినవారు
+      workspace: వర్క్‌స్పేస్
+    invoice_mailer:
+      send_invoice:
+        subject: "%{company_name} నుంచి ఇన్వాయిస్ %{invoice_number}"
+        preheader: "%{company_name} నుంచి ఇన్వాయిస్ %{invoice_number} సిద్ధంగా ఉంది."
+        eyebrow: ఇన్వాయిస్‌లు
+        title: మీ ఇన్వాయిస్ సిద్ధంగా ఉంది
+        subtitle_html: "<strong>%{company_name}</strong> ఇన్వాయిస్ <strong>%{invoice_number}</strong> పంపింది. మీ రికార్డుల కోసం PDF జత చేయబడింది."
+        note_title: "%{company_name} నుంచి ఒక గమనిక"
+        next_steps_title: తరువాత ఏమి చేయాలి
+        next_steps_body: ఇన్వాయిస్ వివరాలు చూడటానికి, PDF డౌన్‌లోడ్ చేసుకోవడానికి, మరియు సిద్ధమైనప్పుడు సురక్షితంగా చెల్లించడానికి ఇన్వాయిస్‌ను తెరవండి.
+        attachment_value: PDF జత చేయబడింది
+        attachment_subvalue: దాన్ని దాచుకోండి, ఫార్వర్డ్ చేయండి లేదా ఫైల్ చేయండి.
+        support_html: "సహాయం కావాలా? ఈ ఇమెయిల్‌కు ప్రత్యుత్తరం ఇవ్వండి లేదా <a href=\"mailto:%{support_email}\">%{support_email}</a> ను సంప్రదించండి."
+      invoice:
+        subject: "ఇన్వాయిస్ %{invoice_number}"
+        preheader: "%{company_name} నుంచి ఇన్వాయిస్ %{invoice_number}."
+        eyebrow: ఇన్వాయిస్‌లు
+        title: మీ ఇన్వాయిస్ సిద్ధంగా ఉంది
+        subtitle_html: "<strong>%{company_name}</strong> ఇన్వాయిస్ <strong>%{invoice_number}</strong> పంపింది. మీరు దాన్ని పరిశీలించి ఆన్‌లైన్‌లో చెల్లించవచ్చు."
+        ready_title: మీరు సిద్ధమైనప్పుడు
+        ready_body: లైన్ ఐటమ్‌లు చూడటానికి, చెల్లించాల్సిన మొత్తాన్ని నిర్ధారించడానికి, మరియు ఆన్‌లైన్‌లో చెల్లించడానికి సురక్షిత ఇన్వాయిస్ పేజీని తెరవండి.
+        payment_link_value: సురక్షిత ఇన్వాయిస్ పేజీ
+        payment_link_subvalue: లైన్ ఐటమ్‌లను చూడండి మరియు ఆన్‌లైన్‌లో చెల్లించండి.
+        support_html: "ఈ ఇన్వాయిస్ గురించి ప్రశ్నలున్నాయా? ఈ ఇమెయిల్‌కు ప్రత్యుత్తరం ఇవ్వండి లేదా <a href=\"mailto:%{support_email}\">%{support_email}</a> ను సంప్రదించండి."
+    send_reminder_mailer:
+      send_reminder:
+        subject: "%{company_name} నుంచి ఇన్వాయిస్ %{invoice_number} కోసం రిమైండర్"
+        preheader: "%{company_name} నుంచి ఇన్వాయిస్ %{invoice_number} కోసం రిమైండర్."
+        eyebrow: ఇన్వాయిస్‌లు
+        title: చెల్లింపు రిమైండర్
+        subtitle_html: "<strong>%{company_name}</strong> నుంచి ఇన్వాయిస్ <strong>%{invoice_number}</strong> ఇంకా ఓపెన్‌లో ఉంది."
+    send_payment_reminder_mailer:
+      send_payment_reminder:
+        subject: "%{company_name} కోసం చెల్లింపు రిమైండర్"
+        preheader: "%{company_name} ఇన్వాయిస్‌ల కోసం చెల్లింపు రిమైండర్."
+        eyebrow: ఇన్వాయిస్‌లు
+        title: చెల్లింపు రిమైండర్
+        subtitle: క్రింది ఇన్వాయిస్‌లను పరిశీలించి మిగిలిన బకాయిలను క్లియర్ చేయండి.
+    payment_mailer:
+      payment:
+        subject: "ఇన్వాయిస్ %{invoice_number} కోసం చెల్లింపు వివరాలు"
+        preheader: "ఇన్వాయిస్ %{invoice_number} కోసం చెల్లింపు ధృవీకరణ."
+        eyebrow: చెల్లింపులు
+        title: చెల్లింపు ధృవీకరణ
+        subtitle_html: "<strong>%{client_name}</strong> ఇన్వాయిస్ <strong>%{invoice_number}</strong> కు చెల్లింపును పూర్తి చేశారు."
+        received_title: చెల్లింపు అందింది
+        summary_html: "<strong>%{client_name}</strong> ఇన్వాయిస్ <strong>%{invoice_number}</strong> కోసం <strong>%{amount}</strong> చెల్లించారు. ఈ ఇన్వాయిస్ ఇప్పుడు పూర్తిగా చెల్లించబడింది."
+        follow_up_title: తర్వాత చేయాల్సింది
+        follow_up_body: రికార్డ్ చేసిన చెల్లింపును నిర్ధారించడానికి, థ్రెడ్‌ను ఆర్కైవ్ చేయడానికి, లేదా తదుపరి పనిని కొనసాగించడానికి ఇన్వాయిస్‌ను తెరవండి.
+    client_payment_mailer:
+      payment:
+        subject: "ఇన్వాయిస్ %{invoice_number} కోసం చెల్లింపు రసీదు"
+        preheader: "ఇన్వాయిస్ %{invoice_number} కోసం చెల్లింపు రసీదు."
+        eyebrow: చెల్లింపులు
+        title: చెల్లింపు రసీదు
+        subtitle_html: "ఇన్వాయిస్ <strong>%{invoice_number}</strong> కు మీ చెల్లింపు మాకు అందింది."
+        receipt_title: చెల్లింపు అందింది
+        summary_html: "మేము <strong>%{paid_on}</strong> నాడు ఇన్వాయిస్ <strong>%{invoice_number}</strong> కోసం <strong>%{amount}</strong> స్వీకరించాము."
+        records_title: దీన్ని మీ రికార్డుల కోసం ఉంచుకోండి
+        records_body: ఈ ఇమెయిల్ మీ చెల్లింపును నిర్ధారిస్తుంది. రసీదు వివరాలు మళ్లీ కావాలంటే మీరు ఎప్పుడైనా ఇన్వాయిస్‌ను తిరిగి తెరవవచ్చు.
+    expense_mailer:
+      submitted:
+        subject: "%{submitter_name} రీయింబర్స్‌మెంట్ అభ్యర్థనను సమర్పించారు"
+        preheader: కొత్త రీయింబర్స్‌మెంట్ అభ్యర్థనకు సమీక్ష అవసరం.
+        eyebrow: ఖర్చులు
+        title: కొత్త రీయింబర్స్‌మెంట్ అభ్యర్థన
+        subtitle_html: "<strong>%{submitter_name}</strong> సమీక్షకు సిద్ధంగా ఉన్న రీయింబర్స్‌మెంట్ అభ్యర్థనను సమర్పించారు."
+      approved:
+        subject: మీ రీయింబర్స్‌మెంట్ ఆమోదించబడింది
+        preheader: మీ రీయింబర్స్‌మెంట్ అభ్యర్థన ఆమోదించబడింది.
+        eyebrow: ఖర్చులు
+        title: రీయింబర్స్‌మెంట్ ఆమోదించబడింది
+        subtitle: మీ రీయింబర్స్‌మెంట్ అభ్యర్థనను సమీక్షించి ఆమోదించారు.
+      paid:
+        subject: మీ రీయింబర్స్‌మెంట్ చెల్లించబడినట్లుగా గుర్తించబడింది
+        preheader: మీ రీయింబర్స్‌మెంట్ అభ్యర్థనను చెల్లించబడినట్లుగా గుర్తించారు.
+        eyebrow: ఖర్చులు
+        title: రీయింబర్స్‌మెంట్ చెల్లించబడింది
+        subtitle: మీ రీయింబర్స్‌మెంట్ అభ్యర్థనకు చెల్లింపు పూర్తైంది.
+      rejected:
+        subject: మీ రీయింబర్స్‌మెంట్‌కు ఆమోదానికి ముందు మార్పులు అవసరం
+        preheader: మీ రీయింబర్స్‌మెంట్ అభ్యర్థనకు మార్పులు అవసరం.
+        eyebrow: ఖర్చులు
+        title: రీయింబర్స్‌మెంట్‌కు మార్పులు అవసరం
+        subtitle: దయచేసి అభ్యర్థన వివరాలను పరిశీలించి, అవసరమైన మార్పులు చేసి, మళ్లీ సమర్పించండి.
+        next_step_title: తదుపరి దశ
+        next_step_body: ఖర్చును తెరవండి, అవసరమైన మార్పులు చేసి, మళ్లీ సమర్పించండి.
+    send_weekly_reminder_to_user_mailer:
+      notify_user_about_missed_entries:
+        subject: గత వారం కోసం మీ Miru టైమ్‌షీట్ పూర్తి చేయండి
+        preheader: మిస్ అయిన వారానికి మీ Miru టైమ్‌షీట్‌ను నవీకరించండి.
+        eyebrow: టైమ్ ట్రాకింగ్
+        title: మీ టైమ్‌షీట్ పూర్తి చేయండి
+        subtitle: "%{company_name} కోసం మీ టైమ్ ఎంట్రీలు ఇంకా ఆశించిన వారాంతపు మొత్తానికి తక్కువగా ఉన్నాయి."
+        greeting_html: "హాయ్ <strong>%{name}</strong>,"
+        body_html: "మీరు <strong>%{starting_date}</strong> మరియు <strong>%{ending_date}</strong> మధ్య 40 గంటల కన్నా తక్కువ సమయం నమోదు చేశారు."
+        follow_up: Miru తెరవండి, మిగిలిన ఎంట్రీలు జోడించి, వారాన్ని పూర్తి చేయండి.
+        signoff_html: "ధన్యవాదాలు,<br><strong>Miru</strong>"
+    user_invitation_mailer:
+      send_user_invitation:
+        subject: మీరు Miru లో చేరడానికి ఆహ్వానించబడ్డారు
+        preheader: మీరు Miru లోని ఒక బృందంలో చేరడానికి ఆహ్వానించబడ్డారు.
+        eyebrow: ఆహ్వానం
+        title: మీరు Miru కు ఆహ్వానించబడ్డారు
+        subtitle_html: "<strong>%{sender_name}</strong> మిమ్మల్ని <strong>%{company_name}</strong> లో చేరమని ఆహ్వానించారు."
+        workspace_members:
+          one: "1 సభ్యుడు"
+          other: "%{count} సభ్యులు"
+        get_started_title: ప్రారంభించండి
+        get_started_body: ఆహ్వానాన్ని అంగీకరించండి, మీ పాస్‌వర్డ్ సెట్ చేయండి, మీరు సిద్ధం.
+        support_html: "మీరు ఈ ఆహ్వానాన్ని ఆశించకపోతే, మా బృందాన్ని <a href=\"mailto:%{support_email}\">%{support_email}</a> వద్ద సంప్రదించండి."
+        about_title: Miru గురించి
+        about_body: Miru సమయం, ఇన్వాయిస్‌లు, చెల్లింపులు, రోజువారీ పనిని ఒకే వర్క్‌స్పేస్‌లోకి తీసుకువస్తుంది.
+    monthly_reports_mailer:
+      cash_flow_digest:
+        subject: "%{company_name} యొక్క %{month_label} నగదు ప్రవాహ డైజెస్ట్"
+        preheader: "%{company_name} యొక్క %{month_label} నగదు ప్రవాహ డైజెస్ట్"
+        eyebrow: నెలవారీ డైజెస్ట్
+        title: "%{company_name} యొక్క %{month_label} నగదు ప్రవాహ డైజెస్ట్"
+        subtitle: "%{month_year_label} కోసం Miru లో డబ్బు ఎలా కదులుతుందో ఇక్కడ మీ స్నాప్‌షాట్ ఉంది."
+        net_change: "%{month_label} లో నికర మార్పు"
+        average_daily_net_change_html: "సగటు రోజువారీ నికర మార్పు <strong>%{amount}</strong>"
+        money_in: వచ్చిన డబ్బు
+        money_out: వెళ్లిన డబ్బు
+        compare_to_previous: "%{month_label} లో %{amount} తో పోలిస్తే"
+        top_money_in_sources: ప్రధాన ఆదాయ వనరులు
+        top_money_out_sources: ప్రధాన ఖర్చు విభాగాలు
+        no_money_in: "%{month_year_label} కోసం Miru లో ఏ చెల్లింపులూ నమోదు కాలేదు."
+        no_money_out: "%{month_year_label} కోసం Miru లో ఏ చెల్లించిన ఖర్చులూ నమోదు కాలేదు."
   custom_leaves:
     update:
       success: కస్టమ్ లీవ్స్ విజయవంతంగా అప్‌డేట్ చేయబడ్డాయి

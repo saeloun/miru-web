@@ -49,7 +49,7 @@ const redirectUrl = role => {
   return url;
 };
 
-const RestrictedRoute = ({ user, role, authorisedRoles }) => {
+const AuthorizedRouteOutlet = ({ user, role, authorisedRoles }) => {
   if (!user || !role) {
     return <Navigate to="/user/sign_in" />;
   }
@@ -63,13 +63,13 @@ const RestrictedRoute = ({ user, role, authorisedRoles }) => {
   return <Navigate to={url} />;
 };
 
-const RootElement = ({ role }) => {
+const DashboardRootRedirect = ({ role }) => {
   const url = redirectUrl(role);
 
   return <Navigate to={url} />;
 };
 
-const Home = (props: Iprops) => {
+const DashboardRoutes = (props: Iprops) => {
   const { companyRole, company_role } = props;
   const role = companyRole || company_role;
   const location = useLocation();
@@ -77,13 +77,13 @@ const Home = (props: Iprops) => {
   return (
     <div className="min-h-full font-geist">
       <Routes>
-        <Route element={<RootElement role={role} />} path="/" />
+        <Route element={<DashboardRootRedirect role={role} />} path="/" />
         {ROUTES.map(parentRoute => (
           <Route
             key={parentRoute.path}
             path={parentRoute.path}
             element={
-              <RestrictedRoute
+              <AuthorizedRouteOutlet
                 authorisedRoles={parentRoute.authorisedRoles}
                 role={role}
                 user={props.user}
@@ -126,4 +126,4 @@ interface Iprops {
   isAdminUser: boolean;
 }
 
-export default Home;
+export default DashboardRoutes;

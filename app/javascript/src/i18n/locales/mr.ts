@@ -2,7 +2,8 @@ const mr = {
   // Image validation
   invalidImageFormatSize:
     "चुकीचा फाइल फॉरमॅट. कृपया PNG किंवा JPG प्रकारची इमेज अपलोड करा. कमाल आकार (%{fileSize}KB)",
-  invalidImageSize: "फाइलचा आकार %{fileSize}KB च्या कमाल मर्यादेपेक्षा जास्त आहे.",
+  invalidImageSize:
+    "फाइलचा आकार %{fileSize}KB च्या कमाल मर्यादेपेक्षा जास्त आहे.",
   invalidImageFormat:
     "चुकीचा फाइल फॉरमॅट. कृपया PNG किंवा JPG प्रकारची इमेज अपलोड करा",
 
@@ -62,7 +63,6 @@ const mr = {
   inactive: "निष्क्रिय",
   invited: "आमंत्रित",
   department: "विभाग",
-  projects: "प्रकल्प",
   theme: "थीम",
   summary: "सारांश",
   format: "फॉरमॅट",
@@ -159,7 +159,8 @@ const mr = {
     editEntry: "एन्ट्री संपादित करा",
     deleteEntry: "एन्ट्री हटवा",
     deleteTimeEntry: "वेळ एन्ट्री हटवा",
-    deleteTimeEntryConfirm: "तुम्हाला खात्री आहे की तुम्ही ही वेळ एन्ट्री हटवू इच्छिता?",
+    deleteTimeEntryConfirm:
+      "तुम्हाला खात्री आहे की तुम्ही ही वेळ एन्ट्री हटवू इच्छिता?",
     durationRequired: "कालावधी आवश्यक आहे",
     projectRequired: "प्रकल्प आवश्यक आहे",
     duration: "कालावधी",
@@ -185,10 +186,13 @@ const mr = {
     entry: "एन्ट्री",
     entries: "एन्ट्री",
     noEntriesForSelectedDay: "निवडलेल्या दिवसासाठी कोणत्याही एन्ट्री नाहीत",
-    weekReviewHint: "या आठवड्यात लॉग केलेल्या सर्व एन्ट्रींचे पुनरावलोकन करण्यासाठी या आठवड्यावर स्विच करा.",
+    weekReviewHint:
+      "या आठवड्यात लॉग केलेल्या सर्व एन्ट्रींचे पुनरावलोकन करण्यासाठी या आठवड्यावर स्विच करा.",
     noTimeEntriesYet: "अद्याप कोणत्याही वेळ एन्ट्री नाहीत",
-    firstEntryHint: 'या दिवसासाठी तुमची पहिली वेळ एन्ट्री लॉग करण्यासाठी "एन्ट्री जोडा" वर क्लिक करा',
-    logWorkByWeekOrMonth: "आठवडा किंवा महिन्यानुसार काम लॉग करा. एन्ट्री स्पष्ट आणि अद्ययावत ठेवा.",
+    firstEntryHint:
+      'या दिवसासाठी तुमची पहिली वेळ एन्ट्री लॉग करण्यासाठी "एन्ट्री जोडा" वर क्लिक करा',
+    logWorkByWeekOrMonth:
+      "आठवडा किंवा महिन्यानुसार काम लॉग करा. एन्ट्री स्पष्ट आणि अद्ययावत ठेवा.",
     entriesFor: "%{name} साठी एन्ट्री",
     timeEntriesFor: "साठी वेळ एन्ट्री",
     unableToLoad: "सध्या वेळ ट्रॅकिंग लोड करता आले नाही.",
@@ -315,13 +319,15 @@ const mr = {
     teamMembers: "टीम सदस्य",
     team: "टीम",
     allProjects: "सर्व प्रकल्प",
-    allProjectsDescription: "तुमचे प्रकल्प व्यवस्थापित करा आणि प्रगती ट्रॅक करा",
+    allProjectsDescription:
+      "तुमचे प्रकल्प व्यवस्थापित करा आणि प्रगती ट्रॅक करा",
     failedToLoadProjects: "प्रकल्प लोड करणे अयशस्वी",
     failedToDeleteProject: "प्रकल्प हटवणे अयशस्वी",
     projectDeletedSuccessfully: "प्रकल्प यशस्वीरित्या हटवला गेला",
     viewDetails: "तपशील पहा",
     copyProjectId: "प्रकल्प आयडी कॉपी करा",
-    manageProjectsDescription: "तुमचे प्रकल्प व्यवस्थापित करा आणि प्रगती ट्रॅक करा",
+    manageProjectsDescription:
+      "तुमचे प्रकल्प व्यवस्थापित करा आणि प्रगती ट्रॅक करा",
     newProject: "नवीन प्रकल्प",
     activeProjects: "सक्रिय प्रकल्प",
     ofTotalProjects: "एकूण %{count} प्रकल्पांपैकी",
@@ -330,7 +336,8 @@ const mr = {
     searchProjects: "प्रकल्प शोधा...",
     createFirstProject: "सुरू करण्यासाठी तुमचा पहिला प्रकल्प तयार करा.",
     noProjectsYet: "अद्याप कोणतेही प्रकल्प नाहीत",
-    workingOnProjects: "तुमच्या प्रकल्पांमध्ये बिल करण्यायोग्य आणि बिल न करण्यायोग्य काम ट्रॅक करा.",
+    workingOnProjects:
+      "तुमच्या प्रकल्पांमध्ये बिल करण्यायोग्य आणि बिल न करण्यायोग्य काम ट्रॅक करा.",
     active: "सक्रिय",
     paused: "थांबवलेले",
     completed: "पूर्ण",
@@ -353,14 +360,16 @@ const mr = {
     nonBillableDescription: "क्लायंटला बिल न करता वेळ ट्रॅक करा",
     noClientsPresent: "कोणतेही क्लायंट उपलब्ध नाहीत",
     teamMembersUpdated: "टीम सदस्य यशस्वीरित्या अपडेट झाले",
-    manageProjectMembersDescription: "टीम सदस्य जोडा किंवा काढून टाका आणि त्यांचे तासाचे दर सेट करा.",
+    manageProjectMembersDescription:
+      "टीम सदस्य जोडा किंवा काढून टाका आणि त्यांचे तासाचे दर सेट करा.",
     enterValidRate: "कृपया वैध दर प्रविष्ट करा",
     addAnotherTeamMember: "आणखी एक सदस्य जोडा",
     addTeamMember: "टीम सदस्य जोडा",
     saveTeamMembers: "सदस्य जतन करा",
     noTeamMembersAdded: "अद्याप कोणतेही टीम सदस्य जोडलेले नाहीत.",
     addTeamMembers: "टीम सदस्य जोडा",
-    teamMembersDescription: "या प्रकल्पात नियुक्त केलेले टीम सदस्य पहा आणि व्यवस्थापित करा.",
+    teamMembersDescription:
+      "या प्रकल्पात नियुक्त केलेले टीम सदस्य पहा आणि व्यवस्थापित करा.",
   },
 
   // Team
@@ -471,8 +480,7 @@ const mr = {
     addEntry: "%{count} एन्ट्री जोडा",
     addEntries_plural: "%{count} एन्ट्री जोडा",
     thankYouForBusiness: "तुमच्या व्यवसायाबद्दल धन्यवाद!",
-    previewNote:
-      "हे पूर्वावलोकन आहे. जतन केल्यानंतर बदल दिसतील.",
+    previewNote: "हे पूर्वावलोकन आहे. जतन केल्यानंतर बदल दिसतील.",
     noInvoiceGenerated: "अद्याप कोणताही इनव्हॉइस तयार केलेला नाही.",
     acceptCreditCards: "क्रेडिट कार्ड स्वीकारा",
     sendTo: "पाठवा",
@@ -502,15 +510,13 @@ const mr = {
     recipientEmailId: "प्राप्तकर्ता ईमेल आयडी",
     subject: "विषय",
     message: "संदेश",
-    addEmailFromClientSettings:
-      "कृपया क्लायंट सेटिंग्ज पृष्ठावरून ईमेल जोडा",
-    reminderSubject:
-      "न भरलेल्या इनव्हॉइससाठी पेमेंट पूर्ण करण्याचे स्मरणपत्र",
-    invoiceSentSubject: "%{company} ने तुम्हाला इनव्हॉइस पाठवला आहे (%{number})",
+    addEmailFromClientSettings: "कृपया क्लायंट सेटिंग्ज पृष्ठावरून ईमेल जोडा",
+    reminderSubject: "न भरलेल्या इनव्हॉइससाठी पेमेंट पूर्ण करण्याचे स्मरणपत्र",
+    invoiceSentSubject:
+      "%{company} ने तुम्हाला इनव्हॉइस पाठवला आहे (%{number})",
     reminderBody:
       "%{company} ने तुम्हाला इनव्हॉइस %{number} साठी स्मरणपत्र पाठवले आहे",
-    invoiceSentBody:
-      "%{company} ने तुम्हाला इनव्हॉइस पाठवला आहे (%{number})",
+    invoiceSentBody: "%{company} ने तुम्हाला इनव्हॉइस पाठवला आहे (%{number})",
     invoiceWillBeSent: "इनव्हॉइस पाठवला जाईल!",
     processing: "प्रक्रिया सुरू आहे...",
 
@@ -584,7 +590,8 @@ const mr = {
 
     // Counters
     showingOf: "%{total} पैकी %{shown} दाखवत आहे",
-    viewingMatching: "%{loaded} लोड केलेल्यांपैकी %{filtered} जुळणारे इनव्हॉइस पाहत आहे",
+    viewingMatching:
+      "%{loaded} लोड केलेल्यांपैकी %{filtered} जुळणारे इनव्हॉइस पाहत आहे",
     loadedOf: "%{total} पैकी %{loaded} लोड केले",
     showingRecentTransactions: "%{count} अलीकडील व्यवहार दाखवत आहे",
     updatedAt: "%{date} रोजी अपडेट केले",
@@ -596,12 +603,16 @@ const mr = {
 
     // Invoice reminder email
     invoiceReminder: "इनव्हॉइस स्मरणपत्र: %{number}",
-    reminderMessage: "हे तुमच्या बाकी इनव्हॉइसबद्दल स्मरणपत्र आहे. कृपया संलग्न तपशील पहा.",
+    reminderMessage:
+      "हे तुमच्या बाकी इनव्हॉइसबद्दल स्मरणपत्र आहे. कृपया संलग्न तपशील पहा.",
     invoiceAttached: "कृपया तुमचा संलग्न इनव्हॉइस पहा.",
-    reminderPaymentMessage: "हे तुमच्या थकीत इनव्हॉइसबद्दल स्मरणपत्र आहे. कृपया पेमेंट पूर्ण करा.",
+    reminderPaymentMessage:
+      "हे तुमच्या थकीत इनव्हॉइसबद्दल स्मरणपत्र आहे. कृपया पेमेंट पूर्ण करा.",
     invoiceSubject: "इनव्हॉइस %{number}",
-    reminderPaymentSubject: "इनव्हॉइस %{number} साठी पेमेंट पूर्ण करण्याचे स्मरणपत्र",
-    markAsPaidConfirm: "हा इनव्हॉइस पेमेंट म्हणून चिन्हांकित करायचा? ही कृती लेखा नोंदींवर परिणाम करते.",
+    reminderPaymentSubject:
+      "इनव्हॉइस %{number} साठी पेमेंट पूर्ण करण्याचे स्मरणपत्र",
+    markAsPaidConfirm:
+      "हा इनव्हॉइस पेमेंट म्हणून चिन्हांकित करायचा? ही कृती लेखा नोंदींवर परिणाम करते.",
     failedToLoadInvoice: "इनव्हॉइस लोड करणे अयशस्वी",
     invoiceNotFound: "इनव्हॉइस सापडला नाही",
     failedToMarkAsPaid: "पेमेंट म्हणून चिन्हांकित करणे अयशस्वी",
@@ -680,7 +691,8 @@ const mr = {
   timer: {
     webTimer: "वेब टायमर",
     webTimerLabel: "वेब टायमर",
-    trackLiveWork: "रिअल टाइममध्ये लाइव काम ट्रॅक करा, नंतर ते थेट आजच्या एन्ट्री यादीत जतन करा.",
+    trackLiveWork:
+      "रिअल टाइममध्ये लाइव काम ट्रॅक करा, नंतर ते थेट आजच्या एन्ट्री यादीत जतन करा.",
     startTimer: "टायमर सुरू करा",
     pause: "थांबवा",
     resume: "पुन्हा सुरू करा",
@@ -689,7 +701,8 @@ const mr = {
     reset: "रीसेट",
     timer: "टायमर",
     saveTimeEntry: "वेळ एन्ट्री जतन करा",
-    saveTimeEntryDescription: "तुम्ही %{time} ट्रॅक केले. तुम्ही हे वेळ एन्ट्री म्हणून जतन करू इच्छिता?",
+    saveTimeEntryDescription:
+      "तुम्ही %{time} ट्रॅक केले. तुम्ही हे वेळ एन्ट्री म्हणून जतन करू इच्छिता?",
     discard: "टाकून द्या",
     timerStarted: "टायमर सुरू झाला",
     timerPaused: "टायमर थांबला",
@@ -786,21 +799,26 @@ const mr = {
     invoiceAgingDetails: "इनव्हॉइस एजिंग तपशील",
     noDataFound: "कोणताही डेटा सापडला नाही",
     accountsAgingReport: "अकाउंट्स एजिंग अहवाल",
-    analysisOfOutstandingReceivables: "एजिंग कालावधीनुसार बाकी प्राप्तींचे विश्लेषण",
+    analysisOfOutstandingReceivables:
+      "एजिंग कालावधीनुसार बाकी प्राप्तींचे विश्लेषण",
     asOf: "%{date} पर्यंत",
     zeroToThirtyDays: "0-30 दिवस",
     thirtyOneToSixtyDays: "31-60 दिवस",
     sixtyOneToNinetyDays: "61-90 दिवस",
     ninetyPlusDays: "90+ दिवस",
-    noClientsWithOutstandingBalances: "बाकी शिल्लक असलेले कोणतेही क्लायंट नाहीत.",
+    noClientsWithOutstandingBalances:
+      "बाकी शिल्लक असलेले कोणतेही क्लायंट नाहीत.",
     showingOfClients: "%{total} पैकी %{displayed} क्लायंट दाखवत आहे...",
-    errorLoadingReportData: "अहवाल डेटा लोड करताना त्रुटी. कृपया पुन्हा प्रयत्न करा.",
+    errorLoadingReportData:
+      "अहवाल डेटा लोड करताना त्रुटी. कृपया पुन्हा प्रयत्न करा.",
     projectClient: "प्रकल्प/ क्लायंट",
     noteHeader: "नोट",
     teamMemberDate: "टीम सदस्य/ तारीख",
     hoursLogged: "लॉग केलेले तास",
-    noResultsMatchFilters: "सध्याच्या फिल्टरशी कोणतेही परिणाम जुळत नाहीत. काही फिल्टर काढून टाकण्याचा प्रयत्न करा.",
-    noTimeEntriesYet: "अद्याप कोणत्याही वेळ एन्ट्री जोडलेल्या नाहीत. तुम्हाला तुमच्या टीमने जोडलेल्या वेळ एन्ट्रींचा सारांश दिसेल.",
+    noResultsMatchFilters:
+      "सध्याच्या फिल्टरशी कोणतेही परिणाम जुळत नाहीत. काही फिल्टर काढून टाकण्याचा प्रयत्न करा.",
+    noTimeEntriesYet:
+      "अद्याप कोणत्याही वेळ एन्ट्री जोडलेल्या नाहीत. तुम्हाला तुमच्या टीमने जोडलेल्या वेळ एन्ट्रींचा सारांश दिसेल.",
     selected: "%{count} निवडले",
     showingClientsCount: "%{total} पैकी %{shown} क्लायंट दाखवत आहे",
     ofTeamMembersSelected: "%{total} पैकी %{active} टीम सदस्य निवडले",
@@ -826,16 +844,20 @@ const mr = {
     timeEntryReportTitle: "वेळ एन्ट्री अहवाल",
     timeEntryReportDesc: "तुमच्या टीमने जोडलेल्या वेळ एन्ट्रींचा सारांश.",
     invoicesReport: "इनव्हॉइस अहवाल",
-    invoicesReportDesc: "एका कालावधीसाठी सर्व क्लायंटच्या बाकी आणि थकीत रकमेचा सविस्तर सारांश.",
+    invoicesReportDesc:
+      "एका कालावधीसाठी सर्व क्लायंटच्या बाकी आणि थकीत रकमेचा सविस्तर सारांश.",
     totalHoursLoggedTitle: "एकूण लॉग केलेले तास",
-    totalHoursLoggedDesc: "प्रकल्पानुसार टीमद्वारे बिल केलेले, अनबिल केलेले आणि बिल न करण्यायोग्य तासांचा सविस्तर सारांश.",
+    totalHoursLoggedDesc:
+      "प्रकल्पानुसार टीमद्वारे बिल केलेले, अनबिल केलेले आणि बिल न करण्यायोग्य तासांचा सविस्तर सारांश.",
     revenueReport: "महसूल अहवाल",
     revenueReportDesc: "प्रत्येक क्लायंटकडून महसूलाचा सविस्तर अहवाल.",
     accountsAging: "अकाउंट्स एजिंग",
-    accountsAgingDesc: "कोणत्या क्लायंटला पेमेंट करण्यास जास्त वेळ लागत आहे ते शोधा",
+    accountsAgingDesc:
+      "कोणत्या क्लायंटला पेमेंट करण्यास जास्त वेळ लागत आहे ते शोधा",
     clearAll: "सर्व हटवा",
     outstandingAndOverdue: "बाकी आणि थकीत",
-    followUpOnInvoices: "ज्या इनव्हॉइसांना अजून लक्ष देणे आवश्यक आहे त्यांचा पाठपुरावा करा.",
+    followUpOnInvoices:
+      "ज्या इनव्हॉइसांना अजून लक्ष देणे आवश्यक आहे त्यांचा पाठपुरावा करा.",
     outstanding: "बाकी",
     overdue: "थकीत",
     refresh: "रीफ्रेश",
@@ -848,19 +870,23 @@ const mr = {
     formatLabel: "फॉरमॅट",
     exportPdfBtn: "PDF निर्यात करा",
     exportCsvBtn: "CSV निर्यात करा",
-    noOutstandingOrOverdueInvoices: "कोणतेही बाकी किंवा थकीत इनव्हॉइस सापडले नाहीत.",
+    noOutstandingOrOverdueInvoices:
+      "कोणतेही बाकी किंवा थकीत इनव्हॉइस सापडले नाहीत.",
     allCurrencies: "सर्व चलने",
     filteredByCurrency: "%{currency} नुसार फिल्टर केले",
     overdueAgingTitle: "थकीत एजिंग (%{currency})",
     averageDays: "सरासरी दिवस:",
-    timeReportsDesc: "तुमच्या टीम सदस्यांनी जोडलेल्या वेळ एन्ट्रींचा सर्वसमावेशक सारांश",
+    timeReportsDesc:
+      "तुमच्या टीम सदस्यांनी जोडलेल्या वेळ एन्ट्रींचा सर्वसमावेशक सारांश",
     outstandingOverdueInvoicesTitle: "बाकी आणि थकीत इनव्हॉइस",
-    outstandingOverdueInvoicesDesc: "सर्व क्लायंटच्या बाकी आणि थकीत इनव्हॉइसचा सविस्तर आढावा",
+    outstandingOverdueInvoicesDesc:
+      "सर्व क्लायंटच्या बाकी आणि थकीत इनव्हॉइसचा सविस्तर आढावा",
     revenueByClient: "क्लायंटनुसार महसूल",
     revenueByClientDesc: "ट्रेंड आणि तुलनांसह क्लायंटनुसार महसूल विवरण",
     accountsAgingTableDesc: "कालावधीनुसार बाकी प्राप्तींचे वय विश्लेषण",
     paymentReportTitle: "पेमेंट अहवाल",
-    paymentReportDesc: "सविस्तर व्यवहार इतिहासासह प्राप्त सर्व पेमेंट ट्रॅक करा",
+    paymentReportDesc:
+      "सविस्तर व्यवहार इतिहासासह प्राप्त सर्व पेमेंट ट्रॅक करा",
     teamUtilization: "टीम वापर",
     teamUtilizationDesc: "टीम सदस्य वापर दर आणि क्षमता विश्लेषण",
     projectProfitability: "प्रकल्प नफा",
@@ -878,7 +904,8 @@ const mr = {
     viewOverdueInvoices: "थकीत इनव्हॉइस पहा",
     monthlyRevenueReport: "मासिक महसूल अहवाल",
     openReport: "%{title} अहवाल उघडा",
-    reviewHoursLogged: "व्यक्ती, क्लायंट आणि प्रकल्पानुसार लॉग केलेले तास पुनरावलोकन करा.",
+    reviewHoursLogged:
+      "व्यक्ती, क्लायंट आणि प्रकल्पानुसार लॉग केलेले तास पुनरावलोकन करा.",
     lastSevenDaysPreset: "मागील 7 दिवस",
     lastThirtyDaysPreset: "मागील 30 दिवस",
     totalEntries: "एकूण एन्ट्री",
@@ -1123,13 +1150,17 @@ const mr = {
     paidInvoices: "पेमेंट केलेले इनव्हॉइस",
     alreadySettled: "आधीच निकालात काढले",
     paymentsReceived: "प्राप्त पेमेंट",
-    employeeGuidance: "तुमचा आठवडा ट्रॅक करा, अचूक एन्ट्री सबमिट करा आणि काम सुरू ठेवा.",
-    bookKeeperGuidance: "येणाऱ्या पेमेंटचे पुनरावलोकन करा, इनव्हॉइस जुळवा आणि रोख प्रवाह स्पष्ट ठेवा.",
-    clientGuidance: "तुमच्या खात्यासाठी इनव्हॉइस स्थिती आणि पेमेंट इतिहास तपासा.",
+    employeeGuidance:
+      "तुमचा आठवडा ट्रॅक करा, अचूक एन्ट्री सबमिट करा आणि काम सुरू ठेवा.",
+    bookKeeperGuidance:
+      "येणाऱ्या पेमेंटचे पुनरावलोकन करा, इनव्हॉइस जुळवा आणि रोख प्रवाह स्पष्ट ठेवा.",
+    clientGuidance:
+      "तुमच्या खात्यासाठी इनव्हॉइस स्थिती आणि पेमेंट इतिहास तपासा.",
     defaultGuidance: "एका नजरेत महसूल, प्रकल्प आणि टीम गती.",
     recentActivity: "अलीकडील क्रियाकलाप",
     workspaceActivity: "कार्यक्षेत्र क्रियाकलाप",
-    employeeActivityDescription: "तुमचा डॅशबोर्ड वेळ ट्रॅकिंग आणि नियुक्त कामावर केंद्रित आहे.",
+    employeeActivityDescription:
+      "तुमचा डॅशबोर्ड वेळ ट्रॅकिंग आणि नियुक्त कामावर केंद्रित आहे.",
     activityDescription: "तुमच्या इनव्हॉइस आणि पेमेंटमधील नवीनतम अपडेट",
     noRecentActivityYet: "अद्याप कोणताही अलीकडील क्रियाकलाप नाही",
     loadMore: "अधिक लोड करा",
@@ -1172,27 +1203,36 @@ const mr = {
     cashLedger: "रोख खातेवही",
     miruLogo: "Miru",
     heroTitle: "वेळ, इनव्हॉइस आणि पेमेंटसाठी एक ठिकाण",
-    heroDescription: "दिवस स्पष्ट ठेवा, बिलिंग सुरू ठेवा आणि रोख दृश्यमान ठेवा.",
+    heroDescription:
+      "दिवस स्पष्ट ठेवा, बिलिंग सुरू ठेवा आणि रोख दृश्यमान ठेवा.",
     slideShowPrefix: "दाखवा",
-    slideDashboardDescription: "शोधल्याशिवाय महसूल, सक्रिय प्रकल्प आणि टीम गती पहा.",
-    slideInvoicesDescription: "ड्राफ्ट, थकीत शिल्लक आणि भरलेले काम एकाच ठिकाणी ठेवा.",
-    slideTimeTrackingDescription: "साप्ताहिक वेळ एन्ट्री व्यस्त न होता अद्ययावत राहते.",
-    slidePaymentsDescription: "प्रत्येक पेमेंट पद्धत, स्थिती आणि स्रोतासह एका खातेवहीत येते.",
+    slideDashboardDescription:
+      "शोधल्याशिवाय महसूल, सक्रिय प्रकल्प आणि टीम गती पहा.",
+    slideInvoicesDescription:
+      "ड्राफ्ट, थकीत शिल्लक आणि भरलेले काम एकाच ठिकाणी ठेवा.",
+    slideTimeTrackingDescription:
+      "साप्ताहिक वेळ एन्ट्री व्यस्त न होता अद्ययावत राहते.",
+    slidePaymentsDescription:
+      "प्रत्येक पेमेंट पद्धत, स्थिती आणि स्रोतासह एका खातेवहीत येते.",
     continueWithGoogle: "Google सह सुरू ठेवा",
     continueWithGithub: "GitHub सह सुरू ठेवा",
     orUseEmail: "किंवा ईमेल वापरा",
     verifyWithAuthenticator: "तुमच्या ऑथेंटिकेटर ॲपने सत्यापित करा",
-    authenticatorInstructions: "तुमच्या ऑथेंटिकेटर ॲपमधून 6-अंकी कोड प्रविष्ट करा, किंवा रिकव्हरी कोड वापरा.",
+    authenticatorInstructions:
+      "तुमच्या ऑथेंटिकेटर ॲपमधून 6-अंकी कोड प्रविष्ट करा, किंवा रिकव्हरी कोड वापरा.",
     authenticatorCode: "ऑथेंटिकेटर कोड",
     recoveryCode: "रिकव्हरी कोड",
     verifyAndSignIn: "सत्यापित करा आणि साइन इन करा",
-    completePasskeyVerification: "साइन इन पूर्ण करण्यासाठी पासकी सत्यापन पूर्ण करा.",
-    enterAuthenticatorCode: "साइन इन पूर्ण करण्यासाठी तुमचा ऑथेंटिकेटर कोड प्रविष्ट करा.",
+    completePasskeyVerification:
+      "साइन इन पूर्ण करण्यासाठी पासकी सत्यापन पूर्ण करा.",
+    enterAuthenticatorCode:
+      "साइन इन पूर्ण करण्यासाठी तुमचा ऑथेंटिकेटर कोड प्रविष्ट करा.",
     invalidVerificationCode: "अवैध सत्यापन कोड.",
     privacy: "गोपनीयता",
     terms: "अटी",
     createAccount: "खाते तयार करा",
-    passwordCriteria: "किमान 8 अक्षरे, 1 अपरकेस, 1 लोअरकेस, 1 अंक आणि 1 विशेष अक्षर",
+    passwordCriteria:
+      "किमान 8 अक्षरे, 1 अपरकेस, 1 लोअरकेस, 1 अंक आणि 1 विशेष अक्षर",
     agreeToTerms: "मी सहमत आहे",
     termsOfService: "सेवेच्या अटी",
     privacyPolicy: "गोपनीयता धोरण",
@@ -1299,12 +1339,14 @@ const mr = {
     numberOfTeamMembers: "टीम सदस्यांची संख्या:",
     plan: "योजना",
     basicPlan: "बेसिक योजना",
-    basicPlanDescription: "बेसिक योजनेत सर्व वैशिष्ट्ये समाविष्ट आहेत. हे एकदाचे शुल्क आहे.",
+    basicPlanDescription:
+      "बेसिक योजनेत सर्व वैशिष्ट्ये समाविष्ट आहेत. हे एकदाचे शुल्क आहे.",
     chargedOnce: "एकदा शुल्क आकारले जाते",
     addOns: "ॲड-ऑन",
     oneTeamMember: "1 टीम सदस्य",
     chargedEveryMonth: "दर महिन्याला शुल्क आकारले जाते",
-    basicPlanPerUser: "बेसिक योजना प्रति वापरकर्ता प्रति महिना अतिरिक्त %{rate}$ सह येते.",
+    basicPlanPerUser:
+      "बेसिक योजना प्रति वापरकर्ता प्रति महिना अतिरिक्त %{rate}$ सह येते.",
     plusTaxes: "कर सहित",
     reviewAndPay: "पुनरावलोकन करा आणि भरा",
   },

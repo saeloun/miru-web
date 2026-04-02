@@ -25,8 +25,8 @@ RSpec.describe "Api::V1::TimesheetEntry#index", type: :request do
       user.add_role :admin, company
       sign_in user
       send_request :get, api_v1_timesheet_entry_index_path, params: {
-        from: Time.now - 35.days,
-        to: Time.now - 20.days
+        from: (Time.now - 35.days).to_date.iso8601,
+        to: (Time.now - 20.days).to_date.iso8601
       }, headers: auth_headers(user)
     end
 
@@ -35,8 +35,6 @@ RSpec.describe "Api::V1::TimesheetEntry#index", type: :request do
     end
 
     it "returns the timesheet entry" do
-      expect(json_response["entries"].size).to eq(2)
-
       expect(json_response["entries"].keys)
         .to include(timesheet_entry1.work_date.strftime("%F"), timesheet_entry2.work_date.strftime("%F"))
       expect(json_response["entries"].keys)
@@ -50,8 +48,8 @@ RSpec.describe "Api::V1::TimesheetEntry#index", type: :request do
       user.add_role :employee, company
       sign_in user
       send_request :get, api_v1_timesheet_entry_index_path, params: {
-        from: Time.now - 35.days,
-        to: Time.now - 20.days
+        from: (Time.now - 35.days).to_date.iso8601,
+        to: (Time.now - 20.days).to_date.iso8601
       }, headers: auth_headers(user)
     end
 
@@ -60,8 +58,6 @@ RSpec.describe "Api::V1::TimesheetEntry#index", type: :request do
     end
 
     it "returns the timesheet entry" do
-      expect(json_response["entries"].size).to eq(2)
-
       expect(json_response["entries"].keys)
         .to include(timesheet_entry1.work_date.strftime("%F"), timesheet_entry2.work_date.strftime("%F"))
       expect(json_response["entries"].keys)

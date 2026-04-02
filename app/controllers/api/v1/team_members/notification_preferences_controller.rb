@@ -9,6 +9,7 @@ class Api::V1::TeamMembers::NotificationPreferencesController < Api::V1::Applica
       invoice_email_notifications: invoice_email_notifications_enabled(pref),
       payment_email_notifications: preference_value(pref, :payment_email_notifications, true),
       timesheet_reminder_enabled: preference_value(pref, :timesheet_reminder_enabled, true),
+      monthly_report_digest_enabled: monthly_report_digest_enabled(pref),
       unsubscribed_from_all: preference_value(pref, :unsubscribed_from_all, false)
     }, status: 200
   end
@@ -26,6 +27,7 @@ class Api::V1::TeamMembers::NotificationPreferencesController < Api::V1::Applica
       invoice_email_notifications: invoice_email_notifications_enabled(pref),
       payment_email_notifications: preference_value(pref, :payment_email_notifications, true),
       timesheet_reminder_enabled: preference_value(pref, :timesheet_reminder_enabled, true),
+      monthly_report_digest_enabled: monthly_report_digest_enabled(pref),
       unsubscribed_from_all: preference_value(pref, :unsubscribed_from_all, false),
       notice: "Preference updated successfully"
     }, status: 200
@@ -48,6 +50,11 @@ class Api::V1::TeamMembers::NotificationPreferencesController < Api::V1::Applica
         :unsubscribed_from_all
       ].select { |attribute| NotificationPreference.attribute_names.include?(attribute.to_s) }
 
+      if billing_notifications_permitted? &&
+          NotificationPreference.attribute_names.include?("monthly_report_digest_enabled")
+        permitted_attributes << :monthly_report_digest_enabled
+      end
+
       params.require(:notification_preference).permit(*permitted_attributes)
     end
 
@@ -58,6 +65,7 @@ class Api::V1::TeamMembers::NotificationPreferencesController < Api::V1::Applica
         notification_enabled: false,
         payment_email_notifications: true,
         timesheet_reminder_enabled: true,
+        monthly_report_digest_enabled: false,
         unsubscribed_from_all: false
       }
 
@@ -70,6 +78,18 @@ class Api::V1::TeamMembers::NotificationPreferencesController < Api::V1::Applica
 
     def invoice_email_notifications_enabled(preference)
       preference_value(preference, :invoice_email_notifications, true)
+    end
+
+    def monthly_report_digest_enabled(preference)
+      return false unless billing_notifications_permitted?
+
+      preference_value(preference, :monthly_report_digest_enabled, false)
+    end
+
+    def billing_notifications_permitted?
+      current_user.has_cached_role?(:owner, current_company) ||
+        current_user.has_cached_role?(:admin, current_company) ||
+        current_user.has_cached_role?(:book_keeper, current_company)
     end
 
     def preference_value(preference, attribute, fallback)

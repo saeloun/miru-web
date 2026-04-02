@@ -33,6 +33,10 @@ FactoryBot.define do
     rate { Faker::Number.between(from: 0, to: 1000) }
     quantity { Faker::Number.between(from: 1, to: 10) }
     invoice
-    timesheet_entry
+    timesheet_entry do
+      project = create(:project, client: invoice.client, billable: true)
+      user = create(:user, current_workspace: invoice.company)
+      create(:timesheet_entry, user:, project:, bill_status: "unbilled")
+    end
   end
 end

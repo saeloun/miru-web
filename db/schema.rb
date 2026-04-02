@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_31_200000) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_01_161000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_stat_statements"
@@ -564,6 +564,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_31_200000) do
     t.bigint "company_id", null: false
     t.datetime "created_at", null: false
     t.boolean "invoice_email_notifications", default: true, null: false
+    t.boolean "monthly_report_digest_enabled", default: false, null: false
     t.boolean "notification_enabled", default: false, null: false
     t.boolean "payment_email_notifications", default: true, null: false
     t.boolean "timesheet_reminder_enabled", default: true, null: false
@@ -592,6 +593,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_31_200000) do
     t.decimal "amount", precision: 20, scale: 2, default: "0.0"
     t.decimal "base_currency_amount", precision: 20, scale: 2
     t.datetime "created_at", null: false
+    t.datetime "discarded_at"
     t.decimal "exchange_rate", precision: 18, scale: 10
     t.date "exchange_rate_date"
     t.bigint "invoice_id", null: false
@@ -602,6 +604,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_31_200000) do
     t.date "transaction_date", null: false
     t.integer "transaction_type", null: false
     t.datetime "updated_at", null: false
+    t.index ["discarded_at"], name: "index_payments_on_discarded_at"
     t.index ["invoice_id"], name: "index_payments_on_invoice_id"
     t.index ["status"], name: "index_payments_on_status"
     t.index ["transaction_date"], name: "index_payments_on_transaction_date"

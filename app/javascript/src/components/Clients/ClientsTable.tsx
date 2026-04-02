@@ -48,7 +48,7 @@ import { useUserContext } from "../../context/UserContext";
 import { clientsApi } from "apis/api";
 import { unmapClientList } from "../../mapper/mappedIndex";
 import { toast } from "sonner";
-import ClientForm from "./ClientForm";
+import ClientEditor from "./ClientForm/ClientEditor";
 interface Client {
   id: string;
   name: string;
@@ -487,7 +487,7 @@ const ClientsTable: React.FC = () => {
               Fill in the details below to add a new client.
             </DialogDescription>
           </DialogHeader>
-          <ClientForm
+          <ClientEditor
             clientLogoUrl={clientLogoUrl}
             handleDeleteLogo={() => {
               setClientLogo(null);
@@ -539,7 +539,7 @@ const ClientsTable: React.FC = () => {
               <Loader size="sm" overlay={false} className="min-h-0 py-0" />
             </div>
           ) : editClientData ? (
-            <ClientForm
+            <ClientEditor
               key={editClientData.id}
               client={editClientData}
               clientLogoUrl={clientLogoUrl}

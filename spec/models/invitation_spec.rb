@@ -95,6 +95,29 @@ RSpec.describe Invitation, type: :model do
     it { is_expected.to callback(:send_invitation_mail).after(:commit) }
   end
 
+  describe "#send_invitation_mail" do
+    let(:mailer_scope) { double(send_user_invitation: mail_delivery) }
+    let(:mail_delivery) { instance_double(ActionMailer::MessageDelivery, deliver_later: true) }
+
+    before do
+      allow(UserInvitationMailer).to receive(:with).and_return(mailer_scope)
+    end
+
+    it "sends at least one workspace member in the payload" do
+      sender = create(:user, current_workspace: company)
+
+      create(:invitation, company:, sender:)
+
+      expect(UserInvitationMailer).to have_received(:with).with(
+        hash_including(
+          company_details: hash_including(
+            employee_count: 1
+          )
+        )
+      )
+    end
+  end
+
   describe "#full_name" do
     it "returns invited users full name" do
       expect(subject.full_name).to eq("#{subject.first_name} #{subject.last_name}")

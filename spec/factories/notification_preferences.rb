@@ -7,6 +7,7 @@
 #  id                          :bigint           not null, primary key
 #  invoice_email_notifications :boolean          default(TRUE), not null
 #  notification_enabled        :boolean          default(FALSE), not null
+#  monthly_report_digest_enabled :boolean        default(FALSE), not null
 #  payment_email_notifications :boolean          default(TRUE), not null
 #  timesheet_reminder_enabled  :boolean          default(TRUE), not null
 #  unsubscribed_from_all       :boolean          default(FALSE), not null
@@ -31,6 +32,7 @@ FactoryBot.define do
     association :user
     association :company
     notification_enabled { false }
+    monthly_report_digest_enabled { false }
     invoice_email_notifications { true }
     payment_email_notifications { true }
     timesheet_reminder_enabled { true }
@@ -38,6 +40,7 @@ FactoryBot.define do
 
     trait :all_enabled do
       notification_enabled { true }
+      monthly_report_digest_enabled { true }
       invoice_email_notifications { true }
       payment_email_notifications { true }
       timesheet_reminder_enabled { true }
@@ -46,6 +49,7 @@ FactoryBot.define do
 
     trait :all_disabled do
       notification_enabled { false }
+      monthly_report_digest_enabled { false }
       invoice_email_notifications { false }
       payment_email_notifications { false }
       timesheet_reminder_enabled { false }
@@ -58,6 +62,7 @@ FactoryBot.define do
 
     trait :weekly_reminder_only do
       notification_enabled { true }
+      monthly_report_digest_enabled { false }
       invoice_email_notifications { false }
       payment_email_notifications { false }
       timesheet_reminder_enabled { false }

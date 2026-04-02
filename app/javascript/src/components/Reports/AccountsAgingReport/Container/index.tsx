@@ -7,7 +7,7 @@ import { useEntry } from "components/Reports/context/EntryContext";
 
 import Table from "./Table";
 
-const Container = () => {
+const AccountsAgingResults = () => {
   const { accountsAgingReport } = useEntry();
 
   return accountsAgingReport.clientList.length ? (
@@ -51,4 +51,4 @@ const Container = () => {
   );
 };
 
-export default Container;
+export default AccountsAgingResults;
