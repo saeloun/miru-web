@@ -64,6 +64,16 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
     clearListError();
   };
 
+  const syncInvoiceState = (invoice: Invoice) => {
+    if (String(selectedInvoiceId) === String(invoice.id)) {
+      setSelectedInvoice(invoice);
+    }
+
+    if (String(previewData?.id) === String(invoice.id)) {
+      setPreviewData(invoice);
+    }
+  };
+
   const fallbackCompany = {
     name: currentCompany?.name || "Miru Time Tracking",
     email: currentCompany?.email || "support@getmiru.com",
@@ -260,12 +270,23 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
         toast.error("Failed to save invoice. Please try again.");
       }
       clearError();
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const handleSendInvoice = async (invoiceData: InvoiceFormData) => {
     try {
       setIsLoading(true);
+
+      const client = clients.find(
+        c => String(c.id) === String(invoiceData.clientId)
+      );
+      if (!client) {
+        toast.error("Please select a client before sending the invoice");
+
+        return;
+      }
 
       // First save the invoice if it's new
       let invoiceId = invoiceData.id;
@@ -279,10 +300,7 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
       }
 
       // Then send the invoice
-      const client = clients.find(
-        c => String(c.id) === String(invoiceData.clientId)
-      );
-      if (client && invoiceId) {
+      if (invoiceId) {
         const response = await invoiceApi.sendInvoice(invoiceId, {
           subject: `Invoice ${invoiceData.invoiceNumber}`,
           message: "Please find your invoice attached.",
@@ -313,6 +331,8 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
         toast.error("Failed to send invoice. Please try again.");
       }
       clearError();
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -332,6 +352,13 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
       });
       toast.success(response?.message || "Invoice sent successfully");
 
+      if (
+        String(selectedInvoiceId) === String(id) ||
+        String(previewData?.id) === String(id)
+      ) {
+        const refreshedInvoice = await invoiceApi.getInvoice(id);
+        syncInvoiceState(refreshedInvoice);
+      }
       await loadInvoices(); // Refresh the invoice list
     } catch (err) {
       toast.error("Failed to send invoice");

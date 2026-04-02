@@ -252,9 +252,20 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
     navigate(`/invoices/${invoice.id}/edit`);
   };
 
-  const handleAction = (action: string) => {
+  const handleAction = async (action: string) => {
     if (onAction) {
-      onAction(action);
+      if (action === "send") {
+        setIsSending(true);
+        try {
+          await onAction(action);
+        } finally {
+          setIsSending(false);
+        }
+
+        return;
+      }
+
+      await onAction(action);
     } else {
       switch (action) {
         case "download":
@@ -297,7 +308,7 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
             <Button
               variant="outline"
               size="sm"
-              onClick={() => handleAction("download")}
+              onClick={() => void handleAction("download")}
               disabled={isDownloading}
             >
               <Download className="h-4 w-4 mr-2" />
@@ -306,7 +317,7 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
             <Button
               variant="outline"
               size="sm"
-              onClick={() => handleAction("print")}
+              onClick={() => void handleAction("print")}
             >
               <Printer className="h-4 w-4 mr-2" />
               Print
@@ -314,7 +325,7 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
             <Button
               variant="outline"
               size="sm"
-              onClick={() => handleAction("edit")}
+              onClick={() => void handleAction("edit")}
             >
               <PencilSimple className="h-4 w-4 mr-2" />
               Edit
@@ -324,7 +335,7 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
                 data-testid="invoice-preview-send-action"
                 size="sm"
                 className="bg-[#5E58F1] hover:bg-[#4D47E0]"
-                onClick={() => handleAction("send")}
+                onClick={() => void handleAction("send")}
                 disabled={isSending}
               >
                 <PaperPlaneTilt className="h-4 w-4 mr-2" />
@@ -338,7 +349,7 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
                 data-testid="invoice-preview-reminder-action"
                 size="sm"
                 className="bg-[#5E58F1] hover:bg-[#4D47E0]"
-                onClick={() => handleAction("send")}
+                onClick={() => void handleAction("send")}
                 disabled={isSending}
               >
                 <PaperPlaneTilt className="h-4 w-4 mr-2" />

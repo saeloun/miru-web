@@ -72,6 +72,10 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
   isLoading = false,
 }) => {
   const [showPreview, setShowPreview] = useState(true);
+  const [submitIntent, setSubmitIntent] = useState<"save" | "send" | null>(
+    null
+  );
+
   // Helper function to ensure valid Date object
   const ensureValidDate = (date: any): Date => {
     if (!date) return new Date();
@@ -174,6 +178,13 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
     [pendingManualEntry]
   );
 
+  const canSubmitInvoice =
+    Boolean(formData.clientId) && activeLineItems.length > 0;
+
+  const isSentInvoice = ["sent", "viewed", "overdue", "paid"].includes(
+    formData.status
+  );
+
   useEffect(() => {
     const snapshot = JSON.stringify({
       ...formData,
@@ -199,6 +210,12 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
       fetchNewLineItems(selectedClient, setLineItems, selectedLineItems);
     }
   }, [selectedClient?.id]);
+
+  useEffect(() => {
+    if (!isLoading) {
+      setSubmitIntent(null);
+    }
+  }, [isLoading]);
 
   const committedSubtotal = useMemo(
     () =>
@@ -333,36 +350,54 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
                 Cancel
               </Button>
               <Button
-                onClick={() =>
+                onClick={() => {
+                  setSubmitIntent("save");
                   onSave &&
-                  onSave({
-                    ...formData,
-                    invoiceLineItems: activeLineItems,
-                  })
-                }
+                    onSave({
+                      ...formData,
+                      invoiceLineItems: activeLineItems,
+                    });
+                }}
                 variant="outline"
                 size="sm"
-                disabled={isLoading || !hasChanges}
+                disabled={isLoading || !hasChanges || !canSubmitInvoice}
               >
                 <FloppyDisk className="mr-1.5 h-4 w-4" />
-                <span className="hidden sm:inline">Save</span>
-                <span className="sm:hidden">Save</span>
+                <span className="hidden sm:inline">
+                  {submitIntent === "save" && isLoading ? "Saving..." : "Save"}
+                </span>
+                <span className="sm:hidden">
+                  {submitIntent === "save" && isLoading ? "Saving..." : "Save"}
+                </span>
               </Button>
               <Button
-                onClick={() =>
+                onClick={() => {
+                  setSubmitIntent("send");
                   onSend &&
-                  onSend({
-                    ...formData,
-                    status: "sent",
-                    invoiceLineItems: activeLineItems,
-                  })
-                }
+                    onSend({
+                      ...formData,
+                      status: "sent",
+                      invoiceLineItems: activeLineItems,
+                    });
+                }}
                 size="sm"
-                disabled={isLoading}
+                disabled={isLoading || !canSubmitInvoice || isSentInvoice}
               >
                 <PaperPlaneTilt className="mr-1.5 h-4 w-4" />
-                <span className="hidden sm:inline">Send Invoice</span>
-                <span className="sm:hidden">Send</span>
+                <span className="hidden sm:inline">
+                  {submitIntent === "send" && isLoading
+                    ? "Sending..."
+                    : isSentInvoice
+                    ? "Already Sent"
+                    : "Send Invoice"}
+                </span>
+                <span className="sm:hidden">
+                  {submitIntent === "send" && isLoading
+                    ? "Sending..."
+                    : isSentInvoice
+                    ? "Sent"
+                    : "Send"}
+                </span>
               </Button>
             </div>
           </div>
