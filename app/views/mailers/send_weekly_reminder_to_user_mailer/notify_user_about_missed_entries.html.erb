@@ -7,12 +7,13 @@
 
 <p><%= t("mailers.send_weekly_reminder_to_user_mailer.notify_user_about_missed_entries.greeting_html", name: @name).html_safe %></p>
 
-<p><%= t("mailers.send_weekly_reminder_to_user_mailer.notify_user_about_missed_entries.body_html", starting_date: l(@starting_date, format: :long), ending_date: l(@ending_date, format: :long)).html_safe %></p>
+<div class="email-highlight">
+  <p class="email-highlight-label"><%= t("mailers.send_weekly_reminder_to_user_mailer.notify_user_about_missed_entries.eyebrow") %></p>
+  <p class="email-highlight-value"><%= l(@starting_date, format: :long) %> to <%= l(@ending_date, format: :long) %></p>
+  <p class="email-highlight-caption"><%= t("mailers.send_weekly_reminder_to_user_mailer.notify_user_about_missed_entries.body_html", starting_date: l(@starting_date, format: :long), ending_date: l(@ending_date, format: :long)).html_safe %></p>
+</div>
 
 <p><%= t("mailers.send_weekly_reminder_to_user_mailer.notify_user_about_missed_entries.follow_up") %></p>
 
 <%= render "shared/mailer/button", href: "#{root_url}time-tracking", label: t("mailers.actions.open_time_tracking") %>
-
-<div class="email-divider"></div>
-
-<p><%= t("mailers.send_weekly_reminder_to_user_mailer.notify_user_about_missed_entries.signoff_html").html_safe %></p>
+<p class="email-muted" style="margin-top: 18px;"><%= t("mailers.send_weekly_reminder_to_user_mailer.notify_user_about_missed_entries.signoff_html").html_safe %></p>

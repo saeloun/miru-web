@@ -11,19 +11,17 @@
   </div>
 <% end %>
 
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="detail-grid">
-  <tr>
-    <%= render "shared/mailer/detail_card", label: t("mailers.labels.issue_date"), value: l(@invoice.issue_date.to_date, format: :long) %>
-    <%= render "shared/mailer/detail_card", label: t("mailers.labels.due_date"), value: l(@invoice.due_date.to_date, format: :long) %>
-  </tr>
-  <tr>
-    <%= render "shared/mailer/detail_card", label: t("mailers.labels.invoice_number"), value: @invoice.invoice_number %>
-    <%= render "shared/mailer/detail_card", label: t("mailers.labels.reference"), value: @invoice.reference.presence || "-" %>
-  </tr>
-  <tr>
-    <%= render "shared/mailer/detail_card", label: t("mailers.labels.outstanding_amount"), value: @amount %>
-    <%= render "shared/mailer/detail_card", label: t("mailers.labels.status"), value: @invoice.status.humanize %>
-  </tr>
-</table>
+<div class="email-highlight">
+  <p class="email-highlight-label"><%= t("mailers.labels.outstanding_amount") %></p>
+  <p class="email-highlight-value"><%= @amount %></p>
+</div>
+
+<%= render "shared/mailer/fact_rows", rows: [
+  { label: t("mailers.labels.invoice_number"), value: @invoice.invoice_number },
+  { label: t("mailers.labels.due_date"), value: l(@invoice.due_date.to_date, format: :long) },
+  { label: t("mailers.labels.issue_date"), value: l(@invoice.issue_date.to_date, format: :long) },
+  { label: t("mailers.labels.status"), value: @invoice.status.humanize },
+  { label: t("mailers.labels.reference"), value: @invoice.reference.presence || "-" }
+] %>
 
 <%= render "shared/mailer/button", href: @invoice_url, label: t("mailers.actions.open_invoice") %>

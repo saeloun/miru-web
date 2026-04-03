@@ -25,7 +25,7 @@ RSpec.describe "Mailer previews", type: :mailer do
     expect(payment_mail.body.encoded).to include("Payment confirmation")
 
     expect(invoice_mail.subject).to include("Invoice PREVIEW-001")
-    expect(invoice_mail.body.encoded).to include("Your invoice is ready")
+    expect(invoice_mail.body.encoded).to include("Invoice ready to review")
   end
 
   it "includes the shared responsive mailer hooks" do

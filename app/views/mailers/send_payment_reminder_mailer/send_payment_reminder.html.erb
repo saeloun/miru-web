@@ -11,19 +11,13 @@
 
 <% @invoices.each do |invoice| %>
   <div class="email-panel email-panel-soft">
-    <p class="email-panel-title" style="margin-bottom: 16px;"><%= invoice.invoice_number %></p>
-    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="detail-grid">
-      <tr>
-        <%= render "shared/mailer/detail_card",
-          label: t("mailers.labels.issue_date"),
-          value: CompanyDateFormattingService.new(invoice.issue_date, company: @company).process %>
-        <%= render "shared/mailer/detail_card", label: t("mailers.labels.due_date"), value: l(invoice.due_date.to_date, format: :long) %>
-      </tr>
-      <tr>
-        <%= render "shared/mailer/detail_card", label: t("mailers.labels.amount_due"), value: FormatAmountService.new(@company.base_currency, invoice.amount).process %>
-        <%= render "shared/mailer/detail_card", label: t("mailers.labels.status"), value: invoice.status.humanize %>
-      </tr>
-    </table>
+    <p class="email-panel-title" style="margin-bottom: 0;"><%= invoice.invoice_number %></p>
+    <%= render "shared/mailer/fact_rows", rows: [
+      { label: t("mailers.labels.amount_due"), value: FormatAmountService.new(@company.base_currency, invoice.amount).process },
+      { label: t("mailers.labels.due_date"), value: l(invoice.due_date.to_date, format: :long) },
+      { label: t("mailers.labels.issue_date"), value: CompanyDateFormattingService.new(invoice.issue_date, company: @company).process },
+      { label: t("mailers.labels.status"), value: invoice.status.humanize }
+    ] %>
     <%= render "shared/mailer/button", href: "#{ENV['APP_BASE_URL']}/invoices/#{invoice.external_view_key}/view", label: t("mailers.actions.open_invoice") %>
   </div>
 <% end %>

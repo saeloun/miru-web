@@ -5,15 +5,16 @@
   <%= t("mailers.expense_mailer.submitted.subtitle_html", submitter_name: @expense.submitter_name).html_safe %>
 <% end %>
 
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="detail-grid">
-  <tr>
-    <%= render "shared/mailer/detail_card", label: t("mailers.labels.amount"), value: FormatAmountService.new(@company.base_currency, @expense.amount).process %>
-    <%= render "shared/mailer/detail_card", label: t("mailers.labels.category"), value: @expense.display_category_name.presence || "-" %>
-  </tr>
-  <tr>
-    <%= render "shared/mailer/detail_card", label: t("mailers.labels.date"), value: @expense.formatted_date %>
-    <%= render "shared/mailer/detail_card", label: t("mailers.labels.description"), value: @expense.description.presence || "-" %>
-  </tr>
-</table>
+<div class="email-highlight">
+  <p class="email-highlight-label"><%= t("mailers.labels.amount") %></p>
+  <p class="email-highlight-value"><%= FormatAmountService.new(@company.base_currency, @expense.amount).process %></p>
+  <p class="email-highlight-caption"><%= @expense.display_category_name.presence || "-" %></p>
+</div>
+
+<%= render "shared/mailer/fact_rows", rows: [
+  { label: t("mailers.labels.date"), value: @expense.formatted_date },
+  { label: t("mailers.labels.category"), value: @expense.display_category_name.presence || "-" },
+  { label: t("mailers.labels.description"), value: @expense.description.presence || "-" }
+] %>
 
 <%= render "shared/mailer/button", href: @expense_url, label: t("mailers.actions.open_expense") %>
