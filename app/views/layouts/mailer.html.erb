@@ -3,7 +3,14 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light only" />
+    <meta name="supported-color-schemes" content="light" />
     <style>
+      :root {
+        color-scheme: light only;
+        supported-color-schemes: light;
+      }
+
       body,
       table,
       td,
@@ -30,7 +37,7 @@
         padding: 0;
         width: 100% !important;
         min-width: 100%;
-        background-color: #edf2f7;
+        background-color: #f7f8fa;
         color: #0f172a;
         font-family: "Aptos", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
       }
@@ -42,8 +49,8 @@
       .email-shell {
         width: 100%;
         background:
-          radial-gradient(circle at top, rgba(148, 163, 184, 0.18), transparent 28%),
-          linear-gradient(180deg, #f8fafc 0%, #eef2f7 50%, #e6ebf2 100%);
+          radial-gradient(circle at top, rgba(255, 255, 255, 0.96), rgba(255, 255, 255, 0) 34%),
+          linear-gradient(180deg, #fbfbfc 0%, #f5f7fa 56%, #eff3f7 100%);
         padding: 40px 16px;
       }
 
@@ -51,10 +58,10 @@
         width: 100%;
         max-width: 680px;
         background-color: #ffffff;
-        border: 1px solid #dbe3ee;
+        border: 1px solid #e7ebf0;
         border-radius: 24px;
         overflow: hidden;
-        box-shadow: 0 22px 50px rgba(15, 23, 42, 0.08);
+        box-shadow: 0 16px 40px rgba(15, 23, 42, 0.06);
       }
 
       .email-card-inner {
@@ -63,14 +70,14 @@
 
       .email-brand {
         padding: 28px 36px 24px;
-        text-align: left;
+        text-align: center;
         background:
-          linear-gradient(180deg, #ffffff 0%, #fbfdff 72%, #f8fbff 100%);
-        border-bottom: 1px solid #e6edf5;
+          linear-gradient(180deg, #ffffff 0%, #fcfcfd 72%, #f8fafc 100%);
+        border-bottom: 1px solid #edf1f5;
       }
 
       .email-brand-logo {
-        display: block;
+        display: inline-block;
         width: 132px;
         height: auto;
       }
@@ -132,22 +139,22 @@
         margin: 24px 0;
         padding: 22px 24px;
         border-radius: 20px;
-        border: 1px solid #e2e8f0;
-        background-color: #f8fafc;
+        border: 1px solid #e7ebf0;
+        background-color: #fafbfc;
       }
 
       .email-panel-soft {
-        background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+        background: linear-gradient(180deg, #ffffff 0%, #fafbfc 100%);
       }
 
       .email-panel-accent {
-        border-color: #dbeafe;
-        background: linear-gradient(180deg, #f8fbff 0%, #eff6ff 100%);
+        border-color: #d9e6ff;
+        background: linear-gradient(180deg, #fbfdff 0%, #f3f7ff 100%);
       }
 
       .email-panel-success {
-        border-color: #bbf7d0;
-        background: linear-gradient(180deg, #f7fef9 0%, #f0fdf4 100%);
+        border-color: #d3f4dd;
+        background: linear-gradient(180deg, #fbfefc 0%, #f3fbf6 100%);
       }
 
       .email-panel-warning {
@@ -184,14 +191,14 @@
         display: inline-block;
         padding: 14px 22px;
         border-radius: 999px;
-        background: #111827;
+        background: #111111;
         color: #ffffff !important;
         font-size: 15px;
         font-weight: 700;
         line-height: 1;
         letter-spacing: 0.01em;
         text-decoration: none;
-        box-shadow: 0 8px 20px rgba(15, 23, 42, 0.16);
+        box-shadow: 0 8px 18px rgba(15, 23, 42, 0.12);
       }
 
       .email-button-secondary {
@@ -219,10 +226,10 @@
 
       .detail-card {
         width: 100%;
-        border: 1px solid #e2e8f0;
+        border: 1px solid #e7ebf0;
         border-radius: 18px;
         background-color: #ffffff;
-        box-shadow: 0 4px 14px rgba(15, 23, 42, 0.03);
+        box-shadow: 0 3px 10px rgba(15, 23, 42, 0.025);
       }
 
       .detail-card td {
@@ -263,8 +270,8 @@
 
       .email-footer-card {
         border-radius: 18px;
-        border: 1px solid #e2e8f0;
-        background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+        border: 1px solid #e7ebf0;
+        background: linear-gradient(180deg, #ffffff 0%, #fafbfc 100%);
       }
 
       .email-footer-card td {
@@ -350,102 +357,6 @@
         line-height: 1.6;
       }
 
-      @media (prefers-color-scheme: dark) {
-        body {
-          background-color: #0b1220 !important;
-          color: #e5edf7 !important;
-        }
-
-        a {
-          color: #93c5fd !important;
-        }
-
-        .email-shell {
-          background:
-            radial-gradient(circle at top, rgba(59, 130, 246, 0.16), transparent 24%),
-            linear-gradient(180deg, #08111f 0%, #0f172a 54%, #131d31 100%) !important;
-        }
-
-        .email-card,
-        .detail-card {
-          background-color: #0f172a !important;
-          border-color: rgba(148, 163, 184, 0.16) !important;
-          box-shadow: 0 24px 60px rgba(2, 6, 23, 0.45) !important;
-        }
-
-        .email-brand {
-          background: linear-gradient(180deg, rgba(15, 23, 42, 0.98) 0%, rgba(15, 23, 42, 0.92) 100%) !important;
-          border-bottom-color: rgba(148, 163, 184, 0.14) !important;
-        }
-
-        .email-title,
-        .email-panel-title,
-        .detail-value,
-        .email-body strong,
-        .logo-label {
-          color: #f8fafc !important;
-        }
-
-        .email-subtitle,
-        .email-body,
-        .detail-subvalue,
-        .email-muted,
-        .detail-label,
-        .email-footer-card td,
-        .digest-caption,
-        .digest-trend-labels,
-        .digest-empty-state {
-          color: #94a3b8 !important;
-        }
-
-        .email-panel {
-          background-color: rgba(15, 23, 42, 0.9) !important;
-          border-color: rgba(148, 163, 184, 0.14) !important;
-        }
-
-        .email-panel-soft {
-          background: linear-gradient(180deg, rgba(15, 23, 42, 0.95) 0%, rgba(15, 23, 42, 0.88) 100%) !important;
-        }
-
-        .email-panel-accent {
-          background: linear-gradient(180deg, rgba(15, 23, 42, 0.96) 0%, rgba(30, 41, 59, 0.94) 100%) !important;
-          border-color: rgba(96, 165, 250, 0.22) !important;
-        }
-
-        .email-panel-success {
-          background: linear-gradient(180deg, rgba(6, 78, 59, 0.45) 0%, rgba(20, 83, 45, 0.4) 100%) !important;
-          border-color: rgba(74, 222, 128, 0.2) !important;
-        }
-
-        .email-divider,
-        .digest-source-name,
-        .digest-source-amount {
-          border-color: rgba(148, 163, 184, 0.16) !important;
-          background-color: rgba(148, 163, 184, 0.16) !important;
-        }
-
-        .email-footer-card {
-          background: linear-gradient(180deg, rgba(15, 23, 42, 0.94) 0%, rgba(17, 24, 39, 0.94) 100%) !important;
-          border-color: rgba(148, 163, 184, 0.16) !important;
-        }
-
-        .email-footer-link {
-          color: #e2e8f0 !important;
-        }
-
-        .email-button {
-          background: #f8fafc !important;
-          color: #0f172a !important;
-          box-shadow: 0 10px 24px rgba(148, 163, 184, 0.16) !important;
-        }
-
-        .email-button-secondary {
-          background: transparent !important;
-          border-color: rgba(148, 163, 184, 0.2) !important;
-          color: #f8fafc !important;
-        }
-      }
-
       @media only screen and (max-width: 640px) {
         .email-shell {
           padding: 18px 10px !important;
@@ -509,9 +420,9 @@
           <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="email-card">
             <tr>
               <td class="email-brand">
-                <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="left">
+                <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center">
                   <tr>
-                    <td align="left">
+                    <td align="center">
                       <% if content_for?(:email_badge) %>
                         <%= yield :email_badge %>
                       <% else %>
