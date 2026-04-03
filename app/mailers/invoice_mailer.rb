@@ -52,7 +52,6 @@ class InvoiceMailer < ApplicationMailer
 
     mail(
       to: recipients,
-      from: ENV["DEFAULT_FROM_EMAIL"] || "noreply@example.com",
       subject: params[:subject].presence || I18n.t("mailers.invoice_mailer.send_invoice.subject", invoice_number: @invoice.invoice_number, company_name: @invoice.company.name),
       reply_to: ENV["REPLY_TO_EMAIL"]
     )

@@ -78,4 +78,27 @@ RSpec.describe InvoiceMailer, type: :mailer do
       end
     end
   end
+
+  describe "send_invoice" do
+    let(:company) { create :company }
+    let(:client) { create :client, company: }
+    let(:invoice) { create :invoice, client:, company: }
+    let(:recipients) { [invoice.client.email] }
+    let(:subject) { "Invoice #{invoice.invoice_number} from #{company.name}" }
+    let(:mail) do
+      InvoiceMailer.with(
+        invoice:,
+        recipients:,
+        subject:,
+        pdf_data: "%PDF-1.4 preview"
+      ).send_invoice
+    end
+
+    it "uses the application mailer sender instead of a noreply fallback" do
+      expect(mail.from).to eq(Array(ApplicationMailer.default[:from]))
+      expect(mail.from).not_to eq(["noreply@example.com"])
+      expect(mail.subject).to eq(subject)
+      expect(mail.to).to eq(recipients)
+    end
+  end
 end
