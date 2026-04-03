@@ -65,6 +65,7 @@ class Client < ApplicationRecord
       email:,
       phone:,
       currency:,
+      previousInvoiceNumber: invoices.kept.order(created_at: :desc).pick(:invoice_number) || 0,
       logo: logo_url,
       minutes_spent: minutes_spent || total_hours_logged(time_frame),
       address: current_address

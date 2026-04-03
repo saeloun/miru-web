@@ -152,6 +152,8 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
     setViewMode("create");
     setSelectedInvoiceId(null);
     setSelectedInvoice(null);
+    setPreviewData(null);
+    navigate("/invoices/new");
   };
 
   const handleViewInvoice = async (id: string) => {
@@ -161,6 +163,7 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
       setSelectedInvoiceId(id);
       setSelectedInvoice(invoice);
       setViewMode("preview");
+      navigate(`/invoices/${id}`);
     } catch (err) {
       setPageError("Failed to load invoice");
       console.error("Error loading invoice:", err);
@@ -176,6 +179,7 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
       setSelectedInvoiceId(id);
       setSelectedInvoice(invoice);
       setViewMode("edit");
+      navigate(`/invoices/${id}/edit`);
     } catch (err) {
       setPageError("Failed to load invoice");
       console.error("Error loading invoice:", err);
@@ -237,6 +241,11 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
           invoiceData.id,
           invoiceData
         );
+        setSelectedInvoiceId(response.id);
+        setSelectedInvoice(response);
+        setPreviewData(response);
+        setViewMode("edit");
+        navigate(`/invoices/${response.id}/edit`);
 
         toast.success(
           response?.notice ||
@@ -245,6 +254,11 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
         );
       } else {
         const response = await invoiceApi.createInvoice(invoiceData);
+        setSelectedInvoiceId(response.id);
+        setSelectedInvoice(response);
+        setPreviewData(response);
+        setViewMode("edit");
+        navigate(`/invoices/${response.id}/edit`);
         toast.success(
           response?.notice ||
             response?.message ||
@@ -253,7 +267,6 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
       }
 
       await loadInvoices(); // Refresh the invoice list
-      setViewMode("list");
     } catch (err: any) {
       console.error("Error saving invoice:", err);
 
@@ -294,9 +307,18 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
       if (!invoiceId) {
         const newInvoice = await invoiceApi.createInvoice(invoiceData);
         invoiceId = newInvoice.id;
+        setSelectedInvoiceId(newInvoice.id);
+        setSelectedInvoice(newInvoice);
+        setPreviewData(newInvoice);
         toast.success(i18n.t("invoices.invoiceCreated"));
       } else {
-        await invoiceApi.updateInvoice(invoiceId, invoiceData);
+        const updatedInvoice = await invoiceApi.updateInvoice(
+          invoiceId,
+          invoiceData
+        );
+        setSelectedInvoiceId(updatedInvoice.id);
+        setSelectedInvoice(updatedInvoice);
+        setPreviewData(updatedInvoice);
         toast.success(i18n.t("invoices.invoiceUpdated"));
       }
 
@@ -313,10 +335,15 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
             response?.message ||
             i18n.t("invoices.invoiceSentSuccessfully")
         );
+        const refreshedInvoice = await invoiceApi.getInvoice(invoiceId);
+        setSelectedInvoiceId(refreshedInvoice.id);
+        setSelectedInvoice(refreshedInvoice);
+        setPreviewData(refreshedInvoice);
+        setViewMode("preview");
+        navigate(`/invoices/${invoiceId}`);
       }
 
       await loadInvoices(); // Refresh the invoice list
-      setViewMode("list");
     } catch (err: any) {
       console.error("Error sending invoice:", err);
 
