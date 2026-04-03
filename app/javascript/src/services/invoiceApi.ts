@@ -2,11 +2,16 @@ import axios from "../apis/api";
 
 export interface InvoiceItem {
   id: string;
+  name?: string;
   description: string;
   quantity: number;
   rate: number;
   amount?: number;
   taxRate?: number;
+  date?: string;
+  work_date?: string;
+  timesheet_entry_id?: string;
+  lineTotal?: number;
 }
 
 export interface Client {
@@ -16,11 +21,14 @@ export interface Client {
   address: string;
   logo?: string;
   currency?: string;
+  clientCurrency?: string;
+  previousInvoiceNumber?: string;
 }
 
 export interface Invoice {
   id: string;
   invoiceNumber: string;
+  clientId?: string;
   client: Client;
   status:
     | "draft"
@@ -259,6 +267,11 @@ class InvoiceApiService {
       address: clientDetail.address || "",
       logo: clientDetail.logo,
       currency: clientDetail.currency,
+      clientCurrency:
+        clientDetail.clientCurrency || clientDetail.client_currency,
+      previousInvoiceNumber:
+        clientDetail.previousInvoiceNumber ||
+        clientDetail.previous_invoice_number,
     }));
   }
 
@@ -333,6 +346,8 @@ class InvoiceApiService {
     return {
       id: apiInvoice.id,
       invoiceNumber: apiInvoice.invoiceNumber || apiInvoice.invoice_number,
+      clientId:
+        apiInvoice.clientId || apiInvoice.client_id || apiInvoice.client?.id,
       client: {
         id: apiInvoice.client?.id || apiInvoice.client_id || "",
         name: apiInvoice.client?.name || apiInvoice.client_name || "",
@@ -343,6 +358,14 @@ class InvoiceApiService {
           apiInvoice.client?.clientCurrency ||
           apiInvoice.client?.currency ||
           apiInvoice.currency,
+        clientCurrency:
+          apiInvoice.client?.clientCurrency ||
+          apiInvoice.client?.client_currency ||
+          apiInvoice.client?.currency ||
+          apiInvoice.currency,
+        previousInvoiceNumber:
+          apiInvoice.client?.previousInvoiceNumber ||
+          apiInvoice.client?.previous_invoice_number,
       },
       status: apiInvoice.status,
       issueDate: apiInvoice.issueDate || apiInvoice.issue_date,
@@ -367,15 +390,25 @@ class InvoiceApiService {
         []
       ).map((item: any) => ({
         id: item.id,
-        description: item.description || item.name,
+        name: item.name,
+        description: item.description || "",
         quantity: parseFloat(item.quantity || 0),
         rate: parseFloat(item.rate || 0),
+        date: item.date || item.work_date,
+        work_date: item.work_date || item.date,
+        timesheet_entry_id: item.timesheet_entry_id || item.timesheetEntryId,
         amount:
           item.amount === null ||
           item.amount === undefined ||
           item.amount === ""
             ? undefined
             : parseFloat(item.amount),
+        lineTotal:
+          item.lineTotal === null ||
+          item.lineTotal === undefined ||
+          item.lineTotal === ""
+            ? undefined
+            : parseFloat(item.lineTotal),
       })),
       company: {
         ...apiInvoice.company,
