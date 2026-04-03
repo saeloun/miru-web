@@ -14,7 +14,6 @@
 <div class="email-highlight">
   <p class="email-highlight-label"><%= t("mailers.labels.outstanding_amount") %></p>
   <p class="email-highlight-value"><%= @amount %></p>
-  <p class="email-highlight-caption"><%= t("mailers.send_reminder_mailer.send_reminder.subtitle_html", invoice_number: @invoice.invoice_number, company_name: @invoice.company.name).html_safe %></p>
 </div>
 
 <%= render "shared/mailer/fact_rows", rows: [

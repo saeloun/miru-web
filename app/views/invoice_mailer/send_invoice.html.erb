@@ -5,6 +5,16 @@
   <%= t("mailers.invoice_mailer.send_invoice.subtitle_html", company_name: @invoice.company.name, invoice_number: @invoice.invoice_number).html_safe %>
 <% end %>
 
+<%
+  rows = [
+    { label: t("mailers.labels.invoice_number"), value: @invoice.invoice_number },
+    { label: t("mailers.labels.due_date"), value: l(@invoice.due_date.to_date, format: :long) },
+    { label: t("mailers.labels.issue_date"), value: l(@invoice.issue_date.to_date, format: :long) },
+    { label: t("mailers.labels.attachment"), value: t("mailers.invoice_mailer.send_invoice.attachment_value") }
+  ]
+  rows << { label: t("mailers.labels.reference"), value: @invoice.reference } if @invoice.reference.present?
+%>
+
 <% if @message.present? %>
   <div class="email-panel email-panel-soft">
     <p class="email-panel-title"><%= t("mailers.invoice_mailer.send_invoice.note_title", company_name: @invoice.company.name) %></p>
@@ -15,18 +25,14 @@
 <div class="email-highlight">
   <p class="email-highlight-label"><%= t("mailers.labels.total_amount") %></p>
   <p class="email-highlight-value"><%= @amount || "-" %></p>
-  <p class="email-highlight-caption"><%= t("mailers.invoice_mailer.send_invoice.next_steps_body") %></p>
 </div>
 
-<p class="email-panel-title"><%= t("mailers.invoice_mailer.send_invoice.next_steps_title") %></p>
+<div class="email-panel email-panel-accent">
+  <p class="email-panel-title"><%= t("mailers.invoice_mailer.send_invoice.next_steps_title") %></p>
+  <p style="margin: 0;"><%= t("mailers.invoice_mailer.send_invoice.next_steps_body") %></p>
+</div>
 
-<%= render "shared/mailer/fact_rows", rows: [
-  { label: t("mailers.labels.invoice_number"), value: @invoice.invoice_number },
-  { label: t("mailers.labels.issue_date"), value: l(@invoice.issue_date.to_date, format: :long) },
-  { label: t("mailers.labels.due_date"), value: l(@invoice.due_date.to_date, format: :long) },
-  { label: t("mailers.labels.reference"), value: @invoice.reference.presence || "-" },
-  { label: t("mailers.labels.attachment"), value: t("mailers.invoice_mailer.send_invoice.attachment_value") }
-] %>
+<%= render "shared/mailer/fact_rows", rows: rows %>
 
 <%= render "shared/mailer/button", href: @invoice_url, label: t("mailers.actions.open_invoice") %>
 

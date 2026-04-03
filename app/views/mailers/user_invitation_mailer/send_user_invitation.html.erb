@@ -8,14 +8,16 @@
 <div class="email-highlight">
   <p class="email-highlight-label"><%= t("mailers.labels.workspace") %></p>
   <p class="email-highlight-value"><%= @company_details&.[](:name) %></p>
-  <p class="email-highlight-caption"><%= t("mailers.user_invitation_mailer.send_user_invitation.get_started_body") %></p>
 </div>
 
-<p class="email-panel-title"><%= t("mailers.user_invitation_mailer.send_user_invitation.get_started_title") %></p>
+<div class="email-panel email-panel-accent">
+  <p class="email-panel-title"><%= t("mailers.user_invitation_mailer.send_user_invitation.get_started_title") %></p>
+  <p style="margin: 0;"><%= t("mailers.user_invitation_mailer.send_user_invitation.get_started_body") %></p>
+</div>
 
 <%= render "shared/mailer/fact_rows", rows: [
   { label: t("mailers.labels.invited_by"), value: @sender_details&.[](:name) },
-  { label: t("mailers.labels.workspace"), value: t("mailers.user_invitation_mailer.send_user_invitation.workspace_members", count: @company_details&.[](:employee_count)) }
+  { label: t("mailers.labels.members"), value: t("mailers.user_invitation_mailer.send_user_invitation.workspace_members", count: @company_details&.[](:employee_count)) }
 ] %>
 
 <%= render "shared/mailer/button", href: invitations_accepts_url(token: @token), label: t("mailers.actions.join_miru") %>

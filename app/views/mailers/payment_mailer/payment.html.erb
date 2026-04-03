@@ -8,7 +8,11 @@
 <div class="email-highlight">
   <p class="email-highlight-label"><%= t("mailers.labels.amount_paid") %></p>
   <p class="email-highlight-value"><%= @amount %></p>
-  <p class="email-highlight-caption"><%= sanitize(@message) %></p>
+</div>
+
+<div class="email-panel email-panel-success">
+  <p class="email-panel-title"><%= t("mailers.payment_mailer.payment.received_title") %></p>
+  <p style="margin: 0;"><%= sanitize(@message) %></p>
 </div>
 
 <%= render "shared/mailer/fact_rows", rows: [
@@ -19,4 +23,7 @@
 
 <%= render "shared/mailer/button", href: @invoice_url, label: t("mailers.actions.open_invoice") %>
 
-<p class="email-muted" style="margin-top: 18px;"><strong><%= t("mailers.payment_mailer.payment.follow_up_title") %></strong> <%= t("mailers.payment_mailer.payment.follow_up_body") %></p>
+<div class="email-panel email-panel-soft">
+  <p class="email-panel-title"><%= t("mailers.payment_mailer.payment.follow_up_title") %></p>
+  <p style="margin: 0;"><%= t("mailers.payment_mailer.payment.follow_up_body") %></p>
+</div>
