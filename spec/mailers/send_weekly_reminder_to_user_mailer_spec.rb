@@ -9,6 +9,8 @@ RSpec.describe SendWeeklyReminderToUserMailer, type: :mailer do
     let(:start_date) { 1.week.ago.beginning_of_week }
     let(:end_date) { 1.week.ago.end_of_week }
     let(:subject) { "Complete your Miru timesheet for last week" }
+    let(:formatted_start_date) { I18n.l(start_date.to_date, format: :long) }
+    let(:formatted_end_date) { I18n.l(end_date.to_date, format: :long) }
 
     it "add mail to default queue" do
       mailer = described_class.with(
@@ -22,8 +24,8 @@ RSpec.describe SendWeeklyReminderToUserMailer, type: :mailer do
       expect { mailer.deliver_later }.to have_enqueued_job.on_queue("default").exactly(:once)
       expect(mailer.to).to eq([user.email])
       expect(mailer.subject).to eq(subject)
-      expect(mailer.body.encoded).to include(start_date.strftime("%B %-d"))
-      expect(mailer.body.encoded).to include(end_date.strftime("%B %-d, %Y"))
+      expect(mailer.body.encoded).to include(formatted_start_date)
+      expect(mailer.body.encoded).to include(formatted_end_date)
     end
 
     context "with notification preferences" do
