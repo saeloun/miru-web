@@ -25,6 +25,14 @@ const AUTH_PATH_PREFIXES = [
 const isAuthPagePath = (pathname: string) =>
   AUTH_PATH_PREFIXES.some(path => pathname.startsWith(path));
 
+const PUBLIC_PATH_PATTERNS = [
+  /^\/invoices\/[^/]+\/view$/,
+  /^\/invoices\/[^/]+\/payments\/success$/,
+];
+
+const isPublicPagePath = (pathname: string) =>
+  PUBLIC_PATH_PATTERNS.some(pattern => pattern.test(pathname));
+
 const AppUserContextProvider = ({
   children,
   value,
@@ -49,11 +57,12 @@ const AppUserContextProvider = ({
 
 const AppWithUserData = (props: any) => {
   const isAuthPage = isAuthPagePath(window.location.pathname);
+  const isPublicPage = isPublicPagePath(window.location.pathname);
   const [userData, setUserData] = useState({
     user: null,
     company: null,
     companyRole: null,
-    loading: !isAuthPage,
+    loading: !(isAuthPage || isPublicPage),
   });
   const [localeReady, setLocaleReady] = useState(false);
   const [initialLocale, setInitialLocale] = useState("en");
@@ -62,7 +71,7 @@ const AppWithUserData = (props: any) => {
   useEffect(() => {
     const fetchUserDetails = async () => {
       // Skip fetching if we're on an auth page
-      if (isAuthPage) {
+      if (isAuthPage || isPublicPage) {
         // On auth pages, don't fetch user data
         setUserData({
           user: null,
