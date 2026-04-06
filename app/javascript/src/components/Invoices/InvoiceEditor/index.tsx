@@ -72,8 +72,22 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
   onCancel,
   isLoading = false,
 }) => {
-  const getNextInvoiceNumber = (previousInvoiceNumber?: string) => {
-    if (!previousInvoiceNumber || previousInvoiceNumber === "0") return "";
+  const getFirstInvoiceNumber = (clientId?: string) => {
+    const numericClientId = String(clientId || "")
+      .replace(/\D/g, "")
+      .slice(-3)
+      .padStart(3, "0");
+
+    return `INV-${numericClientId}-001`;
+  };
+
+  const getNextInvoiceNumber = (
+    previousInvoiceNumber?: string,
+    clientId?: string
+  ) => {
+    if (!previousInvoiceNumber || previousInvoiceNumber === "0") {
+      return getFirstInvoiceNumber(clientId);
+    }
 
     const lastDigitIndex = previousInvoiceNumber.search(/\d+$/);
     if (lastDigitIndex === -1) return previousInvoiceNumber;
@@ -170,7 +184,8 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
     if (invoice?.id || !selectedClient?.id) return;
 
     const nextInvoiceNumber = getNextInvoiceNumber(
-      selectedClient.previousInvoiceNumber
+      selectedClient.previousInvoiceNumber,
+      selectedClient.id
     );
 
     if (
