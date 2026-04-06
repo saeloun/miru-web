@@ -113,7 +113,6 @@ RSpec.describe "Invoice PDF Email Sending", type: :request do
 
     it "includes company branding in email" do
       company.update!(name: "Awesome Company")
-      ENV["DEFAULT_FROM_EMAIL"] = "info@awesome.com"
 
       perform_enqueued_jobs do
         post "/api/v1/invoices/#{invoice.id}/send_invoice",
@@ -122,7 +121,8 @@ RSpec.describe "Invoice PDF Email Sending", type: :request do
       end
 
       email = ActionMailer::Base.deliveries.last
-      expect(email.from).to include("info@awesome.com")
+      expect(email.from).to eq(Array(ApplicationMailer.default[:from]))
+      expect(email.body.encoded).to include("Awesome Company")
     end
 
     context "error handling" do

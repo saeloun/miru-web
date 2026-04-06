@@ -36,6 +36,14 @@ const resolvePreferredLocale = (dbLocale?: string | null) => {
   return storedLocale || dbLocale || browserLocale;
 };
 
+const PUBLIC_PATH_PATTERNS = [
+  /^\/invoices\/[^/]+\/view$/,
+  /^\/invoices\/[^/]+\/payments\/success$/,
+];
+
+const isPublicPagePath = (pathname: string) =>
+  PUBLIC_PATH_PATTERNS.some(pattern => pattern.test(pathname));
+
 const AppUserContextProvider = ({
   children,
   value,
@@ -60,11 +68,12 @@ const AppUserContextProvider = ({
 
 const AppWithUserData = (props: any) => {
   const isAuthPage = isAuthPagePath(window.location.pathname);
+  const isPublicPage = isPublicPagePath(window.location.pathname);
   const [userData, setUserData] = useState({
     user: null,
     company: null,
     companyRole: null,
-    loading: !isAuthPage,
+    loading: !(isAuthPage || isPublicPage),
   });
   const [localeReady, setLocaleReady] = useState(false);
   const [initialLocale, setInitialLocale] = useState("en");
@@ -72,8 +81,7 @@ const AppWithUserData = (props: any) => {
   // Fetch user details from _me endpoint on mount
   useEffect(() => {
     const fetchUserDetails = async () => {
-      // Skip fetching if we're on an auth page
-      if (isAuthPage) {
+      if (isAuthPage || isPublicPage) {
         setUserData({
           user: null,
           company: null,
