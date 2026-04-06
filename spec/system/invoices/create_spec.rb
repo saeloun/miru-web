@@ -44,4 +44,23 @@ RSpec.describe "Invoice creation", type: :system, js: true do
       expect(line_item.date).to be_present
     end
   end
+
+  it "auto-generates the first invoice number for a client without invoices" do
+    with_forgery_protection do
+      visit "/invoices/new?clientId=#{client.id}"
+
+      expect(page).to have_field("invoiceNumber", with: "INV-#{client.id.to_s.rjust(3, '0')}-001", wait: 10)
+
+      click_button "LINE ITEMS"
+
+      find("input[placeholder='Enter name']").fill_in with: "First invoice item"
+      find("input[placeholder='0.00']").fill_in with: "125"
+      find("input[placeholder='00:00']").fill_in with: "01:00"
+
+      click_button "Save"
+
+      expect(page).to have_text("Invoice created successfully", wait: 10)
+      expect(Invoice.find_by!(client:, invoice_number: "INV-#{client.id.to_s.rjust(3, '0')}-001")).to be_present
+    end
+  end
 end
