@@ -6,15 +6,13 @@ import { useUserContext } from "context/UserContext";
 import { getDisplayAvatarUrl } from "helpers";
 import { UserAvatarSVG, DeleteIcon, ImageIcon, EditIcon } from "miruIcons";
 import { MoreOptions, Toastr, Tooltip } from "StyledComponents";
-import { useCurrentUser } from "~/hooks/useCurrentUser";
 
 const UserInformation = () => {
   const {
     personalDetails: { first_name, last_name, id, email_id },
     isCalledFromSettings,
   } = useProfileContext();
-  const { avatarUrl, setCurrentAvatarUrl } = useUserContext();
-  const { currentUser } = useCurrentUser();
+  const { avatarUrl, setCurrentAvatarUrl, user } = useUserContext();
 
   const [showProfileOptions, setShowProfileOptions] = useState(false);
   const [imageUrl, setImageUrl] = useState(null);
@@ -22,15 +20,15 @@ const UserInformation = () => {
 
   // Use current user data when in settings context
   const displayName =
-    isCalledFromSettings && currentUser
-      ? `${currentUser.first_name} ${currentUser.last_name}`
+    isCalledFromSettings && user
+      ? `${user.first_name} ${user.last_name}`
       : `${first_name} ${last_name}`;
 
-  const userId = isCalledFromSettings && currentUser ? currentUser.id : id;
+  const userId = isCalledFromSettings && user ? user.id : id;
   const displayImageUrl =
     getDisplayAvatarUrl(
       imageUrl,
-      isCalledFromSettings ? currentUser?.email : email_id,
+      isCalledFromSettings ? user?.email || email_id : email_id,
       96
     ) || UserAvatarSVG;
 
@@ -38,10 +36,10 @@ const UserInformation = () => {
     if (!userId) return;
 
     try {
-      if (isCalledFromSettings && currentUser) {
-        const nextImageUrl = avatarUrl || currentUser.avatar_url || null;
+      if (isCalledFromSettings && user) {
+        const nextImageUrl = avatarUrl || user.avatar_url || null;
         setImageUrl(nextImageUrl);
-        setUploadedImageUrl(currentUser.avatar_url || null);
+        setUploadedImageUrl(user.avatar_url || null);
       } else {
         const responseData = await teamsApi.get(userId);
         setImageUrl(responseData.data.avatar_url || null);
@@ -56,7 +54,7 @@ const UserInformation = () => {
     if (userId) {
       getAvatar();
     }
-  }, [userId, currentUser, avatarUrl]);
+  }, [avatarUrl, user, userId]);
 
   const validateFileSize = file => {
     const sizeInKB = file.size / 1024;
