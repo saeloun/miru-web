@@ -66,7 +66,7 @@ RSpec.describe "Addresses#index", type: :request do
 
     context "when user wants to see address of an employee outside his workspace" do
       before do
-        send_request :get, api_v1_company_addresses_path(employee2), headers: auth_headers(user)
+        send_request :get, api_v1_user_addresses_path(employee2), headers: auth_headers(user)
       end
 
       it "is not found" do
@@ -86,7 +86,7 @@ RSpec.describe "Addresses#index", type: :request do
 
     context "when user wants to see address of an invalid employee ID" do
       before do
-        send_request :get, api_v1_company_addresses_path("abc"), headers: auth_headers(user)
+        send_request :get, api_v1_user_addresses_path("abc"), headers: auth_headers(user)
       end
 
       it "is not found" do
@@ -146,7 +146,7 @@ RSpec.describe "Addresses#index", type: :request do
 
     context "when user wants to see address of an employee outside his workspace" do
       before do
-        send_request :get, api_v1_company_addresses_path(employee2), headers: auth_headers(user)
+        send_request :get, api_v1_user_addresses_path(employee2), headers: auth_headers(user)
       end
 
       it "is not found" do
@@ -166,7 +166,7 @@ RSpec.describe "Addresses#index", type: :request do
 
     context "when user wants to see address of an invalid employee ID" do
       before do
-        send_request :get, api_v1_company_addresses_path("abc"), headers: auth_headers(user)
+        send_request :get, api_v1_user_addresses_path("abc"), headers: auth_headers(user)
       end
 
       it "is not found" do
