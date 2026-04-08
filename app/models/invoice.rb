@@ -42,6 +42,7 @@ class Invoice < ApplicationRecord
   store_accessor :payment_infos, :stripe_payment_intent
 
   before_validation :set_external_view_key, on: :create
+  before_validation :set_currency_from_client, if: :should_sync_currency_from_client?
   before_validation :calculate_amounts, if: :totals_recalculation_needed?
   before_validation :calculate_base_currency_amount
   after_save :lock_timesheet_entries, if: :draft?
@@ -129,7 +130,6 @@ class Invoice < ApplicationRecord
   def formatted_issue_date
     CompanyDateFormattingService.new(issue_date, company:).process
   end
-
 
   private
 
@@ -232,5 +232,13 @@ class Invoice < ApplicationRecord
         # If we can't get a rate, make sure validation will fail
         self.base_currency_amount = nil unless base_currency_amount.present?
       end
+    end
+
+    def should_sync_currency_from_client?
+      new_record? && currency.blank? && client.present?
+    end
+
+    def set_currency_from_client
+      self.currency = client.currency || company&.base_currency
     end
 end

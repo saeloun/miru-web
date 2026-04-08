@@ -9,6 +9,7 @@ import {
 } from "../../../ui/tooltip";
 import dayjs from "dayjs";
 import {
+  currencyFormat,
   lineTotalCalc,
   minFromHHMM,
   minToHHMM,
@@ -20,6 +21,7 @@ import { i18n } from "../../../../i18n";
 
 const ManualEntry = ({
   addNew,
+  clientCurrency,
   getNewLineItemDropdown,
   lineItem,
   setLineItem,
@@ -165,7 +167,7 @@ const ManualEntry = ({
                 />
               </TooltipTrigger>
               <TooltipContent>
-                <p>Hourly rate: ${rate}/hour</p>
+                <p>Hourly rate: {currencyFormat(clientCurrency, rate)}/hour</p>
               </TooltipContent>
             </Tooltip>
           </td>
@@ -192,11 +194,15 @@ const ManualEntry = ({
           <td className="px-4 py-3 text-right text-sm font-medium text-gray-900">
             <Tooltip>
               <TooltipTrigger asChild>
-                <span className="cursor-help">${lineTotal}</span>
+                <span className="cursor-help">
+                  {currencyFormat(clientCurrency, lineTotal)}
+                </span>
               </TooltipTrigger>
               <TooltipContent>
                 <p>
-                  Line total: {qtyInHHrMin} × ${rate} = ${lineTotal}
+                  Line total: {qtyInHHrMin} ×{" "}
+                  {currencyFormat(clientCurrency, rate)} ={" "}
+                  {currencyFormat(clientCurrency, lineTotal)}
                 </p>
               </TooltipContent>
             </Tooltip>

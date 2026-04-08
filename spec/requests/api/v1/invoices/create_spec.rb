@@ -5,7 +5,7 @@ require "rails_helper"
 RSpec.describe "Api::V1::Invoices#create", type: :request do
   let_it_be(:company) { create(:company) }
   let_it_be(:client) { create(:client, company:) }
-  let(:user) { create(:user, current_workspace_id: company.id) }
+  let(:user) { create(:user, email: "invoice-create-admin@example.com", current_workspace_id: company.id) }
 
   context "when user is an admin" do
     before do
@@ -35,7 +35,7 @@ RSpec.describe "Api::V1::Invoices#create", type: :request do
         send_request :post, api_v1_invoices_path(invoice:), headers: auth_headers(user)
         expect(response).to have_http_status(:ok)
         expected_attrs =
-          ["amount", "amountDue", "amountPaid", "baseCurrencyAmount", "client", "discount", "dueDate",
+          ["amount", "amountDue", "amountPaid", "baseCurrencyAmount", "client", "currency", "discount", "dueDate",
            "id", "invoiceLineItems", "invoiceNumber", "issueDate",
            "outstandingAmount", "reference", "status", "stripeEnabled", "tax"]
         expect(json_response.keys.sort).to match(expected_attrs)
@@ -120,11 +120,99 @@ RSpec.describe "Api::V1::Invoices#create", type: :request do
         expect(json_response["amountDue"].to_f).to eq(275.0)
       end
 
+      it "creates an invoice in the client currency and returns it in the response" do
+        client.update!(currency: "EUR")
+        allow(CurrencyConversionService).to receive(:get_exchange_rate)
+          .with("EUR", company.base_currency, kind_of(Date))
+          .and_return(1.2)
+
+        send_request :post, api_v1_invoices_path(
+          invoice: {
+            client_id: client.id,
+            invoice_number: "INV-EUR-001",
+            issue_date: Date.current.iso8601,
+            due_date: 30.days.from_now.to_date.iso8601,
+            status: "draft",
+            currency: "EUR",
+            invoice_line_items_attributes: [
+              {
+                name: "EUR strategy block",
+                description: "Euro invoice",
+                date: Date.current.iso8601,
+                rate: 150,
+                quantity: 120
+              }
+            ]
+          }), headers: auth_headers(user)
+
+        expect(response).to have_http_status(:ok)
+
+        invoice = Invoice.find_by!(invoice_number: "INV-EUR-001")
+        expect(invoice.currency).to eq("EUR")
+        expect(invoice.amount.to_f).to eq(300.0)
+        expect(invoice.base_currency_amount.to_f).to eq(360.0)
+        expect(json_response["currency"]).to eq("EUR")
+        expect(json_response["baseCurrencyAmount"].to_f).to eq(360.0)
+        expect(json_response.dig("client", "currency")).to eq("EUR")
+      end
+
+      it "supports USD, EUR, and INR invoices within the same company" do
+        eur_client = create(:client, company:, currency: "EUR", name: "Euro Client")
+        inr_client = create(:client, company:, currency: "INR", name: "India Client")
+
+        allow(CurrencyConversionService).to receive(:get_exchange_rate)
+          .with("EUR", company.base_currency, kind_of(Date))
+          .and_return(1.2)
+        allow(CurrencyConversionService).to receive(:get_exchange_rate)
+          .with("INR", company.base_currency, kind_of(Date))
+          .and_return(0.012)
+
+        [
+          [client, "INV-USD-001", "USD", 300.0],
+          [eur_client, "INV-EUR-002", "EUR", 360.0],
+          [inr_client, "INV-INR-001", "INR", 3.6]
+        ].each do |invoice_client, invoice_number, currency_code, expected_base_amount|
+          send_request :post, api_v1_invoices_path(
+            invoice: {
+              client_id: invoice_client.id,
+              invoice_number: invoice_number,
+              issue_date: Date.current.iso8601,
+              due_date: 30.days.from_now.to_date.iso8601,
+              status: "draft",
+              currency: currency_code,
+              invoice_line_items_attributes: [
+                {
+                  name: "#{currency_code} strategy block",
+                  description: "#{currency_code} invoice",
+                  date: Date.current.iso8601,
+                  rate: 150,
+                  quantity: 120
+                }
+              ]
+            }), headers: auth_headers(user)
+
+          expect(response).to have_http_status(:ok)
+
+          created_invoice = Invoice.find_by!(invoice_number:)
+          expect(created_invoice.company_id).to eq(company.id)
+          expect(created_invoice.currency).to eq(currency_code)
+          expect(created_invoice.base_currency_amount.to_f).to eq(expected_base_amount)
+        end
+
+        expect(
+          Invoice.where(invoice_number: ["INV-USD-001", "INV-EUR-002", "INV-INR-001"]).order(:invoice_number).pluck(:currency)
+        ).to eq(["EUR", "INR", "USD"])
+      end
+
       it "rejects timesheet entries from another company" do
         other_company = create(:company)
         other_client = create(:client, company: other_company)
         other_project = create(:project, client: other_client)
-        other_user = create(:user, current_workspace_id: other_company.id)
+        other_user = create(
+          :user,
+          email: "invoice-create-other-company@example.com",
+          current_workspace_id: other_company.id
+        )
         create(:employment, company: other_company, user: other_user)
         other_timesheet_entry = create(
           :timesheet_entry,

@@ -7,7 +7,7 @@ RSpec.describe "Api::V1::Invoices#show", type: :request do
     create(:company_with_invoices)
   end
 
-  let(:user) { create(:user, current_workspace_id: company.id) }
+  let(:user) { create(:user, email: "invoice-show-admin@example.com", current_workspace_id: company.id) }
 
   context "when user is an admin" do
     before do
@@ -19,6 +19,33 @@ RSpec.describe "Api::V1::Invoices#show", type: :request do
     it "returns the invoice" do
       send_request :get, api_v1_invoice_path(company.invoices.first.id), headers: auth_headers(user)
       expect(response).to have_http_status(:ok)
+    end
+
+    it "returns the client's current currency for a reopened draft invoice" do
+      company.update!(base_currency: "USD")
+      client = create(:client, company:, currency: "USD")
+      invoice = create(
+        :invoice,
+        company:,
+        client:,
+        status: :draft,
+        currency: "USD",
+        amount: 300,
+        base_currency_amount: 300
+      )
+
+      allow(CurrencyConversionService).to receive(:get_exchange_rate)
+        .with("EUR", "USD", kind_of(Date))
+        .and_return(1.2)
+
+      client.update!(currency: "EUR")
+
+      send_request :get, api_v1_invoice_path(invoice.id), headers: auth_headers(user)
+
+      expect(response).to have_http_status(:ok)
+      expect(invoice.reload.currency).to eq("USD")
+      expect(json_response["currency"]).to eq("EUR")
+      expect(json_response.dig("client", "currency")).to eq("EUR")
     end
   end
 

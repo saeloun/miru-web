@@ -136,6 +136,11 @@ module InvoiceEditorSystemHelpers
     expect(page).to have_field("invoiceNumber", wait: 10)
   end
 
+  def select_invoice_client(name)
+    find("[data-testid='invoice-client-select']", wait: 10).click
+    find("[role='option']", text: name, wait: 10).click
+  end
+
   def add_manual_line_item(name:, rate:, quantity:, description: nil)
     click_button "LINE ITEMS"
     fill_in_pending_manual_line_item(

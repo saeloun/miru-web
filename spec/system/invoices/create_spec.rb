@@ -190,6 +190,7 @@ RSpec.describe "Invoice creation", type: :system, js: true do
 
       it "shows preview totals in #{base_currency} format before saving" do
         with_forgery_protection do
+          client.update!(currency: base_currency)
           visit_new_invoice_for(client)
 
           fill_in "invoiceNumber", with: "INV-#{base_currency}-001"
@@ -219,6 +220,186 @@ RSpec.describe "Invoice creation", type: :system, js: true do
           expect(invoice.amount_due.to_f).to eq(395.0)
         end
       end
+    end
+  end
+
+  it "uses the client currency for preview totals and persists it on save" do
+    company.update!(base_currency: "USD")
+    client.update!(currency: "EUR")
+    create(:exchange_rate, from_currency: "EUR", to_currency: "USD", rate: 1.2, date: Date.current)
+
+    with_forgery_protection do
+      visit_new_invoice_for(client)
+
+      fill_in "invoiceNumber", with: "INV-EUR-UI-001"
+      add_manual_line_item(
+        name: "Euro design review",
+        rate: "150",
+        quantity: "02:00",
+        description: "Client-currency invoice"
+      )
+
+      expect_invoice_preview_totals(
+        currency: "EUR",
+        subtotal: 300.0,
+        total_due: 300.0
+      )
+      expect(page).not_to have_text("$300.00")
+
+      save_invoice
+
+      expect(page).to have_text("Invoice created successfully", wait: 10)
+
+      response_body = JSON.parse(last_invoice_mutation_response.fetch("body"))
+      invoice = Invoice.find_by!(invoice_number: "INV-EUR-UI-001")
+
+      expect(invoice.currency).to eq("EUR")
+      expect(response_body["currency"]).to eq("EUR")
+      expect(page).to have_current_path("/invoices/#{invoice.id}/edit", ignore_query: true, wait: 10)
+      expect_invoice_preview_totals(
+        currency: "EUR",
+        subtotal: 300.0,
+        total_due: 300.0
+      )
+    end
+  end
+
+  it "updates preview currency when switching from a USD client to a EUR client" do
+    eur_client = create(:client, company:, name: "Euro Labs", currency: "EUR")
+
+    with_forgery_protection do
+      visit_new_invoice_for(client)
+
+      fill_in "invoiceNumber", with: "INV-SWITCH-001"
+      add_manual_line_item(
+        name: "Currency switch check",
+        rate: "100",
+        quantity: "02:00",
+        description: "USD before switch"
+      )
+      expect_invoice_preview_totals(
+        currency: "USD",
+        subtotal: 200.0,
+        total_due: 200.0
+      )
+
+      select_invoice_client(eur_client.name)
+      expect(page).to have_button(eur_client.name, wait: 10)
+      expect_invoice_preview_totals(
+        currency: "EUR",
+        subtotal: 200.0,
+        total_due: 200.0
+      )
+      expect(page).not_to have_text("$200.00")
+    end
+  end
+
+  it "persists the switched client currency when saving after changing clients" do
+    eur_client = create(:client, company:, name: "Euro Save Labs", currency: "EUR")
+    create(:exchange_rate, from_currency: "EUR", to_currency: "USD", rate: 1.2, date: Date.current)
+
+    with_forgery_protection do
+      visit_new_invoice_for(client)
+
+      fill_in "invoiceNumber", with: "INV-SWITCH-SAVE-001"
+      add_manual_line_item(
+        name: "Currency switch save check",
+        rate: "100",
+        quantity: "02:00",
+        description: "USD before switch"
+      )
+
+      select_invoice_client(eur_client.name)
+      expect(page).to have_button(eur_client.name, wait: 10)
+      expect_invoice_preview_totals(
+        currency: "EUR",
+        subtotal: 200.0,
+        total_due: 200.0
+      )
+
+      install_invoice_request_capture
+      page.send_keys(:escape)
+      click_button "Save", match: :first
+
+      expect(page).to have_text("Invoice created successfully", wait: 10)
+
+      response_body = JSON.parse(last_invoice_mutation_response.fetch("body"))
+      invoice = Invoice.find_by!(invoice_number: "INV-SWITCH-SAVE-001")
+
+      expect(invoice.client_id).to eq(eur_client.id)
+      expect(invoice.currency).to eq("EUR")
+      expect(response_body["currency"]).to eq("EUR")
+      expect(page).to have_current_path("/invoices/#{invoice.id}/edit", ignore_query: true, wait: 10)
+      expect_invoice_preview_totals(
+        currency: "EUR",
+        subtotal: 200.0,
+        total_due: 200.0
+      )
+    end
+  end
+
+  it "uses the INR client currency in the editor and persisted invoice" do
+    inr_client = create(:client, company:, name: "India Labs", currency: "INR")
+    create(:exchange_rate, from_currency: "INR", to_currency: "USD", rate: 0.012, date: Date.current)
+
+    with_forgery_protection do
+      visit_new_invoice_for(inr_client)
+
+      fill_in "invoiceNumber", with: "INV-INR-UI-001"
+      add_manual_line_item(
+        name: "India delivery",
+        rate: "150",
+        quantity: "02:00",
+        description: "INR invoice"
+      )
+
+      expect_invoice_preview_totals(
+        currency: "INR",
+        subtotal: 300.0,
+        total_due: 300.0
+      )
+      expect(page).not_to have_text("$300.00")
+
+      save_invoice
+
+      expect(page).to have_text("Invoice created successfully", wait: 10)
+
+      response_body = JSON.parse(last_invoice_mutation_response.fetch("body"))
+      invoice = Invoice.find_by!(invoice_number: "INV-INR-UI-001")
+
+      expect(invoice.currency).to eq("INR")
+      expect(response_body["currency"]).to eq("INR")
+      expect(page).to have_current_path("/invoices/#{invoice.id}/edit", ignore_query: true, wait: 10)
+      expect_invoice_preview_totals(
+        currency: "INR",
+        subtotal: 300.0,
+        total_due: 300.0
+      )
+    end
+  end
+
+  it "shows a reopened draft invoice in the client's updated currency" do
+    invoice = create(:invoice, company:, client:, status: :draft, currency: "USD", invoice_number: "INV-DRAFT-REOPEN-001")
+    create(
+      :invoice_line_item,
+      invoice:,
+      name: "Draft audit",
+      description: "Currency refresh check",
+      rate: 150,
+      quantity: 120,
+      date: Date.current
+    )
+    client.update!(currency: "EUR")
+
+    with_forgery_protection do
+      visit_invoice_editor(invoice)
+
+      expect_invoice_preview_totals(
+        currency: "EUR",
+        subtotal: 300.0,
+        total_due: 300.0
+      )
+      expect(page).not_to have_text("$300.00")
     end
   end
 end
