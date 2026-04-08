@@ -31,23 +31,20 @@ RSpec.describe PdfGeneration::InvoiceService do
   let(:logo_url) { "https://example.com/logo.png" }
   let(:root_url) { "https://app.example.com" }
   let(:service) { described_class.new(invoice.reload, logo_url, root_url) }
-
-  before do
-    # Create invoice line items
+  let!(:primary_line_item) do
     create(:invoice_line_item,
       invoice: invoice,
+      timesheet_entry: nil,
       name: "Consulting Services",
       description: "Consulting Services",
       date: Date.current,
-      quantity: 600,  # 10 hours in minutes
-      rate: 100
-    )
+      quantity: 600,
+      rate: 100)
+  end
 
-    # Mock the template rendering
+  before do
     allow_any_instance_of(ActionController::Base).to receive(:render_to_string)
       .and_return("<html><body><h1>Invoice</h1></body></html>")
-
-    # Don't mock the presenter or format service - let them work normally
   end
 
   describe "#process" do
@@ -132,13 +129,13 @@ RSpec.describe PdfGeneration::InvoiceService do
 
   describe "line item processing" do
     it "processes all invoice line items" do
-      # Add another line item
       create(:invoice_line_item,
         invoice: invoice,
+        timesheet_entry: nil,
         name: "Development Services",
         description: "Development Services",
         date: Date.current,
-        quantity: 300,  # 5 hours in minutes
+        quantity: 300,
         rate: 200
       )
 
