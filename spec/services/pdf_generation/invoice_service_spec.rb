@@ -30,6 +30,7 @@ RSpec.describe PdfGeneration::InvoiceService do
   end
   let(:logo_url) { "https://example.com/logo.png" }
   let(:root_url) { "https://app.example.com" }
+  let(:service) { described_class.new(invoice.reload, logo_url, root_url) }
 
   before do
     # Create invoice line items
@@ -51,7 +52,6 @@ RSpec.describe PdfGeneration::InvoiceService do
 
   describe "#process" do
     it "generates a PDF for an invoice" do
-      service = described_class.new(invoice, logo_url, root_url)
       pdf_data = service.process
 
       expect(pdf_data).not_to be_nil
@@ -60,7 +60,7 @@ RSpec.describe PdfGeneration::InvoiceService do
     end
 
     it "works without a company logo" do
-      service = described_class.new(invoice, nil, root_url)
+      service = described_class.new(invoice.reload, nil, root_url)
       pdf_data = service.process
 
       expect(pdf_data).not_to be_nil
@@ -68,7 +68,7 @@ RSpec.describe PdfGeneration::InvoiceService do
     end
 
     it "works without a root URL" do
-      service = described_class.new(invoice, logo_url, nil)
+      service = described_class.new(invoice.reload, logo_url, nil)
       pdf_data = service.process
 
       expect(pdf_data).not_to be_nil
@@ -96,23 +96,16 @@ RSpec.describe PdfGeneration::InvoiceService do
         "<html><body>Invoice</body></html>"
       end
 
-      service = described_class.new(invoice, logo_url, root_url)
       service.process
     end
 
     it "calculates the correct subtotal" do
-      service = described_class.new(invoice, logo_url, root_url)
-
-      # Access private method for testing
       subtotal = service.send(:calculate_subtotal)
 
       expect(subtotal).to eq(1000.0)
     end
 
     it "calculates the correct total" do
-      service = described_class.new(invoice, logo_url, root_url)
-
-      # Access private method for testing
       total = service.send(:calculate_total)
 
       # total = subtotal + tax - discount = 1000 + 100 - 50 = 1050
@@ -122,14 +115,12 @@ RSpec.describe PdfGeneration::InvoiceService do
     it "formats currency correctly" do
       allow(FormatAmountService).to receive(:new).with("USD", anything).and_call_original
 
-      service = described_class.new(invoice, logo_url, root_url)
       service.process
 
       expect(FormatAmountService).to have_received(:new).with("USD", anything).at_least(:once)
     end
 
     it "uses invoice-specific PDF options" do
-      service = described_class.new(invoice, logo_url, root_url)
       options = service.send(:invoice_pdf_options)
 
       expect(options[:format]).to eq("A4")
@@ -151,8 +142,7 @@ RSpec.describe PdfGeneration::InvoiceService do
         rate: 200
       )
 
-      service = described_class.new(invoice, logo_url, root_url)
-      line_items = service.send(:build_line_items)
+      line_items = described_class.new(invoice.reload, logo_url, root_url).send(:build_line_items)
 
       expect(line_items).to be_an(Array)
       expect(line_items.size).to eq(2)
@@ -161,8 +151,7 @@ RSpec.describe PdfGeneration::InvoiceService do
     it "uses the invoice currency for formatting line items" do
       invoice.update!(currency: "EUR")
 
-      service = described_class.new(invoice, logo_url, root_url)
-      line_items = service.send(:build_line_items)
+      line_items = described_class.new(invoice.reload, logo_url, root_url).send(:build_line_items)
 
       expect(line_items).to be_an(Array)
       expect(line_items).not_to be_empty
@@ -173,15 +162,11 @@ RSpec.describe PdfGeneration::InvoiceService do
     it "handles invoices without line items" do
       invoice.invoice_line_items.destroy_all
 
-      service = described_class.new(invoice, logo_url, root_url)
-
       expect { service.process }.not_to raise_error
     end
 
     it "handles invoices with nil amounts" do
       invoice.update_columns(tax: nil, discount: nil)
-
-      service = described_class.new(invoice, logo_url, root_url)
 
       expect { service.process }.not_to raise_error
     end
