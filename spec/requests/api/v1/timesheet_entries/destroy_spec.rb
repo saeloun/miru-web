@@ -4,8 +4,8 @@ require "rails_helper"
 
 RSpec.describe "Api::V1::TimesheetEntry#destroy", type: :request do
   let(:company) { create(:company) }
-  let(:user) { create(:user, current_workspace_id: company.id) }
-  let(:user2) { create(:user, current_workspace_id: company.id) }
+  let(:user) { create(:user, email: "timesheet-destroy-#{SecureRandom.hex(6)}@example.com", current_workspace_id: company.id) }
+  let(:user2) { create(:user, email: "timesheet-destroy-other-#{SecureRandom.hex(6)}@example.com", current_workspace_id: company.id) }
   let(:client) { create(:client, company:) }
   let(:project) { create(:project, client:) }
   let!(:timesheet_entry) {
@@ -17,15 +17,21 @@ RSpec.describe "Api::V1::TimesheetEntry#destroy", type: :request do
       create(:employment, company:, user:)
       user.add_role :admin, company
       sign_in user
-      send_request :delete, api_v1_timesheet_entry_path(timesheet_entry), headers: auth_headers(user)
     end
 
     it "they should be able to destroy the record successfully" do
+      expect do
+        send_request :delete, api_v1_timesheet_entry_path(timesheet_entry), headers: auth_headers(user)
+      end.not_to change(TimesheetEntry, :count)
+
       expect(response).to be_successful
     end
 
     it "returns success json response" do
+      send_request :delete, api_v1_timesheet_entry_path(timesheet_entry), headers: auth_headers(user)
+
       expect(json_response["notice"]).to match("Timesheet deleted")
+      expect(timesheet_entry.reload).to be_discarded
     end
   end
 
@@ -34,15 +40,21 @@ RSpec.describe "Api::V1::TimesheetEntry#destroy", type: :request do
       create(:employment, company:, user:)
       user.add_role :employee, company
       sign_in user
-      send_request :delete, api_v1_timesheet_entry_path(timesheet_entry), headers: auth_headers(user)
     end
 
     it "they should be able to destroy the record successfully" do
+      expect do
+        send_request :delete, api_v1_timesheet_entry_path(timesheet_entry), headers: auth_headers(user)
+      end.not_to change(TimesheetEntry, :count)
+
       expect(response).to be_successful
     end
 
     it "returns success json response" do
+      send_request :delete, api_v1_timesheet_entry_path(timesheet_entry), headers: auth_headers(user)
+
       expect(json_response["notice"]).to match("Timesheet deleted")
+      expect(timesheet_entry.reload).to be_discarded
     end
   end
 
@@ -51,14 +63,19 @@ RSpec.describe "Api::V1::TimesheetEntry#destroy", type: :request do
       create(:employment, company:, user:)
       user2.add_role :employee, company
       sign_in user2
-      send_request :delete, api_v1_timesheet_entry_path(timesheet_entry), headers: auth_headers(user2)
     end
 
     it "they should not be able to delete the record" do
+      expect do
+        send_request :delete, api_v1_timesheet_entry_path(timesheet_entry), headers: auth_headers(user2)
+      end.not_to change(TimesheetEntry, :count)
+
       expect(response).to have_http_status(:forbidden)
     end
 
     it "returns success json response" do
+      send_request :delete, api_v1_timesheet_entry_path(timesheet_entry), headers: auth_headers(user2)
+
       expect(json_response["errors"]).to include("You are not authorized to perform this action.")
     end
   end

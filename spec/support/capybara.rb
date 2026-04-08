@@ -3,24 +3,26 @@
 require "capybara/rails"
 require "capybara/rspec"
 require "capybara/cuprite"
+require "console"
+require "falcon/capybara"
 
 # Configure Capybara
-Capybara.server = :puma, { Silent: true }
+Console.logger.level = Console::Logger::ERROR
+Capybara.server = :falcon
 Capybara.default_max_wait_time = 10
 Capybara.server_host = "localhost"
-Capybara.save_path = Rails.root.join("tmp", "capybara")
 Capybara.automatic_reload = false
 
 if ENV.key?("TEST_ENV_NUMBER")
   test_number = ENV.fetch("TEST_ENV_NUMBER", "").to_s
   test_number = test_number.empty? ? 1 : test_number.to_i
   Capybara.server_port = 35_000 + test_number
+  Capybara.save_path = Rails.root.join("tmp", "capybara", "worker-#{test_number}")
 else
   Capybara.server_port = ENV.fetch("CAPYBARA_SERVER_PORT", (30_000 + (Process.pid % 10_000)).to_s).to_i
+  Capybara.save_path = Rails.root.join("tmp", "capybara")
 end
 
-# Puma server is already configured above, don't override it
-# The server_port is set separately and Puma will use it automatically
 
 cuprite_options = {
   headless: ENV["HEADED"].blank?,
@@ -74,4 +76,22 @@ end
 
 Capybara.register_driver :chrome do |app|
   Capybara::Cuprite::Driver.new(app, **cuprite_options.merge(headless: false))
+end
+
+RSpec.configure do |config|
+  config.after(:each, type: :system) do
+    page.execute_script(<<~JS)
+      if (window.__miruSystemAuthRestore) {
+        window.__miruSystemAuthRestore();
+      }
+
+      if (window.__miruInvoiceRequestCaptureRestore) {
+        window.__miruInvoiceRequestCaptureRestore();
+      }
+
+      window.__lastInvoiceMutationResponse = null;
+    JS
+  rescue Ferrum::DeadBrowserError, Ferrum::NoSuchPageError, Ferrum::StatusError, Capybara::NotSupportedByDriverError
+    nil
+  end
 end

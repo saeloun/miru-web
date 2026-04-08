@@ -285,7 +285,6 @@ RSpec.describe "Reports", type: :system, js: true do
     create(:employment, company:, user: employee)
     employee.add_role :employee, company
 
-    Warden.test_reset!
     sign_in(employee)
 
     with_forgery_protection do
@@ -302,7 +301,6 @@ RSpec.describe "Reports", type: :system, js: true do
     create(:employment, company: free_company, user: free_admin)
     free_admin.add_role :admin, free_company
 
-    Warden.test_reset!
     sign_in(free_admin)
 
     with_forgery_protection do
@@ -320,7 +318,6 @@ RSpec.describe "Reports", type: :system, js: true do
     create(:employment, company: free_company, user: free_admin)
     free_admin.add_role :admin, free_company
 
-    Warden.test_reset!
     sign_in(free_admin)
 
     with_forgery_protection do

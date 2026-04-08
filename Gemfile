@@ -11,8 +11,10 @@ gem "rails", "~> 8.1.2"
 # Use postgresql as the database for Active Record
 gem "pg"
 
-# Use the Puma web server [https://github.com/puma/puma]
+# Use Puma as rollback ballast while Falcon is rolled out.
 gem "puma", "~> 6.6"
+gem "falcon"
+gem "falcon-rails"
 
 # Reduces boot times through caching
 gem "bootsnap", ">= 1.18.0", require: false
@@ -87,7 +89,7 @@ gem "rolify", "~> 6.0"
 # OAuth Gems
 gem "omniauth-google-oauth2", "~> 1.0"
 gem "omniauth-github", "~> 2.0"
-gem "omniauth-rails_csrf_protection", "~> 1.0"
+gem "omniauth-rails_csrf_protection", "~> 1.0", require: false
 
 # Pundit gem for user authorization
 gem "pundit", "~> 2.2"
@@ -202,6 +204,7 @@ end
 group :test, :ci do
   gem "capybara", ">= 3.26"
   gem "cuprite"
+  gem "falcon-capybara"
 
   # Use Codecov for code coverage analysis
   gem "simplecov", require: false

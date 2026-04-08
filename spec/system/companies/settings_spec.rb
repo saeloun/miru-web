@@ -47,7 +47,6 @@ RSpec.describe "Company organization settings", type: :system, js: true do
     before do
       create(:employment, company:, user: employee)
       employee.add_role :employee, company
-      Warden.test_reset!
       sign_in(employee)
     end
 

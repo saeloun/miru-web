@@ -57,7 +57,6 @@ RSpec.describe "Client listing", type: :system, js: true do
       create(:employment, company:, user: employee)
       employee.add_role :employee, company
       create(:project_member, user: employee, project:)
-      Warden.test_reset!
       sign_in(employee)
     end
 

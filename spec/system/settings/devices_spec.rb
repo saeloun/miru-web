@@ -22,7 +22,7 @@ RSpec.describe "Settings - Devices", type: :system, js: true do
 
     expect(page).to have_current_path("/settings/devices/edit", wait: 10)
     find("h3", text: "Add Another Device").click
-    find("button[role='combobox']").click
+    find("#device-type-0", wait: 10).click
     find("[role='option']", text: "Laptop").click
     fill_in "Model/Name", with: "MacBook Pro"
     fill_in "Serial Number", with: "MBP-001"

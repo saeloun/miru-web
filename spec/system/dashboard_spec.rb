@@ -53,9 +53,11 @@ RSpec.describe "Dashboard", type: :system, js: true do
     end
   end
 
-  it "logs out from the dashboard shell" do
+  it "logs out from the dashboard shell", :skip_sign_in do
     with_forgery_protection do
-      visit "/dashboard"
+      sign_in_through_ui(user)
+
+      expect(page).to have_current_path("/dashboard").or have_current_path("/")
 
       expect(page).to have_button("Logout", wait: 10)
 
@@ -122,7 +124,7 @@ RSpec.describe "Dashboard", type: :system, js: true do
 
   context "when user is not authenticated" do
     it "redirects to login page", :skip_sign_in do
-      Warden.test_reset!
+      Capybara.reset_sessions!
 
       visit "/dashboard"
 
@@ -136,8 +138,11 @@ RSpec.describe "Dashboard", type: :system, js: true do
         visit "/dashboard"
 
         expect(page).to have_css("#react-root", wait: 10)
-        expect(page).to have_content("Year to date", wait: 10)
-        expect(page).to have_content("Month-by-month revenue year to date", wait: 10)
+        expect(page).to have_content("This Year", wait: 10)
+        expect(page).to have_content(
+          "Monthly revenue trend over the past year",
+          wait: 10
+        )
       end
     end
   end

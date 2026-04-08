@@ -22,8 +22,8 @@ RSpec.describe "Inviting team member", type: :system, js: true do
 
           click_button "Invite Member"
           expect(page).to have_css("[role='dialog']", text: "Invite Member")
-          expect(page).to have_field("First name")
-          expect(page).to have_field("Last name")
+          expect(page).to have_field("First Name")
+          expect(page).to have_field("Last Name")
           expect(page).to have_field("Email")
           expect(page).to have_select("Role")
           click_button "Cancel"

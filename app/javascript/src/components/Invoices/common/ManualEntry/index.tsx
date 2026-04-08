@@ -116,6 +116,7 @@ const ManualEntry = ({
             <Tooltip>
               <TooltipTrigger asChild>
                 <input
+                  data-testid="invoice-manual-entry-name"
                   className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                   placeholder={i18n.t("invoices.enterName")}
                   type="text"
@@ -154,6 +155,7 @@ const ManualEntry = ({
             <Tooltip>
               <TooltipTrigger asChild>
                 <input
+                  data-testid="invoice-manual-entry-rate"
                   className="w-full px-3 py-2 text-sm text-right border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                   placeholder="0.00"
                   type="number"
@@ -171,6 +173,7 @@ const ManualEntry = ({
             <Tooltip>
               <TooltipTrigger asChild>
                 <input
+                  data-testid="invoice-manual-entry-quantity"
                   className="w-full px-3 py-2 text-sm text-center border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                   placeholder="00:00"
                   type="text"
@@ -202,6 +205,7 @@ const ManualEntry = ({
             <Tooltip>
               <TooltipTrigger asChild>
                 <button
+                  data-testid="invoice-manual-entry-delete"
                   className="p-1 rounded hover:bg-red-50 transition-colors"
                   onClick={handleDelete}
                 >
@@ -231,6 +235,7 @@ const ManualEntry = ({
             <Tooltip>
               <TooltipTrigger asChild>
                 <TextareaAutosize
+                  data-testid="invoice-manual-entry-description"
                   className="focus:outline-none w-full rounded bg-white p-1 px-2 text-sm font-medium text-foreground focus:border-border focus:ring-1 focus:ring-ring"
                   placeholder={i18n.t("invoices.enterDescription")}
                   value={description}

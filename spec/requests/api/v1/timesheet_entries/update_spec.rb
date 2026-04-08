@@ -25,26 +25,41 @@ RSpec.describe "Api::V1::TimesheetEntry#update", type: :request do
       create(:employment, company:, user:)
       user.add_role :admin, company
       sign_in user
+    end
+
+    it "they should be able to update the record successfully" do
       send_request :patch, api_v1_timesheet_entry_path(timesheet_entry.id), params: {
         project_id: project.id,
         timesheet_entry: {
           duration: 20,
-          work_date: Time.now,
+          work_date: Time.current,
           note: "Updated Note",
           bill_status: :billed
         }
       }, headers: auth_headers(user)
-    end
-
-    it "they should be able to update the record successfully" do
       expect(response).to be_successful
     end
 
     it "returns success json response" do
+      send_request :patch, api_v1_timesheet_entry_path(timesheet_entry.id), params: {
+        project_id: project.id,
+        timesheet_entry: {
+          duration: 20,
+          work_date: Time.current,
+          note: "Updated Note",
+          bill_status: :billed
+        }
+      }, headers: auth_headers(user)
+
       expect(json_response["entry"]["duration"]).to match(20.0)
       expect(json_response["entry"]["note"]).to match("Updated Note")
       expect(json_response["entry"]["bill_status"]).to match("billed")
       expect(json_response["notice"]).to match("Timesheet updated")
+
+      timesheet_entry.reload
+      expect(timesheet_entry.duration).to eq(20)
+      expect(timesheet_entry.note).to eq("Updated Note")
+      expect(timesheet_entry.bill_status).to eq("billed")
     end
 
     context "when time entry record is billed one" do
@@ -73,26 +88,41 @@ RSpec.describe "Api::V1::TimesheetEntry#update", type: :request do
       create(:employment, company:, user:)
       user.add_role :employee, company
       sign_in user
+    end
+
+    it "they should be able to update the record successfully" do
       send_request :patch, api_v1_timesheet_entry_path(timesheet_entry.id), params: {
         project_id: project.id,
         timesheet_entry: {
           duration: 20,
-          work_date: Time.now,
+          work_date: Time.current,
           note: "Updated Note",
           bill_status: :billed
         }
       }, headers: auth_headers(user)
-    end
-
-    it "they should be able to update the record successfully" do
       expect(response).to be_successful
     end
 
     it "returns success json response" do
+      send_request :patch, api_v1_timesheet_entry_path(timesheet_entry.id), params: {
+        project_id: project.id,
+        timesheet_entry: {
+          duration: 20,
+          work_date: Time.current,
+          note: "Updated Note",
+          bill_status: :billed
+        }
+      }, headers: auth_headers(user)
+
       expect(json_response["entry"]["duration"]).to match(20.0)
       expect(json_response["entry"]["note"]).to match("Updated Note")
       expect(json_response["entry"]["bill_status"]).to match("billed")
       expect(json_response["notice"]).to match("Timesheet updated")
+
+      timesheet_entry.reload
+      expect(timesheet_entry.duration).to eq(20)
+      expect(timesheet_entry.note).to eq("Updated Note")
+      expect(timesheet_entry.bill_status).to eq("billed")
     end
 
     context "when time entry record is billed one" do
@@ -121,22 +151,36 @@ RSpec.describe "Api::V1::TimesheetEntry#update", type: :request do
       create(:employment, company:, user: user2)
       user2.add_role :employee, company
       sign_in user2
+    end
+
+    it "they should not be able to update the record" do
+      original_updated_at = timesheet_entry.updated_at
+
       send_request :patch, api_v1_timesheet_entry_path(timesheet_entry.id), params: {
         project_id: project.id,
         timesheet_entry: {
           duration: 20,
-          work_date: Time.now,
+          work_date: Time.current,
           note: "Updated Note",
           bill_status: :billed
         }
       }, headers: auth_headers(user2)
-    end
 
-    it "they should not be able to update the record" do
       expect(response).to have_http_status(:forbidden)
+      expect(timesheet_entry.reload.updated_at.to_i).to eq(original_updated_at.to_i)
     end
 
     it "returns success json response" do
+      send_request :patch, api_v1_timesheet_entry_path(timesheet_entry.id), params: {
+        project_id: project.id,
+        timesheet_entry: {
+          duration: 20,
+          work_date: Time.current,
+          note: "Updated Note",
+          bill_status: :billed
+        }
+      }, headers: auth_headers(user2)
+
       expect(json_response["errors"]).to include("You are not authorized to perform this action.")
     end
   end

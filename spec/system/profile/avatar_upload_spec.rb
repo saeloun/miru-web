@@ -9,7 +9,7 @@ RSpec.describe "Profile avatar upload", type: :system, js: true do
       first_name: "Jane",
       last_name: "Doe",
       email: "jane.doe@example.com",
-      password: "password",
+      password: "Password123!",
       current_workspace_id: company.id)
   end
 

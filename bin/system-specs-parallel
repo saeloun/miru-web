@@ -12,13 +12,15 @@ fi
 PROCS="${PARALLEL_TEST_PROCESSORS:-$CPU_COUNT}"
 ARGS=("$@")
 RUNTIME_LOG="${PARALLEL_RUNTIME_LOG:-tmp/parallel_runtime_system.log}"
-QUIET="${SYSTEM_SPECS_QUIET:-1}"
+QUIET="${SYSTEM_SPECS_QUIET:-0}"
+DB_PREP_MODE="${SYSTEM_SPECS_DB_PREP:-auto}"
+STAMP_FILE="tmp/system-specs-db-prep-${PROCS}.stamp"
+SCHEMA_FILES=("db/schema.rb" "db/data_schema.rb" "Gemfile.lock")
 
 if [ "${#ARGS[@]}" -eq 0 ]; then
   ARGS=("spec/system")
 fi
 
-echo "Preparing parallel test databases for ${PROCS} processes..."
 if command -v mise >/dev/null 2>&1; then
   run_cmd() {
     mise exec -- "$@"
@@ -29,7 +31,59 @@ else
   }
 fi
 
-run_cmd bundle exec rake "parallel:create[${PROCS}]" "parallel:load_schema[${PROCS}]"
+export RUBYOPT="${RUBYOPT:-} -W0"
+
+schema_stamp() {
+  local existing_files=()
+
+  for file in "${SCHEMA_FILES[@]}"; do
+    if [ -f "${file}" ]; then
+      existing_files+=("${file}")
+    fi
+  done
+
+  if [ "${#existing_files[@]}" -eq 0 ]; then
+    echo "no-schema-files"
+    return 0
+  fi
+
+  shasum "${existing_files[@]}" | shasum | awk '{print $1}'
+}
+
+should_prepare_databases() {
+  case "${DB_PREP_MODE}" in
+    1|true|force)
+      return 0
+      ;;
+    0|false|skip)
+      return 1
+      ;;
+    auto)
+      local current_stamp
+      current_stamp="$(schema_stamp)"
+
+      if [ ! -f "${STAMP_FILE}" ] || [ "$(cat "${STAMP_FILE}")" != "${current_stamp}" ]; then
+        return 0
+      fi
+
+      return 1
+      ;;
+    *)
+      echo "Unsupported SYSTEM_SPECS_DB_PREP mode: ${DB_PREP_MODE}" >&2
+      exit 1
+      ;;
+  esac
+}
+
+if should_prepare_databases; then
+  echo "Preparing parallel test databases for ${PROCS} processes..."
+  run_cmd bundle exec rake "parallel:create[${PROCS}]" "parallel:load_schema[${PROCS}]"
+  if [ "${DB_PREP_MODE}" = "auto" ]; then
+    printf '%s' "$(schema_stamp)" > "${STAMP_FILE}"
+  fi
+else
+  echo "Skipping parallel test database prep for ${PROCS} processes (schema unchanged)."
+fi
 
 echo "Running system specs in parallel (${PROCS} processes)..."
 BASE_CMD=(bundle exec parallel_rspec "${ARGS[@]}" -n "${PROCS}" --runtime-log "${RUNTIME_LOG}")
@@ -42,4 +96,4 @@ if [ "${QUIET}" = "1" ]; then
   BASE_CMD+=(--serialize-stdout --combine-stderr --quiet --test-options "--format progress")
 fi
 
-CI=true run_cmd "${BASE_CMD[@]}"
+CI=true CONSOLE_LEVEL="${CONSOLE_LEVEL:-error}" run_cmd "${BASE_CMD[@]}"

@@ -14,7 +14,10 @@ class Api::V1::ExpensesController < Api::V1::ApplicationController
   def create
     authorize Expense
 
-    expense = current_company.expenses.create!(normalized_expense_params.merge(user: current_user))
+    expense = current_company.expenses.create!(
+      normalized_expense_params.except("receipts").merge(user: current_user)
+    )
+    attach_receipts!(expense)
     expense.notify_submission_reviewers!
 
     render :create, locals: {
@@ -31,7 +34,8 @@ class Api::V1::ExpensesController < Api::V1::ApplicationController
   def update
     authorize @expense
 
-    @expense.update!(normalized_expense_params)
+    @expense.update!(normalized_expense_params.except("receipts"))
+    attach_receipts!(@expense)
     resubmit_rejected_expense! if @expense.rejected? && @expense.user_id == current_user.id
 
     render json: { notice: I18n.t("expenses.update") }, status: 200
@@ -117,5 +121,15 @@ class Api::V1::ExpensesController < Api::V1::ApplicationController
       permitted["category_name"] = category_name if category_name.present?
 
       permitted
+    end
+
+    def attach_receipts!(expense)
+      return if uploaded_receipts.empty?
+
+      expense.receipts.attach(uploaded_receipts)
+    end
+
+    def uploaded_receipts
+      Array(expense_params[:receipts]).compact_blank
     end
 end

@@ -88,7 +88,6 @@ RSpec.describe "Invoice detail view", type: :system, js: true do
       amount_due: 1000.00)
     create(:employment, company:, user: employee)
     employee.add_role :employee, company
-    Warden.test_reset!
     sign_in(employee)
 
     with_forgery_protection do

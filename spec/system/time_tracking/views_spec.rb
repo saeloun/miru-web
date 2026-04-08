@@ -15,6 +15,12 @@ RSpec.describe "Time Tracking Views", type: :system, js: true do
     sign_in(user)
   end
 
+  def open_week_review
+    visit "/time-tracking"
+    expect(page).to have_css("#react-root", wait: 10)
+    find("[data-testid='time-review-week']", wait: 10).click
+  end
+
   it "loads the time tracking page with the current week" do
     with_forgery_protection do
       visit "/time-tracking"
@@ -35,9 +41,7 @@ RSpec.describe "Time Tracking Views", type: :system, js: true do
       work_date: Date.current)
 
     with_forgery_protection do
-      visit "/time-tracking"
-
-      expect(page).to have_css("#react-root", wait: 10)
+      open_week_review
       expect(page).to have_content("Acme Corp", wait: 10)
       expect(page).to have_content("Widget Platform", wait: 10)
       expect(page).to have_content("Implementing search feature", wait: 10)
@@ -75,8 +79,7 @@ RSpec.describe "Time Tracking Views", type: :system, js: true do
     )
 
     with_forgery_protection do
-      visit "/time-tracking"
-
+      open_week_review
       expect(page).to have_css("[data-testid='timeoff-entry-card']", count: 2, wait: 10)
       expect(page).to have_content("Leave", wait: 10)
       expect(page).to have_content("Paid Time Off", wait: 10)
@@ -124,10 +127,10 @@ RSpec.describe "Time Tracking Views", type: :system, js: true do
 
     with_forgery_protection do
       visit "/time-tracking"
-
       expect(page).to have_css("#react-root", wait: 10)
       find('[data-testid="user-select"]', wait: 10).click
       find('[role="option"]', text: employee.full_name, wait: 10).click
+      find("[data-testid='time-review-week']", wait: 10).click
 
       expect(page).to have_content("Backend refactoring work", wait: 10)
         .or have_content("08:00", wait: 10)
@@ -151,10 +154,10 @@ RSpec.describe "Time Tracking Views", type: :system, js: true do
 
     with_forgery_protection do
       visit "/time-tracking"
-
       expect(page).to have_css("#react-root", wait: 10)
       find('[data-testid="user-select"]', wait: 10).click
       find('[role="option"]', text: employee.full_name, wait: 10).click
+      find("[data-testid='time-review-week']", wait: 10).click
 
       expect(page).to have_content("Leave", wait: 10)
       expect(page).to have_content("Sick Leave", wait: 10)
@@ -191,19 +194,19 @@ RSpec.describe "Time Tracking Views", type: :system, js: true do
 
     allow_any_instance_of(TimeTrackingIndexService).to receive(:process).and_wrap_original do |original, *args|
       service = original.receiver
-      sleep 1 if service.user.id == slow_employee.id
+      sleep 0.25 if service.user.id == slow_employee.id
       original.call(*args)
     end
 
     with_forgery_protection do
       visit "/time-tracking"
-
       expect(page).to have_css("#react-root", wait: 10)
       find('[data-testid="user-select"]', wait: 10).click
       find('[role="option"]', text: slow_employee.full_name, wait: 10).click
 
       find('[data-testid="user-select"]', wait: 10).click
       find('[role="option"]', text: fast_employee.full_name, wait: 10).click
+      find("[data-testid='time-review-week']", wait: 10).click
 
       expect(page).to have_content("Fast employee entry", wait: 10)
       expect(page).not_to have_content("Slow employee entry")

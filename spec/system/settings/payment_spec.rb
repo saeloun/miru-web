@@ -48,10 +48,7 @@ RSpec.describe "Settings - Payment", type: :system, js: true do
     before do
       create(:employment, company:, user: employee)
       employee.add_role :employee, company
-      Warden.test_reset!
-      login_as(employee, scope: :user)
-      visit "/"
-      expect(page).to have_css("#react-root", wait: 10)
+      sign_in(employee)
     end
 
     it "employee cannot access payment settings" do

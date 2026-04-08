@@ -207,19 +207,8 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
   ]);
 
   const committedLineItems = useMemo(
-    () =>
-      [...selectedLineItems, ...manualEntryArr]
-        .filter(Boolean)
-        .filter(item => !item._destroy),
+    () => [...selectedLineItems, ...manualEntryArr].filter(Boolean),
     [selectedLineItems, manualEntryArr]
-  );
-
-  const activeLineItems = useMemo(
-    () =>
-      pendingManualEntry && !pendingManualEntry._destroy
-        ? [...committedLineItems, pendingManualEntry]
-        : committedLineItems,
-    [committedLineItems, pendingManualEntry]
   );
 
   const hasPendingManualEntry = useMemo(
@@ -234,6 +223,23 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
     [pendingManualEntry]
   );
 
+  const submissionLineItems = useMemo(() => {
+    if (!hasPendingManualEntry) return committedLineItems;
+
+    const pendingDraftAlreadyCommitted =
+      pendingManualEntry?.id &&
+      committedLineItems.some(item => item?.id === pendingManualEntry.id);
+
+    return pendingDraftAlreadyCommitted
+      ? committedLineItems
+      : [...committedLineItems, pendingManualEntry];
+  }, [committedLineItems, hasPendingManualEntry, pendingManualEntry]);
+
+  const activeLineItems = useMemo(
+    () => submissionLineItems.filter(item => !item._destroy),
+    [submissionLineItems]
+  );
+
   const canSubmitInvoice =
     Boolean(formData.clientId) && activeLineItems.length > 0;
 
@@ -246,7 +252,7 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
       ...formData,
       issueDate: ensureValidDate(formData.issueDate).toISOString(),
       dueDate: ensureValidDate(formData.dueDate).toISOString(),
-      lineItems: committedLineItems,
+      lineItems: submissionLineItems,
     });
 
     if (initialStateRef.current === null) {
@@ -259,7 +265,7 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
     setHasChanges(
       hasPendingManualEntry || snapshot !== initialStateRef.current
     );
-  }, [formData, committedLineItems, hasPendingManualEntry]);
+  }, [formData, submissionLineItems, hasPendingManualEntry]);
 
   useEffect(() => {
     if (selectedClient && selectedClient.id) {
@@ -275,16 +281,18 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
 
   const committedSubtotal = useMemo(
     () =>
-      committedLineItems.reduce(
-        (sum, item) =>
-          sum +
-          Number(
-            item.lineTotal ??
-              item.amount ??
-              lineTotalCalc(item.quantity, item.rate)
-          ),
-        0
-      ),
+      committedLineItems
+        .filter(item => !item._destroy)
+        .reduce(
+          (sum, item) =>
+            sum +
+            Number(
+              item.lineTotal ??
+                item.amount ??
+                lineTotalCalc(item.quantity, item.rate)
+            ),
+          0
+        ),
     [committedLineItems]
   );
 
@@ -413,7 +421,7 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
                   onSave &&
                     onSave({
                       ...formData,
-                      invoiceLineItems: activeLineItems,
+                      invoiceLineItems: submissionLineItems,
                     });
                 }}
                 variant="outline"
@@ -439,7 +447,7 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
                     onSend({
                       ...formData,
                       status: "sent",
-                      invoiceLineItems: activeLineItems,
+                      invoiceLineItems: submissionLineItems,
                     });
                 }}
                 size="sm"

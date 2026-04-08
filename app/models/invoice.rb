@@ -42,6 +42,7 @@ class Invoice < ApplicationRecord
   store_accessor :payment_infos, :stripe_payment_intent
 
   before_validation :set_external_view_key, on: :create
+  before_validation :calculate_amounts, if: :totals_recalculation_needed?
   before_validation :calculate_base_currency_amount
   after_save :lock_timesheet_entries, if: :draft?
   after_discard :unlock_timesheet_entries, if: :draft?
@@ -168,6 +169,40 @@ class Invoice < ApplicationRecord
       else
         client&.currency == company&.base_currency
       end
+    end
+
+    def calculate_amounts
+      kept_line_items = invoice_line_items.reject(&:marked_for_destruction?)
+      if kept_line_items.empty?
+        return unless invoice_line_items.any?(&:marked_for_destruction?)
+
+        self.amount = 0
+        self.amount_due = 0
+        self.outstanding_amount = 0
+        return
+      end
+
+      subtotal = kept_line_items.sum { |item| (item.quantity.to_f / 60) * item.rate.to_f }.round(2)
+      total = (subtotal - discount.to_f + tax.to_f).round(2)
+
+      self.amount = total
+
+      if paid? || waived?
+        self.amount_due = 0
+        self.outstanding_amount = 0
+      else
+        self.amount_due = [total - amount_paid.to_f, 0].max.round(2)
+        self.outstanding_amount = amount_due
+      end
+    end
+
+    def totals_recalculation_needed?
+      new_record? ||
+        will_save_change_to_discount? ||
+        will_save_change_to_tax? ||
+        will_save_change_to_amount_paid? ||
+        will_save_change_to_status? ||
+        (association(:invoice_line_items).loaded? && invoice_line_items.any?(&:changed_for_autosave?))
     end
 
     def update_invoice_number

@@ -102,7 +102,6 @@ RSpec.describe "Settings", type: :system, js: true do
     before do
       create(:employment, company:, user: employee)
       employee.add_role :employee, company
-      Warden.test_reset!
       sign_in(employee)
     end
 
@@ -149,10 +148,7 @@ RSpec.describe "Settings", type: :system, js: true do
     before do
       create(:employment, company: configured_company, user: configured_user)
       configured_user.add_role :admin, configured_company
-      Warden.test_reset!
-      login_as(configured_user, scope: :user)
-      visit "/"
-      expect(page).to have_css("#react-root", wait: 10)
+      sign_in(configured_user)
     end
 
     it "shows configured organization and profile identity data", :aggregate_failures do

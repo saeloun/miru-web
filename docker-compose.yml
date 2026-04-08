@@ -25,7 +25,7 @@ services:
       context: .
       dockerfile: .devcontainer/Dockerfile
       target: development
-    command: bash -c "rm -f tmp/pids/server.pid && bundle install && bundle exec rails db:prepare && bundle exec rails server -b 0.0.0.0 -p 3000"
+    command: bash -c "rm -f tmp/pids/server.pid && bundle install && bundle exec rails db:prepare && bundle exec falcon serve --bind http://0.0.0.0:3000"
     ports:
       - "8080:3000"  # Map to 8080 as requested
     working_dir: /app
