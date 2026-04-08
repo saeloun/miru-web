@@ -10,7 +10,6 @@ import { employmentMapper } from "mapper/teams.mapper";
 import { Outlet, useNavigate, useParams } from "react-router-dom";
 import { getDisplayAvatarUrl } from "helpers";
 import { sendGAPageView } from "utils/googleAnalytics";
-import { useCurrentUser } from "~/hooks/useCurrentUser";
 
 import MobilePersonalDetails from "./MobilePersonalDetails";
 import PersonalProfileSummary from "./PersonalProfileSummary";
@@ -21,7 +20,6 @@ const UserDetailsView = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [currentUserId, setCurrentUserId] = useState(null);
   const { avatarUrl, user, isDesktop, companyRole } = useUserContext();
-  const { currentUser } = useCurrentUser();
   const { memberId } = useParams();
 
   const getData = async () => {
@@ -54,15 +52,14 @@ const UserDetailsView = () => {
   // Effect to determine current user ID
   useEffect(() => {
     if (isCalledFromSettings) {
-      // Use fresh user data from _me endpoint for settings
-      if (currentUser) {
-        setCurrentUserId(currentUser.id);
+      if (user?.id) {
+        setCurrentUserId(user.id);
       }
     } else {
       // Use memberId for team view
       setCurrentUserId(memberId);
     }
-  }, [isCalledFromSettings, currentUser, memberId]);
+  }, [isCalledFromSettings, memberId, user]);
 
   useEffect(() => {
     sendGAPageView();
@@ -73,7 +70,7 @@ const UserDetailsView = () => {
 
   const navigate = useNavigate();
   const displayAvatarEmail = isCalledFromSettings
-    ? currentUser?.email || user?.email || personalDetails.email_id
+    ? user?.email || personalDetails.email_id
     : personalDetails.email_id;
 
   const displayAvatarUrl = getDisplayAvatarUrl(

@@ -4,7 +4,6 @@ import { ProfileContext } from "context/Profile/ProfileContext";
 import { useUserContext } from "context/UserContext";
 import dayjs from "dayjs";
 import { useLocation, useParams } from "react-router-dom";
-import { useCurrentUser } from "~/hooks/useCurrentUser";
 
 import { CompensationDetailsState } from "./Context/CompensationDetailsState";
 import { EmploymentDetailsState } from "./Context/EmploymentDetailsState";
@@ -13,13 +12,35 @@ import Header from "./Layout/Header";
 import MobileNav from "./Layout/Navigation/MobileNav";
 import OutletWrapper from "./Layout/OutletWrapper";
 
+const buildPersonalDetails = (
+  user,
+  company,
+  previousState = PersonalDetailsState
+) => ({
+  ...previousState,
+  id: user?.id ? String(user.id) : previousState.id,
+  first_name: user?.first_name || previousState.first_name,
+  last_name: user?.last_name || previousState.last_name,
+  date_of_birth:
+    user?.date_of_birth && (user?.date_format || company?.date_format)
+      ? dayjs(user.date_of_birth).format(
+          user?.date_format || company?.date_format
+        )
+      : user?.date_of_birth || previousState.date_of_birth,
+  phone_number: user?.phone || previousState.phone_number,
+  email_id: user?.personal_email_id || user?.email || previousState.email_id,
+  linkedin: user?.social_accounts?.linkedin_url || previousState.linkedin,
+  github: user?.social_accounts?.github_url || previousState.github,
+  date_format:
+    user?.date_format || company?.date_format || previousState.date_format,
+});
+
 const Layout = () => {
-  const { isDesktop } = useUserContext();
-  const { currentUser } = useCurrentUser();
+  const { isDesktop, user, company } = useUserContext();
   const location = useLocation();
   const { memberId } = useParams();
   const [settingsStates, setSettingsStates] = useState({
-    personalDetails: PersonalDetailsState,
+    personalDetails: buildPersonalDetails(user, company),
     employmentDetails: EmploymentDetailsState,
     documentDetails: {},
     deviceDetails: {},
@@ -55,27 +76,17 @@ const Layout = () => {
 
   // Initialize personal details with current user data when in settings context
   useEffect(() => {
-    if (isCalledFromSettings && currentUser) {
+    if (isCalledFromSettings && user) {
       setSettingsStates(prevState => ({
         ...prevState,
-        personalDetails: {
-          ...prevState.personalDetails,
-          id: String(currentUser.id),
-          first_name: currentUser.first_name || "",
-          last_name: currentUser.last_name || "",
-          date_of_birth:
-            currentUser.date_of_birth && currentUser.date_format
-              ? dayjs(currentUser.date_of_birth).format(currentUser.date_format)
-              : currentUser.date_of_birth || "",
-          phone_number: currentUser.phone || "",
-          email_id: currentUser.personal_email_id || currentUser.email || "",
-          linkedin: currentUser.social_accounts?.linkedin_url || "",
-          github: currentUser.social_accounts?.github_url || "",
-          date_format: currentUser.date_format || "",
-        },
+        personalDetails: buildPersonalDetails(
+          user,
+          company,
+          prevState.personalDetails
+        ),
       }));
     }
-  }, [isCalledFromSettings, currentUser]);
+  }, [company, isCalledFromSettings, user]);
 
   const updateDetails = (key, value) => {
     setSettingsStates(previousSettings => ({
