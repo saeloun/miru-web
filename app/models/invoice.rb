@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Invoice < ApplicationRecord
-  include Discard::Model
+  include Discardable
   include InvoiceSendable
   include ClientPaymentSendable
   include Searchable

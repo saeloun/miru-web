@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class TimeoffEntry < ApplicationRecord
-  include Discard::Model
+  include Discardable
 
   belongs_to :user
   belongs_to :leave_type, optional: true

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class ClientMember < ApplicationRecord
-  include Discard::Model
+  include Discardable
 
   belongs_to :client
   belongs_to :user

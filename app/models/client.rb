@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Client < ApplicationRecord
-  include Discard::Model
+  include Discardable
   include Searchable
   include MetricsTracking
 

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Expense < ApplicationRecord
-  include Discard::Model
+  include Discardable
   include Searchable
   enum :expense_type, [
       :personal,

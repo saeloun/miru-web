@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Holiday < ApplicationRecord
-  include Discard::Model
+  include Discardable
 
   enum :time_period_optional_holidays, { per_quarter: 0, per_year: 1, per_month: 2, per_week: 3 }
 
