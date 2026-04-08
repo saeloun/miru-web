@@ -174,6 +174,37 @@ RSpec.describe "Profile Settings", type: :system, js: true do
     end
   end
 
+  it "shows a saved date of birth on the profile summary" do
+    with_forgery_protection do
+      response = page.evaluate_async_script(<<~JS, "1993-11-12T00:00:00.000Z")
+        const [dateOfBirth, done] = arguments;
+
+        fetch("/api/v1/profile", {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json"
+          },
+          credentials: "same-origin",
+          body: JSON.stringify({ user: { date_of_birth: dateOfBirth } })
+        })
+          .then(async response => {
+            const data = await response.json();
+            done({ ok: response.ok, status: response.status, data });
+          })
+          .catch(error => done({ ok: false, error: String(error) }));
+      JS
+
+      expect(response["ok"]).to eq(true)
+
+      visit "/settings/profile"
+
+      expect(page).to have_current_path("/settings/profile", wait: 10)
+      expect(page).to have_content("Born November 12, 1993", wait: 10)
+      expect(page).not_to have_content("Born Invalid Date", wait: 5)
+    end
+  end
+
   it "hides billing notification controls for employees" do
     employee_user = create(:user,
       first_name: "John",

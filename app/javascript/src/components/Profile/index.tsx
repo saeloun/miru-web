@@ -2,6 +2,7 @@ import React, { Fragment, useState, useEffect } from "react";
 
 import { ProfileContext } from "context/Profile/ProfileContext";
 import { useUserContext } from "context/UserContext";
+import dayjs from "dayjs";
 import { useLocation, useParams } from "react-router-dom";
 import { useCurrentUser } from "~/hooks/useCurrentUser";
 
@@ -62,7 +63,15 @@ const Layout = () => {
           id: String(currentUser.id),
           first_name: currentUser.first_name || "",
           last_name: currentUser.last_name || "",
-          email_id: currentUser.email || "",
+          date_of_birth:
+            currentUser.date_of_birth && currentUser.date_format
+              ? dayjs(currentUser.date_of_birth).format(currentUser.date_format)
+              : currentUser.date_of_birth || "",
+          phone_number: currentUser.phone || "",
+          email_id: currentUser.personal_email_id || currentUser.email || "",
+          linkedin: currentUser.social_accounts?.linkedin_url || "",
+          github: currentUser.social_accounts?.github_url || "",
+          date_format: currentUser.date_format || "",
         },
       }));
     }

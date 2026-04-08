@@ -297,6 +297,7 @@ const UserDetailsEdit = () => {
         await profileApi.update({
           user: userSchema,
         });
+        await refetchCurrentUser();
       } else {
         await teamsApi.updateUser(currentUserId, {
           user: userSchema,
