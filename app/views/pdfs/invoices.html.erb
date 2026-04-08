@@ -3,311 +3,481 @@
 <head>
   <meta charset="utf-8">
   <title>Invoice</title>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     html {
       -webkit-print-color-adjust: exact;
     }
+
     body {
-      font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
-      font-size: 14px !important;
       margin: 0;
       padding: 0;
+      background: #eef2f6;
+      color: #0f172a;
+      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 13px;
+      line-height: 1.55;
     }
-    .main {
+
+    .invoice-shell {
+      padding: 20px;
+    }
+
+    .invoice-card {
+      background: #ffffff;
+      border: 1px solid #dbe3ec;
+      border-radius: 28px;
+      overflow: hidden;
+      box-shadow: 0 16px 40px rgba(15, 23, 42, 0.08);
+    }
+
+    .invoice-hero {
+      padding: 28px 32px 30px;
+      background:
+        linear-gradient(135deg, #0f172a 0%, #1e293b 58%, #334155 100%);
+      color: #f8fafc;
+    }
+
+    .invoice-hero-row {
       width: 100%;
+      border-collapse: collapse;
     }
-    .flex {
-      display: flex;
+
+    .invoice-brand {
+      vertical-align: top;
     }
-    .justify-between {
-      justify-content: space-between;
+
+    .invoice-brand-wrap {
+      display: table;
     }
-    .border-b-2 {
-      border-bottom-width: 2px;
+
+    .invoice-logo-cell,
+    .invoice-brand-copy {
+      display: table-cell;
+      vertical-align: top;
     }
-    .border-border {
-      border-color: #E5E7EB;
+
+    .invoice-logo-cell {
+      width: 72px;
+      padding-right: 16px;
     }
-    .p-10 {
-      padding: 2.5rem;
+
+    .invoice-logo {
+      display: block;
+      width: 72px;
+      height: 72px;
+      object-fit: contain;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.96);
+      padding: 8px;
+      box-sizing: border-box;
     }
-    .px-10 {
-      padding-left: 2.5rem;
-      padding-right: 2.5rem;
+
+    .invoice-kicker {
+      margin: 0 0 10px;
+      color: rgba(226, 232, 240, 0.86);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
     }
-    .py-5 {
-      padding-top: 1.25rem;
-      padding-bottom: 1.25rem;
+
+    .invoice-company {
+      margin: 0;
+      font-size: 32px;
+      font-weight: 800;
+      line-height: 0.96;
+      letter-spacing: -0.05em;
     }
-    .pt-5 {
-      padding-top: 1.25rem;
+
+    .invoice-company-meta {
+      margin: 12px 0 0;
+      color: rgba(226, 232, 240, 0.92);
+      font-size: 14px;
     }
-    .h-50 {
-      height: 12.5rem;
+
+    .invoice-status {
+      width: 200px;
+      vertical-align: top;
+      text-align: right;
     }
-    .h-36 {
-      height: 9rem;
+
+    .invoice-status-pill {
+      display: inline-block;
+      padding: 9px 14px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.14);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #f8fafc;
     }
-    .h-20 {
-      height: 5rem;
+
+    .invoice-status-amount {
+      margin: 22px 0 0;
+      font-size: 40px;
+      font-weight: 800;
+      line-height: 0.96;
+      letter-spacing: -0.06em;
     }
-    .w-20 {
-      width: 5rem;
+
+    .invoice-status-label {
+      margin: 10px 0 0;
+      color: rgba(226, 232, 240, 0.88);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
     }
-    .w-40 {
-      width: 10rem;
+
+    .invoice-body {
+      padding: 28px 32px 32px;
     }
-    .w-1/3 {
-      width: 33.333333%;
+
+    .strip-grid {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 12px;
+      margin: -12px -12px 6px;
     }
-    .w-1/4 {
+
+    .strip-cell {
       width: 25%;
+      vertical-align: top;
     }
-    .w-1/5 {
-      width: 20%;
+
+    .strip-card {
+      height: 100%;
+      padding: 16px 18px;
+      border: 1px solid #e2e8f0;
+      border-radius: 20px;
+      background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
     }
-    .w-2/5 {
-      width: 40%;
+
+    .strip-label {
+      margin: 0 0 8px;
+      color: #64748b;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
     }
-    .w-full {
+
+    .strip-value {
+      margin: 0;
+      color: #0f172a;
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 1.3;
+      word-break: break-word;
+    }
+
+    .strip-subvalue {
+      margin: 7px 0 0;
+      color: #475569;
+      font-size: 12px;
+      line-height: 1.5;
+      word-break: break-word;
+    }
+
+    .section {
+      margin-top: 24px;
+    }
+
+    .section-title {
+      margin: 0 0 12px;
+      color: #64748b;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+    }
+
+    .ledger-table {
       width: 100%;
+      border-collapse: collapse;
+      border: 1px solid #e2e8f0;
+      border-radius: 22px;
+      overflow: hidden;
     }
-    .mr-5 {
-      margin-right: 1.25rem;
+
+    .ledger-table thead th {
+      padding: 14px 16px;
+      background: #f8fafc;
+      color: #64748b;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      text-align: left;
+      border-bottom: 1px solid #e2e8f0;
     }
-    .mt-1 {
-      margin-top: 0.25rem;
+
+    .ledger-table tbody td {
+      padding: 16px;
+      border-bottom: 1px solid #e2e8f0;
+      color: #0f172a;
+      font-size: 13px;
+      vertical-align: top;
+      word-break: break-word;
     }
-    .mt-2 {
-      margin-top: 0.5rem;
+
+    .ledger-table tbody tr:last-child td {
+      border-bottom: none;
     }
-    .mt-4 {
-      margin-top: 1rem;
-    }
+
     .text-right {
       text-align: right;
     }
-    .text-left {
-      text-align: left;
-    }
-    .text-base {
-      font-size: 1rem;
-    }
-    .text-xs {
-      font-size: 0.75rem;
-    }
-    .text-2xl {
-      font-size: 1.5rem;
-    }
-    .text-3xl {
-      font-size: 1.875rem;
-    }
-    .font-normal {
-      font-weight: 400;
-    }
-    .font-bold {
+
+    .line-name {
       font-weight: 700;
     }
-    .text-foreground {
-      color: #1D1A31;
+
+    .line-description {
+      color: #475569;
     }
-    .text-muted-foreground {
-      color: #5B5B5B;
+
+    .totals-wrap {
+      width: 100%;
+      margin-top: 24px;
+      border-collapse: collapse;
     }
-    .text-muted-foreground {
-      color: #6B7280;
+
+    .totals-spacer {
+      width: 48%;
     }
-    .truncate {
-      overflow: hidden;
-      text-overflow: ellipsis;
+
+    .totals-panel-cell {
+      width: 52%;
+      vertical-align: top;
+    }
+
+    .totals-panel {
+      width: 100%;
+      border: 1px solid #dbe3ec;
+      border-radius: 24px;
+      background: linear-gradient(180deg, #fbfdff 0%, #f8fafc 100%);
+    }
+
+    .totals-panel td {
+      padding: 14px 22px;
+      font-size: 14px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .totals-panel tr:last-child td {
+      border-bottom: none;
+    }
+
+    .totals-label {
+      color: #475569;
+    }
+
+    .totals-value {
+      color: #0f172a;
+      font-weight: 700;
+      text-align: right;
       white-space: nowrap;
     }
-    .table-fixed {
-      table-layout: fixed;
+
+    .totals-grand td {
+      background: #0f172a;
+      color: #f8fafc;
+      font-size: 15px;
+      font-weight: 700;
     }
-    .tracking-wider {
-      letter-spacing: 0.05em;
+
+    .meta-panel {
+      margin-top: 24px;
+      padding: 18px 20px;
+      border: 1px solid #e2e8f0;
+      border-radius: 22px;
+      background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
     }
-    .pl-2 {
-      padding-left: 0.5rem;
+
+    .meta-grid {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0 10px;
     }
-    .px-1 {
-      padding-left: 0.25rem;
-      padding-right: 0.25rem;
+
+    .meta-label {
+      width: 180px;
+      color: #64748b;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      vertical-align: top;
     }
-    .py-3 {
-      padding-top: 0.75rem;
-      padding-bottom: 0.75rem;
-    }
-    .pr-10 {
-      padding-right: 2.5rem;
-    }
-    .pb-5 {
-      padding-bottom: 1.25rem;
-    }
-    .pb-10 {
-      padding-bottom: 2.5rem;
-    }
-    .pt-1 {
-      padding-top: 0.25rem;
-    }
-    .pt-4 {
-      padding-top: 1rem;
-    }
-    .mb-5 {
-      margin-bottom: 1.25rem;
-    }
-    .w-22 {
-      width: 5.5rem;
+
+    .meta-value {
+      color: #0f172a;
+      font-size: 13px;
+      vertical-align: top;
+      word-break: break-word;
     }
   </style>
 </head>
 <body>
-  <div class="main">
-    <div class="flex justify-between border-b-2 border-border p-10 h-50">
-      <div class="flex">
-        <div class="h-20 w-20 mr-5">
-          <%=image_tag company_logo%>
+  <%
+    reference = invoice.reference.presence || "-"
+    billed_to = client.formatted_address.presence || client.email.presence || "-"
+    payment_rows = [
+      ["Bank Name", invoice.company.bank_name],
+      ["Account Number", invoice.company.bank_account_number],
+      ["Routing Number", invoice.company.bank_routing_number],
+      ["SWIFT Code", invoice.company.bank_swift_code],
+      ["Tax ID", invoice.company.tax_id],
+      ["VAT Number", invoice.company.vat_number],
+      ["GST Number", invoice.company.gst_number]
+    ].select { |_, value| value.present? }
+  %>
+
+  <div class="invoice-shell">
+    <div class="invoice-card">
+      <div class="invoice-hero">
+        <table class="invoice-hero-row" role="presentation">
+          <tr>
+            <td class="invoice-brand">
+              <div class="invoice-brand-wrap">
+                <% if company_logo.present? %>
+                  <div class="invoice-logo-cell">
+                    <%= image_tag company_logo, class: "invoice-logo" %>
+                  </div>
+                <% end %>
+                <div class="invoice-brand-copy">
+                  <p class="invoice-kicker">Client Invoice</p>
+                  <p class="invoice-company"><%= invoice.company.name %></p>
+                  <p class="invoice-company-meta">
+                    <%= invoice.company.business_phone.presence || invoice.company.email.presence || invoice.company.formatted_address %>
+                  </p>
+                </div>
+              </div>
+            </td>
+            <td class="invoice-status">
+              <span class="invoice-status-pill"><%= invoice.status.humanize %></span>
+              <p class="invoice-status-amount"><%= invoice_amount %></p>
+              <p class="invoice-status-label">Total invoice amount</p>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="invoice-body">
+        <table class="strip-grid" role="presentation">
+          <tr>
+            <td class="strip-cell">
+              <div class="strip-card">
+                <p class="strip-label">Billed To</p>
+                <p class="strip-value"><%= client.name %></p>
+                <p class="strip-subvalue"><%= billed_to %></p>
+              </div>
+            </td>
+            <td class="strip-cell">
+              <div class="strip-card">
+                <p class="strip-label">Invoice Number</p>
+                <p class="strip-value"><%= invoice.invoice_number %></p>
+                <p class="strip-subvalue">Reference: <%= reference %></p>
+              </div>
+            </td>
+            <td class="strip-cell">
+              <div class="strip-card">
+                <p class="strip-label">Issue Date</p>
+                <p class="strip-value"><%= invoice.formatted_issue_date %></p>
+                <p class="strip-subvalue">Due: <%= invoice.formatted_due_date %></p>
+              </div>
+            </td>
+            <td class="strip-cell">
+              <div class="strip-card">
+                <p class="strip-label">Amount Due</p>
+                <p class="strip-value"><%= invoice_amount_due %></p>
+                <p class="strip-subvalue">Paid: <%= invoice_amount_paid %></p>
+              </div>
+            </td>
+          </tr>
+        </table>
+
+        <div class="section">
+          <p class="section-title">Work Summary</p>
+          <table class="ledger-table" role="presentation">
+            <thead>
+              <tr>
+                <th style="width: 16%;">Name</th>
+                <th style="width: 12%;">Date</th>
+                <th style="width: 32%;">Description</th>
+                <th class="text-right" style="width: 13%;">Rate</th>
+                <th class="text-right" style="width: 10%;">Qty</th>
+                <th class="text-right" style="width: 17%;">Line Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% invoice_line_items.each do |item| %>
+                <tr>
+                  <td class="line-name"><%= item[:name] %></td>
+                  <td><%= item[:date] %></td>
+                  <td class="line-description"><%= item[:description] %></td>
+                  <td class="text-right"><%= item[:rate] %></td>
+                  <td class="text-right"><%= item[:quantity] %></td>
+                  <td class="text-right"><%= item[:line_total] %></td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
         </div>
 
-        <div class="mt-2">
-          <p class="font-bold text-3xl text-foreground">
-            <%=invoice.company.name%>
-          </p>
-          <p class="mt-1 font-normal text-base text-foreground">
-            <%=invoice.company.business_phone%>
-          </p>
-        </div>
-      </div>
-      <div class="mt-2 font-normal text-base text-right text-foreground w-40">
-        <p><%=invoice.company.formatted_address%></p>
-      </div>
-    </div>
+        <table class="totals-wrap" role="presentation">
+          <tr>
+            <td class="totals-spacer"></td>
+            <td class="totals-panel-cell">
+              <table class="totals-panel" role="presentation">
+                <tr>
+                  <td class="totals-label">Sub total</td>
+                  <td class="totals-value"><%= sub_total %></td>
+                </tr>
+                <tr>
+                  <td class="totals-label">Discount</td>
+                  <td class="totals-value"><%= invoice_discount %></td>
+                </tr>
+                <tr>
+                  <td class="totals-label">Tax</td>
+                  <td class="totals-value"><%= invoice_tax %></td>
+                </tr>
+                <tr class="totals-grand">
+                  <td>Total</td>
+                  <td class="totals-value"><%= total %></td>
+                </tr>
+                <tr>
+                  <td class="totals-label">Amount Paid</td>
+                  <td class="totals-value"><%= invoice_amount_paid %></td>
+                </tr>
+                <tr>
+                  <td class="totals-label">Amount Due</td>
+                  <td class="totals-value"><%= invoice_amount_due %></td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </table>
 
-    <div class="flex justify-between border-b-2 border-border px-10 py-5 h-36">
-      <div class="w-1/3">
-        <p class="font-normal text-xs text-foreground flex">Billed to</p>
-        <div>
-          <p class="font-bold text-base text-foreground">
-            <%=client.name%>
-          </p>
-          <p class="font-normal text-xs text-muted-foreground truncate">
-            <%=client.formatted_address%><br><%=client.phone%>
-          </p>
-        </div>
-      </div>
-      <div class="w-1/4">
-        <p class="font-normal text-xs text-foreground flex">Date of Issue</p>
-        <p class="font-normal text-base text-foreground">
-          <%= invoice.formatted_issue_date %>
-        </p>
-        <p class="font-normal text-xs text-foreground mt-4">Due Date</p>
-        <p class="font-normal text-base text-foreground">
-          <%= invoice.formatted_due_date %>
-        </p>
-      </div>
-      <div class="w-1/3">
-        <p class="font-normal text-xs text-foreground">Invoice Number</p>
-        <p class="font-normal text-base text-foreground">
-          <%=invoice["invoice_number"]%>
-        </p>
-        <p class="font-normal text-xs text-foreground mt-4">Reference</p>
-        <p class="font-normal text-base text-foreground truncate">
-          <%=invoice["reference"]%>
-        </p>
-      </div>
-      <div class="w-1/5 text-right">
-        <p class="font-normal text-xs text-foreground text-right">Amount</p>
-        <p class="font-normal text-2xl text-foreground mt-1">
-          <%=invoice_amount%>
-        </p>
+        <% if payment_rows.any? %>
+          <div class="meta-panel">
+            <p class="section-title" style="margin-top: 0;">Payment Details</p>
+            <table class="meta-grid" role="presentation">
+              <% payment_rows.each do |label, value| %>
+                <tr>
+                  <td class="meta-label"><%= label %></td>
+                  <td class="meta-value"><%= value %></td>
+                </tr>
+              <% end %>
+            </table>
+          </div>
+        <% end %>
       </div>
     </div>
-    <div class="px-10 pt-5">
-      <table class="w-full table-fixed">
-        <thead class="my-2">
-          <tr>
-            <th class="text-muted-foreground font-normal text-xs text-left tracking-widest" style="width: 18%;">NAME</th>
-            <th class="px-3 text-muted-foreground font-normal text-xs text-left tracking-widest" style="width: 12%;">DATE</th>
-            <th class="pl-2 text-muted-foreground font-normal text-xs text-left tracking-widest" style="width: 30%;">DESCRIPTION</th>
-            <th class="text-muted-foreground font-normal text-xs text-right tracking-widest" style="width: 13%;">RATE</th>
-            <th class="text-muted-foreground font-normal text-xs text-right tracking-widest" style="width: 12%;">QTY</th>
-            <th class="text-muted-foreground font-normal text-xs text-right tracking-widest" style="width: 15%;">LINE TOTAL</th>
-          </tr>
-        </thead>
-        <tbody class="w-full">
-          <%invoice_line_items.each do |item| %>
-            <tr>
-              <td class="border-b-2 border-border px-1 py-3 font-normal text-base text-foreground text-left" style="width: 18%; word-wrap: break-word; overflow-wrap: break-word; word-break: break-word;"><%=item[:name]%></td>
-              <td class="border-b-2 border-border py-3 font-normal text-base text-foreground text-left" style="width: 12%;"><%=item[:date]%></td>
-              <td class="border-b-2 border-border px-1 pl-2 py-3 font-normal text-base text-foreground text-left" style="width: 30%; word-wrap: break-word; overflow-wrap: break-word; word-break: break-word;">
-                <%=item[:description]%>
-              </td>
-              <td class="border-b-2 border-border px-1 py-3 font-normal text-base text-foreground text-right" style="width: 13%;">
-                <%=item[:rate]%>
-              </td>
-              <td class="border-b-2 border-border px-1 py-3 font-normal text-base text-foreground text-right" style="width: 12%;">
-                <%=item[:quantity]%>
-              </td>
-              <td class="border-b-2 border-border px-1 py-3 font-normal text-base text-foreground text-right" style="width: 15%;">
-                <%=item[:line_total]%>
-              </td>
-            </tr>
-          <% end %>
-        </tbody>
-      </table>
-    </div>
-    <div class="pt-1 pb-10 pr-10 mb-5 w-full flex justify-end">
-      <table class="w-2/5">
-        <tbody>
-          <tr>
-            <td class="font-normal text-base text-foreground text-right pr-10">Sub total</td>
-            <td class="font-bold text-base text-foreground text-right "><%=sub_total%></td>
-          </tr>
-          <tr class="pb-5 border-b-2 border-border ">
-            <td class="py-2 font-normal text-base text-foreground text-right pr-10">Discount</td>
-            <td class="font-bold text-base text-foreground text-right "><%=invoice_discount%></td>
-          </tr>
-          <tr>
-            <td class="pt-4 font-normal text-base text-foreground text-right pr-10">Tax</td>
-            <td class="pt-4 font-bold text-base text-foreground text-right w-22">
-              <%=invoice_tax%>
-            </td>
-          </tr>
-          <tr>
-            <td class="pt-1 font-normal text-base text-foreground text-right pr-10">Total</td>
-            <td class="font-bold text-base text-foreground text-right">
-              <%=total%>
-            </td>
-          </tr>
-          <tr>
-            <td class="pt-1 font-normal text-base text-foreground text-right pr-10">Amount Paid</td>
-            <td class="font-bold text-base text-foreground text-right "><%=invoice_amount_paid%></td>
-          </tr>
-          <tr>
-            <td class="pt-1 font-normal text-base text-foreground text-right pr-10">Amount Due</td>
-            <td class="font-bold text-base text-foreground text-right">
-              <%=invoice_amount_due%>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <% if invoice.company.bank_name.present? || invoice.company.bank_account_number.present? || invoice.company.bank_routing_number.present? || invoice.company.bank_swift_code.present? || invoice.company.tax_id.present? || invoice.company.vat_number.present? || invoice.company.gst_number.present? %>
-      <div class="px-10 pb-10">
-        <p class="font-normal text-xs text-foreground tracking-wider">PAYMENT DETAILS</p>
-        <div class="pt-1 font-normal text-xs text-muted-foreground">
-          <% if invoice.company.bank_name.present? %><p>Bank Name: <%= invoice.company.bank_name %></p><% end %>
-          <% if invoice.company.bank_account_number.present? %><p>Account Number: <%= invoice.company.bank_account_number %></p><% end %>
-          <% if invoice.company.bank_routing_number.present? %><p>Routing Number: <%= invoice.company.bank_routing_number %></p><% end %>
-          <% if invoice.company.bank_swift_code.present? %><p>SWIFT Code: <%= invoice.company.bank_swift_code %></p><% end %>
-          <% if invoice.company.tax_id.present? %><p>Tax ID: <%= invoice.company.tax_id %></p><% end %>
-          <% if invoice.company.vat_number.present? %><p>VAT Number: <%= invoice.company.vat_number %></p><% end %>
-          <% if invoice.company.gst_number.present? %><p>GST Number: <%= invoice.company.gst_number %></p><% end %>
-        </div>
-      </div>
-    <% end %>
   </div>
 </body>
 </html>

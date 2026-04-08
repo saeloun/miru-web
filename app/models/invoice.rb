@@ -173,27 +173,33 @@ class Invoice < ApplicationRecord
 
     def calculate_amounts
       kept_line_items = invoice_line_items.reject(&:marked_for_destruction?)
-      if kept_line_items.empty?
-        return unless invoice_line_items.any?(&:marked_for_destruction?)
-
-        self.amount = 0
-        self.amount_due = 0
-        self.outstanding_amount = 0
-        return
-      end
+      return reset_amounts_if_all_line_items_removed unless kept_line_items.any?
 
       subtotal = kept_line_items.sum { |item| (item.quantity.to_f / 60) * item.rate.to_f }.round(2)
       total = (subtotal - discount.to_f + tax.to_f).round(2)
 
       self.amount = total
+      update_open_amounts(total)
+    end
 
-      if paid? || waived?
-        self.amount_due = 0
-        self.outstanding_amount = 0
-      else
-        self.amount_due = [total - amount_paid.to_f, 0].max.round(2)
-        self.outstanding_amount = amount_due
-      end
+    def reset_amounts_if_all_line_items_removed
+      return unless invoice_line_items.any?(&:marked_for_destruction?)
+
+      self.amount = 0
+      self.amount_due = 0
+      self.outstanding_amount = 0
+    end
+
+    def update_open_amounts(total)
+      return clear_open_amounts if paid? || waived?
+
+      self.amount_due = [total - amount_paid.to_f, 0].max.round(2)
+      self.outstanding_amount = amount_due
+    end
+
+    def clear_open_amounts
+      self.amount_due = 0
+      self.outstanding_amount = 0
     end
 
     def totals_recalculation_needed?

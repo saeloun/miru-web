@@ -13,8 +13,14 @@ class InvoiceLineItemPresenter
       date: invoice_line_item.formatted_date,
       description: invoice_line_item.description,
       quantity: invoice_line_item.time_spent,
-      rate: FormatAmountService.new(base_currency, invoice_line_item.rate).process,
-      line_total: FormatAmountService.new(base_currency, invoice_line_item.total_cost).process
+      rate: formatted_amount(base_currency, invoice_line_item.rate),
+      line_total: formatted_amount(base_currency, invoice_line_item.total_cost)
     }
   end
+
+  private
+
+    def formatted_amount(currency, amount)
+      FormatAmountService.new(currency, amount).process
+    end
 end

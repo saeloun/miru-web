@@ -5,21 +5,15 @@ class InvoiceMailer < ApplicationMailer
 
   def invoice
     @invoice = Invoice.find(params[:invoice_id])
-    recipients = params[:recipients]
-    @message = params[:message]
-    @invoice_url = "#{ENV['APP_BASE_URL']}/invoices/#{@invoice.external_view_key}/view"
-    @company = @invoice.company
-    @company_logo = company_logo
-    @amount = FormatAmountService.new(@invoice.currency, @invoice.amount).process
+    setup_invoice_email(message: params[:message])
 
     if can_send_invoice?
       pdf = InvoicePayment::PdfGeneration.process(@invoice, @company_logo, root_url)
       attachments["invoice_#{@invoice.invoice_number}.pdf"] = pdf
 
-      mail(
-        to: recipients,
-        subject: params[:subject].presence || I18n.t("mailers.invoice_mailer.invoice.subject", invoice_number: @invoice.invoice_number),
-        reply_to: ENV["REPLY_TO_EMAIL"]
+      deliver_invoice_email(
+        recipients: params[:recipients],
+        subject: params[:subject].presence || I18n.t("mailers.invoice_mailer.invoice.subject", invoice_number: @invoice.invoice_number)
       )
 
       @invoice.update_columns(sent_at: DateTime.current)
@@ -28,40 +22,45 @@ class InvoiceMailer < ApplicationMailer
 
   def send_invoice
     @invoice = params[:invoice]
-    recipients = params[:recipients]
-    @message = params[:message]
-
-    # Decode PDF data if it was encoded as base64
-    pdf_data = if params[:pdf_encoded]
-      Base64.strict_decode64(params[:pdf_data])
-    else
-      params[:pdf_data]
-    end
-
-    @invoice_url = "#{ENV['APP_BASE_URL']}/invoices/#{@invoice.external_view_key}/view"
-    @company = @invoice.company
-    @company_logo = @invoice.company.logo.attached? ?
-      polymorphic_url(@invoice.company.logo) : ""
-    @amount = FormatAmountService.new(@invoice.currency, @invoice.amount).process
-
-    # Attach the PDF
+    setup_invoice_email(message: params[:message])
     attachments["#{@invoice.invoice_number}.pdf"] = {
       mime_type: "application/pdf",
-      content: pdf_data
+      content: decoded_pdf_data
     }
 
-    mail(
-      to: recipients,
-      subject: params[:subject].presence || I18n.t("mailers.invoice_mailer.send_invoice.subject", invoice_number: @invoice.invoice_number, company_name: @invoice.company.name),
-      reply_to: ENV["REPLY_TO_EMAIL"]
+    deliver_invoice_email(
+      recipients: params[:recipients],
+      subject: params[:subject].presence || I18n.t("mailers.invoice_mailer.send_invoice.subject", invoice_number: @invoice.invoice_number, company_name: @company.name)
     )
   end
 
   private
 
+    def setup_invoice_email(message:)
+      @message = message
+      @company = @invoice.company
+      @company_logo = company_logo
+      @invoice_url = "#{ENV['APP_BASE_URL']}/invoices/#{@invoice.external_view_key}/view"
+      @amount = FormatAmountService.new(@invoice.currency, @invoice.amount).process
+    end
+
+    def deliver_invoice_email(recipients:, subject:)
+      mail(
+        to: recipients,
+        subject: subject,
+        reply_to: ENV["REPLY_TO_EMAIL"]
+      )
+    end
+
+    def decoded_pdf_data
+      return params[:pdf_data] unless params[:pdf_encoded]
+
+      Base64.strict_decode64(params[:pdf_data])
+    end
+
     def company_logo
-      @invoice.company.logo.attached? ?
-        polymorphic_url(@invoice.company.logo) :
+      @company.logo.attached? ?
+        polymorphic_url(@company.logo) :
         ""
     end
 
@@ -70,9 +69,9 @@ class InvoiceMailer < ApplicationMailer
     end
 
     def update_status
-      if @invoice.draft? || @invoice.viewed? || @invoice.declined? || @invoice.sending?
-        @invoice.sent!
-        @invoice.update_timesheet_entry_status!
-      end
+      return unless @invoice.draft? || @invoice.viewed? || @invoice.declined? || @invoice.sending?
+
+      @invoice.sent!
+      @invoice.update_timesheet_entry_status!
     end
 end
