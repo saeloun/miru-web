@@ -72,7 +72,27 @@ class Invoice < ApplicationRecord
   delegate :logo_url, to: :client, prefix: :client
 
   ARCHIVED_PREFIX = "ARC"
+  SYNC_AUDITED_ATTRIBUTES = %w[amount amount_due base_currency_amount exchange_rate exchange_rate_date].freeze
 
+  def sync_totals_from_line_items!(line_items = nil)
+    attrs = calculated_totals_from_line_items(line_items || invoice_line_items.reload)
+    return false unless totals_differ?(attrs)
+
+    previous_values = attributes.slice(*SYNC_AUDITED_ATTRIBUTES, "outstanding_amount")
+    assign_attributes(attrs)
+    send(:calculate_base_currency_amount)
+    sync_attributes = attributes.slice(*SYNC_AUDITED_ATTRIBUTES, "outstanding_amount")
+
+    update_columns(sync_attributes.merge("updated_at" => Time.current))
+    write_sync_audit(previous_values, sync_attributes)
+    clear_changes_information
+
+    true
+  end
+
+  def totals_stale?(line_items = nil)
+    totals_differ?(calculated_totals_from_line_items(line_items || invoice_line_items.reload))
+  end
 
   def recently_sent_mail?
     sent_at.nil? || (sent_at && !(sent_at > 1.minute.ago))
@@ -175,11 +195,7 @@ class Invoice < ApplicationRecord
       kept_line_items = invoice_line_items.reject(&:marked_for_destruction?)
       return reset_amounts_if_all_line_items_removed unless kept_line_items.any?
 
-      subtotal = kept_line_items.sum { |item| (item.quantity.to_f / 60) * item.rate.to_f }.round(2)
-      total = (subtotal - discount.to_f + tax.to_f).round(2)
-
-      self.amount = total
-      update_open_amounts(total)
+      assign_attributes(calculated_totals_from_line_items(kept_line_items))
     end
 
     def reset_amounts_if_all_line_items_removed
@@ -209,6 +225,44 @@ class Invoice < ApplicationRecord
         will_save_change_to_amount_paid? ||
         will_save_change_to_status? ||
         (association(:invoice_line_items).loaded? && invoice_line_items.any?(&:changed_for_autosave?))
+    end
+
+    def calculated_totals_from_line_items(line_items)
+      subtotal = line_items.sum { |item| (item.quantity.to_f / 60) * item.rate.to_f }.round(2)
+      total = (subtotal - discount.to_f + tax.to_f).round(2)
+
+      attrs = { amount: total }
+
+      if paid? || waived?
+        attrs[:amount_due] = 0
+        attrs[:outstanding_amount] = 0
+      else
+        open_amount = [total - amount_paid.to_f, 0].max.round(2)
+        attrs[:amount_due] = open_amount
+        attrs[:outstanding_amount] = open_amount
+      end
+
+      attrs
+    end
+
+    def totals_differ?(attrs)
+      amount.to_f.round(2) != attrs[:amount].to_f.round(2) ||
+        amount_due.to_f.round(2) != attrs[:amount_due].to_f.round(2) ||
+        outstanding_amount.to_f.round(2) != attrs[:outstanding_amount].to_f.round(2)
+    end
+
+    def write_sync_audit(previous_values, current_values)
+      audited_changes = SYNC_AUDITED_ATTRIBUTES.each_with_object({}) do |attribute, changes|
+        previous_value = previous_values[attribute]
+        current_value = current_values[attribute]
+        next if previous_value == current_value
+
+        changes[attribute] = [previous_value, current_value]
+      end
+
+      return if audited_changes.empty?
+
+      write_audit(action: "update", audited_changes:)
     end
 
     def update_invoice_number

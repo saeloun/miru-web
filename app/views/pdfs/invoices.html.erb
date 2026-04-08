@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <title>Invoice</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet">
   <style>
     html {
       -webkit-print-color-adjust: exact;
@@ -15,27 +15,39 @@
       background: #eef2f6;
       color: #0f172a;
       font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      font-size: 13px;
-      line-height: 1.55;
+      font-size: 12px;
+      line-height: 1.45;
     }
 
     .invoice-shell {
-      padding: 20px;
+      padding: 16px;
     }
 
     .invoice-card {
       background: #ffffff;
       border: 1px solid #dbe3ec;
-      border-radius: 28px;
+      border-radius: 22px;
       overflow: hidden;
       box-shadow: 0 16px 40px rgba(15, 23, 42, 0.08);
     }
 
     .invoice-hero {
-      padding: 28px 32px 30px;
+      padding: 18px 28px 22px;
       background:
-        linear-gradient(135deg, #0f172a 0%, #1e293b 58%, #334155 100%);
-      color: #f8fafc;
+        linear-gradient(180deg, #fbfcfe 0%, #f8fafc 100%);
+      border-bottom: 1px solid #e2e8f0;
+      color: #0f172a;
+      position: relative;
+    }
+
+    .invoice-hero::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 10px;
+      background: linear-gradient(90deg, #111111 0%, #3f3f46 52%, #f3f4f6 100%);
     }
 
     .invoice-hero-row {
@@ -58,168 +70,175 @@
     }
 
     .invoice-logo-cell {
-      width: 72px;
-      padding-right: 16px;
+      width: 58px;
+      padding-right: 14px;
     }
 
     .invoice-logo {
       display: block;
-      width: 72px;
-      height: 72px;
+      width: 58px;
+      height: 58px;
       object-fit: contain;
-      border-radius: 20px;
-      background: rgba(255, 255, 255, 0.96);
-      padding: 8px;
+      border-radius: 16px;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      padding: 6px;
       box-sizing: border-box;
     }
 
     .invoice-kicker {
-      margin: 0 0 10px;
-      color: rgba(226, 232, 240, 0.86);
-      font-size: 10px;
+      margin: 2px 0 8px;
+      color: #64748b;
+      font-size: 9px;
       font-weight: 700;
-      letter-spacing: 0.24em;
+      letter-spacing: 0.22em;
       text-transform: uppercase;
     }
 
     .invoice-company {
       margin: 0;
-      font-size: 32px;
-      font-weight: 800;
-      line-height: 0.96;
+      font-family: "Cormorant Garamond", Georgia, serif;
+      font-size: 40px;
+      font-weight: 700;
+      line-height: 0.9;
       letter-spacing: -0.05em;
     }
 
     .invoice-company-meta {
-      margin: 12px 0 0;
-      color: rgba(226, 232, 240, 0.92);
-      font-size: 14px;
+      margin: 10px 0 0;
+      color: #475569;
+      font-size: 13px;
     }
 
     .invoice-status {
-      width: 200px;
+      width: 210px;
       vertical-align: top;
       text-align: right;
     }
 
     .invoice-status-pill {
       display: inline-block;
-      padding: 9px 14px;
+      padding: 7px 12px;
       border-radius: 999px;
-      background: rgba(255, 255, 255, 0.14);
-      border: 1px solid rgba(255, 255, 255, 0.18);
-      font-size: 10px;
+      background: #eff3f8;
+      border: 1px solid #d8e0ea;
+      font-size: 9px;
       font-weight: 700;
-      letter-spacing: 0.18em;
+      letter-spacing: 0.16em;
       text-transform: uppercase;
-      color: #f8fafc;
+      color: #334155;
     }
 
     .invoice-status-amount {
-      margin: 22px 0 0;
-      font-size: 40px;
-      font-weight: 800;
-      line-height: 0.96;
-      letter-spacing: -0.06em;
+      margin: 14px 0 0;
+      font-family: "Cormorant Garamond", Georgia, serif;
+      font-size: 58px;
+      font-weight: 700;
+      line-height: 0.88;
+      letter-spacing: -0.04em;
     }
 
     .invoice-status-label {
-      margin: 10px 0 0;
-      color: rgba(226, 232, 240, 0.88);
-      font-size: 11px;
+      margin: 6px 0 0;
+      color: #64748b;
+      font-size: 9px;
       font-weight: 700;
-      letter-spacing: 0.16em;
+      letter-spacing: 0.14em;
       text-transform: uppercase;
     }
 
     .invoice-body {
-      padding: 28px 32px 32px;
+      padding: 18px 24px 22px;
     }
 
     .strip-grid {
       width: 100%;
-      border-collapse: separate;
-      border-spacing: 12px;
-      margin: -12px -12px 6px;
+      border-collapse: collapse;
+      margin: 0 0 4px;
+      border: 1px solid #e2e8f0;
+      border-radius: 18px;
+      overflow: hidden;
     }
 
     .strip-cell {
       width: 25%;
       vertical-align: top;
+      border-right: 1px solid #e2e8f0;
+    }
+
+    .strip-cell:last-child {
+      border-right: none;
+    }
+
+    .strip-label {
+      margin: 0 0 6px;
+      color: #64748b;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
     }
 
     .strip-card {
       height: 100%;
-      padding: 16px 18px;
-      border: 1px solid #e2e8f0;
-      border-radius: 20px;
-      background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
-    }
-
-    .strip-label {
-      margin: 0 0 8px;
-      color: #64748b;
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
+      padding: 12px 14px;
+      background: linear-gradient(180deg, #ffffff 0%, #fbfcfe 100%);
     }
 
     .strip-value {
       margin: 0;
       color: #0f172a;
-      font-size: 18px;
+      font-size: 14px;
       font-weight: 700;
-      line-height: 1.3;
+      line-height: 1.22;
       word-break: break-word;
     }
 
     .strip-subvalue {
-      margin: 7px 0 0;
+      margin: 6px 0 0;
       color: #475569;
-      font-size: 12px;
-      line-height: 1.5;
+      font-size: 10px;
+      line-height: 1.35;
       word-break: break-word;
     }
 
     .section {
-      margin-top: 24px;
+      margin-top: 16px;
     }
 
     .section-title {
-      margin: 0 0 12px;
+      margin: 0 0 10px;
       color: #64748b;
-      font-size: 10px;
+      font-size: 9px;
       font-weight: 800;
-      letter-spacing: 0.22em;
+      letter-spacing: 0.2em;
       text-transform: uppercase;
     }
 
     .ledger-table {
       width: 100%;
       border-collapse: collapse;
-      border: 1px solid #e2e8f0;
-      border-radius: 22px;
-      overflow: hidden;
+      border-top: 1px solid #dbe3ec;
+      border-bottom: 1px solid #dbe3ec;
     }
 
     .ledger-table thead th {
-      padding: 14px 16px;
-      background: #f8fafc;
+      padding: 9px 10px;
+      background: #fbfcfd;
       color: #64748b;
-      font-size: 10px;
+      font-size: 9px;
       font-weight: 800;
-      letter-spacing: 0.18em;
+      letter-spacing: 0.16em;
       text-transform: uppercase;
       text-align: left;
       border-bottom: 1px solid #e2e8f0;
     }
 
     .ledger-table tbody td {
-      padding: 16px;
+      padding: 10px 10px;
       border-bottom: 1px solid #e2e8f0;
       color: #0f172a;
-      font-size: 13px;
+      font-size: 12px;
       vertical-align: top;
       word-break: break-word;
     }
@@ -240,31 +259,33 @@
       color: #475569;
     }
 
-    .totals-wrap {
+    .summary-grid {
       width: 100%;
-      margin-top: 24px;
-      border-collapse: collapse;
+      margin-top: 18px;
+      border-collapse: separate;
+      border-spacing: 16px 0;
     }
 
-    .totals-spacer {
-      width: 48%;
-    }
-
-    .totals-panel-cell {
-      width: 52%;
+    .summary-cell {
+      width: 50%;
       vertical-align: top;
+    }
+
+    .summary-card {
+      height: 100%;
+      border-top: 2px solid #dbe3ec;
+      background: transparent;
+      page-break-inside: avoid;
     }
 
     .totals-panel {
       width: 100%;
-      border: 1px solid #dbe3ec;
-      border-radius: 24px;
-      background: linear-gradient(180deg, #fbfdff 0%, #f8fafc 100%);
+      border-collapse: collapse;
     }
 
     .totals-panel td {
-      padding: 14px 22px;
-      font-size: 14px;
+      padding: 9px 0;
+      font-size: 13px;
       border-bottom: 1px solid #e2e8f0;
     }
 
@@ -274,6 +295,8 @@
 
     .totals-label {
       color: #475569;
+      text-align: right;
+      padding-right: 14px !important;
     }
 
     .totals-value {
@@ -286,28 +309,31 @@
     .totals-grand td {
       background: #0f172a;
       color: #f8fafc;
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 700;
+      padding: 12px 14px;
+    }
+
+    .totals-grand .totals-label,
+    .totals-grand .totals-value {
+      color: #f8fafc;
     }
 
     .meta-panel {
-      margin-top: 24px;
-      padding: 18px 20px;
-      border: 1px solid #e2e8f0;
-      border-radius: 22px;
-      background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+      padding: 14px 0 0;
+      page-break-inside: avoid;
     }
 
     .meta-grid {
       width: 100%;
       border-collapse: separate;
-      border-spacing: 0 10px;
+      border-spacing: 0 8px;
     }
 
     .meta-label {
-      width: 180px;
+      width: 118px;
       color: #64748b;
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 700;
       letter-spacing: 0.12em;
       text-transform: uppercase;
@@ -316,9 +342,16 @@
 
     .meta-value {
       color: #0f172a;
-      font-size: 13px;
+      font-size: 12px;
       vertical-align: top;
       word-break: break-word;
+    }
+
+    .editorial-note {
+      margin: 12px 0 0;
+      color: #64748b;
+      font-size: 10px;
+      line-height: 1.5;
     }
   </style>
 </head>
@@ -427,12 +460,30 @@
               <% end %>
             </tbody>
           </table>
+          <p class="editorial-note">
+            Prepared by <%= invoice.company.name %>, issued <%= invoice.formatted_issue_date %>, due <%= invoice.formatted_due_date %>.
+          </p>
         </div>
 
-        <table class="totals-wrap" role="presentation">
+        <table class="summary-grid" role="presentation">
           <tr>
-            <td class="totals-spacer"></td>
-            <td class="totals-panel-cell">
+            <td class="summary-cell">
+              <% if payment_rows.any? %>
+                <div class="summary-card meta-panel">
+                  <p class="section-title" style="margin-top: 0;">Payment Details</p>
+                  <table class="meta-grid" role="presentation">
+                    <% payment_rows.each do |label, value| %>
+                      <tr>
+                        <td class="meta-label"><%= label %></td>
+                        <td class="meta-value"><%= value %></td>
+                      </tr>
+                    <% end %>
+                  </table>
+                </div>
+              <% end %>
+            </td>
+            <td class="summary-cell">
+              <div class="summary-card">
               <table class="totals-panel" role="presentation">
                 <tr>
                   <td class="totals-label">Sub total</td>
@@ -459,23 +510,10 @@
                   <td class="totals-value"><%= invoice_amount_due %></td>
                 </tr>
               </table>
+              </div>
             </td>
           </tr>
         </table>
-
-        <% if payment_rows.any? %>
-          <div class="meta-panel">
-            <p class="section-title" style="margin-top: 0;">Payment Details</p>
-            <table class="meta-grid" role="presentation">
-              <% payment_rows.each do |label, value| %>
-                <tr>
-                  <td class="meta-label"><%= label %></td>
-                  <td class="meta-value"><%= value %></td>
-                </tr>
-              <% end %>
-            </table>
-          </div>
-        <% end %>
       </div>
     </div>
   </div>

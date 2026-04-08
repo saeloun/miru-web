@@ -152,6 +152,34 @@ RSpec.describe "Expenses", type: :system, js: true do
     end
   end
 
+  it "shows the submitter name for reimbursements admins can review" do
+    employee_user = create(
+      :user,
+      current_workspace_id: company.id,
+      first_name: "Jamie",
+      last_name: "Rivers"
+    )
+    create(:employment, company:, user: employee_user)
+    employee_user.add_role :employee, company
+    create(:expense,
+      company:,
+      user: employee_user,
+      category_name: "Travel",
+      vendor_name: "Cafe 21",
+      amount: 42.50,
+      expense_type: :business,
+      description: "Mileage reimbursement",
+      date: Date.current)
+
+    with_forgery_protection do
+      visit "/expenses"
+
+      expect(page).to have_css("#react-root", wait: 10)
+      expect(page).to have_content("SUBMITTED BY", wait: 10)
+      expect(page).to have_content("Jamie Rivers", wait: 10)
+    end
+  end
+
   it "accepts currency symbols in the amount field when adding an expense" do
     with_forgery_protection do
       visit "/expenses"
