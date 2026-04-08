@@ -1,0 +1,53 @@
+name: Reek
+
+on:
+  push:
+    branches: [develop, main, stable-3-0, production]
+    paths:
+      - "app/mailers/**/*.rb"
+      - "app/models/**/*.rb"
+      - "app/policies/**/*.rb"
+      - "app/presenters/**/*.rb"
+      - "app/services/**/*.rb"
+      - ".reek.yml"
+      - "Gemfile"
+      - "Gemfile.lock"
+  pull_request:
+    branches: [develop, main, production]
+    types: [labeled, opened, synchronize, reopened]
+    paths:
+      - "app/mailers/**/*.rb"
+      - "app/models/**/*.rb"
+      - "app/policies/**/*.rb"
+      - "app/presenters/**/*.rb"
+      - "app/services/**/*.rb"
+      - ".reek.yml"
+      - "Gemfile"
+      - "Gemfile.lock"
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  code-smells:
+    name: Code smells
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "4.0.1"
+          bundler-cache: true
+          bundler: latest
+
+      - name: Run reek
+        run: |
+          bundle exec reek app/mailers app/models app/policies app/presenters app/services

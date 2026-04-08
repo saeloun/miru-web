@@ -159,6 +159,7 @@ group :development, :test, :ci do
   gem "rubocop-capybara", require: false
   gem "rubocop-factory_bot", require: false
   gem "rubocop-thread_safety", require: false
+  gem "reek", require: false
 
   # Use RSpec as the testing framework
   gem "rspec-rails", "~> 8.0"
