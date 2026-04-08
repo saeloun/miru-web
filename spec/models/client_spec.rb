@@ -59,7 +59,7 @@ RSpec.describe Client, type: :model do
   describe "Public methods" do
     describe "#total_hours_logged" do
       let(:company) { create(:company) }
-      let(:user) { create(:user) }
+      let(:user) { create(:user, email: "client-spec-hours@example.com") }
       let(:client) { create(:client, company:) }
       let(:project_1) { create(:project, client:) }
       let(:project_2) { create(:project, client:) }
@@ -122,7 +122,7 @@ RSpec.describe Client, type: :model do
 
     describe "#strip_attributes" do
       let(:company) { create(:company) }
-      let(:user) { create(:user) }
+      let(:user) { create(:user, email: "client-spec-strip@example.com") }
 
       it "strips the whitespaces for the client name" do
         client = build(:client, company:, name: " Client with whitespace ")
@@ -133,7 +133,7 @@ RSpec.describe Client, type: :model do
 
     describe "#project_details" do
       let(:company) { create(:company) }
-      let(:user) { create(:user) }
+      let(:user) { create(:user, email: "client-spec-project-details@example.com") }
       let(:client) { create(:client, company:) }
       let(:project_1) { create(:project, client:) }
       let(:project_2) { create(:project, client:) }
@@ -187,7 +187,7 @@ RSpec.describe Client, type: :model do
 
     describe "#client_overdue_and_outstanding_calculation" do
       let(:company) { create(:company) }
-      let(:user) { create(:user) }
+      let(:user) { create(:user, email: "client-spec-rate-this-month@example.com") }
       let(:client) { create(:client, company:) }
 
       before do
@@ -216,7 +216,7 @@ RSpec.describe Client, type: :model do
 
     describe "#register_on_stripe!" do
       let(:company) { create(:company) }
-      let(:user) { create(:user) }
+      let(:user) { create(:user, email: "client-spec-total-revenue@example.com") }
       let(:client) { create(:client, company:) }
 
       context "when associated stripe connected account doesn't exist" do

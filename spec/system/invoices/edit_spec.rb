@@ -251,4 +251,55 @@ RSpec.describe "Invoice editing", type: :system, js: true do
       )
     end
   end
+
+  it "saves a reopened draft invoice using the client's updated currency" do
+    invoice = create(:invoice,
+      company:,
+      client:,
+      status: :draft,
+      currency: "USD",
+      invoice_number: "INV-EDIT-DRAFT-EUR-001")
+    create(:invoice_line_item,
+      invoice:,
+      timesheet_entry: nil,
+      name: "Draft currency item",
+      description: "Reopened draft",
+      rate: 150,
+      quantity: 120)
+    client.update!(currency: "EUR")
+    create(:exchange_rate, from_currency: "EUR", to_currency: "USD", rate: 1.2, date: Date.current)
+
+    with_forgery_protection do
+      visit_invoice_editor(invoice)
+
+      expect_invoice_preview_totals(
+        currency: "EUR",
+        subtotal: 300.0,
+        total_due: 300.0
+      )
+      fill_in "reference", with: "DRAFTEUR"
+
+      save_invoice
+
+      expect(last_invoice_mutation_response).to include(
+        "method" => "PATCH",
+        "status" => 200,
+        "ok" => true
+      ), -> { last_invoice_mutation_response.inspect }
+      expect(page).to have_text("Invoice updated successfully", wait: 10)
+
+      response_body = JSON.parse(last_invoice_mutation_response.fetch("body"))
+      invoice.reload
+
+      expect(invoice.currency).to eq("EUR")
+      expect(invoice.reference).to eq("DRAFTEUR")
+      expect(response_body["currency"]).to eq("EUR")
+      expect(page).to have_current_path("/invoices/#{invoice.id}/edit", ignore_query: true, wait: 10)
+      expect_invoice_preview_totals(
+        currency: "EUR",
+        subtotal: 300.0,
+        total_due: 300.0
+      )
+    end
+  end
 end

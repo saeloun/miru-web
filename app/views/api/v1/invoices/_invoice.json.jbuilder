@@ -9,6 +9,7 @@ json.issue_date invoice.issue_date
 json.due_date invoice.due_date
 json.reference invoice.reference
 json.amount invoice.amount
+json.currency(invoice.draft? && client.currency.present? ? client.currency : invoice.currency)
 json.outstanding_amount invoice.outstanding_amount
 json.amount_paid invoice.amount_paid
 json.amount_due invoice.amount_due
@@ -29,4 +30,5 @@ json.client do
   json.id client.id
   json.name client.name
   json.address client.current_address
+  json.currency client.currency
 end

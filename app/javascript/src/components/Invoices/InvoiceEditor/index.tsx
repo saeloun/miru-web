@@ -128,6 +128,14 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
     notes: invoice?.notes || "",
     discount: invoice?.discount || 0,
     tax: invoice?.tax || 0,
+    currency:
+      invoice?.currency ||
+      clients.find(
+        c => String(c.id) === String(invoice?.clientId || initialClientId)
+      )?.currency ||
+      company?.baseCurrency ||
+      company?.base_currency ||
+      "USD",
   });
 
   const [lineItems, setLineItems] = useState([]);
@@ -204,6 +212,36 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
     selectedClient?.id,
     selectedClient?.previousInvoiceNumber,
     formData.invoiceNumber,
+  ]);
+
+  useEffect(() => {
+    if (!selectedClient?.id) return;
+
+    if (invoice?.id && formData.status !== "draft") return;
+
+    const nextCurrency =
+      selectedClient.currency ||
+      selectedClient.clientCurrency ||
+      company?.baseCurrency ||
+      company?.base_currency ||
+      "USD";
+
+    setFormData(currentFormData =>
+      currentFormData.currency === nextCurrency
+        ? currentFormData
+        : {
+            ...currentFormData,
+            currency: nextCurrency,
+          }
+    );
+  }, [
+    invoice?.id,
+    formData.status,
+    selectedClient?.id,
+    selectedClient?.currency,
+    selectedClient?.clientCurrency,
+    company?.baseCurrency,
+    company?.base_currency,
   ]);
 
   const committedLineItems = useMemo(
@@ -341,7 +379,7 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
     ...formData,
     amount: total,
     subtotal,
-    currency: company?.baseCurrency || "USD",
+    currency: formData.currency,
     client: selectedClient,
     lineItems: activeLineItems,
     company: company
@@ -529,7 +567,7 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
                       setFormData({ ...formData, clientId: value })
                     }
                   >
-                    <SelectTrigger>
+                    <SelectTrigger data-testid="invoice-client-select">
                       <SelectValue placeholder="Select a client" />
                     </SelectTrigger>
                     <SelectContent>
@@ -621,7 +659,7 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
               <CardContent className="p-0">
                 <div className="px-6 py-4">
                   <InvoiceTable
-                    clientCurrency={company?.baseCurrency || "USD"}
+                    clientCurrency={formData.currency}
                     dateFormat={company?.dateFormat || "MM/dd/yyyy"}
                     selectedClient={selectedClient}
                     lineItems={lineItems}

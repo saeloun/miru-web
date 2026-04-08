@@ -135,6 +135,7 @@ const InvoiceTable = ({
       return (
         <ManualEntry
           addNew={addNew}
+          clientCurrency={clientCurrency}
           dateFormat={dateFormat}
           getNewLineItemDropdown={getNewLineItemDropdown}
           lineItem={lineItem}
