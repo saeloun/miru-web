@@ -237,10 +237,10 @@ RSpec.describe Project, type: :model do
     end
 
     it "return outstanding_amount overdue_amount amounts" do
-      outstanding_amount = sent_invoice1.amount +
-        viewed_invoice1.amount +
-        overdue_invoice1.amount +
-        overdue_invoice2.amount
+      outstanding_amount = sent_invoice1.reload.amount +
+        viewed_invoice1.reload.amount +
+        overdue_invoice1.reload.amount +
+        overdue_invoice2.reload.amount
       overdue_amount = overdue_invoice1.amount + overdue_invoice2.amount
       overdue_and_outstanding_amounts = project.overdue_and_outstanding_amounts
 

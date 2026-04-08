@@ -56,7 +56,11 @@ module PdfGeneration
         parsed_timeout = configured_timeout.to_i
         return parsed_timeout if configured_timeout.present? && parsed_timeout.positive?
 
-        ENV["CI"].present? ? 30 : 10
+        running_in_parallel_tests? || ENV["CI"].present? ? 30 : 10
+      end
+
+      def running_in_parallel_tests?
+        ENV.key?("TEST_ENV_NUMBER")
       end
 
       def browser_options

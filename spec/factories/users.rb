@@ -49,8 +49,8 @@
 #  fk_rails_...  (current_workspace_id => companies.id)
 #
 FactoryBot.define do
-  sequence(:user_email) { |n| "user#{n}@example.com" }
-  sequence(:personal_email) { |n| "personal#{n}@example.com" }
+  sequence(:user_email) { |n| "user-#{Process.pid}-#{n}@example.com" }
+  sequence(:personal_email) { |n| "personal-#{Process.pid}-#{n}@example.com" }
 
   factory :user do
     first_name { Faker::Name.first_name.gsub(/\W/, "") }

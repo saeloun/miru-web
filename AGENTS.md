@@ -68,6 +68,7 @@ Scope: entire repository.
 - Do not add code comments unless explicitly asked.
 - Keep controllers thin and move business logic to models/services where appropriate.
 - Respect existing authorization patterns unless the task is to change them.
+- Prefer Faker-backed values in factories going forward unless a spec needs a fixed literal for the assertion.
 
 ## Git
 

@@ -109,6 +109,28 @@ RSpec.describe PdfGeneration::BaseService do
       end
     end
 
+    it "uses a longer process timeout in parallel test workers" do
+      original_test_env_number = ENV["TEST_ENV_NUMBER"]
+      original_ferrum_process_timeout = ENV["FERRUM_PROCESS_TIMEOUT"]
+
+      begin
+        ENV["TEST_ENV_NUMBER"] = ""
+        ENV.delete("FERRUM_PROCESS_TIMEOUT")
+        allow(Ferrum::Browser).to receive(:new).and_return(instance_double(Ferrum::Browser, quit: true))
+
+        service.send(:create_browser)
+
+        expect(Ferrum::Browser).to have_received(:new).with(hash_including(process_timeout: 30))
+      ensure
+        if original_test_env_number.nil?
+          ENV.delete("TEST_ENV_NUMBER")
+        else
+          ENV["TEST_ENV_NUMBER"] = original_test_env_number
+        end
+        ENV["FERRUM_PROCESS_TIMEOUT"] = original_ferrum_process_timeout
+      end
+    end
+
     it "allows overriding the process timeout via environment" do
       original_ferrum_process_timeout = ENV["FERRUM_PROCESS_TIMEOUT"]
 
