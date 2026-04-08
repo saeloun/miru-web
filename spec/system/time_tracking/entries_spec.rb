@@ -15,6 +15,13 @@ RSpec.describe "Time Tracking Entries", type: :system, js: true do
     sign_in(user)
   end
 
+  def open_week_review
+    visit "/time-tracking"
+    expect(page).to have_css("#react-root", wait: 10)
+    expect(page).to have_css("[data-testid='time-review-week']", wait: 10)
+    find("[data-testid='time-review-week']").click
+  end
+
   it "loads the time tracking page and primary action" do
     with_forgery_protection do
       visit "/time-tracking"
@@ -38,14 +45,12 @@ RSpec.describe "Time Tracking Entries", type: :system, js: true do
 
     it "shows the entry with client, project, note, and duration" do
       with_forgery_protection do
-        visit "/time-tracking"
-
-        expect(page).to have_css("#react-root", wait: 10)
+        open_week_review
         expect(page).to have_content("Alpha Client", wait: 10)
         expect(page).to have_content("Alpha Project", wait: 10)
         expect(page).to have_content("Worked on feature implementation", wait: 10)
         expect(page).to have_content("08:00", wait: 10)
-        expect(page).to have_content("Day Total", wait: 10)
+        expect(page).to have_content("Week Total", wait: 10)
           .or have_content("8h", wait: 10)
       end
     end
@@ -61,8 +66,7 @@ RSpec.describe "Time Tracking Entries", type: :system, js: true do
       )
 
       with_forgery_protection do
-        visit "/time-tracking"
-
+        open_week_review
         expect(page).to have_content("Codex via MCP", wait: 10)
         expect(page).to have_content("gstack-qa", wait: 10)
         expect(page).to have_content("github", wait: 10)
@@ -71,8 +75,7 @@ RSpec.describe "Time Tracking Entries", type: :system, js: true do
 
     it "resumes the timer from an existing entry" do
       with_forgery_protection do
-        visit "/time-tracking"
-
+        open_week_review
         find("[data-testid='resume-timer-entry']", wait: 10).click
 
         expect(page).to have_css("[data-testid='inline-web-timer']", wait: 10)
@@ -99,9 +102,7 @@ RSpec.describe "Time Tracking Entries", type: :system, js: true do
 
     it "shows entries from multiple clients and projects" do
       with_forgery_protection do
-        visit "/time-tracking"
-
-        expect(page).to have_css("#react-root", wait: 10)
+        open_week_review
         expect(page).to have_content("Alpha Client", wait: 10)
         expect(page).to have_content("Beta Client", wait: 10)
         expect(page).to have_content("Alpha Project", wait: 10)
@@ -123,15 +124,12 @@ RSpec.describe "Time Tracking Entries", type: :system, js: true do
         duration: 360.0,
         note: "Frontend development work",
         work_date: Date.current)
-      Warden.test_reset!
       sign_in(employee)
     end
 
     it "shows the employee's own entry context" do
       with_forgery_protection do
-        visit "/time-tracking"
-
-        expect(page).to have_css("#react-root", wait: 10)
+        open_week_review
         expect(page).to have_content("Alpha Project", wait: 10)
         expect(page).to have_content("Frontend development work", wait: 10)
         expect(page).to have_content("06:00", wait: 10)

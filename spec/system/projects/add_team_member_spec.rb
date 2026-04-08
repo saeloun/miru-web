@@ -23,7 +23,7 @@ RSpec.describe "Add team member to project", type: :system, js: true do
         page.find(:xpath, "//tr[contains(., '#{project.name}')]").hover.click
         expect(page).to have_content(project.name, wait: 10)
         click_button "addRemoveTeamMembers"
-        expect(page).to have_button("Save team members", disabled: true, wait: 10)
+        expect(page).to have_button("Save Members", disabled: true, wait: 10)
       end
     end
   end
@@ -48,7 +48,7 @@ RSpec.describe "Add team member to project", type: :system, js: true do
         expect(page).to have_content(project.name, wait: 10)
         click_button "addRemoveTeamMembers"
         first(:button, "removeMember").click
-        click_button "Save team members"
+        click_button "Save Members"
 
         expect(page).not_to have_content(user_2.first_name)
         expect(page).to have_content(project.name)
@@ -63,7 +63,7 @@ RSpec.describe "Add team member to project", type: :system, js: true do
         expect(page).to have_content(project.name, wait: 10)
         click_button "addRemoveTeamMembers"
         first(:fillable_field, "Hourly rate").set("500")
-        click_button "Save team members"
+        click_button "Save Members"
 
         expect(page).to have_content(user_2.first_name)
         expect(page).to have_content("500")

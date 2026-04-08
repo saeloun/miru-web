@@ -29,7 +29,7 @@ RSpec.describe "Auth flows", type: :system, js: true do
       visit "/password/new"
 
       fill_in "email", with: user.email
-      click_button "Send password reset link"
+      click_button "Send Reset Link"
 
       expect(page).to have_text("Password reset link sent")
       expect(page).to have_text(user.email)
@@ -47,7 +47,7 @@ RSpec.describe "Auth flows", type: :system, js: true do
       expect(page).to have_text("Reset Password")
       fill_in "password", with: "Password1!"
       fill_in "confirm_password", with: "Password1!"
-      click_button "Reset password"
+      click_button "Reset Password"
 
       expect(page).to have_current_path("/").or have_current_path("/dashboard").or have_current_path("/time-tracking")
     end

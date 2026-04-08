@@ -92,7 +92,7 @@ class Expense < ApplicationRecord
     return [] if !receipts.attached?
 
     receipts.includes(:blob).references(:blob).order(:filename).map do |image|
-      Rails.application.routes.url_helpers.polymorphic_url(image, only_path: true)
+      Rails.application.routes.url_helpers.rails_blob_path(image, only_path: true)
     end
   end
 

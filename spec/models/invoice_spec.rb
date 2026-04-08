@@ -52,7 +52,7 @@
 require "rails_helper"
 
 RSpec.describe Invoice, type: :model do
-  subject(:invoice) { build(:invoice_with_invoice_line_items) }
+  subject(:invoice) { build(:invoice) }
 
   describe "Validations" do
     describe "validate presence of" do
@@ -72,12 +72,19 @@ RSpec.describe Invoice, type: :model do
     end
 
     describe "validate numericality of" do
-      it { is_expected.to validate_numericality_of(:amount).is_greater_than_or_equal_to(0) }
-      it { is_expected.to validate_numericality_of(:outstanding_amount).is_greater_than_or_equal_to(0) }
       it { is_expected.to validate_numericality_of(:tax).is_greater_than_or_equal_to(0) }
       it { is_expected.to validate_numericality_of(:amount_paid).is_greater_than_or_equal_to(0) }
-      it { is_expected.to validate_numericality_of(:amount_due).is_greater_than_or_equal_to(0) }
       it { is_expected.to validate_numericality_of(:discount).is_greater_than_or_equal_to(0) }
+
+      %i[amount outstanding_amount amount_due].each do |attribute|
+        it "#{attribute} should not be negative" do
+          plain_invoice = build(:invoice, attribute => -1)
+          allow(plain_invoice).to receive(:totals_recalculation_needed?).and_return(false)
+
+          expect(plain_invoice).to be_invalid
+          expect(plain_invoice.errors[attribute]).to include("must be greater than or equal to 0")
+        end
+      end
     end
 
     describe "validate enum" do
@@ -243,6 +250,59 @@ RSpec.describe Invoice, type: :model do
         invoice = build(:invoice, reference: "abcdef_123456")
         expect(invoice.valid?).to eq(false)
       end
+    end
+  end
+
+  describe "amount recalculation" do
+    let(:company) { create(:company) }
+    let(:client) { create(:client, company:) }
+    let(:entry_user) { create(:user, current_workspace: company) }
+    let(:project) { create(:project, client:) }
+    let(:timesheet_entry) { create(:timesheet_entry, user: entry_user, project:) }
+
+    def create_invoice_line_item_for(invoice)
+      invoice.invoice_line_items.create!(
+        timesheet_entry:,
+        name: "Worked hours",
+        description: "Tracked work",
+        date: Date.current,
+        rate: 120,
+        quantity: 60
+      )
+    end
+
+    it "does not recalculate totals when only a non-total field changes" do
+      invoice = create(:invoice, company:, client:)
+      create_invoice_line_item_for(invoice)
+      invoice.update_columns(amount: 250, amount_due: 250, outstanding_amount: 250)
+
+      expect(invoice).not_to receive(:calculate_amounts)
+
+      invoice.update!(reference: "REF2026")
+      invoice.reload
+
+      expect(invoice.amount.to_f).to eq(250.0)
+      expect(invoice.amount_due.to_f).to eq(250.0)
+      expect(invoice.outstanding_amount.to_f).to eq(250.0)
+    end
+
+    it "zeroes totals when the last line item is removed" do
+      invoice = create(:invoice, company:, client:)
+      line_item = create_invoice_line_item_for(invoice)
+
+      invoice.update!(
+        invoice_line_items_attributes: [
+          {
+            id: line_item.id,
+            _destroy: "1"
+          }
+        ]
+      )
+      invoice.reload
+
+      expect(invoice.amount.to_f).to eq(0.0)
+      expect(invoice.amount_due.to_f).to eq(0.0)
+      expect(invoice.outstanding_amount.to_f).to eq(0.0)
     end
   end
 end

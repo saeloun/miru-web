@@ -3,10 +3,8 @@
 require "rails_helper"
 
 RSpec.describe "Api::V1::Invoices#create", type: :request do
-  let(:company) do
-    create(:company, clients: create_list(:client_with_invoices, 5))
-  end
-
+  let_it_be(:company) { create(:company) }
+  let_it_be(:client) { create(:client, company:) }
   let(:user) { create(:user, current_workspace_id: company.id) }
 
   context "when user is an admin" do
@@ -21,8 +19,8 @@ RSpec.describe "Api::V1::Invoices#create", type: :request do
         attributes_for(
           :invoice,
           invoice_number: "SAI-C1-03",
-          client: company.clients.first,
-          client_id: company.clients.first.id,
+          client:,
+          client_id: client.id,
           invoice_line_item: {
             name: "Test",
             description: "test description",
@@ -46,7 +44,6 @@ RSpec.describe "Api::V1::Invoices#create", type: :request do
       end
 
       it "creates invoice line items with date and timesheet entry associations" do
-        client = company.clients.first
         project = create(:project, client:)
         timesheet_entry = create(
           :timesheet_entry,
@@ -85,8 +82,45 @@ RSpec.describe "Api::V1::Invoices#create", type: :request do
         expect(line_item.timesheet_entry_id).to eq(timesheet_entry.id)
       end
 
+      it "calculates invoice totals from line items, discount, and tax" do
+        send_request :post, api_v1_invoices_path(
+          invoice: {
+            client_id: client.id,
+            invoice_number: "INV-TOTALS-001",
+            issue_date: Date.current.iso8601,
+            due_date: 30.days.from_now.to_date.iso8601,
+            status: "draft",
+            currency: company.base_currency,
+            discount: 25,
+            tax: 10,
+            invoice_line_items_attributes: [
+              {
+                name: "Discovery",
+                description: "Analysis block",
+                date: Date.current.iso8601,
+                rate: 100,
+                quantity: 120
+              },
+              {
+                name: "QA",
+                description: "Validation block",
+                date: Date.current.iso8601,
+                rate: 90,
+                quantity: 60
+              }
+            ]
+          }), headers: auth_headers(user)
+
+        expect(response).to have_http_status(:ok)
+
+        invoice = Invoice.find_by!(invoice_number: "INV-TOTALS-001")
+        expect(invoice.amount.to_f).to eq(275.0)
+        expect(invoice.amount_due.to_f).to eq(275.0)
+        expect(json_response["amount"].to_f).to eq(275.0)
+        expect(json_response["amountDue"].to_f).to eq(275.0)
+      end
+
       it "rejects timesheet entries from another company" do
-        client = company.clients.first
         other_company = create(:company)
         other_client = create(:client, company: other_company)
         other_project = create(:project, client: other_client)
@@ -148,8 +182,8 @@ RSpec.describe "Api::V1::Invoices#create", type: :request do
       send_request :post, api_v1_invoices_path(
         invoice: attributes_for(
           :invoice,
-          client: company.clients.first,
-          client_id: company.clients.first.id,
+          client:,
+          client_id: client.id,
           invoice_line_item: {
             name: "Test",
             description: "test description",
@@ -174,8 +208,8 @@ RSpec.describe "Api::V1::Invoices#create", type: :request do
       send_request :post, api_v1_invoices_path(
         invoice: attributes_for(
           :invoice,
-          client: company.clients.first,
-          client_id: company.clients.first.id,
+          client:,
+          client_id: client.id,
           invoice_line_item: {
             name: "Test",
             description: "test description",
@@ -197,8 +231,8 @@ RSpec.describe "Api::V1::Invoices#create", type: :request do
       send_request :post, api_v1_invoices_path(
         invoice: attributes_for(
           :invoice,
-          client: company.clients.first,
-          client_id: company.clients.first.id
+          client:,
+          client_id: client.id
         )
       )
       expect(response).to have_http_status(:unauthorized)

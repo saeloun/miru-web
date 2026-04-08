@@ -17,8 +17,12 @@ RSpec.describe "Api::V1::Invoices#destroy", type: :request do
 
     describe "#destroy" do
       it "deletes invoice successfully" do
-        send_request :delete, api_v1_invoice_path(id: invoice.id), headers: auth_headers(user)
+        expect do
+          send_request :delete, api_v1_invoice_path(id: invoice.id), headers: auth_headers(user)
+        end.not_to change(Invoice, :count)
+
         expect(response).to be_successful
+        expect(invoice.reload).to be_discarded
         expect(company.invoices.discarded.pluck(:id).include?(invoice.id)).to eq(true)
       end
     end
@@ -29,11 +33,12 @@ RSpec.describe "Api::V1::Invoices#destroy", type: :request do
       create(:employment, company:, user:)
       user.add_role :employee, company
       sign_in user
-      send_request :delete, api_v1_invoice_path(id: invoice.id), headers: auth_headers(user)
     end
 
     it "is not be permitted to delete an invoice" do
+      send_request :delete, api_v1_invoice_path(id: invoice.id), headers: auth_headers(user)
       expect(response).to have_http_status(:forbidden)
+      expect(invoice.reload).not_to be_discarded
     end
   end
 
@@ -42,11 +47,12 @@ RSpec.describe "Api::V1::Invoices#destroy", type: :request do
       create(:employment, company:, user:)
       user.add_role :book_keeper, company
       sign_in user
-      send_request :delete, api_v1_invoice_path(id: invoice.id), headers: auth_headers(user)
     end
 
     it "is not be permitted to delete an invoice" do
+      send_request :delete, api_v1_invoice_path(id: invoice.id), headers: auth_headers(user)
       expect(response).to have_http_status(:forbidden)
+      expect(invoice.reload).not_to be_discarded
     end
   end
 

@@ -25,8 +25,8 @@ RSpec.describe "Delete Project", type: :system, js: true do
         within(:xpath, "//tr[contains(., '#{project.name}')]") do
           find("button#kebabMenu", wait: 10).click
         end
-        find("[role='menuitem']", text: "Delete Project", wait: 10).click
-        click_button "DELETE"
+        find("[role='menuitem']", text: "Delete project", wait: 10).click
+        click_button "Delete"
 
         expect(page).not_to have_content(project.name)
         expect(page).not_to have_content(client.name)

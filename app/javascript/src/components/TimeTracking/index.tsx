@@ -152,6 +152,12 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
     return matchedKey ? entryList[matchedKey] : [];
   };
 
+  const normalizeEntryDateKey = (dateValue: string) => {
+    const parsedDate = dayjs(dateValue, dateParseFormats, true);
+
+    return parsedDate.isValid() ? parsedDate.format("YYYY-MM-DD") : dateValue;
+  };
+
   useEffect(() => {
     sendGAPageView();
     const defaultView = "week";
@@ -474,8 +480,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
 
   const handleFilterEntry = async (date: string, entryId: string | number) => {
     let filteredTimesheetEntry: object;
-    // Convert date to ISO format for entry lookup
-    const isoDate = dayjs(date, dateFormat).format("YYYY-MM-DD");
+    const isoDate = normalizeEntryDateKey(date);
     const newValue = { ...entryList };
 
     // Check if entries exist for this date
@@ -498,17 +503,17 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
   };
 
   const handleRelocateEntry = async (date: string, entry: object) => {
-    // Convert date to ISO format for entry storage
-    const isoDate = dayjs(date, dateFormat).format("YYYY-MM-DD");
+    const isoDate = normalizeEntryDateKey(date);
     setEntryList(prevState => {
       const newState = { ...prevState };
       newState[isoDate] = newState[isoDate]
         ? [...newState[isoDate], entry]
         : [entry];
 
+      setAllEmployeesEntries(pv => ({ ...pv, [selectedEmployeeId]: newState }));
+
       return newState;
     });
-    setAllEmployeesEntries(pv => ({ ...pv, [selectedEmployeeId]: entryList }));
   };
 
   const handleDeleteEntry = async id => {

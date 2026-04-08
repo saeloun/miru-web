@@ -13,7 +13,7 @@ require "active_storage/reflection"
 module MiruWeb
   class Application < Rails::Application
     config.active_storage ||= ActiveSupport::OrderedOptions.new
-    config.active_storage.queues ||= ActiveSupport::InheritableOptions.new
+    config.active_storage.queues ||= ActiveSupport::OrderedOptions.new
 
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 8.0
@@ -71,6 +71,33 @@ module MiruWeb
         unless ActiveRecord::Reflection.singleton_class.ancestors.include?(ActiveStorage::Reflection::ReflectionExtension)
           ActiveRecord::Reflection.singleton_class.prepend(ActiveStorage::Reflection::ReflectionExtension)
         end
+      end
+    end
+
+    initializer "miru_web.active_storage_services", after: "active_storage.services" do |app|
+      ActiveSupport.on_load(:active_storage_blob) do
+        configs = app.config.active_storage.service_configurations ||=
+          begin
+            config_file = Rails.root.join("config/storage/#{Rails.env}.yml")
+            config_file = Rails.root.join("config/storage.yml") unless config_file.exist?
+            raise("Couldn't find Active Storage configuration in #{config_file}") unless config_file.exist?
+
+            ActiveSupport::ConfigurationFile.parse(config_file)
+          end
+
+        ActiveStorage::Blob.services = ActiveStorage::Service::Registry.new(configs) if ActiveStorage::Blob.services.blank?
+
+        if (service_name = app.config.active_storage.service) && ActiveStorage::Blob.service.nil?
+          ActiveStorage::Blob.service = ActiveStorage::Blob.services.fetch(service_name)
+        end
+      end
+    end
+
+    initializer "miru_web.active_storage_verifier", after: "active_storage.verifier" do |app|
+      config.after_initialize do
+        next unless ActiveStorage.verifier.nil?
+
+        ActiveStorage.verifier = app.message_verifier("ActiveStorage")
       end
     end
   end

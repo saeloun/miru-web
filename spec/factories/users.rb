@@ -49,15 +49,18 @@
 #  fk_rails_...  (current_workspace_id => companies.id)
 #
 FactoryBot.define do
+  sequence(:user_email) { |n| "user#{n}@example.com" }
+  sequence(:personal_email) { |n| "personal#{n}@example.com" }
+
   factory :user do
     first_name { Faker::Name.first_name.gsub(/\W/, "") }
     last_name { Faker::Name.last_name.gsub(/\W/, "") }
-    email { Faker::Internet.email }
-    password { Faker::Internet.password }
+    email { generate(:user_email) }
+    password { "Password123!" }
     confirmed_at { Date.today }
     date_of_birth { Faker::Date.between(from: "1990-01-01", to: "2000-01-01") }
     phone { Faker::PhoneNumber.phone_number_with_country_code }
-    personal_email_id { Faker::Internet.email }
+    personal_email_id { generate(:personal_email) }
     current_workspace factory: :company
 
     trait :with_avatar do

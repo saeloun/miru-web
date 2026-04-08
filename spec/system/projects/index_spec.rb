@@ -27,7 +27,8 @@ RSpec.describe "Project listing", type: :system, js: true do
       visit "/projects"
 
       expect(page).to have_css("#react-root", wait: 10)
-      expect(page).to have_content("Looks like there aren't any projects added yet.", wait: 10)
+      expect(page).to have_content("No projects yet", wait: 10)
+      expect(page).to have_content("Create your first project to get started.", wait: 10)
     end
   end
 
@@ -57,7 +58,6 @@ RSpec.describe "Project listing", type: :system, js: true do
     create(:employment, company:, user: employee)
     employee.add_role :employee, company
     create(:project_member, user: employee, project: assigned_project)
-    Warden.test_reset!
     sign_in(employee)
 
     with_forgery_protection do

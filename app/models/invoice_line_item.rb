@@ -55,7 +55,7 @@ class InvoiceLineItem < ApplicationRecord
     end
 
     def unlock_timesheet_entry
-      if invoice.draft?
+      if invoice.draft? && timesheet_entry.present?
         timesheet_entry.update!(locked: false)
       end
     end

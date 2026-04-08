@@ -56,8 +56,7 @@ module SignupHelpers
       end
     end
 
-    # Give React time to process the change
-    sleep 0.1
+    expect(find("#termsOfService", visible: :all, wait: 5)).to be_checked
 
     checkbox_checked
   end
@@ -73,8 +72,7 @@ module SignupHelpers
   def wait_for_signup_form
     expect(page).to have_css("#react-root", wait: 10)
     expect(page).to have_css("form", wait: 10)
-    # Extra wait for React to fully hydrate
-    sleep 0.5
+    expect(page.evaluate_script("document.readyState")).to eq("complete")
   end
 end
 

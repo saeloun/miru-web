@@ -21,7 +21,7 @@ RSpec.describe "Client edit dialog", type: :system, js: true do
 
     expect(page).to have_content("Edit Client", wait: 10)
     expect(page).to have_content("Select File")
-    expect(page).to have_button("Update Client")
+    expect(page).to have_button("Edit Client")
     expect(page).to have_field("name", with: "Acme Labs")
   end
 end

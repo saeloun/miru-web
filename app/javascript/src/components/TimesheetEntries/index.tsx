@@ -292,7 +292,9 @@ const TimesheetEntries = ({ user, isAdminUser }: Iprops) => {
 
   const handleFilterEntry = async (date: string, entryId: string | number) => {
     let filteredTimesheetEntry: object;
-    const filteredDate = dayjs(date).format("YYYY-MM-DD");
+    const filteredDate = dayjs(date).isValid()
+      ? dayjs(date).format("YYYY-MM-DD")
+      : date;
     const newValue = { ...entryList };
     newValue[filteredDate] = newValue[filteredDate].filter(e => {
       if (e["id"] == entryId) {
@@ -308,16 +310,19 @@ const TimesheetEntries = ({ user, isAdminUser }: Iprops) => {
   };
 
   const handleRelocateEntry = async (date: string, entry: object) => {
-    const filteredDate = dayjs(date).format("YYYY-MM-DD");
+    const filteredDate = dayjs(date).isValid()
+      ? dayjs(date).format("YYYY-MM-DD")
+      : date;
     setEntryList(prevState => {
       const newState = { ...prevState };
       newState[filteredDate] = newState[filteredDate]
         ? [...newState[filteredDate], entry]
         : [entry];
 
+      setAllEmployeesEntries(pv => ({ ...pv, [selectedEmployeeId]: newState }));
+
       return newState;
     });
-    setAllEmployeesEntries(pv => ({ ...pv, [selectedEmployeeId]: entryList }));
   };
 
   const handleDeleteEntry = async id => {

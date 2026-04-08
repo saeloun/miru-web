@@ -1,4 +1,8 @@
+import dayjs from "dayjs";
+import customParseFormat from "dayjs/plugin/customParseFormat";
 import axios from "../apis/api";
+
+dayjs.extend(customParseFormat);
 
 export interface InvoiceItem {
   id: string;
@@ -12,6 +16,7 @@ export interface InvoiceItem {
   work_date?: string;
   timesheet_entry_id?: string;
   lineTotal?: number;
+  _destroy?: boolean;
 }
 
 export interface Client {
@@ -75,6 +80,7 @@ export interface InvoiceFormData {
   clientId: string;
   issueDate: string;
   dueDate: string;
+  dateFormat?: string;
   reference?: string;
   invoiceLineItems: InvoiceItem[];
   tax?: number;
@@ -123,6 +129,38 @@ export interface InvoiceFilters {
 
 class InvoiceApiService {
   private baseUrl = "/api/v1";
+
+  private normalizeInvoiceLineItemDate(
+    date: string | undefined,
+    dateFormat?: string
+  ) {
+    if (!date) return date;
+
+    const parsedDate = dayjs(
+      date,
+      [
+        dateFormat,
+        "YYYY-MM-DD",
+        "YYYY-MM-DDTHH:mm:ss.SSS[Z]",
+        "MM-DD-YYYY",
+        "MM/DD/YYYY",
+        "DD-MM-YYYY",
+        "DD/MM/YYYY",
+        "DD.MM.YYYY",
+      ].filter(Boolean),
+      true
+    );
+
+    if (parsedDate.isValid()) {
+      return parsedDate.format("YYYY-MM-DD");
+    }
+
+    const fallbackParsedDate = dayjs(date);
+
+    return fallbackParsedDate.isValid()
+      ? fallbackParsedDate.format("YYYY-MM-DD")
+      : date;
+  }
 
   /**
    * Fetch invoices with optional filters and pagination
@@ -302,11 +340,17 @@ class InvoiceApiService {
           item.description ||
           `${item.first_name || ""} ${item.last_name || ""}`.trim(),
         description: item.description || "",
-        date: item.date || item.work_date,
+        date: this.normalizeInvoiceLineItemDate(
+          item.date || item.work_date,
+          invoiceData.dateFormat
+        ),
         timesheet_entry_id: item.timesheet_entry_id,
         quantity: item.quantity || 0,
         rate: item.rate || 0,
-        amount: item.amount || item.lineTotal || item.quantity * item.rate || 0,
+        amount:
+          item.amount ??
+          item.lineTotal ??
+          (item.quantity ?? 0) * (item.rate ?? 0),
         _destroy: item._destroy || false,
       })),
     };
