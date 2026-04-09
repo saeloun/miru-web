@@ -5,10 +5,18 @@ import React, { useEffect, useState } from "react";
 import cn from "classnames";
 import { XIcon } from "miruIcons";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 import { Button, Modal } from "StyledComponents";
 
 import Recipient from "./Recipient";
-import { emailSubject, emailBody, isDisabled, buttonText } from "./utils";
+import {
+  emailSubject,
+  emailBody,
+  isDisabled,
+  buttonText,
+  getInitialRecipients,
+  isEmailValid,
+} from "./utils";
 import { i18n } from "../../../../../i18n";
 
 const SendInvoice = ({
@@ -23,8 +31,9 @@ const SendInvoice = ({
   const [invoiceEmail, setInvoiceEmail] = useState<InvoiceEmail>({
     subject: emailSubject(invoice, isSendReminder),
     message: emailBody(invoice, isSendReminder),
-    recipients: invoice.client.clientMembersEmails,
+    recipients: getInitialRecipients(invoice),
   });
+  const [newRecipient, setNewRecipient] = useState("");
 
   const navigate = useNavigate();
 
@@ -35,6 +44,36 @@ const SendInvoice = ({
       ...invoiceEmail,
       recipients,
     });
+  };
+
+  const handleAddRecipient = () => {
+    const email = newRecipient.trim();
+
+    if (!email) return;
+
+    if (!isEmailValid(email)) {
+      toast.error(i18n.t("invoices.addEmailFromClientSettings"));
+
+      return;
+    }
+
+    if (invoiceEmail.recipients.includes(email)) {
+      setNewRecipient("");
+
+      return;
+    }
+
+    if (invoiceEmail.recipients.length >= 5) {
+      toast.error("Email can only be sent to 5 recipients.");
+
+      return;
+    }
+
+    setInvoiceEmail({
+      ...invoiceEmail,
+      recipients: [...invoiceEmail.recipients, email],
+    });
+    setNewRecipient("");
   };
 
   useEffect(() => {
@@ -104,6 +143,32 @@ const SendInvoice = ({
                 />
               ))}
             </div>
+            <div className="mt-3 flex gap-2">
+              <input
+                className="flex-1 rounded bg-muted p-1.5"
+                data-testid="invoice-recipient-input"
+                name="recipient"
+                placeholder={i18n.t("invoices.recipientEmailId")}
+                type="email"
+                value={newRecipient}
+                onChange={e => setNewRecipient(e.target.value)}
+                onKeyDown={e => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    handleAddRecipient();
+                  }
+                }}
+              />
+              <Button
+                size="small"
+                style="secondary"
+                type="button"
+                data-testid="invoice-recipient-add"
+                onClick={handleAddRecipient}
+              >
+                Add
+              </Button>
+            </div>
           </fieldset>
           <fieldset className="field_with_errors flex flex-col">
             <label className="form__label mb-2" htmlFor="subject">
@@ -154,7 +219,9 @@ const SendInvoice = ({
               }
               onClick={e => handleSubmit(e, invoiceEmail)}
             >
-              {isSendReminder ? i18n.t("invoices.sendReminder") : buttonText(status)}
+              {isSendReminder
+                ? i18n.t("invoices.sendReminder")
+                : buttonText(status)}
             </Button>
           </div>
         </form>

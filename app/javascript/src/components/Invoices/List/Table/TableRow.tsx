@@ -248,7 +248,9 @@ const TableRow = ({
                 <ArrowLeftIcon className="text-white" size={16} weight="bold" />
               </Button>
               <div className="flex h-12 w-full items-center justify-center bg-primary px-3 text-white">
-                {isSendReminder ? i18n.t("invoices.sendInvoiceReminder") : i18n.t("invoices.sendInvoice")}
+                {isSendReminder
+                  ? i18n.t("invoices.sendInvoiceReminder")
+                  : i18n.t("invoices.sendInvoice")}
               </div>
               <button
                 className="mr-4 text-foreground"
@@ -266,7 +268,6 @@ const TableRow = ({
             </div>
             <div className="flex flex-1">
               <SendInvoiceContainer
-                handleSaveSendInvoice={null}
                 invoice={invoice}
                 isSendReminder={isSendReminder}
                 setIsSending={setIsSending}

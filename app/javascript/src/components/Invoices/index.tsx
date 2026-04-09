@@ -366,7 +366,10 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
     }
   };
 
-  const handleSendInvoiceFromList = async (id: string) => {
+  const handleSendInvoiceFromList = async (
+    id: string,
+    invoiceEmail?: { subject: string; message: string; recipients: string[] }
+  ) => {
     try {
       const invoice = invoices.find(inv => inv.id === id) || selectedInvoice;
       if (!invoice) {
@@ -375,11 +378,14 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
         return;
       }
 
-      const response = await invoiceApi.sendInvoice(id, {
-        subject: `Invoice ${invoice.invoiceNumber}`,
-        message: "Please find your invoice attached.",
-        recipients: [invoice.client.email],
-      });
+      const response = await invoiceApi.sendInvoice(
+        id,
+        invoiceEmail || {
+          subject: `Invoice ${invoice.invoiceNumber}`,
+          message: "Please find your invoice attached.",
+          recipients: [invoice.client.email],
+        }
+      );
 
       toast.success(
         response?.message || i18n.t("invoices.invoiceSentSuccessfully")
@@ -395,10 +401,14 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
       await loadInvoices(); // Refresh the invoice list
     } catch (err) {
       toast.error(i18n.t("invoices.failedToSend"));
+      throw err;
     }
   };
 
-  const handleSendReminderFromList = async (id: string) => {
+  const handleSendReminderFromList = async (
+    id: string,
+    invoiceEmail?: { subject: string; message: string; recipients: string[] }
+  ) => {
     try {
       const invoice = invoices.find(inv => inv.id === id) || selectedInvoice;
       if (!invoice) {
@@ -407,12 +417,15 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
         return;
       }
 
-      const response = await invoiceApi.sendReminder(id, {
-        subject: `Reminder to complete payment for invoice ${invoice.invoiceNumber}`,
-        message:
-          "This is a reminder about your overdue invoice. Please complete payment.",
-        recipients: [invoice.client.email],
-      });
+      const response = await invoiceApi.sendReminder(
+        id,
+        invoiceEmail || {
+          subject: `Reminder to complete payment for invoice ${invoice.invoiceNumber}`,
+          message:
+            "This is a reminder about your overdue invoice. Please complete payment.",
+          recipients: [invoice.client.email],
+        }
+      );
 
       toast.success(
         response?.message || i18n.t("invoices.reminderSentSuccessfully")
@@ -421,6 +434,7 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
       await loadInvoices();
     } catch (err) {
       toast.error("Failed to send reminder");
+      throw err;
     }
   };
 
@@ -622,7 +636,10 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
       const invoiceToPreview = previewData || selectedInvoice;
       if (!invoiceToPreview) return null;
 
-      const handleInvoiceAction = async (action: string) => {
+      const handleInvoiceAction = async (
+        action: string,
+        payload?: { subject: string; message: string; recipients: string[] }
+      ) => {
         switch (action) {
           case "download":
             if (invoiceToPreview.id && invoiceToPreview.id !== "preview") {
@@ -633,7 +650,11 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
             break;
           case "send":
             if (invoiceToPreview.id && invoiceToPreview.id !== "preview") {
-              await handleSendInvoiceFromList(invoiceToPreview.id);
+              if (invoiceToPreview.status === "overdue") {
+                await handleSendReminderFromList(invoiceToPreview.id, payload);
+              } else {
+                await handleSendInvoiceFromList(invoiceToPreview.id, payload);
+              }
             } else {
               setPageError("Cannot send invoice - invalid ID");
             }

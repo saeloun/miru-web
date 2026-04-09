@@ -149,6 +149,23 @@ const ClientEditor = ({
                 <p className="text-xs text-red-600">{errors.name}</p>
               )}
             </motion.div>
+            <div className="space-y-2">
+              <Label htmlFor="email">{i18n.t("email")}</Label>
+              <Input
+                id="email"
+                name="email"
+                type="email"
+                value={values.email}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className={
+                  errors.email && touched.email ? "border-red-500" : ""
+                }
+              />
+              {errors.email && touched.email && (
+                <p className="text-xs text-red-600">{errors.email}</p>
+              )}
+            </div>
             {/* Phone Field */}
             <div className="space-y-2">
               <Label htmlFor="phone">{i18n.t("phone")}</Label>
@@ -364,6 +381,7 @@ interface ClientEditorProps {
 
 interface FormValues {
   name: string;
+  email: string;
   phone: string;
   address1: string;
   address2: string;

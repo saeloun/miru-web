@@ -11,7 +11,9 @@ import {
   PencilSimple,
 } from "phosphor-react";
 import { Button } from "../../ui/button";
+import SendInvoice from "../common/InvoiceForm/SendInvoice";
 import { cn } from "../../../lib/utils";
+import { ApiStatus as InvoiceStatus } from "../../../constants";
 import { invoiceApi } from "../../../services/invoiceApi";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
@@ -65,7 +67,10 @@ interface InvoicePreviewProps {
     }>;
   };
   isEditing?: boolean;
-  onAction?: (action: string) => void;
+  onAction?: (
+    action: string,
+    payload?: { subject: string; message: string; recipients: string[] }
+  ) => Promise<void> | void;
 }
 
 const InvoicePreview: React.FC<InvoicePreviewProps> = ({
@@ -75,6 +80,9 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
 }) => {
   const [isDownloading, setIsDownloading] = useState(false);
   const [isSending, setIsSending] = useState(false);
+  const [sendStatus, setSendStatus] = useState<InvoiceStatus>(
+    InvoiceStatus.IDLE
+  );
   const navigate = useNavigate();
   const formatDate = (date: string | Date) => {
     if (!date) return "";
@@ -179,48 +187,46 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
     }
   };
 
-  const handleSend = async () => {
+  const handleSendSubmit = async (
+    event: React.MouseEvent<HTMLButtonElement>,
+    invoiceEmail: { subject: string; message: string; recipients: string[] }
+  ) => {
+    event.preventDefault();
+
     if (!invoice.id || invoice.id === "preview") {
       toast.error(i18n.t("invoices.cannotSendPreview"));
 
       return;
     }
 
-    setIsSending(true);
     try {
-      const isReminder = invoice.status === "overdue";
-      const subject = isReminder
-        ? `Invoice Reminder: ${invoice.invoiceNumber}`
-        : `Invoice ${invoice.invoiceNumber}`;
+      setSendStatus(InvoiceStatus.LOADING);
 
-      const message = isReminder
-        ? "This is a reminder about your outstanding invoice. Please find the details attached."
-        : "Please find your invoice attached.";
-
-      const response = isReminder
-        ? await invoiceApi.sendReminder(invoice.id, {
-            subject,
-            message,
-            recipients: [invoice.client.email],
-          })
-        : await invoiceApi.sendInvoice(invoice.id, {
-            subject,
-            message,
-            recipients: [invoice.client.email],
-          });
-
-      if (response && response.notice) {
-        toast.success(response.notice);
-      } else if (response && response.message) {
-        toast.success(response.message);
+      if (onAction) {
+        await onAction("send", invoiceEmail);
       } else {
-        toast.success(
-          invoice.status === "draft"
-            ? i18n.t("invoices.invoiceSentSuccessfully")
-            : i18n.t("invoices.reminderSentSuccessfully")
-        );
+        const isReminder = invoice.status === "overdue";
+        const response = isReminder
+          ? await invoiceApi.sendReminder(invoice.id, invoiceEmail)
+          : await invoiceApi.sendInvoice(invoice.id, invoiceEmail);
+
+        if (response && response.notice) {
+          toast.success(response.notice);
+        } else if (response && response.message) {
+          toast.success(response.message);
+        } else {
+          toast.success(
+            isReminder
+              ? i18n.t("invoices.reminderSentSuccessfully")
+              : i18n.t("invoices.invoiceSentSuccessfully")
+          );
+        }
       }
+
+      setSendStatus(InvoiceStatus.SUCCESS);
+      setIsSending(false);
     } catch (error: any) {
+      setSendStatus(InvoiceStatus.ERROR);
       console.error("Send failed:", error);
 
       if (error.response?.data?.error) {
@@ -236,8 +242,6 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
       } else {
         toast.error(i18n.t("invoices.failedToSend"));
       }
-    } finally {
-      setIsSending(false);
     }
   };
 
@@ -257,12 +261,8 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
   const handleAction = async (action: string) => {
     if (onAction) {
       if (action === "send") {
+        setSendStatus(InvoiceStatus.IDLE);
         setIsSending(true);
-        try {
-          await onAction(action);
-        } finally {
-          setIsSending(false);
-        }
 
         return;
       }
@@ -274,7 +274,8 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
           handleDownload();
           break;
         case "send":
-          handleSend();
+          setSendStatus(InvoiceStatus.IDLE);
+          setIsSending(true);
           break;
         case "print":
           handlePrint();
@@ -366,6 +367,16 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
             )}
           </div>
         </div>
+      )}
+      {isSending && (
+        <SendInvoice
+          handleSubmit={handleSendSubmit}
+          invoice={invoice}
+          isSendReminder={invoice.status === "overdue"}
+          isSending={isSending}
+          setIsSending={setIsSending}
+          status={sendStatus}
+        />
       )}
 
       {/* Invoice Preview Card */}
