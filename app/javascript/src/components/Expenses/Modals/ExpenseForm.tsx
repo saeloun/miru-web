@@ -18,6 +18,18 @@ import {
 } from "../../ui/select";
 import { i18n } from "../../../i18n";
 
+const isCustomExpenseCategory = (category, categories = []) => {
+  const trimmedCategory = category.trim();
+
+  return (
+    trimmedCategory.length > 0 &&
+    !categories.some(
+      categoryOption =>
+        (categoryOption.value || categoryOption.name) === trimmedCategory
+    )
+  );
+};
+
 const ExpenseForm = ({
   dateFormat,
   expenseData,
@@ -34,6 +46,9 @@ const ExpenseForm = ({
   const [vendor, setVendor] = useState(expense?.vendorName || "");
   const [amount, setAmount] = useState(expense?.amount || "");
   const [category, setCategory] = useState(expense?.categoryName || "");
+  const [customCategorySelected, setCustomCategorySelected] = useState(
+    isCustomExpenseCategory(expense?.categoryName || "", expenseData.categories)
+  );
   const [description, setDescription] = useState(expense?.description || "");
   const [expenseType, setExpenseType] = useState(
     expense?.type || expense?.expenseType || "business"
@@ -41,6 +56,10 @@ const ExpenseForm = ({
   const [receipts, setReceipts] = useState(expense?.receipts || []);
 
   const isFormActionDisabled = !(expenseDate && amount && category);
+  const isCustomCategorySelected =
+    customCategorySelected ||
+    isCustomExpenseCategory(category, expenseData.categories);
+  const selectedCategoryValue = isCustomCategorySelected ? "Other" : category;
 
   const handleDatePicker = date => {
     setExpenseDate(date);
@@ -194,11 +213,22 @@ const ExpenseForm = ({
           </label>
           <div className="mt-1">
             <Select
-              value={category}
-              onValueChange={value => setCategory(value)}
+              value={selectedCategoryValue}
+              onValueChange={value =>
+                value === "Other"
+                  ? (setCustomCategorySelected(true),
+                    setCategory(
+                      isCustomExpenseCategory(category, expenseData.categories)
+                        ? category
+                        : ""
+                    ))
+                  : (setCustomCategorySelected(false), setCategory(value))
+              }
             >
               <SelectTrigger>
-                <SelectValue placeholder={i18n.t("expenses.selectCategoryEllipsis")} />
+                <SelectValue
+                  placeholder={i18n.t("expenses.selectCategoryEllipsis")}
+                />
               </SelectTrigger>
               <SelectContent>
                 {expenseData.categories?.map(categoryOption => (
@@ -215,6 +245,18 @@ const ExpenseForm = ({
               </SelectContent>
             </Select>
           </div>
+          {selectedCategoryValue === "Other" && (
+            <div className="mt-4">
+              <CustomInputText
+                id="customCategory"
+                label="Custom Category"
+                name="customCategory"
+                type="text"
+                value={category}
+                onChange={e => setCategory(e.target.value)}
+              />
+            </div>
+          )}
         </div>
         <div className="mt-6">
           <CustomTextareaAutosize
@@ -271,7 +313,9 @@ const ExpenseForm = ({
           disabled={isFormActionDisabled}
           onClick={handleSubmit}
         >
-          {expense ? i18n.t("expenses.saveChanges") : i18n.t("expenses.addExpense")}
+          {expense
+            ? i18n.t("expenses.saveChanges")
+            : i18n.t("expenses.addExpense")}
         </Button>
       </div>
     </div>

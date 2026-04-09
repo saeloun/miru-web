@@ -92,6 +92,18 @@ interface ExpensesData {
   };
 }
 
+const isCustomExpenseCategory = (
+  category: string,
+  categories: ExpenseOption[]
+) => {
+  const trimmedCategory = category.trim();
+
+  return (
+    trimmedCategory.length > 0 &&
+    !categories.some(option => option.name === trimmedCategory)
+  );
+};
+
 const fetchExpenses = async (
   filter: string = "all",
   page: number = 1,
@@ -190,6 +202,7 @@ const ExpensesTable: React.FC = () => {
     expenseType: "business",
     notes: "",
   });
+  const [customCategorySelected, setCustomCategorySelected] = useState(false);
 
   const normalizeExpenseAmount = (value: string) => {
     const normalizedValue = value.replace(/[^0-9,.-]/g, "").replace(/,/g, "");
@@ -300,6 +313,7 @@ const ExpensesTable: React.FC = () => {
   });
 
   const resetForm = () => {
+    setCustomCategorySelected(false);
     setFormData({
       date: new Date().toISOString().split("T")[0],
       description: "",
@@ -332,6 +346,10 @@ const ExpensesTable: React.FC = () => {
       expenseType: expense.expenseType === "personal" ? "personal" : "business",
       notes: expense.notes || "",
     });
+
+    setCustomCategorySelected(
+      isCustomExpenseCategory(expense.category, categories)
+    );
     setReceiptFiles([]);
     setShowEditDialog(true);
   };
@@ -486,6 +504,33 @@ const ExpensesTable: React.FC = () => {
     companyRole || ""
   );
   const categories = data?.categories || [];
+  const isCustomCategorySelected =
+    customCategorySelected ||
+    isCustomExpenseCategory(formData.category, categories);
+
+  const selectedCategoryValue = isCustomCategorySelected
+    ? "Other"
+    : formData.category;
+
+  const updateCategorySelection = (value: string) => {
+    if (value === "Other") {
+      setCustomCategorySelected(true);
+      setFormData(current => ({
+        ...current,
+        category: isCustomExpenseCategory(current.category, categories)
+          ? current.category
+          : "",
+      }));
+
+      return;
+    }
+
+    setCustomCategorySelected(false);
+    setFormData(current => ({
+      ...current,
+      category: value,
+    }));
+  };
 
   useEffect(() => {
     if (!data) return;
@@ -1003,10 +1048,8 @@ const ExpensesTable: React.FC = () => {
                 Category
               </Label>
               <Select
-                value={formData.category}
-                onValueChange={value =>
-                  setFormData({ ...formData, category: value })
-                }
+                value={selectedCategoryValue}
+                onValueChange={updateCategorySelection}
               >
                 <SelectTrigger className="col-span-3">
                   <SelectValue placeholder="Select category" />
@@ -1032,6 +1075,22 @@ const ExpensesTable: React.FC = () => {
                 </SelectContent>
               </Select>
             </div>
+            {selectedCategoryValue === "Other" && (
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="custom-category" className="text-right">
+                  Custom Category
+                </Label>
+                <Input
+                  id="custom-category"
+                  value={formData.category}
+                  onChange={e =>
+                    setFormData({ ...formData, category: e.target.value })
+                  }
+                  className="col-span-3"
+                  placeholder="Enter custom category"
+                />
+              </div>
+            )}
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="vendor" className="text-right">
                 Vendor
@@ -1192,10 +1251,8 @@ const ExpensesTable: React.FC = () => {
                 Category
               </Label>
               <Select
-                value={formData.category}
-                onValueChange={value =>
-                  setFormData({ ...formData, category: value })
-                }
+                value={selectedCategoryValue}
+                onValueChange={updateCategorySelection}
               >
                 <SelectTrigger className="col-span-3">
                   <SelectValue placeholder="Select category" />
@@ -1221,6 +1278,22 @@ const ExpensesTable: React.FC = () => {
                 </SelectContent>
               </Select>
             </div>
+            {selectedCategoryValue === "Other" && (
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="edit-custom-category" className="text-right">
+                  Custom Category
+                </Label>
+                <Input
+                  id="edit-custom-category"
+                  value={formData.category}
+                  onChange={e =>
+                    setFormData({ ...formData, category: e.target.value })
+                  }
+                  className="col-span-3"
+                  placeholder="Enter custom category"
+                />
+              </div>
+            )}
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="edit-vendor" className="text-right">
                 Vendor
