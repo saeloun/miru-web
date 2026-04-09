@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Loader from "common/Loader/index";
 import {
   Clock,
@@ -9,6 +9,7 @@ import {
   Calendar as CalendarIcon,
 } from "@phosphor-icons/react";
 import { useInfiniteQuery, useMutation } from "@tanstack/react-query";
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -31,6 +32,7 @@ import {
   endOfQuarter,
 } from "date-fns";
 import { DateRange } from "react-day-picker";
+import { useSearchParams } from "react-router-dom";
 import axios from "../../../apis/api";
 import useInfiniteLoadTrigger from "../../../hooks/useInfiniteLoadTrigger";
 import { minToHHMM } from "../../../helpers";
@@ -45,7 +47,9 @@ import {
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuCheckboxItem,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../../ui/dropdown-menu";
 import {
@@ -61,6 +65,21 @@ import { cn } from "../../../lib/utils";
 import { i18n } from "../../../i18n";
 import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
 import { Calendar as CalendarComponent } from "../../ui/calendar";
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from "../../ui/chart";
+import ShareReportButton from "../ShareReportButton";
+import {
+  buildSearchParams,
+  formatReportApiDate,
+  formatReportQueryDate,
+  getMultiFilterLabel,
+  parseNumericListParam,
+  parseReportQueryDate,
+  toggleNumberListValue,
+} from "../filterUtils";
 
 // Separate component to handle table rendering with hooks
 const ReportGroupTable: React.FC<{
@@ -94,7 +113,9 @@ const ReportGroupTable: React.FC<{
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <CardTitle>{group.label}</CardTitle>
           <div className="flex items-center space-x-2">
-            <span className="text-sm text-muted-foreground">{i18n.t("reports.totalLabel")}</span>
+            <span className="text-sm text-muted-foreground">
+              {i18n.t("reports.totalLabel")}
+            </span>
             <span className="text-lg font-bold text-indigo-600">
               {getTotalHoursForGroup(group)}
             </span>
@@ -196,18 +217,79 @@ interface TimeEntryReportData {
   };
 }
 
+const resolveTimeEntryPreset = (preset: string) => {
+  const now = new Date();
+
+  switch (preset) {
+    case "last_month": {
+      const lastMonth = subDays(startOfMonth(now), 1);
+
+      return {
+        from: startOfMonth(lastMonth),
+        to: endOfMonth(lastMonth),
+      };
+    }
+    case "this_quarter":
+      return {
+        from: startOfQuarter(now),
+        to: endOfQuarter(now),
+      };
+    case "this_year":
+      return {
+        from: startOfYear(now),
+        to: endOfYear(now),
+      };
+    case "last_7_days":
+      return {
+        from: subDays(now, 7),
+        to: now,
+      };
+    case "last_30_days":
+      return {
+        from: subDays(now, 30),
+        to: now,
+      };
+    case "custom":
+      return undefined;
+    case "this_month":
+    default:
+      return {
+        from: startOfMonth(now),
+        to: endOfMonth(now),
+      };
+  }
+};
+
+const timeEntryChartConfig = {
+  duration: {
+    label: "Hours",
+    color: "hsl(var(--primary))",
+  },
+};
+
 const TimeEntryReport: React.FC = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const initialPreset = searchParams.get("preset") || "this_month";
+  const initialFrom = parseReportQueryDate(searchParams.get("from"));
+  const initialTo = parseReportQueryDate(searchParams.get("to"));
   const [groupBy, setGroupBy] = useState<"client" | "project" | "team_member">(
-    "client"
+    (searchParams.get("groupBy") as "client" | "project" | "team_member") ||
+      "client"
   );
 
-  const [dateRange, setDateRange] = useState<DateRange | undefined>({
-    from: startOfMonth(new Date()),
-    to: endOfMonth(new Date()),
-  });
-  const [dateRangePreset, setDateRangePreset] = useState("this_month");
-  const [selectedClients, setSelectedClients] = useState<number[]>([]);
-  const [selectedTeamMembers, setSelectedTeamMembers] = useState<number[]>([]);
+  const [dateRange, setDateRange] = useState<DateRange | undefined>(
+    initialFrom || initialTo
+      ? { from: initialFrom, to: initialTo || initialFrom }
+      : resolveTimeEntryPreset(initialPreset)
+  );
+  const [dateRangePreset, setDateRangePreset] = useState(initialPreset);
+  const [selectedClients, setSelectedClients] = useState<number[]>(
+    parseNumericListParam(searchParams.get("clients"))
+  );
+
+  const [selectedTeamMembers, setSelectedTeamMembers] = useState<number[]>(
+    parseNumericListParam(searchParams.get("teamMembers"))
+  );
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
@@ -232,8 +314,8 @@ const TimeEntryReport: React.FC = () => {
       const params = new URLSearchParams({
         page: String(pageParam),
         group_by: groupBy,
-        ...(dateRange?.from && { from: format(dateRange.from, "dd/MM/yyyy") }),
-        ...(dateRange?.to && { to: format(dateRange.to, "dd/MM/yyyy") }),
+        ...(dateRange?.from && { from: formatReportApiDate(dateRange.from) }),
+        ...(dateRange?.to && { to: formatReportApiDate(dateRange.to) }),
         ...(selectedClients.length > 0 && {
           client: selectedClients.join(","),
         }),
@@ -253,6 +335,7 @@ const TimeEntryReport: React.FC = () => {
 
   const lastPage = data?.pages?.[data.pages.length - 1];
   const reportPages = data?.pages || [];
+  const filterOptions = lastPage?.filterOptions;
   const reports = useMemo(() => {
     const mergedReports = new Map<number | string, ReportGroup>();
 
@@ -275,6 +358,88 @@ const TimeEntryReport: React.FC = () => {
     return Array.from(mergedReports.values());
   }, [reportPages]);
 
+  const durationChartData = useMemo(() => {
+    const rawDurations = lastPage?.groupByTotalDuration?.groupedDurations || {};
+
+    return reports
+      .map(group => ({
+        label: group.label,
+        duration: rawDurations[group.id] || 0,
+      }))
+      .filter(group => group.duration > 0)
+      .sort((left, right) => right.duration - left.duration)
+      .slice(0, 8);
+  }, [lastPage?.groupByTotalDuration?.groupedDurations, reports]);
+
+  useEffect(() => {
+    setSearchParams(
+      buildSearchParams({
+        preset: dateRangePreset,
+        groupBy,
+        from: formatReportQueryDate(dateRange?.from),
+        to: formatReportQueryDate(dateRange?.to),
+        clients: selectedClients.length > 0 ? selectedClients.join(",") : null,
+        teamMembers:
+          selectedTeamMembers.length > 0 ? selectedTeamMembers.join(",") : null,
+      }),
+      { replace: true }
+    );
+  }, [
+    dateRange?.from,
+    dateRange?.to,
+    dateRangePreset,
+    groupBy,
+    selectedClients,
+    selectedTeamMembers,
+    setSearchParams,
+  ]);
+
+  useEffect(() => {
+    const nextPreset = searchParams.get("preset") || "this_month";
+    const nextFrom = parseReportQueryDate(searchParams.get("from"));
+    const nextTo = parseReportQueryDate(searchParams.get("to"));
+    const nextGroupBy =
+      (searchParams.get("groupBy") as "client" | "project" | "team_member") ||
+      "client";
+    const nextClients = parseNumericListParam(searchParams.get("clients"));
+    const nextTeamMembers = parseNumericListParam(
+      searchParams.get("teamMembers")
+    );
+
+    const nextDateRange =
+      nextFrom || nextTo
+        ? { from: nextFrom, to: nextTo || nextFrom }
+        : resolveTimeEntryPreset(nextPreset);
+
+    setGroupBy(current => (current === nextGroupBy ? current : nextGroupBy));
+    setDateRangePreset(current =>
+      current === nextPreset ? current : nextPreset
+    );
+
+    setDateRange(current => {
+      const currentFrom = formatReportQueryDate(current?.from);
+      const currentTo = formatReportQueryDate(current?.to);
+      const nextFromString = formatReportQueryDate(nextDateRange?.from);
+      const nextToString = formatReportQueryDate(nextDateRange?.to);
+
+      if (currentFrom === nextFromString && currentTo === nextToString) {
+        return current;
+      }
+
+      return nextDateRange;
+    });
+
+    setSelectedClients(current =>
+      current.join(",") === nextClients.join(",") ? current : nextClients
+    );
+
+    setSelectedTeamMembers(current =>
+      current.join(",") === nextTeamMembers.join(",")
+        ? current
+        : nextTeamMembers
+    );
+  }, [searchParams]);
+
   const loadMoreReportsRef = useInfiniteLoadTrigger({
     enabled: Boolean(hasNextPage),
     loading: isFetchingNextPage,
@@ -284,43 +449,8 @@ const TimeEntryReport: React.FC = () => {
   });
 
   const handleDateRangePreset = (preset: string) => {
-    const now = new Date();
-    let from: Date, to: Date;
-
-    switch (preset) {
-      case "this_month":
-        from = startOfMonth(now);
-        to = endOfMonth(now);
-        break;
-      case "last_month": {
-        const lastMonth = subDays(startOfMonth(now), 1);
-        from = startOfMonth(lastMonth);
-        to = endOfMonth(lastMonth);
-        break;
-      }
-      case "this_quarter":
-        from = startOfQuarter(now);
-        to = endOfQuarter(now);
-        break;
-      case "this_year":
-        from = startOfYear(now);
-        to = endOfYear(now);
-        break;
-      case "last_7_days":
-        from = subDays(now, 7);
-        to = now;
-        break;
-      case "last_30_days":
-        from = subDays(now, 30);
-        to = now;
-        break;
-      default:
-        from = startOfMonth(now);
-        to = endOfMonth(now);
-    }
-
-    setDateRange({ from, to });
     setDateRangePreset(preset);
+    setDateRange(resolveTimeEntryPreset(preset));
   };
 
   const getTotalHoursForGroup = (group: ReportGroup): string => {
@@ -351,8 +481,8 @@ const TimeEntryReport: React.FC = () => {
       const params = new URLSearchParams({
         format: formatType,
         group_by: groupBy,
-        ...(dateRange?.from && { from: format(dateRange.from, "dd/MM/yyyy") }),
-        ...(dateRange?.to && { to: format(dateRange.to, "dd/MM/yyyy") }),
+        ...(dateRange?.from && { from: formatReportApiDate(dateRange.from) }),
+        ...(dateRange?.to && { to: formatReportApiDate(dateRange.to) }),
         ...(selectedClients.length > 0 && {
           client: selectedClients.join(","),
         }),
@@ -417,13 +547,17 @@ const TimeEntryReport: React.FC = () => {
       accessorKey: "teamMember",
       header: i18n.t("reports.teamMemberHeader"),
       cell: ({ row }) =>
-        row.original.teamMember || row.getValue("teamMember") || i18n.t("reports.unknownUser"),
+        row.original.teamMember ||
+        row.getValue("teamMember") ||
+        i18n.t("reports.unknownUser"),
     },
     {
       accessorKey: "project",
       header: i18n.t("reports.projectHeader"),
       cell: ({ row }) =>
-        row.original.project || row.getValue("project") || i18n.t("reports.unknownProject"),
+        row.original.project ||
+        row.getValue("project") ||
+        i18n.t("reports.unknownProject"),
     },
     {
       accessorKey: "note",
@@ -431,7 +565,9 @@ const TimeEntryReport: React.FC = () => {
     },
     {
       accessorKey: "duration",
-      header: () => <div className="text-right">{i18n.t("reports.hoursHeader")}</div>,
+      header: () => (
+        <div className="text-right">{i18n.t("reports.hoursHeader")}</div>
+      ),
       cell: ({ row }) => (
         <div className="text-right font-medium">
           {minToHHMM(row.getValue("duration"))}
@@ -477,13 +613,27 @@ const TimeEntryReport: React.FC = () => {
                   <SelectValue placeholder={i18n.t("selectPeriod")} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="this_month">{i18n.t("thisMonth")}</SelectItem>
-                  <SelectItem value="last_month">{i18n.t("lastMonth")}</SelectItem>
-                  <SelectItem value="this_quarter">{i18n.t("thisQuarter")}</SelectItem>
-                  <SelectItem value="this_year">{i18n.t("thisYear")}</SelectItem>
-                  <SelectItem value="last_7_days">{i18n.t("reports.lastSevenDaysPreset")}</SelectItem>
-                  <SelectItem value="last_30_days">{i18n.t("reports.lastThirtyDaysPreset")}</SelectItem>
-                  <SelectItem value="custom">{i18n.t("customRange")}</SelectItem>
+                  <SelectItem value="this_month">
+                    {i18n.t("thisMonth")}
+                  </SelectItem>
+                  <SelectItem value="last_month">
+                    {i18n.t("lastMonth")}
+                  </SelectItem>
+                  <SelectItem value="this_quarter">
+                    {i18n.t("thisQuarter")}
+                  </SelectItem>
+                  <SelectItem value="this_year">
+                    {i18n.t("thisYear")}
+                  </SelectItem>
+                  <SelectItem value="last_7_days">
+                    {i18n.t("reports.lastSevenDaysPreset")}
+                  </SelectItem>
+                  <SelectItem value="last_30_days">
+                    {i18n.t("reports.lastThirtyDaysPreset")}
+                  </SelectItem>
+                  <SelectItem value="custom">
+                    {i18n.t("customRange")}
+                  </SelectItem>
                 </SelectContent>
               </Select>
 
@@ -539,13 +689,99 @@ const TimeEntryReport: React.FC = () => {
                   <SelectValue placeholder={i18n.t("reports.groupBy")} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="client">{i18n.t("reports.groupByClient")}</SelectItem>
-                  <SelectItem value="project">{i18n.t("reports.groupByProject")}</SelectItem>
+                  <SelectItem value="client">
+                    {i18n.t("reports.groupByClient")}
+                  </SelectItem>
+                  <SelectItem value="project">
+                    {i18n.t("reports.groupByProject")}
+                  </SelectItem>
                   <SelectItem value="team_member">
                     {i18n.t("reports.teamMembers")}
                   </SelectItem>
                 </SelectContent>
               </Select>
+
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" className="w-full sm:w-auto">
+                    {getMultiFilterLabel(
+                      "Clients",
+                      selectedClients.length,
+                      filterOptions?.clients?.find(option =>
+                        selectedClients.includes(option.value)
+                      )?.label
+                    )}
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent
+                  align="end"
+                  className="max-h-80 w-64 overflow-y-auto"
+                >
+                  {filterOptions?.clients?.map(client => (
+                    <DropdownMenuCheckboxItem
+                      key={client.value}
+                      checked={selectedClients.includes(client.value)}
+                      onCheckedChange={() =>
+                        setSelectedClients(previous =>
+                          toggleNumberListValue(previous, client.value)
+                        )
+                      }
+                    >
+                      {client.label}
+                    </DropdownMenuCheckboxItem>
+                  ))}
+                  {selectedClients.length > 0 && (
+                    <>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem onClick={() => setSelectedClients([])}>
+                        Clear clients
+                      </DropdownMenuItem>
+                    </>
+                  )}
+                </DropdownMenuContent>
+              </DropdownMenu>
+
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" className="w-full sm:w-auto">
+                    {getMultiFilterLabel(
+                      "Team members",
+                      selectedTeamMembers.length,
+                      filterOptions?.teamMembers?.find(option =>
+                        selectedTeamMembers.includes(option.value)
+                      )?.label
+                    )}
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent
+                  align="end"
+                  className="max-h-80 w-64 overflow-y-auto"
+                >
+                  {filterOptions?.teamMembers?.map(teamMember => (
+                    <DropdownMenuCheckboxItem
+                      key={teamMember.value}
+                      checked={selectedTeamMembers.includes(teamMember.value)}
+                      onCheckedChange={() =>
+                        setSelectedTeamMembers(previous =>
+                          toggleNumberListValue(previous, teamMember.value)
+                        )
+                      }
+                    >
+                      {teamMember.label}
+                    </DropdownMenuCheckboxItem>
+                  ))}
+                  {selectedTeamMembers.length > 0 && (
+                    <>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem
+                        onClick={() => setSelectedTeamMembers([])}
+                      >
+                        Clear team members
+                      </DropdownMenuItem>
+                    </>
+                  )}
+                </DropdownMenuContent>
+              </DropdownMenu>
 
               {/* Export Dropdown */}
               <DropdownMenu>
@@ -569,6 +805,8 @@ const TimeEntryReport: React.FC = () => {
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
+
+              <ShareReportButton />
             </div>
           </div>
         </div>
@@ -579,7 +817,9 @@ const TimeEntryReport: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">{i18n.t("reports.totalHours")}</CardTitle>
+              <CardTitle className="text-sm font-medium">
+                {i18n.t("reports.totalHours")}
+              </CardTitle>
               <Clock className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
@@ -632,6 +872,63 @@ const TimeEntryReport: React.FC = () => {
           </Card>
         </div>
 
+        <Card className="mb-6">
+          <CardHeader>
+            <CardTitle>
+              Hours by{" "}
+              {groupBy === "client"
+                ? "Client"
+                : groupBy === "project"
+                ? "Project"
+                : "Team Member"}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {durationChartData.length > 0 ? (
+              <ChartContainer
+                config={timeEntryChartConfig}
+                className="h-[320px] w-full"
+              >
+                <BarChart
+                  data={durationChartData}
+                  layout="vertical"
+                  margin={{ top: 8, right: 16, left: 16, bottom: 8 }}
+                >
+                  <CartesianGrid horizontal={false} />
+                  <XAxis
+                    type="number"
+                    tickFormatter={value => minToHHMM(Number(value))}
+                  />
+                  <YAxis
+                    type="category"
+                    dataKey="label"
+                    width={140}
+                    tickLine={false}
+                    axisLine={false}
+                  />
+                  <ChartTooltip
+                    cursor={false}
+                    content={
+                      <ChartTooltipContent
+                        formatter={value => minToHHMM(Number(value))}
+                      />
+                    }
+                  />
+                  <Bar
+                    dataKey="duration"
+                    radius={[0, 6, 6, 0]}
+                    fill="var(--color-duration)"
+                  />
+                </BarChart>
+              </ChartContainer>
+            ) : (
+              <p className="text-sm text-muted-foreground">
+                No grouped duration data available for the selected filters.
+              </p>
+            )}
+          </CardContent>
+        </Card>
+
         {/* Report Tables */}
         <div className="space-y-6">
           {reports.map((group, index) => (
@@ -647,7 +944,10 @@ const TimeEntryReport: React.FC = () => {
         {lastPage?.pagy?.pages && lastPage.pagy.pages > 1 && (
           <div className="mt-6 flex flex-col items-center gap-2 text-sm text-muted-foreground">
             <span>
-              {i18n.t("reports.loadedPages", { loaded: reportPages.length, total: lastPage.pagy.pages })}
+              {i18n.t("reports.loadedPages", {
+                loaded: reportPages.length,
+                total: lastPage.pagy.pages,
+              })}
             </span>
             {hasNextPage && !isFetchingNextPage && (
               <span>{i18n.t("reports.scrollToLoadMoreRows")}</span>
@@ -655,7 +955,9 @@ const TimeEntryReport: React.FC = () => {
             {hasNextPage && !isFetchingNextPage && (
               <div ref={loadMoreReportsRef} className="h-8 w-full" />
             )}
-            {isFetchingNextPage && <span>{i18n.t("reports.loadingMoreRows")}</span>}
+            {isFetchingNextPage && (
+              <span>{i18n.t("reports.loadingMoreRows")}</span>
+            )}
             {!hasNextPage && <span>{i18n.t("reports.allRowsLoaded")}</span>}
           </div>
         )}

@@ -8,7 +8,6 @@ module PdfGeneration
       @invoice = invoice
       @company_logo_url = company_logo_url
 
-      # Set up template and locals for invoice
       super(
         "pdfs/invoices",
         layout: "layouts/pdf",
@@ -21,18 +20,17 @@ module PdfGeneration
     private
 
       def build_invoice_locals
+        subtotal = calculate_subtotal
+        total = calculate_total(subtotal)
+
         {
           invoice: invoice,
-          invoice_amount: format_currency(invoice.amount),
-          invoice_tax: format_currency(invoice.tax),
-          invoice_amount_due: format_currency(invoice.amount_due),
-          invoice_amount_paid: format_currency(invoice.amount_paid),
-          invoice_discount: format_currency(invoice.discount),
+          **formatted_invoice_amounts,
           company_logo: company_logo_url || "",
           client: invoice.client,
           invoice_line_items: build_line_items,
-          sub_total: format_currency(calculate_subtotal),
-          total: format_currency(calculate_total)
+          sub_total: format_currency(subtotal),
+          total: format_currency(total)
         }
       end
 
@@ -46,11 +44,20 @@ module PdfGeneration
         invoice.invoice_line_items.total_cost_of_all_line_items
       end
 
-      def calculate_total
-        subtotal = calculate_subtotal
+      def calculate_total(subtotal = calculate_subtotal)
         tax = invoice.tax || 0
         discount = invoice.discount || 0
         subtotal + tax - discount
+      end
+
+      def formatted_invoice_amounts
+        {
+          invoice_amount: format_currency(invoice.amount),
+          invoice_tax: format_currency(invoice.tax),
+          invoice_amount_due: format_currency(invoice.amount_due),
+          invoice_amount_paid: format_currency(invoice.amount_paid),
+          invoice_discount: format_currency(invoice.discount)
+        }
       end
 
       def format_currency(amount)

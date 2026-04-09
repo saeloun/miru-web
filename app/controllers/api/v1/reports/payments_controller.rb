@@ -39,10 +39,15 @@ module Api::V1
         def filter_payments
           scope = current_company.payments.includes(:invoice, invoice: :client)
 
-          if params[:from].present? && params[:to].present?
-            from_date = Date.parse(params[:from])
-            to_date = Date.parse(params[:to])
+          from_date = parse_date(params[:from])
+          to_date = parse_date(params[:to])
+
+          if from_date && to_date
             scope = scope.where(transaction_date: from_date..to_date)
+          elsif from_date
+            scope = scope.where("transaction_date >= ?", from_date)
+          elsif to_date
+            scope = scope.where("transaction_date <= ?", to_date)
           end
 
           if params[:client_ids].present?
@@ -59,6 +64,14 @@ module Api::V1
           end
 
           scope.order(transaction_date: :desc)
+        end
+
+        def parse_date(value)
+          return if value.blank?
+
+          Date.parse(value.to_s)
+        rescue ArgumentError
+          nil
         end
 
         def generate_payment_report(payments)

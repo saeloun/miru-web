@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Invoice < ApplicationRecord
-  include Discard::Model
+  include Discardable
   include InvoiceSendable
   include ClientPaymentSendable
   include Searchable
@@ -20,6 +20,8 @@ class Invoice < ApplicationRecord
   }
 
   attr_accessor :sub_total
+  attr_accessor :skip_line_item_total_sync
+  attr_accessor :syncing_nested_line_item_totals
 
   enum :status, [
     :draft,
@@ -45,9 +47,12 @@ class Invoice < ApplicationRecord
   before_validation :set_currency_from_client, if: :should_sync_currency_from_client?
   before_validation :calculate_amounts, if: :totals_recalculation_needed?
   before_validation :calculate_base_currency_amount
+  after_save :sync_nested_line_item_totals, if: -> { skip_line_item_total_sync && !syncing_nested_line_item_totals }
   after_save :lock_timesheet_entries, if: :draft?
   after_discard :unlock_timesheet_entries, if: :draft?
   after_discard :update_invoice_number
+  after_commit :reset_skip_line_item_total_sync
+  after_rollback :reset_skip_line_item_total_sync
 
   validates :issue_date, :due_date, :invoice_number, presence: true
   validates :due_date, comparison: { greater_than_or_equal_to: :issue_date }, if: :not_waived
@@ -72,7 +77,31 @@ class Invoice < ApplicationRecord
   delegate :logo_url, to: :client, prefix: :client
 
   ARCHIVED_PREFIX = "ARC"
+  def sync_totals_from_line_items!(line_items = nil)
+    attrs =
+      if line_items
+        calculated_totals_from_line_items(line_items)
+      else
+        calculated_totals_from_persisted_line_items
+      end
+    return false unless totals_differ?(attrs)
 
+    assign_attributes(attrs)
+    save!
+
+    true
+  end
+
+  def totals_stale?(line_items = nil)
+    attrs =
+      if line_items
+        calculated_totals_from_line_items(line_items)
+      else
+        calculated_totals_from_persisted_line_items
+      end
+
+    totals_differ?(attrs)
+  end
 
   def recently_sent_mail?
     sent_at.nil? || (sent_at && !(sent_at > 1.minute.ago))
@@ -173,27 +202,19 @@ class Invoice < ApplicationRecord
 
     def calculate_amounts
       kept_line_items = invoice_line_items.reject(&:marked_for_destruction?)
-      if kept_line_items.empty?
-        return unless invoice_line_items.any?(&:marked_for_destruction?)
+      self.skip_line_item_total_sync =
+        association(:invoice_line_items).loaded? &&
+        invoice_line_items.any? { |item| item.changed_for_autosave? || item.marked_for_destruction? }
+      return reset_amounts_if_all_line_items_removed unless kept_line_items.any?
 
-        self.amount = 0
-        self.amount_due = 0
-        self.outstanding_amount = 0
-        return
-      end
+      assign_attributes(calculated_totals_from_line_items(kept_line_items))
+    end
 
-      subtotal = kept_line_items.sum { |item| (item.quantity.to_f / 60) * item.rate.to_f }.round(2)
-      total = (subtotal - discount.to_f + tax.to_f).round(2)
+    def reset_amounts_if_all_line_items_removed
+      return unless invoice_line_items.any?(&:marked_for_destruction?)
 
-      self.amount = total
-
-      if paid? || waived?
-        self.amount_due = 0
-        self.outstanding_amount = 0
-      else
-        self.amount_due = [total - amount_paid.to_f, 0].max.round(2)
-        self.outstanding_amount = amount_due
-      end
+      mark_total_attributes_for_zero_sync
+      assign_attributes(zero_total_attributes)
     end
 
     def totals_recalculation_needed?
@@ -202,7 +223,75 @@ class Invoice < ApplicationRecord
         will_save_change_to_tax? ||
         will_save_change_to_amount_paid? ||
         will_save_change_to_status? ||
-        (association(:invoice_line_items).loaded? && invoice_line_items.any?(&:changed_for_autosave?))
+        (association(:invoice_line_items).loaded? &&
+          invoice_line_items.any? { |item| item.changed_for_autosave? || item.marked_for_destruction? })
+    end
+
+    def calculated_totals_from_line_items(line_items)
+      subtotal = line_items.sum { |item| (item.quantity.to_f / 60) * item.rate.to_f }.round(2)
+      total_attributes_for(subtotal)
+    end
+
+    def calculated_totals_from_persisted_line_items
+      line_item_totals = invoice_line_items.pluck(:quantity, :rate)
+      return zero_total_attributes if line_item_totals.empty?
+
+      subtotal = line_item_totals.sum { |quantity, rate| (quantity.to_f / 60) * rate.to_f }.round(2)
+      total_attributes_for(subtotal)
+    end
+
+    def zero_total_attributes
+      {
+        amount: 0,
+        amount_due: 0,
+        outstanding_amount: 0
+      }
+    end
+
+    def mark_total_attributes_for_zero_sync
+      persisted_totals = persisted_total_attributes
+
+      zero_total_attributes.each do |attribute, value|
+        public_send("#{attribute}_will_change!") if persisted_totals[attribute].to_f != value.to_f
+      end
+    end
+
+    def persisted_total_attributes
+      return zero_total_attributes if new_record?
+
+      amount_value, amount_due_value, outstanding_amount_value =
+        self.class.where(id:).pick(:amount, :amount_due, :outstanding_amount)
+
+      {
+        amount: amount_value,
+        amount_due: amount_due_value,
+        outstanding_amount: outstanding_amount_value
+      }
+    end
+
+    def totals_differ?(attrs)
+      amount.to_f.round(2) != attrs[:amount].to_f.round(2) ||
+        amount_due.to_f.round(2) != attrs[:amount_due].to_f.round(2) ||
+        outstanding_amount.to_f.round(2) != attrs[:outstanding_amount].to_f.round(2)
+    end
+
+    def total_attributes_for(subtotal)
+      total = (subtotal - discount.to_f + tax.to_f).round(2)
+
+      if paid? || waived?
+        {
+          amount: total,
+          amount_due: 0,
+          outstanding_amount: 0
+        }
+      else
+        open_amount = [total - amount_paid.to_f, 0].max.round(2)
+        {
+          amount: total,
+          amount_due: open_amount,
+          outstanding_amount: open_amount
+        }
+      end
     end
 
     def update_invoice_number
@@ -240,5 +329,21 @@ class Invoice < ApplicationRecord
 
     def set_currency_from_client
       self.currency = client.currency || company&.base_currency
+    end
+
+    def sync_nested_line_item_totals
+      attrs = calculated_totals_from_persisted_line_items
+      return unless totals_differ?(attrs)
+
+      assign_attributes(attrs)
+      calculate_base_currency_amount
+      self.syncing_nested_line_item_totals = true
+      save!
+    ensure
+      self.syncing_nested_line_item_totals = false
+    end
+
+    def reset_skip_line_item_total_sync
+      self.skip_line_item_total_sync = false
     end
 end

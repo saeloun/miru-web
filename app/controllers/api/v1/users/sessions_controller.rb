@@ -205,11 +205,12 @@ class Api::V1::Users::SessionsController < Devise::SessionsController
     end
 
     def persist_requested_locale(user)
-      requested_locale = user_params[:locale].presence
+      requested_locale =
+        user_params[:locale].presence || request.headers["X-Miru-Locale"].presence
       return if requested_locale.blank?
 
       normalized_locale = LocaleConfig.normalize(requested_locale)
-      return if user.locale == normalized_locale
+      return if normalized_locale.blank? || user.locale == normalized_locale
 
       user.update!(locale: normalized_locale)
     end

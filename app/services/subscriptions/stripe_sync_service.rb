@@ -6,11 +6,12 @@ module Subscriptions
       new(...).process
     end
 
-    def initialize(company: nil, stripe_customer_id: nil, stripe_subscription_id: nil, subscription: nil)
+    def initialize(company: nil, stripe_customer_id: nil, stripe_subscription_id: nil, subscription: nil, notify_plan_purchase: false)
       @company = company
       @stripe_customer_id = stripe_customer_id
       @stripe_subscription_id = stripe_subscription_id
       @subscription = subscription
+      @notify_plan_purchase = notify_plan_purchase
     end
 
     def process
@@ -28,7 +29,7 @@ module Subscriptions
 
     private
 
-      attr_reader :company, :stripe_customer_id, :stripe_subscription_id, :subscription
+      attr_reader :company, :stripe_customer_id, :stripe_subscription_id, :subscription, :notify_plan_purchase
 
       def find_company
         if stripe_subscription_id.present? && Company.column_names.include?("stripe_subscription_id")
@@ -53,6 +54,8 @@ module Subscriptions
       end
 
       def sync_company!(target_company, stripe_subscription)
+        was_paid = target_company.plan_tier == "paid"
+
         target_company.apply_stripe_subscription!(
           stripe_customer_id: stripe_subscription.customer,
           stripe_subscription_id: stripe_subscription.id,
@@ -60,6 +63,10 @@ module Subscriptions
           subscription_ends_at: timestamp_to_time(stripe_subscription.current_period_end),
           subscription_interval: stripe_subscription_interval(stripe_subscription)
         )
+
+        if notify_plan_purchase && !was_paid && target_company.plan_tier == "paid"
+          notify_plan_purchase!(target_company, stripe_subscription)
+        end
       end
 
       def disable_company!(target_company)
@@ -80,6 +87,24 @@ module Subscriptions
           &.price
           &.recurring
           &.interval
+      end
+
+      def notify_plan_purchase!(target_company, stripe_subscription)
+        alert_email = ENV["PLAN_PURCHASE_ALERT_EMAIL"].to_s.presence
+        unless alert_email
+          Rails.logger.warn("PLAN_PURCHASE_ALERT_EMAIL is not configured; skipping plan purchase alert")
+          return
+        end
+
+        SubscriptionMailer.with(
+          company_id: target_company.id,
+          alert_email:,
+          plan_label: target_company.current_plan_label.to_s.humanize.titleize,
+          stripe_subscription_id: stripe_subscription.id,
+          subscription_interval: stripe_subscription_interval(stripe_subscription),
+          seat_quantity: target_company.billable_team_seats,
+          billing_url: "#{ENV['APP_BASE_URL']}/settings/billing"
+        ).plan_purchased.deliver_later
       end
   end
 end

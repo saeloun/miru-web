@@ -19,7 +19,7 @@ import { CustomInputText } from "common/CustomInputText";
 import { CustomReactSelect } from "common/CustomReactSelect";
 import { Divider } from "common/Divider";
 import { ErrorSpan } from "common/ErrorSpan";
-import { i18n } from "../../../../../i18n";
+import { LANGUAGE_OPTIONS, i18n, t } from "../../../../../i18n";
 import PasskeysPanel from "./PasskeysPanel";
 import TotpPanel from "./TotpPanel";
 
@@ -195,6 +195,21 @@ const MobileProfileEditor = ({
                 }
               />
             )}
+          </div>
+          <div className="w-1/2 px-1">
+            <CustomReactSelect
+              handleOnChange={option => {
+                updateBasicDetails(option?.value || "en", "locale", false);
+              }}
+              label={t("common.language")}
+              name="locale"
+              options={LANGUAGE_OPTIONS}
+              value={
+                LANGUAGE_OPTIONS.find(
+                  option => option.value === personalDetails.locale
+                ) || LANGUAGE_OPTIONS[0]
+              }
+            />
           </div>
         </div>
       </div>

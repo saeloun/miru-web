@@ -245,6 +245,18 @@ miru time create \
   --bill-status unbilled
 ```
 
+Example prompt for daily Jira-to-Miru drafting:
+
+```text
+Pull all work I did in Jira today, summarize it hour by hour when the issue history supports that, or collapse it into one full-day summary when it does not. Use `miru project list` to find the best matching Miru project, then draft the exact `miru time create` commands I should run. Do not submit anything until I approve the draft.
+```
+
+If you want the agent to submit after review, use:
+
+```text
+Pull all work I did in Jira today, summarize it hour by hour when the issue history supports that, or collapse it into one full-day summary when it does not. Match each block to the best Miru project, show me the draft first, and only after I approve it run the `miru time create` commands.
+```
+
 ### `miru time update`
 
 Updates one of the authenticated user’s own timesheet entries.

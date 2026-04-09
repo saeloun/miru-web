@@ -44,6 +44,22 @@ RSpec.describe "Api::V1::Users::Sessions#create", type: :request do
       expect(user.reload.locale).to eq("hi")
       expect(json_response.dig("user", "locale")).to eq("hi")
     end
+
+    it "persists the requested locale from the request header on sign in" do
+      send_request :post,
+        api_v1_users_login_path,
+        params: {
+          user: {
+            email: user.email,
+            password: user.password
+          }
+        },
+        headers: { "X-Miru-Locale" => "gu" }
+
+      expect(response).to have_http_status(:ok)
+      expect(user.reload.locale).to eq("gu")
+      expect(json_response.dig("user", "locale")).to eq("gu")
+    end
   end
 
   context "when logged in on miru desktop app with valid email and password" do

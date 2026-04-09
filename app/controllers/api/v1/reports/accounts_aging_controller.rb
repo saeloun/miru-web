@@ -3,7 +3,7 @@
 class Api::V1::Reports::AccountsAgingController < Api::V1::ApplicationController
   def index
     authorize :report
-    render :index, locals: Reports::AccountsAging::FetchOverdueAmount.process(current_company), status: 200
+    render :index, locals: Reports::AccountsAging::FetchOverdueAmount.process(current_company, params), status: 200
   end
 
   def download

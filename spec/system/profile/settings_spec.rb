@@ -37,6 +37,18 @@ RSpec.describe "Profile Settings", type: :system, js: true do
     end
   end
 
+  it "boots the app in the user's saved locale" do
+    user.update!(locale: "hi")
+
+    with_forgery_protection do
+      visit "/settings/profile"
+
+      expect(page).to have_css("#react-root", wait: 10)
+      expect(page).to have_content("हिन्दी", wait: 10)
+      expect(page).to have_content("Personal Information", wait: 10)
+    end
+  end
+
   it "shows employment details" do
     with_forgery_protection do
       visit "/settings/employment"
@@ -159,6 +171,37 @@ RSpec.describe "Profile Settings", type: :system, js: true do
       expect(page).to have_field("date_of_birth", with: "10-04-1992")
       expect(page).to have_field("linkedin", with: "https://linkedin.com/in/janedoe")
       expect(page).to have_field("github", with: "https://github.com/janedoe")
+    end
+  end
+
+  it "shows a saved date of birth on the profile summary" do
+    with_forgery_protection do
+      response = page.evaluate_async_script(<<~JS, "1993-11-12T00:00:00.000Z")
+        const [dateOfBirth, done] = arguments;
+
+        fetch("/api/v1/profile", {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json"
+          },
+          credentials: "same-origin",
+          body: JSON.stringify({ user: { date_of_birth: dateOfBirth } })
+        })
+          .then(async response => {
+            const data = await response.json();
+            done({ ok: response.ok, status: response.status, data });
+          })
+          .catch(error => done({ ok: false, error: String(error) }));
+      JS
+
+      expect(response["ok"]).to eq(true)
+
+      visit "/settings/profile"
+
+      expect(page).to have_current_path("/settings/profile", wait: 10)
+      expect(page).to have_content("Born November 12, 1993", wait: 10)
+      expect(page).not_to have_content("Born Invalid Date", wait: 5)
     end
   end
 

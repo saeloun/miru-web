@@ -657,10 +657,13 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
         ...invoiceToPreview,
         lineItems: invoiceToPreview.invoiceLineItems || [],
         subtotal:
-          invoiceToPreview.invoiceLineItems?.reduce(
-            (sum, item) => sum + resolveLineAmount(item),
-            0
-          ) || invoiceToPreview.amount,
+          invoiceToPreview.invoiceLineItems &&
+          invoiceToPreview.invoiceLineItems.length > 0
+            ? invoiceToPreview.invoiceLineItems.reduce(
+                (sum, item) => sum + resolveLineAmount(item),
+                0
+              )
+            : invoiceToPreview.amount,
         company: invoiceToPreview.company || {
           ...fallbackCompany,
         },

@@ -51,6 +51,8 @@ end
 # Ensure assets are built before running tests
 RSpec.configure do |config|
   config.before(:suite) do
+    next if ENV["SKIP_VITE_TEST_BUILD"] == "1"
+
     ViteTestHelper.ensure_vite_assets_built if ENV["RAILS_ENV"] == "test"
   end
 end

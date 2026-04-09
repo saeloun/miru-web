@@ -53,9 +53,7 @@ const TotalHoursReport = lazy(
   () => import("../components/Reports/totalHoursLogged")
 );
 
-const PaymentReport = lazy(
-  () => import("../components/Reports/PaymentReport/CleanPaymentReport")
-);
+const PaymentReport = lazy(() => import("../components/Reports/PaymentReport"));
 
 const PlanSelection = lazy(
   () => import("../components/Subscriptions/PlanSelection")

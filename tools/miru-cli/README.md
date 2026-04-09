@@ -44,6 +44,12 @@ miru project list --search solar
 miru time create --project-id 2 --duration 30 --date 2026-03-09 --note "CLI entry"
 ```
 
+Example prompt for daily Jira-to-Miru drafting:
+
+```text
+Pull all work I did in Jira today, summarize it hour by hour when the issue history supports that, or collapse it into one full-day summary when it does not. Find the best matching Miru project with `miru project list`, then draft the exact `miru time create` commands I should run. Do not submit anything until I approve the draft.
+```
+
 ## Commands
 
 ```bash

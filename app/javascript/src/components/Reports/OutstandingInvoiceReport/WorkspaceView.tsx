@@ -1,5 +1,6 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useSearchParams } from "react-router-dom";
 import {
   Card,
   CardContent,
@@ -206,15 +207,26 @@ const fetchOutstandingInvoices = async (filters: FetchFilters = {}) => {
 
 const OutstandingInvoicesWorkspaceView: React.FC = () => {
   const { company } = useUserContext();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const initialTab =
+    searchParams.get("tab") === "overdue" ? "overdue" : "outstanding";
+  const initialFromDate = searchParams.get("from") || "";
+  const initialToDate = searchParams.get("to") || "";
+  const initialCurrencyFilter = (
+    searchParams.get("currency") || "ALL"
+  ).toUpperCase();
+
   const [activeTab, setActiveTab] = useState<"outstanding" | "overdue">(
-    "outstanding"
+    initialTab
   );
-  const [fromDate, setFromDate] = useState("");
-  const [toDate, setToDate] = useState("");
-  const [pendingFromDate, setPendingFromDate] = useState("");
-  const [pendingToDate, setPendingToDate] = useState("");
-  const [currencyFilter, setCurrencyFilter] = useState("ALL");
-  const [pendingCurrencyFilter, setPendingCurrencyFilter] = useState("ALL");
+  const [fromDate, setFromDate] = useState(initialFromDate);
+  const [toDate, setToDate] = useState(initialToDate);
+  const [pendingFromDate, setPendingFromDate] = useState(initialFromDate);
+  const [pendingToDate, setPendingToDate] = useState(initialToDate);
+  const [currencyFilter, setCurrencyFilter] = useState(initialCurrencyFilter);
+  const [pendingCurrencyFilter, setPendingCurrencyFilter] = useState(
+    initialCurrencyFilter
+  );
   const [exportFormat, setExportFormat] = useState("CSV");
   const [exportNotice, setExportNotice] = useState("");
   const [selectedClientId, setSelectedClientId] = useState<string | null>(null);
@@ -300,6 +312,57 @@ const OutstandingInvoicesWorkspaceView: React.FC = () => {
     setFromDate(pendingFromDate);
     setToDate(pendingToDate);
   };
+
+  useEffect(() => {
+    const nextParams = new URLSearchParams();
+
+    if (activeTab !== "outstanding") {
+      nextParams.set("tab", activeTab);
+    }
+
+    if (currencyFilter !== "ALL") {
+      nextParams.set("currency", currencyFilter);
+    }
+
+    if (fromDate) {
+      nextParams.set("from", fromDate);
+    }
+
+    if (toDate) {
+      nextParams.set("to", toDate);
+    }
+
+    setSearchParams(nextParams, { replace: true });
+  }, [activeTab, currencyFilter, fromDate, setSearchParams, toDate]);
+
+  useEffect(() => {
+    const nextTab =
+      searchParams.get("tab") === "overdue" ? "overdue" : "outstanding";
+    const nextFromDate = searchParams.get("from") || "";
+    const nextToDate = searchParams.get("to") || "";
+    const nextCurrencyFilter = (
+      searchParams.get("currency") || "ALL"
+    ).toUpperCase();
+
+    setActiveTab(current => (current === nextTab ? current : nextTab));
+    setFromDate(current => (current === nextFromDate ? current : nextFromDate));
+    setToDate(current => (current === nextToDate ? current : nextToDate));
+    setPendingFromDate(current =>
+      current === nextFromDate ? current : nextFromDate
+    );
+
+    setPendingToDate(current =>
+      current === nextToDate ? current : nextToDate
+    );
+
+    setCurrencyFilter(current =>
+      current === nextCurrencyFilter ? current : nextCurrencyFilter
+    );
+
+    setPendingCurrencyFilter(current =>
+      current === nextCurrencyFilter ? current : nextCurrencyFilter
+    );
+  }, [searchParams]);
 
   const refreshData = async () => {
     await refetch();

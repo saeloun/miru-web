@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import Loader from "common/Loader/index";
 import {
   CurrencyDollar as DollarSign,
@@ -10,6 +10,7 @@ import {
   Calendar as CalendarIcon,
 } from "@phosphor-icons/react";
 import { useQuery, useMutation } from "@tanstack/react-query";
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -33,6 +34,7 @@ import {
   endOfQuarter,
 } from "date-fns";
 import { DateRange } from "react-day-picker";
+import { useSearchParams } from "react-router-dom";
 import axios from "../../../apis/api";
 import useInfiniteLoadTrigger from "../../../hooks/useInfiniteLoadTrigger";
 import { Button } from "../../ui/button";
@@ -46,7 +48,9 @@ import {
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuCheckboxItem,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../../ui/dropdown-menu";
 import {
@@ -62,6 +66,21 @@ import { cn } from "../../../lib/utils";
 import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
 import { Calendar as CalendarComponent } from "../../ui/calendar";
 import { currencyFormat } from "../../../helpers/currency";
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from "../../ui/chart";
+import ShareReportButton from "../ShareReportButton";
+import {
+  buildSearchParams,
+  formatReportApiDate,
+  formatReportQueryDate,
+  getMultiFilterLabel,
+  parseNumericListParam,
+  parseReportQueryDate,
+  toggleNumberListValue,
+} from "../filterUtils";
 
 interface ClientRevenue {
   id: number;
@@ -82,12 +101,79 @@ interface RevenueReportData {
     totalRevenue: number;
   };
   currency: string;
+  filterOptions?: {
+    clients: Array<{ id: number; name: string }>;
+  };
 }
 
+const resolveRevenuePreset = (preset: string) => {
+  const now = new Date();
+
+  switch (preset) {
+    case "all_time":
+      return undefined;
+    case "this_month":
+      return { from: startOfMonth(now), to: endOfMonth(now) };
+    case "last_month": {
+      const lastMonth = subDays(startOfMonth(now), 1);
+
+      return { from: startOfMonth(lastMonth), to: endOfMonth(lastMonth) };
+    }
+    case "this_quarter":
+      return { from: startOfQuarter(now), to: endOfQuarter(now) };
+    case "last_quarter": {
+      const lastQuarter = subDays(startOfQuarter(now), 1);
+
+      return {
+        from: startOfQuarter(lastQuarter),
+        to: endOfQuarter(lastQuarter),
+      };
+    }
+    case "this_year":
+      return { from: startOfYear(now), to: endOfYear(now) };
+    case "last_year": {
+      const lastYear = subDays(startOfYear(now), 1);
+
+      return { from: startOfYear(lastYear), to: endOfYear(lastYear) };
+    }
+    case "last_30_days":
+      return { from: subDays(now, 30), to: now };
+    case "custom":
+      return undefined;
+    default:
+      return undefined;
+  }
+};
+
+const revenueChartConfig = {
+  paid_amount: {
+    label: "Paid",
+    color: "hsl(var(--primary))",
+  },
+  outstanding_amount: {
+    label: "Outstanding",
+    color: "hsl(var(--secondary-foreground) / 0.65)",
+  },
+  overdue_amount: {
+    label: "Overdue",
+    color: "hsl(var(--destructive))",
+  },
+};
+
 const RevenueByClientReport: React.FC = () => {
-  const [dateRange, setDateRange] = useState<DateRange | undefined>();
-  const [dateRangePreset, setDateRangePreset] = useState("all_time");
-  const [selectedClients, setSelectedClients] = useState<number[]>([]);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const initialPreset = searchParams.get("preset") || "all_time";
+  const initialFrom = parseReportQueryDate(searchParams.get("from"));
+  const initialTo = parseReportQueryDate(searchParams.get("to"));
+  const [dateRange, setDateRange] = useState<DateRange | undefined>(
+    initialFrom || initialTo
+      ? { from: initialFrom, to: initialTo || initialFrom }
+      : resolveRevenuePreset(initialPreset)
+  );
+  const [dateRangePreset, setDateRangePreset] = useState(initialPreset);
+  const [selectedClients, setSelectedClients] = useState<number[]>(
+    parseNumericListParam(searchParams.get("clients"))
+  );
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
@@ -97,8 +183,8 @@ const RevenueByClientReport: React.FC = () => {
     queryKey: ["revenueByClient", dateRange, selectedClients],
     queryFn: async () => {
       const params = new URLSearchParams({
-        ...(dateRange?.from && { from: format(dateRange.from, "dd/MM/yyyy") }),
-        ...(dateRange?.to && { to: format(dateRange.to, "dd/MM/yyyy") }),
+        ...(dateRange?.from && { from: formatReportApiDate(dateRange.from) }),
+        ...(dateRange?.to && { to: formatReportApiDate(dateRange.to) }),
         ...(selectedClients.length > 0 && {
           client_ids: selectedClients.join(","),
         }),
@@ -113,69 +199,16 @@ const RevenueByClientReport: React.FC = () => {
   });
 
   const handleDateRangePreset = (preset: string) => {
-    if (preset === "all_time") {
-      setDateRange(undefined);
-      setDateRangePreset(preset);
-
-      return;
-    }
-
-    const now = new Date();
-    let from: Date, to: Date;
-
-    switch (preset) {
-      case "this_month":
-        from = startOfMonth(now);
-        to = endOfMonth(now);
-        break;
-      case "last_month": {
-        const lastMonth = subDays(startOfMonth(now), 1);
-        from = startOfMonth(lastMonth);
-        to = endOfMonth(lastMonth);
-        break;
-      }
-      case "this_quarter": {
-        from = startOfQuarter(now);
-        to = endOfQuarter(now);
-        break;
-      }
-      case "last_quarter": {
-        const lastQuarter = subDays(startOfQuarter(now), 1);
-        from = startOfQuarter(lastQuarter);
-        to = endOfQuarter(lastQuarter);
-        break;
-      }
-      case "this_year": {
-        from = startOfYear(now);
-        to = endOfYear(now);
-        break;
-      }
-      case "last_year": {
-        const lastYear = subDays(startOfYear(now), 1);
-        from = startOfYear(lastYear);
-        to = endOfYear(lastYear);
-        break;
-      }
-      case "last_30_days": {
-        from = subDays(now, 30);
-        to = now;
-        break;
-      }
-      default:
-        from = startOfMonth(now);
-        to = endOfMonth(now);
-    }
-
-    setDateRange({ from, to });
     setDateRangePreset(preset);
+    setDateRange(resolveRevenuePreset(preset));
   };
 
   const downloadMutation = useMutation({
     mutationFn: async (formatType: "csv" | "pdf") => {
       const params = new URLSearchParams({
         format: formatType,
-        ...(dateRange?.from && { from: format(dateRange.from, "dd/MM/yyyy") }),
-        ...(dateRange?.to && { to: format(dateRange.to, "dd/MM/yyyy") }),
+        ...(dateRange?.from && { from: formatReportApiDate(dateRange.from) }),
+        ...(dateRange?.to && { to: formatReportApiDate(dateRange.to) }),
         ...(selectedClients.length > 0 && {
           client_ids: selectedClients.join(","),
         }),
@@ -202,6 +235,61 @@ const RevenueByClientReport: React.FC = () => {
       window.URL.revokeObjectURL(url);
     },
   });
+
+  const revenueChartData = useMemo(
+    () => (data?.clients || []).slice(0, 8),
+    [data?.clients]
+  );
+
+  useEffect(() => {
+    setSearchParams(
+      buildSearchParams({
+        preset: dateRangePreset,
+        from: formatReportQueryDate(dateRange?.from),
+        to: formatReportQueryDate(dateRange?.to),
+        clients: selectedClients.length > 0 ? selectedClients.join(",") : null,
+      }),
+      { replace: true }
+    );
+  }, [
+    dateRange?.from,
+    dateRange?.to,
+    dateRangePreset,
+    selectedClients,
+    setSearchParams,
+  ]);
+
+  useEffect(() => {
+    const nextPreset = searchParams.get("preset") || "all_time";
+    const nextFrom = parseReportQueryDate(searchParams.get("from"));
+    const nextTo = parseReportQueryDate(searchParams.get("to"));
+    const nextClients = parseNumericListParam(searchParams.get("clients"));
+    const nextDateRange =
+      nextFrom || nextTo
+        ? { from: nextFrom, to: nextTo || nextFrom }
+        : resolveRevenuePreset(nextPreset);
+
+    setDateRangePreset(current =>
+      current === nextPreset ? current : nextPreset
+    );
+
+    setDateRange(current => {
+      const currentFrom = formatReportQueryDate(current?.from);
+      const currentTo = formatReportQueryDate(current?.to);
+      const nextFromString = formatReportQueryDate(nextDateRange?.from);
+      const nextToString = formatReportQueryDate(nextDateRange?.to);
+
+      if (currentFrom === nextFromString && currentTo === nextToString) {
+        return current;
+      }
+
+      return nextDateRange;
+    });
+
+    setSelectedClients(current =>
+      current.join(",") === nextClients.join(",") ? current : nextClients
+    );
+  }, [searchParams]);
 
   const columns: ColumnDef<ClientRevenue>[] = [
     {
@@ -384,6 +472,46 @@ const RevenueByClientReport: React.FC = () => {
                 </PopoverContent>
               </Popover>
 
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline">
+                    {getMultiFilterLabel(
+                      "Clients",
+                      selectedClients.length,
+                      data?.filterOptions?.clients?.find(client =>
+                        selectedClients.includes(client.id)
+                      )?.name
+                    )}
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent
+                  align="end"
+                  className="max-h-80 w-64 overflow-y-auto"
+                >
+                  {(data?.filterOptions?.clients || []).map(client => (
+                    <DropdownMenuCheckboxItem
+                      key={client.id}
+                      checked={selectedClients.includes(client.id)}
+                      onCheckedChange={() =>
+                        setSelectedClients(previous =>
+                          toggleNumberListValue(previous, client.id)
+                        )
+                      }
+                    >
+                      {client.name}
+                    </DropdownMenuCheckboxItem>
+                  ))}
+                  {selectedClients.length > 0 && (
+                    <>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem onClick={() => setSelectedClients([])}>
+                        Clear clients
+                      </DropdownMenuItem>
+                    </>
+                  )}
+                </DropdownMenuContent>
+              </DropdownMenu>
+
               {/* Export Dropdown */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -406,6 +534,8 @@ const RevenueByClientReport: React.FC = () => {
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
+
+              <ShareReportButton />
             </div>
           </div>
         </div>
@@ -493,6 +623,73 @@ const RevenueByClientReport: React.FC = () => {
             </CardContent>
           </Card>
         </div>
+
+        <Card className="mb-6">
+          <CardHeader>
+            <CardTitle>Revenue Mix by Client</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {revenueChartData.length > 0 ? (
+              <ChartContainer
+                config={revenueChartConfig}
+                className="h-[340px] w-full"
+              >
+                <BarChart
+                  data={revenueChartData}
+                  layout="vertical"
+                  margin={{ top: 8, right: 16, left: 16, bottom: 8 }}
+                >
+                  <CartesianGrid horizontal={false} />
+                  <XAxis
+                    type="number"
+                    tickFormatter={value =>
+                      currencyFormat(data?.currency, Number(value))
+                    }
+                  />
+                  <YAxis
+                    type="category"
+                    dataKey="name"
+                    width={140}
+                    tickLine={false}
+                    axisLine={false}
+                  />
+                  <ChartTooltip
+                    cursor={false}
+                    content={
+                      <ChartTooltipContent
+                        formatter={value =>
+                          currencyFormat(data?.currency, Number(value))
+                        }
+                      />
+                    }
+                  />
+                  <Bar
+                    dataKey="paid_amount"
+                    stackId="revenue"
+                    fill="var(--color-paid_amount)"
+                    radius={[0, 0, 0, 0]}
+                  />
+                  <Bar
+                    dataKey="outstanding_amount"
+                    stackId="revenue"
+                    fill="var(--color-outstanding_amount)"
+                    radius={[0, 0, 0, 0]}
+                  />
+                  <Bar
+                    dataKey="overdue_amount"
+                    stackId="revenue"
+                    fill="var(--color-overdue_amount)"
+                    radius={[0, 6, 6, 0]}
+                  />
+                </BarChart>
+              </ChartContainer>
+            ) : (
+              <p className="text-sm text-muted-foreground">
+                No client revenue data available for the selected filters.
+              </p>
+            )}
+          </CardContent>
+        </Card>
 
         {/* Revenue Table */}
         <Card>

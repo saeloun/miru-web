@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class ProjectMember < ApplicationRecord
-  include Discard::Model
+  include Discardable
 
   belongs_to :project
   belongs_to :user

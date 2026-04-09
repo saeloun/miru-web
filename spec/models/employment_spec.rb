@@ -46,9 +46,76 @@ RSpec.describe Employment, type: :model do
       expect(user.reload.employments.discarded.count).to eq(1)
     end
 
+    it "unsubscribes the user's notification preference for the discarded company" do
+      preference = create(
+        :notification_preference,
+        user:,
+        company:,
+        unsubscribed_from_all: false
+      )
+
+      employment.discard!
+
+      expect(preference.reload.unsubscribed_from_all).to be(true)
+    end
+
+    it "does not rewrite an already unsubscribed notification preference" do
+      preference = create(
+        :notification_preference,
+        user:,
+        company:,
+        unsubscribed_from_all: true
+      )
+
+      expect { employment.discard! }.not_to change { preference.reload.updated_at }
+    end
+
+    it "moves the current workspace to another kept employment when one exists" do
+      other_company = create(:company)
+      other_employment = create(:employment, user:, company: other_company)
+      user.update!(current_workspace: company)
+
+      employment.discard!
+
+      expect(other_employment.reload).to be_kept
+      expect(user.reload.current_workspace_id).to eq(other_company.id)
+    end
+
+    it "keeps the current workspace unchanged when no other kept employment exists" do
+      user.update!(current_workspace: company)
+
+      employment.discard!
+
+      expect(user.reload.current_workspace_id).to eq(company.id)
+    end
+
     it "does not discard the employments if already discarded" do
       employment.discard!
       expect { employment.discard! }.to raise_error(Discard::RecordNotDiscarded)
+    end
+
+    it "resubscribes notification preferences when the employment is restored" do
+      preference = create(
+        :notification_preference,
+        user:,
+        company:,
+        unsubscribed_from_all: false,
+        notification_enabled: false,
+        invoice_email_notifications: false,
+        payment_email_notifications: false,
+        timesheet_reminder_enabled: false,
+        monthly_report_digest_enabled: false
+      )
+
+      employment.discard!
+      employment.undiscard!
+
+      expect(preference.reload.unsubscribed_from_all).to be(false)
+      expect(preference.notification_enabled).to be(true)
+      expect(preference.invoice_email_notifications).to be(true)
+      expect(preference.payment_email_notifications).to be(true)
+      expect(preference.timesheet_reminder_enabled).to be(true)
+      expect(preference.monthly_report_digest_enabled).to be(true)
     end
   end
 

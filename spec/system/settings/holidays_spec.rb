@@ -30,6 +30,15 @@ RSpec.describe "Settings - Holidays", type: :system, js: true do
       end
     end
 
+    it "shows an empty schedule state when no holidays exist" do
+      with_forgery_protection do
+        visit "/settings/holidays"
+
+        expect(page).to have_text("Year At A Glance", wait: 10)
+        expect(page).to have_text("No holidays added for #{Date.current.year} yet", wait: 10)
+      end
+    end
+
     context "with holidays configured" do
       let!(:holiday) do
         create(:holiday,
@@ -58,7 +67,17 @@ RSpec.describe "Settings - Holidays", type: :system, js: true do
         with_forgery_protection do
           visit "/settings/holidays"
 
-          expect(page).to have_css("#react-root", wait: 10)
+          expect(page).to have_text("Year At A Glance", wait: 10)
+          expect(page).to have_css("[data-testid='holidays-calendar']", wait: 10)
+          expect(page).to have_text("Holiday Schedule", wait: 10)
+          expect(page).to have_css("[data-testid='holidays-list']", wait: 10)
+          expect(page).to have_css("[data-testid='holiday-calendar-day-#{Date.current.year}-07-04']", wait: 10)
+          expect(page).to have_css("[data-testid='holiday-calendar-day-#{Date.current.year}-09-10']", wait: 10)
+          expect(page).to have_text("Independence Day", wait: 10)
+          expect(page).to have_text("Company Founder Day", wait: 10)
+          expect(page).to have_text("Public", wait: 10)
+          expect(page).to have_text("Optional", wait: 10)
+          expect(page.body.index("Independence Day")).to be < page.body.index("Company Founder Day")
         end
       end
     end

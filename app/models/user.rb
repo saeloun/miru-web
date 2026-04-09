@@ -9,7 +9,7 @@ class User < ApplicationRecord
   else
     def self.sig(&block); end
   end
-  include Discard::Model
+  include Discardable
   include Searchable
   include SuperAdmin
 

@@ -15,6 +15,23 @@ class SubscriptionMailer < ApplicationMailer
     )
   end
 
+  def plan_purchased
+    @company = Company.find(params[:company_id])
+    @alert_email = params[:alert_email].presence
+    @plan_label = params[:plan_label].presence || @company.current_plan_label.to_s.humanize.titleize
+    @display_plan_label = @plan_label == "Paid" ? "Miru Pro" : @plan_label
+    @stripe_subscription_id = params[:stripe_subscription_id]
+    @subscription_interval = params[:subscription_interval].presence || "month"
+    @seat_quantity = params[:seat_quantity].presence || @company.billable_team_seats
+    @billing_url = params[:billing_url].presence || "#{ENV['APP_BASE_URL']}/settings/billing"
+
+    mail(
+      to: @alert_email,
+      subject: "Cha-ching! #{@company.name} bought #{@display_plan_label}",
+      reply_to: ENV["REPLY_TO_EMAIL"]
+    )
+  end
+
   private
 
     def resolved_time_zone

@@ -20,7 +20,7 @@ import "react-phone-number-input/style.css";
 import CustomDatePicker from "common/CustomDatePicker";
 import CustomReactSelect from "common/CustomReactSelect";
 import { ErrorSpan } from "common/ErrorSpan";
-import { i18n } from "../../../../../i18n";
+import { i18n, LANGUAGE_OPTIONS, t } from "../../../../../i18n";
 import { Card, CardContent, CardHeader, CardTitle } from "../../../../ui/card";
 import { Input } from "../../../../ui/input";
 import { Button } from "../../../../ui/button";
@@ -285,6 +285,33 @@ const ProfileEditor = ({
                       message={errDetails.email_id_err}
                     />
                   )}
+                </div>
+                <div className="space-y-2">
+                  <label
+                    htmlFor="locale"
+                    className="text-xs font-geist-medium uppercase tracking-wider text-muted-foreground flex items-center gap-1"
+                  >
+                    <Globe className="h-3 w-3" weight="bold" />
+                    {t("common.language")}
+                  </label>
+                  <CustomReactSelect
+                    handleOnChange={option => {
+                      updateBasicDetails(
+                        option?.value || "en",
+                        "locale",
+                        false
+                      );
+                    }}
+                    label={t("common.language")}
+                    name="locale"
+                    options={LANGUAGE_OPTIONS}
+                    value={
+                      LANGUAGE_OPTIONS.find(
+                        option => option.value === personalDetails.locale
+                      ) || LANGUAGE_OPTIONS[0]
+                    }
+                    className="font-geist-regular"
+                  />
                 </div>
               </div>
             </CardContent>

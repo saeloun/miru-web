@@ -286,6 +286,108 @@ RSpec.describe Invoice, type: :model do
       expect(invoice.outstanding_amount.to_f).to eq(250.0)
     end
 
+    it "recalculates totals when a line item is created directly" do
+      invoice = create(:invoice, company:, client:)
+
+      create_invoice_line_item_for(invoice)
+      invoice.reload
+
+      expect(invoice.amount.to_f).to eq(120.0)
+      expect(invoice.amount_due.to_f).to eq(120.0)
+      expect(invoice.outstanding_amount.to_f).to eq(120.0)
+    end
+
+    it "recalculates totals when a line item is updated directly" do
+      invoice = create(:invoice, company:, client:)
+      line_item = create_invoice_line_item_for(invoice)
+
+      line_item.update!(quantity: 90)
+      invoice.reload
+
+      expect(invoice.amount.to_f).to eq(180.0)
+      expect(invoice.amount_due.to_f).to eq(180.0)
+      expect(invoice.outstanding_amount.to_f).to eq(180.0)
+    end
+
+    it "recalculates both invoices when a line item moves between invoices" do
+      original_invoice = create(:invoice, company:, client:)
+      destination_invoice = create(:invoice, company:, client:)
+      line_item = create_invoice_line_item_for(original_invoice)
+
+      line_item.update!(invoice: destination_invoice)
+      original_invoice.reload
+      destination_invoice.reload
+
+      expect(original_invoice.amount.to_f).to eq(0.0)
+      expect(original_invoice.amount_due.to_f).to eq(0.0)
+      expect(original_invoice.outstanding_amount.to_f).to eq(0.0)
+      expect(destination_invoice.amount.to_f).to eq(120.0)
+      expect(destination_invoice.amount_due.to_f).to eq(120.0)
+      expect(destination_invoice.outstanding_amount.to_f).to eq(120.0)
+    end
+
+    it "keeps zero open balances for paid invoices when line items change directly" do
+      invoice = create(:invoice, company:, client:, status: :paid)
+
+      create_invoice_line_item_for(invoice)
+      invoice.reload
+
+      expect(invoice.amount.to_f).to eq(120.0)
+      expect(invoice.amount_due.to_f).to eq(0.0)
+      expect(invoice.outstanding_amount.to_f).to eq(0.0)
+    end
+
+    it "recalculates open balances for partially paid invoices when line items change directly" do
+      invoice = create(:invoice, company:, client:, amount_paid: 50)
+
+      create_invoice_line_item_for(invoice)
+      invoice.reload
+
+      expect(invoice.amount.to_f).to eq(120.0)
+      expect(invoice.amount_due.to_f).to eq(70.0)
+      expect(invoice.outstanding_amount.to_f).to eq(70.0)
+    end
+
+    it "does not mark totals stale when only a non-total line item field changes" do
+      invoice = create(:invoice, company:, client:)
+      line_item = create_invoice_line_item_for(invoice)
+
+      line_item.update!(name: "Renamed line item")
+      invoice.reload
+
+      expect(invoice.totals_stale?).to eq(false)
+      expect(invoice.amount.to_f).to eq(120.0)
+      expect(invoice.amount_due.to_f).to eq(120.0)
+      expect(invoice.outstanding_amount.to_f).to eq(120.0)
+    end
+
+    it "updates base currency amounts and audits for foreign-currency direct line item changes" do
+      foreign_company = create(:company, base_currency: "USD")
+      foreign_client = create(:client, company: foreign_company, currency: "EUR")
+      allow(CurrencyConversionService).to receive(:get_exchange_rate).with("EUR", "USD", anything).and_return(1.18)
+
+      invoice = create(:invoice,
+        company: foreign_company,
+        client: foreign_client,
+        currency: "EUR",
+        issue_date: Date.current,
+        base_currency_amount: 0)
+
+      invoice.invoice_line_items.create!(
+        name: "Worked hours",
+        description: "Tracked work",
+        date: Date.current,
+        rate: 120,
+        quantity: 60
+      )
+      invoice.reload
+
+      expect(invoice.amount.to_f).to eq(120.0)
+      expect(invoice.base_currency_amount.to_f).to eq(141.6)
+      expect(invoice.exchange_rate.to_f).to eq(1.18)
+      expect(invoice.exchange_rate_date).to eq(invoice.issue_date)
+      expect(invoice.audits.last.audited_changes.keys).to include("amount", "base_currency_amount")
+    end
     it "zeroes totals when the last line item is removed" do
       invoice = create(:invoice, company:, client:)
       line_item = create_invoice_line_item_for(invoice)
@@ -303,6 +405,34 @@ RSpec.describe Invoice, type: :model do
       expect(invoice.amount.to_f).to eq(0.0)
       expect(invoice.amount_due.to_f).to eq(0.0)
       expect(invoice.outstanding_amount.to_f).to eq(0.0)
+    end
+
+    it "recalculates totals when a line item is destroyed directly" do
+      invoice = create(:invoice, company:, client:)
+      line_item = create_invoice_line_item_for(invoice)
+
+      line_item.destroy!
+      invoice.reload
+
+      expect(invoice.amount.to_f).to eq(0.0)
+      expect(invoice.amount_due.to_f).to eq(0.0)
+      expect(invoice.outstanding_amount.to_f).to eq(0.0)
+    end
+
+    it "detects and repairs stale totals" do
+      invoice = create(:invoice, company:, client:)
+      create_invoice_line_item_for(invoice)
+      invoice.update_columns(amount: 0, amount_due: 0, outstanding_amount: 0)
+
+      expect(invoice.reload.totals_stale?).to eq(true)
+
+      invoice.sync_totals_from_line_items!
+      invoice.reload
+
+      expect(invoice.totals_stale?).to eq(false)
+      expect(invoice.amount.to_f).to eq(120.0)
+      expect(invoice.amount_due.to_f).to eq(120.0)
+      expect(invoice.outstanding_amount.to_f).to eq(120.0)
     end
   end
 end

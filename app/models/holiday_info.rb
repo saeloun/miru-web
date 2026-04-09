@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class HolidayInfo < ApplicationRecord
-  include Discard::Model
+  include Discardable
 
   belongs_to :holiday
 

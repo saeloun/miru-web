@@ -25,6 +25,17 @@ const AUTH_PATH_PREFIXES = [
 const isAuthPagePath = (pathname: string) =>
   AUTH_PATH_PREFIXES.some(path => pathname.startsWith(path));
 
+const resolvePreferredLocale = (dbLocale?: string | null) => {
+  const storedLocale = getStoredLocale();
+  const browserLocale = detectBrowserLocale();
+
+  if (storedLocale && storedLocale !== "en") return storedLocale;
+
+  if (dbLocale && dbLocale !== "en") return dbLocale;
+
+  return storedLocale || dbLocale || browserLocale;
+};
+
 const PUBLIC_PATH_PATTERNS = [
   /^\/invoices\/[^/]+\/view$/,
   /^\/invoices\/[^/]+\/payments\/success$/,
@@ -70,9 +81,7 @@ const AppWithUserData = (props: any) => {
   // Fetch user details from _me endpoint on mount
   useEffect(() => {
     const fetchUserDetails = async () => {
-      // Skip fetching if we're on an auth page
       if (isAuthPage || isPublicPage) {
-        // On auth pages, don't fetch user data
         setUserData({
           user: null,
           company: null,
@@ -104,7 +113,6 @@ const AppWithUserData = (props: any) => {
             loading: false,
           });
         } else {
-          // Not authenticated - just set loading to false
           setUserData({
             user: null,
             company: null,
@@ -127,17 +135,9 @@ const AppWithUserData = (props: any) => {
 
   useEffect(() => {
     const initLocale = async () => {
-      // Priority: localStorage (most recent user choice) > DB > browser detection
-      const stored = getStoredLocale();
-      const dbLocale = userData.user?.locale;
-      const locale =
-        stored && stored !== "en"
-          ? stored
-          : dbLocale && dbLocale !== "en"
-          ? dbLocale
-          : stored || dbLocale || detectBrowserLocale();
+      const preferredLocale = resolvePreferredLocale(userData.user?.locale);
 
-      await loadLocale(locale);
+      await loadLocale(preferredLocale);
       const activeLocale = getActiveLocale();
       setStoredLocale(activeLocale);
       setInitialLocale(activeLocale);

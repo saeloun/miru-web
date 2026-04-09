@@ -19,8 +19,6 @@ RSpec.describe "Invoice detail view", type: :system, js: true do
       client:,
       status: :draft,
       invoice_number: "INV-2024-001",
-      amount: 5000.00,
-      amount_due: 5000.00,
       issue_date: Date.new(2024, 1, 15),
       due_date: Date.new(2024, 2, 15))
     create(:invoice_line_item,
@@ -43,10 +41,56 @@ RSpec.describe "Invoice detail view", type: :system, js: true do
       expect(page).to have_content("Invoice Number", wait: 10)
       expect(page).to have_content("#INV-2024-001", wait: 10)
       expect(page).to have_content("Gotham City Council", wait: 10)
-      expect(page).to have_content("5,000", wait: 10)
+      expect(page).to have_content("$50.00", wait: 10)
       expect(page).to have_content("Description", wait: 10)
       expect(page).to have_content("API integration work", wait: 10)
       expect(page).to have_content("Draft", wait: 10, normalize_ws: true)
+    end
+  end
+
+  it "shows a zero subtotal when line items total to zero" do
+    invoice = create(:invoice,
+      company:,
+      client:,
+      status: :draft,
+      invoice_number: "INV-2024-005",
+      issue_date: Date.new(2024, 1, 15),
+      due_date: Date.new(2024, 2, 15))
+    create(:invoice_line_item,
+      invoice:,
+      name: "Pro bono support",
+      description: "No-charge work",
+      rate: 0.00,
+      quantity: 60,
+      date: Date.new(2024, 1, 10))
+
+    with_forgery_protection do
+      visit "/invoices/#{invoice.id}"
+
+      expect(page).to have_css("#react-root", wait: 10)
+      expect(page).to have_content("INV-2024-005", wait: 10)
+      expect(page).to have_content("$0.00", wait: 10)
+    end
+  end
+
+  it "falls back to the stored amount when an invoice has no line items" do
+    invoice = create(:invoice,
+      company:,
+      client:,
+      status: :draft,
+      invoice_number: "INV-2024-006",
+      amount: 3500.00,
+      amount_due: 3500.00,
+      outstanding_amount: 3500.00,
+      issue_date: Date.new(2024, 1, 15),
+      due_date: Date.new(2024, 2, 15))
+
+    with_forgery_protection do
+      visit "/invoices/#{invoice.id}"
+
+      expect(page).to have_css("#react-root", wait: 10)
+      expect(page).to have_content("INV-2024-006", wait: 10)
+      expect(page).to have_content("3,500", wait: 10)
     end
   end
 

@@ -601,7 +601,7 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
                   Subtotal
                 </span>
                 <span className="font-medium text-foreground print:text-gray-900">
-                  {currencyFormat(currency, invoice.subtotal || invoice.amount)}
+                  {currencyFormat(currency, invoice.subtotal ?? invoice.amount)}
                 </span>
               </div>
               {invoice.discount > 0 && (

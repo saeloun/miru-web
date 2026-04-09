@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Employment < ApplicationRecord
-  include Discard::Model
+  include Discardable
 
   # Associations
   belongs_to :company
@@ -16,10 +16,19 @@ class Employment < ApplicationRecord
   before_destroy :remove_user_invitations
 
   after_discard do
-    if user.employments.kept.count >= 1
-      user.current_workspace = user.employments.kept.first.company
+    notification_preference = NotificationPreference.find_by(user:, company:)
+    notification_preference&.unsubscribe_all! unless notification_preference&.unsubscribed_from_all?
+
+    next_employment = user.employments.kept.first
+
+    if next_employment.present?
+      user.current_workspace = next_employment.company
       user.save!
     end
+  end
+
+  after_undiscard do
+    NotificationPreference.find_by(user:, company:)&.resubscribe!
   end
 
   def formatted_joined_at

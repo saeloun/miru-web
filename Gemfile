@@ -120,7 +120,7 @@ gem "pghero"           # PostgreSQL performance dashboard
 gem "dexter"           # Automatic index suggestions
 
 # PDF generator - using Ferrum PDF for modern Chrome-based PDF generation
-gem "ferrum_pdf"
+gem "ferrum_pdf", ">= 3.0.0"
 
 gem "activerecord-import"
 
@@ -152,13 +152,14 @@ group :development, :test, :ci do
   gem "debug", ">= 1.0.0", platforms: %i[mri windows]
 
   # Add Rubocop to lint and format Ruby code
-  gem "rubocop", require: false
+  gem "rubocop", ">= 1.85.1", require: false
   gem "rubocop-performance", require: false
   gem "rubocop-rails", require: false
   gem "rubocop-rspec", require: false
   gem "rubocop-capybara", require: false
   gem "rubocop-factory_bot", require: false
   gem "rubocop-thread_safety", require: false
+  gem "reek", require: false
 
   # Use RSpec as the testing framework
   gem "rspec-rails", "~> 8.0"
@@ -187,7 +188,7 @@ group :development, :test, :ci do
 
   # To record response of outgoing API calls
   gem "vcr", "~> 6.4.0"
-  gem "webmock", "~> 3.26.0"
+  gem "webmock", "~> 3.26.2"
   gem "i18n-tasks", require: false
 end
 

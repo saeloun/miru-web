@@ -596,6 +596,23 @@ const ExpensesTable: React.FC = () => {
         </div>
       ),
     },
+    ...(canManageReimbursements
+      ? [
+          {
+            accessorKey: "createdBy",
+            header: () => (
+              <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                Submitted by
+              </span>
+            ),
+            cell: ({ row }: { row: { original: Expense } }) => (
+              <span className="text-sm text-foreground">
+                {row.original.createdBy || "—"}
+              </span>
+            ),
+          } as ColumnDef<Expense>,
+        ]
+      : []),
     {
       accessorKey: "category",
       header: () => (

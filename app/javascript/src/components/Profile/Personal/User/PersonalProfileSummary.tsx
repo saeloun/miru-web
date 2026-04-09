@@ -45,6 +45,14 @@ const PersonalProfileSummary = ({
     return parts.join(", ") || "No address provided";
   };
 
+  const formattedDateOfBirth = personalDetails.date_of_birth
+    ? dayjs(
+        personalDetails.date_of_birth,
+        [personalDetails.date_format, "YYYY-MM-DD", dayjs.ISO_8601],
+        true
+      ).format("MMMM D, YYYY")
+    : null;
+
   return (
     <div className="min-h-screen bg-background font-geist">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -93,17 +101,15 @@ const PersonalProfileSummary = ({
                     <p className="mt-1 text-sm font-geist-regular text-muted-foreground">
                       {personalDetails.email_id || "No email provided"}
                     </p>
-                    {personalDetails.date_of_birth && (
-                      <div className="flex items-center gap-1 mt-2">
-                        <Calendar className="h-4 w-4 text-muted-foreground" />
-                        <span className="text-sm font-geist-regular text-muted-foreground">
-                          Born{" "}
-                          {dayjs(personalDetails.date_of_birth).format(
-                            "MMMM D, YYYY"
-                          )}
-                        </span>
-                      </div>
-                    )}
+                    {formattedDateOfBirth &&
+                      formattedDateOfBirth !== "Invalid Date" && (
+                        <div className="flex items-center gap-1 mt-2">
+                          <Calendar className="h-4 w-4 text-muted-foreground" />
+                          <span className="text-sm font-geist-regular text-muted-foreground">
+                            Born {formattedDateOfBirth}
+                          </span>
+                        </div>
+                      )}
                   </div>
                 </div>
 

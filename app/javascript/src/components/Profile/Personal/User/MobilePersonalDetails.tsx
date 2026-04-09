@@ -3,7 +3,10 @@ import React from "react";
 import { Divider } from "common/Divider";
 import { InfoDescription } from "common/Mobile/InfoDescription";
 import dayjs from "dayjs";
+import customParseFormat from "dayjs/plugin/customParseFormat";
 import { GlobeIcon, InfoIcon, KeyIcon, MapPinIcon, PhoneIcon } from "miruIcons";
+
+dayjs.extend(customParseFormat);
 
 const MobilePersonalDetails = ({
   avatarUrl,
@@ -29,6 +32,14 @@ const MobilePersonalDetails = ({
     country = "",
     pin = "",
   } = addresses || {};
+
+  const formattedDateOfBirth = date_of_birth
+    ? dayjs(
+        date_of_birth,
+        [date_format, "YYYY-MM-DD", dayjs.ISO_8601],
+        true
+      ).format(date_format)
+    : "";
 
   return (
     <div className="mt-12 px-4 py-2">
@@ -66,10 +77,7 @@ const MobilePersonalDetails = ({
           <div className="w-1/2 px-1">
             <InfoDescription
               title="Date of Birth"
-              description={`${
-                date_of_birth &&
-                dayjs(date_of_birth, date_format).format(date_format)
-              }`}
+              description={formattedDateOfBirth}
             />
           </div>
         </div>

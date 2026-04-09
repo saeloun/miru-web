@@ -1,0 +1,21 @@
+<%
+  billed_to = invoice.client.formatted_address.presence || invoice.client.email.presence || "-"
+  display_amount = amount.presence || "-"
+%>
+
+<div class="email-highlight">
+  <p class="email-highlight-label"><%= amount_label %></p>
+  <p class="email-highlight-value"><%= display_amount %></p>
+  <p class="email-highlight-caption"><%= invoice.client.name %></p>
+</div>
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="detail-grid">
+  <tr>
+    <%= render "shared/mailer/detail_card", label: t("mailers.labels.invoice_number"), value: invoice.invoice_number, subvalue: invoice.reference.presence || "-" %>
+    <%= render "shared/mailer/detail_card", label: amount_label, value: display_amount, subvalue: l(invoice.due_date.to_date, format: :long) %>
+  </tr>
+  <tr>
+    <%= render "shared/mailer/detail_card", label: t("mailers.labels.issue_date"), value: l(invoice.issue_date.to_date, format: :long), subvalue: t("mailers.labels.due_date") %>
+    <%= render "shared/mailer/detail_card", label: t("mailers.labels.issued_to"), value: invoice.client.name, subvalue: billed_to %>
+  </tr>
+</table>

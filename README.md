@@ -1,26 +1,99 @@
 <p align="center">
-  <img src="https://miru.so/static/media/miru-blue-logo-with-text.5ba2b3fe09b9f038473f0a131f8a8bec.svg" width="200" />
+  <img src="public/miruLogoWithText.svg" width="220" alt="Miru logo" />
   <br/>
 </p>
 
-Miru is an open-source tool, designed to make time tracking, invoice management,
-and accounting easy for small businesses worldwide. It is a platform for
-organizations to help them streamline their workflow.
+<p align="center">
+  Open-source time tracking, invoicing, expenses, payments, and reporting for agencies, consultancies, and service businesses.
+</p>
 
-![Github CI](https://github.com/saeloun/miru-web/actions/workflows/validations.yml/badge.svg?branch=production)
-![GitHub contributors](https://img.shields.io/github/contributors/saeloun/miru-web)
+<p align="center">
+  Stop stitching together a timer, spreadsheet, invoicing app, expense tracker, and payment tool.
+  Miru brings the full workflow into one product.
+</p>
+
+<p align="center">
+  <a href="https://app.miru.so">Start free</a>
+  ·
+  <a href="https://miru.so">Visit miru.so</a>
+  ·
+  <a href="https://miru.so/pricing">See pricing</a>
+  ·
+  <a href="https://docs.miru.so">Read the docs</a>
+</p>
+
+[![CI Test Suite](https://github.com/saeloun/miru-web/actions/workflows/validations.yml/badge.svg?branch=production)](https://github.com/saeloun/miru-web/actions/workflows/validations.yml)
+[![Docker Images](https://github.com/saeloun/miru-web/actions/workflows/docker-build.yml/badge.svg?branch=production)](https://github.com/saeloun/miru-web/actions/workflows/docker-build.yml)
+[![GitHub release](https://img.shields.io/github/v/release/saeloun/miru-web)](https://github.com/saeloun/miru-web/releases)
+[![GitHub contributors](https://img.shields.io/github/contributors/saeloun/miru-web)](https://github.com/saeloun/miru-web/graphs/contributors)
 [![GitHub stars](https://img.shields.io/github/stars/saeloun/miru-web)](https://github.com/saeloun/miru-web/stargazers)
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/saeloun/miru-web)
-![GitHub commit activity](https://img.shields.io/github/commit-activity/m/saeloun/miru-web)
-[![GitHub license](https://img.shields.io/github/license/saeloun/miru-web)](https://github.com/saeloun/miru-web)
+[![GitHub commit activity](https://img.shields.io/github/commit-activity/m/saeloun/miru-web)](https://github.com/saeloun/miru-web/commits/production)
+[![Brakeman](https://img.shields.io/badge/security-brakeman-0ea5e9)](https://brakemanscanner.org/)
+[![Bundler Audit](https://img.shields.io/badge/dependencies-bundler--audit-22c55e)](https://github.com/rubysec/bundler-audit)
+[![SimpleCov](https://img.shields.io/badge/coverage-simplecov-f59e0b)](https://github.com/simplecov-ruby/simplecov)
+[![GitHub license](https://img.shields.io/github/license/saeloun/miru-web)](https://github.com/saeloun/miru-web/blob/production/LICENSE)
 [![Twitter Follow](https://img.shields.io/twitter/follow/GetMiru?style=social)](https://x.com/getmiru)
 [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/saeloun/miru-web/tree/production)
 
-<img src="https://user-images.githubusercontent.com/22231095/170423540-e10ada9e-cf1b-4a05-bbb6-2342955f46b0.png"  width="100%" alt="Miru Monthly Timetracking page"/>
-
-<img src="https://user-images.githubusercontent.com/22231095/170424136-42f45a24-caa9-4b0e-b5fa-35bfe6f2e70b.png" width="100%" alt="Miru Invoice page"/>
-
 ---
+
+## Track time. Send invoices. Get paid.
+
+Miru is built for teams that bill by the hour and want the full money workflow in one place.
+
+- Track time without friction
+- Turn tracked work into invoices
+- Log and review expenses
+- Collect payments through Stripe
+- See revenue, utilization, and aging reports
+
+<p align="center">
+  <a href="https://app.miru.so">Start tracking free</a>
+  ·
+  <a href="https://github.com/saeloun/miru-web">View on GitHub</a>
+</p>
+
+<p align="center">
+  <img src="docs/static/img/readme/hero-current.png" alt="Miru current homepage and app preview" />
+</p>
+
+## Product Preview
+
+<table>
+  <tr>
+    <td width="50%">
+      <img src="docs/static/img/readme/dashboard-current.webp" alt="Miru dashboard screenshot" />
+      <p><strong>Dashboard</strong><br/>Revenue, projects, and team momentum in one place.</p>
+    </td>
+    <td width="50%">
+      <img src="docs/static/img/readme/invoices-current.webp" alt="Miru invoices screenshot" />
+      <p><strong>Invoices</strong><br/>Track status, amounts, and cash flow from a single view.</p>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%">
+      <img src="docs/static/img/readme/reports-current.webp" alt="Miru billing and plan screenshot" />
+      <p><strong>Billing & Reporting</strong><br/>See pricing, billing, and operational visibility in the same product.</p>
+    </td>
+    <td width="50%">
+      <img src="docs/static/img/readme/time-tracking-current.webp" alt="Miru time tracking screenshot" />
+      <p><strong>Time Tracking</strong><br/>Track work as it happens and keep billable time visible.</p>
+    </td>
+  </tr>
+</table>
+
+<p align="center">
+  <a href="https://app.miru.so">Start free</a>
+  ·
+  <a href="https://miru.so">See the full product story</a>
+</p>
+
+## Why Miru
+
+- One workflow from time entry to payment instead of five disconnected tools
+- Open source and MIT licensed, so you can self-host and keep control
+- Designed for agencies, consultancies, and service teams that care about hours, invoices, expenses, and cash flow
+- Free to start, with simple pricing on hosted plans at [miru.so/pricing](https://miru.so/pricing)
 
 ## Major Features
 
@@ -40,6 +113,21 @@ organizations to help them streamline their workflow.
 
 - 💳 **Integration with Payment Gateways**: Seamlessly connect with STRIPE for quick and secure payments. Accept payments directly through Miru.so to streamline invoicing and payment processing.
 
+## Who It Is For
+
+- Agencies tracking billable time across clients and projects
+- Consultancies that need invoices and payments tied directly to work performed
+- Service businesses replacing spreadsheets, legacy trackers, and bloated finance tools
+- Teams that want hosted software now with the option to self-host later
+
+## Try Miru
+
+- Hosted app: [app.miru.so](https://app.miru.so)
+- Product site: [miru.so](https://miru.so)
+- Pricing: [miru.so/pricing](https://miru.so/pricing)
+- Documentation: [docs.miru.so](https://docs.miru.so)
+- Open-source repository: [github.com/saeloun/miru-web](https://github.com/saeloun/miru-web)
+
 ## Miru 3.0 Highlights
 
 - Rails 8 + Ruby 4.0.1 upgrade
@@ -55,6 +143,26 @@ For detailed information on how to use Miru Web and its various features, please
 [Official Documentation](https://docs.miru.so)
 
 For local development on this branch, see CLAUDE.md and docs under `docs/`.
+
+## Localization Automation
+
+Miru supports automated locale maintenance with `i18n-tasks`.
+
+- Install/update tooling: `mise exec -- bundle install`
+- Inspect translation config: `mise exec -- bundle exec rake i18n:config`
+- Check locale health: `mise exec -- bundle exec rake i18n:health`
+- Translate major Indian locales: `mise exec -- bundle exec rake i18n:translate_india`
+- Translate world locales: `mise exec -- bundle exec rake i18n:translate_world`
+- Run Google first, then optional AI fallback: `mise exec -- bundle exec rake i18n:translate_auto`
+
+Required env vars:
+
+- `GOOGLE_TRANSLATE_API_KEY`
+- `I18N_TRANSLATION_BACKEND=google`
+- optional AI fallback:
+  - `I18N_AI_TRANSLATION_FALLBACK=true`
+  - `I18N_AI_TRANSLATION_BACKEND=openai`
+  - `OPENAI_API_KEY`
 
 ## Deploy On Render
 
@@ -82,6 +190,10 @@ After the stack is created, set your required app secrets and point your custom 
 
 - Release owner for Miru 3.0: `Vipul A M`
 - Product and OSS stewardship: `Saeloun`
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=saeloun/miru-web&type=Date)](https://www.star-history.com/#saeloun/miru-web&Date)
 
 ## Community Support
 
@@ -111,4 +223,4 @@ Thanks goes to all our contributors
 
 ## License
 
-_Miru_ © 2023, Saeloun - Released under the [MIT License](LICENSE).
+_Miru_ © Saeloun - Released under the [MIT License](LICENSE).

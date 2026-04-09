@@ -344,6 +344,20 @@ Phase 1 should prove one path:
 
 That is enough to support Claude Code, Codex, OpenClaw, or a custom runner without exploding scope on day one.
 
+### Reference Prompt
+
+Use this shape for a generic agent-key workflow:
+
+```text
+Pull all work I did in Jira today, summarize it hour by hour when the issue history supports that, or collapse it into one full-day summary when it does not. Match each block to the best Miru project you can find. Draft the Miru time entries first, include proof links back to Jira, and only submit them after explicit approval.
+```
+
+For a fully automated agent run after approval:
+
+```text
+Pull all work completed in Jira for this user today. Group it hour by hour when the evidence is strong, otherwise create one full-day summary. Match each block to a Miru project, then create draft agent-attributed time entries with Jira links in proof metadata. Do not generate or send invoices automatically.
+```
+
 ### Success
 
 - an agent finishes a task

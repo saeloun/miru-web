@@ -1,0 +1,73 @@
+<div style="padding: 8px 0 20px;">
+  <div style="display: inline-block; padding: 6px 12px; border-radius: 999px; background: #ecfdf3; color: #047857; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;">
+    Cha-ching
+  </div>
+</div>
+
+<div style="margin: 0 0 24px; border-radius: 24px; overflow: hidden; background: linear-gradient(135deg, #111827 0%, #1f2937 100%);">
+  <svg width="100%" height="180" viewBox="0 0 640 180" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="New paid plan">
+    <defs>
+      <linearGradient id="miru-sales-glow" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#34d399"/>
+        <stop offset="100%" stop-color="#60a5fa"/>
+      </linearGradient>
+    </defs>
+    <rect width="640" height="180" fill="#111827"/>
+    <circle cx="520" cy="42" r="64" fill="url(#miru-sales-glow)" opacity="0.18"/>
+    <circle cx="104" cy="148" r="82" fill="#34d399" opacity="0.12"/>
+    <rect x="42" y="34" width="212" height="112" rx="18" fill="#ffffff" opacity="0.08"/>
+    <rect x="58" y="52" width="122" height="12" rx="6" fill="#ffffff" opacity="0.65"/>
+    <rect x="58" y="74" width="88" height="12" rx="6" fill="#ffffff" opacity="0.45"/>
+    <rect x="58" y="108" width="148" height="20" rx="10" fill="#34d399" opacity="0.88"/>
+    <path d="M338 118 L392 78 L434 102 L506 50" fill="none" stroke="#34d399" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M486 50 H506 V70" fill="none" stroke="#34d399" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="338" y="150" fill="#f9fafb" font-size="22" font-family="Arial, Helvetica, sans-serif" font-weight="700">New paid workspace</text>
+  </svg>
+</div>
+
+<h1 style="margin: 0 0 12px; font-size: 28px; line-height: 1.1; color: #111827;">
+  <%= @company.name %> just bought <%= @display_plan_label %>
+</h1>
+
+<p style="margin: 0 0 24px; font-size: 16px; line-height: 1.6; color: #4b5563;">
+  New paid workspace on Miru. Billing is live.
+</p>
+
+<table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="border-collapse: separate; border-spacing: 0; margin: 0 0 24px;">
+  <tr>
+    <td style="padding: 16px; border: 1px solid #e5e7eb; border-radius: 16px; background: #f9fafb;">
+      <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+        <tr>
+          <td style="padding: 0 0 12px; font-size: 13px; color: #6b7280;">Company</td>
+          <td style="padding: 0 0 12px; font-size: 15px; color: #111827; text-align: right; font-weight: 600;"><%= @company.name %></td>
+        </tr>
+        <tr>
+          <td style="padding: 0 0 12px; font-size: 13px; color: #6b7280;">Plan</td>
+          <td style="padding: 0 0 12px; font-size: 15px; color: #111827; text-align: right; font-weight: 600;"><%= @display_plan_label %></td>
+        </tr>
+        <tr>
+          <td style="padding: 0 0 12px; font-size: 13px; color: #6b7280;">Billing interval</td>
+          <td style="padding: 0 0 12px; font-size: 15px; color: #111827; text-align: right; font-weight: 600;"><%= @subscription_interval %></td>
+        </tr>
+        <tr>
+          <td style="padding: 0 0 12px; font-size: 13px; color: #6b7280;">Team seats</td>
+          <td style="padding: 0 0 12px; font-size: 15px; color: #111827; text-align: right; font-weight: 600;"><%= @seat_quantity %></td>
+        </tr>
+        <tr>
+          <td style="padding: 0; font-size: 13px; color: #6b7280;">Stripe subscription</td>
+          <td style="padding: 0; font-size: 15px; color: #111827; text-align: right; font-weight: 600;"><%= @stripe_subscription_id %></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+
+<p style="margin: 0 0 24px;">
+  <a href="<%= @billing_url %>" style="display: inline-block; padding: 12px 18px; border-radius: 12px; background: #111827; color: #ffffff; text-decoration: none; font-weight: 600;">
+    Open billing settings
+  </a>
+</p>
+
+<p style="margin: 0; font-size: 13px; line-height: 1.6; color: #6b7280;">
+  Billing settings: <a href="<%= @billing_url %>" style="color: #111827;"><%= @billing_url %></a>
+</p>

@@ -5,8 +5,8 @@ require "rails_helper"
 RSpec.describe "Api::V1::Reports::ClientRevenuesController::#index", type: :request do
   let(:company) { create(:company, plan_tier: "paid") }
   let(:user) { create(:user, current_workspace_id: company.id) }
-  let!(:client1) { create(:client, :with_logo, company:, name: "Alpha") }
-  let!(:client2) { create(:client, :with_logo, company:, name: "Delta") }
+  let!(:client1) { create(:client, company:, name: "Alpha") }
+  let!(:client2) { create(:client, company:, name: "Delta") }
   let(:client3) { create(:client, company:, name: "john") }
   let!(:client1_sent_invoice1) { create(:invoice, client: client1, status: "sent", issue_date: 2.weeks.ago) }
   let!(:client1_sent_invoice2) { create(:invoice, client: client1, status: "sent", issue_date: 2.weeks.ago) }
@@ -41,20 +41,22 @@ RSpec.describe "Api::V1::Reports::ClientRevenuesController::#index", type: :requ
         @client2_unpaid_amount = client2_sent_invoice2.amount + client2_viewed_invoice1.amount
         @expected_clients =
           [{
+            id: client1.id,
             logo: client1.logo_url,
             name: client1.name,
-            paid_amount: @client1_paid_amount,
-            outstanding_amount: @client1_unpaid_amount,
-            total_revenue: @client1_paid_amount + @client1_unpaid_amount + @client1_overdue_amount,
-            overdue_amount: @client1_overdue_amount
+            paid_amount: @client1_paid_amount.to_f,
+            outstanding_amount: @client1_unpaid_amount.to_f,
+            total_revenue: (@client1_paid_amount + @client1_unpaid_amount + @client1_overdue_amount).to_f,
+            overdue_amount: @client1_overdue_amount.to_f
           },
            {
+             id: client2.id,
              logo: client2.logo_url,
              name: client2.name,
-             paid_amount: @client2_paid_amount,
-             outstanding_amount: @client2_unpaid_amount,
-             total_revenue: @client2_paid_amount + @client2_unpaid_amount + @client2_overdue_amount,
-             overdue_amount: @client2_overdue_amount
+             paid_amount: @client2_paid_amount.to_f,
+             outstanding_amount: @client2_unpaid_amount.to_f,
+             total_revenue: (@client2_paid_amount + @client2_unpaid_amount + @client2_overdue_amount).to_f,
+             overdue_amount: @client2_overdue_amount.to_f
            }]
         get api_v1_reports_client_revenues_path,
           params: { from_date: 1.month.ago, to_date: Date.today },
@@ -66,7 +68,7 @@ RSpec.describe "Api::V1::Reports::ClientRevenuesController::#index", type: :requ
       end
 
       it "returns the billable clients data in alaphabetical order with amount details" do
-        expect(json_response["clients"]).to eq(JSON.parse(@expected_clients.to_json))
+        expect(json_response["clients"]).to eq(@expected_clients.as_json)
       end
 
       it "does not return non billable clients data" do
@@ -79,15 +81,15 @@ RSpec.describe "Api::V1::Reports::ClientRevenuesController::#index", type: :requ
 
       it "returns the summary of all clients" do
         expected_summary = {
-          totalPaidAmount: @client1_paid_amount + @client2_paid_amount,
-          totalOutstandingAmount: @client1_unpaid_amount + @client2_unpaid_amount + @client1_overdue_amount +
-                                  @client2_overdue_amount,
-          totalRevenue: @client1_paid_amount + @client2_paid_amount + @client1_unpaid_amount + @client2_unpaid_amount +
-                        @client1_overdue_amount + @client2_overdue_amount,
-          totalOverdueAmount: @client1_unpaid_amount + @client2_unpaid_amount + @client1_overdue_amount +
-                              @client2_overdue_amount
+          totalPaidAmount: (@client1_paid_amount + @client2_paid_amount).to_f,
+          totalOutstandingAmount: (@client1_unpaid_amount + @client2_unpaid_amount + @client1_overdue_amount +
+                                  @client2_overdue_amount).to_f,
+          totalRevenue: (@client1_paid_amount + @client2_paid_amount + @client1_unpaid_amount + @client2_unpaid_amount +
+                        @client1_overdue_amount + @client2_overdue_amount).to_f,
+          totalOverdueAmount: (@client1_unpaid_amount + @client2_unpaid_amount + @client1_overdue_amount +
+                              @client2_overdue_amount).to_f
         }
-        expect(json_response["summary"]).to eq(JSON.parse(expected_summary.to_json))
+        expect(json_response["summary"]).to eq(expected_summary.as_json)
       end
     end
 
@@ -111,15 +113,16 @@ RSpec.describe "Api::V1::Reports::ClientRevenuesController::#index", type: :requ
         expected_clients =
           [
             {
+              id: client1.id,
               name: client1.name,
               logo: client1.logo_url,
-              paid_amount: @client1_paid_amount,
-              outstanding_amount: @client1_unpaid_amount,
-              total_revenue: @client1_paid_amount + @client1_unpaid_amount + @client1_overdue_amount,
-              overdue_amount: @client1_overdue_amount
+              paid_amount: @client1_paid_amount.to_f,
+              outstanding_amount: @client1_unpaid_amount.to_f,
+              total_revenue: (@client1_paid_amount + @client1_unpaid_amount + @client1_overdue_amount).to_f,
+              overdue_amount: @client1_overdue_amount.to_f
             }
           ]
-        expect(json_response["clients"]).to eq(JSON.parse(expected_clients.to_json))
+        expect(json_response["clients"]).to eq(expected_clients.as_json)
       end
 
       it "returns the base currency" do
@@ -128,12 +131,21 @@ RSpec.describe "Api::V1::Reports::ClientRevenuesController::#index", type: :requ
 
       it "returns the summary of first client" do
         expected_summary = {
-          totalPaidAmount: @client1_paid_amount,
-          totalOutstandingAmount: @client1_unpaid_amount + @client1_overdue_amount,
-          totalRevenue: @client1_paid_amount + @client1_unpaid_amount + @client1_overdue_amount,
-          totalOverdueAmount: @client1_unpaid_amount + @client1_overdue_amount
+          totalPaidAmount: @client1_paid_amount.to_f,
+          totalOutstandingAmount: (@client1_unpaid_amount + @client1_overdue_amount).to_f,
+          totalRevenue: (@client1_paid_amount + @client1_unpaid_amount + @client1_overdue_amount).to_f,
+          totalOverdueAmount: (@client1_unpaid_amount + @client1_overdue_amount).to_f
         }
-        expect(json_response["summary"]).to eq(JSON.parse(expected_summary.to_json))
+        expect(json_response["summary"]).to eq(expected_summary.as_json)
+      end
+
+      it "accepts comma-separated client ids for filtering" do
+        send_request :get, api_v1_reports_client_revenues_path,
+          params: { client_ids: client1.id.to_s, from_date: 1.month.ago, to_date: Date.today },
+          headers: auth_headers(user)
+
+        expect(response).to have_http_status(:ok)
+        expect(json_response["clients"].pluck("name")).to eq([client1.name])
       end
     end
   end

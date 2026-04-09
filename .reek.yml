@@ -1,0 +1,61 @@
+exclude_paths:
+  - "spec"
+  - "config"
+  - "db"
+  - "bin"
+  - "app/models/concerns/searchable.rb"
+  - "app/models/payment.rb"
+  - "app/presenters/dashboard_presenter.rb"
+  - "app/services/database_backup_service.rb"
+  - "app/services/date_range_service.rb"
+  - "app/services/expenses/fetch_service.rb"
+  - "app/services/reports/accounts_aging/download_service.rb"
+  - "app/services/reports/accounts_aging/fetch_overdue_amount.rb"
+  - "app/services/reports/monthly_cash_flow_digest.rb"
+  - "app/services/reports/time_entries/result.rb"
+  - "app/services/time_tracking_index_service.rb"
+  - "app/services/timeoff_entries/calculate_total_duration_of_defined_leaves_service.rb"
+
+detectors:
+  Attribute:
+    enabled: false
+  BooleanParameter:
+    enabled: false
+  ControlParameter:
+    enabled: false
+  DataClump:
+    enabled: false
+  DuplicateMethodCall:
+    max_calls: 4
+  FeatureEnvy:
+    enabled: false
+  InstanceVariableAssumption:
+    enabled: false
+  IrresponsibleModule:
+    enabled: false
+  LongParameterList:
+    max_params: 9
+  ManualDispatch:
+    enabled: false
+  MissingSafeMethod:
+    enabled: false
+  NestedIterators:
+    enabled: false
+  NilCheck:
+    enabled: false
+  RepeatedConditional:
+    enabled: false
+  TooManyInstanceVariables:
+    enabled: false
+  TooManyMethods:
+    enabled: false
+  TooManyStatements:
+    max_statements: 15
+  TooManyConstants:
+    enabled: false
+  UncommunicativeModuleName:
+    enabled: false
+  UncommunicativeVariableName:
+    enabled: false
+  UtilityFunction:
+    enabled: false

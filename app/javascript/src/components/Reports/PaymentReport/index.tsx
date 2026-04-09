@@ -32,6 +32,7 @@ import {
   endOfQuarter,
 } from "date-fns";
 import { DateRange } from "react-day-picker";
+import { useSearchParams } from "react-router-dom";
 import axios from "../../../apis/api";
 import useInfiniteLoadTrigger from "../../../hooks/useInfiniteLoadTrigger";
 import { Button } from "../../ui/button";
@@ -62,6 +63,12 @@ import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
 import { Calendar as CalendarComponent } from "../../ui/calendar";
 import { StatusBadge } from "../../ui/status-badge";
 import { currencyFormat } from "../../../helpers";
+import {
+  buildSearchParams,
+  formatReportQueryDate,
+  parseNumericListParam,
+  parseReportQueryDate,
+} from "../filterUtils";
 
 interface Payment {
   id: number;
@@ -89,6 +96,32 @@ interface PaymentReportData {
     paymentMethods: Array<{ value: string; label: string }>;
   };
 }
+
+const resolvePaymentPreset = (preset: string) => {
+  const now = new Date();
+
+  switch (preset) {
+    case "this_month":
+      return { from: startOfMonth(now), to: endOfMonth(now) };
+    case "last_month": {
+      const lastMonth = subDays(startOfMonth(now), 1);
+
+      return { from: startOfMonth(lastMonth), to: endOfMonth(lastMonth) };
+    }
+    case "this_quarter":
+      return { from: startOfQuarter(now), to: endOfQuarter(now) };
+    case "this_year":
+      return { from: startOfYear(now), to: now };
+    case "last_7_days":
+      return { from: subDays(now, 7), to: now };
+    case "last_30_days":
+      return { from: subDays(now, 30), to: now };
+    case "custom":
+      return undefined;
+    default:
+      return { from: startOfYear(now), to: now };
+  }
+};
 
 const getPaymentMethodIcon = (method: string) => {
   const methodLower = method.toLowerCase();
@@ -121,28 +154,56 @@ const getPaymentMethodColor = (method: string) => {
 };
 
 const PaymentReport: React.FC = () => {
-  const [dateRange, setDateRange] = useState<DateRange | undefined>({
-    from: startOfYear(new Date()),
-    to: new Date(),
-  });
-  const [dateRangePreset, setDateRangePreset] = useState("this_year");
-  const [selectedClients, setSelectedClients] = useState<number[]>([]);
-  const [paymentMethod, setPaymentMethod] = useState<string>("");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const initialPreset = searchParams.get("preset") || "this_year";
+  const initialFrom = searchParams.get("from");
+  const initialTo = searchParams.get("to");
+  const parsedInitialFrom = parseReportQueryDate(initialFrom);
+  const parsedInitialTo = parseReportQueryDate(initialTo);
+  const [dateRange, setDateRange] = useState<DateRange | undefined>(
+    parsedInitialFrom || parsedInitialTo
+      ? {
+          from: parsedInitialFrom,
+          to: parsedInitialTo,
+        }
+      : resolvePaymentPreset(initialPreset)
+  );
+
+  const [dateRangePreset, setDateRangePreset] = useState(initialPreset);
+
+  const [selectedClients, setSelectedClients] = useState<number[]>(
+    parseNumericListParam(searchParams.get("clients"))
+  );
+
+  const [paymentMethod, setPaymentMethod] = useState<string>(
+    searchParams.get("paymentMethod") || ""
+  );
+
+  const [statusFilter, setStatusFilter] = useState<string>(
+    searchParams.get("status") || ""
+  );
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [visibleRowCount, setVisibleRowCount] = useState(25);
 
   const { data, isLoading, error, refetch } = useQuery<PaymentReportData>({
-    queryKey: ["paymentReport", dateRange, selectedClients, paymentMethod],
+    queryKey: [
+      "paymentReport",
+      dateRange,
+      selectedClients,
+      paymentMethod,
+      statusFilter,
+    ],
     queryFn: async () => {
       const params = new URLSearchParams({
-        ...(dateRange?.from && { from: format(dateRange.from, "dd/MM/yyyy") }),
-        ...(dateRange?.to && { to: format(dateRange.to, "dd/MM/yyyy") }),
+        ...(dateRange?.from && { from: formatReportQueryDate(dateRange.from) }),
+        ...(dateRange?.to && { to: formatReportQueryDate(dateRange.to) }),
         ...(selectedClients.length > 0 && {
           client_ids: selectedClients.join(","),
         }),
         ...(paymentMethod && { payment_method: paymentMethod }),
+        ...(statusFilter && { status: statusFilter }),
       });
 
       const response = await axios.get(
@@ -153,44 +214,69 @@ const PaymentReport: React.FC = () => {
     },
   });
 
+  useEffect(() => {
+    const nextParams = buildSearchParams({
+      preset: dateRangePreset,
+      from: formatReportQueryDate(dateRange?.from),
+      to: formatReportQueryDate(dateRange?.to),
+      clients:
+        selectedClients.length > 0 ? selectedClients.join(",") : undefined,
+      paymentMethod,
+      status: statusFilter,
+    });
+
+    setSearchParams(nextParams, { replace: true });
+  }, [
+    dateRange?.from,
+    dateRange?.to,
+    dateRangePreset,
+    paymentMethod,
+    selectedClients,
+    setSearchParams,
+    statusFilter,
+  ]);
+
+  useEffect(() => {
+    const nextPreset = searchParams.get("preset") || "this_year";
+    const nextFrom = parseReportQueryDate(searchParams.get("from"));
+    const nextTo = parseReportQueryDate(searchParams.get("to"));
+    const nextClients = parseNumericListParam(searchParams.get("clients"));
+    const nextPaymentMethod = searchParams.get("paymentMethod") || "";
+    const nextStatus = searchParams.get("status") || "";
+    const nextDateRange =
+      nextFrom || nextTo
+        ? { from: nextFrom, to: nextTo || nextFrom }
+        : resolvePaymentPreset(nextPreset);
+
+    setDateRangePreset(current =>
+      current === nextPreset ? current : nextPreset
+    );
+
+    setDateRange(current => {
+      const currentFrom = formatReportQueryDate(current?.from);
+      const currentTo = formatReportQueryDate(current?.to);
+      const nextFromString = formatReportQueryDate(nextDateRange?.from);
+      const nextToString = formatReportQueryDate(nextDateRange?.to);
+
+      if (currentFrom === nextFromString && currentTo === nextToString) {
+        return current;
+      }
+
+      return nextDateRange;
+    });
+
+    setSelectedClients(current =>
+      current.join(",") === nextClients.join(",") ? current : nextClients
+    );
+
+    setPaymentMethod(current =>
+      current === nextPaymentMethod ? current : nextPaymentMethod
+    );
+    setStatusFilter(current => (current === nextStatus ? current : nextStatus));
+  }, [searchParams]);
+
   const handleDateRangePreset = (preset: string) => {
-    const now = new Date();
-    let from: Date, to: Date;
-
-    switch (preset) {
-      case "this_month": {
-        from = startOfMonth(now);
-        to = endOfMonth(now);
-        break;
-      }
-      case "last_month": {
-        const lastMonth = subDays(startOfMonth(now), 1);
-        from = startOfMonth(lastMonth);
-        to = endOfMonth(lastMonth);
-        break;
-      }
-      case "this_quarter":
-        from = startOfQuarter(now);
-        to = endOfQuarter(now);
-        break;
-      case "this_year":
-        from = startOfYear(now);
-        to = now;
-        break;
-      case "last_7_days":
-        from = subDays(now, 7);
-        to = now;
-        break;
-      case "last_30_days":
-        from = subDays(now, 30);
-        to = now;
-        break;
-      default:
-        from = startOfYear(now);
-        to = now;
-    }
-
-    setDateRange({ from, to });
+    setDateRange(resolvePaymentPreset(preset));
     setDateRangePreset(preset);
   };
 
@@ -198,12 +284,13 @@ const PaymentReport: React.FC = () => {
     mutationFn: async (formatType: "csv" | "pdf") => {
       const params = new URLSearchParams({
         format: formatType,
-        ...(dateRange?.from && { from: format(dateRange.from, "dd/MM/yyyy") }),
-        ...(dateRange?.to && { to: format(dateRange.to, "dd/MM/yyyy") }),
+        ...(dateRange?.from && { from: formatReportQueryDate(dateRange.from) }),
+        ...(dateRange?.to && { to: formatReportQueryDate(dateRange.to) }),
         ...(selectedClients.length > 0 && {
           client_ids: selectedClients.join(","),
         }),
         ...(paymentMethod && { payment_method: paymentMethod }),
+        ...(statusFilter && { status: statusFilter }),
       });
 
       const response = await axios.get(

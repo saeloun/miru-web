@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class LeaveType < ApplicationRecord
-  include Discard::Model
+  include Discardable
   include LeaveTypeValidatable
 
   enum :color, {

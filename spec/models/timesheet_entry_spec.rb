@@ -232,6 +232,60 @@ RSpec.describe TimesheetEntry, type: :model do
     end
   end
 
+  describe "auditing" do
+    it "records an audit when tracked attributes change" do
+      entry = create(:timesheet_entry, project:, note: "Initial note", duration: 60)
+
+      expect do
+        entry.update!(note: "Updated note", duration: 90)
+      end.to change { Audited::Audit.count }.by(1)
+
+      audit = entry.audits.last
+
+      expect(audit.audited_changes["note"]).to eq(["Initial note", "Updated note"])
+      expect(audit.audited_changes["duration"]).to eq([60.0, 90.0])
+    end
+
+    it "records audits for structured source metadata changes" do
+      entry = create(:timesheet_entry, project:, source_metadata: { "tool" => "codex" })
+
+      expect do
+        entry.update!(source_metadata: { "tool" => "claude-code", "mcp_server" => "github" })
+      end.to change { Audited::Audit.count }.by(1)
+
+      audit = entry.audits.last
+
+      expect(audit.audited_changes["source_metadata"]).to eq(
+        [{ "tool" => "codex" }, { "tool" => "claude-code", "mcp_server" => "github" }]
+      )
+    end
+
+    it "records audits for proof metadata changes" do
+      entry = create(:timesheet_entry, project:, proof_metadata: { "artifact" => "build-log" })
+
+      expect do
+        entry.update!(proof_metadata: { "artifact" => "screenshot", "attempts" => 2 })
+      end.to change { Audited::Audit.count }.by(1)
+
+      audit = entry.audits.last
+
+      expect(audit.audited_changes["proof_metadata"]).to eq(
+        [{ "artifact" => "build-log" }, { "artifact" => "screenshot", "attempts" => 2 }]
+      )
+    end
+
+    it "records an audit when the entry is discarded" do
+      entry = create(:timesheet_entry, project:)
+
+      expect do
+        entry.discard!
+      end.to change { Audited::Audit.count }.by(1)
+
+      expect(entry.audits.last.audited_changes["discarded_at"].first).to be_nil
+      expect(entry.audits.last.audited_changes["discarded_at"].last).to be_present
+    end
+  end
+
   describe "#ensure_bill_status_is_not_billed" do
     let(:error_message) { "You can't create a billed timesheet entry" }
 

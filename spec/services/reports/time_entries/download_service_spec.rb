@@ -31,7 +31,7 @@ RSpec.describe Reports::TimeEntries::DownloadService do
     it "Fetches all the users data" do
       subject.process
       data = subject.reports
-      all_users_with_name = User.all.order(:first_name).map { |u| u.full_name }
+      all_users_with_name = User.all.map(&:full_name).sort
       expect(data.pluck(:label)).to eq(all_users_with_name)
     end
 
