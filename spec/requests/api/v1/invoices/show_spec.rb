@@ -75,6 +75,40 @@ RSpec.describe "Api::V1::Invoices#show", type: :request do
     end
   end
 
+  context "when user is a client" do
+    let(:user) { create(:user, email: "invoice-show-client@example.com", current_workspace_id: company.id) }
+    let(:invoice) { company.invoices.first }
+
+    before do
+      create(:client_member, company:, client: invoice.client, user:)
+      user.add_role :client, company
+      sign_in user
+    end
+
+    it "omits company financial details from the invoice payload" do
+      company.update!(
+        bank_name: "QA Bank",
+        bank_account_number: "12345678",
+        bank_routing_number: "987654321",
+        bank_swift_code: "QABKUS33",
+        tax_id: "TAX-123",
+        vat_number: "VAT-123",
+        gst_number: "GST-123"
+      )
+
+      send_request :get, api_v1_invoice_path(invoice.id), headers: auth_headers(user)
+
+      expect(response).to have_http_status(:ok)
+      expect(json_response.dig("company", "bankName")).to be_nil
+      expect(json_response.dig("company", "bankAccountNumber")).to be_nil
+      expect(json_response.dig("company", "bankRoutingNumber")).to be_nil
+      expect(json_response.dig("company", "bankSwiftCode")).to be_nil
+      expect(json_response.dig("company", "taxId")).to be_nil
+      expect(json_response.dig("company", "vatNumber")).to be_nil
+      expect(json_response.dig("company", "gstNumber")).to be_nil
+    end
+  end
+
   context "when unauthenticated" do
     it "is not permitted to view time entry report" do
       send_request :get, api_v1_invoice_path(company.invoices.first.id)

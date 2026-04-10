@@ -76,8 +76,8 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
   };
 
   const fallbackCompany = {
-    name: currentCompany?.name || "Miru Time Tracking",
-    email: currentCompany?.email || "support@getmiru.com",
+    name: currentCompany?.name || "Company Name",
+    email: currentCompany?.email || "",
     baseCurrency:
       currentCompany?.baseCurrency || currentCompany?.base_currency || "USD",
     dateFormat:
@@ -85,6 +85,7 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
     address: currentCompany?.address || "",
     phone:
       currentCompany?.phone ||
+      currentCompany?.phone_number ||
       currentCompany?.businessPhone ||
       currentCompany?.business_phone ||
       "",
@@ -102,6 +103,7 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
       "",
     bankSwiftCode:
       currentCompany?.bankSwiftCode || currentCompany?.bank_swift_code || "",
+    logo: currentCompany?.logo || "",
   };
 
   // Load initial data

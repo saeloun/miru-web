@@ -30,6 +30,8 @@ class Api::V1::UsersController < Api::V1::BaseController
           "business_phone",
           "tax_id"
         )&.merge(
+          "address" => current_company&.current_address,
+          "logo" => current_company&.company_logo,
           "pro_access" => current_company&.pro_access?,
           "plan_tier" => current_company&.plan_tier,
           "current_plan_label" => current_company&.current_plan_label,

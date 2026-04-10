@@ -32,6 +32,8 @@ module AuthResponsePayload
         "tax_id",
         "plan_tier"
       ).merge(
+        "address" => company.current_address,
+        "logo" => company.company_logo,
         "pro_access" => company.pro_access?,
         "current_plan_label" => company.current_plan_label,
         "team_member_limit" => company.team_member_limit,

@@ -45,6 +45,25 @@ RSpec.describe "Invoice creation", type: :system, js: true do
     end
   end
 
+  it "shows real company details in the preview instead of fallback placeholders" do
+    company.addresses.first.update!(address_line_1: "100 Market St", city: "San Francisco", state: "CA", country: "USA", pin: "94105")
+    company.update!(
+      business_phone: "+15550199",
+      tax_id: "TAX-123",
+      bank_name: "QA Bank",
+      bank_account_number: "12345678"
+    )
+
+    with_forgery_protection do
+      visit_new_invoice_for(client)
+
+      expect(page).to have_text(company.name, wait: 10)
+      expect(page).to have_text("100 Market St", wait: 10)
+      expect(page).to have_text("TAX-123", wait: 10)
+      expect(page).not_to have_text("support@getmiru.com", wait: 1)
+    end
+  end
+
   it "auto-generates the first invoice number for a client without invoices" do
     with_forgery_protection do
       visit_new_invoice_for(client)

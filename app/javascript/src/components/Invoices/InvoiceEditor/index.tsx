@@ -106,13 +106,13 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
   );
 
   // Helper function to ensure valid Date object
-  const ensureValidDate = (date: any): Date => {
-    if (!date) return new Date();
+  const parseDate = (date: any): Date | undefined => {
+    if (!date) return undefined;
 
     if (date instanceof Date && !isNaN(date.getTime())) return date;
     const parsed = new Date(date);
 
-    return isNaN(parsed.getTime()) ? new Date() : parsed;
+    return isNaN(parsed.getTime()) ? undefined : parsed;
   };
 
   const [formData, setFormData] = useState({
@@ -120,10 +120,10 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
     invoiceNumber: invoice?.invoiceNumber || "",
     status: invoice?.status || "draft",
     clientId: invoice?.clientId || initialClientId || "",
-    issueDate: ensureValidDate(invoice?.issueDate),
-    dueDate: ensureValidDate(
-      invoice?.dueDate || new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
-    ),
+    issueDate: parseDate(invoice?.issueDate) || new Date(),
+    dueDate:
+      parseDate(invoice?.dueDate) ||
+      new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
     reference: invoice?.reference || "",
     notes: invoice?.notes || "",
     discount: invoice?.discount || 0,
@@ -288,8 +288,8 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
   useEffect(() => {
     const snapshot = JSON.stringify({
       ...formData,
-      issueDate: ensureValidDate(formData.issueDate).toISOString(),
-      dueDate: ensureValidDate(formData.dueDate).toISOString(),
+      issueDate: formData.issueDate.toISOString(),
+      dueDate: formData.dueDate.toISOString(),
       lineItems: submissionLineItems,
     });
 
@@ -594,7 +594,7 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
                         >
                           <CalendarIcon className="mr-2 h-4 w-4" />
                           {formData.issueDate ? (
-                            format(ensureValidDate(formData.issueDate), "PPP")
+                            format(formData.issueDate, "PPP")
                           ) : (
                             <span>Pick a date</span>
                           )}
@@ -604,9 +604,13 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
                         <Calendar
                           mode="single"
                           selected={formData.issueDate}
-                          onSelect={date =>
-                            setFormData({ ...formData, issueDate: date })
-                          }
+                          onSelect={date => {
+                            if (!date) return;
+                            setFormData(current => ({
+                              ...current,
+                              issueDate: date,
+                            }));
+                          }}
                           initialFocus
                         />
                       </PopoverContent>
@@ -626,7 +630,7 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
                         >
                           <CalendarIcon className="mr-2 h-4 w-4" />
                           {formData.dueDate ? (
-                            format(ensureValidDate(formData.dueDate), "PPP")
+                            format(formData.dueDate, "PPP")
                           ) : (
                             <span>Pick a date</span>
                           )}
@@ -636,9 +640,13 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
                         <Calendar
                           mode="single"
                           selected={formData.dueDate}
-                          onSelect={date =>
-                            setFormData({ ...formData, dueDate: date })
-                          }
+                          onSelect={date => {
+                            if (!date) return;
+                            setFormData(current => ({
+                              ...current,
+                              dueDate: date,
+                            }));
+                          }}
                           initialFocus
                         />
                       </PopoverContent>

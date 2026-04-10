@@ -3,7 +3,14 @@
 require "rails_helper"
 
 RSpec.describe "Api::V1::Users#me", type: :request do
-  let(:company) { create(:company, date_format: "DD-MM-YYYY") }
+  let(:company) do
+    create(
+      :company,
+      date_format: "DD-MM-YYYY",
+      business_phone: "+15550199",
+      tax_id: "TAX-123"
+    )
+  end
   let(:user) do
     create(
       :user,
@@ -43,6 +50,10 @@ RSpec.describe "Api::V1::Users#me", type: :request do
       get api_v1_users_me_path, headers: auth_headers(user)
       expect(json_response["company"]["id"]).to eq(company.id)
       expect(json_response["company"]["name"]).to eq(company.name)
+      expect(json_response["company"]["business_phone"]).to eq(company.business_phone)
+      expect(json_response["company"]["tax_id"]).to eq(company.tax_id)
+      expect(json_response["company"]["address"]["address_line_1"]).to eq(company.current_address.address_line_1)
+      expect(json_response["company"]["logo"]).to eq(company.company_logo)
     end
 
     it "returns the user role" do

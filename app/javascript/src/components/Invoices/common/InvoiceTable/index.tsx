@@ -164,6 +164,14 @@ const InvoiceTable = ({
     <Fragment>
       <div className="w-full overflow-x-auto">
         <table className="bg-card min-w-[48rem] table-fixed sm:min-w-full">
+          <colgroup>
+            <col className="w-[38%]" />
+            <col className="w-[18%]" />
+            <col className="w-[14%]" />
+            <col className="w-[12%]" />
+            <col className="w-[13%]" />
+            <col className="w-[5%]" />
+          </colgroup>
           <LineItemTableHeader />
           <tbody className="w-full" ref={wrapperRef}>
             {getAddNewButton()}
