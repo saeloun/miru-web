@@ -14,7 +14,7 @@ RSpec.describe "Api::V1::TeamMembers::DetailsController#update", type: :request 
       # first name is kept the same for testing, rest all fields are updated
       first_name: user.first_name,
       last_name: Faker::Alphanumeric.alpha(number: 2..10),
-      phone: Faker::PhoneNumber.phone_number_with_country_code,
+      phone: "+1#{Faker::Number.number(digits: 10)}",
       date_of_birth: Faker::Date.between(from: "1990-01-01", to: "2000-01-01"),
       personal_email_id: Faker::Internet.email,
       social_accounts: {
@@ -65,6 +65,40 @@ RSpec.describe "Api::V1::TeamMembers::DetailsController#update", type: :request 
       expect(json_response["date_of_birth"]).to eq(JSON.parse(@user_details["date_of_birth"].to_json))
       expect(json_response["phone"]).to eq(JSON.parse(@user_details["phone"].to_json))
       expect(json_response["social_accounts"]).to eq(JSON.parse(@user_details["social_accounts"].to_json))
+    end
+  end
+
+  context "when Owner submits an invalid future date of birth" do
+    before do
+      user.add_role :owner, company
+      sign_in user
+      send_request :patch, api_v1_team_details_path(
+        team_id: employment.user_id,
+        params: {
+          user: @user_details.merge(date_of_birth: 1.day.from_now.to_date)
+        }), headers: auth_headers(user)
+    end
+
+    it "is unsuccessful" do
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(json_response["errors"]).to include("Date of birth cannot be in the future")
+    end
+  end
+
+  context "when Owner submits a phone number longer than 15 digits" do
+    before do
+      user.add_role :owner, company
+      sign_in user
+      send_request :patch, api_v1_team_details_path(
+        team_id: employment.user_id,
+        params: {
+          user: @user_details.merge(phone: "+1234567890123456")
+        }), headers: auth_headers(user)
+    end
+
+    it "is unsuccessful" do
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(json_response["errors"]).to include("Phone cannot exceed 15 digits")
     end
   end
 
