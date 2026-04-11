@@ -1,4 +1,11 @@
 import * as Yup from "yup";
+import dayjs from "dayjs";
+import customParseFormat from "dayjs/plugin/customParseFormat";
+
+dayjs.extend(customParseFormat);
+
+const phoneDigitsWithinLimit = phoneNumber =>
+  phoneNumber ? phoneNumber.replace(/\D/g, "").length <= 15 : true;
 
 export const userSchema = {
   first_name: Yup.string()
@@ -21,6 +28,27 @@ export const userSchema = {
       is: true,
       then: Yup.string().email("Please enter valid email"),
     }),
+  date_of_birth: Yup.string()
+    .nullable()
+    .test(
+      "not-in-future",
+      "Date of birth cannot be in the future",
+      (value, context) => {
+        if (!value) return true;
+
+        const dateFormat = context.parent?.date_format || "DD-MM-YYYY";
+        const parsedDate = dayjs(value, dateFormat, true);
+
+        return parsedDate.isValid() && !parsedDate.isAfter(dayjs(), "day");
+      }
+    ),
+  phone_number: Yup.string()
+    .nullable()
+    .test(
+      "phone-number-length",
+      "Mobile number cannot exceed 15 digits",
+      value => phoneDigitsWithinLimit(value)
+    ),
   changePassword: Yup.boolean(),
   password: Yup.string().when("changePassword", {
     is: true,

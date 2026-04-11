@@ -193,7 +193,16 @@ const MobileProfileEditor = ({
                     ? personalDetails.date_of_birth
                     : dayjs()
                 }
+                maxDate={new Date()}
               />
+            )}
+            {errDetails.date_of_birth_err && (
+              <div className="px-2">
+                <ErrorSpan
+                  className="text-xs text-destructive"
+                  message={errDetails.date_of_birth_err}
+                />
+              </div>
             )}
           </div>
           <div className="w-1/2 px-1">
@@ -221,7 +230,13 @@ const MobileProfileEditor = ({
         </span>
         <div className="mt-2 flex w-full flex-row">
           <div className="w-1/2 px-1">
-            <div className="outline relative flex h-12 flex-row rounded border border-border bg-background px-2 pb-4 pt-2 text-sm">
+            <div
+              className={`outline relative flex h-12 flex-row rounded border bg-background px-2 pb-4 pt-2 text-sm ${
+                errDetails.phone_number_err
+                  ? "border-destructive"
+                  : "border-border"
+              }`}
+            >
               <PhoneInput
                 className="input-phone-number w-full border-transparent focus:border-transparent focus:ring-0"
                 flags={flags}
@@ -239,6 +254,12 @@ const MobileProfileEditor = ({
                 {i18n.t("clients.phoneNumber")}
               </label>
             </div>
+            {errDetails.phone_number_err && (
+              <ErrorSpan
+                className="text-xs text-destructive"
+                message={errDetails.phone_number_err}
+              />
+            )}
           </div>
           <div className="w-1/2 px-1">
             <CustomInputText

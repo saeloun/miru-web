@@ -68,6 +68,8 @@ class User < ApplicationRecord
     format: { with: /\A[a-zA-Z\s]+\z/ },
     length: { maximum: 20 }
   validates :locale, inclusion: { in: LocaleConfig::SUPPORTED_LOCALES }
+  validate :date_of_birth_cannot_be_in_future
+  validate :phone_length_within_limit
 
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
@@ -273,6 +275,20 @@ class User < ApplicationRecord
 
     def normalize_locale
       self.locale = LocaleConfig.normalize(locale)
+    end
+
+    def date_of_birth_cannot_be_in_future
+      return if date_of_birth.blank?
+      return unless date_of_birth > Date.current
+
+      errors.add(:date_of_birth, "cannot be in the future")
+    end
+
+    def phone_length_within_limit
+      return if phone.blank?
+      return unless phone.gsub(/\D/, "").length > 15
+
+      errors.add(:phone, "cannot exceed 15 digits")
     end
 
     def set_token

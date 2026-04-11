@@ -136,5 +136,23 @@ RSpec.describe "Api::V1::Profile#update", type: :request do
         "linkedin_url" => "https://linkedin.com/in/sam"
       )
     end
+
+    it "rejects a future date of birth" do
+      params = { user: { date_of_birth: (Date.current + 1.day).iso8601 } }
+
+      send_request(:put, api_v1_profile_path, params:, headers: auth_headers(user))
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(json_response["errors"]).to eq(["Date of birth cannot be in the future"])
+    end
+
+    it "rejects a phone number longer than 15 digits" do
+      params = { user: { phone: "+1234567890123456" } }
+
+      send_request(:put, api_v1_profile_path, params:, headers: auth_headers(user))
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(json_response["errors"]).to eq(["Phone cannot exceed 15 digits"])
+    end
   end
 end

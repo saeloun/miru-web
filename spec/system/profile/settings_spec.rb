@@ -205,6 +205,47 @@ RSpec.describe "Profile Settings", type: :system, js: true do
     end
   end
 
+  it "does not offer a future year in the date of birth picker" do
+    with_forgery_protection do
+      visit "/settings/profile/edit"
+
+      expect(page).to have_css("#react-root", wait: 10)
+      date_field = find('input[name="date_of_birth"]', visible: :all, wait: 10)
+
+      page.execute_script("arguments[0].parentElement.click()", date_field.native)
+      expect(page).to have_css(".react-datepicker", wait: 10)
+
+      available_years = page.evaluate_script(<<~JS)
+        Array.from(document.querySelectorAll(".react-datepicker__year-select option")).map(
+          option => Number(option.value)
+        )
+      JS
+
+      expect(available_years.all? { |year| year <= Date.current.year }).to eq(true)
+    end
+  end
+
+  it "rejects a phone number longer than 15 digits on profile edit" do
+    with_forgery_protection do
+      visit "/settings/profile/edit"
+
+      expect(page).to have_css("#react-root", wait: 10)
+      phone_field = find(".input-phone-number input", visible: :all, wait: 10)
+
+      page.execute_script(<<~JS, phone_field.native)
+        const input = arguments[0];
+        input.value = "+1234567890123456";
+        input.dispatchEvent(new Event("input", { bubbles: true }));
+        input.dispatchEvent(new Event("change", { bubbles: true }));
+      JS
+
+      click_button "Update"
+
+      expect(page).to have_current_path("/settings/profile/edit", wait: 10)
+      expect(page).to have_content("Mobile number cannot exceed 15 digits", wait: 10)
+    end
+  end
+
   it "hides billing notification controls for employees" do
     employee_user = create(:user,
       first_name: "John",

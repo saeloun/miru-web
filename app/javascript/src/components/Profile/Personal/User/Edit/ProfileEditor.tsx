@@ -214,6 +214,13 @@ const ProfileEditor = ({
                         ? personalDetails.date_of_birth
                         : dayjs()
                     }
+                    maxDate={new Date()}
+                  />
+                )}
+                {errDetails.date_of_birth_err && (
+                  <ErrorSpan
+                    className="text-xs text-destructive font-geist-regular"
+                    message={errDetails.date_of_birth_err}
                   />
                 )}
               </div>
@@ -240,7 +247,13 @@ const ProfileEditor = ({
                     <Phone className="h-3 w-3" weight="bold" />
                     {i18n.t("clients.phoneNumber")}
                   </label>
-                  <div className="relative flex h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
+                  <div
+                    className={`relative flex h-10 rounded-md border bg-background px-3 py-2 text-sm ring-offset-background focus-within:ring-2 focus-within:ring-offset-2 ${
+                      errDetails.phone_number_err
+                        ? "border-destructive focus-within:ring-destructive"
+                        : "border-input focus-within:ring-ring"
+                    }`}
+                  >
                     <PhoneInput
                       id="phone_number"
                       name="phone_number"
@@ -255,6 +268,12 @@ const ProfileEditor = ({
                       onChange={handlePhoneNumberChange}
                     />
                   </div>
+                  {errDetails.phone_number_err && (
+                    <ErrorSpan
+                      className="text-xs text-destructive font-geist-regular"
+                      message={errDetails.phone_number_err}
+                    />
+                  )}
                 </div>
                 <div className="space-y-2">
                   <label
