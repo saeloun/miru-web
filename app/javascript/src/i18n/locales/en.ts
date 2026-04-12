@@ -1262,6 +1262,29 @@ const en = {
     },
   },
 
+  automationSettings: {
+    title: "Automation and CLI",
+    description:
+      "Use Miru from your terminal, scripts, or AI agents with the same permissions as your logged-in account. No separate automation product. No special backdoor access.",
+    freeForEveryPlan: "Free for every plan",
+    cards: {
+      samePermissionsTitle: "Same permissions as the app",
+      samePermissionsDescription:
+        "The CLI only sees what the authenticated user can already access in the web app.",
+      humansAndScriptsTitle: "Good for humans and scripts",
+      humansAndScriptsDescription:
+        "Keep simple commands for everyday tasks and let scripts or AI call the exact same interface.",
+      easyToInstallTitle: "Easy to install",
+      easyToInstallDescription:
+        "One install command, one login, and then you can list projects, create time entries, review invoices, and more.",
+    },
+    commandGroups: {
+      install: "Install",
+      authenticateOnce: "Authenticate once",
+      dailyCommands: "Daily commands",
+    },
+  },
+
   twoFactor: {
     title: "Authenticator App 2FA",
     addTitle: "Add an authenticator app",

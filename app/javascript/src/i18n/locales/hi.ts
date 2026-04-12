@@ -1390,6 +1390,29 @@ const hi = {
     },
   },
 
+  automationSettings: {
+    title: "ऑटोमेशन और CLI",
+    description:
+      "अपने टर्मिनल, स्क्रिप्ट्स या AI एजेंट्स से Miru का उपयोग उसी अनुमति स्तर के साथ करें जो आपके लॉग-इन खाते के पास है। कोई अलग ऑटोमेशन उत्पाद नहीं। कोई विशेष बैकडोर एक्सेस नहीं।",
+    freeForEveryPlan: "हर प्लान के लिए निःशुल्क",
+    cards: {
+      samePermissionsTitle: "ऐप जैसी ही अनुमतियाँ",
+      samePermissionsDescription:
+        "CLI केवल वही देखता है जिसे प्रमाणित उपयोगकर्ता वेब ऐप में पहले से एक्सेस कर सकता है।",
+      humansAndScriptsTitle: "इंसानों और स्क्रिप्ट्स दोनों के लिए अच्छा",
+      humansAndScriptsDescription:
+        "रोज़मर्रा के कामों के लिए सरल कमांड रखें और स्क्रिप्ट्स या AI को उसी इंटरफ़ेस का उपयोग करने दें।",
+      easyToInstallTitle: "इंस्टॉल करना आसान",
+      easyToInstallDescription:
+        "एक इंस्टॉल कमांड, एक लॉगिन, और फिर आप प्रोजेक्ट्स देख सकते हैं, समय प्रविष्टियाँ बना सकते हैं, इनवॉइस की समीक्षा कर सकते हैं, और बहुत कुछ कर सकते हैं।",
+    },
+    commandGroups: {
+      install: "इंस्टॉल",
+      authenticateOnce: "एक बार प्रमाणित करें",
+      dailyCommands: "दैनिक कमांड",
+    },
+  },
+
   // Leave Management
   leaveManagement: {
     leaveBalance: "अवकाश शेष",

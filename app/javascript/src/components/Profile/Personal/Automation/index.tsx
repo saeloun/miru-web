@@ -1,6 +1,7 @@
 import React from "react";
 
 import { Browser, Command, Robot, TerminalWindow } from "phosphor-react";
+import { i18n } from "../../../../i18n";
 
 import { Badge } from "../../../ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "../../../ui/card";
@@ -10,12 +11,12 @@ const cliInstallCommand =
 
 const commandGroups = [
   {
-    title: "Install",
+    titleKey: "install",
     icon: <TerminalWindow size={18} weight="duotone" />,
     lines: [cliInstallCommand],
   },
   {
-    title: "Authenticate once",
+    titleKey: "authenticateOnce",
     icon: <Browser size={18} weight="duotone" />,
     lines: [
       "miru login --email you@example.com --password password",
@@ -23,7 +24,7 @@ const commandGroups = [
     ],
   },
   {
-    title: "Daily commands",
+    titleKey: "dailyCommands",
     icon: <Command size={18} weight="duotone" />,
     lines: [
       "miru whoami",
@@ -44,46 +45,41 @@ const Automation = () => (
         <div className="flex flex-wrap items-center gap-3">
           <Badge variant="secondary" className="gap-1.5 px-3 py-1">
             <Robot size={14} weight="fill" />
-            Free for every plan
+            {i18n.t("automationSettings.freeForEveryPlan")}
           </Badge>
         </div>
         <div className="space-y-2">
           <CardTitle className="text-2xl tracking-tight">
-            Automation and CLI
+            {i18n.t("automationSettings.title")}
           </CardTitle>
           <p className="max-w-3xl text-sm text-muted-foreground">
-            Use Miru from your terminal, scripts, or AI agents with the same
-            permissions as your logged-in account. No separate automation
-            product. No special backdoor access.
+            {i18n.t("automationSettings.description")}
           </p>
         </div>
       </CardHeader>
       <CardContent className="grid gap-4 md:grid-cols-3">
         <div className="rounded-xl border border-border bg-background p-4 shadow-sm">
           <p className="text-sm font-semibold text-foreground">
-            Same permissions as the app
+            {i18n.t("automationSettings.cards.samePermissionsTitle")}
           </p>
           <p className="mt-2 text-sm text-muted-foreground">
-            The CLI only sees what the authenticated user can already access in
-            the web app.
+            {i18n.t("automationSettings.cards.samePermissionsDescription")}
           </p>
         </div>
         <div className="rounded-xl border border-border bg-background p-4 shadow-sm">
           <p className="text-sm font-semibold text-foreground">
-            Good for humans and scripts
+            {i18n.t("automationSettings.cards.humansAndScriptsTitle")}
           </p>
           <p className="mt-2 text-sm text-muted-foreground">
-            Keep simple commands for everyday tasks and let scripts or AI call
-            the exact same interface.
+            {i18n.t("automationSettings.cards.humansAndScriptsDescription")}
           </p>
         </div>
         <div className="rounded-xl border border-border bg-background p-4 shadow-sm">
           <p className="text-sm font-semibold text-foreground">
-            Easy to install
+            {i18n.t("automationSettings.cards.easyToInstallTitle")}
           </p>
           <p className="mt-2 text-sm text-muted-foreground">
-            One install command, one login, and then you can list projects,
-            create time entries, review invoices, and more.
+            {i18n.t("automationSettings.cards.easyToInstallDescription")}
           </p>
         </div>
       </CardContent>
@@ -91,12 +87,14 @@ const Automation = () => (
 
     <div className="grid gap-4 lg:grid-cols-3">
       {commandGroups.map(group => (
-        <Card key={group.title} className="border-border bg-card shadow-sm">
+        <Card key={group.titleKey} className="border-border bg-card shadow-sm">
           <CardHeader className="gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-background text-foreground shadow-sm">
               {group.icon}
             </div>
-            <CardTitle className="text-lg">{group.title}</CardTitle>
+            <CardTitle className="text-lg">
+              {i18n.t(`automationSettings.commandGroups.${group.titleKey}`)}
+            </CardTitle>
           </CardHeader>
           <CardContent className="space-y-2">
             {group.lines.map(line => (
