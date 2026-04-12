@@ -347,7 +347,11 @@ const UserDetailsEdit = () => {
   };
 
   const handlePhoneNumberChange = phoneNumber => {
-    updateBasicDetails(phoneNumber, "phone_number", false);
+    const digits = (phoneNumber || "").replace(/\D/g, "");
+    const normalizedPhoneNumber =
+      digits.length > 15 ? `+${digits.slice(0, 15)}` : phoneNumber;
+
+    updateBasicDetails(normalizedPhoneNumber, "phone_number", false);
   };
 
   const handleCancelDetails = () => {

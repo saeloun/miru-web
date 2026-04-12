@@ -240,6 +240,7 @@ const MobileProfileEditor = ({
               <PhoneInput
                 className="input-phone-number w-full border-transparent focus:border-transparent focus:ring-0"
                 flags={flags}
+                limitMaxLength
                 value={
                   personalDetails.phone_number
                     ? personalDetails.phone_number

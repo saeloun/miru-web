@@ -260,6 +260,7 @@ const ProfileEditor = ({
                       aria-label={i18n.t("profile.phoneAriaLabel")}
                       className="input-phone-number w-full border-transparent focus:border-transparent focus:ring-0 font-geist-regular"
                       flags={flags}
+                      limitMaxLength
                       value={
                         personalDetails.phone_number
                           ? personalDetails.phone_number
