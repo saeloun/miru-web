@@ -1212,6 +1212,56 @@ const en = {
     zoom: "Zoom",
   },
 
+  preferencesSettings: {
+    title: "Email Preferences",
+    description: "Manage your email notification settings",
+    saving: "Saving...",
+    saveChanges: "Save Changes",
+    timesheetNotifications: "Timesheet Notifications",
+    billingNotifications: "Billing Notifications",
+    timesheetNotificationsDescription:
+      "Manage notifications related to time tracking and timesheets",
+    billingNotificationsDescription:
+      "Control invoice and payment notifications",
+    weeklyReminderTitle: "Weekly Timesheet Reminder",
+    weeklyReminderDescription:
+      "Receive weekly reminders every Monday about pending timesheet entries",
+    timesheetReminderTitle: "Missing Entry Reminders",
+    timesheetReminderDescription:
+      "Get notified when you haven't logged time for more than 2 days",
+    invoiceNotificationsTitle: "Invoice Email Notifications",
+    invoiceNotificationsDescription:
+      "Receive emails when invoices are created, sent, or updated",
+    paymentNotificationsTitle: "Payment Email Notifications",
+    paymentNotificationsDescription:
+      "Get notified when payments are received or payment status changes",
+    monthlyDigestTitle: "Monthly Cash Flow Digest",
+    monthlyDigestDescription:
+      "Receive a monthly cash flow summary with net change, money in, and money out",
+    confirmUnsubscribeTitle: "Confirm Unsubscribe from All Emails",
+    confirmUnsubscribeDescription:
+      "Are you sure you want to unsubscribe from all email notifications? You will not receive any emails including important billing and invoice notifications.",
+    confirmUnsubscribeAction: "Yes, Unsubscribe from All",
+    unsubscribedTitle: "You're Unsubscribed from All Emails",
+    unsubscribedDescription:
+      "You are currently unsubscribed from all email notifications. You won't receive any emails from Miru.",
+    resubscribeAction: "Re-enable Email Notifications",
+    enabledCount: "%{count} of %{total} enabled",
+    deliveryTitle: "Email Delivery Settings",
+    emailAddress: "Email Address",
+    deliveryDescription:
+      "All notifications will be sent to this email address. To change your email, please update it in your profile settings.",
+    unsubscribeTitle: "Unsubscribe",
+    unsubscribeDescription:
+      "If you no longer wish to receive any emails from Miru, you can unsubscribe from all notifications. This will stop all email communications including important billing and invoice notifications.",
+    unsubscribeAction: "Unsubscribe from All Emails",
+    badges: {
+      active: "Active",
+      important: "Important",
+      monthly: "Monthly",
+    },
+  },
+
   twoFactor: {
     title: "Authenticator App 2FA",
     addTitle: "Add an authenticator app",

@@ -1340,6 +1340,56 @@ const hi = {
     zoom: "ज़ूम",
   },
 
+  preferencesSettings: {
+    title: "ईमेल प्राथमिकताएं",
+    description: "अपनी ईमेल सूचना सेटिंग्स प्रबंधित करें",
+    saving: "सहेजा जा रहा है...",
+    saveChanges: "परिवर्तन सहेजें",
+    timesheetNotifications: "टाइमशीट सूचनाएं",
+    billingNotifications: "बिलिंग सूचनाएं",
+    timesheetNotificationsDescription:
+      "समय ट्रैकिंग और टाइमशीट से जुड़ी सूचनाएं प्रबंधित करें",
+    billingNotificationsDescription:
+      "इनवॉइस और भुगतान सूचनाओं को नियंत्रित करें",
+    weeklyReminderTitle: "साप्ताहिक टाइमशीट रिमाइंडर",
+    weeklyReminderDescription:
+      "लंबित टाइमशीट प्रविष्टियों के बारे में हर सोमवार साप्ताहिक रिमाइंडर प्राप्त करें",
+    timesheetReminderTitle: "मिसिंग एंट्री रिमाइंडर",
+    timesheetReminderDescription:
+      "जब आपने 2 दिनों से अधिक समय तक समय लॉग नहीं किया हो तो सूचना प्राप्त करें",
+    invoiceNotificationsTitle: "इनवॉइस ईमेल सूचनाएं",
+    invoiceNotificationsDescription:
+      "जब इनवॉइस बनाए जाएं, भेजे जाएं, या अपडेट हों तब ईमेल प्राप्त करें",
+    paymentNotificationsTitle: "भुगतान ईमेल सूचनाएं",
+    paymentNotificationsDescription:
+      "जब भुगतान प्राप्त हों या भुगतान स्थिति बदले तब सूचना प्राप्त करें",
+    monthlyDigestTitle: "मासिक कैश फ्लो डाइजेस्ट",
+    monthlyDigestDescription:
+      "नेट बदलाव, आय और व्यय के साथ मासिक कैश फ्लो सारांश प्राप्त करें",
+    confirmUnsubscribeTitle: "सभी ईमेल से सदस्यता समाप्ति की पुष्टि करें",
+    confirmUnsubscribeDescription:
+      "क्या आप वाकई सभी ईमेल सूचनाओं से सदस्यता समाप्त करना चाहते हैं? आपको महत्वपूर्ण बिलिंग और इनवॉइस सूचनाओं सहित कोई ईमेल प्राप्त नहीं होगा।",
+    confirmUnsubscribeAction: "हाँ, सभी से सदस्यता समाप्त करें",
+    unsubscribedTitle: "आपने सभी ईमेल से सदस्यता समाप्त कर दी है",
+    unsubscribedDescription:
+      "आप वर्तमान में सभी ईमेल सूचनाओं से सदस्यता समाप्त कर चुके हैं। आपको Miru से कोई ईमेल प्राप्त नहीं होगा।",
+    resubscribeAction: "ईमेल सूचनाएं फिर से सक्षम करें",
+    enabledCount: "%{total} में से %{count} सक्षम",
+    deliveryTitle: "ईमेल डिलीवरी सेटिंग्स",
+    emailAddress: "ईमेल पता",
+    deliveryDescription:
+      "सभी सूचनाएं इस ईमेल पते पर भेजी जाएंगी। अपना ईमेल बदलने के लिए, कृपया इसे अपनी प्रोफ़ाइल सेटिंग्स में अपडेट करें।",
+    unsubscribeTitle: "सदस्यता समाप्त करें",
+    unsubscribeDescription:
+      "यदि आप Miru से कोई ईमेल प्राप्त नहीं करना चाहते हैं, तो आप सभी सूचनाओं से सदस्यता समाप्त कर सकते हैं। इससे महत्वपूर्ण बिलिंग और इनवॉइस सूचनाओं सहित सभी ईमेल संचार बंद हो जाएंगे।",
+    unsubscribeAction: "सभी ईमेल से सदस्यता समाप्त करें",
+    badges: {
+      active: "सक्रिय",
+      important: "महत्वपूर्ण",
+      monthly: "मासिक",
+    },
+  },
+
   // Leave Management
   leaveManagement: {
     leaveBalance: "अवकाश शेष",

@@ -25,15 +25,26 @@ import { Badge } from "../../ui/badge";
 import { Button } from "../../ui/button";
 import { Alert, AlertDescription, AlertTitle } from "../../ui/alert";
 import { cn } from "../../../lib/utils";
+import { i18n } from "../../../i18n";
 
 interface PreferenceItem {
   id: string;
-  title: string;
-  description: string;
+  titleKey:
+    | "weeklyReminderTitle"
+    | "timesheetReminderTitle"
+    | "invoiceNotificationsTitle"
+    | "paymentNotificationsTitle"
+    | "monthlyDigestTitle";
+  descriptionKey:
+    | "weeklyReminderDescription"
+    | "timesheetReminderDescription"
+    | "invoiceNotificationsDescription"
+    | "paymentNotificationsDescription"
+    | "monthlyDigestDescription";
   enabled: boolean;
-  icon: React.ReactNode;
-  category: string;
-  badge?: string;
+  iconKey: "mail" | "clock" | "fileText";
+  categoryKey: "timesheet" | "billing";
+  badgeKey?: "active" | "important" | "monthly";
   dbField: string;
 }
 
@@ -48,6 +59,9 @@ const PreferencesSettingsPage: React.FC = () => {
   );
   const [unsubscribedAll, setUnsubscribedAll] = useState(false);
   const [showUnsubscribeConfirm, setShowUnsubscribeConfirm] = useState(false);
+
+  const clonePreferences = (items: PreferenceItem[]) =>
+    items.map(item => ({ ...item }));
 
   useEffect(() => {
     if (user?.id) {
@@ -66,71 +80,66 @@ const PreferencesSettingsPage: React.FC = () => {
       const prefs: PreferenceItem[] = [
         {
           id: "weekly_reminder",
-          title: "Weekly Timesheet Reminder",
-          description:
-            "Receive weekly reminders every Monday about pending timesheet entries",
+          titleKey: "weeklyReminderTitle",
+          descriptionKey: "weeklyReminderDescription",
           enabled: !isUnsubscribed && (res.data.notification_enabled || false),
-          icon: <Mail className="h-4 w-4" />,
-          category: "Timesheet Notifications",
-          badge: "Active",
+          iconKey: "mail",
+          categoryKey: "timesheet",
+          badgeKey: "active",
           dbField: "notification_enabled",
         },
         {
           id: "timesheet_reminder",
-          title: "Missing Entry Reminders",
-          description:
-            "Get notified when you haven't logged time for more than 2 days",
+          titleKey: "timesheetReminderTitle",
+          descriptionKey: "timesheetReminderDescription",
           enabled:
             !isUnsubscribed && res.data.timesheet_reminder_enabled !== false,
-          icon: <Clock className="h-4 w-4" />,
-          category: "Timesheet Notifications",
+          iconKey: "clock",
+          categoryKey: "timesheet",
           dbField: "timesheet_reminder_enabled",
         },
         {
           id: "invoice_notifications",
-          title: "Invoice Email Notifications",
-          description:
-            "Receive emails when invoices are created, sent, or updated",
+          titleKey: "invoiceNotificationsTitle",
+          descriptionKey: "invoiceNotificationsDescription",
           enabled:
             !isUnsubscribed && res.data.invoice_email_notifications !== false,
-          icon: <FileText className="h-4 w-4" />,
-          category: "Billing Notifications",
-          badge: "Important",
+          iconKey: "fileText",
+          categoryKey: "billing",
+          badgeKey: "important",
           dbField: "invoice_email_notifications",
         },
         {
           id: "payment_notifications",
-          title: "Payment Email Notifications",
-          description:
-            "Get notified when payments are received or payment status changes",
+          titleKey: "paymentNotificationsTitle",
+          descriptionKey: "paymentNotificationsDescription",
           enabled:
             !isUnsubscribed && res.data.payment_email_notifications !== false,
-          icon: <FileText className="h-4 w-4" />,
-          category: "Billing Notifications",
+          iconKey: "fileText",
+          categoryKey: "billing",
           dbField: "payment_email_notifications",
         },
         {
           id: "monthly_report_digest",
-          title: "Monthly Cash Flow Digest",
-          description:
-            "Receive a monthly cash flow summary with net change, money in, and money out",
+          titleKey: "monthlyDigestTitle",
+          descriptionKey: "monthlyDigestDescription",
           enabled:
             !isUnsubscribed && res.data.monthly_report_digest_enabled === true,
-          icon: <FileText className="h-4 w-4" />,
-          category: "Billing Notifications",
-          badge: "Monthly",
+          iconKey: "fileText",
+          categoryKey: "billing",
+          badgeKey: "monthly",
           dbField: "monthly_report_digest_enabled",
         },
       ].filter(pref => {
         if (companyRole === "employee") {
-          return pref.category !== "Billing Notifications";
+          return pref.categoryKey !== "billing";
         }
 
         return true;
       });
 
       setPreferences(prefs);
-      setSavedPreferences(JSON.parse(JSON.stringify(prefs)));
+      setSavedPreferences(clonePreferences(prefs));
       setIsLoading(false);
     } catch (error) {
       console.error("Error fetching preferences:", error);
@@ -169,7 +178,7 @@ const PreferencesSettingsPage: React.FC = () => {
 
       await preferencesApi.updatePreference(user.id, payload);
 
-      setSavedPreferences(JSON.parse(JSON.stringify(preferences)));
+      setSavedPreferences(clonePreferences(preferences));
       setHasChanges(false);
       setIsSaving(false);
     } catch (error) {
@@ -179,7 +188,7 @@ const PreferencesSettingsPage: React.FC = () => {
   };
 
   const handleCancel = () => {
-    setPreferences(JSON.parse(JSON.stringify(savedPreferences)));
+    setPreferences(clonePreferences(savedPreferences));
     setHasChanges(false);
     setUnsubscribedAll(false);
     setShowUnsubscribeConfirm(false);
@@ -202,9 +211,9 @@ const PreferencesSettingsPage: React.FC = () => {
       preferences.map(p => ({
         ...p,
         enabled:
-          p.badge === "Important" ||
-          p.badge === "Active" ||
-          p.badge === "Monthly" ||
+          p.badgeKey === "important" ||
+          p.badgeKey === "active" ||
+          p.badgeKey === "monthly" ||
           p.dbField === "timesheet_reminder_enabled",
       }))
     );
@@ -212,33 +221,61 @@ const PreferencesSettingsPage: React.FC = () => {
   };
 
   const groupedPreferences = preferences.reduce((acc, pref) => {
-    if (!acc[pref.category]) {
-      acc[pref.category] = [];
+    if (!acc[pref.categoryKey]) {
+      acc[pref.categoryKey] = [];
     }
-    acc[pref.category].push(pref);
+    acc[pref.categoryKey].push(pref);
 
     return acc;
-  }, {} as Record<string, PreferenceItem[]>);
+  }, {} as Record<PreferenceItem["categoryKey"], PreferenceItem[]>);
 
-  const getCategoryIcon = (category: string) => {
-    if (category.includes("Timesheet")) {
+  const getCategoryIcon = (categoryKey: PreferenceItem["categoryKey"]) => {
+    if (categoryKey === "timesheet") {
       return <Clock className="h-5 w-5 text-primary" />;
-    } else if (category.includes("Billing")) {
+    } else if (categoryKey === "billing") {
       return <FileText className="h-5 w-5 text-primary" />;
     }
 
     return <Bell className="h-5 w-5 text-muted-foreground" />;
   };
 
-  const getCategoryDescription = (category: string) => {
-    if (category.includes("Timesheet")) {
-      return "Manage notifications related to time tracking and timesheets";
-    } else if (category.includes("Billing")) {
-      return "Control invoice and payment notifications";
+  const getCategoryTitle = (categoryKey: PreferenceItem["categoryKey"]) => {
+    if (categoryKey === "timesheet") {
+      return i18n.t("preferencesSettings.timesheetNotifications");
+    }
+
+    return i18n.t("preferencesSettings.billingNotifications");
+  };
+
+  const getCategoryDescription = (
+    categoryKey: PreferenceItem["categoryKey"]
+  ) => {
+    if (categoryKey === "timesheet") {
+      return i18n.t("preferencesSettings.timesheetNotificationsDescription");
+    } else if (categoryKey === "billing") {
+      return i18n.t("preferencesSettings.billingNotificationsDescription");
     }
 
     return "";
   };
+
+  const getBadgeLabel = (badgeKey?: PreferenceItem["badgeKey"]) => {
+    if (!badgeKey) return null;
+
+    return i18n.t(`preferencesSettings.badges.${badgeKey}`);
+  };
+
+  const getPreferenceIcon = (iconKey: PreferenceItem["iconKey"]) => {
+    if (iconKey === "mail") return <Mail className="h-4 w-4" />;
+
+    if (iconKey === "clock") return <Clock className="h-4 w-4" />;
+
+    return <FileText className="h-4 w-4" />;
+  };
+
+  const getPreferenceLabel = (
+    key: PreferenceItem["titleKey"] | PreferenceItem["descriptionKey"]
+  ) => i18n.t(`preferencesSettings.${key}`);
 
   if (isLoading) {
     return <Loader className="min-h-screen" />;
@@ -252,10 +289,10 @@ const PreferencesSettingsPage: React.FC = () => {
           <div className="flex justify-between items-center py-4">
             <div>
               <h1 className="text-2xl font-semibold text-foreground">
-                Email Preferences
+                {i18n.t("preferencesSettings.title")}
               </h1>
               <p className="mt-1 text-sm text-muted-foreground">
-                Manage your email notification settings
+                {i18n.t("preferencesSettings.description")}
               </p>
             </div>
             {hasChanges && (
@@ -265,7 +302,7 @@ const PreferencesSettingsPage: React.FC = () => {
                   onClick={handleCancel}
                   disabled={isSaving}
                 >
-                  Cancel
+                  {i18n.t("cancel")}
                 </Button>
                 <Button
                   onClick={handleSave}
@@ -275,12 +312,12 @@ const PreferencesSettingsPage: React.FC = () => {
                   {isSaving ? (
                     <>
                       <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
-                      Saving...
+                      {i18n.t("preferencesSettings.saving")}
                     </>
                   ) : (
                     <>
                       <Check className="h-4 w-4 mr-2" />
-                      Save Changes
+                      {i18n.t("preferencesSettings.saveChanges")}
                     </>
                   )}
                 </Button>
@@ -298,13 +335,11 @@ const PreferencesSettingsPage: React.FC = () => {
             <Alert className="border-destructive/30 bg-destructive/5 text-foreground">
               <AlertTriangle className="h-4 w-4 text-destructive" />
               <AlertTitle className="text-foreground">
-                Confirm Unsubscribe from All Emails
+                {i18n.t("preferencesSettings.confirmUnsubscribeTitle")}
               </AlertTitle>
               <AlertDescription className="text-muted-foreground">
                 <p className="mb-4">
-                  Are you sure you want to unsubscribe from all email
-                  notifications? You will not receive any emails including
-                  important billing and invoice notifications.
+                  {i18n.t("preferencesSettings.confirmUnsubscribeDescription")}
                 </p>
                 <div className="flex space-x-3">
                   <Button
@@ -312,14 +347,14 @@ const PreferencesSettingsPage: React.FC = () => {
                     variant="destructive"
                     onClick={confirmUnsubscribeAll}
                   >
-                    Yes, Unsubscribe from All
+                    {i18n.t("preferencesSettings.confirmUnsubscribeAction")}
                   </Button>
                   <Button
                     size="sm"
                     variant="outline"
                     onClick={() => setShowUnsubscribeConfirm(false)}
                   >
-                    Cancel
+                    {i18n.t("cancel")}
                   </Button>
                 </div>
               </AlertDescription>
@@ -331,12 +366,11 @@ const PreferencesSettingsPage: React.FC = () => {
             <Alert className="border-border bg-card text-foreground">
               <AlertTriangle className="h-4 w-4 text-primary" />
               <AlertTitle className="text-foreground">
-                You're Unsubscribed from All Emails
+                {i18n.t("preferencesSettings.unsubscribedTitle")}
               </AlertTitle>
               <AlertDescription className="text-muted-foreground">
                 <p className="mb-4">
-                  You are currently unsubscribed from all email notifications.
-                  You won't receive any emails from Miru.
+                  {i18n.t("preferencesSettings.unsubscribedDescription")}
                 </p>
                 <Button
                   size="sm"
@@ -345,16 +379,16 @@ const PreferencesSettingsPage: React.FC = () => {
                   className="border-border text-foreground hover:bg-accent"
                 >
                   <Mail className="h-4 w-4 mr-2" />
-                  Re-enable Email Notifications
+                  {i18n.t("preferencesSettings.resubscribeAction")}
                 </Button>
               </AlertDescription>
             </Alert>
           )}
 
           {/* Preference Categories */}
-          {Object.entries(groupedPreferences).map(([category, items]) => (
+          {Object.entries(groupedPreferences).map(([categoryKey, items]) => (
             <Card
-              key={category}
+              key={categoryKey}
               className={cn(
                 "border-border shadow-sm overflow-hidden",
                 unsubscribedAll && "opacity-60"
@@ -363,20 +397,28 @@ const PreferencesSettingsPage: React.FC = () => {
               <CardHeader className="border-b border-border bg-muted/30">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
-                    {getCategoryIcon(category)}
+                    {getCategoryIcon(
+                      categoryKey as PreferenceItem["categoryKey"]
+                    )}
                     <div>
                       <CardTitle className="text-lg font-semibold">
-                        {category}
+                        {getCategoryTitle(
+                          categoryKey as PreferenceItem["categoryKey"]
+                        )}
                       </CardTitle>
                       <CardDescription className="text-sm text-muted-foreground">
-                        {getCategoryDescription(category)}
+                        {getCategoryDescription(
+                          categoryKey as PreferenceItem["categoryKey"]
+                        )}
                       </CardDescription>
                     </div>
                   </div>
                   {!unsubscribedAll && (
                     <Badge variant="secondary" className="text-xs">
-                      {items.filter(i => i.enabled).length} of {items.length}{" "}
-                      enabled
+                      {i18n.t("preferencesSettings.enabledCount", {
+                        count: items.filter(i => i.enabled).length,
+                        total: items.length,
+                      })}
                     </Badge>
                   )}
                 </div>
@@ -394,7 +436,7 @@ const PreferencesSettingsPage: React.FC = () => {
                   >
                     <div className="flex items-start space-x-3 flex-1">
                       <div className="mt-0.5 flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-muted">
-                        {preference.icon}
+                        {getPreferenceIcon(preference.iconKey)}
                       </div>
                       <div className="space-y-1 flex-1">
                         <div className="flex items-center space-x-2">
@@ -407,20 +449,20 @@ const PreferencesSettingsPage: React.FC = () => {
                                 : "cursor-pointer text-foreground"
                             )}
                           >
-                            {preference.title}
+                            {getPreferenceLabel(preference.titleKey)}
                           </Label>
-                          {preference.badge && !unsubscribedAll && (
+                          {preference.badgeKey && !unsubscribedAll && (
                             <Badge
                               variant={
-                                preference.badge === "Important"
+                                preference.badgeKey === "important"
                                   ? "destructive"
-                                  : preference.badge === "Active"
+                                  : preference.badgeKey === "active"
                                   ? "default"
                                   : "secondary"
                               }
                               className="text-xs"
                             >
-                              {preference.badge}
+                              {getBadgeLabel(preference.badgeKey)}
                             </Badge>
                           )}
                         </div>
@@ -432,7 +474,7 @@ const PreferencesSettingsPage: React.FC = () => {
                               : "text-muted-foreground"
                           )}
                         >
-                          {preference.description}
+                          {getPreferenceLabel(preference.descriptionKey)}
                         </p>
                       </div>
                     </div>
@@ -454,7 +496,7 @@ const PreferencesSettingsPage: React.FC = () => {
             <CardHeader>
               <CardTitle className="text-lg flex items-center gap-2">
                 <Mail className="h-5 w-5 text-primary" />
-                Email Delivery Settings
+                {i18n.t("preferencesSettings.deliveryTitle")}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -462,7 +504,7 @@ const PreferencesSettingsPage: React.FC = () => {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm font-medium text-foreground">
-                      Email Address
+                      {i18n.t("preferencesSettings.emailAddress")}
                     </p>
                     <p className="text-sm text-muted-foreground">
                       {user?.email}
@@ -471,8 +513,7 @@ const PreferencesSettingsPage: React.FC = () => {
                 </div>
                 <Separator />
                 <p className="text-xs text-muted-foreground">
-                  All notifications will be sent to this email address. To
-                  change your email, please update it in your profile settings.
+                  {i18n.t("preferencesSettings.deliveryDescription")}
                 </p>
               </div>
             </CardContent>
@@ -482,15 +523,14 @@ const PreferencesSettingsPage: React.FC = () => {
           {!unsubscribedAll && (
             <Card className="border-border">
               <CardHeader>
-                <CardTitle className="text-lg">Unsubscribe</CardTitle>
+                <CardTitle className="text-lg">
+                  {i18n.t("preferencesSettings.unsubscribeTitle")}
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
                   <p className="text-sm text-muted-foreground">
-                    If you no longer wish to receive any emails from Miru, you
-                    can unsubscribe from all notifications. This will stop all
-                    email communications including important billing and invoice
-                    notifications.
+                    {i18n.t("preferencesSettings.unsubscribeDescription")}
                   </p>
                   <Button
                     variant="outline"
@@ -498,7 +538,7 @@ const PreferencesSettingsPage: React.FC = () => {
                     className="border-destructive/30 text-destructive hover:bg-destructive/10"
                   >
                     <X className="h-4 w-4 mr-2" />
-                    Unsubscribe from All Emails
+                    {i18n.t("preferencesSettings.unsubscribeAction")}
                   </Button>
                 </div>
               </CardContent>
