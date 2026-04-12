@@ -8,6 +8,16 @@ ENV["BUNDLE_GEMFILE"] ||= File.expand_path("../../Gemfile",
 require "bundler/setup"
 require "optparse"
 
+def mise_available?
+  ENV.fetch("PATH", "").split(File::PATH_SEPARATOR).any? do |path|
+    File.executable?(File.join(path, "mise"))
+  end
+end
+
+def runtime_prefix
+  mise_available? ? ["mise", "exec", "--"] : []
+end
+
 options = {
   processes: ENV.fetch("PARALLEL_TEST_PROCESSES", 10),
   setup: false,
@@ -53,13 +63,13 @@ end.parse!
 if options[:setup]
   puts "Setting up parallel test databases..."
   setup_env = { "PARALLEL_TEST_PROCESSORS" => options[:processes].to_s }
-  setup_ok = system(setup_env, "mise", "exec", "--", "bin/parallel_setup")
+  setup_ok = system(setup_env, *runtime_prefix, "bin/parallel_setup")
   exit(1) unless setup_ok
 end
 
 # Build the command
 command = [
-  "mise", "exec", "--", "bundle", "exec", "parallel_rspec",
+  *runtime_prefix, "bundle", "exec", "parallel_rspec",
   "-n", options[:processes].to_s,
   "--runtime-log", options[:runtime_log]
 ]

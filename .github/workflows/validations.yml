@@ -118,7 +118,7 @@ jobs:
           PARALLEL_FAILURES_LOG: tmp/failing_specs.txt
         run: |
           mkdir -p tmp
-          mise exec -- bin/parallel_test -n 2 --exclude-system
+          bin/parallel_test -n 2 --exclude-system
 
           # Save failed specs list for debugging
           if [ -f tmp/failing_specs.txt ]; then
