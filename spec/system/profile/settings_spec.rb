@@ -45,7 +45,7 @@ RSpec.describe "Profile Settings", type: :system, js: true do
 
       expect(page).to have_css("#react-root", wait: 10)
       expect(page).to have_content("हिन्दी", wait: 10)
-      expect(page).to have_content("Personal Information", wait: 10)
+      expect(page).to have_content("व्यक्तिगत जानकारी", wait: 10)
     end
   end
 

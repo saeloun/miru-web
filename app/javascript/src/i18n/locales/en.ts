@@ -1193,6 +1193,13 @@ const en = {
     profilePhoto: "Profile photo",
     profilePhotoDescription:
       "Upload a square photo for your workspace profile.",
+    noAddressProvided: "No address provided",
+    noEmailProvided: "No email provided",
+    notProvided: "Not provided",
+    notConnected: "Not connected",
+    bornOn: "Born %{date}",
+    lastChangedDaysAgo: "Last changed %{count} days ago",
+    secure: "Secure",
     uploadPhoto: "Upload photo",
     removePhoto: "Remove photo",
     uploadPhotoFailed: "Failed to upload profile image.",
