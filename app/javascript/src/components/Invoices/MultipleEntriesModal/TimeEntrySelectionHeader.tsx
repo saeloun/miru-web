@@ -25,7 +25,7 @@ const TimeEntrySelectionHeader = ({
           <span className="text-base font-extrabold text-foreground">
             {i18n.t("invoices.selectTimeEntries")}
           </span>
-          <button onClick={() => setMultiLineItemModal(false)}>
+          <button type="button" onClick={() => setMultiLineItemModal(false)}>
             <XIcon color="#CDD6DF" size={16} />
           </button>
         </div>

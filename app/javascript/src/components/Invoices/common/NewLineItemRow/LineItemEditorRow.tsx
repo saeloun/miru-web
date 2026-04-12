@@ -159,6 +159,7 @@ const LineItemEditorRow = ({
         </td>
         <td className="w-10">
           <button
+            type="button"
             className="flex w-full items-center rounded p-2.5 text-center hover:bg-secondary"
             id="deleteLineItemButton"
             onClick={() => {

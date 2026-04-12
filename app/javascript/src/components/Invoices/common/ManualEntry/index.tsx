@@ -211,6 +211,7 @@ const ManualEntry = ({
             <Tooltip>
               <TooltipTrigger asChild>
                 <button
+                  type="button"
                   data-testid="invoice-manual-entry-delete"
                   className="p-1 rounded hover:bg-red-50 transition-colors"
                   onClick={handleDelete}

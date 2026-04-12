@@ -109,6 +109,7 @@ const InvoiceTable = ({
         <tr className="w-full pt-4">
           <td className="relative w-full pt-4 pr-10" colSpan={6}>
             <button
+              type="button"
               disabled={!selectedClient}
               className={`hoverButton w-full rounded-md border-2 border-dashed bg-card py-1 pr-10 text-center text-base font-bold tracking-widest transition-colors ${
                 selectedClient

@@ -41,6 +41,13 @@ const CustomDateRangePicker = ({
   const textInput = useRef(null);
   const toInputRef = useRef(null);
 
+  function resetErrors(fieldName: string) {
+    setErrors(prevError => ({
+      ...prevError,
+      [fieldName]: "",
+    }));
+  }
+
   useEffect(() => {
     setSelectedInput(fromInput);
     textInput.current.focus();
@@ -73,13 +80,6 @@ const CustomDateRangePicker = ({
     } else {
       handleSelectDate("");
     }
-  };
-
-  const resetErrors = (fieldName: string) => {
-    setErrors(prevError => ({
-      ...prevError,
-      [fieldName]: "",
-    }));
   };
 
   const validateDateInput = (
@@ -224,7 +224,7 @@ const CustomDateRangePicker = ({
       }) => (
         <div className="bg-background ">
           <div className="mt-2 flex justify-start">
-            <button onClick={hideCustomFilter}>
+            <button type="button" onClick={hideCustomFilter}>
               <LeftArrowIcon color="#5b34ea" size={10} />
             </button>
             <p className="ml-2 text-sm font-medium"> Custom Date Range </p>
@@ -280,7 +280,11 @@ const CustomDateRangePicker = ({
             </div>
           </div>
           <div className="headerWrapper mt-4">
-            <button disabled={prevMonthButtonDisabled} onClick={decreaseMonth}>
+            <button
+              type="button"
+              disabled={prevMonthButtonDisabled}
+              onClick={decreaseMonth}
+            >
               <CaretCircleLeftIcon color="#5b34ea" size={16} />
             </button>
             <div>
@@ -307,7 +311,11 @@ const CustomDateRangePicker = ({
                 ))}
               </select>
             </div>
-            <button disabled={nextMonthButtonDisabled} onClick={increaseMonth}>
+            <button
+              type="button"
+              disabled={nextMonthButtonDisabled}
+              onClick={increaseMonth}
+            >
               <CaretCircleRightIcon color="#5b34ea" size={16} />
             </button>
           </div>

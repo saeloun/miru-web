@@ -199,6 +199,39 @@ RSpec.describe "Invoice creation", type: :system, js: true do
     end
   end
 
+  it "applies a custom date filter in the time entry picker without leaving the invoice form" do
+    project = create(:project, client:, billable: true)
+    create(:project_member, project:, user:, hourly_rate: 95)
+    create(
+      :timesheet_entry,
+      project:,
+      user:,
+      bill_status: "unbilled",
+      duration: 120,
+      note: "Filterable entry",
+      work_date: Date.new(2026, 4, 5)
+    )
+
+    with_forgery_protection do
+      visit_new_invoice_for(client)
+
+      click_button "LINE ITEMS"
+      find("[data-testid='invoice-manual-entry-name']", wait: 10).click
+      click_button "Select Time Entries"
+      all("[role='combobox']", wait: 10).last.click
+      find("[role='option']", text: "Custom", wait: 10).click
+      expect(page).to have_field("from-input", wait: 10)
+      fill_in "from-input", with: "01 Apr 2026"
+      fill_in "to-input", with: "10 Apr 2026"
+      find("button.sidebar__apply", text: /Done/i, wait: 10).click
+      find("button", text: "APPLY", wait: 10).click
+
+      expect(page).to have_current_path(/\/invoices\/new/, wait: 10)
+      expect(page).not_to have_text("404", wait: 1)
+      expect(page).to have_text("Filterable entry", wait: 10)
+    end
+  end
+
   {
     "USD" => { subtotal: 410.0, total_due: 395.0 },
     "EUR" => { subtotal: 410.0, total_due: 395.0 },
