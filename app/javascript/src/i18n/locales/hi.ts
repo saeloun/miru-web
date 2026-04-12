@@ -1448,6 +1448,161 @@ const hi = {
     },
   },
 
+  billingSettings: {
+    membership: "सदस्यता",
+    currentPlan: "वर्तमान प्लान",
+    seatUsage: "सीट उपयोग",
+    billingCadence: "बिलिंग चक्र",
+    monthly: "मासिक",
+    yearly: "वार्षिक",
+    notSubscribedYet: "अभी सदस्यता नहीं ली गई",
+    startTrial: "30-दिन का Pro ट्रायल शुरू करें",
+    startingTrial: "ट्रायल शुरू किया जा रहा है...",
+    upgradeWithStripe: "Stripe के साथ अपग्रेड करें",
+    openingStripe: "Stripe खोला जा रहा है...",
+    manageBillingInStripe: "Stripe में बिलिंग प्रबंधित करें",
+    openingPortal: "पोर्टल खोला जा रहा है...",
+    saveTwoMonths: "वार्षिक पर दो महीने बचाएं",
+    heroTitle: "अभी के लिए सही पैकेज चुनें। ज़रूरत होने पर बाद में बदलें।",
+    howManySeats: "आपको कितनी सीटों की ज़रूरत होने की उम्मीद है?",
+    estimatedSeats: "अनुमानित सीटें",
+    recommended: "अनुशंसित",
+    estimatedProSpend: "अनुमानित Pro खर्च",
+    yearlyDiscount: "वार्षिक छूट",
+    openSource: "ओपन सोर्स",
+    annual: "वार्षिक",
+    service: "सेवा",
+    poweredByStripe: "Stripe द्वारा संचालित",
+    changePlansAnytime: "कभी भी प्लान बदलें",
+    checkoutPoweredByStripe:
+      "चेकआउट और सदस्यता प्रबंधन Stripe द्वारा संचालित हैं।",
+    noSalesCall:
+      "Pro के लिए किसी सेल्स कॉल की ज़रूरत नहीं। Stripe में कभी भी प्लान बदलें या रद्द करें।",
+    reportsAndAnalytics: "रिपोर्ट और एनालिटिक्स",
+    customAnnual: "कस्टम वार्षिक",
+    seatsUsed: "%{used}/%{total} सीटें उपयोग में",
+    seatsUsedWithoutLimit: "%{used} सीटें उपयोग में",
+    savePerYear: "$%{amount}/वर्ष बचाएं",
+    effectiveMonthlyPricing: "लगभग $%{amount}/माह प्रभावी मूल्य",
+    cancelOrUpgradeAnytime: "Stripe में कभी भी रद्द करें या अपग्रेड करें",
+    planCadence: {
+      monthly: "महीना-दर-महीना बिलिंग",
+      yearlySavings: "प्रति सीट 2 महीने की बचत",
+    },
+    alerts: {
+      subscriptionUpdatedTitle: "सदस्यता अपडेट की गई",
+      subscriptionUpdated: "आपका प्लान Stripe में सफलतापूर्वक अपडेट हो गया।",
+      checkoutCancelled: "चेकआउट रद्द किया गया",
+      noSubscriptionChanges: "आपकी सदस्यता में कोई बदलाव नहीं किया गया।",
+      unableToLoad: "बिलिंग विवरण लोड नहीं हो सके",
+      proTrialActive: "Pro ट्रायल सक्रिय है",
+      proTrialActiveUntil:
+        "आपके कार्यस्थान को %{date} तक Pro एक्सेस प्राप्त है।",
+      proTrialEnded: "Pro ट्रायल समाप्त हो गया",
+      proTrialEndedDescription:
+        "आपका कार्यस्थान मुफ़्त प्लान पर लौट आया है। Pro एक्सेस बहाल करने के लिए Stripe में अपग्रेड करें।",
+      seatLimitReached: "सीट सीमा पूरी हो गई",
+      seatLimitReachedDescription:
+        "इस कार्यस्थान में 3 से अधिक सदस्यों को जोड़ने के लिए Stripe में अपग्रेड करें।",
+    },
+    errors: {
+      unableToOpenStripeCheckout: "Stripe चेकआउट नहीं खुल सका",
+      unableToOpenStripeBillingPortal: "Stripe बिलिंग पोर्टल नहीं खुल सका",
+      unableToStartProTrial: "आपका Pro ट्रायल शुरू नहीं हो सका",
+    },
+    recommendations: {
+      freeTitle: "जब तक नियंत्रणों की ज़रूरत न हो, मुफ़्त पर रहें",
+      freeDescription:
+        "बहुत छोटी टीमों के लिए मुफ़्त प्लान अच्छा काम करता है। SSO, बेहतर रिपोर्ट्स, और 3 से अधिक सीटों की ज़रूरत होने पर Pro पर जाएँ।",
+      proTitle: "Pro सही विकल्प है",
+      proDescription:
+        "बढ़ती टीमों के लिए Pro SSO, वित्तीय दृश्यता, और एंटरप्राइज़ जटिलता के बिना स्केल करने की सुविधा देता है।",
+      enterpriseTitle: "Enterprise के लिए हमसे बात करें",
+      enterpriseDescription:
+        "बड़ी टीमों को अक्सर प्रोक्योरमेंट सहायता, एडमिन नियंत्रण, और अधिक सहज रोलआउट की ज़रूरत होती है। Pro से शुरू करें या सीधे Enterprise पर जाएँ।",
+    },
+    highlights: {
+      seatsTitle: "एडमिन झंझट के बिना अधिक सीटें",
+      seatsDescription:
+        "3-सीट मुफ़्त सीमा से आगे बढ़ें और ऑनबोर्डिंग को सरल रखें।",
+      ssoTitle: "SSO और मजबूत नियंत्रण",
+      ssoDescription:
+        "बढ़ती टीमों को अतिरिक्त टूल्स के बिना सुरक्षित एक्सेस दें।",
+      financeTitle: "शांत और स्पष्ट वित्तीय दृश्यता",
+      financeDescription:
+        "अतिरिक्त सेटअप के बिना मार्जिन, बिलिंग चक्र, और टीम उपयोग जानें।",
+    },
+    planDescriptions: {
+      free: "Miru को कोर ट्रैकिंग, इनवॉइसिंग, भुगतान, और 3 टीम सीटों तक स्वयं होस्ट करें।",
+      pro: "Pro रिपोर्ट्स, SSO, अधिक सीटें, और एंटरप्राइज़ जटिलता के बिना बेहतर एडमिन नियंत्रण जोड़ता है।",
+      enterprise:
+        "प्रोक्योरमेंट-अनुकूल कॉन्ट्रैक्ट, उन्नत नियंत्रण, और सुरक्षा समीक्षा चाहने वाली बड़ी टीमों के लिए सहायता।",
+      hostedEnterprise:
+        "हम आपके लिए Miru को समर्पित सेटअप पर होस्ट, अपग्रेड, बैकअप, और सपोर्ट करते हैं।",
+    },
+    planBullets: {
+      free: {
+        coreProduct: "स्व-होस्टेड कोर उत्पाद",
+        tracking: "समय ट्रैकिंग, इनवॉइस, भुगतान",
+        dashboard: "छोटी टीम के लिए डैशबोर्ड दृश्यता",
+      },
+      pro: {
+        trial: "भुगतान से पहले 30-दिन का मुफ़्त ट्रायल",
+        sso: "SSO, उन्नत रिपोर्टिंग, मजबूत एडमिन नियंत्रण",
+        fit: "एजेंसियों और बढ़ती टीमों के लिए सबसे उपयुक्त",
+      },
+      enterprise: {
+        contracts: "प्रोक्योरमेंट-अनुकूल कॉन्ट्रैक्ट",
+        onboarding: "सुरक्षा समीक्षा और ऑनबोर्डिंग सहायता",
+        compliance: "अनुमोदन और अनुपालन ज़रूरतों वाली बड़ी टीमों के लिए",
+      },
+      hosted: {
+        setup: "समर्पित प्रबंधित सेटअप",
+        operations: "हम अपग्रेड, बैकअप, और सपोर्ट संभालते हैं",
+        fit: "उन टीमों के लिए जो Miru को पूरी तरह प्रबंधित रूप में चाहती हैं",
+      },
+    },
+    heroDescription:
+      "मुफ़्त से शुरू करें, जब टीम को अधिक नियंत्रण की ज़रूरत हो तो Pro पर जाएँ, या Miru को हमसे चलवाएँ। Pro सस्ता रहता है, वार्षिक भुगतान से वास्तविक बचत होती है, और बिलिंग सरल रहती है क्योंकि चेकआउट और सदस्यता प्रबंधन Stripe द्वारा संचालित हैं।",
+    seatEstimatorDescription:
+      "इसका उपयोग मुफ़्त बनाम Pro की तुलना करने और यह तय करने के लिए करें कि मासिक या वार्षिक कौन सा बेहतर है।",
+    yearlyDiscountDescription:
+      "मासिक मूल्य निर्धारण की तुलना में प्रति सीट दो महीने मुफ़्त।",
+    checkoutDescription:
+      "बिना किसी सेल्स प्रक्रिया के ट्रायल शुरू करें, तैयार होने पर अपग्रेड करें, और जब चाहें बिलिंग स्वयं प्रबंधित करें।",
+    plans: {
+      unknown: "अज्ञात",
+      free: "मुफ़्त",
+      freePro: "मुफ़्त Pro",
+      proTrial: "Pro ट्रायल",
+      paid: "सशुल्क",
+      enterprise: "एंटरप्राइज़",
+      hostedEnterprise: "होस्टेड एंटरप्राइज़",
+    },
+    table: {
+      feature: "सुविधा",
+      bestFor: "किसके लिए सर्वोत्तम",
+      selfHostedTeams: "शुरुआती स्व-होस्टेड टीमें",
+      growingServiceTeams: "वे बढ़ती सेवा टीमें जिन्हें नियंत्रण चाहिए",
+      largeOrgs: "सुरक्षा और प्रोक्योरमेंट ज़रूरतों वाले बड़े संगठन",
+      managedTeams: "वे टीमें जो Miru को प्रबंधित रूप में चाहती हैं",
+      timeTracking: "समय ट्रैकिंग",
+      invoicesAndPayments: "इनवॉइस और भुगतान",
+      reportsAndDashboards: "रिपोर्ट और डैशबोर्ड",
+      sso: "SSO",
+      auditAndAdminControls: "ऑडिट और एडमिन नियंत्रण",
+      support: "सहायता",
+      included: "शामिल",
+      notIncluded: "शामिल नहीं",
+      dashboardOnly: "केवल डैशबोर्ड",
+      reportsAndAnalytics: "रिपोर्ट और एनालिटिक्स",
+      community: "कम्युनिटी",
+      priorityEmail: "प्राथमिकता ईमेल",
+      priorityOnboarding: "प्राथमिकता + ऑनबोर्डिंग",
+      managedOnboarding: "प्रबंधित सेवा + ऑनबोर्डिंग",
+    },
+  },
+
   // Leave Management
   leaveManagement: {
     leaveBalance: "अवकाश शेष",

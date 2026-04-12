@@ -1319,6 +1319,159 @@ const en = {
     },
   },
 
+  billingSettings: {
+    membership: "Membership",
+    currentPlan: "Current plan",
+    seatUsage: "Seat usage",
+    billingCadence: "Billing cadence",
+    monthly: "Monthly",
+    yearly: "Yearly",
+    notSubscribedYet: "Not subscribed yet",
+    startTrial: "Start 30-day Pro trial",
+    startingTrial: "Starting trial...",
+    upgradeWithStripe: "Upgrade with Stripe",
+    openingStripe: "Opening Stripe...",
+    manageBillingInStripe: "Manage billing in Stripe",
+    openingPortal: "Opening portal...",
+    saveTwoMonths: "Save two months on yearly",
+    heroTitle: "Pick the package that fits now. Switch later if you need more.",
+    howManySeats: "How many seats do you expect to need?",
+    estimatedSeats: "Estimated seats",
+    recommended: "Recommended",
+    estimatedProSpend: "Estimated Pro spend",
+    yearlyDiscount: "Yearly discount",
+    openSource: "Open source",
+    annual: "Annual",
+    service: "Service",
+    poweredByStripe: "Powered by Stripe",
+    changePlansAnytime: "Change plans anytime",
+    checkoutPoweredByStripe:
+      "Checkout and subscription management are powered by Stripe.",
+    noSalesCall:
+      "No sales call for Pro. Cancel or change plans in Stripe anytime.",
+    reportsAndAnalytics: "Reports and analytics",
+    customAnnual: "Custom annual",
+    seatsUsed: "%{used}/%{total} seats used",
+    seatsUsedWithoutLimit: "%{used} seats used",
+    savePerYear: "Save $%{amount}/yr",
+    effectiveMonthlyPricing: "About $%{amount}/mo effective pricing",
+    cancelOrUpgradeAnytime: "Cancel or upgrade any time in Stripe",
+    planCadence: {
+      monthly: "Billed month to month",
+      yearlySavings: "Save 2 months per seat",
+    },
+    alerts: {
+      subscriptionUpdatedTitle: "Subscription updated",
+      subscriptionUpdated: "Your plan was updated in Stripe successfully.",
+      checkoutCancelled: "Checkout cancelled",
+      noSubscriptionChanges: "No changes were made to your subscription.",
+      unableToLoad: "Unable to load billing details",
+      proTrialActive: "Pro trial active",
+      proTrialActiveUntil: "Your workspace has Pro access until %{date}.",
+      proTrialEnded: "Pro trial ended",
+      proTrialEndedDescription:
+        "Your workspace has returned to the free plan. Upgrade in Stripe to restore Pro access.",
+      seatLimitReached: "Seat limit reached",
+      seatLimitReachedDescription:
+        "Upgrade in Stripe to add more than 3 members to this workspace.",
+    },
+    errors: {
+      unableToOpenStripeCheckout: "Unable to open Stripe checkout",
+      unableToOpenStripeBillingPortal: "Unable to open Stripe billing portal",
+      unableToStartProTrial: "Unable to start your Pro trial",
+    },
+    recommendations: {
+      freeTitle: "Stay on Free until you need controls",
+      freeDescription:
+        "Free works well for very small teams. Move to Pro when you need SSO, stronger reports, and more than 3 seats.",
+      proTitle: "Pro is the right fit",
+      proDescription:
+        "For growing teams, Pro gives you SSO, finance visibility, and enough room to scale without enterprise overhead.",
+      enterpriseTitle: "Talk to us about Enterprise",
+      enterpriseDescription:
+        "Larger teams usually need procurement support, admin controls, and a smoother rollout. Start with Pro or move straight to Enterprise.",
+    },
+    highlights: {
+      seatsTitle: "More seats without admin pain",
+      seatsDescription:
+        "Move past the 3-seat free limit and keep onboarding simple.",
+      ssoTitle: "SSO and stronger controls",
+      ssoDescription: "Give growing teams secure access without extra tools.",
+      financeTitle: "Finance visibility that stays calm",
+      financeDescription:
+        "Know margin, billing cadence, and team usage without extra setup.",
+    },
+    planDescriptions: {
+      free: "Self-host Miru with core tracking, invoicing, payments, and up to 3 team seats.",
+      pro: "Pro adds reports, SSO, more seats, and calmer admin controls without enterprise overhead.",
+      enterprise:
+        "Procurement-friendly contracts, advanced controls, and support for larger teams that need security review.",
+      hostedEnterprise:
+        "We host, upgrade, back up, and support Miru for you on a dedicated setup.",
+    },
+    planBullets: {
+      free: {
+        coreProduct: "Self-hosted core product",
+        tracking: "Time tracking, invoices, payments",
+        dashboard: "Dashboard visibility for a small team",
+      },
+      pro: {
+        trial: "30-day free trial before paying",
+        sso: "SSO, advanced reporting, stronger admin controls",
+        fit: "Best fit for agencies and growing teams",
+      },
+      enterprise: {
+        contracts: "Procurement-friendly contracts",
+        onboarding: "Security review and onboarding support",
+        compliance: "For larger teams with approval and compliance needs",
+      },
+      hosted: {
+        setup: "Dedicated managed setup",
+        operations: "We handle upgrades, backups, and support",
+        fit: "For teams that want Miru fully operated for them",
+      },
+    },
+    heroDescription:
+      "Start on Free, move to Pro when the team needs more control, or let us run Miru for you. Pro stays inexpensive, yearly saves real money, and billing stays simple because checkout and subscription management are powered by Stripe.",
+    seatEstimatorDescription:
+      "Use this to compare Free vs Pro and decide whether monthly or yearly makes more sense.",
+    yearlyDiscountDescription:
+      "Two free months per seat compared with monthly pricing.",
+    checkoutDescription:
+      "Start the trial without a sales process, upgrade when you are ready, and manage billing yourself whenever you need.",
+    plans: {
+      unknown: "Unknown",
+      free: "Free",
+      freePro: "Free Pro",
+      proTrial: "Pro Trial",
+      paid: "Paid",
+      enterprise: "Enterprise",
+      hostedEnterprise: "Hosted Enterprise",
+    },
+    table: {
+      feature: "Feature",
+      bestFor: "Best for",
+      selfHostedTeams: "Self-hosted teams getting started",
+      growingServiceTeams: "Growing service teams that need controls",
+      largeOrgs: "Larger orgs with security and procurement needs",
+      managedTeams: "Teams that want Miru managed for them",
+      timeTracking: "Time tracking",
+      invoicesAndPayments: "Invoices and payments",
+      reportsAndDashboards: "Reports and dashboards",
+      sso: "SSO",
+      auditAndAdminControls: "Audit and admin controls",
+      support: "Support",
+      included: "Included",
+      notIncluded: "Not included",
+      dashboardOnly: "Dashboard only",
+      reportsAndAnalytics: "Reports and analytics",
+      community: "Community",
+      priorityEmail: "Priority email",
+      priorityOnboarding: "Priority + onboarding",
+      managedOnboarding: "Managed service + onboarding",
+    },
+  },
+
   twoFactor: {
     title: "Authenticator App 2FA",
     addTitle: "Add an authenticator app",

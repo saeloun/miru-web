@@ -39,6 +39,20 @@ RSpec.describe "Settings billing", type: :system, js: true do
     end
   end
 
+  it "shows localized billing copy in Hindi" do
+    user.update!(locale: "hi")
+
+    with_forgery_protection do
+      visit "/settings/billing"
+
+      expect(page).to have_content("सदस्यता", wait: 10)
+      expect(page).to have_content("वर्तमान प्लान", wait: 10)
+      expect(page).to have_content("रिपोर्ट और एनालिटिक्स", wait: 10)
+      expect(page).to have_button("30-दिन का Pro ट्रायल शुरू करें", wait: 10)
+      expect(page).to have_button("Stripe के साथ अपग्रेड करें", wait: 10)
+    end
+  end
+
   it "shows billing in the dashboard navigation for owners" do
     with_forgery_protection do
       visit "/dashboard"
@@ -96,9 +110,12 @@ RSpec.describe "Settings billing", type: :system, js: true do
   end
 
   it "shows the active trial state" do
+    trial_started_at = 2.days.ago.change(hour: 12)
+    trial_ends_at = 28.days.from_now.change(hour: 12)
+
     company.update!(
-      trial_started_at: Time.zone.local(2026, 3, 11, 12, 0, 0),
-      trial_ends_at: Time.zone.local(2026, 4, 10, 12, 0, 0)
+      trial_started_at: trial_started_at,
+      trial_ends_at: trial_ends_at
     )
 
     with_forgery_protection do
@@ -106,7 +123,7 @@ RSpec.describe "Settings billing", type: :system, js: true do
 
       expect(page).to have_content("Pro Trial", wait: 10)
       expect(page).to have_content("Pro trial active", wait: 10)
-      expect(page).to have_content("April 10, 2026", wait: 10)
+      expect(page).to have_content(trial_ends_at.strftime("%B %-d, %Y"), wait: 10)
       expect(page).not_to have_button("Start 30-day Pro trial")
     end
   end
