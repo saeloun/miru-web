@@ -37,6 +37,21 @@ interface ReportCard {
   category: "time" | "financial" | "client" | "team";
 }
 
+const getCategoryLabel = (category: ReportCard["category"]) => {
+  switch (category) {
+    case "time":
+      return i18n.t("reports.time");
+    case "financial":
+      return i18n.t("reports.financial");
+    case "client":
+      return i18n.t("client");
+    case "team":
+      return i18n.t("team.team");
+    default:
+      return category;
+  }
+};
+
 const getReportCards = (): ReportCard[] => [
   {
     id: "time-entry",
@@ -298,8 +313,7 @@ const ReportsTable: React.FC = () => {
                         variant="outline"
                         className="border-border bg-background text-xs text-foreground"
                       >
-                        {report.category.charAt(0).toUpperCase() +
-                          report.category.slice(1)}
+                        {getCategoryLabel(report.category)}
                       </Badge>
                       <span className="inline-flex items-center text-sm text-muted-foreground">
                         <Download size={16} className="mr-1" />

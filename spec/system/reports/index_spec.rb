@@ -45,6 +45,19 @@ RSpec.describe "Reports", type: :system, js: true do
       end
     end
 
+    it "shows localized report labels in Hindi" do
+      admin.update!(locale: "hi")
+
+      with_forgery_protection do
+        visit "/reports"
+
+        expect_reports_shell("रिपोर्ट")
+        expect(page).to have_content("उपलब्ध रिपोर्ट", wait: 10)
+        expect(page).to have_content("वित्तीय", wait: 10)
+        expect(page).to have_button("रिपोर्ट शेड्यूल करें", wait: 10)
+      end
+    end
+
     it "loads the time entry report" do
       client = create(:client, company:, name: "Alpha Client")
       project = create(:project, client:, name: "Alpha Project")
