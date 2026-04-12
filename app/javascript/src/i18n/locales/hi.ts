@@ -1413,6 +1413,41 @@ const hi = {
     },
   },
 
+  holidaysSettings: {
+    year: "वर्ष",
+    publicHolidays: "सार्वजनिक छुट्टियाँ",
+    optionalHolidays: "वैकल्पिक छुट्टियाँ",
+    holidayName: "छुट्टी का नाम",
+    enterHolidayName: "छुट्टी का नाम दर्ज करें",
+    selectDate: "तिथि चुनें",
+    addHoliday: "छुट्टी जोड़ें",
+    addFirstHoliday: "पहली छुट्टी जोड़ें",
+    addOptionalHoliday: "वैकल्पिक छुट्टी जोड़ें",
+    noPublicHolidaysConfigured: "कोई सार्वजनिक छुट्टियाँ कॉन्फ़िगर नहीं हैं",
+    noOptionalHolidaysConfigured: "कोई वैकल्पिक छुट्टियाँ कॉन्फ़िगर नहीं हैं",
+    totalAllowed: "कुल अनुमत",
+    enterNumber: "संख्या दर्ज करें",
+    frequency: "आवृत्ति",
+    allowedPerEmployee: "प्रति कर्मचारी अनुमत",
+    yearAtAGlance: "वर्ष एक नज़र में",
+    holidaySchedule: "छुट्टी अनुसूची",
+    noHolidaysAddedForYear:
+      "%{year} के लिए अभी तक कोई छुट्टियाँ नहीं जोड़ी गई हैं",
+    categories: {
+      public: "सार्वजनिक",
+      optional: "वैकल्पिक",
+    },
+    weekdays: {
+      sun: "र",
+      mon: "सो",
+      tue: "मं",
+      wed: "बु",
+      thu: "गु",
+      fri: "शु",
+      sat: "श",
+    },
+  },
+
   // Leave Management
   leaveManagement: {
     leaveBalance: "अवकाश शेष",

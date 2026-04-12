@@ -39,6 +39,20 @@ RSpec.describe "Settings - Holidays", type: :system, js: true do
       end
     end
 
+    it "shows localized holiday copy in Hindi" do
+      user.update!(locale: "hi")
+
+      with_forgery_protection do
+        visit "/settings/holidays"
+
+        expect(page).to have_text("वर्ष एक नज़र में", wait: 10)
+        expect(page).to have_text(
+          "#{Date.current.year} के लिए अभी तक कोई छुट्टियाँ नहीं जोड़ी गई हैं",
+          wait: 10
+        )
+      end
+    end
+
     context "with holidays configured" do
       let!(:holiday) do
         create(:holiday,
