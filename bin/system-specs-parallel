@@ -96,4 +96,8 @@ if [ "${QUIET}" = "1" ]; then
   BASE_CMD+=(--serialize-stdout --combine-stderr --quiet --test-options "--format progress")
 fi
 
-CI=true CONSOLE_LEVEL="${CONSOLE_LEVEL:-error}" run_cmd "${BASE_CMD[@]}"
+CI=true \
+CONSOLE_LEVEL="${CONSOLE_LEVEL:-error}" \
+PARALLEL_RUNTIME_LOG="${RUNTIME_LOG}" \
+PARALLEL_FAILURES_LOG="${PARALLEL_FAILURES_LOG:-tmp/failing_system_specs.txt}" \
+run_cmd "${BASE_CMD[@]}"

@@ -19,8 +19,33 @@ module SessionHelpers
     Capybara.reset_sessions!
     company = user.companies.find(user.current_workspace_id)
     role = user.roles.where(resource: company).pick(:name)
-    load_login_page
-    response = page.evaluate_async_script(<<~JS, user.email, SYSTEM_TEST_PASSWORD, user.locale || "en")
+    response = nil
+
+    2.times do
+      load_login_page
+      response = login_via_api(user)
+      break if response["ok"]
+
+      ensure_user_setup(user)
+    end
+
+    if response["ok"]
+      apply_auth_payload(response.fetch("data"))
+      wait_for_react_app
+      visit default_path_for(role)
+    else
+      sign_in_through_ui(user)
+    end
+
+    unless page.has_current_path?(default_path_for(role), ignore_query: true, wait: 15)
+      sign_in_through_ui(user)
+    end
+
+    expect(page).to have_current_path(default_path_for(role), ignore_query: true, wait: 15)
+  end
+
+  def login_via_api(user)
+    page.evaluate_async_script(<<~JS, user.email, SYSTEM_TEST_PASSWORD, user.locale || "en")
       const [email, password, locale, done] = arguments;
 
       fetch("/api/v1/users/login", {
@@ -40,12 +65,9 @@ module SessionHelpers
         })
         .catch(error => done({ ok: false, error: String(error) }));
     JS
+  end
 
-    unless response["ok"]
-      raise "System sign in failed: #{response.inspect}"
-    end
-
-    payload = response.fetch("data")
+  def apply_auth_payload(payload)
     page.execute_script(<<~JS, payload)
       const payload = arguments[0];
       window.localStorage.clear();
@@ -127,9 +149,6 @@ module SessionHelpers
         window.__miruSystemAuthPatched = true;
       }
     JS
-    wait_for_react_app
-    visit default_path_for(role)
-    expect(page).to have_current_path(default_path_for(role), ignore_query: true, wait: 15)
   end
 
   def wait_for_react_app
