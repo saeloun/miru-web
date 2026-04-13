@@ -15,13 +15,6 @@
 - Time-tracking entry flows now rehydrate saved state reliably on the same page and use more stable system-spec selectors
 - System-spec support code was consolidated by removing dead helper modules and stabilizing auth/request-capture teardown
 
-### Verified
-
-- `mise exec -- timeout 30 bin/vite build`
-- `mise exec -- bundle exec rspec spec/system/time_tracking/add_entry_spec.rb -fd`
-- `mise exec -- bundle exec rspec spec/system/invoices/create_spec.rb spec/system/invoices/edit_spec.rb -fd`
-- `mise exec -- env PARALLEL_TEST_PROCESSORS=16 CONSOLE_LEVEL=error SYSTEM_SPECS_DB_PREP=0 bin/system-specs-parallel`
-
 ## 3.0.0 - 2026-03-29
 
 Release owner: `Vipul A M`
