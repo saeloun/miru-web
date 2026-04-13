@@ -46,6 +46,12 @@ RSpec.describe "Profile Settings", type: :system, js: true do
       expect(page).to have_css("#react-root", wait: 10)
       expect(page).to have_content("हिन्दी", wait: 10)
       expect(page).to have_content("व्यक्तिगत जानकारी", wait: 10)
+      expect(page).to have_content("व्यक्तिगत सेटिंग्स", wait: 10)
+      expect(page).to have_content("कंपनी सेटिंग्स", wait: 10)
+      expect(page).to have_content("प्रोफ़ाइल", wait: 10)
+      expect(page).to have_content("प्राथमिकताएँ", wait: 10)
+      expect(page).to have_content("अवकाश", wait: 10)
+      expect(page).to have_content("छुट्टियों का कैलेंडर", wait: 10)
       expect(page).to have_button("संपादित करें", wait: 10)
 
       click_button "संपादित करें"
