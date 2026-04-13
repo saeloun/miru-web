@@ -40,6 +40,7 @@ const hi = {
   date: "तारीख",
   type: "प्रकार",
   notes: "नोट्स",
+  viewInvoice: "इनवॉइस देखें",
   description: "विवरण",
   total: "कुल",
   active: "सक्रिय",

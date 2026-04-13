@@ -45,6 +45,7 @@ const en = {
   date: "Date",
   type: "Type",
   notes: "Notes",
+  viewInvoice: "View Invoice",
   description: "Description",
   total: "Total",
   active: "Active",

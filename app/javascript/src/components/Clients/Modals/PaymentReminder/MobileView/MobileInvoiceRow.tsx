@@ -3,6 +3,7 @@ import React from "react";
 import { currencyFormat } from "helpers";
 import { Badge, Button } from "StyledComponents";
 import getStatusCssClass from "utils/getBadgeStatus";
+import { i18n } from "../../../../../i18n";
 
 const MobileInvoiceRow = ({ invoice, isLast }) => {
   const {
@@ -24,23 +25,23 @@ const MobileInvoiceRow = ({ invoice, isLast }) => {
       } grid grid-cols-2 gap-4`}
     >
       <div>
-        <span>INVOICE NO.</span>
+        <span>{i18n.t("invoices.invoiceNo")}</span>
         <div>{invoiceNumber}</div>
       </div>
       <div>
-        <span>ISSUED DATE</span>
+        <span>{i18n.t("invoices.issuedDate")}</span>
         <div>{issueDate}</div>
       </div>
       <div>
-        <span>DUE DATE</span>
+        <span>{i18n.t("invoices.dueDate")}</span>
         <div>{dueDate}</div>
       </div>
       <div>
-        <span>AMOUNT</span>
+        <span>{i18n.t("invoices.amount")}</span>
         <div>{currencyFormat(baseCurrency, amount)}</div>
       </div>
       <div>
-        <span>STATUS</span>
+        <span>{i18n.t("invoices.status")}</span>
         <div>
           <Badge
             className={`${getStatusCssClass(status)} uppercase`}
@@ -57,7 +58,7 @@ const MobileInvoiceRow = ({ invoice, isLast }) => {
               rel="noreferrer"
               target="_blank"
             >
-              View Invoice
+              {i18n.t("viewInvoice")}
             </a>
           </Button>
         </div>

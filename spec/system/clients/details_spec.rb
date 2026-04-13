@@ -64,6 +64,7 @@ RSpec.describe "Client details", type: :system, js: true do
       expect(page).to have_content("प्राप्तकर्ता ईमेल आईडी", wait: 10)
       expect(page).to have_content("विषय", wait: 10)
       expect(page).to have_content("संदेश", wait: 10)
+      expect(page).to have_link("इनवॉइस देखें", wait: 10)
     end
   end
 
@@ -81,12 +82,16 @@ RSpec.describe "Client details", type: :system, js: true do
 
       expect(page).to have_content("भुगतान अनुस्मारक भेजें", wait: 10)
       expect(page).to have_content("1 इनवॉइस चयनित", wait: 10)
+      expect(page).to have_content("इनवॉइस नंबर", wait: 10)
+      expect(page).to have_content("जारी तिथि/ देय तिथि", wait: 10)
+      expect(page).to have_content("स्थिति/ राशि", wait: 10)
       expect(page).to have_button("जारी रखें", wait: 10)
       click_button("जारी रखें")
       expect(page).to have_content("ईमेल पूर्वावलोकन", wait: 10)
       expect(page).to have_content("प्राप्तकर्ता ईमेल आईडी", wait: 10)
       expect(page).to have_content("विषय", wait: 10)
       expect(page).to have_content("संदेश", wait: 10)
+      expect(page).to have_link("इनवॉइस देखें", wait: 10)
     end
   end
 
@@ -101,6 +106,34 @@ RSpec.describe "Client details", type: :system, js: true do
       expect(page).to have_content("प्रोजेक्ट", wait: 10)
       expect(page).to have_content("टीम", wait: 10)
       expect(page).to have_content("लॉग किए गए घंटे", wait: 10)
+    end
+  end
+
+  it "shows localized contacts modal actions in Hindi" do
+    contact_user = create(:user, current_workspace: company)
+    create(:client_member, client:, company:, user: contact_user)
+
+    with_forgery_protection do
+      visit "/clients/#{client.id}"
+
+      expect(page).to have_current_path("/clients/#{client.id}", wait: 10)
+      find("#kebabMenu").click
+      click_on("संपर्क जोड़ें / देखें")
+
+      expect(page).to have_content("संपर्क जोड़ें", wait: 10)
+      expect(page).to have_content(contact_user.email, wait: 10)
+
+      find("button[aria-label='संपर्क हटाएं']", match: :first).click
+
+      expect(page).to have_content("संपर्क हटाएं", wait: 10)
+      expect(
+        page
+      ).to have_content(
+        "क्या आप वाकई संपर्क #{contact_user.email} को हटाना चाहते हैं? यह क्रिया वापस नहीं की जा सकती।",
+        wait: 10
+      )
+      expect(page).to have_button("रद्द करें", wait: 10)
+      expect(page).to have_button("हटाएं", wait: 10)
     end
   end
 end

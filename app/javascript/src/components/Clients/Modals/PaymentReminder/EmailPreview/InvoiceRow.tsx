@@ -3,6 +3,7 @@ import React from "react";
 import { currencyFormat } from "helpers";
 import { Badge, Button } from "StyledComponents";
 import getStatusCssClass from "utils/getBadgeStatus";
+import { i18n } from "../../../../../i18n";
 
 const InvoiceRow = ({ invoice, isLast }) => {
   const {
@@ -82,7 +83,7 @@ const InvoiceRow = ({ invoice, isLast }) => {
                 rel="noreferrer"
                 target="_blank"
               >
-                View Invoice
+                {i18n.t("viewInvoice")}
               </a>
             </Button>
           </td>
