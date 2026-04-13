@@ -1448,6 +1448,45 @@ const hi = {
     },
   },
 
+  paymentSettingsPage: {
+    backToSettings: "सेटिंग्स पर वापस जाएं",
+    title: "भुगतान प्रदाता",
+    description:
+      "क्लाइंट से ऑनलाइन भुगतान स्वीकार करने के लिए भुगतान प्रदाताओं को कनेक्ट करें",
+    errorTitle: "त्रुटि",
+    errorDescription:
+      "भुगतान सेटिंग्स लोड नहीं हो सकीं। कृपया बाद में फिर से प्रयास करें।",
+    stripeDescription:
+      "क्रेडिट कार्ड, डेबिट कार्ड और लोकप्रिय भुगतान विधियों को स्वीकार करें",
+    connectedTo: "इससे जुड़ा",
+    connected: "कनेक्टेड",
+    stripeAccountFallback: "Stripe खाता",
+    chargesEnabled: "चार्ज सक्षम",
+    connectStripe: "Stripe कनेक्ट करें",
+    connecting: "कनेक्ट हो रहा है...",
+    disconnect: "डिस्कनेक्ट करें",
+    disconnecting: "डिस्कनेक्ट हो रहा है...",
+    featuresTitle: "फ़ीचर्स और लाभ",
+    helpTitle: "मदद चाहिए?",
+    helpDescription:
+      "यदि आपको भुगतान प्रोसेसिंग सेटअप करने में सहायता चाहिए या शुल्क और क्षमताओं के बारे में प्रश्न हैं:",
+    viewDocumentation: "दस्तावेज़ देखें",
+    contactSupport: "सहायता से संपर्क करें",
+    disconnectDialogTitle: "Stripe खाता डिस्कनेक्ट करें",
+    disconnectDialogDescription:
+      "क्या आप वाकई अपना Stripe खाता डिस्कनेक्ट करना चाहते हैं? दोबारा कनेक्ट करने तक आप Stripe के माध्यम से भुगतान स्वीकार नहीं कर पाएंगे।",
+    features: {
+      secureTitle: "सुरक्षित भुगतान",
+      secureDescription: "PCI-अनुपालक भुगतान प्रसंस्करण",
+      currenciesTitle: "अनेक मुद्राएँ",
+      currenciesDescription: "135+ मुद्राओं में भुगतान स्वीकार करें",
+      methodsTitle: "विभिन्न भुगतान विधियाँ",
+      methodsDescription: "कार्ड, वॉलेट, बैंक ट्रांसफर और अधिक",
+      setupTitle: "तुरंत सेटअप",
+      setupDescription: "मिनटों में भुगतान स्वीकार करना शुरू करें",
+    },
+  },
+
   billingSettings: {
     membership: "सदस्यता",
     currentPlan: "वर्तमान प्लान",

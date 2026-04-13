@@ -1319,6 +1319,45 @@ const en = {
     },
   },
 
+  paymentSettingsPage: {
+    backToSettings: "Back to Settings",
+    title: "Payment Providers",
+    description:
+      "Connect payment providers to accept online payments from clients",
+    errorTitle: "Error",
+    errorDescription:
+      "Failed to load payment settings. Please try again later.",
+    stripeDescription:
+      "Accept credit cards, debit cards, and popular payment methods",
+    connectedTo: "Connected to",
+    connected: "Connected",
+    stripeAccountFallback: "Stripe Account",
+    chargesEnabled: "Charges Enabled",
+    connectStripe: "Connect Stripe",
+    connecting: "Connecting...",
+    disconnect: "Disconnect",
+    disconnecting: "Disconnecting...",
+    featuresTitle: "Features & Benefits",
+    helpTitle: "Need Help?",
+    helpDescription:
+      "If you need assistance setting up payment processing or have questions about fees and capabilities:",
+    viewDocumentation: "View Documentation",
+    contactSupport: "Contact Support",
+    disconnectDialogTitle: "Disconnect Stripe Account",
+    disconnectDialogDescription:
+      "Are you sure you want to disconnect your Stripe account? You will no longer be able to accept payments through Stripe until you reconnect.",
+    features: {
+      secureTitle: "Secure Payments",
+      secureDescription: "PCI-compliant payment processing",
+      currenciesTitle: "Multiple Currencies",
+      currenciesDescription: "Accept payments in 135+ currencies",
+      methodsTitle: "Various Payment Methods",
+      methodsDescription: "Cards, wallets, bank transfers, and more",
+      setupTitle: "Instant Setup",
+      setupDescription: "Start accepting payments in minutes",
+    },
+  },
+
   billingSettings: {
     membership: "Membership",
     currentPlan: "Current plan",

@@ -30,6 +30,7 @@ import {
 import { paymentSettings } from "apis/api";
 import { ApiStatus as PaymentSettingsStatus } from "../../../../constants/index";
 import { Skeleton } from "../../../ui/skeleton";
+import { i18n } from "../../../../i18n";
 
 interface OrganizationPaymentSettingsPageProps {
   onBack?: () => void;
@@ -113,7 +114,7 @@ const OrganizationPaymentSettingsPage: React.FC<
         {onBack && (
           <div className="mb-6 flex justify-end">
             <Button variant="outline" onClick={onBack}>
-              Back to Settings
+              {i18n.t("paymentSettingsPage.backToSettings")}
             </Button>
           </div>
         )}
@@ -123,10 +124,10 @@ const OrganizationPaymentSettingsPage: React.FC<
             <CardHeader>
               <div className="flex items-center space-x-2">
                 <CreditCard className="h-5 w-5 text-muted-foreground" />
-                <CardTitle>Payment Providers</CardTitle>
+                <CardTitle>{i18n.t("paymentSettingsPage.title")}</CardTitle>
               </div>
               <CardDescription>
-                Connect payment providers to accept online payments from clients
+                {i18n.t("paymentSettingsPage.description")}
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -135,9 +136,11 @@ const OrganizationPaymentSettingsPage: React.FC<
               ) : status === PaymentSettingsStatus.ERROR ? (
                 <Alert variant="destructive">
                   <AlertCircle className="h-4 w-4" />
-                  <AlertTitle>Error</AlertTitle>
+                  <AlertTitle>
+                    {i18n.t("paymentSettingsPage.errorTitle")}
+                  </AlertTitle>
                   <AlertDescription>
-                    Failed to load payment settings. Please try again later.
+                    {i18n.t("paymentSettingsPage.errorDescription")}
                   </AlertDescription>
                 </Alert>
               ) : (
@@ -163,17 +166,18 @@ const OrganizationPaymentSettingsPage: React.FC<
                             Stripe
                           </h3>
                           <p className="text-sm text-muted-foreground mt-1">
-                            Accept credit cards, debit cards, and popular
-                            payment methods
+                            {i18n.t("paymentSettingsPage.stripeDescription")}
                           </p>
                           {isStripeConnected && stripeAccountDetails && (
                             <div className="mt-3 space-y-2">
                               <div className="flex items-center space-x-2">
                                 <CheckCircle2 className="h-4 w-4 text-primary" />
                                 <span className="text-sm text-muted-foreground">
-                                  Connected to{" "}
+                                  {i18n.t("paymentSettingsPage.connectedTo")}{" "}
                                   {stripeAccountDetails.email ||
-                                    "Stripe Account"}
+                                    i18n.t(
+                                      "paymentSettingsPage.stripeAccountFallback"
+                                    )}
                                 </span>
                               </div>
                               {stripeAccountDetails.charges_enabled && (
@@ -181,7 +185,7 @@ const OrganizationPaymentSettingsPage: React.FC<
                                   variant="secondary"
                                   className="border-border bg-accent text-foreground"
                                 >
-                                  Charges Enabled
+                                  {i18n.t("paymentSettingsPage.chargesEnabled")}
                                 </Badge>
                               )}
                             </div>
@@ -192,7 +196,7 @@ const OrganizationPaymentSettingsPage: React.FC<
                         {isStripeConnected ? (
                           <>
                             <Badge className="border-border bg-accent text-foreground">
-                              Connected
+                              {i18n.t("paymentSettingsPage.connected")}
                             </Badge>
                             <Button
                               variant="outline"
@@ -200,7 +204,7 @@ const OrganizationPaymentSettingsPage: React.FC<
                               onClick={() => setShowDisconnectDialog(true)}
                               className="border-border text-destructive hover:bg-destructive/10 hover:text-destructive"
                             >
-                              Disconnect
+                              {i18n.t("paymentSettingsPage.disconnect")}
                             </Button>
                           </>
                         ) : (
@@ -212,11 +216,11 @@ const OrganizationPaymentSettingsPage: React.FC<
                             {isConnecting ? (
                               <>
                                 <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                                Connecting...
+                                {i18n.t("paymentSettingsPage.connecting")}
                               </>
                             ) : (
                               <>
-                                Connect Stripe
+                                {i18n.t("paymentSettingsPage.connectStripe")}
                                 <ArrowRight className="h-4 w-4 ml-2" />
                               </>
                             )}
@@ -229,17 +233,19 @@ const OrganizationPaymentSettingsPage: React.FC<
                   {/* Features List */}
                   <div className="border-t pt-6">
                     <h4 className="text-sm font-medium text-foreground mb-3">
-                      Features & Benefits
+                      {i18n.t("paymentSettingsPage.featuresTitle")}
                     </h4>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="flex items-start space-x-3">
                         <Shield className="mt-0.5 h-5 w-5 text-primary" />
                         <div>
                           <p className="text-sm font-medium text-foreground">
-                            Secure Payments
+                            {i18n.t("paymentSettingsPage.features.secureTitle")}
                           </p>
                           <p className="text-sm text-muted-foreground">
-                            PCI-compliant payment processing
+                            {i18n.t(
+                              "paymentSettingsPage.features.secureDescription"
+                            )}
                           </p>
                         </div>
                       </div>
@@ -247,10 +253,14 @@ const OrganizationPaymentSettingsPage: React.FC<
                         <Building2 className="mt-0.5 h-5 w-5 text-primary" />
                         <div>
                           <p className="text-sm font-medium text-foreground">
-                            Multiple Currencies
+                            {i18n.t(
+                              "paymentSettingsPage.features.currenciesTitle"
+                            )}
                           </p>
                           <p className="text-sm text-muted-foreground">
-                            Accept payments in 135+ currencies
+                            {i18n.t(
+                              "paymentSettingsPage.features.currenciesDescription"
+                            )}
                           </p>
                         </div>
                       </div>
@@ -258,10 +268,14 @@ const OrganizationPaymentSettingsPage: React.FC<
                         <CreditCard className="mt-0.5 h-5 w-5 text-primary" />
                         <div>
                           <p className="text-sm font-medium text-foreground">
-                            Various Payment Methods
+                            {i18n.t(
+                              "paymentSettingsPage.features.methodsTitle"
+                            )}
                           </p>
                           <p className="text-sm text-muted-foreground">
-                            Cards, wallets, bank transfers, and more
+                            {i18n.t(
+                              "paymentSettingsPage.features.methodsDescription"
+                            )}
                           </p>
                         </div>
                       </div>
@@ -269,10 +283,12 @@ const OrganizationPaymentSettingsPage: React.FC<
                         <CheckCircle2 className="mt-0.5 h-5 w-5 text-primary" />
                         <div>
                           <p className="text-sm font-medium text-foreground">
-                            Instant Setup
+                            {i18n.t("paymentSettingsPage.features.setupTitle")}
                           </p>
                           <p className="text-sm text-muted-foreground">
-                            Start accepting payments in minutes
+                            {i18n.t(
+                              "paymentSettingsPage.features.setupDescription"
+                            )}
                           </p>
                         </div>
                       </div>
@@ -286,20 +302,21 @@ const OrganizationPaymentSettingsPage: React.FC<
           {/* Help Section */}
           <Card className="border-border bg-card">
             <CardHeader>
-              <CardTitle className="text-lg">Need Help?</CardTitle>
+              <CardTitle className="text-lg">
+                {i18n.t("paymentSettingsPage.helpTitle")}
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-sm text-muted-foreground mb-4">
-                If you need assistance setting up payment processing or have
-                questions about fees and capabilities:
+                {i18n.t("paymentSettingsPage.helpDescription")}
               </p>
               <div className="flex flex-col sm:flex-row gap-3">
                 <Button variant="outline" className="bg-card">
                   <ExternalLink className="h-4 w-4 mr-2" />
-                  View Documentation
+                  {i18n.t("paymentSettingsPage.viewDocumentation")}
                 </Button>
                 <Button variant="outline" className="bg-card">
-                  Contact Support
+                  {i18n.t("paymentSettingsPage.contactSupport")}
                 </Button>
               </div>
             </CardContent>
@@ -314,11 +331,11 @@ const OrganizationPaymentSettingsPage: React.FC<
       >
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Disconnect Stripe Account</DialogTitle>
+            <DialogTitle>
+              {i18n.t("paymentSettingsPage.disconnectDialogTitle")}
+            </DialogTitle>
             <DialogDescription>
-              Are you sure you want to disconnect your Stripe account? You will
-              no longer be able to accept payments through Stripe until you
-              reconnect.
+              {i18n.t("paymentSettingsPage.disconnectDialogDescription")}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
@@ -327,7 +344,7 @@ const OrganizationPaymentSettingsPage: React.FC<
               onClick={() => setShowDisconnectDialog(false)}
               disabled={isDisconnecting}
             >
-              Cancel
+              {i18n.t("cancel")}
             </Button>
             <Button
               variant="destructive"
@@ -337,10 +354,10 @@ const OrganizationPaymentSettingsPage: React.FC<
               {isDisconnecting ? (
                 <>
                   <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                  Disconnecting...
+                  {i18n.t("paymentSettingsPage.disconnecting")}
                 </>
               ) : (
-                "Disconnect"
+                i18n.t("paymentSettingsPage.disconnect")
               )}
             </Button>
           </DialogFooter>
