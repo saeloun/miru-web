@@ -45,6 +45,25 @@ RSpec.describe "Invoice creation", type: :system, js: true do
     end
   end
 
+  it "shows the manual entry name in the invoice preview before saving" do
+    with_forgery_protection do
+      visit_new_invoice_for(client)
+
+      fill_in "invoiceNumber", with: "INV-MANUAL-PREVIEW-001"
+      add_manual_line_item(
+        name: "Manual preview item",
+        rate: "100",
+        quantity: "02:00",
+        description: "Preview name check"
+      )
+
+      within "[data-testid='invoice-preview']" do
+        expect(page).to have_text("Manual preview item", wait: 10)
+        expect(page).to have_text("Preview name check", wait: 10)
+      end
+    end
+  end
+
   it "shows real company details in the preview instead of fallback placeholders" do
     company.addresses.first.update!(address_line_1: "100 Market St", city: "San Francisco", state: "CA", country: "USA", pin: "94105")
     company.update!(

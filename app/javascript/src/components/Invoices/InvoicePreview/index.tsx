@@ -288,7 +288,7 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto">
+    <div className="w-full max-w-4xl mx-auto" data-testid="invoice-preview">
       {/* Action Bar */}
       {!isEditing && (
         <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
