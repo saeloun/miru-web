@@ -58,6 +58,38 @@ RSpec.describe "Reports", type: :system, js: true do
       end
     end
 
+    it "shows localized revenue by client labels in Hindi" do
+      admin.update!(locale: "hi")
+      26.times do |index|
+        client = create(:client, company:, name: "Hindi Revenue Client #{index}")
+        create(
+          :invoice,
+          company:,
+          client:,
+          status: :paid,
+          amount: 1000 + index,
+          amount_paid: 1000 + index,
+          amount_due: 0
+        )
+      end
+
+      with_forgery_protection do
+        visit "/reports/revenue-by-client"
+
+        expect_reports_shell("क्लाइंट के अनुसार राजस्व")
+        expect(page).to have_content("कुल राजस्व", wait: 10)
+        expect(page).to have_content("क्लाइंट राजस्व विवरण", wait: 10)
+        expect(page).to have_button("निर्यात", wait: 10)
+        expect(page).to have_button("सभी समय", wait: 10)
+        expect(page).to have_content("क्लाइंट", wait: 10)
+        expect(page).to have_content("26 में से 25 क्लाइंट दिखा रहा है", wait: 10)
+
+        page.execute_script("window.scrollTo(0, document.body.scrollHeight)")
+
+        expect(page).to have_content("सभी क्लाइंट लोड हो गए", wait: 10)
+      end
+    end
+
     it "loads the time entry report" do
       client = create(:client, company:, name: "Alpha Client")
       project = create(:project, client:, name: "Alpha Project")

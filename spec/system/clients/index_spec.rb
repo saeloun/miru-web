@@ -21,6 +21,32 @@ RSpec.describe "Client listing", type: :system, js: true do
     end
   end
 
+  it "shows localized client labels in Hindi" do
+    client = create(:client, company:, name: "Hindi Client", email: "hindi@example.com")
+    user.update!(locale: "hi")
+
+    with_forgery_protection do
+      visit "/clients"
+
+      expect(page).to have_current_path("/clients", wait: 10)
+      expect(page).to have_css("#react-root", wait: 10)
+      expect(page).to have_content("कुल क्लाइंट", wait: 10)
+      expect(page).to have_content("सभी क्लाइंट", wait: 10)
+      expect(page).to have_button("नया क्लाइंट जोड़ें", wait: 10)
+
+      click_button "मेनू खोलें"
+
+      expect(page).to have_content("क्लाइंट आईडी कॉपी करें", wait: 10)
+      expect(page).to have_content("विवरण देखें")
+      expect(page).to have_content("क्लाइंट संपादित करें")
+
+      click_button "क्लाइंट हटाएं"
+
+      expect(page).to have_content("क्या आप वाकई क्लाइंट #{client.name} को हटाना चाहते हैं?", wait: 10)
+      expect(page).to have_button("रद्द करें", wait: 10)
+    end
+  end
+
   context "with existing clients" do
     let!(:client_one) { create(:client, company:, name: "Acme Corp", email: "acme@example.com") }
     let!(:client_two) { create(:client, company:, name: "Beta Inc", email: "beta@example.com") }
@@ -43,7 +69,7 @@ RSpec.describe "Client listing", type: :system, js: true do
         expect(page).to have_content("Acme Corp", wait: 10)
         expect(page).to have_content("Beta Inc")
         expect(page).to have_content("CLIENT", wait: 10)
-        expect(page).to have_content("HOURS LOGGED")
+        expect(page).to have_content("Hours Tracked")
       end
     end
   end
