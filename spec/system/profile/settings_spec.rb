@@ -59,6 +59,13 @@ RSpec.describe "Profile Settings", type: :system, js: true do
       expect(page).to have_css("#react-root", wait: 10)
       expect(page).to have_content("ईमेल प्राथमिकताएं", wait: 10)
       expect(page).to have_content("साप्ताहिक टाइमशीट रिमाइंडर", wait: 10)
+
+      visit "/settings/notifications"
+
+      expect(page).to have_css("#react-root", wait: 10)
+      expect(page).to have_content("सूचना सेटिंग्स", wait: 10)
+      expect(page).to have_content("ईमेल सूचनाएं", wait: 10)
+      expect(page).to have_content("साप्ताहिक ईमेल रिमाइंडर", wait: 10)
     end
   end
 
@@ -81,6 +88,11 @@ RSpec.describe "Profile Settings", type: :system, js: true do
       expect(page).to have_css("#react-root", wait: 10)
       expect(page).to have_content("Email Preferences", wait: 10)
       expect(page).to have_content("Weekly Timesheet Reminder", wait: 10)
+
+      visit "/settings/notifications"
+      expect(page).to have_css("#react-root", wait: 10)
+      expect(page).to have_content("Notification Settings", wait: 10)
+      expect(page).to have_content("Email Notifications", wait: 10)
 
       visit "/settings/holidays"
       expect(page).to have_css("#react-root", wait: 10)

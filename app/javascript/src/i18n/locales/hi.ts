@@ -1686,6 +1686,16 @@ const hi = {
     balanceUntil: "%{date} तक शेष",
   },
 
+  notificationPreferences: {
+    emailNotifications: "ईमेल सूचनाएं",
+    manageDescription: "अपनी ईमेल सूचना प्राथमिकताओं का प्रबंधन करें",
+    weeklyEmailReminder: "साप्ताहिक ईमेल रिमाइंडर",
+    weeklyEmailReminderDescription:
+      "टाइमशीट प्रविष्टियों और प्रोजेक्ट अपडेट के बारे में साप्ताहिक ईमेल रिमाइंडर प्राप्त करें",
+    noUserData: "कोई उपयोगकर्ता डेटा उपलब्ध नहीं है",
+    loginPrompt: "सूचना प्राथमिकताओं का प्रबंधन करने के लिए कृपया लॉग इन करें",
+  },
+
   // Subscriptions / Plan Details
   subscriptions: {
     currentPlan: "वर्तमान योजना",

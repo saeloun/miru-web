@@ -1588,6 +1588,16 @@ const en = {
     balanceUntil: "Balance Until %{date}",
   },
 
+  notificationPreferences: {
+    emailNotifications: "Email Notifications",
+    manageDescription: "Manage your email notification preferences",
+    weeklyEmailReminder: "Weekly Email Reminder",
+    weeklyEmailReminderDescription:
+      "Receive weekly email reminders about timesheet entries and project updates",
+    noUserData: "No user data available",
+    loginPrompt: "Please log in to manage notification preferences",
+  },
+
   // Subscriptions / Plan Details
   subscriptions: {
     currentPlan: "Current Plan",

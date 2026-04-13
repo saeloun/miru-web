@@ -11,6 +11,7 @@ import { useProfileContext } from "context/Profile/ProfileContext";
 import { useUserContext } from "context/UserContext";
 import { Bell } from "phosphor-react";
 import { useParams } from "react-router-dom";
+import { i18n } from "../../../../i18n";
 
 const NotificationPreferences = () => {
   const { user, isDesktop, loading: userLoading } = useUserContext();
@@ -85,13 +86,16 @@ const NotificationPreferences = () => {
   return (
     <Fragment>
       {isDesktop ? (
-        <DetailsHeader subTitle="" title="Notification Settings" />
+        <DetailsHeader
+          subTitle=""
+          title={i18n.t("navbar.notificationSettings")}
+        />
       ) : (
         <MobileEditHeader
           backHref={isFromSettings ? "/settings/" : `/team/${memberId}`}
           href=""
           showEdit={false}
-          title="Notification Settings"
+          title={i18n.t("navbar.notificationSettings")}
         />
       )}
       {isLoading || userLoading ? (
@@ -104,10 +108,10 @@ const NotificationPreferences = () => {
             <CardHeader className="border-b border-border bg-muted/40">
               <CardTitle className="flex items-center text-lg font-semibold text-foreground">
                 <Bell className="mr-2 h-5 w-5 text-muted-foreground" />
-                Email Notifications
+                {i18n.t("notificationPreferences.emailNotifications")}
               </CardTitle>
               <p className="mt-1 text-sm text-muted-foreground">
-                Manage your email notification preferences
+                {i18n.t("notificationPreferences.manageDescription")}
               </p>
             </CardHeader>
             <CardContent className="pt-6">
@@ -117,11 +121,12 @@ const NotificationPreferences = () => {
                     htmlFor="weekly-reminder"
                     className="cursor-pointer text-sm font-medium text-foreground"
                   >
-                    Weekly Email Reminder
+                    {i18n.t("notificationPreferences.weeklyEmailReminder")}
                   </Label>
                   <p className="text-sm text-muted-foreground">
-                    Receive weekly email reminders about timesheet entries and
-                    project updates
+                    {i18n.t(
+                      "notificationPreferences.weeklyEmailReminderDescription"
+                    )}
                   </p>
                 </div>
                 <Switch
@@ -140,9 +145,11 @@ const NotificationPreferences = () => {
       ) : (
         <div className="flex min-h-70v items-center justify-center">
           <div className="text-center space-y-2">
-            <p className="text-muted-foreground">No user data available</p>
+            <p className="text-muted-foreground">
+              {i18n.t("notificationPreferences.noUserData")}
+            </p>
             <p className="text-sm text-muted-foreground">
-              Please log in to manage notification preferences
+              {i18n.t("notificationPreferences.loginPrompt")}
             </p>
           </div>
         </div>
