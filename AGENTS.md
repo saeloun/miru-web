@@ -42,6 +42,8 @@ Scope: entire repository.
 - Development stack is normally run through Foreman with `Procfile.dev`.
 - Preferred local test login when available:
   - `vipul@saeloun.com / password`
+- For live production verification, local env vars use official Saeloun workspace users, not demo-workspace credentials.
+- For live production verification in this repo, treat the Saeloun production owner/book-keeper/employee accounts in local `.env` as official Saeloun workspace users, not demo-workspace credentials.
 
 ## Testing Expectations
 

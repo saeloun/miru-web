@@ -41,19 +41,7 @@ RSpec.describe "Settings - Payment", type: :system, js: true do
       end
     end
 
-    it "shows localized payment settings copy in Hindi" do
-      user.update!(locale: "hi")
-
-      with_forgery_protection do
-        visit "/settings/payment"
-
-        expect(page).to have_css("#react-root", wait: 10)
-        expect(page).to have_content("भुगतान प्रदाता", wait: 10)
-        expect(page).to have_content("फ़ीचर्स और लाभ", wait: 10)
-      end
-    end
-
-    it "shows localized disconnect copy in Hindi for a connected Stripe account" do
+    it "shows localized payment settings copy in Hindi", :aggregate_failures do
       user.update!(locale: "hi")
       create(:stripe_connected_account, company:, account_id: "acct_connected_123")
       allow(Stripe::Account).to receive(:retrieve).and_return(
@@ -64,6 +52,8 @@ RSpec.describe "Settings - Payment", type: :system, js: true do
         visit "/settings/payment"
 
         expect(page).to have_css("#react-root", wait: 10)
+        expect(page).to have_content("भुगतान प्रदाता", wait: 10)
+        expect(page).to have_content("फ़ीचर्स और लाभ", wait: 10)
         expect(page).to have_content("कनेक्टेड", wait: 10)
 
         click_on "डिस्कनेक्ट करें"

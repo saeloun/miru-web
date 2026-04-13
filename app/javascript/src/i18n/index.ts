@@ -3,7 +3,6 @@ import { I18n } from "i18n-js";
 import en from "./locales/en";
 
 const SUPPORTED_LOCALES = [
-  "en",
   "en-GB",
   "en-US",
   "hi",
@@ -31,9 +30,11 @@ const SUPPORTED_LOCALES = [
 
 type SupportedLocale = (typeof SUPPORTED_LOCALES)[number];
 
-const i18n = new I18n({ en });
-i18n.defaultLocale = "en";
-i18n.locale = "en";
+const DEFAULT_LOCALE = "en-US";
+
+const i18n = new I18n({ en, "en-US": en });
+i18n.defaultLocale = DEFAULT_LOCALE;
+i18n.locale = DEFAULT_LOCALE;
 i18n.enableFallback = true;
 i18n.missingBehavior = "guess";
 
@@ -66,36 +67,64 @@ const LOCALE_LOADERS: Record<string, () => Promise<{ default: unknown }>> = {
 const t = (key: string, options?: Record<string, unknown>) =>
   i18n.t(key, options);
 
+function normalizeLocale(locale?: string | null): string {
+  const value = locale?.trim();
+  if (!value || value === "en") return DEFAULT_LOCALE;
+
+  if ((SUPPORTED_LOCALES as readonly string[]).includes(value)) {
+    return value;
+  }
+
+  const shortLocale = value.split("-")[0];
+  if (shortLocale === "en") return DEFAULT_LOCALE;
+
+  const match = (SUPPORTED_LOCALES as readonly string[]).find(
+    supported =>
+      supported === shortLocale || supported.startsWith(`${shortLocale}-`)
+  );
+
+  return match || DEFAULT_LOCALE;
+}
+
 async function loadLocale(locale: string): Promise<boolean> {
-  if (!(SUPPORTED_LOCALES as readonly string[]).includes(locale)) {
-    console.warn(`Unsupported locale: ${locale}, falling back to en`);
-    i18n.locale = "en";
+  const normalizedLocale = normalizeLocale(locale);
+
+  if (!(SUPPORTED_LOCALES as readonly string[]).includes(normalizedLocale)) {
+    console.warn(
+      `Unsupported locale: ${locale}, falling back to ${DEFAULT_LOCALE}`
+    );
+    i18n.locale = DEFAULT_LOCALE;
 
     return false;
   }
 
-  if (locale === "en") {
-    i18n.locale = "en";
+  if (normalizedLocale === DEFAULT_LOCALE) {
+    i18n.locale = DEFAULT_LOCALE;
 
     return true;
   }
 
   try {
-    const loadTranslations = LOCALE_LOADERS[locale];
+    const loadTranslations = LOCALE_LOADERS[normalizedLocale];
     if (!loadTranslations) {
-      throw new Error(`No translations registered for locale ${locale}`);
+      throw new Error(
+        `No translations registered for locale ${normalizedLocale}`
+      );
     }
 
     const module = await loadTranslations();
     const translations = module.default;
 
-    i18n.store({ [locale]: translations });
-    i18n.locale = locale;
+    i18n.store({ [normalizedLocale]: translations });
+    i18n.locale = normalizedLocale;
 
     return true;
   } catch (error) {
-    console.warn(`Failed to load locale ${locale}, falling back to en:`, error);
-    i18n.locale = "en";
+    console.warn(
+      `Failed to load locale ${normalizedLocale}, falling back to ${DEFAULT_LOCALE}:`,
+      error
+    );
+    i18n.locale = DEFAULT_LOCALE;
 
     return false;
   }
@@ -103,15 +132,17 @@ async function loadLocale(locale: string): Promise<boolean> {
 
 function getStoredLocale(): string {
   try {
-    return localStorage.getItem("miru-locale") || "en";
+    const storedLocale = localStorage.getItem("miru-locale");
+
+    return normalizeLocale(storedLocale);
   } catch {
-    return "en";
+    return DEFAULT_LOCALE;
   }
 }
 
 function setStoredLocale(locale: string): void {
   try {
-    localStorage.setItem("miru-locale", locale);
+    localStorage.setItem("miru-locale", normalizeLocale(locale));
   } catch {
     return;
   }
@@ -124,18 +155,19 @@ function detectBrowserLocale(): string {
       return browserLang;
     }
     const shortLang = browserLang.split("-")[0];
+    if (shortLang === "en") return DEFAULT_LOCALE;
     const match = (SUPPORTED_LOCALES as readonly string[]).find(
       l => l === shortLang || l.startsWith(`${shortLang}-`)
     );
 
-    return match || "en";
+    return match || DEFAULT_LOCALE;
   } catch {
-    return "en";
+    return DEFAULT_LOCALE;
   }
 }
 
 function getActiveLocale(): string {
-  return i18n.locale || "en";
+  return i18n.locale || DEFAULT_LOCALE;
 }
 
 function getStoredBrowserCountry(): string {
@@ -197,7 +229,6 @@ function defaultDateFormatForCountry(countryCode?: string): string {
 }
 
 const LOCALE_LABELS: Record<string, string> = {
-  en: "English",
   "en-GB": "English (UK)",
   "en-US": "English (US)",
   hi: "हिन्दी",
@@ -232,6 +263,7 @@ export {
   i18n,
   t,
   LANGUAGE_OPTIONS,
+  normalizeLocale,
   loadLocale,
   getStoredLocale,
   setStoredLocale,

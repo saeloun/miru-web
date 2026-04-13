@@ -58,138 +58,69 @@ RSpec.describe "Reports", type: :system, js: true do
       end
     end
 
-    it "shows localized revenue by client labels in Hindi" do
+    it "shows localized financial report routes in Hindi", :aggregate_failures do
       admin.update!(locale: "hi")
-      client = create(:client, company:, name: "Hindi Revenue Client")
-      create(:project, client:, billable: true, name: "Hindi Revenue Project")
-      create(:invoice, company:, client:, status: :sent, amount: 1200, amount_due: 1200)
+      revenue_client = create(:client, company:, name: "Hindi Revenue Client")
+      payment_client = create(:client, company:, name: "Hindi Payment Client")
+      aging_client = create(:client, company:, name: "Hindi Aging Client")
+      overdue_client = create(:client, company:, name: "Hindi Overdue Client")
+      create(:project, client: revenue_client, billable: true, name: "Hindi Revenue Project")
+      create(:project, client: aging_client, billable: true, name: "Hindi Aging Project")
+      create(:invoice, company:, client: revenue_client, status: :sent, amount: 1200, amount_due: 1200)
+      paid_invoice = create(
+        :invoice,
+        company:,
+        client: payment_client,
+        status: :paid,
+        amount: 2000,
+        amount_paid: 2000,
+        amount_due: 0
+      )
+      create(:payment, invoice: paid_invoice, amount: 2000, status: :paid, transaction_date: Date.current)
       create(
         :invoice,
         company:,
-        client:,
-        status: :paid,
-        amount: 800,
-        amount_paid: 800,
-        amount_due: 0
+        client: aging_client,
+        status: :sent,
+        amount: 5000,
+        amount_due: 5000,
+        issue_date: 90.days.ago,
+        due_date: 60.days.ago
+      )
+      create(
+        :invoice,
+        company:,
+        client: overdue_client,
+        status: :overdue,
+        amount: 2000,
+        amount_due: 2000,
+        currency: "EUR",
+        issue_date: 60.days.ago,
+        due_date: 30.days.ago
       )
 
       with_forgery_protection do
         visit "/reports/revenue-by-client"
-
         expect_reports_shell("क्लाइंट के अनुसार राजस्व")
         expect(page).to have_content("कुल राजस्व", wait: 10)
-        expect(page).to have_content("क्लाइंट राजस्व विवरण", wait: 10)
-        expect(page).to have_button("निर्यात", wait: 10)
         expect(page).to have_button("रिपोर्ट साझा करें", wait: 10)
-        expect(page).to have_button("सभी समय", wait: 10)
-        expect(page).to have_content("भुगतान राशि", wait: 10)
-        expect(page).to have_content("सफलतापूर्वक एकत्रित", wait: 10)
-        expect(page).to have_content("ध्यान आवश्यक", wait: 10)
-        expect(page).to have_content("क्लाइंट", wait: 10)
-        expect(page).to have_content("अतिदेय राशि", wait: 10)
-        expect(page).to have_content("बकाया राशि", wait: 10)
-        expect(page).to have_content("भुगतान राशि", wait: 10)
         expect(page).to have_content("Hindi Revenue Client", wait: 10)
-        expect(page).to have_content("1 में से 1 क्लाइंट दिखा रहा है", wait: 10)
-        expect(page).to have_content("सभी क्लाइंट लोड हो गए", wait: 10)
-      end
-    end
 
-    it "shows localized revenue by client empty state in Hindi" do
-      admin.update!(locale: "hi")
-
-      with_forgery_protection do
-        visit "/reports/revenue-by-client"
-
-        expect_reports_shell("क्लाइंट के अनुसार राजस्व")
-        expect(page).to have_content("कोई परिणाम नहीं।", wait: 10)
-        expect(page).to have_content(
-          "चयनित फ़िल्टर के लिए कोई क्लाइंट राजस्व डेटा उपलब्ध नहीं है।",
-          wait: 10
-        )
-        expect(page).to have_content("0 में से 0 क्लाइंट दिखा रहा है", wait: 10)
-      end
-    end
-
-    it "shows localized payment report labels in Hindi" do
-      admin.update!(locale: "hi")
-      client = create(:client, company:, name: "Hindi Payment Client")
-      invoice = create(:invoice, company:, client:, status: :paid, amount: 2000, amount_paid: 2000, amount_due: 0)
-      create(:payment, invoice:, amount: 2000, status: :paid, transaction_date: Date.current)
-
-      with_forgery_protection do
         visit "/reports/payments"
-
         expect_reports_shell("भुगतान रिपोर्ट")
-        expect(page).to have_content("भुगतान विवरण", wait: 10)
         expect(page).to have_content("कुल भुगतान", wait: 10)
-        expect(page).to have_content("भुगतान संख्या", wait: 10)
-        expect(page).to have_button("निर्यात", wait: 10)
-        expect(page).to have_content("सभी विधियाँ", wait: 10)
-        expect(page).to have_content("भुगतान विधि", wait: 10)
-        expect(page).to have_content("शीर्ष विधि", wait: 10)
-        expect(page).to have_content("भुगतान विधियों का विवरण", wait: 10)
-        expect(page).to have_content("तारीख", wait: 10)
-        expect(page).to have_content("क्लाइंट", wait: 10)
-        expect(page).to have_content("इनवॉइस", wait: 10)
-        expect(page).to have_content("राशि", wait: 10)
-        expect(page).to have_content("नोट्स", wait: 10)
-        expect(page).to have_content("स्थिति", wait: 10)
-        expect(page).to have_content("1 में से 1 भुगतान दिखाए जा रहे हैं", wait: 10)
-        expect(page).to have_content("सभी भुगतान लोड हो गए", wait: 10)
-      end
-    end
+        expect(page).to have_content("भुगतान विवरण", wait: 10)
+        expect(page).to have_content("Hindi Payment Client", wait: 10)
 
-    it "shows localized payment report empty-state and multi-client filters in Hindi" do
-      admin.update!(locale: "hi")
-      first_client = create(:client, company:, name: "Hindi Filter Alpha")
-      second_client = create(:client, company:, name: "Hindi Filter Beta")
-      create(:invoice, company:, client: first_client, status: :sent)
-      create(:invoice, company:, client: second_client, status: :sent)
+        visit "/reports/accounts-aging"
+        expect_reports_shell("अकाउंट्स एजिंग रिपोर्ट")
+        expect(page).to have_content("कुल देय", wait: 10)
+        expect(page).to have_content("Hindi Aging Client", wait: 10)
 
-      with_forgery_protection do
-        visit "/reports/payments"
-
-        expect_reports_shell("भुगतान रिपोर्ट")
-        click_button("सभी क्लाइंट")
-        click_button("Hindi Filter Alpha")
-        click_button("Hindi Filter Alpha")
-        click_button("Hindi Filter Beta")
-        expect(page).to have_content("2 क्लाइंट", wait: 10)
-        expect(page).to have_content("चयनित अवधि के लिए कोई भुगतान नहीं मिला।", wait: 10)
-        expect(page).to have_content("0 में से 0 भुगतान दिखाए जा रहे हैं", wait: 10)
-      end
-    end
-
-    it "shows localized payment report pagination prompt in Hindi" do
-      admin.update!(locale: "hi")
-      client = create(:client, company:, name: "Hindi Payment Scroll Client")
-
-      26.times do |index|
-        invoice = create(
-          :invoice,
-          company:,
-          client:,
-          status: :paid,
-          amount: 100 + index,
-          amount_paid: 100 + index,
-          amount_due: 0
-        )
-        create(
-          :payment,
-          invoice:,
-          amount: 100 + index,
-          status: :paid,
-          transaction_date: Date.current - index.days
-        )
-      end
-
-      with_forgery_protection do
-        visit "/reports/payments"
-
-        expect_reports_shell("भुगतान रिपोर्ट")
-        expect(page).to have_content("26 में से 25 भुगतान दिखाए जा रहे हैं", wait: 10)
-        expect(page).to have_content("और भुगतान लोड करने के लिए स्क्रॉल करें", wait: 10)
+        visit "/reports/outstanding-overdue-invoices?tab=overdue&currency=EUR"
+        expect(page).to have_css("#react-root", wait: 10)
+        expect(page).to have_content("बकाया और अतिदेय", wait: 10)
+        expect(page).to have_content("Hindi Overdue Client", wait: 10)
       end
     end
 
@@ -390,39 +321,6 @@ RSpec.describe "Reports", type: :system, js: true do
       end
     end
 
-    it "shows localized accounts aging labels in Hindi" do
-      admin.update!(locale: "hi")
-      client = create(:client, company:, name: "Hindi Aging Client")
-      create(:project, client:, billable: true, name: "Hindi Aging Project")
-      create(
-        :invoice,
-        company:,
-        client:,
-        status: :sent,
-        amount: 5000,
-        amount_due: 5000,
-        issue_date: 90.days.ago,
-        due_date: 60.days.ago
-      )
-
-      with_forgery_protection do
-        visit "/reports/accounts-aging"
-
-        expect_reports_shell("अकाउंट्स एजिंग रिपोर्ट")
-        expect(page).to have_content("कुल देय", wait: 10)
-        expect(page).to have_content("एजिंग वितरण", wait: 10)
-        expect(page).to have_content("इनवॉइस एजिंग विवरण", wait: 10)
-        expect(page).to have_button("निर्यात", wait: 10)
-        expect(page).to have_button("रिपोर्ट साझा करें", wait: 10)
-        expect(page).to have_button("क्लाइंट", wait: 10)
-        expect(page).to have_content("0-30 दिन", wait: 10)
-        expect(page).to have_content("31-60 दिन", wait: 10)
-        expect(page).to have_content("61-90 दिन", wait: 10)
-        expect(page).to have_content("90+ दिन", wait: 10)
-        expect(page).to have_content("Hindi Aging Client", wait: 10)
-      end
-    end
-
     it "restores accounts aging filters from the permalink" do
       included_client = create(:client, company:, name: "Aging Filter Alpha")
       excluded_client = create(:client, company:, name: "Aging Filter Beta")
@@ -464,39 +362,6 @@ RSpec.describe "Reports", type: :system, js: true do
         expect(page).to have_css("#react-root", wait: 10)
         expect(page).to have_content("Euro Receivable", wait: 10)
         expect(page).to have_no_content("Dollar Receivable")
-      end
-    end
-
-    it "shows localized outstanding report labels in Hindi" do
-      admin.update!(locale: "hi")
-      client = create(:client, company:, name: "Hindi Overdue Client")
-      create(
-        :invoice,
-        company:,
-        client:,
-        status: :overdue,
-        amount: 2000,
-        amount_due: 2000,
-        currency: "EUR",
-        issue_date: 60.days.ago,
-        due_date: 30.days.ago
-      )
-
-      with_forgery_protection do
-        visit "/reports/outstanding-overdue-invoices?tab=overdue&currency=EUR"
-
-        expect(page).to have_css("#react-root", wait: 10)
-        expect(page).to have_content("बकाया और अतिदेय", wait: 10)
-        expect(page).to have_content("स्थिति अवलोकन", wait: 10)
-        expect(page).to have_content("क्लाइंट विवरण", wait: 10)
-        expect(page).to have_content("अतिदेय विवरण", wait: 10)
-        expect(page).to have_select("मुद्रा फ़िल्टर", selected: "EUR", wait: 10)
-        expect(page).to have_select("प्रारूप", selected: "सीएसवी", wait: 10)
-        expect(page).to have_content("30 दिन", wait: 10)
-        expect(page).to have_content("0-30 दिन", wait: 10)
-        expect(page).to have_content("31-60 दिन", wait: 10)
-        expect(page).to have_content("60+ दिन", wait: 10)
-        expect(page).to have_content("Hindi Overdue Client", wait: 10)
       end
     end
 

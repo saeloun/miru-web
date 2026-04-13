@@ -58,7 +58,7 @@ class User < ApplicationRecord
   store_accessor :social_accounts, :github_url, :linkedin_url
 
   # Attribute accessor
-  attribute :locale, :string, default: "en"
+  attribute :locale, :string, default: "en-US"
   attr_accessor :current_company, :role, :skip_password_validation
 
   # Validations

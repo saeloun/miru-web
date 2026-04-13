@@ -45,7 +45,7 @@ module SessionHelpers
   end
 
   def login_via_api(user)
-    page.evaluate_async_script(<<~JS, user.email, SYSTEM_TEST_PASSWORD, user.locale || "en")
+    page.evaluate_async_script(<<~JS, user.email, SYSTEM_TEST_PASSWORD, user.locale || "en-US")
       const [email, password, locale, done] = arguments;
 
       fetch("/api/v1/users/login", {
