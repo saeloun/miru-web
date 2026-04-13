@@ -4,7 +4,7 @@ require "rails_helper"
 
 RSpec.describe "Client listing", type: :system, js: true do
   let(:company) { create(:company) }
-  let(:user) { create(:user, current_workspace_id: company.id) }
+  let(:user) { create(:user, current_workspace: company) }
 
   before do
     create(:employment, company:, user:)
@@ -33,6 +33,9 @@ RSpec.describe "Client listing", type: :system, js: true do
       expect(page).to have_content("कुल क्लाइंट", wait: 10)
       expect(page).to have_content("सभी क्लाइंट", wait: 10)
       expect(page).to have_button("नया क्लाइंट जोड़ें", wait: 10)
+      expect(page).to have_content("लॉग किए गए घंटे", wait: 10)
+      expect(page).to have_content("1 में से 0 पंक्तियाँ चुनी गईं।", wait: 10)
+      expect(page).to have_content("पृष्ठ 1 / 1", wait: 10)
 
       click_button "मेनू खोलें"
 
@@ -40,7 +43,7 @@ RSpec.describe "Client listing", type: :system, js: true do
       expect(page).to have_content("विवरण देखें")
       expect(page).to have_content("क्लाइंट संपादित करें")
 
-      click_button "क्लाइंट हटाएं"
+      find("[role='menuitem']", text: "क्लाइंट हटाएं", wait: 10).click
 
       expect(page).to have_content("क्या आप वाकई क्लाइंट #{client.name} को हटाना चाहते हैं?", wait: 10)
       expect(page).to have_button("रद्द करें", wait: 10)
@@ -75,7 +78,7 @@ RSpec.describe "Client listing", type: :system, js: true do
   end
 
   context "when user is an employee" do
-    let(:employee) { create(:user, current_workspace_id: company.id) }
+    let(:employee) { create(:user, current_workspace: company) }
     let!(:client) { create(:client, company:, name: "Employee Client") }
     let!(:project) { create(:project, client:, name: "Employee Project") }
 

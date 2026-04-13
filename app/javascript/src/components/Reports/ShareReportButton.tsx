@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { LinkSimple } from "@phosphor-icons/react";
+import { i18n } from "../../i18n";
 import { Button } from "../ui/button";
 import { copyText } from "./filterUtils";
 
@@ -18,7 +19,7 @@ const ShareReportButton: React.FC = () => {
   return (
     <Button variant="outline" onClick={handleCopy}>
       <LinkSimple className="mr-2 h-4 w-4" />
-      {copied ? "Link copied" : "Share report"}
+      {copied ? i18n.t("reports.linkCopied") : i18n.t("reports.shareReport")}
     </Button>
   );
 };

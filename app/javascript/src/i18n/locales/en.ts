@@ -131,6 +131,11 @@ const en = {
   searchTeamMembers: "Search team members...",
   selectTeamMember: "Select team member",
   noResultsFound: "No results found",
+  dataTable: {
+    noResults: "No results.",
+    rowsSelected: "%{selected} of %{total} row(s) selected.",
+    pageOf: "Page %{page} of %{total}",
+  },
 
   // Time Tracking
   timeTracking: {
@@ -263,6 +268,7 @@ const en = {
     totalClients: "Total Clients",
     activeClients: "Active clients",
     hoursTracked: "Hours Tracked",
+    hoursLogged: "Hours Logged",
     totalTracked: "Total tracked",
     outstanding: "OUTSTANDING",
     overdue: "OVERDUE",
@@ -284,6 +290,7 @@ const en = {
     clientHeader: "CLIENT",
     contact: "Contact",
     copyClientId: "Copy client ID",
+    viewDetails: "View details",
     addProject: "Add Project",
     addNewProject: "Add New Project",
     paymentReminder: "Payment Reminder",
@@ -923,6 +930,8 @@ const en = {
     monthlyRevenueReport: "Monthly Revenue Report",
     openReport: "Open %{title} report",
     reviewHoursLogged: "Review hours logged by person, client, and project.",
+    shareReport: "Share report",
+    linkCopied: "Link copied",
     lastSevenDaysPreset: "Last 7 Days",
     lastThirtyDaysPreset: "Last 30 Days",
     totalEntries: "Total Entries",

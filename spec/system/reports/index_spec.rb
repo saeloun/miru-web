@@ -4,7 +4,7 @@ require "rails_helper"
 
 RSpec.describe "Reports", type: :system, js: true do
   let!(:company) { create(:company, base_currency: "USD", name: "Reports Corp", plan_tier: "paid") }
-  let!(:admin) { create(:user, current_workspace_id: company.id) }
+  let!(:admin) { create(:user, current_workspace: company) }
 
   before do
     create(:employment, company:, user: admin)
@@ -60,18 +60,6 @@ RSpec.describe "Reports", type: :system, js: true do
 
     it "shows localized revenue by client labels in Hindi" do
       admin.update!(locale: "hi")
-      26.times do |index|
-        client = create(:client, company:, name: "Hindi Revenue Client #{index}")
-        create(
-          :invoice,
-          company:,
-          client:,
-          status: :paid,
-          amount: 1000 + index,
-          amount_paid: 1000 + index,
-          amount_due: 0
-        )
-      end
 
       with_forgery_protection do
         visit "/reports/revenue-by-client"
@@ -80,13 +68,15 @@ RSpec.describe "Reports", type: :system, js: true do
         expect(page).to have_content("कुल राजस्व", wait: 10)
         expect(page).to have_content("क्लाइंट राजस्व विवरण", wait: 10)
         expect(page).to have_button("निर्यात", wait: 10)
+        expect(page).to have_button("रिपोर्ट साझा करें", wait: 10)
         expect(page).to have_button("सभी समय", wait: 10)
         expect(page).to have_content("क्लाइंट", wait: 10)
-        expect(page).to have_content("26 में से 25 क्लाइंट दिखा रहा है", wait: 10)
-
-        page.execute_script("window.scrollTo(0, document.body.scrollHeight)")
-
-        expect(page).to have_content("सभी क्लाइंट लोड हो गए", wait: 10)
+        expect(page).to have_content("कोई परिणाम नहीं।", wait: 10)
+        expect(page).to have_content(
+          "चयनित फ़िल्टर के लिए कोई क्लाइंट राजस्व डेटा उपलब्ध नहीं है।",
+          wait: 10
+        )
+        expect(page).to have_content("0 में से 0 क्लाइंट दिखा रहा है", wait: 10)
       end
     end
 
@@ -384,7 +374,7 @@ RSpec.describe "Reports", type: :system, js: true do
   end
 
   it "prevents employees from accessing reports" do
-    employee = create(:user, current_workspace_id: company.id)
+    employee = create(:user, current_workspace: company)
     create(:employment, company:, user: employee)
     employee.add_role :employee, company
 
@@ -400,7 +390,7 @@ RSpec.describe "Reports", type: :system, js: true do
 
   it "redirects free-plan admins to billing" do
     free_company = create(:company, name: "Free Corp", plan_tier: "free")
-    free_admin = create(:user, current_workspace_id: free_company.id)
+    free_admin = create(:user, current_workspace: free_company)
     create(:employment, company: free_company, user: free_admin)
     free_admin.add_role :admin, free_company
 

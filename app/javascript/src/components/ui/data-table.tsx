@@ -33,6 +33,7 @@ import {
   CaretDoubleLeft,
   CaretDoubleRight,
 } from "phosphor-react";
+import { i18n } from "../../i18n";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -174,7 +175,7 @@ export function DataTable<TData, TValue>({
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  No results.
+                  {i18n.t("dataTable.noResults")}
                 </TableCell>
               </TableRow>
             )}
@@ -184,8 +185,10 @@ export function DataTable<TData, TValue>({
       {showPagination && (
         <div className="flex items-center justify-between space-x-2 py-4">
           <div className="flex-1 text-sm text-muted-foreground">
-            {table.getFilteredSelectedRowModel().rows.length} of{" "}
-            {table.getFilteredRowModel().rows.length} row(s) selected.
+            {i18n.t("dataTable.rowsSelected", {
+              selected: table.getFilteredSelectedRowModel().rows.length,
+              total: table.getFilteredRowModel().rows.length,
+            })}
           </div>
           <div className="flex items-center space-x-2">
             <Button
@@ -206,8 +209,10 @@ export function DataTable<TData, TValue>({
             </Button>
             <div className="flex items-center gap-1">
               <span className="text-sm">
-                Page {table.getState().pagination.pageIndex + 1} of{" "}
-                {table.getPageCount()}
+                {i18n.t("dataTable.pageOf", {
+                  page: table.getState().pagination.pageIndex + 1,
+                  total: table.getPageCount(),
+                })}
               </span>
             </div>
             <Button

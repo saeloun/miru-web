@@ -115,6 +115,11 @@ const hi = {
   searchTeamMembers: "टीम सदस्य खोजें...",
   selectTeamMember: "टीम सदस्य चुनें",
   noResultsFound: "कोई परिणाम नहीं मिला",
+  dataTable: {
+    noResults: "कोई परिणाम नहीं।",
+    rowsSelected: "%{total} में से %{selected} पंक्तियाँ चुनी गईं।",
+    pageOf: "पृष्ठ %{page} / %{total}",
+  },
   timeTracking: {
     addEntry: "प्रविष्टि जोड़ें",
     newTimeEntry: "नई समय प्रविष्टि",
@@ -239,6 +244,7 @@ const hi = {
     totalClients: "कुल क्लाइंट",
     activeClients: "सक्रिय क्लाइंट",
     hoursTracked: "ट्रैक किए गए घंटे",
+    hoursLogged: "लॉग किए गए घंटे",
     totalTracked: "कुल ट्रैक किया गया",
     outstanding: "बकाया",
     overdue: "अतिदेय",
@@ -260,6 +266,7 @@ const hi = {
     clientHeader: "क्लाइंट",
     contact: "संपर्क",
     copyClientId: "क्लाइंट आईडी कॉपी करें",
+    viewDetails: "विवरण देखें",
     addProject: "प्रोजेक्ट जोड़ें",
     addNewProject: "नया प्रोजेक्ट जोड़ें",
     paymentReminder: "भुगतान अनुस्मारक",
@@ -867,6 +874,8 @@ const hi = {
     openReport: "%{title} रिपोर्ट खोलें",
     reviewHoursLogged:
       "व्यक्ति, क्लाइंट और प्रोजेक्ट के अनुसार लॉग किए गए घंटों की समीक्षा करें।",
+    shareReport: "रिपोर्ट साझा करें",
+    linkCopied: "लिंक कॉपी हो गया",
     lastSevenDaysPreset: "पिछले 7 दिन",
     lastThirtyDaysPreset: "पिछले 30 दिन",
     totalEntries: "कुल प्रविष्टियाँ",
