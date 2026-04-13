@@ -50,6 +50,7 @@ import { useUserContext } from "../../context/UserContext";
 import { expensesApi } from "apis/api";
 import { currencyFormat } from "../../helpers/currency";
 import { toast } from "sonner";
+import { i18n } from "../../i18n";
 import ReceiptPreviewDialog from "./ReceiptPreviewDialog";
 import { findCategoryMeta } from "./utils";
 
@@ -231,11 +232,11 @@ const ExpensesTable: React.FC = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["expenses"] });
-      toast.success("Expense deleted successfully");
+      toast.success(i18n.t("expenses.expenseDeletedSuccessfully"));
       setShowDeleteDialog(false);
     },
     onError: () => {
-      toast.error("Failed to delete expense");
+      toast.error(i18n.t("expenses.failedToDeleteExpense"));
     },
   });
 
@@ -245,12 +246,12 @@ const ExpensesTable: React.FC = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["expenses"] });
-      toast.success("Expense created successfully");
+      toast.success(i18n.t("expenses.expenseCreatedSuccessfully"));
       setShowAddDialog(false);
       resetForm();
     },
     onError: () => {
-      toast.error("Failed to create expense");
+      toast.error(i18n.t("expenses.failedToCreateExpense"));
     },
   });
 
@@ -264,12 +265,12 @@ const ExpensesTable: React.FC = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["expenses"] });
-      toast.success("Expense updated successfully");
+      toast.success(i18n.t("expenses.expenseUpdatedSuccessfully"));
       setShowEditDialog(false);
       resetForm();
     },
     onError: () => {
-      toast.error("Failed to update expense");
+      toast.error(i18n.t("expenses.failedToUpdateExpense"));
     },
   });
 
@@ -279,10 +280,10 @@ const ExpensesTable: React.FC = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["expenses"] });
-      toast.success("Expense marked as paid");
+      toast.success(i18n.t("expenses.expenseMarkedAsPaid"));
     },
     onError: () => {
-      toast.error("Failed to mark expense as paid");
+      toast.error(i18n.t("expenses.failedToMarkAsPaid"));
     },
   });
 
@@ -292,10 +293,10 @@ const ExpensesTable: React.FC = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["expenses"] });
-      toast.success("Expense approved");
+      toast.success(i18n.t("expenses.expenseApproved"));
     },
     onError: () => {
-      toast.error("Failed to approve expense");
+      toast.error(i18n.t("expenses.failedToApprove"));
     },
   });
 
@@ -305,10 +306,10 @@ const ExpensesTable: React.FC = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["expenses"] });
-      toast.success("Expense rejected");
+      toast.success(i18n.t("expenses.expenseRejected"));
     },
     onError: () => {
-      toast.error("Failed to reject expense");
+      toast.error(i18n.t("expenses.failedToReject"));
     },
   });
 
@@ -412,7 +413,7 @@ const ExpensesTable: React.FC = () => {
     const submit = async () => {
       try {
         if (!formData.category.trim()) {
-          toast.error("Please select a valid category");
+          toast.error(i18n.t("expenses.selectValidCategory"));
 
           return;
         }
@@ -420,7 +421,7 @@ const ExpensesTable: React.FC = () => {
         const payload = await buildExpensePayload();
         createMutation.mutate(payload);
       } catch {
-        toast.error("Failed to create expense");
+        toast.error(i18n.t("expenses.failedToCreateExpense"));
       }
     };
 
@@ -433,7 +434,7 @@ const ExpensesTable: React.FC = () => {
     const submit = async () => {
       try {
         if (!formData.category.trim()) {
-          toast.error("Please select a valid category");
+          toast.error(i18n.t("expenses.selectValidCategory"));
 
           return;
         }
@@ -444,7 +445,7 @@ const ExpensesTable: React.FC = () => {
           data: payload,
         });
       } catch {
-        toast.error("Failed to update expense");
+        toast.error(i18n.t("expenses.failedToUpdateExpense"));
       }
     };
 

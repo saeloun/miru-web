@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { XIcon } from "miruIcons";
 import Select from "react-select";
 import * as Yup from "yup";
+import { i18n } from "../../../../i18n";
 
 import CustomDateRangePicker from "common/CustomDateRangePicker";
 
@@ -12,8 +13,8 @@ import { customStyles } from "./style";
 import { useEntry } from "../../context/EntryContext";
 
 const dateSchema = Yup.object().shape({
-  fromDate: Yup.string().required("Must include From date"),
-  toDate: Yup.string().required("Must include To date"),
+  fromDate: Yup.string().required(i18n.t("reports.mustIncludeFromDate")),
+  toDate: Yup.string().required(i18n.t("reports.mustIncludeToDate")),
 });
 
 const OutstandingInvoiceReportFilters = ({
@@ -88,7 +89,7 @@ const OutstandingInvoiceReportFilters = ({
     <div className="sidebar__container flex w-full max-w-full flex-col">
       <div>
         <div className="mb-7 flex items-center justify-between px-5 pt-5">
-          <h4 className="text-base font-bold">Filters</h4>
+          <h4 className="text-base font-bold">{i18n.t("filters")}</h4>
           <button onClick={() => setIsFilterVisible(false)}>
             <XIcon size={12} />
           </button>
@@ -96,7 +97,7 @@ const OutstandingInvoiceReportFilters = ({
         <div className="sidebar__filters">
           <ul>
             <li className="px-5 pb-5">
-              <h5 className="text-xs font-normal">Date Range</h5>
+              <h5 className="text-xs font-normal">{i18n.t("dateRange")}</h5>
               <Select
                 classNamePrefix="react-select-filter"
                 name="dateRange"
@@ -127,20 +128,22 @@ const OutstandingInvoiceReportFilters = ({
                       className="sidebar__reset"
                       onClick={resetCustomDatePicker}
                     >
-                      Cancel
+                      {i18n.t("cancel")}
                     </button>
                     <button
                       className="sidebar__apply"
                       onClick={submitCustomDatePicker}
                     >
-                      Done
+                      {i18n.t("done")}
                     </button>
                   </div>
                 </div>
               )}
             </li>
             <li className="px-5 pb-5">
-              <h5 className="text-xs font-normal">Clients</h5>
+              <h5 className="text-xs font-normal">
+                {i18n.t("reports.clients")}
+              </h5>
               <Select
                 isMulti
                 classNamePrefix="react-select-filter"
@@ -156,10 +159,10 @@ const OutstandingInvoiceReportFilters = ({
       </div>
       <div className="sidebar__footer">
         <button className="sidebar__reset" onClick={resetFilter}>
-          RESET
+          {i18n.t("reset")}
         </button>
         <button className="sidebar__apply" onClick={submitApplyFilter}>
-          APPLY
+          {i18n.t("apply")}
         </button>
       </div>
     </div>

@@ -48,6 +48,7 @@ import {
 import { ArrowUpDown, Download, Filter, TrendUp } from "phosphor-react";
 import { currencyFormat } from "../../../helpers/currency";
 import Loader from "../../../common/Loader";
+import { i18n } from "../../../i18n";
 
 interface RevenueClient {
   id: number;
@@ -74,13 +75,13 @@ interface RevenueByClientReportProps {
 }
 
 const presets = [
-  { label: "This Month", value: "this_month" },
-  { label: "Last Month", value: "last_month" },
-  { label: "This Quarter", value: "this_quarter" },
-  { label: "Last Quarter", value: "last_quarter" },
-  { label: "This Year", value: "this_year" },
-  { label: "Last Year", value: "last_year" },
-  { label: "All Time", value: "all_time" },
+  { label: i18n.t("thisMonth"), value: "this_month" },
+  { label: i18n.t("lastMonth"), value: "last_month" },
+  { label: i18n.t("thisQuarter"), value: "this_quarter" },
+  { label: i18n.t("lastQuarter"), value: "last_quarter" },
+  { label: i18n.t("thisYear"), value: "this_year" },
+  { label: i18n.t("lastYear"), value: "last_year" },
+  { label: i18n.t("allTime"), value: "all_time" },
 ];
 
 export const RevenueByClientWorkspaceView: React.FC<
@@ -113,7 +114,7 @@ export const RevenueByClientWorkspaceView: React.FC<
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           className="h-auto p-0 font-semibold"
         >
-          Client Name
+          {i18n.t("reports.clientName")}
           <ArrowUpDown size={16} className="ml-2" />
         </Button>
       ),
@@ -129,7 +130,7 @@ export const RevenueByClientWorkspaceView: React.FC<
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           className="h-auto p-0 font-semibold"
         >
-          Total Revenue
+          {i18n.t("reports.totalRevenue")}
           <ArrowUpDown size={16} className="ml-2" />
         </Button>
       ),
@@ -151,7 +152,7 @@ export const RevenueByClientWorkspaceView: React.FC<
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           className="h-auto p-0 font-semibold"
         >
-          Paid Revenue
+          {i18n.t("reports.paidRevenue")}
           <ArrowUpDown size={16} className="ml-2" />
         </Button>
       ),
@@ -173,7 +174,7 @@ export const RevenueByClientWorkspaceView: React.FC<
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           className="h-auto p-0 font-semibold"
         >
-          Outstanding
+          {i18n.t("reports.outstanding")}
           <ArrowUpDown size={16} className="ml-2" />
         </Button>
       ),
@@ -195,7 +196,7 @@ export const RevenueByClientWorkspaceView: React.FC<
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           className="h-auto p-0 font-semibold"
         >
-          Overdue
+          {i18n.t("reports.overdue")}
           <ArrowUpDown size={16} className="ml-2" />
         </Button>
       ),
@@ -217,7 +218,7 @@ export const RevenueByClientWorkspaceView: React.FC<
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           className="h-auto p-0 font-semibold"
         >
-          Invoices
+          {i18n.t("reports.invoices")}
           <ArrowUpDown size={16} className="ml-2" />
         </Button>
       ),
@@ -267,10 +268,10 @@ export const RevenueByClientWorkspaceView: React.FC<
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold text-foreground">
-            Revenue by Client
+            {i18n.t("reports.revenueByClient")}
           </h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            See which clients drive revenue and which balances are still open.
+            {i18n.t("reports.revenueByClientDesc")}
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -278,19 +279,21 @@ export const RevenueByClientWorkspaceView: React.FC<
             <DropdownMenuTrigger asChild>
               <Button variant="outline">
                 <Download size={16} className="mr-2" />
-                Export
+                {i18n.t("reports.export")}
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
               <DropdownMenuCheckboxItem onClick={() => handleExport("csv")}>
-                Export as CSV
+                {i18n.t("reports.exportAsCsv")}
               </DropdownMenuCheckboxItem>
               <DropdownMenuCheckboxItem onClick={() => handleExport("pdf")}>
-                Export as PDF
+                {i18n.t("reports.exportAsPdf")}
               </DropdownMenuCheckboxItem>
             </DropdownMenuContent>
           </DropdownMenu>
-          <Button onClick={() => navigate("/reports")}>Back to Reports</Button>
+          <Button onClick={() => navigate("/reports")}>
+            {i18n.t("reports.backToReports")}
+          </Button>
         </div>
       </div>
 
@@ -298,33 +301,43 @@ export const RevenueByClientWorkspaceView: React.FC<
       <div className="grid gap-4 md:grid-cols-5">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              {i18n.t("reports.totalRevenue")}
+            </CardTitle>
             <TrendUp size={16} className="text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
               {currencyFormat("USD", summary.total_revenue)}
             </div>
-            <p className="mt-1 text-xs text-muted-foreground">Across clients</p>
+            <p className="mt-1 text-xs text-muted-foreground">
+              {i18n.t("reports.acrossClients")}
+            </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Paid Revenue</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              {i18n.t("reports.paidRevenue")}
+            </CardTitle>
             <TrendUp size={16} className="text-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-foreground">
               {currencyFormat("USD", summary.total_paid)}
             </div>
-            <p className="mt-1 text-xs text-muted-foreground">Collected</p>
+            <p className="mt-1 text-xs text-muted-foreground">
+              {i18n.t("reports.collected")}
+            </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Outstanding</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              {i18n.t("reports.outstanding")}
+            </CardTitle>
             <TrendUp size={16} className="text-foreground" />
           </CardHeader>
           <CardContent>
@@ -332,34 +345,40 @@ export const RevenueByClientWorkspaceView: React.FC<
               {currencyFormat("USD", summary.total_outstanding)}
             </div>
             <p className="mt-1 text-xs text-muted-foreground">
-              Awaiting payment
+              {i18n.t("reports.awaitingPayment")}
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Overdue</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              {i18n.t("reports.overdue")}
+            </CardTitle>
             <TrendUp size={16} className="text-destructive" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-destructive">
               {currencyFormat("USD", summary.total_overdue)}
             </div>
-            <p className="mt-1 text-xs text-muted-foreground">Past due</p>
+            <p className="mt-1 text-xs text-muted-foreground">
+              {i18n.t("reports.pastDue")}
+            </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
-              Active Clients
+              {i18n.t("reports.activeClients")}
             </CardTitle>
             <TrendUp size={16} className="text-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{summary.client_count}</div>
-            <p className="mt-1 text-xs text-muted-foreground">With revenue</p>
+            <p className="mt-1 text-xs text-muted-foreground">
+              {i18n.t("reports.withRevenue")}
+            </p>
           </CardContent>
         </Card>
       </div>
@@ -367,12 +386,14 @@ export const RevenueByClientWorkspaceView: React.FC<
       {/* Filters */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">Filters</CardTitle>
+          <CardTitle className="text-lg">{i18n.t("filters")}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid gap-4 md:grid-cols-4">
             <div className="space-y-2">
-              <label className="text-sm font-medium">Date Range Preset</label>
+              <label className="text-sm font-medium">
+                {i18n.t("dateRangePreset")}
+              </label>
               <Select value={selectedPreset} onValueChange={setSelectedPreset}>
                 <SelectTrigger>
                   <SelectValue />
@@ -388,18 +409,22 @@ export const RevenueByClientWorkspaceView: React.FC<
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-medium">Custom Date Range</label>
+              <label className="text-sm font-medium">
+                {i18n.t("customDateRange")}
+              </label>
               <DateRangePicker
                 date={dateRange}
                 onSelect={setDateRange}
-                placeholder="Select date range"
+                placeholder={i18n.t("selectDateRange")}
               />
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-medium">Search Clients</label>
+              <label className="text-sm font-medium">
+                {i18n.t("reports.searchClients")}
+              </label>
               <Input
-                placeholder="Filter clients..."
+                placeholder={i18n.t("reports.filterClients")}
                 value={globalFilter ?? ""}
                 onChange={event => setGlobalFilter(event.target.value)}
               />
@@ -410,7 +435,7 @@ export const RevenueByClientWorkspaceView: React.FC<
                 <DropdownMenuTrigger asChild>
                   <Button variant="outline" className="w-full">
                     <Filter size={16} className="mr-2" />
-                    Columns
+                    {i18n.t("reports.columns")}
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
@@ -439,8 +464,12 @@ export const RevenueByClientWorkspaceView: React.FC<
       {/* Data Table */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">Revenue Breakdown</CardTitle>
-          <CardDescription>Detailed revenue analysis by client</CardDescription>
+          <CardTitle className="text-lg">
+            {i18n.t("reports.revenueBreakdown")}
+          </CardTitle>
+          <CardDescription>
+            {i18n.t("reports.detailedRevenueAnalysis")}
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="rounded-md border">
@@ -484,7 +513,7 @@ export const RevenueByClientWorkspaceView: React.FC<
                       colSpan={columns.length}
                       className="h-24 text-center"
                     >
-                      No revenue data available.
+                      {i18n.t("reports.noClientRevenueData")}
                     </TableCell>
                   </TableRow>
                 )}
@@ -495,8 +524,10 @@ export const RevenueByClientWorkspaceView: React.FC<
           {/* Pagination */}
           <div className="flex items-center justify-between space-x-2 py-4">
             <div className="text-sm text-muted-foreground">
-              Showing {table.getRowModel().rows.length} of{" "}
-              {table.getFilteredRowModel().rows.length} clients
+              {i18n.t("reports.showingClientsCount", {
+                shown: table.getRowModel().rows.length,
+                total: table.getFilteredRowModel().rows.length,
+              })}
             </div>
             <div className="flex items-center space-x-2">
               <Button
@@ -505,7 +536,7 @@ export const RevenueByClientWorkspaceView: React.FC<
                 onClick={() => table.previousPage()}
                 disabled={!table.getCanPreviousPage()}
               >
-                Previous
+                {i18n.t("previous")}
               </Button>
               <Button
                 variant="outline"
@@ -513,7 +544,7 @@ export const RevenueByClientWorkspaceView: React.FC<
                 onClick={() => table.nextPage()}
                 disabled={!table.getCanNextPage()}
               >
-                Next
+                {i18n.t("next")}
               </Button>
             </div>
           </div>

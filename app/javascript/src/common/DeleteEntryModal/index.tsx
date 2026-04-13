@@ -1,6 +1,7 @@
 import React from "react";
 
 import { Modal, Button } from "StyledComponents";
+import { i18n } from "../../i18n";
 
 const DeleteEntry = ({
   id,
@@ -23,9 +24,11 @@ const DeleteEntry = ({
       onClose={() => setShowDeleteDialog(false)}
     >
       <div className="flex-col">
-        <h6 className="mb-2 text-xl font-bold">Delete Time Entry</h6>
+        <h6 className="mb-2 text-xl font-bold">
+          {i18n.t("timeTracking.deleteTimeEntry")}
+        </h6>
         <p className="mt-4 mb-6 text-base font-normal">
-          Are you sure you want to delete this time entry?
+          {i18n.t("timeTracking.deleteTimeEntryConfirm")}
         </p>
       </div>
       <div className="flex justify-between">
@@ -37,7 +40,7 @@ const DeleteEntry = ({
             setShowDeleteDialog(false);
           }}
         >
-          CANCEL
+          {i18n.t("cancel")}
         </Button>
         <Button
           className="ml-2 w-1/2"
@@ -45,7 +48,7 @@ const DeleteEntry = ({
           style="primary"
           onClick={handledelete}
         >
-          DELETE
+          {i18n.t("delete")}
         </Button>
       </div>
     </Modal>

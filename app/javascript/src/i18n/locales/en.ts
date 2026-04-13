@@ -18,6 +18,7 @@ const en = {
   confirm: "Confirm",
   close: "Close",
   back: "Back",
+  previous: "Previous",
   continue: "Continue",
   next: "Next",
   done: "Done",
@@ -552,6 +553,7 @@ const en = {
     paymentGatewayWarning:
       "You have not connected any payment gateway with Miru. Do you want to send invoice without a payment gateway?",
     goToPaymentSettings: "Go to Payment Settings",
+    backToInvoices: "Back to Invoices",
     sendWithoutPaymentGateway: "Send Without Payment Gateway",
     stripeDisabled: "Stripe disabled for this invoice",
     stripeDisabledMessage:
@@ -616,6 +618,13 @@ const en = {
     editInvoicePage: "Edit invoice",
     editorSubtitle:
       "Fill in the details and preview the invoice before sending it.",
+    basicDetailsDescription: "Enter the basic invoice information",
+    referenceOptional: "Reference (Optional)",
+    referencePlaceholder: "PO Number, etc.",
+    lineItemsDescription: "Add time entries or manual items",
+    additionalDetailsDescription: "Tax, discount, and notes",
+    notesPlaceholder: "Additional notes or payment instructions",
+    subtotal: "Subtotal",
     saving: "Saving...",
     sending: "Sending...",
     alreadySent: "Already sent",
@@ -806,6 +815,9 @@ const en = {
     withRevenue: "With revenue",
     searchClients: "Search Clients",
     filterClients: "Filter clients...",
+    columns: "Columns",
+    clientName: "Client Name",
+    invoices: "Invoices",
     revenueBreakdown: "Revenue Breakdown",
     detailedRevenueAnalysis: "Detailed revenue analysis by client",
     clientRevenueDetails: "Client Revenue Details",
@@ -819,6 +831,7 @@ const en = {
     noClientRevenueData:
       "No client revenue data available for the selected filters.",
     paid: "Paid",
+    awaitingPayment: "Awaiting payment",
 
     // Outstanding invoice report
     failedToLoadReportData: "Failed to load report data",
@@ -1004,6 +1017,8 @@ const en = {
     receipt: "Receipt",
     receiptOptional: "Receipt (optional)",
     receipts: "Receipts",
+    receiptsAttached: "%{count} attached",
+    preview: "Preview",
     uploadReceipt: "Upload receipt",
     uploadFile: "Upload file",
     noExpenses: "No expenses found",
