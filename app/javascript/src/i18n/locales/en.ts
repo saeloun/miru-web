@@ -851,6 +851,7 @@ const en = {
     zeroToThirtyDays: "0-30 Days",
     thirtyOneToSixtyDays: "31-60 Days",
     sixtyOneToNinetyDays: "61-90 Days",
+    sixtyPlusDays: "60+ Days",
     ninetyPlusDays: "90+ Days",
     noClientsWithOutstandingBalances: "No clients with outstanding balances.",
     showingOfClients: "Showing %{displayed} of %{total} clients...",

@@ -251,9 +251,9 @@ const OutstandingInvoicesWorkspaceView: React.FC = () => {
 
   const overdueAging = useMemo(() => {
     const buckets = {
-      "0-30 Days": 0,
-      "31-60 Days": 0,
-      "60+ Days": 0,
+      [i18n.t("reports.zeroToThirtyDays")]: 0,
+      [i18n.t("reports.thirtyOneToSixtyDays")]: 0,
+      [i18n.t("reports.sixtyPlusDays")]: 0,
     };
 
     overdueInvoices.forEach(invoice => {
@@ -261,11 +261,11 @@ const OutstandingInvoicesWorkspaceView: React.FC = () => {
       const converted = amountDueInBaseCurrency(invoice);
 
       if (dueDays <= 30) {
-        buckets["0-30 Days"] += converted;
+        buckets[i18n.t("reports.zeroToThirtyDays")] += converted;
       } else if (dueDays <= 60) {
-        buckets["31-60 Days"] += converted;
+        buckets[i18n.t("reports.thirtyOneToSixtyDays")] += converted;
       } else {
-        buckets["60+ Days"] += converted;
+        buckets[i18n.t("reports.sixtyPlusDays")] += converted;
       }
     });
 
@@ -444,7 +444,7 @@ const OutstandingInvoicesWorkspaceView: React.FC = () => {
                 value={pendingCurrencyFilter}
                 onChange={e => setPendingCurrencyFilter(e.target.value)}
               >
-                <option value="ALL">All</option>
+                <option value="ALL">{i18n.t("all")}</option>
                 {(data?.currencies || []).map(currency => (
                   <option key={currency} value={currency}>
                     {currency}
@@ -594,9 +594,9 @@ const OutstandingInvoicesWorkspaceView: React.FC = () => {
                 value={exportFormat}
                 onChange={e => setExportFormat(e.target.value)}
               >
-                <option value="CSV">CSV</option>
-                <option value="PDF">PDF</option>
-                <option value="Excel">Excel</option>
+                <option value="CSV">{i18n.t("reports.csv")}</option>
+                <option value="PDF">{i18n.t("reports.pdf")}</option>
+                <option value="Excel">{i18n.t("reports.excel")}</option>
               </select>
             </div>
             <Button onClick={() => exportReport(exportFormat)}>
@@ -753,7 +753,9 @@ const OutstandingInvoicesWorkspaceView: React.FC = () => {
                 className="flex items-center justify-between"
               >
                 <span>{invoice.client_name || invoice.client?.name}</span>
-                <Badge variant="outline">{daysOverdue(invoice)} days</Badge>
+                <Badge variant="outline">
+                  {daysOverdue(invoice)} {i18n.t("days")}
+                </Badge>
               </div>
             ))}
           </CardContent>

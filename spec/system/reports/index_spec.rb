@@ -467,6 +467,39 @@ RSpec.describe "Reports", type: :system, js: true do
       end
     end
 
+    it "shows localized outstanding report labels in Hindi" do
+      admin.update!(locale: "hi")
+      client = create(:client, company:, name: "Hindi Overdue Client")
+      create(
+        :invoice,
+        company:,
+        client:,
+        status: :overdue,
+        amount: 2000,
+        amount_due: 2000,
+        currency: "EUR",
+        issue_date: 60.days.ago,
+        due_date: 30.days.ago
+      )
+
+      with_forgery_protection do
+        visit "/reports/outstanding-overdue-invoices?tab=overdue&currency=EUR"
+
+        expect(page).to have_css("#react-root", wait: 10)
+        expect(page).to have_content("बकाया और अतिदेय", wait: 10)
+        expect(page).to have_content("स्थिति अवलोकन", wait: 10)
+        expect(page).to have_content("क्लाइंट विवरण", wait: 10)
+        expect(page).to have_content("अतिदेय विवरण", wait: 10)
+        expect(page).to have_select("मुद्रा फ़िल्टर", selected: "EUR", wait: 10)
+        expect(page).to have_select("प्रारूप", selected: "सीएसवी", wait: 10)
+        expect(page).to have_content("30 दिन", wait: 10)
+        expect(page).to have_content("0-30 दिन", wait: 10)
+        expect(page).to have_content("31-60 दिन", wait: 10)
+        expect(page).to have_content("60+ दिन", wait: 10)
+        expect(page).to have_content("Hindi Overdue Client", wait: 10)
+      end
+    end
+
     it "supports the legacy outstanding and overdue route alias" do
       with_forgery_protection do
         visit "/reports/outstanding-overdue-invoice"

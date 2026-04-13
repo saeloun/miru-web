@@ -793,6 +793,7 @@ const hi = {
     zeroToThirtyDays: "0-30 दिन",
     thirtyOneToSixtyDays: "31-60 दिन",
     sixtyOneToNinetyDays: "61-90 दिन",
+    sixtyPlusDays: "60+ दिन",
     ninetyPlusDays: "90+ दिन",
     noClientsWithOutstandingBalances: "कोई बकाया शेष वाले क्लाइंट नहीं।",
     showingOfClients: "%{total} में से %{displayed} क्लाइंट दिखा रहा है...",
