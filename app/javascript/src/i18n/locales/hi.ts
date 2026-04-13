@@ -270,6 +270,7 @@ const hi = {
     addProject: "प्रोजेक्ट जोड़ें",
     addNewProject: "नया प्रोजेक्ट जोड़ें",
     paymentReminder: "भुगतान अनुस्मारक",
+    addOrViewContacts: "संपर्क जोड़ें / देखें",
     sendPaymentReminder: "भुगतान अनुस्मारक भेजें",
     invoicesSelected: "%{count} इनवॉइस चयनित",
   },

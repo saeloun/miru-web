@@ -294,6 +294,7 @@ const en = {
     addProject: "Add Project",
     addNewProject: "Add New Project",
     paymentReminder: "Payment Reminder",
+    addOrViewContacts: "Add / View Contacts",
     sendPaymentReminder: "Send Payment Reminder",
     invoicesSelected: "%{count} invoices selected",
   },
