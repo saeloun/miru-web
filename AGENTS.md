@@ -10,17 +10,18 @@ Scope: entire repository.
 2. For UI changes, verify in a real browser on the running app.
 3. For JavaScript or TypeScript changes, always run `mise exec -- timeout 30 bin/vite build` before handoff.
 4. Use `mise exec --` for runtime-sensitive commands.
-5. Never add AI or tool attribution to git commits.
-6. When fixing a bug that has a GitHub issue, always post a comment on the issue with the commit SHA, what was fixed, and how it was verified. Close the issue after verification. Do not interact with other external systems without explicit user approval.
-7. Keep changes minimal, focused, and aligned with existing repo patterns.
-8. If a change is verified and there is no explicit reason to hold it back, commit and push it instead of letting the working tree drift.
-9. Do not stop after a trivial sub-step when the user asked for a larger verified batch. Keep going until the batch is done, there is a real blocker, or the next action would be risky without user input.
-10. Do not pause just to summarize progress when the requested implementation batch is still in flight. Execute the next obvious step immediately and only report once a real verification checkpoint or blocker exists.
-11. Before pushing a new commit, cancel stale in-progress GitHub Actions runs for the current branch so CI does not pile up redundant runs.
-12. When working on production or a live cutover, verify the exact target environment and dataset before making changes. Never assume Render, Fly, local, subset, and raw production are aligned.
-13. Do not switch a live domain onto sanitized subset data. Before any domain cutover, confirm whether the target is using a raw production restore or a demo subset and state that explicitly.
-14. If a restored database is missing schema expected by the current branch, fix the restore process by running branch migrations. Do not treat manual schema patching as the solution.
-15. Reuse or close long-running shell processes. Do not let the workspace accumulate runaway exec sessions when a simpler fresh command or a reused session will do.
+5. Prefer `rtk mise exec -- ...` for shell commands when it works cleanly so token savings are recorded, but fall back to plain `mise exec -- ...` immediately if `rtk` adds friction or obscures debugging output.
+6. Never add AI or tool attribution to git commits.
+7. When fixing a bug that has a GitHub issue, always post a comment on the issue with the commit SHA, what was fixed, and how it was verified. Close the issue after verification. Do not interact with other external systems without explicit user approval.
+8. Keep changes minimal, focused, and aligned with existing repo patterns.
+9. If a change is verified and there is no explicit reason to hold it back, commit and push it instead of letting the working tree drift.
+10. Do not stop after a trivial sub-step when the user asked for a larger verified batch. Keep going until the batch is done, there is a real blocker, or the next action would be risky without user input.
+11. Do not pause just to summarize progress when the requested implementation batch is still in flight. Execute the next obvious step immediately and only report once a real verification checkpoint or blocker exists.
+12. Before pushing a new commit, cancel stale in-progress GitHub Actions runs for the current branch so CI does not pile up redundant runs.
+13. When working on production or a live cutover, verify the exact target environment and dataset before making changes. Never assume Render, Fly, local, subset, and raw production are aligned.
+14. Do not switch a live domain onto sanitized subset data. Before any domain cutover, confirm whether the target is using a raw production restore or a demo subset and state that explicitly.
+15. If a restored database is missing schema expected by the current branch, fix the restore process by running branch migrations. Do not treat manual schema patching as the solution.
+16. Reuse or close long-running shell processes. Do not let the workspace accumulate runaway exec sessions when a simpler fresh command or a reused session will do.
 
 ## Repo-Specific Workflow
 
