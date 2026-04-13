@@ -1,12 +1,9 @@
 const bn = {
-  // Image validation
   invalidImageFormatSize:
     "ভুল ফাইল ফরম্যাট। অনুগ্রহ করে PNG বা JPG ধরনের একটি ছবি আপলোড করুন। সর্বোচ্চ আকার (%{fileSize}KB)",
   invalidImageSize: "ফাইলের আকার %{fileSize}KB এর সর্বোচ্চ সীমা অতিক্রম করেছে।",
   invalidImageFormat:
     "ভুল ফাইল ফরম্যাট। অনুগ্রহ করে PNG বা JPG ধরনের একটি ছবি আপলোড করুন",
-
-  // Common actions
   save: "সংরক্ষণ করুন",
   cancel: "বাতিল করুন",
   delete: "মুছুন",
@@ -33,8 +30,6 @@ const bn = {
   yes: "হ্যাঁ",
   no: "না",
   or: "অথবা",
-
-  // Common labels
   name: "নাম",
   email: "ইমেইল",
   phone: "ফোন",
@@ -68,8 +63,6 @@ const bn = {
   all: "সব",
   from: "থেকে",
   to: "পর্যন্ত",
-
-  // Date/time
   today: "আজ",
   yesterday: "গতকাল",
   tomorrow: "আগামীকাল",
@@ -93,16 +86,12 @@ const bn = {
   selectPeriod: "সময়কাল নির্বাচন করুন",
   fullDay: "পূর্ণ দিন",
   halfDay: "অর্ধ দিন",
-
-  // Date validation
   dateCannotBeBlank: "তারিখ খালি রাখা যাবে না",
   fromDateMustBeLessThanToDate:
     "'থেকে' তারিখ অবশ্যই 'পর্যন্ত' তারিখের চেয়ে কম বা সমান হতে হবে",
   toDateMustBeGreaterThanFromDate:
     "'পর্যন্ত' তারিখ অবশ্যই 'থেকে' তারিখের চেয়ে বেশি বা সমান হতে হবে",
   invalidDate: "অনুগ্রহ করে একটি বৈধ তারিখ লিখুন",
-
-  // Month abbreviations
   monthJan: "জানু",
   monthFeb: "ফেব্রু",
   monthMar: "মার্চ",
@@ -115,8 +104,6 @@ const bn = {
   monthOct: "অক্টো",
   monthNov: "নভে",
   monthDec: "ডিসে",
-
-  // Error pages
   pageNotFound: "পৃষ্ঠা পাওয়া যায়নি",
   clickHere: "এখানে ক্লিক করুন",
   somethingWentWrong: "কিছু ভুল হয়েছে",
@@ -124,15 +111,11 @@ const bn = {
     "আবার চেষ্টা করতে পৃষ্ঠাটি রিফ্রেশ করুন। এটি চলতে থাকলে, আবার সাইন ইন করুন বা সহায়তায় যোগাযোগ করুন।",
   reloadPage: "পৃষ্ঠা পুনরায় লোড করুন",
   loadingWorkspace: "ওয়ার্কস্পেস লোড হচ্ছে...",
-
-  // Search
   searchClients: "ক্লায়েন্ট খুঁজুন...",
   searchInvoices: "ইনভয়েস খুঁজুন...",
   searchTeamMembers: "দলের সদস্য খুঁজুন...",
   selectTeamMember: "দলের সদস্য নির্বাচন করুন",
   noResultsFound: "কোনো ফলাফল পাওয়া যায়নি",
-
-  // Time Tracking
   timeTracking: {
     addEntry: "এন্ট্রি যোগ করুন",
     newTimeEntry: "নতুন সময় এন্ট্রি",
@@ -222,8 +205,6 @@ const bn = {
       sun: "রবি",
     },
   },
-
-  // Task types
   taskTypes: {
     development: "উন্নয়ন",
     meeting: "সভা",
@@ -238,16 +219,12 @@ const bn = {
     training: "প্রশিক্ষণ",
     other: "অন্যান্য",
   },
-
-  // Time off types
   timeOffTypes: {
     vacation: "ছুটি",
     sickLeave: "অসুস্থতার ছুটি",
     personalDay: "ব্যক্তিগত দিন",
     holiday: "ছুটির দিন",
   },
-
-  // Clients
   clients: {
     addClients: "ক্লায়েন্ট যোগ করুন",
     addNewClient: "নতুন ক্লায়েন্ট যোগ করুন",
@@ -280,8 +257,6 @@ const bn = {
     sendPaymentReminder: "পেমেন্ট স্মরণিকা পাঠান",
     invoicesSelected: "%{count}টি ইনভয়েস নির্বাচিত",
   },
-
-  // Contacts
   contacts: {
     addContact: "যোগাযোগ যোগ করুন",
     addContacts: "যোগাযোগ যোগ করুন",
@@ -300,8 +275,6 @@ const bn = {
     invalidEmailId: "অবৈধ ইমেইল আইডি",
     emailRequired: "ইমেইল আইডি খালি রাখা যাবে না",
   },
-
-  // Projects
   projects: {
     addProject: "প্রকল্প যোগ করুন",
     addNewProject: "নতুন প্রকল্প যোগ করুন",
@@ -374,8 +347,6 @@ const bn = {
     teamMembersDescription:
       "এই প্রকল্পে বরাদ্দকৃত দলের সদস্যদের দেখুন এবং পরিচালনা করুন।",
   },
-
-  // Team
   team: {
     team: "দল",
     teamOverview: "দলের সংক্ষিপ্ত বিবরণ",
@@ -422,8 +393,6 @@ const bn = {
     invalidEmail: "অবৈধ ইমেইল আইডি",
     emailRequired: "ইমেইল আইডি খালি রাখা যাবে না",
   },
-
-  // Invoices
   invoices: {
     invoice: "ইনভয়েস",
     invoices: "ইনভয়েস",
@@ -500,16 +469,12 @@ const bn = {
     resetFilters: "ফিল্টার রিসেট করুন",
     loadingChartData: "চার্ট ডেটা লোড হচ্ছে...",
     noInvoiceData: "কোনো ইনভয়েস ডেটা পাওয়া যায়নি",
-
-    // Statuses
     draft: "খসড়া",
     sent: "পাঠানো",
     overdue: "অতিরিক্ত বিলম্বিত",
     collected: "আদায়কৃত",
     paid: "পরিশোধিত",
     outstanding: "বকেয়া",
-
-    // Email
     recipientEmailId: "প্রাপকের ইমেইল আইডি",
     subject: "বিষয়",
     message: "বার্তা",
@@ -522,8 +487,6 @@ const bn = {
     invoiceSentBody: "%{company} আপনাকে একটি ইনভয়েস পাঠিয়েছে (%{number})",
     invoiceWillBeSent: "ইনভয়েস পাঠানো হবে!",
     processing: "প্রক্রিয়াকরণ হচ্ছে...",
-
-    // No payment gateway
     noPaymentGateway: "কোনো পেমেন্ট গেটওয়ে সংযুক্ত নেই",
     paymentGatewayError:
       "ত্রুটি। অনুগ্রহ করে ইনভয়েস প্রেরকের সাথে যোগাযোগ করুন যাতে তারা পেমেন্ট গেটওয়ে সংযুক্ত করে এবং আপনি ইনভয়েস পেমেন্ট করতে পারেন",
@@ -534,14 +497,10 @@ const bn = {
     stripeDisabled: "এই ইনভয়েসের জন্য Stripe নিষ্ক্রিয়",
     stripeDisabledMessage:
       "প্রেরক এই ইনভয়েসের জন্য Stripe পেমেন্ট সক্রিয় করেননি। আপনি তাদের সাথে এটি সক্রিয় করার জন্য যোগাযোগ করতে পারেন, অথবা ACH এর মতো বিকল্প পেমেন্ট পদ্ধতি বেছে নিতে পারেন।",
-
-    // Bulk actions
     preparingDownload: "ডাউনলোড প্রস্তুত হচ্ছে...",
     downloadFailed: "ডাউনলোড ব্যর্থ। অনুগ্রহ করে আবার চেষ্টা করুন।",
     downloadingFiles: "ফাইলগুলি ডাউনলোড হচ্ছে...",
     downloadComplete: "ডাউনলোড সম্পন্ন",
-
-    // Table headers
     nameHeader: "নাম",
     descriptionHeader: "বিবরণ",
     dateHeader: "তারিখ",
@@ -549,8 +508,6 @@ const bn = {
     amountHeader: "পরিমাণ",
     statusHeader: "অবস্থা",
     invoiceNumberHeader: "ইনভয়েস নম্বর",
-
-    // Chart labels
     area: "ক্ষেত্র",
     bar: "বার",
     noData: "কোনো ডেটা নেই",
@@ -558,8 +515,6 @@ const bn = {
     quarterly: "ত্রৈমাসিক",
     yearly: "বার্ষিক",
     trend: "প্রবণতা",
-
-    // Preview / detail labels
     taxId: "কর আইডি: %{value}",
     vatNumber: "ভ্যাট নম্বর: %{value}",
     gstNumber: "জিএসটি নম্বর: %{value}",
@@ -573,8 +528,6 @@ const bn = {
     due: "নির্ধারিত %{date}",
     viewed: "দেখা হয়েছে",
     cancelled: "বাতিল",
-
-    // Toast / confirmation messages
     invoiceMarkedAsPaid: "ইনভয়েস সফলভাবে পরিশোধিত হিসেবে চিহ্নিত হয়েছে",
     invoiceDownloaded: "ইনভয়েস সফলভাবে ডাউনলোড হয়েছে",
     invoiceSentSuccessfully: "ইনভয়েস সফলভাবে পাঠানো হয়েছে",
@@ -591,8 +544,6 @@ const bn = {
     invoiceUpdated: "ইনভয়েস সফলভাবে আপডেট হয়েছে",
     failedToSaveInvoice:
       "ইনভয়েস সংরক্ষণ করতে ব্যর্থ। অনুগ্রহ করে আবার চেষ্টা করুন।",
-
-    // Counters
     showingOf: "%{total} এর মধ্যে %{shown}টি দেখানো হচ্ছে",
     viewingMatching:
       "%{loaded}টি লোড করা থেকে %{filtered}টি মিলে যাওয়া ইনভয়েস দেখা হচ্ছে",
@@ -600,12 +551,8 @@ const bn = {
     showingRecentTransactions: "%{count}টি সাম্প্রতিক লেনদেন দেখানো হচ্ছে",
     updatedAt: "%{date} তারিখে আপডেট হয়েছে",
     invoiceHash: "ইনভয়েস #%{number}",
-
-    // Mobile table headers
     nameDescription: "নাম / বিবরণ",
     dateTime: "তারিখ / সময়",
-
-    // Invoice reminder email
     invoiceReminder: "ইনভয়েস স্মরণিকা: %{number}",
     reminderMessage:
       "এটি আপনার বকেয়া ইনভয়েস সম্পর্কে একটি স্মরণিকা। অনুগ্রহ করে সংযুক্ত বিবরণ দেখুন।",
@@ -624,15 +571,29 @@ const bn = {
     cannotDownloadInvalidId: "ইনভয়েস ডাউনলোড করা যাচ্ছে না - অবৈধ আইডি",
     cannotSendInvalidId: "ইনভয়েস পাঠানো যাচ্ছে না - অবৈধ আইডি",
     payment: "পেমেন্ট #%{id}",
+    newInvoicePage: "নতুন চালান",
+    editInvoicePage: "চালান সম্পাদনা করুন",
+    editorSubtitle:
+      "পাঠানোর আগে বিবরণগুলো পূরণ করুন এবং চালানটির প্রিভিউ দেখে নিন।",
+    saving: "সঞ্চয়...",
+    sending: "পাঠানো হচ্ছে...",
+    alreadySent: "ইতিমধ্যে পাঠানো হয়েছে",
+    downloading: "ডাউনলোড হচ্ছে...",
+    selectClientBeforeSending:
+      "ইনভয়েস পাঠানোর আগে একজন ক্লায়েন্ট নির্বাচন করুন।",
   },
   common: {
     retry: "পুনরায় চেষ্টা করুন",
     pageUnavailable:
       "এই পৃষ্ঠাটি অনুপলব্ধ অথবা লিংকটি আপনার ওয়ার্কস্পেসের জন্য আর বৈধ নয়।",
     goToDashboard: "ড্যাশবোর্ডে যান",
+    language: "ভাষা",
+    loading: "লোড হচ্ছে...",
+    saving: "সঞ্চয়...",
+    failedToChangeLanguage: "ভাষা পরিবর্তন করতে ব্যর্থ হয়েছে",
+    searchLanguages: "ভাষা অনুসন্ধান করুন...",
+    noLanguagesFound: "কোন ভাষা খুঁজে পাওয়া যায়নি",
   },
-
-  // Invoice admin dashboard
   invoiceDashboard: {
     revenueOverview: "রাজস্ব সংক্ষিপ্ত বিবরণ",
     revenueByStatus: "অবস্থা অনুযায়ী রাজস্ব",
@@ -640,8 +601,6 @@ const bn = {
     allInvoices: "সব ইনভয়েস",
     recentSales: "সাম্প্রতিক বিক্রয়",
   },
-
-  // Payments
   payments: {
     payments: "পেমেন্ট",
     addPayment: "পেমেন্ট যোগ করুন",
@@ -666,8 +625,6 @@ const bn = {
     paymentHistory: "পেমেন্ট ইতিহাস",
     scrollToLoadMore: "আরো পেমেন্ট লোড করতে স্ক্রল করুন",
     allPaymentsLoaded: "সব পেমেন্ট লোড হয়েছে",
-
-    // Filters
     allStatuses: "সব অবস্থা",
     allClients: "সব ক্লায়েন্ট",
     paymentType: "পেমেন্টের ধরন",
@@ -676,8 +633,8 @@ const bn = {
     bankTransfer: "ব্যাংক ট্রান্সফার",
     wireTransfer: "ওয়্যার ট্রান্সফার",
     achTransfer: "ACH ট্রান্সফার",
-    paypal: "PayPal",
-    stripe: "Stripe",
+    paypal: "পেপ্যাল",
+    stripe: "ডোরাকাটা",
     cash: "নগদ",
     check: "চেক",
     pending: "মুলতুবি",
@@ -690,8 +647,6 @@ const bn = {
     searchByClientOrInvoice: "ক্লায়েন্ট নাম বা ইনভয়েস আইডি দিয়ে খুঁজুন",
     selectTransactionTypeBtn: "লেনদেনের ধরন নির্বাচন করুন",
   },
-
-  // Timer
   timer: {
     webTimer: "ওয়েব টাইমার",
     webTimerLabel: "ওয়েব টাইমার",
@@ -717,8 +672,6 @@ const bn = {
     whatAreYouWorkingOn: "আপনি কী নিয়ে কাজ করছেন?",
     selectProject: "প্রকল্প নির্বাচন করুন",
   },
-
-  // Reports
   reports: {
     reports: "প্রতিবেদন",
     backToReports: "প্রতিবেদনে ফিরে যান",
@@ -733,8 +686,6 @@ const bn = {
     exportAsCsv: "CSV হিসেবে রপ্তানি করুন",
     exportAsPdf: "PDF হিসেবে রপ্তানি করুন",
     toggleReportFilters: "প্রতিবেদন ফিল্টার টগল করুন",
-
-    // Filters
     clients: "ক্লায়েন্ট",
     teamMembers: "দলের সদস্য",
     groupBy: "গ্রুপ করুন",
@@ -743,14 +694,10 @@ const bn = {
     searchClientsFilter: "ক্লায়েন্ট খুঁজুন...",
     searchTeamMembersFilter: "দলের সদস্য খুঁজুন...",
     applyFilter: "ফিল্টার প্রয়োগ করুন",
-
-    // Time entry report
     totalHours: "মোট ঘণ্টা",
     scrollToLoadMoreRows: "আরো প্রতিবেদন সারি লোড করতে স্ক্রল করুন",
     loadingMoreRows: "আরো প্রতিবেদন সারি লোড হচ্ছে...",
     allRowsLoaded: "সব প্রতিবেদন সারি লোড হয়েছে",
-
-    // Payment report
     perTransaction: "প্রতি লেনদেন",
     topMethod: "শীর্ষ পদ্ধতি",
     paymentMethodsBreakdown: "পেমেন্ট পদ্ধতির বিশ্লেষণ",
@@ -760,8 +707,6 @@ const bn = {
     allMethods: "সব পদ্ধতি",
     creditCard: "ক্রেডিট কার্ড",
     allStatus: "সব অবস্থা",
-
-    // Revenue by client report
     totalRevenue: "মোট রাজস্ব",
     paidRevenue: "পরিশোধিত রাজস্ব",
     paidAmount: "পরিশোধিত পরিমাণ",
@@ -778,16 +723,14 @@ const bn = {
     clientRevenueDetails: "ক্লায়েন্ট রাজস্ব বিবরণ",
     scrollToLoadMoreClients: "আরো ক্লায়েন্ট লোড করতে স্ক্রল করুন",
     allClientsLoaded: "সব ক্লায়েন্ট লোড হয়েছে",
-
-    // Outstanding invoice report
     failedToLoadReportData: "প্রতিবেদন ডেটা লোড করতে ব্যর্থ",
     currencyFilter: "মুদ্রা ফিল্টার",
     fromDate: "তারিখ থেকে",
     toDate: "তারিখ পর্যন্ত",
     export: "রপ্তানি",
     csv: "CSV",
-    pdf: "PDF",
-    excel: "Excel",
+    pdf: "পিডিএফ",
+    excel: "এক্সেল",
     statusOverview: "অবস্থার সংক্ষিপ্ত বিবরণ",
     currencyDistribution: "মুদ্রা বিতরণ",
     topClients: "শীর্ষ ক্লায়েন্ট",
@@ -797,8 +740,6 @@ const bn = {
     clientBreakdown: "ক্লায়েন্ট বিশ্লেষণ",
     originalAmount: "মূল পরিমাণ",
     baseAmount: "ভিত্তি পরিমাণ",
-
-    // Accounts aging report
     totalDue: "মোট বকেয়া",
     invoiceAgingDetails: "ইনভয়েস এজিং বিবরণ",
     noDataFound: "কোনো ডেটা পাওয়া যায়নি",
@@ -940,8 +881,6 @@ const bn = {
     unknownProject: "অজানা প্রকল্প",
     generatingExport: "%{format} তৈরি হচ্ছে",
   },
-
-  // Expenses
   expenses: {
     expenses: "ব্যয়",
     addExpense: "ব্যয় যোগ করুন",
@@ -1021,8 +960,6 @@ const bn = {
     viewReceiptsFor: "%{description} এর জন্য রসিদ দেখুন",
     expenseActionsFor: "%{description} এর জন্য ব্যয় কার্যক্রম",
   },
-
-  // Settings
   settings: {
     settings: "সেটিংস",
     profileSettings: "প্রোফাইল সেটিংস",
@@ -1050,9 +987,25 @@ const bn = {
     allocationValue: "বরাদ্দ মূল্য",
     allocationPeriod: "বরাদ্দ সময়কাল",
     allocationFrequency: "বরাদ্দ ফ্রিকোয়েন্সি",
+    labels: {
+      profile: "প্রোফাইল",
+      employment: "কর্মসংস্থান",
+      devices: "ডিভাইস",
+      notifications: "বিজ্ঞপ্তি",
+      preferences: "পছন্দ",
+      organization: "সংগঠন",
+      billing: "বিলিং",
+      payment: "পেমেন্ট",
+      holidays: "ছুটির দিন",
+      leaves: "পাতা",
+      automation: "অটোমেশন",
+      bankInfo: "ব্যাংক ও কর সংক্রান্ত তথ্য",
+    },
+    categories: {
+      personal: "ব্যক্তিগত",
+      organization: "সংগঠন",
+    },
   },
-
-  // Leave types
   leaveTypes: {
     annualLeaves: "বার্ষিক ছুটি",
     sickLeaves: "অসুস্থতার ছুটি",
@@ -1060,23 +1013,17 @@ const bn = {
     paternityLeave: "পিতৃত্বকালীন ছুটি",
     periodLeave: "ঋতুস্রাবের ছুটি",
   },
-
-  // Allocation periods
   allocationPeriods: {
     days: "দিন",
     weeks: "সপ্তাহ",
     months: "মাস",
   },
-
-  // Allocation frequencies
   allocationFrequencies: {
     perWeek: "প্রতি সপ্তাহে",
     perMonth: "প্রতি মাসে",
     perQuarter: "প্রতি ত্রৈমাসিকে",
     perYear: "প্রতি বছরে",
   },
-
-  // Navbar
   navbar: {
     clients: "ক্লায়েন্ট",
     invoices: "ইনভয়েস",
@@ -1128,8 +1075,6 @@ const bn = {
     leavesDescription: "ছুটির অনুরোধ পরিচালনা করুন",
     expensesDescription: "ব্যবসায়িক ব্যয় ট্র্যাক করুন",
   },
-
-  // Dashboard
   dashboard: {
     dashboard: "ড্যাশবোর্ড",
     overdue: "বিলম্বিত",
@@ -1172,12 +1117,99 @@ const bn = {
     noRecentActivityYet: "এখনও কোনো সাম্প্রতিক কার্যক্রম নেই",
     loadMore: "আরো লোড করুন",
     allCaughtUp: "আপনি আপ টু ডেট আছেন",
+    there: "সেখানে",
+    caughtUp: "সবকিছু হয়ে গেছে!",
+    timeframe: {
+      week: "এই সপ্তাহে",
+      month: "এই মাসে",
+      quarter: "এই ত্রৈমাসিকে",
+      year: "এই বছর",
+    },
+    stats: {
+      revenue: "রাজস্ব",
+      totalInvoiced: "মোট চালান",
+      openInvoices: "খোলা চালান",
+      paidInvoices: "পরিশোধিত চালান",
+      paymentsReceived: "প্রাপ্ত অর্থপ্রদান",
+      awaitingPayment: "অর্থপ্রদানের অপেক্ষায়",
+      alreadySettled: "ইতিমধ্যে নিষ্পত্তি হয়েছে",
+      hoursTracked: "ট্র্যাক করা ঘন্টা",
+      currentlyActive: "বর্তমানে সক্রিয়",
+      activeProjects: "সক্রিয় প্রকল্প",
+      assignedProjects: "নির্ধারিত প্রকল্প",
+      projectsYouCanWorkOn: "যে প্রকল্পগুলিতে আপনি কাজ করতে পারেন",
+      teammates: "সতীর্থরা",
+      teamSize: "দলের আকার",
+      noRecentActivity: "সাম্প্রতিক কোনো কার্যকলাপ নেই",
+    },
+    charts: {
+      revenueMomentumTitle: "রাজস্ব গতি",
+      revenueMomentumDescription: "গত এক বছরে মাসিক আয়ের প্রবণতা",
+      revenueTrendEyebrow: "রাজস্ব প্রবণতা",
+      revenueLeadersTitle: "রাজস্ব নেতারা",
+      revenueLeadersDescription: "রাজস্ব অবদানের ভিত্তিতে শীর্ষ গ্রাহক",
+      topCustomersEyebrow: "শীর্ষ গ্রাহক",
+      ofTotal: "মোটের %{percentage}",
+      noRevenue: "রাজস্বের কোন তথ্য উপলব্ধ নেই",
+    },
+    roleGuidance: {
+      employee: "আপনার সময়ের হিসাব রাখুন এবং প্রকল্পগুলো পরিচালনা করুন",
+      bookKeeper: "চালান, পরিশোধ এবং আর্থিক প্রতিবেদন পর্যালোচনা করুন",
+      client: "আপনার চালান এবং পরিশোধের ইতিহাস দেখুন",
+      default: "আপনার কর্মক্ষেত্র পরিচালনা করুন",
+    },
   },
-
-  // Authentication
   auth: {
-    signIn: "সাইন ইন",
-    signUp: "সাইন আপ",
+    signIn: {
+      title: "আপনার কর্মক্ষেত্রে সাইন ইন করুন",
+      description:
+        "এক জায়গা থেকেই কাজের হিসাব রাখুন, চালান পাঠান এবং নগদ অর্থের প্রবাহ স্বচ্ছ রাখুন।",
+      continueWithGoogle: "গুগল দিয়ে চালিয়ে যান",
+      continueWithGitHub: "গিটহাব দিয়ে চালিয়ে যান",
+      orUseEmail: "অথবা ইমেল ব্যবহার করুন",
+      email: "ইমেল",
+      password: "পাসওয়ার্ড",
+      submit: "সাইন ইন করুন",
+      forgotPassword: "পাসওয়ার্ড ভুলে গেছেন?",
+      noAccount: "আপনার কি অ্যাকাউন্ট নেই?",
+      signUp: "সাইন আপ করুন",
+      privacy: "গোপনীয়তা",
+      terms: "শর্তাবলী",
+      loginFailed: "লগইন ব্যর্থ হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।",
+      welcomeBack: "আবার স্বাগতম!",
+      waitingForPasskey: "পাসকি-র জন্য অপেক্ষা করা হচ্ছে...",
+      passkeyPrompt: "আপনার পাসকি ব্যবহার করে সাইন ইন করুন",
+      totpTitle: "দ্বি-স্তরীয় প্রমাণীকরণ",
+      totpPrompt: "আপনার অথেন্টিকেটর অ্যাপ থেকে কোডটি প্রবেশ করান।",
+      totpDescription:
+        "আপনার অথেন্টিকেটর অ্যাপটি খুলুন এবং ৬-সংখ্যার কোডটি প্রবেশ করান।",
+      totpCode: "প্রমাণীকরণ কোড",
+      verifyAndSignIn: "যাচাই করুন এবং সাইন ইন করুন",
+      recoveryCode: "এর পরিবর্তে একটি পুনরুদ্ধার কোড ব্যবহার করুন",
+      back: "ফিরে যান",
+    },
+    signUp: {
+      title: "আপনার কর্মক্ষেত্র তৈরি করুন",
+      description:
+        "একটি সুস্পষ্ট অপারেটিং সিস্টেমের মাধ্যমে ক্লায়েন্ট, প্রজেক্ট, ইনভয়েস এবং পেমেন্ট সেট আপ করুন।",
+      continueWithGoogle: "গুগল দিয়ে চালিয়ে যান",
+      continueWithGitHub: "গিটহাব দিয়ে চালিয়ে যান",
+      orUseEmail: "অথবা ইমেল ব্যবহার করুন",
+      firstName: "প্রথম নাম",
+      lastName: "শেষ নাম",
+      email: "ইমেল",
+      password: "পাসওয়ার্ড",
+      confirmPassword: "পাসওয়ার্ড নিশ্চিত করুন",
+      passwordCriteria:
+        "কমপক্ষে ৮টি অক্ষর, যার মধ্যে একটি বড় হাতের অক্ষর, একটি ছোট হাতের অক্ষর এবং একটি সংখ্যা থাকবে।",
+      submit: "অ্যাকাউন্ট তৈরি করুন",
+      alreadyHaveAccount: "আপনার কি ইতিমধ্যেই একটি অ্যাকাউন্ট আছে?",
+      signIn: "সাইন ইন করুন",
+      agreePrefix: "সাইন আপ করার মাধ্যমে আপনি আমাদের শর্তাবলীতে সম্মত হচ্ছেন।",
+      termsOfService: "পরিষেবার শর্তাবলী",
+      and: "এবং",
+      privacyPolicy: "গোপনীয়তা নীতি",
+    },
     signOut: "সাইন আউট",
     welcomeBack: "স্বাগতম!",
     loginFailed: "লগইন ব্যর্থ। অনুগ্রহ করে আবার চেষ্টা করুন।",
@@ -1203,12 +1235,12 @@ const bn = {
     alreadyHaveAccount: "ইতিমধ্যে অ্যাকাউন্ট আছে?",
     dontHaveAccount: "অ্যাকাউন্ট নেই?",
     rememberMe: "আমাকে মনে রাখুন",
-    totpPlaceholder: "ABCD-EFGH",
+    totpPlaceholder: "এবিসিডি-ইএফজিএইচ",
     companyPulse: "কোম্পানি পালস",
     billingCommand: "বিলিং কমান্ড",
     clearWeeklyFlow: "স্পষ্ট সাপ্তাহিক প্রবাহ",
     cashLedger: "নগদ খাতা",
-    miruLogo: "Miru",
+    miruLogo: "মিরু",
     heroTitle: "সময়, ইনভয়েস এবং পেমেন্টের জন্য এক জায়গা",
     heroDescription:
       "দিনকে স্পষ্ট রাখুন, বিলিং চালু রাখুন এবং নগদ দৃশ্যমান রাখুন।",
@@ -1244,15 +1276,71 @@ const bn = {
     termsOfService: "সেবার শর্তাবলী",
     privacyPolicy: "গোপনীয়তা নীতি",
     and: "এবং",
+    slides: {
+      dashboard: {
+        title: "কোম্পানির স্পন্দন",
+        description:
+          "কোনো রকম খোঁজাখুঁজি ছাড়াই আয়, চলমান প্রকল্প এবং দলের অগ্রগতি দেখুন।",
+      },
+      invoices: {
+        title: "বিলিং কমান্ড",
+        description: "ড্রাফট, বকেয়া বিল এবং পরিশোধিত কাজ একই জায়গায় রাখুন।",
+      },
+      timeTracking: {
+        title: "সাপ্তাহিক প্রবাহ পরিষ্কার রাখুন",
+        description:
+          "সাপ্তাহিক সময় লিপিবদ্ধকরণ অপ্রয়োজনীয় কাজে পরিণত না হয়েও হালনাগাদ থাকে।",
+      },
+      payments: {
+        title: "নগদ খাতা",
+        description:
+          "প্রতিটি পেমেন্ট তার পদ্ধতি, অবস্থা এবং উৎস সহ একটি খতিয়ানে নথিভুক্ত হয়।",
+      },
+    },
+    validation: {
+      emailRequired: "ইমেল আবশ্যক",
+      invalidEmail: "অবৈধ ইমেল ঠিকানা",
+      passwordRequired: "পাসওয়ার্ড প্রয়োজন",
+      passwordComplexity:
+        "পাসওয়ার্ডটি অবশ্যই কমপক্ষে ৮ অক্ষরের হতে হবে, যেখানে বড় হাতের অক্ষর, ছোট হাতের অক্ষর এবং সংখ্যা থাকতে হবে।",
+      passwordSpace: "পাসওয়ার্ডে স্পেস থাকতে পারবে না।",
+      confirmPasswordRequired: "পাসওয়ার্ড নিশ্চিত করা প্রয়োজন।",
+      passwordsMustMatch: "পাসওয়ার্ড অবশ্যই মিলতে হবে",
+      firstNameRequired: "প্রথম নাম আবশ্যক।",
+      firstNameInvalid: "নামের প্রথম অংশে শুধুমাত্র অক্ষর থাকতে হবে।",
+      firstNameMax: "প্রথম নামটি অবশ্যই ২০ অক্ষর বা তার কম হতে হবে।",
+      lastNameRequired: "শেষ নাম আবশ্যক।",
+      lastNameInvalid: "শেষ নামে শুধুমাত্র অক্ষর থাকতে হবে।",
+      lastNameMax: "শেষ নাম অবশ্যই ২০ অক্ষর বা তার কম হতে হবে।",
+      acceptTerms: "আপনাকে শর্তাবলী মেনে নিতে হবে।",
+    },
   },
-
-  // Passkeys
   passkeys: {
     noPasskeyResponse: "কোনো পাসকি প্রতিক্রিয়া পাওয়া যায়নি।",
     passkeysNotSupported: "এই ব্রাউজারে পাসকি সমর্থিত নয়।",
+    title: "পাসকি",
+    addTitle: "এই অ্যাকাউন্টের জন্য একটি পাসকি যোগ করুন",
+    addDescription:
+      "ফেস আইডি, টাচ আইডি, উইন্ডোজ হ্যালো বা হার্ডওয়্যার সিকিউরিটি কী ব্যবহার করুন।",
+    addAction: "পাসকি যোগ করুন",
+    requirementTitle: "সাইন ইন করার জন্য পাসকি প্রয়োজন।",
+    requirementDescription:
+      "আপনার পাসওয়ার্ডের পর, সাইন ইন সম্পন্ন করার জন্য মিরু একটি পাসকি চাইবে।",
+    emptyState: "এখনো কোনো পাসকি যোগ করা হয়নি।",
+    fallbackName: "পাসকি",
+    addedAt: "%{time} যোগ করা হয়েছে",
+    lastUsedAt: "সর্বশেষ ব্যবহৃত %{time}",
+    removeAction: "অপসারণ করুন",
+    addedSuccess: "পাসকি যোগ করা হয়েছে",
+    removedSuccess: "পাসকি সরানো হয়েছে",
+    requirementEnabled: "পাসকি আবশ্যকতা সক্রিয় করা হয়েছে",
+    requirementDisabled: "পাসকি প্রয়োজনীয়তা নিষ্ক্রিয় করা হয়েছে",
+    addFailed: "পাসকি যোগ করতে ব্যর্থ হয়েছে।",
+    removeFailed: "পাসকি অপসারণ করা সম্ভব হয়নি।",
+    updateRequirementFailed:
+      "পাসকি সাইন-ইন প্রয়োজনীয়তা আপডেট করতে ব্যর্থ হয়েছে।",
+    neverUsed: "কখনো ব্যবহার করা হয়নি",
   },
-
-  // Organization setup
   orgSetup: {
     setupOrganization: "সংস্থা সেটআপ করুন",
     companyName: "কোম্পানির নাম",
@@ -1279,8 +1367,6 @@ const bn = {
     workingDaysPerWeek: "কর্মদিবস (প্রতি সপ্তাহে)",
     workingHoursPerWeek: "কর্মঘণ্টা (প্রতি সপ্তাহে)",
   },
-
-  // Profile
   profile: {
     personalDetails: "ব্যক্তিগত বিবরণ",
     employmentDetails: "চাকরির বিবরণ",
@@ -1294,11 +1380,67 @@ const bn = {
     dateOfJoining: "যোগদানের তারিখ",
     dateOfBirth: "জন্ম তারিখ",
     socialProfiles: "সামাজিক প্রোফাইল",
-    linkedin: "LinkedIn",
-    github: "GitHub",
+    linkedin: "লিঙ্কডইন",
+    github: "গিটহাব",
+    personalInformation: "ব্যক্তিগত তথ্য",
+    basicDetails: "মৌলিক বিবরণ",
+    contactInformation: "যোগাযোগের তথ্য",
+    addressType: "ঠিকানার ধরণ",
+    current: "বর্তমান",
+    permanent: "স্থায়ী",
+    employeeId: "কর্মচারী আইডি",
+    officialEmail: "ইমেইল আইডি (অফিসিয়াল)",
+    employmentType: "কর্মসংস্থানের ধরণ",
+    dateOfResignation: "পদত্যাগের তারিখ",
+    birthDatePlaceholder: "আপনার জন্ম তারিখ নির্বাচন করুন",
+    firstName: "প্রথম নাম",
+    lastName: "শেষ নাম",
+    firstNamePlaceholder: "আপনার প্রথম নাম লিখুন",
+    lastNamePlaceholder: "আপনার শেষ নাম লিখুন",
+    personalEmail: "ব্যক্তিগত ইমেল",
+    personalEmailPlaceholder: "your.email@example.com",
+    phoneAriaLabel: "ফোন নম্বর",
+    addressLine1: "ঠিকানা লাইন ১",
+    addressLine2: "ঠিকানা লাইন ২",
+    optionalSuffix: "(ঐচ্ছিক)",
+    streetAddressPlaceholder: "রাস্তার ঠিকানা",
+    addressLine2Placeholder: "অ্যাপার্টমেন্ট, স্যুইট, ইউনিট, ইত্যাদি।",
+    statePlaceholder: "রাজ্য বা প্রদেশ",
+    cityPlaceholder: "শহর",
+    zipPostalCode: "জিপ/পোস্টাল কোড",
+    zipPlaceholder: "১২৩৪৫",
+    languageDescription: "ইন্টারফেসের জন্য আপনার পছন্দের ভাষা নির্বাচন করুন।",
+    security: "নিরাপত্তা",
+    userFallback: "ব্যবহারকারী",
+    currentPasswordPlaceholder: "বর্তমান পাসওয়ার্ড লিখুন",
+    newPassword: "নতুন পাসওয়ার্ড",
+    newPasswordPlaceholder: "নতুন পাসওয়ার্ড লিখুন",
+    confirmPasswordPlaceholder: "নতুন পাসওয়ার্ড পুনরায় লিখুন।",
+    cancelPasswordChange: "পাসওয়ার্ড পরিবর্তন বাতিল করুন",
+    profilePhoto: "প্রোফাইল ছবি",
+    profilePhotoDescription:
+      "আপনার ওয়ার্কস্পেস প্রোফাইলের জন্য একটি বর্গাকার ছবি আপলোড করুন।",
+    noAddressProvided: "কোনো ঠিকানা প্রদান করা হয়নি",
+    noEmailProvided: "কোন ইমেল প্রদান করা হয়নি",
+    notProvided: "সরবরাহ করা হয়নি",
+    notConnected: "সংযুক্ত নয়",
+    bornOn: "জন্ম %{date}",
+    lastChangedDaysAgo: "শেষ পরিবর্তন করা হয়েছে %{count} দিন আগে",
+    secure: "সুরক্ষিত",
+    uploadPhoto: "ছবি আপলোড করুন",
+    removePhoto: "ছবিটি সরান",
+    uploadPhotoFailed: "প্রোফাইল ছবি আপলোড করা সম্ভব হয়নি।",
+    removePhotoFailed: "প্রোফাইল ছবি সরাতে ব্যর্থ হয়েছি।",
+    adjustProfilePhoto: "প্রোফাইল ফটো সামঞ্জস্য করুন",
+    adjustProfilePhotoDescription:
+      "ছবির যে অংশটি আপনি রাখতে চান, তা বাছাই করুন।",
+    noImageSelected: "কোন ছবি নির্বাচন করা হয়নি",
+    savePhoto: "ছবি সংরক্ষণ করুন",
+    zoom: "জুম",
+    company: "কোম্পানি",
+    noPreviousEmployments: "পূর্ববর্তী কোনো চাকরির তথ্য পাওয়া যায়নি।",
+    addPastEmployment: "পূর্ববর্তী কর্মসংস্থান যোগ করুন",
   },
-
-  // Leave Management
   leaveManagement: {
     leaveBalance: "ছুটির ব্যালেন্স",
     applyLeave: "ছুটির জন্য আবেদন করুন",
@@ -1336,9 +1478,11 @@ const bn = {
     leave: "ছুটি",
     nationalHoliday: "জাতীয় ছুটির দিন",
     optionalHoliday: "ঐচ্ছিক ছুটির দিন",
+    summaryLabel: "ছুটির সারাংশ",
+    summaryDescription:
+      "নির্বাচিত বছরের প্রাপ্য ছুটি, ইতোমধ্যে গৃহীত ছুটি এবং ছুটির ব্যবহার এক জায়গায় দেখুন।",
+    balanceUntil: "%{date} পর্যন্ত ভারসাম্য বজায় রাখুন",
   },
-
-  // Subscriptions / Plan Details
   subscriptions: {
     currentPlan: "বর্তমান পরিকল্পনা",
     upgradePlan: "পরিকল্পনা আপগ্রেড করুন",
@@ -1359,8 +1503,6 @@ const bn = {
     plusTaxes: "কর সহ",
     reviewAndPay: "পর্যালোচনা করুন এবং পরিশোধ করুন",
   },
-
-  // Misc
   switchToMode: "%{mode} মোডে স্যুইচ করুন",
   light: "লাইট",
   dark: "ডার্ক",
@@ -1370,8 +1512,6 @@ const bn = {
   editLabel: "সম্পাদনা করুন",
   noPasskeyResponse: "কোনো পাসকি প্রতিক্রিয়া পাওয়া যায়নি।",
   passkeysNotSupported: "এই ব্রাউজারে পাসকি সমর্থিত নয়।",
-
-  // Table headers (common)
   tableHeaders: {
     invoiceNo: "ইনভয়েস নং",
     invoiceNumber: "ইনভয়েস নম্বর",
@@ -1391,15 +1531,454 @@ const bn = {
     role: "ভূমিকা",
     type: "ধরন",
   },
-
-  // Relative dates
   nextDay: "পরবর্তী %{day}",
   lastDay: "গত %{day}",
-
-  // Duration formatting
   durationMinutes: "%{mins}m",
   durationHours: "%{hours}h",
   durationHoursMinutes: "%{hours}h %{mins}m",
+  preferencesSettings: {
+    title: "ইমেল পছন্দ",
+    description: "আপনার ইমেল বিজ্ঞপ্তি সেটিংস পরিচালনা করুন",
+    saving: "সঞ্চয়...",
+    saveChanges: "পরিবর্তনগুলি সংরক্ষণ করুন",
+    timesheetNotifications: "টাইমশিট বিজ্ঞপ্তি",
+    billingNotifications: "বিলিং বিজ্ঞপ্তি",
+    timesheetNotificationsDescription:
+      "সময় ট্র্যাকিং এবং টাইমশিট সম্পর্কিত বিজ্ঞপ্তিগুলি পরিচালনা করুন",
+    billingNotificationsDescription:
+      "চালান এবং পেমেন্ট বিজ্ঞপ্তি নিয়ন্ত্রণ করুন",
+    weeklyReminderTitle: "সাপ্তাহিক টাইমশিট রিমাইন্ডার",
+    weeklyReminderDescription:
+      "প্রতি সোমবার বাকি থাকা টাইমশিট এন্ট্রিগুলোর জন্য সাপ্তাহিক অনুস্মারক পান।",
+    timesheetReminderTitle: "অনুপস্থিত এন্ট্রি অনুস্মারক",
+    timesheetReminderDescription:
+      "২ দিনের বেশি সময় ধরে লগ ইন না করলে বিজ্ঞপ্তি পান।",
+    invoiceNotificationsTitle: "ইনভয়েস ইমেল বিজ্ঞপ্তি",
+    invoiceNotificationsDescription:
+      "ইনভয়েস তৈরি, পাঠানো বা আপডেট করা হলে ইমেল পান।",
+    paymentNotificationsTitle: "পেমেন্ট ইমেল বিজ্ঞপ্তি",
+    paymentNotificationsDescription:
+      "পেমেন্ট গৃহীত হলে বা পেমেন্টের অবস্থা পরিবর্তিত হলে বিজ্ঞপ্তি পান",
+    monthlyDigestTitle: "মাসিক নগদ প্রবাহ সারসংক্ষেপ",
+    monthlyDigestDescription:
+      "নিট পরিবর্তন, আয় এবং ব্যয়ের বিবরণসহ একটি মাসিক নগদ প্রবাহের সারাংশ গ্রহণ করুন।",
+    confirmUnsubscribeTitle: "সমস্ত ইমেল থেকে সদস্যতা বাতিল নিশ্চিত করুন",
+    confirmUnsubscribeDescription:
+      "আপনি কি সব ইমেল বিজ্ঞপ্তি থেকে সদস্যতা বাতিল করতে নিশ্চিত? আপনি গুরুত্বপূর্ণ বিলিং এবং ইনভয়েস বিজ্ঞপ্তি সহ কোনো ইমেল পাবেন না।",
+    confirmUnsubscribeAction: "হ্যাঁ, সবগুলি থেকে আনসাবস্ক্রাইব করুন",
+    unsubscribedTitle: "আপনি সমস্ত ইমেল থেকে আনসাবস্ক্রাইব করেছেন",
+    unsubscribedDescription:
+      "আপনি বর্তমানে সমস্ত ইমেল বিজ্ঞপ্তি থেকে আনসাবস্ক্রাইব করেছেন। আপনি মিরু থেকে কোনো ইমেল পাবেন না।",
+    resubscribeAction: "ইমেল বিজ্ঞপ্তি পুনরায় সক্রিয় করুন",
+    enabledCount: "%{total} এর %{count} সক্রিয় করা হয়েছে",
+    deliveryTitle: "ইমেল ডেলিভারি সেটিংস",
+    emailAddress: "ইমেইল ঠিকানা",
+    deliveryDescription:
+      "সকল বিজ্ঞপ্তি এই ইমেল ঠিকানায় পাঠানো হবে। আপনার ইমেল পরিবর্তন করতে, অনুগ্রহ করে আপনার প্রোফাইল সেটিংসে এটি আপডেট করুন।",
+    unsubscribeTitle: "সদস্যতা বাতিল করুন",
+    unsubscribeDescription:
+      "আপনি যদি মিরু থেকে আর কোনো ইমেল পেতে না চান, তাহলে সব নোটিফিকেশন থেকে আনসাবস্ক্রাইব করতে পারেন। এর ফলে গুরুত্বপূর্ণ বিলিং এবং ইনভয়েস নোটিফিকেশনসহ সমস্ত ইমেল যোগাযোগ বন্ধ হয়ে যাবে।",
+    unsubscribeAction: "সমস্ত ইমেল থেকে সদস্যতা বাতিল করুন",
+    badges: {
+      active: "সক্রিয়",
+      important: "গুরুত্বপূর্ণ",
+      monthly: "মাসিক",
+    },
+  },
+  automationSettings: {
+    title: "অটোমেশন এবং সিএলআই",
+    description:
+      "আপনার লগ-ইন করা অ্যাকাউন্টের মতোই একই অনুমতি নিয়ে আপনার টার্মিনাল, স্ক্রিপ্ট বা এআই এজেন্ট থেকে মিরু ব্যবহার করুন। কোনো আলাদা অটোমেশন প্রোডাক্টের প্রয়োজন নেই। কোনো বিশেষ ব্যাকডোর অ্যাক্সেসেরও প্রয়োজন নেই।",
+    freeForEveryPlan: "প্রতিটি প্ল্যানের জন্য বিনামূল্যে",
+    cards: {
+      samePermissionsTitle: "অ্যাপের মতোই অনুমতি",
+      samePermissionsDescription:
+        "CLI শুধুমাত্র সেইসব জিনিসই দেখতে পায়, যা প্রমাণীকৃত ব্যবহারকারী ওয়েব অ্যাপে আগে থেকেই অ্যাক্সেস করতে পারেন।",
+      humansAndScriptsTitle: "মানুষ এবং স্ক্রিপ্টের জন্য ভালো",
+      humansAndScriptsDescription:
+        "দৈনন্দিন কাজের জন্য সহজ কমান্ড রাখুন এবং স্ক্রিপ্ট বা এআই-কে হুবহু একই ইন্টারফেস ব্যবহার করতে দিন।",
+      easyToInstallTitle: "ইনস্টল করা সহজ",
+      easyToInstallDescription:
+        "একটি ইনস্টল কমান্ড, একটি লগইন, এবং তারপরেই আপনি প্রজেক্টের তালিকা দেখতে, টাইম এন্ট্রি তৈরি করতে, ইনভয়েস পর্যালোচনা করতে এবং আরও অনেক কিছু করতে পারবেন।",
+    },
+    commandGroups: {
+      install: "ইনস্টল করুন",
+      authenticateOnce: "একবার প্রমাণীকরণ করুন",
+      dailyCommands: "দৈনিক নির্দেশাবলী",
+    },
+  },
+  holidaysSettings: {
+    year: "বছর",
+    publicHolidays: "সরকারি ছুটির দিন",
+    optionalHolidays: "ঐচ্ছিক ছুটি",
+    holidayName: "ছুটির নাম",
+    enterHolidayName: "ছুটির নাম লিখুন",
+    selectDate: "তারিখ নির্বাচন করুন",
+    addHoliday: "ছুটি যোগ করুন",
+    addFirstHoliday: "প্রথম ছুটি যোগ করুন",
+    addOptionalHoliday: "ঐচ্ছিক ছুটি যোগ করুন",
+    noPublicHolidaysConfigured: "কোনো সরকারি ছুটির দিন কনফিগার করা হয়নি",
+    noOptionalHolidaysConfigured: "কোন ঐচ্ছিক ছুটির দিন কনফিগার করা নেই",
+    totalAllowed: "মোট অনুমোদিত",
+    enterNumber: "নম্বর লিখুন",
+    frequency: "ফ্রিকোয়েন্সি",
+    allowedPerEmployee: "প্রতি কর্মচারীর জন্য অনুমোদিত",
+    yearAtAGlance: "এক নজরে বছর",
+    holidaySchedule: "ছুটির সময়সূচী",
+    noHolidaysAddedForYear:
+      "%{year} এর জন্য এখনও কোনো ছুটির দিন যোগ করা হয়নি।",
+    categories: {
+      public: "জনসাধারণের",
+      optional: "ঐচ্ছিক",
+    },
+    weekdays: {
+      sun: "এস",
+      mon: "এম",
+      tue: "টি",
+      wed: "ডাব্লিউ",
+      thu: "টি",
+      fri: "এফ",
+      sat: "এস",
+    },
+  },
+  paymentSettingsPage: {
+    backToSettings: "সেটিংসে ফিরে যান",
+    title: "পেমেন্ট প্রদানকারী",
+    description:
+      "গ্রাহকদের কাছ থেকে অনলাইন পেমেন্ট গ্রহণ করার জন্য পেমেন্ট প্রদানকারীদের সংযুক্ত করুন।",
+    errorTitle: "ত্রুটি",
+    errorDescription:
+      "পেমেন্ট সেটিংস লোড করা সম্ভব হয়নি। অনুগ্রহ করে পরে আবার চেষ্টা করুন।",
+    stripeDescription:
+      "ক্রেডিট কার্ড, ডেবিট কার্ড এবং জনপ্রিয় পেমেন্ট পদ্ধতি গ্রহণ করা হয়।",
+    connectedTo: "সংযুক্ত",
+    connected: "সংযুক্ত",
+    stripeAccountFallback: "স্ট্রাইপ অ্যাকাউন্ট",
+    chargesEnabled: "চার্জ সক্রিয় করা হয়েছে",
+    connectStripe: "স্ট্রাইপ সংযোগ করুন",
+    connecting: "সংযোগ স্থাপন...",
+    disconnect: "সংযোগ বিচ্ছিন্ন করুন",
+    disconnecting: "সংযোগ বিচ্ছিন্ন হচ্ছে...",
+    featuresTitle: "বৈশিষ্ট্য ও সুবিধা",
+    helpTitle: "সাহায্য প্রয়োজন?",
+    helpDescription:
+      "পেমেন্ট প্রসেসিং সেট আপ করতে আপনার সাহায্যের প্রয়োজন হলে অথবা ফি এবং কার্যকারিতা সম্পর্কে কোনো প্রশ্ন থাকলে:",
+    viewDocumentation: "ডকুমেন্টেশন দেখুন",
+    contactSupport: "সহায়তার সাথে যোগাযোগ করুন",
+    disconnectDialogTitle: "স্ট্রাইপ অ্যাকাউন্ট সংযোগ বিচ্ছিন্ন করুন",
+    disconnectDialogDescription:
+      "আপনি কি আপনার স্ট্রাইপ অ্যাকাউন্টটি সংযোগ বিচ্ছিন্ন করতে নিশ্চিত? পুনরায় সংযোগ না করা পর্যন্ত আপনি স্ট্রাইপের মাধ্যমে আর পেমেন্ট গ্রহণ করতে পারবেন না।",
+    features: {
+      secureTitle: "নিরাপদ পেমেন্ট",
+      secureDescription: "PCI-সম্মত পেমেন্ট প্রক্রিয়াকরণ",
+      currenciesTitle: "একাধিক মুদ্রা",
+      currenciesDescription: "১৩৫টিরও বেশি মুদ্রায় পেমেন্ট গ্রহণ করা হয়",
+      methodsTitle: "বিভিন্ন অর্থপ্রদানের পদ্ধতি",
+      methodsDescription: "কার্ড, ওয়ালেট, ব্যাংক ট্রান্সফার এবং আরও অনেক কিছু",
+      setupTitle: "তাৎক্ষণিক সেটআপ",
+      setupDescription: "মিনিটের মধ্যেই পেমেন্ট গ্রহণ শুরু করুন",
+    },
+  },
+  organizationSettingsPage: {
+    actions: {
+      editSettings: "সেটিংস সম্পাদনা করুন",
+    },
+    sections: {
+      companyProfile: "কোম্পানির প্রোফাইল",
+      financial: "আর্থিক",
+      scheduleAndTime: "সময়সূচী ও সময়",
+      workingHours: "কাজের সময়",
+    },
+    fields: {
+      businessPhone: "ব্যবসায়িক ফোন",
+      currency: "মুদ্রা",
+      businessAddress: "ব্যবসার ঠিকানা",
+      standardRate: "সাধারণ হার",
+      fiscalYearEnd: "অর্থবছর শেষ",
+      timezone: "সময় অঞ্চল",
+      dateFormat: "তারিখের বিন্যাস",
+      workingDays: "কর্মদিবস",
+    },
+    status: {
+      active: "সক্রিয়",
+    },
+    defaults: {
+      companyName: "কোম্পানির নাম",
+      locationNotSet: "অবস্থান নির্ধারণ করা হয়নি",
+      notConfigured: "কনফিগার করা হয়নি",
+      noAddress: "কোন ঠিকানা কনফিগার করা হয়নি",
+      workingHours: "সকাল ৯:০০ - বিকাল ৫:০০",
+      workingDays: "সোমবার - শুক্রবার",
+      timezone: "ইউটিসি",
+      dateFormat: "এমএম/ডিডি/ওয়াইওয়াইওয়াই",
+    },
+    errors: {
+      loadFailed:
+        "প্রতিষ্ঠানের বিবরণ লোড করা সম্ভব হয়নি। অনুগ্রহ করে আবার চেষ্টা করুন।",
+    },
+    ratePerHour: "/ ঘন্টা",
+  },
+  billingSettings: {
+    membership: "সদস্যপদ",
+    currentPlan: "বর্তমান পরিকল্পনা",
+    seatUsage: "আসন ব্যবহার",
+    billingCadence: "বিলিং ক্যাডেন্স",
+    monthly: "মাসিক",
+    yearly: "বার্ষিক",
+    notSubscribedYet: "এখনো সাবস্ক্রাইব করা হয়নি",
+    startTrial: "৩০-দিনের প্রো ট্রায়াল শুরু করুন",
+    startingTrial: "ট্রায়াল শুরু হচ্ছে...",
+    upgradeWithStripe: "স্ট্রাইপ দিয়ে আপগ্রেড করুন",
+    openingStripe: "খোলার স্ট্রাইপ...",
+    manageBillingInStripe: "Stripe-এ বিলিং পরিচালনা করুন",
+    openingPortal: "পোর্টাল খুলছে...",
+    saveTwoMonths: "বার্ষিক পেমেন্টে দুই মাস সাশ্রয় করুন",
+    heroTitle:
+      "এখনকার জন্য উপযুক্ত প্যাকেজটি বেছে নিন। পরে আরও প্রয়োজন হলে পরিবর্তন করে নেবেন।",
+    howManySeats: "আপনার কয়টি আসনের প্রয়োজন হবে বলে আশা করছেন?",
+    estimatedSeats: "আনুমানিক আসন",
+    recommended: "সুপারিশকৃত",
+    estimatedProSpend: "আনুমানিক প্রো ব্যয়",
+    yearlyDiscount: "বার্ষিক ছাড়",
+    openSource: "ওপেন সোর্স",
+    annual: "বার্ষিক",
+    service: "পরিষেবা",
+    poweredByStripe: "স্ট্রাইপ দ্বারা চালিত",
+    changePlansAnytime: "যেকোনো সময় পরিকল্পনা পরিবর্তন করুন",
+    checkoutPoweredByStripe:
+      "চেকআউট ও সাবস্ক্রিপশন ব্যবস্থাপনা স্ট্রাইপ দ্বারা পরিচালিত হয়।",
+    noSalesCall:
+      "প্রো-এর জন্য কোনো সেলস কল আসবে না। স্ট্রাইপ-এ যেকোনো সময় প্ল্যান বাতিল বা পরিবর্তন করুন।",
+    reportsAndAnalytics: "প্রতিবেদন এবং বিশ্লেষণ",
+    customAnnual: "কাস্টম বার্ষিক",
+    seatsUsed: "%{used}/%{total} টি আসন ব্যবহৃত হয়েছে",
+    seatsUsedWithoutLimit: "%{used} টি আসন ব্যবহৃত হয়েছে",
+    savePerYear: "প্রতি বছর $%{amount} সাশ্রয় করুন",
+    effectiveMonthlyPricing: "কার্যকরী মূল্য প্রায় $%{amount}/মাস",
+    cancelOrUpgradeAnytime: "Stripe-এ যেকোনো সময় বাতিল বা আপগ্রেড করুন",
+    planCadence: {
+      monthly: "মাসিক ভিত্তিতে বিল করা হয়",
+      yearlySavings: "প্রতি সিটে ২ মাসের সাশ্রয় করুন",
+    },
+    alerts: {
+      subscriptionUpdatedTitle: "সাবস্ক্রিপশন আপডেট করা হয়েছে",
+      subscriptionUpdated:
+        "আপনার প্ল্যানটি স্ট্রাইপে সফলভাবে আপডেট করা হয়েছে।",
+      checkoutCancelled: "চেকআউট বাতিল করা হয়েছে",
+      noSubscriptionChanges: "আপনার সাবস্ক্রিপশনে কোনো পরিবর্তন করা হয়নি।",
+      unableToLoad: "বিলিং বিবরণ লোড করা সম্ভব হয়নি",
+      proTrialActive: "প্রো ট্রায়াল সক্রিয়",
+      proTrialActiveUntil:
+        "আপনার ওয়ার্কস্পেসটি %{date} পর্যন্ত প্রো অ্যাক্সেস পাবে।",
+      proTrialEnded: "প্রো ট্রায়াল শেষ হয়েছে",
+      proTrialEndedDescription:
+        "আপনার ওয়ার্কস্পেসটি ফ্রি প্ল্যানে ফিরে গেছে। প্রো অ্যাক্সেস পুনরুদ্ধার করতে Stripe-এ আপগ্রেড করুন।",
+      seatLimitReached: "আসন সংখ্যা পূর্ণ হয়েছে",
+      seatLimitReachedDescription:
+        "এই ওয়ার্কস্পেসে তিনজনের বেশি সদস্য যোগ করতে স্ট্রাইপে আপগ্রেড করুন।",
+    },
+    errors: {
+      unableToOpenStripeCheckout: "স্ট্রাইপ চেকআউট খোলা সম্ভব নয়",
+      unableToOpenStripeBillingPortal: "স্ট্রাইপ বিলিং পোর্টাল খুলতে পারছি না",
+      unableToStartProTrial: "আপনার প্রো ট্রায়াল শুরু করা সম্ভব হয়নি।",
+    },
+    recommendations: {
+      freeTitle:
+        "যতক্ষণ না আপনার নিয়ন্ত্রণের প্রয়োজন হয়, ততক্ষণ বিনামূল্যে থাকুন।",
+      freeDescription:
+        "খুব ছোট দলের জন্য ফ্রি সংস্করণটি বেশ কার্যকর। যখন আপনার SSO, আরও শক্তিশালী রিপোর্ট এবং ৩টির বেশি সিটের প্রয়োজন হবে, তখন প্রো সংস্করণে আপগ্রেড করুন।",
+      proTitle: "প্রো-ই সঠিক পছন্দ।",
+      proDescription:
+        "ক্রমবর্ধমান টিমের জন্য, প্রো আপনাকে এসএসও (SSO), আর্থিক স্বচ্ছতা এবং এন্টারপ্রাইজ ওভারহেড ছাড়াই সম্প্রসারণের পর্যাপ্ত সুযোগ দেয়।",
+      enterpriseTitle: "এন্টারপ্রাইজ সম্পর্কে আমাদের সাথে কথা বলুন",
+      enterpriseDescription:
+        "বড় দলগুলোর সাধারণত ক্রয় সহায়তা, প্রশাসনিক নিয়ন্ত্রণ এবং একটি মসৃণ রোলআউটের প্রয়োজন হয়। প্রো দিয়ে শুরু করুন অথবা সরাসরি এন্টারপ্রাইজে চলে যান।",
+    },
+    highlights: {
+      seatsTitle: "প্রশাসনিক ঝামেলা ছাড়াই আরও আসন",
+      seatsDescription:
+        "বিনামূল্যে ৩টি আসনের সীমাবদ্ধতা অতিক্রম করুন এবং অনবোর্ডিং প্রক্রিয়া সহজ রাখুন।",
+      ssoTitle: "SSO এবং আরও শক্তিশালী নিয়ন্ত্রণ",
+      ssoDescription:
+        "ক্রমবর্ধমান দলগুলোকে অতিরিক্ত টুল ছাড়াই সুরক্ষিত অ্যাক্সেস দিন।",
+      financeTitle: "আর্থিক স্বচ্ছতা যা শান্ত থাকে",
+      financeDescription:
+        "অতিরিক্ত সেটআপ ছাড়াই মার্জিন, বিলিংয়ের ধারাবাহিকতা এবং টিমের ব্যবহার সম্পর্কে জানুন।",
+    },
+    planDescriptions: {
+      free: "কোর ট্র্যাকিং, ইনভয়েসিং, পেমেন্টস এবং সর্বোচ্চ ৩টি টিম সিট সহ সেলফ-হোস্ট মিরু।",
+      pro: "প্রো সংস্করণটি এন্টারপ্রাইজ স্তরের অতিরিক্ত ঝামেলা ছাড়াই রিপোর্ট, এসএসও, আরও বেশি সিট এবং আরও স্বচ্ছন্দ অ্যাডমিন নিয়ন্ত্রণ সুবিধা প্রদান করে।",
+      enterprise:
+        "ক্রয়-বান্ধব চুক্তি, উন্নত নিয়ন্ত্রণ ব্যবস্থা, এবং নিরাপত্তা পর্যালোচনার প্রয়োজন রয়েছে এমন বৃহত্তর দলগুলোর জন্য সহায়তা।",
+      hostedEnterprise:
+        "আমরা একটি ডেডিকেটেড সেটআপে আপনার জন্য মিরু-কে হোস্ট, আপগ্রেড, ব্যাক আপ এবং সাপোর্ট প্রদান করি।",
+    },
+    planBullets: {
+      free: {
+        coreProduct: "স্ব-হোস্টেড মূল পণ্য",
+        tracking: "সময় ট্র্যাকিং, চালান, পেমেন্ট",
+        dashboard: "একটি ছোট দলের জন্য ড্যাশবোর্ডের দৃশ্যমানতা",
+      },
+      pro: {
+        trial: "মূল্য পরিশোধের আগে ৩০ দিনের বিনামূল্যে ট্রায়াল",
+        sso: "এসএসও, উন্নত রিপোর্টিং, আরও শক্তিশালী প্রশাসনিক নিয়ন্ত্রণ",
+        fit: "এজেন্সি এবং ক্রমবর্ধমান দলগুলোর জন্য সবচেয়ে উপযুক্ত",
+      },
+      enterprise: {
+        contracts: "ক্রয়-বান্ধব চুক্তি",
+        onboarding: "নিরাপত্তা পর্যালোচনা এবং অনবোর্ডিং সহায়তা",
+        compliance:
+          "বৃহত্তর দলগুলির জন্য যাদের অনুমোদন এবং সম্মতি সংক্রান্ত প্রয়োজন রয়েছে",
+      },
+      hosted: {
+        setup: "ডেডিকেটেড পরিচালিত সেটআপ",
+        operations: "আমরা আপগ্রেড, ব্যাকআপ এবং সাপোর্টের দায়িত্ব পালন করি।",
+        fit: "যে দলগুলো তাদের জন্য মিরুকে সম্পূর্ণরূপে পরিচালনা করাতে চায়",
+      },
+    },
+    heroDescription:
+      "বিনামূল্যে শুরু করুন, যখন টিমের আরও বেশি নিয়ন্ত্রণের প্রয়োজন হবে তখন প্রো-তে আপগ্রেড করুন, অথবা মিরু চালানোর দায়িত্ব আমাদের উপর ছেড়ে দিন। প্রো সাশ্রয়ী থাকে, বার্ষিক সাবস্ক্রিপশনে প্রকৃত অর্থ সাশ্রয় হয়, এবং বিলিং সহজ থাকে কারণ চেকআউট ও সাবস্ক্রিপশন ম্যানেজমেন্ট স্ট্রাইপ দ্বারা পরিচালিত হয়।",
+    seatEstimatorDescription:
+      "ফ্রি এবং প্রো-এর মধ্যে তুলনা করতে এবং মাসিক নাকি বার্ষিক বেশি যুক্তিযুক্ত হবে তা স্থির করতে এটি ব্যবহার করুন।",
+    yearlyDiscountDescription:
+      "মাসিক মূল্যের তুলনায় প্রতি সিটের জন্য দুই মাস বিনামূল্যে।",
+    checkoutDescription:
+      "কোনো বিক্রয় প্রক্রিয়া ছাড়াই ট্রায়াল শুরু করুন, প্রস্তুত হলে আপগ্রেড করুন এবং প্রয়োজনমতো নিজেই বিলিং পরিচালনা করুন।",
+    plans: {
+      unknown: "অজানা",
+      free: "বিনামূল্যে",
+      freePro: "ফ্রি প্রো",
+      proTrial: "প্রো ট্রায়াল",
+      paid: "প্রদত্ত",
+      enterprise: "উদ্যোগ",
+      hostedEnterprise: "হোস্টেড এন্টারপ্রাইজ",
+    },
+    table: {
+      feature: "বৈশিষ্ট্য",
+      bestFor: "সেরা",
+      selfHostedTeams: "স্ব-আয়োজিত দলগুলো শুরু হচ্ছে",
+      growingServiceTeams: "ক্রমবর্ধমান পরিষেবা দল যাদের নিয়ন্ত্রণ প্রয়োজন",
+      largeOrgs:
+        "নিরাপত্তা ও ক্রয় সংক্রান্ত চাহিদা সম্পন্ন বৃহত্তর সংস্থাগুলি",
+      managedTeams: "যে দলগুলো মিরুকে তাদের জন্য পরিচালনা করতে চায়",
+      timeTracking: "সময় ট্র্যাকিং",
+      invoicesAndPayments: "চালান এবং পেমেন্ট",
+      reportsAndDashboards: "রিপোর্ট এবং ড্যাশবোর্ড",
+      sso: "এসএসও",
+      auditAndAdminControls: "নিরীক্ষা এবং প্রশাসনিক নিয়ন্ত্রণ",
+      support: "সমর্থন",
+      included: "অন্তর্ভুক্ত",
+      notIncluded: "অন্তর্ভুক্ত নয়",
+      dashboardOnly: "শুধুমাত্র ড্যাশবোর্ড",
+      reportsAndAnalytics: "প্রতিবেদন এবং বিশ্লেষণ",
+      community: "সম্প্রদায়",
+      priorityEmail: "অগ্রাধিকার ইমেল",
+      priorityOnboarding: "অগ্রাধিকার + অনবোর্ডিং",
+      managedOnboarding: "পরিচালিত পরিষেবা + অনবোর্ডিং",
+    },
+  },
+  twoFactor: {
+    title: "অথেন্টিকেটর অ্যাপ ২এফএ",
+    addTitle: "একটি প্রমাণীকরণ অ্যাপ যোগ করুন",
+    addDescription:
+      "Google Authenticator, 1Password, Bitwarden, Authy বা যেকোনো TOTP-উপযোগী অ্যাপ ব্যবহার করুন।",
+    setupAction: "2FA সেট আপ করুন",
+    finishTitle: "প্রমাণীকরণকারী সেটআপ শেষ করুন",
+    finishDescription:
+      "এই কী-টি আপনার অথেন্টিকেটর অ্যাপে যোগ করুন, তারপর 2FA চালু করতে বর্তমান ৬-সংখ্যার কোডটি প্রবেশ করান।",
+    manualEntryKey: "ম্যানুয়াল এন্ট্রি কী",
+    verificationCode: "যাচাইকরণ কোড",
+    verificationCodePlaceholder: "১২৩৪৫৬",
+    enableAction: "2FA সক্রিয় করুন",
+    resetKeyAction: "রিসেট কী",
+    enabledTitle: "অথেন্টিকেটর অ্যাপ সুরক্ষা চালু আছে",
+    enabledDescription:
+      "সাইন ইন করার সময় পাসওয়ার্ডের পর আপনার একটি অথেন্টিকেটর কোড প্রয়োজন হবে।",
+    recoveryCodesAvailable: "%{count} পুনরুদ্ধার কোড উপলব্ধ",
+    regenerateRecoveryCodes: "পুনরুদ্ধার কোডগুলি পুনরায় তৈরি করুন",
+    disableAction: "2FA নিষ্ক্রিয় করুন",
+    saveRecoveryCodes: "এই পুনরুদ্ধার কোডগুলি সংরক্ষণ করুন",
+    saveRecoveryCodesDescription:
+      "প্রতিটি কোড একবারই কাজ করে। এগুলো কোনো নিরাপদ স্থানে সংরক্ষণ করুন।",
+    setupReadySuccess: "অথেন্টিকেটর অ্যাপ সেটআপ প্রস্তুত",
+    enabledSuccess: "প্রমাণীকরণ অ্যাপ সক্রিয় করা হয়েছে",
+    disabledSuccess: "প্রমাণীকরণ অ্যাপ নিষ্ক্রিয় করা হয়েছে",
+    regeneratedSuccess: "পুনরুদ্ধার কোডগুলি পুনরায় তৈরি করা হয়েছে",
+    setupFailed: "2FA সেটআপ শুরু করা সম্ভব হয়নি।",
+    enableFailed: "অথেন্টিকেটর অ্যাপটি সক্রিয় করতে ব্যর্থ হয়েছে।",
+    disableFailed: "2FA নিষ্ক্রিয় করতে ব্যর্থ হয়েছে।",
+    regenerateFailed: "পুনরুদ্ধার কোডগুলো পুনরায় তৈরি করতে ব্যর্থ হয়েছে।",
+  },
+  notificationPreferences: {
+    emailNotifications: "ইমেল বিজ্ঞপ্তি",
+    manageDescription: "আপনার ইমেল বিজ্ঞপ্তির পছন্দগুলি পরিচালনা করুন",
+    weeklyEmailReminder: "সাপ্তাহিক ইমেল অনুস্মারক",
+    weeklyEmailReminderDescription:
+      "টাইমশিট এন্ট্রি এবং প্রজেক্ট আপডেট সম্পর্কে সাপ্তাহিক ইমেল রিমাইন্ডার পান।",
+    noUserData: "কোন ব্যবহারকারীর ডেটা উপলব্ধ নেই",
+    loginPrompt: "বিজ্ঞপ্তি পছন্দগুলি পরিচালনা করতে অনুগ্রহ করে লগ ইন করুন।",
+  },
+  devices: {
+    addDevices: "ডিভাইস যোগ করুন",
+    editDevices: "ডিভাইস সম্পাদনা করুন",
+    device: "ডিভাইস",
+    unknownDevice: "অজানা ডিভাইস",
+    serial: "ক্রমিক:",
+    deviceType: "ডিভাইসের ধরন",
+    selectDeviceType: "ডিভাইসের ধরন নির্বাচন করুন",
+    modelName: "মডেল/নাম",
+    serialNumber: "ক্রমিক সংখ্যা",
+    memory: "মেমরি (র‍্যাম)",
+    processor: "প্রসেসর",
+    graphics: "গ্রাফিক্স",
+    graphicsCard: "গ্রাফিক্স কার্ড",
+    storage: "স্টোরেজ",
+    modelNamePlaceholder: "যেমন, ম্যাকবুক প্রো ১৬-ইঞ্চি",
+    serialNumberPlaceholder: "যেমন, C02XX1234567",
+    memoryPlaceholder: "যেমন, ১৬ জিবি ডিডিআর৪",
+    processorPlaceholder: "যেমন, ইন্টেল কোর i7-10750H",
+    graphicsPlaceholder: "যেমন, এনভিডিয়া জিফোর্স আরটিএক্স ৩০৬০",
+    storagePlaceholder: "যেমন, 512GB SSD",
+    addAnotherDevice: "আরেকটি ডিভাইস যোগ করুন",
+    addAnotherDeviceDescription:
+      "আপনার ইনভেন্টরিতে একটি নতুন ডিভাইস যোগ করতে ক্লিক করুন",
+    deviceSummary: "ডিভাইসের সারাংশ",
+    totalDevices: "মোট ডিভাইস",
+    notSpecified: "নির্দিষ্ট করা হয়নি",
+    noDevicesFound: "কোন ডিভাইস খুঁজে পাওয়া যায়নি",
+    newDevice: "নতুন ডিভাইস",
+    unsavedChangesPrompt:
+      "আপনার কিছু পরিবর্তন সংরক্ষিত হয়নি। আপনি কি নিশ্চিত যে আপনি এটি বাতিল করতে চান?",
+  },
+  nav: {
+    dashboard: "ড্যাশবোর্ড",
+    timeTracking: "সময় ট্র্যাকিং",
+    clients: "ক্লায়েন্টরা",
+    projects: "প্রকল্প",
+    team: "দল",
+    invoices: "চালান",
+    reports: "প্রতিবেদন",
+    payments: "পেমেন্ট",
+    leavesAndHolidays: "পাতা ও ছুটির দিন",
+    expenses: "খরচ",
+    settings: "সেটিংস",
+    logout: "লগআউট",
+  },
+  sidebar: {
+    main: "প্রধান",
+    personalSettings: "ব্যক্তিগত সেটিংস",
+    companySettings: "কোম্পানির সেটিংস",
+    profile: "প্রোফাইল",
+    devices: "ডিভাইস",
+    organization: "সংগঠন",
+    billing: "বিলিং",
+    paymentSettings: "পেমেন্ট সেটিংস",
+    holidayCalendar: "ছুটির ক্যালেন্ডার",
+    myLeaves: "আমার পাতা",
+    bankTaxInfo: "ব্যাংক ও কর সংক্রান্ত তথ্য",
+    expand: "সাইডবার প্রসারিত করুন",
+    collapse: "সাইডবার সংকুচিত করুন",
+  },
 };
 
 export default bn;

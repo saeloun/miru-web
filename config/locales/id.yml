@@ -1,16 +1,8 @@
 ---
 id:
-  activerecord:
-    errors:
-      models:
-        client:
-          attributes:
-            name:
-              format: "%{message}"
-        project:
-          attributes:
-            name:
-              format: "%{message}"
+  app:
+    name: Agensi Miru OS
+    tagline: Kelola operasional agensi Anda dari satu pusat komando.
   application_controller:
     not_found: Rute tidak ditemukan
   avatar:
@@ -84,20 +76,6 @@ id:
   employment:
     update:
       success: Informasi lowongan kerja berhasil diperbarui.
-  errors:
-    bill_status_billed: Anda tidak dapat menagih entri yang sudah ditagih sebelumnya.
-    can't change status: Tidak dapat diubah pada faktur yang sudah dibayar.
-    create_billed_entry: Anda tidak dapat membuat entri lembar waktu yang ditagih.
-    internal_server_error: Terjadi kesalahan.
-    not_found: Sumber daya yang Anda cari tidak tersedia.
-    prevent_draft_to_waived: tidak bisa diubah menjadi dibebaskan
-    unauthorized: Hanya pengguna pemilik atau admin yang berwenang untuk melakukan
-      tindakan ini.
-    updation_not_allowed: Pembaruan tidak diperbolehkan.
-    user_already_member: Alamat email sudah digunakan. Silakan masukkan alamat email
-      lain.
-    validate_billable_project: Anda tidak dapat membuat entri yang belum ditagih untuk
-      proyek yang tidak dapat ditagih.
   expenses:
     approve: Pengeluaran berhasil disetujui.
     create: Pengeluaran berhasil diajukan.
@@ -170,6 +148,202 @@ id:
       success: Cuti berhasil dibuat.
     update:
       success: Pembaruan cuti berhasil dilakukan.
+  mailers:
+    actions:
+      join_miru: Bergabunglah dengan Miru
+      open_expense: Biaya terbuka
+      open_invoice: Faktur terbuka
+      open_time_tracking: Pelacakan waktu terbuka
+      view_reports: Lihat laporan di Miru
+    client_payment_mailer:
+      payment:
+        eyebrow: Pembayaran
+        preheader: Bukti pembayaran untuk faktur %{invoice_number}.
+        receipt_title: Pembayaran diterima
+        records_body: Struk ini mengkonfirmasi pembayaran Anda. Anda dapat membuka
+          kembali faktur kapan saja jika Anda memerlukan detailnya lagi.
+        records_title: Simpan ini untuk arsip Anda.
+        subject: Bukti pembayaran untuk faktur %{invoice_number}
+        subtitle_html: Kami telah menerima pembayaran Anda untuk faktur <strong>%{invoice_number}</strong>
+          .
+        summary_html: Kami menerima <strong>%{amount}</strong> pada <strong>%{paid_on}</strong>
+          untuk faktur <strong>%{invoice_number}</strong> .
+        title: Kwitansi Pembayaran
+    expense_mailer:
+      approved:
+        eyebrow: Pengeluaran
+        preheader: Permohonan penggantian biaya Anda telah disetujui.
+        subject: Pengembalian dana Anda telah disetujui.
+        subtitle: Permohonan penggantian biaya Anda telah ditinjau dan disetujui.
+        title: Penggantian biaya disetujui
+      paid:
+        eyebrow: Pengeluaran
+        preheader: Permintaan penggantian biaya Anda telah ditandai sebagai telah
+          dibayar.
+        subject: Pengembalian dana Anda telah ditandai sebagai telah dibayar.
+        subtitle: Pembayaran untuk permintaan penggantian biaya Anda telah selesai.
+        title: Penggantian biaya dibayarkan
+      rejected:
+        eyebrow: Pengeluaran
+        next_step_body: Buka rincian pengeluaran, lakukan pembaruan, dan kirimkan
+          kembali.
+        next_step_title: Langkah selanjutnya
+        preheader: Permohonan penggantian biaya Anda perlu diperbarui.
+        subject: Pengajuan penggantian biaya Anda perlu diperbarui sebelum disetujui.
+        subtitle: Harap tinjau detail permintaan, lakukan perubahan yang diperlukan,
+          dan kirimkan kembali.
+        title: Pengembalian dana perlu diperbarui.
+      submitted:
+        eyebrow: Pengeluaran
+        preheader: Permohonan penggantian biaya baru perlu ditinjau.
+        subject: "%{submitter_name} mengajukan permohonan penggantian biaya"
+        subtitle_html: "<strong>%{submitter_name}</strong> telah mengajukan permohonan
+          penggantian biaya yang siap untuk ditinjau."
+        title: Permohonan penggantian biaya baru
+    invoice_mailer:
+      invoice:
+        eyebrow: Faktur
+        payment_link_subvalue: Periksa rincian tagihan dan bayar secara online.
+        payment_link_value: Halaman faktur aman
+        preheader: Faktur %{invoice_number} dari %{company_name}.
+        ready_body: Buka halaman faktur aman untuk memeriksa rincian item, konfirmasi
+          total, dan bayar secara online.
+        ready_title: Periksa sebelum Anda membayar
+        subject: Faktur %{invoice_number}
+        subtitle_html: "<strong>%{company_name}</strong> telah mengirimkan faktur
+          <strong>%{invoice_number}</strong> . Anda dapat meninjau dan membayar faktur
+          tersebut secara online kapan pun Anda siap."
+        support_html: Ada pertanyaan tentang faktur ini? Balas email ini atau hubungi
+          <a href="mailto:%{support_email}">%{support_email}</a> .
+        title: Faktur siap untuk ditinjau
+      send_invoice:
+        attachment_subvalue: Simpan, teruskan, atau arsipkan.
+        attachment_value: PDF terlampir
+        eyebrow: Faktur
+        next_steps_body: Buka faktur untuk memastikan jumlahnya, tinjau setiap item,
+          dan bayar saat Anda siap.
+        next_steps_title: Apa yang bisa diharapkan
+        note_title: Sebuah catatan dari %{company_name}
+        preheader: Faktur %{invoice_number} dari %{company_name} sudah siap.
+        subject: Faktur %{invoice_number} dari %{company_name}
+        subtitle_html: "<strong>%{company_name}</strong> mengirimkan faktur <strong>%{invoice_number}</strong>
+          . Buka faktur tersebut untuk meninjau detailnya, unduh PDF, dan bayar dengan
+          aman."
+        support_html: Butuh bantuan? Balas email ini atau hubungi <a href="mailto:%{support_email}">%{support_email}</a>
+          .
+        title: Faktur siap untuk ditinjau
+    labels:
+      amount: Jumlah
+      amount_due: Jumlah yang harus dibayar
+      amount_paid: Jumlah yang dibayarkan
+      attachment: Lampiran
+      category: Kategori
+      client: Klien
+      date: Tanggal
+      description: Keterangan
+      due_date: Tenggat waktu
+      invited_by: Diundang oleh
+      invoice: Faktur
+      invoice_number: Nomor faktur
+      issue_date: Tanggal penerbitan
+      issued_to: Dikeluarkan untuk
+      members: Anggota
+      outstanding_amount: Jumlah terutang
+      paid_on: Dibayar pada
+      payment_link: Tautan pembayaran
+      payment_method: Metode pembayaran
+      reference: Referensi
+      status: Status
+      total_amount: Jumlah total
+      workspace: Ruang kerja
+    layout:
+      brand: Miru
+      footer_body: Miru mengelola waktu, faktur, pembayaran, dan operasional dalam
+        satu ruang kerja yang tenang.
+      footer_contact: support@getmiru.com
+      footer_copyright: "© Miru. Semua hak dilindungi undang-undang."
+      footer_site: aplikasi miru.so
+      preheader: Pembaruan yang jelas dari Miru.
+    monthly_reports_mailer:
+      cash_flow_digest:
+        average_daily_net_change_html: Perubahan bersih harian rata-rata <strong>%{amount}</strong>
+        compare_to_previous: vs. %{amount} di %{month_label}
+        eyebrow: Ringkasan Bulanan
+        money_in: Uang masuk
+        money_out: Uang keluar
+        net_change: Perubahan bersih pada %{month_label}
+        no_money_in: Tidak ada pembayaran yang tercatat di Miru untuk %{month_year_label}.
+        no_money_out: Tidak ada pengeluaran yang dibayarkan yang tercatat di Miru
+          untuk %{month_year_label}.
+        preheader: Ringkasan arus kas %{company_name} dan %{month_label}
+        subject: Ringkasan arus kas %{company_name} dan %{month_label}
+        subtitle: Berikut adalah gambaran ringkas pergerakan uang melalui Miru untuk
+          %{month_year_label}.
+        title: Ringkasan arus kas %{company_name} dan %{month_label}
+        top_money_in_sources: Sumber pemasukan uang utama
+        top_money_out_sources: Keranjang penarikan uang teratas
+    payment_mailer:
+      payment:
+        eyebrow: Pembayaran
+        follow_up_body: Buka faktur untuk mengkonfirmasi pembayaran, menyimpan tanda
+          terima, atau melanjutkan ke langkah berikutnya.
+        follow_up_title: Apa yang harus dilakukan selanjutnya?
+        preheader: Konfirmasi pembayaran untuk faktur %{invoice_number}.
+        received_title: Pembayaran diterima
+        subject: Rincian pembayaran untuk faktur %{invoice_number}
+        subtitle_html: "<strong>%{client_name}</strong> membayar faktur <strong>%{invoice_number}</strong>
+          ."
+        summary_html: "<strong>%{client_name}</strong> membayar <strong>%{amount}</strong>
+          untuk faktur <strong>%{invoice_number}</strong> . Faktur ini sekarang telah
+          dibayar lunas."
+        title: Konfirmasi pembayaran
+    send_payment_reminder_mailer:
+      send_payment_reminder:
+        eyebrow: Faktur
+        preheader: Pengingat pembayaran untuk %{company_name} faktur.
+        subject: Pengingat pembayaran untuk %{company_name}
+        subtitle: Berikut adalah faktur-faktur yang masih memerlukan perhatian.
+        title: Pengingat pembayaran
+    send_reminder_mailer:
+      send_reminder:
+        eyebrow: Faktur
+        preheader: Pengingat untuk faktur %{invoice_number} dari %{company_name}.
+        subject: Pengingat untuk faktur %{invoice_number} dari %{company_name}
+        subtitle_html: Faktur <strong>%{invoice_number}</strong> dari <strong>%{company_name}</strong>
+          masih menunggu pembayaran.
+        title: Pengingat pembayaran
+    send_weekly_reminder_to_user_mailer:
+      notify_user_about_missed_entries:
+        body_html: Anda mencatatkan waktu kurang dari 40 jam antara <strong>%{starting_date}</strong>
+          dan <strong>%{ending_date}</strong> .
+        eyebrow: Pencatatan waktu
+        follow_up: Buka Miru, tambahkan entri yang hilang, dan tutup minggu ini.
+        greeting_html: Hai <strong>%{name}</strong> ,
+        preheader: Perbarui lembar waktu Miru Anda untuk minggu yang hilang.
+        signoff_html: Terima kasih,<br> <strong>Miru</strong>
+        subject: Lengkapi lembar waktu Miru Anda untuk minggu lalu.
+        subtitle: Entri waktu Anda untuk %{company_name} masih di bawah total mingguan
+          yang diharapkan.
+        title: Lengkapi lembar waktu Anda.
+    user_invitation_mailer:
+      send_user_invitation:
+        about_body: Miru menyatukan pencatatan waktu, faktur, pembayaran, dan operasional
+          sehari-hari dalam satu ruang kerja.
+        about_title: Tentang Miru
+        eyebrow: Undangan
+        get_started_body: Terima undangannya, buat kata sandi Anda, dan Anda pun bisa
+          masuk.
+        get_started_title: Mulai
+        preheader: Anda telah diundang untuk bergabung dengan sebuah tim di Miru.
+        subject: Anda diundang untuk bergabung dengan Miru.
+        subtitle_html: "<strong>%{sender_name}</strong> mengundang Anda untuk bergabung
+          dengan <strong>%{company_name}</strong> di Miru."
+        support_html: Jika Anda tidak mengharapkan undangan ini, hubungi tim kami
+          di <a href="mailto:%{support_email}">%{support_email}</a> .
+        title: Gabung ke ruang kerja Miru Anda
+        workspace_members:
+          one: 1 anggota
+          other: "%{count} anggota"
   navbar:
     clients: Klien
     help: Membantu

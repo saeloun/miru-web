@@ -25,13 +25,6 @@
     </p>
   </div>
 <% end %>
-<%
-=begin%>
-<%- if devise_mapping.confirmable? && controller_name != 'confirmations' %>
-  <%= link_to t('shared_links.confirmation_instruction').capitalize, new_confirmation_path(resource_name), class:"miru_form_link" %><br />
-<% end %>
-<%
-=end%>
 <%- if devise_mapping.lockable? && resource_class.unlock_strategy_enabled?(:email) && controller_name != 'unlocks' %>
   <%= link_to t('shared_links.unlock_instruction').capitalize, new_unlock_path(resource_name), class: "miru_form_link" %><br />
 <% end %>

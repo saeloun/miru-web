@@ -1,12 +1,9 @@
 const kn = {
-  // Image validation
   invalidImageFormatSize:
     "ತಪ್ಪಾದ ಫೈಲ್ ಫಾರ್ಮ್ಯಾಟ್. ದಯವಿಟ್ಟು PNG ಅಥವಾ JPG ಪ್ರಕಾರದ ಚಿತ್ರವನ್ನು ಅಪ್‌ಲೋಡ್ ಮಾಡಿ. ಗರಿಷ್ಠ ಗಾತ್ರ (%{fileSize}KB)",
   invalidImageSize: "ಫೈಲ್ ಗಾತ್ರ ಗರಿಷ್ಠ ಮಿತಿ %{fileSize}KB ಅನ್ನು ಮೀರಿದೆ.",
   invalidImageFormat:
     "ತಪ್ಪಾದ ಫೈಲ್ ಫಾರ್ಮ್ಯಾಟ್. ದಯವಿಟ್ಟು PNG ಅಥವಾ JPG ಪ್ರಕಾರದ ಚಿತ್ರವನ್ನು ಅಪ್‌ಲೋಡ್ ಮಾಡಿ",
-
-  // Common actions
   save: "ಉಳಿಸಿ",
   cancel: "ರದ್ದುಮಾಡಿ",
   delete: "ಅಳಿಸಿ",
@@ -33,8 +30,6 @@ const kn = {
   yes: "ಹೌದು",
   no: "ಇಲ್ಲ",
   or: "ಅಥವಾ",
-
-  // Common labels
   name: "ಹೆಸರು",
   email: "ಇಮೇಲ್",
   phone: "ಫೋನ್",
@@ -68,8 +63,6 @@ const kn = {
   all: "ಎಲ್ಲಾ",
   from: "ಇಂದ",
   to: "ವರೆಗೆ",
-
-  // Date/time
   today: "ಇಂದು",
   yesterday: "ನಿನ್ನೆ",
   tomorrow: "ನಾಳೆ",
@@ -93,16 +86,12 @@ const kn = {
   selectPeriod: "ಅವಧಿ ಆಯ್ಕೆಮಾಡಿ",
   fullDay: "ಪೂರ್ಣ ದಿನ",
   halfDay: "ಅರ್ಧ ದಿನ",
-
-  // Date validation
   dateCannotBeBlank: "ದಿನಾಂಕ ಖಾಲಿ ಇರಬಾರದು",
   fromDateMustBeLessThanToDate:
     "'ಇಂದ' ದಿನಾಂಕವು 'ವರೆಗೆ' ದಿನಾಂಕಕ್ಕಿಂತ ಕಡಿಮೆ ಅಥವಾ ಸಮಾನವಾಗಿರಬೇಕು",
   toDateMustBeGreaterThanFromDate:
     "'ವರೆಗೆ' ದಿನಾಂಕವು 'ಇಂದ' ದಿನಾಂಕಕ್ಕಿಂತ ಹೆಚ್ಚು ಅಥವಾ ಸಮಾನವಾಗಿರಬೇಕು",
   invalidDate: "ದಯವಿಟ್ಟು ಮಾನ್ಯ ದಿನಾಂಕವನ್ನು ನಮೂದಿಸಿ",
-
-  // Month abbreviations
   monthJan: "ಜನ",
   monthFeb: "ಫೆಬ್ರ",
   monthMar: "ಮಾರ್ಚ್",
@@ -115,8 +104,6 @@ const kn = {
   monthOct: "ಅಕ್ಟೋ",
   monthNov: "ನವೆ",
   monthDec: "ಡಿಸೆ",
-
-  // Error pages
   pageNotFound: "ಪುಟ ಕಂಡುಬಂದಿಲ್ಲ",
   clickHere: "ಇಲ್ಲಿ ಕ್ಲಿಕ್ ಮಾಡಿ",
   somethingWentWrong: "ಏನೋ ತಪ್ಪಾಗಿದೆ",
@@ -124,15 +111,11 @@ const kn = {
     "ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಲು ಪುಟವನ್ನು ರಿಫ್ರೆಶ್ ಮಾಡಿ. ಇದು ಮುಂದುವರಿದರೆ, ಮತ್ತೆ ಸೈನ್ ಇನ್ ಮಾಡಿ ಅಥವಾ ಬೆಂಬಲವನ್ನು ಸಂಪರ್ಕಿಸಿ.",
   reloadPage: "ಪುಟ ಮರುಲೋಡ್ ಮಾಡಿ",
   loadingWorkspace: "ಕಾರ್ಯಕ್ಷೇತ್ರ ಲೋಡ್ ಆಗುತ್ತಿದೆ...",
-
-  // Search
   searchClients: "ಗ್ರಾಹಕರನ್ನು ಹುಡುಕಿ...",
   searchInvoices: "ಇನ್‌ವಾಯ್ಸ್‌ಗಳನ್ನು ಹುಡುಕಿ...",
   searchTeamMembers: "ತಂಡದ ಸದಸ್ಯರನ್ನು ಹುಡುಕಿ...",
   selectTeamMember: "ತಂಡದ ಸದಸ್ಯರನ್ನು ಆಯ್ಕೆಮಾಡಿ",
   noResultsFound: "ಯಾವುದೇ ಫಲಿತಾಂಶಗಳು ಕಂಡುಬಂದಿಲ್ಲ",
-
-  // Time Tracking
   timeTracking: {
     addEntry: "ನಮೂದು ಸೇರಿಸಿ",
     newTimeEntry: "ಹೊಸ ಸಮಯ ನಮೂದು",
@@ -221,8 +204,6 @@ const kn = {
       sun: "ಭಾನು",
     },
   },
-
-  // Task types
   taskTypes: {
     development: "ಅಭಿವೃದ್ಧಿ",
     meeting: "ಸಭೆ",
@@ -237,16 +218,12 @@ const kn = {
     training: "ತರಬೇತಿ",
     other: "ಇತರೆ",
   },
-
-  // Time off types
   timeOffTypes: {
     vacation: "ರಜೆ",
     sickLeave: "ಅನಾರೋಗ್ಯ ರಜೆ",
     personalDay: "ವೈಯಕ್ತಿಕ ದಿನ",
     holiday: "ರಜಾದಿನ",
   },
-
-  // Clients
   clients: {
     addClients: "ಗ್ರಾಹಕರನ್ನು ಸೇರಿಸಿ",
     addNewClient: "ಹೊಸ ಗ್ರಾಹಕರನ್ನು ಸೇರಿಸಿ",
@@ -279,8 +256,6 @@ const kn = {
     sendPaymentReminder: "ಪಾವತಿ ಜ್ಞಾಪನೆ ಕಳುಹಿಸಿ",
     invoicesSelected: "%{count} ಇನ್‌ವಾಯ್ಸ್‌ಗಳನ್ನು ಆಯ್ಕೆಮಾಡಲಾಗಿದೆ",
   },
-
-  // Contacts
   contacts: {
     addContact: "ಸಂಪರ್ಕ ಸೇರಿಸಿ",
     addContacts: "ಸಂಪರ್ಕಗಳನ್ನು ಸೇರಿಸಿ",
@@ -299,8 +274,6 @@ const kn = {
     invalidEmailId: "ಅಮಾನ್ಯ ಇಮೇಲ್ ಐಡಿ",
     emailRequired: "ಇಮೇಲ್ ಐಡಿ ಖಾಲಿ ಇರಬಾರದು",
   },
-
-  // Projects
   projects: {
     addProject: "ಯೋಜನೆ ಸೇರಿಸಿ",
     addNewProject: "ಹೊಸ ಯೋಜನೆ ಸೇರಿಸಿ",
@@ -372,8 +345,6 @@ const kn = {
     teamMembersDescription:
       "ಈ ಯೋಜನೆಗೆ ನಿಯೋಜಿತ ತಂಡದ ಸದಸ್ಯರನ್ನು ವೀಕ್ಷಿಸಿ ಮತ್ತು ನಿರ್ವಹಿಸಿ.",
   },
-
-  // Team
   team: {
     team: "ತಂಡ",
     teamOverview: "ತಂಡ ಅವಲೋಕನ",
@@ -420,8 +391,6 @@ const kn = {
     invalidEmail: "ಅಮಾನ್ಯ ಇಮೇಲ್ ಐಡಿ",
     emailRequired: "ಇಮೇಲ್ ಐಡಿ ಖಾಲಿ ಇರಬಾರದು",
   },
-
-  // Invoices
   invoices: {
     invoice: "ಇನ್‌ವಾಯ್ಸ್",
     invoices: "ಇನ್‌ವಾಯ್ಸ್‌ಗಳು",
@@ -498,16 +467,12 @@ const kn = {
     resetFilters: "ಫಿಲ್ಟರ್‌ಗಳನ್ನು ಮರುಹೊಂದಿಸಿ",
     loadingChartData: "ಚಾರ್ಟ್ ಡೇಟಾ ಲೋಡ್ ಆಗುತ್ತಿದೆ...",
     noInvoiceData: "ಇನ್‌ವಾಯ್ಸ್ ಡೇಟಾ ಲಭ್ಯವಿಲ್ಲ",
-
-    // Statuses
     draft: "ಕರಡು",
     sent: "ಕಳುಹಿಸಲಾಗಿದೆ",
     overdue: "ಅವಧಿ ಮೀರಿದ",
     collected: "ಸಂಗ್ರಹಿಸಲಾಗಿದೆ",
     paid: "ಪಾವತಿಯಾಗಿದೆ",
     outstanding: "ಬಾಕಿ",
-
-    // Email
     recipientEmailId: "ಸ್ವೀಕೃತದಾರರ ಇಮೇಲ್ ಐಡಿ",
     subject: "ವಿಷಯ",
     message: "ಸಂದೇಶ",
@@ -519,8 +484,6 @@ const kn = {
     invoiceSentBody: "%{company} ನಿಮಗೆ ಇನ್‌ವಾಯ್ಸ್ (%{number}) ಕಳುಹಿಸಿದೆ",
     invoiceWillBeSent: "ಇನ್‌ವಾಯ್ಸ್ ಕಳುಹಿಸಲಾಗುವುದು!",
     processing: "ಪ್ರಕ್ರಿಯೆಗೊಳಿಸಲಾಗುತ್ತಿದೆ...",
-
-    // No payment gateway
     noPaymentGateway: "ಯಾವುದೇ ಪಾವತಿ ಗೇಟ್‌ವೇ ಸಂಪರ್ಕಿತವಾಗಿಲ್ಲ",
     paymentGatewayError:
       "ದೋಷ. ಇನ್‌ವಾಯ್ಸ್ ಪಾವತಿ ಮಾಡಲು ಪಾವತಿ ಗೇಟ್‌ವೇ ಸಂಪರ್ಕಿಸಲು ದಯವಿಟ್ಟು ಇನ್‌ವಾಯ್ಸ್ ಕಳುಹಿಸಿದವರನ್ನು ಸಂಪರ್ಕಿಸಿ",
@@ -531,14 +494,10 @@ const kn = {
     stripeDisabled: "ಈ ಇನ್‌ವಾಯ್ಸ್‌ಗೆ Stripe ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ",
     stripeDisabledMessage:
       "ಕಳುಹಿಸಿದವರು ಈ ಇನ್‌ವಾಯ್ಸ್‌ಗೆ Stripe ಪಾವತಿಗಳನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಿಲ್ಲ. ಅದನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಲು ನೀವು ಅವರನ್ನು ಸಂಪರ್ಕಿಸಬಹುದು, ಅಥವಾ ACH ನಂತಹ ಪರ್ಯಾಯ ಪಾವತಿ ವಿಧಾನವನ್ನು ಆಯ್ಕೆಮಾಡಿ.",
-
-    // Bulk actions
     preparingDownload: "ಡೌನ್‌ಲೋಡ್ ಸಿದ್ಧಪಡಿಸಲಾಗುತ್ತಿದೆ...",
     downloadFailed: "ಡೌನ್‌ಲೋಡ್ ವಿಫಲವಾಗಿದೆ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.",
     downloadingFiles: "ಫೈಲ್‌ಗಳನ್ನು ಡೌನ್‌ಲೋಡ್ ಮಾಡಲಾಗುತ್ತಿದೆ...",
     downloadComplete: "ಡೌನ್‌ಲೋಡ್ ಪೂರ್ಣಗೊಂಡಿದೆ",
-
-    // Table headers
     nameHeader: "ಹೆಸರು",
     descriptionHeader: "ವಿವರಣೆ",
     dateHeader: "ದಿನಾಂಕ",
@@ -546,8 +505,6 @@ const kn = {
     amountHeader: "ಮೊತ್ತ",
     statusHeader: "ಸ್ಥಿತಿ",
     invoiceNumberHeader: "ಇನ್‌ವಾಯ್ಸ್ ಸಂಖ್ಯೆ",
-
-    // Chart labels
     area: "ಪ್ರದೇಶ",
     bar: "ಬಾರ್",
     noData: "ಡೇಟಾ ಇಲ್ಲ",
@@ -555,8 +512,6 @@ const kn = {
     quarterly: "ತ್ರೈಮಾಸಿಕ",
     yearly: "ವಾರ್ಷಿಕ",
     trend: "ಪ್ರವೃತ್ತಿ",
-
-    // Preview / detail labels
     taxId: "ತೆರಿಗೆ ಐಡಿ: %{value}",
     vatNumber: "VAT ಸಂಖ್ಯೆ: %{value}",
     gstNumber: "GST ಸಂಖ್ಯೆ: %{value}",
@@ -570,8 +525,6 @@ const kn = {
     due: "%{date} ಗಡುವು",
     viewed: "ವೀಕ್ಷಿಸಲಾಗಿದೆ",
     cancelled: "ರದ್ದುಮಾಡಲಾಗಿದೆ",
-
-    // Toast / confirmation messages
     invoiceMarkedAsPaid:
       "ಇನ್‌ವಾಯ್ಸ್ ಅನ್ನು ಯಶಸ್ವಿಯಾಗಿ ಪಾವತಿಯಾಗಿದೆ ಎಂದು ಗುರುತಿಸಲಾಗಿದೆ",
     invoiceDownloaded: "ಇನ್‌ವಾಯ್ಸ್ ಯಶಸ್ವಿಯಾಗಿ ಡೌನ್‌ಲೋಡ್ ಆಗಿದೆ",
@@ -589,8 +542,6 @@ const kn = {
     invoiceUpdated: "ಇನ್‌ವಾಯ್ಸ್ ಯಶಸ್ವಿಯಾಗಿ ನವೀಕರಿಸಲಾಗಿದೆ",
     failedToSaveInvoice:
       "ಇನ್‌ವಾಯ್ಸ್ ಉಳಿಸಲು ವಿಫಲವಾಗಿದೆ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.",
-
-    // Counters
     showingOf: "%{total} ರಲ್ಲಿ %{shown} ತೋರಿಸಲಾಗುತ್ತಿದೆ",
     viewingMatching:
       "%{loaded} ಲೋಡ್ ಮಾಡಿದವುಗಳಿಂದ %{filtered} ಹೊಂದಾಣಿಕೆಯ ಇನ್‌ವಾಯ್ಸ್‌ಗಳನ್ನು ವೀಕ್ಷಿಸಲಾಗುತ್ತಿದೆ",
@@ -599,12 +550,8 @@ const kn = {
       "%{count} ಇತ್ತೀಚಿನ ವಹಿವಾಟುಗಳನ್ನು ತೋರಿಸಲಾಗುತ್ತಿದೆ",
     updatedAt: "%{date} ರಂದು ನವೀಕರಿಸಲಾಗಿದೆ",
     invoiceHash: "ಇನ್‌ವಾಯ್ಸ್ #%{number}",
-
-    // Mobile table headers
     nameDescription: "ಹೆಸರು / ವಿವರಣೆ",
     dateTime: "ದಿನಾಂಕ / ಸಮಯ",
-
-    // Invoice reminder email
     invoiceReminder: "ಇನ್‌ವಾಯ್ಸ್ ಜ್ಞಾಪನೆ: %{number}",
     reminderMessage:
       "ನಿಮ್ಮ ಬಾಕಿ ಇನ್‌ವಾಯ್ಸ್ ಬಗ್ಗೆ ಇದು ಜ್ಞಾಪನೆ. ದಯವಿಟ್ಟು ಲಗತ್ತಿಸಿದ ವಿವರಗಳನ್ನು ನೋಡಿ.",
@@ -623,15 +570,29 @@ const kn = {
     cannotDownloadInvalidId: "ಇನ್‌ವಾಯ್ಸ್ ಡೌನ್‌ಲೋಡ್ ಮಾಡಲಾಗುವುದಿಲ್ಲ - ಅಮಾನ್ಯ ಐಡಿ",
     cannotSendInvalidId: "ಇನ್‌ವಾಯ್ಸ್ ಕಳುಹಿಸಲಾಗುವುದಿಲ್ಲ - ಅಮಾನ್ಯ ಐಡಿ",
     payment: "ಪಾವತಿ #%{id}",
+    newInvoicePage: "ಹೊಸ ಇನ್‌ವಾಯ್ಸ್",
+    editInvoicePage: "ಇನ್‌ವಾಯ್ಸ್ ಸಂಪಾದಿಸಿ",
+    editorSubtitle:
+      "ವಿವರಗಳನ್ನು ಭರ್ತಿ ಮಾಡಿ ಮತ್ತು ಇನ್‌ವಾಯ್ಸ್ ಕಳುಹಿಸುವ ಮೊದಲು ಅದರ ಪೂರ್ವವೀಕ್ಷಣೆ ಮಾಡಿ.",
+    saving: "ಉಳಿಸಲಾಗುತ್ತಿದೆ...",
+    sending: "ಕಳುಹಿಸಲಾಗುತ್ತಿದೆ...",
+    alreadySent: "ಈಗಾಗಲೇ ಕಳುಹಿಸಲಾಗಿದೆ",
+    downloading: "ಡೌನ್‌ಲೋಡ್ ಮಾಡಲಾಗುತ್ತಿದೆ...",
+    selectClientBeforeSending:
+      "ಇನ್‌ವಾಯ್ಸ್ ಕಳುಹಿಸುವ ಮೊದಲು ಕ್ಲೈಂಟ್ ಅನ್ನು ಆಯ್ಕೆಮಾಡಿ.",
   },
   common: {
     retry: "ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ",
     pageUnavailable:
       "ಈ ಪುಟ ಲಭ್ಯವಿಲ್ಲ ಅಥವಾ ಲಿಂಕ್ ನಿಮ್ಮ ಕಾರ್ಯಕ್ಷೇತ್ರಕ್ಕೆ ಇನ್ನು ಮಾನ್ಯವಲ್ಲ.",
     goToDashboard: "ಡ್ಯಾಶ್‌ಬೋರ್ಡ್‌ಗೆ ಹೋಗಿ",
+    language: "ಭಾಷೆ",
+    loading: "ಲೋಡ್ ಆಗುತ್ತಿದೆ...",
+    saving: "ಉಳಿಸಲಾಗುತ್ತಿದೆ...",
+    failedToChangeLanguage: "ಭಾಷೆಯನ್ನು ಬದಲಾಯಿಸಲು ವಿಫಲವಾಗಿದೆ",
+    searchLanguages: "ಭಾಷೆಗಳನ್ನು ಹುಡುಕಿ...",
+    noLanguagesFound: "ಯಾವುದೇ ಭಾಷೆಗಳು ಕಂಡುಬಂದಿಲ್ಲ.",
   },
-
-  // Invoice admin dashboard
   invoiceDashboard: {
     revenueOverview: "ಆದಾಯ ಅವಲೋಕನ",
     revenueByStatus: "ಸ್ಥಿತಿಯ ಪ್ರಕಾರ ಆದಾಯ",
@@ -639,8 +600,6 @@ const kn = {
     allInvoices: "ಎಲ್ಲಾ ಇನ್‌ವಾಯ್ಸ್‌ಗಳು",
     recentSales: "ಇತ್ತೀಚಿನ ಮಾರಾಟಗಳು",
   },
-
-  // Payments
   payments: {
     payments: "ಪಾವತಿಗಳು",
     addPayment: "ಪಾವತಿ ಸೇರಿಸಿ",
@@ -665,8 +624,6 @@ const kn = {
     paymentHistory: "ಪಾವತಿ ಇತಿಹಾಸ",
     scrollToLoadMore: "ಇನ್ನಷ್ಟು ಪಾವತಿಗಳನ್ನು ಲೋಡ್ ಮಾಡಲು ಸ್ಕ್ರೋಲ್ ಮಾಡಿ",
     allPaymentsLoaded: "ಎಲ್ಲಾ ಪಾವತಿಗಳನ್ನು ಲೋಡ್ ಮಾಡಲಾಗಿದೆ",
-
-    // Filters
     allStatuses: "ಎಲ್ಲಾ ಸ್ಥಿತಿಗಳು",
     allClients: "ಎಲ್ಲಾ ಗ್ರಾಹಕರು",
     paymentType: "ಪಾವತಿ ಪ್ರಕಾರ",
@@ -675,8 +632,8 @@ const kn = {
     bankTransfer: "ಬ್ಯಾಂಕ್ ವರ್ಗಾವಣೆ",
     wireTransfer: "ವೈರ್ ವರ್ಗಾವಣೆ",
     achTransfer: "ACH ವರ್ಗಾವಣೆ",
-    paypal: "PayPal",
-    stripe: "Stripe",
+    paypal: "ಪೇಪಾಲ್",
+    stripe: "ಪಟ್ಟೆ",
     cash: "ನಗದು",
     check: "ಚೆಕ್",
     pending: "ಬಾಕಿ",
@@ -689,8 +646,6 @@ const kn = {
     searchByClientOrInvoice: "ಗ್ರಾಹಕ ಹೆಸರು ಅಥವಾ ಇನ್‌ವಾಯ್ಸ್ ಐಡಿ ಮೂಲಕ ಹುಡುಕಿ",
     selectTransactionTypeBtn: "ವಹಿವಾಟು ಪ್ರಕಾರ ಆಯ್ಕೆಮಾಡಿ",
   },
-
-  // Timer
   timer: {
     webTimer: "ವೆಬ್ ಟೈಮರ್",
     webTimerLabel: "ವೆಬ್ ಟೈಮರ್",
@@ -716,8 +671,6 @@ const kn = {
     whatAreYouWorkingOn: "ನೀವು ಯಾವುದರ ಮೇಲೆ ಕೆಲಸ ಮಾಡುತ್ತಿದ್ದೀರಿ?",
     selectProject: "ಯೋಜನೆ ಆಯ್ಕೆಮಾಡಿ",
   },
-
-  // Reports
   reports: {
     reports: "ವರದಿಗಳು",
     backToReports: "ವರದಿಗಳಿಗೆ ಹಿಂತಿರುಗಿ",
@@ -732,8 +685,6 @@ const kn = {
     exportAsCsv: "CSV ಆಗಿ ರಫ್ತು ಮಾಡಿ",
     exportAsPdf: "PDF ಆಗಿ ರಫ್ತು ಮಾಡಿ",
     toggleReportFilters: "ವರದಿ ಫಿಲ್ಟರ್‌ಗಳನ್ನು ಟಾಗಲ್ ಮಾಡಿ",
-
-    // Filters
     clients: "ಗ್ರಾಹಕರು",
     teamMembers: "ತಂಡದ ಸದಸ್ಯರು",
     groupBy: "ಗುಂಪು ಮಾಡಿ",
@@ -742,14 +693,10 @@ const kn = {
     searchClientsFilter: "ಗ್ರಾಹಕರನ್ನು ಹುಡುಕಿ...",
     searchTeamMembersFilter: "ತಂಡದ ಸದಸ್ಯರನ್ನು ಹುಡುಕಿ...",
     applyFilter: "ಫಿಲ್ಟರ್ ಅನ್ವಯಿಸಿ",
-
-    // Time entry report
     totalHours: "ಒಟ್ಟು ಗಂಟೆಗಳು",
     scrollToLoadMoreRows: "ಇನ್ನಷ್ಟು ವರದಿ ಸಾಲುಗಳನ್ನು ಲೋಡ್ ಮಾಡಲು ಸ್ಕ್ರೋಲ್ ಮಾಡಿ",
     loadingMoreRows: "ಇನ್ನಷ್ಟು ವರದಿ ಸಾಲುಗಳನ್ನು ಲೋಡ್ ಮಾಡಲಾಗುತ್ತಿದೆ...",
     allRowsLoaded: "ಎಲ್ಲಾ ವರದಿ ಸಾಲುಗಳನ್ನು ಲೋಡ್ ಮಾಡಲಾಗಿದೆ",
-
-    // Payment report
     perTransaction: "ಪ್ರತಿ ವಹಿವಾಟು",
     topMethod: "ಉನ್ನತ ವಿಧಾನ",
     paymentMethodsBreakdown: "ಪಾವತಿ ವಿಧಾನಗಳ ವಿಭಜನೆ",
@@ -759,8 +706,6 @@ const kn = {
     allMethods: "ಎಲ್ಲಾ ವಿಧಾನಗಳು",
     creditCard: "ಕ್ರೆಡಿಟ್ ಕಾರ್ಡ್",
     allStatus: "ಎಲ್ಲಾ ಸ್ಥಿತಿ",
-
-    // Revenue by client report
     totalRevenue: "ಒಟ್ಟು ಆದಾಯ",
     paidRevenue: "ಪಾವತಿಯಾದ ಆದಾಯ",
     paidAmount: "ಪಾವತಿಯಾದ ಮೊತ್ತ",
@@ -777,16 +722,14 @@ const kn = {
     clientRevenueDetails: "ಗ್ರಾಹಕ ಆದಾಯ ವಿವರಗಳು",
     scrollToLoadMoreClients: "ಇನ್ನಷ್ಟು ಗ್ರಾಹಕರನ್ನು ಲೋಡ್ ಮಾಡಲು ಸ್ಕ್ರೋಲ್ ಮಾಡಿ",
     allClientsLoaded: "ಎಲ್ಲಾ ಗ್ರಾಹಕರನ್ನು ಲೋಡ್ ಮಾಡಲಾಗಿದೆ",
-
-    // Outstanding invoice report
     failedToLoadReportData: "ವರದಿ ಡೇಟಾ ಲೋಡ್ ಮಾಡಲು ವಿಫಲವಾಗಿದೆ",
     currencyFilter: "ಕರೆನ್ಸಿ ಫಿಲ್ಟರ್",
     fromDate: "ಆರಂಭ ದಿನಾಂಕ",
     toDate: "ಅಂತಿಮ ದಿನಾಂಕ",
     export: "ರಫ್ತು",
-    csv: "CSV",
-    pdf: "PDF",
-    excel: "Excel",
+    csv: "ಸಿಎಸ್‌ವಿ",
+    pdf: "ಪಿಡಿಎಫ್",
+    excel: "ಎಕ್ಸೆಲ್",
     statusOverview: "ಸ್ಥಿತಿ ಅವಲೋಕನ",
     currencyDistribution: "ಕರೆನ್ಸಿ ವಿತರಣೆ",
     topClients: "ಉನ್ನತ ಗ್ರಾಹಕರು",
@@ -796,8 +739,6 @@ const kn = {
     clientBreakdown: "ಗ್ರಾಹಕ ವಿಭಜನೆ",
     originalAmount: "ಮೂಲ ಮೊತ್ತ",
     baseAmount: "ಮೂಲ ಮೊತ್ತ",
-
-    // Accounts aging report
     totalDue: "ಒಟ್ಟು ಬಾಕಿ",
     invoiceAgingDetails: "ಇನ್‌ವಾಯ್ಸ್ ಏಜಿಂಗ್ ವಿವರಗಳು",
     noDataFound: "ಡೇಟಾ ಕಂಡುಬಂದಿಲ್ಲ",
@@ -936,8 +877,6 @@ const kn = {
     unknownProject: "ಅಜ್ಞಾತ ಯೋಜನೆ",
     generatingExport: "%{format} ರಚಿಸಲಾಗುತ್ತಿದೆ",
   },
-
-  // Expenses
   expenses: {
     expenses: "ವೆಚ್ಚಗಳು",
     addExpense: "ವೆಚ್ಚ ಸೇರಿಸಿ",
@@ -1017,8 +956,6 @@ const kn = {
     viewReceiptsFor: "%{description} ಗಾಗಿ ರಸೀದಿಗಳನ್ನು ವೀಕ್ಷಿಸಿ",
     expenseActionsFor: "%{description} ಗಾಗಿ ವೆಚ್ಚ ಕ್ರಿಯೆಗಳು",
   },
-
-  // Settings
   settings: {
     settings: "ಸೆಟ್ಟಿಂಗ್‌ಗಳು",
     profileSettings: "ಪ್ರೊಫೈಲ್ ಸೆಟ್ಟಿಂಗ್‌ಗಳು",
@@ -1046,9 +983,25 @@ const kn = {
     allocationValue: "ಹಂಚಿಕೆ ಮೌಲ್ಯ",
     allocationPeriod: "ಹಂಚಿಕೆ ಅವಧಿ",
     allocationFrequency: "ಹಂಚಿಕೆ ಆವರ್ತನ",
+    labels: {
+      profile: "ಪ್ರೊಫೈಲ್",
+      employment: "ಉದ್ಯೋಗ",
+      devices: "ಸಾಧನಗಳು",
+      notifications: "ಅಧಿಸೂಚನೆಗಳು",
+      preferences: "ಆದ್ಯತೆಗಳು",
+      organization: "ಸಂಸ್ಥೆ",
+      billing: "ಬಿಲ್ಲಿಂಗ್",
+      payment: "ಪಾವತಿ",
+      holidays: "ರಜಾದಿನಗಳು",
+      leaves: "ಎಲೆಗಳು",
+      automation: "ಆಟೊಮೇಷನ್",
+      bankInfo: "ಬ್ಯಾಂಕ್ ಮತ್ತು ತೆರಿಗೆ ಮಾಹಿತಿ",
+    },
+    categories: {
+      personal: "ವೈಯಕ್ತಿಕ",
+      organization: "ಸಂಸ್ಥೆ",
+    },
   },
-
-  // Leave types
   leaveTypes: {
     annualLeaves: "ವಾರ್ಷಿಕ ರಜೆಗಳು",
     sickLeaves: "ಅನಾರೋಗ್ಯ ರಜೆಗಳು",
@@ -1056,23 +1009,17 @@ const kn = {
     paternityLeave: "ಪಿತೃತ್ವ ರಜೆ",
     periodLeave: "ಮಾಸಿಕ ರಜೆ",
   },
-
-  // Allocation periods
   allocationPeriods: {
     days: "ದಿನಗಳು",
     weeks: "ವಾರಗಳು",
     months: "ತಿಂಗಳುಗಳು",
   },
-
-  // Allocation frequencies
   allocationFrequencies: {
     perWeek: "ಪ್ರತಿ ವಾರ",
     perMonth: "ಪ್ರತಿ ತಿಂಗಳು",
     perQuarter: "ಪ್ರತಿ ತ್ರೈಮಾಸಿಕ",
     perYear: "ಪ್ರತಿ ವರ್ಷ",
   },
-
-  // Navbar
   navbar: {
     clients: "ಗ್ರಾಹಕರು",
     invoices: "ಇನ್‌ವಾಯ್ಸ್‌ಗಳು",
@@ -1124,8 +1071,6 @@ const kn = {
     leavesDescription: "ರಜೆ ವಿನಂತಿಗಳನ್ನು ನಿರ್ವಹಿಸಿ",
     expensesDescription: "ವ್ಯಾಪಾರ ವೆಚ್ಚಗಳನ್ನು ಟ್ರ್ಯಾಕ್ ಮಾಡಿ",
   },
-
-  // Dashboard
   dashboard: {
     dashboard: "ಡ್ಯಾಶ್‌ಬೋರ್ಡ್",
     overdue: "ಅವಧಿ ಮೀರಿದ",
@@ -1169,12 +1114,100 @@ const kn = {
     noRecentActivityYet: "ಇನ್ನೂ ಯಾವುದೇ ಇತ್ತೀಚಿನ ಚಟುವಟಿಕೆ ಇಲ್ಲ",
     loadMore: "ಇನ್ನಷ್ಟು ಲೋಡ್ ಮಾಡಿ",
     allCaughtUp: "ನೀವು ಎಲ್ಲವನ್ನೂ ನವೀಕೃತವಾಗಿಸಿದ್ದೀರಿ",
+    there: "ಅಲ್ಲಿ",
+    caughtUp: "ಎಲ್ಲವೂ ಮುಗಿದಿದೆ!",
+    timeframe: {
+      week: "ಈ ವಾರ",
+      month: "ಈ ತಿಂಗಳು",
+      quarter: "ಈ ತ್ರೈಮಾಸಿಕ",
+      year: "ಈ ವರ್ಷ",
+    },
+    stats: {
+      revenue: "ಆದಾಯ",
+      totalInvoiced: "ಒಟ್ಟು ಇನ್‌ವಾಯ್ಸ್",
+      openInvoices: "ಇನ್‌ವಾಯ್ಸ್‌ಗಳನ್ನು ತೆರೆಯಿರಿ",
+      paidInvoices: "ಪಾವತಿಸಿದ ಇನ್‌ವಾಯ್ಸ್‌ಗಳು",
+      paymentsReceived: "ಪಾವತಿಗಳನ್ನು ಸ್ವೀಕರಿಸಲಾಗಿದೆ",
+      awaitingPayment: "ಪಾವತಿಗಾಗಿ ಕಾಯುತ್ತಿದೆ",
+      alreadySettled: "ಈಗಾಗಲೇ ಇತ್ಯರ್ಥವಾಗಿದೆ",
+      hoursTracked: "ಟ್ರ್ಯಾಕ್ ಮಾಡಿದ ಗಂಟೆಗಳು",
+      currentlyActive: "ಪ್ರಸ್ತುತ ಸಕ್ರಿಯವಾಗಿದೆ",
+      activeProjects: "ಸಕ್ರಿಯ ಯೋಜನೆಗಳು",
+      assignedProjects: "ನಿಯೋಜಿಸಲಾದ ಯೋಜನೆಗಳು",
+      projectsYouCanWorkOn: "ನೀವು ಕೆಲಸ ಮಾಡಬಹುದಾದ ಯೋಜನೆಗಳು",
+      teammates: "ತಂಡದ ಸದಸ್ಯರು",
+      teamSize: "ತಂಡದ ಗಾತ್ರ",
+      noRecentActivity: "ಇತ್ತೀಚಿನ ಚಟುವಟಿಕೆ ಇಲ್ಲ",
+    },
+    charts: {
+      revenueMomentumTitle: "ಆದಾಯದ ಆವೇಗ",
+      revenueMomentumDescription: "ಕಳೆದ ವರ್ಷದ ಮಾಸಿಕ ಆದಾಯದ ಪ್ರವೃತ್ತಿ",
+      revenueTrendEyebrow: "ಆದಾಯ ಪ್ರವೃತ್ತಿ",
+      revenueLeadersTitle: "ಕಂದಾಯ ನಾಯಕರು",
+      revenueLeadersDescription: "ಆದಾಯದ ಕೊಡುಗೆಯ ಪ್ರಕಾರ ಉನ್ನತ ಕ್ಲೈಂಟ್‌ಗಳು",
+      topCustomersEyebrow: "ಉನ್ನತ ಗ್ರಾಹಕರು",
+      ofTotal: "ಒಟ್ಟು %{percentage}",
+      noRevenue: "ಯಾವುದೇ ಆದಾಯದ ಡೇಟಾ ಲಭ್ಯವಿಲ್ಲ.",
+    },
+    roleGuidance: {
+      employee:
+        "ನಿಮ್ಮ ಸಮಯವನ್ನು ಟ್ರ್ಯಾಕ್ ಮಾಡಿ ಮತ್ತು ನಿಮ್ಮ ಯೋಜನೆಗಳನ್ನು ನಿರ್ವಹಿಸಿ",
+      bookKeeper: "ಇನ್‌ವಾಯ್ಸ್‌ಗಳು, ಪಾವತಿಗಳು ಮತ್ತು ಹಣಕಾಸು ವರದಿಗಳನ್ನು ಪರಿಶೀಲಿಸಿ",
+      client: "ನಿಮ್ಮ ಇನ್‌ವಾಯ್ಸ್‌ಗಳು ಮತ್ತು ಪಾವತಿ ಇತಿಹಾಸವನ್ನು ವೀಕ್ಷಿಸಿ",
+      default: "ನಿಮ್ಮ ಕಾರ್ಯಸ್ಥಳವನ್ನು ನಿರ್ವಹಿಸಿ",
+    },
   },
-
-  // Authentication
   auth: {
-    signIn: "ಸೈನ್ ಇನ್",
-    signUp: "ಸೈನ್ ಅಪ್",
+    signIn: {
+      title: "ನಿಮ್ಮ ಕಾರ್ಯಸ್ಥಳಕ್ಕೆ ಸೈನ್ ಇನ್ ಮಾಡಿ",
+      description:
+        "ಕೆಲಸವನ್ನು ಟ್ರ್ಯಾಕ್ ಮಾಡಿ, ಇನ್‌ವಾಯ್ಸ್‌ಗಳನ್ನು ಕಳುಹಿಸಿ ಮತ್ತು ಒಂದೇ ಸ್ಥಳದಿಂದ ನಗದು ಹರಿವನ್ನು ಸ್ಪಷ್ಟವಾಗಿ ಇರಿಸಿ.",
+      continueWithGoogle: "Google ನೊಂದಿಗೆ ಮುಂದುವರಿಸಿ",
+      continueWithGitHub: "GitHub ನೊಂದಿಗೆ ಮುಂದುವರಿಯಿರಿ",
+      orUseEmail: "ಅಥವಾ ಇಮೇಲ್ ಬಳಸಿ",
+      email: "ಇಮೇಲ್",
+      password: "ಪಾಸ್ವರ್ಡ್",
+      submit: "ಸೈನ್ ಇನ್",
+      forgotPassword: "ಪಾಸ್ವರ್ಡ್ ಮರೆತಿರಾ?",
+      noAccount: "ಖಾತೆ ಇಲ್ಲವೇ?",
+      signUp: "ಸೈನ್ ಅಪ್ ಮಾಡಿ",
+      privacy: "ಗೌಪ್ಯತೆ",
+      terms: "ನಿಯಮಗಳು",
+      loginFailed: "ಲಾಗಿನ್ ವಿಫಲವಾಗಿದೆ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.",
+      welcomeBack: "ಮರಳಿ ಸ್ವಾಗತ!",
+      waitingForPasskey: "ಪಾಸ್‌ಕೀಗಾಗಿ ಕಾಯಲಾಗುತ್ತಿದೆ...",
+      passkeyPrompt: "ಸೈನ್ ಇನ್ ಮಾಡಲು ನಿಮ್ಮ ಪಾಸ್‌ಕೀ ಬಳಸಿ",
+      totpTitle: "ಎರಡು-ಅಂಶ ದೃಢೀಕರಣ",
+      totpPrompt: "ನಿಮ್ಮ ಅಥೆಂಟಿಕೇಟರ್ ಆ್ಯಪ್‌ನಿಂದ ಕೋಡ್ ಅನ್ನು ನಮೂದಿಸಿ",
+      totpDescription:
+        "ನಿಮ್ಮ ದೃಢೀಕರಣ ಅಪ್ಲಿಕೇಶನ್ ತೆರೆಯಿರಿ ಮತ್ತು 6-ಅಂಕಿಯ ಕೋಡ್ ಅನ್ನು ನಮೂದಿಸಿ",
+      totpCode: "ದೃಢೀಕರಣ ಕೋಡ್",
+      verifyAndSignIn: "ಪರಿಶೀಲಿಸಿ ಮತ್ತು ಸೈನ್ ಇನ್ ಮಾಡಿ",
+      recoveryCode: "ಬದಲಿಗೆ ಮರುಪ್ರಾಪ್ತಿ ಕೋಡ್ ಬಳಸಿ",
+      back: "ಹಿಂದೆ",
+    },
+    signUp: {
+      title: "ನಿಮ್ಮ ಕಾರ್ಯಸ್ಥಳವನ್ನು ರಚಿಸಿ",
+      description:
+        "ಕ್ಲೈಂಟ್‌ಗಳು, ಯೋಜನೆಗಳು, ಇನ್‌ವಾಯ್ಸ್‌ಗಳು ಮತ್ತು ಪಾವತಿಗಳನ್ನು ಒಂದು ಸ್ಪಷ್ಟ ಆಪರೇಟಿಂಗ್ ಸಿಸ್ಟಂನಲ್ಲಿ ಹೊಂದಿಸಿ.",
+      continueWithGoogle: "Google ನೊಂದಿಗೆ ಮುಂದುವರಿಸಿ",
+      continueWithGitHub: "GitHub ನೊಂದಿಗೆ ಮುಂದುವರಿಯಿರಿ",
+      orUseEmail: "ಅಥವಾ ಇಮೇಲ್ ಬಳಸಿ",
+      firstName: "ಹೆಸರು",
+      lastName: "ಕೊನೆಯ ಹೆಸರು",
+      email: "ಇಮೇಲ್",
+      password: "ಪಾಸ್ವರ್ಡ್",
+      confirmPassword: "ಪಾಸ್‌ವರ್ಡ್ ಅನ್ನು ದೃಢೀಕರಿಸಿ",
+      passwordCriteria:
+        "ಒಂದು ದೊಡ್ಡಕ್ಷರ, ಒಂದು ಸಣ್ಣಕ್ಷರ ಮತ್ತು ಒಂದು ಸಂಖ್ಯೆಯನ್ನು ಹೊಂದಿರುವ ಕನಿಷ್ಠ 8 ಅಕ್ಷರಗಳು",
+      submit: "ಖಾತೆಯನ್ನು ರಚಿಸಿ",
+      alreadyHaveAccount: "ಈಗಾಗಲೇ ಖಾತೆ ಇದೆಯೇ?",
+      signIn: "ಸೈನ್ ಇನ್",
+      agreePrefix: "ಸೈನ್ ಅಪ್ ಮಾಡುವ ಮೂಲಕ, ನೀವು ನಮ್ಮ",
+      termsOfService: "ಸೇವಾ ನಿಯಮಗಳು",
+      and: "ಮತ್ತು",
+      privacyPolicy: "ಗೌಪ್ಯತಾ ನೀತಿ",
+    },
     signOut: "ಸೈನ್ ಔಟ್",
     welcomeBack: "ಮರಳಿ ಸ್ವಾಗತ!",
     loginFailed: "ಲಾಗಿನ್ ವಿಫಲವಾಗಿದೆ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.",
@@ -1200,12 +1233,12 @@ const kn = {
     alreadyHaveAccount: "ಈಗಾಗಲೇ ಖಾತೆ ಇದೆಯೇ?",
     dontHaveAccount: "ಖಾತೆ ಇಲ್ಲವೇ?",
     rememberMe: "ನನ್ನನ್ನು ನೆನಪಿಟ್ಟುಕೊಳ್ಳಿ",
-    totpPlaceholder: "ABCD-EFGH",
+    totpPlaceholder: "ಎಬಿಸಿಡಿ-ಇಎಫ್‌ಜಿಹೆಚ್",
     companyPulse: "ಕಂಪನಿ ಸ್ಪಂದನ",
     billingCommand: "ಬಿಲ್ಲಿಂಗ್ ಆದೇಶ",
     clearWeeklyFlow: "ಸ್ಪಷ್ಟ ಸಾಪ್ತಾಹಿಕ ಹರಿವು",
     cashLedger: "ನಗದು ಖಾತೆ ಪುಸ್ತಕ",
-    miruLogo: "Miru",
+    miruLogo: "ಮಿರು",
     heroTitle: "ಸಮಯ, ಇನ್‌ವಾಯ್ಸ್‌ಗಳು, ಮತ್ತು ಪಾವತಿಗಳಿಗೆ ಒಂದೇ ಸ್ಥಳ",
     heroDescription:
       "ದಿನವನ್ನು ಸ್ಪಷ್ಟವಾಗಿಡಿ, ಬಿಲ್ಲಿಂಗ್ ಮುಂದುವರಿಸಿ, ಮತ್ತು ನಗದು ಗೋಚರವಾಗಿಡಿ.",
@@ -1241,15 +1274,71 @@ const kn = {
     termsOfService: "ಸೇವಾ ನಿಯಮಗಳು",
     privacyPolicy: "ಗೌಪ್ಯತೆ ನೀತಿ",
     and: "ಮತ್ತು",
+    slides: {
+      dashboard: {
+        title: "ಕಂಪನಿ ನಾಡಿಮಿಡಿತ",
+        description: "ಆದಾಯ, ಸಕ್ರಿಯ ಯೋಜನೆಗಳು ಮತ್ತು ತಂಡದ ಆವೇಗವನ್ನು ಹುಡುಕದೆ ನೋಡಿ.",
+      },
+      invoices: {
+        title: "ಬಿಲ್ಲಿಂಗ್ ಆಜ್ಞೆ",
+        description:
+          "ಡ್ರಾಫ್ಟ್‌ಗಳು, ಬಾಕಿ ಉಳಿದಿರುವ ಬಾಕಿಗಳು ಮತ್ತು ಪಾವತಿಸಿದ ಕೆಲಸವನ್ನು ಒಂದೇ ಸ್ಥಳದಲ್ಲಿ ಇರಿಸಿ.",
+      },
+      timeTracking: {
+        title: "ವಾರದ ಹರಿವನ್ನು ತೆರವುಗೊಳಿಸಿ",
+        description:
+          "ವಾರದಿಂದ ವಾರಕ್ಕೆ ನಡೆಯುವ ಸಮಯದ ನಮೂದು ಬಿಡುವಿಲ್ಲದ ಕೆಲಸವಾಗಿ ಬದಲಾಗದೆ ಪ್ರಸ್ತುತವಾಗಿರುತ್ತದೆ.",
+      },
+      payments: {
+        title: "ನಗದು ಲೆಡ್ಜರ್",
+        description:
+          "ಪ್ರತಿಯೊಂದು ಪಾವತಿಯು ವಿಧಾನ, ಸ್ಥಿತಿ ಮತ್ತು ಮೂಲದೊಂದಿಗೆ ಒಂದೇ ಲೆಡ್ಜರ್‌ನಲ್ಲಿ ಬರುತ್ತದೆ.",
+      },
+    },
+    validation: {
+      emailRequired: "ಇಮೇಲ್ ಅಗತ್ಯವಿದೆ",
+      invalidEmail: "ಅಮಾನ್ಯ ಇಮೇಲ್ ವಿಳಾಸ",
+      passwordRequired: "ಪಾಸ್‌ವರ್ಡ್ ಅಗತ್ಯವಿದೆ",
+      passwordComplexity:
+        "ಪಾಸ್‌ವರ್ಡ್ ಕನಿಷ್ಠ 8 ಅಕ್ಷರಗಳನ್ನು ಹೊಂದಿರಬೇಕು, ಇದರಲ್ಲಿ ದೊಡ್ಡಕ್ಷರ, ಸಣ್ಣಕ್ಷರ ಮತ್ತು ಸಂಖ್ಯೆ ಇರಬೇಕು.",
+      passwordSpace: "ಪಾಸ್‌ವರ್ಡ್‌ನಲ್ಲಿ ಸ್ಥಳಾವಕಾಶ ಇರಬಾರದು.",
+      confirmPasswordRequired: "ಪಾಸ್‌ವರ್ಡ್ ದೃಢೀಕರಣ ಅಗತ್ಯವಿದೆ.",
+      passwordsMustMatch: "ಪಾಸ್‌ವರ್ಡ್‌ಗಳು ಹೊಂದಿಕೆಯಾಗಬೇಕು",
+      firstNameRequired: "ಮೊದಲ ಹೆಸರು ಅಗತ್ಯವಿದೆ",
+      firstNameInvalid: "ಮೊದಲ ಹೆಸರಿನಲ್ಲಿ ಅಕ್ಷರಗಳು ಮಾತ್ರ ಇರಬೇಕು.",
+      firstNameMax: "ಮೊದಲ ಹೆಸರು 20 ಅಕ್ಷರಗಳು ಅಥವಾ ಅದಕ್ಕಿಂತ ಕಡಿಮೆ ಇರಬೇಕು.",
+      lastNameRequired: "ಕೊನೆಯ ಹೆಸರು ಅಗತ್ಯವಿದೆ",
+      lastNameInvalid: "ಕೊನೆಯ ಹೆಸರಿನಲ್ಲಿ ಕೇವಲ ಅಕ್ಷರಗಳು ಮಾತ್ರ ಇರಬೇಕು.",
+      lastNameMax: "ಕೊನೆಯ ಹೆಸರು 20 ಅಕ್ಷರಗಳು ಅಥವಾ ಅದಕ್ಕಿಂತ ಕಡಿಮೆ ಇರಬೇಕು.",
+      acceptTerms: "ನೀವು ನಿಯಮಗಳನ್ನು ಒಪ್ಪಿಕೊಳ್ಳಬೇಕು",
+    },
   },
-
-  // Passkeys
   passkeys: {
     noPasskeyResponse: "ಯಾವುದೇ ಪಾಸ್‌ಕೀ ಪ್ರತಿಕ್ರಿಯೆ ಸ್ವೀಕರಿಸಲಾಗಿಲ್ಲ.",
     passkeysNotSupported: "ಈ ಬ್ರೌಸರ್‌ನಲ್ಲಿ ಪಾಸ್‌ಕೀಗಳು ಬೆಂಬಲಿತವಾಗಿಲ್ಲ.",
+    title: "ಪಾಸ್‌ಕೀಗಳು",
+    addTitle: "ಈ ಖಾತೆಗೆ ಪಾಸ್‌ಕೀ ಸೇರಿಸಿ",
+    addDescription:
+      "ಫೇಸ್ ಐಡಿ, ಟಚ್ ಐಡಿ, ವಿಂಡೋಸ್ ಹಲೋ ಅಥವಾ ಹಾರ್ಡ್‌ವೇರ್ ಭದ್ರತಾ ಕೀಲಿಯನ್ನು ಬಳಸಿ.",
+    addAction: "ಪಾಸ್‌ಕೀ ಸೇರಿಸಿ",
+    requirementTitle: "ಸೈನ್ ಇನ್ ಮಾಡುವಾಗ ಪಾಸ್‌ಕೀ ಅಗತ್ಯವಿದೆ",
+    requirementDescription:
+      "ನಿಮ್ಮ ಪಾಸ್‌ವರ್ಡ್ ನಂತರ, ಸೈನ್ ಇನ್ ಅನ್ನು ಪೂರ್ಣಗೊಳಿಸಲು ಮಿರುಗೆ ಪಾಸ್‌ಕೀ ಅಗತ್ಯವಿರುತ್ತದೆ.",
+    emptyState: "ಇನ್ನೂ ಯಾವುದೇ ಪಾಸ್‌ಕೀಗಳನ್ನು ಸೇರಿಸಲಾಗಿಲ್ಲ.",
+    fallbackName: "ಪಾಸ್‌ಕೀ",
+    addedAt: "%{time} ಸೇರಿಸಲಾಗಿದೆ",
+    lastUsedAt: "ಕೊನೆಯದಾಗಿ ಬಳಸಿದ್ದು %{time}",
+    removeAction: "ತೆಗೆದುಹಾಕಿ",
+    addedSuccess: "ಪಾಸ್‌ಕೀ ಸೇರಿಸಲಾಗಿದೆ",
+    removedSuccess: "ಪಾಸ್‌ಕೀ ತೆಗೆದುಹಾಕಲಾಗಿದೆ",
+    requirementEnabled: "ಪಾಸ್‌ಕೀ ಅವಶ್ಯಕತೆಯನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ",
+    requirementDisabled: "ಪಾಸ್‌ಕೀ ಅವಶ್ಯಕತೆಯನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ",
+    addFailed: "ಪಾಸ್‌ಕೀ ಸೇರಿಸಲು ವಿಫಲವಾಗಿದೆ.",
+    removeFailed: "ಪಾಸ್‌ಕೀಯನ್ನು ತೆಗೆದುಹಾಕಲು ವಿಫಲವಾಗಿದೆ.",
+    updateRequirementFailed:
+      "ಪಾಸ್‌ಕೀ ಸೈನ್-ಇನ್ ಅವಶ್ಯಕತೆಯನ್ನು ನವೀಕರಿಸಲು ವಿಫಲವಾಗಿದೆ.",
+    neverUsed: "ಎಂದಿಗೂ ಬಳಸಿಲ್ಲ",
   },
-
-  // Organization setup
   orgSetup: {
     setupOrganization: "ಸಂಸ್ಥೆ ಸ್ಥಾಪಿಸಿ",
     companyName: "ಕಂಪನಿ ಹೆಸರು",
@@ -1271,13 +1360,11 @@ const kn = {
     dragLogo: "ಲೋಗೋ ಎಳೆಯಿರಿ",
     selectFile: "ಫೈಲ್ ಆಯ್ಕೆಮಾಡಿ",
     acceptedFileFormats: "ಸ್ವೀಕೃತ ಫೈಲ್ ಫಾರ್ಮ್ಯಾಟ್‌ಗಳು: PNG, JPG, SVG.",
-    fileSizeLimit: "ಫೈಲ್ ಗಾತ್ರ \u2266 2MB ಆಗಿರಬೇಕು.",
+    fileSizeLimit: "ಫೈಲ್ ಗಾತ್ರ ≦ 2MB ಆಗಿರಬೇಕು.",
     imageResolution: "ಚಿತ್ರ ರೆಸಲ್ಯೂಶನ್ 1:1 ಆಗಿರಬೇಕು.",
     workingDaysPerWeek: "ಕೆಲಸದ ದಿನಗಳು (ಪ್ರತಿ ವಾರ)",
     workingHoursPerWeek: "ಕೆಲಸದ ಗಂಟೆಗಳು (ಪ್ರತಿ ವಾರ)",
   },
-
-  // Profile
   profile: {
     personalDetails: "ವೈಯಕ್ತಿಕ ವಿವರಗಳು",
     employmentDetails: "ಉದ್ಯೋಗ ವಿವರಗಳು",
@@ -1291,11 +1378,67 @@ const kn = {
     dateOfJoining: "ಸೇರ್ಪಡೆ ದಿನಾಂಕ",
     dateOfBirth: "ಹುಟ್ಟಿದ ದಿನಾಂಕ",
     socialProfiles: "ಸಾಮಾಜಿಕ ಪ್ರೊಫೈಲ್‌ಗಳು",
-    linkedin: "LinkedIn",
-    github: "GitHub",
+    linkedin: "ಲಿಂಕ್ಡ್ಇನ್",
+    github: "ಗಿಟ್‌ಹಬ್",
+    personalInformation: "ವೈಯಕ್ತಿಕ ಮಾಹಿತಿ",
+    basicDetails: "ಮೂಲ ವಿವರಗಳು",
+    contactInformation: "ಸಂಪರ್ಕ ಮಾಹಿತಿ",
+    addressType: "ವಿಳಾಸದ ಪ್ರಕಾರ",
+    current: "ಪ್ರಸ್ತುತ",
+    permanent: "ಶಾಶ್ವತ",
+    employeeId: "ಉದ್ಯೋಗಿ ಐಡಿ",
+    officialEmail: "ಇಮೇಲ್ ಐಡಿ (ಅಧಿಕೃತ)",
+    employmentType: "ಉದ್ಯೋಗದ ಪ್ರಕಾರ",
+    dateOfResignation: "ರಾಜೀನಾಮೆ ದಿನಾಂಕ",
+    birthDatePlaceholder: "ನಿಮ್ಮ ಜನ್ಮ ದಿನಾಂಕವನ್ನು ಆಯ್ಕೆಮಾಡಿ",
+    firstName: "ಹೆಸರು",
+    lastName: "ಕೊನೆಯ ಹೆಸರು",
+    firstNamePlaceholder: "ನಿಮ್ಮ ಮೊದಲ ಹೆಸರನ್ನು ನಮೂದಿಸಿ",
+    lastNamePlaceholder: "ನಿಮ್ಮ ಕೊನೆಯ ಹೆಸರನ್ನು ನಮೂದಿಸಿ",
+    personalEmail: "ವೈಯಕ್ತಿಕ ಇಮೇಲ್",
+    personalEmailPlaceholder: "ನಿಮ್ಮ ಇಮೇಲ್@example.com",
+    phoneAriaLabel: "ದೂರವಾಣಿ ಸಂಖ್ಯೆ",
+    addressLine1: "ವಿಳಾಸ ಸಾಲು 1",
+    addressLine2: "ವಿಳಾಸ ಸಾಲು 2",
+    optionalSuffix: "(ಐಚ್ಛಿಕ)",
+    streetAddressPlaceholder: "ರಸ್ತೆ ವಿಳಾಸ",
+    addressLine2Placeholder: "ಅಪಾರ್ಟ್‌ಮೆಂಟ್, ಸೂಟ್, ಯೂನಿಟ್, ಇತ್ಯಾದಿ.",
+    statePlaceholder: "ರಾಜ್ಯ ಅಥವಾ ಪ್ರಾಂತ್ಯ",
+    cityPlaceholder: "ನಗರ",
+    zipPostalCode: "ಪಿನ್/ಪೋಸ್ಟಲ್ ಕೋಡ್",
+    zipPlaceholder: "12345",
+    languageDescription: "ಇಂಟರ್ಫೇಸ್‌ಗಾಗಿ ನಿಮ್ಮ ಆದ್ಯತೆಯ ಭಾಷೆಯನ್ನು ಆರಿಸಿ.",
+    security: "ಭದ್ರತೆ",
+    userFallback: "ಬಳಕೆದಾರ",
+    currentPasswordPlaceholder: "ಪ್ರಸ್ತುತ ಪಾಸ್‌ವರ್ಡ್ ನಮೂದಿಸಿ",
+    newPassword: "ಹೊಸ ಪಾಸ್‌ವರ್ಡ್",
+    newPasswordPlaceholder: "ಹೊಸ ಪಾಸ್‌ವರ್ಡ್ ನಮೂದಿಸಿ",
+    confirmPasswordPlaceholder: "ಹೊಸ ಪಾಸ್‌ವರ್ಡ್ ಅನ್ನು ಮರು ನಮೂದಿಸಿ",
+    cancelPasswordChange: "ಪಾಸ್‌ವರ್ಡ್ ಬದಲಾವಣೆಯನ್ನು ರದ್ದುಗೊಳಿಸಿ",
+    profilePhoto: "ಪ್ರೊಫೈಲ್ ಫೋಟೋ",
+    profilePhotoDescription:
+      "ನಿಮ್ಮ ಕಾರ್ಯಸ್ಥಳದ ಪ್ರೊಫೈಲ್‌ಗಾಗಿ ಚೌಕಾಕಾರದ ಫೋಟೋವನ್ನು ಅಪ್‌ಲೋಡ್ ಮಾಡಿ.",
+    noAddressProvided: "ಯಾವುದೇ ವಿಳಾಸವನ್ನು ಒದಗಿಸಲಾಗಿಲ್ಲ.",
+    noEmailProvided: "ಯಾವುದೇ ಇಮೇಲ್ ಒದಗಿಸಲಾಗಿಲ್ಲ.",
+    notProvided: "ಒದಗಿಸಲಾಗಿಲ್ಲ",
+    notConnected: "ಸಂಪರ್ಕಗೊಂಡಿಲ್ಲ",
+    bornOn: "ಜನನ %{date}",
+    lastChangedDaysAgo: "ಕೊನೆಯದಾಗಿ %{count} ದಿನಗಳ ಹಿಂದೆ ಬದಲಾಯಿಸಲಾಗಿದೆ",
+    secure: "ಸುರಕ್ಷಿತ",
+    uploadPhoto: "ಫೋಟೋ ಅಪ್‌ಲೋಡ್ ಮಾಡಿ",
+    removePhoto: "ಫೋಟೋ ತೆಗೆದುಹಾಕಿ",
+    uploadPhotoFailed: "ಪ್ರೊಫೈಲ್ ಚಿತ್ರವನ್ನು ಅಪ್‌ಲೋಡ್ ಮಾಡಲು ವಿಫಲವಾಗಿದೆ.",
+    removePhotoFailed: "ಪ್ರೊಫೈಲ್ ಚಿತ್ರವನ್ನು ತೆಗೆದುಹಾಕಲು ವಿಫಲವಾಗಿದೆ.",
+    adjustProfilePhoto: "ಪ್ರೊಫೈಲ್ ಫೋಟೋ ಹೊಂದಿಸಿ",
+    adjustProfilePhotoDescription:
+      "ನೀವು ಇರಿಸಿಕೊಳ್ಳಲು ಬಯಸುವ ಚಿತ್ರದ ಭಾಗವನ್ನು ಆರಿಸಿ.",
+    noImageSelected: "ಯಾವುದೇ ಚಿತ್ರವನ್ನು ಆಯ್ಕೆ ಮಾಡಿಲ್ಲ.",
+    savePhoto: "ಫೋಟೋ ಉಳಿಸಿ",
+    zoom: "ಜೂಮ್ ಮಾಡಿ",
+    company: "ಕಂಪನಿ",
+    noPreviousEmployments: "ಹಿಂದಿನ ಯಾವುದೇ ಉದ್ಯೋಗಗಳು ಕಂಡುಬಂದಿಲ್ಲ.",
+    addPastEmployment: "+ ಹಿಂದಿನ ಉದ್ಯೋಗವನ್ನು ಸೇರಿಸಿ",
   },
-
-  // Leave Management
   leaveManagement: {
     leaveBalance: "ರಜೆ ಬಾಕಿ",
     applyLeave: "ರಜೆಗೆ ಅರ್ಜಿ ಹಾಕಿ",
@@ -1333,9 +1476,11 @@ const kn = {
     leave: "ರಜೆ",
     nationalHoliday: "ರಾಷ್ಟ್ರೀಯ ರಜಾದಿನ",
     optionalHoliday: "ಐಚ್ಛಿಕ ರಜಾದಿನ",
+    summaryLabel: "ಸಾರಾಂಶ ಬಿಡಿ",
+    summaryDescription:
+      "ಆಯ್ದ ವರ್ಷದ ಲಭ್ಯವಿರುವ ರಜೆ, ಈಗಾಗಲೇ ತೆಗೆದುಕೊಂಡ ಸಮಯ ಮತ್ತು ರಜೆಯ ಬಳಕೆಯನ್ನು ಒಂದೇ ಸ್ಥಳದಲ್ಲಿ ನೋಡಿ.",
+    balanceUntil: "%{date} ವರೆಗೆ ಬಾಕಿ",
   },
-
-  // Subscriptions / Plan Details
   subscriptions: {
     currentPlan: "ಪ್ರಸ್ತುತ ಯೋಜನೆ",
     upgradePlan: "ಯೋಜನೆ ಅಪ್‌ಗ್ರೇಡ್ ಮಾಡಿ",
@@ -1356,8 +1501,6 @@ const kn = {
     plusTaxes: "ತೆರಿಗೆಗಳನ್ನು ಹೊರತುಪಡಿಸಿ",
     reviewAndPay: "ಪರಿಶೀಲಿಸಿ ಮತ್ತು ಪಾವತಿಸಿ",
   },
-
-  // Misc
   switchToMode: "%{mode} ಮೋಡ್‌ಗೆ ಬದಲಾಯಿಸಿ",
   light: "ಬೆಳಕು",
   dark: "ಕತ್ತಲೆ",
@@ -1367,8 +1510,6 @@ const kn = {
   editLabel: "ಸಂಪಾದಿಸಿ",
   noPasskeyResponse: "ಯಾವುದೇ ಪಾಸ್‌ಕೀ ಪ್ರತಿಕ್ರಿಯೆ ಸ್ವೀಕರಿಸಲಾಗಿಲ್ಲ.",
   passkeysNotSupported: "ಈ ಬ್ರೌಸರ್‌ನಲ್ಲಿ ಪಾಸ್‌ಕೀಗಳು ಬೆಂಬಲಿತವಾಗಿಲ್ಲ.",
-
-  // Table headers (common)
   tableHeaders: {
     invoiceNo: "ಇನ್‌ವಾಯ್ಸ್ ಸಂ.",
     invoiceNumber: "ಇನ್‌ವಾಯ್ಸ್ ಸಂಖ್ಯೆ",
@@ -1388,15 +1529,460 @@ const kn = {
     role: "ಪಾತ್ರ",
     type: "ಪ್ರಕಾರ",
   },
-
-  // Relative dates
   nextDay: "ಮುಂದಿನ %{day}",
   lastDay: "ಕಳೆದ %{day}",
-
-  // Duration formatting
-  durationMinutes: "%{mins}m",
-  durationHours: "%{hours}h",
-  durationHoursMinutes: "%{hours}h %{mins}m",
+  durationMinutes: "%{mins}ನಿ",
+  durationHours: "%{hours}ಗಂ",
+  durationHoursMinutes: "%{hours}ಗಂ %{mins}ನಿ",
+  preferencesSettings: {
+    title: "ಇಮೇಲ್ ಆದ್ಯತೆಗಳು",
+    description: "ನಿಮ್ಮ ಇಮೇಲ್ ಅಧಿಸೂಚನೆ ಸೆಟ್ಟಿಂಗ್‌ಗಳನ್ನು ನಿರ್ವಹಿಸಿ",
+    saving: "ಉಳಿಸಲಾಗುತ್ತಿದೆ...",
+    saveChanges: "ಬದಲಾವಣೆಗಳನ್ನು ಉಳಿಸಿ",
+    timesheetNotifications: "ಟೈಮ್‌ಶೀಟ್ ಅಧಿಸೂಚನೆಗಳು",
+    billingNotifications: "ಬಿಲ್ಲಿಂಗ್ ಅಧಿಸೂಚನೆಗಳು",
+    timesheetNotificationsDescription:
+      "ಸಮಯ ಟ್ರ್ಯಾಕಿಂಗ್ ಮತ್ತು ಟೈಮ್‌ಶೀಟ್‌ಗಳಿಗೆ ಸಂಬಂಧಿಸಿದ ಅಧಿಸೂಚನೆಗಳನ್ನು ನಿರ್ವಹಿಸಿ",
+    billingNotificationsDescription:
+      "ಇನ್‌ವಾಯ್ಸ್ ಮತ್ತು ಪಾವತಿ ಅಧಿಸೂಚನೆಗಳನ್ನು ನಿಯಂತ್ರಿಸಿ",
+    weeklyReminderTitle: "ಸಾಪ್ತಾಹಿಕ ವೇಳಾಪಟ್ಟಿ ಜ್ಞಾಪನೆ",
+    weeklyReminderDescription:
+      "ಬಾಕಿ ಇರುವ ಟೈಮ್‌ಶೀಟ್ ನಮೂದುಗಳ ಕುರಿತು ಪ್ರತಿ ಸೋಮವಾರ ಸಾಪ್ತಾಹಿಕ ಜ್ಞಾಪನೆಗಳನ್ನು ಸ್ವೀಕರಿಸಿ",
+    timesheetReminderTitle: "ಕಾಣೆಯಾದ ಪ್ರವೇಶ ಜ್ಞಾಪನೆಗಳು",
+    timesheetReminderDescription:
+      "ನೀವು 2 ದಿನಗಳಿಗಿಂತ ಹೆಚ್ಚು ಕಾಲ ಲಾಗಿನ್ ಆಗದಿದ್ದರೆ ಸೂಚನೆ ಪಡೆಯಿರಿ",
+    invoiceNotificationsTitle: "ಇನ್‌ವಾಯ್ಸ್ ಇಮೇಲ್ ಅಧಿಸೂಚನೆಗಳು",
+    invoiceNotificationsDescription:
+      "ಇನ್‌ವಾಯ್ಸ್‌ಗಳನ್ನು ರಚಿಸಿದಾಗ, ಕಳುಹಿಸಿದಾಗ ಅಥವಾ ನವೀಕರಿಸಿದಾಗ ಇಮೇಲ್‌ಗಳನ್ನು ಸ್ವೀಕರಿಸಿ",
+    paymentNotificationsTitle: "ಪಾವತಿ ಇಮೇಲ್ ಅಧಿಸೂಚನೆಗಳು",
+    paymentNotificationsDescription:
+      "ಪಾವತಿಗಳನ್ನು ಸ್ವೀಕರಿಸಿದಾಗ ಅಥವಾ ಪಾವತಿ ಸ್ಥಿತಿ ಬದಲಾದಾಗ ಸೂಚನೆ ಪಡೆಯಿರಿ",
+    monthlyDigestTitle: "ಮಾಸಿಕ ನಗದು ಹರಿವಿನ ಸಾರಾಂಶ",
+    monthlyDigestDescription:
+      "ನಿವ್ವಳ ಬದಲಾವಣೆ, ಒಳಬರುವ ಹಣ ಮತ್ತು ಹೊರಹೋಗುವ ಹಣದೊಂದಿಗೆ ಮಾಸಿಕ ನಗದು ಹರಿವಿನ ಸಾರಾಂಶವನ್ನು ಪಡೆಯಿರಿ.",
+    confirmUnsubscribeTitle:
+      "ಎಲ್ಲಾ ಇಮೇಲ್‌ಗಳಿಂದ ಅನ್‌ಸಬ್‌ಸ್ಕ್ರೈಬ್ ಮಾಡುವುದನ್ನು ದೃಢೀಕರಿಸಿ",
+    confirmUnsubscribeDescription:
+      "ಎಲ್ಲಾ ಇಮೇಲ್ ಅಧಿಸೂಚನೆಗಳಿಂದ ನೀವು ಅನ್‌ಸಬ್‌ಸ್ಕ್ರೈಬ್ ಮಾಡಲು ಖಚಿತವಾಗಿ ಬಯಸುವಿರಾ? ಪ್ರಮುಖ ಬಿಲ್ಲಿಂಗ್ ಮತ್ತು ಇನ್‌ವಾಯ್ಸ್ ಅಧಿಸೂಚನೆಗಳನ್ನು ಒಳಗೊಂಡಂತೆ ಯಾವುದೇ ಇಮೇಲ್‌ಗಳನ್ನು ನೀವು ಸ್ವೀಕರಿಸುವುದಿಲ್ಲ.",
+    confirmUnsubscribeAction: "ಹೌದು, ಎಲ್ಲದರಿಂದ ಅನ್‌ಸಬ್‌ಸ್ಕ್ರೈಬ್ ಮಾಡಿ",
+    unsubscribedTitle: "ನೀವು ಎಲ್ಲಾ ಇಮೇಲ್‌ಗಳಿಂದ ಅನ್‌ಸಬ್‌ಸ್ಕ್ರೈಬ್ ಆಗಿದ್ದೀರಿ.",
+    unsubscribedDescription:
+      "ನೀವು ಪ್ರಸ್ತುತ ಎಲ್ಲಾ ಇಮೇಲ್ ಅಧಿಸೂಚನೆಗಳಿಂದ ಅನ್‌ಸಬ್‌ಸ್ಕ್ರೈಬ್ ಆಗಿದ್ದೀರಿ. ನೀವು ಮಿರು ನಿಂದ ಯಾವುದೇ ಇಮೇಲ್‌ಗಳನ್ನು ಸ್ವೀಕರಿಸುವುದಿಲ್ಲ.",
+    resubscribeAction: "ಇಮೇಲ್ ಅಧಿಸೂಚನೆಗಳನ್ನು ಮರು-ಸಕ್ರಿಯಗೊಳಿಸಿ",
+    enabledCount: "%{total} ರಲ್ಲಿ %{count} ಸಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ",
+    deliveryTitle: "ಇಮೇಲ್ ವಿತರಣಾ ಸೆಟ್ಟಿಂಗ್‌ಗಳು",
+    emailAddress: "ಇಮೇಲ್ ವಿಳಾಸ",
+    deliveryDescription:
+      "ಎಲ್ಲಾ ಅಧಿಸೂಚನೆಗಳನ್ನು ಈ ಇಮೇಲ್ ವಿಳಾಸಕ್ಕೆ ಕಳುಹಿಸಲಾಗುತ್ತದೆ. ನಿಮ್ಮ ಇಮೇಲ್ ಅನ್ನು ಬದಲಾಯಿಸಲು, ದಯವಿಟ್ಟು ಅದನ್ನು ನಿಮ್ಮ ಪ್ರೊಫೈಲ್ ಸೆಟ್ಟಿಂಗ್‌ಗಳಲ್ಲಿ ನವೀಕರಿಸಿ.",
+    unsubscribeTitle: "ಅನ್‌ಸಬ್‌ಸ್ಕ್ರೈಬ್ ಮಾಡಿ",
+    unsubscribeDescription:
+      "ನೀವು ಇನ್ನು ಮುಂದೆ ಮಿರು ನಿಂದ ಯಾವುದೇ ಇಮೇಲ್‌ಗಳನ್ನು ಸ್ವೀಕರಿಸಲು ಬಯಸದಿದ್ದರೆ, ನೀವು ಎಲ್ಲಾ ಅಧಿಸೂಚನೆಗಳಿಂದ ಅನ್‌ಸಬ್‌ಸ್ಕ್ರೈಬ್ ಮಾಡಬಹುದು. ಇದು ಪ್ರಮುಖ ಬಿಲ್ಲಿಂಗ್ ಮತ್ತು ಇನ್‌ವಾಯ್ಸ್ ಅಧಿಸೂಚನೆಗಳನ್ನು ಒಳಗೊಂಡಂತೆ ಎಲ್ಲಾ ಇಮೇಲ್ ಸಂವಹನಗಳನ್ನು ನಿಲ್ಲಿಸುತ್ತದೆ.",
+    unsubscribeAction: "ಎಲ್ಲಾ ಇಮೇಲ್‌ಗಳಿಂದ ಅನ್‌ಸಬ್‌ಸ್ಕ್ರೈಬ್ ಮಾಡಿ",
+    badges: {
+      active: "ಸಕ್ರಿಯ",
+      important: "ಪ್ರಮುಖ",
+      monthly: "ಮಾಸಿಕವಾಗಿ",
+    },
+  },
+  automationSettings: {
+    title: "ಆಟೋಮೇಷನ್ ಮತ್ತು CLI",
+    description:
+      "ನಿಮ್ಮ ಲಾಗಿನ್ ಮಾಡಿದ ಖಾತೆಯಂತೆಯೇ ಅದೇ ಅನುಮತಿಗಳೊಂದಿಗೆ ನಿಮ್ಮ ಟರ್ಮಿನಲ್, ಸ್ಕ್ರಿಪ್ಟ್‌ಗಳು ಅಥವಾ AI ಏಜೆಂಟ್‌ಗಳಿಂದ ಮಿರು ಬಳಸಿ. ಪ್ರತ್ಯೇಕ ಯಾಂತ್ರೀಕೃತಗೊಂಡ ಉತ್ಪನ್ನವಿಲ್ಲ. ವಿಶೇಷ ಹಿಂಬಾಗಿಲಿನ ಪ್ರವೇಶವಿಲ್ಲ.",
+    freeForEveryPlan: "ಪ್ರತಿ ಯೋಜನೆಗೂ ಉಚಿತ",
+    cards: {
+      samePermissionsTitle: "ಅಪ್ಲಿಕೇಶನ್‌ನಂತೆಯೇ ಅದೇ ಅನುಮತಿಗಳು",
+      samePermissionsDescription:
+        "ವೆಬ್ ಅಪ್ಲಿಕೇಶನ್‌ನಲ್ಲಿ ದೃಢೀಕೃತ ಬಳಕೆದಾರರು ಈಗಾಗಲೇ ಪ್ರವೇಶಿಸಬಹುದಾದ ವಸ್ತುಗಳನ್ನು ಮಾತ್ರ CLI ನೋಡುತ್ತದೆ.",
+      humansAndScriptsTitle: "ಮನುಷ್ಯರಿಗೆ ಮತ್ತು ಲಿಪಿಗಳಿಗೆ ಒಳ್ಳೆಯದು",
+      humansAndScriptsDescription:
+        "ದೈನಂದಿನ ಕೆಲಸಗಳಿಗೆ ಸರಳ ಆಜ್ಞೆಗಳನ್ನು ಇರಿಸಿ ಮತ್ತು ಸ್ಕ್ರಿಪ್ಟ್‌ಗಳು ಅಥವಾ AI ಒಂದೇ ಇಂಟರ್ಫೇಸ್ ಅನ್ನು ಕರೆಯಲಿ.",
+      easyToInstallTitle: "ಸ್ಥಾಪಿಸಲು ಸುಲಭ",
+      easyToInstallDescription:
+        "ಒಂದು ಅನುಸ್ಥಾಪನಾ ಆಜ್ಞೆ, ಒಂದು ಲಾಗಿನ್, ಮತ್ತು ನಂತರ ನೀವು ಯೋಜನೆಗಳನ್ನು ಪಟ್ಟಿ ಮಾಡಬಹುದು, ಸಮಯ ನಮೂದುಗಳನ್ನು ರಚಿಸಬಹುದು, ಇನ್‌ವಾಯ್ಸ್‌ಗಳನ್ನು ಪರಿಶೀಲಿಸಬಹುದು ಮತ್ತು ಇನ್ನೂ ಹೆಚ್ಚಿನದನ್ನು ಮಾಡಬಹುದು.",
+    },
+    commandGroups: {
+      install: "ಇನ್‌ಸ್ಟಾಲ್ ಮಾಡಿ",
+      authenticateOnce: "ಒಮ್ಮೆ ದೃಢೀಕರಿಸಿ",
+      dailyCommands: "ದೈನಂದಿನ ಆಜ್ಞೆಗಳು",
+    },
+  },
+  holidaysSettings: {
+    year: "ವರ್ಷ",
+    publicHolidays: "ಸಾರ್ವಜನಿಕ ರಜಾದಿನಗಳು",
+    optionalHolidays: "ಐಚ್ಛಿಕ ರಜಾದಿನಗಳು",
+    holidayName: "ರಜಾದಿನದ ಹೆಸರು",
+    enterHolidayName: "ರಜಾದಿನದ ಹೆಸರನ್ನು ನಮೂದಿಸಿ",
+    selectDate: "ದಿನಾಂಕ ಆಯ್ಕೆಮಾಡಿ",
+    addHoliday: "ರಜಾದಿನವನ್ನು ಸೇರಿಸಿ",
+    addFirstHoliday: "ಮೊದಲ ರಜಾದಿನವನ್ನು ಸೇರಿಸಿ",
+    addOptionalHoliday: "ಐಚ್ಛಿಕ ರಜಾದಿನವನ್ನು ಸೇರಿಸಿ",
+    noPublicHolidaysConfigured:
+      "ಯಾವುದೇ ಸಾರ್ವಜನಿಕ ರಜಾದಿನಗಳನ್ನು ಕಾನ್ಫಿಗರ್ ಮಾಡಲಾಗಿಲ್ಲ.",
+    noOptionalHolidaysConfigured:
+      "ಯಾವುದೇ ಐಚ್ಛಿಕ ರಜಾದಿನಗಳನ್ನು ಕಾನ್ಫಿಗರ್ ಮಾಡಲಾಗಿಲ್ಲ.",
+    totalAllowed: "ಒಟ್ಟು ಅನುಮತಿಸಲಾದ",
+    enterNumber: "ಸಂಖ್ಯೆಯನ್ನು ನಮೂದಿಸಿ",
+    frequency: "ಆವರ್ತನ",
+    allowedPerEmployee: "ಪ್ರತಿ ಉದ್ಯೋಗಿಗೆ ಅನುಮತಿಸಲಾಗಿದೆ",
+    yearAtAGlance: "ವರ್ಷದ ಸಂಕ್ಷಿಪ್ತ ಮಾಹಿತಿ",
+    holidaySchedule: "ರಜಾ ವೇಳಾಪಟ್ಟಿ",
+    noHolidaysAddedForYear:
+      "%{year} ಗೆ ಇನ್ನೂ ಯಾವುದೇ ರಜಾದಿನಗಳನ್ನು ಸೇರಿಸಲಾಗಿಲ್ಲ.",
+    categories: {
+      public: "ಸಾರ್ವಜನಿಕ",
+      optional: "ಐಚ್ಛಿಕ",
+    },
+    weekdays: {
+      sun: "ಸ",
+      mon: "ಮ",
+      tue: "ಹ",
+      wed: "ವ",
+      thu: "ಹ",
+      fri: "ಕ",
+      sat: "ಸ",
+    },
+  },
+  paymentSettingsPage: {
+    backToSettings: "ಸೆಟ್ಟಿಂಗ್‌ಗಳಿಗೆ ಹಿಂತಿರುಗಿ",
+    title: "ಪಾವತಿ ಪೂರೈಕೆದಾರರು",
+    description:
+      "ಗ್ರಾಹಕರಿಂದ ಆನ್‌ಲೈನ್ ಪಾವತಿಗಳನ್ನು ಸ್ವೀಕರಿಸಲು ಪಾವತಿ ಪೂರೈಕೆದಾರರನ್ನು ಸಂಪರ್ಕಿಸಿ",
+    errorTitle: "ದೋಷ",
+    errorDescription:
+      "ಪಾವತಿ ಸೆಟ್ಟಿಂಗ್‌ಗಳನ್ನು ಲೋಡ್ ಮಾಡಲು ವಿಫಲವಾಗಿದೆ. ದಯವಿಟ್ಟು ನಂತರ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.",
+    stripeDescription:
+      "ಕ್ರೆಡಿಟ್ ಕಾರ್ಡ್‌ಗಳು, ಡೆಬಿಟ್ ಕಾರ್ಡ್‌ಗಳು ಮತ್ತು ಜನಪ್ರಿಯ ಪಾವತಿ ವಿಧಾನಗಳನ್ನು ಸ್ವೀಕರಿಸಿ.",
+    connectedTo: "ಸಂಪರ್ಕಗೊಂಡಿದೆ",
+    connected: "ಸಂಪರ್ಕಿಸಲಾಗಿದೆ",
+    stripeAccountFallback: "ಸ್ಟ್ರೈಪ್ ಖಾತೆ",
+    chargesEnabled: "ಶುಲ್ಕಗಳನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ",
+    connectStripe: "ಕನೆಕ್ಟ್ ಸ್ಟ್ರೈಪ್",
+    connecting: "ಸಂಪರ್ಕಿಸಲಾಗುತ್ತಿದೆ...",
+    disconnect: "ಸಂಪರ್ಕ ಕಡಿತಗೊಳಿಸಿ",
+    disconnecting: "ಸಂಪರ್ಕ ಕಡಿತಗೊಳಿಸಲಾಗುತ್ತಿದೆ...",
+    featuresTitle: "ವೈಶಿಷ್ಟ್ಯಗಳು ಮತ್ತು ಪ್ರಯೋಜನಗಳು",
+    helpTitle: "ಸಹಾಯ ಬೇಕೇ?",
+    helpDescription:
+      "ಪಾವತಿ ಪ್ರಕ್ರಿಯೆಯನ್ನು ಹೊಂದಿಸಲು ನಿಮಗೆ ಸಹಾಯ ಬೇಕಾದರೆ ಅಥವಾ ಶುಲ್ಕಗಳು ಮತ್ತು ಸಾಮರ್ಥ್ಯಗಳ ಬಗ್ಗೆ ಪ್ರಶ್ನೆಗಳಿದ್ದರೆ:",
+    viewDocumentation: "ದಾಖಲೆಗಳನ್ನು ವೀಕ್ಷಿಸಿ",
+    contactSupport: "ಬೆಂಬಲವನ್ನು ಸಂಪರ್ಕಿಸಿ",
+    disconnectDialogTitle: "ಸ್ಟ್ರೈಪ್ ಖಾತೆಯನ್ನು ಸಂಪರ್ಕ ಕಡಿತಗೊಳಿಸಿ",
+    disconnectDialogDescription:
+      "ನಿಮ್ಮ ಸ್ಟ್ರೈಪ್ ಖಾತೆಯನ್ನು ಸಂಪರ್ಕ ಕಡಿತಗೊಳಿಸಲು ನೀವು ಖಚಿತವಾಗಿ ಬಯಸುವಿರಾ? ನೀವು ಮರುಸಂಪರ್ಕಿಸುವವರೆಗೆ ಸ್ಟ್ರೈಪ್ ಮೂಲಕ ಪಾವತಿಗಳನ್ನು ಸ್ವೀಕರಿಸಲು ನಿಮಗೆ ಸಾಧ್ಯವಾಗುವುದಿಲ್ಲ.",
+    features: {
+      secureTitle: "ಸುರಕ್ಷಿತ ಪಾವತಿಗಳು",
+      secureDescription: "PCI- ಕಂಪ್ಲೈಂಟ್ ಪಾವತಿ ಪ್ರಕ್ರಿಯೆ",
+      currenciesTitle: "ಬಹು ಕರೆನ್ಸಿಗಳು",
+      currenciesDescription: "135+ ಕರೆನ್ಸಿಗಳಲ್ಲಿ ಪಾವತಿಗಳನ್ನು ಸ್ವೀಕರಿಸಿ",
+      methodsTitle: "ವಿವಿಧ ಪಾವತಿ ವಿಧಾನಗಳು",
+      methodsDescription:
+        "ಕಾರ್ಡ್‌ಗಳು, ವ್ಯಾಲೆಟ್‌ಗಳು, ಬ್ಯಾಂಕ್ ವರ್ಗಾವಣೆಗಳು ಮತ್ತು ಇನ್ನಷ್ಟು",
+      setupTitle: "ತ್ವರಿತ ಸೆಟಪ್",
+      setupDescription: "ನಿಮಿಷಗಳಲ್ಲಿ ಪಾವತಿಗಳನ್ನು ಸ್ವೀಕರಿಸಲು ಪ್ರಾರಂಭಿಸಿ",
+    },
+  },
+  organizationSettingsPage: {
+    actions: {
+      editSettings: "ಸೆಟ್ಟಿಂಗ್‌ಗಳನ್ನು ಸಂಪಾದಿಸಿ",
+    },
+    sections: {
+      companyProfile: "ಕಂಪನಿ ಪ್ರೊಫೈಲ್",
+      financial: "ಹಣಕಾಸು",
+      scheduleAndTime: "ವೇಳಾಪಟ್ಟಿ ಮತ್ತು ಸಮಯ",
+      workingHours: "ಕೆಲಸದ ಸಮಯ",
+    },
+    fields: {
+      businessPhone: "ವ್ಯಾಪಾರ ಫೋನ್",
+      currency: "ಕರೆನ್ಸಿ",
+      businessAddress: "ವ್ಯವಹಾರ ವಿಳಾಸ",
+      standardRate: "ಪ್ರಮಾಣಿತ ದರ",
+      fiscalYearEnd: "ಹಣಕಾಸು ವರ್ಷಾಂತ್ಯ",
+      timezone: "ಸಮಯ ವಲಯ",
+      dateFormat: "ದಿನಾಂಕ ಸ್ವರೂಪ",
+      workingDays: "ಕೆಲಸದ ದಿನಗಳು",
+    },
+    status: {
+      active: "ಸಕ್ರಿಯ",
+    },
+    defaults: {
+      companyName: "ಕಂಪನಿಯ ಹೆಸರು",
+      locationNotSet: "ಸ್ಥಳ ಹೊಂದಿಸಿಲ್ಲ.",
+      notConfigured: "ಕಾನ್ಫಿಗರ್ ಮಾಡಲಾಗಿಲ್ಲ",
+      noAddress: "ಯಾವುದೇ ವಿಳಾಸವನ್ನು ಕಾನ್ಫಿಗರ್ ಮಾಡಿಲ್ಲ.",
+      workingHours: "ಬೆಳಿಗ್ಗೆ 9:00 - ಸಂಜೆ 5:00",
+      workingDays: "ಸೋಮವಾರ - ಶುಕ್ರವಾರ",
+      timezone: "ಯುಟಿಸಿ",
+      dateFormat: "ತಿತಿ/ದಿದಿ/ವವವವ",
+    },
+    errors: {
+      loadFailed:
+        "ಸಂಸ್ಥೆಯ ವಿವರಗಳನ್ನು ಲೋಡ್ ಮಾಡಲು ವಿಫಲವಾಗಿದೆ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.",
+    },
+    ratePerHour: "/ ಗಂಟೆ",
+  },
+  billingSettings: {
+    membership: "ಸದಸ್ಯತ್ವ",
+    currentPlan: "ಪ್ರಸ್ತುತ ಯೋಜನೆ",
+    seatUsage: "ಆಸನ ಬಳಕೆ",
+    billingCadence: "ಬಿಲ್ಲಿಂಗ್ ಕ್ಯಾಡೆನ್ಸ್",
+    monthly: "ಮಾಸಿಕವಾಗಿ",
+    yearly: "ವಾರ್ಷಿಕ",
+    notSubscribedYet: "ಇನ್ನೂ ಚಂದಾದಾರರಾಗಿಲ್ಲ",
+    startTrial: "30-ದಿನಗಳ ಪ್ರೊ ಪ್ರಯೋಗವನ್ನು ಪ್ರಾರಂಭಿಸಿ",
+    startingTrial: "ಪ್ರಯೋಗ ಪ್ರಾರಂಭವಾಗುತ್ತಿದೆ...",
+    upgradeWithStripe: "ಸ್ಟ್ರೈಪ್‌ನೊಂದಿಗೆ ಅಪ್‌ಗ್ರೇಡ್ ಮಾಡಿ",
+    openingStripe: "ಓಪನಿಂಗ್ ಸ್ಟ್ರೈಪ್...",
+    manageBillingInStripe: "ಸ್ಟ್ರೈಪ್‌ನಲ್ಲಿ ಬಿಲ್ಲಿಂಗ್ ಅನ್ನು ನಿರ್ವಹಿಸಿ",
+    openingPortal: "ಪೋರ್ಟಲ್ ತೆರೆಯಲಾಗುತ್ತಿದೆ...",
+    saveTwoMonths: "ವರ್ಷಕ್ಕೆ ಎರಡು ತಿಂಗಳು ಉಳಿಸಿ",
+    heroTitle:
+      "ಈಗ ಸರಿಹೊಂದುವ ಪ್ಯಾಕೇಜ್ ಅನ್ನು ಆರಿಸಿ. ಇನ್ನಷ್ಟು ಬೇಕಾದರೆ ನಂತರ ಬದಲಾಯಿಸಿ.",
+    howManySeats: "ನಿಮಗೆ ಎಷ್ಟು ಸೀಟುಗಳು ಬೇಕಾಗುತ್ತವೆ ಎಂದು ನಿರೀಕ್ಷಿಸುತ್ತೀರಿ?",
+    estimatedSeats: "ಅಂದಾಜು ಸೀಟುಗಳು",
+    recommended: "ಶಿಫಾರಸು ಮಾಡಲಾಗಿದೆ",
+    estimatedProSpend: "ಅಂದಾಜು ಪ್ರೊ ಖರ್ಚು",
+    yearlyDiscount: "ವಾರ್ಷಿಕ ರಿಯಾಯಿತಿ",
+    openSource: "ಮುಕ್ತ ಮೂಲ",
+    annual: "ವಾರ್ಷಿಕ",
+    service: "ಸೇವೆ",
+    poweredByStripe: "ಸ್ಟ್ರೈಪ್ ನಿಂದ ನಡೆಸಲ್ಪಡುತ್ತಿದೆ",
+    changePlansAnytime: "ಯಾವುದೇ ಸಮಯದಲ್ಲಿ ಯೋಜನೆಗಳನ್ನು ಬದಲಾಯಿಸಿ",
+    checkoutPoweredByStripe:
+      "ಚೆಕ್ಔಟ್ ಮತ್ತು ಚಂದಾದಾರಿಕೆ ನಿರ್ವಹಣೆಯು ಸ್ಟ್ರೈಪ್‌ನಿಂದ ನಡೆಸಲ್ಪಡುತ್ತದೆ.",
+    noSalesCall:
+      "ಪ್ರೊಗೆ ಯಾವುದೇ ಮಾರಾಟ ಕರೆ ಇಲ್ಲ. ಯಾವುದೇ ಸಮಯದಲ್ಲಿ ಸ್ಟ್ರೈಪ್‌ನಲ್ಲಿ ಯೋಜನೆಗಳನ್ನು ರದ್ದುಗೊಳಿಸಿ ಅಥವಾ ಬದಲಾಯಿಸಿ.",
+    reportsAndAnalytics: "ವರದಿಗಳು ಮತ್ತು ವಿಶ್ಲೇಷಣೆಗಳು",
+    customAnnual: "ವಾರ್ಷಿಕ ಕಸ್ಟಮ್",
+    seatsUsed: "%{used}/%{total} ಸೀಟುಗಳು ಬಳಸಲಾಗಿದೆ",
+    seatsUsedWithoutLimit: "%{used} ಸೀಟುಗಳು ಬಳಸಲಾಗಿದೆ",
+    savePerYear: "ವರ್ಷಕ್ಕೆ $%{amount} ಉಳಿಸಿ",
+    effectiveMonthlyPricing: "ಸುಮಾರು $%{amount}/ತಿಂ ಪರಿಣಾಮಕಾರಿ ಬೆಲೆ ನಿಗದಿ",
+    cancelOrUpgradeAnytime:
+      "ಸ್ಟ್ರೈಪ್‌ನಲ್ಲಿ ಯಾವುದೇ ಸಮಯದಲ್ಲಿ ರದ್ದುಗೊಳಿಸಿ ಅಥವಾ ಅಪ್‌ಗ್ರೇಡ್ ಮಾಡಿ",
+    planCadence: {
+      monthly: "ತಿಂಗಳಿನಿಂದ ತಿಂಗಳಿಗೆ ಬಿಲ್ ಮಾಡಲಾಗಿದೆ",
+      yearlySavings: "ಪ್ರತಿ ಸೀಟಿಗೆ 2 ತಿಂಗಳು ಉಳಿಸಿ",
+    },
+    alerts: {
+      subscriptionUpdatedTitle: "ಚಂದಾದಾರಿಕೆಯನ್ನು ನವೀಕರಿಸಲಾಗಿದೆ",
+      subscriptionUpdated:
+        "ನಿಮ್ಮ ಯೋಜನೆಯನ್ನು ಸ್ಟ್ರೈಪ್‌ನಲ್ಲಿ ಯಶಸ್ವಿಯಾಗಿ ನವೀಕರಿಸಲಾಗಿದೆ.",
+      checkoutCancelled: "ಚೆಕ್ಔಟ್ ರದ್ದುಗೊಂಡಿದೆ",
+      noSubscriptionChanges:
+        "ನಿಮ್ಮ ಚಂದಾದಾರಿಕೆಯಲ್ಲಿ ಯಾವುದೇ ಬದಲಾವಣೆಗಳನ್ನು ಮಾಡಲಾಗಿಲ್ಲ.",
+      unableToLoad: "ಬಿಲ್ಲಿಂಗ್ ವಿವರಗಳನ್ನು ಲೋಡ್ ಮಾಡಲು ಸಾಧ್ಯವಾಗುತ್ತಿಲ್ಲ.",
+      proTrialActive: "ಪ್ರೊ ಪ್ರಯೋಗ ಸಕ್ರಿಯವಾಗಿದೆ",
+      proTrialActiveUntil:
+        "ನಿಮ್ಮ ಕಾರ್ಯಸ್ಥಳವು %{date} ವರೆಗೆ ಪ್ರೊ ಪ್ರವೇಶವನ್ನು ಹೊಂದಿರುತ್ತದೆ.",
+      proTrialEnded: "ಪ್ರೊ ಪ್ರಯೋಗ ಕೊನೆಗೊಂಡಿದೆ",
+      proTrialEndedDescription:
+        "ನಿಮ್ಮ ಕಾರ್ಯಸ್ಥಳವು ಉಚಿತ ಯೋಜನೆಗೆ ಮರಳಿದೆ. ಪ್ರೊ ಪ್ರವೇಶವನ್ನು ಪುನಃಸ್ಥಾಪಿಸಲು ಸ್ಟ್ರೈಪ್‌ನಲ್ಲಿ ಅಪ್‌ಗ್ರೇಡ್ ಮಾಡಿ.",
+      seatLimitReached: "ಆಸನ ಮಿತಿ ತಲುಪಿದೆ",
+      seatLimitReachedDescription:
+        "ಈ ಕಾರ್ಯಕ್ಷೇತ್ರಕ್ಕೆ 3 ಕ್ಕಿಂತ ಹೆಚ್ಚು ಸದಸ್ಯರನ್ನು ಸೇರಿಸಲು ಸ್ಟ್ರೈಪ್‌ನಲ್ಲಿ ಅಪ್‌ಗ್ರೇಡ್ ಮಾಡಿ.",
+    },
+    errors: {
+      unableToOpenStripeCheckout: "ಸ್ಟ್ರೈಪ್ ಚೆಕ್ಔಟ್ ತೆರೆಯಲು ಸಾಧ್ಯವಾಗುತ್ತಿಲ್ಲ",
+      unableToOpenStripeBillingPortal:
+        "ಸ್ಟ್ರೈಪ್ ಬಿಲ್ಲಿಂಗ್ ಪೋರ್ಟಲ್ ತೆರೆಯಲು ಸಾಧ್ಯವಾಗುತ್ತಿಲ್ಲ.",
+      unableToStartProTrial:
+        "ನಿಮ್ಮ ವೃತ್ತಿಪರ ಪ್ರಯೋಗವನ್ನು ಪ್ರಾರಂಭಿಸಲು ಸಾಧ್ಯವಾಗುತ್ತಿಲ್ಲ.",
+    },
+    recommendations: {
+      freeTitle: "ನಿಮಗೆ ನಿಯಂತ್ರಣಗಳು ಬೇಕಾಗುವವರೆಗೂ ಉಚಿತವಾಗಿರಿ.",
+      freeDescription:
+        "ಉಚಿತ ಆಟವು ತುಂಬಾ ಸಣ್ಣ ತಂಡಗಳಿಗೆ ಚೆನ್ನಾಗಿ ಕೆಲಸ ಮಾಡುತ್ತದೆ. ನಿಮಗೆ SSO, ಬಲವಾದ ವರದಿಗಳು ಮತ್ತು 3 ಕ್ಕಿಂತ ಹೆಚ್ಚು ಸೀಟುಗಳು ಬೇಕಾದಾಗ ಪ್ರೊಗೆ ಹೋಗಿ.",
+      proTitle: "ಪ್ರೊ ಸರಿಯಾದ ಫಿಟ್ ಆಗಿದೆ",
+      proDescription:
+        "ಬೆಳೆಯುತ್ತಿರುವ ತಂಡಗಳಿಗೆ, ಪ್ರೊ ನಿಮಗೆ SSO, ಹಣಕಾಸು ಗೋಚರತೆ ಮತ್ತು ಎಂಟರ್‌ಪ್ರೈಸ್ ಓವರ್‌ಹೆಡ್ ಇಲ್ಲದೆ ಅಳೆಯಲು ಸಾಕಷ್ಟು ಸ್ಥಳಾವಕಾಶವನ್ನು ನೀಡುತ್ತದೆ.",
+      enterpriseTitle: "ಎಂಟರ್‌ಪ್ರೈಸ್ ಬಗ್ಗೆ ನಮ್ಮೊಂದಿಗೆ ಮಾತನಾಡಿ",
+      enterpriseDescription:
+        "ದೊಡ್ಡ ತಂಡಗಳಿಗೆ ಸಾಮಾನ್ಯವಾಗಿ ಖರೀದಿ ಬೆಂಬಲ, ನಿರ್ವಾಹಕ ನಿಯಂತ್ರಣಗಳು ಮತ್ತು ಸುಗಮವಾದ ರೋಲ್‌ಔಟ್ ಅಗತ್ಯವಿರುತ್ತದೆ. ಪ್ರೊನೊಂದಿಗೆ ಪ್ರಾರಂಭಿಸಿ ಅಥವಾ ನೇರವಾಗಿ ಎಂಟರ್‌ಪ್ರೈಸ್‌ಗೆ ತೆರಳಿ.",
+    },
+    highlights: {
+      seatsTitle: "ನಿರ್ವಾಹಕರ ತೊಂದರೆ ಇಲ್ಲದೆ ಹೆಚ್ಚಿನ ಸೀಟುಗಳು",
+      seatsDescription:
+        "3-ಸೀಟುಗಳ ಉಚಿತ ಮಿತಿಯನ್ನು ಮೀರಿ ಮತ್ತು ಸರಳವಾಗಿ ಆನ್‌ಬೋರ್ಡಿಂಗ್ ಅನ್ನು ಮುಂದುವರಿಸಿ.",
+      ssoTitle: "SSO ಮತ್ತು ಬಲವಾದ ನಿಯಂತ್ರಣಗಳು",
+      ssoDescription:
+        "ಹೆಚ್ಚುವರಿ ಪರಿಕರಗಳಿಲ್ಲದೆ ಬೆಳೆಯುತ್ತಿರುವ ತಂಡಗಳಿಗೆ ಸುರಕ್ಷಿತ ಪ್ರವೇಶವನ್ನು ನೀಡಿ.",
+      financeTitle: "ಶಾಂತವಾಗಿರುವ ಆರ್ಥಿಕ ಗೋಚರತೆ",
+      financeDescription:
+        "ಹೆಚ್ಚುವರಿ ಸೆಟಪ್ ಇಲ್ಲದೆಯೇ ಮಾರ್ಜಿನ್, ಬಿಲ್ಲಿಂಗ್ ಕ್ಯಾಡೆನ್ಸ್ ಮತ್ತು ತಂಡದ ಬಳಕೆಯನ್ನು ತಿಳಿದುಕೊಳ್ಳಿ.",
+    },
+    planDescriptions: {
+      free: "ಕೋರ್ ಟ್ರ್ಯಾಕಿಂಗ್, ಇನ್‌ವಾಯ್ಸಿಂಗ್, ಪಾವತಿಗಳು ಮತ್ತು 3 ತಂಡದ ಸೀಟುಗಳೊಂದಿಗೆ ಮಿರುವನ್ನು ಸ್ವಯಂ-ಹೋಸ್ಟ್ ಮಾಡಿ.",
+      pro: "ಪ್ರೊ ವರದಿಗಳು, SSO, ಹೆಚ್ಚಿನ ಸೀಟುಗಳು ಮತ್ತು ಎಂಟರ್‌ಪ್ರೈಸ್ ಓವರ್‌ಹೆಡ್ ಇಲ್ಲದೆ ಶಾಂತವಾದ ನಿರ್ವಾಹಕ ನಿಯಂತ್ರಣಗಳನ್ನು ಸೇರಿಸುತ್ತದೆ.",
+      enterprise:
+        "ಖರೀದಿ ಸ್ನೇಹಿ ಒಪ್ಪಂದಗಳು, ಸುಧಾರಿತ ನಿಯಂತ್ರಣಗಳು ಮತ್ತು ಭದ್ರತಾ ಪರಿಶೀಲನೆಯ ಅಗತ್ಯವಿರುವ ದೊಡ್ಡ ತಂಡಗಳಿಗೆ ಬೆಂಬಲ.",
+      hostedEnterprise:
+        "ಮೀಸಲಾದ ಸೆಟಪ್‌ನಲ್ಲಿ ನಾವು ಮಿರುವನ್ನು ಹೋಸ್ಟ್ ಮಾಡುತ್ತೇವೆ, ಅಪ್‌ಗ್ರೇಡ್ ಮಾಡುತ್ತೇವೆ, ಬ್ಯಾಕಪ್ ಮಾಡುತ್ತೇವೆ ಮತ್ತು ಬೆಂಬಲಿಸುತ್ತೇವೆ.",
+    },
+    planBullets: {
+      free: {
+        coreProduct: "ಸ್ವಯಂ-ಹೋಸ್ಟ್ ಮಾಡಿದ ಪ್ರಮುಖ ಉತ್ಪನ್ನ",
+        tracking: "ಸಮಯ ಟ್ರ್ಯಾಕಿಂಗ್, ಇನ್‌ವಾಯ್ಸ್‌ಗಳು, ಪಾವತಿಗಳು",
+        dashboard: "ಸಣ್ಣ ತಂಡಕ್ಕೆ ಡ್ಯಾಶ್‌ಬೋರ್ಡ್ ಗೋಚರತೆ",
+      },
+      pro: {
+        trial: "ಪಾವತಿಸುವ ಮೊದಲು 30 ದಿನಗಳ ಉಚಿತ ಪ್ರಯೋಗ",
+        sso: "SSO, ಮುಂದುವರಿದ ವರದಿ ಮಾಡುವಿಕೆ, ಬಲವಾದ ನಿರ್ವಾಹಕ ನಿಯಂತ್ರಣಗಳು",
+        fit: "ಏಜೆನ್ಸಿಗಳು ಮತ್ತು ಬೆಳೆಯುತ್ತಿರುವ ತಂಡಗಳಿಗೆ ಅತ್ಯುತ್ತಮ ಫಿಟ್",
+      },
+      enterprise: {
+        contracts: "ಖರೀದಿ ಸ್ನೇಹಿ ಒಪ್ಪಂದಗಳು",
+        onboarding: "ಭದ್ರತಾ ಪರಿಶೀಲನೆ ಮತ್ತು ಆನ್‌ಬೋರ್ಡಿಂಗ್ ಬೆಂಬಲ",
+        compliance: "ಅನುಮೋದನೆ ಮತ್ತು ಅನುಸರಣೆ ಅಗತ್ಯವಿರುವ ದೊಡ್ಡ ತಂಡಗಳಿಗೆ",
+      },
+      hosted: {
+        setup: "ಮೀಸಲಾದ ನಿರ್ವಹಿಸಲಾದ ಸೆಟಪ್",
+        operations:
+          "ನಾವು ಅಪ್‌ಗ್ರೇಡ್‌ಗಳು, ಬ್ಯಾಕಪ್‌ಗಳು ಮತ್ತು ಬೆಂಬಲವನ್ನು ನಿರ್ವಹಿಸುತ್ತೇವೆ.",
+        fit: "ಮಿರು ಸಂಪೂರ್ಣವಾಗಿ ಕಾರ್ಯನಿರ್ವಹಿಸಬೇಕೆಂದು ಬಯಸುವ ತಂಡಗಳಿಗೆ",
+      },
+    },
+    heroDescription:
+      "ಉಚಿತವಾಗಿ ಪ್ರಾರಂಭಿಸಿ, ತಂಡಕ್ಕೆ ಹೆಚ್ಚಿನ ನಿಯಂತ್ರಣ ಬೇಕಾದಾಗ ಪ್ರೊಗೆ ತೆರಳಿ, ಅಥವಾ ನಿಮಗಾಗಿ ಮಿರುವನ್ನು ನಾವು ನಡೆಸೋಣ. ಪ್ರೊ ಅಗ್ಗವಾಗಿ ಉಳಿಯುತ್ತದೆ, ವಾರ್ಷಿಕವಾಗಿ ನೈಜ ಹಣವನ್ನು ಉಳಿಸುತ್ತದೆ ಮತ್ತು ಬಿಲ್ಲಿಂಗ್ ಸರಳವಾಗಿರುತ್ತದೆ ಏಕೆಂದರೆ ಚೆಕ್ಔಟ್ ಮತ್ತು ಚಂದಾದಾರಿಕೆ ನಿರ್ವಹಣೆಯು ಸ್ಟ್ರೈಪ್‌ನಿಂದ ನಡೆಸಲ್ಪಡುತ್ತದೆ.",
+    seatEstimatorDescription:
+      "ಉಚಿತ vs ಪ್ರೊ ಅನ್ನು ಹೋಲಿಸಲು ಮತ್ತು ಮಾಸಿಕ ಅಥವಾ ವಾರ್ಷಿಕ ಹೆಚ್ಚು ಅರ್ಥಪೂರ್ಣವಾಗಿದೆಯೇ ಎಂದು ನಿರ್ಧರಿಸಲು ಇದನ್ನು ಬಳಸಿ.",
+    yearlyDiscountDescription:
+      "ಮಾಸಿಕ ಬೆಲೆಗೆ ಹೋಲಿಸಿದರೆ ಪ್ರತಿ ಸೀಟಿಗೆ ಎರಡು ತಿಂಗಳು ಉಚಿತ.",
+    checkoutDescription:
+      "ಮಾರಾಟ ಪ್ರಕ್ರಿಯೆಯಿಲ್ಲದೆ ಪ್ರಯೋಗವನ್ನು ಪ್ರಾರಂಭಿಸಿ, ನೀವು ಸಿದ್ಧರಾದಾಗ ಅಪ್‌ಗ್ರೇಡ್ ಮಾಡಿ ಮತ್ತು ನಿಮಗೆ ಅಗತ್ಯವಿರುವಾಗ ಬಿಲ್ಲಿಂಗ್ ಅನ್ನು ನೀವೇ ನಿರ್ವಹಿಸಿ.",
+    plans: {
+      unknown: "ಅಜ್ಞಾತ",
+      free: "ಉಚಿತ",
+      freePro: "ಉಚಿತ ಪ್ರೊ",
+      proTrial: "ಪ್ರೊ ಟ್ರಯಲ್",
+      paid: "ಪಾವತಿಸಲಾಗಿದೆ",
+      enterprise: "ಉದ್ಯಮ",
+      hostedEnterprise: "ಹೋಸ್ಟ್ ಮಾಡಿದ ಉದ್ಯಮ",
+    },
+    table: {
+      feature: "ವೈಶಿಷ್ಟ್ಯ",
+      bestFor: "ಅತ್ಯುತ್ತಮವಾದದ್ದು",
+      selfHostedTeams: "ಸ್ವಯಂ-ಆತಿಥ್ಯ ವಹಿಸಿದ ತಂಡಗಳು ಪ್ರಾರಂಭವಾಗುತ್ತಿವೆ",
+      growingServiceTeams: "ನಿಯಂತ್ರಣಗಳ ಅಗತ್ಯವಿರುವ ಬೆಳೆಯುತ್ತಿರುವ ಸೇವಾ ತಂಡಗಳು",
+      largeOrgs: "ಭದ್ರತೆ ಮತ್ತು ಸಂಗ್ರಹಣೆ ಅಗತ್ಯತೆಗಳನ್ನು ಹೊಂದಿರುವ ದೊಡ್ಡ ಸಂಸ್ಥೆಗಳು",
+      managedTeams: "ಮಿರು ತಮಗಾಗಿ ನಿರ್ವಹಿಸಬೇಕೆಂದು ಬಯಸುವ ತಂಡಗಳು",
+      timeTracking: "ಸಮಯ ಟ್ರ್ಯಾಕಿಂಗ್",
+      invoicesAndPayments: "ಇನ್‌ವಾಯ್ಸ್‌ಗಳು ಮತ್ತು ಪಾವತಿಗಳು",
+      reportsAndDashboards: "ವರದಿಗಳು ಮತ್ತು ಡ್ಯಾಶ್‌ಬೋರ್ಡ್‌ಗಳು",
+      sso: "ಎಸ್ಎಸ್ಒ",
+      auditAndAdminControls: "ಲೆಕ್ಕಪರಿಶೋಧನೆ ಮತ್ತು ಆಡಳಿತ ನಿಯಂತ್ರಣಗಳು",
+      support: "ಬೆಂಬಲ",
+      included: "ಸೇರಿಸಲಾಗಿದೆ",
+      notIncluded: "ಸೇರಿಸಲಾಗಿಲ್ಲ",
+      dashboardOnly: "ಡ್ಯಾಶ್‌ಬೋರ್ಡ್ ಮಾತ್ರ",
+      reportsAndAnalytics: "ವರದಿಗಳು ಮತ್ತು ವಿಶ್ಲೇಷಣೆಗಳು",
+      community: "ಸಮುದಾಯ",
+      priorityEmail: "ಆದ್ಯತೆಯ ಇಮೇಲ್",
+      priorityOnboarding: "ಆದ್ಯತೆ + ಆನ್‌ಬೋರ್ಡಿಂಗ್",
+      managedOnboarding: "ನಿರ್ವಹಿಸಿದ ಸೇವೆ + ಆನ್‌ಬೋರ್ಡಿಂಗ್",
+    },
+  },
+  twoFactor: {
+    title: "ದೃಢೀಕರಣ ಅಪ್ಲಿಕೇಶನ್ 2FA",
+    addTitle: "ಪ್ರಮಾಣೀಕರಣ ಅಪ್ಲಿಕೇಶನ್ ಸೇರಿಸಿ",
+    addDescription:
+      "Google Authenticator, 1Password, Bitwarden, Authy, ಅಥವಾ ಯಾವುದೇ TOTP-ಹೊಂದಾಣಿಕೆಯ ಅಪ್ಲಿಕೇಶನ್ ಬಳಸಿ.",
+    setupAction: "2FA ಸೆಟಪ್ ಮಾಡಿ",
+    finishTitle: "ಅಥೆಂಟಿಕೇಟರ್ ಸೆಟಪ್ ಪೂರ್ಣಗೊಳಿಸಿ",
+    finishDescription:
+      "ಈ ಕೀಲಿಯನ್ನು ನಿಮ್ಮ ದೃಢೀಕರಣ ಅಪ್ಲಿಕೇಶನ್‌ಗೆ ಸೇರಿಸಿ, ನಂತರ 2FA ಅನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಲು ಪ್ರಸ್ತುತ 6-ಅಂಕಿಯ ಕೋಡ್ ಅನ್ನು ನಮೂದಿಸಿ.",
+    manualEntryKey: "ಹಸ್ತಚಾಲಿತ ನಮೂದು ಕೀ",
+    verificationCode: "ಪರಿಶೀಲನಾ ಕೋಡ್",
+    verificationCodePlaceholder: "123456",
+    enableAction: "2FA ಸಕ್ರಿಯಗೊಳಿಸಿ",
+    resetKeyAction: "ಕೀಲಿಯನ್ನು ಮರುಹೊಂದಿಸಿ",
+    enabledTitle: "ಪ್ರಮಾಣೀಕರಣ ಅಪ್ಲಿಕೇಶನ್ ರಕ್ಷಣೆ ಆನ್ ಆಗಿದೆ",
+    enabledDescription:
+      "ನೀವು ಸೈನ್ ಇನ್ ಮಾಡುವಾಗ ನಿಮ್ಮ ಪಾಸ್‌ವರ್ಡ್ ನಂತರ ನಿಮಗೆ ಅಥೆಂಟಿಕೇಟರ್ ಕೋಡ್ ಅಗತ್ಯವಿರುತ್ತದೆ.",
+    recoveryCodesAvailable: "%{count} ಮರುಪಡೆಯುವಿಕೆ ಕೋಡ್‌ಗಳು ಲಭ್ಯವಿದೆ",
+    regenerateRecoveryCodes: "ಮರುಪಡೆಯುವಿಕೆ ಕೋಡ್‌ಗಳನ್ನು ಪುನರುತ್ಪಾದಿಸಿ",
+    disableAction: "2FA ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಿ",
+    saveRecoveryCodes: "ಈ ಮರುಪಡೆಯುವಿಕೆ ಕೋಡ್‌ಗಳನ್ನು ಉಳಿಸಿ",
+    saveRecoveryCodesDescription:
+      "ಪ್ರತಿಯೊಂದು ಕೋಡ್ ಒಮ್ಮೆ ಮಾತ್ರ ಕೆಲಸ ಮಾಡುತ್ತದೆ. ಅವುಗಳನ್ನು ಎಲ್ಲೋ ಸುರಕ್ಷಿತವಾಗಿ ಸಂಗ್ರಹಿಸಿ.",
+    setupReadySuccess: "ಪ್ರಮಾಣೀಕರಣ ಆ್ಯಪ್ ಸೆಟಪ್ ಸಿದ್ಧವಾಗಿದೆ",
+    enabledSuccess: "ಪ್ರಮಾಣೀಕರಣ ಅಪ್ಲಿಕೇಶನ್ ಸಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ",
+    disabledSuccess: "ಪ್ರಮಾಣೀಕರಣ ಅಪ್ಲಿಕೇಶನ್ ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ",
+    regeneratedSuccess: "ಮರುಪಡೆಯುವಿಕೆ ಕೋಡ್‌ಗಳನ್ನು ಪುನರುಜ್ಜೀವನಗೊಳಿಸಲಾಗಿದೆ",
+    setupFailed: "2FA ಸೆಟಪ್ ಪ್ರಾರಂಭಿಸಲು ವಿಫಲವಾಗಿದೆ.",
+    enableFailed: "ದೃಢೀಕರಣ ಅಪ್ಲಿಕೇಶನ್ ಅನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಲು ವಿಫಲವಾಗಿದೆ.",
+    disableFailed: "2FA ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲು ವಿಫಲವಾಗಿದೆ.",
+    regenerateFailed: "ಮರುಪ್ರಾಪ್ತಿ ಕೋಡ್‌ಗಳನ್ನು ಮರುಸೃಷ್ಟಿಸಲು ವಿಫಲವಾಗಿದೆ.",
+  },
+  notificationPreferences: {
+    emailNotifications: "ಇಮೇಲ್ ಅಧಿಸೂಚನೆಗಳು",
+    manageDescription: "ನಿಮ್ಮ ಇಮೇಲ್ ಅಧಿಸೂಚನೆ ಆದ್ಯತೆಗಳನ್ನು ನಿರ್ವಹಿಸಿ",
+    weeklyEmailReminder: "ವಾರದ ಇಮೇಲ್ ಜ್ಞಾಪನೆ",
+    weeklyEmailReminderDescription:
+      "ಟೈಮ್‌ಶೀಟ್ ನಮೂದುಗಳು ಮತ್ತು ಯೋಜನೆಯ ನವೀಕರಣಗಳ ಕುರಿತು ಸಾಪ್ತಾಹಿಕ ಇಮೇಲ್ ಜ್ಞಾಪನೆಗಳನ್ನು ಸ್ವೀಕರಿಸಿ.",
+    noUserData: "ಯಾವುದೇ ಬಳಕೆದಾರ ಡೇಟಾ ಲಭ್ಯವಿಲ್ಲ.",
+    loginPrompt: "ಅಧಿಸೂಚನೆ ಆದ್ಯತೆಗಳನ್ನು ನಿರ್ವಹಿಸಲು ದಯವಿಟ್ಟು ಲಾಗಿನ್ ಮಾಡಿ.",
+  },
+  devices: {
+    addDevices: "ಸಾಧನಗಳನ್ನು ಸೇರಿಸಿ",
+    editDevices: "ಸಾಧನಗಳನ್ನು ಸಂಪಾದಿಸಿ",
+    device: "ಸಾಧನ",
+    unknownDevice: "ಅಪರಿಚಿತ ಸಾಧನ",
+    serial: "ಧಾರಾವಾಹಿ:",
+    deviceType: "ಸಾಧನದ ಪ್ರಕಾರ",
+    selectDeviceType: "ಸಾಧನದ ಪ್ರಕಾರವನ್ನು ಆಯ್ಕೆಮಾಡಿ",
+    modelName: "ಮಾದರಿ/ಹೆಸರು",
+    serialNumber: "ಕ್ರಮ ಸಂಖ್ಯೆ",
+    memory: "ಮೆಮೊರಿ (RAM)",
+    processor: "ಪ್ರೊಸೆಸರ್",
+    graphics: "ಗ್ರಾಫಿಕ್ಸ್",
+    graphicsCard: "ಗ್ರಾಫಿಕ್ಸ್ ಕಾರ್ಡ್",
+    storage: "ಸಂಗ್ರಹಣೆ",
+    modelNamePlaceholder: "ಉದಾ., ಮ್ಯಾಕ್‌ಬುಕ್ ಪ್ರೊ 16-ಇಂಚಿನ",
+    serialNumberPlaceholder: "ಉದಾ., C02XX1234567",
+    memoryPlaceholder: "ಉದಾ., 16GB DDR4",
+    processorPlaceholder: "ಉದಾ., ಇಂಟೆಲ್ ಕೋರ್ i7-10750H",
+    graphicsPlaceholder: "ಉದಾ., NVIDIA GeForce RTX 3060",
+    storagePlaceholder: "ಉದಾ., 512GB SSD",
+    addAnotherDevice: "ಇನ್ನೊಂದು ಸಾಧನವನ್ನು ಸೇರಿಸಿ",
+    addAnotherDeviceDescription:
+      "ನಿಮ್ಮ ಇನ್ವೆಂಟರಿಗೆ ಹೊಸ ಸಾಧನವನ್ನು ಸೇರಿಸಲು ಕ್ಲಿಕ್ ಮಾಡಿ",
+    deviceSummary: "ಸಾಧನದ ಸಾರಾಂಶ",
+    totalDevices: "ಒಟ್ಟು ಸಾಧನಗಳು",
+    notSpecified: "ನಿರ್ದಿಷ್ಟಪಡಿಸಲಾಗಿಲ್ಲ",
+    noDevicesFound: "ಯಾವುದೇ ಸಾಧನಗಳು ಕಂಡುಬಂದಿಲ್ಲ",
+    newDevice: "ಹೊಸ ಸಾಧನ",
+    unsavedChangesPrompt:
+      "ನೀವು ಉಳಿಸದ ಬದಲಾವಣೆಗಳನ್ನು ಹೊಂದಿದ್ದೀರಿ. ನೀವು ರದ್ದುಗೊಳಿಸಲು ಖಚಿತವಾಗಿ ಬಯಸುವಿರಾ?",
+  },
+  nav: {
+    dashboard: "ಡ್ಯಾಶ್‌ಬೋರ್ಡ್",
+    timeTracking: "ಸಮಯ ಟ್ರ್ಯಾಕಿಂಗ್",
+    clients: "ಗ್ರಾಹಕರು",
+    projects: "ಯೋಜನೆಗಳು",
+    team: "ತಂಡ",
+    invoices: "ಇನ್‌ವಾಯ್ಸ್‌ಗಳು",
+    reports: "ವರದಿಗಳು",
+    payments: "ಪಾವತಿಗಳು",
+    leavesAndHolidays: "ಎಲೆಗಳು & ರಜಾದಿನಗಳು",
+    expenses: "ವೆಚ್ಚಗಳು",
+    settings: "ಸೆಟ್ಟಿಂಗ್‌ಗಳು",
+    logout: "ಲಾಗ್ಔಟ್",
+  },
+  sidebar: {
+    main: "ಮುಖ್ಯ",
+    personalSettings: "ವೈಯಕ್ತಿಕ ಸೆಟ್ಟಿಂಗ್‌ಗಳು",
+    companySettings: "ಕಂಪನಿ ಸೆಟ್ಟಿಂಗ್‌ಗಳು",
+    profile: "ಪ್ರೊಫೈಲ್",
+    devices: "ಸಾಧನಗಳು",
+    organization: "ಸಂಸ್ಥೆ",
+    billing: "ಬಿಲ್ಲಿಂಗ್",
+    paymentSettings: "ಪಾವತಿ ಸೆಟ್ಟಿಂಗ್‌ಗಳು",
+    holidayCalendar: "ರಜಾ ಕ್ಯಾಲೆಂಡರ್",
+    myLeaves: "ನನ್ನ ಎಲೆಗಳು",
+    bankTaxInfo: "ಬ್ಯಾಂಕ್ ಮತ್ತು ತೆರಿಗೆ ಮಾಹಿತಿ",
+    expand: "ಸೈಡ್‌ಬಾರ್ ವಿಸ್ತರಿಸಿ",
+    collapse: "ಸೈಡ್‌ಬಾರ್ ಅನ್ನು ಕುಗ್ಗಿಸಿ",
+  },
 };
 
 export default kn;

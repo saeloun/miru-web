@@ -1,12 +1,9 @@
 const ta = {
-  // Image validation
   invalidImageFormatSize:
     "தவறான கோப்பு வடிவம். PNG அல்லது JPG வகை படத்தை பதிவேற்றவும். அதிகபட்ச அளவு (%{fileSize}KB)",
   invalidImageSize: "கோப்பு அளவு அதிகபட்ச வரம்பான %{fileSize}KB ஐ மீறிவிட்டது.",
   invalidImageFormat:
     "தவறான கோப்பு வடிவம். PNG அல்லது JPG வகை படத்தை பதிவேற்றவும்",
-
-  // Common actions
   save: "சேமி",
   cancel: "ரத்துசெய்",
   delete: "நீக்கு",
@@ -33,8 +30,6 @@ const ta = {
   yes: "ஆம்",
   no: "இல்லை",
   or: "அல்லது",
-
-  // Common labels
   name: "பெயர்",
   email: "மின்னஞ்சல்",
   phone: "தொலைபேசி",
@@ -68,8 +63,6 @@ const ta = {
   all: "அனைத்தும்",
   from: "இருந்து",
   to: "வரை",
-
-  // Date/time
   today: "இன்று",
   yesterday: "நேற்று",
   tomorrow: "நாளை",
@@ -93,16 +86,12 @@ const ta = {
   selectPeriod: "காலகட்டத்தைத் தேர்ந்தெடுக்கவும்",
   fullDay: "முழு நாள்",
   halfDay: "அரை நாள்",
-
-  // Date validation
   dateCannotBeBlank: "தேதி காலியாக இருக்க முடியாது",
   fromDateMustBeLessThanToDate:
     "'இருந்து' தேதி 'வரை' தேதிக்கு குறைவாகவோ சமமாகவோ இருக்க வேண்டும்",
   toDateMustBeGreaterThanFromDate:
     "'வரை' தேதி 'இருந்து' தேதிக்கு அதிகமாகவோ சமமாகவோ இருக்க வேண்டும்",
   invalidDate: "செல்லுபடியான தேதியை உள்ளிடவும்",
-
-  // Month abbreviations
   monthJan: "ஜன",
   monthFeb: "பிப்",
   monthMar: "மார்",
@@ -115,8 +104,6 @@ const ta = {
   monthOct: "அக்",
   monthNov: "நவ",
   monthDec: "டிச",
-
-  // Error pages
   pageNotFound: "பக்கம் கிடைக்கவில்லை",
   clickHere: "இங்கே கிளிக் செய்யவும்",
   somethingWentWrong: "ஏதோ தவறு ஏற்பட்டது",
@@ -124,15 +111,11 @@ const ta = {
     "மீண்டும் முயற்சிக்க பக்கத்தைப் புதுப்பிக்கவும். இது தொடர்ந்தால், மீண்டும் உள்நுழையவும் அல்லது ஆதரவைத் தொடர்பு கொள்ளவும்.",
   reloadPage: "பக்கத்தை மீளேற்று",
   loadingWorkspace: "பணியிடத்தை ஏற்றுகிறது...",
-
-  // Search
   searchClients: "வாடிக்கையாளர்களைத் தேடு...",
   searchInvoices: "விலைப்பட்டியல்களைத் தேடு...",
   searchTeamMembers: "குழு உறுப்பினர்களைத் தேடு...",
   selectTeamMember: "குழு உறுப்பினரைத் தேர்ந்தெடுக்கவும்",
   noResultsFound: "முடிவுகள் கிடைக்கவில்லை",
-
-  // Time Tracking
   timeTracking: {
     addEntry: "பதிவைச் சேர்",
     newTimeEntry: "புதிய நேரப் பதிவு",
@@ -222,8 +205,6 @@ const ta = {
       sun: "ஞாயி",
     },
   },
-
-  // Task types
   taskTypes: {
     development: "மேம்பாடு",
     meeting: "கூட்டம்",
@@ -238,16 +219,12 @@ const ta = {
     training: "பயிற்சி",
     other: "மற்றவை",
   },
-
-  // Time off types
   timeOffTypes: {
     vacation: "விடுமுறை",
     sickLeave: "நோய் விடுப்பு",
     personalDay: "தனிப்பட்ட நாள்",
     holiday: "விடுமுறை",
   },
-
-  // Clients
   clients: {
     addClients: "வாடிக்கையாளர்களைச் சேர்",
     addNewClient: "புதிய வாடிக்கையாளரைச் சேர்",
@@ -281,8 +258,6 @@ const ta = {
     sendPaymentReminder: "பணம் செலுத்தும் நினைவூட்டலை அனுப்பு",
     invoicesSelected: "%{count} விலைப்பட்டியல்கள் தேர்ந்தெடுக்கப்பட்டன",
   },
-
-  // Contacts
   contacts: {
     addContact: "தொடர்பைச் சேர்",
     addContacts: "தொடர்புகளைச் சேர்",
@@ -303,8 +278,6 @@ const ta = {
     invalidEmailId: "செல்லாத மின்னஞ்சல் அடையாளம்",
     emailRequired: "மின்னஞ்சல் அடையாளம் காலியாக இருக்க முடியாது",
   },
-
-  // Projects
   projects: {
     addProject: "திட்டத்தைச் சேர்",
     addNewProject: "புதிய திட்டத்தைச் சேர்",
@@ -378,8 +351,6 @@ const ta = {
     teamMembersDescription:
       "இந்தத் திட்டத்திற்கு ஒதுக்கப்பட்ட குழு உறுப்பினர்களைப் பார்க்கவும் நிர்வகிக்கவும்.",
   },
-
-  // Team
   team: {
     team: "குழு",
     teamOverview: "குழு மேலோட்டம்",
@@ -428,8 +399,6 @@ const ta = {
     invalidEmail: "செல்லாத மின்னஞ்சல் அடையாளம்",
     emailRequired: "மின்னஞ்சல் அடையாளம் காலியாக இருக்க முடியாது",
   },
-
-  // Invoices
   invoices: {
     invoice: "விலைப்பட்டியல்",
     invoices: "விலைப்பட்டியல்கள்",
@@ -509,16 +478,12 @@ const ta = {
     resetFilters: "வடிகட்டிகளை மீட்டமை",
     loadingChartData: "விளக்கப்பட தரவை ஏற்றுகிறது...",
     noInvoiceData: "விலைப்பட்டியல் தரவு கிடைக்கவில்லை",
-
-    // Statuses
     draft: "வரைவு",
     sent: "அனுப்பப்பட்டது",
     overdue: "காலாவதி",
     collected: "வசூலிக்கப்பட்டது",
     paid: "பணம் செலுத்தப்பட்டது",
     outstanding: "நிலுவை",
-
-    // Email
     recipientEmailId: "பெறுநர் மின்னஞ்சல் அடையாளம்",
     subject: "பொருள்",
     message: "செய்தி",
@@ -534,8 +499,6 @@ const ta = {
       "%{company} உங்களுக்கு ஒரு விலைப்பட்டியலை அனுப்பியது (%{number})",
     invoiceWillBeSent: "விலைப்பட்டியல் அனுப்பப்படும்!",
     processing: "செயலாக்குகிறது...",
-
-    // No payment gateway
     noPaymentGateway: "பணம் செலுத்தும் வழி இணைக்கப்படவில்லை",
     paymentGatewayError:
       "பிழை. பணம் செலுத்தும் வழியை இணைக்க விலைப்பட்டியல் அனுப்புநரைத் தொடர்பு கொள்ளவும்",
@@ -546,14 +509,10 @@ const ta = {
     stripeDisabled: "இந்த விலைப்பட்டியலுக்கு Stripe முடக்கப்பட்டுள்ளது",
     stripeDisabledMessage:
       "அனுப்புநர் இந்த விலைப்பட்டியலுக்கு Stripe பணம் செலுத்தலை இயக்கவில்லை. அதை இயக்க அவர்களைத் தொடர்பு கொள்ளலாம் அல்லது ACH போன்ற மாற்று பணம் செலுத்தும் முறையைத் தேர்வு செய்யலாம்.",
-
-    // Bulk actions
     preparingDownload: "பதிவிறக்கத்தைத் தயாரிக்கிறது...",
     downloadFailed: "பதிவிறக்கம் தோல்வியடைந்தது. மீண்டும் முயற்சிக்கவும்.",
     downloadingFiles: "கோப்புகளைப் பதிவிறக்குகிறது...",
     downloadComplete: "பதிவிறக்கம் நிறைவடைந்தது",
-
-    // Table headers
     nameHeader: "பெயர்",
     descriptionHeader: "விளக்கம்",
     dateHeader: "தேதி",
@@ -561,8 +520,6 @@ const ta = {
     amountHeader: "தொகை",
     statusHeader: "நிலை",
     invoiceNumberHeader: "விலைப்பட்டியல் எண்",
-
-    // Chart labels
     area: "பரப்பளவு",
     bar: "பட்டை",
     noData: "தரவு இல்லை",
@@ -570,8 +527,6 @@ const ta = {
     quarterly: "காலாண்டு",
     yearly: "ஆண்டு",
     trend: "போக்கு",
-
-    // Preview / detail labels
     taxId: "வரி அடையாளம்: %{value}",
     vatNumber: "VAT எண்: %{value}",
     gstNumber: "GST எண்: %{value}",
@@ -585,8 +540,6 @@ const ta = {
     due: "%{date} நிலுவை",
     viewed: "பார்க்கப்பட்டது",
     cancelled: "ரத்துசெய்யப்பட்டது",
-
-    // Toast / confirmation messages
     invoiceMarkedAsPaid:
       "விலைப்பட்டியல் வெற்றிகரமாக பணம் செலுத்தியதாகக் குறிக்கப்பட்டது",
     invoiceDownloaded: "விலைப்பட்டியல் வெற்றிகரமாகப் பதிவிறக்கப்பட்டது",
@@ -604,8 +557,6 @@ const ta = {
     invoiceUpdated: "விலைப்பட்டியல் வெற்றிகரமாகப் புதுப்பிக்கப்பட்டது",
     failedToSaveInvoice:
       "விலைப்பட்டியலைச் சேமிக்க முடியவில்லை. மீண்டும் முயற்சிக்கவும்.",
-
-    // Counters
     showingOf: "%{total} இல் %{shown} காண்பிக்கப்படுகிறது",
     viewingMatching:
       "%{loaded} ஏற்றப்பட்டவற்றிலிருந்து %{filtered} பொருந்தும் விலைப்பட்டியல்கள் காண்பிக்கப்படுகின்றன",
@@ -614,12 +565,8 @@ const ta = {
       "%{count} சமீபத்திய பரிவர்த்தனைகள் காண்பிக்கப்படுகின்றன",
     updatedAt: "%{date} புதுப்பிக்கப்பட்டது",
     invoiceHash: "விலைப்பட்டியல் #%{number}",
-
-    // Mobile table headers
     nameDescription: "பெயர் / விளக்கம்",
     dateTime: "தேதி / நேரம்",
-
-    // Invoice reminder email
     invoiceReminder: "விலைப்பட்டியல் நினைவூட்டல்: %{number}",
     reminderMessage:
       "உங்கள் நிலுவை விலைப்பட்டியல் பற்றிய நினைவூட்டல். விவரங்கள் இணைக்கப்பட்டுள்ளன.",
@@ -639,15 +586,29 @@ const ta = {
       "விலைப்பட்டியலைப் பதிவிறக்க முடியாது - செல்லாத அடையாளம்",
     cannotSendInvalidId: "விலைப்பட்டியலை அனுப்ப முடியாது - செல்லாத அடையாளம்",
     payment: "பணம் செலுத்தல் #%{id}",
+    newInvoicePage: "புதிய விலைப்பட்டியல்",
+    editInvoicePage: "விலைப்பட்டியலைத் திருத்து",
+    editorSubtitle:
+      "விவரங்களைப் பூர்த்தி செய்து, விலைப்பட்டியலை அனுப்பும் முன் அதை முன்னோட்டமிடவும்.",
+    saving: "சேமிப்பு...",
+    sending: "அனுப்புகிறது...",
+    alreadySent: "ஏற்கனவே அனுப்பப்பட்டது",
+    downloading: "பதிவிறக்கம் ஆகிறது...",
+    selectClientBeforeSending:
+      "விலைப்பட்டியலை அனுப்புவதற்கு முன் வாடிக்கையாளரைத் தேர்ந்தெடுக்கவும்.",
   },
   common: {
     retry: "மீண்டும் முயற்சி",
     pageUnavailable:
       "இந்தப் பக்கம் கிடைக்கவில்லை அல்லது இணைப்பு உங்கள் பணியிடத்திற்கு செல்லாதது.",
     goToDashboard: "டாஷ்போர்டுக்குச் செல்",
+    language: "மொழி",
+    loading: "ஏற்றப்படுகிறது...",
+    saving: "சேமிப்பு...",
+    failedToChangeLanguage: "மொழியை மாற்ற முடியவில்லை",
+    searchLanguages: "மொழிகளைத் தேடுங்கள்...",
+    noLanguagesFound: "மொழிகள் எதுவும் காணப்படவில்லை",
   },
-
-  // Invoice admin dashboard
   invoiceDashboard: {
     revenueOverview: "வருவாய் மேலோட்டம்",
     revenueByStatus: "நிலை வாரியான வருவாய்",
@@ -655,8 +616,6 @@ const ta = {
     allInvoices: "அனைத்து விலைப்பட்டியல்களும்",
     recentSales: "சமீபத்திய விற்பனைகள்",
   },
-
-  // Payments
   payments: {
     payments: "பணம் செலுத்தல்கள்",
     addPayment: "பணம் செலுத்தலைச் சேர்",
@@ -681,8 +640,6 @@ const ta = {
     paymentHistory: "பணம் செலுத்தல் வரலாறு",
     scrollToLoadMore: "மேலும் பணம் செலுத்தல்களை ஏற்ற உருட்டவும்",
     allPaymentsLoaded: "அனைத்து பணம் செலுத்தல்களும் ஏற்றப்பட்டன",
-
-    // Filters
     allStatuses: "அனைத்து நிலைகளும்",
     allClients: "அனைத்து வாடிக்கையாளர்களும்",
     paymentType: "பணம் செலுத்தல் வகை",
@@ -691,8 +648,8 @@ const ta = {
     bankTransfer: "வங்கி பரிமாற்றம்",
     wireTransfer: "கம்பி பரிமாற்றம்",
     achTransfer: "ACH பரிமாற்றம்",
-    paypal: "PayPal",
-    stripe: "Stripe",
+    paypal: "எல்.பி.சி.",
+    stripe: "கோடு",
     cash: "ரொக்கம்",
     check: "காசோலை",
     pending: "நிலுவையில்",
@@ -706,8 +663,6 @@ const ta = {
       "வாடிக்கையாளர் பெயர் அல்லது விலைப்பட்டியல் அடையாளம் மூலம் தேடு",
     selectTransactionTypeBtn: "பரிவர்த்தனை வகையைத் தேர்ந்தெடுக்கவும்",
   },
-
-  // Timer
   timer: {
     webTimer: "வலை நேரமானி",
     webTimerLabel: "வலை நேரமானி",
@@ -733,8 +688,6 @@ const ta = {
     whatAreYouWorkingOn: "நீங்கள் எதில் வேலை செய்கிறீர்கள்?",
     selectProject: "திட்டத்தைத் தேர்ந்தெடுக்கவும்",
   },
-
-  // Reports
   reports: {
     reports: "அறிக்கைகள்",
     backToReports: "அறிக்கைகளுக்குத் திரும்பு",
@@ -749,8 +702,6 @@ const ta = {
     exportAsCsv: "CSV ஆக ஏற்றுமதி செய்",
     exportAsPdf: "PDF ஆக ஏற்றுமதி செய்",
     toggleReportFilters: "அறிக்கை வடிகட்டிகளை மாற்று",
-
-    // Filters
     clients: "வாடிக்கையாளர்கள்",
     teamMembers: "குழு உறுப்பினர்கள்",
     groupBy: "தொகுப்பு",
@@ -759,14 +710,10 @@ const ta = {
     searchClientsFilter: "வாடிக்கையாளர்களைத் தேடு...",
     searchTeamMembersFilter: "குழு உறுப்பினர்களைத் தேடு...",
     applyFilter: "வடிகட்டியைப் பொருத்து",
-
-    // Time entry report
     totalHours: "மொத்த மணிநேரம்",
     scrollToLoadMoreRows: "மேலும் அறிக்கை வரிகளை ஏற்ற உருட்டவும்",
     loadingMoreRows: "மேலும் அறிக்கை வரிகளை ஏற்றுகிறது...",
     allRowsLoaded: "அனைத்து அறிக்கை வரிகளும் ஏற்றப்பட்டன",
-
-    // Payment report
     perTransaction: "பரிவர்த்தனைக்கு",
     topMethod: "முதன்மை முறை",
     paymentMethodsBreakdown: "பணம் செலுத்தும் முறைகள் பிரிப்பு",
@@ -776,8 +723,6 @@ const ta = {
     allMethods: "அனைத்து முறைகளும்",
     creditCard: "கிரெடிட் கார்டு",
     allStatus: "அனைத்து நிலைகளும்",
-
-    // Revenue by client report
     totalRevenue: "மொத்த வருவாய்",
     paidRevenue: "செலுத்தப்பட்ட வருவாய்",
     paidAmount: "செலுத்தப்பட்ட தொகை",
@@ -795,8 +740,6 @@ const ta = {
     clientRevenueDetails: "வாடிக்கையாளர் வருவாய் விவரங்கள்",
     scrollToLoadMoreClients: "மேலும் வாடிக்கையாளர்களை ஏற்ற உருட்டவும்",
     allClientsLoaded: "அனைத்து வாடிக்கையாளர்களும் ஏற்றப்பட்டனர்",
-
-    // Outstanding invoice report
     failedToLoadReportData: "அறிக்கை தரவை ஏற்ற முடியவில்லை",
     currencyFilter: "நாணய வடிகட்டி",
     fromDate: "தொடக்கத் தேதி",
@@ -804,7 +747,7 @@ const ta = {
     export: "ஏற்றுமதி",
     csv: "CSV",
     pdf: "PDF",
-    excel: "Excel",
+    excel: "எக்செல்",
     statusOverview: "நிலை மேலோட்டம்",
     currencyDistribution: "நாணய விநியோகம்",
     topClients: "முதன்மை வாடிக்கையாளர்கள்",
@@ -814,8 +757,6 @@ const ta = {
     clientBreakdown: "வாடிக்கையாளர் பிரிப்பு",
     originalAmount: "அசல் தொகை",
     baseAmount: "அடிப்படைத் தொகை",
-
-    // Accounts aging report
     totalDue: "மொத்த நிலுவை",
     invoiceAgingDetails: "விலைப்பட்டியல் வயதான விவரங்கள்",
     noDataFound: "தரவு கிடைக்கவில்லை",
@@ -965,8 +906,6 @@ const ta = {
     unknownProject: "அறியாத திட்டம்",
     generatingExport: "%{format} உருவாக்குகிறது",
   },
-
-  // Expenses
   expenses: {
     expenses: "செலவுகள்",
     addExpense: "செலவைச் சேர்",
@@ -1046,8 +985,6 @@ const ta = {
     viewReceiptsFor: "%{description} க்கான ரசீதுகளைக் காண்",
     expenseActionsFor: "%{description} க்கான செலவு செயல்கள்",
   },
-
-  // Settings
   settings: {
     settings: "அமைப்புகள்",
     profileSettings: "சுயவிவர அமைப்புகள்",
@@ -1075,9 +1012,25 @@ const ta = {
     allocationValue: "ஒதுக்கீட்டு மதிப்பு",
     allocationPeriod: "ஒதுக்கீட்டு காலம்",
     allocationFrequency: "ஒதுக்கீட்டு அதிர்வெண்",
+    labels: {
+      profile: "சுயவிவரம்",
+      employment: "வேலைவாய்ப்பு",
+      devices: "சாதனங்கள்",
+      notifications: "அறிவிப்புகள்",
+      preferences: "விருப்பத்தேர்வுகள்",
+      organization: "வழக்கறிஞர்",
+      billing: "பில்லிங்",
+      payment: "பணம் செலுத்துதல்",
+      holidays: "விடுமுறை நாட்கள்",
+      leaves: "இலைகள்",
+      automation: "ஆட்டோமேஷன்",
+      bankInfo: "வங்கி மற்றும் வரித் தகவல்",
+    },
+    categories: {
+      personal: "தனிப்பட்ட",
+      organization: "வழக்கறிஞர்",
+    },
   },
-
-  // Leave types
   leaveTypes: {
     annualLeaves: "ஆண்டு விடுப்புகள்",
     sickLeaves: "நோய் விடுப்புகள்",
@@ -1085,23 +1038,17 @@ const ta = {
     paternityLeave: "தந்தை விடுப்பு",
     periodLeave: "மாதவிடாய் விடுப்பு",
   },
-
-  // Allocation periods
   allocationPeriods: {
     days: "நாட்கள்",
     weeks: "வாரங்கள்",
     months: "மாதங்கள்",
   },
-
-  // Allocation frequencies
   allocationFrequencies: {
     perWeek: "வாரத்திற்கு",
     perMonth: "மாதத்திற்கு",
     perQuarter: "காலாண்டுக்கு",
     perYear: "ஆண்டுக்கு",
   },
-
-  // Navbar
   navbar: {
     clients: "வாடிக்கையாளர்கள்",
     invoices: "விலைப்பட்டியல்கள்",
@@ -1153,8 +1100,6 @@ const ta = {
     leavesDescription: "விடுப்பு கோரிக்கைகளை நிர்வகிக்கவும்",
     expensesDescription: "வணிக செலவுகளைக் கண்காணிக்கவும்",
   },
-
-  // Dashboard
   dashboard: {
     dashboard: "டாஷ்போர்டு",
     overdue: "காலாவதி",
@@ -1198,12 +1143,103 @@ const ta = {
     noRecentActivityYet: "சமீபத்திய செயல்பாடு இல்லை",
     loadMore: "மேலும் ஏற்று",
     allCaughtUp: "அனைத்தும் புதுப்பிக்கப்பட்டது",
+    there: "அங்கே",
+    caughtUp: "அனைத்தையும் முடித்துவிட்டேன்!",
+    timeframe: {
+      week: "இந்த வாரம்",
+      month: "இந்த மாதம்",
+      quarter: "இந்தக் காலாண்டில்",
+      year: "இந்த ஆண்டு",
+    },
+    stats: {
+      revenue: "வருவாய்",
+      totalInvoiced: "மொத்த விலைப்பட்டியல்",
+      openInvoices: "திறந்த விலைப்பட்டியல்கள்",
+      paidInvoices: "செலுத்தப்பட்ட விலைப்பட்டியல்கள்",
+      paymentsReceived: "பெறப்பட்ட கொடுப்பனவுகள்",
+      awaitingPayment: "பணம் செலுத்துதலுக்காக காத்திருக்கிறது",
+      alreadySettled: "ஏற்கனவே தீர்க்கப்பட்டது",
+      hoursTracked: "கண்காணிக்கப்பட்ட மணிநேரங்கள்",
+      currentlyActive: "தற்போது செயலில் உள்ளது",
+      activeProjects: "செயலில் உள்ள திட்டங்கள்",
+      assignedProjects: "ஒப்படைக்கப்பட்ட திட்டங்கள்",
+      projectsYouCanWorkOn: "நீங்கள் பணியாற்றக்கூடிய திட்டங்கள்",
+      teammates: "அணி வீரர்கள்",
+      teamSize: "குழு அளவு",
+      noRecentActivity: "சமீபத்திய செயல்பாடு எதுவும் இல்லை",
+    },
+    charts: {
+      revenueMomentumTitle: "வருவாய் உத்வேகம்",
+      revenueMomentumDescription: "கடந்த ஆண்டின் மாதாந்திர வருவாய் போக்கு",
+      revenueTrendEyebrow: "வருவாய் போக்கு",
+      revenueLeadersTitle: "வருவாய் தலைவர்கள்",
+      revenueLeadersDescription:
+        "வருவாய் பங்களிப்பின் அடிப்படையில் முதன்மை வாடிக்கையாளர்கள்",
+      topCustomersEyebrow: "சிறந்த வாடிக்கையாளர்கள்",
+      ofTotal: "மொத்தத்தில் %{percentage}",
+      noRevenue: "வருவாய் தரவுகள் எதுவும் கிடைக்கவில்லை.",
+    },
+    roleGuidance: {
+      employee:
+        "உங்கள் நேரத்தைக் கண்காணித்து, உங்கள் திட்டங்களை நிர்வகிக்கவும்.",
+      bookKeeper:
+        "விலைப்பட்டியல்கள், கொடுப்பனவுகள் மற்றும் நிதி அறிக்கைகளை மதிப்பாய்வு செய்யவும்",
+      client: "உங்கள் விலைப்பட்டியல்களையும் கட்டண வரலாற்றையும் பார்க்கவும்.",
+      default: "உங்கள் பணியிடத்தை நிர்வகிக்கவும்",
+    },
   },
-
-  // Authentication
   auth: {
-    signIn: "உள்நுழை",
-    signUp: "பதிவு செய்",
+    signIn: {
+      title: "உங்கள் பணித்தளத்தில் உள்நுழையவும்",
+      description:
+        "பணிகளைக் கண்காணிக்கவும், விலைப்பட்டியல்களை அனுப்பவும், பணப்புழக்கத்தைத் தெளிவாகப் பராமரிக்கவும் அனைத்தையும் ஒரே இடத்தில் செய்யுங்கள்.",
+      continueWithGoogle: "கூகிள் உடன் தொடரவும்",
+      continueWithGitHub: "GitHub உடன் தொடரவும்",
+      orUseEmail: "அல்லது மின்னஞ்சலைப் பயன்படுத்தவும்",
+      email: "மின்னஞ்சல்",
+      password: "கடவுச்சொல்",
+      submit: "உள்நுழை",
+      forgotPassword: "கடவுச்சொல்லை மறந்துவிட்டீர்களா?",
+      noAccount: "உங்களிடம் கணக்கு இல்லையா?",
+      signUp: "பதிவு செய்க",
+      privacy: "தனியுரிமை",
+      terms: "விதிமுறைகள்",
+      loginFailed: "உள்நுழைவு தோல்வியடைந்தது. மீண்டும் முயற்சிக்கவும்.",
+      welcomeBack: "மீண்டும் வருக!",
+      waitingForPasskey: "கடவுச்சொல்லுக்காகக் காத்திருக்கிறது...",
+      passkeyPrompt: "உங்கள் கடவுச்சொல்லைப் பயன்படுத்தி உள்நுழையவும்.",
+      totpTitle: "இரு காரணி அங்கீகாரம்",
+      totpPrompt: "உங்கள் அங்கீகாரச் செயலியிலிருந்து குறியீட்டை உள்ளிடவும்",
+      totpDescription:
+        "உங்கள் அங்கீகரிப்புச் செயலியைத் திறந்து 6-இலக்கக் குறியீட்டை உள்ளிடவும்.",
+      totpCode: "அங்கீகாரக் குறியீடு",
+      verifyAndSignIn: "சரிபார்த்து உள்நுழையவும்",
+      recoveryCode: "அதற்கு பதிலாக மீட்பு குறியீட்டைப் பயன்படுத்தவும்",
+      back: "திரும்பி",
+    },
+    signUp: {
+      title: "உங்கள் பணியிடத்தை உருவாக்குங்கள்",
+      description:
+        "வாடிக்கையாளர்கள், திட்டங்கள், விலைப்பட்டியல்கள் மற்றும் கொடுப்பனவுகளை ஒரே தெளிவான இயக்க முறைமையில் அமைக்கவும்.",
+      continueWithGoogle: "கூகிள் உடன் தொடரவும்",
+      continueWithGitHub: "GitHub உடன் தொடரவும்",
+      orUseEmail: "அல்லது மின்னஞ்சலைப் பயன்படுத்தவும்",
+      firstName: "முதல் பெயர்",
+      lastName: "கடைசிப் பெயர்",
+      email: "மின்னஞ்சல்",
+      password: "கடவுச்சொல்",
+      confirmPassword: "கடவுச்சொல்லை உறுதிப்படுத்தவும்",
+      passwordCriteria:
+        "ஒரு பெரிய எழுத்து, ஒரு சிறிய எழுத்து மற்றும் ஒரு எண் உட்பட, குறைந்தது 8 எழுத்துக்கள்.",
+      submit: "கணக்கை உருவாக்கு",
+      alreadyHaveAccount: "ஏற்கனவே கணக்கு உள்ளதா?",
+      signIn: "உள்நுழை",
+      agreePrefix:
+        "பதிவு செய்வதன் மூலம், எங்கள் விதிமுறைகளுக்கு நீங்கள் ஒப்புக்கொள்கிறீர்கள்.",
+      termsOfService: "சேவை விதிமுறைகள்",
+      and: "மற்றும்",
+      privacyPolicy: "தனியுரிமைக் கொள்கை",
+    },
     signOut: "வெளியேறு",
     welcomeBack: "மீண்டும் வரவேற்கிறோம்!",
     loginFailed: "உள்நுழைவு தோல்வியடைந்தது. மீண்டும் முயற்சிக்கவும்.",
@@ -1229,12 +1265,12 @@ const ta = {
     alreadyHaveAccount: "ஏற்கனவே கணக்கு உள்ளதா?",
     dontHaveAccount: "கணக்கு இல்லையா?",
     rememberMe: "என்னை நினைவில் வை",
-    totpPlaceholder: "ABCD-EFGH",
+    totpPlaceholder: "ஏபிசிடி-இஎஃப்ஜிஎச்",
     companyPulse: "நிறுவனத் துடிப்பு",
     billingCommand: "கட்டண கட்டளை",
     clearWeeklyFlow: "தெளிவான வாரப் புழக்கம்",
     cashLedger: "பணப் பேரேடு",
-    miruLogo: "Miru",
+    miruLogo: "மிரு",
     heroTitle:
       "நேரம், விலைப்பட்டியல்கள் மற்றும் பணம் செலுத்தல்களுக்கான ஒரே இடம்",
     heroDescription:
@@ -1271,15 +1307,74 @@ const ta = {
     termsOfService: "சேவை விதிமுறைகள்",
     privacyPolicy: "தனியுரிமைக் கொள்கை",
     and: "மற்றும்",
+    slides: {
+      dashboard: {
+        title: "நிறுவனத்தின் துடிப்பு",
+        description:
+          "தேடாமலேயே வருவாய், செயல்பாட்டில் உள்ள திட்டங்கள் மற்றும் குழுவின் உத்வேகம் ஆகியவற்றைக் காணுங்கள்.",
+      },
+      invoices: {
+        title: "பில்லிங் கட்டளை",
+        description:
+          "வரைவுகள், நிலுவையில் உள்ள தொகைகள் மற்றும் ஊதியம் பெற்ற பணிகள் ஆகியவற்றை ஒரே இடத்தில் வைக்கவும்.",
+      },
+      timeTracking: {
+        title: "தெளிவான வாராந்திர ஓட்டம்",
+        description:
+          "வாராந்திர நேரப் பதிவு, தேவையற்ற வேலையாக மாறாமல் புதுப்பிக்கப்படுகிறது.",
+      },
+      payments: {
+        title: "பணப் பேரேடு",
+        description:
+          "ஒவ்வொரு பணப்பரிவர்த்தனையும், அது செலுத்தப்பட்ட முறை, நிலை மற்றும் மூலம் ஆகியவற்றுடன் ஒரே பேரேட்டில் பதியப்படுகிறது.",
+      },
+    },
+    validation: {
+      emailRequired: "மின்னஞ்சல் தேவை",
+      invalidEmail: "தவறான மின்னஞ்சல் முகவரி",
+      passwordRequired: "கடவுச்சொல் தேவைப்படுகிறது",
+      passwordComplexity:
+        "கடவுச்சொல் பெரிய எழுத்துகள், சிறிய எழுத்துகள் மற்றும் எண்களுடன் குறைந்தபட்சம் 8 எழுத்துக்களைக் கொண்டிருக்க வேண்டும்.",
+      passwordSpace: "கடவுச்சொல்லில் இடைவெளிகள் இருக்கக்கூடாது",
+      confirmPasswordRequired: "கடவுச்சொல்லை உறுதிப்படுத்த வேண்டும்",
+      passwordsMustMatch: "கடவுச்சொற்கள் பொருந்த வேண்டும்",
+      firstNameRequired: "முதல் பெயர் தேவை",
+      firstNameInvalid: "முதல் பெயரில் எழுத்துக்கள் மட்டுமே இருக்க வேண்டும்",
+      firstNameMax:
+        "முதல் பெயர் 20 எழுத்துகள் அல்லது அதற்கும் குறைவாக இருக்க வேண்டும்.",
+      lastNameRequired: "கடைசிப் பெயர் தேவை",
+      lastNameInvalid: "கடைசிப் பெயரில் எழுத்துக்கள் மட்டுமே இருக்க வேண்டும்",
+      lastNameMax:
+        "கடைசிப் பெயர் 20 எழுத்துகள் அல்லது அதற்கும் குறைவாக இருக்க வேண்டும்.",
+      acceptTerms: "நீங்கள் நிபந்தனைகளை ஏற்க வேண்டும்.",
+    },
   },
-
-  // Passkeys
   passkeys: {
     noPasskeyResponse: "பாஸ்கீ பதில் பெறப்படவில்லை.",
     passkeysNotSupported: "இந்த உலாவியில் பாஸ்கீகள் ஆதரிக்கப்படவில்லை.",
+    title: "கடவுச்சொற்கள்",
+    addTitle: "இந்தக் கணக்கிற்கு ஒரு கடவுச்சொல்லைச் சேர்க்கவும்",
+    addDescription:
+      "ஃபேஸ் ஐடி, டச் ஐடி, விண்டோஸ் ஹலோ அல்லது வன்பொருள் பாதுகாப்புச் சாவியைப் பயன்படுத்தவும்.",
+    addAction: "கடவுச்சொல்லைச் சேர்க்கவும்",
+    requirementTitle: "உள்நுழையும்போது கடவுச்சொல் தேவை",
+    requirementDescription:
+      "உங்கள் கடவுச்சொல்லுக்குப் பிறகு, உள்நுழைவை நிறைவு செய்ய மிரூ ஒரு கடவுச்சீட்டை (passkey) கேட்கும்.",
+    emptyState: "இன்னும் கடவுச்சொற்கள் எதுவும் சேர்க்கப்படவில்லை.",
+    fallbackName: "கடவுச்சொல்",
+    addedAt: "%{time} சேர்க்கப்பட்டது",
+    lastUsedAt: "கடைசியாகப் பயன்படுத்தப்பட்டது %{time}",
+    removeAction: "அகற்று",
+    addedSuccess: "கடவுச்சொல் சேர்க்கப்பட்டது",
+    removedSuccess: "கடவுச்சொல் நீக்கப்பட்டது",
+    requirementEnabled: "கடவுச்சொல் தேவை செயல்படுத்தப்பட்டது",
+    requirementDisabled: "கடவுச்சொல் தேவை முடக்கப்பட்டுள்ளது",
+    addFailed: "கடவுச்சொல்லைச் சேர்க்க முடியவில்லை.",
+    removeFailed: "கடவுச்சொல்லை அகற்ற முடியவில்லை.",
+    updateRequirementFailed:
+      "கடவுச்சொல் உள்நுழைவுத் தேவையைப் புதுப்பிக்க முடியவில்லை.",
+    neverUsed: "ஒருபோதும் பயன்படுத்தப்படவில்லை",
   },
-
-  // Organization setup
   orgSetup: {
     setupOrganization: "நிறுவனத்தை அமை",
     companyName: "நிறுவனப் பெயர்",
@@ -1306,8 +1401,6 @@ const ta = {
     workingDaysPerWeek: "வாரத்தில் வேலை நாட்கள்",
     workingHoursPerWeek: "வாரத்தில் வேலை மணிநேரம்",
   },
-
-  // Profile
   profile: {
     personalDetails: "தனிப்பட்ட விவரங்கள்",
     employmentDetails: "வேலைவாய்ப்பு விவரங்கள்",
@@ -1321,11 +1414,68 @@ const ta = {
     dateOfJoining: "சேர்ந்த தேதி",
     dateOfBirth: "பிறந்த தேதி",
     socialProfiles: "சமூக சுயவிவரங்கள்",
-    linkedin: "LinkedIn",
-    github: "GitHub",
+    linkedin: "லிங்க்ட்இன்",
+    github: "கிட்ஹப்",
+    personalInformation: "தனிப்பட்ட தகவல்",
+    basicDetails: "அடிப்படை விவரங்கள்",
+    contactInformation: "தொடர்புத் தகவல்",
+    addressType: "முகவரி வகை",
+    current: "தற்போதைய",
+    permanent: "நிரந்தர",
+    employeeId: "பணியாளர் ஐடி",
+    officialEmail: "மின்னஞ்சல் முகவரி (அதிகாரப்பூர்வ)",
+    employmentType: "வேலைவாய்ப்பு வகை",
+    dateOfResignation: "ராஜினாமா தேதி",
+    birthDatePlaceholder: "உங்கள் பிறந்த தேதியைத் தேர்ந்தெடுக்கவும்",
+    firstName: "முதல் பெயர்",
+    lastName: "கடைசிப் பெயர்",
+    firstNamePlaceholder: "உங்கள் முதல் பெயரை உள்ளிடவும்",
+    lastNamePlaceholder: "உங்கள் குடும்பப் பெயரை உள்ளிடவும்",
+    personalEmail: "தனிப்பட்ட மின்னஞ்சல்",
+    personalEmailPlaceholder: "உங்கள்.மின்னஞ்சல்@எடுத்துக்காட்டு.காம்",
+    phoneAriaLabel: "தொலைபேசி எண்",
+    addressLine1: "முகவரி வரி 1",
+    addressLine2: "முகவரி வரி 2",
+    optionalSuffix: "(விருப்பத்திற்குரியது)",
+    streetAddressPlaceholder: "தெரு முகவரி",
+    addressLine2Placeholder: "அபார்ட்மெண்ட், அறைத்தொகுதி, யூனிட் போன்றவை.",
+    statePlaceholder: "மாநிலம் அல்லது மாகாணம்",
+    cityPlaceholder: "நகரம்",
+    zipPostalCode: "ஜிப்/அஞ்சல் குறியீடு",
+    zipPlaceholder: "12345",
+    languageDescription:
+      "இடைமுகத்திற்கு உங்களுக்கு விருப்பமான மொழியைத் தேர்ந்தெடுக்கவும்.",
+    security: "பாதுகாப்பு",
+    userFallback: "பயனர்",
+    currentPasswordPlaceholder: "தற்போதைய கடவுச்சொல்லை உள்ளிடவும்",
+    newPassword: "புதிய கடவுச்சொல்",
+    newPasswordPlaceholder: "புதிய கடவுச்சொல்லை உள்ளிடவும்",
+    confirmPasswordPlaceholder: "புதிய கடவுச்சொல்லை மீண்டும் உள்ளிடவும்",
+    cancelPasswordChange: "கடவுச்சொல் மாற்றத்தை ரத்துசெய்",
+    profilePhoto: "சுயவிவரப் புகைப்படம்",
+    profilePhotoDescription:
+      "உங்கள் பணிச்சூழல் சுயவிவரத்திற்காக ஒரு சதுரப் புகைப்படத்தைப் பதிவேற்றவும்.",
+    noAddressProvided: "முகவரி வழங்கப்படவில்லை",
+    noEmailProvided: "மின்னஞ்சல் வழங்கப்படவில்லை",
+    notProvided: "வழங்கப்படவில்லை",
+    notConnected: "இணைப்பு இல்லை",
+    bornOn: "பிறந்த தேதி %{date}",
+    lastChangedDaysAgo: "கடைசியாக மாற்றப்பட்டது %{count} நாட்களுக்கு முன்பு",
+    secure: "பாதுகாப்பானது",
+    uploadPhoto: "புகைப்படத்தைப் பதிவேற்றவும்",
+    removePhoto: "புகைப்படத்தை அகற்று",
+    uploadPhotoFailed: "சுயவிவரப் படத்தை பதிவேற்ற முடியவில்லை.",
+    removePhotoFailed: "சுயவிவரப் படத்தை அகற்ற முடியவில்லை.",
+    adjustProfilePhoto: "சுயவிவரப் புகைப்படத்தைச் சரிசெய்யவும்",
+    adjustProfilePhotoDescription:
+      "படத்தின் எந்தப் பகுதியை நீங்கள் வைத்திருக்க விரும்புகிறீர்களோ, அதைத் தேர்ந்தெடுக்கவும்.",
+    noImageSelected: "படம் எதுவும் தேர்ந்தெடுக்கப்படவில்லை",
+    savePhoto: "புகைப்படத்தைச் சேமிக்கவும்",
+    zoom: "ஜூம்",
+    company: "நிறுவனம்",
+    noPreviousEmployments: "முந்தைய வேலைவாய்ப்புகள் எதுவும் காணப்படவில்லை",
+    addPastEmployment: "+ முந்தைய வேலைவாய்ப்பைச் சேர்க்கவும்",
   },
-
-  // Leave Management
   leaveManagement: {
     leaveBalance: "விடுப்பு இருப்பு",
     applyLeave: "விடுப்பு விண்ணப்பி",
@@ -1364,9 +1514,11 @@ const ta = {
     leave: "விடுப்பு",
     nationalHoliday: "தேசிய விடுமுறை",
     optionalHoliday: "விரும்பினால் விடுமுறை",
+    summaryLabel: "விடுப்புச் சுருக்கம்",
+    summaryDescription:
+      "தேர்ந்தெடுக்கப்பட்ட ஆண்டிற்கான கிடைக்கக்கூடிய விடுப்பு, ஏற்கனவே எடுத்த விடுப்பு நேரம் மற்றும் விடுமுறைப் பயன்பாடு ஆகியவற்றை ஒரே இடத்தில் காண்க.",
+    balanceUntil: "%{date} வரை இருப்பு",
   },
-
-  // Subscriptions / Plan Details
   subscriptions: {
     currentPlan: "தற்போதைய திட்டம்",
     upgradePlan: "திட்டத்தை மேம்படுத்து",
@@ -1387,8 +1539,6 @@ const ta = {
     plusTaxes: "வரிகள் கூடுதல்",
     reviewAndPay: "மதிப்பாய்வு செய்து பணம் செலுத்து",
   },
-
-  // Misc
   switchToMode: "%{mode} பயன்முறைக்கு மாறு",
   light: "ஒளி",
   dark: "இருள்",
@@ -1398,8 +1548,6 @@ const ta = {
   editLabel: "திருத்து",
   noPasskeyResponse: "பாஸ்கீ பதில் பெறப்படவில்லை.",
   passkeysNotSupported: "இந்த உலாவியில் பாஸ்கீகள் ஆதரிக்கப்படவில்லை.",
-
-  // Table headers (common)
   tableHeaders: {
     invoiceNo: "விலைப்பட்டியல் எண்.",
     invoiceNumber: "விலைப்பட்டியல் எண்",
@@ -1419,15 +1567,465 @@ const ta = {
     role: "பங்கு",
     type: "வகை",
   },
-
-  // Relative dates
   nextDay: "அடுத்த %{day}",
   lastDay: "கடந்த %{day}",
-
-  // Duration formatting
-  durationMinutes: "%{mins}m",
+  durationMinutes: "%{mins}மீ",
   durationHours: "%{hours}h",
   durationHoursMinutes: "%{hours}h %{mins}m",
+  preferencesSettings: {
+    title: "மின்னஞ்சல் விருப்பத்தேர்வுகள்",
+    description: "உங்கள் மின்னஞ்சல் அறிவிப்பு அமைப்புகளை நிர்வகிக்கவும்",
+    saving: "சேமிப்பு...",
+    saveChanges: "மாற்றங்களைச் சேமிக்கவும்",
+    timesheetNotifications: "நேர அட்டவணை அறிவிப்புகள்",
+    billingNotifications: "கட்டண அறிவிப்புகள்",
+    timesheetNotificationsDescription:
+      "நேரக் கண்காணிப்பு மற்றும் நேரப் பதிவேடுகள் தொடர்பான அறிவிப்புகளை நிர்வகிக்கவும்",
+    billingNotificationsDescription:
+      "விலைப்பட்டியல் மற்றும் கட்டண அறிவிப்புகளைக் கட்டுப்படுத்துதல்",
+    weeklyReminderTitle: "வாராந்திர நேர அட்டவணை நினைவூட்டல்",
+    weeklyReminderDescription:
+      "நிலுவையில் உள்ள நேர அட்டவணைப் பதிவுகள் குறித்த வாராந்திர நினைவூட்டல்களை ஒவ்வொரு திங்கட்கிழமையும் பெறுங்கள்.",
+    timesheetReminderTitle: "விடுபட்ட பதிவு நினைவூட்டல்கள்",
+    timesheetReminderDescription:
+      "2 நாட்களுக்கும் மேலாக நீங்கள் நேரத்தைப் பதிவு செய்யாதபோது அறிவிப்பைப் பெறுங்கள்.",
+    invoiceNotificationsTitle: "விலைப்பட்டியல் மின்னஞ்சல் அறிவிப்புகள்",
+    invoiceNotificationsDescription:
+      "விலைப்பட்டியல்கள் உருவாக்கப்படும்போது, அனுப்பப்படும்போது அல்லது புதுப்பிக்கப்படும்போது மின்னஞ்சல்களைப் பெறுங்கள்.",
+    paymentNotificationsTitle: "பணம் செலுத்துதல் மின்னஞ்சல் அறிவிப்புகள்",
+    paymentNotificationsDescription:
+      "பணம் பெறப்படும்போது அல்லது பணம் செலுத்தும் நிலை மாறும்போது அறிவிப்பைப் பெறுங்கள்.",
+    monthlyDigestTitle: "மாதாந்திர பணப்புழக்கச் சுருக்கம்",
+    monthlyDigestDescription:
+      "நிகர மாற்றம், வரவு மற்றும் செலவு ஆகியவற்றுடன் கூடிய மாதாந்திர பணப்புழக்கச் சுருக்கத்தைப் பெறுங்கள்.",
+    confirmUnsubscribeTitle:
+      "அனைத்து மின்னஞ்சல்களிலிருந்தும் குழுவிலகுவதை உறுதிப்படுத்துக",
+    confirmUnsubscribeDescription:
+      "அனைத்து மின்னஞ்சல் அறிவிப்புகளிலிருந்தும் விலகுவதை நீங்கள் உறுதிசெய்கிறீர்களா? இனி, முக்கியமான கட்டணம் மற்றும் விலைப்பட்டியல் அறிவிப்புகள் உட்பட எந்த மின்னஞ்சல்களையும் நீங்கள் பெற மாட்டீர்கள்.",
+    confirmUnsubscribeAction: "ஆம், அனைத்திலிருந்தும் விலகவும்",
+    unsubscribedTitle:
+      "நீங்கள் அனைத்து மின்னஞ்சல்களிலிருந்தும் குழுவிலகியுள்ளீர்கள்.",
+    unsubscribedDescription:
+      "நீங்கள் தற்போது அனைத்து மின்னஞ்சல் அறிவிப்புகளிலிருந்தும் விலகியுள்ளீர்கள். இனி Miru-விடமிருந்து உங்களுக்கு எந்த மின்னஞ்சல்களும் வராது.",
+    resubscribeAction: "மின்னஞ்சல் அறிவிப்புகளை மீண்டும் இயக்கவும்",
+    enabledCount: "%{total} இன் %{count} இயக்கப்பட்டது",
+    deliveryTitle: "மின்னஞ்சல் விநியோக அமைப்புகள்",
+    emailAddress: "மின்னஞ்சல் முகவரி",
+    deliveryDescription:
+      "அனைத்து அறிவிப்புகளும் இந்த மின்னஞ்சல் முகவரிக்கு அனுப்பப்படும். உங்கள் மின்னஞ்சலை மாற்ற, உங்கள் சுயவிவர அமைப்புகளில் அதைப் புதுப்பிக்கவும்.",
+    unsubscribeTitle: "சந்தாவிலிருந்து விலகு",
+    unsubscribeDescription:
+      "நீங்கள் இனி Miru-விடமிருந்து எந்த மின்னஞ்சல்களையும் பெற விரும்பவில்லை என்றால், அனைத்து அறிவிப்புகளிலிருந்தும் விலகிக்கொள்ளலாம். இது, முக்கியமான கட்டணம் மற்றும் விலைப்பட்டியல் அறிவிப்புகள் உட்பட அனைத்து மின்னஞ்சல் தொடர்புகளையும் நிறுத்திவிடும்.",
+    unsubscribeAction: "அனைத்து மின்னஞ்சல்களிலிருந்தும் குழுவிலகவும்",
+    badges: {
+      active: "செயலில்",
+      important: "முக்கியமான",
+      monthly: "மாதாந்திர",
+    },
+  },
+  automationSettings: {
+    title: "ஆட்டோமேஷன் மற்றும் CLI",
+    description:
+      "உங்கள் உள்நுழைந்த கணக்கின் அதே அனுமதிகளுடன், உங்கள் டெர்மினல், ஸ்கிரிப்டுகள் அல்லது AI ஏஜென்ட்களிலிருந்து Miru-வைப் பயன்படுத்தவும். தனி ஆட்டோமேஷன் தயாரிப்பு தேவையில்லை. சிறப்பு மறைமுக அணுகல் எதுவும் இல்லை.",
+    freeForEveryPlan: "ஒவ்வொரு திட்டத்திற்கும் இலவசம்",
+    cards: {
+      samePermissionsTitle: "செயலியின் அதே அனுமதிகள்",
+      samePermissionsDescription:
+        "அங்கீகரிக்கப்பட்ட பயனர் வலைச் செயலியில் ஏற்கனவே அணுகக்கூடியவற்றை மட்டுமே CLI பார்க்கிறது.",
+      humansAndScriptsTitle: "மனிதர்களுக்கும் ஸ்கிரிப்டுகளுக்கும் நல்லது",
+      humansAndScriptsDescription:
+        "அன்றாடப் பணிகளுக்கு எளிய கட்டளைகளைப் பயன்படுத்தி, ஸ்கிரிப்டுகளோ அல்லது செயற்கை நுண்ணறிவோ அதே இடைமுகத்தை அழைக்கட்டும்.",
+      easyToInstallTitle: "நிறுவுவது எளிது",
+      easyToInstallDescription:
+        "ஒரே நிறுவல் கட்டளை, ஒரே உள்நுழைவு, அதன் பிறகு நீங்கள் திட்டங்களைப் பட்டியலிடலாம், நேரப் பதிவுகளை உருவாக்கலாம், விலைப்பட்டியல்களை மதிப்பாய்வு செய்யலாம், மற்றும் பலவற்றைச் செய்யலாம்.",
+    },
+    commandGroups: {
+      install: "நிறுவு",
+      authenticateOnce: "ஒருமுறை அங்கீகரிக்கவும்",
+      dailyCommands: "தினசரி கட்டளைகள்",
+    },
+  },
+  holidaysSettings: {
+    year: "ஆண்டு",
+    publicHolidays: "பொது விடுமுறை நாட்கள்",
+    optionalHolidays: "விருப்ப விடுமுறைகள்",
+    holidayName: "விடுமுறை பெயர்",
+    enterHolidayName: "விடுமுறையின் பெயரை உள்ளிடவும்",
+    selectDate: "தேதியைத் தேர்ந்தெடுக்கவும்",
+    addHoliday: "விடுமுறையைச் சேர்க்கவும்",
+    addFirstHoliday: "முதல் விடுமுறையைச் சேர்க்கவும்",
+    addOptionalHoliday: "விருப்ப விடுமுறையைச் சேர்க்கவும்",
+    noPublicHolidaysConfigured:
+      "பொது விடுமுறை நாட்கள் எதுவும் அமைக்கப்படவில்லை",
+    noOptionalHolidaysConfigured:
+      "விருப்ப விடுமுறைகள் எதுவும் அமைக்கப்படவில்லை",
+    totalAllowed: "மொத்த அனுமதிக்கப்பட்ட",
+    enterNumber: "எண்ணை உள்ளிடவும்",
+    frequency: "அதிர்வெண்",
+    allowedPerEmployee: "ஒரு பணியாளருக்கு அனுமதிக்கப்பட்டது",
+    yearAtAGlance: "ஆண்டு ஒரு பார்வை",
+    holidaySchedule: "விடுமுறை அட்டவணை",
+    noHolidaysAddedForYear:
+      "%{year} க்கு இன்னும் விடுமுறைகள் எதுவும் சேர்க்கப்படவில்லை.",
+    categories: {
+      public: "பொது",
+      optional: "விருப்பத்தேர்வு",
+    },
+    weekdays: {
+      sun: "எஸ்",
+      mon: "எம்",
+      tue: "டி",
+      wed: "W",
+      thu: "டி",
+      fri: "எஃப்",
+      sat: "எஸ்",
+    },
+  },
+  paymentSettingsPage: {
+    backToSettings: "அமைப்புகளுக்குத் திரும்பு",
+    title: "பணம் செலுத்தும் வழங்குநர்கள்",
+    description:
+      "வாடிக்கையாளர்களிடமிருந்து ஆன்லைன் கொடுப்பனவுகளை ஏற்க, கட்டணச் சேவை வழங்குநர்களை இணைக்கவும்.",
+    errorTitle: "பிழை",
+    errorDescription:
+      "பணம் செலுத்தும் அமைப்புகளை ஏற்ற முடியவில்லை. தயவுசெய்து பின்னர் மீண்டும் முயற்சிக்கவும்.",
+    stripeDescription:
+      "கிரெடிட் கார்டுகள், டெபிட் கார்டுகள் மற்றும் பிரபலமான கட்டண முறைகளை ஏற்கிறோம்.",
+    connectedTo: "இணைக்கப்பட்டது",
+    connected: "இணைக்கப்பட்டது",
+    stripeAccountFallback: "ஸ்ட்ரைப் கணக்கு",
+    chargesEnabled: "கட்டணங்கள் இயக்கப்பட்டன",
+    connectStripe: "கனெக்ட் ஸ்ட்ரைப்",
+    connecting: "இணைக்கிறது...",
+    disconnect: "துண்டிப்பு",
+    disconnecting: "இணைப்பைத் துண்டிக்கிறது...",
+    featuresTitle: "அம்சங்கள் மற்றும் நன்மைகள்",
+    helpTitle: "உதவி தேவையா?",
+    helpDescription:
+      "பணம் செலுத்தும் முறையை அமைப்பதற்கு உங்களுக்கு உதவி தேவைப்பட்டாலோ அல்லது கட்டணங்கள் மற்றும் செயல்பாடுகள் குறித்து ஏதேனும் கேள்விகள் இருந்தாலோ:",
+    viewDocumentation: "ஆவணங்களைப் பார்க்கவும்",
+    contactSupport: "ஆதரவைத் தொடர்பு கொள்ளவும்",
+    disconnectDialogTitle: "ஸ்ட்ரைப் கணக்கைத் துண்டிக்கவும்",
+    disconnectDialogDescription:
+      "உங்கள் ஸ்ட்ரைப் கணக்கின் இணைப்பைத் துண்டிக்க நீங்கள் உறுதியாக விரும்புகிறீர்களா? நீங்கள் மீண்டும் இணைக்கும் வரை, உங்களால் இனி ஸ்ட்ரைப் மூலம் பணம் பெற முடியாது.",
+    features: {
+      secureTitle: "பாதுகாப்பான கொடுப்பனவுகள்",
+      secureDescription: "PCI-இணக்கமான கட்டணச் செயலாக்கம்",
+      currenciesTitle: "பல நாணயங்கள்",
+      currenciesDescription:
+        "135க்கும் மேற்பட்ட நாணயங்களில் பணம் செலுத்துதலை ஏற்கிறது",
+      methodsTitle: "பல்வேறு கட்டண முறைகள்",
+      methodsDescription:
+        "அட்டைகள், பணப்பைகள், வங்கிப் பரிமாற்றங்கள் மற்றும் பல",
+      setupTitle: "உடனடி அமைப்பு",
+      setupDescription: "நிமிடங்களில் பணம் செலுத்துதலை ஏற்கத் தொடங்குங்கள்",
+    },
+  },
+  organizationSettingsPage: {
+    actions: {
+      editSettings: "அமைப்புகளைத் திருத்து",
+    },
+    sections: {
+      companyProfile: "நிறுவனத்தின் சுயவிவரம்",
+      financial: "நிதி",
+      scheduleAndTime: "அட்டவணை மற்றும் நேரம்",
+      workingHours: "வேலை நேரம்",
+    },
+    fields: {
+      businessPhone: "வணிக தொலைபேசி",
+      currency: "நாணயம்",
+      businessAddress: "வணிக முகவரி",
+      standardRate: "நிலையான விகிதம்",
+      fiscalYearEnd: "நிதியாண்டு இறுதி",
+      timezone: "நேர மண்டலம்",
+      dateFormat: "தேதி வடிவம்",
+      workingDays: "வேலை நாட்கள்",
+    },
+    status: {
+      active: "செயலில்",
+    },
+    defaults: {
+      companyName: "நிறுவனத்தின் பெயர்",
+      locationNotSet: "இடம் அமைக்கப்படவில்லை",
+      notConfigured: "உள்ளமைக்கப்படவில்லை",
+      noAddress: "முகவரி எதுவும் உள்ளமைக்கப்படவில்லை",
+      workingHours: "காலை 9:00 மணி - மாலை 5:00 மணி",
+      workingDays: "திங்கள் - வெள்ளி",
+      timezone: "UTC",
+      dateFormat: "மாதம்/நாள்/வருடம்",
+    },
+    errors: {
+      loadFailed: "நிறுவன விவரங்களை ஏற்ற முடியவில்லை. மீண்டும் முயற்சிக்கவும்.",
+    },
+    ratePerHour: "/ மணிநேரம்",
+  },
+  billingSettings: {
+    membership: "உறுப்பினர்",
+    currentPlan: "தற்போதைய திட்டம்",
+    seatUsage: "இருக்கை பயன்பாடு",
+    billingCadence: "பில்லிங் கால இடைவெளி",
+    monthly: "மாதாந்திர",
+    yearly: "ஆண்டுதோறும்",
+    notSubscribedYet: "இன்னும் சந்தா செலுத்தவில்லை",
+    startTrial: "30-நாள் ப்ரோ சோதனையைத் தொடங்குங்கள்",
+    startingTrial: "சோதனை தொடங்குகிறது...",
+    upgradeWithStripe: "ஸ்ட்ரைப் மூலம் மேம்படுத்தவும்",
+    openingStripe: "திறப்புப் பட்டை...",
+    manageBillingInStripe: "ஸ்ட்ரைப்பில் பில்லிங்கை நிர்வகிக்கவும்",
+    openingPortal: "நுழைவாயில் திறக்கிறது...",
+    saveTwoMonths: "ஆண்டுச் சந்தாவில் இரண்டு மாதங்கள் சேமிக்கவும்",
+    heroTitle:
+      "தற்போதைக்குப் பொருத்தமான தொகுப்பைத் தேர்ந்தெடுங்கள். பின்னர் மேலும் தேவைப்பட்டால் மாற்றிக்கொள்ளுங்கள்.",
+    howManySeats:
+      "உங்களுக்கு எத்தனை இருக்கைகள் தேவைப்படும் என எதிர்பார்க்கிறீர்கள்?",
+    estimatedSeats: "மதிப்பிடப்பட்ட இருக்கைகள்",
+    recommended: "பரிந்துரைக்கப்பட்டது",
+    estimatedProSpend: "மதிப்பிடப்பட்ட தொழில்முறை செலவு",
+    yearlyDiscount: "ஆண்டு தள்ளுபடி",
+    openSource: "திறந்த மூல",
+    annual: "ஆண்டுதோறும்",
+    service: "சேவை",
+    poweredByStripe: "ஸ்ட்ரைப்பால் இயக்கப்படுகிறது",
+    changePlansAnytime: "திட்டங்களை எப்போது வேண்டுமானாலும் மாற்றலாம்.",
+    checkoutPoweredByStripe:
+      "பணம் செலுத்துதல் மற்றும் சந்தா மேலாண்மை ஆகியவை ஸ்ட்ரைப் மூலம் இயக்கப்படுகின்றன.",
+    noSalesCall:
+      "ப்ரோ திட்டத்திற்கு விற்பனை அழைப்புகள் வராது. ஸ்ட்ரைப்பில் எப்போது வேண்டுமானாலும் திட்டங்களை ரத்து செய்யலாம் அல்லது மாற்றிக்கொள்ளலாம்.",
+    reportsAndAnalytics: "அறிக்கைகள் மற்றும் பகுப்பாய்வுகள்",
+    customAnnual: "தனிப்பயன் வருடாந்திரம்",
+    seatsUsed: "%{used}/%{total} இருக்கைகள் பயன்படுத்தப்பட்டன",
+    seatsUsedWithoutLimit: "பயன்படுத்தப்பட்ட இருக்கைகள்",
+    savePerYear: "ஆண்டுக்கு $%{amount} சேமிக்கவும்",
+    effectiveMonthlyPricing: "சுமார் $%{amount}/மாதம் பயனுள்ள விலை",
+    cancelOrUpgradeAnytime:
+      "ஸ்ட்ரைப்பில் எப்போது வேண்டுமானாலும் ரத்து செய்யலாம் அல்லது மேம்படுத்தலாம்.",
+    planCadence: {
+      monthly: "மாதாந்திர கட்டணம்",
+      yearlySavings: "ஒவ்வொரு இருக்கைக்கும் 2 மாதங்கள் சேமிக்கவும்",
+    },
+    alerts: {
+      subscriptionUpdatedTitle: "சந்தா புதுப்பிக்கப்பட்டது",
+      subscriptionUpdated:
+        "உங்கள் திட்டம் ஸ்ட்ரைப்பில் வெற்றிகரமாகப் புதுப்பிக்கப்பட்டது.",
+      checkoutCancelled: "செக் அவுட் ரத்துசெய்தல்",
+      noSubscriptionChanges:
+        "உங்கள் சந்தாவில் எந்த மாற்றங்களும் செய்யப்படவில்லை.",
+      unableToLoad: "கட்டண விவரங்களை ஏற்ற முடியவில்லை",
+      proTrialActive: "புரோ சோதனை செயலில் உள்ளது",
+      proTrialActiveUntil:
+        "%{date} வரை உங்கள் பணிச்சூழலுக்கு புரோ அணுகல் உள்ளது.",
+      proTrialEnded: "புரோ விசாரணை முடிவடைகிறது",
+      proTrialEndedDescription:
+        "உங்கள் பணிச்சூழல் மீண்டும் இலவசத் திட்டத்திற்குத் திரும்பியுள்ளது. புரோ அணுகலை மீண்டும் பெற, ஸ்ட்ரைப்பில் மேம்படுத்தவும்.",
+      seatLimitReached: "இருக்கை வரம்பு எட்டப்பட்டது",
+      seatLimitReachedDescription:
+        "இந்தப் பணிவெளியில் 3க்கும் மேற்பட்ட உறுப்பினர்களைச் சேர்க்க, ஸ்ட்ரைப்பில் மேம்படுத்தவும்.",
+    },
+    errors: {
+      unableToOpenStripeCheckout: "ஸ்ட்ரைப் செக்அவுட்டைத் திறக்க முடியவில்லை",
+      unableToOpenStripeBillingPortal:
+        "ஸ்ட்ரைப் பில்லிங் போர்ட்டலைத் திறக்க முடியவில்லை",
+      unableToStartProTrial: "உங்கள் புரோ சோதனையைத் தொடங்க முடியவில்லை",
+    },
+    recommendations: {
+      freeTitle:
+        "கட்டுப்பாடுகள் தேவைப்படும் வரை இலவசப் பயன்முறையிலேயே இருங்கள்.",
+      freeDescription:
+        "மிகச் சிறிய குழுக்களுக்கு இலவசப் பதிப்பு நன்றாகப் பொருந்தும். உங்களுக்கு SSO, மேம்பட்ட அறிக்கைகள் மற்றும் 3-க்கும் மேற்பட்ட இருக்கைகள் தேவைப்படும்போது புரோ பதிப்பிற்கு மாறவும்.",
+      proTitle: "புரோ சரியான தேர்வாக இருக்கும்.",
+      proDescription:
+        "வளர்ந்து வரும் அணிகளுக்கு, புரோ பதிப்பானது SSO, நிதி வெளிப்படைத்தன்மை மற்றும் பெருநிறுவன கூடுதல் செலவுகள் இல்லாமல் விரிவாக்கம் செய்வதற்கான போதுமான வாய்ப்பை வழங்குகிறது.",
+      enterpriseTitle: "எண்டர்பிரைஸ் பற்றி எங்களிடம் பேசுங்கள்",
+      enterpriseDescription:
+        "பெரிய குழுக்களுக்கு பொதுவாக கொள்முதல் ஆதரவு, நிர்வாகக் கட்டுப்பாடுகள் மற்றும் ஒரு சுமுகமான அறிமுகம் தேவைப்படும். புரோ பதிப்பில் தொடங்குங்கள் அல்லது நேரடியாக என்டர்பிரைஸ் பதிப்பிற்கு மாறுங்கள்.",
+    },
+    highlights: {
+      seatsTitle: "நிர்வாகச் சிக்கல்கள் இல்லாத கூடுதல் இடங்கள்",
+      seatsDescription:
+        "இலவச 3 இருக்கைகள் என்ற வரம்பைத் தாண்டி, பணியில் சேருவதை எளிமையாக வைத்திருங்கள்.",
+      ssoTitle: "SSO மற்றும் வலுவான கட்டுப்பாடுகள்",
+      ssoDescription:
+        "வளர்ந்து வரும் குழுக்களுக்குக் கூடுதல் கருவிகள் இல்லாமல் பாதுகாப்பான அணுகலை வழங்குங்கள்.",
+      financeTitle: "அமைதியாக இருக்கும் நிதி வெளிப்படைத்தன்மை",
+      financeDescription:
+        "கூடுதல் அமைப்புகள் ஏதுமின்றி லாப வரம்பு, கட்டண முறை மற்றும் குழுப் பயன்பாடு ஆகியவற்றை அறிந்துகொள்ளுங்கள்.",
+    },
+    planDescriptions: {
+      free: "முக்கிய கண்காணிப்பு, விலைப்பட்டியல், பணம் செலுத்துதல் மற்றும் 3 குழு உறுப்பினர்கள் வரை கொண்ட சுய-ஹோஸ்ட் மிரூ.",
+      pro: "புரோ பதிப்பானது, பெருநிறுவனங்களுக்கான கூடுதல் செலவுகள் ஏதுமின்றி, அறிக்கைகள், SSO, அதிக இருக்கைகள் மற்றும் எளிமையான நிர்வாகக் கட்டுப்பாடுகளை வழங்குகிறது.",
+      enterprise:
+        "கொள்முதலுக்கு உகந்த ஒப்பந்தங்கள், மேம்பட்ட கட்டுப்பாடுகள், மற்றும் பாதுகாப்பு மதிப்பாய்வு தேவைப்படும் பெரிய குழுக்களுக்கான ஆதரவு.",
+      hostedEnterprise:
+        "நாங்கள் உங்களுக்காக ஒரு பிரத்யேக அமைப்பில் Miru-வை ஹோஸ்ட் செய்து, மேம்படுத்தி, காப்புப் பிரதி எடுத்து, ஆதரவளிக்கிறோம்.",
+    },
+    planBullets: {
+      free: {
+        coreProduct: "சுய-ஹோஸ்ட் செய்யப்பட்ட முக்கிய தயாரிப்பு",
+        tracking: "நேர கண்காணிப்பு, விலைப்பட்டியல்கள், கொடுப்பனவுகள்",
+        dashboard: "ஒரு சிறிய குழுவிற்கான டாஷ்போர்டு தெரிவுநிலை",
+      },
+      pro: {
+        trial: "பணம் செலுத்துவதற்கு முன் 30 நாள் இலவச சோதனை",
+        sso: "SSO, மேம்பட்ட அறிக்கையிடல், வலுவான நிர்வாகக் கட்டுப்பாடுகள்",
+        fit: "நிறுவனங்களுக்கும் வளர்ந்து வரும் குழுக்களுக்கும் மிகவும் பொருத்தமானது",
+      },
+      enterprise: {
+        contracts: "கொள்முதலுக்கு உகந்த ஒப்பந்தங்கள்",
+        onboarding: "பாதுகாப்பு மதிப்பாய்வு மற்றும் பணியமர்த்தல் ஆதரவு",
+        compliance: "ஒப்புதல் மற்றும் இணக்கத் தேவைகள் உள்ள பெரிய குழுக்களுக்கு",
+      },
+      hosted: {
+        setup: "பிரத்யேக நிர்வாக அமைப்பு",
+        operations:
+          "நாங்கள் மேம்படுத்தல்கள், காப்புப் பிரதிகள் மற்றும் ஆதரவு சேவைகளை வழங்குகிறோம்.",
+        fit: "தங்களுக்காக மிரூ முழுமையாக இயக்கப்பட வேண்டும் என விரும்பும் அணிகளுக்கு",
+      },
+    },
+    heroDescription:
+      "இலவசத் திட்டத்தில் தொடங்குங்கள், குழுவிற்கு அதிகக் கட்டுப்பாடு தேவைப்படும்போது புரோ திட்டத்திற்கு மாறுங்கள், அல்லது உங்களுக்காக மிரூவை நாங்கள் இயக்க அனுமதிக்கவும். புரோ திட்டம் மலிவானதாகவே இருக்கும், வருடாந்திரக் கட்டணம் கணிசமான பணத்தைச் சேமிக்கும், மேலும் செக்அவுட் மற்றும் சந்தா மேலாண்மை ஆகியவை ஸ்ட்ரைப் மூலம் இயக்கப்படுவதால் கட்டணச் செலுத்துதல் எளிமையாகவே இருக்கும்.",
+    seatEstimatorDescription:
+      "இலவச மற்றும் புரோ கட்டணங்களை ஒப்பிட்டு, மாதாந்திரமா அல்லது வருடாந்திரமா எது சிறந்தது என்பதைத் தீர்மானிக்க இதைப் பயன்படுத்தவும்.",
+    yearlyDiscountDescription:
+      "மாதாந்திர விலையுடன் ஒப்பிடுகையில், ஒவ்வொரு இருக்கைக்கும் இரண்டு மாதங்கள் இலவசம்.",
+    checkoutDescription:
+      "விற்பனை செயல்முறை இல்லாமல் சோதனையைத் தொடங்குங்கள், நீங்கள் தயாரானதும் மேம்படுத்திக்கொள்ளுங்கள், மேலும் உங்களுக்குத் தேவைப்படும்போதெல்லாம் கட்டணத்தை நீங்களே நிர்வகித்துக் கொள்ளுங்கள்.",
+    plans: {
+      unknown: "அறியப்படாத",
+      free: "இலவசம்",
+      freePro: "இலவச புரோ",
+      proTrial: "புரோ டிரையல்",
+      paid: "பணம் செலுத்தப்பட்டது",
+      enterprise: "நிறுவனம்",
+      hostedEnterprise: "ஹோஸ்ட் செய்யப்பட்ட எண்டர்பிரைஸ்",
+    },
+    table: {
+      feature: "அம்சம்",
+      bestFor: "சிறந்தது",
+      selfHostedTeams: "சுயமாக ஹோஸ்ட் செய்யப்பட்ட அணிகள் தொடங்குகின்றன",
+      growingServiceTeams:
+        "கட்டுப்பாடுகள் தேவைப்படும் வளர்ந்து வரும் சேவைக் குழுக்கள்",
+      largeOrgs:
+        "பாதுகாப்பு மற்றும் கொள்முதல் தேவைகளைக் கொண்ட பெரிய நிறுவனங்கள்",
+      managedTeams: "மிருவை தங்களுக்காக நிர்வகிக்க விரும்பும் அணிகள்",
+      timeTracking: "நேர கண்காணிப்பு",
+      invoicesAndPayments: "விலைப்பட்டியல்கள் மற்றும் கொடுப்பனவுகள்",
+      reportsAndDashboards: "அறிக்கைகள் மற்றும் டாஷ்போர்டுகள்",
+      sso: "எஸ்எஸ்ஓ",
+      auditAndAdminControls: "தணிக்கை மற்றும் நிர்வாகக் கட்டுப்பாடுகள்",
+      support: "ஆதரவு",
+      included: "சேர்க்கப்பட்டுள்ளது",
+      notIncluded: "சேர்க்கப்படவில்லை",
+      dashboardOnly: "டாஷ்போர்டு மட்டும்",
+      reportsAndAnalytics: "அறிக்கைகள் மற்றும் பகுப்பாய்வுகள்",
+      community: "சமூகம்",
+      priorityEmail: "முன்னுரிமை மின்னஞ்சல்",
+      priorityOnboarding: "முன்னுரிமை + பணியமர்த்தல்",
+      managedOnboarding: "நிர்வகிக்கப்பட்ட சேவை + பணியமர்த்தல்",
+    },
+  },
+  twoFactor: {
+    title: "அங்கீகரிப்பான் செயலி 2FA",
+    addTitle: "ஒரு அங்கீகாரச் செயலியைச் சேர்க்கவும்",
+    addDescription:
+      "Google Authenticator, 1Password, Bitwarden, Authy அல்லது TOTP உடன் இணக்கமான வேறு ஏதேனும் செயலியைப் பயன்படுத்தவும்.",
+    setupAction: "2FA-ஐ அமைக்கவும்",
+    finishTitle: "அங்கீகரிப்பான் அமைப்பை முடிக்கவும்",
+    finishDescription:
+      "இந்த சாவியை உங்கள் அங்கீகரிப்புச் செயலியில் சேர்த்து, பின்னர் 2FA-ஐ இயக்க தற்போதைய 6-இலக்கக் குறியீட்டை உள்ளிடவும்.",
+    manualEntryKey: "கைமுறை நுழைவு விசை",
+    verificationCode: "சரிபார்ப்புக் குறியீடு",
+    verificationCodePlaceholder: "123456",
+    enableAction: "2FA-ஐ இயக்கு",
+    resetKeyAction: "மீட்டமை விசை",
+    enabledTitle: "அங்கீகரிப்பான் செயலி பாதுகாப்பு இயக்கத்தில் உள்ளது",
+    enabledDescription:
+      "நீங்கள் உள்நுழையும்போது, உங்கள் கடவுச்சொல்லுக்குப் பிறகு ஒரு அங்கீகாரக் குறியீடு தேவைப்படும்.",
+    recoveryCodesAvailable: "%{count} மீட்புக் குறியீடுகள் கிடைக்கின்றன",
+    regenerateRecoveryCodes: "மீட்புக் குறியீடுகளை மீண்டும் உருவாக்கு",
+    disableAction: "2FA-ஐ முடக்கு",
+    saveRecoveryCodes: "இந்த மீட்புக் குறியீடுகளைச் சேமிக்கவும்",
+    saveRecoveryCodesDescription:
+      "ஒவ்வொரு குறியீடும் ஒரு முறை மட்டுமே செயல்படும். அவற்றை பாதுகாப்பான இடத்தில் சேமித்து வைக்கவும்.",
+    setupReadySuccess: "அங்கீகரிப்பான் செயலி அமைப்பு தயாராக உள்ளது",
+    enabledSuccess: "அங்கீகரிப்பான் செயலி இயக்கப்பட்டது",
+    disabledSuccess: "அங்கீகரிப்பான் செயலி முடக்கப்பட்டது",
+    regeneratedSuccess: "மீட்புக் குறியீடுகள் மீண்டும் உருவாக்கப்பட்டன",
+    setupFailed: "2FA அமைப்பைத் தொடங்க முடியவில்லை.",
+    enableFailed: "அங்கீகரிப்புச் செயலியை இயக்க முடியவில்லை.",
+    disableFailed: "2FA-ஐ முடக்க முடியவில்லை.",
+    regenerateFailed: "மீட்புக் குறியீடுகளை மீண்டும் உருவாக்க முடியவில்லை.",
+  },
+  notificationPreferences: {
+    emailNotifications: "மின்னஞ்சல் அறிவிப்புகள்",
+    manageDescription:
+      "உங்கள் மின்னஞ்சல் அறிவிப்பு விருப்பங்களை நிர்வகிக்கவும்",
+    weeklyEmailReminder: "வாராந்திர மின்னஞ்சல் நினைவூட்டல்",
+    weeklyEmailReminderDescription:
+      "நேரப்பதிவுகள் மற்றும் திட்டப் புதுப்பிப்புகள் குறித்த வாராந்திர மின்னஞ்சல் நினைவூட்டல்களைப் பெறுங்கள்.",
+    noUserData: "பயனர் தரவு எதுவும் கிடைக்கவில்லை",
+    loginPrompt: "அறிவிப்பு விருப்பங்களை நிர்வகிக்க, தயவுசெய்து உள்நுழையவும்.",
+  },
+  devices: {
+    addDevices: "சாதனங்களைச் சேர்க்கவும்",
+    editDevices: "சாதனங்களைத் திருத்து",
+    device: "சாதனம்",
+    unknownDevice: "அறியப்படாத சாதனம்",
+    serial: "வரிசை எண்:",
+    deviceType: "சாதன வகை",
+    selectDeviceType: "சாதன வகையைத் தேர்ந்தெடுக்கவும்",
+    modelName: "மாடல்/பெயர்",
+    serialNumber: "வரிசை எண்",
+    memory: "நினைவகம் (ரேம்)",
+    processor: "செயலி",
+    graphics: "கிராபிக்ஸ்",
+    graphicsCard: "கிராபிக்ஸ் கார்டு",
+    storage: "சேமிப்பு",
+    modelNamePlaceholder: "உதாரணமாக, மேக்புக் ப்ரோ 16-இன்ச்",
+    serialNumberPlaceholder: "எ.கா., C02XX1234567",
+    memoryPlaceholder: "உதாரணமாக, 16GB DDR4",
+    processorPlaceholder: "உதாரணத்திற்கு, இன்டெல் கோர் i7-10750H",
+    graphicsPlaceholder: "உதாரணமாக, என்விடியா ஜியிஃபோர்ஸ் ஆர்டிஎக்ஸ் 3060",
+    storagePlaceholder: "உதாரணமாக, 512GB SSD",
+    addAnotherDevice: "மற்றொரு சாதனத்தைச் சேர்க்கவும்",
+    addAnotherDeviceDescription:
+      "உங்கள் பட்டியலில் புதிய சாதனத்தைச் சேர்க்க கிளிக் செய்யவும்.",
+    deviceSummary: "சாதன சுருக்கம்",
+    totalDevices: "மொத்த சாதனங்கள்",
+    notSpecified: "குறிப்பிடப்படவில்லை",
+    noDevicesFound: "சாதனங்கள் எதுவும் காணப்படவில்லை",
+    newDevice: "புதிய சாதனம்",
+    unsavedChangesPrompt:
+      "நீங்கள் சேமிக்காத மாற்றங்கள் உள்ளன. நீங்கள் ரத்து செய்ய விரும்புவது உறுதியா?",
+  },
+  nav: {
+    dashboard: "டாஷ்போர்டு",
+    timeTracking: "நேர கண்காணிப்பு",
+    clients: "வாடிக்கையாளர்கள்",
+    projects: "திட்டங்கள்",
+    team: "அணி",
+    invoices: "விலைப்பட்டியல்கள்",
+    reports: "அறிக்கைகள்",
+    payments: "பணம் செலுத்துதல்",
+    leavesAndHolidays: "விடுப்புகள் மற்றும் விடுமுறைகள்",
+    expenses: "செலவுகள்",
+    settings: "அமைப்புகள்",
+    logout: "வெளியேறு",
+  },
+  sidebar: {
+    main: "முக்கிய",
+    personalSettings: "தனிப்பட்ட அமைப்புகள்",
+    companySettings: "நிறுவன அமைப்புகள்",
+    profile: "சுயவிவரம்",
+    devices: "சாதனங்கள்",
+    organization: "வழக்கறிஞர்",
+    billing: "பில்லிங்",
+    paymentSettings: "பணம் செலுத்தும் அமைப்புகள்",
+    holidayCalendar: "விடுமுறை நாட்காட்டி",
+    myLeaves: "என் இலைகள்",
+    bankTaxInfo: "வங்கி மற்றும் வரித் தகவல்",
+    expand: "பக்கப் பட்டியை விரிவாக்கு",
+    collapse: "பக்கப் பட்டியைச் சுருக்கு",
+  },
 };
 
 export default ta;

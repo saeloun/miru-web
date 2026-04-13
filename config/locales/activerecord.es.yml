@@ -1,0 +1,30 @@
+---
+es:
+  activerecord:
+    errors:
+      models:
+        client:
+          attributes:
+            name:
+              format: "%{message}"
+        project:
+          attributes:
+            name:
+              format: "%{message}"
+        user:
+          attributes:
+            email:
+              blank: El correo electrónico no puede estar vacío.
+              invalid: Dirección de correo electrónico no válida
+              taken: La dirección de correo electrónico ya existe.
+            first_name:
+              blank: no puede estar en blanco
+              invalid: debe contener únicamente letras o espacios
+            last_name:
+              blank: no puede estar en blanco
+              invalid: debe contener únicamente letras o espacios
+            password:
+              blank: no puede estar en blanco
+              too_short: Debe tener al menos %{count} caracteres de longitud.
+            password_confirmation:
+              confirmation: no coincide con la nueva contraseña

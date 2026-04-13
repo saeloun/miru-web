@@ -1,25 +1,5 @@
 ---
 it:
-  activerecord:
-    errors:
-      models:
-        user:
-          attributes:
-            email:
-              blank: L'indirizzo email non può essere vuoto.
-              invalid: Indirizzo email non valido
-              taken: L'indirizzo email esiste già
-            first_name:
-              blank: non può essere vuoto
-              invalid: deve contenere solo lettere o spazi
-            last_name:
-              blank: non può essere vuoto
-              invalid: deve contenere solo lettere o spazi
-            password:
-              blank: non può essere vuoto
-              too_short: deve essere lungo almeno %{count} caratteri
-            password_confirmation:
-              confirmation: non corrisponde alla nuova password
   devise:
     confirmations:
       confirmed: Il tuo indirizzo email è stato confermato con successo.
@@ -93,14 +73,3 @@ it:
       send_paranoid_instructions: Se il tuo account esiste, riceverai un'email con
         le istruzioni per sbloccarlo tra pochi minuti.
       unlocked: Il tuo account è stato sbloccato con successo. Accedi per continuare.
-  errors:
-    messages:
-      already_confirmed: è già stato confermato, prova ad accedere
-      confirmation_period_expired: deve essere confermato all'interno di %{period},
-        si prega di richiederne uno nuovo
-      expired: è scaduto, si prega di richiederne uno nuovo
-      not_found: non trovato
-      not_locked: non era chiuso a chiave
-      not_saved:
-        one: '1 errore ha impedito il salvataggio di questo %{resource}:'
-        other: 'Gli errori %{count} hanno impedito il salvataggio di questo %{resource}:'

@@ -1,0 +1,30 @@
+---
+ja:
+  activerecord:
+    errors:
+      models:
+        client:
+          attributes:
+            name:
+              format: "%{message}"
+        project:
+          attributes:
+            name:
+              format: "%{message}"
+        user:
+          attributes:
+            email:
+              blank: メールアドレスは空白にできません
+              invalid: 無効なメールアドレス
+              taken: メールアドレスは既に存在します
+            first_name:
+              blank: 空白にすることはできません
+              invalid: 文字またはスペースのみを含める必要があります
+            last_name:
+              blank: 空白にすることはできません
+              invalid: 文字またはスペースのみを含める必要があります
+            password:
+              blank: 空白にすることはできません
+              too_short: 少なくとも%{count}文字の長さである必要があります
+            password_confirmation:
+              confirmation: 新しいパスワードと一致しません

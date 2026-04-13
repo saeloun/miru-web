@@ -1,0 +1,22 @@
+---
+ja:
+  errors:
+    bill_status_billed: 既に請求済みの項目については、再度請求することはできません。
+    can't change status: 支払い済みの請求書は変更できません
+    create_billed_entry: 請求対象のタイムシートエントリを作成することはできません
+    internal_server_error: 何らかの問題が発生しました
+    messages:
+      already_confirmed: 既に確認済みですので、ログインしてみてください。
+      confirmation_period_expired: "%{period}内で確認が必要です。新しいものをリクエストしてください。"
+      expired: 有効期限が切れています。新しいものをリクエストしてください。
+      not_found: 見つかりません
+      not_locked: ロックされていませんでした
+      not_saved:
+        one: 1つのエラーにより、この%{resource}を保存できませんでした。
+        other: "%{count} エラーにより、この %{resource} を保存できませんでした。"
+    not_found: お探しのリソースは利用できません
+    prevent_draft_to_waived: 免除に変更することはできません
+    unauthorized: この操作を実行できるのは、所有者または管理者ユーザーのみです。
+    updation_not_allowed: 更新は許可されていません
+    user_already_member: メールアドレスは既に使用されています。別のメールアドレスを入力してください。
+    validate_billable_project: 請求対象外のプロジェクトに対して、未請求エントリを作成することはできません。

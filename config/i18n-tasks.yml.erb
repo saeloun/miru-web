@@ -32,7 +32,6 @@ data:
   router: conservative_router
   write:
     - ['devise.*', 'config/locales/devise.%{locale}.yml']
-    - ['branding.*', 'config/locales/branding.%{locale}.yml']
     - ['activerecord.*', 'config/locales/activerecord.%{locale}.yml']
     - ['errors.*', 'config/locales/errors.%{locale}.yml']
     - 'config/locales/%{locale}.yml'
@@ -41,6 +40,9 @@ search:
     - app/
     - config/
     - lib/
+  exclude:
+    - app/assets
+    - app/javascript/src
   prism: rails
   strict: false
 translation:

@@ -1,16 +1,9 @@
 ---
 pt-BR:
-  activerecord:
-    errors:
-      models:
-        client:
-          attributes:
-            name:
-              format: "%{message}"
-        project:
-          attributes:
-            name:
-              format: "%{message}"
+  app:
+    name: Sistema Operacional da Agência Miru
+    tagline: Administre as operações da sua agência a partir de um único centro de
+      comando.
   application_controller:
     not_found: Rota não encontrada
   avatar:
@@ -84,20 +77,6 @@ pt-BR:
   employment:
     update:
       success: Atualização de emprego concluída com sucesso
-  errors:
-    bill_status_billed: Não é possível cobrar por uma entrada que já foi cobrada.
-    can't change status: Não é possível alterar uma fatura já paga.
-    create_billed_entry: Não é possível criar um lançamento de folha de ponto faturado.
-    internal_server_error: Algo deu errado
-    not_found: O recurso que você procura não está disponível.
-    prevent_draft_to_waived: não pode ser alterado para dispensado
-    unauthorized: Somente usuários proprietários ou administradores estão autorizados
-      a executar esta ação.
-    updation_not_allowed: A atualização não é permitida.
-    user_already_member: O endereço de e-mail já está em uso. Por favor, insira outro
-      endereço de e-mail.
-    validate_billable_project: Não é possível criar um lançamento não faturado para
-      projetos não faturáveis.
   expenses:
     approve: Despesa aprovada com sucesso.
     create: Despesa submetida com sucesso.
@@ -170,6 +149,198 @@ pt-BR:
       success: Saída criada com sucesso
     update:
       success: Sair atualizado com sucesso
+  mailers:
+    actions:
+      join_miru: Junte-se ao Miru
+      open_expense: Despesa em aberto
+      open_invoice: Fatura aberta
+      open_time_tracking: Registro de tempo aberto
+      view_reports: Veja os relatórios no Miru
+    client_payment_mailer:
+      payment:
+        eyebrow: Pagamentos
+        preheader: Recibo de pagamento da fatura %{invoice_number}.
+        receipt_title: Pagamento recebido
+        records_body: Este recibo confirma o seu pagamento. Você pode reabrir a fatura
+          a qualquer momento, caso precise dos detalhes novamente.
+        records_title: Guarde isto para seus registros.
+        subject: Recibo de pagamento da fatura %{invoice_number}
+        subtitle_html: Recebemos o seu pagamento referente à fatura <strong>%{invoice_number}</strong>
+          .
+        summary_html: Recebemos <strong>%{amount}</strong> em <strong>%{paid_on}</strong>
+          referente à fatura <strong>%{invoice_number}</strong> .
+        title: Recibo de pagamento
+    expense_mailer:
+      approved:
+        eyebrow: Despesas
+        preheader: Seu pedido de reembolso foi aprovado.
+        subject: Seu reembolso foi aprovado.
+        subtitle: Seu pedido de reembolso foi analisado e aprovado.
+        title: Reembolso aprovado
+      paid:
+        eyebrow: Despesas
+        preheader: Seu pedido de reembolso foi marcado como pago.
+        subject: Seu reembolso foi marcado como pago.
+        subtitle: O pagamento do seu pedido de reembolso foi concluído.
+        title: Reembolso pago
+      rejected:
+        eyebrow: Despesas
+        next_step_body: Abra a despesa, faça as atualizações e envie-a novamente.
+        next_step_title: Próximo passo
+        preheader: Seu pedido de reembolso precisa ser atualizado.
+        subject: Seu reembolso precisa ser atualizado antes de ser aprovado.
+        subtitle: Por favor, revise os detalhes da solicitação, faça as alterações
+          necessárias e envie-a novamente.
+        title: O reembolso precisa ser atualizado.
+      submitted:
+        eyebrow: Despesas
+        preheader: Um novo pedido de reembolso precisa ser analisado.
+        subject: "%{submitter_name} enviou um pedido de reembolso"
+        subtitle_html: "<strong>%{submitter_name}</strong> enviou um pedido de reembolso
+          que está pronto para análise."
+        title: Novo pedido de reembolso
+    invoice_mailer:
+      invoice:
+        eyebrow: Faturas
+        payment_link_subvalue: Confira os itens da lista e pague online.
+        payment_link_value: Página de fatura segura
+        preheader: Fatura %{invoice_number} de %{company_name}.
+        ready_body: Acesse a página segura da fatura para verificar os itens, confirmar
+          o total e pagar online.
+        ready_title: Confira antes de pagar
+        subject: Fatura %{invoice_number}
+        subtitle_html: "<strong>%{company_name}</strong> enviou a fatura <strong>%{invoice_number}</strong>
+          . Você pode revisá-la e pagar online quando estiver pronto."
+        support_html: Tem alguma dúvida sobre esta fatura? Responda a este e-mail
+          ou entre em contato com <a href="mailto:%{support_email}">%{support_email}</a>
+          .
+        title: Fatura pronta para revisão.
+      send_invoice:
+        attachment_subvalue: Guarde, encaminhe ou arquive.
+        attachment_value: PDF em anexo
+        eyebrow: Faturas
+        next_steps_body: Abra a fatura para confirmar o valor, revise os itens e pague
+          quando estiver pronto.
+        next_steps_title: O que esperar
+        note_title: Uma nota de %{company_name}
+        preheader: A fatura %{invoice_number} de %{company_name} está pronta.
+        subject: Fatura %{invoice_number} de %{company_name}
+        subtitle_html: "<strong>%{company_name}</strong> enviou a fatura <strong>%{invoice_number}</strong>
+          . Abra-a para revisar os detalhes, baixar o PDF e pagar com segurança."
+        support_html: Precisa de ajuda? Responda a este e-mail ou entre em contato
+          com <a href="mailto:%{support_email}">%{support_email}</a> .
+        title: Fatura pronta para revisão.
+    labels:
+      amount: Quantia
+      amount_due: Valor devido
+      amount_paid: Valor pago
+      attachment: Anexo
+      category: Categoria
+      client: Cliente
+      date: Data
+      description: Descrição
+      due_date: Data de vencimento
+      invited_by: Convidado por
+      invoice: Fatura
+      invoice_number: Número da fatura
+      issue_date: Data de emissão
+      issued_to: Emitido para
+      members: Membros
+      outstanding_amount: Valor pendente
+      paid_on: Pago em
+      payment_link: Link para pagamento
+      payment_method: Método de pagamento
+      reference: Referência
+      status: Status
+      total_amount: Montante total
+      workspace: Espaço de trabalho
+    layout:
+      brand: Miru
+      footer_body: Miru reúne tempo, faturas, pagamentos e operações em um único espaço
+        de trabalho tranquilo.
+      footer_contact: support@getmiru.com
+      footer_copyright: "© Miru. Todos os direitos reservados."
+      footer_site: app.miru.so
+      preheader: Uma atualização clara da Miru.
+    monthly_reports_mailer:
+      cash_flow_digest:
+        average_daily_net_change_html: Variação líquida média diária <strong>%{amount}</strong>
+        compare_to_previous: vs. %{amount} em %{month_label}
+        eyebrow: Resumo Mensal
+        money_in: Dinheiro em
+        money_out: Dinheiro fora
+        net_change: Variação líquida em %{month_label}
+        no_money_in: Não foram registados quaisquer pagamentos no Miru para %{month_year_label}.
+        no_money_out: Nenhuma despesa paga foi registrada no Miru para %{month_year_label}.
+        preheader: Resumo do fluxo de caixa de %{company_name} %{month_label}
+        subject: Resumo do fluxo de caixa de %{company_name} %{month_label}
+        subtitle: Segue uma visão concisa do fluxo de dinheiro através da Miru para
+          %{month_year_label}.
+        title: Resumo do fluxo de caixa de %{company_name} %{month_label}
+        top_money_in_sources: Principais fontes de entrada de dinheiro
+        top_money_out_sources: Baldes de saque de dinheiro superiores
+    payment_mailer:
+      payment:
+        eyebrow: Pagamentos
+        follow_up_body: Abra a fatura para confirmar o pagamento, arquivar o recibo
+          ou prosseguir para a próxima etapa.
+        follow_up_title: O que fazer a seguir
+        preheader: Confirmação de pagamento da fatura %{invoice_number}.
+        received_title: Pagamento recebido
+        subject: Detalhes de pagamento da fatura %{invoice_number}
+        subtitle_html: "<strong>%{client_name}</strong> pagou a fatura <strong>%{invoice_number}</strong>
+          ."
+        summary_html: "<strong>%{client_name}</strong> pagou <strong>a %{amount}</strong>
+          a fatura <strong>%{invoice_number}</strong> . Esta fatura está agora totalmente
+          paga."
+        title: Confirmação de pagamento
+    send_payment_reminder_mailer:
+      send_payment_reminder:
+        eyebrow: Faturas
+        preheader: Lembrete de pagamento para as faturas %{company_name}.
+        subject: Lembrete de pagamento para %{company_name}
+        subtitle: Seguem abaixo as faturas que ainda precisam de atenção.
+        title: lembrete de pagamento
+    send_reminder_mailer:
+      send_reminder:
+        eyebrow: Faturas
+        preheader: Lembrete referente à fatura %{invoice_number} de %{company_name}.
+        subject: Lembrete referente à fatura %{invoice_number} de %{company_name}
+        subtitle_html: A fatura <strong>%{invoice_number}</strong> de <strong>%{company_name}</strong>
+          ainda aguarda pagamento.
+        title: lembrete de pagamento
+    send_weekly_reminder_to_user_mailer:
+      notify_user_about_missed_entries:
+        body_html: Você registrou menos de 40 horas entre <strong>%{starting_date}</strong>
+          e <strong>%{ending_date}</strong> .
+        eyebrow: Controle de tempo
+        follow_up: Abra o Miru, adicione as entradas que faltam e finalize a semana.
+        greeting_html: Olá <strong>%{name}</strong> ,
+        preheader: Atualize sua folha de ponto do Miru referente à semana em falta.
+        signoff_html: Obrigado,<br> <strong>Miru</strong>
+        subject: Preencha sua folha de ponto Miru referente à semana passada.
+        subtitle: Os seus registos de tempo para %{company_name} ainda estão abaixo
+          do total semanal esperado.
+        title: Preencha sua folha de ponto.
+    user_invitation_mailer:
+      send_user_invitation:
+        about_body: Miru reúne tempo, faturas, pagamentos e operações diárias em um
+          único espaço de trabalho.
+        about_title: Sobre Miru
+        eyebrow: Convite
+        get_started_body: Aceite o convite, crie sua senha e pronto!
+        get_started_title: Comece agora
+        preheader: Você foi convidado(a) a se juntar a uma equipe no Miru.
+        subject: Você está convidado(a) a se juntar à Miru.
+        subtitle_html: "<strong>%{sender_name}</strong> convidou você para se juntar
+          <strong>a %{company_name}</strong> no Miru."
+        support_html: Se você não estava esperando este convite, entre em contato
+          com nossa equipe em <a href="mailto:%{support_email}">%{support_email}</a>
+          .
+        title: Entre no seu espaço de trabalho Miru
+        workspace_members:
+          one: 1 membro
+          other: "%{count} membros"
   navbar:
     clients: Clientes
     help: Ajuda

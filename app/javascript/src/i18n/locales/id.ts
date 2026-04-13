@@ -1,19 +1,16 @@
-const id_ID = {
-  // Image validation
+const id = {
   invalidImageFormatSize:
     "Format file salah. Silakan unggah gambar bertipe PNG atau JPG. Ukuran maks (%{fileSize}KB)",
   invalidImageSize: "Ukuran file melebihi batas maksimal %{fileSize}KB.",
   invalidImageFormat:
     "Format file salah. Silakan unggah gambar bertipe PNG atau JPG",
-
-  // Common actions
   save: "Simpan",
   cancel: "Batal",
   delete: "Hapus",
   edit: "Edit",
   add: "Tambah",
   search: "Cari",
-  reset: "RESET",
+  reset: "MENGATUR ULANG",
   submit: "Kirim",
   confirm: "Konfirmasi",
   close: "Tutup",
@@ -33,10 +30,8 @@ const id_ID = {
   yes: "Ya",
   no: "Tidak",
   or: "atau",
-
-  // Common labels
   name: "Nama",
-  email: "Email",
+  email: "E-mail",
   phone: "Telepon",
   address: "Alamat",
   status: "Status",
@@ -68,8 +63,6 @@ const id_ID = {
   all: "Semua",
   from: "Dari",
   to: "Ke",
-
-  // Date/time
   today: "Hari Ini",
   yesterday: "Kemarin",
   tomorrow: "Besok",
@@ -93,30 +86,24 @@ const id_ID = {
   selectPeriod: "Pilih periode",
   fullDay: "Sehari Penuh",
   halfDay: "Setengah Hari",
-
-  // Date validation
   dateCannotBeBlank: "Tanggal tidak boleh kosong",
   fromDateMustBeLessThanToDate:
     "Tanggal 'Dari' harus kurang dari atau sama dengan tanggal 'Ke'",
   toDateMustBeGreaterThanFromDate:
     "Tanggal 'Ke' harus lebih dari atau sama dengan tanggal 'Dari'",
   invalidDate: "Silakan masukkan tanggal yang valid",
-
-  // Month abbreviations
   monthJan: "Jan",
-  monthFeb: "Feb",
-  monthMar: "Mar",
-  monthApr: "Apr",
+  monthFeb: "Februari",
+  monthMar: "Merusak",
+  monthApr: "April",
   monthMay: "Mei",
-  monthJun: "Jun",
-  monthJul: "Jul",
+  monthJun: "Juni",
+  monthJul: "Juli",
   monthAug: "Agu",
-  monthSep: "Sep",
+  monthSep: "September",
   monthOct: "Okt",
-  monthNov: "Nov",
+  monthNov: "November",
   monthDec: "Des",
-
-  // Error pages
   pageNotFound: "Halaman Tidak Ditemukan",
   clickHere: "Klik di sini",
   somethingWentWrong: "Terjadi kesalahan",
@@ -124,15 +111,11 @@ const id_ID = {
     "Muat ulang halaman untuk mencoba lagi. Jika ini terus terjadi, masuk lagi atau hubungi dukungan.",
   reloadPage: "Muat ulang halaman",
   loadingWorkspace: "Memuat workspace...",
-
-  // Search
   searchClients: "Cari klien...",
   searchInvoices: "Cari faktur...",
   searchTeamMembers: "Cari anggota tim...",
   selectTeamMember: "Pilih anggota tim",
   noResultsFound: "Tidak ada hasil ditemukan",
-
-  // Time Tracking
   timeTracking: {
     addEntry: "Tambah Entri",
     newTimeEntry: "Entri Waktu Baru",
@@ -221,8 +204,6 @@ const id_ID = {
       sun: "Min",
     },
   },
-
-  // Task types
   taskTypes: {
     development: "Pengembangan",
     meeting: "Rapat",
@@ -232,21 +213,17 @@ const id_ID = {
     documentation: "Dokumentasi",
     codeReview: "Review Kode",
     debugging: "Debugging",
-    deployment: "Deployment",
+    deployment: "Penyebaran",
     support: "Dukungan",
     training: "Pelatihan",
     other: "Lainnya",
   },
-
-  // Time off types
   timeOffTypes: {
     vacation: "Liburan",
     sickLeave: "Cuti Sakit",
     personalDay: "Hari Pribadi",
     holiday: "Hari Libur",
   },
-
-  // Clients
   clients: {
     addClients: "Tambah Klien",
     addNewClient: "Tambah Klien Baru",
@@ -279,8 +256,6 @@ const id_ID = {
     sendPaymentReminder: "Kirim Pengingat Pembayaran",
     invoicesSelected: "%{count} faktur dipilih",
   },
-
-  // Contacts
   contacts: {
     addContact: "Tambah Kontak",
     addContacts: "Tambah Kontak",
@@ -299,8 +274,6 @@ const id_ID = {
     invalidEmailId: "ID email tidak valid",
     emailRequired: "ID Email tidak boleh kosong",
   },
-
-  // Projects
   projects: {
     addProject: "Tambah proyek",
     addNewProject: "Tambah proyek baru",
@@ -369,8 +342,6 @@ const id_ID = {
     teamMembersDescription:
       "Lihat dan kelola anggota tim yang ditugaskan ke proyek ini.",
   },
-
-  // Team
   team: {
     team: "Tim",
     teamOverview: "Ikhtisar Tim",
@@ -417,8 +388,6 @@ const id_ID = {
     invalidEmail: "ID email tidak valid",
     emailRequired: "ID Email tidak boleh kosong",
   },
-
-  // Invoices
   invoices: {
     invoice: "Faktur",
     invoices: "Faktur",
@@ -496,16 +465,12 @@ const id_ID = {
     resetFilters: "Reset filter",
     loadingChartData: "Memuat data grafik...",
     noInvoiceData: "Tidak ada data faktur tersedia",
-
-    // Statuses
     draft: "Draf",
     sent: "Terkirim",
     overdue: "Terlambat",
     collected: "Terkumpul",
     paid: "Lunas",
     outstanding: "Belum Dibayar",
-
-    // Email
     recipientEmailId: "ID Email Penerima",
     subject: "Subjek",
     message: "Pesan",
@@ -519,8 +484,6 @@ const id_ID = {
     invoiceSentBody: "%{company} mengirimkan Anda faktur (%{number})",
     invoiceWillBeSent: "Faktur akan dikirim!",
     processing: "memproses...",
-
-    // No payment gateway
     noPaymentGateway: "Tidak ada gateway pembayaran yang terhubung",
     paymentGatewayError:
       "Error. Silakan hubungi pengirim faktur untuk menghubungkan gateway pembayaran agar Anda dapat melakukan pembayaran faktur",
@@ -531,14 +494,10 @@ const id_ID = {
     stripeDisabled: "Stripe dinonaktifkan untuk faktur ini",
     stripeDisabledMessage:
       "Pengirim belum mengaktifkan pembayaran Stripe untuk faktur ini. Anda dapat menghubungi mereka untuk mengaktifkannya, atau pilih metode pembayaran alternatif seperti ACH.",
-
-    // Bulk actions
     preparingDownload: "Menyiapkan unduhan...",
     downloadFailed: "Unduhan gagal. Silakan coba lagi.",
     downloadingFiles: "Mengunduh file...",
     downloadComplete: "Unduhan Selesai",
-
-    // Table headers
     nameHeader: "NAMA",
     descriptionHeader: "DESKRIPSI",
     dateHeader: "TANGGAL",
@@ -546,17 +505,13 @@ const id_ID = {
     amountHeader: "JUMLAH",
     statusHeader: "STATUS",
     invoiceNumberHeader: "NOMOR FAKTUR",
-
-    // Chart labels
-    area: "Area",
+    area: "Daerah",
     bar: "Batang",
     noData: "Tidak ada data",
     monthly: "Bulanan",
     quarterly: "Kuartalan",
     yearly: "Tahunan",
     trend: "Tren",
-
-    // Preview / detail labels
     taxId: "ID Pajak: %{value}",
     vatNumber: "Nomor PPN: %{value}",
     gstNumber: "Nomor GST: %{value}",
@@ -570,8 +525,6 @@ const id_ID = {
     due: "Jatuh tempo %{date}",
     viewed: "Dilihat",
     cancelled: "Dibatalkan",
-
-    // Toast / confirmation messages
     invoiceMarkedAsPaid: "Faktur berhasil ditandai sebagai lunas",
     invoiceDownloaded: "Faktur berhasil diunduh",
     invoiceSentSuccessfully: "Faktur berhasil dikirim",
@@ -587,8 +540,6 @@ const id_ID = {
     invoiceCreated: "Faktur berhasil dibuat",
     invoiceUpdated: "Faktur berhasil diperbarui",
     failedToSaveInvoice: "Gagal menyimpan faktur. Silakan coba lagi.",
-
-    // Counters
     showingOf: "Menampilkan %{shown} dari %{total}",
     viewingMatching:
       "Melihat %{filtered} faktur yang cocok dari %{loaded} yang dimuat",
@@ -596,12 +547,8 @@ const id_ID = {
     showingRecentTransactions: "Menampilkan %{count} transaksi terbaru",
     updatedAt: "Diperbarui %{date}",
     invoiceHash: "Faktur #%{number}",
-
-    // Mobile table headers
     nameDescription: "NAMA / DESKRIPSI",
     dateTime: "TANGGAL / WAKTU",
-
-    // Invoice reminder email
     invoiceReminder: "Pengingat Faktur: %{number}",
     reminderMessage:
       "Ini adalah pengingat tentang faktur Anda yang belum dibayar. Silakan lihat detail terlampir.",
@@ -620,15 +567,28 @@ const id_ID = {
     cannotDownloadInvalidId: "Tidak dapat mengunduh faktur - ID tidak valid",
     cannotSendInvalidId: "Tidak dapat mengirim faktur - ID tidak valid",
     payment: "Pembayaran #%{id}",
+    newInvoicePage: "Faktur baru",
+    editInvoicePage: "Edit faktur",
+    editorSubtitle:
+      "Isi detailnya dan pratinjau faktur sebelum mengirimkannya.",
+    saving: "Penghematan...",
+    sending: "Mengirim...",
+    alreadySent: "Sudah dikirim",
+    downloading: "Sedang mengunduh...",
+    selectClientBeforeSending: "Pilih klien sebelum mengirimkan faktur.",
   },
   common: {
     retry: "Coba Lagi",
     pageUnavailable:
       "Halaman ini tidak tersedia atau tautan tidak lagi valid untuk workspace Anda.",
     goToDashboard: "Buka dasbor",
+    language: "Bahasa",
+    loading: "Memuat...",
+    saving: "Penghematan...",
+    failedToChangeLanguage: "Gagal mengubah bahasa",
+    searchLanguages: "Cari bahasa...",
+    noLanguagesFound: "Tidak ditemukan bahasa apa pun.",
   },
-
-  // Invoice admin dashboard
   invoiceDashboard: {
     revenueOverview: "Ikhtisar Pendapatan",
     revenueByStatus: "Pendapatan berdasarkan Status",
@@ -636,8 +596,6 @@ const id_ID = {
     allInvoices: "Semua Faktur",
     recentSales: "Penjualan Terbaru",
   },
-
-  // Payments
   payments: {
     payments: "Pembayaran",
     addPayment: "Tambah Pembayaran",
@@ -662,8 +620,6 @@ const id_ID = {
     paymentHistory: "Riwayat Pembayaran",
     scrollToLoadMore: "Gulir untuk memuat lebih banyak pembayaran",
     allPaymentsLoaded: "Semua pembayaran dimuat",
-
-    // Filters
     allStatuses: "Semua Status",
     allClients: "Semua Klien",
     paymentType: "Tipe Pembayaran",
@@ -673,7 +629,7 @@ const id_ID = {
     wireTransfer: "Transfer Kawat",
     achTransfer: "Transfer ACH",
     paypal: "PayPal",
-    stripe: "Stripe",
+    stripe: "Garis",
     cash: "Tunai",
     check: "Cek",
     pending: "Tertunda",
@@ -686,8 +642,6 @@ const id_ID = {
     searchByClientOrInvoice: "Cari berdasarkan nama klien atau ID faktur",
     selectTransactionTypeBtn: "Pilih Tipe Transaksi",
   },
-
-  // Timer
   timer: {
     webTimer: "Timer web",
     webTimerLabel: "Timer Web",
@@ -698,8 +652,8 @@ const id_ID = {
     resume: "Lanjutkan",
     start: "Mulai",
     stop: "Berhenti",
-    reset: "Reset",
-    timer: "Timer",
+    reset: "Mengatur ulang",
+    timer: "Pengatur waktu",
     saveTimeEntry: "Simpan Entri Waktu",
     saveTimeEntryDescription:
       "Anda melacak %{time}. Apakah Anda ingin menyimpannya sebagai entri waktu?",
@@ -713,8 +667,6 @@ const id_ID = {
     whatAreYouWorkingOn: "Apa yang sedang Anda kerjakan?",
     selectProject: "Pilih proyek",
   },
-
-  // Reports
   reports: {
     reports: "Laporan",
     backToReports: "Kembali ke Laporan",
@@ -729,8 +681,6 @@ const id_ID = {
     exportAsCsv: "Ekspor sebagai CSV",
     exportAsPdf: "Ekspor sebagai PDF",
     toggleReportFilters: "Aktifkan/nonaktifkan filter laporan",
-
-    // Filters
     clients: "Klien",
     teamMembers: "Anggota Tim",
     groupBy: "Kelompokkan Berdasarkan",
@@ -739,14 +689,10 @@ const id_ID = {
     searchClientsFilter: "Cari Klien...",
     searchTeamMembersFilter: "Cari Anggota Tim...",
     applyFilter: "Terapkan Filter",
-
-    // Time entry report
     totalHours: "Total Jam",
     scrollToLoadMoreRows: "Gulir untuk memuat lebih banyak baris laporan",
     loadingMoreRows: "Memuat lebih banyak baris laporan...",
     allRowsLoaded: "Semua baris laporan dimuat",
-
-    // Payment report
     perTransaction: "Per transaksi",
     topMethod: "Metode Teratas",
     paymentMethodsBreakdown: "Rincian Metode Pembayaran",
@@ -756,8 +702,6 @@ const id_ID = {
     allMethods: "Semua Metode",
     creditCard: "Kartu Kredit",
     allStatus: "Semua Status",
-
-    // Revenue by client report
     totalRevenue: "Total Pendapatan",
     paidRevenue: "Pendapatan Terbayar",
     paidAmount: "Jumlah Terbayar",
@@ -774,8 +718,6 @@ const id_ID = {
     clientRevenueDetails: "Detail Pendapatan Klien",
     scrollToLoadMoreClients: "Gulir untuk memuat lebih banyak klien",
     allClientsLoaded: "Semua klien dimuat",
-
-    // Outstanding invoice report
     failedToLoadReportData: "Gagal memuat data laporan",
     currencyFilter: "Filter Mata Uang",
     fromDate: "Tanggal Dari",
@@ -783,7 +725,7 @@ const id_ID = {
     export: "Ekspor",
     csv: "CSV",
     pdf: "PDF",
-    excel: "Excel",
+    excel: "Unggul",
     statusOverview: "Ikhtisar Status",
     currencyDistribution: "Distribusi Mata Uang",
     topClients: "Klien Teratas",
@@ -793,8 +735,6 @@ const id_ID = {
     clientBreakdown: "Rincian Klien",
     originalAmount: "Jumlah Asli",
     baseAmount: "Jumlah Dasar",
-
-    // Accounts aging report
     totalDue: "Total Jatuh Tempo",
     invoiceAgingDetails: "Detail Aging Faktur",
     noDataFound: "Data Tidak Ditemukan",
@@ -939,8 +879,6 @@ const id_ID = {
     unknownProject: "Proyek Tidak Dikenal",
     generatingExport: "Membuat %{format}",
   },
-
-  // Expenses
   expenses: {
     expenses: "Pengeluaran",
     addExpense: "Tambah Pengeluaran",
@@ -955,7 +893,7 @@ const id_ID = {
     category: "Kategori",
     selectCategory: "Pilih kategori",
     selectCategoryEllipsis: "Pilih kategori...",
-    vendor: "Vendor",
+    vendor: "Penjual",
     enterVendor: "Masukkan vendor",
     enterVendorName: "Masukkan nama vendor",
     receipt: "Kwitansi",
@@ -1020,8 +958,6 @@ const id_ID = {
     viewReceiptsFor: "Lihat kwitansi untuk %{description}",
     expenseActionsFor: "Tindakan pengeluaran untuk %{description}",
   },
-
-  // Settings
   settings: {
     settings: "Pengaturan",
     profileSettings: "Pengaturan Profil",
@@ -1049,9 +985,25 @@ const id_ID = {
     allocationValue: "Nilai Alokasi",
     allocationPeriod: "Periode Alokasi",
     allocationFrequency: "Frekuensi Alokasi",
+    labels: {
+      profile: "Profil",
+      employment: "Pekerjaan",
+      devices: "Perangkat",
+      notifications: "Pemberitahuan",
+      preferences: "Preferensi",
+      organization: "Organisasi",
+      billing: "Penagihan",
+      payment: "Pembayaran",
+      holidays: "Liburan",
+      leaves: "Daun-daun",
+      automation: "Otomatisasi",
+      bankInfo: "Informasi Bank & Pajak",
+    },
+    categories: {
+      personal: "Pribadi",
+      organization: "Organisasi",
+    },
   },
-
-  // Leave types
   leaveTypes: {
     annualLeaves: "Cuti tahunan",
     sickLeaves: "Cuti sakit",
@@ -1059,23 +1011,17 @@ const id_ID = {
     paternityLeave: "Cuti ayah",
     periodLeave: "Cuti haid",
   },
-
-  // Allocation periods
   allocationPeriods: {
     days: "hari",
     weeks: "pekan",
     months: "bulan",
   },
-
-  // Allocation frequencies
   allocationFrequencies: {
     perWeek: "per pekan",
     perMonth: "per bulan",
     perQuarter: "per kuartal",
     perYear: "per tahun",
   },
-
-  // Navbar
   navbar: {
     clients: "Klien",
     invoices: "Faktur",
@@ -1104,7 +1050,7 @@ const id_ID = {
     paymentSettings: "Pengaturan Pembayaran",
     leaves: "Cuti",
     holidays: "Hari Libur",
-    workspace: "Workspace",
+    workspace: "Ruang kerja",
     active: "Aktif",
     createNewWorkspace: "Buat Workspace Baru",
     selectWorkspace: "PILIH WORKSPACE",
@@ -1127,8 +1073,6 @@ const id_ID = {
     leavesDescription: "Kelola permintaan cuti",
     expensesDescription: "Lacak pengeluaran bisnis",
   },
-
-  // Dashboard
   dashboard: {
     dashboard: "Dasbor",
     overdue: "TERLAMBAT",
@@ -1172,12 +1116,101 @@ const id_ID = {
     noRecentActivityYet: "Belum ada aktivitas terbaru",
     loadMore: "Muat lebih banyak",
     allCaughtUp: "Anda sudah up to date",
+    there: "di sana",
+    caughtUp: "Semua sudah teratasi!",
+    timeframe: {
+      week: "Minggu Ini",
+      month: "Bulan Ini",
+      quarter: "Kuartal ini",
+      year: "Tahun ini",
+    },
+    stats: {
+      revenue: "Pendapatan",
+      totalInvoiced: "Total Tagihan",
+      openInvoices: "Faktur Terbuka",
+      paidInvoices: "Faktur yang telah dibayar",
+      paymentsReceived: "Pembayaran yang Diterima",
+      awaitingPayment: "Menunggu Pembayaran",
+      alreadySettled: "Sudah beres",
+      hoursTracked: "Jam yang Dilacak",
+      currentlyActive: "Saat ini aktif",
+      activeProjects: "Proyek Aktif",
+      assignedProjects: "Proyek yang Ditugaskan",
+      projectsYouCanWorkOn: "Proyek yang dapat Anda kerjakan",
+      teammates: "Rekan satu tim",
+      teamSize: "Ukuran Tim",
+      noRecentActivity: "Tidak ada aktivitas terbaru.",
+    },
+    charts: {
+      revenueMomentumTitle: "Momentum Pendapatan",
+      revenueMomentumDescription:
+        "Tren pendapatan bulanan selama setahun terakhir",
+      revenueTrendEyebrow: "TREN PENDAPATAN",
+      revenueLeadersTitle: "Pemimpin Pendapatan",
+      revenueLeadersDescription:
+        "Klien teratas berdasarkan kontribusi pendapatan",
+      topCustomersEyebrow: "PELANGGAN UTAMA",
+      ofTotal: "__PH__0__ dari total",
+      noRevenue: "Tidak ada data pendapatan yang tersedia.",
+    },
+    roleGuidance: {
+      employee: "Catat waktu Anda dan kelola proyek Anda.",
+      bookKeeper: "Meninjau faktur, pembayaran, dan laporan keuangan.",
+      client: "Lihat faktur dan riwayat pembayaran Anda",
+      default: "Kelola ruang kerja Anda",
+    },
   },
-
-  // Authentication
   auth: {
-    signIn: "Masuk",
-    signUp: "Daftar",
+    signIn: {
+      title: "Masuk ke ruang kerja Anda",
+      description:
+        "Lacak pekerjaan, kirim faktur, dan jaga agar arus kas tetap jelas dari satu tempat.",
+      continueWithGoogle: "Lanjutkan dengan Google",
+      continueWithGitHub: "Lanjutkan dengan GitHub",
+      orUseEmail: "atau gunakan email",
+      email: "E-mail",
+      password: "Kata sandi",
+      submit: "Masuk",
+      forgotPassword: "Lupa kata sandi?",
+      noAccount: "Belum punya akun?",
+      signUp: "Mendaftar",
+      privacy: "Pribadi",
+      terms: "Ketentuan",
+      loginFailed: "Login gagal. Silakan coba lagi.",
+      welcomeBack: "Selamat Datang kembali!",
+      waitingForPasskey: "Menunggu kode akses...",
+      passkeyPrompt: "Gunakan kata sandi Anda untuk masuk.",
+      totpTitle: "Autentikasi Dua Faktor",
+      totpPrompt: "Masukkan kode dari aplikasi otentikasi Anda.",
+      totpDescription:
+        "Buka aplikasi otentikasi Anda dan masukkan kode 6 digit.",
+      totpCode: "Kode otentikasi",
+      verifyAndSignIn: "Verifikasi dan masuk",
+      recoveryCode: "Gunakan kode pemulihan sebagai gantinya.",
+      back: "Kembali",
+    },
+    signUp: {
+      title: "Buat ruang kerja Anda",
+      description:
+        "Kelola klien, proyek, faktur, dan pembayaran dalam satu sistem operasi yang mudah dipahami.",
+      continueWithGoogle: "Lanjutkan dengan Google",
+      continueWithGitHub: "Lanjutkan dengan GitHub",
+      orUseEmail: "atau gunakan email",
+      firstName: "Nama depan",
+      lastName: "Nama Belakang",
+      email: "E-mail",
+      password: "Kata sandi",
+      confirmPassword: "Konfirmasi Kata Sandi",
+      passwordCriteria:
+        "Minimal 8 karakter dengan satu huruf besar, satu huruf kecil, dan satu angka.",
+      submit: "Buat akun",
+      alreadyHaveAccount: "Sudah punya akun?",
+      signIn: "Masuk",
+      agreePrefix: "Dengan mendaftar, Anda menyetujui ketentuan kami.",
+      termsOfService: "Ketentuan Layanan",
+      and: " Dan ",
+      privacyPolicy: "Kebijakan Privasi",
+    },
     signOut: "Keluar",
     welcomeBack: "Selamat datang kembali!",
     loginFailed: "Login gagal. Silakan coba lagi.",
@@ -1203,7 +1236,7 @@ const id_ID = {
     alreadyHaveAccount: "Sudah punya akun?",
     dontHaveAccount: "Belum punya akun?",
     rememberMe: "Ingat saya",
-    totpPlaceholder: "ABCD-EFGH",
+    totpPlaceholder: "ABCD EFGH",
     companyPulse: "Denyut perusahaan",
     billingCommand: "Perintah penagihan",
     clearWeeklyFlow: "Alur mingguan yang jelas",
@@ -1244,15 +1277,71 @@ const id_ID = {
     termsOfService: "Ketentuan Layanan",
     privacyPolicy: "Kebijakan Privasi",
     and: "dan",
+    slides: {
+      dashboard: {
+        title: "Denyut nadi perusahaan",
+        description:
+          "Lihat pendapatan, proyek aktif, dan momentum tim tanpa perlu mencarinya sendiri.",
+      },
+      invoices: {
+        title: "Perintah penagihan",
+        description:
+          "Simpan draf, saldo terutang, dan pekerjaan yang sudah dibayar di tempat yang sama.",
+      },
+      timeTracking: {
+        title: "Alur mingguan yang jelas",
+        description:
+          "Pencatatan waktu mingguan tetap terkini tanpa menjadi pekerjaan yang membosankan.",
+      },
+      payments: {
+        title: "Buku kas",
+        description:
+          "Setiap pembayaran tercatat dalam satu buku besar dengan metode, status, dan sumbernya.",
+      },
+    },
+    validation: {
+      emailRequired: "Email wajib diisi.",
+      invalidEmail: "Alamat email tidak valid",
+      passwordRequired: "Kata sandi diperlukan",
+      passwordComplexity:
+        "Kata sandi harus terdiri minimal 8 karakter dengan huruf besar, huruf kecil, dan angka.",
+      passwordSpace: "Kata sandi tidak boleh mengandung spasi.",
+      confirmPasswordRequired: "Konfirmasi kata sandi diperlukan",
+      passwordsMustMatch: "Kata sandi harus sama",
+      firstNameRequired: "Nama depan wajib diisi.",
+      firstNameInvalid: "Nama depan hanya boleh terdiri dari huruf.",
+      firstNameMax: "Nama depan harus terdiri dari 20 karakter atau kurang.",
+      lastNameRequired: "Nama belakang wajib diisi.",
+      lastNameInvalid: "Nama belakang hanya boleh terdiri dari huruf.",
+      lastNameMax: "Nama belakang harus terdiri dari 20 karakter atau kurang.",
+      acceptTerms: "Anda harus menerima persyaratannya.",
+    },
   },
-
-  // Passkeys
   passkeys: {
     noPasskeyResponse: "Tidak ada respons passkey yang diterima.",
     passkeysNotSupported: "Passkey tidak didukung di browser ini.",
+    title: "Kode akses",
+    addTitle: "Tambahkan kata sandi untuk akun ini",
+    addDescription:
+      "Gunakan Face ID, Touch ID, Windows Hello, atau kunci keamanan perangkat keras.",
+    addAction: "Tambahkan kata sandi",
+    requirementTitle: "Membutuhkan kata sandi saat masuk.",
+    requirementDescription:
+      "Setelah memasukkan kata sandi, Miru akan meminta kode sandi untuk menyelesaikan proses masuk.",
+    emptyState: "Belum ada kode akses yang ditambahkan.",
+    fallbackName: "Kode sandi",
+    addedAt: "__PH__ telah ditambahkan",
+    lastUsedAt: "Terakhir digunakan __PH__",
+    removeAction: "Menghapus",
+    addedSuccess: "Kata sandi telah ditambahkan",
+    removedSuccess: "Kata sandi telah dihapus.",
+    requirementEnabled: "Persyaratan kata sandi diaktifkan",
+    requirementDisabled: "Persyaratan kata sandi dinonaktifkan",
+    addFailed: "Gagal menambahkan kata sandi.",
+    removeFailed: "Gagal menghapus kata sandi.",
+    updateRequirementFailed: "Gagal memperbarui persyaratan masuk kata sandi.",
+    neverUsed: "Tidak pernah digunakan",
   },
-
-  // Organization setup
   orgSetup: {
     setupOrganization: "Siapkan Organisasi",
     companyName: "Nama Perusahaan",
@@ -1274,13 +1363,11 @@ const id_ID = {
     dragLogo: "Seret logo",
     selectFile: "Pilih File",
     acceptedFileFormats: "Format file yang diterima: PNG, JPG, SVG.",
-    fileSizeLimit: "Ukuran file harus \u2266 2MB.",
+    fileSizeLimit: "Ukuran file harus ≦ 2MB.",
     imageResolution: "Resolusi gambar harus 1:1.",
     workingDaysPerWeek: "Hari Kerja (per pekan)",
     workingHoursPerWeek: "Jam Kerja (per pekan)",
   },
-
-  // Profile
   profile: {
     personalDetails: "Detail Pribadi",
     employmentDetails: "Detail Pekerjaan",
@@ -1296,9 +1383,65 @@ const id_ID = {
     socialProfiles: "Profil Sosial",
     linkedin: "LinkedIn",
     github: "GitHub",
+    personalInformation: "Informasi Pribadi",
+    basicDetails: "Detail Dasar",
+    contactInformation: "Informasi Kontak",
+    addressType: "Jenis Alamat",
+    current: "Saat ini",
+    permanent: "Permanen",
+    employeeId: "ID Karyawan",
+    officialEmail: "Alamat Email (Resmi)",
+    employmentType: "Jenis Pekerjaan",
+    dateOfResignation: "Tanggal Pengunduran Diri",
+    birthDatePlaceholder: "Pilih tanggal lahir Anda",
+    firstName: "Nama depan",
+    lastName: "Nama Belakang",
+    firstNamePlaceholder: "Masukkan nama depan Anda",
+    lastNamePlaceholder: "Masukkan nama belakang Anda",
+    personalEmail: "Email Pribadi",
+    personalEmailPlaceholder: "email Anda@contoh.com",
+    phoneAriaLabel: "Nomor telepon",
+    addressLine1: "Baris Alamat 1",
+    addressLine2: "Baris Alamat 2",
+    optionalSuffix: "(Opsional)",
+    streetAddressPlaceholder: "Alamat jalan",
+    addressLine2Placeholder: "Apartemen, suite, unit, dll.",
+    statePlaceholder: "Negara bagian atau provinsi",
+    cityPlaceholder: "Kota",
+    zipPostalCode: "Kode Pos",
+    zipPlaceholder: "12345",
+    languageDescription: "Pilih bahasa pilihan Anda untuk antarmuka.",
+    security: "Keamanan",
+    userFallback: "Pengguna",
+    currentPasswordPlaceholder: "Masukkan kata sandi saat ini",
+    newPassword: "Kata Sandi Baru",
+    newPasswordPlaceholder: "Masukkan kata sandi baru",
+    confirmPasswordPlaceholder: "Masukkan kembali kata sandi baru",
+    cancelPasswordChange: "Batalkan Perubahan Kata Sandi",
+    profilePhoto: "Foto profil",
+    profilePhotoDescription:
+      "Unggah foto persegi untuk profil ruang kerja Anda.",
+    noAddressProvided: "Tidak ada alamat yang diberikan.",
+    noEmailProvided: "Tidak ada alamat email yang diberikan.",
+    notProvided: "Tidak disediakan",
+    notConnected: "Tidak terhubung",
+    bornOn: "Lahir __PH__",
+    lastChangedDaysAgo: "Terakhir diubah __PH__0__ hari yang lalu",
+    secure: "Aman",
+    uploadPhoto: "Unggah foto",
+    removePhoto: "Hapus foto",
+    uploadPhotoFailed: "Gagal mengunggah gambar profil.",
+    removePhotoFailed: "Gagal menghapus gambar profil.",
+    adjustProfilePhoto: "Sesuaikan foto profil",
+    adjustProfilePhotoDescription:
+      "Pilih bagian gambar yang ingin Anda simpan.",
+    noImageSelected: "Tidak ada gambar yang dipilih",
+    savePhoto: "Simpan foto",
+    zoom: "Zoom",
+    company: "Perusahaan",
+    noPreviousEmployments: "Tidak ditemukan riwayat pekerjaan sebelumnya.",
+    addPastEmployment: "+ Tambahkan Riwayat Pekerjaan Sebelumnya",
   },
-
-  // Leave Management
   leaveManagement: {
     leaveBalance: "Saldo Cuti",
     applyLeave: "Ajukan Cuti",
@@ -1337,9 +1480,11 @@ const id_ID = {
     leave: "cuti",
     nationalHoliday: "Hari Libur Nasional",
     optionalHoliday: "Hari Libur Opsional",
+    summaryLabel: "Ringkasan cuti",
+    summaryDescription:
+      "Lihat cuti yang tersedia, waktu cuti yang sudah diambil, dan penggunaan cuti untuk tahun yang dipilih di satu tempat.",
+    balanceUntil: "Saldo Hingga __PH__0__",
   },
-
-  // Subscriptions / Plan Details
   subscriptions: {
     currentPlan: "Paket Saat Ini",
     upgradePlan: "Upgrade Paket",
@@ -1360,8 +1505,6 @@ const id_ID = {
     plusTaxes: "ditambah pajak",
     reviewAndPay: "TINJAU DAN BAYAR",
   },
-
-  // Misc
   switchToMode: "Beralih ke mode %{mode}",
   light: "Terang",
   dark: "Gelap",
@@ -1371,8 +1514,6 @@ const id_ID = {
   editLabel: "Edit",
   noPasskeyResponse: "Tidak ada respons passkey yang diterima.",
   passkeysNotSupported: "Passkey tidak didukung di browser ini.",
-
-  // Table headers (common)
   tableHeaders: {
     invoiceNo: "NO. FAKTUR",
     invoiceNumber: "NOMOR FAKTUR",
@@ -1392,15 +1533,458 @@ const id_ID = {
     role: "PERAN",
     type: "TIPE",
   },
-
-  // Relative dates
   nextDay: "%{day} Depan",
   lastDay: "%{day} Lalu",
-
-  // Duration formatting
-  durationMinutes: "%{mins}m",
+  durationMinutes: "__PH__0__m",
   durationHours: "%{hours}h",
   durationHoursMinutes: "%{hours}h %{mins}m",
+  preferencesSettings: {
+    title: "Preferensi Email",
+    description: "Kelola pengaturan notifikasi email Anda",
+    saving: "Penghematan...",
+    saveChanges: "Simpan Perubahan",
+    timesheetNotifications: "Notifikasi Lembar Waktu",
+    billingNotifications: "Pemberitahuan Penagihan",
+    timesheetNotificationsDescription:
+      "Kelola notifikasi terkait pencatatan waktu dan lembar waktu.",
+    billingNotificationsDescription:
+      "Kontrol faktur dan pemberitahuan pembayaran",
+    weeklyReminderTitle: "Pengingat Pengisian Lembar Waktu Mingguan",
+    weeklyReminderDescription:
+      "Dapatkan pengingat mingguan setiap hari Senin tentang entri lembar waktu yang tertunda.",
+    timesheetReminderTitle: "Pengingat Entri yang Hilang",
+    timesheetReminderDescription:
+      "Dapatkan notifikasi jika Anda belum mencatat waktu kerja selama lebih dari 2 hari.",
+    invoiceNotificationsTitle: "Notifikasi Email Faktur",
+    invoiceNotificationsDescription:
+      "Terima email saat faktur dibuat, dikirim, atau diperbarui.",
+    paymentNotificationsTitle: "Notifikasi Email Pembayaran",
+    paymentNotificationsDescription:
+      "Dapatkan notifikasi saat pembayaran diterima atau status pembayaran berubah.",
+    monthlyDigestTitle: "Ringkasan Arus Kas Bulanan",
+    monthlyDigestDescription:
+      "Dapatkan ringkasan arus kas bulanan yang berisi perubahan bersih, uang masuk, dan uang keluar.",
+    confirmUnsubscribeTitle: "Konfirmasi Berhenti Berlangganan Semua Email",
+    confirmUnsubscribeDescription:
+      "Apakah Anda yakin ingin berhenti berlangganan semua notifikasi email? Anda tidak akan menerima email apa pun, termasuk notifikasi penting terkait penagihan dan faktur.",
+    confirmUnsubscribeAction: "Ya, Berhenti berlangganan dari semua",
+    unsubscribedTitle: "Anda telah berhenti berlangganan semua email.",
+    unsubscribedDescription:
+      "Saat ini Anda telah berhenti berlangganan semua notifikasi email. Anda tidak akan menerima email apa pun dari Miru.",
+    resubscribeAction: "Aktifkan kembali Notifikasi Email",
+    enabledCount: "%{count} dari %{total} diaktifkan",
+    deliveryTitle: "Pengaturan Pengiriman Email",
+    emailAddress: "Alamat Email",
+    deliveryDescription:
+      "Semua notifikasi akan dikirim ke alamat email ini. Untuk mengubah email Anda, silakan perbarui di pengaturan profil Anda.",
+    unsubscribeTitle: "Berhenti berlangganan",
+    unsubscribeDescription:
+      "Jika Anda tidak ingin lagi menerima email dari Miru, Anda dapat berhenti berlangganan dari semua notifikasi. Ini akan menghentikan semua komunikasi email, termasuk pemberitahuan penting terkait penagihan dan faktur.",
+    unsubscribeAction: "Berhenti berlangganan semua email",
+    badges: {
+      active: "Aktif",
+      important: "Penting",
+      monthly: "Bulanan",
+    },
+  },
+  automationSettings: {
+    title: "Otomatisasi dan CLI",
+    description:
+      "Gunakan Miru dari terminal, skrip, atau agen AI Anda dengan izin yang sama seperti akun yang Anda gunakan untuk login. Tidak perlu produk otomatisasi terpisah. Tidak ada akses pintu belakang khusus.",
+    freeForEveryPlan: "Gratis untuk setiap paket",
+    cards: {
+      samePermissionsTitle: "Memiliki izin yang sama seperti aplikasi.",
+      samePermissionsDescription:
+        "CLI hanya melihat apa yang sudah dapat diakses oleh pengguna yang telah diautentikasi di aplikasi web.",
+      humansAndScriptsTitle: "Baik untuk manusia dan skrip",
+      humansAndScriptsDescription:
+        "Gunakan perintah sederhana untuk tugas sehari-hari dan biarkan skrip atau AI memanggil antarmuka yang persis sama.",
+      easyToInstallTitle: "Mudah dipasang",
+      easyToInstallDescription:
+        "Hanya dengan satu perintah instalasi, satu kali login, Anda dapat membuat daftar proyek, membuat catatan waktu, meninjau faktur, dan banyak lagi.",
+    },
+    commandGroups: {
+      install: "Memasang",
+      authenticateOnce: "Lakukan otentikasi sekali",
+      dailyCommands: "Perintah harian",
+    },
+  },
+  holidaysSettings: {
+    year: "Tahun",
+    publicHolidays: "Hari Libur Nasional",
+    optionalHolidays: "Liburan Opsional",
+    holidayName: "Nama Hari Libur",
+    enterHolidayName: "Masukkan nama hari libur",
+    selectDate: "Pilih tanggal",
+    addHoliday: "Tambahkan Hari Libur",
+    addFirstHoliday: "Tambahkan Liburan Pertama",
+    addOptionalHoliday: "Tambahkan Liburan Opsional",
+    noPublicHolidaysConfigured: "Tidak ada hari libur umum yang dikonfigurasi.",
+    noOptionalHolidaysConfigured:
+      "Tidak ada hari libur opsional yang dikonfigurasi.",
+    totalAllowed: "Jumlah yang Diizinkan",
+    enterNumber: "Masukkan angka",
+    frequency: "Frekuensi",
+    allowedPerEmployee: "Diperbolehkan per Karyawan",
+    yearAtAGlance: "Ringkasan Tahunan",
+    holidaySchedule: "Jadwal Liburan",
+    noHolidaysAddedForYear:
+      "Belum ada hari libur yang ditambahkan untuk __PH__",
+    categories: {
+      public: "Publik",
+      optional: "Opsional",
+    },
+    weekdays: {
+      sun: "S",
+      mon: "M",
+      tue: "T",
+      wed: "W",
+      thu: "T",
+      fri: "F",
+      sat: "S",
+    },
+  },
+  paymentSettingsPage: {
+    backToSettings: "Kembali ke Pengaturan",
+    title: "Penyedia Pembayaran",
+    description:
+      "Hubungkan penyedia pembayaran untuk menerima pembayaran online dari klien.",
+    errorTitle: "Kesalahan",
+    errorDescription:
+      "Pengaturan pembayaran gagal dimuat. Silakan coba lagi nanti.",
+    stripeDescription:
+      "Menerima kartu kredit, kartu debit, dan metode pembayaran populer lainnya.",
+    connectedTo: "Terhubung ke",
+    connected: "Terhubung",
+    stripeAccountFallback: "Akun Stripe",
+    chargesEnabled: "Pengisian Daya Diaktifkan",
+    connectStripe: "Hubungkan Stripe",
+    connecting: "Menghubungkan...",
+    disconnect: "Memutuskan",
+    disconnecting: "Memutuskan sambungan...",
+    featuresTitle: "Fitur & Manfaat",
+    helpTitle: "Butuh Bantuan?",
+    helpDescription:
+      "Jika Anda memerlukan bantuan dalam menyiapkan pemrosesan pembayaran atau memiliki pertanyaan tentang biaya dan fitur:",
+    viewDocumentation: "Lihat Dokumentasi",
+    contactSupport: "Hubungi Dukungan",
+    disconnectDialogTitle: "Putuskan koneksi akun Stripe",
+    disconnectDialogDescription:
+      "Apakah Anda yakin ingin memutuskan akun Stripe Anda? Anda tidak akan lagi dapat menerima pembayaran melalui Stripe sampai Anda menyambungkan kembali akun Anda.",
+    features: {
+      secureTitle: "Pembayaran Aman",
+      secureDescription: "Pemrosesan pembayaran yang sesuai dengan standar PCI",
+      currenciesTitle: "Berbagai Mata Uang",
+      currenciesDescription: "Menerima pembayaran dalam 135+ mata uang.",
+      methodsTitle: "Berbagai Metode Pembayaran",
+      methodsDescription: "Kartu, dompet, transfer bank, dan banyak lagi.",
+      setupTitle: "Pengaturan Instan",
+      setupDescription: "Mulai menerima pembayaran dalam hitungan menit.",
+    },
+  },
+  organizationSettingsPage: {
+    actions: {
+      editSettings: "Edit Pengaturan",
+    },
+    sections: {
+      companyProfile: "Profil Perusahaan",
+      financial: "Finansial",
+      scheduleAndTime: "Jadwal & Waktu",
+      workingHours: "Jam Kerja",
+    },
+    fields: {
+      businessPhone: "Telepon Kantor",
+      currency: "Mata uang",
+      businessAddress: "Alamat Bisnis",
+      standardRate: "Tarif Standar",
+      fiscalYearEnd: "Akhir Tahun Fiskal",
+      timezone: "Zona waktu",
+      dateFormat: "Format Tanggal",
+      workingDays: "Hari Kerja",
+    },
+    status: {
+      active: "Aktif",
+    },
+    defaults: {
+      companyName: "Nama perusahaan",
+      locationNotSet: "Lokasi belum diatur",
+      notConfigured: "Belum dikonfigurasi",
+      noAddress: "Tidak ada alamat yang dikonfigurasi",
+      workingHours: "Pukul 09.00 - 17.00",
+      workingDays: "Senin - Jumat",
+      timezone: "UTC",
+      dateFormat: "BB/DD/YYYY",
+    },
+    errors: {
+      loadFailed: "Detail organisasi gagal dimuat. Silakan coba lagi.",
+    },
+    ratePerHour: "/ jam",
+  },
+  billingSettings: {
+    membership: "Keanggotaan",
+    currentPlan: "Rencana saat ini",
+    seatUsage: "Penggunaan tempat duduk",
+    billingCadence: "Irama penagihan",
+    monthly: "Bulanan",
+    yearly: "Tahunan",
+    notSubscribedYet: "Belum berlangganan",
+    startTrial: "Mulai uji coba Pro 30 hari",
+    startingTrial: "Memulai persidangan...",
+    upgradeWithStripe: "Tingkatkan dengan Stripe",
+    openingStripe: "Garis Pembuka...",
+    manageBillingInStripe: "Kelola penagihan di Stripe",
+    openingPortal: "Membuka portal...",
+    saveTwoMonths: "Hemat dua bulan untuk langganan tahunan",
+    heroTitle:
+      "Pilih paket yang sesuai saat ini. Beralihlah nanti jika Anda membutuhkan lebih banyak.",
+    howManySeats: "Anda memperkirakan akan membutuhkan berapa banyak kursi?",
+    estimatedSeats: "Perkiraan jumlah kursi",
+    recommended: "Direkomendasikan",
+    estimatedProSpend: "Perkiraan pengeluaran profesional",
+    yearlyDiscount: "Diskon tahunan",
+    openSource: "Sumber terbuka",
+    annual: "Tahunan",
+    service: "Melayani",
+    poweredByStripe: "Didukung oleh Stripe",
+    changePlansAnytime: "Ubah rencana kapan saja.",
+    checkoutPoweredByStripe:
+      "Proses pembayaran dan pengelolaan langganan didukung oleh Stripe.",
+    noSalesCall:
+      "Tidak ada panggilan penjualan untuk Pro. Batalkan atau ubah paket di Stripe kapan saja.",
+    reportsAndAnalytics: "Laporan dan analisis",
+    customAnnual: "Tahunan khusus",
+    seatsUsed: "Kursi %{used}/%{total} digunakan",
+    seatsUsedWithoutLimit: "__PH__0__ kursi digunakan",
+    savePerYear: "Hemat $%{amount}/tahun",
+    effectiveMonthlyPricing: "Harga efektif sekitar $__PH__0__/bulan",
+    cancelOrUpgradeAnytime: "Batalkan atau tingkatkan kapan saja di Stripe.",
+    planCadence: {
+      monthly: "Ditagih setiap bulan",
+      yearlySavings: "Hemat 2 bulan per kursi",
+    },
+    alerts: {
+      subscriptionUpdatedTitle: "Langganan diperbarui",
+      subscriptionUpdated:
+        "Paket langganan Anda di Stripe telah berhasil diperbarui.",
+      checkoutCancelled: "Checkout dibatalkan",
+      noSubscriptionChanges:
+        "Tidak ada perubahan yang dilakukan pada langganan Anda.",
+      unableToLoad: "Tidak dapat memuat detail penagihan",
+      proTrialActive: "Uji coba pro aktif",
+      proTrialActiveUntil:
+        "Ruang kerja Anda memiliki akses Pro hingga %{date}.",
+      proTrialEnded: "Uji coba pro berakhir",
+      proTrialEndedDescription:
+        "Ruang kerja Anda telah kembali ke paket gratis. Tingkatkan akun Anda di Stripe untuk memulihkan akses Pro.",
+      seatLimitReached: "Batas kapasitas tempat duduk telah tercapai.",
+      seatLimitReachedDescription:
+        "Lakukan upgrade di Stripe untuk menambahkan lebih dari 3 anggota ke ruang kerja ini.",
+    },
+    errors: {
+      unableToOpenStripeCheckout:
+        "Tidak dapat membuka halaman pembayaran Stripe.",
+      unableToOpenStripeBillingPortal:
+        "Tidak dapat membuka portal penagihan Stripe",
+      unableToStartProTrial: "Tidak dapat memulai uji coba Pro Anda",
+    },
+    recommendations: {
+      freeTitle: "Tetap gunakan versi gratis hingga Anda memerlukan kontrol.",
+      freeDescription:
+        "Versi gratis cocok untuk tim yang sangat kecil. Beralihlah ke versi Pro jika Anda membutuhkan SSO, laporan yang lebih lengkap, dan lebih dari 3 pengguna.",
+      proTitle: "Pro adalah pilihan yang tepat.",
+      proDescription:
+        "Untuk tim yang sedang berkembang, Pro memberi Anda SSO, visibilitas keuangan, dan ruang yang cukup untuk berkembang tanpa biaya tambahan tingkat perusahaan.",
+      enterpriseTitle: "Bicaralah dengan kami tentang Enterprise.",
+      enterpriseDescription:
+        "Tim yang lebih besar biasanya membutuhkan dukungan pengadaan, kontrol administratif, dan peluncuran yang lebih lancar. Mulailah dengan Pro atau langsung beralih ke Enterprise.",
+    },
+    highlights: {
+      seatsTitle: "Lebih banyak kursi tanpa kerumitan administrasi.",
+      seatsDescription:
+        "Lewati batasan 3 kursi gratis dan buat proses pendaftaran tetap sederhana.",
+      ssoTitle: "SSO dan kontrol yang lebih ketat",
+      ssoDescription:
+        "Berikan akses aman kepada tim yang sedang berkembang tanpa memerlukan alat tambahan.",
+      financeTitle: "Transparansi keuangan yang tetap tenang.",
+      financeDescription:
+        "Ketahui margin, siklus penagihan, dan penggunaan tim tanpa pengaturan tambahan.",
+    },
+    planDescriptions: {
+      free: "Kelola sendiri Miru dengan pelacakan inti, pembuatan faktur, pembayaran, dan hingga 3 kursi tim.",
+      pro: "Pro menambahkan laporan, SSO, lebih banyak lisensi, dan kontrol administrasi yang lebih mudah tanpa biaya tambahan untuk perusahaan besar.",
+      enterprise:
+        "Kontrak yang ramah terhadap pengadaan, kontrol tingkat lanjut, dan dukungan untuk tim yang lebih besar yang membutuhkan tinjauan keamanan.",
+      hostedEnterprise:
+        "Kami menyediakan layanan hosting, upgrade, backup, dan dukungan untuk Miru Anda pada pengaturan khusus.",
+    },
+    planBullets: {
+      free: {
+        coreProduct: "Produk inti yang dihosting sendiri",
+        tracking: "Pencatatan waktu, faktur, pembayaran",
+        dashboard: "Visibilitas dasbor untuk tim kecil",
+      },
+      pro: {
+        trial: "Uji coba gratis 30 hari sebelum membayar",
+        sso: "SSO, pelaporan tingkat lanjut, kontrol admin yang lebih kuat.",
+        fit: "Sangat cocok untuk agensi dan tim yang sedang berkembang.",
+      },
+      enterprise: {
+        contracts: "Kontrak yang ramah terhadap pengadaan",
+        onboarding: "Tinjauan keamanan dan dukungan orientasi",
+        compliance:
+          "Untuk tim yang lebih besar dengan kebutuhan persetujuan dan kepatuhan.",
+      },
+      hosted: {
+        setup: "Pengaturan terkelola khusus",
+        operations:
+          "Kami menangani peningkatan versi, pencadangan data, dan dukungan.",
+        fit: "Untuk tim yang menginginkan Miru dioperasikan sepenuhnya untuk mereka.",
+      },
+    },
+    heroDescription:
+      "Mulailah dengan versi Gratis, beralih ke Pro saat tim membutuhkan kontrol lebih, atau biarkan kami menjalankan Miru untuk Anda. Versi Pro tetap terjangkau, berlangganan tahunan menghemat uang, dan penagihan tetap sederhana karena proses pembayaran dan manajemen langganan didukung oleh Stripe.",
+    seatEstimatorDescription:
+      "Gunakan ini untuk membandingkan versi Gratis vs Pro dan putuskan apakah langganan bulanan atau tahunan lebih masuk akal.",
+    yearlyDiscountDescription:
+      "Dua bulan gratis per kursi dibandingkan dengan harga bulanan.",
+    checkoutDescription:
+      "Mulailah uji coba tanpa proses penjualan, tingkatkan saat Anda siap, dan kelola penagihan sendiri kapan pun Anda membutuhkannya.",
+    plans: {
+      unknown: "Tidak dikenal",
+      free: "Bebas",
+      freePro: "Pro Gratis",
+      proTrial: "Uji Coba Pro",
+      paid: "Dibayar",
+      enterprise: "Perusahaan",
+      hostedEnterprise: "Hosted Enterprise",
+    },
+    table: {
+      feature: "Fitur",
+      bestFor: "Terbaik untuk",
+      selfHostedTeams: "Tim yang menggunakan hosting sendiri memulai",
+      growingServiceTeams:
+        "Tim layanan yang sedang berkembang membutuhkan kontrol.",
+      largeOrgs:
+        "Organisasi yang lebih besar dengan kebutuhan keamanan dan pengadaan.",
+      managedTeams: "Tim-tim yang ingin Miru dikelola untuk mereka",
+      timeTracking: "Pencatatan waktu",
+      invoicesAndPayments: "Faktur dan pembayaran",
+      reportsAndDashboards: "Laporan dan dasbor",
+      sso: "SSO",
+      auditAndAdminControls: "Kontrol audit dan administrasi",
+      support: "Mendukung",
+      included: "Termasuk",
+      notIncluded: "Tidak termasuk",
+      dashboardOnly: "Hanya dasbor",
+      reportsAndAnalytics: "Laporan dan analisis",
+      community: "Masyarakat",
+      priorityEmail: "Email prioritas",
+      priorityOnboarding: "Prioritas + orientasi",
+      managedOnboarding: "Layanan terkelola + orientasi",
+    },
+  },
+  twoFactor: {
+    title: "Aplikasi Otentikator Otentikasi Dua Faktor (2FA)",
+    addTitle: "Tambahkan aplikasi otentikasi",
+    addDescription:
+      "Gunakan Google Authenticator, 1Password, Bitwarden, Authy, atau aplikasi apa pun yang kompatibel dengan TOTP.",
+    setupAction: "Siapkan otentikasi dua faktor (2FA).",
+    finishTitle: "Selesaikan pengaturan autentikator.",
+    finishDescription:
+      "Tambahkan kunci ini ke aplikasi otentikasi Anda, lalu masukkan kode 6 digit saat ini untuk mengaktifkan otentikasi dua faktor (2FA).",
+    manualEntryKey: "Kunci masuk manual",
+    verificationCode: "Kode verifikasi",
+    verificationCodePlaceholder: "123456",
+    enableAction: "Aktifkan otentikasi dua faktor (2FA).",
+    resetKeyAction: "Tombol reset",
+    enabledTitle: "Perlindungan aplikasi otentikasi aktif.",
+    enabledDescription:
+      "Anda akan memerlukan kode otentikasi setelah kata sandi Anda saat masuk.",
+    recoveryCodesAvailable: "Kode pemulihan __PH__0__ tersedia",
+    regenerateRecoveryCodes: "Buat ulang kode pemulihan",
+    disableAction: "Nonaktifkan otentikasi dua faktor (2FA).",
+    saveRecoveryCodes: "Simpan kode pemulihan ini",
+    saveRecoveryCodesDescription:
+      "Setiap kode hanya dapat digunakan sekali. Simpan kode-kode tersebut di tempat yang aman.",
+    setupReadySuccess: "Pengaturan aplikasi otentikasi sudah siap.",
+    enabledSuccess: "Aplikasi otentikasi diaktifkan",
+    disabledSuccess: "Aplikasi otentikasi dinonaktifkan",
+    regeneratedSuccess: "Kode pemulihan dibuat ulang",
+    setupFailed: "Gagal memulai pengaturan 2FA.",
+    enableFailed: "Gagal mengaktifkan aplikasi otentikasi.",
+    disableFailed: "Gagal menonaktifkan otentikasi dua faktor (2FA).",
+    regenerateFailed: "Gagal menghasilkan kode pemulihan.",
+  },
+  notificationPreferences: {
+    emailNotifications: "Notifikasi Email",
+    manageDescription: "Kelola preferensi notifikasi email Anda",
+    weeklyEmailReminder: "Pengingat Email Mingguan",
+    weeklyEmailReminderDescription:
+      "Dapatkan pengingat email mingguan tentang pengisian lembar waktu dan pembaruan proyek.",
+    noUserData: "Tidak ada data pengguna yang tersedia.",
+    loginPrompt: "Silakan masuk untuk mengelola preferensi notifikasi.",
+  },
+  devices: {
+    addDevices: "Tambahkan Perangkat",
+    editDevices: "Edit Perangkat",
+    device: "Perangkat",
+    unknownDevice: "Perangkat Tidak Dikenal",
+    serial: "Serial:",
+    deviceType: "Jenis Perangkat",
+    selectDeviceType: "Pilih jenis perangkat",
+    modelName: "Model/Nama",
+    serialNumber: "Nomor seri",
+    memory: "Memori (RAM)",
+    processor: "Prosesor",
+    graphics: "Grafik",
+    graphicsCard: "Kartu Grafis",
+    storage: "Penyimpanan",
+    modelNamePlaceholder: "misalnya, MacBook Pro 16 inci",
+    serialNumberPlaceholder: "misalnya, C02XX1234567",
+    memoryPlaceholder: "misalnya, 16GB DDR4",
+    processorPlaceholder: "misalnya, Intel Core i7-10750H",
+    graphicsPlaceholder: "misalnya, NVIDIA GeForce RTX 3060",
+    storagePlaceholder: "misalnya, SSD 512GB",
+    addAnotherDevice: "Tambahkan Perangkat Lain",
+    addAnotherDeviceDescription:
+      "Klik untuk menambahkan perangkat baru ke inventaris Anda",
+    deviceSummary: "Ringkasan Perangkat",
+    totalDevices: "Total Perangkat",
+    notSpecified: "Tidak ditentukan",
+    noDevicesFound: "Tidak ada perangkat yang ditemukan.",
+    newDevice: "Perangkat Baru",
+    unsavedChangesPrompt:
+      "Anda memiliki perubahan yang belum disimpan. Apakah Anda yakin ingin membatalkan?",
+  },
+  nav: {
+    dashboard: "Dasbor",
+    timeTracking: "Pencatatan Waktu",
+    clients: "Klien",
+    projects: "Proyek",
+    team: "Tim",
+    invoices: "Faktur",
+    reports: "Laporan",
+    payments: "Pembayaran",
+    leavesAndHolidays: "Cuti & Liburan",
+    expenses: "Pengeluaran",
+    settings: "Pengaturan",
+    logout: "Keluar",
+  },
+  sidebar: {
+    main: "Utama",
+    personalSettings: "Pengaturan Pribadi",
+    companySettings: "Pengaturan Perusahaan",
+    profile: "Profil",
+    devices: "Perangkat",
+    organization: "Organisasi",
+    billing: "Penagihan",
+    paymentSettings: "Pengaturan Pembayaran",
+    holidayCalendar: "Kalender Hari Libur",
+    myLeaves: "Daunku",
+    bankTaxInfo: "Informasi Bank & Pajak",
+    expand: "Perluas bilah sisi",
+    collapse: "Tutup bilah sisi",
+  },
 };
 
-export default id_ID;
+export default id;

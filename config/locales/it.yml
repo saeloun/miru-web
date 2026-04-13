@@ -1,16 +1,8 @@
 ---
 it:
-  activerecord:
-    errors:
-      models:
-        client:
-          attributes:
-            name:
-              format: "%{message}"
-        project:
-          attributes:
-            name:
-              format: "%{message}"
+  app:
+    name: Sistema operativo dell'agenzia Miru
+    tagline: Gestisci le operazioni della tua agenzia da un unico centro di comando.
   application_controller:
     not_found: Percorso non trovato
   avatar:
@@ -84,20 +76,6 @@ it:
   employment:
     update:
       success: Aggiornamento dello stato occupazionale completato con successo.
-  errors:
-    bill_status_billed: Non è possibile fatturare una voce che è già stata fatturata
-    can't change status: non può essere modificato una fattura pagata
-    create_billed_entry: Non è possibile creare una voce di foglio presenze fatturabile
-    internal_server_error: Qualcosa è andato storto
-    not_found: La risorsa che stai cercando non è disponibile
-    prevent_draft_to_waived: non può essere modificato in rinunciato
-    unauthorized: Solo gli utenti proprietari o amministratori sono autorizzati a
-      eseguire questa azione.
-    updation_not_allowed: L'aggiornamento non è consentito
-    user_already_member: L'indirizzo email è già in uso. Inserisci un altro indirizzo
-      email.
-    validate_billable_project: Non è possibile creare una voce non fatturata per progetti
-      non fatturabili.
   expenses:
     approve: Spesa approvata con successo
     create: Spesa inviata correttamente
@@ -171,6 +149,200 @@ it:
       success: Uscita creata con successo
     update:
       success: Uscita aggiornata correttamente
+  mailers:
+    actions:
+      join_miru: Unisciti a Miru
+      open_expense: Spese aperte
+      open_invoice: Apri fattura
+      open_time_tracking: Monitoraggio del tempo di apertura
+      view_reports: Visualizza i report in Miru
+    client_payment_mailer:
+      payment:
+        eyebrow: Pagamenti
+        preheader: Ricevuta di pagamento per la fattura %{invoice_number}.
+        receipt_title: Pagamento ricevuto
+        records_body: Questa ricevuta conferma il pagamento. Puoi riaprire la fattura
+          in qualsiasi momento se hai bisogno di consultare nuovamente i dettagli.
+        records_title: Conserva questo documento per i tuoi archivi.
+        subject: Ricevuta di pagamento per la fattura %{invoice_number}
+        subtitle_html: Abbiamo ricevuto il pagamento per la fattura <strong>%{invoice_number}</strong>
+          .
+        summary_html: Abbiamo ricevuto <strong>%{amount}</strong> su <strong>%{paid_on}</strong>
+          per la fattura <strong>%{invoice_number}</strong> .
+        title: Ricevuta di pagamento
+    expense_mailer:
+      approved:
+        eyebrow: Spese
+        preheader: La tua richiesta di rimborso è stata approvata.
+        subject: Il rimborso è stato approvato.
+        subtitle: La tua richiesta di rimborso è stata esaminata e approvata.
+        title: Rimborso approvato
+      paid:
+        eyebrow: Spese
+        preheader: La tua richiesta di rimborso è stata contrassegnata come pagata.
+        subject: Il tuo rimborso è stato contrassegnato come pagato.
+        subtitle: Il pagamento per la tua richiesta di rimborso è stato completato.
+        title: Rimborso pagato
+      rejected:
+        eyebrow: Spese
+        next_step_body: Apri la nota spese, apporta le modifiche necessarie e inviala
+          nuovamente.
+        next_step_title: Passo successivo
+        preheader: La tua richiesta di rimborso necessita di aggiornamenti.
+        subject: La tua richiesta di rimborso necessita di aggiornamenti prima di
+          poter essere approvata.
+        subtitle: Si prega di rivedere i dettagli della richiesta, apportare le modifiche
+          necessarie e inviarla nuovamente.
+        title: Necessita di aggiornamenti sui rimborsi
+      submitted:
+        eyebrow: Spese
+        preheader: Una nuova richiesta di rimborso necessita di revisione.
+        subject: "%{submitter_name} ha presentato una richiesta di rimborso"
+        subtitle_html: "<strong>%{submitter_name}</strong> ha inviato una richiesta
+          di rimborso che è pronta per la revisione."
+        title: Nuova richiesta di rimborso
+    invoice_mailer:
+      invoice:
+        eyebrow: Spese
+        payment_link_subvalue: Rivedi le voci dell'ordine ed effettua il pagamento
+          online.
+        payment_link_value: Pagina di fatturazione sicura
+        preheader: Fattura %{invoice_number} da %{company_name}.
+        ready_body: Apri la pagina sicura della fattura per verificare le voci, confermare
+          il totale ed effettuare il pagamento online.
+        ready_title: Rivedi prima di pagare
+        subject: Fattura %{invoice_number}
+        subtitle_html: "<strong>%{company_name}</strong> ha inviato la fattura <strong>%{invoice_number}</strong>
+          . Puoi visualizzarla e pagarla online quando sei pronto."
+        support_html: Domande su questa fattura? Rispondi a questa email o contatta
+          <a href="mailto:%{support_email}">%{support_email}</a> .
+        title: Fattura pronta per la revisione
+      send_invoice:
+        attachment_subvalue: Conservalo, inoltralo o archivialo.
+        attachment_value: PDF allegato
+        eyebrow: Spese
+        next_steps_body: Apri la fattura per confermare l'importo, controlla le voci
+          e paga quando sei pronto.
+        next_steps_title: Cosa aspettarsi
+        note_title: Una nota da %{company_name}
+        preheader: La fattura %{invoice_number} da %{company_name} è pronta.
+        subject: Fattura %{invoice_number} da %{company_name}
+        subtitle_html: "<strong>%{company_name}</strong> ha inviato la fattura <strong>%{invoice_number}</strong>
+          . Aprila per visualizzare i dettagli, scaricare il PDF ed effettuare il
+          pagamento in modo sicuro."
+        support_html: Hai bisogno di aiuto? Rispondi a questa email o contatta <a
+          href="mailto:%{support_email}">%{support_email}</a> .
+        title: Fattura pronta per la revisione
+    labels:
+      amount: Quantità
+      amount_due: Importo dovuto
+      amount_paid: Importo pagato
+      attachment: Allegato
+      category: Categoria
+      client: Cliente
+      date: Data
+      description: Descrizione
+      due_date: Scadenza
+      invited_by: Invitato da
+      invoice: Fattura
+      invoice_number: Numero di fattura
+      issue_date: Data di emissione
+      issued_to: Emesso a
+      members: Membri
+      outstanding_amount: Importo residuo
+      paid_on: Pagato su
+      payment_link: Link per il pagamento
+      payment_method: Metodo di pagamento
+      reference: Riferimento
+      status: Stato
+      total_amount: Importo totale
+      workspace: Spazio di lavoro
+    layout:
+      brand: Miru
+      footer_body: Miru gestisce tempo, fatture, pagamenti e operazioni in un unico
+        spazio di lavoro intuitivo.
+      footer_contact: support@getmiru.com
+      footer_copyright: "© Miru. Tutti i diritti riservati."
+      footer_site: app.miru.so
+      preheader: Un aggiornamento chiaro da parte di Miru.
+    monthly_reports_mailer:
+      cash_flow_digest:
+        average_daily_net_change_html: Variazione netta media giornaliera <strong>%{amount}</strong>
+        compare_to_previous: vs. %{amount} in %{month_label}
+        eyebrow: Riepilogo mensile
+        money_in: Denaro in
+        money_out: Prelievo di denaro
+        net_change: Variazione netta di %{month_label}
+        no_money_in: In Miru non è stato registrato alcun pagamento per %{month_year_label}.
+        no_money_out: In Miru non sono state registrate spese pagate per %{month_year_label}.
+        preheader: Riepilogo del flusso di cassa %{company_name} %{month_label}
+        subject: Riepilogo del flusso di cassa %{company_name} %{month_label}
+        subtitle: Ecco una panoramica sintetica del flusso di denaro attraverso Miru
+          per %{month_year_label}.
+        title: Riepilogo del flusso di cassa %{company_name} %{month_label}
+        top_money_in_sources: Principali fonti di finanziamento
+        top_money_out_sources: Principali categorie di prelievo di denaro
+    payment_mailer:
+      payment:
+        eyebrow: Pagamenti
+        follow_up_body: Apri la fattura per confermare il pagamento, archivia la ricevuta
+          oppure procedi con il passaggio successivo.
+        follow_up_title: Cosa fare dopo?
+        preheader: Conferma di pagamento per la fattura %{invoice_number}.
+        received_title: Pagamento ricevuto
+        subject: Dettagli di pagamento per la fattura %{invoice_number}
+        subtitle_html: "<strong>%{client_name}</strong> ha pagato la fattura <strong>%{invoice_number}</strong>
+          ."
+        summary_html: "<strong>%{client_name}</strong> ha pagato <strong>%{amount}</strong>
+          per la fattura <strong>%{invoice_number}</strong> . Questa fattura è ora
+          interamente saldata."
+        title: Conferma di pagamento
+    send_payment_reminder_mailer:
+      send_payment_reminder:
+        eyebrow: Spese
+        preheader: Promemoria di pagamento per le fatture %{company_name}.
+        subject: Promemoria di pagamento per %{company_name}
+        subtitle: Ecco le fatture che necessitano ancora di attenzione.
+        title: Promemoria di pagamento
+    send_reminder_mailer:
+      send_reminder:
+        eyebrow: Spese
+        preheader: Promemoria per la fattura %{invoice_number} da %{company_name}.
+        subject: Promemoria per la fattura %{invoice_number} da %{company_name}
+        subtitle_html: La fattura <strong>%{invoice_number}</strong> di <strong>%{company_name}</strong>
+          è ancora in attesa di pagamento.
+        title: Promemoria di pagamento
+    send_weekly_reminder_to_user_mailer:
+      notify_user_about_missed_entries:
+        body_html: Hai registrato meno di 40 ore tra <strong>%{starting_date}</strong>
+          e <strong>%{ending_date}</strong> .
+        eyebrow: Tracciamento temporale
+        follow_up: Apri Miru, aggiungi le voci mancanti e chiudi la settimana.
+        greeting_html: Ciao <strong>%{name}</strong> ,
+        preheader: Aggiorna il tuo foglio presenze su Miru per la settimana mancante.
+        signoff_html: Grazie,<br> <strong>Miru</strong>
+        subject: Completa il tuo foglio presenze Miru per la scorsa settimana.
+        subtitle: Le ore lavorate per %{company_name} sono ancora al di sotto del
+          totale settimanale previsto.
+        title: Completa il tuo foglio presenze
+    user_invitation_mailer:
+      send_user_invitation:
+        about_body: Miru riunisce in un unico spazio di lavoro tempo, fatture, pagamenti
+          e operazioni quotidiane.
+        about_title: Informazioni su Miru
+        eyebrow: Invito
+        get_started_body: Accetta l'invito, crea la tua password e il gioco è fatto.
+        get_started_title: Inizia
+        preheader: Sei stato invitato a unirti a un team su Miru.
+        subject: Sei invitato a unirti a Miru
+        subtitle_html: "<strong>%{sender_name}</strong> ti ha invitato a unirti <strong>a
+          %{company_name}</strong> su Miru."
+        support_html: Se non ti aspettavi questo invito, contatta il nostro team all'indirizzo
+          <a href="mailto:%{support_email}">%{support_email}</a> .
+        title: Accedi al tuo spazio di lavoro Miru
+        workspace_members:
+          one: 1 membro
+          other: "%{count} membri"
   navbar:
     clients: Clienti
     help: Aiuto

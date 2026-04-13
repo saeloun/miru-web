@@ -1,16 +1,8 @@
 ---
 ta:
-  activerecord:
-    errors:
-      models:
-        client:
-          attributes:
-            name:
-              format: "%{message}"
-        project:
-          attributes:
-            name:
-              format: "%{message}"
+  app:
+    name: மிரு ஏஜென்சி ஓஎஸ்
+    tagline: உங்கள் முகமையின் செயல்பாடுகளை ஒரே கட்டுப்பாட்டு மையத்திலிருந்து நிர்வகிக்கவும்.
   application_controller:
     not_found: வழி காணப்படவில்லை
   avatar:
@@ -84,22 +76,6 @@ ta:
   employment:
     update:
       success: வேலைவாய்ப்பு வெற்றிகரமாக புதுப்பிக்கப்பட்டது
-  errors:
-    bill_status_billed: ஏற்கனவே கட்டணம் வசூலிக்கப்பட்ட ஒரு பதிவிற்கு மீண்டும் கட்டணம்
-      வசூலிக்க முடியாது.
-    can't change status: பணம் செலுத்தப்பட்ட விலைப்பட்டியலை மாற்ற முடியாது.
-    create_billed_entry: உங்களால் கட்டணம் விதிக்கப்பட்ட நேர அட்டவணைப் பதிவை உருவாக்க
-      முடியாது.
-    internal_server_error: ஏதோ தவறு நடந்துவிட்டது
-    not_found: நீங்கள் தேடும் வளம் கிடைக்கவில்லை
-    prevent_draft_to_waived: தள்ளுபடி செய்யப்பட்டதாக மாற்ற முடியாது
-    unauthorized: உரிமையாளர் அல்லது நிர்வாகப் பயனர்கள் மட்டுமே இந்தச் செயலைச் செய்ய
-      அங்கீகரிக்கப்பட்டுள்ளனர்.
-    updation_not_allowed: புதுப்பித்தல் அனுமதிக்கப்படவில்லை
-    user_already_member: மின்னஞ்சல் முகவரி ஏற்கனவே பயன்பாட்டில் உள்ளது. தயவுசெய்து
-      வேறொரு மின்னஞ்சல் முகவரியை உள்ளிடவும்.
-    validate_billable_project: கட்டணம் வசூலிக்கப்படாத திட்டங்களுக்கு, கட்டணம் வசூலிக்கப்படாத
-      பதிவை உங்களால் உருவாக்க முடியாது.
   expenses:
     approve: செலவினம் வெற்றிகரமாக அங்கீகரிக்கப்பட்டது
     create: செலவு வெற்றிகரமாக சமர்ப்பிக்கப்பட்டது
@@ -173,6 +149,208 @@ ta:
       success: விடுப்பு வெற்றிகரமாக உருவாக்கப்பட்டது
     update:
       success: விடுப்பு வெற்றிகரமாகப் புதுப்பிக்கப்பட்டது
+  mailers:
+    actions:
+      join_miru: மிருவில் சேரவும்
+      open_expense: திறந்த செலவு
+      open_invoice: விலைப்பட்டியலைத் திறக்கவும்
+      open_time_tracking: திறந்திருக்கும் நேரத்தைக் கண்காணித்தல்
+      view_reports: மிருவில் அறிக்கைகளைக் காண்க
+    client_payment_mailer:
+      payment:
+        eyebrow: பணம் செலுத்துதல்
+        preheader: விலைப்பட்டியல் %{invoice_number}-க்கான கட்டண ரசீது.
+        receipt_title: பணம் பெறப்பட்டது
+        records_body: இந்த ரசீது உங்கள் கட்டணத்தை உறுதி செய்கிறது. உங்களுக்கு விவரங்கள்
+          மீண்டும் தேவைப்பட்டால், எப்போது வேண்டுமானாலும் இந்த ரசீதை மீண்டும் திறக்கலாம்.
+        records_title: இதை உங்கள் பதிவுகளுக்காக வைத்துக்கொள்ளுங்கள்.
+        subject: விலைப்பட்டியல் %{invoice_number}-க்கான கட்டண ரசீது
+        subtitle_html: விலைப்பட்டியல் <strong>%{invoice_number}-</strong> க்கான உங்கள்
+          கட்டணத்தை நாங்கள் பெற்றுக்கொண்டோம்.
+        summary_html: விலைப்பட்டியல் <strong>%{invoice_number}-</strong> க்காக, <strong>%{paid_on}</strong>
+          அன்று <strong>%{amount}-ஐ</strong> நாங்கள் பெற்றோம்.
+        title: பணம் செலுத்திய ரசீது
+    expense_mailer:
+      approved:
+        eyebrow: செலவுகள்
+        preheader: உங்கள் பணமீட்டு கோரிக்கை அங்கீகரிக்கப்பட்டுள்ளது.
+        subject: உங்கள் பணம் திரும்பப்பெறுதல் அங்கீகரிக்கப்பட்டுள்ளது
+        subtitle: உங்கள் பணமீட்டு கோரிக்கை பரிசீலிக்கப்பட்டு அங்கீகரிக்கப்பட்டுள்ளது.
+        title: திருப்பிச் செலுத்துதல் அங்கீகரிக்கப்பட்டது
+      paid:
+        eyebrow: செலவுகள்
+        preheader: உங்கள் பணமீட்டு கோரிக்கை செலுத்தப்பட்டதாகக் குறிக்கப்பட்டுள்ளது.
+        subject: உங்கள் பணத் திருப்பிச் செலுத்துதல் செலுத்தப்பட்டதாகக் குறிக்கப்பட்டுள்ளது.
+        subtitle: உங்கள் பணத்தைத் திரும்பப்பெறும் கோரிக்கைக்கான கட்டணம் செலுத்தப்பட்டுவிட்டது.
+        title: திருப்பிச் செலுத்தப்பட்ட தொகை
+      rejected:
+        eyebrow: செலவுகள்
+        next_step_body: செலவுக் கணக்கைத் திறந்து, திருத்தங்களைச் செய்து, மீண்டும்
+          சமர்ப்பிக்கவும்.
+        next_step_title: அடுத்த கட்டம்
+        preheader: உங்கள் பணமீட்டு கோரிக்கையில் திருத்தங்கள் தேவை.
+        subject: உங்கள் பணத் திருப்பிச் செலுத்துதலுக்கு ஒப்புதல் அளிப்பதற்கு முன்,
+          அதில் புதுப்பிப்புகள் செய்யப்பட வேண்டும்.
+        subtitle: கோரிக்கை விவரங்களை மதிப்பாய்வு செய்து, தேவையான மாற்றங்களைச் செய்து,
+          மீண்டும் சமர்ப்பிக்கவும்.
+        title: திருப்பிச் செலுத்துதல் தொடர்பான விவரங்கள் புதுப்பிக்கப்பட வேண்டும்.
+      submitted:
+        eyebrow: செலவுகள்
+        preheader: புதிய பணமீட்டுதல் கோரிக்கை மறுபரிசீலனை செய்யப்பட வேண்டும்.
+        subject: "%{submitter_name} பணத்தைத் திரும்பப் பெறுவதற்கான கோரிக்கையைச் சமர்ப்பித்தார்"
+        subtitle_html: "<strong>%{submitter_name}</strong> சமர்ப்பித்த பணமீட்டுதல்
+          கோரிக்கை பரிசீலனைக்குத் தயாராக உள்ளது."
+        title: புதிய பணமீட்டுதல் கோரிக்கை
+    invoice_mailer:
+      invoice:
+        eyebrow: விலைப்பட்டியல்கள்
+        payment_link_subvalue: செலவினங்களை மதிப்பாய்வு செய்து, ஆன்லைனில் பணம் செலுத்துங்கள்.
+        payment_link_value: பாதுகாப்பான விலைப்பட்டியல் பக்கம்
+        preheader: "%{company_name} இலிருந்து %{invoice_number} விலைப்பட்டியல்."
+        ready_body: வரி இனங்களைச் சரிபார்க்கவும், மொத்தத் தொகையை உறுதிப்படுத்தவும்,
+          ஆன்லைனில் பணம் செலுத்தவும் பாதுகாப்பான விலைப்பட்டியல் பக்கத்தைத் திறக்கவும்.
+        ready_title: பணம் செலுத்தும் முன் மதிப்பாய்வு செய்யவும்
+        subject: விலைப்பட்டியல் %{invoice_number}
+        subtitle_html: "<strong>%{company_name},</strong> <strong>%{invoice_number}</strong>
+          என்ற விலைப்பட்டியலை அனுப்பியுள்ளார். நீங்கள் தயாரானதும் அதை மதிப்பாய்வு
+          செய்து ஆன்லைனில் பணம் செலுத்தலாம்."
+        support_html: இந்த விலைப்பட்டியல் குறித்து ஏதேனும் கேள்விகள் உள்ளதா? இந்த
+          மின்னஞ்சலுக்குப் பதிலளிக்கவும் அல்லது <a href="mailto:%{support_email}">%{support_email}
+          ஐத்</a> தொடர்பு கொள்ளவும்.
+        title: மதிப்பாய்வு செய்ய விலைப்பட்டியல் தயாராக உள்ளது
+      send_invoice:
+        attachment_subvalue: இதை வைத்துக்கொள்ளுங்கள், மற்றவர்களுக்கு அனுப்புங்கள்
+          அல்லது கோப்பில் சேமித்து வையுங்கள்.
+        attachment_value: PDF இணைக்கப்பட்டுள்ளது
+        eyebrow: விலைப்பட்டியல்கள்
+        next_steps_body: ரசீதைத் திறந்து தொகையை உறுதிசெய்து, அதில் உள்ள இனக்குழுக்களை
+          மதிப்பாய்வு செய்து, நீங்கள் தயாரானதும் பணம் செலுத்துங்கள்.
+        next_steps_title: என்ன எதிர்பார்க்கலாம்
+        note_title: "%{company_name} இடமிருந்து ஒரு குறிப்பு"
+        preheader: "%{company_name} இலிருந்து %{invoice_number} விலைப்பட்டியல் தயாராக
+          உள்ளது."
+        subject: "%{company_name} இலிருந்து விலைப்பட்டியல் %{invoice_number}"
+        subtitle_html: "<strong>%{company_name},</strong> <strong>%{invoice_number}</strong>
+          என்ற விலைப்பட்டியலை அனுப்பியுள்ளார். விவரங்களை மதிப்பாய்வு செய்யவும், PDF-ஐப்
+          பதிவிறக்கவும், பாதுகாப்பாகப் பணம் செலுத்தவும் அதைத் திறக்கவும்."
+        support_html: உதவி தேவையா? இந்த மின்னஞ்சலுக்குப் பதிலளிக்கவும் அல்லது <a href="mailto:%{support_email}">%{support_email}
+          ஐத்</a> தொடர்பு கொள்ளவும்.
+        title: மதிப்பாய்வு செய்ய விலைப்பட்டியல் தயாராக உள்ளது
+    labels:
+      amount: தொகை
+      amount_due: செலுத்த வேண்டிய தொகை
+      amount_paid: செலுத்தப்பட்ட தொகை
+      attachment: இணைப்பு
+      category: வகை
+      client: வாடிக்கையாளர்
+      date: தேதி
+      description: விளக்கம்
+      due_date: கடைசி தேதி
+      invited_by: அழைக்கப்பட்டவர்
+      invoice: விலைப்பட்டியல்
+      invoice_number: விலைப்பட்டியல் எண்
+      issue_date: வெளியீட்டு தேதி
+      issued_to: வழங்கப்பட்டது
+      members: உறுப்பினர்கள்
+      outstanding_amount: நிலுவைத் தொகை
+      paid_on: பணம் செலுத்தப்பட்டது
+      payment_link: பணம் செலுத்தும் இணைப்பு
+      payment_method: பணம் செலுத்தும் முறை
+      reference: குறிப்பு
+      status: நிலை
+      total_amount: மொத்த தொகை
+      workspace: பணியிடம்
+    layout:
+      brand: மிரு
+      footer_body: மிரூ நேரம், விலைப்பட்டியல்கள், கொடுப்பனவுகள் மற்றும் செயல்பாடுகளை
+        ஒரே அமைதியான பணிச்சூழலில் ஒருங்கிணைக்கிறது.
+      footer_contact: support@getmiru.com
+      footer_copyright: "© மிரூ. அனைத்து உரிமைகளும் பாதுகாக்கப்பட்டவை."
+      footer_site: app.miru.so
+      preheader: மிரூவிடமிருந்து ஒரு தெளிவான அறிவிப்பு.
+    monthly_reports_mailer:
+      cash_flow_digest:
+        average_daily_net_change_html: சராசரி தினசரி நிகர மாற்றம் <strong>%{amount}</strong>
+        compare_to_previous: "%{month_label} இல் %{amount} க்கு எதிராக"
+        eyebrow: மாதாந்திர தொகுப்பு
+        money_in: பணத்தில்
+        money_out: பணம் வெளியே
+        net_change: "%{month_label} இல் நிகர மாற்றம்"
+        no_money_in: "%{month_year_label}-க்கு Miru-வில் எந்தப் பணப்பரிவர்த்தனையும்
+          பதிவு செய்யப்படவில்லை."
+        no_money_out: "%{month_year_label}-விற்கான செலுத்தப்பட்ட செலவுகள் எதுவும்
+          மிரூவில் பதிவு செய்யப்படவில்லை."
+        preheader: "%{company_name}-இன் %{month_label} பணப்புழக்கச் சுருக்கம்"
+        subject: "%{company_name}-இன் %{month_label} பணப்புழக்கச் சுருக்கம்"
+        subtitle: "%{month_year_label}-க்காக Miru வழியாகப் பரிமாற்றம் செய்யப்படும்
+          பணப் பரிமாற்றத்தின் சுருக்கமான கண்ணோட்டம் இதோ."
+        title: "%{company_name}-இன் %{month_label} பணப்புழக்கச் சுருக்கம்"
+        top_money_in_sources: அதிக பணம் வரும் ஆதாரங்கள்
+        top_money_out_sources: மேல் பணம் வெளியேறும் பிரிவுகள்
+    payment_mailer:
+      payment:
+        eyebrow: பணம் செலுத்துதல்
+        follow_up_body: பணம் செலுத்தியதை உறுதிப்படுத்த, ரசீதைப் பதிவுசெய்ய அல்லது
+          அடுத்த கட்டத்திற்குச் செல்ல, விலைப்பட்டியலைத் திறக்கவும்.
+        follow_up_title: அடுத்து என்ன செய்வது
+        preheader: விலைப்பட்டியல் %{invoice_number}-க்கான கட்டண உறுதிப்படுத்தல்.
+        received_title: பணம் பெறப்பட்டது
+        subject: விலைப்பட்டியல் %{invoice_number}-க்கான கட்டண விவரங்கள்
+        subtitle_html: "<strong>%{client_name},</strong> <strong>%{invoice_number}</strong>
+          என்ற விலைப்பட்டியலுக்குப் பணம் செலுத்தியது."
+        summary_html: "<strong>%{client_name},</strong> <strong>%{amount}-</strong>
+          க்கு <strong>%{invoice_number}</strong> என்ற விலைப்பட்டியலுக்காகப் பணம்
+          செலுத்தினார். இந்த விலைப்பட்டியல் இப்போது முழுமையாகச் செலுத்தப்பட்டுவிட்டது."
+        title: பணம் செலுத்தியதை உறுதிப்படுத்துதல்
+    send_payment_reminder_mailer:
+      send_payment_reminder:
+        eyebrow: விலைப்பட்டியல்கள்
+        preheader: "%{company_name} விலைப்பட்டியல்களுக்கான கட்டண நினைவூட்டல்."
+        subject: "%{company_name}-க்கான கட்டண நினைவூட்டல்"
+        subtitle: இன்னும் கவனிக்கப்பட வேண்டிய விலைப்பட்டியல்கள் இதோ.
+        title: பணம் செலுத்துவதற்கான நினைவூட்டல்
+    send_reminder_mailer:
+      send_reminder:
+        eyebrow: விலைப்பட்டியல்கள்
+        preheader: "%{company_name} இலிருந்து %{invoice_number} விலைப்பட்டியல் தொடர்பான
+          நினைவூட்டல்."
+        subject: "%{company_name} இலிருந்து %{invoice_number} இன்வாய்ஸுக்கான நினைவூட்டல்"
+        subtitle_html: "<strong>%{company_name}</strong> வழங்கிய <strong>%{invoice_number}</strong>
+          விலைப்பட்டியல் இன்னும் பணம் செலுத்தப்படாமல் உள்ளது."
+        title: பணம் செலுத்துவதற்கான நினைவூட்டல்
+    send_weekly_reminder_to_user_mailer:
+      notify_user_about_missed_entries:
+        body_html: நீங்கள் <strong>%{starting_date}</strong> மற்றும் <strong>%{ending_date}</strong>
+          க்கு இடையில் 40 மணி நேரத்திற்கும் குறைவாகப் பதிவு செய்துள்ளீர்கள்.
+        eyebrow: நேர கண்காணிப்பு
+        follow_up: Miru-வைத் திறந்து, விடுபட்ட பதிவுகளைச் சேர்த்து, வாரத்தை நிறைவு
+          செய்யவும்.
+        greeting_html: வணக்கம் <strong>%{name}</strong> ,
+        preheader: விடுபட்ட வாரத்திற்கான உங்கள் மிரூ நேர அட்டவணையைப் புதுப்பிக்கவும்.
+        signoff_html: நன்றி,<br> <strong>மிரு</strong>
+        subject: கடந்த வாரத்திற்கான உங்கள் மிரூ நேர அட்டவணையைப் பூர்த்தி செய்யவும்.
+        subtitle: "%{company_name}-க்கான உங்கள் நேரப் பதிவுகள், எதிர்பார்க்கப்பட்ட
+          வாராந்திர மொத்தத்தை விட இன்னும் குறைவாகவே உள்ளன."
+        title: உங்கள் நேர அட்டவணையைப் பூர்த்தி செய்யவும்
+    user_invitation_mailer:
+      send_user_invitation:
+        about_body: மிரூ நேரம், விலைப்பட்டியல்கள், கொடுப்பனவுகள் மற்றும் அன்றாட செயல்பாடுகளை
+          ஒரே பணிச்சூழலுக்குள் கொண்டுவருகிறது.
+        about_title: மிருவைப் பற்றி
+        eyebrow: அழைப்பிதழ்
+        get_started_body: அழைப்பை ஏற்று, உங்கள் கடவுச்சொல்லை உருவாக்கிவிட்டால், நீங்கள்
+          உள்ளே நுழைந்துவிட்டீர்கள்.
+        get_started_title: தொடங்குங்கள்
+        preheader: Miru-வில் உள்ள ஒரு குழுவில் சேர நீங்கள் அழைக்கப்பட்டுள்ளீர்கள்.
+        subject: மிரூவில் சேர நீங்கள் அழைக்கப்படுகிறீர்கள்.
+        subtitle_html: "<strong>%{sender_name}</strong> உங்களை Miru-வில் <strong>%{company_name}</strong>
+          உடன் இணைய அழைத்துள்ளது."
+        support_html: இந்த அழைப்பை நீங்கள் எதிர்பார்க்கவில்லை எனில், <a href="mailto:%{support_email}">%{support_email}</a>
+          இல் உள்ள எங்கள் குழுவைத் தொடர்பு கொள்ளவும்.
+        title: உங்கள் மிரு பணிவெளியில் இணையுங்கள்
+        workspace_members:
+          one: 1 உறுப்பினர்
+          other: "%{count} உறுப்பினர்கள்"
   navbar:
     clients: வாடிக்கையாளர்கள்
     help: உதவி

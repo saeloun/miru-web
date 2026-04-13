@@ -1,0 +1,30 @@
+---
+ar:
+  activerecord:
+    errors:
+      models:
+        client:
+          attributes:
+            name:
+              format: "%{message}"
+        project:
+          attributes:
+            name:
+              format: "%{message}"
+        user:
+          attributes:
+            email:
+              blank: لا يمكن أن يكون البريد الإلكتروني فارغًا
+              invalid: معرف بريد إلكتروني غير صالح
+              taken: معرف البريد الإلكتروني موجود بالفعل
+            first_name:
+              blank: لا يمكن أن يكون فارغًا
+              invalid: يجب أن تحتوي فقط على أحرف أو مسافات
+            last_name:
+              blank: لا يمكن أن يكون فارغًا
+              invalid: يجب أن تحتوي فقط على أحرف أو مسافات
+            password:
+              blank: لا يمكن أن يكون فارغًا
+              too_short: يجب أن يكون طوله %{count} حرفًا على الأقل
+            password_confirmation:
+              confirmation: لا يتطابق مع كلمة المرور الجديدة

@@ -1,25 +1,5 @@
 ---
 ar:
-  activerecord:
-    errors:
-      models:
-        user:
-          attributes:
-            email:
-              blank: لا يمكن أن يكون البريد الإلكتروني فارغًا
-              invalid: معرف بريد إلكتروني غير صالح
-              taken: معرف البريد الإلكتروني موجود بالفعل
-            first_name:
-              blank: لا يمكن أن يكون فارغًا
-              invalid: يجب أن تحتوي فقط على أحرف أو مسافات
-            last_name:
-              blank: لا يمكن أن يكون فارغًا
-              invalid: يجب أن تحتوي فقط على أحرف أو مسافات
-            password:
-              blank: لا يمكن أن يكون فارغًا
-              too_short: يجب أن يكون طوله %{count} حرفًا على الأقل
-            password_confirmation:
-              confirmation: لا يتطابق مع كلمة المرور الجديدة
   devise:
     confirmations:
       confirmed: تم تأكيد عنوان بريدك الإلكتروني بنجاح.
@@ -90,13 +70,3 @@ ar:
       send_paranoid_instructions: إذا كان حسابك موجودًا، فستتلقى بريدًا إلكترونيًا
         يحتوي على تعليمات حول كيفية فتحه في غضون دقائق قليلة.
       unlocked: تم فتح حسابك بنجاح. يرجى تسجيل الدخول للمتابعة.
-  errors:
-    messages:
-      already_confirmed: تم التأكيد بالفعل، يرجى محاولة تسجيل الدخول
-      confirmation_period_expired: يجب تأكيد ذلك خلال %{period}، يرجى طلب واحد جديد
-      expired: انتهت صلاحية البطاقة، يرجى طلب بطاقة جديدة
-      not_found: غير موجود
-      not_locked: لم يكن مغلقًا
-      not_saved:
-        one: 'حدث خطأ واحد منع حفظ هذا الملف %{resource}:'
-        other: 'أدت الأخطاء %{count} إلى منع حفظ %{resource} هذا:'

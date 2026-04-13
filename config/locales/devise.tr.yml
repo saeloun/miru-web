@@ -1,25 +1,5 @@
 ---
 tr:
-  activerecord:
-    errors:
-      models:
-        user:
-          attributes:
-            email:
-              blank: E-posta adresi boş bırakılamaz.
-              invalid: Geçersiz E-posta Adresi
-              taken: E-posta adresi zaten mevcut.
-            first_name:
-              blank: boş olamaz
-              invalid: Yalnızca harf veya boşluk içermelidir.
-            last_name:
-              blank: boş olamaz
-              invalid: Yalnızca harf veya boşluk içermelidir.
-            password:
-              blank: boş olamaz
-              too_short: En az %{count} karakter uzunluğunda olmalıdır
-            password_confirmation:
-              confirmation: Yeni şifreyle eşleşmiyor
   devise:
     confirmations:
       confirmed: E-posta adresiniz başarıyla doğrulandı.
@@ -91,14 +71,3 @@ tr:
         kilidini nasıl açacağınıza dair talimatlar içeren bir e-posta alacaksınız.
       unlocked: Hesabınızın kilidi başarıyla açıldı. Devam etmek için lütfen giriş
         yapın.
-  errors:
-    messages:
-      already_confirmed: Onaylandı, lütfen giriş yapmayı deneyin.
-      confirmation_period_expired: "%{period} içinde onaylanması gerekiyor, lütfen
-        yenisini talep edin."
-      expired: Süresi doldu, lütfen yenisini talep edin.
-      not_found: bulunamadı
-      not_locked: kilitli değildi
-      not_saved:
-        one: '1 hata bu %{resource}''ın kaydedilmesini engelledi:'
-        other: "%{count} hataları bu %{resource}'in kaydedilmesini engelledi:"

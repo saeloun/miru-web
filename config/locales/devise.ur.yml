@@ -1,25 +1,5 @@
 ---
 ur:
-  activerecord:
-    errors:
-      models:
-        user:
-          attributes:
-            email:
-              blank: ای میل خالی نہیں ہو سکتی
-              invalid: غلط ای میل ID
-              taken: ای میل آئی ڈی پہلے سے موجود ہے۔
-            first_name:
-              blank: خالی نہیں ہو سکتا
-              invalid: صرف حروف یا خالی جگہوں پر مشتمل ہونا چاہیے۔
-            last_name:
-              blank: خالی نہیں ہو سکتا
-              invalid: صرف حروف یا خالی جگہوں پر مشتمل ہونا چاہیے۔
-            password:
-              blank: خالی نہیں ہو سکتا
-              too_short: کم از کم %{count} حروف کا ہونا ضروری ہے۔
-            password_confirmation:
-              confirmation: نئے پاس ورڈ سے میل نہیں کھاتا
   devise:
     confirmations:
       confirmed: آپ کے ای میل ایڈریس کی کامیابی سے تصدیق ہو گئی ہے۔
@@ -94,14 +74,3 @@ ur:
         اسے غیر مقفل کرنے کے طریقے کے بارے میں ہدایات کے ساتھ ایک ای میل موصول ہوگا۔
       unlocked: آپ کا اکاؤنٹ کامیابی کے ساتھ ان لاک ہو گیا ہے۔ جاری رکھنے کے لیے براہ
         کرم سائن ان کریں۔
-  errors:
-    messages:
-      already_confirmed: پہلے ہی تصدیق ہو چکی تھی، براہ کرم سائن ان کرنے کی کوشش کریں۔
-      confirmation_period_expired: "%{period} کے اندر تصدیق کرنے کی ضرورت ہے، براہ
-        کرم ایک نئے کی درخواست کریں۔"
-      expired: میعاد ختم ہو گئی ہے، براہ کرم ایک نئے کی درخواست کریں۔
-      not_found: نہیں ملا
-      not_locked: مقفل نہیں تھا
-      not_saved:
-        one: '1 غلطی نے اس %{resource} کو محفوظ ہونے سے روک دیا:'
-        other: "%{count} کی خرابیوں نے اس %{resource} کو محفوظ ہونے سے روک دیا:"

@@ -1,0 +1,28 @@
+---
+ar:
+  errors:
+    bill_status_billed: لا يمكنك إصدار فاتورة مقابل بند تم إصدار فاتورة له بالفعل.
+    can't change status: لا يمكن تغيير الفاتورة المدفوعة
+    create_billed_entry: لا يمكنك إنشاء إدخال جدول زمني مُفوتر
+    internal_server_error: حدث خطأ ما
+    messages:
+      already_confirmed: تم التأكيد بالفعل، يرجى محاولة تسجيل الدخول
+      confirmation_period_expired: يجب تأكيد ذلك خلال %{period}، يرجى طلب واحد جديد
+      expired: انتهت صلاحية البطاقة، يرجى طلب بطاقة جديدة
+      not_found: غير موجود
+      not_locked: لم يكن مغلقًا
+      not_saved:
+        few: 'حدثت %{count} أخطاء منعت حفظ هذا %{resource}:'
+        many: 'حدث %{count} خطأ منع حفظ هذا %{resource}:'
+        one: 'حدث خطأ واحد منع حفظ هذا الملف %{resource}:'
+        other: 'أدت الأخطاء %{count} إلى منع حفظ %{resource} هذا:'
+        two: 'حدث خطآن منعا حفظ هذا %{resource}:'
+        zero: لم تحدث أي أخطاء، ولكن تعذر حفظ %{resource}.
+    not_found: المورد الذي تبحث عنه غير متوفر
+    prevent_draft_to_waived: لا يمكن تغييرها إلى إعفاء
+    unauthorized: لا يُسمح إلا للمالكين أو المستخدمين الإداريين بتنفيذ هذا الإجراء
+    updation_not_allowed: التحديث غير مسموح به
+    user_already_member: البريد الإلكتروني مستخدم بالفعل. يرجى إدخال بريد إلكتروني
+      آخر.
+    validate_billable_project: لا يمكنك إنشاء إدخال غير مُفوتر للمشاريع غير القابلة
+      للفوترة

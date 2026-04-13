@@ -1,12 +1,9 @@
 const ja = {
-  // Image validation
   invalidImageFormatSize:
     "ファイル形式が正しくありません。PNGまたはJPG形式の画像をアップロードしてください。最大サイズ（%{fileSize}KB）",
   invalidImageSize: "ファイルサイズが%{fileSize}KBの上限を超えました。",
   invalidImageFormat:
     "ファイル形式が正しくありません。PNGまたはJPG形式の画像をアップロードしてください",
-
-  // Common actions
   save: "保存",
   cancel: "キャンセル",
   delete: "削除",
@@ -33,8 +30,6 @@ const ja = {
   yes: "はい",
   no: "いいえ",
   or: "または",
-
-  // Common labels
   name: "名前",
   email: "メール",
   phone: "電話",
@@ -68,8 +63,6 @@ const ja = {
   all: "すべて",
   from: "開始",
   to: "終了",
-
-  // Date/time
   today: "今日",
   yesterday: "昨日",
   tomorrow: "明日",
@@ -93,16 +86,12 @@ const ja = {
   selectPeriod: "期間を選択",
   fullDay: "全日",
   halfDay: "半日",
-
-  // Date validation
   dateCannotBeBlank: "日付は空にできません",
   fromDateMustBeLessThanToDate:
     "「開始」日は「終了」日以前でなければなりません",
   toDateMustBeGreaterThanFromDate:
     "「終了」日は「開始」日以降でなければなりません",
   invalidDate: "有効な日付を入力してください",
-
-  // Month abbreviations
   monthJan: "1月",
   monthFeb: "2月",
   monthMar: "3月",
@@ -115,8 +104,6 @@ const ja = {
   monthOct: "10月",
   monthNov: "11月",
   monthDec: "12月",
-
-  // Error pages
   pageNotFound: "ページが見つかりません",
   clickHere: "こちらをクリック",
   somethingWentWrong: "問題が発生しました",
@@ -124,15 +111,11 @@ const ja = {
     "ページを更新して再試行してください。この問題が続く場合は、再度サインインするかサポートにお問い合わせください。",
   reloadPage: "ページを再読み込み",
   loadingWorkspace: "ワークスペースを読み込み中...",
-
-  // Search
   searchClients: "クライアントを検索...",
   searchInvoices: "請求書を検索...",
   searchTeamMembers: "チームメンバーを検索...",
   selectTeamMember: "チームメンバーを選択",
   noResultsFound: "結果が見つかりません",
-
-  // Time Tracking
   timeTracking: {
     addEntry: "エントリーを追加",
     newTimeEntry: "新しいタイムエントリー",
@@ -220,8 +203,6 @@ const ja = {
       sun: "日",
     },
   },
-
-  // Task types
   taskTypes: {
     development: "開発",
     meeting: "会議",
@@ -236,16 +217,12 @@ const ja = {
     training: "研修",
     other: "その他",
   },
-
-  // Time off types
   timeOffTypes: {
     vacation: "有給休暇",
     sickLeave: "病気休暇",
     personalDay: "私用休暇",
     holiday: "祝日",
   },
-
-  // Clients
   clients: {
     addClients: "クライアントを追加",
     addNewClient: "新しいクライアントを追加",
@@ -278,8 +255,6 @@ const ja = {
     sendPaymentReminder: "支払いリマインダーを送信",
     invoicesSelected: "%{count}件の請求書が選択されました",
   },
-
-  // Contacts
   contacts: {
     addContact: "連絡先を追加",
     addContacts: "連絡先を追加",
@@ -298,8 +273,6 @@ const ja = {
     invalidEmailId: "無効なメールアドレス",
     emailRequired: "メールアドレスは空にできません",
   },
-
-  // Projects
   projects: {
     addProject: "プロジェクトを追加",
     addNewProject: "新しいプロジェクトを追加",
@@ -369,8 +342,6 @@ const ja = {
     teamMembersDescription:
       "このプロジェクトに割り当てられたチームメンバーを表示・管理します。",
   },
-
-  // Team
   team: {
     team: "チーム",
     teamOverview: "チーム概要",
@@ -417,8 +388,6 @@ const ja = {
     invalidEmail: "無効なメールアドレス",
     emailRequired: "メールアドレスは空にできません",
   },
-
-  // Invoices
   invoices: {
     invoice: "請求書",
     invoices: "請求書",
@@ -495,16 +464,12 @@ const ja = {
     resetFilters: "フィルターをリセット",
     loadingChartData: "チャートデータを読み込み中...",
     noInvoiceData: "請求書データがありません",
-
-    // Statuses
     draft: "下書き",
     sent: "送信済み",
     overdue: "期限超過",
     collected: "回収済み",
     paid: "支払い済み",
     outstanding: "未払い",
-
-    // Email
     recipientEmailId: "受信者メールアドレス",
     subject: "件名",
     message: "メッセージ",
@@ -516,8 +481,6 @@ const ja = {
     invoiceSentBody: "%{company}から請求書が届きました（%{number}）",
     invoiceWillBeSent: "請求書が送信されます！",
     processing: "処理中...",
-
-    // No payment gateway
     noPaymentGateway: "決済ゲートウェイが接続されていません",
     paymentGatewayError:
       "エラー。請求書の支払いを可能にするため、請求書の送信者に連絡して決済ゲートウェイを接続してもらってください",
@@ -528,14 +491,10 @@ const ja = {
     stripeDisabled: "この請求書でStripeが無効です",
     stripeDisabledMessage:
       "送信者がこの請求書でStripe決済を有効にしていません。有効化を依頼するか、ACHなどの代替決済方法を選択できます。",
-
-    // Bulk actions
     preparingDownload: "ダウンロードを準備中...",
     downloadFailed: "ダウンロードに失敗しました。再試行してください。",
     downloadingFiles: "ファイルをダウンロード中...",
     downloadComplete: "ダウンロード完了",
-
-    // Table headers
     nameHeader: "名前",
     descriptionHeader: "説明",
     dateHeader: "日付",
@@ -543,8 +502,6 @@ const ja = {
     amountHeader: "金額",
     statusHeader: "ステータス",
     invoiceNumberHeader: "請求書番号",
-
-    // Chart labels
     area: "エリア",
     bar: "棒グラフ",
     noData: "データなし",
@@ -552,8 +509,6 @@ const ja = {
     quarterly: "四半期",
     yearly: "年次",
     trend: "トレンド",
-
-    // Preview / detail labels
     taxId: "税務ID: %{value}",
     vatNumber: "VAT番号: %{value}",
     gstNumber: "GST番号: %{value}",
@@ -567,8 +522,6 @@ const ja = {
     due: "期日 %{date}",
     viewed: "閲覧済み",
     cancelled: "キャンセル済み",
-
-    // Toast / confirmation messages
     invoiceMarkedAsPaid: "請求書が正常に支払い済みとしてマークされました",
     invoiceDownloaded: "請求書が正常にダウンロードされました",
     invoiceSentSuccessfully: "請求書が正常に送信されました",
@@ -584,20 +537,14 @@ const ja = {
     invoiceCreated: "請求書が正常に作成されました",
     invoiceUpdated: "請求書が正常に更新されました",
     failedToSaveInvoice: "請求書の保存に失敗しました。再試行してください。",
-
-    // Counters
     showingOf: "%{shown} / %{total} 表示中",
     viewingMatching: "%{loaded}件中%{filtered}件の一致する請求書を表示中",
     loadedOf: "%{loaded} / %{total} 読み込み済み",
     showingRecentTransactions: "最近の%{count}件の取引を表示中",
     updatedAt: "%{date}に更新",
     invoiceHash: "請求書 #%{number}",
-
-    // Mobile table headers
     nameDescription: "名前 / 説明",
     dateTime: "日付 / 時間",
-
-    // Invoice reminder email
     invoiceReminder: "請求書リマインダー: %{number}",
     reminderMessage:
       "未払いの請求書についてのリマインダーです。添付の詳細をご確認ください。",
@@ -615,15 +562,28 @@ const ja = {
     cannotDownloadInvalidId: "請求書をダウンロードできません - 無効なID",
     cannotSendInvalidId: "請求書を送信できません - 無効なID",
     payment: "支払い #%{id}",
+    newInvoicePage: "新しい請求書",
+    editInvoicePage: "請求書を編集する",
+    editorSubtitle:
+      "詳細を入力し、送信前に請求書の内容をプレビューしてください。",
+    saving: "保存中...",
+    sending: "送信中...",
+    alreadySent: "既に送信済み",
+    downloading: "ダウンロード中...",
+    selectClientBeforeSending: "請求書を送信する前に、顧客を選択してください。",
   },
   common: {
     retry: "再試行",
     pageUnavailable:
       "このページは利用できないか、ワークスペースのリンクが無効になっています。",
     goToDashboard: "ダッシュボードへ",
+    language: "言語",
+    loading: "読み込み中…",
+    saving: "保存中...",
+    failedToChangeLanguage: "言語の変更に失敗しました",
+    searchLanguages: "言語を検索...",
+    noLanguagesFound: "言語が見つかりません",
   },
-
-  // Invoice admin dashboard
   invoiceDashboard: {
     revenueOverview: "収益概要",
     revenueByStatus: "ステータス別収益",
@@ -631,8 +591,6 @@ const ja = {
     allInvoices: "すべての請求書",
     recentSales: "最近の売上",
   },
-
-  // Payments
   payments: {
     payments: "支払い",
     addPayment: "支払いを追加",
@@ -657,8 +615,6 @@ const ja = {
     paymentHistory: "支払い履歴",
     scrollToLoadMore: "スクロールして支払いをさらに読み込む",
     allPaymentsLoaded: "すべての支払いが読み込まれました",
-
-    // Filters
     allStatuses: "すべてのステータス",
     allClients: "すべてのクライアント",
     paymentType: "支払いタイプ",
@@ -667,8 +623,8 @@ const ja = {
     bankTransfer: "銀行振込",
     wireTransfer: "電信送金",
     achTransfer: "ACH送金",
-    paypal: "PayPal",
-    stripe: "Stripe",
+    paypal: "ペイパル",
+    stripe: "ストライプ",
     cash: "現金",
     check: "小切手",
     pending: "保留中",
@@ -681,8 +637,6 @@ const ja = {
     searchByClientOrInvoice: "クライアント名または請求書IDで検索",
     selectTransactionTypeBtn: "取引タイプを選択",
   },
-
-  // Timer
   timer: {
     webTimer: "Webタイマー",
     webTimerLabel: "Webタイマー",
@@ -708,8 +662,6 @@ const ja = {
     whatAreYouWorkingOn: "何の作業中ですか？",
     selectProject: "プロジェクトを選択",
   },
-
-  // Reports
   reports: {
     reports: "レポート",
     backToReports: "レポートに戻る",
@@ -724,8 +676,6 @@ const ja = {
     exportAsCsv: "CSVとしてエクスポート",
     exportAsPdf: "PDFとしてエクスポート",
     toggleReportFilters: "レポートフィルターを切り替え",
-
-    // Filters
     clients: "クライアント",
     teamMembers: "チームメンバー",
     groupBy: "グループ化",
@@ -734,14 +684,10 @@ const ja = {
     searchClientsFilter: "クライアントを検索...",
     searchTeamMembersFilter: "チームメンバーを検索...",
     applyFilter: "フィルターを適用",
-
-    // Time entry report
     totalHours: "合計時間",
     scrollToLoadMoreRows: "スクロールしてレポート行をさらに読み込む",
     loadingMoreRows: "レポート行をさらに読み込み中...",
     allRowsLoaded: "すべてのレポート行が読み込まれました",
-
-    // Payment report
     perTransaction: "取引あたり",
     topMethod: "最多方法",
     paymentMethodsBreakdown: "決済方法の内訳",
@@ -751,8 +697,6 @@ const ja = {
     allMethods: "すべての方法",
     creditCard: "クレジットカード",
     allStatus: "すべてのステータス",
-
-    // Revenue by client report
     totalRevenue: "総収益",
     paidRevenue: "支払い済み収益",
     paidAmount: "支払い済み金額",
@@ -769,8 +713,6 @@ const ja = {
     clientRevenueDetails: "クライアント収益詳細",
     scrollToLoadMoreClients: "スクロールしてクライアントをさらに読み込む",
     allClientsLoaded: "すべてのクライアントが読み込まれました",
-
-    // Outstanding invoice report
     failedToLoadReportData: "レポートデータの読み込みに失敗しました",
     currencyFilter: "通貨フィルター",
     fromDate: "開始日",
@@ -788,8 +730,6 @@ const ja = {
     clientBreakdown: "クライアント内訳",
     originalAmount: "元の金額",
     baseAmount: "基本金額",
-
-    // Accounts aging report
     totalDue: "未払い合計",
     invoiceAgingDetails: "請求書エイジング詳細",
     noDataFound: "データが見つかりません",
@@ -925,8 +865,6 @@ const ja = {
     unknownProject: "不明なプロジェクト",
     generatingExport: "%{format}を生成中",
   },
-
-  // Expenses
   expenses: {
     expenses: "経費",
     addExpense: "経費を追加",
@@ -1006,8 +944,6 @@ const ja = {
     viewReceiptsFor: "%{description}の領収書を表示",
     expenseActionsFor: "%{description}の経費アクション",
   },
-
-  // Settings
   settings: {
     settings: "設定",
     profileSettings: "プロフィール設定",
@@ -1035,9 +971,25 @@ const ja = {
     allocationValue: "割り当て値",
     allocationPeriod: "割り当て期間",
     allocationFrequency: "割り当て頻度",
+    labels: {
+      profile: "プロフィール",
+      employment: "雇用",
+      devices: "デバイス",
+      notifications: "通知",
+      preferences: "設定",
+      organization: "組織",
+      billing: "請求する",
+      payment: "支払い",
+      holidays: "休日",
+      leaves: "葉",
+      automation: "オートメーション",
+      bankInfo: "銀行および税務情報",
+    },
+    categories: {
+      personal: "個人的",
+      organization: "組織",
+    },
   },
-
-  // Leave types
   leaveTypes: {
     annualLeaves: "年次有給休暇",
     sickLeaves: "病気休暇",
@@ -1045,23 +997,17 @@ const ja = {
     paternityLeave: "育休",
     periodLeave: "生理休暇",
   },
-
-  // Allocation periods
   allocationPeriods: {
     days: "日",
     weeks: "週",
     months: "月",
   },
-
-  // Allocation frequencies
   allocationFrequencies: {
     perWeek: "週ごと",
     perMonth: "月ごと",
     perQuarter: "四半期ごと",
     perYear: "年ごと",
   },
-
-  // Navbar
   navbar: {
     clients: "クライアント",
     invoices: "請求書",
@@ -1113,8 +1059,6 @@ const ja = {
     leavesDescription: "休暇申請を管理",
     expensesDescription: "ビジネス経費を追跡",
   },
-
-  // Dashboard
   dashboard: {
     dashboard: "ダッシュボード",
     overdue: "期限超過",
@@ -1157,12 +1101,99 @@ const ja = {
     noRecentActivityYet: "最近の活動はまだありません",
     loadMore: "もっと読み込む",
     allCaughtUp: "すべて最新です",
+    there: "そこには",
+    caughtUp: "すべて追いつきました！",
+    timeframe: {
+      week: "今週",
+      month: "今月",
+      quarter: "今四半期",
+      year: "今年",
+    },
+    stats: {
+      revenue: "収益",
+      totalInvoiced: "請求合計金額",
+      openInvoices: "未払い請求書",
+      paidInvoices: "支払い済み請求書",
+      paymentsReceived: "受領した支払い",
+      awaitingPayment: "支払い待ち",
+      alreadySettled: "既に解決済み",
+      hoursTracked: "計測された時間",
+      currentlyActive: "現在有効",
+      activeProjects: "進行中のプロジェクト",
+      assignedProjects: "割り当てられたプロジェクト",
+      projectsYouCanWorkOn: "取り組めるプロジェクト",
+      teammates: "チームメイト",
+      teamSize: "チーム規模",
+      noRecentActivity: "最近アクティビティはありません",
+    },
+    charts: {
+      revenueMomentumTitle: "収益の勢い",
+      revenueMomentumDescription: "過去1年間の月間収益の推移",
+      revenueTrendEyebrow: "収益動向",
+      revenueLeadersTitle: "収益リーダー",
+      revenueLeadersDescription: "収益貢献度上位顧客",
+      topCustomersEyebrow: "トップ顧客",
+      ofTotal: "合計の %{percentage}",
+      noRevenue: "収益データは入手できません",
+    },
+    roleGuidance: {
+      employee: "時間を記録し、プロジェクトを管理する",
+      bookKeeper: "請求書、支払い、財務報告書を確認する",
+      client: "請求書と支払い履歴を表示する",
+      default: "ワークスペースを管理する",
+    },
   },
-
-  // Authentication
   auth: {
-    signIn: "サインイン",
-    signUp: "サインアップ",
+    signIn: {
+      title: "ワークスペースにサインインしてください",
+      description:
+        "作業の進捗状況を追跡し、請求書を送付し、資金の流れを一元管理できます。",
+      continueWithGoogle: "Googleで続行",
+      continueWithGitHub: "GitHub で続行",
+      orUseEmail: "またはメールを使用する",
+      email: "メール",
+      password: "パスワード",
+      submit: "サインイン",
+      forgotPassword: "パスワードをお忘れですか？",
+      noAccount: "アカウントをお持ちではありませんか？",
+      signUp: "サインアップ",
+      privacy: "プライバシー",
+      terms: "条項",
+      loginFailed: "ログインに失敗しました。もう一度お試しください。",
+      welcomeBack: "おかえり！",
+      waitingForPasskey: "パスキーをお待ちしています...",
+      passkeyPrompt: "パスキーを使用してログインしてください",
+      totpTitle: "二段階認証",
+      totpPrompt: "認証アプリのコードを入力してください",
+      totpDescription: "認証アプリを開いて、6桁のコードを入力してください。",
+      totpCode: "認証コード",
+      verifyAndSignIn: "確認してログインしてください",
+      recoveryCode: "代わりに復旧コードを使用してください",
+      back: "戻る",
+    },
+    signUp: {
+      title: "ワークスペースを作成する",
+      description:
+        "顧客、プロジェクト、請求書、支払いを、分かりやすい単一のオペレーティングシステムで設定します。",
+      continueWithGoogle: "Googleで続行",
+      continueWithGitHub: "GitHub で続行",
+      orUseEmail: "またはメールを使用する",
+      firstName: "ファーストネーム",
+      lastName: "苗字",
+      email: "メール",
+      password: "パスワード",
+      confirmPassword: "パスワードを認証する",
+      passwordCriteria:
+        "大文字、小文字、数字をそれぞれ1文字以上含む、8文字以上の文字列。",
+      submit: "アカウントを作成する",
+      alreadyHaveAccount: "既にアカウントをお持ちですか？",
+      signIn: "サインイン",
+      agreePrefix:
+        "ご登録いただくことで、当社の規約に同意したものとみなされます。",
+      termsOfService: "利用規約",
+      and: " そして ",
+      privacyPolicy: "プライバシーポリシー",
+    },
     signOut: "サインアウト",
     welcomeBack: "おかえりなさい！",
     loginFailed: "ログインに失敗しました。再試行してください。",
@@ -1193,7 +1224,7 @@ const ja = {
     billingCommand: "請求コマンド",
     clearWeeklyFlow: "明確な週次フロー",
     cashLedger: "現金出納帳",
-    miruLogo: "Miru",
+    miruLogo: "ミル",
     heroTitle: "時間、請求書、支払いを一か所で",
     heroDescription: "日々を明確に、請求を前進させ、キャッシュフローを可視化。",
     slideShowPrefix: "表示",
@@ -1227,15 +1258,72 @@ const ja = {
     termsOfService: "利用規約",
     privacyPolicy: "プライバシーポリシー",
     and: "および",
+    slides: {
+      dashboard: {
+        title: "企業動向",
+        description:
+          "収益、進行中のプロジェクト、チームの勢いを、面倒な作業なしで確認できます。",
+      },
+      invoices: {
+        title: "請求コマンド",
+        description:
+          "下書き、未払い残高、支払い済みの仕事はすべて同じ場所に保管してください。",
+      },
+      timeTracking: {
+        title: "明確な週次フロー",
+        description:
+          "週ごとの時間入力は、面倒な作業になることなく、常に最新の状態を維持できる。",
+      },
+      payments: {
+        title: "現金出納帳",
+        description:
+          "すべての支払いは、方法、ステータス、および支払元とともに、1つの台帳に記録されます。",
+      },
+    },
+    validation: {
+      emailRequired: "メールアドレスは必須です。",
+      invalidEmail: "無効なメールアドレスです",
+      passwordRequired: "パスワードが必要です",
+      passwordComplexity:
+        "パスワードは、大文字、小文字、数字を含む8文字以上である必要があります。",
+      passwordSpace: "パスワードにスペースを含めることはできません",
+      confirmPasswordRequired: "パスワードの確認が必要です",
+      passwordsMustMatch: "パスワードが一致する必要があります",
+      firstNameRequired: "名字は必須です",
+      firstNameInvalid: "名前は文字のみで構成されている必要があります",
+      firstNameMax: "名前は20文字以内である必要があります",
+      lastNameRequired: "姓は必須です。",
+      lastNameInvalid: "姓は文字のみで構成されている必要があります",
+      lastNameMax: "姓は20文字以下でなければなりません",
+      acceptTerms: "利用規約に同意する必要があります",
+    },
   },
-
-  // Passkeys
   passkeys: {
     noPasskeyResponse: "パスキーの応答がありませんでした。",
     passkeysNotSupported: "このブラウザではパスキーがサポートされていません。",
+    title: "パスキー",
+    addTitle: "このアカウントにパスキーを追加してください",
+    addDescription:
+      "Face ID、Touch ID、Windows Hello、またはハードウェアセキュリティキーを使用してください。",
+    addAction: "パスキーを追加",
+    requirementTitle: "サインイン時にパスキーを要求する",
+    requirementDescription:
+      "パスワードを入力した後、Miruはサインインを完了するためにパスキーを要求します。",
+    emptyState: "まだパスキーは追加されていません。",
+    fallbackName: "パスキー",
+    addedAt: "%{time}を追加しました",
+    lastUsedAt: "最後に使用されたのは%{time}です。",
+    removeAction: "取り除く",
+    addedSuccess: "Passkeyが追加されました",
+    removedSuccess: "パスキーが削除されました",
+    requirementEnabled: "パスキー要件が有効になっています",
+    requirementDisabled: "パスキー要件は無効になっています",
+    addFailed: "パスキーの追加に失敗しました。",
+    removeFailed: "パスキーの削除に失敗しました。",
+    updateRequirementFailed:
+      "パスキーによるサインイン要件の更新に失敗しました。",
+    neverUsed: "未使用",
   },
-
-  // Organization setup
   orgSetup: {
     setupOrganization: "組織セットアップ",
     companyName: "会社名",
@@ -1262,8 +1350,6 @@ const ja = {
     workingDaysPerWeek: "勤務日数（週）",
     workingHoursPerWeek: "勤務時間（週）",
   },
-
-  // Profile
   profile: {
     personalDetails: "個人情報",
     employmentDetails: "雇用情報",
@@ -1279,9 +1365,65 @@ const ja = {
     socialProfiles: "ソーシャルプロフィール",
     linkedin: "LinkedIn",
     github: "GitHub",
+    personalInformation: "個人情報",
+    basicDetails: "基本情報",
+    contactInformation: "連絡先",
+    addressType: "住所タイプ",
+    current: "現在",
+    permanent: "永続",
+    employeeId: "社員番号",
+    officialEmail: "メールアドレス（公式）",
+    employmentType: "雇用形態",
+    dateOfResignation: "退職日",
+    birthDatePlaceholder: "生年月日を選択してください",
+    firstName: "ファーストネーム",
+    lastName: "苗字",
+    firstNamePlaceholder: "名を入力してください",
+    lastNamePlaceholder: "姓を入力してください",
+    personalEmail: "個人用メールアドレス",
+    personalEmailPlaceholder: "your.email@example.com",
+    phoneAriaLabel: "電話番号",
+    addressLine1: "住所1",
+    addressLine2: "住所欄2",
+    optionalSuffix: "（任意）",
+    streetAddressPlaceholder: "住所",
+    addressLine2Placeholder: "アパート、スイート、ユニットなど",
+    statePlaceholder: "州または地方",
+    cityPlaceholder: "市",
+    zipPostalCode: "郵便番号",
+    zipPlaceholder: "12345",
+    languageDescription: "インターフェースに使用する言語を選択してください。",
+    security: "安全",
+    userFallback: "ユーザー",
+    currentPasswordPlaceholder: "現在のパスワードを入力してください",
+    newPassword: "新しいパスワード",
+    newPasswordPlaceholder: "新しいパスワードを入力してください",
+    confirmPasswordPlaceholder: "新しいパスワードを再入力してください",
+    cancelPasswordChange: "パスワード変更をキャンセルする",
+    profilePhoto: "プロフィール写真",
+    profilePhotoDescription:
+      "ワークスペースのプロフィール用に正方形の写真をアップロードしてください。",
+    noAddressProvided: "住所が提供されていません",
+    noEmailProvided: "メールアドレスは提供されていません",
+    notProvided: "提供されていません",
+    notConnected: "接続されていません",
+    bornOn: "生まれ %{date}",
+    lastChangedDaysAgo: "最終更新日：%{count}日前",
+    secure: "安全な",
+    uploadPhoto: "写真をアップロード",
+    removePhoto: "写真を削除",
+    uploadPhotoFailed: "プロフィール画像のアップロードに失敗しました。",
+    removePhotoFailed: "プロフィール画像の削除に失敗しました。",
+    adjustProfilePhoto: "プロフィール写真を調整する",
+    adjustProfilePhotoDescription:
+      "画像の中から残したい部分を選択してください。",
+    noImageSelected: "画像が選択されていません",
+    savePhoto: "写真を保存",
+    zoom: "ズーム",
+    company: "会社",
+    noPreviousEmployments: "過去の職歴は見つかりませんでした",
+    addPastEmployment: "+ 過去の職歴を追加",
   },
-
-  // Leave Management
   leaveManagement: {
     leaveBalance: "休暇残高",
     applyLeave: "休暇を申請",
@@ -1318,9 +1460,11 @@ const ja = {
     leave: "休暇",
     nationalHoliday: "国民の祝日",
     optionalHoliday: "任意の祝日",
+    summaryLabel: "休暇概要",
+    summaryDescription:
+      "選択した年の利用可能な休暇、既に取得した休暇日数、および休暇の利用状況を1か所で確認できます。",
+    balanceUntil: "pHが0になるまでバランス調整",
   },
-
-  // Subscriptions / Plan Details
   subscriptions: {
     currentPlan: "現在のプラン",
     upgradePlan: "プランをアップグレード",
@@ -1341,8 +1485,6 @@ const ja = {
     plusTaxes: "税別",
     reviewAndPay: "確認して支払い",
   },
-
-  // Misc
   switchToMode: "%{mode}モードに切り替え",
   light: "ライト",
   dark: "ダーク",
@@ -1352,8 +1494,6 @@ const ja = {
   editLabel: "編集",
   noPasskeyResponse: "パスキーの応答がありませんでした。",
   passkeysNotSupported: "このブラウザではパスキーがサポートされていません。",
-
-  // Table headers (common)
   tableHeaders: {
     invoiceNo: "請求書番号",
     invoiceNumber: "請求書番号",
@@ -1373,15 +1513,449 @@ const ja = {
     role: "役割",
     type: "タイプ",
   },
-
-  // Relative dates
   nextDay: "次の%{day}",
   lastDay: "前の%{day}",
-
-  // Duration formatting
   durationMinutes: "%{mins}m",
   durationHours: "%{hours}h",
   durationHoursMinutes: "%{hours}h %{mins}m",
+  preferencesSettings: {
+    title: "メール設定",
+    description: "メール通知設定を管理する",
+    saving: "保存中...",
+    saveChanges: "変更を保存",
+    timesheetNotifications: "タイムシート通知",
+    billingNotifications: "請求通知",
+    timesheetNotificationsDescription:
+      "時間追跡とタイムシートに関する通知を管理する",
+    billingNotificationsDescription: "請求書と支払い通知を管理する",
+    weeklyReminderTitle: "週間のタイムシート提出期限のお知らせ",
+    weeklyReminderDescription:
+      "毎週月曜日に、未処理のタイムシート入力に関するリマインダーを受け取ります。",
+    timesheetReminderTitle: "記入漏れのお知らせ",
+    timesheetReminderDescription:
+      "2日間以上作業時間を記録していない場合に通知を受け取る",
+    invoiceNotificationsTitle: "請求書メール通知",
+    invoiceNotificationsDescription:
+      "請求書が作成、送信、または更新された際にメール通知を受け取る",
+    paymentNotificationsTitle: "支払いメール通知",
+    paymentNotificationsDescription:
+      "支払いが受領されたとき、または支払い状況が変更されたときに通知を受け取る",
+    monthlyDigestTitle: "月次キャッシュフローダイジェスト",
+    monthlyDigestDescription:
+      "毎月のキャッシュフロー概要（純変動額、収入、支出を含む）を受け取ることができます。",
+    confirmUnsubscribeTitle: "すべてのメールの購読を解除する",
+    confirmUnsubscribeDescription:
+      "本当にすべてのメール通知の配信を停止しますか？重要な請求書や領収書通知を含む、すべてのメールが届かなくなります。",
+    confirmUnsubscribeAction: "はい、すべて購読解除します",
+    unsubscribedTitle: "すべてのメール配信が停止されました。",
+    unsubscribedDescription:
+      "現在、すべてのメール通知の配信が停止されています。Miruからのメールは一切届きません。",
+    resubscribeAction: "メール通知を再度有効にする",
+    enabledCount: "%{count} の %{total} が有効になりました",
+    deliveryTitle: "メール配信設定",
+    emailAddress: "電子メールアドレス",
+    deliveryDescription:
+      "すべての通知はこのメールアドレスに送信されます。メールアドレスを変更するには、プロフィール設定で更新してください。",
+    unsubscribeTitle: "購読解除",
+    unsubscribeDescription:
+      "Miruからのメールの受信を希望されない場合は、すべての通知の購読を解除できます。これにより、重要な請求書や領収書に関する通知を含む、すべてのメール配信が停止されます。",
+    unsubscribeAction: "すべてのメールの購読を解除する",
+    badges: {
+      active: "アクティブ",
+      important: "重要",
+      monthly: "月刊",
+    },
+  },
+  automationSettings: {
+    title: "自動化とCLI",
+    description:
+      "Miruは、ターミナル、スクリプト、またはAIエージェントから、ログインしているアカウントと同じ権限で使用できます。別途自動化製品は必要ありません。特別なバックドアアクセスもありません。",
+    freeForEveryPlan: "すべてのプランで無料",
+    cards: {
+      samePermissionsTitle: "アプリと同じ権限",
+      samePermissionsDescription:
+        "CLIは、認証されたユーザーがWebアプリ内で既にアクセスできるものしか認識しません。",
+      humansAndScriptsTitle: "人間にもスクリプトにも良い",
+      humansAndScriptsDescription:
+        "日常的な作業にはシンプルなコマンドを使用し、スクリプトやAIに全く同じインターフェースを呼び出させるようにする。",
+      easyToInstallTitle: "取り付けが簡単",
+      easyToInstallDescription:
+        "インストールコマンドを1つ実行し、ログインを1回するだけで、プロジェクトの一覧表示、タイムエントリの作成、請求書の確認など、さまざまな操作が可能になります。",
+    },
+    commandGroups: {
+      install: "インストール",
+      authenticateOnce: "一度認証してください",
+      dailyCommands: "日々の命令",
+    },
+  },
+  holidaysSettings: {
+    year: "年",
+    publicHolidays: "祝日",
+    optionalHolidays: "任意休暇",
+    holidayName: "祝日名",
+    enterHolidayName: "祝日名を入力してください",
+    selectDate: "日付を選択してください",
+    addHoliday: "休日を追加",
+    addFirstHoliday: "最初の祝日を追加する",
+    addOptionalHoliday: "オプションの休日を追加",
+    noPublicHolidaysConfigured: "祝日は設定されていません",
+    noOptionalHolidaysConfigured: "オプションの休日が設定されていません",
+    totalAllowed: "合計許容量",
+    enterNumber: "数字を入力してください",
+    frequency: "頻度",
+    allowedPerEmployee: "従業員一人当たりの許可数",
+    yearAtAGlance: "年間概要",
+    holidaySchedule: "祝日スケジュール",
+    noHolidaysAddedForYear: "%{year} にはまだ祝日が追加されていません",
+    categories: {
+      public: "公共",
+      optional: "オプション",
+    },
+    weekdays: {
+      sun: "S",
+      mon: "M",
+      tue: "T",
+      wed: "W",
+      thu: "T",
+      fri: "F",
+      sat: "S",
+    },
+  },
+  paymentSettingsPage: {
+    backToSettings: "設定に戻る",
+    title: "決済プロバイダー",
+    description:
+      "顧客からのオンライン決済を受け付けるための決済プロバイダーを接続する",
+    errorTitle: "エラー",
+    errorDescription:
+      "お支払い設定の読み込みに失敗しました。しばらくしてからもう一度お試しください。",
+    stripeDescription:
+      "クレジットカード、デビットカード、および一般的な支払い方法に対応しています。",
+    connectedTo: "接続先",
+    connected: "接続済み",
+    stripeAccountFallback: "Stripeアカウント",
+    chargesEnabled: "課金が有効になりました",
+    connectStripe: "Stripeに接続する",
+    connecting: "接続中...",
+    disconnect: "切断",
+    disconnecting: "接続を切断しています...",
+    featuresTitle: "特徴とメリット",
+    helpTitle: "お困りですか？",
+    helpDescription:
+      "決済処理の設定に関するサポートが必要な場合、または料金や機能についてご質問がある場合は、以下までお問い合わせください。",
+    viewDocumentation: "ドキュメントを表示",
+    contactSupport: "サポートに問い合わせる",
+    disconnectDialogTitle: "Stripeアカウントの接続を解除する",
+    disconnectDialogDescription:
+      "Stripeアカウントの接続を解除してもよろしいですか？接続を解除すると、再接続するまでStripe経由での支払いを受け付けることができなくなります。",
+    features: {
+      secureTitle: "安全な決済",
+      secureDescription: "PCI準拠の決済処理",
+      currenciesTitle: "複数通貨",
+      currenciesDescription: "135種類以上の通貨での支払いを受け付けます",
+      methodsTitle: "様々な支払い方法",
+      methodsDescription: "カード、ウォレット、銀行振込など",
+      setupTitle: "即時セットアップ",
+      setupDescription: "数分で支払いの受付を開始できます",
+    },
+  },
+  organizationSettingsPage: {
+    actions: {
+      editSettings: "設定を編集",
+    },
+    sections: {
+      companyProfile: "会社概要",
+      financial: "金融",
+      scheduleAndTime: "スケジュールと時間",
+      workingHours: "勤務時間",
+    },
+    fields: {
+      businessPhone: "ビジネス電話",
+      currency: "通貨",
+      businessAddress: "事業所住所",
+      standardRate: "標準料金",
+      fiscalYearEnd: "会計年度末",
+      timezone: "タイムゾーン",
+      dateFormat: "日付形式",
+      workingDays: "営業日",
+    },
+    status: {
+      active: "アクティブ",
+    },
+    defaults: {
+      companyName: "会社名",
+      locationNotSet: "場所が設定されていません",
+      notConfigured: "設定されていません",
+      noAddress: "アドレスが設定されていません",
+      workingHours: "午前9時～午後5時",
+      workingDays: "月曜日～金曜日",
+      timezone: "UTC",
+      dateFormat: "MM/DD/YYYY",
+    },
+    errors: {
+      loadFailed: "組織情報の読み込みに失敗しました。もう一度お試しください。",
+    },
+    ratePerHour: "/ 時間",
+  },
+  billingSettings: {
+    membership: "会員",
+    currentPlan: "現在の計画",
+    seatUsage: "座席の使用状況",
+    billingCadence: "請求頻度",
+    monthly: "月刊",
+    yearly: "年間",
+    notSubscribedYet: "まだ登録していません",
+    startTrial: "30日間のプロ版無料トライアルを開始する",
+    startingTrial: "トライアルを開始します...",
+    upgradeWithStripe: "Stripeでアップグレード",
+    openingStripe: "オープニングストライプ...",
+    manageBillingInStripe: "Stripeで請求を管理する",
+    openingPortal: "ポータルを開いています...",
+    saveTwoMonths: "年間契約で2か月分節約",
+    heroTitle:
+      "今のあなたに合ったプランをお選びください。必要になったら後で変更できます。",
+    howManySeats: "何席必要になる見込みですか？",
+    estimatedSeats: "推定座席数",
+    recommended: "推奨",
+    estimatedProSpend: "プロ向けの推定支出額",
+    yearlyDiscount: "年間割引",
+    openSource: "オープンソース",
+    annual: "年間",
+    service: "サービス",
+    poweredByStripe: "Stripeによって提供されています",
+    changePlansAnytime: "いつでも予定変更可能",
+    checkoutPoweredByStripe:
+      "決済および定期購入管理はStripeによって提供されています。",
+    noSalesCall:
+      "Proプランには営業電話は一切ありません。Stripeでいつでもプランのキャンセルや変更が可能です。",
+    reportsAndAnalytics: "レポートと分析",
+    customAnnual: "カスタム年間",
+    seatsUsed: "%{used}/%{total} 座席使用",
+    seatsUsedWithoutLimit: "%{used} 座席使用",
+    savePerYear: "年間$%{amount}節約",
+    effectiveMonthlyPricing: "実質価格は約$%{amount}/月",
+    cancelOrUpgradeAnytime:
+      "Stripeではいつでもキャンセルまたはアップグレードできます",
+    planCadence: {
+      monthly: "月払い",
+      yearlySavings: "座席1席あたり2ヶ月分の料金が節約できます",
+    },
+    alerts: {
+      subscriptionUpdatedTitle: "購読情報が更新されました",
+      subscriptionUpdated: "Stripe上でプランの更新が正常に完了しました。",
+      checkoutCancelled: "チェックアウトがキャンセルされました",
+      noSubscriptionChanges: "お客様のご契約内容に変更はありません。",
+      unableToLoad: "請求情報を読み込めません",
+      proTrialActive: "プロトライアル有効",
+      proTrialActiveUntil:
+        "あなたのワークスペースは%{date}までProアクセス権を持っています。",
+      proTrialEnded: "裁判は終了しました",
+      proTrialEndedDescription:
+        "ワークスペースが無料プランに戻りました。Stripeでアップグレードすると、Proプランへのアクセスが復元されます。",
+      seatLimitReached: "座席数制限に達しました",
+      seatLimitReachedDescription:
+        "Stripeでアップグレードすると、このワークスペースに3人以上のメンバーを追加できます。",
+    },
+    errors: {
+      unableToOpenStripeCheckout:
+        "Stripeのチェックアウトを開くことができません",
+      unableToOpenStripeBillingPortal:
+        "Stripeの請求ポータルを開くことができません",
+      unableToStartProTrial: "Proトライアルを開始できません",
+    },
+    recommendations: {
+      freeTitle: "コントロールが必要になるまでは無料のままでいましょう",
+      freeDescription:
+        "無料プランは小規模チームに最適です。シングルサインオン（SSO）、より高度なレポート機能、3ユーザー以上の利用が必要な場合は、プロプランにアップグレードしてください。",
+      proTitle: "プロ仕様が最適",
+      proDescription:
+        "成長中のチームにとって、Proはシングルサインオン（SSO）、財務状況の可視化、そしてエンタープライズレベルのオーバーヘッドなしに拡張できる十分な余地を提供します。",
+      enterpriseTitle: "エンタープライズについてご相談ください",
+      enterpriseDescription:
+        "大規模なチームは通常、調達サポート、管理コントロール、そしてスムーズな導入を必要とします。まずはProプランから始めるか、Enterpriseプランに直接移行してください。",
+    },
+    highlights: {
+      seatsTitle: "管理上の負担なしに座席数を増やす",
+      seatsDescription:
+        "3席までの無料枠制限を撤廃し、オンボーディングを簡素化しましょう。",
+      ssoTitle: "SSOとより強力な管理",
+      ssoDescription:
+        "成長中のチームに、追加ツールなしで安全なアクセスを提供する。",
+      financeTitle: "冷静さを保つ財務状況の可視化",
+      financeDescription:
+        "追加設定なしで、利益率、請求頻度、チームの使用状況を把握できます。",
+    },
+    planDescriptions: {
+      free: "コアとなるトラッキング、請求書発行、支払い機能、および最大3つのチームシートを備えた、セルフホスティング型のMiru。",
+      pro: "Pro版では、レポート機能、SSO（シングルサインオン）、ユーザー数の増加、よりシンプルな管理者コントロールが、エンタープライズレベルのオーバーヘッドなしで追加されます。",
+      enterprise:
+        "調達に配慮した契約、高度な管理機能、そしてセキュリティレビューを必要とする大規模チームへのサポート。",
+      hostedEnterprise:
+        "弊社は専用環境において、Miruのホスティング、アップグレード、バックアップ、およびサポートを代行いたします。",
+    },
+    planBullets: {
+      free: {
+        coreProduct: "自己ホスト型のコア製品",
+        tracking: "時間管理、請求書、支払い",
+        dashboard: "小規模チーム向けのダッシュボードの可視性",
+      },
+      pro: {
+        trial: "料金を支払う前に30日間無料でお試しいただけます",
+        sso: "SSO、高度なレポート機能、より強力な管理者制御",
+        fit: "代理店や成長中のチームに最適",
+      },
+      enterprise: {
+        contracts: "調達に有利な契約",
+        onboarding: "セキュリティレビューとオンボーディングサポート",
+        compliance: "承認とコンプライアンスのニーズがある大規模チーム向け",
+      },
+      hosted: {
+        setup: "専用のマネージドセットアップ",
+        operations:
+          "アップグレード、バックアップ、サポートは弊社が担当いたします。",
+        fit: "Miruの運用を全面的に委託したいチーム向け",
+      },
+    },
+    heroDescription:
+      "無料プランから始めて、チームがより高度な管理を必要とするようになったらプロプランに移行するか、Miruの運用を弊社にお任せください。プロプランは低価格で、年間契約なら大幅なコスト削減が可能です。また、決済とサブスクリプション管理はStripeによって提供されるため、請求処理もシンプルです。",
+    seatEstimatorDescription:
+      "これを使って無料版と有料版を比較し、月額プランと年額プランのどちらがより理にかなっているかを判断してください。",
+    yearlyDiscountDescription: "月額料金と比較して、1席あたり2ヶ月無料。",
+    checkoutDescription:
+      "販売プロセスを経ずに無料トライアルを開始し、準備が整ったらアップグレードし、必要に応じていつでも請求を管理できます。",
+    plans: {
+      unknown: "未知",
+      free: "無料",
+      freePro: "無料プロ",
+      proTrial: "プロトライアル",
+      paid: "有料",
+      enterprise: "企業",
+      hostedEnterprise: "ホステッドエンタープライズ",
+    },
+    table: {
+      feature: "特徴",
+      bestFor: "最適",
+      selfHostedTeams: "セルフホスト型チームの開始",
+      growingServiceTeams: "管理が必要なサービスチームの拡大",
+      largeOrgs: "セキュリティと調達のニーズを持つ大規模組織",
+      managedTeams: "Miruのマネジメントを依頼したいチーム",
+      timeTracking: "時間追跡",
+      invoicesAndPayments: "請求書と支払い",
+      reportsAndDashboards: "レポートとダッシュボード",
+      sso: "SSO",
+      auditAndAdminControls: "監査および管理統制",
+      support: "サポート",
+      included: "含まれる",
+      notIncluded: "含まれていません",
+      dashboardOnly: "ダッシュボードのみ",
+      reportsAndAnalytics: "レポートと分析",
+      community: "コミュニティ",
+      priorityEmail: "優先メール",
+      priorityOnboarding: "優先対応＋オンボーディング",
+      managedOnboarding: "マネージドサービス＋オンボーディング",
+    },
+  },
+  twoFactor: {
+    title: "認証アプリの2段階認証",
+    addTitle: "認証アプリを追加する",
+    addDescription:
+      "Google Authenticator、1Password、Bitwarden、Authy、またはTOTP対応アプリを使用してください。",
+    setupAction: "2段階認証を設定する",
+    finishTitle: "認証システムの設定を完了する",
+    finishDescription:
+      "このキーを認証アプリに追加し、現在の6桁のコードを入力して2段階認証を有効にしてください。",
+    manualEntryKey: "手動入力キー",
+    verificationCode: "検証コード",
+    verificationCodePlaceholder: "123456",
+    enableAction: "2段階認証を有効にする",
+    resetKeyAction: "リセットキー",
+    enabledTitle: "認証アプリの保護が有効になっています",
+    enabledDescription:
+      "ログイン時には、パスワードの後に認証コードが必要になります。",
+    recoveryCodesAvailable: "%{count} リカバリーコードが利用可能です",
+    regenerateRecoveryCodes: "回復コードを再生成する",
+    disableAction: "2段階認証を無効にする",
+    saveRecoveryCodes: "これらの復旧コードを保存してください",
+    saveRecoveryCodesDescription:
+      "各コードは一度しか使用できません。安全な場所に保管してください。",
+    setupReadySuccess: "認証アプリの設定が完了しました",
+    enabledSuccess: "認証アプリが有効になっています",
+    disabledSuccess: "認証アプリが無効になっています",
+    regeneratedSuccess: "リカバリーコードが再生成されました",
+    setupFailed: "2段階認証の設定を開始できませんでした。",
+    enableFailed: "認証アプリの有効化に失敗しました。",
+    disableFailed: "2段階認証の無効化に失敗しました。",
+    regenerateFailed: "復旧コードの再生成に失敗しました。",
+  },
+  notificationPreferences: {
+    emailNotifications: "メール通知",
+    manageDescription: "メール通知設定を管理する",
+    weeklyEmailReminder: "毎週のメールリマインダー",
+    weeklyEmailReminderDescription:
+      "タイムシートの入力とプロジェクトの更新に関する週ごとのメールリマインダーを受け取ります",
+    noUserData: "ユーザーデータがありません",
+    loginPrompt: "通知設定を管理するにはログインしてください",
+  },
+  devices: {
+    addDevices: "デバイスを追加する",
+    editDevices: "編集デバイス",
+    device: "デバイス",
+    unknownDevice: "不明なデバイス",
+    serial: "シリアル：",
+    deviceType: "デバイスの種類",
+    selectDeviceType: "デバイスの種類を選択してください",
+    modelName: "モデル名",
+    serialNumber: "シリアルナンバー",
+    memory: "メモリ（RAM）",
+    processor: "プロセッサ",
+    graphics: "グラフィック",
+    graphicsCard: "グラフィックカード",
+    storage: "ストレージ",
+    modelNamePlaceholder: "例：MacBook Pro 16インチ",
+    serialNumberPlaceholder: "例：C02XX1234567",
+    memoryPlaceholder: "例：16GB DDR4",
+    processorPlaceholder: "例：Intel Core i7-10750H",
+    graphicsPlaceholder: "例：NVIDIA GeForce RTX 3060",
+    storagePlaceholder: "例：512GB SSD",
+    addAnotherDevice: "別のデバイスを追加する",
+    addAnotherDeviceDescription: "クリックして新しいデバイスを在庫に追加します",
+    deviceSummary: "デバイス概要",
+    totalDevices: "合計デバイス数",
+    notSpecified: "指定されていない",
+    noDevicesFound: "デバイスが見つかりません",
+    newDevice: "新デバイス",
+    unsavedChangesPrompt:
+      "保存されていない変更があります。本当にキャンセルしますか？",
+  },
+  nav: {
+    dashboard: "ダッシュボード",
+    timeTracking: "時間追跡",
+    clients: "クライアント",
+    projects: "プロジェクト",
+    team: "チーム",
+    invoices: "請求書",
+    reports: "報告書",
+    payments: "支払い",
+    leavesAndHolidays: "休暇と休日",
+    expenses: "費用",
+    settings: "設定",
+    logout: "ログアウト",
+  },
+  sidebar: {
+    main: "主要",
+    personalSettings: "個人設定",
+    companySettings: "会社設定",
+    profile: "プロフィール",
+    devices: "デバイス",
+    organization: "組織",
+    billing: "請求する",
+    paymentSettings: "支払い設定",
+    holidayCalendar: "祝日カレンダー",
+    myLeaves: "私の葉っぱ",
+    bankTaxInfo: "銀行および税務情報",
+    expand: "サイドバーを展開する",
+    collapse: "サイドバーを折りたたむ",
+  },
 };
 
 export default ja;

@@ -1,12 +1,9 @@
 const hi = {
-  // Image validation
   invalidImageFormatSize:
     "गलत फ़ाइल प्रारूप। कृपया PNG या JPG प्रकार की छवि अपलोड करें। अधिकतम आकार (%{fileSize}KB)",
   invalidImageSize: "फ़ाइल का आकार %{fileSize}KB की अधिकतम सीमा से अधिक है।",
   invalidImageFormat:
     "गलत फ़ाइल प्रारूप। कृपया PNG या JPG प्रकार की छवि अपलोड करें",
-
-  // Common actions
   save: "सहेजें",
   cancel: "रद्द करें",
   delete: "हटाएं",
@@ -33,8 +30,6 @@ const hi = {
   yes: "हाँ",
   no: "नहीं",
   or: "या",
-
-  // Common labels
   name: "नाम",
   email: "ईमेल",
   phone: "फ़ोन",
@@ -68,8 +63,6 @@ const hi = {
   all: "सभी",
   from: "से",
   to: "तक",
-
-  // Date/time
   today: "आज",
   yesterday: "कल",
   tomorrow: "कल",
@@ -93,15 +86,11 @@ const hi = {
   selectPeriod: "अवधि चुनें",
   fullDay: "पूरा दिन",
   halfDay: "आधा दिन",
-
-  // Date validation
   dateCannotBeBlank: "तिथि खाली नहीं हो सकती",
   fromDateMustBeLessThanToDate: "'से' तिथि 'तक' तिथि से कम या बराबर होनी चाहिए",
   toDateMustBeGreaterThanFromDate:
     "'तक' तिथि 'से' तिथि से अधिक या बराबर होनी चाहिए",
   invalidDate: "कृपया एक मान्य तिथि दर्ज करें",
-
-  // Month abbreviations
   monthJan: "जन",
   monthFeb: "फ़र",
   monthMar: "मार्च",
@@ -114,8 +103,6 @@ const hi = {
   monthOct: "अक्टू",
   monthNov: "नव",
   monthDec: "दिस",
-
-  // Error pages
   pageNotFound: "पृष्ठ नहीं मिला",
   clickHere: "यहाँ क्लिक करें",
   somethingWentWrong: "कुछ गलत हो गया",
@@ -123,15 +110,11 @@ const hi = {
     "पुनः प्रयास करने के लिए पृष्ठ रीफ़्रेश करें। यदि यह जारी रहता है, तो पुनः साइन इन करें या सहायता से संपर्क करें।",
   reloadPage: "पृष्ठ पुनः लोड करें",
   loadingWorkspace: "कार्यस्थान लोड हो रहा है...",
-
-  // Search
   searchClients: "क्लाइंट खोजें...",
   searchInvoices: "इनवॉइस खोजें...",
   searchTeamMembers: "टीम सदस्य खोजें...",
   selectTeamMember: "टीम सदस्य चुनें",
   noResultsFound: "कोई परिणाम नहीं मिला",
-
-  // Time Tracking
   timeTracking: {
     addEntry: "प्रविष्टि जोड़ें",
     newTimeEntry: "नई समय प्रविष्टि",
@@ -218,8 +201,6 @@ const hi = {
       sun: "रवि",
     },
   },
-
-  // Task types
   taskTypes: {
     development: "विकास",
     meeting: "बैठक",
@@ -234,16 +215,12 @@ const hi = {
     training: "प्रशिक्षण",
     other: "अन्य",
   },
-
-  // Time off types
   timeOffTypes: {
     vacation: "अवकाश",
     sickLeave: "बीमारी की छुट्टी",
     personalDay: "व्यक्तिगत दिन",
     holiday: "छुट्टी",
   },
-
-  // Clients
   clients: {
     addClients: "क्लाइंट जोड़ें",
     addNewClient: "नया क्लाइंट जोड़ें",
@@ -276,8 +253,6 @@ const hi = {
     sendPaymentReminder: "भुगतान अनुस्मारक भेजें",
     invoicesSelected: "%{count} इनवॉइस चयनित",
   },
-
-  // Contacts
   contacts: {
     addContact: "संपर्क जोड़ें",
     addContacts: "संपर्क जोड़ें",
@@ -296,8 +271,6 @@ const hi = {
     invalidEmailId: "अमान्य ईमेल आईडी",
     emailRequired: "ईमेल आईडी खाली नहीं हो सकती",
   },
-
-  // Projects
   projects: {
     addProject: "प्रोजेक्ट जोड़ें",
     addNewProject: "नया प्रोजेक्ट जोड़ें",
@@ -369,8 +342,6 @@ const hi = {
     teamMembersDescription:
       "इस प्रोजेक्ट में असाइन किए गए टीम सदस्यों को देखें और प्रबंधित करें।",
   },
-
-  // Team
   team: {
     team: "टीम",
     teamOverview: "टीम अवलोकन",
@@ -417,8 +388,6 @@ const hi = {
     invalidEmail: "अमान्य ईमेल आईडी",
     emailRequired: "ईमेल आईडी खाली नहीं हो सकती",
   },
-
-  // Invoices
   invoices: {
     invoice: "इनवॉइस",
     invoices: "इनवॉइस",
@@ -495,16 +464,12 @@ const hi = {
     resetFilters: "फ़िल्टर रीसेट करें",
     loadingChartData: "चार्ट डेटा लोड हो रहा है...",
     noInvoiceData: "कोई इनवॉइस डेटा उपलब्ध नहीं",
-
-    // Statuses
     draft: "ड्राफ़्ट",
     sent: "भेजा गया",
     overdue: "अतिदेय",
     collected: "एकत्रित",
     paid: "भुगतान किया",
     outstanding: "बकाया",
-
-    // Email
     recipientEmailId: "प्राप्तकर्ता ईमेल आईडी",
     subject: "विषय",
     message: "संदेश",
@@ -516,8 +481,6 @@ const hi = {
     invoiceSentBody: "%{company} ने आपको एक इनवॉइस भेजा है (%{number})",
     invoiceWillBeSent: "इनवॉइस भेजा जाएगा!",
     processing: "प्रोसेसिंग...",
-
-    // No payment gateway
     noPaymentGateway: "कोई भुगतान गेटवे कनेक्ट नहीं है",
     paymentGatewayError:
       "त्रुटि। कृपया इनवॉइस भेजने वाले से संपर्क करें ताकि वे भुगतान गेटवे कनेक्ट करें और आप इनवॉइस भुगतान कर सकें",
@@ -528,14 +491,10 @@ const hi = {
     stripeDisabled: "इस इनवॉइस के लिए Stripe अक्षम है",
     stripeDisabledMessage:
       "भेजने वाले ने इस इनवॉइस के लिए Stripe भुगतान सक्षम नहीं किया है। आप उनसे इसे सक्रिय करने के लिए संपर्क कर सकते हैं, या ACH जैसी वैकल्पिक भुगतान विधि चुन सकते हैं।",
-
-    // Bulk actions
     preparingDownload: "डाउनलोड तैयार हो रहा है...",
     downloadFailed: "डाउनलोड विफल। कृपया पुनः प्रयास करें।",
     downloadingFiles: "फ़ाइलें डाउनलोड हो रही हैं...",
     downloadComplete: "डाउनलोड पूर्ण",
-
-    // Table headers
     nameHeader: "नाम",
     descriptionHeader: "विवरण",
     dateHeader: "तिथि",
@@ -543,8 +502,6 @@ const hi = {
     amountHeader: "राशि",
     statusHeader: "स्थिति",
     invoiceNumberHeader: "इनवॉइस नंबर",
-
-    // Chart labels
     area: "क्षेत्र",
     bar: "बार",
     noData: "कोई डेटा नहीं",
@@ -552,8 +509,6 @@ const hi = {
     quarterly: "तिमाही",
     yearly: "वार्षिक",
     trend: "प्रवृत्ति",
-
-    // Preview / detail labels
     taxId: "कर आईडी: %{value}",
     vatNumber: "वैट नंबर: %{value}",
     gstNumber: "जीएसटी नंबर: %{value}",
@@ -567,8 +522,6 @@ const hi = {
     due: "देय %{date}",
     viewed: "देखा गया",
     cancelled: "रद्द",
-
-    // Toast / confirmation messages
     invoiceMarkedAsPaid:
       "इनवॉइस सफलतापूर्वक भुगतान के रूप में चिह्नित किया गया",
     invoiceDownloaded: "इनवॉइस सफलतापूर्वक डाउनलोड किया गया",
@@ -585,8 +538,6 @@ const hi = {
     invoiceCreated: "इनवॉइस सफलतापूर्वक बनाया गया",
     invoiceUpdated: "इनवॉइस सफलतापूर्वक अपडेट किया गया",
     failedToSaveInvoice: "इनवॉइस सहेजने में विफल। कृपया पुनः प्रयास करें।",
-
-    // Counters
     showingOf: "%{total} में से %{shown} दिखा रहा है",
     viewingMatching:
       "%{loaded} लोड किए गए में से %{filtered} मेल खाने वाले इनवॉइस देख रहा है",
@@ -594,12 +545,8 @@ const hi = {
     showingRecentTransactions: "%{count} हाल के लेनदेन दिखा रहा है",
     updatedAt: "%{date} को अपडेट किया गया",
     invoiceHash: "इनवॉइस #%{number}",
-
-    // Mobile table headers
     nameDescription: "नाम / विवरण",
     dateTime: "तिथि / समय",
-
-    // Invoice reminder email
     invoiceReminder: "इनवॉइस अनुस्मारक: %{number}",
     reminderMessage:
       "यह आपके बकाया इनवॉइस के बारे में एक अनुस्मारक है। कृपया संलग्न विवरण देखें।",
@@ -618,15 +565,28 @@ const hi = {
     cannotDownloadInvalidId: "इनवॉइस डाउनलोड नहीं किया जा सकता - अमान्य आईडी",
     cannotSendInvalidId: "इनवॉइस भेजा नहीं जा सकता - अमान्य आईडी",
     payment: "भुगतान #%{id}",
+    newInvoicePage: "नया चालान",
+    editInvoicePage: "इनवॉइस संपादित करें",
+    editorSubtitle:
+      "विवरण भरें और इनवॉइस भेजने से पहले उसका पूर्वावलोकन कर लें।",
+    saving: "सहेजा जा रहा है...",
+    sending: "भेजा जा रहा है...",
+    alreadySent: "पहले से ही भेजा",
+    downloading: "डाउनलोड हो रहा है...",
+    selectClientBeforeSending: "इनवॉइस भेजने से पहले ग्राहक का चयन करें।",
   },
   common: {
     retry: "पुनः प्रयास करें",
     pageUnavailable:
       "यह पृष्ठ उपलब्ध नहीं है या लिंक आपके कार्यस्थान के लिए अब मान्य नहीं है।",
     goToDashboard: "डैशबोर्ड पर जाएं",
+    language: "भाषा",
+    loading: "लोड हो रहा है...",
+    saving: "सहेजा जा रहा है...",
+    failedToChangeLanguage: "भाषा बदलने में विफल",
+    searchLanguages: "भाषाओं में खोजें...",
+    noLanguagesFound: "कोई भाषा नहीं मिली",
   },
-
-  // Invoice admin dashboard
   invoiceDashboard: {
     revenueOverview: "राजस्व अवलोकन",
     revenueByStatus: "स्थिति के अनुसार राजस्व",
@@ -634,8 +594,6 @@ const hi = {
     allInvoices: "सभी इनवॉइस",
     recentSales: "हाल की बिक्री",
   },
-
-  // Payments
   payments: {
     payments: "भुगतान",
     addPayment: "भुगतान जोड़ें",
@@ -660,8 +618,6 @@ const hi = {
     paymentHistory: "भुगतान इतिहास",
     scrollToLoadMore: "और भुगतान लोड करने के लिए स्क्रॉल करें",
     allPaymentsLoaded: "सभी भुगतान लोड हो गए",
-
-    // Filters
     allStatuses: "सभी स्थितियाँ",
     allClients: "सभी क्लाइंट",
     paymentType: "भुगतान प्रकार",
@@ -670,8 +626,8 @@ const hi = {
     bankTransfer: "बैंक ट्रांसफ़र",
     wireTransfer: "वायर ट्रांसफ़र",
     achTransfer: "ACH ट्रांसफ़र",
-    paypal: "PayPal",
-    stripe: "Stripe",
+    paypal: "पेपैल",
+    stripe: "पट्टी",
     cash: "नकद",
     check: "चेक",
     pending: "लंबित",
@@ -684,8 +640,6 @@ const hi = {
     searchByClientOrInvoice: "क्लाइंट नाम या इनवॉइस आईडी से खोजें",
     selectTransactionTypeBtn: "लेनदेन प्रकार चुनें",
   },
-
-  // Timer
   timer: {
     webTimer: "वेब टाइमर",
     webTimerLabel: "वेब टाइमर",
@@ -711,8 +665,6 @@ const hi = {
     whatAreYouWorkingOn: "आप किस पर काम कर रहे हैं?",
     selectProject: "प्रोजेक्ट चुनें",
   },
-
-  // Reports
   reports: {
     reports: "रिपोर्ट",
     backToReports: "रिपोर्ट पर वापस जाएं",
@@ -727,8 +679,6 @@ const hi = {
     exportAsCsv: "CSV के रूप में निर्यात करें",
     exportAsPdf: "PDF के रूप में निर्यात करें",
     toggleReportFilters: "रिपोर्ट फ़िल्टर टॉगल करें",
-
-    // Filters
     clients: "क्लाइंट",
     teamMembers: "टीम सदस्य",
     groupBy: "समूह करें",
@@ -737,14 +687,10 @@ const hi = {
     searchClientsFilter: "क्लाइंट खोजें...",
     searchTeamMembersFilter: "टीम सदस्य खोजें...",
     applyFilter: "फ़िल्टर लागू करें",
-
-    // Time entry report
     totalHours: "कुल घंटे",
     scrollToLoadMoreRows: "और रिपोर्ट पंक्तियाँ लोड करने के लिए स्क्रॉल करें",
     loadingMoreRows: "और रिपोर्ट पंक्तियाँ लोड हो रही हैं...",
     allRowsLoaded: "सभी रिपोर्ट पंक्तियाँ लोड हो गईं",
-
-    // Payment report
     perTransaction: "प्रति लेनदेन",
     topMethod: "शीर्ष विधि",
     paymentMethodsBreakdown: "भुगतान विधियों का विवरण",
@@ -754,8 +700,6 @@ const hi = {
     allMethods: "सभी विधियाँ",
     creditCard: "क्रेडिट कार्ड",
     allStatus: "सभी स्थिति",
-
-    // Revenue by client report
     totalRevenue: "कुल राजस्व",
     paidRevenue: "भुगतान किया गया राजस्व",
     paidAmount: "भुगतान राशि",
@@ -772,16 +716,14 @@ const hi = {
     clientRevenueDetails: "क्लाइंट राजस्व विवरण",
     scrollToLoadMoreClients: "और क्लाइंट लोड करने के लिए स्क्रॉल करें",
     allClientsLoaded: "सभी क्लाइंट लोड हो गए",
-
-    // Outstanding invoice report
     failedToLoadReportData: "रिपोर्ट डेटा लोड करने में विफल",
     currencyFilter: "मुद्रा फ़िल्टर",
     fromDate: "तिथि से",
     toDate: "तिथि तक",
     export: "निर्यात",
-    csv: "CSV",
-    pdf: "PDF",
-    excel: "Excel",
+    csv: "सीएसवी",
+    pdf: "पीडीएफ",
+    excel: "एक्सेल",
     statusOverview: "स्थिति अवलोकन",
     currencyDistribution: "मुद्रा वितरण",
     topClients: "शीर्ष क्लाइंट",
@@ -791,8 +733,6 @@ const hi = {
     clientBreakdown: "क्लाइंट विवरण",
     originalAmount: "मूल राशि",
     baseAmount: "आधार राशि",
-
-    // Accounts aging report
     totalDue: "कुल देय",
     invoiceAgingDetails: "इनवॉइस एजिंग विवरण",
     noDataFound: "कोई डेटा नहीं मिला",
@@ -933,8 +873,6 @@ const hi = {
     unknownProject: "अज्ञात प्रोजेक्ट",
     generatingExport: "%{format} जनरेट हो रहा है",
   },
-
-  // Expenses
   expenses: {
     expenses: "खर्चे",
     addExpense: "खर्चा जोड़ें",
@@ -1014,8 +952,6 @@ const hi = {
     viewReceiptsFor: "%{description} के लिए रसीदें देखें",
     expenseActionsFor: "%{description} के लिए खर्चे के कार्य",
   },
-
-  // Settings
   settings: {
     settings: "सेटिंग्स",
     profileSettings: "प्रोफ़ाइल सेटिंग्स",
@@ -1043,9 +979,25 @@ const hi = {
     allocationValue: "आवंटन मूल्य",
     allocationPeriod: "आवंटन अवधि",
     allocationFrequency: "आवंटन आवृत्ति",
+    labels: {
+      profile: "प्रोफ़ाइल",
+      employment: "रोज़गार",
+      devices: "उपकरण",
+      notifications: "सूचनाएं",
+      preferences: "प्राथमिकताएँ",
+      organization: "संगठन",
+      billing: "बिलिंग",
+      payment: "भुगतान",
+      holidays: "छुट्टियां",
+      leaves: "पत्तियों",
+      automation: "स्वचालन",
+      bankInfo: "बैंक और कर संबंधी जानकारी",
+    },
+    categories: {
+      personal: "निजी",
+      organization: "संगठन",
+    },
   },
-
-  // Leave types
   leaveTypes: {
     annualLeaves: "वार्षिक अवकाश",
     sickLeaves: "बीमारी अवकाश",
@@ -1053,23 +1005,17 @@ const hi = {
     paternityLeave: "पितृत्व अवकाश",
     periodLeave: "मासिक धर्म अवकाश",
   },
-
-  // Allocation periods
   allocationPeriods: {
     days: "दिन",
     weeks: "सप्ताह",
     months: "महीने",
   },
-
-  // Allocation frequencies
   allocationFrequencies: {
     perWeek: "प्रति सप्ताह",
     perMonth: "प्रति माह",
     perQuarter: "प्रति तिमाही",
     perYear: "प्रति वर्ष",
   },
-
-  // Navbar
   navbar: {
     clients: "क्लाइंट",
     invoices: "इनवॉइस",
@@ -1121,8 +1067,6 @@ const hi = {
     leavesDescription: "छुट्टी अनुरोध प्रबंधित करें",
     expensesDescription: "व्यावसायिक खर्चे ट्रैक करें",
   },
-
-  // Dashboard
   dashboard: {
     dashboard: "डैशबोर्ड",
     overdue: "अतिदेय",
@@ -1164,12 +1108,98 @@ const hi = {
     noRecentActivityYet: "अभी तक कोई हाल की गतिविधि नहीं",
     loadMore: "और लोड करें",
     allCaughtUp: "आप अप टू डेट हैं",
+    there: "वहाँ",
+    caughtUp: "सारी जानकारी प्राप्त!",
+    timeframe: {
+      week: "इस सप्ताह",
+      month: "इस महीने",
+      quarter: "इस तिमाही",
+      year: "इस साल",
+    },
+    stats: {
+      revenue: "आय",
+      totalInvoiced: "कुल बिल राशि",
+      openInvoices: "खुले चालान",
+      paidInvoices: "भुगतान किए गए बिल",
+      paymentsReceived: "भुगतान प्राप्त हुआ",
+      awaitingPayment: "भुगतान की प्रतीक्षा",
+      alreadySettled: "पहले ही तय हो चुका है",
+      hoursTracked: "ट्रैक किए गए घंटे",
+      currentlyActive: "वर्तमान में सक्रिय",
+      activeProjects: "सक्रिय परियोजनाएँ",
+      assignedProjects: "सौंपी गई परियोजनाएँ",
+      projectsYouCanWorkOn: "आप इन परियोजनाओं पर काम कर सकते हैं",
+      teammates: "टीम के साथी",
+      teamSize: "टीम का आकार",
+      noRecentActivity: "कोई हालिया गतिविधि नहीं",
+    },
+    charts: {
+      revenueMomentumTitle: "राजस्व गति",
+      revenueMomentumDescription: "पिछले एक वर्ष में मासिक राजस्व का रुझान",
+      revenueTrendEyebrow: "राजस्व प्रवृत्ति",
+      revenueLeadersTitle: "राजस्व नेता",
+      revenueLeadersDescription: "राजस्व योगदान के आधार पर शीर्ष ग्राहक",
+      topCustomersEyebrow: "शीर्ष ग्राहक",
+      ofTotal: "कुल का %{percentage}",
+      noRevenue: "राजस्व संबंधी कोई डेटा उपलब्ध नहीं है",
+    },
+    roleGuidance: {
+      employee: "अपने समय का हिसाब रखें और अपनी परियोजनाओं का प्रबंधन करें",
+      bookKeeper: "बिल, भुगतान और वित्तीय रिपोर्टों की समीक्षा करें।",
+      client: "अपने बिल और भुगतान इतिहास देखें",
+      default: "अपने कार्यक्षेत्र को प्रबंधित करें",
+    },
   },
-
-  // Authentication
   auth: {
-    signIn: "साइन इन",
-    signUp: "साइन अप",
+    signIn: {
+      title: "अपने कार्यक्षेत्र में लॉग इन करें",
+      description:
+        "एक ही स्थान से काम पर नज़र रखें, चालान भेजें और नकदी प्रवाह को स्पष्ट रखें।",
+      continueWithGoogle: "Google के साथ जारी रखें",
+      continueWithGitHub: "GitHub के साथ जारी रखें",
+      orUseEmail: "या ईमेल का उपयोग करें",
+      email: "ईमेल",
+      password: "पासवर्ड",
+      submit: "दाखिल करना",
+      forgotPassword: "पासवर्ड भूल गए?",
+      noAccount: "क्या आपके पास खाता नहीं है?",
+      signUp: "साइन अप करें",
+      privacy: "गोपनीयता",
+      terms: "शर्तें",
+      loginFailed: "लॉगिन फ़ेल। कृपया पुन: प्रयास करें।",
+      welcomeBack: "वापसी पर स्वागत है!",
+      waitingForPasskey: "पासकी का इंतजार है...",
+      passkeyPrompt: "लॉग इन करने के लिए अपनी पासकी का उपयोग करें",
+      totpTitle: "दो-कारक प्रमाणीकरण",
+      totpPrompt: "अपने ऑथेंटिकेटर ऐप से कोड दर्ज करें",
+      totpDescription: "अपना ऑथेंटिकेटर ऐप खोलें और 6 अंकों का कोड दर्ज करें।",
+      totpCode: "प्रमाणीकरण कोड",
+      verifyAndSignIn: "सत्यापित करें और साइन इन करें",
+      recoveryCode: "इसके बजाय रिकवरी कोड का उपयोग करें",
+      back: "पीछे",
+    },
+    signUp: {
+      title: "अपना कार्यक्षेत्र बनाएं",
+      description:
+        "एक ही स्पष्ट ऑपरेटिंग सिस्टम में क्लाइंट, प्रोजेक्ट, इनवॉइस और भुगतान की व्यवस्था करें।",
+      continueWithGoogle: "Google के साथ जारी रखें",
+      continueWithGitHub: "GitHub के साथ जारी रखें",
+      orUseEmail: "या ईमेल का उपयोग करें",
+      firstName: "पहला नाम",
+      lastName: "उपनाम",
+      email: "ईमेल",
+      password: "पासवर्ड",
+      confirmPassword: "पासवर्ड की पुष्टि कीजिये",
+      passwordCriteria:
+        "कम से कम 8 अक्षर जिनमें एक अपरकेस, एक लोअरकेस और एक संख्या शामिल हो।",
+      submit: "खाता बनाएं",
+      alreadyHaveAccount: "क्या आपके पास पहले से एक खाता मौजूद है? ",
+      signIn: "दाखिल करना",
+      agreePrefix: "साइन अप करके, आप हमारी शर्तों से सहमत होते हैं।",
+      termsOfService: "सेवा की शर्तें",
+      and: " और ",
+      privacyPolicy: "गोपनीयता नीति",
+    },
     signOut: "साइन आउट",
     welcomeBack: "वापस स्वागत है!",
     loginFailed: "लॉगिन विफल। कृपया पुनः प्रयास करें।",
@@ -1195,12 +1225,12 @@ const hi = {
     alreadyHaveAccount: "पहले से खाता है?",
     dontHaveAccount: "खाता नहीं है?",
     rememberMe: "मुझे याद रखें",
-    totpPlaceholder: "ABCD-EFGH",
+    totpPlaceholder: "एबीसीडी-ईएफजीएच",
     companyPulse: "कंपनी पल्स",
     billingCommand: "बिलिंग कमांड",
     clearWeeklyFlow: "स्पष्ट साप्ताहिक प्रवाह",
     cashLedger: "नकद खाता",
-    miruLogo: "Miru",
+    miruLogo: "मिरू",
     heroTitle: "समय, इनवॉइस और भुगतान के लिए एक स्थान",
     heroDescription: "दिन स्पष्ट रखें, बिलिंग चालू रखें और नकदी दृश्य रखें।",
     slideShowPrefix: "दिखाएं",
@@ -1235,15 +1265,71 @@ const hi = {
     termsOfService: "सेवा की शर्तें",
     privacyPolicy: "गोपनीयता नीति",
     and: "और",
+    slides: {
+      dashboard: {
+        title: "कंपनी की स्थिति",
+        description:
+          "बिना ज्यादा खोजबीन किए ही राजस्व, सक्रिय परियोजनाएं और टीम की प्रगति देखें।",
+      },
+      invoices: {
+        title: "बिलिंग कमांड",
+        description:
+          "ड्राफ्ट, बकाया राशि और भुगतान किए गए कार्य को एक ही स्थान पर रखें।",
+      },
+      timeTracking: {
+        title: "स्पष्ट साप्ताहिक प्रवाह",
+        description:
+          "सप्ताह-दर-सप्ताह समय प्रविष्टि बिना किसी अनावश्यक कार्य में बदले अद्यतन रहती है।",
+      },
+      payments: {
+        title: "नकद खाता बही",
+        description:
+          "प्रत्येक भुगतान विधि, स्थिति और स्रोत सहित एक ही बहीखाते में दर्ज होता है।",
+      },
+    },
+    validation: {
+      emailRequired: "ईमेल की जरूरत है",
+      invalidEmail: "अमान्य ईमेल पता",
+      passwordRequired: "पासवर्ड आवश्यक है",
+      passwordComplexity:
+        "पासवर्ड कम से कम 8 अक्षरों का होना चाहिए जिसमें अपरकेस, लोअरकेस और संख्याएँ शामिल हों।",
+      passwordSpace: "पासवर्ड में स्पेस नहीं हो सकता",
+      confirmPasswordRequired: "पासवर्ड की पुष्टि आवश्यक है",
+      passwordsMustMatch: "पासवर्डों को मेल खाना चाहिए",
+      firstNameRequired: "पहला नाम आवश्यक है",
+      firstNameInvalid: "प्रथम नाम में केवल अक्षर होने चाहिए",
+      firstNameMax: "पहला नाम 20 अक्षरों या उससे कम का होना चाहिए।",
+      lastNameRequired: "अंतिम नाम आवश्यक है",
+      lastNameInvalid: "अंतिम नाम में केवल अक्षर होने चाहिए",
+      lastNameMax: "अंतिम नाम 20 अक्षरों या उससे कम का होना चाहिए।",
+      acceptTerms: "आपको शर्तों को स्वीकार करना होगा",
+    },
   },
-
-  // Passkeys
   passkeys: {
     noPasskeyResponse: "कोई पासकी प्रतिक्रिया प्राप्त नहीं हुई।",
     passkeysNotSupported: "इस ब्राउज़र में पासकी समर्थित नहीं हैं।",
+    title: "पासकीज़",
+    addTitle: "इस खाते के लिए एक पासवर्ड जोड़ें",
+    addDescription:
+      "फेस आईडी, टच आईडी, विंडोज हेलो या हार्डवेयर सिक्योरिटी की का उपयोग करें।",
+    addAction: "पासकी जोड़ें",
+    requirementTitle: "लॉग इन करते समय पासकी आवश्यक है",
+    requirementDescription:
+      "आपके पासवर्ड के बाद, Miru को साइन इन पूरा करने के लिए एक पासकी की आवश्यकता होगी।",
+    emptyState: "अभी तक कोई पासकी नहीं जोड़ी गई है।",
+    fallbackName: "सर्व-कुंजी",
+    addedAt: "%{time} जोड़ा गया",
+    lastUsedAt: "अंतिम बार उपयोग किया गया %{time}",
+    removeAction: "निकालना",
+    addedSuccess: "पासकी जोड़ी गई",
+    removedSuccess: "पासकी हटा दी गई",
+    requirementEnabled: "पासकी की आवश्यकता सक्षम",
+    requirementDisabled: "पासकी की आवश्यकता अक्षम",
+    addFailed: "पासकी जोड़ने में विफल।",
+    removeFailed: "पासकी हटाने में विफल।",
+    updateRequirementFailed: "पासकी साइन-इन आवश्यकता को अपडेट करने में विफलता।",
+    neverUsed: "कभी भी इस्तेमाल नहीं किया",
   },
-
-  // Organization setup
   orgSetup: {
     setupOrganization: "संगठन सेटअप करें",
     companyName: "कंपनी का नाम",
@@ -1270,8 +1356,6 @@ const hi = {
     workingDaysPerWeek: "कार्य दिवस (प्रति सप्ताह)",
     workingHoursPerWeek: "कार्य घंटे (प्रति सप्ताह)",
   },
-
-  // Profile
   profile: {
     personalDetails: "व्यक्तिगत विवरण",
     personalInformation: "व्यक्तिगत जानकारी",
@@ -1296,7 +1380,7 @@ const hi = {
     dateOfBirth: "जन्म तिथि",
     birthDatePlaceholder: "अपनी जन्म तिथि चुनें",
     socialProfiles: "सामाजिक प्रोफ़ाइल",
-    linkedin: "LinkedIn",
+    linkedin: "Linkedin",
     github: "GitHub",
     firstName: "पहला नाम",
     lastName: "उपनाम",
@@ -1346,7 +1430,6 @@ const hi = {
     noPreviousEmployments: "कोई पिछला रोजगार नहीं मिला",
     addPastEmployment: "+ पिछला रोजगार जोड़ें",
   },
-
   preferencesSettings: {
     title: "ईमेल प्राथमिकताएं",
     description: "अपनी ईमेल सूचना सेटिंग्स प्रबंधित करें",
@@ -1396,7 +1479,6 @@ const hi = {
       monthly: "मासिक",
     },
   },
-
   automationSettings: {
     title: "ऑटोमेशन और CLI",
     description:
@@ -1419,7 +1501,6 @@ const hi = {
       dailyCommands: "दैनिक कमांड",
     },
   },
-
   holidaysSettings: {
     year: "वर्ष",
     publicHolidays: "सार्वजनिक छुट्टियाँ",
@@ -1454,7 +1535,6 @@ const hi = {
       sat: "श",
     },
   },
-
   paymentSettingsPage: {
     backToSettings: "सेटिंग्स पर वापस जाएं",
     title: "भुगतान प्रदाता",
@@ -1493,7 +1573,6 @@ const hi = {
       setupDescription: "मिनटों में भुगतान स्वीकार करना शुरू करें",
     },
   },
-
   organizationSettingsPage: {
     actions: {
       editSettings: "सेटिंग्स संपादित करें",
@@ -1522,17 +1601,16 @@ const hi = {
       locationNotSet: "स्थान सेट नहीं है",
       notConfigured: "कॉन्फ़िगर नहीं किया गया",
       noAddress: "कोई पता कॉन्फ़िगर नहीं किया गया",
-      workingHours: "9:00 AM - 5:00 PM",
+      workingHours: "सुबह 9:00 बजे से शाम 5:00 बजे तक",
       workingDays: "सोमवार - शुक्रवार",
       timezone: "UTC",
-      dateFormat: "MM/DD/YYYY",
+      dateFormat: "एमएम/डीडी/वाईवाईवाई",
     },
     errors: {
       loadFailed: "कंपनी विवरण लोड नहीं हो सके। कृपया फिर से प्रयास करें।",
     },
     ratePerHour: "/ घंटा",
   },
-
   billingSettings: {
     membership: "सदस्यता",
     currentPlan: "वर्तमान प्लान",
@@ -1674,7 +1752,7 @@ const hi = {
       timeTracking: "समय ट्रैकिंग",
       invoicesAndPayments: "इनवॉइस और भुगतान",
       reportsAndDashboards: "रिपोर्ट और डैशबोर्ड",
-      sso: "SSO",
+      sso: "एसएसओ",
       auditAndAdminControls: "ऑडिट और एडमिन नियंत्रण",
       support: "सहायता",
       included: "शामिल",
@@ -1687,8 +1765,6 @@ const hi = {
       managedOnboarding: "प्रबंधित सेवा + ऑनबोर्डिंग",
     },
   },
-
-  // Leave Management
   leaveManagement: {
     leaveBalance: "अवकाश शेष",
     applyLeave: "अवकाश आवेदन करें",
@@ -1731,7 +1807,6 @@ const hi = {
       "चयनित वर्ष के लिए उपलब्ध अवकाश, पहले से लिया गया समय और छुट्टी उपयोग एक ही जगह देखें।",
     balanceUntil: "%{date} तक शेष",
   },
-
   notificationPreferences: {
     emailNotifications: "ईमेल सूचनाएं",
     manageDescription: "अपनी ईमेल सूचना प्राथमिकताओं का प्रबंधन करें",
@@ -1741,7 +1816,6 @@ const hi = {
     noUserData: "कोई उपयोगकर्ता डेटा उपलब्ध नहीं है",
     loginPrompt: "सूचना प्राथमिकताओं का प्रबंधन करने के लिए कृपया लॉग इन करें",
   },
-
   devices: {
     addDevices: "उपकरण जोड़ें",
     editDevices: "उपकरण संपादित करें",
@@ -1774,8 +1848,6 @@ const hi = {
     unsavedChangesPrompt:
       "आपके पास बिना सहेजे बदलाव हैं। क्या आप वाकई रद्द करना चाहते हैं?",
   },
-
-  // Subscriptions / Plan Details
   subscriptions: {
     currentPlan: "वर्तमान योजना",
     upgradePlan: "योजना अपग्रेड करें",
@@ -1796,8 +1868,6 @@ const hi = {
     plusTaxes: "कर सहित",
     reviewAndPay: "समीक्षा करें और भुगतान करें",
   },
-
-  // Misc
   switchToMode: "%{mode} मोड में बदलें",
   light: "लाइट",
   dark: "डार्क",
@@ -1807,8 +1877,6 @@ const hi = {
   editLabel: "संपादित करें",
   noPasskeyResponse: "कोई पासकी प्रतिक्रिया प्राप्त नहीं हुई।",
   passkeysNotSupported: "इस ब्राउज़र में पासकी समर्थित नहीं हैं।",
-
-  // Table headers (common)
   tableHeaders: {
     invoiceNo: "इनवॉइस नं.",
     invoiceNumber: "इनवॉइस नंबर",
@@ -1828,15 +1896,72 @@ const hi = {
     role: "भूमिका",
     type: "प्रकार",
   },
-
-  // Relative dates
   nextDay: "अगला %{day}",
   lastDay: "पिछला %{day}",
-
-  // Duration formatting
   durationMinutes: "%{mins}m",
   durationHours: "%{hours}h",
   durationHoursMinutes: "%{hours}h %{mins}m",
+  twoFactor: {
+    title: "ऑथेंटिकेटर ऐप 2FA",
+    addTitle: "एक प्रमाणीकरण ऐप जोड़ें",
+    addDescription:
+      "आप Google Authenticator, 1Password, Bitwarden, Authy, या TOTP के अनुकूल किसी भी ऐप का उपयोग कर सकते हैं।",
+    setupAction: "2FA सेट अप करें",
+    finishTitle: "प्रमाणीकरणकर्ता सेटअप पूरा करें",
+    finishDescription:
+      "इस कुंजी को अपने प्रमाणीकरण ऐप में जोड़ें, फिर 2FA को सक्षम करने के लिए वर्तमान 6-अंकीय कोड दर्ज करें।",
+    manualEntryKey: "मैनुअल एंट्री कुंजी",
+    verificationCode: "सत्यापन कोड",
+    verificationCodePlaceholder: "123456",
+    enableAction: "2FA सक्षम करें",
+    resetKeyAction: "कुंजी रीसेट करें",
+    enabledTitle: "ऑथेंटिकेटर ऐप सुरक्षा चालू है",
+    enabledDescription:
+      "लॉग इन करते समय आपको अपने पासवर्ड के बाद एक प्रमाणीकरण कोड की आवश्यकता होगी।",
+    recoveryCodesAvailable: "%{count} रिकवरी कोड उपलब्ध हैं",
+    regenerateRecoveryCodes: "रिकवरी कोड को पुनः उत्पन्न करें",
+    disableAction: "2FA को अक्षम करें",
+    saveRecoveryCodes: "इन रिकवरी कोड को सेव करें",
+    saveRecoveryCodesDescription:
+      "प्रत्येक कोड केवल एक बार काम करता है। इन्हें किसी सुरक्षित स्थान पर संग्रहित करें।",
+    setupReadySuccess: "ऑथेंटिकेटर ऐप सेटअप तैयार है",
+    enabledSuccess: "प्रमाणीकरण ऐप सक्षम",
+    disabledSuccess: "प्रमाणीकरण ऐप अक्षम कर दिया गया है",
+    regeneratedSuccess: "रिकवरी कोड पुनः उत्पन्न किए गए",
+    setupFailed: "2FA सेटअप शुरू करने में विफल।",
+    enableFailed: "प्रमाणीकरण ऐप को सक्रिय करने में विफलता।",
+    disableFailed: "2FA को निष्क्रिय करने में विफल।",
+    regenerateFailed: "रिकवरी कोड को पुनः उत्पन्न करने में विफलता।",
+  },
+  nav: {
+    dashboard: "डैशबोर्ड",
+    timeTracking: "समय ट्रैकिंग",
+    clients: "ग्राहकों",
+    projects: "परियोजनाओं",
+    team: "टीम",
+    invoices: "चालान",
+    reports: "रिपोर्टों",
+    payments: "भुगतान",
+    leavesAndHolidays: "छुट्टियाँ और अवकाश",
+    expenses: "खर्च",
+    settings: "सेटिंग्स",
+    logout: "लॉग आउट",
+  },
+  sidebar: {
+    main: "मुख्य",
+    personalSettings: "व्यक्तिगत सेटिंग्स",
+    companySettings: "कंपनी सेटिंग्स",
+    profile: "प्रोफ़ाइल",
+    devices: "उपकरण",
+    organization: "संगठन",
+    billing: "बिलिंग",
+    paymentSettings: "भुगतान सेटिंग्स",
+    holidayCalendar: "छुट्टियों का कैलेंडर",
+    myLeaves: "मेरे पत्ते",
+    bankTaxInfo: "बैंक और कर संबंधी जानकारी",
+    expand: "साइडबार का विस्तार करें",
+    collapse: "साइडबार को छोटा करें",
+  },
 };
 
 export default hi;

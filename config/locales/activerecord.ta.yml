@@ -1,0 +1,30 @@
+---
+ta:
+  activerecord:
+    errors:
+      models:
+        client:
+          attributes:
+            name:
+              format: "%{message}"
+        project:
+          attributes:
+            name:
+              format: "%{message}"
+        user:
+          attributes:
+            email:
+              blank: மின்னஞ்சல் காலியாக இருக்கக்கூடாது
+              invalid: தவறான மின்னஞ்சல் முகவரி
+              taken: மின்னஞ்சல் முகவரி ஏற்கனவே உள்ளது
+            first_name:
+              blank: வெற்று இடமாக இருக்க முடியாது
+              invalid: எழுத்துக்கள் அல்லது இடைவெளிகளை மட்டுமே கொண்டிருக்க வேண்டும்
+            last_name:
+              blank: வெற்று இடமாக இருக்க முடியாது
+              invalid: எழுத்துக்கள் அல்லது இடைவெளிகளை மட்டுமே கொண்டிருக்க வேண்டும்
+            password:
+              blank: வெற்று இடமாக இருக்க முடியாது
+              too_short: குறைந்தது %{count} எழுத்துகள் நீளமுடையதாக இருக்க வேண்டும்
+            password_confirmation:
+              confirmation: புதிய கடவுச்சொல்லுடன் பொருந்தவில்லை

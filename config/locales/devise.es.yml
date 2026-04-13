@@ -1,25 +1,5 @@
 ---
 es:
-  activerecord:
-    errors:
-      models:
-        user:
-          attributes:
-            email:
-              blank: El correo electrónico no puede estar vacío.
-              invalid: Dirección de correo electrónico no válida
-              taken: La dirección de correo electrónico ya existe.
-            first_name:
-              blank: no puede estar en blanco
-              invalid: debe contener únicamente letras o espacios
-            last_name:
-              blank: no puede estar en blanco
-              invalid: debe contener únicamente letras o espacios
-            password:
-              blank: no puede estar en blanco
-              too_short: Debe tener al menos %{count} caracteres de longitud.
-            password_confirmation:
-              confirmation: no coincide con la nueva contraseña
   devise:
     confirmations:
       confirmed: Tu dirección de correo electrónico ha sido confirmada correctamente.
@@ -91,14 +71,3 @@ es:
       send_paranoid_instructions: Si tu cuenta ya existe, recibirás un correo electrónico
         con instrucciones para desbloquearla en unos minutos.
       unlocked: Tu cuenta se ha desbloqueado correctamente. Inicia sesión para continuar.
-  errors:
-    messages:
-      already_confirmed: Ya se confirmó, por favor intente iniciar sesión.
-      confirmation_period_expired: Debe confirmarse en %{period}, por favor solicite
-        uno nuevo.
-      expired: ha caducado, por favor solicite uno nuevo
-      not_found: extraviado
-      not_locked: no estaba cerrado
-      not_saved:
-        one: '1 error impidió que este %{resource} se guardara:'
-        other: "%{count} errores impidieron que este %{resource} se guardara:"

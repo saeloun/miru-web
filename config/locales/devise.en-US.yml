@@ -1,25 +1,5 @@
 ---
 en-US:
-  activerecord:
-    errors:
-      models:
-        user:
-          attributes:
-            email:
-              blank: Email can't be blank
-              invalid: Invalid Email ID
-              taken: Email ID already exists
-            first_name:
-              blank: can't be blank
-              invalid: must only contain letters or spaces
-            last_name:
-              blank: can't be blank
-              invalid: must only contain letters or spaces
-            password:
-              blank: can't be blank
-              too_short: must be at least %{count} characters long
-            password_confirmation:
-              confirmation: doesn't match with new password
   devise:
     confirmations:
       confirmed: Your email address has been successfully confirmed.
@@ -90,14 +70,3 @@ en-US:
       send_paranoid_instructions: If your account exists, you will receive an email
         with instructions for how to unlock it in a few minutes.
       unlocked: Your account has been unlocked successfully. Please sign in to continue.
-  errors:
-    messages:
-      already_confirmed: was already confirmed, please try signing in
-      confirmation_period_expired: needs to be confirmed within %{period}, please
-        request a new one
-      expired: has expired, please request a new one
-      not_found: not found
-      not_locked: was not locked
-      not_saved:
-        one: '1 error prohibited this %{resource} from being saved:'
-        other: "%{count} errors prohibited this %{resource} from being saved:"

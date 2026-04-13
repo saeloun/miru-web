@@ -1,0 +1,25 @@
+---
+tr:
+  errors:
+    bill_status_billed: Daha önce faturalandırılmış bir işlem için tekrar fatura kesemezsiniz.
+    can't change status: Ödenmiş bir faturada değişiklik yapılamaz.
+    create_billed_entry: Faturalandırılmış zaman çizelgesi girişi oluşturamazsınız.
+    internal_server_error: Bir şeyler ters gitti.
+    messages:
+      already_confirmed: Onaylandı, lütfen giriş yapmayı deneyin.
+      confirmation_period_expired: "%{period} içinde onaylanması gerekiyor, lütfen
+        yenisini talep edin."
+      expired: Süresi doldu, lütfen yenisini talep edin.
+      not_found: bulunamadı
+      not_locked: kilitli değildi
+      not_saved:
+        one: '1 hata bu %{resource}''ın kaydedilmesini engelledi:'
+        other: "%{count} hataları bu %{resource}'in kaydedilmesini engelledi:"
+    not_found: Aradığınız kaynak mevcut değil.
+    prevent_draft_to_waived: feragat olarak değiştirilemez
+    unauthorized: Bu işlemi yalnızca sahip veya yönetici kullanıcılar gerçekleştirebilir.
+    updation_not_allowed: Güncellemeye izin verilmiyor.
+    user_already_member: E-posta adresi zaten kullanımda. Lütfen başka bir e-posta
+      adresi girin.
+    validate_billable_project: Faturalandırılmayan projeler için faturalandırılmamış
+      giriş oluşturamazsınız.

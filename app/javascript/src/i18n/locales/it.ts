@@ -1,13 +1,10 @@
 const it = {
-  // Image validation
   invalidImageFormatSize:
     "Formato file non corretto. Carica un'immagine di tipo PNG o JPG. Dimensione max. (%{fileSize}KB)",
   invalidImageSize:
     "La dimensione del file ha superato il limite massimo di %{fileSize}KB.",
   invalidImageFormat:
     "Formato file non corretto. Carica un'immagine di tipo PNG o JPG",
-
-  // Common actions
   save: "Salva",
   cancel: "Annulla",
   delete: "Elimina",
@@ -32,10 +29,8 @@ const it = {
   apply: "Applica",
   remove: "Rimuovi",
   yes: "Sì",
-  no: "No",
+  no: "NO",
   or: "o",
-
-  // Common labels
   name: "Nome",
   email: "E-mail",
   phone: "Telefono",
@@ -69,8 +64,6 @@ const it = {
   all: "Tutti",
   from: "Da",
   to: "A",
-
-  // Date/time
   today: "Oggi",
   yesterday: "Ieri",
   tomorrow: "Domani",
@@ -94,30 +87,24 @@ const it = {
   selectPeriod: "Seleziona periodo",
   fullDay: "Giornata intera",
   halfDay: "Mezza giornata",
-
-  // Date validation
   dateCannotBeBlank: "La data non può essere vuota",
   fromDateMustBeLessThanToDate:
     "La data 'Da' deve essere inferiore o uguale alla data 'A'",
   toDateMustBeGreaterThanFromDate:
     "La data 'A' deve essere superiore o uguale alla data 'Da'",
   invalidDate: "Inserisci una data valida",
-
-  // Month abbreviations
   monthJan: "Gen",
-  monthFeb: "Feb",
+  monthFeb: "Dicembre",
   monthMar: "Mar",
-  monthApr: "Apr",
+  monthApr: "Aprile",
   monthMay: "Mag",
   monthJun: "Giu",
   monthJul: "Lug",
   monthAug: "Ago",
   monthSep: "Set",
   monthOct: "Ott",
-  monthNov: "Nov",
+  monthNov: "novembre",
   monthDec: "Dic",
-
-  // Error pages
   pageNotFound: "Pagina non trovata",
   clickHere: "Clicca qui",
   somethingWentWrong: "Qualcosa è andato storto",
@@ -125,15 +112,11 @@ const it = {
     "Aggiorna la pagina per riprovare. Se il problema persiste, accedi di nuovo o contatta l'assistenza.",
   reloadPage: "Ricarica pagina",
   loadingWorkspace: "Caricamento area di lavoro...",
-
-  // Search
   searchClients: "Cerca clienti...",
   searchInvoices: "Cerca fatture...",
   searchTeamMembers: "Cerca membri del team...",
   selectTeamMember: "Seleziona membro del team",
   noResultsFound: "Nessun risultato trovato",
-
-  // Time Tracking
   timeTracking: {
     addEntry: "Aggiungi voce",
     newTimeEntry: "Nuova voce di tempo",
@@ -223,8 +206,6 @@ const it = {
       sun: "Dom",
     },
   },
-
-  // Task types
   taskTypes: {
     development: "Sviluppo",
     meeting: "Riunione",
@@ -239,16 +220,12 @@ const it = {
     training: "Formazione",
     other: "Altro",
   },
-
-  // Time off types
   timeOffTypes: {
     vacation: "Ferie",
     sickLeave: "Malattia",
     personalDay: "Giorno personale",
     holiday: "Festivo",
   },
-
-  // Clients
   clients: {
     addClients: "Aggiungi clienti",
     addNewClient: "Aggiungi nuovo cliente",
@@ -281,8 +258,6 @@ const it = {
     sendPaymentReminder: "Invia promemoria di pagamento",
     invoicesSelected: "%{count} fatture selezionate",
   },
-
-  // Contacts
   contacts: {
     addContact: "Aggiungi contatto",
     addContacts: "Aggiungi contatti",
@@ -301,8 +276,6 @@ const it = {
     invalidEmailId: "Indirizzo e-mail non valido",
     emailRequired: "L'indirizzo e-mail non può essere vuoto",
   },
-
-  // Projects
   projects: {
     addProject: "Aggiungi progetto",
     addNewProject: "Aggiungi nuovo progetto",
@@ -319,7 +292,7 @@ const it = {
     hoursLogged: "ORE REGISTRATE",
     totalHours: "Ore totali",
     teamMembers: "Membri del team",
-    team: "Team",
+    team: "Squadra",
     allProjects: "Tutti i progetti",
     allProjectsDescription: "Gestisci i tuoi progetti e monitora i progressi",
     failedToLoadProjects: "Impossibile caricare i progetti",
@@ -374,10 +347,8 @@ const it = {
     teamMembersDescription:
       "Visualizza e gestisci i membri del team assegnati a questo progetto.",
   },
-
-  // Team
   team: {
-    team: "Team",
+    team: "Squadra",
     teamOverview: "Panoramica del team",
     totalMembers: "Membri totali",
     inviteMember: "Invita membro",
@@ -422,8 +393,6 @@ const it = {
     invalidEmail: "Indirizzo e-mail non valido",
     emailRequired: "L'indirizzo e-mail non può essere vuoto",
   },
-
-  // Invoices
   invoices: {
     invoice: "Fattura",
     invoices: "Fatture",
@@ -501,16 +470,12 @@ const it = {
     resetFilters: "Reimposta filtri",
     loadingChartData: "Caricamento dati del grafico...",
     noInvoiceData: "Nessun dato fattura disponibile",
-
-    // Statuses
     draft: "Bozza",
     sent: "Inviata",
     overdue: "Scaduta",
     collected: "Incassata",
     paid: "Pagata",
     outstanding: "In sospeso",
-
-    // Email
     recipientEmailId: "Indirizzo e-mail del destinatario",
     subject: "Oggetto",
     message: "Messaggio",
@@ -524,8 +489,6 @@ const it = {
     invoiceSentBody: "%{company} ti ha inviato una fattura (%{number})",
     invoiceWillBeSent: "La fattura verrà inviata!",
     processing: "elaborazione...",
-
-    // No payment gateway
     noPaymentGateway: "Nessun gateway di pagamento collegato",
     paymentGatewayError:
       "Errore. Contatta il mittente della fattura per collegare un gateway di pagamento per effettuare il pagamento della fattura",
@@ -536,14 +499,10 @@ const it = {
     stripeDisabled: "Stripe disabilitato per questa fattura",
     stripeDisabledMessage:
       "Il mittente non ha abilitato i pagamenti Stripe per questa fattura. Puoi contattarlo per attivarlo o scegliere un metodo di pagamento alternativo come ACH.",
-
-    // Bulk actions
     preparingDownload: "Preparazione download...",
     downloadFailed: "Download non riuscito. Riprova.",
     downloadingFiles: "Download dei file in corso...",
     downloadComplete: "Download completato",
-
-    // Table headers
     nameHeader: "NOME",
     descriptionHeader: "DESCRIZIONE",
     dateHeader: "DATA",
@@ -551,17 +510,13 @@ const it = {
     amountHeader: "IMPORTO",
     statusHeader: "STATO",
     invoiceNumberHeader: "NUMERO FATTURA",
-
-    // Chart labels
-    area: "Area",
+    area: "Zona",
     bar: "Barre",
     noData: "Nessun dato",
     monthly: "Mensile",
     quarterly: "Trimestrale",
     yearly: "Annuale",
     trend: "Tendenza",
-
-    // Preview / detail labels
     taxId: "Codice fiscale: %{value}",
     vatNumber: "Partita IVA: %{value}",
     gstNumber: "Numero GST: %{value}",
@@ -575,8 +530,6 @@ const it = {
     due: "Scadenza %{date}",
     viewed: "Visualizzata",
     cancelled: "Annullata",
-
-    // Toast / confirmation messages
     invoiceMarkedAsPaid: "Fattura segnata come pagata con successo",
     invoiceDownloaded: "Fattura scaricata con successo",
     invoiceSentSuccessfully: "Fattura inviata con successo",
@@ -592,8 +545,6 @@ const it = {
     invoiceCreated: "Fattura creata con successo",
     invoiceUpdated: "Fattura aggiornata con successo",
     failedToSaveInvoice: "Impossibile salvare la fattura. Riprova.",
-
-    // Counters
     showingOf: "Visualizzazione di %{shown} su %{total}",
     viewingMatching:
       "Visualizzazione di %{filtered} fatture corrispondenti su %{loaded} caricate",
@@ -602,12 +553,8 @@ const it = {
       "Visualizzazione di %{count} transazioni recenti",
     updatedAt: "Aggiornata %{date}",
     invoiceHash: "Fattura #%{number}",
-
-    // Mobile table headers
     nameDescription: "NOME / DESCRIZIONE",
     dateTime: "DATA / ORA",
-
-    // Invoice reminder email
     invoiceReminder: "Promemoria fattura: %{number}",
     reminderMessage:
       "Questo è un promemoria sulla tua fattura in sospeso. Trova i dettagli in allegato.",
@@ -626,15 +573,29 @@ const it = {
     cannotDownloadInvalidId: "Impossibile scaricare la fattura - ID non valido",
     cannotSendInvalidId: "Impossibile inviare la fattura - ID non valido",
     payment: "Pagamento #%{id}",
+    newInvoicePage: "Nuova fattura",
+    editInvoicePage: "Modifica fattura",
+    editorSubtitle:
+      "Inserisci i dati e visualizza l'anteprima della fattura prima di inviarla.",
+    saving: "Risparmio...",
+    sending: "Invio in corso...",
+    alreadySent: "Già inviato",
+    downloading: "Download in corso...",
+    selectClientBeforeSending:
+      "Seleziona un cliente prima di inviare la fattura.",
   },
   common: {
     retry: "Riprova",
     pageUnavailable:
       "Questa pagina non è disponibile o il link non è più valido per la tua area di lavoro.",
     goToDashboard: "Vai alla dashboard",
+    language: "Lingua",
+    loading: "Caricamento...",
+    saving: "Risparmio...",
+    failedToChangeLanguage: "Impossibile cambiare lingua",
+    searchLanguages: "Cerca lingue...",
+    noLanguagesFound: "Nessuna lingua trovata",
   },
-
-  // Invoice admin dashboard
   invoiceDashboard: {
     revenueOverview: "Panoramica ricavi",
     revenueByStatus: "Ricavi per stato",
@@ -642,8 +603,6 @@ const it = {
     allInvoices: "Tutte le fatture",
     recentSales: "Vendite recenti",
   },
-
-  // Payments
   payments: {
     payments: "Pagamenti",
     addPayment: "Aggiungi pagamento",
@@ -668,8 +627,6 @@ const it = {
     paymentHistory: "Storico pagamenti",
     scrollToLoadMore: "Scorri per caricare altri pagamenti",
     allPaymentsLoaded: "Tutti i pagamenti caricati",
-
-    // Filters
     allStatuses: "Tutti gli stati",
     allClients: "Tutti i clienti",
     paymentType: "Tipo di pagamento",
@@ -679,7 +636,7 @@ const it = {
     wireTransfer: "Trasferimento bancario",
     achTransfer: "Trasferimento ACH",
     paypal: "PayPal",
-    stripe: "Stripe",
+    stripe: "Banda",
     cash: "Contanti",
     check: "Assegno",
     pending: "In attesa",
@@ -692,8 +649,6 @@ const it = {
     searchByClientOrInvoice: "Cerca per nome cliente o ID fattura",
     selectTransactionTypeBtn: "Seleziona tipo di transazione",
   },
-
-  // Timer
   timer: {
     webTimer: "Timer web",
     webTimerLabel: "Timer web",
@@ -719,8 +674,6 @@ const it = {
     whatAreYouWorkingOn: "Su cosa stai lavorando?",
     selectProject: "Seleziona progetto",
   },
-
-  // Reports
   reports: {
     reports: "Report",
     backToReports: "Torna ai report",
@@ -735,8 +688,6 @@ const it = {
     exportAsCsv: "Esporta come CSV",
     exportAsPdf: "Esporta come PDF",
     toggleReportFilters: "Attiva/disattiva filtri report",
-
-    // Filters
     clients: "Clienti",
     teamMembers: "Membri del team",
     groupBy: "Raggruppa per",
@@ -745,14 +696,10 @@ const it = {
     searchClientsFilter: "Cerca clienti...",
     searchTeamMembersFilter: "Cerca membri del team...",
     applyFilter: "Applica filtro",
-
-    // Time entry report
     totalHours: "Ore totali",
     scrollToLoadMoreRows: "Scorri per caricare altre righe del report",
     loadingMoreRows: "Caricamento di altre righe del report...",
     allRowsLoaded: "Tutte le righe del report caricate",
-
-    // Payment report
     perTransaction: "Per transazione",
     topMethod: "Metodo principale",
     paymentMethodsBreakdown: "Ripartizione metodi di pagamento",
@@ -762,8 +709,6 @@ const it = {
     allMethods: "Tutti i metodi",
     creditCard: "Carta di credito",
     allStatus: "Tutti gli stati",
-
-    // Revenue by client report
     totalRevenue: "Ricavi totali",
     paidRevenue: "Ricavi incassati",
     paidAmount: "Importo pagato",
@@ -780,8 +725,6 @@ const it = {
     clientRevenueDetails: "Dettagli ricavi del cliente",
     scrollToLoadMoreClients: "Scorri per caricare altri clienti",
     allClientsLoaded: "Tutti i clienti caricati",
-
-    // Outstanding invoice report
     failedToLoadReportData: "Impossibile caricare i dati del report",
     currencyFilter: "Filtro valuta",
     fromDate: "Data inizio",
@@ -789,7 +732,7 @@ const it = {
     export: "Esporta",
     csv: "CSV",
     pdf: "PDF",
-    excel: "Excel",
+    excel: "Eccellere",
     statusOverview: "Panoramica stati",
     currencyDistribution: "Distribuzione per valuta",
     topClients: "Principali clienti",
@@ -799,8 +742,6 @@ const it = {
     clientBreakdown: "Ripartizione per cliente",
     originalAmount: "Importo originale",
     baseAmount: "Importo base",
-
-    // Accounts aging report
     totalDue: "Totale dovuto",
     invoiceAgingDetails: "Dettagli sull'anzianità delle fatture",
     noDataFound: "Nessun dato trovato",
@@ -944,8 +885,6 @@ const it = {
     unknownProject: "Progetto sconosciuto",
     generatingExport: "Generazione %{format}",
   },
-
-  // Expenses
   expenses: {
     expenses: "Spese",
     addExpense: "Aggiungi spesa",
@@ -1025,8 +964,6 @@ const it = {
     viewReceiptsFor: "Visualizza ricevute per %{description}",
     expenseActionsFor: "Azioni spesa per %{description}",
   },
-
-  // Settings
   settings: {
     settings: "Impostazioni",
     profileSettings: "Impostazioni profilo",
@@ -1054,9 +991,25 @@ const it = {
     allocationValue: "Valore di allocazione",
     allocationPeriod: "Periodo di allocazione",
     allocationFrequency: "Frequenza di allocazione",
+    labels: {
+      profile: "Profilo",
+      employment: "Occupazione",
+      devices: "Dispositivi",
+      notifications: "Notifiche",
+      preferences: "Preferenze",
+      organization: "Organizzazione",
+      billing: "Fatturazione",
+      payment: "Pagamento",
+      holidays: "Vacanze",
+      leaves: "Foglie",
+      automation: "Automazione",
+      bankInfo: "Informazioni bancarie e fiscali",
+    },
+    categories: {
+      personal: "Personale",
+      organization: "Organizzazione",
+    },
   },
-
-  // Leave types
   leaveTypes: {
     annualLeaves: "Ferie annuali",
     sickLeaves: "Malattia",
@@ -1064,23 +1017,17 @@ const it = {
     paternityLeave: "Congedo di paternità",
     periodLeave: "Congedo mestruale",
   },
-
-  // Allocation periods
   allocationPeriods: {
     days: "giorni",
     weeks: "settimane",
     months: "mesi",
   },
-
-  // Allocation frequencies
   allocationFrequencies: {
     perWeek: "a settimana",
     perMonth: "al mese",
     perQuarter: "a trimestre",
     perYear: "all'anno",
   },
-
-  // Navbar
   navbar: {
     clients: "Clienti",
     invoices: "Fatture",
@@ -1089,7 +1036,7 @@ const it = {
     projects: "Progetti",
     reports: "Report",
     settings: "Impostazioni",
-    team: "Team",
+    team: "Squadra",
     payments: "Pagamenti",
     help: "Aiuto",
     timeTracking: "Tracciamento tempo",
@@ -1132,10 +1079,8 @@ const it = {
     leavesDescription: "Gestisci le richieste di assenza",
     expensesDescription: "Traccia le spese aziendali",
   },
-
-  // Dashboard
   dashboard: {
-    dashboard: "Dashboard",
+    dashboard: "Pannello di controllo",
     overdue: "SCADUTO",
     outstanding: "IN SOSPESO",
     totalHours: "ORE TOTALI",
@@ -1176,12 +1121,101 @@ const it = {
     noRecentActivityYet: "Nessuna attività recente per ora",
     loadMore: "Carica altro",
     allCaughtUp: "Sei in pari",
+    there: "Là",
+    caughtUp: "Tutto a posto!",
+    timeframe: {
+      week: "Questa settimana",
+      month: "Questo mese",
+      quarter: "Questo trimestre",
+      year: "Quest'anno",
+    },
+    stats: {
+      revenue: "Reddito",
+      totalInvoiced: "Totale fatturato",
+      openInvoices: "Fatture aperte",
+      paidInvoices: "Fatture pagate",
+      paymentsReceived: "Pagamenti ricevuti",
+      awaitingPayment: "In attesa di pagamento",
+      alreadySettled: "Già sistemato",
+      hoursTracked: "Ore monitorate",
+      currentlyActive: "Attualmente attivo",
+      activeProjects: "Progetti attivi",
+      assignedProjects: "Progetti assegnati",
+      projectsYouCanWorkOn: "Progetti su cui puoi lavorare",
+      teammates: "compagni di squadra",
+      teamSize: "Dimensioni del team",
+      noRecentActivity: "Nessuna attività recente",
+    },
+    charts: {
+      revenueMomentumTitle: "Andamento dei ricavi",
+      revenueMomentumDescription:
+        "Andamento del fatturato mensile nell'ultimo anno",
+      revenueTrendEyebrow: "ANDAMENTO DEI RICAVI",
+      revenueLeadersTitle: "Leader del fatturato",
+      revenueLeadersDescription:
+        "Principali clienti in base al contributo al fatturato",
+      topCustomersEyebrow: "CLIENTI MIGLIORI",
+      ofTotal: "%{percentage} del totale",
+      noRevenue: "Nessun dato disponibile sui ricavi",
+    },
+    roleGuidance: {
+      employee: "Monitora il tuo tempo e gestisci i tuoi progetti.",
+      bookKeeper: "Esaminare fatture, pagamenti e rendiconti finanziari.",
+      client: "Visualizza le tue fatture e la cronologia dei pagamenti",
+      default: "Gestisci il tuo spazio di lavoro",
+    },
   },
-
-  // Authentication
   auth: {
-    signIn: "Accedi",
-    signUp: "Registrati",
+    signIn: {
+      title: "Accedi al tuo spazio di lavoro",
+      description:
+        "Tieni traccia del lavoro, invia fatture e mantieni un flusso di cassa chiaro, tutto da un'unica piattaforma.",
+      continueWithGoogle: "Continua con Google",
+      continueWithGitHub: "Continua con GitHub",
+      orUseEmail: "oppure usa la posta elettronica",
+      email: "E-mail",
+      password: "Password",
+      submit: "Registrazione",
+      forgotPassword: "Ha dimenticato la password?",
+      noAccount: "Non hai un account?",
+      signUp: "Iscrizione",
+      privacy: "Privacy",
+      terms: "Informazioni",
+      loginFailed: "Accesso non riuscito. Riprova.",
+      welcomeBack: "Bentornato!",
+      waitingForPasskey: "In attesa della password...",
+      passkeyPrompt: "Utilizza la tua password per accedere.",
+      totpTitle: "Autenticazione a due fattori",
+      totpPrompt: "Inserisci il codice dalla tua app di autenticazione",
+      totpDescription:
+        "Apri l'app di autenticazione e inserisci il codice a 6 cifre",
+      totpCode: "Codice di autenticazione",
+      verifyAndSignIn: "Verifica e accedi",
+      recoveryCode: "Utilizzare invece un codice di recupero",
+      back: "Indietro",
+    },
+    signUp: {
+      title: "Crea il tuo spazio di lavoro",
+      description:
+        "Configura clienti, progetti, fatture e pagamenti in un unico sistema operativo intuitivo.",
+      continueWithGoogle: "Continua con Google",
+      continueWithGitHub: "Continua con GitHub",
+      orUseEmail: "oppure usa la posta elettronica",
+      firstName: "Nome di battesimo",
+      lastName: "Cognome",
+      email: "E-mail",
+      password: "Password",
+      confirmPassword: "Conferma password",
+      passwordCriteria:
+        "Almeno 8 caratteri, di cui uno maiuscolo, uno minuscolo e uno numerico.",
+      submit: "Creare un account",
+      alreadyHaveAccount: "Hai già un account?",
+      signIn: "Registrazione",
+      agreePrefix: "Registrandoti, accetti i nostri termini e condizioni.",
+      termsOfService: "Termini di servizio",
+      and: " E ",
+      privacyPolicy: "politica sulla riservatezza",
+    },
     signOut: "Esci",
     welcomeBack: "Bentornato!",
     loginFailed: "Accesso non riuscito. Riprova.",
@@ -1248,15 +1282,73 @@ const it = {
     termsOfService: "Termini di servizio",
     privacyPolicy: "Informativa sulla privacy",
     and: "e",
+    slides: {
+      dashboard: {
+        title: "Impulso aziendale",
+        description:
+          "Visualizza entrate, progetti attivi e slancio del team senza dover cercare a fondo le informazioni.",
+      },
+      invoices: {
+        title: "Comando di fatturazione",
+        description:
+          "Conserva bozze, saldi scaduti e lavori pagati nello stesso posto.",
+      },
+      timeTracking: {
+        title: "Flusso settimanale chiaro",
+        description:
+          "L'inserimento settimanale delle ore lavorate rimane aggiornato senza trasformarsi in un'attività ripetitiva e noiosa.",
+      },
+      payments: {
+        title: "Conto cassa",
+        description:
+          "Ogni pagamento viene registrato in un unico registro contabile con metodo, stato e provenienza.",
+      },
+    },
+    validation: {
+      emailRequired: "È richiesta la posta elettronica",
+      invalidEmail: "Indirizzo email non valido",
+      passwordRequired: "È richiesta la password",
+      passwordComplexity:
+        "La password deve essere composta da almeno 8 caratteri, inclusi lettere maiuscole, minuscole e numeri.",
+      passwordSpace: "La password non può contenere spazi.",
+      confirmPasswordRequired: "Conferma la password",
+      passwordsMustMatch: "Le password devono essere identiche",
+      firstNameRequired: "È richiesto il nome di battesimo",
+      firstNameInvalid: "Il nome deve contenere solo lettere",
+      firstNameMax:
+        "Il nome di battesimo deve essere composto da un massimo di 20 caratteri.",
+      lastNameRequired: "Il cognome è obbligatorio",
+      lastNameInvalid: "Il cognome deve contenere solo lettere",
+      lastNameMax: "Il cognome non deve superare i 20 caratteri.",
+      acceptTerms: "Devi accettare i termini",
+    },
   },
-
-  // Passkeys
   passkeys: {
     noPasskeyResponse: "Nessuna risposta passkey ricevuta.",
     passkeysNotSupported: "Le passkey non sono supportate in questo browser.",
+    title: "Password",
+    addTitle: "Aggiungi una password per questo account",
+    addDescription:
+      "Utilizza Face ID, Touch ID, Windows Hello o una chiave di sicurezza hardware.",
+    addAction: "Aggiungi password",
+    requirementTitle: "Richiedi password al momento dell'accesso",
+    requirementDescription:
+      "Dopo la password, Miru richiederà una password per completare l'accesso.",
+    emptyState: "Non sono ancora state aggiunte password.",
+    fallbackName: "Chiave di sicurezza",
+    addedAt: "Aggiunto %{time}",
+    lastUsedAt: "Ultimo utilizzo %{time}",
+    removeAction: "Rimuovere",
+    addedSuccess: "Parkey ha aggiunto",
+    removedSuccess: "Password rimossa",
+    requirementEnabled: "Richiesta di password abilitata",
+    requirementDisabled: "Richiesta di password disabilitata",
+    addFailed: "Impossibile aggiungere la password.",
+    removeFailed: "Impossibile rimuovere la password.",
+    updateRequirementFailed:
+      "Impossibile aggiornare il requisito di accesso tramite password.",
+    neverUsed: "mai usato",
   },
-
-  // Organization setup
   orgSetup: {
     setupOrganization: "Configura organizzazione",
     companyName: "Nome azienda",
@@ -1283,8 +1375,6 @@ const it = {
     workingDaysPerWeek: "Giorni lavorativi (a settimana)",
     workingHoursPerWeek: "Ore lavorative (a settimana)",
   },
-
-  // Profile
   profile: {
     personalDetails: "Dati personali",
     employmentDetails: "Dati di impiego",
@@ -1300,9 +1390,65 @@ const it = {
     socialProfiles: "Profili social",
     linkedin: "LinkedIn",
     github: "GitHub",
+    personalInformation: "Informazioni personali",
+    basicDetails: "Dettagli di base",
+    contactInformation: "Informazioni sui contatti",
+    addressType: "Tipo di indirizzo",
+    current: "Attuale",
+    permanent: "Permanente",
+    employeeId: "ID dipendente",
+    officialEmail: "Indirizzo email (ufficiale)",
+    employmentType: "Tipo di impiego",
+    dateOfResignation: "Data delle dimissioni",
+    birthDatePlaceholder: "Seleziona la tua data di nascita",
+    firstName: "Nome di battesimo",
+    lastName: "Cognome",
+    firstNamePlaceholder: "Inserisci il tuo nome",
+    lastNamePlaceholder: "Inserisci il tuo cognome",
+    personalEmail: "Email personale",
+    personalEmailPlaceholder: "your.email@example.com",
+    phoneAriaLabel: "Numero di telefono",
+    addressLine1: "Indirizzo Linea 1",
+    addressLine2: "Riga indirizzo 2",
+    optionalSuffix: "(Opzionale)",
+    streetAddressPlaceholder: "Indirizzo stradale",
+    addressLine2Placeholder: "Appartamento, suite, unità, ecc.",
+    statePlaceholder: "Stato o provincia",
+    cityPlaceholder: "Città",
+    zipPostalCode: "Zip / Codice postale",
+    zipPlaceholder: "12345",
+    languageDescription: "Scegli la lingua che preferisci per l'interfaccia.",
+    security: "Sicurezza",
+    userFallback: "Utente",
+    currentPasswordPlaceholder: "Inserisci la password attuale",
+    newPassword: "Nuova password",
+    newPasswordPlaceholder: "Inserisci la nuova password",
+    confirmPasswordPlaceholder: "Reinserisci la nuova password",
+    cancelPasswordChange: "Annulla la modifica della password",
+    profilePhoto: "Foto profilo",
+    profilePhotoDescription:
+      "Carica una foto quadrata per il tuo profilo di lavoro.",
+    noAddressProvided: "Nessun indirizzo fornito",
+    noEmailProvided: "Nessun indirizzo email fornito",
+    notProvided: "Non fornito",
+    notConnected: "Non connesso",
+    bornOn: "Nato %{date}",
+    lastChangedDaysAgo: "Ultimo aggiornamento %{count} giorni fa",
+    secure: "Sicuro",
+    uploadPhoto: "Carica la foto",
+    removePhoto: "Rimuovi la foto",
+    uploadPhotoFailed: "Impossibile caricare l'immagine del profilo.",
+    removePhotoFailed: "Impossibile rimuovere l'immagine del profilo.",
+    adjustProfilePhoto: "regola la foto del profilo",
+    adjustProfilePhotoDescription:
+      "Seleziona la parte dell'immagine che desideri conservare.",
+    noImageSelected: "Nessuna immagine selezionata",
+    savePhoto: "Salva la foto",
+    zoom: "Zoom",
+    company: "Azienda",
+    noPreviousEmployments: "Nessun precedente impiego trovato",
+    addPastEmployment: "+ Aggiungi precedenti esperienze lavorative",
   },
-
-  // Leave Management
   leaveManagement: {
     leaveBalance: "Saldo permessi",
     applyLeave: "Richiedi permesso",
@@ -1340,9 +1486,11 @@ const it = {
     leave: "permesso",
     nationalHoliday: "Festa nazionale",
     optionalHoliday: "Festivo facoltativo",
+    summaryLabel: "Lascia perdere",
+    summaryDescription:
+      "Visualizza in un unico posto le ferie disponibili, quelle già usufruite e i giorni festivi utilizzati per l'anno selezionato.",
+    balanceUntil: "Saldo fino a %{date}",
   },
-
-  // Subscriptions / Plan Details
   subscriptions: {
     currentPlan: "Piano attuale",
     upgradePlan: "Aggiorna piano",
@@ -1363,8 +1511,6 @@ const it = {
     plusTaxes: "più tasse",
     reviewAndPay: "RIVEDI E PAGA",
   },
-
-  // Misc
   switchToMode: "Passa alla modalità %{mode}",
   light: "Chiaro",
   dark: "Scuro",
@@ -1374,8 +1520,6 @@ const it = {
   editLabel: "Modifica",
   noPasskeyResponse: "Nessuna risposta passkey ricevuta.",
   passkeysNotSupported: "Le passkey non sono supportate in questo browser.",
-
-  // Table headers (common)
   tableHeaders: {
     invoiceNo: "N. FATTURA",
     invoiceNumber: "NUMERO FATTURA",
@@ -1395,15 +1539,460 @@ const it = {
     role: "RUOLO",
     type: "TIPO",
   },
-
-  // Relative dates
   nextDay: "Prossimo %{day}",
   lastDay: "Ultimo %{day}",
-
-  // Duration formatting
   durationMinutes: "%{mins}m",
   durationHours: "%{hours}h",
   durationHoursMinutes: "%{hours}h %{mins}m",
+  preferencesSettings: {
+    title: "Preferenze e-mail",
+    description: "Gestisci le impostazioni di notifica via email",
+    saving: "Risparmio...",
+    saveChanges: "Salva le modifiche",
+    timesheetNotifications: "Notifiche delle schede attività",
+    billingNotifications: "Notifiche di fatturazione",
+    timesheetNotificationsDescription:
+      "Gestisci le notifiche relative al monitoraggio del tempo e ai fogli presenze.",
+    billingNotificationsDescription:
+      "Gestione delle notifiche di fatturazione e pagamento",
+    weeklyReminderTitle: "Promemoria settimanale per la scheda presenze",
+    weeklyReminderDescription:
+      "Ricevi promemoria settimanali ogni lunedì relativi alle voci in sospeso del foglio presenze",
+    timesheetReminderTitle: "Promemoria per voci mancanti",
+    timesheetReminderDescription:
+      "Ricevi una notifica quando non registri ore di lavoro per più di 2 giorni.",
+    invoiceNotificationsTitle: "Notifiche via email relative alle fatture",
+    invoiceNotificationsDescription:
+      "Ricevi email quando le fatture vengono create, inviate o aggiornate.",
+    paymentNotificationsTitle: "Notifiche di pagamento via e-mail",
+    paymentNotificationsDescription:
+      "Ricevi una notifica quando vengono ricevuti pagamenti o quando cambia lo stato del pagamento.",
+    monthlyDigestTitle: "Riepilogo mensile del flusso di cassa",
+    monthlyDigestDescription:
+      "Ricevi un riepilogo mensile del flusso di cassa con variazione netta, entrate e uscite.",
+    confirmUnsubscribeTitle: "Conferma la disiscrizione da tutte le email",
+    confirmUnsubscribeDescription:
+      "Sei sicuro di voler annullare l'iscrizione a tutte le notifiche via email? Non riceverai più email, incluse le notifiche importanti relative alla fatturazione e alle fatture.",
+    confirmUnsubscribeAction: "Sì, annulla l'iscrizione a tutto",
+    unsubscribedTitle: "Hai annullato l'iscrizione a tutte le email.",
+    unsubscribedDescription:
+      "Al momento non ricevi più alcuna notifica via email. Non riceverai email da Miru.",
+    resubscribeAction: "Riattiva le notifiche e-mail",
+    enabledCount: "%{count} di %{total} abilitato",
+    deliveryTitle: "Impostazioni di invio e-mail",
+    emailAddress: "Indirizzo e-mail",
+    deliveryDescription:
+      "Tutte le notifiche verranno inviate a questo indirizzo email. Per modificare il tuo indirizzo email, aggiornalo nelle impostazioni del tuo profilo.",
+    unsubscribeTitle: "Annulla iscrizione",
+    unsubscribeDescription:
+      "Se non desideri più ricevere email da Miru, puoi annullare l'iscrizione a tutte le notifiche. In questo modo verranno interrotte tutte le comunicazioni via email, comprese le importanti notifiche di fatturazione e contabilità.",
+    unsubscribeAction: "Annulla l'iscrizione a tutte le email",
+    badges: {
+      active: "Attivo",
+      important: "Importante",
+      monthly: "Mensile",
+    },
+  },
+  automationSettings: {
+    title: "Automazione e CLI",
+    description:
+      "Utilizza Miru dal tuo terminale, tramite script o agenti di intelligenza artificiale con le stesse autorizzazioni del tuo account di accesso. Nessun prodotto di automazione separato. Nessun accesso backdoor speciale.",
+    freeForEveryPlan: "Gratuito per ogni piano",
+    cards: {
+      samePermissionsTitle: "Stesse autorizzazioni dell'app",
+      samePermissionsDescription:
+        "La CLI visualizza solo le risorse a cui l'utente autenticato ha già accesso nell'applicazione web.",
+      humansAndScriptsTitle: "Buono per gli umani e per le sceneggiature",
+      humansAndScriptsDescription:
+        "Utilizza comandi semplici per le attività quotidiane e lascia che script o intelligenza artificiale richiamino la stessa interfaccia.",
+      easyToInstallTitle: "Facile da installare",
+      easyToInstallDescription:
+        "Un solo comando di installazione, un solo accesso e potrai visualizzare l'elenco dei progetti, creare voci di tempo, controllare le fatture e molto altro.",
+    },
+    commandGroups: {
+      install: "Installare",
+      authenticateOnce: "Autenticati una sola volta",
+      dailyCommands: "Comandi giornalieri",
+    },
+  },
+  holidaysSettings: {
+    year: "Anno",
+    publicHolidays: "Giorni festivi",
+    optionalHolidays: "Giorni festivi facoltativi",
+    holidayName: "Nome della festività",
+    enterHolidayName: "Inserisci il nome della festività",
+    selectDate: "Seleziona la data",
+    addHoliday: "Aggiungi festività",
+    addFirstHoliday: "Aggiungi la prima festività",
+    addOptionalHoliday: "Aggiungi festività facoltative",
+    noPublicHolidaysConfigured: "Nessuna festività pubblica configurata",
+    noOptionalHolidaysConfigured: "Nessuna festività opzionale configurata",
+    totalAllowed: "Totale consentito",
+    enterNumber: "Inserisci il numero",
+    frequency: "Frequenza",
+    allowedPerEmployee: "Consentito per dipendente",
+    yearAtAGlance: "Riepilogo dell'anno",
+    holidaySchedule: "Orario festivo",
+    noHolidaysAddedForYear:
+      "Non sono ancora state aggiunte festività per %{year}",
+    categories: {
+      public: "Pubblico",
+      optional: "Opzionale",
+    },
+    weekdays: {
+      sun: "S",
+      mon: "M",
+      tue: "T",
+      wed: "W",
+      thu: "T",
+      fri: "F",
+      sat: "S",
+    },
+  },
+  paymentSettingsPage: {
+    backToSettings: "Torna alle impostazioni",
+    title: "Fornitori di servizi di pagamento",
+    description:
+      "Collega i fornitori di servizi di pagamento per consentire loro di accettare pagamenti online dai clienti.",
+    errorTitle: "Errore",
+    errorDescription:
+      "Impossibile caricare le impostazioni di pagamento. Riprova più tardi.",
+    stripeDescription:
+      "Accettiamo carte di credito, carte di debito e i metodi di pagamento più diffusi.",
+    connectedTo: "Connesso a",
+    connected: "Collegato",
+    stripeAccountFallback: "Conto Stripe",
+    chargesEnabled: "Addebiti abilitati",
+    connectStripe: "Collega Stripe",
+    connecting: "Connessione in corso...",
+    disconnect: "Disconnetti",
+    disconnecting: "Disconnessione in corso...",
+    featuresTitle: "Caratteristiche e vantaggi",
+    helpTitle: "Hai bisogno di aiuto?",
+    helpDescription:
+      "Se hai bisogno di assistenza per configurare l'elaborazione dei pagamenti o hai domande su commissioni e funzionalità:",
+    viewDocumentation: "Visualizza la documentazione",
+    contactSupport: "Contatta l'assistenza",
+    disconnectDialogTitle: "Disconnetti l'account Stripe",
+    disconnectDialogDescription:
+      "Sei sicuro di voler disconnettere il tuo account Stripe? Non potrai più accettare pagamenti tramite Stripe finché non lo ricollegherai.",
+    features: {
+      secureTitle: "Pagamenti sicuri",
+      secureDescription:
+        "Elaborazione dei pagamenti conforme allo standard PCI",
+      currenciesTitle: "Valute multiple",
+      currenciesDescription: "Accettiamo pagamenti in oltre 135 valute.",
+      methodsTitle: "Diversi metodi di pagamento",
+      methodsDescription: "Carte, portafogli, bonifici bancari e altro ancora",
+      setupTitle: "Configurazione immediata",
+      setupDescription: "Inizia ad accettare pagamenti in pochi minuti",
+    },
+  },
+  organizationSettingsPage: {
+    actions: {
+      editSettings: "Modifica impostazioni",
+    },
+    sections: {
+      companyProfile: "Profilo Aziendale",
+      financial: "Finanziario",
+      scheduleAndTime: "Programma e orario",
+      workingHours: "Orario di lavoro",
+    },
+    fields: {
+      businessPhone: "Telefono aziendale",
+      currency: "Valuta",
+      businessAddress: "Indirizzo commerciale",
+      standardRate: "Tariffa standard",
+      fiscalYearEnd: "Fine dell'anno fiscale",
+      timezone: "Fuso orario",
+      dateFormat: "Formato data",
+      workingDays: "Giorni lavorativi",
+    },
+    status: {
+      active: "Attivo",
+    },
+    defaults: {
+      companyName: "Nome dell'azienda",
+      locationNotSet: "Posizione non impostata",
+      notConfigured: "Non configurato",
+      noAddress: "Nessun indirizzo configurato",
+      workingHours: "9:00 - 17:00",
+      workingDays: "Dal lunedì al venerdì",
+      timezone: "UTC",
+      dateFormat: "MM/GG/AAAA",
+    },
+    errors: {
+      loadFailed:
+        "Impossibile caricare i dettagli dell'organizzazione. Riprova.",
+    },
+    ratePerHour: "/ ora",
+  },
+  billingSettings: {
+    membership: "Iscrizione",
+    currentPlan: "Piano attuale",
+    seatUsage: "Utilizzo dei posti a sedere",
+    billingCadence: "Frequenza di fatturazione",
+    monthly: "Mensile",
+    yearly: "Annuale",
+    notSubscribedYet: "Non sei ancora iscritto?",
+    startTrial: "Inizia la prova gratuita di 30 giorni della versione Pro",
+    startingTrial: "Inizio della prova...",
+    upgradeWithStripe: "Passa a Stripe",
+    openingStripe: "Striscia di apertura...",
+    manageBillingInStripe: "Gestisci la fatturazione in Stripe",
+    openingPortal: "Apertura del portale...",
+    saveTwoMonths: "Risparmia due mesi sull'abbonamento annuale",
+    heroTitle:
+      "Scegli il pacchetto più adatto alle tue esigenze attuali. Potrai cambiarlo in seguito, se necessario.",
+    howManySeats: "Di quanti posti a sedere pensate di aver bisogno?",
+    estimatedSeats: "Posti stimati",
+    recommended: "Raccomandato",
+    estimatedProSpend: "Spesa stimata per i professionisti",
+    yearlyDiscount: "Sconto annuale",
+    openSource: "Open source",
+    annual: "Annuale",
+    service: "Servizio",
+    poweredByStripe: "Powered by Stripe",
+    changePlansAnytime: "È possibile modificare i piani in qualsiasi momento.",
+    checkoutPoweredByStripe:
+      "La gestione dei pagamenti e degli abbonamenti è affidata a Stripe.",
+    noSalesCall:
+      "Nessuna chiamata di vendita per Pro. Puoi annullare o modificare il tuo piano in Stripe in qualsiasi momento.",
+    reportsAndAnalytics: "Rapporti e analisi",
+    customAnnual: "Annuale personalizzato",
+    seatsUsed: "%{used}/%{total} posti occupati",
+    seatsUsedWithoutLimit: "%{used} posti occupati",
+    savePerYear: "Risparmia $%{amount}/anno",
+    effectiveMonthlyPricing: "Circa $%{amount}/mese prezzo effettivo",
+    cancelOrUpgradeAnytime:
+      "Annulla o effettua l'upgrade in qualsiasi momento su Stripe",
+    planCadence: {
+      monthly: "Fatturazione mensile",
+      yearlySavings: "Risparmia 2 mesi per posto",
+    },
+    alerts: {
+      subscriptionUpdatedTitle: "Abbonamento aggiornato",
+      subscriptionUpdated:
+        "Il tuo piano è stato aggiornato correttamente su Stripe.",
+      checkoutCancelled: "Checkout annullato",
+      noSubscriptionChanges:
+        "Non è stata apportata alcuna modifica al tuo abbonamento.",
+      unableToLoad: "Impossibile caricare i dati di fatturazione",
+      proTrialActive: "Pro trial attivo",
+      proTrialActiveUntil:
+        "Il tuo spazio di lavoro avrà accesso Pro fino al %{date}.",
+      proTrialEnded: "Il processo è terminato.",
+      proTrialEndedDescription:
+        "Il tuo spazio di lavoro è tornato al piano gratuito. Esegui l'upgrade in Stripe per ripristinare l'accesso alla versione Pro.",
+      seatLimitReached: "Posti limitati raggiunti",
+      seatLimitReachedDescription:
+        "Per aggiungere più di 3 membri a questo spazio di lavoro, effettua l'upgrade del tuo account Stripe.",
+    },
+    errors: {
+      unableToOpenStripeCheckout: "Impossibile aprire il checkout di Stripe",
+      unableToOpenStripeBillingPortal:
+        "Impossibile aprire il portale di fatturazione di Stripe",
+      unableToStartProTrial:
+        "Impossibile avviare la prova gratuita della versione Pro",
+    },
+    recommendations: {
+      freeTitle: "Rimani gratuito finché non avrai bisogno dei controlli.",
+      freeDescription:
+        "La versione gratuita è ideale per team molto piccoli. Passa alla versione Pro quando hai bisogno di SSO, report più dettagliati e più di 3 licenze.",
+      proTitle: "Pro è la soluzione ideale",
+      proDescription:
+        "Per i team in crescita, la versione Pro offre SSO, visibilità finanziaria e sufficiente flessibilità per scalare senza i costi aggiuntivi di una grande azienda.",
+      enterpriseTitle: "Parlaci di Enterprise",
+      enterpriseDescription:
+        "I team più numerosi in genere necessitano di supporto per gli acquisti, controlli amministrativi e un'implementazione più agevole. Inizia con il piano Pro o passa direttamente al piano Enterprise.",
+    },
+    highlights: {
+      seatsTitle: "Più posti a sedere senza oneri amministrativi",
+      seatsDescription:
+        "Supera il limite dei 3 posti gratuiti e semplifica la procedura di onboarding.",
+      ssoTitle: "SSO e controlli più rigorosi",
+      ssoDescription:
+        "Offri ai team in crescita un accesso sicuro senza bisogno di strumenti aggiuntivi.",
+      financeTitle: "Visibilità finanziaria che mantiene la calma",
+      financeDescription:
+        "Conoscere margini, cadenza di fatturazione e utilizzo del team senza bisogno di configurazioni aggiuntive.",
+    },
+    planDescriptions: {
+      free: "Installa Miru in modalità self-hosting con funzionalità di base di tracciamento, fatturazione, pagamenti e fino a 3 postazioni per team.",
+      pro: "La versione Pro aggiunge report, SSO, più postazioni e controlli amministrativi più intuitivi senza i costi aggiuntivi di una soluzione aziendale.",
+      enterprise:
+        "Contratti che semplificano gli acquisti, controlli avanzati e supporto per team più numerosi che necessitano di una verifica di sicurezza.",
+      hostedEnterprise:
+        "Ci occupiamo dell'hosting, dell'aggiornamento, del backup e dell'assistenza di Miru su una configurazione dedicata.",
+    },
+    planBullets: {
+      free: {
+        coreProduct: "Prodotto principale autogestito",
+        tracking: "Monitoraggio del tempo, fatture, pagamenti",
+        dashboard: "Visibilità del pannello di controllo per un piccolo team",
+      },
+      pro: {
+        trial: "Prova gratuita di 30 giorni prima di pagare",
+        sso: "Accesso singolo (SSO), reportistica avanzata, controlli amministrativi più rigorosi",
+        fit: "Ideale per agenzie e team in crescita",
+      },
+      enterprise: {
+        contracts: "Contratti favorevoli agli appalti",
+        onboarding: "Revisione della sicurezza e supporto all'inserimento",
+        compliance:
+          "Per team più numerosi con esigenze di approvazione e conformità",
+      },
+      hosted: {
+        setup: "Configurazione gestita dedicata",
+        operations: "Ci occupiamo di aggiornamenti, backup e supporto.",
+        fit: "Per i team che desiderano che Miru venga gestito interamente per loro",
+      },
+    },
+    heroDescription:
+      "Inizia con la versione gratuita, passa alla versione Pro quando il team ha bisogno di maggiore controllo, oppure lascia che gestiamo Miru per te. La versione Pro rimane economica, l'abbonamento annuale ti permette di risparmiare davvero e la fatturazione è semplice perché la gestione dei pagamenti e degli abbonamenti è affidata a Stripe.",
+    seatEstimatorDescription:
+      "Utilizza questo strumento per confrontare la versione gratuita e quella a pagamento e decidere se l'abbonamento mensile o annuale sia più conveniente.",
+    yearlyDiscountDescription:
+      "Due mesi gratuiti per postazione rispetto al prezzo mensile.",
+    checkoutDescription:
+      "Inizia la prova gratuita senza alcun processo di acquisto, passa alla versione a pagamento quando sei pronto e gestisci la fatturazione in autonomia quando ne hai bisogno.",
+    plans: {
+      unknown: "Sconosciuto",
+      free: "Gratuito",
+      freePro: "Free Pro",
+      proTrial: "Prova Pro",
+      paid: "Pagato",
+      enterprise: "Imprese",
+      hostedEnterprise: "Azienda ospitata",
+    },
+    table: {
+      feature: "Caratteristica",
+      bestFor: "Ideale per",
+      selfHostedTeams: "Team self-hosted in fase di avvio",
+      growingServiceTeams:
+        "Team di assistenza in crescita che necessitano di controlli",
+      largeOrgs:
+        "Organizzazioni di grandi dimensioni con esigenze di sicurezza e approvvigionamento",
+      managedTeams: "Squadre che desiderano che Miru venga gestito per loro",
+      timeTracking: "Tracciamento temporale",
+      invoicesAndPayments: "Fatture e pagamenti",
+      reportsAndDashboards: "Report e dashboard",
+      sso: "SSO",
+      auditAndAdminControls: "Controlli di audit e amministrativi",
+      support: "Supporto",
+      included: "Incluso",
+      notIncluded: "Non incluso",
+      dashboardOnly: "Solo cruscotto",
+      reportsAndAnalytics: "Rapporti e analisi",
+      community: "Comunità",
+      priorityEmail: "E-mail prioritaria",
+      priorityOnboarding: "Priorità + onboarding",
+      managedOnboarding: "Servizio gestito + onboarding",
+    },
+  },
+  twoFactor: {
+    title: "App di autenticazione 2FA",
+    addTitle: "Aggiungi un'app di autenticazione",
+    addDescription:
+      "Utilizza Google Authenticator, 1Password, Bitwarden, Authy o qualsiasi altra app compatibile con TOTP.",
+    setupAction: "Configura l'autenticazione a due fattori (2FA).",
+    finishTitle: "Completare la configurazione dell'autenticatore",
+    finishDescription:
+      "Aggiungi questa chiave alla tua app di autenticazione, quindi inserisci il codice a 6 cifre corrente per abilitare l'autenticazione a due fattori (2FA).",
+    manualEntryKey: "Chiave di accesso manuale",
+    verificationCode: "codice di verifica",
+    verificationCodePlaceholder: "123456",
+    enableAction: "Abilita l'autenticazione a due fattori",
+    resetKeyAction: "Chiave di ripristino",
+    enabledTitle: "La protezione dell'app Authenticator è attiva",
+    enabledDescription:
+      "Al momento dell'accesso, dopo la password, ti verrà richiesto un codice di autenticazione.",
+    recoveryCodesAvailable: "Codici di ripristino %{count} disponibili",
+    regenerateRecoveryCodes: "Rigenera i codici di recupero",
+    disableAction: "Disabilita l'autenticazione a due fattori",
+    saveRecoveryCodes: "Salva questi codici di recupero",
+    saveRecoveryCodesDescription:
+      "Ogni codice funziona una sola volta. Conservali in un luogo sicuro.",
+    setupReadySuccess: "La configurazione dell'app di autenticazione è pronta.",
+    enabledSuccess: "App di autenticazione abilitata",
+    disabledSuccess: "App di autenticazione disabilitata",
+    regeneratedSuccess: "Codici di ripristino rigenerati",
+    setupFailed:
+      "Impossibile avviare la configurazione dell'autenticazione a due fattori.",
+    enableFailed: "Impossibile abilitare l'app di autenticazione.",
+    disableFailed: "Impossibile disattivare l'autenticazione a due fattori.",
+    regenerateFailed: "Impossibile rigenerare i codici di ripristino.",
+  },
+  notificationPreferences: {
+    emailNotifications: "Notifiche via e-mail",
+    manageDescription: "Gestisci le tue preferenze di notifica via email",
+    weeklyEmailReminder: "Promemoria settimanale via email",
+    weeklyEmailReminderDescription:
+      "Ricevi promemoria settimanali via email relativi alle voci del foglio presenze e agli aggiornamenti del progetto.",
+    noUserData: "Nessun dato utente disponibile",
+    loginPrompt: "Effettua l'accesso per gestire le preferenze di notifica.",
+  },
+  devices: {
+    addDevices: "Aggiungi dispositivi",
+    editDevices: "Modifica dispositivi",
+    device: "Dispositivo",
+    unknownDevice: "Dispositivo sconosciuto",
+    serial: "Seriale:",
+    deviceType: "Tipo di dispositivo",
+    selectDeviceType: "Seleziona il tipo di dispositivo",
+    modelName: "Modello/Nome",
+    serialNumber: "Numero di serie",
+    memory: "Memoria (RAM)",
+    processor: "Processore",
+    graphics: "Grafica",
+    graphicsCard: "Scheda medica",
+    storage: "Magazzinaggio",
+    modelNamePlaceholder: "ad esempio, MacBook Pro da 16 pollici",
+    serialNumberPlaceholder: "ad esempio, C02XX1234567",
+    memoryPlaceholder: "ad esempio, 16 GB DDR4",
+    processorPlaceholder: "ad esempio, Intel Core i7-10750H",
+    graphicsPlaceholder: "ad esempio, NVIDIA GeForce RTX 3060",
+    storagePlaceholder: "ad esempio, SSD da 512 GB",
+    addAnotherDevice: "Aggiungi un altro dispositivo",
+    addAnotherDeviceDescription:
+      "Fai clic per aggiungere un nuovo dispositivo al tuo inventario",
+    deviceSummary: "Riepilogo del dispositivo",
+    totalDevices: "Dispositivi totali",
+    notSpecified: "Non specificato",
+    noDevicesFound: "Nessun dispositivo trovato",
+    newDevice: "Nuovo dispositivo",
+    unsavedChangesPrompt:
+      "Hai apportato modifiche non salvate. Vuoi annullare con certezza?",
+  },
+  nav: {
+    dashboard: "Pannello di controllo",
+    timeTracking: "Monitoraggio del tempo",
+    clients: "Clienti",
+    projects: "Eventi",
+    team: "Squadra",
+    invoices: "Spese",
+    reports: "Rapporti",
+    payments: "Pagamenti",
+    leavesAndHolidays: "Ferie e vacanze",
+    expenses: "Spese",
+    settings: "Impostazioni",
+    logout: "Disconnettiti",
+  },
+  sidebar: {
+    main: "Principale",
+    personalSettings: "Impostazioni personali",
+    companySettings: "Impostazioni aziendali",
+    profile: "Profilo",
+    devices: "Dispositivi",
+    organization: "Organizzazione",
+    billing: "Fatturazione",
+    paymentSettings: "Impostazioni di pagamento",
+    holidayCalendar: "Calendario delle festività",
+    myLeaves: "Le mie foglie",
+    bankTaxInfo: "Informazioni bancarie e fiscali",
+    expand: "Espandi la barra laterale",
+    collapse: "Comprimi la barra laterale",
+  },
 };
 
 export default it;

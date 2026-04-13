@@ -1,0 +1,26 @@
+---
+es:
+  errors:
+    bill_status_billed: No se puede facturar una entrada que ya ha sido facturada.
+    can't change status: No se puede modificar una factura pagada.
+    create_billed_entry: No puedes crear una entrada de hoja de horas facturada.
+    internal_server_error: Algo salió mal
+    messages:
+      already_confirmed: Ya se confirmó, por favor intente iniciar sesión.
+      confirmation_period_expired: Debe confirmarse en %{period}, por favor solicite
+        uno nuevo.
+      expired: ha caducado, por favor solicite uno nuevo
+      not_found: extraviado
+      not_locked: no estaba cerrado
+      not_saved:
+        one: '1 error impidió que este %{resource} se guardara:'
+        other: "%{count} errores impidieron que este %{resource} se guardara:"
+    not_found: El recurso que busca no está disponible.
+    prevent_draft_to_waived: no se puede cambiar a renunciado
+    unauthorized: Solo los usuarios propietarios o administradores están autorizados
+      a realizar esta acción.
+    updation_not_allowed: No se permiten actualizaciones.
+    user_already_member: Esta dirección de correo electrónico ya está en uso. Por
+      favor, introduzca otra dirección de correo electrónico.
+    validate_billable_project: No se puede crear una entrada no facturada para proyectos
+      no facturables.

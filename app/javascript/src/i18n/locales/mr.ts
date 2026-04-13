@@ -1,13 +1,10 @@
 const mr = {
-  // Image validation
   invalidImageFormatSize:
     "चुकीचा फाइल फॉरमॅट. कृपया PNG किंवा JPG प्रकारची इमेज अपलोड करा. कमाल आकार (%{fileSize}KB)",
   invalidImageSize:
     "फाइलचा आकार %{fileSize}KB च्या कमाल मर्यादेपेक्षा जास्त आहे.",
   invalidImageFormat:
     "चुकीचा फाइल फॉरमॅट. कृपया PNG किंवा JPG प्रकारची इमेज अपलोड करा",
-
-  // Common actions
   save: "जतन करा",
   cancel: "रद्द करा",
   delete: "हटवा",
@@ -34,8 +31,6 @@ const mr = {
   yes: "हो",
   no: "नाही",
   or: "किंवा",
-
-  // Common labels
   name: "नाव",
   email: "ईमेल",
   phone: "फोन",
@@ -69,8 +64,6 @@ const mr = {
   all: "सर्व",
   from: "पासून",
   to: "पर्यंत",
-
-  // Date/time
   today: "आज",
   yesterday: "काल",
   tomorrow: "उद्या",
@@ -94,16 +87,12 @@ const mr = {
   selectPeriod: "कालावधी निवडा",
   fullDay: "पूर्ण दिवस",
   halfDay: "अर्धा दिवस",
-
-  // Date validation
   dateCannotBeBlank: "तारीख रिकामी असू शकत नाही",
   fromDateMustBeLessThanToDate:
     "'पासून' तारीख 'पर्यंत' तारखेपेक्षा कमी किंवा समान असणे आवश्यक आहे",
   toDateMustBeGreaterThanFromDate:
     "'पर्यंत' तारीख 'पासून' तारखेपेक्षा जास्त किंवा समान असणे आवश्यक आहे",
   invalidDate: "कृपया वैध तारीख प्रविष्ट करा",
-
-  // Month abbreviations
   monthJan: "जाने",
   monthFeb: "फेब्रु",
   monthMar: "मार्च",
@@ -116,8 +105,6 @@ const mr = {
   monthOct: "ऑक्टो",
   monthNov: "नोव्हें",
   monthDec: "डिसें",
-
-  // Error pages
   pageNotFound: "पृष्ठ सापडले नाही",
   clickHere: "येथे क्लिक करा",
   somethingWentWrong: "काहीतरी चूक झाली",
@@ -125,15 +112,11 @@ const mr = {
     "पुन्हा प्रयत्न करण्यासाठी पृष्ठ रीफ्रेश करा. हे सुरू राहिल्यास, पुन्हा साइन इन करा किंवा सपोर्टशी संपर्क साधा.",
   reloadPage: "पृष्ठ पुन्हा लोड करा",
   loadingWorkspace: "कार्यक्षेत्र लोड होत आहे...",
-
-  // Search
   searchClients: "क्लायंट शोधा...",
   searchInvoices: "इनव्हॉइस शोधा...",
   searchTeamMembers: "टीम सदस्य शोधा...",
   selectTeamMember: "टीम सदस्य निवडा",
   noResultsFound: "कोणतेही परिणाम सापडले नाहीत",
-
-  // Time Tracking
   timeTracking: {
     addEntry: "एन्ट्री जोडा",
     newTimeEntry: "नवीन वेळ एन्ट्री",
@@ -221,8 +204,6 @@ const mr = {
       sun: "रवि",
     },
   },
-
-  // Task types
   taskTypes: {
     development: "विकास",
     meeting: "बैठक",
@@ -237,16 +218,12 @@ const mr = {
     training: "प्रशिक्षण",
     other: "इतर",
   },
-
-  // Time off types
   timeOffTypes: {
     vacation: "सुट्टी",
     sickLeave: "आजारपणाची रजा",
     personalDay: "वैयक्तिक दिवस",
     holiday: "सुट्टी",
   },
-
-  // Clients
   clients: {
     addClients: "क्लायंट जोडा",
     addNewClient: "नवीन क्लायंट जोडा",
@@ -279,8 +256,6 @@ const mr = {
     sendPaymentReminder: "पेमेंट स्मरणपत्र पाठवा",
     invoicesSelected: "%{count} इनव्हॉइस निवडले",
   },
-
-  // Contacts
   contacts: {
     addContact: "संपर्क जोडा",
     addContacts: "संपर्क जोडा",
@@ -299,8 +274,6 @@ const mr = {
     invalidEmailId: "अवैध ईमेल आयडी",
     emailRequired: "ईमेल आयडी रिकामी असू शकत नाही",
   },
-
-  // Projects
   projects: {
     addProject: "प्रकल्प जोडा",
     addNewProject: "नवीन प्रकल्प जोडा",
@@ -371,8 +344,6 @@ const mr = {
     teamMembersDescription:
       "या प्रकल्पात नियुक्त केलेले टीम सदस्य पहा आणि व्यवस्थापित करा.",
   },
-
-  // Team
   team: {
     team: "टीम",
     teamOverview: "टीम आढावा",
@@ -419,8 +390,6 @@ const mr = {
     invalidEmail: "अवैध ईमेल आयडी",
     emailRequired: "ईमेल आयडी रिकामी असू शकत नाही",
   },
-
-  // Invoices
   invoices: {
     invoice: "इनव्हॉइस",
     invoices: "इनव्हॉइस",
@@ -497,16 +466,12 @@ const mr = {
     resetFilters: "फिल्टर रीसेट करा",
     loadingChartData: "चार्ट डेटा लोड होत आहे...",
     noInvoiceData: "कोणताही इनव्हॉइस डेटा उपलब्ध नाही",
-
-    // Statuses
     draft: "ड्राफ्ट",
     sent: "पाठवले",
     overdue: "थकीत",
     collected: "गोळा केले",
     paid: "पेमेंट केले",
     outstanding: "बाकी",
-
-    // Email
     recipientEmailId: "प्राप्तकर्ता ईमेल आयडी",
     subject: "विषय",
     message: "संदेश",
@@ -519,8 +484,6 @@ const mr = {
     invoiceSentBody: "%{company} ने तुम्हाला इनव्हॉइस पाठवला आहे (%{number})",
     invoiceWillBeSent: "इनव्हॉइस पाठवला जाईल!",
     processing: "प्रक्रिया सुरू आहे...",
-
-    // No payment gateway
     noPaymentGateway: "कोणतेही पेमेंट गेटवे कनेक्ट केलेले नाही",
     paymentGatewayError:
       "त्रुटी. कृपया इनव्हॉइस पाठवणाऱ्याशी संपर्क साधा जेणेकरून ते पेमेंट गेटवे कनेक्ट करतील आणि तुम्ही इनव्हॉइस पेमेंट करू शकाल",
@@ -531,14 +494,10 @@ const mr = {
     stripeDisabled: "या इनव्हॉइससाठी Stripe अक्षम आहे",
     stripeDisabledMessage:
       "पाठवणाऱ्याने या इनव्हॉइससाठी Stripe पेमेंट सक्षम केलेले नाही. तुम्ही त्यांना सक्रिय करण्यासाठी संपर्क साधू शकता, किंवा ACH सारखी पर्यायी पेमेंट पद्धत निवडू शकता.",
-
-    // Bulk actions
     preparingDownload: "डाउनलोड तयार होत आहे...",
     downloadFailed: "डाउनलोड अयशस्वी. कृपया पुन्हा प्रयत्न करा.",
     downloadingFiles: "फाइल्स डाउनलोड होत आहेत...",
     downloadComplete: "डाउनलोड पूर्ण",
-
-    // Table headers
     nameHeader: "नाव",
     descriptionHeader: "वर्णन",
     dateHeader: "तारीख",
@@ -546,8 +505,6 @@ const mr = {
     amountHeader: "रक्कम",
     statusHeader: "स्थिती",
     invoiceNumberHeader: "इनव्हॉइस क्रमांक",
-
-    // Chart labels
     area: "क्षेत्र",
     bar: "बार",
     noData: "डेटा नाही",
@@ -555,8 +512,6 @@ const mr = {
     quarterly: "तिमाही",
     yearly: "वार्षिक",
     trend: "प्रवृत्ती",
-
-    // Preview / detail labels
     taxId: "कर आयडी: %{value}",
     vatNumber: "व्हॅट क्रमांक: %{value}",
     gstNumber: "जीएसटी क्रमांक: %{value}",
@@ -570,8 +525,6 @@ const mr = {
     due: "देय %{date}",
     viewed: "पाहिले",
     cancelled: "रद्द",
-
-    // Toast / confirmation messages
     invoiceMarkedAsPaid: "इनव्हॉइस यशस्वीरित्या पेमेंट म्हणून चिन्हांकित केला",
     invoiceDownloaded: "इनव्हॉइस यशस्वीरित्या डाउनलोड केला",
     invoiceSentSuccessfully: "इनव्हॉइस यशस्वीरित्या पाठवला",
@@ -587,8 +540,6 @@ const mr = {
     invoiceCreated: "इनव्हॉइस यशस्वीरित्या तयार केला",
     invoiceUpdated: "इनव्हॉइस यशस्वीरित्या अपडेट केला",
     failedToSaveInvoice: "इनव्हॉइस जतन करणे अयशस्वी. कृपया पुन्हा प्रयत्न करा.",
-
-    // Counters
     showingOf: "%{total} पैकी %{shown} दाखवत आहे",
     viewingMatching:
       "%{loaded} लोड केलेल्यांपैकी %{filtered} जुळणारे इनव्हॉइस पाहत आहे",
@@ -596,12 +547,8 @@ const mr = {
     showingRecentTransactions: "%{count} अलीकडील व्यवहार दाखवत आहे",
     updatedAt: "%{date} रोजी अपडेट केले",
     invoiceHash: "इनव्हॉइस #%{number}",
-
-    // Mobile table headers
     nameDescription: "नाव / वर्णन",
     dateTime: "तारीख / वेळ",
-
-    // Invoice reminder email
     invoiceReminder: "इनव्हॉइस स्मरणपत्र: %{number}",
     reminderMessage:
       "हे तुमच्या बाकी इनव्हॉइसबद्दल स्मरणपत्र आहे. कृपया संलग्न तपशील पहा.",
@@ -620,15 +567,28 @@ const mr = {
     cannotDownloadInvalidId: "इनव्हॉइस डाउनलोड करता येत नाही - अवैध आयडी",
     cannotSendInvalidId: "इनव्हॉइस पाठवता येत नाही - अवैध आयडी",
     payment: "पेमेंट #%{id}",
+    newInvoicePage: "नवीन इनव्हॉइस",
+    editInvoicePage: "इनव्हॉइस संपादित करा",
+    editorSubtitle:
+      "इन्व्हॉइस पाठवण्यापूर्वी तपशील भरा आणि त्याचे पूर्वावलोकन करा.",
+    saving: "जतन करत आहे...",
+    sending: "पाठवत आहे...",
+    alreadySent: "आधीच पाठवले आहे",
+    downloading: "डाउनलोड होत आहे...",
+    selectClientBeforeSending: "इनव्हॉइस पाठवण्यापूर्वी क्लायंटची निवड करा.",
   },
   common: {
     retry: "पुन्हा प्रयत्न करा",
     pageUnavailable:
       "हे पृष्ठ उपलब्ध नाही किंवा लिंक तुमच्या कार्यक्षेत्रासाठी यापुढे वैध नाही.",
     goToDashboard: "डॅशबोर्डवर जा",
+    language: "भाषा",
+    loading: "लोडिंग...",
+    saving: "जतन करत आहे...",
+    failedToChangeLanguage: "भाषा बदलण्यात अयशस्वी झाले.",
+    searchLanguages: "भाषा शोधा...",
+    noLanguagesFound: "कोणतीही भाषा आढळली नाही",
   },
-
-  // Invoice admin dashboard
   invoiceDashboard: {
     revenueOverview: "महसूल आढावा",
     revenueByStatus: "स्थितीनुसार महसूल",
@@ -636,8 +596,6 @@ const mr = {
     allInvoices: "सर्व इनव्हॉइस",
     recentSales: "अलीकडील विक्री",
   },
-
-  // Payments
   payments: {
     payments: "पेमेंट",
     addPayment: "पेमेंट जोडा",
@@ -662,8 +620,6 @@ const mr = {
     paymentHistory: "पेमेंट इतिहास",
     scrollToLoadMore: "अधिक पेमेंट लोड करण्यासाठी स्क्रोल करा",
     allPaymentsLoaded: "सर्व पेमेंट लोड झाले",
-
-    // Filters
     allStatuses: "सर्व स्थिती",
     allClients: "सर्व क्लायंट",
     paymentType: "पेमेंट प्रकार",
@@ -672,8 +628,8 @@ const mr = {
     bankTransfer: "बँक ट्रान्सफर",
     wireTransfer: "वायर ट्रान्सफर",
     achTransfer: "ACH ट्रान्सफर",
-    paypal: "PayPal",
-    stripe: "Stripe",
+    paypal: "पेपल",
+    stripe: "पट्टे",
     cash: "रोख",
     check: "चेक",
     pending: "प्रलंबित",
@@ -686,8 +642,6 @@ const mr = {
     searchByClientOrInvoice: "क्लायंट नाव किंवा इनव्हॉइस आयडीने शोधा",
     selectTransactionTypeBtn: "व्यवहार प्रकार निवडा",
   },
-
-  // Timer
   timer: {
     webTimer: "वेब टायमर",
     webTimerLabel: "वेब टायमर",
@@ -713,8 +667,6 @@ const mr = {
     whatAreYouWorkingOn: "तुम्ही कशावर काम करत आहात?",
     selectProject: "प्रकल्प निवडा",
   },
-
-  // Reports
   reports: {
     reports: "अहवाल",
     backToReports: "अहवालांवर परत जा",
@@ -729,8 +681,6 @@ const mr = {
     exportAsCsv: "CSV म्हणून निर्यात करा",
     exportAsPdf: "PDF म्हणून निर्यात करा",
     toggleReportFilters: "अहवाल फिल्टर टॉगल करा",
-
-    // Filters
     clients: "क्लायंट",
     teamMembers: "टीम सदस्य",
     groupBy: "गट करा",
@@ -739,14 +689,10 @@ const mr = {
     searchClientsFilter: "क्लायंट शोधा...",
     searchTeamMembersFilter: "टीम सदस्य शोधा...",
     applyFilter: "फिल्टर लागू करा",
-
-    // Time entry report
     totalHours: "एकूण तास",
     scrollToLoadMoreRows: "अधिक अहवाल पंक्ती लोड करण्यासाठी स्क्रोल करा",
     loadingMoreRows: "अधिक अहवाल पंक्ती लोड होत आहेत...",
     allRowsLoaded: "सर्व अहवाल पंक्ती लोड झाल्या",
-
-    // Payment report
     perTransaction: "प्रति व्यवहार",
     topMethod: "शीर्ष पद्धत",
     paymentMethodsBreakdown: "पेमेंट पद्धतींचे विवरण",
@@ -756,8 +702,6 @@ const mr = {
     allMethods: "सर्व पद्धती",
     creditCard: "क्रेडिट कार्ड",
     allStatus: "सर्व स्थिती",
-
-    // Revenue by client report
     totalRevenue: "एकूण महसूल",
     paidRevenue: "भरलेला महसूल",
     paidAmount: "भरलेली रक्कम",
@@ -774,16 +718,14 @@ const mr = {
     clientRevenueDetails: "क्लायंट महसूल तपशील",
     scrollToLoadMoreClients: "अधिक क्लायंट लोड करण्यासाठी स्क्रोल करा",
     allClientsLoaded: "सर्व क्लायंट लोड झाले",
-
-    // Outstanding invoice report
     failedToLoadReportData: "अहवाल डेटा लोड करणे अयशस्वी",
     currencyFilter: "चलन फिल्टर",
     fromDate: "तारखेपासून",
     toDate: "तारखेपर्यंत",
     export: "निर्यात",
     csv: "CSV",
-    pdf: "PDF",
-    excel: "Excel",
+    pdf: "पीडीएफ",
+    excel: "एक्सेल",
     statusOverview: "स्थिती आढावा",
     currencyDistribution: "चलन वितरण",
     topClients: "शीर्ष क्लायंट",
@@ -793,8 +735,6 @@ const mr = {
     clientBreakdown: "क्लायंट विवरण",
     originalAmount: "मूळ रक्कम",
     baseAmount: "आधार रक्कम",
-
-    // Accounts aging report
     totalDue: "एकूण देय",
     invoiceAgingDetails: "इनव्हॉइस एजिंग तपशील",
     noDataFound: "कोणताही डेटा सापडला नाही",
@@ -933,8 +873,6 @@ const mr = {
     unknownProject: "अज्ञात प्रकल्प",
     generatingExport: "%{format} तयार होत आहे",
   },
-
-  // Expenses
   expenses: {
     expenses: "खर्च",
     addExpense: "खर्च जोडा",
@@ -1014,8 +952,6 @@ const mr = {
     viewReceiptsFor: "%{description} साठी पावत्या पहा",
     expenseActionsFor: "%{description} साठी खर्चाच्या कृती",
   },
-
-  // Settings
   settings: {
     settings: "सेटिंग्ज",
     profileSettings: "प्रोफाइल सेटिंग्ज",
@@ -1043,9 +979,25 @@ const mr = {
     allocationValue: "वाटप मूल्य",
     allocationPeriod: "वाटप कालावधी",
     allocationFrequency: "वाटप वारंवारता",
+    labels: {
+      profile: "प्रोफाइल",
+      employment: "रोजगार",
+      devices: "उपकरणे",
+      notifications: "सूचना",
+      preferences: "प्राधान्ये",
+      organization: "संघटना",
+      billing: "बिलिंग",
+      payment: "पेमेंट",
+      holidays: "सुट्ट्या",
+      leaves: "पाने",
+      automation: "ऑटोमेशन",
+      bankInfo: "बँक आणि कर माहिती",
+    },
+    categories: {
+      personal: "वैयक्तिक",
+      organization: "संघटना",
+    },
   },
-
-  // Leave types
   leaveTypes: {
     annualLeaves: "वार्षिक रजा",
     sickLeaves: "आजारपणाच्या रजा",
@@ -1053,23 +1005,17 @@ const mr = {
     paternityLeave: "पितृत्व रजा",
     periodLeave: "मासिक पाळी रजा",
   },
-
-  // Allocation periods
   allocationPeriods: {
     days: "दिवस",
     weeks: "आठवडे",
     months: "महिने",
   },
-
-  // Allocation frequencies
   allocationFrequencies: {
     perWeek: "प्रति आठवडा",
     perMonth: "प्रति महिना",
     perQuarter: "प्रति तिमाही",
     perYear: "प्रति वर्ष",
   },
-
-  // Navbar
   navbar: {
     clients: "क्लायंट",
     invoices: "इनव्हॉइस",
@@ -1121,8 +1067,6 @@ const mr = {
     leavesDescription: "सुट्टी विनंत्या व्यवस्थापित करा",
     expensesDescription: "व्यावसायिक खर्च ट्रॅक करा",
   },
-
-  // Dashboard
   dashboard: {
     dashboard: "डॅशबोर्ड",
     overdue: "थकीत",
@@ -1165,12 +1109,99 @@ const mr = {
     noRecentActivityYet: "अद्याप कोणताही अलीकडील क्रियाकलाप नाही",
     loadMore: "अधिक लोड करा",
     allCaughtUp: "तुम्ही अद्ययावत आहात",
+    there: "तिथे",
+    caughtUp: "सर्व काही पूर्ण झाले!",
+    timeframe: {
+      week: "या आठवड्यात",
+      month: "या महिन्यात",
+      quarter: "या तिमाहीत",
+      year: "या वर्षी",
+    },
+    stats: {
+      revenue: "महसूल",
+      totalInvoiced: "एकूण बिल",
+      openInvoices: "खुली बिले",
+      paidInvoices: "भरलेली बिले",
+      paymentsReceived: "मिळालेले पेमेंट",
+      awaitingPayment: "पेमेंटची वाट पाहत आहे",
+      alreadySettled: "आधीच स्थायिक झाले आहे",
+      hoursTracked: "तासांचा मागोवा घेतला",
+      currentlyActive: "सध्या सक्रिय",
+      activeProjects: "सक्रिय प्रकल्प",
+      assignedProjects: "नेमून दिलेले प्रकल्प",
+      projectsYouCanWorkOn: "तुम्ही काम करू शकता असे प्रकल्प",
+      teammates: "संघ सहकारी",
+      teamSize: "संघाचा आकार",
+      noRecentActivity: "अलीकडील कोणतीही हालचाल नाही",
+    },
+    charts: {
+      revenueMomentumTitle: "महसूल गती",
+      revenueMomentumDescription: "गेल्या वर्षभरातील मासिक महसुलाचा कल",
+      revenueTrendEyebrow: "महसुलाचा कल",
+      revenueLeadersTitle: "महसूल नेते",
+      revenueLeadersDescription: "महसूल योगदानानुसार प्रमुख ग्राहक",
+      topCustomersEyebrow: "शीर्ष ग्राहक",
+      ofTotal: "एकूण %{percentage}",
+      noRevenue: "महसुलाची माहिती उपलब्ध नाही",
+    },
+    roleGuidance: {
+      employee:
+        "तुमच्या वेळेचा मागोवा घ्या आणि तुमच्या प्रकल्पांचे व्यवस्थापन करा",
+      bookKeeper: "पावत्या, देयके आणि आर्थिक अहवालांचे पुनरावलोकन करा",
+      client: "तुमची बिले आणि पेमेंटचा इतिहास पहा",
+      default: "तुमच्या कार्यक्षेत्राचे व्यवस्थापन करा",
+    },
   },
-
-  // Authentication
   auth: {
-    signIn: "साइन इन",
-    signUp: "साइन अप",
+    signIn: {
+      title: "तुमच्या वर्कस्पेसमध्ये साइन इन करा",
+      description:
+        "एकाच ठिकाणाहून कामाचा मागोवा घ्या, बिले पाठवा आणि रोख रकमेचा प्रवाह सुरळीत ठेवा.",
+      continueWithGoogle: "गुगलसह सुरू ठेवा",
+      continueWithGitHub: "गिटहबसह सुरू ठेवा",
+      orUseEmail: "किंवा ईमेल वापरा",
+      email: "ईमेल",
+      password: "पासवर्ड",
+      submit: "साइन इन करा",
+      forgotPassword: "पासवर्ड विसरलात का?",
+      noAccount: "तुमचे खाते नाही का?",
+      signUp: "नोंदणी करा",
+      privacy: "गोपनीयता",
+      terms: "अटी",
+      loginFailed: "लॉगिन अयशस्वी झाले. कृपया पुन्हा प्रयत्न करा.",
+      welcomeBack: "पुन्हा स्वागत आहे!",
+      waitingForPasskey: "पासकीची वाट पाहत आहे...",
+      passkeyPrompt: "साइन इन करण्यासाठी तुमच्या पासकीचा वापर करा",
+      totpTitle: "द्वि-घटक प्रमाणीकरण",
+      totpPrompt: "तुमच्या ऑथेंटिकेटर ॲपमधील कोड प्रविष्ट करा",
+      totpDescription: "तुमचे ऑथेंटिकेटर ॲप उघडा आणि ६-अंकी कोड टाका.",
+      totpCode: "प्रमाणीकरण कोड",
+      verifyAndSignIn: "पडताळणी करा आणि साइन इन करा",
+      recoveryCode: "त्याऐवजी रिकव्हरी कोड वापरा",
+      back: "मागे",
+    },
+    signUp: {
+      title: "तुमची कार्यक्षेत्र तयार करा",
+      description:
+        "एकाच सुस्पष्ट ऑपरेटिंग सिस्टीममध्ये ग्राहक, प्रकल्प, पावत्या आणि पेमेंटची व्यवस्था करा.",
+      continueWithGoogle: "गुगलसह सुरू ठेवा",
+      continueWithGitHub: "गिटहबसह सुरू ठेवा",
+      orUseEmail: "किंवा ईमेल वापरा",
+      firstName: "पहिले नाव",
+      lastName: "आडनाव",
+      email: "ईमेल",
+      password: "पासवर्ड",
+      confirmPassword: "पासवर्डची पुष्टी करा",
+      passwordCriteria:
+        "किमान ८ अक्षरे, ज्यात एक मोठे अक्षर, एक लहान अक्षर आणि एक अंक असेल.",
+      submit: "खाते तयार करा",
+      alreadyHaveAccount: "तुमचे खाते आधीच आहे का?",
+      signIn: "साइन इन करा",
+      agreePrefix: "नोंदणी करून, तुम्ही आमच्या अटी व शर्तींना सहमती देत आहात.",
+      termsOfService: "सेवा अटी",
+      and: "आणि",
+      privacyPolicy: "गोपनीयता धोरण",
+    },
     signOut: "साइन आउट",
     welcomeBack: "पुन्हा स्वागत!",
     loginFailed: "लॉगिन अयशस्वी. कृपया पुन्हा प्रयत्न करा.",
@@ -1196,12 +1227,12 @@ const mr = {
     alreadyHaveAccount: "आधीच खाते आहे?",
     dontHaveAccount: "खाते नाही?",
     rememberMe: "मला लक्षात ठेवा",
-    totpPlaceholder: "ABCD-EFGH",
+    totpPlaceholder: "एबीसीडी-ईएफजीएच",
     companyPulse: "कंपनी पल्स",
     billingCommand: "बिलिंग कमांड",
     clearWeeklyFlow: "स्पष्ट साप्ताहिक प्रवाह",
     cashLedger: "रोख खातेवही",
-    miruLogo: "Miru",
+    miruLogo: "मिरू",
     heroTitle: "वेळ, इनव्हॉइस आणि पेमेंटसाठी एक ठिकाण",
     heroDescription:
       "दिवस स्पष्ट ठेवा, बिलिंग सुरू ठेवा आणि रोख दृश्यमान ठेवा.",
@@ -1237,15 +1268,72 @@ const mr = {
     termsOfService: "सेवेच्या अटी",
     privacyPolicy: "गोपनीयता धोरण",
     and: "आणि",
+    slides: {
+      dashboard: {
+        title: "कंपनीचा पल्स",
+        description:
+          "महसूल, सक्रिय प्रकल्प आणि टीमची गती कोणतीही शोधाशोध न करता पहा.",
+      },
+      invoices: {
+        title: "बिलिंग कमांड",
+        description:
+          "ड्राफ्ट, थकीत रक्कम आणि अदा केलेली कामे एकाच ठिकाणी ठेवा.",
+      },
+      timeTracking: {
+        title: "स्पष्ट साप्ताहिक प्रवाह",
+        description:
+          "आठवड्या-आठवड्याची वेळेची नोंद निरर्थक कामात न अडकता अद्ययावत राहते.",
+      },
+      payments: {
+        title: "रोख खातेवही",
+        description:
+          "प्रत्येक पेमेंटची नोंद पद्धत, स्थिती आणि स्त्रोतासह एकाच लेजरमध्ये केली जाते.",
+      },
+    },
+    validation: {
+      emailRequired: "ईमेल आवश्यक आहे",
+      invalidEmail: "चुकीचा ईमेल पत्ता",
+      passwordRequired: "पासवर्ड आवश्यक आहे",
+      passwordComplexity:
+        "पासवर्ड किमान ८ अक्षरी असावा, ज्यामध्ये मोठी अक्षरे, लहान अक्षरे आणि अंक यांचा समावेश असावा.",
+      passwordSpace: "पासवर्डमध्ये स्पेस असू शकत नाही.",
+      confirmPasswordRequired: "पासवर्डची पुष्टी करणे आवश्यक आहे.",
+      passwordsMustMatch: "पासवर्ड जुळले पाहिजेत",
+      firstNameRequired: "पहिले नाव आवश्यक आहे",
+      firstNameInvalid: "पहिल्या नावात फक्त अक्षरेच असली पाहिजेत",
+      firstNameMax: "पहिले नाव २० अक्षरांपेक्षा कमी असावे.",
+      lastNameRequired: "आडनाव आवश्यक आहे",
+      lastNameInvalid: "आडनावात फक्त अक्षरेच असली पाहिजेत",
+      lastNameMax: "आडनाव २० अक्षरांपेक्षा कमी असावे.",
+      acceptTerms: "तुम्ही अटी स्वीकारल्या पाहिजेत.",
+    },
   },
-
-  // Passkeys
   passkeys: {
     noPasskeyResponse: "कोणताही पासकी प्रतिसाद प्राप्त झाला नाही.",
     passkeysNotSupported: "या ब्राउझरमध्ये पासकी समर्थित नाहीत.",
+    title: "पासकीज",
+    addTitle: "या खात्यासाठी पासकी जोडा",
+    addDescription:
+      "फेस आयडी, टच आयडी, विंडोज हॅलो किंवा हार्डवेअर सुरक्षा की वापरा.",
+    addAction: "पासकी जोडा",
+    requirementTitle: "साइन इन करताना पासकी आवश्यक आहे.",
+    requirementDescription:
+      "तुमच्या पासवर्डनंतर, साइन इन पूर्ण करण्यासाठी मिरूला पासकीची आवश्यकता असेल.",
+    emptyState: "अद्याप पासकी जोडलेल्या नाहीत.",
+    fallbackName: "पासकी",
+    addedAt: "%{time} जोडले",
+    lastUsedAt: "शेवटचा वापर %{time}",
+    removeAction: "काढून टाका",
+    addedSuccess: "पासकी जोडली",
+    removedSuccess: "पासकी काढली",
+    requirementEnabled: "पासकीची आवश्यकता सक्षम केली आहे",
+    requirementDisabled: "पासकीची आवश्यकता अक्षम केली आहे",
+    addFailed: "पासकी जोडण्यात अयशस्वी झाले.",
+    removeFailed: "पासकी काढण्यात अयशस्वी झाले.",
+    updateRequirementFailed:
+      "पासकी साइन-इन आवश्यकता अद्ययावत करण्यात अयशस्वी झाले.",
+    neverUsed: "कधीही वापरले नाही",
   },
-
-  // Organization setup
   orgSetup: {
     setupOrganization: "संस्था सेटअप करा",
     companyName: "कंपनीचे नाव",
@@ -1272,8 +1360,6 @@ const mr = {
     workingDaysPerWeek: "कार्य दिवस (प्रति आठवडा)",
     workingHoursPerWeek: "कार्य तास (प्रति आठवडा)",
   },
-
-  // Profile
   profile: {
     personalDetails: "वैयक्तिक तपशील",
     employmentDetails: "रोजगार तपशील",
@@ -1287,11 +1373,67 @@ const mr = {
     dateOfJoining: "सामील होण्याची तारीख",
     dateOfBirth: "जन्मतारीख",
     socialProfiles: "सामाजिक प्रोफाइल",
-    linkedin: "LinkedIn",
-    github: "GitHub",
+    linkedin: "लिंक्डइन",
+    github: "गिटहब",
+    personalInformation: "वैयक्तिक माहिती",
+    basicDetails: "मूलभूत तपशील",
+    contactInformation: "संपर्क माहिती",
+    addressType: "पत्त्याचा प्रकार",
+    current: "वर्तमान",
+    permanent: "कायमस्वरूपी",
+    employeeId: "कर्मचारी आयडी",
+    officialEmail: "ईमेल आयडी (अधिकृत)",
+    employmentType: "रोजगाराचा प्रकार",
+    dateOfResignation: "राजीनाम्याची तारीख",
+    birthDatePlaceholder: "तुमची जन्मतारीख निवडा",
+    firstName: "पहिले नाव",
+    lastName: "आडनाव",
+    firstNamePlaceholder: "तुमचे पहिले नाव प्रविष्ट करा",
+    lastNamePlaceholder: "तुमचे आडनाव लिहा",
+    personalEmail: "वैयक्तिक ईमेल",
+    personalEmailPlaceholder: "तुमचा ईमेल@उदाहरण.कॉम",
+    phoneAriaLabel: "फोन नंबर",
+    addressLine1: "पत्ता ओळ १",
+    addressLine2: "पत्ता ओळ २",
+    optionalSuffix: "(ऐच्छिक)",
+    streetAddressPlaceholder: "रस्त्याचा पत्ता",
+    addressLine2Placeholder: "अपार्टमेंट, सुइट, युनिट, इत्यादी.",
+    statePlaceholder: "राज्य किंवा प्रांत",
+    cityPlaceholder: "शहर",
+    zipPostalCode: "झिप/पोस्टल कोड",
+    zipPlaceholder: "१२३४५",
+    languageDescription: "इंटरफेससाठी तुमच्या पसंतीची भाषा निवडा.",
+    security: "सुरक्षा",
+    userFallback: "वापरकर्ता",
+    currentPasswordPlaceholder: "सध्याचा पासवर्ड प्रविष्ट करा",
+    newPassword: "नवीन पासवर्ड",
+    newPasswordPlaceholder: "नवीन पासवर्ड टाका",
+    confirmPasswordPlaceholder: "नवीन पासवर्ड पुन्हा प्रविष्ट करा",
+    cancelPasswordChange: "पासवर्ड बदल रद्द करा",
+    profilePhoto: "प्रोफाइल फोटो",
+    profilePhotoDescription:
+      "तुमच्या वर्कस्पेस प्रोफाइलसाठी एक चौरस फोटो अपलोड करा.",
+    noAddressProvided: "पत्ता दिलेला नाही",
+    noEmailProvided: "ईमेल दिलेला नाही.",
+    notProvided: "प्रदान केलेले नाही",
+    notConnected: "जोडलेले नाही",
+    bornOn: "जन्म %{date}",
+    lastChangedDaysAgo: "शेवटचा बदल %{count} दिवसांपूर्वी",
+    secure: "सुरक्षित",
+    uploadPhoto: "फोटो अपलोड करा",
+    removePhoto: "फोटो काढा",
+    uploadPhotoFailed: "प्रोफाइल इमेज अपलोड करण्यात अयशस्वी.",
+    removePhotoFailed: "प्रोफाइल इमेज काढण्यात अयशस्वी झाले.",
+    adjustProfilePhoto: "प्रोफाइल फोटो समायोजित करा",
+    adjustProfilePhotoDescription:
+      "चित्राचा जो भाग तुम्हाला ठेवायचा आहे तो निवडा.",
+    noImageSelected: "कोणतेही चित्र निवडलेले नाही",
+    savePhoto: "फोटो जतन करा",
+    zoom: "झूम",
+    company: "कंपनी",
+    noPreviousEmployments: "पूर्वीच्या नोकऱ्या आढळल्या नाहीत",
+    addPastEmployment: "+ मागील नोकरी जोडा",
   },
-
-  // Leave Management
   leaveManagement: {
     leaveBalance: "रजा शिल्लक",
     applyLeave: "रजा अर्ज करा",
@@ -1327,9 +1469,11 @@ const mr = {
     leave: "रजा",
     nationalHoliday: "राष्ट्रीय सुट्टी",
     optionalHoliday: "पर्यायी सुट्टी",
+    summaryLabel: "सारांश सोडा",
+    summaryDescription:
+      "निवडलेल्या वर्षासाठी उपलब्ध रजा, आधीच घेतलेला वेळ आणि सुट्ट्यांचा वापर एकाच ठिकाणी पहा.",
+    balanceUntil: "%{date} पर्यंत शिल्लक",
   },
-
-  // Subscriptions / Plan Details
   subscriptions: {
     currentPlan: "सध्याची योजना",
     upgradePlan: "योजना अपग्रेड करा",
@@ -1350,8 +1494,6 @@ const mr = {
     plusTaxes: "कर सहित",
     reviewAndPay: "पुनरावलोकन करा आणि भरा",
   },
-
-  // Misc
   switchToMode: "%{mode} मोडवर स्विच करा",
   light: "लाइट",
   dark: "डार्क",
@@ -1361,8 +1503,6 @@ const mr = {
   editLabel: "संपादित करा",
   noPasskeyResponse: "कोणताही पासकी प्रतिसाद प्राप्त झाला नाही.",
   passkeysNotSupported: "या ब्राउझरमध्ये पासकी समर्थित नाहीत.",
-
-  // Table headers (common)
   tableHeaders: {
     invoiceNo: "इनव्हॉइस क्र.",
     invoiceNumber: "इनव्हॉइस क्रमांक",
@@ -1382,15 +1522,453 @@ const mr = {
     role: "भूमिका",
     type: "प्रकार",
   },
-
-  // Relative dates
   nextDay: "पुढचा %{day}",
   lastDay: "मागचा %{day}",
-
-  // Duration formatting
   durationMinutes: "%{mins}m",
   durationHours: "%{hours}h",
   durationHoursMinutes: "%{hours}h %{mins}m",
+  preferencesSettings: {
+    title: "ईमेल प्राधान्ये",
+    description: "तुमच्या ईमेल सूचना सेटिंग्ज व्यवस्थापित करा",
+    saving: "जतन करत आहे...",
+    saveChanges: "बदल जतन करा",
+    timesheetNotifications: "टाइमशीट सूचना",
+    billingNotifications: "बिलिंग सूचना",
+    timesheetNotificationsDescription:
+      "वेळेचा मागोवा आणि टाइमशीटशी संबंधित सूचना व्यवस्थापित करा",
+    billingNotificationsDescription:
+      "इनव्हॉइस आणि पेमेंट सूचनांवर नियंत्रण ठेवा",
+    weeklyReminderTitle: "साप्ताहिक टाइमशीट स्मरणपत्र",
+    weeklyReminderDescription:
+      "प्रलंबित टाइमशीट नोंदींबद्दल साप्ताहिक स्मरणपत्रे प्रत्येक सोमवारी मिळवा.",
+    timesheetReminderTitle: "गहाळ नोंदीसाठी स्मरणपत्रे",
+    timesheetReminderDescription:
+      "जेव्हा तुम्ही २ दिवसांपेक्षा जास्त काळ वेळ नोंदवला नसेल तेव्हा सूचना मिळवा.",
+    invoiceNotificationsTitle: "इनव्हॉइस ईमेल सूचना",
+    invoiceNotificationsDescription:
+      "इनव्हॉइस तयार झाल्यावर, पाठवल्यावर किंवा अपडेट केल्यावर ईमेल मिळवा.",
+    paymentNotificationsTitle: "पेमेंट ईमेल सूचना",
+    paymentNotificationsDescription:
+      "पेमेंट मिळाल्यावर किंवा पेमेंटच्या स्थितीत बदल झाल्यावर सूचना मिळवा.",
+    monthlyDigestTitle: "मासिक रोख प्रवाह सारांश",
+    monthlyDigestDescription:
+      "निव्वळ बदल, येणारी रक्कम आणि जाणारी रक्कम यासह मासिक रोख प्रवाहाचा सारांश मिळवा.",
+    confirmUnsubscribeTitle: "सर्व ईमेलमधून सदस्यता रद्द करण्याची पुष्टी करा",
+    confirmUnsubscribeDescription:
+      "तुम्हाला सर्व ईमेल सूचनांमधून सदस्यता रद्द करायची आहे याची खात्री आहे का? तुम्हाला महत्त्वाच्या बिलिंग आणि इनव्हॉइस सूचनांसह कोणतेही ईमेल मिळणार नाहीत.",
+    confirmUnsubscribeAction: "होय, सर्वांमधून सदस्यता रद्द करा",
+    unsubscribedTitle: "तुम्ही सर्व ईमेलमधून सदस्यत्व रद्द केले आहे.",
+    unsubscribedDescription:
+      "तुम्ही सध्या सर्व ईमेल सूचनांमधून सदस्यत्व रद्द केले आहे. तुम्हाला मिरूकडून कोणतेही ईमेल मिळणार नाहीत.",
+    resubscribeAction: "ईमेल सूचना पुन्हा चालू करा",
+    enabledCount: "%{total} पैकी %{count} सक्षम केले",
+    deliveryTitle: "ईमेल वितरण सेटिंग्ज",
+    emailAddress: "ईमेल पत्ता",
+    deliveryDescription:
+      "सर्व सूचना या ईमेल पत्त्यावर पाठवल्या जातील. तुमचा ईमेल बदलण्यासाठी, कृपया तुमच्या प्रोफाइल सेटिंग्जमध्ये तो अद्ययावत करा.",
+    unsubscribeTitle: "सदस्यता रद्द करा",
+    unsubscribeDescription:
+      "जर तुम्हाला यापुढे मिरूकडून कोणतेही ईमेल नको असतील, तर तुम्ही सर्व सूचनांमधून अनसबस्क्राइब करू शकता. यामुळे महत्त्वाच्या बिलिंग आणि इनव्हॉइस सूचनांसह सर्व ईमेल संवाद थांबतील.",
+    unsubscribeAction: "सर्व ईमेलमधून सदस्यता रद्द करा",
+    badges: {
+      active: "सक्रिय",
+      important: "महत्त्वाचे",
+      monthly: "मासिक",
+    },
+  },
+  automationSettings: {
+    title: "ऑटोमेशन आणि सीएलआय",
+    description:
+      "तुमच्या लॉग-इन केलेल्या खात्याप्रमाणेच परवानग्यांसह, तुमच्या टर्मिनल, स्क्रिप्ट्स किंवा एआय एजंट्सवरून मिरूचा वापर करा. कोणत्याही वेगळ्या ऑटोमेशन उत्पादनाची आवश्यकता नाही. कोणत्याही विशेष बॅकडोअर ॲक्सेसची गरज नाही.",
+    freeForEveryPlan: "प्रत्येक प्लॅनसोबत मोफत",
+    cards: {
+      samePermissionsTitle: "अ‍ॅपप्रमाणेच परवानग्या",
+      samePermissionsDescription:
+        "प्रमाणीकृत वापरकर्ता वेब अॅपमध्ये आधीपासून जे ॲक्सेस करू शकतो, फक्त तेच CLI पाहू शकते.",
+      humansAndScriptsTitle: "माणसांसाठी आणि स्क्रिप्ट्ससाठी चांगले",
+      humansAndScriptsDescription:
+        "दैनंदिन कामांसाठी सोप्या कमांड्स ठेवा आणि स्क्रिप्ट्स किंवा एआयला अगदी तोच इंटरफेस वापरू द्या.",
+      easyToInstallTitle: "स्थापित करणे सोपे",
+      easyToInstallDescription:
+        "एकच इन्स्टॉल कमांड, एकच लॉगिन, आणि मग तुम्ही प्रोजेक्ट्सची यादी पाहू शकता, वेळेच्या नोंदी तयार करू शकता, इनव्हॉइस तपासू शकता आणि बरेच काही करू शकता.",
+    },
+    commandGroups: {
+      install: "स्थापित करा",
+      authenticateOnce: "एकदा प्रमाणीकरण करा",
+      dailyCommands: "दैनंदिन आदेश",
+    },
+  },
+  holidaysSettings: {
+    year: "वर्ष",
+    publicHolidays: "सार्वजनिक सुट्ट्या",
+    optionalHolidays: "ऐच्छिक सुट्ट्या",
+    holidayName: "सुट्टीचे नाव",
+    enterHolidayName: "सुट्टीचे नाव प्रविष्ट करा",
+    selectDate: "तारीख निवडा",
+    addHoliday: "सुट्टी जोडा",
+    addFirstHoliday: "पहिली सुट्टी जोडा",
+    addOptionalHoliday: "ऐच्छिक सुट्टी जोडा",
+    noPublicHolidaysConfigured:
+      "कोणत्याही सार्वजनिक सुट्ट्या कॉन्फिगर केलेल्या नाहीत.",
+    noOptionalHolidaysConfigured:
+      "कोणत्याही ऐच्छिक सुट्ट्या कॉन्फिगर केलेल्या नाहीत.",
+    totalAllowed: "एकूण परवानगी",
+    enterNumber: "संख्या प्रविष्ट करा",
+    frequency: "वारंवारता",
+    allowedPerEmployee: "प्रत्येक कर्मचाऱ्यामागे परवानगी",
+    yearAtAGlance: "एका दृष्टिक्षेपात वर्ष",
+    holidaySchedule: "सुट्टीचे वेळापत्रक",
+    noHolidaysAddedForYear: "%{year} साठी अद्याप कोणतीही सुट्टी जोडलेली नाही.",
+    categories: {
+      public: "सार्वजनिक",
+      optional: "ऐच्छिक",
+    },
+    weekdays: {
+      sun: "एस",
+      mon: "एम",
+      tue: "टी",
+      wed: "डब्ल्यू",
+      thu: "टी",
+      fri: "एफ",
+      sat: "एस",
+    },
+  },
+  paymentSettingsPage: {
+    backToSettings: "सेटिंग्जवर परत जा",
+    title: "पेमेंट प्रदाते",
+    description:
+      "ग्राहकांकडून ऑनलाइन पेमेंट स्वीकारण्यासाठी पेमेंट प्रोव्हायडर्सना जोडा.",
+    errorTitle: "त्रुटी",
+    errorDescription:
+      "पेमेंट सेटिंग्ज लोड होण्यात अयशस्वी झाले. कृपया नंतर पुन्हा प्रयत्न करा.",
+    stripeDescription:
+      "क्रेडिट कार्ड, डेबिट कार्ड आणि लोकप्रिय पेमेंट पद्धती स्वीकारा",
+    connectedTo: "शी जोडलेले",
+    connected: "जोडलेले",
+    stripeAccountFallback: "स्ट्राइप खाते",
+    chargesEnabled: "शुल्क सक्षम केले",
+    connectStripe: "पट्टे जोडा",
+    connecting: "जोडत आहे...",
+    disconnect: "डिस्कनेक्ट करा",
+    disconnecting: "कनेक्शन तोडत आहे...",
+    featuresTitle: "वैशिष्ट्ये आणि फायदे",
+    helpTitle: "मदत हवी आहे का?",
+    helpDescription:
+      "जर तुम्हाला पेमेंट प्रोसेसिंग सेट अप करण्यासाठी मदतीची आवश्यकता असेल किंवा शुल्क आणि कार्यप्रणालीबद्दल प्रश्न असतील तर:",
+    viewDocumentation: "दस्तऐवज पहा",
+    contactSupport: "सपोर्टशी संपर्क साधा",
+    disconnectDialogTitle: "स्ट्राइप खाते डिस्कनेक्ट करा",
+    disconnectDialogDescription:
+      "तुम्हाला तुमचे स्ट्राइप खाते नक्कीच बंद करायचे आहे का? जोपर्यंत तुम्ही ते पुन्हा जोडत नाही, तोपर्यंत तुम्ही स्ट्राइपद्वारे पेमेंट स्वीकारू शकणार नाही.",
+    features: {
+      secureTitle: "सुरक्षित पेमेंट",
+      secureDescription: "PCI-अनुरूप पेमेंट प्रक्रिया",
+      currenciesTitle: "अनेक चलने",
+      currenciesDescription: "१३५ पेक्षा जास्त चलनांमध्ये पेमेंट स्वीकारा",
+      methodsTitle: "विविध पेमेंट पद्धती",
+      methodsDescription: "कार्ड, वॉलेट, बँक ट्रान्सफर आणि बरेच काही",
+      setupTitle: "झटपट सेटअप",
+      setupDescription: "काही मिनिटांत पेमेंट स्वीकारण्यास सुरुवात करा",
+    },
+  },
+  organizationSettingsPage: {
+    actions: {
+      editSettings: "सेटिंग्ज संपादित करा",
+    },
+    sections: {
+      companyProfile: "कंपनी प्रोफाइल",
+      financial: "आर्थिक",
+      scheduleAndTime: "वेळापत्रक आणि वेळ",
+      workingHours: "कामाचे तास",
+    },
+    fields: {
+      businessPhone: "व्यवसाय फोन",
+      currency: "चलन",
+      businessAddress: "व्यवसायाचा पत्ता",
+      standardRate: "मानक दर",
+      fiscalYearEnd: "आर्थिक वर्षाचा शेवट",
+      timezone: "टाइमझोन",
+      dateFormat: "तारीख स्वरूप",
+      workingDays: "कामाचे दिवस",
+    },
+    status: {
+      active: "सक्रिय",
+    },
+    defaults: {
+      companyName: "कंपनीचे नाव",
+      locationNotSet: "स्थान निश्चित नाही",
+      notConfigured: "कॉन्फिगर केलेले नाही",
+      noAddress: "कोणताही पत्ता कॉन्फिगर केलेला नाही.",
+      workingHours: "सकाळी ९:०० ते सायंकाळी ५:००",
+      workingDays: "सोमवार - शुक्रवार",
+      timezone: "यूटीसी",
+      dateFormat: "MM/DD/YYYY",
+    },
+    errors: {
+      loadFailed:
+        "संस्थेचा तपशील लोड करण्यात अयशस्वी झाले. कृपया पुन्हा प्रयत्न करा.",
+    },
+    ratePerHour: "/ तास",
+  },
+  billingSettings: {
+    membership: "सदस्यत्व",
+    currentPlan: "सध्याची योजना",
+    seatUsage: "आसनाचा वापर",
+    billingCadence: "बिलिंग कॅडेन्स",
+    monthly: "मासिक",
+    yearly: "वार्षिक",
+    notSubscribedYet: "अद्याप सदस्यता घेतली नाही",
+    startTrial: "३०-दिवसांची प्रो चाचणी सुरू करा",
+    startingTrial: "चाचणी सुरू होत आहे...",
+    upgradeWithStripe: "स्ट्राइपसह अपग्रेड करा",
+    openingStripe: "ओपनिंग स्ट्राइप...",
+    manageBillingInStripe: "स्ट्राइपमध्ये बिलिंग व्यवस्थापित करा",
+    openingPortal: "पोर्टल उघडत आहे...",
+    saveTwoMonths: "वार्षिक शुल्कावर दोन महिन्यांची बचत करा",
+    heroTitle: "सध्या योग्य असलेले पॅकेज निवडा. नंतर गरज भासल्यास बदला.",
+    howManySeats: "तुम्हाला किती जागा लागतील असा अंदाज आहे?",
+    estimatedSeats: "अंदाजित जागा",
+    recommended: "शिफारस केलेले",
+    estimatedProSpend: "अंदाजित व्यावसायिक खर्च",
+    yearlyDiscount: "वार्षिक सवलत",
+    openSource: "ओपन सोर्स",
+    annual: "वार्षिक",
+    service: "सेवा",
+    poweredByStripe: "स्ट्राइप द्वारे समर्थित",
+    changePlansAnytime: "योजना कधीही बदला.",
+    checkoutPoweredByStripe:
+      "चेकआउट आणि सबस्क्रिप्शन व्यवस्थापन स्ट्राइपद्वारे समर्थित आहे.",
+    noSalesCall:
+      "प्रो प्लॅनसाठी कोणताही सेल्स कॉल नाही. स्ट्राइपमध्ये कधीही प्लॅन रद्द करा किंवा बदला.",
+    reportsAndAnalytics: "अहवाल आणि विश्लेषण",
+    customAnnual: "सानुकूल वार्षिक",
+    seatsUsed: "%{used}/%{total} जागा वापरल्या",
+    seatsUsedWithoutLimit: "वापरलेल्या %{used} जागा",
+    savePerYear: "दरवर्षी $%{amount} वाचवा",
+    effectiveMonthlyPricing: "अंदाजे $%{amount}/प्रति महिना प्रभावी किंमत",
+    cancelOrUpgradeAnytime: "स्ट्राइपमध्ये कधीही रद्द करा किंवा अपग्रेड करा",
+    planCadence: {
+      monthly: "मासिक बिल",
+      yearlySavings: "प्रत्येक सीटमागे २ महिन्यांची बचत करा",
+    },
+    alerts: {
+      subscriptionUpdatedTitle: "सदस्यता अद्ययावत झाली",
+      subscriptionUpdated:
+        "तुमची योजना स्ट्राइपमध्ये यशस्वीरित्या अद्ययावत करण्यात आली.",
+      checkoutCancelled: "चेकआउट रद्द केले",
+      noSubscriptionChanges:
+        "तुमच्या सदस्यतेमध्ये कोणतेही बदल करण्यात आले नाहीत.",
+      unableToLoad: "बिलिंग तपशील लोड करता आले नाहीत",
+      proTrialActive: "प्रो चाचणी सक्रिय",
+      proTrialActiveUntil:
+        "तुमच्या वर्कस्पेसला %{date} पर्यंत प्रो ॲक्सेस आहे.",
+      proTrialEnded: "समर्थक खटला संपला",
+      proTrialEndedDescription:
+        "तुमचे वर्कस्पेस पुन्हा मोफत प्लॅनवर आले आहे. प्रो ॲक्सेस पुन्हा मिळवण्यासाठी स्ट्राइपमध्ये अपग्रेड करा.",
+      seatLimitReached: "आसन मर्यादा गाठली गेली.",
+      seatLimitReachedDescription:
+        "या वर्कस्पेसमध्ये 3 पेक्षा जास्त सदस्य जोडण्यासाठी स्ट्राइपमध्ये अपग्रेड करा.",
+    },
+    errors: {
+      unableToOpenStripeCheckout: "स्ट्राइप चेकआउट उघडता आले नाही",
+      unableToOpenStripeBillingPortal: "स्ट्राइप बिलिंग पोर्टल उघडता आले नाही",
+      unableToStartProTrial: "तुमची प्रो चाचणी सुरू करता आली नाही",
+    },
+    recommendations: {
+      freeTitle:
+        "जोपर्यंत तुम्हाला नियंत्रणांची गरज भासत नाही तोपर्यंत मोफत वापरा.",
+      freeDescription:
+        "अतिशय लहान टीम्ससाठी मोफत आवृत्ती चांगली काम करते. जेव्हा तुम्हाला SSO, अधिक मजबूत रिपोर्ट्स आणि ३ पेक्षा जास्त सीट्सची आवश्यकता असेल, तेव्हा प्रो आवृत्ती घ्या.",
+      proTitle: "प्रो योग्य आहे",
+      proDescription:
+        "वाढत्या टीम्ससाठी, प्रो तुम्हाला SSO, आर्थिक पारदर्शकता आणि एंटरप्राइझ ओव्हरहेडशिवाय वाढीसाठी पुरेशी संधी देतो.",
+      enterpriseTitle: "एंटरप्राइजबद्दल आमच्याशी बोला",
+      enterpriseDescription:
+        "मोठ्या टीम्सना सहसा खरेदीसाठी सहाय्य, प्रशासकीय नियंत्रणे आणि अधिक सुलभ अंमलबजावणीची आवश्यकता असते. प्रो ने सुरुवात करा किंवा थेट एंटरप्राइझवर जा.",
+    },
+    highlights: {
+      seatsTitle: "प्रशासकीय त्रासाशिवाय अधिक जागा",
+      seatsDescription:
+        "३-सीट मोफत मर्यादेच्या पलीकडे जा आणि ऑनबोर्डिंग सोपे ठेवा.",
+      ssoTitle: "एसएसओ आणि अधिक मजबूत नियंत्रणे",
+      ssoDescription:
+        "वाढत्या संघांना अतिरिक्त साधनांशिवाय सुरक्षित प्रवेश द्या.",
+      financeTitle: "शांत राहणारी आर्थिक पारदर्शकता",
+      financeDescription:
+        "कोणत्याही अतिरिक्त सेटअपशिवाय मार्जिन, बिलिंगची पद्धत आणि टीमचा वापर जाणून घ्या.",
+    },
+    planDescriptions: {
+      free: "कोअर ट्रॅकिंग, इन्व्हॉइसिंग, पेमेंट्स आणि ३ टीम सीट्सपर्यंतच्या सुविधेसह मिरूला सेल्फ-होस्ट करा.",
+      pro: "प्रो आवृत्तीमध्ये एंटरप्राइझ स्तरावरील अतिरिक्त खर्चाशिवाय रिपोर्ट्स, SSO, अधिक सीट्स आणि अधिक सुलभ प्रशासकीय नियंत्रणे मिळतात.",
+      enterprise:
+        "खरेदी-अनुकूल करार, प्रगत नियंत्रणे आणि सुरक्षा पुनरावलोकनाची आवश्यकता असलेल्या मोठ्या संघांसाठी साहाय्य.",
+      hostedEnterprise:
+        "आम्ही तुमच्यासाठी एका समर्पित सेटअपवर मिरू होस्ट करतो, अपग्रेड करतो, बॅकअप घेतो आणि सपोर्ट देतो.",
+    },
+    planBullets: {
+      free: {
+        coreProduct: "सेल्फ-होस्टेड कोअर प्रॉडक्ट",
+        tracking: "वेळेचा मागोवा, पावत्या, देयके",
+        dashboard: "लहान टीमसाठी डॅशबोर्डची दृश्यमानता",
+      },
+      pro: {
+        trial: "पैसे भरण्यापूर्वी ३० दिवसांची मोफत चाचणी",
+        sso: "एसएसओ, प्रगत रिपोर्टिंग, अधिक मजबूत प्रशासकीय नियंत्रणे",
+        fit: "एजन्सी आणि वाढत्या संघांसाठी सर्वोत्तम पर्याय",
+      },
+      enterprise: {
+        contracts: "खरेदी-अनुकूल करार",
+        onboarding: "सुरक्षा पुनरावलोकन आणि ऑनबोर्डिंग सहाय्य",
+        compliance: "मंजुरी आणि अनुपालनाची आवश्यकता असलेल्या मोठ्या संघांसाठी",
+      },
+      hosted: {
+        setup: "समर्पित व्यवस्थापित सेटअप",
+        operations: "आम्ही अपग्रेड, बॅकअप आणि सपोर्टची जबाबदारी सांभाळतो.",
+        fit: "ज्या संघांना मिरू त्यांच्यासाठी पूर्णपणे ऑपरेट करून हवा आहे त्यांच्यासाठी",
+      },
+    },
+    heroDescription:
+      "मोफत सुरुवात करा, जेव्हा टीमला अधिक नियंत्रणाची गरज असेल तेव्हा प्रो मध्ये जा, किंवा मिरू आमच्यावर सोपवा. प्रो कमी खर्चाचे राहते, वार्षिक सदस्यत्वामुळे पैशांची बचत होते, आणि बिलिंग सोपे राहते कारण चेकआउट आणि सबस्क्रिप्शन व्यवस्थापन स्ट्राइपद्वारे केले जाते.",
+    seatEstimatorDescription:
+      "मोफत आणि प्रो यांची तुलना करण्यासाठी याचा वापर करा आणि मासिक की वार्षिक यापैकी काय अधिक फायदेशीर आहे ते ठरवा.",
+    yearlyDiscountDescription:
+      "मासिक दरांच्या तुलनेत प्रत्येक सीटवर दोन महिने मोफत.",
+    checkoutDescription:
+      "कोणत्याही विक्री प्रक्रियेशिवाय चाचणी सुरू करा, तुम्ही तयार असाल तेव्हा अपग्रेड करा आणि गरजेनुसार स्वतःच बिलिंग व्यवस्थापित करा.",
+    plans: {
+      unknown: "अज्ञात",
+      free: "मोफत",
+      freePro: "मोफत प्रो",
+      proTrial: "प्रो ट्रायल",
+      paid: "पैसे दिले",
+      enterprise: "एंटरप्राइझ",
+      hostedEnterprise: "होस्टेड एंटरप्राइज",
+    },
+    table: {
+      feature: "वैशिष्ट्य",
+      bestFor: "यासाठी सर्वोत्तम",
+      selfHostedTeams: "सेल्फ-होस्टेड टीम्सची सुरुवात",
+      growingServiceTeams: "नियंत्रणांची गरज असलेल्या वाढत्या सेवा संघ",
+      largeOrgs: "सुरक्षा आणि खरेदीची गरज असलेल्या मोठ्या संस्था",
+      managedTeams: "ज्या संघांना मिरूचे व्यवस्थापन करून घ्यायचे आहे",
+      timeTracking: "वेळेचा मागोवा घेणे",
+      invoicesAndPayments: "पावत्या आणि देयके",
+      reportsAndDashboards: "अहवाल आणि डॅशबोर्ड",
+      sso: "एसएसओ",
+      auditAndAdminControls: "लेखापरीक्षण आणि प्रशासकीय नियंत्रणे",
+      support: "समर्थन",
+      included: "समाविष्ट",
+      notIncluded: "समाविष्ट नाही",
+      dashboardOnly: "फक्त डॅशबोर्ड",
+      reportsAndAnalytics: "अहवाल आणि विश्लेषण",
+      community: "समुदाय",
+      priorityEmail: "प्राधान्य ईमेल",
+      priorityOnboarding: "प्राधान्य + ऑनबोर्डिंग",
+      managedOnboarding: "व्यवस्थापित सेवा + ऑनबोर्डिंग",
+    },
+  },
+  twoFactor: {
+    title: "ऑथेंटिकेटर अॅप 2FA",
+    addTitle: "ऑथेंटिकेटर अॅप जोडा",
+    addDescription:
+      "Google Authenticator, 1Password, Bitwarden, Authy, किंवा कोणतेही TOTP-सुसंगत ॲप वापरा.",
+    setupAction: "२एफए सेट अप करा",
+    finishTitle: "ऑथेंटिकेटर सेटअप पूर्ण करा",
+    finishDescription:
+      "ही की तुमच्या ऑथेंटिकेटर ॲपमध्ये जोडा, त्यानंतर २एफए (2FA) सक्षम करण्यासाठी सध्याचा ६-अंकी कोड प्रविष्ट करा.",
+    manualEntryKey: "मॅन्युअल एंट्री की",
+    verificationCode: "पडताळणी कोड",
+    verificationCodePlaceholder: "१२३४५६",
+    enableAction: "२एफए सक्षम करा",
+    resetKeyAction: "रीसेट की",
+    enabledTitle: "ऑथेंटिकेटर अॅप संरक्षण चालू आहे",
+    enabledDescription:
+      "साइन इन करताना तुमच्या पासवर्डनंतर तुम्हाला एका ऑथेंटिकेटर कोडची आवश्यकता असेल.",
+    recoveryCodesAvailable: "%{count} रिकव्हरी कोड उपलब्ध आहेत",
+    regenerateRecoveryCodes: "रिकव्हरी कोड पुन्हा तयार करा",
+    disableAction: "२एफए अक्षम करा",
+    saveRecoveryCodes: "हे रिकव्हरी कोड जतन करा",
+    saveRecoveryCodesDescription:
+      "प्रत्येक कोड एकदाच काम करतो. ते सुरक्षित ठिकाणी साठवून ठेवा.",
+    setupReadySuccess: "ऑथेंटिकेटर अॅप सेटअप तयार आहे",
+    enabledSuccess: "ऑथेंटिकेटर अॅप सक्षम केले",
+    disabledSuccess: "ऑथेंटिकेटर अॅप अक्षम केले",
+    regeneratedSuccess: "रिकव्हरी कोड पुन्हा तयार केले गेले.",
+    setupFailed: "2FA सेटअप सुरू करण्यात अयशस्वी झाले.",
+    enableFailed: "ऑथेंटिकेटर अॅप सक्षम करण्यात अयशस्वी झाले.",
+    disableFailed: "2FA अक्षम करण्यात अयशस्वी झाले.",
+    regenerateFailed: "रिकव्हरी कोड पुन्हा तयार करण्यात अयशस्वी झाले.",
+  },
+  notificationPreferences: {
+    emailNotifications: "ईमेल सूचना",
+    manageDescription: "तुमच्या ईमेल सूचना प्राधान्ये व्यवस्थापित करा",
+    weeklyEmailReminder: "साप्ताहिक ईमेल स्मरणपत्र",
+    weeklyEmailReminderDescription:
+      "टाइमशीट नोंदी आणि प्रकल्प अद्यतनांविषयी साप्ताहिक ईमेल स्मरणपत्रे मिळवा.",
+    noUserData: "वापरकर्त्याचा डेटा उपलब्ध नाही",
+    loginPrompt: "सूचना प्राधान्ये व्यवस्थापित करण्यासाठी कृपया लॉग इन करा.",
+  },
+  devices: {
+    addDevices: "डिव्हाइस जोडा",
+    editDevices: "उपकरणे संपादित करा",
+    device: "डिव्हाइस",
+    unknownDevice: "अज्ञात डिव्हाइस",
+    serial: "मालिका:",
+    deviceType: "डिव्हाइस प्रकार",
+    selectDeviceType: "डिव्हाइसचा प्रकार निवडा",
+    modelName: "मॉडेल/नाव",
+    serialNumber: "अनुक्रमांक",
+    memory: "मेमरी (रॅम)",
+    processor: "प्रोसेसर",
+    graphics: "ग्राफिक्स",
+    graphicsCard: "ग्राफिक्स कार्ड",
+    storage: "साठवणूक",
+    modelNamePlaceholder: "उदा., मॅकबुक प्रो १६-इंच",
+    serialNumberPlaceholder: "उदा., C02XX1234567",
+    memoryPlaceholder: "उदा., 16GB DDR4",
+    processorPlaceholder: "उदा., इंटेल कोर आय७-१०७५०एच",
+    graphicsPlaceholder: "उदा., एनव्हिडिया जीफोर्स आरटीएक्स ३०६०",
+    storagePlaceholder: "उदा., ५१२ जीबी एसएसडी",
+    addAnotherDevice: "आणखी एक डिव्हाइस जोडा",
+    addAnotherDeviceDescription:
+      "तुमच्या इन्व्हेंटरीमध्ये नवीन डिव्हाइस जोडण्यासाठी क्लिक करा",
+    deviceSummary: "डिव्हाइस सारांश",
+    totalDevices: "एकूण उपकरणे",
+    notSpecified: "निर्दिष्ट नाही",
+    noDevicesFound: "कोणतेही डिव्हाइस आढळले नाही",
+    newDevice: "नवीन उपकरण",
+    unsavedChangesPrompt:
+      "तुम्ही केलेले बदल जतन केलेले नाहीत. तुम्हाला रद्द करायचे आहे याची खात्री आहे का?",
+  },
+  nav: {
+    dashboard: "डॅशबोर्ड",
+    timeTracking: "वेळ ट्रॅकिंग",
+    clients: "ग्राहक",
+    projects: "प्रकल्प",
+    team: "संघ",
+    invoices: "पावत्या",
+    reports: "अहवाल",
+    payments: "पेमेंट",
+    leavesAndHolidays: "रजा आणि सुट्ट्या",
+    expenses: "खर्च",
+    settings: "सेटिंग्ज",
+    logout: "लॉगआउट",
+  },
+  sidebar: {
+    main: "मुख्य",
+    personalSettings: "वैयक्तिक सेटिंग्ज",
+    companySettings: "कंपनी सेटिंग्ज",
+    profile: "प्रोफाइल",
+    devices: "उपकरणे",
+    organization: "संघटना",
+    billing: "बिलिंग",
+    paymentSettings: "पेमेंट सेटिंग्ज",
+    holidayCalendar: "सुट्टीचे कॅलेंडर",
+    myLeaves: "माझी पाने",
+    bankTaxInfo: "बँक आणि कर माहिती",
+    expand: "साइडबारचा विस्तार करा",
+    collapse: "साइडबार संकुचित करा",
+  },
 };
 
 export default mr;

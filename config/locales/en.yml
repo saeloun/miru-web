@@ -1,167 +1,92 @@
-# Files in the config/locales directory are used for internationalization
-# and are automatically loaded by Rails. If you want to use locales other
-# than English, add the necessary files in this directory.
-#
-# To use the locales, use `I18n.t`:
-#
-#     I18n.t "hello"
-#
-# In views, this is aliased to just `t`:
-#
-#     <%= t("hello") %>
-#
-# To use a different locale, set it with `I18n.locale`:
-#
-#     I18n.locale = :es
-#
-# This would use the information in config/locales/es.yml.
-#
-# The following keys must be escaped otherwise they will not be retrieved by
-# the default I18n backend:
-#
-# true, false, on, off, yes, no
-#
-# Instead, surround them with single quotes.
-#
-# en:
-#   "true": "foo"
-#
-# To learn more, please read the Rails Internationalization guide
-# available at https://guides.rubyonrails.org/i18n.html.
-
+---
 en:
-  activerecord:
-    errors:
-      models:
-        client:
-          attributes:
-            name:
-              format: "%{message}"
-        project:
-          attributes:
-            name:
-              format: "%{message}"
-  navbar:
-    clients: Clients
-    invoices: Invoices
-    logout: Logout
-    profile: Profile
-    projects: Projects
-    reports: Reports
-    settings: Settings
-    team: Team
-    payments: Payments
-    help: Help
-    time_tracking: Time Tracking
-    view_notifications: View Notifications
-  user:
-    login:
-      failure:
-        disabled: "Your access has been disabled."
-        pending_invitation: "Your account is not activated yet."
-  projects:
-    projects: Projects
-    hours_logged: HOURS LOGGED
-    new_project: NEW PROJECT
-    project: Project
-    client: Client
-    project_name: Project name
-    edit: edit
-    create:
-      success: Project added successfully.
-      failure: Project creation failed.
+  app:
+    name: Miru Agency OS
+    tagline: Run your agency’s ops from one command center.
+  application_controller:
+    not_found: Route not found
+  avatar:
+    destroy:
+      success: Avatar deleted successfully
     update:
-      success:  Changes saved successfully.
-    update_members:
-      success:
-        message: Changes saved successfully
-      failure:
-        unauthorized: User is unauthorized to modify this project's details
-        message: Failed to saved changes
-    add_project: Add project
-    add_new_project: Add new project
-    billable: Billable
-    non_billable: Non-Billable
-    delete:
-      success:
-        message: Project removed successfully
-  companies:
-    create:
-      failure: "Company creation failed"
-      success: "Company created successfully"
-    update:
-      success: "Changes saved successfully"
-    purge_logo:
-      destroy:
-        success: "Company Logo successfully removed"
+      success: Avatar updated successfully
   client:
-    name:
-      label: Name
-      placeholder: Enter name
-    email:
-      label: Email
-      placeholder: Enter email ID
-    phone:
-      label: Phone number
-      placeholder: Enter phone number
+    add: ADD CLIENT
     address:
       label: Address
       placeholder: Enter address
     create:
-      failure: "Client creation failed"
-      success: "Client added successfully"
-    update:
-      success:
-        message: Changes saved successfully
-      failure:
-        unauthorized: User is unauthorized to modify this client's details
-        message: Failed to saved changes
+      failure: Client creation failed
+      success: Client added successfully
     delete:
       success:
         message: Client removed successfully
-    add: ADD CLIENT
-  workspaces:
+    email:
+      label: Email
+      placeholder: Enter email ID
+    name:
+      label: Name
+      placeholder: Enter name
+    phone:
+      label: Phone number
+      placeholder: Enter phone number
     update:
-      failure: "Failed to switch workspace"
-      success: "Workspace switched successfully"
-  expenses:
-    create: Expense submitted successfully
-    update: Expense updated successfully
-    destroy: Expense deleted successfully
-    approve: Expense approved successfully
-    reject: Expense rejected successfully
-    mark_paid: Expense marked as paid
-    must_be_approved: Expense must be approved before marking it as paid
-  team:
-    team: Team
-    new_user: NEW USER
-    profile_picture: PHOTO
-    name: NAME
-    email_id: EMAIL ID
-    role: ROLE
-    create_new_user: Create New User
-    update_user: Update User
-    current_email: Current Email
-    changed_email: Changed Email
-    reconfirmation: RECONFIRMATION PENDING
-    invitation: INVITATION PENDING
-    form_name: Name
-    form_email: Email
-    form_book_keeper: Book Keeper
-    form_role: Role
-    form_admin: Admin
-    form_employee: Employee
-    first_name: First Name
-    last_name: Last Name
-    email: Email
-    delete:
-      success:
-        message: Team Member removed successfully
-    update:
+      failure:
+        message: Failed to saved changes
+        unauthorized: User is unauthorized to modify this client's details
       success:
         message: Changes saved successfully
-      error:
-        role: There was an error while updating role
+  clients:
+    add_client_contact:
+      success: Invitation sent successfully.
+    send_payment_reminder:
+      success: Payment reminder has been sent
+  companies:
+    create:
+      failure: Company creation failed
+      success: Company created successfully
+    purge_logo:
+      destroy:
+        success: Company Logo successfully removed
+    update:
+      success: Changes saved successfully
+  company:
+    address: address
+    base_currency: base currency
+    business_phone: business phone
+    cancel: cancel
+    company: company
+    country: country
+    date_format: date Format
+    fiscal_year: fiscal year
+    logo: logo
+    save: save
+    save_org: save org details
+    setup: setup org
+    standard_price: standard price
+    timezone: timezone
+  confirmation:
+    send_instructions: A confirmation email has been sent to %{email}.
+  currency_pairs:
+    from_to_required: from and to are required
+    rate_not_found: Rate not found
+  custom_leaves:
+    update:
+      success: Custom Leaves updated successfully
+  employment:
+    update:
+      success: Employment updated successfully
+  expenses:
+    approve: Expense approved successfully
+    create: Expense submitted successfully
+    destroy: Expense deleted successfully
+    mark_paid: Expense marked as paid
+    must_be_approved: Expense must be approved before marking it as paid
+    reject: Expense rejected successfully
+    update: Expense updated successfully
+  holidays:
+    update:
+      success: Holiday Info updated successfully
   invitation:
     create:
       success:
@@ -169,390 +94,435 @@ en:
     delete:
       success:
         message: Invitation removed successfully
-    update:
-      success:
-        message: Changes saved successfully
     resent:
       success:
         message: Invitation resent successfully
-  employment:
     update:
-      success: Employment updated successfully
-  registration:
-    sign_up: sign up
-    sign_in: sign in
-    name: name
-    first_name: first name
-    last_name: last name
-    password: password
-    confirm_password: confirm password
-    email_id: email
-    remember_me: remember me
-    or: or
-    signup_with_google: sign up with google
-    signup_with_github: sign up with github
-    signup_with_apple: sign up with apple
-    signin_with_google: sign in with google
-    signin_with_github: sign in with github
-  confirmation:
-    send_instructions: "A confirmation email has been sent to %{email}."
-  shared_links:
-    already_have_an_account: already have an account?
-    dont_have_an_account: don't have an account?
-    forgot_password: forgot password ?
-    back_to_login: back to login
-    confirmation_instruction: didn't receive confirmation instructions?
-    unlock_instruction: didn't receive unlock instructions?
-  company:
-    cancel: cancel
-    save: save
-    logo: logo
-    company: company
-    address: address
-    business_phone: business phone
-    country: country
-    timezone: timezone
-    base_currency: base currency
-    standard_price: standard price
-    fiscal_year: fiscal year
-    date_format: date Format
-    setup: setup org
-    save_org: save org details
-  reports:
-    heading: Time entry report
+      success:
+        message: Changes saved successfully
   invitations:
-    create:
-      success: Invitation will be sent
-      failure: Failed to saved changes
-    update:
-      success: Invitation updated
-      failure: Failed to saved changes
-    destroy:
-      success: Invitation deleted
-      failure: Failed to delete invitation
     accept:
-      success: Invitation accepted
       index:
         success: Invitation accepted
       show:
         success: Invitation accepted
+      success: Invitation accepted
+    create:
+      failure: Failed to saved changes
+      success: Invitation will be sent
+    destroy:
+      failure: Failed to delete invitation
+      success: Invitation deleted
+    update:
+      failure: Failed to saved changes
+      success: Invitation updated
   invoices:
     payments:
       success:
-        success: "Payment successful"
-        failure: "Something went wrong, please contact support"
-  settings:
-    settings: settings
-    cancel: cancel
-    save: save
-    profile_setting: profile settings
-    organization_setting: organization settings
-    payment_setting: payment settings
-    profile_picture: profile picture
-    name: name
-    email: email
-    change_password: change password
-    current_password: current password
-    password: password
-    confirm_password: confirm password
-  pundit:
-    default: You are not authorized to perform this action.
-    different_workspace: You are not authorized to access records outside your current workspace.
-    client_policy:
-      create?: You are not authorized to create client.
-      update?: You are not authorized to update client.
-      show?:
-        You are not authorized to access the page. Please reach out to your
-        administrator for help.
-    company_policy:
-      new?: You are not authorized to create new company.
-      create?: You are not authorized to create company.
-      show?: You are not authorized to view company.
-      update?: You are not authorized to update company.
-    current_company_policy:
-      company_not_present: Company not present.
-    project_policy:
-      create?: You are not authorized to create project.
-      show?:
-        You are not authorized to access the page. Please reach out to your
-        administrator for help.
-    team_policy:
-      edit?: You are not authorized to edit team.
-      update?: You are not authorized to update team.
-      destroy?: You are not authorized to destroy team.
-  errors:
-    not_found: The resource you're looking for is not available
-    unauthorized:
-      Only owner or admin users are authorized to perform this action
-    bill_status_billed: You can't bill an entry that has already been billed
-    create_billed_entry: You can't create a billed timesheet entry
-    validate_billable_project: You can't create an unbilled entry for non-billable projects
-    internal_server_error: Something went wrong
-    user_already_member: Email id is already in use. Please enter another email id
-    updation_not_allowed: updation is not allowed
-    can't change status: can't be changed of a paid invoice
-    prevent_draft_to_waived: can't be changed to waived
-  timesheet_entry:
-    create:
-      message: "Timesheet created"
-    update:
-      message: "Timesheet updated"
-      failure: "Failed to update timesheet entries"
-    destroy:
-      message: "Timesheet deleted"
-      failure: "Failed to delete timesheet entries"
-  password:
-    create:
-      success:
-        Instructions for resetting your password have been sent to your email.
-    update:
-      success: Your password has been updated.
-  sessions:
-    failure:
-      invalid: Invalid email or password
-  leaves:
-    create:
-      success: Leave created successfully
-    update:
-      success: Leave updated successfully
-  timeoff_entries:
-    create:
-      success: Added time off successfully
-    update:
-      success: Updated time off successfully
-    destroy:
-      success: Deleted time off successfully
-  leave_with_leave_types:
-    update:
-      success: Leaves updated successfully
-  avatar:
-    update:
-      success: Avatar updated successfully
-    destroy:
-      success: Avatar deleted successfully
-  clients:
-    add_client_contact:
-      success: "Invitation sent successfully."
-    send_payment_reminder:
-      success: Payment reminder has been sent
+        failure: Something went wrong, please contact support
+        success: Payment successful
+  invoices_controller:
+    download:
+      pdf_failed: Failed to generate PDF
+    send_invoice:
+      already_paid: Invoice is already paid
+      pdf_failed: Failed to generate PDF
+      recipient_limit: Email can only be sent to 5 recipients.
+      recipients_required: Recipients are required
+      success: Invoice has been sent successfully
+    send_reminder:
+      overdue_only: Reminders can only be sent for overdue invoices
+      success: A reminder has been sent
+  invoices_view:
+    not_found: No invoice found
   leave_types:
     create:
       success: Added leave type successfully
     update:
       success: Updated leave type successfully
-  custom_leaves:
+  leave_with_leave_types:
     update:
-      success: Custom Leaves updated successfully
-  holidays:
+      success: Leaves updated successfully
+  leaves:
+    create:
+      success: Leave created successfully
     update:
-      success: Holiday Info updated successfully
-  invoices_controller:
-    send_invoice:
-      recipients_required: Recipients are required
-      recipient_limit: "Email can only be sent to 5 recipients."
-      already_paid: Invoice is already paid
-      pdf_failed: Failed to generate PDF
-      success: Invoice has been sent successfully
-    send_reminder:
-      success: A reminder has been sent
-      overdue_only: Reminders can only be sent for overdue invoices
-    download:
-      pdf_failed: Failed to generate PDF
-  application_controller:
-    not_found: Route not found
-  invoices_view:
-    not_found: No invoice found
-  subscriptions:
-    pricing_not_configured: Stripe subscription pricing is not configured
-    no_billing_customer: No billing customer exists for this company
-    trial_started: "Your 30-day Pro trial has started"
-    trial_not_eligible: Your workspace is not eligible for a Pro trial
-  passkeys:
-    added: Passkey added
-    removed: Passkey removed
-    requirement_enabled: Passkey requirement enabled
-    requirement_disabled: Passkey requirement disabled
-    disable_totp_first: "Disable authenticator app 2FA before requiring passkey sign in."
-    add_passkey_first: "Add a passkey before requiring it for sign in."
-    session_expired: "Passkey session expired. Please try again."
-    verification_failed: "Passkey verification failed."
-    not_found: "Passkey not found."
-  totp:
-    disable_passkey_first: "Disable required passkey sign in before enabling authenticator app 2FA."
-    invalid_code: "Invalid authenticator code."
-    enabled: Authenticator app enabled
-    not_enabled: "Enable authenticator app 2FA first."
-    recovery_codes_regenerated: Recovery codes regenerated
-    disabled: Authenticator app disabled
-    invalid_verification: "Invalid verification code."
-    session_expired: "That verification request is no longer valid. Please sign in again."
-  currency_pairs:
-    from_to_required: from and to are required
-    rate_not_found: Rate not found
+      success: Leave updated successfully
   mailers:
-    layout:
-      preheader: A clear update from Miru.
-      brand: Miru
-      footer_body: Miru keeps time, invoices, payments, and operations in one calm workspace.
-      footer_site: app.miru.so
-      footer_contact: support@getmiru.com
-      footer_copyright: © Miru. All rights reserved.
     actions:
-      open_invoice: Open invoice
+      join_miru: Join Miru
       open_expense: Open expense
+      open_invoice: Open invoice
       open_time_tracking: Open time tracking
       view_reports: View reports in Miru
-      join_miru: Join Miru
-    labels:
-      issue_date: Issue date
-      due_date: Due date
-      invoice_number: Invoice number
-      reference: Reference
-      total_amount: Total amount
-      attachment: Attachment
-      amount_due: Amount due
-      payment_link: Payment link
-      outstanding_amount: Outstanding amount
-      status: Status
-      invoice: Invoice
-      payment_method: Payment method
-      amount_paid: Amount paid
-      client: Client
-      issued_to: Issued to
-      paid_on: Paid on
-      amount: Amount
-      category: Category
-      date: Date
-      description: Description
-      invited_by: Invited by
-      workspace: Workspace
-      members: Members
-    invoice_mailer:
-      send_invoice:
-        subject: "Invoice %{invoice_number} from %{company_name}"
-        preheader: "Invoice %{invoice_number} from %{company_name} is ready."
-        eyebrow: Invoices
-        title: Invoice ready to review
-        subtitle_html: "<strong>%{company_name}</strong> sent invoice <strong>%{invoice_number}</strong>. Open it to review the details, download the PDF, and pay securely."
-        note_title: "A note from %{company_name}"
-        next_steps_title: What to expect
-        next_steps_body: Open the invoice to confirm the amount, review the line items, and pay when you are ready.
-        attachment_value: PDF attached
-        attachment_subvalue: Keep it, forward it, or file it.
-        support_html: "Need a hand? Reply to this email or contact <a href=\"mailto:%{support_email}\">%{support_email}</a>."
-      invoice:
-        subject: "Invoice %{invoice_number}"
-        preheader: "Invoice %{invoice_number} from %{company_name}."
-        eyebrow: Invoices
-        title: Invoice ready to review
-        subtitle_html: "<strong>%{company_name}</strong> sent invoice <strong>%{invoice_number}</strong>. You can review it and pay online whenever you are ready."
-        ready_title: Review before you pay
-        ready_body: Open the secure invoice page to check the line items, confirm the total, and pay online.
-        payment_link_value: Secure invoice page
-        payment_link_subvalue: Review the line items and pay online.
-        support_html: "Questions about this invoice? Reply to this email or contact <a href=\"mailto:%{support_email}\">%{support_email}</a>."
-    send_reminder_mailer:
-      send_reminder:
-        subject: "Reminder for invoice %{invoice_number} from %{company_name}"
-        preheader: "Reminder for invoice %{invoice_number} from %{company_name}."
-        eyebrow: Invoices
-        title: Payment reminder
-        subtitle_html: "Invoice <strong>%{invoice_number}</strong> from <strong>%{company_name}</strong> is still awaiting payment."
-    send_payment_reminder_mailer:
-      send_payment_reminder:
-        subject: "Payment reminder for %{company_name}"
-        preheader: "Payment reminder for %{company_name} invoices."
-        eyebrow: Invoices
-        title: Payment reminder
-        subtitle: Here are the invoices that still need attention.
-    payment_mailer:
-      payment:
-        subject: "Payment details for invoice %{invoice_number}"
-        preheader: "Payment confirmation for invoice %{invoice_number}."
-        eyebrow: Payments
-        title: Payment confirmation
-        subtitle_html: "<strong>%{client_name}</strong> paid invoice <strong>%{invoice_number}</strong>."
-        received_title: Payment received
-        summary_html: "<strong>%{client_name}</strong> paid <strong>%{amount}</strong> for invoice <strong>%{invoice_number}</strong>. This invoice is now fully paid."
-        follow_up_title: What to do next
-        follow_up_body: Open the invoice to confirm the payment, file the receipt, or continue with the next step.
     client_payment_mailer:
       payment:
-        subject: "Payment receipt for invoice %{invoice_number}"
-        preheader: "Payment receipt for invoice %{invoice_number}."
         eyebrow: Payments
-        title: Payment receipt
-        subtitle_html: "We received your payment for invoice <strong>%{invoice_number}</strong>."
+        preheader: Payment receipt for invoice %{invoice_number}.
         receipt_title: Payment received
-        summary_html: "We received <strong>%{amount}</strong> on <strong>%{paid_on}</strong> for invoice <strong>%{invoice_number}</strong>."
+        records_body: This receipt confirms your payment. You can reopen the invoice
+          anytime if you need the details again.
         records_title: Keep this for your records
-        records_body: This receipt confirms your payment. You can reopen the invoice anytime if you need the details again.
+        subject: Payment receipt for invoice %{invoice_number}
+        subtitle_html: We received your payment for invoice <strong>%{invoice_number}</strong>.
+        summary_html: We received <strong>%{amount}</strong> on <strong>%{paid_on}</strong>
+          for invoice <strong>%{invoice_number}</strong>.
+        title: Payment receipt
     expense_mailer:
-      submitted:
-        subject: "%{submitter_name} submitted a reimbursement request"
-        preheader: A new reimbursement request needs review.
-        eyebrow: Expenses
-        title: New reimbursement request
-        subtitle_html: "<strong>%{submitter_name}</strong> submitted a reimbursement request that is ready for review."
       approved:
-        subject: Your reimbursement has been approved
+        eyebrow: Expenses
         preheader: Your reimbursement request has been approved.
-        eyebrow: Expenses
-        title: Reimbursement approved
+        subject: Your reimbursement has been approved
         subtitle: Your reimbursement request has been reviewed and approved.
+        title: Reimbursement approved
       paid:
-        subject: Your reimbursement has been marked as paid
+        eyebrow: Expenses
         preheader: Your reimbursement request has been marked as paid.
-        eyebrow: Expenses
-        title: Reimbursement paid
+        subject: Your reimbursement has been marked as paid
         subtitle: Payment for your reimbursement request has been completed.
+        title: Reimbursement paid
       rejected:
-        subject: Your reimbursement needs updates before approval
-        preheader: Your reimbursement request needs updates.
         eyebrow: Expenses
-        title: Reimbursement needs updates
-        subtitle: Please review the request details, make the needed changes, and resubmit it.
-        next_step_title: Next step
         next_step_body: Open the expense, make the updates, and submit it again.
-    send_weekly_reminder_to_user_mailer:
-      notify_user_about_missed_entries:
-        subject: Complete your Miru timesheet for last week
-        preheader: Update your Miru timesheet for the missing week.
-        eyebrow: Time tracking
-        title: Complete your timesheet
-        subtitle: Your time entries for %{company_name} are still below the expected weekly total.
-        greeting_html: "Hi <strong>%{name}</strong>,"
-        body_html: "You logged fewer than 40 hours between <strong>%{starting_date}</strong> and <strong>%{ending_date}</strong>."
-        follow_up: Open Miru, add the missing entries, and close out the week.
-        signoff_html: "Thanks,<br><strong>Miru</strong>"
-    user_invitation_mailer:
-      send_user_invitation:
-        subject: You're invited to join Miru
-        preheader: You have been invited to join a team on Miru.
-        eyebrow: Invitation
-        title: Join your Miru workspace
-        subtitle_html: "<strong>%{sender_name}</strong> invited you to join <strong>%{company_name}</strong> on Miru."
-        workspace_members:
-          one: "1 member"
-          other: "%{count} members"
-        get_started_title: Get started
-        get_started_body: Accept the invite, create your password, and you are in.
-        support_html: "If you were not expecting this invitation, contact our team at <a href=\"mailto:%{support_email}\">%{support_email}</a>."
-        about_title: About Miru
-        about_body: Miru brings time, invoices, payments, and day-to-day operations into one workspace.
+        next_step_title: Next step
+        preheader: Your reimbursement request needs updates.
+        subject: Your reimbursement needs updates before approval
+        subtitle: Please review the request details, make the needed changes, and
+          resubmit it.
+        title: Reimbursement needs updates
+      submitted:
+        eyebrow: Expenses
+        preheader: A new reimbursement request needs review.
+        subject: "%{submitter_name} submitted a reimbursement request"
+        subtitle_html: "<strong>%{submitter_name}</strong> submitted a reimbursement
+          request that is ready for review."
+        title: New reimbursement request
+    invoice_mailer:
+      invoice:
+        eyebrow: Invoices
+        payment_link_subvalue: Review the line items and pay online.
+        payment_link_value: Secure invoice page
+        preheader: Invoice %{invoice_number} from %{company_name}.
+        ready_body: Open the secure invoice page to check the line items, confirm
+          the total, and pay online.
+        ready_title: Review before you pay
+        subject: Invoice %{invoice_number}
+        subtitle_html: "<strong>%{company_name}</strong> sent invoice <strong>%{invoice_number}</strong>.
+          You can review it and pay online whenever you are ready."
+        support_html: Questions about this invoice? Reply to this email or contact
+          <a href="mailto:%{support_email}">%{support_email}</a>.
+        title: Invoice ready to review
+      send_invoice:
+        attachment_subvalue: Keep it, forward it, or file it.
+        attachment_value: PDF attached
+        eyebrow: Invoices
+        next_steps_body: Open the invoice to confirm the amount, review the line items,
+          and pay when you are ready.
+        next_steps_title: What to expect
+        note_title: A note from %{company_name}
+        preheader: Invoice %{invoice_number} from %{company_name} is ready.
+        subject: Invoice %{invoice_number} from %{company_name}
+        subtitle_html: "<strong>%{company_name}</strong> sent invoice <strong>%{invoice_number}</strong>.
+          Open it to review the details, download the PDF, and pay securely."
+        support_html: Need a hand? Reply to this email or contact <a href="mailto:%{support_email}">%{support_email}</a>.
+        title: Invoice ready to review
+    labels:
+      amount: Amount
+      amount_due: Amount due
+      amount_paid: Amount paid
+      attachment: Attachment
+      category: Category
+      client: Client
+      date: Date
+      description: Description
+      due_date: Due date
+      invited_by: Invited by
+      invoice: Invoice
+      invoice_number: Invoice number
+      issue_date: Issue date
+      issued_to: Issued to
+      members: Members
+      outstanding_amount: Outstanding amount
+      paid_on: Paid on
+      payment_link: Payment link
+      payment_method: Payment method
+      reference: Reference
+      status: Status
+      total_amount: Total amount
+      workspace: Workspace
+    layout:
+      brand: Miru
+      footer_body: Miru keeps time, invoices, payments, and operations in one calm
+        workspace.
+      footer_contact: support@getmiru.com
+      footer_copyright: "© Miru. All rights reserved."
+      footer_site: app.miru.so
+      preheader: A clear update from Miru.
     monthly_reports_mailer:
       cash_flow_digest:
-        subject: "%{company_name}'s %{month_label} cash flow digest"
-        preheader: "%{company_name}'s %{month_label} cash flow digest"
+        average_daily_net_change_html: Average daily net change <strong>%{amount}</strong>
+        compare_to_previous: vs. %{amount} in %{month_label}
         eyebrow: Monthly Digest
-        title: "%{company_name}'s %{month_label} cash flow digest"
-        subtitle: "Here is a concise view of money moving through Miru for %{month_year_label}."
-        net_change: "Net change in %{month_label}"
-        average_daily_net_change_html: "Average daily net change <strong>%{amount}</strong>"
         money_in: Money in
         money_out: Money out
-        compare_to_previous: "vs. %{amount} in %{month_label}"
+        net_change: Net change in %{month_label}
+        no_money_in: No payments were recorded in Miru for %{month_year_label}.
+        no_money_out: No paid expenses were recorded in Miru for %{month_year_label}.
+        preheader: "%{company_name}'s %{month_label} cash flow digest"
+        subject: "%{company_name}'s %{month_label} cash flow digest"
+        subtitle: Here is a concise view of money moving through Miru for %{month_year_label}.
+        title: "%{company_name}'s %{month_label} cash flow digest"
         top_money_in_sources: Top money-in sources
         top_money_out_sources: Top money-out buckets
-        no_money_in: "No payments were recorded in Miru for %{month_year_label}."
-        no_money_out: "No paid expenses were recorded in Miru for %{month_year_label}."
+    payment_mailer:
+      payment:
+        eyebrow: Payments
+        follow_up_body: Open the invoice to confirm the payment, file the receipt,
+          or continue with the next step.
+        follow_up_title: What to do next
+        preheader: Payment confirmation for invoice %{invoice_number}.
+        received_title: Payment received
+        subject: Payment details for invoice %{invoice_number}
+        subtitle_html: "<strong>%{client_name}</strong> paid invoice <strong>%{invoice_number}</strong>."
+        summary_html: "<strong>%{client_name}</strong> paid <strong>%{amount}</strong>
+          for invoice <strong>%{invoice_number}</strong>. This invoice is now fully
+          paid."
+        title: Payment confirmation
+    send_payment_reminder_mailer:
+      send_payment_reminder:
+        eyebrow: Invoices
+        preheader: Payment reminder for %{company_name} invoices.
+        subject: Payment reminder for %{company_name}
+        subtitle: Here are the invoices that still need attention.
+        title: Payment reminder
+    send_reminder_mailer:
+      send_reminder:
+        eyebrow: Invoices
+        preheader: Reminder for invoice %{invoice_number} from %{company_name}.
+        subject: Reminder for invoice %{invoice_number} from %{company_name}
+        subtitle_html: Invoice <strong>%{invoice_number}</strong> from <strong>%{company_name}</strong>
+          is still awaiting payment.
+        title: Payment reminder
+    send_weekly_reminder_to_user_mailer:
+      notify_user_about_missed_entries:
+        body_html: You logged fewer than 40 hours between <strong>%{starting_date}</strong>
+          and <strong>%{ending_date}</strong>.
+        eyebrow: Time tracking
+        follow_up: Open Miru, add the missing entries, and close out the week.
+        greeting_html: Hi <strong>%{name}</strong>,
+        preheader: Update your Miru timesheet for the missing week.
+        signoff_html: Thanks,<br><strong>Miru</strong>
+        subject: Complete your Miru timesheet for last week
+        subtitle: Your time entries for %{company_name} are still below the expected
+          weekly total.
+        title: Complete your timesheet
+    user_invitation_mailer:
+      send_user_invitation:
+        about_body: Miru brings time, invoices, payments, and day-to-day operations
+          into one workspace.
+        about_title: About Miru
+        eyebrow: Invitation
+        get_started_body: Accept the invite, create your password, and you are in.
+        get_started_title: Get started
+        preheader: You have been invited to join a team on Miru.
+        subject: You're invited to join Miru
+        subtitle_html: "<strong>%{sender_name}</strong> invited you to join <strong>%{company_name}</strong>
+          on Miru."
+        support_html: If you were not expecting this invitation, contact our team
+          at <a href="mailto:%{support_email}">%{support_email}</a>.
+        title: Join your Miru workspace
+        workspace_members:
+          one: 1 member
+          other: "%{count} members"
+  navbar:
+    clients: Clients
+    help: Help
+    invoices: Invoices
+    logout: Logout
+    payments: Payments
+    profile: Profile
+    projects: Projects
+    reports: Reports
+    settings: Settings
+    team: Team
+    time_tracking: Time Tracking
+    view_notifications: View Notifications
+  passkeys:
+    add_passkey_first: Add a passkey before requiring it for sign in.
+    added: Passkey added
+    disable_totp_first: Disable authenticator app 2FA before requiring passkey sign
+      in.
+    not_found: Passkey not found.
+    removed: Passkey removed
+    requirement_disabled: Passkey requirement disabled
+    requirement_enabled: Passkey requirement enabled
+    session_expired: Passkey session expired. Please try again.
+    verification_failed: Passkey verification failed.
+  password:
+    create:
+      success: Instructions for resetting your password have been sent to your email.
+    update:
+      success: Your password has been updated.
+  projects:
+    add_new_project: Add new project
+    add_project: Add project
+    billable: Billable
+    client: Client
+    create:
+      failure: Project creation failed.
+      success: Project added successfully.
+    delete:
+      success:
+        message: Project removed successfully
+    edit: edit
+    hours_logged: HOURS LOGGED
+    new_project: NEW PROJECT
+    non_billable: Non-Billable
+    project: Project
+    project_name: Project name
+    projects: Projects
+    update:
+      success: Changes saved successfully.
+    update_members:
+      failure:
+        message: Failed to saved changes
+        unauthorized: User is unauthorized to modify this project's details
+      success:
+        message: Changes saved successfully
+  pundit:
+    client_policy:
+      create?: You are not authorized to create client.
+      show?: You are not authorized to access the page. Please reach out to your administrator
+        for help.
+      update?: You are not authorized to update client.
+    company_policy:
+      create?: You are not authorized to create company.
+      new?: You are not authorized to create new company.
+      show?: You are not authorized to view company.
+      update?: You are not authorized to update company.
+    current_company_policy:
+      company_not_present: Company not present.
+    default: You are not authorized to perform this action.
+    different_workspace: You are not authorized to access records outside your current
+      workspace.
+    project_policy:
+      create?: You are not authorized to create project.
+      show?: You are not authorized to access the page. Please reach out to your administrator
+        for help.
+    team_policy:
+      destroy?: You are not authorized to destroy team.
+      edit?: You are not authorized to edit team.
+      update?: You are not authorized to update team.
+  registration:
+    confirm_password: confirm password
+    email_id: email
+    first_name: first name
+    last_name: last name
+    name: name
+    or: or
+    password: password
+    remember_me: remember me
+    sign_in: sign in
+    sign_up: sign up
+    signin_with_github: sign in with github
+    signin_with_google: sign in with google
+    signup_with_apple: sign up with apple
+    signup_with_github: sign up with github
+    signup_with_google: sign up with google
+  reports:
+    heading: Time entry report
+  sessions:
+    failure:
+      invalid: Invalid email or password
+  settings:
+    cancel: cancel
+    change_password: change password
+    confirm_password: confirm password
+    current_password: current password
+    email: email
+    name: name
+    organization_setting: organization settings
+    password: password
+    payment_setting: payment settings
+    profile_picture: profile picture
+    profile_setting: profile settings
+    save: save
+    settings: settings
+  shared_links:
+    already_have_an_account: already have an account?
+    back_to_login: back to login
+    confirmation_instruction: didn't receive confirmation instructions?
+    dont_have_an_account: don't have an account?
+    forgot_password: forgot password ?
+    unlock_instruction: didn't receive unlock instructions?
+  subscriptions:
+    no_billing_customer: No billing customer exists for this company
+    pricing_not_configured: Stripe subscription pricing is not configured
+    trial_not_eligible: Your workspace is not eligible for a Pro trial
+    trial_started: Your 30-day Pro trial has started
+  team:
+    changed_email: Changed Email
+    create_new_user: Create New User
+    current_email: Current Email
+    delete:
+      success:
+        message: Team Member removed successfully
+    email: Email
+    email_id: EMAIL ID
+    first_name: First Name
+    form_admin: Admin
+    form_book_keeper: Book Keeper
+    form_email: Email
+    form_employee: Employee
+    form_name: Name
+    form_role: Role
+    invitation: INVITATION PENDING
+    last_name: Last Name
+    name: NAME
+    new_user: NEW USER
+    profile_picture: PHOTO
+    reconfirmation: RECONFIRMATION PENDING
+    role: ROLE
+    team: Team
+    update:
+      error:
+        role: There was an error while updating role
+      success:
+        message: Changes saved successfully
+    update_user: Update User
+  timeoff_entries:
+    create:
+      success: Added time off successfully
+    destroy:
+      success: Deleted time off successfully
+    update:
+      success: Updated time off successfully
+  timesheet_entry:
+    create:
+      message: Timesheet created
+    destroy:
+      failure: Failed to delete timesheet entries
+      message: Timesheet deleted
+    update:
+      failure: Failed to update timesheet entries
+      message: Timesheet updated
+  totp:
+    disable_passkey_first: Disable required passkey sign in before enabling authenticator
+      app 2FA.
+    disabled: Authenticator app disabled
+    enabled: Authenticator app enabled
+    invalid_code: Invalid authenticator code.
+    invalid_verification: Invalid verification code.
+    not_enabled: Enable authenticator app 2FA first.
+    recovery_codes_regenerated: Recovery codes regenerated
+    session_expired: That verification request is no longer valid. Please sign in
+      again.
+  user:
+    login:
+      failure:
+        disabled: Your access has been disabled.
+        pending_invitation: Your account is not activated yet.
+  workspaces:
+    update:
+      failure: Failed to switch workspace
+      success: Workspace switched successfully

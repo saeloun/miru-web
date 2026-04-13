@@ -1,16 +1,8 @@
 ---
 tr:
-  activerecord:
-    errors:
-      models:
-        client:
-          attributes:
-            name:
-              format: "%{message}"
-        project:
-          attributes:
-            name:
-              format: "%{message}"
+  app:
+    name: Miru Ajansı İşletim Sistemi
+    tagline: Ajansınızın operasyonlarını tek bir komuta merkezinden yönetin.
   application_controller:
     not_found: Rota bulunamadı.
   avatar:
@@ -84,19 +76,6 @@ tr:
   employment:
     update:
       success: İstihdam bilgileri başarıyla güncellendi.
-  errors:
-    bill_status_billed: Daha önce faturalandırılmış bir işlem için tekrar fatura kesemezsiniz.
-    can't change status: Ödenmiş bir faturada değişiklik yapılamaz.
-    create_billed_entry: Faturalandırılmış zaman çizelgesi girişi oluşturamazsınız.
-    internal_server_error: Bir şeyler ters gitti.
-    not_found: Aradığınız kaynak mevcut değil.
-    prevent_draft_to_waived: feragat olarak değiştirilemez
-    unauthorized: Bu işlemi yalnızca sahip veya yönetici kullanıcılar gerçekleştirebilir.
-    updation_not_allowed: Güncellemeye izin verilmiyor.
-    user_already_member: E-posta adresi zaten kullanımda. Lütfen başka bir e-posta
-      adresi girin.
-    validate_billable_project: Faturalandırılmayan projeler için faturalandırılmamış
-      giriş oluşturamazsınız.
   expenses:
     approve: Masraf başarıyla onaylandı
     create: Masraf başarıyla gönderildi.
@@ -169,6 +148,201 @@ tr:
       success: İzin başarıyla oluşturuldu.
     update:
       success: Sayfa başarıyla güncellendi.
+  mailers:
+    actions:
+      join_miru: Miru'ya katılın
+      open_expense: Açık gider
+      open_invoice: Açık fatura
+      open_time_tracking: Açık zaman takibi
+      view_reports: Miru'daki raporları görüntüle
+    client_payment_mailer:
+      payment:
+        eyebrow: Ödemeler
+        preheader: "%{invoice_number} numaralı faturaya ait ödeme makbuzu."
+        receipt_title: Ödeme alındı.
+        records_body: Bu makbuz ödemenizi onaylamaktadır. Ayrıntılara tekrar ihtiyacınız
+          olursa faturayı istediğiniz zaman yeniden açabilirsiniz.
+        records_title: Bunu kayıtlarınız için saklayın.
+        subject: "%{invoice_number} numaralı fatura için ödeme makbuzu"
+        subtitle_html: "<strong>%{invoice_number}</strong> numaralı faturanızın ödemesini
+          aldık."
+        summary_html: "<strong>%{invoice_number} numaralı</strong> fatura için <strong>%{paid_on}</strong>
+          tarihinde <strong>%{amount}</strong> tutarında teslimat aldık."
+        title: Ödeme makbuzu
+    expense_mailer:
+      approved:
+        eyebrow: Giderler
+        preheader: Geri ödeme talebiniz onaylandı.
+        subject: Geri ödemeniz onaylandı.
+        subtitle: Geri ödeme talebiniz incelenmiş ve onaylanmıştır.
+        title: Geri ödeme onaylandı
+      paid:
+        eyebrow: Giderler
+        preheader: Geri ödeme talebiniz ödenmiş olarak işaretlendi.
+        subject: Geri ödemeniz ödenmiş olarak işaretlendi.
+        subtitle: Geri ödeme talebinizin ödemesi tamamlandı.
+        title: Geri ödeme yapıldı
+      rejected:
+        eyebrow: Giderler
+        next_step_body: Masrafı açın, güncellemeleri yapın ve tekrar gönderin.
+        next_step_title: Sonraki adım
+        preheader: Geri ödeme talebinizin güncellenmesi gerekiyor.
+        subject: Geri ödeme talebinizin onaylanmadan önce güncellenmesi gerekiyor.
+        subtitle: Lütfen talep detaylarını gözden geçirin, gerekli değişiklikleri
+          yapın ve yeniden gönderin.
+        title: Geri ödeme sisteminde güncellemeler gerekiyor.
+      submitted:
+        eyebrow: Giderler
+        preheader: Yeni bir geri ödeme talebinin incelenmesi gerekiyor.
+        subject: "%{submitter_name} bir geri ödeme talebi gönderdi."
+        subtitle_html: "<strong>%{submitter_name},</strong> incelemeye hazır bir geri
+          ödeme talebi gönderdi."
+        title: Yeni geri ödeme talebi
+    invoice_mailer:
+      invoice:
+        eyebrow: Faturalar
+        payment_link_subvalue: Ürün kalemlerini inceleyin ve çevrimiçi ödeme yapın.
+        payment_link_value: Güvenli fatura sayfası
+        preheader: "%{company_name}'den %{invoice_number} numaralı fatura."
+        ready_body: Güvenli fatura sayfasına girerek kalem kalem detayları kontrol
+          edin, toplamı onaylayın ve çevrimiçi ödeme yapın.
+        ready_title: Ödeme yapmadan önce inceleyin
+        subject: Fatura %{invoice_number}
+        subtitle_html: "<strong>%{company_name},</strong> <strong>%{invoice_number}</strong>
+          numaralı faturayı gönderdi. Faturayı inceleyebilir ve istediğiniz zaman
+          çevrimiçi olarak ödeme yapabilirsiniz."
+        support_html: Bu faturayla ilgili sorularınız mı var? Bu e-postaya yanıt verin
+          veya <a href="mailto:%{support_email}">%{support_email}</a> ile iletişime
+          geçin.
+        title: Fatura incelemeye hazır.
+      send_invoice:
+        attachment_subvalue: Saklayın, iletin veya arşivleyin.
+        attachment_value: PDF ektedir.
+        eyebrow: Faturalar
+        next_steps_body: Faturayı açarak tutarı teyit edin, kalemleri inceleyin ve
+          hazır olduğunuzda ödeme yapın.
+        next_steps_title: Neler beklemeli?
+        note_title: "%{company_name}'dan bir not"
+        preheader: "%{company_name}'den gelen %{invoice_number} numaralı fatura hazır."
+        subject: "%{company_name}'den %{invoice_number} numaralı fatura"
+        subtitle_html: "<strong>%{company_name},</strong> <strong>%{invoice_number}</strong>
+          numaralı faturayı gönderdi. Ayrıntıları incelemek, PDF dosyasını indirmek
+          ve güvenli bir şekilde ödeme yapmak için faturayı açın."
+        support_html: Yardıma mı ihtiyacınız var? Bu e-postaya yanıt verin veya <a
+          href="mailto:%{support_email}">%{support_email}</a> ile iletişime geçin.
+        title: Fatura incelemeye hazır.
+    labels:
+      amount: Miktar
+      amount_due: Ödenecek tutar
+      amount_paid: Ödenen tutar
+      attachment: EK
+      category: Kategori
+      client: Müşteri
+      date: Tarih
+      description: Tanım
+      due_date: Bitiş tarihi
+      invited_by: 'Davet eden:'
+      invoice: Fatura
+      invoice_number: Fatura numarası
+      issue_date: Düzenleme tarihi
+      issued_to: Yayınlandı
+      members: Üyeler
+      outstanding_amount: Ödenmemiş tutar
+      paid_on: Ödeme yapıldı
+      payment_link: Ödeme bağlantısı
+      payment_method: Ödeme yöntemi
+      reference: Referans
+      status: Durum
+      total_amount: Toplam tutar
+      workspace: Çalışma Alanı
+    layout:
+      brand: Miru
+      footer_body: Miru, zamanı, faturaları, ödemeleri ve operasyonları tek bir sakin
+        çalışma alanında bir arada tutar.
+      footer_contact: support@getmiru.com
+      footer_copyright: "© Miru. Tüm hakları saklıdır."
+      footer_site: uygulama.miru.so
+      preheader: Miru'dan net bir güncelleme.
+    monthly_reports_mailer:
+      cash_flow_digest:
+        average_daily_net_change_html: Ortalama günlük net değişim <strong>%{amount}</strong>
+        compare_to_previous: "%{month_label}'de %{amount}'a karşı"
+        eyebrow: Aylık Özet
+        money_in: Para
+        money_out: Para çıkışı
+        net_change: "%{month_label} içindeki net değişim"
+        no_money_in: Miru'da %{month_year_label} için herhangi bir ödeme kaydedilmedi.
+        no_money_out: Miru'da %{month_year_label} için herhangi bir ödenmiş gider
+          kaydedilmemiştir.
+        preheader: "%{company_name}'ın %{month_label} nakit akışı özeti"
+        subject: "%{company_name}'ın %{month_label} nakit akışı özeti"
+        subtitle: İşte %{month_year_label} için Miru üzerinden geçen para hareketlerine
+          dair kısa bir özet.
+        title: "%{company_name}'ın %{month_label} nakit akışı özeti"
+        top_money_in_sources: En iyi para giriş kaynakları
+        top_money_out_sources: En yüksek para çekme oranları
+    payment_mailer:
+      payment:
+        eyebrow: Ödemeler
+        follow_up_body: Ödemeyi onaylamak, makbuzu saklamak veya bir sonraki adıma
+          geçmek için faturayı açın.
+        follow_up_title: Sonraki adımlar
+        preheader: "%{invoice_number} numaralı fatura için ödeme onayı."
+        received_title: Ödeme alındı.
+        subject: "%{invoice_number} numaralı faturaya ait ödeme detayları"
+        subtitle_html: "<strong>%{client_name},</strong> <strong>%{invoice_number}
+          numaralı</strong> faturayı ödedi."
+        summary_html: "<strong>%{client_name},</strong> <strong>%{amount}'e</strong>
+          <strong>%{invoice_number}</strong> numaralı fatura için ödeme yaptı. Bu
+          fatura artık tamamen ödenmiştir."
+        title: Ödeme onayı
+    send_payment_reminder_mailer:
+      send_payment_reminder:
+        eyebrow: Faturalar
+        preheader: "%{company_name} adet fatura için ödeme hatırlatması."
+        subject: "%{company_name} için ödeme hatırlatıcısı"
+        subtitle: Henüz işlem görmemiş faturalar şunlardır.
+        title: Ödeme hatırlatıcısı
+    send_reminder_mailer:
+      send_reminder:
+        eyebrow: Faturalar
+        preheader: "%{company_name} numaralı fatura için %{invoice_number} numaralı
+          faturaya ilişkin hatırlatma."
+        subject: "%{company_name}'den %{invoice_number} numaralı fatura için hatırlatma"
+        subtitle_html: "<strong>%{company_name}</strong> firmasından gelen <strong>%{invoice_number}</strong>
+          numaralı fatura henüz ödenmedi."
+        title: Ödeme hatırlatıcısı
+    send_weekly_reminder_to_user_mailer:
+      notify_user_about_missed_entries:
+        body_html: "<strong>%{starting_date}</strong> ve <strong>%{ending_date}</strong>
+          tarihleri arasında 40 saatten daha az süreyle oturum açtınız."
+        eyebrow: Zaman takibi
+        follow_up: Miru uygulamasını açın, eksik girişleri ekleyin ve haftayı kapatın.
+        greeting_html: Merhaba <strong>%{name}</strong> ,
+        preheader: Eksik olan hafta için Miru zaman çizelgenizi güncelleyin.
+        signoff_html: Teşekkürler,<br> <strong>Miru</strong>
+        subject: Geçen haftaya ait Miru zaman çizelgenizi doldurun.
+        subtitle: "%{company_name} için zaman kayıtlarınız hala beklenen haftalık
+          toplamın altında."
+        title: Çalışma saatlerinizi gösteren belgeyi doldurun.
+    user_invitation_mailer:
+      send_user_invitation:
+        about_body: Miru, zaman yönetimi, faturalar, ödemeler ve günlük operasyonları
+          tek bir çalışma alanında bir araya getiriyor.
+        about_title: Miru hakkında
+        eyebrow: Davet
+        get_started_body: Daveti kabul edin, şifrenizi oluşturun ve giriş yapın.
+        get_started_title: Başlayın
+        preheader: Miru'da bir ekibe katılmaya davet edildiniz.
+        subject: Miru'ya katılmaya davetlisiniz.
+        subtitle_html: "<strong>%{sender_name}</strong> sizi Miru'da <strong>%{company_name}'e</strong>
+          katılmaya davet etti."
+        support_html: Bu daveti beklemiyorsanız, lütfen <a href="mailto:%{support_email}">%{support_email}</a>
+          adresinden ekibimizle iletişime geçin.
+        title: Miru çalışma alanınıza katılın
+        workspace_members:
+          one: 1 üye
+          other: "%{count} üye"
   navbar:
     clients: Müşteriler
     help: Yardım

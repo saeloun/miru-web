@@ -1,16 +1,8 @@
 ---
 bn:
-  activerecord:
-    errors:
-      models:
-        client:
-          attributes:
-            name:
-              format: "%{message}"
-        project:
-          attributes:
-            name:
-              format: "%{message}"
+  app:
+    name: মিরু এজেন্সি ওএস
+    tagline: একটিমাত্র কমান্ড সেন্টার থেকে আপনার সংস্থার কার্যক্রম পরিচালনা করুন।
   application_controller:
     not_found: রুট খুঁজে পাওয়া যায়নি
   avatar:
@@ -85,20 +77,6 @@ bn:
   employment:
     update:
       success: কর্মসংস্থান সফলভাবে আপডেট করা হয়েছে
-  errors:
-    bill_status_billed: যে এন্ট্রির বিল ইতিমধ্যে করা হয়েছে, তার জন্য আপনি নতুন করে
-      বিল করতে পারবেন না।
-    can't change status: পরিশোধিত চালান পরিবর্তন করা যাবে না।
-    create_billed_entry: আপনি বিলযোগ্য টাইমশিট এন্ট্রি তৈরি করতে পারবেন না।
-    internal_server_error: কিছু একটা ভুল হয়েছে
-    not_found: আপনি যে রিসোর্সটি খুঁজছেন তা উপলব্ধ নেই।
-    prevent_draft_to_waived: মওকুফ করা যাবে না
-    unauthorized: শুধুমাত্র মালিক বা অ্যাডমিন ব্যবহারকারীরাই এই কাজটি করার জন্য অনুমোদিত।
-    updation_not_allowed: আপডেট করার অনুমতি নেই
-    user_already_member: ইমেল আইডিটি ইতিমধ্যেই ব্যবহৃত হচ্ছে। অনুগ্রহ করে অন্য একটি
-      ইমেল আইডি প্রবেশ করান।
-    validate_billable_project: যেসব প্রজেক্টের বিল করা যায় না, সেগুলোর জন্য আপনি
-      কোনো অবিলম্বিত এন্ট্রি তৈরি করতে পারবেন না।
   expenses:
     approve: ব্যয় সফলভাবে অনুমোদিত হয়েছে
     create: খরচ সফলভাবে জমা দেওয়া হয়েছে
@@ -172,6 +150,203 @@ bn:
       success: সফলভাবে ছুটি তৈরি করা হয়েছে
     update:
       success: ছুটি সফলভাবে আপডেট করা হয়েছে
+  mailers:
+    actions:
+      join_miru: মিরুর সাথে যোগ দিন
+      open_expense: খোলা খরচ
+      open_invoice: খোলা চালান
+      open_time_tracking: খোলা সময় ট্র্যাকিং
+      view_reports: মিরুতে রিপোর্টগুলো দেখুন
+    client_payment_mailer:
+      payment:
+        eyebrow: পেমেন্ট
+        preheader: ইনভয়েস %{invoice_number}-এর জন্য অর্থপ্রদানের রসিদ।
+        receipt_title: পেমেন্ট প্রাপ্ত হয়েছে
+        records_body: এই রসিদটি আপনার অর্থপ্রদান নিশ্চিত করে। আপনার যদি আবার বিস্তারিত
+          তথ্যের প্রয়োজন হয়, তবে আপনি যেকোনো সময় চালানটি পুনরায় খুলতে পারেন।
+        records_title: আপনার রেকর্ডের জন্য এটি রাখুন
+        subject: ইনভয়েস %{invoice_number} এর জন্য পেমেন্ট রসিদ
+        subtitle_html: আমরা ইনভয়েস <strong>%{invoice_number}</strong> এর জন্য আপনার
+          পেমেন্ট পেয়েছি।
+        summary_html: আমরা <strong>%{invoice_number}</strong> চালানের জন্য <strong>%{paid_on}</strong>
+          তারিখে <strong>%{amount}</strong> পেয়েছি।
+        title: অর্থপ্রদানের রসিদ
+    expense_mailer:
+      approved:
+        eyebrow: খরচ
+        preheader: আপনার অর্থ ফেরতের আবেদনটি অনুমোদিত হয়েছে।
+        subject: আপনার প্রতিদান অনুমোদিত হয়েছে।
+        subtitle: আপনার অর্থ ফেরতের অনুরোধটি পর্যালোচনা ও অনুমোদন করা হয়েছে।
+        title: ক্ষতিপূরণ অনুমোদিত
+      paid:
+        eyebrow: খরচ
+        preheader: আপনার অর্থ ফেরতের অনুরোধটি পরিশোধিত হিসাবে চিহ্নিত করা হয়েছে।
+        subject: আপনার প্রতিদান পরিশোধিত হিসাবে চিহ্নিত করা হয়েছে।
+        subtitle: আপনার প্রতিপূরণ অনুরোধের অর্থপ্রদান সম্পন্ন হয়েছে।
+        title: পরিশোধ করা হয়েছে
+      rejected:
+        eyebrow: খরচ
+        next_step_body: খরচের নথিটি খুলুন, প্রয়োজনীয় পরিবর্তনগুলো করুন এবং পুনরায়
+          জমা দিন।
+        next_step_title: পরবর্তী পদক্ষেপ
+        preheader: আপনার প্রতিপূরণের অনুরোধটি হালনাগাদ করা প্রয়োজন।
+        subject: অনুমোদনের আগে আপনার প্রতিদানের তথ্য হালনাগাদ করা প্রয়োজন।
+        subtitle: অনুগ্রহ করে অনুরোধের বিবরণ পর্যালোচনা করুন, প্রয়োজনীয় পরিবর্তন
+          করুন এবং পুনরায় জমা দিন।
+        title: ক্ষতিপূরণের হালনাগাদ প্রয়োজন
+      submitted:
+        eyebrow: খরচ
+        preheader: একটি নতুন প্রতিপূরণ অনুরোধ পর্যালোচনার প্রয়োজন।
+        subject: "%{submitter_name} একটি প্রতিপূরণ অনুরোধ জমা দিয়েছেন"
+        subtitle_html: "<strong>%{submitter_name}</strong> একটি প্রতিপূরণ অনুরোধ জমা
+          দিয়েছেন যা পর্যালোচনার জন্য প্রস্তুত।"
+        title: নতুন প্রতিদানের অনুরোধ
+    invoice_mailer:
+      invoice:
+        eyebrow: চালান
+        payment_link_subvalue: প্রতিটি আইটেম পর্যালোচনা করুন এবং অনলাইনে অর্থ পরিশোধ
+          করুন।
+        payment_link_value: নিরাপদ চালান পৃষ্ঠা
+        preheader: "%{company_name} থেকে %{invoice_number} চালান।"
+        ready_body: প্রতিটি আইটেম যাচাই করতে, মোট পরিমাণ নিশ্চিত করতে এবং অনলাইনে
+          অর্থ পরিশোধ করতে সুরক্ষিত ইনভয়েস পৃষ্ঠাটি খুলুন।
+        ready_title: অর্থ পরিশোধ করার আগে পর্যালোচনা করুন।
+        subject: চালান %{invoice_number}
+        subtitle_html: "<strong>%{company_name},</strong> <strong>%{invoice_number}</strong>
+          ইনভয়েসটি পাঠিয়েছে। আপনি এটি পর্যালোচনা করে আপনার সুবিধামতো সময়ে অনলাইনে
+          পেমেন্ট করতে পারেন।"
+        support_html: এই চালানটি সম্পর্কে কোনো প্রশ্ন আছে? এই ইমেইলে উত্তর দিন অথবা
+          <a href="mailto:%{support_email}">%{support_email} এর</a> সাথে যোগাযোগ করুন।
+        title: চালান পর্যালোচনার জন্য প্রস্তুত
+      send_invoice:
+        attachment_subvalue: এটি রাখুন, পাঠিয়ে দিন বা নথিভুক্ত করুন।
+        attachment_value: পিডিএফ সংযুক্ত
+        eyebrow: চালান
+        next_steps_body: টাকার পরিমাণ নিশ্চিত করতে ইনভয়েসটি খুলুন, প্রতিটি আইটেম
+          পর্যালোচনা করুন এবং প্রস্তুত হলে পরিশোধ করুন।
+        next_steps_title: কী আশা করা যায়
+        note_title: "%{company_name} থেকে একটি নোট"
+        preheader: "%{company_name} থেকে %{invoice_number} ইনভয়েসটি প্রস্তুত।"
+        subject: "%{company_name} থেকে চালান %{invoice_number}"
+        subtitle_html: "<strong>%{company_name},</strong> <strong>%{invoice_number}</strong>
+          ইনভয়েসটি পাঠিয়েছে। বিস্তারিত পর্যালোচনা করতে এটি খুলুন, পিডিএফটি ডাউনলোড
+          করুন এবং নিরাপদে অর্থ পরিশোধ করুন।"
+        support_html: সাহায্যের প্রয়োজন? এই ইমেইলের উত্তর দিন অথবা <a href="mailto:%{support_email}">%{support_email}
+          এর</a> সাথে যোগাযোগ করুন।
+        title: চালান পর্যালোচনার জন্য প্রস্তুত
+    labels:
+      amount: পরিমাণ
+      amount_due: প্রদেয় অর্থ
+      amount_paid: প্রদত্ত অর্থ
+      attachment: সংযুক্তি
+      category: বিভাগ
+      client: ক্লায়েন্ট
+      date: তারিখ
+      description: বর্ণনা
+      due_date: নির্ধারিত তারিখ
+      invited_by: আমন্ত্রিত
+      invoice: চালান
+      invoice_number: চালান নম্বর
+      issue_date: ইস্যু তারিখ
+      issued_to: ইস্যু করা হয়েছে
+      members: সদস্যরা
+      outstanding_amount: বকেয়া পরিমাণ
+      paid_on: পরিশোধিত
+      payment_link: পেমেন্ট লিঙ্ক
+      payment_method: অর্থপ্রদানের পদ্ধতি
+      reference: রেফারেন্স
+      status: অবস্থা
+      total_amount: মোট পরিমাণ
+      workspace: কর্মক্ষেত্র
+    layout:
+      brand: মিরু
+      footer_body: মিরু সময়, চালান, পেমেন্ট এবং কার্যক্রম একটি শান্ত কর্মক্ষেত্রে
+        গুছিয়ে রাখে।
+      footer_contact: support@getmiru.com
+      footer_copyright: "© মিরু। সর্বস্বত্ব সংরক্ষিত।"
+      footer_site: অ্যাপ.মিরু.সো
+      preheader: মিরুর কাছ থেকে একটি স্পষ্ট আপডেট।
+    monthly_reports_mailer:
+      cash_flow_digest:
+        average_daily_net_change_html: গড় দৈনিক নেট পরিবর্তন <strong>%{amount}</strong>
+        compare_to_previous: "%{month_label}-এ %{amount} বনাম"
+        eyebrow: মাসিক সারসংক্ষেপ
+        money_in: টাকায়
+        money_out: টাকা বাইরে
+        net_change: "%{month_label}-তে মোট পরিবর্তন"
+        no_money_in: "%{month_year_label}-এর জন্য মিরুতে কোনো অর্থপ্রদান নথিভুক্ত
+          করা হয়নি।"
+        no_money_out: "%{month_year_label}-এর জন্য মিরুতে কোনো পরিশোধিত খরচ রেকর্ড
+          করা হয়নি।"
+        preheader: "%{company_name}'s %{month_label} নগদ প্রবাহের সারসংক্ষেপ"
+        subject: "%{company_name}'s %{month_label} নগদ প্রবাহের সারসংক্ষেপ"
+        subtitle: "%{month_year_label}-এর জন্য মিরুর মাধ্যমে অর্থ প্রবাহের একটি সংক্ষিপ্ত
+          চিত্র এখানে দেওয়া হলো।"
+        title: "%{company_name}'s %{month_label} নগদ প্রবাহের সারসংক্ষেপ"
+        top_money_in_sources: অর্থ উপার্জনের শীর্ষ উৎস
+        top_money_out_sources: শীর্ষ অর্থ-আউট বাকেট
+    payment_mailer:
+      payment:
+        eyebrow: পেমেন্ট
+        follow_up_body: পেমেন্ট নিশ্চিত করতে, রসিদটি সংরক্ষণ করতে বা পরবর্তী ধাপে
+          এগিয়ে যেতে ইনভয়েসটি খুলুন।
+        follow_up_title: এরপর কী করতে হবে
+        preheader: ইনভয়েস %{invoice_number}-এর পেমেন্ট নিশ্চিতকরণ।
+        received_title: পেমেন্ট প্রাপ্ত হয়েছে
+        subject: ইনভয়েস %{invoice_number} এর পেমেন্টের বিবরণ
+        subtitle_html: "<strong>%{client_name}</strong> চালান <strong>%{invoice_number}</strong>
+          পরিশোধ করেছে।"
+        summary_html: "<strong>%{client_name},</strong> <strong>%{amount}-কে</strong>
+          <strong>%{invoice_number}</strong> ইনভয়েসটির জন্য অর্থ পরিশোধ করেছেন। এই
+          ইনভয়েসটি এখন সম্পূর্ণরূপে পরিশোধিত হয়েছে।"
+        title: পেমেন্ট নিশ্চিতকরণ
+    send_payment_reminder_mailer:
+      send_payment_reminder:
+        eyebrow: চালান
+        preheader: "%{company_name} টি ইনভয়েসের জন্য পেমেন্ট রিমাইন্ডার।"
+        subject: "%{company_name} এর জন্য পেমেন্ট রিমাইন্ডার"
+        subtitle: এই চালানগুলো এখনো মনোযোগের দাবি রাখে।
+        title: পেমেন্টের রিমাইন্ডার
+    send_reminder_mailer:
+      send_reminder:
+        eyebrow: চালান
+        preheader: "%{company_name} থেকে %{invoice_number} ইনভয়েসের জন্য অনুস্মারক।"
+        subject: "%{company_name} থেকে %{invoice_number} চালানের জন্য অনুস্মারক"
+        subtitle_html: "<strong>%{company_name}</strong> থেকে <strong>%{invoice_number}</strong>
+          চালানটি এখনও পরিশোধের অপেক্ষায় রয়েছে।"
+        title: পেমেন্টের রিমাইন্ডার
+    send_weekly_reminder_to_user_mailer:
+      notify_user_about_missed_entries:
+        body_html: আপনি <strong>%{starting_date}</strong> এবং <strong>%{ending_date}</strong>
+          এর মধ্যে ৪০ ঘণ্টারও কম সময় লগ করেছেন।
+        eyebrow: সময় ট্র্যাকিং
+        follow_up: মিরু খুলুন, অনুপস্থিত এন্ট্রিগুলো যোগ করুন এবং সপ্তাহটি বন্ধ করুন।
+        greeting_html: হাই <strong>%{name}</strong> ,
+        preheader: বাদ পড়া সপ্তাহের জন্য আপনার মিরু টাইমশিট আপডেট করুন।
+        signoff_html: ধন্যবাদ,<br> <strong>মিরু</strong>
+        subject: গত সপ্তাহের জন্য আপনার মিরু টাইমশিটটি পূরণ করুন।
+        subtitle: "%{company_name}-এর জন্য আপনার সময় এন্ট্রিগুলো এখনও প্রত্যাশিত
+          সাপ্তাহিক মোট পরিমাণের নিচে রয়েছে।"
+        title: আপনার টাইমশিটটি পূরণ করুন।
+    user_invitation_mailer:
+      send_user_invitation:
+        about_body: মিরু সময়, চালান, পেমেন্ট এবং দৈনন্দিন কার্যক্রমকে একটি ওয়ার্কস্পেসে
+          নিয়ে আসে।
+        about_title: মিরু সম্পর্কে
+        eyebrow: আমন্ত্রণ
+        get_started_body: আমন্ত্রণটি গ্রহণ করুন, আপনার পাসওয়ার্ড তৈরি করুন, এবং আপনি
+          প্রবেশ করতে পারবেন।
+        get_started_title: শুরু করুন
+        preheader: আপনাকে মিরুতে একটি দলে যোগদানের জন্য আমন্ত্রণ জানানো হয়েছে।
+        subject: আপনাকে মিরুতে যোগদানের জন্য আমন্ত্রণ জানানো হচ্ছে।
+        subtitle_html: "<strong>%{sender_name}</strong> আপনাকে Miru-তে <strong>%{company_name}-এর</strong>
+          সাথে যোগ দিতে আমন্ত্রণ জানিয়েছে।"
+        support_html: আপনি যদি এই আমন্ত্রণটি প্রত্যাশা না করে থাকেন, তাহলে <a href="mailto:%{support_email}">%{support_email}</a>
+          নম্বরে আমাদের টিমের সাথে যোগাযোগ করুন।
+        title: আপনার মিরু কর্মক্ষেত্রে যোগ দিন
+        workspace_members:
+          one: ১ জন সদস্য
+          other: "%{count} সদস্য"
   navbar:
     clients: ক্লায়েন্টরা
     help: সাহায্য

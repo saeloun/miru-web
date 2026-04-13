@@ -1,0 +1,30 @@
+---
+te:
+  activerecord:
+    errors:
+      models:
+        client:
+          attributes:
+            name:
+              format: "%{message}"
+        project:
+          attributes:
+            name:
+              format: "%{message}"
+        user:
+          attributes:
+            email:
+              blank: ఇమెయిల్ ఖాళీగా ఉండకూడదు
+              invalid: చెల్లని ఇమెయిల్ ఐడి
+              taken: ఇమెయిల్ ఐడి ఇప్పటికే ఉంది
+            first_name:
+              blank: ఖాళీగా ఉండకూడదు
+              invalid: అక్షరాలు లేదా ఖాళీలను మాత్రమే కలిగి ఉండాలి
+            last_name:
+              blank: ఖాళీగా ఉండకూడదు
+              invalid: అక్షరాలు లేదా ఖాళీలను మాత్రమే కలిగి ఉండాలి
+            password:
+              blank: ఖాళీగా ఉండకూడదు
+              too_short: కనీసం %{count} అక్షరాల పొడవు ఉండాలి
+            password_confirmation:
+              confirmation: కొత్త పాస్‌వర్డ్‌తో సరిపోలడం లేదు

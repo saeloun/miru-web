@@ -1,0 +1,22 @@
+---
+ko:
+  errors:
+    bill_status_billed: 이미 청구된 항목에 대해서는 다시 청구할 수 없습니다.
+    can't change status: 이미 지불된 송장은 변경할 수 없습니다.
+    create_billed_entry: 청구 가능한 근무 시간 항목을 생성할 수 없습니다.
+    internal_server_error: 뭔가 잘못됐어요
+    messages:
+      already_confirmed: 이미 확인되었습니다. 다시 로그인해 주세요.
+      confirmation_period_expired: "%{period} 이내에 확인이 필요합니다. 새 제품을 요청해 주세요."
+      expired: 만료되었습니다. 새 라이선스를 신청해 주세요.
+      not_found: 찾을 수 없음
+      not_locked: 잠겨 있지 않았습니다
+      not_saved:
+        one: 오류 1개로 인해 이 %{resource}을 저장할 수 없습니다.
+        other: "%{count}개의 오류로 인해 이 %{resource}을 저장할 수 없었습니다."
+    not_found: 찾으시는 자료를 이용할 수 없습니다.
+    prevent_draft_to_waived: 면제로 변경할 수 없습니다
+    unauthorized: 소유자 또는 관리자 사용자만 이 작업을 수행할 권한이 있습니다.
+    updation_not_allowed: 업데이트가 허용되지 않습니다.
+    user_already_member: 해당 이메일 주소는 이미 사용 중입니다. 다른 이메일 주소를 입력해 주세요.
+    validate_billable_project: 청구 불가능한 프로젝트에 대해서는 미청구 항목을 생성할 수 없습니다.

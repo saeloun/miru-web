@@ -1,0 +1,30 @@
+---
+ur:
+  activerecord:
+    errors:
+      models:
+        client:
+          attributes:
+            name:
+              format: "%{message}"
+        project:
+          attributes:
+            name:
+              format: "%{message}"
+        user:
+          attributes:
+            email:
+              blank: ای میل خالی نہیں ہو سکتی
+              invalid: غلط ای میل ID
+              taken: ای میل آئی ڈی پہلے سے موجود ہے۔
+            first_name:
+              blank: خالی نہیں ہو سکتا
+              invalid: صرف حروف یا خالی جگہوں پر مشتمل ہونا چاہیے۔
+            last_name:
+              blank: خالی نہیں ہو سکتا
+              invalid: صرف حروف یا خالی جگہوں پر مشتمل ہونا چاہیے۔
+            password:
+              blank: خالی نہیں ہو سکتا
+              too_short: کم از کم %{count} حروف کا ہونا ضروری ہے۔
+            password_confirmation:
+              confirmation: نئے پاس ورڈ سے میل نہیں کھاتا

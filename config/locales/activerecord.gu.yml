@@ -1,0 +1,30 @@
+---
+gu:
+  activerecord:
+    errors:
+      models:
+        client:
+          attributes:
+            name:
+              format: "%{message}"
+        project:
+          attributes:
+            name:
+              format: "%{message}"
+        user:
+          attributes:
+            email:
+              blank: ઇમેઇલ ખાલી હોઈ શકતો નથી
+              invalid: અમાન્ય ઇમેઇલ આઈડી
+              taken: ઇમેઇલ આઈડી પહેલેથી જ અસ્તિત્વમાં છે
+            first_name:
+              blank: ખાલી ન હોઈ શકે.
+              invalid: ફક્ત અક્ષરો અથવા જગ્યાઓ હોવી જોઈએ
+            last_name:
+              blank: ખાલી ન હોઈ શકે.
+              invalid: ફક્ત અક્ષરો અથવા જગ્યાઓ હોવી જોઈએ
+            password:
+              blank: ખાલી ન હોઈ શકે.
+              too_short: ઓછામાં ઓછા %{count} અક્ષરો હોવા જોઈએ
+            password_confirmation:
+              confirmation: નવા પાસવર્ડ સાથે મેળ ખાતો નથી.

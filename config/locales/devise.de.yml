@@ -1,25 +1,5 @@
 ---
 de:
-  activerecord:
-    errors:
-      models:
-        user:
-          attributes:
-            email:
-              blank: Die E-Mail-Adresse darf nicht leer sein.
-              invalid: Ungültige E-Mail-Adresse
-              taken: Die E-Mail-Adresse existiert bereits.
-            first_name:
-              blank: darf nicht leer sein
-              invalid: Darf nur Buchstaben oder Leerzeichen enthalten
-            last_name:
-              blank: darf nicht leer sein
-              invalid: Darf nur Buchstaben oder Leerzeichen enthalten
-            password:
-              blank: darf nicht leer sein
-              too_short: muss mindestens %{count} Zeichen lang sein
-            password_confirmation:
-              confirmation: stimmt nicht mit dem neuen Passwort überein
   devise:
     confirmations:
       confirmed: Ihre E-Mail-Adresse wurde erfolgreich bestätigt.
@@ -96,14 +76,3 @@ de:
         Minuten eine E-Mail mit Anweisungen zum Entsperren.
       unlocked: Ihr Konto wurde erfolgreich entsperrt. Bitte melden Sie sich an, um
         fortzufahren.
-  errors:
-    messages:
-      already_confirmed: wurde bereits bestätigt, bitte versuchen Sie, sich anzumelden.
-      confirmation_period_expired: muss innerhalb von %{period} bestätigt werden,
-        bitte fordern Sie eine neue an
-      expired: ist abgelaufen, bitte fordern Sie ein neues an
-      not_found: nicht gefunden
-      not_locked: war nicht gesperrt
-      not_saved:
-        one: 'Ein Fehler verhinderte das Speichern von %{resource}:'
-        other: "%{count}-Fehler verhinderten das Speichern dieses %{resource}:"

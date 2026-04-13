@@ -1,16 +1,8 @@
 ---
 ar:
-  activerecord:
-    errors:
-      models:
-        client:
-          attributes:
-            name:
-              format: "%{message}"
-        project:
-          attributes:
-            name:
-              format: "%{message}"
+  app:
+    name: وكالة ميرو OS
+    tagline: أدر عمليات وكالتك من مركز قيادة واحد.
   application_controller:
     not_found: لم يتم العثور على المسار
   avatar:
@@ -84,19 +76,6 @@ ar:
   employment:
     update:
       success: تم تحديث بيانات التوظيف بنجاح
-  errors:
-    bill_status_billed: لا يمكنك إصدار فاتورة مقابل بند تم إصدار فاتورة له بالفعل.
-    can't change status: لا يمكن تغيير الفاتورة المدفوعة
-    create_billed_entry: لا يمكنك إنشاء إدخال جدول زمني مُفوتر
-    internal_server_error: حدث خطأ ما
-    not_found: المورد الذي تبحث عنه غير متوفر
-    prevent_draft_to_waived: لا يمكن تغييرها إلى إعفاء
-    unauthorized: لا يُسمح إلا للمالكين أو المستخدمين الإداريين بتنفيذ هذا الإجراء
-    updation_not_allowed: التحديث غير مسموح به
-    user_already_member: البريد الإلكتروني مستخدم بالفعل. يرجى إدخال بريد إلكتروني
-      آخر.
-    validate_billable_project: لا يمكنك إنشاء إدخال غير مُفوتر للمشاريع غير القابلة
-      للفوترة
   expenses:
     approve: تمت الموافقة على المصروفات بنجاح
     create: تم تقديم المصروفات بنجاح
@@ -169,6 +148,198 @@ ar:
       success: تم إنشاء الإجازة بنجاح
     update:
       success: تم تحديث الملف بنجاح
+  mailers:
+    actions:
+      join_miru: انضم إلى ميرو
+      open_expense: مصروفات مفتوحة
+      open_invoice: فاتورة مفتوحة
+      open_time_tracking: تتبع وقت الفتح
+      view_reports: عرض التقارير في ميرو
+    client_payment_mailer:
+      payment:
+        eyebrow: المدفوعات
+        preheader: إيصال دفع للفاتورة %{invoice_number}.
+        receipt_title: تم استلام الدفعة
+        records_body: يؤكد هذا الإيصال عملية الدفع. يمكنك إعادة فتح الفاتورة في أي
+          وقت إذا احتجت إلى التفاصيل مرة أخرى.
+        records_title: احتفظ بهذا لسجلاتك
+        subject: إيصال دفع للفاتورة %{invoice_number}
+        subtitle_html: لقد استلمنا دفعتك للفاتورة <strong>%{invoice_number}</strong>
+          .
+        summary_html: لقد استلمنا <strong>%{amount}</strong> على <strong>%{paid_on}</strong>
+          للفاتورة <strong>%{invoice_number}</strong> .
+        title: إيصال الدفع
+    expense_mailer:
+      approved:
+        eyebrow: نفقات
+        preheader: تمت الموافقة على طلب استرداد المصاريف الخاص بك.
+        subject: تمت الموافقة على طلب استرداد أموالك
+        subtitle: تمت مراجعة طلب استرداد المصاريف الخاص بك والموافقة عليه.
+        title: تمت الموافقة على رد الأموال
+      paid:
+        eyebrow: نفقات
+        preheader: تم وضع علامة "مدفوع" على طلب استرداد المبلغ الخاص بك.
+        subject: تم وضع علامة "مدفوع" على طلب استرداد أموالك
+        subtitle: تم إتمام عملية الدفع لطلب استرداد المبلغ الخاص بك.
+        title: تم سداد المبلغ
+      rejected:
+        eyebrow: نفقات
+        next_step_body: افتح المصروفات، وقم بإجراء التحديثات، ثم أرسلها مرة أخرى.
+        next_step_title: الخطوة التالية
+        preheader: طلب استرداد المصاريف الخاص بك يحتاج إلى تحديثات.
+        subject: يحتاج طلب استرداد أموالك إلى تحديثات قبل الموافقة عليه.
+        subtitle: يرجى مراجعة تفاصيل الطلب، وإجراء التغييرات اللازمة، ثم إعادة إرساله.
+        title: يحتاج نظام التعويض إلى تحديثات
+      submitted:
+        eyebrow: نفقات
+        preheader: طلب استرداد جديد يحتاج إلى مراجعة.
+        subject: قدّم %{submitter_name} طلب استرداد.
+        subtitle_html: قدم <strong>%{submitter_name}</strong> طلب استرداد جاهز للمراجعة.
+        title: طلب استرداد جديد
+    invoice_mailer:
+      invoice:
+        eyebrow: الفواتير
+        payment_link_subvalue: راجع بنود الفاتورة وادفع عبر الإنترنت.
+        payment_link_value: صفحة الفاتورة الآمنة
+        preheader: الفاتورة %{invoice_number} من %{company_name}.
+        ready_body: افتح صفحة الفاتورة الآمنة للتحقق من بنود الفاتورة، وتأكيد الإجمالي،
+          والدفع عبر الإنترنت.
+        ready_title: راجع قبل الدفع
+        subject: الفاتورة %{invoice_number}
+        subtitle_html: أرسل <strong>%{company_name}</strong> الفاتورة <strong>%{invoice_number}</strong>
+          . يمكنك مراجعتها ودفعها عبر الإنترنت متى كنت مستعدًا.
+        support_html: هل لديك أي استفسارات بخصوص هذه الفاتورة؟ يرجى الرد على هذه الرسالة
+          الإلكترونية أو الاتصال بـ <a href="mailto:%{support_email}">%{support_email}</a>
+          .
+        title: الفاتورة جاهزة للمراجعة
+      send_invoice:
+        attachment_subvalue: احتفظ بها، أو أعد توجيهها، أو قم بحفظها في ملف.
+        attachment_value: ملف PDF مرفق
+        eyebrow: الفواتير
+        next_steps_body: افتح الفاتورة لتأكيد المبلغ، وراجع بنودها، وادفع عندما تكون
+          مستعداً.
+        next_steps_title: ما الذي يمكن توقعه؟
+        note_title: ملاحظة من %{company_name}
+        preheader: الفاتورة %{invoice_number} من %{company_name} جاهزة.
+        subject: الفاتورة %{invoice_number} من %{company_name}
+        subtitle_html: أرسل <strong>%{company_name}</strong> الفاتورة <strong>%{invoice_number}</strong>
+          . افتحها لمراجعة التفاصيل، وقم بتنزيل ملف PDF، وادفع بأمان.
+        support_html: هل تحتاج إلى مساعدة؟ أجب على هذه الرسالة الإلكترونية أو اتصل
+          بـ <a href="mailto:%{support_email}">%{support_email}</a> .
+        title: الفاتورة جاهزة للمراجعة
+    labels:
+      amount: كمية
+      amount_due: المبلغ المستحق
+      amount_paid: المبلغ المدفوع
+      attachment: مرفق
+      category: فئة
+      client: عميل
+      date: تاريخ
+      description: وصف
+      due_date: تاريخ الاستحقاق
+      invited_by: بدعوة من
+      invoice: فاتورة
+      invoice_number: رقم الفاتورة
+      issue_date: تاريخ الإصدار
+      issued_to: صادر إلى
+      members: أعضاء
+      outstanding_amount: المبلغ المستحق
+      paid_on: تم الدفع
+      payment_link: رابط الدفع
+      payment_method: طريقة الدفع
+      reference: مرجع
+      status: حالة
+      total_amount: المبلغ الإجمالي
+      workspace: مساحة العمل
+    layout:
+      brand: ميرو
+      footer_body: يُدير برنامج ميرو الوقت والفواتير والمدفوعات والعمليات في مساحة
+        عمل واحدة هادئة.
+      footer_contact: support@getmiru.com
+      footer_copyright: "© ميرو. جميع الحقوق محفوظة."
+      footer_site: app.miru.so
+      preheader: تحديث واضح من ميرو.
+    monthly_reports_mailer:
+      cash_flow_digest:
+        average_daily_net_change_html: متوسط التغير الصافي اليومي <strong>%{amount}</strong>
+        compare_to_previous: مقابل %{amount} في %{month_label}
+        eyebrow: ملخص شهري
+        money_in: المال في
+        money_out: سحب الأموال
+        net_change: التغير الصافي في %{month_label}
+        no_money_in: لم يتم تسجيل أي مدفوعات في ميرو لـ %{month_year_label}.
+        no_money_out: لم يتم تسجيل أي مصاريف مدفوعة في برنامج ميرو لـ %{month_year_label}.
+        preheader: ملخص التدفقات النقدية لـ %{company_name} و %{month_label}
+        subject: ملخص التدفقات النقدية لـ %{company_name} و %{month_label}
+        subtitle: فيما يلي نظرة موجزة على حركة الأموال عبر ميرو لـ %{month_year_label}.
+        title: ملخص التدفقات النقدية لـ %{company_name} و %{month_label}
+        top_money_in_sources: أهم مصادر الدخل
+        top_money_out_sources: أعلى فئات الأموال الخارجة
+    payment_mailer:
+      payment:
+        eyebrow: المدفوعات
+        follow_up_body: افتح الفاتورة لتأكيد الدفع، أو لحفظ الإيصال، أو للمتابعة إلى
+          الخطوة التالية.
+        follow_up_title: ما الخطوة التالية؟
+        preheader: تأكيد الدفع للفاتورة %{invoice_number}.
+        received_title: تم استلام الدفعة
+        subject: تفاصيل الدفع للفاتورة %{invoice_number}
+        subtitle_html: تم دفع الفاتورة <strong>%{client_name}</strong> <strong>%{invoice_number}</strong>
+          .
+        summary_html: دفع <strong>%{client_name}</strong> المبلغ <strong>%{amount}</strong>
+          للفاتورة <strong>%{invoice_number}</strong> . تم سداد هذه الفاتورة بالكامل
+          الآن.
+        title: تأكيد الدفع
+    send_payment_reminder_mailer:
+      send_payment_reminder:
+        eyebrow: الفواتير
+        preheader: تذكير بدفع فواتير %{company_name}.
+        subject: تذكير بالدفع لـ %{company_name}
+        subtitle: إليكم الفواتير التي لا تزال بحاجة إلى مراجعة.
+        title: تذكير بالدفع
+    send_reminder_mailer:
+      send_reminder:
+        eyebrow: الفواتير
+        preheader: تذكير بشأن الفاتورة %{invoice_number} من %{company_name}.
+        subject: تذكير بالفاتورة %{invoice_number} من %{company_name}
+        subtitle_html: الفاتورة <strong>%{invoice_number}</strong> من <strong>%{company_name}</strong>
+          لا تزال بانتظار الدفع.
+        title: تذكير بالدفع
+    send_weekly_reminder_to_user_mailer:
+      notify_user_about_missed_entries:
+        body_html: لقد سجلت أقل من 40 ساعة بين <strong>%{starting_date}</strong> و
+          <strong>%{ending_date}</strong> .
+        eyebrow: تتبع الوقت
+        follow_up: افتح برنامج ميرو، وأضف الإدخالات المفقودة، وأغلق الأسبوع.
+        greeting_html: مرحباً <strong>%{name}</strong> ،
+        preheader: قم بتحديث جدول مواعيدك في برنامج ميرو للأسبوع المفقود.
+        signoff_html: شكرًا،<br> <strong>ميرو</strong>
+        subject: أكمل جدول ساعات العمل الخاص بك على منصة ميرو للأسبوع الماضي
+        subtitle: لا تزال إدخالات وقتك لـ %{company_name} أقل من الإجمالي الأسبوعي
+          المتوقع.
+        title: أكمل جدول ساعات العمل الخاص بك
+    user_invitation_mailer:
+      send_user_invitation:
+        about_body: يجمع برنامج ميرو الوقت والفواتير والمدفوعات والعمليات اليومية
+          في مساحة عمل واحدة.
+        about_title: عن ميرو
+        eyebrow: دعوة
+        get_started_body: اقبل الدعوة، أنشئ كلمة مرورك، وستكون قد دخلت.
+        get_started_title: ابدأ الآن
+        preheader: لقد تمت دعوتك للانضمام إلى فريق على متن ميرو.
+        subject: أنت مدعو للانضمام إلى ميرو
+        subtitle_html: "<strong>%{sender_name}</strong> دعاك للانضمام إلى <strong>%{company_name}</strong>
+          على ميرو."
+        support_html: إذا لم تكن تتوقع هذه الدعوة، فاتصل بفريقنا على <a href="mailto:%{support_email}">%{support_email}</a>
+          .
+        title: انضم إلى مساحة عمل ميرو الخاصة بك
+        workspace_members:
+          few: "%{count} أعضاء"
+          many: "%{count} عضوًا"
+          one: عضو واحد
+          other: أعضاء %{count}
+          two: عضوان
+          zero: 0 عضو
   navbar:
     clients: العملاء
     help: يساعد

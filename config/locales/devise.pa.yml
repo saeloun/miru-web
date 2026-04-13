@@ -1,25 +1,5 @@
 ---
 pa:
-  activerecord:
-    errors:
-      models:
-        user:
-          attributes:
-            email:
-              blank: ਈਮੇਲ ਖਾਲੀ ਨਹੀਂ ਹੋ ਸਕਦੀ
-              invalid: ਅਵੈਧ ਈਮੇਲ ਆਈਡੀ
-              taken: ਈਮੇਲ ਆਈਡੀ ਪਹਿਲਾਂ ਹੀ ਮੌਜੂਦ ਹੈ
-            first_name:
-              blank: ਖਾਲੀ ਨਹੀਂ ਹੋ ਸਕਦਾ
-              invalid: ਸਿਰਫ਼ ਅੱਖਰ ਜਾਂ ਖਾਲੀ ਥਾਂਵਾਂ ਹੋਣੀਆਂ ਚਾਹੀਦੀਆਂ ਹਨ
-            last_name:
-              blank: ਖਾਲੀ ਨਹੀਂ ਹੋ ਸਕਦਾ
-              invalid: ਸਿਰਫ਼ ਅੱਖਰ ਜਾਂ ਖਾਲੀ ਥਾਂਵਾਂ ਹੋਣੀਆਂ ਚਾਹੀਦੀਆਂ ਹਨ
-            password:
-              blank: ਖਾਲੀ ਨਹੀਂ ਹੋ ਸਕਦਾ
-              too_short: ਘੱਟੋ-ਘੱਟ %{count} ਅੱਖਰ ਹੋਣੇ ਚਾਹੀਦੇ ਹਨ
-            password_confirmation:
-              confirmation: ਨਵੇਂ ਪਾਸਵਰਡ ਨਾਲ ਮੇਲ ਨਹੀਂ ਖਾਂਦਾ।
   devise:
     confirmations:
       confirmed: ਤੁਹਾਡੇ ਈਮੇਲ ਪਤੇ ਦੀ ਸਫਲਤਾਪੂਰਵਕ ਪੁਸ਼ਟੀ ਹੋ ਗਈ ਹੈ।
@@ -95,15 +75,3 @@ pa:
         ਵਿੱਚ ਇਸਨੂੰ ਅਨਲੌਕ ਕਰਨ ਦੇ ਨਿਰਦੇਸ਼ਾਂ ਵਾਲੀ ਇੱਕ ਈਮੇਲ ਪ੍ਰਾਪਤ ਹੋਵੇਗੀ।
       unlocked: ਤੁਹਾਡਾ ਖਾਤਾ ਸਫਲਤਾਪੂਰਵਕ ਅਨਲੌਕ ਕਰ ਦਿੱਤਾ ਗਿਆ ਹੈ। ਜਾਰੀ ਰੱਖਣ ਲਈ ਕਿਰਪਾ ਕਰਕੇ
         ਸਾਈਨ ਇਨ ਕਰੋ।
-  errors:
-    messages:
-      already_confirmed: ਪਹਿਲਾਂ ਹੀ ਪੁਸ਼ਟੀ ਕੀਤੀ ਗਈ ਸੀ, ਕਿਰਪਾ ਕਰਕੇ ਸਾਈਨ ਇਨ ਕਰਨ ਦੀ ਕੋਸ਼ਿਸ਼
-        ਕਰੋ।
-      confirmation_period_expired: "%{period} ਦੇ ਅੰਦਰ ਪੁਸ਼ਟੀ ਕਰਨ ਦੀ ਲੋੜ ਹੈ, ਕਿਰਪਾ
-        ਕਰਕੇ ਇੱਕ ਨਵਾਂ ਬੇਨਤੀ ਕਰੋ"
-      expired: ਮਿਆਦ ਪੁੱਗ ਗਈ ਹੈ, ਕਿਰਪਾ ਕਰਕੇ ਇੱਕ ਨਵਾਂ ਬੇਨਤੀ ਕਰੋ
-      not_found: ਨਹੀਂ ਲਭਿਆ
-      not_locked: ਤਾਲਾਬੰਦ ਨਹੀਂ ਸੀ
-      not_saved:
-        one: '1 ਗਲਤੀ ਨੇ ਇਸ %{resource} ਨੂੰ ਸੇਵ ਕਰਨ ਤੋਂ ਰੋਕਿਆ:'
-        other: "%{count} ਗਲਤੀਆਂ ਨੇ ਇਸ %{resource} ਨੂੰ ਸੇਵ ਕਰਨ ਤੋਂ ਰੋਕਿਆ:"

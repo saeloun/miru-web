@@ -1,25 +1,5 @@
 ---
 te:
-  activerecord:
-    errors:
-      models:
-        user:
-          attributes:
-            email:
-              blank: ఇమెయిల్ ఖాళీగా ఉండకూడదు
-              invalid: చెల్లని ఇమెయిల్ ఐడి
-              taken: ఇమెయిల్ ఐడి ఇప్పటికే ఉంది
-            first_name:
-              blank: ఖాళీగా ఉండకూడదు
-              invalid: అక్షరాలు లేదా ఖాళీలను మాత్రమే కలిగి ఉండాలి
-            last_name:
-              blank: ఖాళీగా ఉండకూడదు
-              invalid: అక్షరాలు లేదా ఖాళీలను మాత్రమే కలిగి ఉండాలి
-            password:
-              blank: ఖాళీగా ఉండకూడదు
-              too_short: కనీసం %{count} అక్షరాల పొడవు ఉండాలి
-            password_confirmation:
-              confirmation: కొత్త పాస్‌వర్డ్‌తో సరిపోలడం లేదు
   devise:
     confirmations:
       confirmed: మీ ఇమెయిల్ చిరునామా విజయవంతంగా ధృవీకరించబడింది.
@@ -91,14 +71,3 @@ te:
         చేసే విధానంపై సూచనలతో కూడిన ఇమెయిల్ మీకు వస్తుంది.
       unlocked: మీ ఖాతా విజయవంతంగా అన్‌లాక్ చేయబడింది. కొనసాగించడానికి దయచేసి సైన్
         ఇన్ చేయండి.
-  errors:
-    messages:
-      already_confirmed: ఇదివరకే ధృవీకరించబడింది, దయచేసి సైన్ ఇన్ చేయడానికి ప్రయత్నించండి
-      confirmation_period_expired: "%{period} లోపల నిర్ధారించబడాలి, దయచేసి కొత్త దానిని
-        అభ్యర్థించండి"
-      expired: గడువు ముగిసింది, దయచేసి కొత్త దానిని అభ్యర్థించండి
-      not_found: కనుగొనబడలేదు
-      not_locked: లాక్ చేయబడలేదు
-      not_saved:
-        one: '1 లోపం కారణంగా ఈ %{resource} సేవ్ చేయబడలేదు:'
-        other: "%{count} లోపాల వల్ల ఈ %{resource} సేవ్ చేయబడలేదు:"

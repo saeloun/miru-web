@@ -1,25 +1,5 @@
 ---
 gu:
-  activerecord:
-    errors:
-      models:
-        user:
-          attributes:
-            email:
-              blank: ઇમેઇલ ખાલી હોઈ શકતો નથી
-              invalid: અમાન્ય ઇમેઇલ આઈડી
-              taken: ઇમેઇલ આઈડી પહેલેથી જ અસ્તિત્વમાં છે
-            first_name:
-              blank: ખાલી ન હોઈ શકે.
-              invalid: ફક્ત અક્ષરો અથવા જગ્યાઓ હોવી જોઈએ
-            last_name:
-              blank: ખાલી ન હોઈ શકે.
-              invalid: ફક્ત અક્ષરો અથવા જગ્યાઓ હોવી જોઈએ
-            password:
-              blank: ખાલી ન હોઈ શકે.
-              too_short: ઓછામાં ઓછા %{count} અક્ષરો હોવા જોઈએ
-            password_confirmation:
-              confirmation: નવા પાસવર્ડ સાથે મેળ ખાતો નથી.
   devise:
     confirmations:
       confirmed: તમારા ઇમેઇલ સરનામાંની સફળતાપૂર્વક પુષ્ટિ થઈ ગઈ છે.
@@ -93,15 +73,3 @@ gu:
         તેને કેવી રીતે અનલૉક કરવું તેની સૂચનાઓ સાથેનો એક ઇમેઇલ પ્રાપ્ત થશે.
       unlocked: તમારું એકાઉન્ટ સફળતાપૂર્વક અનલૉક કરવામાં આવ્યું છે. ચાલુ રાખવા માટે
         કૃપા કરીને સાઇન ઇન કરો.
-  errors:
-    messages:
-      already_confirmed: પહેલાથી જ પુષ્ટિ થઈ ગઈ હતી, કૃપા કરીને સાઇન ઇન કરવાનો પ્રયાસ
-        કરો
-      confirmation_period_expired: "%{period} ની અંદર પુષ્ટિ કરવાની જરૂર છે, કૃપા
-        કરીને એક નવું વિનંતી કરો"
-      expired: સમયસીમા સમાપ્ત થઈ ગઈ છે, કૃપા કરીને નવી વિનંતી કરો
-      not_found: મળ્યું નથી
-      not_locked: તાળું મારેલું નહોતું
-      not_saved:
-        one: '1 ભૂલે આ %{resource} ને સાચવવાથી અટકાવ્યું:'
-        other: "%{count} ભૂલોએ આ %{resource} ને સાચવવાથી અટકાવ્યું:"

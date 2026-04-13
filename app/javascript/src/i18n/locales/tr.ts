@@ -1,12 +1,9 @@
 const tr = {
-  // Image validation
   invalidImageFormatSize:
     "Yanlış dosya formatı. Lütfen PNG veya JPG türünde bir resim yükleyin. Maks. boyut (%{fileSize}KB)",
   invalidImageSize: "Dosya boyutu %{fileSize}KB maksimum sınırı aştı.",
   invalidImageFormat:
     "Yanlış dosya formatı. Lütfen PNG veya JPG türünde bir resim yükleyin",
-
-  // Common actions
   save: "Kaydet",
   cancel: "İptal",
   delete: "Sil",
@@ -33,8 +30,6 @@ const tr = {
   yes: "Evet",
   no: "Hayır",
   or: "veya",
-
-  // Common labels
   name: "Ad",
   email: "E-posta",
   phone: "Telefon",
@@ -64,12 +59,10 @@ const tr = {
   department: "Departman",
   theme: "Tema",
   summary: "Özet",
-  format: "Format",
+  format: "Biçim",
   all: "Tümü",
   from: "Başlangıç",
   to: "Bitiş",
-
-  // Date/time
   today: "Bugün",
   yesterday: "Dün",
   tomorrow: "Yarın",
@@ -93,21 +86,17 @@ const tr = {
   selectPeriod: "Dönem seçin",
   fullDay: "Tam Gün",
   halfDay: "Yarım Gün",
-
-  // Date validation
   dateCannotBeBlank: "Tarih boş bırakılamaz",
   fromDateMustBeLessThanToDate:
     "'Başlangıç' tarihi 'Bitiş' tarihinden küçük veya eşit olmalıdır",
   toDateMustBeGreaterThanFromDate:
     "'Bitiş' tarihi 'Başlangıç' tarihinden büyük veya eşit olmalıdır",
   invalidDate: "Lütfen geçerli bir tarih girin",
-
-  // Month abbreviations
   monthJan: "Oca",
   monthFeb: "Şub",
   monthMar: "Mar",
   monthApr: "Nis",
-  monthMay: "May",
+  monthMay: "Mayıs",
   monthJun: "Haz",
   monthJul: "Tem",
   monthAug: "Ağu",
@@ -115,8 +104,6 @@ const tr = {
   monthOct: "Eki",
   monthNov: "Kas",
   monthDec: "Ara",
-
-  // Error pages
   pageNotFound: "Sayfa Bulunamadı",
   clickHere: "Buraya tıklayın",
   somethingWentWrong: "Bir şeyler ters gitti",
@@ -124,15 +111,11 @@ const tr = {
     "Tekrar denemek için sayfayı yenileyin. Bu durum devam ederse, tekrar giriş yapın veya destek ile iletişime geçin.",
   reloadPage: "Sayfayı yenile",
   loadingWorkspace: "Çalışma alanı yükleniyor...",
-
-  // Search
   searchClients: "Müşteri ara...",
   searchInvoices: "Fatura ara...",
   searchTeamMembers: "Ekip üyesi ara...",
   selectTeamMember: "Ekip üyesi seçin",
   noResultsFound: "Sonuç bulunamadı",
-
-  // Time Tracking
   timeTracking: {
     addEntry: "Kayıt Ekle",
     newTimeEntry: "Yeni Zaman Kaydı",
@@ -222,8 +205,6 @@ const tr = {
       sun: "Paz",
     },
   },
-
-  // Task types
   taskTypes: {
     development: "Geliştirme",
     meeting: "Toplantı",
@@ -238,16 +219,12 @@ const tr = {
     training: "Eğitim",
     other: "Diğer",
   },
-
-  // Time off types
   timeOffTypes: {
     vacation: "Tatil",
     sickLeave: "Hastalık İzni",
     personalDay: "Kişisel Gün",
     holiday: "Resmi Tatil",
   },
-
-  // Clients
   clients: {
     addClients: "Müşteri Ekle",
     addNewClient: "Yeni Müşteri Ekle",
@@ -280,8 +257,6 @@ const tr = {
     sendPaymentReminder: "Ödeme Hatırlatması Gönder",
     invoicesSelected: "%{count} fatura seçildi",
   },
-
-  // Contacts
   contacts: {
     addContact: "Kişi Ekle",
     addContacts: "Kişiler Ekle",
@@ -300,8 +275,6 @@ const tr = {
     invalidEmailId: "Geçersiz e-posta adresi",
     emailRequired: "E-posta adresi boş bırakılamaz",
   },
-
-  // Projects
   projects: {
     addProject: "Proje ekle",
     addNewProject: "Yeni proje ekle",
@@ -371,8 +344,6 @@ const tr = {
     teamMembersDescription:
       "Bu projeye atanmış ekip üyelerini görüntüleyin ve yönetin.",
   },
-
-  // Team
   team: {
     team: "Ekip",
     teamOverview: "Ekip Genel Görünümü",
@@ -419,8 +390,6 @@ const tr = {
     invalidEmail: "Geçersiz e-posta adresi",
     emailRequired: "E-posta adresi boş bırakılamaz",
   },
-
-  // Invoices
   invoices: {
     invoice: "Fatura",
     invoices: "Faturalar",
@@ -498,16 +467,12 @@ const tr = {
     resetFilters: "Filtreleri sıfırla",
     loadingChartData: "Grafik verileri yükleniyor...",
     noInvoiceData: "Fatura verisi mevcut değil",
-
-    // Statuses
     draft: "Taslak",
     sent: "Gönderildi",
     overdue: "Gecikmiş",
     collected: "Tahsil Edildi",
     paid: "Ödendi",
     outstanding: "Ödenmemiş",
-
-    // Email
     recipientEmailId: "Alıcı E-posta Adresi",
     subject: "Konu",
     message: "Mesaj",
@@ -520,8 +485,6 @@ const tr = {
     invoiceSentBody: "%{company} size bir fatura gönderdi (%{number})",
     invoiceWillBeSent: "Fatura gönderilecek!",
     processing: "işleniyor...",
-
-    // No payment gateway
     noPaymentGateway: "Ödeme ağ geçidi bağlı değil",
     paymentGatewayError:
       "Hata. Fatura ödemesini yapabilmeniz için lütfen fatura gönderenle iletişime geçerek bir ödeme ağ geçidi bağlamasını isteyin",
@@ -532,14 +495,10 @@ const tr = {
     stripeDisabled: "Bu fatura için Stripe devre dışı",
     stripeDisabledMessage:
       "Gönderen bu fatura için Stripe ödemelerini etkinleştirmemiş. Etkinleştirmesi için onlarla iletişime geçebilir veya ACH gibi alternatif bir ödeme yöntemi seçebilirsiniz.",
-
-    // Bulk actions
     preparingDownload: "İndirme hazırlanıyor...",
     downloadFailed: "İndirme başarısız. Lütfen tekrar deneyin.",
     downloadingFiles: "Dosyalar indiriliyor...",
     downloadComplete: "İndirme Tamamlandı",
-
-    // Table headers
     nameHeader: "AD",
     descriptionHeader: "AÇIKLAMA",
     dateHeader: "TARİH",
@@ -547,8 +506,6 @@ const tr = {
     amountHeader: "TUTAR",
     statusHeader: "DURUM",
     invoiceNumberHeader: "FATURA NUMARASI",
-
-    // Chart labels
     area: "Alan",
     bar: "Çubuk",
     noData: "Veri yok",
@@ -556,8 +513,6 @@ const tr = {
     quarterly: "Üç Aylık",
     yearly: "Yıllık",
     trend: "Eğilim",
-
-    // Preview / detail labels
     taxId: "Vergi No: %{value}",
     vatNumber: "KDV Numarası: %{value}",
     gstNumber: "GST Numarası: %{value}",
@@ -571,8 +526,6 @@ const tr = {
     due: "Vade %{date}",
     viewed: "Görüntülendi",
     cancelled: "İptal Edildi",
-
-    // Toast / confirmation messages
     invoiceMarkedAsPaid: "Fatura başarıyla ödendi olarak işaretlendi",
     invoiceDownloaded: "Fatura başarıyla indirildi",
     invoiceSentSuccessfully: "Fatura başarıyla gönderildi",
@@ -588,8 +541,6 @@ const tr = {
     invoiceCreated: "Fatura başarıyla oluşturuldu",
     invoiceUpdated: "Fatura başarıyla güncellendi",
     failedToSaveInvoice: "Fatura kaydedilemedi. Lütfen tekrar deneyin.",
-
-    // Counters
     showingOf: "%{shown} / %{total} gösteriliyor",
     viewingMatching:
       "%{loaded} yüklenenden %{filtered} eşleşen fatura görüntüleniyor",
@@ -597,12 +548,8 @@ const tr = {
     showingRecentTransactions: "%{count} son işlem gösteriliyor",
     updatedAt: "%{date} güncellendi",
     invoiceHash: "Fatura #%{number}",
-
-    // Mobile table headers
     nameDescription: "AD / AÇIKLAMA",
     dateTime: "TARİH / SÜRE",
-
-    // Invoice reminder email
     invoiceReminder: "Fatura Hatırlatması: %{number}",
     reminderMessage:
       "Bu, ödenmemiş faturanız hakkında bir hatırlatmadır. Lütfen ekteki ayrıntıları inceleyin.",
@@ -620,15 +567,28 @@ const tr = {
     cannotDownloadInvalidId: "Fatura indirilemez - geçersiz ID",
     cannotSendInvalidId: "Fatura gönderilemez - geçersiz ID",
     payment: "Ödeme #%{id}",
+    newInvoicePage: "Yeni fatura",
+    editInvoicePage: "Faturayı düzenle",
+    editorSubtitle:
+      "Fatura bilgilerini doldurun ve göndermeden önce önizleyin.",
+    saving: "Tasarruf...",
+    sending: "Gönderiliyor...",
+    alreadySent: "Zaten gönderildi",
+    downloading: "İndiriliyor...",
+    selectClientBeforeSending: "Faturayı göndermeden önce bir müşteri seçin.",
   },
   common: {
     retry: "Tekrar dene",
     pageUnavailable:
       "Bu sayfa kullanılamıyor veya bağlantı çalışma alanınız için artık geçerli değil.",
     goToDashboard: "Panoya git",
+    language: "Dil",
+    loading: "Yükleniyor...",
+    saving: "Tasarruf...",
+    failedToChangeLanguage: "Dil değiştirme başarısız oldu.",
+    searchLanguages: "Dilleri ara...",
+    noLanguagesFound: "Hiçbir dil bulunamadı.",
   },
-
-  // Invoice admin dashboard
   invoiceDashboard: {
     revenueOverview: "Gelir Genel Görünümü",
     revenueByStatus: "Duruma Göre Gelir",
@@ -636,8 +596,6 @@ const tr = {
     allInvoices: "Tüm Faturalar",
     recentSales: "Son Satışlar",
   },
-
-  // Payments
   payments: {
     payments: "Ödemeler",
     addPayment: "Ödeme Ekle",
@@ -662,8 +620,6 @@ const tr = {
     paymentHistory: "Ödeme Geçmişi",
     scrollToLoadMore: "Daha fazla ödeme yüklemek için kaydırın",
     allPaymentsLoaded: "Tüm ödemeler yüklendi",
-
-    // Filters
     allStatuses: "Tüm Durumlar",
     allClients: "Tüm Müşteriler",
     paymentType: "Ödeme Türü",
@@ -673,7 +629,7 @@ const tr = {
     wireTransfer: "Elektronik Havale",
     achTransfer: "ACH Transferi",
     paypal: "PayPal",
-    stripe: "Stripe",
+    stripe: "Şerit",
     cash: "Nakit",
     check: "Çek",
     pending: "Beklemede",
@@ -686,8 +642,6 @@ const tr = {
     searchByClientOrInvoice: "Müşteri adı veya fatura ID'si ile arayın",
     selectTransactionTypeBtn: "İşlem Türü Seçin",
   },
-
-  // Timer
   timer: {
     webTimer: "Web zamanlayıcı",
     webTimerLabel: "Web Zamanlayıcı",
@@ -713,8 +667,6 @@ const tr = {
     whatAreYouWorkingOn: "Ne üzerinde çalışıyorsunuz?",
     selectProject: "Proje seçin",
   },
-
-  // Reports
   reports: {
     reports: "Raporlar",
     backToReports: "Raporlara Dön",
@@ -729,8 +681,6 @@ const tr = {
     exportAsCsv: "CSV olarak dışa aktar",
     exportAsPdf: "PDF olarak dışa aktar",
     toggleReportFilters: "Rapor filtrelerini aç/kapat",
-
-    // Filters
     clients: "Müşteriler",
     teamMembers: "Ekip Üyeleri",
     groupBy: "Grupla",
@@ -739,14 +689,10 @@ const tr = {
     searchClientsFilter: "Müşteri Ara...",
     searchTeamMembersFilter: "Ekip Üyesi Ara...",
     applyFilter: "Filtreyi Uygula",
-
-    // Time entry report
     totalHours: "Toplam Saat",
     scrollToLoadMoreRows: "Daha fazla rapor satırı yüklemek için kaydırın",
     loadingMoreRows: "Daha fazla rapor satırı yükleniyor...",
     allRowsLoaded: "Tüm rapor satırları yüklendi",
-
-    // Payment report
     perTransaction: "İşlem başına",
     topMethod: "En Çok Kullanılan Yöntem",
     paymentMethodsBreakdown: "Ödeme Yöntemleri Dağılımı",
@@ -756,8 +702,6 @@ const tr = {
     allMethods: "Tüm Yöntemler",
     creditCard: "Kredi Kartı",
     allStatus: "Tüm Durumlar",
-
-    // Revenue by client report
     totalRevenue: "Toplam Gelir",
     paidRevenue: "Ödenen Gelir",
     paidAmount: "Ödenen Tutar",
@@ -774,8 +718,6 @@ const tr = {
     clientRevenueDetails: "Müşteri Gelir Detayları",
     scrollToLoadMoreClients: "Daha fazla müşteri yüklemek için kaydırın",
     allClientsLoaded: "Tüm müşteriler yüklendi",
-
-    // Outstanding invoice report
     failedToLoadReportData: "Rapor verileri yüklenemedi",
     currencyFilter: "Para Birimi Filtresi",
     fromDate: "Başlangıç Tarihi",
@@ -793,8 +735,6 @@ const tr = {
     clientBreakdown: "Müşteri Dağılımı",
     originalAmount: "Orijinal Tutar",
     baseAmount: "Temel Tutar",
-
-    // Accounts aging report
     totalDue: "Toplam Borç",
     invoiceAgingDetails: "Fatura Yaşlandırma Detayları",
     noDataFound: "Veri Bulunamadı",
@@ -865,7 +805,7 @@ const tr = {
     totalInvoices: "Toplam Fatura",
     totalAmount: "Toplam Tutar",
     exportSection: "Dışa Aktar",
-    formatLabel: "Format",
+    formatLabel: "Biçim",
     exportPdfBtn: "PDF Dışa Aktar",
     exportCsvBtn: "CSV Dışa Aktar",
     noOutstandingOrOverdueInvoices:
@@ -935,8 +875,6 @@ const tr = {
     unknownProject: "Bilinmeyen Proje",
     generatingExport: "%{format} oluşturuluyor",
   },
-
-  // Expenses
   expenses: {
     expenses: "Giderler",
     addExpense: "Gider Ekle",
@@ -1016,8 +954,6 @@ const tr = {
     viewReceiptsFor: "%{description} için makbuzları görüntüle",
     expenseActionsFor: "%{description} için gider işlemleri",
   },
-
-  // Settings
   settings: {
     settings: "Ayarlar",
     profileSettings: "Profil Ayarları",
@@ -1045,9 +981,25 @@ const tr = {
     allocationValue: "Tahsis Değeri",
     allocationPeriod: "Tahsis Dönemi",
     allocationFrequency: "Tahsis Sıklığı",
+    labels: {
+      profile: "Profil",
+      employment: "İstihdam",
+      devices: "Cihazlar",
+      notifications: "Bildirimler",
+      preferences: "Tercihler",
+      organization: "Organizasyon",
+      billing: "Faturalama",
+      payment: "Ödeme",
+      holidays: "Tatiller",
+      leaves: "Yapraklar",
+      automation: "Otomasyon",
+      bankInfo: "Banka ve Vergi Bilgileri",
+    },
+    categories: {
+      personal: "Kişisel",
+      organization: "Organizasyon",
+    },
   },
-
-  // Leave types
   leaveTypes: {
     annualLeaves: "Yıllık izinler",
     sickLeaves: "Hastalık izinleri",
@@ -1055,23 +1007,17 @@ const tr = {
     paternityLeave: "Babalık izni",
     periodLeave: "Regl izni",
   },
-
-  // Allocation periods
   allocationPeriods: {
     days: "gün",
     weeks: "hafta",
     months: "ay",
   },
-
-  // Allocation frequencies
   allocationFrequencies: {
     perWeek: "haftalık",
     perMonth: "aylık",
     perQuarter: "çeyreklik",
     perYear: "yıllık",
   },
-
-  // Navbar
   navbar: {
     clients: "Müşteriler",
     invoices: "Faturalar",
@@ -1123,8 +1069,6 @@ const tr = {
     leavesDescription: "İzin taleplerini yönetin",
     expensesDescription: "İş giderlerini takip edin",
   },
-
-  // Dashboard
   dashboard: {
     dashboard: "Pano",
     overdue: "GECİKMİŞ",
@@ -1167,12 +1111,99 @@ const tr = {
     noRecentActivityYet: "Henüz son etkinlik yok",
     loadMore: "Daha fazla yükle",
     allCaughtUp: "Her şey güncel",
+    there: "Orası",
+    caughtUp: "Her şey tamamlandı!",
+    timeframe: {
+      week: "Bu hafta",
+      month: "Bu Ay",
+      quarter: "Bu Çeyrek",
+      year: "Bu Yıl",
+    },
+    stats: {
+      revenue: "Hasılat",
+      totalInvoiced: "Toplam Fatura Tutarı",
+      openInvoices: "Açık Faturalar",
+      paidInvoices: "Ödenmiş Faturalar",
+      paymentsReceived: "Alınan Ödemeler",
+      awaitingPayment: "Ödeme Bekleniyor",
+      alreadySettled: "Yerleşti",
+      hoursTracked: "Takip Edilen Saatler",
+      currentlyActive: "Şu anda aktif",
+      activeProjects: "Aktif Projeler",
+      assignedProjects: "Atanmış Projeler",
+      projectsYouCanWorkOn: "Üzerinde çalışabileceğiniz projeler",
+      teammates: "Takım arkadaşları",
+      teamSize: "Takım Boyutu",
+      noRecentActivity: "Son zamanlarda herhangi bir aktivite yok.",
+    },
+    charts: {
+      revenueMomentumTitle: "Gelir Momentumu",
+      revenueMomentumDescription: "Geçtiğimiz yıl boyunca aylık gelir trendi",
+      revenueTrendEyebrow: "GELİR TRENDİ",
+      revenueLeadersTitle: "Gelir Liderleri",
+      revenueLeadersDescription: "Gelir katkısına göre en büyük müşteriler",
+      topCustomersEyebrow: "EN İYİ MÜŞTERİLER",
+      ofTotal: "toplam %{percentage}",
+      noRevenue: "Gelir verisi mevcut değil.",
+    },
+    roleGuidance: {
+      employee: "Zamanınızı takip edin ve projelerinizi yönetin.",
+      bookKeeper: "Faturaları, ödemeleri ve mali raporları inceleyin.",
+      client: "Faturalarınızı ve ödeme geçmişinizi görüntüleyin.",
+      default: "Çalışma alanınızı yönetin",
+    },
   },
-
-  // Authentication
   auth: {
-    signIn: "Giriş yap",
-    signUp: "Kayıt ol",
+    signIn: {
+      title: "Çalışma alanınıza giriş yapın",
+      description:
+        "İşleri takip edin, faturaları gönderin ve nakit akışını tek bir yerden yönetin.",
+      continueWithGoogle: "Google ile devam edin",
+      continueWithGitHub: "GitHub ile devam edin",
+      orUseEmail: "veya e-posta kullanın",
+      email: "E-posta",
+      password: "Şifre",
+      submit: "Giriş yap",
+      forgotPassword: "Parolanızı mı unuttunuz?",
+      noAccount: "Hesabınız yok mu?",
+      signUp: "Üye olmak",
+      privacy: "Mahremiyet",
+      terms: "Şartlar",
+      loginFailed: "Giriş başarısız oldu. Lütfen tekrar deneyin.",
+      welcomeBack: "Tekrar hoşgeldiniz!",
+      waitingForPasskey: "Şifre bekleniyor...",
+      passkeyPrompt: "Oturum açmak için parolanızı kullanın.",
+      totpTitle: "İki Faktörlü Kimlik Doğrulama",
+      totpPrompt: "Kimlik doğrulama uygulamanızdan aldığınız kodu girin.",
+      totpDescription:
+        "Kimlik doğrulama uygulamanızı açın ve 6 haneli kodu girin.",
+      totpCode: "Kimlik doğrulama kodu",
+      verifyAndSignIn: "Doğrulayın ve giriş yapın.",
+      recoveryCode: "Bunun yerine bir kurtarma kodu kullanın.",
+      back: "Geri",
+    },
+    signUp: {
+      title: "Çalışma alanınızı oluşturun",
+      description:
+        "Müşterilerinizi, projelerinizi, faturalarınızı ve ödemelerinizi tek bir sade işletim sisteminde düzenleyin.",
+      continueWithGoogle: "Google ile devam edin",
+      continueWithGitHub: "GitHub ile devam edin",
+      orUseEmail: "veya e-posta kullanın",
+      firstName: "İlk adı",
+      lastName: "Soy isim",
+      email: "E-posta",
+      password: "Şifre",
+      confirmPassword: "Şifreyi Onayla",
+      passwordCriteria:
+        "En az 8 karakterden oluşan, biri büyük harf, biri küçük harf ve biri rakamdan oluşan bir metin.",
+      submit: "Hesap oluşturmak",
+      alreadyHaveAccount: "Zaten hesabınız var mı?",
+      signIn: "Giriş yap",
+      agreePrefix: "Kaydolmakla, şartlarımızı kabul etmiş olursunuz.",
+      termsOfService: "Hizmet Şartları",
+      and: " Ve ",
+      privacyPolicy: "Gizlilik Politikası",
+    },
     signOut: "Çıkış yap",
     welcomeBack: "Tekrar hoş geldiniz!",
     loginFailed: "Giriş başarısız. Lütfen tekrar deneyin.",
@@ -1239,15 +1270,72 @@ const tr = {
     termsOfService: "Hizmet Şartları",
     privacyPolicy: "Gizlilik Politikası",
     and: "ve",
+    slides: {
+      dashboard: {
+        title: "Şirket nabzı",
+        description:
+          "Gelirleri, aktif projeleri ve ekip ivmesini aramanıza gerek kalmadan görün.",
+      },
+      invoices: {
+        title: "Fatura komutu",
+        description:
+          "Çeklerinizi, vadesi geçmiş bakiyelerinizi ve ödenmiş işlerinizi aynı yerde tutun.",
+      },
+      timeTracking: {
+        title: "Net haftalık akış",
+        description:
+          "Haftalık zaman kaydı, gereksiz iş yüküne dönüşmeden güncel kalır.",
+      },
+      payments: {
+        title: "Nakit defteri",
+        description:
+          "Her ödeme, yöntem, durum ve kaynak bilgileriyle birlikte tek bir deftere kaydedilir.",
+      },
+    },
+    validation: {
+      emailRequired: "E-posta adresi gereklidir.",
+      invalidEmail: "Geçersiz e-posta adresi",
+      passwordRequired: "Şifre gereklidir.",
+      passwordComplexity:
+        "Parola en az 8 karakterden oluşmalı ve büyük harf, küçük harf ve rakam içermelidir.",
+      passwordSpace: "Parola boşluk içeremez.",
+      confirmPasswordRequired: "Şifre onayı gereklidir.",
+      passwordsMustMatch: "Şifreler aynı olmalıdır",
+      firstNameRequired: "Adının belirtilmesi zorunludur.",
+      firstNameInvalid: "İsim yalnızca harflerden oluşmalıdır.",
+      firstNameMax: "İsim en fazla 20 karakterden oluşmalıdır.",
+      lastNameRequired: "Soyadı zorunludur.",
+      lastNameInvalid: "Soyadı yalnızca harflerden oluşmalıdır.",
+      lastNameMax: "Soyadı en fazla 20 karakter uzunluğunda olmalıdır.",
+      acceptTerms: "Şartları kabul etmelisiniz.",
+    },
   },
-
-  // Passkeys
   passkeys: {
     noPasskeyResponse: "Geçiş anahtarı yanıtı alınamadı.",
     passkeysNotSupported: "Bu tarayıcıda geçiş anahtarları desteklenmiyor.",
+    title: "Parolalar",
+    addTitle: "Bu hesap için bir parola ekleyin.",
+    addDescription:
+      "Face ID, Touch ID, Windows Hello veya donanım güvenlik anahtarını kullanın.",
+    addAction: "Parola ekle",
+    requirementTitle: "Giriş yaparken parola gereklidir.",
+    requirementDescription:
+      "Şifrenizi girdikten sonra, Miru oturum açma işlemini tamamlamak için bir parola isteyecektir.",
+    emptyState: "Henüz parola eklenmedi.",
+    fallbackName: "Parola",
+    addedAt: "%{time} eklendi",
+    lastUsedAt: "Son kullanım %{time}",
+    removeAction: "Kaldırmak",
+    addedSuccess: "Parola eklendi.",
+    removedSuccess: "Parola kaldırıldı.",
+    requirementEnabled: "Parola gereksinimi etkinleştirildi.",
+    requirementDisabled: "Parola gereksinimi devre dışı bırakıldı.",
+    addFailed: "Parola ekleme işlemi başarısız oldu.",
+    removeFailed: "Parolayı kaldırma işlemi başarısız oldu.",
+    updateRequirementFailed:
+      "Parola girişi gereksiniminin güncellenmesi başarısız oldu.",
+    neverUsed: "Hiç kullanılmamış",
   },
-
-  // Organization setup
   orgSetup: {
     setupOrganization: "Kuruluş Kurulumu",
     companyName: "Şirket Adı",
@@ -1269,13 +1357,11 @@ const tr = {
     dragLogo: "Logo sürükleyin",
     selectFile: "Dosya Seç",
     acceptedFileFormats: "Kabul edilen dosya formatları: PNG, JPG, SVG.",
-    fileSizeLimit: "Dosya boyutu \u2266 2MB olmalıdır.",
+    fileSizeLimit: "Dosya boyutu ≦ 2MB olmalıdır.",
     imageResolution: "Görüntü çözünürlüğü 1:1 olmalıdır.",
     workingDaysPerWeek: "Çalışma Günleri (haftalık)",
     workingHoursPerWeek: "Çalışma Saatleri (haftalık)",
   },
-
-  // Profile
   profile: {
     personalDetails: "Kişisel Bilgiler",
     employmentDetails: "İstihdam Bilgileri",
@@ -1291,9 +1377,65 @@ const tr = {
     socialProfiles: "Sosyal Profiller",
     linkedin: "LinkedIn",
     github: "GitHub",
+    personalInformation: "Kişisel Bilgiler",
+    basicDetails: "Temel Ayrıntılar",
+    contactInformation: "İletişim Bilgileri",
+    addressType: "Adres Türü",
+    current: "Akım",
+    permanent: "Kalıcı",
+    employeeId: "Çalışan Kimliği",
+    officialEmail: "E-posta Adresi (Resmi)",
+    employmentType: "İstihdam Türü",
+    dateOfResignation: "İstifa Tarihi",
+    birthDatePlaceholder: "Doğum tarihinizi seçin",
+    firstName: "İlk adı",
+    lastName: "Soy isim",
+    firstNamePlaceholder: "Adınızı girin",
+    lastNamePlaceholder: "Soyadınızı girin",
+    personalEmail: "Kişisel E-posta",
+    personalEmailPlaceholder: "your.email@example.com",
+    phoneAriaLabel: "Telefon numarası",
+    addressLine1: "Adres satırı 1",
+    addressLine2: "Adres Satırı 2",
+    optionalSuffix: "(İsteğe bağlı)",
+    streetAddressPlaceholder: "Açık adres",
+    addressLine2Placeholder: "Daire, süit, ünite vb.",
+    statePlaceholder: "Eyalet veya il",
+    cityPlaceholder: "Şehir",
+    zipPostalCode: "Posta Kodu",
+    zipPlaceholder: "12345",
+    languageDescription: "Arayüz için tercih ettiğiniz dili seçin.",
+    security: "Güvenlik",
+    userFallback: "Kullanıcı",
+    currentPasswordPlaceholder: "Geçerli şifrenizi girin.",
+    newPassword: "Yeni Şifre",
+    newPasswordPlaceholder: "Yeni şifreyi girin",
+    confirmPasswordPlaceholder: "Yeni şifreyi tekrar girin",
+    cancelPasswordChange: "Şifre Değişikliğini İptal Et",
+    profilePhoto: "Profil fotoğrafı",
+    profilePhotoDescription:
+      "Çalışma alanı profiliniz için kare şeklinde bir fotoğraf yükleyin.",
+    noAddressProvided: "Adres bilgisi verilmedi.",
+    noEmailProvided: "E-posta adresi verilmedi.",
+    notProvided: "Bilgi verilmedi.",
+    notConnected: "Bağlı değil",
+    bornOn: "Doğum %{date}",
+    lastChangedDaysAgo: "Son değişiklik %{count} gün önce yapıldı",
+    secure: "Güvenli",
+    uploadPhoto: "Fotoğraf yükle",
+    removePhoto: "Fotoğrafı kaldır",
+    uploadPhotoFailed: "Profil resmi yüklenemedi.",
+    removePhotoFailed: "Profil resmini kaldırma işlemi başarısız oldu.",
+    adjustProfilePhoto: "Profil fotoğrafını ayarla",
+    adjustProfilePhotoDescription:
+      "Resmin saklamak istediğiniz bölümünü seçin.",
+    noImageSelected: "Hiçbir resim seçilmedi.",
+    savePhoto: "Fotoğrafı kaydet",
+    zoom: "Zoom",
+    company: "Şirket",
+    noPreviousEmployments: "Önceki iş deneyimi bulunamadı.",
+    addPastEmployment: "+ Geçmiş İş Deneyimi Ekle",
   },
-
-  // Leave Management
   leaveManagement: {
     leaveBalance: "İzin Bakiyesi",
     applyLeave: "İzin Başvurusu",
@@ -1331,9 +1473,11 @@ const tr = {
     leave: "izin",
     nationalHoliday: "Ulusal Tatil",
     optionalHoliday: "İsteğe Bağlı Tatil",
+    summaryLabel: "Özeti bırakın",
+    summaryDescription:
+      "Seçilen yıl için mevcut izinleri, kullanılan izinleri ve tatil kullanım oranlarını tek bir yerden görüntüleyin.",
+    balanceUntil: "Bakiye %{date}'a Kadar",
   },
-
-  // Subscriptions / Plan Details
   subscriptions: {
     currentPlan: "Mevcut Plan",
     upgradePlan: "Planı Yükselt",
@@ -1353,8 +1497,6 @@ const tr = {
     plusTaxes: "vergiler hariç",
     reviewAndPay: "İNCELE VE ÖDE",
   },
-
-  // Misc
   switchToMode: "%{mode} moduna geç",
   light: "Açık",
   dark: "Koyu",
@@ -1364,8 +1506,6 @@ const tr = {
   editLabel: "Düzenle",
   noPasskeyResponse: "Geçiş anahtarı yanıtı alınamadı.",
   passkeysNotSupported: "Bu tarayıcıda geçiş anahtarları desteklenmiyor.",
-
-  // Table headers (common)
   tableHeaders: {
     invoiceNo: "FATURA NO.",
     invoiceNumber: "FATURA NUMARASI",
@@ -1385,15 +1525,456 @@ const tr = {
     role: "ROL",
     type: "TÜR",
   },
-
-  // Relative dates
   nextDay: "Gelecek %{day}",
   lastDay: "Geçen %{day}",
-
-  // Duration formatting
   durationMinutes: "%{mins}m",
   durationHours: "%{hours}h",
   durationHoursMinutes: "%{hours}h %{mins}m",
+  preferencesSettings: {
+    title: "E-posta Tercihleri",
+    description: "E-posta bildirim ayarlarınızı yönetin",
+    saving: "Tasarruf...",
+    saveChanges: "Değişiklikleri Kaydet",
+    timesheetNotifications: "Zaman Çizelgesi Bildirimleri",
+    billingNotifications: "Faturalama Bildirimleri",
+    timesheetNotificationsDescription:
+      "Zaman takibi ve zaman çizelgeleriyle ilgili bildirimleri yönetin.",
+    billingNotificationsDescription:
+      "Fatura ve ödeme bildirimlerini kontrol edin.",
+    weeklyReminderTitle: "Haftalık Çalışma Saatleri Çizelgesi Hatırlatıcısı",
+    weeklyReminderDescription:
+      "Her Pazartesi, bekleyen zaman çizelgesi girişleriyle ilgili haftalık hatırlatıcılar alın.",
+    timesheetReminderTitle: "Eksik Giriş Hatırlatıcıları",
+    timesheetReminderDescription:
+      "2 günden fazla süreyle giriş yapmadığınızda bildirim alın.",
+    invoiceNotificationsTitle: "Fatura E-posta Bildirimleri",
+    invoiceNotificationsDescription:
+      "Fatura oluşturulduğunda, gönderildiğinde veya güncellendiğinde e-posta alın.",
+    paymentNotificationsTitle: "Ödeme E-posta Bildirimleri",
+    paymentNotificationsDescription:
+      "Ödemeler alındığında veya ödeme durumu değiştiğinde bildirim alın.",
+    monthlyDigestTitle: "Aylık Nakit Akışı Özeti",
+    monthlyDigestDescription:
+      "Net değişim, nakit girişi ve nakit çıkışı bilgilerini içeren aylık nakit akışı özetini alın.",
+    confirmUnsubscribeTitle:
+      "Tüm e-postalardan aboneliği iptal et seçeneğini onaylayın.",
+    confirmUnsubscribeDescription:
+      "Tüm e-posta bildirimlerinden aboneliğinizi iptal etmek istediğinizden emin misiniz? Önemli fatura ve ödeme bildirimleri de dahil olmak üzere hiçbir e-posta almayacaksınız.",
+    confirmUnsubscribeAction: "Evet, Tüm Aboneliklerden Çık",
+    unsubscribedTitle: "Tüm e-postalardan aboneliğiniz iptal edildi.",
+    unsubscribedDescription:
+      "Şu anda tüm e-posta bildirimlerinden aboneliğiniz iptal edildi. Miru'dan artık hiçbir e-posta almayacaksınız.",
+    resubscribeAction: "E-posta Bildirimlerini Yeniden Etkinleştir",
+    enabledCount: "%{total}'in %{count}'ı etkinleştirildi",
+    deliveryTitle: "E-posta Teslim Ayarları",
+    emailAddress: "E-posta Adresi",
+    deliveryDescription:
+      "Tüm bildirimler bu e-posta adresine gönderilecektir. E-posta adresinizi değiştirmek için lütfen profil ayarlarınızdan güncelleyin.",
+    unsubscribeTitle: "Abonelikten çık",
+    unsubscribeDescription:
+      "Miru'dan artık e-posta almak istemiyorsanız, tüm bildirimlerden aboneliğinizi iptal edebilirsiniz. Bu, önemli fatura ve ödeme bildirimleri de dahil olmak üzere tüm e-posta iletişimini durduracaktır.",
+    unsubscribeAction: "Tüm e-postalardan aboneliği iptal et",
+    badges: {
+      active: "Aktif",
+      important: "Önemli",
+      monthly: "Aylık",
+    },
+  },
+  automationSettings: {
+    title: "Otomasyon ve CLI",
+    description:
+      "Miru'yu terminalinizden, komut dosyalarınızdan veya yapay zeka aracılarınızdan, oturum açmış hesabınızla aynı yetkilere sahip olarak kullanın. Ayrı bir otomasyon ürününe gerek yok. Özel bir arka kapı erişimine de ihtiyaç yok.",
+    freeForEveryPlan: "Her plan için ücretsiz",
+    cards: {
+      samePermissionsTitle: "Uygulamayla aynı izinlere sahip.",
+      samePermissionsDescription:
+        "CLI yalnızca kimliği doğrulanmış kullanıcının web uygulamasında zaten erişebildiği şeyleri görür.",
+      humansAndScriptsTitle: "Hem insanlar hem de senaryolar için iyi.",
+      humansAndScriptsDescription:
+        "Günlük işler için basit komutlar kullanın ve komut dosyalarının veya yapay zekanın tam olarak aynı arayüzü çağırmasına izin verin.",
+      easyToInstallTitle: "Kolay kurulum",
+      easyToInstallDescription:
+        "Tek bir kurulum komutu, tek bir giriş ve ardından projeleri listeleyebilir, zaman kayıtları oluşturabilir, faturaları inceleyebilir ve daha fazlasını yapabilirsiniz.",
+    },
+    commandGroups: {
+      install: "Düzenlemek",
+      authenticateOnce: "Bir kez kimlik doğrulaması yapın.",
+      dailyCommands: "Günlük komutlar",
+    },
+  },
+  holidaysSettings: {
+    year: "Yıl",
+    publicHolidays: "Resmi Tatiller",
+    optionalHolidays: "İsteğe Bağlı Tatiller",
+    holidayName: "Tatil Adı",
+    enterHolidayName: "Tatil adını girin",
+    selectDate: "Tarih seçin",
+    addHoliday: "Tatil Ekle",
+    addFirstHoliday: "İlk Tatili Ekle",
+    addOptionalHoliday: "İsteğe Bağlı Tatil Ekle",
+    noPublicHolidaysConfigured: "Hiçbir resmi tatil yapılandırılmamış.",
+    noOptionalHolidaysConfigured:
+      "Hiçbir isteğe bağlı tatil seçeneği yapılandırılmamış.",
+    totalAllowed: "Toplam İzin Verilen",
+    enterNumber: "Numara girin",
+    frequency: "Sıklık",
+    allowedPerEmployee: "Çalışan başına izin verilen miktar",
+    yearAtAGlance: "Yıla Genel Bakış",
+    holidaySchedule: "Tatil Takvimi",
+    noHolidaysAddedForYear: "%{year} için henüz hiçbir tatil günü eklenmedi.",
+    categories: {
+      public: "Halk",
+      optional: "İsteğe bağlı",
+    },
+    weekdays: {
+      sun: "S",
+      mon: "M",
+      tue: "T",
+      wed: "W",
+      thu: "T",
+      fri: "F",
+      sat: "S",
+    },
+  },
+  paymentSettingsPage: {
+    backToSettings: "Ayarlara geri dön",
+    title: "Ödeme Sağlayıcıları",
+    description:
+      "Müşterilerden çevrimiçi ödeme kabul etmek için ödeme sağlayıcılarını birbirine bağlayın.",
+    errorTitle: "Hata",
+    errorDescription:
+      "Ödeme ayarları yüklenemedi. Lütfen daha sonra tekrar deneyin.",
+    stripeDescription:
+      "Kredi kartlarını, banka kartlarını ve popüler ödeme yöntemlerini kabul ediyoruz.",
+    connectedTo: "Bağlı olduğu",
+    connected: "Bağlı",
+    stripeAccountFallback: "Stripe Hesabı",
+    chargesEnabled: "Ücretlendirme Etkinleştirildi",
+    connectStripe: "Stripe'ı Bağla",
+    connecting: "Bağlanıyor...",
+    disconnect: "Bağlantıyı kes",
+    disconnecting: "Bağlantı kesiliyor...",
+    featuresTitle: "Özellikler ve Faydalar",
+    helpTitle: "Yardıma mı ihtiyacınız var?",
+    helpDescription:
+      "Ödeme işlemleri kurulumunda yardıma ihtiyacınız varsa veya ücretler ve özellikler hakkında sorularınız varsa:",
+    viewDocumentation: "Dokümantasyonu Görüntüle",
+    contactSupport: "Destek ile iletişime geçin",
+    disconnectDialogTitle: "Stripe hesabının bağlantısını kes",
+    disconnectDialogDescription:
+      "Stripe hesabınızın bağlantısını kesmek istediğinizden emin misiniz? Hesabınızı yeniden bağlayana kadar Stripe üzerinden ödeme kabul edemezsiniz.",
+    features: {
+      secureTitle: "Güvenli Ödemeler",
+      secureDescription: "PCI uyumlu ödeme işlemleri",
+      currenciesTitle: "Çoklu Para Birimleri",
+      currenciesDescription: "135'ten fazla para biriminde ödeme kabul edin.",
+      methodsTitle: "Çeşitli Ödeme Yöntemleri",
+      methodsDescription:
+        "Kartlar, cüzdanlar, banka havaleleri ve daha fazlası",
+      setupTitle: "Anında Kurulum",
+      setupDescription: "Dakikalar içinde ödeme almaya başlayın.",
+    },
+  },
+  organizationSettingsPage: {
+    actions: {
+      editSettings: "Ayarları Düzenle",
+    },
+    sections: {
+      companyProfile: "Şirket Profili",
+      financial: "Finansal",
+      scheduleAndTime: "Program ve Zaman",
+      workingHours: "Çalışma Saatleri",
+    },
+    fields: {
+      businessPhone: "İş Telefonu",
+      currency: "Para birimi",
+      businessAddress: "İş Adresi",
+      standardRate: "Standart Oran",
+      fiscalYearEnd: "Mali Yıl Sonu",
+      timezone: "Saat dilimi",
+      dateFormat: "Tarih Formatı",
+      workingDays: "Çalışma Günleri",
+    },
+    status: {
+      active: "Aktif",
+    },
+    defaults: {
+      companyName: "Firma Adı",
+      locationNotSet: "Konum ayarlanmadı",
+      notConfigured: "Yapılandırılmamış",
+      noAddress: "Adres yapılandırılmamış.",
+      workingHours: "09:00 - 17:00",
+      workingDays: "Pazartesi - Cuma",
+      timezone: "UTC",
+      dateFormat: "AA/GG/YYYY",
+    },
+    errors: {
+      loadFailed: "Kuruluş bilgileri yüklenemedi. Lütfen tekrar deneyin.",
+    },
+    ratePerHour: "/ saat",
+  },
+  billingSettings: {
+    membership: "Üyelik",
+    currentPlan: "Mevcut plan",
+    seatUsage: "Koltuk kullanımı",
+    billingCadence: "Faturalama ritmi",
+    monthly: "Aylık",
+    yearly: "Yıllık",
+    notSubscribedYet: "Henüz abone olmadınız mı?",
+    startTrial: "30 günlük Pro deneme sürümünü başlatın",
+    startingTrial: "Duruşma başlıyor...",
+    upgradeWithStripe: "Stripe ile yükseltin",
+    openingStripe: "Açılış Şeridi...",
+    manageBillingInStripe: "Stripe'ta faturalandırmayı yönetin",
+    openingPortal: "Portal açılıyor...",
+    saveTwoMonths: "Yıllık abonelikten iki ay tasarruf edin.",
+    heroTitle:
+      "Şu an için ihtiyacınız olan paketi seçin. Daha fazlasına ihtiyacınız olursa daha sonra değiştirin.",
+    howManySeats: "Kaç koltuğa ihtiyacınız olacağını tahmin ediyorsunuz?",
+    estimatedSeats: "Tahmini koltuk sayısı",
+    recommended: "Tavsiye edilen",
+    estimatedProSpend: "Tahmini Profesyonel harcama",
+    yearlyDiscount: "Yıllık indirim",
+    openSource: "Açık kaynak",
+    annual: "Yıllık",
+    service: "Hizmet",
+    poweredByStripe: "Stripe tarafından desteklenmektedir.",
+    changePlansAnytime: "Planları istediğiniz zaman değiştirebilirsiniz.",
+    checkoutPoweredByStripe:
+      "Ödeme ve abonelik yönetimi Stripe tarafından desteklenmektedir.",
+    noSalesCall:
+      "Pro paketi için satış görüşmesi yapılmaz. Stripe üzerinden planlarınızı istediğiniz zaman iptal edebilir veya değiştirebilirsiniz.",
+    reportsAndAnalytics: "Raporlar ve analizler",
+    customAnnual: "Özel yıllık",
+    seatsUsed: "%{used}/%{total} koltuk kullanıldı",
+    seatsUsedWithoutLimit: "%{used} koltuk kullanıldı",
+    savePerYear: "Yılda $%{amount} tasarruf edin",
+    effectiveMonthlyPricing: "Yaklaşık $%{amount}/ay etkili fiyatlandırma",
+    cancelOrUpgradeAnytime:
+      "Stripe'ta istediğiniz zaman iptal edebilir veya yükseltme yapabilirsiniz.",
+    planCadence: {
+      monthly: "Aylık olarak faturalandırılır.",
+      yearlySavings: "Koltuk başına 2 ay tasarruf edin",
+    },
+    alerts: {
+      subscriptionUpdatedTitle: "Abonelik güncellendi",
+      subscriptionUpdated: "Planınız Stripe'ta başarıyla güncellendi.",
+      checkoutCancelled: "Çıkış işlemi iptal edildi.",
+      noSubscriptionChanges:
+        "Aboneliğinizde herhangi bir değişiklik yapılmadı.",
+      unableToLoad: "Faturalama bilgileri yüklenemedi.",
+      proTrialActive: "Pro denemesi aktif",
+      proTrialActiveUntil:
+        "Çalışma alanınız %{date} tarihine kadar Pro erişimine sahiptir.",
+      proTrialEnded: "Dava sona erdi.",
+      proTrialEndedDescription:
+        "Çalışma alanınız ücretsiz plana geri döndü. Pro erişimini geri yüklemek için Stripe'ta yükseltme yapın.",
+      seatLimitReached: "Koltuk limiti doldu.",
+      seatLimitReachedDescription:
+        "Bu çalışma alanına 3'ten fazla üye eklemek için Stripe'ta yükseltme yapın.",
+    },
+    errors: {
+      unableToOpenStripeCheckout: "Stripe ödeme sayfası açılamıyor.",
+      unableToOpenStripeBillingPortal:
+        "Stripe faturalama portalını açamıyorum.",
+      unableToStartProTrial: "Pro deneme sürümünü başlatamıyorsunuz.",
+    },
+    recommendations: {
+      freeTitle: "Kontrollere ihtiyaç duyana kadar ücretsiz modda kalın.",
+      freeDescription:
+        "Ücretsiz sürüm çok küçük ekipler için uygundur. Tekli oturum açma (SSO), daha güçlü raporlar ve 3'ten fazla kullanıcıya ihtiyaç duyduğunuzda Pro sürüme geçin.",
+      proTitle: "Pro tam uygun seçim.",
+      proDescription:
+        "Büyüyen ekipler için Pro, tekli oturum açma (SSO), finansal görünürlük ve kurumsal maliyetler olmadan ölçeklenebilme olanağı sunar.",
+      enterpriseTitle: "Kurumsal konular hakkında bizimle konuşun.",
+      enterpriseDescription:
+        "Daha büyük ekipler genellikle tedarik desteğine, yönetim kontrollerine ve daha sorunsuz bir devreye alma sürecine ihtiyaç duyar. Pro sürümüyle başlayın veya doğrudan Enterprise sürümüne geçin.",
+    },
+    highlights: {
+      seatsTitle: "Yönetimsel zorluklar olmadan daha fazla koltuk",
+      seatsDescription:
+        "3 koltukluk ücretsiz sınırlamayı aşın ve yeni kullanıcıların sisteme entegrasyonunu basit tutun.",
+      ssoTitle: "SSO ve daha güçlü kontroller",
+      ssoDescription:
+        "Büyüyen ekiplere ek araçlara ihtiyaç duymadan güvenli erişim sağlayın.",
+      financeTitle: "Finansal görünürlük sakin kalıyor",
+      financeDescription:
+        "Ekstra kurulum yapmadan kar marjını, faturalama sıklığını ve ekip kullanımını öğrenin.",
+    },
+    planDescriptions: {
+      free: "Miru'yu kendi sunucunuzda çalıştırın; temel takip, faturalama, ödeme ve 3'e kadar ekip üyesi desteği sunar.",
+      pro: "Pro sürümü, kurumsal düzeyde ek maliyetler olmadan raporlar, tekli oturum açma (SSO), daha fazla kullanıcı ve daha sakin yönetim kontrolleri sunar.",
+      enterprise:
+        "Tedarik süreçlerini kolaylaştıran sözleşmeler, gelişmiş kontroller ve güvenlik incelemesine ihtiyaç duyan daha büyük ekipler için destek.",
+      hostedEnterprise:
+        "Size özel bir kurulumda Miru'yu barındırıyor, güncelliyor, yedekliyor ve destekliyoruz.",
+    },
+    planBullets: {
+      free: {
+        coreProduct: "Kendi sunucunuzda barındırılan temel ürün",
+        tracking: "Zaman takibi, faturalar, ödemeler",
+        dashboard: "Küçük bir ekip için kontrol paneli görünürlüğü",
+      },
+      pro: {
+        trial: "Ücretli ödeme yapmadan önce 30 günlük ücretsiz deneme süresi.",
+        sso: "SSO, gelişmiş raporlama, daha güçlü yönetim kontrolleri",
+        fit: "Ajanslar ve büyüyen ekipler için en uygun çözüm.",
+      },
+      enterprise: {
+        contracts: "Tedarik dostu sözleşmeler",
+        onboarding: "Güvenlik incelemesi ve işe alım desteği",
+        compliance:
+          "Onay ve uyumluluk ihtiyaçları olan daha büyük ekipler için",
+      },
+      hosted: {
+        setup: "Özel olarak yönetilen kurulum",
+        operations: "Yükseltmeleri, yedeklemeleri ve desteği biz sağlıyoruz.",
+        fit: "Miru'nun tamamen kendileri tarafından işletilmesini isteyen takımlar için",
+      },
+    },
+    heroDescription:
+      "Ücretsiz sürümle başlayın, ekip daha fazla kontrole ihtiyaç duyduğunda Pro sürüme geçin veya Miru'yu sizin için biz yönetelim. Pro sürüm uygun fiyatlı kalır, yıllık abonelik gerçek anlamda para tasarrufu sağlar ve ödeme ve abonelik yönetimi Stripe tarafından desteklendiği için faturalandırma basittir.",
+    seatEstimatorDescription:
+      "Bu özelliği kullanarak ücretsiz ve profesyonel sürümleri karşılaştırın ve aylık mı yoksa yıllık aboneliğin mi daha mantıklı olduğuna karar verin.",
+    yearlyDiscountDescription:
+      "Aylık fiyatlandırmaya kıyasla, koltuk başına iki ay ücretsiz.",
+    checkoutDescription:
+      "Satış süreci olmadan deneme sürümünü başlatın, hazır olduğunuzda yükseltme yapın ve ihtiyaç duyduğunuzda faturalandırmayı kendiniz yönetin.",
+    plans: {
+      unknown: "Bilinmiyor",
+      free: "Özgür",
+      freePro: "Ücretsiz Pro",
+      proTrial: "Pro Deneme",
+      paid: "Paralı",
+      enterprise: "Girişim",
+      hostedEnterprise: "Barındırılan Kurumsal Hizmet",
+    },
+    table: {
+      feature: "Özellik",
+      bestFor: "En iyisi",
+      selfHostedTeams: "Kendi sunucularına sahip ekipler işe başlıyor",
+      growingServiceTeams: "Kontrollere ihtiyaç duyan büyüyen hizmet ekipleri",
+      largeOrgs: "Güvenlik ve tedarik ihtiyaçları olan daha büyük kuruluşlar",
+      managedTeams: "Miru'nun yönetimini kendileri için isteyen takımlar",
+      timeTracking: "Zaman takibi",
+      invoicesAndPayments: "Faturalar ve ödemeler",
+      reportsAndDashboards: "Raporlar ve gösterge panelleri",
+      sso: "SSO",
+      auditAndAdminControls: "Denetim ve yönetim kontrolleri",
+      support: "Destek",
+      included: "Dahil",
+      notIncluded: "Dahil değil",
+      dashboardOnly: "Yalnızca gösterge paneli",
+      reportsAndAnalytics: "Raporlar ve analizler",
+      community: "Toplum",
+      priorityEmail: "Öncelikli e-posta",
+      priorityOnboarding: "Öncelik + işe alım",
+      managedOnboarding: "Yönetilen hizmet + işe alım süreci",
+    },
+  },
+  twoFactor: {
+    title: "Kimlik Doğrulama Uygulaması 2FA",
+    addTitle: "Kimlik doğrulama uygulaması ekleyin",
+    addDescription:
+      "Google Authenticator, 1Password, Bitwarden, Authy veya TOTP ile uyumlu herhangi bir uygulamayı kullanın.",
+    setupAction: "İki faktörlü kimlik doğrulamayı kurun.",
+    finishTitle: "Kimlik doğrulayıcı kurulumunu tamamlayın",
+    finishDescription:
+      "Bu anahtarı kimlik doğrulama uygulamanıza ekleyin, ardından 2FA'yı etkinleştirmek için mevcut 6 haneli kodu girin.",
+    manualEntryKey: "Manuel giriş anahtarı",
+    verificationCode: "Doğrulama kodu",
+    verificationCodePlaceholder: "123456",
+    enableAction: "İki faktörlü kimlik doğrulamayı etkinleştirin.",
+    resetKeyAction: "Sıfırlama tuşu",
+    enabledTitle: "Kimlik doğrulama uygulaması koruması açık.",
+    enabledDescription:
+      "Giriş yaparken parolanızdan sonra bir doğrulama koduna ihtiyacınız olacak.",
+    recoveryCodesAvailable: "%{count} kurtarma kodları mevcut",
+    regenerateRecoveryCodes: "Kurtarma kodlarını yeniden oluştur",
+    disableAction: "İki faktörlü kimlik doğrulamayı devre dışı bırakın",
+    saveRecoveryCodes: "Bu kurtarma kodlarını kaydedin.",
+    saveRecoveryCodesDescription:
+      "Her kod yalnızca bir kez çalışır. Bunları güvenli bir yerde saklayın.",
+    setupReadySuccess: "Kimlik doğrulama uygulaması kurulumu tamamlandı.",
+    enabledSuccess: "Kimlik doğrulama uygulaması etkinleştirildi",
+    disabledSuccess: "Kimlik doğrulama uygulaması devre dışı bırakıldı",
+    regeneratedSuccess: "Kurtarma kodları yeniden oluşturuldu.",
+    setupFailed: "İki faktörlü kimlik doğrulama kurulumu başlatılamadı.",
+    enableFailed: "Kimlik doğrulama uygulamasını etkinleştirme başarısız oldu.",
+    disableFailed: "İki faktörlü kimlik doğrulama devre dışı bırakılamadı.",
+    regenerateFailed:
+      "Kurtarma kodlarının yeniden oluşturulması başarısız oldu.",
+  },
+  notificationPreferences: {
+    emailNotifications: "E-posta Bildirimleri",
+    manageDescription: "E-posta bildirim tercihlerinizi yönetin",
+    weeklyEmailReminder: "Haftalık E-posta Hatırlatıcısı",
+    weeklyEmailReminderDescription:
+      "Zaman çizelgesi girişleri ve proje güncellemeleri hakkında haftalık e-posta hatırlatıcıları alın.",
+    noUserData: "Kullanıcı verisi mevcut değil.",
+    loginPrompt: "Bildirim tercihlerinizi yönetmek için lütfen giriş yapın.",
+  },
+  devices: {
+    addDevices: "Cihaz Ekle",
+    editDevices: "Aygıtları Düzenle",
+    device: "Cihaz",
+    unknownDevice: "Bilinmeyen Cihaz",
+    serial: "Seri:",
+    deviceType: "Cihaz Türü",
+    selectDeviceType: "Cihaz türünü seçin",
+    modelName: "Model/İsim",
+    serialNumber: "Seri numarası",
+    memory: "Bellek (RAM)",
+    processor: "İşlemci",
+    graphics: "Grafikler",
+    graphicsCard: "Grafik Kartı",
+    storage: "Depolamak",
+    modelNamePlaceholder: "Örneğin, 16 inç MacBook Pro",
+    serialNumberPlaceholder: "Örneğin, C02XX1234567",
+    memoryPlaceholder: "Örneğin, 16 GB DDR4",
+    processorPlaceholder: "Örneğin, Intel Core i7-10750H",
+    graphicsPlaceholder: "Örneğin, NVIDIA GeForce RTX 3060",
+    storagePlaceholder: "Örneğin, 512 GB SSD",
+    addAnotherDevice: "Başka bir cihaz ekle",
+    addAnotherDeviceDescription:
+      "Envanterinize yeni bir cihaz eklemek için tıklayın.",
+    deviceSummary: "Cihaz Özeti",
+    totalDevices: "Toplam Cihazlar",
+    notSpecified: "Belirtilmemiş",
+    noDevicesFound: "Hiçbir cihaz bulunamadı.",
+    newDevice: "Yeni Cihaz",
+    unsavedChangesPrompt:
+      "Kaydedilmemiş değişiklikleriniz var. İptal etmek istediğinizden emin misiniz?",
+  },
+  nav: {
+    dashboard: "Kontrol Paneli",
+    timeTracking: "Zaman Takibi",
+    clients: "Müşteriler",
+    projects: "Projeler",
+    team: "Takım",
+    invoices: "Faturalar",
+    reports: "Raporlar",
+    payments: "Ödemeler",
+    leavesAndHolidays: "Yapraklar ve Tatiller",
+    expenses: "Giderler",
+    settings: "Ayarlar",
+    logout: "Çıkış yap",
+  },
+  sidebar: {
+    main: "Ana",
+    personalSettings: "Kişisel Ayarlar",
+    companySettings: "Şirket Ayarları",
+    profile: "Profil",
+    devices: "Cihazlar",
+    organization: "Organizasyon",
+    billing: "Faturalama",
+    paymentSettings: "Ödeme Ayarları",
+    holidayCalendar: "Tatil Takvimi",
+    myLeaves: "Yapraklarım",
+    bankTaxInfo: "Banka ve Vergi Bilgileri",
+    expand: "Kenar çubuğunu genişlet",
+    collapse: "Kenar çubuğunu daralt",
+  },
 };
 
 export default tr;

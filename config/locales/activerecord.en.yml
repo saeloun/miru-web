@@ -1,0 +1,30 @@
+---
+en:
+  activerecord:
+    errors:
+      models:
+        client:
+          attributes:
+            name:
+              format: "%{message}"
+        project:
+          attributes:
+            name:
+              format: "%{message}"
+        user:
+          attributes:
+            email:
+              blank: Email can't be blank
+              invalid: Invalid Email ID
+              taken: Email ID already exists
+            first_name:
+              blank: can't be blank
+              invalid: must only contain letters or spaces
+            last_name:
+              blank: can't be blank
+              invalid: must only contain letters or spaces
+            password:
+              blank: can't be blank
+              too_short: must be at least %{count} characters long
+            password_confirmation:
+              confirmation: doesn't match with new password

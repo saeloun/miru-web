@@ -1,25 +1,5 @@
 ---
 mr:
-  activerecord:
-    errors:
-      models:
-        user:
-          attributes:
-            email:
-              blank: ईमेल रिकामा असू शकत नाही.
-              invalid: अवैध ईमेल आयडी
-              taken: ईमेल आयडी आधीच अस्तित्वात आहे
-            first_name:
-              blank: रिक्त असू शकत नाही
-              invalid: त्यात फक्त अक्षरे किंवा जागा असाव्यात
-            last_name:
-              blank: रिक्त असू शकत नाही
-              invalid: त्यात फक्त अक्षरे किंवा जागा असाव्यात
-            password:
-              blank: रिक्त असू शकत नाही
-              too_short: किमान %{count} अक्षरांचे असले पाहिजे
-            password_confirmation:
-              confirmation: नवीन पासवर्डशी जुळत नाही
   devise:
     confirmations:
       confirmed: तुमचा ईमेल पत्ता यशस्वीरित्या सत्यापित झाला आहे.
@@ -94,14 +74,3 @@ mr:
         याच्या सूचनांसह तुम्हाला काही मिनिटांत एक ईमेल मिळेल.
       unlocked: तुमचे खाते यशस्वीरित्या अनलॉक करण्यात आले आहे. पुढे जाण्यासाठी कृपया
         साइन इन करा.
-  errors:
-    messages:
-      already_confirmed: आधीच पुष्टी झाली आहे, कृपया साइन इन करण्याचा प्रयत्न करा.
-      confirmation_period_expired: "%{period} च्या आत याची पुष्टी होणे आवश्यक आहे,
-        कृपया नवीन विनंती करा."
-      expired: मुदत संपली आहे, कृपया नवीन विनंती करा.
-      not_found: आढळले नाही
-      not_locked: कुलूप नव्हते
-      not_saved:
-        one: '1 त्रुटीमुळे हे %{resource} जतन होण्यापासून रोखले गेले:'
-        other: "%{count} त्रुटींमुळे या %{resource} ला जतन करता आले नाही:"

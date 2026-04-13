@@ -1,0 +1,26 @@
+---
+it:
+  errors:
+    bill_status_billed: Non è possibile fatturare una voce che è già stata fatturata
+    can't change status: non può essere modificato una fattura pagata
+    create_billed_entry: Non è possibile creare una voce di foglio presenze fatturabile
+    internal_server_error: Qualcosa è andato storto
+    messages:
+      already_confirmed: è già stato confermato, prova ad accedere
+      confirmation_period_expired: deve essere confermato all'interno di %{period},
+        si prega di richiederne uno nuovo
+      expired: è scaduto, si prega di richiederne uno nuovo
+      not_found: non trovato
+      not_locked: non era chiuso a chiave
+      not_saved:
+        one: '1 errore ha impedito il salvataggio di questo %{resource}:'
+        other: 'Gli errori %{count} hanno impedito il salvataggio di questo %{resource}:'
+    not_found: La risorsa che stai cercando non è disponibile
+    prevent_draft_to_waived: non può essere modificato in rinunciato
+    unauthorized: Solo gli utenti proprietari o amministratori sono autorizzati a
+      eseguire questa azione.
+    updation_not_allowed: L'aggiornamento non è consentito
+    user_already_member: L'indirizzo email è già in uso. Inserisci un altro indirizzo
+      email.
+    validate_billable_project: Non è possibile creare una voce non fatturata per progetti
+      non fatturabili.

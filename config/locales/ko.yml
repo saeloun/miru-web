@@ -1,16 +1,8 @@
 ---
 ko:
-  activerecord:
-    errors:
-      models:
-        client:
-          attributes:
-            name:
-              format: "%{message}"
-        project:
-          attributes:
-            name:
-              format: "%{message}"
+  app:
+    name: 미루 에이전시 OS
+    tagline: 기관의 모든 운영을 하나의 지휘 센터에서 관리하세요.
   application_controller:
     not_found: 경로를 찾을 수 없습니다
   avatar:
@@ -84,17 +76,6 @@ ko:
   employment:
     update:
       success: 고용 정보가 성공적으로 업데이트되었습니다.
-  errors:
-    bill_status_billed: 이미 청구된 항목에 대해서는 다시 청구할 수 없습니다.
-    can't change status: 이미 지불된 송장은 변경할 수 없습니다.
-    create_billed_entry: 청구 가능한 근무 시간 항목을 생성할 수 없습니다.
-    internal_server_error: 뭔가 잘못됐어요
-    not_found: 찾으시는 자료를 이용할 수 없습니다.
-    prevent_draft_to_waived: 면제로 변경할 수 없습니다
-    unauthorized: 소유자 또는 관리자 사용자만 이 작업을 수행할 권한이 있습니다.
-    updation_not_allowed: 업데이트가 허용되지 않습니다.
-    user_already_member: 해당 이메일 주소는 이미 사용 중입니다. 다른 이메일 주소를 입력해 주세요.
-    validate_billable_project: 청구 불가능한 프로젝트에 대해서는 미청구 항목을 생성할 수 없습니다.
   expenses:
     approve: 경비 승인 완료
     create: 경비 청구가 성공적으로 제출되었습니다.
@@ -167,6 +148,185 @@ ko:
       success: 휴가 신청이 성공적으로 완료되었습니다.
     update:
       success: 업데이트가 성공적으로 완료되었습니다.
+  mailers:
+    actions:
+      join_miru: 미루와 함께하세요
+      open_expense: 개방형 비용
+      open_invoice: 송장 열기
+      open_time_tracking: 오픈 시간 추적
+      view_reports: Miru에서 보고서를 확인하세요
+    client_payment_mailer:
+      payment:
+        eyebrow: 결제
+        preheader: 송장 %{invoice_number}에 대한 결제 영수증.
+        receipt_title: 결제 완료
+        records_body: 이 영수증은 결제 완료를 확인하는 자료입니다. 필요하시면 언제든지 송장을 다시 열어 자세한 내용을 확인하실
+          수 있습니다.
+        records_title: 기록 보관용으로 이것을 보관하십시오.
+        subject: 송장 %{invoice_number}에 대한 지불 영수증
+        subtitle_html: 송장 번호 <strong>%{invoice_number}</strong> 에 대한 대금 수령을 확인했습니다.
+        summary_html: 저희는 <strong>%{invoice_number}</strong> 송장에 대해 <strong>%{paid_on}</strong>
+          일에 <strong>%{amount}을</strong> 수령했습니다.
+        title: 지불 영수증
+    expense_mailer:
+      approved:
+        eyebrow: 경비
+        preheader: 고객님의 환급 요청이 승인되었습니다.
+        subject: 환급이 승인되었습니다.
+        subtitle: 귀하의 환급 요청이 검토되어 승인되었습니다.
+        title: 환급 승인됨
+      paid:
+        eyebrow: 경비
+        preheader: 고객님의 환급 요청이 지급 완료로 표시되었습니다.
+        subject: 고객님의 환급금이 지급 완료로 표시되었습니다.
+        subtitle: 고객님의 환급 요청에 대한 지급이 완료되었습니다.
+        title: 상환금 지급됨
+      rejected:
+        eyebrow: 경비
+        next_step_body: 지출 내역을 열고, 내용을 업데이트한 후 다시 제출하세요.
+        next_step_title: 다음 단계
+        preheader: 환급 요청에 대한 업데이트가 필요합니다.
+        subject: 환급 승인을 받으려면 업데이트된 정보가 필요합니다.
+        subtitle: 요청 내용을 검토하시고 필요한 변경 사항을 적용하신 후 다시 제출해 주십시오.
+        title: 상환 필요 사항 업데이트
+      submitted:
+        eyebrow: 경비
+        preheader: 새로운 환급 요청에 대한 검토가 필요합니다.
+        subject: "%{submitter_name}님이 환불 요청을 제출했습니다."
+        subtitle_html: "<strong>%{submitter_name}님</strong> 이 검토 준비가 완료된 환급 요청서를 제출했습니다."
+        title: 새로운 환급 요청
+    invoice_mailer:
+      invoice:
+        eyebrow: 송장
+        payment_link_subvalue: 청구 내역을 확인하시고 온라인으로 결제하세요.
+        payment_link_value: 안전한 청구서 페이지
+        preheader: "%{company_name}에서 발행한 송장 %{invoice_number}."
+        ready_body: 안전한 청구서 페이지를 열어 품목을 확인하고, 총액을 확인한 후 온라인으로 결제하세요.
+        ready_title: 결제하기 전에 검토해 주세요
+        subject: 송장 %{invoice_number}
+        subtitle_html: "<strong>%{company_name}님</strong> 이 <strong>%{invoice_number}</strong>
+          님께 청구서를 보냈습니다. 원하시면 언제든지 검토하시고 온라인으로 결제하실 수 있습니다."
+        support_html: 이 청구서에 대해 문의사항이 있으신가요? 이메일에 회신하시거나 <a href="mailto:%{support_email}">%{support_email}</a>
+          로 연락주세요.
+        title: 검토할 송장 준비 완료
+      send_invoice:
+        attachment_subvalue: 보관하거나, 전달하거나, 파일에 넣어 두세요.
+        attachment_value: PDF 파일 첨부
+        eyebrow: 송장
+        next_steps_body: 청구서를 열어 금액을 확인하고, 항목별 내역을 검토한 후, 준비가 되면 결제하세요.
+        next_steps_title: 무엇을 기대해야 할까요?
+        note_title: "%{company_name}의 메모"
+        preheader: "%{company_name}의 송장 %{invoice_number}이 준비되었습니다."
+        subject: "%{company_name}에서 발행한 송장 %{invoice_number}"
+        subtitle_html: "<strong>%{company_name}님이</strong> <strong>%{invoice_number}</strong>
+          님께 청구서를 보내셨습니다. 청구서를 열어 세부 정보를 확인하고, PDF 파일을 다운로드하고, 안전하게 결제하세요."
+        support_html: 도움이 필요하신가요? 이 이메일에 답장하시거나 <a href="mailto:%{support_email}">%{support_email}</a>
+          에게 연락하세요.
+        title: 검토할 송장 준비 완료
+    labels:
+      amount: 양
+      amount_due: 지불해야 할 금액
+      amount_paid: 지불된 금액
+      attachment: 부착
+      category: 범주
+      client: 고객
+      date: 날짜
+      description: 설명
+      due_date: 마감일
+      invited_by: 초대받은 사람
+      invoice: 송장
+      invoice_number: 송장 번호
+      issue_date: 발행일
+      issued_to: 발행 대상
+      members: 회원들
+      outstanding_amount: 미지급금액
+      paid_on: 지불됨
+      payment_link: 결제 링크
+      payment_method: 결제 방법
+      reference: 참조
+      status: 상태
+      total_amount: 총액
+      workspace: 작업 공간
+    layout:
+      brand: 미루
+      footer_body: Miru는 시간, 송장, 결제 및 운영을 하나의 차분한 작업 공간에서 관리합니다.
+      footer_contact: support@getmiru.com
+      footer_copyright: "© Miru. 모든 권리 보유."
+      footer_site: 앱.미루.소
+      preheader: 미루로부터 명확한 업데이트 소식이 전해졌습니다.
+    monthly_reports_mailer:
+      cash_flow_digest:
+        average_daily_net_change_html: 일일 평균 순변화 <strong>%{amount}</strong>
+        compare_to_previous: "%{month_label}에서 %{amount} 대비"
+        eyebrow: 월간 요약
+        money_in: 돈
+        money_out: 돈 인출
+        net_change: "%{month_label}의 순변화"
+        no_money_in: Miru에는 %{month_year_label}에 대한 결제 내역이 기록되지 않았습니다.
+        no_money_out: "%{month_year_label}에 대한 Miru에는 지급된 비용이 기록되지 않았습니다."
+        preheader: "%{company_name}의 %{month_label} 현금 흐름 요약"
+        subject: "%{company_name}의 %{month_label} 현금 흐름 요약"
+        subtitle: 다음은 %{month_year_label}에 대한 Miru를 통한 자금 이동에 대한 간략한 개요입니다.
+        title: "%{company_name}의 %{month_label} 현금 흐름 요약"
+        top_money_in_sources: 주요 자금 유입 경로
+        top_money_out_sources: 주요 자금 유출 버킷
+    payment_mailer:
+      payment:
+        eyebrow: 결제
+        follow_up_body: 청구서를 열어 결제를 확인하거나, 영수증을 보관하거나, 다음 단계로 진행하세요.
+        follow_up_title: 다음 단계는 무엇일까요?
+        preheader: 송장 %{invoice_number}에 대한 결제 확인.
+        received_title: 결제 완료
+        subject: 송장 %{invoice_number}에 대한 결제 정보
+        subtitle_html: "<strong>%{client_name}이</strong> <strong>%{invoice_number}</strong>
+          송장을 지불했습니다."
+        summary_html: "<strong>%{client_name}님</strong> <strong>이 %{amount}님</strong>
+          에게 <strong>%{invoice_number}번</strong> 송장에 대한 대금을 지불했습니다. 이 송장은 이제 전액 지불되었습니다."
+        title: 결제 확인
+    send_payment_reminder_mailer:
+      send_payment_reminder:
+        eyebrow: 송장
+        preheader: "%{company_name}번 청구서에 대한 결제 안내입니다."
+        subject: "%{company_name}에 대한 결제 알림"
+        subtitle: 아직 처리해야 할 청구서 목록입니다.
+        title: 결제 알림
+    send_reminder_mailer:
+      send_reminder:
+        eyebrow: 송장
+        preheader: "%{company_name}에서 발행한 %{invoice_number} 송장에 대한 알림입니다."
+        subject: "%{company_name}님의 %{invoice_number}번 송장에 대한 알림입니다."
+        subtitle_html: "<strong>%{company_name}</strong> 의 송장 <strong>%{invoice_number}</strong>
+          은 아직 결제를 기다리고 있습니다."
+        title: 결제 알림
+    send_weekly_reminder_to_user_mailer:
+      notify_user_about_missed_entries:
+        body_html: "<strong>%{starting_date}</strong> 과 <strong>%{ending_date}</strong>
+          사이에 40시간 미만을 기록했습니다."
+        eyebrow: 시간 추적
+        follow_up: Miru를 열고 누락된 항목을 추가한 다음, 이번 주를 마무리하세요.
+        greeting_html: 안녕하세요 <strong>%{name}님</strong> ,
+        preheader: 누락된 주간의 Miru 근무 시간표를 업데이트하세요.
+        signoff_html: 감사해요,<br> <strong>미루</strong>
+        subject: 지난주 Miru 근무 시간표를 작성하세요.
+        subtitle: "%{company_name}에 대한 귀하의 시간 입력은 여전히 예상 주간 합계에 미치지 못합니다."
+        title: 근무 시간표를 작성하세요
+    user_invitation_mailer:
+      send_user_invitation:
+        about_body: Miru는 시간 관리, 송장 관리, 결제 관리 및 일상적인 운영 업무를 하나의 작업 공간으로 통합합니다.
+        about_title: 미루 소개
+        eyebrow: 초대
+        get_started_body: 초대장을 수락하고 비밀번호를 생성하면 로그인할 수 있습니다.
+        get_started_title: 시작하기
+        preheader: Miru 팀에 합류하도록 초대받으셨습니다.
+        subject: Miru에 여러분을 초대합니다
+        subtitle_html: "<strong>%{sender_name}</strong> 님이 Miru에서 <strong>%{company_name}님</strong>
+          과 함께하도록 초대했습니다."
+        support_html: 이 초대를 예상하지 못하셨다면 <a href="mailto:%{support_email}">%{support_email}</a>
+          로 저희 팀에 연락해 주세요.
+        title: Miru 워크스페이스에 참여하세요
+        workspace_members:
+          one: 1명
+          other: "%{count}명"
   navbar:
     clients: 고객들
     help: 돕다

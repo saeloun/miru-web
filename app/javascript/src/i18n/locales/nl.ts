@@ -1,13 +1,10 @@
 const nl = {
-  // Image validation
   invalidImageFormatSize:
     "Onjuweldig bestandsformaat. Upload een afbeelding van het type PNG of JPG. Max grootte (%{fileSize}KB)",
   invalidImageSize:
     "Bestandsgrootte overschrijdt de maximale limiet van %{fileSize}KB.",
   invalidImageFormat:
     "Onjuweldig bestandsformaat. Upload een afbeelding van het type PNG of JPG",
-
-  // Common actions
   save: "Opslaan",
   cancel: "Annuleren",
   delete: "Verwijderen",
@@ -34,8 +31,6 @@ const nl = {
   yes: "Ja",
   no: "Nee",
   or: "of",
-
-  // Common labels
   name: "Naam",
   email: "E-mail",
   phone: "Telefoon",
@@ -69,8 +64,6 @@ const nl = {
   all: "Alle",
   from: "Van",
   to: "Tot",
-
-  // Date/time
   today: "Vandaag",
   yesterday: "Gisteren",
   tomorrow: "Morgen",
@@ -94,30 +87,24 @@ const nl = {
   selectPeriod: "Selecteer periode",
   fullDay: "Hele Dag",
   halfDay: "Halve Dag",
-
-  // Date validation
   dateCannotBeBlank: "Datum mag niet leeg zijn",
   fromDateMustBeLessThanToDate:
     "'Van' datum moet kleiner zijn dan of gelijk aan 'Tot' datum",
   toDateMustBeGreaterThanFromDate:
     "'Tot' datum moet groter zijn dan of gelijk aan 'Van' datum",
   invalidDate: "Voer een geldige datum in",
-
-  // Month abbreviations
   monthJan: "Jan",
-  monthFeb: "Feb",
+  monthFeb: "februari",
   monthMar: "Mar",
-  monthApr: "Apr",
+  monthApr: "april",
   monthMay: "Mei",
-  monthJun: "Jun",
-  monthJul: "Jul",
+  monthJun: "juni",
+  monthJul: "juli",
   monthAug: "Aug",
   monthSep: "Sep",
   monthOct: "Okt",
-  monthNov: "Nov",
+  monthNov: "nov",
   monthDec: "Dec",
-
-  // Error pages
   pageNotFound: "Pagina niet Gevonden",
   clickHere: "Klik hier",
   somethingWentWrong: "Er is iets misgegaan",
@@ -125,15 +112,11 @@ const nl = {
     "Vernieuw de pagina om het opnieuw te proberen. Als dit blijft gebeuren, log opnieuw in of neem contact op met de ondersteuning.",
   reloadPage: "Pagina herladen",
   loadingWorkspace: "Werkruimte laden...",
-
-  // Search
   searchClients: "Zoek klanten...",
   searchInvoices: "Zoek facturen...",
   searchTeamMembers: "Zoek teamleden...",
   selectTeamMember: "Selecteer teamlid",
   noResultsFound: "Geen resultaten gevonden",
-
-  // Time Tracking
   timeTracking: {
     addEntry: "Voeg Invoer Toe",
     newTimeEntry: "Nieuwe Tijd Invoer",
@@ -222,8 +205,6 @@ const nl = {
       sun: "Zo",
     },
   },
-
-  // Task types
   taskTypes: {
     development: "Ontwikkeling",
     meeting: "Vergadering",
@@ -231,23 +212,19 @@ const nl = {
     planning: "Planning",
     testing: "Testen",
     documentation: "Documentatie",
-    codeReview: "Code Review",
+    codeReview: "Codebeoordeling",
     debugging: "Debuggen",
     deployment: "Implementatie",
     support: "Ondersteuning",
-    training: "Training",
+    training: "Opleiding",
     other: "Overig",
   },
-
-  // Time off types
   timeOffTypes: {
     vacation: "Vakantie",
     sickLeave: "Ziekteverlof",
     personalDay: "Persoonlijke Dag",
     holiday: "Vakantie",
   },
-
-  // Clients
   clients: {
     addClients: "Voeg Klanten Toe",
     addNewClient: "Voeg Nieuwe Klant Toe",
@@ -280,8 +257,6 @@ const nl = {
     sendPaymentReminder: "Stuur Betalingsherinnering",
     invoicesSelected: "%{count} facturen geselecteerd",
   },
-
-  // Contacts
   contacts: {
     addContact: "Voeg Contact Toe",
     addContacts: "Voeg Contacten Toe",
@@ -300,8 +275,6 @@ const nl = {
     invalidEmailId: "Ongeldig e-mailadres",
     emailRequired: "E-mailadres mag niet leeg zijn",
   },
-
-  // Projects
   projects: {
     addProject: "Voeg project toe",
     addNewProject: "Voeg nieuw project toe",
@@ -371,8 +344,6 @@ const nl = {
     teamMembersDescription:
       "Bekijk en beheer teamleden die aan dit project zijn toegewezen.",
   },
-
-  // Team
   team: {
     team: "Team",
     teamOverview: "Teamoverzicht",
@@ -419,8 +390,6 @@ const nl = {
     invalidEmail: "Ongeldig e-mailadres",
     emailRequired: "E-mailadres mag niet leeg zijn",
   },
-
-  // Invoices
   invoices: {
     invoice: "Factuur",
     invoices: "Facturen",
@@ -496,19 +465,15 @@ const nl = {
     scrollToLoadMore: "Scroll om meer facturen te laden",
     loadingMoreInvoices: "Meer facturen laden...",
     allInvoicesLoaded: "Alle facturen geladen",
-    resetFilters: "Reset filters",
+    resetFilters: "Filters resetten",
     loadingChartData: "Laden grafiekgegevens...",
     noInvoiceData: "Geen factuurgegevens beschikbaar",
-
-    // Statuses
     draft: "Concept",
     sent: "Verzonden",
     overdue: "Vertraagd",
     collected: "Verzameld",
     paid: "Betaald",
     outstanding: "Uitstaand",
-
-    // Email
     recipientEmailId: "E-mailadres Ontvanger",
     subject: "Onderwerp",
     message: "Bericht",
@@ -522,8 +487,6 @@ const nl = {
     invoiceSentBody: "%{company} heeft je een factuur gestuurd (%{number})",
     invoiceWillBeSent: "Factuur zal worden verzonden!",
     processing: "verwerken...",
-
-    // No payment gateway
     noPaymentGateway: "Geen betalingsgateway verbonden",
     paymentGatewayError:
       "Fout. Neem contact op met de factuurafzender om een betalingsgateway te verbinden zodat je factuurbetalingen kunt doen",
@@ -534,14 +497,10 @@ const nl = {
     stripeDisabled: "Stripe uitgeschakeld voor deze factuur",
     stripeDisabledMessage:
       "De afzender heeft geen Stripe-betalingen ingeschakeld voor deze factuur. Je kunt contact met hen opnemen om het te activeren, of een alternatieve betaalmethode zoals ACH kiezen.",
-
-    // Bulk actions
     preparingDownload: "Voorbereiden download...",
     downloadFailed: "Download mislukt. Probeer het opnieuw.",
     downloadingFiles: "Bestanden downloaden...",
     downloadComplete: "Download Voltooid",
-
-    // Table headers
     nameHeader: "NAAM",
     descriptionHeader: "BESCHRIJVING",
     dateHeader: "DATUM",
@@ -549,8 +508,6 @@ const nl = {
     amountHeader: "BEDRAG",
     statusHeader: "STATUS",
     invoiceNumberHeader: "FACTUURNUMMER",
-
-    // Chart labels
     area: "Gebied",
     bar: "Balk",
     noData: "Geen gegevens",
@@ -558,8 +515,6 @@ const nl = {
     quarterly: "Kwartaal",
     yearly: "Jaarlijks",
     trend: "Trend",
-
-    // Preview / detail labels
     taxId: "Belasting ID: %{value}",
     vatNumber: "BTW-nummer: %{value}",
     gstNumber: "GST-nummer: %{value}",
@@ -573,8 +528,6 @@ const nl = {
     due: "Vervalt %{date}",
     viewed: "Bekeken",
     cancelled: "Geannuleerd",
-
-    // Toast / confirmation messages
     invoiceMarkedAsPaid: "Factuur succesvol gemarkeerd als betaald",
     invoiceDownloaded: "Factuur succesvol gedownload",
     invoiceSentSuccessfully: "Factuur succesvol verzonden",
@@ -590,8 +543,6 @@ const nl = {
     invoiceCreated: "Factuur succesvol aangemaakt",
     invoiceUpdated: "Factuur succesvol bijgewerkt",
     failedToSaveInvoice: "Kon factuur niet opslaan. Probeer het opnieuw.",
-
-    // Counters
     showingOf: "Toont %{shown} van %{total}",
     viewingMatching:
       "Bekijken %{filtered} overeenkomende facturen van %{loaded} geladen",
@@ -599,12 +550,8 @@ const nl = {
     showingRecentTransactions: "Toont %{count} recente transacties",
     updatedAt: "Bijgewerkt %{date}",
     invoiceHash: "Factuur #%{number}",
-
-    // Mobile table headers
     nameDescription: "NAAM / BESCHRIJVING",
     dateTime: "DATUM / TIJD",
-
-    // Invoice reminder email
     invoiceReminder: "Factuurherinnering: %{number}",
     reminderMessage:
       "Dit is een herinnering over je openstaande factuur. Zie de details in de bijlage.",
@@ -623,15 +570,29 @@ const nl = {
     cannotDownloadInvalidId: "Kan factuur niet downloaden - ongeldig ID",
     cannotSendInvalidId: "Kan factuur niet verzenden - ongeldig ID",
     payment: "Betaling #%{id}",
+    newInvoicePage: "Nieuwe factuur",
+    editInvoicePage: "Factuur bewerken",
+    editorSubtitle:
+      "Vul de gegevens in en bekijk de factuur voordat u deze verzendt.",
+    saving: "Besparing...",
+    sending: "Verzenden...",
+    alreadySent: "Reeds verzonden",
+    downloading: "Bezig met downloaden...",
+    selectClientBeforeSending:
+      "Selecteer een klant voordat u de factuur verstuurt.",
   },
   common: {
     retry: "Opnieuw proberen",
     pageUnavailable:
       "Deze pagina is niet beschikbaar of de link is niet langer geldig voor je werkruimte.",
     goToDashboard: "Ga naar dashboard",
+    language: "Taal",
+    loading: "Laden...",
+    saving: "Besparing...",
+    failedToChangeLanguage: "Taal wijzigen mislukt",
+    searchLanguages: "Zoektalen...",
+    noLanguagesFound: "Geen talen gevonden",
   },
-
-  // Invoice admin dashboard
   invoiceDashboard: {
     revenueOverview: "Inkomstenoverzicht",
     revenueByStatus: "Inkomsten per Status",
@@ -639,8 +600,6 @@ const nl = {
     allInvoices: "Alle Facturen",
     recentSales: "Recente Verkopen",
   },
-
-  // Payments
   payments: {
     payments: "Betalingen",
     addPayment: "Voeg Betaling Toe",
@@ -665,8 +624,6 @@ const nl = {
     paymentHistory: "Betalingsgeschiedenis",
     scrollToLoadMore: "Scroll om meer betalingen te laden",
     allPaymentsLoaded: "Alle betalingen geladen",
-
-    // Filters
     allStatuses: "Alle Statussen",
     allClients: "Alle Klanten",
     paymentType: "Betalingswijze",
@@ -676,7 +633,7 @@ const nl = {
     wireTransfer: "Overschrijving",
     achTransfer: "ACH Overschrijving",
     paypal: "PayPal",
-    stripe: "Stripe",
+    stripe: "Streep",
     cash: "Contant",
     check: "Cheque",
     pending: "In behandeling",
@@ -689,17 +646,15 @@ const nl = {
     searchByClientOrInvoice: "Zoek op klantnaam of factuur-ID",
     selectTransactionTypeBtn: "Selecteer Transactietype",
   },
-
-  // Timer
   timer: {
     webTimer: "Webtimer",
     webTimerLabel: "Web Timer",
     trackLiveWork:
       "Volg live werk in real-time, en sla het vervolgens direct op in de invoerlijst van vandaag.",
-    startTimer: "Start Timer",
+    startTimer: "Start timer",
     pause: "Pauze",
     resume: "Hervatten",
-    start: "Start",
+    start: "Begin",
     stop: "Stop",
     reset: "Reset",
     timer: "Timer",
@@ -716,8 +671,6 @@ const nl = {
     whatAreYouWorkingOn: "Waar ben je aan het werken?",
     selectProject: "Selecteer project",
   },
-
-  // Reports
   reports: {
     reports: "Rapporten",
     backToReports: "Terug naar Rapporten",
@@ -732,8 +685,6 @@ const nl = {
     exportAsCsv: "Exporteer als CSV",
     exportAsPdf: "Exporteer als PDF",
     toggleReportFilters: "Schakel rapportfilters in/uit",
-
-    // Filters
     clients: "Klanten",
     teamMembers: "Teamleden",
     groupBy: "Groeperen Op",
@@ -742,14 +693,10 @@ const nl = {
     searchClientsFilter: "Zoek Klanten...",
     searchTeamMembersFilter: "Zoek Teamleden...",
     applyFilter: "Pas Filter Toe",
-
-    // Time entry report
     totalHours: "Totaal Uren",
     scrollToLoadMoreRows: "Scroll om meer rapportrijen te laden",
     loadingMoreRows: "Meer rapportrijen laden...",
     allRowsLoaded: "Alle rapportrijen geladen",
-
-    // Payment report
     perTransaction: "Per transactie",
     topMethod: "Top Methode",
     paymentMethodsBreakdown: "Betalingsmethoden Overzicht",
@@ -759,8 +706,6 @@ const nl = {
     allMethods: "Alle Methoden",
     creditCard: "Creditcard",
     allStatus: "Alle Status",
-
-    // Revenue by client report
     totalRevenue: "Totaal Inkomsten",
     paidRevenue: "Betaalde Inkomsten",
     paidAmount: "Betaald Bedrag",
@@ -777,8 +722,6 @@ const nl = {
     clientRevenueDetails: "Klant Inkomsten Details",
     scrollToLoadMoreClients: "Scroll om meer klanten te laden",
     allClientsLoaded: "Alle klanten geladen",
-
-    // Outstanding invoice report
     failedToLoadReportData: "Kon rapportgegevens niet laden",
     currencyFilter: "Valuta Filter",
     fromDate: "Van Datum",
@@ -796,8 +739,6 @@ const nl = {
     clientBreakdown: "Klant Overzicht",
     originalAmount: "Oorspronkelijk Bedrag",
     baseAmount: "Basis Bedrag",
-
-    // Accounts aging report
     totalDue: "Totaal Te Betalen",
     invoiceAgingDetails: "Factuur Verouderingsdetails",
     noDataFound: "Geen Gegevens Gevonden",
@@ -940,8 +881,6 @@ const nl = {
     unknownProject: "Onbekend Project",
     generatingExport: "Genereren %{format}",
   },
-
-  // Expenses
   expenses: {
     expenses: "Uitgaven",
     addExpense: "Voeg Uitgave Toe",
@@ -1021,8 +960,6 @@ const nl = {
     viewReceiptsFor: "Bekijk bonnen voor %{description}",
     expenseActionsFor: "Uitgave-acties voor %{description}",
   },
-
-  // Settings
   settings: {
     settings: "Instellingen",
     profileSettings: "Profielinstellingen",
@@ -1050,9 +987,25 @@ const nl = {
     allocationValue: "Toewijzingswaarde",
     allocationPeriod: "Toewijzingsperiode",
     allocationFrequency: "Toewijzingsfrequentie",
+    labels: {
+      profile: "Profiel",
+      employment: "Werkgelegenheid",
+      devices: "Apparaten",
+      notifications: "Meldingen",
+      preferences: "Voorkeuren",
+      organization: "Organisatie",
+      billing: "Facturering",
+      payment: "Betaling",
+      holidays: "Vakantie",
+      leaves: "Bladeren",
+      automation: "Automatisering",
+      bankInfo: "Bank- en belastinginformatie",
+    },
+    categories: {
+      personal: "Persoonlijk",
+      organization: "Organisatie",
+    },
   },
-
-  // Leave types
   leaveTypes: {
     annualLeaves: "Jaarlijkse verlof",
     sickLeaves: "Ziekteverlof",
@@ -1060,23 +1013,17 @@ const nl = {
     paternityLeave: "Vaderschapsverlof",
     periodLeave: "Periodeverlof",
   },
-
-  // Allocation periods
   allocationPeriods: {
     days: "dagen",
     weeks: "weken",
     months: "maanden",
   },
-
-  // Allocation frequencies
   allocationFrequencies: {
     perWeek: "per week",
     perMonth: "per maand",
     perQuarter: "per kwartaal",
     perYear: "per jaar",
   },
-
-  // Navbar
   navbar: {
     clients: "Klanten",
     invoices: "Facturen",
@@ -1087,7 +1034,7 @@ const nl = {
     settings: "Instellingen",
     team: "Team",
     payments: "Betalingen",
-    help: "Help",
+    help: "Hulp",
     timeTracking: "Tijdregistratie",
     viewNotifications: "Bekijk Meldingen",
     expenses: "Uitgaven",
@@ -1128,8 +1075,6 @@ const nl = {
     leavesDescription: "Beheer verlofaanvragen",
     expensesDescription: "Volg zakelijke uitgaven",
   },
-
-  // Dashboard
   dashboard: {
     dashboard: "Dashboard",
     overdue: "VERTRAAGD",
@@ -1172,12 +1117,101 @@ const nl = {
     noRecentActivityYet: "Nog geen recente activiteit",
     loadMore: "Laad meer",
     allCaughtUp: "Je bent helemaal bij",
+    there: "daar",
+    caughtUp: "Alles weer ingehaald!",
+    timeframe: {
+      week: "Deze week",
+      month: "Deze maand",
+      quarter: "Dit kwartaal",
+      year: "Dit jaar",
+    },
+    stats: {
+      revenue: "Winst",
+      totalInvoiced: "Totaal gefactureerd",
+      openInvoices: "Openstaande facturen",
+      paidInvoices: "Betaalde facturen",
+      paymentsReceived: "Ontvangen betalingen",
+      awaitingPayment: "Wachtend op betaling",
+      alreadySettled: "Reeds geregeld",
+      hoursTracked: "Uren geregistreerd",
+      currentlyActive: "Momenteel actief",
+      activeProjects: "Actieve projecten",
+      assignedProjects: "Toegewezen projecten",
+      projectsYouCanWorkOn: "Projecten waaraan je kunt werken",
+      teammates: "Teamgenoten",
+      teamSize: "Teamgrootte",
+      noRecentActivity: "Geen recente activiteit",
+    },
+    charts: {
+      revenueMomentumTitle: "Omzetmomentum",
+      revenueMomentumDescription:
+        "Maandelijkse omzetontwikkeling over het afgelopen jaar",
+      revenueTrendEyebrow: "OMZETTREND",
+      revenueLeadersTitle: "Omzetleiders",
+      revenueLeadersDescription:
+        "Belangrijkste klanten op basis van omzetbijdrage",
+      topCustomersEyebrow: "TOPKLANTEN",
+      ofTotal: "%{percentage} van het totaal",
+      noRevenue: "Er zijn geen omzetgegevens beschikbaar.",
+    },
+    roleGuidance: {
+      employee: "Houd je tijd bij en beheer je projecten.",
+      bookKeeper: "Controleer facturen, betalingen en financiële rapporten.",
+      client: "Bekijk uw facturen en betalingsgeschiedenis.",
+      default: "Beheer je werkruimte",
+    },
   },
-
-  // Authentication
   auth: {
-    signIn: "Inloggen",
-    signUp: "Aanmelden",
+    signIn: {
+      title: "Meld u aan bij uw werkruimte",
+      description:
+        "Volg de werkzaamheden, verstuur facturen en houd de cashflow overzichtelijk vanuit één centrale plek.",
+      continueWithGoogle: "Ga verder met Google",
+      continueWithGitHub: "Ga verder met GitHub",
+      orUseEmail: "of gebruik e-mail",
+      email: "E-mail",
+      password: "Wachtwoord",
+      submit: "Inloggen",
+      forgotPassword: "Wachtwoord vergeten?",
+      noAccount: "Nog geen account?",
+      signUp: "Aanmelden",
+      privacy: "Privacy",
+      terms: "Voorwaarden",
+      loginFailed: "Aanmelden mislukt. Probeer het opnieuw.",
+      welcomeBack: "Welkom terug!",
+      waitingForPasskey: "Wachten op toegangscode...",
+      passkeyPrompt: "Gebruik je toegangscode om in te loggen.",
+      totpTitle: "Tweefactorauthenticatie",
+      totpPrompt: "Voer de code van uw authenticatie-app in.",
+      totpDescription:
+        "Open je authenticatie-app en voer de 6-cijferige code in.",
+      totpCode: "Authenticatiecode",
+      verifyAndSignIn: "Verifieer en log in",
+      recoveryCode: "Gebruik in plaats daarvan een herstelcode.",
+      back: "Rug",
+    },
+    signUp: {
+      title: "Creëer je eigen werkruimte.",
+      description:
+        "Beheer klanten, projecten, facturen en betalingen in één overzichtelijk systeem.",
+      continueWithGoogle: "Ga verder met Google",
+      continueWithGitHub: "Ga verder met GitHub",
+      orUseEmail: "of gebruik e-mail",
+      firstName: "Voornaam",
+      lastName: "Achternaam",
+      email: "E-mail",
+      password: "Wachtwoord",
+      confirmPassword: "Bevestig wachtwoord",
+      passwordCriteria:
+        "Minimaal 8 tekens, waaronder één hoofdletter, één kleine letter en één cijfer.",
+      submit: "Account aanmaken",
+      alreadyHaveAccount: "Heb je al een account?",
+      signIn: "Inloggen",
+      agreePrefix: "Door je aan te melden, ga je akkoord met onze voorwaarden.",
+      termsOfService: "Gebruiksvoorwaarden",
+      and: " En ",
+      privacyPolicy: "Privacybeleid",
+    },
     signOut: "Uitloggen",
     welcomeBack: "Welkom terug!",
     loginFailed: "Inloggen mislukt. Probeer het opnieuw.",
@@ -1243,16 +1277,73 @@ const nl = {
     termsOfService: "Servicevoorwaarden",
     privacyPolicy: "Privacybeleid",
     and: "en",
+    slides: {
+      dashboard: {
+        title: "Bedrijfspuls",
+        description:
+          "Krijg direct inzicht in omzet, actieve projecten en de voortgang van het team, zonder ernaar te hoeven zoeken.",
+      },
+      invoices: {
+        title: "Factureringsopdracht",
+        description:
+          "Bewaar concepten, openstaande bedragen en betaald werk op dezelfde plek.",
+      },
+      timeTracking: {
+        title: "Duidelijke wekelijkse workflow",
+        description:
+          "De wekelijkse urenregistratie blijft actueel zonder dat het een routineklus wordt.",
+      },
+      payments: {
+        title: "Kasboek",
+        description:
+          "Elke betaling wordt in één grootboek geregistreerd met de betaalmethode, status en bron.",
+      },
+    },
+    validation: {
+      emailRequired: "Een e-mailadres is verplicht.",
+      invalidEmail: "Ongeldig e-mailadres",
+      passwordRequired: "Wachtwoord vereist",
+      passwordComplexity:
+        "Het wachtwoord moet minimaal 8 tekens lang zijn en mag alleen hoofdletters, kleine letters en cijfers bevatten.",
+      passwordSpace: "Het wachtwoord mag geen spaties bevatten.",
+      confirmPasswordRequired: "Bevestiging van het wachtwoord is vereist.",
+      passwordsMustMatch: "Wachtwoorden moeten overeenkomen.",
+      firstNameRequired: "Voornaam verplicht",
+      firstNameInvalid: "De voornaam mag alleen letters bevatten.",
+      firstNameMax: "De voornaam mag maximaal 20 tekens lang zijn.",
+      lastNameRequired: "Achternaam verplicht",
+      lastNameInvalid: "De achternaam mag alleen letters bevatten.",
+      lastNameMax: "De achternaam mag maximaal 20 tekens lang zijn.",
+      acceptTerms: "U dient de voorwaarden te accepteren.",
+    },
   },
-
-  // Passkeys
   passkeys: {
     noPasskeyResponse: "Geen toegangscode reactie ontvangen.",
     passkeysNotSupported:
       "Toegangscodes worden niet ondersteund in deze browser.",
+    title: "Wachtwoorden",
+    addTitle: "Voeg een wachtwoord toe voor dit account.",
+    addDescription:
+      "Gebruik Face ID, Touch ID, Windows Hello of een hardwarebeveiligingssleutel.",
+    addAction: "Voeg wachtwoord toe",
+    requirementTitle: "Wachtwoord vereisen bij aanmelden",
+    requirementDescription:
+      "Na het invoeren van uw wachtwoord, vraagt Miru om een toegangscode om het inlogproces te voltooien.",
+    emptyState: "Er zijn nog geen wachtwoorden toegevoegd.",
+    fallbackName: "Wachtwoord",
+    addedAt: "%{time} toegevoegd",
+    lastUsedAt: "Laatst gebruikt %{time}",
+    removeAction: "Verwijderen",
+    addedSuccess: "Wachtwoord toegevoegd",
+    removedSuccess: "Wachtwoord verwijderd",
+    requirementEnabled: "Wachtwoordvereiste ingeschakeld",
+    requirementDisabled: "Wachtwoordvereiste uitgeschakeld",
+    addFailed: "Wachtwoord toevoegen mislukt.",
+    removeFailed: "Het verwijderen van de toegangscode is mislukt.",
+    updateRequirementFailed:
+      "Het bijwerken van de wachtwoordvereiste voor aanmelden is mislukt.",
+    neverUsed: "Nooit gebruikt",
   },
-
-  // Organization setup
   orgSetup: {
     setupOrganization: "Organisatie Instellen",
     companyName: "Bedrijfsnaam",
@@ -1274,13 +1365,11 @@ const nl = {
     dragLogo: "Sleep logo",
     selectFile: "Selecteer Bestand",
     acceptedFileFormats: "Geaccepteerde bestandsformaten: PNG, JPG, SVG.",
-    fileSizeLimit: "Bestandsgrootte moet \u2266 2MB zijn.",
+    fileSizeLimit: "Bestandsgrootte moet ≦ 2MB zijn.",
     imageResolution: "Afbeeldingsresolutie moet 1:1 zijn.",
     workingDaysPerWeek: "Werkdagen (per week)",
     workingHoursPerWeek: "Werkuren (per week)",
   },
-
-  // Profile
   profile: {
     personalDetails: "Persoonlijke Gegevens",
     employmentDetails: "Werkgelegenheidsdetails",
@@ -1296,9 +1385,64 @@ const nl = {
     socialProfiles: "Sociale Profielen",
     linkedin: "LinkedIn",
     github: "GitHub",
+    personalInformation: "Persoonlijke gegevens",
+    basicDetails: "Basisgegevens",
+    contactInformation: "Contactgegevens",
+    addressType: "Adrestype",
+    current: "Huidig",
+    permanent: "Permanent",
+    employeeId: "Werknemers-ID",
+    officialEmail: "Officieel e-mailadres",
+    employmentType: "Soort dienstverband",
+    dateOfResignation: "Datum van ontslag",
+    birthDatePlaceholder: "Selecteer je geboortedatum",
+    firstName: "Voornaam",
+    lastName: "Achternaam",
+    firstNamePlaceholder: "Voer uw voornaam in",
+    lastNamePlaceholder: "Voer uw achternaam in",
+    personalEmail: "Persoonlijk e-mailadres",
+    personalEmailPlaceholder: "jouw.email@example.com",
+    phoneAriaLabel: "Telefoonnummer",
+    addressLine1: "Adresregel 1",
+    addressLine2: "Adresregel 2",
+    optionalSuffix: "(Optioneel)",
+    streetAddressPlaceholder: "Straatadres",
+    addressLine2Placeholder: "Appartement, suite, wooneenheid, enz.",
+    statePlaceholder: "Staat of provincie",
+    cityPlaceholder: "Stad",
+    zipPostalCode: "Postcode",
+    zipPlaceholder: "12345",
+    languageDescription: "Kies de gewenste taal voor de interface.",
+    security: "Beveiliging",
+    userFallback: "Gebruiker",
+    currentPasswordPlaceholder: "Voer het huidige wachtwoord in",
+    newPassword: "Nieuw wachtwoord",
+    newPasswordPlaceholder: "Voer een nieuw wachtwoord in",
+    confirmPasswordPlaceholder: "Voer het nieuwe wachtwoord opnieuw in.",
+    cancelPasswordChange: "Wachtwoordwijziging annuleren",
+    profilePhoto: "Profielfoto",
+    profilePhotoDescription: "Upload een vierkante foto voor je werkprofiel.",
+    noAddressProvided: "Geen adres opgegeven",
+    noEmailProvided: "Geen e-mailadres opgegeven",
+    notProvided: "Niet verstrekt",
+    notConnected: "Niet verbonden",
+    bornOn: "Geboren %{date}",
+    lastChangedDaysAgo: "Laatst gewijzigd %{count} dagen geleden",
+    secure: "Zeker",
+    uploadPhoto: "Foto uploaden",
+    removePhoto: "Foto verwijderen",
+    uploadPhotoFailed: "Het uploaden van de profielfoto is mislukt.",
+    removePhotoFailed: "Het verwijderen van de profielfoto is mislukt.",
+    adjustProfilePhoto: "Profielfoto aanpassen",
+    adjustProfilePhotoDescription:
+      "Kies het gedeelte van de afbeelding dat je wilt behouden.",
+    noImageSelected: "Geen afbeelding geselecteerd",
+    savePhoto: "Foto opslaan",
+    zoom: "Zoom",
+    company: "Bedrijf",
+    noPreviousEmployments: "Geen eerdere werkervaring gevonden",
+    addPastEmployment: "+ Eerdere werkervaring toevoegen",
   },
-
-  // Leave Management
   leaveManagement: {
     leaveBalance: "Verlof Saldo",
     applyLeave: "Vraag Verlof Aan",
@@ -1336,22 +1480,24 @@ const nl = {
     leave: "verlof",
     nationalHoliday: "Nationale Vakantie",
     optionalHoliday: "Optionele Vakantie",
+    summaryLabel: "Samenvatting van het verlof",
+    summaryDescription:
+      "Bekijk op één plek uw beschikbare verlofdagen, reeds opgenomen verlofdagen en vakantiegebruik voor het geselecteerde jaar.",
+    balanceUntil: "Evenwicht tot %{date}",
   },
-
-  // Subscriptions / Plan Details
   subscriptions: {
     currentPlan: "Huidig Plan",
-    upgradePlan: "Upgrade Plan",
+    upgradePlan: "Upgradeplan",
     manageBilling: "Beheer Facturering",
     billingHistory: "Factureringsgeschiedenis",
-    planDetails: "Plan Details",
+    planDetails: "Plandetails",
     numberOfTeamMembers: "Aantal Teamleden:",
     plan: "Plan",
     basicPlan: "Basisplan",
     basicPlanDescription:
       "Basisplan omvat alle functies. Dit is een eenmalige kosten.",
     chargedOnce: "eenmalig in rekening gebracht",
-    addOns: "Add-Ons",
+    addOns: "Add-ons",
     oneTeamMember: "1 teamlid",
     chargedEveryMonth: "maandelijks in rekening gebracht",
     basicPlanPerUser:
@@ -1359,8 +1505,6 @@ const nl = {
     plusTaxes: "plus belastingen",
     reviewAndPay: "BEKIJK EN BETALEN",
   },
-
-  // Misc
   switchToMode: "Schakel naar %{mode} modus",
   light: "Licht",
   dark: "Donker",
@@ -1371,8 +1515,6 @@ const nl = {
   noPasskeyResponse: "Geen toegangscode reactie ontvangen.",
   passkeysNotSupported:
     "Toegangscodes worden niet ondersteund in deze browser.",
-
-  // Table headers (common)
   tableHeaders: {
     invoiceNo: "FACTUUR NO.",
     invoiceNumber: "FACTUURNUMMER",
@@ -1392,15 +1534,461 @@ const nl = {
     role: "ROL",
     type: "TYPE",
   },
-
-  // Relative dates
   nextDay: "Volgende %{day}",
   lastDay: "Laatste %{day}",
-
-  // Duration formatting
   durationMinutes: "%{mins}m",
   durationHours: "%{hours}h",
   durationHoursMinutes: "%{hours}h %{mins}m",
+  preferencesSettings: {
+    title: "E-mailvoorkeuren",
+    description: "Beheer je e-mailnotificatie-instellingen",
+    saving: "Besparing...",
+    saveChanges: "Wijzigingen opslaan",
+    timesheetNotifications: "Urenregistratiemeldingen",
+    billingNotifications: "Factuurmeldingen",
+    timesheetNotificationsDescription:
+      "Beheer meldingen met betrekking tot tijdregistratie en urenstaten.",
+    billingNotificationsDescription: "Factuur- en betalingsmeldingen beheren",
+    weeklyReminderTitle: "Wekelijkse urenregistratie herinnering",
+    weeklyReminderDescription:
+      "Ontvang elke maandag een herinnering over nog openstaande urenregistraties.",
+    timesheetReminderTitle: "Herinneringen voor ontbrekende gegevens",
+    timesheetReminderDescription:
+      "Ontvang een melding als je meer dan 2 dagen geen uren hebt geregistreerd.",
+    invoiceNotificationsTitle: "E-mailmeldingen voor facturen",
+    invoiceNotificationsDescription:
+      "Ontvang e-mails wanneer facturen worden aangemaakt, verzonden of bijgewerkt.",
+    paymentNotificationsTitle: "Betalings-e-mailmeldingen",
+    paymentNotificationsDescription:
+      "Ontvang een melding wanneer betalingen zijn ontvangen of wanneer de betalingsstatus verandert.",
+    monthlyDigestTitle: "Maandelijks kasstroomoverzicht",
+    monthlyDigestDescription:
+      "Ontvang maandelijks een kasstroomoverzicht met netto verandering, inkomsten en uitgaven.",
+    confirmUnsubscribeTitle:
+      "Bevestig dat u zich wilt afmelden voor alle e-mails",
+    confirmUnsubscribeDescription:
+      "Weet u zeker dat u zich wilt afmelden voor alle e-mailmeldingen? U ontvangt dan geen e-mails meer, inclusief belangrijke factuur- en factureringsberichten.",
+    confirmUnsubscribeAction: "Ja, ik wil me van alle abonnementen afmelden.",
+    unsubscribedTitle: "Je ontvangt geen e-mails meer.",
+    unsubscribedDescription:
+      "Je bent momenteel afgemeld voor alle e-mailnotificaties. Je ontvangt geen e-mails meer van Miru.",
+    resubscribeAction: "E-mailmeldingen opnieuw inschakelen",
+    enabledCount: "%{count} van %{total} ingeschakeld",
+    deliveryTitle: "Instellingen voor e-mailbezorging",
+    emailAddress: "E-mailadres",
+    deliveryDescription:
+      "Alle meldingen worden naar dit e-mailadres verzonden. Om uw e-mailadres te wijzigen, kunt u dit aanpassen in uw profielinstellingen.",
+    unsubscribeTitle: "Uitschrijven",
+    unsubscribeDescription:
+      "Als u geen e-mails meer van Miru wilt ontvangen, kunt u zich afmelden voor alle meldingen. Hierdoor worden alle e-mailberichten, inclusief belangrijke factuur- en factureringsmeldingen, stopgezet.",
+    unsubscribeAction: "U kunt zich afmelden voor alle e-mails.",
+    badges: {
+      active: "Actief",
+      important: "Belangrijk",
+      monthly: "Maandelijks",
+    },
+  },
+  automationSettings: {
+    title: "Automatisering en CLI",
+    description:
+      "Gebruik Miru vanuit je terminal, scripts of AI-agents met dezelfde machtigingen als je ingelogde account. Geen apart automatiseringsproduct nodig. Geen speciale toegang via een achterdeur.",
+    freeForEveryPlan: "Gratis bij elk abonnement",
+    cards: {
+      samePermissionsTitle: "Dezelfde machtigingen als de app",
+      samePermissionsDescription:
+        "De CLI ziet alleen datgene waartoe de geauthenticeerde gebruiker al toegang heeft in de webapplicatie.",
+      humansAndScriptsTitle: "Goed voor mensen en scripts.",
+      humansAndScriptsDescription:
+        "Gebruik eenvoudige commando's voor dagelijkse taken en laat scripts of AI dezelfde interface aanroepen.",
+      easyToInstallTitle: "Eenvoudig te installeren",
+      easyToInstallDescription:
+        "Eén installatieopdracht, één aanmelding, en vervolgens kunt u projecten bekijken, urenregistraties aanmaken, facturen controleren en nog veel meer.",
+    },
+    commandGroups: {
+      install: "Installeren",
+      authenticateOnce: "Authenticeer één keer",
+      dailyCommands: "Dagelijkse opdrachten",
+    },
+  },
+  holidaysSettings: {
+    year: "Jaar",
+    publicHolidays: "Officiële feestdagen",
+    optionalHolidays: "Optionele vakanties",
+    holidayName: "Naam van de feestdag",
+    enterHolidayName: "Voer de naam van de vakantie in",
+    selectDate: "Selecteer datum",
+    addHoliday: "Vakantie toevoegen",
+    addFirstHoliday: "Voeg de eerste feestdag toe",
+    addOptionalHoliday: "Voeg een optionele vakantie toe",
+    noPublicHolidaysConfigured: "Geen officiële feestdagen geconfigureerd",
+    noOptionalHolidaysConfigured: "Geen optionele feestdagen geconfigureerd",
+    totalAllowed: "Totaal toegestaan",
+    enterNumber: "Voer een nummer in",
+    frequency: "Frequentie",
+    allowedPerEmployee: "Toegestaan per werknemer",
+    yearAtAGlance: "Jaaroverzicht",
+    holidaySchedule: "Vakantierooster",
+    noHolidaysAddedForYear:
+      "Er zijn nog geen feestdagen toegevoegd voor %{year}",
+    categories: {
+      public: "Openbaar",
+      optional: "Optioneel",
+    },
+    weekdays: {
+      sun: "S",
+      mon: "M",
+      tue: "T",
+      wed: "W",
+      thu: "T",
+      fri: "F",
+      sat: "S",
+    },
+  },
+  paymentSettingsPage: {
+    backToSettings: "Terug naar instellingen",
+    title: "Betaalproviders",
+    description:
+      "Koppel betaalproviders om online betalingen van klanten te accepteren.",
+    errorTitle: "Fout",
+    errorDescription:
+      "Het laden van de betaalinstellingen is mislukt. Probeer het later opnieuw.",
+    stripeDescription:
+      "Wij accepteren creditcards, betaalpassen en andere gangbare betaalmethoden.",
+    connectedTo: "Verbonden met",
+    connected: "Aangesloten",
+    stripeAccountFallback: "Stripe-account",
+    chargesEnabled: "Opladen ingeschakeld",
+    connectStripe: "Verbind Stripe",
+    connecting: "Verbinden...",
+    disconnect: "Verbinding verbreken",
+    disconnecting: "Verbinding verbreken...",
+    featuresTitle: "Kenmerken en voordelen",
+    helpTitle: "Hulp nodig?",
+    helpDescription:
+      "Heeft u hulp nodig bij het instellen van de betalingsverwerking of heeft u vragen over kosten en mogelijkheden?",
+    viewDocumentation: "Documentatie bekijken",
+    contactSupport: "Neem contact op met de ondersteuning.",
+    disconnectDialogTitle: "Stripe-account ontkoppelen",
+    disconnectDialogDescription:
+      "Weet je zeker dat je je Stripe-account wilt ontkoppelen? Je kunt geen betalingen meer accepteren via Stripe totdat je je account opnieuw koppelt.",
+    features: {
+      secureTitle: "Veilige betalingen",
+      secureDescription: "PCI-compatibele betalingsverwerking",
+      currenciesTitle: "Meerdere valuta's",
+      currenciesDescription: "Accepteer betalingen in meer dan 135 valuta.",
+      methodsTitle: "Diverse betaalmethoden",
+      methodsDescription:
+        "Kaarten, portemonnees, bankoverschrijvingen en meer.",
+      setupTitle: "Directe installatie",
+      setupDescription:
+        "Begin binnen enkele minuten met het accepteren van betalingen.",
+    },
+  },
+  organizationSettingsPage: {
+    actions: {
+      editSettings: "Instellingen bewerken",
+    },
+    sections: {
+      companyProfile: "Bedrijfsprofiel",
+      financial: "Financieel",
+      scheduleAndTime: "Planning & Tijd",
+      workingHours: "Werktijden",
+    },
+    fields: {
+      businessPhone: "Zakelijk telefoonnummer",
+      currency: "Munteenheid",
+      businessAddress: "Bedrijfsadres",
+      standardRate: "Standaardtarief",
+      fiscalYearEnd: "Einde van het fiscale jaar",
+      timezone: "Tijdzone",
+      dateFormat: "Datumformaat",
+      workingDays: "Werkdagen",
+    },
+    status: {
+      active: "Actief",
+    },
+    defaults: {
+      companyName: "Bedrijfsnaam",
+      locationNotSet: "Locatie niet ingesteld",
+      notConfigured: "Niet geconfigureerd",
+      noAddress: "Geen adres geconfigureerd",
+      workingHours: "9:00 - 17:00",
+      workingDays: "Maandag - vrijdag",
+      timezone: "UTC",
+      dateFormat: "MM/DD/JJJJ",
+    },
+    errors: {
+      loadFailed:
+        "Organisatiegegevens konden niet worden geladen. Probeer het opnieuw.",
+    },
+    ratePerHour: "/ uur",
+  },
+  billingSettings: {
+    membership: "Lidmaatschap",
+    currentPlan: "Huidig plan",
+    seatUsage: "Stoelgebruik",
+    billingCadence: "Factureringsfrequentie",
+    monthly: "Maandelijks",
+    yearly: "Jaarlijks",
+    notSubscribedYet: "Nog geen abonnee?",
+    startTrial: "Start de 30-daagse Pro-proefperiode.",
+    startingTrial: "Proces begint...",
+    upgradeWithStripe: "Upgrade met Stripe",
+    openingStripe: "Openingsstrip...",
+    manageBillingInStripe: "Beheer je facturering in Stripe.",
+    openingPortal: "Portaal openen...",
+    saveTwoMonths: "Bespaar twee maanden op een jaarabonnement.",
+    heroTitle:
+      "Kies het pakket dat nu bij je past. Je kunt later overstappen als je meer nodig hebt.",
+    howManySeats: "Hoeveel zitplaatsen verwacht je nodig te hebben?",
+    estimatedSeats: "Geschat aantal zitplaatsen",
+    recommended: "Aanbevolen",
+    estimatedProSpend: "Geschatte uitgaven van professionals",
+    yearlyDiscount: "Jaarlijkse korting",
+    openSource: "Open source",
+    annual: "Jaarlijks",
+    service: "Dienst",
+    poweredByStripe: "Mogelijk gemaakt door Stripe",
+    changePlansAnytime: "Plannen kunnen op elk moment worden gewijzigd.",
+    checkoutPoweredByStripe:
+      "Het afrekenproces en het abonnementsbeheer worden verzorgd door Stripe.",
+    noSalesCall:
+      "Geen verkoopgesprekken voor Pro-abonnementen. U kunt uw abonnement op elk moment in Stripe annuleren of wijzigen.",
+    reportsAndAnalytics: "Rapporten en analyses",
+    customAnnual: "Op maat gemaakt jaarlijks",
+    seatsUsed: "%{used}/%{total} stoelen gebruikt",
+    seatsUsedWithoutLimit: "%{used} stoelen gebruikt",
+    savePerYear: "Bespaar $%{amount}/jr",
+    effectiveMonthlyPricing: "Effectieve prijs van ongeveer $%{amount}/maand",
+    cancelOrUpgradeAnytime:
+      "Annuleer of upgrade op elk gewenst moment via Stripe.",
+    planCadence: {
+      monthly: "Maandelijks gefactureerd",
+      yearlySavings: "Bespaar 2 maanden per stoel",
+    },
+    alerts: {
+      subscriptionUpdatedTitle: "Abonnement bijgewerkt",
+      subscriptionUpdated: "Je abonnement is succesvol bijgewerkt in Stripe.",
+      checkoutCancelled: "Uitchecken geannuleerd",
+      noSubscriptionChanges:
+        "Er zijn geen wijzigingen aangebracht in uw abonnement.",
+      unableToLoad: "Factuurgegevens kunnen niet worden geladen.",
+      proTrialActive: "Pro-proef actief",
+      proTrialActiveUntil: "Je werkruimte heeft Pro-toegang tot %{date}.",
+      proTrialEnded: "Proefproces beëindigd",
+      proTrialEndedDescription:
+        "Je werkruimte is teruggezet naar het gratis abonnement. Upgrade via Stripe om weer toegang te krijgen tot het Pro-abonnement.",
+      seatLimitReached: "Maximale capaciteit bereikt",
+      seatLimitReachedDescription:
+        "Upgrade je Stripe-account om meer dan 3 leden aan deze werkruimte toe te voegen.",
+    },
+    errors: {
+      unableToOpenStripeCheckout:
+        "Stripe-betaalpagina kan niet worden geopend.",
+      unableToOpenStripeBillingPortal:
+        "Het lukt niet om het Stripe-factureringsportal te openen.",
+      unableToStartProTrial: "Je kunt je Pro-proefversie niet starten.",
+    },
+    recommendations: {
+      freeTitle:
+        "Blijf in de gratis modus totdat je de bedieningselementen nodig hebt.",
+      freeDescription:
+        "De gratis versie is prima voor zeer kleine teams. Stap over naar Pro wanneer je SSO, uitgebreidere rapportages en meer dan 3 gebruikers nodig hebt.",
+      proTitle: "Pro is de juiste keuze.",
+      proDescription:
+        "Voor groeiende teams biedt Pro SSO, inzicht in de financiën en voldoende ruimte om te schalen zonder de hoge kosten van een grote onderneming.",
+      enterpriseTitle: "Neem contact met ons op over Enterprise.",
+      enterpriseDescription:
+        "Grotere teams hebben doorgaans behoefte aan ondersteuning bij de inkoop, beheermogelijkheden en een soepelere implementatie. Begin met Pro of ga direct over op Enterprise.",
+    },
+    highlights: {
+      seatsTitle: "Meer zitplaatsen zonder administratieve rompslomp.",
+      seatsDescription:
+        "Ga voorbij de limiet van 3 gratis stoelen en houd het onboardingproces eenvoudig.",
+      ssoTitle: "SSO en strengere controles",
+      ssoDescription:
+        "Geef groeiende teams veilige toegang zonder extra tools.",
+      financeTitle: "Financieel inzicht dat rustig blijft",
+      financeDescription:
+        "Krijg inzicht in marge, factureringsfrequentie en teamgebruik zonder extra configuratie.",
+    },
+    planDescriptions: {
+      free: "Host Miru zelf met de basisfunctionaliteiten voor tracking, facturering, betalingen en tot 3 teamlicenties.",
+      pro: "Pro biedt rapportagemogelijkheden, SSO, meer gebruikerslicenties en gebruiksvriendelijkere beheertools zonder de extra kosten van een bedrijfsomgeving.",
+      enterprise:
+        "Aanbestedingsvriendelijke contracten, geavanceerde controles en ondersteuning voor grotere teams die een veiligheidsbeoordeling nodig hebben.",
+      hostedEnterprise:
+        "Wij verzorgen de hosting, upgrades, back-ups en ondersteuning van Miru voor u op een speciaal daarvoor bestemde locatie.",
+    },
+    planBullets: {
+      free: {
+        coreProduct: "Zelf gehost kernproduct",
+        tracking: "Tijdregistratie, facturen, betalingen",
+        dashboard: "Dashboardoverzicht voor een klein team",
+      },
+      pro: {
+        trial: "30 dagen gratis proefperiode, voordat u betaalt.",
+        sso: "SSO, geavanceerde rapportage, strengere beheerdersopties",
+        fit: "Ideaal voor bureaus en groeiende teams.",
+      },
+      enterprise: {
+        contracts: "Inkoopvriendelijke contracten",
+        onboarding:
+          "Beveiligingsbeoordeling en ondersteuning bij de onboarding",
+        compliance:
+          "Voor grotere teams met goedkeurings- en nalevingsvereisten.",
+      },
+      hosted: {
+        setup: "Speciaal beheerde installatie",
+        operations: "Wij verzorgen upgrades, back-ups en ondersteuning.",
+        fit: "Voor teams die Miru volledig voor zich willen laten beheren.",
+      },
+    },
+    heroDescription:
+      "Begin met de gratis versie, ga over naar Pro wanneer het team meer controle nodig heeft, of laat ons Miru voor u beheren. Pro blijft voordelig, een jaarabonnement bespaart echt geld en de facturering blijft eenvoudig omdat de betaling en het abonnementsbeheer via Stripe verlopen.",
+    seatEstimatorDescription:
+      "Gebruik dit om de gratis versie en de betaalde versie te vergelijken en te bepalen of een maandelijks of jaarlijks abonnement voordeliger is.",
+    yearlyDiscountDescription:
+      "Twee maanden gratis per gebruiker in vergelijking met de maandelijkse prijs.",
+    checkoutDescription:
+      "Start de proefperiode zonder verkoopproces, upgrade wanneer u er klaar voor bent en beheer de facturering zelf wanneer u dat nodig hebt.",
+    plans: {
+      unknown: "Onbekend",
+      free: "Vrij",
+      freePro: "Gratis Pro",
+      proTrial: "Pro-proef",
+      paid: "Betaald",
+      enterprise: "Onderneming",
+      hostedEnterprise: "Gehoste onderneming",
+    },
+    table: {
+      feature: "Functie",
+      bestFor: "Het beste voor",
+      selfHostedTeams: "Zelfgehoste teams aan de slag",
+      growingServiceTeams:
+        "Groeiende serviceteams die behoefte hebben aan controle.",
+      largeOrgs:
+        "Grotere organisaties met behoeften op het gebied van beveiliging en inkoop.",
+      managedTeams: "Teams die Miru als manager willen hebben.",
+      timeTracking: "Tijdregistratie",
+      invoicesAndPayments: "Facturen en betalingen",
+      reportsAndDashboards: "Rapporten en dashboards",
+      sso: "SSO",
+      auditAndAdminControls: "Audit- en beheercontroles",
+      support: "Steun",
+      included: "Inbegrepen",
+      notIncluded: "Niet inbegrepen",
+      dashboardOnly: "Alleen dashboard",
+      reportsAndAnalytics: "Rapporten en analyses",
+      community: "Gemeenschap",
+      priorityEmail: "Prioriteitse-mail",
+      priorityOnboarding: "Prioriteit + onboarding",
+      managedOnboarding: "Beheerde service + onboarding",
+    },
+  },
+  twoFactor: {
+    title: "Authenticator-app 2FA",
+    addTitle: "Voeg een authenticatie-app toe",
+    addDescription:
+      "Gebruik Google Authenticator, 1Password, Bitwarden, Authy of een andere TOTP-compatibele app.",
+    setupAction: "Stel 2FA in.",
+    finishTitle: "Voltooi de authenticatie-instellingen",
+    finishDescription:
+      "Voeg deze sleutel toe aan je authenticatie-app en voer vervolgens de huidige 6-cijferige code in om 2FA in te schakelen.",
+    manualEntryKey: "Handmatige invoersleutel",
+    verificationCode: "Verificatiecode",
+    verificationCodePlaceholder: "123456",
+    enableAction: "Schakel 2FA in.",
+    resetKeyAction: "Reset-toets",
+    enabledTitle: "De beveiliging van de Authenticator-app is ingeschakeld.",
+    enabledDescription:
+      "Na je wachtwoord heb je een authenticatiecode nodig om in te loggen.",
+    recoveryCodesAvailable: "%{count} herstelcodes beschikbaar",
+    regenerateRecoveryCodes: "Herstelcodes opnieuw genereren",
+    disableAction: "Schakel 2FA uit",
+    saveRecoveryCodes: "Bewaar deze herstelcodes",
+    saveRecoveryCodesDescription:
+      "Elke code werkt slechts één keer. Bewaar ze op een veilige plek.",
+    setupReadySuccess: "De installatie van de authenticatie-app is voltooid.",
+    enabledSuccess: "Authenticator-app ingeschakeld",
+    disabledSuccess: "Authenticator-app uitgeschakeld",
+    regeneratedSuccess: "Herstelcodes opnieuw gegenereerd",
+    setupFailed: "Het is niet gelukt om de 2FA-configuratie te starten.",
+    enableFailed: "Authenticator-app inschakelen mislukt.",
+    disableFailed: "Het uitschakelen van 2FA is mislukt.",
+    regenerateFailed:
+      "Het is niet gelukt om de herstelcodes opnieuw te genereren.",
+  },
+  notificationPreferences: {
+    emailNotifications: "E-mailmeldingen",
+    manageDescription: "Beheer je voorkeuren voor e-mailmeldingen.",
+    weeklyEmailReminder: "Wekelijkse e-mailherinnering",
+    weeklyEmailReminderDescription:
+      "Ontvang wekelijks e-mailherinneringen over urenregistratie en projectupdates.",
+    noUserData: "Geen gebruikersgegevens beschikbaar",
+    loginPrompt: "Log in om uw meldingsvoorkeuren te beheren.",
+  },
+  devices: {
+    addDevices: "Apparaten toevoegen",
+    editDevices: "Apparaten bewerken",
+    device: "Apparaat",
+    unknownDevice: "Onbekend apparaat",
+    serial: "Serienummer:",
+    deviceType: "Apparaattype",
+    selectDeviceType: "Selecteer het apparaattype",
+    modelName: "Model/Naam",
+    serialNumber: "Serienummer",
+    memory: "Geheugen (RAM)",
+    processor: "Processor",
+    graphics: "Grafische weergave",
+    graphicsCard: "Grafische kaart",
+    storage: "Opslag",
+    modelNamePlaceholder: "bijvoorbeeld een MacBook Pro 16-inch",
+    serialNumberPlaceholder: "bijv. C02XX1234567",
+    memoryPlaceholder: "bijvoorbeeld 16 GB DDR4",
+    processorPlaceholder: "bijvoorbeeld Intel Core i7-10750H",
+    graphicsPlaceholder: "bijvoorbeeld NVIDIA GeForce RTX 3060",
+    storagePlaceholder: "bijvoorbeeld een SSD van 512 GB",
+    addAnotherDevice: "Voeg nog een apparaat toe",
+    addAnotherDeviceDescription:
+      "Klik om een nieuw apparaat aan uw inventaris toe te voegen.",
+    deviceSummary: "Apparaatoverzicht",
+    totalDevices: "Totaal aantal apparaten",
+    notSpecified: "Niet gespecificeerd",
+    noDevicesFound: "Geen apparaten gevonden",
+    newDevice: "Nieuw apparaat",
+    unsavedChangesPrompt:
+      "Je hebt niet-opgeslagen wijzigingen. Weet je zeker dat je wilt annuleren?",
+  },
+  nav: {
+    dashboard: "Dashboard",
+    timeTracking: "Tijdregistratie",
+    clients: "Klanten",
+    projects: "Projecten",
+    team: "Team",
+    invoices: "Facturen",
+    reports: "Rapporten",
+    payments: "Betalingen",
+    leavesAndHolidays: "Verlof en vakantie",
+    expenses: "Uitgaven",
+    settings: "Instellingen",
+    logout: "Uitloggen",
+  },
+  sidebar: {
+    main: "Voornaamst",
+    personalSettings: "Persoonlijke instellingen",
+    companySettings: "Bedrijfsinstellingen",
+    profile: "Profiel",
+    devices: "Apparaten",
+    organization: "Organisatie",
+    billing: "Facturering",
+    paymentSettings: "Betaalinstellingen",
+    holidayCalendar: "Vakantiekalender",
+    myLeaves: "Mijn bladeren",
+    bankTaxInfo: "Bank- en belastinginformatie",
+    expand: "Zijbalk uitklappen",
+    collapse: "Zijbalk inklappen",
+  },
 };
 
 export default nl;

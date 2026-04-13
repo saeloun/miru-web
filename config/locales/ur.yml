@@ -1,16 +1,8 @@
 ---
 ur:
-  activerecord:
-    errors:
-      models:
-        client:
-          attributes:
-            name:
-              format: "%{message}"
-        project:
-          attributes:
-            name:
-              format: "%{message}"
+  app:
+    name: میرو ایجنسی او ایس
+    tagline: ایک کمانڈ سینٹر سے اپنی ایجنسی کے آپریشنز چلائیں۔
   application_controller:
     not_found: راستہ نہیں ملا
   avatar:
@@ -85,20 +77,6 @@ ur:
   employment:
     update:
       success: ملازمت کامیابی کے ساتھ اپ ڈیٹ ہو گئی۔
-  errors:
-    bill_status_billed: آپ کسی ایسے اندراج کو بل نہیں دے سکتے جس کا پہلے ہی بل ہو
-      چکا ہو۔
-    can't change status: ادا شدہ رسید کو تبدیل نہیں کیا جا سکتا
-    create_billed_entry: آپ بل شدہ ٹائم شیٹ اندراج نہیں بنا سکتے
-    internal_server_error: کچھ غلط ہو گیا۔
-    not_found: آپ جس وسائل کی تلاش کر رہے ہیں وہ دستیاب نہیں ہے۔
-    prevent_draft_to_waived: معافی میں تبدیل نہیں کیا جا سکتا
-    unauthorized: صرف مالک یا منتظم صارفین ہی اس کارروائی کو انجام دینے کے مجاز ہیں۔
-    updation_not_allowed: اپ ڈیٹ کی اجازت نہیں ہے
-    user_already_member: ای میل آئی ڈی پہلے ہی استعمال میں ہے۔ براہ کرم کوئی اور ای
-      میل آئی ڈی درج کریں۔
-    validate_billable_project: آپ غیر بل کے قابل پروجیکٹس کے لیے بغیر بل کے اندراج
-      نہیں بنا سکتے
   expenses:
     approve: اخراجات کامیابی کے ساتھ منظور ہو گئے۔
     create: اخراجات کامیابی کے ساتھ جمع کرائے گئے۔
@@ -172,6 +150,201 @@ ur:
       success: چھوڑیں کامیابی کے ساتھ بن گئیں۔
     update:
       success: کامیابی سے اپ ڈیٹ ہونے کو چھوڑ دیں۔
+  mailers:
+    actions:
+      join_miru: میرو میں شامل ہوں۔
+      open_expense: کھلا خرچ
+      open_invoice: انوائس کھولیں۔
+      open_time_tracking: اوپن ٹائم ٹریکنگ
+      view_reports: میرو میں رپورٹیں دیکھیں
+    client_payment_mailer:
+      payment:
+        eyebrow: ادائیگیاں
+        preheader: انوائس %{invoice_number} کے لیے ادائیگی کی رسید۔
+        receipt_title: ادائیگی موصول ہوئی۔
+        records_body: یہ رسید آپ کی ادائیگی کی تصدیق کرتی ہے۔ اگر آپ کو دوبارہ تفصیلات
+          کی ضرورت ہو تو آپ کسی بھی وقت انوائس کو دوبارہ کھول سکتے ہیں۔
+        records_title: اسے اپنے ریکارڈ کے لیے رکھیں
+        subject: انوائس %{invoice_number} کے لیے ادائیگی کی رسید
+        subtitle_html: ہمیں انوائس <strong>%{invoice_number}</strong> کے لیے آپ کی
+          ادائیگی موصول ہوئی ہے۔
+        summary_html: ہمیں انوائس <strong>%{invoice_number}</strong> کے لیے <strong>%{paid_on}</strong>
+          پر <strong>%{amount}</strong> موصول ہوا۔
+        title: ادائیگی کی رسید
+    expense_mailer:
+      approved:
+        eyebrow: اخراجات
+        preheader: آپ کی ادائیگی کی درخواست منظور کر لی گئی ہے۔
+        subject: آپ کا معاوضہ منظور کر لیا گیا ہے۔
+        subtitle: آپ کی ادائیگی کی درخواست کا جائزہ لیا گیا ہے اور اسے منظور کر لیا
+          گیا ہے۔
+        title: معاوضہ منظور کر لیا گیا۔
+      paid:
+        eyebrow: اخراجات
+        preheader: آپ کی ادائیگی کی درخواست کو بطور ادا شدہ نشان زد کر دیا گیا ہے۔
+        subject: آپ کے معاوضے کو بطور ادا شدہ نشان زد کر دیا گیا ہے۔
+        subtitle: آپ کی ری ایمبرسمنٹ کی درخواست کی ادائیگی مکمل ہو گئی ہے۔
+        title: معاوضہ ادا کر دیا گیا۔
+      rejected:
+        eyebrow: اخراجات
+        next_step_body: اخراجات کو کھولیں، اپ ڈیٹس بنائیں، اور اسے دوبارہ جمع کروائیں۔
+        next_step_title: اگلا مرحلہ
+        preheader: آپ کی ادائیگی کی درخواست کو اپ ڈیٹس کی ضرورت ہے۔
+        subject: آپ کے معاوضے کو منظوری سے پہلے اپ ڈیٹس کی ضرورت ہے۔
+        subtitle: براہ کرم درخواست کی تفصیلات کا جائزہ لیں، ضروری تبدیلیاں کریں، اور
+          اسے دوبارہ جمع کرائیں۔
+        title: معاوضے کو اپ ڈیٹس کی ضرورت ہے۔
+      submitted:
+        eyebrow: اخراجات
+        preheader: معاوضے کی نئی درخواست پر نظرثانی کی ضرورت ہے۔
+        subject: "%{submitter_name} نے معاوضے کی درخواست جمع کرائی"
+        subtitle_html: "<strong>%{submitter_name}</strong> نے معاوضے کی درخواست جمع
+          کرائی جو نظرثانی کے لیے تیار ہے۔"
+        title: معاوضے کی نئی درخواست
+    invoice_mailer:
+      invoice:
+        eyebrow: رسیدیں
+        payment_link_subvalue: لائن آئٹمز کا جائزہ لیں اور آن لائن ادائیگی کریں۔
+        payment_link_value: انوائس کا صفحہ محفوظ کریں۔
+        preheader: "%{company_name} سے انوائس %{invoice_number}۔"
+        ready_body: لائن آئٹمز کو چیک کرنے، کل کی تصدیق کرنے اور آن لائن ادائیگی کرنے
+          کے لیے محفوظ رسید کا صفحہ کھولیں۔
+        ready_title: ادائیگی کرنے سے پہلے جائزہ لیں۔
+        subject: انوائس %{invoice_number}
+        subtitle_html: "<strong>%{company_name}</strong> نے انوائس <strong>%{invoice_number}</strong>
+          بھیجی ہے۔ آپ اس کا جائزہ لے سکتے ہیں اور جب بھی آپ تیار ہوں آن لائن ادائیگی
+          کر سکتے ہیں۔"
+        support_html: اس رسید کے بارے میں سوالات؟ اس ای میل کا جواب دیں یا <a href="mailto:%{support_email}">%{support_email}</a>
+          سے رابطہ کریں۔
+        title: انوائس جائزہ لینے کے لیے تیار ہے۔
+      send_invoice:
+        attachment_subvalue: اسے رکھیں، اسے آگے بھیجیں، یا فائل کریں۔
+        attachment_value: پی ڈی ایف منسلک ہے۔
+        eyebrow: رسیدیں
+        next_steps_body: رقم کی تصدیق کے لیے انوائس کھولیں، لائن آئٹمز کا جائزہ لیں،
+          اور جب آپ تیار ہوں تو ادائیگی کریں۔
+        next_steps_title: کیا توقع کی جائے۔
+        note_title: "%{company_name} سے ایک نوٹ"
+        preheader: "%{company_name} سے انوائس %{invoice_number} تیار ہے۔"
+        subject: "%{company_name} سے انوائس %{invoice_number}"
+        subtitle_html: "<strong>%{company_name}</strong> نے انوائس <strong>%{invoice_number}</strong>
+          بھیجی ہے۔ تفصیلات کا جائزہ لینے کے لیے اسے کھولیں، پی ڈی ایف ڈاؤن لوڈ کریں،
+          اور محفوظ طریقے سے ادائیگی کریں۔"
+        support_html: ایک ہاتھ کی ضرورت ہے؟ اس ای میل کا جواب دیں یا <a href="mailto:%{support_email}">%{support_email}</a>
+          سے رابطہ کریں۔
+        title: انوائس جائزہ لینے کے لیے تیار ہے۔
+    labels:
+      amount: رقم
+      amount_due: واجب الادا رقم
+      amount_paid: ادا کی گئی رقم
+      attachment: اٹیچمنٹ
+      category: زمرہ
+      client: کلائنٹ
+      date: تاریخ
+      description: تفصیل
+      due_date: مقررہ تاریخ
+      invited_by: کی طرف سے مدعو کیا گیا
+      invoice: رسید
+      invoice_number: انوائس نمبر
+      issue_date: جاری ہونے کی تاریخ
+      issued_to: کو جاری کیا گیا۔
+      members: ممبران
+      outstanding_amount: بقایا رقم
+      paid_on: پر ادا کیا
+      payment_link: ادائیگی کا لنک
+      payment_method: ادائیگی کا طریقہ
+      reference: حوالہ
+      status: حیثیت
+      total_amount: کل رقم
+      workspace: کام کی جگہ
+    layout:
+      brand: میرو
+      footer_body: Miru وقت، رسیدیں، ادائیگیاں، اور آپریشنز کو ایک پرسکون کام کی جگہ
+        پر رکھتا ہے۔
+      footer_contact: support@getmiru.com
+      footer_copyright: "© میرو۔ جملہ حقوق محفوظ ہیں۔"
+      footer_site: app.miru.so
+      preheader: میرو کی طرف سے واضح اپ ڈیٹ۔
+    monthly_reports_mailer:
+      cash_flow_digest:
+        average_daily_net_change_html: اوسط روزانہ خالص تبدیلی <strong>%{amount}</strong>
+        compare_to_previous: بمقابلہ %{amount} %{month_label} میں
+        eyebrow: ماہانہ ڈائجسٹ
+        money_in: پیسے میں
+        money_out: پیسے باہر
+        net_change: "%{month_label} میں خالص تبدیلی"
+        no_money_in: Miru میں %{month_year_label} کے لیے کوئی ادائیگی ریکارڈ نہیں
+          کی گئی۔
+        no_money_out: Miru میں %{month_year_label} کے لیے کوئی ادا شدہ اخراجات ریکارڈ
+          نہیں کیے گئے۔
+        preheader: "%{company_name}'s %{month_label} کیش فلو ڈائجسٹ"
+        subject: "%{company_name}'s %{month_label} کیش فلو ڈائجسٹ"
+        subtitle: یہاں %{month_year_label} کے لیے Miru کے ذریعے رقم کی منتقلی کا ایک
+          مختصر منظر ہے۔
+        title: "%{company_name}'s %{month_label} کیش فلو ڈائجسٹ"
+        top_money_in_sources: سرفہرست رقم کے ذرائع
+        top_money_out_sources: سب سے اوپر پیسے باہر بالٹیاں
+    payment_mailer:
+      payment:
+        eyebrow: ادائیگیاں
+        follow_up_body: ادائیگی کی تصدیق کے لیے انوائس کھولیں، رسید فائل کریں، یا
+          اگلے مرحلے کے ساتھ جاری رکھیں۔
+        follow_up_title: آگے کیا کرنا ہے۔
+        preheader: انوائس %{invoice_number} کے لیے ادائیگی کی تصدیق۔
+        received_title: ادائیگی موصول ہوئی۔
+        subject: انوائس %{invoice_number} کے لیے ادائیگی کی تفصیلات
+        subtitle_html: "<strong>%{client_name}</strong> ادا شدہ انوائس <strong>%{invoice_number}</strong>
+          ۔"
+        summary_html: "<strong>%{client_name}</strong> نے <strong>%{amount} کو</strong>
+          انوائس <strong>%{invoice_number}</strong> کے لیے ادا کیا۔ یہ رسید اب پوری
+          طرح ادا کر دی گئی ہے۔"
+        title: ادائیگی کی تصدیق
+    send_payment_reminder_mailer:
+      send_payment_reminder:
+        eyebrow: رسیدیں
+        preheader: "%{company_name} رسیدوں کے لیے ادائیگی کی یاد دہانی۔"
+        subject: "%{company_name} کے لیے ادائیگی کی یاد دہانی"
+        subtitle: یہاں وہ رسیدیں ہیں جن پر ابھی بھی توجہ کی ضرورت ہے۔
+        title: ادائیگی کی یاد دہانی
+    send_reminder_mailer:
+      send_reminder:
+        eyebrow: رسیدیں
+        preheader: "%{company_name} سے انوائس %{invoice_number} کے لیے یاد دہانی۔"
+        subject: "%{company_name} سے انوائس %{invoice_number} کے لیے یاد دہانی"
+        subtitle_html: "<strong>%{company_name}</strong> سے انوائس <strong>%{invoice_number}</strong>
+          اب بھی ادائیگی کا منتظر ہے۔"
+        title: ادائیگی کی یاد دہانی
+    send_weekly_reminder_to_user_mailer:
+      notify_user_about_missed_entries:
+        body_html: آپ نے <strong>%{starting_date}</strong> اور <strong>%{ending_date}</strong>
+          کے درمیان 40 گھنٹے سے کم لاگ ان کیا ہے۔
+        eyebrow: ٹائم ٹریکنگ
+        follow_up: میرو کھولیں، گمشدہ اندراجات شامل کریں، اور ہفتہ کو بند کریں۔
+        greeting_html: ہائے <strong>%{name}</strong> ،
+        preheader: گمشدہ ہفتے کے لیے اپنی میرو ٹائم شیٹ کو اپ ڈیٹ کریں۔
+        signoff_html: شکریہ،<br> <strong>میرو</strong>
+        subject: پچھلے ہفتے کے لیے اپنی میرو ٹائم شیٹ کو مکمل کریں۔
+        subtitle: "%{company_name} کے لیے آپ کے وقت کے اندراجات ابھی بھی متوقع ہفتہ
+          وار کل سے کم ہیں۔"
+        title: اپنی ٹائم شیٹ کو مکمل کریں۔
+    user_invitation_mailer:
+      send_user_invitation:
+        about_body: Miru وقت، رسیدیں، ادائیگیاں، اور روزانہ کی کارروائیوں کو ایک کام
+          کی جگہ میں لاتا ہے۔
+        about_title: میرو کے بارے میں
+        eyebrow: دعوت نامہ
+        get_started_body: دعوت قبول کریں، اپنا پاس ورڈ بنائیں، اور آپ داخل ہو گئے۔
+        get_started_title: شروع کریں
+        preheader: آپ کو میرو پر ایک ٹیم میں شامل ہونے کی دعوت دی گئی ہے۔
+        subject: آپ کو میرو میں شامل ہونے کی دعوت دی گئی ہے۔
+        subtitle_html: "<strong>%{sender_name}</strong> نے آپ کو Miru پر <strong>%{company_name}</strong>
+          میں شامل ہونے کی دعوت دی۔"
+        support_html: اگر آپ کو اس دعوت کی توقع نہیں تھی، تو ہماری ٹیم سے <a href="mailto:%{support_email}">%{support_email}</a>
+          پر رابطہ کریں۔
+        title: اپنے میرو ورک اسپیس میں شامل ہوں۔
+        workspace_members:
+          one: 1 رکن
+          other: "%{count} اراکین"
   navbar:
     clients: کلائنٹس
     help: مدد

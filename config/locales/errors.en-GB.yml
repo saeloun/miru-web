@@ -1,0 +1,24 @@
+---
+en-GB:
+  errors:
+    bill_status_billed: You can't bill an entry that has already been billed
+    can't change status: can't be changed of a paid invoice
+    create_billed_entry: You can't create a billed timesheet entry
+    internal_server_error: Something went wrong
+    messages:
+      already_confirmed: was already confirmed, please try signing in
+      confirmation_period_expired: needs to be confirmed within %{period}, please
+        request a new one
+      expired: has expired, please request a new one
+      not_found: not found
+      not_locked: was not locked
+      not_saved:
+        one: '1 error prohibited this %{resource} from being saved:'
+        other: "%{count} errors prohibited this %{resource} from being saved:"
+    not_found: The resource you're looking for is not available
+    prevent_draft_to_waived: can't be changed to waived
+    unauthorized: Only owner or admin users are authorized to perform this action
+    updation_not_allowed: updation is not allowed
+    user_already_member: Email id is already in use. Please enter another email id
+    validate_billable_project: You can't create an unbilled entry for non-billable
+      projects
