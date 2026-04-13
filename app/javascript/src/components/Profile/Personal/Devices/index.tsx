@@ -6,6 +6,7 @@ import { MobileEditHeader } from "common/Mobile/MobileEditHeader";
 import { useProfileContext } from "context/Profile/ProfileContext";
 import { useUserContext } from "context/UserContext";
 import { useNavigate, useParams } from "react-router-dom";
+import { i18n } from "../../../../i18n";
 
 import { Device } from "./Device";
 import DeviceInventorySummary from "./DeviceInventorySummary";
@@ -55,13 +56,15 @@ const AllocatedDevicesDetails = () => {
               onClick={handleEdit}
               className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
             >
-              {devices.length > 0 ? "Edit Devices" : "Add Devices"}
+              {devices.length > 0
+                ? i18n.t("devices.editDevices")
+                : i18n.t("devices.addDevices")}
             </button>
           </div>
         ) : (
           <MobileEditHeader
             href="edit"
-            title="Allocated Devices"
+            title={i18n.t("navbar.allocatedDevices")}
             backHref={
               isCalledFromSettings
                 ? "/settings/"

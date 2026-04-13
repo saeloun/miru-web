@@ -1703,6 +1703,39 @@ const hi = {
     loginPrompt: "सूचना प्राथमिकताओं का प्रबंधन करने के लिए कृपया लॉग इन करें",
   },
 
+  devices: {
+    addDevices: "उपकरण जोड़ें",
+    editDevices: "उपकरण संपादित करें",
+    device: "उपकरण",
+    unknownDevice: "अज्ञात उपकरण",
+    serial: "सीरियल:",
+    deviceType: "उपकरण प्रकार",
+    selectDeviceType: "उपकरण प्रकार चुनें",
+    modelName: "मॉडल/नाम",
+    serialNumber: "सीरियल नंबर",
+    memory: "मेमोरी (RAM)",
+    processor: "प्रोसेसर",
+    graphics: "ग्राफिक्स",
+    graphicsCard: "ग्राफिक्स कार्ड",
+    storage: "स्टोरेज",
+    modelNamePlaceholder: "उदा., MacBook Pro 16-inch",
+    serialNumberPlaceholder: "उदा., C02XX1234567",
+    memoryPlaceholder: "उदा., 16GB DDR4",
+    processorPlaceholder: "उदा., Intel Core i7-10750H",
+    graphicsPlaceholder: "उदा., NVIDIA GeForce RTX 3060",
+    storagePlaceholder: "उदा., 512GB SSD",
+    addAnotherDevice: "एक और उपकरण जोड़ें",
+    addAnotherDeviceDescription:
+      "अपनी सूची में नया उपकरण जोड़ने के लिए क्लिक करें",
+    deviceSummary: "उपकरण सारांश",
+    totalDevices: "कुल उपकरण",
+    notSpecified: "निर्दिष्ट नहीं",
+    noDevicesFound: "कोई उपकरण नहीं मिला",
+    newDevice: "नया उपकरण",
+    unsavedChangesPrompt:
+      "आपके पास बिना सहेजे बदलाव हैं। क्या आप वाकई रद्द करना चाहते हैं?",
+  },
+
   // Subscriptions / Plan Details
   subscriptions: {
     currentPlan: "वर्तमान योजना",

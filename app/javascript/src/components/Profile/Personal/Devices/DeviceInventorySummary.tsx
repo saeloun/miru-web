@@ -4,6 +4,7 @@ import EmptyStates from "common/EmptyStates";
 import { Desktop, DeviceMobile, Laptop } from "phosphor-react";
 import { Card, CardContent, CardHeader, CardTitle } from "components/ui/card";
 import { Badge } from "components/ui/badge";
+import { i18n } from "../../../../i18n";
 
 const DeviceInventoryCard = ({ device, index, getDeviceIcon }) => {
   const {
@@ -26,10 +27,10 @@ const DeviceInventoryCard = ({ device, index, getDeviceIcon }) => {
             </div>
             <div>
               <div className="text-lg font-semibold">
-                {name || `Device ${index + 1}`}
+                {name || `${i18n.t("devices.device")} ${index + 1}`}
               </div>
               <div className="text-sm font-normal text-muted-foreground">
-                {device_type || "Unknown Device"}
+                {device_type || i18n.t("devices.unknownDevice")}
               </div>
             </div>
           </CardTitle>
@@ -44,32 +45,32 @@ const DeviceInventoryCard = ({ device, index, getDeviceIcon }) => {
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           <div>
             <label className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-              Serial Number
+              {i18n.t("devices.serialNumber")}
             </label>
             <p className="mt-1 text-sm font-medium text-foreground">
-              {serial_number || "Not specified"}
+              {serial_number || i18n.t("devices.notSpecified")}
             </p>
           </div>
           <div>
             <label className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-              Memory (RAM)
+              {i18n.t("devices.memory")}
             </label>
             <p className="mt-1 text-sm font-medium text-foreground">
-              {ram || "Not specified"}
+              {ram || i18n.t("devices.notSpecified")}
             </p>
           </div>
           <div>
             <label className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-              Processor
+              {i18n.t("devices.processor")}
             </label>
             <p className="mt-1 text-sm font-medium text-foreground">
-              {processor || "Not specified"}
+              {processor || i18n.t("devices.notSpecified")}
             </p>
           </div>
           {graphics && (
             <div className="md:col-span-2 lg:col-span-3">
               <label className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-                Graphics
+                {i18n.t("devices.graphics")}
               </label>
               <p className="mt-1 text-sm font-medium text-foreground">
                 {graphics}
@@ -109,7 +110,7 @@ const DeviceInventorySummary = ({ devices }) => {
         ))
       ) : (
         <EmptyStates
-          Message="No devices found"
+          Message={i18n.t("devices.noDevicesFound")}
           containerClassName="h-full"
           showNoSearchResultState={false}
         />

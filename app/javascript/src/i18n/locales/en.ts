@@ -1605,6 +1605,38 @@ const en = {
     loginPrompt: "Please log in to manage notification preferences",
   },
 
+  devices: {
+    addDevices: "Add Devices",
+    editDevices: "Edit Devices",
+    device: "Device",
+    unknownDevice: "Unknown Device",
+    serial: "Serial:",
+    deviceType: "Device Type",
+    selectDeviceType: "Select device type",
+    modelName: "Model/Name",
+    serialNumber: "Serial Number",
+    memory: "Memory (RAM)",
+    processor: "Processor",
+    graphics: "Graphics",
+    graphicsCard: "Graphics Card",
+    storage: "Storage",
+    modelNamePlaceholder: "e.g., MacBook Pro 16-inch",
+    serialNumberPlaceholder: "e.g., C02XX1234567",
+    memoryPlaceholder: "e.g., 16GB DDR4",
+    processorPlaceholder: "e.g., Intel Core i7-10750H",
+    graphicsPlaceholder: "e.g., NVIDIA GeForce RTX 3060",
+    storagePlaceholder: "e.g., 512GB SSD",
+    addAnotherDevice: "Add Another Device",
+    addAnotherDeviceDescription: "Click to add a new device to your inventory",
+    deviceSummary: "Device Summary",
+    totalDevices: "Total Devices",
+    notSpecified: "Not specified",
+    noDevicesFound: "No devices found",
+    newDevice: "New Device",
+    unsavedChangesPrompt:
+      "You have unsaved changes. Are you sure you want to cancel?",
+  },
+
   // Subscriptions / Plan Details
   subscriptions: {
     currentPlan: "Current Plan",
