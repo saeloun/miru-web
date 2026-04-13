@@ -21,12 +21,6 @@
 - `mise exec -- bundle exec rspec spec/system/time_tracking/add_entry_spec.rb -fd`
 - `mise exec -- bundle exec rspec spec/system/invoices/create_spec.rb spec/system/invoices/edit_spec.rb -fd`
 - `mise exec -- env PARALLEL_TEST_PROCESSORS=16 CONSOLE_LEVEL=error SYSTEM_SPECS_DB_PREP=0 bin/system-specs-parallel`
-- `rtk mise exec -- bundle exec rspec spec/system/time_tracking/add_entry_spec.rb -e "adds a time entry from week view with project, duration, and notes" -fd`
-- `rtk mise exec -- bundle exec rspec spec/system/time_tracking/add_entry_spec.rb -e "shows selected day total in month view and allows adding entry from the same screen" -fd`
-- `rtk mise exec -- bundle exec rspec spec/system/invoices/create_spec.rb:17 -fd`
-- `rtk mise exec -- bundle exec rspec spec/system/invoices/create_spec.rb:48 -fd`
-- Real browser verification on local `/invoices/new?clientId=1` with no console errors
-- Exact production Actions succeeded for `a5a8083ed` and `b1f6a0ec3`
 
 ## 3.0.0 - 2026-03-29
 
