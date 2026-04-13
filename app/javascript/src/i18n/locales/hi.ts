@@ -15,6 +15,7 @@ const hi = {
   confirm: "पुष्टि करें",
   close: "बंद करें",
   back: "वापस",
+  continue: "जारी रखें",
   next: "अगला",
   done: "पूर्ण",
   loading: "लोड हो रहा है...",
@@ -272,7 +273,13 @@ const hi = {
     paymentReminder: "भुगतान अनुस्मारक",
     addOrViewContacts: "संपर्क जोड़ें / देखें",
     sendPaymentReminder: "भुगतान अनुस्मारक भेजें",
+    paymentReminderSubject: "बकाया इनवॉइस के भुगतान पूरे करने के लिए अनुस्मारक",
+    paymentReminderMessage:
+      "यह निम्नलिखित इनवॉइस के भुगतान पूरे करने के लिए एक विनम्र अनुस्मारक है। संबंधित भुगतान लिंक और इनवॉइस विवरण नीचे दिए गए हैं",
+    invoiceSelected: "%{count} इनवॉइस चयनित",
     invoicesSelected: "%{count} इनवॉइस चयनित",
+    noProjectsAddedYet:
+      "इस क्लाइंट में अभी तक कोई प्रोजेक्ट नहीं जोड़ा गया है।",
   },
   contacts: {
     addContact: "संपर्क जोड़ें",

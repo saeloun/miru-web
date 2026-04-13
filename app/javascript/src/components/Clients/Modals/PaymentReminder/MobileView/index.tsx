@@ -4,6 +4,7 @@ import { clientApi } from "apis/api";
 import { XIcon } from "miruIcons";
 import Steps from "rc-steps";
 import { Button, Toastr } from "StyledComponents";
+import { i18n } from "../../../../../i18n";
 
 import MobileTable from "./MobileTable";
 
@@ -40,9 +41,8 @@ const MobilePaymentReminder = ({
     useState<number>(0);
 
   const [emailParams, setEmailParams] = useState<SendPaymentReminderEmail>({
-    subject: "Reminder to complete payments for unpaid invoices",
-    message:
-      "This is a gentle reminder to complete payments for the following invoices. You can find the respective payment links along with the invoice details given below",
+    subject: i18n.t("clients.paymentReminderSubject"),
+    message: i18n.t("clients.paymentReminderMessage"),
     recipients: client.clientMembersEmails,
   });
 
@@ -112,7 +112,7 @@ const MobilePaymentReminder = ({
     <div className="flex h-full flex-col">
       <div className="flex w-full bg-primary pl-4">
         <div className="flex h-12 w-full items-center justify-center bg-primary px-3 text-white">
-          Send Payment Reminder
+          {i18n.t("clients.sendPaymentReminder")}
         </div>
         <Button
           className="pr-4"
@@ -145,8 +145,12 @@ const MobilePaymentReminder = ({
         <div className="flex w-full items-center justify-between bg-muted p-3">
           <small>
             {selectedInvoices.length > 1
-              ? `${selectedInvoices.length} invoices selected`
-              : `${selectedInvoices.length} invoice selected`}
+              ? i18n.t("clients.invoicesSelected", {
+                  count: selectedInvoices.length,
+                })
+              : i18n.t("clients.invoiceSelected", {
+                  count: selectedInvoices.length,
+                })}
           </small>
           <Button
             className="py-2 px-10 text-base"
@@ -157,7 +161,7 @@ const MobilePaymentReminder = ({
               setCurrentStep(2);
             }}
           >
-            Continue
+            {i18n.t("continue")}
           </Button>
         </div>
       ) : (
@@ -170,7 +174,7 @@ const MobilePaymentReminder = ({
               setCurrentStep(1);
             }}
           >
-            Back
+            {i18n.t("back")}
           </Button>
           <Button
             className="w-2/5 py-2 px-2/100 text-base"
@@ -180,7 +184,7 @@ const MobilePaymentReminder = ({
               handleSendReminder();
             }}
           >
-            Send Reminder
+            {i18n.t("clients.sendReminder")}
           </Button>
         </div>
       )}

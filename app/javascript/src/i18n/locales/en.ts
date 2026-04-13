@@ -18,6 +18,7 @@ const en = {
   confirm: "Confirm",
   close: "Close",
   back: "Back",
+  continue: "Continue",
   next: "Next",
   done: "Done",
   loading: "Loading...",
@@ -296,7 +297,12 @@ const en = {
     paymentReminder: "Payment Reminder",
     addOrViewContacts: "Add / View Contacts",
     sendPaymentReminder: "Send Payment Reminder",
+    paymentReminderSubject: "Reminder to complete payments for unpaid invoices",
+    paymentReminderMessage:
+      "This is a gentle reminder to complete payments for the following invoices. You can find the respective payment links along with the invoice details given below",
+    invoiceSelected: "%{count} invoice selected",
     invoicesSelected: "%{count} invoices selected",
+    noProjectsAddedYet: "No project has been added to this client yet.",
   },
 
   // Contacts
