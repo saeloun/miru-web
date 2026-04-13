@@ -46,6 +46,13 @@ RSpec.describe "Profile Settings", type: :system, js: true do
       expect(page).to have_css("#react-root", wait: 10)
       expect(page).to have_content("हिन्दी", wait: 10)
       expect(page).to have_content("व्यक्तिगत जानकारी", wait: 10)
+      expect(page).to have_button("संपादित करें", wait: 10)
+
+      click_button "संपादित करें"
+
+      expect(page).to have_current_path("/settings/profile/edit", wait: 10)
+      expect(page).to have_button("रद्द करें", wait: 10)
+      expect(page).to have_button("अपडेट करें", wait: 10)
 
       visit "/settings/preferences"
 

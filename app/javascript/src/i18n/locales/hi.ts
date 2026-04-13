@@ -1680,6 +1680,10 @@ const hi = {
     leave: "अवकाश",
     nationalHoliday: "राष्ट्रीय छुट्टी",
     optionalHoliday: "वैकल्पिक छुट्टी",
+    summaryLabel: "अवकाश सारांश",
+    summaryDescription:
+      "चयनित वर्ष के लिए उपलब्ध अवकाश, पहले से लिया गया समय और छुट्टी उपयोग एक ही जगह देखें।",
+    balanceUntil: "%{date} तक शेष",
   },
 
   // Subscriptions / Plan Details

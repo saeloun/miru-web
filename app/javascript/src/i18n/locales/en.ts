@@ -1582,6 +1582,10 @@ const en = {
     leave: "leave",
     nationalHoliday: "National Holiday",
     optionalHoliday: "Optional Holiday",
+    summaryLabel: "Leave summary",
+    summaryDescription:
+      "See available leave, time already taken, and holiday usage for the selected year in one place.",
+    balanceUntil: "Balance Until %{date}",
   },
 
   // Subscriptions / Plan Details

@@ -5,6 +5,7 @@ import Loader from "common/Loader/index";
 import withLayout from "common/Mobile/HOC/withLayout";
 import { useUserContext } from "context/UserContext";
 import { getYear, format } from "date-fns";
+import { i18n } from "../../i18n";
 
 import Header from "./Header";
 import LeaveManagementContent from "./LeaveManagementContent";
@@ -136,7 +137,9 @@ const LeaveManagement = () => {
         date = new Date();
       }
 
-      return `Balance Until ${format(date, "do MMM yyyy")}`;
+      return i18n.t("leaveManagement.balanceUntil", {
+        date: format(date, "do MMM yyyy"),
+      });
     };
 
     return (
