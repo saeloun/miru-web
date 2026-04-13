@@ -135,8 +135,9 @@ RSpec.describe "Time Tracking - Add Entry", type: :system, js: true do
       expect(page).to have_content("03:30")
     end
     find("[data-testid='time-review-week']", wait: 10).click
-    expect(page).to have_content("Implement timer + clean weekly UX", wait: 10)
+    expect(page).to have_text("Implement timer + clean weekly UX", count: 1, wait: 10)
     expect(page).to have_content("03:30", wait: 10)
+    expect(page).not_to have_content("07:00")
 
     visit "/time-tracking"
     expect(page).to have_css("#react-root", wait: 10)

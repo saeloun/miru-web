@@ -226,7 +226,10 @@ const AddEntry: React.FC<Iprops> = ({
       setToLocalStorage("duration", "");
 
       const fetchEntriesRes = await refreshVisibleEntries();
-      await handleRelocateEntry(selectedFullDate, res.data.entry);
+
+      if (!fetchEntriesRes) {
+        await handleRelocateEntry(selectedFullDate, res.data.entry);
+      }
 
       if (fetchEntriesRes) {
         setNewEntryView(false);
@@ -482,7 +485,9 @@ const AddEntry: React.FC<Iprops> = ({
 
                     setClient(value);
                     setProject(defaultProject?.name || "");
-                    setProjectId(defaultProject ? Number(defaultProject.id) : 0);
+                    setProjectId(
+                      defaultProject ? Number(defaultProject.id) : 0
+                    );
                     setProjectBillable(Boolean(defaultProject?.billable));
                   }}
                 >
@@ -491,7 +496,9 @@ const AddEntry: React.FC<Iprops> = ({
                     aria-label={i18n.t("client")}
                     className="h-12 client-select"
                   >
-                    <SelectValue placeholder={i18n.t("timeTracking.selectClient")} />
+                    <SelectValue
+                      placeholder={i18n.t("timeTracking.selectClient")}
+                    />
                   </SelectTrigger>
                   <SelectContent>
                     {Array.isArray(clients) &&
@@ -517,10 +524,14 @@ const AddEntry: React.FC<Iprops> = ({
                     const selectedProject =
                       client &&
                       projects[client] &&
-                      projects[client].find(currentProject => currentProject.name === value);
+                      projects[client].find(
+                        currentProject => currentProject.name === value
+                      );
 
                     setProject(value);
-                    setProjectId(selectedProject ? Number(selectedProject.id) : 0);
+                    setProjectId(
+                      selectedProject ? Number(selectedProject.id) : 0
+                    );
                     setProjectBillable(Boolean(selectedProject?.billable));
                   }}
                   disabled={!client}
@@ -533,7 +544,9 @@ const AddEntry: React.FC<Iprops> = ({
                       !client && "opacity-50 cursor-not-allowed"
                     )}
                   >
-                    <SelectValue placeholder={i18n.t("timeTracking.selectProject")} />
+                    <SelectValue
+                      placeholder={i18n.t("timeTracking.selectProject")}
+                    />
                   </SelectTrigger>
                   <SelectContent>
                     {client &&
@@ -595,21 +608,47 @@ const AddEntry: React.FC<Iprops> = ({
                 </Label>
                 <Select value={taskType} onValueChange={setTaskType}>
                   <SelectTrigger className="h-12">
-                    <SelectValue placeholder={i18n.t("timeTracking.selectTaskType")} />
+                    <SelectValue
+                      placeholder={i18n.t("timeTracking.selectTaskType")}
+                    />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="development">{i18n.t("taskTypes.development")}</SelectItem>
-                    <SelectItem value="meeting">{i18n.t("taskTypes.meeting")}</SelectItem>
-                    <SelectItem value="research">{i18n.t("taskTypes.research")}</SelectItem>
-                    <SelectItem value="planning">{i18n.t("taskTypes.planning")}</SelectItem>
-                    <SelectItem value="testing">{i18n.t("taskTypes.testing")}</SelectItem>
-                    <SelectItem value="documentation">{i18n.t("taskTypes.documentation")}</SelectItem>
-                    <SelectItem value="review">{i18n.t("taskTypes.codeReview")}</SelectItem>
-                    <SelectItem value="debugging">{i18n.t("taskTypes.debugging")}</SelectItem>
-                    <SelectItem value="deployment">{i18n.t("taskTypes.deployment")}</SelectItem>
-                    <SelectItem value="support">{i18n.t("taskTypes.support")}</SelectItem>
-                    <SelectItem value="training">{i18n.t("taskTypes.training")}</SelectItem>
-                    <SelectItem value="other">{i18n.t("taskTypes.other")}</SelectItem>
+                    <SelectItem value="development">
+                      {i18n.t("taskTypes.development")}
+                    </SelectItem>
+                    <SelectItem value="meeting">
+                      {i18n.t("taskTypes.meeting")}
+                    </SelectItem>
+                    <SelectItem value="research">
+                      {i18n.t("taskTypes.research")}
+                    </SelectItem>
+                    <SelectItem value="planning">
+                      {i18n.t("taskTypes.planning")}
+                    </SelectItem>
+                    <SelectItem value="testing">
+                      {i18n.t("taskTypes.testing")}
+                    </SelectItem>
+                    <SelectItem value="documentation">
+                      {i18n.t("taskTypes.documentation")}
+                    </SelectItem>
+                    <SelectItem value="review">
+                      {i18n.t("taskTypes.codeReview")}
+                    </SelectItem>
+                    <SelectItem value="debugging">
+                      {i18n.t("taskTypes.debugging")}
+                    </SelectItem>
+                    <SelectItem value="deployment">
+                      {i18n.t("taskTypes.deployment")}
+                    </SelectItem>
+                    <SelectItem value="support">
+                      {i18n.t("taskTypes.support")}
+                    </SelectItem>
+                    <SelectItem value="training">
+                      {i18n.t("taskTypes.training")}
+                    </SelectItem>
+                    <SelectItem value="other">
+                      {i18n.t("taskTypes.other")}
+                    </SelectItem>
                   </SelectContent>
                 </Select>
               </div>
