@@ -9,6 +9,7 @@ import { useUserContext } from "context/UserContext";
 import { employmentMapper } from "mapper/teams.mapper";
 import { useNavigate, useParams } from "react-router-dom";
 import { useCurrentUser } from "~/hooks/useCurrentUser";
+import { i18n } from "../../../../i18n";
 
 import EmploymentSummary from "./EmploymentSummary";
 
@@ -72,13 +73,13 @@ const EmploymentDetails = () => {
           editAction={handleEditClick}
           isDisableUpdateBtn={false}
           subTitle=""
-          title="Employment Details"
+          title={i18n.t("profile.employmentDetails")}
         />
       )}
       {!isDesktop && (
         <MobileEditHeader
           href="edit"
-          title="Employment Details"
+          title={i18n.t("profile.employmentDetails")}
           backHref={
             isCalledFromSettings ? "/settings/" : `/team/${currentUserId}`
           }

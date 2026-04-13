@@ -1286,9 +1286,13 @@ const hi = {
     editProfile: "प्रोफ़ाइल संपादित करें",
     currentEmployment: "वर्तमान रोजगार",
     previousEmployment: "पिछला रोजगार",
+    employeeId: "कर्मचारी आईडी",
     designation: "पदनाम",
+    officialEmail: "ईमेल आईडी (आधिकारिक)",
+    employmentType: "रोजगार प्रकार",
     department: "विभाग",
     dateOfJoining: "शामिल होने की तिथि",
+    dateOfResignation: "त्यागपत्र की तिथि",
     dateOfBirth: "जन्म तिथि",
     birthDatePlaceholder: "अपनी जन्म तिथि चुनें",
     socialProfiles: "सामाजिक प्रोफ़ाइल",
@@ -1338,6 +1342,9 @@ const hi = {
     noImageSelected: "कोई छवि चयनित नहीं है",
     savePhoto: "फोटो सहेजें",
     zoom: "ज़ूम",
+    company: "कंपनी",
+    noPreviousEmployments: "कोई पिछला रोजगार नहीं मिला",
+    addPastEmployment: "+ पिछला रोजगार जोड़ें",
   },
 
   preferencesSettings: {

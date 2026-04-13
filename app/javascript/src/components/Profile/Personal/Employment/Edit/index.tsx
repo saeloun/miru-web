@@ -14,6 +14,7 @@ import { employmentMapper } from "mapper/teams.mapper";
 import { useNavigate, useParams } from "react-router-dom";
 import * as Yup from "yup";
 import { useCurrentUser } from "~/hooks/useCurrentUser";
+import { i18n } from "../../../../../i18n";
 
 import MobileEmploymentEditor from "./MobileEmploymentEditor";
 import EmploymentEditor from "./EmploymentEditor";
@@ -310,7 +311,7 @@ const EmploymentDetailsEdit = () => {
             isDisableUpdateBtn={false}
             saveAction={handleUpdateDetails}
             subTitle=""
-            title="Employment Details"
+            title={i18n.t("profile.employmentDetails")}
           />
           {isLoading ? (
             <Loader className="min-h-70v" />
@@ -345,7 +346,7 @@ const EmploymentDetailsEdit = () => {
         <Fragment>
           <MobileDetailsHeader
             href={`${navigateToPath}/employment`}
-            title="Employment Details"
+            title={i18n.t("profile.employmentDetails")}
           />
           {isLoading ? (
             <Loader className="min-h-70v" />

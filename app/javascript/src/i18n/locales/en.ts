@@ -1158,9 +1158,13 @@ const en = {
     editProfile: "Edit Profile",
     currentEmployment: "Current Employment",
     previousEmployment: "Previous Employment",
+    employeeId: "Employee ID",
     designation: "Designation",
+    officialEmail: "Email ID (Official)",
+    employmentType: "Employment Type",
     department: "Department",
     dateOfJoining: "Date of Joining",
+    dateOfResignation: "Date of Resignation",
     dateOfBirth: "Date of Birth",
     birthDatePlaceholder: "Select your birth date",
     socialProfiles: "Social Profiles",
@@ -1210,6 +1214,9 @@ const en = {
     noImageSelected: "No image selected",
     savePhoto: "Save photo",
     zoom: "Zoom",
+    company: "Company",
+    noPreviousEmployments: "No previous employments found",
+    addPastEmployment: "+ Add Past Employment",
   },
 
   preferencesSettings: {

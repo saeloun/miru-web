@@ -66,6 +66,21 @@ RSpec.describe "Profile Settings", type: :system, js: true do
       expect(page).to have_content("सूचना सेटिंग्स", wait: 10)
       expect(page).to have_content("ईमेल सूचनाएं", wait: 10)
       expect(page).to have_content("साप्ताहिक ईमेल रिमाइंडर", wait: 10)
+
+      visit "/settings/employment"
+
+      expect(page).to have_css("#react-root", wait: 10)
+      expect(page).to have_content("रोजगार विवरण", wait: 10)
+      expect(page).to have_content("वर्तमान रोजगार", wait: 10)
+      expect(page).to have_content("कर्मचारी आईडी", wait: 10)
+
+      click_button "संपादित करें"
+
+      expect(page).to have_current_path("/settings/employment/edit", wait: 10)
+      expect(page).to have_content("रोजगार विवरण", wait: 10)
+      expect(page).to have_field("employee_id", wait: 10)
+      expect(page).to have_content("कर्मचारी आईडी", wait: 10)
+      expect(page).to have_content("रोजगार प्रकार", wait: 10)
     end
   end
 
