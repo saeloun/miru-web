@@ -533,4 +533,37 @@ RSpec.describe "Time Tracking - Add Entry", type: :system, js: true do
       expect(page).to have_content(/Week Total/i, wait: 10)
     end
   end
+
+  it "keeps long notes wrapped inside the review panel" do
+    long_note = <<~TEXT.squish
+      Today’s tasks (1 April):
+      1. Attend issues - https://docs.google.com/spreadsheets/d/jsdnvbsdnlsdnljndscvjbhsadccsdnv-dfjbadshfgsdkjfnkjhf/edit?gid=0#gid=0
+      2. Simulate script should accept variable which can set Distribution through variable (Sea food 25%, Vegetarion 30%, etc)
+      3. Product view ingredients not showing on UI verify on below rows: https://mydummyapp-staging.herokuapp.com/admin/ops/cook_book/component_versions/342578 https://mydummyapp-staging.herokuapp.com/admin/ops/menus/products/310274 https://mydummyapp-staging.herokuapp.com/admin/ops/menus/menus/20215
+      4. Validate all Meals -> Products has primary protein set
+    TEXT
+
+    create(
+      :timesheet_entry,
+      user:,
+      project:,
+      work_date: Date.current.beginning_of_week(:monday),
+      duration: 90,
+      note: long_note
+    )
+
+    visit "/time-tracking"
+    expect(page).to have_css("#react-root", wait: 10)
+    switch_to("Week")
+
+    expect(page).to have_content("Today’s tasks", wait: 10)
+    expect(page).to have_css("[data-testid='time-entry-note']", wait: 10)
+
+    note_overflows = page.evaluate_script(<<~JS)
+      Array.from(document.querySelectorAll('[data-testid="time-entry-note"]'))
+        .some((element) => element.scrollWidth > element.clientWidth + 1)
+    JS
+
+    expect(note_overflows).to be(false)
+  end
 end

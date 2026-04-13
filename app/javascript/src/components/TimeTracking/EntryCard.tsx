@@ -125,7 +125,10 @@ const EntryCard: React.FC<props> = ({
               <div className="relative">
                 <div className="absolute bottom-0 left-0 top-0 w-1 rounded-full bg-gradient-to-b from-primary/40 to-transparent"></div>
                 <div className="pl-6">
-                  <p className="max-w-4xl whitespace-pre-wrap break-words text-base leading-relaxed text-muted-foreground">
+                  <p
+                    data-testid="time-entry-note"
+                    className="max-w-4xl overflow-hidden whitespace-pre-wrap break-words [overflow-wrap:anywhere] text-base leading-relaxed text-muted-foreground"
+                  >
                     {note.split("\n").map((line, index) => {
                       if (line.trim().startsWith("•")) {
                         return (
@@ -142,7 +145,7 @@ const EntryCard: React.FC<props> = ({
                         return (
                           <span
                             key={index}
-                            className="mb-3 block break-words text-lg font-bold text-foreground"
+                            className="mb-3 block break-words [overflow-wrap:anywhere] text-lg font-bold text-foreground"
                           >
                             {line}
                           </span>
@@ -152,7 +155,7 @@ const EntryCard: React.FC<props> = ({
                       return (
                         <span
                           key={index}
-                          className="mb-1.5 block break-words leading-relaxed text-muted-foreground"
+                          className="mb-1.5 block break-words [overflow-wrap:anywhere] leading-relaxed text-muted-foreground"
                         >
                           {line}
                         </span>
