@@ -89,6 +89,11 @@ RSpec.describe "Settings", type: :system, js: true do
         expect(page).to have_content("मेरे अवकाश", wait: 10)
         expect(page).to have_content("अवकाश सारांश", wait: 10)
         expect(page).to have_content("अवकाश कैलेंडर", wait: 10)
+        expect(page).to have_content("सार्वजनिक छुट्टियाँ", wait: 10)
+        expect(page).to have_content("वैकल्पिक छुट्टियाँ", wait: 10)
+        expect(page).to have_text(/\d+\sमें से\s\d+\s\((इस तिमाही|प्रति तिमाही)\)/, wait: 10)
+        expect(page).not_to have_content("Optional Holidays")
+        expect(page).not_to have_content("National Holidays")
 
         visit "/settings/holidays"
         expect(page).to have_css("#react-root", wait: 10)

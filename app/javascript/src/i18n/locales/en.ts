@@ -1649,6 +1649,13 @@ const en = {
     leave: "leave",
     nationalHoliday: "National Holiday",
     optionalHoliday: "Optional Holiday",
+    leaveTypeUtilized: "%{name} Utilized",
+    leaveTypeAvailable: "%{name} Available",
+    outOf: "out of",
+    thisQuarter: "this quarter",
+    thisYear: "this year",
+    thisMonth: "this month",
+    thisWeek: "this week",
     summaryLabel: "Leave summary",
     summaryDescription:
       "See available leave, time already taken, and holiday usage for the selected year in one place.",

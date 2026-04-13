@@ -1823,6 +1823,13 @@ const hi = {
     leave: "अवकाश",
     nationalHoliday: "राष्ट्रीय छुट्टी",
     optionalHoliday: "वैकल्पिक छुट्टी",
+    leaveTypeUtilized: "%{name} उपयोग किया गया",
+    leaveTypeAvailable: "%{name} उपलब्ध",
+    outOf: "में से",
+    thisQuarter: "इस तिमाही",
+    thisYear: "इस वर्ष",
+    thisMonth: "इस महीने",
+    thisWeek: "इस सप्ताह",
     summaryLabel: "अवकाश सारांश",
     summaryDescription:
       "चयनित वर्ष के लिए उपलब्ध अवकाश, पहले से लिया गया समय और छुट्टी उपयोग एक ही जगह देखें।",

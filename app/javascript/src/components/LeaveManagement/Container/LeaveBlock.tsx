@@ -9,6 +9,7 @@ import {
   generateHolidayColor,
 } from "components/Profile/Organization/Leaves/utils";
 import { minToHHMM } from "helpers";
+import { i18n } from "../../../i18n";
 
 // Default color for custom leaves
 const CUSTOM_LEAVE_COLOR = { value: "#9B59B6", label: "custom" };
@@ -16,6 +17,23 @@ const CUSTOM_LEAVE_ICON = { icon: null, value: "custom" };
 
 const LeaveBlock = ({ leaveType, selectedLeaveType, setSelectedLeaveType }) => {
   const { icon, color, name, netDuration, type, category, label } = leaveType;
+
+  const translatedName =
+    category === "national"
+      ? i18n.t("leaveManagement.publicHolidays")
+      : category === "optional"
+      ? i18n.t("leaveManagement.optionalHolidays")
+      : name;
+
+  const translatedLabel =
+    typeof label === "string"
+      ? label
+          .replace(/\bout of\b/gi, i18n.t("leaveManagement.outOf"))
+          .replace(/\bthis quarter\b/gi, i18n.t("leaveManagement.thisQuarter"))
+          .replace(/\bthis year\b/gi, i18n.t("leaveManagement.thisYear"))
+          .replace(/\bthis month\b/gi, i18n.t("leaveManagement.thisMonth"))
+          .replace(/\bthis week\b/gi, i18n.t("leaveManagement.thisWeek"))
+      : label;
 
   const getLeaveIcon = () => {
     if (type === "custom_leave") {
@@ -40,21 +58,25 @@ const LeaveBlock = ({ leaveType, selectedLeaveType, setSelectedLeaveType }) => {
 
   const formattedDuration =
     category == "national" || category == "optional"
-      ? label
+      ? translatedLabel
       : netDuration < 0
-      ? `-${minToHHMM(-netDuration)} h (-${label})`
-      : `${minToHHMM(netDuration)} h (${label})`;
+      ? `-${minToHHMM(-netDuration)} h (-${translatedLabel})`
+      : `${minToHHMM(netDuration)} h (${translatedLabel})`;
 
   const isSelected = selectedLeaveType?.name === name;
 
   const getSelectedText = () => {
-    if (!isSelected) return name;
+    if (!isSelected) return translatedName;
 
     if (category === "national" || category === "optional") {
-      return `${name} Utilized`;
+      return i18n.t("leaveManagement.leaveTypeUtilized", {
+        name: translatedName,
+      });
     }
 
-    return `${name} Available`;
+    return i18n.t("leaveManagement.leaveTypeAvailable", {
+      name: translatedName,
+    });
   };
 
   const displayName = getSelectedText();
