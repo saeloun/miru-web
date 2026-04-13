@@ -96,7 +96,7 @@ interface AccountsAgingData {
 
 const accountsAgingChartConfig = {
   total: {
-    label: "Amount due",
+    label: i18n.t("reports.totalDue"),
     color: "hsl(var(--primary))",
   },
 };
@@ -422,7 +422,7 @@ const AccountsAgingReport: React.FC = () => {
             <DropdownMenuTrigger asChild>
               <Button variant="outline" className="bg-white">
                 {getMultiFilterLabel(
-                  "Clients",
+                  i18n.t("reports.clients"),
                   selectedClients.length,
                   data?.report?.filter_options?.clients?.find(client =>
                     selectedClients.includes(client.id)
@@ -573,7 +573,7 @@ const AccountsAgingReport: React.FC = () => {
 
       <Card className="border-gray-200">
         <CardHeader>
-          <CardTitle>Aging Distribution</CardTitle>
+          <CardTitle>{i18n.t("reports.agingDistribution")}</CardTitle>
         </CardHeader>
         <CardContent>
           <ChartContainer

@@ -774,6 +774,7 @@ const hi = {
     pdf: "पीडीएफ",
     excel: "एक्सेल",
     statusOverview: "स्थिति अवलोकन",
+    agingDistribution: "एजिंग वितरण",
     currencyDistribution: "मुद्रा वितरण",
     topClients: "शीर्ष क्लाइंट",
     clientAnalysis: "क्लाइंट विश्लेषण",

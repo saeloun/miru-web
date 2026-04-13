@@ -390,6 +390,39 @@ RSpec.describe "Reports", type: :system, js: true do
       end
     end
 
+    it "shows localized accounts aging labels in Hindi" do
+      admin.update!(locale: "hi")
+      client = create(:client, company:, name: "Hindi Aging Client")
+      create(:project, client:, billable: true, name: "Hindi Aging Project")
+      create(
+        :invoice,
+        company:,
+        client:,
+        status: :sent,
+        amount: 5000,
+        amount_due: 5000,
+        issue_date: 90.days.ago,
+        due_date: 60.days.ago
+      )
+
+      with_forgery_protection do
+        visit "/reports/accounts-aging"
+
+        expect_reports_shell("अकाउंट्स एजिंग रिपोर्ट")
+        expect(page).to have_content("कुल देय", wait: 10)
+        expect(page).to have_content("एजिंग वितरण", wait: 10)
+        expect(page).to have_content("इनवॉइस एजिंग विवरण", wait: 10)
+        expect(page).to have_button("निर्यात", wait: 10)
+        expect(page).to have_button("रिपोर्ट साझा करें", wait: 10)
+        expect(page).to have_button("क्लाइंट", wait: 10)
+        expect(page).to have_content("0-30 दिन", wait: 10)
+        expect(page).to have_content("31-60 दिन", wait: 10)
+        expect(page).to have_content("61-90 दिन", wait: 10)
+        expect(page).to have_content("90+ दिन", wait: 10)
+        expect(page).to have_content("Hindi Aging Client", wait: 10)
+      end
+    end
+
     it "restores accounts aging filters from the permalink" do
       included_client = create(:client, company:, name: "Aging Filter Alpha")
       excluded_client = create(:client, company:, name: "Aging Filter Beta")

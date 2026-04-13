@@ -830,6 +830,7 @@ const en = {
     pdf: "PDF",
     excel: "Excel",
     statusOverview: "Status Overview",
+    agingDistribution: "Aging Distribution",
     currencyDistribution: "Currency Distribution",
     topClients: "Top Clients",
     clientAnalysis: "Client Analysis",
