@@ -3,6 +3,7 @@ import React from "react";
 import cn from "classnames";
 import { CustomAdvanceInput } from "common/CustomAdvanceInput";
 import { CustomTextareaAutosize } from "common/CustomTextareaAutosize";
+import { i18n } from "../../../../../i18n";
 
 import InvoiceRow from "./InvoiceRow";
 
@@ -24,7 +25,7 @@ const EmailPreview = ({
       <div className="xsm:px-2 my-6 w-full lg:px-0">
         <CustomAdvanceInput
           id="Email ID"
-          label="Recipient Email ID"
+          label={i18n.t("invoices.recipientEmailId")}
           wrapperClassName="h-full"
           value={
             <div
@@ -47,7 +48,7 @@ const EmailPreview = ({
       <div className="xsm:px-2 mb-6 w-full lg:px-0">
         <CustomTextareaAutosize
           id="subject"
-          label="Subject"
+          label={i18n.t("invoices.subject")}
           maxLength={30}
           maxRows={12}
           name="subject"
@@ -64,7 +65,7 @@ const EmailPreview = ({
       <div className="xsm:overflow-visible xsm:px-2.5 mb-6 w-full overflow-auto lg:px-0">
         <CustomAdvanceInput
           id="message"
-          label="Message"
+          label={i18n.t("invoices.message")}
           value={
             <div className="mt-3">
               <p className="mb-10">{emailParams.message}</p>

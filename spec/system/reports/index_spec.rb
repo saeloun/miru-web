@@ -70,6 +70,9 @@ RSpec.describe "Reports", type: :system, js: true do
         expect(page).to have_button("निर्यात", wait: 10)
         expect(page).to have_button("रिपोर्ट साझा करें", wait: 10)
         expect(page).to have_button("सभी समय", wait: 10)
+        expect(page).to have_content("भुगतान राशि", wait: 10)
+        expect(page).to have_content("सफलतापूर्वक एकत्रित", wait: 10)
+        expect(page).to have_content("ध्यान आवश्यक", wait: 10)
         expect(page).to have_content("क्लाइंट", wait: 10)
         expect(page).to have_content("कोई परिणाम नहीं।", wait: 10)
         expect(page).to have_content(
@@ -77,6 +80,104 @@ RSpec.describe "Reports", type: :system, js: true do
           wait: 10
         )
         expect(page).to have_content("0 में से 0 क्लाइंट दिखा रहा है", wait: 10)
+      end
+    end
+
+    it "shows localized payment report labels in Hindi" do
+      admin.update!(locale: "hi")
+      client = create(:client, company:, name: "Hindi Payment Client")
+      invoice = create(:invoice, company:, client:, status: :paid, amount: 2000, amount_paid: 2000, amount_due: 0)
+      create(:payment, invoice:, amount: 2000, status: :paid, transaction_date: Date.current)
+
+      with_forgery_protection do
+        visit "/reports/payments"
+
+        expect_reports_shell("भुगतान रिपोर्ट")
+        expect(page).to have_content("भुगतान विवरण", wait: 10)
+        expect(page).to have_content("कुल भुगतान", wait: 10)
+        expect(page).to have_content("भुगतान संख्या", wait: 10)
+        expect(page).to have_button("निर्यात", wait: 10)
+        expect(page).to have_content("सभी विधियाँ", wait: 10)
+        expect(page).to have_content("भुगतान विधि", wait: 10)
+        expect(page).to have_content("शीर्ष विधि", wait: 10)
+        expect(page).to have_content("भुगतान विधियों का विवरण", wait: 10)
+        expect(page).to have_content("तारीख", wait: 10)
+        expect(page).to have_content("क्लाइंट", wait: 10)
+        expect(page).to have_content("इनवॉइस", wait: 10)
+        expect(page).to have_content("राशि", wait: 10)
+        expect(page).to have_content("नोट्स", wait: 10)
+        expect(page).to have_content("स्थिति", wait: 10)
+        expect(page).to have_content("1 में से 1 भुगतान दिखाए जा रहे हैं", wait: 10)
+        expect(page).to have_content("सभी भुगतान लोड हो गए", wait: 10)
+      end
+    end
+
+    it "shows localized payment report empty-state and multi-client filters in Hindi" do
+      admin.update!(locale: "hi")
+      first_client = create(:client, company:, name: "Hindi Filter Alpha")
+      second_client = create(:client, company:, name: "Hindi Filter Beta")
+      create(:invoice, company:, client: first_client, status: :sent)
+      create(:invoice, company:, client: second_client, status: :sent)
+
+      with_forgery_protection do
+        visit "/reports/payments"
+
+        expect_reports_shell("भुगतान रिपोर्ट")
+        click_button("सभी क्लाइंट")
+        click_button("Hindi Filter Alpha")
+        click_button("Hindi Filter Alpha")
+        click_button("Hindi Filter Beta")
+        expect(page).to have_content("2 क्लाइंट", wait: 10)
+        expect(page).to have_content("चयनित अवधि के लिए कोई भुगतान नहीं मिला।", wait: 10)
+        expect(page).to have_content("0 में से 0 भुगतान दिखाए जा रहे हैं", wait: 10)
+      end
+    end
+
+    it "shows localized payment report pagination prompt in Hindi" do
+      admin.update!(locale: "hi")
+      client = create(:client, company:, name: "Hindi Payment Scroll Client")
+
+      26.times do |index|
+        invoice = create(
+          :invoice,
+          company:,
+          client:,
+          status: :paid,
+          amount: 100 + index,
+          amount_paid: 100 + index,
+          amount_due: 0
+        )
+        create(
+          :payment,
+          invoice:,
+          amount: 100 + index,
+          status: :paid,
+          transaction_date: Date.current - index.days
+        )
+      end
+
+      with_forgery_protection do
+        visit "/reports/payments"
+
+        expect_reports_shell("भुगतान रिपोर्ट")
+        expect(page).to have_content("26 में से 25 भुगतान दिखाए जा रहे हैं", wait: 10)
+        expect(page).to have_content("और भुगतान लोड करने के लिए स्क्रॉल करें", wait: 10)
+      end
+    end
+
+    it "shows localized payment report error-state in Hindi" do
+      admin.update!(locale: "hi")
+
+      allow_any_instance_of(Api::V1::Reports::PaymentsController).to receive(:index) do |controller|
+        controller.send(:authorize, :report, :index?)
+        controller.render json: { error: "boom" }, status: :internal_server_error
+      end
+
+      with_forgery_protection do
+        visit "/reports/payments"
+
+        expect(page).to have_css("#react-root", wait: 10)
+        expect(page).to have_content("भुगतान रिपोर्ट लोड करने में असमर्थ", wait: 10)
       end
     end
 

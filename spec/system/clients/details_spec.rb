@@ -59,6 +59,11 @@ RSpec.describe "Client details", type: :system, js: true do
       expect(page).to have_content("भुगतान अनुस्मारक भेजें", wait: 10)
       expect(page).to have_content("1 इनवॉइस चयनित", wait: 10)
       expect(page).to have_button("जारी रखें", wait: 10)
+      click_button("जारी रखें")
+      expect(page).to have_content("ईमेल पूर्वावलोकन", wait: 10)
+      expect(page).to have_content("प्राप्तकर्ता ईमेल आईडी", wait: 10)
+      expect(page).to have_content("विषय", wait: 10)
+      expect(page).to have_content("संदेश", wait: 10)
     end
   end
 
@@ -77,6 +82,25 @@ RSpec.describe "Client details", type: :system, js: true do
       expect(page).to have_content("भुगतान अनुस्मारक भेजें", wait: 10)
       expect(page).to have_content("1 इनवॉइस चयनित", wait: 10)
       expect(page).to have_button("जारी रखें", wait: 10)
+      click_button("जारी रखें")
+      expect(page).to have_content("ईमेल पूर्वावलोकन", wait: 10)
+      expect(page).to have_content("प्राप्तकर्ता ईमेल आईडी", wait: 10)
+      expect(page).to have_content("विषय", wait: 10)
+      expect(page).to have_content("संदेश", wait: 10)
+    end
+  end
+
+  it "shows localized project table headers in Hindi" do
+    create(:project, client:, name: "Hindi Project")
+
+    with_forgery_protection do
+      visit "/clients/#{client.id}"
+
+      expect(page).to have_current_path("/clients/#{client.id}", wait: 10)
+      expect(page).to have_content("Hindi Project", wait: 10)
+      expect(page).to have_content("प्रोजेक्ट", wait: 10)
+      expect(page).to have_content("टीम", wait: 10)
+      expect(page).to have_content("लॉग किए गए घंटे", wait: 10)
     end
   end
 end
