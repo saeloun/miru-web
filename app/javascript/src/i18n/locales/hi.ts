@@ -1494,6 +1494,45 @@ const hi = {
     },
   },
 
+  organizationSettingsPage: {
+    actions: {
+      editSettings: "सेटिंग्स संपादित करें",
+    },
+    sections: {
+      companyProfile: "कंपनी प्रोफ़ाइल",
+      financial: "वित्तीय",
+      scheduleAndTime: "समय और कार्य अनुसूची",
+      workingHours: "कार्य समय",
+    },
+    fields: {
+      businessPhone: "व्यावसायिक फ़ोन",
+      currency: "मुद्रा",
+      businessAddress: "व्यावसायिक पता",
+      standardRate: "मानक दर",
+      fiscalYearEnd: "वित्तीय वर्ष समाप्ति",
+      timezone: "समय क्षेत्र",
+      dateFormat: "दिनांक प्रारूप",
+      workingDays: "कार्य दिवस",
+    },
+    status: {
+      active: "सक्रिय",
+    },
+    defaults: {
+      companyName: "कंपनी का नाम",
+      locationNotSet: "स्थान सेट नहीं है",
+      notConfigured: "कॉन्फ़िगर नहीं किया गया",
+      noAddress: "कोई पता कॉन्फ़िगर नहीं किया गया",
+      workingHours: "9:00 AM - 5:00 PM",
+      workingDays: "सोमवार - शुक्रवार",
+      timezone: "UTC",
+      dateFormat: "MM/DD/YYYY",
+    },
+    errors: {
+      loadFailed: "कंपनी विवरण लोड नहीं हो सके। कृपया फिर से प्रयास करें।",
+    },
+    ratePerHour: "/ घंटा",
+  },
+
   billingSettings: {
     membership: "सदस्यता",
     currentPlan: "वर्तमान प्लान",

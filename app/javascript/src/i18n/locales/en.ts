@@ -1365,6 +1365,45 @@ const en = {
     },
   },
 
+  organizationSettingsPage: {
+    actions: {
+      editSettings: "Edit Settings",
+    },
+    sections: {
+      companyProfile: "Company Profile",
+      financial: "Financial",
+      scheduleAndTime: "Schedule & Time",
+      workingHours: "Working Hours",
+    },
+    fields: {
+      businessPhone: "Business Phone",
+      currency: "Currency",
+      businessAddress: "Business Address",
+      standardRate: "Standard Rate",
+      fiscalYearEnd: "Fiscal Year End",
+      timezone: "Timezone",
+      dateFormat: "Date Format",
+      workingDays: "Working Days",
+    },
+    status: {
+      active: "Active",
+    },
+    defaults: {
+      companyName: "Company Name",
+      locationNotSet: "Location not set",
+      notConfigured: "Not configured",
+      noAddress: "No address configured",
+      workingHours: "9:00 AM - 5:00 PM",
+      workingDays: "Monday - Friday",
+      timezone: "UTC",
+      dateFormat: "MM/DD/YYYY",
+    },
+    errors: {
+      loadFailed: "Failed to load organization details. Please try again.",
+    },
+    ratePerHour: "/ hour",
+  },
+
   billingSettings: {
     membership: "Membership",
     currentPlan: "Current plan",

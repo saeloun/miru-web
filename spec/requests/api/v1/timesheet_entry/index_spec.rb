@@ -70,6 +70,7 @@ RSpec.describe "Api::V1::TimesheetEntry#index", type: :request do
   end
 
   it "returns leave entries for day-first date params used by week navigation" do
+    company.update!(date_format: "MM-DD-YYYY")
     target_date = Date.current.beginning_of_week - 7.days
     weekly_timeoff_entry = create(
       :timeoff_entry,
@@ -89,6 +90,33 @@ RSpec.describe "Api::V1::TimesheetEntry#index", type: :request do
     expect(response).to have_http_status(:ok)
     leave_entry = json_response.fetch("entries").values.flatten.find do |entry|
       entry["id"] == weekly_timeoff_entry.id
+    end
+
+    expect(leave_entry["type"]).to eq("leave")
+    expect(leave_entry["leave_type_id"]).to eq(leave_type.id)
+  end
+
+  it "prefers the shortest valid ambiguous date range inside MM-DD workspaces" do
+    company.update!(date_format: "MM-DD-YYYY")
+    target_date = Date.new(2026, 4, 6)
+    ambiguous_timeoff_entry = create(
+      :timeoff_entry,
+      user:,
+      leave_type:,
+      leave_date: target_date,
+      duration: 480,
+      note: "Ambiguous range PTO"
+    )
+
+    send_request :get, api_v1_timesheet_entry_index_path, params: {
+      from: "06-04-2026",
+      to: "12-04-2026",
+      year: 2026
+    }, headers: auth_headers(user)
+
+    expect(response).to have_http_status(:ok)
+    leave_entry = json_response.fetch("entries").values.flatten.find do |entry|
+      entry["id"] == ambiguous_timeoff_entry.id
     end
 
     expect(leave_entry["type"]).to eq("leave")

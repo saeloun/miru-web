@@ -17,6 +17,7 @@ import { companiesApi } from "apis/api";
 import { useNavigate } from "react-router-dom";
 import { Skeleton } from "../../../ui/skeleton";
 import worldCountries from "world-countries";
+import { i18n } from "../../../../i18n";
 
 interface OrganizationDetails {
   id: string | null;
@@ -106,12 +107,16 @@ const OrganizationSettingsPage: React.FC<OrganizationSettingsPageProps> = ({
         companyDateFormat: date_format,
         companyTimezone: timezone,
         logo: company_logo,
-        companyWorkingHours: working_hours || "9:00 AM - 5:00 PM",
-        companyWorkingDays: working_days || "Monday - Friday",
+        companyWorkingHours:
+          working_hours ||
+          i18n.t("organizationSettingsPage.defaults.workingHours"),
+        companyWorkingDays:
+          working_days ||
+          i18n.t("organizationSettingsPage.defaults.workingDays"),
       });
     } catch (err) {
       console.error("Failed to fetch organization details:", err);
-      setError("Failed to load organization details. Please try again.");
+      setError(i18n.t("organizationSettingsPage.errors.loadFailed"));
     } finally {
       setIsLoading(false);
     }
@@ -122,7 +127,9 @@ const OrganizationSettingsPage: React.FC<OrganizationSettingsPageProps> = ({
   };
 
   const formatAddress = (address: string | any) => {
-    if (!address || address === "-") return "No address configured";
+    if (!address || address === "-") {
+      return i18n.t("organizationSettingsPage.defaults.noAddress");
+    }
 
     // Handle object addresses (likely from the API)
     if (typeof address === "object" && address !== null) {
@@ -146,7 +153,10 @@ const OrganizationSettingsPage: React.FC<OrganizationSettingsPageProps> = ({
         parts.push(countryDetails?.name?.common || address.country);
       }
 
-      return parts.filter(Boolean).join(", ") || "No address configured";
+      return (
+        parts.filter(Boolean).join(", ") ||
+        i18n.t("organizationSettingsPage.defaults.noAddress")
+      );
     }
 
     // Handle string addresses
@@ -156,7 +166,7 @@ const OrganizationSettingsPage: React.FC<OrganizationSettingsPageProps> = ({
       return parts.join(", ");
     }
 
-    return "No address configured";
+    return i18n.t("organizationSettingsPage.defaults.noAddress");
   };
 
   const LoadingSkeleton = () => (
@@ -187,7 +197,7 @@ const OrganizationSettingsPage: React.FC<OrganizationSettingsPageProps> = ({
             size="sm"
           >
             <PencilSimple className="h-4 w-4 mr-2" />
-            Edit Settings
+            {i18n.t("organizationSettingsPage.actions.editSettings")}
           </Button>
         </div>
         {error ? (
@@ -201,7 +211,7 @@ const OrganizationSettingsPage: React.FC<OrganizationSettingsPageProps> = ({
               <CardHeader className="pb-4">
                 <CardTitle className="text-lg font-geist-semibold flex items-center gap-2">
                   <Buildings className="h-5 w-5 text-muted-foreground" />
-                  Company Profile
+                  {i18n.t("organizationSettingsPage.sections.companyProfile")}
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -223,17 +233,23 @@ const OrganizationSettingsPage: React.FC<OrganizationSettingsPageProps> = ({
                       </Avatar>
                       <div className="flex-1">
                         <h2 className="text-xl font-geist-semibold text-foreground">
-                          {orgDetails.companyName || "Company Name"}
+                          {orgDetails.companyName ||
+                            i18n.t(
+                              "organizationSettingsPage.defaults.companyName"
+                            )}
                         </h2>
                         <p className="text-sm text-muted-foreground mt-1 font-geist-regular">
-                          {orgDetails.countryName || "Location not set"}
+                          {orgDetails.countryName ||
+                            i18n.t(
+                              "organizationSettingsPage.defaults.locationNotSet"
+                            )}
                         </p>
                         <Badge
                           variant="outline"
                           className="mt-2 border-border bg-card text-card-foreground font-geist-medium"
                         >
                           <div className="mr-2 h-1.5 w-1.5 rounded-full bg-foreground" />
-                          Active
+                          {i18n.t("organizationSettingsPage.status.active")}
                         </Badge>
                       </div>
                     </div>
@@ -244,15 +260,20 @@ const OrganizationSettingsPage: React.FC<OrganizationSettingsPageProps> = ({
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
                         <label className="text-xs font-geist-medium text-muted-foreground uppercase tracking-wider">
-                          Business Phone
+                          {i18n.t(
+                            "organizationSettingsPage.fields.businessPhone"
+                          )}
                         </label>
                         <p className="text-sm font-geist-regular text-foreground mt-1">
-                          {orgDetails.companyPhone || "Not configured"}
+                          {orgDetails.companyPhone ||
+                            i18n.t(
+                              "organizationSettingsPage.defaults.notConfigured"
+                            )}
                         </p>
                       </div>
                       <div>
                         <label className="text-xs font-geist-medium text-muted-foreground uppercase tracking-wider">
-                          Currency
+                          {i18n.t("organizationSettingsPage.fields.currency")}
                         </label>
                         <p className="text-sm font-geist-semibold text-foreground mt-1">
                           {orgDetails.companyCurrency}
@@ -264,7 +285,9 @@ const OrganizationSettingsPage: React.FC<OrganizationSettingsPageProps> = ({
                     <div>
                       <label className="text-xs font-geist-medium text-muted-foreground uppercase tracking-wider flex items-center gap-1">
                         <MapPin className="h-3 w-3" />
-                        Business Address
+                        {i18n.t(
+                          "organizationSettingsPage.fields.businessAddress"
+                        )}
                       </label>
                       <p className="text-sm font-geist-regular text-foreground mt-1 leading-relaxed">
                         {formatAddress(orgDetails.companyAddr)}
@@ -280,7 +303,7 @@ const OrganizationSettingsPage: React.FC<OrganizationSettingsPageProps> = ({
               <CardHeader className="pb-4">
                 <CardTitle className="text-lg font-geist-semibold flex items-center gap-2">
                   <CurrencyDollar className="h-5 w-5 text-muted-foreground" />
-                  Financial
+                  {i18n.t("organizationSettingsPage.sections.financial")}
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -295,7 +318,7 @@ const OrganizationSettingsPage: React.FC<OrganizationSettingsPageProps> = ({
                   <div className="space-y-4">
                     <div>
                       <label className="text-xs font-geist-medium text-muted-foreground uppercase tracking-wider">
-                        Standard Rate
+                        {i18n.t("organizationSettingsPage.fields.standardRate")}
                       </label>
                       <div className="flex items-baseline gap-1 mt-1">
                         <span className="text-2xl font-geist-bold text-foreground">
@@ -307,17 +330,22 @@ const OrganizationSettingsPage: React.FC<OrganizationSettingsPageProps> = ({
                               )}
                         </span>
                         <span className="text-sm text-muted-foreground font-geist-regular">
-                          / hour
+                          {i18n.t("organizationSettingsPage.ratePerHour")}
                         </span>
                       </div>
                     </div>
 
                     <div>
                       <label className="text-xs font-geist-medium text-muted-foreground uppercase tracking-wider">
-                        Fiscal Year End
+                        {i18n.t(
+                          "organizationSettingsPage.fields.fiscalYearEnd"
+                        )}
                       </label>
                       <p className="text-sm font-geist-regular text-foreground mt-1">
-                        {orgDetails.companyFiscalYear || "Not configured"}
+                        {orgDetails.companyFiscalYear ||
+                          i18n.t(
+                            "organizationSettingsPage.defaults.notConfigured"
+                          )}
                       </p>
                     </div>
                   </div>
@@ -330,7 +358,7 @@ const OrganizationSettingsPage: React.FC<OrganizationSettingsPageProps> = ({
               <CardHeader className="pb-4">
                 <CardTitle className="text-lg font-geist-semibold flex items-center gap-2">
                   <Clock className="h-5 w-5 text-muted-foreground" />
-                  Schedule & Time
+                  {i18n.t("organizationSettingsPage.sections.scheduleAndTime")}
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -340,23 +368,27 @@ const OrganizationSettingsPage: React.FC<OrganizationSettingsPageProps> = ({
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                     <div>
                       <label className="text-xs font-geist-medium text-muted-foreground uppercase tracking-wider">
-                        Timezone
+                        {i18n.t("organizationSettingsPage.fields.timezone")}
                       </label>
                       <p className="text-sm font-geist-regular text-foreground mt-1">
-                        {orgDetails.companyTimezone || "UTC"}
+                        {orgDetails.companyTimezone ||
+                          i18n.t("organizationSettingsPage.defaults.timezone")}
                       </p>
                     </div>
                     <div>
                       <label className="text-xs font-geist-medium text-muted-foreground uppercase tracking-wider">
-                        Date Format
+                        {i18n.t("organizationSettingsPage.fields.dateFormat")}
                       </label>
                       <p className="text-sm font-geist-regular text-foreground mt-1">
-                        {orgDetails.companyDateFormat || "MM/DD/YYYY"}
+                        {orgDetails.companyDateFormat ||
+                          i18n.t(
+                            "organizationSettingsPage.defaults.dateFormat"
+                          )}
                       </p>
                     </div>
                     <div>
                       <label className="text-xs font-geist-medium text-muted-foreground uppercase tracking-wider">
-                        Working Days
+                        {i18n.t("organizationSettingsPage.fields.workingDays")}
                       </label>
                       <p className="text-sm font-geist-regular text-foreground mt-1">
                         {orgDetails.companyWorkingDays}
@@ -372,7 +404,7 @@ const OrganizationSettingsPage: React.FC<OrganizationSettingsPageProps> = ({
               <CardHeader className="pb-4">
                 <CardTitle className="text-lg font-geist-semibold flex items-center gap-2">
                   <Briefcase className="h-5 w-5 text-muted-foreground" />
-                  Working Hours
+                  {i18n.t("organizationSettingsPage.sections.workingHours")}
                 </CardTitle>
               </CardHeader>
               <CardContent>
