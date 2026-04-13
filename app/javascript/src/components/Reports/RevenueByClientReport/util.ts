@@ -1,18 +1,20 @@
+import { i18n } from "../../../i18n";
+
 export const REVENUE_REPORT_PAGE = "Revenue Report";
 
 export const summaryList = (revenueByClientReport, isDesktop) => {
   if (isDesktop) {
     return [
       {
-        label: "TOTAL PENDING AMOUNT",
+        label: i18n.t("reports.outstandingAmount").toUpperCase(),
         value: revenueByClientReport.summary.totalOutstandingAmount,
       },
       {
-        label: "TOTAL PAID AMOUNT",
+        label: i18n.t("reports.paidAmount").toUpperCase(),
         value: revenueByClientReport.summary.totalPaidAmount,
       },
       {
-        label: "TOTAL REVENUE",
+        label: i18n.t("reports.totalRevenue").toUpperCase(),
         value: revenueByClientReport.summary.totalRevenue,
       },
     ];
@@ -20,15 +22,15 @@ export const summaryList = (revenueByClientReport, isDesktop) => {
 
   return [
     {
-      label: "PENDING",
+      label: i18n.t("reports.outstanding").toUpperCase(),
       value: revenueByClientReport.summary.totalOutstandingAmount,
     },
     {
-      label: "PAID",
+      label: i18n.t("reports.paid").toUpperCase(),
       value: revenueByClientReport.summary.totalPaidAmount,
     },
     {
-      label: "REVENUE",
+      label: i18n.t("reports.totalRevenue").toUpperCase(),
       value: revenueByClientReport.summary.totalRevenue,
     },
   ];

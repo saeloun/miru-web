@@ -60,6 +60,18 @@ RSpec.describe "Reports", type: :system, js: true do
 
     it "shows localized revenue by client labels in Hindi" do
       admin.update!(locale: "hi")
+      client = create(:client, company:, name: "Hindi Revenue Client")
+      create(:project, client:, billable: true, name: "Hindi Revenue Project")
+      create(:invoice, company:, client:, status: :sent, amount: 1200, amount_due: 1200)
+      create(
+        :invoice,
+        company:,
+        client:,
+        status: :paid,
+        amount: 800,
+        amount_paid: 800,
+        amount_due: 0
+      )
 
       with_forgery_protection do
         visit "/reports/revenue-by-client"
@@ -74,6 +86,22 @@ RSpec.describe "Reports", type: :system, js: true do
         expect(page).to have_content("सफलतापूर्वक एकत्रित", wait: 10)
         expect(page).to have_content("ध्यान आवश्यक", wait: 10)
         expect(page).to have_content("क्लाइंट", wait: 10)
+        expect(page).to have_content("अतिदेय राशि", wait: 10)
+        expect(page).to have_content("बकाया राशि", wait: 10)
+        expect(page).to have_content("भुगतान राशि", wait: 10)
+        expect(page).to have_content("Hindi Revenue Client", wait: 10)
+        expect(page).to have_content("1 में से 1 क्लाइंट दिखा रहा है", wait: 10)
+        expect(page).to have_content("सभी क्लाइंट लोड हो गए", wait: 10)
+      end
+    end
+
+    it "shows localized revenue by client empty state in Hindi" do
+      admin.update!(locale: "hi")
+
+      with_forgery_protection do
+        visit "/reports/revenue-by-client"
+
+        expect_reports_shell("क्लाइंट के अनुसार राजस्व")
         expect(page).to have_content("कोई परिणाम नहीं।", wait: 10)
         expect(page).to have_content(
           "चयनित फ़िल्टर के लिए कोई क्लाइंट राजस्व डेटा उपलब्ध नहीं है।",
