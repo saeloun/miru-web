@@ -33,6 +33,7 @@ RSpec.describe "Client listing", type: :system, js: true do
       expect(page).to have_content("कुल क्लाइंट", wait: 10)
       expect(page).to have_content("सभी क्लाइंट", wait: 10)
       expect(page).to have_button("नया क्लाइंट जोड़ें", wait: 10)
+      expect(page).to have_field(placeholder: "क्लाइंट खोजें...", wait: 10)
       expect(page).to have_content("लॉग किए गए घंटे", wait: 10)
       expect(page).to have_content("1 में से 0 पंक्तियाँ चुनी गईं।", wait: 10)
       expect(page).to have_content("पृष्ठ 1 / 1", wait: 10)
