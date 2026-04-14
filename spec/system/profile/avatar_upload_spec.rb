@@ -19,7 +19,7 @@ RSpec.describe "Profile avatar upload", type: :system, js: true do
     sign_in(user)
   end
 
-  it "opens the crop dialog for avatar upload" do
+  it "uploads a cropped avatar from profile edit" do
     with_forgery_protection do
       visit "/settings/profile/edit"
       expect(page).to have_css("#react-root", wait: 15)
@@ -30,6 +30,11 @@ RSpec.describe "Profile avatar upload", type: :system, js: true do
       expect(page).to have_text("Adjust profile photo", wait: 10)
       expect(page).to have_button("Save photo", disabled: false, wait: 10)
       expect(page).to have_field("Zoom", wait: 10)
+
+      expect do
+        click_button "Save photo"
+        expect(page).to have_text("Avatar updated successfully", wait: 10)
+      end.to change { user.reload.avatar.attached? }.from(false).to(true)
     end
   end
 end
