@@ -47,8 +47,6 @@ const getDateRangeOptions = () => {
   ];
 };
 
-const dateRangeOptions = [...getDateRangeOptions()];
-
 const customDateFilter = "customDateFilter";
 
-export { dateRangeOptions, customDateFilter, getQuarter };
+export { customDateFilter, getDateRangeOptions, getQuarter };

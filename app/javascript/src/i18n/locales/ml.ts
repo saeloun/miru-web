@@ -1,4 +1,4 @@
-const ml = {
+const locale = {
   invalidImageFormatSize:
     "തെറ്റായ ഫയൽ ഫോർമാറ്റ്. ദയവായി PNG അല്ലെങ്കിൽ JPG തരത്തിലുള്ള ചിത്രം അപ്‌ലോഡ് ചെയ്യുക. പരമാവധി വലുപ്പം (%{fileSize}KB)",
   invalidImageSize: "ഫയൽ വലുപ്പം %{fileSize}KB എന്ന പരമാവധി പരിധി കവിഞ്ഞു.",
@@ -258,6 +258,37 @@ const ml = {
     paymentReminder: "പേയ്‌മെന്റ് ഓർമ്മക്കുറിപ്പ്",
     sendPaymentReminder: "പേയ്‌മെന്റ് ഓർമ്മക്കുറിപ്പ് അയയ്ക്കുക",
     invoicesSelected: "%{count} ഇൻവോയ്‌സുകൾ തിരഞ്ഞെടുത്തു",
+    acceptedPngAndJpgFormats: "സ്വീകരിക്കുന്ന ഫയൽ ഫോർമാറ്റുകൾ: PNG, JPG.",
+    fileSizeLimitKb: "ഫയൽ വലുപ്പം ≤ %{fileSize} KB ആയിരിക്കണം.",
+    hoursLogged: "മണിക്കൂറുകൾ ലോഗ് ചെയ്‌തു",
+    overdue: "അമിതഭാരം",
+    allClientsDescription:
+      "നിങ്ങളുടെ എല്ലാ ക്ലയന്റുകളുടെയും കോൺടാക്റ്റ് വിവരങ്ങളും ബില്ലിംഗ് സ്റ്റാറ്റസും ഉള്ള ഒരു ലിസ്റ്റ്.",
+    failedToLoadClientDetails:
+      "ക്ലയന്റ് വിശദാംശങ്ങൾ ലോഡ് ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു",
+    clientDeletedSuccessfully: "ക്ലയന്റിനെ വിജയകരമായി ഇല്ലാതാക്കി",
+    failedToDeleteClient: "ക്ലയന്റിനെ ഇല്ലാതാക്കാനായില്ല",
+    addYourFirstClient: "നിങ്ങളുടെ ആദ്യ ക്ലയന്റിനെ ചേർക്കുക",
+    addNewClientDescription:
+      "പുതിയ ക്ലയന്റിനെ ചേർക്കാൻ താഴെയുള്ള വിശദാംശങ്ങൾ പൂരിപ്പിക്കുക.",
+    editClientDescription: "താഴെയുള്ള ക്ലയന്റ് വിശദാംശങ്ങൾ അപ്ഡേറ്റ് ചെയ്യുക.",
+    manageClientsDescription:
+      "നിങ്ങളുടെ ക്ലയന്റ് ബന്ധങ്ങളും ബില്ലിംഗും കൈകാര്യം ചെയ്യുക",
+    clientHeader: "ക്ലയന്റ്",
+    contact: "ബന്ധപ്പെടുക",
+    copyClientId: "ക്ലയന്റ് ഐഡി പകർത്തുക",
+    viewDetails: "വിശദാംശങ്ങൾ കാണുക",
+    addOrViewContacts: "കോൺടാക്റ്റുകൾ ചേർക്കുക / കാണുക",
+    paymentReminderSubject:
+      "പണമടയ്ക്കാത്ത ഇൻവോയ്‌സുകളുടെ പേയ്‌മെന്റുകൾ പൂർത്തിയാക്കുന്നതിനുള്ള ഓർമ്മപ്പെടുത്തൽ",
+    paymentReminderMessage:
+      "താഴെ പറയുന്ന ഇൻവോയ്‌സുകൾക്കുള്ള പേയ്‌മെന്റുകൾ പൂർത്തിയാക്കുന്നതിനുള്ള ഒരു ഓർമ്മപ്പെടുത്തലാണിത്. താഴെ നൽകിയിരിക്കുന്ന ഇൻവോയ്‌സ് വിശദാംശങ്ങൾക്കൊപ്പം ബന്ധപ്പെട്ട പേയ്‌മെന്റ് ലിങ്കുകൾ നിങ്ങൾക്ക് കണ്ടെത്താനാകും.",
+    selectInvoices: "ഇൻവോയ്‌സുകൾ തിരഞ്ഞെടുക്കുക",
+    emailPreview: "ഇമെയിൽ പ്രിവ്യൂ",
+    recipientEmailId: "സ്വീകർത്താവിന്റെ ഇമെയിൽ ഐഡി",
+    invoiceSelected: "%{count} ഇൻവോയ്സ് തിരഞ്ഞെടുത്തു",
+    noProjectsAddedYet:
+      "ഈ ക്ലയന്റിലേക്ക് ഇതുവരെ ഒരു പ്രോജക്റ്റും ചേർത്തിട്ടില്ല.",
   },
   contacts: {
     addContact: "കോൺടാക്ട് ചേർക്കുക",
@@ -590,6 +621,15 @@ const ml = {
     downloading: "ഡൗൺലോഡ് ചെയ്യുന്നു...",
     selectClientBeforeSending:
       "ഇൻവോയ്സ് അയയ്ക്കുന്നതിന് മുമ്പ് ഒരു ക്ലയന്റിനെ തിരഞ്ഞെടുക്കുക.",
+    backToInvoices: "ഇൻവോയ്‌സുകളിലേക്ക് മടങ്ങുക",
+    basicDetailsDescription: "അടിസ്ഥാന ഇൻവോയ്സ് വിവരങ്ങൾ നൽകുക",
+    referenceOptional: "റഫറൻസ് (ഓപ്ഷണൽ)",
+    referencePlaceholder: "പി.ഒ. നമ്പർ, മുതലായവ.",
+    lineItemsDescription: "സമയ എൻട്രികളോ മാനുവൽ ഇനങ്ങളോ ചേർക്കുക",
+    additionalDetailsDescription: "നികുതി, കിഴിവ്, കുറിപ്പുകൾ",
+    notesPlaceholder: "അധിക കുറിപ്പുകൾ അല്ലെങ്കിൽ പേയ്‌മെന്റ് നിർദ്ദേശങ്ങൾ",
+    subtotal: "ആകെത്തുക",
+    showingOfTotal: "%{total} ൽ %{shown} കാണിക്കുന്നു",
   },
   common: {
     retry: "വീണ്ടും ശ്രമിക്കുക",
@@ -655,6 +695,39 @@ const ml = {
     failedToAddManualEntry: "മാനുവൽ എൻട്രി ചേർക്കുന്നതിൽ പരാജയപ്പെട്ടു",
     searchByClientOrInvoice: "ക്ലയന്റ് പേരോ ഇൻവോയ്‌സ് ഐഡിയോ ഉപയോഗിച്ച് തിരയുക",
     selectTransactionTypeBtn: "ഇടപാട് തരം തിരഞ്ഞെടുക്കുക",
+    searchPaymentsPlaceholder:
+      "ക്ലയന്റ്, ഇൻവോയ്സ് അല്ലെങ്കിൽ തുക അനുസരിച്ച് പേയ്‌മെന്റുകൾ തിരയുക...",
+    failedToLoadInvoicesForPaymentEntry:
+      "പേയ്‌മെന്റ് എൻട്രിക്കുള്ള ഇൻവോയ്‌സുകൾ ലോഡ് ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു.",
+    totalPayments: "ആകെ പേയ്‌മെന്റുകൾ",
+    totalCollected: "ആകെ ശേഖരിച്ചത്",
+    allTime: "എല്ലാ സമയത്തും",
+    averagePayment: "ശരാശരി പേയ്‌മെന്റ്",
+    perTransaction: "ഓരോ ഇടപാടിനും",
+    paymentHistoryDescription:
+      "ഇൻവോയ്‌സും ക്ലയന്റ് വിശദാംശങ്ങളും ഉള്ള ഓരോ പേയ്‌മെന്റും.",
+    paymentLedgerDescription: "ഒരു ലളിതമായ ലെഡ്ജറിൽ വരയും മാനുവൽ എൻട്രികളും.",
+    searchByInvoiceClientMethodOrNotes:
+      "ഇൻവോയ്സ്, ക്ലയന്റ്, രീതി അല്ലെങ്കിൽ കുറിപ്പുകൾ പ്രകാരം തിരയുക...",
+    showingPaymentsCount: "%{total} ന്റെ %{visible} കാണിക്കുന്നു",
+    notes: "കുറിപ്പുകൾ",
+    paymentMethod: "പണമടയ്ക്കൽ രീതി",
+    openMenu: "മെനു തുറക്കുക",
+    copyTransactionId: "ഇടപാട് ഐഡി പകർത്തുക",
+    viewInvoice: "ഇൻവോയ്‌സ് കാണുക",
+    downloadReceipt: "രസീത് ഡൗൺലോഡ് ചെയ്യുക",
+    manual: "മാനുവൽ",
+    visa: "വിസ",
+    mastercard: "മാസ്റ്റർകാർഡ്",
+    amex: "അമേക്സ്",
+    debitCard: "ഡെബിറ്റ് കാർഡ്",
+    creditCard: "ക്രെഡിറ്റ് കാർഡ്",
+    paid: "പണമടച്ചു",
+    noPaymentFound: "പേയ്‌മെന്റൊന്നും കണ്ടെത്തിയില്ല!",
+    recordManualPaymentAgainstInvoice:
+      "ഒരു ഇൻവോയ്‌സിൽ നേരിട്ട് പണമടയ്ക്കൽ രേഖപ്പെടുത്തുക.",
+    partiallyPaid: "ഭാഗികമായി പണമടച്ചു",
+    cancelled: "റദ്ദാക്കി",
   },
   timer: {
     webTimer: "വെബ് ടൈമർ",
@@ -892,6 +965,33 @@ const ml = {
     unknownUser: "അജ്ഞാത ഉപയോക്താവ്",
     unknownProject: "അജ്ഞാത പ്രോജക്ട്",
     generatingExport: "%{format} സൃഷ്ടിക്കുന്നു",
+    totalPayments: "ആകെ പേയ്‌മെന്റുകൾ",
+    paymentCount: "പേയ്‌മെന്റ് എണ്ണം",
+    averagePayment: "ശരാശരി പേയ്‌മെന്റ്",
+    totalTransactions: "ആകെ ഇടപാടുകൾ",
+    selectedPeriod: "തിരഞ്ഞെടുത്ത കാലയളവ്",
+    noPaymentsFoundForSelectedPeriod:
+      "തിരഞ്ഞെടുത്ത കാലയളവിലേക്ക് പേയ്‌മെന്റുകളൊന്നും കണ്ടെത്തിയില്ല.",
+    showingPayments: "%{total} പേയ്‌മെന്റുകളുടെ %{shown} കാണിക്കുന്നു",
+    scrollToLoadMorePayments:
+      "കൂടുതൽ പേയ്‌മെന്റുകൾ ലോഡ് ചെയ്യാൻ സ്ക്രോൾ ചെയ്യുക",
+    clientsSelected: "%{count} ക്ലയന്റുകൾ",
+    columns: "നിരകൾ",
+    clientName: "ക്ലയന്റിന്റെ പേര്",
+    invoices: "ഇൻവോയ്‌സുകൾ",
+    clearClients: "ക്ലയന്റുകളെ മായ്‌ക്കുക",
+    successfullyCollected: "വിജയകരമായി ശേഖരിച്ചു",
+    pendingCollection: "തീർച്ചപ്പെടുത്താത്ത ശേഖരം",
+    requiresAttention: "ശ്രദ്ധ ആവശ്യമാണ്",
+    revenueMixByClient: "ക്ലയന്റ് അനുസരിച്ചുള്ള വരുമാന മിക്‌സ്",
+    noClientRevenueData:
+      "തിരഞ്ഞെടുത്ത ഫിൽട്ടറുകൾക്ക് ക്ലയന്റ് വരുമാന ഡാറ്റ ലഭ്യമല്ല.",
+    paid: "പണമടച്ചു",
+    awaitingPayment: "പേയ്‌മെന്റിനായി കാത്തിരിക്കുന്നു",
+    agingDistribution: "വാർദ്ധക്യ വിതരണം",
+    sixtyPlusDays: "60+ ദിവസങ്ങൾ",
+    shareReport: "റിപ്പോർട്ട് പങ്കിടുക",
+    linkCopied: "ലിങ്ക് പകർത്തി",
   },
   expenses: {
     expenses: "ചെലവുകൾ",
@@ -972,6 +1072,10 @@ const ml = {
     viewExistingReceipts: "നിലവിലുള്ള രസീതുകൾ കാണുക (%{count})",
     viewReceiptsFor: "%{description} ന്റെ രസീതുകൾ കാണുക",
     expenseActionsFor: "%{description} ന്റെ ചെലവ് പ്രവർത്തനങ്ങൾ",
+    customCategory: "ഇഷ്ടാനുസൃത വിഭാഗം",
+    enterCustomCategory: "ഇഷ്ടാനുസൃത വിഭാഗം നൽകുക",
+    receiptsAttached: "%{count} അറ്റാച്ചുചെയ്‌തു",
+    preview: "പ്രിവ്യൂ",
   },
   settings: {
     settings: "ക്രമീകരണങ്ങൾ",
@@ -1503,6 +1607,13 @@ const ml = {
     summaryDescription:
       "തിരഞ്ഞെടുത്ത വർഷത്തേക്കുള്ള ലഭ്യമായ അവധി, ഇതിനകം എടുത്ത സമയം, അവധിക്കാല ഉപയോഗം എന്നിവ ഒരിടത്ത് കാണുക.",
     balanceUntil: "%{date} വരെ ബാലൻസ്",
+    leaveTypeUtilized: "%{name} ഉപയോഗിച്ചു",
+    leaveTypeAvailable: "%{name} ലഭ്യമാണ്",
+    outOf: "പുറത്ത്",
+    thisQuarter: "ഈ പാദം",
+    thisYear: "ഈ വര്ഷം",
+    thisMonth: "ഈ മാസം",
+    thisWeek: "ഈ ആഴ്ച",
   },
   subscriptions: {
     currentPlan: "നിലവിലെ പ്ലാൻ",
@@ -2007,6 +2118,23 @@ const ml = {
     expand: "സൈഡ്‌ബാർ വികസിപ്പിക്കുക",
     collapse: "സൈഡ്‌ബാർ ചുരുക്കുക",
   },
+  previous: "മുമ്പത്തേത്",
+  continue: "തുടരുക",
+  pagination: "പേജിനേഷൻ",
+  breadcrumb: "ബ്രെഡ്ക്രംബ്സ്",
+  applyFilters: "ഫിൽട്ടറുകൾ പ്രയോഗിക്കുക",
+  resetAction: "റീസെറ്റ്",
+  toggleSidebar: "സൈഡ്‌ബാർ ടോഗിൾ ചെയ്യുക",
+  morePages: "കൂടുതൽ പേജുകൾ",
+  viewInvoice: "ഇൻവോയ്സ് കാണുക",
+  customRangeWithDates: "കസ്റ്റം (%{from} - %{to})",
+  dataTable: {
+    noResults: "ഫലങ്ങളൊന്നുമില്ല.",
+    rowsSelected: "%{selected} / %{total} വരി(കൾ) തിരഞ്ഞെടുത്തു.",
+    pageOf: "%{page} / %{total} പേജ്",
+  },
+  selectAll: "എല്ലാം തിരഞ്ഞെടുക്കുക",
+  selectRow: "വരി തിരഞ്ഞെടുക്കുക",
 };
 
-export default ml;
+export default locale;

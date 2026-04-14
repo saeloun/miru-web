@@ -7,6 +7,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "components/ui/dialog";
+import { i18n } from "../../../i18n";
 
 import PaymentEntryForm from "./PaymentEntryForm";
 
@@ -22,9 +23,9 @@ const AddManualEntry = ({
   <Dialog open={showManualEntryModal} onOpenChange={setShowManualEntryModal}>
     <DialogContent className="max-w-lg overflow-visible">
       <DialogHeader>
-        <DialogTitle>Add Payment</DialogTitle>
+        <DialogTitle>{i18n.t("payments.addPayment")}</DialogTitle>
         <DialogDescription>
-          Record a manual payment against an invoice.
+          {i18n.t("payments.recordManualPaymentAgainstInvoice")}
         </DialogDescription>
       </DialogHeader>
       <PaymentEntryForm

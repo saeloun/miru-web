@@ -6,6 +6,7 @@ import { CaretLeft, CaretRight, Calendar, Clock } from "phosphor-react";
 import { minToHHMM } from "helpers";
 import { CaretCircleLeftIcon, CaretCircleRightIcon } from "miruIcons";
 import { useUserContext } from "context/UserContext";
+import { i18n } from "../../i18n";
 import { Button } from "../ui/button";
 import { Card, CardContent } from "../ui/card";
 import CustomDatePicker from "common/CustomDatePicker";
@@ -72,11 +73,11 @@ const Header = ({
 
     return isDesktop ? (
       <>
-        <span>Week of</span>
+        <span>{i18n.t("weekOf")}</span>
         <span className="mx-1">
           {dayInfo[0]["month"]} {parseInt(dayInfo[0]["date"], 10)}
         </span>
-        <span>to</span>
+        <span>{i18n.t("to")}</span>
         <span className="mx-1">
           {dayInfo[6]["month"]} {parseInt(dayInfo[6]["date"], 10)},
         </span>
@@ -112,7 +113,7 @@ const Header = ({
               data-testid="time-nav-today"
               className="px-4 py-2 font-bold text-sm border-border hover:bg-accent hover:text-accent-foreground transition-all duration-200"
             >
-              Today
+              {i18n.t("today")}
             </Button>
             {isDesktop && !handleTodayButton && (
               <Button
@@ -121,7 +122,7 @@ const Header = ({
                 onClick={getLastWeekAction}
                 className="px-3 py-2 text-sm font-semibold text-muted-foreground hover:bg-accent hover:text-foreground"
               >
-                Last week
+                {i18n.t("lastWeek")}
               </Button>
             )}
           </div>
@@ -181,7 +182,7 @@ const Header = ({
 
           <div className="weekly-total ml-auto rounded-lg border border-border bg-muted/40 px-3 py-2 text-right min-w-0 shrink-0 sm:px-4">
             <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">
-              Total
+              {i18n.t("total")}
             </div>
             <div className="text-lg font-bold tabular-nums text-foreground">
               {getTotal() || "00:00"}

@@ -1,4 +1,4 @@
-const de = {
+const locale = {
   invalidImageFormatSize:
     "Falsches Dateiformat. Bitte laden Sie ein Bild im PNG- oder JPG-Format hoch. Max. Größe (%{fileSize}KB)",
   invalidImageSize: "Dateigröße hat das Limit von %{fileSize}KB überschritten.",
@@ -258,6 +258,34 @@ const de = {
     paymentReminder: "Zahlungserinnerung",
     sendPaymentReminder: "Zahlungserinnerung senden",
     invoicesSelected: "%{count} Rechnungen ausgewählt",
+    acceptedPngAndJpgFormats: "Akzeptierte Dateiformate: PNG und JPG.",
+    fileSizeLimitKb: "Die Dateigröße sollte ≤ %{fileSize} KB betragen.",
+    hoursLogged: "Protokollierte Stunden",
+    overdue: "ÜBERFÄLLIG",
+    allClientsDescription:
+      "Eine Liste all Ihrer Kunden mit ihren Kontaktdaten und ihrem Abrechnungsstatus.",
+    failedToLoadClientDetails: "Kundendaten konnten nicht geladen werden",
+    clientDeletedSuccessfully: "Client erfolgreich gelöscht",
+    failedToDeleteClient: "Client konnte nicht gelöscht werden",
+    addYourFirstClient: "Fügen Sie Ihren ersten Kunden hinzu",
+    addNewClientDescription:
+      "Füllen Sie die folgenden Felder aus, um einen neuen Kunden hinzuzufügen.",
+    editClientDescription: "Aktualisieren Sie die Kundendaten unten.",
+    manageClientsDescription:
+      "Verwalten Sie Ihre Kundenbeziehungen und Ihre Abrechnung",
+    clientHeader: "KUNDE",
+    contact: "Kontakt",
+    copyClientId: "Client-ID kopieren",
+    viewDetails: "Details anzeigen",
+    addOrViewContacts: "Kontakte hinzufügen/ansehen",
+    paymentReminderSubject: "Zahlungserinnerung für offene Rechnungen",
+    paymentReminderMessage:
+      "Dies ist eine freundliche Zahlungserinnerung für die folgenden Rechnungen. Die entsprechenden Zahlungslinks sowie die Rechnungsdetails finden Sie unten.",
+    selectInvoices: "Rechnungen auswählen",
+    emailPreview: "E-Mail-Vorschau",
+    recipientEmailId: "E-Mail-Adresse des Empfängers",
+    invoiceSelected: "%{count} Rechnung ausgewählt",
+    noProjectsAddedYet: "Diesem Kunden wurde noch kein Projekt hinzugefügt.",
   },
   contacts: {
     addContact: "Kontakt hinzufügen",
@@ -587,6 +615,17 @@ const de = {
     downloading: "Wird heruntergeladen...",
     selectClientBeforeSending:
       "Wählen Sie einen Kunden aus, bevor Sie die Rechnung senden.",
+    backToInvoices: "Zurück zu den Rechnungen",
+    basicDetailsDescription:
+      "Geben Sie die grundlegenden Rechnungsinformationen ein.",
+    referenceOptional: "Referenz (optional)",
+    referencePlaceholder: "Bestellnummer usw.",
+    lineItemsDescription:
+      "Fügen Sie Zeiteinträge oder manuelle Elemente hinzu.",
+    additionalDetailsDescription: "Steuern, Rabatte und Anmerkungen",
+    notesPlaceholder: "Zusätzliche Hinweise oder Zahlungsanweisungen",
+    subtotal: "Zwischensumme",
+    showingOfTotal: "Anzeige von %{shown} von %{total}",
   },
   common: {
     retry: "Erneut versuchen",
@@ -652,6 +691,39 @@ const de = {
     failedToAddManualEntry: "Manueller Eintrag konnte nicht hinzugefügt werden",
     searchByClientOrInvoice: "Nach Kundenname oder Rechnungs-ID suchen",
     selectTransactionTypeBtn: "Transaktionstyp auswählen",
+    searchPaymentsPlaceholder:
+      "Zahlungen nach Kunde, Rechnung oder Betrag suchen...",
+    failedToLoadInvoicesForPaymentEntry:
+      "Rechnungen konnten zur Zahlungserfassung nicht geladen werden",
+    totalPayments: "Gesamtzahlungen",
+    totalCollected: "Gesamtbetrag",
+    allTime: "Alle Zeiten",
+    averagePayment: "Durchschnittliche Zahlung",
+    perTransaction: "Pro Transaktion",
+    paymentHistoryDescription: "Jede Zahlung mit Rechnung und Kundendaten.",
+    paymentLedgerDescription:
+      "Stripe- und manuelle Einträge in einem einfachen Hauptbuch.",
+    searchByInvoiceClientMethodOrNotes:
+      "Suche nach Rechnung, Kunde, Methode oder Notizen...",
+    showingPaymentsCount: "Anzeige von %{visible} von %{total}",
+    notes: "Anmerkungen",
+    paymentMethod: "Zahlungsmethode",
+    openMenu: "Menü öffnen",
+    copyTransactionId: "Transaktions-ID kopieren",
+    viewInvoice: "Rechnung ansehen",
+    downloadReceipt: "Quittung herunterladen",
+    manual: "Handbuch",
+    visa: "Visum",
+    mastercard: "MasterCard",
+    amex: "American Express",
+    debitCard: "Debitkarte",
+    creditCard: "Kreditkarte",
+    paid: "Bezahlt",
+    noPaymentFound: "Keine Zahlung gefunden!",
+    recordManualPaymentAgainstInvoice:
+      "Eine manuelle Zahlung zu einer Rechnung erfassen.",
+    partiallyPaid: "Teilweise bezahlt",
+    cancelled: "Abgesagt",
   },
   timer: {
     webTimer: "Web-Timer",
@@ -890,6 +962,32 @@ const de = {
     unknownUser: "Unbekannter Benutzer",
     unknownProject: "Unbekanntes Projekt",
     generatingExport: "%{format} wird generiert",
+    totalPayments: "Gesamtzahlungen",
+    paymentCount: "Zahlungsanzahl",
+    averagePayment: "Durchschnittliche Zahlung",
+    totalTransactions: "Gesamttransaktionen",
+    selectedPeriod: "Ausgewählter Zeitraum",
+    noPaymentsFoundForSelectedPeriod:
+      "Für den ausgewählten Zeitraum wurden keine Zahlungen gefunden.",
+    showingPayments: "Anzeige der Zahlungen %{shown} von %{total}",
+    scrollToLoadMorePayments: "Scrollen Sie, um weitere Zahlungen zu laden.",
+    clientsSelected: "%{count}-Clients",
+    columns: "Spalten",
+    clientName: "Kundenname",
+    invoices: "Rechnungen",
+    clearClients: "Klare Kunden",
+    successfullyCollected: "Erfolgreich gesammelt",
+    pendingCollection: "Ausstehende Sammlung",
+    requiresAttention: "Erfordert Aufmerksamkeit",
+    revenueMixByClient: "Umsatzstruktur nach Kunde",
+    noClientRevenueData:
+      "Für die ausgewählten Filter sind keine Kundenumsatzdaten verfügbar.",
+    paid: "Bezahlt",
+    awaitingPayment: "Zahlung ausstehend",
+    agingDistribution: "Altersverteilung",
+    sixtyPlusDays: "60+ Tage",
+    shareReport: "Bericht teilen",
+    linkCopied: "Link kopiert",
   },
   expenses: {
     expenses: "Ausgaben",
@@ -969,6 +1067,10 @@ const de = {
     viewExistingReceipts: "Vorhandene Belege ansehen (%{count})",
     viewReceiptsFor: "Belege für %{description} ansehen",
     expenseActionsFor: "Ausgabenaktionen für %{description}",
+    customCategory: "Benutzerdefinierte Kategorie",
+    enterCustomCategory: "Benutzerdefinierte Kategorie eingeben",
+    receiptsAttached: "%{count} angehängt",
+    preview: "Vorschau",
   },
   settings: {
     settings: "Einstellungen",
@@ -1497,6 +1599,13 @@ const de = {
     summaryDescription:
       "Auf einen Blick sehen Sie verfügbaren Urlaub, bereits genommene Urlaubstage und die Urlaubsnutzung für das ausgewählte Jahr.",
     balanceUntil: "Saldo bis %{date}",
+    leaveTypeUtilized: "%{name} verwendet",
+    leaveTypeAvailable: "%{name} Verfügbar",
+    outOf: "von",
+    thisQuarter: "dieses Quartal",
+    thisYear: "dieses Jahr",
+    thisMonth: "diesen Monat",
+    thisWeek: "diese Woche",
   },
   subscriptions: {
     currentPlan: "Aktueller Plan",
@@ -2006,6 +2115,23 @@ const de = {
     expand: "Seitenleiste erweitern",
     collapse: "Seitenleiste ausklappen",
   },
+  previous: "Vorherige",
+  continue: "Weitermachen",
+  pagination: "Pagination",
+  breadcrumb: "Brotkrumen",
+  applyFilters: "Filter anwenden",
+  resetAction: "Zurücksetzen",
+  toggleSidebar: "Seitenleiste ein-/ausblenden",
+  morePages: "Weitere Seiten",
+  viewInvoice: "Rechnung ansehen",
+  customRangeWithDates: "Benutzerdefiniert (%{from} - %{to})",
+  dataTable: {
+    noResults: "Keine Ergebnisse.",
+    rowsSelected: "%{selected} von %{total} Zeilen ausgewählt.",
+    pageOf: "Seite %{page} von %{total}",
+  },
+  selectAll: "Alle auswählen",
+  selectRow: "Zeile auswählen",
 };
 
-export default de;
+export default locale;

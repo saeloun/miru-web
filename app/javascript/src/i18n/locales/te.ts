@@ -1,4 +1,4 @@
-const te = {
+const locale = {
   invalidImageFormatSize:
     "ఫైల్ ఫార్మాట్ తప్పుగా ఉంది. దయచేసి PNG లేదా JPG రకానికి చెందిన చిత్రాన్ని అప్‌లోడ్ చేయండి. గరిష్ట పరిమాణం (%{fileSize}KB)",
   invalidImageSize: "ఫైల్ పరిమాణం %{fileSize}KB గరిష్ట పరిమితిని మించిపోయింది.",
@@ -254,6 +254,35 @@ const te = {
     paymentReminder: "చెల్లింపు రిమైండర్",
     sendPaymentReminder: "చెల్లింపు రిమైండర్‌ను పంపండి",
     invoicesSelected: "__PH__0__ ఇన్‌వాయిస్‌లు ఎంపిక చేయబడ్డాయి",
+    acceptedPngAndJpgFormats: "ఆమోదించబడిన ఫైల్ ఫార్మాట్‌లు: PNG మరియు JPG.",
+    fileSizeLimitKb: "ఫైల్ పరిమాణం ≤ %{fileSize} KB ఉండాలి.",
+    hoursLogged: "గంటలు నమోదు చేయబడ్డాయి",
+    overdue: "గడువు మించిపోయింది",
+    allClientsDescription:
+      "మీ క్లయింట్లందరి జాబితా, వారి సంప్రదింపు సమాచారం మరియు బిల్లింగ్ స్థితితో సహా.",
+    failedToLoadClientDetails: "క్లయింట్ వివరాలను లోడ్ చేయడంలో విఫలమైంది",
+    clientDeletedSuccessfully: "క్లయింట్ విజయవంతంగా తొలగించబడింది",
+    failedToDeleteClient: "క్లయింట్‌ను తొలగించడంలో విఫలమైంది",
+    addYourFirstClient: "మీ మొదటి క్లయింట్‌ను జోడించండి",
+    addNewClientDescription:
+      "కొత్త క్లయింట్‌ను జోడించడానికి క్రింది వివరాలను పూరించండి.",
+    editClientDescription: "క్లయింట్ వివరాలను క్రింద అప్‌డేట్ చేయండి.",
+    manageClientsDescription:
+      "మీ క్లయింట్ సంబంధాలను మరియు బిల్లింగ్‌ను నిర్వహించండి",
+    clientHeader: "క్లయింట్",
+    contact: "సంప్రదించండి",
+    copyClientId: "క్లయింట్ ఐడిని కాపీ చేయండి",
+    viewDetails: "వివరాలను వీక్షించండి",
+    addOrViewContacts: "పరిచయాలను జోడించండి / వీక్షించండి",
+    paymentReminderSubject:
+      "చెల్లించని ఇన్‌వాయిస్‌లకు చెల్లింపులను పూర్తి చేయాలని రిమైండర్",
+    paymentReminderMessage:
+      "కింది ఇన్‌వాయిస్‌లకు చెల్లింపులు పూర్తి చేయాలని విజ్ఞప్తి. దిగువన ఇవ్వబడిన ఇన్‌వాయిస్ వివరాలతో పాటు సంబంధిత చెల్లింపు లింక్‌లను మీరు కనుగొనవచ్చు.",
+    selectInvoices: "ఇన్‌వాయిస్‌లను ఎంచుకోండి",
+    emailPreview: "ఇమెయిల్ ప్రివ్యూ",
+    recipientEmailId: "గ్రహీత ఇమెయిల్ ఐడి",
+    invoiceSelected: "%{count} ఇన్వాయిస్ ఎంపిక చేయబడింది",
+    noProjectsAddedYet: "ఈ క్లయింట్‌కు ఇంకా ఏ ప్రాజెక్టూ జోడించబడలేదు.",
   },
   contacts: {
     addContact: "పరిచయాన్ని జోడించండి",
@@ -581,6 +610,15 @@ const te = {
     cannotDownloadInvalidId: "ఇన్‌వాయిస్‌ను డౌన్‌లోడ్ చేయలేము - ID చెల్లదు",
     cannotSendInvalidId: "ఇన్‌వాయిస్ పంపలేము - ID చెల్లదు",
     payment: "చెల్లింపు #__PH__0__",
+    backToInvoices: "ఇన్‌వాయిస్‌లకు తిరిగి వెళ్లండి",
+    basicDetailsDescription: "ప్రాథమిక ఇన్వాయిస్ సమాచారాన్ని నమోదు చేయండి",
+    referenceOptional: "సూచన (ఐచ్ఛికం)",
+    referencePlaceholder: "PO నంబర్, మొదలైనవి.",
+    lineItemsDescription: "సమయ నమోదులు లేదా మాన్యువల్ అంశాలను జోడించండి",
+    additionalDetailsDescription: "పన్ను, తగ్గింపు మరియు గమనికలు",
+    notesPlaceholder: "అదనపు గమనికలు లేదా చెల్లింపు సూచనలు",
+    subtotal: "ఉపమొత్తం",
+    showingOfTotal: "%{total}లో %{shown} చూపబడుతోంది",
   },
   common: {
     retry: "మళ్ళీ ప్రయత్నించండి",
@@ -647,6 +685,40 @@ const te = {
     searchByClientOrInvoice:
       "క్లయింట్ పేరు లేదా ఇన్‌వాయిస్ ఐడి ద్వారా శోధించండి",
     selectTransactionTypeBtn: "లావాదేవీ రకాన్ని ఎంచుకోండి",
+    searchPaymentsPlaceholder:
+      "క్లయింట్, ఇన్‌వాయిస్ లేదా మొత్తం ఆధారంగా చెల్లింపులను శోధించండి...",
+    failedToLoadInvoicesForPaymentEntry:
+      "చెల్లింపు నమోదు కోసం ఇన్‌వాయిస్‌లను లోడ్ చేయడంలో విఫలమైంది",
+    totalPayments: "మొత్తం చెల్లింపులు",
+    totalCollected: "మొత్తం వసూలు చేయబడింది",
+    allTime: "అన్ని కాలాలలో",
+    averagePayment: "సగటు చెల్లింపు",
+    perTransaction: "ప్రతి లావాదేవీకి",
+    paymentHistoryDescription:
+      "ఇన్‌వాయిస్ మరియు క్లయింట్ వివరాలతో ప్రతి చెల్లింపు.",
+    paymentLedgerDescription:
+      "ఒకే సులభమైన లెడ్జర్‌లో స్ట్రైప్ మరియు మాన్యువల్ ఎంట్రీలు.",
+    searchByInvoiceClientMethodOrNotes:
+      "ఇన్‌వాయిస్, క్లయింట్, పద్ధతి లేదా నోట్స్ ద్వారా శోధించండి...",
+    showingPaymentsCount: "%{total} యొక్క %{visible} చూపిస్తోంది",
+    notes: "గమనికలు",
+    paymentMethod: "చెల్లింపు విధానం",
+    openMenu: "మెనూ తెరవండి",
+    copyTransactionId: "లావాదేవీ IDని కాపీ చేయండి",
+    viewInvoice: "ఇన్‌వాయిస్‌ను వీక్షించండి",
+    downloadReceipt: "రసీదును డౌన్‌లోడ్ చేయండి",
+    manual: "మాన్యువల్",
+    visa: "వీసా",
+    mastercard: "మాస్టర్ కార్డ్",
+    amex: "అమెక్స్",
+    debitCard: "డెబిట్ కార్డ్",
+    creditCard: "క్రెడిట్ కార్డ్",
+    paid: "చెల్లించబడింది",
+    noPaymentFound: "చెల్లింపు కనుగొనబడలేదు!",
+    recordManualPaymentAgainstInvoice:
+      "ఇన్‌వాయిస్‌కు వ్యతిరేకంగా మాన్యువల్ చెల్లింపును నమోదు చేయండి.",
+    partiallyPaid: "పాక్షికంగా చెల్లించబడింది",
+    cancelled: "రద్దు చేయబడింది",
   },
   timer: {
     webTimer: "వెబ్ టైమర్",
@@ -881,6 +953,33 @@ const te = {
     unknownUser: "తెలియని వినియోగదారు",
     unknownProject: "తెలియని ప్రాజెక్ట్",
     generatingExport: "__PH__0__ ను ఉత్పత్తి చేస్తోంది",
+    totalPayments: "మొత్తం చెల్లింపులు",
+    paymentCount: "చెల్లింపుల సంఖ్య",
+    averagePayment: "సగటు చెల్లింపు",
+    totalTransactions: "మొత్తం లావాదేవీలు",
+    selectedPeriod: "ఎంచుకున్న కాలం",
+    noPaymentsFoundForSelectedPeriod:
+      "ఎంచుకున్న కాలానికి చెల్లింపులు ఏవీ కనుగొనబడలేదు.",
+    showingPayments: "%{total} చెల్లింపులలో %{shown} చూపిస్తోంది",
+    scrollToLoadMorePayments:
+      "మరిన్ని చెల్లింపులను లోడ్ చేయడానికి స్క్రోల్ చేయండి",
+    clientsSelected: "%{count} క్లయింట్లు",
+    columns: "కాలమ్స్",
+    clientName: "క్లయింట్ పేరు",
+    invoices: "ఇన్‌వాయిస్‌లు",
+    clearClients: "స్పష్టమైన క్లయింట్లు",
+    successfullyCollected: "విజయవంతంగా సేకరించబడింది",
+    pendingCollection: "వసూలు పెండింగ్‌లో ఉంది",
+    requiresAttention: "శ్రద్ధ అవసరం",
+    revenueMixByClient: "క్లయింట్ వారీగా రాబడి మిశ్రమం",
+    noClientRevenueData:
+      "ఎంచుకున్న ఫిల్టర్‌లకు సంబంధించి క్లయింట్ రాబడి డేటా అందుబాటులో లేదు.",
+    paid: "చెల్లించబడింది",
+    awaitingPayment: "చెల్లింపు కోసం వేచి ఉంది",
+    agingDistribution: "వృద్ధాప్య పంపిణీ",
+    sixtyPlusDays: "60+ రోజులు",
+    shareReport: "నివేదికను పంచుకోండి",
+    linkCopied: "లింక్ కాపీ చేయబడింది",
   },
   expenses: {
     expenses: "ఖర్చులు",
@@ -960,6 +1059,10 @@ const te = {
     viewExistingReceipts: "ఇప్పటికే ఉన్న రసీదులను వీక్షించండి (%{count})",
     viewReceiptsFor: "__PH__0__ కోసం రసీదులను వీక్షించండి",
     expenseActionsFor: "__PH__0__ కోసం ఖర్చు చర్యలు",
+    customCategory: "కస్టమ్ వర్గం",
+    enterCustomCategory: "అనుకూల వర్గాన్ని నమోదు చేయండి",
+    receiptsAttached: "%{count} జతచేయబడింది",
+    preview: "ప్రివ్యూ",
   },
   settings: {
     settings: "సెట్టింగ్‌లు",
@@ -1487,6 +1590,13 @@ const te = {
     summaryDescription:
       "ఎంచుకున్న సంవత్సరానికి అందుబాటులో ఉన్న సెలవులు, ఇప్పటికే తీసుకున్న సమయం మరియు సెలవు వినియోగాన్ని ఒకే చోట చూడండి.",
     balanceUntil: "__PH__0__ వరకు బ్యాలెన్స్ చేయండి",
+    leaveTypeUtilized: "%{name} ఉపయోగించబడింది",
+    leaveTypeAvailable: "%{name} అందుబాటులో ఉంది",
+    outOf: "బయట",
+    thisQuarter: "ఈ త్రైమాసికంలో",
+    thisYear: "ఈ సంవత్సరం",
+    thisMonth: "ఈ నెల",
+    thisWeek: "ఈ వారం",
   },
   subscriptions: {
     currentPlan: "ప్రస్తుత ప్రణాళిక",
@@ -1985,6 +2095,23 @@ const te = {
     expand: "సైడ్‌బార్‌ను విస్తరించండి",
     collapse: "సైడ్‌బార్‌ను కుదించండి",
   },
+  previous: "మునుపటి",
+  continue: "కొనసాగించండి",
+  pagination: "పేజీల సంఖ్య",
+  breadcrumb: "బ్రెడ్‌క్రంబ్",
+  applyFilters: "ఫిల్టర్‌లను వర్తింపజేయండి",
+  resetAction: "రీసెట్",
+  toggleSidebar: "సైడ్‌బార్‌ను టోగుల్ చేయండి",
+  morePages: "మరిన్ని పేజీలు",
+  viewInvoice: "ఇన్‌వాయిస్‌ను వీక్షించండి",
+  customRangeWithDates: "కస్టమ్ (%{from} - %{to})",
+  dataTable: {
+    noResults: "ఫలితాలు లేవు.",
+    rowsSelected: "%{total} వరుస(ల)లో %{selected} ఎంపిక చేయబడింది.",
+    pageOf: "%{total} యొక్క పేజీ %{page}",
+  },
+  selectAll: "అన్నింటినీ ఎంచుకోండి",
+  selectRow: "వరుసను ఎంచుకోండి",
 };
 
-export default te;
+export default locale;

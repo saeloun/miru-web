@@ -781,12 +781,12 @@ const ExpensesTable: React.FC = () => {
                 className="h-8 w-8 p-0"
                 aria-label={`Expense actions for ${expense.description}`}
               >
-                <span className="sr-only">Open menu</span>
+                <span className="sr-only">{i18n.t("openMenu")}</span>
                 <DotsThree size={20} />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DropdownMenuLabel>{i18n.t("actions")}</DropdownMenuLabel>
               <DropdownMenuItem onClick={() => handleEdit(expense)}>
                 <PencilSimple size={16} className="mr-2" />
                 Edit expense
@@ -844,7 +844,9 @@ const ExpensesTable: React.FC = () => {
       <div className="flex items-center justify-center h-96">
         <div className="text-center">
           <Receipt size={48} className="mx-auto mb-4 text-muted-foreground" />
-          <p className="text-muted-foreground">Failed to load expenses</p>
+          <p className="text-muted-foreground">
+            {i18n.t("expenses.failedToLoadExpenses")}
+          </p>
         </div>
       </div>
     );
@@ -885,7 +887,9 @@ const ExpensesTable: React.FC = () => {
               <div className="text-2xl font-semibold text-foreground">
                 {currencyFormat(baseCurrency, totalAmount)}
               </div>
-              <p className="mt-1 text-xs text-muted-foreground">All time</p>
+              <p className="mt-1 text-xs text-muted-foreground">
+                {i18n.t("allTime")}
+              </p>
             </CardContent>
           </Card>
 
@@ -901,7 +905,7 @@ const ExpensesTable: React.FC = () => {
                 {currencyFormat(baseCurrency, businessAmount)}
               </div>
               <p className="mt-1 text-xs text-muted-foreground">
-                Business expenses
+                {i18n.t("expenses.businessExpenses")}
               </p>
             </CardContent>
           </Card>
@@ -909,7 +913,7 @@ const ExpensesTable: React.FC = () => {
           <Card className="border-border shadow-sm">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">
-                Personal
+                {i18n.t("expenses.personal")}
               </CardTitle>
               <XCircle size={20} className="text-muted-foreground" />
             </CardHeader>
@@ -918,7 +922,7 @@ const ExpensesTable: React.FC = () => {
                 {currencyFormat(baseCurrency, personalAmount)}
               </div>
               <p className="mt-1 text-xs text-muted-foreground">
-                Personal expenses
+                {i18n.t("expenses.personalExpenses")}
               </p>
             </CardContent>
           </Card>
@@ -926,7 +930,7 @@ const ExpensesTable: React.FC = () => {
           <Card className="border-border shadow-sm">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">
-                This Month
+                {i18n.t("thisMonth")}
               </CardTitle>
               <Calendar size={20} className="text-muted-foreground" />
             </CardHeader>
@@ -935,7 +939,7 @@ const ExpensesTable: React.FC = () => {
                 {totalExpenseCount}
               </div>
               <p className="mt-1 text-xs text-muted-foreground">
-                Expense entries
+                {i18n.t("expenses.expenseEntries")}
               </p>
             </CardContent>
           </Card>
@@ -949,22 +953,27 @@ const ExpensesTable: React.FC = () => {
                 <DataTable
                   columns={columns}
                   data={expenses}
-                  searchPlaceholder="Search expenses..."
+                  searchPlaceholder={i18n.t("expenses.searchExpenses")}
                   showPagination={false}
                 />
                 <div className="flex flex-col items-center gap-2 pb-2 pt-4 text-sm text-muted-foreground">
                   <span>
-                    Showing {visibleExpenseCount} of {totalExpenseCount}
+                    {i18n.t("expenses.showingOfTotal", {
+                      visible: visibleExpenseCount,
+                      total: totalExpenseCount,
+                    })}
                   </span>
                   {hasMoreExpenses && !isLoadingMore && (
-                    <span>Scroll to load more expenses</span>
+                    <span>{i18n.t("expenses.scrollToLoadMore")}</span>
                   )}
                   {hasMoreExpenses && !isLoadingMore && (
                     <div ref={loadMoreExpensesRef} className="h-8 w-full" />
                   )}
-                  {isLoadingMore && <span>Loading more expenses...</span>}
+                  {isLoadingMore && (
+                    <span>{i18n.t("expenses.loadingMoreExpenses")}</span>
+                  )}
                   {!hasMoreExpenses && totalExpenseCount > 0 && (
-                    <span>All expenses loaded</span>
+                    <span>{i18n.t("expenses.allExpensesLoaded")}</span>
                   )}
                 </div>
               </>
@@ -975,14 +984,14 @@ const ExpensesTable: React.FC = () => {
                   className="mx-auto mb-4 text-muted-foreground/70"
                 />
                 <p className="mb-4 text-muted-foreground">
-                  No expenses recorded
+                  {i18n.t("expenses.noExpensesRecorded")}
                 </p>
                 <Button
                   variant="outline"
                   onClick={() => setShowAddDialog(true)}
                 >
                   <Plus size={20} className="mr-2" />
-                  Submit your first expense
+                  {i18n.t("expenses.submitFirstExpense")}
                 </Button>
               </div>
             )}
@@ -994,15 +1003,15 @@ const ExpensesTable: React.FC = () => {
       <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
         <DialogContent className="sm:max-w-[500px]">
           <DialogHeader>
-            <DialogTitle>Add New Expense</DialogTitle>
+            <DialogTitle>{i18n.t("expenses.addNewExpense")}</DialogTitle>
             <DialogDescription>
-              Enter the details for the new expense.
+              {i18n.t("expenses.enterExpenseDetails")}
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="date" className="text-right">
-                Date
+                {i18n.t("date")}
               </Label>
               <Input
                 id="date"
@@ -1016,7 +1025,7 @@ const ExpensesTable: React.FC = () => {
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="description" className="text-right">
-                Description
+                {i18n.t("description")}
               </Label>
               <Input
                 id="description"
@@ -1025,12 +1034,12 @@ const ExpensesTable: React.FC = () => {
                   setFormData({ ...formData, description: e.target.value })
                 }
                 className="col-span-3"
-                placeholder="Enter expense description"
+                placeholder={i18n.t("expenses.enterExpenseDescription")}
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="amount" className="text-right">
-                Amount
+                {i18n.t("amount")}
               </Label>
               <Input
                 id="amount"
@@ -1046,14 +1055,16 @@ const ExpensesTable: React.FC = () => {
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="category" className="text-right">
-                Category
+                {i18n.t("expenses.category")}
               </Label>
               <Select
                 value={selectedCategoryValue}
                 onValueChange={updateCategorySelection}
               >
                 <SelectTrigger className="col-span-3">
-                  <SelectValue placeholder="Select category" />
+                  <SelectValue
+                    placeholder={i18n.t("expenses.selectCategory")}
+                  />
                 </SelectTrigger>
                 <SelectContent>
                   {categories.map(category => (
@@ -1079,7 +1090,7 @@ const ExpensesTable: React.FC = () => {
             {selectedCategoryValue === "Other" && (
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="custom-category" className="text-right">
-                  Custom Category
+                  {i18n.t("expenses.customCategory")}
                 </Label>
                 <Input
                   id="custom-category"
@@ -1088,13 +1099,13 @@ const ExpensesTable: React.FC = () => {
                     setFormData({ ...formData, category: e.target.value })
                   }
                   className="col-span-3"
-                  placeholder="Enter custom category"
+                  placeholder={i18n.t("expenses.enterCustomCategory")}
                 />
               </div>
             )}
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="vendor" className="text-right">
-                Vendor
+                {i18n.t("expenses.vendor")}
               </Label>
               <Input
                 id="vendor"
@@ -1103,12 +1114,12 @@ const ExpensesTable: React.FC = () => {
                   setFormData({ ...formData, vendor: e.target.value })
                 }
                 className="col-span-3"
-                placeholder="Enter vendor name"
+                placeholder={i18n.t("expenses.enterVendorName")}
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="type" className="text-right">
-                Type
+                {i18n.t("type")}
               </Label>
               <Select
                 value={formData.expenseType}
@@ -1120,14 +1131,18 @@ const ExpensesTable: React.FC = () => {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="business">Business</SelectItem>
-                  <SelectItem value="personal">Personal</SelectItem>
+                  <SelectItem value="business">
+                    {i18n.t("expenses.business")}
+                  </SelectItem>
+                  <SelectItem value="personal">
+                    {i18n.t("expenses.personal")}
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="notes" className="text-right">
-                Notes
+                {i18n.t("notes")}
               </Label>
               <Textarea
                 id="notes"
@@ -1136,12 +1151,12 @@ const ExpensesTable: React.FC = () => {
                   setFormData({ ...formData, notes: e.target.value })
                 }
                 className="col-span-3"
-                placeholder="Optional notes"
+                placeholder={i18n.t("expenses.optionalNotes")}
               />
             </div>
             <div className="grid grid-cols-4 items-start gap-4">
               <Label htmlFor="receipts" className="pt-2 text-right">
-                Receipts
+                {i18n.t("expenses.receipts")}
               </Label>
               <div className="col-span-3 space-y-3">
                 <Input
@@ -1167,7 +1182,7 @@ const ExpensesTable: React.FC = () => {
                           variant="ghost"
                           onClick={() => removeReceiptFile(file.name)}
                         >
-                          Remove
+                          {i18n.t("remove")}
                         </Button>
                       </div>
                     ))}
@@ -1178,7 +1193,7 @@ const ExpensesTable: React.FC = () => {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowAddDialog(false)}>
-              Cancel
+              {i18n.t("cancel")}
             </Button>
             <Button
               onClick={handleSubmitAdd}
@@ -1189,7 +1204,9 @@ const ExpensesTable: React.FC = () => {
                 createMutation.isPending
               }
             >
-              {createMutation.isPending ? "Adding..." : "Add Expense"}
+              {createMutation.isPending
+                ? i18n.t("expenses.adding")
+                : i18n.t("expenses.addExpense")}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -1199,13 +1216,15 @@ const ExpensesTable: React.FC = () => {
       <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
         <DialogContent className="sm:max-w-[500px]">
           <DialogHeader>
-            <DialogTitle>Edit Expense</DialogTitle>
-            <DialogDescription>Update the expense details.</DialogDescription>
+            <DialogTitle>{i18n.t("expenses.editExpense")}</DialogTitle>
+            <DialogDescription>
+              {i18n.t("expenses.updateExpenseDetails")}
+            </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="edit-date" className="text-right">
-                Date
+                {i18n.t("date")}
               </Label>
               <Input
                 id="edit-date"
@@ -1219,7 +1238,7 @@ const ExpensesTable: React.FC = () => {
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="edit-description" className="text-right">
-                Description
+                {i18n.t("description")}
               </Label>
               <Input
                 id="edit-description"
@@ -1228,12 +1247,12 @@ const ExpensesTable: React.FC = () => {
                   setFormData({ ...formData, description: e.target.value })
                 }
                 className="col-span-3"
-                placeholder="Enter expense description"
+                placeholder={i18n.t("expenses.enterExpenseDescription")}
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="edit-amount" className="text-right">
-                Amount
+                {i18n.t("amount")}
               </Label>
               <Input
                 id="edit-amount"
@@ -1249,14 +1268,16 @@ const ExpensesTable: React.FC = () => {
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="edit-category" className="text-right">
-                Category
+                {i18n.t("expenses.category")}
               </Label>
               <Select
                 value={selectedCategoryValue}
                 onValueChange={updateCategorySelection}
               >
                 <SelectTrigger className="col-span-3">
-                  <SelectValue placeholder="Select category" />
+                  <SelectValue
+                    placeholder={i18n.t("expenses.selectCategory")}
+                  />
                 </SelectTrigger>
                 <SelectContent>
                   {categories.map(category => (
@@ -1282,7 +1303,7 @@ const ExpensesTable: React.FC = () => {
             {selectedCategoryValue === "Other" && (
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="edit-custom-category" className="text-right">
-                  Custom Category
+                  {i18n.t("expenses.customCategory")}
                 </Label>
                 <Input
                   id="edit-custom-category"
@@ -1291,13 +1312,13 @@ const ExpensesTable: React.FC = () => {
                     setFormData({ ...formData, category: e.target.value })
                   }
                   className="col-span-3"
-                  placeholder="Enter custom category"
+                  placeholder={i18n.t("expenses.enterCustomCategory")}
                 />
               </div>
             )}
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="edit-vendor" className="text-right">
-                Vendor
+                {i18n.t("expenses.vendor")}
               </Label>
               <Input
                 id="edit-vendor"
@@ -1306,12 +1327,12 @@ const ExpensesTable: React.FC = () => {
                   setFormData({ ...formData, vendor: e.target.value })
                 }
                 className="col-span-3"
-                placeholder="Enter vendor name"
+                placeholder={i18n.t("expenses.enterVendorName")}
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="edit-type" className="text-right">
-                Type
+                {i18n.t("type")}
               </Label>
               <Select
                 value={formData.expenseType}
@@ -1323,14 +1344,18 @@ const ExpensesTable: React.FC = () => {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="business">Business</SelectItem>
-                  <SelectItem value="personal">Personal</SelectItem>
+                  <SelectItem value="business">
+                    {i18n.t("expenses.business")}
+                  </SelectItem>
+                  <SelectItem value="personal">
+                    {i18n.t("expenses.personal")}
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="edit-notes" className="text-right">
-                Notes
+                {i18n.t("notes")}
               </Label>
               <Textarea
                 id="edit-notes"
@@ -1339,12 +1364,12 @@ const ExpensesTable: React.FC = () => {
                   setFormData({ ...formData, notes: e.target.value })
                 }
                 className="col-span-3"
-                placeholder="Optional notes"
+                placeholder={i18n.t("expenses.optionalNotes")}
               />
             </div>
             <div className="grid grid-cols-4 items-start gap-4">
               <Label htmlFor="edit-receipts" className="pt-2 text-right">
-                Receipts
+                {i18n.t("expenses.receipts")}
               </Label>
               <div className="col-span-3 space-y-3">
                 {selectedExpense?.receipts?.length ? (
@@ -1354,7 +1379,9 @@ const ExpensesTable: React.FC = () => {
                     size="sm"
                     onClick={() => openReceiptsPreview(selectedExpense)}
                   >
-                    View existing receipts ({selectedExpense.receipts.length})
+                    {i18n.t("expenses.viewExistingReceipts", {
+                      count: selectedExpense.receipts.length,
+                    })}
                   </Button>
                 ) : null}
                 <Input
@@ -1380,7 +1407,7 @@ const ExpensesTable: React.FC = () => {
                           variant="ghost"
                           onClick={() => removeReceiptFile(file.name)}
                         >
-                          Remove
+                          {i18n.t("remove")}
                         </Button>
                       </div>
                     ))}
@@ -1391,7 +1418,7 @@ const ExpensesTable: React.FC = () => {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowEditDialog(false)}>
-              Cancel
+              {i18n.t("cancel")}
             </Button>
             <Button
               onClick={handleSubmitEdit}
@@ -1402,7 +1429,9 @@ const ExpensesTable: React.FC = () => {
                 updateMutation.isPending
               }
             >
-              {updateMutation.isPending ? "Saving..." : "Save Changes"}
+              {updateMutation.isPending
+                ? i18n.t("expenses.saving")
+                : i18n.t("expenses.saveChanges")}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -1412,10 +1441,9 @@ const ExpensesTable: React.FC = () => {
       <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Delete Expense</DialogTitle>
+            <DialogTitle>{i18n.t("expenses.deleteExpense")}</DialogTitle>
             <DialogDescription>
-              Are you sure you want to delete this expense? This action cannot
-              be undone.
+              {i18n.t("expenses.deleteExpenseConfirmUndone")}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
@@ -1423,14 +1451,16 @@ const ExpensesTable: React.FC = () => {
               variant="outline"
               onClick={() => setShowDeleteDialog(false)}
             >
-              Cancel
+              {i18n.t("cancel")}
             </Button>
             <Button
               variant="destructive"
               onClick={confirmDelete}
               disabled={deleteMutation.isPending}
             >
-              {deleteMutation.isPending ? "Deleting..." : "Delete"}
+              {deleteMutation.isPending
+                ? i18n.t("expenses.deleting")
+                : i18n.t("delete")}
             </Button>
           </DialogFooter>
         </DialogContent>

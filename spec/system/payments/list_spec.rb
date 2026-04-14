@@ -152,6 +152,19 @@ RSpec.describe "Payments page", type: :system, js: true do
         expect(page).to have_content("Scroll to load more payments", wait: 10)
       end
     end
+
+    it "shows localized payment counts in Gujarati", :aggregate_failures do
+      user.update!(locale: "gu")
+
+      with_forgery_protection do
+        visit "/payments"
+
+        expect(page).to have_css("#react-root", wait: 10)
+        expect(page).to have_content("ચુકવણીઓ", wait: 10)
+        expect(page).to have_content("26 માંથી 25 બતાવી રહ્યું છે", wait: 10)
+        expect(page).to have_content("મેન્યુઅલ એન્ટ્રી ઉમેરો", wait: 10)
+      end
+    end
   end
 
   context "role access" do

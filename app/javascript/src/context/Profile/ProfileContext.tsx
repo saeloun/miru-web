@@ -1,6 +1,5 @@
 import { createContext, useContext } from "react";
 
-import { CompensationDetailsState } from "components/Profile/Context/CompensationDetailsState";
 import { EmploymentDetailsState } from "components/Profile/Context/EmploymentDetailsState";
 import { PersonalDetailsState } from "components/Profile/Context/PersonalDetailsState";
 // Context Creation
@@ -10,7 +9,6 @@ export const ProfileContext = createContext({
   employmentDetails: EmploymentDetailsState,
   documentDetails: {},
   deviceDetails: {},
-  compensationDetails: CompensationDetailsState,
   reimburstmentDetails: {},
   updateDetails: (key, payload) => {},
   isCalledFromSettings: false,

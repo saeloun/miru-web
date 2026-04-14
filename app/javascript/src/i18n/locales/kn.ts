@@ -1,4 +1,4 @@
-const kn = {
+const locale = {
   invalidImageFormatSize:
     "ತಪ್ಪಾದ ಫೈಲ್ ಫಾರ್ಮ್ಯಾಟ್. ದಯವಿಟ್ಟು PNG ಅಥವಾ JPG ಪ್ರಕಾರದ ಚಿತ್ರವನ್ನು ಅಪ್‌ಲೋಡ್ ಮಾಡಿ. ಗರಿಷ್ಠ ಗಾತ್ರ (%{fileSize}KB)",
   invalidImageSize: "ಫೈಲ್ ಗಾತ್ರ ಗರಿಷ್ಠ ಮಿತಿ %{fileSize}KB ಅನ್ನು ಮೀರಿದೆ.",
@@ -255,6 +255,36 @@ const kn = {
     paymentReminder: "ಪಾವತಿ ಜ್ಞಾಪನೆ",
     sendPaymentReminder: "ಪಾವತಿ ಜ್ಞಾಪನೆ ಕಳುಹಿಸಿ",
     invoicesSelected: "%{count} ಇನ್‌ವಾಯ್ಸ್‌ಗಳನ್ನು ಆಯ್ಕೆಮಾಡಲಾಗಿದೆ",
+    acceptedPngAndJpgFormats:
+      "ಸ್ವೀಕರಿಸಲಾಗುವ ಫೈಲ್ ಫಾರ್ಮ್ಯಾಟ್‌ಗಳು: PNG ಮತ್ತು JPG.",
+    fileSizeLimitKb: "ಫೈಲ್ ಗಾತ್ರ ≤ %{fileSize} KB ಆಗಿರಬೇಕು.",
+    hoursLogged: "ಗಂಟೆಗಳನ್ನು ದಾಖಲಿಸಲಾಗಿದೆ",
+    overdue: "ಮಿತಿಮೀರಿದ",
+    allClientsDescription:
+      "ನಿಮ್ಮ ಎಲ್ಲಾ ಕ್ಲೈಂಟ್‌ಗಳ ಪಟ್ಟಿ, ಅವರ ಸಂಪರ್ಕ ಮಾಹಿತಿ ಮತ್ತು ಬಿಲ್ಲಿಂಗ್ ಸ್ಥಿತಿ.",
+    failedToLoadClientDetails: "ಕ್ಲೈಂಟ್ ವಿವರಗಳನ್ನು ಲೋಡ್ ಮಾಡಲು ವಿಫಲವಾಗಿದೆ.",
+    clientDeletedSuccessfully: "ಕ್ಲೈಂಟ್ ಅನ್ನು ಯಶಸ್ವಿಯಾಗಿ ಅಳಿಸಲಾಗಿದೆ",
+    failedToDeleteClient: "ಕ್ಲೈಂಟ್ ಅಳಿಸಲು ವಿಫಲವಾಗಿದೆ",
+    addYourFirstClient: "ನಿಮ್ಮ ಮೊದಲ ಕ್ಲೈಂಟ್ ಅನ್ನು ಸೇರಿಸಿ",
+    addNewClientDescription:
+      "ಹೊಸ ಕ್ಲೈಂಟ್ ಅನ್ನು ಸೇರಿಸಲು ಕೆಳಗಿನ ವಿವರಗಳನ್ನು ಭರ್ತಿ ಮಾಡಿ.",
+    editClientDescription: "ಕೆಳಗಿನ ಕ್ಲೈಂಟ್ ವಿವರಗಳನ್ನು ನವೀಕರಿಸಿ.",
+    manageClientsDescription:
+      "ನಿಮ್ಮ ಕ್ಲೈಂಟ್ ಸಂಬಂಧಗಳು ಮತ್ತು ಬಿಲ್ಲಿಂಗ್ ಅನ್ನು ನಿರ್ವಹಿಸಿ",
+    clientHeader: "ಕ್ಲೈಂಟ್",
+    contact: "ಸಂಪರ್ಕಿಸಿ",
+    copyClientId: "ಕ್ಲೈಂಟ್ ಐಡಿಯನ್ನು ನಕಲಿಸಿ",
+    viewDetails: "ವಿವರಗಳನ್ನು ವೀಕ್ಷಿಸಿ",
+    addOrViewContacts: "ಸಂಪರ್ಕಗಳನ್ನು ಸೇರಿಸಿ / ವೀಕ್ಷಿಸಿ",
+    paymentReminderSubject:
+      "ಪಾವತಿಸದ ಇನ್‌ವಾಯ್ಸ್‌ಗಳಿಗೆ ಪಾವತಿಗಳನ್ನು ಪೂರ್ಣಗೊಳಿಸಲು ಜ್ಞಾಪನೆ",
+    paymentReminderMessage:
+      "ಈ ಕೆಳಗಿನ ಇನ್‌ವಾಯ್ಸ್‌ಗಳಿಗೆ ಪಾವತಿಗಳನ್ನು ಪೂರ್ಣಗೊಳಿಸಲು ಇದೊಂದು ಸೌಮ್ಯ ಜ್ಞಾಪನೆ. ಕೆಳಗೆ ನೀಡಲಾದ ಇನ್‌ವಾಯ್ಸ್ ವಿವರಗಳೊಂದಿಗೆ ನೀವು ಆಯಾ ಪಾವತಿ ಲಿಂಕ್‌ಗಳನ್ನು ಕಾಣಬಹುದು.",
+    selectInvoices: "ಇನ್‌ವಾಯ್ಸ್‌ಗಳನ್ನು ಆಯ್ಕೆಮಾಡಿ",
+    emailPreview: "ಇಮೇಲ್ ಪೂರ್ವವೀಕ್ಷಣೆ",
+    recipientEmailId: "ಸ್ವೀಕರಿಸುವವರ ಇಮೇಲ್ ಐಡಿ",
+    invoiceSelected: "%{count} ಇನ್‌ವಾಯ್ಸ್ ಆಯ್ಕೆ ಮಾಡಲಾಗಿದೆ",
+    noProjectsAddedYet: "ಈ ಕ್ಲೈಂಟ್‌ಗೆ ಇನ್ನೂ ಯಾವುದೇ ಯೋಜನೆಯನ್ನು ಸೇರಿಸಲಾಗಿಲ್ಲ.",
   },
   contacts: {
     addContact: "ಸಂಪರ್ಕ ಸೇರಿಸಿ",
@@ -580,6 +610,15 @@ const kn = {
     downloading: "ಡೌನ್‌ಲೋಡ್ ಮಾಡಲಾಗುತ್ತಿದೆ...",
     selectClientBeforeSending:
       "ಇನ್‌ವಾಯ್ಸ್ ಕಳುಹಿಸುವ ಮೊದಲು ಕ್ಲೈಂಟ್ ಅನ್ನು ಆಯ್ಕೆಮಾಡಿ.",
+    backToInvoices: "ಇನ್‌ವಾಯ್ಸ್‌ಗಳಿಗೆ ಹಿಂತಿರುಗಿ",
+    basicDetailsDescription: "ಮೂಲ ಇನ್‌ವಾಯ್ಸ್ ಮಾಹಿತಿಯನ್ನು ನಮೂದಿಸಿ",
+    referenceOptional: "ಉಲ್ಲೇಖ (ಐಚ್ಛಿಕ)",
+    referencePlaceholder: "ಪಿಒ ಸಂಖ್ಯೆ, ಇತ್ಯಾದಿ.",
+    lineItemsDescription: "ಸಮಯ ನಮೂದುಗಳು ಅಥವಾ ಹಸ್ತಚಾಲಿತ ವಸ್ತುಗಳನ್ನು ಸೇರಿಸಿ",
+    additionalDetailsDescription: "ತೆರಿಗೆ, ರಿಯಾಯಿತಿ ಮತ್ತು ಟಿಪ್ಪಣಿಗಳು",
+    notesPlaceholder: "ಹೆಚ್ಚುವರಿ ಟಿಪ್ಪಣಿಗಳು ಅಥವಾ ಪಾವತಿ ಸೂಚನೆಗಳು",
+    subtotal: "ಉಪಮೊತ್ತ",
+    showingOfTotal: "%{total} ರಲ್ಲಿ %{shown} ತೋರಿಸಲಾಗುತ್ತಿದೆ",
   },
   common: {
     retry: "ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ",
@@ -645,6 +684,40 @@ const kn = {
     failedToAddManualEntry: "ಹಸ್ತಚಾಲಿತ ನಮೂದನ್ನು ಸೇರಿಸಲು ವಿಫಲವಾಗಿದೆ",
     searchByClientOrInvoice: "ಗ್ರಾಹಕ ಹೆಸರು ಅಥವಾ ಇನ್‌ವಾಯ್ಸ್ ಐಡಿ ಮೂಲಕ ಹುಡುಕಿ",
     selectTransactionTypeBtn: "ವಹಿವಾಟು ಪ್ರಕಾರ ಆಯ್ಕೆಮಾಡಿ",
+    searchPaymentsPlaceholder:
+      "ಕ್ಲೈಂಟ್, ಇನ್‌ವಾಯ್ಸ್ ಅಥವಾ ಮೊತ್ತದ ಮೂಲಕ ಪಾವತಿಗಳನ್ನು ಹುಡುಕಿ...",
+    failedToLoadInvoicesForPaymentEntry:
+      "ಪಾವತಿ ನಮೂದುಗಾಗಿ ಇನ್‌ವಾಯ್ಸ್‌ಗಳನ್ನು ಲೋಡ್ ಮಾಡಲು ವಿಫಲವಾಗಿದೆ.",
+    totalPayments: "ಒಟ್ಟು ಪಾವತಿಗಳು",
+    totalCollected: "ಒಟ್ಟು ಸಂಗ್ರಹಿಸಲಾಗಿದೆ",
+    allTime: "ಎಲ್ಲಾ ಸಮಯ",
+    averagePayment: "ಸರಾಸರಿ ಪಾವತಿ",
+    perTransaction: "ಪ್ರತಿ ವಹಿವಾಟಿಗೆ",
+    paymentHistoryDescription:
+      "ಪ್ರತಿ ಪಾವತಿಯು ಇನ್‌ವಾಯ್ಸ್ ಮತ್ತು ಕ್ಲೈಂಟ್ ವಿವರಗಳೊಂದಿಗೆ.",
+    paymentLedgerDescription:
+      "ಒಂದು ಸರಳ ಲೆಡ್ಜರ್‌ನಲ್ಲಿ ಪಟ್ಟೆ ಮತ್ತು ಹಸ್ತಚಾಲಿತ ನಮೂದುಗಳು.",
+    searchByInvoiceClientMethodOrNotes:
+      "ಇನ್‌ವಾಯ್ಸ್, ಕ್ಲೈಂಟ್, ವಿಧಾನ ಅಥವಾ ಟಿಪ್ಪಣಿಗಳ ಮೂಲಕ ಹುಡುಕಿ...",
+    showingPaymentsCount: "%{total} ನ %{visible} ಅನ್ನು ತೋರಿಸಲಾಗುತ್ತಿದೆ",
+    notes: "ಟಿಪ್ಪಣಿಗಳು",
+    paymentMethod: "ಪಾವತಿ ವಿಧಾನ",
+    openMenu: "ಮೆನು ತೆರೆಯಿರಿ",
+    copyTransactionId: "ವಹಿವಾಟು ಐಡಿಯನ್ನು ನಕಲಿಸಿ",
+    viewInvoice: "ಇನ್‌ವಾಯ್ಸ್ ವೀಕ್ಷಿಸಿ",
+    downloadReceipt: "ರಶೀದಿಯನ್ನು ಡೌನ್‌ಲೋಡ್ ಮಾಡಿ",
+    manual: "ಕೈಪಿಡಿ",
+    visa: "ವೀಸಾ",
+    mastercard: "ಮಾಸ್ಟರ್‌ಕಾರ್ಡ್",
+    amex: "ಅಮೆಕ್ಸ್",
+    debitCard: "ಡೆಬಿಟ್ ಕಾರ್ಡ್",
+    creditCard: "ಕ್ರೆಡಿಟ್ ಕಾರ್ಡ್",
+    paid: "ಪಾವತಿಸಲಾಗಿದೆ",
+    noPaymentFound: "ಯಾವುದೇ ಪಾವತಿ ಕಂಡುಬಂದಿಲ್ಲ!",
+    recordManualPaymentAgainstInvoice:
+      "ಇನ್‌ವಾಯ್ಸ್ ವಿರುದ್ಧ ಹಸ್ತಚಾಲಿತ ಪಾವತಿಯನ್ನು ದಾಖಲಿಸಿ.",
+    partiallyPaid: "ಭಾಗಶಃ ಪಾವತಿಸಲಾಗಿದೆ",
+    cancelled: "ರದ್ದುಗೊಳಿಸಲಾಗಿದೆ",
   },
   timer: {
     webTimer: "ವೆಬ್ ಟೈಮರ್",
@@ -876,6 +949,32 @@ const kn = {
     unknownUser: "ಅಜ್ಞಾತ ಬಳಕೆದಾರ",
     unknownProject: "ಅಜ್ಞಾತ ಯೋಜನೆ",
     generatingExport: "%{format} ರಚಿಸಲಾಗುತ್ತಿದೆ",
+    totalPayments: "ಒಟ್ಟು ಪಾವತಿಗಳು",
+    paymentCount: "ಪಾವತಿ ಎಣಿಕೆ",
+    averagePayment: "ಸರಾಸರಿ ಪಾವತಿ",
+    totalTransactions: "ಒಟ್ಟು ವಹಿವಾಟುಗಳು",
+    selectedPeriod: "ಆಯ್ಕೆಮಾಡಿದ ಅವಧಿ",
+    noPaymentsFoundForSelectedPeriod:
+      "ಆಯ್ಕೆಮಾಡಿದ ಅವಧಿಗೆ ಯಾವುದೇ ಪಾವತಿಗಳು ಕಂಡುಬಂದಿಲ್ಲ.",
+    showingPayments: "%{total} ಪಾವತಿಗಳಲ್ಲಿ %{shown} ತೋರಿಸಲಾಗುತ್ತಿದೆ",
+    scrollToLoadMorePayments: "ಹೆಚ್ಚಿನ ಪಾವತಿಗಳನ್ನು ಲೋಡ್ ಮಾಡಲು ಸ್ಕ್ರಾಲ್ ಮಾಡಿ",
+    clientsSelected: "%{count} ಕ್ಲೈಂಟ್‌ಗಳು",
+    columns: "ಕಾಲಮ್‌ಗಳು",
+    clientName: "ಕ್ಲೈಂಟ್ ಹೆಸರು",
+    invoices: "ಇನ್‌ವಾಯ್ಸ್‌ಗಳು",
+    clearClients: "ಕ್ಲೈಂಟ್‌ಗಳನ್ನು ತೆರವುಗೊಳಿಸಿ",
+    successfullyCollected: "ಯಶಸ್ವಿಯಾಗಿ ಸಂಗ್ರಹಿಸಲಾಗಿದೆ",
+    pendingCollection: "ಬಾಕಿ ಉಳಿದಿರುವ ಸಂಗ್ರಹ",
+    requiresAttention: "ಗಮನ ಬೇಕು",
+    revenueMixByClient: "ಕ್ಲೈಂಟ್‌ನಿಂದ ಆದಾಯ ಮಿಶ್ರಣ",
+    noClientRevenueData:
+      "ಆಯ್ಕೆಮಾಡಿದ ಫಿಲ್ಟರ್‌ಗಳಿಗೆ ಯಾವುದೇ ಕ್ಲೈಂಟ್ ಆದಾಯದ ಡೇಟಾ ಲಭ್ಯವಿಲ್ಲ.",
+    paid: "ಪಾವತಿಸಲಾಗಿದೆ",
+    awaitingPayment: "ಪಾವತಿಗಾಗಿ ಕಾಯಲಾಗುತ್ತಿದೆ",
+    agingDistribution: "ವಯಸ್ಸಾದ ವಿತರಣೆ",
+    sixtyPlusDays: "60+ ದಿನಗಳು",
+    shareReport: "ವರದಿಯನ್ನು ಹಂಚಿಕೊಳ್ಳಿ",
+    linkCopied: "ಲಿಂಕ್ ನಕಲಿಸಲಾಗಿದೆ",
   },
   expenses: {
     expenses: "ವೆಚ್ಚಗಳು",
@@ -955,6 +1054,10 @@ const kn = {
     viewExistingReceipts: "ಅಸ್ತಿತ್ವದಲ್ಲಿರುವ ರಸೀದಿಗಳನ್ನು ವೀಕ್ಷಿಸಿ (%{count})",
     viewReceiptsFor: "%{description} ಗಾಗಿ ರಸೀದಿಗಳನ್ನು ವೀಕ್ಷಿಸಿ",
     expenseActionsFor: "%{description} ಗಾಗಿ ವೆಚ್ಚ ಕ್ರಿಯೆಗಳು",
+    customCategory: "ಕಸ್ಟಮ್ ವರ್ಗ",
+    enterCustomCategory: "ಕಸ್ಟಮ್ ವರ್ಗವನ್ನು ನಮೂದಿಸಿ",
+    receiptsAttached: "%{count} ಲಗತ್ತಿಸಲಾಗಿದೆ",
+    preview: "ಪೂರ್ವವೀಕ್ಷಣೆ",
   },
   settings: {
     settings: "ಸೆಟ್ಟಿಂಗ್‌ಗಳು",
@@ -1480,6 +1583,13 @@ const kn = {
     summaryDescription:
       "ಆಯ್ದ ವರ್ಷದ ಲಭ್ಯವಿರುವ ರಜೆ, ಈಗಾಗಲೇ ತೆಗೆದುಕೊಂಡ ಸಮಯ ಮತ್ತು ರಜೆಯ ಬಳಕೆಯನ್ನು ಒಂದೇ ಸ್ಥಳದಲ್ಲಿ ನೋಡಿ.",
     balanceUntil: "%{date} ವರೆಗೆ ಬಾಕಿ",
+    leaveTypeUtilized: "%{name} ಬಳಸಲಾಗಿದೆ",
+    leaveTypeAvailable: "%{name} ಲಭ್ಯವಿದೆ",
+    outOf: "ಹೊರಗೆ",
+    thisQuarter: "ಈ ತ್ರೈಮಾಸಿಕ",
+    thisYear: "ಈ ವರ್ಷ",
+    thisMonth: "ಈ ತಿಂಗಳು",
+    thisWeek: "ಈ ವಾರ",
   },
   subscriptions: {
     currentPlan: "ಪ್ರಸ್ತುತ ಯೋಜನೆ",
@@ -1983,6 +2093,23 @@ const kn = {
     expand: "ಸೈಡ್‌ಬಾರ್ ವಿಸ್ತರಿಸಿ",
     collapse: "ಸೈಡ್‌ಬಾರ್ ಅನ್ನು ಕುಗ್ಗಿಸಿ",
   },
+  previous: "ಹಿಂದಿನದು",
+  continue: "ಮುಂದುವರಿಸಿ",
+  pagination: "ಪುಟ ವಿನ್ಯಾಸ",
+  breadcrumb: "ಬ್ರೆಡ್ ತುಂಡು",
+  applyFilters: "ಫಿಲ್ಟರ್‌ಗಳನ್ನು ಅನ್ವಯಿಸಿ",
+  resetAction: "ಮರುಹೊಂದಿಸಿ",
+  toggleSidebar: "ಸೈಡ್‌ಬಾರ್ ಅನ್ನು ಟಾಗಲ್ ಮಾಡಿ",
+  morePages: "ಇನ್ನಷ್ಟು ಪುಟಗಳು",
+  viewInvoice: "ಇನ್‌ವಾಯ್ಸ್ ವೀಕ್ಷಿಸಿ",
+  customRangeWithDates: "ಕಸ್ಟಮ್ (%{from} - %{to})",
+  dataTable: {
+    noResults: "ಯಾವುದೇ ಫಲಿತಾಂಶಗಳಿಲ್ಲ.",
+    rowsSelected: "%{total} ಸಾಲು(ಗಳು) ರಲ್ಲಿ %{selected} ಆಯ್ಕೆ ಮಾಡಲಾಗಿದೆ.",
+    pageOf: "%{total} ನ %{page} ಪುಟ",
+  },
+  selectAll: "ಎಲ್ಲವನ್ನೂ ಆಯ್ಕೆಮಾಡಿ",
+  selectRow: "ಸಾಲನ್ನು ಆಯ್ಕೆಮಾಡಿ",
 };
 
-export default kn;
+export default locale;

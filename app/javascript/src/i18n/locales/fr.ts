@@ -1,4 +1,4 @@
-const fr = {
+const locale = {
   invalidImageFormatSize:
     "Format de fichier incorrect. Veuillez télécharger une image de type PNG ou JPG. Taille max. (%{fileSize}Ko)",
   invalidImageSize:
@@ -258,6 +258,35 @@ const fr = {
     paymentReminder: "Rappel de paiement",
     sendPaymentReminder: "Envoyer un rappel de paiement",
     invoicesSelected: "%{count} factures sélectionnées",
+    acceptedPngAndJpgFormats: "Formats de fichiers acceptés : PNG et JPG.",
+    fileSizeLimitKb: "La taille du fichier doit être ≤ %{fileSize} KB.",
+    hoursLogged: "Heures enregistrées",
+    overdue: "EN RETARD",
+    allClientsDescription:
+      "Une liste de tous vos clients avec leurs coordonnées et leur statut de facturation.",
+    failedToLoadClientDetails: "Impossible de charger les détails du client",
+    clientDeletedSuccessfully: "Client supprimé avec succès",
+    failedToDeleteClient: "Échec de la suppression du client",
+    addYourFirstClient: "Ajoutez votre premier client",
+    addNewClientDescription:
+      "Remplissez les champs ci-dessous pour ajouter un nouveau client.",
+    editClientDescription: "Mettez à jour les informations client ci-dessous.",
+    manageClientsDescription:
+      "Gérez vos relations clients et votre facturation",
+    clientHeader: "CLIENT",
+    contact: "Contact",
+    copyClientId: "Copier l'identifiant client",
+    viewDetails: "Voir les détails",
+    addOrViewContacts: "Ajouter/Consulter des contacts",
+    paymentReminderSubject:
+      "Rappel concernant le paiement des factures impayées",
+    paymentReminderMessage:
+      "Ceci est un rappel concernant le règlement des factures suivantes. Vous trouverez ci-dessous les liens de paiement correspondants ainsi que le détail des factures.",
+    selectInvoices: "Sélectionner les factures",
+    emailPreview: "Aperçu de l'e-mail",
+    recipientEmailId: "Adresse e-mail du destinataire",
+    invoiceSelected: "Facture %{count} sélectionnée",
+    noProjectsAddedYet: "Aucun projet n'a encore été ajouté à ce client.",
   },
   contacts: {
     addContact: "Ajouter un contact",
@@ -584,6 +613,16 @@ const fr = {
     downloading: "Téléchargement...",
     selectClientBeforeSending:
       "Sélectionnez un client avant d'envoyer la facture.",
+    backToInvoices: "Retour aux factures",
+    basicDetailsDescription: "Saisissez les informations de base de la facture",
+    referenceOptional: "Référence (facultative)",
+    referencePlaceholder: "Numéro de commande, etc.",
+    lineItemsDescription:
+      "Ajouter des entrées de temps ou des éléments manuels",
+    additionalDetailsDescription: "Taxes, remises et notes",
+    notesPlaceholder: "Remarques supplémentaires ou instructions de paiement",
+    subtotal: "Total",
+    showingOfTotal: "Affichage de %{shown} sur %{total}",
   },
   common: {
     retry: "Réessayer",
@@ -649,6 +688,40 @@ const fr = {
     failedToAddManualEntry: "Échec de l'ajout de l'entrée manuelle",
     searchByClientOrInvoice: "Rechercher par nom de client ou ID de facture",
     selectTransactionTypeBtn: "Sélectionner le type de transaction",
+    searchPaymentsPlaceholder:
+      "Rechercher les paiements par client, facture ou montant...",
+    failedToLoadInvoicesForPaymentEntry:
+      "Échec du chargement des factures pour la saisie du paiement",
+    totalPayments: "Paiements totaux",
+    totalCollected: "Total collecté",
+    allTime: "Tout le temps",
+    averagePayment: "Paiement moyen",
+    perTransaction: "Par transaction",
+    paymentHistoryDescription:
+      "Chaque paiement accompagné d'une facture et des coordonnées du client.",
+    paymentLedgerDescription:
+      "Saisie par bande magnétique et saisies manuelles dans un seul registre simplifié.",
+    searchByInvoiceClientMethodOrNotes:
+      "Recherche par facture, client, méthode ou notes...",
+    showingPaymentsCount: "Affichage de %{visible} de %{total}",
+    notes: "Notes",
+    paymentMethod: "Mode de paiement",
+    openMenu: "Ouvrir le menu",
+    copyTransactionId: "Copier l'identifiant de transaction",
+    viewInvoice: "Voir la facture",
+    downloadReceipt: "Reçu de téléchargement",
+    manual: "Manuel",
+    visa: "Visa",
+    mastercard: "MasterCard",
+    amex: "Amex",
+    debitCard: "Carte de débit",
+    creditCard: "Carte de crédit",
+    paid: "Payé",
+    noPaymentFound: "Aucun paiement trouvé !",
+    recordManualPaymentAgainstInvoice:
+      "Enregistrez un paiement manuel correspondant à une facture.",
+    partiallyPaid: "Payé partiellement",
+    cancelled: "Annulé",
   },
   timer: {
     webTimer: "Minuteur web",
@@ -888,6 +961,32 @@ const fr = {
     unknownUser: "Utilisateur inconnu",
     unknownProject: "Projet inconnu",
     generatingExport: "Génération de %{format}",
+    totalPayments: "Paiements totaux",
+    paymentCount: "Nombre de paiements",
+    averagePayment: "Paiement moyen",
+    totalTransactions: "Total des transactions",
+    selectedPeriod: "Période sélectionnée",
+    noPaymentsFoundForSelectedPeriod:
+      "Aucun paiement trouvé pour la période sélectionnée.",
+    showingPayments: "Affichage des paiements %{shown} et %{total}",
+    scrollToLoadMorePayments: "Défilez pour afficher plus de paiements",
+    clientsSelected: "Clients %{count}",
+    columns: "Colonnes",
+    clientName: "Nom du client",
+    invoices: "Factures",
+    clearClients: "Clients clairs",
+    successfullyCollected: "Collecte réussie",
+    pendingCollection: "Collection en attente",
+    requiresAttention: "Nécessite de l'attention",
+    revenueMixByClient: "Répartition des revenus par client",
+    noClientRevenueData:
+      "Aucune donnée sur les revenus des clients n'est disponible pour les filtres sélectionnés.",
+    paid: "Payé",
+    awaitingPayment: "En attente de paiement",
+    agingDistribution: "Répartition par âge",
+    sixtyPlusDays: "60 jours et plus",
+    shareReport: "Partager le rapport",
+    linkCopied: "Lien copié",
   },
   expenses: {
     expenses: "Dépenses",
@@ -967,6 +1066,10 @@ const fr = {
     viewExistingReceipts: "Voir les reçus existants (%{count})",
     viewReceiptsFor: "Voir les reçus pour %{description}",
     expenseActionsFor: "Actions de dépense pour %{description}",
+    customCategory: "Catégorie personnalisée",
+    enterCustomCategory: "Saisir une catégorie personnalisée",
+    receiptsAttached: "%{count} joint",
+    preview: "Aperçu",
   },
   settings: {
     settings: "Paramètres",
@@ -1499,6 +1602,13 @@ const fr = {
     summaryDescription:
       "Consultez en un seul endroit les congés disponibles, les congés déjà pris et l'utilisation des jours fériés pour l'année sélectionnée.",
     balanceUntil: "Solde jusqu'à %{date}",
+    leaveTypeUtilized: "%{name} Utilisé",
+    leaveTypeAvailable: "%{name} Disponible",
+    outOf: "de",
+    thisQuarter: "ce trimestre",
+    thisYear: "cette année",
+    thisMonth: "ce mois-ci",
+    thisWeek: "cette semaine",
   },
   subscriptions: {
     currentPlan: "Plan actuel",
@@ -2011,6 +2121,23 @@ const fr = {
     expand: "Développer la barre latérale",
     collapse: "Réduire la barre latérale",
   },
+  previous: "Précédent",
+  continue: "Continuer",
+  pagination: "Pagination",
+  breadcrumb: "chapelure",
+  applyFilters: "Appliquer les filtres",
+  resetAction: "Réinitialiser",
+  toggleSidebar: "Afficher/masquer la barre latérale",
+  morePages: "Plus de pages",
+  viewInvoice: "Voir la facture",
+  customRangeWithDates: "Personnalisé (%{from} - %{to})",
+  dataTable: {
+    noResults: "Aucun résultat.",
+    rowsSelected: "%{selected} sur %{total} ligne(s) sélectionnée(s).",
+    pageOf: "Page %{page} de %{total}",
+  },
+  selectAll: "Tout sélectionner",
+  selectRow: "Sélectionner la ligne",
 };
 
-export default fr;
+export default locale;

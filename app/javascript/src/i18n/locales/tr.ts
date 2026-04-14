@@ -1,4 +1,4 @@
-const tr = {
+const locale = {
   invalidImageFormatSize:
     "Yanlış dosya formatı. Lütfen PNG veya JPG türünde bir resim yükleyin. Maks. boyut (%{fileSize}KB)",
   invalidImageSize: "Dosya boyutu %{fileSize}KB maksimum sınırı aştı.",
@@ -256,6 +256,35 @@ const tr = {
     paymentReminder: "Ödeme Hatırlatması",
     sendPaymentReminder: "Ödeme Hatırlatması Gönder",
     invoicesSelected: "%{count} fatura seçildi",
+    acceptedPngAndJpgFormats: "Kabul edilen dosya formatları: PNG ve JPG.",
+    fileSizeLimitKb: "Dosya boyutu ≤ %{fileSize} KB olmalıdır.",
+    hoursLogged: "Kaydedilen Saatler",
+    overdue: "GECİKMİŞ",
+    allClientsDescription:
+      "Müşterilerinizin tümünün iletişim bilgilerini ve faturalama durumlarını içeren bir liste.",
+    failedToLoadClientDetails: "Müşteri bilgilerini yükleme başarısız oldu.",
+    clientDeletedSuccessfully: "İstemci başarıyla silindi.",
+    failedToDeleteClient: "İstemci silme işlemi başarısız oldu.",
+    addYourFirstClient: "İlk Müşterinizi Ekleyin",
+    addNewClientDescription:
+      "Yeni bir müşteri eklemek için lütfen aşağıdaki bilgileri doldurun.",
+    editClientDescription: "Lütfen aşağıdaki müşteri bilgilerini güncelleyin.",
+    manageClientsDescription:
+      "Müşteri ilişkilerinizi ve faturalandırmanızı yönetin.",
+    clientHeader: "MÜŞTERİ",
+    contact: "Temas etmek",
+    copyClientId: "Müşteri kimliğini kopyala",
+    viewDetails: "Ayrıntıları görüntüle",
+    addOrViewContacts: "Kişi Ekle / Kişileri Görüntüle",
+    paymentReminderSubject:
+      "Ödenmemiş faturaların ödemelerinin tamamlanması için hatırlatma.",
+    paymentReminderMessage:
+      "Aşağıdaki faturaların ödemelerini tamamlamanız için nazik bir hatırlatmadır. İlgili ödeme bağlantılarını ve fatura detaylarını aşağıda bulabilirsiniz.",
+    selectInvoices: "Faturaları seçin",
+    emailPreview: "E-posta önizlemesi",
+    recipientEmailId: "Alıcı E-posta Adresi",
+    invoiceSelected: "%{count} faturası seçildi",
+    noProjectsAddedYet: "Bu müşteriye henüz hiçbir proje eklenmedi.",
   },
   contacts: {
     addContact: "Kişi Ekle",
@@ -576,6 +605,15 @@ const tr = {
     alreadySent: "Zaten gönderildi",
     downloading: "İndiriliyor...",
     selectClientBeforeSending: "Faturayı göndermeden önce bir müşteri seçin.",
+    backToInvoices: "Faturalara geri dön",
+    basicDetailsDescription: "Temel fatura bilgilerini girin",
+    referenceOptional: "Referans (İsteğe bağlı)",
+    referencePlaceholder: "Sipariş Numarası, vb.",
+    lineItemsDescription: "Zaman girişleri veya manuel öğeler ekleyin.",
+    additionalDetailsDescription: "Vergi, indirim ve notlar",
+    notesPlaceholder: "Ek notlar veya ödeme talimatları",
+    subtotal: "Ara toplam",
+    showingOfTotal: "%{total}'in %{shown}'ı gösteriliyor.",
   },
   common: {
     retry: "Tekrar dene",
@@ -641,6 +679,40 @@ const tr = {
     failedToAddManualEntry: "Manuel giriş eklenemedi",
     searchByClientOrInvoice: "Müşteri adı veya fatura ID'si ile arayın",
     selectTransactionTypeBtn: "İşlem Türü Seçin",
+    searchPaymentsPlaceholder:
+      "Müşteri, fatura veya tutar bazında ödemeleri arayın...",
+    failedToLoadInvoicesForPaymentEntry:
+      "Ödeme girişi için faturalar yüklenemedi.",
+    totalPayments: "Toplam Ödemeler",
+    totalCollected: "Toplam Toplanan",
+    allTime: "Tüm zamanlar",
+    averagePayment: "Ortalama Ödeme",
+    perTransaction: "İşlem başına",
+    paymentHistoryDescription:
+      "Fatura ve müşteri bilgilerini içeren her ödeme.",
+    paymentLedgerDescription:
+      "Stripe ve manuel girişler tek bir basit defterde.",
+    searchByInvoiceClientMethodOrNotes:
+      "Fatura, müşteri, yöntem veya notlara göre arama yapın...",
+    showingPaymentsCount: "%{total}'dan %{visible} gösteriliyor.",
+    notes: "Notlar",
+    paymentMethod: "Ödeme yöntemi",
+    openMenu: "Menüyü aç",
+    copyTransactionId: "İşlem kimliğini kopyala",
+    viewInvoice: "Faturayı görüntüle",
+    downloadReceipt: "Makbuzu indir",
+    manual: "Manuel",
+    visa: "Visa",
+    mastercard: "MasterCard",
+    amex: "Amex",
+    debitCard: "Banka Kartı",
+    creditCard: "Kredi kartı",
+    paid: "Paralı",
+    noPaymentFound: "Ödeme bulunamadı!",
+    recordManualPaymentAgainstInvoice:
+      "Faturaya karşılık manuel ödeme kaydı yapıldı.",
+    partiallyPaid: "Kısmen Ödenmiş",
+    cancelled: "İptal edildi",
   },
   timer: {
     webTimer: "Web zamanlayıcı",
@@ -874,6 +946,32 @@ const tr = {
     unknownUser: "Bilinmeyen Kullanıcı",
     unknownProject: "Bilinmeyen Proje",
     generatingExport: "%{format} oluşturuluyor",
+    totalPayments: "Toplam Ödemeler",
+    paymentCount: "Ödeme Sayısı",
+    averagePayment: "Ortalama Ödeme",
+    totalTransactions: "Toplam işlemler",
+    selectedPeriod: "Seçilen dönem",
+    noPaymentsFoundForSelectedPeriod:
+      "Seçilen dönem için herhangi bir ödeme bulunamadı.",
+    showingPayments: "%{total} ödemelerinden %{shown} gösteriliyor.",
+    scrollToLoadMorePayments: "Daha fazla ödeme yüklemek için aşağı kaydırın.",
+    clientsSelected: "%{count} istemcileri",
+    columns: "Sütunlar",
+    clientName: "Müşteri Adı",
+    invoices: "Faturalar",
+    clearClients: "Net müşteriler",
+    successfullyCollected: "Başarıyla toplandı",
+    pendingCollection: "Tahsilat bekleniyor",
+    requiresAttention: "Dikkat gerektirir",
+    revenueMixByClient: "Müşteriye Göre Gelir Dağılımı",
+    noClientRevenueData:
+      "Seçilen filtreler için müşteri gelir verisi mevcut değil.",
+    paid: "Paralı",
+    awaitingPayment: "Ödeme bekleniyor",
+    agingDistribution: "Yaşlanma Dağılımı",
+    sixtyPlusDays: "60+ Gün",
+    shareReport: "Raporu paylaş",
+    linkCopied: "Bağlantı kopyalandı",
   },
   expenses: {
     expenses: "Giderler",
@@ -953,6 +1051,10 @@ const tr = {
     viewExistingReceipts: "Mevcut makbuzları görüntüle (%{count})",
     viewReceiptsFor: "%{description} için makbuzları görüntüle",
     expenseActionsFor: "%{description} için gider işlemleri",
+    customCategory: "Özel Kategori",
+    enterCustomCategory: "Özel kategori girin",
+    receiptsAttached: "%{count} eklendi",
+    preview: "Önizleme",
   },
   settings: {
     settings: "Ayarlar",
@@ -1477,6 +1579,13 @@ const tr = {
     summaryDescription:
       "Seçilen yıl için mevcut izinleri, kullanılan izinleri ve tatil kullanım oranlarını tek bir yerden görüntüleyin.",
     balanceUntil: "Bakiye %{date}'a Kadar",
+    leaveTypeUtilized: "%{name} Kullanıldı",
+    leaveTypeAvailable: "%{name} Mevcut",
+    outOf: "dışında",
+    thisQuarter: "bu çeyrek",
+    thisYear: "bu yıl",
+    thisMonth: "bu ay",
+    thisWeek: "Bu hafta",
   },
   subscriptions: {
     currentPlan: "Mevcut Plan",
@@ -1975,6 +2084,23 @@ const tr = {
     expand: "Kenar çubuğunu genişlet",
     collapse: "Kenar çubuğunu daralt",
   },
+  previous: "Öncesi",
+  continue: "Devam etmek",
+  pagination: "Sayfalama",
+  breadcrumb: "Ekmek kırıntısı",
+  applyFilters: "Filtreleri Uygula",
+  resetAction: "Sıfırla",
+  toggleSidebar: "Kenar Çubuğunu Aç/Kapat",
+  morePages: "Daha fazla sayfa",
+  viewInvoice: "Faturayı Görüntüle",
+  customRangeWithDates: "Özel (%{from} - %{to})",
+  dataTable: {
+    noResults: "Sonuç bulunamadı.",
+    rowsSelected: "%{total} satırından %{selected} seçildi.",
+    pageOf: "%{total}'nun %{page} sayfası",
+  },
+  selectAll: "Tümünü seç",
+  selectRow: "Satırı seçin",
 };
 
-export default tr;
+export default locale;

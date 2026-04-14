@@ -1,4 +1,4 @@
-const hi = {
+const locale = {
   invalidImageFormatSize:
     "गलत फ़ाइल प्रारूप। कृपया PNG या JPG प्रकार की छवि अपलोड करें। अधिकतम आकार (%{fileSize}KB)",
   invalidImageSize: "फ़ाइल का आकार %{fileSize}KB की अधिकतम सीमा से अधिक है।",
@@ -285,6 +285,8 @@ const hi = {
     invoicesSelected: "%{count} इनवॉइस चयनित",
     noProjectsAddedYet:
       "इस क्लाइंट में अभी तक कोई प्रोजेक्ट नहीं जोड़ा गया है।",
+    acceptedPngAndJpgFormats: "स्वीकृत फ़ाइल प्रारूप: PNG और JPG।",
+    fileSizeLimitKb: "फ़ाइल का आकार ≤ %{fileSize} KB होना चाहिए।",
   },
   contacts: {
     addContact: "संपर्क जोड़ें",
@@ -615,6 +617,7 @@ const hi = {
     alreadySent: "पहले से ही भेजा",
     downloading: "डाउनलोड हो रहा है...",
     selectClientBeforeSending: "इनवॉइस भेजने से पहले ग्राहक का चयन करें।",
+    showingOfTotal: "%{total} का %{shown} दिखाया जा रहा है",
   },
   common: {
     retry: "पुनः प्रयास करें",
@@ -707,6 +710,11 @@ const hi = {
     searchByClientOrInvoice: "क्लाइंट नाम या इनवॉइस आईडी से खोजें",
     selectTransactionTypeBtn: "लेनदेन प्रकार चुनें",
     noPaymentFound: "कोई भुगतान नहीं मिला!",
+    paid: "चुकाया गया",
+    recordManualPaymentAgainstInvoice:
+      "किसी इनवॉइस के विरुद्ध मैन्युअल भुगतान दर्ज करें।",
+    partiallyPaid: "आंशिक रूप से भुगतान किया",
+    cancelled: "रद्द कर दिया गया",
   },
   timer: {
     webTimer: "वेब टाइमर",
@@ -1046,6 +1054,8 @@ const hi = {
     viewExistingReceipts: "मौजूदा रसीदें देखें (%{count})",
     viewReceiptsFor: "%{description} के लिए रसीदें देखें",
     expenseActionsFor: "%{description} के लिए खर्चे के कार्य",
+    customCategory: "अनुकूलित श्रेणी",
+    enterCustomCategory: "कस्टम श्रेणी दर्ज करें",
   },
   settings: {
     settings: "सेटिंग्स",
@@ -2064,6 +2074,15 @@ const hi = {
     expand: "साइडबार का विस्तार करें",
     collapse: "साइडबार को छोटा करें",
   },
+  pagination: "पृष्ठ पर अंक लगाना",
+  breadcrumb: "ब्रेडक्रम्ब",
+  applyFilters: "फ़िल्टर लागू करें",
+  resetAction: "रीसेट करें",
+  toggleSidebar: "साइडबार टॉगल करें",
+  morePages: "और पेज",
+  customRangeWithDates: "कस्टम (%{from} - %{to})",
+  selectAll: "सबका चयन करें",
+  selectRow: "पंक्ति का चयन करें",
 };
 
-export default hi;
+export default locale;

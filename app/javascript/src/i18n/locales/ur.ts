@@ -1,4 +1,4 @@
-const ur = {
+const locale = {
   invalidImageFormatSize:
     "غلط فائل فارمیٹ۔ براہ کرم PNG یا JPG قسم کی تصویر اپ لوڈ کریں۔ زیادہ سے زیادہ سائز (%{fileSize}KB)",
   invalidImageSize:
@@ -254,6 +254,35 @@ const ur = {
     paymentReminder: "ادائیگی کی یاد دہانی",
     sendPaymentReminder: "ادائیگی کی یاد دہانی بھیجیں",
     invoicesSelected: "%{count} انوائسز منتخب",
+    acceptedPngAndJpgFormats: "قبول شدہ فائل فارمیٹس: PNG اور JPG۔",
+    fileSizeLimitKb: "فائل کا سائز ≤ %{fileSize} KB ہونا چاہیے۔",
+    hoursLogged: "گھنٹے لاگ ان",
+    overdue: "اوورڈیو",
+    allClientsDescription:
+      "آپ کے تمام کلائنٹس کی فہرست ان کے رابطے کی معلومات اور بلنگ کی حیثیت کے ساتھ۔",
+    failedToLoadClientDetails: "کلائنٹ کی تفصیلات لوڈ کرنے میں ناکام",
+    clientDeletedSuccessfully: "کلائنٹ کو کامیابی سے حذف کر دیا گیا۔",
+    failedToDeleteClient: "کلائنٹ کو حذف کرنے میں ناکام",
+    addYourFirstClient: "اپنا پہلا کلائنٹ شامل کریں۔",
+    addNewClientDescription:
+      "نیا کلائنٹ شامل کرنے کے لیے نیچے دی گئی تفصیلات پر کریں۔",
+    editClientDescription: "ذیل میں کلائنٹ کی تفصیلات کو اپ ڈیٹ کریں۔",
+    manageClientsDescription: "اپنے کلائنٹ کے تعلقات اور بلنگ کا نظم کریں۔",
+    clientHeader: "کلائنٹ",
+    contact: "رابطہ کریں۔",
+    copyClientId: "کلائنٹ آئی ڈی کاپی کریں۔",
+    viewDetails: "تفصیلات دیکھیں",
+    addOrViewContacts: "روابط شامل کریں / دیکھیں",
+    paymentReminderSubject:
+      "غیر ادا شدہ رسیدوں کی ادائیگی مکمل کرنے کی یاد دہانی",
+    paymentReminderMessage:
+      "درج ذیل رسیدوں کی ادائیگی مکمل کرنے کے لیے یہ ایک نرم یاد دہانی ہے۔ آپ ذیل میں دی گئی انوائس کی تفصیلات کے ساتھ متعلقہ ادائیگی کے لنکس تلاش کر سکتے ہیں۔",
+    selectInvoices: "رسیدیں منتخب کریں۔",
+    emailPreview: "ای میل کا پیش نظارہ",
+    recipientEmailId: "وصول کنندہ کی ای میل آئی ڈی",
+    invoiceSelected: "%{count} انوائس منتخب کی گئی۔",
+    noProjectsAddedYet:
+      "اس کلائنٹ میں ابھی تک کوئی پروجیکٹ شامل نہیں کیا گیا ہے۔",
   },
   contacts: {
     addContact: "رابطہ شامل کریں",
@@ -577,6 +606,15 @@ const ur = {
     downloading: "ڈاؤن لوڈ ہو رہا ہے...",
     selectClientBeforeSending:
       "انوائس بھیجنے سے پہلے ایک کلائنٹ کا انتخاب کریں۔",
+    backToInvoices: "انوائسز پر واپس جائیں۔",
+    basicDetailsDescription: "انوائس کی بنیادی معلومات درج کریں۔",
+    referenceOptional: "حوالہ (اختیاری)",
+    referencePlaceholder: "PO نمبر، وغیرہ",
+    lineItemsDescription: "وقت کے اندراجات یا دستی اشیاء شامل کریں۔",
+    additionalDetailsDescription: "ٹیکس، رعایت، اور نوٹ",
+    notesPlaceholder: "اضافی نوٹس یا ادائیگی کی ہدایات",
+    subtotal: "ذیلی کل",
+    showingOfTotal: "%{total} میں سے %{shown} دکھا رہا ہے",
   },
   common: {
     retry: "دوبارہ کوشش کریں",
@@ -642,6 +680,39 @@ const ur = {
     failedToAddManualEntry: "دستی اندراج شامل کرنے میں ناکامی",
     searchByClientOrInvoice: "کلائنٹ نام یا انوائس آئی ڈی سے تلاش کریں",
     selectTransactionTypeBtn: "لین دین کی قسم منتخب کریں",
+    searchPaymentsPlaceholder:
+      "کلائنٹ، انوائس، یا رقم کے لحاظ سے ادائیگی تلاش کریں...",
+    failedToLoadInvoicesForPaymentEntry:
+      "ادائیگی کے اندراج کے لیے رسیدیں لوڈ کرنے میں ناکام",
+    totalPayments: "کل ادائیگیاں",
+    totalCollected: "کل جمع",
+    allTime: "ہر وقت",
+    averagePayment: "اوسط ادائیگی",
+    perTransaction: "فی لین دین",
+    paymentHistoryDescription:
+      "انوائس اور کلائنٹ کی تفصیلات کے ساتھ ہر ادائیگی۔",
+    paymentLedgerDescription: "ایک سادہ لیجر میں پٹی اور دستی اندراجات۔",
+    searchByInvoiceClientMethodOrNotes:
+      "انوائس، کلائنٹ، طریقہ، یا نوٹس کے ذریعے تلاش کریں...",
+    showingPaymentsCount: "%{visible} از %{total} دکھا رہا ہے۔",
+    notes: "نوٹس",
+    paymentMethod: "ادائیگی کا طریقہ",
+    openMenu: "مینو کھولیں۔",
+    copyTransactionId: "ٹرانزیکشن ID کاپی کریں۔",
+    viewInvoice: "رسید دیکھیں",
+    downloadReceipt: "رسید ڈاؤن لوڈ کریں۔",
+    manual: "دستی",
+    visa: "ویزا",
+    mastercard: "ماسٹر کارڈ",
+    amex: "ایمیکس",
+    debitCard: "ڈیبٹ کارڈ",
+    creditCard: "کریڈٹ کارڈ",
+    paid: "ادا کیا",
+    noPaymentFound: "کوئی ادائیگی نہیں ملی!",
+    recordManualPaymentAgainstInvoice:
+      "انوائس کے خلاف دستی ادائیگی ریکارڈ کریں۔",
+    partiallyPaid: "جزوی طور پر ادا شدہ",
+    cancelled: "منسوخ",
   },
   timer: {
     webTimer: "ویب ٹائمر",
@@ -874,6 +945,31 @@ const ur = {
     unknownUser: "نامعلوم صارف",
     unknownProject: "نامعلوم پراجیکٹ",
     generatingExport: "%{format} تیار ہو رہا ہے",
+    totalPayments: "کل ادائیگیاں",
+    paymentCount: "ادائیگی کی گنتی",
+    averagePayment: "اوسط ادائیگی",
+    totalTransactions: "کل لین دین",
+    selectedPeriod: "منتخب مدت",
+    noPaymentsFoundForSelectedPeriod: "منتخب مدت کے لیے کوئی ادائیگی نہیں ملی۔",
+    showingPayments: "%{total} ادائیگیوں میں سے %{shown} دکھا رہا ہے۔",
+    scrollToLoadMorePayments: "مزید ادائیگیاں لوڈ کرنے کے لیے اسکرول کریں۔",
+    clientsSelected: "%{count} کلائنٹس",
+    columns: "کالم",
+    clientName: "کلائنٹ کا نام",
+    invoices: "رسیدیں",
+    clearClients: "کلائنٹس کو صاف کریں۔",
+    successfullyCollected: "کامیابی کے ساتھ جمع ہو گیا۔",
+    pendingCollection: "زیر التواء مجموعہ",
+    requiresAttention: "توجہ کی ضرورت ہے۔",
+    revenueMixByClient: "کلائنٹ کے حساب سے ریونیو مکس",
+    noClientRevenueData:
+      "منتخب کردہ فلٹرز کے لیے کلائنٹ کی آمدنی کا کوئی ڈیٹا دستیاب نہیں ہے۔",
+    paid: "ادا کیا",
+    awaitingPayment: "ادائیگی کا انتظار ہے۔",
+    agingDistribution: "عمر رسیدہ تقسیم",
+    sixtyPlusDays: "60+ دن",
+    shareReport: "رپورٹ شیئر کریں۔",
+    linkCopied: "لنک کاپی ہو گیا۔",
   },
   expenses: {
     expenses: "اخراجات",
@@ -953,6 +1049,10 @@ const ur = {
     viewExistingReceipts: "موجودہ رسیدیں دیکھیں (%{count})",
     viewReceiptsFor: "%{description} کی رسیدیں دیکھیں",
     expenseActionsFor: "%{description} کے خرچ کے اقدامات",
+    customCategory: "حسب ضرورت زمرہ",
+    enterCustomCategory: "حسب ضرورت زمرہ درج کریں۔",
+    receiptsAttached: "%{count} منسلک ہے۔",
+    preview: "پیش نظارہ",
   },
   settings: {
     settings: "ترتیبات",
@@ -1475,6 +1575,13 @@ const ur = {
     summaryDescription:
       "دستیاب چھٹی، پہلے سے لیا گیا وقت، اور منتخب سال کے لیے چھٹیوں کا استعمال ایک جگہ پر دیکھیں۔",
     balanceUntil: "%{date} تک بیلنس",
+    leaveTypeUtilized: "%{name} استعمال کیا گیا۔",
+    leaveTypeAvailable: "%{name} دستیاب ہے۔",
+    outOf: "سے باہر",
+    thisQuarter: "اس سہ ماہی",
+    thisYear: "اس سال",
+    thisMonth: "اس مہینے",
+    thisWeek: "اس ہفتے",
   },
   subscriptions: {
     currentPlan: "موجودہ پلان",
@@ -1967,6 +2074,23 @@ const ur = {
     expand: "سائڈبار کو پھیلائیں۔",
     collapse: "سائڈبار کو سکیڑیں۔",
   },
+  previous: "پچھلا",
+  continue: "جاری رکھیں",
+  pagination: "صفحہ بندی",
+  breadcrumb: "بریڈ کرمب",
+  applyFilters: "فلٹرز لگائیں۔",
+  resetAction: "دوبارہ ترتیب دیں۔",
+  toggleSidebar: "سائڈبار کو ٹوگل کریں۔",
+  morePages: "مزید صفحات",
+  viewInvoice: "انوائس دیکھیں",
+  customRangeWithDates: "حسب ضرورت (%{from} - %{to})",
+  dataTable: {
+    noResults: "کوئی نتیجہ نہیں نکلا۔",
+    rowsSelected: "%{selected} از %{total} قطاریں منتخب کی گئیں۔",
+    pageOf: "صفحہ %{page} از %{total}",
+  },
+  selectAll: "سبھی کو منتخب کریں۔",
+  selectRow: "قطار منتخب کریں۔",
 };
 
-export default ur;
+export default locale;

@@ -1,4 +1,4 @@
-const id = {
+const locale = {
   invalidImageFormatSize:
     "Format file salah. Silakan unggah gambar bertipe PNG atau JPG. Ukuran maks (%{fileSize}KB)",
   invalidImageSize: "Ukuran file melebihi batas maksimal %{fileSize}KB.",
@@ -255,6 +255,34 @@ const id = {
     paymentReminder: "Pengingat Pembayaran",
     sendPaymentReminder: "Kirim Pengingat Pembayaran",
     invoicesSelected: "%{count} faktur dipilih",
+    acceptedPngAndJpgFormats: "Format file yang diterima: PNG dan JPG.",
+    fileSizeLimitKb: "Ukuran file harus ≤ %{fileSize} KB.",
+    hoursLogged: "Jam yang Tercatat",
+    overdue: "TERLAMBAT",
+    allClientsDescription:
+      "Daftar semua klien Anda beserta informasi kontak dan status penagihan mereka.",
+    failedToLoadClientDetails: "Gagal memuat detail klien",
+    clientDeletedSuccessfully: "Klien berhasil dihapus.",
+    failedToDeleteClient: "Gagal menghapus klien",
+    addYourFirstClient: "Tambahkan Klien Pertama Anda",
+    addNewClientDescription:
+      "Isi detail di bawah ini untuk menambahkan klien baru.",
+    editClientDescription: "Perbarui detail klien di bawah ini.",
+    manageClientsDescription: "Kelola hubungan klien dan penagihan Anda",
+    clientHeader: "KLIEN",
+    contact: "Kontak",
+    copyClientId: "Salin ID klien",
+    viewDetails: "Lihat detailnya",
+    addOrViewContacts: "Tambah / Lihat Kontak",
+    paymentReminderSubject:
+      "Pengingat untuk menyelesaikan pembayaran atas faktur yang belum dibayar",
+    paymentReminderMessage:
+      "Ini adalah pengingat untuk menyelesaikan pembayaran untuk faktur-faktur berikut. Anda dapat menemukan tautan pembayaran masing-masing beserta detail faktur yang tertera di bawah ini.",
+    selectInvoices: "Pilih faktur",
+    emailPreview: "Pratinjau email",
+    recipientEmailId: "ID Email Penerima",
+    invoiceSelected: "Faktur %{count} dipilih",
+    noProjectsAddedYet: "Belum ada proyek yang ditambahkan ke klien ini.",
   },
   contacts: {
     addContact: "Tambah Kontak",
@@ -576,6 +604,15 @@ const id = {
     alreadySent: "Sudah dikirim",
     downloading: "Sedang mengunduh...",
     selectClientBeforeSending: "Pilih klien sebelum mengirimkan faktur.",
+    backToInvoices: "Kembali ke Faktur",
+    basicDetailsDescription: "Masukkan informasi dasar faktur.",
+    referenceOptional: "Referensi (Opsional)",
+    referencePlaceholder: "Nomor PO, dll.",
+    lineItemsDescription: "Tambahkan entri waktu atau item manual.",
+    additionalDetailsDescription: "Pajak, diskon, dan catatan",
+    notesPlaceholder: "Catatan tambahan atau instruksi pembayaran",
+    subtotal: "Subtotal",
+    showingOfTotal: "Menampilkan %{shown} dari %{total}",
   },
   common: {
     retry: "Coba Lagi",
@@ -641,6 +678,40 @@ const id = {
     failedToAddManualEntry: "Gagal menambahkan entri manual",
     searchByClientOrInvoice: "Cari berdasarkan nama klien atau ID faktur",
     selectTransactionTypeBtn: "Pilih Tipe Transaksi",
+    searchPaymentsPlaceholder:
+      "Cari pembayaran berdasarkan klien, faktur, atau jumlah...",
+    failedToLoadInvoicesForPaymentEntry:
+      "Gagal memuat faktur untuk entri pembayaran.",
+    totalPayments: "Total Pembayaran",
+    totalCollected: "Total yang Terkumpul",
+    allTime: "Sepanjang masa",
+    averagePayment: "Pembayaran Rata-Rata",
+    perTransaction: "Per transaksi",
+    paymentHistoryDescription:
+      "Setiap pembayaran disertai faktur dan detail klien.",
+    paymentLedgerDescription:
+      "Entri Stripe dan manual dalam satu buku besar yang sederhana.",
+    searchByInvoiceClientMethodOrNotes:
+      "Cari berdasarkan faktur, klien, metode, atau catatan...",
+    showingPaymentsCount: "Menampilkan %{visible} dari %{total}",
+    notes: "Catatan",
+    paymentMethod: "Metode Pembayaran",
+    openMenu: "Buka menu",
+    copyTransactionId: "Salin ID transaksi",
+    viewInvoice: "Lihat faktur",
+    downloadReceipt: "Unduh tanda terima",
+    manual: "Manual",
+    visa: "Visa",
+    mastercard: "MasterCard",
+    amex: "Amex",
+    debitCard: "Kartu Debit",
+    creditCard: "Kartu kredit",
+    paid: "Dibayar",
+    noPaymentFound: "Pembayaran tidak ditemukan!",
+    recordManualPaymentAgainstInvoice:
+      "Catat pembayaran manual terhadap sebuah faktur.",
+    partiallyPaid: "Dibayar Sebagian",
+    cancelled: "Dibatalkan",
   },
   timer: {
     webTimer: "Timer web",
@@ -878,6 +949,33 @@ const id = {
     unknownUser: "Pengguna Tidak Dikenal",
     unknownProject: "Proyek Tidak Dikenal",
     generatingExport: "Membuat %{format}",
+    totalPayments: "Total Pembayaran",
+    paymentCount: "Jumlah Pembayaran",
+    averagePayment: "Pembayaran Rata-Rata",
+    totalTransactions: "Total transaksi",
+    selectedPeriod: "Periode yang dipilih",
+    noPaymentsFoundForSelectedPeriod:
+      "Tidak ditemukan pembayaran untuk periode yang dipilih.",
+    showingPayments: "Menampilkan %{shown} dari pembayaran %{total}",
+    scrollToLoadMorePayments:
+      "Gulir ke bawah untuk memuat lebih banyak pembayaran",
+    clientsSelected: "Klien %{count}",
+    columns: "Kolom",
+    clientName: "Nama Klien",
+    invoices: "Faktur",
+    clearClients: "Klien yang jelas",
+    successfullyCollected: "Berhasil dikumpulkan",
+    pendingCollection: "Penagihan tertunda",
+    requiresAttention: "Membutuhkan perhatian",
+    revenueMixByClient: "Komposisi Pendapatan berdasarkan Klien",
+    noClientRevenueData:
+      "Tidak ada data pendapatan klien yang tersedia untuk filter yang dipilih.",
+    paid: "Dibayar",
+    awaitingPayment: "Menunggu pembayaran",
+    agingDistribution: "Distribusi Penuaan",
+    sixtyPlusDays: "60+ Hari",
+    shareReport: "Bagikan laporan",
+    linkCopied: "Tautan disalin",
   },
   expenses: {
     expenses: "Pengeluaran",
@@ -957,6 +1055,10 @@ const id = {
     viewExistingReceipts: "Lihat kwitansi yang ada (%{count})",
     viewReceiptsFor: "Lihat kwitansi untuk %{description}",
     expenseActionsFor: "Tindakan pengeluaran untuk %{description}",
+    customCategory: "Kategori Kustom",
+    enterCustomCategory: "Masukkan kategori khusus",
+    receiptsAttached: "%{count} terlampir",
+    preview: "Pratinjau",
   },
   settings: {
     settings: "Pengaturan",
@@ -1484,6 +1586,13 @@ const id = {
     summaryDescription:
       "Lihat cuti yang tersedia, waktu cuti yang sudah diambil, dan penggunaan cuti untuk tahun yang dipilih di satu tempat.",
     balanceUntil: "Saldo Hingga __PH__0__",
+    leaveTypeUtilized: "%{name} Digunakan",
+    leaveTypeAvailable: "%{name} Tersedia",
+    outOf: "dari",
+    thisQuarter: "kuartal ini",
+    thisYear: "tahun ini",
+    thisMonth: "bulan ini",
+    thisWeek: "minggu ini",
   },
   subscriptions: {
     currentPlan: "Paket Saat Ini",
@@ -1985,6 +2094,23 @@ const id = {
     expand: "Perluas bilah sisi",
     collapse: "Tutup bilah sisi",
   },
+  previous: "Sebelumnya",
+  continue: "Melanjutkan",
+  pagination: "Penomoran halaman",
+  breadcrumb: "Remah roti",
+  applyFilters: "Terapkan Filter",
+  resetAction: "Mengatur ulang",
+  toggleSidebar: "Alihkan Sidebar",
+  morePages: "Halaman lainnya",
+  viewInvoice: "Lihat Faktur",
+  customRangeWithDates: "Kustom (%{from} - %{to})",
+  dataTable: {
+    noResults: "Tidak ada hasil.",
+    rowsSelected: "%{selected} dari %{total} baris terpilih.",
+    pageOf: "Halaman %{page} dari %{total}",
+  },
+  selectAll: "Pilih semua",
+  selectRow: "Pilih baris",
 };
 
-export default id;
+export default locale;

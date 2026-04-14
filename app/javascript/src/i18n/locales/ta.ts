@@ -1,4 +1,4 @@
-const ta = {
+const locale = {
   invalidImageFormatSize:
     "தவறான கோப்பு வடிவம். PNG அல்லது JPG வகை படத்தை பதிவேற்றவும். அதிகபட்ச அளவு (%{fileSize}KB)",
   invalidImageSize: "கோப்பு அளவு அதிகபட்ச வரம்பான %{fileSize}KB ஐ மீறிவிட்டது.",
@@ -257,6 +257,37 @@ const ta = {
     paymentReminder: "பணம் செலுத்தும் நினைவூட்டல்",
     sendPaymentReminder: "பணம் செலுத்தும் நினைவூட்டலை அனுப்பு",
     invoicesSelected: "%{count} விலைப்பட்டியல்கள் தேர்ந்தெடுக்கப்பட்டன",
+    acceptedPngAndJpgFormats: "ஏற்கப்பட்ட கோப்பு வடிவங்கள்: PNG மற்றும் JPG.",
+    fileSizeLimitKb:
+      "கோப்பின் அளவு %{fileSize} KB அல்லது அதற்குக் குறைவாக இருக்க வேண்டும்.",
+    hoursLogged: "பதிவு செய்யப்பட்ட மணிநேரங்கள்",
+    overdue: "காலாவதியானது",
+    allClientsDescription:
+      "உங்கள் வாடிக்கையாளர்கள் அனைவரின் தொடர்புத் தகவல் மற்றும் கட்டண நிலவரம் அடங்கிய பட்டியல்.",
+    failedToLoadClientDetails: "வாடிக்கையாளர் விவரங்களை ஏற்ற முடியவில்லை",
+    clientDeletedSuccessfully: "கிளையன்ட் வெற்றிகரமாக நீக்கப்பட்டது",
+    failedToDeleteClient: "கிளையண்ட்டை நீக்க முடியவில்லை",
+    addYourFirstClient: "உங்கள் முதல் வாடிக்கையாளரைச் சேர்க்கவும்",
+    addNewClientDescription:
+      "புதிய வாடிக்கையாளரைச் சேர்க்க, கீழே உள்ள விவரங்களை நிரப்பவும்.",
+    editClientDescription: "கீழே வாடிக்கையாளர் விவரங்களைப் புதுப்பிக்கவும்.",
+    manageClientsDescription:
+      "உங்கள் வாடிக்கையாளர் உறவுகளையும் கட்டண விவரங்களையும் நிர்வகிக்கவும்.",
+    clientHeader: "வாடிக்கையாளர்",
+    contact: "தொடர்பு",
+    copyClientId: "கிளையன்ட் ஐடியை நகலெடுக்கவும்",
+    viewDetails: "விவரங்களைக் காண்க",
+    addOrViewContacts: "தொடர்புகளைச் சேர்க்கவும் / பார்க்கவும்",
+    paymentReminderSubject:
+      "செலுத்தப்படாத விலைப்பட்டியல்களுக்கான கட்டணங்களைச் செலுத்தி முடிக்க நினைவூட்டல்",
+    paymentReminderMessage:
+      "பின்வரும் இன்வாய்ஸ்களுக்கான கட்டணங்களைச் செலுத்தி முடிக்குமாறு அன்புடன் நினைவூட்டுகிறோம். அதற்கான கட்டண இணைப்புகளையும் இன்வாய்ஸ் விவரங்களையும் கீழே காணலாம்.",
+    selectInvoices: "விலைப்பட்டியல்களைத் தேர்ந்தெடுக்கவும்",
+    emailPreview: "மின்னஞ்சல் முன்னோட்டம்",
+    recipientEmailId: "பெறுநரின் மின்னஞ்சல் ஐடி",
+    invoiceSelected: "%{count} விலைப்பட்டியல் தேர்ந்தெடுக்கப்பட்டது",
+    noProjectsAddedYet:
+      "இந்த வாடிக்கையாளருக்கு இதுவரை எந்தத் திட்டமும் சேர்க்கப்படவில்லை.",
   },
   contacts: {
     addContact: "தொடர்பைச் சேர்",
@@ -596,6 +627,16 @@ const ta = {
     downloading: "பதிவிறக்கம் ஆகிறது...",
     selectClientBeforeSending:
       "விலைப்பட்டியலை அனுப்புவதற்கு முன் வாடிக்கையாளரைத் தேர்ந்தெடுக்கவும்.",
+    backToInvoices: "விலைப்பட்டியல்களுக்குத் திரும்பு",
+    basicDetailsDescription: "அடிப்படை விலைப்பட்டியல் தகவலை உள்ளிடவும்",
+    referenceOptional: "குறிப்பு (விருப்பத்திற்குரியது)",
+    referencePlaceholder: "கொள்முதல் ஆணை எண், முதலியன.",
+    lineItemsDescription:
+      "நேர உள்ளீடுகள் அல்லது கையேடு உருப்படிகளைச் சேர்க்கவும்",
+    additionalDetailsDescription: "வரி, தள்ளுபடி மற்றும் குறிப்புகள்",
+    notesPlaceholder: "கூடுதல் குறிப்புகள் அல்லது கட்டண வழிமுறைகள்",
+    subtotal: "மொத்த தொகை",
+    showingOfTotal: "%{total} இன் %{shown} காட்டப்படுகிறது",
   },
   common: {
     retry: "மீண்டும் முயற்சி",
@@ -662,6 +703,40 @@ const ta = {
     searchByClientOrInvoice:
       "வாடிக்கையாளர் பெயர் அல்லது விலைப்பட்டியல் அடையாளம் மூலம் தேடு",
     selectTransactionTypeBtn: "பரிவர்த்தனை வகையைத் தேர்ந்தெடுக்கவும்",
+    searchPaymentsPlaceholder:
+      "வாடிக்கையாளர், விலைப்பட்டியல் அல்லது தொகை அடிப்படையில் பணம் செலுத்துதல்களைத் தேடவும்...",
+    failedToLoadInvoicesForPaymentEntry:
+      "பணம் செலுத்துவதற்கான இன்வாய்ஸ்களை ஏற்ற முடியவில்லை",
+    totalPayments: "மொத்த கொடுப்பனவுகள்",
+    totalCollected: "மொத்தமாக சேகரிக்கப்பட்டது",
+    allTime: "எல்லா நேரத்திலும்",
+    averagePayment: "சராசரி கட்டணம்",
+    perTransaction: "ஒவ்வொரு ஒப்பந்தத்திற்கும்",
+    paymentHistoryDescription:
+      "ஒவ்வொரு கட்டணமும் விலைப்பட்டியல் மற்றும் வாடிக்கையாளர் விவரங்களுடன் வழங்கப்படும்.",
+    paymentLedgerDescription:
+      "வரி மற்றும் கைமுறைப் பதிவுகள் ஒரே எளிய பேரேட்டில்.",
+    searchByInvoiceClientMethodOrNotes:
+      "விலைப்பட்டியல், வாடிக்கையாளர், முறை அல்லது குறிப்புகள் மூலம் தேடவும்...",
+    showingPaymentsCount: "%{total}-இன் %{visible} காட்டப்படுகிறது",
+    notes: "குறிப்புகள்",
+    paymentMethod: "பணம் செலுத்தும் முறை",
+    openMenu: "மெனுவைத் திறக்கவும்",
+    copyTransactionId: "பரிவர்த்தனை ஐடியை நகலெடுக்கவும்",
+    viewInvoice: "விலைப்பட்டியலைக் காண்க",
+    downloadReceipt: "பதிவிறக்க ரசீது",
+    manual: "கையேடு",
+    visa: "விசா",
+    mastercard: "மாஸ்டர்கார்டு",
+    amex: "அமெக்ஸ்",
+    debitCard: "பற்று அட்டை",
+    creditCard: "கிரெடிட் கார்டு",
+    paid: "பணம் செலுத்தப்பட்டது",
+    noPaymentFound: "பணம் செலுத்தப்படவில்லை!",
+    recordManualPaymentAgainstInvoice:
+      "ஒரு விலைப்பட்டியலுக்கு எதிரான கைமுறை செலுத்துதலைப் பதிவு செய்யவும்.",
+    partiallyPaid: "பகுதி பணம் செலுத்தப்பட்டது",
+    cancelled: "ரத்து செய்யப்பட்டது",
   },
   timer: {
     webTimer: "வலை நேரமானி",
@@ -905,6 +980,33 @@ const ta = {
     unknownUser: "அறியாத பயனர்",
     unknownProject: "அறியாத திட்டம்",
     generatingExport: "%{format} உருவாக்குகிறது",
+    totalPayments: "மொத்த கொடுப்பனவுகள்",
+    paymentCount: "பணம் செலுத்தும் எண்ணிக்கை",
+    averagePayment: "சராசரி கட்டணம்",
+    totalTransactions: "மொத்த பரிவர்த்தனைகள்",
+    selectedPeriod: "தேர்ந்தெடுக்கப்பட்ட காலம்",
+    noPaymentsFoundForSelectedPeriod:
+      "தேர்ந்தெடுக்கப்பட்ட காலத்திற்கான பணம் செலுத்துதல்கள் எதுவும் காணப்படவில்லை.",
+    showingPayments: "%{total} கொடுப்பனவுகளில் %{shown} காட்டப்படுகிறது",
+    scrollToLoadMorePayments:
+      "மேலும் பணம் செலுத்துதல்களைக் காண கீழே உருட்டவும்.",
+    clientsSelected: "%{count} வாடிக்கையாளர்கள்",
+    columns: "நெடுவரிசைகள்",
+    clientName: "வாடிக்கையாளர் பெயர்",
+    invoices: "விலைப்பட்டியல்கள்",
+    clearClients: "தெளிவான வாடிக்கையாளர்கள்",
+    successfullyCollected: "வெற்றிகரமாக சேகரிக்கப்பட்டது",
+    pendingCollection: "சேகரிப்பு நிலுவையில் உள்ளது",
+    requiresAttention: "கவனம் தேவைப்படுகிறது",
+    revenueMixByClient: "வாடிக்கையாளர் வாரியான வருவாய் கலவை",
+    noClientRevenueData:
+      "தேர்ந்தெடுக்கப்பட்ட வடிப்பான்களுக்கு வாடிக்கையாளர் வருவாய் தரவுகள் எதுவும் கிடைக்கவில்லை.",
+    paid: "பணம் செலுத்தப்பட்டது",
+    awaitingPayment: "பணம் செலுத்துவதற்காகக் காத்திருக்கிறது",
+    agingDistribution: "வயதான விநியோகம்",
+    sixtyPlusDays: "60+ நாட்கள்",
+    shareReport: "பங்கு அறிக்கை",
+    linkCopied: "இணைப்பு நகலெடுக்கப்பட்டது",
   },
   expenses: {
     expenses: "செலவுகள்",
@@ -984,6 +1086,10 @@ const ta = {
     viewExistingReceipts: "ஏற்கனவே உள்ள ரசீதுகளைக் காண (%{count})",
     viewReceiptsFor: "%{description} க்கான ரசீதுகளைக் காண்",
     expenseActionsFor: "%{description} க்கான செலவு செயல்கள்",
+    customCategory: "தனிப்பயன் வகை",
+    enterCustomCategory: "தனிப்பயன் வகையை உள்ளிடவும்",
+    receiptsAttached: "%{count} இணைக்கப்பட்டது",
+    preview: "முன்னோட்டம்",
   },
   settings: {
     settings: "அமைப்புகள்",
@@ -1518,6 +1624,13 @@ const ta = {
     summaryDescription:
       "தேர்ந்தெடுக்கப்பட்ட ஆண்டிற்கான கிடைக்கக்கூடிய விடுப்பு, ஏற்கனவே எடுத்த விடுப்பு நேரம் மற்றும் விடுமுறைப் பயன்பாடு ஆகியவற்றை ஒரே இடத்தில் காண்க.",
     balanceUntil: "%{date} வரை இருப்பு",
+    leaveTypeUtilized: "%{name} பயன்படுத்தப்பட்டது",
+    leaveTypeAvailable: "%{name} கிடைக்கிறது",
+    outOf: "வெளியே",
+    thisQuarter: "இந்தக் காலாண்டில்",
+    thisYear: "இந்த ஆண்டு",
+    thisMonth: "இந்த மாதம்",
+    thisWeek: "இந்த வாரம்",
   },
   subscriptions: {
     currentPlan: "தற்போதைய திட்டம்",
@@ -2026,6 +2139,23 @@ const ta = {
     expand: "பக்கப் பட்டியை விரிவாக்கு",
     collapse: "பக்கப் பட்டியைச் சுருக்கு",
   },
+  previous: "முந்தைய",
+  continue: "தொடரவும்",
+  pagination: "பக்க எண்",
+  breadcrumb: "ரொட்டித்தூள்",
+  applyFilters: "வடிப்பான்களைப் பயன்படுத்துங்கள்",
+  resetAction: "மீட்டமை",
+  toggleSidebar: "பக்கப் பட்டியை மாற்று",
+  morePages: "மேலும் பக்கங்கள்",
+  viewInvoice: "விலைப்பட்டியலைக் காண்க",
+  customRangeWithDates: "தனிப்பயன் (%{from} - %{to})",
+  dataTable: {
+    noResults: "முடிவுகள் இல்லை.",
+    rowsSelected: "%{total} வரிசைகளில் %{selected} தேர்ந்தெடுக்கப்பட்டது.",
+    pageOf: "%{total}-இன் பக்கம் %{page}",
+  },
+  selectAll: "அனைத்தையும் தேர்ந்தெடுக்கவும்",
+  selectRow: "வரிசையைத் தேர்ந்தெடுக்கவும்",
 };
 
-export default ta;
+export default locale;

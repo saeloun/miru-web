@@ -3,6 +3,7 @@ import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { CaretRight, DotsThree } from "@phosphor-icons/react";
 
+import { i18n } from "../../i18n";
 import { cn } from "../../lib/utils";
 
 const Breadcrumb = React.forwardRef<
@@ -10,7 +11,9 @@ const Breadcrumb = React.forwardRef<
   React.ComponentPropsWithoutRef<"nav"> & {
     separator?: React.ReactNode;
   }
->(({ ...props }, ref) => <nav ref={ref} aria-label="breadcrumb" {...props} />);
+>(({ ...props }, ref) => (
+  <nav ref={ref} aria-label={i18n.t("breadcrumb")} {...props} />
+));
 Breadcrumb.displayName = "Breadcrumb";
 
 const BreadcrumbList = React.forwardRef<
@@ -100,7 +103,7 @@ const BreadcrumbEllipsis = ({
     {...props}
   >
     <DotsThree className="h-4 w-4" />
-    <span className="sr-only">More</span>
+    <span className="sr-only">{i18n.t("openMenu")}</span>
   </span>
 );
 BreadcrumbEllipsis.displayName = "BreadcrumbElipssis";

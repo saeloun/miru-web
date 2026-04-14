@@ -1,4 +1,4 @@
-const mr = {
+const locale = {
   invalidImageFormatSize:
     "चुकीचा फाइल फॉरमॅट. कृपया PNG किंवा JPG प्रकारची इमेज अपलोड करा. कमाल आकार (%{fileSize}KB)",
   invalidImageSize:
@@ -255,6 +255,34 @@ const mr = {
     paymentReminder: "पेमेंट स्मरणपत्र",
     sendPaymentReminder: "पेमेंट स्मरणपत्र पाठवा",
     invoicesSelected: "%{count} इनव्हॉइस निवडले",
+    acceptedPngAndJpgFormats: "स्वीकार्य फाईल फॉरमॅट्स: PNG आणि JPG.",
+    fileSizeLimitKb: "फाईलचा आकार %{fileSize} KB पेक्षा कमी किंवा समान असावा.",
+    hoursLogged: "नोंदवलेले तास",
+    overdue: "विलंबित",
+    allClientsDescription:
+      "तुमच्या सर्व ग्राहकांची त्यांच्या संपर्क माहिती आणि बिलिंग स्थितीसह यादी.",
+    failedToLoadClientDetails: "क्लायंटचा तपशील लोड करण्यात अयशस्वी",
+    clientDeletedSuccessfully: "क्लायंट यशस्वीरित्या हटवला गेला.",
+    failedToDeleteClient: "क्लायंट हटवण्यात अयशस्वी झाले.",
+    addYourFirstClient: "तुमचा पहिला ग्राहक जोडा",
+    addNewClientDescription: "नवीन ग्राहक जोडण्यासाठी खालील तपशील भरा.",
+    editClientDescription: "खालील ग्राहक तपशील अद्ययावत करा.",
+    manageClientsDescription: "आपले ग्राहक संबंध आणि बिलिंग व्यवस्थापित करा",
+    clientHeader: "ग्राहक",
+    contact: "संपर्क",
+    copyClientId: "क्लायंट आयडी कॉपी करा",
+    viewDetails: "तपशील पहा",
+    addOrViewContacts: "संपर्क जोडा / पहा",
+    paymentReminderSubject:
+      "न भरलेल्या बिलांचे पेमेंट पूर्ण करण्याबाबतची सूचना",
+    paymentReminderMessage:
+      "खालील इनव्हॉइसचे पेमेंट पूर्ण करण्यासाठी ही एक नम्र आठवण आहे. खाली दिलेल्या इनव्हॉइसच्या तपशिलासोबत तुम्हाला संबंधित पेमेंट लिंक्स मिळतील.",
+    selectInvoices: "पावत्या निवडा",
+    emailPreview: "ईमेल पूर्वावलोकन",
+    recipientEmailId: "प्राप्तकर्त्याचा ईमेल आयडी",
+    invoiceSelected: "%{count} इनव्हॉइस निवडले",
+    noProjectsAddedYet:
+      "या क्लायंटकडे अद्याप कोणताही प्रकल्प जोडला गेलेला नाही.",
   },
   contacts: {
     addContact: "संपर्क जोडा",
@@ -576,6 +604,15 @@ const mr = {
     alreadySent: "आधीच पाठवले आहे",
     downloading: "डाउनलोड होत आहे...",
     selectClientBeforeSending: "इनव्हॉइस पाठवण्यापूर्वी क्लायंटची निवड करा.",
+    backToInvoices: "पावत्यांकडे परत जा",
+    basicDetailsDescription: "इनव्हॉइसची मूलभूत माहिती प्रविष्ट करा",
+    referenceOptional: "संदर्भ (ऐच्छिक)",
+    referencePlaceholder: "पीओ नंबर, इत्यादी.",
+    lineItemsDescription: "वेळेच्या नोंदी किंवा मॅन्युअल आयटम जोडा",
+    additionalDetailsDescription: "कर, सवलत आणि नोंदी",
+    notesPlaceholder: "अतिरिक्त नोंदी किंवा पेमेंट सूचना",
+    subtotal: "उपएकूण",
+    showingOfTotal: "%{total} चा %{shown} दाखवत आहे",
   },
   common: {
     retry: "पुन्हा प्रयत्न करा",
@@ -641,6 +678,40 @@ const mr = {
     failedToAddManualEntry: "मॅन्युअल एन्ट्री जोडणे अयशस्वी",
     searchByClientOrInvoice: "क्लायंट नाव किंवा इनव्हॉइस आयडीने शोधा",
     selectTransactionTypeBtn: "व्यवहार प्रकार निवडा",
+    searchPaymentsPlaceholder:
+      "ग्राहक, इनव्हॉइस किंवा रकमेनुसार पेमेंट शोधा...",
+    failedToLoadInvoicesForPaymentEntry:
+      "पेमेंट एंट्रीसाठी इन्व्हॉइसेस लोड करण्यात अयशस्वी झाले.",
+    totalPayments: "एकूण देयके",
+    totalCollected: "एकूण गोळा केले",
+    allTime: "सर्वकाळ",
+    averagePayment: "सरासरी पेमेंट",
+    perTransaction: "प्रति व्यवहार",
+    paymentHistoryDescription:
+      "प्रत्येक पेमेंट इनव्हॉइस आणि क्लायंटच्या तपशिलांसह केले जाईल.",
+    paymentLedgerDescription:
+      "एकाच सोप्या लेजरमध्ये स्ट्राइप आणि मॅन्युअल नोंदी.",
+    searchByInvoiceClientMethodOrNotes:
+      "इनव्हॉइस, क्लायंट, पद्धत किंवा नोंदींनुसार शोधा...",
+    showingPaymentsCount: "%{total} चा %{visible} दाखवत आहे",
+    notes: "नोंदी",
+    paymentMethod: "पेमेंट पद्धत",
+    openMenu: "मेनू उघडा",
+    copyTransactionId: "व्यवहार आयडी कॉपी करा",
+    viewInvoice: "इनव्हॉइस पहा",
+    downloadReceipt: "पावती डाउनलोड करा",
+    manual: "मॅन्युअल",
+    visa: "व्हिसा",
+    mastercard: "मास्टरकार्ड",
+    amex: "अमेक्स",
+    debitCard: "डेबिट कार्ड",
+    creditCard: "क्रेडिट कार्ड",
+    paid: "पैसे दिले",
+    noPaymentFound: "कोणतेही पेमेंट आढळले नाही!",
+    recordManualPaymentAgainstInvoice:
+      "इनव्हॉइसच्या विरुद्ध मॅन्युअल पेमेंटची नोंद करा.",
+    partiallyPaid: "अंशतः भरलेले",
+    cancelled: "रद्द केले",
   },
   timer: {
     webTimer: "वेब टायमर",
@@ -872,6 +943,32 @@ const mr = {
     unknownUser: "अज्ञात वापरकर्ता",
     unknownProject: "अज्ञात प्रकल्प",
     generatingExport: "%{format} तयार होत आहे",
+    totalPayments: "एकूण देयके",
+    paymentCount: "पेमेंटची संख्या",
+    averagePayment: "सरासरी पेमेंट",
+    totalTransactions: "एकूण व्यवहार",
+    selectedPeriod: "निवडलेला कालावधी",
+    noPaymentsFoundForSelectedPeriod:
+      "निवडलेल्या कालावधीसाठी कोणतेही पेमेंट आढळले नाही.",
+    showingPayments: "%{total} पैकी %{shown} पेमेंट दाखवत आहे",
+    scrollToLoadMorePayments: "अधिक पेमेंट लोड करण्यासाठी स्क्रोल करा",
+    clientsSelected: "%{count} क्लायंट्स",
+    columns: "स्तंभ",
+    clientName: "क्लायंटचे नाव",
+    invoices: "पावत्या",
+    clearClients: "क्लिअर क्लायंट्स",
+    successfullyCollected: "यशस्वीरित्या गोळा केले",
+    pendingCollection: "प्रलंबित संकलन",
+    requiresAttention: "लक्ष देण्याची गरज आहे",
+    revenueMixByClient: "ग्राहकानुसार महसूल मिश्रण",
+    noClientRevenueData:
+      "निवडलेल्या फिल्टरसाठी क्लायंटच्या महसुलाचा डेटा उपलब्ध नाही.",
+    paid: "पैसे दिले",
+    awaitingPayment: "पेमेंटची वाट पाहत आहे",
+    agingDistribution: "वृद्ध वितरण",
+    sixtyPlusDays: "६०+ दिवस",
+    shareReport: "अहवाल शेअर करा",
+    linkCopied: "लिंक कॉपी केली.",
   },
   expenses: {
     expenses: "खर्च",
@@ -951,6 +1048,10 @@ const mr = {
     viewExistingReceipts: "विद्यमान पावत्या पहा (%{count})",
     viewReceiptsFor: "%{description} साठी पावत्या पहा",
     expenseActionsFor: "%{description} साठी खर्चाच्या कृती",
+    customCategory: "सानुकूल श्रेणी",
+    enterCustomCategory: "सानुकूल श्रेणी प्रविष्ट करा",
+    receiptsAttached: "%{count} संलग्न",
+    preview: "पूर्वावलोकन",
   },
   settings: {
     settings: "सेटिंग्ज",
@@ -1473,6 +1574,13 @@ const mr = {
     summaryDescription:
       "निवडलेल्या वर्षासाठी उपलब्ध रजा, आधीच घेतलेला वेळ आणि सुट्ट्यांचा वापर एकाच ठिकाणी पहा.",
     balanceUntil: "%{date} पर्यंत शिल्लक",
+    leaveTypeUtilized: "%{name} वापरले",
+    leaveTypeAvailable: "%{name} उपलब्ध",
+    outOf: "बाहेर",
+    thisQuarter: "या तिमाहीत",
+    thisYear: "या वर्षी",
+    thisMonth: "या महिन्यात",
+    thisWeek: "या आठवड्यात",
   },
   subscriptions: {
     currentPlan: "सध्याची योजना",
@@ -1969,6 +2077,23 @@ const mr = {
     expand: "साइडबारचा विस्तार करा",
     collapse: "साइडबार संकुचित करा",
   },
+  previous: "मागील",
+  continue: "पुढे चालू ठेवा",
+  pagination: "पृष्ठांकन",
+  breadcrumb: "ब्रेडक्रंब",
+  applyFilters: "फिल्टर लावा",
+  resetAction: "रीसेट करा",
+  toggleSidebar: "साइडबार टॉगल करा",
+  morePages: "अधिक पृष्ठे",
+  viewInvoice: "इनव्हॉइस पहा",
+  customRangeWithDates: "सानुकूल (%{from} - %{to})",
+  dataTable: {
+    noResults: "कोणतेही परिणाम नाहीत.",
+    rowsSelected: "%{selected} पैकी %{total} पंक्ती निवडल्या गेल्या.",
+    pageOf: "%{total} चे पृष्ठ %{page}",
+  },
+  selectAll: "सर्व निवडा",
+  selectRow: "पंक्ती निवडा",
 };
 
-export default mr;
+export default locale;

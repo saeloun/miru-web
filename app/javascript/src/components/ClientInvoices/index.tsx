@@ -5,6 +5,7 @@ import Loader from "common/Loader/index";
 import withLayout from "common/Mobile/HOC/withLayout";
 import { useUserContext } from "context/UserContext";
 import { useSearchParams } from "react-router-dom";
+import { i18n } from "../../i18n";
 import useInfiniteLoadTrigger from "../../hooks/useInfiniteLoadTrigger";
 
 import Header from "./Header";
@@ -118,18 +119,27 @@ const ClientInvoices = () => {
       {invoices.length > 0 && (
         <div className="mt-4 flex flex-col items-center gap-2 text-sm text-muted-foreground">
           <span>
-            Showing {invoices.length} of {totalInvoices}
+            {i18n.t("invoices.showingOfTotal", {
+              shown: invoices.length,
+              total: totalInvoices,
+            })}
           </span>
-          {hasMoreInvoices && <span>Scroll to load more invoices</span>}
+          {hasMoreInvoices && (
+            <span>{i18n.t("invoices.scrollToLoadMore")}</span>
+          )}
           {hasMoreInvoices && (
             <div ref={loadMoreInvoicesRef} className="h-8 w-full" />
           )}
-          {isLoadingMore && <span>Loading more invoices...</span>}
+          {isLoadingMore && (
+            <span>{i18n.t("invoices.loadingMoreInvoices")}</span>
+          )}
           {!hasMoreInvoices && totalInvoices > 0 && (
-            <span>All invoices loaded</span>
+            <span>{i18n.t("invoices.allInvoicesLoaded")}</span>
           )}
           <div className="mt-2 flex items-center gap-2">
-            <label htmlFor="client-invoices-per-page">Invoices per page</label>
+            <label htmlFor="client-invoices-per-page">
+              {i18n.t("invoices.invoicesPerPage")}
+            </label>
             <select
               id="client-invoices-per-page"
               className="rounded-md border border-border bg-background px-2 py-1 text-sm"

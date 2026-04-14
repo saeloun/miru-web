@@ -220,8 +220,19 @@ const PaymentsTable: React.FC = () => {
     }
   };
 
-  const getStatusLabel = (status: string) =>
-    status.replaceAll("_", " ").replace(/\b\w/g, s => s.toUpperCase());
+  const getStatusLabel = (status: string) => {
+    const statusLabels = {
+      paid: i18n.t("payments.paid"),
+      pending: i18n.t("payments.pending"),
+      failed: i18n.t("payments.failed"),
+      refunded: i18n.t("payments.refunded"),
+      completed: i18n.t("payments.completed"),
+      partially_paid: i18n.t("payments.partiallyPaid"),
+      cancelled: i18n.t("payments.cancelled"),
+    };
+
+    return statusLabels[status] || status;
+  };
 
   const columns: ColumnDef<Payment>[] = [
     {
@@ -230,14 +241,14 @@ const PaymentsTable: React.FC = () => {
         <Checkbox
           checked={table.getIsAllPageRowsSelected()}
           onCheckedChange={value => table.toggleAllPageRowsSelected(!!value)}
-          aria-label="Select all"
+          aria-label={i18n.t("selectAll")}
         />
       ),
       cell: ({ row }) => (
         <Checkbox
           checked={row.getIsSelected()}
           onCheckedChange={value => row.toggleSelected(!!value)}
-          aria-label="Select row"
+          aria-label={i18n.t("selectRow")}
         />
       ),
       enableSorting: false,

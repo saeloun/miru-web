@@ -5,7 +5,6 @@ import { useUserContext } from "context/UserContext";
 import dayjs from "dayjs";
 import { useLocation, useParams } from "react-router-dom";
 
-import { CompensationDetailsState } from "./Context/CompensationDetailsState";
 import { EmploymentDetailsState } from "./Context/EmploymentDetailsState";
 import { PersonalDetailsState } from "./Context/PersonalDetailsState";
 import Header from "./Layout/Header";
@@ -44,7 +43,6 @@ const Layout = () => {
     employmentDetails: EmploymentDetailsState,
     documentDetails: {},
     deviceDetails: {},
-    compensationDetails: CompensationDetailsState,
     reimburstmentDetails: {},
   });
 

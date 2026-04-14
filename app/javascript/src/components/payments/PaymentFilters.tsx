@@ -12,6 +12,7 @@ import { Label } from "../ui/label";
 import { Card } from "../ui/card";
 import { DatePicker } from "../ui/date-picker";
 import { Badge } from "../ui/badge";
+import { i18n } from "../../i18n";
 
 interface PaymentFiltersProps {
   filters: {
@@ -59,7 +60,7 @@ const PaymentFilters: React.FC<PaymentFiltersProps> = ({
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <Funnel className="h-4 w-4" />
-          <h3 className="font-semibold">Filters</h3>
+          <h3 className="font-semibold">{i18n.t("filters")}</h3>
           {activeFiltersCount > 0 && (
             <Badge variant="secondary">{activeFiltersCount}</Badge>
           )}
@@ -77,7 +78,7 @@ const PaymentFilters: React.FC<PaymentFiltersProps> = ({
       <div className="space-y-4">
         {/* Status Funnel */}
         <div className="space-y-2">
-          <Label htmlFor="status">Status</Label>
+          <Label htmlFor="status">{i18n.t("status")}</Label>
           <Select
             value={filters.status}
             onValueChange={value =>
@@ -85,21 +86,29 @@ const PaymentFilters: React.FC<PaymentFiltersProps> = ({
             }
           >
             <SelectTrigger id="status">
-              <SelectValue placeholder="All Statuses" />
+              <SelectValue placeholder={i18n.t("payments.allStatuses")} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Statuses</SelectItem>
-              <SelectItem value="paid">Paid</SelectItem>
-              <SelectItem value="pending">Pending</SelectItem>
-              <SelectItem value="failed">Failed</SelectItem>
-              <SelectItem value="refunded">Refunded</SelectItem>
+              <SelectItem value="all">
+                {i18n.t("payments.allStatuses")}
+              </SelectItem>
+              <SelectItem value="paid">{i18n.t("payments.paid")}</SelectItem>
+              <SelectItem value="pending">
+                {i18n.t("payments.pending")}
+              </SelectItem>
+              <SelectItem value="failed">
+                {i18n.t("payments.failed")}
+              </SelectItem>
+              <SelectItem value="refunded">
+                {i18n.t("payments.refunded")}
+              </SelectItem>
             </SelectContent>
           </Select>
         </div>
 
         {/* Client Funnel */}
         <div className="space-y-2">
-          <Label htmlFor="client">Client</Label>
+          <Label htmlFor="client">{i18n.t("client")}</Label>
           <Select
             value={filters.client}
             onValueChange={value =>
@@ -107,10 +116,12 @@ const PaymentFilters: React.FC<PaymentFiltersProps> = ({
             }
           >
             <SelectTrigger id="client">
-              <SelectValue placeholder="All Clients" />
+              <SelectValue placeholder={i18n.t("payments.allClients")} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Clients</SelectItem>
+              <SelectItem value="all">
+                {i18n.t("payments.allClients")}
+              </SelectItem>
               {clients.map(client => (
                 <SelectItem key={client.id} value={client.id}>
                   {client.name}
@@ -122,7 +133,7 @@ const PaymentFilters: React.FC<PaymentFiltersProps> = ({
 
         {/* Payment Type Funnel */}
         <div className="space-y-2">
-          <Label htmlFor="paymentType">Payment Type</Label>
+          <Label htmlFor="paymentType">{i18n.t("payments.paymentType")}</Label>
           <Select
             value={filters.paymentType}
             onValueChange={value =>
@@ -130,39 +141,51 @@ const PaymentFilters: React.FC<PaymentFiltersProps> = ({
             }
           >
             <SelectTrigger id="paymentType">
-              <SelectValue placeholder="All Types" />
+              <SelectValue placeholder={i18n.t("payments.allTypes")} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Types</SelectItem>
-              <SelectItem value="credit_card">Card Payment</SelectItem>
-              <SelectItem value="bank_transfer">Bank Transfer</SelectItem>
-              <SelectItem value="wire_transfer">Wire Transfer</SelectItem>
-              <SelectItem value="ach">ACH Transfer</SelectItem>
-              <SelectItem value="paypal">PayPal</SelectItem>
-              <SelectItem value="stripe">Stripe</SelectItem>
-              <SelectItem value="cash">Cash</SelectItem>
-              <SelectItem value="check">Check</SelectItem>
+              <SelectItem value="all">{i18n.t("payments.allTypes")}</SelectItem>
+              <SelectItem value="credit_card">
+                {i18n.t("payments.cardPayment")}
+              </SelectItem>
+              <SelectItem value="bank_transfer">
+                {i18n.t("payments.bankTransfer")}
+              </SelectItem>
+              <SelectItem value="wire_transfer">
+                {i18n.t("payments.wireTransfer")}
+              </SelectItem>
+              <SelectItem value="ach">
+                {i18n.t("payments.achTransfer")}
+              </SelectItem>
+              <SelectItem value="paypal">
+                {i18n.t("payments.paypal")}
+              </SelectItem>
+              <SelectItem value="stripe">
+                {i18n.t("payments.stripe")}
+              </SelectItem>
+              <SelectItem value="cash">{i18n.t("payments.cash")}</SelectItem>
+              <SelectItem value="check">{i18n.t("payments.check")}</SelectItem>
             </SelectContent>
           </Select>
         </div>
 
         {/* Date Range Funnel */}
         <div className="space-y-2">
-          <Label>Date Range</Label>
+          <Label>{i18n.t("dateRange")}</Label>
           <div className="flex gap-2">
             <DatePicker
               date={filters.dateFrom}
               onDateChange={date =>
                 onFilterChange({ ...filters, dateFrom: date })
               }
-              placeholder="From"
+              placeholder={i18n.t("from")}
             />
             <DatePicker
               date={filters.dateTo}
               onDateChange={date =>
                 onFilterChange({ ...filters, dateTo: date })
               }
-              placeholder="To"
+              placeholder={i18n.t("to")}
             />
           </div>
         </div>
@@ -175,10 +198,10 @@ const PaymentFilters: React.FC<PaymentFiltersProps> = ({
             className="flex-1"
             onClick={handleReset}
           >
-            Reset
+            {i18n.t("resetAction")}
           </Button>
           <Button size="sm" className="flex-1" onClick={onClose}>
-            Apply
+            {i18n.t("apply")}
           </Button>
         </div>
       </div>
