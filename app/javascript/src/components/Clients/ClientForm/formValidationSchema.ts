@@ -1,5 +1,6 @@
 import { currencyList } from "constants/currencyList";
 
+import { i18n } from "../../../i18n";
 import worldCountries from "world-countries";
 import * as Yup from "yup";
 
@@ -13,31 +14,31 @@ interface Currency {
 
 const clientSchema = Yup.object().shape({
   name: Yup.string()
-    .required("Name cannot be blank")
-    .max(30, "Maximum 30 characters are allowed"),
-  email: Yup.string().email("Please enter a valid email address"),
+    .required(i18n.t("auth.validation.nameRequired"))
+    .max(30, i18n.t("auth.validation.max30")),
+  email: Yup.string().email(i18n.t("auth.validation.invalidEmail")),
   phone: Yup.string().matches(
     phoneRegExp,
-    "Please enter a valid business phone number"
+    i18n.t("auth.validation.validBusinessPhone")
   ),
   address1: Yup.string()
-    .required("Address line cannot be blank")
-    .max(50, "Maximum 50 characters are allowed"),
-  address2: Yup.string().max(50, "Maximum 50 characters are allowed"),
+    .required(i18n.t("auth.validation.addressLineRequired"))
+    .max(50, i18n.t("auth.validation.max50")),
+  address2: Yup.string().max(50, i18n.t("auth.validation.max50")),
   country: Yup.object().shape({
-    value: Yup.string().required("Country cannot be blank"),
+    value: Yup.string().required(i18n.t("auth.validation.countryRequired")),
   }),
   state: Yup.string()
-    .required("State cannot be blank")
-    .max(50, "Maximum 50 characters are allowed"),
+    .required(i18n.t("auth.validation.stateRequired"))
+    .max(50, i18n.t("auth.validation.max50")),
   city: Yup.string()
-    .required("City cannot be blank")
-    .max(50, "Maximum 50 characters are allowed"),
+    .required(i18n.t("auth.validation.cityRequired"))
+    .max(50, i18n.t("auth.validation.max50")),
   zipcode: Yup.string()
-    .required("Zipcode line cannot be blank")
-    .max(10, "Maximum 10 characters are allowed"),
+    .required(i18n.t("auth.validation.zipcodeLineRequired"))
+    .max(10, i18n.t("auth.validation.max10")),
   currency: Yup.object().shape({
-    value: Yup.string().required("Currency cannot be blank"),
+    value: Yup.string().required(i18n.t("auth.validation.currencyRequired")),
   }),
 });
 

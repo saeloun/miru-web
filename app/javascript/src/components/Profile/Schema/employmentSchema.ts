@@ -1,25 +1,26 @@
 import * as Yup from "yup";
+import { i18n } from "../../../i18n";
 
 export const employmentSchema = {
   current_employment: Yup.object().shape({
     employee_id: Yup.string()
-      .required("Please enter employee id")
-      .typeError("Please enter employee id")
-      .max(20, "Maximum 20 characters are allowed"),
+      .required(i18n.t("employment.validation.employeeIdRequired"))
+      .typeError(i18n.t("employment.validation.employeeIdRequired"))
+      .max(20, i18n.t("employment.validation.max20")),
     employment_type: Yup.string()
-      .typeError("Please select employment type")
-      .required("Please select employment type"),
+      .typeError(i18n.t("employment.validation.employmentTypeRequired"))
+      .required(i18n.t("employment.validation.employmentTypeRequired")),
     designation: Yup.string()
-      .required("Please enter designation")
-      .typeError("Please enter designation")
-      .max(40, "Maximum 40 characters are allowed"),
+      .required(i18n.t("employment.validation.designationRequired"))
+      .typeError(i18n.t("employment.validation.designationRequired"))
+      .max(40, i18n.t("employment.validation.max40")),
     email: Yup.string()
-      .required("Please enter email id")
-      .email("Please enter valid email")
-      .typeError("Please enter email"),
+      .required(i18n.t("employment.validation.emailRequired"))
+      .email(i18n.t("auth.validation.validEmailPrompt"))
+      .typeError(i18n.t("employment.validation.emailRequired")),
     joined_at: Yup.string()
-      .required("Please enter Date of joining")
-      .typeError("Please enter Date of joining"),
+      .required(i18n.t("employment.validation.dateOfJoiningRequired"))
+      .typeError(i18n.t("employment.validation.dateOfJoiningRequired")),
   }),
   previous_employment: Yup.array(),
 };

@@ -5,6 +5,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { companiesApi, companyProfileApi } from "apis/api";
 import Loader from "common/Loader/index";
 import { useUserContext } from "context/UserContext";
+import { i18n } from "../../../../i18n";
 import { useDropzone } from "react-dropzone";
 import { useNavigate } from "react-router-dom";
 import { Toastr } from "StyledComponents";
@@ -19,30 +20,34 @@ const phoneRegExp =
 
 const orgSchema = Yup.object().shape({
   companyName: Yup.string()
-    .required("Name cannot be blank")
-    .max(30, "Maximum 30 characters are allowed"),
+    .required(i18n.t("auth.validation.nameRequired"))
+    .max(30, i18n.t("auth.validation.max30")),
   companyPhone: Yup.string().matches(
     phoneRegExp,
-    "Please enter a valid business phone number"
+    i18n.t("auth.validation.validBusinessPhone")
   ),
   companyAddr: Yup.object().shape({
     addressLine1: Yup.string()
-      .required("Address Line 1 cannot be blank")
-      .max(50, "Maximum 50 characters are allowed"),
-    addressLine2: Yup.string().max(50, "Maximum 50 characters are allowed"),
-    country: Yup.string().required("Country cannot be blank"),
-    state: Yup.string().required("State cannot be blank"),
-    city: Yup.string().required("City cannot be blank"),
+      .required(i18n.t("auth.validation.addressLine1Required"))
+      .max(50, i18n.t("auth.validation.max50")),
+    addressLine2: Yup.string().max(50, i18n.t("auth.validation.max50")),
+    country: Yup.string().required(i18n.t("auth.validation.countryRequired")),
+    state: Yup.string().required(i18n.t("auth.validation.stateRequired")),
+    city: Yup.string().required(i18n.t("auth.validation.cityRequired")),
     zipcode: Yup.string()
-      .required("Zipcode cannot be blank")
-      .max(10, "Maximum 10 characters are allowed"),
+      .required(i18n.t("auth.validation.zipcodeRequired"))
+      .max(10, i18n.t("auth.validation.max10")),
   }),
   companyRate: Yup.number()
-    .typeError("Amount must be a number")
-    .min(0, "please enter larger amount")
-    .required("Rate cannot be blank"),
-  companyWorkingHours: Yup.string().required("Working hours cannot be blank"),
-  companyWorkingDays: Yup.string().required("Working days cannot be blank"),
+    .typeError(i18n.t("auth.validation.amountMustBeNumber"))
+    .min(0, i18n.t("auth.validation.amountMustBePositive"))
+    .required(i18n.t("auth.validation.rateRequired")),
+  companyWorkingHours: Yup.string().required(
+    i18n.t("auth.validation.workingHoursRequired")
+  ),
+  companyWorkingDays: Yup.string().required(
+    i18n.t("auth.validation.workingDaysRequired")
+  ),
 });
 
 const fiscalYearOptions = [
@@ -506,7 +511,7 @@ const OrgEdit = () => {
       setIsLoading(false);
     } catch {
       setIsLoading(false);
-      Toastr.error("Error in Updating Org. Details");
+      Toastr.error(i18n.t("organization.updateError"));
     }
   };
 

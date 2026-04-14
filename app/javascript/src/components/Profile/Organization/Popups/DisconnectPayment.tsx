@@ -1,7 +1,7 @@
 import React from "react";
 
 import { paymentSettings } from "apis/api";
-import { i18n } from "i18n-js";
+import { i18n } from "../../../i18n";
 import { Modal, Button } from "StyledComponents";
 
 interface IProps {

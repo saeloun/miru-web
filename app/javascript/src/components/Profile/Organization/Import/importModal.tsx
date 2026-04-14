@@ -3,7 +3,7 @@ import React, { Fragment } from "react";
 
 import ProgressBar from "common/ProgressBar";
 import { bytesToSize } from "helpers";
-import { i18n } from "i18n-js";
+import { i18n } from "../../../i18n";
 import { XIcon } from "miruIcons";
 
 import TableHeader from "./TableHeader";

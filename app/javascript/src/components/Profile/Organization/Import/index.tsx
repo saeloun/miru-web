@@ -1,7 +1,7 @@
 import React, { Fragment, useState } from "react";
 
 import Loader from "common/Loader/index";
-import { i18n } from "i18n-js";
+import { i18n } from "../../../i18n";
 
 import ImportCard from "./importCard";
 import ImportModal from "./importModal";

@@ -15,6 +15,7 @@ import PhoneInput from "react-phone-number-input";
 import flags from "react-phone-number-input/flags";
 import "react-phone-number-input/style.css";
 import { ErrorSpan } from "common/ErrorSpan";
+import { i18n } from "../../../../i18n";
 import { Card, CardContent, CardHeader } from "../../../ui/card";
 import { Button } from "../../../ui/button";
 import { Separator } from "../../../ui/separator";
@@ -178,7 +179,7 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
             size="sm"
             className="border-border"
           >
-            Cancel
+            {i18n.t("common.cancel")}
           </Button>
           <Button
             onClick={saveAction}
@@ -192,7 +193,7 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
             )}
           >
             <Check className="h-4 w-4 mr-2" />
-            Save Changes
+            {i18n.t("common.saveChanges")}
           </Button>
         </div>
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
@@ -202,7 +203,7 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
             <Card className="overflow-hidden border-border shadow-sm">
               <CardHeader className="pb-4">
                 <SectionTitle
-                  title="Company Logo"
+                  title={i18n.t("organization.companyLogo")}
                   icon={<Buildings className="h-4 w-4" />}
                 />
               </CardHeader>
@@ -222,10 +223,10 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                       <input {...getInputProps()} />
                       <Upload className="mb-3 h-10 w-10 text-muted-foreground" />
                       <p className="text-sm font-medium text-foreground">
-                        Drop logo here or click to upload
+                        {i18n.t("organization.dropLogoHere")}
                       </p>
                       <p className="mt-1 text-xs text-muted-foreground">
-                        JPG, PNG or GIF (max. 2MB)
+                        {i18n.t("organization.logoFormats")}
                       </p>
                     </div>
                   ) : (
@@ -242,14 +243,14 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                             className="flex cursor-pointer items-center gap-1 rounded-md border border-border bg-card px-3 py-1.5 text-sm font-medium text-foreground hover:bg-accent"
                           >
                             <Upload className="h-3 w-3" />
-                            Change
+                            {i18n.t("common.change")}
                           </label>
                           <button
                             onClick={handleDeleteLogo}
                             className="flex items-center gap-1 rounded-md border border-border bg-card px-3 py-1.5 text-sm font-medium text-destructive hover:bg-destructive/10"
                           >
                             <X className="h-3 w-3" />
-                            Remove
+                            {i18n.t("common.remove")}
                           </button>
                         </div>
                       </div>
@@ -273,13 +274,13 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
             >
               <CardHeader className="pb-4">
                 <SectionTitle
-                  title="Company Name"
+                  title={i18n.t("organization.companyName")}
                   icon={<Buildings className="h-4 w-4" />}
                 />
               </CardHeader>
               <CardContent>
                 <FormField
-                  label="Company Name"
+                  label={i18n.t("organization.companyName")}
                   required
                   error={errDetails.companyNameErr}
                   htmlFor="company_name"
@@ -292,7 +293,7 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                     onChange={e =>
                       handleChangeCompanyDetails(e.target.value, "companyName")
                     }
-                    placeholder="Enter company name"
+                    placeholder={i18n.t("organization.enterCompanyName")}
                     className={cn(
                       "border-border",
                       errDetails.companyNameErr && "border-destructive"
@@ -312,14 +313,14 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
             >
               <CardHeader className="pb-4">
                 <SectionTitle
-                  title="Contact Information"
+                  title={i18n.t("organization.contactInformation")}
                   icon={<Phone className="h-4 w-4" />}
                 />
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
                   <FormField
-                    label="Business Phone"
+                    label={i18n.t("organization.businessPhone")}
                     error={errDetails.companyPhoneErr}
                     htmlFor="company_phone"
                   >
@@ -340,13 +341,13 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                   <Separator className="my-4" />
 
                   <SectionTitle
-                    title="Business Address"
+                    title={i18n.t("organization.businessAddress")}
                     icon={<MapPin className="h-3 w-3" />}
                   />
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <FormField
-                      label="Address Line 1"
+                      label={i18n.t("organization.addressLine1")}
                       required
                       error={errDetails.addressLine1Err}
                       className="md:col-span-2"
@@ -360,7 +361,7 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                         onChange={e =>
                           handleAddrChange(e.target.value, "addressLine1")
                         }
-                        placeholder="Street address"
+                        placeholder={i18n.t("organization.streetAddress")}
                         className={cn(
                           "border-border",
                           errDetails.addressLine1Err && "border-destructive"
@@ -369,7 +370,7 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                     </FormField>
 
                     <FormField
-                      label="Address Line 2"
+                      label={i18n.t("organization.addressLine2")}
                       className="md:col-span-2"
                       htmlFor="company_address_line_2"
                     >
@@ -381,13 +382,15 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                         onChange={e =>
                           handleAddrChange(e.target.value, "addressLine2")
                         }
-                        placeholder="Apartment, suite, etc. (optional)"
+                        placeholder={i18n.t(
+                          "organization.addressLine2Placeholder"
+                        )}
                         className="border-border"
                       />
                     </FormField>
 
                     <FormField
-                      label="Country"
+                      label={i18n.t("organization.country")}
                       required
                       error={errDetails.countryErr}
                     >
@@ -406,7 +409,9 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                           aria-label="Country"
                           className="border-border"
                         >
-                          <SelectValue placeholder="Select country" />
+                          <SelectValue
+                            placeholder={i18n.t("organization.selectCountry")}
+                          />
                         </SelectTrigger>
                         <SelectContent>
                           {countries.map(country => (
@@ -422,7 +427,7 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                     </FormField>
 
                     <FormField
-                      label="State/Province"
+                      label={i18n.t("organization.stateProvince")}
                       required
                       error={errDetails.stateErr}
                       htmlFor="company_state"
@@ -433,7 +438,9 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                         type="text"
                         value={companyAddr?.state || ""}
                         onChange={handleStateChange}
-                        placeholder="State or province"
+                        placeholder={i18n.t(
+                          "organization.stateProvincePlaceholder"
+                        )}
                         className={cn(
                           "border-border",
                           errDetails.stateErr && "border-destructive"
@@ -442,7 +449,7 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                     </FormField>
 
                     <FormField
-                      label="City"
+                      label={i18n.t("organization.city")}
                       required
                       error={errDetails.cityErr}
                       htmlFor="company_city"
@@ -462,7 +469,7 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                     </FormField>
 
                     <FormField
-                      label="ZIP/Postal Code"
+                      label={i18n.t("organization.zipPostalCode")}
                       required
                       error={errDetails.zipcodeErr}
                       htmlFor="company_zipcode"
@@ -473,7 +480,7 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                         type="text"
                         value={companyAddr?.zipcode || ""}
                         onChange={handleZipcodeChange}
-                        placeholder="ZIP code"
+                        placeholder={i18n.t("organization.zipPlaceholder")}
                         className={cn(
                           "border-border",
                           errDetails.zipcodeErr && "border-destructive"
@@ -489,13 +496,13 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
             <Card className="overflow-hidden border-border shadow-sm">
               <CardHeader className="pb-4">
                 <SectionTitle
-                  title="Financial Configuration"
+                  title={i18n.t("organization.financialConfiguration")}
                   icon={<CurrencyDollar className="h-4 w-4" />}
                 />
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <FormField label="Base Currency">
+                  <FormField label={i18n.t("organization.baseCurrency")}>
                     <Select
                       value={
                         typeof companyCurrency === "string"
@@ -515,7 +522,9 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                         aria-label="Base Currency"
                         className="border-border"
                       >
-                        <SelectValue placeholder="Select currency" />
+                        <SelectValue
+                          placeholder={i18n.t("organization.selectCurrency")}
+                        />
                       </SelectTrigger>
                       <SelectContent>
                         {currenciesOption.map(currency => (
@@ -531,7 +540,7 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                   </FormField>
 
                   <FormField
-                    label="Standard Rate"
+                    label={i18n.t("organization.standardRate")}
                     required
                     error={errDetails.companyRateErr}
                     htmlFor="company_rate"
@@ -559,12 +568,12 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                         step="0.01"
                       />
                       <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
-                        /hr
+                        {i18n.t("organization.perHour")}
                       </span>
                     </div>
                   </FormField>
 
-                  <FormField label="Fiscal Year End">
+                  <FormField label={i18n.t("organization.fiscalYearEnd")}>
                     <Select
                       value={
                         typeof companyFiscalYear === "string"
@@ -584,7 +593,9 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                         aria-label="Fiscal Year End"
                         className="border-border"
                       >
-                        <SelectValue placeholder="Select month" />
+                        <SelectValue
+                          placeholder={i18n.t("organization.selectMonth")}
+                        />
                       </SelectTrigger>
                       <SelectContent>
                         {fiscalYearOptions.map(fiscalYear => (
@@ -606,13 +617,13 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
             <Card className="overflow-hidden border-border shadow-sm">
               <CardHeader className="pb-4">
                 <SectionTitle
-                  title="Regional Settings"
+                  title={i18n.t("organization.regionalSettings")}
                   icon={<Globe className="h-4 w-4" />}
                 />
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <FormField label="Timezone">
+                  <FormField label={i18n.t("organization.timezone")}>
                     <Select
                       value={
                         typeof companyTimezone === "string"
@@ -632,7 +643,9 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                         aria-label="Timezone"
                         className="border-border"
                       >
-                        <SelectValue placeholder="Select timezone" />
+                        <SelectValue
+                          placeholder={i18n.t("orgSetup.selectTimezone")}
+                        />
                       </SelectTrigger>
                       <SelectContent>
                         {timezoneOption.map(timezone => (
@@ -647,7 +660,7 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                     </Select>
                   </FormField>
 
-                  <FormField label="Date Format">
+                  <FormField label={i18n.t("organization.dateFormat")}>
                     <Select
                       value={
                         typeof companyDateFormat === "string"
@@ -667,7 +680,9 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                         aria-label="Date Format"
                         className="border-border"
                       >
-                        <SelectValue placeholder="Select format" />
+                        <SelectValue
+                          placeholder={i18n.t("organization.selectFormat")}
+                        />
                       </SelectTrigger>
                       <SelectContent>
                         {dateFormatOptions.map(dateFormat => (
@@ -689,14 +704,14 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
             <Card className="overflow-hidden border-border shadow-sm">
               <CardHeader className="pb-4">
                 <SectionTitle
-                  title="Work Schedule"
+                  title={i18n.t("organization.workSchedule")}
                   icon={<CalendarBlank className="h-4 w-4" />}
                 />
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <FormField
-                    label="Working Days per Week"
+                    label={i18n.t("organization.workingDaysPerWeek")}
                     required
                     htmlFor="company_working_days"
                   >
@@ -719,7 +734,7 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                   </FormField>
 
                   <FormField
-                    label="Working Hours per Week"
+                    label={i18n.t("organization.workingHoursPerWeek")}
                     required
                     htmlFor="company_working_hours"
                   >
@@ -748,13 +763,16 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
             <Card className="overflow-hidden border-border shadow-sm">
               <CardHeader className="pb-4">
                 <SectionTitle
-                  title="Bank Information"
+                  title={i18n.t("organization.bankInformation")}
                   icon={<Buildings className="h-4 w-4" />}
                 />
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <FormField label="Bank Name" htmlFor="bank_name">
+                  <FormField
+                    label={i18n.t("organization.bankName")}
+                    htmlFor="bank_name"
+                  >
                     <Input
                       id="bank_name"
                       aria-label="Bank Name"
@@ -764,12 +782,12 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                         handleChangeCompanyDetails(e.target.value, "bankName")
                       }
                       className="border-border"
-                      placeholder="Enter bank name"
+                      placeholder={i18n.t("organization.enterBankName")}
                     />
                   </FormField>
 
                   <FormField
-                    label="Account Number"
+                    label={i18n.t("organization.accountNumber")}
                     htmlFor="bank_account_number"
                   >
                     <Input
@@ -784,12 +802,12 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                         )
                       }
                       className="border-border"
-                      placeholder="Enter account number"
+                      placeholder={i18n.t("organization.enterAccountNumber")}
                     />
                   </FormField>
 
                   <FormField
-                    label="Routing Number"
+                    label={i18n.t("organization.routingNumber")}
                     htmlFor="bank_routing_number"
                   >
                     <Input
@@ -804,11 +822,14 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                         )
                       }
                       className="border-border"
-                      placeholder="Enter routing number"
+                      placeholder={i18n.t("organization.enterRoutingNumber")}
                     />
                   </FormField>
 
-                  <FormField label="SWIFT Code" htmlFor="bank_swift_code">
+                  <FormField
+                    label={i18n.t("organization.swiftCode")}
+                    htmlFor="bank_swift_code"
+                  >
                     <Input
                       id="bank_swift_code"
                       aria-label="SWIFT Code"
@@ -821,7 +842,7 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                         )
                       }
                       className="border-border"
-                      placeholder="Enter SWIFT code"
+                      placeholder={i18n.t("organization.enterSwiftCode")}
                     />
                   </FormField>
                 </div>
@@ -835,13 +856,16 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
             >
               <CardHeader className="pb-4">
                 <SectionTitle
-                  title="Tax Information"
+                  title={i18n.t("organization.taxInformation")}
                   icon={<Hash className="h-4 w-4" />}
                 />
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <FormField label="Tax ID" htmlFor="tax_id">
+                  <FormField
+                    label={i18n.t("organization.taxId")}
+                    htmlFor="tax_id"
+                  >
                     <Input
                       id="tax_id"
                       aria-label="Tax ID"
@@ -851,11 +875,14 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                         handleChangeCompanyDetails(e.target.value, "taxId")
                       }
                       className="border-border"
-                      placeholder="Enter Tax ID"
+                      placeholder={i18n.t("organization.enterTaxId")}
                     />
                   </FormField>
 
-                  <FormField label="VAT Number" htmlFor="vat_number">
+                  <FormField
+                    label={i18n.t("organization.vatNumber")}
+                    htmlFor="vat_number"
+                  >
                     <Input
                       id="vat_number"
                       aria-label="VAT Number"
@@ -865,11 +892,14 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                         handleChangeCompanyDetails(e.target.value, "vatNumber")
                       }
                       className="border-border"
-                      placeholder="Enter VAT number"
+                      placeholder={i18n.t("organization.enterVatNumber")}
                     />
                   </FormField>
 
-                  <FormField label="GST Number" htmlFor="gst_number">
+                  <FormField
+                    label={i18n.t("organization.gstNumber")}
+                    htmlFor="gst_number"
+                  >
                     <Input
                       id="gst_number"
                       aria-label="GST Number"
@@ -879,7 +909,7 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                         handleChangeCompanyDetails(e.target.value, "gstNumber")
                       }
                       className="border-border"
-                      placeholder="Enter GST number"
+                      placeholder={i18n.t("organization.enterGstNumber")}
                     />
                   </FormField>
                 </div>
