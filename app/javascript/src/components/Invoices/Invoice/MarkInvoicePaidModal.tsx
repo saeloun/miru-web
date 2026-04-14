@@ -149,14 +149,14 @@ const MarkInvoiceAsPaidModal = ({
       <div className="relative mt-4">
         {isDesktop ? (
           <div className="field relative">
-            <label className="absolute -top-1 left-0 z-1 ml-3 origin-0 bg-white px-1 text-xsm font-medium text-muted-foreground duration-300">
+            <label className="absolute top-0.5 left-1 h-6 z-1 origin-0 bg-white p-2 text-base font-medium text-muted-foreground duration-300">
               {i18n.t("payments.transactionType")}
             </label>
             <Select
               value={transactionType || ""}
               onValueChange={value => setTransactionType(value)}
             >
-              <SelectTrigger className="mt-1">
+              <SelectTrigger className="mt-1 h-12 border-border bg-white px-4 text-base focus:ring-1 focus:ring-ring focus:ring-offset-0">
                 <SelectValue
                   placeholder={i18n.t("payments.selectTransactionType")}
                 />
