@@ -166,13 +166,11 @@ const MarkInvoiceAsPaidModal = ({
             className="field relative"
             ref={wrapperDesktopTransactionTypeRef}
           >
-            <label className="absolute top-0.5 left-1 h-6 z-1 origin-0 bg-white p-2 text-base font-medium text-muted-foreground duration-300">
-              {i18n.t("payments.transactionType")}
-            </label>
             <button
+              aria-label={i18n.t("payments.transactionType")}
               aria-expanded={showDesktopTransactionTypes}
               aria-haspopup="listbox"
-              className="mt-1 flex h-12 w-full items-center justify-between rounded-md border border-border bg-white px-4 text-left text-base text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
+              className="flex h-12 w-full items-center justify-between rounded-md border border-border bg-white px-4 text-left text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
               type="button"
               onClick={() =>
                 setShowDesktopTransactionTypes(previous => !previous)
