@@ -18,7 +18,7 @@ import { i18n } from "../../../../i18n";
 import CustomReactSelect from "common/CustomReactSelect";
 import SingleYearDatePicker from "common/CustomYearPicker/SingleYearDatePicker";
 import { allocationFrequency } from "constants/leaveType";
-import { customStyles } from "./EditHolidays/utils";
+import { customStyles } from "./utils";
 
 const monthLabels = [
   i18n.t("monthJan"),

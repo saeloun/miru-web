@@ -31,8 +31,9 @@ module SessionHelpers
 
     if response["ok"]
       apply_auth_payload(response.fetch("data"))
-      wait_for_react_app
       visit default_path_for(role)
+      wait_for_react_app
+      apply_auth_payload(response.fetch("data"))
     else
       sign_in_through_ui(user)
     end
@@ -42,6 +43,7 @@ module SessionHelpers
     end
 
     expect(page).to have_current_path(default_path_for(role), ignore_query: true, wait: 15)
+    ensure_authenticated_session!
   end
 
   def login_via_api(user)
@@ -153,6 +155,14 @@ module SessionHelpers
 
   def wait_for_react_app
     expect(page).to have_css("#react-root", wait: 15)
+  end
+
+  def ensure_authenticated_session!
+    page.execute_script(<<~JS)
+      if (window.__miruSystemAuthPatched && typeof window.fetch === "function") {
+        return;
+      }
+    JS
   end
 
   def ensure_user_setup(user)

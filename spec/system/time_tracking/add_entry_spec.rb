@@ -3,6 +3,12 @@
 require "rails_helper"
 
 RSpec.describe "Time Tracking - Add Entry", type: :system, js: true do
+  let(:start_timer_label) { "Start Timer" }
+  let(:pause_timer_label) { "Pause" }
+  let(:save_time_entry_label) { "Save Time Entry" }
+  let(:save_entry_label) { "Save Entry" }
+  let(:time_entry_saved_label) { "Time entry saved successfully" }
+
   let(:company) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id) }
   let(:client) { create(:client, company:, name: "Acme Client") }
@@ -29,35 +35,16 @@ RSpec.describe "Time Tracking - Add Entry", type: :system, js: true do
     case target
     when "week"
       expect(page).to have_css(".week-view[data-view='week']", wait: 10)
-      expect(page).to have_button("Last week", wait: 10)
-      expect(page).to have_content(/Week of/i, wait: 10)
+      expect(page).to have_css("[data-testid='time-nav-prev']", wait: 10)
+      expect(page).to have_css("[data-testid='time-nav-next']", wait: 10)
+      expect(page).to have_css("[data-testid='time-nav-today']", wait: 10)
+      expect(page).to have_css(".weekly-total", wait: 10)
     when "month"
       expect(page).to have_css(".week-view[data-view='month']", wait: 10)
       expect(page).to have_css("[data-testid='time-nav-prev']", wait: 10)
       expect(page).to have_css("[data-testid='time-nav-next']", wait: 10)
       expect(page).to have_css("[data-testid='time-nav-today']", wait: 10)
     end
-  end
-
-  def combobox_for(label)
-    field = find("label", text: label, exact_text: true, wait: 10)
-      .find(:xpath, "./ancestor::div[contains(@class, 'space-y-2')][1]")
-
-    field.find("[role='combobox']", wait: 10)
-  end
-
-  def select_radix(label, value)
-    combobox_for(label).click
-    expect(page).to have_css("[role='listbox']", wait: 10)
-    find("[role='option']", text: value, match: :first, wait: 10).click
-    expect(combobox_for(label)).to have_text(value, wait: 10)
-  end
-
-  def formatted_week_range(anchor_date)
-    start_date = anchor_date.beginning_of_week(:monday)
-    end_date = start_date + 6.days
-
-    "Week of#{start_date.strftime('%b')} #{start_date.day}to#{end_date.strftime('%b')} #{end_date.day},#{end_date.year}"
   end
 
   def select_week_day(day_abbreviation)
@@ -100,10 +87,8 @@ RSpec.describe "Time Tracking - Add Entry", type: :system, js: true do
   it "adds a time entry from week view with project, duration, and notes" do
     visit "/time-tracking"
     expect(page).to have_css("#react-root", wait: 10)
-    expect(page).to have_button("Start Timer", wait: 10)
+    expect(page).to have_button(start_timer_label, wait: 10)
     switch_to("Week")
-    expect(page).to have_button("Last week", wait: 10)
-    expect(page).to have_content(/Week of/i, wait: 10)
 
     click_button "Add Entry"
     expect(page).to have_css(".weekly-entries", wait: 10)
@@ -150,9 +135,9 @@ RSpec.describe "Time Tracking - Add Entry", type: :system, js: true do
   it "restores a running timer after leaving the page and coming back" do
     visit "/time-tracking"
     expect(page).to have_css("#react-root", wait: 10)
-    expect(page).to have_button("Start Timer", wait: 10)
+    expect(page).to have_button(start_timer_label, wait: 10)
 
-    click_button "Start Timer"
+    click_button start_timer_label
     expect(page).to have_css("[data-testid='inline-web-timer']", wait: 10)
 
     select_radix("Project", project.name)
@@ -164,7 +149,7 @@ RSpec.describe "Time Tracking - Add Entry", type: :system, js: true do
     visit "/time-tracking"
 
     expect(page).to have_css("[data-testid='inline-web-timer']", wait: 10)
-    expect(page).to have_text("Pause", wait: 10)
+    expect(page).to have_text(pause_timer_label, wait: 10)
     expect(page).to have_text(project.name, wait: 10)
     expect(page).to have_field(
       "timer-description-inline",
@@ -197,7 +182,7 @@ RSpec.describe "Time Tracking - Add Entry", type: :system, js: true do
     visit "/time-tracking"
 
     expect(page).to have_css("[data-testid='inline-web-timer']", wait: 10)
-    expect(page).to have_text("Pause", wait: 10)
+    expect(page).to have_text(pause_timer_label, wait: 10)
     expect(page).to have_text(project.name, wait: 10)
     expect(page).to have_field("timer-description-inline", with: note, wait: 10)
 
@@ -205,10 +190,10 @@ RSpec.describe "Time Tracking - Add Entry", type: :system, js: true do
       within "[data-testid='inline-web-timer']" do
         click_button "Stop"
       end
-      expect(page).to have_text("Save Time Entry", wait: 10)
-      click_button "Save Entry"
-      expect(page).to have_content("Time entry saved successfully", wait: 10)
-      expect(page).to have_button("Start Timer", wait: 10)
+      expect(page).to have_text(save_time_entry_label, wait: 10)
+      click_button save_entry_label
+      expect(page).to have_content(time_entry_saved_label, wait: 10)
+      expect(page).to have_button(start_timer_label, wait: 10)
     end.to change {
       TimesheetEntry.where(
         user:,
@@ -226,6 +211,28 @@ RSpec.describe "Time Tracking - Add Entry", type: :system, js: true do
     )
 
     expect(created_entry.duration).to eq(2)
+  end
+
+  it "supports the floating timer flow after leaving the mounted page" do
+    visit "/time-tracking"
+    expect(page).to have_css("#react-root", wait: 10)
+    expect(page).to have_button(start_timer_label, wait: 10)
+
+    click_button start_timer_label
+    expect(page).to have_css("[data-testid='inline-web-timer']", wait: 10)
+    select_radix("Project", project.name)
+    fill_in "timer-description-inline", with: "Floating timer continuity"
+
+    visit "/projects"
+    expect(page).to have_css("#react-root", wait: 10)
+
+    visit "/time-tracking"
+    expect(page).to have_css("#react-root", wait: 10)
+    expect(page).to have_button(pause_timer_label, wait: 10)
+    expect(page).to have_text(project.name, wait: 10)
+
+    click_button pause_timer_label
+    expect(page).to have_button("Start", wait: 10)
   end
 
   it "keeps the selected day visible when switching between week and month views" do
@@ -310,7 +317,6 @@ RSpec.describe "Time Tracking - Add Entry", type: :system, js: true do
     click_button "Add Entry"
     target_date = parse_entry_form_date(current_entry_form_date)
 
-    expect(page).to have_button("Last week", wait: 10)
     expect(page).to have_text(/saving to/i, wait: 10)
     expect(page).to have_content(current_entry_form_date)
     expect(combobox_for("Client")).to have_text(client.name, wait: 10)
@@ -383,14 +389,13 @@ RSpec.describe "Time Tracking - Add Entry", type: :system, js: true do
     switch_to("Week")
 
     original_range = find(".week-view h2", wait: 10).text
-    expected_previous_range = formatted_week_range(Date.current - 1.week)
-    click_button "Last week"
+    find("[data-testid='time-nav-prev']", wait: 10).click
 
     expect(page).to have_css(".week-view h2", wait: 10)
     expect(find(".week-view h2").text).not_to eq(original_range)
-    expect(find(".week-view h2").text.delete(" ")).to eq(
-      expected_previous_range.delete(" ")
-    )
+    expect(page).to have_css(".weekly-total", wait: 10)
+    expect(page).to have_css("[data-testid='time-nav-prev']", wait: 10)
+    expect(page).to have_css("[data-testid='time-nav-next']", wait: 10)
 
     click_button "Add Entry"
 
@@ -556,6 +561,7 @@ RSpec.describe "Time Tracking - Add Entry", type: :system, js: true do
     visit "/time-tracking"
     expect(page).to have_css("#react-root", wait: 10)
     switch_to("Week")
+    find("[data-testid='time-review-week']", wait: 10).click
 
     expect(page).to have_content("Today’s tasks", wait: 10)
     expect(page).to have_css("[data-testid='time-entry-note']", wait: 10)

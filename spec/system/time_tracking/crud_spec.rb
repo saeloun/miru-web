@@ -34,16 +34,6 @@ RSpec.describe "Time Tracking CRUD", type: :system, js: true do
     find(:xpath, "//*[contains(@class,'group')][.//*[contains(normalize-space(.), #{note.to_json})]]", wait: 10)
   end
 
-  def select_radix(label, value)
-    field = find("label", text: label, exact_text: true, wait: 10)
-      .find(:xpath, "./ancestor::div[contains(@class, 'space-y-2')][1]")
-
-    field.find("[role='combobox']", wait: 10).click
-    expect(page).to have_css("[role='listbox']", wait: 10)
-    find("[role='option']", text: value, match: :first, wait: 10).click
-    expect(field.find("[role='combobox']", wait: 10)).to have_text(value, wait: 10)
-  end
-
   it "creates, edits, and deletes a time entry with persisted state after reload" do
     with_forgery_protection do
       open_add_entry_form
