@@ -2,6 +2,7 @@ import React from "react";
 
 import { clientMembersApi } from "apis/api";
 import { Modal, Button } from "StyledComponents";
+import { i18n } from "../../../i18n";
 
 interface IProps {
   contact: any;
@@ -33,11 +34,11 @@ const DeleteContact = ({
       onClose={() => setShowDeleteDialog(false)}
     >
       <div className="my-8 flex-col">
-        <h6 className="mb-2 text-2xl font-bold">Delete Contact</h6>
+        <h6 className="mb-2 text-2xl font-bold">
+          {i18n.t("contacts.deleteContact")}
+        </h6>
         <p className="mt-2 font-normal">
-          Are you sure you want to delete contact{" "}
-          <b className="font-bold">{contact.email}</b>? This action cannot be
-          reversed.
+          {i18n.t("contacts.deleteContactConfirm", { name: contact.email })}
         </p>
       </div>
       <div className="flex justify-between">
@@ -49,7 +50,7 @@ const DeleteContact = ({
             setShowDeleteDialog(false);
           }}
         >
-          CANCEL
+          {i18n.t("cancel").toUpperCase()}
         </Button>
         <Button
           className="ml-2 w-1/2"
@@ -57,7 +58,7 @@ const DeleteContact = ({
           style="primary"
           onClick={deleteContact}
         >
-          DELETE
+          {i18n.t("delete").toUpperCase()}
         </Button>
       </div>
     </Modal>

@@ -1,0 +1,26 @@
+---
+id:
+  errors:
+    bill_status_billed: Anda tidak dapat menagih entri yang sudah ditagih sebelumnya.
+    can't change status: Tidak dapat diubah pada faktur yang sudah dibayar.
+    create_billed_entry: Anda tidak dapat membuat entri lembar waktu yang ditagih.
+    internal_server_error: Terjadi kesalahan.
+    messages:
+      already_confirmed: Sudah dikonfirmasi, silakan coba masuk.
+      confirmation_period_expired: Perlu dikonfirmasi dalam %{period}, mohon ajukan
+        yang baru.
+      expired: telah kedaluwarsa, silakan minta yang baru.
+      not_found: tidak ditemukan
+      not_locked: tidak terkunci
+      not_saved:
+        one: '1 kesalahan mencegah %{resource} ini untuk disimpan:'
+        other: 'Kesalahan %{count} mencegah %{resource} ini untuk disimpan:'
+    not_found: Sumber daya yang Anda cari tidak tersedia.
+    prevent_draft_to_waived: tidak bisa diubah menjadi dibebaskan
+    unauthorized: Hanya pengguna pemilik atau admin yang berwenang untuk melakukan
+      tindakan ini.
+    updation_not_allowed: Pembaruan tidak diperbolehkan.
+    user_already_member: Alamat email sudah digunakan. Silakan masukkan alamat email
+      lain.
+    validate_billable_project: Anda tidak dapat membuat entri yang belum ditagih untuk
+      proyek yang tidak dapat ditagih.

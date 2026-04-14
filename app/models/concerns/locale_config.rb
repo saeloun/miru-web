@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 
 module LocaleConfig
-  DEFAULT_LOCALE = "en"
+  DEFAULT_LOCALE = "en-US"
   SUPPORTED_LOCALES = [
-    "en",
     "en-GB",
     "en-US",
     "hi",
@@ -35,11 +34,13 @@ module LocaleConfig
   def normalize(locale)
     value = locale.to_s.strip
     return DEFAULT_LOCALE if value.blank?
+    return DEFAULT_LOCALE if value.casecmp?("en")
 
     match = SUPPORTED_LOCALES.find { |supported| supported.casecmp?(value) }
     return match if match
 
     base = value.split("-").first
+    return DEFAULT_LOCALE if base.casecmp?("en")
     base_match = SUPPORTED_LOCALES.find { |supported| supported.casecmp?(base) }
 
     base_match || DEFAULT_LOCALE

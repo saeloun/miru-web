@@ -49,7 +49,7 @@ module Reports::AccountsAging
       end
 
       def outstanding_invoices
-        Invoice.where(client: clients)
+        Invoice.where(client_id: clients.unscope(:select, :order).select(:id))
           .where("amount_due > 0")
           .where(status: [:sent, :viewed, :paid, :overdue])
       end
@@ -85,13 +85,14 @@ module Reports::AccountsAging
       end
 
       def all_billable_clients
-        @_all_billable_clients ||= begin
-          client_ids = current_company.clients.joins(:projects).where(
-            projects: { billable: true }
-          ).kept.distinct.pluck(:id)
-
-          current_company.clients.kept.where(id: client_ids).order(name: :asc)
-        end
+        @_all_billable_clients ||= current_company.clients
+          .kept
+          .with_attached_logo
+          .joins(:projects)
+          .where(projects: { billable: true })
+          .select("clients.*")
+          .distinct
+          .order("clients.name ASC")
       end
 
       def rows

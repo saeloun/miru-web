@@ -6,6 +6,7 @@ import { clientApi } from "apis/api";
 import { useUserContext } from "context/UserContext";
 import { useDebounce } from "helpers";
 import { XIcon, SearchIcon } from "miruIcons";
+import { i18n } from "../../i18n";
 
 import SearchDropdown from "./InvoiceSearch/SearchDropdown";
 
@@ -91,7 +92,9 @@ const Header = ({ showSearch, params, setParams }) => {
 
   return (
     <div className="relative mt-6 mb-3 flex flex-wrap items-center justify-center md:justify-start lg:justify-between">
-      {isDesktop && <h2 className="header__title">Invoices</h2>}
+      {isDesktop && (
+        <h2 className="header__title">{i18n.t("invoices.invoices")}</h2>
+      )}
       {showSearch >= 1 && (
         <>
           {isDesktop ? (
@@ -99,7 +102,7 @@ const Header = ({ showSearch, params, setParams }) => {
               <div className="relative w-11/12">
                 <input
                   className="outline-none w-full rounded-full border-border bg-muted py-2 px-3 text-sm font-medium leading-5 focus:border focus:ring-1 focus:ring-ring"
-                  placeholder="Search"
+                  placeholder={i18n.t("search")}
                   type="text"
                   value={searchQuery}
                   onChange={e => setSearchQuery(e.target.value)}
@@ -134,7 +137,7 @@ const Header = ({ showSearch, params, setParams }) => {
               >
                 <input
                   className="outline-none w-full rounded-full border-border bg-muted py-3 px-3 text-sm font-medium leading-5 focus:border focus:ring-1 focus:ring-ring"
-                  placeholder="Search"
+                  placeholder={i18n.t("search")}
                   type="text"
                   value={searchQuery}
                   onBlur={onSearchBlur}

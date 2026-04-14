@@ -20,12 +20,6 @@ export const parseNumericListParam = (value?: string | null) =>
     .map(item => Number(item.trim()))
     .filter(item => Number.isFinite(item) && item > 0);
 
-export const parseStringListParam = (value?: string | null) =>
-  (value || "")
-    .split(",")
-    .map(item => item.trim())
-    .filter(Boolean);
-
 export const buildSearchParams = (
   values: Record<string, string | number | undefined | null | false>
 ) => {

@@ -87,6 +87,30 @@ RSpec.describe "Api::V1::TimeTracking#index", type: :request do
       expect(entry["source_label"]).to eq("Codex via MCP")
     end
 
+    it "uses the shortest valid ambiguous date range for day-first week navigation" do
+      target_date = Date.new(2026, 4, 6)
+      travel_entry = create(
+        :timesheet_entry,
+        user:,
+        project: project1,
+        work_date: target_date,
+        note: "Ambiguous week navigation",
+        source: "manual"
+      )
+
+      send_request :get, api_v1_time_tracking_index_path, params: {
+        from: "06-04-2026",
+        to: "12-04-2026"
+      }, headers: auth_headers(user)
+
+      entry = json_response.dig("entries", target_date.iso8601).find do |value|
+        value["id"] == travel_entry.id
+      end
+
+      expect(entry).to be_present
+      expect(entry["note"]).to eq("Ambiguous week navigation")
+    end
+
     it "parses ISO date params when filtering entries" do
       send_request :get, api_v1_time_tracking_index_path, params: {
         from: Date.current.beginning_of_week(:monday).iso8601,

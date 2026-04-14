@@ -1,28 +1,15 @@
 ---
 tr:
-  activerecord:
-    errors:
-      models:
-        user:
-          attributes:
-            email:
-              blank: E-posta adresi boş bırakılamaz.
-              invalid: Geçersiz E-posta Adresi
-              taken: E-posta adresi zaten mevcut.
-            first_name:
-              blank: boş olamaz
-              invalid: Yalnızca harf veya boşluk içermelidir.
-            last_name:
-              blank: boş olamaz
-              invalid: Yalnızca harf veya boşluk içermelidir.
-            password:
-              blank: boş olamaz
-              too_short: En az %{count} karakter uzunluğunda olmalıdır
-            password_confirmation:
-              confirmation: Yeni şifreyle eşleşmiyor
   devise:
     confirmations:
       confirmed: E-posta adresiniz başarıyla doğrulandı.
+      new:
+        description: Onay bağlantınızın süresi dolmuş veya geçersiz. Lütfen yeni bir
+          bağlantı isteyin.
+        remember_password: Şifrenizi hatırlıyor musunuz?
+        resend: Onay E-postasını Yeniden Gönder
+        sign_in: Giriş yap
+        title: E-posta Onayı Gerekli
       send_instructions: Birkaç dakika içinde e-posta adresinizi nasıl doğrulayacağınıza
         dair talimatlar içeren bir e-posta alacaksınız.
       send_paranoid_instructions: E-posta adresiniz veritabanımızda kayıtlıysa, birkaç
@@ -85,20 +72,12 @@ tr:
       signed_in: Başarıyla giriş yapıldı.
       signed_out: Başarılı bir şekilde oturumdan çıkış yapıldı.
     unlocks:
+      new:
+        submit: Kilit açma talimatlarını yeniden gönder
+        title: Kilit açma talimatlarını yeniden gönder
       send_instructions: Hesabınızın kilidini nasıl açacağınıza dair talimatları içeren
         bir e-posta birkaç dakika içinde alacaksınız.
       send_paranoid_instructions: Hesabınız mevcutsa, birkaç dakika içinde hesabınızın
         kilidini nasıl açacağınıza dair talimatlar içeren bir e-posta alacaksınız.
       unlocked: Hesabınızın kilidi başarıyla açıldı. Devam etmek için lütfen giriş
         yapın.
-  errors:
-    messages:
-      already_confirmed: Onaylandı, lütfen giriş yapmayı deneyin.
-      confirmation_period_expired: "%{period} içinde onaylanması gerekiyor, lütfen
-        yenisini talep edin."
-      expired: Süresi doldu, lütfen yenisini talep edin.
-      not_found: bulunamadı
-      not_locked: kilitli değildi
-      not_saved:
-        one: '1 hata bu %{resource}''ın kaydedilmesini engelledi:'
-        other: "%{count} hataları bu %{resource}'in kaydedilmesini engelledi:"

@@ -1,0 +1,27 @@
+---
+nl:
+  errors:
+    bill_status_billed: Je kunt geen factuur sturen voor een item dat al eerder gefactureerd
+      is.
+    can't change status: Kan niet worden gewijzigd na betaling van een factuur.
+    create_billed_entry: Je kunt geen gefactureerde urenregistratie aanmaken.
+    internal_server_error: Er is iets misgegaan.
+    messages:
+      already_confirmed: Dit is al bevestigd, probeer opnieuw in te loggen.
+      confirmation_period_expired: Dit moet binnen %{period} worden bevestigd; vraag
+        een nieuwe aan.
+      expired: is verlopen, vraag een nieuwe aan.
+      not_found: niet gevonden
+      not_locked: was niet vergrendeld
+      not_saved:
+        one: '1 fout heeft ervoor gezorgd dat deze %{resource} niet kon worden opgeslagen:'
+        other: "%{count}-fouten verhinderden dat deze %{resource} kon worden opgeslagen:"
+    not_found: De bron waarnaar u op zoek bent, is niet beschikbaar.
+    prevent_draft_to_waived: kan niet worden gewijzigd naar kwijtgescholden
+    unauthorized: Alleen de eigenaar of beheerder is gemachtigd om deze actie uit
+      te voeren.
+    updation_not_allowed: Updaten is niet toegestaan.
+    user_already_member: Dit e-mailadres is al in gebruik. Voer een ander e-mailadres
+      in.
+    validate_billable_project: Je kunt geen niet-gefactureerde post aanmaken voor
+      projecten die niet gefactureerd worden.

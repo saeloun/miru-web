@@ -16,6 +16,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "../../../ui/card";
 import { Button } from "../../../ui/button";
 import { Separator } from "../../../ui/separator";
 import { Badge } from "../../../ui/badge";
+import { i18n } from "../../../../i18n";
 
 dayjs.extend(customParseFormat);
 
@@ -26,7 +27,7 @@ const PersonalProfileSummary = ({
   isCalledFromSettings,
 }) => {
   const formatAddress = () => {
-    if (!personalDetails.addresses) return "No address provided";
+    if (!personalDetails.addresses) return i18n.t("profile.noAddressProvided");
 
     const addr = personalDetails.addresses;
     const parts = [];
@@ -42,7 +43,7 @@ const PersonalProfileSummary = ({
 
     if (addr.pin) parts.push(addr.pin);
 
-    return parts.join(", ") || "No address provided";
+    return parts.join(", ") || i18n.t("profile.noAddressProvided");
   };
 
   const formattedDateOfBirth = personalDetails.date_of_birth
@@ -62,7 +63,7 @@ const PersonalProfileSummary = ({
             className="bg-primary text-primary-foreground hover:bg-primary/90 font-geist-medium"
             size="sm"
           >
-            Edit Profile
+            {i18n.t("profile.editProfile")}
           </Button>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -70,7 +71,7 @@ const PersonalProfileSummary = ({
             <CardHeader className="pb-4">
               <CardTitle className="text-lg font-geist-semibold flex items-center gap-2">
                 <User className="h-5 w-5 text-muted-foreground" />
-                Personal Information
+                {i18n.t("profile.personalInformation")}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -82,7 +83,7 @@ const PersonalProfileSummary = ({
                         alt={
                           `${personalDetails.first_name || ""} ${
                             personalDetails.last_name || ""
-                          }`.trim() || "Profile photo"
+                          }`.trim() || i18n.t("profile.profilePhoto")
                         }
                         className="h-full w-full object-cover"
                         src={avatarUrl}
@@ -99,14 +100,17 @@ const PersonalProfileSummary = ({
                       {personalDetails.first_name} {personalDetails.last_name}
                     </h2>
                     <p className="mt-1 text-sm font-geist-regular text-muted-foreground">
-                      {personalDetails.email_id || "No email provided"}
+                      {personalDetails.email_id ||
+                        i18n.t("profile.noEmailProvided")}
                     </p>
                     {formattedDateOfBirth &&
                       formattedDateOfBirth !== "Invalid Date" && (
                         <div className="flex items-center gap-1 mt-2">
                           <Calendar className="h-4 w-4 text-muted-foreground" />
                           <span className="text-sm font-geist-regular text-muted-foreground">
-                            Born {formattedDateOfBirth}
+                            {i18n.t("profile.bornOn", {
+                              date: formattedDateOfBirth,
+                            })}
                           </span>
                         </div>
                       )}
@@ -119,19 +123,21 @@ const PersonalProfileSummary = ({
                   <div>
                     <label className="text-xs font-geist-medium uppercase tracking-wider text-muted-foreground flex items-center gap-1">
                       <Phone className="h-3 w-3" />
-                      Phone Number
+                      {i18n.t("clients.phoneNumber")}
                     </label>
                     <p className="mt-1 text-sm font-geist-regular text-foreground">
-                      {personalDetails.phone_number || "Not provided"}
+                      {personalDetails.phone_number ||
+                        i18n.t("profile.notProvided")}
                     </p>
                   </div>
                   <div>
                     <label className="text-xs font-geist-medium uppercase tracking-wider text-muted-foreground flex items-center gap-1">
                       <Envelope className="h-3 w-3" />
-                      Personal Email
+                      {i18n.t("profile.personalEmail")}
                     </label>
                     <p className="mt-1 text-sm font-geist-regular text-foreground">
-                      {personalDetails.email_id || "Not provided"}
+                      {personalDetails.email_id ||
+                        i18n.t("profile.notProvided")}
                     </p>
                   </div>
                 </div>
@@ -139,7 +145,7 @@ const PersonalProfileSummary = ({
                 <div>
                   <label className="text-xs font-geist-medium uppercase tracking-wider text-muted-foreground flex items-center gap-1">
                     <MapPin className="h-3 w-3" />
-                    Address
+                    {i18n.t("address")}
                   </label>
                   <p className="mt-1 text-sm font-geist-regular leading-relaxed text-foreground">
                     {formatAddress()}
@@ -154,7 +160,7 @@ const PersonalProfileSummary = ({
               <CardHeader className="pb-4">
                 <CardTitle className="text-lg font-geist-semibold flex items-center gap-2">
                   <Globe className="h-5 w-5 text-muted-foreground" />
-                  Social Profiles
+                  {i18n.t("profile.socialProfiles")}
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -162,19 +168,20 @@ const PersonalProfileSummary = ({
                   <div>
                     <label className="text-xs font-geist-medium uppercase tracking-wider text-muted-foreground flex items-center gap-1">
                       <LinkedinLogo className="h-3 w-3" />
-                      LinkedIn
+                      {i18n.t("profile.linkedin")}
                     </label>
                     <p className="mt-1 truncate text-sm font-geist-regular text-foreground">
-                      {personalDetails.linkedin || "Not connected"}
+                      {personalDetails.linkedin ||
+                        i18n.t("profile.notConnected")}
                     </p>
                   </div>
                   <div>
                     <label className="text-xs font-geist-medium uppercase tracking-wider text-muted-foreground flex items-center gap-1">
                       <GithubLogo className="h-3 w-3" />
-                      GitHub
+                      {i18n.t("profile.github")}
                     </label>
                     <p className="mt-1 truncate text-sm font-geist-regular text-foreground">
-                      {personalDetails.github || "Not connected"}
+                      {personalDetails.github || i18n.t("profile.notConnected")}
                     </p>
                   </div>
                 </div>
@@ -186,7 +193,7 @@ const PersonalProfileSummary = ({
                 <CardHeader className="pb-4">
                   <CardTitle className="text-lg font-geist-semibold flex items-center gap-2">
                     <Lock className="h-5 w-5 text-muted-foreground" />
-                    Security
+                    {i18n.t("profile.security")}
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -194,14 +201,14 @@ const PersonalProfileSummary = ({
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="text-sm font-geist-medium text-foreground">
-                          Password
+                          {i18n.t("settings.password")}
                         </p>
                         <p className="mt-0.5 text-xs font-geist-regular text-muted-foreground">
-                          Last changed 30 days ago
+                          {i18n.t("profile.lastChangedDaysAgo", { count: 30 })}
                         </p>
                       </div>
                       <Badge className="bg-primary text-primary-foreground font-geist-medium">
-                        Secure
+                        {i18n.t("profile.secure")}
                       </Badge>
                     </div>
                     <Button
@@ -210,7 +217,7 @@ const PersonalProfileSummary = ({
                       className="w-full font-geist-medium"
                       onClick={handleEditClick}
                     >
-                      Change Password
+                      {i18n.t("settings.changePassword")}
                     </Button>
                   </div>
                 </CardContent>

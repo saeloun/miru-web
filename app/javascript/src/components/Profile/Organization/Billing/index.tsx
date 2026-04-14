@@ -26,6 +26,7 @@ import { Button } from "../../../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../../../ui/card";
 import { Skeleton } from "../../../ui/skeleton";
 import { Slider } from "../../../ui/slider";
+import { i18n } from "../../../../i18n";
 import {
   Table,
   TableBody,
@@ -87,7 +88,7 @@ const Billing = () => {
       toast.error(
         error?.response?.data?.errors ||
           error?.message ||
-          "Unable to open Stripe checkout"
+          i18n.t("billingSettings.errors.unableToOpenStripeCheckout")
       );
     } finally {
       setProcessingCheckout(false);
@@ -104,7 +105,7 @@ const Billing = () => {
       toast.error(
         error?.response?.data?.errors ||
           error?.message ||
-          "Unable to open Stripe billing portal"
+          i18n.t("billingSettings.errors.unableToOpenStripeBillingPortal")
       );
     } finally {
       setProcessingPortal(false);
@@ -116,12 +117,15 @@ const Billing = () => {
       setProcessingTrial(true);
       const response = await subscriptionsApi.trial();
       setSummary(response.data);
-      toast.success(response?.data?.notice || "Your Pro trial is active");
+      toast.success(
+        response?.data?.notice ||
+          i18n.t("billingSettings.alerts.proTrialActive")
+      );
     } catch (error: any) {
       toast.error(
         error?.response?.data?.errors ||
           error?.message ||
-          "Unable to start your Pro trial"
+          i18n.t("billingSettings.errors.unableToStartProTrial")
       );
     } finally {
       setProcessingTrial(false);
@@ -137,15 +141,21 @@ const Billing = () => {
   }, []);
 
   const planLabel = () => {
-    if (!summary) return "Unknown";
+    if (!summary) return i18n.t("billingSettings.plans.unknown");
 
-    if (summary.plan_label === "free_pro") return "Free Pro";
+    if (summary.plan_label === "free_pro") {
+      return i18n.t("billingSettings.plans.freePro");
+    }
 
-    if (summary.plan_label === "pro_trial") return "Pro Trial";
+    if (summary.plan_label === "pro_trial") {
+      return i18n.t("billingSettings.plans.proTrial");
+    }
 
-    if (summary.plan_label === "paid") return "Paid";
+    if (summary.plan_label === "paid") {
+      return i18n.t("billingSettings.plans.paid");
+    }
 
-    return "Free";
+    return i18n.t("billingSettings.plans.free");
   };
 
   const formatDate = (value?: string | null) => {
@@ -159,22 +169,29 @@ const Billing = () => {
   };
 
   const usageLabel = summary
-    ? `${summary.used_team_seats}/${summary.team_member_limit} seats used`
+    ? summary.team_member_limit
+      ? i18n.t("billingSettings.seatsUsed", {
+          used: summary.used_team_seats,
+          total: summary.team_member_limit,
+        })
+      : i18n.t("billingSettings.seatsUsedWithoutLimit", {
+          used: summary.used_team_seats,
+        })
     : "";
 
   const priceByInterval = {
     monthly: {
       proPerSeat: 1,
       pro: "$1/team member/mo",
-      proSavings: "Billed month to month",
-      enterprise: "Custom annual",
+      proSavings: i18n.t("billingSettings.planCadence.monthly"),
+      enterprise: i18n.t("billingSettings.customAnnual"),
       hostedEnterprise: "$1,000/mo + usage",
     },
     yearly: {
       proPerSeat: 10,
       pro: "$10/team member/yr",
-      proSavings: "Save 2 months per seat",
-      enterprise: "Custom annual",
+      proSavings: i18n.t("billingSettings.planCadence.yearlySavings"),
+      enterprise: i18n.t("billingSettings.customAnnual"),
       hostedEnterprise: "$12,000/yr + usage",
     },
   } as const;
@@ -195,119 +212,116 @@ const Billing = () => {
   const recommendation = (() => {
     if (seatEstimate <= 3) {
       return {
-        title: "Stay on Free until you need controls",
-        description:
-          "Free works well for very small teams. Move to Pro when you need SSO, stronger reports, and more than 3 seats.",
+        title: i18n.t("billingSettings.recommendations.freeTitle"),
+        description: i18n.t("billingSettings.recommendations.freeDescription"),
       };
     }
 
     if (seatEstimate <= 25) {
       return {
-        title: "Pro is the right fit",
-        description:
-          "For growing teams, Pro gives you SSO, finance visibility, and enough room to scale without enterprise overhead.",
+        title: i18n.t("billingSettings.recommendations.proTitle"),
+        description: i18n.t("billingSettings.recommendations.proDescription"),
       };
     }
 
     return {
-      title: "Talk to us about Enterprise",
-      description:
-        "Larger teams usually need procurement support, admin controls, and a smoother rollout. Start with Pro or move straight to Enterprise.",
+      title: i18n.t("billingSettings.recommendations.enterpriseTitle"),
+      description: i18n.t(
+        "billingSettings.recommendations.enterpriseDescription"
+      ),
     };
   })();
 
   const pricingRows = [
     {
-      feature: "Best for",
-      free: "Self-hosted teams getting started",
-      pro: "Growing service teams that need controls",
-      enterprise: "Larger orgs with security and procurement needs",
-      hostedEnterprise: "Teams that want Miru managed for them",
+      feature: i18n.t("billingSettings.table.bestFor"),
+      free: i18n.t("billingSettings.table.selfHostedTeams"),
+      pro: i18n.t("billingSettings.table.growingServiceTeams"),
+      enterprise: i18n.t("billingSettings.table.largeOrgs"),
+      hostedEnterprise: i18n.t("billingSettings.table.managedTeams"),
     },
     {
-      feature: "Time tracking",
-      free: "Included",
-      pro: "Included",
-      enterprise: "Included",
-      hostedEnterprise: "Included",
+      feature: i18n.t("billingSettings.table.timeTracking"),
+      free: i18n.t("billingSettings.table.included"),
+      pro: i18n.t("billingSettings.table.included"),
+      enterprise: i18n.t("billingSettings.table.included"),
+      hostedEnterprise: i18n.t("billingSettings.table.included"),
     },
     {
-      feature: "Invoices and payments",
-      free: "Included",
-      pro: "Included",
-      enterprise: "Included",
-      hostedEnterprise: "Included",
+      feature: i18n.t("billingSettings.table.invoicesAndPayments"),
+      free: i18n.t("billingSettings.table.included"),
+      pro: i18n.t("billingSettings.table.included"),
+      enterprise: i18n.t("billingSettings.table.included"),
+      hostedEnterprise: i18n.t("billingSettings.table.included"),
     },
     {
-      feature: "Reports and dashboards",
-      free: "Dashboard only",
-      pro: "Reports and analytics",
-      enterprise: "Reports and analytics",
-      hostedEnterprise: "Reports and analytics",
+      feature: i18n.t("billingSettings.table.reportsAndDashboards"),
+      free: i18n.t("billingSettings.table.dashboardOnly"),
+      pro: i18n.t("billingSettings.table.reportsAndAnalytics"),
+      enterprise: i18n.t("billingSettings.table.reportsAndAnalytics"),
+      hostedEnterprise: i18n.t("billingSettings.table.reportsAndAnalytics"),
     },
     {
-      feature: "SSO",
-      free: "Not included",
-      pro: "Included",
-      enterprise: "Included",
-      hostedEnterprise: "Included",
+      feature: i18n.t("billingSettings.table.sso"),
+      free: i18n.t("billingSettings.table.notIncluded"),
+      pro: i18n.t("billingSettings.table.included"),
+      enterprise: i18n.t("billingSettings.table.included"),
+      hostedEnterprise: i18n.t("billingSettings.table.included"),
     },
     {
-      feature: "Audit and admin controls",
-      free: "Not included",
-      pro: "Included",
-      enterprise: "Included",
-      hostedEnterprise: "Included",
+      feature: i18n.t("billingSettings.table.auditAndAdminControls"),
+      free: i18n.t("billingSettings.table.notIncluded"),
+      pro: i18n.t("billingSettings.table.included"),
+      enterprise: i18n.t("billingSettings.table.included"),
+      hostedEnterprise: i18n.t("billingSettings.table.included"),
     },
     {
-      feature: "Support",
-      free: "Community",
-      pro: "Priority email",
-      enterprise: "Priority + onboarding",
-      hostedEnterprise: "Managed service + onboarding",
+      feature: i18n.t("billingSettings.table.support"),
+      free: i18n.t("billingSettings.table.community"),
+      pro: i18n.t("billingSettings.table.priorityEmail"),
+      enterprise: i18n.t("billingSettings.table.priorityOnboarding"),
+      hostedEnterprise: i18n.t("billingSettings.table.managedOnboarding"),
     },
   ];
 
   const proHighlights = [
     {
-      title: "More seats without admin pain",
-      description:
-        "Move past the 3-seat free limit and keep onboarding simple.",
+      title: i18n.t("billingSettings.highlights.seatsTitle"),
+      description: i18n.t("billingSettings.highlights.seatsDescription"),
       icon: <RocketLaunch size={18} weight="duotone" />,
     },
     {
-      title: "SSO and stronger controls",
-      description: "Give growing teams secure access without extra tools.",
+      title: i18n.t("billingSettings.highlights.ssoTitle"),
+      description: i18n.t("billingSettings.highlights.ssoDescription"),
       icon: <LockKey size={18} weight="duotone" />,
     },
     {
-      title: "Finance visibility that stays calm",
-      description:
-        "Know margin, billing cadence, and team usage without extra setup.",
+      title: i18n.t("billingSettings.highlights.financeTitle"),
+      description: i18n.t("billingSettings.highlights.financeDescription"),
       icon: <ChartLineUp size={18} weight="duotone" />,
     },
   ];
 
   const planBullets = {
     free: [
-      "Self-hosted core product",
-      "Time tracking, invoices, payments",
-      "Dashboard visibility for a small team",
+      i18n.t("billingSettings.planBullets.free.coreProduct"),
+      i18n.t("billingSettings.planBullets.free.tracking"),
+      i18n.t("billingSettings.planBullets.free.dashboard"),
     ],
     pro: [
-      "30-day free trial before paying",
-      "SSO, advanced reporting, stronger admin controls",
-      "Best fit for agencies and growing teams",
+      i18n.t("billingSettings.planBullets.pro.trial"),
+      i18n.t("billingSettings.planBullets.pro.sso"),
+      i18n.t("billingSettings.planBullets.pro.fit"),
     ],
     enterprise: [
-      "Procurement-friendly contracts",
-      "Security review and onboarding support",
-      "For larger teams with approval and compliance needs",
+      i18n.t("billingSettings.planBullets.enterprise.contracts"),
+      i18n.t("billingSettings.planBullets.enterprise.onboarding"),
+      i18n.t("billingSettings.planBullets.enterprise.compliance"),
     ],
     hostedEnterprise: [
-      "Dedicated managed setup",
-      "We handle upgrades, backups, and support",
-      "For teams that want Miru fully operated for them",
+      i18n.t("billingSettings.planBullets.hosted.setup"),
+      i18n.t("billingSettings.planBullets.hosted.operations"),
+      i18n.t("billingSettings.planBullets.hosted.fit"),
     ],
   } as const;
 
@@ -315,25 +329,29 @@ const Billing = () => {
     <div className="mx-auto flex w-full max-w-5xl flex-col gap-6 p-4 sm:p-6">
       {billingResult === "success" && (
         <Alert>
-          <AlertTitle>Subscription updated</AlertTitle>
+          <AlertTitle>
+            {i18n.t("billingSettings.alerts.subscriptionUpdatedTitle")}
+          </AlertTitle>
           <AlertDescription>
-            Your plan was updated in Stripe successfully.
+            {i18n.t("billingSettings.alerts.subscriptionUpdated")}
           </AlertDescription>
         </Alert>
       )}
 
       {billingResult === "cancelled" && (
         <Alert>
-          <AlertTitle>Checkout cancelled</AlertTitle>
+          <AlertTitle>
+            {i18n.t("billingSettings.alerts.checkoutCancelled")}
+          </AlertTitle>
           <AlertDescription>
-            No changes were made to your subscription.
+            {i18n.t("billingSettings.alerts.noSubscriptionChanges")}
           </AlertDescription>
         </Alert>
       )}
 
       <Card className="border-border bg-card shadow-sm">
         <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle>Membership</CardTitle>
+          <CardTitle>{i18n.t("billingSettings.membership")}</CardTitle>
           {summary && <Badge variant="secondary">{planLabel()}</Badge>}
         </CardHeader>
         <CardContent>
@@ -347,9 +365,11 @@ const Billing = () => {
 
           {status === ApiStatus.ERROR && (
             <Alert variant="destructive">
-              <AlertTitle>Unable to load billing details</AlertTitle>
+              <AlertTitle>
+                {i18n.t("billingSettings.alerts.unableToLoad")}
+              </AlertTitle>
               <AlertDescription>
-                Refresh this page and try again.
+                {i18n.t("refreshPageMessage")}
               </AlertDescription>
             </Alert>
           )}
@@ -359,7 +379,7 @@ const Billing = () => {
               <div className="grid gap-3 sm:grid-cols-2">
                 <div className="rounded-lg border border-border bg-background p-3">
                   <p className="text-xs uppercase tracking-wide text-muted-foreground">
-                    Current plan
+                    {i18n.t("billingSettings.currentPlan")}
                   </p>
                   <p className="mt-1 text-base font-medium text-foreground">
                     {planLabel()}
@@ -367,7 +387,7 @@ const Billing = () => {
                 </div>
                 <div className="rounded-lg border border-border bg-background p-3">
                   <p className="text-xs uppercase tracking-wide text-muted-foreground">
-                    Seat usage
+                    {i18n.t("billingSettings.seatUsage")}
                   </p>
                   <p className="mt-1 text-base font-medium text-foreground">
                     {usageLabel}
@@ -375,44 +395,51 @@ const Billing = () => {
                 </div>
                 <div className="rounded-lg border border-border bg-background p-3 sm:col-span-2">
                   <p className="text-xs uppercase tracking-wide text-muted-foreground">
-                    Billing cadence
+                    {i18n.t("billingSettings.billingCadence")}
                   </p>
                   <p className="mt-1 text-base font-medium text-foreground">
                     {summary.subscription_interval === "year"
-                      ? "Yearly"
+                      ? i18n.t("billingSettings.yearly")
                       : summary.subscription_interval === "month"
-                      ? "Monthly"
-                      : "Not subscribed yet"}
+                      ? i18n.t("billingSettings.monthly")
+                      : i18n.t("billingSettings.notSubscribedYet")}
                   </p>
                 </div>
               </div>
 
               {summary.trial_active && summary.trial_ends_at && (
                 <Alert>
-                  <AlertTitle>Pro trial active</AlertTitle>
+                  <AlertTitle>
+                    {i18n.t("billingSettings.alerts.proTrialActive")}
+                  </AlertTitle>
                   <AlertDescription>
-                    Your workspace has Pro access until{" "}
-                    {formatDate(summary.trial_ends_at)}.
+                    {i18n.t("billingSettings.alerts.proTrialActiveUntil", {
+                      date: formatDate(summary.trial_ends_at),
+                    })}
                   </AlertDescription>
                 </Alert>
               )}
 
               {summary.subscription_status === "trial_expired" && (
                 <Alert>
-                  <AlertTitle>Pro trial ended</AlertTitle>
+                  <AlertTitle>
+                    {i18n.t("billingSettings.alerts.proTrialEnded")}
+                  </AlertTitle>
                   <AlertDescription>
-                    Your workspace has returned to the free plan. Upgrade in
-                    Stripe to restore Pro access.
+                    {i18n.t("billingSettings.alerts.proTrialEndedDescription")}
                   </AlertDescription>
                 </Alert>
               )}
 
               {summary.team_member_limit_reached && !summary.pro_access && (
                 <Alert>
-                  <AlertTitle>Seat limit reached</AlertTitle>
+                  <AlertTitle>
+                    {i18n.t("billingSettings.alerts.seatLimitReached")}
+                  </AlertTitle>
                   <AlertDescription>
-                    Upgrade in Stripe to add more than 3 members to this
-                    workspace.
+                    {i18n.t(
+                      "billingSettings.alerts.seatLimitReachedDescription"
+                    )}
                   </AlertDescription>
                 </Alert>
               )}
@@ -432,7 +459,7 @@ const Billing = () => {
                     }
                     onClick={() => setBillingInterval("monthly")}
                   >
-                    Monthly
+                    {i18n.t("billingSettings.monthly")}
                   </Button>
                   <Button
                     type="button"
@@ -445,7 +472,7 @@ const Billing = () => {
                     }
                     onClick={() => setBillingInterval("yearly")}
                   >
-                    Yearly
+                    {i18n.t("billingSettings.yearly")}
                   </Button>
                 </div>
 
@@ -456,16 +483,16 @@ const Billing = () => {
                     disabled={processingTrial}
                   >
                     {processingTrial
-                      ? "Starting trial..."
-                      : "Start 30-day Pro trial"}
+                      ? i18n.t("billingSettings.startingTrial")
+                      : i18n.t("billingSettings.startTrial")}
                   </Button>
                 )}
 
                 {!summary.billing_exempt && summary.plan_tier !== "paid" && (
                   <Button onClick={startCheckout} disabled={processingCheckout}>
                     {processingCheckout
-                      ? "Opening Stripe..."
-                      : "Upgrade with Stripe"}
+                      ? i18n.t("billingSettings.openingStripe")
+                      : i18n.t("billingSettings.upgradeWithStripe")}
                   </Button>
                 )}
 
@@ -477,8 +504,8 @@ const Billing = () => {
                     disabled={processingPortal}
                   >
                     {processingPortal
-                      ? "Opening portal..."
-                      : "Manage billing in Stripe"}
+                      ? i18n.t("billingSettings.openingPortal")
+                      : i18n.t("billingSettings.manageBillingInStripe")}
                   </Button>
                 )}
               </div>
@@ -492,21 +519,18 @@ const Billing = () => {
           <div className="flex flex-wrap items-center gap-3">
             <Badge className="gap-1.5 px-3 py-1">
               <Sparkle size={14} weight="fill" />
-              30-day Pro trial
+              {i18n.t("billingSettings.startTrial")}
             </Badge>
             <Badge variant="secondary" className="gap-1.5 px-3 py-1">
               <ClockClockwise size={14} weight="fill" />
-              Save two months on yearly
+              {i18n.t("billingSettings.saveTwoMonths")}
             </Badge>
           </div>
           <CardTitle className="text-2xl tracking-tight">
-            Pick the package that fits now. Switch later if you need more.
+            {i18n.t("billingSettings.heroTitle")}
           </CardTitle>
           <p className="max-w-3xl text-sm text-muted-foreground">
-            Start on Free, move to Pro when the team needs more control, or let
-            us run Miru for you. Pro stays inexpensive, yearly saves real money,
-            and billing stays simple because checkout and subscription
-            management are powered by Stripe.
+            {i18n.t("billingSettings.heroDescription")}
           </p>
         </CardHeader>
         <CardContent className="space-y-6">
@@ -533,16 +557,15 @@ const Billing = () => {
             <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
               <div className="space-y-2">
                 <p className="text-sm font-medium text-foreground">
-                  How many seats do you expect to need?
+                  {i18n.t("billingSettings.howManySeats")}
                 </p>
                 <p className="text-sm text-muted-foreground">
-                  Use this to compare Free vs Pro and decide whether monthly or
-                  yearly makes more sense.
+                  {i18n.t("billingSettings.seatEstimatorDescription")}
                 </p>
               </div>
               <div className="rounded-lg border border-border bg-background px-4 py-3 text-right shadow-sm">
                 <p className="text-xs uppercase tracking-wide text-muted-foreground">
-                  Estimated seats
+                  {i18n.t("billingSettings.estimatedSeats")}
                 </p>
                 <p className="text-2xl font-semibold text-foreground">
                   {seatEstimate}
@@ -563,7 +586,7 @@ const Billing = () => {
               <div className="grid gap-3 md:grid-cols-3">
                 <div className="rounded-lg border border-border bg-background p-3 shadow-sm">
                   <p className="text-xs uppercase tracking-wide text-muted-foreground">
-                    Recommended
+                    {i18n.t("billingSettings.recommended")}
                   </p>
                   <p className="mt-1 text-sm font-semibold text-foreground">
                     {recommendation.title}
@@ -575,7 +598,7 @@ const Billing = () => {
 
                 <div className="rounded-lg border border-border bg-background p-3 shadow-sm">
                   <p className="text-xs uppercase tracking-wide text-muted-foreground">
-                    Estimated Pro spend
+                    {i18n.t("billingSettings.estimatedProSpend")}
                   </p>
                   <p className="mt-1 text-sm font-semibold text-foreground">
                     {billingInterval === "yearly"
@@ -584,20 +607,22 @@ const Billing = () => {
                   </p>
                   <p className="mt-1 text-sm text-muted-foreground">
                     {billingInterval === "yearly"
-                      ? `About $${monthlyEquivalent.toLocaleString()}/mo effective pricing`
-                      : "Cancel or upgrade any time in Stripe"}
+                      ? i18n.t("billingSettings.effectiveMonthlyPricing", {
+                          amount: monthlyEquivalent.toLocaleString(),
+                        })
+                      : i18n.t("billingSettings.cancelOrUpgradeAnytime")}
                   </p>
                 </div>
 
                 <div className="rounded-lg border border-border bg-background p-3 shadow-sm">
                   <p className="text-xs uppercase tracking-wide text-muted-foreground">
-                    Yearly discount
+                    {i18n.t("billingSettings.yearlyDiscount")}
                   </p>
                   <p className="mt-1 text-sm font-semibold text-foreground">
                     Save ${yearlySavings.toLocaleString()}/yr
                   </p>
                   <p className="mt-1 text-sm text-muted-foreground">
-                    Two free months per seat compared with monthly pricing.
+                    {i18n.t("billingSettings.yearlyDiscountDescription")}
                   </p>
                 </div>
               </div>
@@ -608,14 +633,15 @@ const Billing = () => {
             <div className="rounded-xl border border-border bg-card p-4 shadow-sm">
               <div className="flex items-center justify-between">
                 <h3 className="text-base font-semibold text-foreground">
-                  Free
+                  {i18n.t("billingSettings.plans.free")}
                 </h3>
-                <Badge variant="outline">Open source</Badge>
+                <Badge variant="outline">
+                  {i18n.t("billingSettings.openSource")}
+                </Badge>
               </div>
               <p className="mt-2 text-2xl font-semibold text-foreground">$0</p>
               <p className="mt-2 text-sm text-muted-foreground">
-                Self-host Miru with core tracking, invoicing, payments, and up
-                to 3 team seats.
+                {i18n.t("billingSettings.planDescriptions.free")}
               </p>
               <div className="mt-4 space-y-2">
                 {planBullets.free.map(item => (
@@ -639,9 +665,13 @@ const Billing = () => {
                 <h3 className="text-base font-semibold text-foreground">Pro</h3>
                 <div className="flex items-center gap-2">
                   {billingInterval === "yearly" && (
-                    <Badge variant="secondary">Save ${yearlySavings}/yr</Badge>
+                    <Badge variant="secondary">
+                      {i18n.t("billingSettings.savePerYear", {
+                        amount: yearlySavings,
+                      })}
+                    </Badge>
                   )}
-                  <Badge>Recommended</Badge>
+                  <Badge>{i18n.t("billingSettings.recommended")}</Badge>
                 </div>
               </div>
               <p className="mt-2 text-2xl font-semibold text-foreground">
@@ -651,8 +681,7 @@ const Billing = () => {
                 {priceByInterval[billingInterval].proSavings}
               </p>
               <p className="mt-2 text-sm text-muted-foreground">
-                Pro adds reports, SSO, more seats, and calmer admin controls
-                without enterprise overhead.
+                {i18n.t("billingSettings.planDescriptions.pro")}
               </p>
               <div className="mt-4 space-y-2">
                 {planBullets.pro.map(item => (
@@ -678,8 +707,8 @@ const Billing = () => {
                     disabled={processingTrial}
                   >
                     {processingTrial
-                      ? "Starting trial..."
-                      : "Start 30-day Pro trial"}
+                      ? i18n.t("billingSettings.startingTrial")
+                      : i18n.t("billingSettings.startTrial")}
                   </Button>
                 )}
                 {!summary?.billing_exempt && summary?.plan_tier !== "paid" && (
@@ -689,13 +718,12 @@ const Billing = () => {
                     disabled={processingCheckout}
                   >
                     {processingCheckout
-                      ? "Opening Stripe..."
-                      : "Upgrade with Stripe"}
+                      ? i18n.t("billingSettings.openingStripe")
+                      : i18n.t("billingSettings.upgradeWithStripe")}
                   </Button>
                 )}
                 <p className="text-xs text-muted-foreground">
-                  No sales call for Pro. Cancel or change plans in Stripe
-                  anytime.
+                  {i18n.t("billingSettings.noSalesCall")}
                 </p>
               </div>
             </div>
@@ -703,16 +731,17 @@ const Billing = () => {
             <div className="rounded-xl border border-border bg-card p-4 shadow-sm">
               <div className="flex items-center justify-between">
                 <h3 className="text-base font-semibold text-foreground">
-                  Enterprise
+                  {i18n.t("billingSettings.plans.enterprise")}
                 </h3>
-                <Badge variant="secondary">Annual</Badge>
+                <Badge variant="secondary">
+                  {i18n.t("billingSettings.annual")}
+                </Badge>
               </div>
               <p className="mt-2 text-2xl font-semibold text-foreground">
                 {priceByInterval[billingInterval].enterprise}
               </p>
               <p className="mt-2 text-sm text-muted-foreground">
-                Procurement-friendly contracts, advanced controls, and support
-                for larger teams that need security review.
+                {i18n.t("billingSettings.planDescriptions.enterprise")}
               </p>
               <p className="mt-2 text-sm font-medium text-foreground">
                 Talk to{" "}
@@ -743,16 +772,17 @@ const Billing = () => {
             <div className="rounded-xl border border-border bg-card p-4 shadow-sm">
               <div className="flex items-center justify-between">
                 <h3 className="text-base font-semibold text-foreground">
-                  Hosted Enterprise
+                  {i18n.t("billingSettings.plans.hostedEnterprise")}
                 </h3>
-                <Badge variant="outline">Service</Badge>
+                <Badge variant="outline">
+                  {i18n.t("billingSettings.service")}
+                </Badge>
               </div>
               <p className="mt-2 text-2xl font-semibold text-foreground">
                 {priceByInterval[billingInterval].hostedEnterprise}
               </p>
               <p className="mt-2 text-sm text-muted-foreground">
-                We host, upgrade, back up, and support Miru for you on a
-                dedicated setup.
+                {i18n.t("billingSettings.planDescriptions.hostedEnterprise")}
               </p>
               <p className="mt-2 text-sm font-medium text-foreground">
                 Talk to{" "}
@@ -785,11 +815,17 @@ const Billing = () => {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Feature</TableHead>
-                  <TableHead>Free</TableHead>
+                  <TableHead>
+                    {i18n.t("billingSettings.table.feature")}
+                  </TableHead>
+                  <TableHead>{i18n.t("billingSettings.plans.free")}</TableHead>
                   <TableHead>Pro</TableHead>
-                  <TableHead>Enterprise</TableHead>
-                  <TableHead>Hosted Enterprise</TableHead>
+                  <TableHead>
+                    {i18n.t("billingSettings.plans.enterprise")}
+                  </TableHead>
+                  <TableHead>
+                    {i18n.t("billingSettings.plans.hostedEnterprise")}
+                  </TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -812,21 +848,20 @@ const Billing = () => {
             <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
               <div className="space-y-2">
                 <p className="text-sm font-semibold text-foreground">
-                  Checkout and subscription management are powered by Stripe.
+                  {i18n.t("billingSettings.checkoutPoweredByStripe")}
                 </p>
                 <p className="text-sm text-muted-foreground">
-                  Start the trial without a sales process, upgrade when you are
-                  ready, and manage billing yourself whenever you need.
+                  {i18n.t("billingSettings.checkoutDescription")}
                 </p>
               </div>
               <div className="flex flex-wrap gap-2">
                 <Badge variant="outline" className="gap-1.5 px-3 py-1">
                   <ShieldCheck size={14} weight="fill" />
-                  Powered by Stripe
+                  {i18n.t("billingSettings.poweredByStripe")}
                 </Badge>
                 <Badge variant="secondary" className="gap-1.5 px-3 py-1">
                   <ClockClockwise size={14} weight="fill" />
-                  Change plans anytime
+                  {i18n.t("billingSettings.changePlansAnytime")}
                 </Badge>
               </div>
             </div>

@@ -1,49 +1,47 @@
 import React, { Fragment, useState } from "react";
 
 import Loader from "common/Loader/index";
+import { i18n } from "../../../i18n";
 
 import ImportCard from "./importCard";
 import ImportModal from "./importModal";
 
 import EditHeader from "../../Common/EditHeader";
 
-const importList = [
-  {
-    id: 1,
-    title: "Invoices",
-    description:
-      "Import past invoice data from your previous invoicing tool or software",
-    btnText: "START IMPORT",
-    fields: [
-      "Invoice number",
-      "Client name",
-      "Issue Date",
-      "Due Date",
-      "Amount",
-      "Status",
-    ],
-  },
-  {
-    id: 2,
-    title: "Time Entries",
-    description:
-      "Import past time entries from your previous time tracking tool or software",
-    btnText: "START IMPORT",
-    fields: [
-      "Employee Name",
-      "Date",
-      "Hours",
-      "Status",
-      "Client",
-      "Project",
-      "Description",
-    ],
-  },
-];
-
 const columnNames = [];
 
 const Import = () => {
+  const importList = [
+    {
+      id: 1,
+      title: i18n.t("importCatalog.invoices.title"),
+      description: i18n.t("importCatalog.invoices.description"),
+      btnText: i18n.t("importModal.startImport").toUpperCase(),
+      fields: [
+        i18n.t("importCatalog.invoices.fields.invoiceNumber"),
+        i18n.t("importCatalog.invoices.fields.clientName"),
+        i18n.t("importCatalog.invoices.fields.issueDate"),
+        i18n.t("importCatalog.invoices.fields.dueDate"),
+        i18n.t("importCatalog.invoices.fields.amount"),
+        i18n.t("importCatalog.invoices.fields.status"),
+      ],
+    },
+    {
+      id: 2,
+      title: i18n.t("importCatalog.timeEntries.title"),
+      description: i18n.t("importCatalog.timeEntries.description"),
+      btnText: i18n.t("importModal.startImport").toUpperCase(),
+      fields: [
+        i18n.t("importCatalog.timeEntries.fields.employeeName"),
+        i18n.t("importCatalog.timeEntries.fields.date"),
+        i18n.t("importCatalog.timeEntries.fields.hours"),
+        i18n.t("importCatalog.timeEntries.fields.status"),
+        i18n.t("importCatalog.timeEntries.fields.client"),
+        i18n.t("importCatalog.timeEntries.fields.project"),
+        i18n.t("importCatalog.timeEntries.fields.description"),
+      ],
+    },
+  ];
   const [isLoading, setisLoading] = useState(false);
   const [file, setFile] = useState(null);
   const [showImportModal, setShowImportModal] = useState(false);
@@ -79,8 +77,8 @@ const Import = () => {
       <EditHeader
         isDisableUpdateBtn={false}
         showButtons={false}
-        subTitle="Import your data into Miru"
-        title="Import"
+        subTitle={i18n.t("importCatalog.subtitle")}
+        title={i18n.t("importModal.import")}
       />
       {isLoading ? (
         <Loader className="min-h-70v" />

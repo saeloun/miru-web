@@ -10,6 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../components/ui/select";
+import { i18n } from "../i18n";
 import { MobileMoreOptions } from "StyledComponents";
 
 const SearchTimeEntries = ({
@@ -55,7 +56,9 @@ const SearchTimeEntries = ({
       }}
     >
       <SelectTrigger className="w-52" data-testid="user-select">
-        <SelectValue placeholder={currentUser?.label || "Select team member"} />
+        <SelectValue
+          placeholder={currentUser?.label || i18n.t("selectTeamMember")}
+        />
       </SelectTrigger>
       <SelectContent>
         {employeeList.map(employee => (
@@ -82,7 +85,7 @@ const SearchTimeEntries = ({
         >
           <div className="relative mt-2 flex w-full items-center">
             <input
-              placeholder="Search"
+              placeholder={i18n.t("search")}
               type="text"
               value={searchQuery}
               className="focus:outline-none w-full rounded bg-muted p-2

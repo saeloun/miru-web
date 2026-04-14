@@ -1,6 +1,7 @@
 import React from "react";
 
 import { paymentSettings } from "apis/api";
+import { i18n } from "../../../i18n";
 import { Modal, Button } from "StyledComponents";
 
 interface IProps {
@@ -29,12 +30,13 @@ const DisconnectPayment = ({
       onClose={() => setShowDisconnectDialog(false)}
     >
       <div className="mb-8 mt-4 flex-col">
-        <h6 className="mb-2 text-2xl font-bold">Disconnect Stripe</h6>
+        <h6 className="mb-2 text-2xl font-bold">
+          {i18n.t("paymentSettingsPage.disconnectDialogTitle")}
+        </h6>
         <p className="mt-2 font-normal">
-          Are you sure you want to disconnect{" "}
-          <b className="font-bold">{paymentMode}</b> payment gateway? You won’t
-          be able to receive payments through {paymentMode} until you connect a{" "}
-          {paymentMode} account.
+          {i18n.t("paymentSettingsPage.disconnectPaymentModeDescription", {
+            paymentMode,
+          })}
         </p>
       </div>
       <div className="flex justify-between">
@@ -46,7 +48,7 @@ const DisconnectPayment = ({
             setShowDisconnectDialog(false);
           }}
         >
-          CANCEL
+          {i18n.t("cancel").toUpperCase()}
         </Button>
         <Button
           className="ml-2 w-1/2 bg-destructive text-white"
@@ -55,7 +57,7 @@ const DisconnectPayment = ({
             disconnectPayment();
           }}
         >
-          Disconnect
+          {i18n.t("paymentSettingsPage.disconnect")}
         </Button>
       </div>
     </Modal>

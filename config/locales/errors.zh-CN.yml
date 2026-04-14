@@ -1,0 +1,22 @@
+---
+zh-CN:
+  errors:
+    bill_status_billed: 已经计费过的条目不能再次计费。
+    can't change status: 已付款的发票无法更改
+    create_billed_entry: 您无法创建已计费的工时表条目
+    internal_server_error: 出问题了
+    messages:
+      already_confirmed: 已确认，请尝试登录。
+      confirmation_period_expired: 需要在 %{period} 天内确认，请申请新的确认。
+      expired: 已过期，请申请新的。
+      not_found: 未找到
+      not_locked: 未锁定
+      not_saved:
+        one: 1 个错误导致此 %{resource} 无法保存：
+        other: "%{count} 错误导致此 %{resource} 无法保存："
+    not_found: 您要查找的资源不可用。
+    prevent_draft_to_waived: 不能改为豁免
+    unauthorized: 只有所有者或管理员用户才有权执行此操作
+    updation_not_allowed: 不允许更新。
+    user_already_member: 邮箱地址已被使用。请输入另一个邮箱地址。
+    validate_billable_project: 您无法为不可计费项目创建未开票条目。

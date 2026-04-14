@@ -1,0 +1,30 @@
+---
+de:
+  activerecord:
+    errors:
+      models:
+        client:
+          attributes:
+            name:
+              format: "%{message}"
+        project:
+          attributes:
+            name:
+              format: "%{message}"
+        user:
+          attributes:
+            email:
+              blank: Die E-Mail-Adresse darf nicht leer sein.
+              invalid: Ungültige E-Mail-Adresse
+              taken: Die E-Mail-Adresse existiert bereits.
+            first_name:
+              blank: darf nicht leer sein
+              invalid: Darf nur Buchstaben oder Leerzeichen enthalten
+            last_name:
+              blank: darf nicht leer sein
+              invalid: Darf nur Buchstaben oder Leerzeichen enthalten
+            password:
+              blank: darf nicht leer sein
+              too_short: muss mindestens %{count} Zeichen lang sein
+            password_confirmation:
+              confirmation: stimmt nicht mit dem neuen Passwort überein

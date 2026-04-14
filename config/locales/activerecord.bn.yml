@@ -1,0 +1,30 @@
+---
+bn:
+  activerecord:
+    errors:
+      models:
+        client:
+          attributes:
+            name:
+              format: "%{message}"
+        project:
+          attributes:
+            name:
+              format: "%{message}"
+        user:
+          attributes:
+            email:
+              blank: ইমেল খালি রাখা যাবে না।
+              invalid: অবৈধ ইমেল আইডি
+              taken: ইমেল আইডি ইতিমধ্যেই বিদ্যমান আছে
+            first_name:
+              blank: খালি হতে পারে না
+              invalid: শুধুমাত্র অক্ষর বা স্পেস থাকতে হবে
+            last_name:
+              blank: খালি হতে পারে না
+              invalid: শুধুমাত্র অক্ষর বা স্পেস থাকতে হবে
+            password:
+              blank: খালি হতে পারে না
+              too_short: কমপক্ষে %{count} অক্ষর দীর্ঘ হতে হবে
+            password_confirmation:
+              confirmation: নতুন পাসওয়ার্ডের সাথে মিলছে না

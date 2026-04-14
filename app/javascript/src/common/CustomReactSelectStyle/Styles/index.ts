@@ -35,11 +35,25 @@ export const customStyles = (
       fontWeight: 500,
     };
   },
-  menu: provided => ({
+  menu: provided => {
+    const colors = palette();
+
+    return {
+      ...provided,
+      fontSize: "12px",
+      letterSpacing: "2px",
+      zIndex: 50,
+      backgroundColor: colors.background,
+      border: `1px solid ${colors.border}`,
+      boxShadow: "0 12px 32px rgba(15, 23, 42, 0.18)",
+      overflow: "hidden",
+    };
+  },
+  menuList: provided => ({
     ...provided,
-    fontSize: "12px",
-    letterSpacing: "2px",
-    zIndex: 2,
+    backgroundColor: palette().background,
+    paddingTop: 4,
+    paddingBottom: 4,
   }),
   valueContainer: provided => ({
     ...provided,
@@ -101,4 +115,21 @@ export const customStyles = (
       };
     })(),
   }),
+  option: (base, state) => {
+    const colors = palette();
+
+    return {
+      ...base,
+      backgroundColor: state.isSelected
+        ? darken(colors.background)
+        : state.isFocused
+        ? tint(colors.background)
+        : colors.background,
+      color: colors.text,
+      cursor: "pointer",
+    };
+  },
 });
+
+const tint = background => (background === "#0A0A0A" ? "#18181B" : "#F4F4F5");
+const darken = background => (background === "#0A0A0A" ? "#27272A" : "#E4E4E7");

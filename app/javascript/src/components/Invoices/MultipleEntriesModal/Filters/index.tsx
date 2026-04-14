@@ -235,7 +235,7 @@ const Filters = ({
               handleSelectFilter(selectedOption, { name: "dateRange" });
             }}
           >
-            <SelectTrigger className="w-full">
+            <SelectTrigger type="button" className="w-full">
               <SelectValue placeholder={i18n.t("selectDateRange")} />
             </SelectTrigger>
             <SelectContent>
@@ -257,12 +257,14 @@ const Filters = ({
               />
               <div className="flex h-full items-end justify-center bg-background p-6 ">
                 <button
+                  type="button"
                   className="sidebar__reset"
                   onClick={resetCustomDatePicker}
                 >
                   {i18n.t("cancel")}
                 </button>
                 <button
+                  type="button"
                   disabled={disableDateBtn}
                   className={`sidebar__apply ${
                     disableDateBtn
@@ -280,6 +282,7 @@ const Filters = ({
       </div>
       <div className="flex w-full items-center justify-between px-2 lg:w-2/12 lg:py-0">
         <button
+          type="button"
           disabled={!isResetActive}
           className={`text-base lg:hover:text-primary ${
             isResetActive ? "text-primary" : "text-muted-foreground"
@@ -289,6 +292,7 @@ const Filters = ({
           {i18n.t("reset")}
         </button>
         <button
+          type="button"
           disabled={!isResetActive}
           className={`text-base lg:hover:text-primary ${
             isResetActive ? "text-primary" : "text-muted-foreground"

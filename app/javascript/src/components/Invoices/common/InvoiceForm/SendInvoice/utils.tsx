@@ -11,12 +11,27 @@ export const isEmailValid = (email: string): boolean => {
   return schema.isValidSync(email);
 };
 
+export const getInitialRecipients = (invoice: any): string[] =>
+  Array.from(
+    new Set(
+      [
+        invoice.client.email,
+        ...(invoice.client.clientMembersEmails || []),
+      ].filter(Boolean)
+    )
+  );
+
 export const emailSubject = (invoice: any, isSendReminder = false): string => {
   if (isSendReminder) {
-    return i18n.t("invoices.reminderSubject", { number: invoice.invoiceNumber });
+    return i18n.t("invoices.reminderSubject", {
+      number: invoice.invoiceNumber,
+    });
   }
 
-  return i18n.t("invoices.invoiceSentSubject", { company: invoice.company.name, number: invoice.invoiceNumber });
+  return i18n.t("invoices.invoiceSentSubject", {
+    company: invoice.company.name,
+    number: invoice.invoiceNumber,
+  });
 };
 
 export const emailBody = (invoice: any, isSendReminder = false): string => {
@@ -30,10 +45,19 @@ export const emailBody = (invoice: any, isSendReminder = false): string => {
   );
 
   if (isSendReminder) {
-    return i18n.t("invoices.reminderBody", { company: invoice.company.name, number: invoice.invoiceNumber, dueDate });
+    return i18n.t("invoices.reminderBody", {
+      company: invoice.company.name,
+      number: invoice.invoiceNumber,
+      dueDate,
+    });
   }
 
-  return i18n.t("invoices.invoiceSentBody", { company: invoice.company.name, number: invoice.invoiceNumber, amount: formattedAmount, dueDate });
+  return i18n.t("invoices.invoiceSentBody", {
+    company: invoice.company.name,
+    number: invoice.invoiceNumber,
+    amount: formattedAmount,
+    dueDate,
+  });
 };
 
 export const isDisabled = (status: string): boolean =>

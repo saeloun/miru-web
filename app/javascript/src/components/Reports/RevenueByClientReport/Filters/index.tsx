@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 
 import dayjs from "dayjs";
 import { useDebounce, useOutsideClick } from "helpers";
@@ -12,8 +12,9 @@ import CustomRadioButton from "common/CustomRadio";
 import ClientFilter from "components/Reports/Filters/ClientFilter";
 import { LocalStorageKeys } from "constants/index";
 import { useUserContext } from "context/UserContext";
+import { i18n } from "../../../../i18n";
 
-import { dateRangeOptions } from "./filterOptions";
+import { getDateRangeOptions } from "./filterOptions";
 
 const RevenueByClientReportFilters = ({
   dateRange,
@@ -36,10 +37,30 @@ const RevenueByClientReportFilters = ({
   const [customDate, setCustomDate] = useState<boolean>(false);
   const [disableDateBtn, setDisableDateBtn] = useState<boolean>(true);
   const [isDateRangeOpen, setIsDateRangeOpen] = useState<boolean>(false);
-  const [dateRangeList, setDateRangeList] = useState<any>(dateRangeOptions);
   const [isClientOpen, setIsClientOpen] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [disableApplyBtn, setDisableApplyBtn] = useState(false);
+
+  const customDateRangeLabel = useMemo(() => {
+    if (!dateRange.from || !dateRange.to) {
+      return i18n.t("customRange");
+    }
+
+    return i18n.t("customRangeWithDates", {
+      from: dayjs(dateRange.from).format("Do MMM"),
+      to: dayjs(dateRange.to).format("Do MMM"),
+    });
+  }, [dateRange.from, dateRange.to]);
+
+  const dateRangeList = useMemo(
+    () =>
+      getDateRangeOptions().map(option =>
+        option.value === "custom"
+          ? { ...option, label: customDateRangeLabel }
+          : option
+      ),
+    [customDateRangeLabel]
+  );
 
   const { isDesktop } = useUserContext();
   const debouncedSearchQuery = useDebounce(searchQuery, 500);
@@ -51,10 +72,7 @@ const RevenueByClientReportFilters = ({
     if (value == "custom" && from && to) {
       setDateRange({ ...dateRange, from, to });
       setCustomDate(true);
-      setDateRangeList(dateRangeOptions);
       setDisableDateBtn(false);
-    } else {
-      dateRangeOptions[4].label = "Custom";
     }
     fetchCompanyDetails();
   }, []);
@@ -121,7 +139,6 @@ const RevenueByClientReportFilters = ({
 
   const handleSelectFilter = (selectedValue, field) => {
     if (selectedValue.value !== "custom") {
-      dateRangeOptions[4].label = "Custom";
       setDefaultDateRange();
     }
 
@@ -142,13 +159,12 @@ const RevenueByClientReportFilters = ({
 
     if (field.name != "dateRange") {
       if (field.checked) {
-        if (filters[field.name][0].label === "All Clients") {
-          filters[field.name].splice(0, 1);
-        }
+        const existingFilters =
+          filters[field.name][0].value === "all" ? [] : filters[field.name];
 
         setFilters({
           ...filters,
-          [field.name]: filters[field.name].concat(selectedValue),
+          [field.name]: existingFilters.concat(selectedValue),
         });
       } else {
         const newarr = filters[field.name].filter(
@@ -181,15 +197,11 @@ const RevenueByClientReportFilters = ({
 
   const submitCustomDatePicker = async () => {
     if (dateRange.from && dateRange.to) {
-      const fromDate = dayjs(dateRange.from).format("Do MMM");
-      const toDate = dayjs(dateRange.to).format("Do MMM");
-      dateRangeOptions[4].label = `Custom (${fromDate} - ${toDate})`;
-
       setFilters({
         ...filters,
         ["dateRange"]: {
           value: "custom",
-          label: `Custom (${fromDate} - ${toDate})`,
+          label: customDateRangeLabel,
           ...dateRange,
         },
       });
@@ -212,7 +224,12 @@ const RevenueByClientReportFilters = ({
 
   const setDefaultDateRange = () => ({
     ...filters,
-    ["dateRange"]: { value: "all_time", label: "All Time", from: "", to: "" },
+    ["dateRange"]: {
+      value: "all_time",
+      label: i18n.t("allTime"),
+      from: "",
+      to: "",
+    },
   });
 
   const resetCustomDatePicker = () => {
@@ -251,7 +268,7 @@ const RevenueByClientReportFilters = ({
     setIsFilterVisible(false);
     const dateRangeCount = filters.dateRange.value != "all" ? 1 : 0;
     const ClientCount =
-      filters.clients[0].label === "All Clients" ? 0 : filters.clients.length;
+      filters.clients[0].value === "all" ? 0 : filters.clients.length;
     setFilterCounter(ClientCount + dateRangeCount);
   };
 
@@ -285,16 +302,14 @@ const RevenueByClientReportFilters = ({
         clients: newarr,
       });
     } else {
-      if (
-        filters.clients.length > 0 &&
-        filters.clients[0].label === "All Clients"
-      ) {
-        filters.clients.splice(0, 1);
-      }
+      const nextClients =
+        filters.clients.length > 0 && filters.clients[0].value === "all"
+          ? []
+          : filters.clients;
 
       setFilters({
         ...filters,
-        clients: [...filters.clients, selectedClient],
+        clients: [...nextClients, selectedClient],
       });
     }
   };
@@ -308,11 +323,12 @@ const RevenueByClientReportFilters = ({
         <SidePanel.Header className="mb-2 flex h-12 items-center justify-between bg-primary px-2 text-white lg:h-auto lg:bg-white lg:px-5 lg:py-5 lg:font-bold lg:text-foreground">
           {isDesktop ? (
             <h4 className="flex items-center text-base font-extrabold">
-              <FilterIcon className="mr-2.5" size={16} /> <span>Filters</span>
+              <FilterIcon className="mr-2.5" size={16} />{" "}
+              <span>{i18n.t("filters")}</span>
             </h4>
           ) : (
             <span className="flex w-full items-center justify-center pl-6 text-base font-extrabold leading-5">
-              Filters
+              {i18n.t("filters")}
             </span>
           )}
           <Button style="ternary" onClick={() => setIsFilterVisible(false)}>
@@ -330,7 +346,7 @@ const RevenueByClientReportFilters = ({
                 }}
               >
                 <h5 className="text-xs font-bold leading-4 tracking-widest">
-                  DATE RANGE
+                  {i18n.t("dateRange").toUpperCase()}
                 </h5>
                 <div className="flex items-center">
                   {filters.dateRange.value != "all" && (
@@ -380,7 +396,7 @@ const RevenueByClientReportFilters = ({
                       className="sidebar__reset"
                       onClick={resetCustomDatePicker}
                     >
-                      Cancel
+                      {i18n.t("cancel")}
                     </button>
                     <button
                       disabled={disableDateBtn}
@@ -392,7 +408,7 @@ const RevenueByClientReportFilters = ({
                           }`}
                       onClick={submitCustomDatePicker}
                     >
-                      Done
+                      {i18n.t("done")}
                     </button>
                   </div>
                 </div>
@@ -416,7 +432,7 @@ const RevenueByClientReportFilters = ({
           style="secondary"
           onClick={resetFilter}
         >
-          RESET
+          {i18n.t("reset")}
         </Button>
         <Button
           disabled={disableApplyBtn}
@@ -427,7 +443,7 @@ const RevenueByClientReportFilters = ({
           } px-10 py-2.5 text-base font-bold leading-5`}
           onClick={handleApply}
         >
-          APPLY
+          {i18n.t("apply").toUpperCase()}
         </Button>
       </SidePanel.Footer>
     </SidePanel>

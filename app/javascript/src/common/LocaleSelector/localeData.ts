@@ -13,7 +13,6 @@ export const LOCALE_GROUPS: LocaleGroup[] = [
   {
     label: "ENGLISH",
     locales: [
-      { code: "en", nativeName: "English", englishName: "English (US)" },
       { code: "en-GB", nativeName: "English (UK)" },
       { code: "en-US", nativeName: "English (US)" },
     ],

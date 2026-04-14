@@ -36,6 +36,8 @@ const UserDetailsEdit = () => {
   const initialErrState = {
     first_name_err: "",
     last_name_err: "",
+    date_of_birth_err: "",
+    phone_number_err: "",
     address_line_1_err: "",
     country_err: "",
     state_err: "",
@@ -326,12 +328,30 @@ const UserDetailsEdit = () => {
           }
         });
         setErrDetails(errObj);
+      } else if (Array.isArray(err?.response?.data?.errors)) {
+        err.response.data.errors.forEach(message => {
+          if (message.includes("Date of birth")) {
+            errObj.date_of_birth_err = message;
+          } else if (message.includes("Phone")) {
+            errObj.phone_number_err = message;
+          }
+        });
+
+        if (errObj.date_of_birth_err || errObj.phone_number_err) {
+          setErrDetails(errObj);
+        } else {
+          toast.error(err.response.data.errors[0]);
+        }
       }
     }
   };
 
   const handlePhoneNumberChange = phoneNumber => {
-    updateBasicDetails(phoneNumber, "phone_number", false);
+    const digits = (phoneNumber || "").replace(/\D/g, "");
+    const normalizedPhoneNumber =
+      digits.length > 15 ? `+${digits.slice(0, 15)}` : phoneNumber;
+
+    updateBasicDetails(normalizedPhoneNumber, "phone_number", false);
   };
 
   const handleCancelDetails = () => {

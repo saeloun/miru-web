@@ -1,0 +1,27 @@
+---
+fr:
+  errors:
+    bill_status_billed: Vous ne pouvez pas facturer une entrée qui a déjà été facturée.
+    can't change status: Une facture payée ne peut être modifiée.
+    create_billed_entry: Vous ne pouvez pas créer d'entrée de feuille de temps facturée.
+    internal_server_error: Quelque chose s'est mal passé
+    messages:
+      already_confirmed: Votre demande a déjà été confirmée. Veuillez essayer de vous
+        connecter.
+      confirmation_period_expired: À confirmer dans un délai de %{period}, veuillez
+        en demander une nouvelle.
+      expired: a expiré, veuillez en demander un nouveau
+      not_found: introuvable
+      not_locked: n'était pas verrouillé
+      not_saved:
+        one: 'Une erreur a empêché l''enregistrement de ce %{resource} :'
+        other: 'Des erreurs %{count} ont empêché l''enregistrement de ce %{resource} :'
+    not_found: La ressource que vous recherchez n'est pas disponible.
+    prevent_draft_to_waived: ne peut pas être transformé en dispense
+    unauthorized: Seuls les propriétaires ou les administrateurs sont autorisés à
+      effectuer cette action.
+    updation_not_allowed: La mise à jour n'est pas autorisée
+    user_already_member: Cette adresse e-mail est déjà utilisée. Veuillez saisir une
+      autre adresse e-mail.
+    validate_billable_project: Vous ne pouvez pas créer d'entrée non facturée pour
+      les projets non facturables.

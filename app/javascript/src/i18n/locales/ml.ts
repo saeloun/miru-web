@@ -1,12 +1,9 @@
-const ml = {
-  // Image validation
+const locale = {
   invalidImageFormatSize:
     "തെറ്റായ ഫയൽ ഫോർമാറ്റ്. ദയവായി PNG അല്ലെങ്കിൽ JPG തരത്തിലുള്ള ചിത്രം അപ്‌ലോഡ് ചെയ്യുക. പരമാവധി വലുപ്പം (%{fileSize}KB)",
   invalidImageSize: "ഫയൽ വലുപ്പം %{fileSize}KB എന്ന പരമാവധി പരിധി കവിഞ്ഞു.",
   invalidImageFormat:
     "തെറ്റായ ഫയൽ ഫോർമാറ്റ്. ദയവായി PNG അല്ലെങ്കിൽ JPG തരത്തിലുള്ള ചിത്രം അപ്‌ലോഡ് ചെയ്യുക",
-
-  // Common actions
   save: "സേവ് ചെയ്യുക",
   cancel: "റദ്ദാക്കുക",
   delete: "ഇല്ലാതാക്കുക",
@@ -18,23 +15,31 @@ const ml = {
   confirm: "സ്ഥിരീകരിക്കുക",
   close: "അടയ്ക്കുക",
   back: "പിന്നിലേക്ക്",
+  previous: "മുമ്പത്തേത്",
+  continue: "തുടരുക",
   next: "അടുത്തത്",
   done: "പൂർത്തിയായി",
   loading: "ലോഡ് ചെയ്യുന്നു...",
   actions: "പ്രവർത്തനങ്ങൾ",
   openMenu: "മെനു തുറക്കുക",
   filters: "ഫിൽട്ടറുകൾ",
+  pagination: "പേജിനേഷൻ",
+  breadcrumb: "ബ്രെഡ്ക്രംബ്സ്",
   download: "ഡൗൺലോഡ്",
   downloading: "ഡൗൺലോഡ് ചെയ്യുന്നു...",
   duplicate: "തനിപ്പകർപ്പ്",
+  selectAll: "എല്ലാം തിരഞ്ഞെടുക്കുക",
+  selectRow: "വരി തിരഞ്ഞെടുക്കുക",
   update: "അപ്‌ഡേറ്റ്",
   apply: "പ്രയോഗിക്കുക",
+  applyFilters: "ഫിൽട്ടറുകൾ പ്രയോഗിക്കുക",
   remove: "നീക്കം ചെയ്യുക",
+  resetAction: "റീസെറ്റ്",
   yes: "അതെ",
   no: "ഇല്ല",
   or: "അല്ലെങ്കിൽ",
-
-  // Common labels
+  toggleSidebar: "സൈഡ്‌ബാർ ടോഗിൾ ചെയ്യുക",
+  morePages: "കൂടുതൽ പേജുകൾ",
   name: "പേര്",
   email: "ഇമെയിൽ",
   phone: "ഫോൺ",
@@ -44,6 +49,7 @@ const ml = {
   date: "തീയതി",
   type: "തരം",
   notes: "കുറിപ്പുകൾ",
+  viewInvoice: "ഇൻവോയ്സ് കാണുക",
   description: "വിവരണം",
   total: "ആകെ",
   active: "സജീവം",
@@ -68,8 +74,18 @@ const ml = {
   all: "എല്ലാം",
   from: "മുതൽ",
   to: "വരെ",
-
-  // Date/time
+  themeSelector: {
+    open: "തീം സെലക്ടർ തുറക്കുക",
+    close: "തീം സെലക്ടർ അടയ്ക്കുക",
+    choose: "തീം തിരഞ്ഞെടുക്കുക",
+    description: "നിങ്ങളുടെ ഇഷ്ടപ്പെട്ട ഇന്റർഫേസ് ശൈലി തിരഞ്ഞെടുക്കുക",
+    classic: "ക്ലാസിക്",
+    classicDescription: "പരമ്പരാഗത മിരു ഇന്റർഫേസ്",
+    admin: "അഡ്മിൻ പ്രോ",
+    adminDescription: "ആധുനിക ഷാഡ്‌സിഎൻ ഡാഷ്‌ബോർഡ്",
+    minimize: "ചെറുതാക്കുക",
+    previewActive: "തീം പ്രിവ്യൂ സജീവമാണ്",
+  },
   today: "ഇന്ന്",
   yesterday: "ഇന്നലെ",
   tomorrow: "നാളെ",
@@ -84,6 +100,7 @@ const ml = {
   lastYear: "കഴിഞ്ഞ വർഷം",
   allTime: "എല്ലാ സമയവും",
   customRange: "ഇഷ്ടാനുസൃത ശ്രേണി",
+  customRangeWithDates: "കസ്റ്റം (%{from} - %{to})",
   customDateRange: "ഇഷ്ടാനുസൃത തീയതി ശ്രേണി",
   dateRange: "തീയതി ശ്രേണി",
   dateRangePreset: "തീയതി ശ്രേണി പ്രീസെറ്റ്",
@@ -93,16 +110,12 @@ const ml = {
   selectPeriod: "കാലയളവ് തിരഞ്ഞെടുക്കുക",
   fullDay: "മുഴുവൻ ദിവസം",
   halfDay: "അര ദിവസം",
-
-  // Date validation
   dateCannotBeBlank: "തീയതി ശൂന്യമാകരുത്",
   fromDateMustBeLessThanToDate:
     "'മുതൽ' തീയതി 'വരെ' തീയതിയേക്കാൾ കുറവോ തുല്യമോ ആയിരിക്കണം",
   toDateMustBeGreaterThanFromDate:
     "'വരെ' തീയതി 'മുതൽ' തീയതിയേക്കാൾ കൂടുതലോ തുല്യമോ ആയിരിക്കണം",
   invalidDate: "ദയവായി സാധുവായ ഒരു തീയതി നൽകുക",
-
-  // Month abbreviations
   monthJan: "ജനു",
   monthFeb: "ഫെബ്ര",
   monthMar: "മാർ",
@@ -115,8 +128,6 @@ const ml = {
   monthOct: "ഒക്ടോ",
   monthNov: "നവം",
   monthDec: "ഡിസം",
-
-  // Error pages
   pageNotFound: "പേജ് കണ്ടെത്തിയില്ല",
   clickHere: "ഇവിടെ ക്ലിക്ക് ചെയ്യുക",
   somethingWentWrong: "എന്തോ കുഴപ്പമുണ്ടായി",
@@ -124,15 +135,16 @@ const ml = {
     "വീണ്ടും ശ്രമിക്കാൻ പേജ് റീഫ്രഷ് ചെയ്യുക. ഇത് തുടർന്നാൽ, വീണ്ടും സൈൻ ഇൻ ചെയ്യുകയോ സപ്പോർട്ടുമായി ബന്ധപ്പെടുകയോ ചെയ്യുക.",
   reloadPage: "പേജ് വീണ്ടും ലോഡ് ചെയ്യുക",
   loadingWorkspace: "വർക്ക്‌സ്പേസ് ലോഡ് ചെയ്യുന്നു...",
-
-  // Search
   searchClients: "ക്ലയന്റുകൾ തിരയുക...",
   searchInvoices: "ഇൻവോയ്‌സുകൾ തിരയുക...",
   searchTeamMembers: "ടീം അംഗങ്ങൾ തിരയുക...",
   selectTeamMember: "ടീം അംഗത്തെ തിരഞ്ഞെടുക്കുക",
   noResultsFound: "ഫലങ്ങൾ കണ്ടെത്തിയില്ല",
-
-  // Time Tracking
+  dataTable: {
+    noResults: "ഫലങ്ങളൊന്നുമില്ല.",
+    rowsSelected: "%{selected} / %{total} വരി(കൾ) തിരഞ്ഞെടുത്തു.",
+    pageOf: "%{page} / %{total} പേജ്",
+  },
   timeTracking: {
     addEntry: "എൻട്രി ചേർക്കുക",
     newTimeEntry: "പുതിയ സമയ എൻട്രി",
@@ -224,8 +236,6 @@ const ml = {
       sun: "ഞായർ",
     },
   },
-
-  // Task types
   taskTypes: {
     development: "വികസനം",
     meeting: "മീറ്റിംഗ്",
@@ -240,16 +250,12 @@ const ml = {
     training: "പരിശീലനം",
     other: "മറ്റുള്ളവ",
   },
-
-  // Time off types
   timeOffTypes: {
     vacation: "അവധി",
     sickLeave: "രോഗാവധി",
     personalDay: "വ്യക്തിഗത ദിവസം",
     holiday: "അവധിദിനം",
   },
-
-  // Clients
   clients: {
     addClients: "ക്ലയന്റുകൾ ചേർക്കുക",
     addNewClient: "പുതിയ ക്ലയന്റ് ചേർക്കുക",
@@ -260,6 +266,8 @@ const ml = {
       "%{name} ക്ലയന്റിനെ ഇല്ലാതാക്കണമെന്ന് നിങ്ങൾക്ക് ഉറപ്പാണോ? ഈ പ്രവർത്തനം പിൻവലിക്കാനാവില്ല.",
     clientDetails: "ക്ലയന്റ് വിശദാംശങ്ങൾ",
     clientLogo: "ക്ലയന്റ് ലോഗോ",
+    acceptedPngAndJpgFormats: "സ്വീകരിക്കുന്ന ഫയൽ ഫോർമാറ്റുകൾ: PNG, JPG.",
+    fileSizeLimitKb: "ഫയൽ വലുപ്പം ≤ %{fileSize} KB ആയിരിക്കണം.",
     phoneNumber: "ഫോൺ നമ്പർ",
     addressLine1: "വിലാസ ലൈൻ 1",
     addressLine2: "വിലാസ ലൈൻ 2 (ഐച്ഛികം)",
@@ -268,22 +276,49 @@ const ml = {
     totalClients: "ആകെ ക്ലയന്റുകൾ",
     activeClients: "സജീവ ക്ലയന്റുകൾ",
     hoursTracked: "ട്രാക്ക് ചെയ്ത മണിക്കൂറുകൾ",
+    hoursLogged: "മണിക്കൂറുകൾ ലോഗ് ചെയ്‌തു",
     totalTracked: "ആകെ ട്രാക്ക് ചെയ്തത്",
     outstanding: "കുടിശ്ശിക",
+    overdue: "അമിതഭാരം",
     allClients: "എല്ലാ ക്ലയന്റുകളും",
+    allClientsDescription:
+      "നിങ്ങളുടെ എല്ലാ ക്ലയന്റുകളുടെയും കോൺടാക്റ്റ് വിവരങ്ങളും ബില്ലിംഗ് സ്റ്റാറ്റസും ഉള്ള ഒരു ലിസ്റ്റ്.",
     failedToLoadClients: "ക്ലയന്റുകൾ ലോഡ് ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു",
+    failedToLoadClientDetails:
+      "ക്ലയന്റ് വിശദാംശങ്ങൾ ലോഡ് ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു",
+    clientDeletedSuccessfully: "ക്ലയന്റിനെ വിജയകരമായി ഇല്ലാതാക്കി",
+    failedToDeleteClient: "ക്ലയന്റിനെ ഇല്ലാതാക്കാനായില്ല",
     clientAddedSuccessfully: "ക്ലയന്റ് വിജയകരമായി ചേർത്തു",
     clientUpdatedSuccessfully: "ക്ലയന്റ് വിജയകരമായി അപ്‌ഡേറ്റ് ചെയ്തു",
     noClientsYet: "ഇതുവരെ ക്ലയന്റുകൾ ചേർത്തിട്ടില്ലെന്ന് തോന്നുന്നു.",
     deleting: "ഇല്ലാതാക്കുന്നു...",
+    addYourFirstClient: "നിങ്ങളുടെ ആദ്യ ക്ലയന്റിനെ ചേർക്കുക",
+    addNewClientDescription:
+      "പുതിയ ക്ലയന്റിനെ ചേർക്കാൻ താഴെയുള്ള വിശദാംശങ്ങൾ പൂരിപ്പിക്കുക.",
+    editClientDescription: "താഴെയുള്ള ക്ലയന്റ് വിശദാംശങ്ങൾ അപ്ഡേറ്റ് ചെയ്യുക.",
+    manageClientsDescription:
+      "നിങ്ങളുടെ ക്ലയന്റ് ബന്ധങ്ങളും ബില്ലിംഗും കൈകാര്യം ചെയ്യുക",
+    clientHeader: "ക്ലയന്റ്",
+    contact: "ബന്ധപ്പെടുക",
+    copyClientId: "ക്ലയന്റ് ഐഡി പകർത്തുക",
+    viewDetails: "വിശദാംശങ്ങൾ കാണുക",
     addProject: "പ്രോജക്ട് ചേർക്കുക",
     addNewProject: "പുതിയ പ്രോജക്ട് ചേർക്കുക",
     paymentReminder: "പേയ്‌മെന്റ് ഓർമ്മക്കുറിപ്പ്",
+    addOrViewContacts: "കോൺടാക്റ്റുകൾ ചേർക്കുക / കാണുക",
     sendPaymentReminder: "പേയ്‌മെന്റ് ഓർമ്മക്കുറിപ്പ് അയയ്ക്കുക",
+    paymentReminderSubject:
+      "പണമടയ്ക്കാത്ത ഇൻവോയ്‌സുകളുടെ പേയ്‌മെന്റുകൾ പൂർത്തിയാക്കുന്നതിനുള്ള ഓർമ്മപ്പെടുത്തൽ",
+    paymentReminderMessage:
+      "താഴെ പറയുന്ന ഇൻവോയ്‌സുകൾക്കുള്ള പേയ്‌മെന്റുകൾ പൂർത്തിയാക്കുന്നതിനുള്ള ഒരു ഓർമ്മപ്പെടുത്തലാണിത്. താഴെ നൽകിയിരിക്കുന്ന ഇൻവോയ്‌സ് വിശദാംശങ്ങൾക്കൊപ്പം ബന്ധപ്പെട്ട പേയ്‌മെന്റ് ലിങ്കുകൾ നിങ്ങൾക്ക് കണ്ടെത്താനാകും.",
+    selectInvoices: "ഇൻവോയ്‌സുകൾ തിരഞ്ഞെടുക്കുക",
+    emailPreview: "ഇമെയിൽ പ്രിവ്യൂ",
+    recipientEmailId: "സ്വീകർത്താവിന്റെ ഇമെയിൽ ഐഡി",
+    invoiceSelected: "%{count} ഇൻവോയ്സ് തിരഞ്ഞെടുത്തു",
     invoicesSelected: "%{count} ഇൻവോയ്‌സുകൾ തിരഞ്ഞെടുത്തു",
+    noProjectsAddedYet:
+      "ഈ ക്ലയന്റിലേക്ക് ഇതുവരെ ഒരു പ്രോജക്റ്റും ചേർത്തിട്ടില്ല.",
   },
-
-  // Contacts
   contacts: {
     addContact: "കോൺടാക്ട് ചേർക്കുക",
     addContacts: "കോൺടാക്ടുകൾ ചേർക്കുക",
@@ -302,8 +337,6 @@ const ml = {
     invalidEmailId: "അസാധുവായ ഇമെയിൽ ഐഡി",
     emailRequired: "ഇമെയിൽ ഐഡി ശൂന്യമാകരുത്",
   },
-
-  // Projects
   projects: {
     addProject: "പ്രോജക്ട് ചേർക്കുക",
     addNewProject: "പുതിയ പ്രോജക്ട് ചേർക്കുക",
@@ -376,8 +409,6 @@ const ml = {
     teamMembersDescription:
       "ഈ പ്രോജക്ടിന് നിയോഗിച്ച ടീം അംഗങ്ങളെ കാണുകയും കൈകാര്യം ചെയ്യുകയും ചെയ്യുക.",
   },
-
-  // Team
   team: {
     team: "ടീം",
     teamOverview: "ടീം അവലോകനം",
@@ -424,8 +455,6 @@ const ml = {
     invalidEmail: "അസാധുവായ ഇമെയിൽ ഐഡി",
     emailRequired: "ഇമെയിൽ ഐഡി ശൂന്യമാകരുത്",
   },
-
-  // Invoices
   invoices: {
     invoice: "ഇൻവോയ്‌സ്",
     invoices: "ഇൻവോയ്‌സുകൾ",
@@ -502,19 +531,16 @@ const ml = {
     scrollToLoadMore: "കൂടുതൽ ഇൻവോയ്‌സുകൾ ലോഡ് ചെയ്യാൻ സ്ക്രോൾ ചെയ്യുക",
     loadingMoreInvoices: "കൂടുതൽ ഇൻവോയ്‌സുകൾ ലോഡ് ചെയ്യുന്നു...",
     allInvoicesLoaded: "എല്ലാ ഇൻവോയ്‌സുകളും ലോഡ് ചെയ്തു",
+    showingOfTotal: "%{total} ൽ %{shown} കാണിക്കുന്നു",
     resetFilters: "ഫിൽട്ടറുകൾ റീസെറ്റ് ചെയ്യുക",
     loadingChartData: "ചാർട്ട് ഡാറ്റ ലോഡ് ചെയ്യുന്നു...",
     noInvoiceData: "ഇൻവോയ്‌സ് ഡാറ്റ ലഭ്യമല്ല",
-
-    // Statuses
     draft: "ഡ്രാഫ്റ്റ്",
     sent: "അയച്ചു",
     overdue: "കാലാവധി കഴിഞ്ഞത്",
     collected: "ശേഖരിച്ചു",
     paid: "പേയ്‌ഡ്",
     outstanding: "കുടിശ്ശിക",
-
-    // Email
     recipientEmailId: "സ്വീകർത്താവിന്റെ ഇമെയിൽ ഐഡി",
     subject: "വിഷയം",
     message: "സന്ദേശം",
@@ -529,26 +555,21 @@ const ml = {
     invoiceSentBody: "%{company} നിങ്ങൾക്ക് ഒരു ഇൻവോയ്‌സ് (%{number}) അയച്ചു",
     invoiceWillBeSent: "ഇൻവോയ്‌സ് അയയ്ക്കപ്പെടും!",
     processing: "പ്രോസസ്സ് ചെയ്യുന്നു...",
-
-    // No payment gateway
     noPaymentGateway: "പേയ്‌മെന്റ് ഗേറ്റ്‌വേ ബന്ധിപ്പിച്ചിട്ടില്ല",
     paymentGatewayError:
       "പിശക്. ഇൻവോയ്‌സ് പേയ്‌മെന്റ് ചെയ്യാൻ പേയ്‌മെന്റ് ഗേറ്റ്‌വേ ബന്ധിപ്പിക്കാൻ ദയവായി ഇൻവോയ്‌സ് അയച്ചയാളുമായി ബന്ധപ്പെടുക",
     paymentGatewayWarning:
       "നിങ്ങൾ Miru-മായി ഒരു പേയ്‌മെന്റ് ഗേറ്റ്‌വേയും ബന്ധിപ്പിച്ചിട്ടില്ല. പേയ്‌മെന്റ് ഗേറ്റ്‌വേ ഇല്ലാതെ ഇൻവോയ്‌സ് അയയ്ക്കണോ?",
     goToPaymentSettings: "പേയ്‌മെന്റ് ക്രമീകരണങ്ങളിലേക്ക് പോകുക",
+    backToInvoices: "ഇൻവോയ്‌സുകളിലേക്ക് മടങ്ങുക",
     sendWithoutPaymentGateway: "പേയ്‌മെന്റ് ഗേറ്റ്‌വേ ഇല്ലാതെ അയയ്ക്കുക",
     stripeDisabled: "ഈ ഇൻവോയ്‌സിന് Stripe നിഷ്ക്രിയമാക്കി",
     stripeDisabledMessage:
       "അയച്ചയാൾ ഈ ഇൻവോയ്‌സിന് Stripe പേയ്‌മെന്റുകൾ സജീവമാക്കിയിട്ടില്ല. സജീവമാക്കാൻ നിങ്ങൾക്ക് അവരുമായി ബന്ധപ്പെടാം, അല്ലെങ്കിൽ ACH പോലുള്ള ബദൽ പേയ്‌മെന്റ് രീതി തിരഞ്ഞെടുക്കുക.",
-
-    // Bulk actions
     preparingDownload: "ഡൗൺലോഡ് തയ്യാറാക്കുന്നു...",
     downloadFailed: "ഡൗൺലോഡ് പരാജയപ്പെട്ടു. ദയവായി വീണ്ടും ശ്രമിക്കുക.",
     downloadingFiles: "ഫയലുകൾ ഡൗൺലോഡ് ചെയ്യുന്നു...",
     downloadComplete: "ഡൗൺലോഡ് പൂർത്തിയായി",
-
-    // Table headers
     nameHeader: "പേര്",
     descriptionHeader: "വിവരണം",
     dateHeader: "തീയതി",
@@ -556,8 +577,6 @@ const ml = {
     amountHeader: "തുക",
     statusHeader: "സ്ഥിതി",
     invoiceNumberHeader: "ഇൻവോയ്‌സ് നമ്പർ",
-
-    // Chart labels
     area: "ഏരിയ",
     bar: "ബാർ",
     noData: "ഡാറ്റ ഇല്ല",
@@ -565,8 +584,6 @@ const ml = {
     quarterly: "ത്രൈമാസികം",
     yearly: "വാർഷികം",
     trend: "ട്രെൻഡ്",
-
-    // Preview / detail labels
     taxId: "നികുതി ഐഡി: %{value}",
     vatNumber: "VAT നമ്പർ: %{value}",
     gstNumber: "GST നമ്പർ: %{value}",
@@ -580,8 +597,6 @@ const ml = {
     due: "%{date} ഡ്യൂ",
     viewed: "കണ്ടു",
     cancelled: "റദ്ദാക്കി",
-
-    // Toast / confirmation messages
     invoiceMarkedAsPaid: "ഇൻവോയ്‌സ് വിജയകരമായി പേയ്‌ഡ് ആയി അടയാളപ്പെടുത്തി",
     invoiceDownloaded: "ഇൻവോയ്‌സ് വിജയകരമായി ഡൗൺലോഡ് ചെയ്തു",
     invoiceSentSuccessfully: "ഇൻവോയ്‌സ് വിജയകരമായി അയച്ചു",
@@ -599,8 +614,23 @@ const ml = {
     invoiceUpdated: "ഇൻവോയ്‌സ് വിജയകരമായി അപ്‌ഡേറ്റ് ചെയ്തു",
     failedToSaveInvoice:
       "ഇൻവോയ്‌സ് സേവ് ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു. ദയവായി വീണ്ടും ശ്രമിക്കുക.",
-
-    // Counters
+    newInvoicePage: "പുതിയ ഇൻവോയ്‌സ്",
+    editInvoicePage: "ഇൻവോയ്‌സ് എഡിറ്റ് ചെയ്യുക",
+    editorSubtitle:
+      "ഇൻവോയ്സ് അയയ്ക്കുന്നതിന് മുമ്പ് വിശദാംശങ്ങൾ പൂരിപ്പിച്ച് പ്രിവ്യൂ ചെയ്യുക.",
+    basicDetailsDescription: "അടിസ്ഥാന ഇൻവോയ്സ് വിവരങ്ങൾ നൽകുക",
+    referenceOptional: "റഫറൻസ് (ഓപ്ഷണൽ)",
+    referencePlaceholder: "പി.ഒ. നമ്പർ, മുതലായവ.",
+    lineItemsDescription: "സമയ എൻട്രികളോ മാനുവൽ ഇനങ്ങളോ ചേർക്കുക",
+    additionalDetailsDescription: "നികുതി, കിഴിവ്, കുറിപ്പുകൾ",
+    notesPlaceholder: "അധിക കുറിപ്പുകൾ അല്ലെങ്കിൽ പേയ്‌മെന്റ് നിർദ്ദേശങ്ങൾ",
+    subtotal: "ആകെത്തുക",
+    saving: "സംരക്ഷിക്കുന്നു...",
+    sending: "അയയ്ക്കുന്നു...",
+    alreadySent: "ഇതിനകം അയച്ചു",
+    downloading: "ഡൗൺലോഡ് ചെയ്യുന്നു...",
+    selectClientBeforeSending:
+      "ഇൻവോയ്സ് അയയ്ക്കുന്നതിന് മുമ്പ് ഒരു ക്ലയന്റിനെ തിരഞ്ഞെടുക്കുക.",
     showingOf: "%{total} ൽ %{shown} കാണിക്കുന്നു",
     viewingMatching:
       "%{loaded} ലോഡ് ചെയ്തവയിൽ %{filtered} ഹൊരുങ്ങുന്ന ഇൻവോയ്‌സുകൾ കാണുന്നു",
@@ -608,12 +638,8 @@ const ml = {
     showingRecentTransactions: "%{count} സമീപകാല ഇടപാടുകൾ കാണിക്കുന്നു",
     updatedAt: "%{date} ന് അപ്‌ഡേറ്റ് ചെയ്തു",
     invoiceHash: "ഇൻവോയ്‌സ് #%{number}",
-
-    // Mobile table headers
     nameDescription: "പേര് / വിവരണം",
     dateTime: "തീയതി / സമയം",
-
-    // Invoice reminder email
     invoiceReminder: "ഇൻവോയ്‌സ് ഓർമ്മക്കുറിപ്പ്: %{number}",
     reminderMessage:
       "നിങ്ങളുടെ കുടിശ്ശിക ഇൻവോയ്‌സിനെക്കുറിച്ചുള്ള ഓർമ്മക്കുറിപ്പാണിത്. ദയവായി ലഗത്താക്കിയ വിശദാംശങ്ങൾ കാണുക.",
@@ -634,14 +660,6 @@ const ml = {
     cannotSendInvalidId: "ഇൻവോയ്‌സ് അയയ്ക്കാൻ കഴിയില്ല - അസാധുവായ ഐഡി",
     payment: "പേയ്‌മെന്റ് #%{id}",
   },
-  common: {
-    retry: "വീണ്ടും ശ്രമിക്കുക",
-    pageUnavailable:
-      "ഈ പേജ് ലഭ്യമല്ല അല്ലെങ്കിൽ ലിങ്ക് നിങ്ങളുടെ വർക്ക്‌സ്പേസിന് ഇനി സാധുവല്ല.",
-    goToDashboard: "ഡാഷ്‌ബോർഡിലേക്ക് പോകുക",
-  },
-
-  // Invoice admin dashboard
   invoiceDashboard: {
     revenueOverview: "റവന്യൂ അവലോകനം",
     revenueByStatus: "സ്ഥിതി അനുസരിച്ച് റവന്യൂ",
@@ -649,12 +667,12 @@ const ml = {
     allInvoices: "എല്ലാ ഇൻവോയ്‌സുകളും",
     recentSales: "സമീപകാല വിൽപ്പനകൾ",
   },
-
-  // Payments
   payments: {
     payments: "പേയ്‌മെന്റുകൾ",
     addPayment: "പേയ്‌മെന്റ് ചേർക്കുക",
     addManualEntry: "മാനുവൽ എൻട്രി ചേർക്കുക",
+    searchPaymentsPlaceholder:
+      "ക്ലയന്റ്, ഇൻവോയ്സ് അല്ലെങ്കിൽ തുക അനുസരിച്ച് പേയ്‌മെന്റുകൾ തിരയുക...",
     noPaymentsRecorded: "ഇതുവരെ പേയ്‌മെന്റുകൾ രേഖപ്പെടുത്തിയിട്ടില്ല",
     invoiceClient: "ഇൻവോയ്‌സ് # / ക്ലയന്റ്",
     clientInvoiceNumber: "ക്ലയന്റ്/ ഇൻവോയ്‌സ് നമ്പർ",
@@ -670,13 +688,38 @@ const ml = {
     paymentSuccessful: "പേയ്‌മെന്റ് വിജയകരമായി.",
     paymentReceived: "നിങ്ങളുടെ പേയ്‌മെന്റ് ലഭിച്ചു.",
     goToHomePage: "ഹോം പേജിലേക്ക് പോകുക",
+    recordManualPaymentAgainstInvoice:
+      "ഒരു ഇൻവോയ്‌സിൽ നേരിട്ട് പണമടയ്ക്കൽ രേഖപ്പെടുത്തുക.",
     failedToLoadPayments: "പേയ്‌മെന്റുകൾ ലോഡ് ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു",
+    failedToLoadInvoicesForPaymentEntry:
+      "പേയ്‌മെന്റ് എൻട്രിക്കുള്ള ഇൻവോയ്‌സുകൾ ലോഡ് ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു.",
     transactions: "ഇടപാടുകൾ",
+    totalPayments: "ആകെ പേയ്‌മെന്റുകൾ",
+    totalCollected: "ആകെ ശേഖരിച്ചത്",
+    allTime: "എല്ലാ സമയത്തും",
+    averagePayment: "ശരാശരി പേയ്‌മെന്റ്",
+    perTransaction: "ഓരോ ഇടപാടിനും",
     paymentHistory: "പേയ്‌മെന്റ് ചരിത്രം",
+    paymentHistoryDescription:
+      "ഇൻവോയ്‌സും ക്ലയന്റ് വിശദാംശങ്ങളും ഉള്ള ഓരോ പേയ്‌മെന്റും.",
+    paymentLedgerDescription: "ഒരു ലളിതമായ ലെഡ്ജറിൽ വരയും മാനുവൽ എൻട്രികളും.",
+    searchByInvoiceClientMethodOrNotes:
+      "ഇൻവോയ്സ്, ക്ലയന്റ്, രീതി അല്ലെങ്കിൽ കുറിപ്പുകൾ പ്രകാരം തിരയുക...",
+    showingPaymentsCount: "%{total} ന്റെ %{visible} കാണിക്കുന്നു",
+    notes: "കുറിപ്പുകൾ",
+    paymentMethod: "പണമടയ്ക്കൽ രീതി",
+    openMenu: "മെനു തുറക്കുക",
+    copyTransactionId: "ഇടപാട് ഐഡി പകർത്തുക",
+    viewInvoice: "ഇൻവോയ്‌സ് കാണുക",
+    downloadReceipt: "രസീത് ഡൗൺലോഡ് ചെയ്യുക",
+    manual: "മാനുവൽ",
+    visa: "വിസ",
+    mastercard: "മാസ്റ്റർകാർഡ്",
+    amex: "അമേക്സ്",
+    debitCard: "ഡെബിറ്റ് കാർഡ്",
+    creditCard: "ക്രെഡിറ്റ് കാർഡ്",
     scrollToLoadMore: "കൂടുതൽ പേയ്‌മെന്റുകൾ ലോഡ് ചെയ്യാൻ സ്ക്രോൾ ചെയ്യുക",
     allPaymentsLoaded: "എല്ലാ പേയ്‌മെന്റുകളും ലോഡ് ചെയ്തു",
-
-    // Filters
     allStatuses: "എല്ലാ സ്ഥിതികളും",
     allClients: "എല്ലാ ക്ലയന്റുകളും",
     paymentType: "പേയ്‌മെന്റ് തരം",
@@ -685,12 +728,15 @@ const ml = {
     bankTransfer: "ബാങ്ക് ട്രാൻസ്ഫർ",
     wireTransfer: "വയർ ട്രാൻസ്ഫർ",
     achTransfer: "ACH ട്രാൻസ്ഫർ",
-    paypal: "PayPal",
-    stripe: "Stripe",
+    paypal: "പേപാൽ",
+    stripe: "വര",
     cash: "പണം",
     check: "ചെക്ക്",
+    paid: "പണമടച്ചു",
+    partiallyPaid: "ഭാഗികമായി പണമടച്ചു",
     pending: "തീർപ്പുകൽപ്പിക്കാത്തത്",
     failed: "പരാജയപ്പെട്ടു",
+    cancelled: "റദ്ദാക്കി",
     refunded: "തിരിച്ചടച്ചു",
     completed: "പൂർത്തിയായി",
     addPaymentBtn: "പേയ്‌മെന്റ് ചേർക്കുക",
@@ -698,9 +744,8 @@ const ml = {
     failedToAddManualEntry: "മാനുവൽ എൻട്രി ചേർക്കുന്നതിൽ പരാജയപ്പെട്ടു",
     searchByClientOrInvoice: "ക്ലയന്റ് പേരോ ഇൻവോയ്‌സ് ഐഡിയോ ഉപയോഗിച്ച് തിരയുക",
     selectTransactionTypeBtn: "ഇടപാട് തരം തിരഞ്ഞെടുക്കുക",
+    noPaymentFound: "പേയ്‌മെന്റൊന്നും കണ്ടെത്തിയില്ല!",
   },
-
-  // Timer
   timer: {
     webTimer: "വെബ് ടൈമർ",
     webTimerLabel: "വെബ് ടൈമർ",
@@ -726,8 +771,6 @@ const ml = {
     whatAreYouWorkingOn: "നിങ്ങൾ എന്തിലാണ് പ്രവർത്തിക്കുന്നത്?",
     selectProject: "പ്രോജക്ട് തിരഞ്ഞെടുക്കുക",
   },
-
-  // Reports
   reports: {
     reports: "റിപ്പോർട്ടുകൾ",
     backToReports: "റിപ്പോർട്ടുകളിലേക്ക് മടങ്ങുക",
@@ -742,8 +785,6 @@ const ml = {
     exportAsCsv: "CSV ആയി എക്‌സ്‌പോർട്ട്",
     exportAsPdf: "PDF ആയി എക്‌സ്‌പോർട്ട്",
     toggleReportFilters: "റിപ്പോർട്ട് ഫിൽട്ടറുകൾ ടോഗിൾ ചെയ്യുക",
-
-    // Filters
     clients: "ക്ലയന്റുകൾ",
     teamMembers: "ടീം അംഗങ്ങൾ",
     groupBy: "ഗ്രൂപ്പ് ചെയ്യുക",
@@ -752,27 +793,32 @@ const ml = {
     searchClientsFilter: "ക്ലയന്റുകൾ തിരയുക...",
     searchTeamMembersFilter: "ടീം അംഗങ്ങൾ തിരയുക...",
     applyFilter: "ഫിൽട്ടർ പ്രയോഗിക്കുക",
-
-    // Time entry report
     totalHours: "ആകെ മണിക്കൂറുകൾ",
     scrollToLoadMoreRows:
       "കൂടുതൽ റിപ്പോർട്ട് വരികൾ ലോഡ് ചെയ്യാൻ സ്ക്രോൾ ചെയ്യുക",
     loadingMoreRows: "കൂടുതൽ റിപ്പോർട്ട് വരികൾ ലോഡ് ചെയ്യുന്നു...",
     allRowsLoaded: "എല്ലാ റിപ്പോർട്ട് വരികളും ലോഡ് ചെയ്തു",
-
-    // Payment report
     perTransaction: "ഓരോ ഇടപാടിനും",
     topMethod: "മികച്ച രീതി",
     paymentMethodsBreakdown: "പേയ്‌മെന്റ് രീതികളുടെ വിഭജനം",
     paymentDetails: "പേയ്‌മെന്റ് വിശദാംശങ്ങൾ",
     unableToLoadPaymentReport:
       "പേയ്‌മെന്റ് റിപ്പോർട്ട് ലോഡ് ചെയ്യാൻ കഴിയുന്നില്ല",
+    totalPayments: "ആകെ പേയ്‌മെന്റുകൾ",
+    paymentCount: "പേയ്‌മെന്റ് എണ്ണം",
+    averagePayment: "ശരാശരി പേയ്‌മെന്റ്",
+    totalTransactions: "ആകെ ഇടപാടുകൾ",
+    selectedPeriod: "തിരഞ്ഞെടുത്ത കാലയളവ്",
+    noPaymentsFoundForSelectedPeriod:
+      "തിരഞ്ഞെടുത്ത കാലയളവിലേക്ക് പേയ്‌മെന്റുകളൊന്നും കണ്ടെത്തിയില്ല.",
+    showingPayments: "%{total} പേയ്‌മെന്റുകളുടെ %{shown} കാണിക്കുന്നു",
+    scrollToLoadMorePayments:
+      "കൂടുതൽ പേയ്‌മെന്റുകൾ ലോഡ് ചെയ്യാൻ സ്ക്രോൾ ചെയ്യുക",
+    clientsSelected: "%{count} ക്ലയന്റുകൾ",
     paymentMethod: "പേയ്‌മെന്റ് രീതി",
     allMethods: "എല്ലാ രീതികളും",
     creditCard: "ക്രെഡിറ്റ് കാർഡ്",
     allStatus: "എല്ലാ സ്ഥിതിയും",
-
-    // Revenue by client report
     totalRevenue: "ആകെ റവന്യൂ",
     paidRevenue: "പേയ്‌ഡ് റവന്യൂ",
     paidAmount: "പേയ്‌ഡ് തുക",
@@ -784,22 +830,33 @@ const ml = {
     withRevenue: "റവന്യൂ ഉള്ള",
     searchClients: "ക്ലയന്റുകൾ തിരയുക",
     filterClients: "ക്ലയന്റുകൾ ഫിൽട്ടർ ചെയ്യുക...",
+    columns: "നിരകൾ",
+    clientName: "ക്ലയന്റിന്റെ പേര്",
+    invoices: "ഇൻവോയ്‌സുകൾ",
     revenueBreakdown: "റവന്യൂ വിഭജനം",
     detailedRevenueAnalysis: "ക്ലയന്റ് അനുസരിച്ച് വിശദമായ റവന്യൂ വിശകലനം",
     clientRevenueDetails: "ക്ലയന്റ് റവന്യൂ വിശദാംശങ്ങൾ",
     scrollToLoadMoreClients: "കൂടുതൽ ക്ലയന്റുകൾ ലോഡ് ചെയ്യാൻ സ്ക്രോൾ ചെയ്യുക",
     allClientsLoaded: "എല്ലാ ക്ലയന്റുകളും ലോഡ് ചെയ്തു",
-
-    // Outstanding invoice report
+    clearClients: "ക്ലയന്റുകളെ മായ്‌ക്കുക",
+    successfullyCollected: "വിജയകരമായി ശേഖരിച്ചു",
+    pendingCollection: "തീർച്ചപ്പെടുത്താത്ത ശേഖരം",
+    requiresAttention: "ശ്രദ്ധ ആവശ്യമാണ്",
+    revenueMixByClient: "ക്ലയന്റ് അനുസരിച്ചുള്ള വരുമാന മിക്‌സ്",
+    noClientRevenueData:
+      "തിരഞ്ഞെടുത്ത ഫിൽട്ടറുകൾക്ക് ക്ലയന്റ് വരുമാന ഡാറ്റ ലഭ്യമല്ല.",
+    paid: "പണമടച്ചു",
+    awaitingPayment: "പേയ്‌മെന്റിനായി കാത്തിരിക്കുന്നു",
     failedToLoadReportData: "റിപ്പോർട്ട് ഡാറ്റ ലോഡ് ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു",
     currencyFilter: "കറൻസി ഫിൽട്ടർ",
     fromDate: "ആരംഭ തീയതി",
     toDate: "അവസാന തീയതി",
     export: "എക്‌സ്‌പോർട്ട്",
-    csv: "CSV",
-    pdf: "PDF",
-    excel: "Excel",
+    csv: "സി‌എസ്‌വി",
+    pdf: "PDF ലേക്ക് സ്വാഗതം.",
+    excel: "എക്സൽ",
     statusOverview: "സ്ഥിതി അവലോകനം",
+    agingDistribution: "വാർദ്ധക്യ വിതരണം",
     currencyDistribution: "കറൻസി വിതരണം",
     topClients: "മികച്ച ക്ലയന്റുകൾ",
     clientAnalysis: "ക്ലയന്റ് വിശകലനം",
@@ -808,8 +865,6 @@ const ml = {
     clientBreakdown: "ക്ലയന്റ് വിഭജനം",
     originalAmount: "യഥാർത്ഥ തുക",
     baseAmount: "അടിസ്ഥാന തുക",
-
-    // Accounts aging report
     totalDue: "ആകെ ബാക്കി",
     invoiceAgingDetails: "ഇൻവോയ്‌സ് ഏജിംഗ് വിശദാംശങ്ങൾ",
     noDataFound: "ഡാറ്റ കണ്ടെത്തിയില്ല",
@@ -820,6 +875,7 @@ const ml = {
     zeroToThirtyDays: "0-30 ദിവസം",
     thirtyOneToSixtyDays: "31-60 ദിവസം",
     sixtyOneToNinetyDays: "61-90 ദിവസം",
+    sixtyPlusDays: "60+ ദിവസങ്ങൾ",
     ninetyPlusDays: "90+ ദിവസം",
     noClientsWithOutstandingBalances: "കുടിശ്ശിക ബാലൻസ് ഉള്ള ക്ലയന്റുകൾ ഇല്ല.",
     showingOfClients: "%{total} ക്ലയന്റുകളിൽ %{displayed} കാണിക്കുന്നു...",
@@ -925,6 +981,8 @@ const ml = {
     openReport: "%{title} റിപ്പോർട്ട് തുറക്കുക",
     reviewHoursLogged:
       "വ്യക്തി, ക്ലയന്റ്, പ്രോജക്ട് അനുസരിച്ച് രേഖപ്പെടുത്തിയ മണിക്കൂറുകൾ അവലോകനം ചെയ്യുക.",
+    shareReport: "റിപ്പോർട്ട് പങ്കിടുക",
+    linkCopied: "ലിങ്ക് പകർത്തി",
     lastSevenDaysPreset: "കഴിഞ്ഞ 7 ദിവസം",
     lastThirtyDaysPreset: "കഴിഞ്ഞ 30 ദിവസം",
     totalEntries: "ആകെ എൻട്രികൾ",
@@ -952,8 +1010,6 @@ const ml = {
     unknownProject: "അജ്ഞാത പ്രോജക്ട്",
     generatingExport: "%{format} സൃഷ്ടിക്കുന്നു",
   },
-
-  // Expenses
   expenses: {
     expenses: "ചെലവുകൾ",
     addExpense: "ചെലവ് ചേർക്കുക",
@@ -968,12 +1024,16 @@ const ml = {
     category: "വിഭാഗം",
     selectCategory: "വിഭാഗം തിരഞ്ഞെടുക്കുക",
     selectCategoryEllipsis: "വിഭാഗം തിരഞ്ഞെടുക്കുക...",
+    customCategory: "ഇഷ്ടാനുസൃത വിഭാഗം",
+    enterCustomCategory: "ഇഷ്ടാനുസൃത വിഭാഗം നൽകുക",
     vendor: "വെണ്ടർ",
     enterVendor: "വെണ്ടർ നൽകുക",
     enterVendorName: "വെണ്ടർ പേര് നൽകുക",
     receipt: "രസീത്",
     receiptOptional: "രസീത് (ഐച്ഛികം)",
     receipts: "രസീതുകൾ",
+    receiptsAttached: "%{count} അറ്റാച്ചുചെയ്‌തു",
+    preview: "പ്രിവ്യൂ",
     uploadReceipt: "രസീത് അപ്‌ലോഡ് ചെയ്യുക",
     uploadFile: "ഫയൽ അപ്‌ലോഡ് ചെയ്യുക",
     noExpenses: "ചെലവുകൾ കണ്ടെത്തിയില്ല",
@@ -1033,39 +1093,62 @@ const ml = {
     viewExistingReceipts: "നിലവിലുള്ള രസീതുകൾ കാണുക (%{count})",
     viewReceiptsFor: "%{description} ന്റെ രസീതുകൾ കാണുക",
     expenseActionsFor: "%{description} ന്റെ ചെലവ് പ്രവർത്തനങ്ങൾ",
+    receiptPreview: "രസീത് പ്രിവ്യൂ",
+    reviewUploadedReceipts:
+      "ഈ ചെലവിനായി അപ്‌ലോഡ് ചെയ്ത രസീതുകൾ അവലോകനം ചെയ്യുക.",
   },
-
-  // Settings
-  settings: {
-    settings: "ക്രമീകരണങ്ങൾ",
-    profileSettings: "പ്രൊഫൈൽ ക്രമീകരണങ്ങൾ",
-    organizationSettings: "ഓർഗനൈസേഷൻ ക്രമീകരണങ്ങൾ",
-    paymentSettings: "പേയ്‌മെന്റ് ക്രമീകരണങ്ങൾ",
-    profilePicture: "പ്രൊഫൈൽ ചിത്രം",
-    changePassword: "പാസ്‌വേഡ് മാറ്റുക",
-    currentPassword: "നിലവിലെ പാസ്‌വേഡ്",
-    password: "പാസ്‌വേഡ്",
-    confirmPassword: "പാസ്‌വേഡ് സ്ഥിരീകരിക്കുക",
-    billing: "ബില്ലിംഗ്",
-    integrations: "ഇന്റഗ്രേഷനുകൾ",
-    leaves: "ലീവുകൾ",
-    import: "ഇമ്പോർട്ട്",
-    general: "പൊതുവായത്",
-    profile: "പ്രൊഫൈൽ",
-    organization: "ഓർഗനൈസേഷൻ",
-    payment: "പേയ്‌മെന്റ്",
-    allocateLeaves: "ലീവുകൾ അലോക്കേറ്റ് ചെയ്യുക",
-    customLeaves: "ഇഷ്ടാനുസൃത ലീവുകൾ",
-    addCustomLeave: "ഇഷ്ടാനുസൃത ലീവ് ചേർക്കുക",
-    editCustomLeave: "ഇഷ്ടാനുസൃത ലീവ് എഡിറ്റ് ചെയ്യുക",
-    leaveType: "ലീവ് തരം",
-    enterLeaveType: "ലീവ് തരം നൽകുക",
-    allocationValue: "അലോക്കേഷൻ മൂല്യം",
-    allocationPeriod: "അലോക്കേഷൻ കാലയളവ്",
-    allocationFrequency: "അലോക്കേഷൻ ആവൃത്തി",
+  importModal: {
+    importTitle: "%{title} ഇറക്കുമതി ചെയ്യുക",
+    uploadFile: "ഫയൽ അപ്‌ലോഡ് ചെയ്യുക",
+    supportedFormats: "പിന്തുണയ്ക്കുന്ന ഫയൽ ഫോർമാറ്റുകൾ: .xls, .xlsx, .csv",
+    reviewMappedFields:
+      "ഫയലിൽ നിന്ന് ഇനിപ്പറയുന്ന കോളങ്ങൾ ഞങ്ങൾ തിരിച്ചറിഞ്ഞു, അവ ആവശ്യമായ ഫീൽഡുകളിലേക്ക് മാപ്പ് ചെയ്തു. ദയവായി അവലോകനം ചെയ്ത് സ്ഥിരീകരിക്കുക.",
+    startImport: "ഇറക്കുമതി ആരംഭിക്കുക",
+    importingEntries: "%{count} സമയ എൻട്രികൾ ഇറക്കുമതി ചെയ്യുന്നു",
+    backgroundImportNotice:
+      "ഇത് പൂർത്തിയാകാൻ കുറച്ച് സമയമെടുത്തേക്കാം. നിങ്ങൾ ഈ വിൻഡോ അടച്ച് പൂർത്തിയാകുമ്പോൾ നിങ്ങൾക്ക് ഒരു ഇമെയിൽ അയച്ചാലും ഞങ്ങൾ പശ്ചാത്തലത്തിൽ ഇറക്കുമതി ചെയ്യുന്നത് തുടരും.",
+    closeWindow: "വിൻഡോ അടയ്ക്കുക",
+    importComplete: "ഇറക്കുമതി പൂർത്തിയായി!",
+    importSummary: "ഇറക്കുമതി സംഗ്രഹം",
+    totalTimeEntries: "ആകെ സമയ എൻട്രികൾ",
+    successfullyImported: "വിജയകരമായി ഇറക്കുമതി ചെയ്തു",
+    failedToImport: "ഇറക്കുമതി ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു",
+    detailedLogSent:
+      "വിശദമായ ഒരു ലോഗ് ഞങ്ങൾ നിങ്ങളുടെ ഇമെയിലിലേക്ക് അയച്ചിട്ടുണ്ട്.",
+    importAnotherFile: "മറ്റൊരു ഫയൽ ഇറക്കുമതി ചെയ്യുക",
+    mapFields: "മാപ്പ് ഫീൽഡുകൾ",
+    import: "ഇറക്കുമതി ചെയ്യുക",
   },
-
-  // Leave types
+  importCatalog: {
+    subtitle: "നിങ്ങളുടെ ഡാറ്റ മിരുവിലേക്ക് ഇറക്കുമതി ചെയ്യുക",
+    invoices: {
+      title: "ഇൻവോയ്‌സുകൾ",
+      description:
+        "നിങ്ങളുടെ മുൻ ഇൻവോയ്‌സിംഗ് ഉപകരണത്തിൽ നിന്നോ സോഫ്റ്റ്‌വെയറിൽ നിന്നോ പഴയ ഇൻവോയ്‌സ് ഡാറ്റ ഇറക്കുമതി ചെയ്യുക.",
+      fields: {
+        invoiceNumber: "ഇൻവോയ്സ് നമ്പർ",
+        clientName: "ക്ലയന്റിന്റെ പേര്",
+        issueDate: "പുറപ്പെടുവിക്കുന്ന തീയതി",
+        dueDate: "രണ്ട് തീയതികൾ",
+        amount: "തുക",
+        status: "പദവി",
+      },
+    },
+    timeEntries: {
+      title: "സമയ എൻട്രികൾ",
+      description:
+        "നിങ്ങളുടെ മുൻ സമയ ട്രാക്കിംഗ് ഉപകരണത്തിൽ നിന്നോ സോഫ്റ്റ്‌വെയറിൽ നിന്നോ കഴിഞ്ഞ സമയ എൻട്രികൾ ഇറക്കുമതി ചെയ്യുക",
+      fields: {
+        employeeName: "ജീവനക്കാരന്റെ പേര്",
+        date: "തീയതി",
+        hours: "മണിക്കൂറുകൾ",
+        status: "പദവി",
+        client: "ക്ലയന്റ്",
+        project: "പദ്ധതി",
+        description: "വിവരണം",
+      },
+    },
+  },
   leaveTypes: {
     annualLeaves: "വാർഷിക ലീവുകൾ",
     sickLeaves: "രോഗാവധി ലീവുകൾ",
@@ -1073,23 +1156,17 @@ const ml = {
     paternityLeave: "പിതൃത്വ ലീവ്",
     periodLeave: "ആർത്തവ ലീവ്",
   },
-
-  // Allocation periods
   allocationPeriods: {
     days: "ദിവസങ്ങൾ",
     weeks: "ആഴ്ചകൾ",
     months: "മാസങ്ങൾ",
   },
-
-  // Allocation frequencies
   allocationFrequencies: {
     perWeek: "ആഴ്ചയിൽ",
     perMonth: "മാസത്തിൽ",
     perQuarter: "ത്രൈമാസത്തിൽ",
     perYear: "വർഷത്തിൽ",
   },
-
-  // Navbar
   navbar: {
     clients: "ക്ലയന്റുകൾ",
     invoices: "ഇൻവോയ്‌സുകൾ",
@@ -1143,133 +1220,32 @@ const ml = {
     leavesDescription: "അവധി അഭ്യർത്ഥനകൾ കൈകാര്യം ചെയ്യുക",
     expensesDescription: "ബിസിനസ് ചെലവുകൾ ട്രാക്ക് ചെയ്യുക",
   },
-
-  // Dashboard
-  dashboard: {
-    dashboard: "ഡാഷ്‌ബോർഡ്",
-    overdue: "കാലാവധി കഴിഞ്ഞത്",
-    outstanding: "കുടിശ്ശിക",
-    totalHours: "ആകെ മണിക്കൂറുകൾ",
-    revenueOverview: "റവന്യൂ അവലോകനം",
-    welcomeBack: "തിരിച്ചുവരവിന് സ്വാഗതം, %{name}",
-    companyPulse: "കമ്പനി പൾസ്",
-    yearToDate: "ഈ വർഷം ഇതുവരെ",
-    quarterToDate: "ഈ ത്രൈമാസം ഇതുവരെ",
-    monthToDate: "ഈ മാസം ഇതുവരെ",
-    weekToDate: "ഈ ആഴ്ച ഇതുവരെ",
-    revenue: "റവന്യൂ",
-    activeProjects: "സജീവ പ്രോജക്ടുകൾ",
-    currentlyActive: "നിലവിൽ സജീവം",
-    noRecentActivity: "സമീപകാല പ്രവർത്തനം ഇല്ല",
-    teamSize: "ടീം വലുപ്പം",
-    teammates: "ടീം സഹപ്രവർത്തകർ",
-    hoursTracked: "ട്രാക്ക് ചെയ്ത മണിക്കൂറുകൾ",
-    assignedProjects: "നിയോഗിച്ച പ്രോജക്ടുകൾ",
-    projectsYouCanWorkOn: "നിങ്ങൾക്ക് പ്രവർത്തിക്കാവുന്ന പ്രോജക്ടുകൾ",
-    totalInvoiced: "ആകെ ഇൻവോയ്‌സ് ചെയ്തത്",
-    openInvoices: "ഓപ്പൺ ഇൻവോയ്‌സുകൾ",
-    awaitingPayment: "പേയ്‌മെന്റ് കാത്തിരിക്കുന്നു",
-    paidInvoices: "പേയ്‌ഡ് ഇൻവോയ്‌സുകൾ",
-    alreadySettled: "ഇതിനകം തീർപ്പാക്കി",
-    paymentsReceived: "ലഭിച്ച പേയ്‌മെന്റുകൾ",
-    employeeGuidance:
-      "നിങ്ങളുടെ ആഴ്ച ട്രാക്ക് ചെയ്യുക, കൃത്യമായ എൻട്രികൾ സമർപ്പിക്കുക, ജോലി മുന്നോട്ട് കൊണ്ടുപോകുക.",
-    bookKeeperGuidance:
-      "വരുന്ന പേയ്‌മെന്റുകൾ അവലോകനം ചെയ്യുക, ഇൻവോയ്‌സുകൾ സമന്വയിപ്പിക്കുക, പണമൊഴുക്ക് വ്യക്തമാക്കുക.",
-    clientGuidance:
-      "നിങ്ങളുടെ അക്കൗണ്ടിന്റെ ഇൻവോയ്‌സ് സ്ഥിതിയും പേയ്‌മെന്റ് ചരിത്രവും പരിശോധിക്കുക.",
-    defaultGuidance: "റവന്യൂ, പ്രോജക്ടുകൾ, ടീം ആക്കം എന്നിവ ഒറ്റ നോട്ടത്തിൽ.",
-    recentActivity: "സമീപകാല പ്രവർത്തനം",
-    workspaceActivity: "വർക്ക്‌സ്പേസ് പ്രവർത്തനം",
-    employeeActivityDescription:
-      "നിങ്ങളുടെ ഡാഷ്‌ബോർഡ് സമയ ട്രാക്കിംഗിലും നിയോഗിച്ച ജോലിയിലും ശ്രദ്ധ കേന്ദ്രീകരിച്ചിരിക്കുന്നു.",
-    activityDescription:
-      "നിങ്ങളുടെ ഇൻവോയ്‌സുകളിലും പേയ്‌മെന്റുകളിലുമുള്ള ഏറ്റവും പുതിയ അപ്‌ഡേറ്റുകൾ",
-    noRecentActivityYet: "ഇതുവരെ സമീപകാല പ്രവർത്തനം ഇല്ല",
-    loadMore: "കൂടുതൽ ലോഡ് ചെയ്യുക",
-    allCaughtUp: "നിങ്ങൾ എല്ലാം അപ്‌ഡേറ്റ് ചെയ്തു",
-  },
-
-  // Authentication
-  auth: {
-    signIn: "സൈൻ ഇൻ",
-    signUp: "സൈൻ അപ്പ്",
-    signOut: "സൈൻ ഔട്ട്",
-    welcomeBack: "തിരിച്ചുവരവിന് സ്വാഗതം!",
-    loginFailed: "ലോഗിൻ പരാജയപ്പെട്ടു. ദയവായി വീണ്ടും ശ്രമിക്കുക.",
-    noAuthTokenReceived: "ഓതന്റിക്കേഷൻ ടോക്കൺ ലഭിച്ചില്ല",
-    signInToWorkspace: "നിങ്ങളുടെ വർക്ക്‌സ്പേസിലേക്ക് സൈൻ ഇൻ ചെയ്യുക",
-    createYourWorkspace: "നിങ്ങളുടെ വർക്ക്‌സ്പേസ് സൃഷ്ടിക്കുക",
-    signInDescription:
-      "ജോലി ട്രാക്ക് ചെയ്യുക, ഇൻവോയ്‌സുകൾ അയയ്ക്കുക, പണമൊഴുക്ക് ഒരു സ്ഥലത്ത് നിന്ന് വ്യക്തമാക്കുക.",
-    signUpDescription:
-      "ക്ലയന്റുകൾ, പ്രോജക്ടുകൾ, ഇൻവോയ്‌സുകൾ, പേയ്‌മെന്റുകൾ എന്നിവ ഒരു വ്യക്തമായ ഓപ്പറേറ്റിംഗ് സിസ്റ്റത്തിൽ സജ്ജീകരിക്കുക.",
-    firstName: "ആദ്യ പേര്",
-    lastName: "അവസാന പേര്",
-    password: "പാസ്‌വേഡ്",
-    confirmPassword: "പാസ്‌വേഡ് സ്ഥിരീകരിക്കുക",
-    waitingForPasskey: "പാസ്‌കീയ്ക്കായി കാത്തിരിക്കുന്നു...",
-    forgotPassword: "പാസ്‌വേഡ് മറന്നോ?",
-    enterRegisteredEmail: "നിങ്ങളുടെ രജിസ്റ്റർ ചെയ്ത ഇമെയിൽ ഐഡി നൽകുക",
-    resetPassword: "പാസ്‌വേഡ് റീസെറ്റ് ചെയ്യുക",
-    resetPasswordInstructions:
-      "നിങ്ങളുടെ അക്കൗണ്ടുമായി ബന്ധപ്പെട്ട ഇമെയിൽ വിലാസം നൽകുക, പാസ്‌വേഡ് റീസെറ്റ് ചെയ്യാനുള്ള ലിങ്ക് ഞങ്ങൾ അയയ്ക്കും.",
-    sendResetLink: "റീസെറ്റ് ലിങ്ക് അയയ്ക്കുക",
-    backToLogin: "ലോഗിനിലേക്ക് മടങ്ങുക",
-    alreadyHaveAccount: "ഇതിനകം ഒരു അക്കൗണ്ട് ഉണ്ടോ?",
-    dontHaveAccount: "അക്കൗണ്ട് ഇല്ലേ?",
-    rememberMe: "എന്നെ ഓർക്കുക",
-    totpPlaceholder: "ABCD-EFGH",
-    companyPulse: "കമ്പനി പൾസ്",
-    billingCommand: "ബില്ലിംഗ് കമാൻഡ്",
-    clearWeeklyFlow: "വ്യക്തമായ ആഴ്ചയിലെ ഫ്ലോ",
-    cashLedger: "ക്യാഷ് ലെഡ്ജർ",
-    miruLogo: "Miru",
-    heroTitle: "സമയം, ഇൻവോയ്‌സുകൾ, പേയ്‌മെന്റുകൾ എന്നിവയ്ക്ക് ഒരു സ്ഥലം",
-    heroDescription:
-      "ദിവസം വ്യക്തമായി സൂക്ഷിക്കുക, ബില്ലിംഗ് മുന്നോട്ട് കൊണ്ടുപോകുക, പണം ദൃശ്യമായി സൂക്ഷിക്കുക.",
-    slideShowPrefix: "കാണിക്കുക",
-    slideDashboardDescription:
-      "റവന്യൂ, സജീവ പ്രോജക്ടുകൾ, ടീം ആക്കം എന്നിവ തിരയാതെ കാണുക.",
-    slideInvoicesDescription:
-      "ഡ്രാഫ്റ്റുകൾ, കാലാവധി കഴിഞ്ഞ ബാലൻസുകൾ, പേയ്‌ഡ് ജോലി ഒരേ സ്ഥലത്ത് സൂക്ഷിക്കുക.",
-    slideTimeTrackingDescription:
-      "ആഴ്ചതോറും സമയ എൻട്രി ജോലിയാകാതെ കാലികമായി നിലനിർത്തുന്നു.",
-    slidePaymentsDescription:
-      "ഓരോ പേയ്‌മെന്റും രീതി, സ്ഥിതി, ഉറവിടം സഹിതം ഒരു ലെഡ്ജറിൽ വരുന്നു.",
-    continueWithGoogle: "Google ഉപയോഗിച്ച് തുടരുക",
-    continueWithGithub: "GitHub ഉപയോഗിച്ച് തുടരുക",
-    orUseEmail: "അല്ലെങ്കിൽ ഇമെയിൽ ഉപയോഗിക്കുക",
-    verifyWithAuthenticator:
-      "നിങ്ങളുടെ ഓതന്റിക്കേറ്റർ ആപ്പ് ഉപയോഗിച്ച് പരിശോധിക്കുക",
-    authenticatorInstructions:
-      "നിങ്ങളുടെ ഓതന്റിക്കേറ്റർ ആപ്പിൽ നിന്ന് 6-അക്ക കോഡ് നൽകുക, അല്ലെങ്കിൽ റിക്കവറി കോഡ് ഉപയോഗിക്കുക.",
-    authenticatorCode: "ഓതന്റിക്കേറ്റർ കോഡ്",
-    recoveryCode: "റിക്കവറി കോഡ്",
-    verifyAndSignIn: "പരിശോധിച്ച് സൈൻ ഇൻ ചെയ്യുക",
-    completePasskeyVerification:
-      "സൈൻ ഇൻ പൂർത്തിയാക്കാൻ പാസ്‌കീ പരിശോധന പൂർത്തിയാക്കുക.",
-    enterAuthenticatorCode:
-      "സൈൻ ഇൻ പൂർത്തിയാക്കാൻ നിങ്ങളുടെ ഓതന്റിക്കേറ്റർ കോഡ് നൽകുക.",
-    invalidVerificationCode: "അസാധുവായ പരിശോധന കോഡ്.",
-    privacy: "സ്വകാര്യത",
-    terms: "നിബന്ധനകൾ",
-    createAccount: "അക്കൗണ്ട് സൃഷ്ടിക്കുക",
-    passwordCriteria:
-      "കുറഞ്ഞത് 8 അക്ഷരങ്ങൾ, 1 വലിയ അക്ഷരം, 1 ചെറിയ അക്ഷരം, 1 അക്കം, 1 പ്രത്യേക അക്ഷരം",
-    agreeToTerms: "ഞാൻ സമ്മതിക്കുന്നു",
-    termsOfService: "സേവന നിബന്ധനകൾ",
-    privacyPolicy: "സ്വകാര്യതാ നയം",
-    and: "ഒപ്പം",
-  },
-
-  // Passkeys
   passkeys: {
     noPasskeyResponse: "പാസ്‌കീ പ്രതികരണം ലഭിച്ചില്ല.",
     passkeysNotSupported: "ഈ ബ്രൗസറിൽ പാസ്‌കീകൾ പിന്തുണയ്ക്കുന്നില്ല.",
+    title: "പാസ്‌കീകൾ",
+    addTitle: "ഈ അക്കൗണ്ടിനായി ഒരു പാസ്‌കീ ചേർക്കുക",
+    addDescription:
+      "ഫേസ് ഐഡി, ടച്ച് ഐഡി, വിൻഡോസ് ഹലോ, അല്ലെങ്കിൽ ഒരു ഹാർഡ്‌വെയർ സുരക്ഷാ കീ എന്നിവ ഉപയോഗിക്കുക.",
+    addAction: "പാസ്‌കീ ചേർക്കുക",
+    requirementTitle: "സൈൻ ഇൻ ചെയ്യുമ്പോൾ പാസ്‌കീ ആവശ്യമാണ്",
+    requirementDescription:
+      "നിങ്ങളുടെ പാസ്‌വേഡിന് ശേഷം, സൈൻ ഇൻ പൂർത്തിയാക്കാൻ മിരുവിന് ഒരു പാസ്‌കീ ആവശ്യമാണ്.",
+    emptyState: "ഇതുവരെ പാസ്‌കീകളൊന്നും ചേർത്തിട്ടില്ല.",
+    fallbackName: "പാസ്‌കീ",
+    addedAt: "%{time} ചേർത്തു",
+    lastUsedAt: "അവസാനം ഉപയോഗിച്ചത് %{time}",
+    removeAction: "നീക്കം ചെയ്യുക",
+    addedSuccess: "പാസ്‌കീ ചേർത്തു",
+    removedSuccess: "പാസ്‌കീ നീക്കം ചെയ്‌തു",
+    requirementEnabled: "പാസ്‌കീ ആവശ്യകത പ്രവർത്തനക്ഷമമാക്കി",
+    requirementDisabled: "പാസ്‌കീ ആവശ്യകത പ്രവർത്തനരഹിതമാക്കി",
+    addFailed: "പാസ്‌കീ ചേർക്കുന്നതിൽ പരാജയപ്പെട്ടു.",
+    removeFailed: "പാസ്‌കീ നീക്കം ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു.",
+    updateRequirementFailed:
+      "പാസ്‌കീ സൈൻ-ഇൻ ആവശ്യകത അപ്‌ഡേറ്റ് ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു.",
+    neverUsed: "ഒരിക്കലും ഉപയോഗിച്ചിട്ടില്ല",
   },
-
-  // Organization setup
   orgSetup: {
     setupOrganization: "ഓർഗനൈസേഷൻ സജ്ജീകരിക്കുക",
     companyName: "കമ്പനി പേര്",
@@ -1291,31 +1267,468 @@ const ml = {
     dragLogo: "ലോഗോ വലിച്ചിടുക",
     selectFile: "ഫയൽ തിരഞ്ഞെടുക്കുക",
     acceptedFileFormats: "സ്വീകരിക്കുന്ന ഫയൽ ഫോർമാറ്റുകൾ: PNG, JPG, SVG.",
-    fileSizeLimit: "ഫയൽ വലുപ്പം \u2266 2MB ആയിരിക്കണം.",
+    fileSizeLimit: "ഫയൽ വലുപ്പം ≦ 2MB ആയിരിക്കണം.",
     imageResolution: "ചിത്ര റെസല്യൂഷൻ 1:1 ആയിരിക്കണം.",
     workingDaysPerWeek: "പ്രവൃത്തി ദിവസങ്ങൾ (ആഴ്ചയിൽ)",
     workingHoursPerWeek: "പ്രവൃത്തി മണിക്കൂറുകൾ (ആഴ്ചയിൽ)",
   },
-
-  // Profile
   profile: {
     personalDetails: "വ്യക്തിഗത വിശദാംശങ്ങൾ",
+    personalInformation: "സ്വകാര്യ വിവരം",
+    basicDetails: "അടിസ്ഥാന വിശദാംശങ്ങൾ",
+    contactInformation: "ബന്ധപ്പെടാനുള്ള വിവരങ്ങൾ",
+    addressType: "വിലാസ തരം",
+    current: "നിലവിലുള്ളത്",
+    permanent: "സ്ഥിരം",
     employmentDetails: "ജോലി വിശദാംശങ്ങൾ",
     compensationDetails: "ശമ്പള വിശദാംശങ്ങൾ",
     devices: "ഡിവൈസുകൾ",
     editProfile: "പ്രൊഫൈൽ എഡിറ്റ് ചെയ്യുക",
     currentEmployment: "നിലവിലെ ജോലി",
     previousEmployment: "മുൻ ജോലി",
+    employeeId: "ജീവനക്കാരുടെ ഐഡി",
     designation: "ഉദ്യോഗപ്പേര്",
+    officialEmail: "ഇമെയിൽ ഐഡി (ഔദ്യോഗികം)",
+    employmentType: "തൊഴിൽ തരം",
     department: "വിഭാഗം",
     dateOfJoining: "ചേർന്ന തീയതി",
+    dateOfResignation: "രാജിവച്ച തീയതി",
     dateOfBirth: "ജനനതീയതി",
+    birthDatePlaceholder: "നിങ്ങളുടെ ജനനത്തീയതി തിരഞ്ഞെടുക്കുക",
     socialProfiles: "സോഷ്യൽ പ്രൊഫൈലുകൾ",
-    linkedin: "LinkedIn",
-    github: "GitHub",
+    linkedin: "ലിങ്ക്ഡ്ഇൻ",
+    github: "ഗിറ്റ്ഹബ്",
+    firstName: "പേരിന്റെ ആദ്യഭാഗം",
+    lastName: "പേരിന്റെ അവസാന ഭാഗം",
+    firstNamePlaceholder: "നിങ്ങളുടെ ആദ്യ നാമം നൽകുക",
+    lastNamePlaceholder: "നിങ്ങളുടെ അവസാന നാമം നൽകുക",
+    personalEmail: "സ്വകാര്യ ഇമെയിൽ",
+    personalEmailPlaceholder: "നിങ്ങളുടെ.ഇമെയിൽ@example.com",
+    phoneAriaLabel: "ഫോൺ നമ്പർ",
+    addressLine1: "വിലാസ ലൈൻ 1",
+    addressLine2: "വിലാസ വരി 2",
+    optionalSuffix: "(ഓപ്ഷണൽ)",
+    streetAddressPlaceholder: "സ്ട്രീറ്റ് വിലാസം",
+    addressLine2Placeholder: "അപ്പാർട്ട്മെന്റ്, സ്യൂട്ട്, യൂണിറ്റ് മുതലായവ.",
+    statePlaceholder: "സംസ്ഥാനം അല്ലെങ്കിൽ പ്രവിശ്യ",
+    cityPlaceholder: "നഗരം",
+    zipPostalCode: "സിപ് / പോസ്റ്റൽ കോഡ്",
+    zipPlaceholder: "12345",
+    languageDescription:
+      "ഇന്റർഫേസിനായി നിങ്ങൾക്ക് ഇഷ്ടപ്പെട്ട ഭാഷ തിരഞ്ഞെടുക്കുക.",
+    security: "സുരക്ഷ",
+    userFallback: "ഉപയോക്താവ്",
+    currentPasswordPlaceholder: "നിലവിലുള്ള പാസ്‌വേഡ് നൽകുക",
+    newPassword: "പുതിയ പാസ്വേഡ്",
+    newPasswordPlaceholder: "പുതിയ പാസ്‌വേഡ് നൽകുക",
+    confirmPasswordPlaceholder: "പുതിയ പാസ്‌വേഡ് വീണ്ടും നൽകുക",
+    cancelPasswordChange: "പാസ്‌വേഡ് മാറ്റം റദ്ദാക്കുക",
+    profilePhoto: "പ്രൊഫൈൽ ഫോട്ടോ",
+    profilePhotoDescription:
+      "നിങ്ങളുടെ വർക്ക്‌സ്‌പെയ്‌സ് പ്രൊഫൈലിനായി ഒരു ചതുരാകൃതിയിലുള്ള ഫോട്ടോ അപ്‌ലോഡ് ചെയ്യുക.",
+    noAddressProvided: "വിലാസമൊന്നും നൽകിയിട്ടില്ല.",
+    noEmailProvided: "ഇമെയിൽ നൽകിയിട്ടില്ല.",
+    notProvided: "നൽകിയിട്ടില്ല",
+    notConnected: "കണക്റ്റ് ചെയ്തിട്ടില്ല",
+    bornOn: "ജനിച്ചത് %{date}",
+    lastChangedDaysAgo: "അവസാനം മാറ്റം വരുത്തിയത് %{count} ദിവസം മുമ്പ്",
+    secure: "സുരക്ഷിതം",
+    uploadPhoto: "ഫോട്ടോ അപ്‌ലോഡ് ചെയ്യുക",
+    removePhoto: "ഫോട്ടോ നീക്കം ചെയ്യുക",
+    uploadPhotoFailed: "പ്രൊഫൈൽ ചിത്രം അപ്‌ലോഡ് ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു.",
+    removePhotoFailed: "പ്രൊഫൈൽ ചിത്രം നീക്കം ചെയ്യാനായില്ല.",
+    adjustProfilePhoto: "പ്രൊഫൈൽ ഫോട്ടോ ക്രമീകരിക്കുക",
+    adjustProfilePhotoDescription:
+      "നിങ്ങൾ സൂക്ഷിക്കാൻ ആഗ്രഹിക്കുന്ന ചിത്രത്തിന്റെ ഭാഗം തിരഞ്ഞെടുക്കുക.",
+    noImageSelected: "ഒരു ചിത്രവും തിരഞ്ഞെടുത്തിട്ടില്ല.",
+    savePhoto: "ഫോട്ടോ സംരക്ഷിക്കുക",
+    zoom: "സൂം ചെയ്യുക",
+    company: "കമ്പനി",
+    noPreviousEmployments: "മുമ്പ് ജോലി ചെയ്തിരുന്നതായി കണ്ടെത്തിയില്ല.",
+    addPastEmployment: "+ മുൻ തൊഴിൽ ചേർക്കുക",
   },
-
-  // Leave Management
+  preferencesSettings: {
+    title: "ഇമെയിൽ മുൻഗണനകൾ",
+    description: "നിങ്ങളുടെ ഇമെയിൽ അറിയിപ്പ് ക്രമീകരണങ്ങൾ കൈകാര്യം ചെയ്യുക",
+    saving: "സംരക്ഷിക്കുന്നു...",
+    saveChanges: "മാറ്റങ്ങൾ സംരക്ഷിക്കുക",
+    timesheetNotifications: "ടൈംഷീറ്റ് അറിയിപ്പുകൾ",
+    billingNotifications: "ബില്ലിംഗ് അറിയിപ്പുകൾ",
+    timesheetNotificationsDescription:
+      "സമയ ട്രാക്കിംഗും ടൈംഷീറ്റുകളുമായി ബന്ധപ്പെട്ട അറിയിപ്പുകൾ കൈകാര്യം ചെയ്യുക",
+    billingNotificationsDescription:
+      "ഇൻവോയ്‌സും പേയ്‌മെന്റ് അറിയിപ്പുകളും നിയന്ത്രിക്കുക",
+    weeklyReminderTitle: "പ്രതിവാര ടൈംഷീറ്റ് ഓർമ്മപ്പെടുത്തൽ",
+    weeklyReminderDescription:
+      "തീർപ്പാക്കാത്ത ടൈംഷീറ്റ് എൻട്രികളെക്കുറിച്ച് എല്ലാ തിങ്കളാഴ്ചയും പ്രതിവാര ഓർമ്മപ്പെടുത്തലുകൾ സ്വീകരിക്കുക.",
+    timesheetReminderTitle: "എൻട്രി ഓർമ്മപ്പെടുത്തലുകൾ കാണുന്നില്ല",
+    timesheetReminderDescription:
+      "2 ദിവസത്തിൽ കൂടുതൽ ലോഗിൻ ചെയ്തിട്ടില്ലെങ്കിൽ അറിയിപ്പ് നേടുക",
+    invoiceNotificationsTitle: "ഇൻവോയ്സ് ഇമെയിൽ അറിയിപ്പുകൾ",
+    invoiceNotificationsDescription:
+      "ഇൻവോയ്‌സുകൾ സൃഷ്ടിക്കുമ്പോഴോ അയയ്ക്കുമ്പോഴോ അപ്‌ഡേറ്റ് ചെയ്യുമ്പോഴോ ഇമെയിലുകൾ സ്വീകരിക്കുക",
+    paymentNotificationsTitle: "പേയ്‌മെന്റ് ഇമെയിൽ അറിയിപ്പുകൾ",
+    paymentNotificationsDescription:
+      "പേയ്‌മെന്റുകൾ ലഭിക്കുമ്പോഴോ പേയ്‌മെന്റ് നില മാറുമ്പോഴോ അറിയിപ്പ് നേടുക",
+    monthlyDigestTitle: "പ്രതിമാസ പണമൊഴുക്ക് ഡൈജസ്റ്റ്",
+    monthlyDigestDescription:
+      "മൊത്തം മാറ്റം, പണ വരവ്, പുറത്തേക്കുള്ള പണം എന്നിവ ഉൾപ്പെടുന്ന പ്രതിമാസ പണമൊഴുക്ക് സംഗ്രഹം സ്വീകരിക്കുക.",
+    confirmUnsubscribeTitle:
+      "എല്ലാ ഇമെയിലുകളിൽ നിന്നും അൺസബ്‌സ്‌ക്രൈബ് ചെയ്യുന്നത് സ്ഥിരീകരിക്കുക",
+    confirmUnsubscribeDescription:
+      "എല്ലാ ഇമെയിൽ അറിയിപ്പുകളിൽ നിന്നും അൺസബ്‌സ്‌ക്രൈബ് ചെയ്യണമെന്ന് നിങ്ങൾക്ക് ഉറപ്പാണോ? പ്രധാനപ്പെട്ട ബില്ലിംഗ്, ഇൻവോയ്‌സ് അറിയിപ്പുകൾ ഉൾപ്പെടെയുള്ള ഒരു ഇമെയിലുകളും നിങ്ങൾക്ക് ലഭിക്കില്ല.",
+    confirmUnsubscribeAction: "അതെ, എല്ലാത്തിൽ നിന്നും അൺസബ്‌സ്‌ക്രൈബ് ചെയ്യുക",
+    unsubscribedTitle:
+      "എല്ലാ ഇമെയിലുകളിൽ നിന്നും നിങ്ങൾ അൺസബ്‌സ്‌ക്രൈബ് ചെയ്‌തു.",
+    unsubscribedDescription:
+      "നിങ്ങൾ നിലവിൽ എല്ലാ ഇമെയിൽ അറിയിപ്പുകളിൽ നിന്നും അൺസബ്‌സ്‌ക്രൈബ് ചെയ്‌തിരിക്കുന്നു. മിരുവിൽ നിന്ന് നിങ്ങൾക്ക് ഇമെയിലുകളൊന്നും ലഭിക്കില്ല.",
+    resubscribeAction: "ഇമെയിൽ അറിയിപ്പുകൾ വീണ്ടും പ്രാപ്തമാക്കുക",
+    enabledCount: "%{total} ൽ %{count} പ്രവർത്തനക്ഷമമാക്കി",
+    deliveryTitle: "ഇമെയിൽ ഡെലിവറി ക്രമീകരണങ്ങൾ",
+    emailAddress: "ഇമെയിൽ വിലാസം",
+    deliveryDescription:
+      "എല്ലാ അറിയിപ്പുകളും ഈ ഇമെയിൽ വിലാസത്തിലേക്ക് അയയ്ക്കും. നിങ്ങളുടെ ഇമെയിൽ മാറ്റാൻ, ദയവായി നിങ്ങളുടെ പ്രൊഫൈൽ ക്രമീകരണങ്ങളിൽ അത് അപ്ഡേറ്റ് ചെയ്യുക.",
+    unsubscribeTitle: "അൺസബ്‌സ്‌ക്രൈബ് ചെയ്യുക",
+    unsubscribeDescription:
+      "മിരുവിൽ നിന്ന് ഇനി ഇമെയിലുകൾ സ്വീകരിക്കാൻ താൽപ്പര്യമില്ലെങ്കിൽ, എല്ലാ അറിയിപ്പുകളിൽ നിന്നും നിങ്ങൾക്ക് അൺസബ്‌സ്‌ക്രൈബ് ചെയ്യാം. പ്രധാനപ്പെട്ട ബില്ലിംഗ്, ഇൻവോയ്‌സ് അറിയിപ്പുകൾ ഉൾപ്പെടെ എല്ലാ ഇമെയിൽ ആശയവിനിമയങ്ങളും ഇത് നിർത്തും.",
+    unsubscribeAction: "എല്ലാ ഇമെയിലുകളിൽ നിന്നും അൺസബ്‌സ്‌ക്രൈബ് ചെയ്യുക",
+    badges: {
+      active: "സജീവം",
+      important: "പ്രധാനപ്പെട്ടത്",
+      monthly: "പ്രതിമാസം",
+    },
+  },
+  automationSettings: {
+    title: "ഓട്ടോമേഷനും സി‌എൽ‌ഐയും",
+    description:
+      "നിങ്ങളുടെ ലോഗിൻ ചെയ്ത അക്കൗണ്ടിന്റെ അതേ അനുമതികളോടെ നിങ്ങളുടെ ടെർമിനലിൽ നിന്നോ സ്ക്രിപ്റ്റുകളിൽ നിന്നോ AI ഏജന്റുകളിൽ നിന്നോ മിരു ഉപയോഗിക്കുക. പ്രത്യേക ഓട്ടോമേഷൻ ഉൽപ്പന്നമില്ല. പ്രത്യേക ബാക്ക്ഡോർ ആക്‌സസ് ഇല്ല.",
+    freeForEveryPlan: "എല്ലാ പ്ലാനിനും സൗജന്യം",
+    cards: {
+      samePermissionsTitle: "ആപ്പിന് സമാനമായ അനുമതികൾ",
+      samePermissionsDescription:
+        "വെബ് ആപ്പിൽ പ്രാമാണീകരിച്ച ഉപയോക്താവിന് ഇതിനകം ആക്‌സസ് ചെയ്യാൻ കഴിയുന്നവ മാത്രമേ CLI കാണൂ.",
+      humansAndScriptsTitle: "മനുഷ്യർക്കും സ്ക്രിപ്റ്റുകൾക്കും നല്ലത്",
+      humansAndScriptsDescription:
+        "ദൈനംദിന ജോലികൾക്കായി ലളിതമായ കമാൻഡുകൾ ഉപയോഗിക്കുക, സ്ക്രിപ്റ്റുകളോ AI-യോ അതേ ഇന്റർഫേസ് ഉപയോഗിക്കാൻ അനുവദിക്കുക.",
+      easyToInstallTitle: "ഇൻസ്റ്റാൾ ചെയ്യാൻ എളുപ്പമാണ്",
+      easyToInstallDescription:
+        "ഒരു ഇൻസ്റ്റാൾ കമാൻഡ്, ഒരു ലോഗിൻ, തുടർന്ന് നിങ്ങൾക്ക് പ്രോജക്റ്റുകൾ ലിസ്റ്റ് ചെയ്യാനും സമയ എൻട്രികൾ സൃഷ്ടിക്കാനും ഇൻവോയ്സുകൾ അവലോകനം ചെയ്യാനും മറ്റും കഴിയും.",
+    },
+    commandGroups: {
+      install: "ഇന്‍സ്റ്റാളുചെയ്യുക",
+      authenticateOnce: "ഒരിക്കൽ പ്രാമാണീകരിക്കുക",
+      dailyCommands: "ദൈനംദിന കമാൻഡുകൾ",
+    },
+  },
+  holidaysSettings: {
+    year: "വർഷം",
+    publicHolidays: "പൊതു അവധി",
+    optionalHolidays: "ഓപ്ഷണൽ അവധി ദിവസങ്ങൾ",
+    holidayName: "അവധിക്കാല നാമം",
+    enterHolidayName: "അവധിക്കാല നാമം നൽകുക",
+    selectDate: "തീയതി തിരഞ്ഞെടുക്കുക",
+    addHoliday: "അവധിക്കാലം ചേർക്കുക",
+    addFirstHoliday: "ആദ്യ അവധിക്കാലം ചേർക്കുക",
+    addOptionalHoliday: "ഓപ്ഷണൽ അവധിക്കാലം ചേർക്കുക",
+    noPublicHolidaysConfigured:
+      "പൊതു അവധി ദിവസങ്ങളൊന്നും കോൺഫിഗർ ചെയ്തിട്ടില്ല.",
+    noOptionalHolidaysConfigured:
+      "ഓപ്ഷണൽ അവധി ദിവസങ്ങളൊന്നും കോൺഫിഗർ ചെയ്തിട്ടില്ല.",
+    totalAllowed: "ആകെ അനുവദനീയം",
+    enterNumber: "നമ്പർ നൽകുക",
+    frequency: "ആവൃത്തി",
+    allowedPerEmployee: "ഓരോ ജീവനക്കാരനും അനുവദിച്ചിരിക്കുന്നത്",
+    yearAtAGlance: "വർഷം ഒറ്റനോട്ടത്തിൽ",
+    holidaySchedule: "അവധിക്കാല ഷെഡ്യൂൾ",
+    noHolidaysAddedForYear:
+      "%{year} ന് ഇതുവരെ അവധി ദിവസങ്ങളൊന്നും ചേർത്തിട്ടില്ല.",
+    categories: {
+      public: "പൊതു",
+      optional: "ഓപ്ഷണൽ",
+    },
+    weekdays: {
+      sun: "സ",
+      mon: "മ",
+      tue: "ഹ",
+      wed: "വ",
+      thu: "ഹ",
+      fri: "ക",
+      sat: "സ",
+    },
+  },
+  paymentSettingsPage: {
+    backToSettings: "ക്രമീകരണങ്ങളിലേക്ക് മടങ്ങുക",
+    title: "പേയ്‌മെന്റ് ദാതാക്കൾ",
+    description:
+      "ക്ലയന്റുകളിൽ നിന്ന് ഓൺലൈൻ പേയ്‌മെന്റുകൾ സ്വീകരിക്കുന്നതിന് പേയ്‌മെന്റ് ദാതാക്കളെ ബന്ധിപ്പിക്കുക.",
+    errorTitle: "പിശക്",
+    errorDescription:
+      "പേയ്‌മെന്റ് ക്രമീകരണങ്ങൾ ലോഡ് ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു. പിന്നീട് വീണ്ടും ശ്രമിക്കുക.",
+    stripeDescription:
+      "ക്രെഡിറ്റ് കാർഡുകൾ, ഡെബിറ്റ് കാർഡുകൾ, ജനപ്രിയ പേയ്‌മെന്റ് രീതികൾ എന്നിവ സ്വീകരിക്കുക.",
+    connectedTo: "ബന്ധിപ്പിച്ചിരിക്കുന്നു",
+    connected: "ബന്ധിപ്പിച്ചു",
+    stripeAccountFallback: "സ്ട്രൈപ്പ് അക്കൗണ്ട്",
+    chargesEnabled: "ചാർജുകൾ പ്രവർത്തനക്ഷമമാക്കി",
+    connectStripe: "കണക്റ്റ് സ്ട്രൈപ്പ്",
+    connecting: "ബന്ധിപ്പിക്കുന്നു...",
+    disconnect: "വിച്ഛേദിക്കുക",
+    disconnecting: "വിച്ഛേദിക്കുന്നു...",
+    featuresTitle: "സവിശേഷതകളും നേട്ടങ്ങളും",
+    helpTitle: "സഹായം ആവശ്യമുണ്ട്?",
+    helpDescription:
+      "പേയ്‌മെന്റ് പ്രോസസ്സിംഗ് സജ്ജീകരിക്കുന്നതിന് നിങ്ങൾക്ക് സഹായം ആവശ്യമുണ്ടെങ്കിൽ അല്ലെങ്കിൽ ഫീസുകളെയും കഴിവുകളെയും കുറിച്ച് ചോദ്യങ്ങളുണ്ടെങ്കിൽ:",
+    viewDocumentation: "ഡോക്യുമെന്റേഷൻ കാണുക",
+    contactSupport: "പിന്തുണയെ ബന്ധപ്പെടുക",
+    disconnectDialogTitle: "സ്ട്രൈപ്പ് അക്കൗണ്ട് വിച്ഛേദിക്കുക",
+    disconnectDialogDescription:
+      "നിങ്ങളുടെ സ്ട്രൈപ്പ് അക്കൗണ്ട് വിച്ഛേദിക്കണമെന്ന് തീർച്ചയാണോ? വീണ്ടും കണക്റ്റ് ചെയ്യുന്നതുവരെ നിങ്ങൾക്ക് സ്ട്രൈപ്പ് വഴി പേയ്‌മെന്റുകൾ സ്വീകരിക്കാൻ കഴിയില്ല.",
+    disconnectPaymentModeDescription:
+      "%{paymentMode} പേയ്‌മെന്റ് ഗേറ്റ്‌വേ വിച്ഛേദിക്കണമെന്ന് നിങ്ങൾക്ക് ഉറപ്പാണോ? നിങ്ങൾ ഒരു %{paymentMode} അക്കൗണ്ട് കണക്റ്റുചെയ്യുന്നതുവരെ %{paymentMode} വഴി പേയ്‌മെന്റുകൾ സ്വീകരിക്കാൻ കഴിയില്ല.",
+    features: {
+      secureTitle: "സുരക്ഷിത പേയ്‌മെന്റുകൾ",
+      secureDescription: "പിസിഐ-അനുയോജ്യമായ പേയ്‌മെന്റ് പ്രോസസ്സിംഗ്",
+      currenciesTitle: "ഒന്നിലധികം കറൻസികൾ",
+      currenciesDescription: "135+ കറൻസികളിൽ പേയ്‌മെന്റുകൾ സ്വീകരിക്കുക",
+      methodsTitle: "വിവിധ പേയ്‌മെന്റ് രീതികൾ",
+      methodsDescription:
+        "കാർഡുകൾ, വാലറ്റുകൾ, ബാങ്ക് ട്രാൻസ്ഫറുകൾ എന്നിവയും മറ്റും",
+      setupTitle: "തൽക്ഷണ സജ്ജീകരണം",
+      setupDescription: "മിനിറ്റുകൾക്കുള്ളിൽ പേയ്‌മെന്റുകൾ സ്വീകരിച്ചു തുടങ്ങൂ",
+    },
+  },
+  organizationSettingsPage: {
+    actions: {
+      editSettings: "ക്രമീകരണങ്ങൾ എഡിറ്റ് ചെയ്യുക",
+    },
+    sections: {
+      companyProfile: "കമ്പനി പ്രൊഫൈൽ",
+      financial: "സാമ്പത്തികം",
+      scheduleAndTime: "ഷെഡ്യൂളും സമയവും",
+      workingHours: "പ്രവൃത്തി സമയം",
+    },
+    fields: {
+      businessPhone: "ബിസിനസ് ഫോൺ",
+      currency: "കറൻസി",
+      businessAddress: "ബിസിനസ്സ് വിലാസം",
+      standardRate: "സ്റ്റാൻഡേർഡ് നിരക്ക്",
+      fiscalYearEnd: "സാമ്പത്തിക വർഷാവസാനം",
+      timezone: "സമയമേഖല",
+      dateFormat: "തീയതി ഫോർമാറ്റ്",
+      workingDays: "പ്രവൃത്തി ദിവസങ്ങൾ",
+    },
+    status: {
+      active: "സജീവം",
+    },
+    defaults: {
+      companyName: "കമ്പനി പേര്",
+      locationNotSet: "സ്ഥലം സജ്ജീകരിച്ചിട്ടില്ല.",
+      notConfigured: "കോൺഫിഗർ ചെയ്തിട്ടില്ല",
+      noAddress: "വിലാസമൊന്നും കോൺഫിഗർ ചെയ്തിട്ടില്ല.",
+      workingHours: "രാവിലെ 9:00 - വൈകുന്നേരം 5:00",
+      workingDays: "തിങ്കൾ - വെള്ളി",
+      timezone: "യുടിസി",
+      dateFormat: "മാസം/ദിവസം/വർഷം",
+    },
+    errors: {
+      loadFailed: "സ്ഥാപന വിശദാംശങ്ങൾ ലോഡ് ചെയ്യാനായില്ല. വീണ്ടും ശ്രമിക്കുക.",
+    },
+    ratePerHour: "/ മണിക്കൂർ",
+  },
+  billingSettings: {
+    membership: "അംഗത്വം",
+    currentPlan: "നിലവിലെ പ്ലാൻ",
+    seatUsage: "സീറ്റ് ഉപയോഗം",
+    billingCadence: "ബില്ലിംഗ് ആവൃത്തി",
+    monthly: "പ്രതിമാസം",
+    yearly: "വാർഷികം",
+    notSubscribedYet: "ഇതുവരെ സബ്‌സ്‌ക്രൈബ് ചെയ്തിട്ടില്ല",
+    startTrial: "30 ദിവസത്തെ പ്രോ ട്രയൽ ആരംഭിക്കൂ",
+    startingTrial: "ട്രയൽ ആരംഭിക്കുന്നു...",
+    upgradeWithStripe: "സ്ട്രൈപ്പ് ഉപയോഗിച്ച് അപ്‌ഗ്രേഡ് ചെയ്യുക",
+    openingStripe: "ഓപ്പണിംഗ് സ്ട്രൈപ്പ്...",
+    manageBillingInStripe: "സ്ട്രൈപ്പിൽ ബില്ലിംഗ് കൈകാര്യം ചെയ്യുക",
+    openingPortal: "പോർട്ടൽ തുറക്കുന്നു...",
+    saveTwoMonths: "വർഷത്തിൽ രണ്ട് മാസം ലാഭിക്കൂ",
+    heroTitle:
+      "ഇപ്പോൾ യോജിക്കുന്ന പാക്കേജ് തിരഞ്ഞെടുക്കുക. കൂടുതൽ ആവശ്യമുണ്ടെങ്കിൽ പിന്നീട് മാറ്റുക.",
+    howManySeats: "എത്ര സീറ്റുകൾ വേണമെന്നാണ് നിങ്ങൾ പ്രതീക്ഷിക്കുന്നത്?",
+    estimatedSeats: "കണക്കാക്കിയ സീറ്റുകൾ",
+    recommended: "ശുപാർശ ചെയ്ത",
+    estimatedProSpend: "കണക്കാക്കിയ പ്രോ ചെലവ്",
+    yearlyDiscount: "വാർഷിക കിഴിവ്",
+    openSource: "ഓപ്പൺ സോഴ്‌സ്",
+    annual: "വാർഷികം",
+    service: "സേവനം",
+    poweredByStripe: "സ്ട്രൈപ്പ് നൽകുന്ന",
+    changePlansAnytime: "എപ്പോൾ വേണമെങ്കിലും പ്ലാനുകൾ മാറ്റുക",
+    checkoutPoweredByStripe:
+      "ചെക്ക്ഔട്ടും സബ്‌സ്‌ക്രിപ്‌ഷൻ മാനേജ്‌മെന്റും സ്ട്രൈപ്പ് ഉപയോഗിച്ചാണ് നടത്തുന്നത്.",
+    noSalesCall:
+      "പ്രോയ്ക്ക് വിൽപ്പന കോളുകളൊന്നുമില്ല. എപ്പോൾ വേണമെങ്കിലും സ്ട്രൈപ്പിലെ പ്ലാനുകൾ റദ്ദാക്കുകയോ മാറ്റുകയോ ചെയ്യുക.",
+    reportsAndAnalytics: "റിപ്പോർട്ടുകളും വിശകലനങ്ങളും",
+    customAnnual: "വാർഷിക ഇഷ്ടാനുസൃതം",
+    seatsUsed: "%{used}/%{total} സീറ്റുകൾ ഉപയോഗിച്ചു",
+    seatsUsedWithoutLimit: "%{used} സീറ്റുകൾ ഉപയോഗിച്ചു",
+    savePerYear: "$%{amount}/വർഷം ലാഭിക്കൂ",
+    effectiveMonthlyPricing:
+      "ഏകദേശം $%{amount}/മാസം പ്രാബല്യത്തിലുള്ള വിലനിർണ്ണയം",
+    cancelOrUpgradeAnytime:
+      "സ്ട്രൈപ്പിൽ എപ്പോൾ വേണമെങ്കിലും റദ്ദാക്കുക അല്ലെങ്കിൽ അപ്‌ഗ്രേഡ് ചെയ്യുക.",
+    planCadence: {
+      monthly: "മാസംതോറും ബിൽ ചെയ്തു",
+      yearlySavings: "ഓരോ സീറ്റിനും 2 മാസം ലാഭിക്കൂ",
+    },
+    alerts: {
+      subscriptionUpdatedTitle: "സബ്‌സ്‌ക്രിപ്‌ഷൻ അപ്‌ഡേറ്റ് ചെയ്‌തു",
+      subscriptionUpdated:
+        "നിങ്ങളുടെ പ്ലാൻ സ്ട്രൈപ്പിൽ വിജയകരമായി അപ്ഡേറ്റ് ചെയ്തു.",
+      checkoutCancelled: "ചെക്ക്ഔട്ട് റദ്ദാക്കി",
+      noSubscriptionChanges:
+        "നിങ്ങളുടെ സബ്‌സ്‌ക്രിപ്‌ഷനിൽ മാറ്റങ്ങളൊന്നും വരുത്തിയിട്ടില്ല.",
+      unableToLoad: "ബില്ലിംഗ് വിശദാംശങ്ങൾ ലോഡ് ചെയ്യാനായില്ല.",
+      proTrialActive: "പ്രോ ട്രയൽ സജീവമാണ്",
+      proTrialActiveUntil:
+        "നിങ്ങളുടെ വർക്ക്‌സ്‌പെയ്‌സിന് %{date} വരെ പ്രോ ആക്‌സസ് ഉണ്ട്.",
+      proTrialEnded: "പ്രോ ട്രയൽ അവസാനിച്ചു",
+      proTrialEndedDescription:
+        "നിങ്ങളുടെ വർക്ക്‌സ്‌പെയ്‌സ് സൗജന്യ പ്ലാനിലേക്ക് തിരിച്ചെത്തിയിരിക്കുന്നു. പ്രോ ആക്‌സസ് പുനഃസ്ഥാപിക്കാൻ സ്ട്രൈപ്പിൽ അപ്‌ഗ്രേഡ് ചെയ്യുക.",
+      seatLimitReached: "സീറ്റ് പരിധി എത്തി",
+      seatLimitReachedDescription:
+        "ഈ വർക്ക്‌സ്‌പെയ്‌സിലേക്ക് 3-ൽ കൂടുതൽ അംഗങ്ങളെ ചേർക്കാൻ സ്ട്രൈപ്പിൽ അപ്‌ഗ്രേഡ് ചെയ്യുക.",
+    },
+    errors: {
+      unableToOpenStripeCheckout:
+        "സ്ട്രൈപ്പ് ചെക്ക്ഔട്ട് തുറക്കാൻ കഴിയുന്നില്ല.",
+      unableToOpenStripeBillingPortal:
+        "സ്ട്രൈപ്പ് ബില്ലിംഗ് പോർട്ടൽ തുറക്കാൻ കഴിയുന്നില്ല.",
+      unableToStartProTrial: "നിങ്ങളുടെ Pro ട്രയൽ ആരംഭിക്കാൻ കഴിയുന്നില്ല.",
+    },
+    recommendations: {
+      freeTitle: "നിങ്ങൾക്ക് നിയന്ത്രണങ്ങൾ ആവശ്യമുള്ളത് വരെ സൗജന്യമായി തുടരുക.",
+      freeDescription:
+        "വളരെ ചെറിയ ടീമുകൾക്ക് സൗജന്യം നന്നായി പ്രവർത്തിക്കുന്നു. നിങ്ങൾക്ക് SSO, ശക്തമായ റിപ്പോർട്ടുകൾ, 3 സീറ്റിൽ കൂടുതൽ എന്നിവ ആവശ്യമുള്ളപ്പോൾ പ്രോയിലേക്ക് മാറുക.",
+      proTitle: "പ്രോ ആണ് ശരിയായ ഫിറ്റ്",
+      proDescription:
+        "വളരുന്ന ടീമുകൾക്ക്, പ്രോ നിങ്ങൾക്ക് SSO, ധനകാര്യ ദൃശ്യപരത, എന്റർപ്രൈസ് ഓവർഹെഡ് ഇല്ലാതെ സ്കെയിൽ ചെയ്യാൻ മതിയായ ഇടം എന്നിവ നൽകുന്നു.",
+      enterpriseTitle: "എന്റർപ്രൈസിനെക്കുറിച്ച് ഞങ്ങളോട് സംസാരിക്കൂ",
+      enterpriseDescription:
+        "വലിയ ടീമുകൾക്ക് സാധാരണയായി സംഭരണ പിന്തുണ, അഡ്മിൻ നിയന്ത്രണങ്ങൾ, സുഗമമായ റോൾഔട്ട് എന്നിവ ആവശ്യമാണ്. പ്രോയിൽ നിന്ന് ആരംഭിക്കുക അല്ലെങ്കിൽ നേരെ എന്റർപ്രൈസിലേക്ക് മാറുക.",
+    },
+    highlights: {
+      seatsTitle: "അഡ്മിൻ ബുദ്ധിമുട്ടില്ലാതെ കൂടുതൽ സീറ്റുകൾ",
+      seatsDescription:
+        "3 സീറ്റ് സൗജന്യ പരിധി മറികടന്ന് ഓൺബോർഡിംഗ് ലളിതമായി തുടരുക.",
+      ssoTitle: "SSO-യും കൂടുതൽ ശക്തമായ നിയന്ത്രണങ്ങളും",
+      ssoDescription:
+        "അധിക ഉപകരണങ്ങൾ ഇല്ലാതെ വളരുന്ന ടീമുകൾക്ക് സുരക്ഷിതമായ ആക്‌സസ് നൽകുക.",
+      financeTitle: "ശാന്തമായി തുടരുന്ന സാമ്പത്തിക ദൃശ്യപരത",
+      financeDescription:
+        "അധിക സജ്ജീകരണമില്ലാതെ തന്നെ മാർജിൻ, ബില്ലിംഗ് കേഡൻസ്, ടീം ഉപയോഗം എന്നിവ അറിയുക.",
+    },
+    planDescriptions: {
+      free: "കോർ ട്രാക്കിംഗ്, ഇൻവോയ്‌സിംഗ്, പേയ്‌മെന്റുകൾ, പരമാവധി 3 ടീം സീറ്റുകൾ എന്നിവയുള്ള മിരു സ്വയം ഹോസ്റ്റ് ചെയ്യുക.",
+      pro: "എന്റർപ്രൈസ് ഓവർഹെഡ് ഇല്ലാതെ റിപ്പോർട്ടുകൾ, SSO, കൂടുതൽ സീറ്റുകൾ, ശാന്തമായ അഡ്മിൻ നിയന്ത്രണങ്ങൾ എന്നിവ Pro ചേർക്കുന്നു.",
+      enterprise:
+        "സംഭരണ-സൗഹൃദ കരാറുകൾ, വിപുലമായ നിയന്ത്രണങ്ങൾ, സുരക്ഷാ അവലോകനം ആവശ്യമുള്ള വലിയ ടീമുകൾക്കുള്ള പിന്തുണ.",
+      hostedEnterprise:
+        "ഒരു പ്രത്യേക സജ്ജീകരണത്തിൽ ഞങ്ങൾ നിങ്ങൾക്കായി മിരുവിനെ ഹോസ്റ്റ് ചെയ്യുകയും അപ്‌ഗ്രേഡ് ചെയ്യുകയും ബാക്കപ്പ് ചെയ്യുകയും പിന്തുണയ്ക്കുകയും ചെയ്യുന്നു.",
+    },
+    planBullets: {
+      free: {
+        coreProduct: "സ്വയം ഹോസ്റ്റ് ചെയ്ത കോർ ഉൽപ്പന്നം",
+        tracking: "സമയ ട്രാക്കിംഗ്, ഇൻവോയ്‌സുകൾ, പേയ്‌മെന്റുകൾ",
+        dashboard: "ഒരു ചെറിയ ടീമിനുള്ള ഡാഷ്‌ബോർഡ് ദൃശ്യപരത",
+      },
+      pro: {
+        trial: "പണമടയ്ക്കുന്നതിന് മുമ്പ് 30 ദിവസത്തെ സൗജന്യ ട്രയൽ",
+        sso: "SSO, വിപുലമായ റിപ്പോർട്ടിംഗ്, ശക്തമായ അഡ്മിൻ നിയന്ത്രണങ്ങൾ",
+        fit: "ഏജൻസികൾക്കും വളരുന്ന ടീമുകൾക്കും ഏറ്റവും അനുയോജ്യം",
+      },
+      enterprise: {
+        contracts: "സംഭരണ സൗഹൃദ കരാറുകൾ",
+        onboarding: "സുരക്ഷാ അവലോകനവും ഓൺബോർഡിംഗ് പിന്തുണയും",
+        compliance: "അംഗീകാരവും അനുസരണ ആവശ്യങ്ങളും ഉള്ള വലിയ ടീമുകൾക്ക്",
+      },
+      hosted: {
+        setup: "സമർപ്പിത മാനേജ്ഡ് സജ്ജീകരണം",
+        operations:
+          "അപ്‌ഗ്രേഡുകൾ, ബാക്കപ്പുകൾ, പിന്തുണ എന്നിവ ഞങ്ങൾ കൈകാര്യം ചെയ്യുന്നു.",
+        fit: "മിരു പൂർണ്ണമായും പ്രവർത്തിക്കണമെന്ന് ആഗ്രഹിക്കുന്ന ടീമുകൾക്ക്",
+      },
+    },
+    heroDescription:
+      "സൗജന്യമായി ആരംഭിക്കുക, ടീമിന് കൂടുതൽ നിയന്ത്രണം ആവശ്യമുള്ളപ്പോൾ പ്രോയിലേക്ക് മാറുക, അല്ലെങ്കിൽ നിങ്ങൾക്കായി മിരു പ്രവർത്തിപ്പിക്കാൻ ഞങ്ങളെ അനുവദിക്കുക. പ്രോ വിലകുറഞ്ഞതായി തുടരുന്നു, വർഷം തോറും യഥാർത്ഥ പണം ലാഭിക്കുന്നു, ചെക്ക്ഔട്ടും സബ്‌സ്‌ക്രിപ്‌ഷൻ മാനേജ്‌മെന്റും സ്ട്രൈപ്പ് നൽകുന്നതിനാൽ ബില്ലിംഗ് ലളിതമാണ്.",
+    seatEstimatorDescription:
+      "ഫ്രീ vs പ്രോ താരതമ്യം ചെയ്ത് പ്രതിമാസമോ വാർഷികമോ കൂടുതൽ അർത്ഥവത്താണോ എന്ന് തീരുമാനിക്കാൻ ഇത് ഉപയോഗിക്കുക.",
+    yearlyDiscountDescription:
+      "പ്രതിമാസ നിരക്കുമായി താരതമ്യം ചെയ്യുമ്പോൾ സീറ്റിന് രണ്ട് മാസം സൗജന്യം.",
+    checkoutDescription:
+      "വിൽപ്പന പ്രക്രിയയില്ലാതെ ട്രയൽ ആരംഭിക്കുക, നിങ്ങൾ തയ്യാറാകുമ്പോൾ അപ്‌ഗ്രേഡ് ചെയ്യുക, ആവശ്യമുള്ളപ്പോഴെല്ലാം ബില്ലിംഗ് സ്വയം കൈകാര്യം ചെയ്യുക.",
+    plans: {
+      unknown: "അജ്ഞാതം",
+      free: "സൗ ജന്യം",
+      freePro: "സൗജന്യ പ്രോ",
+      proTrial: "പ്രോ ട്രയൽ",
+      paid: "പണമടച്ചു",
+      enterprise: "എന്റർപ്രൈസ്",
+      hostedEnterprise: "ഹോസ്റ്റഡ് എന്റർപ്രൈസ്",
+    },
+    table: {
+      feature: "സവിശേഷത",
+      bestFor: "ഏറ്റവും അനുയോജ്യം",
+      selfHostedTeams: "സ്വയം ആതിഥേയത്വം വഹിക്കുന്ന ടീമുകൾ ആരംഭിക്കുന്നു",
+      growingServiceTeams: "നിയന്ത്രണങ്ങൾ ആവശ്യമുള്ള വളർന്നുവരുന്ന സേവന ടീമുകൾ",
+      largeOrgs: "സുരക്ഷയും സംഭരണവും ആവശ്യമുള്ള വലിയ സ്ഥാപനങ്ങൾ",
+      managedTeams: "മിരുവിനെ നിയന്ത്രിക്കണമെന്ന് ആഗ്രഹിക്കുന്ന ടീമുകൾ",
+      timeTracking: "സമയ ട്രാക്കിംഗ്",
+      invoicesAndPayments: "ഇൻവോയ്‌സുകളും പേയ്‌മെന്റുകളും",
+      reportsAndDashboards: "റിപ്പോർട്ടുകളും ഡാഷ്‌ബോർഡുകളും",
+      sso: "എസ്.എസ്.ഒ.",
+      auditAndAdminControls: "ഓഡിറ്റും അഡ്മിൻ നിയന്ത്രണങ്ങളും",
+      support: "പിന്തുണ",
+      included: "ഉൾപ്പെടുത്തിയിരിക്കുന്നു",
+      notIncluded: "ഉൾപ്പെടുത്തിയിട്ടില്ല",
+      dashboardOnly: "ഡാഷ്‌ബോർഡ് മാത്രം",
+      reportsAndAnalytics: "റിപ്പോർട്ടുകളും വിശകലനങ്ങളും",
+      community: "സമൂഹം",
+      priorityEmail: "മുൻഗണനാ ഇമെയിൽ",
+      priorityOnboarding: "മുൻഗണന + ഓൺബോർഡിംഗ്",
+      managedOnboarding: "മാനേജ്ഡ് സർവീസ് + ഓൺബോർഡിംഗ്",
+    },
+  },
+  twoFactor: {
+    title: "ഓതന്റിക്കേറ്റർ ആപ്പ് 2FA",
+    addTitle: "ഒരു ഓതന്റിക്കേറ്റർ ആപ്പ് ചേർക്കുക",
+    addDescription:
+      "Google Authenticator, 1Password, Bitwarden, Authy, അല്ലെങ്കിൽ ഏതെങ്കിലും TOTP-അനുയോജ്യമായ ആപ്പ് ഉപയോഗിക്കുക.",
+    setupAction: "2FA സജ്ജീകരിക്കുക",
+    finishTitle: "ഓതന്റിക്കേറ്റർ സജ്ജീകരണം പൂർത്തിയാക്കുക",
+    finishDescription:
+      "നിങ്ങളുടെ ഓതന്റിക്കേറ്റർ ആപ്പിലേക്ക് ഈ കീ ചേർക്കുക, തുടർന്ന് 2FA പ്രവർത്തനക്ഷമമാക്കാൻ നിലവിലുള്ള 6 അക്ക കോഡ് നൽകുക.",
+    manualEntryKey: "മാനുവൽ എൻട്രി കീ",
+    verificationCode: "പരിശോധിച്ചുറപ്പിക്കൽ കോഡ്",
+    verificationCodePlaceholder: "123456, предельный закладный зак",
+    enableAction: "2FA പ്രാപ്തമാക്കുക",
+    resetKeyAction: "കീ പുനഃസജ്ജമാക്കുക",
+    enabledTitle: "ഓതന്റിക്കേറ്റർ ആപ്പ് പരിരക്ഷ ഓണാണ്",
+    enabledDescription:
+      "സൈൻ ഇൻ ചെയ്യുമ്പോൾ നിങ്ങളുടെ പാസ്‌വേഡിന് ശേഷം ഒരു ഓതന്റിക്കേറ്റർ കോഡ് ആവശ്യമായി വരും.",
+    recoveryCodesAvailable: "%{count} വീണ്ടെടുക്കൽ കോഡുകൾ ലഭ്യമാണ്",
+    regenerateRecoveryCodes: "വീണ്ടെടുക്കൽ കോഡുകൾ പുനരുജ്ജീവിപ്പിക്കുക",
+    disableAction: "2FA പ്രവർത്തനരഹിതമാക്കുക",
+    saveRecoveryCodes: "ഈ വീണ്ടെടുക്കൽ കോഡുകൾ സംരക്ഷിക്കുക",
+    saveRecoveryCodesDescription:
+      "ഓരോ കോഡും ഒരിക്കൽ മാത്രമേ പ്രവർത്തിക്കൂ. അവ എവിടെയെങ്കിലും സുരക്ഷിതമായി സൂക്ഷിക്കുക.",
+    setupReadySuccess: "ഓതന്റിക്കേറ്റർ ആപ്പ് സജ്ജീകരണം തയ്യാറാണ്",
+    enabledSuccess: "ഓതന്റിക്കേറ്റർ ആപ്പ് പ്രവർത്തനക്ഷമമാക്കി",
+    disabledSuccess: "ഓതന്റിക്കേറ്റർ ആപ്പ് പ്രവർത്തനരഹിതമാക്കി",
+    regeneratedSuccess: "വീണ്ടെടുക്കൽ കോഡുകൾ പുനഃസൃഷ്ടിച്ചു",
+    setupFailed: "2FA സജ്ജീകരണം ആരംഭിക്കുന്നതിൽ പരാജയപ്പെട്ടു.",
+    enableFailed: "ഓതന്റിക്കേറ്റർ ആപ്പ് പ്രവർത്തനക്ഷമമാക്കാനായില്ല.",
+    disableFailed: "2FA പ്രവർത്തനരഹിതമാക്കുന്നതിൽ പരാജയപ്പെട്ടു.",
+    regenerateFailed: "വീണ്ടെടുക്കൽ കോഡുകൾ പുനഃസൃഷ്ടിക്കുന്നതിൽ പരാജയപ്പെട്ടു.",
+  },
   leaveManagement: {
     leaveBalance: "ലീവ് ബാലൻസ്",
     applyLeave: "ലീവിന് അപേക്ഷിക്കുക",
@@ -1353,9 +1766,59 @@ const ml = {
     leave: "ലീവ്",
     nationalHoliday: "ദേശീയ അവധിദിനം",
     optionalHoliday: "ഐച്ഛിക അവധിദിനം",
+    leaveTypeUtilized: "%{name} ഉപയോഗിച്ചു",
+    leaveTypeAvailable: "%{name} ലഭ്യമാണ്",
+    outOf: "പുറത്ത്",
+    thisQuarter: "ഈ പാദം",
+    thisYear: "ഈ വര്ഷം",
+    thisMonth: "ഈ മാസം",
+    thisWeek: "ഈ ആഴ്ച",
+    summaryLabel: "സംഗ്രഹം വിടുക",
+    summaryDescription:
+      "തിരഞ്ഞെടുത്ത വർഷത്തേക്കുള്ള ലഭ്യമായ അവധി, ഇതിനകം എടുത്ത സമയം, അവധിക്കാല ഉപയോഗം എന്നിവ ഒരിടത്ത് കാണുക.",
+    balanceUntil: "%{date} വരെ ബാലൻസ്",
   },
-
-  // Subscriptions / Plan Details
+  notificationPreferences: {
+    emailNotifications: "ഇമെയിൽ അറിയിപ്പുകൾ",
+    manageDescription: "നിങ്ങളുടെ ഇമെയിൽ അറിയിപ്പ് മുൻഗണനകൾ കൈകാര്യം ചെയ്യുക",
+    weeklyEmailReminder: "പ്രതിവാര ഇമെയിൽ ഓർമ്മപ്പെടുത്തൽ",
+    weeklyEmailReminderDescription:
+      "ടൈംഷീറ്റ് എൻട്രികളെയും പ്രോജക്റ്റ് അപ്‌ഡേറ്റുകളെയും കുറിച്ചുള്ള ആഴ്ചതോറുമുള്ള ഇമെയിൽ ഓർമ്മപ്പെടുത്തലുകൾ സ്വീകരിക്കുക.",
+    noUserData: "ഉപയോക്തൃ ഡാറ്റ ലഭ്യമല്ല.",
+    loginPrompt: "അറിയിപ്പ് മുൻഗണനകൾ കൈകാര്യം ചെയ്യാൻ ലോഗിൻ ചെയ്യുക.",
+  },
+  devices: {
+    addDevices: "ഉപകരണങ്ങൾ ചേർക്കുക",
+    editDevices: "ഉപകരണങ്ങൾ എഡിറ്റ് ചെയ്യുക",
+    device: "ഉപകരണം",
+    unknownDevice: "അജ്ഞാത ഉപകരണം",
+    serial: "സീരിയൽ:",
+    deviceType: "ഉപകരണ തരം",
+    selectDeviceType: "ഉപകരണ തരം തിരഞ്ഞെടുക്കുക",
+    modelName: "മോഡൽ/പേര്",
+    serialNumber: "സീരിയൽ നമ്പർ",
+    memory: "മെമ്മറി (റാം)",
+    processor: "പ്രോസസ്സർ",
+    graphics: "ഗ്രാഫിക്സ്",
+    graphicsCard: "ഗ്രാഫിക്സ് കാർഡ്",
+    storage: "സംഭരണം",
+    modelNamePlaceholder: "ഉദാ., മാക്ബുക്ക് പ്രോ 16-ഇഞ്ച്",
+    serialNumberPlaceholder: "ഉദാ., C02XX1234567",
+    memoryPlaceholder: "ഉദാ., 16GB DDR4",
+    processorPlaceholder: "ഉദാ., ഇന്റൽ കോർ i7-10750H",
+    graphicsPlaceholder: "ഉദാ., NVIDIA GeForce RTX 3060",
+    storagePlaceholder: "ഉദാ., 512GB SSD",
+    addAnotherDevice: "മറ്റൊരു ഉപകരണം ചേർക്കുക",
+    addAnotherDeviceDescription:
+      "നിങ്ങളുടെ ഇൻവെന്ററിയിലേക്ക് ഒരു പുതിയ ഉപകരണം ചേർക്കാൻ ക്ലിക്ക് ചെയ്യുക",
+    deviceSummary: "ഉപകരണ സംഗ്രഹം",
+    totalDevices: "ആകെ ഉപകരണങ്ങൾ",
+    notSpecified: "വ്യക്തമാക്കിയിട്ടില്ല",
+    noDevicesFound: "ഉപകരണങ്ങളൊന്നും കണ്ടെത്തിയില്ല",
+    newDevice: "പുതിയ ഉപകരണം",
+    unsavedChangesPrompt:
+      "നിങ്ങൾക്ക് സംരക്ഷിക്കാത്ത മാറ്റങ്ങളുണ്ട്. റദ്ദാക്കണമെന്ന് തീർച്ചയാണോ?",
+  },
   subscriptions: {
     currentPlan: "നിലവിലെ പ്ലാൻ",
     upgradePlan: "പ്ലാൻ അപ്‌ഗ്രേഡ് ചെയ്യുക",
@@ -1376,8 +1839,6 @@ const ml = {
     plusTaxes: "നികുതി കൂടാതെ",
     reviewAndPay: "അവലോകനം ചെയ്ത് പേയ് ചെയ്യുക",
   },
-
-  // Misc
   switchToMode: "%{mode} മോഡിലേക്ക് മാറുക",
   light: "ലൈറ്റ്",
   dark: "ഡാർക്ക്",
@@ -1387,8 +1848,6 @@ const ml = {
   editLabel: "എഡിറ്റ്",
   noPasskeyResponse: "പാസ്‌കീ പ്രതികരണം ലഭിച്ചില്ല.",
   passkeysNotSupported: "ഈ ബ്രൗസറിൽ പാസ്‌കീകൾ പിന്തുണയ്ക്കുന്നില്ല.",
-
-  // Table headers (common)
   tableHeaders: {
     invoiceNo: "ഇൻവോയ്‌സ് നം.",
     invoiceNumber: "ഇൻവോയ്‌സ് നമ്പർ",
@@ -1408,15 +1867,343 @@ const ml = {
     role: "റോൾ",
     type: "തരം",
   },
-
-  // Relative dates
   nextDay: "അടുത്ത %{day}",
   lastDay: "കഴിഞ്ഞ %{day}",
-
-  // Duration formatting
-  durationMinutes: "%{mins}m",
-  durationHours: "%{hours}h",
-  durationHoursMinutes: "%{hours}h %{mins}m",
+  durationMinutes: "%{mins}മി",
+  durationHours: "%{hours}മണിക്കൂർ",
+  durationHoursMinutes: "%{hours}മണിക്കൂർ %{mins}മിനിറ്റ്",
+  common: {
+    retry: "വീണ്ടും ശ്രമിക്കുക",
+    pageUnavailable:
+      "ഈ പേജ് ലഭ്യമല്ല അല്ലെങ്കിൽ ലിങ്ക് നിങ്ങളുടെ വർക്ക്‌സ്പേസിന് ഇനി സാധുവല്ല.",
+    goToDashboard: "ഡാഷ്‌ബോർഡിലേക്ക് പോകുക",
+    language: "ഭാഷ",
+    loading: "ലോഡ് ചെയ്യുന്നു...",
+    saving: "സംരക്ഷിക്കുന്നു...",
+    failedToChangeLanguage: "ഭാഷ മാറ്റുന്നതിൽ പരാജയപ്പെട്ടു",
+    searchLanguages: "ഭാഷകൾ തിരയുക...",
+    noLanguagesFound: "ഭാഷകളൊന്നും കണ്ടെത്തിയില്ല.",
+  },
+  auth: {
+    signIn: {
+      title: "നിങ്ങളുടെ വർക്ക്‌സ്‌പെയ്‌സിലേക്ക് സൈൻ ഇൻ ചെയ്യുക",
+      description:
+        "ജോലി ട്രാക്ക് ചെയ്യുക, ഇൻവോയ്‌സുകൾ അയയ്ക്കുക, ഒരിടത്ത് നിന്ന് പണമൊഴുക്ക് വ്യക്തമായി നിലനിർത്തുക.",
+      continueWithGoogle: "Google-ൽ തുടരുക",
+      continueWithGitHub: "GitHub-ൽ തുടരുക",
+      orUseEmail: "അല്ലെങ്കിൽ ഇമെയിൽ ഉപയോഗിക്കുക",
+      email: "ഇമെയിൽ",
+      password: "പാസ്‌വേഡ്",
+      submit: "സൈൻ ഇൻ",
+      forgotPassword: "പാസ്വേഡ് മറന്നോ?",
+      noAccount: "അക്കൗണ്ട് ഇല്ലേ?",
+      signUp: "സൈൻ അപ്പ് ചെയ്യുക",
+      privacy: "സ്വകാര്യത",
+      terms: "നിബന്ധനകൾ",
+      loginFailed: "ലോഗിൻ പരാജയപ്പെട്ടു. വീണ്ടും ശ്രമിക്കുക.",
+      welcomeBack: "തിരികെ സ്വാഗതം!",
+      waitingForPasskey: "പാസ്‌കീയ്ക്കായി കാത്തിരിക്കുന്നു...",
+      passkeyPrompt: "സൈൻ ഇൻ ചെയ്യാൻ നിങ്ങളുടെ പാസ്‌കീ ഉപയോഗിക്കുക",
+      totpTitle: "രണ്ട്-ഘടക പ്രാമാണീകരണം",
+      totpPrompt: "നിങ്ങളുടെ ഓതന്റിക്കേറ്റർ ആപ്പിൽ നിന്നുള്ള കോഡ് നൽകുക",
+      totpDescription:
+        "നിങ്ങളുടെ ഓതന്റിക്കേറ്റർ ആപ്പ് തുറന്ന് 6 അക്ക കോഡ് നൽകുക",
+      totpCode: "പ്രാമാണീകരണ കോഡ്",
+      verifyAndSignIn: "പരിശോധിച്ചുറപ്പിച്ച് സൈൻ ഇൻ ചെയ്യുക",
+      recoveryCode: "പകരം ഒരു വീണ്ടെടുക്കൽ കോഡ് ഉപയോഗിക്കുക",
+      back: "തിരികെ",
+    },
+    signUp: {
+      title: "നിങ്ങളുടെ വർക്ക്‌സ്‌പെയ്‌സ് സൃഷ്ടിക്കുക",
+      description:
+        "ക്ലയന്റുകൾ, പ്രോജക്ടുകൾ, ഇൻവോയ്‌സുകൾ, പേയ്‌മെന്റുകൾ എന്നിവ ഒരു വ്യക്തമായ ഓപ്പറേറ്റിംഗ് സിസ്റ്റത്തിൽ സജ്ജീകരിക്കുക.",
+      continueWithGoogle: "Google-ൽ തുടരുക",
+      continueWithGitHub: "GitHub-ൽ തുടരുക",
+      orUseEmail: "അല്ലെങ്കിൽ ഇമെയിൽ ഉപയോഗിക്കുക",
+      firstName: "പേരിന്റെ ആദ്യഭാഗം",
+      lastName: "പേരിന്റെ അവസാന ഭാഗം",
+      email: "ഇമെയിൽ",
+      password: "പാസ്‌വേഡ്",
+      confirmPassword: "പാസ്വേഡ് സ്ഥിരീകരിക്കുക",
+      passwordCriteria:
+        "ഒരു വലിയക്ഷരം, ഒരു ചെറിയക്ഷരം, ഒരു സംഖ്യ എന്നിവയുൾപ്പെടെ കുറഞ്ഞത് 8 പ്രതീകങ്ങളെങ്കിലും",
+      submit: "അക്കൗണ്ട് സൃഷ്ടിക്കുക",
+      alreadyHaveAccount: "ഇതിനകം ഒരു അക്കൗണ്ട് ഉണ്ടോ?",
+      signIn: "സൈൻ ഇൻ",
+      agreePrefix: "സൈൻ അപ്പ് ചെയ്യുന്നതിലൂടെ, നിങ്ങൾ ഞങ്ങളുടെ",
+      termsOfService: "സേവന നിബന്ധനകൾ",
+      and: "ഒപ്പം",
+      privacyPolicy: "സ്വകാര്യതാ നയം",
+    },
+    slides: {
+      dashboard: {
+        title: "കമ്പനി പൾസ്",
+        description:
+          "വരുമാനം, സജീവമായ പ്രോജക്ടുകൾ, ടീമിന്റെ ആക്കം എന്നിവ തിരയാതെ തന്നെ കാണുക.",
+      },
+      invoices: {
+        title: "ബില്ലിംഗ് കമാൻഡ്",
+        description:
+          "ഡ്രാഫ്റ്റുകൾ, കുടിശ്ശികയുള്ള ബാലൻസുകൾ, ശമ്പളമുള്ള ജോലി എന്നിവ ഒരേ സ്ഥലത്ത് സൂക്ഷിക്കുക.",
+      },
+      timeTracking: {
+        title: "ആഴ്ചതോറുമുള്ള ഒഴുക്ക് മായ്‌ക്കുക",
+        description:
+          "ആഴ്ചതോറുമുള്ള സമയരേഖ തിരക്കേറിയ ജോലിയായി മാറാതെ കാലികമായി തുടരുന്നു.",
+      },
+      payments: {
+        title: "ക്യാഷ് ലെഡ്ജർ",
+        description:
+          "ഓരോ പേയ്‌മെന്റും രീതി, സ്റ്റാറ്റസ്, ഉറവിടം എന്നിവയുള്ള ഒരു ലെഡ്ജറിൽ വരുന്നു.",
+      },
+    },
+    validation: {
+      emailRequired: "ഇമെയിൽ ആവശ്യമാണ്",
+      invalidEmail: "ഇമെയിൽ വിലാസം അസാധുവാണ്",
+      passwordRequired: "പാസ്‌വേഡ് ആവശ്യമാണ്",
+      passwordComplexity:
+        "പാസ്‌വേഡ് വലിയക്ഷരം, ചെറിയക്ഷരം, നമ്പർ എന്നിവയുൾപ്പെടെ കുറഞ്ഞത് 8 പ്രതീകങ്ങളെങ്കിലും ആയിരിക്കണം.",
+      passwordSpace: "പാസ്‌വേഡിൽ സ്‌പെയ്‌സുകൾ ഉൾപ്പെടുത്താൻ പാടില്ല.",
+      confirmPasswordRequired: "പാസ്‌വേഡ് സ്ഥിരീകരിക്കേണ്ടതുണ്ട്",
+      passwordsMustMatch: "പാസ്വേഡുകൾ മാച്ചുചെയ്യണം",
+      firstNameRequired: "ഫസ്റ്റ് നെയിം ആവശ്യമാണ്",
+      firstNameInvalid: "പേരിന്റെ ആദ്യഭാഗത്ത് അക്ഷരങ്ങൾ മാത്രമേ ഉണ്ടാകാവൂ.",
+      firstNameMax: "പേരിന്റെ ആദ്യഭാഗം 20 പ്രതീകങ്ങളോ അതിൽ കുറവോ ആയിരിക്കണം.",
+      lastNameRequired: "ലാസ്റ്റ് നെയിം ആവശ്യമാണ്",
+      lastNameInvalid: "അവസാന നാമത്തിൽ അക്ഷരങ്ങൾ മാത്രമേ ഉണ്ടാകാവൂ.",
+      lastNameMax: "അവസാന നാമം 20 പ്രതീകങ്ങളോ അതിൽ കുറവോ ആയിരിക്കണം.",
+      acceptTerms: "നിങ്ങൾ നിബന്ധനകൾ അംഗീകരിക്കണം",
+    },
+    miruLogo: "മിരു",
+    heroTitle: "സമയം, ഇൻവോയ്‌സുകൾ, പേയ്‌മെന്റുകൾ എന്നിവയ്ക്ക് ഒരു സ്ഥലം",
+    heroDescription:
+      "ദിവസം വ്യക്തമായി സൂക്ഷിക്കുക, ബില്ലിംഗ് മുന്നോട്ട് കൊണ്ടുപോകുക, പണം ദൃശ്യമായി സൂക്ഷിക്കുക.",
+    companyPulse: "കമ്പനി പൾസ്",
+    billingCommand: "ബില്ലിംഗ് കമാൻഡ്",
+    clearWeeklyFlow: "വ്യക്തമായ ആഴ്ചയിലെ ഫ്ലോ",
+    cashLedger: "ക്യാഷ് ലെഡ്ജർ",
+    signOut: "സൈൻ ഔട്ട്",
+    signInToWorkspace: "നിങ്ങളുടെ വർക്ക്‌സ്പേസിലേക്ക് സൈൻ ഇൻ ചെയ്യുക",
+    createYourWorkspace: "നിങ്ങളുടെ വർക്ക്‌സ്പേസ് സൃഷ്ടിക്കുക",
+    signInDescription:
+      "ജോലി ട്രാക്ക് ചെയ്യുക, ഇൻവോയ്‌സുകൾ അയയ്ക്കുക, പണമൊഴുക്ക് ഒരു സ്ഥലത്ത് നിന്ന് വ്യക്തമാക്കുക.",
+    signUpDescription:
+      "ക്ലയന്റുകൾ, പ്രോജക്ടുകൾ, ഇൻവോയ്‌സുകൾ, പേയ്‌മെന്റുകൾ എന്നിവ ഒരു വ്യക്തമായ ഓപ്പറേറ്റിംഗ് സിസ്റ്റത്തിൽ സജ്ജീകരിക്കുക.",
+    firstName: "ആദ്യ പേര്",
+    lastName: "അവസാന പേര്",
+    password: "പാസ്‌വേഡ്",
+    confirmPassword: "പാസ്‌വേഡ് സ്ഥിരീകരിക്കുക",
+    forgotPassword: "പാസ്‌വേഡ് മറന്നോ?",
+    enterRegisteredEmail: "നിങ്ങളുടെ രജിസ്റ്റർ ചെയ്ത ഇമെയിൽ ഐഡി നൽകുക",
+    resetPassword: "പാസ്‌വേഡ് റീസെറ്റ് ചെയ്യുക",
+    resetPasswordInstructions:
+      "നിങ്ങളുടെ അക്കൗണ്ടുമായി ബന്ധപ്പെട്ട ഇമെയിൽ വിലാസം നൽകുക, പാസ്‌വേഡ് റീസെറ്റ് ചെയ്യാനുള്ള ലിങ്ക് ഞങ്ങൾ അയയ്ക്കും.",
+    sendResetLink: "റീസെറ്റ് ലിങ്ക് അയയ്ക്കുക",
+    backToLogin: "ലോഗിനിലേക്ക് മടങ്ങുക",
+    alreadyHaveAccount: "ഇതിനകം ഒരു അക്കൗണ്ട് ഉണ്ടോ?",
+    dontHaveAccount: "അക്കൗണ്ട് ഇല്ലേ?",
+    rememberMe: "എന്നെ ഓർക്കുക",
+    totpPlaceholder: "എബിസിഡി-ഇഎഫ്ജിഎച്ച്",
+    noAuthTokenReceived: "ഓതന്റിക്കേഷൻ ടോക്കൺ ലഭിച്ചില്ല",
+    slideDashboardDescription:
+      "റവന്യൂ, സജീവ പ്രോജക്ടുകൾ, ടീം ആക്കം എന്നിവ തിരയാതെ കാണുക.",
+    slideInvoicesDescription:
+      "ഡ്രാഫ്റ്റുകൾ, കാലാവധി കഴിഞ്ഞ ബാലൻസുകൾ, പേയ്‌ഡ് ജോലി ഒരേ സ്ഥലത്ത് സൂക്ഷിക്കുക.",
+    slideTimeTrackingDescription:
+      "ആഴ്ചതോറും സമയ എൻട്രി ജോലിയാകാതെ കാലികമായി നിലനിർത്തുന്നു.",
+    slidePaymentsDescription:
+      "ഓരോ പേയ്‌മെന്റും രീതി, സ്ഥിതി, ഉറവിടം സഹിതം ഒരു ലെഡ്ജറിൽ വരുന്നു.",
+    slideShowPrefix: "കാണിക്കുക",
+    continueWithGoogle: "Google ഉപയോഗിച്ച് തുടരുക",
+    continueWithGithub: "GitHub ഉപയോഗിച്ച് തുടരുക",
+    orUseEmail: "അല്ലെങ്കിൽ ഇമെയിൽ ഉപയോഗിക്കുക",
+    verifyWithAuthenticator:
+      "നിങ്ങളുടെ ഓതന്റിക്കേറ്റർ ആപ്പ് ഉപയോഗിച്ച് പരിശോധിക്കുക",
+    authenticatorInstructions:
+      "നിങ്ങളുടെ ഓതന്റിക്കേറ്റർ ആപ്പിൽ നിന്ന് 6-അക്ക കോഡ് നൽകുക, അല്ലെങ്കിൽ റിക്കവറി കോഡ് ഉപയോഗിക്കുക.",
+    authenticatorCode: "ഓതന്റിക്കേറ്റർ കോഡ്",
+    recoveryCode: "റിക്കവറി കോഡ്",
+    verifyAndSignIn: "പരിശോധിച്ച് സൈൻ ഇൻ ചെയ്യുക",
+    completePasskeyVerification:
+      "സൈൻ ഇൻ പൂർത്തിയാക്കാൻ പാസ്‌കീ പരിശോധന പൂർത്തിയാക്കുക.",
+    enterAuthenticatorCode:
+      "സൈൻ ഇൻ പൂർത്തിയാക്കാൻ നിങ്ങളുടെ ഓതന്റിക്കേറ്റർ കോഡ് നൽകുക.",
+    invalidVerificationCode: "അസാധുവായ പരിശോധന കോഡ്.",
+    privacy: "സ്വകാര്യത",
+    terms: "നിബന്ധനകൾ",
+    createAccount: "അക്കൗണ്ട് സൃഷ്ടിക്കുക",
+    passwordCriteria:
+      "കുറഞ്ഞത് 8 അക്ഷരങ്ങൾ, 1 വലിയ അക്ഷരം, 1 ചെറിയ അക്ഷരം, 1 അക്കം, 1 പ്രത്യേക അക്ഷരം",
+    agreeToTerms: "ഞാൻ സമ്മതിക്കുന്നു",
+    termsOfService: "സേവന നിബന്ധനകൾ",
+    privacyPolicy: "സ്വകാര്യതാ നയം",
+    and: "ഒപ്പം",
+    welcomeBack: "തിരിച്ചുവരവിന് സ്വാഗതം!",
+    loginFailed: "ലോഗിൻ പരാജയപ്പെട്ടു. ദയവായി വീണ്ടും ശ്രമിക്കുക.",
+    waitingForPasskey: "പാസ്‌കീയ്ക്കായി കാത്തിരിക്കുന്നു...",
+  },
+  nav: {
+    dashboard: "ഡാഷ്‌ബോർഡ്",
+    timeTracking: "സമയ ട്രാക്കിംഗ്",
+    clients: "ക്ലയന്റുകൾ",
+    projects: "പദ്ധതികൾ",
+    team: "ടീം",
+    invoices: "ഇൻവോയ്‌സുകൾ",
+    reports: "റിപ്പോർട്ടുകൾ",
+    payments: "പേയ്‌മെന്റുകൾ",
+    leavesAndHolidays: "ഇലകൾ & അവധി ദിവസങ്ങൾ",
+    expenses: "ചെലവുകൾ",
+    settings: "ക്രമീകരണങ്ങൾ",
+    logout: "ലോഗ്ഔട്ട് ചെയ്യുക",
+  },
+  sidebar: {
+    main: "പ്രധാനം",
+    personalSettings: "വ്യക്തിഗത ക്രമീകരണങ്ങൾ",
+    companySettings: "കമ്പനി ക്രമീകരണങ്ങൾ",
+    profile: "പ്രൊഫൈൽ",
+    devices: "ഉപകരണങ്ങൾ",
+    organization: "സംഘടന",
+    billing: "ബില്ലിംഗ്",
+    paymentSettings: "പേയ്‌മെന്റ് ക്രമീകരണങ്ങൾ",
+    holidayCalendar: "അവധിക്കാല കലണ്ടർ",
+    myLeaves: "എന്റെ ഇലകൾ",
+    bankTaxInfo: "ബാങ്ക് & നികുതി വിവരങ്ങൾ",
+    expand: "സൈഡ്‌ബാർ വികസിപ്പിക്കുക",
+    collapse: "സൈഡ്‌ബാർ ചുരുക്കുക",
+  },
+  settings: {
+    settings: "ക്രമീകരണങ്ങൾ",
+    profileSettings: "പ്രൊഫൈൽ ക്രമീകരണങ്ങൾ",
+    organizationSettings: "ഓർഗനൈസേഷൻ ക്രമീകരണങ്ങൾ",
+    paymentSettings: "പേയ്‌മെന്റ് ക്രമീകരണങ്ങൾ",
+    profilePicture: "പ്രൊഫൈൽ ചിത്രം",
+    changePassword: "പാസ്‌വേഡ് മാറ്റുക",
+    currentPassword: "നിലവിലെ പാസ്‌വേഡ്",
+    password: "പാസ്‌വേഡ്",
+    confirmPassword: "പാസ്‌വേഡ് സ്ഥിരീകരിക്കുക",
+    billing: "ബില്ലിംഗ്",
+    integrations: "ഇന്റഗ്രേഷനുകൾ",
+    leaves: "ലീവുകൾ",
+    import: "ഇമ്പോർട്ട്",
+    general: "പൊതുവായത്",
+    profile: "പ്രൊഫൈൽ",
+    organization: "ഓർഗനൈസേഷൻ",
+    payment: "പേയ്‌മെന്റ്",
+    allocateLeaves: "ലീവുകൾ അലോക്കേറ്റ് ചെയ്യുക",
+    customLeaves: "ഇഷ്ടാനുസൃത ലീവുകൾ",
+    addCustomLeave: "ഇഷ്ടാനുസൃത ലീവ് ചേർക്കുക",
+    editCustomLeave: "ഇഷ്ടാനുസൃത ലീവ് എഡിറ്റ് ചെയ്യുക",
+    leaveType: "ലീവ് തരം",
+    enterLeaveType: "ലീവ് തരം നൽകുക",
+    allocationValue: "അലോക്കേഷൻ മൂല്യം",
+    allocationPeriod: "അലോക്കേഷൻ കാലയളവ്",
+    allocationFrequency: "അലോക്കേഷൻ ആവൃത്തി",
+    labels: {
+      profile: "പ്രൊഫൈൽ",
+      employment: "തൊഴിൽ",
+      devices: "ഉപകരണങ്ങൾ",
+      notifications: "അറിയിപ്പുകൾ",
+      preferences: "മുൻഗണനകൾ",
+      organization: "സംഘടന",
+      billing: "ബില്ലിംഗ്",
+      payment: "പേയ്മെന്റ്",
+      holidays: "അവധി ദിവസങ്ങൾ",
+      leaves: "ഇലകൾ",
+      automation: "ഓട്ടോമേഷൻ",
+      bankInfo: "ബാങ്ക് & നികുതി വിവരങ്ങൾ",
+    },
+    categories: {
+      personal: "വ്യക്തിപരം",
+      organization: "സംഘടന",
+    },
+  },
+  dashboard: {
+    dashboard: "ഡാഷ്‌ബോർഡ്",
+    overdue: "കാലാവധി കഴിഞ്ഞത്",
+    outstanding: "കുടിശ്ശിക",
+    totalHours: "ആകെ മണിക്കൂറുകൾ",
+    revenueOverview: "റവന്യൂ അവലോകനം",
+    there: "അവിടെ",
+    companyPulse: "കമ്പനി പൾസ്",
+    welcomeBack: "തിരിച്ചുവരവിന് സ്വാഗതം, %{name}",
+    recentActivity: "സമീപകാല പ്രവർത്തനം",
+    workspaceActivity: "വർക്ക്‌സ്പേസ് പ്രവർത്തനം",
+    activityDescription:
+      "നിങ്ങളുടെ ഇൻവോയ്‌സുകളിലും പേയ്‌മെന്റുകളിലുമുള്ള ഏറ്റവും പുതിയ അപ്‌ഡേറ്റുകൾ",
+    employeeActivityDescription:
+      "നിങ്ങളുടെ ഡാഷ്‌ബോർഡ് സമയ ട്രാക്കിംഗിലും നിയോഗിച്ച ജോലിയിലും ശ്രദ്ധ കേന്ദ്രീകരിച്ചിരിക്കുന്നു.",
+    noRecentActivityYet: "ഇതുവരെ സമീപകാല പ്രവർത്തനം ഇല്ല",
+    loadMore: "കൂടുതൽ ലോഡ് ചെയ്യുക",
+    caughtUp: "എല്ലാം മനസ്സിലായി!",
+    yearToDate: "ഈ വർഷം ഇതുവരെ",
+    quarterToDate: "ഈ ത്രൈമാസം ഇതുവരെ",
+    monthToDate: "ഈ മാസം ഇതുവരെ",
+    weekToDate: "ഈ ആഴ്ച ഇതുവരെ",
+    revenue: "റവന്യൂ",
+    activeProjects: "സജീവ പ്രോജക്ടുകൾ",
+    currentlyActive: "നിലവിൽ സജീവം",
+    noRecentActivity: "സമീപകാല പ്രവർത്തനം ഇല്ല",
+    teamSize: "ടീം വലുപ്പം",
+    teammates: "ടീം സഹപ്രവർത്തകർ",
+    hoursTracked: "ട്രാക്ക് ചെയ്ത മണിക്കൂറുകൾ",
+    assignedProjects: "നിയോഗിച്ച പ്രോജക്ടുകൾ",
+    projectsYouCanWorkOn: "നിങ്ങൾക്ക് പ്രവർത്തിക്കാവുന്ന പ്രോജക്ടുകൾ",
+    totalInvoiced: "ആകെ ഇൻവോയ്‌സ് ചെയ്തത്",
+    openInvoices: "ഓപ്പൺ ഇൻവോയ്‌സുകൾ",
+    awaitingPayment: "പേയ്‌മെന്റ് കാത്തിരിക്കുന്നു",
+    paidInvoices: "പേയ്‌ഡ് ഇൻവോയ്‌സുകൾ",
+    alreadySettled: "ഇതിനകം തീർപ്പാക്കി",
+    paymentsReceived: "ലഭിച്ച പേയ്‌മെന്റുകൾ",
+    employeeGuidance:
+      "നിങ്ങളുടെ ആഴ്ച ട്രാക്ക് ചെയ്യുക, കൃത്യമായ എൻട്രികൾ സമർപ്പിക്കുക, ജോലി മുന്നോട്ട് കൊണ്ടുപോകുക.",
+    bookKeeperGuidance:
+      "വരുന്ന പേയ്‌മെന്റുകൾ അവലോകനം ചെയ്യുക, ഇൻവോയ്‌സുകൾ സമന്വയിപ്പിക്കുക, പണമൊഴുക്ക് വ്യക്തമാക്കുക.",
+    clientGuidance:
+      "നിങ്ങളുടെ അക്കൗണ്ടിന്റെ ഇൻവോയ്‌സ് സ്ഥിതിയും പേയ്‌മെന്റ് ചരിത്രവും പരിശോധിക്കുക.",
+    defaultGuidance: "റവന്യൂ, പ്രോജക്ടുകൾ, ടീം ആക്കം എന്നിവ ഒറ്റ നോട്ടത്തിൽ.",
+    allCaughtUp: "നിങ്ങൾ എല്ലാം അപ്‌ഡേറ്റ് ചെയ്തു",
+    timeframe: {
+      week: "ഈ ആഴ്ച",
+      month: "ഈ മാസം",
+      quarter: "ഈ പാദം",
+      year: "ഈ വര്ഷം",
+    },
+    stats: {
+      revenue: "വരുമാനം",
+      totalInvoiced: "ആകെ ഇൻവോയ്‌സ്",
+      openInvoices: "ഓപ്പൺ ഇൻവോയ്‌സുകൾ",
+      paidInvoices: "പണമടച്ചുള്ള ഇൻവോയ്‌സുകൾ",
+      paymentsReceived: "ലഭിച്ച പേയ്‌മെന്റുകൾ",
+      awaitingPayment: "പേയ്‌മെന്റിനായി കാത്തിരിക്കുന്നു",
+      alreadySettled: "ഇതിനകം തന്നെ നിശ്ചയിച്ചു",
+      hoursTracked: "ട്രാക്ക് ചെയ്ത സമയം",
+      currentlyActive: "നിലവിൽ സജീവമാണ്",
+      activeProjects: "സജീവ പ്രോജക്ടുകൾ",
+      assignedProjects: "നിയുക്ത പ്രോജക്ടുകൾ",
+      projectsYouCanWorkOn: "നിങ്ങൾക്ക് പ്രവർത്തിക്കാൻ കഴിയുന്ന പദ്ധതികൾ",
+      teammates: "സഹതാരങ്ങൾ",
+      teamSize: "ടീമിന്റെ വലുപ്പം",
+      noRecentActivity: "സമീപകാല പ്രവർത്തനമൊന്നുമില്ല",
+    },
+    charts: {
+      revenueMomentumTitle: "വരുമാന മൊമന്റം",
+      revenueMomentumDescription: "കഴിഞ്ഞ വർഷത്തെ പ്രതിമാസ വരുമാന പ്രവണത",
+      revenueTrendEyebrow: "വരുമാന പ്രവണത",
+      revenueLeadersTitle: "റവന്യൂ നേതാക്കൾ",
+      revenueLeadersDescription: "വരുമാന സംഭാവന പ്രകാരം മികച്ച ക്ലയന്റുകൾ",
+      topCustomersEyebrow: "മുൻനിര ഉപഭോക്താക്കൾ",
+      ofTotal: "ആകെ %{percentage}",
+      noRevenue: "വരുമാന ഡാറ്റ ലഭ്യമല്ല.",
+    },
+    roleGuidance: {
+      employee:
+        "നിങ്ങളുടെ സമയം ട്രാക്ക് ചെയ്ത് നിങ്ങളുടെ പ്രോജക്ടുകൾ കൈകാര്യം ചെയ്യുക",
+      bookKeeper:
+        "ഇൻവോയ്‌സുകൾ, പേയ്‌മെന്റുകൾ, സാമ്പത്തിക റിപ്പോർട്ടുകൾ എന്നിവ അവലോകനം ചെയ്യുക",
+      client: "നിങ്ങളുടെ ഇൻവോയ്‌സുകളും പേയ്‌മെന്റ് ചരിത്രവും കാണുക",
+      default: "നിങ്ങളുടെ വർക്ക്‌സ്‌പെയ്‌സ് കൈകാര്യം ചെയ്യുക",
+    },
+  },
 };
 
-export default ml;
+export default locale;

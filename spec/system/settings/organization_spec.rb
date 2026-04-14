@@ -79,6 +79,20 @@ RSpec.describe "Settings - Organization", type: :system, js: true do
         expect(page).to have_css("#react-root", wait: 10)
       end
     end
+
+    it "shows localized organization copy in Hindi", :aggregate_failures do
+      user.update!(locale: "hi")
+
+      with_forgery_protection do
+        visit "/settings/organization"
+
+        expect(page).to have_css("#react-root", wait: 10)
+        expect(page).to have_content("कंपनी प्रोफ़ाइल", wait: 10)
+        expect(page).to have_content("व्यावसायिक फ़ोन", wait: 10)
+        expect(page).to have_content("समय और कार्य अनुसूची", wait: 10)
+        expect(page).to have_content("कार्य समय", wait: 10)
+      end
+    end
   end
 
   describe "employee access" do

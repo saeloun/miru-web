@@ -12,27 +12,41 @@ import {
   ShieldIcon,
   OptionIcon,
 } from "miruIcons";
+import { i18n } from "../i18n";
+
+const allocationPeriodLabel = value => i18n.t(`allocationPeriods.${value}`);
+
+const allocationFrequencyLabel = value => {
+  const keyByValue = {
+    per_week: "perWeek",
+    per_month: "perMonth",
+    per_quarter: "perQuarter",
+    per_year: "perYear",
+  };
+
+  return i18n.t(`allocationFrequencies.${keyByValue[value]}`);
+};
 
 export const leaveTypes = [
   {
     value: "annual",
-    label: "Annual leaves",
+    label: i18n.t("leaveTypes.annualLeaves"),
   },
   {
     value: "sick",
-    label: "Sick leaves",
+    label: i18n.t("leaveTypes.sickLeaves"),
   },
   {
     value: "maternity",
-    label: "Maternity leave",
+    label: i18n.t("leaveTypes.maternityLeave"),
   },
   {
     value: "paternity",
-    label: "Paternity leave",
+    label: i18n.t("leaveTypes.paternityLeave"),
   },
   {
     value: "period",
-    label: "Period leave",
+    label: i18n.t("leaveTypes.periodLeave"),
   },
 ];
 
@@ -148,39 +162,39 @@ export const holidayIcons = [
 export const getAllocationPeriod = selectedFrequency => {
   switch (selectedFrequency) {
     case "per_week":
-      return [{ value: "days", label: "days" }];
+      return [{ value: "days", label: allocationPeriodLabel("days") }];
     case "per_month":
     case "per_quarter":
       return [
-        { value: "days", label: "days" },
-        { value: "weeks", label: "weeks" },
+        { value: "days", label: allocationPeriodLabel("days") },
+        { value: "weeks", label: allocationPeriodLabel("weeks") },
       ];
     case "per_year":
       return [
-        { value: "days", label: "days" },
-        { value: "weeks", label: "weeks" },
-        { value: "months", label: "months" },
+        { value: "days", label: allocationPeriodLabel("days") },
+        { value: "weeks", label: allocationPeriodLabel("weeks") },
+        { value: "months", label: allocationPeriodLabel("months") },
       ];
     default:
       return [
-        { value: "days", label: "days" },
-        { value: "weeks", label: "weeks" },
-        { value: "months", label: "months" },
+        { value: "days", label: allocationPeriodLabel("days") },
+        { value: "weeks", label: allocationPeriodLabel("weeks") },
+        { value: "months", label: allocationPeriodLabel("months") },
       ];
   }
 };
 
 export const allocationPeriod = [
-  { value: "days", label: "days" },
-  { value: "weeks", label: "weeks" },
-  { value: "months", label: "months" },
+  { value: "days", label: allocationPeriodLabel("days") },
+  { value: "weeks", label: allocationPeriodLabel("weeks") },
+  { value: "months", label: allocationPeriodLabel("months") },
 ];
 
 export const allocationFrequency = [
-  { value: "per_week", label: "per week" },
-  { value: "per_month", label: "per month" },
-  { value: "per_quarter", label: "per quarter" },
-  { value: "per_year", label: "per year" },
+  { value: "per_week", label: allocationFrequencyLabel("per_week") },
+  { value: "per_month", label: allocationFrequencyLabel("per_month") },
+  { value: "per_quarter", label: allocationFrequencyLabel("per_quarter") },
+  { value: "per_year", label: allocationFrequencyLabel("per_year") },
 ];
 
 export const quarter_one = [

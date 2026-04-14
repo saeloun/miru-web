@@ -1,28 +1,15 @@
 ---
 id:
-  activerecord:
-    errors:
-      models:
-        user:
-          attributes:
-            email:
-              blank: Email tidak boleh kosong.
-              invalid: Alamat Email Tidak Valid
-              taken: Alamat email sudah ada.
-            first_name:
-              blank: tidak boleh kosong
-              invalid: hanya boleh berisi huruf atau spasi.
-            last_name:
-              blank: tidak boleh kosong
-              invalid: hanya boleh berisi huruf atau spasi.
-            password:
-              blank: tidak boleh kosong
-              too_short: harus memiliki panjang minimal %{count} karakter.
-            password_confirmation:
-              confirmation: Tidak cocok dengan kata sandi baru.
   devise:
     confirmations:
       confirmed: Alamat email Anda telah berhasil dikonfirmasi.
+      new:
+        description: Tautan konfirmasi Anda telah kedaluwarsa atau tidak valid. Silakan
+          minta tautan baru.
+        remember_password: Ingat kata sandi Anda?
+        resend: Kirim Ulang Email Konfirmasi
+        sign_in: Masuk
+        title: Konfirmasi Email Diperlukan
       send_instructions: Anda akan menerima email berisi petunjuk tentang cara mengkonfirmasi
         alamat email Anda dalam beberapa menit.
       send_paranoid_instructions: Jika alamat email Anda terdaftar dalam basis data
@@ -86,19 +73,11 @@ id:
       signed_in: Berhasil masuk.
       signed_out: Berhasil keluar.
     unlocks:
+      new:
+        submit: Kirim ulang instruksi pembukaan kunci
+        title: Kirim ulang instruksi pembukaan kunci
       send_instructions: Anda akan menerima email berisi petunjuk tentang cara membuka
         kunci akun Anda dalam beberapa menit.
       send_paranoid_instructions: Jika akun Anda ada, Anda akan menerima email berisi
         petunjuk cara membukanya dalam beberapa menit.
       unlocked: Akun Anda telah berhasil dibuka. Silakan masuk untuk melanjutkan.
-  errors:
-    messages:
-      already_confirmed: Sudah dikonfirmasi, silakan coba masuk.
-      confirmation_period_expired: Perlu dikonfirmasi dalam %{period}, mohon ajukan
-        yang baru.
-      expired: telah kedaluwarsa, silakan minta yang baru.
-      not_found: tidak ditemukan
-      not_locked: tidak terkunci
-      not_saved:
-        one: '1 kesalahan mencegah %{resource} ini untuk disimpan:'
-        other: 'Kesalahan %{count} mencegah %{resource} ini untuk disimpan:'

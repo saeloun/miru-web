@@ -1,21 +1,21 @@
-<% content_for :email_preheader, "Your Miru Pro trial is now active." %>
-<% content_for :email_eyebrow, "Billing" %>
-<% content_for :email_title, "Your Miru Pro trial is live" %>
+<% content_for :email_preheader, t("mailers.subscription.trial_started.preheader") %>
+<% content_for :email_eyebrow, t("mailers.subscription.trial_started.eyebrow") %>
+<% content_for :email_title, t("mailers.subscription.trial_started.title") %>
 <% content_for :email_subtitle do %>
-  Explore billing, reports, and the rest of the Pro workflow during your 30-day trial.
+  <%= t("mailers.subscription.trial_started.subtitle") %>
 <% end %>
 
-<p>Hello <strong><%= @recipient.first_name.presence || @recipient.email %></strong>,</p>
+<p><%= t("mailers.subscription.trial_started.greeting_html", name: @recipient.first_name.presence || @recipient.email) %></p>
 
-<p>Your 30-day Miru Pro trial for <strong><%= @company.name %></strong> is now active.</p>
+<p><%= t("mailers.subscription.trial_started.body_html", company: @company.name) %></p>
 
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="detail-grid" style="margin-top: 24px;">
   <tr>
-    <%= render "shared/mailer/detail_card", label: "Workspace", value: @company.name %>
-    <%= render "shared/mailer/detail_card", label: "Trial ends", value: @trial_end_date_text %>
+    <%= render "shared/mailer/detail_card", label: t("mailers.labels.workspace"), value: @company.name %>
+    <%= render "shared/mailer/detail_card", label: t("mailers.subscription.trial_started.trial_ends"), value: @trial_end_date_text %>
   </tr>
 </table>
 
-<p>You can review billing, compare plans, and upgrade at any time from your billing settings.</p>
+<p><%= t("mailers.subscription.trial_started.footer_body") %></p>
 
-<%= render "shared/mailer/button", href: @billing_url, label: "Open billing" %>
+<%= render "shared/mailer/button", href: @billing_url, label: t("mailers.subscription.trial_started.cta") %>

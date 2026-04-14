@@ -24,7 +24,7 @@ RSpec.describe "Api::V1::Client#create", type: :request do
         expect(response).to have_http_status(:created)
         change(Client, :count).by(1)
         change(Address, :count).by(1)
-        [ "address", "id", "logo", "name", "phone" ]
+        expect(json_response["client"]["email"]).to eq(client[:email])
         expect(json_response["client"]["address"]["address_line_1"]).to eq(address_details[:address_line_1])
         expect(json_response["client"]["address"]["address_line_2"]).to eq(address_details[:address_line_2])
         expect(json_response["client"]["address"]["city"]).to eq(address_details[:city])

@@ -1,7 +1,8 @@
 import React from "react";
+import { i18n } from "../../i18n";
 import { cn } from "../../lib/utils";
 import { Link, useLocation } from "react-router-dom";
-import { CaretRight } from "phosphor-react";
+import { Buildings, CaretRight, Check, CaretDown } from "phosphor-react";
 import { Badge } from "../ui/badge";
 import { Separator } from "../ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
@@ -12,6 +13,9 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "../ui/tooltip";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
+import { Button } from "../ui/button";
+import { WorkspaceApi } from "apis/api";
 
 export interface NavigationItem {
   label: string;
@@ -35,9 +39,11 @@ interface SidebarProps {
   className?: string;
   logo?: React.ReactNode;
   user?: {
+    id?: number;
     name: string;
     email: string;
     avatar?: string;
+    currentWorkspaceId?: number;
   };
 }
 
@@ -179,6 +185,37 @@ const Sidebar: React.FC<SidebarProps> = ({
   user,
 }) => {
   const displayAvatarUrl = getDisplayAvatarUrl(user?.avatar, user?.email, 64);
+  const [workspaces, setWorkspaces] = React.useState<any[]>([]);
+  const [isWorkspaceDialogOpen, setIsWorkspaceDialogOpen] =
+    React.useState(false);
+
+  const [isSwitchingWorkspaceId, setIsSwitchingWorkspaceId] = React.useState<
+    number | null
+  >(null);
+
+  React.useEffect(() => {
+    if (!user) return;
+
+    const fetchWorkspaces = async () => {
+      const response = await WorkspaceApi.get();
+      setWorkspaces(response.data.workspaces || []);
+    };
+
+    fetchWorkspaces();
+  }, [user?.id, user?.currentWorkspaceId]);
+
+  const currentWorkspace = React.useMemo(
+    () =>
+      workspaces.find(workspace => workspace.id === user?.currentWorkspaceId) ||
+      null,
+    [workspaces, user?.currentWorkspaceId]
+  );
+
+  const handleWorkspaceSwitch = async (workspaceId: number) => {
+    setIsSwitchingWorkspaceId(workspaceId);
+    await WorkspaceApi.update(workspaceId);
+    window.location.reload();
+  };
 
   return (
     <div className={cn("flex h-full w-full flex-col bg-card", className)}>
@@ -244,22 +281,89 @@ const Sidebar: React.FC<SidebarProps> = ({
               </Avatar>
             </div>
           ) : (
-            <div className="flex items-center gap-3">
-              <Avatar className="h-8 w-8 flex-shrink-0">
-                <AvatarImage src={displayAvatarUrl} alt={user.name} />
-                <AvatarFallback className="bg-primary/10 text-xs font-medium text-primary">
-                  {userInitials(user.name)}
-                </AvatarFallback>
-              </Avatar>
-              <div className="flex-1 min-w-0">
-                <div className="text-sm font-medium text-foreground truncate">
-                  {user.name}
+            <>
+              <button
+                type="button"
+                className={cn(
+                  "flex w-full items-center gap-3 rounded-lg text-left transition-colors",
+                  workspaces.length > 1 && "hover:bg-accent p-2 -m-2"
+                )}
+                disabled={workspaces.length <= 1}
+                onClick={() => setIsWorkspaceDialogOpen(true)}
+              >
+                <Avatar className="h-8 w-8 flex-shrink-0">
+                  <AvatarImage src={displayAvatarUrl} alt={user.name} />
+                  <AvatarFallback className="bg-primary/10 text-xs font-medium text-primary">
+                    {userInitials(user.name)}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="flex-1 min-w-0">
+                  <div className="text-sm font-medium text-foreground truncate">
+                    {user.name}
+                  </div>
+                  <div className="text-xs text-muted-foreground truncate">
+                    {user.email}
+                  </div>
+                  {currentWorkspace && (
+                    <div className="mt-0.5 text-[11px] text-muted-foreground truncate">
+                      {currentWorkspace.name}
+                    </div>
+                  )}
                 </div>
-                <div className="text-xs text-muted-foreground truncate">
-                  {user.email}
-                </div>
-              </div>
-            </div>
+                {workspaces.length > 1 && (
+                  <CaretDown className="h-4 w-4 flex-shrink-0 text-muted-foreground" />
+                )}
+              </button>
+              <Dialog
+                open={isWorkspaceDialogOpen}
+                onOpenChange={setIsWorkspaceDialogOpen}
+              >
+                <DialogContent className="sm:max-w-md">
+                  <DialogHeader>
+                    <DialogTitle>
+                      {i18n.t("navbar.switchWorkspace")}
+                    </DialogTitle>
+                  </DialogHeader>
+                  <div className="space-y-2">
+                    {workspaces.map(workspace => {
+                      const isCurrent =
+                        workspace.id === user.currentWorkspaceId;
+
+                      const isSwitching =
+                        workspace.id === isSwitchingWorkspaceId;
+
+                      return (
+                        <Button
+                          key={workspace.id}
+                          variant={isCurrent ? "secondary" : "outline"}
+                          className="h-auto w-full justify-between px-4 py-3"
+                          disabled={
+                            isCurrent || Boolean(isSwitchingWorkspaceId)
+                          }
+                          onClick={() => handleWorkspaceSwitch(workspace.id)}
+                        >
+                          <div className="flex min-w-0 items-center gap-3">
+                            <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-primary/10">
+                              <Buildings className="h-4 w-4 text-primary" />
+                            </div>
+                            <div className="min-w-0 text-left">
+                              <div className="truncate text-sm font-medium">
+                                {workspace.name}
+                              </div>
+                            </div>
+                          </div>
+                          {isCurrent ? (
+                            <Check className="h-4 w-4 flex-shrink-0" />
+                          ) : isSwitching ? (
+                            <span className="text-xs opacity-70">...</span>
+                          ) : null}
+                        </Button>
+                      );
+                    })}
+                  </div>
+                </DialogContent>
+              </Dialog>
+            </>
           )}
         </div>
       )}

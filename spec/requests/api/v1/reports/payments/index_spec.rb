@@ -52,4 +52,31 @@ RSpec.describe "Api::V1::Reports::PaymentsController::#index", type: :request do
     expect(json_response["summary"]["payment_count"]).to eq(1)
     expect(json_response["filterOptions"]["clients"].pluck("name")).to include(client1.name, client2.name)
   end
+
+  it "filters payments when only a from date is provided" do
+    send_request :get, api_v1_reports_payments_path,
+      params: { from: 1.day.ago.iso8601 },
+      headers: auth_headers(user)
+
+    expect(response).to have_http_status(:ok)
+    expect(json_response["payments"].pluck("id")).to eq([matching_payment.id])
+  end
+
+  it "filters payments when only a to date is provided" do
+    send_request :get, api_v1_reports_payments_path,
+      params: { to: 1.day.ago.iso8601 },
+      headers: auth_headers(user)
+
+    expect(response).to have_http_status(:ok)
+    expect(json_response["payments"].pluck("id")).to eq([other_payment.id])
+  end
+
+  it "ignores invalid date filters" do
+    send_request :get, api_v1_reports_payments_path,
+      params: { from: "not-a-date", to: "also-bad" },
+      headers: auth_headers(user)
+
+    expect(response).to have_http_status(:ok)
+    expect(json_response["payments"].pluck("id")).to match_array([matching_payment.id, other_payment.id])
+  end
 end

@@ -1,28 +1,14 @@
 ---
 pt-BR:
-  activerecord:
-    errors:
-      models:
-        user:
-          attributes:
-            email:
-              blank: O e-mail não pode estar em branco.
-              invalid: ID de e-mail inválido
-              taken: O endereço de e-mail já existe.
-            first_name:
-              blank: não pode estar em branco
-              invalid: deve conter apenas letras ou espaços
-            last_name:
-              blank: não pode estar em branco
-              invalid: deve conter apenas letras ou espaços
-            password:
-              blank: não pode estar em branco
-              too_short: deve ter pelo menos %{count} caracteres
-            password_confirmation:
-              confirmation: não corresponde à nova senha
   devise:
     confirmations:
       confirmed: Seu endereço de e-mail foi confirmado com sucesso.
+      new:
+        description: Seu link de confirmação expirou ou é inválido. Solicite um novo.
+        remember_password: Lembra-se da sua senha?
+        resend: Reenviar e-mail de confirmação
+        sign_in: Entrar
+        title: Confirmação por e-mail necessária
       send_instructions: Você receberá um e-mail com instruções sobre como confirmar
         seu endereço de e-mail em alguns minutos.
       send_paranoid_instructions: Se o seu endereço de e-mail estiver em nosso banco
@@ -86,20 +72,11 @@ pt-BR:
       signed_in: Login efetuado com sucesso.
       signed_out: Sessão encerrada com sucesso.
     unlocks:
+      new:
+        submit: Reenviar instruções de desbloqueio
+        title: Reenviar instruções de desbloqueio
       send_instructions: Você receberá um e-mail com instruções sobre como desbloquear
         sua conta em alguns minutos.
       send_paranoid_instructions: Se a sua conta existir, você receberá um e-mail
         com instruções sobre como desbloqueá-la em alguns minutos.
       unlocked: Sua conta foi desbloqueada com sucesso. Faça login para continuar.
-  errors:
-    messages:
-      already_confirmed: A confirmação já foi feita, por favor, tente iniciar sessão
-        novamente.
-      confirmation_period_expired: Precisa ser confirmado dentro de %{period}, por
-        favor, solicite um novo.
-      expired: expirou, solicite uma nova.
-      not_found: não encontrado
-      not_locked: não estava trancado
-      not_saved:
-        one: '1 erro impediu que este %{resource} fosse salvo:'
-        other: "%{count} erros impediram que este %{resource} fosse salvo:"

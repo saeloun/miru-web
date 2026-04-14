@@ -1,28 +1,14 @@
 ---
 ja:
-  activerecord:
-    errors:
-      models:
-        user:
-          attributes:
-            email:
-              blank: メールアドレスは空白にできません
-              invalid: 無効なメールアドレス
-              taken: メールアドレスは既に存在します
-            first_name:
-              blank: 空白にすることはできません
-              invalid: 文字またはスペースのみを含める必要があります
-            last_name:
-              blank: 空白にすることはできません
-              invalid: 文字またはスペースのみを含める必要があります
-            password:
-              blank: 空白にすることはできません
-              too_short: 少なくとも%{count}文字の長さである必要があります
-            password_confirmation:
-              confirmation: 新しいパスワードと一致しません
   devise:
     confirmations:
       confirmed: お客様のメールアドレスは正常に確認されました。
+      new:
+        description: 確認リンクの有効期限が切れているか、無効です。新しいリンクをリクエストしてください。
+        remember_password: パスワードを覚えていますか？
+        resend: 確認メールを再送信
+        sign_in: サインイン
+        title: メールによる確認が必要です
       send_instructions: 数分以内に、メールアドレスを確認する方法を記載したメールが届きます。
       send_paranoid_instructions: お客様のメールアドレスが弊社のデータベースに登録されている場合、数分以内にメールアドレスの確認方法を記載したメールが届きます。
     failure:
@@ -71,16 +57,9 @@ ja:
       signed_in: ログインに成功しました。
       signed_out: 正常にログアウトしました。
     unlocks:
+      new:
+        submit: ロック解除手順を再送信
+        title: ロック解除手順を再送信
       send_instructions: 数分以内に、アカウントのロックを解除する方法を記載したメールが届きます。
       send_paranoid_instructions: アカウントが存在する場合、数分以内にロック解除方法を記載したメールが届きます。
       unlocked: アカウントのロック解除が完了しました。ログインして続行してください。
-  errors:
-    messages:
-      already_confirmed: 既に確認済みですので、ログインしてみてください。
-      confirmation_period_expired: "%{period}内で確認が必要です。新しいものをリクエストしてください。"
-      expired: 有効期限が切れています。新しいものをリクエストしてください。
-      not_found: 見つかりません
-      not_locked: ロックされていませんでした
-      not_saved:
-        one: 1つのエラーにより、この%{resource}を保存できませんでした。
-        other: "%{count} エラーにより、この %{resource} を保存できませんでした。"

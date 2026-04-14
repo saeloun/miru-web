@@ -96,7 +96,7 @@ interface AccountsAgingData {
 
 const accountsAgingChartConfig = {
   total: {
-    label: "Amount due",
+    label: i18n.t("reports.totalDue"),
     color: "hsl(var(--primary))",
   },
 };
@@ -195,6 +195,22 @@ const AccountsAgingReport: React.FC = () => {
     );
   }, [asOfDate, selectedClients, setSearchParams]);
 
+  useEffect(() => {
+    const nextAsOfDate =
+      parseReportQueryDate(searchParams.get("asOf")) || new Date();
+    const nextClients = parseNumericListParam(searchParams.get("clients"));
+
+    setAsOfDate(current =>
+      formatReportQueryDate(current) === formatReportQueryDate(nextAsOfDate)
+        ? current
+        : nextAsOfDate
+    );
+
+    setSelectedClients(current =>
+      current.join(",") === nextClients.join(",") ? current : nextClients
+    );
+  }, [searchParams]);
+
   const columns: ColumnDef<ClientAging>[] = [
     {
       accessorKey: "name",
@@ -205,7 +221,9 @@ const AccountsAgingReport: React.FC = () => {
     },
     {
       accessorKey: "amount_overdue.total",
-      header: () => <div className="text-right">{i18n.t("reports.totalDue")}</div>,
+      header: () => (
+        <div className="text-right">{i18n.t("reports.totalDue")}</div>
+      ),
       cell: ({ row }) => (
         <div className="text-right font-bold whitespace-nowrap">
           {currencyFormat(
@@ -218,7 +236,9 @@ const AccountsAgingReport: React.FC = () => {
     {
       accessorKey: "amount_overdue.zero_to_thirty_days",
       header: () => (
-        <div className="text-right whitespace-nowrap">{i18n.t("reports.zeroToThirtyDays")}</div>
+        <div className="text-right whitespace-nowrap">
+          {i18n.t("reports.zeroToThirtyDays")}
+        </div>
       ),
       cell: ({ row }) => {
         const value = row.original.amount_overdue.zero_to_thirty_days;
@@ -238,7 +258,9 @@ const AccountsAgingReport: React.FC = () => {
     {
       accessorKey: "amount_overdue.thirty_one_to_sixty_days",
       header: () => (
-        <div className="text-right whitespace-nowrap">{i18n.t("reports.thirtyOneToSixtyDays")}</div>
+        <div className="text-right whitespace-nowrap">
+          {i18n.t("reports.thirtyOneToSixtyDays")}
+        </div>
       ),
       cell: ({ row }) => {
         const value = row.original.amount_overdue.thirty_one_to_sixty_days;
@@ -258,7 +280,9 @@ const AccountsAgingReport: React.FC = () => {
     {
       accessorKey: "amount_overdue.sixty_one_to_ninety_days",
       header: () => (
-        <div className="text-right whitespace-nowrap">{i18n.t("reports.sixtyOneToNinetyDays")}</div>
+        <div className="text-right whitespace-nowrap">
+          {i18n.t("reports.sixtyOneToNinetyDays")}
+        </div>
       ),
       cell: ({ row }) => {
         const value = row.original.amount_overdue.sixty_one_to_ninety_days;
@@ -278,7 +302,9 @@ const AccountsAgingReport: React.FC = () => {
     {
       accessorKey: "amount_overdue.ninety_plus_days",
       header: () => (
-        <div className="text-right whitespace-nowrap">{i18n.t("reports.ninetyPlusDays")}</div>
+        <div className="text-right whitespace-nowrap">
+          {i18n.t("reports.ninetyPlusDays")}
+        </div>
       ),
       cell: ({ row }) => {
         const value = row.original.amount_overdue.ninety_plus_days;
@@ -376,7 +402,9 @@ const AccountsAgingReport: React.FC = () => {
                 )}
               >
                 <CalendarIcon className="mr-2 h-4 w-4" />
-                {i18n.t("reports.asOf", { date: format(asOfDate, "LLL dd, y") })}
+                {i18n.t("reports.asOf", {
+                  date: format(asOfDate, "LLL dd, y"),
+                })}
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0" align="start">
@@ -394,7 +422,7 @@ const AccountsAgingReport: React.FC = () => {
             <DropdownMenuTrigger asChild>
               <Button variant="outline" className="bg-white">
                 {getMultiFilterLabel(
-                  "Clients",
+                  i18n.t("reports.clients"),
                   selectedClients.length,
                   data?.report?.filter_options?.clients?.find(client =>
                     selectedClients.includes(client.id)
@@ -457,7 +485,9 @@ const AccountsAgingReport: React.FC = () => {
       <div className="grid gap-4 md:grid-cols-5">
         <Card className="border-gray-200">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{i18n.t("reports.totalDue")}</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              {i18n.t("reports.totalDue")}
+            </CardTitle>
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -472,7 +502,9 @@ const AccountsAgingReport: React.FC = () => {
 
         <Card className="border-gray-200">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{i18n.t("reports.zeroToThirtyDays")}</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              {i18n.t("reports.zeroToThirtyDays")}
+            </CardTitle>
             <Calendar className="h-4 w-4 text-gray-500" />
           </CardHeader>
           <CardContent>
@@ -487,7 +519,9 @@ const AccountsAgingReport: React.FC = () => {
 
         <Card className="border-gray-200">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{i18n.t("reports.thirtyOneToSixtyDays")}</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              {i18n.t("reports.thirtyOneToSixtyDays")}
+            </CardTitle>
             <Calendar className="h-4 w-4 text-gray-600" />
           </CardHeader>
           <CardContent>
@@ -503,7 +537,9 @@ const AccountsAgingReport: React.FC = () => {
 
         <Card className="border-gray-200">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{i18n.t("reports.sixtyOneToNinetyDays")}</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              {i18n.t("reports.sixtyOneToNinetyDays")}
+            </CardTitle>
             <AlertCircle className="h-4 w-4 text-gray-700" />
           </CardHeader>
           <CardContent>
@@ -519,7 +555,9 @@ const AccountsAgingReport: React.FC = () => {
 
         <Card className="border-gray-200">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{i18n.t("reports.ninetyPlusDays")}</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              {i18n.t("reports.ninetyPlusDays")}
+            </CardTitle>
             <AlertCircle className="h-4 w-4 text-gray-800" />
           </CardHeader>
           <CardContent>
@@ -535,7 +573,7 @@ const AccountsAgingReport: React.FC = () => {
 
       <Card className="border-gray-200">
         <CardHeader>
-          <CardTitle>Aging Distribution</CardTitle>
+          <CardTitle>{i18n.t("reports.agingDistribution")}</CardTitle>
         </CardHeader>
         <CardContent>
           <ChartContainer
@@ -635,7 +673,10 @@ const AccountsAgingReport: React.FC = () => {
           {displayedItems < allClients.length && (
             <div className="flex justify-center py-4">
               <div className="text-sm text-muted-foreground">
-                {i18n.t("reports.showingOfClients", { displayed: displayedItems, total: allClients.length })}
+                {i18n.t("reports.showingOfClients", {
+                  displayed: displayedItems,
+                  total: allClients.length,
+                })}
               </div>
             </div>
           )}

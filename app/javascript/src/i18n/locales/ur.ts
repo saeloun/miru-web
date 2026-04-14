@@ -1,13 +1,10 @@
-const ur = {
-  // Image validation
+const locale = {
   invalidImageFormatSize:
     "غلط فائل فارمیٹ۔ براہ کرم PNG یا JPG قسم کی تصویر اپ لوڈ کریں۔ زیادہ سے زیادہ سائز (%{fileSize}KB)",
   invalidImageSize:
     "فائل کا سائز %{fileSize}KB کی زیادہ سے زیادہ حد سے تجاوز کر گیا۔",
   invalidImageFormat:
     "غلط فائل فارمیٹ۔ براہ کرم PNG یا JPG قسم کی تصویر اپ لوڈ کریں",
-
-  // Common actions
   save: "محفوظ کریں",
   cancel: "منسوخ کریں",
   delete: "حذف کریں",
@@ -19,23 +16,31 @@ const ur = {
   confirm: "تصدیق کریں",
   close: "بند کریں",
   back: "واپس",
+  previous: "پچھلا",
+  continue: "جاری رکھیں",
   next: "اگلا",
   done: "مکمل",
   loading: "لوڈ ہو رہا ہے...",
   actions: "اقدامات",
   openMenu: "مینو کھولیں",
   filters: "فلٹرز",
+  pagination: "صفحہ بندی",
+  breadcrumb: "بریڈ کرمب",
   download: "ڈاؤن لوڈ",
   downloading: "ڈاؤن لوڈ ہو رہا ہے...",
   duplicate: "نقل بنائیں",
+  selectAll: "سبھی کو منتخب کریں۔",
+  selectRow: "قطار منتخب کریں۔",
   update: "اپ ڈیٹ کریں",
   apply: "لاگو کریں",
+  applyFilters: "فلٹرز لگائیں۔",
   remove: "ہٹائیں",
+  resetAction: "دوبارہ ترتیب دیں۔",
   yes: "ہاں",
   no: "نہیں",
   or: "یا",
-
-  // Common labels
+  toggleSidebar: "سائڈبار کو ٹوگل کریں۔",
+  morePages: "مزید صفحات",
   name: "نام",
   email: "ای میل",
   phone: "فون",
@@ -45,6 +50,7 @@ const ur = {
   date: "تاریخ",
   type: "قسم",
   notes: "نوٹس",
+  viewInvoice: "انوائس دیکھیں",
   description: "تفصیل",
   total: "کل",
   active: "فعال",
@@ -69,8 +75,18 @@ const ur = {
   all: "تمام",
   from: "سے",
   to: "تک",
-
-  // Date/time
+  themeSelector: {
+    open: "تھیم سلیکٹر کھولیں۔",
+    close: "تھیم سلیکٹر بند کریں۔",
+    choose: "تھیم کا انتخاب کریں۔",
+    description: "اپنا پسندیدہ انٹرفیس اسٹائل منتخب کریں۔",
+    classic: "کلاسک",
+    classicDescription: "روایتی میرو انٹرفیس",
+    admin: "ایڈمن پرو",
+    adminDescription: "جدید shadcn ڈیش بورڈ",
+    minimize: "کم سے کم کرنا",
+    previewActive: "تھیم کا پیش نظارہ فعال ہے۔",
+  },
   today: "آج",
   yesterday: "گزشتہ کل",
   tomorrow: "آنے والا کل",
@@ -85,6 +101,7 @@ const ur = {
   lastYear: "پچھلے سال",
   allTime: "تمام وقت",
   customRange: "حسب ضرورت حد",
+  customRangeWithDates: "حسب ضرورت (%{from} - %{to})",
   customDateRange: "حسب ضرورت تاریخ کی حد",
   dateRange: "تاریخ کی حد",
   dateRangePreset: "تاریخ کی حد پری سیٹ",
@@ -94,16 +111,12 @@ const ur = {
   selectPeriod: "مدت منتخب کریں",
   fullDay: "پورا دن",
   halfDay: "آدھا دن",
-
-  // Date validation
   dateCannotBeBlank: "تاریخ خالی نہیں ہو سکتی",
   fromDateMustBeLessThanToDate:
     "'سے' تاریخ 'تک' تاریخ سے کم یا مساوی ہونی چاہیے",
   toDateMustBeGreaterThanFromDate:
     "'تک' تاریخ 'سے' تاریخ سے زیادہ یا مساوی ہونی چاہیے",
   invalidDate: "براہ کرم درست تاریخ درج کریں",
-
-  // Month abbreviations
   monthJan: "جنوری",
   monthFeb: "فروری",
   monthMar: "مارچ",
@@ -116,8 +129,6 @@ const ur = {
   monthOct: "اکتوبر",
   monthNov: "نومبر",
   monthDec: "دسمبر",
-
-  // Error pages
   pageNotFound: "صفحہ نہیں ملا",
   clickHere: "یہاں کلک کریں",
   somethingWentWrong: "کچھ غلط ہو گیا",
@@ -125,15 +136,16 @@ const ur = {
     "دوبارہ کوشش کرنے کے لیے صفحہ ریفریش کریں۔ اگر یہ جاری رہے تو دوبارہ سائن ان کریں یا سپورٹ سے رابطہ کریں۔",
   reloadPage: "صفحہ دوبارہ لوڈ کریں",
   loadingWorkspace: "ورک سپیس لوڈ ہو رہا ہے...",
-
-  // Search
   searchClients: "کلائنٹس تلاش کریں...",
   searchInvoices: "انوائسز تلاش کریں...",
   searchTeamMembers: "ٹیم ممبرز تلاش کریں...",
   selectTeamMember: "ٹیم ممبر منتخب کریں",
   noResultsFound: "کوئی نتائج نہیں ملے",
-
-  // Time Tracking
+  dataTable: {
+    noResults: "کوئی نتیجہ نہیں نکلا۔",
+    rowsSelected: "%{selected} از %{total} قطاریں منتخب کی گئیں۔",
+    pageOf: "صفحہ %{page} از %{total}",
+  },
   timeTracking: {
     addEntry: "اندراج شامل کریں",
     newTimeEntry: "نیا وقت کا اندراج",
@@ -220,8 +232,6 @@ const ur = {
       sun: "اتوار",
     },
   },
-
-  // Task types
   taskTypes: {
     development: "ترقی",
     meeting: "میٹنگ",
@@ -236,16 +246,12 @@ const ur = {
     training: "تربیت",
     other: "دیگر",
   },
-
-  // Time off types
   timeOffTypes: {
     vacation: "چھٹی",
     sickLeave: "بیماری کی رخصت",
     personalDay: "ذاتی دن",
     holiday: "تعطیل",
   },
-
-  // Clients
   clients: {
     addClients: "کلائنٹس شامل کریں",
     addNewClient: "نیا کلائنٹ شامل کریں",
@@ -256,6 +262,8 @@ const ur = {
       "کیا آپ واقعی کلائنٹ %{name} کو حذف کرنا چاہتے ہیں؟ یہ عمل واپس نہیں ہو سکتا۔",
     clientDetails: "کلائنٹ کی تفصیلات",
     clientLogo: "کلائنٹ لوگو",
+    acceptedPngAndJpgFormats: "قبول شدہ فائل فارمیٹس: PNG اور JPG۔",
+    fileSizeLimitKb: "فائل کا سائز ≤ %{fileSize} KB ہونا چاہیے۔",
     phoneNumber: "فون نمبر",
     addressLine1: "پتہ سطر 1",
     addressLine2: "پتہ سطر 2 (اختیاری)",
@@ -264,22 +272,47 @@ const ur = {
     totalClients: "کل کلائنٹس",
     activeClients: "فعال کلائنٹس",
     hoursTracked: "ٹریک شدہ گھنٹے",
+    hoursLogged: "گھنٹے لاگ ان",
     totalTracked: "کل ٹریک شدہ",
     outstanding: "بقایا",
+    overdue: "اوورڈیو",
     allClients: "تمام کلائنٹس",
+    allClientsDescription:
+      "آپ کے تمام کلائنٹس کی فہرست ان کے رابطے کی معلومات اور بلنگ کی حیثیت کے ساتھ۔",
     failedToLoadClients: "کلائنٹس لوڈ کرنے میں ناکامی",
+    failedToLoadClientDetails: "کلائنٹ کی تفصیلات لوڈ کرنے میں ناکام",
+    clientDeletedSuccessfully: "کلائنٹ کو کامیابی سے حذف کر دیا گیا۔",
+    failedToDeleteClient: "کلائنٹ کو حذف کرنے میں ناکام",
     clientAddedSuccessfully: "کلائنٹ کامیابی سے شامل ہو گیا",
     clientUpdatedSuccessfully: "کلائنٹ کامیابی سے اپ ڈیٹ ہو گیا",
     noClientsYet: "ایسا لگتا ہے کہ ابھی تک کوئی کلائنٹس شامل نہیں ہوئے۔",
     deleting: "حذف ہو رہا ہے...",
+    addYourFirstClient: "اپنا پہلا کلائنٹ شامل کریں۔",
+    addNewClientDescription:
+      "نیا کلائنٹ شامل کرنے کے لیے نیچے دی گئی تفصیلات پر کریں۔",
+    editClientDescription: "ذیل میں کلائنٹ کی تفصیلات کو اپ ڈیٹ کریں۔",
+    manageClientsDescription: "اپنے کلائنٹ کے تعلقات اور بلنگ کا نظم کریں۔",
+    clientHeader: "کلائنٹ",
+    contact: "رابطہ کریں۔",
+    copyClientId: "کلائنٹ آئی ڈی کاپی کریں۔",
+    viewDetails: "تفصیلات دیکھیں",
     addProject: "پراجیکٹ شامل کریں",
     addNewProject: "نیا پراجیکٹ شامل کریں",
     paymentReminder: "ادائیگی کی یاد دہانی",
+    addOrViewContacts: "روابط شامل کریں / دیکھیں",
     sendPaymentReminder: "ادائیگی کی یاد دہانی بھیجیں",
+    paymentReminderSubject:
+      "غیر ادا شدہ رسیدوں کی ادائیگی مکمل کرنے کی یاد دہانی",
+    paymentReminderMessage:
+      "درج ذیل رسیدوں کی ادائیگی مکمل کرنے کے لیے یہ ایک نرم یاد دہانی ہے۔ آپ ذیل میں دی گئی انوائس کی تفصیلات کے ساتھ متعلقہ ادائیگی کے لنکس تلاش کر سکتے ہیں۔",
+    selectInvoices: "رسیدیں منتخب کریں۔",
+    emailPreview: "ای میل کا پیش نظارہ",
+    recipientEmailId: "وصول کنندہ کی ای میل آئی ڈی",
+    invoiceSelected: "%{count} انوائس منتخب کی گئی۔",
     invoicesSelected: "%{count} انوائسز منتخب",
+    noProjectsAddedYet:
+      "اس کلائنٹ میں ابھی تک کوئی پروجیکٹ شامل نہیں کیا گیا ہے۔",
   },
-
-  // Contacts
   contacts: {
     addContact: "رابطہ شامل کریں",
     addContacts: "رابطے شامل کریں",
@@ -298,8 +331,6 @@ const ur = {
     invalidEmailId: "غلط ای میل آئی ڈی",
     emailRequired: "ای میل آئی ڈی خالی نہیں ہو سکتی",
   },
-
-  // Projects
   projects: {
     addProject: "پراجیکٹ شامل کریں",
     addNewProject: "نیا پراجیکٹ شامل کریں",
@@ -371,8 +402,6 @@ const ur = {
     teamMembersDescription:
       "اس پراجیکٹ کے لیے تفویض شدہ ٹیم ممبرز دیکھیں اور ان کا انتظام کریں۔",
   },
-
-  // Team
   team: {
     team: "ٹیم",
     teamOverview: "ٹیم کا جائزہ",
@@ -419,8 +448,6 @@ const ur = {
     invalidEmail: "غلط ای میل آئی ڈی",
     emailRequired: "ای میل آئی ڈی خالی نہیں ہو سکتی",
   },
-
-  // Invoices
   invoices: {
     invoice: "انوائس",
     invoices: "انوائسز",
@@ -494,19 +521,16 @@ const ur = {
     scrollToLoadMore: "مزید انوائسز لوڈ کرنے کے لیے سکرول کریں",
     loadingMoreInvoices: "مزید انوائسز لوڈ ہو رہی ہیں...",
     allInvoicesLoaded: "تمام انوائسز لوڈ ہو گئیں",
+    showingOfTotal: "%{total} میں سے %{shown} دکھا رہا ہے",
     resetFilters: "فلٹرز ری سیٹ کریں",
     loadingChartData: "چارٹ ڈیٹا لوڈ ہو رہا ہے...",
     noInvoiceData: "کوئی انوائس ڈیٹا دستیاب نہیں",
-
-    // Statuses
     draft: "مسودہ",
     sent: "بھیجی گئی",
     overdue: "واجب الادا",
     collected: "وصول شدہ",
     paid: "ادا شدہ",
     outstanding: "بقایا",
-
-    // Email
     recipientEmailId: "وصول کنندہ ای میل آئی ڈی",
     subject: "موضوع",
     message: "پیغام",
@@ -518,26 +542,21 @@ const ur = {
     invoiceSentBody: "%{company} نے آپ کو ایک انوائس بھیجی (%{number})",
     invoiceWillBeSent: "انوائس بھیجی جائے گی!",
     processing: "کارروائی جاری ہے...",
-
-    // No payment gateway
     noPaymentGateway: "کوئی ادائیگی گیٹ وے منسلک نہیں",
     paymentGatewayError:
       "خرابی۔ براہ کرم انوائس بھیجنے والے سے رابطہ کریں تاکہ ادائیگی گیٹ وے منسلک کیا جائے تاکہ آپ انوائس کی ادائیگی کر سکیں",
     paymentGatewayWarning:
       "آپ نے Miru کے ساتھ کوئی ادائیگی گیٹ وے منسلک نہیں کیا۔ کیا آپ ادائیگی گیٹ وے کے بغیر انوائس بھیجنا چاہتے ہیں؟",
     goToPaymentSettings: "ادائیگی ترتیبات پر جائیں",
+    backToInvoices: "انوائسز پر واپس جائیں۔",
     sendWithoutPaymentGateway: "ادائیگی گیٹ وے کے بغیر بھیجیں",
     stripeDisabled: "اس انوائس کے لیے Stripe غیر فعال ہے",
     stripeDisabledMessage:
       "بھیجنے والے نے اس انوائس کے لیے Stripe ادائیگیاں فعال نہیں کی ہیں۔ آپ ان سے رابطہ کر سکتے ہیں تاکہ اسے فعال کریں، یا ACH جیسا متبادل ادائیگی طریقہ استعمال کریں۔",
-
-    // Bulk actions
     preparingDownload: "ڈاؤن لوڈ تیار ہو رہا ہے...",
     downloadFailed: "ڈاؤن لوڈ ناکام۔ براہ کرم دوبارہ کوشش کریں۔",
     downloadingFiles: "فائلز ڈاؤن لوڈ ہو رہی ہیں...",
     downloadComplete: "ڈاؤن لوڈ مکمل",
-
-    // Table headers
     nameHeader: "نام",
     descriptionHeader: "تفصیل",
     dateHeader: "تاریخ",
@@ -545,8 +564,6 @@ const ur = {
     amountHeader: "رقم",
     statusHeader: "حیثیت",
     invoiceNumberHeader: "انوائس نمبر",
-
-    // Chart labels
     area: "ایریا",
     bar: "بار",
     noData: "کوئی ڈیٹا نہیں",
@@ -554,8 +571,6 @@ const ur = {
     quarterly: "سہ ماہی",
     yearly: "سالانہ",
     trend: "رجحان",
-
-    // Preview / detail labels
     taxId: "ٹیکس آئی ڈی: %{value}",
     vatNumber: "VAT نمبر: %{value}",
     gstNumber: "GST نمبر: %{value}",
@@ -569,8 +584,6 @@ const ur = {
     due: "واجب الادا %{date}",
     viewed: "دیکھی گئی",
     cancelled: "منسوخ",
-
-    // Toast / confirmation messages
     invoiceMarkedAsPaid: "انوائس کامیابی سے ادا شدہ نشان زد ہو گئی",
     invoiceDownloaded: "انوائس کامیابی سے ڈاؤن لوڈ ہو گئی",
     invoiceSentSuccessfully: "انوائس کامیابی سے بھیجی گئی",
@@ -587,8 +600,23 @@ const ur = {
     invoiceUpdated: "انوائس کامیابی سے اپ ڈیٹ ہو گئی",
     failedToSaveInvoice:
       "انوائس محفوظ کرنے میں ناکامی۔ براہ کرم دوبارہ کوشش کریں۔",
-
-    // Counters
+    newInvoicePage: "نئی رسید",
+    editInvoicePage: "انوائس میں ترمیم کریں۔",
+    editorSubtitle:
+      "تفصیلات پُر کریں اور انوائس بھیجنے سے پہلے اس کا جائزہ لیں۔",
+    basicDetailsDescription: "انوائس کی بنیادی معلومات درج کریں۔",
+    referenceOptional: "حوالہ (اختیاری)",
+    referencePlaceholder: "PO نمبر، وغیرہ",
+    lineItemsDescription: "وقت کے اندراجات یا دستی اشیاء شامل کریں۔",
+    additionalDetailsDescription: "ٹیکس، رعایت، اور نوٹ",
+    notesPlaceholder: "اضافی نوٹس یا ادائیگی کی ہدایات",
+    subtotal: "ذیلی کل",
+    saving: "محفوظ کر رہا ہے...",
+    sending: "بھیج رہا ہے...",
+    alreadySent: "پہلے ہی بھیج دیا ہے۔",
+    downloading: "ڈاؤن لوڈ ہو رہا ہے...",
+    selectClientBeforeSending:
+      "انوائس بھیجنے سے پہلے ایک کلائنٹ کا انتخاب کریں۔",
     showingOf: "%{total} میں سے %{shown} دکھائی جا رہی ہیں",
     viewingMatching:
       "%{loaded} لوڈ شدہ میں سے %{filtered} ملتی انوائسز دیکھی جا رہی ہیں",
@@ -596,12 +624,8 @@ const ur = {
     showingRecentTransactions: "%{count} حالیہ لین دین دکھائے جا رہے ہیں",
     updatedAt: "%{date} اپ ڈیٹ شدہ",
     invoiceHash: "انوائس #%{number}",
-
-    // Mobile table headers
     nameDescription: "نام / تفصیل",
     dateTime: "تاریخ / وقت",
-
-    // Invoice reminder email
     invoiceReminder: "انوائس یاد دہانی: %{number}",
     reminderMessage:
       "یہ آپ کی بقایا انوائس کے بارے میں ایک یاد دہانی ہے۔ براہ کرم منسلک تفصیلات دیکھیں۔",
@@ -621,14 +645,6 @@ const ur = {
     cannotSendInvalidId: "انوائس نہیں بھیجی جا سکتی - غلط آئی ڈی",
     payment: "ادائیگی #%{id}",
   },
-  common: {
-    retry: "دوبارہ کوشش کریں",
-    pageUnavailable:
-      "یہ صفحہ دستیاب نہیں ہے یا لنک اب آپ کے ورک سپیس کے لیے درست نہیں ہے۔",
-    goToDashboard: "ڈیش بورڈ پر جائیں",
-  },
-
-  // Invoice admin dashboard
   invoiceDashboard: {
     revenueOverview: "آمدنی کا جائزہ",
     revenueByStatus: "حیثیت کے لحاظ سے آمدنی",
@@ -636,12 +652,12 @@ const ur = {
     allInvoices: "تمام انوائسز",
     recentSales: "حالیہ فروخت",
   },
-
-  // Payments
   payments: {
     payments: "ادائیگیاں",
     addPayment: "ادائیگی شامل کریں",
     addManualEntry: "دستی اندراج شامل کریں",
+    searchPaymentsPlaceholder:
+      "کلائنٹ، انوائس، یا رقم کے لحاظ سے ادائیگی تلاش کریں...",
     noPaymentsRecorded: "ابھی تک کوئی ادائیگیاں درج نہیں ہوئیں",
     invoiceClient: "انوائس # / کلائنٹ",
     clientInvoiceNumber: "کلائنٹ/ انوائس نمبر",
@@ -657,13 +673,38 @@ const ur = {
     paymentSuccessful: "ادائیگی کامیاب رہی۔",
     paymentReceived: "ہمیں آپ کی ادائیگی موصول ہو گئی ہے۔",
     goToHomePage: "ہوم پیج پر جائیں",
+    recordManualPaymentAgainstInvoice:
+      "انوائس کے خلاف دستی ادائیگی ریکارڈ کریں۔",
     failedToLoadPayments: "ادائیگیاں لوڈ کرنے میں ناکامی",
+    failedToLoadInvoicesForPaymentEntry:
+      "ادائیگی کے اندراج کے لیے رسیدیں لوڈ کرنے میں ناکام",
     transactions: "لین دین",
+    totalPayments: "کل ادائیگیاں",
+    totalCollected: "کل جمع",
+    allTime: "ہر وقت",
+    averagePayment: "اوسط ادائیگی",
+    perTransaction: "فی لین دین",
     paymentHistory: "ادائیگی کی تاریخ",
+    paymentHistoryDescription:
+      "انوائس اور کلائنٹ کی تفصیلات کے ساتھ ہر ادائیگی۔",
+    paymentLedgerDescription: "ایک سادہ لیجر میں پٹی اور دستی اندراجات۔",
+    searchByInvoiceClientMethodOrNotes:
+      "انوائس، کلائنٹ، طریقہ، یا نوٹس کے ذریعے تلاش کریں...",
+    showingPaymentsCount: "%{visible} از %{total} دکھا رہا ہے۔",
+    notes: "نوٹس",
+    paymentMethod: "ادائیگی کا طریقہ",
+    openMenu: "مینو کھولیں۔",
+    copyTransactionId: "ٹرانزیکشن ID کاپی کریں۔",
+    viewInvoice: "رسید دیکھیں",
+    downloadReceipt: "رسید ڈاؤن لوڈ کریں۔",
+    manual: "دستی",
+    visa: "ویزا",
+    mastercard: "ماسٹر کارڈ",
+    amex: "ایمیکس",
+    debitCard: "ڈیبٹ کارڈ",
+    creditCard: "کریڈٹ کارڈ",
     scrollToLoadMore: "مزید ادائیگیاں لوڈ کرنے کے لیے سکرول کریں",
     allPaymentsLoaded: "تمام ادائیگیاں لوڈ ہو گئیں",
-
-    // Filters
     allStatuses: "تمام حیثیتیں",
     allClients: "تمام کلائنٹس",
     paymentType: "ادائیگی کی قسم",
@@ -672,12 +713,15 @@ const ur = {
     bankTransfer: "بینک ٹرانسفر",
     wireTransfer: "وائر ٹرانسفر",
     achTransfer: "ACH ٹرانسفر",
-    paypal: "PayPal",
-    stripe: "Stripe",
+    paypal: "پے پال",
+    stripe: "دھاری",
     cash: "نقد",
     check: "چیک",
+    paid: "ادا کیا",
+    partiallyPaid: "جزوی طور پر ادا شدہ",
     pending: "زیر التوا",
     failed: "ناکام",
+    cancelled: "منسوخ",
     refunded: "واپس کی گئی",
     completed: "مکمل",
     addPaymentBtn: "ادائیگی شامل کریں",
@@ -685,9 +729,8 @@ const ur = {
     failedToAddManualEntry: "دستی اندراج شامل کرنے میں ناکامی",
     searchByClientOrInvoice: "کلائنٹ نام یا انوائس آئی ڈی سے تلاش کریں",
     selectTransactionTypeBtn: "لین دین کی قسم منتخب کریں",
+    noPaymentFound: "کوئی ادائیگی نہیں ملی!",
   },
-
-  // Timer
   timer: {
     webTimer: "ویب ٹائمر",
     webTimerLabel: "ویب ٹائمر",
@@ -713,8 +756,6 @@ const ur = {
     whatAreYouWorkingOn: "آپ کس پر کام کر رہے ہیں؟",
     selectProject: "پراجیکٹ منتخب کریں",
   },
-
-  // Reports
   reports: {
     reports: "رپورٹس",
     backToReports: "رپورٹس پر واپس",
@@ -729,8 +770,6 @@ const ur = {
     exportAsCsv: "CSV کے طور پر برآمد کریں",
     exportAsPdf: "PDF کے طور پر برآمد کریں",
     toggleReportFilters: "رپورٹ فلٹرز ٹوگل کریں",
-
-    // Filters
     clients: "کلائنٹس",
     teamMembers: "ٹیم ممبرز",
     groupBy: "گروپ بائی",
@@ -739,25 +778,28 @@ const ur = {
     searchClientsFilter: "کلائنٹس تلاش کریں...",
     searchTeamMembersFilter: "ٹیم ممبرز تلاش کریں...",
     applyFilter: "فلٹر لاگو کریں",
-
-    // Time entry report
     totalHours: "کل گھنٹے",
     scrollToLoadMoreRows: "مزید رپورٹ قطاریں لوڈ کرنے کے لیے سکرول کریں",
     loadingMoreRows: "مزید رپورٹ قطاریں لوڈ ہو رہی ہیں...",
     allRowsLoaded: "تمام رپورٹ قطاریں لوڈ ہو گئیں",
-
-    // Payment report
     perTransaction: "فی لین دین",
     topMethod: "سب سے زیادہ استعمال شدہ طریقہ",
     paymentMethodsBreakdown: "ادائیگی کے طریقوں کی تفصیل",
     paymentDetails: "ادائیگی کی تفصیلات",
     unableToLoadPaymentReport: "ادائیگی رپورٹ لوڈ کرنے سے قاصر",
+    totalPayments: "کل ادائیگیاں",
+    paymentCount: "ادائیگی کی گنتی",
+    averagePayment: "اوسط ادائیگی",
+    totalTransactions: "کل لین دین",
+    selectedPeriod: "منتخب مدت",
+    noPaymentsFoundForSelectedPeriod: "منتخب مدت کے لیے کوئی ادائیگی نہیں ملی۔",
+    showingPayments: "%{total} ادائیگیوں میں سے %{shown} دکھا رہا ہے۔",
+    scrollToLoadMorePayments: "مزید ادائیگیاں لوڈ کرنے کے لیے اسکرول کریں۔",
+    clientsSelected: "%{count} کلائنٹس",
     paymentMethod: "ادائیگی کا طریقہ",
     allMethods: "تمام طریقے",
     creditCard: "کریڈٹ کارڈ",
     allStatus: "تمام حیثیتیں",
-
-    // Revenue by client report
     totalRevenue: "کل آمدنی",
     paidRevenue: "ادا شدہ آمدنی",
     paidAmount: "ادا شدہ رقم",
@@ -769,22 +811,33 @@ const ur = {
     withRevenue: "آمدنی کے ساتھ",
     searchClients: "کلائنٹس تلاش کریں",
     filterClients: "کلائنٹس فلٹر کریں...",
+    columns: "کالم",
+    clientName: "کلائنٹ کا نام",
+    invoices: "رسیدیں",
     revenueBreakdown: "آمدنی کی تفصیل",
     detailedRevenueAnalysis: "کلائنٹ کے لحاظ سے تفصیلی آمدنی کا تجزیہ",
     clientRevenueDetails: "کلائنٹ آمدنی کی تفصیلات",
     scrollToLoadMoreClients: "مزید کلائنٹس لوڈ کرنے کے لیے سکرول کریں",
     allClientsLoaded: "تمام کلائنٹس لوڈ ہو گئے",
-
-    // Outstanding invoice report
+    clearClients: "کلائنٹس کو صاف کریں۔",
+    successfullyCollected: "کامیابی کے ساتھ جمع ہو گیا۔",
+    pendingCollection: "زیر التواء مجموعہ",
+    requiresAttention: "توجہ کی ضرورت ہے۔",
+    revenueMixByClient: "کلائنٹ کے حساب سے ریونیو مکس",
+    noClientRevenueData:
+      "منتخب کردہ فلٹرز کے لیے کلائنٹ کی آمدنی کا کوئی ڈیٹا دستیاب نہیں ہے۔",
+    paid: "ادا کیا",
+    awaitingPayment: "ادائیگی کا انتظار ہے۔",
     failedToLoadReportData: "رپورٹ ڈیٹا لوڈ کرنے میں ناکامی",
     currencyFilter: "کرنسی فلٹر",
     fromDate: "تاریخ سے",
     toDate: "تاریخ تک",
     export: "برآمد",
     csv: "CSV",
-    pdf: "PDF",
-    excel: "Excel",
+    pdf: "پی ڈی ایف",
+    excel: "ایکسل",
     statusOverview: "حیثیت کا جائزہ",
+    agingDistribution: "عمر رسیدہ تقسیم",
     currencyDistribution: "کرنسی کی تقسیم",
     topClients: "سرفہرست کلائنٹس",
     clientAnalysis: "کلائنٹ تجزیہ",
@@ -793,8 +846,6 @@ const ur = {
     clientBreakdown: "کلائنٹ تفصیل",
     originalAmount: "اصل رقم",
     baseAmount: "بنیادی رقم",
-
-    // Accounts aging report
     totalDue: "کل واجب الادا",
     invoiceAgingDetails: "انوائس ایجنگ تفصیلات",
     noDataFound: "کوئی ڈیٹا نہیں ملا",
@@ -805,6 +856,7 @@ const ur = {
     zeroToThirtyDays: "0-30 دن",
     thirtyOneToSixtyDays: "31-60 دن",
     sixtyOneToNinetyDays: "61-90 دن",
+    sixtyPlusDays: "60+ دن",
     ninetyPlusDays: "90+ دن",
     noClientsWithOutstandingBalances: "بقایا بیلنس والے کوئی کلائنٹس نہیں۔",
     showingOfClients:
@@ -907,6 +959,8 @@ const ur = {
     openReport: "%{title} رپورٹ کھولیں",
     reviewHoursLogged:
       "شخص، کلائنٹ، اور پراجیکٹ کے لحاظ سے درج شدہ گھنٹوں کا جائزہ لیں۔",
+    shareReport: "رپورٹ شیئر کریں۔",
+    linkCopied: "لنک کاپی ہو گیا۔",
     lastSevenDaysPreset: "آخری 7 دن",
     lastThirtyDaysPreset: "آخری 30 دن",
     totalEntries: "کل اندراجات",
@@ -934,8 +988,6 @@ const ur = {
     unknownProject: "نامعلوم پراجیکٹ",
     generatingExport: "%{format} تیار ہو رہا ہے",
   },
-
-  // Expenses
   expenses: {
     expenses: "اخراجات",
     addExpense: "خرچ شامل کریں",
@@ -950,12 +1002,16 @@ const ur = {
     category: "زمرہ",
     selectCategory: "زمرہ منتخب کریں",
     selectCategoryEllipsis: "زمرہ منتخب کریں...",
+    customCategory: "حسب ضرورت زمرہ",
+    enterCustomCategory: "حسب ضرورت زمرہ درج کریں۔",
     vendor: "فروش",
     enterVendor: "فروش درج کریں",
     enterVendorName: "فروش کا نام درج کریں",
     receipt: "رسید",
     receiptOptional: "رسید (اختیاری)",
     receipts: "رسیدیں",
+    receiptsAttached: "%{count} منسلک ہے۔",
+    preview: "پیش نظارہ",
     uploadReceipt: "رسید اپ لوڈ کریں",
     uploadFile: "فائل اپ لوڈ کریں",
     noExpenses: "کوئی اخراجات نہیں ملے",
@@ -1014,39 +1070,61 @@ const ur = {
     viewExistingReceipts: "موجودہ رسیدیں دیکھیں (%{count})",
     viewReceiptsFor: "%{description} کی رسیدیں دیکھیں",
     expenseActionsFor: "%{description} کے خرچ کے اقدامات",
+    receiptPreview: "رسید کا پیش نظارہ",
+    reviewUploadedReceipts:
+      "اس اخراجات کے لیے اپ لوڈ کردہ رسیدوں کا جائزہ لیں۔",
   },
-
-  // Settings
-  settings: {
-    settings: "ترتیبات",
-    profileSettings: "پروفائل ترتیبات",
-    organizationSettings: "تنظیم ترتیبات",
-    paymentSettings: "ادائیگی ترتیبات",
-    profilePicture: "پروفائل تصویر",
-    changePassword: "پاس ورڈ تبدیل کریں",
-    currentPassword: "موجودہ پاس ورڈ",
-    password: "پاس ورڈ",
-    confirmPassword: "پاس ورڈ کی تصدیق",
-    billing: "بلنگ",
-    integrations: "انٹیگریشنز",
-    leaves: "رخصتیں",
-    import: "درآمد",
-    general: "عمومی",
-    profile: "پروفائل",
-    organization: "تنظیم",
-    payment: "ادائیگی",
-    allocateLeaves: "رخصتیں مختص کریں",
-    customLeaves: "حسب ضرورت رخصتیں",
-    addCustomLeave: "حسب ضرورت رخصت شامل کریں",
-    editCustomLeave: "حسب ضرورت رخصت ترمیم کریں",
-    leaveType: "رخصت کی قسم",
-    enterLeaveType: "رخصت کی قسم درج کریں",
-    allocationValue: "مختص قدر",
-    allocationPeriod: "مختص مدت",
-    allocationFrequency: "مختص تعدد",
+  importModal: {
+    importTitle: "درآمد کریں %{title}",
+    uploadFile: "فائل اپ لوڈ کریں۔",
+    supportedFormats: "معاون فائل فارمیٹس: .xls, .xlsx, .csv",
+    reviewMappedFields:
+      "ہم نے فائل سے درج ذیل کالموں کی نشاندہی کی ہے اور انہیں مطلوبہ فیلڈز میں میپ کیا ہے۔ براہ کرم جائزہ لیں اور تصدیق کریں۔",
+    startImport: "درآمد شروع کریں۔",
+    importingEntries: "%{count} وقت کے اندراجات درآمد کر رہا ہے۔",
+    backgroundImportNotice:
+      "اسے مکمل ہونے میں کچھ وقت لگ سکتا ہے۔ ہم پس منظر میں درآمد جاری رکھیں گے چاہے آپ اس ونڈو کو بند کر دیں اور اس کے مکمل ہونے پر آپ کو ای میل بھیجیں۔",
+    closeWindow: "ونڈو بند کریں۔",
+    importComplete: "درآمد مکمل!",
+    importSummary: "درآمد کا خلاصہ",
+    totalTimeEntries: "کل وقت کے اندراجات",
+    successfullyImported: "کامیابی کے ساتھ درآمد ہو گیا۔",
+    failedToImport: "درآمد کرنے میں ناکام",
+    detailedLogSent: "ہم نے آپ کے ای میل پر ایک تفصیلی لاگ بھیج دیا ہے۔",
+    importAnotherFile: "دوسری فائل درآمد کریں۔",
+    mapFields: "نقشے کے میدان",
+    import: "درآمد کریں۔",
   },
-
-  // Leave types
+  importCatalog: {
+    subtitle: "اپنا ڈیٹا میرو میں درآمد کریں۔",
+    invoices: {
+      title: "رسیدیں",
+      description:
+        "اپنے پچھلے انوائسنگ ٹول یا سافٹ ویئر سے ماضی کا انوائس ڈیٹا درآمد کریں۔",
+      fields: {
+        invoiceNumber: "انوائس نمبر",
+        clientName: "کلائنٹ کا نام",
+        issueDate: "جاری ہونے کی تاریخ",
+        dueDate: "دو تاریخیں۔",
+        amount: "رقم",
+        status: "حیثیت",
+      },
+    },
+    timeEntries: {
+      title: "وقت کے اندراجات",
+      description:
+        "اپنے پچھلی ٹائم ٹریکنگ ٹول یا سافٹ ویئر سے پچھلے وقت کے اندراجات درآمد کریں۔",
+      fields: {
+        employeeName: "ملازم کا نام",
+        date: "تاریخ",
+        hours: "گھنٹے",
+        status: "حیثیت",
+        client: "کلائنٹ",
+        project: "پروجیکٹ",
+        description: "تفصیل",
+      },
+    },
+  },
   leaveTypes: {
     annualLeaves: "سالانہ رخصتیں",
     sickLeaves: "بیماری کی رخصتیں",
@@ -1054,23 +1132,17 @@ const ur = {
     paternityLeave: "ولدیت کی رخصت",
     periodLeave: "ماہواری کی رخصت",
   },
-
-  // Allocation periods
   allocationPeriods: {
     days: "دن",
     weeks: "ہفتے",
     months: "ماہ",
   },
-
-  // Allocation frequencies
   allocationFrequencies: {
     perWeek: "فی ہفتہ",
     perMonth: "فی ماہ",
     perQuarter: "فی سہ ماہی",
     perYear: "فی سال",
   },
-
-  // Navbar
   navbar: {
     clients: "کلائنٹس",
     invoices: "انوائسز",
@@ -1122,130 +1194,32 @@ const ur = {
     leavesDescription: "چھٹی کی درخواستیں منظم کریں",
     expensesDescription: "کاروباری اخراجات ٹریک کریں",
   },
-
-  // Dashboard
-  dashboard: {
-    dashboard: "ڈیش بورڈ",
-    overdue: "واجب الادا",
-    outstanding: "بقایا",
-    totalHours: "کل گھنٹے",
-    revenueOverview: "آمدنی کا جائزہ",
-    welcomeBack: "خوش آمدید، %{name}",
-    companyPulse: "کمپنی پلس",
-    yearToDate: "سال تا تاریخ",
-    quarterToDate: "سہ ماہی تا تاریخ",
-    monthToDate: "ماہ تا تاریخ",
-    weekToDate: "ہفتہ تا تاریخ",
-    revenue: "آمدنی",
-    activeProjects: "فعال پراجیکٹس",
-    currentlyActive: "فی الحال فعال",
-    noRecentActivity: "کوئی حالیہ سرگرمی نہیں",
-    teamSize: "ٹیم کا سائز",
-    teammates: "ساتھی",
-    hoursTracked: "ٹریک شدہ گھنٹے",
-    assignedProjects: "تفویض شدہ پراجیکٹس",
-    projectsYouCanWorkOn: "جن پراجیکٹس پر آپ کام کر سکتے ہیں",
-    totalInvoiced: "کل انوائس شدہ",
-    openInvoices: "کھلی انوائسز",
-    awaitingPayment: "ادائیگی کے منتظر",
-    paidInvoices: "ادا شدہ انوائسز",
-    alreadySettled: "پہلے سے طے شدہ",
-    paymentsReceived: "موصول شدہ ادائیگیاں",
-    employeeGuidance:
-      "اپنے ہفتے کو ٹریک کریں، درست اندراجات جمع کریں، اور کام جاری رکھیں۔",
-    bookKeeperGuidance:
-      "آنے والی ادائیگیوں کا جائزہ لیں، انوائسز کی مطابقت کریں، اور نقد بہاؤ واضح رکھیں۔",
-    clientGuidance:
-      "اپنے اکاؤنٹ کی انوائس کی حیثیت اور ادائیگی کی تاریخ دیکھیں۔",
-    defaultGuidance: "آمدنی، پراجیکٹس، اور ٹیم کی رفتار ایک نظر میں۔",
-    recentActivity: "حالیہ سرگرمی",
-    workspaceActivity: "ورک سپیس سرگرمی",
-    employeeActivityDescription:
-      "آپ کا ڈیش بورڈ ٹائم ٹریکنگ اور تفویض شدہ کام پر مرکوز ہے۔",
-    activityDescription: "آپ کی انوائسز اور ادائیگیوں کی تازہ ترین اپ ڈیٹس",
-    noRecentActivityYet: "ابھی تک کوئی حالیہ سرگرمی نہیں",
-    loadMore: "مزید لوڈ کریں",
-    allCaughtUp: "آپ سب اپ ٹو ڈیٹ ہیں",
-  },
-
-  // Authentication
-  auth: {
-    signIn: "سائن ان",
-    signUp: "سائن اپ",
-    signOut: "سائن آؤٹ",
-    welcomeBack: "خوش آمدید!",
-    loginFailed: "لاگ ان ناکام۔ براہ کرم دوبارہ کوشش کریں۔",
-    noAuthTokenReceived: "کوئی تصدیقی ٹوکن موصول نہیں ہوا",
-    signInToWorkspace: "اپنے ورک سپیس میں سائن ان کریں",
-    createYourWorkspace: "اپنا ورک سپیس بنائیں",
-    signInDescription:
-      "ایک جگہ سے کام ٹریک کریں، انوائسز بھیجیں، اور نقد بہاؤ واضح رکھیں۔",
-    signUpDescription:
-      "ایک واضح آپریٹنگ سسٹم میں کلائنٹس، پراجیکٹس، انوائسز، اور ادائیگیاں ترتیب دیں۔",
-    firstName: "پہلا نام",
-    lastName: "آخری نام",
-    password: "پاس ورڈ",
-    confirmPassword: "پاس ورڈ کی تصدیق",
-    waitingForPasskey: "پاس کی کا انتظار...",
-    forgotPassword: "پاس ورڈ بھول گئے؟",
-    enterRegisteredEmail: "اپنی رجسٹرڈ ای میل آئی ڈی درج کریں",
-    resetPassword: "پاس ورڈ ری سیٹ کریں",
-    resetPasswordInstructions:
-      "اپنے اکاؤنٹ سے وابستہ ای میل ایڈریس درج کریں اور ہم آپ کو پاس ورڈ ری سیٹ کرنے کا لنک بھیجیں گے۔",
-    sendResetLink: "ری سیٹ لنک بھیجیں",
-    backToLogin: "لاگ ان پر واپس",
-    alreadyHaveAccount: "پہلے سے اکاؤنٹ ہے؟",
-    dontHaveAccount: "اکاؤنٹ نہیں ہے؟",
-    rememberMe: "مجھے یاد رکھیں",
-    totpPlaceholder: "ABCD-EFGH",
-    companyPulse: "کمپنی پلس",
-    billingCommand: "بلنگ کمانڈ",
-    clearWeeklyFlow: "واضح ہفتہ وار بہاؤ",
-    cashLedger: "نقد لیجر",
-    miruLogo: "Miru",
-    heroTitle: "وقت، انوائسز، اور ادائیگیوں کے لیے ایک جگہ",
-    heroDescription: "دن واضح رکھیں، بلنگ جاری رکھیں، اور نقدی نظر میں رکھیں۔",
-    slideShowPrefix: "دکھائیں",
-    slideDashboardDescription:
-      "آمدنی، فعال پراجیکٹس، اور ٹیم کی رفتار بغیر تلاش کیے دیکھیں۔",
-    slideInvoicesDescription:
-      "مسودے، واجب الادا بیلنس، اور ادا شدہ کام ایک جگہ رکھیں۔",
-    slideTimeTrackingDescription:
-      "ہفتہ وار وقت کا اندراج مصروف کام میں بدلے بغیر تازہ رہتا ہے۔",
-    slidePaymentsDescription:
-      "ہر ادائیگی ایک لیجر میں طریقہ، حیثیت، اور ذریعے کے ساتھ آتی ہے۔",
-    continueWithGoogle: "Google کے ساتھ جاری رکھیں",
-    continueWithGithub: "GitHub کے ساتھ جاری رکھیں",
-    orUseEmail: "یا ای میل استعمال کریں",
-    verifyWithAuthenticator: "اپنی تصدیق کنندہ ایپ سے تصدیق کریں",
-    authenticatorInstructions:
-      "اپنی تصدیق کنندہ ایپ سے 6 ہندسوں کا کوڈ درج کریں، یا ریکوری کوڈ استعمال کریں۔",
-    authenticatorCode: "تصدیق کنندہ کوڈ",
-    recoveryCode: "ریکوری کوڈ",
-    verifyAndSignIn: "تصدیق کریں اور سائن ان کریں",
-    completePasskeyVerification:
-      "سائن ان مکمل کرنے کے لیے پاس کی تصدیق مکمل کریں۔",
-    enterAuthenticatorCode:
-      "سائن ان مکمل کرنے کے لیے اپنا تصدیق کنندہ کوڈ درج کریں۔",
-    invalidVerificationCode: "غلط تصدیقی کوڈ۔",
-    privacy: "رازداری",
-    terms: "شرائط",
-    createAccount: "اکاؤنٹ بنائیں",
-    passwordCriteria:
-      "کم از کم 8 حروف، 1 بڑا حرف، 1 چھوٹا حرف، 1 نمبر اور 1 خاص حرف",
-    agreeToTerms: "میں متفق ہوں",
-    termsOfService: "سروس کی شرائط",
-    privacyPolicy: "رازداری کی پالیسی",
-    and: "اور",
-  },
-
-  // Passkeys
   passkeys: {
     noPasskeyResponse: "کوئی پاس کی جواب موصول نہیں ہوا۔",
     passkeysNotSupported: "اس براؤزر میں پاس کیز سپورٹ نہیں ہیں۔",
+    title: "پاسکیز",
+    addTitle: "اس اکاؤنٹ کے لیے ایک پاسکی شامل کریں۔",
+    addDescription:
+      "فیس آئی ڈی، ٹچ آئی ڈی، ونڈوز ہیلو، یا ہارڈویئر سیکیورٹی کلید استعمال کریں۔",
+    addAction: "پاسکی شامل کریں۔",
+    requirementTitle: "سائن ان کرنے پر پاس کلید درکار ہے۔",
+    requirementDescription:
+      "آپ کے پاس ورڈ کے بعد، Miru کو سائن ان مکمل کرنے کے لیے ایک پاسکی کی ضرورت ہوگی۔",
+    emptyState: "ابھی تک کوئی پاسکیز شامل نہیں کی گئیں۔",
+    fallbackName: "پاسکی",
+    addedAt: "شامل کیا گیا %{time}",
+    lastUsedAt: "آخری بار استعمال کیا گیا %{time}",
+    removeAction: "ہٹا دیں۔",
+    addedSuccess: "پاسکی شامل کی گئی۔",
+    removedSuccess: "پاسکی ہٹا دی گئی۔",
+    requirementEnabled: "پاسکی کی ضرورت فعال ہے۔",
+    requirementDisabled: "پاسکی کی ضرورت غیر فعال ہے۔",
+    addFailed: "پاس کلید شامل کرنے میں ناکام۔",
+    removeFailed: "پاسکی کو ہٹانے میں ناکام۔",
+    updateRequirementFailed:
+      "پاس کی سائن ان کی ضرورت کو اپ ڈیٹ کرنے میں ناکام۔",
+    neverUsed: "کبھی استعمال نہیں کیا۔",
   },
-
-  // Organization setup
   orgSetup: {
     setupOrganization: "تنظیم ترتیب دیں",
     companyName: "کمپنی کا نام",
@@ -1272,26 +1246,450 @@ const ur = {
     workingDaysPerWeek: "کام کے دن (فی ہفتہ)",
     workingHoursPerWeek: "کام کے گھنٹے (فی ہفتہ)",
   },
-
-  // Profile
   profile: {
     personalDetails: "ذاتی تفصیلات",
+    personalInformation: "ذاتی معلومات",
+    basicDetails: "بنیادی تفصیلات",
+    contactInformation: "رابطہ کی معلومات",
+    addressType: "ایڈریس کی قسم",
+    current: "کرنٹ",
+    permanent: "مستقل",
     employmentDetails: "ملازمت کی تفصیلات",
     compensationDetails: "معاوضے کی تفصیلات",
     devices: "آلات",
     editProfile: "پروفائل ترمیم کریں",
     currentEmployment: "موجودہ ملازمت",
     previousEmployment: "سابقہ ملازمت",
+    employeeId: "ملازم کی شناخت",
     designation: "عہدہ",
+    officialEmail: "ای میل آئی ڈی (آفیشل)",
+    employmentType: "ملازمت کی قسم",
     department: "شعبہ",
     dateOfJoining: "شمولیت کی تاریخ",
+    dateOfResignation: "استعفیٰ کی تاریخ",
     dateOfBirth: "تاریخ پیدائش",
+    birthDatePlaceholder: "اپنی تاریخ پیدائش منتخب کریں۔",
     socialProfiles: "سوشل پروفائلز",
     linkedin: "LinkedIn",
-    github: "GitHub",
+    github: "گٹ ہب",
+    firstName: "پہلا نام",
+    lastName: "آخری نام",
+    firstNamePlaceholder: "اپنا پہلا نام درج کریں۔",
+    lastNamePlaceholder: "اپنا آخری نام درج کریں۔",
+    personalEmail: "ذاتی ای میل",
+    personalEmailPlaceholder: "your.email@example.com",
+    phoneAriaLabel: "فون نمبر",
+    addressLine1: "ایڈریس لائن 1",
+    addressLine2: "ایڈریس لائن 2",
+    optionalSuffix: "(اختیاری)",
+    streetAddressPlaceholder: "گلی کا پتہ",
+    addressLine2Placeholder: "اپارٹمنٹ، سویٹ، یونٹ، وغیرہ",
+    statePlaceholder: "ریاست یا صوبہ",
+    cityPlaceholder: "شہر",
+    zipPostalCode: "زپ/پوسٹل کوڈ",
+    zipPlaceholder: "12345",
+    languageDescription: "انٹرفیس کے لیے اپنی پسندیدہ زبان کا انتخاب کریں۔",
+    security: "سیکورٹی",
+    userFallback: "صارف",
+    currentPasswordPlaceholder: "موجودہ پاس ورڈ درج کریں۔",
+    newPassword: "نیا پاس ورڈ",
+    newPasswordPlaceholder: "نیا پاس ورڈ درج کریں۔",
+    confirmPasswordPlaceholder: "نیا پاس ورڈ دوبارہ درج کریں۔",
+    cancelPasswordChange: "پاس ورڈ کی تبدیلی منسوخ کریں۔",
+    profilePhoto: "پروفائل فوٹو",
+    profilePhotoDescription:
+      "اپنے ورک اسپیس پروفائل کے لیے ایک مربع تصویر اپ لوڈ کریں۔",
+    noAddressProvided: "کوئی پتہ فراہم نہیں کیا گیا۔",
+    noEmailProvided: "کوئی ای میل فراہم نہیں کی گئی۔",
+    notProvided: "فراہم نہیں کیا گیا۔",
+    notConnected: "منسلک نہیں",
+    bornOn: "پیدائش %{date}",
+    lastChangedDaysAgo: "آخری بار تبدیل کیا گیا %{count} دن پہلے",
+    secure: "محفوظ",
+    uploadPhoto: "تصویر اپ لوڈ کریں۔",
+    removePhoto: "تصویر ہٹا دیں۔",
+    uploadPhotoFailed: "پروفائل تصویر اپ لوڈ کرنے میں ناکام۔",
+    removePhotoFailed: "پروفائل تصویر ہٹانے میں ناکام۔",
+    adjustProfilePhoto: "پروفائل تصویر کو ایڈجسٹ کریں۔",
+    adjustProfilePhotoDescription:
+      "تصویر کا وہ حصہ منتخب کریں جسے آپ رکھنا چاہتے ہیں۔",
+    noImageSelected: "کوئی تصویر منتخب نہیں کی گئی۔",
+    savePhoto: "تصویر محفوظ کریں۔",
+    zoom: "زوم",
+    company: "کمپنی",
+    noPreviousEmployments: "کوئی سابقہ روزگار نہیں ملا",
+    addPastEmployment: "+ ماضی کی ملازمت شامل کریں۔",
   },
-
-  // Leave Management
+  preferencesSettings: {
+    title: "ای میل کی ترجیحات",
+    description: "اپنی ای میل اطلاع کی ترتیبات کا نظم کریں۔",
+    saving: "محفوظ کر رہا ہے...",
+    saveChanges: "تبدیلیاں محفوظ کریں۔",
+    timesheetNotifications: "ٹائم شیٹ کی اطلاعات",
+    billingNotifications: "بلنگ کی اطلاعات",
+    timesheetNotificationsDescription:
+      "ٹائم ٹریکنگ اور ٹائم شیٹس سے متعلق اطلاعات کا نظم کریں۔",
+    billingNotificationsDescription:
+      "انوائس اور ادائیگی کی اطلاعات کو کنٹرول کریں۔",
+    weeklyReminderTitle: "ہفتہ وار ٹائم شیٹ کی یاد دہانی",
+    weeklyReminderDescription:
+      "زیر التواء ٹائم شیٹ اندراجات کے بارے میں ہر پیر کو ہفتہ وار یاددہانی حاصل کریں۔",
+    timesheetReminderTitle: "داخلے کی یاد دہانیاں غائب ہیں۔",
+    timesheetReminderDescription:
+      "جب آپ نے 2 دن سے زیادہ لاگ ان نہیں کیا ہے تو اطلاع حاصل کریں۔",
+    invoiceNotificationsTitle: "انوائس ای میل اطلاعات",
+    invoiceNotificationsDescription:
+      "انوائسز بننے، بھیجے یا اپ ڈیٹ ہونے پر ای میلز موصول کریں۔",
+    paymentNotificationsTitle: "ادائیگی کی ای میل اطلاعات",
+    paymentNotificationsDescription:
+      "ادائیگیاں موصول ہونے یا ادائیگی کی حیثیت تبدیل ہونے پر مطلع کریں۔",
+    monthlyDigestTitle: "ماہانہ کیش فلو ڈائجسٹ",
+    monthlyDigestDescription:
+      "ماہانہ کیش فلو کا خلاصہ حاصل کریں جس میں خالص تبدیلی، پیسہ اندر اور پیسہ باہر ہے۔",
+    confirmUnsubscribeTitle: "تمام ای میلز سے ان سبسکرائب کی تصدیق کریں۔",
+    confirmUnsubscribeDescription:
+      "کیا آپ واقعی تمام ای میل اطلاعات سے ان سبسکرائب کرنا چاہتے ہیں؟ آپ کو اہم بلنگ اور انوائس اطلاعات سمیت کوئی بھی ای میل موصول نہیں ہوگی۔",
+    confirmUnsubscribeAction: "ہاں، سب سے ان سبسکرائب کریں۔",
+    unsubscribedTitle: "آپ تمام ای میلز سے ان سبسکرائب کر چکے ہیں۔",
+    unsubscribedDescription:
+      "آپ فی الحال تمام ای میل اطلاعات سے ان سبسکرائب شدہ ہیں۔ آپ کو Miru کی طرف سے کوئی ای میل موصول نہیں ہوگی۔",
+    resubscribeAction: "ای میل اطلاعات کو دوبارہ فعال کریں۔",
+    enabledCount: "%{count} از %{total} فعال",
+    deliveryTitle: "ای میل کی ترسیل کی ترتیبات",
+    emailAddress: "ای میل ایڈریس",
+    deliveryDescription:
+      "تمام اطلاعات اس ای میل ایڈریس پر بھیجی جائیں گی۔ اپنا ای میل تبدیل کرنے کے لیے، براہ کرم اسے اپنی پروفائل کی ترتیبات میں اپ ڈیٹ کریں۔",
+    unsubscribeTitle: "ان سبسکرائب کریں۔",
+    unsubscribeDescription:
+      "اگر آپ میرو سے کوئی ای میل موصول نہیں کرنا چاہتے تو آپ تمام اطلاعات سے رکنیت ختم کر سکتے ہیں۔ یہ تمام ای میل مواصلات کو روک دے گا بشمول اہم بلنگ اور انوائس اطلاعات۔",
+    unsubscribeAction: "تمام ای میلز سے ان سبسکرائب کریں۔",
+    badges: {
+      active: "فعال",
+      important: "اہم",
+      monthly: "ماہانہ",
+    },
+  },
+  automationSettings: {
+    title: "آٹومیشن اور CLI",
+    description:
+      "اپنے ٹرمینل، اسکرپٹس، یا AI ایجنٹس سے Miru کا استعمال انہی اجازتوں کے ساتھ کریں جو آپ کے لاگ ان کردہ اکاؤنٹ میں ہے۔ کوئی علیحدہ آٹومیشن پروڈکٹ نہیں۔ کوئی خاص بیک ڈور رسائی نہیں۔",
+    freeForEveryPlan: "ہر پلان کے لیے مفت",
+    cards: {
+      samePermissionsTitle: "ایپ جیسی ہی اجازتیں۔",
+      samePermissionsDescription:
+        "CLI صرف یہ دیکھتا ہے کہ تصدیق شدہ صارف پہلے ہی ویب ایپ میں کیا رسائی حاصل کر سکتا ہے۔",
+      humansAndScriptsTitle: "انسانوں اور اسکرپٹ کے لیے اچھا ہے۔",
+      humansAndScriptsDescription:
+        "روزمرہ کے کاموں کے لیے آسان کمانڈ رکھیں اور اسکرپٹس یا AI کو بالکل وہی انٹرفیس کال کرنے دیں۔",
+      easyToInstallTitle: "انسٹال کرنا آسان ہے۔",
+      easyToInstallDescription:
+        "ایک انسٹال کمانڈ، ایک لاگ ان، اور پھر آپ پروجیکٹس کی فہرست بنا سکتے ہیں، وقت کے اندراجات بنا سکتے ہیں، رسیدوں کا جائزہ لے سکتے ہیں، اور بہت کچھ۔",
+    },
+    commandGroups: {
+      install: "انسٹال کریں۔",
+      authenticateOnce: "ایک بار تصدیق کریں۔",
+      dailyCommands: "روزانہ کے احکامات",
+    },
+  },
+  holidaysSettings: {
+    year: "سال",
+    publicHolidays: "عوامی تعطیلات",
+    optionalHolidays: "اختیاری تعطیلات",
+    holidayName: "چھٹیوں کا نام",
+    enterHolidayName: "چھٹی کا نام درج کریں۔",
+    selectDate: "تاریخ منتخب کریں۔",
+    addHoliday: "تعطیلات شامل کریں۔",
+    addFirstHoliday: "پہلی چھٹی شامل کریں۔",
+    addOptionalHoliday: "اختیاری چھٹیاں شامل کریں۔",
+    noPublicHolidaysConfigured: "کوئی عوامی تعطیلات ترتیب نہیں دی گئی ہیں۔",
+    noOptionalHolidaysConfigured: "کوئی اختیاری تعطیلات ترتیب نہیں دی گئی ہیں۔",
+    totalAllowed: "کل اجازت ہے۔",
+    enterNumber: "نمبر درج کریں۔",
+    frequency: "تعدد",
+    allowedPerEmployee: "فی ملازم کی اجازت ہے۔",
+    yearAtAGlance: "سال ایک نظر میں",
+    holidaySchedule: "چھٹیوں کا شیڈول",
+    noHolidaysAddedForYear:
+      "ابھی تک %{year} کے لیے کوئی چھٹیاں شامل نہیں کی گئیں۔",
+    categories: {
+      public: "عوامی",
+      optional: "اختیاری",
+    },
+    weekdays: {
+      sun: "ایس",
+      mon: "ایم",
+      tue: "ٹی",
+      wed: "ڈبلیو",
+      thu: "ٹی",
+      fri: "ایف",
+      sat: "ایس",
+    },
+  },
+  paymentSettingsPage: {
+    backToSettings: "ترتیبات پر واپس جائیں۔",
+    title: "ادائیگی فراہم کرنے والے",
+    description:
+      "کلائنٹس سے آن لائن ادائیگیاں قبول کرنے کے لیے ادائیگی فراہم کرنے والوں سے رابطہ کریں۔",
+    errorTitle: "خرابی",
+    errorDescription:
+      "ادائیگی کی ترتیبات لوڈ کرنے میں ناکام۔ براہ کرم بعد میں دوبارہ کوشش کریں۔",
+    stripeDescription:
+      "کریڈٹ کارڈز، ڈیبٹ کارڈز، اور مقبول ادائیگی کے طریقے قبول کریں۔",
+    connectedTo: "سے جڑا ہوا ہے۔",
+    connected: "جڑا ہوا",
+    stripeAccountFallback: "پٹی اکاؤنٹ",
+    chargesEnabled: "چارجز فعال",
+    connectStripe: "پٹی کو جوڑیں۔",
+    connecting: "منسلک ہو رہا ہے...",
+    disconnect: "منقطع کرنا",
+    disconnecting: "منقطع ہو رہا ہے...",
+    featuresTitle: "خصوصیات اور فوائد",
+    helpTitle: "مدد کی ضرورت ہے؟",
+    helpDescription:
+      "اگر آپ کو ادائیگی کے عمل کو ترتیب دینے میں مدد کی ضرورت ہے یا فیس اور صلاحیتوں کے بارے میں سوالات ہیں:",
+    viewDocumentation: "دستاویزات دیکھیں",
+    contactSupport: "سپورٹ سے رابطہ کریں۔",
+    disconnectDialogTitle: "پٹی اکاؤنٹ منقطع کریں۔",
+    disconnectDialogDescription:
+      "کیا آپ واقعی اپنا اسٹرائپ اکاؤنٹ منقطع کرنا چاہتے ہیں؟ آپ اس وقت تک اسٹرائپ کے ذریعے ادائیگیاں قبول نہیں کر سکیں گے جب تک کہ آپ دوبارہ رابطہ نہ کریں۔",
+    disconnectPaymentModeDescription:
+      "کیا آپ واقعی %{paymentMode} ادائیگی کے گیٹ وے کو منقطع کرنا چاہتے ہیں؟ آپ اس وقت تک %{paymentMode} کے ذریعے ادائیگیاں وصول نہیں کر سکیں گے جب تک کہ آپ %{paymentMode} اکاؤنٹ سے منسلک نہ ہوں۔",
+    features: {
+      secureTitle: "محفوظ ادائیگیاں",
+      secureDescription: "PCI کے مطابق ادائیگی کی پروسیسنگ",
+      currenciesTitle: "متعدد کرنسیاں",
+      currenciesDescription: "135+ کرنسیوں میں ادائیگیاں قبول کریں۔",
+      methodsTitle: "ادائیگی کے مختلف طریقے",
+      methodsDescription: "کارڈز، بٹوے، بینک ٹرانسفر، اور بہت کچھ",
+      setupTitle: "فوری سیٹ اپ",
+      setupDescription: "منٹوں میں ادائیگیاں قبول کرنا شروع کریں۔",
+    },
+  },
+  organizationSettingsPage: {
+    actions: {
+      editSettings: "ترتیبات میں ترمیم کریں۔",
+    },
+    sections: {
+      companyProfile: "کمپنی کا پروفائل",
+      financial: "مالیاتی",
+      scheduleAndTime: "شیڈول اور ٹائم",
+      workingHours: "کام کے اوقات",
+    },
+    fields: {
+      businessPhone: "بزنس فون",
+      currency: "کرنسی",
+      businessAddress: "کاروباری پتہ",
+      standardRate: "معیاری شرح",
+      fiscalYearEnd: "مالی سال کا اختتام",
+      timezone: "ٹائم زون",
+      dateFormat: "تاریخ کی شکل",
+      workingDays: "کام کے دن",
+    },
+    status: {
+      active: "فعال",
+    },
+    defaults: {
+      companyName: "کمپنی کا نام",
+      locationNotSet: "مقام متعین نہیں ہے۔",
+      notConfigured: "کنفیگر نہیں ہے۔",
+      noAddress: "کوئی ایڈریس کنفیگر نہیں ہے۔",
+      workingHours: "9:00 AM - 5:00 PM",
+      workingDays: "پیر - جمعہ",
+      timezone: "UTC",
+      dateFormat: "MM/DD/YYYY",
+    },
+    errors: {
+      loadFailed:
+        "تنظیم کی تفصیلات لوڈ کرنے میں ناکام۔ براہ کرم دوبارہ کوشش کریں۔",
+    },
+    ratePerHour: "/ گھنٹہ",
+  },
+  billingSettings: {
+    membership: "رکنیت",
+    currentPlan: "موجودہ منصوبہ",
+    seatUsage: "سیٹ کا استعمال",
+    billingCadence: "بلنگ کیڈنس",
+    monthly: "ماہانہ",
+    yearly: "سالانہ",
+    notSubscribedYet: "ابھی تک سبسکرائب نہیں کیا",
+    startTrial: "30 دن کا پرو ٹرائل شروع کریں۔",
+    startingTrial: "ٹرائل شروع ہو رہا ہے...",
+    upgradeWithStripe: "پٹی کے ساتھ اپ گریڈ کریں۔",
+    openingStripe: "پٹی کھل رہی ہے...",
+    manageBillingInStripe: "اسٹرائپ میں بلنگ کا نظم کریں۔",
+    openingPortal: "پورٹل کھول رہا ہے...",
+    saveTwoMonths: "سالانہ دو ماہ کی بچت کریں۔",
+    heroTitle:
+      "وہ پیکج چنیں جو اب فٹ بیٹھتا ہے۔ اگر آپ کو مزید ضرورت ہو تو بعد میں سوئچ کریں۔",
+    howManySeats: "آپ کو کتنی نشستوں کی ضرورت ہے؟",
+    estimatedSeats: "تخمینی نشستیں۔",
+    recommended: "تجویز کردہ",
+    estimatedProSpend: "پرو خرچ کا تخمینہ",
+    yearlyDiscount: "سالانہ رعایت",
+    openSource: "اوپن سورس",
+    annual: "سالانہ",
+    service: "سروس",
+    poweredByStripe: "پٹی کے ذریعے تقویت یافتہ",
+    changePlansAnytime: "کسی بھی وقت منصوبوں کو تبدیل کریں۔",
+    checkoutPoweredByStripe:
+      "چیک آؤٹ اور سبسکرپشن مینجمنٹ اسٹرائپ کے ذریعہ تقویت یافتہ ہے۔",
+    noSalesCall:
+      "پرو کے لیے کوئی سیل کال نہیں ہے۔ کسی بھی وقت اسٹرائپ میں منصوبوں کو منسوخ یا تبدیل کریں۔",
+    reportsAndAnalytics: "رپورٹس اور تجزیات",
+    customAnnual: "حسب ضرورت سالانہ",
+    seatsUsed: "%{used}/%{total} نشستیں استعمال کی گئیں۔",
+    seatsUsedWithoutLimit: "%{used} نشستیں استعمال کی گئیں۔",
+    savePerYear: "$%{amount}/سال کی بچت کریں۔",
+    effectiveMonthlyPricing: "تقریباً $%{amount}/ماہ مؤثر قیمت",
+    cancelOrUpgradeAnytime: "اسٹرائپ میں کسی بھی وقت منسوخ یا اپ گریڈ کریں۔",
+    planCadence: {
+      monthly: "مہینہ مہینہ بل",
+      yearlySavings: "فی سیٹ 2 ماہ کی بچت کریں۔",
+    },
+    alerts: {
+      subscriptionUpdatedTitle: "سبسکرپشن اپ ڈیٹ ہو گئی۔",
+      subscriptionUpdated:
+        "آپ کا منصوبہ اسٹرائپ میں کامیابی کے ساتھ اپ ڈیٹ ہو گیا تھا۔",
+      checkoutCancelled: "چیک آؤٹ منسوخ کر دیا گیا۔",
+      noSubscriptionChanges: "آپ کی رکنیت میں کوئی تبدیلی نہیں کی گئی۔",
+      unableToLoad: "بلنگ کی تفصیلات لوڈ کرنے سے قاصر",
+      proTrialActive: "پرو ٹرائل فعال",
+      proTrialActiveUntil: "آپ کے ورک اسپیس کو %{date} تک پرو رسائی حاصل ہے۔",
+      proTrialEnded: "پرو ٹرائل ختم ہو گیا۔",
+      proTrialEndedDescription:
+        "آپ کی ورک اسپیس مفت پلان پر واپس آ گئی ہے۔ پرو رسائی کو بحال کرنے کے لیے اسٹرائپ میں اپ گریڈ کریں۔",
+      seatLimitReached: "سیٹ کی حد پوری ہو گئی۔",
+      seatLimitReachedDescription:
+        "اس ورک اسپیس میں 3 سے زیادہ اراکین کو شامل کرنے کے لیے اسٹرائپ میں اپ گریڈ کریں۔",
+    },
+    errors: {
+      unableToOpenStripeCheckout: "اسٹرائپ چیک آؤٹ کھولنے سے قاصر",
+      unableToOpenStripeBillingPortal: "اسٹرائپ بلنگ پورٹل کھولنے سے قاصر",
+      unableToStartProTrial: "آپ کا پرو ٹرائل شروع کرنے سے قاصر ہے۔",
+    },
+    recommendations: {
+      freeTitle: "جب تک آپ کو کنٹرولز کی ضرورت نہ ہو مفت پر رہیں",
+      freeDescription:
+        "مفت بہت چھوٹی ٹیموں کے لیے اچھا کام کرتا ہے۔ جب آپ کو SSO، مضبوط رپورٹس، اور 3 سے زیادہ نشستوں کی ضرورت ہو تو پرو پر جائیں۔",
+      proTitle: "پرو صحیح فٹ ہے۔",
+      proDescription:
+        "بڑھتی ہوئی ٹیموں کے لیے، پرو آپ کو SSO، فنانس کی مرئیت، اور انٹرپرائز اوور ہیڈ کے بغیر پیمانے کے لیے کافی گنجائش فراہم کرتا ہے۔",
+      enterpriseTitle: "انٹرپرائز کے بارے میں ہم سے بات کریں۔",
+      enterpriseDescription:
+        "بڑی ٹیموں کو عام طور پر پروکیورمنٹ سپورٹ، ایڈمن کنٹرولز، اور ایک ہموار رول آؤٹ کی ضرورت ہوتی ہے۔ پرو کے ساتھ شروع کریں یا سیدھے انٹرپرائز پر جائیں۔",
+    },
+    highlights: {
+      seatsTitle: "ایڈمن کے درد کے بغیر زیادہ نشستیں",
+      seatsDescription:
+        "3 سیٹوں کی مفت حد سے آگے بڑھیں اور آن بورڈنگ کو آسان رکھیں۔",
+      ssoTitle: "SSO اور مضبوط کنٹرولز",
+      ssoDescription:
+        "بڑھتی ہوئی ٹیموں کو بغیر کسی اضافی ٹولز کے محفوظ رسائی دیں۔",
+      financeTitle: "مالیاتی نمائش جو پرسکون رہتی ہے۔",
+      financeDescription:
+        "اضافی سیٹ اپ کے بغیر مارجن، بلنگ کیڈنس اور ٹیم کے استعمال کو جانیں۔",
+    },
+    planDescriptions: {
+      free: "کور ٹریکنگ، انوائسنگ، ادائیگیوں اور ٹیم کی 3 نشستوں کے ساتھ خود میزبان Miru۔",
+      pro: "پرو انٹرپرائز اوور ہیڈ کے بغیر رپورٹس، SSO، مزید سیٹیں، اور پرسکون ایڈمن کنٹرولز شامل کرتا ہے۔",
+      enterprise:
+        "پروکیورمنٹ کے موافق معاہدوں، جدید کنٹرولز، اور بڑی ٹیموں کے لیے سپورٹ جن کو سیکیورٹی کے جائزے کی ضرورت ہے۔",
+      hostedEnterprise:
+        "ہم آپ کے لیے ایک وقف شدہ سیٹ اپ پر Miru کی میزبانی، اپ گریڈ، بیک اپ اور معاونت کرتے ہیں۔",
+    },
+    planBullets: {
+      free: {
+        coreProduct: "خود میزبان بنیادی پروڈکٹ",
+        tracking: "وقت سے باخبر رہنا، رسیدیں، ادائیگیاں",
+        dashboard: "ایک چھوٹی ٹیم کے لیے ڈیش بورڈ کی مرئیت",
+      },
+      pro: {
+        trial: "ادائیگی کرنے سے پہلے 30 دن کی مفت آزمائش",
+        sso: "SSO، اعلی درجے کی رپورٹنگ، مضبوط منتظم کنٹرولز",
+        fit: "ایجنسیوں اور بڑھتی ہوئی ٹیموں کے لیے بہترین فٹ",
+      },
+      enterprise: {
+        contracts: "خریداری کے موافق معاہدے",
+        onboarding: "سیکیورٹی کا جائزہ اور آن بورڈنگ سپورٹ",
+        compliance: "منظوری اور تعمیل کی ضروریات کے ساتھ بڑی ٹیموں کے لیے",
+      },
+      hosted: {
+        setup: "سرشار منظم سیٹ اپ",
+        operations: "ہم اپ گریڈ، بیک اپ اور سپورٹ کو سنبھالتے ہیں۔",
+        fit: "ان ٹیموں کے لیے جو میرو کو مکمل طور پر کام کرنا چاہتی ہیں۔",
+      },
+    },
+    heroDescription:
+      "مفت پر شروع کریں، جب ٹیم کو مزید کنٹرول کی ضرورت ہو تو پرو پر جائیں، یا ہمیں آپ کے لیے Miru چلانے دیں۔ پرو سستا رہتا ہے، سالانہ حقیقی رقم بچاتا ہے، اور بلنگ آسان رہتی ہے کیونکہ چیک آؤٹ اور سبسکرپشن کا انتظام اسٹرائپ کے ذریعے ہوتا ہے۔",
+    seatEstimatorDescription:
+      "مفت بمقابلہ پرو کا موازنہ کرنے کے لیے اس کا استعمال کریں اور فیصلہ کریں کہ آیا ماہانہ یا سالانہ زیادہ معنی رکھتا ہے۔",
+    yearlyDiscountDescription: "ماہانہ قیمتوں کے مقابلے میں فی سیٹ دو ماہ مفت۔",
+    checkoutDescription:
+      "فروخت کے عمل کے بغیر ٹرائل شروع کریں، جب آپ تیار ہوں تو اپ گریڈ کریں، اور جب بھی آپ کو ضرورت ہو خود بلنگ کا انتظام کریں۔",
+    plans: {
+      unknown: "نامعلوم",
+      free: "مفت",
+      freePro: "مفت پرو",
+      proTrial: "پرو ٹرائل",
+      paid: "ادا کیا",
+      enterprise: "انٹرپرائز",
+      hostedEnterprise: "میزبان انٹرپرائز",
+    },
+    table: {
+      feature: "فیچر",
+      bestFor: "کے لیے بہترین",
+      selfHostedTeams: "خود میزبان ٹیمیں شروع ہو رہی ہیں۔",
+      growingServiceTeams: "بڑھتی ہوئی سروس ٹیمیں جنہیں کنٹرول کی ضرورت ہے۔",
+      largeOrgs: "سیکیورٹی اور خریداری کی ضروریات کے ساتھ بڑے ادارے",
+      managedTeams: "وہ ٹیمیں جو میرو کو چاہتی ہیں ان کے لیے انتظام کریں۔",
+      timeTracking: "ٹائم ٹریکنگ",
+      invoicesAndPayments: "رسیدیں اور ادائیگیاں",
+      reportsAndDashboards: "رپورٹس اور ڈیش بورڈز",
+      sso: "ایس ایس او",
+      auditAndAdminControls: "آڈٹ اور ایڈمن کنٹرولز",
+      support: "حمایت",
+      included: "شامل",
+      notIncluded: "شامل نہیں",
+      dashboardOnly: "صرف ڈیش بورڈ",
+      reportsAndAnalytics: "رپورٹس اور تجزیات",
+      community: "برادری",
+      priorityEmail: "ترجیحی ای میل",
+      priorityOnboarding: "ترجیح + آن بورڈنگ",
+      managedOnboarding: "منظم سروس + آن بورڈنگ",
+    },
+  },
+  twoFactor: {
+    title: "Authenticator App 2FA",
+    addTitle: "ایک تصدیق کنندہ ایپ شامل کریں۔",
+    addDescription:
+      "Google Authenticator، 1Password، Bitwarden، Authy، یا TOTP سے مطابقت رکھنے والی کوئی بھی ایپ استعمال کریں۔",
+    setupAction: "2FA ترتیب دیں۔",
+    finishTitle: "تصدیق کنندہ کا سیٹ اپ مکمل کریں۔",
+    finishDescription:
+      "اس کلید کو اپنی تصدیق کنندہ ایپ میں شامل کریں، پھر 2FA کو فعال کرنے کے لیے موجودہ 6 ہندسوں کا کوڈ درج کریں۔",
+    manualEntryKey: "دستی اندراج کی کلید",
+    verificationCode: "تصدیقی کوڈ",
+    verificationCodePlaceholder: "123456",
+    enableAction: "2FA کو فعال کریں۔",
+    resetKeyAction: "کلید کو دوبارہ ترتیب دیں۔",
+    enabledTitle: "Authenticator ایپ کا تحفظ آن ہے۔",
+    enabledDescription:
+      "جب آپ سائن ان کریں گے تو آپ کو اپنے پاس ورڈ کے بعد ایک تصدیق کنندہ کوڈ کی ضرورت ہوگی۔",
+    recoveryCodesAvailable: "%{count} بازیابی کوڈز دستیاب ہیں۔",
+    regenerateRecoveryCodes: "ریکوری کوڈز دوبارہ تخلیق کریں۔",
+    disableAction: "2FA کو غیر فعال کریں۔",
+    saveRecoveryCodes: "ان ریکوری کوڈز کو محفوظ کریں۔",
+    saveRecoveryCodesDescription:
+      "ہر کوڈ ایک بار کام کرتا ہے۔ انہیں کسی محفوظ جگہ پر رکھیں۔",
+    setupReadySuccess: "Authenticator ایپ سیٹ اپ تیار ہے۔",
+    enabledSuccess: "Authenticator ایپ فعال ہے۔",
+    disabledSuccess: "Authenticator ایپ غیر فعال ہے۔",
+    regeneratedSuccess: "ریکوری کوڈز دوبارہ تخلیق کیے گئے۔",
+    setupFailed: "2FA سیٹ اپ شروع کرنے میں ناکام۔",
+    enableFailed: "تصدیق کنندہ ایپ کو فعال کرنے میں ناکام۔",
+    disableFailed: "2FA کو غیر فعال کرنے میں ناکام۔",
+    regenerateFailed: "ریکوری کوڈز دوبارہ بنانے میں ناکام۔",
+  },
   leaveManagement: {
     leaveBalance: "رخصت کا بیلنس",
     applyLeave: "رخصت لگائیں",
@@ -1329,9 +1727,59 @@ const ur = {
     leave: "رخصت",
     nationalHoliday: "قومی تعطیل",
     optionalHoliday: "اختیاری تعطیل",
+    leaveTypeUtilized: "%{name} استعمال کیا گیا۔",
+    leaveTypeAvailable: "%{name} دستیاب ہے۔",
+    outOf: "سے باہر",
+    thisQuarter: "اس سہ ماہی",
+    thisYear: "اس سال",
+    thisMonth: "اس مہینے",
+    thisWeek: "اس ہفتے",
+    summaryLabel: "خلاصہ چھوڑیں۔",
+    summaryDescription:
+      "دستیاب چھٹی، پہلے سے لیا گیا وقت، اور منتخب سال کے لیے چھٹیوں کا استعمال ایک جگہ پر دیکھیں۔",
+    balanceUntil: "%{date} تک بیلنس",
   },
-
-  // Subscriptions / Plan Details
+  notificationPreferences: {
+    emailNotifications: "ای میل اطلاعات",
+    manageDescription: "اپنی ای میل اطلاع کی ترجیحات کا نظم کریں۔",
+    weeklyEmailReminder: "ہفتہ وار ای میل یاد دہانی",
+    weeklyEmailReminderDescription:
+      "ٹائم شیٹ اندراجات اور پروجیکٹ اپ ڈیٹس کے بارے میں ہفتہ وار ای میل یاددہانی حاصل کریں۔",
+    noUserData: "کوئی صارف ڈیٹا دستیاب نہیں ہے۔",
+    loginPrompt: "براہ کرم اطلاع کی ترجیحات کا نظم کرنے کے لیے لاگ ان کریں۔",
+  },
+  devices: {
+    addDevices: "آلات شامل کریں۔",
+    editDevices: "آلات میں ترمیم کریں۔",
+    device: "ڈیوائس",
+    unknownDevice: "نامعلوم آلہ",
+    serial: "سیریل:",
+    deviceType: "ڈیوائس کی قسم",
+    selectDeviceType: "ڈیوائس کی قسم منتخب کریں۔",
+    modelName: "ماڈل/نام",
+    serialNumber: "سیریل نمبر",
+    memory: "میموری (RAM)",
+    processor: "پروسیسر",
+    graphics: "گرافکس",
+    graphicsCard: "گرافکس کارڈ",
+    storage: "ذخیرہ",
+    modelNamePlaceholder: "مثال کے طور پر، MacBook Pro 16 انچ",
+    serialNumberPlaceholder: "جیسے، C02XX1234567",
+    memoryPlaceholder: "مثال کے طور پر، 16GB DDR4",
+    processorPlaceholder: "مثال کے طور پر، Intel Core i7-10750H",
+    graphicsPlaceholder: "مثال کے طور پر، NVIDIA GeForce RTX 3060",
+    storagePlaceholder: "مثال کے طور پر، 512GB SSD",
+    addAnotherDevice: "ایک اور ڈیوائس شامل کریں۔",
+    addAnotherDeviceDescription:
+      "اپنی انوینٹری میں ایک نیا آلہ شامل کرنے کے لیے کلک کریں۔",
+    deviceSummary: "ڈیوائس کا خلاصہ",
+    totalDevices: "کل آلات",
+    notSpecified: "متعین نہیں ہے۔",
+    noDevicesFound: "کوئی آلات نہیں ملے",
+    newDevice: "نیا آلہ",
+    unsavedChangesPrompt:
+      "آپ کے پاس غیر محفوظ شدہ تبدیلیاں ہیں۔ کیا آپ واقعی منسوخ کرنا چاہتے ہیں؟",
+  },
   subscriptions: {
     currentPlan: "موجودہ پلان",
     upgradePlan: "پلان اپ گریڈ کریں",
@@ -1352,8 +1800,6 @@ const ur = {
     plusTaxes: "ٹیکس علاوہ",
     reviewAndPay: "جائزہ لیں اور ادا کریں",
   },
-
-  // Misc
   switchToMode: "%{mode} موڈ پر سوئچ کریں",
   light: "روشن",
   dark: "تاریک",
@@ -1363,8 +1809,6 @@ const ur = {
   editLabel: "ترمیم کریں",
   noPasskeyResponse: "کوئی پاس کی جواب موصول نہیں ہوا۔",
   passkeysNotSupported: "اس براؤزر میں پاس کیز سپورٹ نہیں ہیں۔",
-
-  // Table headers (common)
   tableHeaders: {
     invoiceNo: "انوائس نمبر",
     invoiceNumber: "انوائس نمبر",
@@ -1384,15 +1828,337 @@ const ur = {
     role: "کردار",
     type: "قسم",
   },
-
-  // Relative dates
   nextDay: "اگلا %{day}",
   lastDay: "پچھلا %{day}",
-
-  // Duration formatting
   durationMinutes: "%{mins}m",
   durationHours: "%{hours}h",
   durationHoursMinutes: "%{hours}h %{mins}m",
+  common: {
+    retry: "دوبارہ کوشش کریں",
+    pageUnavailable:
+      "یہ صفحہ دستیاب نہیں ہے یا لنک اب آپ کے ورک سپیس کے لیے درست نہیں ہے۔",
+    goToDashboard: "ڈیش بورڈ پر جائیں",
+    language: "زبان",
+    loading: "لوڈ ہو رہا ہے...",
+    saving: "محفوظ کر رہا ہے...",
+    failedToChangeLanguage: "زبان تبدیل کرنے میں ناکام",
+    searchLanguages: "زبانیں تلاش کریں...",
+    noLanguagesFound: "کوئی زبانیں نہیں ملی",
+  },
+  auth: {
+    signIn: {
+      title: "اپنے ورک اسپیس میں سائن ان کریں۔",
+      description:
+        "کام کا سراغ لگائیں، رسیدیں بھیجیں، اور ایک جگہ سے کیش فلو کو صاف رکھیں۔",
+      continueWithGoogle: "گوگل کے ساتھ جاری رکھیں",
+      continueWithGitHub: "GitHub کے ساتھ جاری رکھیں",
+      orUseEmail: "یا ای میل استعمال کریں۔",
+      email: "ای میل",
+      password: "پاس ورڈ",
+      submit: "سائن ان کریں۔",
+      forgotPassword: "پاس ورڈ بھول گئے؟",
+      noAccount: "اکاؤنٹ نہیں ہے؟ ",
+      signUp: "سائن اپ کریں۔",
+      privacy: "رازداری",
+      terms: "شرائط",
+      loginFailed: "لاگ ان ناکام ہو گیا۔ براہ کرم دوبارہ کوشش کریں۔",
+      welcomeBack: "دوبارہ خوش آمدید!",
+      waitingForPasskey: "پاسکی کا انتظار کر رہا ہے...",
+      passkeyPrompt: "سائن ان کرنے کے لیے اپنی پاسکی کا استعمال کریں۔",
+      totpTitle: "دو عنصر کی توثیق",
+      totpPrompt: "اپنی تصدیق کنندہ ایپ سے کوڈ درج کریں۔",
+      totpDescription: "اپنا مستند ایپ کھولیں اور 6 ہندسوں کا کوڈ درج کریں۔",
+      totpCode: "تصدیقی کوڈ",
+      verifyAndSignIn: "تصدیق کریں اور سائن ان کریں۔",
+      recoveryCode: "اس کے بجائے ایک ریکوری کوڈ استعمال کریں۔",
+      back: "پیچھے",
+    },
+    signUp: {
+      title: "اپنے کام کی جگہ بنائیں",
+      description:
+        "ایک واضح آپریٹنگ سسٹم میں کلائنٹس، پروجیکٹس، رسیدیں اور ادائیگیاں ترتیب دیں۔",
+      continueWithGoogle: "گوگل کے ساتھ جاری رکھیں",
+      continueWithGitHub: "GitHub کے ساتھ جاری رکھیں",
+      orUseEmail: "یا ای میل استعمال کریں۔",
+      firstName: "پہلا نام",
+      lastName: "آخری نام",
+      email: "ای میل",
+      password: "پاس ورڈ",
+      confirmPassword: "پاس ورڈ کی تصدیق کریں۔",
+      passwordCriteria:
+        "ایک بڑے، ایک چھوٹے اور ایک نمبر کے ساتھ کم از کم 8 حروف",
+      submit: "اکاؤنٹ بنائیں",
+      alreadyHaveAccount: "پہلے سے ہی اکاؤنٹ ہے؟ ",
+      signIn: "سائن ان کریں۔",
+      agreePrefix: "سائن اپ کرکے، آپ ہماری بات سے اتفاق کرتے ہیں۔ ",
+      termsOfService: "سروس کی شرائط",
+      and: " اور ",
+      privacyPolicy: "رازداری کی پالیسی",
+    },
+    slides: {
+      dashboard: {
+        title: "کمپنی کی نبض",
+        description:
+          "آمدنی، فعال پروجیکٹس، اور ٹیم کی رفتار کو کھودنے کے بغیر دیکھیں۔",
+      },
+      invoices: {
+        title: "بلنگ کمانڈ",
+        description:
+          "ڈرافٹ، زائد المیعاد بیلنس، اور ادا شدہ کام کو ایک ہی جگہ پر رکھیں۔",
+      },
+      timeTracking: {
+        title: "ہفتہ وار بہاؤ صاف کریں۔",
+        description:
+          "ہفتہ بہ ہفتہ وقت کا اندراج مصروف کام میں بدلے بغیر موجودہ رہتا ہے۔",
+      },
+      payments: {
+        title: "کیش لیجر",
+        description:
+          "ہر ادائیگی طریقہ، حیثیت اور ذریعہ کے ساتھ ایک لیجر میں آتی ہے۔",
+      },
+    },
+    validation: {
+      emailRequired: "ای میل درکار ہے۔",
+      invalidEmail: "غلط ای میل پتہ",
+      passwordRequired: "پاس ورڈ درکار ہے۔",
+      passwordComplexity:
+        "پاس ورڈ کم از کم 8 حروف کا ہونا چاہیے جس میں بڑے، چھوٹے اور نمبر ہوں۔",
+      passwordSpace: "پاس ورڈ میں خالی جگہیں نہیں ہوسکتی ہیں۔",
+      confirmPasswordRequired: "تصدیق کریں کہ پاس ورڈ درکار ہے۔",
+      passwordsMustMatch: "پاس ورڈز مماثل ہونے چاہئیں",
+      firstNameRequired: "پہلا نام درکار ہے۔",
+      firstNameInvalid: "پہلا نام صرف حروف پر مشتمل ہونا چاہیے۔",
+      firstNameMax: "پہلا نام 20 حروف یا اس سے کم ہونا چاہیے۔",
+      lastNameRequired: "آخری نام درکار ہے۔",
+      lastNameInvalid: "آخری نام صرف حروف پر مشتمل ہونا چاہیے۔",
+      lastNameMax: "آخری نام 20 حروف یا اس سے کم ہونا چاہیے۔",
+      acceptTerms: "آپ کو شرائط کو قبول کرنا ہوگا۔",
+    },
+    miruLogo: "میرو",
+    heroTitle: "وقت، انوائسز، اور ادائیگیوں کے لیے ایک جگہ",
+    heroDescription: "دن واضح رکھیں، بلنگ جاری رکھیں، اور نقدی نظر میں رکھیں۔",
+    companyPulse: "کمپنی پلس",
+    billingCommand: "بلنگ کمانڈ",
+    clearWeeklyFlow: "واضح ہفتہ وار بہاؤ",
+    cashLedger: "نقد لیجر",
+    signOut: "سائن آؤٹ",
+    signInToWorkspace: "اپنے ورک سپیس میں سائن ان کریں",
+    createYourWorkspace: "اپنا ورک سپیس بنائیں",
+    signInDescription:
+      "ایک جگہ سے کام ٹریک کریں، انوائسز بھیجیں، اور نقد بہاؤ واضح رکھیں۔",
+    signUpDescription:
+      "ایک واضح آپریٹنگ سسٹم میں کلائنٹس، پراجیکٹس، انوائسز، اور ادائیگیاں ترتیب دیں۔",
+    firstName: "پہلا نام",
+    lastName: "آخری نام",
+    password: "پاس ورڈ",
+    confirmPassword: "پاس ورڈ کی تصدیق",
+    forgotPassword: "پاس ورڈ بھول گئے؟",
+    enterRegisteredEmail: "اپنی رجسٹرڈ ای میل آئی ڈی درج کریں",
+    resetPassword: "پاس ورڈ ری سیٹ کریں",
+    resetPasswordInstructions:
+      "اپنے اکاؤنٹ سے وابستہ ای میل ایڈریس درج کریں اور ہم آپ کو پاس ورڈ ری سیٹ کرنے کا لنک بھیجیں گے۔",
+    sendResetLink: "ری سیٹ لنک بھیجیں",
+    backToLogin: "لاگ ان پر واپس",
+    alreadyHaveAccount: "پہلے سے اکاؤنٹ ہے؟",
+    dontHaveAccount: "اکاؤنٹ نہیں ہے؟",
+    rememberMe: "مجھے یاد رکھیں",
+    totpPlaceholder: "ABCD-EFGH",
+    noAuthTokenReceived: "کوئی تصدیقی ٹوکن موصول نہیں ہوا",
+    slideDashboardDescription:
+      "آمدنی، فعال پراجیکٹس، اور ٹیم کی رفتار بغیر تلاش کیے دیکھیں۔",
+    slideInvoicesDescription:
+      "مسودے، واجب الادا بیلنس، اور ادا شدہ کام ایک جگہ رکھیں۔",
+    slideTimeTrackingDescription:
+      "ہفتہ وار وقت کا اندراج مصروف کام میں بدلے بغیر تازہ رہتا ہے۔",
+    slidePaymentsDescription:
+      "ہر ادائیگی ایک لیجر میں طریقہ، حیثیت، اور ذریعے کے ساتھ آتی ہے۔",
+    slideShowPrefix: "دکھائیں",
+    continueWithGoogle: "Google کے ساتھ جاری رکھیں",
+    continueWithGithub: "GitHub کے ساتھ جاری رکھیں",
+    orUseEmail: "یا ای میل استعمال کریں",
+    verifyWithAuthenticator: "اپنی تصدیق کنندہ ایپ سے تصدیق کریں",
+    authenticatorInstructions:
+      "اپنی تصدیق کنندہ ایپ سے 6 ہندسوں کا کوڈ درج کریں، یا ریکوری کوڈ استعمال کریں۔",
+    authenticatorCode: "تصدیق کنندہ کوڈ",
+    recoveryCode: "ریکوری کوڈ",
+    verifyAndSignIn: "تصدیق کریں اور سائن ان کریں",
+    completePasskeyVerification:
+      "سائن ان مکمل کرنے کے لیے پاس کی تصدیق مکمل کریں۔",
+    enterAuthenticatorCode:
+      "سائن ان مکمل کرنے کے لیے اپنا تصدیق کنندہ کوڈ درج کریں۔",
+    invalidVerificationCode: "غلط تصدیقی کوڈ۔",
+    privacy: "رازداری",
+    terms: "شرائط",
+    createAccount: "اکاؤنٹ بنائیں",
+    passwordCriteria:
+      "کم از کم 8 حروف، 1 بڑا حرف، 1 چھوٹا حرف، 1 نمبر اور 1 خاص حرف",
+    agreeToTerms: "میں متفق ہوں",
+    termsOfService: "سروس کی شرائط",
+    privacyPolicy: "رازداری کی پالیسی",
+    and: "اور",
+    welcomeBack: "خوش آمدید!",
+    loginFailed: "لاگ ان ناکام۔ براہ کرم دوبارہ کوشش کریں۔",
+    waitingForPasskey: "پاس کی کا انتظار...",
+  },
+  nav: {
+    dashboard: "ڈیش بورڈ",
+    timeTracking: "ٹائم ٹریکنگ",
+    clients: "کلائنٹس",
+    projects: "پروجیکٹس",
+    team: "ٹیم",
+    invoices: "رسیدیں",
+    reports: "رپورٹس",
+    payments: "ادائیگیاں",
+    leavesAndHolidays: "پتے اور چھٹیاں",
+    expenses: "اخراجات",
+    settings: "ترتیبات",
+    logout: "لاگ آؤٹ",
+  },
+  sidebar: {
+    main: "مین",
+    personalSettings: "ذاتی ترتیبات",
+    companySettings: "کمپنی کی ترتیبات",
+    profile: "پروفائل",
+    devices: "آلات",
+    organization: "تنظیم",
+    billing: "بلنگ",
+    paymentSettings: "ادائیگی کی ترتیبات",
+    holidayCalendar: "چھٹیوں کا کیلنڈر",
+    myLeaves: "میرے پتے",
+    bankTaxInfo: "بینک اور ٹیکس کی معلومات",
+    expand: "سائڈبار کو پھیلائیں۔",
+    collapse: "سائڈبار کو سکیڑیں۔",
+  },
+  settings: {
+    settings: "ترتیبات",
+    profileSettings: "پروفائل ترتیبات",
+    organizationSettings: "تنظیم ترتیبات",
+    paymentSettings: "ادائیگی ترتیبات",
+    profilePicture: "پروفائل تصویر",
+    changePassword: "پاس ورڈ تبدیل کریں",
+    currentPassword: "موجودہ پاس ورڈ",
+    password: "پاس ورڈ",
+    confirmPassword: "پاس ورڈ کی تصدیق",
+    billing: "بلنگ",
+    integrations: "انٹیگریشنز",
+    leaves: "رخصتیں",
+    import: "درآمد",
+    general: "عمومی",
+    profile: "پروفائل",
+    organization: "تنظیم",
+    payment: "ادائیگی",
+    allocateLeaves: "رخصتیں مختص کریں",
+    customLeaves: "حسب ضرورت رخصتیں",
+    addCustomLeave: "حسب ضرورت رخصت شامل کریں",
+    editCustomLeave: "حسب ضرورت رخصت ترمیم کریں",
+    leaveType: "رخصت کی قسم",
+    enterLeaveType: "رخصت کی قسم درج کریں",
+    allocationValue: "مختص قدر",
+    allocationPeriod: "مختص مدت",
+    allocationFrequency: "مختص تعدد",
+    labels: {
+      profile: "پروفائل",
+      employment: "روزگار",
+      devices: "آلات",
+      notifications: "اطلاعات",
+      preferences: "ترجیحات",
+      organization: "تنظیم",
+      billing: "بلنگ",
+      payment: "ادائیگی",
+      holidays: "چھٹیاں",
+      leaves: "پتے",
+      automation: "آٹومیشن",
+      bankInfo: "بینک اور ٹیکس کی معلومات",
+    },
+    categories: {
+      personal: "ذاتی",
+      organization: "تنظیم",
+    },
+  },
+  dashboard: {
+    dashboard: "ڈیش بورڈ",
+    overdue: "واجب الادا",
+    outstanding: "بقایا",
+    totalHours: "کل گھنٹے",
+    revenueOverview: "آمدنی کا جائزہ",
+    there: "وہاں",
+    companyPulse: "کمپنی پلس",
+    welcomeBack: "خوش آمدید، %{name}",
+    recentActivity: "حالیہ سرگرمی",
+    workspaceActivity: "ورک سپیس سرگرمی",
+    activityDescription: "آپ کی انوائسز اور ادائیگیوں کی تازہ ترین اپ ڈیٹس",
+    employeeActivityDescription:
+      "آپ کا ڈیش بورڈ ٹائم ٹریکنگ اور تفویض شدہ کام پر مرکوز ہے۔",
+    noRecentActivityYet: "ابھی تک کوئی حالیہ سرگرمی نہیں",
+    loadMore: "مزید لوڈ کریں",
+    caughtUp: "سب پکڑے گئے!",
+    yearToDate: "سال تا تاریخ",
+    quarterToDate: "سہ ماہی تا تاریخ",
+    monthToDate: "ماہ تا تاریخ",
+    weekToDate: "ہفتہ تا تاریخ",
+    revenue: "آمدنی",
+    activeProjects: "فعال پراجیکٹس",
+    currentlyActive: "فی الحال فعال",
+    noRecentActivity: "کوئی حالیہ سرگرمی نہیں",
+    teamSize: "ٹیم کا سائز",
+    teammates: "ساتھی",
+    hoursTracked: "ٹریک شدہ گھنٹے",
+    assignedProjects: "تفویض شدہ پراجیکٹس",
+    projectsYouCanWorkOn: "جن پراجیکٹس پر آپ کام کر سکتے ہیں",
+    totalInvoiced: "کل انوائس شدہ",
+    openInvoices: "کھلی انوائسز",
+    awaitingPayment: "ادائیگی کے منتظر",
+    paidInvoices: "ادا شدہ انوائسز",
+    alreadySettled: "پہلے سے طے شدہ",
+    paymentsReceived: "موصول شدہ ادائیگیاں",
+    employeeGuidance:
+      "اپنے ہفتے کو ٹریک کریں، درست اندراجات جمع کریں، اور کام جاری رکھیں۔",
+    bookKeeperGuidance:
+      "آنے والی ادائیگیوں کا جائزہ لیں، انوائسز کی مطابقت کریں، اور نقد بہاؤ واضح رکھیں۔",
+    clientGuidance:
+      "اپنے اکاؤنٹ کی انوائس کی حیثیت اور ادائیگی کی تاریخ دیکھیں۔",
+    defaultGuidance: "آمدنی، پراجیکٹس، اور ٹیم کی رفتار ایک نظر میں۔",
+    allCaughtUp: "آپ سب اپ ٹو ڈیٹ ہیں",
+    timeframe: {
+      week: "اس ہفتے",
+      month: "اس مہینے",
+      quarter: "اس سہ ماہی",
+      year: "اس سال",
+    },
+    stats: {
+      revenue: "آمدنی",
+      totalInvoiced: "کل رسید",
+      openInvoices: "انوائسز کھولیں۔",
+      paidInvoices: "ادا شدہ رسیدیں",
+      paymentsReceived: "ادائیگیاں موصول ہوئیں",
+      awaitingPayment: "ادائیگی کا انتظار ہے۔",
+      alreadySettled: "پہلے ہی آباد ہیں۔",
+      hoursTracked: "اوقات کا پتہ لگایا",
+      currentlyActive: "فی الحال فعال",
+      activeProjects: "ایکٹو پروجیکٹس",
+      assignedProjects: "تفویض کردہ پروجیکٹس",
+      projectsYouCanWorkOn: "پروجیکٹس جن پر آپ کام کر سکتے ہیں۔",
+      teammates: "ٹیم کے ساتھی۔",
+      teamSize: "ٹیم کا سائز",
+      noRecentActivity: "کوئی حالیہ سرگرمی نہیں ہے۔",
+    },
+    charts: {
+      revenueMomentumTitle: "آمدنی کی رفتار",
+      revenueMomentumDescription: "گزشتہ سال کے دوران ماہانہ آمدنی کا رجحان",
+      revenueTrendEyebrow: "ریوینیو کا رجحان",
+      revenueLeadersTitle: "ریونیو لیڈرز",
+      revenueLeadersDescription: "آمدنی میں شراکت کے لحاظ سے سرفہرست کلائنٹس",
+      topCustomersEyebrow: "سر فہرست صارفین",
+      ofTotal: "کل کا %{percentage}",
+      noRevenue: "آمدنی کا کوئی ڈیٹا دستیاب نہیں ہے۔",
+    },
+    roleGuidance: {
+      employee: "اپنے وقت کو ٹریک کریں اور اپنے پروجیکٹس کا نظم کریں۔",
+      bookKeeper: "انوائسز، ادائیگیوں اور مالیاتی رپورٹس کا جائزہ لیں۔",
+      client: "اپنی رسیدیں اور ادائیگی کی تاریخ دیکھیں",
+      default: "اپنے کام کی جگہ کا نظم کریں۔",
+    },
+  },
 };
 
-export default ur;
+export default locale;

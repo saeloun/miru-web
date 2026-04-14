@@ -3,7 +3,7 @@
 require "rails_helper"
 
 RSpec.describe "Api::V1::Invoices#update", type: :request do
-  let_it_be(:company) { create(:company) }
+  let_it_be(:company) { create(:company, :with_logo) }
   let_it_be(:client) { create(:client, company:) }
   let(:user) { create(:user, current_workspace_id: company.id) }
   let(:invoice) { create(:invoice, company:, client:, invoice_number: "INV-UP-001") }
@@ -187,5 +187,51 @@ RSpec.describe "Api::V1::Invoices#update", type: :request do
     expect(invoice.amount_due.to_f).to eq(240.0)
     expect(json_response["amount"].to_f).to eq(240.0)
     expect(json_response["amountDue"].to_f).to eq(240.0)
+  end
+
+  it "returns company data needed by the editor preview" do
+    company.addresses.first.update!(address_line_1: "100 Market St", city: "San Francisco", state: "CA", country: "USA", pin: "94105")
+    company.update!(
+      business_phone: "+15550199",
+      tax_id: "TAX-123",
+      bank_name: "QA Bank",
+      bank_account_number: "12345678",
+      bank_routing_number: "987654321",
+      bank_swift_code: "QABKUS33"
+    )
+
+    send_request :patch, api_v1_invoice_path(invoice), params: {
+      invoice: {
+        client_id: client.id,
+        invoice_number: "INV-UP-001",
+        issue_date: invoice.issue_date.iso8601,
+        due_date: invoice.due_date.iso8601,
+        status: "draft",
+        currency: company.base_currency,
+        invoice_line_items_attributes: [
+          {
+            name: "Updated item",
+            description: "Updated line item",
+            date: Date.current.iso8601,
+            rate: 80,
+            quantity: 60
+          }
+        ]
+      }
+    }, headers: auth_headers(user)
+
+    expect(response).to have_http_status(:ok)
+    expect(json_response.dig("company", "name")).to eq(company.name)
+    expect(json_response.dig("company", "phoneNumber")).to eq(company.business_phone)
+    expect(json_response.dig("company", "taxId")).to eq(company.tax_id)
+    expect(json_response.dig("company", "logo")).to end_with(company.company_logo)
+    expect(json_response.dig("company", "bankName")).to eq(company.bank_name)
+    expect(json_response.dig("company", "bankAccountNumber")).to eq(company.bank_account_number)
+    expect(json_response.dig("company", "bankRoutingNumber")).to eq(company.bank_routing_number)
+    expect(json_response.dig("company", "bankSwiftCode")).to eq(company.bank_swift_code)
+    expect(
+      json_response.dig("company", "address", "addressLine1") ||
+      json_response.dig("company", "address", "address_line_1")
+    ).to eq(company.current_address.address_line_1)
   end
 end

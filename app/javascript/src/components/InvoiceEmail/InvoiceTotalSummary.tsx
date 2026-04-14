@@ -1,6 +1,7 @@
 import React from "react";
 
 import { currencyFormat } from "helpers";
+import { i18n } from "../../i18n";
 
 const InvoiceTotalSummary = ({ invoice, lineItems, strikeAmount }) => {
   const subTotal = lineItems
@@ -17,7 +18,7 @@ const InvoiceTotalSummary = ({ invoice, lineItems, strikeAmount }) => {
         <tbody>
           <tr>
             <td className="pr-10 text-right text-base font-normal text-foreground">
-              Sub total
+              {i18n.t("pdfs.invoices.sub_total")}
             </td>
             <td
               className={`text-right text-base font-bold text-foreground ${strikeAmount}`}
@@ -27,7 +28,7 @@ const InvoiceTotalSummary = ({ invoice, lineItems, strikeAmount }) => {
           </tr>
           <tr className="border-b-2 border-border pb-5 ">
             <td className="py-2 pr-10 text-right text-base font-normal text-foreground">
-              Discount
+              {i18n.t("pdfs.invoices.discount")}
             </td>
             <td
               className={`text-right text-base font-bold text-foreground ${strikeAmount}`}
@@ -37,7 +38,7 @@ const InvoiceTotalSummary = ({ invoice, lineItems, strikeAmount }) => {
           </tr>
           <tr>
             <td className="pt-4 pr-10 text-right text-base font-normal text-foreground">
-              Tax
+              {i18n.t("pdfs.invoices.tax")}
             </td>
             <td
               className={`w-22 pt-4 text-right text-base font-bold text-foreground ${strikeAmount}`}
@@ -47,7 +48,7 @@ const InvoiceTotalSummary = ({ invoice, lineItems, strikeAmount }) => {
           </tr>
           <tr>
             <td className="pt-1 pr-10 text-right text-base font-normal text-foreground">
-              Total
+              {i18n.t("pdfs.invoices.total")}
             </td>
             <td
               className={`text-right text-base font-bold text-foreground ${strikeAmount}`}
@@ -57,7 +58,7 @@ const InvoiceTotalSummary = ({ invoice, lineItems, strikeAmount }) => {
           </tr>
           <tr>
             <td className="pt-1 pr-10 text-right text-base font-normal text-foreground">
-              Amount Paid
+              {i18n.t("pdfs.invoices.amount_paid")}
             </td>
             <td
               className={`text-right text-base font-bold text-foreground ${strikeAmount}`}
@@ -67,7 +68,7 @@ const InvoiceTotalSummary = ({ invoice, lineItems, strikeAmount }) => {
           </tr>
           <tr>
             <td className="pt-1 pr-10 text-right text-base font-normal text-foreground">
-              Amount Due
+              {i18n.t("pdfs.invoices.amount_due")}
             </td>
             <td
               className={`text-right text-base font-bold text-foreground ${strikeAmount}`}

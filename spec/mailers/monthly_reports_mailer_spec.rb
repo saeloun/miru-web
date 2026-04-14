@@ -5,7 +5,7 @@ require "rails_helper"
 RSpec.describe MonthlyReportsMailer, type: :mailer do
   describe "cash_flow_digest" do
     let(:company) { create(:company, name: "Saeloun Inc", base_currency: "USD") }
-    let(:user) { create(:user, email: "vipul@saeloun.com", current_workspace: company, locale: "en") }
+    let(:user) { create(:user, email: "vipul@saeloun.com", current_workspace: company, locale: "en-US") }
     let(:client) { create(:client, company:, name: "Haul Hub Inc") }
     let(:invoice) { create(:invoice, company:, client:, status: :paid, amount: 50_644.17, currency: "USD") }
     let!(:payment) do

@@ -94,7 +94,7 @@ RSpec.describe User, type: :model do
 
       user.valid?
 
-      expect(user.locale).to eq("en")
+      expect(user.locale).to eq("en-US")
     end
 
     it "normalizes regional locales before validation" do
@@ -111,6 +111,20 @@ RSpec.describe User, type: :model do
       user.valid?
 
       expect(user.locale).to eq("ur")
+    end
+
+    it "does not allow a future date of birth" do
+      user.date_of_birth = Date.current + 1.day
+
+      expect(user).not_to be_valid
+      expect(user.errors[:date_of_birth]).to include("cannot be in the future")
+    end
+
+    it "does not allow a phone number longer than 15 digits" do
+      user.phone = "+1234567890123456"
+
+      expect(user).not_to be_valid
+      expect(user.errors[:phone]).to include("cannot exceed 15 digits")
     end
   end
 

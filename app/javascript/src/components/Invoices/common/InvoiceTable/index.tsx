@@ -109,6 +109,7 @@ const InvoiceTable = ({
         <tr className="w-full pt-4">
           <td className="relative w-full pt-4 pr-10" colSpan={6}>
             <button
+              type="button"
               disabled={!selectedClient}
               className={`hoverButton w-full rounded-md border-2 border-dashed bg-card py-1 pr-10 text-center text-base font-bold tracking-widest transition-colors ${
                 selectedClient
@@ -164,6 +165,14 @@ const InvoiceTable = ({
     <Fragment>
       <div className="w-full overflow-x-auto">
         <table className="bg-card min-w-[48rem] table-fixed sm:min-w-full">
+          <colgroup>
+            <col className="w-[38%]" />
+            <col className="w-[18%]" />
+            <col className="w-[14%]" />
+            <col className="w-[12%]" />
+            <col className="w-[13%]" />
+            <col className="w-[5%]" />
+          </colgroup>
           <LineItemTableHeader />
           <tbody className="w-full" ref={wrapperRef}>
             {getAddNewButton()}

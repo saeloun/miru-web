@@ -5,6 +5,7 @@ import flags from "react-phone-number-input/flags";
 import "react-phone-number-input/style.css";
 import CustomReactSelect from "common/CustomReactSelect";
 import { ErrorSpan } from "common/ErrorSpan";
+import { i18n } from "../../../../i18n";
 import { Button } from "../../../ui/button";
 import { cn } from "../../../../lib/utils";
 
@@ -71,12 +72,15 @@ export const OrganizationEditPage = ({
   <div className="max-w-6xl mx-auto px-4 py-6 space-y-4">
     {/* Basic Details Section */}
     <FormSection>
-      <SectionHeader icon={Buildings} title="Basic Details" />
+      <SectionHeader
+        icon={Buildings}
+        title={i18n.t("organization.basicDetails")}
+      />
       <div className="grid md:grid-cols-2 gap-4">
         {/* Logo Upload */}
         <div className="md:col-span-2">
           <label className="block text-xs font-medium text-muted-foreground mb-2">
-            Company Logo
+            {i18n.t("organization.companyLogo")}
           </label>
           <div className="flex items-start gap-4">
             {!logoUrl ? (
@@ -92,10 +96,10 @@ export const OrganizationEditPage = ({
                 <div className="flex flex-col items-center gap-2">
                   <Upload className="h-8 w-8 text-muted-foreground" />
                   <p className="text-sm text-muted-foreground">
-                    Drop logo here or click to upload
+                    {i18n.t("organization.dropLogoHere")}
                   </p>
                   <p className="text-xs text-muted-foreground">
-                    JPG, PNG or GIF (max. 2MB)
+                    {i18n.t("organization.logoFormats")}
                   </p>
                 </div>
               </div>
@@ -132,7 +136,7 @@ export const OrganizationEditPage = ({
         {/* Company Name */}
         <InputWrapper>
           <label className="text-xs font-medium text-muted-foreground">
-            Company Name *
+            {i18n.t("organization.companyName")} *
           </label>
           <input
             type="text"
@@ -147,7 +151,7 @@ export const OrganizationEditPage = ({
                 ? "border-destructive focus:ring-destructive/20"
                 : "border-border hover:border-border"
             )}
-            placeholder="Enter company name"
+            placeholder={i18n.t("organization.enterCompanyName")}
           />
           {errDetails.companyNameErr && (
             <ErrorSpan
@@ -159,7 +163,7 @@ export const OrganizationEditPage = ({
         {/* Business Phone */}
         <InputWrapper>
           <label className="text-xs font-medium text-muted-foreground">
-            Business Phone
+            {i18n.t("organization.businessPhone")}
           </label>
           <div className="relative">
             <PhoneInput
@@ -177,11 +181,11 @@ export const OrganizationEditPage = ({
     </FormSection>
     {/* Address Section */}
     <FormSection>
-      <SectionHeader icon={MapPin} title="Address" />
+      <SectionHeader icon={MapPin} title={i18n.t("organization.address")} />
       <div className="grid md:grid-cols-2 gap-3">
         <InputWrapper className="md:col-span-2">
           <label className="text-xs font-medium text-muted-foreground">
-            Address Line 1 *
+            {i18n.t("organization.addressLine1")} *
           </label>
           <input
             type="text"
@@ -194,7 +198,7 @@ export const OrganizationEditPage = ({
                 ? "border-destructive"
                 : "border-border hover:border-border"
             )}
-            placeholder="Street address"
+            placeholder={i18n.t("organization.streetAddress")}
           />
           {errDetails.addressLine1Err && (
             <ErrorSpan
@@ -205,85 +209,88 @@ export const OrganizationEditPage = ({
         </InputWrapper>
         <InputWrapper className="md:col-span-2">
           <label className="text-xs font-medium text-muted-foreground">
-            Address Line 2
+            {i18n.t("organization.addressLine2")}
           </label>
           <input
             type="text"
             value={companyAddr?.addressLine2 || ""}
             onChange={e => handleAddrChange(e.target.value, "addressLine2")}
             className="w-full px-3 py-2 border border-border rounded-md text-sm hover:border-border focus:outline-none focus:ring-2 focus:ring-ring/40"
-            placeholder="Apartment, suite, etc. (optional)"
+            placeholder={i18n.t("organization.addressLine2Placeholder")}
           />
         </InputWrapper>
         <InputWrapper>
           <label className="text-xs font-medium text-muted-foreground">
-            Country *
+            {i18n.t("organization.country")} *
           </label>
           <CustomReactSelect
             className="text-sm"
             options={countries}
             value={companyAddr?.country}
             onChange={handleOnChangeCountry}
-            placeholder="Select country"
+            placeholder={i18n.t("organization.selectCountry")}
           />
         </InputWrapper>
         <InputWrapper>
           <label className="text-xs font-medium text-muted-foreground">
-            State/Province
+            {i18n.t("organization.stateProvince")}
           </label>
           <input
             type="text"
             value={companyAddr?.state || ""}
             onChange={handleStateChange}
             className="w-full px-3 py-2 border border-border rounded-md text-sm hover:border-border focus:outline-none focus:ring-2 focus:ring-ring/40"
-            placeholder="State or province"
+            placeholder={i18n.t("organization.stateProvincePlaceholder")}
           />
         </InputWrapper>
         <InputWrapper>
           <label className="text-xs font-medium text-muted-foreground">
-            City
+            {i18n.t("organization.city")}
           </label>
           <input
             type="text"
             value={companyAddr?.city || ""}
             onChange={handleCityChange}
             className="w-full px-3 py-2 border border-border rounded-md text-sm hover:border-border focus:outline-none focus:ring-2 focus:ring-ring/40"
-            placeholder="City"
+            placeholder={i18n.t("organization.city")}
           />
         </InputWrapper>
         <InputWrapper>
           <label className="text-xs font-medium text-muted-foreground">
-            ZIP/Postal Code
+            {i18n.t("organization.zipPostalCode")}
           </label>
           <input
             type="text"
             value={companyAddr?.zipcode || ""}
             onChange={handleZipcodeChange}
             className="w-full px-3 py-2 border border-border rounded-md text-sm hover:border-border focus:outline-none focus:ring-2 focus:ring-ring/40"
-            placeholder="ZIP code"
+            placeholder={i18n.t("organization.zipPlaceholder")}
           />
         </InputWrapper>
       </div>
     </FormSection>
     {/* Business Settings */}
     <FormSection>
-      <SectionHeader icon={Globe} title="Business Settings" />
+      <SectionHeader
+        icon={Globe}
+        title={i18n.t("organization.businessSettings")}
+      />
       <div className="grid md:grid-cols-2 gap-3">
         <InputWrapper>
           <label className="text-xs font-medium text-muted-foreground">
-            Currency
+            {i18n.t("organization.currency")}
           </label>
           <CustomReactSelect
             className="text-sm"
             options={currenciesOption}
             value={companyCurrency}
             onChange={handleCurrencyChange}
-            placeholder="Select currency"
+            placeholder={i18n.t("organization.selectCurrency")}
           />
         </InputWrapper>
         <InputWrapper>
           <label className="text-xs font-medium text-muted-foreground">
-            Standard Rate
+            {i18n.t("organization.standardRate")}
           </label>
           <div className="relative">
             <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
@@ -302,38 +309,38 @@ export const OrganizationEditPage = ({
         </InputWrapper>
         <InputWrapper>
           <label className="text-xs font-medium text-muted-foreground">
-            Timezone
+            {i18n.t("organization.timezone")}
           </label>
           <CustomReactSelect
             className="text-sm"
             options={timezoneOption}
             value={companyTimezone}
             onChange={handleTimezoneChange}
-            placeholder="Select timezone"
+            placeholder={i18n.t("orgSetup.selectTimezone")}
           />
         </InputWrapper>
         <InputWrapper>
           <label className="text-xs font-medium text-muted-foreground">
-            Date Format
+            {i18n.t("organization.dateFormat")}
           </label>
           <CustomReactSelect
             className="text-sm"
             options={dateFormatOptions}
             value={companyDateFormat}
             onChange={handleDateFormatChange}
-            placeholder="Select date format"
+            placeholder={i18n.t("orgSetup.selectDateFormat")}
           />
         </InputWrapper>
         <InputWrapper>
           <label className="text-xs font-medium text-muted-foreground">
-            Fiscal Year End
+            {i18n.t("organization.fiscalYearEnd")}
           </label>
           <CustomReactSelect
             className="text-sm"
             options={fiscalYearOptions}
             value={companyFiscalYear}
             onChange={handleFiscalYearChange}
-            placeholder="Select fiscal year end"
+            placeholder={i18n.t("orgSetup.selectFiscalYearEnd")}
           />
         </InputWrapper>
       </div>
@@ -341,10 +348,10 @@ export const OrganizationEditPage = ({
     {/* Action Buttons */}
     <div className="flex justify-end gap-3 pt-4">
       <Button variant="outline" onClick={cancelAction} className="px-6">
-        Cancel
+        {i18n.t("common.cancel")}
       </Button>
       <Button onClick={saveAction} className="px-6 bg-primary hover:bg-primary">
-        Save Changes
+        {i18n.t("common.saveChanges")}
       </Button>
     </div>
   </div>

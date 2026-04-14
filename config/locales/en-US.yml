@@ -1,16 +1,52 @@
 ---
 en-US:
-  activerecord:
-    errors:
-      models:
-        client:
-          attributes:
-            name:
-              format: "%{message}"
-        project:
-          attributes:
-            name:
-              format: "%{message}"
+  analytics:
+    activity:
+      amount_collected: Amount Collected
+      bank_transfers_month: Bank Transfers (Month)
+      created: Created
+      downloaded: Downloaded
+      invoice_activity_today: Invoice Activity Today
+      payment_activity: Payment Activity
+      payments_today: Payments Today
+      sent: Sent
+      stripe_payments_month: Stripe Payments (Month)
+      viewed: Viewed
+    currency:
+      conversion_impact: Conversion Impact
+      currencies_in_use: Currencies in Use
+      invoices_with_conversion: Invoices with Conversion
+      recent_exchange_rates: Recent Exchange Rates
+      table:
+        date: Date
+        from: From
+        rate: Rate
+        source: Source
+        to: To
+      title: Currency Conversion Insights
+    overview:
+      active_clients: Active Clients
+      outstanding: Outstanding
+      overdue: Overdue
+      total_revenue: Total Revenue
+    recent_activity:
+      ago: "%{time} ago"
+      invoice_reference: invoice
+      system: System
+      title: Recent Activity
+    super_admin: Super Admin
+    tabs:
+      activity: Activity
+      clients: Clients
+      currency_exchange: Currency & Exchange
+      overview: Overview
+      revenue: Revenue
+      users: Users
+    title: Analytics Dashboard
+    welcome: Welcome, %{name}
+  app:
+    name: Miru Agency OS
+    tagline: Run your agency’s ops from one command center.
   application_controller:
     not_found: Route not found
   avatar:
@@ -84,18 +120,6 @@ en-US:
   employment:
     update:
       success: Employment updated successfully
-  errors:
-    bill_status_billed: You can't bill an entry that has already been billed
-    can't change status: can't be changed of a paid invoice
-    create_billed_entry: You can't create a billed timesheet entry
-    internal_server_error: Something went wrong
-    not_found: The resource you're looking for is not available
-    prevent_draft_to_waived: can't be changed to waived
-    unauthorized: Only owner or admin users are authorized to perform this action
-    updation_not_allowed: updation is not allowed
-    user_already_member: Email id is already in use. Please enter another email id
-    validate_billable_project: You can't create an unbilled entry for non-billable
-      projects
   expenses:
     approve: Expense approved successfully
     create: Expense submitted successfully
@@ -168,6 +192,300 @@ en-US:
       success: Leave created successfully
     update:
       success: Leave updated successfully
+  mailers:
+    actions:
+      join_miru: Join Miru
+      open_expense: Open expense
+      open_invoice: Open invoice
+      open_time_tracking: Open time tracking
+      view_reports: View reports in Miru
+    client_payment_mailer:
+      payment:
+        eyebrow: Payments
+        preheader: Payment receipt for invoice %{invoice_number}.
+        receipt_title: Payment received
+        records_body: This receipt confirms your payment. You can reopen the invoice
+          anytime if you need the details again.
+        records_title: Keep this for your records
+        subject: Payment receipt for invoice %{invoice_number}
+        subtitle_html: We received your payment for invoice <strong>%{invoice_number}</strong>.
+        summary_html: We received <strong>%{amount}</strong> on <strong>%{paid_on}</strong>
+          for invoice <strong>%{invoice_number}</strong>.
+        title: Payment receipt
+    devise:
+      confirmation:
+        body_intro: 'You''re almost set. Here are a few of the things you can do with
+          Miru from day one:'
+        cta: Confirm email address
+        cta_body: Use the button below to confirm your email address.
+        eyebrow: Account setup
+        feature_1: Send professional invoices with hosted payment links.
+        feature_2: Track time, expenses, and utilization in one workflow.
+        feature_3: Manage your team, clients, and billing from a single workspace.
+        feature_4: Stay on top of revenue, overdue invoices, and payment activity.
+        footer_note: If you did not create a Miru account, you can safely ignore this
+          message.
+        greeting_html: Hi <strong>%{name}</strong>,
+        preheader: Confirm your email address to finish setting up Miru.
+        subtitle: Confirm your email address to start tracking time, sending invoices,
+          and managing your team from one place.
+        title: Welcome to Miru
+      email_changed:
+        changed_html: Your account email has been changed to <strong>%{email}</strong>.
+        eyebrow: Account security
+        greeting_html: Hello <strong>%{email}</strong>,
+        pending_html: Your account email is being changed to <strong>%{email}</strong>.
+        preheader: Your Miru email address has changed.
+        subtitle: This message confirms a change to the email address on your Miru
+          account.
+        title: Email address updated
+        warning_body_html: Contact our support team immediately at <a href="mailto:%{email}">%{email}</a>.
+        warning_title: Did not request this change?
+      password_change:
+        eyebrow: Account security
+        greeting_html: Hello <strong>%{name}</strong>,
+        preheader: Your Miru password has been changed.
+        subtitle: Your Miru account password was updated successfully.
+        success_body: You can continue signing in to Miru using your new password.
+        success_title: Your password was updated.
+        title: Password changed successfully
+        warning_body_html: Contact <a href="mailto:%{email}">%{email}</a> right away
+          so we can help secure your account.
+        warning_title: Did not make this change?
+      reset_password:
+        cta: Reset password
+        cta_body: Use the button below to choose a new password. This reset link expires
+          in 24 hours.
+        eyebrow: Account security
+        footer_note: If you did not request a password reset, you can ignore this
+          message and your password will stay the same.
+        greeting: Hello,
+        preheader: Reset the password for your Miru account.
+        request_html: We received a request to change the password associated with
+          <strong>%{email}</strong>.
+        subtitle: We received a request to reset the password for your Miru account.
+        title: Reset your password
+      shared:
+        signature_html: Thanks,<br><strong>Team Miru</strong>
+      unlock:
+        cta: Reset password
+        eyebrow: Account security
+        footer_note: If you did not try to sign in, wait for the lock to expire and
+          change your password immediately.
+        greeting_html: Hello <strong>%{email}</strong>,
+        preheader: Unlock your Miru account after too many failed sign-in attempts.
+        subtitle: We locked your Miru account after too many unsuccessful sign-in
+          attempts.
+        title: Your account is temporarily locked
+        warning_body: Miru unlocks accounts automatically after 30 minutes. If you
+          do not recognize these attempts, reset your password so your account is
+          secure once the lock expires.
+        warning_title: Sign-in attempts exceeded the allowed limit.
+    expense_mailer:
+      approved:
+        eyebrow: Expenses
+        preheader: Your reimbursement request has been approved.
+        subject: Your reimbursement has been approved
+        subtitle: Your reimbursement request has been reviewed and approved.
+        title: Reimbursement approved
+      paid:
+        eyebrow: Expenses
+        preheader: Your reimbursement request has been marked as paid.
+        subject: Your reimbursement has been marked as paid
+        subtitle: Payment for your reimbursement request has been completed.
+        title: Reimbursement paid
+      rejected:
+        eyebrow: Expenses
+        next_step_body: Open the expense, make the updates, and submit it again.
+        next_step_title: Next step
+        preheader: Your reimbursement request needs updates.
+        subject: Your reimbursement needs updates before approval
+        subtitle: Please review the request details, make the needed changes, and
+          resubmit it.
+        title: Reimbursement needs updates
+      submitted:
+        eyebrow: Expenses
+        preheader: A new reimbursement request needs review.
+        subject: "%{submitter_name} submitted a reimbursement request"
+        subtitle_html: "<strong>%{submitter_name}</strong> submitted a reimbursement
+          request that is ready for review."
+        title: New reimbursement request
+    invoice_mailer:
+      invoice:
+        eyebrow: Invoices
+        payment_link_subvalue: Review the line items and pay online.
+        payment_link_value: Secure invoice page
+        preheader: Invoice %{invoice_number} from %{company_name}.
+        ready_body: Open the secure invoice page to check the line items, confirm
+          the total, and pay online.
+        ready_title: Review before you pay
+        subject: Invoice %{invoice_number}
+        subtitle_html: "<strong>%{company_name}</strong> sent invoice <strong>%{invoice_number}</strong>.
+          You can review it and pay online whenever you are ready."
+        support_html: Questions about this invoice? Reply to this email or contact
+          <a href="mailto:%{support_email}">%{support_email}</a>.
+        title: Invoice ready to review
+      send_invoice:
+        attachment_subvalue: Keep it, forward it, or file it.
+        attachment_value: PDF attached
+        eyebrow: Invoices
+        next_steps_body: Open the invoice to confirm the amount, review the line items,
+          and pay when you are ready.
+        next_steps_title: What to expect
+        note_title: A note from %{company_name}
+        preheader: Invoice %{invoice_number} from %{company_name} is ready.
+        subject: Invoice %{invoice_number} from %{company_name}
+        subtitle_html: "<strong>%{company_name}</strong> sent invoice <strong>%{invoice_number}</strong>.
+          Open it to review the details, download the PDF, and pay securely."
+        support_html: Need a hand? Reply to this email or contact <a href="mailto:%{support_email}">%{support_email}</a>.
+        title: Invoice ready to review
+    labels:
+      amount: Amount
+      amount_due: Amount due
+      amount_paid: Amount paid
+      attachment: Attachment
+      category: Category
+      client: Client
+      date: Date
+      description: Description
+      due_date: Due date
+      invited_by: Invited by
+      invoice: Invoice
+      invoice_number: Invoice number
+      issue_date: Issue date
+      issued_to: Issued to
+      members: Members
+      outstanding_amount: Outstanding amount
+      paid_on: Paid on
+      payment_link: Payment link
+      payment_method: Payment method
+      reference: Reference
+      status: Status
+      total_amount: Total amount
+      workspace: Workspace
+    layout:
+      brand: Miru
+      footer_body: Miru keeps time, invoices, payments, and operations in one calm
+        workspace.
+      footer_contact: support@getmiru.com
+      footer_copyright: "© Miru. All rights reserved."
+      footer_site: app.miru.so
+      preheader: A clear update from Miru.
+    monthly_reports_mailer:
+      cash_flow_digest:
+        average_daily_net_change_html: Average daily net change <strong>%{amount}</strong>
+        compare_to_previous: vs. %{amount} in %{month_label}
+        eyebrow: Monthly Digest
+        money_in: Money in
+        money_out: Money out
+        net_change: Net change in %{month_label}
+        no_money_in: No payments were recorded in Miru for %{month_year_label}.
+        no_money_out: No paid expenses were recorded in Miru for %{month_year_label}.
+        preheader: "%{company_name}'s %{month_label} cash flow digest"
+        subject: "%{company_name}'s %{month_label} cash flow digest"
+        subtitle: Here is a concise view of money moving through Miru for %{month_year_label}.
+        title: "%{company_name}'s %{month_label} cash flow digest"
+        top_money_in_sources: Top money-in sources
+        top_money_out_sources: Top money-out buckets
+    payment_mailer:
+      payment:
+        eyebrow: Payments
+        follow_up_body: Open the invoice to confirm the payment, file the receipt,
+          or continue with the next step.
+        follow_up_title: What to do next
+        preheader: Payment confirmation for invoice %{invoice_number}.
+        received_title: Payment received
+        subject: Payment details for invoice %{invoice_number}
+        subtitle_html: "<strong>%{client_name}</strong> paid invoice <strong>%{invoice_number}</strong>."
+        summary_html: "<strong>%{client_name}</strong> paid <strong>%{amount}</strong>
+          for invoice <strong>%{invoice_number}</strong>. This invoice is now fully
+          paid."
+        title: Payment confirmation
+    send_payment_reminder_mailer:
+      send_payment_reminder:
+        eyebrow: Invoices
+        preheader: Payment reminder for %{company_name} invoices.
+        subject: Payment reminder for %{company_name}
+        subtitle: Here are the invoices that still need attention.
+        title: Payment reminder
+    send_reminder_mailer:
+      send_reminder:
+        eyebrow: Invoices
+        preheader: Reminder for invoice %{invoice_number} from %{company_name}.
+        subject: Reminder for invoice %{invoice_number} from %{company_name}
+        subtitle_html: Invoice <strong>%{invoice_number}</strong> from <strong>%{company_name}</strong>
+          is still awaiting payment.
+        title: Payment reminder
+    send_weekly_reminder_to_user_mailer:
+      notify_user_about_missed_entries:
+        body_html: You logged fewer than 40 hours between <strong>%{starting_date}</strong>
+          and <strong>%{ending_date}</strong>.
+        eyebrow: Time tracking
+        follow_up: Open Miru, add the missing entries, and close out the week.
+        greeting_html: Hi <strong>%{name}</strong>,
+        preheader: Update your Miru timesheet for the missing week.
+        signoff_html: Thanks,<br><strong>Miru</strong>
+        subject: Complete your Miru timesheet for last week
+        subtitle: Your time entries for %{company_name} are still below the expected
+          weekly total.
+        title: Complete your timesheet
+    subscription:
+      plan_purchased:
+        badge: Cha-ching
+        billing_interval: Billing interval
+        billing_settings_html: 'Billing settings: <a href="%{url}" style="color: #111827;">%{url}</a>'
+        company: Company
+        cta: Open billing settings
+        image_label: New paid plan
+        image_text: New paid workspace
+        plan: Plan
+        stripe_subscription: Stripe subscription
+        subtitle: New paid workspace on Miru. Billing is live.
+        team_seats: Team seats
+        title: "%{company} just bought %{plan}"
+      plan_purchased_text:
+        billing_interval: 'Billing interval: %{interval}'
+        billing_settings: 'Open billing settings: %{url}'
+        company: 'Company: %{company}'
+        plan: 'Plan: %{plan}'
+        stripe_subscription: 'Stripe subscription: %{id}'
+        team_seats: 'Team seats: %{seats}'
+      trial_started:
+        body_html: Your 30-day Miru Pro trial for <strong>%{company}</strong> is now
+          active.
+        cta: Open billing
+        eyebrow: Billing
+        footer_body: You can review billing, compare plans, and upgrade at any time
+          from your billing settings.
+        greeting_html: Hello <strong>%{name}</strong>,
+        preheader: Your Miru Pro trial is now active.
+        subtitle: Explore billing, reports, and the rest of the Pro workflow during
+          your 30-day trial.
+        title: Your Miru Pro trial is live
+        trial_ends: Trial ends
+      trial_started_text:
+        body: Your 30-day Miru Pro trial for %{company} is now active.
+        greeting: Hello %{name},
+        review_billing: Review billing at %{url}.
+        trial_ends: Trial ends on %{date}.
+    user_invitation_mailer:
+      send_user_invitation:
+        about_body: Miru brings time, invoices, payments, and day-to-day operations
+          into one workspace.
+        about_title: About Miru
+        eyebrow: Invitation
+        get_started_body: Accept the invite, create your password, and you are in.
+        get_started_title: Get started
+        preheader: You have been invited to join a team on Miru.
+        subject: You're invited to join Miru
+        subtitle_html: "<strong>%{sender_name}</strong> invited you to join <strong>%{company_name}</strong>
+          on Miru."
+        support_html: If you were not expecting this invitation, contact our team
+          at <a href="mailto:%{support_email}">%{support_email}</a>.
+        title: Join your Miru workspace
+        workspace_members:
+          one: 1 member
+          other: "%{count} members"
   navbar:
     clients: Clients
     help: Help
@@ -197,6 +515,73 @@ en-US:
       success: Instructions for resetting your password have been sent to your email.
     update:
       success: Your password has been updated.
+  pdfs:
+    accounts_aging:
+      client: Client
+      title: Accounts Aging Report
+      total: Total
+    client_revenues:
+      client: Client
+      outstanding_amount: Outstanding Amount
+      overdue_amount: Overdue Amount
+      paid_amount: Paid Amount
+      title: Client Revenue Report
+      total_revenue: Total Revenue
+    invoices:
+      amount_due: Amount Due
+      amount_paid: Amount Paid
+      billed_to: Billed To
+      client_invoice: Client Invoice
+      discount: Discount
+      due: 'Due: %{due_date}'
+      invoice_number: Invoice Number
+      issue_date: Issue Date
+      paid: 'Paid: %{amount}'
+      payment_details: Payment Details
+      payment_rows:
+        account_number: Account Number
+        bank_name: Bank Name
+        gst_number: GST Number
+        routing_number: Routing Number
+        swift_code: SWIFT Code
+        tax_id: Tax ID
+        vat_number: VAT Number
+      prepared_by: Prepared by %{company_name}, issued %{issue_date}, due %{due_date}.
+      reference: 'Reference: %{reference}'
+      sub_total: Sub total
+      table:
+        date: Date
+        description: Description
+        line_total: Line Total
+        name: Name
+        qty: Qty
+        rate: Rate
+      tax: Tax
+      title: Invoice
+      total: Total
+      total_invoice_amount: Total invoice amount
+      work_summary: Work Summary
+    outstanding_overdue_invoices:
+      amount: Amount
+      client: Client
+      due_date: Due Date
+      invoice_number: Invoice No
+      issue_date: Issue Date
+      no_clients_found: No clients found
+      outstanding_amount: Outstanding Amount
+      overdue_amount: Overdue Amount
+      status: Status
+      title: Outstanding and Overdue Invoices Report
+      total_amounts: Total Amounts
+      total_invoice_amount: Total Invoice Amount
+    time_entries:
+      client: Client
+      date: Date
+      hours_logged: Hours Logged
+      note: Note
+      project: Project
+      team_member: Team Member
+      title: Time Entry Report
   projects:
     add_new_project: Add new project
     add_project: Add project

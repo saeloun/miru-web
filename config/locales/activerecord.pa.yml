@@ -1,0 +1,30 @@
+---
+pa:
+  activerecord:
+    errors:
+      models:
+        client:
+          attributes:
+            name:
+              format: "%{message}"
+        project:
+          attributes:
+            name:
+              format: "%{message}"
+        user:
+          attributes:
+            email:
+              blank: ਈਮੇਲ ਖਾਲੀ ਨਹੀਂ ਹੋ ਸਕਦੀ
+              invalid: ਅਵੈਧ ਈਮੇਲ ਆਈਡੀ
+              taken: ਈਮੇਲ ਆਈਡੀ ਪਹਿਲਾਂ ਹੀ ਮੌਜੂਦ ਹੈ
+            first_name:
+              blank: ਖਾਲੀ ਨਹੀਂ ਹੋ ਸਕਦਾ
+              invalid: ਸਿਰਫ਼ ਅੱਖਰ ਜਾਂ ਖਾਲੀ ਥਾਂਵਾਂ ਹੋਣੀਆਂ ਚਾਹੀਦੀਆਂ ਹਨ
+            last_name:
+              blank: ਖਾਲੀ ਨਹੀਂ ਹੋ ਸਕਦਾ
+              invalid: ਸਿਰਫ਼ ਅੱਖਰ ਜਾਂ ਖਾਲੀ ਥਾਂਵਾਂ ਹੋਣੀਆਂ ਚਾਹੀਦੀਆਂ ਹਨ
+            password:
+              blank: ਖਾਲੀ ਨਹੀਂ ਹੋ ਸਕਦਾ
+              too_short: ਘੱਟੋ-ਘੱਟ %{count} ਅੱਖਰ ਹੋਣੇ ਚਾਹੀਦੇ ਹਨ
+            password_confirmation:
+              confirmation: ਨਵੇਂ ਪਾਸਵਰਡ ਨਾਲ ਮੇਲ ਨਹੀਂ ਖਾਂਦਾ।

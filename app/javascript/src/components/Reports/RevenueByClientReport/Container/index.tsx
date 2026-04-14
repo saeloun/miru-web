@@ -5,6 +5,7 @@ import { SummaryDashboard } from "StyledComponents";
 import EmptyStates from "common/EmptyStates";
 import { useEntry } from "components/Reports/context/EntryContext";
 import { useUserContext } from "context/UserContext";
+import { i18n } from "../../../../i18n";
 
 import MobileRow from "./MobileRow";
 import TableRow from "./TableRow";
@@ -18,31 +19,31 @@ const RevenueByClientTableHeader = () => (
         className="w-4/12 py-5 pr-6 text-left text-xs font-normal tracking-widest text-muted-foreground"
         scope="col"
       >
-        CLIENT
+        {i18n.t("reports.clientHeader").toUpperCase()}
       </th>
       <th
         className="w-2/12 px-0 py-5 text-right text-xs font-normal tracking-widest text-muted-foreground"
         scope="col"
       >
-        OVERDUE <br /> AMOUNT
+        {i18n.t("reports.overdueAmount").toUpperCase()}
       </th>
       <th
         className="w-2/12 px-0 py-5 text-right text-xs font-normal tracking-widest text-muted-foreground"
         scope="col"
       >
-        OUTSTANDING <br /> AMOUNT
+        {i18n.t("reports.outstandingAmount").toUpperCase()}
       </th>
       <th
         className="w-2/12 px-6 py-5 text-right text-xs font-normal tracking-widest text-muted-foreground"
         scope="col"
       >
-        PAID <br /> AMOUNT
+        {i18n.t("reports.paidAmount").toUpperCase()}
       </th>
       <th
         className="w-2/12 py-5 pl-6 text-right text-xs font-normal tracking-widest text-muted-foreground"
         scope="col"
       >
-        TOTAL <br /> REVENUE
+        {i18n.t("reports.totalRevenue").toUpperCase()}
       </th>
     </tr>
   </thead>
@@ -101,8 +102,8 @@ const RevenueByClientResults = () => {
       showNoSearchResultState={revenueByClientReport.filterCounter > 0}
       Message={
         revenueByClientReport.filterCounter > 0
-          ? "No results match current filters. Try removing some filters."
-          : " No data found. We will display relevant data once it becomes available"
+          ? i18n.t("reports.noResultsMatchFilters")
+          : i18n.t("reports.noClientRevenueData")
       }
     />
   );

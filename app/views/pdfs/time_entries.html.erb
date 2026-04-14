@@ -1,23 +1,23 @@
 <div style="display: flex; justify-content: center; align-items: center; border-bottom: 2px solid #ccc; padding: 10px; height: 30px;">
-  <h2>Time Entry Report</h2>
+  <h2><%= t("pdfs.time_entries.title") %></h2>
 </div>
 
 <div style="display: flex; justify-content: space-between; padding: 10px;">
   <table style="width: 100%; border-collapse: collapse">
     <thead>
       <th style="text-align: left; flex-basis: 25%; border: 1px solid #000;">
-        <p>Project\</p>
-        <p>Client</p>
+        <p><%= t("pdfs.time_entries.project") %></p>
+        <p><%= t("pdfs.time_entries.client") %></p>
       </th>
       <th style="text-align: left; flex-basis: 25%; padding: 3px;border: 1px solid #000; ">
-        Note
+        <%= t("pdfs.time_entries.note") %>
       </th>
       <th style="text-align: left; flex-basis: 25%; border: 1px solid #000; ">
-        <p>Team Member\</p>
-        <p>Date</p>
+        <p><%= t("pdfs.time_entries.team_member") %></p>
+        <p><%= t("pdfs.time_entries.date") %></p>
       </th>
       <th style="text-align: left; flex-basis: 25%; padding: 1px;border: 1px solid #000; ">
-        Hours Logged
+        <%= t("pdfs.time_entries.hours_logged") %>
       </th>
     </thead>
     <tbody>

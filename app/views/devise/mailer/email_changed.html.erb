@@ -1,21 +1,21 @@
-<% content_for :email_preheader, "Your Miru email address has changed." %>
-<% content_for :email_eyebrow, "Account security" %>
-<% content_for :email_title, "Email address updated" %>
+<% content_for :email_preheader, t("mailers.devise.email_changed.preheader") %>
+<% content_for :email_eyebrow, t("mailers.devise.email_changed.eyebrow") %>
+<% content_for :email_title, t("mailers.devise.email_changed.title") %>
 <% content_for :email_subtitle do %>
-  This message confirms a change to the email address on your Miru account.
+  <%= t("mailers.devise.email_changed.subtitle") %>
 <% end %>
 
-<p>Hello <strong><%= @email %></strong>,</p>
+<p><%= t("mailers.devise.email_changed.greeting_html", email: @email) %></p>
 
 <% if @resource.try(:unconfirmed_email?) %>
-  <p>Your account email is being changed to <strong><%= @resource.unconfirmed_email %></strong>.</p>
+  <p><%= t("mailers.devise.email_changed.pending_html", email: @resource.unconfirmed_email) %></p>
 <% else %>
-  <p>Your account email has been changed to <strong><%= @resource.email %></strong>.</p>
+  <p><%= t("mailers.devise.email_changed.changed_html", email: @resource.email) %></p>
 <% end %>
 
 <div class="email-panel email-panel-warning">
-  <p class="email-panel-title">Did not request this change?</p>
-  <p style="margin-bottom: 0;">Contact our support team immediately at <a href="mailto:hello@saeloun.com">hello@saeloun.com</a>.</p>
+  <p class="email-panel-title"><%= t("mailers.devise.email_changed.warning_title") %></p>
+  <p style="margin-bottom: 0;"><%= t("mailers.devise.email_changed.warning_body_html", email: "hello@saeloun.com") %></p>
 </div>
 
-<p>Thanks,<br><strong>Team Miru</strong></p>
+<p><%= t("mailers.devise.shared.signature_html") %></p>

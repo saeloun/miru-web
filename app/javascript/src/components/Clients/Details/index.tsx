@@ -14,6 +14,7 @@ import { unmapClientDetails } from "mapper/mappedIndex";
 import { PlusIcon } from "miruIcons";
 import { useParams, useNavigate } from "react-router-dom";
 import { sendGAPageView } from "utils/googleAnalytics";
+import { i18n } from "../../../i18n";
 
 import { tableHeader, mobileTableHeader } from "./constants";
 import Header from "./Header";
@@ -159,7 +160,7 @@ const ClientDetails = ({ isAdminUser }) => {
                   />
                 ) : (
                   <EmptyStates
-                    Message="No project has been added to this client yet."
+                    Message={i18n.t("clients.noProjectsAddedYet")}
                     messageClassName="w-full lg:mt-5"
                     showNoSearchResultState={false}
                     wrapperClassName="mt-5"
@@ -171,7 +172,7 @@ const ClientDetails = ({ isAdminUser }) => {
                     >
                       <PlusIcon size={20} weight="bold" />
                       <span className="ml-2 inline-block text-xl">
-                        Add Project
+                        {i18n.t("clients.addProject")}
                       </span>
                     </button>
                   </EmptyStates>

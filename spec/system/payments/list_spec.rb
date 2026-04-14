@@ -88,7 +88,7 @@ RSpec.describe "Payments page", type: :system, js: true do
         expect(page).to have_content("Partially Paid")
         expect(page).to have_content("Failed")
         expect(page).to have_content("Payment declined by bank")
-        expect(page).to have_content("Add manual entry")
+        expect(page).to have_content("ADD MANUAL ENTRY")
       end
     end
 
@@ -96,7 +96,7 @@ RSpec.describe "Payments page", type: :system, js: true do
       with_forgery_protection do
         visit "/payments?invoiceId=#{sent_invoice.id}"
 
-        find("button", text: "Add manual entry", match: :first, wait: 10).click
+        find("button", text: "ADD MANUAL ENTRY", match: :first, wait: 10).click
         within("#transactionType") do
           find("button", text: "Select Transaction Type", match: :first, wait: 10).click
         end
@@ -113,8 +113,11 @@ RSpec.describe "Payments page", type: :system, js: true do
         visit "/payments"
 
         expect(page).to have_css("#react-root", wait: 10)
-        expect(page).to have_content("No payments recorded yet", wait: 10)
-        expect(page).to have_content("Add Manual Entry", wait: 10)
+        expect(page).to have_content(
+          "No payments have been recorded yet",
+          wait: 10
+        )
+        expect(page).to have_content("ADD MANUAL ENTRY", wait: 10)
       end
     end
   end
@@ -149,6 +152,19 @@ RSpec.describe "Payments page", type: :system, js: true do
         expect(page).to have_content("Scroll to load more payments", wait: 10)
       end
     end
+
+    it "shows localized payment counts in Gujarati", :aggregate_failures do
+      user.update!(locale: "gu")
+
+      with_forgery_protection do
+        visit "/payments"
+
+        expect(page).to have_css("#react-root", wait: 10)
+        expect(page).to have_content("ચુકવણીઓ", wait: 10)
+        expect(page).to have_content("26 માંથી 25 બતાવી રહ્યું છે", wait: 10)
+        expect(page).to have_content("મેન્યુઅલ એન્ટ્રી ઉમેરો", wait: 10)
+      end
+    end
   end
 
   context "role access" do
@@ -165,7 +181,7 @@ RSpec.describe "Payments page", type: :system, js: true do
         visit "/payments"
 
         expect(page).to have_css("#react-root", wait: 10)
-        expect(page).not_to have_content("Add manual entry", wait: 5)
+        expect(page).not_to have_content("ADD MANUAL ENTRY", wait: 5)
         expect(page).to have_current_path("/time-tracking", wait: 10)
       end
     end

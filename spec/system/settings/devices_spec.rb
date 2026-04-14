@@ -45,4 +45,24 @@ RSpec.describe "Settings - Devices", type: :system, js: true do
     expect(page).to have_content("Employee Laptop", wait: 10)
     expect(page).not_to have_content("Owner Laptop")
   end
+
+  it "shows localized device copy in Hindi" do
+    owner.update!(locale: "hi")
+    sign_in(owner)
+
+    visit "/settings/devices"
+
+    expect(page).to have_content("उपकरण जोड़ें", wait: 10)
+    expect(page).to have_content("कोई उपकरण नहीं मिला", wait: 10)
+    click_on "उपकरण जोड़ें"
+
+    expect(page).to have_current_path("/settings/devices/edit", wait: 10)
+    expect(page).to have_content("एक और उपकरण जोड़ें", wait: 10)
+    find("h3", text: "एक और उपकरण जोड़ें").click
+    expect(page).to have_content("उपकरण सारांश", wait: 10)
+    accept_confirm("आपके पास बिना सहेजे बदलाव हैं। क्या आप वाकई रद्द करना चाहते हैं?") do
+      click_on "रद्द करें"
+    end
+    expect(page).to have_current_path("/settings/devices", wait: 10)
+  end
 end

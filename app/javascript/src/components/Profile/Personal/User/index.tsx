@@ -10,6 +10,7 @@ import { employmentMapper } from "mapper/teams.mapper";
 import { Outlet, useNavigate, useParams } from "react-router-dom";
 import { getDisplayAvatarUrl } from "helpers";
 import { sendGAPageView } from "utils/googleAnalytics";
+import { i18n } from "../../../../i18n";
 
 import MobilePersonalDetails from "./MobilePersonalDetails";
 import PersonalProfileSummary from "./PersonalProfileSummary";
@@ -92,7 +93,7 @@ const UserDetailsView = () => {
             editAction={handleEditClick}
             isDisableUpdateBtn={false}
             subTitle=""
-            title="Personal Details"
+            title={i18n.t("profile.personalDetails")}
           />
           {isLoading ? (
             <Loader className="min-h-70v" />
@@ -110,7 +111,7 @@ const UserDetailsView = () => {
         <Fragment>
           <MobileEditHeader
             href="edit"
-            title="Personal Details"
+            title={i18n.t("profile.personalDetails")}
             backHref={
               isCalledFromSettings ? "/settings/" : `/team/${currentUserId}/`
             }

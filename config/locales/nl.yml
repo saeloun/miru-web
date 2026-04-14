@@ -1,16 +1,52 @@
 ---
 nl:
-  activerecord:
-    errors:
-      models:
-        client:
-          attributes:
-            name:
-              format: "%{message}"
-        project:
-          attributes:
-            name:
-              format: "%{message}"
+  analytics:
+    activity:
+      amount_collected: Verzamelde bedrag
+      bank_transfers_month: Bankoverschrijvingen (maand)
+      created: Gemaakt
+      downloaded: Gedownload
+      invoice_activity_today: Factuuractiviteit vandaag
+      payment_activity: Betalingsactiviteit
+      payments_today: Betalingen vandaag
+      sent: Verstuurd
+      stripe_payments_month: Stripe-betalingen (maand)
+      viewed: Bekeken
+    currency:
+      conversion_impact: Conversie-impact
+      currencies_in_use: In gebruik zijnde valuta
+      invoices_with_conversion: Facturen met conversie
+      recent_exchange_rates: Recente wisselkoersen
+      table:
+        date: Datum
+        from: Van
+        rate: Tarief
+        source: Bron
+        to: Naar
+      title: Inzichten in valutaconversie
+    overview:
+      active_clients: Actieve klanten
+      outstanding: Uitstekend
+      overdue: Verlopen
+      total_revenue: Totale omzet
+    recent_activity:
+      ago: "%{time} geleden"
+      invoice_reference: factuur
+      system: Systeem
+      title: Recente activiteit
+    super_admin: Superbeheerder
+    tabs:
+      activity: Activiteit
+      clients: Klanten
+      currency_exchange: Valuta en wisselkoers
+      overview: Overzicht
+      revenue: Winst
+      users: Gebruikers
+    title: Analysedashboard
+    welcome: Welkom, %{name}
+  app:
+    name: Miru Agency OS
+    tagline: Beheer de operationele activiteiten van uw organisatie vanuit één commandocentrum.
   application_controller:
     not_found: Route niet gevonden
   avatar:
@@ -85,21 +121,6 @@ nl:
   employment:
     update:
       success: Werkgelegenheid succesvol bijgewerkt
-  errors:
-    bill_status_billed: Je kunt geen factuur sturen voor een item dat al eerder gefactureerd
-      is.
-    can't change status: Kan niet worden gewijzigd na betaling van een factuur.
-    create_billed_entry: Je kunt geen gefactureerde urenregistratie aanmaken.
-    internal_server_error: Er is iets misgegaan.
-    not_found: De bron waarnaar u op zoek bent, is niet beschikbaar.
-    prevent_draft_to_waived: kan niet worden gewijzigd naar kwijtgescholden
-    unauthorized: Alleen de eigenaar of beheerder is gemachtigd om deze actie uit
-      te voeren.
-    updation_not_allowed: Updaten is niet toegestaan.
-    user_already_member: Dit e-mailadres is al in gebruik. Voer een ander e-mailadres
-      in.
-    validate_billable_project: Je kunt geen niet-gefactureerde post aanmaken voor
-      projecten die niet gefactureerd worden.
   expenses:
     approve: Declaratie succesvol goedgekeurd
     create: Declaratie succesvol ingediend
@@ -174,6 +195,314 @@ nl:
       success: Verlof succesvol aangemaakt
     update:
       success: Laat de update succesvol verlopen
+  mailers:
+    actions:
+      join_miru: Sluit je aan bij Miru
+      open_expense: Openstaande kosten
+      open_invoice: Open factuur
+      open_time_tracking: Tijdregistratie openen
+      view_reports: Bekijk rapporten in Miru
+    client_payment_mailer:
+      payment:
+        eyebrow: Betalingen
+        preheader: Betalingsbewijs voor factuur %{invoice_number}.
+        receipt_title: Betaling ontvangen
+        records_body: Deze bon bevestigt uw betaling. U kunt de factuur op elk gewenst
+          moment opnieuw openen als u de gegevens nogmaals nodig heeft.
+        records_title: Bewaar dit voor uw administratie.
+        subject: Betalingsbewijs voor factuur %{invoice_number}
+        subtitle_html: Wij hebben uw betaling voor factuur <strong>%{invoice_number}</strong>
+          ontvangen.
+        summary_html: We ontvingen <strong>%{amount}</strong> op <strong>%{paid_on}</strong>
+          voor factuur <strong>%{invoice_number}</strong> .
+        title: Betalingsbewijs
+    devise:
+      confirmation:
+        body_intro: 'Je bent er bijna helemaal klaar voor. Hier zijn een paar dingen
+          die je vanaf dag één met Miru kunt doen:'
+        cta: Bevestig uw e-mailadres
+        cta_body: Gebruik de onderstaande knop om uw e-mailadres te bevestigen.
+        eyebrow: Accountinstellingen
+        feature_1: Verstuur professionele facturen met gehoste betaallinks.
+        feature_2: Registreer tijd, kosten en benutting in één workflow.
+        feature_3: Beheer uw team, klanten en facturering vanuit één centrale werkplek.
+        feature_4: Houd de inkomsten, openstaande facturen en betalingsactiviteiten
+          nauwlettend in de gaten.
+        footer_note: Als u geen Miru-account heeft aangemaakt, kunt u dit bericht
+          gerust negeren.
+        greeting_html: Hallo <strong>%{name}</strong> ,
+        preheader: Bevestig je e-mailadres om de installatie van Miru te voltooien.
+        subtitle: Bevestig uw e-mailadres om te beginnen met het bijhouden van uren,
+          het versturen van facturen en het beheren van uw team vanuit één centrale
+          plek.
+        title: Welkom bij Miru
+      email_changed:
+        changed_html: Het e-mailadres van uw account is gewijzigd naar <strong>%{email}</strong>
+          .
+        eyebrow: Accountbeveiliging
+        greeting_html: Hallo <strong>%{email}</strong> ,
+        pending_html: Het e-mailadres van uw account wordt gewijzigd naar <strong>%{email}</strong>
+          .
+        preheader: Je Miru-e-mailadres is gewijzigd.
+        subtitle: Dit bericht bevestigt een wijziging van het e-mailadres in uw Miru-account.
+        title: E-mailadres bijgewerkt
+        warning_body_html: Neem direct contact op met ons supportteam via <a href="mailto:%{email}">%{email}</a>
+          .
+        warning_title: Heeft u deze wijziging niet aangevraagd?
+      password_change:
+        eyebrow: Accountbeveiliging
+        greeting_html: Hallo <strong>%{name}</strong> ,
+        preheader: Je Miru-wachtwoord is gewijzigd.
+        subtitle: Het wachtwoord van uw Miru-account is succesvol bijgewerkt.
+        success_body: Je kunt gewoon blijven inloggen bij Miru met je nieuwe wachtwoord.
+        success_title: Je wachtwoord is bijgewerkt.
+        title: Wachtwoord succesvol gewijzigd
+        warning_body_html: Neem direct contact op met <a href="mailto:%{email}">%{email}</a>
+          , zodat we je kunnen helpen je account te beveiligen.
+        warning_title: Heb je deze wijziging niet doorgevoerd?
+      reset_password:
+        cta: Wachtwoord opnieuw instellen
+        cta_body: Gebruik de onderstaande knop om een nieuw wachtwoord te kiezen.
+          Deze link voor het opnieuw instellen van uw wachtwoord is 24 uur geldig.
+        eyebrow: Accountbeveiliging
+        footer_note: Als u geen wachtwoordreset hebt aangevraagd, kunt u dit bericht
+          negeren en blijft uw wachtwoord hetzelfde.
+        greeting: Hallo,
+        preheader: Stel het wachtwoord voor uw Miru-account opnieuw in.
+        request_html: We hebben een verzoek ontvangen om het wachtwoord van <strong>%{email}</strong>
+          te wijzigen.
+        subtitle: We hebben een verzoek ontvangen om het wachtwoord van uw Miru-account
+          opnieuw in te stellen.
+        title: Stel uw wachtwoord opnieuw in
+      shared:
+        signature_html: Bedankt,<br> <strong>Team Miru</strong>
+      unlock:
+        cta: Wachtwoord opnieuw instellen
+        eyebrow: Accountbeveiliging
+        footer_note: Als je niet hebt geprobeerd in te loggen, wacht dan tot de blokkering
+          is opgeheven en wijzig je wachtwoord onmiddellijk.
+        greeting_html: Hallo <strong>%{email}</strong> ,
+        preheader: Ontgrendel je Miru-account na te veel mislukte inlogpogingen.
+        subtitle: We hebben je Miru-account geblokkeerd na te veel mislukte inlogpogingen.
+        title: Je account is tijdelijk geblokkeerd.
+        warning_body: Miru ontgrendelt accounts automatisch na 30 minuten. Als u deze
+          pogingen niet herkent, wijzig dan uw wachtwoord zodat uw account weer veilig
+          is zodra de vergrendeling is verlopen.
+        warning_title: Het aantal inlogpogingen overschreed de toegestane limiet.
+    expense_mailer:
+      approved:
+        eyebrow: Uitgaven
+        preheader: Uw declaratieverzoek is goedgekeurd.
+        subject: Uw terugbetaling is goedgekeurd.
+        subtitle: Uw declaratieverzoek is beoordeeld en goedgekeurd.
+        title: Vergoeding goedgekeurd
+      paid:
+        eyebrow: Uitgaven
+        preheader: Uw terugbetalingsverzoek is als betaald gemarkeerd.
+        subject: Uw terugbetaling is als betaald gemarkeerd.
+        subtitle: De betaling voor uw terugbetalingsverzoek is voltooid.
+        title: Terugbetaling ontvangen
+      rejected:
+        eyebrow: Uitgaven
+        next_step_body: Open de onkostennota, voer de wijzigingen door en dien deze
+          opnieuw in.
+        next_step_title: Volgende stap
+        preheader: Uw declaratieverzoek moet worden bijgewerkt.
+        subject: Uw declaratie moet worden bijgewerkt voordat deze kan worden goedgekeurd.
+        subtitle: Controleer de details van het verzoek, breng de nodige wijzigingen
+          aan en dien het opnieuw in.
+        title: Vergoedingen moeten worden bijgewerkt.
+      submitted:
+        eyebrow: Uitgaven
+        preheader: Een nieuw verzoek om terugbetaling moet worden beoordeeld.
+        subject: "%{submitter_name} heeft een vergoedingsverzoek ingediend"
+        subtitle_html: "<strong>%{submitter_name}</strong> heeft een terugbetalingsverzoek
+          ingediend dat klaar is voor beoordeling."
+        title: Nieuw verzoek om terugbetaling
+    invoice_mailer:
+      invoice:
+        eyebrow: Facturen
+        payment_link_subvalue: Controleer de specificaties en betaal online.
+        payment_link_value: Beveiligde factuurpagina
+        preheader: Factuur %{invoice_number} van %{company_name}.
+        ready_body: Open de beveiligde factuurpagina om de factuurregels te controleren,
+          het totaalbedrag te bevestigen en online te betalen.
+        ready_title: Lees de recensie voordat je betaalt.
+        subject: Factuur %{invoice_number}
+        subtitle_html: "<strong>%{company_name}</strong> heeft factuur <strong>%{invoice_number}</strong>
+          verzonden. U kunt deze bekijken en online betalen wanneer het u uitkomt."
+        support_html: Heeft u vragen over deze factuur? Beantwoord deze e-mail of
+          neem contact op met <a href="mailto:%{support_email}">%{support_email}</a>
+          .
+        title: Factuur klaar voor beoordeling
+      send_invoice:
+        attachment_subvalue: Bewaar het, stuur het door of archiveer het.
+        attachment_value: PDF bijgevoegd
+        eyebrow: Facturen
+        next_steps_body: Open de factuur om het bedrag te controleren, bekijk de afzonderlijke
+          posten en betaal wanneer u er klaar voor bent.
+        next_steps_title: Wat kun je verwachten?
+        note_title: Een bericht van %{company_name}
+        preheader: Factuur %{invoice_number} van %{company_name} is gereed.
+        subject: Factuur %{invoice_number} van %{company_name}
+        subtitle_html: "<strong>%{company_name}</strong> heeft factuur <strong>%{invoice_number}</strong>
+          verzonden. Open deze om de details te bekijken, download de pdf en betaal
+          veilig."
+        support_html: Hulp nodig? Reageer op deze e-mail of neem contact op met <a
+          href="mailto:%{support_email}">%{support_email}</a> .
+        title: Factuur klaar voor beoordeling
+    labels:
+      amount: Hoeveelheid
+      amount_due: Verschuldigd bedrag
+      amount_paid: Betaald bedrag
+      attachment: Bijlage
+      category: Categorie
+      client: Cliënt
+      date: Datum
+      description: Beschrijving
+      due_date: Deadline
+      invited_by: Uitgenodigd door
+      invoice: Factuur
+      invoice_number: Factuurnummer
+      issue_date: Uitgiftedatum
+      issued_to: Uitgegeven aan
+      members: Leden
+      outstanding_amount: Uitstaande bedrag
+      paid_on: Betaald op
+      payment_link: Betaallink
+      payment_method: Betaalmethode
+      reference: Referentie
+      status: Status
+      total_amount: Totaalbedrag
+      workspace: Werkruimte
+    layout:
+      brand: Miru
+      footer_body: Miru beheert tijd, facturen, betalingen en de bedrijfsvoering in
+        één overzichtelijke werkomgeving.
+      footer_contact: support@getmiru.com
+      footer_copyright: "© Miru. Alle rechten voorbehouden."
+      footer_site: app.miru.so
+      preheader: Een duidelijke update van Miru.
+    monthly_reports_mailer:
+      cash_flow_digest:
+        average_daily_net_change_html: Gemiddelde dagelijkse netto verandering <strong>%{amount}</strong>
+        compare_to_previous: versus %{amount} in %{month_label}
+        eyebrow: Maandelijks overzicht
+        money_in: Geld in
+        money_out: Geld opnemen
+        net_change: Netto verandering in %{month_label}
+        no_money_in: Er zijn geen betalingen geregistreerd in Miru voor %{month_year_label}.
+        no_money_out: Er zijn geen betaalde onkosten geregistreerd in Miru voor %{month_year_label}.
+        preheader: "%{company_name}'s %{month_label} kasstroomoverzicht"
+        subject: "%{company_name}'s %{month_label} kasstroomoverzicht"
+        subtitle: Hieronder een beknopt overzicht van de geldstromen via Miru voor
+          %{month_year_label}.
+        title: "%{company_name}'s %{month_label} kasstroomoverzicht"
+        top_money_in_sources: Belangrijkste bronnen van inkomsten
+        top_money_out_sources: Top geld-uitgavenpotten
+    payment_mailer:
+      payment:
+        eyebrow: Betalingen
+        follow_up_body: Open de factuur om de betaling te bevestigen, bewaar het ontvangstbewijs
+          of ga verder met de volgende stap.
+        follow_up_title: Wat moet ik nu doen?
+        preheader: Betalingsbevestiging voor factuur %{invoice_number}.
+        received_title: Betaling ontvangen
+        subject: Betalingsgegevens voor factuur %{invoice_number}
+        subtitle_html: "<strong>%{client_name}</strong> betaalde factuur <strong>%{invoice_number}</strong>
+          ."
+        summary_html: "<strong>%{client_name}</strong> betaalde <strong>%{amount}</strong>
+          voor factuur <strong>%{invoice_number}</strong> . Deze factuur is nu volledig
+          betaald."
+        title: Betalingsbevestiging
+    send_payment_reminder_mailer:
+      send_payment_reminder:
+        eyebrow: Facturen
+        preheader: Betalingsherinnering voor %{company_name} facturen.
+        subject: Betalingsherinnering voor %{company_name}
+        subtitle: Dit zijn de facturen die nog aandacht nodig hebben.
+        title: Betalingsherinnering
+    send_reminder_mailer:
+      send_reminder:
+        eyebrow: Facturen
+        preheader: Herinnering voor factuur %{invoice_number} van %{company_name}.
+        subject: Herinnering voor factuur %{invoice_number} van %{company_name}
+        subtitle_html: Factuur <strong>%{invoice_number}</strong> van <strong>%{company_name}</strong>
+          wacht nog op betaling.
+        title: Betalingsherinnering
+    send_weekly_reminder_to_user_mailer:
+      notify_user_about_missed_entries:
+        body_html: Je hebt minder dan 40 uur geregistreerd tussen <strong>%{starting_date}</strong>
+          en <strong>%{ending_date}</strong> .
+        eyebrow: Tijdregistratie
+        follow_up: Open Miru, voeg de ontbrekende gegevens toe en sluit de week af.
+        greeting_html: Hallo <strong>%{name}</strong> ,
+        preheader: Werk je Miru-urenregistratie bij voor de ontbrekende week.
+        signoff_html: Bedankt,<br> <strong>Miru</strong>
+        subject: Vul je Miru-urenregistratieformulier voor vorige week in.
+        subtitle: Uw urenregistraties voor %{company_name} liggen nog steeds onder
+          het verwachte wekelijkse totaal.
+        title: Vul je urenregistratieformulier in.
+    subscription:
+      plan_purchased:
+        badge: Kassa-kassa
+        billing_interval: Factureringsinterval
+        billing_settings_html: 'Factureringsinstellingen: <a href="%{url}" style="color:
+          #111827;">%{url}</a>'
+        company: Bedrijf
+        cta: Factureringsinstellingen openen
+        image_label: Nieuw betaald abonnement
+        image_text: Nieuwe betaalde werkplek
+        plan: Plan
+        stripe_subscription: Stripe-abonnement
+        subtitle: Nieuwe betaalde werkruimte op Miru. Facturering is nu actief.
+        team_seats: Teamstoelen
+        title: "%{company} heeft zojuist %{plan} gekocht"
+      plan_purchased_text:
+        billing_interval: 'Factureringsinterval: %{interval}'
+        billing_settings: 'Factureringsinstellingen openen: %{url}'
+        company: 'Bedrijf: %{company}'
+        plan: 'Plan: %{plan}'
+        stripe_subscription: 'Stripe-abonnement: %{id}'
+        team_seats: 'Teamplaatsen: %{seats}'
+      trial_started:
+        body_html: Je 30-daagse proefperiode van Miru Pro voor <strong>%{company}</strong>
+          is nu actief.
+        cta: Open facturering
+        eyebrow: Facturering
+        footer_body: Je kunt je factuurgegevens bekijken, abonnementen vergelijken
+          en op elk gewenst moment upgraden via je factuurinstellingen.
+        greeting_html: Hallo <strong>%{name}</strong> ,
+        preheader: Je Miru Pro-proefperiode is nu actief.
+        subtitle: Ontdek de facturering, rapporten en de rest van de Pro-workflow
+          tijdens uw 30-daagse proefperiode.
+        title: Je Miru Pro-proefperiode is nu actief.
+        trial_ends: Proces beëindigd
+      trial_started_text:
+        body: Je 30-daagse proefperiode van Miru Pro voor %{company} is nu actief.
+        greeting: Hallo %{name},
+        review_billing: Controleer de facturering bij %{url}.
+        trial_ends: De proef eindigt op %{date}.
+    user_invitation_mailer:
+      send_user_invitation:
+        about_body: Miru brengt tijdregistratie, facturen, betalingen en dagelijkse
+          werkzaamheden samen in één werkruimte.
+        about_title: Over Miru
+        eyebrow: Uitnodiging
+        get_started_body: Accepteer de uitnodiging, maak een wachtwoord aan en je
+          hebt toegang.
+        get_started_title: Aan de slag
+        preheader: Je bent uitgenodigd om deel te nemen aan een team op Miru.
+        subject: Je bent van harte uitgenodigd om je bij Miru aan te sluiten.
+        subtitle_html: "<strong>%{sender_name}</strong> heeft je uitgenodigd om je
+          bij <strong>%{company_name}</strong> op Miru aan te sluiten."
+        support_html: Mocht u deze uitnodiging niet verwachten, neem dan contact op
+          met ons team via <a href="mailto:%{support_email}">%{support_email}</a>
+          .
+        title: Word lid van je Miru-werkruimte
+        workspace_members:
+          one: 1 lid
+          other: "%{count} leden"
   navbar:
     clients: Klanten
     help: Hulp
@@ -204,6 +533,74 @@ nl:
         uw e-mailadres verzonden.
     update:
       success: Je wachtwoord is bijgewerkt.
+  pdfs:
+    accounts_aging:
+      client: Cliënt
+      title: Rapport over openstaande debiteuren
+      total: Totaal
+    client_revenues:
+      client: Cliënt
+      outstanding_amount: Uitstaande bedrag
+      overdue_amount: Achterstallig bedrag
+      paid_amount: Betaald bedrag
+      title: Rapport over klantomzet
+      total_revenue: Totale omzet
+    invoices:
+      amount_due: Verschuldigd bedrag
+      amount_paid: Betaald bedrag
+      billed_to: Gefactureerd aan
+      client_invoice: Klantfactuur
+      discount: Korting
+      due: 'Vervaldatum: %{due_date}'
+      invoice_number: Factuurnummer
+      issue_date: Uitgiftedatum
+      paid: 'Betaald: %{amount}'
+      payment_details: Betalingsgegevens
+      payment_rows:
+        account_number: Rekeningnummer
+        bank_name: Banknaam
+        gst_number: GST-nummer
+        routing_number: Routingnummer
+        swift_code: SWIFT-code
+        tax_id: Belastingnummer
+        vat_number: BTW-nummer
+      prepared_by: Opgesteld door %{company_name}, uitgegeven door %{issue_date},
+        verschuldigd op %{due_date}.
+      reference: 'Referentie: %{reference}'
+      sub_total: Subtotaal
+      table:
+        date: Datum
+        description: Beschrijving
+        line_total: Lijntotaal
+        name: Naam
+        qty: Aantal
+        rate: Tarief
+      tax: Belasting
+      title: Factuur
+      total: Totaal
+      total_invoice_amount: Totaal factuurbedrag
+      work_summary: Werkoverzicht
+    outstanding_overdue_invoices:
+      amount: Hoeveelheid
+      client: Cliënt
+      due_date: Deadline
+      invoice_number: Factuurnr.
+      issue_date: Uitgiftedatum
+      no_clients_found: Geen klanten gevonden
+      outstanding_amount: Uitstaande bedrag
+      overdue_amount: Achterstallig bedrag
+      status: Status
+      title: Rapport met openstaande en achterstallige facturen
+      total_amounts: Totale bedragen
+      total_invoice_amount: Totaal factuurbedrag
+    time_entries:
+      client: Cliënt
+      date: Datum
+      hours_logged: Uren geregistreerd
+      note: Opmerking
+      project: Project
+      team_member: Teamlid
+      title: Urenregistratierapport
   projects:
     add_new_project: Nieuw project toevoegen
     add_project: Project toevoegen

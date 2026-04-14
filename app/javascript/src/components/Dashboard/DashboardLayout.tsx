@@ -266,6 +266,16 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
                   <span className="font-semibold text-foreground">Miru</span>
                 </div>
               }
+              user={{
+                id: user?.id,
+                name:
+                  `${user?.first_name || ""} ${user?.last_name || ""}`.trim() ||
+                  user?.email ||
+                  "User",
+                email: user?.email || "",
+                avatar: avatarUrl || user?.avatar_url || "",
+                currentWorkspaceId: user?.current_workspace_id,
+              }}
             />
           </div>
         </div>
@@ -297,12 +307,14 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
             </button>
           }
           user={{
+            id: user?.id,
             name:
               `${user?.first_name || ""} ${user?.last_name || ""}`.trim() ||
               user?.email ||
               "User",
             email: user?.email || "",
             avatar: avatarUrl || user?.avatar_url || "",
+            currentWorkspaceId: user?.current_workspace_id,
           }}
         />
       </aside>

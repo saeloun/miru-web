@@ -255,6 +255,47 @@ const FloatingTimer: React.FC<FloatingTimerProps> = ({
   const isPristineTimer =
     !timer.isRunning && timer.elapsedTime === 0 && !timer.project;
 
+  const saveEntrySummary = (
+    <>
+      <div className="space-y-4">
+        <div>
+          <Label>{i18n.t("project")}</Label>
+          <p className="text-sm text-muted-foreground">
+            {timer.project} ({timer.client})
+          </p>
+        </div>
+
+        <div>
+          <Label>{i18n.t("timeTracking.duration")}</Label>
+          <p className="text-sm text-muted-foreground">
+            {formatTime(timer.elapsedTime)}
+          </p>
+        </div>
+
+        {timer.description && (
+          <div>
+            <Label>{i18n.t("description")}</Label>
+            <p className="text-sm text-muted-foreground">{timer.description}</p>
+          </div>
+        )}
+      </div>
+
+      <DialogFooter>
+        <Button variant="outline" onClick={discardTimer}>
+          {i18n.t("timer.discard")}
+        </Button>
+        <Button
+          onClick={handleSaveEntry}
+          disabled={saveTimerMutation.isPending || !timer.project}
+        >
+          {saveTimerMutation.isPending
+            ? i18n.t("timeTracking.saving")
+            : i18n.t("timeTracking.saveEntry")}
+        </Button>
+      </DialogFooter>
+    </>
+  );
+
   if (isPristineTimer) {
     if (isInline) {
       return (
@@ -282,7 +323,7 @@ const FloatingTimer: React.FC<FloatingTimerProps> = ({
       <div className="fixed bottom-6 left-6 z-50">
         <Button onClick={startTimer} className="shadow-lg">
           <Play size={16} className="mr-2" />
-          Start Timer
+          {i18n.t("timer.startTimer")}
         </Button>
       </div>
     );
@@ -331,7 +372,9 @@ const FloatingTimer: React.FC<FloatingTimerProps> = ({
                   ) : (
                     <Button size="sm" onClick={startTimer}>
                       <Play size={16} className="mr-1" />
-                      {timer.elapsedTime > 0 ? i18n.t("timer.resume") : i18n.t("timer.start")}
+                      {timer.elapsedTime > 0
+                        ? i18n.t("timer.resume")
+                        : i18n.t("timer.start")}
                     </Button>
                   )}
                   <Button size="sm" onClick={stopTimer} variant="outline">
@@ -355,7 +398,9 @@ const FloatingTimer: React.FC<FloatingTimerProps> = ({
                     onValueChange={handleProjectChange}
                   >
                     <SelectTrigger id="timer-project-inline" className="h-10">
-                      <SelectValue placeholder={i18n.t("timer.selectProject")} />
+                      <SelectValue
+                        placeholder={i18n.t("timer.selectProject")}
+                      />
                     </SelectTrigger>
                     <SelectContent>
                       {projectsData?.projects.map(project => (
@@ -394,44 +439,13 @@ const FloatingTimer: React.FC<FloatingTimerProps> = ({
             <DialogHeader>
               <DialogTitle>{i18n.t("timer.saveTimeEntry")}</DialogTitle>
               <DialogDescription>
-                {i18n.t("timer.saveTimeEntryDescription", { time: formatTime(timer.elapsedTime) })}
+                {i18n.t("timer.saveTimeEntryDescription", {
+                  time: formatTime(timer.elapsedTime),
+                })}
               </DialogDescription>
             </DialogHeader>
 
-            <div className="space-y-4">
-              <div>
-                <Label>{i18n.t("project")}</Label>
-                <p className="text-sm text-gray-600">
-                  {timer.project} ({timer.client})
-                </p>
-              </div>
-
-              <div>
-                <Label>{i18n.t("timeTracking.duration")}</Label>
-                <p className="text-sm text-gray-600">
-                  {formatTime(timer.elapsedTime)}
-                </p>
-              </div>
-
-              {timer.description && (
-                <div>
-                  <Label>{i18n.t("description")}</Label>
-                  <p className="text-sm text-gray-600">{timer.description}</p>
-                </div>
-              )}
-            </div>
-
-            <DialogFooter>
-              <Button variant="outline" onClick={discardTimer}>
-                {i18n.t("timer.discard")}
-              </Button>
-              <Button
-                onClick={handleSaveEntry}
-                disabled={saveTimerMutation.isPending || !timer.project}
-              >
-                {saveTimerMutation.isPending ? i18n.t("timeTracking.saving") : i18n.t("timeTracking.saveEntry")}
-              </Button>
-            </DialogFooter>
+            <div className="space-y-4">{saveEntrySummary}</div>
           </DialogContent>
         </Dialog>
       </>
@@ -444,8 +458,8 @@ const FloatingTimer: React.FC<FloatingTimerProps> = ({
       <div className="fixed bottom-6 left-6 z-50">
         <Card
           className={cn(
-            "bg-white shadow-lg border-2 transition-all duration-300",
-            timer.isRunning ? "border-green-500" : "border-gray-200",
+            "border-2 bg-card/95 shadow-lg backdrop-blur transition-all duration-300",
+            timer.isRunning ? "border-green-500" : "border-border",
             isMinimized ? "w-48" : "w-80"
           )}
         >
@@ -457,10 +471,12 @@ const FloatingTimer: React.FC<FloatingTimerProps> = ({
                   <Timer
                     size={20}
                     className={
-                      timer.isRunning ? "text-green-600" : "text-gray-400"
+                      timer.isRunning
+                        ? "text-green-600"
+                        : "text-muted-foreground"
                     }
                   />
-                  <span className="font-mono text-lg font-bold">
+                  <span className="font-mono text-lg font-bold text-foreground">
                     {formatTime(timer.elapsedTime)}
                   </span>
                 </div>
@@ -491,10 +507,14 @@ const FloatingTimer: React.FC<FloatingTimerProps> = ({
                     <Timer
                       size={20}
                       className={
-                        timer.isRunning ? "text-green-600" : "text-gray-400"
+                        timer.isRunning
+                          ? "text-green-600"
+                          : "text-muted-foreground"
                       }
                     />
-                    <span className="font-semibold">{i18n.t("timer.timer")}</span>
+                    <span className="font-semibold text-foreground">
+                      {i18n.t("timer.timer")}
+                    </span>
                   </div>
                   <div className="flex gap-1">
                     <Button
@@ -511,7 +531,7 @@ const FloatingTimer: React.FC<FloatingTimerProps> = ({
                 </div>
 
                 <div className="text-center">
-                  <div className="font-mono text-3xl font-bold mb-2">
+                  <div className="mb-2 font-mono text-3xl font-bold text-foreground">
                     {formatTime(timer.elapsedTime)}
                   </div>
                   <div className="flex justify-center gap-2">
@@ -543,7 +563,9 @@ const FloatingTimer: React.FC<FloatingTimerProps> = ({
                       onValueChange={handleProjectChange}
                     >
                       <SelectTrigger className="h-8">
-                        <SelectValue placeholder={i18n.t("timer.selectProject")} />
+                        <SelectValue
+                          placeholder={i18n.t("timer.selectProject")}
+                        />
                       </SelectTrigger>
                       <SelectContent>
                         {projectsData?.projects.map(project => (
@@ -585,44 +607,13 @@ const FloatingTimer: React.FC<FloatingTimerProps> = ({
           <DialogHeader>
             <DialogTitle>{i18n.t("timer.saveTimeEntry")}</DialogTitle>
             <DialogDescription>
-              {i18n.t("timer.saveTimeEntryDescription", { time: formatTime(timer.elapsedTime) })}
+              {i18n.t("timer.saveTimeEntryDescription", {
+                time: formatTime(timer.elapsedTime),
+              })}
             </DialogDescription>
           </DialogHeader>
 
-          <div className="space-y-4">
-            <div>
-              <Label>{i18n.t("project")}</Label>
-              <p className="text-sm text-gray-600">
-                {timer.project} ({timer.client})
-              </p>
-            </div>
-
-            <div>
-              <Label>{i18n.t("timeTracking.duration")}</Label>
-              <p className="text-sm text-gray-600">
-                {formatTime(timer.elapsedTime)}
-              </p>
-            </div>
-
-            {timer.description && (
-              <div>
-                <Label>{i18n.t("description")}</Label>
-                <p className="text-sm text-gray-600">{timer.description}</p>
-              </div>
-            )}
-          </div>
-
-          <DialogFooter>
-            <Button variant="outline" onClick={discardTimer}>
-              {i18n.t("timer.discard")}
-            </Button>
-            <Button
-              onClick={handleSaveEntry}
-              disabled={saveTimerMutation.isPending || !timer.project}
-            >
-              {saveTimerMutation.isPending ? i18n.t("timeTracking.saving") : i18n.t("timeTracking.saveEntry")}
-            </Button>
-          </DialogFooter>
+          <div className="space-y-4">{saveEntrySummary}</div>
         </DialogContent>
       </Dialog>
     </>

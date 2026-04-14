@@ -9,7 +9,7 @@ class Reports::OutstandingOverdueInvoices::ReportDecorator < ApplicationService
 
   def process
     {
-      invoices: invoices,
+      invoices: loaded_invoices,
       summary: summary,
       clients: clients_data,
       clients_data: clients_data,  # For compatibility with specs
@@ -27,50 +27,61 @@ class Reports::OutstandingOverdueInvoices::ReportDecorator < ApplicationService
     def invoices
       @invoices ||= current_company.invoices.kept
         .where(status: outstanding_overdue_statuses)
-        .includes(:client, :company)
+        .includes(:company, client: { logo_attachment: :blob })
         .order(issue_date: :desc)
     end
 
+    def loaded_invoices
+      @loaded_invoices ||= invoices.to_a
+    end
+
+    def invoice_groups
+      @invoice_groups ||= loaded_invoices.group_by(&:client)
+    end
+
     def summary
-      {
-        total_outstanding_amount: calculate_sum_in_base_currency(invoices.where(status: ["sent", "viewed"])),
-        total_overdue_amount: calculate_sum_in_base_currency(invoices.where(status: "overdue")),
-        total_invoice_amount: calculate_sum_in_base_currency(invoices),
+      @summary ||= loaded_invoices.each_with_object({
+        total_outstanding_amount: 0,
+        total_overdue_amount: 0,
+        total_invoice_amount: 0,
         currency: current_company.base_currency
-      }
+      }) do |invoice, totals|
+        amount_due = invoice_amount_due_in_base_currency(invoice)
+
+        totals[:total_invoice_amount] += amount_due
+        if invoice.status == "overdue"
+          totals[:total_overdue_amount] += amount_due
+        else
+          totals[:total_outstanding_amount] += amount_due
+        end
+      end
     end
 
     def clients_data
-      invoices.group_by(&:client).map do |client, client_invoices|
-        outstanding = calculate_outstanding(client_invoices)
-        overdue = calculate_overdue(client_invoices)
-        {
-          name: client.name,
-          client: client,  # For compatibility with specs
-          logo: client.logo_url,
-          invoices: client_invoices,
-          total_outstanding_amount: outstanding,
-          total_outstanding: outstanding,  # For compatibility with specs
-          total_overdue_amount: overdue,
-          total_overdue: overdue  # For compatibility with specs
-        }
+      invoice_groups.map do |client, client_invoices|
+        client_invoices.each_with_object(
+          {
+            name: client.name,
+            client: client,
+            logo: client.logo_url,
+            invoices: client_invoices,
+            total_outstanding_amount: 0,
+            total_outstanding: 0,
+            total_overdue_amount: 0,
+            total_overdue: 0
+          }
+        ) do |invoice, totals|
+          amount_due = invoice_amount_due_in_base_currency(invoice)
+
+          if invoice.status == "overdue"
+            totals[:total_overdue_amount] += amount_due
+            totals[:total_overdue] += amount_due
+          else
+            totals[:total_outstanding_amount] += amount_due
+            totals[:total_outstanding] += amount_due
+          end
+        end
       end.sort_by { |c| -(c[:total_outstanding_amount].to_f + c[:total_overdue_amount].to_f) }
-    end
-
-    def calculate_outstanding(client_invoices)
-      client_invoices
-        .select { |i| ["sent", "viewed"].include?(i.status) }
-        .sum { |invoice| invoice_amount_due_in_base_currency(invoice) }
-    end
-
-    def calculate_overdue(client_invoices)
-      client_invoices
-        .select { |i| i.status == "overdue" }
-        .sum { |invoice| invoice_amount_due_in_base_currency(invoice) }
-    end
-
-    def calculate_sum_in_base_currency(invoices)
-      invoices.sum { |invoice| invoice_amount_due_in_base_currency(invoice) }
     end
 
     def invoice_amount_due_in_base_currency(invoice)
@@ -84,16 +95,6 @@ class Reports::OutstandingOverdueInvoices::ReportDecorator < ApplicationService
         ratio * invoice.base_currency_amount
       else
         amount_due
-      end
-    end
-
-    # Keep original method for compatibility if needed elsewhere
-    def invoice_amount_in_base_currency(invoice)
-      # Use base_currency_amount if available and greater than 0, otherwise use amount
-      if invoice.base_currency_amount.to_f > 0.00
-        invoice.base_currency_amount
-      else
-        invoice.amount
       end
     end
 end

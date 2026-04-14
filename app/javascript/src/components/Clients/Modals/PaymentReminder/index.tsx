@@ -5,6 +5,7 @@ import Steps from "rc-steps";
 import "rc-steps/assets/index.css";
 import { Button, Modal, Toastr } from "StyledComponents";
 import { clientApi } from "apis/api";
+import { i18n } from "../../../../i18n";
 
 import EmailPreview from "./EmailPreview";
 import Step from "./Step";
@@ -41,9 +42,8 @@ const PaymentReminder = ({
     useState<number>(0);
 
   const [emailParams, setEmailParams] = useState<SendPaymentReminderEmail>({
-    subject: "Reminder to complete payments for unpaid invoices",
-    message:
-      "This is a gentle reminder to complete payments for the following invoices. You can find the respective payment links along with the invoice details given below",
+    subject: i18n.t("clients.paymentReminderSubject"),
+    message: i18n.t("clients.paymentReminderMessage"),
     recipients: client.clientMembersEmails,
   });
 
@@ -117,7 +117,9 @@ const PaymentReminder = ({
     >
       <div className="h-full" onClick={e => e.stopPropagation()}>
         <div className="flex items-center">
-          <h6 className="form__title">Send Payment Reminder</h6>
+          <h6 className="form__title">
+            {i18n.t("clients.sendPaymentReminder")}
+          </h6>
           <div className="mx-auto flex w-1/3 items-center">
             <Steps
               current={currentStep - 1}
@@ -146,8 +148,12 @@ const PaymentReminder = ({
             <div className="flex w-full items-center justify-between">
               <small>
                 {selectedInvoices.length > 1
-                  ? `${selectedInvoices.length} invoices selected`
-                  : `${selectedInvoices.length} invoice selected`}
+                  ? i18n.t("clients.invoicesSelected", {
+                      count: selectedInvoices.length,
+                    })
+                  : i18n.t("clients.invoiceSelected", {
+                      count: selectedInvoices.length,
+                    })}
               </small>
               <Button
                 className="py-2 px-10 text-base"
@@ -158,7 +164,7 @@ const PaymentReminder = ({
                   setCurrentStep(2);
                 }}
               >
-                Continue
+                {i18n.t("continue")}
               </Button>
             </div>
           ) : (
@@ -171,7 +177,7 @@ const PaymentReminder = ({
                   setCurrentStep(1);
                 }}
               >
-                Back
+                {i18n.t("back")}
               </Button>
               <Button
                 className="py-2 px-10 text-base"
@@ -181,7 +187,7 @@ const PaymentReminder = ({
                   handleSendReminder();
                 }}
               >
-                Send Reminder
+                {i18n.t("clients.sendReminder")}
               </Button>
             </div>
           )}

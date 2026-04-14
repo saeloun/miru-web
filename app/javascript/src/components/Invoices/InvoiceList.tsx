@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Card, CardContent } from "../ui/card";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
+import SendInvoice from "./common/InvoiceForm/SendInvoice";
 
 import {
   DropdownMenu,
@@ -26,6 +27,7 @@ import {
   Download,
   Eye,
   CheckCircle,
+  XCircle,
   Circle,
   Warning,
   FileText,
@@ -35,6 +37,7 @@ import {
   CircleNotch,
 } from "phosphor-react";
 
+import { ApiStatus as InvoiceStatus } from "../../constants";
 import { Invoice } from "../../services/invoiceApi";
 import ChartWithSummary from "./ChartWithSummary";
 import { currencyFormat } from "../../helpers/currency";
@@ -47,9 +50,16 @@ interface InvoiceListProps {
   summary?: any;
   onCreateInvoice?: () => void;
   onViewInvoice?: (id: string) => void;
-  onSendInvoice?: (id: string) => void;
-  onSendReminder?: (id: string) => void;
-  onMarkPaid?: (id: string) => void;
+  onSendInvoice?: (
+    id: string,
+    invoiceEmail?: { subject: string; message: string; recipients: string[] }
+  ) => Promise<void> | void;
+  onSendReminder?: (
+    id: string,
+    invoiceEmail?: { subject: string; message: string; recipients: string[] }
+  ) => Promise<void> | void;
+  onMarkPaid?: (invoice: Invoice) => void;
+  onWaive?: (invoice: Invoice) => void;
   onDownload?: (id: string) => void;
   onLoadMore?: () => void;
   isLoading?: boolean;
@@ -66,6 +76,7 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
   onSendInvoice,
   onSendReminder,
   onMarkPaid,
+  onWaive,
   onDownload,
   onLoadMore,
   isLoading = false,
@@ -74,6 +85,13 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
 }) => {
   const { companyRole } = useUserContext();
   const [searchTerm, setSearchTerm] = useState("");
+  const [activeInvoice, setActiveInvoice] = useState<Invoice | null>(null);
+  const [isSending, setIsSending] = useState(false);
+  const [isSendReminder, setIsSendReminder] = useState(false);
+  const [sendStatus, setSendStatus] = useState<InvoiceStatus>(
+    InvoiceStatus.IDLE
+  );
+
   const [filterParams, setFilterParams] = useState({
     dateRange: { label: "All", value: "all", from: "", to: "" },
     clients: [],
@@ -233,6 +251,36 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
 
   const canManageInvoices = companyRole === "owner" || companyRole === "admin";
 
+  const openSendDialog = (invoice: Invoice, reminder = false) => {
+    setActiveInvoice(invoice);
+    setIsSendReminder(reminder);
+    setIsSending(true);
+    setSendStatus(InvoiceStatus.IDLE);
+  };
+
+  const handleSendSubmit = async (
+    event: React.MouseEvent<HTMLButtonElement>,
+    invoiceEmail: { subject: string; message: string; recipients: string[] }
+  ) => {
+    event.preventDefault();
+    if (!activeInvoice) return;
+
+    try {
+      setSendStatus(InvoiceStatus.LOADING);
+      if (isSendReminder) {
+        await onSendReminder?.(activeInvoice.id, invoiceEmail);
+      } else {
+        await onSendInvoice?.(activeInvoice.id, invoiceEmail);
+      }
+      setSendStatus(InvoiceStatus.SUCCESS);
+      setIsSending(false);
+      setIsSendReminder(false);
+      setActiveInvoice(null);
+    } catch {
+      setSendStatus(InvoiceStatus.ERROR);
+    }
+  };
+
   const getQuickActions = (invoice: Invoice) => (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -265,7 +313,7 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
             {invoice.status === "draft" && (
               <DropdownMenuItem
                 data-testid={`invoice-action-send-${invoice.id}`}
-                onClick={() => onSendInvoice?.(invoice.id)}
+                onClick={() => openSendDialog(invoice)}
               >
                 <PaperPlaneTilt className="h-4 w-4 mr-2" />
                 {i18n.t("invoices.sendInvoice")}
@@ -274,19 +322,28 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
             {invoice.status === "overdue" && (
               <DropdownMenuItem
                 data-testid={`invoice-action-reminder-${invoice.id}`}
-                onClick={() => onSendReminder?.(invoice.id)}
+                onClick={() => openSendDialog(invoice, true)}
               >
                 <PaperPlaneTilt className="h-4 w-4 mr-2" />
                 {i18n.t("invoices.sendReminder")}
               </DropdownMenuItem>
             )}
-            {invoice.status !== "paid" && (
+            {["sent", "viewed", "overdue"].includes(invoice.status) && (
               <DropdownMenuItem
                 data-testid={`invoice-action-mark-paid-${invoice.id}`}
-                onClick={() => onMarkPaid?.(invoice.id)}
+                onClick={() => onMarkPaid?.(invoice)}
               >
                 <CheckCircle className="h-4 w-4 mr-2" />
                 {i18n.t("invoices.markAsPaid")}
+              </DropdownMenuItem>
+            )}
+            {["sent", "viewed", "overdue"].includes(invoice.status) && (
+              <DropdownMenuItem
+                data-testid={`invoice-action-waive-${invoice.id}`}
+                onClick={() => onWaive?.(invoice)}
+              >
+                <XCircle className="h-4 w-4 mr-2" />
+                {i18n.t("invoices.waiveOff")}
               </DropdownMenuItem>
             )}
           </>
@@ -463,8 +520,14 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
         <div className="flex flex-col items-center gap-2 pb-2 text-sm text-muted-foreground">
           <span>
             {hasActiveFilters
-              ? i18n.t("invoices.viewingMatching", { filtered: filteredInvoices.length, loaded: invoices.length })
-              : i18n.t("invoices.loadedOf", { loaded: invoices.length, total: totalInvoices })}
+              ? i18n.t("invoices.viewingMatching", {
+                  filtered: filteredInvoices.length,
+                  loaded: invoices.length,
+                })
+              : i18n.t("invoices.loadedOf", {
+                  loaded: invoices.length,
+                  total: totalInvoices,
+                })}
           </span>
           {!hasActiveFilters && hasMore && !isLoadingMore && (
             <span>{i18n.t("invoices.scrollToLoadMore")}</span>
@@ -472,7 +535,9 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
           {!hasActiveFilters && hasMore && !isLoadingMore && (
             <div className="h-8 w-full" />
           )}
-          {!hasActiveFilters && !hasMore && <span>{i18n.t("invoices.allInvoicesLoaded")}</span>}
+          {!hasActiveFilters && !hasMore && (
+            <span>{i18n.t("invoices.allInvoicesLoaded")}</span>
+          )}
         </div>
       )}
 
@@ -484,7 +549,9 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
               <div className="text-2xl font-bold">
                 {filteredInvoices.filter(inv => inv.status === "draft").length}
               </div>
-              <div className="text-sm text-muted-foreground">{i18n.t("invoices.draft")}</div>
+              <div className="text-sm text-muted-foreground">
+                {i18n.t("invoices.draft")}
+              </div>
             </CardContent>
           </Card>
           <Card>
@@ -492,7 +559,9 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
               <div className="text-2xl font-bold">
                 {filteredInvoices.filter(inv => inv.status === "sent").length}
               </div>
-              <div className="text-sm text-muted-foreground">{i18n.t("invoices.sent")}</div>
+              <div className="text-sm text-muted-foreground">
+                {i18n.t("invoices.sent")}
+              </div>
             </CardContent>
           </Card>
           <Card>
@@ -503,7 +572,9 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
                     .length
                 }
               </div>
-              <div className="text-sm text-muted-foreground">{i18n.t("invoices.overdue")}</div>
+              <div className="text-sm text-muted-foreground">
+                {i18n.t("invoices.overdue")}
+              </div>
             </CardContent>
           </Card>
           <Card>
@@ -516,10 +587,23 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
                     .reduce((sum, inv) => sum + inv.amount, 0)
                 )}
               </div>
-              <div className="text-sm text-muted-foreground">{i18n.t("invoices.collected")}</div>
+              <div className="text-sm text-muted-foreground">
+                {i18n.t("invoices.collected")}
+              </div>
             </CardContent>
           </Card>
         </div>
+      )}
+      {activeInvoice && isSending && (
+        <SendInvoice
+          handleSubmit={handleSendSubmit}
+          invoice={activeInvoice}
+          isSendReminder={isSendReminder}
+          isSending={isSending}
+          setIsSendReminder={setIsSendReminder}
+          setIsSending={setIsSending}
+          status={sendStatus}
+        />
       )}
     </div>
   );

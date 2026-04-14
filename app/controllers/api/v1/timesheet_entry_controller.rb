@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Api::V1::TimesheetEntryController < Api::V1::ApplicationController
+  include DateRangeParamParsing
+
   skip_after_action :verify_authorized, only: [:index]
   after_action :verify_policy_scoped, only: [:index]
 
@@ -48,41 +50,6 @@ class Api::V1::TimesheetEntryController < Api::V1::ApplicationController
   end
 
   private
-
-    def parsed_date_param(key)
-      value = params[key]
-      return if value.blank?
-
-      date_formats.each do |format|
-        parsed_date = Date.strptime(value.to_s, format)
-        return parsed_date if parsed_date.strftime(format) == value.to_s
-      rescue ArgumentError
-        next
-      end
-
-      Date.iso8601(value.to_s)
-    rescue ArgumentError
-      nil
-    end
-
-    def date_formats
-      [
-        company_date_format_for_strptime,
-        "%Y-%m-%d",
-        "%m-%d-%Y",
-        "%d-%m-%Y",
-        "%m/%d/%Y",
-        "%d/%m/%Y"
-      ].compact.uniq
-    end
-
-    def company_date_format_for_strptime
-      {
-        "DD-MM-YYYY" => "%d-%m-%Y",
-        "MM-DD-YYYY" => "%m-%d-%Y",
-        "YYYY-MM-DD" => "%Y-%m-%d"
-      }[current_company.date_format]
-    end
 
     def selected_user_id
       return current_user.id unless current_user.has_role?(:owner, current_company) || current_user.has_role?(:admin, current_company)

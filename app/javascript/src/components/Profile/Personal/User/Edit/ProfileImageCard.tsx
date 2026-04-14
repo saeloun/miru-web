@@ -32,6 +32,17 @@ const loadImage = (src: string) =>
     image.src = src;
   });
 
+const canvasToBlob = canvas =>
+  new Promise<Blob>((resolve, reject) => {
+    canvas.toBlob(blob => {
+      if (blob) {
+        resolve(blob);
+      } else {
+        reject(new Error(i18n.t("profile.uploadPhotoFailed")));
+      }
+    }, "image/png");
+  });
+
 const createCroppedFile = async (
   sourceUrl: string,
   filename: string,
@@ -63,9 +74,7 @@ const createCroppedFile = async (
     canvas.height
   );
 
-  const dataUrl = canvas.toDataURL("image/png");
-  const response = await fetch(dataUrl);
-  const blob = await response.blob();
+  const blob = await canvasToBlob(canvas);
 
   return new File([blob], `${filename.replace(/\.[^.]+$/, "")}.png`, {
     type: "image/png",

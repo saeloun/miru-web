@@ -1,0 +1,30 @@
+---
+nl:
+  activerecord:
+    errors:
+      models:
+        client:
+          attributes:
+            name:
+              format: "%{message}"
+        project:
+          attributes:
+            name:
+              format: "%{message}"
+        user:
+          attributes:
+            email:
+              blank: Een e-mailadres mag niet leeg zijn.
+              invalid: Ongeldig e-mailadres
+              taken: Het e-mailadres bestaat al
+            first_name:
+              blank: mag niet leeg zijn
+              invalid: mag alleen letters of spaties bevatten
+            last_name:
+              blank: mag niet leeg zijn
+              invalid: mag alleen letters of spaties bevatten
+            password:
+              blank: mag niet leeg zijn
+              too_short: moet minimaal %{count} tekens lang zijn
+            password_confirmation:
+              confirmation: komt niet overeen met het nieuwe wachtwoord

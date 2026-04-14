@@ -1,16 +1,52 @@
 ---
 zh-CN:
-  activerecord:
-    errors:
-      models:
-        client:
-          attributes:
-            name:
-              format: "%{message}"
-        project:
-          attributes:
-            name:
-              format: "%{message}"
+  analytics:
+    activity:
+      amount_collected: 已收金额
+      bank_transfers_month: 银行转账（每月）
+      created: 创建
+      downloaded: 下载
+      invoice_activity_today: 今日发票活动
+      payment_activity: 支付活动
+      payments_today: 今日支付
+      sent: 发送
+      stripe_payments_month: Stripe支付（月）
+      viewed: 已查看
+    currency:
+      conversion_impact: 转化率影响
+      currencies_in_use: 流通货币
+      invoices_with_conversion: 包含转换的发票
+      recent_exchange_rates: 近期汇率
+      table:
+        date: 日期
+        from: 从
+        rate: 速度
+        source: 来源
+        to: 到
+      title: 货币兑换洞察
+    overview:
+      active_clients: 活跃客户
+      outstanding: 杰出的
+      overdue: 逾期
+      total_revenue: 总收入
+    recent_activity:
+      ago: "%{time}年前"
+      invoice_reference: 发票
+      system: 系统
+      title: 近期活动
+    super_admin: 超级管理员
+    tabs:
+      activity: 活动
+      clients: 客户
+      currency_exchange: 货币与兑换
+      overview: 概述
+      revenue: 收入
+      users: 用户
+    title: 分析仪表盘
+    welcome: 欢迎，%{name}
+  app:
+    name: Miru Agency OS
+    tagline: 通过一个指挥中心管理您机构的各项行动。
   application_controller:
     not_found: 未找到路线
   avatar:
@@ -84,17 +120,6 @@ zh-CN:
   employment:
     update:
       success: 就业信息已成功更新
-  errors:
-    bill_status_billed: 已经计费过的条目不能再次计费。
-    can't change status: 已付款的发票无法更改
-    create_billed_entry: 您无法创建已计费的工时表条目
-    internal_server_error: 出问题了
-    not_found: 您要查找的资源不可用。
-    prevent_draft_to_waived: 不能改为豁免
-    unauthorized: 只有所有者或管理员用户才有权执行此操作
-    updation_not_allowed: 不允许更新。
-    user_already_member: 邮箱地址已被使用。请输入另一个邮箱地址。
-    validate_billable_project: 您无法为不可计费项目创建未开票条目。
   expenses:
     approve: 费用已获批准
     create: 费用已成功提交
@@ -167,6 +192,275 @@ zh-CN:
       success: 请假创建成功
     update:
       success: 休假信息已成功更新
+  mailers:
+    actions:
+      join_miru: 加入米鲁
+      open_expense: 公开费用
+      open_invoice: 未结发票
+      open_time_tracking: 开放时间跟踪
+      view_reports: 在 Miru 中查看报告
+    client_payment_mailer:
+      payment:
+        eyebrow: 付款
+        preheader: 发票 %{invoice_number} 的付款收据。
+        receipt_title: 已收到付款
+        records_body: 此收据确认您的付款。如果您需要再次查看详细信息，可以随时重新打开发票。
+        records_title: 请妥善保管此文件以作记录。
+        subject: 发票 %{invoice_number} 的付款收据
+        subtitle_html: 我们已收到您支付的发票<strong>%{invoice_number}</strong>的款项。
+        summary_html: 我们于<strong>%{paid_on} 日</strong>收到了<strong>%{amount}</strong>
+          ，用于支付发票<strong>%{invoice_number}</strong> 。
+        title: 付款收据
+    devise:
+      confirmation:
+        body_intro: 你差不多准备就绪了。以下是你从第一天起就可以用 Miru 做的一些事情：
+        cta: 确认电邮地址
+        cta_body: 请使用下方按钮确认您的电子邮件地址。
+        eyebrow: 账户设置
+        feature_1: 发送带有托管支付链接的专业发票。
+        feature_2: 在一个工作流程中跟踪时间、费用和利用率。
+        feature_3: 在一个工作空间内管理您的团队、客户和账单。
+        feature_4: 密切关注收入、逾期发票和付款情况。
+        footer_note: 如果您没有创建 Miru 帐户，则可以忽略此消息。
+        greeting_html: 嗨<strong>%{name}</strong> ，
+        preheader: 请确认您的电子邮件地址以完成Miru的设置。
+        subtitle: 请确认您的电子邮件地址，即可开始在一个地方跟踪工时、发送发票和管理您的团队。
+        title: 欢迎来到米鲁
+      email_changed:
+        changed_html: 您的帐户电子邮件已更改为<strong>%{email}</strong> 。
+        eyebrow: 账户安全
+        greeting_html: 你好<strong>%{email}</strong> ，
+        pending_html: 您的帐户电子邮件正在更改为<strong>%{email}</strong> 。
+        preheader: 您的Miru邮箱地址已更改。
+        subtitle: 此邮件确认您的 Miru 帐户电子邮件地址已更改。
+        title: 电子邮件地址已更新
+        warning_body_html: 立即联系我们的支持团队，电话是<a href="mailto:%{email}">%{email}</a> 。
+        warning_title: 没有提出这项更改请求？
+      password_change:
+        eyebrow: 账户安全
+        greeting_html: 你好<strong>%{name}</strong> ，
+        preheader: 您的Miru密码已更改。
+        subtitle: 您的Miru账户密码已成功更新。
+        success_body: 您可以使用新密码继续登录Miru。
+        success_title: 您的密码已更新。
+        title: 密码已成功更改
+        warning_body_html: 请立即联系<a href="mailto:%{email}">%{email}</a> ，以便我们帮助您保护您的帐户安全。
+        warning_title: 没有进行此项更改？
+      reset_password:
+        cta: 重置密码
+        cta_body: 请使用下方按钮选择新密码。此重置链接将在24小时后失效。
+        eyebrow: 账户安全
+        footer_note: 如果您没有申请重置密码，您可以忽略此消息，您的密码将保持不变。
+        greeting: 你好，
+        preheader: 重置您的Miru账户密码。
+        request_html: 我们收到更改与<strong>%{email}</strong>关联的密码的请求。
+        subtitle: 我们收到您重置 Miru 帐户密码的请求。
+        title: 重置密码
+      shared:
+        signature_html: 谢谢，<br><strong>米鲁队</strong>
+      unlock:
+        cta: 重置密码
+        eyebrow: 账户安全
+        footer_note: 如果您没有尝试登录，请等待锁定解除后立即更改密码。
+        greeting_html: 你好<strong>%{email}</strong> ，
+        preheader: 多次登录失败后，解锁您的 Miru 帐户。
+        subtitle: 由于您多次登录失败，我们已锁定您的 Miru 帐户。
+        title: 您的账户已被暂时锁定。
+        warning_body: Miru 会在 30 分钟后自动解锁账户。如果您无法识别这些尝试，请重置密码，以便在账户锁定解除后确保账户安全。
+        warning_title: 登录尝试次数已超过允许的次数限制。
+    expense_mailer:
+      approved:
+        eyebrow: 开支
+        preheader: 您的报销申请已获批准。
+        subject: 您的报销申请已获批准。
+        subtitle: 您的报销申请已审核通过。
+        title: 报销已批准
+      paid:
+        eyebrow: 开支
+        preheader: 您的报销申请已标记为已支付。
+        subject: 您的报销款项已标记为已支付。
+        subtitle: 您的报销申请已完成付款。
+        title: 已支付报销款
+      rejected:
+        eyebrow: 开支
+        next_step_body: 打开费用记录，进行更新，然后重新提交。
+        next_step_title: 下一步
+        preheader: 您的报销申请需要更新。
+        subject: 您的报销信息需要更新才能获得批准。
+        subtitle: 请核对申请详情，进行必要的修改，然后重新提交。
+        title: 报销需要更新
+      submitted:
+        eyebrow: 开支
+        preheader: 需要审核新的报销申请。
+        subject: "%{submitter_name} 提交了一份报销申请"
+        subtitle_html: "<strong>%{submitter_name}</strong>提交了一份报销申请，该申请已准备好接受审核。"
+        title: 新的报销申请
+    invoice_mailer:
+      invoice:
+        eyebrow: 发票
+        payment_link_subvalue: 请查看明细并在线支付。
+        payment_link_value: 安全发票页面
+        preheader: "%{company_name} 开具的 %{invoice_number} 发票。"
+        ready_body: 打开安全发票页面，查看明细项目，确认总额，并在线支付。
+        ready_title: 付款前请仔细阅读
+        subject: 发票 %{invoice_number}
+        subtitle_html: "<strong>%{company_name}</strong>已发送发票<strong>%{invoice_number}</strong>
+          。您可以随时查看并在线支付。"
+        support_html: 对这张发票有任何疑问？请回复此邮件或联系<a href="mailto:%{support_email}">%{support_email}</a>
+          。
+        title: 发票已准备好供审核
+      send_invoice:
+        attachment_subvalue: 保留、转发或归档。
+        attachment_value: 附件为PDF文件。
+        eyebrow: 发票
+        next_steps_body: 打开发票确认金额，查看明细项目，准备好后即可付款。
+        next_steps_title: 预期情况
+        note_title: 来自 %{company_name} 的一条消息
+        preheader: 来自 %{company_name} 的发票 %{invoice_number} 已准备就绪。
+        subject: 来自 %{company_name} 的发票 %{invoice_number}
+        subtitle_html: "<strong>%{company_name}</strong>已发送发票<strong>%{invoice_number}</strong>
+          。打开发票查看详情，下载 PDF 文件，并安全支付。"
+        support_html: 需要帮忙吗？请回复此邮件或联系<a href="mailto:%{support_email}">%{support_email}</a>
+          。
+        title: 发票已准备好供审核
+    labels:
+      amount: 数量
+      amount_due: 应付金额
+      amount_paid: 已付金额
+      attachment: 依恋
+      category: 类别
+      client: 客户
+      date: 日期
+      description: 描述
+      due_date: 到期日
+      invited_by: 受邀
+      invoice: 发票
+      invoice_number: 发票号码
+      issue_date: 签发日期
+      issued_to: 签发给
+      members: 成员
+      outstanding_amount: 未偿金额
+      paid_on: 已支付
+      payment_link: 付款链接
+      payment_method: 付款方式
+      reference: 参考
+      status: 地位
+      total_amount: 总金额
+      workspace: 工作区
+    layout:
+      brand: 米鲁
+      footer_body: Miru 将时间、发票、付款和运营集中在一个简洁的工作空间中。
+      footer_contact: support@getmiru.com
+      footer_copyright: "© Miru。版权所有。"
+      footer_site: app.miru.so
+      preheader: 来自Miru的明确更新。
+    monthly_reports_mailer:
+      cash_flow_digest:
+        average_daily_net_change_html: 平均每日净变化<strong>%{amount}</strong>
+        compare_to_previous: 与 %{amount} 在 %{month_label} 中
+        eyebrow: 月度摘要
+        money_in: 资金
+        money_out: 资金支出
+        net_change: "%{month_label} 的净变化"
+        no_money_in: Miru 中没有记录 %{month_year_label} 的任何付款。
+        no_money_out: Miru 中未记录 %{month_year_label} 的任何已付费支出。
+        preheader: "%{company_name} 的 %{month_label} 现金流摘要"
+        subject: "%{company_name} 的 %{month_label} 现金流摘要"
+        subtitle: 以下是 %{month_year_label} 资金通过 Miru 流动情况的简要视图。
+        title: "%{company_name} 的 %{month_label} 现金流摘要"
+        top_money_in_sources: 主要资金来源
+        top_money_out_sources: 最高赔付桶
+    payment_mailer:
+      payment:
+        eyebrow: 付款
+        follow_up_body: 打开发票以确认付款、归档收据或继续执行下一步。
+        follow_up_title: 接下来该做什么
+        preheader: 发票 %{invoice_number} 的付款确认。
+        received_title: 已收到付款
+        subject: 发票 %{invoice_number} 的付款详情
+        subtitle_html: "<strong>%{client_name}</strong>已支付发票<strong>%{invoice_number}</strong>
+          。"
+        summary_html: "<strong>%{client_name}</strong>已向<strong>%{amount}</strong>支付了发票<strong>%{invoice_number}</strong>的款项。该发票现已全额付清。"
+        title: 付款确认
+    send_payment_reminder_mailer:
+      send_payment_reminder:
+        eyebrow: 发票
+        preheader: "%{company_name} 张发票的付款提醒。"
+        subject: "%{company_name} 付款提醒"
+        subtitle: 以下是仍需处理的发票。
+        title: 付款提醒
+    send_reminder_mailer:
+      send_reminder:
+        eyebrow: 发票
+        preheader: 提醒您支付来自 %{company_name} 的发票 %{invoice_number}。
+        subject: 提醒您注意来自 %{company_name} 的发票 %{invoice_number}。
+        subtitle_html: 来自<strong>%{company_name}</strong>的发票<strong>%{invoice_number}</strong>仍待付款。
+        title: 付款提醒
+    send_weekly_reminder_to_user_mailer:
+      notify_user_about_missed_entries:
+        body_html: 在<strong>%{starting_date}</strong>和<strong>%{ending_date}</strong>之间，您的日志记录时间少于
+          40 小时。
+        eyebrow: 时间跟踪
+        follow_up: 打开 Miru，添加缺失的条目，然后结束本周。
+        greeting_html: 嗨<strong>%{name}</strong> ，
+        preheader: 请更新您在Miru系统中缺失的那一周的工时表。
+        signoff_html: 谢谢，<br><strong>米鲁</strong>
+        subject: 请填写您上周的Miru工时表
+        subtitle: 您在 %{company_name} 的工时记录仍然低于预期的每周总数。
+        title: 填写您的工时表
+    subscription:
+      plan_purchased:
+        badge: 叮咚
+        billing_interval: 计费周期
+        billing_settings_html: '计费设置： <a href="%{url}" style="color: #111827;">%{url}</a>'
+        company: 公司
+        cta: 打开计费设置
+        image_label: 新付费计划
+        image_text: 新的付费工作空间
+        plan: 计划
+        stripe_subscription: Stripe订阅
+        subtitle: Miru新增付费工作空间，现已上线计费。
+        team_seats: 团队座位
+        title: "%{company} 刚刚购买了 %{plan}"
+      plan_purchased_text:
+        billing_interval: 计费周期：%{interval}
+        billing_settings: 打开账单设置：%{url}
+        company: 公司：%{company}
+        plan: 计划：%{plan}
+        stripe_subscription: Stripe订阅：%{id}
+        team_seats: 团队席位：%{seats}
+      trial_started:
+        body_html: 您针对<strong>%{company} 的</strong>30 天 Miru Pro 试用版现已激活。
+        cta: 公开账单
+        eyebrow: 账单
+        footer_body: 您可以随时在账单设置中查看账单、比较套餐和升级。
+        greeting_html: 你好<strong>%{name}</strong> ，
+        preheader: 您的 Miru Pro 试用版现已激活。
+        subtitle: 在 30 天试用期内，探索计费、报告和 Pro 工作流程的其他功能。
+        title: 您的 Miru Pro 试用版已上线
+        trial_ends: 审判结束
+      trial_started_text:
+        body: 您针对 %{company} 的 30 天 Miru Pro 试用版现已激活。
+        greeting: 你好 %{name}，
+        review_billing: 审核账单，地址为 %{url}。
+        trial_ends: 试验于 %{date} 结束。
+    user_invitation_mailer:
+      send_user_invitation:
+        about_body: Miru 将时间、发票、付款和日常运营整合到一个工作空间中。
+        about_title: 关于米鲁
+        eyebrow: 邀请函
+        get_started_body: 接受邀请，创建密码，即可登录。
+        get_started_title: 开始使用
+        preheader: 您已被邀请加入 Miru 上的一个团队。
+        subject: 您受邀加入Miru
+        subtitle_html: "<strong>%{sender_name}</strong>邀请你加入 Miru 上的<strong>%{company_name}</strong>
+          。"
+        support_html: 如果您没有预料到会收到此邀请，请联系我们的团队<a href="mailto:%{support_email}">%{support_email}</a>
+          。
+        title: 加入您的 Miru 工作区
+        workspace_members:
+          one: 1名成员
+          other: "%{count} 成员"
   navbar:
     clients: 客户
     help: 帮助
@@ -195,6 +489,73 @@ zh-CN:
       success: 重置密码的说明已发送到您的邮箱。
     update:
       success: 您的密码已更新。
+  pdfs:
+    accounts_aging:
+      client: 客户
+      title: 账户账龄报告
+      total: 全部的
+    client_revenues:
+      client: 客户
+      outstanding_amount: 未偿金额
+      overdue_amount: 逾期金额
+      paid_amount: 已付金额
+      title: 客户收入报告
+      total_revenue: 总收入
+    invoices:
+      amount_due: 应付金额
+      amount_paid: 支付金额
+      billed_to: 账单支付给
+      client_invoice: 客户发票
+      discount: 折扣
+      due: 截止日期：%{due_date}
+      invoice_number: 发票号码
+      issue_date: 签发日期
+      paid: 已付：%{amount}
+      payment_details: 付款详情
+      payment_rows:
+        account_number: 帐号
+        bank_name: 银行名称
+        gst_number: 商品及服务税号
+        routing_number: 路由号码
+        swift_code: SWIFT代码
+        tax_id: 税务识别号
+        vat_number: 增值税号
+      prepared_by: 由 %{company_name} 编制，%{issue_date} 签发，%{due_date} 到期。
+      reference: 参考：%{reference}
+      sub_total: 小计
+      table:
+        date: 日期
+        description: 描述
+        line_total: 总计
+        name: 姓名
+        qty: 数量
+        rate: 速度
+      tax: 税
+      title: 发票
+      total: 全部的
+      total_invoice_amount: 发票总额
+      work_summary: 工作概要
+    outstanding_overdue_invoices:
+      amount: 数量
+      client: 客户
+      due_date: 到期日
+      invoice_number: 发票编号
+      issue_date: 签发日期
+      no_clients_found: 未找到客户
+      outstanding_amount: 未偿金额
+      overdue_amount: 逾期金额
+      status: 地位
+      title: 未结及逾期发票报告
+      total_amounts: 总金额
+      total_invoice_amount: 发票总金额
+    time_entries:
+      client: 客户
+      date: 日期
+      hours_logged: 记录工时
+      note: 笔记
+      project: 项目
+      team_member: 队员
+      title: 时间录入报告
   projects:
     add_new_project: 添加新项目
     add_project: 添加项目

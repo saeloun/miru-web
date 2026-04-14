@@ -1,6 +1,7 @@
 import React from "react";
 
 import CustomCheckbox from "common/CustomCheckbox";
+import { i18n } from "../../../../../i18n";
 
 const MobileTableHeader = ({ handleCheck, isChecked }) => (
   <thead>
@@ -20,19 +21,19 @@ const MobileTableHeader = ({ handleCheck, isChecked }) => (
         className="w-1/5 py-5 text-left text-xs font-medium tracking-widest text-foreground"
         scope="col"
       >
-        INVOICE NUMBER
+        {i18n.t("tableHeaders.invoiceNumber")}
       </th>
       <th
         className="w-1/5 py-5 text-left text-xs font-medium tracking-widest text-foreground"
         scope="col"
       >
-        ISSUE DATE/ DUE DATE
+        {i18n.t("tableHeaders.issueDateDueDate")}
       </th>
       <th
         className="w-1/5 px-4 py-5 text-right text-xs font-medium tracking-widest text-foreground"
         scope="col"
       >
-        STATUS/ AMOUNT
+        {i18n.t("tableHeaders.statusAmount")}
       </th>
     </tr>
   </thead>

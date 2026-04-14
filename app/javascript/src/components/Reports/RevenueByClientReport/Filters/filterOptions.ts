@@ -1,5 +1,6 @@
 import dayjs from "dayjs";
 import quarterOfYear from "dayjs/plugin/quarterOfYear";
+import { i18n } from "../../../../i18n";
 
 import { month, quarters } from "../../../../utils/dateUtil";
 
@@ -24,8 +25,12 @@ const getQuarter = isCurrentQuarter => {
   }
 
   return isCurrentQuarter
-    ? `This Quarter (${quarters[quarter].startDay} - ${quarters[quarter].endDay})`
-    : `Last Quarter (${quarters[quarter].startDay} - ${quarters[quarter].endDay})`;
+    ? `${i18n.t("thisQuarter")} (${quarters[quarter].startDay} - ${
+        quarters[quarter].endDay
+      })`
+    : `${i18n.t("lastQuarter")} (${quarters[quarter].startDay} - ${
+        quarters[quarter].endDay
+      })`;
 };
 
 const getDateRangeOptions = () => {
@@ -35,15 +40,13 @@ const getDateRangeOptions = () => {
   return [
     { value: "this_quarter", label: thisQuarter },
     { value: "last_quarter", label: previousQuarter },
-    { value: "this_year", label: "This Year" },
-    { value: "last_year", label: "Last Year" },
-    { value: "custom", label: "Custom" },
-    { value: "all_time", label: "All Time" },
+    { value: "this_year", label: i18n.t("thisYear") },
+    { value: "last_year", label: i18n.t("lastYear") },
+    { value: "custom", label: i18n.t("customRange") },
+    { value: "all_time", label: i18n.t("allTime") },
   ];
 };
 
-const dateRangeOptions = [...getDateRangeOptions()];
-
 const customDateFilter = "customDateFilter";
 
-export { dateRangeOptions, customDateFilter, getQuarter };
+export { customDateFilter, getDateRangeOptions, getQuarter };

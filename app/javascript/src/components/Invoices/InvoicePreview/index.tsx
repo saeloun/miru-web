@@ -9,9 +9,13 @@ import {
   PaperPlaneTilt,
   Printer,
   PencilSimple,
+  CheckCircle,
+  XCircle,
 } from "phosphor-react";
 import { Button } from "../../ui/button";
+import SendInvoice from "../common/InvoiceForm/SendInvoice";
 import { cn } from "../../../lib/utils";
+import { ApiStatus as InvoiceStatus } from "../../../constants";
 import { invoiceApi } from "../../../services/invoiceApi";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
@@ -65,7 +69,10 @@ interface InvoicePreviewProps {
     }>;
   };
   isEditing?: boolean;
-  onAction?: (action: string) => void;
+  onAction?: (
+    action: string,
+    payload?: { subject: string; message: string; recipients: string[] }
+  ) => Promise<void> | void;
 }
 
 const InvoicePreview: React.FC<InvoicePreviewProps> = ({
@@ -75,6 +82,9 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
 }) => {
   const [isDownloading, setIsDownloading] = useState(false);
   const [isSending, setIsSending] = useState(false);
+  const [sendStatus, setSendStatus] = useState<InvoiceStatus>(
+    InvoiceStatus.IDLE
+  );
   const navigate = useNavigate();
   const formatDate = (date: string | Date) => {
     if (!date) return "";
@@ -179,48 +189,46 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
     }
   };
 
-  const handleSend = async () => {
+  const handleSendSubmit = async (
+    event: React.MouseEvent<HTMLButtonElement>,
+    invoiceEmail: { subject: string; message: string; recipients: string[] }
+  ) => {
+    event.preventDefault();
+
     if (!invoice.id || invoice.id === "preview") {
       toast.error(i18n.t("invoices.cannotSendPreview"));
 
       return;
     }
 
-    setIsSending(true);
     try {
-      const isReminder = invoice.status === "overdue";
-      const subject = isReminder
-        ? `Invoice Reminder: ${invoice.invoiceNumber}`
-        : `Invoice ${invoice.invoiceNumber}`;
+      setSendStatus(InvoiceStatus.LOADING);
 
-      const message = isReminder
-        ? "This is a reminder about your outstanding invoice. Please find the details attached."
-        : "Please find your invoice attached.";
-
-      const response = isReminder
-        ? await invoiceApi.sendReminder(invoice.id, {
-            subject,
-            message,
-            recipients: [invoice.client.email],
-          })
-        : await invoiceApi.sendInvoice(invoice.id, {
-            subject,
-            message,
-            recipients: [invoice.client.email],
-          });
-
-      if (response && response.notice) {
-        toast.success(response.notice);
-      } else if (response && response.message) {
-        toast.success(response.message);
+      if (onAction) {
+        await onAction("send", invoiceEmail);
       } else {
-        toast.success(
-          invoice.status === "draft"
-            ? i18n.t("invoices.invoiceSentSuccessfully")
-            : i18n.t("invoices.reminderSentSuccessfully")
-        );
+        const isReminder = invoice.status === "overdue";
+        const response = isReminder
+          ? await invoiceApi.sendReminder(invoice.id, invoiceEmail)
+          : await invoiceApi.sendInvoice(invoice.id, invoiceEmail);
+
+        if (response && response.notice) {
+          toast.success(response.notice);
+        } else if (response && response.message) {
+          toast.success(response.message);
+        } else {
+          toast.success(
+            isReminder
+              ? i18n.t("invoices.reminderSentSuccessfully")
+              : i18n.t("invoices.invoiceSentSuccessfully")
+          );
+        }
       }
+
+      setSendStatus(InvoiceStatus.SUCCESS);
+      setIsSending(false);
     } catch (error: any) {
+      setSendStatus(InvoiceStatus.ERROR);
       console.error("Send failed:", error);
 
       if (error.response?.data?.error) {
@@ -236,8 +244,6 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
       } else {
         toast.error(i18n.t("invoices.failedToSend"));
       }
-    } finally {
-      setIsSending(false);
     }
   };
 
@@ -257,12 +263,8 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
   const handleAction = async (action: string) => {
     if (onAction) {
       if (action === "send") {
+        setSendStatus(InvoiceStatus.IDLE);
         setIsSending(true);
-        try {
-          await onAction(action);
-        } finally {
-          setIsSending(false);
-        }
 
         return;
       }
@@ -274,7 +276,8 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
           handleDownload();
           break;
         case "send":
-          handleSend();
+          setSendStatus(InvoiceStatus.IDLE);
+          setIsSending(true);
           break;
         case "print":
           handlePrint();
@@ -287,7 +290,7 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto">
+    <div className="w-full max-w-4xl mx-auto" data-testid="invoice-preview">
       {/* Action Bar */}
       {!isEditing && (
         <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -334,6 +337,30 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
               <PencilSimple className="h-4 w-4 mr-2" />
               {i18n.t("edit")}
             </Button>
+            {(invoice.status === "sent" ||
+              invoice.status === "overdue" ||
+              invoice.status === "viewed") && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => void handleAction("mark_paid")}
+              >
+                <CheckCircle className="h-4 w-4 mr-2" />
+                {i18n.t("invoices.markAsPaid")}
+              </Button>
+            )}
+            {(invoice.status === "sent" ||
+              invoice.status === "overdue" ||
+              invoice.status === "viewed") && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => void handleAction("waive")}
+              >
+                <XCircle className="h-4 w-4 mr-2" />
+                {i18n.t("invoices.waiveOff")}
+              </Button>
+            )}
             {invoice.status === "draft" && (
               <Button
                 data-testid="invoice-preview-send-action"
@@ -367,6 +394,16 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
           </div>
         </div>
       )}
+      {isSending && (
+        <SendInvoice
+          handleSubmit={handleSendSubmit}
+          invoice={invoice}
+          isSendReminder={invoice.status === "overdue"}
+          isSending={isSending}
+          setIsSending={setIsSending}
+          status={sendStatus}
+        />
+      )}
 
       {/* Invoice Preview Card */}
       <Card className="border-border bg-background p-4 text-foreground shadow-sm print:border-gray-200 print:bg-white print:text-gray-900 sm:p-8">
@@ -382,7 +419,7 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
             ) : (
               <div className="mb-4">
                 <h1 className="text-2xl font-bold text-foreground print:text-gray-900">
-                  {invoice.company?.name || "Company Name"}
+                  {invoice.company?.name || i18n.t("company")}
                 </h1>
               </div>
             )}
@@ -392,23 +429,35 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
               )}
               {invoice.company.email && <p>{invoice.company.email}</p>}
               {invoice.company.phone && <p>{invoice.company.phone}</p>}
-              {invoice.company.taxId && <p>Tax ID: {invoice.company.taxId}</p>}
+              {invoice.company.taxId && (
+                <p>
+                  {i18n.t("invoices.taxId", { value: invoice.company.taxId })}
+                </p>
+              )}
               {invoice.company.vatNumber && (
-                <p>VAT Number: {invoice.company.vatNumber}</p>
+                <p>
+                  {i18n.t("invoices.vatNumber", {
+                    value: invoice.company.vatNumber,
+                  })}
+                </p>
               )}
               {invoice.company.gstNumber && (
-                <p>GST Number: {invoice.company.gstNumber}</p>
+                <p>
+                  {i18n.t("invoices.gstNumber", {
+                    value: invoice.company.gstNumber,
+                  })}
+                </p>
               )}
             </div>
           </div>
 
           <div className="text-left sm:text-right">
             <h2 className="mb-2 text-3xl font-bold text-foreground print:text-gray-900">
-              INVOICE
+              {i18n.t("invoices.invoice")}
             </h2>
             <div className="text-sm space-y-1">
               <p className="text-muted-foreground print:text-gray-600">
-                Invoice Number
+                {i18n.t("invoices.invoiceNumber")}
               </p>
               <p className="text-lg font-semibold text-foreground print:text-gray-900">
                 #{invoice.invoiceNumber}
@@ -417,7 +466,7 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
             <div className="mt-4 text-sm space-y-1">
               <div className="flex justify-between gap-4">
                 <span className="text-muted-foreground print:text-gray-600">
-                  Issue Date:
+                  {i18n.t("invoices.issueDate")}:
                 </span>
                 <span className="font-medium text-foreground print:text-gray-900">
                   {formatDate(invoice.issueDate)}
@@ -425,7 +474,7 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
               </div>
               <div className="flex justify-between gap-4">
                 <span className="text-muted-foreground print:text-gray-600">
-                  Due Date:
+                  {i18n.t("invoices.dueDate")}:
                 </span>
                 <span className="font-medium text-foreground print:text-gray-900">
                   {formatDate(invoice.dueDate)}
@@ -434,7 +483,7 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
               {invoice.reference && (
                 <div className="flex justify-between gap-4">
                   <span className="text-muted-foreground print:text-gray-600">
-                    Reference:
+                    {i18n.t("invoices.reference")}:
                   </span>
                   <span className="font-medium text-foreground print:text-gray-900">
                     {invoice.reference}
@@ -448,7 +497,7 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
         {/* Bill To */}
         <div className="mb-8">
           <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-muted-foreground print:text-gray-600">
-            Bill To
+            {i18n.t("invoices.billedTo")}
           </h3>
           <div className="space-y-1 break-words text-sm">
             <p className="text-lg font-semibold text-foreground print:text-gray-900">
@@ -471,7 +520,7 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
             )}
             {invoice.client.taxId && (
               <p className="text-muted-foreground print:text-gray-600">
-                Tax ID: {invoice.client.taxId}
+                {i18n.t("invoices.taxId", { value: invoice.client.taxId })}
               </p>
             )}
           </div>
@@ -500,7 +549,7 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
                 <dl className="mt-4 grid grid-cols-2 gap-3 text-sm">
                   <div>
                     <dt className="text-muted-foreground print:text-gray-600">
-                      Date
+                      {i18n.t("date")}
                     </dt>
                     <dd className="font-medium text-foreground print:text-gray-900">
                       {item.date ? formatDate(item.date) : "-"}
@@ -508,7 +557,7 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
                   </div>
                   <div>
                     <dt className="text-muted-foreground print:text-gray-600">
-                      Qty
+                      {i18n.t("invoices.quantity")}
                     </dt>
                     <dd className="font-medium text-foreground print:text-gray-900">
                       {formatQuantity(item.quantity)}
@@ -516,7 +565,7 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
                   </div>
                   <div>
                     <dt className="text-muted-foreground print:text-gray-600">
-                      Rate
+                      {i18n.t("invoices.rate")}
                     </dt>
                     <dd className="font-medium text-foreground print:text-gray-900">
                       {currencyFormat(currency, item.rate)}
@@ -524,7 +573,7 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
                   </div>
                   <div>
                     <dt className="text-muted-foreground print:text-gray-600">
-                      Amount
+                      {i18n.t("amount")}
                     </dt>
                     <dd className="font-medium text-foreground print:text-gray-900">
                       {formatLineAmount(item)}
@@ -539,19 +588,19 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
               <thead>
                 <tr className="border-b-2 border-border print:border-gray-200">
                   <th className="px-2 py-3 text-left text-sm font-semibold text-foreground print:text-gray-700">
-                    Description
+                    {i18n.t("description")}
                   </th>
                   <th className="px-2 py-3 text-center text-sm font-semibold text-foreground print:text-gray-700">
-                    Date
+                    {i18n.t("date")}
                   </th>
                   <th className="px-2 py-3 text-center text-sm font-semibold text-foreground print:text-gray-700">
-                    Qty
+                    {i18n.t("invoices.quantity")}
                   </th>
                   <th className="px-2 py-3 text-right text-sm font-semibold text-foreground print:text-gray-700">
-                    Rate
+                    {i18n.t("invoices.rate")}
                   </th>
                   <th className="px-2 py-3 text-right text-sm font-semibold text-foreground print:text-gray-700">
-                    Amount
+                    {i18n.t("amount")}
                   </th>
                 </tr>
               </thead>
@@ -598,7 +647,7 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
             <div className="space-y-2 text-sm">
               <div className="flex justify-between py-2">
                 <span className="text-muted-foreground print:text-gray-600">
-                  Subtotal
+                  {i18n.t("invoices.subtotal")}
                 </span>
                 <span className="font-medium text-foreground print:text-gray-900">
                   {currencyFormat(currency, invoice.subtotal ?? invoice.amount)}
@@ -627,7 +676,7 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
               <Separator className="my-2" />
               <div className="flex justify-between py-2">
                 <span className="text-base font-semibold text-foreground print:text-gray-900">
-                  Total Due
+                  {i18n.t("reports.totalDue")}
                 </span>
                 <span className="text-xl font-bold text-foreground print:text-gray-900">
                   {currencyFormat(currency, invoice.amount)}
@@ -641,7 +690,7 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
         {invoice.notes && (
           <div className="border-t border-border pt-6 print:border-gray-200">
             <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-muted-foreground print:text-gray-600">
-              Notes
+              {i18n.t("notes")}
             </h3>
             <p className="text-sm text-muted-foreground print:text-gray-600">
               {invoice.notes}
@@ -655,20 +704,36 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
           invoice.company.bankSwiftCode) && (
           <div className="border-t border-border pt-6 print:border-gray-200">
             <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-muted-foreground print:text-gray-600">
-              Payment Details
+              {i18n.t("reports.paymentDetails")}
             </h3>
             <div className="grid gap-2 text-sm text-muted-foreground print:text-gray-600 sm:grid-cols-2">
               {invoice.company.bankName && (
-                <p>Bank Name: {invoice.company.bankName}</p>
+                <p>
+                  {i18n.t("invoices.bankName", {
+                    value: invoice.company.bankName,
+                  })}
+                </p>
               )}
               {invoice.company.bankAccountNumber && (
-                <p>Account Number: {invoice.company.bankAccountNumber}</p>
+                <p>
+                  {i18n.t("invoices.accountNumber", {
+                    value: invoice.company.bankAccountNumber,
+                  })}
+                </p>
               )}
               {invoice.company.bankRoutingNumber && (
-                <p>Routing Number: {invoice.company.bankRoutingNumber}</p>
+                <p>
+                  {i18n.t("invoices.routingNumber", {
+                    value: invoice.company.bankRoutingNumber,
+                  })}
+                </p>
               )}
               {invoice.company.bankSwiftCode && (
-                <p>SWIFT Code: {invoice.company.bankSwiftCode}</p>
+                <p>
+                  {i18n.t("invoices.swiftCode", {
+                    value: invoice.company.bankSwiftCode,
+                  })}
+                </p>
               )}
             </div>
           </div>
@@ -677,10 +742,10 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
         {/* Footer */}
         <div className="mt-8 border-t border-border pt-6 print:border-gray-200">
           <div className="text-center text-xs text-muted-foreground print:text-gray-500">
-            <p>Thank you for your business!</p>
+            <p>{i18n.t("invoices.thankYouForBusiness")}</p>
             {isEditing && (
               <p className="mt-2 text-amber-600">
-                This is a preview. Changes will be reflected once saved.
+                {i18n.t("invoices.previewNote")}
               </p>
             )}
           </div>

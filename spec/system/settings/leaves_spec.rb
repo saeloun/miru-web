@@ -79,6 +79,27 @@ RSpec.describe "Settings", type: :system, js: true do
         expect(page).to have_content(Date.current.year.to_s, wait: 10)
       end
     end
+
+    it "shows localized leaves copy in Hindi", :aggregate_failures do
+      user.update!(locale: "hi")
+
+      with_forgery_protection do
+        visit "/settings/leaves"
+        expect(page).to have_css("#react-root", wait: 10)
+        expect(page).to have_content("मेरे अवकाश", wait: 10)
+        expect(page).to have_content("अवकाश सारांश", wait: 10)
+        expect(page).to have_content("अवकाश कैलेंडर", wait: 10)
+        expect(page).to have_content("सार्वजनिक छुट्टियाँ", wait: 10)
+        expect(page).to have_content("वैकल्पिक छुट्टियाँ", wait: 10)
+        expect(page).to have_text(/\d+\sमें से\s\d+\s\((इस तिमाही|प्रति तिमाही)\)/, wait: 10)
+        expect(page).not_to have_content("Optional Holidays")
+        expect(page).not_to have_content("National Holidays")
+
+        visit "/settings/holidays"
+        expect(page).to have_css("#react-root", wait: 10)
+        expect(page).to have_content("सार्वजनिक छुट्टियाँ", wait: 10)
+      end
+    end
   end
 
   context "employee access" do

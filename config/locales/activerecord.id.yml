@@ -1,0 +1,30 @@
+---
+id:
+  activerecord:
+    errors:
+      models:
+        client:
+          attributes:
+            name:
+              format: "%{message}"
+        project:
+          attributes:
+            name:
+              format: "%{message}"
+        user:
+          attributes:
+            email:
+              blank: Email tidak boleh kosong.
+              invalid: Alamat Email Tidak Valid
+              taken: Alamat email sudah ada.
+            first_name:
+              blank: tidak boleh kosong
+              invalid: hanya boleh berisi huruf atau spasi.
+            last_name:
+              blank: tidak boleh kosong
+              invalid: hanya boleh berisi huruf atau spasi.
+            password:
+              blank: tidak boleh kosong
+              too_short: harus memiliki panjang minimal %{count} karakter.
+            password_confirmation:
+              confirmation: Tidak cocok dengan kata sandi baru.

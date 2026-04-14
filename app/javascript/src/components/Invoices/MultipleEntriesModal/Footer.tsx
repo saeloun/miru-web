@@ -13,10 +13,12 @@ const Footer = ({ selectedRowCount, handleSubmitModal, handleSelectAll }) => {
     >
       <div className="flex items-center pt-3">
         <span className="text-sm font-medium text-foreground">
-          {selectedRowCount} {i18n.t("invoices.entriesSelected", { count: selectedRowCount })}
+          {selectedRowCount}{" "}
+          {i18n.t("invoices.entriesSelected", { count: selectedRowCount })}
         </span>
         {selectedRowCount > 0 && (
           <button
+            type="button"
             className="tracking-wide ml-4 text-base font-medium text-primary"
             onClick={handleSelectAll}
           >
@@ -25,6 +27,7 @@ const Footer = ({ selectedRowCount, handleSubmitModal, handleSelectAll }) => {
         )}
       </div>
       <button
+        type="button"
         className={`rounded py-2 px-7 text-base font-bold tracking-widest text-white
           ${
             selectedRowCount
@@ -39,6 +42,7 @@ const Footer = ({ selectedRowCount, handleSubmitModal, handleSelectAll }) => {
   ) : (
     <div className="fixed bottom-0 left-0 right-0 bg-white p-4 shadow-c1">
       <button
+        type="button"
         className={`w-full rounded py-2 px-7 text-base font-bold tracking-widest text-white
           ${
             selectedRowCount
@@ -49,7 +53,9 @@ const Footer = ({ selectedRowCount, handleSubmitModal, handleSelectAll }) => {
       >
         {selectedRowCount == 1
           ? i18n.t("invoices.addEntry", { count: selectedRowCount })
-          : i18n.t("invoices.addEntries_plural", { count: selectedRowCount || "" })}
+          : i18n.t("invoices.addEntries_plural", {
+              count: selectedRowCount || "",
+            })}
       </button>
     </div>
   );

@@ -1,0 +1,30 @@
+---
+zh-CN:
+  activerecord:
+    errors:
+      models:
+        client:
+          attributes:
+            name:
+              format: "%{message}"
+        project:
+          attributes:
+            name:
+              format: "%{message}"
+        user:
+          attributes:
+            email:
+              blank: 电子邮件地址不能为空。
+              invalid: 无效的电子邮件地址
+              taken: 邮箱地址已存在
+            first_name:
+              blank: 不能为空
+              invalid: 只能包含字母或空格
+            last_name:
+              blank: 不能为空
+              invalid: 只能包含字母或空格
+            password:
+              blank: 不能为空
+              too_short: 长度必须至少为 %{count} 个字符
+            password_confirmation:
+              confirmation: 与新密码不匹配

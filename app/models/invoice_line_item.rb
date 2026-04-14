@@ -6,7 +6,8 @@ class InvoiceLineItem < ApplicationRecord
 
   before_update :capture_previous_invoice_id, if: :will_save_change_to_invoice_id?
   before_destroy :unlock_timesheet_entry
-  after_commit :sync_invoice_totals, on: [:create, :update, :destroy]
+  after_save :sync_invoice_totals
+  after_destroy :sync_invoice_totals
 
   validates :name, :date, :rate, :quantity, presence: true
   validates :rate, numericality: { greater_than_or_equal_to: 0 }
@@ -70,10 +71,12 @@ class InvoiceLineItem < ApplicationRecord
       return unless should_sync_invoice_totals?
 
       invoice_ids_to_sync.each do |current_invoice_id|
-        invoice = Invoice.includes(:invoice_line_items).find_by(id: current_invoice_id)
+        next if skip_invoice_sync?(current_invoice_id)
+
+        invoice = Invoice.find_by(id: current_invoice_id)
         next unless invoice
 
-        invoice.sync_totals_from_line_items!(invoice.invoice_line_items.to_a)
+        invoice.sync_totals_from_line_items!
       end
     ensure
       @previous_invoice_id = nil
@@ -92,5 +95,11 @@ class InvoiceLineItem < ApplicationRecord
       ids << @previous_invoice_id if defined?(@previous_invoice_id)
       ids << previous_changes.dig("invoice_id", 0)
       ids.compact.uniq
+    end
+
+    def skip_invoice_sync?(current_invoice_id)
+      invoice.present? &&
+        invoice.id == current_invoice_id &&
+        invoice.skip_line_item_total_sync
     end
 end

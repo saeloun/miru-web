@@ -1,0 +1,30 @@
+---
+tr:
+  activerecord:
+    errors:
+      models:
+        client:
+          attributes:
+            name:
+              format: "%{message}"
+        project:
+          attributes:
+            name:
+              format: "%{message}"
+        user:
+          attributes:
+            email:
+              blank: E-posta adresi boş bırakılamaz.
+              invalid: Geçersiz E-posta Adresi
+              taken: E-posta adresi zaten mevcut.
+            first_name:
+              blank: boş olamaz
+              invalid: Yalnızca harf veya boşluk içermelidir.
+            last_name:
+              blank: boş olamaz
+              invalid: Yalnızca harf veya boşluk içermelidir.
+            password:
+              blank: boş olamaz
+              too_short: En az %{count} karakter uzunluğunda olmalıdır
+            password_confirmation:
+              confirmation: Yeni şifreyle eşleşmiyor

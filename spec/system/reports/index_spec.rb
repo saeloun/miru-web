@@ -4,7 +4,7 @@ require "rails_helper"
 
 RSpec.describe "Reports", type: :system, js: true do
   let!(:company) { create(:company, base_currency: "USD", name: "Reports Corp", plan_tier: "paid") }
-  let!(:admin) { create(:user, current_workspace_id: company.id) }
+  let!(:admin) { create(:user, current_workspace: company) }
 
   before do
     create(:employment, company:, user: admin)
@@ -42,6 +42,101 @@ RSpec.describe "Reports", type: :system, js: true do
 
         expect(page).to have_current_path("/settings/preferences", wait: 10)
         expect(page).to have_content("Monthly Cash Flow Digest", wait: 10)
+      end
+    end
+
+    it "shows localized report labels in Hindi" do
+      admin.update!(locale: "hi")
+
+      with_forgery_protection do
+        visit "/reports"
+
+        expect_reports_shell("रिपोर्ट")
+        expect(page).to have_content("उपलब्ध रिपोर्ट", wait: 10)
+        expect(page).to have_content("वित्तीय", wait: 10)
+        expect(page).to have_button("रिपोर्ट शेड्यूल करें", wait: 10)
+      end
+    end
+
+    it "shows localized financial report routes in Hindi", :aggregate_failures do
+      admin.update!(locale: "hi")
+      revenue_client = create(:client, company:, name: "Hindi Revenue Client")
+      payment_client = create(:client, company:, name: "Hindi Payment Client")
+      aging_client = create(:client, company:, name: "Hindi Aging Client")
+      overdue_client = create(:client, company:, name: "Hindi Overdue Client")
+      create(:project, client: revenue_client, billable: true, name: "Hindi Revenue Project")
+      create(:project, client: aging_client, billable: true, name: "Hindi Aging Project")
+      create(:invoice, company:, client: revenue_client, status: :sent, amount: 1200, amount_due: 1200)
+      paid_invoice = create(
+        :invoice,
+        company:,
+        client: payment_client,
+        status: :paid,
+        amount: 2000,
+        amount_paid: 2000,
+        amount_due: 0
+      )
+      create(:payment, invoice: paid_invoice, amount: 2000, status: :paid, transaction_date: Date.current)
+      create(
+        :invoice,
+        company:,
+        client: aging_client,
+        status: :sent,
+        amount: 5000,
+        amount_due: 5000,
+        issue_date: 90.days.ago,
+        due_date: 60.days.ago
+      )
+      create(
+        :invoice,
+        company:,
+        client: overdue_client,
+        status: :overdue,
+        amount: 2000,
+        amount_due: 2000,
+        currency: "EUR",
+        issue_date: 60.days.ago,
+        due_date: 30.days.ago
+      )
+
+      with_forgery_protection do
+        visit "/reports/revenue-by-client"
+        expect_reports_shell("क्लाइंट के अनुसार राजस्व")
+        expect(page).to have_content("कुल राजस्व", wait: 10)
+        expect(page).to have_button("रिपोर्ट साझा करें", wait: 10)
+        expect(page).to have_content("Hindi Revenue Client", wait: 10)
+
+        visit "/reports/payments"
+        expect_reports_shell("भुगतान रिपोर्ट")
+        expect(page).to have_content("कुल भुगतान", wait: 10)
+        expect(page).to have_content("भुगतान विवरण", wait: 10)
+        expect(page).to have_content("Hindi Payment Client", wait: 10)
+
+        visit "/reports/accounts-aging"
+        expect_reports_shell("अकाउंट्स एजिंग रिपोर्ट")
+        expect(page).to have_content("कुल देय", wait: 10)
+        expect(page).to have_content("Hindi Aging Client", wait: 10)
+
+        visit "/reports/outstanding-overdue-invoices?tab=overdue&currency=EUR"
+        expect(page).to have_css("#react-root", wait: 10)
+        expect(page).to have_content("बकाया और अतिदेय", wait: 10)
+        expect(page).to have_content("Hindi Overdue Client", wait: 10)
+      end
+    end
+
+    it "shows localized payment report error-state in Hindi" do
+      admin.update!(locale: "hi")
+
+      allow_any_instance_of(Api::V1::Reports::PaymentsController).to receive(:index) do |controller|
+        controller.send(:authorize, :report, :index?)
+        controller.render json: { error: "boom" }, status: :internal_server_error
+      end
+
+      with_forgery_protection do
+        visit "/reports/payments"
+
+        expect(page).to have_css("#react-root", wait: 10)
+        expect(page).to have_content("भुगतान रिपोर्ट लोड करने में असमर्थ", wait: 10)
       end
     end
 
@@ -95,6 +190,36 @@ RSpec.describe "Reports", type: :system, js: true do
         expect_reports_shell("Time Reports")
         expect(page).to have_content("Filtered Alpha Client", wait: 10)
         expect(page).to have_no_content("Filtered Beta Client")
+      end
+    end
+
+    it "copies the time entry report permalink" do
+      client = create(:client, company:, name: "Permalink Client")
+      project = create(:project, client:, name: "Permalink Project")
+      create(:project_member, user: admin, project:)
+      create(:timesheet_entry, user: admin, project:, duration: 120, work_date: Date.current)
+
+      with_forgery_protection do
+        visit "/reports/time-entry?clients=#{client.id}"
+
+        page.execute_script(<<~JS)
+          window.__copiedReportUrl = null;
+          Object.defineProperty(navigator, "clipboard", {
+            configurable: true,
+            value: {
+              writeText: async function(value) {
+                window.__copiedReportUrl = value;
+              }
+            }
+          });
+        JS
+
+        click_button "Share report"
+
+        expect(page).to have_button("Link copied", wait: 10)
+        copied_url = page.evaluate_script("window.__copiedReportUrl")
+        expect(copied_url).to include("/reports/time-entry?")
+        expect(copied_url).to include("clients=#{client.id}")
       end
     end
 
@@ -152,6 +277,34 @@ RSpec.describe "Reports", type: :system, js: true do
         expect_reports_shell("Revenue by Client")
         expect(page).to have_content("Revenue Filter Alpha", wait: 10)
         expect(page).to have_no_content("Revenue Filter Beta")
+      end
+    end
+
+    it "copies the revenue by client permalink" do
+      client = create(:client, company:, name: "Revenue Share Client")
+      create(:invoice, company:, client:, status: :paid, amount: 1200, amount_paid: 1200, amount_due: 0)
+
+      with_forgery_protection do
+        visit "/reports/revenue-by-client?clients=#{client.id}"
+
+        page.execute_script(<<~JS)
+          window.__copiedReportUrl = null;
+          Object.defineProperty(navigator, "clipboard", {
+            configurable: true,
+            value: {
+              writeText: async function(value) {
+                window.__copiedReportUrl = value;
+              }
+            }
+          });
+        JS
+
+        click_button "Share report"
+
+        expect(page).to have_button("Link copied", wait: 10)
+        copied_url = page.evaluate_script("window.__copiedReportUrl")
+        expect(copied_url).to include("/reports/revenue-by-client")
+        expect(copied_url).to include("clients=#{client.id}")
       end
     end
 
@@ -281,7 +434,7 @@ RSpec.describe "Reports", type: :system, js: true do
   end
 
   it "prevents employees from accessing reports" do
-    employee = create(:user, current_workspace_id: company.id)
+    employee = create(:user, current_workspace: company)
     create(:employment, company:, user: employee)
     employee.add_role :employee, company
 
@@ -297,7 +450,7 @@ RSpec.describe "Reports", type: :system, js: true do
 
   it "redirects free-plan admins to billing" do
     free_company = create(:company, name: "Free Corp", plan_tier: "free")
-    free_admin = create(:user, current_workspace_id: free_company.id)
+    free_admin = create(:user, current_workspace: free_company)
     create(:employment, company: free_company, user: free_admin)
     free_admin.add_role :admin, free_company
 

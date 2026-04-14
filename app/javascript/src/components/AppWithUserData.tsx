@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import UserContext from "../context/UserContext";
 import { LocaleProvider, useLocale } from "../context/LocaleContext";
 import {
+  normalizeLocale,
   loadLocale,
   getActiveLocale,
   getStoredLocale,
@@ -26,14 +27,17 @@ const isAuthPagePath = (pathname: string) =>
   AUTH_PATH_PREFIXES.some(path => pathname.startsWith(path));
 
 const resolvePreferredLocale = (dbLocale?: string | null) => {
-  const storedLocale = getStoredLocale();
+  const storedLocale = normalizeLocale(getStoredLocale());
+  const normalizedDbLocale = dbLocale ? normalizeLocale(dbLocale) : null;
   const browserLocale = detectBrowserLocale();
 
-  if (storedLocale && storedLocale !== "en") return storedLocale;
+  if (storedLocale && storedLocale !== "en-US") return storedLocale;
 
-  if (dbLocale && dbLocale !== "en") return dbLocale;
+  if (normalizedDbLocale && normalizedDbLocale !== "en-US") {
+    return normalizedDbLocale;
+  }
 
-  return storedLocale || dbLocale || browserLocale;
+  return storedLocale || normalizedDbLocale || browserLocale;
 };
 
 const PUBLIC_PATH_PATTERNS = [
@@ -76,7 +80,7 @@ const AppWithUserData = (props: any) => {
     loading: !(isAuthPage || isPublicPage),
   });
   const [localeReady, setLocaleReady] = useState(false);
-  const [initialLocale, setInitialLocale] = useState("en");
+  const [initialLocale, setInitialLocale] = useState("en-US");
 
   // Fetch user details from _me endpoint on mount
   useEffect(() => {

@@ -1,16 +1,52 @@
 ---
 mr:
-  activerecord:
-    errors:
-      models:
-        client:
-          attributes:
-            name:
-              format: "%{message}"
-        project:
-          attributes:
-            name:
-              format: "%{message}"
+  analytics:
+    activity:
+      amount_collected: जमा झालेली रक्कम
+      bank_transfers_month: बँक हस्तांतरण (मासिक)
+      created: तयार केले
+      downloaded: डाउनलोड केले
+      invoice_activity_today: आजची इनव्हॉइस व्यवहार
+      payment_activity: पेमेंट क्रियाकलाप
+      payments_today: आजचे पेमेंट
+      sent: पाठवले
+      stripe_payments_month: स्ट्राइप पेमेंट (महिना)
+      viewed: पाहिले
+    currency:
+      conversion_impact: रूपांतरण परिणाम
+      currencies_in_use: वापरातील चलने
+      invoices_with_conversion: रूपांतरणासह पावत्या
+      recent_exchange_rates: अलीकडील विनिमय दर
+      table:
+        date: तारीख
+        from: पासून
+        rate: दर
+        source: स्रोत
+        to: ला
+      title: चलन रूपांतरण अंतर्दृष्टी
+    overview:
+      active_clients: सक्रिय ग्राहक
+      outstanding: उत्कृष्ट
+      overdue: विलंबित
+      total_revenue: एकूण महसूल
+    recent_activity:
+      ago: "%{time} पूर्वी"
+      invoice_reference: इनव्हॉइस
+      system: प्रणाली
+      title: अलीकडील क्रियाकलाप
+    super_admin: सुपर प्रशासक
+    tabs:
+      activity: क्रियाकलाप
+      clients: ग्राहक
+      currency_exchange: चलन आणि विनिमय
+      overview: आढावा
+      revenue: महसूल
+      users: वापरकर्ते
+    title: ॲनालिटिक्स डॅशबोर्ड
+    welcome: स्वागत आहे, %{name}
+  app:
+    name: मिरू एजन्सी ओएस
+    tagline: आपल्या संस्थेचे कामकाज एकाच नियंत्रण केंद्रातून चालवा.
   application_controller:
     not_found: मार्ग सापडला नाही
   avatar:
@@ -84,21 +120,6 @@ mr:
   employment:
     update:
       success: रोजगार यशस्वीरित्या अद्ययावत झाला.
-  errors:
-    bill_status_billed: ज्या नोंदीचे बिल आधीच आकारले गेले आहे, तिचे बिल तुम्ही पुन्हा
-      आकारू शकत नाही.
-    can't change status: पैसे भरलेल्या बिलामध्ये बदल करता येत नाही.
-    create_billed_entry: तुम्ही बिल केलेली टाइमशीट नोंद तयार करू शकत नाही.
-    internal_server_error: काहीतरी चूक झाली
-    not_found: तुम्ही शोधत असलेले संसाधन उपलब्ध नाही.
-    prevent_draft_to_waived: माफ केले असे बदलता येणार नाही
-    unauthorized: केवळ मालक किंवा प्रशासक वापरकर्त्यांनाच ही कृती करण्याचा अधिकार
-      आहे.
-    updation_not_allowed: अद्ययावतीकरणास परवानगी नाही
-    user_already_member: ईमेल आयडी आधीच वापरला गेला आहे. कृपया दुसरा ईमेल आयडी प्रविष्ट
-      करा.
-    validate_billable_project: बिल न आकारता येणाऱ्या प्रकल्पांसाठी तुम्ही बिल न आकारलेली
-      नोंद तयार करू शकत नाही.
   expenses:
     approve: खर्च यशस्वीरित्या मंजूर झाला.
     create: खर्च यशस्वीरित्या सादर झाला.
@@ -172,6 +193,319 @@ mr:
       success: रजा यशस्वीरित्या तयार केली.
     update:
       success: रजा यशस्वीरित्या अद्यतनित झाली.
+  mailers:
+    actions:
+      join_miru: मीरूमध्ये सामील व्हा
+      open_expense: खुला खर्च
+      open_invoice: इनव्हॉइस उघडा
+      open_time_tracking: ओपन टाइम ट्रॅकिंग
+      view_reports: मिरूमध्ये अहवाल पहा
+    client_payment_mailer:
+      payment:
+        eyebrow: पेमेंट
+        preheader: इनव्हॉइस %{invoice_number} साठी पेमेंट पावती.
+        receipt_title: पेमेंट मिळाले
+        records_body: ही पावती तुमच्या पेमेंटची पुष्टी करते. तुम्हाला पुन्हा तपशील
+          हवा असल्यास, तुम्ही कधीही इन्व्हॉइस पुन्हा उघडू शकता.
+        records_title: हे तुमच्या नोंदीसाठी जपून ठेवा.
+        subject: इनव्हॉइस %{invoice_number} साठी पेमेंट पावती
+        subtitle_html: आम्हाला इनव्हॉइस <strong>%{invoice_number}</strong> साठी तुमचे
+          पेमेंट मिळाले आहे.
+        summary_html: आम्हाला इनव्हॉइस <strong>%{invoice_number}</strong> साठी <strong>%{paid_on}</strong>
+          वर <strong>%{amount}</strong> मिळाले.
+        title: पेमेंट पावती
+    devise:
+      confirmation:
+        body_intro: 'तुमची तयारी जवळपास पूर्ण झाली आहे. पहिल्या दिवसापासून तुम्ही
+          मिरूसोबत करू शकता अशा काही गोष्टी खालीलप्रमाणे आहेत:'
+        cta: ईमेल पत्ता सत्यापित करा
+        cta_body: तुमचा ईमेल पत्ता सत्यापित करण्यासाठी खालील बटण वापरा.
+        eyebrow: खाते सेटअप
+        feature_1: होस्ट केलेल्या पेमेंट लिंकसह व्यावसायिक इनव्हॉइस पाठवा.
+        feature_2: एकाच कार्यप्रवाहात वेळ, खर्च आणि वापराचा मागोवा घ्या.
+        feature_3: तुमच्या टीम, ग्राहक आणि बिलांचे व्यवस्थापन एकाच वर्कस्पेसवरून करा.
+        feature_4: महसूल, थकीत बिले आणि पेमेंटच्या घडामोडींवर लक्ष ठेवा.
+        footer_note: जर तुम्ही मिरू खाते तयार केले नसेल, तर तुम्ही हा संदेश बिनधास्तपणे
+          दुर्लक्ष करू शकता.
+        greeting_html: हाय <strong>%{name}</strong> ,
+        preheader: मिरूची सेटअप प्रक्रिया पूर्ण करण्यासाठी तुमच्या ईमेल पत्त्याची
+          पुष्टी करा.
+        subtitle: एकाच ठिकाणाहून वेळेचा मागोवा घेणे, पावत्या पाठवणे आणि तुमच्या टीमचे
+          व्यवस्थापन सुरू करण्यासाठी तुमचा ईमेल पत्ता सत्यापित करा.
+        title: मिरु मध्ये आपले स्वागत आहे
+      email_changed:
+        changed_html: तुमच्या खात्याचा ईमेल बदलून <strong>%{email}</strong> करण्यात
+          आला आहे.
+        eyebrow: खाते सुरक्षा
+        greeting_html: नमस्कार <strong>%{email}</strong> ,
+        pending_html: तुमच्या खात्याचा ईमेल <strong>%{email}</strong> मध्ये बदलला
+          जात आहे.
+        preheader: तुमचा मिरू ईमेल पत्ता बदलला आहे.
+        subtitle: तुमच्या मिरू खात्यावरील ईमेल पत्त्यामध्ये बदल झाल्याची पुष्टी हा
+          संदेश करतो.
+        title: ईमेल पत्ता अपडेट केला.
+        warning_body_html: आमच्या सपोर्ट टीमशी <a href="mailto:%{email}">%{email}</a>
+          वर तात्काळ संपर्क साधा.
+        warning_title: या बदलाची विनंती केली नव्हती का?
+      password_change:
+        eyebrow: खाते सुरक्षा
+        greeting_html: नमस्कार <strong>%{name}</strong> ,
+        preheader: तुमचा मिरू पासवर्ड बदलण्यात आला आहे.
+        subtitle: तुमच्या मिरू खात्याचा पासवर्ड यशस्वीरित्या अद्ययावत करण्यात आला
+          आहे.
+        success_body: तुम्ही तुमचा नवीन पासवर्ड वापरून मिरूमध्ये साइन इन करणे सुरू
+          ठेवू शकता.
+        success_title: तुमचा पासवर्ड अद्ययावत करण्यात आला आहे.
+        title: पासवर्ड यशस्वीरित्या बदलला.
+        warning_body_html: तुमचे खाते सुरक्षित करण्यासाठी आम्ही मदत करू शकू, म्हणून
+          <a href="mailto:%{email}">%{email} शी</a> त्वरित संपर्क साधा.
+        warning_title: हा बदल केला नाही का?
+      reset_password:
+        cta: पासवर्ड रीसेट करा
+        cta_body: नवीन पासवर्ड निवडण्यासाठी खालील बटण वापरा. ही रीसेट लिंक २४ तासांत
+          कालबाह्य होईल.
+        eyebrow: खाते सुरक्षा
+        footer_note: जर तुम्ही पासवर्ड रीसेट करण्याची विनंती केली नसेल, तर तुम्ही
+          या संदेशाकडे दुर्लक्ष करू शकता आणि तुमचा पासवर्ड तोच राहील.
+        greeting: नमस्कार,
+        preheader: तुमच्या मिरू खात्याचा पासवर्ड रीसेट करा.
+        request_html: आम्हाला <strong>%{email}</strong> शी संबंधित पासवर्ड बदलण्याची
+          विनंती प्राप्त झाली आहे.
+        subtitle: तुमच्या मिरू खात्याचा पासवर्ड रीसेट करण्याची विनंती आम्हाला प्राप्त
+          झाली आहे.
+        title: तुमचा पासवर्ड रीसेट करा
+      shared:
+        signature_html: धन्यवाद.<br> <strong>टीम मिरू</strong>
+      unlock:
+        cta: पासवर्ड रीसेट करा
+        eyebrow: खाते सुरक्षा
+        footer_note: तुम्ही साइन इन करण्याचा प्रयत्न केला नसल्यास, लॉकची मुदत संपेपर्यंत
+          थांबा आणि तुमचा पासवर्ड त्वरित बदला.
+        greeting_html: नमस्कार <strong>%{email}</strong> ,
+        preheader: वारंवार साइन-इन अयशस्वी झाल्यानंतर तुमचे मिरू खाते अनलॉक करा.
+        subtitle: वारंवार साइन-इन करण्याचे प्रयत्न अयशस्वी झाल्यामुळे आम्ही तुमचे
+          मिरू खाते लॉक केले आहे.
+        title: तुमचे खाते तात्पुरते लॉक केले आहे.
+        warning_body: मिरू ३० मिनिटांनंतर खाती आपोआप अनलॉक करते. जर तुम्हाला हे प्रयत्न
+          ओळखता येत नसतील, तर तुमचा पासवर्ड रीसेट करा, जेणेकरून लॉकची मुदत संपल्यावर
+          तुमचे खाते सुरक्षित राहील.
+        warning_title: साइन-इन करण्याचे प्रयत्न अनुमत मर्यादेपेक्षा जास्त झाले.
+    expense_mailer:
+      approved:
+        eyebrow: खर्च
+        preheader: तुमची परताव्याची विनंती मंजूर झाली आहे.
+        subject: तुमची परतफेड मंजूर झाली आहे.
+        subtitle: तुमच्या परताव्याच्या विनंतीचे पुनरावलोकन करून ती मंजूर करण्यात आली
+          आहे.
+        title: परतावा मंजूर झाला.
+      paid:
+        eyebrow: खर्च
+        preheader: तुमची परताव्याची विनंती अदा झाली आहे असे चिन्हांकित केले आहे.
+        subject: तुमची परतफेड अदा झाली म्हणून चिन्हांकित करण्यात आली आहे.
+        subtitle: तुमच्या प्रतिपूर्ती विनंतीसाठीचे पेमेंट पूर्ण झाले आहे.
+        title: परतफेड अदा केली
+      rejected:
+        eyebrow: खर्च
+        next_step_body: खर्चाचा तपशील उघडा, आवश्यक बदल करा आणि तो पुन्हा सादर करा.
+        next_step_title: पुढील पायरी
+        preheader: तुमच्या परताव्याच्या विनंतीमध्ये अद्ययावतीकरणाची आवश्यकता आहे.
+        subject: तुमच्या प्रतिपूर्तीला मंजुरी मिळण्यापूर्वी त्यात बदल करणे आवश्यक
+          आहे.
+        subtitle: कृपया विनंतीच्या तपशिलाचे पुनरावलोकन करा, आवश्यक बदल करा आणि ती
+          पुन्हा सादर करा.
+        title: परताव्याच्या माहितीत सुधारणा करणे आवश्यक आहे.
+      submitted:
+        eyebrow: खर्च
+        preheader: नवीन प्रतिपूर्ती विनंतीचे पुनरावलोकन करणे आवश्यक आहे.
+        subject: "%{submitter_name} ने परताव्याची विनंती सादर केली"
+        subtitle_html: "<strong>%{submitter_name}</strong> ने परताव्यासाठी एक विनंती
+          सादर केली आहे, जी पुनरावलोकनासाठी तयार आहे."
+        title: नवीन परतावा विनंती
+    invoice_mailer:
+      invoice:
+        eyebrow: पावत्या
+        payment_link_subvalue: सर्व बाबींचा आढावा घ्या आणि ऑनलाइन पैसे भरा.
+        payment_link_value: सुरक्षित इनव्हॉइस पृष्ठ
+        preheader: "%{company_name} कडून %{invoice_number} चे बीजक."
+        ready_body: सुरक्षित इनव्हॉइस पेज उघडून त्यातील बाबी तपासा, एकूण रकमेची पुष्टी
+          करा आणि ऑनलाइन पेमेंट करा.
+        ready_title: पैसे देण्यापूर्वी पुनरावलोकन करा
+        subject: इनव्हॉइस %{invoice_number}
+        subtitle_html: "<strong>%{company_name} ने</strong> <strong>%{invoice_number}
+          ला</strong> बिल पाठवले आहे. तुम्ही तयार असाल तेव्हा त्याचे पुनरावलोकन करून
+          ऑनलाइन पेमेंट करू शकता."
+        support_html: या इनव्हॉइसबद्दल काही प्रश्न आहेत का? या ईमेलला उत्तर द्या किंवा
+          <a href="mailto:%{support_email}">%{support_email}</a> शी संपर्क साधा.
+        title: बिल तपासणीसाठी तयार आहे
+      send_invoice:
+        attachment_subvalue: हे ठेवा, पुढे पाठवा किंवा फाईल करा.
+        attachment_value: पीडीएफ जोडली आहे.
+        eyebrow: पावत्या
+        next_steps_body: रक्कम निश्चित करण्यासाठी इन्व्हॉइस उघडा, त्यातील बाबी तपासा
+          आणि तयार झाल्यावर पैसे भरा.
+        next_steps_title: काय अपेक्षा करावी
+        note_title: "%{company_name} कडून एक टीप"
+        preheader: "%{company_name} कडून आलेले इनव्हॉइस %{invoice_number} तयार आहे."
+        subject: "%{company_name} कडून %{invoice_number} चे बिल"
+        subtitle_html: "<strong>%{company_name} ने</strong> <strong>%{invoice_number}
+          ला</strong> इनव्हॉइस पाठवले आहे. तपशील तपासण्यासाठी, PDF डाउनलोड करण्यासाठी
+          आणि सुरक्षितपणे पैसे भरण्यासाठी ते उघडा."
+        support_html: मदत हवी आहे का? या ईमेलला उत्तर द्या किंवा <a href="mailto:%{support_email}">%{support_email}</a>
+          शी संपर्क साधा.
+        title: बिल तपासणीसाठी तयार आहे
+    labels:
+      amount: रक्कम
+      amount_due: देय रक्कम
+      amount_paid: भरलेली रक्कम
+      attachment: संलग्नक
+      category: श्रेणी
+      client: क्लायंट
+      date: तारीख
+      description: वर्णन
+      due_date: देय तारीख
+      invited_by: यांच्याकडून आमंत्रित केले आहे
+      invoice: बिल
+      invoice_number: इनव्हॉइस क्रमांक
+      issue_date: जारी करण्याची तारीख
+      issued_to: जारी केले
+      members: सदस्य
+      outstanding_amount: थकबाकी रक्कम
+      paid_on: पैसे दिले
+      payment_link: पेमेंट लिंक
+      payment_method: पेमेंट पद्धत
+      reference: संदर्भ
+      status: स्थिती
+      total_amount: एकूण रक्कम
+      workspace: कार्यक्षेत्र
+    layout:
+      brand: मिरू
+      footer_body: मिरू वेळ, पावत्या, देयके आणि कामकाज एकाच शांत कार्यक्षेत्रात सांभाळते.
+      footer_contact: support@getmiru.com
+      footer_copyright: "© मिरू. सर्व हक्क राखीव."
+      footer_site: अ‍ॅप.मिरू.सो
+      preheader: मिरूकडून एक स्पष्ट अपडेट.
+    monthly_reports_mailer:
+      cash_flow_digest:
+        average_daily_net_change_html: सरासरी दैनिक निव्वळ बदल <strong>%{amount}</strong>
+        compare_to_previous: "%{month_label} मध्ये %{amount} विरुद्ध"
+        eyebrow: मासिक सारांश
+        money_in: पैशात
+        money_out: पैसे बाहेर
+        net_change: "%{month_label} मधील निव्वळ बदल"
+        no_money_in: "%{month_year_label} साठी मिरूमध्ये कोणतेही पेमेंट नोंदवले गेले
+          नाही."
+        no_money_out: "%{month_year_label} साठी मिरूमध्ये कोणताही सशुल्क खर्च नोंदवला
+          गेला नाही."
+        preheader: "%{company_name} चा %{month_label} रोख प्रवाह सारांश"
+        subject: "%{company_name} चा %{month_label} रोख प्रवाह सारांश"
+        subtitle: "%{month_year_label} साठी मिरूमधून होणाऱ्या पैशांच्या व्यवहाराचा
+          हा एक संक्षिप्त आढावा आहे."
+        title: "%{company_name} चा %{month_label} रोख प्रवाह सारांश"
+        top_money_in_sources: शीर्ष पैसे मिळवण्याचे स्रोत
+        top_money_out_sources: सर्वाधिक पैसे काढण्याचे पर्याय
+    payment_mailer:
+      payment:
+        eyebrow: पेमेंट
+        follow_up_body: पेमेंटची पुष्टी करण्यासाठी, पावती दाखल करण्यासाठी किंवा पुढील
+          पायरीवर जाण्यासाठी इनव्हॉइस उघडा.
+        follow_up_title: पुढे काय करावे
+        preheader: इनव्हॉइस %{invoice_number} साठी पेमेंटची पुष्टी.
+        received_title: पेमेंट मिळाले
+        subject: इनव्हॉइस %{invoice_number} साठी पेमेंट तपशील
+        subtitle_html: "<strong>%{client_name} ने</strong> <strong>%{invoice_number}</strong>
+          चे बिल भरले."
+        summary_html: "<strong>%{client_name} ने</strong> इनव्हॉइस <strong>%{invoice_number}</strong>
+          साठी <strong>%{amount} ला</strong> पैसे दिले. या इनव्हॉइसचे पैसे आता पूर्णपणे
+          दिले गेले आहेत."
+        title: पेमेंटची पुष्टी
+    send_payment_reminder_mailer:
+      send_payment_reminder:
+        eyebrow: पावत्या
+        preheader: "%{company_name} इनव्हॉइससाठी पेमेंटची आठवण."
+        subject: "%{company_name} साठी पेमेंटची आठवण"
+        subtitle: या पावत्यांकडे अजून लक्ष देण्याची गरज आहे.
+        title: पेमेंटची आठवण
+    send_reminder_mailer:
+      send_reminder:
+        eyebrow: पावत्या
+        preheader: "%{company_name} कडून आलेल्या %{invoice_number} इनव्हॉइससाठी स्मरणपत्र."
+        subject: "%{company_name} कडून आलेल्या %{invoice_number} इनव्हॉइससाठी स्मरणपत्र"
+        subtitle_html: "<strong>%{company_name}</strong> कडून आलेले इन्व्हॉइस <strong>%{invoice_number}
+          चे</strong> पेमेंट अद्याप बाकी आहे."
+        title: पेमेंटची आठवण
+    send_weekly_reminder_to_user_mailer:
+      notify_user_about_missed_entries:
+        body_html: तुम्ही <strong>%{starting_date}</strong> आणि <strong>%{ending_date}
+          च्या</strong> दरम्यान 40 तासांपेक्षा कमी लॉग इन केले.
+        eyebrow: वेळेचा मागोवा घेणे
+        follow_up: मिरू उघडा, राहिलेल्या नोंदी जोडा आणि आठवडा बंद करा.
+        greeting_html: हाय <strong>%{name}</strong> ,
+        preheader: गहाळ आठवड्यासाठी तुमची मिरू टाइमशीट अपडेट करा.
+        signoff_html: धन्यवाद.<br> <strong>मिरू</strong>
+        subject: मागील आठवड्याचे तुमचे मिरू टाइमशीट पूर्ण करा.
+        subtitle: "%{company_name} साठीच्या तुमच्या वेळेच्या नोंदी अजूनही अपेक्षित
+          साप्ताहिक एकूण रकमेपेक्षा कमी आहेत."
+        title: तुमचा टाइमशीट पूर्ण करा.
+    subscription:
+      plan_purchased:
+        badge: चा-चिंग
+        billing_interval: बिलिंग कालावधी
+        billing_settings_html: 'बिलिंग सेटिंग्ज: <a href="%{url}" style="color: #111827;">%{url}</a>'
+        company: कंपनी
+        cta: बिलिंग सेटिंग्ज उघडा
+        image_label: नवीन सशुल्क योजना
+        image_text: नवीन सशुल्क कामाची जागा
+        plan: योजना
+        stripe_subscription: स्ट्राइप सबस्क्रिप्शन
+        subtitle: मिरूवर नवीन सशुल्क वर्कस्पेस. बिलिंग सुरू झाले आहे.
+        team_seats: टीम सीट्स
+        title: "%{company} ने नुकतेच %{plan} विकत घेतले"
+      plan_purchased_text:
+        billing_interval: 'बिलिंग कालावधी: %{interval}'
+        billing_settings: 'बिलिंग सेटिंग्ज उघडा: %{url}'
+        company: 'कंपनी: %{company}'
+        plan: 'योजना: %{plan}'
+        stripe_subscription: 'स्ट्राइप सबस्क्रिप्शन: %{id}'
+        team_seats: 'संघ जागा: %{seats}'
+      trial_started:
+        body_html: तुमची <strong>%{company}</strong> साठीची ३०-दिवसांची मिरू प्रो
+          चाचणी आता सक्रिय झाली आहे.
+        cta: ओपनिंग बिलिंग
+        eyebrow: बिलिंग
+        footer_body: तुम्ही तुमच्या बिलिंग सेटिंग्जमधून कधीही बिलाचा आढावा घेऊ शकता,
+          योजनांची तुलना करू शकता आणि अपग्रेड करू शकता.
+        greeting_html: नमस्कार <strong>%{name}</strong> ,
+        preheader: तुमची मिरू प्रो चाचणी आता सक्रिय झाली आहे.
+        subtitle: तुमच्या ३०-दिवसांच्या चाचणी कालावधीत बिलिंग, अहवाल आणि उर्वरित प्रो
+          वर्कफ्लोचा अनुभव घ्या.
+        title: तुमची मिरू प्रो ट्रायल सुरू झाली आहे.
+        trial_ends: खटला समाप्त झाला
+      trial_started_text:
+        body: तुमची %{company} साठीची ३०-दिवसांची मिरू प्रो चाचणी आता सक्रिय झाली
+          आहे.
+        greeting: नमस्कार %{name},
+        review_billing: "%{url} वर बिलाचा आढावा घ्या."
+        trial_ends: चाचणी %{date} रोजी संपेल.
+    user_invitation_mailer:
+      send_user_invitation:
+        about_body: मिरू वेळ, पावत्या, देयके आणि दैनंदिन कामकाज एकाच कार्यक्षेत्रात
+          आणते.
+        about_title: मिरू बद्दल
+        eyebrow: आमंत्रण
+        get_started_body: आमंत्रण स्वीकारा, तुमचा पासवर्ड तयार करा आणि तुम्ही सामील
+          व्हाल.
+        get_started_title: सुरुवात करा
+        preheader: तुम्हाला मिरूवरील एका टीममध्ये सामील होण्यासाठी आमंत्रित करण्यात
+          आले आहे.
+        subject: तुम्हाला मिरूमध्ये सामील होण्यासाठी आमंत्रित केले आहे.
+        subtitle_html: "<strong>%{sender_name}</strong> ने तुम्हाला मिरूवर <strong>%{company_name}</strong>
+          सोबत सामील होण्यासाठी आमंत्रित केले आहे."
+        support_html: जर तुम्हाला या आमंत्रणाची अपेक्षा नसेल तर, आमच्या टीमशी <a href="mailto:%{support_email}">%{support_email}</a>
+          वर संपर्क साधा.
+        title: तुमच्या मिरू वर्कस्पेसमध्ये सामील व्हा
+        workspace_members:
+          one: १ सदस्य
+          other: "%{count} सदस्य"
   navbar:
     clients: ग्राहक
     help: मदत
@@ -202,6 +536,74 @@ mr:
         आहेत.
     update:
       success: तुमचा पासवर्ड बदलण्यात आला आहे.
+  pdfs:
+    accounts_aging:
+      client: क्लायंट
+      title: खात्यांचा कालबाह्य अहवाल
+      total: एकूण
+    client_revenues:
+      client: क्लायंट
+      outstanding_amount: थकबाकी रक्कम
+      overdue_amount: थकीत रक्कम
+      paid_amount: दिलेली रक्कम
+      title: ग्राहक महसूल अहवाल
+      total_revenue: एकूण महसूल
+    invoices:
+      amount_due: देय रक्कम
+      amount_paid: दिलेली रक्कम
+      billed_to: बिल केलेले
+      client_invoice: ग्राहकाचे बिल
+      discount: सवलत
+      due: 'देय: %{due_date}'
+      invoice_number: इनव्हॉइस क्रमांक
+      issue_date: जारी करण्याची तारीख
+      paid: 'दिलेले: %{amount}'
+      payment_details: पेमेंट तपशील
+      payment_rows:
+        account_number: खाते क्रमांक
+        bank_name: बँकेचे नाव
+        gst_number: जीएसटी क्रमांक
+        routing_number: राउटिंग नंबर
+        swift_code: स्विफ्ट कोड
+        tax_id: कर ओळखपत्र
+        vat_number: व्हॅट क्रमांक
+      prepared_by: "%{company_name} यांनी तयार केले, %{issue_date} रोजी जारी केले,
+        %{due_date} रोजी देय."
+      reference: 'संदर्भ: %{reference}'
+      sub_total: एकूण उप
+      table:
+        date: तारीख
+        description: वर्णन
+        line_total: ओळीची एकूण
+        name: नाव
+        qty: प्रमाण
+        rate: दर
+      tax: कर
+      title: बिल
+      total: एकूण
+      total_invoice_amount: एकूण बिलाची रक्कम
+      work_summary: कामाचा सारांश
+    outstanding_overdue_invoices:
+      amount: रक्कम
+      client: क्लायंट
+      due_date: देय तारीख
+      invoice_number: इनव्हॉइस क्रमांक
+      issue_date: जारी करण्याची तारीख
+      no_clients_found: कोणतेही ग्राहक आढळले नाहीत
+      outstanding_amount: थकबाकी रक्कम
+      overdue_amount: थकीत रक्कम
+      status: स्थिती
+      title: थकीत आणि मुदत उलटलेल्या पावत्यांचा अहवाल
+      total_amounts: एकूण रक्कम
+      total_invoice_amount: एकूण बिलाची रक्कम
+    time_entries:
+      client: क्लायंट
+      date: तारीख
+      hours_logged: नोंदवलेले तास
+      note: टीप
+      project: प्रकल्प
+      team_member: संघ सदस्य
+      title: वेळ नोंद अहवाल
   projects:
     add_new_project: नवीन प्रकल्प जोडा
     add_project: प्रकल्प जोडा

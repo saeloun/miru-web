@@ -1,0 +1,30 @@
+---
+ml:
+  activerecord:
+    errors:
+      models:
+        client:
+          attributes:
+            name:
+              format: "%{message}"
+        project:
+          attributes:
+            name:
+              format: "%{message}"
+        user:
+          attributes:
+            email:
+              blank: ഇമെയിൽ ശൂന്യമായിടാൻ കഴിയില്ല.
+              invalid: അസാധുവായ ഇമെയിൽ ഐഡി
+              taken: ഇമെയിൽ ഐഡി നിലവിലുണ്ട്.
+            first_name:
+              blank: ശൂന്യമാക്കാൻ കഴിയില്ല.
+              invalid: അക്ഷരങ്ങളോ സ്‌പെയ്‌സുകളോ മാത്രമേ ഉൾപ്പെടുത്താവൂ.
+            last_name:
+              blank: ശൂന്യമാക്കാൻ കഴിയില്ല.
+              invalid: അക്ഷരങ്ങളോ സ്‌പെയ്‌സുകളോ മാത്രമേ ഉൾപ്പെടുത്താവൂ.
+            password:
+              blank: ശൂന്യമാക്കാൻ കഴിയില്ല.
+              too_short: കുറഞ്ഞത് %{count} പ്രതീകങ്ങൾ നീളമുണ്ടായിരിക്കണം.
+            password_confirmation:
+              confirmation: പുതിയ പാസ്‌വേഡുമായി പൊരുത്തപ്പെടുന്നില്ല.

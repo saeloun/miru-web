@@ -7,6 +7,7 @@ export const formatFormData = (
   clientLogoUrl
 ) => {
   formData.append("client[name]", values.name);
+  formData.append("client[email]", values.email || "");
   formData.append("client[phone]", values.phone);
   formData.append("client[currency]", values.currency?.value);
 

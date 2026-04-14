@@ -13,6 +13,7 @@ import { currencyFormat, useOutsideClick } from "helpers";
 import { mapPayment } from "mapper/mappedIndex";
 import { CalendarIcon } from "miruIcons";
 import { useNavigate } from "react-router-dom";
+import { i18n } from "../../../i18n";
 import {
   Select,
   SelectContent,
@@ -111,7 +112,7 @@ const PaymentEntryForm = ({
         note,
       });
       await payment.create(sanitized);
-      Toastr.success("Manual entry added successfully.");
+      Toastr.success(i18n.t("payments.manualEntryAdded"));
       setIsLoading(false);
       fetchPaymentList();
       fetchInvoiceList();
@@ -120,7 +121,7 @@ const PaymentEntryForm = ({
         navigate(`/invoices/${invoiceId}`);
       }
     } catch {
-      Toastr.error("Failed to add manual entry");
+      Toastr.error(i18n.t("payments.failedToAddManualEntry"));
       setIsLoading(false);
     }
   };
@@ -179,7 +180,7 @@ const PaymentEntryForm = ({
                       classNamePrefix="border-0 font-medium text-foreground"
                       defaultValue={invoice}
                       id="invoice"
-                      label="Invoice"
+                      label={i18n.t("payments.invoice")}
                       name="invoiceSearch"
                       options={invoiceList.invoiceList}
                       value={invoice}
@@ -216,7 +217,11 @@ const PaymentEntryForm = ({
                           }}
                         >
                           <SelectTrigger className="m-0 mt-2 w-full border-0 font-medium text-foreground">
-                            <SelectValue placeholder="Search by client name or invoice ID" />
+                            <SelectValue
+                              placeholder={i18n.t(
+                                "payments.searchByClientOrInvoice"
+                              )}
+                            />
                           </SelectTrigger>
                           <SelectContent>
                             {invoiceList.invoiceList.map(invoiceOption => (
@@ -279,7 +284,7 @@ const PaymentEntryForm = ({
                   readOnly
                   id="transactionDate"
                   inputBoxClassName="cursor-pointer bg-background text-foreground"
-                  label="Transaction Date"
+                  label={i18n.t("payments.transactionDate")}
                   labelClassName="absolute top-0.5 left-1 h-6 z-1 origin-0 bg-background p-2 text-base font-medium duration-300 text-muted-foreground"
                   name="transactionDate"
                   type="text"
@@ -312,7 +317,7 @@ const PaymentEntryForm = ({
               {isDesktop ? (
                 <div className="field relative">
                   <label className="absolute -top-1 left-0 z-1 ml-3 origin-0 bg-background px-1 text-xsm font-medium text-muted-foreground duration-300">
-                    Transaction Type
+                    {i18n.t("payments.transactionType")}
                   </label>
                   <Select
                     value={transactionType || ""}
@@ -321,7 +326,11 @@ const PaymentEntryForm = ({
                     }
                   >
                     <SelectTrigger className="mt-1 bg-background text-foreground">
-                      <SelectValue placeholder="Select Transaction Type" />
+                      <SelectValue
+                        placeholder={i18n.t(
+                          "payments.selectTransactionTypeBtn"
+                        )}
+                      />
                     </SelectTrigger>
                     <SelectContent>
                       {transactionTypes.map(type => (
@@ -336,7 +345,7 @@ const PaymentEntryForm = ({
                 <>
                   <CustomReactSelect
                     isDisabled
-                    label="Transaction Type"
+                    label={i18n.t("payments.transactionType")}
                     name="transactionType"
                     options={transactionTypes}
                     handleonFocus={() =>
@@ -379,7 +388,7 @@ const PaymentEntryForm = ({
                 disabled
                 id="paymentAmount"
                 inputBoxClassName="form__input block h-12 w-full appearance-none border-border bg-background p-4 text-base text-foreground focus-within:border-primary"
-                label="Payment amount"
+                label={i18n.t("payments.paymentAmount")}
                 labelClassName="absolute top-0.5 left-1 h-6 z-1 origin-0 bg-background p-2 text-base font-medium duration-300 text-muted-foreground"
                 name="paymentAmount"
                 type="text"
@@ -394,7 +403,7 @@ const PaymentEntryForm = ({
             <div className="mt-4">
               <CustomTextareaAutosize
                 id="NotesOptional"
-                label="Notes (optional)"
+                label={i18n.t("payments.notesOptional")}
                 maxRows={12}
                 name="NotesOptional"
                 rows={5}
@@ -412,7 +421,7 @@ const PaymentEntryForm = ({
                     : "focus:outline-none flex h-10 w-full cursor-pointer items-center justify-center rounded border border-transparent bg-secondary py-1 px-4 font-sans text-base font-medium uppercase tracking-widest text-primary-foreground shadow-sm"
                 }
               >
-                ADD PAYMENT
+                {i18n.t("payments.addPayment")}
               </button>
             </div>
           </Form>

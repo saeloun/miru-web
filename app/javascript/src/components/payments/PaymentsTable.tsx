@@ -42,6 +42,7 @@ import { payment, paymentsApi } from "apis/api";
 import { toast } from "sonner";
 import { unmapPayment } from "../../mapper/mappedIndex";
 import AddManualEntry from "./Modals/AddManualEntry";
+import { i18n } from "../../i18n";
 
 interface Payment {
   id: string | number;
@@ -156,7 +157,7 @@ const PaymentsTable: React.FC = () => {
       await fetchInvoiceList();
       setShowManualEntryModal(true);
     } catch (e) {
-      toast.error("Failed to load invoices for payment entry");
+      toast.error(i18n.t("payments.failedToLoadInvoicesForPaymentEntry"));
     }
   };
 
@@ -186,18 +187,18 @@ const PaymentsTable: React.FC = () => {
 
   const getTransactionTypeBadge = (type: string) => {
     const typeLabels = {
-      manual: "Manual",
-      stripe: "Stripe",
-      paypal: "PayPal",
-      bank_transfer: "Bank Transfer",
-      check: "Check",
+      manual: i18n.t("payments.manual"),
+      stripe: i18n.t("payments.stripe"),
+      paypal: i18n.t("payments.paypal"),
+      bank_transfer: i18n.t("payments.bankTransfer"),
+      check: i18n.t("payments.check"),
       ach: "ACH",
-      visa: "Visa",
-      mastercard: "Mastercard",
-      amex: "Amex",
-      debit_card: "Debit Card",
-      cash: "Cash",
-      credit_card: "Credit Card",
+      visa: i18n.t("payments.visa"),
+      mastercard: i18n.t("payments.mastercard"),
+      amex: i18n.t("payments.amex"),
+      debit_card: i18n.t("payments.debitCard"),
+      cash: i18n.t("payments.cash"),
+      credit_card: i18n.t("payments.creditCard"),
     };
 
     return (
@@ -219,8 +220,19 @@ const PaymentsTable: React.FC = () => {
     }
   };
 
-  const getStatusLabel = (status: string) =>
-    status.replaceAll("_", " ").replace(/\b\w/g, s => s.toUpperCase());
+  const getStatusLabel = (status: string) => {
+    const statusLabels = {
+      paid: i18n.t("payments.paid"),
+      pending: i18n.t("payments.pending"),
+      failed: i18n.t("payments.failed"),
+      refunded: i18n.t("payments.refunded"),
+      completed: i18n.t("payments.completed"),
+      partially_paid: i18n.t("payments.partiallyPaid"),
+      cancelled: i18n.t("payments.cancelled"),
+    };
+
+    return statusLabels[status] || status;
+  };
 
   const columns: ColumnDef<Payment>[] = [
     {
@@ -229,14 +241,14 @@ const PaymentsTable: React.FC = () => {
         <Checkbox
           checked={table.getIsAllPageRowsSelected()}
           onCheckedChange={value => table.toggleAllPageRowsSelected(!!value)}
-          aria-label="Select all"
+          aria-label={i18n.t("selectAll")}
         />
       ),
       cell: ({ row }) => (
         <Checkbox
           checked={row.getIsSelected()}
           onCheckedChange={value => row.toggleSelected(!!value)}
-          aria-label="Select row"
+          aria-label={i18n.t("selectRow")}
         />
       ),
       enableSorting: false,
@@ -250,7 +262,7 @@ const PaymentsTable: React.FC = () => {
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           className="-ml-4"
         >
-          Date
+          {i18n.t("date")}
           {column.getIsSorted() === "asc" ? (
             <ArrowUp size={16} className="ml-2" />
           ) : column.getIsSorted() === "desc" ? (
@@ -272,7 +284,7 @@ const PaymentsTable: React.FC = () => {
     },
     {
       accessorKey: "invoiceNumber",
-      header: "Invoice",
+      header: i18n.t("payments.invoice"),
       cell: ({ row }) => {
         const payment = row.original;
 
@@ -296,7 +308,7 @@ const PaymentsTable: React.FC = () => {
     },
     {
       accessorKey: "clientName",
-      header: "Client",
+      header: i18n.t("client"),
       cell: ({ row }) => {
         const payment = row.original;
 
@@ -315,7 +327,7 @@ const PaymentsTable: React.FC = () => {
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           className="-ml-4"
         >
-          Amount
+          {i18n.t("amount")}
           {column.getIsSorted() === "asc" ? (
             <ArrowUp size={16} className="ml-2" />
           ) : column.getIsSorted() === "desc" ? (
@@ -340,7 +352,7 @@ const PaymentsTable: React.FC = () => {
     },
     {
       accessorKey: "note",
-      header: "Notes",
+      header: i18n.t("payments.notes"),
       cell: ({ row }) => (
         <span className="line-clamp-1 text-sm text-muted-foreground">
           {row.original.note || "—"}
@@ -349,12 +361,12 @@ const PaymentsTable: React.FC = () => {
     },
     {
       accessorKey: "transactionType",
-      header: "Payment Method",
+      header: i18n.t("payments.paymentMethod"),
       cell: ({ row }) => getTransactionTypeBadge(row.original.transactionType),
     },
     {
       id: "status",
-      header: "Status",
+      header: i18n.t("status"),
       cell: ({ row }) => (
         <Badge
           variant="outline"
@@ -374,18 +386,18 @@ const PaymentsTable: React.FC = () => {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="h-8 w-8 p-0">
-                <span className="sr-only">Open menu</span>
+                <span className="sr-only">{i18n.t("payments.openMenu")}</span>
                 <DotsThree className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DropdownMenuLabel>{i18n.t("actions")}</DropdownMenuLabel>
               <DropdownMenuItem
                 onClick={() =>
                   navigator.clipboard.writeText(payment.transactionId)
                 }
               >
-                Copy transaction ID
+                {i18n.t("payments.copyTransactionId")}
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               {payment.invoiceId && (
@@ -393,12 +405,12 @@ const PaymentsTable: React.FC = () => {
                   onClick={() => navigate(`/invoices/${payment.invoiceId}`)}
                 >
                   <Eye className="h-4 w-4 mr-2" />
-                  View invoice
+                  {i18n.t("payments.viewInvoice")}
                 </DropdownMenuItem>
               )}
               <DropdownMenuItem>
                 <Download className="h-4 w-4 mr-2" />
-                Download receipt
+                {i18n.t("payments.downloadReceipt")}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -416,7 +428,9 @@ const PaymentsTable: React.FC = () => {
       <div className="flex h-96 items-center justify-center">
         <div className="text-center">
           <CreditCard className="mx-auto h-12 w-12 text-muted-foreground" />
-          <p className="text-muted-foreground">Failed to load payments</p>
+          <p className="text-muted-foreground">
+            {i18n.t("payments.failedToLoadPayments")}
+          </p>
         </div>
       </div>
     );
@@ -434,7 +448,7 @@ const PaymentsTable: React.FC = () => {
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
           <p className="text-sm text-muted-foreground md:text-base">
-            Stripe and manual entries in one simple ledger.
+            {i18n.t("payments.paymentLedgerDescription")}
           </p>
         </div>
         {isAdminUser && (
@@ -443,7 +457,7 @@ const PaymentsTable: React.FC = () => {
             className="bg-foreground text-background hover:opacity-90"
           >
             <Plus className="h-4 w-4 mr-2" />
-            Add manual entry
+            {i18n.t("payments.addManualEntry")}
           </Button>
         )}
       </div>
@@ -452,20 +466,22 @@ const PaymentsTable: React.FC = () => {
         <Card className="border-border">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
-              Total Payments
+              {i18n.t("payments.totalPayments")}
             </CardTitle>
             <CreditCard className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{data?.total || 0}</div>
-            <p className="mt-1 text-xs text-muted-foreground">Transactions</p>
+            <p className="mt-1 text-xs text-muted-foreground">
+              {i18n.t("payments.transactions")}
+            </p>
           </CardContent>
         </Card>
 
         <Card className="border-border">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
-              Total Collected
+              {i18n.t("payments.totalCollected")}
             </CardTitle>
             <CurrencyDollar className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
@@ -473,14 +489,16 @@ const PaymentsTable: React.FC = () => {
             <div className="text-2xl font-bold">
               {currencyFormat(baseCurrency, totalAmount)}
             </div>
-            <p className="mt-1 text-xs text-muted-foreground">All time</p>
+            <p className="mt-1 text-xs text-muted-foreground">
+              {i18n.t("payments.allTime")}
+            </p>
           </CardContent>
         </Card>
 
         <Card className="border-border">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
-              Average Payment
+              {i18n.t("payments.averagePayment")}
             </CardTitle>
             <CurrencyDollar className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
@@ -492,7 +510,7 @@ const PaymentsTable: React.FC = () => {
               )}
             </div>
             <p className="mt-1 text-xs text-muted-foreground">
-              Per transaction
+              {i18n.t("payments.perTransaction")}
             </p>
           </CardContent>
         </Card>
@@ -500,9 +518,9 @@ const PaymentsTable: React.FC = () => {
 
       <Card className="border-border">
         <CardHeader>
-          <CardTitle>Payment History</CardTitle>
+          <CardTitle>{i18n.t("payments.paymentHistory")}</CardTitle>
           <CardDescription>
-            Every payment with invoice and client details.
+            {i18n.t("payments.paymentHistoryDescription")}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -511,30 +529,39 @@ const PaymentsTable: React.FC = () => {
               <DataTable
                 columns={columns}
                 data={visiblePayments}
-                searchPlaceholder="Search by invoice, client, method, or notes..."
+                searchPlaceholder={i18n.t(
+                  "payments.searchByInvoiceClientMethodOrNotes"
+                )}
                 showPagination={false}
               />
               <div className="flex flex-col items-center gap-2 pb-2 text-sm text-muted-foreground">
                 <span>
-                  Showing {visiblePayments.length} of {payments.length}
+                  {i18n.t("payments.showingPaymentsCount", {
+                    visible: visiblePayments.length,
+                    total: payments.length,
+                  })}
                 </span>
-                {hasMorePayments && <span>Scroll to load more payments</span>}
+                {hasMorePayments && (
+                  <span>{i18n.t("payments.scrollToLoadMore")}</span>
+                )}
                 {hasMorePayments && (
                   <div ref={loadMorePaymentsRef} className="h-8 w-full" />
                 )}
-                {!hasMorePayments && <span>All payments loaded</span>}
+                {!hasMorePayments && (
+                  <span>{i18n.t("payments.allPaymentsLoaded")}</span>
+                )}
               </div>
             </div>
           ) : (
             <div className="text-center py-12">
               <CreditCard className="mx-auto h-12 w-12 text-muted-foreground" />
               <p className="mb-4 mt-4 text-muted-foreground">
-                No payments recorded yet
+                {i18n.t("payments.noPaymentsRecorded")}
               </p>
               {isAdminUser && (
                 <Button variant="outline" onClick={openManualEntry}>
                   <Plus className="h-4 w-4 mr-2" />
-                  Add Manual Entry
+                  {i18n.t("payments.addManualEntry")}
                 </Button>
               )}
             </div>

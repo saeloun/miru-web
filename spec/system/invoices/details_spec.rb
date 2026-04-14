@@ -121,6 +121,30 @@ RSpec.describe "Invoice detail view", type: :system, js: true do
     end
   end
 
+  it "opens the mark paid modal from the invoice detail page for sent invoices" do
+    invoice = create(:invoice,
+      company:,
+      client:,
+      status: :sent,
+      invoice_number: "INV-2024-007",
+      amount: 3500.00,
+      amount_due: 3500.00,
+      outstanding_amount: 3500.00,
+      issue_date: Date.new(2024, 2, 1),
+      due_date: Date.new(2024, 3, 1))
+
+    with_forgery_protection do
+      visit "/invoices/#{invoice.id}"
+
+      expect(page).to have_css("#react-root", wait: 10)
+      click_button "Mark as Paid"
+
+      expect(page).to have_content("Mark Invoice As Paid", wait: 10)
+      expect(page).to have_selector("#transactionDate", wait: 10)
+      expect(page).to have_selector("#invoice", wait: 10)
+    end
+  end
+
   it "restricts employees from viewing invoice details" do
     employee = create(:user, current_workspace_id: company.id)
     invoice = create(:invoice,

@@ -106,13 +106,13 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
   );
 
   // Helper function to ensure valid Date object
-  const ensureValidDate = (date: any): Date => {
-    if (!date) return new Date();
+  const parseDate = (date: any): Date | undefined => {
+    if (!date) return undefined;
 
     if (date instanceof Date && !isNaN(date.getTime())) return date;
     const parsed = new Date(date);
 
-    return isNaN(parsed.getTime()) ? new Date() : parsed;
+    return isNaN(parsed.getTime()) ? undefined : parsed;
   };
 
   const [formData, setFormData] = useState({
@@ -120,10 +120,10 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
     invoiceNumber: invoice?.invoiceNumber || "",
     status: invoice?.status || "draft",
     clientId: invoice?.clientId || initialClientId || "",
-    issueDate: ensureValidDate(invoice?.issueDate),
-    dueDate: ensureValidDate(
-      invoice?.dueDate || new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
-    ),
+    issueDate: parseDate(invoice?.issueDate) || new Date(),
+    dueDate:
+      parseDate(invoice?.dueDate) ||
+      new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
     reference: invoice?.reference || "",
     notes: invoice?.notes || "",
     discount: invoice?.discount || 0,
@@ -288,8 +288,8 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
   useEffect(() => {
     const snapshot = JSON.stringify({
       ...formData,
-      issueDate: ensureValidDate(formData.issueDate).toISOString(),
-      dueDate: ensureValidDate(formData.dueDate).toISOString(),
+      issueDate: formData.issueDate.toISOString(),
+      dueDate: formData.dueDate.toISOString(),
       lineItems: submissionLineItems,
     });
 
@@ -525,15 +525,17 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
             {/* Basic Details */}
             <Card>
               <CardHeader>
-                <CardTitle>Basic Details</CardTitle>
+                <CardTitle>{i18n.t("invoices.basicDetails")}</CardTitle>
                 <CardDescription>
-                  Enter the basic invoice information
+                  {i18n.t("invoices.basicDetailsDescription")}
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <Label htmlFor="invoiceNumber">Invoice Number</Label>
+                    <Label htmlFor="invoiceNumber">
+                      {i18n.t("invoices.invoiceNumber")}
+                    </Label>
                     <Input
                       id="invoiceNumber"
                       value={formData.invoiceNumber}
@@ -547,20 +549,22 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
                     />
                   </div>
                   <div>
-                    <Label htmlFor="reference">Reference (Optional)</Label>
+                    <Label htmlFor="reference">
+                      {i18n.t("invoices.referenceOptional")}
+                    </Label>
                     <Input
                       id="reference"
                       value={formData.reference}
                       onChange={e =>
                         setFormData({ ...formData, reference: e.target.value })
                       }
-                      placeholder="PO Number, etc."
+                      placeholder={i18n.t("invoices.referencePlaceholder")}
                     />
                   </div>
                 </div>
 
                 <div>
-                  <Label htmlFor="client">Client</Label>
+                  <Label htmlFor="client">{i18n.t("client")}</Label>
                   <Select
                     value={formData.clientId}
                     onValueChange={value =>
@@ -568,7 +572,9 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
                     }
                   >
                     <SelectTrigger data-testid="invoice-client-select">
-                      <SelectValue placeholder="Select a client" />
+                      <SelectValue
+                        placeholder={i18n.t("timeTracking.selectClient")}
+                      />
                     </SelectTrigger>
                     <SelectContent>
                       {clients.map(client => (
@@ -582,7 +588,7 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <Label>Issue Date</Label>
+                    <Label>{i18n.t("invoices.issueDate")}</Label>
                     <Popover>
                       <PopoverTrigger asChild>
                         <Button
@@ -594,9 +600,9 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
                         >
                           <CalendarIcon className="mr-2 h-4 w-4" />
                           {formData.issueDate ? (
-                            format(ensureValidDate(formData.issueDate), "PPP")
+                            format(formData.issueDate, "PPP")
                           ) : (
-                            <span>Pick a date</span>
+                            <span>{i18n.t("pickADate")}</span>
                           )}
                         </Button>
                       </PopoverTrigger>
@@ -604,9 +610,13 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
                         <Calendar
                           mode="single"
                           selected={formData.issueDate}
-                          onSelect={date =>
-                            setFormData({ ...formData, issueDate: date })
-                          }
+                          onSelect={date => {
+                            if (!date) return;
+                            setFormData(current => ({
+                              ...current,
+                              issueDate: date,
+                            }));
+                          }}
                           initialFocus
                         />
                       </PopoverContent>
@@ -614,7 +624,7 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
                   </div>
 
                   <div>
-                    <Label>Due Date</Label>
+                    <Label>{i18n.t("invoices.dueDate")}</Label>
                     <Popover>
                       <PopoverTrigger asChild>
                         <Button
@@ -626,9 +636,9 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
                         >
                           <CalendarIcon className="mr-2 h-4 w-4" />
                           {formData.dueDate ? (
-                            format(ensureValidDate(formData.dueDate), "PPP")
+                            format(formData.dueDate, "PPP")
                           ) : (
-                            <span>Pick a date</span>
+                            <span>{i18n.t("pickADate")}</span>
                           )}
                         </Button>
                       </PopoverTrigger>
@@ -636,9 +646,13 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
                         <Calendar
                           mode="single"
                           selected={formData.dueDate}
-                          onSelect={date =>
-                            setFormData({ ...formData, dueDate: date })
-                          }
+                          onSelect={date => {
+                            if (!date) return;
+                            setFormData(current => ({
+                              ...current,
+                              dueDate: date,
+                            }));
+                          }}
                           initialFocus
                         />
                       </PopoverContent>
@@ -651,9 +665,9 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
             {/* Line Items */}
             <Card>
               <CardHeader>
-                <CardTitle>Line Items</CardTitle>
+                <CardTitle>{i18n.t("invoices.lineItems")}</CardTitle>
                 <CardDescription>
-                  Add time entries or manual items
+                  {i18n.t("invoices.lineItemsDescription")}
                 </CardDescription>
               </CardHeader>
               <CardContent className="p-0">
@@ -677,13 +691,17 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
             {/* Additional Details */}
             <Card>
               <CardHeader>
-                <CardTitle>Additional Details</CardTitle>
-                <CardDescription>Tax, discount, and notes</CardDescription>
+                <CardTitle>{i18n.t("invoices.additionalDetails")}</CardTitle>
+                <CardDescription>
+                  {i18n.t("invoices.additionalDetailsDescription")}
+                </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <Label htmlFor="discount">Discount</Label>
+                    <Label htmlFor="discount">
+                      {i18n.t("invoices.discount")}
+                    </Label>
                     <Input
                       id="discount"
                       type="number"
@@ -699,7 +717,7 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
                     />
                   </div>
                   <div>
-                    <Label htmlFor="tax">Tax</Label>
+                    <Label htmlFor="tax">{i18n.t("invoices.tax")}</Label>
                     <Input
                       id="tax"
                       type="number"
@@ -717,14 +735,14 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
                 </div>
 
                 <div>
-                  <Label htmlFor="notes">Notes</Label>
+                  <Label htmlFor="notes">{i18n.t("notes")}</Label>
                   <Textarea
                     id="notes"
                     value={formData.notes}
                     onChange={e =>
                       setFormData({ ...formData, notes: e.target.value })
                     }
-                    placeholder="Additional notes or payment instructions"
+                    placeholder={i18n.t("invoices.notesPlaceholder")}
                     rows={4}
                   />
                 </div>

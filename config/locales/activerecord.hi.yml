@@ -1,0 +1,30 @@
+---
+hi:
+  activerecord:
+    errors:
+      models:
+        client:
+          attributes:
+            name:
+              format: "%{message}"
+        project:
+          attributes:
+            name:
+              format: "%{message}"
+        user:
+          attributes:
+            email:
+              blank: ईमेल खाली नहीं हो सकता
+              invalid: अमान्य ईमेल आईडी
+              taken: ईमेल आईडी पहले से मौजूद है
+            first_name:
+              blank: खाली नहीं हो सकता
+              invalid: इसमें केवल अक्षर या रिक्त स्थान होने चाहिए
+            last_name:
+              blank: खाली नहीं हो सकता
+              invalid: इसमें केवल अक्षर या रिक्त स्थान होने चाहिए
+            password:
+              blank: खाली नहीं हो सकता
+              too_short: कम से कम %{count} अक्षर लंबा होना चाहिए
+            password_confirmation:
+              confirmation: नए पासवर्ड से मेल नहीं खाता

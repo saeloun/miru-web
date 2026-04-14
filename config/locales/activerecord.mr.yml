@@ -1,0 +1,30 @@
+---
+mr:
+  activerecord:
+    errors:
+      models:
+        client:
+          attributes:
+            name:
+              format: "%{message}"
+        project:
+          attributes:
+            name:
+              format: "%{message}"
+        user:
+          attributes:
+            email:
+              blank: ईमेल रिकामा असू शकत नाही.
+              invalid: अवैध ईमेल आयडी
+              taken: ईमेल आयडी आधीच अस्तित्वात आहे
+            first_name:
+              blank: रिक्त असू शकत नाही
+              invalid: त्यात फक्त अक्षरे किंवा जागा असाव्यात
+            last_name:
+              blank: रिक्त असू शकत नाही
+              invalid: त्यात फक्त अक्षरे किंवा जागा असाव्यात
+            password:
+              blank: रिक्त असू शकत नाही
+              too_short: किमान %{count} अक्षरांचे असले पाहिजे
+            password_confirmation:
+              confirmation: नवीन पासवर्डशी जुळत नाही

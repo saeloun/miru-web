@@ -3,6 +3,7 @@ import React from "react";
 import { ProjectsIcon } from "miruIcons";
 import { Briefcase } from "phosphor-react";
 import { Card, CardContent, CardHeader, CardTitle } from "components/ui/card";
+import { i18n } from "../../../../i18n";
 
 import { getLabelForEmployeeType } from "./helpers";
 
@@ -17,14 +18,14 @@ const EmploymentSummary = ({ employmentDetails }) => (
             size={16}
             weight="bold"
           />
-          Current Employment
+          {i18n.t("profile.currentEmployment")}
         </CardTitle>
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div className="space-y-1">
             <span className="text-sm font-semibold text-muted-foreground">
-              Employee ID
+              {i18n.t("profile.employeeId")}
             </span>
             <p className="text-base font-medium text-foreground">
               {employmentDetails.current_employment.employee_id || "-"}
@@ -32,7 +33,7 @@ const EmploymentSummary = ({ employmentDetails }) => (
           </div>
           <div className="space-y-1">
             <span className="text-sm font-semibold text-muted-foreground">
-              Designation
+              {i18n.t("profile.designation")}
             </span>
             <p className="text-base font-medium text-foreground">
               {employmentDetails.current_employment.designation || "-"}
@@ -40,7 +41,7 @@ const EmploymentSummary = ({ employmentDetails }) => (
           </div>
           <div className="space-y-1">
             <span className="text-sm font-semibold text-muted-foreground">
-              Email ID (Official)
+              {i18n.t("profile.officialEmail")}
             </span>
             <p className="text-base font-medium text-foreground">
               {employmentDetails.current_employment.email || "-"}
@@ -48,7 +49,7 @@ const EmploymentSummary = ({ employmentDetails }) => (
           </div>
           <div className="space-y-1">
             <span className="text-sm font-semibold text-muted-foreground">
-              Employee Type
+              {i18n.t("profile.employmentType")}
             </span>
             <p className="text-base font-medium text-foreground">
               {getLabelForEmployeeType(
@@ -58,7 +59,7 @@ const EmploymentSummary = ({ employmentDetails }) => (
           </div>
           <div className="space-y-1">
             <span className="text-sm font-semibold text-muted-foreground">
-              Date of Joining
+              {i18n.t("profile.dateOfJoining")}
             </span>
             <p className="text-base font-medium text-foreground">
               {employmentDetails.current_employment.joined_at || "-"}
@@ -66,7 +67,7 @@ const EmploymentSummary = ({ employmentDetails }) => (
           </div>
           <div className="space-y-1">
             <span className="text-sm font-semibold text-muted-foreground">
-              Date of Resignation
+              {i18n.t("profile.dateOfResignation")}
             </span>
             <p className="text-base font-medium text-foreground">
               {employmentDetails.current_employment.resigned_at || "-"}
@@ -84,7 +85,7 @@ const EmploymentSummary = ({ employmentDetails }) => (
             size={16}
             weight="bold"
           />
-          Previous Employment
+          {i18n.t("profile.previousEmployment")}
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -97,7 +98,7 @@ const EmploymentSummary = ({ employmentDetails }) => (
               >
                 <div className="space-y-1">
                   <span className="text-sm font-semibold text-muted-foreground">
-                    Company
+                    {i18n.t("profile.company")}
                   </span>
                   <p className="text-base font-medium text-foreground">
                     {previous.company_name}
@@ -105,7 +106,7 @@ const EmploymentSummary = ({ employmentDetails }) => (
                 </div>
                 <div className="space-y-1">
                   <span className="text-sm font-semibold text-muted-foreground">
-                    Role
+                    {i18n.t("role")}
                   </span>
                   <p className="text-base font-medium text-foreground">
                     {previous.role}
@@ -116,7 +117,7 @@ const EmploymentSummary = ({ employmentDetails }) => (
           </div>
         ) : (
           <div className="text-center py-8 text-muted-foreground">
-            No previous employments found
+            {i18n.t("profile.noPreviousEmployments")}
           </div>
         )}
       </CardContent>

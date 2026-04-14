@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Client Revenue Report</title>
+  <title><%= t("pdfs.client_revenues.title") %></title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -33,15 +33,15 @@
   </style>
 </head>
 <body>
-  <h1>Client Revenue Report</h1>
+  <h1><%= t("pdfs.client_revenues.title") %></h1>
   <table>
     <thead>
       <tr>
-        <th>Client</th>
-        <th>Overdue Amount</th>
-        <th>Outstanding Amount</th>
-        <th>Paid Amount</th>
-        <th>Total Revenue</th>
+        <th><%= t("pdfs.client_revenues.client") %></th>
+        <th><%= t("pdfs.client_revenues.overdue_amount") %></th>
+        <th><%= t("pdfs.client_revenues.outstanding_amount") %></th>
+        <th><%= t("pdfs.client_revenues.paid_amount") %></th>
+        <th><%= t("pdfs.client_revenues.total_revenue") %></th>
       </tr>
     </thead>
     <tbody>

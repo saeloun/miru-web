@@ -2,6 +2,7 @@ import { invoicesApi } from "apis/api";
 import dayjs from "dayjs";
 import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
+import { i18n } from "../../../../i18n";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -16,18 +17,18 @@ const calculateTime = (date, dateFormat, timezone) => {
         const minutes = Math.round(Math.abs(now - recordCreated) / 60000);
 
         return minutes == 1
-          ? `${minutes} minute ago`
-          : `${minutes} minutes ago`;
+          ? i18n.t("invoiceHistory.minuteAgo", { count: minutes })
+          : i18n.t("invoiceHistory.minutesAgo", { count: minutes });
       }
 
-      return `${hour} hour ago`;
+      return i18n.t("invoiceHistory.hourAgo", { count: hour });
     }
 
-    return `${hour} hours ago`;
+    return i18n.t("invoiceHistory.hoursAgo", { count: hour });
   }
 
   if (24 == hour || hour < 48) {
-    return "1 day ago";
+    return i18n.t("invoiceHistory.dayAgo", { count: 1 });
   }
 
   if (hour >= 48) {
@@ -70,28 +71,31 @@ export const createData = (rawData, company) => {
   rawData.map(data => {
     switch (data.type) {
       case "create_invoice":
-        processInvoiceEvent("created invoice", data);
+        processInvoiceEvent(i18n.t("invoiceHistory.createdInvoice"), data);
         break;
       case "view_invoice":
-        processInvoiceEvent("viewed invoice", data);
+        processInvoiceEvent(i18n.t("invoiceHistory.viewedInvoice"), data);
         break;
       case "update_invoice":
-        processInvoiceEvent("updated invoice", data);
+        processInvoiceEvent(i18n.t("invoiceHistory.updatedInvoice"), data);
         break;
       case "delete_invoice":
-        processInvoiceEvent("deleted invoice", data);
+        processInvoiceEvent(i18n.t("invoiceHistory.deletedInvoice"), data);
         break;
       case "download_invoice":
-        processInvoiceEvent("downloaded invoice", data);
+        processInvoiceEvent(i18n.t("invoiceHistory.downloadedInvoice"), data);
         break;
       case "send_invoice":
-        processInvoiceEvent("sent invoice", data);
+        processInvoiceEvent(i18n.t("invoiceHistory.sentInvoice"), data);
         break;
       case "create_payment":
-        processInvoiceEvent("marked invoice as paid manually", data);
+        processInvoiceEvent(
+          i18n.t("invoiceHistory.markedInvoicePaidManually"),
+          data
+        );
         break;
       case "create_stripe_payment":
-        processInvoiceEvent("paid via stripe", data);
+        processInvoiceEvent(i18n.t("invoiceHistory.paidViaStripe"), data);
         break;
     }
   });

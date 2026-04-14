@@ -22,4 +22,20 @@ RSpec.describe "Settings automation", type: :system, js: true do
       expect(page).to have_content("miru invoice list", wait: 10)
     end
   end
+
+  it "shows localized copy on the automation page" do
+    user.update!(locale: "hi")
+
+    with_forgery_protection do
+      visit "/settings/automation"
+
+      expect(page).to have_content("ऑटोमेशन और CLI", wait: 10)
+      expect(page).to have_content("हर प्लान के लिए निःशुल्क", wait: 10)
+      expect(page).to have_content("एक बार प्रमाणित करें", wait: 10)
+      expect(page).to have_content(
+        "miru login --email you@example.com --password password",
+        wait: 10
+      )
+    end
+  end
 end

@@ -8,6 +8,7 @@ import CustomDatePicker from "common/CustomDatePicker";
 import { CustomInputText } from "common/CustomInputText";
 import { CustomReactSelect } from "common/CustomReactSelect";
 import { ErrorSpan } from "common/ErrorSpan";
+import { i18n } from "../../../../../i18n";
 
 const inputClass =
   "form__input block h-12 w-full appearance-none bg-background p-4 text-base focus-within:border-primary";
@@ -52,7 +53,7 @@ const EmploymentEditor = ({
             weight="bold"
           />
           <span className="text-sm font-medium text-foreground">
-            Current <br /> Employment
+            {i18n.t("profile.currentEmployment")}
           </span>
         </div>
         <div className="w-9/12">
@@ -60,7 +61,7 @@ const EmploymentEditor = ({
             <div className="flex w-1/2 flex-col px-2">
               <CustomInputText
                 id="employee_id"
-                label="Employee ID"
+                label={i18n.t("profile.employeeId")}
                 name="employee_id"
                 type="text"
                 value={employmentDetails.current_employment.employee_id}
@@ -88,7 +89,7 @@ const EmploymentEditor = ({
             <div className="flex w-1/2 flex-col px-2">
               <CustomInputText
                 id="designation"
-                label="Designation"
+                label={i18n.t("profile.designation")}
                 name="designation"
                 type="text"
                 value={employmentDetails.current_employment.designation}
@@ -119,7 +120,7 @@ const EmploymentEditor = ({
               <CustomInputText
                 disabled={employmentDetails.current_employment.email}
                 id="email"
-                label="Email ID (Official)"
+                label={i18n.t("profile.officialEmail")}
                 name="email"
                 type="text"
                 value={employmentDetails.current_employment.email}
@@ -146,7 +147,7 @@ const EmploymentEditor = ({
               <CustomReactSelect
                 handleOnChange={handleOnChangeEmployeeType}
                 id="employment_type"
-                label="Employment Type"
+                label={i18n.t("profile.employmentType")}
                 name="employment_type"
                 options={employeeTypes}
                 value={employeeType?.value ? employeeType : employeeTypes[0]}
@@ -173,7 +174,7 @@ const EmploymentEditor = ({
                 <CustomInputText
                   disabled
                   id="joined_at"
-                  label="Date of Joining"
+                  label={i18n.t("profile.dateOfJoining")}
                   name="joined_at"
                   type="text"
                   value={getDOJ || ""}
@@ -211,7 +212,7 @@ const EmploymentEditor = ({
                 <CustomInputText
                   disabled
                   id="resigned_at"
-                  label="Date of Resignation"
+                  label={i18n.t("profile.dateOfResignation")}
                   name="resigned_at"
                   type="text"
                   value={getDOR || ""}
@@ -247,7 +248,7 @@ const EmploymentEditor = ({
             weight="bold"
           />
           <span className="text-sm font-medium text-foreground">
-            Previous <br /> Employment
+            {i18n.t("profile.previousEmployment")}
           </span>
         </div>
         <div className="w-10/12">
@@ -261,7 +262,7 @@ const EmploymentEditor = ({
                   <div className="flex w-1/2 flex-col px-2">
                     <CustomInputText
                       id={`company_name_${index}`}
-                      label="Company Name"
+                      label={i18n.t("profile.companyName")}
                       name="company_name"
                       type="text"
                       value={previous.company_name}
@@ -273,7 +274,7 @@ const EmploymentEditor = ({
                   <div className="flex w-1/2 flex-col px-2">
                     <CustomInputText
                       id={`role_${index}`}
-                      label="Role"
+                      label={i18n.t("role")}
                       name="role"
                       type="text"
                       value={previous.role}
@@ -298,7 +299,7 @@ const EmploymentEditor = ({
               style="dashed"
               onClick={handleAddPastEmployment}
             >
-              + Add Past Employment
+              {i18n.t("profile.addPastEmployment")}
             </Button>
             <div className="w-11" />
           </div>

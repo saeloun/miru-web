@@ -1,0 +1,30 @@
+---
+kn:
+  activerecord:
+    errors:
+      models:
+        client:
+          attributes:
+            name:
+              format: "%{message}"
+        project:
+          attributes:
+            name:
+              format: "%{message}"
+        user:
+          attributes:
+            email:
+              blank: ಇಮೇಲ್ ಖಾಲಿಯಾಗಿರಬಾರದು.
+              invalid: ಅಮಾನ್ಯ ಇಮೇಲ್ ಐಡಿ
+              taken: ಇಮೇಲ್ ಐಡಿ ಈಗಾಗಲೇ ಅಸ್ತಿತ್ವದಲ್ಲಿದೆ.
+            first_name:
+              blank: ಖಾಲಿಯಾಗಿರಬಾರದು.
+              invalid: ಅಕ್ಷರಗಳು ಅಥವಾ ಸ್ಥಳಗಳನ್ನು ಮಾತ್ರ ಒಳಗೊಂಡಿರಬೇಕು.
+            last_name:
+              blank: ಖಾಲಿಯಾಗಿರಬಾರದು.
+              invalid: ಅಕ್ಷರಗಳು ಅಥವಾ ಸ್ಥಳಗಳನ್ನು ಮಾತ್ರ ಒಳಗೊಂಡಿರಬೇಕು.
+            password:
+              blank: ಖಾಲಿಯಾಗಿರಬಾರದು.
+              too_short: ಕನಿಷ್ಠ %{count} ಅಕ್ಷರಗಳಷ್ಟು ಉದ್ದವಿರಬೇಕು.
+            password_confirmation:
+              confirmation: ಹೊಸ ಪಾಸ್‌ವರ್ಡ್‌ನೊಂದಿಗೆ ಹೊಂದಿಕೆಯಾಗುವುದಿಲ್ಲ.

@@ -78,6 +78,15 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pnpm-
 
+      - name: Restore parallel runtime log cache
+        uses: actions/cache/restore@v4
+        with:
+          path: tmp/parallel_runtime_rspec.log
+          key: ${{ runner.os }}-parallel-rspec-runtime-${{ github.ref_name }}-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-parallel-rspec-runtime-${{ github.ref_name }}-
+            ${{ runner.os }}-parallel-rspec-runtime-
+
       - name: Install pnpm packages
         run: |
           PUPPETEER_SKIP_DOWNLOAD=true pnpm install --frozen-lockfile
@@ -105,17 +114,24 @@ jobs:
       - name: Run parallel tests (excluding system specs)
         env:
           PARALLEL_TEST_PROCESSORS: 2  # Optimal for standard runners
+          PARALLEL_RUNTIME_LOG: tmp/parallel_runtime_rspec.log
+          PARALLEL_FAILURES_LOG: tmp/failing_specs.txt
         run: |
           mkdir -p tmp
-
-          # Run specs with parallel_rspec, excluding system and system_skip specs
-          bundle exec parallel_rspec spec -n 2 --exclude-pattern "spec/(system|system_skip)/"
+          bin/parallel_test -n 2 --exclude-system
 
           # Save failed specs list for debugging
           if [ -f tmp/failing_specs.txt ]; then
             echo "Failed specs:"
             cat tmp/failing_specs.txt
           fi
+
+      - name: Save parallel runtime log cache
+        if: ${{ always() && hashFiles('tmp/parallel_runtime_rspec.log') != '' }}
+        uses: actions/cache/save@v4
+        with:
+          path: tmp/parallel_runtime_rspec.log
+          key: ${{ runner.os }}-parallel-rspec-runtime-${{ github.ref_name }}-${{ github.sha }}
 
       - name: Upload test results
         if: always()
@@ -127,6 +143,7 @@ jobs:
             tmp/rspec*.xml
             tmp/capybara/*.png
             tmp/failing_specs.txt
+            tmp/parallel_runtime_rspec.log
             log/test.log
           if-no-files-found: warn
 

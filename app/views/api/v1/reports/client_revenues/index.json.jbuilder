@@ -21,7 +21,7 @@ json.summary do
   json.totalOverdueAmount summary[:total_outstanding] # Add overdue amount for summary
 end
 json.filterOptions do
-  json.clients current_company.billable_clients do |client|
+  json.clients filter_options[:clients] do |client|
     json.id client.id
     json.name client.name
   end

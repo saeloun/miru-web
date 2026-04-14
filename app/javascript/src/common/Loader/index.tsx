@@ -1,5 +1,6 @@
 import React from "react";
 import { CircleNotch } from "@phosphor-icons/react";
+import { i18n } from "../../i18n";
 import { cn } from "../../lib/utils";
 
 export type LoaderSize = "sm" | "md" | "lg";
@@ -28,7 +29,7 @@ const sizeMap = {
 
 const Loader = ({
   className = "",
-  message = "Loading workspace...",
+  message = i18n.t("loadingWorkspace"),
   size = "md",
   overlay = true,
 }: LoaderProps) => (

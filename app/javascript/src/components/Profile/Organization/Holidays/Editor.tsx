@@ -14,27 +14,36 @@ import { Button } from "../../../ui/button";
 import { Input } from "../../../ui/input";
 import { Label } from "../../../ui/label";
 import { Separator } from "../../../ui/separator";
+import { i18n } from "../../../../i18n";
 import CustomReactSelect from "common/CustomReactSelect";
 import SingleYearDatePicker from "common/CustomYearPicker/SingleYearDatePicker";
 import { allocationFrequency } from "constants/leaveType";
-import { customStyles } from "./EditHolidays/utils";
+import { customStyles } from "./utils";
 
-const monthNames = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
+const monthLabels = [
+  i18n.t("monthJan"),
+  i18n.t("monthFeb"),
+  i18n.t("monthMar"),
+  i18n.t("monthApr"),
+  i18n.t("monthMay"),
+  i18n.t("monthJun"),
+  i18n.t("monthJul"),
+  i18n.t("monthAug"),
+  i18n.t("monthSep"),
+  i18n.t("monthOct"),
+  i18n.t("monthNov"),
+  i18n.t("monthDec"),
 ];
 
-const weekdayLabels = ["S", "M", "T", "W", "T", "F", "S"];
+const weekdayLabels = [
+  i18n.t("holidaysSettings.weekdays.sun"),
+  i18n.t("holidaysSettings.weekdays.mon"),
+  i18n.t("holidaysSettings.weekdays.tue"),
+  i18n.t("holidaysSettings.weekdays.wed"),
+  i18n.t("holidaysSettings.weekdays.thu"),
+  i18n.t("holidaysSettings.weekdays.fri"),
+  i18n.t("holidaysSettings.weekdays.sat"),
+];
 
 const buildHolidayDate = (date, dateFormat) => {
   if (!date) return null;
@@ -112,7 +121,7 @@ const OrganizationHolidaysEditor = ({
       return {
         ...holiday,
         parsedDate: holidayDate,
-        categoryLabel: holiday.category === "optional" ? "Optional" : "Public",
+        categoryKey: holiday.category === "optional" ? "optional" : "public",
       };
     })
     .filter(Boolean)
@@ -169,7 +178,7 @@ const OrganizationHolidaysEditor = ({
             variant="outline"
             className="font-geist-medium"
           >
-            Cancel
+            {i18n.t("cancel")}
           </Button>
           {canManageHolidays ? (
             <Button
@@ -177,7 +186,7 @@ const OrganizationHolidaysEditor = ({
               disabled={isDisableUpdateBtn}
               className="font-geist-medium"
             >
-              Save Changes
+              {i18n.t("preferencesSettings.saveChanges")}
             </Button>
           ) : null}
         </div>
@@ -191,7 +200,7 @@ const OrganizationHolidaysEditor = ({
                     className="h-5 w-5 text-muted-foreground"
                     weight="bold"
                   />
-                  Public Holidays
+                  {i18n.t("holidaysSettings.publicHolidays")}
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -206,7 +215,7 @@ const OrganizationHolidaysEditor = ({
                           <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <div className="relative">
                               <Label className="text-xs font-geist-medium text-muted-foreground uppercase tracking-wider mb-1">
-                                Date
+                                {i18n.t("date")}
                               </Label>
                               <div
                                 className="relative cursor-pointer"
@@ -227,7 +236,9 @@ const OrganizationHolidaysEditor = ({
                                       : ""
                                   }`}
                                   disabled={!canManageHolidays}
-                                  placeholder="Select date"
+                                  placeholder={i18n.t(
+                                    "holidaysSettings.selectDate"
+                                  )}
                                   value={holiday.date}
                                 />
                                 <Calendar
@@ -262,7 +273,7 @@ const OrganizationHolidaysEditor = ({
                             </div>
                             <div>
                               <Label className="text-xs font-geist-medium text-muted-foreground uppercase tracking-wider mb-1">
-                                Holiday Name
+                                {i18n.t("holidaysSettings.holidayName")}
                               </Label>
                               <Input
                                 className={`font-geist-regular ${
@@ -271,7 +282,9 @@ const OrganizationHolidaysEditor = ({
                                     : ""
                                 }`}
                                 disabled={!canManageHolidays}
-                                placeholder="Enter holiday name"
+                                placeholder={i18n.t(
+                                  "holidaysSettings.enterHolidayName"
+                                )}
                                 value={holiday.name}
                                 onChange={e =>
                                   handleHolidateNameChange(e, index, false)
@@ -304,7 +317,7 @@ const OrganizationHolidaysEditor = ({
                           className="w-full border-dashed border-border font-geist-medium text-muted-foreground hover:border-primary/40 hover:text-foreground"
                         >
                           <Plus size={16} weight="bold" className="mr-2" />
-                          Add Holiday
+                          {i18n.t("holidaysSettings.addHoliday")}
                         </Button>
                       ) : null}
                     </>
@@ -316,7 +329,7 @@ const OrganizationHolidaysEditor = ({
                         weight="thin"
                       />
                       <p className="text-muted-foreground font-geist-regular mb-3">
-                        No public holidays configured
+                        {i18n.t("holidaysSettings.noPublicHolidaysConfigured")}
                       </p>
                       {canManageHolidays ? (
                         <Button
@@ -325,7 +338,7 @@ const OrganizationHolidaysEditor = ({
                           className="font-geist-medium"
                         >
                           <Plus size={16} weight="bold" className="mr-2" />
-                          Add First Holiday
+                          {i18n.t("holidaysSettings.addFirstHoliday")}
                         </Button>
                       ) : null}
                     </div>
@@ -343,7 +356,7 @@ const OrganizationHolidaysEditor = ({
                       className="h-5 w-5 text-muted-foreground"
                       weight="bold"
                     />
-                    Optional Holidays
+                    {i18n.t("holidaysSettings.optionalHolidays")}
                   </CardTitle>
                   <button
                     onClick={handleCheckboxClick}
@@ -374,21 +387,21 @@ const OrganizationHolidaysEditor = ({
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pb-4 border-b border-border">
                       <div>
                         <Label className="text-xs font-geist-medium text-muted-foreground uppercase tracking-wider">
-                          Total Allowed
+                          {i18n.t("holidaysSettings.totalAllowed")}
                         </Label>
                         <Input
                           type="number"
                           min={0}
                           className="font-geist-regular mt-1"
                           disabled={!canManageHolidays}
-                          placeholder="Enter number"
+                          placeholder={i18n.t("holidaysSettings.enterNumber")}
                           value={totalOptionalHolidays}
                           onChange={handleChangeTotalOpHoliday}
                         />
                       </div>
                       <div>
                         <Label className="text-xs font-geist-medium text-muted-foreground uppercase tracking-wider">
-                          Frequency
+                          {i18n.t("holidaysSettings.frequency")}
                         </Label>
                         <div className="mt-1">
                           <CustomReactSelect
@@ -429,7 +442,7 @@ const OrganizationHolidaysEditor = ({
                                 <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-3">
                                   <div className="relative">
                                     <Label className="text-xs font-geist-medium text-muted-foreground uppercase tracking-wider mb-1">
-                                      Date
+                                      {i18n.t("date")}
                                     </Label>
                                     <div
                                       className="relative cursor-pointer"
@@ -451,7 +464,9 @@ const OrganizationHolidaysEditor = ({
                                             : ""
                                         }`}
                                         disabled={!canManageHolidays}
-                                        placeholder="Select date"
+                                        placeholder={i18n.t(
+                                          "holidaysSettings.selectDate"
+                                        )}
                                         value={optionalHoliday.date}
                                       />
                                       <Calendar
@@ -490,7 +505,7 @@ const OrganizationHolidaysEditor = ({
                                   </div>
                                   <div>
                                     <Label className="text-xs font-geist-medium text-muted-foreground uppercase tracking-wider mb-1">
-                                      Holiday Name
+                                      {i18n.t("holidaysSettings.holidayName")}
                                     </Label>
                                     <Input
                                       className={`font-geist-regular ${
@@ -499,7 +514,9 @@ const OrganizationHolidaysEditor = ({
                                           : ""
                                       }`}
                                       disabled={!canManageHolidays}
-                                      placeholder="Enter holiday name"
+                                      placeholder={i18n.t(
+                                        "holidaysSettings.enterHolidayName"
+                                      )}
                                       value={optionalHoliday.name}
                                       onChange={e =>
                                         handleHolidateNameChange(e, index, true)
@@ -537,7 +554,7 @@ const OrganizationHolidaysEditor = ({
                               className="w-full border-dashed border-border font-geist-medium text-muted-foreground hover:border-primary/40 hover:text-foreground"
                             >
                               <Plus size={16} weight="bold" className="mr-2" />
-                              Add Optional Holiday
+                              {i18n.t("holidaysSettings.addOptionalHoliday")}
                             </Button>
                           ) : null}
                         </>
@@ -549,7 +566,9 @@ const OrganizationHolidaysEditor = ({
                             weight="thin"
                           />
                           <p className="text-sm text-muted-foreground font-geist-regular mb-3">
-                            No optional holidays configured
+                            {i18n.t(
+                              "holidaysSettings.noOptionalHolidaysConfigured"
+                            )}
                           </p>
                           {canManageHolidays ? (
                             <Button
@@ -559,7 +578,7 @@ const OrganizationHolidaysEditor = ({
                               className="font-geist-medium"
                             >
                               <Plus size={14} weight="bold" className="mr-1" />
-                              Add Optional Holiday
+                              {i18n.t("holidaysSettings.addOptionalHoliday")}
                             </Button>
                           ) : null}
                         </div>
@@ -576,21 +595,21 @@ const OrganizationHolidaysEditor = ({
             <Card className="border-border shadow-sm">
               <CardHeader className="pb-4">
                 <CardTitle className="text-lg font-geist-semibold">
-                  Summary
+                  {i18n.t("summary")}
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
                   <div className="flex justify-between items-center">
                     <span className="text-sm text-muted-foreground font-geist-regular">
-                      Year
+                      {i18n.t("holidaysSettings.year")}
                     </span>
                     <span className="font-geist-semibold">{currentYear}</span>
                   </div>
                   <Separator />
                   <div className="flex justify-between items-center">
                     <span className="text-sm text-muted-foreground font-geist-regular">
-                      Public Holidays
+                      {i18n.t("holidaysSettings.publicHolidays")}
                     </span>
                     <span className="font-geist-semibold">
                       {holidayList.length}
@@ -600,7 +619,7 @@ const OrganizationHolidaysEditor = ({
                     <>
                       <div className="flex justify-between items-center">
                         <span className="text-sm text-muted-foreground font-geist-regular">
-                          Optional Holidays
+                          {i18n.t("holidaysSettings.optionalHolidays")}
                         </span>
                         <span className="font-geist-semibold">
                           {optionalHolidaysList.length}
@@ -608,7 +627,7 @@ const OrganizationHolidaysEditor = ({
                       </div>
                       <div className="flex justify-between items-center">
                         <span className="text-sm text-muted-foreground font-geist-regular">
-                          Allowed per Employee
+                          {i18n.t("holidaysSettings.allowedPerEmployee")}
                         </span>
                         <span className="font-geist-semibold">
                           {totalOptionalHolidays || 0}
@@ -623,7 +642,7 @@ const OrganizationHolidaysEditor = ({
             <Card className="border-border bg-card shadow-sm">
               <CardHeader className="pb-4">
                 <CardTitle className="text-sm font-geist-semibold text-card-foreground">
-                  Year At A Glance
+                  {i18n.t("holidaysSettings.yearAtAGlance")}
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -631,14 +650,14 @@ const OrganizationHolidaysEditor = ({
                   className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2"
                   data-testid="holidays-calendar"
                 >
-                  {monthNames.map((monthName, monthIndex) => (
+                  {monthLabels.map((monthLabel, monthIndex) => (
                     <div
-                      key={monthName}
+                      key={`${monthLabel}-${monthIndex}`}
                       className="rounded-xl border border-border bg-muted/30 p-3"
                     >
                       <div className="mb-2 flex items-center justify-between">
                         <p className="text-xs font-geist-semibold uppercase tracking-[0.24em] text-muted-foreground">
-                          {monthName.slice(0, 3)}
+                          {monthLabel}
                         </p>
                         <p className="text-[11px] text-muted-foreground">
                           {holidaysByMonth[monthIndex]?.length || 0}
@@ -647,7 +666,7 @@ const OrganizationHolidaysEditor = ({
                       <div className="grid grid-cols-7 gap-1 text-[10px] text-muted-foreground">
                         {weekdayLabels.map((label, labelIndex) => (
                           <span
-                            key={`${monthName}-${label}-${labelIndex}`}
+                            key={`${monthLabel}-${label}-${labelIndex}`}
                             className="text-center"
                           >
                             {label}
@@ -658,14 +677,14 @@ const OrganizationHolidaysEditor = ({
                         {buildMonthGrid(currentYear, monthIndex).map(
                           (week, weekIndex) => (
                             <div
-                              key={`${monthName}-week-${weekIndex}`}
+                              key={`${monthLabel}-week-${weekIndex}`}
                               className="grid grid-cols-7 gap-1"
                             >
                               {week.map((day, dayIndex) => {
                                 if (!day) {
                                   return (
                                     <span
-                                      key={`${monthName}-blank-${weekIndex}-${dayIndex}`}
+                                      key={`${monthLabel}-blank-${weekIndex}-${dayIndex}`}
                                     />
                                   );
                                 }
@@ -677,7 +696,7 @@ const OrganizationHolidaysEditor = ({
 
                                 return (
                                   <span
-                                    key={`${monthName}-${day}`}
+                                    key={`${monthLabel}-${day}`}
                                     data-testid={
                                       holiday
                                         ? `holiday-calendar-day-${isoDate}`
@@ -707,7 +726,7 @@ const OrganizationHolidaysEditor = ({
             <Card className="border-border bg-card shadow-sm">
               <CardHeader className="pb-3">
                 <CardTitle className="text-sm font-geist-semibold text-card-foreground">
-                  Holiday Schedule
+                  {i18n.t("holidaysSettings.holidaySchedule")}
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -715,7 +734,7 @@ const OrganizationHolidaysEditor = ({
                   <div className="space-y-3" data-testid="holidays-list">
                     {allHolidays.map(holiday => (
                       <div
-                        key={`${holiday.categoryLabel}-${
+                        key={`${holiday.categoryKey}-${
                           holiday.name
                         }-${holiday.parsedDate.format("YYYY-MM-DD")}`}
                         className="rounded-xl border border-border bg-muted/20 p-3"
@@ -730,7 +749,9 @@ const OrganizationHolidaysEditor = ({
                             </p>
                           </div>
                           <span className="rounded-full bg-muted px-2 py-1 text-[10px] font-geist-semibold uppercase tracking-[0.18em] text-muted-foreground">
-                            {holiday.categoryLabel}
+                            {i18n.t(
+                              `holidaysSettings.categories.${holiday.categoryKey}`
+                            )}
                           </span>
                         </div>
                       </div>
@@ -738,7 +759,9 @@ const OrganizationHolidaysEditor = ({
                   </div>
                 ) : (
                   <div className="rounded-xl border border-dashed border-border bg-muted/20 px-4 py-6 text-center text-sm text-muted-foreground">
-                    No holidays added for {currentYear} yet
+                    {i18n.t("holidaysSettings.noHolidaysAddedForYear", {
+                      year: currentYear,
+                    })}
                   </div>
                 )}
               </CardContent>

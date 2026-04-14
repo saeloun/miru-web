@@ -1,0 +1,27 @@
+---
+de:
+  errors:
+    bill_status_billed: Eine bereits abgerechnete Buchung kann nicht erneut in Rechnung
+      gestellt werden.
+    can't change status: Eine bezahlte Rechnung kann nicht geändert werden.
+    create_billed_entry: Sie können keinen abgerechneten Stundenzetteleintrag erstellen.
+    internal_server_error: Etwas ist schiefgelaufen.
+    messages:
+      already_confirmed: wurde bereits bestätigt, bitte versuchen Sie, sich anzumelden.
+      confirmation_period_expired: muss innerhalb von %{period} bestätigt werden,
+        bitte fordern Sie eine neue an
+      expired: ist abgelaufen, bitte fordern Sie ein neues an
+      not_found: nicht gefunden
+      not_locked: war nicht gesperrt
+      not_saved:
+        one: 'Ein Fehler verhinderte das Speichern von %{resource}:'
+        other: "%{count}-Fehler verhinderten das Speichern dieses %{resource}:"
+    not_found: Die gesuchte Ressource ist nicht verfügbar.
+    prevent_draft_to_waived: kann nicht in „verzichtbar“ geändert werden.
+    unauthorized: Nur Eigentümer oder Administratoren sind berechtigt, diese Aktion
+      durchzuführen.
+    updation_not_allowed: Aktualisierungen sind nicht erlaubt
+    user_already_member: Diese E-Mail-Adresse wird bereits verwendet. Bitte geben
+      Sie eine andere E-Mail-Adresse ein.
+    validate_billable_project: Für nicht abrechnungsfähige Projekte können keine nicht
+      abgerechneten Einträge erstellt werden.

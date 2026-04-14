@@ -388,7 +388,6 @@ RSpec.describe Invoice, type: :model do
       expect(invoice.exchange_rate_date).to eq(invoice.issue_date)
       expect(invoice.audits.last.audited_changes.keys).to include("amount", "base_currency_amount")
     end
-
     it "zeroes totals when the last line item is removed" do
       invoice = create(:invoice, company:, client:)
       line_item = create_invoice_line_item_for(invoice)

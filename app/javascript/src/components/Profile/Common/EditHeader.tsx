@@ -4,6 +4,7 @@ import CustomYearPicker from "common/CustomYearPicker";
 import { getYear } from "date-fns";
 import { X } from "phosphor-react";
 import { useLocation } from "react-router-dom";
+import { i18n } from "../../../i18n";
 
 import { Button } from "../../ui/button";
 
@@ -42,14 +43,14 @@ const EditHeader = ({
           {showButtons && (
             <>
               <Button onClick={cancelAction} type="button" variant="outline">
-                Cancel
+                {i18n.t("cancel")}
               </Button>
               <Button
                 disabled={isDisableUpdateBtn}
                 onClick={saveAction}
                 type="button"
               >
-                Update
+                {i18n.t("update")}
               </Button>
             </>
           )}

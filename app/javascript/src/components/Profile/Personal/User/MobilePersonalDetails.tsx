@@ -5,6 +5,7 @@ import { InfoDescription } from "common/Mobile/InfoDescription";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import { GlobeIcon, InfoIcon, KeyIcon, MapPinIcon, PhoneIcon } from "miruIcons";
+import { i18n } from "../../../../i18n";
 
 dayjs.extend(customParseFormat);
 
@@ -45,8 +46,8 @@ const MobilePersonalDetails = ({
     <div className="mt-12 px-4 py-2">
       <div className="py-4">
         <span className="flex flex-row items-center px-1 text-sm font-medium text-foreground">
-          <InfoIcon className="mr-2" color="#1D1A31" size={13.5} /> Basic
-          Details
+          <InfoIcon className="mr-2" color="#1D1A31" size={13.5} />{" "}
+          {i18n.t("profile.basicDetails")}
         </span>
         <div className="px-1 pb-4 pt-3">
           <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-2xl bg-accent">
@@ -54,7 +55,7 @@ const MobilePersonalDetails = ({
               <img
                 alt={
                   `${first_name || ""} ${last_name || ""}`.trim() ||
-                  "Profile photo"
+                  i18n.t("profile.profilePhoto")
                 }
                 className="h-full w-full object-cover"
                 src={avatarUrl}
@@ -71,12 +72,12 @@ const MobilePersonalDetails = ({
           <div className="w-1/2 px-1">
             <InfoDescription
               description={`${first_name} ${last_name}`}
-              title="Name"
+              title={i18n.t("name")}
             />
           </div>
           <div className="w-1/2 px-1">
             <InfoDescription
-              title="Date of Birth"
+              title={i18n.t("profile.dateOfBirth")}
               description={formattedDateOfBirth}
             />
           </div>
@@ -85,17 +86,20 @@ const MobilePersonalDetails = ({
       <Divider />
       <div className="py-4">
         <span className="flex flex-row items-center px-1 text-sm font-medium text-foreground">
-          <PhoneIcon className="mr-2" color="#1D1A31" size={13.5} /> Contact
-          Details
+          <PhoneIcon className="mr-2" color="#1D1A31" size={13.5} />{" "}
+          {i18n.t("profile.contactInformation")}
         </span>
         <div className="mt-2 flex w-full flex-row">
           <div className="w-1/2 px-1">
-            <InfoDescription description={phone_number} title="Phone Number" />
+            <InfoDescription
+              description={phone_number}
+              title={i18n.t("clients.phoneNumber")}
+            />
           </div>
           <div className="w-1/2 px-1">
             <InfoDescription
               description={email_id}
-              title="Email ID (Personal)"
+              title={i18n.t("profile.personalEmail")}
             />
           </div>
         </div>
@@ -103,13 +107,14 @@ const MobilePersonalDetails = ({
       <Divider />
       <div className="py-4">
         <span className="flex flex-row items-center px-1 text-sm font-medium text-foreground">
-          <MapPinIcon className="mr-2" color="#1D1A31" size={13.5} /> Address
+          <MapPinIcon className="mr-2" color="#1D1A31" size={13.5} />{" "}
+          {i18n.t("address")}
         </span>
         <div className="mt-2 flex w-full flex-row">
           <div className="px-1">
             {addresses && (
               <InfoDescription
-                title="Address"
+                title={i18n.t("address")}
                 description={`${address_line_1},
                   ${address_line_2}
                   ${city},
@@ -125,20 +130,20 @@ const MobilePersonalDetails = ({
       <div className="py-4">
         <span className="flex flex-row items-center px-1 text-sm font-medium text-foreground">
           <GlobeIcon className="mr-2" color="#1D1A31" size={13.5} />
-          Social Profiles
+          {i18n.t("profile.socialProfiles")}
         </span>
         <div className="mt-2 flex w-full flex-row">
           <div className="w-1/2 px-1">
             <InfoDescription
               description={linkedin}
-              title="LinkedIn"
+              title={i18n.t("profile.linkedin")}
               wrapperClassName="break-all"
             />
           </div>
           <div className="w-1/2 px-2">
             <InfoDescription
               description={github}
-              title="Github"
+              title={i18n.t("profile.github")}
               wrapperClassName="break-all"
             />
           </div>
@@ -148,14 +153,14 @@ const MobilePersonalDetails = ({
         <div className="flex items-center justify-between pr-4">
           <span className="flex flex-row items-center text-sm font-medium text-foreground">
             <KeyIcon className="mr-2" color="#1D1A31" size={13.5} />
-            Password
+            {i18n.t("settings.password")}
           </span>
           <div className="ml-2">
             <button
               className="cursor-pointer p-1 text-xs font-bold text-primary"
               onClick={handleEditClick}
             >
-              Change Password
+              {i18n.t("settings.changePassword")}
             </button>
           </div>
         </div>

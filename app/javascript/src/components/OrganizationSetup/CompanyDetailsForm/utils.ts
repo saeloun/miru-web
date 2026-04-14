@@ -2,6 +2,7 @@ import { CountryList } from "constants/countryList";
 import {
   getStoredBrowserCountry,
   getStoredBrowserTimeZone,
+  i18n,
 } from "../../../i18n";
 
 import * as Yup from "yup";
@@ -11,29 +12,29 @@ const phoneRegExp =
 
 export const companyDetailsFormValidationSchema = Yup.object().shape({
   company_name: Yup.string()
-    .required("Company name cannot be blank")
-    .max(30, "Maximum 30 characters are allowed"),
+    .required(i18n.t("auth.validation.nameRequired"))
+    .max(30, i18n.t("auth.validation.max30")),
   business_phone: Yup.string().matches(
     phoneRegExp,
-    "Please enter a valid business phone number"
+    i18n.t("auth.validation.validBusinessPhone")
   ),
   address_line_1: Yup.string()
-    .required("Address line cannot be blank")
-    .max(50, "Maximum 50 characters are allowed"),
-  address_line_2: Yup.string().max(50, "Maximum 50 characters are allowed"),
+    .required(i18n.t("auth.validation.addressLineRequired"))
+    .max(50, i18n.t("auth.validation.max50")),
+  address_line_2: Yup.string().max(50, i18n.t("auth.validation.max50")),
   country: Yup.object().shape({
-    value: Yup.string().required("Country cannot be blank"),
+    value: Yup.string().required(i18n.t("auth.validation.countryRequired")),
   }),
-  state: Yup.string().required("State cannot be blank"),
-  city: Yup.string().required("City cannot be blank"),
+  state: Yup.string().required(i18n.t("auth.validation.stateRequired")),
+  city: Yup.string().required(i18n.t("auth.validation.cityRequired")),
   zipcode: Yup.string()
-    .required("Zipcode line cannot be blank")
-    .max(10, "Maximum 10 characters are allowed"),
+    .required(i18n.t("auth.validation.zipcodeLineRequired"))
+    .max(10, i18n.t("auth.validation.max10")),
 });
 
 export const mostSelectedCountries = [
   {
-    label: "United States",
+    label: i18n.t("countries.unitedStates"),
     value: "US",
     code: "US",
   },
@@ -57,11 +58,11 @@ export const countryListOptions = CountryList?.filter(country => {
 
 export const groupedCountryListOptions = [
   {
-    label: "Most selected countries",
+    label: i18n.t("orgSetup.mostSelectedCountries"),
     options: mostSelectedCountries,
   },
   {
-    label: "Please select",
+    label: i18n.t("orgSetup.selectCountryGroup"),
     options: countryListOptions,
   },
 ];

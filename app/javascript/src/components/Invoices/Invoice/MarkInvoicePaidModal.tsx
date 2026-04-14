@@ -1,15 +1,9 @@
 import React, { useState, useRef, useEffect } from "react";
+import { CaretDown } from "phosphor-react";
 
 import { payment } from "apis/api";
 import CustomDatePicker from "common/CustomDatePicker";
 import { CustomInputText } from "common/CustomInputText";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../../ui/select";
 import { CustomTextareaAutosize } from "common/CustomTextareaAutosize";
 import { transactionTypes } from "components/payments/Modals/constants";
 import { useUserContext } from "context/UserContext";
@@ -31,21 +25,30 @@ const MarkInvoiceAsPaidModal = ({
   const { isDesktop } = useUserContext();
   const [transactionDate, setTransactionDate] = useState<any>(dayjs());
   const [transactionType, setTransactionType] = useState<any>(null);
-  const [note, setNote] = useState<any>(null);
+  const [note, setNote] = useState<any>("");
   const [showDatePicker, setShowDatePicker] = useState<any>(false);
   const [showTransactionTypes, setShowTransactionTypes] =
     useState<boolean>(false);
+
+  const [showDesktopTransactionTypes, setShowDesktopTransactionTypes] =
+    useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const wrapperSelectRef = useRef(null);
+  const wrapperInvoiceRef = useRef(null);
   const wrapperCalendartRef = useRef(null);
+  const wrapperDesktopTransactionTypeRef = useRef(null);
   const amount = invoice?.amount;
   const client = invoice?.client?.name;
+  const selectedTransactionType = transactionTypes.find(
+    type => type.value === transactionType
+  );
 
   useEffect(() => {
     const close = e => {
       if (e.keyCode === 27) {
         setShowDatePicker({ visibility: false });
+        setShowDesktopTransactionTypes(false);
+        setShowTransactionTypes(false);
       }
     };
     window.addEventListener("keydown", close);
@@ -53,8 +56,19 @@ const MarkInvoiceAsPaidModal = ({
     return () => window.removeEventListener("keydown", close);
   }, []);
 
+  useEffect(() => {
+    if (!showManualEntryModal) {
+      setShowDesktopTransactionTypes(false);
+      setShowTransactionTypes(false);
+    }
+  }, [showManualEntryModal]);
+
   useOutsideClick(wrapperCalendartRef, () => {
     setShowDatePicker({ visibility: false });
+  });
+
+  useOutsideClick(wrapperDesktopTransactionTypeRef, () => {
+    setShowDesktopTransactionTypes(false);
   });
 
   const handleAddPayment = async () => {
@@ -84,7 +98,10 @@ const MarkInvoiceAsPaidModal = ({
       onClose={() => setShowManualEntryModal(false)}
     >
       <div className="modal__position m-0">
-        <h6 className="modal__title"> {i18n.t("invoices.markInvoiceAsPaid")}</h6>
+        <h6 className="modal__title">
+          {" "}
+          {i18n.t("invoices.markInvoiceAsPaid")}
+        </h6>
         <div className="modal__close">
           <button
             className="modal__button"
@@ -96,7 +113,7 @@ const MarkInvoiceAsPaidModal = ({
       </div>
       <div className="relative mt-4">
         <div className="field">
-          <div className="mt-1" id="invoice" ref={wrapperSelectRef}>
+          <div className="mt-1" id="invoice" ref={wrapperInvoiceRef}>
             <CustomInputText
               disabled
               id="invoice"
@@ -106,6 +123,7 @@ const MarkInvoiceAsPaidModal = ({
               name="invoice"
               type="text"
               value={client}
+              wrapperClassName="outline-none relative h-12"
               onChange={() => {}}
             />
           </div>
@@ -126,6 +144,7 @@ const MarkInvoiceAsPaidModal = ({
             name="transactionDate"
             type="text"
             value={transactionDate && dayjs(transactionDate).format(dateFormat)}
+            wrapperClassName="outline-none relative h-12"
             onChange={() => {}}
           />
           <CalendarIcon
@@ -143,25 +162,59 @@ const MarkInvoiceAsPaidModal = ({
       </div>
       <div className="relative mt-4">
         {isDesktop ? (
-          <div className="field relative">
-            <label className="absolute -top-1 left-0 z-1 ml-3 origin-0 bg-white px-1 text-xsm font-medium text-muted-foreground duration-300">
-              {i18n.t("payments.transactionType")}
-            </label>
-            <Select
-              value={transactionType || ""}
-              onValueChange={value => setTransactionType(value)}
+          <div
+            className="field relative"
+            ref={wrapperDesktopTransactionTypeRef}
+          >
+            <button
+              aria-label={i18n.t("payments.transactionType")}
+              aria-expanded={showDesktopTransactionTypes}
+              aria-haspopup="listbox"
+              className="flex h-12 w-full items-center justify-between rounded-md border border-border bg-white px-4 text-left text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
+              type="button"
+              onClick={() =>
+                setShowDesktopTransactionTypes(previous => !previous)
+              }
             >
-              <SelectTrigger className="mt-1">
-                <SelectValue placeholder={i18n.t("payments.selectTransactionType")} />
-              </SelectTrigger>
-              <SelectContent>
-                {transactionTypes.map((type: any) => (
-                  <SelectItem key={type.value} value={type.value}>
-                    {type.label}
-                  </SelectItem>
+              <span
+                className={
+                  transactionType ? "text-foreground" : "text-muted-foreground"
+                }
+              >
+                {selectedTransactionType?.label ||
+                  i18n.t("payments.selectTransactionType")}
+              </span>
+              <CaretDown
+                className={`h-4 w-4 text-muted-foreground transition-transform ${
+                  showDesktopTransactionTypes ? "rotate-180" : ""
+                }`}
+              />
+            </button>
+            {showDesktopTransactionTypes && (
+              <ul
+                className="absolute z-20 mt-1 max-h-60 w-full overflow-y-auto rounded-md border border-border bg-white p-1 shadow-lg"
+                role="listbox"
+              >
+                {transactionTypes.map(type => (
+                  <li key={type.value}>
+                    <button
+                      className={`flex w-full items-center rounded-sm px-3 py-2 text-left text-sm ${
+                        transactionType === type.value
+                          ? "bg-muted font-medium text-foreground"
+                          : "text-foreground hover:bg-muted"
+                      }`}
+                      type="button"
+                      onClick={() => {
+                        setTransactionType(type.value);
+                        setShowDesktopTransactionTypes(false);
+                      }}
+                    >
+                      {type.label}
+                    </button>
+                  </li>
                 ))}
-              </SelectContent>
-            </Select>
+              </ul>
+            )}
           </div>
         ) : (
           <>
@@ -219,6 +272,7 @@ const MarkInvoiceAsPaidModal = ({
           name="paymentAmount"
           type="text"
           value={amount && baseCurrency && currencyFormat(baseCurrency, amount)}
+          wrapperClassName="outline-none relative h-12"
           onChange={() => {}}
         />
       </div>
@@ -230,6 +284,7 @@ const MarkInvoiceAsPaidModal = ({
           name="NotesOptional"
           rows={5}
           value={note}
+          wrapperClassName="outline-none relative"
           onChange={e => setNote(e.target.value)}
         />
       </div>

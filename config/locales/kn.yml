@@ -1,16 +1,52 @@
 ---
 kn:
-  activerecord:
-    errors:
-      models:
-        client:
-          attributes:
-            name:
-              format: ಎಕ್ಸ್__0
-        project:
-          attributes:
-            name:
-              format: ಎಕ್ಸ್__0
+  analytics:
+    activity:
+      amount_collected: ಸಂಗ್ರಹಿಸಿದ ಮೊತ್ತ
+      bank_transfers_month: ಬ್ಯಾಂಕ್ ವರ್ಗಾವಣೆಗಳು (ತಿಂಗಳು)
+      created: ರಚಿಸಲಾಗಿದೆ
+      downloaded: ಡೌನ್‌ಲೋಡ್ ಮಾಡಲಾಗಿದೆ
+      invoice_activity_today: ಇಂದಿನ ಇನ್‌ವಾಯ್ಸ್ ಚಟುವಟಿಕೆ
+      payment_activity: ಪಾವತಿ ಚಟುವಟಿಕೆ
+      payments_today: ಇಂದಿನ ಪಾವತಿಗಳು
+      sent: ಕಳುಹಿಸಲಾಗಿದೆ
+      stripe_payments_month: ಪಟ್ಟೆ ಪಾವತಿಗಳು (ತಿಂಗಳು)
+      viewed: ವೀಕ್ಷಿಸಲಾಗಿದೆ
+    currency:
+      conversion_impact: ಪರಿವರ್ತನೆಯ ಪರಿಣಾಮ
+      currencies_in_use: ಬಳಕೆಯಲ್ಲಿರುವ ಕರೆನ್ಸಿಗಳು
+      invoices_with_conversion: ಪರಿವರ್ತನೆಯೊಂದಿಗೆ ಇನ್‌ವಾಯ್ಸ್‌ಗಳು
+      recent_exchange_rates: ಇತ್ತೀಚಿನ ವಿನಿಮಯ ದರಗಳು
+      table:
+        date: ದಿನಾಂಕ
+        from: ಇಂದ
+        rate: ದರ
+        source: ಮೂಲ
+        to: ಗೆ
+      title: ಕರೆನ್ಸಿ ಪರಿವರ್ತನೆ ಒಳನೋಟಗಳು
+    overview:
+      active_clients: ಸಕ್ರಿಯ ಕ್ಲೈಂಟ್‌ಗಳು
+      outstanding: ಅತ್ಯುತ್ತಮ
+      overdue: ಅವಧಿ ಮೀರಿದೆ
+      total_revenue: ಒಟ್ಟು ಆದಾಯ
+    recent_activity:
+      ago: "%{time} ಹಿಂದೆ"
+      invoice_reference: ಸರಕುಪಟ್ಟಿ
+      system: ವ್ಯವಸ್ಥೆ
+      title: ಇತ್ತೀಚಿನ ಚಟುವಟಿಕೆ
+    super_admin: ಸೂಪರ್ ಅಡ್ಮಿನ್
+    tabs:
+      activity: ಚಟುವಟಿಕೆ
+      clients: ಗ್ರಾಹಕರು
+      currency_exchange: ಕರೆನ್ಸಿ & ವಿನಿಮಯ
+      overview: ಅವಲೋಕನ
+      revenue: ಆದಾಯ
+      users: ಬಳಕೆದಾರರು
+    title: ಅನಾಲಿಟಿಕ್ಸ್ ಡ್ಯಾಶ್‌ಬೋರ್ಡ್
+    welcome: ಸ್ವಾಗತ, %{name}
+  app:
+    name: ಮಿರು ಏಜೆನ್ಸಿ ಓಎಸ್
+    tagline: ನಿಮ್ಮ ಏಜೆನ್ಸಿಯ ಕಾರ್ಯಾಚರಣೆಗಳನ್ನು ಒಂದೇ ಕಮಾಂಡ್ ಕೇಂದ್ರದಿಂದ ಚಲಾಯಿಸಿ.
   application_controller:
     not_found: ಮಾರ್ಗ ಕಂಡುಬಂದಿಲ್ಲ.
   avatar:
@@ -84,20 +120,6 @@ kn:
   employment:
     update:
       success: ಉದ್ಯೋಗವನ್ನು ಯಶಸ್ವಿಯಾಗಿ ನವೀಕರಿಸಲಾಗಿದೆ
-  errors:
-    bill_status_billed: ಈಗಾಗಲೇ ಬಿಲ್ ಮಾಡಲಾದ ನಮೂದನ್ನು ನೀವು ಬಿಲ್ ಮಾಡಲು ಸಾಧ್ಯವಿಲ್ಲ.
-    can't change status: ಪಾವತಿಸಿದ ಇನ್‌ವಾಯ್ಸ್ ಅನ್ನು ಬದಲಾಯಿಸಲಾಗುವುದಿಲ್ಲ.
-    create_billed_entry: ನೀವು ಬಿಲ್ ಮಾಡಿದ ಟೈಮ್‌ಶೀಟ್ ನಮೂದನ್ನು ರಚಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ.
-    internal_server_error: ಏನೋ ತಪ್ಪಾಗಿದೆ.
-    not_found: ನೀವು ಹುಡುಕುತ್ತಿರುವ ಸಂಪನ್ಮೂಲ ಲಭ್ಯವಿಲ್ಲ.
-    prevent_draft_to_waived: ಬಿಟ್ಟುಕೊಟ್ಟಂತೆ ಬದಲಾಯಿಸಲಾಗುವುದಿಲ್ಲ.
-    unauthorized: ಈ ಕ್ರಿಯೆಯನ್ನು ನಿರ್ವಹಿಸಲು ಮಾಲೀಕರು ಅಥವಾ ನಿರ್ವಾಹಕ ಬಳಕೆದಾರರಿಗೆ ಮಾತ್ರ
-      ಅಧಿಕಾರವಿದೆ.
-    updation_not_allowed: ನವೀಕರಣಕ್ಕೆ ಅವಕಾಶವಿಲ್ಲ.
-    user_already_member: ಇಮೇಲ್ ಐಡಿ ಈಗಾಗಲೇ ಬಳಕೆಯಲ್ಲಿದೆ. ದಯವಿಟ್ಟು ಇನ್ನೊಂದು ಇಮೇಲ್ ಐಡಿ
-      ನಮೂದಿಸಿ.
-    validate_billable_project: ಬಿಲ್ ಮಾಡಲಾಗದ ಯೋಜನೆಗಳಿಗೆ ನೀವು ಬಿಲ್ ಮಾಡದ ನಮೂದನ್ನು ರಚಿಸಲು
-      ಸಾಧ್ಯವಿಲ್ಲ.
   expenses:
     approve: ವೆಚ್ಚವನ್ನು ಯಶಸ್ವಿಯಾಗಿ ಅನುಮೋದಿಸಲಾಗಿದೆ.
     create: ವೆಚ್ಚವನ್ನು ಯಶಸ್ವಿಯಾಗಿ ಸಲ್ಲಿಸಲಾಗಿದೆ
@@ -170,6 +192,311 @@ kn:
       success: ರಜೆಯನ್ನು ಯಶಸ್ವಿಯಾಗಿ ರಚಿಸಲಾಗಿದೆ
     update:
       success: ಯಶಸ್ವಿಯಾಗಿ ನವೀಕರಿಸಲಾಗಿದೆ ಬಿಡಿ
+  mailers:
+    actions:
+      join_miru: ಮಿರು ಸೇರಿ
+      open_expense: ಮುಕ್ತ ವೆಚ್ಚ
+      open_invoice: ಇನ್‌ವಾಯ್ಸ್ ತೆರೆಯಿರಿ
+      open_time_tracking: ತೆರೆದ ಸಮಯ ಟ್ರ್ಯಾಕಿಂಗ್
+      view_reports: ಮಿರುನಲ್ಲಿ ವರದಿಗಳನ್ನು ವೀಕ್ಷಿಸಿ
+    client_payment_mailer:
+      payment:
+        eyebrow: ಪಾವತಿಗಳು
+        preheader: ಇನ್‌ವಾಯ್ಸ್ %{invoice_number} ಗಾಗಿ ಪಾವತಿ ರಸೀದಿ.
+        receipt_title: ಪಾವತಿ ಸ್ವೀಕರಿಸಲಾಗಿದೆ
+        records_body: ಈ ರಶೀದಿ ನಿಮ್ಮ ಪಾವತಿಯನ್ನು ದೃಢೀಕರಿಸುತ್ತದೆ. ನಿಮಗೆ ಮತ್ತೆ ವಿವರಗಳು
+          ಬೇಕಾದರೆ ನೀವು ಯಾವುದೇ ಸಮಯದಲ್ಲಿ ಇನ್‌ವಾಯ್ಸ್ ಅನ್ನು ಮತ್ತೆ ತೆರೆಯಬಹುದು.
+        records_title: ಇದನ್ನು ನಿಮ್ಮ ದಾಖಲೆಗಳಿಗಾಗಿ ಇಟ್ಟುಕೊಳ್ಳಿ.
+        subject: ಇನ್‌ವಾಯ್ಸ್ %{invoice_number} ಗಾಗಿ ಪಾವತಿ ರಸೀದಿ
+        subtitle_html: ನಾವು ನಿಮ್ಮ ಇನ್‌ವಾಯ್ಸ್ <strong>%{invoice_number}</strong> ಪಾವತಿಯನ್ನು
+          ಸ್ವೀಕರಿಸಿದ್ದೇವೆ.
+        summary_html: ನಾವು <strong>%{invoice_number}</strong> ಇನ್‌ವಾಯ್ಸ್‌ಗಾಗಿ <strong>%{paid_on}</strong>
+          ನಲ್ಲಿ <strong>%{amount} ಅನ್ನು</strong> ಸ್ವೀಕರಿಸಿದ್ದೇವೆ.
+        title: ಪಾವತಿ ರಶೀದಿ
+    devise:
+      confirmation:
+        body_intro: 'ನೀವು ಬಹುತೇಕ ಸಿದ್ಧರಾಗಿದ್ದೀರಿ. ಮೊದಲ ದಿನದಿಂದಲೇ ಮಿರು ಜೊತೆ ನೀವು ಮಾಡಬಹುದಾದ
+          ಕೆಲವು ವಿಷಯಗಳು ಇಲ್ಲಿವೆ:'
+        cta: ಇಮೇಲ್ ವಿಳಾಸವನ್ನು ದೃಢೀಕರಿಸಿ
+        cta_body: ನಿಮ್ಮ ಇಮೇಲ್ ವಿಳಾಸವನ್ನು ದೃಢೀಕರಿಸಲು ಕೆಳಗಿನ ಬಟನ್ ಬಳಸಿ.
+        eyebrow: ಖಾತೆ ಸೆಟಪ್
+        feature_1: ಹೋಸ್ಟ್ ಮಾಡಿದ ಪಾವತಿ ಲಿಂಕ್‌ಗಳೊಂದಿಗೆ ವೃತ್ತಿಪರ ಇನ್‌ವಾಯ್ಸ್‌ಗಳನ್ನು ಕಳುಹಿಸಿ.
+        feature_2: ಒಂದೇ ಕೆಲಸದ ಹರಿವಿನಲ್ಲಿ ಸಮಯ, ವೆಚ್ಚಗಳು ಮತ್ತು ಬಳಕೆಯನ್ನು ಟ್ರ್ಯಾಕ್ ಮಾಡಿ.
+        feature_3: ನಿಮ್ಮ ತಂಡ, ಕ್ಲೈಂಟ್‌ಗಳು ಮತ್ತು ಬಿಲ್ಲಿಂಗ್ ಅನ್ನು ಒಂದೇ ಕಾರ್ಯಸ್ಥಳದಿಂದ
+          ನಿರ್ವಹಿಸಿ.
+        feature_4: ಆದಾಯ, ಬಾಕಿ ಉಳಿದಿರುವ ಇನ್‌ವಾಯ್ಸ್‌ಗಳು ಮತ್ತು ಪಾವತಿ ಚಟುವಟಿಕೆಯ ಮೇಲೆ ಹಿಡಿತ
+          ಸಾಧಿಸಿ.
+        footer_note: ನೀವು ಮಿರು ಖಾತೆಯನ್ನು ರಚಿಸದಿದ್ದರೆ, ನೀವು ಈ ಸಂದೇಶವನ್ನು ಸುರಕ್ಷಿತವಾಗಿ
+          ನಿರ್ಲಕ್ಷಿಸಬಹುದು.
+        greeting_html: ಹಾಯ್ <strong>%{name}</strong> ,
+        preheader: ಮಿರು ಸೆಟಪ್ ಅನ್ನು ಪೂರ್ಣಗೊಳಿಸಲು ನಿಮ್ಮ ಇಮೇಲ್ ವಿಳಾಸವನ್ನು ದೃಢೀಕರಿಸಿ.
+        subtitle: ಸಮಯವನ್ನು ಟ್ರ್ಯಾಕ್ ಮಾಡಲು, ಇನ್‌ವಾಯ್ಸ್‌ಗಳನ್ನು ಕಳುಹಿಸಲು ಮತ್ತು ನಿಮ್ಮ
+          ತಂಡವನ್ನು ಒಂದೇ ಸ್ಥಳದಿಂದ ನಿರ್ವಹಿಸಲು ನಿಮ್ಮ ಇಮೇಲ್ ವಿಳಾಸವನ್ನು ದೃಢೀಕರಿಸಿ.
+        title: ಮಿರುಗೆ ಸ್ವಾಗತ
+      email_changed:
+        changed_html: ನಿಮ್ಮ ಖಾತೆಯ ಇಮೇಲ್ ವಿಳಾಸವನ್ನು <strong>%{email}</strong> ಗೆ ಬದಲಾಯಿಸಲಾಗಿದೆ.
+        eyebrow: ಖಾತೆ ಭದ್ರತೆ
+        greeting_html: ನಮಸ್ಕಾರ <strong>%{email}</strong> ,
+        pending_html: ನಿಮ್ಮ ಖಾತೆಯ ಇಮೇಲ್ ವಿಳಾಸವನ್ನು <strong>%{email}</strong> ಗೆ ಬದಲಾಯಿಸಲಾಗುತ್ತಿದೆ.
+        preheader: ನಿಮ್ಮ ಮಿರು ಇಮೇಲ್ ವಿಳಾಸ ಬದಲಾಗಿದೆ.
+        subtitle: ಈ ಸಂದೇಶವು ನಿಮ್ಮ ಮಿರು ಖಾತೆಯಲ್ಲಿರುವ ಇಮೇಲ್ ವಿಳಾಸಕ್ಕೆ ಬದಲಾವಣೆಯನ್ನು ದೃಢೀಕರಿಸುತ್ತದೆ.
+        title: ಇಮೇಲ್ ವಿಳಾಸವನ್ನು ನವೀಕರಿಸಲಾಗಿದೆ
+        warning_body_html: <a href="mailto:%{email}">%{email}</a> ನಲ್ಲಿ ನಮ್ಮ ಬೆಂಬಲ
+          ತಂಡವನ್ನು ತಕ್ಷಣ ಸಂಪರ್ಕಿಸಿ.
+        warning_title: ಈ ಬದಲಾವಣೆಯನ್ನು ವಿನಂತಿಸಲಿಲ್ಲವೇ?
+      password_change:
+        eyebrow: ಖಾತೆ ಭದ್ರತೆ
+        greeting_html: ನಮಸ್ಕಾರ <strong>%{name}</strong> ,
+        preheader: ನಿಮ್ಮ ಮಿರು ಪಾಸ್‌ವರ್ಡ್ ಅನ್ನು ಬದಲಾಯಿಸಲಾಗಿದೆ.
+        subtitle: ನಿಮ್ಮ ಮಿರು ಖಾತೆಯ ಪಾಸ್‌ವರ್ಡ್ ಅನ್ನು ಯಶಸ್ವಿಯಾಗಿ ನವೀಕರಿಸಲಾಗಿದೆ.
+        success_body: ನಿಮ್ಮ ಹೊಸ ಪಾಸ್‌ವರ್ಡ್ ಬಳಸಿ ನೀವು ಮಿರುಗೆ ಸೈನ್ ಇನ್ ಮಾಡುವುದನ್ನು ಮುಂದುವರಿಸಬಹುದು.
+        success_title: ನಿಮ್ಮ ಪಾಸ್‌ವರ್ಡ್ ಅನ್ನು ನವೀಕರಿಸಲಾಗಿದೆ.
+        title: ಪಾಸ್‌ವರ್ಡ್ ಅನ್ನು ಯಶಸ್ವಿಯಾಗಿ ಬದಲಾಯಿಸಲಾಗಿದೆ.
+        warning_body_html: ನಿಮ್ಮ ಖಾತೆಯನ್ನು ಸುರಕ್ಷಿತಗೊಳಿಸಲು ನಾವು ಸಹಾಯ ಮಾಡಲು <a href="mailto:%{email}">%{email}
+          ಅನ್ನು</a> ತಕ್ಷಣವೇ ಸಂಪರ್ಕಿಸಿ.
+        warning_title: ಈ ಬದಲಾವಣೆ ಮಾಡಲಿಲ್ಲವೇ?
+      reset_password:
+        cta: ಪಾಸ್ವರ್ಡ್ ಮರುಹೊಂದಿಸಿ
+        cta_body: ಹೊಸ ಪಾಸ್‌ವರ್ಡ್ ಆಯ್ಕೆ ಮಾಡಲು ಕೆಳಗಿನ ಬಟನ್ ಬಳಸಿ. ಈ ಮರುಹೊಂದಿಸುವ ಲಿಂಕ್
+          24 ಗಂಟೆಗಳಲ್ಲಿ ಮುಕ್ತಾಯಗೊಳ್ಳುತ್ತದೆ.
+        eyebrow: ಖಾತೆ ಭದ್ರತೆ
+        footer_note: ನೀವು ಪಾಸ್‌ವರ್ಡ್ ಮರುಹೊಂದಿಕೆಯನ್ನು ವಿನಂತಿಸದಿದ್ದರೆ, ನೀವು ಈ ಸಂದೇಶವನ್ನು
+          ನಿರ್ಲಕ್ಷಿಸಬಹುದು ಮತ್ತು ನಿಮ್ಮ ಪಾಸ್‌ವರ್ಡ್ ಹಾಗೆಯೇ ಇರುತ್ತದೆ.
+        greeting: ನಮಸ್ಕಾರ,
+        preheader: ನಿಮ್ಮ ಮಿರು ಖಾತೆಯ ಪಾಸ್‌ವರ್ಡ್ ಅನ್ನು ಮರುಹೊಂದಿಸಿ.
+        request_html: "<strong>%{email}</strong> ಗೆ ಸಂಬಂಧಿಸಿದ ಪಾಸ್‌ವರ್ಡ್ ಬದಲಾಯಿಸಲು
+          ನಮಗೆ ವಿನಂತಿ ಬಂದಿದೆ."
+        subtitle: ನಿಮ್ಮ ಮಿರು ಖಾತೆಯ ಪಾಸ್‌ವರ್ಡ್ ಅನ್ನು ಮರುಹೊಂದಿಸಲು ನಮಗೆ ವಿನಂತಿ ಬಂದಿದೆ.
+        title: ನಿಮ್ಮ ಪಾಸ್‌ವರ್ಡ್ ಅನ್ನು ಮರುಹೊಂದಿಸಿ
+      shared:
+        signature_html: ಧನ್ಯವಾದಗಳು,<br> <strong>ತಂಡ ಮಿರು</strong>
+      unlock:
+        cta: ಪಾಸ್ವರ್ಡ್ ಮರುಹೊಂದಿಸಿ
+        eyebrow: ಖಾತೆ ಭದ್ರತೆ
+        footer_note: ನೀವು ಸೈನ್ ಇನ್ ಮಾಡಲು ಪ್ರಯತ್ನಿಸದಿದ್ದರೆ, ಲಾಕ್ ಅವಧಿ ಮುಗಿಯುವವರೆಗೆ
+          ಕಾಯಿರಿ ಮತ್ತು ನಿಮ್ಮ ಪಾಸ್‌ವರ್ಡ್ ಅನ್ನು ತಕ್ಷಣವೇ ಬದಲಾಯಿಸಿ.
+        greeting_html: ನಮಸ್ಕಾರ <strong>%{email}</strong> ,
+        preheader: ಹಲವಾರು ವಿಫಲ ಸೈನ್-ಇನ್ ಪ್ರಯತ್ನಗಳ ನಂತರ ನಿಮ್ಮ ಮಿರು ಖಾತೆಯನ್ನು ಅನ್‌ಲಾಕ್
+          ಮಾಡಿ.
+        subtitle: ಹಲವಾರು ವಿಫಲ ಸೈನ್-ಇನ್ ಪ್ರಯತ್ನಗಳ ನಂತರ ನಾವು ನಿಮ್ಮ ಮಿರು ಖಾತೆಯನ್ನು ಲಾಕ್
+          ಮಾಡಿದ್ದೇವೆ.
+        title: ನಿಮ್ಮ ಖಾತೆಯನ್ನು ತಾತ್ಕಾಲಿಕವಾಗಿ ಲಾಕ್ ಮಾಡಲಾಗಿದೆ.
+        warning_body: ಮಿರು 30 ನಿಮಿಷಗಳ ನಂತರ ಸ್ವಯಂಚಾಲಿತವಾಗಿ ಖಾತೆಗಳನ್ನು ಅನ್‌ಲಾಕ್ ಮಾಡುತ್ತದೆ.
+          ಈ ಪ್ರಯತ್ನಗಳನ್ನು ನೀವು ಗುರುತಿಸದಿದ್ದರೆ, ಲಾಕ್ ಅವಧಿ ಮುಗಿದ ನಂತರ ನಿಮ್ಮ ಖಾತೆಯನ್ನು
+          ಸುರಕ್ಷಿತವಾಗಿರಿಸಲು ನಿಮ್ಮ ಪಾಸ್‌ವರ್ಡ್ ಅನ್ನು ಮರುಹೊಂದಿಸಿ.
+        warning_title: ಸೈನ್-ಇನ್ ಪ್ರಯತ್ನಗಳು ಅನುಮತಿಸಲಾದ ಮಿತಿಯನ್ನು ಮೀರಿದೆ.
+    expense_mailer:
+      approved:
+        eyebrow: ವೆಚ್ಚಗಳು
+        preheader: ನಿಮ್ಮ ಮರುಪಾವತಿ ವಿನಂತಿಯನ್ನು ಅನುಮೋದಿಸಲಾಗಿದೆ.
+        subject: ನಿಮ್ಮ ಮರುಪಾವತಿಯನ್ನು ಅನುಮೋದಿಸಲಾಗಿದೆ.
+        subtitle: ನಿಮ್ಮ ಮರುಪಾವತಿ ವಿನಂತಿಯನ್ನು ಪರಿಶೀಲಿಸಲಾಗಿದೆ ಮತ್ತು ಅನುಮೋದಿಸಲಾಗಿದೆ.
+        title: ಮರುಪಾವತಿಯನ್ನು ಅನುಮೋದಿಸಲಾಗಿದೆ
+      paid:
+        eyebrow: ವೆಚ್ಚಗಳು
+        preheader: ನಿಮ್ಮ ಮರುಪಾವತಿ ವಿನಂತಿಯನ್ನು ಪಾವತಿಸಲಾಗಿದೆ ಎಂದು ಗುರುತಿಸಲಾಗಿದೆ.
+        subject: ನಿಮ್ಮ ಮರುಪಾವತಿಯನ್ನು ಪಾವತಿಸಲಾಗಿದೆ ಎಂದು ಗುರುತಿಸಲಾಗಿದೆ.
+        subtitle: ನಿಮ್ಮ ಮರುಪಾವತಿ ವಿನಂತಿಯ ಪಾವತಿ ಪೂರ್ಣಗೊಂಡಿದೆ.
+        title: ಮರುಪಾವತಿ ಪಾವತಿಸಲಾಗಿದೆ
+      rejected:
+        eyebrow: ವೆಚ್ಚಗಳು
+        next_step_body: ವೆಚ್ಚವನ್ನು ತೆರೆಯಿರಿ, ನವೀಕರಣಗಳನ್ನು ಮಾಡಿ ಮತ್ತು ಅದನ್ನು ಮತ್ತೆ
+          ಸಲ್ಲಿಸಿ.
+        next_step_title: ಮುಂದಿನ ಹೆಜ್ಜೆ
+        preheader: ನಿಮ್ಮ ಮರುಪಾವತಿ ವಿನಂತಿಯನ್ನು ನವೀಕರಿಸಬೇಕಾಗಿದೆ.
+        subject: ಅನುಮೋದನೆ ಪಡೆಯುವ ಮೊದಲು ನಿಮ್ಮ ಮರುಪಾವತಿಗೆ ನವೀಕರಣಗಳ ಅಗತ್ಯವಿದೆ.
+        subtitle: ದಯವಿಟ್ಟು ವಿನಂತಿಯ ವಿವರಗಳನ್ನು ಪರಿಶೀಲಿಸಿ, ಅಗತ್ಯವಿರುವ ಬದಲಾವಣೆಗಳನ್ನು
+          ಮಾಡಿ ಮತ್ತು ಅದನ್ನು ಪುನಃ ಸಲ್ಲಿಸಿ.
+        title: ಮರುಪಾವತಿಗೆ ನವೀಕರಣಗಳ ಅಗತ್ಯವಿದೆ
+      submitted:
+        eyebrow: ವೆಚ್ಚಗಳು
+        preheader: ಹೊಸ ಮರುಪಾವತಿ ವಿನಂತಿಯನ್ನು ಪರಿಶೀಲಿಸುವ ಅಗತ್ಯವಿದೆ.
+        subject: "%{submitter_name} ಮರುಪಾವತಿ ವಿನಂತಿಯನ್ನು ಸಲ್ಲಿಸಿದೆ"
+        subtitle_html: "<strong>%{submitter_name}</strong> ಮರುಪಾವತಿ ವಿನಂತಿಯನ್ನು ಸಲ್ಲಿಸಿದ್ದು
+          ಅದು ಪರಿಶೀಲನೆಗೆ ಸಿದ್ಧವಾಗಿದೆ."
+        title: ಹೊಸ ಮರುಪಾವತಿ ವಿನಂತಿ
+    invoice_mailer:
+      invoice:
+        eyebrow: ಇನ್‌ವಾಯ್ಸ್‌ಗಳು
+        payment_link_subvalue: ಲೈನ್ ಐಟಂಗಳನ್ನು ಪರಿಶೀಲಿಸಿ ಮತ್ತು ಆನ್‌ಲೈನ್‌ನಲ್ಲಿ ಪಾವತಿಸಿ.
+        payment_link_value: ಸುರಕ್ಷಿತ ಇನ್‌ವಾಯ್ಸ್ ಪುಟ
+        preheader: "%{company_name} ರಿಂದ ಇನ್‌ವಾಯ್ಸ್ %{invoice_number}."
+        ready_body: ಲೈನ್ ಐಟಂಗಳನ್ನು ಪರಿಶೀಲಿಸಲು, ಒಟ್ಟು ಮೊತ್ತವನ್ನು ದೃಢೀಕರಿಸಲು ಮತ್ತು ಆನ್‌ಲೈನ್‌ನಲ್ಲಿ
+          ಪಾವತಿಸಲು ಸುರಕ್ಷಿತ ಇನ್‌ವಾಯ್ಸ್ ಪುಟವನ್ನು ತೆರೆಯಿರಿ.
+        ready_title: ಪಾವತಿಸುವ ಮೊದಲು ಪರಿಶೀಲಿಸಿ
+        subject: ಇನ್‌ವಾಯ್ಸ್ %{invoice_number}
+        subtitle_html: "<strong>%{company_name}</strong> ಕಳುಹಿಸಲಾದ ಇನ್‌ವಾಯ್ಸ್ <strong>%{invoice_number}</strong>
+          . ನೀವು ಸಿದ್ಧರಾದಾಗಲೆಲ್ಲಾ ಅದನ್ನು ಪರಿಶೀಲಿಸಬಹುದು ಮತ್ತು ಆನ್‌ಲೈನ್‌ನಲ್ಲಿ ಪಾವತಿಸಬಹುದು."
+        support_html: ಈ ಇನ್‌ವಾಯ್ಸ್ ಕುರಿತು ಪ್ರಶ್ನೆಗಳಿವೆಯೇ? ಈ ಇಮೇಲ್‌ಗೆ ಪ್ರತ್ಯುತ್ತರಿಸಿ
+          ಅಥವಾ <a href="mailto:%{support_email}">%{support_email} ಅವರನ್ನು</a> ಸಂಪರ್ಕಿಸಿ.
+        title: ಪರಿಶೀಲಿಸಲು ಇನ್‌ವಾಯ್ಸ್ ಸಿದ್ಧವಾಗಿದೆ
+      send_invoice:
+        attachment_subvalue: ಅದನ್ನು ಇಟ್ಟುಕೊಳ್ಳಿ, ಫಾರ್ವರ್ಡ್ ಮಾಡಿ ಅಥವಾ ಫೈಲ್ ಮಾಡಿ.
+        attachment_value: PDF ಲಗತ್ತಿಸಲಾಗಿದೆ
+        eyebrow: ಇನ್‌ವಾಯ್ಸ್‌ಗಳು
+        next_steps_body: ಮೊತ್ತವನ್ನು ದೃಢೀಕರಿಸಲು ಇನ್‌ವಾಯ್ಸ್ ತೆರೆಯಿರಿ, ಲೈನ್ ಐಟಂಗಳನ್ನು
+          ಪರಿಶೀಲಿಸಿ ಮತ್ತು ನೀವು ಸಿದ್ಧರಾದಾಗ ಪಾವತಿಸಿ.
+        next_steps_title: ಏನನ್ನು ನಿರೀಕ್ಷಿಸಬಹುದು
+        note_title: "%{company_name} ನಿಂದ ಒಂದು ಟಿಪ್ಪಣಿ"
+        preheader: "%{company_name} ನಿಂದ %{invoice_number} ಇನ್‌ವಾಯ್ಸ್ ಸಿದ್ಧವಾಗಿದೆ."
+        subject: "%{company_name} ರಿಂದ ಇನ್‌ವಾಯ್ಸ್ %{invoice_number}"
+        subtitle_html: "<strong>%{company_name}</strong> ಇನ್‌ವಾಯ್ಸ್ ಕಳುಹಿಸಲಾಗಿದೆ <strong>%{invoice_number}</strong>
+          . ವಿವರಗಳನ್ನು ಪರಿಶೀಲಿಸಲು, PDF ಡೌನ್‌ಲೋಡ್ ಮಾಡಲು ಮತ್ತು ಸುರಕ್ಷಿತವಾಗಿ ಪಾವತಿಸಲು
+          ಅದನ್ನು ತೆರೆಯಿರಿ."
+        support_html: ಸಹಾಯ ಬೇಕೇ? ಈ ಇಮೇಲ್‌ಗೆ ಪ್ರತ್ಯುತ್ತರಿಸಿ ಅಥವಾ <a href="mailto:%{support_email}">%{support_email}
+          ಅವರನ್ನು</a> ಸಂಪರ್ಕಿಸಿ.
+        title: ಪರಿಶೀಲಿಸಲು ಇನ್‌ವಾಯ್ಸ್ ಸಿದ್ಧವಾಗಿದೆ
+    labels:
+      amount: ಮೊತ್ತ
+      amount_due: ಬಾಕಿ ಮೊತ್ತ
+      amount_paid: ಪಾವತಿಸಿದ ಮೊತ್ತ
+      attachment: ಲಗತ್ತು
+      category: ವರ್ಗ
+      client: ಕ್ಲೈಂಟ್
+      date: ದಿನಾಂಕ
+      description: ವಿವರಣೆ
+      due_date: ಅಂತಿಮ ದಿನಾಂಕ
+      invited_by: ಆಹ್ವಾನಿಸಲಾಗಿದೆ
+      invoice: ಸರಕುಪಟ್ಟಿ
+      invoice_number: ಇನ್‌ವಾಯ್ಸ್ ಸಂಖ್ಯೆ
+      issue_date: ಬಿಡುಗಡೆ ದಿನಾಂಕ
+      issued_to: ನೀಡಲಾಗಿದೆ
+      members: ಸದಸ್ಯರು
+      outstanding_amount: ಬಾಕಿ ಮೊತ್ತ
+      paid_on: ಪಾವತಿಸಿದ್ದು
+      payment_link: ಪಾವತಿ ಲಿಂಕ್
+      payment_method: ಪಾವತಿ ವಿಧಾನ
+      reference: ಉಲ್ಲೇಖ
+      status: ಸ್ಥಿತಿ
+      total_amount: ಒಟ್ಟು ಮೊತ್ತ
+      workspace: ಕಾರ್ಯಸ್ಥಳ
+    layout:
+      brand: ಮಿರು
+      footer_body: ಮಿರು ಸಮಯ, ಇನ್‌ವಾಯ್ಸ್‌ಗಳು, ಪಾವತಿಗಳು ಮತ್ತು ಕಾರ್ಯಾಚರಣೆಗಳನ್ನು ಒಂದೇ
+        ಶಾಂತ ಕಾರ್ಯಕ್ಷೇತ್ರದಲ್ಲಿ ಇಡುತ್ತದೆ.
+      footer_contact: ಬೆಂಬಲ@getmiru.com
+      footer_copyright: "© ಮಿರು. ಎಲ್ಲ ಹಕ್ಕುಗಳನ್ನು ಕಾಯ್ದಿರಿಸಲಾಗಿದೆ."
+      footer_site: ಅಪ್ಲಿಕೇಶನ್.ಮಿರು.ಸೋ
+      preheader: ಮಿರು ಅವರಿಂದ ಸ್ಪಷ್ಟವಾದ ನವೀಕರಣ.
+    monthly_reports_mailer:
+      cash_flow_digest:
+        average_daily_net_change_html: ಸರಾಸರಿ ದೈನಂದಿನ ನಿವ್ವಳ ಬದಲಾವಣೆ <strong>%{amount}</strong>
+        compare_to_previous: "%{month_label} ರಲ್ಲಿ %{amount} ವಿರುದ್ಧ"
+        eyebrow: ಮಾಸಿಕ ಡೈಜೆಸ್ಟ್
+        money_in: ಹಣ ಬಂದಿದೆ
+        money_out: ಹಣ ಖಾಲಿಯಾಗಿದೆ
+        net_change: "%{month_label} ನಲ್ಲಿ ನಿವ್ವಳ ಬದಲಾವಣೆ"
+        no_money_in: ಮಿರುನಲ್ಲಿ %{month_year_label} ಗೆ ಯಾವುದೇ ಪಾವತಿಗಳು ದಾಖಲಾಗಿಲ್ಲ.
+        no_money_out: "%{month_year_label} ಗೆ ಮಿರುನಲ್ಲಿ ಯಾವುದೇ ಪಾವತಿಸಿದ ವೆಚ್ಚಗಳನ್ನು
+          ದಾಖಲಿಸಲಾಗಿಲ್ಲ."
+        preheader: "%{company_name} ಗಳ %{month_label} ನಗದು ಹರಿವಿನ ಸಾರಾಂಶ"
+        subject: "%{company_name} ಗಳ %{month_label} ನಗದು ಹರಿವಿನ ಸಾರಾಂಶ"
+        subtitle: "%{month_year_label} ಗಾಗಿ ಮಿರು ಮೂಲಕ ಹಣ ಚಲಿಸುವ ಸಂಕ್ಷಿಪ್ತ ನೋಟ ಇಲ್ಲಿದೆ."
+        title: "%{company_name} ಗಳ %{month_label} ನಗದು ಹರಿವಿನ ಸಾರಾಂಶ"
+        top_money_in_sources: ಹಣ ಗಳಿಸುವ ಪ್ರಮುಖ ಮೂಲಗಳು
+        top_money_out_sources: ಹಣ ಗಳಿಸುವ ಟಾಪ್ ಬಕೆಟ್‌ಗಳು
+    payment_mailer:
+      payment:
+        eyebrow: ಪಾವತಿಗಳು
+        follow_up_body: ಪಾವತಿಯನ್ನು ಖಚಿತಪಡಿಸಲು ಇನ್‌ವಾಯ್ಸ್ ತೆರೆಯಿರಿ, ರಶೀದಿಯನ್ನು ಸಲ್ಲಿಸಿ
+          ಅಥವಾ ಮುಂದಿನ ಹಂತಕ್ಕೆ ಮುಂದುವರಿಯಿರಿ.
+        follow_up_title: ಮುಂದೆ ಏನು ಮಾಡಬೇಕು
+        preheader: ಇನ್‌ವಾಯ್ಸ್ %{invoice_number} ಗಾಗಿ ಪಾವತಿ ದೃಢೀಕರಣ.
+        received_title: ಪಾವತಿ ಸ್ವೀಕರಿಸಲಾಗಿದೆ
+        subject: ಇನ್‌ವಾಯ್ಸ್ %{invoice_number} ಗಾಗಿ ಪಾವತಿ ವಿವರಗಳು
+        subtitle_html: "<strong>%{client_name}</strong> ಪಾವತಿಸಿದ ಇನ್‌ವಾಯ್ಸ್ <strong>%{invoice_number}</strong>
+          ."
+        summary_html: "<strong>%{client_name}</strong> ಇನ್‌ವಾಯ್ಸ್ <strong>%{invoice_number}</strong>
+          ಗಾಗಿ <strong>%{amount} ಅನ್ನು</strong> ಪಾವತಿಸಿದೆ. ಈ ಇನ್‌ವಾಯ್ಸ್ ಈಗ ಸಂಪೂರ್ಣವಾಗಿ
+          ಪಾವತಿಸಲಾಗಿದೆ."
+        title: ಪಾವತಿ ದೃಢೀಕರಣ
+    send_payment_reminder_mailer:
+      send_payment_reminder:
+        eyebrow: ಇನ್‌ವಾಯ್ಸ್‌ಗಳು
+        preheader: "%{company_name} ಇನ್‌ವಾಯ್ಸ್‌ಗಳಿಗೆ ಪಾವತಿ ಜ್ಞಾಪನೆ."
+        subject: "%{company_name} ಗಾಗಿ ಪಾವತಿ ಜ್ಞಾಪನೆ"
+        subtitle: ಇನ್ನೂ ಗಮನ ಹರಿಸಬೇಕಾದ ಇನ್‌ವಾಯ್ಸ್‌ಗಳು ಇಲ್ಲಿವೆ.
+        title: ಪಾವತಿ ಜ್ಞಾಪನೆ
+    send_reminder_mailer:
+      send_reminder:
+        eyebrow: ಇನ್‌ವಾಯ್ಸ್‌ಗಳು
+        preheader: "%{company_name} ರಿಂದ %{invoice_number} ಇನ್‌ವಾಯ್ಸ್‌ಗಾಗಿ ಜ್ಞಾಪನೆ."
+        subject: "%{company_name} ರಿಂದ %{invoice_number} ಇನ್‌ವಾಯ್ಸ್‌ಗಾಗಿ ಜ್ಞಾಪನೆ"
+        subtitle_html: "<strong>%{company_name}</strong> ನಿಂದ ಬಂದ <strong>%{invoice_number}</strong>
+          ಇನ್‌ವಾಯ್ಸ್ ಇನ್ನೂ ಪಾವತಿಗಾಗಿ ಕಾಯುತ್ತಿದೆ."
+        title: ಪಾವತಿ ಜ್ಞಾಪನೆ
+    send_weekly_reminder_to_user_mailer:
+      notify_user_about_missed_entries:
+        body_html: ನೀವು <strong>%{starting_date}</strong> ಮತ್ತು <strong>%{ending_date}</strong>
+          ನಡುವೆ 40 ಗಂಟೆಗಳಿಗಿಂತ ಕಡಿಮೆ ಸಮಯ ಲಾಗಿನ್ ಆಗಿದ್ದೀರಿ.
+        eyebrow: ಸಮಯ ಟ್ರ್ಯಾಕಿಂಗ್
+        follow_up: ಮಿರು ತೆರೆಯಿರಿ, ಕಾಣೆಯಾದ ನಮೂದುಗಳನ್ನು ಸೇರಿಸಿ ಮತ್ತು ವಾರವನ್ನು ಮುಚ್ಚಿ.
+        greeting_html: ಹಾಯ್ <strong>%{name}</strong> ,
+        preheader: ಕಾಣೆಯಾದ ವಾರಕ್ಕೆ ನಿಮ್ಮ ಮಿರು ಟೈಮ್‌ಶೀಟ್ ಅನ್ನು ನವೀಕರಿಸಿ.
+        signoff_html: ಧನ್ಯವಾದಗಳು,<br> <strong>ಮಿರು</strong>
+        subject: ಕಳೆದ ವಾರದ ನಿಮ್ಮ ಮಿರು ವೇಳಾಪಟ್ಟಿಯನ್ನು ಪೂರ್ಣಗೊಳಿಸಿ.
+        subtitle: "%{company_name} ಗಾಗಿ ನಿಮ್ಮ ಸಮಯ ನಮೂದುಗಳು ಇನ್ನೂ ನಿರೀಕ್ಷಿತ ವಾರದ ಒಟ್ಟು
+          ಸಮಯಕ್ಕಿಂತ ಕಡಿಮೆ ಇವೆ."
+        title: ನಿಮ್ಮ ಟೈಮ್‌ಶೀಟ್ ಅನ್ನು ಪೂರ್ಣಗೊಳಿಸಿ
+    subscription:
+      plan_purchased:
+        badge: ಚಾ-ಚಿಂಗ್
+        billing_interval: ಬಿಲ್ಲಿಂಗ್ ಮಧ್ಯಂತರ
+        billing_settings_html: 'ಬಿಲ್ಲಿಂಗ್ ಸೆಟ್ಟಿಂಗ್‌ಗಳು: <a href="%{url}" style="color:
+          #111827;">%{url}</a>'
+        company: ಕಂಪನಿ
+        cta: ಬಿಲ್ಲಿಂಗ್ ಸೆಟ್ಟಿಂಗ್‌ಗಳನ್ನು ತೆರೆಯಿರಿ
+        image_label: ಹೊಸ ಪಾವತಿಸಿದ ಯೋಜನೆ
+        image_text: ಹೊಸ ಪಾವತಿಸಿದ ಕಾರ್ಯಸ್ಥಳ
+        plan: ಯೋಜನೆ
+        stripe_subscription: ಸ್ಟ್ರೈಪ್ ಚಂದಾದಾರಿಕೆ
+        subtitle: ಮಿರುನಲ್ಲಿ ಹೊಸ ಪಾವತಿಸಿದ ಕಾರ್ಯಸ್ಥಳ. ಬಿಲ್ಲಿಂಗ್ ಲೈವ್ ಆಗಿದೆ.
+        team_seats: ತಂಡದ ಸೀಟುಗಳು
+        title: "%{company} ಈಗಷ್ಟೇ %{plan} ಖರೀದಿಸಿದೆ."
+      plan_purchased_text:
+        billing_interval: 'ಬಿಲ್ಲಿಂಗ್ ಮಧ್ಯಂತರ: %{interval}'
+        billing_settings: 'ಬಿಲ್ಲಿಂಗ್ ಸೆಟ್ಟಿಂಗ್‌ಗಳನ್ನು ತೆರೆಯಿರಿ: %{url}'
+        company: 'ಕಂಪನಿ: %{company}'
+        plan: 'ಯೋಜನೆ: %{plan}'
+        stripe_subscription: 'ಸ್ಟ್ರೈಪ್ ಚಂದಾದಾರಿಕೆ: %{id}'
+        team_seats: 'ತಂಡದ ಸೀಟುಗಳು: %{seats}'
+      trial_started:
+        body_html: "<strong>%{company}</strong> ಗಾಗಿ ನಿಮ್ಮ 30 ದಿನಗಳ ಮಿರು ಪ್ರೊ ಪ್ರಾಯೋಗಿಕ
+          ಅವಧಿ ಈಗ ಸಕ್ರಿಯವಾಗಿದೆ."
+        cta: ಬಿಲ್ಲಿಂಗ್ ತೆರೆಯಿರಿ
+        eyebrow: ಬಿಲ್ಲಿಂಗ್
+        footer_body: ನಿಮ್ಮ ಬಿಲ್ಲಿಂಗ್ ಸೆಟ್ಟಿಂಗ್‌ಗಳಿಂದ ನೀವು ಯಾವುದೇ ಸಮಯದಲ್ಲಿ ಬಿಲ್ಲಿಂಗ್
+          ಅನ್ನು ಪರಿಶೀಲಿಸಬಹುದು, ಯೋಜನೆಗಳನ್ನು ಹೋಲಿಸಬಹುದು ಮತ್ತು ಅಪ್‌ಗ್ರೇಡ್ ಮಾಡಬಹುದು.
+        greeting_html: ನಮಸ್ಕಾರ <strong>%{name}</strong> ,
+        preheader: ನಿಮ್ಮ ಮಿರು ಪ್ರೊ ಪ್ರಯೋಗ ಈಗ ಸಕ್ರಿಯವಾಗಿದೆ.
+        subtitle: ನಿಮ್ಮ 30 ದಿನಗಳ ಪ್ರಾಯೋಗಿಕ ಅವಧಿಯಲ್ಲಿ ಬಿಲ್ಲಿಂಗ್, ವರದಿಗಳು ಮತ್ತು ಉಳಿದ
+          ಪ್ರೊ ವರ್ಕ್‌ಫ್ಲೋ ಅನ್ನು ಅನ್ವೇಷಿಸಿ.
+        title: ನಿಮ್ಮ ಮಿರು ಪ್ರೊ ಪ್ರಯೋಗ ಲೈವ್ ಆಗಿದೆ.
+        trial_ends: ಪ್ರಯೋಗ ಕೊನೆಗೊಳ್ಳುತ್ತದೆ
+      trial_started_text:
+        body: "%{company} ಗಾಗಿ ನಿಮ್ಮ 30 ದಿನಗಳ ಮಿರು ಪ್ರೊ ಪ್ರಾಯೋಗಿಕ ಅವಧಿ ಈಗ ಸಕ್ರಿಯವಾಗಿದೆ."
+        greeting: ನಮಸ್ಕಾರ %{name},
+        review_billing: "%{url} ನಲ್ಲಿ ಬಿಲ್ಲಿಂಗ್ ಪರಿಶೀಲಿಸಿ."
+        trial_ends: ಪ್ರಯೋಗವು %{date} ರಂದು ಕೊನೆಗೊಳ್ಳುತ್ತದೆ.
+    user_invitation_mailer:
+      send_user_invitation:
+        about_body: ಮಿರು ಸಮಯ, ಇನ್‌ವಾಯ್ಸ್‌ಗಳು, ಪಾವತಿಗಳು ಮತ್ತು ದಿನನಿತ್ಯದ ಕಾರ್ಯಾಚರಣೆಗಳನ್ನು
+          ಒಂದೇ ಕಾರ್ಯಕ್ಷೇತ್ರಕ್ಕೆ ತರುತ್ತದೆ.
+        about_title: ಮಿರು ಬಗ್ಗೆ
+        eyebrow: ಆಹ್ವಾನ
+        get_started_body: ಆಹ್ವಾನವನ್ನು ಸ್ವೀಕರಿಸಿ, ನಿಮ್ಮ ಪಾಸ್‌ವರ್ಡ್ ರಚಿಸಿ, ಮತ್ತು ನೀವು
+          ಪ್ರವೇಶಿಸಿದ್ದೀರಿ.
+        get_started_title: ಪ್ರಾರಂಭಿಸಿ
+        preheader: ಮಿರುನಲ್ಲಿ ತಂಡವನ್ನು ಸೇರಲು ನಿಮ್ಮನ್ನು ಆಹ್ವಾನಿಸಲಾಗಿದೆ.
+        subject: ಮಿರುಗೆ ಸೇರಲು ನಿಮ್ಮನ್ನು ಆಹ್ವಾನಿಸಲಾಗಿದೆ.
+        subtitle_html: "<strong>%{sender_name}</strong> ನಿಮ್ಮನ್ನು ಮಿರುನಲ್ಲಿ <strong>%{company_name}
+          ಗೆ</strong> ಸೇರಲು ಆಹ್ವಾನಿಸಿದೆ."
+        support_html: ನೀವು ಈ ಆಹ್ವಾನವನ್ನು ನಿರೀಕ್ಷಿಸದಿದ್ದರೆ, <a href="mailto:%{support_email}">%{support_email}</a>
+          ನಲ್ಲಿ ನಮ್ಮ ತಂಡವನ್ನು ಸಂಪರ್ಕಿಸಿ.
+        title: ನಿಮ್ಮ ಮಿರು ಕಾರ್ಯಕ್ಷೇತ್ರಕ್ಕೆ ಸೇರಿ
+        workspace_members:
+          one: 1 ಸದಸ್ಯ
+          other: "%{count} ಸದಸ್ಯರು"
   navbar:
     clients: ಗ್ರಾಹಕರು
     help: ಸಹಾಯ
@@ -199,6 +526,74 @@ kn:
       success: ನಿಮ್ಮ ಪಾಸ್‌ವರ್ಡ್ ಅನ್ನು ಮರುಹೊಂದಿಸಲು ಸೂಚನೆಗಳನ್ನು ನಿಮ್ಮ ಇಮೇಲ್‌ಗೆ ಕಳುಹಿಸಲಾಗಿದೆ.
     update:
       success: ನಿಮ್ಮ ಪಾಸ್‌ವರ್ಡ್ ಅನ್ನು ನವೀಕರಿಸಲಾಗಿದೆ.
+  pdfs:
+    accounts_aging:
+      client: ಕ್ಲೈಂಟ್
+      title: ಖಾತೆಗಳ ವಯಸ್ಸಾಗುವಿಕೆ ವರದಿ
+      total: ಒಟ್ಟು
+    client_revenues:
+      client: ಕ್ಲೈಂಟ್
+      outstanding_amount: ಬಾಕಿ ಮೊತ್ತ
+      overdue_amount: ಬಾಕಿ ಉಳಿದಿರುವ ಮೊತ್ತ
+      paid_amount: ಪಾವತಿಸಿದ ಮೊತ್ತ
+      title: ಕ್ಲೈಂಟ್ ಆದಾಯ ವರದಿ
+      total_revenue: ಒಟ್ಟು ಆದಾಯ
+    invoices:
+      amount_due: ಬಾಕಿ ಮೊತ್ತ
+      amount_paid: ಪಾವತಿಸಿದ ಮೊತ್ತ
+      billed_to: ಬಿಲ್ ಮಾಡಲಾಗಿದೆ
+      client_invoice: ಕ್ಲೈಂಟ್ ಇನ್‌ವಾಯ್ಸ್
+      discount: ರಿಯಾಯಿತಿ
+      due: 'ಅಂತಿಮ ದಿನಾಂಕ: %{due_date}'
+      invoice_number: ಇನ್‌ವಾಯ್ಸ್ ಸಂಖ್ಯೆ
+      issue_date: ಬಿಡುಗಡೆ ದಿನಾಂಕ
+      paid: 'ಪಾವತಿಸಲಾಗಿದೆ: %{amount}'
+      payment_details: ಪಾವತಿ ವಿವರಗಳು
+      payment_rows:
+        account_number: ಖಾತೆ ಸಂಖ್ಯೆ
+        bank_name: ಬ್ಯಾಂಕ್ ಹೆಸರು
+        gst_number: ಜಿಎಸ್ಟಿ ಸಂಖ್ಯೆ
+        routing_number: ರೂಟಿಂಗ್ ಸಂಖ್ಯೆ
+        swift_code: SWIFT ಕೋಡ್
+        tax_id: ತೆರಿಗೆ ಐಡಿ
+        vat_number: ವ್ಯಾಟ್ ಸಂಖ್ಯೆ
+      prepared_by: "%{company_name} ಸಿದ್ಧಪಡಿಸಿದ್ದು, %{issue_date} ಬಿಡುಗಡೆ ಮಾಡಿದ್ದು,
+        %{due_date} ಕ್ಕೆ ನಿಗದಿಯಾಗಿದೆ."
+      reference: 'ಉಲ್ಲೇಖ: %{reference}'
+      sub_total: ಉಪ ಮೊತ್ತ
+      table:
+        date: ದಿನಾಂಕ
+        description: ವಿವರಣೆ
+        line_total: ಸಾಲಿನ ಒಟ್ಟು
+        name: ಹೆಸರು
+        qty: ಪ್ರಮಾಣ
+        rate: ದರ
+      tax: ತೆರಿಗೆ
+      title: ಸರಕುಪಟ್ಟಿ
+      total: ಒಟ್ಟು
+      total_invoice_amount: ಒಟ್ಟು ಇನ್‌ವಾಯ್ಸ್ ಮೊತ್ತ
+      work_summary: ಕೆಲಸದ ಸಾರಾಂಶ
+    outstanding_overdue_invoices:
+      amount: ಮೊತ್ತ
+      client: ಕ್ಲೈಂಟ್
+      due_date: ಅಂತಿಮ ದಿನಾಂಕ
+      invoice_number: ಇನ್‌ವಾಯ್ಸ್ ಸಂಖ್ಯೆ
+      issue_date: ಬಿಡುಗಡೆ ದಿನಾಂಕ
+      no_clients_found: ಯಾವುದೇ ಕ್ಲೈಂಟ್‌ಗಳು ಕಂಡುಬಂದಿಲ್ಲ.
+      outstanding_amount: ಬಾಕಿ ಮೊತ್ತ
+      overdue_amount: ಬಾಕಿ ಉಳಿದಿರುವ ಮೊತ್ತ
+      status: ಸ್ಥಿತಿ
+      title: ಬಾಕಿ ಉಳಿದಿರುವ ಮತ್ತು ಅವಧಿ ಮೀರಿದ ಇನ್‌ವಾಯ್ಸ್‌ಗಳ ವರದಿ
+      total_amounts: ಒಟ್ಟು ಮೊತ್ತಗಳು
+      total_invoice_amount: ಒಟ್ಟು ಇನ್‌ವಾಯ್ಸ್ ಮೊತ್ತ
+    time_entries:
+      client: ಕ್ಲೈಂಟ್
+      date: ದಿನಾಂಕ
+      hours_logged: ಗಂಟೆಗಳನ್ನು ದಾಖಲಿಸಲಾಗಿದೆ
+      note: ಸೂಚನೆ
+      project: ಯೋಜನೆ
+      team_member: ತಂಡದ ಸದಸ್ಯ
+      title: ಸಮಯ ನಮೂದು ವರದಿ
   projects:
     add_new_project: ಹೊಸ ಯೋಜನೆಯನ್ನು ಸೇರಿಸಿ
     add_project: ಯೋಜನೆಯನ್ನು ಸೇರಿಸಿ

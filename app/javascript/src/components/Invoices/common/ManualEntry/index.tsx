@@ -114,12 +114,12 @@ const ManualEntry = ({
     <TooltipProvider>
       <>
         <tr className="border-b border-gray-100 hover:bg-gray-50">
-          <td className="px-4 py-3">
+          <td className="px-1 py-3 text-left text-base font-normal text-foreground">
             <Tooltip>
               <TooltipTrigger asChild>
                 <input
                   data-testid="invoice-manual-entry-name"
-                  className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  className="focus:outline-none w-full rounded bg-transparent p-1 text-sm font-medium text-foreground focus:border-border focus:bg-white focus:ring-1 focus:ring-ring"
                   placeholder={i18n.t("invoices.enterName")}
                   type="text"
                   value={name}
@@ -133,7 +133,7 @@ const ManualEntry = ({
               </TooltipContent>
             </Tooltip>
           </td>
-          <td className="px-4 py-3">
+          <td className="px-1 py-3 text-right text-base font-normal text-foreground">
             <Tooltip>
               <TooltipTrigger asChild>
                 <div className="w-full">
@@ -153,12 +153,12 @@ const ManualEntry = ({
               </TooltipContent>
             </Tooltip>
           </td>
-          <td className="px-4 py-3">
+          <td className="px-1 py-3 text-right text-base font-normal text-foreground">
             <Tooltip>
               <TooltipTrigger asChild>
                 <input
                   data-testid="invoice-manual-entry-rate"
-                  className="w-full px-3 py-2 text-sm text-right border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  className="focus:outline-none w-full rounded bg-transparent p-1 text-right text-sm font-medium text-foreground focus:border-border focus:bg-white focus:ring-1 focus:ring-ring"
                   placeholder="0.00"
                   type="number"
                   value={rate}
@@ -171,12 +171,12 @@ const ManualEntry = ({
               </TooltipContent>
             </Tooltip>
           </td>
-          <td className="px-4 py-3">
+          <td className="px-1 py-3 text-right text-base font-normal text-foreground">
             <Tooltip>
               <TooltipTrigger asChild>
                 <input
                   data-testid="invoice-manual-entry-quantity"
-                  className="w-full px-3 py-2 text-sm text-center border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  className="focus:outline-none w-full rounded bg-transparent p-1 text-right text-sm font-medium text-foreground focus:border-border focus:bg-white focus:ring-1 focus:ring-ring"
                   placeholder="00:00"
                   type="text"
                   value={qtyInHHrMin}
@@ -191,7 +191,7 @@ const ManualEntry = ({
               </TooltipContent>
             </Tooltip>
           </td>
-          <td className="px-4 py-3 text-right text-sm font-medium text-gray-900">
+          <td className="px-1 py-3 text-right text-base font-normal text-foreground">
             <Tooltip>
               <TooltipTrigger asChild>
                 <span className="cursor-help">
@@ -207,15 +207,16 @@ const ManualEntry = ({
               </TooltipContent>
             </Tooltip>
           </td>
-          <td className="px-4 py-3">
+          <td className="w-10">
             <Tooltip>
               <TooltipTrigger asChild>
                 <button
+                  type="button"
                   data-testid="invoice-manual-entry-delete"
-                  className="p-1 rounded hover:bg-red-50 transition-colors"
+                  className="flex w-full items-center rounded p-2.5 text-center hover:bg-secondary"
                   onClick={handleDelete}
                 >
-                  <DeleteIcon color="#E04646" size={18} weight="bold" />
+                  <DeleteIcon color="#5E58F1" size={16} weight="bold" />
                 </button>
               </TooltipTrigger>
               <TooltipContent>
@@ -237,12 +238,15 @@ const ManualEntry = ({
           </tr>
         )}
         <tr>
-          <td className="w-full p-1" colSpan={2}>
+          <td
+            className="border-b-2 border-border px-1 pb-4 text-left text-xs font-normal text-muted-foreground"
+            colSpan={2}
+          >
             <Tooltip>
               <TooltipTrigger asChild>
                 <TextareaAutosize
                   data-testid="invoice-manual-entry-description"
-                  className="focus:outline-none w-full rounded bg-white p-1 px-2 text-sm font-medium text-foreground focus:border-border focus:ring-1 focus:ring-ring"
+                  className="focus:outline-none w-full rounded bg-transparent p-1 text-sm font-medium text-muted-foreground focus:border-border focus:bg-white focus:ring-1 focus:ring-ring"
                   placeholder={i18n.t("invoices.enterDescription")}
                   value={description}
                   onChange={e => setDescription(e.target["value"])}
@@ -254,7 +258,7 @@ const ManualEntry = ({
               </TooltipContent>
             </Tooltip>
           </td>
-          <td colSpan={3} />
+          <td className="border-b-2 border-border" colSpan={3} />
         </tr>
       </>
     </TooltipProvider>

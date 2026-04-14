@@ -4,7 +4,7 @@ require "rails_helper"
 
 RSpec.describe "Invoice editor preview", type: :system, js: true do
   let(:company) { create(:company, name: "Wayne Enterprises", base_currency: "USD") }
-  let(:user_locale) { "en" }
+  let(:user_locale) { "en-US" }
   let(:user) { create(:user, current_workspace_id: company.id, locale: user_locale) }
   let(:client) { create(:client, company:, name: "Gotham City Council") }
 

@@ -113,7 +113,9 @@ const ReportGroupTable: React.FC<{
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <CardTitle>{group.label}</CardTitle>
           <div className="flex items-center space-x-2">
-            <span className="text-sm text-muted-foreground">{i18n.t("reports.totalLabel")}</span>
+            <span className="text-sm text-muted-foreground">
+              {i18n.t("reports.totalLabel")}
+            </span>
             <span className="text-lg font-bold text-indigo-600">
               {getTotalHoursForGroup(group)}
             </span>
@@ -392,6 +394,52 @@ const TimeEntryReport: React.FC = () => {
     setSearchParams,
   ]);
 
+  useEffect(() => {
+    const nextPreset = searchParams.get("preset") || "this_month";
+    const nextFrom = parseReportQueryDate(searchParams.get("from"));
+    const nextTo = parseReportQueryDate(searchParams.get("to"));
+    const nextGroupBy =
+      (searchParams.get("groupBy") as "client" | "project" | "team_member") ||
+      "client";
+    const nextClients = parseNumericListParam(searchParams.get("clients"));
+    const nextTeamMembers = parseNumericListParam(
+      searchParams.get("teamMembers")
+    );
+
+    const nextDateRange =
+      nextFrom || nextTo
+        ? { from: nextFrom, to: nextTo || nextFrom }
+        : resolveTimeEntryPreset(nextPreset);
+
+    setGroupBy(current => (current === nextGroupBy ? current : nextGroupBy));
+    setDateRangePreset(current =>
+      current === nextPreset ? current : nextPreset
+    );
+
+    setDateRange(current => {
+      const currentFrom = formatReportQueryDate(current?.from);
+      const currentTo = formatReportQueryDate(current?.to);
+      const nextFromString = formatReportQueryDate(nextDateRange?.from);
+      const nextToString = formatReportQueryDate(nextDateRange?.to);
+
+      if (currentFrom === nextFromString && currentTo === nextToString) {
+        return current;
+      }
+
+      return nextDateRange;
+    });
+
+    setSelectedClients(current =>
+      current.join(",") === nextClients.join(",") ? current : nextClients
+    );
+
+    setSelectedTeamMembers(current =>
+      current.join(",") === nextTeamMembers.join(",")
+        ? current
+        : nextTeamMembers
+    );
+  }, [searchParams]);
+
   const loadMoreReportsRef = useInfiniteLoadTrigger({
     enabled: Boolean(hasNextPage),
     loading: isFetchingNextPage,
@@ -499,13 +547,17 @@ const TimeEntryReport: React.FC = () => {
       accessorKey: "teamMember",
       header: i18n.t("reports.teamMemberHeader"),
       cell: ({ row }) =>
-        row.original.teamMember || row.getValue("teamMember") || i18n.t("reports.unknownUser"),
+        row.original.teamMember ||
+        row.getValue("teamMember") ||
+        i18n.t("reports.unknownUser"),
     },
     {
       accessorKey: "project",
       header: i18n.t("reports.projectHeader"),
       cell: ({ row }) =>
-        row.original.project || row.getValue("project") || i18n.t("reports.unknownProject"),
+        row.original.project ||
+        row.getValue("project") ||
+        i18n.t("reports.unknownProject"),
     },
     {
       accessorKey: "note",
@@ -513,7 +565,9 @@ const TimeEntryReport: React.FC = () => {
     },
     {
       accessorKey: "duration",
-      header: () => <div className="text-right">{i18n.t("reports.hoursHeader")}</div>,
+      header: () => (
+        <div className="text-right">{i18n.t("reports.hoursHeader")}</div>
+      ),
       cell: ({ row }) => (
         <div className="text-right font-medium">
           {minToHHMM(row.getValue("duration"))}
@@ -559,13 +613,27 @@ const TimeEntryReport: React.FC = () => {
                   <SelectValue placeholder={i18n.t("selectPeriod")} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="this_month">{i18n.t("thisMonth")}</SelectItem>
-                  <SelectItem value="last_month">{i18n.t("lastMonth")}</SelectItem>
-                  <SelectItem value="this_quarter">{i18n.t("thisQuarter")}</SelectItem>
-                  <SelectItem value="this_year">{i18n.t("thisYear")}</SelectItem>
-                  <SelectItem value="last_7_days">{i18n.t("reports.lastSevenDaysPreset")}</SelectItem>
-                  <SelectItem value="last_30_days">{i18n.t("reports.lastThirtyDaysPreset")}</SelectItem>
-                  <SelectItem value="custom">{i18n.t("customRange")}</SelectItem>
+                  <SelectItem value="this_month">
+                    {i18n.t("thisMonth")}
+                  </SelectItem>
+                  <SelectItem value="last_month">
+                    {i18n.t("lastMonth")}
+                  </SelectItem>
+                  <SelectItem value="this_quarter">
+                    {i18n.t("thisQuarter")}
+                  </SelectItem>
+                  <SelectItem value="this_year">
+                    {i18n.t("thisYear")}
+                  </SelectItem>
+                  <SelectItem value="last_7_days">
+                    {i18n.t("reports.lastSevenDaysPreset")}
+                  </SelectItem>
+                  <SelectItem value="last_30_days">
+                    {i18n.t("reports.lastThirtyDaysPreset")}
+                  </SelectItem>
+                  <SelectItem value="custom">
+                    {i18n.t("customRange")}
+                  </SelectItem>
                 </SelectContent>
               </Select>
 
@@ -621,8 +689,12 @@ const TimeEntryReport: React.FC = () => {
                   <SelectValue placeholder={i18n.t("reports.groupBy")} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="client">{i18n.t("reports.groupByClient")}</SelectItem>
-                  <SelectItem value="project">{i18n.t("reports.groupByProject")}</SelectItem>
+                  <SelectItem value="client">
+                    {i18n.t("reports.groupByClient")}
+                  </SelectItem>
+                  <SelectItem value="project">
+                    {i18n.t("reports.groupByProject")}
+                  </SelectItem>
                   <SelectItem value="team_member">
                     {i18n.t("reports.teamMembers")}
                   </SelectItem>
@@ -745,7 +817,9 @@ const TimeEntryReport: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">{i18n.t("reports.totalHours")}</CardTitle>
+              <CardTitle className="text-sm font-medium">
+                {i18n.t("reports.totalHours")}
+              </CardTitle>
               <Clock className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
@@ -870,7 +944,10 @@ const TimeEntryReport: React.FC = () => {
         {lastPage?.pagy?.pages && lastPage.pagy.pages > 1 && (
           <div className="mt-6 flex flex-col items-center gap-2 text-sm text-muted-foreground">
             <span>
-              {i18n.t("reports.loadedPages", { loaded: reportPages.length, total: lastPage.pagy.pages })}
+              {i18n.t("reports.loadedPages", {
+                loaded: reportPages.length,
+                total: lastPage.pagy.pages,
+              })}
             </span>
             {hasNextPage && !isFetchingNextPage && (
               <span>{i18n.t("reports.scrollToLoadMoreRows")}</span>
@@ -878,7 +955,9 @@ const TimeEntryReport: React.FC = () => {
             {hasNextPage && !isFetchingNextPage && (
               <div ref={loadMoreReportsRef} className="h-8 w-full" />
             )}
-            {isFetchingNextPage && <span>{i18n.t("reports.loadingMoreRows")}</span>}
+            {isFetchingNextPage && (
+              <span>{i18n.t("reports.loadingMoreRows")}</span>
+            )}
             {!hasNextPage && <span>{i18n.t("reports.allRowsLoaded")}</span>}
           </div>
         )}

@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import InvoiceList from "./InvoiceList";
 import InvoiceEditor from "./InvoiceEditor/index";
 import InvoicePreview from "./InvoicePreview";
+import MarkInvoiceAsPaidModal from "./Invoice/MarkInvoicePaidModal";
+import WaiveOffInvoice from "./popups/WavieOffInvoice";
 import { Button } from "../ui/button";
 import { ArrowLeft } from "phosphor-react";
 import {
@@ -43,6 +45,13 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
     initialInvoiceId || null
   );
   const [previewData, setPreviewData] = useState<Invoice | null>(null);
+  const [markPaidInvoice, setMarkPaidInvoice] = useState<Invoice | null>(null);
+  const [showMarkPaidModal, setShowMarkPaidModal] = useState(false);
+  const [showWaiveDialog, setShowWaiveDialog] = useState(false);
+  const [invoiceToWaive, setInvoiceToWaive] = useState<string | null>(null);
+  const [invoiceToWaiveNumber, setInvoiceToWaiveNumber] = useState<
+    string | null
+  >(null);
   const [clients, setClients] = useState<Client[]>([]);
   const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
   const {
@@ -76,8 +85,8 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
   };
 
   const fallbackCompany = {
-    name: currentCompany?.name || "Miru Time Tracking",
-    email: currentCompany?.email || "support@getmiru.com",
+    name: currentCompany?.name || "Company Name",
+    email: currentCompany?.email || "",
     baseCurrency:
       currentCompany?.baseCurrency || currentCompany?.base_currency || "USD",
     dateFormat:
@@ -85,6 +94,7 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
     address: currentCompany?.address || "",
     phone:
       currentCompany?.phone ||
+      currentCompany?.phone_number ||
       currentCompany?.businessPhone ||
       currentCompany?.business_phone ||
       "",
@@ -102,6 +112,7 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
       "",
     bankSwiftCode:
       currentCompany?.bankSwiftCode || currentCompany?.bank_swift_code || "",
+    logo: currentCompany?.logo || "",
   };
 
   // Load initial data
@@ -366,7 +377,10 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
     }
   };
 
-  const handleSendInvoiceFromList = async (id: string) => {
+  const handleSendInvoiceFromList = async (
+    id: string,
+    invoiceEmail?: { subject: string; message: string; recipients: string[] }
+  ) => {
     try {
       const invoice = invoices.find(inv => inv.id === id) || selectedInvoice;
       if (!invoice) {
@@ -375,11 +389,14 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
         return;
       }
 
-      const response = await invoiceApi.sendInvoice(id, {
-        subject: `Invoice ${invoice.invoiceNumber}`,
-        message: "Please find your invoice attached.",
-        recipients: [invoice.client.email],
-      });
+      const response = await invoiceApi.sendInvoice(
+        id,
+        invoiceEmail || {
+          subject: `Invoice ${invoice.invoiceNumber}`,
+          message: "Please find your invoice attached.",
+          recipients: [invoice.client.email],
+        }
+      );
 
       toast.success(
         response?.message || i18n.t("invoices.invoiceSentSuccessfully")
@@ -395,10 +412,14 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
       await loadInvoices(); // Refresh the invoice list
     } catch (err) {
       toast.error(i18n.t("invoices.failedToSend"));
+      throw err;
     }
   };
 
-  const handleSendReminderFromList = async (id: string) => {
+  const handleSendReminderFromList = async (
+    id: string,
+    invoiceEmail?: { subject: string; message: string; recipients: string[] }
+  ) => {
     try {
       const invoice = invoices.find(inv => inv.id === id) || selectedInvoice;
       if (!invoice) {
@@ -407,12 +428,15 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
         return;
       }
 
-      const response = await invoiceApi.sendReminder(id, {
-        subject: `Reminder to complete payment for invoice ${invoice.invoiceNumber}`,
-        message:
-          "This is a reminder about your overdue invoice. Please complete payment.",
-        recipients: [invoice.client.email],
-      });
+      const response = await invoiceApi.sendReminder(
+        id,
+        invoiceEmail || {
+          subject: `Reminder to complete payment for invoice ${invoice.invoiceNumber}`,
+          message:
+            "This is a reminder about your overdue invoice. Please complete payment.",
+          recipients: [invoice.client.email],
+        }
+      );
 
       toast.success(
         response?.message || i18n.t("invoices.reminderSentSuccessfully")
@@ -421,37 +445,42 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
       await loadInvoices();
     } catch (err) {
       toast.error("Failed to send reminder");
+      throw err;
     }
   };
 
-  const handleMarkPaid = async (id: string) => {
-    const shouldMarkPaid = window.confirm(
-      "Mark this invoice as paid? This action affects accounting records."
-    );
-    if (!shouldMarkPaid) return;
-
+  const handleMarkPaid = async (invoice: Invoice) => {
     try {
-      const invoice = await invoiceApi.getInvoice(id);
-      const updatedInvoice: InvoiceFormData = {
-        id: invoice.id,
-        invoiceNumber: invoice.invoiceNumber,
-        clientId: invoice.client.id,
-        issueDate: invoice.issueDate,
-        dueDate: invoice.dueDate,
-        reference: invoice.reference,
-        invoiceLineItems: invoice.invoiceLineItems || [],
-        tax: invoice.tax,
-        discount: invoice.discount,
-        currency: invoice.currency,
-        status: "paid",
-      };
-
-      await invoiceApi.updateInvoice(id, updatedInvoice);
-      await loadInvoices(); // Refresh the invoice list
+      const fullInvoice = await invoiceApi.getInvoice(invoice.id);
+      setMarkPaidInvoice(fullInvoice);
+      setShowMarkPaidModal(true);
     } catch (err) {
       setPageError("Failed to mark invoice as paid");
       console.error("Error marking invoice as paid:", err);
     }
+  };
+
+  const handleWaiveInvoice = (invoice: Invoice) => {
+    setInvoiceToWaive(invoice.id);
+    setInvoiceToWaiveNumber(invoice.invoiceNumber);
+    setShowWaiveDialog(true);
+  };
+
+  const refreshWaivedInvoice = async () => {
+    if (invoiceToWaive) {
+      const refreshedInvoice = await invoiceApi.getInvoice(invoiceToWaive);
+      syncInvoiceState(refreshedInvoice);
+    }
+
+    await loadInvoices();
+  };
+
+  const refreshMarkedInvoice = async () => {
+    if (!markPaidInvoice?.id) return;
+
+    const refreshedInvoice = await invoiceApi.getInvoice(markPaidInvoice.id);
+    syncInvoiceState(refreshedInvoice);
+    await loadInvoices();
   };
 
   const handleDownload = async (id: string) => {
@@ -500,7 +529,7 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
   const renderBackButton = () => (
     <Button variant="outline" onClick={handleBackToList} className="mb-6">
       <ArrowLeft className="h-4 w-4 mr-2" />
-      Back to Invoices
+      {i18n.t("invoices.backToInvoices")}
     </Button>
   );
 
@@ -525,9 +554,11 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
     );
   }
 
+  let view = null;
+
   switch (viewMode) {
     case "list":
-      return (
+      view = (
         <InvoiceList
           invoices={invoices}
           totalInvoices={totalInvoices}
@@ -537,6 +568,7 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
           onSendInvoice={handleSendInvoiceFromList}
           onSendReminder={handleSendReminderFromList}
           onMarkPaid={handleMarkPaid}
+          onWaive={handleWaiveInvoice}
           onDownload={handleDownload}
           onLoadMore={loadMoreInvoices}
           isLoading={isListLoading || isLoading}
@@ -544,9 +576,10 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
           hasMore={hasMoreInvoices}
         />
       );
+      break;
 
     case "create":
-      return (
+      view = (
         <div>
           {renderBackButton()}
           <InvoiceEditor
@@ -561,9 +594,10 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
           />
         </div>
       );
+      break;
 
     case "edit": {
-      if (!selectedInvoice) return null;
+      if (!selectedInvoice) break;
 
       const editFormData: InvoiceFormData = {
         id: selectedInvoice.id,
@@ -601,7 +635,7 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
             ...fallbackCompany,
           };
 
-      return (
+      view = (
         <div>
           {renderBackButton()}
           <InvoiceEditor
@@ -616,13 +650,17 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
           />
         </div>
       );
+      break;
     }
 
     case "preview": {
       const invoiceToPreview = previewData || selectedInvoice;
-      if (!invoiceToPreview) return null;
+      if (!invoiceToPreview) break;
 
-      const handleInvoiceAction = async (action: string) => {
+      const handleInvoiceAction = async (
+        action: string,
+        payload?: { subject: string; message: string; recipients: string[] }
+      ) => {
         switch (action) {
           case "download":
             if (invoiceToPreview.id && invoiceToPreview.id !== "preview") {
@@ -633,7 +671,11 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
             break;
           case "send":
             if (invoiceToPreview.id && invoiceToPreview.id !== "preview") {
-              await handleSendInvoiceFromList(invoiceToPreview.id);
+              if (invoiceToPreview.status === "overdue") {
+                await handleSendReminderFromList(invoiceToPreview.id, payload);
+              } else {
+                await handleSendInvoiceFromList(invoiceToPreview.id, payload);
+              }
             } else {
               setPageError("Cannot send invoice - invalid ID");
             }
@@ -641,6 +683,16 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
           case "edit":
             if (invoiceToPreview.id) {
               await handleEditInvoice(invoiceToPreview.id);
+            }
+            break;
+          case "mark_paid":
+            if (invoiceToPreview.id) {
+              await handleMarkPaid(invoiceToPreview as Invoice);
+            }
+            break;
+          case "waive":
+            if (invoiceToPreview.id) {
+              handleWaiveInvoice(invoiceToPreview as Invoice);
             }
             break;
           case "print":
@@ -669,7 +721,7 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
         },
       };
 
-      return (
+      view = (
         <div>
           {renderBackButton()}
           <InvoicePreview
@@ -678,11 +730,37 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
           />
         </div>
       );
+      break;
     }
 
     default:
-      return null;
+      break;
   }
+
+  return (
+    <>
+      {view}
+      {showMarkPaidModal && markPaidInvoice?.company && (
+        <MarkInvoiceAsPaidModal
+          baseCurrency={markPaidInvoice.company.baseCurrency}
+          dateFormat={markPaidInvoice.company.dateFormat}
+          fetchInvoice={refreshMarkedInvoice}
+          invoice={markPaidInvoice}
+          setShowManualEntryModal={setShowMarkPaidModal}
+          showManualEntryModal={showMarkPaidModal}
+        />
+      )}
+      {showWaiveDialog && invoiceToWaive && (
+        <WaiveOffInvoice
+          fetchInvoices={refreshWaivedInvoice}
+          invoice={invoiceToWaive}
+          invoiceNumber={invoiceToWaiveNumber}
+          setShowWaiveDialog={setShowWaiveDialog}
+          showWaiveDialog={showWaiveDialog}
+        />
+      )}
+    </>
+  );
 };
 
 export default InvoicesPage;

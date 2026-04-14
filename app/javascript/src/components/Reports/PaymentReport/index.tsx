@@ -63,6 +63,13 @@ import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
 import { Calendar as CalendarComponent } from "../../ui/calendar";
 import { StatusBadge } from "../../ui/status-badge";
 import { currencyFormat } from "../../../helpers";
+import {
+  buildSearchParams,
+  formatReportQueryDate,
+  parseNumericListParam,
+  parseReportQueryDate,
+} from "../filterUtils";
+import { i18n } from "../../../i18n";
 
 interface Payment {
   id: number;
@@ -90,6 +97,32 @@ interface PaymentReportData {
     paymentMethods: Array<{ value: string; label: string }>;
   };
 }
+
+const resolvePaymentPreset = (preset: string) => {
+  const now = new Date();
+
+  switch (preset) {
+    case "this_month":
+      return { from: startOfMonth(now), to: endOfMonth(now) };
+    case "last_month": {
+      const lastMonth = subDays(startOfMonth(now), 1);
+
+      return { from: startOfMonth(lastMonth), to: endOfMonth(lastMonth) };
+    }
+    case "this_quarter":
+      return { from: startOfQuarter(now), to: endOfQuarter(now) };
+    case "this_year":
+      return { from: startOfYear(now), to: now };
+    case "last_7_days":
+      return { from: subDays(now, 7), to: now };
+    case "last_30_days":
+      return { from: subDays(now, 30), to: now };
+    case "custom":
+      return undefined;
+    default:
+      return { from: startOfYear(now), to: now };
+  }
+};
 
 const getPaymentMethodIcon = (method: string) => {
   const methodLower = method.toLowerCase();
@@ -123,29 +156,24 @@ const getPaymentMethodColor = (method: string) => {
 
 const PaymentReport: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
+  const initialPreset = searchParams.get("preset") || "this_year";
   const initialFrom = searchParams.get("from");
   const initialTo = searchParams.get("to");
+  const parsedInitialFrom = parseReportQueryDate(initialFrom);
+  const parsedInitialTo = parseReportQueryDate(initialTo);
   const [dateRange, setDateRange] = useState<DateRange | undefined>(
-    initialFrom || initialTo
+    parsedInitialFrom || parsedInitialTo
       ? {
-          from: initialFrom ? new Date(initialFrom) : undefined,
-          to: initialTo ? new Date(initialTo) : undefined,
+          from: parsedInitialFrom,
+          to: parsedInitialTo,
         }
-      : {
-          from: startOfYear(new Date()),
-          to: new Date(),
-        }
+      : resolvePaymentPreset(initialPreset)
   );
 
-  const [dateRangePreset, setDateRangePreset] = useState(
-    initialFrom || initialTo ? "custom" : "this_year"
-  );
+  const [dateRangePreset, setDateRangePreset] = useState(initialPreset);
 
   const [selectedClients, setSelectedClients] = useState<number[]>(
-    (searchParams.get("clients") || "")
-      .split(",")
-      .map(value => Number(value))
-      .filter(Boolean)
+    parseNumericListParam(searchParams.get("clients"))
   );
 
   const [paymentMethod, setPaymentMethod] = useState<string>(
@@ -170,8 +198,8 @@ const PaymentReport: React.FC = () => {
     ],
     queryFn: async () => {
       const params = new URLSearchParams({
-        ...(dateRange?.from && { from: format(dateRange.from, "dd/MM/yyyy") }),
-        ...(dateRange?.to && { to: format(dateRange.to, "dd/MM/yyyy") }),
+        ...(dateRange?.from && { from: formatReportQueryDate(dateRange.from) }),
+        ...(dateRange?.to && { to: formatReportQueryDate(dateRange.to) }),
         ...(selectedClients.length > 0 && {
           client_ids: selectedClients.join(","),
         }),
@@ -188,76 +216,68 @@ const PaymentReport: React.FC = () => {
   });
 
   useEffect(() => {
-    const nextParams = new URLSearchParams();
-
-    if (dateRange?.from) {
-      nextParams.set("from", format(dateRange.from, "yyyy-MM-dd"));
-    }
-
-    if (dateRange?.to) {
-      nextParams.set("to", format(dateRange.to, "yyyy-MM-dd"));
-    }
-
-    if (selectedClients.length > 0) {
-      nextParams.set("clients", selectedClients.join(","));
-    }
-
-    if (paymentMethod) {
-      nextParams.set("paymentMethod", paymentMethod);
-    }
-
-    if (statusFilter) {
-      nextParams.set("status", statusFilter);
-    }
+    const nextParams = buildSearchParams({
+      preset: dateRangePreset,
+      from: formatReportQueryDate(dateRange?.from),
+      to: formatReportQueryDate(dateRange?.to),
+      clients:
+        selectedClients.length > 0 ? selectedClients.join(",") : undefined,
+      paymentMethod,
+      status: statusFilter,
+    });
 
     setSearchParams(nextParams, { replace: true });
   }, [
     dateRange?.from,
     dateRange?.to,
+    dateRangePreset,
     paymentMethod,
     selectedClients,
     setSearchParams,
     statusFilter,
   ]);
 
+  useEffect(() => {
+    const nextPreset = searchParams.get("preset") || "this_year";
+    const nextFrom = parseReportQueryDate(searchParams.get("from"));
+    const nextTo = parseReportQueryDate(searchParams.get("to"));
+    const nextClients = parseNumericListParam(searchParams.get("clients"));
+    const nextPaymentMethod = searchParams.get("paymentMethod") || "";
+    const nextStatus = searchParams.get("status") || "";
+    const nextDateRange =
+      nextFrom || nextTo
+        ? { from: nextFrom, to: nextTo || nextFrom }
+        : resolvePaymentPreset(nextPreset);
+
+    setDateRangePreset(current =>
+      current === nextPreset ? current : nextPreset
+    );
+
+    setDateRange(current => {
+      const currentFrom = formatReportQueryDate(current?.from);
+      const currentTo = formatReportQueryDate(current?.to);
+      const nextFromString = formatReportQueryDate(nextDateRange?.from);
+      const nextToString = formatReportQueryDate(nextDateRange?.to);
+
+      if (currentFrom === nextFromString && currentTo === nextToString) {
+        return current;
+      }
+
+      return nextDateRange;
+    });
+
+    setSelectedClients(current =>
+      current.join(",") === nextClients.join(",") ? current : nextClients
+    );
+
+    setPaymentMethod(current =>
+      current === nextPaymentMethod ? current : nextPaymentMethod
+    );
+    setStatusFilter(current => (current === nextStatus ? current : nextStatus));
+  }, [searchParams]);
+
   const handleDateRangePreset = (preset: string) => {
-    const now = new Date();
-    let from: Date, to: Date;
-
-    switch (preset) {
-      case "this_month": {
-        from = startOfMonth(now);
-        to = endOfMonth(now);
-        break;
-      }
-      case "last_month": {
-        const lastMonth = subDays(startOfMonth(now), 1);
-        from = startOfMonth(lastMonth);
-        to = endOfMonth(lastMonth);
-        break;
-      }
-      case "this_quarter":
-        from = startOfQuarter(now);
-        to = endOfQuarter(now);
-        break;
-      case "this_year":
-        from = startOfYear(now);
-        to = now;
-        break;
-      case "last_7_days":
-        from = subDays(now, 7);
-        to = now;
-        break;
-      case "last_30_days":
-        from = subDays(now, 30);
-        to = now;
-        break;
-      default:
-        from = startOfYear(now);
-        to = now;
-    }
-
-    setDateRange({ from, to });
+    setDateRange(resolvePaymentPreset(preset));
     setDateRangePreset(preset);
   };
 
@@ -265,12 +285,13 @@ const PaymentReport: React.FC = () => {
     mutationFn: async (formatType: "csv" | "pdf") => {
       const params = new URLSearchParams({
         format: formatType,
-        ...(dateRange?.from && { from: format(dateRange.from, "dd/MM/yyyy") }),
-        ...(dateRange?.to && { to: format(dateRange.to, "dd/MM/yyyy") }),
+        ...(dateRange?.from && { from: formatReportQueryDate(dateRange.from) }),
+        ...(dateRange?.to && { to: formatReportQueryDate(dateRange.to) }),
         ...(selectedClients.length > 0 && {
           client_ids: selectedClients.join(","),
         }),
         ...(paymentMethod && { payment_method: paymentMethod }),
+        ...(statusFilter && { status: statusFilter }),
       });
 
       const response = await axios.get(
@@ -298,7 +319,7 @@ const PaymentReport: React.FC = () => {
   const columns: ColumnDef<Payment>[] = [
     {
       accessorKey: "payment_date",
-      header: "Date",
+      header: i18n.t("date"),
       cell: ({ row }) => (
         <div className="font-medium">
           {format(new Date(row.getValue("payment_date")), "MMM dd, yyyy")}
@@ -307,14 +328,14 @@ const PaymentReport: React.FC = () => {
     },
     {
       accessorKey: "client_name",
-      header: "Client",
+      header: i18n.t("client"),
       cell: ({ row }) => (
         <div className="font-medium">{row.getValue("client_name")}</div>
       ),
     },
     {
       accessorKey: "invoice_number",
-      header: "Invoice",
+      header: i18n.t("invoices.invoice"),
       cell: ({ row }) => (
         <div className="text-blue-600 hover:underline cursor-pointer">
           {row.getValue("invoice_number")}
@@ -323,7 +344,7 @@ const PaymentReport: React.FC = () => {
     },
     {
       accessorKey: "payment_method",
-      header: "Payment Method",
+      header: i18n.t("reports.paymentMethod"),
       cell: ({ row }) => {
         const method = row.getValue("payment_method") as string;
 
@@ -342,7 +363,7 @@ const PaymentReport: React.FC = () => {
     },
     {
       accessorKey: "amount",
-      header: () => <div className="text-right">Amount</div>,
+      header: () => <div className="text-right">{i18n.t("amount")}</div>,
       cell: ({ row }) => (
         <div className="text-right font-bold text-green-600">
           {currencyFormat(data?.currency, row.getValue("amount"))}
@@ -351,7 +372,7 @@ const PaymentReport: React.FC = () => {
     },
     {
       accessorKey: "notes",
-      header: "Notes",
+      header: i18n.t("notes"),
       cell: ({ row }) => (
         <div className="text-gray-600 text-sm truncate max-w-[200px]">
           {row.original.notes || "-"}
@@ -360,7 +381,7 @@ const PaymentReport: React.FC = () => {
     },
     {
       accessorKey: "status",
-      header: "Status",
+      header: i18n.t("status"),
       cell: ({ row }) => {
         const status = row.getValue("status") as string;
 
@@ -420,7 +441,7 @@ const PaymentReport: React.FC = () => {
   if (error) {
     return (
       <div className="text-center text-red-600 py-8">
-        Error loading payment report. Please try again.
+        {i18n.t("reports.unableToLoadPaymentReport")}
       </div>
     );
   }
@@ -433,10 +454,10 @@ const PaymentReport: React.FC = () => {
           <div className="flex flex-col md:flex-row md:justify-between md:items-center py-4 gap-4">
             <div>
               <h1 className="text-2xl font-semibold text-gray-900">
-                Payment Report
+                {i18n.t("reports.paymentReportTitle")}
               </h1>
               <p className="text-sm text-gray-600 mt-1">
-                Track and analyze all payment transactions
+                {i18n.t("reports.paymentReportDesc")}
               </p>
             </div>
 
@@ -447,16 +468,30 @@ const PaymentReport: React.FC = () => {
                 onValueChange={handleDateRangePreset}
               >
                 <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="Select period" />
+                  <SelectValue placeholder={i18n.t("selectPeriod")} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="this_month">This Month</SelectItem>
-                  <SelectItem value="last_month">Last Month</SelectItem>
-                  <SelectItem value="this_quarter">This Quarter</SelectItem>
-                  <SelectItem value="this_year">This Year</SelectItem>
-                  <SelectItem value="last_7_days">Last 7 Days</SelectItem>
-                  <SelectItem value="last_30_days">Last 30 Days</SelectItem>
-                  <SelectItem value="custom">Custom Range</SelectItem>
+                  <SelectItem value="this_month">
+                    {i18n.t("thisMonth")}
+                  </SelectItem>
+                  <SelectItem value="last_month">
+                    {i18n.t("lastMonth")}
+                  </SelectItem>
+                  <SelectItem value="this_quarter">
+                    {i18n.t("thisQuarter")}
+                  </SelectItem>
+                  <SelectItem value="this_year">
+                    {i18n.t("thisYear")}
+                  </SelectItem>
+                  <SelectItem value="last_7_days">
+                    {i18n.t("reports.lastSevenDays")}
+                  </SelectItem>
+                  <SelectItem value="last_30_days">
+                    {i18n.t("reports.lastThirtyDaysPreset")}
+                  </SelectItem>
+                  <SelectItem value="custom">
+                    {i18n.t("customRange")}
+                  </SelectItem>
                 </SelectContent>
               </Select>
 
@@ -481,7 +516,7 @@ const PaymentReport: React.FC = () => {
                         format(dateRange.from, "LLL dd, y")
                       )
                     ) : (
-                      <span>Pick a date range</span>
+                      <span>{i18n.t("pickADateRange")}</span>
                     )}
                   </Button>
                 </PopoverTrigger>
@@ -514,12 +549,14 @@ const PaymentReport: React.FC = () => {
                       >
                         <span className="truncate">
                           {selectedClients.length === 0
-                            ? "All Clients"
+                            ? i18n.t("clients.allClients")
                             : selectedClients.length === 1
                             ? data.filterOptions.clients.find(
                                 c => c.id === selectedClients[0]
                               )?.name
-                            : `${selectedClients.length} clients`}
+                            : i18n.t("reports.clientsSelected", {
+                                count: selectedClients.length,
+                              })}
                         </span>
                         <ChevronDown className="ml-2 h-4 w-4 shrink-0" />
                       </Button>
@@ -531,7 +568,7 @@ const PaymentReport: React.FC = () => {
                           className="w-full justify-start"
                           onClick={() => setSelectedClients([])}
                         >
-                          All Clients
+                          {i18n.t("clients.allClients")}
                         </Button>
                         {data.filterOptions.clients.map(client => (
                           <Button
@@ -568,20 +605,22 @@ const PaymentReport: React.FC = () => {
                 }
               >
                 <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="All Methods" />
+                  <SelectValue placeholder={i18n.t("reports.allMethods")} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Methods</SelectItem>
+                  <SelectItem value="all">
+                    {i18n.t("reports.allMethods")}
+                  </SelectItem>
                   {data?.filterOptions?.paymentMethods?.map(method => (
                     <SelectItem key={method.value} value={method.value}>
                       {method.label}
                     </SelectItem>
                   )) || [
                     <SelectItem key="credit_card" value="credit_card">
-                      Credit Card
+                      {i18n.t("reports.creditCard")}
                     </SelectItem>,
                     <SelectItem key="bank_transfer" value="bank_transfer">
-                      Bank Transfer
+                      {i18n.t("payments.bankTransfer")}
                     </SelectItem>,
                     <SelectItem key="paypal" value="paypal">
                       PayPal
@@ -598,7 +637,7 @@ const PaymentReport: React.FC = () => {
                 <DropdownMenuTrigger asChild>
                   <Button variant="outline">
                     <Download className="mr-2 h-4 w-4" />
-                    Export
+                    {i18n.t("reports.export")}
                     <ChevronDown className="ml-2 h-4 w-4" />
                   </Button>
                 </DropdownMenuTrigger>
@@ -606,12 +645,12 @@ const PaymentReport: React.FC = () => {
                   <DropdownMenuItem
                     onClick={() => downloadMutation.mutate("csv")}
                   >
-                    Export as CSV
+                    {i18n.t("reports.exportAsCsv")}
                   </DropdownMenuItem>
                   <DropdownMenuItem
                     onClick={() => downloadMutation.mutate("pdf")}
                   >
-                    Export as PDF
+                    {i18n.t("reports.exportAsPdf")}
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -626,7 +665,7 @@ const PaymentReport: React.FC = () => {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">
-                Total Payments
+                {i18n.t("reports.totalPayments")}
               </CardTitle>
               <DollarSign className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
@@ -643,7 +682,7 @@ const PaymentReport: React.FC = () => {
                       dateRange.to,
                       "MMM d, yyyy"
                     )}`
-                  : "Selected period"}
+                  : i18n.t("reports.selectedPeriod")}
               </p>
             </CardContent>
           </Card>
@@ -651,7 +690,7 @@ const PaymentReport: React.FC = () => {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">
-                Payment Count
+                {i18n.t("reports.paymentCount")}
               </CardTitle>
               <Hash className="h-4 w-4 text-blue-600" />
             </CardHeader>
@@ -660,7 +699,7 @@ const PaymentReport: React.FC = () => {
                 {data?.summary?.payment_count || 0}
               </div>
               <p className="text-xs text-muted-foreground">
-                Total transactions
+                {i18n.t("reports.totalTransactions")}
               </p>
             </CardContent>
           </Card>
@@ -668,7 +707,7 @@ const PaymentReport: React.FC = () => {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">
-                Average Payment
+                {i18n.t("reports.averagePayment")}
               </CardTitle>
               <TrendingUp className="h-4 w-4 text-indigo-600" />
             </CardHeader>
@@ -679,13 +718,17 @@ const PaymentReport: React.FC = () => {
                   data?.summary?.average_payment || 0
                 )}
               </div>
-              <p className="text-xs text-muted-foreground">Per transaction</p>
+              <p className="text-xs text-muted-foreground">
+                {i18n.t("reports.perTransaction")}
+              </p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Top Method</CardTitle>
+              <CardTitle className="text-sm font-medium">
+                {i18n.t("reports.topMethod")}
+              </CardTitle>
               <CreditCard className="h-4 w-4 text-purple-600" />
             </CardHeader>
             <CardContent>
@@ -714,7 +757,9 @@ const PaymentReport: React.FC = () => {
           Object.keys(data.summary.by_payment_method).length > 0 && (
             <Card className="mb-6">
               <CardHeader>
-                <CardTitle>Payment Methods Breakdown</CardTitle>
+                <CardTitle>
+                  {i18n.t("reports.paymentMethodsBreakdown")}
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -749,7 +794,7 @@ const PaymentReport: React.FC = () => {
         {/* Payments Table */}
         <Card>
           <CardHeader>
-            <CardTitle>Payment Details</CardTitle>
+            <CardTitle>{i18n.t("reports.paymentDetails")}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="rounded-md border">
@@ -793,7 +838,7 @@ const PaymentReport: React.FC = () => {
                         colSpan={columns.length}
                         className="h-24 text-center"
                       >
-                        No payments found for the selected period.
+                        {i18n.t("reports.noPaymentsFoundForSelectedPeriod")}
                       </TableCell>
                     </TableRow>
                   )}
@@ -804,14 +849,19 @@ const PaymentReport: React.FC = () => {
             {/* Pagination */}
             <div className="flex flex-col items-center gap-2 py-4 text-sm text-muted-foreground">
               <span>
-                Showing {displayedRows} of {totalRows} payments
+                {i18n.t("reports.showingPayments", {
+                  shown: displayedRows,
+                  total: totalRows,
+                })}
               </span>
-              {hasMoreRows && <span>Scroll to load more payments</span>}
+              {hasMoreRows && (
+                <span>{i18n.t("reports.scrollToLoadMorePayments")}</span>
+              )}
               {hasMoreRows && (
                 <div ref={loadMoreRowsRef} className="h-8 w-full" />
               )}
               {!hasMoreRows && totalRows > 0 && (
-                <span>All payments loaded</span>
+                <span>{i18n.t("payments.allPaymentsLoaded")}</span>
               )}
             </div>
           </CardContent>

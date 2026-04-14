@@ -3,6 +3,7 @@ import React from "react";
 import CustomYearPicker from "common/CustomYearPicker";
 import { getYear } from "date-fns";
 import { useLocation } from "react-router-dom";
+import { i18n } from "../../../i18n";
 
 import { Button } from "../../ui/button";
 
@@ -44,7 +45,7 @@ const DetailsHeader = ({
               type="button"
               variant="outline"
             >
-              Edit
+              {i18n.t("edit")}
             </Button>
           )}
         </div>
@@ -76,7 +77,7 @@ const DetailsHeader = ({
             type="button"
             variant="outline"
           >
-            Edit
+            {i18n.t("edit")}
           </Button>
         )}
       </div>

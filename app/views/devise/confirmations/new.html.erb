@@ -8,10 +8,10 @@
             <div class="space-y-6">
               <div class="text-center">
                 <h2 class="text-2xl font-bold tracking-tight text-gray-900">
-                  Email Confirmation Required
+                  <%= t("devise.confirmations.new.title") %>
                 </h2>
                 <p class="mt-2 text-sm text-gray-600">
-                  Your confirmation link has expired or is invalid. Please request a new one.
+                  <%= t("devise.confirmations.new.description") %>
                 </p>
               </div>
 
@@ -45,16 +45,16 @@
                 </div>
 
                 <div>
-                  <%= f.submit "Resend Confirmation Email",
+                  <%= f.submit t("devise.confirmations.new.resend"),
                       class: "w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 cursor-pointer transition-colors" %>
                 </div>
               <% end %>
 
               <div class="text-center">
                 <p class="text-sm text-gray-600">
-                  Remember your password?
+                  <%= t("devise.confirmations.new.remember_password") %>
                   <a href="/login" class="font-medium text-indigo-600 hover:text-indigo-500">
-                    Sign in
+                    <%= t("devise.confirmations.new.sign_in") %>
                   </a>
                 </p>
               </div>

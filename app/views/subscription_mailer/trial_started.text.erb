@@ -1,7 +1,7 @@
-Hello <%= @recipient.first_name.presence || @recipient.email %>,
+<%= t("mailers.subscription.trial_started_text.greeting", name: @recipient.first_name.presence || @recipient.email) %>
 
-Your 30-day Miru Pro trial for <%= @company.name %> is now active.
+<%= t("mailers.subscription.trial_started_text.body", company: @company.name) %>
 
-Trial ends on <%= @trial_end_date_text %>.
+<%= t("mailers.subscription.trial_started_text.trial_ends", date: @trial_end_date_text) %>
 
-Review billing at <%= @billing_url %>.
+<%= t("mailers.subscription.trial_started_text.review_billing", url: @billing_url) %>

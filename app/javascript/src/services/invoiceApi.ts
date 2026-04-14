@@ -280,6 +280,12 @@ class InvoiceApiService {
     return response.data;
   }
 
+  async waiveInvoice(id: string): Promise<{ message?: string }> {
+    const response = await axios.patch(`/invoices/waived/${id}`);
+
+    return response.data;
+  }
+
   /**
    * Download invoice PDF
    */
@@ -398,6 +404,7 @@ class InvoiceApiService {
         email: apiInvoice.client?.email || "",
         address: formatAddress(apiInvoice.client?.address),
         logo: apiInvoice.client?.logo,
+        phone: apiInvoice.client?.phone || "",
         currency:
           apiInvoice.client?.clientCurrency ||
           apiInvoice.client?.currency ||
@@ -456,6 +463,12 @@ class InvoiceApiService {
       })),
       company: {
         ...apiInvoice.company,
+        logo: apiInvoice.company?.logo || "",
+        phone: apiInvoice.company?.phone || apiInvoice.company?.phone_number,
+        baseCurrency:
+          apiInvoice.company?.baseCurrency || apiInvoice.company?.currency,
+        dateFormat:
+          apiInvoice.company?.dateFormat || apiInvoice.company?.date_format,
         address: apiInvoice.company?.address
           ? formatAddress(apiInvoice.company.address)
           : "",

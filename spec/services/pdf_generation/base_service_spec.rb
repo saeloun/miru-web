@@ -75,10 +75,12 @@ RSpec.describe PdfGeneration::BaseService do
 
     it "uses the local default process timeout outside CI" do
       original_ci = ENV["CI"]
+      original_test_env_number = ENV["TEST_ENV_NUMBER"]
       original_ferrum_process_timeout = ENV["FERRUM_PROCESS_TIMEOUT"]
 
       begin
         ENV.delete("CI")
+        ENV.delete("TEST_ENV_NUMBER")
         ENV.delete("FERRUM_PROCESS_TIMEOUT")
         allow(Ferrum::Browser).to receive(:new).and_return(instance_double(Ferrum::Browser, quit: true))
 
@@ -87,6 +89,11 @@ RSpec.describe PdfGeneration::BaseService do
         expect(Ferrum::Browser).to have_received(:new).with(hash_including(process_timeout: 10))
       ensure
         ENV["CI"] = original_ci
+        if original_test_env_number.nil?
+          ENV.delete("TEST_ENV_NUMBER")
+        else
+          ENV["TEST_ENV_NUMBER"] = original_test_env_number
+        end
         ENV["FERRUM_PROCESS_TIMEOUT"] = original_ferrum_process_timeout
       end
     end
@@ -148,10 +155,12 @@ RSpec.describe PdfGeneration::BaseService do
 
     it "falls back to the default timeout when the override is invalid" do
       original_ci = ENV["CI"]
+      original_test_env_number = ENV["TEST_ENV_NUMBER"]
       original_ferrum_process_timeout = ENV["FERRUM_PROCESS_TIMEOUT"]
 
       begin
         ENV.delete("CI")
+        ENV.delete("TEST_ENV_NUMBER")
         ENV["FERRUM_PROCESS_TIMEOUT"] = "abc"
         allow(Ferrum::Browser).to receive(:new).and_return(instance_double(Ferrum::Browser, quit: true))
 
@@ -160,6 +169,11 @@ RSpec.describe PdfGeneration::BaseService do
         expect(Ferrum::Browser).to have_received(:new).with(hash_including(process_timeout: 10))
       ensure
         ENV["CI"] = original_ci
+        if original_test_env_number.nil?
+          ENV.delete("TEST_ENV_NUMBER")
+        else
+          ENV["TEST_ENV_NUMBER"] = original_test_env_number
+        end
         ENV["FERRUM_PROCESS_TIMEOUT"] = original_ferrum_process_timeout
       end
     end

@@ -89,4 +89,14 @@ RSpec.configure do |config|
     process_num = ENV["TEST_ENV_NUMBER"].to_s.empty? ? "0" : ENV["TEST_ENV_NUMBER"]
     config.add_formatter "RspecJunitFormatter", "tmp/rspec#{process_num}.xml"
   end
+
+  if ENV["PARALLEL_RUNTIME_LOG"].to_s.length > 0
+    require "parallel_tests/rspec/runtime_logger"
+    config.add_formatter ParallelTests::RSpec::RuntimeLogger, ENV["PARALLEL_RUNTIME_LOG"]
+  end
+
+  if ENV["PARALLEL_FAILURES_LOG"].to_s.length > 0
+    require "parallel_tests/rspec/failures_logger"
+    config.add_formatter ParallelTests::RSpec::FailuresLogger, ENV["PARALLEL_FAILURES_LOG"]
+  end
 end

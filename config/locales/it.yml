@@ -1,16 +1,52 @@
 ---
 it:
-  activerecord:
-    errors:
-      models:
-        client:
-          attributes:
-            name:
-              format: "%{message}"
-        project:
-          attributes:
-            name:
-              format: "%{message}"
+  analytics:
+    activity:
+      amount_collected: Importo raccolto
+      bank_transfers_month: Bonifici bancari (mensili)
+      created: Creato
+      downloaded: Scaricato
+      invoice_activity_today: Attività di fatturazione odierna
+      payment_activity: Attività di pagamento
+      payments_today: Pagamenti oggi
+      sent: Inviato
+      stripe_payments_month: Pagamenti Stripe (mensili)
+      viewed: Visualizzato
+    currency:
+      conversion_impact: Impatto della conversione
+      currencies_in_use: valute in uso
+      invoices_with_conversion: Fatture con conversione
+      recent_exchange_rates: Tassi di cambio recenti
+      table:
+        date: Data
+        from: Da
+        rate: Valutare
+        source: Fonte
+        to: A
+      title: Approfondimenti sulla conversione di valuta
+    overview:
+      active_clients: Clienti attivi
+      outstanding: Eccezionale
+      overdue: In ritardo
+      total_revenue: Ricavo totale
+    recent_activity:
+      ago: "%{time} fa"
+      invoice_reference: fattura
+      system: Sistema
+      title: Attività recenti
+    super_admin: Super amministratore
+    tabs:
+      activity: Attività
+      clients: Clienti
+      currency_exchange: Valuta e cambio
+      overview: Panoramica
+      revenue: Reddito
+      users: Utenti
+    title: Dashboard di analisi
+    welcome: Benvenuto, %{name}
+  app:
+    name: Sistema operativo dell'agenzia Miru
+    tagline: Gestisci le operazioni della tua agenzia da un unico centro di comando.
   application_controller:
     not_found: Percorso non trovato
   avatar:
@@ -84,20 +120,6 @@ it:
   employment:
     update:
       success: Aggiornamento dello stato occupazionale completato con successo.
-  errors:
-    bill_status_billed: Non è possibile fatturare una voce che è già stata fatturata
-    can't change status: non può essere modificato una fattura pagata
-    create_billed_entry: Non è possibile creare una voce di foglio presenze fatturabile
-    internal_server_error: Qualcosa è andato storto
-    not_found: La risorsa che stai cercando non è disponibile
-    prevent_draft_to_waived: non può essere modificato in rinunciato
-    unauthorized: Solo gli utenti proprietari o amministratori sono autorizzati a
-      eseguire questa azione.
-    updation_not_allowed: L'aggiornamento non è consentito
-    user_already_member: L'indirizzo email è già in uso. Inserisci un altro indirizzo
-      email.
-    validate_billable_project: Non è possibile creare una voce non fatturata per progetti
-      non fatturabili.
   expenses:
     approve: Spesa approvata con successo
     create: Spesa inviata correttamente
@@ -171,6 +193,319 @@ it:
       success: Uscita creata con successo
     update:
       success: Uscita aggiornata correttamente
+  mailers:
+    actions:
+      join_miru: Unisciti a Miru
+      open_expense: Spese aperte
+      open_invoice: Apri fattura
+      open_time_tracking: Monitoraggio del tempo di apertura
+      view_reports: Visualizza i report in Miru
+    client_payment_mailer:
+      payment:
+        eyebrow: Pagamenti
+        preheader: Ricevuta di pagamento per la fattura %{invoice_number}.
+        receipt_title: Pagamento ricevuto
+        records_body: Questa ricevuta conferma il pagamento. Puoi riaprire la fattura
+          in qualsiasi momento se hai bisogno di consultare nuovamente i dettagli.
+        records_title: Conserva questo documento per i tuoi archivi.
+        subject: Ricevuta di pagamento per la fattura %{invoice_number}
+        subtitle_html: Abbiamo ricevuto il pagamento per la fattura <strong>%{invoice_number}</strong>
+          .
+        summary_html: Abbiamo ricevuto <strong>%{amount}</strong> su <strong>%{paid_on}</strong>
+          per la fattura <strong>%{invoice_number}</strong> .
+        title: Ricevuta di pagamento
+    devise:
+      confirmation:
+        body_intro: 'Sei quasi pronto. Ecco alcune delle cose che puoi fare con Miru
+          fin dal primo giorno:'
+        cta: Conferma l'indirizzo e-mail
+        cta_body: Utilizza il pulsante qui sotto per confermare il tuo indirizzo email.
+        eyebrow: Configurazione dell'account
+        feature_1: Invia fatture professionali con link di pagamento ospitati.
+        feature_2: Monitora tempi, spese e utilizzo in un unico flusso di lavoro.
+        feature_3: Gestisci il tuo team, i clienti e la fatturazione da un'unica postazione
+          di lavoro.
+        feature_4: Tieni sotto controllo entrate, fatture scadute e attività di pagamento.
+        footer_note: Se non hai creato un account Miru, puoi tranquillamente ignorare
+          questo messaggio.
+        greeting_html: Ciao <strong>%{name}</strong> ,
+        preheader: Conferma il tuo indirizzo email per completare la configurazione
+          di Miru.
+        subtitle: Conferma il tuo indirizzo email per iniziare a monitorare il tempo,
+          inviare fatture e gestire il tuo team da un'unica piattaforma.
+        title: Benvenuto a Miru
+      email_changed:
+        changed_html: L'indirizzo email del tuo account è stato modificato in <strong>%{email}</strong>
+          .
+        eyebrow: Sicurezza dell'account
+        greeting_html: Ciao <strong>%{email}</strong> ,
+        pending_html: L'indirizzo email del tuo account verrà modificato in <strong>%{email}</strong>
+          .
+        preheader: Il tuo indirizzo email Miru è cambiato.
+        subtitle: Questo messaggio conferma la modifica dell'indirizzo email associato
+          al tuo account Miru.
+        title: Indirizzo email aggiornato
+        warning_body_html: Contatta subito il nostro team di supporto al <a href="mailto:%{email}">numero
+          %{email}</a> .
+        warning_title: Non hai richiesto questa modifica?
+      password_change:
+        eyebrow: Sicurezza dell'account
+        greeting_html: Ciao <strong>%{name}</strong> ,
+        preheader: La tua password di Miru è stata modificata.
+        subtitle: La password del tuo account Miru è stata aggiornata correttamente.
+        success_body: Puoi continuare ad accedere a Miru utilizzando la tua nuova
+          password.
+        success_title: La tua password è stata aggiornata.
+        title: Password modificata con successo
+        warning_body_html: Contatta subito <a href="mailto:%{email}">%{email}</a>
+          per ricevere assistenza nella protezione del tuo account.
+        warning_title: Non hai apportato questa modifica?
+      reset_password:
+        cta: Reimposta la password
+        cta_body: Utilizza il pulsante qui sotto per scegliere una nuova password.
+          Questo link di reimpostazione scade tra 24 ore.
+        eyebrow: Sicurezza dell'account
+        footer_note: Se non hai richiesto il ripristino della password, puoi ignorare
+          questo messaggio e la tua password rimarrà invariata.
+        greeting: Ciao,
+        preheader: Reimposta la password del tuo account Miru.
+        request_html: Abbiamo ricevuto una richiesta di modifica della password associata
+          a <strong>%{email}</strong> .
+        subtitle: Abbiamo ricevuto una richiesta di reimpostazione della password
+          per il tuo account Miru.
+        title: Reimposta la tua password
+      shared:
+        signature_html: Grazie,<br> <strong>Team Miru</strong>
+      unlock:
+        cta: Reimposta la password
+        eyebrow: Sicurezza dell'account
+        footer_note: Se non hai ancora provato ad accedere, attendi che il blocco
+          scada e cambia subito la password.
+        greeting_html: Ciao <strong>%{email}</strong> ,
+        preheader: Sblocca il tuo account Miru dopo troppi tentativi di accesso non
+          riusciti.
+        subtitle: Abbiamo bloccato il tuo account Miru dopo troppi tentativi di accesso
+          non riusciti.
+        title: Il tuo account è temporaneamente bloccato.
+        warning_body: Miru sblocca automaticamente gli account dopo 30 minuti. Se
+          non riconosci questi tentativi, reimposta la password in modo che il tuo
+          account sia al sicuro allo scadere del blocco.
+        warning_title: Il numero di tentativi di accesso ha superato il limite consentito.
+    expense_mailer:
+      approved:
+        eyebrow: Spese
+        preheader: La tua richiesta di rimborso è stata approvata.
+        subject: Il rimborso è stato approvato.
+        subtitle: La tua richiesta di rimborso è stata esaminata e approvata.
+        title: Rimborso approvato
+      paid:
+        eyebrow: Spese
+        preheader: La tua richiesta di rimborso è stata contrassegnata come pagata.
+        subject: Il tuo rimborso è stato contrassegnato come pagato.
+        subtitle: Il pagamento per la tua richiesta di rimborso è stato completato.
+        title: Rimborso pagato
+      rejected:
+        eyebrow: Spese
+        next_step_body: Apri la nota spese, apporta le modifiche necessarie e inviala
+          nuovamente.
+        next_step_title: Passo successivo
+        preheader: La tua richiesta di rimborso necessita di aggiornamenti.
+        subject: La tua richiesta di rimborso necessita di aggiornamenti prima di
+          poter essere approvata.
+        subtitle: Si prega di rivedere i dettagli della richiesta, apportare le modifiche
+          necessarie e inviarla nuovamente.
+        title: Necessita di aggiornamenti sui rimborsi
+      submitted:
+        eyebrow: Spese
+        preheader: Una nuova richiesta di rimborso necessita di revisione.
+        subject: "%{submitter_name} ha presentato una richiesta di rimborso"
+        subtitle_html: "<strong>%{submitter_name}</strong> ha inviato una richiesta
+          di rimborso che è pronta per la revisione."
+        title: Nuova richiesta di rimborso
+    invoice_mailer:
+      invoice:
+        eyebrow: Spese
+        payment_link_subvalue: Rivedi le voci dell'ordine ed effettua il pagamento
+          online.
+        payment_link_value: Pagina di fatturazione sicura
+        preheader: Fattura %{invoice_number} da %{company_name}.
+        ready_body: Apri la pagina sicura della fattura per verificare le voci, confermare
+          il totale ed effettuare il pagamento online.
+        ready_title: Rivedi prima di pagare
+        subject: Fattura %{invoice_number}
+        subtitle_html: "<strong>%{company_name}</strong> ha inviato la fattura <strong>%{invoice_number}</strong>
+          . Puoi visualizzarla e pagarla online quando sei pronto."
+        support_html: Domande su questa fattura? Rispondi a questa email o contatta
+          <a href="mailto:%{support_email}">%{support_email}</a> .
+        title: Fattura pronta per la revisione
+      send_invoice:
+        attachment_subvalue: Conservalo, inoltralo o archivialo.
+        attachment_value: PDF allegato
+        eyebrow: Spese
+        next_steps_body: Apri la fattura per confermare l'importo, controlla le voci
+          e paga quando sei pronto.
+        next_steps_title: Cosa aspettarsi
+        note_title: Una nota da %{company_name}
+        preheader: La fattura %{invoice_number} da %{company_name} è pronta.
+        subject: Fattura %{invoice_number} da %{company_name}
+        subtitle_html: "<strong>%{company_name}</strong> ha inviato la fattura <strong>%{invoice_number}</strong>
+          . Aprila per visualizzare i dettagli, scaricare il PDF ed effettuare il
+          pagamento in modo sicuro."
+        support_html: Hai bisogno di aiuto? Rispondi a questa email o contatta <a
+          href="mailto:%{support_email}">%{support_email}</a> .
+        title: Fattura pronta per la revisione
+    labels:
+      amount: Quantità
+      amount_due: Importo dovuto
+      amount_paid: Importo pagato
+      attachment: Allegato
+      category: Categoria
+      client: Cliente
+      date: Data
+      description: Descrizione
+      due_date: Scadenza
+      invited_by: Invitato da
+      invoice: Fattura
+      invoice_number: Numero di fattura
+      issue_date: Data di emissione
+      issued_to: Emesso a
+      members: Membri
+      outstanding_amount: Importo residuo
+      paid_on: Pagato su
+      payment_link: Link per il pagamento
+      payment_method: Metodo di pagamento
+      reference: Riferimento
+      status: Stato
+      total_amount: Importo totale
+      workspace: Spazio di lavoro
+    layout:
+      brand: Miru
+      footer_body: Miru gestisce tempo, fatture, pagamenti e operazioni in un unico
+        spazio di lavoro intuitivo.
+      footer_contact: support@getmiru.com
+      footer_copyright: "© Miru. Tutti i diritti riservati."
+      footer_site: app.miru.so
+      preheader: Un aggiornamento chiaro da parte di Miru.
+    monthly_reports_mailer:
+      cash_flow_digest:
+        average_daily_net_change_html: Variazione netta media giornaliera <strong>%{amount}</strong>
+        compare_to_previous: vs. %{amount} in %{month_label}
+        eyebrow: Riepilogo mensile
+        money_in: Denaro in
+        money_out: Prelievo di denaro
+        net_change: Variazione netta di %{month_label}
+        no_money_in: In Miru non è stato registrato alcun pagamento per %{month_year_label}.
+        no_money_out: In Miru non sono state registrate spese pagate per %{month_year_label}.
+        preheader: Riepilogo del flusso di cassa %{company_name} %{month_label}
+        subject: Riepilogo del flusso di cassa %{company_name} %{month_label}
+        subtitle: Ecco una panoramica sintetica del flusso di denaro attraverso Miru
+          per %{month_year_label}.
+        title: Riepilogo del flusso di cassa %{company_name} %{month_label}
+        top_money_in_sources: Principali fonti di finanziamento
+        top_money_out_sources: Principali categorie di prelievo di denaro
+    payment_mailer:
+      payment:
+        eyebrow: Pagamenti
+        follow_up_body: Apri la fattura per confermare il pagamento, archivia la ricevuta
+          oppure procedi con il passaggio successivo.
+        follow_up_title: Cosa fare dopo?
+        preheader: Conferma di pagamento per la fattura %{invoice_number}.
+        received_title: Pagamento ricevuto
+        subject: Dettagli di pagamento per la fattura %{invoice_number}
+        subtitle_html: "<strong>%{client_name}</strong> ha pagato la fattura <strong>%{invoice_number}</strong>
+          ."
+        summary_html: "<strong>%{client_name}</strong> ha pagato <strong>%{amount}</strong>
+          per la fattura <strong>%{invoice_number}</strong> . Questa fattura è ora
+          interamente saldata."
+        title: Conferma di pagamento
+    send_payment_reminder_mailer:
+      send_payment_reminder:
+        eyebrow: Spese
+        preheader: Promemoria di pagamento per le fatture %{company_name}.
+        subject: Promemoria di pagamento per %{company_name}
+        subtitle: Ecco le fatture che necessitano ancora di attenzione.
+        title: Promemoria di pagamento
+    send_reminder_mailer:
+      send_reminder:
+        eyebrow: Spese
+        preheader: Promemoria per la fattura %{invoice_number} da %{company_name}.
+        subject: Promemoria per la fattura %{invoice_number} da %{company_name}
+        subtitle_html: La fattura <strong>%{invoice_number}</strong> di <strong>%{company_name}</strong>
+          è ancora in attesa di pagamento.
+        title: Promemoria di pagamento
+    send_weekly_reminder_to_user_mailer:
+      notify_user_about_missed_entries:
+        body_html: Hai registrato meno di 40 ore tra <strong>%{starting_date}</strong>
+          e <strong>%{ending_date}</strong> .
+        eyebrow: Tracciamento temporale
+        follow_up: Apri Miru, aggiungi le voci mancanti e chiudi la settimana.
+        greeting_html: Ciao <strong>%{name}</strong> ,
+        preheader: Aggiorna il tuo foglio presenze su Miru per la settimana mancante.
+        signoff_html: Grazie,<br> <strong>Miru</strong>
+        subject: Completa il tuo foglio presenze Miru per la scorsa settimana.
+        subtitle: Le ore lavorate per %{company_name} sono ancora al di sotto del
+          totale settimanale previsto.
+        title: Completa il tuo foglio presenze
+    subscription:
+      plan_purchased:
+        badge: Cha-ching
+        billing_interval: Intervallo di fatturazione
+        billing_settings_html: 'Impostazioni di fatturazione: <a href="%{url}" style="color:
+          #111827;">%{url}</a>'
+        company: Azienda
+        cta: Impostazioni di fatturazione aperte
+        image_label: Nuovo piano a pagamento
+        image_text: Nuovo spazio di lavoro a pagamento
+        plan: Piano
+        stripe_subscription: Abbonamento Stripe
+        subtitle: Nuovo spazio di lavoro a pagamento su Miru. La fatturazione è attiva.
+        team_seats: Posti a sedere della squadra
+        title: "%{company} ha appena acquistato %{plan}"
+      plan_purchased_text:
+        billing_interval: 'Intervallo di fatturazione: %{interval}'
+        billing_settings: 'Apri le impostazioni di fatturazione: %{url}'
+        company: 'Azienda: %{company}'
+        plan: 'Piano: %{plan}'
+        stripe_subscription: 'Abbonamento Stripe: %{id}'
+        team_seats: 'Posti a sedere della squadra: %{seats}'
+      trial_started:
+        body_html: La tua prova gratuita di 30 giorni di Miru Pro per <strong>%{company}</strong>
+          è ora attiva.
+        cta: Fatturazione aperta
+        eyebrow: Fatturazione
+        footer_body: Dalle impostazioni di fatturazione puoi visualizzare i dettagli
+          della fatturazione, confrontare i piani tariffari ed effettuare l'upgrade
+          in qualsiasi momento.
+        greeting_html: Ciao <strong>%{name}</strong> ,
+        preheader: La tua versione di prova di Miru Pro è ora attiva.
+        subtitle: Scopri la fatturazione, i report e il resto del flusso di lavoro
+          della versione Pro durante la tua prova gratuita di 30 giorni.
+        title: La tua versione di prova di Miru Pro è attiva.
+        trial_ends: Il processo termina
+      trial_started_text:
+        body: La tua prova gratuita di 30 giorni di Miru Pro per %{company} è ora
+          attiva.
+        greeting: Ciao %{name},
+        review_billing: Rivedi la fatturazione su %{url}.
+        trial_ends: La prova termina su %{date}.
+    user_invitation_mailer:
+      send_user_invitation:
+        about_body: Miru riunisce in un unico spazio di lavoro tempo, fatture, pagamenti
+          e operazioni quotidiane.
+        about_title: Informazioni su Miru
+        eyebrow: Invito
+        get_started_body: Accetta l'invito, crea la tua password e il gioco è fatto.
+        get_started_title: Inizia
+        preheader: Sei stato invitato a unirti a un team su Miru.
+        subject: Sei invitato a unirti a Miru
+        subtitle_html: "<strong>%{sender_name}</strong> ti ha invitato a unirti <strong>a
+          %{company_name}</strong> su Miru."
+        support_html: Se non ti aspettavi questo invito, contatta il nostro team all'indirizzo
+          <a href="mailto:%{support_email}">%{support_email}</a> .
+        title: Accedi al tuo spazio di lavoro Miru
+        workspace_members:
+          one: 1 membro
+          other: "%{count} membri"
   navbar:
     clients: Clienti
     help: Aiuto
@@ -201,6 +536,74 @@ it:
         indirizzo email.
     update:
       success: La tua password è stata aggiornata.
+  pdfs:
+    accounts_aging:
+      client: Cliente
+      title: Report sull'anzianità dei conti
+      total: Totale
+    client_revenues:
+      client: Cliente
+      outstanding_amount: Importo residuo
+      overdue_amount: Importo scaduto
+      paid_amount: Importo pagato
+      title: Report sui ricavi del cliente
+      total_revenue: Ricavo totale
+    invoices:
+      amount_due: Importo dovuto
+      amount_paid: Importo pagato
+      billed_to: Fatturato a
+      client_invoice: Fattura al cliente
+      discount: Sconto
+      due: 'Scadenza: %{due_date}'
+      invoice_number: Numero fattura
+      issue_date: Data di emissione
+      paid: 'Pagato: %{amount}'
+      payment_details: Dettagli di pagamento
+      payment_rows:
+        account_number: Numero di conto
+        bank_name: Nome della banca
+        gst_number: Numero GST
+        routing_number: Numero di instradamento
+        swift_code: Codice SWIFT
+        tax_id: Codice fiscale
+        vat_number: Partita IVA
+      prepared_by: Preparato da %{company_name}, emesso da %{issue_date}, scadenza
+        %{due_date}.
+      reference: 'Riferimento: %{reference}'
+      sub_total: Subtotale
+      table:
+        date: Data
+        description: Descrizione
+        line_total: Totale della riga
+        name: Nome
+        qty: Quantità
+        rate: Valutare
+      tax: Tassare
+      title: Fattura
+      total: Totale
+      total_invoice_amount: Importo totale della fattura
+      work_summary: Riepilogo del lavoro
+    outstanding_overdue_invoices:
+      amount: Quantità
+      client: Cliente
+      due_date: Scadenza
+      invoice_number: Numero fattura
+      issue_date: Data di emissione
+      no_clients_found: Nessun cliente trovato
+      outstanding_amount: Importo residuo
+      overdue_amount: Importo scaduto
+      status: Stato
+      title: Report delle fatture in sospeso e scadute
+      total_amounts: Importi totali
+      total_invoice_amount: Importo totale della fattura
+    time_entries:
+      client: Cliente
+      date: Data
+      hours_logged: Ore registrate
+      note: Nota
+      project: Progetto
+      team_member: Membro del team
+      title: Report di inserimento orario
   projects:
     add_new_project: Aggiungi nuovo progetto
     add_project: Aggiungi progetto

@@ -220,4 +220,32 @@ RSpec.describe "Expenses", type: :system, js: true do
       expect(page).to have_button("Add Expense", disabled: false, wait: 10)
     end
   end
+
+  it "allows saving a custom category when Other is selected in edit expense" do
+    expense = create(:expense,
+      company:,
+      user: user,
+      category_name: "Travel",
+      vendor_name: "Acme Supplies",
+      amount: 88.25,
+      expense_type: :business,
+      description: "Subscription renewal",
+      date: Date.current)
+
+    with_forgery_protection do
+      visit "/expenses"
+
+      find("button[aria-label='Expense actions for Subscription renewal']", wait: 10).click
+      find("[role='menuitem']", text: "Edit expense", wait: 10).click
+
+      find("label[for='edit-category']", wait: 10).find(:xpath, "..").find("button").click
+      find("[role='option']", text: "Other", wait: 10).click
+      fill_in "edit-custom-category", with: "Software Subscription"
+      click_button "Save Changes"
+
+      expect(page).to have_content("Expense updated successfully", wait: 10)
+      expect(expense.reload.category_name).to eq("Software Subscription")
+      expect(page).to have_content("Software Subscription", wait: 10)
+    end
+  end
 end

@@ -45,7 +45,48 @@ RSpec.describe "Profile Settings", type: :system, js: true do
 
       expect(page).to have_css("#react-root", wait: 10)
       expect(page).to have_content("हिन्दी", wait: 10)
-      expect(page).to have_content("Personal Information", wait: 10)
+      expect(page).to have_content("व्यक्तिगत जानकारी", wait: 10)
+      expect(page).to have_content("व्यक्तिगत सेटिंग्स", wait: 10)
+      expect(page).to have_content("कंपनी सेटिंग्स", wait: 10)
+      expect(page).to have_content("प्रोफ़ाइल", wait: 10)
+      expect(page).to have_content("प्राथमिकताएँ", wait: 10)
+      expect(page).to have_content("अवकाश", wait: 10)
+      expect(page).to have_content("छुट्टियों का कैलेंडर", wait: 10)
+      expect(page).to have_button("संपादित करें", wait: 10)
+
+      click_button "संपादित करें"
+
+      expect(page).to have_current_path("/settings/profile/edit", wait: 10)
+      expect(page).to have_button("रद्द करें", wait: 10)
+      expect(page).to have_button("अपडेट करें", wait: 10)
+
+      visit "/settings/preferences"
+
+      expect(page).to have_css("#react-root", wait: 10)
+      expect(page).to have_content("ईमेल प्राथमिकताएं", wait: 10)
+      expect(page).to have_content("साप्ताहिक टाइमशीट रिमाइंडर", wait: 10)
+
+      visit "/settings/notifications"
+
+      expect(page).to have_css("#react-root", wait: 10)
+      expect(page).to have_content("सूचना सेटिंग्स", wait: 10)
+      expect(page).to have_content("ईमेल सूचनाएं", wait: 10)
+      expect(page).to have_content("साप्ताहिक ईमेल रिमाइंडर", wait: 10)
+
+      visit "/settings/employment"
+
+      expect(page).to have_css("#react-root", wait: 10)
+      expect(page).to have_content("रोजगार विवरण", wait: 10)
+      expect(page).to have_content("वर्तमान रोजगार", wait: 10)
+      expect(page).to have_content("कर्मचारी आईडी", wait: 10)
+
+      click_button "संपादित करें"
+
+      expect(page).to have_current_path("/settings/employment/edit", wait: 10)
+      expect(page).to have_content("रोजगार विवरण", wait: 10)
+      expect(page).to have_field("employee_id", wait: 10)
+      expect(page).to have_content("कर्मचारी आईडी", wait: 10)
+      expect(page).to have_content("रोजगार प्रकार", wait: 10)
     end
   end
 
@@ -68,6 +109,11 @@ RSpec.describe "Profile Settings", type: :system, js: true do
       expect(page).to have_css("#react-root", wait: 10)
       expect(page).to have_content("Email Preferences", wait: 10)
       expect(page).to have_content("Weekly Timesheet Reminder", wait: 10)
+
+      visit "/settings/notifications"
+      expect(page).to have_css("#react-root", wait: 10)
+      expect(page).to have_content("Notification Settings", wait: 10)
+      expect(page).to have_content("Email Notifications", wait: 10)
 
       visit "/settings/holidays"
       expect(page).to have_css("#react-root", wait: 10)

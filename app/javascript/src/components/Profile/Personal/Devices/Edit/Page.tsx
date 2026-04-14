@@ -27,6 +27,7 @@ import {
   SelectValue,
 } from "../../../../ui/select";
 import { Badge } from "../../../../ui/badge";
+import { i18n } from "../../../../../i18n";
 
 interface DeviceSpec {
   ram?: string;
@@ -118,9 +119,7 @@ const DeviceEditPage: React.FC<DeviceEditPageProps> = ({
 
   const handleCancel = () => {
     if (hasChanges) {
-      const confirmed = window.confirm(
-        "You have unsaved changes. Are you sure you want to cancel?"
-      );
+      const confirmed = window.confirm(i18n.t("devices.unsavedChangesPrompt"));
       if (!confirmed) return;
     }
     onCancel();
@@ -132,7 +131,7 @@ const DeviceEditPage: React.FC<DeviceEditPageProps> = ({
         <div className="mb-6 flex justify-end items-center space-x-3">
           <Button variant="outline" onClick={handleCancel} disabled={isLoading}>
             <X className="h-4 w-4 mr-2" />
-            Cancel
+            {i18n.t("cancel")}
           </Button>
           <Button
             onClick={handleSave}
@@ -140,7 +139,7 @@ const DeviceEditPage: React.FC<DeviceEditPageProps> = ({
             className="bg-primary hover:bg-primary/90"
           >
             <Save className="h-4 w-4 mr-2" />
-            Save Changes
+            {i18n.t("preferencesSettings.saveChanges")}
           </Button>
         </div>
         <div className="space-y-6">
@@ -159,11 +158,11 @@ const DeviceEditPage: React.FC<DeviceEditPageProps> = ({
                     </div>
                     <div>
                       <CardTitle className="text-lg">
-                        {device.name || "New Device"}
+                        {device.name || i18n.t("devices.newDevice")}
                       </CardTitle>
                       {device.serial_number && (
                         <CardDescription className="text-sm">
-                          Serial: {device.serial_number}
+                          {i18n.t("devices.serial")} {device.serial_number}
                         </CardDescription>
                       )}
                     </div>
@@ -182,7 +181,9 @@ const DeviceEditPage: React.FC<DeviceEditPageProps> = ({
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {/* Device Type */}
                   <div className="space-y-2">
-                    <Label htmlFor={`device-type-${index}`}>Device Type</Label>
+                    <Label htmlFor={`device-type-${index}`}>
+                      {i18n.t("devices.deviceType")}
+                    </Label>
                     <Select
                       value={device.device_type}
                       onValueChange={value =>
@@ -190,7 +191,9 @@ const DeviceEditPage: React.FC<DeviceEditPageProps> = ({
                       }
                     >
                       <SelectTrigger id={`device-type-${index}`}>
-                        <SelectValue placeholder="Select device type" />
+                        <SelectValue
+                          placeholder={i18n.t("devices.selectDeviceType")}
+                        />
                       </SelectTrigger>
                       <SelectContent>
                         {deviceTypes.map(type => (
@@ -207,7 +210,9 @@ const DeviceEditPage: React.FC<DeviceEditPageProps> = ({
 
                   {/* Model/Name */}
                   <div className="space-y-2">
-                    <Label htmlFor={`model-${index}`}>Model/Name</Label>
+                    <Label htmlFor={`model-${index}`}>
+                      {i18n.t("devices.modelName")}
+                    </Label>
                     <Input
                       id={`model-${index}`}
                       type="text"
@@ -215,13 +220,15 @@ const DeviceEditPage: React.FC<DeviceEditPageProps> = ({
                       onChange={e =>
                         handleDeviceChange(index, "name", e.target.value)
                       }
-                      placeholder="e.g., MacBook Pro 16-inch"
+                      placeholder={i18n.t("devices.modelNamePlaceholder")}
                     />
                   </div>
 
                   {/* Serial Number */}
                   <div className="space-y-2">
-                    <Label htmlFor={`serial-${index}`}>Serial Number</Label>
+                    <Label htmlFor={`serial-${index}`}>
+                      {i18n.t("devices.serialNumber")}
+                    </Label>
                     <Input
                       id={`serial-${index}`}
                       type="text"
@@ -233,7 +240,7 @@ const DeviceEditPage: React.FC<DeviceEditPageProps> = ({
                           e.target.value
                         )
                       }
-                      placeholder="e.g., C02XX1234567"
+                      placeholder={i18n.t("devices.serialNumberPlaceholder")}
                     />
                   </div>
 
@@ -241,7 +248,7 @@ const DeviceEditPage: React.FC<DeviceEditPageProps> = ({
                   <div className="space-y-2">
                     <Label htmlFor={`ram-${index}`}>
                       <HardDrive className="inline h-4 w-4 mr-1" />
-                      Memory (RAM)
+                      {i18n.t("devices.memory")}
                     </Label>
                     <Input
                       id={`ram-${index}`}
@@ -254,7 +261,7 @@ const DeviceEditPage: React.FC<DeviceEditPageProps> = ({
                           e.target.value
                         )
                       }
-                      placeholder="e.g., 16GB DDR4"
+                      placeholder={i18n.t("devices.memoryPlaceholder")}
                     />
                   </div>
 
@@ -262,7 +269,7 @@ const DeviceEditPage: React.FC<DeviceEditPageProps> = ({
                   <div className="space-y-2">
                     <Label htmlFor={`processor-${index}`}>
                       <Cpu className="inline h-4 w-4 mr-1" />
-                      Processor
+                      {i18n.t("devices.processor")}
                     </Label>
                     <Input
                       id={`processor-${index}`}
@@ -275,13 +282,15 @@ const DeviceEditPage: React.FC<DeviceEditPageProps> = ({
                           e.target.value
                         )
                       }
-                      placeholder="e.g., Intel Core i7-10750H"
+                      placeholder={i18n.t("devices.processorPlaceholder")}
                     />
                   </div>
 
                   {/* Graphics */}
                   <div className="space-y-2">
-                    <Label htmlFor={`graphics-${index}`}>Graphics Card</Label>
+                    <Label htmlFor={`graphics-${index}`}>
+                      {i18n.t("devices.graphicsCard")}
+                    </Label>
                     <Input
                       id={`graphics-${index}`}
                       type="text"
@@ -293,13 +302,15 @@ const DeviceEditPage: React.FC<DeviceEditPageProps> = ({
                           e.target.value
                         )
                       }
-                      placeholder="e.g., NVIDIA GeForce RTX 3060"
+                      placeholder={i18n.t("devices.graphicsPlaceholder")}
                     />
                   </div>
 
                   {/* Storage */}
                   <div className="space-y-2">
-                    <Label htmlFor={`storage-${index}`}>Storage</Label>
+                    <Label htmlFor={`storage-${index}`}>
+                      {i18n.t("devices.storage")}
+                    </Label>
                     <Input
                       id={`storage-${index}`}
                       type="text"
@@ -311,7 +322,7 @@ const DeviceEditPage: React.FC<DeviceEditPageProps> = ({
                           e.target.value
                         )
                       }
-                      placeholder="e.g., 512GB SSD"
+                      placeholder={i18n.t("devices.storagePlaceholder")}
                     />
                   </div>
                 </div>
@@ -332,10 +343,10 @@ const DeviceEditPage: React.FC<DeviceEditPageProps> = ({
                   </div>
                 </div>
                 <h3 className="text-sm font-medium text-foreground">
-                  Add Another Device
+                  {i18n.t("devices.addAnotherDevice")}
                 </h3>
                 <p className="text-sm text-muted-foreground mt-1">
-                  Click to add a new device to your inventory
+                  {i18n.t("devices.addAnotherDeviceDescription")}
                 </p>
               </div>
             </CardContent>
@@ -345,13 +356,15 @@ const DeviceEditPage: React.FC<DeviceEditPageProps> = ({
           {devices.length > 0 && (
             <Card className="border-border bg-card">
               <CardHeader>
-                <CardTitle className="text-lg">Device Summary</CardTitle>
+                <CardTitle className="text-lg">
+                  {i18n.t("devices.deviceSummary")}
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="flex items-center justify-between">
                   <div className="space-y-1">
                     <p className="text-sm text-muted-foreground">
-                      Total Devices
+                      {i18n.t("devices.totalDevices")}
                     </p>
                     <p className="text-2xl font-bold text-foreground">
                       {devices.length}

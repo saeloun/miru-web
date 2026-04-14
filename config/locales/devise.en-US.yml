@@ -1,28 +1,15 @@
 ---
 en-US:
-  activerecord:
-    errors:
-      models:
-        user:
-          attributes:
-            email:
-              blank: Email can't be blank
-              invalid: Invalid Email ID
-              taken: Email ID already exists
-            first_name:
-              blank: can't be blank
-              invalid: must only contain letters or spaces
-            last_name:
-              blank: can't be blank
-              invalid: must only contain letters or spaces
-            password:
-              blank: can't be blank
-              too_short: must be at least %{count} characters long
-            password_confirmation:
-              confirmation: doesn't match with new password
   devise:
     confirmations:
       confirmed: Your email address has been successfully confirmed.
+      new:
+        description: Your confirmation link has expired or is invalid. Please request
+          a new one.
+        remember_password: Remember your password?
+        resend: Resend Confirmation Email
+        sign_in: Sign in
+        title: Email Confirmation Required
       send_instructions: You will receive an email with instructions for how to confirm
         your email address in a few minutes.
       send_paranoid_instructions: If your email address exists in our database, you
@@ -85,19 +72,11 @@ en-US:
       signed_in: Signed in successfully.
       signed_out: Signed out successfully.
     unlocks:
+      new:
+        submit: Resend unlock instructions
+        title: Resend unlock instructions
       send_instructions: You will receive an email with instructions for how to unlock
         your account in a few minutes.
       send_paranoid_instructions: If your account exists, you will receive an email
         with instructions for how to unlock it in a few minutes.
       unlocked: Your account has been unlocked successfully. Please sign in to continue.
-  errors:
-    messages:
-      already_confirmed: was already confirmed, please try signing in
-      confirmation_period_expired: needs to be confirmed within %{period}, please
-        request a new one
-      expired: has expired, please request a new one
-      not_found: not found
-      not_locked: was not locked
-      not_saved:
-        one: '1 error prohibited this %{resource} from being saved:'
-        other: "%{count} errors prohibited this %{resource} from being saved:"

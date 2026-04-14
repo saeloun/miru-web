@@ -53,7 +53,7 @@ const UploadLogo = ({
           htmlFor="file-input"
         >
           <span className="text-xs font-medium text-foreground hover:text-foreground/80">
-            Select File
+            {i18n.t("settings.selectFile")}
           </span>
         </label>
         <input
@@ -66,9 +66,9 @@ const UploadLogo = ({
         />
       </div>
       <div className="space-y-1 text-xs text-muted-foreground">
-        <p>Accepted file formats: PNG and JPG.</p>
-        <p>File size should be ≤ 30 KB.</p>
-        <p>Image resolution should be 1:1.</p>
+        <p>{i18n.t("clients.acceptedPngAndJpgFormats")}</p>
+        <p>{i18n.t("clients.fileSizeLimitKb", { fileSize: "30" })}</p>
+        <p>{i18n.t("settings.imageResolution")}</p>
       </div>
     </div>
   );
@@ -86,7 +86,7 @@ const UploadLogo = ({
             className="cursor-pointer text-xs font-medium text-foreground hover:text-foreground/80"
             htmlFor="file_input_edit"
           >
-            Edit
+            {i18n.t("edit")}
           </label>
           <input
             className="hidden"
@@ -102,15 +102,15 @@ const UploadLogo = ({
               type="button"
               onClick={handleDeleteLogo}
             >
-              Delete
+              {i18n.t("delete")}
             </button>
           )}
         </div>
       </div>
       <div className="space-y-1 text-xs text-muted-foreground">
-        <p>Accepted file formats: PNG and JPG.</p>
-        <p>File size should be ≤ 30 KB.</p>
-        <p>Image resolution should be 1:1.</p>
+        <p>{i18n.t("clients.acceptedPngAndJpgFormats")}</p>
+        <p>{i18n.t("clients.fileSizeLimitKb", { fileSize: "30" })}</p>
+        <p>{i18n.t("settings.imageResolution")}</p>
       </div>
     </div>
   );

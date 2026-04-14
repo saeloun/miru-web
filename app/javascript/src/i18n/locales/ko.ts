@@ -1,12 +1,9 @@
-const ko = {
-  // Image validation
+const locale = {
   invalidImageFormatSize:
     "잘못된 파일 형식입니다. PNG 또는 JPG 형식의 이미지를 업로드하세요. 최대 크기 (%{fileSize}KB)",
   invalidImageSize: "파일 크기가 %{fileSize}KB 최대 한도를 초과했습니다.",
   invalidImageFormat:
     "잘못된 파일 형식입니다. PNG 또는 JPG 형식의 이미지를 업로드하세요",
-
-  // Common actions
   save: "저장",
   cancel: "취소",
   delete: "삭제",
@@ -18,23 +15,31 @@ const ko = {
   confirm: "확인",
   close: "닫기",
   back: "뒤로",
+  previous: "이전의",
+  continue: "계속하다",
   next: "다음",
   done: "완료",
   loading: "로딩 중...",
   actions: "작업",
   openMenu: "메뉴 열기",
   filters: "필터",
+  pagination: "쪽수 매기기",
+  breadcrumb: "빵가루",
   download: "다운로드",
   downloading: "다운로드 중...",
   duplicate: "복제",
+  selectAll: "모두 선택하세요",
+  selectRow: "행을 선택하세요",
   update: "업데이트",
   apply: "적용",
+  applyFilters: "필터 적용",
   remove: "제거",
+  resetAction: "다시 놓기",
   yes: "예",
   no: "아니오",
   or: "또는",
-
-  // Common labels
+  toggleSidebar: "사이드바 토글",
+  morePages: "더 많은 페이지",
   name: "이름",
   email: "이메일",
   phone: "전화",
@@ -44,6 +49,7 @@ const ko = {
   date: "날짜",
   type: "유형",
   notes: "메모",
+  viewInvoice: "송장 보기",
   description: "설명",
   total: "합계",
   active: "활성",
@@ -68,8 +74,18 @@ const ko = {
   all: "전체",
   from: "시작",
   to: "종료",
-
-  // Date/time
+  themeSelector: {
+    open: "테마 선택기 열기",
+    close: "테마 선택기 닫기",
+    choose: "테마를 선택하세요",
+    description: "원하는 인터페이스 스타일을 선택하세요",
+    classic: "권위 있는",
+    classicDescription: "기존 Miru 인터페이스",
+    admin: "관리자 프로",
+    adminDescription: "최신 shadcn 대시보드",
+    minimize: "최소화",
+    previewActive: "테마 미리보기가 활성화되었습니다",
+  },
   today: "오늘",
   yesterday: "어제",
   tomorrow: "내일",
@@ -84,6 +100,7 @@ const ko = {
   lastYear: "작년",
   allTime: "전체 기간",
   customRange: "사용자 지정 범위",
+  customRangeWithDates: "사용자 정의 (%{from} - %{to})",
   customDateRange: "사용자 지정 날짜 범위",
   dateRange: "날짜 범위",
   dateRangePreset: "날짜 범위 프리셋",
@@ -93,16 +110,12 @@ const ko = {
   selectPeriod: "기간 선택",
   fullDay: "종일",
   halfDay: "반일",
-
-  // Date validation
   dateCannotBeBlank: "날짜는 비워둘 수 없습니다",
   fromDateMustBeLessThanToDate:
     "'시작' 날짜는 '종료' 날짜보다 이전이어야 합니다",
   toDateMustBeGreaterThanFromDate:
     "'종료' 날짜는 '시작' 날짜보다 이후여야 합니다",
   invalidDate: "유효한 날짜를 입력하세요",
-
-  // Month abbreviations
   monthJan: "1월",
   monthFeb: "2월",
   monthMar: "3월",
@@ -115,8 +128,6 @@ const ko = {
   monthOct: "10월",
   monthNov: "11월",
   monthDec: "12월",
-
-  // Error pages
   pageNotFound: "페이지를 찾을 수 없습니다",
   clickHere: "여기를 클릭하세요",
   somethingWentWrong: "문제가 발생했습니다",
@@ -124,15 +135,16 @@ const ko = {
     "페이지를 새로고침하여 다시 시도하세요. 문제가 계속되면 다시 로그인하거나 지원팀에 문의하세요.",
   reloadPage: "페이지 새로고침",
   loadingWorkspace: "워크스페이스 로딩 중...",
-
-  // Search
   searchClients: "고객 검색...",
   searchInvoices: "청구서 검색...",
   searchTeamMembers: "팀원 검색...",
   selectTeamMember: "팀원 선택",
   noResultsFound: "결과를 찾을 수 없습니다",
-
-  // Time Tracking
+  dataTable: {
+    noResults: "검색 결과가 없습니다.",
+    rowsSelected: "%{selected} (%{total}) 행이 선택되었습니다.",
+    pageOf: "%{page} 페이지 %{total}",
+  },
   timeTracking: {
     addEntry: "항목 추가",
     newTimeEntry: "새 시간 항목",
@@ -219,8 +231,6 @@ const ko = {
       sun: "일",
     },
   },
-
-  // Task types
   taskTypes: {
     development: "개발",
     meeting: "회의",
@@ -235,16 +245,12 @@ const ko = {
     training: "교육",
     other: "기타",
   },
-
-  // Time off types
   timeOffTypes: {
     vacation: "휴가",
     sickLeave: "병가",
     personalDay: "개인 휴일",
     holiday: "공휴일",
   },
-
-  // Clients
   clients: {
     addClients: "고객 추가",
     addNewClient: "새 고객 추가",
@@ -255,6 +261,8 @@ const ko = {
       "고객 %{name}을(를) 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.",
     clientDetails: "고객 세부정보",
     clientLogo: "고객 로고",
+    acceptedPngAndJpgFormats: "지원되는 파일 형식: PNG 및 JPG.",
+    fileSizeLimitKb: "파일 크기는 %{fileSize} KB 이하여야 합니다.",
     phoneNumber: "전화번호",
     addressLine1: "주소 1",
     addressLine2: "주소 2 (선택사항)",
@@ -263,22 +271,46 @@ const ko = {
     totalClients: "전체 고객",
     activeClients: "활성 고객",
     hoursTracked: "추적된 시간",
+    hoursLogged: "기록된 시간",
     totalTracked: "총 추적 시간",
     outstanding: "미결제",
+    overdue: "기한 초과",
     allClients: "모든 고객",
+    allClientsDescription:
+      "고객 목록과 각 고객의 연락처 정보 및 청구 상태입니다.",
     failedToLoadClients: "고객 로딩에 실패했습니다",
+    failedToLoadClientDetails: "클라이언트 정보를 불러오는 데 실패했습니다.",
+    clientDeletedSuccessfully: "클라이언트가 성공적으로 삭제되었습니다.",
+    failedToDeleteClient: "클라이언트 삭제에 실패했습니다",
     clientAddedSuccessfully: "고객이 성공적으로 추가되었습니다",
     clientUpdatedSuccessfully: "고객이 성공적으로 업데이트되었습니다",
     noClientsYet: "아직 추가된 고객이 없는 것 같습니다.",
     deleting: "삭제 중...",
+    addYourFirstClient: "첫 번째 고객을 추가하세요",
+    addNewClientDescription: "아래 정보를 입력하여 새 고객을 추가하세요.",
+    editClientDescription: "아래의 고객 정보를 업데이트하세요.",
+    manageClientsDescription: "고객 관계 및 청구 관리를 담당하세요.",
+    clientHeader: "고객",
+    contact: "연락하다",
+    copyClientId: "고객 ID를 복사하세요",
+    viewDetails: "자세히 보기",
     addProject: "프로젝트 추가",
     addNewProject: "새 프로젝트 추가",
     paymentReminder: "결제 알림",
+    addOrViewContacts: "연락처 추가/보기",
     sendPaymentReminder: "결제 알림 보내기",
+    paymentReminderSubject:
+      "미지급 청구서에 대한 결제를 완료해 주시기 바랍니다.",
+    paymentReminderMessage:
+      "다음 청구서에 대한 결제를 완료해 주시기 바랍니다. 아래에서 각 청구서의 상세 정보와 결제 링크를 확인하실 수 있습니다.",
+    selectInvoices: "청구서를 선택하세요",
+    emailPreview: "이메일 미리보기",
+    recipientEmailId: "수신자 이메일 주소",
+    invoiceSelected: "%{count} 송장 선택됨",
     invoicesSelected: "%{count}개 청구서 선택됨",
+    noProjectsAddedYet:
+      "이 클라이언트에게는 아직 프로젝트가 추가되지 않았습니다.",
   },
-
-  // Contacts
   contacts: {
     addContact: "연락처 추가",
     addContacts: "연락처 추가",
@@ -297,8 +329,6 @@ const ko = {
     invalidEmailId: "유효하지 않은 이메일 주소",
     emailRequired: "이메일 주소는 비워둘 수 없습니다",
   },
-
-  // Projects
   projects: {
     addProject: "프로젝트 추가",
     addNewProject: "새 프로젝트 추가",
@@ -366,8 +396,6 @@ const ko = {
     addTeamMembers: "팀원 추가",
     teamMembersDescription: "이 프로젝트에 배정된 팀원을 보고 관리하세요.",
   },
-
-  // Team
   team: {
     team: "팀",
     teamOverview: "팀 개요",
@@ -414,8 +442,6 @@ const ko = {
     invalidEmail: "유효하지 않은 이메일 주소",
     emailRequired: "이메일 주소는 비워둘 수 없습니다",
   },
-
-  // Invoices
   invoices: {
     invoice: "청구서",
     invoices: "청구서",
@@ -489,19 +515,16 @@ const ko = {
     scrollToLoadMore: "스크롤하여 청구서 더 로드",
     loadingMoreInvoices: "청구서 더 로딩 중...",
     allInvoicesLoaded: "모든 청구서가 로드되었습니다",
+    showingOfTotal: "%{total} 중 %{shown}을(를) 표시합니다.",
     resetFilters: "필터 초기화",
     loadingChartData: "차트 데이터 로딩 중...",
     noInvoiceData: "청구서 데이터 없음",
-
-    // Statuses
     draft: "초안",
     sent: "발송됨",
     overdue: "연체",
     collected: "수금됨",
     paid: "결제됨",
     outstanding: "미결제",
-
-    // Email
     recipientEmailId: "수신자 이메일 주소",
     subject: "제목",
     message: "메시지",
@@ -512,26 +535,21 @@ const ko = {
     invoiceSentBody: "%{company}에서 청구서를 보냈습니다 (%{number})",
     invoiceWillBeSent: "청구서가 발송됩니다!",
     processing: "처리 중...",
-
-    // No payment gateway
     noPaymentGateway: "결제 게이트웨이가 연결되지 않았습니다",
     paymentGatewayError:
       "오류. 청구서 결제를 위해 청구서 발송자에게 결제 게이트웨이 연결을 요청하세요",
     paymentGatewayWarning:
       "Miru에 결제 게이트웨이를 연결하지 않았습니다. 결제 게이트웨이 없이 청구서를 보내시겠습니까?",
     goToPaymentSettings: "결제 설정으로 이동",
+    backToInvoices: "청구서 목록으로 돌아가기",
     sendWithoutPaymentGateway: "결제 게이트웨이 없이 보내기",
     stripeDisabled: "이 청구서에 Stripe가 비활성화되었습니다",
     stripeDisabledMessage:
       "발송자가 이 청구서에 대해 Stripe 결제를 활성화하지 않았습니다. 활성화를 요청하거나 ACH와 같은 대체 결제 방법을 선택할 수 있습니다.",
-
-    // Bulk actions
     preparingDownload: "다운로드 준비 중...",
     downloadFailed: "다운로드에 실패했습니다. 다시 시도하세요.",
     downloadingFiles: "파일 다운로드 중...",
     downloadComplete: "다운로드 완료",
-
-    // Table headers
     nameHeader: "이름",
     descriptionHeader: "설명",
     dateHeader: "날짜",
@@ -539,8 +557,6 @@ const ko = {
     amountHeader: "금액",
     statusHeader: "상태",
     invoiceNumberHeader: "청구서 번호",
-
-    // Chart labels
     area: "영역",
     bar: "막대",
     noData: "데이터 없음",
@@ -548,8 +564,6 @@ const ko = {
     quarterly: "분기별",
     yearly: "연별",
     trend: "추세",
-
-    // Preview / detail labels
     taxId: "세금 ID: %{value}",
     vatNumber: "VAT 번호: %{value}",
     gstNumber: "GST 번호: %{value}",
@@ -563,8 +577,6 @@ const ko = {
     due: "만기일 %{date}",
     viewed: "확인됨",
     cancelled: "취소됨",
-
-    // Toast / confirmation messages
     invoiceMarkedAsPaid: "청구서가 결제 완료로 표시되었습니다",
     invoiceDownloaded: "청구서가 성공적으로 다운로드되었습니다",
     invoiceSentSuccessfully: "청구서가 성공적으로 발송되었습니다",
@@ -580,20 +592,30 @@ const ko = {
     invoiceCreated: "청구서가 성공적으로 생성되었습니다",
     invoiceUpdated: "청구서가 성공적으로 업데이트되었습니다",
     failedToSaveInvoice: "청구서 저장에 실패했습니다. 다시 시도하세요.",
-
-    // Counters
+    newInvoicePage: "새 송장",
+    editInvoicePage: "송장 수정",
+    editorSubtitle:
+      "청구서를 보내기 전에 세부 정보를 입력하고 미리 보기를 하세요.",
+    basicDetailsDescription: "기본 송장 정보를 입력하세요",
+    referenceOptional: "참고 자료 (선택 사항)",
+    referencePlaceholder: "구매 주문 번호 등",
+    lineItemsDescription: "시간 입력 또는 수동 항목을 추가하세요.",
+    additionalDetailsDescription: "세금, 할인 및 메모",
+    notesPlaceholder: "추가 참고 사항 또는 결제 안내",
+    subtotal: "소계",
+    saving: "절약...",
+    sending: "배상...",
+    alreadySent: "이미 보냈습니다",
+    downloading: "다운로드 중...",
+    selectClientBeforeSending: "송장을 보내기 전에 고객을 선택하세요.",
     showingOf: "%{shown} / %{total} 표시 중",
     viewingMatching: "%{loaded}개 중 %{filtered}개 일치하는 청구서 표시 중",
     loadedOf: "%{loaded} / %{total} 로드됨",
     showingRecentTransactions: "최근 %{count}개 거래 표시 중",
     updatedAt: "%{date}에 업데이트됨",
     invoiceHash: "청구서 #%{number}",
-
-    // Mobile table headers
     nameDescription: "이름 / 설명",
     dateTime: "날짜 / 시간",
-
-    // Invoice reminder email
     invoiceReminder: "청구서 알림: %{number}",
     reminderMessage:
       "미결제 청구서에 대한 알림입니다. 첨부된 세부정보를 확인하세요.",
@@ -613,14 +635,6 @@ const ko = {
     cannotSendInvalidId: "청구서를 발송할 수 없습니다 - 유효하지 않은 ID",
     payment: "결제 #%{id}",
   },
-  common: {
-    retry: "재시도",
-    pageUnavailable:
-      "이 페이지를 사용할 수 없거나 링크가 워크스페이스에서 더 이상 유효하지 않습니다.",
-    goToDashboard: "대시보드로 이동",
-  },
-
-  // Invoice admin dashboard
   invoiceDashboard: {
     revenueOverview: "매출 개요",
     revenueByStatus: "상태별 매출",
@@ -628,12 +642,12 @@ const ko = {
     allInvoices: "모든 청구서",
     recentSales: "최근 판매",
   },
-
-  // Payments
   payments: {
     payments: "결제",
     addPayment: "결제 추가",
     addManualEntry: "수동 항목 추가",
+    searchPaymentsPlaceholder:
+      "고객, 송장 또는 금액별로 결제 내역을 검색하세요...",
     noPaymentsRecorded: "아직 기록된 결제가 없습니다",
     invoiceClient: "청구서 # / 고객",
     clientInvoiceNumber: "고객/ 청구서 번호",
@@ -649,13 +663,38 @@ const ko = {
     paymentSuccessful: "결제가 완료되었습니다.",
     paymentReceived: "결제를 수령했습니다.",
     goToHomePage: "홈페이지로 이동",
+    recordManualPaymentAgainstInvoice: "송장에 대한 수동 결제를 기록합니다.",
     failedToLoadPayments: "결제 로딩에 실패했습니다",
+    failedToLoadInvoicesForPaymentEntry:
+      "결제 입력용 송장 불러오기에 실패했습니다.",
     transactions: "거래",
+    totalPayments: "총 지불액",
+    totalCollected: "총 수집액",
+    allTime: "역대",
+    averagePayment: "평균 지불액",
+    perTransaction: "거래당",
     paymentHistory: "결제 기록",
+    paymentHistoryDescription:
+      "모든 결제 내역에는 송장 및 고객 정보가 포함됩니다.",
+    paymentLedgerDescription:
+      "Stripe 결제 내역과 수동 입력 내역을 하나의 간편한 장부에 관리하세요.",
+    searchByInvoiceClientMethodOrNotes:
+      "송장, 고객, 방법 또는 메모로 검색하세요...",
+    showingPaymentsCount: "%{visible}와 %{total}를 표시합니다.",
+    notes: "메모",
+    paymentMethod: "결제 방법",
+    openMenu: "메뉴 열기",
+    copyTransactionId: "거래 ID 복사",
+    viewInvoice: "송장 보기",
+    downloadReceipt: "다운로드 영수증",
+    manual: "수동",
+    visa: "비자",
+    mastercard: "마스터 카드",
+    amex: "아멕스",
+    debitCard: "직불 카드",
+    creditCard: "신용카드",
     scrollToLoadMore: "스크롤하여 결제 더 로드",
     allPaymentsLoaded: "모든 결제가 로드되었습니다",
-
-    // Filters
     allStatuses: "모든 상태",
     allClients: "모든 고객",
     paymentType: "결제 유형",
@@ -664,12 +703,15 @@ const ko = {
     bankTransfer: "은행 이체",
     wireTransfer: "전신 송금",
     achTransfer: "ACH 이체",
-    paypal: "PayPal",
-    stripe: "Stripe",
+    paypal: "페이팔",
+    stripe: "줄무늬",
     cash: "현금",
     check: "수표",
+    paid: "유급의",
+    partiallyPaid: "부분 지급됨",
     pending: "대기 중",
     failed: "실패",
+    cancelled: "취소",
     refunded: "환불됨",
     completed: "완료",
     addPaymentBtn: "결제 추가",
@@ -677,9 +719,8 @@ const ko = {
     failedToAddManualEntry: "수동 항목 추가에 실패했습니다",
     searchByClientOrInvoice: "고객 이름 또는 청구서 ID로 검색",
     selectTransactionTypeBtn: "거래 유형 선택",
+    noPaymentFound: "결제 내역을 찾을 수 없습니다!",
   },
-
-  // Timer
   timer: {
     webTimer: "웹 타이머",
     webTimerLabel: "웹 타이머",
@@ -705,8 +746,6 @@ const ko = {
     whatAreYouWorkingOn: "어떤 작업 중인가요?",
     selectProject: "프로젝트 선택",
   },
-
-  // Reports
   reports: {
     reports: "보고서",
     backToReports: "보고서로 돌아가기",
@@ -721,8 +760,6 @@ const ko = {
     exportAsCsv: "CSV로 내보내기",
     exportAsPdf: "PDF로 내보내기",
     toggleReportFilters: "보고서 필터 전환",
-
-    // Filters
     clients: "고객",
     teamMembers: "팀원",
     groupBy: "그룹화",
@@ -731,25 +768,29 @@ const ko = {
     searchClientsFilter: "고객 검색...",
     searchTeamMembersFilter: "팀원 검색...",
     applyFilter: "필터 적용",
-
-    // Time entry report
     totalHours: "총 시간",
     scrollToLoadMoreRows: "스크롤하여 보고서 행 더 로드",
     loadingMoreRows: "보고서 행 더 로딩 중...",
     allRowsLoaded: "모든 보고서 행이 로드되었습니다",
-
-    // Payment report
     perTransaction: "거래당",
     topMethod: "최다 결제 방법",
     paymentMethodsBreakdown: "결제 방법 분석",
     paymentDetails: "결제 세부정보",
     unableToLoadPaymentReport: "결제 보고서를 로드할 수 없습니다",
+    totalPayments: "총 지불액",
+    paymentCount: "지불 횟수",
+    averagePayment: "평균 지불액",
+    totalTransactions: "총 거래 건수",
+    selectedPeriod: "선택된 기간",
+    noPaymentsFoundForSelectedPeriod:
+      "선택하신 기간에 대한 결제 내역이 없습니다.",
+    showingPayments: "%{shown}와 %{total} 결제 내역을 표시합니다.",
+    scrollToLoadMorePayments: "더 많은 결제 정보를 보려면 스크롤하세요.",
+    clientsSelected: "%{count} 클라이언트",
     paymentMethod: "결제 방법",
     allMethods: "모든 방법",
     creditCard: "신용카드",
     allStatus: "모든 상태",
-
-    // Revenue by client report
     totalRevenue: "총 매출",
     paidRevenue: "결제된 매출",
     paidAmount: "결제 금액",
@@ -761,13 +802,22 @@ const ko = {
     withRevenue: "매출 있음",
     searchClients: "고객 검색",
     filterClients: "고객 필터...",
+    columns: "컬럼",
+    clientName: "고객 이름",
+    invoices: "송장",
     revenueBreakdown: "매출 분석",
     detailedRevenueAnalysis: "고객별 상세 매출 분석",
     clientRevenueDetails: "고객 매출 세부정보",
     scrollToLoadMoreClients: "스크롤하여 고객 더 로드",
     allClientsLoaded: "모든 고객이 로드되었습니다",
-
-    // Outstanding invoice report
+    clearClients: "클리어 클라이언트",
+    successfullyCollected: "성공적으로 수집되었습니다",
+    pendingCollection: "수집 대기 중",
+    requiresAttention: "주의가 필요합니다",
+    revenueMixByClient: "고객별 수익 구성",
+    noClientRevenueData: "선택한 필터에 해당하는 고객 매출 데이터가 없습니다.",
+    paid: "유급의",
+    awaitingPayment: "결제 대기 중",
     failedToLoadReportData: "보고서 데이터 로딩에 실패했습니다",
     currencyFilter: "통화 필터",
     fromDate: "시작 날짜",
@@ -775,8 +825,9 @@ const ko = {
     export: "내보내기",
     csv: "CSV",
     pdf: "PDF",
-    excel: "Excel",
+    excel: "뛰어나다",
     statusOverview: "상태 개요",
+    agingDistribution: "노령화 유통",
     currencyDistribution: "통화 분포",
     topClients: "상위 고객",
     clientAnalysis: "고객 분석",
@@ -785,8 +836,6 @@ const ko = {
     clientBreakdown: "고객 분석",
     originalAmount: "원래 금액",
     baseAmount: "기본 금액",
-
-    // Accounts aging report
     totalDue: "총 미결제",
     invoiceAgingDetails: "청구서 경과 세부정보",
     noDataFound: "데이터를 찾을 수 없습니다",
@@ -796,6 +845,7 @@ const ko = {
     zeroToThirtyDays: "0-30일",
     thirtyOneToSixtyDays: "31-60일",
     sixtyOneToNinetyDays: "61-90일",
+    sixtyPlusDays: "60일 이상",
     ninetyPlusDays: "90일 이상",
     noClientsWithOutstandingBalances: "미결제 잔액이 있는 고객이 없습니다.",
     showingOfClients: "%{displayed} / %{total} 고객 표시 중...",
@@ -889,6 +939,8 @@ const ko = {
     monthlyRevenueReport: "월간 매출 보고서",
     openReport: "%{title} 보고서 열기",
     reviewHoursLogged: "사람, 고객, 프로젝트별 기록 시간을 검토하세요.",
+    shareReport: "공유 보고서",
+    linkCopied: "링크 복사됨",
     lastSevenDaysPreset: "최근 7일",
     lastThirtyDaysPreset: "최근 30일",
     totalEntries: "전체 항목",
@@ -916,8 +968,6 @@ const ko = {
     unknownProject: "알 수 없는 프로젝트",
     generatingExport: "%{format} 생성 중",
   },
-
-  // Expenses
   expenses: {
     expenses: "경비",
     addExpense: "경비 추가",
@@ -932,12 +982,16 @@ const ko = {
     category: "카테고리",
     selectCategory: "카테고리 선택",
     selectCategoryEllipsis: "카테고리 선택...",
+    customCategory: "사용자 정의 카테고리",
+    enterCustomCategory: "사용자 지정 카테고리를 입력하세요",
     vendor: "공급업체",
     enterVendor: "공급업체 입력",
     enterVendorName: "공급업체명 입력",
     receipt: "영수증",
     receiptOptional: "영수증 (선택사항)",
     receipts: "영수증",
+    receiptsAttached: "%{count} 첨부됨",
+    preview: "시사",
     uploadReceipt: "영수증 업로드",
     uploadFile: "파일 업로드",
     noExpenses: "경비를 찾을 수 없습니다",
@@ -996,39 +1050,60 @@ const ko = {
     viewExistingReceipts: "기존 영수증 보기 (%{count})",
     viewReceiptsFor: "%{description}의 영수증 보기",
     expenseActionsFor: "%{description}의 경비 작업",
+    receiptPreview: "영수증 미리보기",
+    reviewUploadedReceipts: "해당 지출에 대한 업로드된 영수증을 검토하십시오.",
   },
-
-  // Settings
-  settings: {
-    settings: "설정",
-    profileSettings: "프로필 설정",
-    organizationSettings: "조직 설정",
-    paymentSettings: "결제 설정",
-    profilePicture: "프로필 사진",
-    changePassword: "비밀번호 변경",
-    currentPassword: "현재 비밀번호",
-    password: "비밀번호",
-    confirmPassword: "비밀번호 확인",
-    billing: "청구",
-    integrations: "연동",
-    leaves: "휴가",
-    import: "가져오기",
-    general: "일반",
-    profile: "프로필",
-    organization: "조직",
-    payment: "결제",
-    allocateLeaves: "휴가 할당",
-    customLeaves: "사용자 지정 휴가",
-    addCustomLeave: "사용자 지정 휴가 추가",
-    editCustomLeave: "사용자 지정 휴가 편집",
-    leaveType: "휴가 유형",
-    enterLeaveType: "휴가 유형 입력",
-    allocationValue: "할당 값",
-    allocationPeriod: "할당 기간",
-    allocationFrequency: "할당 빈도",
+  importModal: {
+    importTitle: "%{title} 가져오기",
+    uploadFile: "파일 업로드",
+    supportedFormats: "지원되는 파일 형식: .xls, .xlsx, .csv",
+    reviewMappedFields:
+      "파일에서 다음과 같은 열을 식별하고 필수 필드에 매핑했습니다. 검토 후 확인해 주시기 바랍니다.",
+    startImport: "가져오기 시작",
+    importingEntries: "%{count} 시간 항목 가져오기",
+    backgroundImportNotice:
+      "이 작업은 완료하는 데 다소 시간이 걸릴 수 있습니다. 이 창을 닫더라도 백그라운드에서 가져오기 작업이 계속 진행되며 완료되면 이메일로 알려드립니다.",
+    closeWindow: "창 닫기",
+    importComplete: "가져오기가 완료되었습니다!",
+    importSummary: "수입 요약",
+    totalTimeEntries: "총 시간 입력",
+    successfullyImported: "성공적으로 수입되었습니다",
+    failedToImport: "가져오기에 실패했습니다",
+    detailedLogSent: "자세한 로그를 이메일로 보내드렸습니다.",
+    importAnotherFile: "다른 파일 가져오기",
+    mapFields: "지도 필드",
+    import: "수입",
   },
-
-  // Leave types
+  importCatalog: {
+    subtitle: "Miru에 데이터를 가져오세요",
+    invoices: {
+      title: "송장",
+      description:
+        "이전 청구 도구 또는 소프트웨어에서 과거 청구서 데이터를 가져오세요.",
+      fields: {
+        invoiceNumber: "송장 번호",
+        clientName: "고객 이름",
+        issueDate: "발행일",
+        dueDate: "두 번의 데이트",
+        amount: "양",
+        status: "상태",
+      },
+    },
+    timeEntries: {
+      title: "시간 입력",
+      description:
+        "이전 시간 관리 도구 또는 소프트웨어에서 과거 시간 기록을 가져옵니다.",
+      fields: {
+        employeeName: "직원 이름",
+        date: "날짜",
+        hours: "영업시간",
+        status: "상태",
+        client: "고객",
+        project: "프로젝트",
+        description: "설명",
+      },
+    },
+  },
   leaveTypes: {
     annualLeaves: "연차 휴가",
     sickLeaves: "병가",
@@ -1036,23 +1111,17 @@ const ko = {
     paternityLeave: "육아 휴가",
     periodLeave: "생리 휴가",
   },
-
-  // Allocation periods
   allocationPeriods: {
     days: "일",
     weeks: "주",
     months: "개월",
   },
-
-  // Allocation frequencies
   allocationFrequencies: {
     perWeek: "주당",
     perMonth: "월당",
     perQuarter: "분기당",
     perYear: "연당",
   },
-
-  // Navbar
   navbar: {
     clients: "고객",
     invoices: "청구서",
@@ -1104,128 +1173,31 @@ const ko = {
     leavesDescription: "휴가 요청 관리",
     expensesDescription: "사업 경비 추적",
   },
-
-  // Dashboard
-  dashboard: {
-    dashboard: "대시보드",
-    overdue: "연체",
-    outstanding: "미결제",
-    totalHours: "총 시간",
-    revenueOverview: "매출 개요",
-    welcomeBack: "돌아오신 것을 환영합니다, %{name}님",
-    companyPulse: "회사 현황",
-    yearToDate: "연초 이후",
-    quarterToDate: "분기 초 이후",
-    monthToDate: "월초 이후",
-    weekToDate: "주초 이후",
-    revenue: "매출",
-    activeProjects: "활성 프로젝트",
-    currentlyActive: "현재 활성",
-    noRecentActivity: "최근 활동 없음",
-    teamSize: "팀 규모",
-    teammates: "팀원",
-    hoursTracked: "추적된 시간",
-    assignedProjects: "할당된 프로젝트",
-    projectsYouCanWorkOn: "작업 가능한 프로젝트",
-    totalInvoiced: "총 청구액",
-    openInvoices: "미결 청구서",
-    awaitingPayment: "결제 대기 중",
-    paidInvoices: "결제된 청구서",
-    alreadySettled: "이미 정산됨",
-    paymentsReceived: "수령한 결제",
-    employeeGuidance:
-      "주간 작업을 추적하고 정확한 항목을 제출하며 업무를 진행하세요.",
-    bookKeeperGuidance:
-      "수령한 결제를 검토하고 청구서를 대조하며 현금 흐름을 명확히 하세요.",
-    clientGuidance: "계정의 청구서 상태와 결제 기록을 확인하세요.",
-    defaultGuidance: "매출, 프로젝트, 팀 모멘텀을 한눈에 파악하세요.",
-    recentActivity: "최근 활동",
-    workspaceActivity: "워크스페이스 활동",
-    employeeActivityDescription:
-      "대시보드는 시간 추적과 할당된 작업에 초점을 맞추고 있습니다.",
-    activityDescription: "청구서 및 결제의 최신 업데이트",
-    noRecentActivityYet: "아직 최근 활동이 없습니다",
-    loadMore: "더 불러오기",
-    allCaughtUp: "모두 최신 상태입니다",
-  },
-
-  // Authentication
-  auth: {
-    signIn: "로그인",
-    signUp: "회원가입",
-    signOut: "로그아웃",
-    welcomeBack: "돌아오신 것을 환영합니다!",
-    loginFailed: "로그인에 실패했습니다. 다시 시도하세요.",
-    noAuthTokenReceived: "인증 토큰을 수신하지 못했습니다",
-    signInToWorkspace: "워크스페이스에 로그인",
-    createYourWorkspace: "워크스페이스 만들기",
-    signInDescription:
-      "작업을 추적하고 청구서를 보내며 현금 흐름을 한 곳에서 명확하게 관리하세요.",
-    signUpDescription:
-      "고객, 프로젝트, 청구서, 결제를 하나의 명확한 시스템으로 설정하세요.",
-    firstName: "이름",
-    lastName: "성",
-    password: "비밀번호",
-    confirmPassword: "비밀번호 확인",
-    waitingForPasskey: "패스키 대기 중...",
-    forgotPassword: "비밀번호를 잊으셨나요?",
-    enterRegisteredEmail: "등록된 이메일 주소를 입력하세요",
-    resetPassword: "비밀번호 재설정",
-    resetPasswordInstructions:
-      "계정과 연결된 이메일 주소를 입력하면 비밀번호 재설정 링크를 보내드리겠습니다.",
-    sendResetLink: "재설정 링크 보내기",
-    backToLogin: "로그인으로 돌아가기",
-    alreadyHaveAccount: "이미 계정이 있으신가요?",
-    dontHaveAccount: "계정이 없으신가요?",
-    rememberMe: "로그인 상태 유지",
-    totpPlaceholder: "ABCD-EFGH",
-    companyPulse: "회사 현황",
-    billingCommand: "청구 명령",
-    clearWeeklyFlow: "명확한 주간 흐름",
-    cashLedger: "현금 원장",
-    miruLogo: "Miru",
-    heroTitle: "시간, 청구서, 결제를 한 곳에서",
-    heroDescription: "일과를 명확히 하고 청구를 진행하며 현금을 가시화하세요.",
-    slideShowPrefix: "보기",
-    slideDashboardDescription:
-      "매출, 활성 프로젝트, 팀 모멘텀을 한눈에 확인하세요.",
-    slideInvoicesDescription:
-      "초안, 연체 잔액, 결제된 작업을 같은 곳에서 관리하세요.",
-    slideTimeTrackingDescription:
-      "주간 시간 입력이 번거로움 없이 최신 상태를 유지합니다.",
-    slidePaymentsDescription:
-      "모든 결제가 방법, 상태, 출처와 함께 하나의 원장에 기록됩니다.",
-    continueWithGoogle: "Google로 계속",
-    continueWithGithub: "GitHub로 계속",
-    orUseEmail: "또는 이메일 사용",
-    verifyWithAuthenticator: "인증 앱으로 확인",
-    authenticatorInstructions:
-      "인증 앱의 6자리 코드를 입력하거나 복구 코드를 사용하세요.",
-    authenticatorCode: "인증 코드",
-    recoveryCode: "복구 코드",
-    verifyAndSignIn: "확인 후 로그인",
-    completePasskeyVerification:
-      "로그인을 완료하려면 패스키 인증을 완료하세요.",
-    enterAuthenticatorCode: "로그인을 완료하려면 인증 코드를 입력하세요.",
-    invalidVerificationCode: "유효하지 않은 인증 코드입니다.",
-    privacy: "개인정보",
-    terms: "약관",
-    createAccount: "계정 만들기",
-    passwordCriteria:
-      "최소 8자, 대문자 1개, 소문자 1개, 숫자 1개, 특수문자 1개",
-    agreeToTerms: "동의합니다",
-    termsOfService: "서비스 약관",
-    privacyPolicy: "개인정보 처리방침",
-    and: "및",
-  },
-
-  // Passkeys
   passkeys: {
     noPasskeyResponse: "패스키 응답을 받지 못했습니다.",
     passkeysNotSupported: "이 브라우저에서는 패스키가 지원되지 않습니다.",
+    title: "패스키",
+    addTitle: "이 계정에 암호를 추가하세요",
+    addDescription:
+      "Face ID, Touch ID, Windows Hello 또는 하드웨어 보안 키를 사용하십시오.",
+    addAction: "암호를 추가하세요",
+    requirementTitle: "로그인 시 패스키가 필요합니다.",
+    requirementDescription:
+      "Miru는 비밀번호를 입력한 후 로그인을 완료하기 위해 패스키를 요구합니다.",
+    emptyState: "아직 암호가 추가되지 않았습니다.",
+    fallbackName: "곁쇠",
+    addedAt: "%{time} 추가됨",
+    lastUsedAt: "마지막 사용 %{time}",
+    removeAction: "제거하다",
+    addedSuccess: "암호키가 추가되었습니다",
+    removedSuccess: "암호가 삭제되었습니다",
+    requirementEnabled: "암호키 요구 사항이 활성화되었습니다.",
+    requirementDisabled: "암호키 요구 사항 비활성화됨",
+    addFailed: "암호를 추가하는 데 실패했습니다.",
+    removeFailed: "암호를 제거하는 데 실패했습니다.",
+    updateRequirementFailed: "암호키 로그인 요구 사항 업데이트에 실패했습니다.",
+    neverUsed: "한 번도 사용하지 않았습니다.",
   },
-
-  // Organization setup
   orgSetup: {
     setupOrganization: "조직 설정",
     companyName: "회사명",
@@ -1252,26 +1224,445 @@ const ko = {
     workingDaysPerWeek: "근무일 (주당)",
     workingHoursPerWeek: "근무시간 (주당)",
   },
-
-  // Profile
   profile: {
     personalDetails: "개인 정보",
+    personalInformation: "개인 정보",
+    basicDetails: "기본 정보",
+    contactInformation: "연락처 정보",
+    addressType: "주소 유형",
+    current: "현재의",
+    permanent: "영구적인",
     employmentDetails: "고용 정보",
     compensationDetails: "보상 정보",
     devices: "기기",
     editProfile: "프로필 편집",
     currentEmployment: "현재 고용",
     previousEmployment: "이전 고용",
+    employeeId: "직원 ID",
     designation: "직위",
+    officialEmail: "이메일 주소 (공식)",
+    employmentType: "고용 형태",
     department: "부서",
     dateOfJoining: "입사일",
+    dateOfResignation: "사직일",
     dateOfBirth: "생년월일",
+    birthDatePlaceholder: "생년월일을 선택하세요",
     socialProfiles: "소셜 프로필",
-    linkedin: "LinkedIn",
-    github: "GitHub",
+    linkedin: "링크드인",
+    github: "깃허브",
+    firstName: "이름",
+    lastName: "성",
+    firstNamePlaceholder: "이름을 입력하세요",
+    lastNamePlaceholder: "성을 입력하세요",
+    personalEmail: "개인 이메일",
+    personalEmailPlaceholder: "your.email@example.com",
+    phoneAriaLabel: "전화 번호",
+    addressLine1: "주소 1행",
+    addressLine2: "주소 2번째 줄",
+    optionalSuffix: "(선택 과목)",
+    streetAddressPlaceholder: "도로명 주소",
+    addressLine2Placeholder: "아파트, 스위트룸, 유닛 등",
+    statePlaceholder: "주 또는 지방",
+    cityPlaceholder: "도시",
+    zipPostalCode: "우편번호",
+    zipPlaceholder: "12345",
+    languageDescription: "인터페이스에 사용할 언어를 선택하세요.",
+    security: "보안",
+    userFallback: "사용자",
+    currentPasswordPlaceholder: "현재 비밀번호를 입력하세요",
+    newPassword: "새 비밀번호",
+    newPasswordPlaceholder: "새 비밀번호를 입력하세요",
+    confirmPasswordPlaceholder: "새 비밀번호를 다시 입력하세요",
+    cancelPasswordChange: "비밀번호 변경 취소",
+    profilePhoto: "프로필 사진",
+    profilePhotoDescription:
+      "워크스페이스 프로필에 정사각형 사진을 업로드하세요.",
+    noAddressProvided: "주소가 제공되지 않았습니다.",
+    noEmailProvided: "이메일 주소가 제공되지 않았습니다.",
+    notProvided: "제공되지 않음",
+    notConnected: "연결되지 않음",
+    bornOn: "%{date} 출생",
+    lastChangedDaysAgo: "마지막 변경일: %{count}일 전",
+    secure: "안전한",
+    uploadPhoto: "사진 업로드",
+    removePhoto: "사진 삭제",
+    uploadPhotoFailed: "프로필 이미지 업로드에 실패했습니다.",
+    removePhotoFailed: "프로필 이미지를 삭제하는 데 실패했습니다.",
+    adjustProfilePhoto: "프로필 사진 조정",
+    adjustProfilePhotoDescription: "이미지에서 남기고 싶은 부분을 선택하세요.",
+    noImageSelected: "선택된 이미지가 없습니다",
+    savePhoto: "사진 저장",
+    zoom: "줌",
+    company: "회사",
+    noPreviousEmployments: "이전 고용 이력이 없습니다.",
+    addPastEmployment: "+ 이전 고용 경력 추가",
   },
-
-  // Leave Management
+  preferencesSettings: {
+    title: "이메일 수신 설정",
+    description: "이메일 알림 설정을 관리하세요",
+    saving: "절약...",
+    saveChanges: "변경 사항 저장",
+    timesheetNotifications: "근무 시간 알림",
+    billingNotifications: "청구 알림",
+    timesheetNotificationsDescription:
+      "시간 추적 및 근무 시간표 관련 알림을 관리하세요.",
+    billingNotificationsDescription: "송장 및 지급 알림 관리",
+    weeklyReminderTitle: "주간 근무 시간표 제출 안내",
+    weeklyReminderDescription:
+      "매주 월요일, 미처리된 근무 시간 입력 사항에 대한 알림을 받으세요.",
+    timesheetReminderTitle: "누락된 항목에 대한 알림",
+    timesheetReminderDescription:
+      "2일 이상 근무 기록이 없으면 알림을 받으세요.",
+    invoiceNotificationsTitle: "청구서 이메일 알림",
+    invoiceNotificationsDescription:
+      "청구서가 생성, 발송 또는 업데이트될 때 이메일을 수신하세요.",
+    paymentNotificationsTitle: "결제 이메일 알림",
+    paymentNotificationsDescription:
+      "결제가 완료되거나 결제 상태가 변경될 때 알림을 받으세요.",
+    monthlyDigestTitle: "월별 현금 흐름 요약",
+    monthlyDigestDescription:
+      "순 변동액, 수입 및 지출 내역을 포함한 월별 현금 흐름 요약 보고서를 받아보세요.",
+    confirmUnsubscribeTitle: "모든 이메일 수신 거부를 확인하세요",
+    confirmUnsubscribeDescription:
+      "모든 이메일 알림 수신을 정말로 거부하시겠습니까? 중요한 청구서 및 송장 알림을 포함한 모든 이메일을 더 이상 받지 않게 됩니다.",
+    confirmUnsubscribeAction: "네, 모든 구독을 취소하세요.",
+    unsubscribedTitle: "모든 이메일 수신을 거부하셨습니다.",
+    unsubscribedDescription:
+      "현재 모든 이메일 알림 수신을 거부하셨습니다. Miru에서 보내는 이메일을 더 이상 받지 않으실 겁니다.",
+    resubscribeAction: "이메일 알림 다시 활성화",
+    enabledCount: "%{count} of %{total} 활성화됨",
+    deliveryTitle: "이메일 전송 설정",
+    emailAddress: "이메일 주소",
+    deliveryDescription:
+      "모든 알림은 이 이메일 주소로 발송됩니다. 이메일 주소를 변경하려면 프로필 설정에서 업데이트하세요.",
+    unsubscribeTitle: "구독 취소",
+    unsubscribeDescription:
+      "Miru에서 보내는 이메일을 더 이상 받고 싶지 않으시면 모든 알림 수신을 거부하실 수 있습니다. 이렇게 하면 중요한 청구 및 송장 알림을 포함한 모든 이메일 수신이 중단됩니다.",
+    unsubscribeAction: "모든 이메일 수신을 거부하려면 구독을 취소하세요.",
+    badges: {
+      active: "활동적인",
+      important: "중요한",
+      monthly: "월간 간행물",
+    },
+  },
+  automationSettings: {
+    title: "자동화 및 CLI",
+    description:
+      "Miru를 터미널, 스크립트 또는 AI 에이전트에서 로그인한 계정과 동일한 권한으로 사용하세요. 별도의 자동화 제품이 필요하지 않습니다. 특별한 백도어 접근 권한도 필요 없습니다.",
+    freeForEveryPlan: "모든 플랜 무료",
+    cards: {
+      samePermissionsTitle: "앱과 동일한 권한",
+      samePermissionsDescription:
+        "CLI는 인증된 사용자가 웹 앱에서 이미 접근할 수 있는 항목만 볼 수 있습니다.",
+      humansAndScriptsTitle: "사람과 시나리오 모두에게 좋습니다",
+      humansAndScriptsDescription:
+        "일상적인 작업에는 간단한 명령어를 사용하고, 스크립트나 AI가 동일한 인터페이스를 호출하도록 하세요.",
+      easyToInstallTitle: "설치가 간편합니다",
+      easyToInstallDescription:
+        "설치 명령 한 번, 로그인 한 번으로 프로젝트 목록 보기, 시간 기록 생성, 송장 검토 등 다양한 작업을 수행할 수 있습니다.",
+    },
+    commandGroups: {
+      install: "설치하다",
+      authenticateOnce: "한 번만 인증하세요",
+      dailyCommands: "매일의 명령",
+    },
+  },
+  holidaysSettings: {
+    year: "년도",
+    publicHolidays: "공휴일",
+    optionalHolidays: "선택적 휴가",
+    holidayName: "휴일 이름",
+    enterHolidayName: "휴일 이름을 입력하세요",
+    selectDate: "날짜를 선택하세요",
+    addHoliday: "휴일 추가",
+    addFirstHoliday: "첫 번째 휴일 추가",
+    addOptionalHoliday: "선택 사항 휴일 추가",
+    noPublicHolidaysConfigured: "공휴일 설정 안 됨",
+    noOptionalHolidaysConfigured: "설정된 선택적 휴일이 없습니다.",
+    totalAllowed: "총 허용 금액",
+    enterNumber: "숫자를 입력하세요",
+    frequency: "빈도",
+    allowedPerEmployee: "직원 1인당 허용",
+    yearAtAGlance: "한 해回顾",
+    holidaySchedule: "휴일 일정",
+    noHolidaysAddedForYear: "%{year}에 대한 휴일은 아직 추가되지 않았습니다.",
+    categories: {
+      public: "공공의",
+      optional: "선택 과목",
+    },
+    weekdays: {
+      sun: "에스",
+      mon: "중",
+      tue: "티",
+      wed: "W",
+      thu: "티",
+      fri: "에프",
+      sat: "에스",
+    },
+  },
+  paymentSettingsPage: {
+    backToSettings: "설정으로 돌아가기",
+    title: "결제 제공업체",
+    description:
+      "고객이 온라인 결제를 받을 수 있도록 결제 서비스 제공업체를 연결하세요.",
+    errorTitle: "오류",
+    errorDescription:
+      "결제 설정을 불러오는 데 실패했습니다. 나중에 다시 시도해 주세요.",
+    stripeDescription:
+      "신용카드, 직불카드 및 기타 일반적인 결제 수단을 허용하세요",
+    connectedTo: "연결됨",
+    connected: "연결됨",
+    stripeAccountFallback: "스트라이프 계정",
+    chargesEnabled: "요금 충전 가능",
+    connectStripe: "스트라이프에 연결",
+    connecting: "연결 중...",
+    disconnect: "연결을 끊으세요",
+    disconnecting: "연결을 해제하는 중...",
+    featuresTitle: "특징 및 장점",
+    helpTitle: "도움이 필요하세요?",
+    helpDescription:
+      "결제 처리 설정에 도움이 필요하시거나 수수료 및 기능에 대해 궁금한 점이 있으시면 문의해 주세요.",
+    viewDocumentation: "문서 보기",
+    contactSupport: "고객 지원팀에 문의하세요",
+    disconnectDialogTitle: "Stripe 계정 연결 해제",
+    disconnectDialogDescription:
+      "Stripe 계정 연결을 해제하시겠습니까? 다시 연결하기 전까지는 Stripe를 통해 결제를 받을 수 없습니다.",
+    disconnectPaymentModeDescription:
+      "%{paymentMode} 결제 게이트웨이 연결을 해제하시겠습니까? %{paymentMode} 계정을 연결하기 전까지는 %{paymentMode}을 통한 결제를 받을 수 없습니다.",
+    features: {
+      secureTitle: "안전한 결제",
+      secureDescription: "PCI 규정을 준수하는 결제 처리",
+      currenciesTitle: "여러 통화",
+      currenciesDescription: "135개 이상의 통화로 결제를 받으세요",
+      methodsTitle: "다양한 결제 방법",
+      methodsDescription: "카드, 전자지갑, 은행 송금 등",
+      setupTitle: "즉시 설치",
+      setupDescription: "몇 분 안에 결제를 받기 시작하세요",
+    },
+  },
+  organizationSettingsPage: {
+    actions: {
+      editSettings: "설정 편집",
+    },
+    sections: {
+      companyProfile: "회사 소개",
+      financial: "재정적인",
+      scheduleAndTime: "일정 및 시간",
+      workingHours: "근무 시간",
+    },
+    fields: {
+      businessPhone: "업무용 전화",
+      currency: "통화",
+      businessAddress: "사업장 주소",
+      standardRate: "표준 요금",
+      fiscalYearEnd: "회계연도 종료",
+      timezone: "시간대",
+      dateFormat: "날짜 형식",
+      workingDays: "근무일",
+    },
+    status: {
+      active: "활동적인",
+    },
+    defaults: {
+      companyName: "회사명",
+      locationNotSet: "위치가 설정되지 않았습니다",
+      notConfigured: "구성되지 않음",
+      noAddress: "주소가 구성되지 않았습니다.",
+      workingHours: "오전 9시 - 오후 5시",
+      workingDays: "월요일 - 금요일",
+      timezone: "UTC",
+      dateFormat: "월/일/년",
+    },
+    errors: {
+      loadFailed: "조직 정보를 불러오는 데 실패했습니다. 다시 시도해 주세요.",
+    },
+    ratePerHour: "/ 시간",
+  },
+  billingSettings: {
+    membership: "멤버십",
+    currentPlan: "현재 계획",
+    seatUsage: "좌석 사용",
+    billingCadence: "청구 주기",
+    monthly: "월간 간행물",
+    yearly: "매년",
+    notSubscribedYet: "아직 구독하지 않았습니다",
+    startTrial: "30일 프로 체험판을 시작하세요",
+    startingTrial: "시험 시작 중...",
+    upgradeWithStripe: "Stripe로 업그레이드하세요",
+    openingStripe: "Stripe 열기...",
+    manageBillingInStripe: "Stripe에서 결제 관리하기",
+    openingPortal: "포털을 여는 중...",
+    saveTwoMonths: "연간 구독료에서 두 달을 절약하세요",
+    heroTitle:
+      "지금 필요한 패키지를 선택하세요. 나중에 더 필요하면 변경하세요.",
+    howManySeats: "좌석이 몇 개 정도 필요할 것으로 예상하시나요?",
+    estimatedSeats: "예상 좌석 수",
+    recommended: "추천",
+    estimatedProSpend: "예상 전문가 지출",
+    yearlyDiscount: "연간 할인",
+    openSource: "오픈 소스",
+    annual: "연간",
+    service: "서비스",
+    poweredByStripe: "Stripe 제공",
+    changePlansAnytime: "언제든지 계획을 변경할 수 있습니다.",
+    checkoutPoweredByStripe: "결제 및 구독 관리는 Stripe에서 제공합니다.",
+    noSalesCall:
+      "Pro 버전에는 영업 전화가 없습니다. Stripe에서 언제든지 요금제를 취소하거나 변경할 수 있습니다.",
+    reportsAndAnalytics: "보고서 및 분석",
+    customAnnual: "맞춤형 연간",
+    seatsUsed: "%{used}/%{total} 좌석 사용",
+    seatsUsedWithoutLimit: "%{used} 좌석 사용됨",
+    savePerYear: "연간 $%{amount} 절약",
+    effectiveMonthlyPricing: "실질적인 가격은 약 $%{amount}/월입니다.",
+    cancelOrUpgradeAnytime:
+      "Stripe에서 언제든지 취소 또는 업그레이드할 수 있습니다.",
+    planCadence: {
+      monthly: "월 단위로 청구됩니다.",
+      yearlySavings: "좌석당 2개월 할인",
+    },
+    alerts: {
+      subscriptionUpdatedTitle: "구독 정보가 업데이트되었습니다.",
+      subscriptionUpdated: "Stripe에서 요금제가 성공적으로 업데이트되었습니다.",
+      checkoutCancelled: "체크아웃 취소됨",
+      noSubscriptionChanges: "구독 내용에 변경 사항이 없습니다.",
+      unableToLoad: "결제 정보를 불러올 수 없습니다.",
+      proTrialActive: "프로 체험판 활성화됨",
+      proTrialActiveUntil:
+        "워크스페이스는 %{date}까지 Pro 액세스 권한을 갖습니다.",
+      proTrialEnded: "친선 재판 종료",
+      proTrialEndedDescription:
+        "워크스페이스가 무료 플랜으로 돌아갔습니다. Stripe에서 업그레이드하여 Pro 액세스 권한을 복원하세요.",
+      seatLimitReached: "좌석 제한에 도달했습니다",
+      seatLimitReachedDescription:
+        "Stripe에서 업그레이드하여 이 워크스페이스에 3명 이상의 멤버를 추가하세요.",
+    },
+    errors: {
+      unableToOpenStripeCheckout: "Stripe 결제 페이지를 열 수 없습니다.",
+      unableToOpenStripeBillingPortal: "Stripe 결제 포털을 열 수 없습니다.",
+      unableToStartProTrial: "Pro 체험판을 시작할 수 없습니다.",
+    },
+    recommendations: {
+      freeTitle: "제어 기능이 필요할 때까지 무료 버전을 유지하세요.",
+      freeDescription:
+        "무료 버전은 소규모 팀에 적합합니다. SSO, 더욱 강력한 보고서 기능, 그리고 3개 이상의 사용자 계정이 필요할 경우 프로 버전으로 업그레이드하세요.",
+      proTitle: "Pro가 딱 맞습니다",
+      proDescription:
+        "성장하는 팀의 경우, Pro는 SSO, 재무 가시성을 제공하며 엔터프라이즈급 비용 부담 없이 확장할 수 있는 충분한 여유 공간을 제공합니다.",
+      enterpriseTitle: "엔터프라이즈에 대해 저희에게 문의하세요.",
+      enterpriseDescription:
+        "규모가 큰 팀은 일반적으로 구매 지원, 관리자 제어 및 원활한 배포가 필요합니다. Pro 버전으로 시작하거나 바로 Enterprise 버전으로 업그레이드하세요.",
+    },
+    highlights: {
+      seatsTitle: "행정적인 번거로움 없이 더 많은 좌석을 확보하세요.",
+      seatsDescription:
+        "무료 좌석 3개 제한을 넘어 온보딩 프로세스를 간소화하세요.",
+      ssoTitle: "SSO 및 더욱 강력한 제어",
+      ssoDescription:
+        "추가 도구 없이 성장하는 팀에 안전한 액세스 권한을 제공합니다.",
+      financeTitle: "재무 상황을 안정적으로 파악할 수 있는 투명성",
+      financeDescription:
+        "별도의 설정 없이 마진, 청구 주기 및 팀 사용량을 파악하세요.",
+    },
+    planDescriptions: {
+      free: "핵심 추적, 송장 발행, 결제 기능과 최대 3개 팀 계정을 갖춘 Miru를 자체 호스팅하세요.",
+      pro: "Pro 버전은 엔터프라이즈급 추가 비용 없이 보고서, SSO, 더 많은 사용자 계정, 그리고 더욱 간편한 관리자 제어 기능을 제공합니다.",
+      enterprise:
+        "구매 친화적인 계약, 고급 제어 기능, 그리고 보안 검토가 필요한 대규모 팀에 대한 지원을 제공합니다.",
+      hostedEnterprise:
+        "저희는 전용 환경에서 Miru를 호스팅, 업그레이드, 백업 및 지원해 드립니다.",
+    },
+    planBullets: {
+      free: {
+        coreProduct: "자체 호스팅 핵심 제품",
+        tracking: "시간 기록, 송장, 결제",
+        dashboard: "소규모 팀을 위한 대시보드 가시성",
+      },
+      pro: {
+        trial: "결제 전 30일 무료 체험",
+        sso: "SSO, 고급 보고 기능, 강화된 관리자 제어 기능",
+        fit: "에이전시 및 성장하는 팀에 가장 적합합니다.",
+      },
+      enterprise: {
+        contracts: "조달 친화적인 계약",
+        onboarding: "보안 검토 및 온보딩 지원",
+        compliance: "승인 및 규정 준수 요구 사항이 있는 대규모 팀의 경우",
+      },
+      hosted: {
+        setup: "전용 관리형 설정",
+        operations: "저희는 업그레이드, 백업 및 지원을 담당합니다.",
+        fit: "Miru의 모든 기능을 활용하고 싶어하는 팀을 위해",
+      },
+    },
+    heroDescription:
+      "무료로 시작하여 팀에서 더 많은 제어가 필요할 때 프로 버전으로 업그레이드하거나 Miru 운영을 저희에게 맡기세요. 프로 버전은 저렴한 가격으로 매년 비용을 절감할 수 있으며, 결제 및 구독 관리는 Stripe를 통해 간편하게 이루어집니다.",
+    seatEstimatorDescription:
+      "이를 통해 무료 버전과 유료 버전을 비교하고 월간 구독과 연간 구독 중 어느 것이 더 적합한지 결정하세요.",
+    yearlyDiscountDescription: "월별 요금제 대비 좌석당 2개월 무료 혜택.",
+    checkoutDescription:
+      "영업 절차 없이 체험판을 시작하고, 준비가 되면 업그레이드하고, 필요할 때마다 직접 청구를 관리하세요.",
+    plans: {
+      unknown: "알려지지 않은",
+      free: "무료",
+      freePro: "무료 프로",
+      proTrial: "프로 체험판",
+      paid: "유급의",
+      enterprise: "기업",
+      hostedEnterprise: "호스팅 엔터프라이즈",
+    },
+    table: {
+      feature: "특징",
+      bestFor: "~에 가장 적합함",
+      selfHostedTeams: "자체 호스팅 팀의 시작",
+      growingServiceTeams: "관리 기능이 필요한 서비스 팀의 성장",
+      largeOrgs: "보안 및 조달 요구 사항이 있는 대규모 조직",
+      managedTeams: "Miru의 관리를 원하는 팀",
+      timeTracking: "시간 추적",
+      invoicesAndPayments: "송장 및 결제",
+      reportsAndDashboards: "보고서 및 대시보드",
+      sso: "SSO",
+      auditAndAdminControls: "감사 및 관리 통제",
+      support: "지원하다",
+      included: "포함됨",
+      notIncluded: "포함되지 않음",
+      dashboardOnly: "대시보드 전용",
+      reportsAndAnalytics: "보고서 및 분석",
+      community: "지역 사회",
+      priorityEmail: "우선 이메일",
+      priorityOnboarding: "우선 순위 + 온보딩",
+      managedOnboarding: "관리형 서비스 + 온보딩",
+    },
+  },
+  twoFactor: {
+    title: "인증 앱 2FA",
+    addTitle: "인증 앱을 추가하세요",
+    addDescription:
+      "Google Authenticator, 1Password, Bitwarden, Authy 또는 TOTP 호환 앱을 사용하세요.",
+    setupAction: "2단계 인증(2FA)을 설정하세요",
+    finishTitle: "인증기 설정 완료",
+    finishDescription:
+      "이 키를 인증 앱에 추가한 다음 현재 6자리 코드를 입력하여 2단계 인증을 활성화하세요.",
+    manualEntryKey: "수동 입력 키",
+    verificationCode: "인증 코드",
+    verificationCodePlaceholder: "123456",
+    enableAction: "2단계 인증을 활성화하세요",
+    resetKeyAction: "리셋 키",
+    enabledTitle: "인증 앱 보호 기능이 켜져 있습니다.",
+    enabledDescription: "로그인할 때 비밀번호 다음에 인증 코드가 필요합니다.",
+    recoveryCodesAvailable: "%{count} 복구 코드 사용 가능",
+    regenerateRecoveryCodes: "복구 코드 재생성",
+    disableAction: "2단계 인증 비활성화",
+    saveRecoveryCodes: "이 복구 코드를 저장해 두세요.",
+    saveRecoveryCodesDescription:
+      "각 코드는 한 번만 사용할 수 있습니다. 안전한 곳에 보관하세요.",
+    setupReadySuccess: "인증 앱 설정이 완료되었습니다.",
+    enabledSuccess: "인증 앱 활성화됨",
+    disabledSuccess: "인증 앱이 비활성화되었습니다",
+    regeneratedSuccess: "복구 코드가 재생성되었습니다",
+    setupFailed: "2단계 인증 설정 시작에 실패했습니다.",
+    enableFailed: "인증 앱을 활성화하는 데 실패했습니다.",
+    disableFailed: "2단계 인증을 비활성화하는 데 실패했습니다.",
+    regenerateFailed: "복구 코드를 재생성하는 데 실패했습니다.",
+  },
   leaveManagement: {
     leaveBalance: "휴가 잔여",
     applyLeave: "휴가 신청",
@@ -1308,9 +1699,58 @@ const ko = {
     leave: "휴가",
     nationalHoliday: "국경일",
     optionalHoliday: "선택 공휴일",
+    leaveTypeUtilized: "%{name} 활용됨",
+    leaveTypeAvailable: "%{name} 사용 가능",
+    outOf: "~의",
+    thisQuarter: "이번 분기",
+    thisYear: "올해",
+    thisMonth: "이번 달",
+    thisWeek: "이번 주",
+    summaryLabel: "요약해서 남겨주세요",
+    summaryDescription:
+      "선택한 연도의 사용 가능한 휴가, 이미 사용한 휴가, 그리고 연차 사용 현황을 한 곳에서 확인하세요.",
+    balanceUntil: "잔액은 %{date}까지입니다.",
   },
-
-  // Subscriptions / Plan Details
+  notificationPreferences: {
+    emailNotifications: "이메일 알림",
+    manageDescription: "이메일 알림 설정을 관리하세요",
+    weeklyEmailReminder: "주간 이메일 알림",
+    weeklyEmailReminderDescription:
+      "근무 시간 입력 및 프로젝트 업데이트에 대한 주간 이메일 알림을 받으세요.",
+    noUserData: "사용자 데이터가 없습니다.",
+    loginPrompt: "알림 설정을 관리하려면 로그인하십시오.",
+  },
+  devices: {
+    addDevices: "기기 추가",
+    editDevices: "장치 편집",
+    device: "장치",
+    unknownDevice: "알 수 없는 장치",
+    serial: "연속물:",
+    deviceType: "장치 유형",
+    selectDeviceType: "기기 유형을 선택하세요",
+    modelName: "모델/이름",
+    serialNumber: "일련번호",
+    memory: "메모리(RAM)",
+    processor: "프로세서",
+    graphics: "제도법",
+    graphicsCard: "그래픽 카드",
+    storage: "저장",
+    modelNamePlaceholder: "예: 맥북 프로 16인치",
+    serialNumberPlaceholder: "예: C02XX1234567",
+    memoryPlaceholder: "예: 16GB DDR4",
+    processorPlaceholder: "예: 인텔 코어 i7-10750H",
+    graphicsPlaceholder: "예: NVIDIA GeForce RTX 3060",
+    storagePlaceholder: "예: 512GB SSD",
+    addAnotherDevice: "다른 기기 추가",
+    addAnotherDeviceDescription: "클릭하여 재고에 새 기기를 추가하세요.",
+    deviceSummary: "기기 요약",
+    totalDevices: "총 기기 수",
+    notSpecified: "명시되지 않음",
+    noDevicesFound: "기기를 찾을 수 없습니다.",
+    newDevice: "새로운 장치",
+    unsavedChangesPrompt:
+      "저장되지 않은 변경 사항이 있습니다. 취소하시겠습니까?",
+  },
   subscriptions: {
     currentPlan: "현재 플랜",
     upgradePlan: "플랜 업그레이드",
@@ -1331,8 +1771,6 @@ const ko = {
     plusTaxes: "세금 별도",
     reviewAndPay: "검토 및 결제",
   },
-
-  // Misc
   switchToMode: "%{mode} 모드로 전환",
   light: "라이트",
   dark: "다크",
@@ -1342,8 +1780,6 @@ const ko = {
   editLabel: "편집",
   noPasskeyResponse: "패스키 응답을 받지 못했습니다.",
   passkeysNotSupported: "이 브라우저에서는 패스키가 지원되지 않습니다.",
-
-  // Table headers (common)
   tableHeaders: {
     invoiceNo: "청구서 번호",
     invoiceNumber: "청구서 번호",
@@ -1363,15 +1799,335 @@ const ko = {
     role: "역할",
     type: "유형",
   },
-
-  // Relative dates
   nextDay: "다음 %{day}",
   lastDay: "지난 %{day}",
-
-  // Duration formatting
   durationMinutes: "%{mins}m",
   durationHours: "%{hours}h",
   durationHoursMinutes: "%{hours}h %{mins}m",
+  common: {
+    retry: "재시도",
+    pageUnavailable:
+      "이 페이지를 사용할 수 없거나 링크가 워크스페이스에서 더 이상 유효하지 않습니다.",
+    goToDashboard: "대시보드로 이동",
+    language: "언어",
+    loading: "로딩 중...",
+    saving: "절약...",
+    failedToChangeLanguage: "언어 변경에 실패했습니다",
+    searchLanguages: "검색 언어...",
+    noLanguagesFound: "언어를 찾을 수 없습니다.",
+  },
+  auth: {
+    signIn: {
+      title: "워크스페이스에 로그인하세요",
+      description:
+        "한 곳에서 업무 진행 상황을 추적하고, 송장을 보내고, 현금 흐름을 명확하게 관리하세요.",
+      continueWithGoogle: "Google에서 계속 진행",
+      continueWithGitHub: "GitHub에서 계속 진행하세요",
+      orUseEmail: "또는 이메일을 사용하세요",
+      email: "이메일",
+      password: "비밀번호",
+      submit: "로그인",
+      forgotPassword: "비밀번호를 잊으셨나요?",
+      noAccount: "계정이 없으신가요?",
+      signUp: "가입하기",
+      privacy: "은둔",
+      terms: "자귀",
+      loginFailed: "로그인에 실패했습니다. 다시 시도해 주세요.",
+      welcomeBack: "다시 오신 것을 환영합니다!",
+      waitingForPasskey: "암호를 기다리는 중...",
+      passkeyPrompt: "암호를 사용하여 로그인하세요",
+      totpTitle: "2단계 인증",
+      totpPrompt: "인증 앱에서 받은 코드를 입력하세요",
+      totpDescription: "인증 앱을 열고 6자리 코드를 입력하세요.",
+      totpCode: "인증 코드",
+      verifyAndSignIn: "인증 후 로그인하세요",
+      recoveryCode: "대신 복구 코드를 사용하세요",
+      back: "뒤쪽에",
+    },
+    signUp: {
+      title: "나만의 작업 공간을 만드세요",
+      description:
+        "고객, 프로젝트, 송장 및 결제를 하나의 명확한 운영 시스템에서 설정하세요.",
+      continueWithGoogle: "Google에서 계속 진행",
+      continueWithGitHub: "GitHub에서 계속 진행하세요",
+      orUseEmail: "또는 이메일을 사용하세요",
+      firstName: "이름",
+      lastName: "성",
+      email: "이메일",
+      password: "비밀번호",
+      confirmPassword: "비밀번호 확인",
+      passwordCriteria:
+        "최소 8자 이상이어야 하며, 대문자 1개, 소문자 1개, 숫자 1개가 포함되어야 합니다.",
+      submit: "계정 생성",
+      alreadyHaveAccount: "이미 계정이 있으신가요?",
+      signIn: "로그인",
+      agreePrefix: "가입함으로써 귀하는 당사의 이용약관에 동의하게 됩니다.",
+      termsOfService: "서비스 약관",
+      and: " 그리고 ",
+      privacyPolicy: "개인정보 보호정책",
+    },
+    slides: {
+      dashboard: {
+        title: "회사 동향",
+        description:
+          "수익, 진행 중인 프로젝트, 팀 성과 등을 일일이 찾아보지 않고도 확인할 수 있습니다.",
+      },
+      invoices: {
+        title: "청구 명령",
+        description:
+          "어음, 연체금, 그리고 지급 완료된 작업물을 한 곳에 보관하세요.",
+      },
+      timeTracking: {
+        title: "명확한 주간 흐름",
+        description:
+          "주별 시간 입력은 단순 반복 작업으로 이어지지 않으면서도 최신 상태를 유지합니다.",
+      },
+      payments: {
+        title: "현금 장부",
+        description:
+          "모든 결제 내역은 결제 방식, 상태 및 출처와 함께 하나의 장부에 기록됩니다.",
+      },
+    },
+    validation: {
+      emailRequired: "이메일 주소는 필수입니다.",
+      invalidEmail: "잘못된 이메일 주소입니다",
+      passwordRequired: "비밀번호가 필요합니다",
+      passwordComplexity:
+        "비밀번호는 대문자, 소문자, 숫자를 포함하여 최소 8자 이상이어야 합니다.",
+      passwordSpace: "비밀번호에는 공백이 포함될 수 없습니다.",
+      confirmPasswordRequired: "비밀번호 확인이 필요합니다",
+      passwordsMustMatch: "비밀번호는 일치해야 합니다.",
+      firstNameRequired: "이름은 필수 입력 사항입니다.",
+      firstNameInvalid: "이름은 알파벳으로만 구성되어야 합니다.",
+      firstNameMax: "이름은 20자 이하여야 합니다.",
+      lastNameRequired: "성(姓)은 필수 입력 사항입니다.",
+      lastNameInvalid: "성에는 알파벳만 포함되어야 합니다.",
+      lastNameMax: "성씨는 20자 이하여야 합니다.",
+      acceptTerms: "약관에 동의하셔야 합니다.",
+    },
+    miruLogo: "미루",
+    heroTitle: "시간, 청구서, 결제를 한 곳에서",
+    heroDescription: "일과를 명확히 하고 청구를 진행하며 현금을 가시화하세요.",
+    companyPulse: "회사 현황",
+    billingCommand: "청구 명령",
+    clearWeeklyFlow: "명확한 주간 흐름",
+    cashLedger: "현금 원장",
+    signOut: "로그아웃",
+    signInToWorkspace: "워크스페이스에 로그인",
+    createYourWorkspace: "워크스페이스 만들기",
+    signInDescription:
+      "작업을 추적하고 청구서를 보내며 현금 흐름을 한 곳에서 명확하게 관리하세요.",
+    signUpDescription:
+      "고객, 프로젝트, 청구서, 결제를 하나의 명확한 시스템으로 설정하세요.",
+    firstName: "이름",
+    lastName: "성",
+    password: "비밀번호",
+    confirmPassword: "비밀번호 확인",
+    forgotPassword: "비밀번호를 잊으셨나요?",
+    enterRegisteredEmail: "등록된 이메일 주소를 입력하세요",
+    resetPassword: "비밀번호 재설정",
+    resetPasswordInstructions:
+      "계정과 연결된 이메일 주소를 입력하면 비밀번호 재설정 링크를 보내드리겠습니다.",
+    sendResetLink: "재설정 링크 보내기",
+    backToLogin: "로그인으로 돌아가기",
+    alreadyHaveAccount: "이미 계정이 있으신가요?",
+    dontHaveAccount: "계정이 없으신가요?",
+    rememberMe: "로그인 상태 유지",
+    totpPlaceholder: "ABCD-EFGH",
+    noAuthTokenReceived: "인증 토큰을 수신하지 못했습니다",
+    slideDashboardDescription:
+      "매출, 활성 프로젝트, 팀 모멘텀을 한눈에 확인하세요.",
+    slideInvoicesDescription:
+      "초안, 연체 잔액, 결제된 작업을 같은 곳에서 관리하세요.",
+    slideTimeTrackingDescription:
+      "주간 시간 입력이 번거로움 없이 최신 상태를 유지합니다.",
+    slidePaymentsDescription:
+      "모든 결제가 방법, 상태, 출처와 함께 하나의 원장에 기록됩니다.",
+    slideShowPrefix: "보기",
+    continueWithGoogle: "Google로 계속",
+    continueWithGithub: "GitHub로 계속",
+    orUseEmail: "또는 이메일 사용",
+    verifyWithAuthenticator: "인증 앱으로 확인",
+    authenticatorInstructions:
+      "인증 앱의 6자리 코드를 입력하거나 복구 코드를 사용하세요.",
+    authenticatorCode: "인증 코드",
+    recoveryCode: "복구 코드",
+    verifyAndSignIn: "확인 후 로그인",
+    completePasskeyVerification:
+      "로그인을 완료하려면 패스키 인증을 완료하세요.",
+    enterAuthenticatorCode: "로그인을 완료하려면 인증 코드를 입력하세요.",
+    invalidVerificationCode: "유효하지 않은 인증 코드입니다.",
+    privacy: "개인정보",
+    terms: "약관",
+    createAccount: "계정 만들기",
+    passwordCriteria:
+      "최소 8자, 대문자 1개, 소문자 1개, 숫자 1개, 특수문자 1개",
+    agreeToTerms: "동의합니다",
+    termsOfService: "서비스 약관",
+    privacyPolicy: "개인정보 처리방침",
+    and: "및",
+    welcomeBack: "돌아오신 것을 환영합니다!",
+    loginFailed: "로그인에 실패했습니다. 다시 시도하세요.",
+    waitingForPasskey: "패스키 대기 중...",
+  },
+  nav: {
+    dashboard: "계기반",
+    timeTracking: "시간 추적",
+    clients: "고객들",
+    projects: "프로젝트",
+    team: "팀",
+    invoices: "송장",
+    reports: "보고서",
+    payments: "결제",
+    leavesAndHolidays: "휴가 및 공휴일",
+    expenses: "경비",
+    settings: "설정",
+    logout: "로그아웃",
+  },
+  sidebar: {
+    main: "기본",
+    personalSettings: "개인 설정",
+    companySettings: "회사 설정",
+    profile: "윤곽",
+    devices: "기기",
+    organization: "조직",
+    billing: "청구",
+    paymentSettings: "결제 설정",
+    holidayCalendar: "휴일 달력",
+    myLeaves: "내 잎사귀들",
+    bankTaxInfo: "은행 및 세금 정보",
+    expand: "사이드바 펼치기",
+    collapse: "사이드바 접기",
+  },
+  settings: {
+    settings: "설정",
+    profileSettings: "프로필 설정",
+    organizationSettings: "조직 설정",
+    paymentSettings: "결제 설정",
+    profilePicture: "프로필 사진",
+    changePassword: "비밀번호 변경",
+    currentPassword: "현재 비밀번호",
+    password: "비밀번호",
+    confirmPassword: "비밀번호 확인",
+    billing: "청구",
+    integrations: "연동",
+    leaves: "휴가",
+    import: "가져오기",
+    general: "일반",
+    profile: "프로필",
+    organization: "조직",
+    payment: "결제",
+    allocateLeaves: "휴가 할당",
+    customLeaves: "사용자 지정 휴가",
+    addCustomLeave: "사용자 지정 휴가 추가",
+    editCustomLeave: "사용자 지정 휴가 편집",
+    leaveType: "휴가 유형",
+    enterLeaveType: "휴가 유형 입력",
+    allocationValue: "할당 값",
+    allocationPeriod: "할당 기간",
+    allocationFrequency: "할당 빈도",
+    labels: {
+      profile: "윤곽",
+      employment: "고용",
+      devices: "기기",
+      notifications: "알림",
+      preferences: "환경설정",
+      organization: "조직",
+      billing: "청구",
+      payment: "지불",
+      holidays: "휴가",
+      leaves: "나뭇잎",
+      automation: "오토메이션",
+      bankInfo: "은행 및 세금 정보",
+    },
+    categories: {
+      personal: "개인의",
+      organization: "조직",
+    },
+  },
+  dashboard: {
+    dashboard: "대시보드",
+    overdue: "연체",
+    outstanding: "미결제",
+    totalHours: "총 시간",
+    revenueOverview: "매출 개요",
+    there: "거기",
+    companyPulse: "회사 현황",
+    welcomeBack: "돌아오신 것을 환영합니다, %{name}님",
+    recentActivity: "최근 활동",
+    workspaceActivity: "워크스페이스 활동",
+    activityDescription: "청구서 및 결제의 최신 업데이트",
+    employeeActivityDescription:
+      "대시보드는 시간 추적과 할당된 작업에 초점을 맞추고 있습니다.",
+    noRecentActivityYet: "아직 최근 활동이 없습니다",
+    loadMore: "더 불러오기",
+    caughtUp: "다 따라잡았어요!",
+    yearToDate: "연초 이후",
+    quarterToDate: "분기 초 이후",
+    monthToDate: "월초 이후",
+    weekToDate: "주초 이후",
+    revenue: "매출",
+    activeProjects: "활성 프로젝트",
+    currentlyActive: "현재 활성",
+    noRecentActivity: "최근 활동 없음",
+    teamSize: "팀 규모",
+    teammates: "팀원",
+    hoursTracked: "추적된 시간",
+    assignedProjects: "할당된 프로젝트",
+    projectsYouCanWorkOn: "작업 가능한 프로젝트",
+    totalInvoiced: "총 청구액",
+    openInvoices: "미결 청구서",
+    awaitingPayment: "결제 대기 중",
+    paidInvoices: "결제된 청구서",
+    alreadySettled: "이미 정산됨",
+    paymentsReceived: "수령한 결제",
+    employeeGuidance:
+      "주간 작업을 추적하고 정확한 항목을 제출하며 업무를 진행하세요.",
+    bookKeeperGuidance:
+      "수령한 결제를 검토하고 청구서를 대조하며 현금 흐름을 명확히 하세요.",
+    clientGuidance: "계정의 청구서 상태와 결제 기록을 확인하세요.",
+    defaultGuidance: "매출, 프로젝트, 팀 모멘텀을 한눈에 파악하세요.",
+    allCaughtUp: "모두 최신 상태입니다",
+    timeframe: {
+      week: "이번 주",
+      month: "이번 달",
+      quarter: "이번 분기",
+      year: "올해",
+    },
+    stats: {
+      revenue: "수익",
+      totalInvoiced: "청구된 총액",
+      openInvoices: "미결 청구서",
+      paidInvoices: "지불 완료된 송장",
+      paymentsReceived: "수령한 금액",
+      awaitingPayment: "결제 대기 중",
+      alreadySettled: "이미 정해졌습니다",
+      hoursTracked: "근무시간 기록됨",
+      currentlyActive: "현재 활동 중",
+      activeProjects: "진행 중인 프로젝트",
+      assignedProjects: "배정된 프로젝트",
+      projectsYouCanWorkOn: "참여할 수 있는 프로젝트",
+      teammates: "팀원들",
+      teamSize: "팀 규모",
+      noRecentActivity: "최근 활동 없음",
+    },
+    charts: {
+      revenueMomentumTitle: "수익 모멘텀",
+      revenueMomentumDescription: "지난 1년간 월별 매출 추세",
+      revenueTrendEyebrow: "수익 추세",
+      revenueLeadersTitle: "매출 선도 기업",
+      revenueLeadersDescription: "수익 기여도 기준 주요 고객",
+      topCustomersEyebrow: "주요 고객",
+      ofTotal: "총 %{percentage}",
+      noRevenue: "수익 데이터가 없습니다.",
+    },
+    roleGuidance: {
+      employee: "시간을 추적하고 프로젝트를 관리하세요",
+      bookKeeper: "송장, 지급 내역 및 재무 보고서를 검토합니다.",
+      client: "청구서 및 결제 내역을 확인하세요.",
+      default: "워크스페이스를 관리하세요",
+    },
+  },
 };
 
-export default ko;
+export default locale;

@@ -1,0 +1,30 @@
+---
+ko:
+  activerecord:
+    errors:
+      models:
+        client:
+          attributes:
+            name:
+              format: "%{message}"
+        project:
+          attributes:
+            name:
+              format: "%{message}"
+        user:
+          attributes:
+            email:
+              blank: 이메일은 비워둘 수 없습니다.
+              invalid: 잘못된 이메일 주소입니다
+              taken: 이메일 ID가 이미 존재합니다.
+            first_name:
+              blank: 빈칸일 수 없습니다
+              invalid: 문자 또는 공백만 포함해야 합니다.
+            last_name:
+              blank: 빈칸일 수 없습니다
+              invalid: 문자 또는 공백만 포함해야 합니다.
+            password:
+              blank: 빈칸일 수 없습니다
+              too_short: 최소 %{count}자 이상이어야 합니다.
+            password_confirmation:
+              confirmation: 새 비밀번호와 일치하지 않습니다

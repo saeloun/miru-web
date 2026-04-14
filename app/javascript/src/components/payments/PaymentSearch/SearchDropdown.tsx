@@ -1,5 +1,6 @@
 import React from "react";
 import { SearchResults } from "../../ui/search-results";
+import { i18n } from "../../../i18n";
 import SearchedDataRow from "./SearchedDataRow";
 
 import { SearchDropdownProps } from "../interfaces";
@@ -23,7 +24,7 @@ const SearchDropdown = ({
           suggestedPaymentClientName={suggestedPayment.clientName}
         />
       )}
-      emptyMessage="No payment found!"
+      emptyMessage={i18n.t("payments.noPaymentFound")}
       className="py-4 px-2"
     />
   );

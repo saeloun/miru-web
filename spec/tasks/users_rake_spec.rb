@@ -24,7 +24,7 @@ RSpec.describe "users:backfill_locales" do
       Rake::Task["users:backfill_locales"].invoke
     }.to output(/scanned=3 updated=2 already_valid=1/).to_stdout
 
-    expect(invalid_user.reload.locale).to eq("en")
+    expect(invalid_user.reload.locale).to eq("en-US")
     expect(non_canonical_user.reload.locale).to eq("en-US")
     expect(valid_user.reload.locale).to eq("hi")
   end

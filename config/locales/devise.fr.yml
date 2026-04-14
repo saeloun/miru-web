@@ -1,28 +1,15 @@
 ---
 fr:
-  activerecord:
-    errors:
-      models:
-        user:
-          attributes:
-            email:
-              blank: L'adresse e-mail ne peut pas être vide.
-              invalid: Adresse e-mail invalide
-              taken: L'adresse e-mail existe déjà.
-            first_name:
-              blank: ne peut pas être vide
-              invalid: ne doit contenir que des lettres ou des espaces
-            last_name:
-              blank: ne peut pas être vide
-              invalid: ne doit contenir que des lettres ou des espaces
-            password:
-              blank: ne peut pas être vide
-              too_short: doit comporter au moins %{count} caractères.
-            password_confirmation:
-              confirmation: ne correspond pas au nouveau mot de passe
   devise:
     confirmations:
       confirmed: Votre adresse e-mail a été confirmée avec succès.
+      new:
+        description: Votre lien de confirmation a expiré ou n'est pas valide. Veuillez
+          en demander un nouveau.
+        remember_password: Vous vous souvenez de votre mot de passe ?
+        resend: Renvoyer l'e-mail de confirmation
+        sign_in: Se connecter
+        title: Confirmation par courriel requise
       send_instructions: Vous recevrez dans quelques minutes un courriel contenant
         les instructions pour confirmer votre adresse électronique.
       send_paranoid_instructions: Si votre adresse électronique figure dans notre
@@ -89,21 +76,12 @@ fr:
       signed_in: Connexion réussie.
       signed_out: Déconnexion réussie.
     unlocks:
+      new:
+        submit: Renvoyer les instructions de déverrouillage
+        title: Renvoyer les instructions de déverrouillage
       send_instructions: Vous recevrez dans quelques minutes un courriel contenant
         les instructions pour déverrouiller votre compte.
       send_paranoid_instructions: Si votre compte existe, vous recevrez dans quelques
         minutes un courriel contenant les instructions pour le déverrouiller.
       unlocked: Votre compte a été déverrouillé avec succès. Veuillez vous connecter
         pour continuer.
-  errors:
-    messages:
-      already_confirmed: Votre demande a déjà été confirmée. Veuillez essayer de vous
-        connecter.
-      confirmation_period_expired: À confirmer dans un délai de %{period}, veuillez
-        en demander une nouvelle.
-      expired: a expiré, veuillez en demander un nouveau
-      not_found: introuvable
-      not_locked: n'était pas verrouillé
-      not_saved:
-        one: 'Une erreur a empêché l''enregistrement de ce %{resource} :'
-        other: 'Des erreurs %{count} ont empêché l''enregistrement de ce %{resource} :'

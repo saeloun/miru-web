@@ -16,6 +16,7 @@ import {
 } from "miruIcons";
 import { useNavigate } from "react-router-dom";
 import { MobileMoreOptions, Modal } from "StyledComponents";
+import { i18n } from "../../../i18n";
 
 import Contacts from "../Contacts";
 import DeleteClient from "../Modals/DeleteClient";
@@ -86,7 +87,10 @@ const Header = ({
           <h2 className="mr-6 py-1 text-base font-medium text-foreground sm:truncate lg:text-4xl lg:font-extrabold">
             {clientDetails.name}
           </h2>
-          <button onClick={handleClientDetails}>
+          <button
+            aria-label={i18n.t("clients.clientDetails")}
+            onClick={handleClientDetails}
+          >
             <InfoIcon size={20} weight="bold" />
           </button>
         </div>
@@ -103,19 +107,21 @@ const Header = ({
               <li onClick={handleAddProject}>
                 <button className="menuButton__list-item">
                   <ReportsIcon color="#5E58F1" size={16} weight="bold" />
-                  <span className="ml-3">Add Project</span>
+                  <span className="ml-3">{i18n.t("clients.addProject")}</span>
                 </button>
               </li>
               <li onClick={handleEdit}>
                 <button className="menuButton__list-item">
                   <PencilIcon color="#5b34ea" size={16} weight="bold" />
-                  <span className="ml-3">Edit</span>
+                  <span className="ml-3">{i18n.t("edit")}</span>
                 </button>
               </li>
               <li onClick={() => setSendPaymentReminder(true)}>
                 <button className="menuButton__list-item">
                   <ReminderIcon id="reminderIcon" size={16} />
-                  <span className="ml-3">Payment Reminder</span>
+                  <span className="ml-3">
+                    {i18n.t("clients.paymentReminder")}
+                  </span>
                 </button>
               </li>
               <li
@@ -126,13 +132,15 @@ const Header = ({
               >
                 <button className="menuButton__list-item">
                   <TeamsIcon size={16} />
-                  <span className="ml-3">Add / View Contacts</span>
+                  <span className="ml-3">
+                    {i18n.t("clients.addOrViewContacts")}
+                  </span>
                 </button>
               </li>
               <li onClick={handleDelete}>
                 <button className="menuButton__list-item text-destructive">
                   <DeleteIcon color="#E04646" size={16} weight="bold" />
-                  <span className="ml-3">Delete</span>
+                  <span className="ml-3">{i18n.t("delete")}</span>
                 </button>
               </li>
             </ul>
@@ -142,9 +150,11 @@ const Header = ({
       {isClientOpen && (
         <Modal isOpen={isClientOpen} onClose={() => setIsClientOpen(false)}>
           <div>
-            <p className="text-lg font-bold">Client Details</p>
+            <p className="text-lg font-bold">
+              {i18n.t("clients.clientDetails")}
+            </p>
             <div className="mt-4 text-base">
-              <p className=" font-semibold">Address</p>
+              <p className=" font-semibold">{i18n.t("address")}</p>
               <div className="mt-1 text-muted-foreground">
                 <p>{clientDetails.address.address_line_1}</p>
                 <p>{clientDetails.address?.address_line_2}</p>
@@ -153,7 +163,7 @@ const Header = ({
               </div>
             </div>
             <div className="mt-4 text-base">
-              <p className="font-semibold">Phone number</p>
+              <p className="font-semibold">{i18n.t("clients.phoneNumber")}</p>
               <p className="mt-1 text-muted-foreground">
                 {clientDetails.phone}
               </p>
@@ -196,7 +206,7 @@ const Header = ({
             }}
           >
             <PlusIcon />
-            <span className="ml-3">Add new project</span>
+            <span className="ml-3">{i18n.t("clients.addNewProject")}</span>
           </li>
           <li
             className="menuButton__list-item px-0"
@@ -206,7 +216,7 @@ const Header = ({
             }}
           >
             <ReminderIcon id="reminderIcon" size={16} />
-            <span className="ml-3">Payment Reminder</span>
+            <span className="ml-3">{i18n.t("clients.paymentReminder")}</span>
           </li>
           <li
             onClick={() => {
@@ -216,7 +226,9 @@ const Header = ({
           >
             <button className="menuButton__list-item px-0">
               <TeamsIcon size={16} />
-              <span className="ml-3">Add / View Contacts</span>
+              <span className="ml-3">
+                {i18n.t("clients.addOrViewContacts")}
+              </span>
             </button>
           </li>
           <li
@@ -227,7 +239,7 @@ const Header = ({
             }}
           >
             <EditIcon color="#5E58F1" size={16} />
-            <span className="ml-3">Edit</span>
+            <span className="ml-3">{i18n.t("edit")}</span>
           </li>
           <li
             className="menuButton__list-item px-0"
@@ -237,7 +249,7 @@ const Header = ({
             }}
           >
             <DeleteIcon color="#E04646" size={16} />
-            <span className="ml-3">Delete</span>
+            <span className="ml-3">{i18n.t("delete")}</span>
           </li>
         </MobileMoreOptions>
       )}

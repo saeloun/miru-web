@@ -2,6 +2,7 @@ import React from "react";
 
 import { DeleteIcon, PencilIcon, PlusIcon, XIcon } from "miruIcons";
 import { Badge, Modal, Switch } from "StyledComponents";
+import { i18n } from "../../../i18n";
 
 const ContactsList = ({
   isContactOpen,
@@ -20,11 +21,14 @@ const ContactsList = ({
     onClose={() => setIsContactOpen(false)}
   >
     <div className="flex items-center justify-between">
-      <h6 className="text-base font-extrabold capitalize">Add Contacts</h6>
+      <h6 className="text-base font-extrabold capitalize">
+        {i18n.t("contacts.addContacts")}
+      </h6>
       <div>
         <button
           className="menuButton__button"
           type="button"
+          aria-label={i18n.t("contacts.addContact")}
           onClick={() => setAddContactModal(true)}
         >
           <PlusIcon color="#5b34ea" size={16} weight="bold" />
@@ -32,6 +36,7 @@ const ContactsList = ({
         <button
           className="menuButton__button ml-2"
           type="button"
+          aria-label={i18n.t("close")}
           onClick={() => setIsContactOpen(false)}
         >
           <XIcon color="#CDD6DF" size={16} weight="bold" />
@@ -51,11 +56,17 @@ const ContactsList = ({
             {contact.email}
           </p>
           <div className="iconWrapper flex items-center justify-evenly">
-            <button onClick={() => displayEditContact(contact)}>
+            <button
+              aria-label={i18n.t("contacts.editContact")}
+              type="button"
+              onClick={() => displayEditContact(contact)}
+            >
               <PencilIcon color="#5b34ea" size={16} weight="bold" />
             </button>
             <button
+              aria-label={i18n.t("contacts.deleteContact")}
               className="ml-10"
+              type="button"
               onClick={() => displayDeleteContact(contact)}
             >
               <DeleteIcon color="#5b34ea" size={16} weight="bold" />
@@ -76,7 +87,7 @@ const ContactsList = ({
               {contact.recipient_email}
             </span>
             <div className="iconWrapper flex items-center justify-evenly">
-              <Badge className="mr-2" text="Pending" />
+              <Badge className="mr-2" text={i18n.t("pending")} />
               {virtualVerifiedInvitationsAllowed && (
                 <Switch
                   enabled={contact.virtual_verified}

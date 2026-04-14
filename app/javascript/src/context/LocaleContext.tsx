@@ -1,7 +1,9 @@
 import React, { createContext, useContext, useState, useCallback } from "react";
 
 import {
+  getActiveLocale,
   loadLocale,
+  normalizeLocale,
   setStoredLocale,
   SUPPORTED_LOCALES,
 } from "../i18n";
@@ -14,7 +16,7 @@ interface LocaleContextType {
 }
 
 const LocaleContext = createContext<LocaleContextType>({
-  locale: "en",
+  locale: "en-US",
   setLocale: async () => {},
   isLocaleReady: true,
   supportedLocales: SUPPORTED_LOCALES,
@@ -28,7 +30,7 @@ interface LocaleProviderProps {
 }
 
 export const LocaleProvider: React.FC<LocaleProviderProps> = ({
-  initialLocale = "en",
+  initialLocale = "en-US",
   children,
 }) => {
   const [locale, setLocaleState] = useState(initialLocale);
@@ -37,7 +39,9 @@ export const LocaleProvider: React.FC<LocaleProviderProps> = ({
   const setLocale = useCallback(async (newLocale: string) => {
     setIsLocaleReady(false);
     const success = await loadLocale(newLocale);
-    const effectiveLocale = success ? newLocale : "en";
+    const effectiveLocale = success
+      ? getActiveLocale()
+      : normalizeLocale(newLocale);
     setLocaleState(effectiveLocale);
     setStoredLocale(effectiveLocale);
     setIsLocaleReady(true);

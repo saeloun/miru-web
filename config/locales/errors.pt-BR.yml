@@ -1,0 +1,27 @@
+---
+pt-BR:
+  errors:
+    bill_status_billed: Não é possível cobrar por uma entrada que já foi cobrada.
+    can't change status: Não é possível alterar uma fatura já paga.
+    create_billed_entry: Não é possível criar um lançamento de folha de ponto faturado.
+    internal_server_error: Algo deu errado
+    messages:
+      already_confirmed: A confirmação já foi feita, por favor, tente iniciar sessão
+        novamente.
+      confirmation_period_expired: Precisa ser confirmado dentro de %{period}, por
+        favor, solicite um novo.
+      expired: expirou, solicite uma nova.
+      not_found: não encontrado
+      not_locked: não estava trancado
+      not_saved:
+        one: '1 erro impediu que este %{resource} fosse salvo:'
+        other: "%{count} erros impediram que este %{resource} fosse salvo:"
+    not_found: O recurso que você procura não está disponível.
+    prevent_draft_to_waived: não pode ser alterado para dispensado
+    unauthorized: Somente usuários proprietários ou administradores estão autorizados
+      a executar esta ação.
+    updation_not_allowed: A atualização não é permitida.
+    user_already_member: O endereço de e-mail já está em uso. Por favor, insira outro
+      endereço de e-mail.
+    validate_billable_project: Não é possível criar um lançamento não faturado para
+      projetos não faturáveis.

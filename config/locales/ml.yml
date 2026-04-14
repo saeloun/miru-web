@@ -1,16 +1,52 @@
 ---
 ml:
-  activerecord:
-    errors:
-      models:
-        client:
-          attributes:
-            name:
-              format: എക്സ്__0
-        project:
-          attributes:
-            name:
-              format: എക്സ്__0
+  analytics:
+    activity:
+      amount_collected: ശേഖരിച്ച തുക
+      bank_transfers_month: ബാങ്ക് ട്രാൻസ്ഫറുകൾ (മാസം)
+      created: സൃഷ്ടിച്ചു
+      downloaded: ഡൗൺലോഡ് ചെയ്‌തു
+      invoice_activity_today: ഇന്നത്തെ ഇൻവോയ്സ് പ്രവർത്തനം
+      payment_activity: പേയ്‌മെന്റ് ആക്റ്റിവിറ്റി
+      payments_today: ഇന്നത്തെ പേയ്‌മെന്റുകൾ
+      sent: അയച്ചു
+      stripe_payments_month: സ്ട്രൈപ്പ് പേയ്‌മെന്റുകൾ (മാസം)
+      viewed: കണ്ടു
+    currency:
+      conversion_impact: പരിവർത്തന ആഘാതം
+      currencies_in_use: ഉപയോഗത്തിലുള്ള കറൻസികൾ
+      invoices_with_conversion: പരിവർത്തനത്തോടുകൂടിയ ഇൻവോയ്‌സുകൾ
+      recent_exchange_rates: സമീപകാല വിനിമയ നിരക്കുകൾ
+      table:
+        date: തീയതി
+        from: ഉത്ഭവം
+        rate: നിരക്ക്
+        source: ഉറവിടം
+        to: ലേക്ക്
+      title: കറൻസി കൺവേർഷൻ ഇൻസൈറ്റുകൾ
+    overview:
+      active_clients: സജീവ ക്ലയന്റുകൾ
+      outstanding: മികച്ചത്
+      overdue: കാലാവധി കഴിഞ്ഞു
+      total_revenue: ആകെ വരുമാനം
+    recent_activity:
+      ago: "%{time} മുമ്പ്"
+      invoice_reference: ഇൻവോയ്സ്
+      system: സിസ്റ്റം
+      title: സമീപകാല പ്രവർത്തനം
+    super_admin: സൂപ്പർ അഡ്മിൻ
+    tabs:
+      activity: പ്രവർത്തനം
+      clients: ക്ലയന്റുകൾ
+      currency_exchange: കറൻസിയും വിനിമയവും
+      overview: അവലോകനം
+      revenue: വരുമാനം
+      users: ഉപയോക്താക്കൾ
+    title: അനലിറ്റിക്സ് ഡാഷ്‌ബോർഡ്
+    welcome: സ്വാഗതം, %{name}
+  app:
+    name: മിരു ഏജൻസി ഒ.എസ്.
+    tagline: ഒരു കമാൻഡ് സെന്ററിൽ നിന്ന് നിങ്ങളുടെ ഏജൻസിയുടെ പ്രവർത്തനങ്ങൾ പ്രവർത്തിപ്പിക്കുക.
   application_controller:
     not_found: റൂട്ട് കണ്ടെത്തിയില്ല.
   avatar:
@@ -84,20 +120,6 @@ ml:
   employment:
     update:
       success: തൊഴിൽ വിജയകരമായി അപ്ഡേറ്റ് ചെയ്തു
-  errors:
-    bill_status_billed: ഇതിനകം ബിൽ ചെയ്ത ഒരു എൻട്രി നിങ്ങൾക്ക് ബിൽ ചെയ്യാൻ കഴിയില്ല.
-    can't change status: പണമടച്ചുള്ള ഇൻവോയ്‌സിൽ മാറ്റം വരുത്താൻ കഴിയില്ല.
-    create_billed_entry: നിങ്ങൾക്ക് ഒരു ബിൽ ചെയ്ത ടൈംഷീറ്റ് എൻട്രി സൃഷ്ടിക്കാൻ കഴിയില്ല.
-    internal_server_error: എന്തോ കുഴപ്പം സംഭവിച്ചു.
-    not_found: നിങ്ങൾ തിരയുന്ന ഉറവിടം ലഭ്യമല്ല.
-    prevent_draft_to_waived: ഒഴിവാക്കിയതായി മാറ്റാൻ കഴിയില്ല.
-    unauthorized: ഈ പ്രവൃത്തി ചെയ്യാൻ ഉടമയ്‌ക്കോ അഡ്‌മിൻ ഉപയോക്താക്കൾക്കോ മാത്രമേ
-      അധികാരമുള്ളൂ.
-    updation_not_allowed: അപ്ഡേറ്റ് അനുവദനീയമല്ല.
-    user_already_member: ഇമെയിൽ ഐഡി ഇതിനകം ഉപയോഗത്തിലുണ്ട്. ദയവായി മറ്റൊരു ഇമെയിൽ
-      ഐഡി നൽകുക.
-    validate_billable_project: ബിൽ ചെയ്യാത്ത പ്രോജക്റ്റുകൾക്ക് നിങ്ങൾക്ക് ഒരു അൺബിൽഡ്
-      എൻട്രി സൃഷ്ടിക്കാൻ കഴിയില്ല.
   expenses:
     approve: ചെലവ് വിജയകരമായി അംഗീകരിച്ചു
     create: ചെലവ് വിജയകരമായി സമർപ്പിച്ചു
@@ -170,6 +192,320 @@ ml:
       success: ലീവ് വിജയകരമായി സൃഷ്ടിച്ചു
     update:
       success: വിജയകരമായി അപ്ഡേറ്റ് ചെയ്തു വിടുക
+  mailers:
+    actions:
+      join_miru: മിരുവിന് ചേരൂ
+      open_expense: തുറന്ന ചെലവ്
+      open_invoice: ഇൻവോയ്‌സ് തുറക്കുക
+      open_time_tracking: തുറന്ന സമയ ട്രാക്കിംഗ്
+      view_reports: മിരുവിലെ റിപ്പോർട്ടുകൾ കാണുക
+    client_payment_mailer:
+      payment:
+        eyebrow: പേയ്‌മെന്റുകൾ
+        preheader: ഇൻവോയ്‌സിന്റെ പേയ്‌മെന്റ് രസീത് %{invoice_number}.
+        receipt_title: പേയ്‌മെന്റ് ലഭിച്ചു
+        records_body: ഈ രസീത് നിങ്ങളുടെ പേയ്‌മെന്റ് സ്ഥിരീകരിക്കുന്നു. വീണ്ടും വിശദാംശങ്ങൾ
+          ആവശ്യമുണ്ടെങ്കിൽ എപ്പോൾ വേണമെങ്കിലും ഇൻവോയ്‌സ് വീണ്ടും തുറക്കാവുന്നതാണ്.
+        records_title: ഇത് നിങ്ങളുടെ രേഖകൾക്കായി സൂക്ഷിക്കുക.
+        subject: "%{invoice_number} എന്ന ഇൻവോയ്‌സിനുള്ള പേയ്‌മെന്റ് രസീത്"
+        subtitle_html: നിങ്ങളുടെ <strong>%{invoice_number}</strong> ഇൻവോയ്‌സിനുള്ള
+          പേയ്‌മെന്റ് ഞങ്ങൾക്ക് ലഭിച്ചു.
+        summary_html: "<strong>%{invoice_number}</strong> എന്ന ഇൻവോയ്‌സിന് <strong>%{paid_on}-</strong>
+          ൽ ഞങ്ങൾക്ക് <strong>%{amount}</strong> ലഭിച്ചു."
+        title: പേയ്‌മെന്റ് രസീത്
+    devise:
+      confirmation:
+        body_intro: 'നിങ്ങൾ ഏകദേശം തയ്യാറായി. ആദ്യ ദിവസം മുതൽ മിരു ഉപയോഗിച്ച് നിങ്ങൾക്ക്
+          ചെയ്യാൻ കഴിയുന്ന ചില കാര്യങ്ങൾ ഇതാ:'
+        cta: ഇമെയിൽ വിലാസം സ്ഥിരീകരിക്കുക
+        cta_body: നിങ്ങളുടെ ഇമെയിൽ വിലാസം സ്ഥിരീകരിക്കാൻ താഴെയുള്ള ബട്ടൺ ഉപയോഗിക്കുക.
+        eyebrow: അക്കൗണ്ട് സജ്ജീകരണം
+        feature_1: ഹോസ്റ്റ് ചെയ്ത പേയ്‌മെന്റ് ലിങ്കുകൾ ഉപയോഗിച്ച് പ്രൊഫഷണൽ ഇൻവോയ്‌സുകൾ
+          അയയ്‌ക്കുക.
+        feature_2: ഒരു വർക്ക്ഫ്ലോയിൽ സമയം, ചെലവുകൾ, ഉപയോഗം എന്നിവ ട്രാക്ക് ചെയ്യുക.
+        feature_3: നിങ്ങളുടെ ടീം, ക്ലയന്റുകൾ, ബില്ലിംഗ് എന്നിവ ഒരൊറ്റ വർക്ക്‌സ്‌പെയ്‌സിൽ
+          നിന്ന് കൈകാര്യം ചെയ്യുക.
+        feature_4: വരുമാനം, കുടിശ്ശിക ഇൻവോയ്‌സുകൾ, പേയ്‌മെന്റ് പ്രവർത്തനങ്ങൾ എന്നിവയിൽ
+          മുൻനിരയിൽ തുടരുക.
+        footer_note: നിങ്ങൾ ഒരു മിരു അക്കൗണ്ട് സൃഷ്ടിച്ചിട്ടില്ലെങ്കിൽ, നിങ്ങൾക്ക്
+          ഈ സന്ദേശം സുരക്ഷിതമായി അവഗണിക്കാം.
+        greeting_html: ഹായ് <strong>%{name}</strong> ,
+        preheader: മിരു സജ്ജീകരിക്കുന്നത് പൂർത്തിയാക്കാൻ നിങ്ങളുടെ ഇമെയിൽ വിലാസം സ്ഥിരീകരിക്കുക.
+        subtitle: സമയം ട്രാക്ക് ചെയ്യാനും ഇൻവോയ്‌സുകൾ അയയ്ക്കാനും നിങ്ങളുടെ ടീമിനെ
+          ഒരിടത്ത് നിന്ന് നിയന്ത്രിക്കാനും ആരംഭിക്കുന്നതിന് നിങ്ങളുടെ ഇമെയിൽ വിലാസം
+          സ്ഥിരീകരിക്കുക.
+        title: മിരുവിന് സ്വാഗതം
+      email_changed:
+        changed_html: നിങ്ങളുടെ അക്കൗണ്ട് ഇമെയിൽ വിലാസം <strong>%{email}</strong>
+          ആയി മാറ്റിയിരിക്കുന്നു.
+        eyebrow: അക്കൗണ്ട് സുരക്ഷ
+        greeting_html: ഹലോ <strong>%{email}</strong> ,
+        pending_html: നിങ്ങളുടെ അക്കൗണ്ട് ഇമെയിൽ വിലാസം <strong>%{email}</strong>
+          ആയി മാറ്റിയിരിക്കുന്നു.
+        preheader: നിങ്ങളുടെ മിരു ഇമെയിൽ വിലാസം മാറിയിരിക്കുന്നു.
+        subtitle: നിങ്ങളുടെ മിരു അക്കൗണ്ടിലെ ഇമെയിൽ വിലാസത്തിൽ വന്ന മാറ്റം ഈ സന്ദേശം
+          സ്ഥിരീകരിക്കുന്നു.
+        title: ഇമെയിൽ വിലാസം അപ്ഡേറ്റ് ചെയ്തു
+        warning_body_html: <a href="mailto:%{email}">%{email}</a> എന്ന നമ്പറിൽ ഞങ്ങളുടെ
+          പിന്തുണാ ടീമിനെ ഉടൻ ബന്ധപ്പെടുക.
+        warning_title: ഈ മാറ്റം ആവശ്യപ്പെട്ടില്ലേ?
+      password_change:
+        eyebrow: അക്കൗണ്ട് സുരക്ഷ
+        greeting_html: ഹലോ <strong>%{name}</strong> ,
+        preheader: നിങ്ങളുടെ മിരു പാസ്‌വേഡ് മാറ്റി.
+        subtitle: നിങ്ങളുടെ മിരു അക്കൗണ്ട് പാസ്‌വേഡ് വിജയകരമായി അപ്‌ഡേറ്റ് ചെയ്‌തു.
+        success_body: നിങ്ങളുടെ പുതിയ പാസ്‌വേഡ് ഉപയോഗിച്ച് മിരുവിൽ സൈൻ ഇൻ ചെയ്യുന്നത്
+          തുടരാം.
+        success_title: നിങ്ങളുടെ പാസ്‌വേഡ് അപ്‌ഡേറ്റ് ചെയ്‌തു.
+        title: പാസ്‌വേഡ് വിജയകരമായി മാറ്റി
+        warning_body_html: നിങ്ങളുടെ അക്കൗണ്ട് സുരക്ഷിതമാക്കാൻ ഞങ്ങൾക്ക് സഹായിക്കുന്നതിന്
+          ഉടൻ തന്നെ <a href="mailto:%{email}">%{email}-നെ</a> ബന്ധപ്പെടുക.
+        warning_title: ഈ മാറ്റം വരുത്തിയില്ലേ?
+      reset_password:
+        cta: പാസ്‌വേഡ് പുനഃസജ്ജമാക്കുക
+        cta_body: പുതിയ പാസ്‌വേഡ് തിരഞ്ഞെടുക്കാൻ താഴെയുള്ള ബട്ടൺ ഉപയോഗിക്കുക. ഈ പുനഃസജ്ജീകരണ
+          ലിങ്ക് 24 മണിക്കൂറിനുള്ളിൽ കാലഹരണപ്പെടും.
+        eyebrow: അക്കൗണ്ട് സുരക്ഷ
+        footer_note: നിങ്ങൾ പാസ്‌വേഡ് പുനഃസജ്ജമാക്കാൻ അഭ്യർത്ഥിച്ചിട്ടില്ലെങ്കിൽ,
+          നിങ്ങൾക്ക് ഈ സന്ദേശം അവഗണിക്കാം, നിങ്ങളുടെ പാസ്‌വേഡ് അതേപടി തുടരും.
+        greeting: ഹലോ,
+        preheader: നിങ്ങളുടെ മിരു അക്കൗണ്ടിന്റെ പാസ്‌വേഡ് പുനഃസജ്ജമാക്കുക.
+        request_html: "<strong>%{email}</strong> മായി ബന്ധപ്പെട്ട പാസ്‌വേഡ് മാറ്റുന്നതിനുള്ള
+          ഒരു അഭ്യർത്ഥന ഞങ്ങൾക്ക് ലഭിച്ചു."
+        subtitle: നിങ്ങളുടെ മിരു അക്കൗണ്ടിന്റെ പാസ്‌വേഡ് പുനഃസജ്ജമാക്കാനുള്ള ഒരു അഭ്യർത്ഥന
+          ഞങ്ങൾക്ക് ലഭിച്ചു.
+        title: നിങ്ങളുടെ പാസ്‌വേഡ് പുനഃസജ്ജമാക്കുക
+      shared:
+        signature_html: നന്ദി,<br> <strong>ടീം മിരു</strong>
+      unlock:
+        cta: പാസ്‌വേഡ് പുനഃസജ്ജമാക്കുക
+        eyebrow: അക്കൗണ്ട് സുരക്ഷ
+        footer_note: നിങ്ങൾ സൈൻ ഇൻ ചെയ്യാൻ ശ്രമിച്ചിട്ടില്ലെങ്കിൽ, ലോക്ക് കാലഹരണപ്പെടുന്നത്
+          വരെ കാത്തിരിക്കുക, തുടർന്ന് ഉടൻ തന്നെ നിങ്ങളുടെ പാസ്‌വേഡ് മാറ്റുക.
+        greeting_html: ഹലോ <strong>%{email}</strong> ,
+        preheader: നിരവധി പരാജയപ്പെട്ട സൈൻ-ഇൻ ശ്രമങ്ങൾക്ക് ശേഷം നിങ്ങളുടെ മിരു അക്കൗണ്ട്
+          അൺലോക്ക് ചെയ്യുക.
+        subtitle: നിരവധി പരാജയപ്പെട്ട സൈൻ-ഇൻ ശ്രമങ്ങൾക്ക് ശേഷം ഞങ്ങൾ നിങ്ങളുടെ മിരു
+          അക്കൗണ്ട് ലോക്ക് ചെയ്തു.
+        title: നിങ്ങളുടെ അക്കൗണ്ട് താൽക്കാലികമായി ലോക്ക് ചെയ്തിരിക്കുന്നു.
+        warning_body: 30 മിനിറ്റിനുശേഷം മിരു അക്കൗണ്ടുകൾ സ്വയമേവ അൺലോക്ക് ചെയ്യുന്നു.
+          ഈ ശ്രമങ്ങൾ നിങ്ങൾക്ക് തിരിച്ചറിയാൻ കഴിയുന്നില്ലെങ്കിൽ, ലോക്ക് കാലഹരണപ്പെട്ടാൽ
+          നിങ്ങളുടെ അക്കൗണ്ട് സുരക്ഷിതമാക്കുന്നതിന് നിങ്ങളുടെ പാസ്‌വേഡ് പുനഃസജ്ജമാക്കുക.
+        warning_title: സൈൻ-ഇൻ ശ്രമങ്ങൾ അനുവദനീയമായ പരിധി കവിഞ്ഞു.
+    expense_mailer:
+      approved:
+        eyebrow: ചെലവുകൾ
+        preheader: നിങ്ങളുടെ പണം തിരികെ നൽകാനുള്ള അഭ്യർത്ഥന അംഗീകരിച്ചു.
+        subject: നിങ്ങളുടെ റീഇംബേഴ്‌സ്‌മെന്റ് അംഗീകരിച്ചു.
+        subtitle: നിങ്ങളുടെ പണം തിരികെ നൽകൽ അഭ്യർത്ഥന അവലോകനം ചെയ്ത് അംഗീകരിച്ചു.
+        title: റീഇംബേഴ്‌സ്‌മെന്റ് അംഗീകരിച്ചു
+      paid:
+        eyebrow: ചെലവുകൾ
+        preheader: നിങ്ങളുടെ പണം തിരികെ ലഭിക്കാനുള്ള അഭ്യർത്ഥന അടച്ചതായി അടയാളപ്പെടുത്തിയിരിക്കുന്നു.
+        subject: നിങ്ങളുടെ റീഇംബേഴ്‌സ്‌മെന്റ് അടച്ചതായി അടയാളപ്പെടുത്തിയിരിക്കുന്നു.
+        subtitle: നിങ്ങളുടെ റീഇംബേഴ്‌സ്‌മെന്റ് അഭ്യർത്ഥനയ്ക്കുള്ള പേയ്‌മെന്റ് പൂർത്തിയായി.
+        title: റീഇംബേഴ്‌സ്‌മെന്റ് നൽകി
+      rejected:
+        eyebrow: ചെലവുകൾ
+        next_step_body: ചെലവ് തുറന്ന് അപ്ഡേറ്റുകൾ വരുത്തി വീണ്ടും സമർപ്പിക്കുക.
+        next_step_title: അടുത്ത ഘട്ടം
+        preheader: നിങ്ങളുടെ പണം തിരികെ നൽകൽ അഭ്യർത്ഥനയ്ക്ക് അപ്‌ഡേറ്റുകൾ ആവശ്യമാണ്.
+        subject: അംഗീകാരം ലഭിക്കുന്നതിന് മുമ്പ് നിങ്ങളുടെ റീഇംബേഴ്‌സ്‌മെന്റിന് അപ്‌ഡേറ്റുകൾ
+          ആവശ്യമാണ്.
+        subtitle: അഭ്യർത്ഥന വിശദാംശങ്ങൾ അവലോകനം ചെയ്യുക, ആവശ്യമായ മാറ്റങ്ങൾ വരുത്തുക,
+          തുടർന്ന് വീണ്ടും സമർപ്പിക്കുക.
+        title: റീഇംബേഴ്‌സ്‌മെന്റിന് അപ്‌ഡേറ്റുകൾ ആവശ്യമാണ്
+      submitted:
+        eyebrow: ചെലവുകൾ
+        preheader: പുതിയൊരു റീഇംബേഴ്‌സ്‌മെന്റ് അഭ്യർത്ഥന അവലോകനം ചെയ്യേണ്ടതുണ്ട്.
+        subject: "%{submitter_name} ഒരു റീഇംബേഴ്‌സ്‌മെന്റ് അഭ്യർത്ഥന സമർപ്പിച്ചു"
+        subtitle_html: "<strong>%{submitter_name}</strong> ഒരു റീഇംബേഴ്‌സ്‌മെന്റ്
+          അഭ്യർത്ഥന സമർപ്പിച്ചു, അത് അവലോകനത്തിന് തയ്യാറാണ്."
+        title: പുതിയ റീഇംബേഴ്‌സ്‌മെന്റ് അഭ്യർത്ഥന
+    invoice_mailer:
+      invoice:
+        eyebrow: ഇൻവോയ്‌സുകൾ
+        payment_link_subvalue: ലൈൻ ഇനങ്ങൾ അവലോകനം ചെയ്ത് ഓൺലൈനായി പണമടയ്ക്കുക.
+        payment_link_value: സുരക്ഷിത ഇൻവോയ്‌സ് പേജ്
+        preheader: "%{company_name} ൽ നിന്നുള്ള ഇൻവോയ്സ് %{invoice_number}."
+        ready_body: ലൈൻ ഇനങ്ങൾ പരിശോധിക്കുന്നതിനും ആകെ തുക സ്ഥിരീകരിക്കുന്നതിനും ഓൺലൈനായി
+          പണമടയ്ക്കുന്നതിനും സെക്യുർ ഇൻവോയ്സ് പേജ് തുറക്കുക.
+        ready_title: പണമടയ്ക്കുന്നതിന് മുമ്പ് അവലോകനം ചെയ്യുക
+        subject: ഇൻവോയ്സ് %{invoice_number}
+        subtitle_html: "<strong>%{company_name}</strong> അയച്ച ഇൻവോയ്സ് <strong>%{invoice_number}</strong>
+          . നിങ്ങൾക്ക് അത് അവലോകനം ചെയ്യാനും തയ്യാറാകുമ്പോഴെല്ലാം ഓൺലൈനായി പണമടയ്ക്കാനും
+          കഴിയും."
+        support_html: ഈ ഇൻവോയ്‌സിനെക്കുറിച്ച് എന്തെങ്കിലും ചോദ്യങ്ങളുണ്ടോ? ഈ ഇമെയിലിന്
+          മറുപടി നൽകുക അല്ലെങ്കിൽ <a href="mailto:%{support_email}">%{support_email}
+          എന്ന</a> നമ്പറിൽ ബന്ധപ്പെടുക.
+        title: ഇൻവോയ്സ് അവലോകനത്തിന് തയ്യാറാണ്
+      send_invoice:
+        attachment_subvalue: അത് സൂക്ഷിക്കുക, ഫോർവേഡ് ചെയ്യുക അല്ലെങ്കിൽ ഫയൽ ചെയ്യുക.
+        attachment_value: PDF അറ്റാച്ച് ചെയ്‌തു
+        eyebrow: ഇൻവോയ്‌സുകൾ
+        next_steps_body: തുക സ്ഥിരീകരിക്കാൻ ഇൻവോയ്സ് തുറക്കുക, ലൈൻ ഇനങ്ങൾ അവലോകനം
+          ചെയ്യുക, തയ്യാറാകുമ്പോൾ പണമടയ്ക്കുക.
+        next_steps_title: എന്താണ് പ്രതീക്ഷിക്കേണ്ടത്
+        note_title: "%{company_name} ൽ നിന്നുള്ള ഒരു കുറിപ്പ്"
+        preheader: "%{company_name} ൽ നിന്നുള്ള ഇൻവോയ്സ് %{invoice_number} തയ്യാറാണ്."
+        subject: "%{company_name} ൽ നിന്നുള്ള ഇൻവോയ്സ് %{invoice_number}"
+        subtitle_html: "<strong>%{company_name}</strong> ഇൻവോയ്സ് അയച്ചു <strong>%{invoice_number}</strong>
+          . വിശദാംശങ്ങൾ അവലോകനം ചെയ്യാനും PDF ഡൗൺലോഡ് ചെയ്യാനും സുരക്ഷിതമായി പണമടയ്ക്കാനും
+          അത് തുറക്കുക."
+        support_html: ഒരു സഹായം ആവശ്യമുണ്ടോ? ഈ ഇമെയിലിന് മറുപടി നൽകുക അല്ലെങ്കിൽ <a
+          href="mailto:%{support_email}">%{support_email} എന്ന</a> നമ്പറിൽ ബന്ധപ്പെടുക.
+        title: ഇൻവോയ്സ് അവലോകനത്തിന് തയ്യാറാണ്
+    labels:
+      amount: തുക
+      amount_due: കുടിശ്ശിക തുക
+      amount_paid: തുക നൽകി
+      attachment: അറ്റാച്ച്മെന്റ്
+      category: വിഭാഗം
+      client: ക്ലയന്റ്
+      date: തീയതി
+      description: വിവരണം
+      due_date: അവസാന തീയതി
+      invited_by: ക്ഷണിച്ചത്
+      invoice: ഇൻവോയ്സ്
+      invoice_number: ഇൻവോയ്സ് നമ്പർ
+      issue_date: പുറപ്പെടുവിക്കുന്ന തീയതി
+      issued_to: ഇഷ്യൂ ചെയ്തത്
+      members: അംഗങ്ങൾ
+      outstanding_amount: കുടിശ്ശിക തുക
+      paid_on: പണമടച്ച തീയതി
+      payment_link: പേയ്‌മെന്റ് ലിങ്ക്
+      payment_method: പണമടയ്ക്കൽ രീതി
+      reference: റഫറൻസ്
+      status: പദവി
+      total_amount: മൊത്തം തുക
+      workspace: ജോലിസ്ഥലം
+    layout:
+      brand: മിരു
+      footer_body: മിരു സമയം, ഇൻവോയ്‌സുകൾ, പേയ്‌മെന്റുകൾ, പ്രവർത്തനങ്ങൾ എന്നിവ ഒരു
+        ശാന്തമായ വർക്ക്‌സ്‌പെയ്‌സിൽ സൂക്ഷിക്കുന്നു.
+      footer_contact: support@getmiru.com
+      footer_copyright: "© മിരു. എല്ലാ അവകാശങ്ങളും നിക്ഷിപ്തം."
+      footer_site: ആപ്പ്.മിരു.സോ
+      preheader: മിരുവിൽ നിന്നുള്ള ഒരു വ്യക്തമായ അപ്‌ഡേറ്റ്.
+    monthly_reports_mailer:
+      cash_flow_digest:
+        average_daily_net_change_html: ശരാശരി പ്രതിദിന അറ്റ മാറ്റം <strong>%{amount}</strong>
+        compare_to_previous: "%{month_label} ലെ %{amount} നെ അപേക്ഷിച്ച്"
+        eyebrow: പ്രതിമാസ ഡൈജസ്റ്റ്
+        money_in: പണം
+        money_out: പണം തീർന്നു
+        net_change: "%{month_label} ലെ ആകെ മാറ്റം"
+        no_money_in: "%{month_year_label} ന് മിരുവിൽ പണമടയ്ക്കലുകൾ ഒന്നും രേഖപ്പെടുത്തിയിട്ടില്ല."
+        no_money_out: "%{month_year_label} ന് മിരുവിൽ പണമടച്ച ചെലവുകളൊന്നും രേഖപ്പെടുത്തിയിട്ടില്ല."
+        preheader: "%{company_name} യുടെ %{month_label} ക്യാഷ് ഫ്ലോ ഡൈജസ്റ്റ്"
+        subject: "%{company_name} യുടെ %{month_label} ക്യാഷ് ഫ്ലോ ഡൈജസ്റ്റ്"
+        subtitle: "%{month_year_label} ന് വേണ്ടി മിരുവിലൂടെ പണം നീങ്ങുന്നതിന്റെ ഒരു
+          സംക്ഷിപ്ത കാഴ്ച ഇതാ."
+        title: "%{company_name} യുടെ %{month_label} ക്യാഷ് ഫ്ലോ ഡൈജസ്റ്റ്"
+        top_money_in_sources: മുൻനിര പണം സമ്പാദിക്കുന്ന സ്രോതസ്സുകൾ
+        top_money_out_sources: പണം മുടക്കുന്ന മികച്ച ബക്കറ്റുകൾ
+    payment_mailer:
+      payment:
+        eyebrow: പേയ്‌മെന്റുകൾ
+        follow_up_body: പേയ്‌മെന്റ് സ്ഥിരീകരിക്കുന്നതിന് ഇൻവോയ്‌സ് തുറക്കുക, രസീത്
+          ഫയൽ ചെയ്യുക അല്ലെങ്കിൽ അടുത്ത ഘട്ടത്തിലേക്ക് പോകുക.
+        follow_up_title: ഇനി എന്ത് ചെയ്യണം
+        preheader: "%{invoice_number} എന്ന ഇൻവോയ്‌സിനുള്ള പേയ്‌മെന്റ് സ്ഥിരീകരണം."
+        received_title: പേയ്‌മെന്റ് ലഭിച്ചു
+        subject: "%{invoice_number} എന്ന ഇൻവോയ്‌സിന്റെ പേയ്‌മെന്റ് വിശദാംശങ്ങൾ"
+        subtitle_html: "<strong>%{client_name}</strong> അടച്ച ഇൻവോയ്സ് <strong>%{invoice_number}</strong>
+          ."
+        summary_html: "<strong>%{client_name}</strong> ഇൻവോയ്‌സ് <strong>%{invoice_number}</strong>
+          ന് <strong>%{amount}</strong> നൽകി. ഈ ഇൻവോയ്‌സ് ഇപ്പോൾ പൂർണ്ണമായും അടച്ചു."
+        title: പേയ്‌മെന്റ് സ്ഥിരീകരണം
+    send_payment_reminder_mailer:
+      send_payment_reminder:
+        eyebrow: ഇൻവോയ്‌സുകൾ
+        preheader: "%{company_name} ഇൻവോയ്‌സുകൾക്കുള്ള പേയ്‌മെന്റ് ഓർമ്മപ്പെടുത്തൽ."
+        subject: "%{company_name}-നുള്ള പേയ്‌മെന്റ് ഓർമ്മപ്പെടുത്തൽ"
+        subtitle: ഇനിയും ശ്രദ്ധ ആവശ്യമുള്ള ഇൻവോയ്‌സുകൾ ഇതാ.
+        title: പേയ്‌മെന്റ് ഓർമ്മപ്പെടുത്തൽ
+    send_reminder_mailer:
+      send_reminder:
+        eyebrow: ഇൻവോയ്‌സുകൾ
+        preheader: "%{company_name} ൽ നിന്നുള്ള %{invoice_number} ഇൻവോയ്‌സിനുള്ള ഓർമ്മപ്പെടുത്തൽ."
+        subject: "%{company_name} ൽ നിന്നുള്ള %{invoice_number} ഇൻവോയ്‌സിനുള്ള ഓർമ്മപ്പെടുത്തൽ"
+        subtitle_html: "<strong>%{company_name}</strong> ൽ നിന്നുള്ള ഇൻവോയ്സ് <strong>%{invoice_number}</strong>
+          ഇപ്പോഴും പേയ്‌മെന്റിനായി കാത്തിരിക്കുന്നു."
+        title: പേയ്‌മെന്റ് ഓർമ്മപ്പെടുത്തൽ
+    send_weekly_reminder_to_user_mailer:
+      notify_user_about_missed_entries:
+        body_html: "<strong>%{starting_date}</strong> നും <strong>%{ending_date}</strong>
+          നും ഇടയിൽ നിങ്ങൾ 40 മണിക്കൂറിൽ താഴെ മാത്രമേ ലോഗിൻ ചെയ്തിട്ടുള്ളൂ."
+        eyebrow: സമയ ട്രാക്കിംഗ്
+        follow_up: മിരു തുറക്കുക, വിട്ടുപോയ എൻട്രികൾ ചേർക്കുക, ആഴ്ച അടയ്ക്കുക.
+        greeting_html: ഹായ് <strong>%{name}</strong> ,
+        preheader: കാണാതായ ആഴ്ചയിലെ നിങ്ങളുടെ മിരു ടൈംഷീറ്റ് അപ്ഡേറ്റ് ചെയ്യുക.
+        signoff_html: നന്ദി,<br> <strong>മിരു</strong>
+        subject: കഴിഞ്ഞ ആഴ്ചയിലെ നിങ്ങളുടെ മിരു ടൈംഷീറ്റ് പൂർത്തിയാക്കുക.
+        subtitle: "%{company_name}-നുള്ള നിങ്ങളുടെ സമയ എൻട്രികൾ ഇപ്പോഴും പ്രതീക്ഷിച്ച
+          ആഴ്ചയിലെ ആകെത്തുകയേക്കാൾ താഴെയാണ്."
+        title: നിങ്ങളുടെ ടൈംഷീറ്റ് പൂർത്തിയാക്കുക
+    subscription:
+      plan_purchased:
+        badge: ചാ-ചിങ്
+        billing_interval: ബില്ലിംഗ് ഇടവേള
+        billing_settings_html: 'ബില്ലിംഗ് ക്രമീകരണങ്ങൾ: <a href="%{url}" style="color:
+          #111827;">%{url}</a>'
+        company: കമ്പനി
+        cta: ബില്ലിംഗ് ക്രമീകരണം തുറക്കുക
+        image_label: പുതിയ പണമടച്ചുള്ള പ്ലാൻ
+        image_text: പുതിയ പണമടച്ചുള്ള വർക്ക്‌സ്‌പെയ്‌സ്
+        plan: പ്ലാൻ ചെയ്യുക
+        stripe_subscription: സ്ട്രൈപ്പ് സബ്‌സ്‌ക്രിപ്‌ഷൻ
+        subtitle: മിരുവിൽ പുതിയ പണമടച്ചുള്ള വർക്ക്‌സ്‌പെയ്‌സ്. ബില്ലിംഗ് തത്സമയമാണ്.
+        team_seats: ടീം സീറ്റുകൾ
+        title: "%{company} ഇപ്പോൾ %{plan} വാങ്ങി."
+      plan_purchased_text:
+        billing_interval: 'ബില്ലിംഗ് ഇടവേള: %{interval}'
+        billing_settings: 'ബില്ലിംഗ് ക്രമീകരണങ്ങൾ തുറക്കുക: %{url}'
+        company: 'കമ്പനി: %{company}'
+        plan: 'പ്ലാൻ: %{plan}'
+        stripe_subscription: 'സ്ട്രൈപ്പ് സബ്‌സ്‌ക്രിപ്‌ഷൻ: %{id}'
+        team_seats: 'ടീം സീറ്റുകൾ: %{seats}'
+      trial_started:
+        body_html: "<strong>%{company}-</strong> നുള്ള നിങ്ങളുടെ 30 ദിവസത്തെ മിരു
+          പ്രോ ട്രയൽ ഇപ്പോൾ സജീവമാണ്."
+        cta: ബില്ലിംഗ് തുറക്കുക
+        eyebrow: ബില്ലിംഗ്
+        footer_body: നിങ്ങളുടെ ബില്ലിംഗ് ക്രമീകരണങ്ങളിൽ നിന്ന് എപ്പോൾ വേണമെങ്കിലും
+          ബില്ലിംഗ് അവലോകനം ചെയ്യാനും പ്ലാനുകൾ താരതമ്യം ചെയ്യാനും അപ്‌ഗ്രേഡ് ചെയ്യാനും
+          കഴിയും.
+        greeting_html: ഹലോ <strong>%{name}</strong> ,
+        preheader: നിങ്ങളുടെ മിരു പ്രോ ട്രയൽ ഇപ്പോൾ സജീവമാണ്.
+        subtitle: നിങ്ങളുടെ 30 ദിവസത്തെ ട്രയലിൽ ബില്ലിംഗ്, റിപ്പോർട്ടുകൾ, ബാക്കിയുള്ള
+          പ്രോ വർക്ക്ഫ്ലോ എന്നിവ പര്യവേക്ഷണം ചെയ്യുക.
+        title: നിങ്ങളുടെ മിരു പ്രോ ട്രയൽ തത്സമയമാണ്.
+        trial_ends: ട്രയൽ അവസാനിക്കുന്നു
+      trial_started_text:
+        body: "%{company}-നുള്ള നിങ്ങളുടെ 30 ദിവസത്തെ മിരു പ്രോ ട്രയൽ ഇപ്പോൾ സജീവമാണ്."
+        greeting: ഹലോ %{name},
+        review_billing: "%{url}-ൽ ബില്ലിംഗ് അവലോകനം ചെയ്യുക."
+        trial_ends: ട്രയൽ %{date}-ന് അവസാനിക്കും.
+    user_invitation_mailer:
+      send_user_invitation:
+        about_body: മിരു സമയം, ഇൻവോയ്‌സുകൾ, പേയ്‌മെന്റുകൾ, ദൈനംദിന പ്രവർത്തനങ്ങൾ എന്നിവ
+          ഒരു വർക്ക്‌സ്‌പെയ്‌സിലേക്ക് കൊണ്ടുവരുന്നു.
+        about_title: മിരുവിനെ കുറിച്ച്
+        eyebrow: ക്ഷണം
+        get_started_body: ക്ഷണം സ്വീകരിക്കുക, നിങ്ങളുടെ പാസ്‌വേഡ് സൃഷ്ടിക്കുക, അപ്പോൾ
+          നിങ്ങൾ പ്രവേശിക്കും.
+        get_started_title: ആരംഭിക്കുക
+        preheader: മിരുവിലെ ഒരു ടീമിൽ ചേരാൻ നിങ്ങളെ ക്ഷണിച്ചിരിക്കുന്നു.
+        subject: മിരുവിൽ ചേരാൻ നിങ്ങളെ ക്ഷണിക്കുന്നു.
+        subtitle_html: "<strong>%{sender_name}</strong> നിങ്ങളെ മിരുവിലെ <strong>%{company_name}-</strong>
+          ൽ ചേരാൻ ക്ഷണിച്ചു."
+        support_html: ഈ ക്ഷണം നിങ്ങൾ പ്രതീക്ഷിച്ചിരുന്നില്ലെങ്കിൽ, <a href="mailto:%{support_email}">%{support_email}</a>
+          എന്ന നമ്പറിൽ ഞങ്ങളുടെ ടീമിനെ ബന്ധപ്പെടുക.
+        title: നിങ്ങളുടെ മിരു വർക്ക്‌സ്‌പെയ്‌സിൽ ചേരൂ
+        workspace_members:
+          one: 1 അംഗം
+          other: "%{count} അംഗങ്ങൾ"
   navbar:
     clients: ക്ലയന്റുകൾ
     help: സഹായം
@@ -200,6 +536,74 @@ ml:
         ഇമെയിലിലേക്ക് അയച്ചിട്ടുണ്ട്.
     update:
       success: നിങ്ങളുടെ പാസ്‌വേഡ് അപ്‌ഡേറ്റ് ചെയ്‌തു.
+  pdfs:
+    accounts_aging:
+      client: ക്ലയന്റ്
+      title: അക്കൗണ്ടുകളുടെ പ്രായമാകൽ റിപ്പോർട്ട്
+      total: ആകെ
+    client_revenues:
+      client: ക്ലയന്റ്
+      outstanding_amount: കുടിശ്ശിക തുക
+      overdue_amount: കുടിശ്ശിക തുക
+      paid_amount: അടച്ച തുക
+      title: ക്ലയന്റ് റവന്യൂ റിപ്പോർട്ട്
+      total_revenue: ആകെ വരുമാനം
+    invoices:
+      amount_due: അടയ്ക്കേണ്ട തുക
+      amount_paid: അടച്ച തുക
+      billed_to: ബിൽ ചെയ്‌തത്
+      client_invoice: ക്ലയന്റ് ഇൻവോയ്സ്
+      discount: കിഴിവ്
+      due: 'അവസാന തീയതി: %{due_date}'
+      invoice_number: ഇൻവോയ്സ് നമ്പർ
+      issue_date: പുറപ്പെടുവിക്കുന്ന തീയതി
+      paid: 'പണമടച്ചത്: %{amount}'
+      payment_details: പേയ്‌മെന്റ് വിശദാംശങ്ങൾ
+      payment_rows:
+        account_number: അക്കൗണ്ട് നമ്പർ
+        bank_name: ബാങ്ക് പേര്
+        gst_number: ജിഎസ്ടി നമ്പർ
+        routing_number: റൂട്ടിംഗ് നമ്പർ
+        swift_code: സ്വിഫ്റ്റ് കോഡ്
+        tax_id: ടാക്സ് ഐഡി
+        vat_number: വാറ്റ് നമ്പർ
+      prepared_by: "%{company_name} തയ്യാറാക്കിയത്, %{issue_date} ഇഷ്യൂ ചെയ്തത്, %{due_date}
+        നൽകേണ്ടത്."
+      reference: 'റഫറൻസ്: %{reference}'
+      sub_total: ആകെ തുക
+      table:
+        date: തീയതി
+        description: വിവരണം
+        line_total: ലൈൻ ആകെ
+        name: പേര്
+        qty: അളവ്
+        rate: നിരക്ക്
+      tax: നികുതി
+      title: ഇൻവോയ്സ്
+      total: ആകെ
+      total_invoice_amount: ആകെ ഇൻവോയ്‌സ് തുക
+      work_summary: ജോലി സംഗ്രഹം
+    outstanding_overdue_invoices:
+      amount: തുക
+      client: ക്ലയന്റ്
+      due_date: അവസാന തീയതി
+      invoice_number: ഇൻവോയ്സ് നമ്പർ
+      issue_date: പുറപ്പെടുവിക്കുന്ന തീയതി
+      no_clients_found: ക്ലയന്റുകളെയൊന്നും കണ്ടെത്തിയില്ല.
+      outstanding_amount: കുടിശ്ശിക തുക
+      overdue_amount: കുടിശ്ശിക തുക
+      status: പദവി
+      title: കുടിശ്ശികയും കാലാവധി കഴിഞ്ഞതുമായ ഇൻവോയ്‌സുകളുടെ റിപ്പോർട്ട്
+      total_amounts: ആകെ തുകകൾ
+      total_invoice_amount: ആകെ ഇൻവോയ്സ് തുക
+    time_entries:
+      client: ക്ലയന്റ്
+      date: തീയതി
+      hours_logged: മണിക്കൂറുകൾ ലോഗ് ചെയ്‌തു
+      note: കുറിപ്പ്
+      project: പദ്ധതി
+      team_member: ടീം അംഗം
+      title: സമയ എൻട്രി റിപ്പോർട്ട്
   projects:
     add_new_project: പുതിയ പ്രോജക്റ്റ് ചേർക്കുക
     add_project: പ്രോജക്റ്റ് ചേർക്കുക

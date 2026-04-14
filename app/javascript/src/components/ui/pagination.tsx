@@ -2,13 +2,14 @@
 import * as React from "react";
 import { CaretLeft, CaretRight, DotsThree } from "@phosphor-icons/react";
 
+import { i18n } from "../../i18n";
 import { cn } from "../../lib/utils";
 import { ButtonProps, buttonVariants } from "./button";
 
 const Pagination = ({ className, ...props }: React.ComponentProps<"nav">) => (
   <nav
     role="navigation"
-    aria-label="pagination"
+    aria-label={i18n.t("pagination")}
     className={cn("mx-auto flex w-full justify-center", className)}
     {...props}
   />
@@ -69,13 +70,13 @@ const PaginationPrevious = ({
   ...props
 }: React.ComponentProps<typeof PaginationLink>) => (
   <PaginationLink
-    aria-label="Go to previous page"
+    aria-label={i18n.t("previous")}
     size="default"
     className={cn("gap-1 pl-2.5", className)}
     {...props}
   >
     <CaretLeft className="h-4 w-4" />
-    <span>Previous</span>
+    <span>{i18n.t("previous")}</span>
   </PaginationLink>
 );
 PaginationPrevious.displayName = "PaginationPrevious";
@@ -85,12 +86,12 @@ const PaginationNext = ({
   ...props
 }: React.ComponentProps<typeof PaginationLink>) => (
   <PaginationLink
-    aria-label="Go to next page"
+    aria-label={i18n.t("next")}
     size="default"
     className={cn("gap-1 pr-2.5", className)}
     {...props}
   >
-    <span>Next</span>
+    <span>{i18n.t("next")}</span>
     <CaretRight className="h-4 w-4" />
   </PaginationLink>
 );
@@ -106,7 +107,7 @@ const PaginationEllipsis = ({
     {...props}
   >
     <DotsThree className="h-4 w-4" />
-    <span className="sr-only">More pages</span>
+    <span className="sr-only">{i18n.t("morePages")}</span>
   </span>
 );
 PaginationEllipsis.displayName = "PaginationEllipsis";

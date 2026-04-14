@@ -27,8 +27,11 @@ json.invoice_line_items invoice.invoice_line_items do |invoice_line_item|
   json.quantity invoice_line_item.quantity
 end
 json.client do
-  json.id client.id
-  json.name client.name
-  json.address client.current_address
-  json.currency client.currency
+  json.partial! "internal_api/v1/partial/client", locals: { client: }
+end
+json.company do
+  json.partial! "internal_api/v1/partial/company", locals: {
+    company: invoice.company,
+    include_financial_details: local_assigns.fetch(:include_financial_details, true)
+  }
 end

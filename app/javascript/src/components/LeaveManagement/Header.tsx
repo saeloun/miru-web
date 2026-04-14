@@ -1,6 +1,7 @@
 import React from "react";
 
 import SearchTimeEntries from "common/SearchTimeEntries";
+import { i18n } from "../../i18n";
 import { Button } from "../ui/button";
 import { CaretLeft, CaretRight } from "phosphor-react";
 
@@ -15,15 +16,14 @@ const Header = ({
   <div className="mb-8 flex flex-col gap-5 xl:flex-row xl:items-end xl:justify-between">
     <div className="space-y-2">
       <p className="text-sm font-medium uppercase tracking-[0.24em] text-muted-foreground">
-        Leave summary
+        {i18n.t("leaveManagement.summaryLabel")}
       </p>
       <div>
         <h1 className="text-3xl font-semibold tracking-tight text-foreground">
-          My Leaves
+          {i18n.t("navbar.myLeaves")}
         </h1>
         <p className="mt-2 max-w-2xl text-sm leading-6 text-muted-foreground">
-          See available leave, time already taken, and holiday usage for the
-          selected year in one place.
+          {i18n.t("leaveManagement.summaryDescription")}
         </p>
       </div>
     </div>

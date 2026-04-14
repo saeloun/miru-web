@@ -48,6 +48,7 @@ import { useUserContext } from "../../context/UserContext";
 import { clientsApi } from "apis/api";
 import { unmapClientList } from "../../mapper/mappedIndex";
 import { toast } from "sonner";
+import { i18n } from "../../i18n";
 import ClientEditor from "./ClientForm/ClientEditor";
 interface Client {
   id: string;
@@ -114,11 +115,11 @@ const ClientsTable: React.FC = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["clients"] });
-      toast.success("Client deleted successfully");
+      toast.success(i18n.t("clients.clientDeletedSuccessfully"));
       setShowDeleteDialog(false);
     },
     onError: () => {
-      toast.error("Failed to delete client");
+      toast.error(i18n.t("clients.failedToDeleteClient"));
     },
   });
 
@@ -137,7 +138,7 @@ const ClientsTable: React.FC = () => {
       setClientLogoUrl(fullClientData?.logo || "");
     } catch (error) {
       console.error("Failed to fetch client details:", error);
-      toast.error("Failed to load client details");
+      toast.error(i18n.t("clients.failedToLoadClientDetails"));
     } finally {
       setLoadingClient(false);
     }
@@ -172,7 +173,7 @@ const ClientsTable: React.FC = () => {
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           className="-ml-4"
         >
-          CLIENT
+          {i18n.t("clients.clientHeader")}
           {column.getIsSorted() === "asc" ? (
             <ArrowUp size={16} className="ml-2" />
           ) : column.getIsSorted() === "desc" ? (
@@ -198,7 +199,7 @@ const ClientsTable: React.FC = () => {
     },
     {
       accessorKey: "phone",
-      header: "Contact",
+      header: i18n.t("clients.contact"),
       cell: ({ row }) => {
         const client = row.original;
 
@@ -217,7 +218,7 @@ const ClientsTable: React.FC = () => {
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           className="-ml-4"
         >
-          HOURS LOGGED
+          {i18n.t("clients.hoursLogged")}
           {column.getIsSorted() === "asc" ? (
             <ArrowUp size={16} className="ml-2" />
           ) : column.getIsSorted() === "desc" ? (
@@ -241,8 +242,8 @@ const ClientsTable: React.FC = () => {
     },
     {
       id: "status",
-      header: "Status",
-      cell: ({ row }) => <Badge variant="outline">Active</Badge>,
+      header: i18n.t("status"),
+      cell: ({ row }) => <Badge variant="outline">{i18n.t("active")}</Badge>,
     },
     {
       id: "actions",
@@ -256,33 +257,33 @@ const ClientsTable: React.FC = () => {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="h-8 w-8 p-0">
-                <span className="sr-only">Open menu</span>
+                <span className="sr-only">{i18n.t("openMenu")}</span>
                 <DotsThree size={20} />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DropdownMenuLabel>{i18n.t("actions")}</DropdownMenuLabel>
               <DropdownMenuItem
                 onClick={() => navigator.clipboard.writeText(client.id)}
               >
-                Copy client ID
+                {i18n.t("clients.copyClientId")}
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 onClick={() => navigate(`/clients/${client.id}`)}
               >
-                View details
+                {i18n.t("clients.viewDetails")}
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => handleEdit(client)}>
                 <PencilSimple size={16} className="mr-2" />
-                Edit client
+                {i18n.t("clients.editClient")}
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() => handleDelete(client)}
                 className="text-destructive focus:text-destructive"
               >
                 <Trash size={16} className="mr-2" />
-                Delete client
+                {i18n.t("clients.deleteClient")}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -300,7 +301,9 @@ const ClientsTable: React.FC = () => {
       <div className="flex items-center justify-center h-96">
         <div className="text-center">
           <Warning size={48} className="mx-auto mb-4 text-muted-foreground" />
-          <p className="text-muted-foreground">Failed to load clients</p>
+          <p className="text-muted-foreground">
+            {i18n.t("clients.failedToLoadClients")}
+          </p>
         </div>
       </div>
     );
@@ -312,7 +315,7 @@ const ClientsTable: React.FC = () => {
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
           <p className="text-sm text-muted-foreground md:text-base">
-            Manage your client relationships and billing
+            {i18n.t("clients.manageClientsDescription")}
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -322,10 +325,10 @@ const ClientsTable: React.FC = () => {
             onChange={event => setTimeFrame(event.target.value)}
             className="h-10 rounded-md border border-border bg-background px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
           >
-            <option value="week">This Week</option>
-            <option value="last_week">Last Week</option>
-            <option value="month">This Month</option>
-            <option value="last_month">Last Month</option>
+            <option value="week">{i18n.t("thisWeek")}</option>
+            <option value="last_week">{i18n.t("lastWeek")}</option>
+            <option value="month">{i18n.t("thisMonth")}</option>
+            <option value="last_month">{i18n.t("lastMonth")}</option>
           </select>
           {isAdminUser && (
             <Button
@@ -337,7 +340,7 @@ const ClientsTable: React.FC = () => {
               }}
             >
               <Plus size={20} className="mr-2" />
-              Add Client
+              {i18n.t("clients.addNewClient")}
             </Button>
           )}
         </div>
@@ -347,33 +350,43 @@ const ClientsTable: React.FC = () => {
       <div className="grid gap-4 md:grid-cols-3">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Clients</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              {i18n.t("clients.totalClients")}
+            </CardTitle>
             <Buildings size={20} className="text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
               {data?.clientList?.length || 0}
             </div>
-            <p className="mt-1 text-xs text-muted-foreground">Active clients</p>
+            <p className="mt-1 text-xs text-muted-foreground">
+              {i18n.t("clients.activeClients")}
+            </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Hours Tracked</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              {i18n.t("clients.hoursTracked")}
+            </CardTitle>
             <Timer size={20} className="text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
               {data?.totalMinutes ? formatHours(data.totalMinutes) : "0h 0m"}
             </div>
-            <p className="mt-1 text-xs text-muted-foreground">Total tracked</p>
+            <p className="mt-1 text-xs text-muted-foreground">
+              {i18n.t("clients.totalTracked")}
+            </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">OUTSTANDING</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              {i18n.t("clients.outstanding")}
+            </CardTitle>
             <CurrencyDollar size={20} className="text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -389,7 +402,7 @@ const ClientsTable: React.FC = () => {
                   baseCurrency,
                   data.overdueOutstandingAmount.overdue
                 )}{" "}
-                OVERDUE
+                {i18n.t("clients.overdue")}
               </p>
             )}
           </CardContent>
@@ -399,10 +412,9 @@ const ClientsTable: React.FC = () => {
       {/* Data Table */}
       <Card>
         <CardHeader>
-          <CardTitle>All Clients</CardTitle>
+          <CardTitle>{i18n.t("clients.allClients")}</CardTitle>
           <CardDescription>
-            A list of all your clients with their contact information and
-            billing status.
+            {i18n.t("clients.allClientsDescription")}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -410,7 +422,7 @@ const ClientsTable: React.FC = () => {
             <DataTable
               columns={columns}
               data={data.clientList}
-              searchPlaceholder="Search clients..."
+              searchPlaceholder={i18n.t("searchClients")}
             />
           ) : (
             <div className="text-center py-12">
@@ -419,7 +431,7 @@ const ClientsTable: React.FC = () => {
                 className="mx-auto mb-4 text-muted-foreground/70"
               />
               <p className="mb-4 text-muted-foreground">
-                Looks like there aren't any clients added yet.
+                {i18n.t("clients.noClientsYet")}
               </p>
               {isAdminUser && (
                 <Button
@@ -432,7 +444,7 @@ const ClientsTable: React.FC = () => {
                   }}
                 >
                   <Plus size={20} className="mr-2" />
-                  Add Your First Client
+                  {i18n.t("clients.addYourFirstClient")}
                 </Button>
               )}
             </div>
@@ -444,10 +456,11 @@ const ClientsTable: React.FC = () => {
       <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Delete Client</DialogTitle>
+            <DialogTitle>{i18n.t("clients.deleteClient")}</DialogTitle>
             <DialogDescription>
-              Are you sure you want to delete {selectedClient?.name}? This
-              action cannot be undone.
+              {i18n.t("clients.deleteClientConfirm", {
+                name: selectedClient?.name,
+              })}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
@@ -455,14 +468,16 @@ const ClientsTable: React.FC = () => {
               variant="outline"
               onClick={() => setShowDeleteDialog(false)}
             >
-              Cancel
+              {i18n.t("cancel")}
             </Button>
             <Button
               variant="destructive"
               onClick={confirmDelete}
               disabled={deleteMutation.isPending}
             >
-              {deleteMutation.isPending ? "Deleting..." : "Delete"}
+              {deleteMutation.isPending
+                ? i18n.t("clients.deleting")
+                : i18n.t("delete")}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -482,9 +497,9 @@ const ClientsTable: React.FC = () => {
       >
         <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>Add New Client</DialogTitle>
+            <DialogTitle>{i18n.t("clients.addNewClient")}</DialogTitle>
             <DialogDescription>
-              Fill in the details below to add a new client.
+              {i18n.t("clients.addNewClientDescription")}
             </DialogDescription>
           </DialogHeader>
           <ClientEditor
@@ -529,9 +544,9 @@ const ClientsTable: React.FC = () => {
       >
         <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>Edit Client</DialogTitle>
+            <DialogTitle>{i18n.t("clients.editClient")}</DialogTitle>
             <DialogDescription>
-              Update the client details below.
+              {i18n.t("clients.editClientDescription")}
             </DialogDescription>
           </DialogHeader>
           {loadingClient ? (

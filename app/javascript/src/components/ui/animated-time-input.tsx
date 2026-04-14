@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Clock } from "phosphor-react";
 import { CaretDownIcon } from "miruIcons";
+import { i18n } from "../../i18n";
 import { cn } from "../../lib/utils";
 
 // Validation functions
@@ -65,16 +66,16 @@ const hhmmToMinutes = (hhmm: string): number => {
 
 // Common time slots for quick selection
 const COMMON_TIME_SLOTS = [
-  { label: "15 minutes", value: "00:15", minutes: 15 },
-  { label: "30 minutes", value: "00:30", minutes: 30 },
-  { label: "45 minutes", value: "00:45", minutes: 45 },
-  { label: "1 hour", value: "01:00", minutes: 60 },
-  { label: "1.5 hours", value: "01:30", minutes: 90 },
-  { label: "2 hours", value: "02:00", minutes: 120 },
-  { label: "3 hours", value: "03:00", minutes: 180 },
-  { label: "4 hours", value: "04:00", minutes: 240 },
-  { label: "6 hours", value: "06:00", minutes: 360 },
-  { label: "8 hours", value: "08:00", minutes: 480 },
+  { labelKey: "timeSlots.15Minutes", value: "00:15", minutes: 15 },
+  { labelKey: "timeSlots.30Minutes", value: "00:30", minutes: 30 },
+  { labelKey: "timeSlots.45Minutes", value: "00:45", minutes: 45 },
+  { labelKey: "timeSlots.1Hour", value: "01:00", minutes: 60 },
+  { labelKey: "timeSlots.1_5Hours", value: "01:30", minutes: 90 },
+  { labelKey: "timeSlots.2Hours", value: "02:00", minutes: 120 },
+  { labelKey: "timeSlots.3Hours", value: "03:00", minutes: 180 },
+  { labelKey: "timeSlots.4Hours", value: "04:00", minutes: 240 },
+  { labelKey: "timeSlots.6Hours", value: "06:00", minutes: 360 },
+  { labelKey: "timeSlots.8Hours", value: "08:00", minutes: 480 },
 ];
 
 type InputMode = "hhmm" | "decimal" | "minutes";
@@ -569,7 +570,7 @@ const AnimatedTimeInput: React.FC<AnimatedTimeInputProps> = ({
                       handleQuickSelect(slot.value);
                     }}
                   >
-                    <span>{slot.label}</span>
+                    <span>{i18n.t(slot.labelKey)}</span>
                     <span className="text-xs text-muted-foreground">
                       {slot.value}
                     </span>

@@ -81,6 +81,7 @@ import {
   parseReportQueryDate,
   toggleNumberListValue,
 } from "../filterUtils";
+import { i18n } from "../../../i18n";
 
 interface ClientRevenue {
   id: number;
@@ -145,21 +146,6 @@ const resolveRevenuePreset = (preset: string) => {
   }
 };
 
-const revenueChartConfig = {
-  paid_amount: {
-    label: "Paid",
-    color: "hsl(var(--primary))",
-  },
-  outstanding_amount: {
-    label: "Outstanding",
-    color: "hsl(var(--secondary-foreground) / 0.65)",
-  },
-  overdue_amount: {
-    label: "Overdue",
-    color: "hsl(var(--destructive))",
-  },
-};
-
 const RevenueByClientReport: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const initialPreset = searchParams.get("preset") || "all_time";
@@ -178,6 +164,20 @@ const RevenueByClientReport: React.FC = () => {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [visibleRowCount, setVisibleRowCount] = useState(25);
+  const revenueChartConfig = {
+    paid_amount: {
+      label: i18n.t("reports.paid"),
+      color: "hsl(var(--primary))",
+    },
+    outstanding_amount: {
+      label: i18n.t("reports.outstanding"),
+      color: "hsl(var(--secondary-foreground) / 0.65)",
+    },
+    overdue_amount: {
+      label: i18n.t("reports.overdue"),
+      color: "hsl(var(--destructive))",
+    },
+  };
 
   const { data, isLoading, error } = useQuery<RevenueReportData>({
     queryKey: ["revenueByClient", dateRange, selectedClients],
@@ -259,10 +259,42 @@ const RevenueByClientReport: React.FC = () => {
     setSearchParams,
   ]);
 
+  useEffect(() => {
+    const nextPreset = searchParams.get("preset") || "all_time";
+    const nextFrom = parseReportQueryDate(searchParams.get("from"));
+    const nextTo = parseReportQueryDate(searchParams.get("to"));
+    const nextClients = parseNumericListParam(searchParams.get("clients"));
+    const nextDateRange =
+      nextFrom || nextTo
+        ? { from: nextFrom, to: nextTo || nextFrom }
+        : resolveRevenuePreset(nextPreset);
+
+    setDateRangePreset(current =>
+      current === nextPreset ? current : nextPreset
+    );
+
+    setDateRange(current => {
+      const currentFrom = formatReportQueryDate(current?.from);
+      const currentTo = formatReportQueryDate(current?.to);
+      const nextFromString = formatReportQueryDate(nextDateRange?.from);
+      const nextToString = formatReportQueryDate(nextDateRange?.to);
+
+      if (currentFrom === nextFromString && currentTo === nextToString) {
+        return current;
+      }
+
+      return nextDateRange;
+    });
+
+    setSelectedClients(current =>
+      current.join(",") === nextClients.join(",") ? current : nextClients
+    );
+  }, [searchParams]);
+
   const columns: ColumnDef<ClientRevenue>[] = [
     {
       accessorKey: "name",
-      header: "Client",
+      header: i18n.t("reports.clientHeader"),
       cell: ({ row }) => (
         <div className="flex items-center">
           {row.original.logo && (
@@ -278,7 +310,9 @@ const RevenueByClientReport: React.FC = () => {
     },
     {
       accessorKey: "overdue_amount",
-      header: () => <div className="text-right">Overdue Amount</div>,
+      header: () => (
+        <div className="text-right">{i18n.t("reports.overdueAmount")}</div>
+      ),
       cell: ({ row }) => (
         <div className="text-right text-red-600 font-medium">
           {currencyFormat(data?.currency, row.getValue("overdue_amount"))}
@@ -287,7 +321,9 @@ const RevenueByClientReport: React.FC = () => {
     },
     {
       accessorKey: "outstanding_amount",
-      header: () => <div className="text-right">Outstanding Amount</div>,
+      header: () => (
+        <div className="text-right">{i18n.t("reports.outstandingAmount")}</div>
+      ),
       cell: ({ row }) => (
         <div className="text-right text-orange-600 font-medium">
           {currencyFormat(data?.currency, row.getValue("outstanding_amount"))}
@@ -296,7 +332,9 @@ const RevenueByClientReport: React.FC = () => {
     },
     {
       accessorKey: "paid_amount",
-      header: () => <div className="text-right">Paid Amount</div>,
+      header: () => (
+        <div className="text-right">{i18n.t("reports.paidAmount")}</div>
+      ),
       cell: ({ row }) => (
         <div className="text-right text-green-600 font-medium">
           {currencyFormat(data?.currency, row.getValue("paid_amount"))}
@@ -305,7 +343,9 @@ const RevenueByClientReport: React.FC = () => {
     },
     {
       accessorKey: "total_revenue",
-      header: () => <div className="text-right">Total Revenue</div>,
+      header: () => (
+        <div className="text-right">{i18n.t("reports.totalRevenue")}</div>
+      ),
       cell: ({ row }) => (
         <div className="text-right font-bold text-indigo-600">
           {currencyFormat(data?.currency, row.getValue("total_revenue"))}
@@ -360,7 +400,7 @@ const RevenueByClientReport: React.FC = () => {
   if (error) {
     return (
       <div className="text-center text-red-600 py-8">
-        Error loading report data. Please try again.
+        {i18n.t("reports.errorLoadingReportData")}
       </div>
     );
   }
@@ -372,7 +412,7 @@ const RevenueByClientReport: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <h1 className="text-2xl font-semibold text-gray-900">
-              Revenue by Client
+              {i18n.t("reports.revenueByClient")}
             </h1>
 
             <div className="flex items-center space-x-3">
@@ -382,18 +422,34 @@ const RevenueByClientReport: React.FC = () => {
                 onValueChange={handleDateRangePreset}
               >
                 <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="Select period" />
+                  <SelectValue placeholder={i18n.t("selectPeriod")} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all_time">All Time</SelectItem>
-                  <SelectItem value="this_month">This Month</SelectItem>
-                  <SelectItem value="last_month">Last Month</SelectItem>
-                  <SelectItem value="this_quarter">This Quarter</SelectItem>
-                  <SelectItem value="last_quarter">Last Quarter</SelectItem>
-                  <SelectItem value="this_year">This Year</SelectItem>
-                  <SelectItem value="last_year">Last Year</SelectItem>
-                  <SelectItem value="last_30_days">Last 30 Days</SelectItem>
-                  <SelectItem value="custom">Custom Range</SelectItem>
+                  <SelectItem value="all_time">{i18n.t("allTime")}</SelectItem>
+                  <SelectItem value="this_month">
+                    {i18n.t("thisMonth")}
+                  </SelectItem>
+                  <SelectItem value="last_month">
+                    {i18n.t("lastMonth")}
+                  </SelectItem>
+                  <SelectItem value="this_quarter">
+                    {i18n.t("thisQuarter")}
+                  </SelectItem>
+                  <SelectItem value="last_quarter">
+                    {i18n.t("lastQuarter")}
+                  </SelectItem>
+                  <SelectItem value="this_year">
+                    {i18n.t("thisYear")}
+                  </SelectItem>
+                  <SelectItem value="last_year">
+                    {i18n.t("lastYear")}
+                  </SelectItem>
+                  <SelectItem value="last_30_days">
+                    {i18n.t("reports.lastThirtyDaysPreset")}
+                  </SelectItem>
+                  <SelectItem value="custom">
+                    {i18n.t("customRange")}
+                  </SelectItem>
                 </SelectContent>
               </Select>
 
@@ -418,7 +474,7 @@ const RevenueByClientReport: React.FC = () => {
                         format(dateRange.from, "LLL dd, y")
                       )
                     ) : (
-                      <span>All Time</span>
+                      <span>{i18n.t("allTime")}</span>
                     )}
                   </Button>
                 </PopoverTrigger>
@@ -444,7 +500,7 @@ const RevenueByClientReport: React.FC = () => {
                 <DropdownMenuTrigger asChild>
                   <Button variant="outline">
                     {getMultiFilterLabel(
-                      "Clients",
+                      i18n.t("reports.clients"),
                       selectedClients.length,
                       data?.filterOptions?.clients?.find(client =>
                         selectedClients.includes(client.id)
@@ -473,7 +529,7 @@ const RevenueByClientReport: React.FC = () => {
                     <>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem onClick={() => setSelectedClients([])}>
-                        Clear clients
+                        {i18n.t("reports.clearClients")}
                       </DropdownMenuItem>
                     </>
                   )}
@@ -485,7 +541,7 @@ const RevenueByClientReport: React.FC = () => {
                 <DropdownMenuTrigger asChild>
                   <Button variant="outline">
                     <Download className="mr-2 h-4 w-4" />
-                    Export
+                    {i18n.t("reports.export")}
                     <ChevronDown className="ml-2 h-4 w-4" />
                   </Button>
                 </DropdownMenuTrigger>
@@ -493,12 +549,12 @@ const RevenueByClientReport: React.FC = () => {
                   <DropdownMenuItem
                     onClick={() => downloadMutation.mutate("csv")}
                   >
-                    Export as CSV
+                    {i18n.t("reports.exportAsCsv")}
                   </DropdownMenuItem>
                   <DropdownMenuItem
                     onClick={() => downloadMutation.mutate("pdf")}
                   >
-                    Export as PDF
+                    {i18n.t("reports.exportAsPdf")}
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -515,7 +571,7 @@ const RevenueByClientReport: React.FC = () => {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">
-                Total Revenue
+                {i18n.t("reports.totalRevenue")}
               </CardTitle>
               <TrendingUp className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
@@ -532,14 +588,16 @@ const RevenueByClientReport: React.FC = () => {
                       dateRange.to,
                       "MMM d, yyyy"
                     )}`
-                  : "All time"}
+                  : i18n.t("allTime")}
               </p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Paid Amount</CardTitle>
+              <CardTitle className="text-sm font-medium">
+                {i18n.t("reports.paidAmount")}
+              </CardTitle>
               <DollarSign className="h-4 w-4 text-green-600" />
             </CardHeader>
             <CardContent>
@@ -550,14 +608,16 @@ const RevenueByClientReport: React.FC = () => {
                 )}
               </div>
               <p className="text-xs text-muted-foreground">
-                Successfully collected
+                {i18n.t("reports.successfullyCollected")}
               </p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Outstanding</CardTitle>
+              <CardTitle className="text-sm font-medium">
+                {i18n.t("reports.outstanding")}
+              </CardTitle>
               <Building2 className="h-4 w-4 text-orange-600" />
             </CardHeader>
             <CardContent>
@@ -568,14 +628,16 @@ const RevenueByClientReport: React.FC = () => {
                 )}
               </div>
               <p className="text-xs text-muted-foreground">
-                Pending collection
+                {i18n.t("reports.pendingCollection")}
               </p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Overdue</CardTitle>
+              <CardTitle className="text-sm font-medium">
+                {i18n.t("reports.overdue")}
+              </CardTitle>
               <Users className="h-4 w-4 text-red-600" />
             </CardHeader>
             <CardContent>
@@ -586,7 +648,7 @@ const RevenueByClientReport: React.FC = () => {
                 )}
               </div>
               <p className="text-xs text-muted-foreground">
-                Requires attention
+                {i18n.t("reports.requiresAttention")}
               </p>
             </CardContent>
           </Card>
@@ -594,7 +656,7 @@ const RevenueByClientReport: React.FC = () => {
 
         <Card className="mb-6">
           <CardHeader>
-            <CardTitle>Revenue Mix by Client</CardTitle>
+            <CardTitle>{i18n.t("reports.revenueMixByClient")}</CardTitle>
           </CardHeader>
           <CardContent>
             {revenueChartData.length > 0 ? (
@@ -653,7 +715,7 @@ const RevenueByClientReport: React.FC = () => {
               </ChartContainer>
             ) : (
               <p className="text-sm text-muted-foreground">
-                No client revenue data available for the selected filters.
+                {i18n.t("reports.noClientRevenueData")}
               </p>
             )}
           </CardContent>
@@ -662,7 +724,7 @@ const RevenueByClientReport: React.FC = () => {
         {/* Revenue Table */}
         <Card>
           <CardHeader>
-            <CardTitle>Client Revenue Details</CardTitle>
+            <CardTitle>{i18n.t("reports.clientRevenueDetails")}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="rounded-md border">
@@ -706,7 +768,7 @@ const RevenueByClientReport: React.FC = () => {
                         colSpan={columns.length}
                         className="h-24 text-center"
                       >
-                        No results.
+                        {i18n.t("reports.noResults")}
                       </TableCell>
                     </TableRow>
                   )}
@@ -717,13 +779,20 @@ const RevenueByClientReport: React.FC = () => {
             {/* Pagination */}
             <div className="flex flex-col items-center gap-2 py-4 text-sm text-muted-foreground">
               <span>
-                Showing {displayedRows} of {totalRows} clients
+                {i18n.t("reports.showingClientsCount", {
+                  shown: displayedRows,
+                  total: totalRows,
+                })}
               </span>
-              {hasMoreRows && <span>Scroll to load more clients</span>}
+              {hasMoreRows && (
+                <span>{i18n.t("reports.scrollToLoadMoreClients")}</span>
+              )}
               {hasMoreRows && (
                 <div ref={loadMoreRowsRef} className="h-8 w-full" />
               )}
-              {!hasMoreRows && totalRows > 0 && <span>All clients loaded</span>}
+              {!hasMoreRows && totalRows > 0 && (
+                <span>{i18n.t("reports.allClientsLoaded")}</span>
+              )}
             </div>
           </CardContent>
         </Card>
