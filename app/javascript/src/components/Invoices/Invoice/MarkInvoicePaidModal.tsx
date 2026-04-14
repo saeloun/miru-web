@@ -109,6 +109,7 @@ const MarkInvoiceAsPaidModal = ({
               name="invoice"
               type="text"
               value={client}
+              wrapperClassName="outline-none relative h-12"
               onChange={() => {}}
             />
           </div>
@@ -129,6 +130,7 @@ const MarkInvoiceAsPaidModal = ({
             name="transactionDate"
             type="text"
             value={transactionDate && dayjs(transactionDate).format(dateFormat)}
+            wrapperClassName="outline-none relative h-12"
             onChange={() => {}}
           />
           <CalendarIcon
@@ -224,6 +226,7 @@ const MarkInvoiceAsPaidModal = ({
           name="paymentAmount"
           type="text"
           value={amount && baseCurrency && currencyFormat(baseCurrency, amount)}
+          wrapperClassName="outline-none relative h-12"
           onChange={() => {}}
         />
       </div>
@@ -235,6 +238,7 @@ const MarkInvoiceAsPaidModal = ({
           name="NotesOptional"
           rows={5}
           value={note}
+          wrapperClassName="outline-none relative"
           onChange={e => setNote(e.target.value)}
         />
       </div>
