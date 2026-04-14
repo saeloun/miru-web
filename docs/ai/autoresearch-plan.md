@@ -45,9 +45,11 @@ Build a safe autonomous improvement loop for Miru that can research, propose, ve
 
 ## Immediate TODO
 
-- Create a dedicated `docs/experiments/` log for Miru.
-- Define one browser smoke matrix for the most fragile routes.
-- Pick the first autonomous lane:
-  - flaky tests
-  - docs consistency
+- Keep the current manual lanes green:
+  - `docs_consistency`
+  - `frontend_build`
+- Add one browser smoke matrix for the most fragile routes.
+- Add the next narrow lane:
+  - focused rspec verification
   - frontend smoke hardening
+  - docs drift checks with stronger assertions
