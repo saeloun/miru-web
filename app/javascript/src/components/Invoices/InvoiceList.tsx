@@ -325,7 +325,7 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
                 {i18n.t("invoices.sendReminder")}
               </DropdownMenuItem>
             )}
-            {invoice.status !== "paid" && (
+            {["sent", "viewed", "overdue"].includes(invoice.status) && (
               <DropdownMenuItem
                 data-testid={`invoice-action-mark-paid-${invoice.id}`}
                 onClick={() => onMarkPaid?.(invoice)}

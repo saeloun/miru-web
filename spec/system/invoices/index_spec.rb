@@ -184,6 +184,19 @@ RSpec.describe "Invoice listing", type: :system, js: true do
         expect(page).to have_selector("#invoice", wait: 10)
       end
     end
+
+    it "does not show mark paid for draft invoices in the actions menu" do
+      with_forgery_protection do
+        visit "/invoices"
+
+        find("[data-testid='invoice-actions-trigger-#{draft_invoice.id}']", wait: 10).click
+
+        expect(page).not_to have_selector(
+          "[data-testid='invoice-action-mark-paid-#{draft_invoice.id}']",
+          wait: 2
+        )
+      end
+    end
   end
 
   context "with multiple clients" do
