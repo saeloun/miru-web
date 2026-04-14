@@ -9,6 +9,7 @@ import {
   PaperPlaneTilt,
   Printer,
   PencilSimple,
+  CheckCircle,
 } from "phosphor-react";
 import { Button } from "../../ui/button";
 import SendInvoice from "../common/InvoiceForm/SendInvoice";
@@ -335,6 +336,18 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
               <PencilSimple className="h-4 w-4 mr-2" />
               {i18n.t("edit")}
             </Button>
+            {(invoice.status === "sent" ||
+              invoice.status === "overdue" ||
+              invoice.status === "viewed") && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => void handleAction("mark_paid")}
+              >
+                <CheckCircle className="h-4 w-4 mr-2" />
+                {i18n.t("invoices.markAsPaid")}
+              </Button>
+            )}
             {invoice.status === "draft" && (
               <Button
                 data-testid="invoice-preview-send-action"

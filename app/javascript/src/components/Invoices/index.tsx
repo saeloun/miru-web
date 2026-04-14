@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import InvoiceList from "./InvoiceList";
 import InvoiceEditor from "./InvoiceEditor/index";
 import InvoicePreview from "./InvoicePreview";
+import MarkInvoiceAsPaidModal from "./Invoice/MarkInvoicePaidModal";
 import { Button } from "../ui/button";
 import { ArrowLeft } from "phosphor-react";
 import {
@@ -43,6 +44,8 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
     initialInvoiceId || null
   );
   const [previewData, setPreviewData] = useState<Invoice | null>(null);
+  const [markPaidInvoice, setMarkPaidInvoice] = useState<Invoice | null>(null);
+  const [showMarkPaidModal, setShowMarkPaidModal] = useState(false);
   const [clients, setClients] = useState<Client[]>([]);
   const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
   const {
@@ -440,34 +443,23 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
     }
   };
 
-  const handleMarkPaid = async (id: string) => {
-    const shouldMarkPaid = window.confirm(
-      "Mark this invoice as paid? This action affects accounting records."
-    );
-    if (!shouldMarkPaid) return;
-
+  const handleMarkPaid = async (invoice: Invoice) => {
     try {
-      const invoice = await invoiceApi.getInvoice(id);
-      const updatedInvoice: InvoiceFormData = {
-        id: invoice.id,
-        invoiceNumber: invoice.invoiceNumber,
-        clientId: invoice.client.id,
-        issueDate: invoice.issueDate,
-        dueDate: invoice.dueDate,
-        reference: invoice.reference,
-        invoiceLineItems: invoice.invoiceLineItems || [],
-        tax: invoice.tax,
-        discount: invoice.discount,
-        currency: invoice.currency,
-        status: "paid",
-      };
-
-      await invoiceApi.updateInvoice(id, updatedInvoice);
-      await loadInvoices(); // Refresh the invoice list
+      const fullInvoice = await invoiceApi.getInvoice(invoice.id);
+      setMarkPaidInvoice(fullInvoice);
+      setShowMarkPaidModal(true);
     } catch (err) {
       setPageError("Failed to mark invoice as paid");
       console.error("Error marking invoice as paid:", err);
     }
+  };
+
+  const refreshMarkedInvoice = async () => {
+    if (!markPaidInvoice?.id) return;
+
+    const refreshedInvoice = await invoiceApi.getInvoice(markPaidInvoice.id);
+    syncInvoiceState(refreshedInvoice);
+    await loadInvoices();
   };
 
   const handleDownload = async (id: string) => {
@@ -541,9 +533,11 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
     );
   }
 
+  let view = null;
+
   switch (viewMode) {
     case "list":
-      return (
+      view = (
         <InvoiceList
           invoices={invoices}
           totalInvoices={totalInvoices}
@@ -560,9 +554,10 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
           hasMore={hasMoreInvoices}
         />
       );
+      break;
 
     case "create":
-      return (
+      view = (
         <div>
           {renderBackButton()}
           <InvoiceEditor
@@ -577,9 +572,10 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
           />
         </div>
       );
+      break;
 
     case "edit": {
-      if (!selectedInvoice) return null;
+      if (!selectedInvoice) break;
 
       const editFormData: InvoiceFormData = {
         id: selectedInvoice.id,
@@ -617,7 +613,7 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
             ...fallbackCompany,
           };
 
-      return (
+      view = (
         <div>
           {renderBackButton()}
           <InvoiceEditor
@@ -632,11 +628,12 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
           />
         </div>
       );
+      break;
     }
 
     case "preview": {
       const invoiceToPreview = previewData || selectedInvoice;
-      if (!invoiceToPreview) return null;
+      if (!invoiceToPreview) break;
 
       const handleInvoiceAction = async (
         action: string,
@@ -666,6 +663,11 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
               await handleEditInvoice(invoiceToPreview.id);
             }
             break;
+          case "mark_paid":
+            if (invoiceToPreview.id) {
+              await handleMarkPaid(invoiceToPreview as Invoice);
+            }
+            break;
           case "print":
             window.print();
             break;
@@ -692,7 +694,7 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
         },
       };
 
-      return (
+      view = (
         <div>
           {renderBackButton()}
           <InvoicePreview
@@ -701,11 +703,28 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
           />
         </div>
       );
+      break;
     }
 
     default:
-      return null;
+      break;
   }
+
+  return (
+    <>
+      {view}
+      {showMarkPaidModal && markPaidInvoice?.company && (
+        <MarkInvoiceAsPaidModal
+          baseCurrency={markPaidInvoice.company.baseCurrency}
+          dateFormat={markPaidInvoice.company.dateFormat}
+          fetchInvoice={refreshMarkedInvoice}
+          invoice={markPaidInvoice}
+          setShowManualEntryModal={setShowMarkPaidModal}
+          showManualEntryModal={showMarkPaidModal}
+        />
+      )}
+    </>
+  );
 };
 
 export default InvoicesPage;

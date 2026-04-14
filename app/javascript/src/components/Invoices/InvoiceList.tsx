@@ -57,7 +57,7 @@ interface InvoiceListProps {
     id: string,
     invoiceEmail?: { subject: string; message: string; recipients: string[] }
   ) => Promise<void> | void;
-  onMarkPaid?: (id: string) => void;
+  onMarkPaid?: (invoice: Invoice) => void;
   onDownload?: (id: string) => void;
   onLoadMore?: () => void;
   isLoading?: boolean;
@@ -328,7 +328,7 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
             {invoice.status !== "paid" && (
               <DropdownMenuItem
                 data-testid={`invoice-action-mark-paid-${invoice.id}`}
-                onClick={() => onMarkPaid?.(invoice.id)}
+                onClick={() => onMarkPaid?.(invoice)}
               >
                 <CheckCircle className="h-4 w-4 mr-2" />
                 {i18n.t("invoices.markAsPaid")}

@@ -171,6 +171,19 @@ RSpec.describe "Invoice listing", type: :system, js: true do
         )
       end
     end
+
+    it "opens the mark paid modal from the invoice actions menu" do
+      with_forgery_protection do
+        visit "/invoices"
+
+        find("[data-testid='invoice-actions-trigger-#{sent_invoice.id}']", wait: 10).click
+        find("[data-testid='invoice-action-mark-paid-#{sent_invoice.id}']", wait: 10).click
+
+        expect(page).to have_content("Mark Invoice As Paid", wait: 10)
+        expect(page).to have_selector("#transactionDate", wait: 10)
+        expect(page).to have_selector("#invoice", wait: 10)
+      end
+    end
   end
 
   context "with multiple clients" do

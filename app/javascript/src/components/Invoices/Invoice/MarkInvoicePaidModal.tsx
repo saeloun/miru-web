@@ -31,7 +31,7 @@ const MarkInvoiceAsPaidModal = ({
   const { isDesktop } = useUserContext();
   const [transactionDate, setTransactionDate] = useState<any>(dayjs());
   const [transactionType, setTransactionType] = useState<any>(null);
-  const [note, setNote] = useState<any>(null);
+  const [note, setNote] = useState<any>("");
   const [showDatePicker, setShowDatePicker] = useState<any>(false);
   const [showTransactionTypes, setShowTransactionTypes] =
     useState<boolean>(false);
@@ -84,7 +84,10 @@ const MarkInvoiceAsPaidModal = ({
       onClose={() => setShowManualEntryModal(false)}
     >
       <div className="modal__position m-0">
-        <h6 className="modal__title"> {i18n.t("invoices.markInvoiceAsPaid")}</h6>
+        <h6 className="modal__title">
+          {" "}
+          {i18n.t("invoices.markInvoiceAsPaid")}
+        </h6>
         <div className="modal__close">
           <button
             className="modal__button"
@@ -152,7 +155,9 @@ const MarkInvoiceAsPaidModal = ({
               onValueChange={value => setTransactionType(value)}
             >
               <SelectTrigger className="mt-1">
-                <SelectValue placeholder={i18n.t("payments.selectTransactionType")} />
+                <SelectValue
+                  placeholder={i18n.t("payments.selectTransactionType")}
+                />
               </SelectTrigger>
               <SelectContent>
                 {transactionTypes.map((type: any) => (
