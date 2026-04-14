@@ -7,6 +7,7 @@ Current lanes:
 - `docs_consistency`
 - `frontend_build`
 - `auth_pages_request_spec`
+- `browser_root_smoke`
 
 Run:
 
@@ -14,4 +15,5 @@ Run:
 script/autoresearch/run.sh docs_consistency
 script/autoresearch/run.sh frontend_build
 script/autoresearch/run.sh auth_pages_request_spec
+script/autoresearch/run.sh browser_root_smoke
 ```
