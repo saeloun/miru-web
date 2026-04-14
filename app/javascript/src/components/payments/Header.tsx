@@ -5,6 +5,7 @@ import { UnifiedSearch } from "../ui/enhanced-search";
 import { PlusIcon } from "miruIcons";
 import { useNavigate } from "react-router-dom";
 import { Button } from "StyledComponents";
+import { i18n } from "../../i18n";
 
 import { HeaderProps } from "./interfaces";
 import MobileHeader from "./Mobile/Header";
@@ -103,12 +104,12 @@ const Header = ({
   return (
     <div className="relative mt-6 mb-3 flex flex-wrap items-center justify-between">
       <h2 className="header__title hidden md:flex md:items-center md:gap-2">
-        <span>Payments</span>
+        <span>{i18n.t("payments.payments")}</span>
       </h2>
       <div className="flex items-center gap-3 hidden md:flex mx-auto">
         <UnifiedSearch
           searchAction={fetchSearchedPayments}
-          placeholder="Search payments by client, invoice, or amount..."
+          placeholder={i18n.t("payments.searchPaymentsPlaceholder")}
           onSelect={handlePaymentSelect}
           handleEnter={handleEnterKey}
           clearSearch={handleClearSearch}
@@ -130,7 +131,7 @@ const Header = ({
       >
         <PlusIcon size={16} weight="bold" />
         <span className="ml-2 hidden text-base font-bold tracking-widest lg:inline-block">
-          Add Manual Entry
+          {i18n.t("payments.addManualEntry")}
         </span>
       </Button>
       <MobileHeader

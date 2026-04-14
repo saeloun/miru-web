@@ -2,6 +2,7 @@ import React from "react";
 
 import EmptyStates from "common/EmptyStates";
 import { PlusIcon } from "miruIcons";
+import { i18n } from "../../i18n";
 
 import { PaymentsEmptyStateProps } from "./interfaces";
 
@@ -9,7 +10,7 @@ export const PaymentsEmptyState = ({
   setShowManualEntryModal,
 }: PaymentsEmptyStateProps) => (
   <EmptyStates
-    Message="No payments have been recorded yet"
+    Message={i18n.t("payments.noPaymentsRecorded")}
     messageClassName="w-full lg:text-xl"
     showNoSearchResultState={false}
   >
@@ -21,7 +22,7 @@ export const PaymentsEmptyState = ({
       >
         <PlusIcon size={20} weight="bold" />
         <span className="ml-2 inline-block text-xl uppercase">
-          ADD MANUAL ENTRY
+          {i18n.t("payments.addManualEntry")}
         </span>
       </button>
     </div>
