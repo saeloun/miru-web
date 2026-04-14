@@ -1,5 +1,49 @@
 ---
 tr:
+  analytics:
+    activity:
+      amount_collected: Tahsil Edilen Miktar
+      bank_transfers_month: Banka Havaleleri (Ay)
+      created: Oluşturuldu
+      downloaded: İndirildi
+      invoice_activity_today: Bugünkü Fatura İşlemleri
+      payment_activity: Ödeme Faaliyeti
+      payments_today: Bugünkü Ödemeler
+      sent: Gönderilmiş
+      stripe_payments_month: Stripe Ödemeleri (Ay)
+      viewed: Görüntülendi
+    currency:
+      conversion_impact: Dönüşüm Etkisi
+      currencies_in_use: Kullanılan Para Birimleri
+      invoices_with_conversion: Dönüştürme İşlemi İçeren Faturalar
+      recent_exchange_rates: Son Döviz Kurları
+      table:
+        date: Tarih
+        from: İtibaren
+        rate: Oran
+        source: Kaynak
+        to: İle
+      title: Para Birimi Dönüştürme Analizleri
+    overview:
+      active_clients: Aktif Müşteriler
+      outstanding: Üstün
+      overdue: Gecikmiş
+      total_revenue: Toplam Gelir
+    recent_activity:
+      ago: "%{time} önce"
+      invoice_reference: fatura
+      system: Sistem
+      title: Son Aktiviteler
+    super_admin: Süper Yönetici
+    tabs:
+      activity: Aktivite
+      clients: Müşteriler
+      currency_exchange: Para Birimi ve Döviz
+      overview: Genel Bakış
+      revenue: Hasılat
+      users: Kullanıcılar
+    title: Analitik Kontrol Paneli
+    welcome: Hoş geldiniz, %{name}
   app:
     name: Miru Ajansı İşletim Sistemi
     tagline: Ajansınızın operasyonlarını tek bir komuta merkezinden yönetin.
@@ -169,6 +213,81 @@ tr:
         summary_html: "<strong>%{invoice_number} numaralı</strong> fatura için <strong>%{paid_on}</strong>
           tarihinde <strong>%{amount}</strong> tutarında teslimat aldık."
         title: Ödeme makbuzu
+    devise:
+      confirmation:
+        body_intro: 'Neredeyse hazırsınız. İşte Miru ile ilk günden itibaren yapabileceğiniz
+          şeylerden bazıları:'
+        cta: E
+        cta_body: E-posta adresinizi onaylamak için aşağıdaki düğmeyi kullanın.
+        eyebrow: Hesap kurulumu
+        feature_1: Profesyonel faturalarınızı, barındırma hizmeti sunan ödeme bağlantılarıyla
+          birlikte gönderin.
+        feature_2: Zamanı, giderleri ve kullanım oranını tek bir iş akışında takip
+          edin.
+        feature_3: Ekibinizi, müşterilerinizi ve faturalandırmanızı tek bir çalışma
+          alanından yönetin.
+        feature_4: Gelirleri, vadesi geçmiş faturaları ve ödeme faaliyetlerini yakından
+          takip edin.
+        footer_note: Eğer Miru hesabı oluşturmadıysanız, bu mesajı güvenle görmezden
+          gelebilirsiniz.
+        greeting_html: Merhaba <strong>%{name}</strong> ,
+        preheader: Miru kurulumunu tamamlamak için e-posta adresinizi onaylayın.
+        subtitle: Çalışma sürelerinizi takip etmeye, fatura göndermeye ve ekibinizi
+          tek bir yerden yönetmeye başlamak için e-posta adresinizi onaylayın.
+        title: Miru'ya hoş geldiniz
+      email_changed:
+        changed_html: Hesap e-postanız <strong>%{email}</strong> olarak değiştirildi.
+        eyebrow: Hesap güvenliği
+        greeting_html: Merhaba <strong>%{email}</strong> ,
+        pending_html: Hesap e-postanız <strong>%{email}</strong> olarak değiştiriliyor.
+        preheader: Miru e-posta adresiniz değişti.
+        subtitle: Bu mesaj, Miru hesabınızdaki e-posta adresinde bir değişiklik olduğunu
+          doğrulamaktadır.
+        title: E-posta adresi güncellendi
+        warning_body_html: Lütfen hemen <a href="mailto:%{email}">%{email}</a> numaralı
+          telefondan destek ekibimizle iletişime geçin.
+        warning_title: Bu değişikliği siz talep etmediniz mi?
+      password_change:
+        eyebrow: Hesap güvenliği
+        greeting_html: Merhaba <strong>%{name}</strong> ,
+        preheader: Miru şifreniz değiştirildi.
+        subtitle: Miru hesabınızın şifresi başarıyla güncellendi.
+        success_body: Yeni şifrenizi kullanarak Miru'ya giriş yapmaya devam edebilirsiniz.
+        success_title: Parolanız güncellendi.
+        title: Şifre başarıyla değiştirildi.
+        warning_body_html: Hesabınızın güvenliğini sağlamamız için lütfen hemen <a
+          href="mailto:%{email}">%{email}</a> ile iletişime geçin.
+        warning_title: Bu değişikliği yapmadınız mı?
+      reset_password:
+        cta: Şifreyi sıfırla
+        cta_body: Yeni bir parola seçmek için aşağıdaki düğmeyi kullanın. Bu sıfırlama
+          bağlantısı 24 saat sonra geçerliliğini yitirecektir.
+        eyebrow: Hesap güvenliği
+        footer_note: Parola sıfırlama talebinde bulunmadıysanız, bu mesajı görmezden
+          gelebilirsiniz ve parolanız aynı kalacaktır.
+        greeting: Merhaba,
+        preheader: Miru hesabınızın şifresini sıfırlayın.
+        request_html: "<strong>%{email}</strong> ile ilişkili şifrenin değiştirilmesi
+          talebi aldık."
+        subtitle: Miru hesabınızın şifresini sıfırlama talebi aldık.
+        title: Parolanızı sıfırlayın
+      shared:
+        signature_html: Teşekkürler,<br> <strong>Miru Takımı</strong>
+      unlock:
+        cta: Şifreyi sıfırla
+        eyebrow: Hesap güvenliği
+        footer_note: Giriş yapmayı denemediyseniz, kilidin süresi dolana kadar bekleyin
+          ve hemen şifrenizi değiştirin.
+        greeting_html: Merhaba <strong>%{email}</strong> ,
+        preheader: Çok fazla başarısız giriş denemesinden sonra Miru hesabınızın kilidini
+          açın.
+        subtitle: Başarısız giriş denemelerinin çok fazla olması nedeniyle Miru hesabınızı
+          kilitledik.
+        title: Hesabınız geçici olarak kilitlendi.
+        warning_body: Miru, hesapların kilidini 30 dakika sonra otomatik olarak açar.
+          Bu giriş denemelerini tanımazsanız, hesabınızın kilit süresi dolduktan sonra
+          güvende olması için şifrenizi sıfırlayın.
+        warning_title: Giriş denemeleri izin verilen sınırı aştı.
     expense_mailer:
       approved:
         eyebrow: Giderler
@@ -325,6 +444,46 @@ tr:
         subtitle: "%{company_name} için zaman kayıtlarınız hala beklenen haftalık
           toplamın altında."
         title: Çalışma saatlerinizi gösteren belgeyi doldurun.
+    subscription:
+      plan_purchased:
+        badge: Çınlama
+        billing_interval: Faturalama aralığı
+        billing_settings_html: 'Faturalama ayarları: <a href="%{url}" style="color:
+          #111827;">%{url}</a>'
+        company: Şirket
+        cta: Fatura ayarlarını açın
+        image_label: Yeni ücretli plan
+        image_text: Yeni ücretli çalışma alanı
+        plan: Plan
+        stripe_subscription: Stripe aboneliği
+        subtitle: Miru'da yeni ücretli çalışma alanı. Faturalandırma aktif.
+        team_seats: Takım koltukları
+        title: "%{company} az önce %{plan}'i satın aldı."
+      plan_purchased_text:
+        billing_interval: 'Faturalama aralığı: %{interval}'
+        billing_settings: 'Fatura ayarlarını aç: %{url}'
+        company: 'Şirket: %{company}'
+        plan: 'Plan: %{plan}'
+        stripe_subscription: 'Stripe aboneliği: %{id}'
+        team_seats: 'Takım koltukları: %{seats}'
+      trial_started:
+        body_html: "<strong>%{company}</strong> için 30 günlük Miru Pro deneme sürümünüz
+          artık aktif."
+        cta: Açık faturalama
+        eyebrow: Faturalama
+        footer_body: Faturalandırma ayarlarınızdan istediğiniz zaman fatura bilgilerinizi
+          inceleyebilir, planları karşılaştırabilir ve yükseltme yapabilirsiniz.
+        greeting_html: Merhaba <strong>%{name}</strong> ,
+        preheader: Miru Pro deneme sürümünüz artık aktif.
+        subtitle: 30 günlük deneme süreniz boyunca faturalandırma, raporlar ve Pro
+          iş akışının geri kalanını keşfedin.
+        title: Miru Pro deneme sürümünüz aktif.
+        trial_ends: Dava sona erdi
+      trial_started_text:
+        body: "%{company} için 30 günlük Miru Pro deneme sürümünüz artık aktif."
+        greeting: Merhaba %{name},
+        review_billing: "%{url} adresindeki faturalandırmayı inceleyin."
+        trial_ends: Duruşma %{date} tarihinde sona eriyor.
     user_invitation_mailer:
       send_user_invitation:
         about_body: Miru, zaman yönetimi, faturalar, ödemeler ve günlük operasyonları
@@ -372,6 +531,74 @@ tr:
       success: Parolanızı sıfırlama talimatları e-posta adresinize gönderildi.
     update:
       success: Parolanız güncellendi.
+  pdfs:
+    accounts_aging:
+      client: Müşteri
+      title: Hesapların Yaşlanma Raporu
+      total: Toplam
+    client_revenues:
+      client: Müşteri
+      outstanding_amount: Ödenmemiş Tutar
+      overdue_amount: Gecikmiş Tutar
+      paid_amount: Ödenen Tutar
+      title: Müşteri Gelir Raporu
+      total_revenue: Toplam Gelir
+    invoices:
+      amount_due: Ödenecek Tutar
+      amount_paid: Ödenen Tutar
+      billed_to: Faturalandırılan Kişi
+      client_invoice: Müşteri Faturası
+      discount: İndirim
+      due: 'Son tarih: %{due_date}'
+      invoice_number: Fatura Numarası
+      issue_date: Düzenleme tarihi
+      paid: 'Ödenen: %{amount}'
+      payment_details: Ödeme Detayları
+      payment_rows:
+        account_number: Hesap Numarası
+        bank_name: Banka Adı
+        gst_number: GST Numarası
+        routing_number: Yönlendirme Numarası
+        swift_code: Swift kodu
+        tax_id: Vergi Kimlik Numarası
+        vat_number: KDV Numarası
+      prepared_by: "%{company_name} tarafından hazırlanmış, %{issue_date} tarihinde
+        yayınlanmış, %{due_date} tarihinde teslim edilmesi gerekmektedir."
+      reference: 'Referans: %{reference}'
+      sub_total: Ara toplam
+      table:
+        date: Tarih
+        description: Tanım
+        line_total: Satır Toplamı
+        name: İsim
+        qty: Adet
+        rate: Oran
+      tax: Vergi
+      title: Fatura
+      total: Toplam
+      total_invoice_amount: Toplam fatura tutarı
+      work_summary: İş Özeti
+    outstanding_overdue_invoices:
+      amount: Miktar
+      client: Müşteri
+      due_date: Bitiş tarihi
+      invoice_number: Fatura No
+      issue_date: Düzenleme tarihi
+      no_clients_found: Hiçbir müşteri bulunamadı.
+      outstanding_amount: Ödenmemiş Tutar
+      overdue_amount: Gecikmiş Tutar
+      status: Durum
+      title: Ödenmemiş ve Gecikmiş Faturalar Raporu
+      total_amounts: Toplam Tutarlar
+      total_invoice_amount: Toplam Fatura Tutarı
+    time_entries:
+      client: Müşteri
+      date: Tarih
+      hours_logged: Kaydedilen Saatler
+      note: Not
+      project: Proje
+      team_member: Takım Üyesi
+      title: Zaman Giriş Raporu
   projects:
     add_new_project: Yeni proje ekle
     add_project: Proje ekle

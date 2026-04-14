@@ -3,6 +3,12 @@ ko:
   devise:
     confirmations:
       confirmed: 귀하의 이메일 주소가 성공적으로 확인되었습니다.
+      new:
+        description: 인증 링크가 만료되었거나 유효하지 않습니다. 새 링크를 요청해 주세요.
+        remember_password: 비밀번호를 기억하시나요?
+        resend: 확인 이메일 재전송
+        sign_in: 로그인
+        title: 이메일 확인이 필요합니다
       send_instructions: 몇 분 안에 이메일 주소 확인 방법에 대한 안내 이메일을 받으실 겁니다.
       send_paranoid_instructions: 귀하의 이메일 주소가 당사 데이터베이스에 등록되어 있는 경우, 몇 분 안에 이메일 주소
         확인 방법에 대한 안내 이메일을 받게 됩니다.
@@ -57,6 +63,9 @@ ko:
       signed_in: 로그인에 성공했습니다.
       signed_out: 성공적으로 로그아웃되었습니다.
     unlocks:
+      new:
+        submit: 잠금 해제 지침 재전송
+        title: 잠금 해제 지침 재전송
       send_instructions: 몇 분 안에 계정 잠금 해제 방법에 대한 안내 이메일을 받으실 겁니다.
       send_paranoid_instructions: 계정이 있는 경우 몇 분 안에 계정 잠금 해제 방법에 대한 안내 이메일을 받게 됩니다.
       unlocked: 계정 잠금 해제가 성공적으로 완료되었습니다. 계속하려면 로그인하세요.

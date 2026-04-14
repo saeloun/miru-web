@@ -3,6 +3,13 @@ fr:
   devise:
     confirmations:
       confirmed: Votre adresse e-mail a été confirmée avec succès.
+      new:
+        description: Votre lien de confirmation a expiré ou n'est pas valide. Veuillez
+          en demander un nouveau.
+        remember_password: Vous vous souvenez de votre mot de passe ?
+        resend: Renvoyer l'e-mail de confirmation
+        sign_in: Se connecter
+        title: Confirmation par courriel requise
       send_instructions: Vous recevrez dans quelques minutes un courriel contenant
         les instructions pour confirmer votre adresse électronique.
       send_paranoid_instructions: Si votre adresse électronique figure dans notre
@@ -69,6 +76,9 @@ fr:
       signed_in: Connexion réussie.
       signed_out: Déconnexion réussie.
     unlocks:
+      new:
+        submit: Renvoyer les instructions de déverrouillage
+        title: Renvoyer les instructions de déverrouillage
       send_instructions: Vous recevrez dans quelques minutes un courriel contenant
         les instructions pour déverrouiller votre compte.
       send_paranoid_instructions: Si votre compte existe, vous recevrez dans quelques

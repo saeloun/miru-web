@@ -1,5 +1,49 @@
 ---
 ar:
+  analytics:
+    activity:
+      amount_collected: المبلغ المحصل
+      bank_transfers_month: التحويلات المصرفية (شهرياً)
+      created: مخلوق
+      downloaded: تم التنزيل
+      invoice_activity_today: نشاط الفواتير اليوم
+      payment_activity: نشاط الدفع
+      payments_today: الدفع اليوم
+      sent: مرسل
+      stripe_payments_month: مدفوعات سترايب (شهريًا)
+      viewed: تمت المشاهدة
+    currency:
+      conversion_impact: تأثير التحويل
+      currencies_in_use: العملات المستخدمة
+      invoices_with_conversion: الفواتير مع التحويل
+      recent_exchange_rates: أسعار الصرف الأخيرة
+      table:
+        date: تاريخ
+        from: من
+        rate: معدل
+        source: مصدر
+        to: ل
+      title: رؤى حول تحويل العملات
+    overview:
+      active_clients: العملاء النشطون
+      outstanding: متميز
+      overdue: متأخر
+      total_revenue: إجمالي الإيرادات
+    recent_activity:
+      ago: منذ %{time}
+      invoice_reference: فاتورة
+      system: نظام
+      title: النشاط الأخير
+    super_admin: المشرف الرئيسي
+    tabs:
+      activity: نشاط
+      clients: العملاء
+      currency_exchange: العملات والصرف
+      overview: ملخص
+      revenue: ربح
+      users: المستخدمون
+    title: لوحة تحليلات البيانات
+    welcome: أهلاً وسهلاً، %{name}
   app:
     name: وكالة ميرو OS
     tagline: أدر عمليات وكالتك من مركز قيادة واحد.
@@ -169,6 +213,80 @@ ar:
         summary_html: لقد استلمنا <strong>%{amount}</strong> على <strong>%{paid_on}</strong>
           للفاتورة <strong>%{invoice_number}</strong> .
         title: إيصال الدفع
+    devise:
+      confirmation:
+        body_intro: 'أنت على وشك الانتهاء. إليك بعض الأشياء التي يمكنك فعلها مع ميرو
+          منذ اليوم الأول:'
+        cta: تأكيد عنوان البريد الإلكتروني
+        cta_body: استخدم الزر أدناه لتأكيد عنوان بريدك الإلكتروني.
+        eyebrow: إعداد الحساب
+        feature_1: أرسل فواتير احترافية مع روابط دفع مستضافة.
+        feature_2: تتبع الوقت والمصروفات والاستخدام في سير عمل واحد.
+        feature_3: قم بإدارة فريقك وعملائك وفواتيرك من مساحة عمل واحدة.
+        feature_4: تابع الإيرادات والفواتير المتأخرة ونشاط الدفع عن كثب.
+        footer_note: إذا لم تقم بإنشاء حساب على موقع ميرو، فيمكنك تجاهل هذه الرسالة
+          بأمان.
+        greeting_html: مرحباً <strong>%{name}</strong> ،
+        preheader: قم بتأكيد عنوان بريدك الإلكتروني لإكمال إعداد تطبيق ميرو.
+        subtitle: قم بتأكيد عنوان بريدك الإلكتروني لبدء تتبع الوقت وإرسال الفواتير
+          وإدارة فريقك من مكان واحد.
+        title: مرحبا بكم في ميرو
+      email_changed:
+        changed_html: تم تغيير بريدك الإلكتروني الخاص بالحساب إلى <strong>%{email}</strong>
+          .
+        eyebrow: أمان الحساب
+        greeting_html: مرحباً <strong>%{email}</strong> ،
+        pending_html: سيتم تغيير بريدك الإلكتروني الخاص بالحساب إلى <strong>%{email}</strong>
+          .
+        preheader: لقد تغير عنوان بريدك الإلكتروني على منصة ميرو.
+        subtitle: تؤكد هذه الرسالة تغيير عنوان البريد الإلكتروني في حسابك على موقع
+          ميرو.
+        title: تم تحديث عنوان البريد الإلكتروني
+        warning_body_html: اتصل بفريق الدعم لدينا فوراً على <a href="mailto:%{email}">الرقم
+          %{email}</a> .
+        warning_title: ألم تطلب هذا التغيير؟
+      password_change:
+        eyebrow: أمان الحساب
+        greeting_html: مرحباً <strong>%{name}</strong> ،
+        preheader: تم تغيير كلمة مرورك في Miru.
+        subtitle: تم تحديث كلمة مرور حسابك على Miru بنجاح.
+        success_body: يمكنك الاستمرار في تسجيل الدخول إلى ميرو باستخدام كلمة المرور
+          الجديدة الخاصة بك.
+        success_title: تم تحديث كلمة مرورك.
+        title: تم تغيير كلمة المرور بنجاح
+        warning_body_html: اتصل بـ <a href="mailto:%{email}">%{email}</a> على الفور
+          حتى نتمكن من مساعدتك في تأمين حسابك.
+        warning_title: ألم تقم بهذا التغيير؟
+      reset_password:
+        cta: إعادة تعيين كلمة المرور
+        cta_body: استخدم الزر أدناه لاختيار كلمة مرور جديدة. سينتهي صلاحية رابط إعادة
+          التعيين هذا خلال 24 ساعة.
+        eyebrow: أمان الحساب
+        footer_note: إذا لم تطلب إعادة تعيين كلمة المرور، فيمكنك تجاهل هذه الرسالة
+          وستبقى كلمة مرورك كما هي.
+        greeting: مرحبًا،
+        preheader: أعد تعيين كلمة مرور حسابك على Miru.
+        request_html: تلقينا طلبًا لتغيير كلمة المرور المرتبطة بـ <strong>%{email}</strong>
+          .
+        subtitle: تلقينا طلبًا لإعادة تعيين كلمة المرور لحسابك على موقع ميرو.
+        title: أعد تعيين كلمة المرور الخاصة بك
+      shared:
+        signature_html: شكرًا،<br> <strong>فريق ميرو</strong>
+      unlock:
+        cta: إعادة تعيين كلمة المرور
+        eyebrow: أمان الحساب
+        footer_note: إذا لم تحاول تسجيل الدخول، فانتظر حتى ينتهي القفل وقم بتغيير
+          كلمة المرور الخاصة بك على الفور.
+        greeting_html: مرحباً <strong>%{email}</strong> ،
+        preheader: قم بإلغاء قفل حسابك في ميرو بعد عدد كبير جدًا من محاولات تسجيل
+          الدخول الفاشلة.
+        subtitle: لقد قمنا بإغلاق حسابك على Miru بعد عدد كبير جدًا من محاولات تسجيل
+          الدخول غير الناجحة.
+        title: تم قفل حسابك مؤقتًا
+        warning_body: يقوم تطبيق ميرو بفتح الحسابات تلقائيًا بعد 30 دقيقة. إذا لم
+          تتعرف على هذه المحاولات، فأعد تعيين كلمة مرورك لضمان أمان حسابك بعد انتهاء
+          مدة القفل.
+        warning_title: تجاوزت محاولات تسجيل الدخول الحد المسموح به.
     expense_mailer:
       approved:
         eyebrow: نفقات
@@ -318,6 +436,46 @@ ar:
         subtitle: لا تزال إدخالات وقتك لـ %{company_name} أقل من الإجمالي الأسبوعي
           المتوقع.
         title: أكمل جدول ساعات العمل الخاص بك
+    subscription:
+      plan_purchased:
+        badge: تشا تشينغ
+        billing_interval: فترة الفوترة
+        billing_settings_html: 'إعدادات الفوترة: <a href="%{url}" style="color: #111827;">%{url}</a>'
+        company: شركة
+        cta: إعدادات الفوترة المفتوحة
+        image_label: خطة مدفوعة جديدة
+        image_text: مساحة عمل مدفوعة الأجر جديدة
+        plan: يخطط
+        stripe_subscription: اشتراك سترايب
+        subtitle: مساحة عمل مدفوعة جديدة على منصة ميرو. تم تفعيل نظام الفوترة.
+        team_seats: مقاعد الفريق
+        title: "%{company} اشترى للتو %{plan}"
+      plan_purchased_text:
+        billing_interval: 'فترة الفوترة: %{interval}'
+        billing_settings: 'افتح إعدادات الفوترة: %{url}'
+        company: 'الشركة: %{company}'
+        plan: 'الخطة: %{plan}'
+        stripe_subscription: 'اشتراك سترايب: %{id}'
+        team_seats: 'مقاعد الفريق: %{seats}'
+      trial_started:
+        body_html: تم تفعيل تجربتك المجانية لمدة 30 يومًا لبرنامج Miru Pro الخاص بك
+          لجهاز <strong>%{company}</strong> .
+        cta: الفواتير المفتوحة
+        eyebrow: الفواتير
+        footer_body: يمكنك مراجعة الفواتير ومقارنة الخطط والترقية في أي وقت من إعدادات
+          الفواتير الخاصة بك.
+        greeting_html: مرحباً <strong>%{name}</strong> ،
+        preheader: تم تفعيل النسخة التجريبية من برنامج Miru Pro الخاص بك الآن.
+        subtitle: استكشف نظام الفوترة والتقارير وبقية سير العمل الاحترافي خلال فترة
+          التجربة المجانية التي تبلغ 30 يومًا.
+        title: تجربتك المجانية لبرنامج Miru Pro متاحة الآن
+        trial_ends: انتهاء المحاكمة
+      trial_started_text:
+        body: تم تفعيل تجربتك المجانية لمدة 30 يومًا لبرنامج Miru Pro الخاص بك لجهاز
+          %{company}.
+        greeting: مرحباً %{name}،
+        review_billing: مراجعة الفواتير في %{url}.
+        trial_ends: تنتهي المحاكمة عند %{date}.
     user_invitation_mailer:
       send_user_invitation:
         about_body: يجمع برنامج ميرو الوقت والفواتير والمدفوعات والعمليات اليومية
@@ -369,6 +527,74 @@ ar:
       success: تم إرسال تعليمات إعادة تعيين كلمة المرور الخاصة بك إلى بريدك الإلكتروني.
     update:
       success: تم تحديث كلمة مرورك.
+  pdfs:
+    accounts_aging:
+      client: عميل
+      title: تقرير أعمار الحسابات
+      total: المجموع
+    client_revenues:
+      client: عميل
+      outstanding_amount: المبلغ المستحق
+      overdue_amount: المبلغ المستحق
+      paid_amount: المبلغ المدفوع
+      title: تقرير إيرادات العملاء
+      total_revenue: إجمالي الإيرادات
+    invoices:
+      amount_due: المبلغ المستحق
+      amount_paid: المبلغ المدفوع
+      billed_to: تمت الفاتورة إلى
+      client_invoice: فاتورة العميل
+      discount: تخفيض
+      due: 'الموعد النهائي: %{due_date}'
+      invoice_number: رقم الفاتورة
+      issue_date: تاريخ الإصدار
+      paid: 'مدفوع: %{amount}'
+      payment_details: تفاصيل الدفع
+      payment_rows:
+        account_number: رقم الحساب
+        bank_name: اسم البنك
+        gst_number: رقم ضريبة السلع والخدمات
+        routing_number: رقم التوجيه
+        swift_code: رمز السرعة
+        tax_id: رقم التعريف الضريبي
+        vat_number: رقم ضريبة القيمة المضافة
+      prepared_by: أُعدّ بواسطة %{company_name}، وصدر بواسطة %{issue_date}، ويستحق
+        الدفع %{due_date}.
+      reference: 'المرجع: %{reference}'
+      sub_total: المجموع الفرعي
+      table:
+        date: تاريخ
+        description: وصف
+        line_total: إجمالي السطر
+        name: اسم
+        qty: الكمية
+        rate: معدل
+      tax: ضريبة
+      title: فاتورة
+      total: المجموع
+      total_invoice_amount: إجمالي مبلغ الفاتورة
+      work_summary: ملخص العمل
+    outstanding_overdue_invoices:
+      amount: كمية
+      client: عميل
+      due_date: تاريخ الاستحقاق
+      invoice_number: رقم الفاتورة
+      issue_date: تاريخ الإصدار
+      no_clients_found: لم يتم العثور على عملاء
+      outstanding_amount: المبلغ المستحق
+      overdue_amount: المبلغ المستحق
+      status: حالة
+      title: تقرير الفواتير غير المستحقة والمتأخرة
+      total_amounts: إجمالي المبالغ
+      total_invoice_amount: إجمالي مبلغ الفاتورة
+    time_entries:
+      client: عميل
+      date: تاريخ
+      hours_logged: الساعات المسجلة
+      note: ملحوظة
+      project: مشروع
+      team_member: عضو فريق
+      title: تقرير إدخال الوقت
   projects:
     add_new_project: إضافة مشروع جديد
     add_project: إضافة مشروع

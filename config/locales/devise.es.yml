@@ -3,6 +3,13 @@ es:
   devise:
     confirmations:
       confirmed: Tu dirección de correo electrónico ha sido confirmada correctamente.
+      new:
+        description: Tu enlace de confirmación ha caducado o no es válido. Solicita
+          uno nuevo.
+        remember_password: "¿Recuerdas tu contraseña?"
+        resend: Reenviar correo electrónico de confirmación
+        sign_in: Iniciar sesión
+        title: Se requiere confirmación por correo electrónico.
       send_instructions: En unos minutos recibirás un correo electrónico con instrucciones
         para confirmar tu dirección de correo electrónico.
       send_paranoid_instructions: Si tu dirección de correo electrónico existe en
@@ -66,6 +73,9 @@ es:
       signed_in: Inicio de sesión exitoso.
       signed_out: Sesión cerrada correctamente.
     unlocks:
+      new:
+        submit: Reenviar las instrucciones de desbloqueo
+        title: Reenviar las instrucciones de desbloqueo
       send_instructions: En unos minutos recibirás un correo electrónico con instrucciones
         para desbloquear tu cuenta.
       send_paranoid_instructions: Si tu cuenta ya existe, recibirás un correo electrónico

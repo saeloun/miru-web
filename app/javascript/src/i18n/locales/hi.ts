@@ -66,6 +66,18 @@ const locale = {
   all: "सभी",
   from: "से",
   to: "तक",
+  themeSelector: {
+    open: "थीम चयनकर्ता खोलें",
+    close: "थीम चयनकर्ता बंद करें",
+    choose: "थीम चुनें",
+    description: "अपनी पसंदीदा इंटरफ़ेस शैली चुनें",
+    classic: "क्लासिक",
+    classicDescription: "पारंपरिक Miru इंटरफ़ेस",
+    admin: "एडमिन प्रो",
+    adminDescription: "आधुनिक shadcn डैशबोर्ड",
+    minimize: "मिनिमाइज़ करें",
+    previewActive: "थीम प्रीव्यू सक्रिय है",
+  },
   today: "आज",
   yesterday: "कल",
   tomorrow: "कल",
@@ -1054,8 +1066,62 @@ const locale = {
     viewExistingReceipts: "मौजूदा रसीदें देखें (%{count})",
     viewReceiptsFor: "%{description} के लिए रसीदें देखें",
     expenseActionsFor: "%{description} के लिए खर्चे के कार्य",
+    receiptPreview: "रसीद पूर्वावलोकन",
+    reviewUploadedReceipts:
+      "इस खर्च के लिए अपलोड की गई रसीदों की समीक्षा करें।",
     customCategory: "अनुकूलित श्रेणी",
     enterCustomCategory: "कस्टम श्रेणी दर्ज करें",
+  },
+  importModal: {
+    importTitle: "%{title} आयात करें",
+    uploadFile: "फ़ाइल अपलोड करें",
+    supportedFormats: "समर्थित फ़ाइल प्रारूप: .xls, .xlsx, .csv",
+    reviewMappedFields:
+      "हमने फ़ाइल से निम्न स्तंभ पहचाने हैं और उन्हें आवश्यक फ़ील्ड्स से मैप किया है। कृपया समीक्षा करके पुष्टि करें।",
+    startImport: "आयात शुरू करें",
+    importingEntries: "%{count} समय प्रविष्टियाँ आयात की जा रही हैं",
+    backgroundImportNotice:
+      "इसे पूरा होने में कुछ समय लग सकता है। यदि आप यह विंडो बंद भी कर दें, तो भी आयात पृष्ठभूमि में जारी रहेगा और पूरा होने पर आपको ईमेल भेजा जाएगा।",
+    closeWindow: "विंडो बंद करें",
+    importComplete: "आयात पूर्ण हुआ!",
+    importSummary: "आयात सारांश",
+    totalTimeEntries: "कुल समय प्रविष्टियाँ",
+    successfullyImported: "सफलतापूर्वक आयातित",
+    failedToImport: "आयात विफल",
+    detailedLogSent: "हमने आपको ईमेल पर विस्तृत लॉग भेज दिया है।",
+    importAnotherFile: "एक और फ़ाइल आयात करें",
+    mapFields: "फ़ील्ड मैप करें",
+    import: "आयात",
+  },
+  importCatalog: {
+    subtitle: "अपना डेटा Miru में आयात करें",
+    invoices: {
+      title: "इनवॉइस",
+      description:
+        "अपने पिछले इनवॉइसिंग टूल या सॉफ़्टवेयर से पुराना इनवॉइस डेटा आयात करें",
+      fields: {
+        invoiceNumber: "इनवॉइस नंबर",
+        clientName: "क्लाइंट का नाम",
+        issueDate: "जारी करने की तिथि",
+        dueDate: "देय तिथि",
+        amount: "राशि",
+        status: "स्थिति",
+      },
+    },
+    timeEntries: {
+      title: "समय प्रविष्टियाँ",
+      description:
+        "अपने पिछले समय ट्रैकिंग टूल या सॉफ़्टवेयर से पुरानी समय प्रविष्टियाँ आयात करें",
+      fields: {
+        employeeName: "कर्मचारी का नाम",
+        date: "तिथि",
+        hours: "घंटे",
+        status: "स्थिति",
+        client: "क्लाइंट",
+        project: "प्रोजेक्ट",
+        description: "विवरण",
+      },
+    },
   },
   settings: {
     settings: "सेटिंग्स",
@@ -1667,6 +1733,8 @@ const locale = {
     disconnectDialogTitle: "Stripe खाता डिस्कनेक्ट करें",
     disconnectDialogDescription:
       "क्या आप वाकई अपना Stripe खाता डिस्कनेक्ट करना चाहते हैं? दोबारा कनेक्ट करने तक आप Stripe के माध्यम से भुगतान स्वीकार नहीं कर पाएंगे।",
+    disconnectPaymentModeDescription:
+      "क्या आप वाकई %{paymentMode} भुगतान गेटवे डिस्कनेक्ट करना चाहते हैं? जब तक आप %{paymentMode} खाता दोबारा कनेक्ट नहीं करते, तब तक आप %{paymentMode} के माध्यम से भुगतान प्राप्त नहीं कर पाएंगे।",
     features: {
       secureTitle: "सुरक्षित भुगतान",
       secureDescription: "PCI-अनुपालक भुगतान प्रसंस्करण",

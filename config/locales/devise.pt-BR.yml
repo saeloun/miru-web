@@ -3,6 +3,12 @@ pt-BR:
   devise:
     confirmations:
       confirmed: Seu endereço de e-mail foi confirmado com sucesso.
+      new:
+        description: Seu link de confirmação expirou ou é inválido. Solicite um novo.
+        remember_password: Lembra-se da sua senha?
+        resend: Reenviar e-mail de confirmação
+        sign_in: Entrar
+        title: Confirmação por e-mail necessária
       send_instructions: Você receberá um e-mail com instruções sobre como confirmar
         seu endereço de e-mail em alguns minutos.
       send_paranoid_instructions: Se o seu endereço de e-mail estiver em nosso banco
@@ -66,6 +72,9 @@ pt-BR:
       signed_in: Login efetuado com sucesso.
       signed_out: Sessão encerrada com sucesso.
     unlocks:
+      new:
+        submit: Reenviar instruções de desbloqueio
+        title: Reenviar instruções de desbloqueio
       send_instructions: Você receberá um e-mail com instruções sobre como desbloquear
         sua conta em alguns minutos.
       send_paranoid_instructions: Se a sua conta existir, você receberá um e-mail

@@ -1,5 +1,49 @@
 ---
 hi:
+  analytics:
+    activity:
+      amount_collected: एकत्रित राशि
+      bank_transfers_month: बैंक हस्तांतरण (माह)
+      created: बनाया था
+      downloaded: डाउनलोड
+      invoice_activity_today: आज की इनवॉइस गतिविधि
+      payment_activity: भुगतान गतिविधि
+      payments_today: आज भुगतान करें
+      sent: भेजा
+      stripe_payments_month: स्ट्राइप भुगतान (माह)
+      viewed: देखा गया
+    currency:
+      conversion_impact: रूपांतरण प्रभाव
+      currencies_in_use: प्रचलन में मुद्राएँ
+      invoices_with_conversion: रूपांतरण सहित चालान
+      recent_exchange_rates: हाल की विनिमय दरें
+      table:
+        date: तारीख
+        from: से
+        rate: दर
+        source: स्रोत
+        to: को
+      title: मुद्रा रूपांतरण संबंधी जानकारी
+    overview:
+      active_clients: सक्रिय ग्राहक
+      outstanding: असाधारण
+      overdue: अतिदेय
+      total_revenue: कुल मुनाफा
+    recent_activity:
+      ago: "%{time} पहले"
+      invoice_reference: चालान
+      system: प्रणाली
+      title: हाल की गतिविधि
+    super_admin: सुपर एडमिन
+    tabs:
+      activity: गतिविधि
+      clients: ग्राहकों
+      currency_exchange: मुद्रा विनिमय
+      overview: अवलोकन
+      revenue: आय
+      users: उपयोगकर्ताओं
+    title: एनालिटिक्स डैशबोर्ड
+    welcome: स्वागत है, %{name}
   app:
     name: मिरू एजेंसी ओएस
     tagline: अपनी एजेंसी के संचालन को एक ही कमांड सेंटर से प्रबंधित करें।
@@ -171,6 +215,82 @@ hi:
         summary_html: हमें चालान <strong>%{invoice_number}</strong> के लिए <strong>%{paid_on}</strong>
           को <strong>%{amount}</strong> प्राप्त हुआ।
         title: भुगतान रसीद
+    devise:
+      confirmation:
+        body_intro: 'आप लगभग तैयार हैं। पहले दिन से ही आप मीरू के साथ ये कुछ चीजें
+          कर सकते हैं:'
+        cta: ईमेल पते की पुष्टि करें
+        cta_body: अपना ईमेल पता सत्यापित करने के लिए नीचे दिए गए बटन का उपयोग करें।
+        eyebrow: खाता सेटअप
+        feature_1: होस्टेड पेमेंट लिंक के साथ प्रोफेशनल इनवॉइस भेजें।
+        feature_2: एक ही वर्कफ़्लो में समय, खर्च और उपयोग को ट्रैक करें।
+        feature_3: एक ही कार्यक्षेत्र से अपनी टीम, ग्राहकों और बिलिंग का प्रबंधन करें।
+        feature_4: राजस्व, बकाया बिल और भुगतान संबंधी गतिविधियों पर नजर रखें।
+        footer_note: यदि आपने मिरू खाता नहीं बनाया है, तो आप इस संदेश को निःसंकोच
+          अनदेखा कर सकते हैं।
+        greeting_html: हाय <strong>%{name}</strong> ,
+        preheader: Miru को सेटअप करने की प्रक्रिया पूरी करने के लिए अपना ईमेल पता
+          सत्यापित करें।
+        subtitle: समय ट्रैक करने, चालान भेजने और अपनी टीम को एक ही स्थान से प्रबंधित
+          करने के लिए अपना ईमेल पता सत्यापित करें।
+        title: मिरू में आपका स्वागत है
+      email_changed:
+        changed_html: आपके खाते का ईमेल <strong>%{email}</strong> में बदल दिया गया
+          है।
+        eyebrow: खाता सुरक्षा
+        greeting_html: नमस्ते <strong>%{email}</strong> ,
+        pending_html: आपके खाते का ईमेल <strong>%{email}</strong> में बदला जा रहा
+          है।
+        preheader: आपका मिरू ईमेल पता बदल गया है।
+        subtitle: यह संदेश आपके मिरू खाते में ईमेल पते में हुए बदलाव की पुष्टि करता
+          है।
+        title: ईमेल पता अपडेट किया गया
+        warning_body_html: कृपया <a href="mailto:%{email}">%{email}</a> पर हमारी सहायता
+          टीम से तुरंत संपर्क करें।
+        warning_title: क्या आपने इस बदलाव का अनुरोध नहीं किया था?
+      password_change:
+        eyebrow: खाता सुरक्षा
+        greeting_html: नमस्ते <strong>%{name}</strong> ,
+        preheader: आपका मिरू पासवर्ड बदल दिया गया है।
+        subtitle: आपके मिरू खाते का पासवर्ड सफलतापूर्वक अपडेट कर दिया गया है।
+        success_body: आप अपने नए पासवर्ड का उपयोग करके मिरू में साइन इन करना जारी
+          रख सकते हैं।
+        success_title: आपका पासवर्ड अपडेट कर दिया गया है।
+        title: पासवर्ड सफलतापूर्वक बदला गया
+        warning_body_html: अपने खाते को सुरक्षित करने में सहायता के लिए तुरंत <a href="mailto:%{email}">%{email}
+          से</a> संपर्क करें।
+        warning_title: क्या आपने यह बदलाव नहीं किया?
+      reset_password:
+        cta: पासवर्ड रीसेट
+        cta_body: नया पासवर्ड चुनने के लिए नीचे दिए गए बटन का उपयोग करें। यह रीसेट
+          लिंक 24 घंटों में समाप्त हो जाएगा।
+        eyebrow: खाता सुरक्षा
+        footer_note: यदि आपने पासवर्ड रीसेट करने का अनुरोध नहीं किया है, तो आप इस
+          संदेश को अनदेखा कर सकते हैं और आपका पासवर्ड वही रहेगा।
+        greeting: नमस्ते,
+        preheader: अपने मिरू खाते का पासवर्ड रीसेट करें।
+        request_html: हमें <strong>%{email}</strong> से जुड़े पासवर्ड को बदलने का
+          अनुरोध प्राप्त हुआ है।
+        subtitle: हमें आपके मिरू खाते का पासवर्ड रीसेट करने का अनुरोध प्राप्त हुआ
+          है।
+        title: अपना पासवर्ड रीसेट करें
+      shared:
+        signature_html: धन्यवाद,<br> <strong>टीम मिरू</strong>
+      unlock:
+        cta: पासवर्ड रीसेट
+        eyebrow: खाता सुरक्षा
+        footer_note: यदि आपने लॉग इन करने का प्रयास नहीं किया है, तो लॉक की अवधि समाप्त
+          होने की प्रतीक्षा करें और तुरंत अपना पासवर्ड बदलें।
+        greeting_html: नमस्ते <strong>%{email}</strong> ,
+        preheader: बहुत बार लॉग इन करने में असफल होने के बाद अपना मिरू खाता अनलॉक
+          करें।
+        subtitle: बहुत बार लॉग इन करने का प्रयास विफल होने के बाद हमने आपका मिरू खाता
+          लॉक कर दिया है।
+        title: आपका खाता अस्थायी रूप से बंद कर दिया है
+        warning_body: मिरू 30 मिनट के बाद खातों को स्वचालित रूप से अनलॉक कर देता है।
+          यदि आप इन प्रयासों को नहीं पहचानते हैं, तो अपना पासवर्ड रीसेट कर लें ताकि
+          लॉक समाप्त होने के बाद आपका खाता सुरक्षित रहे।
+        warning_title: लॉग इन करने के प्रयास अनुमत सीमा से अधिक हो गए।
     expense_mailer:
       approved:
         eyebrow: खर्च
@@ -330,6 +450,46 @@ hi:
         subtitle: "%{company_name} के लिए आपकी समय प्रविष्टियाँ अभी भी अपेक्षित साप्ताहिक
           कुल से कम हैं।"
         title: अपनी टाइमशीट पूरी करें
+    subscription:
+      plan_purchased:
+        badge: चा चिंग
+        billing_interval: बिलिंग अंतराल
+        billing_settings_html: 'बिलिंग सेटिंग्स: <a href="%{url}" style="color: #111827;">%{url}</a>'
+        company: कंपनी
+        cta: बिलिंग सेटिंग खोलें
+        image_label: नई सशुल्क योजना
+        image_text: नया सशुल्क कार्यक्षेत्र
+        plan: योजना
+        stripe_subscription: स्ट्राइप सदस्यता
+        subtitle: Miru पर नया सशुल्क कार्यक्षेत्र उपलब्ध है। बिलिंग शुरू हो गई है।
+        team_seats: टीम सीटें
+        title: "%{company} ने अभी %{plan} खरीदा है"
+      plan_purchased_text:
+        billing_interval: 'बिलिंग अंतराल: %{interval}'
+        billing_settings: 'बिलिंग सेटिंग खोलें: %{url}'
+        company: 'कंपनी: %{company}'
+        plan: 'योजना: %{plan}'
+        stripe_subscription: 'स्ट्राइप सदस्यता: %{id}'
+        team_seats: 'टीम सीटें: %{seats}'
+      trial_started:
+        body_html: "<strong>%{company}</strong> के लिए आपका 30-दिवसीय मिरू प्रो ट्रायल
+          अब सक्रिय हो गया है।"
+        cta: ओपन बिलिंग
+        eyebrow: बिलिंग
+        footer_body: आप अपनी बिलिंग सेटिंग से बिलिंग की समीक्षा कर सकते हैं, प्लान
+          की तुलना कर सकते हैं और किसी भी समय अपग्रेड कर सकते हैं।
+        greeting_html: नमस्ते <strong>%{name}</strong> ,
+        preheader: आपका मिरू प्रो ट्रायल अब सक्रिय हो गया है।
+        subtitle: अपने 30-दिवसीय परीक्षण के दौरान बिलिंग, रिपोर्ट और प्रो वर्कफ़्लो
+          के बाकी हिस्सों का अन्वेषण करें।
+        title: आपका मिरू प्रो ट्रायल शुरू हो गया है।
+        trial_ends: मुकदमा समाप्त
+      trial_started_text:
+        body: "%{company} के लिए आपका 30-दिवसीय मिरू प्रो ट्रायल अब सक्रिय हो गया
+          है।"
+        greeting: नमस्ते %{name},
+        review_billing: "%{url} पर बिलिंग की समीक्षा करें।"
+        trial_ends: परीक्षण %{date} को समाप्त होता है।
     user_invitation_mailer:
       send_user_invitation:
         about_body: मिरू समय, बिल, भुगतान और दिन-प्रतिदिन के संचालन को एक ही कार्यक्षेत्र
@@ -378,6 +538,74 @@ hi:
       success: आपका पासवर्ड रीसेट करने के निर्देश आपके ईमेल पर भेज दिए गए हैं।
     update:
       success: आपका पासवर्ड बदला जा चुका है।
+  pdfs:
+    accounts_aging:
+      client: ग्राहक
+      title: खातों की आयु सीमा रिपोर्ट
+      total: कुल
+    client_revenues:
+      client: ग्राहक
+      outstanding_amount: बकाया राशि
+      overdue_amount: बकाया राशि
+      paid_amount: चुकाई गई राशि
+      title: ग्राहक राजस्व रिपोर्ट
+      total_revenue: कुल मुनाफा
+    invoices:
+      amount_due: देय राशि
+      amount_paid: राशि का भुगतान
+      billed_to: बिल किया गया
+      client_invoice: ग्राहक चालान
+      discount: छूट
+      due: 'देय तिथि: %{due_date}'
+      invoice_number: चालान संख्या
+      issue_date: जारी करने की तिथि
+      paid: 'भुगतान किया गया: %{amount}'
+      payment_details: भुगतान विवरण
+      payment_rows:
+        account_number: खाता संख्या
+        bank_name: बैंक का नाम
+        gst_number: जीएसटी नंबर
+        routing_number: राउटिंग नम्बर
+        swift_code: स्विफ्ट कोड
+        tax_id: टैक्स आईडी
+        vat_number: वैट संख्या
+      prepared_by: "%{company_name} द्वारा तैयार, %{issue_date} को जारी, %{due_date}
+        को देय।"
+      reference: 'संदर्भ: %{reference}'
+      sub_total: उप-योग
+      table:
+        date: तारीख
+        description: विवरण
+        line_total: पंक्ति योग
+        name: नाम
+        qty: मात्रा
+        rate: दर
+      tax: कर
+      title: चालान
+      total: कुल
+      total_invoice_amount: कुल बिल राशि
+      work_summary: कार्य सारांश
+    outstanding_overdue_invoices:
+      amount: मात्रा
+      client: ग्राहक
+      due_date: नियत तारीख
+      invoice_number: चालान नंबर
+      issue_date: जारी करने की तिथि
+      no_clients_found: कोई ग्राहक नहीं मिला
+      outstanding_amount: बकाया राशि
+      overdue_amount: बकाया राशि
+      status: स्थिति
+      title: बकाया और समय सीमा से अधिक देय बिलों की रिपोर्ट
+      total_amounts: कुल राशि
+      total_invoice_amount: कुल बिल राशि
+    time_entries:
+      client: ग्राहक
+      date: तारीख
+      hours_logged: घंटे लॉग किए गए
+      note: टिप्पणी
+      project: परियोजना
+      team_member: टीम के सदस्य
+      title: समय प्रविष्टि रिपोर्ट
   projects:
     add_new_project: नया प्रोजेक्ट जोड़ें
     add_project: प्रोजेक्ट जोड़ें

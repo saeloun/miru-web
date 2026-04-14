@@ -1,5 +1,49 @@
 ---
 de:
+  analytics:
+    activity:
+      amount_collected: Eingezogener Betrag
+      bank_transfers_month: Banküberweisungen (Monat)
+      created: Erstellt
+      downloaded: Heruntergeladen
+      invoice_activity_today: Rechnungsaktivitäten heute
+      payment_activity: Zahlungsaktivität
+      payments_today: Zahlungen heute
+      sent: Gesendet
+      stripe_payments_month: Stripe-Zahlungen (Monat)
+      viewed: Angesehen
+    currency:
+      conversion_impact: Konversionsauswirkung
+      currencies_in_use: Währungen im Gebrauch
+      invoices_with_conversion: Rechnungen mit Konvertierung
+      recent_exchange_rates: Aktuelle Wechselkurse
+      table:
+        date: Datum
+        from: Aus
+        rate: Rate
+        source: Quelle
+        to: Zu
+      title: Einblicke in die Währungsumrechnung
+    overview:
+      active_clients: Aktive Kunden
+      outstanding: Hervorragend
+      overdue: Überfällig
+      total_revenue: Gesamtertrag
+    recent_activity:
+      ago: "%{time} Jahre alt"
+      invoice_reference: Rechnung
+      system: System
+      title: Aktuelle Aktivitäten
+    super_admin: Super-Admin
+    tabs:
+      activity: Aktivität
+      clients: Kunden
+      currency_exchange: Währungen & Wechselkurse
+      overview: Überblick
+      revenue: Einnahmen
+      users: Benutzer
+    title: Analyse-Dashboard
+    welcome: Willkommen, %{name}
   app:
     name: Miru Agency OS
     tagline: Steuern Sie die Einsätze Ihrer Behörde von einer zentralen Kommandozentrale
@@ -173,6 +217,84 @@ de:
         summary_html: Wir haben am <strong>%{paid_on}</strong> <strong>den Betrag
           %{amount}</strong> für die Rechnung <strong>%{invoice_number}</strong> erhalten.
         title: Zahlungsbeleg
+    devise:
+      confirmation:
+        body_intro: 'Du bist fast startklar. Hier sind ein paar Dinge, die du mit
+          Miru vom ersten Tag an machen kannst:'
+        cta: E-Mail-Adresse bestätigen
+        cta_body: Bitte verwenden Sie die Schaltfläche unten, um Ihre E-Mail-Adresse
+          zu bestätigen.
+        eyebrow: Kontoeinrichtung
+        feature_1: Versenden Sie professionelle Rechnungen mit integrierten Zahlungslinks.
+        feature_2: Zeitaufwand, Kosten und Auslastung in einem einzigen Workflow erfassen.
+        feature_3: Verwalten Sie Ihr Team, Ihre Kunden und Ihre Abrechnung über einen
+          einzigen Arbeitsbereich.
+        feature_4: Behalten Sie den Überblick über Einnahmen, überfällige Rechnungen
+          und Zahlungsvorgänge.
+        footer_note: Wenn Sie kein Miru-Konto erstellt haben, können Sie diese Nachricht
+          getrost ignorieren.
+        greeting_html: Hallo <strong>%{name}</strong> ,
+        preheader: Bestätigen Sie Ihre E-Mail-Adresse, um die Einrichtung von Miru
+          abzuschließen.
+        subtitle: Bestätigen Sie Ihre E-Mail-Adresse, um Arbeitszeiten zu erfassen,
+          Rechnungen zu versenden und Ihr Team von einem zentralen Ort aus zu verwalten.
+        title: Willkommen bei Miru
+      email_changed:
+        changed_html: Die E-Mail-Adresse Ihres Kontos wurde auf <strong>%{email}</strong>
+          geändert.
+        eyebrow: Kontosicherheit
+        greeting_html: Hallo <strong>%{email}</strong> ,
+        pending_html: Die E-Mail-Adresse Ihres Kontos wird auf <strong>%{email}</strong>
+          geändert.
+        preheader: Ihre Miru-E-Mail-Adresse hat sich geändert.
+        subtitle: Diese Nachricht bestätigt eine Änderung der E-Mail-Adresse in Ihrem
+          Miru-Konto.
+        title: E-Mail-Adresse aktualisiert
+        warning_body_html: Kontaktieren Sie umgehend unser Support-Team unter <a href="mailto:%{email}">%{email}</a>
+          .
+        warning_title: Haben Sie diese Änderung nicht beantragt?
+      password_change:
+        eyebrow: Kontosicherheit
+        greeting_html: Hallo <strong>%{name}</strong> ,
+        preheader: Ihr Miru-Passwort wurde geändert.
+        subtitle: Ihr Miru-Kontopasswort wurde erfolgreich aktualisiert.
+        success_body: Sie können sich weiterhin mit Ihrem neuen Passwort bei Miru
+          anmelden.
+        success_title: Ihr Passwort wurde aktualisiert.
+        title: Passwort erfolgreich geändert
+        warning_body_html: Kontaktieren Sie <a href="mailto:%{email}">%{email}</a>
+          umgehend, damit wir Ihnen bei der Sicherung Ihres Kontos helfen können.
+        warning_title: Haben Sie diese Änderung nicht vorgenommen?
+      reset_password:
+        cta: Passwort zurücksetzen
+        cta_body: Klicken Sie unten, um ein neues Passwort zu wählen. Dieser Link
+          zum Zurücksetzen des Passworts ist 24 Stunden gültig.
+        eyebrow: Kontosicherheit
+        footer_note: Wenn Sie keine Passwortzurücksetzung angefordert haben, können
+          Sie diese Nachricht ignorieren und Ihr Passwort bleibt unverändert.
+        greeting: Hallo,
+        preheader: Setzen Sie das Passwort für Ihr Miru-Konto zurück.
+        request_html: Wir haben eine Anfrage zur Änderung des Passworts für <strong>%{email}</strong>
+          erhalten.
+        subtitle: Wir haben eine Anfrage zum Zurücksetzen des Passworts für Ihr Miru-Konto
+          erhalten.
+        title: Setzen Sie Ihr Passwort zurück
+      shared:
+        signature_html: Danke,<br> <strong>Team Miru</strong>
+      unlock:
+        cta: Passwort zurücksetzen
+        eyebrow: Kontosicherheit
+        footer_note: Falls Sie sich nicht anmelden konnten, warten Sie, bis die Sperre
+          abgelaufen ist, und ändern Sie Ihr Passwort umgehend.
+        greeting_html: Hallo <strong>%{email}</strong> ,
+        preheader: Entsperren Sie Ihr Miru-Konto nach zu vielen fehlgeschlagenen Anmeldeversuchen.
+        subtitle: Wir haben Ihr Miru-Konto nach zu vielen erfolglosen Anmeldeversuchen
+          gesperrt.
+        title: Ihr Konto ist vorübergehend gesperrt.
+        warning_body: Miru entsperrt Konten automatisch nach 30 Minuten. Sollten Sie
+          diese Entsperrversuche nicht erkennen, setzen Sie Ihr Passwort zurück, damit
+          Ihr Konto nach Ablauf der Sperre wieder sicher ist.
+        warning_title: Die zulässige Anzahl an Anmeldeversuchen wurde überschritten.
     expense_mailer:
       approved:
         eyebrow: Kosten
@@ -332,6 +454,47 @@ de:
         subtitle: Ihre Zeiteinträge für %{company_name} liegen noch unter dem erwarteten
           Wochengesamtwert.
         title: Füllen Sie Ihren Stundenzettel aus.
+    subscription:
+      plan_purchased:
+        badge: Cha-ching
+        billing_interval: Abrechnungsintervall
+        billing_settings_html: 'Abrechnungseinstellungen: <a href="%{url}" style="color:
+          #111827;">%{url}</a>'
+        company: Unternehmen
+        cta: Abrechnungseinstellungen öffnen
+        image_label: Neuer kostenpflichtiger Tarif
+        image_text: Neuer kostenpflichtiger Arbeitsbereich
+        plan: Planen
+        stripe_subscription: Stripe-Abonnement
+        subtitle: Neuer kostenpflichtiger Arbeitsbereich auf Miru. Die Abrechnung
+          ist aktiv.
+        team_seats: Teamplätze
+        title: "%{company} hat gerade %{plan} gekauft"
+      plan_purchased_text:
+        billing_interval: 'Abrechnungsintervall: %{interval}'
+        billing_settings: 'Einstellungen für die offene Abrechnung: %{url}'
+        company: 'Firma: %{company}'
+        plan: 'Plan: %{plan}'
+        stripe_subscription: 'Stripe-Abonnement: %{id}'
+        team_seats: 'Teamplätze: %{seats}'
+      trial_started:
+        body_html: Ihre 30-tägige Miru Pro-Testversion für <strong>%{company}</strong>
+          ist jetzt aktiv.
+        cta: Offene Abrechnung
+        eyebrow: Abrechnung
+        footer_body: In Ihren Abrechnungseinstellungen können Sie jederzeit Ihre Rechnungen
+          einsehen, Tarife vergleichen und ein Upgrade durchführen.
+        greeting_html: Hallo <strong>%{name}</strong> ,
+        preheader: Ihre Miru Pro-Testversion ist jetzt aktiv.
+        subtitle: Erkunden Sie während Ihrer 30-tägigen Testphase die Abrechnung,
+          Berichte und den restlichen Pro-Workflow.
+        title: Ihre Miru Pro-Testversion ist aktiv.
+        trial_ends: Prozess endet
+      trial_started_text:
+        body: Ihre 30-tägige Miru Pro-Testversion für %{company} ist jetzt aktiv.
+        greeting: Hallo %{name},
+        review_billing: Rechnung unter %{url} prüfen.
+        trial_ends: Der Prozess endet am %{date}.
     user_invitation_mailer:
       send_user_invitation:
         about_body: Miru vereint Zeiterfassung, Rechnungen, Zahlungen und das Tagesgeschäft
@@ -383,6 +546,74 @@ de:
         zugesandt.
     update:
       success: Ihr Passwort wurde aktualisiert.
+  pdfs:
+    accounts_aging:
+      client: Kunde
+      title: Bericht über die Altersstruktur der Forderungen
+      total: Gesamt
+    client_revenues:
+      client: Kunde
+      outstanding_amount: Ausstehender Betrag
+      overdue_amount: Überfälliger Betrag
+      paid_amount: Bezahlter Betrag
+      title: Kundenumsatzbericht
+      total_revenue: Gesamtertrag
+    invoices:
+      amount_due: Fälliger Betrag
+      amount_paid: Gezahlter Betrag
+      billed_to: Rechnung an
+      client_invoice: Kundenrechnung
+      discount: Rabatt
+      due: 'Fällig: %{due_date}'
+      invoice_number: Rechnungsnummer
+      issue_date: Ausgabedatum
+      paid: 'Bezahlt: %{amount}'
+      payment_details: Zahlungsdetails
+      payment_rows:
+        account_number: Kontonummer
+        bank_name: Name der Bank
+        gst_number: GST-Nummer
+        routing_number: Routingnummer
+        swift_code: SWIFT-Code
+        tax_id: Steuer-ID
+        vat_number: Umsatzsteuer-Identifikationsnummer
+      prepared_by: Erstellt von %{company_name}, herausgegeben von %{issue_date},
+        fällig von %{due_date}.
+      reference: 'Referenz: %{reference}'
+      sub_total: Zwischensumme
+      table:
+        date: Datum
+        description: Beschreibung
+        line_total: Zeilensumme
+        name: Name
+        qty: Menge
+        rate: Rate
+      tax: Steuer
+      title: Rechnung
+      total: Gesamt
+      total_invoice_amount: Gesamtbetrag der Rechnung
+      work_summary: Arbeitszusammenfassung
+    outstanding_overdue_invoices:
+      amount: Menge
+      client: Kunde
+      due_date: Fälligkeitsdatum
+      invoice_number: Rechnungsnummer
+      issue_date: Ausgabedatum
+      no_clients_found: Keine Kunden gefunden
+      outstanding_amount: Ausstehender Betrag
+      overdue_amount: Überfälliger Betrag
+      status: Status
+      title: Bericht über offene und überfällige Rechnungen
+      total_amounts: Gesamtbeträge
+      total_invoice_amount: Gesamtbetrag der Rechnung
+    time_entries:
+      client: Kunde
+      date: Datum
+      hours_logged: Protokollierte Stunden
+      note: Notiz
+      project: Projekt
+      team_member: Teammitglied
+      title: Zeiterfassungsbericht
   projects:
     add_new_project: Neues Projekt hinzufügen
     add_project: Projekt hinzufügen

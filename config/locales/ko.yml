@@ -1,5 +1,49 @@
 ---
 ko:
+  analytics:
+    activity:
+      amount_collected: 모금된 금액
+      bank_transfers_month: 은행 송금 (월별)
+      created: 생성됨
+      downloaded: 다운로드됨
+      invoice_activity_today: 오늘의 송장 처리 내역
+      payment_activity: 결제 활동
+      payments_today: 오늘의 결제
+      sent: 전송된
+      stripe_payments_month: Stripe 결제 (월별)
+      viewed: 조회됨
+    currency:
+      conversion_impact: 전환 영향
+      currencies_in_use: 사용되는 통화
+      invoices_with_conversion: 변환 기능이 있는 송장
+      recent_exchange_rates: 최근 환율
+      table:
+        date: 날짜
+        from: 에서
+        rate: 비율
+        source: 원천
+        to: 에게
+      title: 환율 변환 분석
+    overview:
+      active_clients: 활성 고객
+      outstanding: 뛰어난
+      overdue: 기한 초과
+      total_revenue: 총 수익
+    recent_activity:
+      ago: "%{time} 전"
+      invoice_reference: 송장
+      system: 체계
+      title: 최근 활동
+    super_admin: 슈퍼 관리자
+    tabs:
+      activity: 활동
+      clients: 고객들
+      currency_exchange: 통화 및 환전
+      overview: 개요
+      revenue: 수익
+      users: 사용자
+    title: 분석 대시보드
+    welcome: 환영합니다, %{name}님.
   app:
     name: 미루 에이전시 OS
     tagline: 기관의 모든 운영을 하나의 지휘 센터에서 관리하세요.
@@ -168,6 +212,66 @@ ko:
         summary_html: 저희는 <strong>%{invoice_number}</strong> 송장에 대해 <strong>%{paid_on}</strong>
           일에 <strong>%{amount}을</strong> 수령했습니다.
         title: 지불 영수증
+    devise:
+      confirmation:
+        body_intro: 거의 다 됐어요. 첫날부터 Miru로 할 수 있는 몇 가지 활동을 알려드릴게요.
+        cta: 이메일 주소를 확인하세요
+        cta_body: 아래 버튼을 사용하여 이메일 주소를 확인하세요.
+        eyebrow: 계정 설정
+        feature_1: 호스팅된 결제 링크가 포함된 전문적인 청구서를 보내세요.
+        feature_2: 시간, 비용 및 활용도를 하나의 워크플로에서 추적하세요.
+        feature_3: 하나의 작업 공간에서 팀, 고객 및 청구를 관리하세요.
+        feature_4: 매출, 연체 청구서 및 지급 활동을 지속적으로 파악하세요.
+        footer_note: Miru 계정을 만들지 않으셨다면 이 메시지를 무시하셔도 됩니다.
+        greeting_html: 안녕하세요 <strong>%{name}님</strong> ,
+        preheader: Miru 설정을 완료하려면 이메일 주소를 확인하세요.
+        subtitle: 이메일 주소를 인증하시면 시간 기록, 송장 발송, 팀 관리 등을 한 곳에서 편리하게 이용하실 수 있습니다.
+        title: 미루에 오신 것을 환영합니다
+      email_changed:
+        changed_html: 회원님의 계정 이메일 주소가 <strong>%{email}</strong> 으로 변경되었습니다.
+        eyebrow: 계정 보안
+        greeting_html: 안녕하세요 <strong>%{email} 님</strong> ,
+        pending_html: 회원님의 계정 이메일 주소가 <strong>%{email}</strong> 으로 변경됩니다.
+        preheader: Miru 이메일 주소가 변경되었습니다.
+        subtitle: 이 메시지는 Miru 계정의 이메일 주소가 변경되었음을 확인하는 메시지입니다.
+        title: 이메일 주소가 업데이트되었습니다.
+        warning_body_html: <a href="mailto:%{email}">%{email}</a> 로 저희 지원팀에 즉시 연락해
+          주세요.
+        warning_title: 이 변경 사항을 요청하지 않으셨나요?
+      password_change:
+        eyebrow: 계정 보안
+        greeting_html: 안녕하세요 <strong>%{name} 님</strong> ,
+        preheader: Miru 비밀번호가 변경되었습니다.
+        subtitle: Miru 계정 비밀번호가 성공적으로 업데이트되었습니다.
+        success_body: 새 비밀번호를 사용하여 Miru에 계속 로그인할 수 있습니다.
+        success_title: 비밀번호가 업데이트되었습니다.
+        title: 비밀번호가 성공적으로 변경되었습니다.
+        warning_body_html: 계정 보안을 위해 <a href="mailto:%{email}">%{email}에</a> 즉시 연락해
+          주세요.
+        warning_title: 이 변경 사항을 적용하지 않으셨나요?
+      reset_password:
+        cta: 비밀번호 재설정
+        cta_body: 아래 버튼을 사용하여 새 비밀번호를 선택하세요. 이 비밀번호 재설정 링크는 24시간 후에 만료됩니다.
+        eyebrow: 계정 보안
+        footer_note: 비밀번호 재설정을 요청하지 않으셨다면 이 메시지를 무시하셔도 되며, 비밀번호는 그대로 유지됩니다.
+        greeting: 안녕하세요,
+        preheader: Miru 계정 비밀번호를 재설정하세요.
+        request_html: "<strong>%{email}</strong> 계정의 비밀번호 변경 요청을 받았습니다."
+        subtitle: 고객님의 Miru 계정 비밀번호 재설정 요청을 받았습니다.
+        title: 비밀번호를 재설정하세요
+      shared:
+        signature_html: 감사해요,<br> <strong>팀 미루</strong>
+      unlock:
+        cta: 비밀번호 재설정
+        eyebrow: 계정 보안
+        footer_note: 로그인 시도를 하지 않았다면, 잠금 해제 시간이 만료될 때까지 기다린 후 즉시 비밀번호를 변경하세요.
+        greeting_html: 안녕하세요 <strong>%{email} 님</strong> ,
+        preheader: 로그인 시도 횟수 초과 후 Miru 계정 잠금을 해제하세요.
+        subtitle: 로그인 시도 횟수가 너무 많아 Miru 계정이 잠겼습니다.
+        title: 회원님의 계정이 일시적으로 잠금 처리되었습니다.
+        warning_body: Miru는 30분 후 자동으로 계정 잠금을 해제합니다. 이러한 잠금 해제 시도를 인지하지 못하는 경우, 비밀번호를
+          재설정하여 잠금 해제 후 계정을 안전하게 보호하세요.
+        warning_title: 로그인 시도 횟수가 허용된 횟수를 초과했습니다.
     expense_mailer:
       approved:
         eyebrow: 경비
@@ -310,6 +414,42 @@ ko:
         subject: 지난주 Miru 근무 시간표를 작성하세요.
         subtitle: "%{company_name}에 대한 귀하의 시간 입력은 여전히 예상 주간 합계에 미치지 못합니다."
         title: 근무 시간표를 작성하세요
+    subscription:
+      plan_purchased:
+        badge: 차칭
+        billing_interval: 청구 기간
+        billing_settings_html: '청구 설정: <a href="%{url}" style="color: #111827;">%{url}</a>'
+        company: 회사
+        cta: 결제 설정 열기
+        image_label: 새로운 유료 플랜
+        image_text: 새로운 유료 작업 공간
+        plan: 계획
+        stripe_subscription: Stripe 구독
+        subtitle: Miru에 새로운 유료 워크스페이스가 추가되었습니다. 결제가 시작되었습니다.
+        team_seats: 팀 좌석
+        title: "%{company}님이 %{plan}님을 방금 구매했습니다."
+      plan_purchased_text:
+        billing_interval: '청구 간격: %{interval}'
+        billing_settings: '결제 설정 열기: %{url}'
+        company: '회사: %{company}'
+        plan: '계획: %{plan}'
+        stripe_subscription: 'Stripe 구독: %{id}'
+        team_seats: '팀 좌석 수: %{seats}'
+      trial_started:
+        body_html: "<strong>%{company}</strong> 에 대한 Miru Pro 30일 무료 체험이 시작되었습니다."
+        cta: 오픈빌딩
+        eyebrow: 청구
+        footer_body: 청구 설정에서 언제든지 청구 내역을 확인하고, 요금제를 비교하고, 업그레이드할 수 있습니다.
+        greeting_html: 안녕하세요 <strong>%{name} 님</strong> ,
+        preheader: Miru Pro 체험판이 활성화되었습니다.
+        subtitle: 30일 무료 체험 기간 동안 청구, 보고서 및 기타 Pro 워크플로를 살펴보세요.
+        title: Miru Pro 체험판이 시작되었습니다.
+        trial_ends: 재판 종료
+      trial_started_text:
+        body: "%{company}에 대한 Miru Pro 30일 무료 체험이 시작되었습니다."
+        greeting: 안녕하세요 %{name}님,
+        review_billing: "%{url}에서 청구 내역을 검토하세요."
+        trial_ends: 재판은 %{date}에 종료됩니다.
     user_invitation_mailer:
       send_user_invitation:
         about_body: Miru는 시간 관리, 송장 관리, 결제 관리 및 일상적인 운영 업무를 하나의 작업 공간으로 통합합니다.
@@ -355,6 +495,73 @@ ko:
       success: 비밀번호 재설정 방법이 이메일로 발송되었습니다.
     update:
       success: 비밀번호가 업데이트되었습니다.
+  pdfs:
+    accounts_aging:
+      client: 고객
+      title: 미수금 보고서
+      total: 총
+    client_revenues:
+      client: 고객
+      outstanding_amount: 미지급 금액
+      overdue_amount: 연체 금액
+      paid_amount: 지불 금액
+      title: 고객 수익 보고서
+      total_revenue: 총 수익
+    invoices:
+      amount_due: 지불해야 할 금액
+      amount_paid: 지불 금액
+      billed_to: 청구 대상
+      client_invoice: 고객 청구서
+      discount: 할인
+      due: '마감일: %{due_date}'
+      invoice_number: 송장 번호
+      issue_date: 발행일
+      paid: '지불 완료: %{amount}'
+      payment_details: 결제 정보
+      payment_rows:
+        account_number: 계좌번호
+        bank_name: 은행명
+        gst_number: GST 번호
+        routing_number: 라우팅 번호
+        swift_code: SWIFT 코드
+        tax_id: 세금 ID
+        vat_number: 부가가치세 번호
+      prepared_by: '작성자: %{company_name}, 발행일: %{issue_date}, 제출 기한: %{due_date}.'
+      reference: '참고: %{reference}'
+      sub_total: 소계
+      table:
+        date: 날짜
+        description: 설명
+        line_total: 라인 합계
+        name: 이름
+        qty: 수량
+        rate: 비율
+      tax: 세
+      title: 송장
+      total: 총
+      total_invoice_amount: 총 청구 금액
+      work_summary: 업무 요약
+    outstanding_overdue_invoices:
+      amount: 양
+      client: 고객
+      due_date: 마감일
+      invoice_number: 송장 번호
+      issue_date: 발행일
+      no_clients_found: 고객을 찾을 수 없습니다.
+      outstanding_amount: 미지급 금액
+      overdue_amount: 연체 금액
+      status: 상태
+      title: 미지급 및 연체 청구서 보고서
+      total_amounts: 총액
+      total_invoice_amount: 총 청구 금액
+    time_entries:
+      client: 고객
+      date: 날짜
+      hours_logged: 기록된 시간
+      note: 메모
+      project: 프로젝트
+      team_member: 팀원
+      title: 시간 입력 보고서
   projects:
     add_new_project: 새 프로젝트 추가
     add_project: 프로젝트 추가

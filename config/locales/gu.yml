@@ -1,5 +1,49 @@
 ---
 gu:
+  analytics:
+    activity:
+      amount_collected: એકત્રિત રકમ
+      bank_transfers_month: બેંક ટ્રાન્સફર (મહિનો)
+      created: બનાવ્યું
+      downloaded: ડાઉનલોડ કરેલ
+      invoice_activity_today: આજની ઇન્વોઇસ પ્રવૃત્તિ
+      payment_activity: ચુકવણી પ્રવૃત્તિ
+      payments_today: આજે ચુકવણીઓ
+      sent: મોકલ્યું
+      stripe_payments_month: સ્ટ્રાઇપ ચુકવણીઓ (મહિનો)
+      viewed: જોયું
+    currency:
+      conversion_impact: રૂપાંતર અસર
+      currencies_in_use: ઉપયોગમાં લેવાતી ચલણો
+      invoices_with_conversion: રૂપાંતર સાથે ઇન્વોઇસ
+      recent_exchange_rates: તાજેતરના વિનિમય દરો
+      table:
+        date: તારીખ
+        from: પ્રતિ
+        rate: દર
+        source: સ્ત્રોત
+        to: પ્રતિ
+      title: ચલણ રૂપાંતર આંતરદૃષ્ટિ
+    overview:
+      active_clients: સક્રિય ગ્રાહકો
+      outstanding: ઉત્કૃષ્ટ
+      overdue: મુદતવીતી
+      total_revenue: કુલ આવક
+    recent_activity:
+      ago: "%{time} પહેલાં"
+      invoice_reference: બિલ
+      system: સિસ્ટમ
+      title: તાજેતરની પ્રવૃત્તિ
+    super_admin: સુપર એડમિન
+    tabs:
+      activity: પ્રવૃત્તિ
+      clients: ગ્રાહકો
+      currency_exchange: ચલણ અને વિનિમય
+      overview: ઝાંખી
+      revenue: આવક
+      users: વપરાશકર્તાઓ
+    title: એનાલિટિક્સ ડેશબોર્ડ
+    welcome: સ્વાગત છે, %{name}
   app:
     name: મીરુ એજન્સી ઓએસ
     tagline: એક કમાન્ડ સેન્ટરથી તમારી એજન્સીના ઓપરેશન્સ ચલાવો.
@@ -170,6 +214,80 @@ gu:
         summary_html: અમને <strong>%{paid_on}</strong> ના રોજ ઇન્વોઇસ <strong>%{invoice_number}</strong>
           માટે <strong>%{amount}</strong> મળ્યા.
         title: ચુકવણી રસીદ
+    devise:
+      confirmation:
+        body_intro: 'તમે લગભગ તૈયાર છો. પહેલા દિવસથી જ મીરુ સાથે તમે કરી શકો તેવી
+          કેટલીક વસ્તુઓ અહીં આપેલી છે:'
+        cta: ઇમેઇલ સરનામું કન્ફર્મ કરો
+        cta_body: તમારા ઇમેઇલ સરનામાંની પુષ્ટિ કરવા માટે નીચેના બટનનો ઉપયોગ કરો.
+        eyebrow: એકાઉન્ટ સેટઅપ
+        feature_1: હોસ્ટેડ પેમેન્ટ લિંક્સ સાથે વ્યાવસાયિક ઇન્વૉઇસ મોકલો.
+        feature_2: એક જ વર્કફ્લોમાં સમય, ખર્ચ અને ઉપયોગને ટ્રૅક કરો.
+        feature_3: એક જ કાર્યસ્થળમાંથી તમારી ટીમ, ક્લાયન્ટ્સ અને બિલિંગનું સંચાલન
+          કરો.
+        feature_4: આવક, મુદતવીતી ઇન્વોઇસ અને ચુકવણી પ્રવૃત્તિથી વાકેફ રહો.
+        footer_note: જો તમે મીરુ એકાઉન્ટ બનાવ્યું નથી, તો તમે આ સંદેશને સુરક્ષિત રીતે
+          અવગણી શકો છો.
+        greeting_html: હાય <strong>%{name}</strong> ,
+        preheader: મીરુ સેટઅપ પૂર્ણ કરવા માટે તમારા ઇમેઇલ સરનામાંની પુષ્ટિ કરો.
+        subtitle: સમય ટ્રેક કરવા, ઇન્વોઇસ મોકલવા અને તમારી ટીમને એક જ જગ્યાએથી મેનેજ
+          કરવા માટે તમારા ઇમેઇલ સરનામાંની પુષ્ટિ કરો.
+        title: મીરુમાં આપનું સ્વાગત છે
+      email_changed:
+        changed_html: તમારા એકાઉન્ટનું ઇમેઇલ સરનામું <strong>%{email}</strong> માં
+          બદલાઈ ગયું છે.
+        eyebrow: એકાઉન્ટ સુરક્ષા
+        greeting_html: હેલો <strong>%{email}</strong> ,
+        pending_html: તમારા એકાઉન્ટનું ઇમેઇલ સરનામું <strong>%{email}</strong> માં
+          બદલવામાં આવી રહ્યું છે.
+        preheader: તમારું મીરુ ઇમેઇલ સરનામું બદલાઈ ગયું છે.
+        subtitle: આ સંદેશ તમારા મીરુ એકાઉન્ટ પરના ઇમેઇલ સરનામાંમાં ફેરફારની પુષ્ટિ
+          કરે છે.
+        title: ઇમેઇલ સરનામું અપડેટ કર્યું
+        warning_body_html: <a href="mailto:%{email}">%{email}</a> પર તાત્કાલિક અમારી
+          સપોર્ટ ટીમનો સંપર્ક કરો.
+        warning_title: આ ફેરફારની વિનંતી નથી કરી?
+      password_change:
+        eyebrow: એકાઉન્ટ સુરક્ષા
+        greeting_html: હેલો <strong>%{name}</strong> ,
+        preheader: તમારો મીરુ પાસવર્ડ બદલાઈ ગયો છે.
+        subtitle: તમારા મીરુ એકાઉન્ટનો પાસવર્ડ સફળતાપૂર્વક અપડેટ થયો.
+        success_body: તમે તમારા નવા પાસવર્ડનો ઉપયોગ કરીને મીરુમાં સાઇન ઇન કરવાનું
+          ચાલુ રાખી શકો છો.
+        success_title: તમારો પાસવર્ડ અપડેટ કરવામાં આવ્યો હતો.
+        title: પાસવર્ડ સફળતાપૂર્વક બદલાયો
+        warning_body_html: તમારા એકાઉન્ટને સુરક્ષિત કરવામાં અમે મદદ કરી શકીએ તે માટે
+          તરત જ <a href="mailto:%{email}">%{email}</a> નો સંપર્ક કરો.
+        warning_title: આ ફેરફાર નથી કર્યો?
+      reset_password:
+        cta: પાસવર્ડ રીસેટ કરો
+        cta_body: નવો પાસવર્ડ પસંદ કરવા માટે નીચેના બટનનો ઉપયોગ કરો. આ રીસેટ લિંક
+          24 કલાકમાં સમાપ્ત થાય છે.
+        eyebrow: એકાઉન્ટ સુરક્ષા
+        footer_note: જો તમે પાસવર્ડ રીસેટની વિનંતી ન કરી હોય, તો તમે આ સંદેશને અવગણી
+          શકો છો અને તમારો પાસવર્ડ એનો એ જ રહેશે.
+        greeting: નમસ્તે,
+        preheader: તમારા મીરુ એકાઉન્ટનો પાસવર્ડ રીસેટ કરો.
+        request_html: અમને <strong>%{email}</strong> સાથે સંકળાયેલ પાસવર્ડ બદલવાની
+          વિનંતી મળી.
+        subtitle: અમને તમારા મીરુ એકાઉન્ટનો પાસવર્ડ રીસેટ કરવાની વિનંતી મળી છે.
+        title: તમારો પાસવર્ડ રીસેટ કરો
+      shared:
+        signature_html: આભાર,<br> <strong>ટીમ મીરુ</strong>
+      unlock:
+        cta: પાસવર્ડ રીસેટ કરો
+        eyebrow: એકાઉન્ટ સુરક્ષા
+        footer_note: જો તમે સાઇન ઇન કરવાનો પ્રયાસ ન કર્યો હોય, તો લોક સમાપ્ત થાય ત્યાં
+          સુધી રાહ જુઓ અને તરત જ તમારો પાસવર્ડ બદલો.
+        greeting_html: હેલો <strong>%{email}</strong> ,
+        preheader: ઘણા બધા નિષ્ફળ સાઇન-ઇન પ્રયાસો પછી તમારું મીરુ એકાઉન્ટ અનલૉક કરો.
+        subtitle: ઘણા બધા અસફળ સાઇન-ઇન પ્રયાસો પછી અમે તમારું મીરુ એકાઉન્ટ લૉક કરી
+          દીધું છે.
+        title: તમારું એકાઉન્ટ અસ્થાયી રૂપે લૉક થયેલ છે.
+        warning_body: મીરુ 30 મિનિટ પછી આપમેળે એકાઉન્ટ્સ અનલોક કરે છે. જો તમે આ પ્રયાસોને
+          ઓળખી શકતા નથી, તો તમારો પાસવર્ડ રીસેટ કરો જેથી લોક સમાપ્ત થયા પછી તમારું
+          એકાઉન્ટ સુરક્ષિત રહે.
+        warning_title: સાઇન-ઇન પ્રયાસો મંજૂર મર્યાદા ઓળંગી ગયા.
     expense_mailer:
       approved:
         eyebrow: ખર્ચ
@@ -325,6 +443,45 @@ gu:
         subtitle: "%{company_name} માટેના તમારા સમય દાખલાઓ હજી અપેક્ષિત સાપ્તાહિક
           કુલથી ઓછા છે."
         title: તમારો ટાઇમશીટ પૂર્ણ કરો
+    subscription:
+      plan_purchased:
+        badge: ચા-ચિંગ
+        billing_interval: બિલિંગ અંતરાલ
+        billing_settings_html: 'બિલિંગ સેટિંગ્સ: <a href="%{url}" style="color: #111827;">%{url}</a>'
+        company: કંપની
+        cta: બિલિંગ સેટિંગ્સ ખોલો
+        image_label: નવો પેઇડ પ્લાન
+        image_text: નવું પેઇડ વર્કસ્પેસ
+        plan: યોજના
+        stripe_subscription: સ્ટ્રાઇપ સબ્સ્ક્રિપ્શન
+        subtitle: મીરુ પર નવું પેઇડ વર્કસ્પેસ. બિલિંગ લાઇવ છે.
+        team_seats: ટીમ સીટ
+        title: "%{company} એ હમણાં જ %{plan} ખરીદ્યું"
+      plan_purchased_text:
+        billing_interval: 'બિલિંગ અંતરાલ: %{interval}'
+        billing_settings: 'બિલિંગ સેટિંગ્સ ખોલો: %{url}'
+        company: 'કંપની: %{company}'
+        plan: 'યોજના: %{plan}'
+        stripe_subscription: 'સ્ટ્રાઇપ સબ્સ્ક્રિપ્શન: %{id}'
+        team_seats: 'ટીમ સીટ: %{seats}'
+      trial_started:
+        body_html: "<strong>%{company}</strong> માટે તમારી 30-દિવસની Miru Pro ટ્રાયલ
+          હવે સક્રિય છે."
+        cta: બિલિંગ ખોલો
+        eyebrow: બિલિંગ
+        footer_body: તમે તમારી બિલિંગ સેટિંગ્સમાંથી કોઈપણ સમયે બિલિંગની સમીક્ષા કરી
+          શકો છો, યોજનાઓની તુલના કરી શકો છો અને અપગ્રેડ કરી શકો છો.
+        greeting_html: હેલો <strong>%{name}</strong> ,
+        preheader: તમારી મીરુ પ્રો ટ્રાયલ હવે સક્રિય છે.
+        subtitle: તમારા 30-દિવસના અજમાયશ દરમિયાન બિલિંગ, રિપોર્ટ્સ અને બાકીના પ્રો
+          વર્કફ્લોનું અન્વેષણ કરો.
+        title: તમારી મીરુ પ્રો ટ્રાયલ લાઇવ છે
+        trial_ends: અજમાયશ સમાપ્ત થાય છે
+      trial_started_text:
+        body: "%{company} માટે તમારી 30-દિવસની Miru Pro ટ્રાયલ હવે સક્રિય છે."
+        greeting: હેલો %{name},
+        review_billing: "%{url} પર બિલિંગની સમીક્ષા કરો."
+        trial_ends: ટ્રાયલ %{date} ના રોજ સમાપ્ત થાય છે.
     user_invitation_mailer:
       send_user_invitation:
         about_body: Miru સમય, ઇન્વોઇસ, ચુકવણીઓ અને દૈનિક કામગીરીને એક જ વર્કસ્પેસમાં
@@ -373,6 +530,74 @@ gu:
         છે.
     update:
       success: તમારો પાસવર્ડ અપડેટ કરવામાં આવ્યો છે.
+  pdfs:
+    accounts_aging:
+      client: ક્લાયન્ટ
+      title: એકાઉન્ટ્સ એજિંગ રિપોર્ટ
+      total: કુલ
+    client_revenues:
+      client: ક્લાયન્ટ
+      outstanding_amount: બાકી રકમ
+      overdue_amount: મુદતવીતી રકમ
+      paid_amount: ચૂકવેલ રકમ
+      title: ક્લાયન્ટ રેવન્યુ રિપોર્ટ
+      total_revenue: કુલ આવક
+    invoices:
+      amount_due: બાકી રકમ
+      amount_paid: ચૂકવેલ રકમ
+      billed_to: બિલ કરેલ
+      client_invoice: ક્લાયન્ટ ઇન્વોઇસ
+      discount: ડિસ્કાઉન્ટ
+      due: 'નિયત તારીખ: %{due_date}'
+      invoice_number: ઇન્વોઇસ નંબર
+      issue_date: ઇશ્યુ તારીખ
+      paid: 'ચૂકવેલ: %{amount}'
+      payment_details: ચુકવણી વિગતો
+      payment_rows:
+        account_number: એકાઉન્ટ નંબર
+        bank_name: બેંકનું નામ
+        gst_number: GST નંબર
+        routing_number: રૂટીંગ નંબર
+        swift_code: SWIFT કોડ
+        tax_id: ટેક્સ ID
+        vat_number: વેટ નંબર
+      prepared_by: "%{company_name} દ્વારા તૈયાર કરાયેલ, %{issue_date} જારી કરાયેલ,
+        %{due_date} ચૂકવવાની બાકી."
+      reference: 'સંદર્ભ: %{reference}'
+      sub_total: કુલ રકમ
+      table:
+        date: તારીખ
+        description: વર્ણન
+        line_total: કુલ લાઇન
+        name: નામ
+        qty: જથ્થો
+        rate: દર
+      tax: કર
+      title: ઇન્વોઇસ
+      total: કુલ
+      total_invoice_amount: કુલ ઇન્વોઇસ રકમ
+      work_summary: કાર્યનો સારાંશ
+    outstanding_overdue_invoices:
+      amount: રકમ
+      client: ક્લાયન્ટ
+      due_date: નિયત તારીખ
+      invoice_number: ઇન્વોઇસ નં.
+      issue_date: ઇશ્યુ તારીખ
+      no_clients_found: કોઈ ક્લાયન્ટ મળ્યા નથી
+      outstanding_amount: બાકી રકમ
+      overdue_amount: મુદતવીતી રકમ
+      status: સ્થિતિ
+      title: બાકી અને મુદતવીતી ઇન્વોઇસ રિપોર્ટ
+      total_amounts: કુલ રકમ
+      total_invoice_amount: કુલ ઇન્વોઇસ રકમ
+    time_entries:
+      client: ક્લાયન્ટ
+      date: તારીખ
+      hours_logged: લૉગ કરેલા કલાકો
+      note: નોંધ
+      project: પ્રોજેક્ટ
+      team_member: ટીમ સભ્ય
+      title: સમય પ્રવેશ અહેવાલ
   projects:
     add_new_project: નવો પ્રોજેક્ટ ઉમેરો
     add_project: પ્રોજેક્ટ ઉમેરો

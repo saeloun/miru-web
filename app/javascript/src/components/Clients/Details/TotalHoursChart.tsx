@@ -3,6 +3,7 @@ import React from "react";
 import AmountBoxContainer from "common/AmountBox";
 import ChartBar from "common/ChartBar";
 import { cashFormatter, currencySymbol } from "helpers";
+import { i18n } from "../../../i18n";
 
 const TotalHoursChart = ({
   projectDetails,
@@ -16,12 +17,12 @@ const TotalHoursChart = ({
 
   const amountBox = [
     {
-      title: "OVERDUE",
+      title: i18n.t("reports.overdue").toUpperCase(),
       amount:
         currencySymb + cashFormatter(overdueOutstandingAmount?.overdue_amount),
     },
     {
-      title: "OUTSTANDING",
+      title: i18n.t("reports.outstanding").toUpperCase(),
       amount:
         currencySymb +
         cashFormatter(overdueOutstandingAmount?.outstanding_amount),
@@ -45,9 +46,9 @@ const TotalHoursChart = ({
           ease-in-out"
           onChange={handleSelectChange}
         >
-          <option value="week">THIS WEEK</option>
-          <option value="month">THIS MONTH</option>
-          <option value="year">THIS YEAR</option>
+          <option value="week">{i18n.t("thisWeek").toUpperCase()}</option>
+          <option value="month">{i18n.t("thisMonth").toUpperCase()}</option>
+          <option value="year">{i18n.t("thisYear").toUpperCase()}</option>
         </select>
       </div>
       {projectDetails && (

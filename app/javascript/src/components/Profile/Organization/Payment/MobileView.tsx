@@ -3,6 +3,7 @@ import { ApiStatus as PaymentSettingsStatus } from "constants/index";
 import React from "react";
 
 import Loader from "common/Loader/index";
+import { i18n } from "../../../../i18n";
 import {
   ArrowLeftIcon,
   PaymentsIcon,
@@ -51,7 +52,7 @@ const MobileView = ({
         <div>
           <PaymentsIcon size={16} />
         </div>
-        <div className="px-2">Payment Gateways</div>
+        <div className="px-2">{i18n.t("paymentSettingsPage.title")}</div>
       </div>
       <div>
         {status === PaymentSettingsStatus.LOADING ? (
@@ -63,8 +64,7 @@ const MobileView = ({
                 <img height={34} src={StripeLogoSVG} width={72} />
               </div>
               <div className="my-4">
-                Connect with your existing Stripe account or create a new
-                account
+                {i18n.t("paymentSettingsPage.description")}
               </div>
               {isStripeConnected ? (
                 <div className="flex flex-row">
@@ -75,7 +75,7 @@ const MobileView = ({
                     <div className="logo-container mr-1 py-2">
                       <img src={disconnectAccountSVG} />
                     </div>
-                    Disconnect
+                    {i18n.t("paymentSettingsPage.disconnect")}
                   </button>
                 </div>
               ) : (

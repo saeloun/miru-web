@@ -3,6 +3,7 @@ import React, { Fragment } from "react";
 
 import ProgressBar from "common/ProgressBar";
 import { bytesToSize } from "helpers";
+import { i18n } from "i18n-js";
 import { XIcon } from "miruIcons";
 
 import TableHeader from "./TableHeader";
@@ -36,11 +37,11 @@ const ImportModal = ({
               <div className="flex flex-row ">
                 <img className="" src={fileIcon} />
                 <p className="ml-4 text-base	font-bold tracking-widest text-muted-foreground">
-                  UPLOAD FILE
+                  {i18n.t("importModal.uploadFile").toUpperCase()}
                 </p>
               </div>
               <p className="text-xs font-medium text-muted-foreground">
-                Supported file formats: .xls, .xlsx, .csv
+                {i18n.t("importModal.supportedFormats")}
               </p>
             </div>
           </label>
@@ -80,7 +81,7 @@ const ImportModal = ({
         className="mt-5 w-352 rounded bg-primary py-2 text-base font-bold tracking-widest text-primary-foreground transition-colors hover:bg-primary/90"
         onClick={handleContinueClick}
       >
-        CONTINUE
+        {i18n.t("continue").toUpperCase()}
       </button>
     </Fragment>
   );
@@ -89,8 +90,7 @@ const ImportModal = ({
     <Fragment>
       <div className=" mt-5 w-352">
         <p className="text-xs	font-medium	">
-          We have identified following columns from the file and mapped with the
-          required fields. Please review and confirm.
+          {i18n.t("importModal.reviewMappedFields")}
         </p>
         <table className="mt-5 min-w-full divide-y divide-border">
           <thead>
@@ -109,7 +109,7 @@ const ImportModal = ({
         className="mt-5 w-352 rounded bg-primary py-2 text-base font-bold tracking-widest text-primary-foreground transition-colors hover:bg-primary/90"
         onClick={handleContinueClick}
       >
-        START IMPORT
+        {i18n.t("importModal.startImport").toUpperCase()}
       </button>
     </Fragment>
   );
@@ -120,7 +120,9 @@ const ImportModal = ({
         <Fragment>
           <div className=" flex h-304 w-full flex-col items-center justify-around rounded-lg bg-muted">
             <p className="tracking-wide	text-base	font-bold	">
-              Importing {totalEntries || 0} time entries
+              {i18n.t("importModal.importingEntries", {
+                count: totalEntries || 0,
+              })}
             </p>
             <div className="flex h-87 items-baseline justify-center text-primary">
               <p className="text-3xl font-normal">
@@ -133,49 +135,57 @@ const ImportModal = ({
             </div>
           </div>
           <div className="mt-11 text-justify text-base	font-normal">
-            This might take some time to complete. We will continue importing in
-            the background even if you close this window and send an email to
-            you when it is completed.
+            {i18n.t("importModal.backgroundImportNotice")}
           </div>
           <button
             className="mt-22 w-352 rounded bg-primary py-2 text-base font-bold tracking-widest text-primary-foreground transition-colors hover:bg-primary/90"
             onClick={handleToggleModal}
           >
-            CLOSE WINDOW
+            {i18n.t("importModal.closeWindow").toUpperCase()}
           </button>
         </Fragment>
       ) : (
         <Fragment>
           <div className="flex h-512 w-full flex-col items-center justify-around rounded-lg bg-muted p-4">
-            <p className="tracking-wide	text-base	font-bold	">Import complete!</p>
+            <p className="tracking-wide	text-base	font-bold	">
+              {i18n.t("importModal.importComplete")}
+            </p>
             <div className="flex h-87 items-baseline justify-center text-primary">
               <p className="text-3xl font-normal">100</p>
               <p className="text-base font-normal">%</p>
             </div>
             <div className="w-full border-t-2 border-border ">
-              <div className="py-5 text-base font-bold">Import Summary</div>
+              <div className="py-5 text-base font-bold">
+                {i18n.t("importModal.importSummary")}
+              </div>
               <div className="flex justify-between border-b-2 border-border py-2">
-                <p className="text-sm	font-normal">Total time entries</p>
+                <p className="text-sm	font-normal">
+                  {i18n.t("importModal.totalTimeEntries")}
+                </p>
                 <p className="text-base font-bold">{totalEntries || 0}</p>
               </div>
               <div className="flex justify-between border-b-2 border-border py-2">
-                <p className="text-sm	font-normal">Successfully imported</p>
+                <p className="text-sm	font-normal">
+                  {i18n.t("importModal.successfullyImported")}
+                </p>
                 <p className="text-base font-bold">{importedEntries || 0}</p>
               </div>
               <div className="flex justify-between py-2">
-                <p className="text-sm	font-normal">Failed to import</p>
+                <p className="text-sm	font-normal">
+                  {i18n.t("importModal.failedToImport")}
+                </p>
                 <p className="text-base font-bold">{failedEntries || 0}</p>
               </div>
             </div>
             <div className="text-base font-normal	">
-              We have sent a detailed log to your email.
+              {i18n.t("importModal.detailedLogSent")}
             </div>
           </div>
           <button
             className="mt-10 w-352 rounded bg-primary py-2 text-base font-bold tracking-widest text-primary-foreground transition-colors hover:bg-primary/90"
             onClick={handleContinueClick}
           >
-            IMPORT ANOTHER FILE
+            {i18n.t("importModal.importAnotherFile").toUpperCase()}
           </button>
         </Fragment>
       )}
@@ -190,7 +200,9 @@ const ImportModal = ({
       <div className="modal__container__import__modal modal-container">
         <div className="modal__content modal-content mt-2">
           <div className="modal__position w-352">
-            <h6 className="modal__title"> Import {title} </h6>
+            <h6 className="modal__title">
+              {i18n.t("importModal.importTitle", { title })}
+            </h6>
             <div className="modal__close">
               <button className="modal__button" onClick={handleToggleModal}>
                 <XIcon color="currentColor" size={15} />
@@ -209,7 +221,7 @@ const ImportModal = ({
                   step === 1 ? "text-primary" : "text-muted-foreground"
                 }
               >
-                Upload File
+                {i18n.t("importModal.uploadFile")}
               </div>
               <div className="h-px min-w-24 border border-border bg-secondary" />
               {step <= 2 ? (
@@ -222,7 +234,7 @@ const ImportModal = ({
                   step <= 2 ? "text-primary " : "text-muted-foreground"
                 }
               >
-                Map fields
+                {i18n.t("importModal.mapFields")}
               </div>
               <div className="h-px min-w-24 border border-border bg-secondary" />
               {step <= 3 ? (
@@ -235,7 +247,7 @@ const ImportModal = ({
                   step <= 3 ? "text-primary " : "text-muted-foreground"
                 }
               >
-                Import
+                {i18n.t("importModal.import")}
               </div>
             </div>
             {step === 1 && firstStep()}

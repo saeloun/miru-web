@@ -79,6 +79,18 @@ const en = {
   all: "All",
   from: "From",
   to: "To",
+  themeSelector: {
+    open: "Open theme selector",
+    close: "Close theme selector",
+    choose: "Choose Theme",
+    description: "Select your preferred interface style",
+    classic: "Classic",
+    classicDescription: "Traditional Miru interface",
+    admin: "Admin Pro",
+    adminDescription: "Modern shadcn dashboard",
+    minimize: "Minimize",
+    previewActive: "Theme preview active",
+  },
 
   // Date/time
   today: "Today",
@@ -1123,6 +1135,59 @@ const en = {
     viewExistingReceipts: "View existing receipts (%{count})",
     viewReceiptsFor: "View receipts for %{description}",
     expenseActionsFor: "Expense actions for %{description}",
+    receiptPreview: "Receipt preview",
+    reviewUploadedReceipts: "Review uploaded receipts for this expense.",
+  },
+  importModal: {
+    importTitle: "Import %{title}",
+    uploadFile: "Upload File",
+    supportedFormats: "Supported file formats: .xls, .xlsx, .csv",
+    reviewMappedFields:
+      "We have identified the following columns from the file and mapped them to the required fields. Please review and confirm.",
+    startImport: "Start Import",
+    importingEntries: "Importing %{count} time entries",
+    backgroundImportNotice:
+      "This might take some time to complete. We will continue importing in the background even if you close this window and send an email to you when it is completed.",
+    closeWindow: "Close Window",
+    importComplete: "Import complete!",
+    importSummary: "Import Summary",
+    totalTimeEntries: "Total time entries",
+    successfullyImported: "Successfully imported",
+    failedToImport: "Failed to import",
+    detailedLogSent: "We have sent a detailed log to your email.",
+    importAnotherFile: "Import Another File",
+    mapFields: "Map fields",
+    import: "Import",
+  },
+  importCatalog: {
+    subtitle: "Import your data into Miru",
+    invoices: {
+      title: "Invoices",
+      description:
+        "Import past invoice data from your previous invoicing tool or software",
+      fields: {
+        invoiceNumber: "Invoice number",
+        clientName: "Client name",
+        issueDate: "Issue Date",
+        dueDate: "Due Date",
+        amount: "Amount",
+        status: "Status",
+      },
+    },
+    timeEntries: {
+      title: "Time Entries",
+      description:
+        "Import past time entries from your previous time tracking tool or software",
+      fields: {
+        employeeName: "Employee Name",
+        date: "Date",
+        hours: "Hours",
+        status: "Status",
+        client: "Client",
+        project: "Project",
+        description: "Description",
+      },
+    },
   },
 
   // Leave types
@@ -1467,6 +1532,8 @@ const en = {
     disconnectDialogTitle: "Disconnect Stripe Account",
     disconnectDialogDescription:
       "Are you sure you want to disconnect your Stripe account? You will no longer be able to accept payments through Stripe until you reconnect.",
+    disconnectPaymentModeDescription:
+      "Are you sure you want to disconnect %{paymentMode} payment gateway? You won’t be able to receive payments through %{paymentMode} until you connect a %{paymentMode} account.",
     features: {
       secureTitle: "Secure Payments",
       secureDescription: "PCI-compliant payment processing",

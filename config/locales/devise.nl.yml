@@ -3,6 +3,13 @@ nl:
   devise:
     confirmations:
       confirmed: Je e-mailadres is succesvol bevestigd.
+      new:
+        description: Uw bevestigingslink is verlopen of ongeldig. Vraag een nieuwe
+          aan.
+        remember_password: Weet je je wachtwoord nog?
+        resend: Bevestigingsmail opnieuw verzenden
+        sign_in: Inloggen
+        title: E-mailbevestiging vereist
       send_instructions: Je ontvangt binnen enkele minuten een e-mail met instructies
         voor het bevestigen van je e-mailadres.
       send_paranoid_instructions: Als uw e-mailadres in onze database staat, ontvangt
@@ -67,6 +74,9 @@ nl:
       signed_in: Succesvol ingelogd.
       signed_out: Succesvol uitgelogd.
     unlocks:
+      new:
+        submit: Instructies voor het ontgrendelen opnieuw verzenden
+        title: Instructies voor het ontgrendelen opnieuw verzenden
       send_instructions: Je ontvangt binnen enkele minuten een e-mail met instructies
         voor het ontgrendelen van je account.
       send_paranoid_instructions: Als uw account bestaat, ontvangt u binnen enkele

@@ -1,5 +1,49 @@
 ---
 bn:
+  analytics:
+    activity:
+      amount_collected: সংগৃহীত পরিমাণ
+      bank_transfers_month: ব্যাংক ট্রান্সফার (মাস)
+      created: তৈরি করা হয়েছে
+      downloaded: ডাউনলোড করা হয়েছে
+      invoice_activity_today: আজকের চালান কার্যকলাপ
+      payment_activity: অর্থপ্রদান কার্যক্রম
+      payments_today: আজকের পেমেন্ট
+      sent: পাঠানো হয়েছে
+      stripe_payments_month: স্ট্রাইপ পেমেন্টস (মাস)
+      viewed: দেখা হয়েছে
+    currency:
+      conversion_impact: রূপান্তর প্রভাব
+      currencies_in_use: ব্যবহৃত মুদ্রা
+      invoices_with_conversion: রূপান্তর সহ চালান
+      recent_exchange_rates: সাম্প্রতিক বিনিময় হার
+      table:
+        date: তারিখ
+        from: থেকে
+        rate: রেট
+        source: উৎস
+        to: প্রতি
+      title: মুদ্রা রূপান্তর অন্তর্দৃষ্টি
+    overview:
+      active_clients: সক্রিয় ক্লায়েন্ট
+      outstanding: অসামান্য
+      overdue: বকেয়া
+      total_revenue: মোট রাজস্ব
+    recent_activity:
+      ago: "%{time} আগে"
+      invoice_reference: চালান
+      system: সিস্টেম
+      title: সাম্প্রতিক কার্যকলাপ
+    super_admin: সুপার অ্যাডমিন
+    tabs:
+      activity: কার্যকলাপ
+      clients: ক্লায়েন্টরা
+      currency_exchange: মুদ্রা ও বিনিময়
+      overview: সংক্ষিপ্ত বিবরণ
+      revenue: রাজস্ব
+      users: ব্যবহারকারীরা
+    title: অ্যানালিটিক্স ড্যাশবোর্ড
+    welcome: স্বাগতম, %{name}
   app:
     name: মিরু এজেন্সি ওএস
     tagline: একটিমাত্র কমান্ড সেন্টার থেকে আপনার সংস্থার কার্যক্রম পরিচালনা করুন।
@@ -171,6 +215,82 @@ bn:
         summary_html: আমরা <strong>%{invoice_number}</strong> চালানের জন্য <strong>%{paid_on}</strong>
           তারিখে <strong>%{amount}</strong> পেয়েছি।
         title: অর্থপ্রদানের রসিদ
+    devise:
+      confirmation:
+        body_intro: 'আপনি প্রায় প্রস্তুত। প্রথম দিন থেকেই মিরু দিয়ে আপনি যে কয়েকটি
+          কাজ করতে পারবেন, তা নিচে দেওয়া হলো:'
+        cta: ইমেল ঠিকানা নিশ্চিত করুন
+        cta_body: আপনার ইমেল ঠিকানা নিশ্চিত করতে নিচের বোতামটি ব্যবহার করুন।
+        eyebrow: অ্যাকাউন্ট সেটআপ
+        feature_1: হোস্টেড পেমেন্ট লিঙ্ক সহ পেশাদার ইনভয়েস পাঠান।
+        feature_2: একটি ওয়ার্কফ্লোতে সময়, খরচ এবং ব্যবহারের হিসাব রাখুন।
+        feature_3: একটিমাত্র ওয়ার্কস্পেস থেকে আপনার টিম, ক্লায়েন্ট এবং বিলিং পরিচালনা
+          করুন।
+        feature_4: রাজস্ব, বকেয়া চালান এবং পেমেন্ট কার্যক্রমের উপর নজর রাখুন।
+        footer_note: আপনি যদি মিরু অ্যাকাউন্ট তৈরি না করে থাকেন, তাহলে এই বার্তাটি
+          নিশ্চিন্তে উপেক্ষা করতে পারেন।
+        greeting_html: হাই <strong>%{name}</strong> ,
+        preheader: মিরু সেটআপ সম্পন্ন করতে আপনার ইমেল ঠিকানা নিশ্চিত করুন।
+        subtitle: একই জায়গা থেকে সময় ট্র্যাক করা, ইনভয়েস পাঠানো এবং আপনার টিম পরিচালনা
+          শুরু করতে আপনার ইমেল ঠিকানা নিশ্চিত করুন।
+        title: মিরুকে স্বাগতম
+      email_changed:
+        changed_html: আপনার অ্যাকাউন্টের ইমেল পরিবর্তন করে <strong>%{email}</strong>
+          করা হয়েছে।
+        eyebrow: অ্যাকাউন্টের নিরাপত্তা
+        greeting_html: হ্যালো <strong>%{email}</strong> ,
+        pending_html: আপনার অ্যাকাউন্টের ইমেল পরিবর্তন করে <strong>%{email}</strong>
+          করা হচ্ছে।
+        preheader: আপনার মিরু ইমেল ঠিকানা পরিবর্তন হয়েছে।
+        subtitle: এই বার্তাটি আপনার মিরু অ্যাকাউন্টের ইমেল ঠিকানা পরিবর্তনের বিষয়টি
+          নিশ্চিত করছে।
+        title: ইমেল ঠিকানা আপডেট করা হয়েছে
+        warning_body_html: অবিলম্বে <a href="mailto:%{email}">%{email}</a> নম্বরে
+          আমাদের সাপোর্ট টিমের সাথে যোগাযোগ করুন।
+        warning_title: এই পরিবর্তনের জন্য অনুরোধ করেননি?
+      password_change:
+        eyebrow: অ্যাকাউন্টের নিরাপত্তা
+        greeting_html: হ্যালো <strong>%{name}</strong> ,
+        preheader: আপনার মিরু পাসওয়ার্ড পরিবর্তন করা হয়েছে।
+        subtitle: আপনার মিরু অ্যাকাউন্টের পাসওয়ার্ড সফলভাবে আপডেট করা হয়েছে।
+        success_body: আপনি আপনার নতুন পাসওয়ার্ড ব্যবহার করে মিরুতে সাইন ইন করা চালিয়ে
+          যেতে পারেন।
+        success_title: আপনার পাসওয়ার্ড আপডেট করা হয়েছে।
+        title: পাসওয়ার্ড সফলভাবে পরিবর্তন করা হয়েছে।
+        warning_body_html: আপনার অ্যাকাউন্ট সুরক্ষিত করতে আমরা সাহায্য করতে পারি,
+          তাই অবিলম্বে <a href="mailto:%{email}">%{email}-এর</a> সাথে যোগাযোগ করুন।
+        warning_title: এই পরিবর্তনটি করেননি?
+      reset_password:
+        cta: পাসওয়ার্ড রিসেট করুন
+        cta_body: নতুন পাসওয়ার্ড বেছে নিতে নিচের বাটনটি ব্যবহার করুন। এই রিসেট লিঙ্কটির
+          মেয়াদ ২৪ ঘণ্টা পর শেষ হয়ে যাবে।
+        eyebrow: অ্যাকাউন্টের নিরাপত্তা
+        footer_note: আপনি যদি পাসওয়ার্ড রিসেট করার অনুরোধ না করে থাকেন, তাহলে এই
+          বার্তাটি উপেক্ষা করতে পারেন এবং আপনার পাসওয়ার্ড একই থাকবে।
+        greeting: হ্যালো,
+        preheader: আপনার মিরু অ্যাকাউন্টের পাসওয়ার্ড রিসেট করুন।
+        request_html: "<strong>%{email}</strong> এর সাথে যুক্ত পাসওয়ার্ডটি পরিবর্তন
+          করার জন্য আমরা একটি অনুরোধ পেয়েছি।"
+        subtitle: আপনার মিরু অ্যাকাউন্টের পাসওয়ার্ড পুনরায় সেট করার জন্য আমরা একটি
+          অনুরোধ পেয়েছি।
+        title: আপনার পাসওয়ার্ড রিসেট করুন
+      shared:
+        signature_html: ধন্যবাদ,<br> <strong>টিম মিরু</strong>
+      unlock:
+        cta: পাসওয়ার্ড রিসেট করুন
+        eyebrow: অ্যাকাউন্টের নিরাপত্তা
+        footer_note: আপনি যদি সাইন ইন করার চেষ্টা না করে থাকেন, তাহলে লকটির মেয়াদ
+          শেষ হওয়া পর্যন্ত অপেক্ষা করুন এবং অবিলম্বে আপনার পাসওয়ার্ড পরিবর্তন করুন।
+        greeting_html: হ্যালো <strong>%{email}</strong> ,
+        preheader: অনেকবার সাইন-ইন করার চেষ্টা ব্যর্থ হলে আপনার মিরু অ্যাকাউন্টটি
+          আনলক করুন।
+        subtitle: বারবার অসফল সাইন-ইন চেষ্টার কারণে আমরা আপনার মিরু অ্যাকাউন্টটি লক
+          করে দিয়েছি।
+        title: আপনার অ্যাকাউন্টটি সাময়িকভাবে লক করা হয়েছে।
+        warning_body: মিরু ৩০ মিনিট পর স্বয়ংক্রিয়ভাবে অ্যাকাউন্ট আনলক করে দেয়।
+          আপনি যদি এই প্রচেষ্টাগুলো চিনতে না পারেন, তাহলে আপনার পাসওয়ার্ড রিসেট করুন,
+          যাতে লকের মেয়াদ শেষ হয়ে গেলে আপনার অ্যাকাউন্ট সুরক্ষিত থাকে।
+        warning_title: সাইন-ইন করার চেষ্টার সংখ্যা অনুমোদিত সীমা অতিক্রম করেছে।
     expense_mailer:
       approved:
         eyebrow: খরচ
@@ -328,6 +448,46 @@ bn:
         subtitle: "%{company_name}-এর জন্য আপনার সময় এন্ট্রিগুলো এখনও প্রত্যাশিত
           সাপ্তাহিক মোট পরিমাণের নিচে রয়েছে।"
         title: আপনার টাইমশিটটি পূরণ করুন।
+    subscription:
+      plan_purchased:
+        badge: চা-চিং
+        billing_interval: বিলিং ব্যবধান
+        billing_settings_html: 'বিলিং সেটিংস: <a href="%{url}" style="color: #111827;">%{url}</a>'
+        company: কোম্পানি
+        cta: বিলিং সেটিংস খুলুন
+        image_label: নতুন পেইড প্ল্যান
+        image_text: নতুন বেতনভুক্ত কর্মক্ষেত্র
+        plan: পরিকল্পনা
+        stripe_subscription: স্ট্রাইপ সাবস্ক্রিপশন
+        subtitle: মিরুতে নতুন পেইড ওয়ার্কস্পেস। বিলিং চালু হয়েছে।
+        team_seats: দলের আসন
+        title: "%{company} এইমাত্র %{plan} কিনেছে"
+      plan_purchased_text:
+        billing_interval: 'বিলিং ব্যবধান: %{interval}'
+        billing_settings: 'বিলিং সেটিংস খুলুন: %{url}'
+        company: 'কোম্পানি: %{company}'
+        plan: 'পরিকল্পনা: %{plan}'
+        stripe_subscription: 'স্ট্রাইপ সাবস্ক্রিপশন: %{id}'
+        team_seats: 'দলের আসন: %{seats}'
+      trial_started:
+        body_html: "<strong>%{company}-</strong> এর জন্য আপনার ৩০-দিনের মিরু প্রো
+          ট্রায়ালটি এখন সক্রিয় হয়েছে।"
+        cta: ওপেন বিলিং
+        eyebrow: বিলিং
+        footer_body: আপনি আপনার বিলিং সেটিংস থেকে যেকোনো সময় বিল পর্যালোচনা করতে,
+          প্ল্যান তুলনা করতে এবং আপগ্রেড করতে পারেন।
+        greeting_html: হ্যালো <strong>%{name}</strong> ,
+        preheader: আপনার মিরু প্রো ট্রায়াল এখন সক্রিয় হয়েছে।
+        subtitle: আপনার ৩০-দিনের ট্রায়াল চলাকালীন বিলিং, রিপোর্ট এবং প্রো ওয়ার্কফ্লোর
+          বাকি অংশগুলো অন্বেষণ করুন।
+        title: আপনার মিরু প্রো ট্রায়াল চালু আছে।
+        trial_ends: বিচার শেষ
+      trial_started_text:
+        body: "%{company}-এর জন্য আপনার ৩০-দিনের মিরু প্রো ট্রায়ালটি এখন সক্রিয়
+          হয়েছে।"
+        greeting: হ্যালো %{name},
+        review_billing: "%{url}-তে বিলিং পর্যালোচনা করুন।"
+        trial_ends: ট্রায়াল %{date} তে শেষ হবে।
     user_invitation_mailer:
       send_user_invitation:
         about_body: মিরু সময়, চালান, পেমেন্ট এবং দৈনন্দিন কার্যক্রমকে একটি ওয়ার্কস্পেসে
@@ -377,6 +537,74 @@ bn:
       success: আপনার পাসওয়ার্ড রিসেট করার নির্দেশাবলী আপনার ইমেইলে পাঠানো হয়েছে।
     update:
       success: আপনার পাসওয়ার্ড হালনাগাদ করা হয়েছে।
+  pdfs:
+    accounts_aging:
+      client: ক্লায়েন্ট
+      title: অ্যাকাউন্টস এজিং রিপোর্ট
+      total: মোট
+    client_revenues:
+      client: ক্লায়েন্ট
+      outstanding_amount: বকেয়া পরিমাণ
+      overdue_amount: বকেয়া পরিমাণ
+      paid_amount: প্রদত্ত পরিমাণ
+      title: ক্লায়েন্ট রাজস্ব প্রতিবেদন
+      total_revenue: মোট রাজস্ব
+    invoices:
+      amount_due: প্রদেয় অর্থ
+      amount_paid: প্রদত্ত পরিমাণ
+      billed_to: বিল করা হয়েছে
+      client_invoice: ক্লায়েন্ট ইনভয়েস
+      discount: ছাড়
+      due: 'প্রদেয়: %{due_date}'
+      invoice_number: চালান নম্বর
+      issue_date: ইস্যু তারিখ
+      paid: 'পরিশোধিত: %{amount}'
+      payment_details: অর্থপ্রদানের বিবরণ
+      payment_rows:
+        account_number: অ্যাকাউন্ট নম্বর
+        bank_name: ব্যাংকের নাম
+        gst_number: জিএসটি নম্বর
+        routing_number: রাউটিং নম্বর
+        swift_code: সুইফট কোড
+        tax_id: ট্যাক্স আইডি
+        vat_number: ভ্যাট নম্বর
+      prepared_by: প্রস্তুত করেছেন %{company_name}, ইস্যু করা হয়েছে %{issue_date},
+        প্রদেয় %{due_date}।
+      reference: 'রেফারেন্স: %{reference}'
+      sub_total: উপমোট
+      table:
+        date: তারিখ
+        description: বর্ণনা
+        line_total: লাইন মোট
+        name: নাম
+        qty: পরিমাণ
+        rate: রেট
+      tax: কর
+      title: চালান
+      total: মোট
+      total_invoice_amount: মোট চালানের পরিমাণ
+      work_summary: কাজের সারসংক্ষেপ
+    outstanding_overdue_invoices:
+      amount: পরিমাণ
+      client: ক্লায়েন্ট
+      due_date: নির্ধারিত তারিখ
+      invoice_number: চালান নম্বর
+      issue_date: ইস্যু তারিখ
+      no_clients_found: কোন ক্লায়েন্ট পাওয়া যায়নি
+      outstanding_amount: বকেয়া পরিমাণ
+      overdue_amount: বকেয়া পরিমাণ
+      status: অবস্থা
+      title: বকেয়া এবং মেয়াদোত্তীর্ণ চালানের প্রতিবেদন
+      total_amounts: মোট পরিমাণ
+      total_invoice_amount: মোট চালানের পরিমাণ
+    time_entries:
+      client: ক্লায়েন্ট
+      date: তারিখ
+      hours_logged: লগ করা ঘন্টা
+      note: দ্রষ্টব্য
+      project: প্রকল্প
+      team_member: দলের সদস্য
+      title: সময় এন্ট্রি রিপোর্ট
   projects:
     add_new_project: নতুন প্রকল্প যোগ করুন
     add_project: প্রকল্প যোগ করুন

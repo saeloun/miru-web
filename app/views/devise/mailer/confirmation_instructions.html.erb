@@ -1,29 +1,29 @@
-<% content_for :email_preheader, "Confirm your email address to finish setting up Miru." %>
-<% content_for :email_eyebrow, "Account setup" %>
-<% content_for :email_title, "Welcome to Miru" %>
+<% content_for :email_preheader, t("mailers.devise.confirmation.preheader") %>
+<% content_for :email_eyebrow, t("mailers.devise.confirmation.eyebrow") %>
+<% content_for :email_title, t("mailers.devise.confirmation.title") %>
 <% content_for :email_subtitle do %>
-  Confirm your email address to start tracking time, sending invoices, and managing your team from one place.
+  <%= t("mailers.devise.confirmation.subtitle") %>
 <% end %>
 
-<p>Hi <strong><%= @resource.first_name.titleize %> <%= @resource.last_name.titleize %></strong>,</p>
+<p><%= t("mailers.devise.confirmation.greeting_html", name: "#{@resource.first_name.titleize} #{@resource.last_name.titleize}") %></p>
 
-<p>You're almost set. Here are a few of the things you can do with Miru from day one:</p>
+<p><%= t("mailers.devise.confirmation.body_intro") %></p>
 
 <div class="email-panel email-panel-soft">
   <ul class="email-list">
-    <li>Send professional invoices with hosted payment links.</li>
-    <li>Track time, expenses, and utilization in one workflow.</li>
-    <li>Manage your team, clients, and billing from a single workspace.</li>
-    <li>Stay on top of revenue, overdue invoices, and payment activity.</li>
+    <li><%= t("mailers.devise.confirmation.feature_1") %></li>
+    <li><%= t("mailers.devise.confirmation.feature_2") %></li>
+    <li><%= t("mailers.devise.confirmation.feature_3") %></li>
+    <li><%= t("mailers.devise.confirmation.feature_4") %></li>
   </ul>
 </div>
 
-<p>Use the button below to confirm your email address.</p>
+<p><%= t("mailers.devise.confirmation.cta_body") %></p>
 
-<%= render "shared/mailer/button", href: confirmation_url(@resource, confirmation_token: @token), label: "Confirm email address" %>
+<%= render "shared/mailer/button", href: confirmation_url(@resource, confirmation_token: @token), label: t("mailers.devise.confirmation.cta") %>
 
 <div class="email-divider"></div>
 
-<p class="email-muted">If you did not create a Miru account, you can safely ignore this message.</p>
+<p class="email-muted"><%= t("mailers.devise.confirmation.footer_note") %></p>
 
-<p>Thanks,<br><strong>Team Miru</strong></p>
+<p><%= t("mailers.devise.shared.signature_html") %></p>

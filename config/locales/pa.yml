@@ -1,5 +1,49 @@
 ---
 pa:
+  analytics:
+    activity:
+      amount_collected: ਇਕੱਠੀ ਕੀਤੀ ਰਕਮ
+      bank_transfers_month: ਬੈਂਕ ਟ੍ਰਾਂਸਫਰ (ਮਹੀਨਾ)
+      created: ਬਣਾਇਆ ਗਿਆ
+      downloaded: ਡਾਊਨਲੋਡ ਕੀਤਾ ਗਿਆ
+      invoice_activity_today: ਅੱਜ ਦੀ ਇਨਵੌਇਸ ਗਤੀਵਿਧੀ
+      payment_activity: ਭੁਗਤਾਨ ਗਤੀਵਿਧੀ
+      payments_today: ਅੱਜ ਦੇ ਭੁਗਤਾਨ
+      sent: ਭੇਜਿਆ ਗਿਆ
+      stripe_payments_month: ਸਟ੍ਰਾਈਪ ਭੁਗਤਾਨ (ਮਹੀਨਾ)
+      viewed: ਦੇਖਿਆ ਗਿਆ
+    currency:
+      conversion_impact: ਪਰਿਵਰਤਨ ਪ੍ਰਭਾਵ
+      currencies_in_use: ਵਰਤੋਂ ਵਿੱਚ ਮੁਦਰਾਵਾਂ
+      invoices_with_conversion: ਪਰਿਵਰਤਨ ਦੇ ਨਾਲ ਇਨਵੌਇਸ
+      recent_exchange_rates: ਹਾਲੀਆ ਵਟਾਂਦਰਾ ਦਰਾਂ
+      table:
+        date: ਮਿਤੀ
+        from: ਤੋਂ
+        rate: ਰੇਟ ਕਰੋ
+        source: ਸਰੋਤ
+        to: ਨੂੰ
+      title: ਮੁਦਰਾ ਪਰਿਵਰਤਨ ਸੂਝ
+    overview:
+      active_clients: ਸਰਗਰਮ ਗਾਹਕ
+      outstanding: ਸ਼ਾਨਦਾਰ
+      overdue: ਬਕਾਇਆ
+      total_revenue: ਕੁੱਲ ਆਮਦਨ
+    recent_activity:
+      ago: "%{time} ਪਹਿਲਾਂ"
+      invoice_reference: ਇਨਵੌਇਸ
+      system: ਸਿਸਟਮ
+      title: ਹਾਲੀਆ ਗਤੀਵਿਧੀ
+    super_admin: ਸੁਪਰ ਐਡਮਿਨ
+    tabs:
+      activity: ਗਤੀਵਿਧੀ
+      clients: ਕਲਾਇੰਟ
+      currency_exchange: ਮੁਦਰਾ ਅਤੇ ਵਟਾਂਦਰਾ
+      overview: ਸੰਖੇਪ ਜਾਣਕਾਰੀ
+      revenue: ਮਾਲੀਆ
+      users: ਉਪਭੋਗਤਾ
+    title: ਵਿਸ਼ਲੇਸ਼ਣ ਡੈਸ਼ਬੋਰਡ
+    welcome: ਜੀ ਆਇਆਂ ਨੂੰ, %{name}
   app:
     name: ਮੀਰੂ ਏਜੰਸੀ ਓ.ਐਸ.
     tagline: ਆਪਣੀ ਏਜੰਸੀ ਦੇ ਕਾਰਜ ਇੱਕ ਕਮਾਂਡ ਸੈਂਟਰ ਤੋਂ ਚਲਾਓ।
@@ -170,6 +214,80 @@ pa:
         summary_html: ਸਾਨੂੰ <strong>%{invoice_number}</strong> ਇਨਵੌਇਸ ਲਈ <strong>%{paid_on}
           '</strong> ਤੇ <strong>%{amount}</strong> ਪ੍ਰਾਪਤ ਹੋਇਆ।
         title: ਭੁਗਤਾਨ ਰਸੀਦ
+    devise:
+      confirmation:
+        body_intro: 'ਤੁਸੀਂ ਲਗਭਗ ਤਿਆਰ ਹੋ। ਇੱਥੇ ਕੁਝ ਚੀਜ਼ਾਂ ਹਨ ਜੋ ਤੁਸੀਂ ਪਹਿਲੇ ਦਿਨ ਤੋਂ
+          ਹੀ ਮੀਰੂ ਨਾਲ ਕਰ ਸਕਦੇ ਹੋ:'
+        cta: ਈਮੇਲ ਪਤੇ ਦੀ ਪੁਸ਼ਟੀ ਕਰੋ
+        cta_body: ਆਪਣੇ ਈਮੇਲ ਪਤੇ ਦੀ ਪੁਸ਼ਟੀ ਕਰਨ ਲਈ ਹੇਠਾਂ ਦਿੱਤੇ ਬਟਨ ਦੀ ਵਰਤੋਂ ਕਰੋ।
+        eyebrow: ਖਾਤਾ ਸੈੱਟਅੱਪ
+        feature_1: ਹੋਸਟ ਕੀਤੇ ਭੁਗਤਾਨ ਲਿੰਕਾਂ ਦੇ ਨਾਲ ਪੇਸ਼ੇਵਰ ਇਨਵੌਇਸ ਭੇਜੋ।
+        feature_2: ਇੱਕ ਵਰਕਫਲੋ ਵਿੱਚ ਸਮਾਂ, ਖਰਚੇ ਅਤੇ ਵਰਤੋਂ ਨੂੰ ਟਰੈਕ ਕਰੋ।
+        feature_3: ਇੱਕ ਵਰਕਸਪੇਸ ਤੋਂ ਆਪਣੀ ਟੀਮ, ਗਾਹਕਾਂ ਅਤੇ ਬਿਲਿੰਗ ਦਾ ਪ੍ਰਬੰਧਨ ਕਰੋ।
+        feature_4: ਆਮਦਨ, ਬਕਾਇਆ ਇਨਵੌਇਸਾਂ ਅਤੇ ਭੁਗਤਾਨ ਗਤੀਵਿਧੀ ਤੋਂ ਜਾਣੂ ਰਹੋ।
+        footer_note: ਜੇਕਰ ਤੁਸੀਂ ਮੀਰੂ ਖਾਤਾ ਨਹੀਂ ਬਣਾਇਆ ਹੈ, ਤਾਂ ਤੁਸੀਂ ਇਸ ਸੁਨੇਹੇ ਨੂੰ ਸੁਰੱਖਿਅਤ
+          ਢੰਗ ਨਾਲ ਨਜ਼ਰਅੰਦਾਜ਼ ਕਰ ਸਕਦੇ ਹੋ।
+        greeting_html: ਹੈਲੋ <strong>%{name}</strong> ,
+        preheader: ਮੀਰੂ ਦਾ ਸੈੱਟਅੱਪ ਪੂਰਾ ਕਰਨ ਲਈ ਆਪਣੇ ਈਮੇਲ ਪਤੇ ਦੀ ਪੁਸ਼ਟੀ ਕਰੋ।
+        subtitle: ਸਮੇਂ ਨੂੰ ਟਰੈਕ ਕਰਨ, ਇਨਵੌਇਸ ਭੇਜਣ ਅਤੇ ਆਪਣੀ ਟੀਮ ਦਾ ਪ੍ਰਬੰਧਨ ਇੱਕੋ ਥਾਂ
+          ਤੋਂ ਸ਼ੁਰੂ ਕਰਨ ਲਈ ਆਪਣੇ ਈਮੇਲ ਪਤੇ ਦੀ ਪੁਸ਼ਟੀ ਕਰੋ।
+        title: ਮੀਰੂ ਵਿੱਚ ਤੁਹਾਡਾ ਸੁਆਗਤ ਹੈ
+      email_changed:
+        changed_html: ਤੁਹਾਡੇ ਖਾਤੇ ਦਾ ਈਮੇਲ ਪਤਾ <strong>%{email}</strong> ਵਿੱਚ ਬਦਲ ਦਿੱਤਾ
+          ਗਿਆ ਹੈ।
+        eyebrow: ਖਾਤਾ ਸੁਰੱਖਿਆ
+        greeting_html: ਹੈਲੋ <strong>%{email}</strong> ,
+        pending_html: ਤੁਹਾਡੇ ਖਾਤੇ ਦਾ ਈਮੇਲ ਪਤਾ <strong>%{email}</strong> ਵਿੱਚ ਬਦਲਿਆ
+          ਜਾ ਰਿਹਾ ਹੈ।
+        preheader: ਤੁਹਾਡਾ ਮੀਰੂ ਈਮੇਲ ਪਤਾ ਬਦਲ ਗਿਆ ਹੈ।
+        subtitle: ਇਹ ਸੁਨੇਹਾ ਤੁਹਾਡੇ ਮੀਰੂ ਖਾਤੇ ਦੇ ਈਮੇਲ ਪਤੇ ਵਿੱਚ ਤਬਦੀਲੀ ਦੀ ਪੁਸ਼ਟੀ ਕਰਦਾ
+          ਹੈ।
+        title: ਈਮੇਲ ਪਤਾ ਅੱਪਡੇਟ ਕੀਤਾ ਗਿਆ
+        warning_body_html: <a href="mailto:%{email}">%{email} '</a> ਤੇ ਸਾਡੀ ਸਹਾਇਤਾ
+          ਟੀਮ ਨਾਲ ਤੁਰੰਤ ਸੰਪਰਕ ਕਰੋ।
+        warning_title: ਕੀ ਇਸ ਬਦਲਾਅ ਦੀ ਬੇਨਤੀ ਨਹੀਂ ਕੀਤੀ?
+      password_change:
+        eyebrow: ਖਾਤਾ ਸੁਰੱਖਿਆ
+        greeting_html: ਹੈਲੋ <strong>%{name}</strong> ,
+        preheader: ਤੁਹਾਡਾ ਮੀਰੂ ਪਾਸਵਰਡ ਬਦਲ ਦਿੱਤਾ ਗਿਆ ਹੈ।
+        subtitle: ਤੁਹਾਡਾ ਮੀਰੂ ਖਾਤਾ ਪਾਸਵਰਡ ਸਫਲਤਾਪੂਰਵਕ ਅੱਪਡੇਟ ਕੀਤਾ ਗਿਆ।
+        success_body: ਤੁਸੀਂ ਆਪਣੇ ਨਵੇਂ ਪਾਸਵਰਡ ਦੀ ਵਰਤੋਂ ਕਰਕੇ ਮੀਰੂ ਵਿੱਚ ਸਾਈਨ ਇਨ ਕਰਨਾ
+          ਜਾਰੀ ਰੱਖ ਸਕਦੇ ਹੋ।
+        success_title: ਤੁਹਾਡਾ ਪਾਸਵਰਡ ਅੱਪਡੇਟ ਕੀਤਾ ਗਿਆ ਸੀ।
+        title: ਪਾਸਵਰਡ ਸਫਲਤਾਪੂਰਵਕ ਬਦਲਿਆ ਗਿਆ
+        warning_body_html: ਤੁਹਾਡੇ ਖਾਤੇ ਨੂੰ ਸੁਰੱਖਿਅਤ ਕਰਨ ਵਿੱਚ ਮਦਦ ਕਰਨ ਲਈ ਅਸੀਂ ਤੁਰੰਤ
+          <a href="mailto:%{email}">%{email}</a> ਨਾਲ ਸੰਪਰਕ ਕਰੋ।
+        warning_title: ਕੀ ਇਹ ਬਦਲਾਅ ਨਹੀਂ ਕੀਤਾ?
+      reset_password:
+        cta: ਪਾਸਵਰਡ ਰੀਸੈਟ ਕਰੋ
+        cta_body: ਨਵਾਂ ਪਾਸਵਰਡ ਚੁਣਨ ਲਈ ਹੇਠਾਂ ਦਿੱਤੇ ਬਟਨ ਦੀ ਵਰਤੋਂ ਕਰੋ। ਇਸ ਰੀਸੈਟ ਲਿੰਕ
+          ਦੀ ਮਿਆਦ 24 ਘੰਟਿਆਂ ਵਿੱਚ ਖਤਮ ਹੋ ਜਾਵੇਗੀ।
+        eyebrow: ਖਾਤਾ ਸੁਰੱਖਿਆ
+        footer_note: ਜੇਕਰ ਤੁਸੀਂ ਪਾਸਵਰਡ ਰੀਸੈਟ ਦੀ ਬੇਨਤੀ ਨਹੀਂ ਕੀਤੀ, ਤਾਂ ਤੁਸੀਂ ਇਸ ਸੁਨੇਹੇ
+          ਨੂੰ ਨਜ਼ਰਅੰਦਾਜ਼ ਕਰ ਸਕਦੇ ਹੋ ਅਤੇ ਤੁਹਾਡਾ ਪਾਸਵਰਡ ਉਹੀ ਰਹੇਗਾ।
+        greeting: ਸਤ ਸ੍ਰੀ ਅਕਾਲ,
+        preheader: ਆਪਣੇ ਮੀਰੂ ਖਾਤੇ ਦਾ ਪਾਸਵਰਡ ਰੀਸੈਟ ਕਰੋ।
+        request_html: ਸਾਨੂੰ <strong>%{email}</strong> ਨਾਲ ਜੁੜੇ ਪਾਸਵਰਡ ਨੂੰ ਬਦਲਣ ਦੀ
+          ਬੇਨਤੀ ਪ੍ਰਾਪਤ ਹੋਈ ਹੈ।
+        subtitle: ਸਾਨੂੰ ਤੁਹਾਡੇ ਮੀਰੂ ਖਾਤੇ ਲਈ ਪਾਸਵਰਡ ਰੀਸੈਟ ਕਰਨ ਦੀ ਬੇਨਤੀ ਪ੍ਰਾਪਤ ਹੋਈ ਹੈ।
+        title: ਆਪਣਾ ਪਾਸਵਰਡ ਰੀਸੈਟ ਕਰੋ
+      shared:
+        signature_html: ਧੰਨਵਾਦ,<br> <strong>ਟੀਮ ਮੀਰੂ</strong>
+      unlock:
+        cta: ਪਾਸਵਰਡ ਰੀਸੈਟ ਕਰੋ
+        eyebrow: ਖਾਤਾ ਸੁਰੱਖਿਆ
+        footer_note: ਜੇਕਰ ਤੁਸੀਂ ਸਾਈਨ ਇਨ ਕਰਨ ਦੀ ਕੋਸ਼ਿਸ਼ ਨਹੀਂ ਕੀਤੀ, ਤਾਂ ਲਾਕ ਦੀ ਮਿਆਦ
+          ਪੁੱਗਣ ਦੀ ਉਡੀਕ ਕਰੋ ਅਤੇ ਤੁਰੰਤ ਆਪਣਾ ਪਾਸਵਰਡ ਬਦਲੋ।
+        greeting_html: ਹੈਲੋ <strong>%{email}</strong> ,
+        preheader: ਬਹੁਤ ਸਾਰੀਆਂ ਅਸਫਲ ਸਾਈਨ-ਇਨ ਕੋਸ਼ਿਸ਼ਾਂ ਤੋਂ ਬਾਅਦ ਆਪਣੇ ਮੀਰੂ ਖਾਤੇ ਨੂੰ
+          ਅਨਲੌਕ ਕਰੋ।
+        subtitle: ਬਹੁਤ ਸਾਰੀਆਂ ਅਸਫਲ ਸਾਈਨ-ਇਨ ਕੋਸ਼ਿਸ਼ਾਂ ਤੋਂ ਬਾਅਦ ਅਸੀਂ ਤੁਹਾਡਾ ਮੀਰੂ ਖਾਤਾ
+          ਲਾਕ ਕਰ ਦਿੱਤਾ ਹੈ।
+        title: ਤੁਹਾਡਾ ਖਾਤਾ ਅਸਥਾਈ ਤੌਰ 'ਤੇ ਲਾਕ ਹੈ।
+        warning_body: ਮੀਰੂ 30 ਮਿੰਟਾਂ ਬਾਅਦ ਆਪਣੇ ਆਪ ਖਾਤਿਆਂ ਨੂੰ ਅਨਲੌਕ ਕਰ ਦਿੰਦਾ ਹੈ। ਜੇਕਰ
+          ਤੁਸੀਂ ਇਹਨਾਂ ਕੋਸ਼ਿਸ਼ਾਂ ਨੂੰ ਨਹੀਂ ਪਛਾਣਦੇ, ਤਾਂ ਆਪਣਾ ਪਾਸਵਰਡ ਰੀਸੈਟ ਕਰੋ ਤਾਂ ਜੋ
+          ਲਾਕ ਦੀ ਮਿਆਦ ਪੁੱਗਣ ਤੋਂ ਬਾਅਦ ਤੁਹਾਡਾ ਖਾਤਾ ਸੁਰੱਖਿਅਤ ਰਹੇ।
+        warning_title: ਸਾਈਨ-ਇਨ ਕੋਸ਼ਿਸ਼ਾਂ ਆਗਿਆ ਦਿੱਤੀ ਸੀਮਾ ਤੋਂ ਵੱਧ ਗਈਆਂ।
     expense_mailer:
       approved:
         eyebrow: ਖਰਚੇ
@@ -325,6 +443,45 @@ pa:
         subtitle: "%{company_name} ਲਈ ਤੁਹਾਡੀਆਂ ਸਮਾਂ ਐਂਟਰੀਆਂ ਅਜੇ ਵੀ ਉਮੀਦ ਕੀਤੇ ਹਫ਼ਤਾਵਾਰੀ
           ਕੁੱਲ ਤੋਂ ਘੱਟ ਹਨ।"
         title: ਆਪਣੀ ਟਾਈਮਸ਼ੀਟ ਪੂਰੀ ਕਰੋ
+    subscription:
+      plan_purchased:
+        badge: ਚਾ-ਚਿੰਗ
+        billing_interval: ਬਿਲਿੰਗ ਅੰਤਰਾਲ
+        billing_settings_html: 'ਬਿਲਿੰਗ ਸੈਟਿੰਗਾਂ: <a href="%{url}" style="color: #111827;">%{url}</a>'
+        company: ਕੰਪਨੀ
+        cta: ਬਿਲਿੰਗ ਸੈਟਿੰਗਾਂ ਖੋਲ੍ਹੋ
+        image_label: ਨਵਾਂ ਭੁਗਤਾਨ ਕੀਤਾ ਪਲਾਨ
+        image_text: ਨਵਾਂ ਭੁਗਤਾਨ ਕੀਤਾ ਵਰਕਸਪੇਸ
+        plan: ਯੋਜਨਾ
+        stripe_subscription: ਸਟ੍ਰਾਈਪ ਗਾਹਕੀ
+        subtitle: ਮੀਰੂ 'ਤੇ ਨਵਾਂ ਭੁਗਤਾਨ ਕੀਤਾ ਵਰਕਸਪੇਸ। ਬਿਲਿੰਗ ਲਾਈਵ ਹੈ।
+        team_seats: ਟੀਮ ਸੀਟਾਂ
+        title: "%{company} ਨੇ ਹੁਣੇ %{plan} ਖਰੀਦਿਆ ਹੈ"
+      plan_purchased_text:
+        billing_interval: 'ਬਿਲਿੰਗ ਅੰਤਰਾਲ: %{interval}'
+        billing_settings: 'ਬਿਲਿੰਗ ਸੈਟਿੰਗਾਂ ਖੋਲ੍ਹੋ: %{url}'
+        company: 'ਕੰਪਨੀ: %{company}'
+        plan: 'ਯੋਜਨਾ: %{plan}'
+        stripe_subscription: 'ਸਟ੍ਰਾਈਪ ਗਾਹਕੀ: %{id}'
+        team_seats: 'ਟੀਮ ਸੀਟਾਂ: %{seats}'
+      trial_started:
+        body_html: "<strong>%{company}</strong> ਲਈ ਤੁਹਾਡਾ 30-ਦਿਨਾਂ ਦਾ ਮੀਰੂ ਪ੍ਰੋ ਟ੍ਰਾਇਲ
+          ਹੁਣ ਕਿਰਿਆਸ਼ੀਲ ਹੈ।"
+        cta: ਬਿਲਿੰਗ ਖੋਲ੍ਹੋ
+        eyebrow: ਬਿਲਿੰਗ
+        footer_body: ਤੁਸੀਂ ਆਪਣੀਆਂ ਬਿਲਿੰਗ ਸੈਟਿੰਗਾਂ ਤੋਂ ਕਿਸੇ ਵੀ ਸਮੇਂ ਬਿਲਿੰਗ ਦੀ ਸਮੀਖਿਆ
+          ਕਰ ਸਕਦੇ ਹੋ, ਯੋਜਨਾਵਾਂ ਦੀ ਤੁਲਨਾ ਕਰ ਸਕਦੇ ਹੋ ਅਤੇ ਅੱਪਗ੍ਰੇਡ ਕਰ ਸਕਦੇ ਹੋ।
+        greeting_html: ਹੈਲੋ <strong>%{name}</strong> ,
+        preheader: ਤੁਹਾਡਾ ਮੀਰੂ ਪ੍ਰੋ ਟ੍ਰਾਇਲ ਹੁਣ ਕਿਰਿਆਸ਼ੀਲ ਹੈ।
+        subtitle: ਆਪਣੇ 30-ਦਿਨਾਂ ਦੇ ਟ੍ਰਾਇਲ ਦੌਰਾਨ ਬਿਲਿੰਗ, ਰਿਪੋਰਟਾਂ ਅਤੇ ਬਾਕੀ ਪ੍ਰੋ ਵਰਕਫਲੋ
+          ਦੀ ਪੜਚੋਲ ਕਰੋ।
+        title: ਤੁਹਾਡਾ ਮੀਰੂ ਪ੍ਰੋ ਟ੍ਰਾਇਲ ਲਾਈਵ ਹੈ
+        trial_ends: ਪਰਖ ਸਮਾਪਤ
+      trial_started_text:
+        body: "%{company} ਲਈ ਤੁਹਾਡਾ 30-ਦਿਨਾਂ ਦਾ ਮੀਰੂ ਪ੍ਰੋ ਟ੍ਰਾਇਲ ਹੁਣ ਕਿਰਿਆਸ਼ੀਲ ਹੈ।"
+        greeting: ਹੈਲੋ %{name},
+        review_billing: "%{url} 'ਤੇ ਬਿਲਿੰਗ ਦੀ ਸਮੀਖਿਆ ਕਰੋ।"
+        trial_ends: ਟ੍ਰਾਇਲ %{date} ਨੂੰ ਖਤਮ ਹੁੰਦਾ ਹੈ।
     user_invitation_mailer:
       send_user_invitation:
         about_body: ਮੀਰੂ ਸਮਾਂ, ਇਨਵੌਇਸ, ਭੁਗਤਾਨ, ਅਤੇ ਰੋਜ਼ਾਨਾ ਦੇ ਕੰਮਾਂ ਨੂੰ ਇੱਕ ਵਰਕਸਪੇਸ
@@ -373,6 +530,74 @@ pa:
         ਹਨ।
     update:
       success: ਤੁਹਾਡਾ ਪਾਸਵਰਡ ਅੱਪਡੇਟ ਕਰ ਦਿੱਤਾ ਗਿਆ ਹੈ।
+  pdfs:
+    accounts_aging:
+      client: ਕਲਾਇੰਟ
+      title: ਖਾਤਿਆਂ ਦੀ ਉਮਰ ਦੀ ਰਿਪੋਰਟ
+      total: ਕੁੱਲ
+    client_revenues:
+      client: ਕਲਾਇੰਟ
+      outstanding_amount: ਬਕਾਇਆ ਰਕਮ
+      overdue_amount: ਬਕਾਇਆ ਰਕਮ
+      paid_amount: ਭੁਗਤਾਨ ਕੀਤੀ ਰਕਮ
+      title: ਕਲਾਇੰਟ ਆਮਦਨ ਰਿਪੋਰਟ
+      total_revenue: ਕੁੱਲ ਆਮਦਨ
+    invoices:
+      amount_due: ਬਕਾਇਆ ਰਕਮ
+      amount_paid: ਭੁਗਤਾਨ ਕੀਤੀ ਰਕਮ
+      billed_to: ਬਿਲ ਕੀਤਾ ਗਿਆ
+      client_invoice: ਕਲਾਇੰਟ ਇਨਵੌਇਸ
+      discount: ਛੋਟ
+      due: 'ਬਕਾਇਆ: %{due_date}'
+      invoice_number: ਇਨਵੌਇਸ ਨੰਬਰ
+      issue_date: ਜਾਰੀ ਕਰਨ ਦੀ ਮਿਤੀ
+      paid: 'ਭੁਗਤਾਨ ਕੀਤਾ ਗਿਆ: %{amount}'
+      payment_details: ਭੁਗਤਾਨ ਵੇਰਵੇ
+      payment_rows:
+        account_number: ਅਕਾਊਂਟ ਨੰਬਰ
+        bank_name: ਬੈਂਕ ਦਾ ਨਾਮ
+        gst_number: ਜੀਐਸਟੀ ਨੰਬਰ
+        routing_number: ਰੂਟਿੰਗ ਨੰਬਰ
+        swift_code: ਸ੍ਵਿਫ਼ਤ ਕਉਡ
+        tax_id: ਟੈਕਸ ਆਈਡੀ
+        vat_number: ਵੈਟ ਨੰਬਰ
+      prepared_by: "%{company_name} ਦੁਆਰਾ ਤਿਆਰ ਕੀਤਾ ਗਿਆ, %{issue_date} ਜਾਰੀ ਕੀਤਾ ਗਿਆ,
+        %{due_date} ਦੇਣਯੋਗ ਹੈ।"
+      reference: 'ਹਵਾਲਾ: %{reference}'
+      sub_total: ਕੁੱਲ ਰਕਮ
+      table:
+        date: ਮਿਤੀ
+        description: ਵੇਰਵਾ
+        line_total: ਲਾਈਨ ਕੁੱਲ
+        name: ਨਾਮ
+        qty: ਮਾਤਰਾ
+        rate: ਰੇਟ ਕਰੋ
+      tax: ਟੈਕਸ
+      title: ਇਨਵੌਇਸ
+      total: ਕੁੱਲ
+      total_invoice_amount: ਕੁੱਲ ਇਨਵੌਇਸ ਰਕਮ
+      work_summary: ਕੰਮ ਦਾ ਸਾਰ
+    outstanding_overdue_invoices:
+      amount: ਰਕਮ
+      client: ਕਲਾਇੰਟ
+      due_date: ਅਦਾਇਗੀ ਤਾਰੀਖ
+      invoice_number: ਇਨਵੌਇਸ ਨੰ.
+      issue_date: ਜਾਰੀ ਕਰਨ ਦੀ ਮਿਤੀ
+      no_clients_found: ਕੋਈ ਕਲਾਇੰਟ ਨਹੀਂ ਮਿਲਿਆ
+      outstanding_amount: ਬਕਾਇਆ ਰਕਮ
+      overdue_amount: ਬਕਾਇਆ ਰਕਮ
+      status: ਸਥਿਤੀ
+      title: ਬਕਾਇਆ ਅਤੇ ਬਕਾਇਆ ਇਨਵੌਇਸ ਰਿਪੋਰਟ
+      total_amounts: ਕੁੱਲ ਰਕਮਾਂ
+      total_invoice_amount: ਕੁੱਲ ਇਨਵੌਇਸ ਰਕਮ
+    time_entries:
+      client: ਕਲਾਇੰਟ
+      date: ਮਿਤੀ
+      hours_logged: ਘੰਟੇ ਲੌਗ ਕੀਤੇ ਗਏ
+      note: ਨੋਟ
+      project: ਪ੍ਰੋਜੈਕਟ
+      team_member: ਟੀਮ ਮੈਂਬਰ
+      title: ਸਮਾਂ ਐਂਟਰੀ ਰਿਪੋਰਟ
   projects:
     add_new_project: ਨਵਾਂ ਪ੍ਰੋਜੈਕਟ ਸ਼ਾਮਲ ਕਰੋ
     add_project: ਪ੍ਰੋਜੈਕਟ ਸ਼ਾਮਲ ਕਰੋ

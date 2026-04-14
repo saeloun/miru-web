@@ -1,11 +1,11 @@
-CHA-CHING
+<%= t("mailers.subscription.plan_purchased.badge").upcase %>
 
-<%= @company.name %> just bought <%= @display_plan_label %>.
+<%= t("mailers.subscription.plan_purchased.title", company: @company.name, plan: @display_plan_label) %>
 
-Company: <%= @company.name %>
-Plan: <%= @display_plan_label %>
-Billing interval: <%= @subscription_interval %>
-Team seats: <%= @seat_quantity %>
-Stripe subscription: <%= @stripe_subscription_id %>
+<%= t("mailers.subscription.plan_purchased_text.company", company: @company.name) %>
+<%= t("mailers.subscription.plan_purchased_text.plan", plan: @display_plan_label) %>
+<%= t("mailers.subscription.plan_purchased_text.billing_interval", interval: @subscription_interval) %>
+<%= t("mailers.subscription.plan_purchased_text.team_seats", seats: @seat_quantity) %>
+<%= t("mailers.subscription.plan_purchased_text.stripe_subscription", id: @stripe_subscription_id) %>
 
-Open billing settings: <%= @billing_url %>
+<%= t("mailers.subscription.plan_purchased_text.billing_settings", url: @billing_url) %>

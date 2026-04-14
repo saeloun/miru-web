@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { Palette, X, CaretRight, Desktop, Sparkles } from "phosphor-react";
+import { i18n } from "../../../i18n";
 
 interface ThemeToggleProps {
   currentTheme: "classic" | "admin";
@@ -28,15 +29,15 @@ const ThemeToggle: React.FC<ThemeToggleProps> = ({
   const themes = [
     {
       id: "classic",
-      name: "Classic",
-      description: "Traditional Miru interface",
+      name: i18n.t("themeSelector.classic"),
+      description: i18n.t("themeSelector.classicDescription"),
       icon: Desktop,
       preview: "bg-gradient-to-br from-blue-50 to-indigo-100",
     },
     {
       id: "admin",
-      name: "Admin Pro",
-      description: "Modern shadcn dashboard",
+      name: i18n.t("themeSelector.admin"),
+      description: i18n.t("themeSelector.adminDescription"),
       icon: Sparkles,
       preview: "bg-gradient-to-br from-purple-50 to-pink-100",
     },
@@ -51,7 +52,7 @@ const ThemeToggle: React.FC<ThemeToggleProps> = ({
             setIsOpen(true);
           }}
           className="group bg-white border border-gray-200 rounded-full p-3 shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-110"
-          aria-label="Open theme selector"
+          aria-label={i18n.t("themeSelector.open")}
         >
           <Palette className="h-5 w-5 text-gray-600 group-hover:text-[#5E58F1]" />
         </button>
@@ -67,7 +68,9 @@ const ThemeToggle: React.FC<ThemeToggleProps> = ({
           className="group flex items-center gap-2 bg-white border border-gray-200 rounded-full px-4 py-2.5 shadow-lg hover:shadow-xl transition-all duration-200"
         >
           <Palette className="h-5 w-5 text-gray-600 group-hover:text-[#5E58F1]" />
-          <span className="text-sm font-medium text-gray-700">Theme</span>
+          <span className="text-sm font-medium text-gray-700">
+            {i18n.t("theme")}
+          </span>
           <CaretRight className="h-4 w-4 text-gray-400 group-hover:translate-x-0.5 transition-transform" />
         </button>
       </div>
@@ -89,16 +92,16 @@ const ThemeToggle: React.FC<ThemeToggleProps> = ({
           <div className="flex items-center justify-between mb-5">
             <div>
               <h3 className="text-lg font-semibold text-gray-900">
-                Choose Theme
+                {i18n.t("themeSelector.choose")}
               </h3>
               <p className="text-sm text-gray-500 mt-1">
-                Select your preferred interface style
+                {i18n.t("themeSelector.description")}
               </p>
             </div>
             <button
               onClick={() => setIsOpen(false)}
               className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors"
-              aria-label="Close theme selector"
+              aria-label={i18n.t("themeSelector.close")}
             >
               <X className="h-4 w-4 text-gray-500" />
             </button>
@@ -155,7 +158,7 @@ const ThemeToggle: React.FC<ThemeToggleProps> = ({
                       </span>
                       {isActive && (
                         <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-[#5E58F1] text-white">
-                          Active
+                          {i18n.t("active")}
                         </span>
                       )}
                     </div>
@@ -175,12 +178,12 @@ const ThemeToggle: React.FC<ThemeToggleProps> = ({
                 onClick={() => setIsMinimized(true)}
                 className="text-sm text-gray-500 hover:text-gray-700 transition-colors"
               >
-                Minimize
+                {i18n.t("themeSelector.minimize")}
               </button>
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
                 <span className="text-xs text-gray-500">
-                  Theme preview active
+                  {i18n.t("themeSelector.previewActive")}
                 </span>
               </div>
             </div>

@@ -3,6 +3,12 @@ ja:
   devise:
     confirmations:
       confirmed: お客様のメールアドレスは正常に確認されました。
+      new:
+        description: 確認リンクの有効期限が切れているか、無効です。新しいリンクをリクエストしてください。
+        remember_password: パスワードを覚えていますか？
+        resend: 確認メールを再送信
+        sign_in: サインイン
+        title: メールによる確認が必要です
       send_instructions: 数分以内に、メールアドレスを確認する方法を記載したメールが届きます。
       send_paranoid_instructions: お客様のメールアドレスが弊社のデータベースに登録されている場合、数分以内にメールアドレスの確認方法を記載したメールが届きます。
     failure:
@@ -51,6 +57,9 @@ ja:
       signed_in: ログインに成功しました。
       signed_out: 正常にログアウトしました。
     unlocks:
+      new:
+        submit: ロック解除手順を再送信
+        title: ロック解除手順を再送信
       send_instructions: 数分以内に、アカウントのロックを解除する方法を記載したメールが届きます。
       send_paranoid_instructions: アカウントが存在する場合、数分以内にロック解除方法を記載したメールが届きます。
       unlocked: アカウントのロック解除が完了しました。ログインして続行してください。

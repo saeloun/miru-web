@@ -3,6 +3,13 @@ id:
   devise:
     confirmations:
       confirmed: Alamat email Anda telah berhasil dikonfirmasi.
+      new:
+        description: Tautan konfirmasi Anda telah kedaluwarsa atau tidak valid. Silakan
+          minta tautan baru.
+        remember_password: Ingat kata sandi Anda?
+        resend: Kirim Ulang Email Konfirmasi
+        sign_in: Masuk
+        title: Konfirmasi Email Diperlukan
       send_instructions: Anda akan menerima email berisi petunjuk tentang cara mengkonfirmasi
         alamat email Anda dalam beberapa menit.
       send_paranoid_instructions: Jika alamat email Anda terdaftar dalam basis data
@@ -66,6 +73,9 @@ id:
       signed_in: Berhasil masuk.
       signed_out: Berhasil keluar.
     unlocks:
+      new:
+        submit: Kirim ulang instruksi pembukaan kunci
+        title: Kirim ulang instruksi pembukaan kunci
       send_instructions: Anda akan menerima email berisi petunjuk tentang cara membuka
         kunci akun Anda dalam beberapa menit.
       send_paranoid_instructions: Jika akun Anda ada, Anda akan menerima email berisi

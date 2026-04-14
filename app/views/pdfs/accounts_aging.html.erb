@@ -1,12 +1,12 @@
 <div style="display: flex; justify-content: center; align-items: center; border-bottom: 2px solid #ccc; padding: 10px; height: 30px;">
-  <h2>Accounts Aging Report</h2>
+  <h2><%= t("pdfs.accounts_aging.title") %></h2>
 </div>
 
 <div style="display: flex; justify-content: space-between; padding: 10px;">
   <table style="width: 100%; border-collapse: collapse">
     <thead>
       <th style="text-align: left; flex-basis: 25%; border: 1px solid #000;">
-        <p>Client</p>
+        <p><%= t("pdfs.accounts_aging.client") %></p>
       </th>
       <th style="text-align: left; flex-basis: 25%; padding: 3px;border: 1px solid #000; ">
         0-30 days
@@ -21,7 +21,7 @@
         <p>90+ days</p>
       </th>
       <th style="text-align: left; flex-basis: 25%; padding: 1px;border: 1px solid #000; ">
-        <p>Total</p>
+        <p><%= t("pdfs.accounts_aging.total") %></p>
       </th>
     </thead>
     <tbody>
@@ -61,7 +61,7 @@
       <tr>
         <td style="text-align: left; font-size: 14px; flex-basis: 25%; padding: 2px;border: 1px solid #000;">
           <p style="color: #6B7280; margin: 0;">
-            Total
+            <%= t("pdfs.accounts_aging.total") %>
           </p>
         </td>
         <td style="text-align: left; font-size: 14px; flex-basis: 25%; padding: 2px;border: 1px solid #000;">

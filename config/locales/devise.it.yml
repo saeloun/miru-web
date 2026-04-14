@@ -3,6 +3,13 @@ it:
   devise:
     confirmations:
       confirmed: Il tuo indirizzo email è stato confermato con successo.
+      new:
+        description: Il tuo link di conferma è scaduto o non è valido. Richiedine
+          uno nuovo.
+        remember_password: Ricordi la password?
+        resend: Reinvia l'email di conferma
+        sign_in: Registrazione
+        title: È richiesta la conferma via e-mail.
       send_instructions: Tra pochi minuti riceverai un'email con le istruzioni per
         confermare il tuo indirizzo email.
       send_paranoid_instructions: Se il tuo indirizzo email è presente nel nostro
@@ -68,6 +75,9 @@ it:
       signed_in: Accesso effettuato con successo.
       signed_out: Disconnessione effettuata con successo.
     unlocks:
+      new:
+        submit: Reinvia le istruzioni di sblocco
+        title: Reinvia le istruzioni di sblocco
       send_instructions: Riceverai un'email con le istruzioni su come sbloccare il
         tuo account tra pochi minuti.
       send_paranoid_instructions: Se il tuo account esiste, riceverai un'email con

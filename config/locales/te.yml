@@ -1,5 +1,49 @@
 ---
 te:
+  analytics:
+    activity:
+      amount_collected: వసూలు చేసిన మొత్తం
+      bank_transfers_month: బ్యాంకు బదిలీలు (నెల)
+      created: సృష్టించబడింది
+      downloaded: డౌన్‌లోడ్ చేయబడింది
+      invoice_activity_today: ఈరోజు ఇన్వాయిస్ కార్యకలాపం
+      payment_activity: చెల్లింపు కార్యకలాపం
+      payments_today: ఈరోజు చెల్లింపులు
+      sent: పంపబడింది
+      stripe_payments_month: స్ట్రైప్ చెల్లింపులు (నెల)
+      viewed: వీక్షించబడింది
+    currency:
+      conversion_impact: మార్పిడి ప్రభావం
+      currencies_in_use: వాడుకలో ఉన్న కరెన్సీలు
+      invoices_with_conversion: మార్పిడితో కూడిన ఇన్‌వాయిస్‌లు
+      recent_exchange_rates: ఇటీవలి మార్పిడి రేట్లు
+      table:
+        date: తేదీ
+        from: నుండి
+        rate: రేటు
+        source: మూలం
+        to: కి
+      title: కరెన్సీ మార్పిడి అంతర్దృష్టులు
+    overview:
+      active_clients: క్రియాశీల క్లయింట్లు
+      outstanding: అద్భుతమైన
+      overdue: గడువు మీరినది
+      total_revenue: మొత్తం ఆదాయం
+    recent_activity:
+      ago: "%{time} క్రితం"
+      invoice_reference: ఇన్వాయిస్
+      system: వ్యవస్థ
+      title: ఇటీవలి కార్యకలాపాలు
+    super_admin: సూపర్ అడ్మిన్
+    tabs:
+      activity: కార్యాచరణ
+      clients: క్లయింట్లు
+      currency_exchange: కరెన్సీ & మార్పిడి
+      overview: అవలోకనం
+      revenue: ఆదాయం
+      users: వినియోగదారులు
+    title: విశ్లేషణల డాష్‌బోర్డ్
+    welcome: స్వాగతం, %{name}
   app:
     name: మిరు ఏజెన్సీ ఓఎస్
     tagline: మీ ఏజెన్సీ కార్యకలాపాలను ఒకే కమాండ్ సెంటర్ నుండి నిర్వహించండి.
@@ -169,6 +213,79 @@ te:
         summary_html: మేము <strong>%{paid_on}</strong> నాడు ఇన్వాయిస్ <strong>%{invoice_number}</strong>
           కోసం <strong>%{amount}</strong> స్వీకరించాము.
         title: చెల్లింపు రసీదు
+    devise:
+      confirmation:
+        body_intro: 'మీరు దాదాపు సిద్ధంగా ఉన్నారు. మొదటి రోజు నుండే మిరుతో మీరు చేయగల
+          కొన్ని పనులు ఇక్కడ ఉన్నాయి:'
+        cta: ఇమెయిల్ చిరునామాను నిర్ధారించండి
+        cta_body: మీ ఇమెయిల్ చిరునామాను నిర్ధారించడానికి దిగువ బటన్‌ను ఉపయోగించండి.
+        eyebrow: ఖాతా సెటప్
+        feature_1: హోస్ట్ చేసిన చెల్లింపు లింక్‌లతో ప్రొఫెషనల్ ఇన్‌వాయిస్‌లను పంపండి.
+        feature_2: ఒకే వర్క్‌ఫ్లోలో సమయం, ఖర్చులు మరియు వినియోగాన్ని ట్రాక్ చేయండి.
+        feature_3: మీ బృందాన్ని, క్లయింట్‌లను మరియు బిల్లింగ్‌ను ఒకే వర్క్‌స్పేస్
+          నుండి నిర్వహించండి.
+        feature_4: ఆదాయం, గడువు దాటిన ఇన్‌వాయిస్‌లు మరియు చెల్లింపు కార్యకలాపాలపై
+          నిఘా ఉంచండి.
+        footer_note: మీరు Miru ఖాతాను సృష్టించకపోతే, మీరు ఈ సందేశాన్ని నిరభ్యంతరంగా
+          విస్మరించవచ్చు.
+        greeting_html: హాయ్ <strong>%{name}</strong> ,
+        preheader: మిరు సెటప్‌ను పూర్తి చేయడానికి మీ ఇమెయిల్ చిరునామాను నిర్ధారించండి.
+        subtitle: సమయాన్ని ట్రాక్ చేయడం, ఇన్‌వాయిస్‌లు పంపడం మరియు మీ బృందాన్ని ఒకే
+          చోట నుండి నిర్వహించడం ప్రారంభించడానికి మీ ఇమెయిల్ చిరునామాను నిర్ధారించండి.
+        title: మీరూకు స్వాగతం
+      email_changed:
+        changed_html: మీ ఖాతా ఇమెయిల్ <strong>%{email}</strong> గా మార్చబడింది.
+        eyebrow: ఖాతా భద్రత
+        greeting_html: హలో <strong>%{email}</strong> ,
+        pending_html: మీ ఖాతా ఇమెయిల్ <strong>%{email}</strong> గా మార్చబడుతోంది.
+        preheader: మీ మిరు ఇమెయిల్ చిరునామా మారింది.
+        subtitle: ఈ సందేశం మీ Miru ఖాతాలోని ఇమెయిల్ చిరునామాలో మార్పును ధృవీకరిస్తుంది.
+        title: ఇమెయిల్ చిరునామా నవీకరించబడింది
+        warning_body_html: వెంటనే <a href="mailto:%{email}">%{email}</a> వద్ద మా సహాయక
+          బృందాన్ని సంప్రదించండి.
+        warning_title: ఈ మార్పును అభ్యర్థించలేదా?
+      password_change:
+        eyebrow: ఖాతా భద్రత
+        greeting_html: హలో <strong>%{name}</strong> ,
+        preheader: మీ మిరు పాస్‌వర్డ్ మార్చబడింది.
+        subtitle: మీ మిరు ఖాతా పాస్‌వర్డ్ విజయవంతంగా నవీకరించబడింది.
+        success_body: మీరు మీ కొత్త పాస్‌వర్డ్‌ను ఉపయోగించి మిరులోకి సైన్ ఇన్ చేయడం
+          కొనసాగించవచ్చు.
+        success_title: మీ పాస్‌వర్డ్ నవీకరించబడింది.
+        title: పాస్‌వర్డ్ విజయవంతంగా మార్చబడింది
+        warning_body_html: మీ ఖాతాను సురక్షితం చేయడంలో మేము సహాయపడేలా, వెంటనే <a href="mailto:%{email}">%{email}ని</a>
+          సంప్రదించండి.
+        warning_title: ఈ మార్పు చేయలేదా?
+      reset_password:
+        cta: పాస్‌వర్డ్‌ను రీసెట్ చేయండి
+        cta_body: కొత్త పాస్‌వర్డ్‌ను ఎంచుకోవడానికి దిగువ బటన్‌ను ఉపయోగించండి. ఈ రీసెట్
+          లింక్ 24 గంటల్లో గడువు ముగుస్తుంది.
+        eyebrow: ఖాతా భద్రత
+        footer_note: మీరు పాస్‌వర్డ్ రీసెట్ కోసం అభ్యర్థించనట్లయితే, మీరు ఈ సందేశాన్ని
+          విస్మరించవచ్చు మరియు మీ పాస్‌వర్డ్ అలాగే ఉంటుంది.
+        greeting: హలో,
+        preheader: మీ Miru ఖాతా పాస్‌వర్డ్‌ను రీసెట్ చేయండి.
+        request_html: "<strong>%{email}</strong> కి సంబంధించిన పాస్‌వర్డ్‌ను మార్చమని
+          మాకు ఒక అభ్యర్థన అందింది."
+        subtitle: మీ Miru ఖాతా పాస్‌వర్డ్‌ను రీసెట్ చేయమని మాకు ఒక అభ్యర్థన అందింది.
+        title: మీ పాస్‌వర్డ్‌ను రీసెట్ చేయండి
+      shared:
+        signature_html: ధన్యవాదాలు,<br> <strong>టీమ్ మిరు</strong>
+      unlock:
+        cta: పాస్‌వర్డ్‌ను రీసెట్ చేయండి
+        eyebrow: ఖాతా భద్రత
+        footer_note: మీరు సైన్ ఇన్ చేయడానికి ప్రయత్నించకపోతే, లాక్ గడువు ముగిసే వరకు
+          వేచి ఉండి, వెంటనే మీ పాస్‌వర్డ్‌ను మార్చుకోండి.
+        greeting_html: హలో <strong>%{email}</strong> ,
+        preheader: చాలా సార్లు సైన్-ఇన్ ప్రయత్నాలు విఫలమైన తర్వాత మీ మిరు ఖాతాను అన్‌లాక్
+          చేయండి.
+        subtitle: మీరు చాలాసార్లు సైన్ ఇన్ చేయడానికి విఫలమైనందున మేము మీ మిరు ఖాతాను
+          లాక్ చేసాము.
+        title: మీ ఖాతా తాత్కాలికంగా లాక్ చేయబడింది
+        warning_body: మిరు 30 నిమిషాల తర్వాత ఖాతాలను స్వయంచాలకంగా అన్‌లాక్ చేస్తుంది.
+          మీరు ఈ ప్రయత్నాలను గుర్తించకపోతే, మీ పాస్‌వర్డ్‌ను రీసెట్ చేసుకోండి, తద్వారా
+          లాక్ గడువు ముగిసిన తర్వాత మీ ఖాతా సురక్షితంగా ఉంటుంది.
+        warning_title: సైన్-ఇన్ ప్రయత్నాలు అనుమతించబడిన పరిమితిని మించిపోయాయి.
     expense_mailer:
       approved:
         eyebrow: ఖర్చులు
@@ -322,6 +439,46 @@ te:
         subtitle: "%{company_name} కోసం మీ టైమ్ ఎంట్రీలు ఇంకా ఆశించిన వారాంతపు మొత్తానికి
           తక్కువగా ఉన్నాయి."
         title: మీ టైమ్‌షీట్ పూర్తి చేయండి
+    subscription:
+      plan_purchased:
+        badge: చా-చింగ్
+        billing_interval: బిల్లింగ్ వ్యవధి
+        billing_settings_html: 'బిల్లింగ్ సెట్టింగ్‌లు: <a href="%{url}" style="color:
+          #111827;">%{url}</a>'
+        company: కంపెనీ
+        cta: బిల్లింగ్ సెట్టింగ్‌లను తెరవండి
+        image_label: కొత్త చెల్లింపు ప్రణాళిక
+        image_text: కొత్త వేతనంతో కూడిన కార్యస్థలం
+        plan: ప్రణాళిక
+        stripe_subscription: స్ట్రైప్ సబ్‌స్క్రిప్షన్
+        subtitle: మిరులో కొత్త చెల్లింపు వర్క్‌స్పేస్. బిల్లింగ్ ప్రారంభమైంది.
+        team_seats: జట్టు సీట్లు
+        title: "%{company} ఇప్పుడే %{plan}ని కొనుగోలు చేసింది"
+      plan_purchased_text:
+        billing_interval: 'బిల్లింగ్ వ్యవధి: %{interval}'
+        billing_settings: 'బిల్లింగ్ సెట్టింగ్‌లను తెరవండి: %{url}'
+        company: 'కంపెనీ: %{company}'
+        plan: 'ప్రణాళిక: %{plan}'
+        stripe_subscription: 'స్ట్రైప్ సబ్‌స్క్రిప్షన్: %{id}'
+        team_seats: 'జట్టు సీట్లు: %{seats}'
+      trial_started:
+        body_html: "<strong>%{company}</strong> కోసం మీ 30-రోజుల మిరు ప్రో ట్రయల్
+          ఇప్పుడు యాక్టివ్‌గా ఉంది."
+        cta: ఓపెన్ బిల్లింగ్
+        eyebrow: బిల్లింగ్
+        footer_body: మీరు మీ బిల్లింగ్ సెట్టింగ్‌ల నుండి ఎప్పుడైనా బిల్లింగ్‌ను సమీక్షించుకోవచ్చు,
+          ప్లాన్‌లను పోల్చుకోవచ్చు మరియు అప్‌గ్రేడ్ చేసుకోవచ్చు.
+        greeting_html: హలో <strong>%{name}</strong> ,
+        preheader: మీ Miru Pro ట్రయల్ ఇప్పుడు యాక్టివ్‌గా ఉంది.
+        subtitle: మీ 30-రోజుల ట్రయల్ సమయంలో బిల్లింగ్, నివేదికలు మరియు మిగిలిన ప్రో
+          వర్క్‌ఫ్లోను అన్వేషించండి.
+        title: మీ మిరు ప్రో ట్రయల్ ప్రారంభమైంది
+        trial_ends: విచారణ ముగిసింది
+      trial_started_text:
+        body: "%{company} కోసం మీ 30-రోజుల మిరు ప్రో ట్రయల్ ఇప్పుడు యాక్టివ్‌గా ఉంది."
+        greeting: హలో %{name},
+        review_billing: "%{url} వద్ద బిల్లింగ్‌ను సమీక్షించండి."
+        trial_ends: ప్రయోగం %{date} వద్ద ముగుస్తుంది.
     user_invitation_mailer:
       send_user_invitation:
         about_body: Miru సమయం, ఇన్వాయిస్‌లు, చెల్లింపులు, రోజువారీ పనిని ఒకే వర్క్‌స్పేస్‌లోకి
@@ -368,6 +525,74 @@ te:
       success: మీ పాస్‌వర్డ్‌ను రీసెట్ చేయడానికి సంబంధించిన సూచనలు మీ ఇమెయిల్‌కు పంపబడ్డాయి.
     update:
       success: మీ పాస్‌వర్డ్ నవీకరించబడింది.
+  pdfs:
+    accounts_aging:
+      client: క్లయింట్
+      title: ఖాతాల వయోపరిమితి నివేదిక
+      total: మొత్తం
+    client_revenues:
+      client: క్లయింట్
+      outstanding_amount: బకాయి మొత్తం
+      overdue_amount: బకాయి మొత్తం
+      paid_amount: చెల్లించిన మొత్తం
+      title: క్లయింట్ రాబడి నివేదిక
+      total_revenue: మొత్తం ఆదాయం
+    invoices:
+      amount_due: చెల్లించవలసిన మొత్తం
+      amount_paid: చెల్లించిన మొత్తం
+      billed_to: బిల్లు చేయబడినది
+      client_invoice: క్లయింట్ ఇన్వాయిస్
+      discount: తగ్గింపు
+      due: 'గడువు: %{due_date}'
+      invoice_number: ఇన్‌వాయిస్ నంబర్
+      issue_date: జారీ తేదీ
+      paid: 'చెల్లించబడింది: %{amount}'
+      payment_details: చెల్లింపు వివరాలు
+      payment_rows:
+        account_number: ఖాతా సంఖ్య
+        bank_name: బ్యాంకు పేరు
+        gst_number: GST సంఖ్య
+        routing_number: రూటింగ్ సంఖ్య
+        swift_code: స్విఫ్ట్ కోడ్
+        tax_id: పన్ను గుర్తింపు సంఖ్య
+        vat_number: వ్యాట్ నంబర్
+      prepared_by: "%{company_name} చే తయారు చేయబడింది, %{issue_date} జారీ చేయబడింది,
+        గడువు %{due_date}."
+      reference: 'సూచన: %{reference}'
+      sub_total: ఉప మొత్తం
+      table:
+        date: తేదీ
+        description: వివరణ
+        line_total: లైన్ మొత్తం
+        name: పేరు
+        qty: పరిమాణం
+        rate: రేటు
+      tax: పన్ను
+      title: ఇన్‌వాయిస్
+      total: మొత్తం
+      total_invoice_amount: మొత్తం ఇన్వాయిస్ మొత్తం
+      work_summary: పని సారాంశం
+    outstanding_overdue_invoices:
+      amount: మొత్తం
+      client: క్లయింట్
+      due_date: గడువు తేదీ
+      invoice_number: ఇన్‌వాయిస్ నెం
+      issue_date: జారీ తేదీ
+      no_clients_found: క్లయింట్లు ఎవరూ కనుగొనబడలేదు
+      outstanding_amount: బకాయి మొత్తం
+      overdue_amount: బకాయి మొత్తం
+      status: స్థితి
+      title: చెల్లించని మరియు గడువు మీరిన ఇన్‌వాయిస్‌ల నివేదిక
+      total_amounts: మొత్తం మొత్తాలు
+      total_invoice_amount: మొత్తం ఇన్వాయిస్ మొత్తం
+    time_entries:
+      client: క్లయింట్
+      date: తేదీ
+      hours_logged: గంటలు నమోదు చేయబడ్డాయి
+      note: గమనిక
+      project: ప్రాజెక్ట్
+      team_member: జట్టు సభ్యుడు
+      title: సమయ నమోదు నివేదిక
   projects:
     add_new_project: కొత్త ప్రాజెక్ట్‌ను జోడించండి
     add_project: ప్రాజెక్ట్‌ను జోడించండి

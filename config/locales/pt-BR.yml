@@ -1,5 +1,49 @@
 ---
 pt-BR:
+  analytics:
+    activity:
+      amount_collected: Valor arrecadado
+      bank_transfers_month: Transferências bancárias (mês)
+      created: Criado
+      downloaded: Baixado
+      invoice_activity_today: Atividade de faturamento hoje
+      payment_activity: Atividade de pagamento
+      payments_today: Pagamentos hoje
+      sent: Enviado
+      stripe_payments_month: Pagamentos Stripe (mês)
+      viewed: Visualizado
+    currency:
+      conversion_impact: Impacto da conversão
+      currencies_in_use: Moedas em uso
+      invoices_with_conversion: Faturas com conversão
+      recent_exchange_rates: Taxas de câmbio recentes
+      table:
+        date: Data
+        from: De
+        rate: Avaliar
+        source: Fonte
+        to: Para
+      title: Informações sobre conversão de moedas
+    overview:
+      active_clients: Clientes ativos
+      outstanding: Fora do comum
+      overdue: Atrasado
+      total_revenue: Receita total
+    recent_activity:
+      ago: "%{time} atrás"
+      invoice_reference: fatura
+      system: Sistema
+      title: Atividade recente
+    super_admin: Superadministrador
+    tabs:
+      activity: Atividade
+      clients: Clientes
+      currency_exchange: Moedas e câmbio
+      overview: Visão geral
+      revenue: Receita
+      users: Usuários
+    title: Painel de Análise
+    welcome: Bem-vindo(a), %{name}
   app:
     name: Sistema Operacional da Agência Miru
     tagline: Administre as operações da sua agência a partir de um único centro de
@@ -170,6 +214,80 @@ pt-BR:
         summary_html: Recebemos <strong>%{amount}</strong> em <strong>%{paid_on}</strong>
           referente à fatura <strong>%{invoice_number}</strong> .
         title: Recibo de pagamento
+    devise:
+      confirmation:
+        body_intro: 'Você está quase pronto. Aqui estão algumas coisas que você pode
+          fazer com a Miru desde o primeiro dia:'
+        cta: Confirme o endereço de e-mail.
+        cta_body: Utilize o botão abaixo para confirmar seu endereço de e-mail.
+        eyebrow: Configuração da conta
+        feature_1: Envie faturas profissionais com links de pagamento hospedados.
+        feature_2: Monitore tempo, despesas e utilização em um único fluxo de trabalho.
+        feature_3: Gerencie sua equipe, clientes e faturamento a partir de um único
+          espaço de trabalho.
+        feature_4: Acompanhe de perto as receitas, as faturas em atraso e a atividade
+          de pagamentos.
+        footer_note: Se você não criou uma conta Miru, pode ignorar esta mensagem
+          sem problemas.
+        greeting_html: Olá <strong>%{name}</strong> ,
+        preheader: Confirme seu endereço de e-mail para concluir a configuração do
+          Miru.
+        subtitle: Confirme seu endereço de e-mail para começar a controlar o tempo,
+          enviar faturas e gerenciar sua equipe em um só lugar.
+        title: Bem vindo ao Miru
+      email_changed:
+        changed_html: O endereço de e-mail da sua conta foi alterado para <strong>%{email}</strong>
+          .
+        eyebrow: Segurança da conta
+        greeting_html: Olá <strong>%{email}</strong> ,
+        pending_html: O endereço de e-mail da sua conta está sendo alterado para <strong>%{email}</strong>
+          .
+        preheader: Seu endereço de e-mail da Miru foi alterado.
+        subtitle: Esta mensagem confirma uma alteração no endereço de e-mail da sua
+          conta Miru.
+        title: Endereço de e-mail atualizado
+        warning_body_html: Contate nossa equipe de suporte imediatamente pelo <a href="mailto:%{email}">%{email}</a>
+          .
+        warning_title: Você não solicitou essa alteração?
+      password_change:
+        eyebrow: Segurança da conta
+        greeting_html: Olá <strong>%{name}</strong> ,
+        preheader: Sua senha do Miru foi alterada.
+        subtitle: A senha da sua conta Miru foi atualizada com sucesso.
+        success_body: Você pode continuar acessando o Miru usando sua nova senha.
+        success_title: Sua senha foi atualizada.
+        title: Senha alterada com sucesso
+        warning_body_html: Entre em contato com <a href="mailto:%{email}">%{email}</a>
+          imediatamente para que possamos ajudar a proteger sua conta.
+        warning_title: Não fez essa alteração?
+      reset_password:
+        cta: Redefinir senha
+        cta_body: Use o botão abaixo para escolher uma nova senha. Este link de redefinição
+          expira em 24 horas.
+        eyebrow: Segurança da conta
+        footer_note: Se você não solicitou uma redefinição de senha, pode ignorar
+          esta mensagem e sua senha permanecerá a mesma.
+        greeting: Olá,
+        preheader: Redefina a senha da sua conta Miru.
+        request_html: Recebemos uma solicitação para alterar a senha associada a <strong>%{email}</strong>
+          .
+        subtitle: Recebemos uma solicitação para redefinir a senha da sua conta Miru.
+        title: Redefina sua senha
+      shared:
+        signature_html: Obrigado,<br> <strong>Equipe Miru</strong>
+      unlock:
+        cta: Redefinir senha
+        eyebrow: Segurança da conta
+        footer_note: Se você não tentou fazer login, aguarde o bloqueio expirar e
+          altere sua senha imediatamente.
+        greeting_html: Olá <strong>%{email}</strong> ,
+        preheader: Desbloqueie sua conta Miru após muitas tentativas de login malsucedidas.
+        subtitle: Bloqueamos sua conta Miru após muitas tentativas de login malsucedidas.
+        title: Sua conta está temporariamente bloqueada.
+        warning_body: Miru desbloqueia contas automaticamente após 30 minutos. Se
+          você não reconhecer essas tentativas, redefina sua senha para que sua conta
+          fique segura após o término do bloqueio.
+        warning_title: O número de tentativas de login excedeu o limite permitido.
     expense_mailer:
       approved:
         eyebrow: Despesas
@@ -322,6 +440,48 @@ pt-BR:
         subtitle: Os seus registos de tempo para %{company_name} ainda estão abaixo
           do total semanal esperado.
         title: Preencha sua folha de ponto.
+    subscription:
+      plan_purchased:
+        badge: Cha-ching
+        billing_interval: Intervalo de faturamento
+        billing_settings_html: 'Configurações de faturamento: <a href="%{url}" style="color:
+          #111827;">%{url}</a>'
+        company: Empresa
+        cta: Abra as configurações de faturamento.
+        image_label: Novo plano pago
+        image_text: Novo espaço de trabalho remunerado
+        plan: Plano
+        stripe_subscription: Assinatura Stripe
+        subtitle: Novo espaço de trabalho pago no Miru. O sistema de cobrança já está
+          ativo.
+        team_seats: Lugares da equipe
+        title: "%{company} acabou de comprar %{plan}"
+      plan_purchased_text:
+        billing_interval: 'Intervalo de faturamento: %{interval}'
+        billing_settings: 'Abrir configurações de faturamento: %{url}'
+        company: 'Empresa: %{company}'
+        plan: 'Plano: %{plan}'
+        stripe_subscription: 'Assinatura Stripe: %{id}'
+        team_seats: 'Lugares da equipe: %{seats}'
+      trial_started:
+        body_html: Seu período de avaliação de 30 dias do Miru Pro para <strong>%{company}</strong>
+          já está ativo.
+        cta: Faturamento aberto
+        eyebrow: Cobrança
+        footer_body: Você pode consultar sua fatura, comparar planos e fazer upgrade
+          a qualquer momento nas suas configurações de faturamento.
+        greeting_html: Olá <strong>%{name}</strong> ,
+        preheader: Seu período de avaliação do Miru Pro agora está ativo.
+        subtitle: Explore a faturação, os relatórios e o restante do fluxo de trabalho
+          do Pro durante o seu período experimental de 30 dias.
+        title: Seu período de teste do Miru Pro está ativo.
+        trial_ends: O julgamento termina
+      trial_started_text:
+        body: Seu período de avaliação de 30 dias do Miru Pro para %{company} já está
+          ativo.
+        greeting: Olá %{name},
+        review_billing: Revisar a fatura em %{url}.
+        trial_ends: O teste termina em %{date}.
     user_invitation_mailer:
       send_user_invitation:
         about_body: Miru reúne tempo, faturas, pagamentos e operações diárias em um
@@ -370,6 +530,74 @@ pt-BR:
       success: As instruções para redefinir sua senha foram enviadas para o seu e-mail.
     update:
       success: Sua senha foi atualizada.
+  pdfs:
+    accounts_aging:
+      client: Cliente
+      title: Relatório de Antiguidade de Contas
+      total: Total
+    client_revenues:
+      client: Cliente
+      outstanding_amount: Valor pendente
+      overdue_amount: Valor em atraso
+      paid_amount: Valor pago
+      title: Relatório de Receita do Cliente
+      total_revenue: Receita total
+    invoices:
+      amount_due: Valor devido
+      amount_paid: Valor pago
+      billed_to: Faturado para
+      client_invoice: Fatura do cliente
+      discount: Desconto
+      due: 'Data de vencimento: %{due_date}'
+      invoice_number: Número da fatura
+      issue_date: Data de emissão
+      paid: 'Pago: %{amount}'
+      payment_details: Detalhes do pagamento
+      payment_rows:
+        account_number: Número de conta
+        bank_name: Nome do banco
+        gst_number: Número GST
+        routing_number: Número de roteamento
+        swift_code: Código Swift
+        tax_id: Número de Identificação Fiscal
+        vat_number: Número de IVA
+      prepared_by: Preparado por %{company_name}, emitido por %{issue_date}, com vencimento
+        em %{due_date}.
+      reference: 'Referência: %{reference}'
+      sub_total: Subtotal
+      table:
+        date: Data
+        description: Descrição
+        line_total: Total da linha
+        name: Nome
+        qty: Quantidade
+        rate: Avaliar
+      tax: Imposto
+      title: Fatura
+      total: Total
+      total_invoice_amount: Valor total da fatura
+      work_summary: Resumo do Trabalho
+    outstanding_overdue_invoices:
+      amount: Quantia
+      client: Cliente
+      due_date: Data de vencimento
+      invoice_number: Nº da fatura
+      issue_date: Data de emissão
+      no_clients_found: Nenhum cliente encontrado
+      outstanding_amount: Valor pendente
+      overdue_amount: Valor em atraso
+      status: Status
+      title: Relatório de Faturas Pendentes e Vencidas
+      total_amounts: Valores totais
+      total_invoice_amount: Valor total da fatura
+    time_entries:
+      client: Cliente
+      date: Data
+      hours_logged: Horas Registradas
+      note: Observação
+      project: Projeto
+      team_member: Membro da Equipe
+      title: Relatório de Registro de Horas
   projects:
     add_new_project: Adicionar novo projeto
     add_project: Adicionar projeto

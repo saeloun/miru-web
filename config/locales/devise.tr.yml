@@ -3,6 +3,13 @@ tr:
   devise:
     confirmations:
       confirmed: E-posta adresiniz başarıyla doğrulandı.
+      new:
+        description: Onay bağlantınızın süresi dolmuş veya geçersiz. Lütfen yeni bir
+          bağlantı isteyin.
+        remember_password: Şifrenizi hatırlıyor musunuz?
+        resend: Onay E-postasını Yeniden Gönder
+        sign_in: Giriş yap
+        title: E-posta Onayı Gerekli
       send_instructions: Birkaç dakika içinde e-posta adresinizi nasıl doğrulayacağınıza
         dair talimatlar içeren bir e-posta alacaksınız.
       send_paranoid_instructions: E-posta adresiniz veritabanımızda kayıtlıysa, birkaç
@@ -65,6 +72,9 @@ tr:
       signed_in: Başarıyla giriş yapıldı.
       signed_out: Başarılı bir şekilde oturumdan çıkış yapıldı.
     unlocks:
+      new:
+        submit: Kilit açma talimatlarını yeniden gönder
+        title: Kilit açma talimatlarını yeniden gönder
       send_instructions: Hesabınızın kilidini nasıl açacağınıza dair talimatları içeren
         bir e-posta birkaç dakika içinde alacaksınız.
       send_paranoid_instructions: Hesabınız mevcutsa, birkaç dakika içinde hesabınızın

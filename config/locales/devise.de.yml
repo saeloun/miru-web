@@ -3,6 +3,13 @@ de:
   devise:
     confirmations:
       confirmed: Ihre E-Mail-Adresse wurde erfolgreich bestätigt.
+      new:
+        description: Ihr Bestätigungslink ist abgelaufen oder ungültig. Bitte fordern
+          Sie einen neuen an.
+        remember_password: Passwort vergessen?
+        resend: Bestätigungs-E-Mail erneut senden
+        sign_in: anmelden
+        title: E-Mail-Bestätigung erforderlich
       send_instructions: Sie erhalten in wenigen Minuten eine E-Mail mit Anweisungen
         zur Bestätigung Ihrer E-Mail-Adresse.
       send_paranoid_instructions: Wenn Ihre E-Mail-Adresse in unserer Datenbank vorhanden
@@ -70,6 +77,9 @@ de:
       signed_in: Anmeldung erfolgreich.
       signed_out: Erfolgreich abgemeldet.
     unlocks:
+      new:
+        submit: Entsperranweisungen erneut senden
+        title: Entsperranweisungen erneut senden
       send_instructions: Sie erhalten in wenigen Minuten eine E-Mail mit Anweisungen
         zum Entsperren Ihres Kontos.
       send_paranoid_instructions: Falls Ihr Konto existiert, erhalten Sie in wenigen

@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Invoice</title>
+  <title><%= t("pdfs.invoices.title") %></title>
   <style>
     html {
       -webkit-print-color-adjust: exact;
@@ -359,13 +359,13 @@
     reference = invoice.reference.presence || "-"
     billed_to = client.formatted_address.presence || client.email.presence || "-"
     payment_rows = [
-      ["Bank Name", invoice.company.bank_name],
-      ["Account Number", invoice.company.bank_account_number],
-      ["Routing Number", invoice.company.bank_routing_number],
-      ["SWIFT Code", invoice.company.bank_swift_code],
-      ["Tax ID", invoice.company.tax_id],
-      ["VAT Number", invoice.company.vat_number],
-      ["GST Number", invoice.company.gst_number]
+      [t("pdfs.invoices.payment_rows.bank_name"), invoice.company.bank_name],
+      [t("pdfs.invoices.payment_rows.account_number"), invoice.company.bank_account_number],
+      [t("pdfs.invoices.payment_rows.routing_number"), invoice.company.bank_routing_number],
+      [t("pdfs.invoices.payment_rows.swift_code"), invoice.company.bank_swift_code],
+      [t("pdfs.invoices.payment_rows.tax_id"), invoice.company.tax_id],
+      [t("pdfs.invoices.payment_rows.vat_number"), invoice.company.vat_number],
+      [t("pdfs.invoices.payment_rows.gst_number"), invoice.company.gst_number]
     ].select { |_, value| value.present? }
   %>
 
@@ -382,7 +382,7 @@
                   </div>
                 <% end %>
                 <div class="invoice-brand-copy">
-                  <p class="invoice-kicker">Client Invoice</p>
+                  <p class="invoice-kicker"><%= t("pdfs.invoices.client_invoice") %></p>
                   <p class="invoice-company"><%= invoice.company.name %></p>
                   <p class="invoice-company-meta">
                     <%= invoice.company.business_phone.presence || invoice.company.email.presence || invoice.company.formatted_address %>
@@ -393,7 +393,7 @@
             <td class="invoice-status">
               <span class="invoice-status-pill"><%= invoice.status.humanize %></span>
               <p class="invoice-status-amount"><%= invoice_amount %></p>
-              <p class="invoice-status-label">Total invoice amount</p>
+              <p class="invoice-status-label"><%= t("pdfs.invoices.total_invoice_amount") %></p>
             </td>
           </tr>
         </table>
@@ -404,46 +404,46 @@
           <tr>
             <td class="strip-cell">
               <div class="strip-card">
-                <p class="strip-label">Billed To</p>
+                <p class="strip-label"><%= t("pdfs.invoices.billed_to") %></p>
                 <p class="strip-value"><%= client.name %></p>
                 <p class="strip-subvalue"><%= billed_to %></p>
               </div>
             </td>
             <td class="strip-cell">
               <div class="strip-card">
-                <p class="strip-label">Invoice Number</p>
+                <p class="strip-label"><%= t("pdfs.invoices.invoice_number") %></p>
                 <p class="strip-value"><%= invoice.invoice_number %></p>
-                <p class="strip-subvalue">Reference: <%= reference %></p>
+                <p class="strip-subvalue"><%= t("pdfs.invoices.reference", reference: reference) %></p>
               </div>
             </td>
             <td class="strip-cell">
               <div class="strip-card">
-                <p class="strip-label">Issue Date</p>
+                <p class="strip-label"><%= t("pdfs.invoices.issue_date") %></p>
                 <p class="strip-value"><%= invoice.formatted_issue_date %></p>
-                <p class="strip-subvalue">Due: <%= invoice.formatted_due_date %></p>
+                <p class="strip-subvalue"><%= t("pdfs.invoices.due", due_date: invoice.formatted_due_date) %></p>
               </div>
             </td>
             <td class="strip-cell">
               <div class="strip-card">
-                <p class="strip-label">Amount Due</p>
+                <p class="strip-label"><%= t("pdfs.invoices.amount_due") %></p>
                 <p class="strip-value"><%= invoice_amount_due %></p>
-                <p class="strip-subvalue">Paid: <%= invoice_amount_paid %></p>
+                <p class="strip-subvalue"><%= t("pdfs.invoices.paid", amount: invoice_amount_paid) %></p>
               </div>
             </td>
           </tr>
         </table>
 
         <div class="section">
-          <p class="section-title">Work Summary</p>
+          <p class="section-title"><%= t("pdfs.invoices.work_summary") %></p>
           <table class="ledger-table" role="presentation">
             <thead>
               <tr>
-                <th style="width: 16%;">Name</th>
-                <th style="width: 12%;">Date</th>
-                <th style="width: 32%;">Description</th>
-                <th class="text-right" style="width: 13%;">Rate</th>
-                <th class="text-right" style="width: 10%;">Qty</th>
-                <th class="text-right" style="width: 17%;">Line Total</th>
+                <th style="width: 16%;"><%= t("pdfs.invoices.table.name") %></th>
+                <th style="width: 12%;"><%= t("pdfs.invoices.table.date") %></th>
+                <th style="width: 32%;"><%= t("pdfs.invoices.table.description") %></th>
+                <th class="text-right" style="width: 13%;"><%= t("pdfs.invoices.table.rate") %></th>
+                <th class="text-right" style="width: 10%;"><%= t("pdfs.invoices.table.qty") %></th>
+                <th class="text-right" style="width: 17%;"><%= t("pdfs.invoices.table.line_total") %></th>
               </tr>
             </thead>
             <tbody>
@@ -460,7 +460,7 @@
             </tbody>
           </table>
           <p class="editorial-note">
-            Prepared by <%= invoice.company.name %>, issued <%= invoice.formatted_issue_date %>, due <%= invoice.formatted_due_date %>.
+            <%= t("pdfs.invoices.prepared_by", company_name: invoice.company.name, issue_date: invoice.formatted_issue_date, due_date: invoice.formatted_due_date) %>
           </p>
         </div>
 
@@ -469,7 +469,7 @@
             <td class="summary-cell">
               <% if payment_rows.any? %>
                 <div class="summary-card meta-panel">
-                  <p class="section-title" style="margin-top: 0;">Payment Details</p>
+                  <p class="section-title" style="margin-top: 0;"><%= t("pdfs.invoices.payment_details") %></p>
                   <table class="meta-grid" role="presentation">
                     <% payment_rows.each do |label, value| %>
                       <tr>
@@ -485,27 +485,27 @@
               <div class="summary-card">
               <table class="totals-panel" role="presentation">
                 <tr>
-                  <td class="totals-label">Sub total</td>
+                  <td class="totals-label"><%= t("pdfs.invoices.sub_total") %></td>
                   <td class="totals-value"><%= sub_total %></td>
                 </tr>
                 <tr>
-                  <td class="totals-label">Discount</td>
+                  <td class="totals-label"><%= t("pdfs.invoices.discount") %></td>
                   <td class="totals-value"><%= invoice_discount %></td>
                 </tr>
                 <tr>
-                  <td class="totals-label">Tax</td>
+                  <td class="totals-label"><%= t("pdfs.invoices.tax") %></td>
                   <td class="totals-value"><%= invoice_tax %></td>
                 </tr>
                 <tr class="totals-grand">
-                  <td>Total</td>
+                  <td><%= t("pdfs.invoices.total") %></td>
                   <td class="totals-value"><%= total %></td>
                 </tr>
                 <tr>
-                  <td class="totals-label">Amount Paid</td>
+                  <td class="totals-label"><%= t("pdfs.invoices.amount_paid") %></td>
                   <td class="totals-value"><%= invoice_amount_paid %></td>
                 </tr>
                 <tr>
-                  <td class="totals-label">Amount Due</td>
+                  <td class="totals-label"><%= t("pdfs.invoices.amount_due") %></td>
                   <td class="totals-value"><%= invoice_amount_due %></td>
                 </tr>
               </table>

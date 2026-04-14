@@ -3,6 +3,12 @@ zh-CN:
   devise:
     confirmations:
       confirmed: 您的电子邮件地址已成功验证。
+      new:
+        description: 您的确认链接已过期或无效，请申请新的链接。
+        remember_password: 记住密码了吗？
+        resend: 重新发送确认邮件
+        sign_in: 登入
+        title: 需要电子邮件确认
       send_instructions: 几分钟后，您将收到一封电子邮件，其中包含如何确认您的电子邮件地址的说明。
       send_paranoid_instructions: 如果您的电子邮件地址已存在于我们的数据库中，您将在几分钟内收到一封电子邮件，其中包含如何确认您的电子邮件地址的说明。
     failure:
@@ -51,6 +57,9 @@ zh-CN:
       signed_in: 登录成功。
       signed_out: 已成功登出。
     unlocks:
+      new:
+        submit: 重新发送解锁说明
+        title: 重新发送解锁说明
       send_instructions: 几分钟后，您将收到一封电子邮件，其中包含解锁帐户的说明。
       send_paranoid_instructions: 如果您的账户存在，您将在几分钟内收到一封电子邮件，其中包含解锁账户的说明。
       unlocked: 您的账户已成功解锁。请登录以继续。

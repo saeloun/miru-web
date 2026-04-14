@@ -1,5 +1,49 @@
 ---
 id:
+  analytics:
+    activity:
+      amount_collected: Jumlah yang Dikumpulkan
+      bank_transfers_month: Transfer Bank (Bulanan)
+      created: Dibuat
+      downloaded: Diunduh
+      invoice_activity_today: Aktivitas Faktur Hari Ini
+      payment_activity: Aktivitas Pembayaran
+      payments_today: Pembayaran Hari Ini
+      sent: Terkirim
+      stripe_payments_month: Pembayaran Stripe (Bulanan)
+      viewed: Dilihat
+    currency:
+      conversion_impact: Dampak Konversi
+      currencies_in_use: Mata Uang yang Digunakan
+      invoices_with_conversion: Faktur dengan Konversi
+      recent_exchange_rates: Kurs Pertukaran Terbaru
+      table:
+        date: Tanggal
+        from: Dari
+        rate: Kecepatan
+        source: Sumber
+        to: Ke
+      title: Wawasan Konversi Mata Uang
+    overview:
+      active_clients: Klien Aktif
+      outstanding: Luar biasa
+      overdue: Terlambat
+      total_revenue: Total Pendapatan
+    recent_activity:
+      ago: "%{time} yang lalu"
+      invoice_reference: faktur
+      system: Sistem
+      title: Aktivitas Terkini
+    super_admin: Admin Super
+    tabs:
+      activity: Aktivitas
+      clients: Klien
+      currency_exchange: Mata Uang & Pertukaran
+      overview: Ringkasan
+      revenue: Pendapatan
+      users: Pengguna
+    title: Dasbor Analitik
+    welcome: Selamat datang, %{name}
   app:
     name: Agensi Miru OS
     tagline: Kelola operasional agensi Anda dari satu pusat komando.
@@ -169,6 +213,82 @@ id:
         summary_html: Kami menerima <strong>%{amount}</strong> pada <strong>%{paid_on}</strong>
           untuk faktur <strong>%{invoice_number}</strong> .
         title: Kwitansi Pembayaran
+    devise:
+      confirmation:
+        body_intro: 'Anda hampir siap. Berikut beberapa hal yang dapat Anda lakukan
+          dengan Miru sejak hari pertama:'
+        cta: Konfirmasi alamat email
+        cta_body: Gunakan tombol di bawah ini untuk mengkonfirmasi alamat email Anda.
+        eyebrow: Pengaturan akun
+        feature_1: Kirim faktur profesional dengan tautan pembayaran yang dihosting.
+        feature_2: Lacak waktu, pengeluaran, dan pemanfaatan dalam satu alur kerja.
+        feature_3: Kelola tim, klien, dan penagihan Anda dari satu ruang kerja.
+        feature_4: Pantau terus pendapatan, faktur yang jatuh tempo, dan aktivitas
+          pembayaran.
+        footer_note: Jika Anda belum membuat akun Miru, Anda dapat mengabaikan pesan
+          ini.
+        greeting_html: Hai <strong>%{name}</strong> ,
+        preheader: Konfirmasikan alamat email Anda untuk menyelesaikan pengaturan
+          Miru.
+        subtitle: Konfirmasikan alamat email Anda untuk mulai melacak waktu kerja,
+          mengirim faktur, dan mengelola tim Anda dari satu tempat.
+        title: Selamat datang di Miru
+      email_changed:
+        changed_html: Alamat email akun Anda telah diubah menjadi <strong>%{email}</strong>
+          .
+        eyebrow: Keamanan akun
+        greeting_html: Halo <strong>%{email}</strong> ,
+        pending_html: Alamat email akun Anda sedang diubah menjadi <strong>%{email}</strong>
+          .
+        preheader: Alamat email Miru Anda telah berubah.
+        subtitle: Pesan ini mengkonfirmasi perubahan alamat email pada akun Miru Anda.
+        title: Alamat email telah diperbarui.
+        warning_body_html: Hubungi tim dukungan kami segera di <a href="mailto:%{email}">%{email}</a>
+          .
+        warning_title: Tidak meminta perubahan ini?
+      password_change:
+        eyebrow: Keamanan akun
+        greeting_html: Halo <strong>%{name}</strong> ,
+        preheader: Kata sandi Miru Anda telah diubah.
+        subtitle: Kata sandi akun Miru Anda berhasil diperbarui.
+        success_body: Anda dapat melanjutkan masuk ke Miru menggunakan kata sandi
+          baru Anda.
+        success_title: Kata sandi Anda telah diperbarui.
+        title: Kata sandi berhasil diubah.
+        warning_body_html: Hubungi <a href="mailto:%{email}">%{email}</a> segera agar
+          kami dapat membantu mengamankan akun Anda.
+        warning_title: Tidak melakukan perubahan ini?
+      reset_password:
+        cta: Atur ulang kata sandi
+        cta_body: Gunakan tombol di bawah untuk memilih kata sandi baru. Tautan pengaturan
+          ulang ini akan kedaluwarsa dalam 24 jam.
+        eyebrow: Keamanan akun
+        footer_note: Jika Anda tidak meminta pengaturan ulang kata sandi, Anda dapat
+          mengabaikan pesan ini dan kata sandi Anda akan tetap sama.
+        greeting: Halo,
+        preheader: Atur ulang kata sandi untuk akun Miru Anda.
+        request_html: Kami menerima permintaan untuk mengubah kata sandi yang terkait
+          dengan <strong>%{email}</strong> .
+        subtitle: Kami menerima permintaan untuk mengatur ulang kata sandi akun Miru
+          Anda.
+        title: Atur ulang kata sandi Anda
+      shared:
+        signature_html: Terima kasih,<br> <strong>Tim Miru</strong>
+      unlock:
+        cta: Atur ulang kata sandi
+        eyebrow: Keamanan akun
+        footer_note: Jika Anda belum mencoba masuk, tunggu hingga masa berlaku kunci
+          berakhir dan segera ubah kata sandi Anda.
+        greeting_html: Halo <strong>%{email}</strong> ,
+        preheader: Buka kunci akun Miru Anda setelah terlalu banyak upaya masuk yang
+          gagal.
+        subtitle: Kami mengunci akun Miru Anda setelah terlalu banyak upaya masuk
+          yang gagal.
+        title: Akun Anda dikunci sementara.
+        warning_body: Miru membuka kunci akun secara otomatis setelah 30 menit. Jika
+          Anda tidak mengenali upaya tersebut, atur ulang kata sandi Anda agar akun
+          Anda aman setelah kunci berakhir.
+        warning_title: Upaya masuk melebihi batas yang diizinkan.
     expense_mailer:
       approved:
         eyebrow: Pengeluaran
@@ -325,6 +445,46 @@ id:
         subtitle: Entri waktu Anda untuk %{company_name} masih di bawah total mingguan
           yang diharapkan.
         title: Lengkapi lembar waktu Anda.
+    subscription:
+      plan_purchased:
+        badge: Cha-ching
+        billing_interval: Interval penagihan
+        billing_settings_html: 'Pengaturan penagihan: <a href="%{url}" style="color:
+          #111827;">%{url}</a>'
+        company: Perusahaan
+        cta: Buka pengaturan penagihan
+        image_label: Paket berbayar baru
+        image_text: Ruang kerja berbayar baru
+        plan: Rencana
+        stripe_subscription: Langganan Stripe
+        subtitle: Ruang kerja berbayar baru di Miru. Penagihan sudah aktif.
+        team_seats: Kursi tim
+        title: "%{company} baru saja membeli %{plan}"
+      plan_purchased_text:
+        billing_interval: 'Interval penagihan: %{interval}'
+        billing_settings: 'Buka pengaturan penagihan: %{url}'
+        company: 'Perusahaan: %{company}'
+        plan: 'Rencana: %{plan}'
+        stripe_subscription: 'Langganan Stripe: %{id}'
+        team_seats: 'Kursi tim: %{seats}'
+      trial_started:
+        body_html: Masa uji coba Miru Pro 30 hari Anda untuk <strong>%{company}</strong>
+          kini aktif.
+        cta: Tagihan terbuka
+        eyebrow: Penagihan
+        footer_body: Anda dapat meninjau tagihan, membandingkan paket, dan melakukan
+          peningkatan kapan saja dari pengaturan tagihan Anda.
+        greeting_html: Halo <strong>%{name}</strong> ,
+        preheader: Masa uji coba Miru Pro Anda kini aktif.
+        subtitle: Jelajahi penagihan, laporan, dan alur kerja Pro lainnya selama masa
+          uji coba 30 hari Anda.
+        title: Uji coba Miru Pro Anda telah dimulai.
+        trial_ends: Percobaan berakhir
+      trial_started_text:
+        body: Masa uji coba Miru Pro 30 hari Anda untuk %{company} kini aktif.
+        greeting: Halo %{name},
+        review_billing: Tinjau tagihan di %{url}.
+        trial_ends: Percobaan berakhir pada %{date}.
     user_invitation_mailer:
       send_user_invitation:
         about_body: Miru menyatukan pencatatan waktu, faktur, pembayaran, dan operasional
@@ -374,6 +534,74 @@ id:
         Anda.
     update:
       success: Kata sandi Anda telah diperbarui.
+  pdfs:
+    accounts_aging:
+      client: Klien
+      title: Laporan Penuaan Piutang
+      total: Total
+    client_revenues:
+      client: Klien
+      outstanding_amount: Jumlah Terutang
+      overdue_amount: Jumlah Tunggakan
+      paid_amount: Jumlah yang Dibayarkan
+      title: Laporan Pendapatan Klien
+      total_revenue: Total Pendapatan
+    invoices:
+      amount_due: Jumlah yang Harus Dibayar
+      amount_paid: Jumlah yang Dibayarkan
+      billed_to: Ditagihkan Kepada
+      client_invoice: Faktur Klien
+      discount: Diskon
+      due: 'Jatuh tempo: %{due_date}'
+      invoice_number: Nomor Faktur
+      issue_date: Tanggal Penerbitan
+      paid: 'Dibayar: %{amount}'
+      payment_details: Rincian Pembayaran
+      payment_rows:
+        account_number: Nomor Rekening
+        bank_name: Nama Bank
+        gst_number: Nomor GST
+        routing_number: Nomor Routing
+        swift_code: Kode SWIFT
+        tax_id: Nomor Identifikasi Pajak
+        vat_number: Nomor PPN
+      prepared_by: Disiapkan oleh %{company_name}, diterbitkan %{issue_date}, jatuh
+        tempo %{due_date}.
+      reference: 'Referensi: %{reference}'
+      sub_total: Subtotal
+      table:
+        date: Tanggal
+        description: Keterangan
+        line_total: Jumlah Baris
+        name: Nama
+        qty: Jumlah
+        rate: Kecepatan
+      tax: Pajak
+      title: Faktur
+      total: Total
+      total_invoice_amount: Jumlah total tagihan
+      work_summary: Ringkasan Pekerjaan
+    outstanding_overdue_invoices:
+      amount: Jumlah
+      client: Klien
+      due_date: Tenggat waktu
+      invoice_number: Nomor Faktur
+      issue_date: Tanggal Penerbitan
+      no_clients_found: Tidak ada klien yang ditemukan.
+      outstanding_amount: Jumlah Terutang
+      overdue_amount: Jumlah Tunggakan
+      status: Status
+      title: Laporan Faktur yang Belum Dibayar dan Tertunggak
+      total_amounts: Jumlah Total
+      total_invoice_amount: Jumlah Total Tagihan
+    time_entries:
+      client: Klien
+      date: Tanggal
+      hours_logged: Jam yang Tercatat
+      note: Catatan
+      project: Proyek
+      team_member: Anggota Tim
+      title: Laporan Pencatatan Waktu
   projects:
     add_new_project: Tambahkan proyek baru
     add_project: Tambahkan proyek

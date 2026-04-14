@@ -8,6 +8,7 @@ import {
   DialogTitle,
 } from "../ui/dialog";
 import { ScrollArea } from "../ui/scroll-area";
+import { i18n } from "../../i18n";
 
 import ReceiptPreview from "./ReceiptPreview";
 
@@ -30,9 +31,9 @@ const ReceiptPreviewDialog: React.FC<ReceiptPreviewDialogProps> = ({
   <Dialog open={open} onOpenChange={onOpenChange}>
     <DialogContent className="max-w-4xl">
       <DialogHeader>
-        <DialogTitle>Receipt preview</DialogTitle>
+        <DialogTitle>{i18n.t("expenses.receiptPreview")}</DialogTitle>
         <DialogDescription>
-          {expense?.description || "Review uploaded receipts for this expense."}
+          {expense?.description || i18n.t("expenses.reviewUploadedReceipts")}
         </DialogDescription>
       </DialogHeader>
       <ScrollArea className="max-h-[75vh] pr-4">

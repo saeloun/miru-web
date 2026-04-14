@@ -1,5 +1,49 @@
 ---
 ur:
+  analytics:
+    activity:
+      amount_collected: جمع کی گئی رقم
+      bank_transfers_month: بینک ٹرانسفرز (مہینہ)
+      created: بنایا
+      downloaded: ڈاؤن لوڈ کیا گیا۔
+      invoice_activity_today: انوائس کی سرگرمی آج
+      payment_activity: ادائیگی کی سرگرمی
+      payments_today: ادائیگیاں آج
+      sent: بھیجا
+      stripe_payments_month: پٹی کی ادائیگی (مہینہ)
+      viewed: دیکھا
+    currency:
+      conversion_impact: تبادلوں کا اثر
+      currencies_in_use: استعمال میں کرنسیاں
+      invoices_with_conversion: تبادلوں کے ساتھ رسیدیں
+      recent_exchange_rates: حالیہ شرح تبادلہ
+      table:
+        date: تاریخ
+        from: سے
+        rate: شرح
+        source: ماخذ
+        to: کو
+      title: کرنسی کی تبدیلی کی بصیرتیں۔
+    overview:
+      active_clients: ایکٹو کلائنٹس
+      outstanding: بقایا
+      overdue: زائد المیعاد
+      total_revenue: کل آمدنی
+    recent_activity:
+      ago: "%{time} پہلے"
+      invoice_reference: رسید
+      system: سسٹم
+      title: حالیہ سرگرمی
+    super_admin: سپر ایڈمن
+    tabs:
+      activity: سرگرمی
+      clients: کلائنٹس
+      currency_exchange: کرنسی اور تبادلہ
+      overview: جائزہ
+      revenue: آمدنی
+      users: صارفین
+    title: تجزیاتی ڈیش بورڈ
+    welcome: خوش آمدید، %{name}
   app:
     name: میرو ایجنسی او ایس
     tagline: ایک کمانڈ سینٹر سے اپنی ایجنسی کے آپریشنز چلائیں۔
@@ -171,6 +215,81 @@ ur:
         summary_html: ہمیں انوائس <strong>%{invoice_number}</strong> کے لیے <strong>%{paid_on}</strong>
           پر <strong>%{amount}</strong> موصول ہوا۔
         title: ادائیگی کی رسید
+    devise:
+      confirmation:
+        body_intro: 'آپ تقریباً سیٹ ہو چکے ہیں۔ یہاں کچھ چیزیں ہیں جو آپ پہلے دن سے
+          میرو کے ساتھ کر سکتے ہیں:'
+        cta: ای میل ایڈریس کی تصدیق کریں۔
+        cta_body: اپنے ای میل ایڈریس کی تصدیق کے لیے نیچے دیئے گئے بٹن کا استعمال
+          کریں۔
+        eyebrow: اکاؤنٹ سیٹ اپ
+        feature_1: میزبان ادائیگی کے لنکس کے ساتھ پیشہ ورانہ رسیدیں بھیجیں۔
+        feature_2: ایک ورک فلو میں وقت، اخراجات اور استعمال کا سراغ لگائیں۔
+        feature_3: ایک ہی ورک اسپیس سے اپنی ٹیم، کلائنٹس اور بلنگ کا نظم کریں۔
+        feature_4: آمدنی، زائد المیعاد رسیدوں، اور ادائیگی کی سرگرمی میں سرفہرست رہیں۔
+        footer_note: اگر آپ نے Miru اکاؤنٹ نہیں بنایا ہے، تو آپ محفوظ طریقے سے اس
+          پیغام کو نظر انداز کر سکتے ہیں۔
+        greeting_html: ہائے <strong>%{name}</strong> ،
+        preheader: Miru سیٹ اپ مکمل کرنے کے لیے اپنے ای میل ایڈریس کی تصدیق کریں۔
+        subtitle: ٹریکنگ ٹائم شروع کرنے، رسیدیں بھیجنے، اور اپنی ٹیم کو ایک جگہ سے
+          منظم کرنے کے لیے اپنے ای میل ایڈریس کی تصدیق کریں۔
+        title: میرو میں خوش آمدید
+      email_changed:
+        changed_html: آپ کے اکاؤنٹ کی ای میل کو <strong>%{email}</strong> میں تبدیل
+          کر دیا گیا ہے۔
+        eyebrow: اکاؤنٹ سیکیورٹی
+        greeting_html: ہیلو <strong>%{email}</strong> ،
+        pending_html: آپ کے اکاؤنٹ کی ای میل کو <strong>%{email}</strong> میں تبدیل
+          کیا جا رہا ہے۔
+        preheader: آپ کا Miru ای میل ایڈریس بدل گیا ہے۔
+        subtitle: یہ پیغام آپ کے Miru اکاؤنٹ پر ای میل ایڈریس میں تبدیلی کی تصدیق
+          کرتا ہے۔
+        title: ای میل ایڈریس اپ ڈیٹ ہو گیا۔
+        warning_body_html: ہماری سپورٹ ٹیم سے فوری طور پر <a href="mailto:%{email}">%{email}</a>
+          پر رابطہ کریں۔
+        warning_title: کیا اس تبدیلی کی درخواست نہیں کی؟
+      password_change:
+        eyebrow: اکاؤنٹ سیکیورٹی
+        greeting_html: ہیلو <strong>%{name}</strong> ،
+        preheader: آپ کا Miru پاس ورڈ تبدیل کر دیا گیا ہے۔
+        subtitle: آپ کے Miru اکاؤنٹ کا پاس ورڈ کامیابی کے ساتھ اپ ڈیٹ ہو گیا۔
+        success_body: آپ اپنا نیا پاس ورڈ استعمال کر کے Miru میں سائن ان کرنا جاری
+          رکھ سکتے ہیں۔
+        success_title: آپ کا پاس ورڈ اپ ڈیٹ کر دیا گیا تھا۔
+        title: پاس ورڈ کامیابی سے تبدیل ہو گیا۔
+        warning_body_html: <a href="mailto:%{email}">%{email} سے</a> فوراً رابطہ کریں
+          تاکہ ہم آپ کے اکاؤنٹ کو محفوظ بنانے میں مدد کر سکیں۔
+        warning_title: کیا یہ تبدیلی نہیں کی؟
+      reset_password:
+        cta: پاس ورڈ دوبارہ ترتیب دیں۔
+        cta_body: نیا پاس ورڈ منتخب کرنے کے لیے نیچے دیا گیا بٹن استعمال کریں۔ یہ
+          ری سیٹ لنک 24 گھنٹے میں ختم ہو جائے گا۔
+        eyebrow: اکاؤنٹ سیکیورٹی
+        footer_note: اگر آپ نے پاس ورڈ دوبارہ ترتیب دینے کی درخواست نہیں کی ہے، تو
+          آپ اس پیغام کو نظر انداز کر سکتے ہیں اور آپ کا پاس ورڈ وہی رہے گا۔
+        greeting: ہیلو،
+        preheader: اپنے میرو اکاؤنٹ کا پاس ورڈ دوبارہ ترتیب دیں۔
+        request_html: ہمیں <strong>%{email}</strong> سے وابستہ پاس ورڈ تبدیل کرنے
+          کی درخواست موصول ہوئی ہے۔
+        subtitle: ہمیں آپ کے Miru اکاؤنٹ کا پاس ورڈ دوبارہ ترتیب دینے کی درخواست موصول
+          ہوئی ہے۔
+        title: اپنا پاس ورڈ دوبارہ ترتیب دیں۔
+      shared:
+        signature_html: شکریہ،<br> <strong>ٹیم میرو</strong>
+      unlock:
+        cta: پاس ورڈ دوبارہ ترتیب دیں۔
+        eyebrow: اکاؤنٹ سیکیورٹی
+        footer_note: اگر آپ نے سائن ان کرنے کی کوشش نہیں کی تو لاک کے ختم ہونے کا
+          انتظار کریں اور فوری طور پر اپنا پاس ورڈ تبدیل کریں۔
+        greeting_html: ہیلو <strong>%{email}</strong> ،
+        preheader: بہت ساری ناکام سائن ان کوششوں کے بعد اپنا Miru اکاؤنٹ کھولیں۔
+        subtitle: بہت ساری ناکام سائن ان کوششوں کے بعد ہم نے آپ کا Miru اکاؤنٹ لاک
+          کر دیا ہے۔
+        title: آپ کا اکاؤنٹ عارضی طور پر مقفل ہے۔
+        warning_body: Miru 30 منٹ کے بعد اکاؤنٹس کو خود بخود کھول دیتا ہے۔ اگر آپ
+          ان کوششوں کو نہیں پہچانتے ہیں تو اپنا پاس ورڈ دوبارہ ترتیب دیں تاکہ لاک
+          ختم ہونے کے بعد آپ کا اکاؤنٹ محفوظ رہے۔
+        warning_title: سائن ان کرنے کی کوششیں منظور شدہ حد سے تجاوز کر گئیں۔
     expense_mailer:
       approved:
         eyebrow: اخراجات
@@ -327,6 +446,45 @@ ur:
         subtitle: "%{company_name} کے لیے آپ کے وقت کے اندراجات ابھی بھی متوقع ہفتہ
           وار کل سے کم ہیں۔"
         title: اپنی ٹائم شیٹ کو مکمل کریں۔
+    subscription:
+      plan_purchased:
+        badge: چا چنگ
+        billing_interval: بلنگ وقفہ
+        billing_settings_html: 'بلنگ کی ترتیبات: <a href="%{url}" style="color: #111827;">%{url}</a>'
+        company: کمپنی
+        cta: بلنگ کی ترتیبات کھولیں۔
+        image_label: نیا ادا شدہ منصوبہ
+        image_text: نئی ادا شدہ ورک اسپیس
+        plan: منصوبہ
+        stripe_subscription: پٹی سبسکرپشن
+        subtitle: میرو پر نئی بامعاوضہ ورک اسپیس۔ بلنگ لائیو ہے۔
+        team_seats: ٹیم کی نشستیں
+        title: "%{company} نے ابھی %{plan} خریدا۔"
+      plan_purchased_text:
+        billing_interval: 'بلنگ وقفہ: %{interval}'
+        billing_settings: 'بلنگ کی ترتیبات کھولیں: %{url}'
+        company: 'کمپنی: %{company}'
+        plan: 'منصوبہ: %{plan}'
+        stripe_subscription: 'اسٹرائپ سبسکرپشن: %{id}'
+        team_seats: 'ٹیم کی نشستیں: %{seats}'
+      trial_started:
+        body_html: "<strong>%{company}</strong> کے لیے آپ کا 30 دن کا Miru Pro ٹرائل
+          اب فعال ہے۔"
+        cta: بلنگ کھولیں۔
+        eyebrow: بلنگ
+        footer_body: آپ اپنی بلنگ کی ترتیبات سے کسی بھی وقت بلنگ کا جائزہ لے سکتے
+          ہیں، منصوبوں کا موازنہ کر سکتے ہیں اور اپ گریڈ کر سکتے ہیں۔
+        greeting_html: ہیلو <strong>%{name}</strong> ،
+        preheader: آپ کا Miru Pro ٹرائل اب فعال ہے۔
+        subtitle: اپنے 30 دن کے ٹرائل کے دوران بلنگ، رپورٹس اور پرو ورک فلو کا بقیہ
+          حصہ دریافت کریں۔
+        title: آپ کا Miru Pro ٹرائل لائیو ہے۔
+        trial_ends: آزمائش ختم ہوتی ہے۔
+      trial_started_text:
+        body: "%{company} کے لیے آپ کا 30 دن کا Miru Pro ٹرائل اب فعال ہے۔"
+        greeting: ہیلو %{name}،
+        review_billing: "%{url} پر بلنگ کا جائزہ لیں۔"
+        trial_ends: آزمائش %{date} کو ختم ہوتی ہے۔
     user_invitation_mailer:
       send_user_invitation:
         about_body: Miru وقت، رسیدیں، ادائیگیاں، اور روزانہ کی کارروائیوں کو ایک کام
@@ -375,6 +533,74 @@ ur:
         گئی ہیں۔
     update:
       success: آپ کا پاس ورڈ اپ ڈیٹ کر دیا گیا ہے۔
+  pdfs:
+    accounts_aging:
+      client: کلائنٹ
+      title: اکاؤنٹس کی عمر رسیدہ رپورٹ
+      total: کل
+    client_revenues:
+      client: کلائنٹ
+      outstanding_amount: بقایا رقم
+      overdue_amount: واجب الادا رقم
+      paid_amount: ادا شدہ رقم
+      title: کلائنٹ کی آمدنی کی رپورٹ
+      total_revenue: کل آمدنی
+    invoices:
+      amount_due: واجب الادا رقم
+      amount_paid: ادا کی گئی رقم
+      billed_to: کو بل کیا گیا۔
+      client_invoice: کلائنٹ انوائس
+      discount: رعایت
+      due: 'واجب الادا: %{due_date}'
+      invoice_number: انوائس نمبر
+      issue_date: جاری ہونے کی تاریخ
+      paid: 'ادا کیا گیا: %{amount}'
+      payment_details: ادائیگی کی تفصیلات
+      payment_rows:
+        account_number: اکاؤنٹ نمبر
+        bank_name: بینک کا نام
+        gst_number: جی ایس ٹی نمبر
+        routing_number: روٹنگ نمبر
+        swift_code: سوئفٹ کوڈ
+        tax_id: ٹیکس ID
+        vat_number: VAT نمبر
+      prepared_by: "%{company_name} کے ذریعہ تیار کردہ، %{issue_date} جاری کیا گیا،
+        %{due_date} کی وجہ سے۔"
+      reference: 'حوالہ: %{reference}'
+      sub_total: ذیلی کل
+      table:
+        date: تاریخ
+        description: تفصیل
+        line_total: لائن ٹوٹل
+        name: نام
+        qty: مقدار
+        rate: شرح
+      tax: ٹیکس
+      title: رسید
+      total: کل
+      total_invoice_amount: انوائس کی کل رقم
+      work_summary: کام کا خلاصہ
+    outstanding_overdue_invoices:
+      amount: رقم
+      client: کلائنٹ
+      due_date: مقررہ تاریخ
+      invoice_number: رسید نمبر
+      issue_date: جاری ہونے کی تاریخ
+      no_clients_found: کوئی کلائنٹ نہیں ملا
+      outstanding_amount: بقایا رقم
+      overdue_amount: واجب الادا رقم
+      status: حیثیت
+      title: بقایا اور زائد المیعاد رسیدوں کی رپورٹ
+      total_amounts: کل رقم
+      total_invoice_amount: انوائس کی کل رقم
+    time_entries:
+      client: کلائنٹ
+      date: تاریخ
+      hours_logged: گھنٹے لاگ ان
+      note: نوٹ
+      project: پروجیکٹ
+      team_member: ٹیم ممبر
+      title: ٹائم انٹری رپورٹ
   projects:
     add_new_project: نیا پروجیکٹ شامل کریں۔
     add_project: پروجیکٹ شامل کریں۔

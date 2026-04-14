@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Outstanding and Overdue Invoices Report</title>
+  <title><%= t("pdfs.outstanding_overdue_invoices.title") %></title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -36,7 +36,7 @@
   </style>
 </head>
 <body>
-  <h1>Outstanding and Overdue Invoices Report</h1>
+  <h1><%= t("pdfs.outstanding_overdue_invoices.title") %></h1>
   <table>
     <thead>
 
@@ -46,10 +46,10 @@
       <% if report_data[:clients].present? %>
         <% report_data[:clients].each do |client| %>
           <tr>
-        <th>Client</th>
-        <th>Outstanding Amount</th>
-        <th>Overdue Amount</th>
-        <th>Total Invoice Amount</th>
+        <th><%= t("pdfs.outstanding_overdue_invoices.client") %></th>
+        <th><%= t("pdfs.outstanding_overdue_invoices.outstanding_amount") %></th>
+        <th><%= t("pdfs.outstanding_overdue_invoices.overdue_amount") %></th>
+        <th><%= t("pdfs.outstanding_overdue_invoices.total_invoice_amount") %></th>
       </tr>
           <tr>
             <td>
@@ -65,11 +65,11 @@
                 <table class="invoice-table">
                   <thead>
                     <tr>
-                      <th>Invoice No</th>
-                      <th>Issue Date</th>
-                      <th>Due Date</th>
-                      <th>Amount</th>
-                      <th>Status</th>
+                      <th><%= t("pdfs.outstanding_overdue_invoices.invoice_number") %></th>
+                      <th><%= t("pdfs.outstanding_overdue_invoices.issue_date") %></th>
+                      <th><%= t("pdfs.outstanding_overdue_invoices.due_date") %></th>
+                      <th><%= t("pdfs.outstanding_overdue_invoices.amount") %></th>
+                      <th><%= t("pdfs.outstanding_overdue_invoices.status") %></th>
                     </tr>
                   </thead>
                   <tbody>
@@ -90,11 +90,11 @@
         <% end %>
       <% else %>
         <tr>
-          <td colspan="4">No clients found</td>
+          <td colspan="4"><%= t("pdfs.outstanding_overdue_invoices.no_clients_found") %></td>
         </tr>
       <% end %>
       <tr class="total-row">
-        <td>Total Amounts</td>
+        <td><%= t("pdfs.outstanding_overdue_invoices.total_amounts") %></td>
         <td><%= FormatAmountService.new(base_currency,report_data[:summary][:total_outstanding_amount]).process %></td>
         <td><%= FormatAmountService.new(base_currency,report_data[:summary][:total_overdue_amount]).process %></td>
         <td><%= FormatAmountService.new(base_currency,report_data[:summary][:total_invoice_amount]).process %></td>
