@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 
 import { useDebounce } from "helpers";
 import { SearchIcon, XIcon } from "miruIcons";
+import { i18n } from "../../../i18n";
 
 import SearchDropdown from "./SearchDropdown";
 
@@ -92,7 +93,7 @@ const SearchWithSuggestions = ({
         <div>
           <input
             className="outline-none w-full px-2 text-sm font-medium leading-5"
-            placeholder="Search"
+            placeholder={i18n.t("payments.paymentSearch")}
             type="text"
             value={searchQuery || params?.query?.trim()}
             onChange={handleSearchInputChange}

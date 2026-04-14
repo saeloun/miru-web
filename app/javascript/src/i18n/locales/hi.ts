@@ -706,6 +706,7 @@ const hi = {
     failedToAddManualEntry: "मैनुअल प्रविष्टि जोड़ने में विफल",
     searchByClientOrInvoice: "क्लाइंट नाम या इनवॉइस आईडी से खोजें",
     selectTransactionTypeBtn: "लेनदेन प्रकार चुनें",
+    noPaymentFound: "कोई भुगतान नहीं मिला!",
   },
   timer: {
     webTimer: "वेब टाइमर",

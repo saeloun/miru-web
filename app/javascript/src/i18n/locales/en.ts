@@ -747,6 +747,7 @@ const en = {
     failedToAddManualEntry: "Failed to add manual entry",
     searchByClientOrInvoice: "Search by client name or invoice ID",
     selectTransactionTypeBtn: "Select Transaction Type",
+    noPaymentFound: "No payment found!",
   },
 
   // Timer

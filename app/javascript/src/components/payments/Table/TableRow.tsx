@@ -3,6 +3,7 @@ import React from "react";
 import { currencyFormat } from "helpers";
 import StatusBadge from "components/ui/status-badge";
 import { Link } from "react-router-dom";
+import { i18n } from "../../../i18n";
 import {
   CreditCard,
   Buildings,
@@ -32,49 +33,49 @@ const TableRow = ({ payment, baseCurrency }: TableRowProps) => {
     const typeMap = {
       credit_card: {
         icon: <CreditCard className="h-4 w-4" />,
-        text: "Card Payment",
+        text: i18n.t("payments.cardPayment"),
         color: "text-foreground",
       },
       bank_transfer: {
         icon: <Buildings className="h-4 w-4" />,
-        text: "Bank Transfer",
+        text: i18n.t("payments.bankTransfer"),
         color: "text-foreground",
       },
       wire_transfer: {
         icon: <ArrowsLeftRight className="h-4 w-4" />,
-        text: "Wire Transfer",
+        text: i18n.t("payments.wireTransfer"),
         color: "text-foreground",
       },
       ach: {
         icon: <Buildings className="h-4 w-4" />,
-        text: "ACH Transfer",
+        text: i18n.t("payments.achTransfer"),
         color: "text-foreground",
       },
       paypal: {
         icon: <Wallet className="h-4 w-4" />,
-        text: "PayPal",
+        text: i18n.t("payments.paypal"),
         color: "text-foreground",
       },
       stripe: {
         icon: <CreditCard className="h-4 w-4" />,
-        text: "Stripe",
+        text: i18n.t("payments.stripe"),
         color: "text-foreground",
       },
       cash: {
         icon: <Money className="h-4 w-4" />,
-        text: "Cash",
+        text: i18n.t("payments.cash"),
         color: "text-foreground",
       },
       check: {
         icon: <Receipt className="h-4 w-4" />,
-        text: "Check",
+        text: i18n.t("payments.check"),
         color: "text-muted-foreground",
       },
     };
 
     const typeInfo = typeMap[type] || {
       icon: <Wallet className="h-4 w-4" />,
-      text: type || "Payment",
+      text: type || i18n.t("payments.payments"),
       color: "text-muted-foreground",
     };
 
