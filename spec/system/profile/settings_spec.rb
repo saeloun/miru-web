@@ -33,7 +33,7 @@ RSpec.describe "Profile Settings", type: :system, js: true do
       expect(page).to have_content("Jane", wait: 10)
       expect(page).to have_content("Doe", wait: 10)
       expect(page).to have_content("jane.doe@example.com", wait: 10)
-      expect(page).to have_content("Edit Profile", wait: 10)
+      expect(page).to have_button("Edit", wait: 10)
     end
   end
 
