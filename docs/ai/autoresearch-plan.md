@@ -48,8 +48,9 @@ Build a safe autonomous improvement loop for Miru that can research, propose, ve
 - Keep the current manual lanes green:
   - `docs_consistency`
   - `frontend_build`
+  - `auth_pages_request_spec`
 - Add one browser smoke matrix for the most fragile routes.
 - Add the next narrow lane:
-  - focused rspec verification
   - frontend smoke hardening
   - docs drift checks with stronger assertions
+  - one more focused rspec verification lane

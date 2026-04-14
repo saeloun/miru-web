@@ -7,7 +7,7 @@ cd "$ROOT"
 lane="${1:-}"
 
 if [[ -z "$lane" ]]; then
-  echo "usage: script/autoresearch/run.sh <docs_consistency|frontend_build>" >&2
+  echo "usage: script/autoresearch/run.sh <docs_consistency|frontend_build|auth_pages_request_spec>" >&2
   exit 1
 fi
 
@@ -58,12 +58,21 @@ run_frontend_build() {
   fi
 }
 
+run_auth_pages_request_spec() {
+  if ! rtk proxy mise exec -- timeout 60 bundle exec rspec spec/requests/localization/auth_pages_spec.rb >"$tmp_file" 2>&1; then
+    status="FAIL"
+  fi
+}
+
 case "$lane" in
   docs_consistency)
     run_docs_consistency
     ;;
   frontend_build)
     run_frontend_build
+    ;;
+  auth_pages_request_spec)
+    run_auth_pages_request_spec
     ;;
   *)
     echo "unknown lane: $lane" >&2
