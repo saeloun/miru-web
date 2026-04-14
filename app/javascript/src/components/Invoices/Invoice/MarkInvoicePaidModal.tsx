@@ -98,7 +98,7 @@ const MarkInvoiceAsPaidModal = ({
       onClose={() => setShowManualEntryModal(false)}
     >
       <div className="modal__position m-0">
-        <h6 className="modal__title">
+        <h6 className="modal__title text-slate-900">
           {" "}
           {i18n.t("invoices.markInvoiceAsPaid")}
         </h6>
@@ -139,8 +139,9 @@ const MarkInvoiceAsPaidModal = ({
           <CustomInputText
             readOnly
             id="transactionDate"
-            inputBoxClassName="cursor-pointer"
+            inputBoxClassName="form__input block h-12 w-full cursor-pointer appearance-none border-border !bg-white p-4 text-base !text-slate-900 [color-scheme:light] focus-within:border-primary"
             label={i18n.t("payments.transactionDate")}
+            labelClassName="absolute top-0.5 left-1 z-1 h-6 origin-0 bg-white p-2 text-base font-medium text-slate-500 duration-300"
             name="transactionDate"
             type="text"
             value={transactionDate && dayjs(transactionDate).format(dateFormat)}
@@ -170,7 +171,7 @@ const MarkInvoiceAsPaidModal = ({
               aria-label={i18n.t("payments.transactionType")}
               aria-expanded={showDesktopTransactionTypes}
               aria-haspopup="listbox"
-              className="flex h-12 w-full items-center justify-between rounded-md border border-border bg-white px-4 text-left text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
+              className="flex h-12 w-full items-center justify-between rounded-md border border-border bg-white px-4 text-left text-sm text-slate-900 focus:outline-none focus:ring-1 focus:ring-ring"
               type="button"
               onClick={() =>
                 setShowDesktopTransactionTypes(previous => !previous)
@@ -178,14 +179,14 @@ const MarkInvoiceAsPaidModal = ({
             >
               <span
                 className={
-                  transactionType ? "text-foreground" : "text-muted-foreground"
+                  transactionType ? "text-slate-900" : "text-slate-500"
                 }
               >
                 {selectedTransactionType?.label ||
                   i18n.t("payments.selectTransactionType")}
               </span>
               <CaretDown
-                className={`h-4 w-4 text-muted-foreground transition-transform ${
+                className={`h-4 w-4 text-slate-400 transition-transform ${
                   showDesktopTransactionTypes ? "rotate-180" : ""
                 }`}
               />
@@ -200,8 +201,8 @@ const MarkInvoiceAsPaidModal = ({
                     <button
                       className={`flex w-full items-center rounded-sm px-3 py-2 text-left text-sm ${
                         transactionType === type.value
-                          ? "bg-muted font-medium text-foreground"
-                          : "text-foreground hover:bg-muted"
+                          ? "bg-muted font-medium text-slate-900"
+                          : "text-slate-900 hover:bg-muted"
                       }`}
                       type="button"
                       onClick={() => {
@@ -279,12 +280,13 @@ const MarkInvoiceAsPaidModal = ({
       <div className="mt-4">
         <CustomTextareaAutosize
           id="NotesOptional"
+          inputBoxClassName="form__input block h-16 w-full appearance-none border-border !bg-white p-4 text-sm !text-slate-900 [color-scheme:light] lg:text-base"
           label={i18n.t("payments.notesOptional")}
           maxRows={12}
           name="NotesOptional"
           rows={5}
           value={note}
-          wrapperClassName="outline-none relative"
+          wrapperClassName="outline-none relative [&>span]:bg-white [&>span]:text-slate-500"
           onChange={e => setNote(e.target.value)}
         />
       </div>
