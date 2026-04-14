@@ -1,4 +1,5 @@
 import React from "react";
+import { i18n } from "../../i18n";
 import { cn } from "../../lib/utils";
 import { Link, useLocation } from "react-router-dom";
 import { Buildings, CaretRight, Check, CaretDown } from "phosphor-react";
@@ -319,7 +320,9 @@ const Sidebar: React.FC<SidebarProps> = ({
               >
                 <DialogContent className="sm:max-w-md">
                   <DialogHeader>
-                    <DialogTitle>Switch workspace</DialogTitle>
+                    <DialogTitle>
+                      {i18n.t("navbar.switchWorkspace")}
+                    </DialogTitle>
                   </DialogHeader>
                   <div className="space-y-2">
                     {workspaces.map(workspace => {
@@ -352,7 +355,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                           {isCurrent ? (
                             <Check className="h-4 w-4 flex-shrink-0" />
                           ) : isSwitching ? (
-                            <span className="text-xs">Switching...</span>
+                            <span className="text-xs opacity-70">...</span>
                           ) : null}
                         </Button>
                       );

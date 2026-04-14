@@ -1,5 +1,6 @@
 import React from "react";
 import { Moon, Sun } from "phosphor-react";
+import { i18n } from "../../i18n";
 
 const STORAGE_KEY = "miru-theme";
 
@@ -41,10 +42,12 @@ const ThemeToggle: React.FC<ThemeToggleProps> = ({
       type="button"
       onClick={toggleTheme}
       className={`inline-flex items-center justify-center gap-2 rounded-lg border border-border bg-card px-3 py-2 text-sm font-medium text-foreground shadow-sm transition hover:bg-accent hover:text-accent-foreground ${className}`}
-      aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
+      aria-label={i18n.t("switchToMode", {
+        mode: i18n.t(theme === "dark" ? "light" : "dark").toLowerCase(),
+      })}
     >
       {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
-      {!compact && <span>{theme === "dark" ? "Light" : "Dark"}</span>}
+      {!compact && <span>{i18n.t(theme === "dark" ? "light" : "dark")}</span>}
     </button>
   );
 };
