@@ -280,6 +280,12 @@ class InvoiceApiService {
     return response.data;
   }
 
+  async waiveInvoice(id: string): Promise<{ message?: string }> {
+    const response = await axios.patch(`/invoices/waived/${id}`);
+
+    return response.data;
+  }
+
   /**
    * Download invoice PDF
    */

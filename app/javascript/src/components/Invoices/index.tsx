@@ -4,6 +4,7 @@ import InvoiceList from "./InvoiceList";
 import InvoiceEditor from "./InvoiceEditor/index";
 import InvoicePreview from "./InvoicePreview";
 import MarkInvoiceAsPaidModal from "./Invoice/MarkInvoicePaidModal";
+import WaiveOffInvoice from "./popups/WavieOffInvoice";
 import { Button } from "../ui/button";
 import { ArrowLeft } from "phosphor-react";
 import {
@@ -46,6 +47,11 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
   const [previewData, setPreviewData] = useState<Invoice | null>(null);
   const [markPaidInvoice, setMarkPaidInvoice] = useState<Invoice | null>(null);
   const [showMarkPaidModal, setShowMarkPaidModal] = useState(false);
+  const [showWaiveDialog, setShowWaiveDialog] = useState(false);
+  const [invoiceToWaive, setInvoiceToWaive] = useState<string | null>(null);
+  const [invoiceToWaiveNumber, setInvoiceToWaiveNumber] = useState<
+    string | null
+  >(null);
   const [clients, setClients] = useState<Client[]>([]);
   const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
   const {
@@ -454,6 +460,21 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
     }
   };
 
+  const handleWaiveInvoice = (invoice: Invoice) => {
+    setInvoiceToWaive(invoice.id);
+    setInvoiceToWaiveNumber(invoice.invoiceNumber);
+    setShowWaiveDialog(true);
+  };
+
+  const refreshWaivedInvoice = async () => {
+    if (invoiceToWaive) {
+      const refreshedInvoice = await invoiceApi.getInvoice(invoiceToWaive);
+      syncInvoiceState(refreshedInvoice);
+    }
+
+    await loadInvoices();
+  };
+
   const refreshMarkedInvoice = async () => {
     if (!markPaidInvoice?.id) return;
 
@@ -547,6 +568,7 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
           onSendInvoice={handleSendInvoiceFromList}
           onSendReminder={handleSendReminderFromList}
           onMarkPaid={handleMarkPaid}
+          onWaive={handleWaiveInvoice}
           onDownload={handleDownload}
           onLoadMore={loadMoreInvoices}
           isLoading={isListLoading || isLoading}
@@ -668,6 +690,11 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
               await handleMarkPaid(invoiceToPreview as Invoice);
             }
             break;
+          case "waive":
+            if (invoiceToPreview.id) {
+              handleWaiveInvoice(invoiceToPreview as Invoice);
+            }
+            break;
           case "print":
             window.print();
             break;
@@ -721,6 +748,15 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
           invoice={markPaidInvoice}
           setShowManualEntryModal={setShowMarkPaidModal}
           showManualEntryModal={showMarkPaidModal}
+        />
+      )}
+      {showWaiveDialog && invoiceToWaive && (
+        <WaiveOffInvoice
+          fetchInvoices={refreshWaivedInvoice}
+          invoice={invoiceToWaive}
+          invoiceNumber={invoiceToWaiveNumber}
+          setShowWaiveDialog={setShowWaiveDialog}
+          showWaiveDialog={showWaiveDialog}
         />
       )}
     </>

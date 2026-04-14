@@ -27,6 +27,7 @@ import {
   Download,
   Eye,
   CheckCircle,
+  XCircle,
   Circle,
   Warning,
   FileText,
@@ -58,6 +59,7 @@ interface InvoiceListProps {
     invoiceEmail?: { subject: string; message: string; recipients: string[] }
   ) => Promise<void> | void;
   onMarkPaid?: (invoice: Invoice) => void;
+  onWaive?: (invoice: Invoice) => void;
   onDownload?: (id: string) => void;
   onLoadMore?: () => void;
   isLoading?: boolean;
@@ -74,6 +76,7 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
   onSendInvoice,
   onSendReminder,
   onMarkPaid,
+  onWaive,
   onDownload,
   onLoadMore,
   isLoading = false,
@@ -332,6 +335,15 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
               >
                 <CheckCircle className="h-4 w-4 mr-2" />
                 {i18n.t("invoices.markAsPaid")}
+              </DropdownMenuItem>
+            )}
+            {["sent", "viewed", "overdue"].includes(invoice.status) && (
+              <DropdownMenuItem
+                data-testid={`invoice-action-waive-${invoice.id}`}
+                onClick={() => onWaive?.(invoice)}
+              >
+                <XCircle className="h-4 w-4 mr-2" />
+                {i18n.t("invoices.waiveOff")}
               </DropdownMenuItem>
             )}
           </>
