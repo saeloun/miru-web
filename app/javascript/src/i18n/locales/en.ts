@@ -1280,7 +1280,7 @@ const en = {
     adjustProfilePhotoDescription:
       "Choose the part of the image you want to keep.",
     noImageSelected: "No image selected",
-    savePhoto: "Save photo",
+    savePhoto: "Apply photo",
     zoom: "Zoom",
     company: "Company",
     noPreviousEmployments: "No previous employments found",

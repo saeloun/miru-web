@@ -28,11 +28,11 @@ RSpec.describe "Profile avatar upload", type: :system, js: true do
         .set(Rails.root.join("spec/support/fixtures/test-image.png"))
 
       expect(page).to have_text("Adjust profile photo", wait: 10)
-      expect(page).to have_button("Save photo", disabled: false, wait: 10)
+      expect(page).to have_button("Apply photo", disabled: false, wait: 10)
       expect(page).to have_field("Zoom", wait: 10)
 
       expect do
-        click_button "Save photo"
+        click_button "Apply photo"
         expect(page).to have_text("Avatar updated successfully", wait: 10)
       end.to change { user.reload.avatar.attached? }.from(false).to(true)
     end
