@@ -21,7 +21,7 @@ This repository contains the documentation website for Miru, built with [Docusau
 
 ### Prerequisites
 - Node.js 18+ (we use Node 22.11.0)
-- npm, yarn, or pnpm
+- pnpm 9+
 
 ### Installation
 
@@ -30,11 +30,7 @@ This repository contains the documentation website for Miru, built with [Docusau
 git clone https://github.com/saeloun/miru-web.git
 cd miru-web/docs
 
-# Install dependencies (choose one)
-npm install
-# or
-yarn install
-# or
+# Install dependencies
 pnpm install
 ```
 
@@ -42,10 +38,6 @@ pnpm install
 
 ```bash
 # Start the development server
-npm start
-# or
-yarn start
-# or
 pnpm start
 ```
 
@@ -55,10 +47,6 @@ This starts a local development server and opens [http://localhost:3000](http://
 
 ```bash
 # Generate static files
-npm run build
-# or
-yarn build
-# or
 pnpm build
 ```
 
@@ -117,26 +105,26 @@ For substantial improvements:
 ### Running Tests
 ```bash
 # Check for broken links and build issues
-npm run build
+pnpm run build
 
 # Lint markdown files
-npm run lint
+pnpm run lint
 
 # Spell check (if configured)
-npm run spell-check
+pnpm run spell-check
 ```
 
 ## 📋 Available Scripts
 
 | Command | Description |
 |---------|-------------|
-| `npm start` | Start development server |
-| `npm run build` | Build for production |
-| `npm run serve` | Preview production build |
-| `npm run clear` | Clear Docusaurus cache |
-| `npm run write-translations` | Extract translatable strings |
-| `npm run write-heading-ids` | Generate heading IDs |
-| `npm run typecheck` | TypeScript type checking |
+| `pnpm start` | Start development server |
+| `pnpm run build` | Build for production |
+| `pnpm run serve` | Preview production build |
+| `pnpm run clear` | Clear Docusaurus cache |
+| `pnpm run write-translations` | Extract translatable strings |
+| `pnpm run write-heading-ids` | Generate heading IDs |
+| `pnpm run typecheck` | TypeScript type checking |
 
 ## 🔧 Configuration
 
@@ -226,10 +214,10 @@ Automatic deployment is configured via GitHub Actions.
 ### Manual Deployment
 ```bash
 # Build and deploy to gh-pages branch
-npm run deploy
+pnpm run deploy
 
 # Or build manually and upload to your hosting service
-npm run build
+pnpm run build
 # Upload the 'build' directory contents
 ```
 

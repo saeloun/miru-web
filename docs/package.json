@@ -26,19 +26,19 @@
     "update-browserslist": "npx update-browserslist-db@latest"
   },
   "dependencies": {
-    "@docusaurus/core": "^3.6.3",
-    "@docusaurus/preset-classic": "^3.6.3",
-    "@docusaurus/theme-search-algolia": "^3.6.3",
-    "@mdx-js/react": "^3.0.1",
+    "@docusaurus/core": "2.4.3",
+    "@docusaurus/preset-classic": "2.4.3",
+    "@docusaurus/theme-search-algolia": "2.4.3",
+    "@mdx-js/react": "1.6.22",
     "clsx": "^2.1.1",
     "prism-react-renderer": "^2.4.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
-    "@docusaurus/module-type-aliases": "^3.6.3",
-    "@docusaurus/types": "^3.6.3",
-    "@tsconfig/docusaurus": "^2.0.3",
+    "@docusaurus/module-type-aliases": "2.4.3",
+    "@docusaurus/types": "2.4.3",
+    "@tsconfig/docusaurus": "1.0.6",
     "@typescript-eslint/eslint-plugin": "^8.15.0",
     "@typescript-eslint/parser": "^8.15.0",
     "cspell": "^8.16.0",
@@ -61,5 +61,10 @@
       "last 3 firefox version",
       "last 5 safari version"
     ]
+  },
+  "pnpm": {
+    "overrides": {
+      "webpack": "5.74.0"
+    }
   }
 }
