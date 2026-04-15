@@ -41,6 +41,7 @@ Keep this file short. Treat it as a router for repo-specific rules.
 - Repo delivery and GitHub workflow rules: `docs/ai/workflow.md`
 - Repo RTK usage patterns: `RTK.md`
 - Design system source of truth for UI decisions: `DESIGN.md`
+- QMD retrieval playbook for Codex + gstack: `docs/ai/qmd-codex-gstack.md`
 
 ## Notes
 
