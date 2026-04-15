@@ -17,30 +17,46 @@ const InvoiceSummary = ({
     });
   };
 
+  const parseAmount = value => {
+    if (typeof value === "number") return value;
+    const parsed = Number(value);
+
+    return Number.isFinite(parsed) ? parsed : 0;
+  };
+  const overdueAmount = parseAmount(summary.overdueAmount);
+  const outstandingAmount = parseAmount(summary.outstandingAmount);
+  const draftAmount = parseAmount(summary.draftAmount);
+  const openAmount = Math.max(outstandingAmount - overdueAmount, 0);
+  const totalAmount = overdueAmount + openAmount + draftAmount;
+
   const summaryList = [
     {
       label: i18n.t("all").toUpperCase(),
-      value: summary.totalAmount,
+      value: totalAmount,
       onClick: () => applyFilter([]), // Clear all filters to show all invoices
     },
     {
       label: i18n.t("invoices.overdue").toUpperCase(),
-      value: summary.overdueAmount,
-      onClick: () => applyFilter([{ value: "overdue", label: i18n.t("invoices.overdue").toUpperCase() }]),
-    },
-    {
-      label: i18n.t("invoices.outstanding").toUpperCase(),
-      value: summary.outstandingAmount,
+      value: overdueAmount,
       onClick: () =>
         applyFilter([
-          { value: "sent", label: "SENT" },
-          { value: "viewed", label: "VIEWED" },
           { value: "overdue", label: i18n.t("invoices.overdue").toUpperCase() },
         ]),
     },
     {
-      label: isDesktop ? i18n.t("invoices.draft").toUpperCase() : i18n.t("invoices.draft").toUpperCase(),
-      value: summary.draftAmount,
+      label: i18n.t("invoices.outstanding").toUpperCase(),
+      value: openAmount,
+      onClick: () =>
+        applyFilter([
+          { value: "sent", label: "SENT" },
+          { value: "viewed", label: "VIEWED" },
+        ]),
+    },
+    {
+      label: isDesktop
+        ? i18n.t("invoices.draft").toUpperCase()
+        : i18n.t("invoices.draft").toUpperCase(),
+      value: draftAmount,
       onClick: () => applyFilter([{ value: "draft", label: "DRAFT" }]),
     },
   ];

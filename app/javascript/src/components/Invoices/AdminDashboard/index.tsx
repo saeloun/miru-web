@@ -28,9 +28,9 @@ import { i18n } from "../../../i18n";
 
 interface AdminDashboardProps {
   summary: {
-    overdueAmount: number;
-    outstandingAmount: number;
-    draftAmount: number;
+    overdueAmount: number | string;
+    outstandingAmount: number | string;
+    draftAmount: number | string;
     currency: string;
   };
   invoices: any[];
@@ -52,9 +52,19 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const [selectedPeriod, setSelectedPeriod] = useState("month");
 
   const baseCurrency = invoices[0]?.company?.baseCurrency || "USD";
-  const invoiceStatusTotal = summary.outstandingAmount + summary.draftAmount;
+  const parseAmount = (value: number | string): number => {
+    if (typeof value === "number") return value;
+    const parsed = Number(value);
 
-  const formatStatusShare = amount => {
+    return Number.isFinite(parsed) ? parsed : 0;
+  };
+  const overdueAmount = parseAmount(summary.overdueAmount);
+  const outstandingAmount = parseAmount(summary.outstandingAmount);
+  const draftAmount = parseAmount(summary.draftAmount);
+  const openAmount = Math.max(outstandingAmount - overdueAmount, 0);
+  const invoiceStatusTotal = openAmount + overdueAmount + draftAmount;
+
+  const formatStatusShare = (amount: number) => {
     if (invoiceStatusTotal <= 0 || amount <= 0) {
       return i18n.t("invoices.noData");
     }
@@ -72,10 +82,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const statsCards = [
     {
       title: i18n.t("reports.totalRevenue"),
-      value: currencyFormat(
-        baseCurrency,
-        summary.outstandingAmount + summary.draftAmount
-      ),
+      value: currencyFormat(baseCurrency, invoiceStatusTotal),
       description: "",
       icon: CurrencyDollar,
       trend: { value: 12.5, isPositive: true },
@@ -84,7 +91,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
     },
     {
       title: i18n.t("invoices.outstanding"),
-      value: currencyFormat(baseCurrency, summary.outstandingAmount),
+      value: currencyFormat(baseCurrency, openAmount),
       description: "",
       icon: Clock,
       trend: { value: 8.2, isPositive: false },
@@ -94,12 +101,11 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
         applyFilter([
           { value: "sent", label: "SENT" },
           { value: "viewed", label: "VIEWED" },
-          { value: "overdue", label: "OVERDUE" },
         ]),
     },
     {
       title: i18n.t("invoices.overdue"),
-      value: currencyFormat(baseCurrency, summary.overdueAmount),
+      value: currencyFormat(baseCurrency, overdueAmount),
       description: "",
       icon: Warning,
       trend: { value: 3.1, isPositive: false },
@@ -109,7 +115,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
     },
     {
       title: i18n.t("invoices.draft"),
-      value: currencyFormat(baseCurrency, summary.draftAmount),
+      value: currencyFormat(baseCurrency, draftAmount),
       description: "",
       icon: FileText,
       color: "text-muted-foreground",
@@ -128,8 +134,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
               <h1 className="text-xl font-semibold text-foreground sm:text-2xl">
                 {i18n.t("invoices.invoices")}
               </h1>
-              <p className="text-sm text-muted-foreground mt-1">
-                              </p>
+              <p className="text-sm text-muted-foreground mt-1"></p>
             </div>
             <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-center lg:w-auto">
               <Button className="w-full sm:w-auto" variant="outline" size="sm">
@@ -209,10 +214,10 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
             <CardHeader>
               <div className="flex items-center justify-between">
                 <div>
-                  <CardTitle>{i18n.t("invoiceDashboard.revenueOverview")}</CardTitle>
-                  <CardDescription>
-                    
-                  </CardDescription>
+                  <CardTitle>
+                    {i18n.t("invoiceDashboard.revenueOverview")}
+                  </CardTitle>
+                  <CardDescription></CardDescription>
                 </div>
                 <div className="flex gap-2">
                   <Button
@@ -244,10 +249,10 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
           <Card className="md:col-span-3">
             <CardHeader>
-              <CardTitle>{i18n.t("invoiceDashboard.revenueByStatus")}</CardTitle>
-              <CardDescription>
-                
-              </CardDescription>
+              <CardTitle>
+                {i18n.t("invoiceDashboard.revenueByStatus")}
+              </CardTitle>
+              <CardDescription></CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
@@ -256,7 +261,9 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     <CurrencyDollar className="h-5 w-5 text-foreground" />
                   </div>
                   <div className="ml-4 flex-1">
-                    <p className="text-sm font-medium">{i18n.t("invoices.paid")}</p>
+                    <p className="text-sm font-medium">
+                      {i18n.t("invoices.paid")}
+                    </p>
                     <p className="text-2xl font-bold">
                       {currencyFormat(baseCurrency, 0)}
                     </p>
@@ -274,16 +281,18 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     <Clock className="h-5 w-5 text-foreground" />
                   </div>
                   <div className="ml-4 flex-1">
-                    <p className="text-sm font-medium">{i18n.t("invoices.outstanding")}</p>
+                    <p className="text-sm font-medium">
+                      {i18n.t("invoices.outstanding")}
+                    </p>
                     <p className="text-2xl font-bold">
-                      {currencyFormat(baseCurrency, summary.outstandingAmount)}
+                      {currencyFormat(baseCurrency, openAmount)}
                     </p>
                   </div>
                   <Badge
                     variant="outline"
                     className="border-border bg-card text-card-foreground"
                   >
-                    {formatStatusShare(summary.outstandingAmount)}
+                    {formatStatusShare(openAmount)}
                   </Badge>
                 </div>
 
@@ -292,16 +301,18 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     <Warning className="h-5 w-5 text-foreground" />
                   </div>
                   <div className="ml-4 flex-1">
-                    <p className="text-sm font-medium">{i18n.t("invoices.overdue")}</p>
+                    <p className="text-sm font-medium">
+                      {i18n.t("invoices.overdue")}
+                    </p>
                     <p className="text-2xl font-bold">
-                      {currencyFormat(baseCurrency, summary.overdueAmount)}
+                      {currencyFormat(baseCurrency, overdueAmount)}
                     </p>
                   </div>
                   <Badge
                     variant="outline"
                     className="border-border bg-card text-card-foreground"
                   >
-                    {formatStatusShare(summary.overdueAmount)}
+                    {formatStatusShare(overdueAmount)}
                   </Badge>
                 </div>
 
@@ -310,16 +321,18 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     <FileText className="h-5 w-5 text-muted-foreground" />
                   </div>
                   <div className="ml-4 flex-1">
-                    <p className="text-sm font-medium">{i18n.t("invoices.draft")}</p>
+                    <p className="text-sm font-medium">
+                      {i18n.t("invoices.draft")}
+                    </p>
                     <p className="text-2xl font-bold">
-                      {currencyFormat(baseCurrency, summary.draftAmount)}
+                      {currencyFormat(baseCurrency, draftAmount)}
                     </p>
                   </div>
                   <Badge
                     variant="outline"
                     className="bg-muted/40 text-muted-foreground border-border"
                   >
-                    {formatStatusShare(summary.draftAmount)}
+                    {formatStatusShare(draftAmount)}
                   </Badge>
                 </div>
               </div>
@@ -332,10 +345,10 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
           <CardHeader>
             <div className="flex items-center justify-between">
               <div>
-                <CardTitle>{i18n.t("invoiceDashboard.recentActivity")}</CardTitle>
-                <CardDescription>
-                  
-                </CardDescription>
+                <CardTitle>
+                  {i18n.t("invoiceDashboard.recentActivity")}
+                </CardTitle>
+                <CardDescription></CardDescription>
               </div>
               <Button variant="outline" size="sm">
                 {i18n.t("all")}
@@ -353,9 +366,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
             <div className="flex items-center justify-between">
               <div>
                 <CardTitle>{i18n.t("invoiceDashboard.allInvoices")}</CardTitle>
-                <CardDescription>
-                  
-                </CardDescription>
+                <CardDescription></CardDescription>
               </div>
               <Button variant="outline" size="sm">
                 <Funnel className="mr-2 h-4 w-4" />
@@ -367,10 +378,18 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
             <Tabs defaultValue="all" className="w-full">
               <TabsList>
                 <TabsTrigger value="all">{i18n.t("all")}</TabsTrigger>
-                <TabsTrigger value="paid">{i18n.t("invoices.paid")}</TabsTrigger>
-                <TabsTrigger value="outstanding">{i18n.t("invoices.outstanding")}</TabsTrigger>
-                <TabsTrigger value="overdue">{i18n.t("invoices.overdue")}</TabsTrigger>
-                <TabsTrigger value="draft">{i18n.t("invoices.draft")}</TabsTrigger>
+                <TabsTrigger value="paid">
+                  {i18n.t("invoices.paid")}
+                </TabsTrigger>
+                <TabsTrigger value="outstanding">
+                  {i18n.t("invoices.outstanding")}
+                </TabsTrigger>
+                <TabsTrigger value="overdue">
+                  {i18n.t("invoices.overdue")}
+                </TabsTrigger>
+                <TabsTrigger value="draft">
+                  {i18n.t("invoices.draft")}
+                </TabsTrigger>
               </TabsList>
               <TabsContent value="all" className="mt-4">
                 <div className="rounded-md border">

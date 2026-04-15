@@ -142,7 +142,8 @@ const ChartWithSummary: React.FC<ChartWithSummaryProps> = ({
   const overdueAmount = parseAmount(summary.overdueAmount);
   const outstandingAmount = parseAmount(summary.outstandingAmount);
   const draftAmount = parseAmount(summary.draftAmount);
-  const totalAmount = overdueAmount + outstandingAmount + draftAmount;
+  const openAmount = Math.max(outstandingAmount - overdueAmount, 0);
+  const totalAmount = overdueAmount + openAmount + draftAmount;
 
   const summaryItems = [
     {
@@ -162,14 +163,13 @@ const ChartWithSummary: React.FC<ChartWithSummaryProps> = ({
     },
     {
       label: i18n.t("invoices.outstanding"),
-      value: outstandingAmount,
+      value: openAmount,
       colorClass: "text-foreground",
       bgClass: "bg-muted/40 hover:bg-accent",
       onClick: () =>
         applyFilter([
           { value: "sent", label: "SENT" },
           { value: "viewed", label: "VIEWED" },
-          { value: "overdue", label: "OVERDUE" },
         ]),
     },
     {
@@ -227,8 +227,7 @@ const ChartWithSummary: React.FC<ChartWithSummaryProps> = ({
                   <h3 className="text-xl font-bold text-foreground">
                     {i18n.t("invoiceDashboard.revenueOverview")}
                   </h3>
-                  <p className="mt-1 text-sm text-muted-foreground">
-                                      </p>
+                  <p className="mt-1 text-sm text-muted-foreground"></p>
                 </div>
                 <div className="flex items-center gap-3">
                   <div className="flex items-center gap-2 rounded-lg bg-card px-3 py-2">
@@ -253,8 +252,7 @@ const ChartWithSummary: React.FC<ChartWithSummaryProps> = ({
                       ).toFixed(1)}
                       %
                     </span>
-                    <span className="text-xs text-muted-foreground">
-                                          </span>
+                    <span className="text-xs text-muted-foreground"></span>
                   </div>
                 </div>
               </div>
@@ -390,8 +388,7 @@ const ChartWithSummary: React.FC<ChartWithSummaryProps> = ({
                   </p>
                 </div>
                 <div className="text-center">
-                  <p className="mb-1 text-xs uppercase tracking-wide text-muted-foreground">
-                                      </p>
+                  <p className="mb-1 text-xs uppercase tracking-wide text-muted-foreground"></p>
                   <p className="text-base font-bold text-foreground">
                     {revenueData.reduce(
                       (max, item) => (item.revenue > max.revenue ? item : max),
