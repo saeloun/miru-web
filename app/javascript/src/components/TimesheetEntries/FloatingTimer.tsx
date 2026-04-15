@@ -275,7 +275,9 @@ const FloatingTimer: React.FC<FloatingTimerProps> = ({
         {timer.description && (
           <div>
             <Label>{i18n.t("description")}</Label>
-            <p className="text-sm text-muted-foreground">{timer.description}</p>
+            <p className="text-sm text-muted-foreground whitespace-pre-wrap break-words [overflow-wrap:anywhere]">
+              {timer.description}
+            </p>
           </div>
         )}
       </div>
