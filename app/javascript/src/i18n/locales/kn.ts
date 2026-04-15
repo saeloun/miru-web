@@ -1849,6 +1849,14 @@ const locale = {
   durationHours: "%{hours}ಗಂ",
   durationHoursMinutes: "%{hours}ಗಂ %{mins}ನಿ",
   common: {
+    loadingLatestVersion: "ಇತ್ತೀಚಿನ ಆವೃತ್ತಿ ಲೋಡ್ ಆಗುತ್ತಿದೆ...",
+    updatingApplication: "ಅಪ್ಲಿಕೇಶನ್ ಅಪ್‌ಡೇಟ್ ಆಗುತ್ತಿದೆ",
+    newVersionAvailable: "ಹೊಸ ಆವೃತ್ತಿ ಲಭ್ಯವಿದೆ",
+    deployReloadPrompt:
+      "ಇತ್ತೀಚಿನ ಅಪ್ಲಿಕೇಶನ್ ಫೈಲ್‌ಗಳನ್ನು ಸ್ವಯಂಚಾಲಿತವಾಗಿ ಲೋಡ್ ಮಾಡಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ. ನವೀಕರಿಸಿದ ಬಿಲ್ಡ್‌ನೊಂದಿಗೆ ಮುಂದುವರಿಯಲು ಒಮ್ಮೆ ರಿಫ್ರೆಶ್ ಮಾಡಿ.",
+    reloadApplication: "ಅಪ್ಲಿಕೇಶನ್ ಮರುಲೋಡ್ ಮಾಡಿ",
+    pageLoadFailedRefresh:
+      "ಈ ಪುಟ ಲೋಡ್ ಆಗಲಿಲ್ಲ. ರಿಫ್ರೆಶ್ ಮಾಡಿ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.",
     retry: "ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ",
     pageUnavailable:
       "ಈ ಪುಟ ಲಭ್ಯವಿಲ್ಲ ಅಥವಾ ಲಿಂಕ್ ನಿಮ್ಮ ಕಾರ್ಯಕ್ಷೇತ್ರಕ್ಕೆ ಇನ್ನು ಮಾನ್ಯವಲ್ಲ.",

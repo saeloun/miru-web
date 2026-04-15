@@ -1873,6 +1873,14 @@ const locale = {
   durationHours: "%{hours}മണിക്കൂർ",
   durationHoursMinutes: "%{hours}മണിക്കൂർ %{mins}മിനിറ്റ്",
   common: {
+    loadingLatestVersion: "ഏറ്റവും പുതിയ പതിപ്പ് ലോഡ് ചെയ്യുന്നു...",
+    updatingApplication: "ആപ്ലിക്കേഷൻ അപ്‌ഡേറ്റ് ചെയ്യുന്നു",
+    newVersionAvailable: "പുതിയ പതിപ്പ് ലഭ്യമാണ്",
+    deployReloadPrompt:
+      "ഏറ്റവും പുതിയ ആപ്പ് ഫയലുകൾ സ്വയം ലോഡ് ചെയ്യാൻ കഴിഞ്ഞില്ല. അപ്‌ഡേറ്റുചെയ്ത ബിൽഡുമായി തുടരാൻ ഒരിക്കൽ റിഫ്രെഷ് ചെയ്യുക.",
+    reloadApplication: "ആപ്ലിക്കേഷൻ വീണ്ടും ലോഡ് ചെയ്യുക",
+    pageLoadFailedRefresh:
+      "ഈ പേജ് ലോഡ് ചെയ്യാനായില്ല. റിഫ്രെഷ് ചെയ്ത് വീണ്ടും ശ്രമിക്കുക.",
     retry: "വീണ്ടും ശ്രമിക്കുക",
     pageUnavailable:
       "ഈ പേജ് ലഭ്യമല്ല അല്ലെങ്കിൽ ലിങ്ക് നിങ്ങളുടെ വർക്ക്‌സ്പേസിന് ഇനി സാധുവല്ല.",

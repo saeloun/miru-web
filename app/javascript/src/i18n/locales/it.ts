@@ -1860,6 +1860,14 @@ const locale = {
   durationHours: "%{hours}h",
   durationHoursMinutes: "%{hours}h %{mins}m",
   common: {
+    loadingLatestVersion: "Caricamento dell ultima versione...",
+    updatingApplication: "Aggiornamento dell applicazione",
+    newVersionAvailable: "E disponibile una nuova versione",
+    deployReloadPrompt:
+      "Non e stato possibile caricare automaticamente i file piu recenti dell app. Aggiorna una volta per continuare con la versione aggiornata.",
+    reloadApplication: "Ricarica applicazione",
+    pageLoadFailedRefresh:
+      "Impossibile caricare questa pagina. Aggiorna e riprova.",
     retry: "Riprova",
     pageUnavailable:
       "Questa pagina non è disponibile o il link non è più valido per la tua area di lavoro.",

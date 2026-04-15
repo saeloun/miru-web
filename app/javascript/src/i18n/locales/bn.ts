@@ -1843,6 +1843,14 @@ const locale = {
   durationHours: "%{hours}h",
   durationHoursMinutes: "%{hours}h %{mins}m",
   common: {
+    loadingLatestVersion: "সর্বশেষ সংস্করণ লোড হচ্ছে...",
+    updatingApplication: "অ্যাপ্লিকেশন আপডেট হচ্ছে",
+    newVersionAvailable: "নতুন একটি সংস্করণ উপলভ্য",
+    deployReloadPrompt:
+      "আমরা স্বয়ংক্রিয়ভাবে অ্যাপের সর্বশেষ ফাইল লোড করতে পারিনি। আপডেটেড বিল্ডে চালিয়ে যেতে একবার রিফ্রেশ করুন।",
+    reloadApplication: "অ্যাপ্লিকেশন রিলোড করুন",
+    pageLoadFailedRefresh:
+      "এই পৃষ্ঠা লোড করা যায়নি। রিফ্রেশ করে আবার চেষ্টা করুন।",
     retry: "পুনরায় চেষ্টা করুন",
     pageUnavailable:
       "এই পৃষ্ঠাটি অনুপলব্ধ অথবা লিংকটি আপনার ওয়ার্কস্পেসের জন্য আর বৈধ নয়।",

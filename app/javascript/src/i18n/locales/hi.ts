@@ -635,6 +635,14 @@ const locale = {
     showingOfTotal: "%{total} का %{shown} दिखाया जा रहा है",
   },
   common: {
+    loadingLatestVersion: "नवीनतम संस्करण लोड हो रहा है...",
+    updatingApplication: "एप्लिकेशन अपडेट हो रहा है",
+    newVersionAvailable: "एक नया संस्करण उपलब्ध है",
+    deployReloadPrompt:
+      "हम नवीनतम ऐप फाइलें स्वचालित रूप से लोड नहीं कर पाए। अपडेट किए गए बिल्ड के साथ जारी रखने के लिए एक बार रिफ्रेश करें।",
+    reloadApplication: "एप्लिकेशन पुनः लोड करें",
+    pageLoadFailedRefresh:
+      "यह पेज लोड नहीं हो सका। रिफ्रेश करके फिर से कोशिश करें।",
     retry: "पुनः प्रयास करें",
     pageUnavailable:
       "यह पृष्ठ उपलब्ध नहीं है या लिंक आपके कार्यस्थान के लिए अब मान्य नहीं है।",

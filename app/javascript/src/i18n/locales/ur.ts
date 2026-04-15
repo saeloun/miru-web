@@ -1834,6 +1834,14 @@ const locale = {
   durationHours: "%{hours}h",
   durationHoursMinutes: "%{hours}h %{mins}m",
   common: {
+    loadingLatestVersion: "تازہ ترین ورژن لوڈ ہو رہا ہے...",
+    updatingApplication: "ایپلیکیشن اپ ڈیٹ ہو رہی ہے",
+    newVersionAvailable: "نیا ورژن دستیاب ہے",
+    deployReloadPrompt:
+      "ہم تازہ ترین ایپ فائلیں خودکار طور پر لوڈ نہیں کر سکے۔ اپ ڈیٹ شدہ بلڈ کے ساتھ جاری رکھنے کے لیے ایک بار ریفریش کریں۔",
+    reloadApplication: "ایپلیکیشن دوبارہ لوڈ کریں",
+    pageLoadFailedRefresh:
+      "یہ صفحہ لوڈ نہیں ہو سکا۔ ریفریش کر کے دوبارہ کوشش کریں۔",
     retry: "دوبارہ کوشش کریں",
     pageUnavailable:
       "یہ صفحہ دستیاب نہیں ہے یا لنک اب آپ کے ورک سپیس کے لیے درست نہیں ہے۔",

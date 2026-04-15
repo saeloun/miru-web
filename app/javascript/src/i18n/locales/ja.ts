@@ -1820,6 +1820,14 @@ const locale = {
   durationHours: "%{hours}h",
   durationHoursMinutes: "%{hours}h %{mins}m",
   common: {
+    loadingLatestVersion: "最新バージョンを読み込み中...",
+    updatingApplication: "アプリケーションを更新中",
+    newVersionAvailable: "新しいバージョンがあります",
+    deployReloadPrompt:
+      "最新のアプリファイルを自動で読み込めませんでした。更新版を続行するために一度再読み込みしてください。",
+    reloadApplication: "アプリを再読み込み",
+    pageLoadFailedRefresh:
+      "このページを読み込めませんでした。再読み込みしてもう一度お試しください。",
     retry: "再試行",
     pageUnavailable:
       "このページは利用できないか、ワークスペースのリンクが無効になっています。",

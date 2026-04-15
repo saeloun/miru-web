@@ -1740,6 +1740,13 @@ const locale = {
   durationHours: "%{hours}h",
   durationHoursMinutes: "%{hours}h %{mins}m",
   common: {
+    loadingLatestVersion: "正在加载最新版本...",
+    updatingApplication: "正在更新应用",
+    newVersionAvailable: "有新版本可用",
+    deployReloadPrompt:
+      "无法自动加载最新应用文件。请刷新一次以继续使用更新后的版本。",
+    reloadApplication: "重新加载应用",
+    pageLoadFailedRefresh: "此页面加载失败。请刷新后重试。",
     retry: "重试",
     pageUnavailable: "此页面不可用或链接对您的工作区已不再有效。",
     goToDashboard: "前往仪表盘",

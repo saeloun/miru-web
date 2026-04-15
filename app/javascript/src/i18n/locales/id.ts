@@ -1849,6 +1849,14 @@ const locale = {
   durationHours: "%{hours}h",
   durationHoursMinutes: "%{hours}h %{mins}m",
   common: {
+    loadingLatestVersion: "Memuat versi terbaru...",
+    updatingApplication: "Memperbarui aplikasi",
+    newVersionAvailable: "Versi baru tersedia",
+    deployReloadPrompt:
+      "Kami tidak dapat memuat file aplikasi terbaru secara otomatis. Muat ulang sekali untuk melanjutkan dengan versi terbaru.",
+    reloadApplication: "Muat ulang aplikasi",
+    pageLoadFailedRefresh:
+      "Halaman ini gagal dimuat. Muat ulang lalu coba lagi.",
     retry: "Coba Lagi",
     pageUnavailable:
       "Halaman ini tidak tersedia atau tautan tidak lagi valid untuk workspace Anda.",
