@@ -81,6 +81,28 @@ const createCroppedFile = async (
   });
 };
 
+const resolveApiErrorMessage = (error: any, fallbackMessage: string) => {
+  const errors = error?.response?.data?.errors;
+  const stringError = typeof errors === "string" ? errors : "";
+  const flattenedErrors = Array.isArray(errors)
+    ? errors.join(", ")
+    : typeof errors === "object" && errors !== null
+    ? Object.values(errors).flat().join(", ")
+    : "";
+
+  const serverMessage =
+    error?.response?.data?.error ||
+    error?.response?.data?.notice ||
+    stringError ||
+    flattenedErrors;
+
+  if (typeof serverMessage === "string" && serverMessage.trim().length > 0) {
+    return serverMessage;
+  }
+
+  return fallbackMessage;
+};
+
 const ProfileImageCard = ({
   userId,
   imageUrl,
@@ -132,6 +154,13 @@ const ProfileImageCard = ({
     inputRef.current?.click();
   };
 
+  const closeEditor = () => {
+    setIsDialogOpen(false);
+    setCrop({ x: 0, y: 0 });
+    setZoom(1);
+    setCropAreaPixels(null);
+  };
+
   const handleFileSelection = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -153,16 +182,21 @@ const ProfileImageCard = ({
     }
 
     const nextSourceUrl = URL.createObjectURL(file);
-    await loadImage(nextSourceUrl);
 
-    if (sourceUrl) URL.revokeObjectURL(sourceUrl);
+    try {
+      await loadImage(nextSourceUrl);
+      if (sourceUrl) URL.revokeObjectURL(sourceUrl);
 
-    setFilename(file.name);
-    setSourceUrl(nextSourceUrl);
-    setCrop({ x: 0, y: 0 });
-    setZoom(1);
-    setCropAreaPixels(null);
-    setIsDialogOpen(true);
+      setFilename(file.name);
+      setSourceUrl(nextSourceUrl);
+      setCrop({ x: 0, y: 0 });
+      setZoom(1);
+      setCropAreaPixels(null);
+      setIsDialogOpen(true);
+    } catch (_error) {
+      URL.revokeObjectURL(nextSourceUrl);
+      toast.error(i18n.t("profile.uploadPhotoFailed"));
+    }
   };
 
   const handleCropUpload = async () => {
@@ -183,17 +217,18 @@ const ProfileImageCard = ({
       const formData = new FormData();
       formData.append("user[avatar]", croppedFile);
 
-      const response = await teamApi.updateTeamMemberAvatar(userId, formData);
+      const response = await teamApi.updateTeamMemberAvatar(userId, formData, {
+        skipErrorToast: true,
+      });
       const nextUrl = response.data.avatar_url;
 
       setPreviewUrl(nextUrl);
+      setImageLoadFailed(false);
       onAvatarChange(nextUrl);
-      setIsDialogOpen(false);
+      closeEditor();
     } catch (error) {
       toast.error(
-        error?.response?.data?.error ||
-          error.message ||
-          i18n.t("profile.uploadPhotoFailed")
+        resolveApiErrorMessage(error, i18n.t("profile.uploadPhotoFailed"))
       );
     } finally {
       setIsUploading(false);
@@ -203,14 +238,15 @@ const ProfileImageCard = ({
   const handleDelete = async () => {
     try {
       setIsUploading(true);
-      await teamApi.destroyTeamMemberAvatar(userId);
+      await teamApi.destroyTeamMemberAvatar(userId, {
+        skipErrorToast: true,
+      });
       setPreviewUrl(null);
+      setImageLoadFailed(false);
       onAvatarChange(null);
     } catch (error) {
       toast.error(
-        error?.response?.data?.error ||
-          error.message ||
-          i18n.t("profile.removePhotoFailed")
+        resolveApiErrorMessage(error, i18n.t("profile.removePhotoFailed"))
       );
     } finally {
       setIsUploading(false);
@@ -221,19 +257,30 @@ const ProfileImageCard = ({
     <>
       <div className="rounded-2xl border border-border bg-card p-6 shadow-sm">
         <div className="flex flex-col items-center gap-4 text-center">
-          <div className="flex h-28 w-28 items-center justify-center overflow-hidden rounded-3xl border border-border bg-muted shadow-sm">
-            {previewUrl && !imageLoadFailed ? (
-              <img
-                alt={displayName}
-                className="h-full w-full object-cover"
-                src={previewUrl}
-                onError={() => setImageLoadFailed(true)}
-              />
-            ) : (
-              <span className="text-xl font-semibold text-foreground">
-                {initials}
-              </span>
-            )}
+          <div className="relative">
+            <div className="flex h-28 w-28 items-center justify-center overflow-hidden rounded-full border border-border bg-muted shadow-sm">
+              {previewUrl && !imageLoadFailed ? (
+                <img
+                  alt={displayName}
+                  className="h-full w-full object-cover"
+                  src={previewUrl}
+                  onError={() => setImageLoadFailed(true)}
+                />
+              ) : (
+                <span className="text-xl font-semibold text-foreground">
+                  {initials}
+                </span>
+              )}
+            </div>
+            <button
+              aria-label={i18n.t("profile.uploadPhoto")}
+              className="absolute bottom-0 right-0 flex h-8 w-8 items-center justify-center rounded-full border border-border bg-card text-foreground shadow-sm transition-colors hover:bg-accent"
+              data-testid="profile-image-edit-trigger"
+              type="button"
+              onClick={openFilePicker}
+            >
+              <UploadSimple className="h-4 w-4" />
+            </button>
           </div>
           <div className="space-y-1">
             <h2 className="text-base font-semibold text-foreground">
@@ -243,9 +290,9 @@ const ProfileImageCard = ({
               {i18n.t("profile.profilePhotoDescription")}
             </p>
           </div>
-          <div className="flex w-full flex-col gap-2">
+          <div className="flex w-full gap-2">
             <Button
-              className="w-full"
+              className="flex-1"
               onClick={openFilePicker}
               type="button"
               variant="outline"
@@ -255,7 +302,7 @@ const ProfileImageCard = ({
             </Button>
             {previewUrl && (
               <Button
-                className="w-full"
+                className="flex-1"
                 disabled={isUploading}
                 onClick={handleDelete}
                 type="button"
@@ -277,58 +324,92 @@ const ProfileImageCard = ({
         />
       </div>
 
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="max-w-2xl">
+      <Dialog
+        open={isDialogOpen}
+        onOpenChange={open => {
+          if (!open) closeEditor();
+          else setIsDialogOpen(true);
+        }}
+      >
+        <DialogContent className="max-w-3xl">
           <DialogHeader>
             <DialogTitle>{i18n.t("profile.adjustProfilePhoto")}</DialogTitle>
             <DialogDescription>
               {i18n.t("profile.adjustProfilePhotoDescription")}
             </DialogDescription>
           </DialogHeader>
-          <div className="space-y-5">
-            <div className="overflow-hidden rounded-2xl border border-border bg-muted">
-              {sourceUrl ? (
-                <div className="relative h-[22rem] w-full bg-muted">
-                  <Cropper
-                    aspect={1}
-                    crop={crop}
-                    cropShape="round"
-                    image={sourceUrl}
-                    objectFit="cover"
-                    showGrid={false}
-                    zoom={zoom}
-                    onCropChange={setCrop}
-                    onCropComplete={(_, areaPixels) =>
-                      setCropAreaPixels(areaPixels)
-                    }
-                    onZoomChange={setZoom}
-                  />
-                </div>
-              ) : (
-                <div className="flex h-[22rem] items-center justify-center text-sm text-muted-foreground">
-                  <Camera className="mr-2 h-4 w-4" />
-                  {i18n.t("profile.noImageSelected")}
-                </div>
-              )}
+          <div className="grid gap-5 md:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
+            <div className="space-y-4">
+              <div className="overflow-hidden rounded-2xl border border-border bg-muted">
+                {sourceUrl ? (
+                  <div className="relative h-[22rem] w-full bg-muted">
+                    <Cropper
+                      aspect={1}
+                      crop={crop}
+                      cropShape="round"
+                      image={sourceUrl}
+                      objectFit="cover"
+                      showGrid={false}
+                      zoom={zoom}
+                      onCropChange={setCrop}
+                      onCropComplete={(_, areaPixels) =>
+                        setCropAreaPixels(areaPixels)
+                      }
+                      onZoomChange={setZoom}
+                    />
+                  </div>
+                ) : (
+                  <div className="flex h-[22rem] items-center justify-center text-sm text-muted-foreground">
+                    <Camera className="mr-2 h-4 w-4" />
+                    {i18n.t("profile.noImageSelected")}
+                  </div>
+                )}
+              </div>
+              <label className="space-y-2 text-sm text-foreground">
+                {i18n.t("profile.zoom")}
+                <input
+                  aria-label={i18n.t("profile.zoom")}
+                  className="w-full accent-foreground"
+                  max={3}
+                  min={1}
+                  step={0.05}
+                  type="range"
+                  value={zoom}
+                  onChange={event => setZoom(Number(event.target.value))}
+                />
+              </label>
             </div>
-            <label className="space-y-2 text-sm text-foreground">
-              {i18n.t("profile.zoom")}
-              <input
-                aria-label={i18n.t("profile.zoom")}
-                className="w-full accent-foreground"
-                max={3}
-                min={1}
-                step={0.05}
-                type="range"
-                value={zoom}
-                onChange={event => setZoom(Number(event.target.value))}
-              />
-            </label>
+            <div className="space-y-3 rounded-2xl border border-border bg-muted/40 p-4">
+              <p className="text-sm font-medium text-foreground">
+                {i18n.t("profile.profilePhoto")}
+              </p>
+              <p className="text-xs text-muted-foreground">
+                {i18n.t("profile.adjustProfilePhotoDescription")}
+              </p>
+              <div className="flex justify-center py-2">
+                <div className="flex h-24 w-24 items-center justify-center overflow-hidden rounded-full border border-border bg-muted">
+                  {sourceUrl ? (
+                    <img
+                      alt={displayName}
+                      className="h-full w-full object-cover"
+                      src={sourceUrl}
+                    />
+                  ) : (
+                    <span className="text-base font-semibold text-foreground">
+                      {initials}
+                    </span>
+                  )}
+                </div>
+              </div>
+              <div className="rounded-lg border border-border bg-card px-3 py-2 text-xs text-muted-foreground">
+                {i18n.t("profile.adjustProfilePhotoDescription")}
+              </div>
+            </div>
           </div>
           <DialogFooter>
             <Button
               disabled={isUploading}
-              onClick={() => setIsDialogOpen(false)}
+              onClick={closeEditor}
               type="button"
               variant="outline"
             >
@@ -339,7 +420,9 @@ const ProfileImageCard = ({
               onClick={handleCropUpload}
               type="button"
             >
-              {i18n.t("profile.savePhoto")}
+              {isUploading
+                ? `${i18n.t("profile.savePhoto")}...`
+                : i18n.t("profile.savePhoto")}
             </Button>
           </DialogFooter>
         </DialogContent>
