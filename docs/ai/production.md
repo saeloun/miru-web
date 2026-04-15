@@ -28,3 +28,12 @@
   - verify email/password login
   - verify Google OAuth callback configuration
   - verify mailer links and any touched host-based metadata
+
+## SPA Deploy Safety
+
+- Treat stale frontend assets as a first-class deploy risk for active sessions.
+- Keep deploy-time recovery enabled for Vite preload and lazy-import chunk failures:
+  - auto-reload once
+  - fall back to a manual reload prompt if auto-reload already happened recently
+- Do not map runtime chunk/preload failures to product 404 UI.
+- For unexpected `401` responses right after deploy, verify session validity via `/api/v1/users/_me` once before forcing logout.

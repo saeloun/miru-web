@@ -6,19 +6,30 @@ import {
   clearCredentialsFromLocalStorage,
   getValueFromLocalStorage,
 } from "utils/storage";
+import { reportClientError } from "utils/runtimeRecovery";
+
+const AUTH_PATH_PREFIXES = [
+  "/user/sign_in",
+  "/login",
+  "/signup",
+  "/password/new",
+  "/password/edit",
+  "/users/password/edit",
+  "/email_confirmation",
+];
 
 class ApiHandler {
   axios: any;
+  sessionValidationPromise: Promise<boolean> | null;
+
   constructor() {
+    this.sessionValidationPromise = null;
     this.axios = axios.create({
       baseURL: "/api/v1",
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
-        "X-CSRF-TOKEN":
-          document
-            .querySelector('[name="csrf-token"]')
-            ?.getAttribute("content") || "",
+        "X-CSRF-TOKEN": this.getCsrfToken(),
       },
     });
 
@@ -35,18 +46,33 @@ class ApiHandler {
 
         return response;
       },
-      (error: any) => {
+      async (error: any) => {
         if (error.response?.status === 401) {
-          const token = getValueFromLocalStorage("authToken");
-          if (token) {
-            clearCredentialsFromLocalStorage();
+          const requestConfig = (error.config || {}) as {
+            __sessionValidated?: boolean;
+            url?: string;
+          };
+
+          if (
+            !requestConfig.__sessionValidated &&
+            !this.isSessionValidationBypassed(requestConfig.url)
+          ) {
+            const sessionStillUnauthorized =
+              await this.isSessionStillUnauthorized();
+            if (!sessionStillUnauthorized) {
+              reportClientError("api-401-recovered", error, {
+                reason: "transient-401-session-still-valid",
+                requestUrl: requestConfig.url || "",
+              });
+
+              return this.axios({
+                ...requestConfig,
+                __sessionValidated: true,
+              });
+            }
           }
 
-          Toastr.error(
-            error.response?.data?.error ||
-              "Session expired. Please login again."
-          );
-          setTimeout(() => (window.location.href = "/"), 500);
+          this.handleUnauthorizedSession(error);
 
           return Promise.reject(error);
         }
@@ -85,6 +111,74 @@ class ApiHandler {
       },
       (error: any) => Promise.reject(error)
     );
+  }
+
+  getCsrfToken() {
+    return (
+      document.querySelector('[name="csrf-token"]')?.getAttribute("content") ||
+      ""
+    );
+  }
+
+  isAuthPage() {
+    const currentPath = window.location.pathname;
+
+    return AUTH_PATH_PREFIXES.some(path => currentPath.startsWith(path));
+  }
+
+  isSessionValidationBypassed(url?: string) {
+    if (!url) return false;
+
+    const bypassPaths = [
+      "/users/login",
+      "/users/signup",
+      "/users/forgot_password",
+      "/users/reset_password",
+      "/users/logout",
+      "/users/_me",
+    ];
+
+    return bypassPaths.some(path => url.includes(path));
+  }
+
+  async isSessionStillUnauthorized() {
+    if (!this.sessionValidationPromise) {
+      this.sessionValidationPromise = fetch("/api/v1/users/_me", {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          "X-CSRF-TOKEN": this.getCsrfToken(),
+        },
+        credentials: "include",
+      })
+        .then(response => !response.ok)
+        .catch(() => true)
+        .finally(() => {
+          this.sessionValidationPromise = null;
+        });
+    }
+
+    return this.sessionValidationPromise;
+  }
+
+  handleUnauthorizedSession(error: any) {
+    const token = getValueFromLocalStorage("authToken");
+    if (token) {
+      clearCredentialsFromLocalStorage();
+    }
+
+    reportClientError("api-401-invalid-session", error, {
+      reason: "confirmed-unauthorized",
+      requestUrl: error?.config?.url || "",
+    });
+
+    if (!this.isAuthPage()) {
+      Toastr.error(
+        error.response?.data?.error || "Session expired. Please login again."
+      );
+      setTimeout(() => (window.location.href = "/"), 500);
+    }
   }
 }
 

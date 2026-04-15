@@ -8,6 +8,7 @@ import { AuthProvider } from "../src/context/auth";
 import { Toaster } from "sonner";
 import queryClient from "../src/lib/queryClient";
 import AppErrorBoundary from "../src/common/AppErrorBoundary";
+import { installRuntimeRecoveryHandlers } from "../src/utils/runtimeRecovery";
 // Geist font is loaded via CSS instead of npm package
 
 import "../settings";
@@ -18,6 +19,7 @@ import AppWithUserData from "../src/components/AppWithUserData";
 // Initialize Rails
 Rails.start();
 ActiveStorage.start();
+installRuntimeRecoveryHandlers();
 
 const THEME_STORAGE_KEY = "miru-theme";
 
