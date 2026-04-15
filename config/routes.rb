@@ -67,6 +67,14 @@ Rails.application.routes.draw do
     post "stripe/checkout/fulfillment", to: "stripe#fulfill_stripe_checkout"
   end
 
+  # Keep docs reachable from the main app domain.
+  get "/docs", to: redirect("https://docs.miru.so")
+  get "/docs/*path", to: redirect { |params, request|
+    suffix = params[:path].to_s
+    query = request.query_string.present? ? "?#{request.query_string}" : ""
+    suffix.present? ? "https://docs.miru.so/#{suffix}#{query}" : "https://docs.miru.so#{query}"
+  }
+
   root "home#index"
 
   match "*path", via: :all, to: "home#index", constraints: lambda { |req|

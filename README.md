@@ -170,7 +170,7 @@ Miru now ships with a Render Blueprint for one-click infrastructure setup.
 
 - Production branch: `production`
 - Release prep branch: `stable-3-0`
-- Deploy guide: [docs/docs/contributing-guide/deployment/render.md](docs/docs/contributing-guide/deployment/render.md)
+- Deploy guide: [docs/contributing-guide/deployment/render.md](docs/contributing-guide/deployment/render.md)
 - Blueprint: [render.yaml](render.yaml)
 
 For a fresh Render workspace, use the button above or open:

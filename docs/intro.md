@@ -162,6 +162,7 @@ Miru is proudly open source. We believe in transparency, community-driven develo
 
 ### 📚 Resources
 - **Documentation**: You're reading it!
+- **AI + gstack runbooks**: [AI Docs Hub](ai)
 - **API Reference**: Coming soon
 - **Video Tutorials**: [YouTube channel](https://youtube.com/@saeloun)
 

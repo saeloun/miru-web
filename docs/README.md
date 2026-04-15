@@ -68,13 +68,13 @@ This generates static content in the `build` directory, ready for deployment to 
 
 ```
 docs/
-├── docs/                          # Documentation pages
-│   ├── intro.md                  # Landing page
-│   ├── contributing-guide/       # Developer guides
-│   │   ├── setup/               # Setup instructions
-│   │   ├── testing/             # Testing documentation
-│   │   └── guidelines.md        # Contribution guidelines
-│   └── product-guide/           # User guides
+├── intro.md                       # Landing page
+├── contributing-guide/            # Developer guides
+│   ├── setup/                     # Setup instructions
+│   ├── testing/                   # Testing documentation
+│   └── guidelines.md              # Contribution guidelines
+├── product-guide/                 # User guides
+├── ai/                            # AI and gstack runbooks
 ├── static/                       # Static assets
 │   └── img/                     # Images and screenshots
 ├── src/                         # Custom components and styling
@@ -204,9 +204,16 @@ Override styles in `src/css/custom.css`:
 
 Miru's application stack is now documented for Render-first deployment.
 
-- App deploy guide: [docs/docs/contributing-guide/deployment/render.md](docs/docs/contributing-guide/deployment/render.md)
+- App deploy guide: [contributing-guide/deployment/render.md](contributing-guide/deployment/render.md)
 - One-click Blueprint: [`../render.yaml`](../render.yaml)
 - Production deploy branch: `production`
+
+### Accessing Docs From The App
+
+- `https://app.miru.so/docs` now routes users to the hosted docs site.
+- Deep links are preserved. Example:
+  - `https://app.miru.so/docs/contributing-guide/setup/macos`
+  - redirects to `https://docs.miru.so/contributing-guide/setup/macos`
 
 ### GitHub Pages
 Automatic deployment is configured via GitHub Actions. Every push to `main` triggers a build and deploys to GitHub Pages.
