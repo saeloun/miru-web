@@ -27,6 +27,7 @@ const UserContext = createContext({
   calendarEnabled: false,
   calendarConnected: false,
   loading: false,
+  authResolution: "unknown",
 });
 
 export const useUserContext = () => useContext(UserContext);

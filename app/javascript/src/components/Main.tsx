@@ -26,7 +26,7 @@ const Main: React.FC<MainProps> = props => {
   const authDispatch = useAuthDispatch();
   const location = useLocation();
   const { isLoggedIn } = useAuthState();
-  const { user } = useUserContext();
+  const { user, authResolution } = useUserContext();
   const navigate = useNavigate();
 
   // Handle Google OAuth success
@@ -54,13 +54,13 @@ const Main: React.FC<MainProps> = props => {
           email: user.email,
         },
       });
-    } else if (!user && isLoggedIn) {
+    } else if (!user && isLoggedIn && authResolution === "unauthenticated") {
       // User is no longer authenticated, log out
       authDispatch({
         type: "LOGOUT",
       });
     }
-  }, [user, isLoggedIn, authDispatch]);
+  }, [user, isLoggedIn, authDispatch, authResolution]);
 
   return <AppRouter {...props} user={user || props.user} />;
 };
