@@ -36,6 +36,14 @@ const config = {
       /** @type {import('@docusaurus/preset-classic').Options} */
       ({
         docs: {
+          // Keep docs content flattened at docs/ (not docs/docs/)
+          path: ".",
+          include: [
+            "intro.md",
+            "contributing-guide/**/*.{md,mdx}",
+            "product-guide/**/*.{md,mdx}",
+            "ai/**/*.{md,mdx}",
+          ],
           routeBasePath: "/",
           sidebarCollapsible: true,
           sidebarPath: require.resolve("./sidebars.js"),
