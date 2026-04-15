@@ -18,7 +18,7 @@ RSpec.describe "Api::V1::Profile#update", type: :request do
       expect(response).to have_http_status(:ok)
       expect(user.first_name).to eq("Sam")
       expect(user.last_name).to eq("Smith")
-      expect(json_response["notice"]).to eq("User updated")
+      expect(json_response["notice"]).to eq(I18n.t("companies.update.success"))
     end
 
     it "updates the preferred locale" do
@@ -28,10 +28,11 @@ RSpec.describe "Api::V1::Profile#update", type: :request do
 
       expect(response).to have_http_status(:ok)
       expect(user.reload.locale).to eq("mr")
-      expect(json_response["notice"]).to eq("User updated")
+      expect(json_response["notice"]).to eq(I18n.t("companies.update.success"))
     end
 
     it "updates user data with password" do
+      previous_password_changed_at = user.reload.password_changed_at
       params = {
         user: {
           first_name: "Example", last_name: "User", current_password: "testing12", password: "12345678",
@@ -40,9 +41,11 @@ RSpec.describe "Api::V1::Profile#update", type: :request do
       }
       send_request(:put, api_v1_profile_path, params:, headers: auth_headers(user))
       expect(response).to have_http_status(:ok)
-      expect(user.first_name).to eq("Example")
+      expect(user.reload.first_name).to eq("Example")
       expect(user.last_name).to eq("User")
-      expect(json_response["notice"]).to eq("Password updated")
+      expect(user.password_changed_at).to be > previous_password_changed_at
+      expect(json_response["notice"]).to eq(I18n.t("password.update.success"))
+      expect(json_response.dig("user", "password_changed_at")).to be_present
     end
 
     it "throws error when first name is blank" do

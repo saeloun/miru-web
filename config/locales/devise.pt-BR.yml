@@ -71,6 +71,8 @@ pt-BR:
       already_signed_out: Sessão encerrada com sucesso.
       signed_in: Login efetuado com sucesso.
       signed_out: Sessão encerrada com sucesso.
+      warn_pwned: Sua senha foi encontrada em vazamentos de dados conhecidos. Por
+        favor, altere-a imediatamente.
     unlocks:
       new:
         submit: Reenviar instruções de desbloqueio

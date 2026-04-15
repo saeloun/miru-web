@@ -13,7 +13,8 @@ class Api::V1::InvoicesController < Api::V1::ApplicationController
       pagination_details: response[:pagination_details],
       summary: response[:summary],
       recently_updated_invoices: response[:recently_updated_invoices],
-      recently_updated_total_count: response[:recently_updated_total_count]
+      recently_updated_total_count: response[:recently_updated_total_count],
+      meta: financial_api_meta(currency: response.dig(:summary, :currency))
     }
   end
 

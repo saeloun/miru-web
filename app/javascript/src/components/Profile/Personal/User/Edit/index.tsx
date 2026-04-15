@@ -296,9 +296,25 @@ const UserDetailsEdit = () => {
       };
 
       if (isCalledFromSettings) {
-        await profileApi.update({
+        const profileResponse = await profileApi.update({
           user: userSchema,
         });
+
+        const updatedPasswordChangedAt =
+          profileResponse?.data?.user?.password_changed_at;
+        const updatedAvatarUrl = profileResponse?.data?.user?.avatar_url;
+
+        if (updatedPasswordChangedAt) {
+          updateDetails("personalDetails", {
+            ...personalDetails,
+            password_changed_at: updatedPasswordChangedAt,
+          });
+        }
+
+        if (updatedAvatarUrl) {
+          setCurrentAvatarUrl(updatedAvatarUrl);
+        }
+
         await refetchCurrentUser();
       } else {
         await teamsApi.updateUser(currentUserId, {

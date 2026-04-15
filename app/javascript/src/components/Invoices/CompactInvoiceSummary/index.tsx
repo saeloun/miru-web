@@ -11,9 +11,10 @@ import { i18n } from "../../../i18n";
 
 interface CompactInvoiceSummaryProps {
   summary: {
-    overdueAmount: number;
-    outstandingAmount: number;
-    draftAmount: number;
+    overdueAmount: number | string;
+    openAmount?: number | string;
+    outstandingAmount: number | string;
+    draftAmount: number | string;
   };
   baseCurrency: string;
   filterParams: any;
@@ -42,12 +43,26 @@ const CompactInvoiceSummary: React.FC<CompactInvoiceSummaryProps> = ({
     });
   };
 
+  const parseAmount = (value: number | string): number => {
+    if (typeof value === "number") return value;
+    const parsed = Number(value);
+
+    return Number.isFinite(parsed) ? parsed : 0;
+  };
+  const overdueAmount = parseAmount(summary.overdueAmount);
+  const outstandingAmount = parseAmount(summary.outstandingAmount);
+  const providedOpenAmount = parseAmount(summary.openAmount ?? 0);
+  const draftAmount = parseAmount(summary.draftAmount);
+  const openAmount =
+    summary.openAmount !== undefined
+      ? providedOpenAmount
+      : Math.max(outstandingAmount - overdueAmount, 0);
+
   const summaryItems = [
     {
       id: "all",
       label: i18n.t("invoiceDashboard.allInvoices"),
-      value:
-        summary.overdueAmount + summary.outstandingAmount + summary.draftAmount,
+      value: overdueAmount + openAmount + draftAmount,
       icon: ArrowCounterClockwise,
       colorClass: "text-[#5E58F1]",
       bgClass: "bg-[#5E58F1]/5 hover:bg-[#5E58F1]/10 border-[#5E58F1]/20",
@@ -57,7 +72,7 @@ const CompactInvoiceSummary: React.FC<CompactInvoiceSummaryProps> = ({
     {
       id: "overdue",
       label: i18n.t("invoices.overdue"),
-      value: summary.overdueAmount,
+      value: overdueAmount,
       icon: AlertTriangle,
       colorClass: "text-red-600",
       bgClass: "bg-red-50 hover:bg-red-100 border-red-200",
@@ -66,7 +81,7 @@ const CompactInvoiceSummary: React.FC<CompactInvoiceSummaryProps> = ({
     {
       id: "outstanding",
       label: i18n.t("invoices.outstanding"),
-      value: summary.outstandingAmount,
+      value: openAmount,
       icon: Clock,
       colorClass: "text-amber-600",
       bgClass: "bg-amber-50 hover:bg-amber-100 border-amber-200",
@@ -74,13 +89,12 @@ const CompactInvoiceSummary: React.FC<CompactInvoiceSummaryProps> = ({
         applyFilter([
           { value: "sent", label: "SENT" },
           { value: "viewed", label: "VIEWED" },
-          { value: "overdue", label: "OVERDUE" },
         ]),
     },
     {
       id: "draft",
       label: i18n.t("invoices.draft"),
-      value: summary.draftAmount,
+      value: draftAmount,
       icon: FileText,
       colorClass: "text-gray-600",
       bgClass: "bg-gray-50 hover:bg-gray-100 border-gray-200",
@@ -119,7 +133,9 @@ const CompactInvoiceSummary: React.FC<CompactInvoiceSummaryProps> = ({
                       className={`text-lg font-semibold ${item.colorClass} truncate`}
                     >
                       {item.isReset ? (
-                        <span className="text-sm">{i18n.t("invoices.resetFilters")}</span>
+                        <span className="text-sm">
+                          {i18n.t("invoices.resetFilters")}
+                        </span>
                       ) : (
                         currencyFormat(baseCurrency, item.value)
                       )}

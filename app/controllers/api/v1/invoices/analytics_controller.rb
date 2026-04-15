@@ -62,6 +62,13 @@ class Api::V1::Invoices::AnalyticsController < Api::V1::ApplicationController
     # Convert to array and sort by date
     chart_data = monthly_data.values.sort_by { |data|
       Date.parse("1 #{data[:full_month]}")
+    }.map { |data|
+      data.merge(
+        revenue: data[:revenue].to_f.round(2),
+        payments: data[:payments].to_f.round(2),
+        invoice_count: data[:invoice_count].to_i,
+        payment_count: data[:payment_count].to_i
+      )
     }
 
     # Calculate statistics
@@ -83,17 +90,18 @@ class Api::V1::Invoices::AnalyticsController < Api::V1::ApplicationController
     render json: {
       chart_data: chart_data,
       statistics: {
-        total_revenue: total_revenue,
-        average_revenue: average_revenue,
+        total_revenue: total_revenue.to_f.round(2),
+        average_revenue: average_revenue.to_f.round(2),
         trend: trend.round(2),
-        current_month_revenue: current_month_revenue,
+        current_month_revenue: current_month_revenue.to_f.round(2),
         current_month_invoices: current_month_count,
         currency: current_company.base_currency
       },
       period: {
         start_date: start_date.strftime("%b %Y"),
         end_date: end_date.strftime("%b %Y")
-      }
+      },
+      meta: financial_api_meta(currency: current_company.base_currency)
     }
   end
 
@@ -115,19 +123,20 @@ class Api::V1::Invoices::AnalyticsController < Api::V1::ApplicationController
     status_data = Invoice.statuses.keys.map do |status|
       {
         status: status,
-        revenue: revenue_by_status[status] || 0,
+        revenue: (revenue_by_status[status] || 0).to_f.round(2),
         label: status.humanize.upcase
       }
     end
 
     render json: {
       status_data: status_data,
-      total: revenue_by_status.values.sum,
+      total: revenue_by_status.values.sum(&:to_f).round(2),
       currency: current_company.base_currency,
       period: {
         start_date: start_date.strftime("%b %d, %Y"),
         end_date: end_date.strftime("%b %d, %Y")
-      }
+      },
+      meta: financial_api_meta(currency: current_company.base_currency)
     }
   end
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_01_161000) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_15_143000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_stat_statements"
@@ -878,6 +878,15 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_01_161000) do
     t.string "encrypted_password", default: "", null: false
     t.integer "failed_attempts", default: 0, null: false
     t.string "first_name", null: false
+    t.datetime "invitation_accepted_at"
+    t.datetime "invitation_created_at"
+    t.integer "invitation_limit"
+    t.datetime "invitation_sent_at"
+    t.string "invitation_token"
+    t.integer "invitations_count", default: 0
+    t.bigint "invited_by_id"
+    t.string "invited_by_type"
+    t.string "jti", null: false
     t.string "last_name", null: false
     t.datetime "last_sign_in_at"
     t.string "last_sign_in_ip"
@@ -889,6 +898,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_01_161000) do
     t.boolean "otp_required_for_login", default: false, null: false
     t.text "otp_secret_ciphertext"
     t.boolean "passkey_required_for_login", default: false, null: false
+    t.datetime "password_changed_at"
     t.string "personal_email_id"
     t.string "phone"
     t.datetime "remember_created_at"
@@ -898,6 +908,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_01_161000) do
     t.jsonb "social_accounts"
     t.string "token", limit: 50
     t.string "unconfirmed_email"
+    t.string "unique_session_id", null: false
     t.datetime "updated_at", null: false
     t.string "webauthn_id"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token"
@@ -906,10 +917,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_01_161000) do
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["email"], name: "index_users_on_email_trgm", opclass: :gin_trgm_ops, using: :gin
     t.index ["first_name"], name: "index_users_on_first_name_trgm", opclass: :gin_trgm_ops, using: :gin
+    t.index ["invitation_token"], name: "index_users_on_invitation_token", unique: true
+    t.index ["invited_by_type", "invited_by_id"], name: "index_users_on_invited_by_type_and_invited_by_id"
+    t.index ["jti"], name: "index_users_on_jti", unique: true
     t.index ["last_name"], name: "index_users_on_last_name_trgm", opclass: :gin_trgm_ops, using: :gin
     t.index ["locale"], name: "index_users_on_locale"
     t.index ["locked_at"], name: "index_users_on_locked_at"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
+    t.index ["unique_session_id"], name: "index_users_on_unique_session_id", unique: true
     t.index ["webauthn_id"], name: "index_users_on_webauthn_id", unique: true
   end
 

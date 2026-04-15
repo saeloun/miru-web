@@ -14,6 +14,7 @@ zh-CN:
       not_saved:
         one: 1 个错误导致此 %{resource} 无法保存：
         other: "%{count} 错误导致此 %{resource} 无法保存："
+      pwned_password: 该密码曾出现在数据泄露事件中，切勿使用。请选择更强的密码。
     not_found: 您要查找的资源不可用。
     prevent_draft_to_waived: 不能改为豁免
     unauthorized: 只有所有者或管理员用户才有权执行此操作

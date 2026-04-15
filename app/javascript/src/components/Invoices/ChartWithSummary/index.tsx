@@ -16,6 +16,7 @@ import { i18n } from "../../../i18n";
 interface ChartWithSummaryProps {
   summary: {
     overdueAmount: number | string;
+    openAmount?: number | string;
     outstandingAmount: number | string;
     draftAmount: number | string;
   };
@@ -35,13 +36,28 @@ const ChartWithSummary: React.FC<ChartWithSummaryProps> = ({
   const [growthRate, setGrowthRate] = useState(0);
   const [monthlyAvg, setMonthlyAvg] = useState(0);
 
-  // Fetch real invoice data from dashboard API
+  const parseNumber = (value: unknown): number => {
+    if (typeof value === "number") return Number.isFinite(value) ? value : 0;
+
+    if (typeof value === "string") {
+      const parsed = Number(value);
+
+      return Number.isFinite(parsed) ? parsed : 0;
+    }
+
+    return 0;
+  };
+
+  const periodMonths =
+    selectedPeriod === "month" ? 1 : selectedPeriod === "quarter" ? 3 : 12;
+
+  // Fetch real invoice chart data from invoices analytics API
   const { data: monthlyInvoices } = useQuery({
-    queryKey: ["dashboard", "revenue", selectedPeriod],
+    queryKey: ["invoices", "analytics", "monthly_revenue", selectedPeriod],
     queryFn: async () => {
       try {
         const response = await fetch(
-          `/api/v1/dashboard?timeframe=${selectedPeriod}`,
+          `/api/v1/invoices/analytics/monthly_revenue`,
           {
             headers: {
               "Content-Type": "application/json",
@@ -66,14 +82,18 @@ const ChartWithSummary: React.FC<ChartWithSummaryProps> = ({
         }
 
         const data = await response.json();
-        const revenueChart = data.revenue_chart || [];
+        const monthlyRevenue = data.chart_data || [];
+        const scopedData = monthlyRevenue.slice(-periodMonths);
 
         // Transform the data to match our chart format
-        const monthlyData = revenueChart.map(item => ({
-          month: item.label || item.month || item.name,
-          revenue: item.value || item.revenue || item.amount || 0,
-          paid: item.paid || item.value || 0,
-          pending: item.pending || 0,
+        const monthlyData = scopedData.map(item => ({
+          month: item.month || item.label || item.name,
+          revenue: parseNumber(
+            item.monthly_revenue ?? item.revenue ?? item.value ?? item.amount
+          ),
+          invoices: parseNumber(
+            item.invoices ?? item.invoice_count ?? item.count
+          ),
         }));
 
         // Calculate totals and growth
@@ -85,8 +105,13 @@ const ChartWithSummary: React.FC<ChartWithSummaryProps> = ({
         const avg =
           monthlyData.length > 0 ? totalRevenue / monthlyData.length : 0;
 
-        // Calculate growth from stats if available
-        const growth = data.stats?.revenue_trend || 0;
+        // Calculate growth from the selected period's last two points
+        let growth = 0;
+        if (monthlyData.length >= 2) {
+          const last = monthlyData[monthlyData.length - 1].revenue;
+          const previous = monthlyData[monthlyData.length - 2].revenue;
+          growth = previous > 0 ? ((last - previous) / previous) * 100 : 0;
+        }
 
         return { monthlyData, growth, avg, totalRevenue };
       } catch (error) {
@@ -141,8 +166,13 @@ const ChartWithSummary: React.FC<ChartWithSummaryProps> = ({
 
   const overdueAmount = parseAmount(summary.overdueAmount);
   const outstandingAmount = parseAmount(summary.outstandingAmount);
+  const providedOpenAmount = parseAmount(summary.openAmount ?? 0);
   const draftAmount = parseAmount(summary.draftAmount);
-  const totalAmount = overdueAmount + outstandingAmount + draftAmount;
+  const openAmount =
+    summary.openAmount !== undefined
+      ? providedOpenAmount
+      : Math.max(outstandingAmount - overdueAmount, 0);
+  const totalAmount = overdueAmount + openAmount + draftAmount;
 
   const summaryItems = [
     {
@@ -162,14 +192,13 @@ const ChartWithSummary: React.FC<ChartWithSummaryProps> = ({
     },
     {
       label: i18n.t("invoices.outstanding"),
-      value: outstandingAmount,
+      value: openAmount,
       colorClass: "text-foreground",
       bgClass: "bg-muted/40 hover:bg-accent",
       onClick: () =>
         applyFilter([
           { value: "sent", label: "SENT" },
           { value: "viewed", label: "VIEWED" },
-          { value: "overdue", label: "OVERDUE" },
         ]),
     },
     {
@@ -227,8 +256,7 @@ const ChartWithSummary: React.FC<ChartWithSummaryProps> = ({
                   <h3 className="text-xl font-bold text-foreground">
                     {i18n.t("invoiceDashboard.revenueOverview")}
                   </h3>
-                  <p className="mt-1 text-sm text-muted-foreground">
-                                      </p>
+                  <p className="mt-1 text-sm text-muted-foreground"></p>
                 </div>
                 <div className="flex items-center gap-3">
                   <div className="flex items-center gap-2 rounded-lg bg-card px-3 py-2">
@@ -253,8 +281,7 @@ const ChartWithSummary: React.FC<ChartWithSummaryProps> = ({
                       ).toFixed(1)}
                       %
                     </span>
-                    <span className="text-xs text-muted-foreground">
-                                          </span>
+                    <span className="text-xs text-muted-foreground"></span>
                   </div>
                 </div>
               </div>
@@ -390,8 +417,7 @@ const ChartWithSummary: React.FC<ChartWithSummaryProps> = ({
                   </p>
                 </div>
                 <div className="text-center">
-                  <p className="mb-1 text-xs uppercase tracking-wide text-muted-foreground">
-                                      </p>
+                  <p className="mb-1 text-xs uppercase tracking-wide text-muted-foreground"></p>
                   <p className="text-base font-bold text-foreground">
                     {revenueData.reduce(
                       (max, item) => (item.revenue > max.revenue ? item : max),

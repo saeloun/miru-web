@@ -12,7 +12,10 @@ class Api::V1::DashboardController < Api::V1::BaseController
       to_date: parsed_date_param(:to_date)
     )
 
-    render json: @presenter.data
+    dashboard_data = @presenter.data
+    render json: dashboard_data.merge(
+      meta: financial_api_meta(currency: dashboard_data.dig(:stats, :currency))
+    )
   end
 
   private

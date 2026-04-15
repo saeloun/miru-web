@@ -16,6 +16,8 @@ pt-BR:
       not_saved:
         one: '1 erro impediu que este %{resource} fosse salvo:'
         other: "%{count} erros impediram que este %{resource} fosse salvo:"
+      pwned_password: Essa senha já apareceu em uma violação de dados e nunca deve
+        ser usada. Por favor, escolha uma senha mais forte.
     not_found: O recurso que você procura não está disponível.
     prevent_draft_to_waived: não pode ser alterado para dispensado
     unauthorized: Somente usuários proprietários ou administradores estão autorizados

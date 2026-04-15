@@ -76,6 +76,8 @@ de:
       already_signed_out: Erfolgreich abgemeldet.
       signed_in: Anmeldung erfolgreich.
       signed_out: Erfolgreich abgemeldet.
+      warn_pwned: Ihr Passwort wurde im Zusammenhang mit bekannten Datenlecks verwendet.
+        Bitte ändern Sie es umgehend.
     unlocks:
       new:
         submit: Entsperranweisungen erneut senden

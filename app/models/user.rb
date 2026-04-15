@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class User < ApplicationRecord
+  include Devise::JWT::RevocationStrategies::JTIMatcher
+
   TOTP_ISSUER = "Miru"
   RECOVERY_CODES_COUNT = 8
 
@@ -75,8 +77,10 @@ class User < ApplicationRecord
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable,
     :recoverable, :rememberable, :validatable,
-    :trackable, :confirmable, :lockable,
-    :omniauthable, omniauth_providers: [:google_oauth2, :github]
+    :trackable, :confirmable, :lockable, :invitable,
+    :session_limitable, :pwned_password, :jwt_authenticatable, :omniauthable,
+    jwt_revocation_strategy: self,
+    omniauth_providers: [:google_oauth2, :github]
 
   # Devise session serialization fix
   def self.serialize_into_session(record)
@@ -102,7 +106,9 @@ class User < ApplicationRecord
   # Callbacks
   after_discard :discard_project_members
   before_create :set_token
+  before_save :mark_password_changed_at, if: :will_save_change_to_encrypted_password?
   before_validation :normalize_locale
+  before_validation :ensure_auth_extension_identifiers, on: :create
 
   after_commit :send_to_hubspot, on: :create
 
@@ -275,6 +281,15 @@ class User < ApplicationRecord
 
     def normalize_locale
       self.locale = LocaleConfig.normalize(locale)
+    end
+
+    def ensure_auth_extension_identifiers
+      self.jti ||= SecureRandom.uuid
+      self.unique_session_id ||= SecureRandom.uuid
+    end
+
+    def mark_password_changed_at
+      self.password_changed_at = Time.current
     end
 
     def date_of_birth_cannot_be_in_future

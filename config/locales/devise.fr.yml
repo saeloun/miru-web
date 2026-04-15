@@ -75,6 +75,8 @@ fr:
       already_signed_out: Déconnexion réussie.
       signed_in: Connexion réussie.
       signed_out: Déconnexion réussie.
+      warn_pwned: Votre mot de passe a été divulgué lors de fuites de données connues.
+        Veuillez le modifier immédiatement.
     unlocks:
       new:
         submit: Renvoyer les instructions de déverrouillage

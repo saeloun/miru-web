@@ -6,7 +6,7 @@ import { minToHHMM } from "helpers";
 import { i18n } from "../../../i18n";
 
 const CheckboxIcon = () => (
-  <div className="mr-2 flex h-4 w-4 flex-shrink-0 items-center justify-center border-2 border-primary bg-white focus-within:border-blue-500 lg:h-5 lg:w-5">
+  <div className="mr-2 flex h-4 w-4 flex-shrink-0 items-center justify-center border-2 border-primary bg-background focus-within:border-blue-500 lg:h-5 lg:w-5">
     <svg
       className="custom__checkbox-tick pointer-events-none hidden h-2 w-2 fill-current text-primary"
       version="1.1"

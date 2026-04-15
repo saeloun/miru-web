@@ -62,6 +62,7 @@ ko:
       already_signed_out: 성공적으로 로그아웃되었습니다.
       signed_in: 로그인에 성공했습니다.
       signed_out: 성공적으로 로그아웃되었습니다.
+      warn_pwned: 귀하의 비밀번호가 알려진 데이터 유출 사례에 포함되었습니다. 즉시 비밀번호를 변경하십시오.
     unlocks:
       new:
         submit: 잠금 해제 지침 재전송

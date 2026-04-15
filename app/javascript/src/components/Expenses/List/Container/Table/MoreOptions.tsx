@@ -16,7 +16,7 @@ const MoreOptions = ({
 
   return isDesktop ? (
     <div
-      className="absolute bottom-16 right-0 hidden items-center justify-between rounded-xl border-2 border-border bg-white lg:w-28 lg:p-2 lg:group-hover:flex xl:w-40 xl:p-3"
+      className="absolute bottom-16 right-0 hidden items-center justify-between rounded-xl border-2 border-border bg-background text-foreground lg:w-28 lg:p-2 lg:group-hover:flex xl:w-40 xl:p-3"
       onClick={e => e.stopPropagation()}
     >
       <Tooltip content="Download">
@@ -60,7 +60,7 @@ const MoreOptions = ({
       isOpen={showMoreOptions}
       onClose={() => setShowMoreOptions(false)}
     >
-      <ul className="shadow-2 w-full rounded-lg bg-white">
+      <ul className="shadow-2 w-full rounded-lg border border-border bg-background text-foreground">
         <li className="flex cursor-pointer items-center py-2 text-primary">
           <DownloadSimpleIcon className="mr-4" size={16} /> Download Expense
         </li>

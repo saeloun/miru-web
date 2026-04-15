@@ -1,4 +1,6 @@
-const locale = baseCurrency => {
+import { getActiveLocale } from "../i18n";
+
+const fallbackLocaleByCurrency = baseCurrency => {
   switch (baseCurrency) {
     case "INR":
       return "en-IN";
@@ -19,13 +21,24 @@ const locale = baseCurrency => {
   }
 };
 
+const normalizedLocale = (localeValue?: string | null) => {
+  const value = localeValue?.trim();
+
+  return value && value.length > 0 ? value : null;
+};
+
 const currencyFormat = (
   baseCurrency,
   amount,
-  notation?: "standard" | "compact"
+  notation?: "standard" | "compact",
+  localeOverride?: string
 ) => {
   // Default to USD if no currency provided
   const currency = baseCurrency || "USD";
+  const activeLocale =
+    normalizedLocale(localeOverride) ||
+    normalizedLocale(getActiveLocale()) ||
+    fallbackLocaleByCurrency(currency);
 
   // Ensure amount is a valid number, default to 0 if not
   const numericAmount =
@@ -33,7 +46,7 @@ const currencyFormat = (
       ? amount
       : parseFloat(amount) || 0;
 
-  return new Intl.NumberFormat(locale(currency), {
+  return new Intl.NumberFormat(activeLocale, {
     style: "currency",
     currency,
     maximumFractionDigits: 2,

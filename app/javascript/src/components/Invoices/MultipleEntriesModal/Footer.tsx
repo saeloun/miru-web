@@ -28,11 +28,11 @@ const Footer = ({ selectedRowCount, handleSubmitModal, handleSelectAll }) => {
       </div>
       <button
         type="button"
-        className={`rounded py-2 px-7 text-base font-bold tracking-widest text-white
+        className={`rounded py-2 px-7 text-base font-bold tracking-widest
           ${
             selectedRowCount
-              ? "cursor-pointer bg-primary"
-              : "cursor-not-allowed border-transparent bg-indigo-100 hover:border-transparent"
+              ? "cursor-pointer bg-primary text-primary-foreground"
+              : "cursor-not-allowed border-transparent bg-secondary text-muted-foreground hover:border-transparent"
           }`}
         onClick={handleSubmitModal}
       >
@@ -40,14 +40,14 @@ const Footer = ({ selectedRowCount, handleSubmitModal, handleSelectAll }) => {
       </button>
     </div>
   ) : (
-    <div className="fixed bottom-0 left-0 right-0 bg-white p-4 shadow-c1">
+    <div className="fixed bottom-0 left-0 right-0 border-t border-border bg-background p-4 shadow-c1">
       <button
         type="button"
-        className={`w-full rounded py-2 px-7 text-base font-bold tracking-widest text-white
+        className={`w-full rounded py-2 px-7 text-base font-bold tracking-widest
           ${
             selectedRowCount
-              ? "cursor-pointer bg-primary"
-              : "cursor-not-allowed border-transparent bg-indigo-100 hover:border-transparent"
+              ? "cursor-pointer bg-primary text-primary-foreground"
+              : "cursor-not-allowed border-transparent bg-secondary text-muted-foreground hover:border-transparent"
           }`}
         onClick={handleSubmitModal}
       >

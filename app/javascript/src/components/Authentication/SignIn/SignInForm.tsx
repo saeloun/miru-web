@@ -46,7 +46,7 @@ const SignInForm = () => {
     document.querySelector('[name="csrf-token"]')?.getAttribute("content") ||
     "";
 
-  const completeLogin = ({ company, company_role, user }) => {
+  const completeLogin = ({ company, company_role, user, security_warning }) => {
     if (!user?.token) {
       throw new Error("No authentication token received");
     }
@@ -66,6 +66,10 @@ const SignInForm = () => {
     }
 
     toast.success(t("auth.signIn.welcomeBack"));
+    if (security_warning) {
+      toast.warning(security_warning);
+    }
+
     setTimeout(() => {
       window.location.href = dashboardUrl(company_role);
     }, 500);

@@ -74,6 +74,8 @@ it:
       already_signed_out: Disconnessione effettuata con successo.
       signed_in: Accesso effettuato con successo.
       signed_out: Disconnessione effettuata con successo.
+      warn_pwned: La tua password è stata rilevata in violazioni di dati note. Ti
+        preghiamo di cambiarla immediatamente.
     unlocks:
       new:
         submit: Reinvia le istruzioni di sblocco

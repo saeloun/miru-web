@@ -14,6 +14,7 @@ ja:
       not_saved:
         one: 1つのエラーにより、この%{resource}を保存できませんでした。
         other: "%{count} エラーにより、この %{resource} を保存できませんでした。"
+      pwned_password: 過去にデータ漏洩事件で使用されたことがあり、絶対に使用しないでください。より強力なパスワードを選択してください。
     not_found: お探しのリソースは利用できません
     prevent_draft_to_waived: 免除に変更することはできません
     unauthorized: この操作を実行できるのは、所有者または管理者ユーザーのみです。

@@ -17,6 +17,7 @@ export const PersonalDetailsState = {
   },
   linkedin: "",
   github: "",
+  password_changed_at: "",
   date_format: "",
   currentPassword: "",
   password: "",

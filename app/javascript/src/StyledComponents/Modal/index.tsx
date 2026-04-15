@@ -28,7 +28,7 @@ const Modal = ({ isOpen, onClose, customStyle, children }: Iprops) => (
             leaveTo="opacity-0 scale-95"
           >
             <Dialog.Panel
-              className={`w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all ${customStyle}`}
+              className={`w-full max-w-md transform overflow-hidden rounded-2xl border border-border bg-background p-6 text-left align-middle text-foreground shadow-xl transition-all ${customStyle}`}
             >
               {children}
             </Dialog.Panel>

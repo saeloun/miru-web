@@ -393,7 +393,9 @@ const TimesheetEntryDialog: React.FC<TimesheetEntryDialogProps> = ({
                   }
                   placeholder="Hours"
                 />
-                <Label className="text-xs text-gray-500 mt-1">Hours</Label>
+                <Label className="mt-1 text-xs text-muted-foreground">
+                  Hours
+                </Label>
               </div>
               <div className="flex-1">
                 <Input
@@ -406,7 +408,9 @@ const TimesheetEntryDialog: React.FC<TimesheetEntryDialogProps> = ({
                   }
                   placeholder="Minutes"
                 />
-                <Label className="text-xs text-gray-500 mt-1">Minutes</Label>
+                <Label className="mt-1 text-xs text-muted-foreground">
+                  Minutes
+                </Label>
               </div>
             </div>
           </div>

@@ -70,6 +70,7 @@ class CreateInvitedUserService
       if (@user = User.find_by(email: invitation.recipient_email))
         @user.update!(current_workspace_id: invitation.company.id)
         activate_employment_status unless invitation.client
+        sync_invitable_metadata!
       else
         create_invited_user!
         create_reset_password_token
@@ -94,6 +95,7 @@ class CreateInvitedUserService
       )
       @user.skip_password_validation = true
       @user.save!
+      sync_invitable_metadata!
     end
 
     def add_role_to_invited_user
@@ -116,6 +118,17 @@ class CreateInvitedUserService
 
     def create_reset_password_token
       @reset_password_token = user.create_reset_password_token
+    end
+
+    def sync_invitable_metadata!
+      user.update_columns(
+        invitation_token: invitation.token,
+        invitation_created_at: invitation.created_at,
+        invitation_sent_at: invitation.created_at,
+        invitation_accepted_at: invitation.accepted_at || Time.current,
+        invited_by_type: invitation.sender.class.name,
+        invited_by_id: invitation.sender_id
+      )
     end
 
     def service_failed(message)

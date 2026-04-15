@@ -54,6 +54,15 @@ const PersonalProfileSummary = ({
       ).format("MMMM D, YYYY")
     : null;
 
+  const passwordChangedAt = personalDetails.password_changed_at
+    ? dayjs(personalDetails.password_changed_at)
+    : null;
+
+  const passwordChangedDaysAgo =
+    passwordChangedAt && passwordChangedAt.isValid()
+      ? Math.max(dayjs().diff(passwordChangedAt, "day"), 0)
+      : 0;
+
   return (
     <div className="min-h-screen bg-background font-geist">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -195,7 +204,9 @@ const PersonalProfileSummary = ({
                           {i18n.t("settings.password")}
                         </p>
                         <p className="mt-0.5 text-xs font-geist-regular text-muted-foreground">
-                          {i18n.t("profile.lastChangedDaysAgo", { count: 30 })}
+                          {i18n.t("profile.lastChangedDaysAgo", {
+                            count: passwordChangedDaysAgo,
+                          })}
                         </p>
                       </div>
                       <Badge className="bg-primary text-primary-foreground font-geist-medium">

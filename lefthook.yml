@@ -62,6 +62,11 @@ post-commit:
         # Update CLAUDE.md with recent commits if needed
         echo "✅ Commit successful!"
 
+pre-push:
+  commands:
+    council-gate:
+      run: script/enforce_council_gate.sh
+
 # Install hooks on npm/pnpm install
 scripts:
   "postinstall": "lefthook install"

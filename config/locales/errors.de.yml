@@ -16,6 +16,9 @@ de:
       not_saved:
         one: 'Ein Fehler verhinderte das Speichern von %{resource}:'
         other: "%{count}-Fehler verhinderten das Speichern dieses %{resource}:"
+      pwned_password: Dieses Passwort wurde bereits bei einem Datenleck verwendet
+        und sollte unter keinen Umständen mehr verwendet werden. Bitte wählen Sie
+        ein sicheres Passwort.
     not_found: Die gesuchte Ressource ist nicht verfügbar.
     prevent_draft_to_waived: kann nicht in „verzichtbar“ geändert werden.
     unauthorized: Nur Eigentümer oder Administratoren sind berechtigt, diese Aktion

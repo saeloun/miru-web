@@ -38,7 +38,7 @@ const MoreOptions = ({
   return isDesktop ? (
     <>
       <div
-        className="absolute bottom-16 right-0 hidden items-center justify-between rounded-xl border-2 border-border bg-white lg:w-28 lg:p-2 lg:group-hover:flex xl:w-40 xl:p-3"
+        className="absolute bottom-16 right-0 hidden items-center justify-between rounded-xl border-2 border-border bg-background text-foreground lg:w-28 lg:p-2 lg:group-hover:flex xl:w-40 xl:p-3"
         onClick={e => e.stopPropagation()}
       >
         <Tooltip content={i18n.t("invoices.sendTo")}>
@@ -111,10 +111,10 @@ const MoreOptions = ({
           onMouseLeave={() => setIsMenuOpen(false)}
         >
           <div className="hidden overflow-hidden lg:w-10 xl:w-12">
-            <div className="h-6 w-6 origin-bottom-left rotate-45 transform border-2 border-border bg-white" />
+            <div className="h-6 w-6 origin-bottom-left rotate-45 transform border-2 border-border bg-background" />
           </div>
           <ul
-            className="mt-1 rounded-lg border-border bg-white shadow-c1 lg:py-3 xl:py-4"
+            className="mt-1 rounded-lg border border-border bg-background text-foreground shadow-c1 lg:py-3 xl:py-4"
             onClick={e => e.stopPropagation()}
           >
             {invoice?.status === "overdue" && (
@@ -178,7 +178,7 @@ const MoreOptions = ({
       isOpen={showMoreOptions}
       onClose={() => setShowMoreOptions(false)}
     >
-      <ul className="shadow-2 w-full rounded-lg bg-white">
+      <ul className="shadow-2 w-full rounded-lg border border-border bg-background text-foreground">
         <li>
           <button
             className="flex cursor-pointer items-center py-2 text-primary"
@@ -195,7 +195,8 @@ const MoreOptions = ({
               }
             }}
           >
-            <PaperPlaneTiltIcon className="mr-4" size={16} /> {i18n.t("invoices.sendInvoice")}
+            <PaperPlaneTiltIcon className="mr-4" size={16} />{" "}
+            {i18n.t("invoices.sendInvoice")}
           </button>
         </li>
         <li className="flex cursor-pointer items-center py-2">
@@ -208,7 +209,8 @@ const MoreOptions = ({
             }
             onClick={() => handleDownloadInvoice(invoice)}
           >
-            <DownloadSimpleIcon className="mr-4" size={16} /> {i18n.t("download")}
+            <DownloadSimpleIcon className="mr-4" size={16} />{" "}
+            {i18n.t("download")}
           </button>
         </li>
         <li>
@@ -219,7 +221,8 @@ const MoreOptions = ({
               navigate(`/invoices/${invoice.id}/edit`);
             }}
           >
-            <PenIcon className="mr-4" size={16} /> {i18n.t("invoices.editInvoice")}
+            <PenIcon className="mr-4" size={16} />{" "}
+            {i18n.t("invoices.editInvoice")}
           </button>
         </li>
         {invoice?.status === "overdue" && (

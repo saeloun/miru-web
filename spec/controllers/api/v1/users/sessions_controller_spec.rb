@@ -4,7 +4,7 @@ require "rails_helper"
 
 RSpec.describe Api::V1::Users::SessionsController, type: :controller do
   let(:company) { create(:company) }
-  let(:user) { create(:user, current_workspace_id: company.id) }
+  let(:user) { create(:user, :with_avatar, current_workspace_id: company.id) }
 
   before do
     @request.env["devise.mapping"] = Devise.mappings[:user]
@@ -82,7 +82,10 @@ RSpec.describe Api::V1::Users::SessionsController, type: :controller do
 
   describe "GET #me" do
     context "when user is authenticated" do
-      before { sign_in user }
+      before do
+        request.headers["X-Auth-Email"] = user.email
+        request.headers["X-Auth-Token"] = user.token
+      end
 
       it "returns current user data" do
         get :me, format: :json
@@ -94,6 +97,10 @@ RSpec.describe Api::V1::Users::SessionsController, type: :controller do
         expect(json_response["user"]).not_to have_key("token")
         expect(json_response["user"]["current_workspace_id"]).to eq(user.current_workspace_id)
         expect(json_response["user"]["avatar_url"]).to eq(user.avatar_url)
+        expect(json_response["user"]["avatar_url"]).to be_present
+        expect(json_response["user"]["password_changed_at"]).to be_present
+        expect(Time.zone.parse(json_response["user"]["password_changed_at"]).to_i)
+          .to eq(user.password_changed_at.to_i)
         expect(json_response["user"]).not_to have_key("confirmed")
         expect(json_response["company_role"]).to eq("admin")
         expect(json_response["company"]["id"]).to eq(company.id)
@@ -114,7 +121,10 @@ RSpec.describe Api::V1::Users::SessionsController, type: :controller do
     context "when user has no company role" do
       let(:user_without_role) { create(:user, current_workspace_id: company.id) }
 
-      before { sign_in user_without_role }
+      before do
+        request.headers["X-Auth-Email"] = user_without_role.email
+        request.headers["X-Auth-Token"] = user_without_role.token
+      end
 
       it "returns user data with nil company_role" do
         get :me, format: :json

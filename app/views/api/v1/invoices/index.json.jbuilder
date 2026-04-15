@@ -36,11 +36,20 @@ end
 
 json.summary do
   json.draftAmount summary[:draftAmount]
+  json.openAmount summary[:openAmount]
   json.outstandingAmount summary[:outstandingAmount]
   json.overdueAmount summary[:overdueAmount]
+  json.draftCount summary[:draftCount]
+  json.openCount summary[:openCount]
+  json.outstandingCount summary[:outstandingCount]
+  json.overdueCount summary[:overdueCount]
+  json.paidCount summary[:paidCount]
+  json.totalCount summary[:totalCount]
   json.totalAmount summary[:totalAmount]
   json.currency summary[:currency]
 end
+
+json.meta meta
 
 json.recentlyUpdatedInvoices recently_updated_invoices do |invoice|
   json.id invoice.id

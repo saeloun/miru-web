@@ -71,6 +71,7 @@ tr:
       already_signed_out: Başarılı bir şekilde oturumdan çıkış yapıldı.
       signed_in: Başarıyla giriş yapıldı.
       signed_out: Başarılı bir şekilde oturumdan çıkış yapıldı.
+      warn_pwned: Parolanız bilinen veri ihlallerinde yer aldı. Lütfen hemen değiştirin.
     unlocks:
       new:
         submit: Kilit açma talimatlarını yeniden gönder
