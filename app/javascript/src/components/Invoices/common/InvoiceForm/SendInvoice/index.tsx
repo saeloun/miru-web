@@ -97,7 +97,7 @@ const SendInvoice = ({
         }
       }}
     >
-      <div className="bg-white">
+      <div className="bg-background text-foreground">
         <div className="mt-2 mb-6 flex items-center justify-between">
           <h6 className="form__title">
             {isSendReminder

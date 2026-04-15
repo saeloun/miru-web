@@ -143,7 +143,7 @@ const PaymentReminder = ({
           </button>
         </div>
         {renderSelectedForm()}
-        <div className="absolute bottom-0 left-0 right-0 flex items-center justify-between bg-white p-4 shadow-c1">
+        <div className="absolute bottom-0 left-0 right-0 flex items-center justify-between border-t border-border bg-background p-4 shadow-c1">
           {currentStep === 1 ? (
             <div className="flex w-full items-center justify-between">
               <small>
