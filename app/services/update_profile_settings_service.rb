@@ -18,7 +18,7 @@ class UpdateProfileSettingsService
 
   def update_user_without_password
     if current_user.update_without_password(user_params.except(:current_password))
-      { res: { notice: "User updated" }, status: :ok }
+      { res: success_payload(I18n.t("companies.update.success")), status: :ok }
     else
       { res: { errors: current_user.errors.full_messages }, status: :unprocessable_content }
     end
@@ -26,9 +26,21 @@ class UpdateProfileSettingsService
 
   def update_user_with_password
     if current_user.update_with_password(user_params)
-      { res: { notice: "Password updated" }, status: :ok }
+      { res: success_payload(I18n.t("password.update.success")), status: :ok }
     else
       { res: { errors: current_user.errors.full_messages }, status: :unprocessable_content }
     end
   end
+
+  private
+
+    def success_payload(notice)
+      {
+        notice:,
+        user: {
+          avatar_url: current_user.avatar_url,
+          password_changed_at: current_user.password_changed_at
+        }
+      }
+    end
 end

@@ -46,7 +46,9 @@ class Api::V1::Users::SessionsController < Devise::SessionsController
           "phone" => current_user.phone,
           "personal_email_id" => current_user.personal_email_id,
           "social_accounts" => current_user.social_accounts,
-          "date_format" => current_company&.date_format
+          "date_format" => current_company&.date_format,
+          "avatar_url" => current_user.avatar_url,
+          "password_changed_at" => current_user.password_changed_at
         ),
         company_role: company_role_payload(current_user, current_company),
         company: company_payload(current_company)
@@ -95,6 +97,7 @@ class Api::V1::Users::SessionsController < Devise::SessionsController
       persist_requested_locale(user)
       user.reset_failed_attempts! if user.respond_to?(:reset_failed_attempts!)
       sign_in(user)
+      set_pwned_password_warning(user)
 
       app = params[:app] || ""
 
@@ -110,11 +113,13 @@ class Api::V1::Users::SessionsController < Devise::SessionsController
     end
 
     def render_sign_in_response(user)
-      render json: signed_in_payload(
-        user,
-        company: current_company,
-        notice: I18n.t("devise.sessions.signed_in"),
-        include_token: true
+      render json: with_security_warning(
+        signed_in_payload(
+          user,
+          company: current_company,
+          notice: I18n.t("devise.sessions.signed_in"),
+          include_token: true
+        )
       ), status: 200
     end
 
@@ -154,27 +159,27 @@ class Api::V1::Users::SessionsController < Devise::SessionsController
     end
 
     def render_sign_in_response_for_desktop(user)
-      render json: {
+      render json: with_security_warning({
         notice: I18n.t("devise.sessions.signed_in"),
         **desktop_signed_in_payload(
           user,
           company: current_company,
           google_oauth_success: @google_oauth_success.present?
         )
-      }, status: 200
+      }), status: 200
     end
 
     def render_sign_in_response_for_mobile(user)
-      render json: {
+      render json: with_security_warning({
         notice: I18n.t("devise.sessions.signed_in"),
         **mobile_signed_in_payload(user, company: current_company)
-      }, status: 200
+      }), status: 200
     end
 
     def render_sign_in_response_for_cli(user)
       cli_session, plain_token = CliSession.issue_for(user:, company: current_company)
 
-      render json: {
+      render json: with_security_warning({
         notice: I18n.t("devise.sessions.signed_in"),
         user: safe_user_payload(user),
         company: {
@@ -185,7 +190,19 @@ class Api::V1::Users::SessionsController < Devise::SessionsController
           token: plain_token,
           expires_at: cli_session.expires_at.iso8601
         }
-      }, status: 200
+      }), status: 200
+    end
+
+    def set_pwned_password_warning(user)
+      return unless user.respond_to?(:pwned?) && user.pwned?
+
+      @security_warning = I18n.t("devise.sessions.warn_pwned")
+    end
+
+    def with_security_warning(payload)
+      return payload if @security_warning.blank?
+
+      payload.merge(security_warning: @security_warning)
     end
 
     def passkey_login_required?(user)

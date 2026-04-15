@@ -56,6 +56,7 @@ zh-CN:
       already_signed_out: 已成功登出。
       signed_in: 登录成功。
       signed_out: 已成功登出。
+      warn_pwned: 您的密码已出现在已知的数据泄露事件中。请立即更改密码。
     unlocks:
       new:
         submit: 重新发送解锁说明

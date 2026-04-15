@@ -25,8 +25,12 @@ const InvoiceSummary = ({
   };
   const overdueAmount = parseAmount(summary.overdueAmount);
   const outstandingAmount = parseAmount(summary.outstandingAmount);
+  const providedOpenAmount = parseAmount(summary.openAmount ?? 0);
   const draftAmount = parseAmount(summary.draftAmount);
-  const openAmount = Math.max(outstandingAmount - overdueAmount, 0);
+  const openAmount =
+    summary.openAmount !== undefined
+      ? providedOpenAmount
+      : Math.max(outstandingAmount - overdueAmount, 0);
   const totalAmount = overdueAmount + openAmount + draftAmount;
 
   const summaryList = [

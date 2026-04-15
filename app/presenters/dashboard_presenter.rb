@@ -49,15 +49,15 @@ class DashboardPresenter
         payments_received = scoped_payments.where(transaction_date: from_date..to_date).sum(:amount)
 
         return {
-          total_revenue: period_invoices.sum(:amount).round(2),
-          revenue_trend: calculate_trend(period_invoices.sum(:amount), calculate_previous_period_revenue),
+          total_revenue: amount_value(period_invoices.sum(:amount)),
+          revenue_trend: trend_value(calculate_trend(period_invoices.sum(:amount), calculate_previous_period_revenue)),
           active_projects: open_invoices,
           projects_trend: 0,
           team_size: paid_invoices,
-          billable_hours: payments_received.round(2),
+          billable_hours: amount_value(payments_received),
           hours_trend: 0,
-          outstanding_amount: outstanding_amount.round(2),
-          payments_received: payments_received.round(2),
+          outstanding_amount: amount_value(outstanding_amount),
+          payments_received: amount_value(payments_received),
           paid_invoices: paid_invoices,
           open_invoices: open_invoices,
           currency: company.base_currency
@@ -79,13 +79,13 @@ class DashboardPresenter
       hours_trend = calculate_trend(billable_hours, previous_billable_hours)
 
       {
-        total_revenue: total_revenue.round(2),
-        revenue_trend: revenue_trend,
+        total_revenue: amount_value(total_revenue),
+        revenue_trend: trend_value(revenue_trend),
         active_projects: active_projects,
-        projects_trend: projects_trend,
+        projects_trend: trend_value(projects_trend),
         team_size: team_size,
-        billable_hours: billable_hours,
-        hours_trend: hours_trend,
+        billable_hours: amount_value(billable_hours),
+        hours_trend: trend_value(hours_trend),
         currency: company.base_currency
       }
       end
@@ -104,13 +104,13 @@ class DashboardPresenter
       cumulative_revenue = 0
 
       while current_date <= to_date
-        month_revenue = monthly_data[current_date.beginning_of_month.in_time_zone] || 0
+        month_revenue = (monthly_data[current_date.beginning_of_month.in_time_zone] || 0).to_f
         cumulative_revenue += month_revenue
 
         chart_data << {
           month: current_date.strftime("%b"),
-          revenue: cumulative_revenue.round(2),
-          monthly_revenue: month_revenue.round(2),
+          revenue: amount_value(cumulative_revenue),
+          monthly_revenue: amount_value(month_revenue),
           invoices: invoice_count_for_month(current_date)
         }
         current_date = current_date.next_month
@@ -131,7 +131,7 @@ class DashboardPresenter
         {
           id: client_id,
           name: client_name || "Unknown",
-          revenue: amount.round(2)
+          revenue: amount_value(amount)
         }
       end
 
@@ -220,7 +220,7 @@ class DashboardPresenter
     def calculate_trend(current_value, previous_value)
       return 0 if previous_value == 0
 
-      ((current_value - previous_value) / previous_value * 100).round(1)
+      ((current_value.to_f - previous_value.to_f) / previous_value.to_f * 100).round(1)
     end
 
     def previous_period_range
@@ -320,5 +320,13 @@ class DashboardPresenter
 
     def employee_scoped?
       current_user.has_role?(:employee, company)
+    end
+
+    def amount_value(amount)
+      amount.to_f.round(2)
+    end
+
+    def trend_value(value)
+      value.to_f.round(1)
     end
 end

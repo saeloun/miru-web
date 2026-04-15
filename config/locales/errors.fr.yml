@@ -16,6 +16,8 @@ fr:
       not_saved:
         one: 'Une erreur a empêché l''enregistrement de ce %{resource} :'
         other: 'Des erreurs %{count} ont empêché l''enregistrement de ce %{resource} :'
+      pwned_password: Ce mot de passe a déjà été compromis lors d'une fuite de données
+        et ne doit jamais être utilisé. Veuillez choisir un mot de passe plus robuste.
     not_found: La ressource que vous recherchez n'est pas disponible.
     prevent_draft_to_waived: ne peut pas être transformé en dispense
     unauthorized: Seuls les propriétaires ou les administrateurs sont autorisés à

@@ -104,6 +104,9 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
     overdueAmount: invoices
       .filter(inv => inv.status === "overdue")
       .reduce((sum, inv) => sum + (inv.amount || 0), 0),
+    openAmount: invoices
+      .filter(inv => ["sent", "viewed"].includes(inv.status))
+      .reduce((sum, inv) => sum + (inv.amount || 0), 0),
     outstandingAmount: invoices
       .filter(inv => ["sent", "viewed", "overdue"].includes(inv.status))
       .reduce((sum, inv) => sum + (inv.amount || 0), 0),

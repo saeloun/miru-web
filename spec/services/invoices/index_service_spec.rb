@@ -20,7 +20,20 @@ RSpec.describe Invoices::IndexService do
       expect(response[:invoices].length).to eq(1)
       expect(response[:invoices].first.id).to eq(invoice_one.id)
       expect(response[:pagination_details]).to include(page: 1, pages: 2, total: 2)
-      expect(response[:summary]).to include(:draftAmount, :outstandingAmount, :overdueAmount, :totalAmount, :currency)
+      expect(response[:summary]).to include(
+        :draftAmount,
+        :openAmount,
+        :outstandingAmount,
+        :overdueAmount,
+        :draftCount,
+        :openCount,
+        :outstandingCount,
+        :overdueCount,
+        :paidCount,
+        :totalCount,
+        :totalAmount,
+        :currency
+      )
       expect(response[:recently_updated_invoices].map(&:id)).to eq([invoice_two.id, invoice_one.id])
       expect(response[:recently_updated_total_count]).to eq(2)
     end

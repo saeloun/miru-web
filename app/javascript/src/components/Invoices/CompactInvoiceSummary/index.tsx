@@ -12,6 +12,7 @@ import { i18n } from "../../../i18n";
 interface CompactInvoiceSummaryProps {
   summary: {
     overdueAmount: number | string;
+    openAmount?: number | string;
     outstandingAmount: number | string;
     draftAmount: number | string;
   };
@@ -50,8 +51,12 @@ const CompactInvoiceSummary: React.FC<CompactInvoiceSummaryProps> = ({
   };
   const overdueAmount = parseAmount(summary.overdueAmount);
   const outstandingAmount = parseAmount(summary.outstandingAmount);
+  const providedOpenAmount = parseAmount(summary.openAmount ?? 0);
   const draftAmount = parseAmount(summary.draftAmount);
-  const openAmount = Math.max(outstandingAmount - overdueAmount, 0);
+  const openAmount =
+    summary.openAmount !== undefined
+      ? providedOpenAmount
+      : Math.max(outstandingAmount - overdueAmount, 0);
 
   const summaryItems = [
     {

@@ -15,6 +15,9 @@ es:
       not_saved:
         one: '1 error impidió que este %{resource} se guardara:'
         other: "%{count} errores impidieron que este %{resource} se guardara:"
+      pwned_password: Esta contraseña ya apareció en una filtración de datos y no
+        debe utilizarse bajo ninguna circunstancia. Por favor, elija una contraseña
+        más segura.
     not_found: El recurso que busca no está disponible.
     prevent_draft_to_waived: no se puede cambiar a renunciado
     unauthorized: Solo los usuarios propietarios o administradores están autorizados

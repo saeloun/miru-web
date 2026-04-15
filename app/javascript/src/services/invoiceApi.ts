@@ -103,10 +103,30 @@ export interface InvoiceListResponse {
   recentlyUpdatedTotalCount: number;
   summary: {
     draftAmount: string | number;
+    openAmount?: string | number;
     outstandingAmount: string | number;
     overdueAmount: string | number;
+    draftCount?: number;
+    openCount?: number;
+    outstandingCount?: number;
+    overdueCount?: number;
+    paidCount?: number;
+    totalCount?: number;
     totalAmount: string | number;
     currency: string;
+  };
+  meta?: {
+    i18n?: {
+      locale?: string;
+      default_locale?: string;
+      transliteration_enabled?: boolean;
+    };
+    formatting?: {
+      currency?: string;
+      decimal_precision?: number;
+    };
+    timezone?: string;
+    generated_at?: string;
   };
   pagy: {
     page: number;
@@ -196,11 +216,19 @@ class InvoiceApiService {
         ) || 0,
       summary: response.data.summary || {
         draftAmount: 0,
+        openAmount: 0,
         outstandingAmount: 0,
         overdueAmount: 0,
+        draftCount: 0,
+        openCount: 0,
+        outstandingCount: 0,
+        overdueCount: 0,
+        paidCount: 0,
+        totalCount: 0,
         totalAmount: 0,
         currency: "USD",
       },
+      meta: response.data.meta,
       pagy: response.data.pagination_details ||
         response.data.pagy || { page: 1, pages: 1, total: 0 },
     };

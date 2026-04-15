@@ -10,6 +10,7 @@ import {
   BarChart,
   Bar,
 } from "recharts";
+import { useQuery } from "@tanstack/react-query";
 import { currencyFormat } from "helpers";
 import { Toastr } from "StyledComponents";
 import { i18n } from "../../../i18n";
@@ -18,6 +19,7 @@ interface MonthlyRevenueData {
   month: string;
   revenue: number;
   invoiceCount?: number;
+  invoice_count?: number;
 }
 
 interface MonthlyRevenueChartProps {
@@ -39,57 +41,77 @@ const MonthlyRevenueChart: React.FC<MonthlyRevenueChartProps> = ({
   const [totalRevenue, setTotalRevenue] = useState(0);
   const [averageRevenue, setAverageRevenue] = useState(0);
   const [trend, setTrend] = useState<number>(0);
-  const [isLoading, setIsLoading] = useState(false);
   const [currency, setCurrency] = useState(baseCurrency);
+
+  const parseNumber = (value: unknown): number => {
+    if (typeof value === "number") return Number.isFinite(value) ? value : 0;
+
+    if (typeof value === "string") {
+      const parsed = Number(value);
+
+      return Number.isFinite(parsed) ? parsed : 0;
+    }
+
+    return 0;
+  };
+
+  const {
+    data: analyticsData,
+    isLoading,
+    error: analyticsError,
+  } = useQuery({
+    queryKey: ["invoices", "analytics", "monthly_revenue", "monthly-chart"],
+    enabled: !monthlyData,
+    queryFn: async () => {
+      const response = await fetch(
+        "/api/v1/invoices/analytics/monthly_revenue",
+        {
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-TOKEN":
+              document
+                .querySelector('[name="csrf-token"]')
+                ?.getAttribute("content") || "",
+          },
+          credentials: "include",
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to load monthly revenue analytics");
+      }
+
+      return response.json();
+    },
+    staleTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: false,
+  });
 
   useEffect(() => {
     if (monthlyData) {
       processMonthlyData(monthlyData);
-    } else {
-      generateMockData();
-    }
-  }, [monthlyData]);
 
-  const generateMockData = () => {
-    // Generate mock data for the last 12 months
-    const months = [
-      i18n.t("monthJan"),
-      i18n.t("monthFeb"),
-      i18n.t("monthMar"),
-      i18n.t("monthApr"),
-      i18n.t("monthMay"),
-      i18n.t("monthJun"),
-      i18n.t("monthJul"),
-      i18n.t("monthAug"),
-      i18n.t("monthSep"),
-      i18n.t("monthOct"),
-      i18n.t("monthNov"),
-      i18n.t("monthDec"),
-    ];
-    const currentMonth = new Date().getMonth();
-    const mockData: MonthlyRevenueData[] = [];
-
-    for (let i = 0; i < 12; i++) {
-      const monthIndex = (currentMonth - 11 + i + 12) % 12;
-      mockData.push({
-        month: months[monthIndex],
-        revenue: 0,
-        invoiceCount: 0,
-      });
+      return;
     }
 
-    processMonthlyData(mockData);
-  };
+    if (analyticsData?.chart_data) {
+      processMonthlyData(
+        analyticsData.chart_data.map(item => ({
+          month: item.month,
+          revenue: parseNumber(item.revenue),
+          invoiceCount: parseNumber(item.invoice_count),
+        }))
+      );
+    }
+  }, [monthlyData, analyticsData]);
 
   const processMonthlyData = (inputData: MonthlyRevenueData[]) => {
     try {
-      setIsLoading(false);
-
       // Set the chart data
       const formattedData: MonthlyRevenueData[] = inputData.map(item => ({
         month: item.month,
         revenue: item.revenue,
-        invoiceCount: item.invoiceCount || item.invoice_count,
+        invoiceCount: item.invoiceCount ?? item.invoice_count,
       }));
 
       setChartData(formattedData);
@@ -102,14 +124,18 @@ const MonthlyRevenueChart: React.FC<MonthlyRevenueChartProps> = ({
       setAverageRevenue(avg);
       setTrend(0); // Trend calculation would require historical data
       setCurrency(baseCurrency);
-      setIsLoading(false);
     } catch (error) {
       console.error("Error fetching monthly revenue:", error);
       Toastr.error(i18n.t("invoices.failedToLoadRevenueData"));
       setChartData([]);
-      setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (analyticsError) {
+      Toastr.error(i18n.t("invoices.failedToLoadRevenueData"));
+    }
+  }, [analyticsError]);
 
   const formatTooltipValue = (value: number) => currencyFormat(currency, value);
 
@@ -152,9 +178,7 @@ const MonthlyRevenueChart: React.FC<MonthlyRevenueChartProps> = ({
           <h3 className="text-lg font-semibold text-foreground">
             {i18n.t("invoiceDashboard.revenueOverview")}
           </h3>
-          <p className="mt-1 text-sm text-muted-foreground">
-            
-          </p>
+          <p className="mt-1 text-sm text-muted-foreground"></p>
         </div>
 
         <div className="flex flex-col sm:flex-row gap-4 mt-4 lg:mt-0">
@@ -200,14 +224,18 @@ const MonthlyRevenueChart: React.FC<MonthlyRevenueChartProps> = ({
           className="flex items-center justify-center"
           style={{ height: `${height}px` }}
         >
-          <div className="text-muted-foreground">{i18n.t("invoices.loadingChartData")}</div>
+          <div className="text-muted-foreground">
+            {i18n.t("invoices.loadingChartData")}
+          </div>
         </div>
       ) : chartData.length === 0 ? (
         <div
           className="flex items-center justify-center"
           style={{ height: `${height}px` }}
         >
-          <div className="text-muted-foreground">{i18n.t("invoices.noInvoiceData")}</div>
+          <div className="text-muted-foreground">
+            {i18n.t("invoices.noInvoiceData")}
+          </div>
         </div>
       ) : (
         <div className="w-full" style={{ height: `${height}px` }}>

@@ -36,17 +36,19 @@ RSpec.describe Api::V1::DashboardController, type: :request do
       get "/api/v1/dashboard"
 
       expect(response).to have_http_status(:ok)
-      expect(response.parsed_body.dig("stats", "total_revenue")).to eq("1000.0")
+      expect(response.parsed_body.dig("stats", "total_revenue")).to eq(1000.0)
       expect(response.parsed_body.dig("stats", "active_projects")).to eq(1)
-      expect(response.parsed_body.dig("stats", "billable_hours")).to eq("0.0")
+      expect(response.parsed_body.dig("stats", "billable_hours")).to eq(0.0)
       expect(response.parsed_body.fetch("revenue_by_customer")).to eq([])
+      expect(response.parsed_body.dig("meta", "i18n", "locale")).to be_present
+      expect(response.parsed_body.dig("meta", "formatting", "currency")).to eq(company.base_currency)
     end
 
     it "defaults to year-to-date data instead of a rolling last-year window" do
       get "/api/v1/dashboard"
 
       expect(response).to have_http_status(:ok)
-      expect(response.parsed_body.dig("stats", "total_revenue")).to eq("1000.0")
+      expect(response.parsed_body.dig("stats", "total_revenue")).to eq(1000.0)
     end
   end
 end

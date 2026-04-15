@@ -72,6 +72,8 @@ id:
       already_signed_out: Berhasil keluar.
       signed_in: Berhasil masuk.
       signed_out: Berhasil keluar.
+      warn_pwned: Kata sandi Anda telah muncul dalam kebocoran data yang diketahui.
+        Harap segera ubah kata sandi Anda.
     unlocks:
       new:
         submit: Kirim ulang instruksi pembukaan kunci

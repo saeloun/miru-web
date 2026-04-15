@@ -15,6 +15,8 @@ id:
       not_saved:
         one: '1 kesalahan mencegah %{resource} ini untuk disimpan:'
         other: 'Kesalahan %{count} mencegah %{resource} ini untuk disimpan:'
+      pwned_password: Kata sandi ini sebelumnya pernah muncul dalam kebocoran data
+        dan sebaiknya tidak digunakan. Silakan pilih kata sandi yang lebih kuat.
     not_found: Sumber daya yang Anda cari tidak tersedia.
     prevent_draft_to_waived: tidak bisa diubah menjadi dibebaskan
     unauthorized: Hanya pengguna pemilik atau admin yang berwenang untuk melakukan

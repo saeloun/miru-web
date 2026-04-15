@@ -73,6 +73,8 @@ nl:
       already_signed_out: Succesvol uitgelogd.
       signed_in: Succesvol ingelogd.
       signed_out: Succesvol uitgelogd.
+      warn_pwned: Uw wachtwoord is mogelijk gelekt via bekende datalekken. Wijzig
+        het onmiddellijk.
     unlocks:
       new:
         submit: Instructies voor het ontgrendelen opnieuw verzenden

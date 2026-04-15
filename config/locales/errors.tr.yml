@@ -15,6 +15,8 @@ tr:
       not_saved:
         one: '1 hata bu %{resource}''ın kaydedilmesini engelledi:'
         other: "%{count} hataları bu %{resource}'in kaydedilmesini engelledi:"
+      pwned_password: Bu şifre daha önce bir veri ihlalinde kullanılmıştır ve asla
+        kullanılmamalıdır. Lütfen daha güçlü bir şifre seçin.
     not_found: Aradığınız kaynak mevcut değil.
     prevent_draft_to_waived: feragat olarak değiştirilemez
     unauthorized: Bu işlemi yalnızca sahip veya yönetici kullanıcılar gerçekleştirebilir.

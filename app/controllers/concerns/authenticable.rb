@@ -15,6 +15,7 @@ module Authenticable
       return if current_user
 
       return if authenticate_user_using_cli_token
+      return if authenticate_user_using_jwt
 
       user_email = request.headers["X-Auth-Email"].presence
       auth_token = request.headers["X-Auth-Token"].presence
@@ -36,6 +37,19 @@ module Authenticable
       @current_cli_session = session
       sign_in session.user, store: false
       true
+    end
+
+    def authenticate_user_using_jwt
+      authorization_header = request.headers["Authorization"].to_s
+      return false unless authorization_header.start_with?("Bearer ")
+
+      user = warden.authenticate(scope: :user)
+      return false unless user
+
+      sign_in user, store: false
+      true
+    rescue StandardError
+      false
     end
 
     def current_cli_session

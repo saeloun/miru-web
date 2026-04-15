@@ -30,6 +30,22 @@ class Api::V1::ApplicationController < ActionController::API
 
   private
 
+    def financial_api_meta(currency: nil)
+      {
+        i18n: {
+          locale: I18n.locale.to_s,
+          default_locale: I18n.default_locale.to_s,
+          transliteration_enabled: true
+        },
+        formatting: {
+          currency: currency || current_company&.base_currency,
+          decimal_precision: 2
+        },
+        timezone: Time.zone.tzinfo.name,
+        generated_at: Time.current.iso8601
+      }
+    end
+
     def switch_locale(&action)
       locale = LocaleConfig.normalize(
         params[:locale].presence ||

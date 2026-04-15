@@ -124,17 +124,35 @@ module Invoices
       end
 
       def summary
-        invoice_amounts = InvoiceAmountsSummary.process(current_company.invoices.kept)
+        invoices_scope = current_company.invoices.kept
+        invoice_amounts = InvoiceAmountsSummary.process(invoices_scope)
+        status_counts = invoices_scope.group(:status).count
+
         draft_amount = invoice_amounts[:draft_amount]
         outstanding_amount = invoice_amounts[:outstanding_amount]
         overdue_amount = invoice_amounts[:overdue_amount]
-        total_amount = (draft_amount + outstanding_amount + overdue_amount).round(2)
+        open_amount = (outstanding_amount - overdue_amount).round(2)
+        total_amount = (draft_amount + open_amount + overdue_amount).round(2)
+
+        draft_count = status_counts.fetch("draft", 0)
+        overdue_count = status_counts.fetch("overdue", 0)
+        paid_count = status_counts.fetch("paid", 0)
+        open_count = status_counts.fetch("sent", 0) + status_counts.fetch("viewed", 0)
+        outstanding_count = open_count + overdue_count
+        total_count = status_counts.values.sum
 
         {
-          draftAmount: draft_amount == 0 ? 0 : draft_amount.to_s,
-          outstandingAmount: outstanding_amount == 0 ? 0 : outstanding_amount.to_s,
-          overdueAmount: overdue_amount == 0 ? 0 : overdue_amount.to_s,
-          totalAmount: total_amount == 0 ? 0 : total_amount.to_s,
+          draftAmount: draft_amount,
+          openAmount: open_amount,
+          outstandingAmount: outstanding_amount,
+          overdueAmount: overdue_amount,
+          draftCount: draft_count,
+          openCount: open_count,
+          outstandingCount: outstanding_count,
+          overdueCount: overdue_count,
+          paidCount: paid_count,
+          totalCount: total_count,
+          totalAmount: total_amount,
           currency: current_company.base_currency
         }
       end

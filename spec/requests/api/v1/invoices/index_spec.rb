@@ -321,13 +321,21 @@ RSpec.describe "Api::V1::Invoices#index", type: :request do
       it "returns correct summary" do
         send_request :get, api_v1_invoices_path(), headers: auth_headers(admin)
         expected_data = {
-          overdueAmount: @overdue_amount,
-          outstandingAmount: @outstanding_amount,
-          draftAmount: @draft_amount,
-          totalAmount: (@overdue_amount + @outstanding_amount + @draft_amount).to_s,
+          overdueAmount: @overdue_amount.to_f,
+          openAmount: (@outstanding_amount - @overdue_amount).to_f,
+          outstandingAmount: @outstanding_amount.to_f,
+          draftAmount: @draft_amount.to_f,
+          draftCount: company.invoices.kept.draft.count,
+          openCount: company.invoices.kept.where(status: [:sent, :viewed]).count,
+          outstandingCount: company.invoices.kept.where(status: [:sent, :viewed, :overdue]).count,
+          overdueCount: company.invoices.kept.overdue.count,
+          paidCount: company.invoices.kept.paid.count,
+          totalCount: company.invoices.kept.count,
+          totalAmount: (@outstanding_amount + @draft_amount).to_f,
           currency: company.base_currency
         }
         expect(json_response["summary"]).to eq(JSON.parse(expected_data.to_json))
+        expect(json_response.dig("meta", "i18n", "locale")).to be_present
       end
     end
   end

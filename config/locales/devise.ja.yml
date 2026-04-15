@@ -56,6 +56,7 @@ ja:
       already_signed_out: 正常にログアウトしました。
       signed_in: ログインに成功しました。
       signed_out: 正常にログアウトしました。
+      warn_pwned: お客様のパスワードが既知のデータ漏洩事件で使用されていました。直ちにパスワードを変更してください。
     unlocks:
       new:
         submit: ロック解除手順を再送信

@@ -15,6 +15,8 @@ en-US:
       not_saved:
         one: '1 error prohibited this %{resource} from being saved:'
         other: "%{count} errors prohibited this %{resource} from being saved:"
+      pwned_password: has previously appeared in a data breach and should never be
+        used. Please choose a stronger password.
     not_found: The resource you're looking for is not available
     prevent_draft_to_waived: can't be changed to waived
     unauthorized: Only owner or admin users are authorized to perform this action

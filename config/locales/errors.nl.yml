@@ -16,6 +16,8 @@ nl:
       not_saved:
         one: '1 fout heeft ervoor gezorgd dat deze %{resource} niet kon worden opgeslagen:'
         other: "%{count}-fouten verhinderden dat deze %{resource} kon worden opgeslagen:"
+      pwned_password: Dit wachtwoord is eerder gebruikt bij een datalek en mag daarom
+        nooit meer worden gebruikt. Kies een sterker wachtwoord.
     not_found: De bron waarnaar u op zoek bent, is niet beschikbaar.
     prevent_draft_to_waived: kan niet worden gewijzigd naar kwijtgescholden
     unauthorized: Alleen de eigenaar of beheerder is gemachtigd om deze actie uit

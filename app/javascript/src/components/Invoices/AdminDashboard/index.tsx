@@ -20,6 +20,7 @@ import {
   Plus,
   Funnel,
 } from "phosphor-react";
+import { useQuery } from "@tanstack/react-query";
 import { cn } from "@/lib/utils";
 import MonthlyRevenueChart from "../MonthlyRevenueChart";
 import InfiniteScrollRecentlyUpdated from "../List/RecentlyUpdated/InfiniteScrollRecentlyUpdated";
@@ -29,6 +30,7 @@ import { i18n } from "../../../i18n";
 interface AdminDashboardProps {
   summary: {
     overdueAmount: number | string;
+    openAmount?: number | string;
     outstandingAmount: number | string;
     draftAmount: number | string;
     currency: string;
@@ -60,9 +62,47 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
   };
   const overdueAmount = parseAmount(summary.overdueAmount);
   const outstandingAmount = parseAmount(summary.outstandingAmount);
+  const providedOpenAmount = parseAmount(summary.openAmount ?? 0);
   const draftAmount = parseAmount(summary.draftAmount);
-  const openAmount = Math.max(outstandingAmount - overdueAmount, 0);
-  const invoiceStatusTotal = openAmount + overdueAmount + draftAmount;
+  const openAmount =
+    summary.openAmount !== undefined
+      ? providedOpenAmount
+      : Math.max(outstandingAmount - overdueAmount, 0);
+
+  const { data: revenueByStatusData } = useQuery({
+    queryKey: ["invoices", "analytics", "revenue_by_status"],
+    queryFn: async () => {
+      const response = await fetch(
+        "/api/v1/invoices/analytics/revenue_by_status",
+        {
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-TOKEN":
+              document
+                .querySelector('[name="csrf-token"]')
+                ?.getAttribute("content") || "",
+          },
+          credentials: "include",
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to load invoice status revenue");
+      }
+
+      return response.json();
+    },
+    staleTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: false,
+  });
+
+  const paidAmount = parseAmount(
+    revenueByStatusData?.status_data?.find(item => item.status === "paid")
+      ?.revenue ?? 0
+  );
+
+  const invoiceStatusTotal =
+    openAmount + overdueAmount + draftAmount + paidAmount;
 
   const formatStatusShare = (amount: number) => {
     if (invoiceStatusTotal <= 0 || amount <= 0) {
@@ -265,14 +305,14 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       {i18n.t("invoices.paid")}
                     </p>
                     <p className="text-2xl font-bold">
-                      {currencyFormat(baseCurrency, 0)}
+                      {currencyFormat(baseCurrency, paidAmount)}
                     </p>
                   </div>
                   <Badge
                     variant="outline"
                     className="border-border bg-card text-card-foreground"
                   >
-                    {formatStatusShare(0)}
+                    {formatStatusShare(paidAmount)}
                   </Badge>
                 </div>
 

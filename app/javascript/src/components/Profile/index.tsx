@@ -30,6 +30,8 @@ const buildPersonalDetails = (
   email_id: user?.personal_email_id || user?.email || previousState.email_id,
   linkedin: user?.social_accounts?.linkedin_url || previousState.linkedin,
   github: user?.social_accounts?.github_url || previousState.github,
+  password_changed_at:
+    user?.password_changed_at || previousState.password_changed_at,
   date_format:
     user?.date_format || company?.date_format || previousState.date_format,
 });

@@ -14,6 +14,7 @@ interface User {
   } | null;
   date_format?: string | null;
   avatar_url?: string;
+  password_changed_at?: string | null;
   confirmed?: boolean;
   calendar_enabled?: boolean;
   calendar_connected?: boolean;

@@ -26,6 +26,10 @@ gem "jbuilder", "~> 2.11"
 
 # Use devise for authentication
 gem "devise"
+gem "devise-security"
+gem "devise-pwned_password"
+gem "devise-jwt"
+gem "devise_invitable"
 gem "webauthn"
 gem "rotp"
 
