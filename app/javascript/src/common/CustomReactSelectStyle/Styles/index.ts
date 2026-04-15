@@ -1,23 +1,17 @@
 let focusedState = false;
 let isDisabled = false;
 
-const palette = () => {
-  const dark =
-    typeof document !== "undefined" &&
-    document.documentElement.classList.contains("dark");
-
-  return {
-    background: dark ? "#0A0A0A" : "#FFFFFF",
-    menuBackground: dark ? "#09090B" : "#FFFFFF",
-    border: dark ? "#27272A" : "#CDD6DF",
-    text: dark ? "#FAFAFA" : "#1D1A31",
-    muted: dark ? "#A1A1AA" : "#A5A3AD",
-    subtle: dark ? "#A1A1AA" : "#777683",
-    optionText: dark ? "#F4F4F5" : "#1D1A31",
-    optionTextMuted: dark ? "#E4E4E7" : "#52525B",
-    optionHover: dark ? "#18181B" : "#F4F4F5",
-    optionSelected: dark ? "#27272A" : "#E4E4E7",
-  };
+const palette = {
+  background: "hsl(var(--background))",
+  menuBackground: "hsl(var(--popover))",
+  border: "hsl(var(--input))",
+  text: "hsl(var(--foreground))",
+  muted: "hsl(var(--muted-foreground))",
+  subtle: "hsl(var(--muted-foreground) / 0.9)",
+  optionText: "hsl(var(--foreground))",
+  optionTextMuted: "hsl(var(--foreground) / 0.8)",
+  optionHover: "hsl(var(--accent))",
+  optionSelected: "hsl(var(--secondary))",
 };
 
 export const customStyles = (
@@ -26,37 +20,32 @@ export const customStyles = (
   hideDropdownIndicator = false
 ) => ({
   control: (provided, state) => {
-    const colors = palette();
     focusedState = state.isFocused;
     isDisabled = !!state.isDisabled;
 
     return {
       ...provided,
-      backgroundColor: colors.background,
+      backgroundColor: palette.background,
       minHeight: 48,
       padding: "0",
-      border: `1px solid ${colors.border}`,
-      borderColor: colors.border,
+      border: `1px solid ${palette.border}`,
+      borderColor: palette.border,
       fontWeight: 500,
     };
   },
-  menu: provided => {
-    const colors = palette();
-
-    return {
-      ...provided,
-      fontSize: isDesktopView ? "14px" : "13px",
-      letterSpacing: "normal",
-      zIndex: 50,
-      backgroundColor: colors.menuBackground,
-      border: `1px solid ${colors.border}`,
-      boxShadow: "0 12px 32px rgba(15, 23, 42, 0.18)",
-      overflow: "hidden",
-    };
-  },
+  menu: provided => ({
+    ...provided,
+    fontSize: isDesktopView ? "14px" : "13px",
+    letterSpacing: "normal",
+    zIndex: 50,
+    backgroundColor: palette.menuBackground,
+    border: `1px solid ${palette.border}`,
+    boxShadow: "0 12px 32px hsl(var(--foreground) / 0.18)",
+    overflow: "hidden",
+  }),
   menuList: provided => ({
     ...provided,
-    backgroundColor: palette().menuBackground,
+    backgroundColor: palette.menuBackground,
     paddingTop: 6,
     paddingBottom: 6,
   }),
@@ -65,36 +54,30 @@ export const customStyles = (
     overflow: "visible",
   }),
   placeholder: (baseStyles, state) => ({
-    ...(() => {
-      const colors = palette();
-
-      return {
-        ...baseStyles,
-        position: "absolute",
-        top:
-          focusedState ||
-          state.selectProps.inputValue ||
-          (state.selectProps.value && state.selectProps.value?.value !== "")
-            ? "-40%"
-            : "15%",
-        transition: "top 0.5s",
-        fontSize:
-          focusedState ||
-          state.selectProps.inputValue ||
-          (state.selectProps.value && state.selectProps.value?.value !== "")
-            ? 9
-            : isDesktopView
-            ? 16
-            : 14,
-        backgroundColor: colors.background,
-        color:
-          focusedState ||
-          state.selectProps.inputValue ||
-          (state.selectProps.value && state.selectProps.value?.value !== "")
-            ? colors.subtle
-            : colors.muted,
-      };
-    })(),
+    ...baseStyles,
+    position: "absolute",
+    top:
+      focusedState ||
+      state.selectProps.inputValue ||
+      (state.selectProps.value && state.selectProps.value?.value !== "")
+        ? "-40%"
+        : "15%",
+    transition: "top 0.5s",
+    fontSize:
+      focusedState ||
+      state.selectProps.inputValue ||
+      (state.selectProps.value && state.selectProps.value?.value !== "")
+        ? 9
+        : isDesktopView
+        ? 16
+        : 14,
+    backgroundColor: palette.background,
+    color:
+      focusedState ||
+      state.selectProps.inputValue ||
+      (state.selectProps.value && state.selectProps.value?.value !== "")
+        ? palette.subtle
+        : palette.muted,
   }),
   dropdownIndicator: base => ({
     ...base,
@@ -108,38 +91,28 @@ export const customStyles = (
     },
   }),
   singleValue: base => ({
-    ...(() => {
-      const colors = palette();
-
-      return {
-        ...base,
-        fontWeight: 500,
-        fontSize: isDesktopView ? 16 : 14,
-        color:
-          isDisabled && !ignoreDisabledFontColor ? colors.muted : colors.text,
-      };
-    })(),
+    ...base,
+    fontWeight: 500,
+    fontSize: isDesktopView ? 16 : 14,
+    color:
+      isDisabled && !ignoreDisabledFontColor ? palette.muted : palette.text,
   }),
-  option: (base, state) => {
-    const colors = palette();
-
-    return {
-      ...base,
-      backgroundColor: state.isSelected
-        ? colors.optionSelected
-        : state.isFocused
-        ? colors.optionHover
-        : colors.menuBackground,
-      color:
-        state.isSelected || state.isFocused
-          ? colors.optionText
-          : colors.optionTextMuted,
-      cursor: state.isDisabled ? "not-allowed" : "pointer",
-      fontSize: isDesktopView ? 14 : 13,
-      fontWeight: state.isSelected ? 600 : 500,
-      lineHeight: 1.4,
-      paddingTop: 10,
-      paddingBottom: 10,
-    };
-  },
+  option: (base, state) => ({
+    ...base,
+    backgroundColor: state.isSelected
+      ? palette.optionSelected
+      : state.isFocused
+      ? palette.optionHover
+      : palette.menuBackground,
+    color:
+      state.isSelected || state.isFocused
+        ? palette.optionText
+        : palette.optionTextMuted,
+    cursor: state.isDisabled ? "not-allowed" : "pointer",
+    fontSize: isDesktopView ? 14 : 13,
+    fontWeight: state.isSelected ? 600 : 500,
+    lineHeight: 1.4,
+    paddingTop: 10,
+    paddingBottom: 10,
+  }),
 });

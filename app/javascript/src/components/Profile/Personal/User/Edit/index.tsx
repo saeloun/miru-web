@@ -10,7 +10,7 @@ import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import { useOutsideClick } from "helpers";
 import { i18n } from "../../../../../i18n";
-import { teamsMapper } from "mapper/teams.mapper";
+import { pickPrimaryAddress, teamsMapper } from "mapper/teams.mapper";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { beginPasskeyRegistration } from "utils/passkeys";
@@ -65,6 +65,7 @@ const UserDetailsEdit = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [addrId, setAddrId] = useState();
   const [userId, setUserId] = useState();
+  const [initialPersonalDetails, setInitialPersonalDetails] = useState(null);
   const [changePassword, setChangePassword] = useState<boolean>(false);
   const [showCurrentPassword, setShowCurrentPassword] =
     useState<boolean>(false);
@@ -109,9 +110,11 @@ const UserDetailsEdit = () => {
 
       if (userData) {
         const addressData = await teamsApi.getAddress(userData.id);
-        const userObj = teamsMapper(userData, addressData.data.addresses[0]);
+        const primaryAddress = pickPrimaryAddress(addressData?.data?.addresses);
+        const userObj = teamsMapper(userData, primaryAddress);
 
         updateDetails("personalDetails", userObj);
+        setInitialPersonalDetails(userObj);
 
         if (userObj.addresses?.address_type?.length > 0) {
           setAddrType(
@@ -120,7 +123,7 @@ const UserDetailsEdit = () => {
             )
           );
         }
-        setAddrId(addressData.data.addresses[0]?.id);
+        setAddrId(primaryAddress?.id);
       }
     } catch (error) {
       console.error(i18n.t("profile.editProfile"), error);
@@ -371,7 +374,17 @@ const UserDetailsEdit = () => {
   };
 
   const handleCancelDetails = () => {
-    setIsLoading(true);
+    setErrDetails(initialErrState);
+    setChangePassword(false);
+    setCurrentPassword("");
+    setPassword("");
+    setConfirmPassword("");
+    updateDetails("personalDetails", {
+      ...(initialPersonalDetails || {}),
+      currentPassword: "",
+      password: "",
+      confirmPassword: "",
+    });
     navigate(`${navigateToPath}/profile`, { replace: true });
   };
 

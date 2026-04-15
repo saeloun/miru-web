@@ -157,5 +157,14 @@ RSpec.describe "Api::V1::Profile#update", type: :request do
       expect(response).to have_http_status(:unprocessable_content)
       expect(json_response["errors"]).to eq(["Phone cannot exceed 15 digits"])
     end
+
+    it "rejects a phone number shorter than 2 digits" do
+      params = { user: { phone: "+1" } }
+
+      send_request(:put, api_v1_profile_path, params:, headers: auth_headers(user))
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(json_response["errors"]).to eq(["Phone must contain at least 2 digits"])
+    end
   end
 end

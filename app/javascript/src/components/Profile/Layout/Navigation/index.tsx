@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 import { teamsApi } from "apis/api";
 import { useProfileContext } from "context/Profile/ProfileContext";
 import { useUserContext } from "context/UserContext";
-import { teamsMapper } from "mapper/teams.mapper";
+import { pickPrimaryAddress, teamsMapper } from "mapper/teams.mapper";
 import { useParams } from "react-router-dom";
 
 import AdminNav from "./AdminNav";
@@ -32,7 +32,8 @@ const SideNav = () => {
     const res = await teamsApi.get(UserId);
     if (res.status && res.status == 200) {
       const addressData = await teamsApi.getAddress(UserId);
-      const userObj = teamsMapper(res.data, addressData.data.addresses[0]);
+      const primaryAddress = pickPrimaryAddress(addressData?.data?.addresses);
+      const userObj = teamsMapper(res.data, primaryAddress);
       updateDetails("personalDetails", userObj);
     }
   };

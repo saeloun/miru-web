@@ -1,5 +1,22 @@
 import dayjs from "dayjs";
 
+export const pickPrimaryAddress = addresses => {
+  if (!Array.isArray(addresses) || addresses.length === 0) return null;
+
+  return (
+    addresses.find(address => address?.address_type === "current") ||
+    addresses.find(
+      address =>
+        address?.address_line_1 ||
+        address?.city ||
+        address?.state ||
+        address?.country ||
+        address?.pin
+    ) ||
+    addresses[0]
+  );
+};
+
 export const teamsMapper = (user, address) => ({
   id: user.id,
   first_name: user.first_name,

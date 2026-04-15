@@ -23,6 +23,26 @@ type ProfileImageCardProps = {
 };
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
+const ALLOWED_FILE_TYPES = [
+  "image/png",
+  "image/jpeg",
+  "image/jpg",
+  "image/webp",
+] as const;
+const ALLOWED_FILE_TYPE_SET = new Set(ALLOWED_FILE_TYPES);
+const ALLOWED_FILE_EXTENSIONS = new Set(["png", "jpg", "jpeg", "webp"]);
+const FILE_INPUT_ACCEPT = ALLOWED_FILE_TYPES.join(",");
+
+const isSupportedImageFile = (file: File) => {
+  const normalizedType = file.type?.toLowerCase();
+  if (normalizedType && ALLOWED_FILE_TYPE_SET.has(normalizedType)) {
+    return true;
+  }
+
+  const extension = file.name.split(".").pop()?.toLowerCase();
+
+  return Boolean(extension && ALLOWED_FILE_EXTENSIONS.has(extension));
+};
 
 const loadImage = (src: string) =>
   new Promise((resolve: (value: any) => void, reject) => {
@@ -169,14 +189,14 @@ const ProfileImageCard = ({
 
     if (!file) return;
 
-    if (!file.type.startsWith("image/")) {
-      toast.error(i18n.t("invalidImageFormat"));
+    if (!isSupportedImageFile(file)) {
+      toast.error(i18n.t("profile.invalidPhotoFormat"));
 
       return;
     }
 
     if (file.size > MAX_FILE_SIZE) {
-      toast.error(i18n.t("invalidImageSize", { fileSize: 5120 }));
+      toast.error(i18n.t("profile.invalidPhotoSize"));
 
       return;
     }
@@ -315,7 +335,7 @@ const ProfileImageCard = ({
           </div>
         </div>
         <input
-          accept="image/png,image/jpeg,image/jpg,image/webp"
+          accept={FILE_INPUT_ACCEPT}
           className="hidden"
           data-testid="profile-image-input"
           ref={inputRef}

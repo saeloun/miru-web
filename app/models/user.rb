@@ -5,6 +5,8 @@ class User < ApplicationRecord
 
   TOTP_ISSUER = "Miru"
   RECOVERY_CODES_COUNT = 8
+  MAX_AVATAR_SIZE_MB = 5
+  ALLOWED_AVATAR_CONTENT_TYPES = %w[image/png image/jpeg image/jpg image/webp].freeze
 
   if defined?(T::Sig)
     extend T::Sig
@@ -72,6 +74,7 @@ class User < ApplicationRecord
   validates :locale, inclusion: { in: LocaleConfig::SUPPORTED_LOCALES }
   validate :date_of_birth_cannot_be_in_future
   validate :phone_length_within_limit
+  validate :validate_avatar_constraints
 
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
@@ -279,6 +282,18 @@ class User < ApplicationRecord
 
   private
 
+    def validate_avatar_constraints
+      return unless avatar.attached?
+
+      if avatar.blob.byte_size > MAX_AVATAR_SIZE_MB.megabytes
+        errors.add(:avatar, I18n.t("avatar.validation.file_too_large", size_mb: MAX_AVATAR_SIZE_MB))
+      end
+
+      return if ALLOWED_AVATAR_CONTENT_TYPES.include?(avatar.blob.content_type)
+
+      errors.add(:avatar, I18n.t("avatar.validation.invalid_content_type"))
+    end
+
     def normalize_locale
       self.locale = LocaleConfig.normalize(locale)
     end
@@ -301,9 +316,13 @@ class User < ApplicationRecord
 
     def phone_length_within_limit
       return if phone.blank?
-      return unless phone.gsub(/\D/, "").length > 15
 
-      errors.add(:phone, "cannot exceed 15 digits")
+      digits_count = phone.gsub(/\D/, "").length
+      if digits_count < 2
+        errors.add(:phone, "must contain at least 2 digits")
+      elsif digits_count > 15
+        errors.add(:phone, "cannot exceed 15 digits")
+      end
     end
 
     def set_token

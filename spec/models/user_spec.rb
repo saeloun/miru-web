@@ -126,6 +126,13 @@ RSpec.describe User, type: :model do
       expect(user).not_to be_valid
       expect(user.errors[:phone]).to include("cannot exceed 15 digits")
     end
+
+    it "does not allow a phone number shorter than 2 digits" do
+      user.phone = "+1"
+
+      expect(user).not_to be_valid
+      expect(user.errors[:phone]).to include("must contain at least 2 digits")
+    end
   end
 
   describe "Callbacks" do

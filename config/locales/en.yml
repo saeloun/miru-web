@@ -54,6 +54,9 @@ en:
       success: Avatar deleted successfully
     update:
       success: Avatar updated successfully
+    validation:
+      file_too_large: must be smaller than %{size_mb}MB
+      invalid_content_type: must be a PNG, JPG, JPEG, or WEBP image
   client:
     add: ADD CLIENT
     address:

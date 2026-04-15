@@ -220,6 +220,117 @@ RSpec.describe "Profile Settings", type: :system, js: true do
     end
   end
 
+  it "discards unsaved profile edits when cancel is clicked" do
+    with_forgery_protection do
+      visit "/settings/profile/edit"
+
+      expect(page).to have_css("#react-root", wait: 10)
+      fill_in "first_name", with: "Janet"
+      fill_in "linkedin", with: "https://linkedin.com/in/unsaved-change"
+
+      click_button "Cancel"
+
+      expect(page).to have_current_path("/settings/profile", wait: 10)
+      expect(page).to have_content("Jane Doe", wait: 10)
+      expect(page).to have_content("https://linkedin.com/in/janedoe", wait: 10)
+      expect(page).not_to have_content("https://linkedin.com/in/unsaved-change")
+    end
+  end
+
+  it "shows saved social profiles and address after refresh" do
+    with_forgery_protection do
+      response = page.evaluate_async_script(<<~JS, user.id)
+        const [userId, done] = arguments;
+
+        const token =
+          document.querySelector('[name="csrf-token"]')?.getAttribute("content") || "";
+        const headers = {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          "X-CSRF-TOKEN": token
+        };
+
+        const updateProfile = fetch("/api/v1/profile", {
+          method: "PUT",
+          headers,
+          credentials: "same-origin",
+          body: JSON.stringify({
+            user: {
+              social_accounts: {
+                linkedin_url: "https://linkedin.com/in/jane-refresh",
+                github_url: "https://github.com/jane-refresh"
+              }
+            }
+          })
+        });
+
+        const upsertAddress = fetch(`/api/v1/users/${userId}/addresses`, {
+          method: "GET",
+          headers: { Accept: "application/json", "X-CSRF-TOKEN": token },
+          credentials: "same-origin"
+        })
+          .then(async indexResponse => {
+            const indexData = await indexResponse.json();
+            const currentAddress = (indexData.addresses || []).find(
+              address => address.address_type === "current"
+            );
+
+            const payload = {
+              address: {
+                address_type: "current",
+                address_line_1: "2146 Test Street",
+                address_line_2: "Suite 10",
+                city: "Pune",
+                state: "MH",
+                country: "IN",
+                pin: "411001"
+              }
+            };
+
+            if (currentAddress?.id) {
+              return fetch(`/api/v1/users/${userId}/addresses/${currentAddress.id}`, {
+                method: "PUT",
+                headers,
+                credentials: "same-origin",
+                body: JSON.stringify(payload)
+              });
+            }
+
+            return fetch(`/api/v1/users/${userId}/addresses`, {
+              method: "POST",
+              headers,
+              credentials: "same-origin",
+              body: JSON.stringify(payload)
+            });
+          });
+
+        Promise.all([updateProfile, upsertAddress])
+          .then(async ([profileResponse, addressResponse]) => {
+            done({
+              profile_status: profileResponse.status,
+              address_status: addressResponse.status,
+              ok: profileResponse.ok && addressResponse.ok
+            });
+          })
+          .catch(error => done({ ok: false, error: String(error) }));
+      JS
+
+      expect(response["ok"]).to eq(true)
+
+      visit "/settings/profile"
+      expect(page).to have_current_path("/settings/profile", wait: 10)
+      expect(page).to have_content("https://linkedin.com/in/jane-refresh", wait: 10)
+      expect(page).to have_content("https://github.com/jane-refresh", wait: 10)
+      expect(page).to have_content("2146 Test Street", wait: 10)
+
+      visit "/settings/profile"
+      expect(page).to have_current_path("/settings/profile", wait: 10)
+      expect(page).to have_content("https://linkedin.com/in/jane-refresh", wait: 10)
+      expect(page).to have_content("https://github.com/jane-refresh", wait: 10)
+      expect(page).to have_content("2146 Test Street", wait: 10)
+    end
+  end
+
   it "shows a saved date of birth on the profile summary" do
     with_forgery_protection do
       response = page.evaluate_async_script(<<~JS, "1993-11-12T00:00:00.000Z")

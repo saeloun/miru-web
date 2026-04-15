@@ -24,7 +24,7 @@ import PasskeysPanel from "./PasskeysPanel";
 import TotpPanel from "./TotpPanel";
 
 const inputClass =
-  "form__input block h-12 w-full appearance-none bg-background p-4 text-sm focus-within:border-primary";
+  "form__input block h-12 w-full appearance-none bg-background p-4 text-sm text-foreground focus-within:border-primary";
 
 const labelClass =
   "absolute top-0.5 left-1 z-1 h-6 origin-0 bg-background p-2 text-sm font-medium duration-300";
@@ -97,7 +97,7 @@ const MobileProfileEditor = ({
       {avatarSection && <div className="pb-4">{avatarSection}</div>}
       <div className="py-4">
         <span className="flex flex-row items-center px-1 text-sm font-medium text-foreground">
-          <InfoIcon className="mr-2" color="#1D1A31" size={13.5} />{" "}
+          <InfoIcon className="mr-2 text-muted-foreground" size={13.5} />{" "}
           {i18n.t("profile.basicDetails")}
         </span>
         <div className="mt-2 flex w-full flex-row">
@@ -179,8 +179,7 @@ const MobileProfileEditor = ({
                 }}
               />
               <CalendarIcon
-                className="absolute top-0 bottom-0 right-1 mx-2 my-3 "
-                color="#5E58F1"
+                className="absolute top-0 bottom-0 right-1 mx-2 my-3 text-primary"
                 size={20}
               />
             </div>
@@ -225,16 +224,16 @@ const MobileProfileEditor = ({
       <Divider />
       <div className="py-4">
         <span className="flex flex-row items-center px-1 text-sm font-medium text-foreground">
-          <PhoneIcon className="mr-2" color="#1D1A31" size={13.5} />{" "}
+          <PhoneIcon className="mr-2 text-muted-foreground" size={13.5} />{" "}
           {i18n.t("profile.contactInformation")}
         </span>
         <div className="mt-2 flex w-full flex-row">
           <div className="w-1/2 px-1">
             <div
-              className={`outline relative flex h-12 flex-row rounded border bg-background px-2 pb-4 pt-2 text-sm ${
+              className={`outline relative flex h-12 flex-row items-center rounded-md border bg-background px-2 text-sm ring-offset-background focus-within:ring-2 focus-within:ring-offset-2 ${
                 errDetails.phone_number_err
-                  ? "border-destructive"
-                  : "border-border"
+                  ? "border-destructive focus-within:ring-destructive"
+                  : "border-input focus-within:ring-ring"
               }`}
             >
               <PhoneInput
@@ -293,7 +292,7 @@ const MobileProfileEditor = ({
       <Divider />
       <div className="py-4">
         <span className="flex flex-row items-center px-1 text-sm font-medium text-foreground">
-          <MapPinIcon className="mr-2" color="#1D1A31" size={13.5} />{" "}
+          <MapPinIcon className="mr-2 text-muted-foreground" size={13.5} />{" "}
           {i18n.t("address")}
         </span>
         <div className="mt-2 flex w-full flex-col">
@@ -462,7 +461,7 @@ const MobileProfileEditor = ({
       <Divider />
       <div className="py-4">
         <span className="flex flex-row items-center px-1 text-sm font-medium text-foreground">
-          <GlobeIcon className="mr-2" color="#1D1A31" size={13.5} />
+          <GlobeIcon className="mr-2 text-muted-foreground" size={13.5} />
           {i18n.t("profile.socialProfiles")}
         </span>
         <div className="mt-2 flex w-full flex-row">
@@ -499,7 +498,7 @@ const MobileProfileEditor = ({
       <div className="py-6">
         <div className="flex items-center justify-between pr-4">
           <span className="flex flex-row items-center text-sm font-medium text-foreground">
-            <KeyIcon className="mr-2" color="#1D1A31" size={13.5} />
+            <KeyIcon className="mr-2 text-muted-foreground" size={13.5} />
             {i18n.t("profile.security")}
           </span>
           <div className="ml-2">
@@ -537,7 +536,8 @@ const MobileProfileEditor = ({
                     onChange={handleCurrentPasswordChange}
                   />
                   <button
-                    className="btn btn-outline-primary absolute right-0 mt-4 mr-5"
+                    type="button"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 rounded-md p-1 text-muted-foreground transition-colors hover:text-foreground"
                     onClick={() => setShowCurrentPassword(!showCurrentPassword)}
                   >
                     {!showCurrentPassword ? (
@@ -581,7 +581,8 @@ const MobileProfileEditor = ({
                       }}
                     />
                     <button
-                      className="btn btn-outline-primary absolute right-0 mt-4 mr-5"
+                      type="button"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 rounded-md p-1 text-muted-foreground transition-colors hover:text-foreground"
                       onClick={() => setShowPassword(!showPassword)}
                     >
                       {!showPassword ? (
@@ -625,7 +626,8 @@ const MobileProfileEditor = ({
                         }}
                       />
                       <button
-                        className="btn btn-outline-primary absolute right-0 mt-4 mr-5"
+                        type="button"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 rounded-md p-1 text-muted-foreground transition-colors hover:text-foreground"
                         onClick={() =>
                           setShowConfirmPassword(!showConfirmPassword)
                         }
@@ -677,18 +679,18 @@ const MobileProfileEditor = ({
         />
       </div>
       <Divider />
-      <div className="flex flex-row justify-between py-4">
+      <div className="flex flex-row gap-3 py-4">
         <button
-          className="h-10	 w-38 rounded border border-primary bg-transparent py-2 px-6 text-xs font-bold tracking-widest text-primary "
+          className="h-10 flex-1 rounded border border-primary bg-transparent px-4 py-2 text-xs font-semibold tracking-wide text-primary"
           onClick={handleCancelDetails}
         >
-          {i18n.t("cancel").toUpperCase()}
+          {i18n.t("cancel")}
         </button>
         <button
-          className="h-10 w-38 rounded border border-primary bg-primary px-6 py-2 text-xs font-bold tracking-widest text-primary-foreground"
+          className="h-10 flex-1 rounded border border-primary bg-primary px-4 py-2 text-xs font-semibold tracking-wide text-primary-foreground"
           onClick={handleUpdateDetails}
         >
-          {i18n.t("save").toUpperCase()}
+          {i18n.t("save")}
         </button>
       </div>
     </div>

@@ -8,6 +8,12 @@ dayjs.extend(customParseFormat);
 const phoneDigitsWithinLimit = phoneNumber =>
   phoneNumber ? phoneNumber.replace(/\D/g, "").length <= 15 : true;
 
+const phoneDigitsAboveMinimum = phoneNumber => {
+  if (!phoneNumber) return true;
+
+  return phoneNumber.replace(/\D/g, "").length >= 2;
+};
+
 export const userSchema = {
   first_name: Yup.string()
     .required(i18n.t("auth.validation.firstNamePrompt"))
@@ -47,6 +53,11 @@ export const userSchema = {
     ),
   phone_number: Yup.string()
     .nullable()
+    .test(
+      "phone-number-min-length",
+      i18n.t("auth.validation.mobileMin2Digits"),
+      value => phoneDigitsAboveMinimum(value)
+    )
     .test(
       "phone-number-length",
       i18n.t("auth.validation.mobile15Digits"),

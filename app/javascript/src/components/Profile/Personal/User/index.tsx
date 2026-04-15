@@ -6,7 +6,11 @@ import { MobileEditHeader } from "common/Mobile/MobileEditHeader";
 import DetailsHeader from "components/Profile/Common/DetailsHeader";
 import { useProfileContext } from "context/Profile/ProfileContext";
 import { useUserContext } from "context/UserContext";
-import { employmentMapper } from "mapper/teams.mapper";
+import {
+  employmentMapper,
+  pickPrimaryAddress,
+  teamsMapper,
+} from "mapper/teams.mapper";
 import { Outlet, useNavigate, useParams } from "react-router-dom";
 import { getDisplayAvatarUrl } from "helpers";
 import { sendGAPageView } from "utils/googleAnalytics";
@@ -28,6 +32,15 @@ const UserDetailsView = () => {
 
     setIsLoading(true);
     try {
+      const userResponse: any = await teamsApi.get(currentUserId);
+
+      if (userResponse?.status === 200) {
+        const addressData: any = await teamsApi.getAddress(currentUserId);
+        const primaryAddress = pickPrimaryAddress(addressData?.data?.addresses);
+        const userObj = teamsMapper(userResponse.data, primaryAddress);
+        updateDetails("personalDetails", userObj);
+      }
+
       if (companyRole !== "client") {
         const employmentData: any = await teamsApi.getEmploymentDetails(
           currentUserId
@@ -45,7 +58,7 @@ const UserDetailsView = () => {
         }
       }
     } catch (error) {
-      console.error("Failed to fetch employment data:", error);
+      console.error("Failed to fetch personal/employment data:", error);
     }
     setIsLoading(false);
   };
