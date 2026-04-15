@@ -216,7 +216,12 @@ Miru's application stack is now documented for Render-first deployment.
   - redirects to `https://docs.miru.so/contributing-guide/setup/macos`
 
 ### GitHub Pages
-Automatic deployment is configured via GitHub Actions. Every push to `main` triggers a build and deploys to GitHub Pages.
+Automatic deployment is configured via GitHub Actions.
+
+- Workflow: `.github/workflows/docs-site.yml`
+- Triggers: pushes to `develop` and `production` when `docs/**` changes
+- Publish branch: `gh-pages`
+- Custom domain: `docs.miru.so`
 
 ### Manual Deployment
 ```bash
