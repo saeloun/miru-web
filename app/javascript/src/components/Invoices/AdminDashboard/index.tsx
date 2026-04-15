@@ -21,6 +21,7 @@ import {
   Funnel,
 } from "phosphor-react";
 import { useQuery } from "@tanstack/react-query";
+import { invoicesApi } from "apis/api";
 import { cn } from "@/lib/utils";
 import MonthlyRevenueChart from "../MonthlyRevenueChart";
 import InfiniteScrollRecentlyUpdated from "../List/RecentlyUpdated/InfiniteScrollRecentlyUpdated";
@@ -51,7 +52,6 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
   fetchInvoices,
 }) => {
   const [chartType, setChartType] = useState<"area" | "bar">("area");
-  const [selectedPeriod, setSelectedPeriod] = useState("month");
 
   const baseCurrency = invoices[0]?.company?.baseCurrency || "USD";
   const parseAmount = (value: number | string): number => {
@@ -72,29 +72,26 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const { data: revenueByStatusData } = useQuery({
     queryKey: ["invoices", "analytics", "revenue_by_status"],
     queryFn: async () => {
-      const response = await fetch(
-        "/api/v1/invoices/analytics/revenue_by_status",
-        {
-          headers: {
-            "Content-Type": "application/json",
-            "X-CSRF-TOKEN":
-              document
-                .querySelector('[name="csrf-token"]')
-                ?.getAttribute("content") || "",
-          },
-          credentials: "include",
-        }
-      );
+      const response = await invoicesApi.getRevenueByStatus();
 
-      if (!response.ok) {
-        throw new Error("Failed to load invoice status revenue");
-      }
-
-      return response.json();
+      return response.data;
     },
     staleTime: 5 * 60 * 1000,
     refetchOnWindowFocus: false,
   });
+
+  const { data: monthlyRevenueData } = useQuery({
+    queryKey: ["invoices", "analytics", "monthly_revenue", "admin-dashboard"],
+    queryFn: async () => {
+      const response = await invoicesApi.getMonthlyRevenue();
+
+      return response.data;
+    },
+    staleTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: false,
+  });
+
+  const revenueTrend = parseAmount(monthlyRevenueData?.statistics?.trend ?? 0);
 
   const paidAmount = parseAmount(
     revenueByStatusData?.status_data?.find(item => item.status === "paid")
@@ -125,7 +122,10 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
       value: currencyFormat(baseCurrency, invoiceStatusTotal),
       description: "",
       icon: CurrencyDollar,
-      trend: { value: 12.5, isPositive: true },
+      trend:
+        revenueTrend !== 0
+          ? { value: Math.abs(revenueTrend), isPositive: revenueTrend > 0 }
+          : undefined,
       color: "text-foreground",
       bgColor: "bg-card",
     },
@@ -134,7 +134,6 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
       value: currencyFormat(baseCurrency, openAmount),
       description: "",
       icon: Clock,
-      trend: { value: 8.2, isPositive: false },
       color: "text-foreground",
       bgColor: "bg-card",
       onClick: () =>
@@ -148,7 +147,6 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({
       value: currencyFormat(baseCurrency, overdueAmount),
       description: "",
       icon: Warning,
-      trend: { value: 3.1, isPositive: false },
       color: "text-foreground",
       bgColor: "bg-card",
       onClick: () => applyFilter([{ value: "overdue", label: "OVERDUE" }]),

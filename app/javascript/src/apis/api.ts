@@ -77,9 +77,15 @@ class ApiHandler {
           return Promise.reject(error);
         }
 
+        const shouldSkipGlobalErrorToast = Boolean(
+          error?.config?.skipErrorToast
+        );
         // Skip generic toast if field_errors are present and non-empty (handled by the component)
         const fieldErrors = error.response?.data?.field_errors;
-        if (!fieldErrors || Object.keys(fieldErrors).length === 0) {
+        if (
+          !shouldSkipGlobalErrorToast &&
+          (!fieldErrors || Object.keys(fieldErrors).length === 0)
+        ) {
           Toastr.error(
             error.response?.data?.errors ||
               error.response?.data?.error ||
@@ -522,7 +528,8 @@ export const teamApi = {
   destroyTeamMember: (id: any) => http.delete(`${teamPath}/${id}`),
   updateTeamMember: (id: any, payload: any) =>
     http.put(`${teamPath}/${id}`, payload),
-  destroyTeamMemberAvatar: (id: any) => http.delete(`${teamPath}/${id}/avatar`),
+  destroyTeamMemberAvatar: (id: any, config?: any) =>
+    http.delete(`${teamPath}/${id}/avatar`, config),
   updateTeamMemberAvatar: (id: any, payload: any, config?: any) =>
     http.put(`${teamPath}/${id}/avatar`, payload, config),
   updateTeamMembers: (payload: any) =>

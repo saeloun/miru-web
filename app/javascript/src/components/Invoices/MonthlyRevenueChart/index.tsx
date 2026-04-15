@@ -11,6 +11,7 @@ import {
   Bar,
 } from "recharts";
 import { useQuery } from "@tanstack/react-query";
+import { invoicesApi } from "apis/api";
 import { currencyFormat } from "helpers";
 import { Toastr } from "StyledComponents";
 import { i18n } from "../../../i18n";
@@ -20,6 +21,14 @@ interface MonthlyRevenueData {
   revenue: number;
   invoiceCount?: number;
   invoice_count?: number;
+}
+
+interface MonthlyRevenueStatistics {
+  total_revenue?: number | string;
+  average_revenue?: number | string;
+  trend?: number | string;
+  current_month_revenue?: number | string;
+  current_month_invoices?: number | string;
 }
 
 interface MonthlyRevenueChartProps {
@@ -39,7 +48,8 @@ const MonthlyRevenueChart: React.FC<MonthlyRevenueChartProps> = ({
 }) => {
   const [chartData, setChartData] = useState<MonthlyRevenueData[]>([]);
   const [totalRevenue, setTotalRevenue] = useState(0);
-  const [averageRevenue, setAverageRevenue] = useState(0);
+  const [currentMonthRevenue, setCurrentMonthRevenue] = useState(0);
+  const [currentMonthInvoices, setCurrentMonthInvoices] = useState(0);
   const [trend, setTrend] = useState<number>(0);
   const [currency, setCurrency] = useState(baseCurrency);
 
@@ -47,9 +57,14 @@ const MonthlyRevenueChart: React.FC<MonthlyRevenueChartProps> = ({
     if (typeof value === "number") return Number.isFinite(value) ? value : 0;
 
     if (typeof value === "string") {
-      const parsed = Number(value);
+      const normalized = value.trim();
+      const parsed = Number(normalized);
+      if (Number.isFinite(parsed)) return parsed;
 
-      return Number.isFinite(parsed) ? parsed : 0;
+      const noSeparators = normalized.replace(/,/g, "");
+      const parsedNoSeparators = Number(noSeparators);
+
+      return Number.isFinite(parsedNoSeparators) ? parsedNoSeparators : 0;
     }
 
     return 0;
@@ -63,25 +78,9 @@ const MonthlyRevenueChart: React.FC<MonthlyRevenueChartProps> = ({
     queryKey: ["invoices", "analytics", "monthly_revenue", "monthly-chart"],
     enabled: !monthlyData,
     queryFn: async () => {
-      const response = await fetch(
-        "/api/v1/invoices/analytics/monthly_revenue",
-        {
-          headers: {
-            "Content-Type": "application/json",
-            "X-CSRF-TOKEN":
-              document
-                .querySelector('[name="csrf-token"]')
-                ?.getAttribute("content") || "",
-          },
-          credentials: "include",
-        }
-      );
+      const response = await invoicesApi.getMonthlyRevenue();
 
-      if (!response.ok) {
-        throw new Error("Failed to load monthly revenue analytics");
-      }
-
-      return response.json();
+      return response.data;
     },
     staleTime: 5 * 60 * 1000,
     refetchOnWindowFocus: false,
@@ -97,32 +96,47 @@ const MonthlyRevenueChart: React.FC<MonthlyRevenueChartProps> = ({
     if (analyticsData?.chart_data) {
       processMonthlyData(
         analyticsData.chart_data.map(item => ({
-          month: item.month,
-          revenue: parseNumber(item.revenue),
-          invoiceCount: parseNumber(item.invoice_count),
-        }))
+          month: item.month || item.label || item.name,
+          revenue: parseNumber(item.revenue ?? item.monthly_revenue),
+          invoiceCount: parseNumber(item.invoice_count ?? item.invoices),
+        })),
+        analyticsData.statistics
       );
     }
   }, [monthlyData, analyticsData]);
 
-  const processMonthlyData = (inputData: MonthlyRevenueData[]) => {
+  const processMonthlyData = (
+    inputData: MonthlyRevenueData[],
+    statistics?: MonthlyRevenueStatistics
+  ) => {
     try {
-      // Set the chart data
       const formattedData: MonthlyRevenueData[] = inputData.map(item => ({
         month: item.month,
-        revenue: item.revenue,
-        invoiceCount: item.invoiceCount ?? item.invoice_count,
+        revenue: parseNumber(item.revenue),
+        invoiceCount: parseNumber(item.invoiceCount ?? item.invoice_count),
       }));
 
       setChartData(formattedData);
 
-      // Calculate statistics from the data
-      const total = formattedData.reduce((sum, item) => sum + item.revenue, 0);
-      const avg = formattedData.length > 0 ? total / formattedData.length : 0;
+      const totalFromData = formattedData.reduce(
+        (sum, item) => sum + item.revenue,
+        0
+      );
+      const latestPoint = formattedData[formattedData.length - 1];
 
-      setTotalRevenue(total);
-      setAverageRevenue(avg);
-      setTrend(0); // Trend calculation would require historical data
+      setTotalRevenue(parseNumber(statistics?.total_revenue ?? totalFromData));
+      setCurrentMonthRevenue(
+        parseNumber(
+          statistics?.current_month_revenue ?? latestPoint?.revenue ?? 0
+        )
+      );
+
+      setCurrentMonthInvoices(
+        parseNumber(
+          statistics?.current_month_invoices ?? latestPoint?.invoiceCount ?? 0
+        )
+      );
+      setTrend(parseNumber(statistics?.trend ?? 0));
       setCurrency(baseCurrency);
     } catch (error) {
       console.error("Error fetching monthly revenue:", error);
@@ -194,10 +208,18 @@ const MonthlyRevenueChart: React.FC<MonthlyRevenueChartProps> = ({
             </div>
             <div>
               <p className="text-xs uppercase tracking-wider text-muted-foreground">
-                {i18n.t("invoiceDashboard.revenueOverview")}
+                {i18n.t("thisMonth")}
               </p>
               <p className="text-lg font-semibold text-foreground">
-                {currencyFormat(currency, averageRevenue, "compact")}
+                {currencyFormat(currency, currentMonthRevenue, "compact")}
+              </p>
+            </div>
+            <div>
+              <p className="text-xs uppercase tracking-wider text-muted-foreground">
+                {i18n.t("invoices.invoices")}
+              </p>
+              <p className="text-lg font-semibold text-foreground">
+                {Math.round(currentMonthInvoices)}
               </p>
             </div>
             {trend !== 0 && (

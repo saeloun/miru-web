@@ -19,22 +19,42 @@ RSpec.describe "Profile avatar upload", type: :system, js: true do
     sign_in(user)
   end
 
-  it "uploads a cropped avatar from profile edit" do
+  def upload_avatar
+    find("[data-testid='profile-image-input']", visible: false)
+      .set(Rails.root.join("spec/support/fixtures/test-image.png"))
+
+    expect(page).to have_text("Adjust profile photo", wait: 10)
+    expect(page).to have_button("Apply photo", disabled: false, wait: 10)
+    expect(page).to have_field("Zoom", wait: 10)
+    click_button "Apply photo"
+    expect(page).to have_text(I18n.t("avatar.update.success"), wait: 10)
+  end
+
+  it "uploads and reapplies a cropped avatar from profile edit" do
     with_forgery_protection do
       visit "/settings/profile/edit"
       expect(page).to have_css("#react-root", wait: 15)
 
-      find("[data-testid='profile-image-input']", visible: false)
-        .set(Rails.root.join("spec/support/fixtures/test-image.png"))
+      expect { upload_avatar }.to change { user.reload.avatar.attached? }
+        .from(false).to(true)
 
-      expect(page).to have_text("Adjust profile photo", wait: 10)
-      expect(page).to have_button("Apply photo", disabled: false, wait: 10)
-      expect(page).to have_field("Zoom", wait: 10)
+      find("[data-testid='profile-image-edit-trigger']").click
+      upload_avatar
+      expect(user.reload.avatar.attached?).to be(true)
+    end
+  end
 
-      expect do
-        click_button "Apply photo"
-        expect(page).to have_text("Avatar updated successfully", wait: 10)
-      end.to change { user.reload.avatar.attached? }.from(false).to(true)
+  it "removes avatar after uploading from profile edit" do
+    with_forgery_protection do
+      visit "/settings/profile/edit"
+      expect(page).to have_css("#react-root", wait: 15)
+
+      upload_avatar
+      expect(user.reload.avatar.attached?).to be(true)
+
+      click_button "Remove photo"
+      expect(page).to have_text(I18n.t("avatar.destroy.success"), wait: 10)
+      expect(user.reload.avatar.attached?).to be(false)
     end
   end
 end
