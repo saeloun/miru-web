@@ -8,10 +8,15 @@ const palette = () => {
 
   return {
     background: dark ? "#0A0A0A" : "#FFFFFF",
+    menuBackground: dark ? "#09090B" : "#FFFFFF",
     border: dark ? "#27272A" : "#CDD6DF",
     text: dark ? "#FAFAFA" : "#1D1A31",
     muted: dark ? "#A1A1AA" : "#A5A3AD",
     subtle: dark ? "#A1A1AA" : "#777683",
+    optionText: dark ? "#F4F4F5" : "#1D1A31",
+    optionTextMuted: dark ? "#E4E4E7" : "#52525B",
+    optionHover: dark ? "#18181B" : "#F4F4F5",
+    optionSelected: dark ? "#27272A" : "#E4E4E7",
   };
 };
 
@@ -40,10 +45,10 @@ export const customStyles = (
 
     return {
       ...provided,
-      fontSize: "12px",
-      letterSpacing: "2px",
+      fontSize: isDesktopView ? "14px" : "13px",
+      letterSpacing: "normal",
       zIndex: 50,
-      backgroundColor: colors.background,
+      backgroundColor: colors.menuBackground,
       border: `1px solid ${colors.border}`,
       boxShadow: "0 12px 32px rgba(15, 23, 42, 0.18)",
       overflow: "hidden",
@@ -51,9 +56,9 @@ export const customStyles = (
   },
   menuList: provided => ({
     ...provided,
-    backgroundColor: palette().background,
-    paddingTop: 4,
-    paddingBottom: 4,
+    backgroundColor: palette().menuBackground,
+    paddingTop: 6,
+    paddingBottom: 6,
   }),
   valueContainer: provided => ({
     ...provided,
@@ -121,15 +126,20 @@ export const customStyles = (
     return {
       ...base,
       backgroundColor: state.isSelected
-        ? darken(colors.background)
+        ? colors.optionSelected
         : state.isFocused
-        ? tint(colors.background)
-        : colors.background,
-      color: colors.text,
-      cursor: "pointer",
+        ? colors.optionHover
+        : colors.menuBackground,
+      color:
+        state.isSelected || state.isFocused
+          ? colors.optionText
+          : colors.optionTextMuted,
+      cursor: state.isDisabled ? "not-allowed" : "pointer",
+      fontSize: isDesktopView ? 14 : 13,
+      fontWeight: state.isSelected ? 600 : 500,
+      lineHeight: 1.4,
+      paddingTop: 10,
+      paddingBottom: 10,
     };
   },
 });
-
-const tint = background => (background === "#0A0A0A" ? "#18181B" : "#F4F4F5");
-const darken = background => (background === "#0A0A0A" ? "#27272A" : "#E4E4E7");
