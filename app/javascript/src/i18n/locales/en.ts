@@ -1480,6 +1480,9 @@ const en = {
     lastChangedDaysAgo: "Last changed %{count} days ago",
     secure: "Secure",
     uploadPhoto: "Upload photo",
+    invalidPhotoFormat:
+      "Incorrect file format. Please upload a PNG, JPG, JPEG, or WEBP image.",
+    invalidPhotoSize: "File size exceeded the max limit of 5MB.",
     removePhoto: "Remove photo",
     uploadPhotoFailed: "Failed to upload profile image.",
     removePhotoFailed: "Failed to remove profile image.",
