@@ -16,14 +16,14 @@ type CustomAdvanceInputProps = {
 };
 
 const getDefaultInputBoxClassName = focused =>
-  `form__input block w-full h-full appearance-none p-4 text-base bg-white ${
+  `form__input block h-full w-full appearance-none bg-background p-4 text-base text-foreground ${
     focused ? "border-primary" : "border-border"
   }`;
 
 const getDefaultLabelClassName = (focused, value) =>
   focused || value
-    ? "absolute duration-300 -top-2 -z-1 left-4 origin-0 text-xs font-normal text-muted-foreground bg-white"
-    : "absolute duration-300 -z-1 origin-0 top-3 left-4 text-muted-foreground bg-white text-sm lg:text-base font-medium";
+    ? "absolute -top-2 -z-1 left-4 origin-0 bg-background text-xs font-normal text-muted-foreground duration-300"
+    : "absolute top-3 -z-1 left-4 origin-0 bg-background text-sm font-medium text-muted-foreground duration-300 lg:text-base";
 
 export const CustomAdvanceInput = ({
   id,

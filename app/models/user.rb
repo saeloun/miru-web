@@ -316,9 +316,13 @@ class User < ApplicationRecord
 
     def phone_length_within_limit
       return if phone.blank?
-      return unless phone.gsub(/\D/, "").length > 15
 
-      errors.add(:phone, "cannot exceed 15 digits")
+      digits_count = phone.gsub(/\D/, "").length
+      if digits_count < 2
+        errors.add(:phone, "must contain at least 2 digits")
+      elsif digits_count > 15
+        errors.add(:phone, "cannot exceed 15 digits")
+      end
     end
 
     def set_token

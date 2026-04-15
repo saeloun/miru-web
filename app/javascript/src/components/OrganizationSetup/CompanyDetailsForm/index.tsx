@@ -150,16 +150,6 @@ const CompanyDetailsForm = ({
     };
   };
 
-  const isBtnDisabled = (values: CompanyDetailsFormValues) =>
-    !(
-      values.country?.value?.trim() &&
-      values.state?.trim() &&
-      values.city?.trim() &&
-      values.timezone?.value?.trim() &&
-      values.address_line_1?.trim() &&
-      values.zipcode?.trim()
-    );
-
   const LogoComponent = ({ values, setFieldValue }) => (
     <div className="my-4 flex flex-row">
       <div className="mt-2 h-30 w-30 border border-dashed border-border">
@@ -227,7 +217,24 @@ const CompanyDetailsForm = ({
         onSubmit={onNextBtnClick}
       >
         {(props: FormikProps<CompanyDetailsFormValues>) => {
-          const { touched, errors, setFieldValue, values } = props;
+          const {
+            touched,
+            errors,
+            setFieldValue,
+            values,
+            submitCount,
+            isSubmitting,
+          } = props;
+          const showValidationErrors = submitCount > 0;
+          const countryError =
+            typeof errors.country === "object"
+              ? errors.country?.value
+              : errors.country;
+
+          const timezoneError =
+            typeof errors.timezone === "object"
+              ? errors.timezone?.value
+              : errors.timezone;
 
           return (
             <Form>
@@ -257,10 +264,14 @@ const CompanyDetailsForm = ({
                                   <p className="text-muted-foreground">
                                     {i18n.t("orgSetup.dragLogo")}
                                   </p>
-                                  <p className="text-muted-foreground">{i18n.t("or")}</p>
+                                  <p className="text-muted-foreground">
+                                    {i18n.t("or")}
+                                  </p>
                                 </>
                               )}
-                              <p className="text-primary">{i18n.t("orgSetup.selectFile")}</p>
+                              <p className="text-primary">
+                                {i18n.t("orgSetup.selectFile")}
+                              </p>
                             </div>
                           </label>
                           <input
@@ -287,7 +298,10 @@ const CompanyDetailsForm = ({
               <InputField
                 autoFocus
                 resetErrorOnChange
-                hasError={errors.company_name && touched.company_name}
+                hasError={
+                  errors.company_name &&
+                  (touched.company_name || showValidationErrors)
+                }
                 id="company_name"
                 label={i18n.t("orgSetup.companyName")}
                 name="company_name"
@@ -295,7 +309,7 @@ const CompanyDetailsForm = ({
               />
               <InputErrors
                 fieldErrors={errors.company_name}
-                fieldTouched={touched.company_name}
+                fieldTouched={touched.company_name || showValidationErrors}
               />
               <div className="mb-2 xsm:mb-6">
                 <label className="mb-2 block text-sm font-medium text-muted-foreground">
@@ -315,12 +329,15 @@ const CompanyDetailsForm = ({
                 </div>
                 <InputErrors
                   fieldErrors={errors.business_phone}
-                  fieldTouched={touched.business_phone}
+                  fieldTouched={touched.business_phone || showValidationErrors}
                 />
               </div>
               <InputField
                 resetErrorOnChange
-                hasError={errors.address_line_1 && touched.address_line_1}
+                hasError={
+                  errors.address_line_1 &&
+                  (touched.address_line_1 || showValidationErrors)
+                }
                 id="address_line_1"
                 label={i18n.t("clients.addressLine1")}
                 name="address_line_1"
@@ -328,11 +345,14 @@ const CompanyDetailsForm = ({
               />
               <InputErrors
                 fieldErrors={errors.address_line_1}
-                fieldTouched={touched.address_line_1}
+                fieldTouched={touched.address_line_1 || showValidationErrors}
               />
               <InputField
                 resetErrorOnChange
-                hasError={errors.address_line_2 && touched.address_line_2}
+                hasError={
+                  errors.address_line_2 &&
+                  (touched.address_line_2 || showValidationErrors)
+                }
                 id="address_line_2"
                 label={i18n.t("clients.addressLine2")}
                 name="address_line_2"
@@ -340,7 +360,7 @@ const CompanyDetailsForm = ({
               />
               <InputErrors
                 fieldErrors={errors.address_line_2}
-                fieldTouched={touched.address_line_2}
+                fieldTouched={touched.address_line_2 || showValidationErrors}
               />
               {/* Country and State */}
               <div className="flex flex-row gap-4">
@@ -368,10 +388,14 @@ const CompanyDetailsForm = ({
                     <SelectTrigger
                       data-testid="select-trigger"
                       className={`h-10 ${
-                        errors.country ? "border-red-500" : ""
+                        countryError && showValidationErrors
+                          ? "border-red-500"
+                          : ""
                       }`}
                     >
-                      <SelectValue placeholder={i18n.t("clients.selectCountry")} />
+                      <SelectValue
+                        placeholder={i18n.t("clients.selectCountry")}
+                      />
                     </SelectTrigger>
                     <SelectContent>
                       {countries.map(country => (
@@ -385,11 +409,17 @@ const CompanyDetailsForm = ({
                       ))}
                     </SelectContent>
                   </Select>
+                  <InputErrors
+                    fieldErrors={countryError}
+                    fieldTouched={showValidationErrors}
+                  />
                 </div>
                 <div className="flex w-1/2 flex-col" id="state">
                   <InputField
                     resetErrorOnChange
-                    hasError={errors.state && touched.state}
+                    hasError={
+                      errors.state && (touched.state || showValidationErrors)
+                    }
                     id="state"
                     label={i18n.t("state")}
                     name="state"
@@ -397,7 +427,7 @@ const CompanyDetailsForm = ({
                   />
                   <InputErrors
                     fieldErrors={errors.state}
-                    fieldTouched={touched.state}
+                    fieldTouched={touched.state || showValidationErrors}
                   />
                 </div>
               </div>
@@ -406,7 +436,9 @@ const CompanyDetailsForm = ({
                 <div className="flex w-1/2 flex-col" id="city">
                   <InputField
                     resetErrorOnChange
-                    hasError={errors.city && touched.city}
+                    hasError={
+                      errors.city && (touched.city || showValidationErrors)
+                    }
                     id="city"
                     label={i18n.t("city")}
                     name="city"
@@ -414,13 +446,16 @@ const CompanyDetailsForm = ({
                   />
                   <InputErrors
                     fieldErrors={errors.city}
-                    fieldTouched={touched.city}
+                    fieldTouched={touched.city || showValidationErrors}
                   />
                 </div>
                 <div className="flex w-1/2 flex-col">
                   <InputField
                     resetErrorOnChange
-                    hasError={errors.zipcode && touched.zipcode}
+                    hasError={
+                      errors.zipcode &&
+                      (touched.zipcode || showValidationErrors)
+                    }
                     id="zipcode"
                     label={i18n.t("zipcode")}
                     name="zipcode"
@@ -428,7 +463,7 @@ const CompanyDetailsForm = ({
                   />
                   <InputErrors
                     fieldErrors={errors.zipcode}
-                    fieldTouched={touched.zipcode}
+                    fieldTouched={touched.zipcode || showValidationErrors}
                   />
                 </div>
               </div>
@@ -454,10 +489,14 @@ const CompanyDetailsForm = ({
                 >
                   <SelectTrigger
                     className={`h-10 ${
-                      errors.timezone ? "border-red-500" : ""
+                      timezoneError && showValidationErrors
+                        ? "border-red-500"
+                        : ""
                     }`}
                   >
-                    <SelectValue placeholder={i18n.t("orgSetup.selectTimezone")} />
+                    <SelectValue
+                      placeholder={i18n.t("orgSetup.selectTimezone")}
+                    />
                   </SelectTrigger>
                   <SelectContent>
                     {timezonesOfSelectedCountry?.map(timezone => (
@@ -467,19 +506,19 @@ const CompanyDetailsForm = ({
                     ))}
                   </SelectContent>
                 </Select>
-                {errors.timezone && touched.timezone && (
-                  <div className="mt-1 text-xs tracking-wider text-red-600">
-                    {errors.timezone.value}
-                  </div>
-                )}
+                <InputErrors
+                  addMargin={false}
+                  fieldErrors={timezoneError}
+                  fieldTouched={showValidationErrors}
+                />
               </div>
               {/* Next Button */}
               <div className="mb-3">
                 <button
-                  disabled={isBtnDisabled(values)}
+                  disabled={isSubmitting}
                   type="submit"
                   className={`form__button whitespace-nowrap tracking-normal ${
-                    isBtnDisabled(values)
+                    isSubmitting
                       ? "cursor-not-allowed border-transparent bg-indigo-100 hover:border-transparent"
                       : "cursor-pointer"
                   }`}

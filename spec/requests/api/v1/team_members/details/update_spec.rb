@@ -102,6 +102,23 @@ RSpec.describe "Api::V1::TeamMembers::DetailsController#update", type: :request 
     end
   end
 
+  context "when Owner submits a phone number shorter than 2 digits" do
+    before do
+      user.add_role :owner, company
+      sign_in user
+      send_request :patch, api_v1_team_details_path(
+        team_id: employment.user_id,
+        params: {
+          user: @user_details.merge(phone: "+1")
+        }), headers: auth_headers(user)
+    end
+
+    it "is unsuccessful" do
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(json_response["errors"]).to include("Phone must contain at least 2 digits")
+    end
+  end
+
   context "when Employee wants to update his own details" do
     before do
       user.add_role :employee, company
