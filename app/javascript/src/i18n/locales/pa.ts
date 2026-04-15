@@ -1827,6 +1827,14 @@ const locale = {
   durationHours: "%{hours}ਘੰਟੇ",
   durationHoursMinutes: "%{hours}ਘੰਟੇ %{mins}ਮਿੰਟ",
   common: {
+    loadingLatestVersion: "ਨਵਾਂ ਤੋਂ ਨਵਾਂ ਵਰਜਨ ਲੋਡ ਹੋ ਰਿਹਾ ਹੈ...",
+    updatingApplication: "ਐਪਲੀਕੇਸ਼ਨ ਅਪਡੇਟ ਹੋ ਰਹੀ ਹੈ",
+    newVersionAvailable: "ਨਵਾਂ ਵਰਜਨ ਉਪਲਬਧ ਹੈ",
+    deployReloadPrompt:
+      "ਅਸੀਂ ਐਪ ਦੀਆਂ ਨਵੀਂਆਂ ਫ਼ਾਈਲਾਂ ਆਪਣੇ ਆਪ ਲੋਡ ਨਹੀਂ ਕਰ ਸਕੇ। ਅਪਡੇਟ ਕੀਤੇ ਬਿਲਡ ਨਾਲ ਜਾਰੀ ਰੱਖਣ ਲਈ ਇੱਕ ਵਾਰ ਰਿਫ੍ਰੈਸ਼ ਕਰੋ।",
+    reloadApplication: "ਐਪਲੀਕੇਸ਼ਨ ਰੀਲੋਡ ਕਰੋ",
+    pageLoadFailedRefresh:
+      "ਇਹ ਪੰਨਾ ਲੋਡ ਨਹੀਂ ਹੋ ਸਕਿਆ। ਰਿਫ੍ਰੈਸ਼ ਕਰਕੇ ਫਿਰ ਕੋਸ਼ਿਸ਼ ਕਰੋ।",
     retry: "ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼",
     pageUnavailable:
       "ਇਹ ਪੰਨਾ ਉਪਲਬਧ ਨਹੀਂ ਹੈ ਜਾਂ ਲਿੰਕ ਤੁਹਾਡੀ ਵਰਕਸਪੇਸ ਲਈ ਹੁਣ ਯੋਗ ਨਹੀਂ ਹੈ।",

@@ -1805,6 +1805,14 @@ const locale = {
   durationHours: "%{hours}h",
   durationHoursMinutes: "%{hours}h %{mins}m",
   common: {
+    loadingLatestVersion: "최신 버전을 불러오는 중...",
+    updatingApplication: "애플리케이션 업데이트 중",
+    newVersionAvailable: "새 버전을 사용할 수 있습니다",
+    deployReloadPrompt:
+      "최신 앱 파일을 자동으로 불러오지 못했습니다. 업데이트된 빌드로 계속하려면 한 번 새로고침하세요.",
+    reloadApplication: "애플리케이션 다시 로드",
+    pageLoadFailedRefresh:
+      "이 페이지를 불러오지 못했습니다. 새로고침 후 다시 시도하세요.",
     retry: "재시도",
     pageUnavailable:
       "이 페이지를 사용할 수 없거나 링크가 워크스페이스에서 더 이상 유효하지 않습니다.",

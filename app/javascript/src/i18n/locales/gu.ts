@@ -1832,6 +1832,14 @@ const locale = {
   durationHours: "%{hours}કલાક",
   durationHoursMinutes: "%{hours}કલાક %{mins}મિ.",
   common: {
+    loadingLatestVersion: "નવીનતમ સંસ્કરણ લોડ થઈ રહ્યું છે...",
+    updatingApplication: "એપ્લિકેશન અપડેટ થઈ રહી છે",
+    newVersionAvailable: "નવું સંસ્કરણ ઉપલબ્ધ છે",
+    deployReloadPrompt:
+      "અમે એપની નવીનતમ ફાઇલો આપમેળે લોડ કરી શક્યા નથી. અપડેટ થયેલા બિલ્ડ સાથે આગળ વધવા માટે એકવાર રિફ્રેશ કરો.",
+    reloadApplication: "એપ્લિકેશન ફરી લોડ કરો",
+    pageLoadFailedRefresh:
+      "આ પેજ લોડ થઈ શક્યું નથી. રિફ્રેશ કરીને ફરી પ્રયાસ કરો.",
     retry: "ફરી પ્રયાસ કરો",
     pageUnavailable:
       "આ પેજ ઉપલબ્ધ નથી અથવા લિંક હવે તમારા કાર્યસ્થળ માટે માન્ય નથી.",

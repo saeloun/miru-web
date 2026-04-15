@@ -1890,6 +1890,14 @@ const locale = {
   durationHours: "%{hours}h",
   durationHoursMinutes: "%{hours}h %{mins}m",
   common: {
+    loadingLatestVersion: "சமீபத்திய பதிப்பு ஏற்றப்படுகிறது...",
+    updatingApplication: "பயன்பாடு புதுப்பிக்கப்படுகிறது",
+    newVersionAvailable: "புதிய பதிப்பு கிடைக்கிறது",
+    deployReloadPrompt:
+      "சமீபத்திய பயன்பாட்டு கோப்புகளை தானாக ஏற்ற முடியவில்லை. புதுப்பிக்கப்பட்ட கட்டமைப்புடன் தொடர ஒருமுறை ரிப்ரெஷ் செய்யவும்.",
+    reloadApplication: "பயன்பாட்டை மீண்டும் ஏற்று",
+    pageLoadFailedRefresh:
+      "இந்த பக்கத்தை ஏற்ற முடியவில்லை. ரிப்ரெஷ் செய்து மீண்டும் முயற்சிக்கவும்.",
     retry: "மீண்டும் முயற்சி",
     pageUnavailable:
       "இந்தப் பக்கம் கிடைக்கவில்லை அல்லது இணைப்பு உங்கள் பணியிடத்திற்கு செல்லாதது.",

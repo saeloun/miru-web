@@ -1850,6 +1850,14 @@ const locale = {
   durationHours: "%{hours}h",
   durationHoursMinutes: "%{hours}h %{mins}m",
   common: {
+    loadingLatestVersion: "తాజా వెర్షన్ లోడ్ అవుతోంది...",
+    updatingApplication: "యాప్ నవీకరించబడుతోంది",
+    newVersionAvailable: "కొత్త వెర్షన్ అందుబాటులో ఉంది",
+    deployReloadPrompt:
+      "తాజా యాప్ ఫైళ్లను స్వయంచాలకంగా లోడ్ చేయలేకపోయాం. నవీకరించిన బిల్డ్‌తో కొనసాగడానికి ఒక్కసారి రిఫ్రెష్ చేయండి.",
+    reloadApplication: "యాప్‌ను మళ్లీ లోడ్ చేయండి",
+    pageLoadFailedRefresh:
+      "ఈ పేజీ లోడ్ కాలేదు. రిఫ్రెష్ చేసి మళ్లీ ప్రయత్నించండి.",
     retry: "మళ్ళీ ప్రయత్నించండి",
     pageUnavailable:
       "ఈ పేజీ అందుబాటులో లేదు లేదా ఈ లింక్ మీ వర్క్‌స్పేస్‌కు ఇకపై చెల్లదు.",

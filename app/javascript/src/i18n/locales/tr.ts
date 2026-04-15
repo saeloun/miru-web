@@ -1842,6 +1842,13 @@ const locale = {
   durationHours: "%{hours}h",
   durationHoursMinutes: "%{hours}h %{mins}m",
   common: {
+    loadingLatestVersion: "En son surum yukleniyor...",
+    updatingApplication: "Uygulama guncelleniyor",
+    newVersionAvailable: "Yeni bir surum mevcut",
+    deployReloadPrompt:
+      "Uygulamanin en guncel dosyalari otomatik olarak yuklenemedi. Guncellenmis surumle devam etmek icin bir kez yenileyin.",
+    reloadApplication: "Uygulamayi yeniden yukle",
+    pageLoadFailedRefresh: "Bu sayfa yuklenemedi. Yenileyip tekrar deneyin.",
     retry: "Tekrar dene",
     pageUnavailable:
       "Bu sayfa kullanılamıyor veya bağlantı çalışma alanınız için artık geçerli değil.",

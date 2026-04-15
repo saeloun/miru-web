@@ -2025,6 +2025,13 @@ const en = {
 
   // Common extras
   common: {
+    loadingLatestVersion: "Loading latest version...",
+    updatingApplication: "Updating application",
+    newVersionAvailable: "A new version is available",
+    deployReloadPrompt:
+      "We could not load the latest app files automatically. Refresh once to continue with the updated build.",
+    reloadApplication: "Reload application",
+    pageLoadFailedRefresh: "This page failed to load. Refresh and try again.",
     retry: "Retry",
     pageUnavailable:
       "This page is unavailable or the link is no longer valid for your workspace.",
