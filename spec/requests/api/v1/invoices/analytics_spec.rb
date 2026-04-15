@@ -25,6 +25,12 @@ RSpec.describe "Api::V1::Invoices::Analytics", type: :request do
         expect(json_response).to have_key("period")
         expect(json_response["chart_data"]).to be_an(Array)
         expect(json_response["chart_data"].length).to eq(12)
+        expect(json_response["statistics"]).to include(
+          "current_month_revenue",
+          "current_month_invoices",
+          "current_month_label",
+          "trend"
+        )
       end
     end
 

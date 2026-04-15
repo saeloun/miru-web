@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Api::V1::Invoices::AnalyticsController < Api::V1::ApplicationController
+  INVOICE_AMOUNT_SQL = Arel.sql(InvoiceAmountsSummary::FULL_AMOUNT_SQL).freeze
+
   def monthly_revenue
     authorize Invoice, :index?
 
@@ -86,6 +88,7 @@ class Api::V1::Invoices::AnalyticsController < Api::V1::ApplicationController
     # Get current period stats for quick access
     current_month_revenue = chart_data.last&.dig(:revenue) || 0
     current_month_count = chart_data.last&.dig(:invoice_count) || 0
+    current_month_label = chart_data.last&.dig(:month) || Date.current.strftime("%b")
 
     render json: {
       chart_data: chart_data,
@@ -95,6 +98,7 @@ class Api::V1::Invoices::AnalyticsController < Api::V1::ApplicationController
         trend: trend.round(2),
         current_month_revenue: current_month_revenue.to_f.round(2),
         current_month_invoices: current_month_count,
+        current_month_label: current_month_label,
         currency: current_company.base_currency
       },
       period: {
@@ -117,7 +121,7 @@ class Api::V1::Invoices::AnalyticsController < Api::V1::ApplicationController
       .kept
       .where(issue_date: start_date..end_date)
       .group(:status)
-      .sum(:base_currency_amount)
+      .sum(INVOICE_AMOUNT_SQL)
 
     # Format the response
     status_data = Invoice.statuses.keys.map do |status|

@@ -9,8 +9,9 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import { Calendar, TrendUp, CurrencyDollar } from "phosphor-react";
+import { TrendUp } from "phosphor-react";
 import { useQuery } from "@tanstack/react-query";
+import { invoicesApi } from "apis/api";
 import { i18n } from "../../../i18n";
 
 interface ChartWithSummaryProps {
@@ -31,18 +32,26 @@ const ChartWithSummary: React.FC<ChartWithSummaryProps> = ({
   filterParams,
   setFilterParams,
 }) => {
-  const [revenueData, setRevenueData] = useState([]);
-  const [selectedPeriod, setSelectedPeriod] = useState("year");
+  const [revenueData, setRevenueData] = useState<any[]>([]);
+  const [selectedPeriod] = useState("year");
   const [growthRate, setGrowthRate] = useState(0);
-  const [monthlyAvg, setMonthlyAvg] = useState(0);
+  const [currentMonthRevenue, setCurrentMonthRevenue] = useState(0);
+  const [currentMonthInvoices, setCurrentMonthInvoices] = useState(0);
+  const [currentMonthLabel, setCurrentMonthLabel] = useState("-");
 
   const parseNumber = (value: unknown): number => {
     if (typeof value === "number") return Number.isFinite(value) ? value : 0;
 
     if (typeof value === "string") {
-      const parsed = Number(value);
+      const normalized = value.trim();
+      const parsed = Number(normalized);
+      if (Number.isFinite(parsed)) return parsed;
 
-      return Number.isFinite(parsed) ? parsed : 0;
+      const noSeparators = normalized.replace(/,/g, "");
+      const parsedNoSeparators = Number(noSeparators);
+      if (Number.isFinite(parsedNoSeparators)) return parsedNoSeparators;
+
+      return 0;
     }
 
     return 0;
@@ -51,79 +60,56 @@ const ChartWithSummary: React.FC<ChartWithSummaryProps> = ({
   const periodMonths =
     selectedPeriod === "month" ? 1 : selectedPeriod === "quarter" ? 3 : 12;
 
-  // Fetch real invoice chart data from invoices analytics API
   const { data: monthlyInvoices } = useQuery({
     queryKey: ["invoices", "analytics", "monthly_revenue", selectedPeriod],
     queryFn: async () => {
-      try {
-        const response = await fetch(
-          `/api/v1/invoices/analytics/monthly_revenue`,
-          {
-            headers: {
-              "Content-Type": "application/json",
-              "X-CSRF-TOKEN":
-                document
-                  .querySelector('[name="csrf-token"]')
-                  ?.getAttribute("content") || "",
-            },
-            credentials: "include",
-          }
-        );
+      const response = await invoicesApi.getMonthlyRevenue();
+      const data = response?.data || {};
+      const rawChartData = Array.isArray(data.chart_data)
+        ? data.chart_data
+        : [];
+      const scopedData = rawChartData.slice(-periodMonths);
+      const statistics = data.statistics || {};
+      const latestPoint = scopedData[scopedData.length - 1];
 
-        if (!response.ok) {
-          console.warn("Dashboard API error, using fallback data");
+      const monthlyData = scopedData.map(item => ({
+        month: item.month || item.label || item.name,
+        revenue: parseNumber(
+          item.monthly_revenue ?? item.revenue ?? item.value ?? item.amount
+        ),
+        invoices: parseNumber(
+          item.invoices ?? item.invoice_count ?? item.count
+        ),
+      }));
 
-          return {
-            monthlyData: [],
-            growth: 0,
-            avg: 0,
-            totalRevenue: 0,
-          };
-        }
+      const computedGrowth =
+        monthlyData.length >= 2
+          ? (() => {
+              const last = monthlyData[monthlyData.length - 1].revenue;
+              const previous = monthlyData[monthlyData.length - 2].revenue;
 
-        const data = await response.json();
-        const monthlyRevenue = data.chart_data || [];
-        const scopedData = monthlyRevenue.slice(-periodMonths);
+              return previous > 0 ? ((last - previous) / previous) * 100 : 0;
+            })()
+          : 0;
 
-        // Transform the data to match our chart format
-        const monthlyData = scopedData.map(item => ({
-          month: item.month || item.label || item.name,
-          revenue: parseNumber(
-            item.monthly_revenue ?? item.revenue ?? item.value ?? item.amount
-          ),
-          invoices: parseNumber(
-            item.invoices ?? item.invoice_count ?? item.count
-          ),
-        }));
+      const apiTrend = parseNumber(statistics.trend);
 
-        // Calculate totals and growth
-        const totalRevenue = monthlyData.reduce(
-          (sum, item) => sum + item.revenue,
-          0
-        );
-
-        const avg =
-          monthlyData.length > 0 ? totalRevenue / monthlyData.length : 0;
-
-        // Calculate growth from the selected period's last two points
-        let growth = 0;
-        if (monthlyData.length >= 2) {
-          const last = monthlyData[monthlyData.length - 1].revenue;
-          const previous = monthlyData[monthlyData.length - 2].revenue;
-          growth = previous > 0 ? ((last - previous) / previous) * 100 : 0;
-        }
-
-        return { monthlyData, growth, avg, totalRevenue };
-      } catch (error) {
-        console.error("Error fetching dashboard data:", error);
-
-        return {
-          monthlyData: [],
-          growth: 0,
-          avg: 0,
-          totalRevenue: 0,
-        };
-      }
+      return {
+        monthlyData,
+        growth: selectedPeriod === "year" ? apiTrend : computedGrowth,
+        currentMonthRevenue: parseNumber(
+          statistics.current_month_revenue ?? latestPoint?.revenue ?? 0
+        ),
+        currentMonthInvoices: parseNumber(
+          statistics.current_month_invoices ?? latestPoint?.invoice_count ?? 0
+        ),
+        currentMonthLabel:
+          latestPoint?.month ||
+          latestPoint?.label ||
+          latestPoint?.name ||
+          data?.period?.end_date?.split(" ")?.[0] ||
+          "-",
+      };
     },
     staleTime: 5 * 60 * 1000, // Cache for 5 minutes
     refetchOnWindowFocus: false,
@@ -136,9 +122,18 @@ const ChartWithSummary: React.FC<ChartWithSummaryProps> = ({
         typeof monthlyInvoices.growth === "number" ? monthlyInvoices.growth : 0
       );
 
-      setMonthlyAvg(
-        typeof monthlyInvoices.avg === "number" ? monthlyInvoices.avg : 0
+      setCurrentMonthRevenue(
+        typeof monthlyInvoices.currentMonthRevenue === "number"
+          ? monthlyInvoices.currentMonthRevenue
+          : 0
       );
+
+      setCurrentMonthInvoices(
+        typeof monthlyInvoices.currentMonthInvoices === "number"
+          ? monthlyInvoices.currentMonthInvoices
+          : 0
+      );
+      setCurrentMonthLabel(monthlyInvoices.currentMonthLabel || "-");
     }
   }, [monthlyInvoices]);
 
@@ -210,12 +205,6 @@ const ChartWithSummary: React.FC<ChartWithSummaryProps> = ({
     },
   ];
 
-  const revenueFilters = [
-    { label: i18n.t("invoices.monthly"), value: "month", icon: Calendar },
-    { label: i18n.t("invoices.quarterly"), value: "quarter", icon: TrendUp },
-    { label: i18n.t("invoices.yearly"), value: "year", icon: CurrencyDollar },
-  ];
-
   const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
       return (
@@ -267,20 +256,26 @@ const ChartWithSummary: React.FC<ChartWithSummaryProps> = ({
                           : "text-muted-foreground"
                       }`}
                     />
-                    <span
-                      className={`text-sm font-semibold ${
-                        growthRate > 0
-                          ? "text-primary"
-                          : "text-muted-foreground"
-                      }`}
-                    >
-                      {growthRate > 0 ? "+" : ""}
-                      {(typeof growthRate === "number"
-                        ? growthRate
-                        : 0
-                      ).toFixed(1)}
-                      %
-                    </span>
+                    {revenueData.length >= 2 ? (
+                      <span
+                        className={`text-sm font-semibold ${
+                          growthRate > 0
+                            ? "text-primary"
+                            : "text-muted-foreground"
+                        }`}
+                      >
+                        {growthRate > 0 ? "+" : ""}
+                        {(typeof growthRate === "number"
+                          ? growthRate
+                          : 0
+                        ).toFixed(1)}
+                        %
+                      </span>
+                    ) : (
+                      <span className="text-sm font-semibold text-muted-foreground">
+                        {i18n.t("invoices.noData")}
+                      </span>
+                    )}
                     <span className="text-xs text-muted-foreground"></span>
                   </div>
                 </div>
@@ -410,19 +405,18 @@ const ChartWithSummary: React.FC<ChartWithSummaryProps> = ({
               <div className="mt-4 grid grid-cols-1 gap-4 border-t border-border pt-4 sm:grid-cols-3">
                 <div className="text-center">
                   <p className="mb-1 text-xs uppercase tracking-wide text-muted-foreground">
-                    {i18n.t("invoiceDashboard.revenueOverview")}
+                    {i18n.t("thisMonth")}
                   </p>
                   <p className="text-base font-bold text-foreground">
-                    {currencyFormat(baseCurrency, monthlyAvg)}
+                    {currencyFormat(baseCurrency, currentMonthRevenue)}
                   </p>
                 </div>
                 <div className="text-center">
-                  <p className="mb-1 text-xs uppercase tracking-wide text-muted-foreground"></p>
+                  <p className="mb-1 text-xs uppercase tracking-wide text-muted-foreground">
+                    {i18n.t("month")}
+                  </p>
                   <p className="text-base font-bold text-foreground">
-                    {revenueData.reduce(
-                      (max, item) => (item.revenue > max.revenue ? item : max),
-                      revenueData[0] || { revenue: 0 }
-                    )?.month || "-"}
+                    {currentMonthLabel}
                   </p>
                 </div>
                 <div className="text-center">
@@ -430,10 +424,7 @@ const ChartWithSummary: React.FC<ChartWithSummaryProps> = ({
                     {i18n.t("invoices.invoices")}
                   </p>
                   <p className="text-base font-bold text-foreground">
-                    {revenueData.reduce(
-                      (sum, item) => sum + (item.invoices || 0),
-                      0
-                    )}
+                    {Math.round(currentMonthInvoices)}
                   </p>
                 </div>
               </div>
