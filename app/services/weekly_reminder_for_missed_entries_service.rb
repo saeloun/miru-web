@@ -7,14 +7,17 @@ class WeeklyReminderForMissedEntriesService
         notification_preference = NotificationPreference.find_by(user_id: user.id, company_id: company.id)
 
         if notification_preference&.can_receive_weekly_reminder?
-          check_entries_and_send_mail(user, company)
+          check_entries_and_send_mail(user, company, notification_preference)
         end
       end
     end
   end
 
-  def check_entries_and_send_mail(user, company)
+  def check_entries_and_send_mail(user, company, notification_preference = nil)
     return unless user_is_admin_or_employee?(user, company)
+
+    notification_preference ||= NotificationPreference.find_by(user_id: user.id, company_id: company.id)
+    return if notification_preference.blank?
 
     name = user.full_name
     company_name = company.name
@@ -27,7 +30,14 @@ class WeeklyReminderForMissedEntriesService
     entries_total_duration = entries.sum(&:duration)
 
     if entries_total_duration < limit
-      send_mail(recipients: user.email, name:, start_date:, end_date:, company_name:)
+      send_weekly_reminder_once(
+        notification_preference:,
+        recipients: user.email,
+        name:,
+        start_date:,
+        end_date:,
+        company_name:
+      )
     end
   end
 
@@ -45,6 +55,17 @@ class WeeklyReminderForMissedEntriesService
         end_date:,
         company_name:
       ).notify_user_about_missed_entries.deliver_later
+    end
+
+    # This lock makes the weekly reminder idempotent per user/company/week,
+    # even if the scheduled job is triggered multiple times across environments.
+    def send_weekly_reminder_once(notification_preference:, recipients:, name:, start_date:, end_date:, company_name:)
+      notification_preference.with_lock do
+        return if notification_preference.weekly_reminder_last_sent_for_week_start == start_date
+
+        send_mail(recipients:, name:, start_date:, end_date:, company_name:)
+        notification_preference.update!(weekly_reminder_last_sent_for_week_start: start_date)
+      end
     end
 
     def get_entries_for_period(user:, company:, start_date:, end_date:)
