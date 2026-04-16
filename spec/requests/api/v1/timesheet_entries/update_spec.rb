@@ -13,7 +13,7 @@ RSpec.describe "Api::V1::TimesheetEntry#update", type: :request do
       :timesheet_entry,
       user:,
       project:,
-      work_date: Time.now - 30.days,
+      work_date: Time.current,
       duration: 10,
       note: "Test note",
       bill_status: :unbilled
@@ -137,6 +137,27 @@ RSpec.describe "Api::V1::TimesheetEntry#update", type: :request do
           project_id: project.id,
           timesheet_entry: {
             bill_status: :unbilled
+          }
+        }, headers: auth_headers(user)
+
+        expect(response).to have_http_status(:forbidden)
+        expect(json_response["errors"]).to include("You are not authorized to perform this action.")
+      end
+    end
+
+    context "when the entry is older than one week" do
+      before do
+        timesheet_entry.update!(work_date: 30.days.ago)
+      end
+
+      it "returns forbidden for updates" do
+        send_request :patch, api_v1_timesheet_entry_path(timesheet_entry.id), params: {
+          project_id: project.id,
+          timesheet_entry: {
+            duration: 20,
+            work_date: Time.current,
+            note: "Updated Note",
+            bill_status: :billed
           }
         }, headers: auth_headers(user)
 
