@@ -24,7 +24,8 @@ RSpec.describe Api::V1::ExpensesController, type: :controller do
 
   describe "POST #create" do
     before do
-      sign_in employee
+      request.headers["X-Auth-Email"] = employee.email
+      request.headers["X-Auth-Token"] = employee.token
     end
 
     it "creates an employee reimbursement, attaches receipts, and notifies reviewers" do
@@ -50,7 +51,8 @@ RSpec.describe Api::V1::ExpensesController, type: :controller do
 
   describe "PATCH #approve" do
     before do
-      sign_in admin
+      request.headers["X-Auth-Email"] = admin.email
+      request.headers["X-Auth-Token"] = admin.token
     end
 
     it "approves the reimbursement and notifies the submitter" do
@@ -65,7 +67,8 @@ RSpec.describe Api::V1::ExpensesController, type: :controller do
 
   describe "PATCH #reject" do
     before do
-      sign_in admin
+      request.headers["X-Auth-Email"] = admin.email
+      request.headers["X-Auth-Token"] = admin.token
     end
 
     it "rejects the reimbursement and notifies the submitter" do
@@ -80,7 +83,8 @@ RSpec.describe Api::V1::ExpensesController, type: :controller do
 
   describe "PATCH #mark_paid" do
     before do
-      sign_in admin
+      request.headers["X-Auth-Email"] = admin.email
+      request.headers["X-Auth-Token"] = admin.token
       expense.update!(status: :approved)
     end
 

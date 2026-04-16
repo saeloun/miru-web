@@ -165,6 +165,31 @@ RSpec.describe "Api::V1::Invoices#index", type: :request do
       end
     end
 
+    describe "draft invoice currency" do
+      it "returns the current client currency for draft invoices" do
+        client = create(:client, company:, currency: "USD")
+        draft_invoice = create(
+          :invoice,
+          company:,
+          client:,
+          status: :draft,
+          currency: "USD"
+        )
+
+        client.update!(currency: "EUR")
+
+        send_request :get,
+          api_v1_invoices_path(status: :draft, client_id: client.id, invoices_per_page: 50),
+          headers: auth_headers(book_keeper)
+
+        expect(response).to have_http_status(:ok)
+
+        response_invoice = json_response["invoices"].find { |invoice| invoice["id"] == draft_invoice.id }
+        expect(response_invoice).to be_present
+        expect(response_invoice["currency"]).to eq("EUR")
+      end
+    end
+
     describe "search query" do
       it "returns invoices when query partially matches client name" do
         query = company.clients.first.name[0..2]

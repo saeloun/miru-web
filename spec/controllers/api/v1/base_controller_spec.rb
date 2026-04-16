@@ -15,7 +15,8 @@ RSpec.describe Api::V1::BaseController, type: :controller do
 
   before do
     create(:employment, company:, user:)
-    sign_in user
+    request.headers["X-Auth-Email"] = user.email
+    request.headers["X-Auth-Token"] = user.token
   end
 
   describe "#set_virtual_verified_invitations_allowed" do
