@@ -90,7 +90,13 @@ const TimeoffForm = ({ isDisplayEditTimeoffEntryForm = false }) => {
     if (isDisplayEditTimeoffEntryForm) {
       handleFillData();
     }
-  }, [isDisplayEditTimeoffEntryForm]);
+  }, [
+    isDisplayEditTimeoffEntryForm,
+    editTimeoffEntryId,
+    selectedFullDate,
+    entryList,
+    leaveTypes,
+  ]);
 
   useEffect(() => {
     if (isHolidayEntry()) {
@@ -134,14 +140,27 @@ const TimeoffForm = ({ isDisplayEditTimeoffEntryForm = false }) => {
     return null;
   };
 
-  const handleFillData = () => {
-    const timeoffEntry = entryList[selectedFullDate]?.find(
+  const findEditableTimeoffEntry = () => {
+    const selectedDateEntries = entryList[selectedFullDate] || [];
+    const matchingSelectedDateEntry = selectedDateEntries.find(
       entry => entry.id === editTimeoffEntryId
     );
+    if (matchingSelectedDateEntry) return matchingSelectedDateEntry;
+
+    const allEntries = Object.values(entryList || {}).flat();
+
+    return allEntries.find(entry => entry.id === editTimeoffEntryId);
+  };
+
+  const handleFillData = () => {
+    const timeoffEntry = findEditableTimeoffEntry();
 
     if (timeoffEntry) {
       setDuration(minToHHMM(timeoffEntry?.duration || 0));
       setNote(timeoffEntry?.note || "");
+      if (timeoffEntry?.leave_date) {
+        setSelectedDate(dayjs(timeoffEntry.leave_date).format("YYYY-MM-DD"));
+      }
 
       if (timeoffEntry?.holiday_info_id) {
         const currentHolidayId = timeoffEntry.holiday_info_id || 0;

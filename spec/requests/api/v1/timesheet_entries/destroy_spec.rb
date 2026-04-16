@@ -9,7 +9,7 @@ RSpec.describe "Api::V1::TimesheetEntry#destroy", type: :request do
   let(:client) { create(:client, company:) }
   let(:project) { create(:project, client:) }
   let!(:timesheet_entry) {
-    create(:timesheet_entry, user:, project:, work_date: Time.now - 30.days)
+    create(:timesheet_entry, user:, project:, work_date: Time.current)
   }
 
   context "when user is an admin" do
@@ -55,6 +55,19 @@ RSpec.describe "Api::V1::TimesheetEntry#destroy", type: :request do
 
       expect(json_response["notice"]).to match("Timesheet deleted")
       expect(timesheet_entry.reload).to be_discarded
+    end
+
+    context "when entry is older than one week" do
+      before do
+        timesheet_entry.update!(work_date: 30.days.ago)
+      end
+
+      it "returns forbidden" do
+        send_request :delete, api_v1_timesheet_entry_path(timesheet_entry), headers: auth_headers(user)
+
+        expect(response).to have_http_status(:forbidden)
+        expect(json_response["errors"]).to include("You are not authorized to perform this action.")
+      end
     end
   end
 

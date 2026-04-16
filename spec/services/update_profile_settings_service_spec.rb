@@ -12,7 +12,14 @@ RSpec.describe UpdateProfileSettingsService do
 
       result = described_class.new(user, params).process
 
-      expect(result).to eq({ res: { notice: "User updated" }, status: :ok })
+      expect(result[:status]).to eq(:ok)
+      expect(result[:res][:notice]).to eq(I18n.t("companies.update.success"))
+      expect(result[:res][:user]).to eq(
+        {
+          avatar_url: user.avatar_url,
+          password_changed_at: user.password_changed_at
+        }
+      )
     end
 
     it "updates with password when current_password is present" do
@@ -21,7 +28,14 @@ RSpec.describe UpdateProfileSettingsService do
 
       result = described_class.new(user, params).process
 
-      expect(result).to eq({ res: { notice: "Password updated" }, status: :ok })
+      expect(result[:status]).to eq(:ok)
+      expect(result[:res][:notice]).to eq(I18n.t("password.update.success"))
+      expect(result[:res][:user]).to eq(
+        {
+          avatar_url: user.avatar_url,
+          password_changed_at: user.password_changed_at
+        }
+      )
     end
 
     it "returns errors when update fails" do

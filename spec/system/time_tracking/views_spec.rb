@@ -113,6 +113,39 @@ RSpec.describe "Time Tracking Views", type: :system, js: true do
     end
   end
 
+  it "pre-fills leave edit form from week review and allows updating" do
+    leave = create(:leave, company:, year: Date.current.year)
+    leave_type = create(:leave_type, leave:, name: "Paid Time Off")
+    leave_date = Date.current.beginning_of_week
+    leave_date += 1.day if leave_date == Date.current
+    create(
+      :timeoff_entry,
+      user:,
+      leave_type:,
+      leave_date:,
+      duration: 480,
+      note: "Editable week review PTO"
+    )
+
+    with_forgery_protection do
+      visit "/time-tracking"
+      find("[data-testid='time-review-week']", wait: 10).click
+
+      within("[data-testid='timeoff-entry-card']", text: "Editable week review PTO") do
+        find("button[title='Edit entry']", wait: 10).click
+      end
+
+      expect(page).to have_field("notes", with: "Editable week review PTO", wait: 10)
+      expect(page).to have_button("Update Entry", disabled: false, wait: 10)
+
+      fill_in "notes", with: "Editable week review PTO updated"
+      click_button "Update Entry"
+
+      find("[data-testid='time-review-week']", wait: 10).click
+      expect(page).to have_content("Editable week review PTO updated", wait: 10)
+    end
+  end
+
   it "lets an admin switch to another user" do
     employee = create(:user, first_name: "Jane", last_name: "Developer", current_workspace_id: company.id)
     create(:employment, company:, user: employee)

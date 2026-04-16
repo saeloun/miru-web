@@ -19,7 +19,8 @@ RSpec.describe TestController, type: :controller do
       routes.draw { get "show" => "test#show" }
       create(:employment, company:, user:)
       user.add_role :admin, company
-      sign_in user
+      allow(controller).to receive(:authenticate_user!).and_return(true)
+      allow(controller).to receive(:current_user).and_return(user)
     end
 
     context "when request is HTML type" do
