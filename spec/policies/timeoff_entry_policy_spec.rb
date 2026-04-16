@@ -35,10 +35,30 @@ RSpec.describe TimeoffEntryPolicy, type: :policy do
   end
 
   permissions :update?, :destroy? do
-    it "permits owner, admin, and employee in the same workspace" do
+    it "permits owner and admin in the same workspace" do
       expect(described_class).to permit(owner, record)
       expect(described_class).to permit(admin, record)
+    end
+
+    it "permits employee for their own recent entries" do
       expect(described_class).to permit(employee, record)
+    end
+
+    it "forbids employee for entries older than a week" do
+      record.update!(leave_date: 8.days.ago.to_date)
+      expect(described_class).not_to permit(employee, record)
+    end
+
+    it "forbids owner for entries older than a week" do
+      record.update!(leave_date: 8.days.ago.to_date)
+      expect(described_class).not_to permit(owner, record)
+      expect(described_class).to permit(admin, record)
+    end
+
+    it "forbids employee from editing another employee entry" do
+      another_employee = create(:user, current_workspace_id: company.id)
+      another_employee.add_role :employee, company
+      expect(described_class).not_to permit(another_employee, record)
     end
 
     it "forbids client and other workspace users" do

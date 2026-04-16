@@ -1,6 +1,10 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 
-import { timesheetEntryApi, timeTrackingApi } from "apis/api";
+import {
+  timeoffEntriesApi,
+  timesheetEntryApi,
+  timeTrackingApi,
+} from "apis/api";
 import Loader from "common/Loader/index";
 import withLayout from "common/Mobile/HOC/withLayout";
 import SearchTimeEntries from "common/SearchTimeEntries";
@@ -531,6 +535,17 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
     }
   };
 
+  const handleDeleteTimeoffEntry = async (
+    id: number,
+    leaveDate?: string | null
+  ) => {
+    const res = await timeoffEntriesApi.destroy(id);
+    if (res.status !== 200) return;
+
+    await handleFilterEntry(leaveDate || selectedFullDate, id);
+    await refreshVisibleEntries();
+  };
+
   const removeLocalStorageItems = () => {
     localStorage.removeItem("note");
     localStorage.removeItem("duration");
@@ -1004,10 +1019,14 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
                 leaveTypeHashObj={leaveTypeHashObj}
                 holidaysHashObj={holidaysHashObj}
                 handleDeleteEntry={handleDeleteEntry}
+                handleDeleteTimeoffEntry={handleDeleteTimeoffEntry}
                 handleDuplicate={handleDuplicate}
                 handleResumeTimer={handleResumeTimer}
                 setEditEntryId={setEditEntryId}
+                setEditTimeoffEntryId={setEditTimeoffEntryId}
                 setNewEntryView={setNewEntryView}
+                setNewTimeoffEntryView={setNewTimeoffEntryView}
+                setSelectedFullDate={setSelectedFullDate}
                 dayInfo={dayInfo}
                 view={view}
               />
