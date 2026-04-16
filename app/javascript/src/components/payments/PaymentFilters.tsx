@@ -175,16 +175,12 @@ const PaymentFilters: React.FC<PaymentFiltersProps> = ({
           <div className="flex gap-2">
             <DatePicker
               date={filters.dateFrom}
-              onDateChange={date =>
-                onFilterChange({ ...filters, dateFrom: date })
-              }
+              onSelect={date => onFilterChange({ ...filters, dateFrom: date })}
               placeholder={i18n.t("from")}
             />
             <DatePicker
               date={filters.dateTo}
-              onDateChange={date =>
-                onFilterChange({ ...filters, dateTo: date })
-              }
+              onSelect={date => onFilterChange({ ...filters, dateTo: date })}
               placeholder={i18n.t("to")}
             />
           </div>

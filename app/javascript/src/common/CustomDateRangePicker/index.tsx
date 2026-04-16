@@ -15,6 +15,8 @@ interface DateRange {
   to: string;
 }
 
+const formatWeekdayLabel = (dayName: string) => dayName.slice(0, 2);
+
 const CustomDateRangePicker = ({
   hideCustomFilter,
   handleSelectDate,
@@ -200,6 +202,7 @@ const CustomDateRangePicker = ({
     <DatePicker
       inline
       calendarClassName="miru-datepicker miru-datepicker--range"
+      formatWeekDay={formatWeekdayLabel}
       wrapperClassName="datePicker absolute miru-datepicker-wrapper"
       maxDate={
         selectedInput === fromInput && dateRange.to
