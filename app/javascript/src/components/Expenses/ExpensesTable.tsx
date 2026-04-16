@@ -53,6 +53,7 @@ import { toast } from "sonner";
 import { i18n } from "../../i18n";
 import ReceiptPreviewDialog from "./ReceiptPreviewDialog";
 import { findCategoryMeta } from "./utils";
+import { useLocation, useNavigate } from "react-router-dom";
 
 interface Expense {
   id: string;
@@ -180,6 +181,9 @@ const ExpensesTable: React.FC = () => {
   const EXPENSES_BATCH_SIZE = 25;
   const queryClient = useQueryClient();
   const { company, companyRole } = useUserContext();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const isNewExpenseRoute = location.pathname.endsWith("/expenses/new");
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
@@ -247,6 +251,9 @@ const ExpensesTable: React.FC = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["expenses"] });
       toast.success(i18n.t("expenses.expenseCreatedSuccessfully"));
+      if (isNewExpenseRoute) {
+        navigate("/expenses", { replace: true });
+      }
       setShowAddDialog(false);
       resetForm();
     },
@@ -542,6 +549,12 @@ const ExpensesTable: React.FC = () => {
     setTotalExpenseCount(data.paginationDetails?.total || data.expenses.length);
     setHasMoreExpenses(Boolean(data.paginationDetails?.next));
   }, [data]);
+
+  useEffect(() => {
+    if (isNewExpenseRoute) {
+      setShowAddDialog(true);
+    }
+  }, [isNewExpenseRoute]);
 
   const loadMoreExpenses = useCallback(async () => {
     if (isLoadingMore || !hasMoreExpenses) return;
@@ -1000,7 +1013,15 @@ const ExpensesTable: React.FC = () => {
       </div>
 
       {/* Add Expense Dialog */}
-      <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
+      <Dialog
+        open={showAddDialog}
+        onOpenChange={open => {
+          setShowAddDialog(open);
+          if (!open && isNewExpenseRoute) {
+            navigate("/expenses", { replace: true });
+          }
+        }}
+      >
         <DialogContent className="sm:max-w-[500px]">
           <DialogHeader>
             <DialogTitle>{i18n.t("expenses.addNewExpense")}</DialogTitle>
@@ -1192,7 +1213,15 @@ const ExpensesTable: React.FC = () => {
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setShowAddDialog(false)}>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setShowAddDialog(false);
+                if (isNewExpenseRoute) {
+                  navigate("/expenses", { replace: true });
+                }
+              }}
+            >
               {i18n.t("cancel")}
             </Button>
             <Button

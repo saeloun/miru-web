@@ -89,10 +89,11 @@ const OrganizationHolidaysEditor = ({
   setCurrentYear,
   enableOptionalHolidays,
   setEnableOptionalHolidays,
+  isEditable,
+  setIsEditable,
   holidayList,
   optionalHolidaysList,
   totalOptionalHolidays,
-  isDisableUpdateBtn,
   optionalRepetitionType,
   wrapperRef,
   optionalWrapperRef,
@@ -112,6 +113,7 @@ const OrganizationHolidaysEditor = ({
   optionalHolidayErrors,
   updateHolidayDetails,
 }) => {
+  const canEdit = canManageHolidays && isEditable;
   const allHolidays = [...holidayList, ...optionalHolidaysList]
     .map(holiday => {
       const holidayDate = buildHolidayDate(holiday.date, dateFormat);
@@ -173,20 +175,29 @@ const OrganizationHolidaysEditor = ({
               })}
             </select>
           </div>
-          <Button
-            onClick={handleCancelAction}
-            variant="outline"
-            className="font-geist-medium"
-          >
-            {i18n.t("cancel")}
-          </Button>
-          {canManageHolidays ? (
+          {canEdit ? (
             <Button
-              onClick={updateHolidayDetails}
-              disabled={isDisableUpdateBtn}
+              onClick={handleCancelAction}
+              variant="outline"
               className="font-geist-medium"
             >
-              {i18n.t("preferencesSettings.saveChanges")}
+              {i18n.t("cancel")}
+            </Button>
+          ) : null}
+          {canManageHolidays ? (
+            <Button
+              onClick={() => {
+                if (canEdit) {
+                  updateHolidayDetails();
+                } else {
+                  setIsEditable(true);
+                }
+              }}
+              className="font-geist-medium"
+            >
+              {canEdit
+                ? i18n.t("preferencesSettings.saveChanges")
+                : i18n.t("edit")}
             </Button>
           ) : null}
         </div>
@@ -220,7 +231,7 @@ const OrganizationHolidaysEditor = ({
                               <div
                                 className="relative cursor-pointer"
                                 onClick={() => {
-                                  if (!canManageHolidays) return;
+                                  if (!canEdit) return;
 
                                   setShowDatePicker({
                                     visibility: !showDatePicker.visibility,
@@ -235,7 +246,7 @@ const OrganizationHolidaysEditor = ({
                                       ? "border-destructive"
                                       : ""
                                   }`}
-                                  disabled={!canManageHolidays}
+                                  disabled={!canEdit}
                                   placeholder={i18n.t(
                                     "holidaysSettings.selectDate"
                                   )}
@@ -281,7 +292,7 @@ const OrganizationHolidaysEditor = ({
                                     ? "border-destructive"
                                     : ""
                                 }`}
-                                disabled={!canManageHolidays}
+                                disabled={!canEdit}
                                 placeholder={i18n.t(
                                   "holidaysSettings.enterHolidayName"
                                 )}
@@ -297,7 +308,7 @@ const OrganizationHolidaysEditor = ({
                               )}
                             </div>
                           </div>
-                          {canManageHolidays ? (
+                          {canEdit ? (
                             <Button
                               aria-label="Delete holiday"
                               variant="ghost"
@@ -310,7 +321,7 @@ const OrganizationHolidaysEditor = ({
                           ) : null}
                         </div>
                       ))}
-                      {canManageHolidays ? (
+                      {canEdit ? (
                         <Button
                           variant="outline"
                           onClick={() => handleAddHoliday(false)}
@@ -331,7 +342,7 @@ const OrganizationHolidaysEditor = ({
                       <p className="text-muted-foreground font-geist-regular mb-3">
                         {i18n.t("holidaysSettings.noPublicHolidaysConfigured")}
                       </p>
-                      {canManageHolidays ? (
+                      {canEdit ? (
                         <Button
                           variant="outline"
                           onClick={() => handleAddHoliday(false)}
@@ -361,7 +372,7 @@ const OrganizationHolidaysEditor = ({
                   <button
                     onClick={handleCheckboxClick}
                     className="transition-colors"
-                    disabled={!canManageHolidays}
+                    disabled={!canEdit}
                     type="button"
                   >
                     {enableOptionalHolidays ? (
@@ -393,7 +404,7 @@ const OrganizationHolidaysEditor = ({
                           type="number"
                           min={0}
                           className="font-geist-regular mt-1"
-                          disabled={!canManageHolidays}
+                          disabled={!canEdit}
                           placeholder={i18n.t("holidaysSettings.enterNumber")}
                           value={totalOptionalHolidays}
                           onChange={handleChangeTotalOpHoliday}
@@ -405,7 +416,7 @@ const OrganizationHolidaysEditor = ({
                         </Label>
                         <div className="mt-1">
                           <CustomReactSelect
-                            isDisabled={!canManageHolidays}
+                            isDisabled={!canEdit}
                             handleOnChange={handleChangeRepetitionOpHoliday}
                             id="allocationFrequency"
                             label=""
@@ -447,7 +458,7 @@ const OrganizationHolidaysEditor = ({
                                     <div
                                       className="relative cursor-pointer"
                                       onClick={() => {
-                                        if (!canManageHolidays) return;
+                                        if (!canEdit) return;
 
                                         setShowOptionalDatePicker({
                                           visibility:
@@ -463,7 +474,7 @@ const OrganizationHolidaysEditor = ({
                                             ? "border-destructive"
                                             : ""
                                         }`}
-                                        disabled={!canManageHolidays}
+                                        disabled={!canEdit}
                                         placeholder={i18n.t(
                                           "holidaysSettings.selectDate"
                                         )}
@@ -513,7 +524,7 @@ const OrganizationHolidaysEditor = ({
                                           ? "border-destructive"
                                           : ""
                                       }`}
-                                      disabled={!canManageHolidays}
+                                      disabled={!canEdit}
                                       placeholder={i18n.t(
                                         "holidaysSettings.enterHolidayName"
                                       )}
@@ -531,7 +542,7 @@ const OrganizationHolidaysEditor = ({
                                     )}
                                   </div>
                                 </div>
-                                {canManageHolidays ? (
+                                {canEdit ? (
                                   <Button
                                     aria-label="Delete holiday"
                                     variant="ghost"
@@ -547,7 +558,7 @@ const OrganizationHolidaysEditor = ({
                               </div>
                             )
                           )}
-                          {canManageHolidays ? (
+                          {canEdit ? (
                             <Button
                               variant="outline"
                               onClick={() => handleAddHoliday(true)}
@@ -570,7 +581,7 @@ const OrganizationHolidaysEditor = ({
                               "holidaysSettings.noOptionalHolidaysConfigured"
                             )}
                           </p>
-                          {canManageHolidays ? (
+                          {canEdit ? (
                             <Button
                               variant="outline"
                               size="sm"

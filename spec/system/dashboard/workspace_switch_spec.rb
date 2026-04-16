@@ -31,7 +31,7 @@ RSpec.describe "Dashboard workspace switcher", type: :system, js: true do
 
       find("aside button", text: /Vipul Switcher/, wait: 10).click
 
-      expect(page).to have_content("Switch workspace", wait: 10)
+      expect(page).to have_content(/switch workspace/i, wait: 10)
       click_button "Secondary Workspace"
 
       expect(page).to have_current_path("/dashboard", wait: 10)

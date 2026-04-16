@@ -3,9 +3,11 @@ import React from "react";
 import { getMonth, getYear } from "date-fns";
 import dayjs from "dayjs";
 import { useOutsideClick } from "helpers";
-import { CaretCircleLeftIcon, CaretCircleRightIcon } from "miruIcons";
+import { CaretLeft, CaretRight } from "phosphor-react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+
+const formatWeekdayLabel = (dayName: string) => dayName.slice(0, 2);
 
 const CustomDatePicker = ({
   handleChange,
@@ -42,7 +44,7 @@ const CustomDatePicker = ({
   ];
 
   useOutsideClick(wrapperRef, () => {
-    setVisibility(false);
+    setVisibility?.(false);
   });
 
   const parseDate = dateValue => {
@@ -68,10 +70,11 @@ const CustomDatePicker = ({
   return (
     <DatePicker
       inline
-      calendarClassName="miru-calendar"
+      calendarClassName="miru-datepicker miru-datepicker--single"
+      formatWeekDay={formatWeekdayLabel}
       selected={parseDate(date)}
       maxDate={maxDate}
-      wrapperClassName="datePicker"
+      wrapperClassName="datePicker miru-datepicker-wrapper"
       renderCustomHeader={({
         date,
         changeYear,
@@ -99,11 +102,17 @@ const CustomDatePicker = ({
 
         return (
           <div className="headerWrapper">
-            <button disabled={prevMonthButtonDisabled} onClick={decreaseMonth}>
-              <CaretCircleLeftIcon color="#5b34ea" size={16} />
+            <button
+              type="button"
+              className="miru-datepicker-nav-btn"
+              disabled={prevMonthButtonDisabled}
+              onClick={decreaseMonth}
+            >
+              <CaretLeft size={14} weight="bold" />
             </button>
             <div>
               <select
+                className="miru-datepicker-select"
                 value={months[getMonth(date)]}
                 onChange={({ target: { value } }) =>
                   changeMonth(months.indexOf(value))
@@ -116,6 +125,7 @@ const CustomDatePicker = ({
                 ))}
               </select>
               <select
+                className="miru-datepicker-select"
                 value={getYear(date)}
                 onChange={({ target: { value } }) => changeYear(value)}
               >
@@ -126,8 +136,13 @@ const CustomDatePicker = ({
                 ))}
               </select>
             </div>
-            <button disabled={nextDisabled} onClick={increaseMonth}>
-              <CaretCircleRightIcon color="#5b34ea" size={16} />
+            <button
+              type="button"
+              className="miru-datepicker-nav-btn"
+              disabled={nextDisabled}
+              onClick={increaseMonth}
+            >
+              <CaretRight size={14} weight="bold" />
             </button>
           </div>
         );

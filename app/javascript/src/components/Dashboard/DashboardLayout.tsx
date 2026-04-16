@@ -118,7 +118,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
           label: t("sidebar.holidayCalendar"),
           href: "/settings/holidays",
           icon: Calendar,
-          roles: ["admin", "owner"],
+          roles: ["admin", "owner", "employee"],
         },
         {
           label: t("sidebar.companySettings"),

@@ -2,11 +2,8 @@ import React, { useEffect, useRef, useState } from "react";
 
 import { getMonth, getYear } from "date-fns";
 import dayjs from "dayjs";
-import {
-  CaretCircleLeftIcon,
-  CaretCircleRightIcon,
-  LeftArrowIcon,
-} from "miruIcons";
+import { LeftArrowIcon } from "miruIcons";
+import { CaretLeft, CaretRight } from "phosphor-react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { i18n } from "../../i18n";
@@ -17,6 +14,8 @@ interface DateRange {
   from: string;
   to: string;
 }
+
+const formatWeekdayLabel = (dayName: string) => dayName.slice(0, 2);
 
 const CustomDateRangePicker = ({
   hideCustomFilter,
@@ -202,8 +201,9 @@ const CustomDateRangePicker = ({
   return (
     <DatePicker
       inline
-      calendarClassName="miru-calendar-date-range"
-      wrapperClassName="datePicker absolute"
+      calendarClassName="miru-datepicker miru-datepicker--range"
+      formatWeekDay={formatWeekdayLabel}
+      wrapperClassName="datePicker absolute miru-datepicker-wrapper"
       maxDate={
         selectedInput === fromInput && dateRange.to
           ? new Date(dateRange.to)
@@ -223,10 +223,14 @@ const CustomDateRangePicker = ({
         prevMonthButtonDisabled,
         nextMonthButtonDisabled,
       }) => (
-        <div className="bg-background ">
+        <div className="bg-background">
           <div className="mt-2 flex justify-start">
-            <button type="button" onClick={hideCustomFilter}>
-              <LeftArrowIcon color="#5b34ea" size={10} />
+            <button
+              type="button"
+              className="inline-flex h-6 w-6 items-center justify-center rounded-md text-primary hover:bg-accent"
+              onClick={hideCustomFilter}
+            >
+              <LeftArrowIcon color="currentColor" size={10} />
             </button>
             <p className="ml-2 text-sm font-medium">
               {i18n.t("customDateRange")}
@@ -240,8 +244,8 @@ const CustomDateRangePicker = ({
                 placeholder={i18n.t("from")}
                 ref={textInput}
                 type="text"
-                className={`mr-1 h-8 w-32 rounded bg-muted p-1 ${
-                  selectedInput === fromInput && "border-2 border-primary"
+                className={`mr-1 h-9 w-36 rounded-md border border-input bg-background px-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring ${
+                  selectedInput === fromInput && "border-primary"
                 }`}
                 value={
                   dateRange.from
@@ -265,8 +269,8 @@ const CustomDateRangePicker = ({
                 placeholder={i18n.t("to")}
                 ref={toInputRef}
                 type="text"
-                className={`ml-1 h-8 w-32 rounded bg-muted p-1 ${
-                  selectedInput === toInput && "border-2 border-primary"
+                className={`ml-1 h-9 w-36 rounded-md border border-input bg-background px-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring ${
+                  selectedInput === toInput && "border-primary"
                 }`}
                 value={
                   dateRange.to
@@ -285,13 +289,15 @@ const CustomDateRangePicker = ({
           <div className="headerWrapper mt-4">
             <button
               type="button"
+              className="miru-datepicker-nav-btn"
               disabled={prevMonthButtonDisabled}
               onClick={decreaseMonth}
             >
-              <CaretCircleLeftIcon color="#5b34ea" size={16} />
+              <CaretLeft size={14} weight="bold" />
             </button>
             <div>
               <select
+                className="miru-datepicker-select"
                 value={months[getMonth(date)]}
                 onChange={({ target: { value } }) =>
                   changeMonth(months.indexOf(value))
@@ -304,6 +310,7 @@ const CustomDateRangePicker = ({
                 ))}
               </select>
               <select
+                className="miru-datepicker-select"
                 value={getYear(date)}
                 onChange={({ target: { value } }) => changeYear(value)}
               >
@@ -316,10 +323,11 @@ const CustomDateRangePicker = ({
             </div>
             <button
               type="button"
+              className="miru-datepicker-nav-btn"
               disabled={nextMonthButtonDisabled}
               onClick={increaseMonth}
             >
-              <CaretCircleRightIcon color="#5b34ea" size={16} />
+              <CaretRight size={14} weight="bold" />
             </button>
           </div>
         </div>

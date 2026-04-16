@@ -907,3 +907,186 @@ input[type="number"]::-webkit-outer-spin-button {
 input[type="number"] {
   -moz-appearance: textfield;
 }
+
+/* Unified date/time picker styling (react-datepicker + native date/time fields) */
+:is(.miru-datepicker-wrapper .react-datepicker, .react-datepicker.miru-datepicker) {
+  border: 1px solid hsl(var(--border));
+  border-radius: 0.875rem;
+  background: hsl(var(--popover));
+  color: hsl(var(--popover-foreground));
+  font-family: inherit;
+  box-shadow: 0 14px 40px hsl(var(--foreground) / 0.12);
+}
+
+:is(.miru-datepicker-wrapper .react-datepicker, .react-datepicker.miru-datepicker)
+  .react-datepicker__triangle {
+  display: none;
+}
+
+:is(.miru-datepicker-wrapper .react-datepicker, .react-datepicker.miru-datepicker)
+  .react-datepicker__header {
+  background: hsl(var(--muted) / 0.45);
+  border-bottom: 1px solid hsl(var(--border));
+  border-top-left-radius: 0.875rem;
+  border-top-right-radius: 0.875rem;
+  padding-top: 0.5rem;
+}
+
+:is(.miru-datepicker-wrapper .react-datepicker, .react-datepicker.miru-datepicker)
+  .react-datepicker__current-month {
+  color: hsl(var(--foreground));
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+:is(.miru-datepicker-wrapper .react-datepicker, .react-datepicker.miru-datepicker)
+  .react-datepicker__month {
+  margin: 0.45rem auto 0.75rem;
+  width: fit-content;
+}
+
+:is(.miru-datepicker-wrapper .react-datepicker, .react-datepicker.miru-datepicker)
+  .react-datepicker__day-names,
+:is(.miru-datepicker-wrapper .react-datepicker, .react-datepicker.miru-datepicker)
+  .react-datepicker__week {
+  display: grid;
+  grid-template-columns: repeat(7, 2.35rem);
+  justify-content: center;
+  gap: 0.2rem;
+}
+
+:is(.miru-datepicker-wrapper .react-datepicker, .react-datepicker.miru-datepicker)
+  .react-datepicker__day-name {
+  width: 100%;
+  height: 2.1rem;
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: hsl(var(--muted-foreground));
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.015em;
+}
+
+:is(.miru-datepicker-wrapper .react-datepicker, .react-datepicker.miru-datepicker)
+  .react-datepicker__day {
+  width: 100%;
+  height: 2.2rem;
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.55rem;
+  color: hsl(var(--foreground));
+  transition: background-color 120ms ease, color 120ms ease;
+}
+
+:is(.miru-datepicker-wrapper .react-datepicker, .react-datepicker.miru-datepicker)
+  .react-datepicker__day:hover {
+  background: hsl(var(--accent));
+  color: hsl(var(--accent-foreground));
+}
+
+:is(.miru-datepicker-wrapper .react-datepicker, .react-datepicker.miru-datepicker)
+  .react-datepicker__day--today {
+  background: hsl(var(--accent) / 0.85);
+  font-weight: 700;
+}
+
+:is(.miru-datepicker-wrapper .react-datepicker, .react-datepicker.miru-datepicker)
+  .react-datepicker__day--keyboard-selected {
+  background: hsl(var(--primary) / 0.15);
+  color: hsl(var(--foreground));
+}
+
+:is(.miru-datepicker-wrapper .react-datepicker, .react-datepicker.miru-datepicker)
+  .react-datepicker__day--selected,
+:is(.miru-datepicker-wrapper .react-datepicker, .react-datepicker.miru-datepicker)
+  .react-datepicker__day--in-selecting-range,
+:is(.miru-datepicker-wrapper .react-datepicker, .react-datepicker.miru-datepicker)
+  .react-datepicker__day--in-range {
+  background: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+}
+
+:is(.miru-datepicker-wrapper .react-datepicker, .react-datepicker.miru-datepicker)
+  .react-datepicker__day--outside-month {
+  color: hsl(var(--muted-foreground));
+  opacity: 0.6;
+}
+
+:is(.miru-datepicker-wrapper .react-datepicker, .react-datepicker.miru-datepicker)
+  .react-datepicker__day--disabled {
+  color: hsl(var(--muted-foreground));
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+:is(.miru-datepicker-wrapper .react-datepicker, .react-datepicker.miru-datepicker)
+  .react-datepicker__day--disabled:hover {
+  background: transparent;
+}
+
+.headerWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.3rem 0.25rem 0.2rem;
+}
+
+.headerWrapper > div {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.miru-datepicker-nav-btn {
+  width: 1.8rem;
+  height: 1.8rem;
+  border-radius: 0.5rem;
+  border: 1px solid hsl(var(--border));
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: hsl(var(--foreground));
+  background: hsl(var(--background));
+}
+
+.miru-datepicker-nav-btn:hover:not(:disabled) {
+  background: hsl(var(--accent));
+}
+
+.miru-datepicker-nav-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.miru-datepicker-select {
+  height: 1.8rem;
+  border: 1px solid hsl(var(--input));
+  border-radius: 0.5rem;
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
+  padding: 0 0.5rem;
+  font-size: 0.8rem;
+}
+
+.miru-datepicker--range .react-datepicker__month-container {
+  width: 100%;
+}
+
+input[type="date"],
+input[type="time"],
+input[type="datetime-local"] {
+  color: hsl(var(--foreground));
+  background-color: hsl(var(--background));
+  border-color: hsl(var(--input));
+}
+
+.dark input[type="date"]::-webkit-calendar-picker-indicator,
+.dark input[type="time"]::-webkit-calendar-picker-indicator,
+.dark input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+  filter: invert(0.88) brightness(1.05);
+}
