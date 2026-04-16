@@ -15,7 +15,13 @@ json.invoices invoices do |invoice|
   json.exchange_rate invoice.respond_to?(:exchange_rate) ? invoice.exchange_rate.to_f : 0.0
   json.tax invoice.tax.to_f
   json.discount invoice.discount.to_f
-  json.currency invoice.currency || current_company.base_currency
+  json.currency(
+    if invoice.draft? && invoice.client&.currency.present?
+      invoice.client.currency
+    else
+      invoice.currency || current_company.base_currency
+    end
+  )
   json.created_at invoice.created_at
   json.updated_at invoice.updated_at
 
@@ -64,6 +70,13 @@ json.recentlyUpdatedInvoices recently_updated_invoices do |invoice|
   json.outstanding_amount invoice.outstanding_amount.to_f
   json.base_currency_amount invoice.base_currency_amount.to_f
   json.exchange_rate invoice.respond_to?(:exchange_rate) ? invoice.exchange_rate.to_f : 0.0
+  json.currency(
+    if invoice.draft? && invoice.client&.currency.present?
+      invoice.client.currency
+    else
+      invoice.currency || current_company.base_currency
+    end
+  )
   json.updated_at invoice.updated_at
 
   json.client do
