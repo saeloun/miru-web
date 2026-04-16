@@ -136,6 +136,7 @@ const SettingsRoutes = [{ path: "*", Component: ProfileRouteConfig }];
 
 const ExpenseRoutes = [
   { path: "", Component: ExpensesTable },
+  { path: "new", Component: ExpensesTable },
   { path: ":expenseId", Component: ExpenseDetails },
   { path: "*", Component: ErrorPage },
 ];
