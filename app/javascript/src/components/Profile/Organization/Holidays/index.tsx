@@ -14,7 +14,6 @@ import { companyDateFormat, makePayload } from "./utils";
 
 const Holidays = () => {
   const [holidayList, setHolidayList] = useState([]);
-  const [isDetailUpdated, setIsDetailUpdated] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [currentYear, setCurrentYear] = useState<number>(getYear(new Date()));
   const [showDatePicker, setShowDatePicker] = useState<any>({
@@ -467,7 +466,6 @@ const Holidays = () => {
       if (holidays.length) {
         updateHolidaysList(holidays);
       }
-      setIsDetailUpdated(false);
       setIsEditable(false);
       setHolidayErrors({} as Record<number, Record<string, string[]>>);
       setOptionalHolidayErrors({} as Record<number, Record<string, string[]>>);
@@ -487,6 +485,8 @@ const Holidays = () => {
         dateFormat={dateFormat}
         enableOptionalHolidays={enableOptionalHolidays}
         canManageHolidays={canManageHolidays}
+        isEditable={isEditable}
+        setIsEditable={setIsEditable}
         handleAddHoliday={handleAddHoliday}
         handleCancelAction={handleCancelAction}
         handleChangeRepetitionOpHoliday={handleChangeRepetitionOpHoliday}
@@ -497,7 +497,6 @@ const Holidays = () => {
         handleHolidateNameChange={handleHolidateNameChange}
         holidayList={holidayList}
         isDesktop={isDesktop}
-        isDisableUpdateBtn={isDetailUpdated}
         optionalHolidaysList={optionalHolidaysList}
         optionalRepetitionType={optionalRepetitionType}
         optionalWrapperRef={optionalWrapperRef}
