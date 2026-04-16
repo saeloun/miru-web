@@ -78,8 +78,8 @@ export interface InvoiceFormData {
   id?: string;
   invoiceNumber: string;
   clientId: string;
-  issueDate: string;
-  dueDate: string;
+  issueDate: string | Date;
+  dueDate: string | Date;
   dateFormat?: string;
   reference?: string;
   invoiceLineItems: InvoiceItem[];
@@ -151,7 +151,7 @@ class InvoiceApiService {
   private baseUrl = "/api/v1";
 
   private normalizeInvoiceLineItemDate(
-    date: string | undefined,
+    date: string | Date | undefined,
     dateFormat?: string
   ) {
     if (!date) return date;
@@ -167,6 +167,44 @@ class InvoiceApiService {
         "DD-MM-YYYY",
         "DD/MM/YYYY",
         "DD.MM.YYYY",
+      ].filter(Boolean),
+      true
+    );
+
+    if (parsedDate.isValid()) {
+      return parsedDate.format("YYYY-MM-DD");
+    }
+
+    const fallbackParsedDate = dayjs(date);
+
+    return fallbackParsedDate.isValid()
+      ? fallbackParsedDate.format("YYYY-MM-DD")
+      : date;
+  }
+
+  private normalizeInvoiceDate(
+    date: string | Date | undefined,
+    dateFormat?: string
+  ) {
+    if (!date) return date;
+
+    if (date instanceof Date && !isNaN(date.getTime())) {
+      return dayjs(date).format("YYYY-MM-DD");
+    }
+
+    const parsedDate = dayjs(
+      date,
+      [
+        dateFormat,
+        "YYYY-MM-DD",
+        "YYYY-MM-DDTHH:mm:ss.SSS[Z]",
+        "MM-DD-YYYY",
+        "MM/DD/YYYY",
+        "DD-MM-YYYY",
+        "DD/MM/YYYY",
+        "DD.MM.YYYY",
+        "MMMM D, YYYY",
+        "MMMM Do, YYYY",
       ].filter(Boolean),
       true
     );
@@ -354,8 +392,14 @@ class InvoiceApiService {
     return {
       invoice_number: invoiceData.invoiceNumber,
       client_id: invoiceData.clientId,
-      issue_date: invoiceData.issueDate,
-      due_date: invoiceData.dueDate,
+      issue_date: this.normalizeInvoiceDate(
+        invoiceData.issueDate,
+        invoiceData.dateFormat
+      ),
+      due_date: this.normalizeInvoiceDate(
+        invoiceData.dueDate,
+        invoiceData.dateFormat
+      ),
       reference: invoiceData.reference,
       tax: invoiceData.tax || 0,
       discount: invoiceData.discount || 0,
