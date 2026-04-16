@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import dayjs from "dayjs";
+import { PencilSimple, Trash } from "phosphor-react";
 import EntryCard from "./EntryCard";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import { Button } from "../ui/button";
@@ -7,6 +8,8 @@ import { Card, CardContent } from "../ui/card";
 import { Badge } from "../ui/badge";
 import { minToHHMM } from "../../helpers";
 import { i18n } from "../../i18n";
+import { useUserContext } from "../../context/UserContext";
+import { Roles } from "../../constants";
 
 dayjs.extend(customParseFormat);
 
@@ -16,10 +19,14 @@ interface TimeEntriesDisplayProps {
   leaveTypeHashObj: Record<number, any>;
   holidaysHashObj: Record<number, any>;
   handleDeleteEntry: (id: number) => void;
+  handleDeleteTimeoffEntry: (id: number, leaveDate?: string | null) => void;
   handleDuplicate: (entry: any) => void;
   handleResumeTimer: (entry: any) => void;
   setEditEntryId: (id: number) => void;
+  setEditTimeoffEntryId: (id: number) => void;
   setNewEntryView: (value: boolean) => void;
+  setNewTimeoffEntryView: (value: boolean) => void;
+  setSelectedFullDate: (value: string) => void;
   dayInfo?: any[];
   view?: string;
 }
@@ -30,14 +37,19 @@ const TimeEntriesDisplay: React.FC<TimeEntriesDisplayProps> = ({
   leaveTypeHashObj,
   holidaysHashObj,
   handleDeleteEntry,
+  handleDeleteTimeoffEntry,
   handleDuplicate,
   handleResumeTimer,
   setEditEntryId,
+  setEditTimeoffEntryId,
   setNewEntryView,
+  setNewTimeoffEntryView,
+  setSelectedFullDate,
   dayInfo = [],
   view = "week",
 }) => {
   const [reviewMode, setReviewMode] = useState<"day" | "week">("day");
+  const { companyRole, isDesktop } = useUserContext();
   const dateFormats = [
     "YYYY-MM-DD",
     "MM-DD-YYYY",
@@ -77,6 +89,16 @@ const TimeEntriesDisplay: React.FC<TimeEntriesDisplayProps> = ({
   const canShowWeekReview = view === "week" && weekEntries.length > 0;
   const reviewEntries = reviewMode === "week" ? weekEntries : entries || [];
   const shouldRenderReviewPanel = hasEntries || canShowWeekReview;
+
+  const isAdminUser = companyRole === Roles["ADMIN"];
+
+  const isOlderThanOneWeek = (entryDate: string) => {
+    const parsedDate = dayjs(entryDate, dateFormats, true);
+    if (!parsedDate.isValid()) return false;
+
+    return dayjs().startOf("day").diff(parsedDate.startOf("day"), "day") > 7;
+  };
+
   const renderEntry = (entry: any, index: number) => {
     if (entry?.type === "leave") {
       const entryKey = entry?.id ? `leave-${entry.id}` : `leave-${index}`;
@@ -94,11 +116,39 @@ const TimeEntriesDisplay: React.FC<TimeEntriesDisplayProps> = ({
       const entryDate =
         entry.display_date || entry.leave_date || selectedFullDate;
 
+      const canManageTimeoff =
+        !holidayDetails && (!isOlderThanOneWeek(entryDate) || isAdminUser);
+
+      const handleEditTimeoff = () => {
+        if (!canManageTimeoff) return;
+        setNewEntryView(false);
+        setEditEntryId(0);
+        setSelectedFullDate(
+          dayjs(entryDate, dateFormats, true).isValid()
+            ? dayjs(entryDate, dateFormats, true).format("YYYY-MM-DD")
+            : entryDate
+        );
+        setEditTimeoffEntryId(entry.id);
+        setNewTimeoffEntryView(true);
+      };
+
+      const handleDeleteTimeoff = () => {
+        if (!canManageTimeoff) return;
+        handleDeleteTimeoffEntry(entry.id, entryDate);
+      };
+
       return (
         <Card
           key={entryKey}
-          className="mb-4 border-border bg-card"
+          className={`mb-4 border-border bg-card ${
+            !isDesktop && canManageTimeoff ? "cursor-pointer" : ""
+          }`}
           data-testid="timeoff-entry-card"
+          onClick={() => {
+            if (!isDesktop) {
+              handleEditTimeoff();
+            }
+          }}
         >
           <CardContent className="p-6">
             <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
@@ -132,6 +182,34 @@ const TimeEntriesDisplay: React.FC<TimeEntriesDisplayProps> = ({
                   {minToHHMM(entry.duration)}
                 </div>
               </div>
+              {isDesktop && canManageTimeoff && (
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-9 w-9 hover:bg-accent hover:text-primary"
+                    onClick={event => {
+                      event.stopPropagation();
+                      handleEditTimeoff();
+                    }}
+                    title={i18n.t("timeTracking.editEntry")}
+                  >
+                    <PencilSimple className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-9 w-9 hover:bg-destructive/10 hover:text-destructive"
+                    onClick={event => {
+                      event.stopPropagation();
+                      handleDeleteTimeoff();
+                    }}
+                    title={i18n.t("timeTracking.deleteEntry")}
+                  >
+                    <Trash className="h-4 w-4" />
+                  </Button>
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>
@@ -147,6 +225,7 @@ const TimeEntriesDisplay: React.FC<TimeEntriesDisplayProps> = ({
         client={entry.client}
         project={entry.project}
         projectId={entry.project_id}
+        work_date={entry.work_date || entry.display_date}
         note={entry.note}
         duration={entry.duration}
         source_label={entry.source_label}

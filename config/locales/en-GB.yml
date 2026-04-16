@@ -721,9 +721,11 @@ en-GB:
       message: Timesheet created
     destroy:
       failure: Failed to delete timesheet entries
+      locked: Only admins can delete entries older than 7 days
       message: Timesheet deleted
     update:
       failure: Failed to update timesheet entries
+      locked: Only admins can edit entries older than 7 days
       message: Timesheet updated
   totp:
     disable_passkey_first: Disable required passkey sign in before enabling authenticator

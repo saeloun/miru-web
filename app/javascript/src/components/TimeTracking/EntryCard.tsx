@@ -1,4 +1,5 @@
 import React from "react";
+import dayjs from "dayjs";
 import { minToHHMM } from "helpers";
 import { Trash, PencilSimple, Clock, Briefcase, Play } from "phosphor-react";
 import { Card, CardContent } from "../ui/card";
@@ -14,6 +15,7 @@ interface props {
   client: string;
   project: string;
   projectId: number;
+  work_date?: string;
   note: string;
   duration: number;
   source_label?: string;
@@ -31,14 +33,32 @@ interface props {
   }) => void;
 }
 
-const canEditTimeEntry = (billStatus, role) =>
-  billStatus != "billed" || role == Roles["OWNER"] || role == Roles["ADMIN"];
+const isPrivilegedRole = role =>
+  role === Roles["OWNER"] || role === Roles["ADMIN"];
+
+const isAdminRole = role => role === Roles["ADMIN"];
+
+const isOlderThanOneWeek = workDate => {
+  const parsedDate = dayjs(workDate);
+  if (!workDate || !parsedDate.isValid()) return false;
+
+  return dayjs().startOf("day").diff(parsedDate.startOf("day"), "day") > 7;
+};
+
+const canEditTimeEntry = (billStatus, role, workDate) => {
+  if (isOlderThanOneWeek(workDate)) return isAdminRole(role);
+
+  if (isPrivilegedRole(role)) return true;
+
+  return billStatus !== "billed";
+};
 
 const EntryCard: React.FC<props> = ({
   id,
   client,
   project,
   projectId,
+  work_date,
   note,
   duration,
   source_label,
@@ -51,11 +71,12 @@ const EntryCard: React.FC<props> = ({
   handleResumeTimer,
 }) => {
   const { isDesktop, companyRole } = useUserContext();
+  const canManageEntry = canEditTimeEntry(bill_status, companyRole, work_date);
   const sourceSkill = source_metadata?.skill;
   const sourceServer = source_metadata?.mcp_server;
 
   const handleCardClick = () => {
-    if (!isDesktop) {
+    if (!isDesktop && canManageEntry) {
       setEditEntryId(id);
       setNewEntryView(true);
     }
@@ -66,7 +87,7 @@ const EntryCard: React.FC<props> = ({
       className={cn(
         "group relative mb-4 overflow-hidden transition-all duration-200 hover:shadow-lg",
         "border-border bg-card hover:border-primary/60",
-        !isDesktop && "cursor-pointer active:scale-[0.99]",
+        !isDesktop && canManageEntry && "cursor-pointer active:scale-[0.99]",
         "before:absolute before:left-0 before:top-0 before:h-full before:w-1 before:bg-primary before:opacity-0 before:transition-opacity hover:before:opacity-100"
       )}
       onClick={handleCardClick}
@@ -184,7 +205,7 @@ const EntryCard: React.FC<props> = ({
               </div>
             </div>
 
-            {canEditTimeEntry(bill_status, companyRole) && (
+            {canManageEntry && (
               <div className="flex items-center gap-2">
                 <Button
                   variant="outline"
