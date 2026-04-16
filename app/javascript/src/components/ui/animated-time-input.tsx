@@ -304,12 +304,12 @@ const AnimatedTimeInput: React.FC<AnimatedTimeInputProps> = ({
 
   const inputVariants = {
     initial: {
-      borderColor: "#e5e7eb",
+      borderColor: "hsl(var(--input))",
       boxShadow: "none",
     },
     focus: {
-      borderColor: "#3b82f6",
-      boxShadow: "0 0 0 3px rgba(59, 130, 246, 0.1)",
+      borderColor: "hsl(var(--ring))",
+      boxShadow: "0 0 0 3px hsl(var(--ring) / 0.18)",
       transition: {
         type: "spring",
         stiffness: 300,
@@ -317,8 +317,8 @@ const AnimatedTimeInput: React.FC<AnimatedTimeInputProps> = ({
       },
     },
     error: {
-      borderColor: "#ef4444",
-      boxShadow: "0 0 0 3px rgba(239, 68, 68, 0.1)",
+      borderColor: "hsl(var(--destructive))",
+      boxShadow: "0 0 0 3px hsl(var(--destructive) / 0.2)",
     },
   };
 
@@ -425,7 +425,7 @@ const AnimatedTimeInput: React.FC<AnimatedTimeInputProps> = ({
       },
     }),
     hover: {
-      backgroundColor: "#f3f4f6",
+      backgroundColor: "hsl(var(--accent))",
       x: 4,
       transition: {
         type: "spring",
@@ -561,7 +561,7 @@ const AnimatedTimeInput: React.FC<AnimatedTimeInputProps> = ({
                     custom={index}
                     className={cn(
                       "w-full flex items-center justify-between px-3 py-2 text-left text-sm rounded-md transition-colors",
-                      "hover:bg-muted hover:text-gray-900",
+                      "hover:bg-muted hover:text-foreground",
                       "focus:bg-muted focus:text-foreground focus:outline-none"
                     )}
                     onClick={e => {
