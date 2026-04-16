@@ -941,7 +941,8 @@ input[type="number"] {
 
 :is(.miru-datepicker-wrapper .react-datepicker, .react-datepicker.miru-datepicker)
   .react-datepicker__month {
-  margin: 0.4rem 0.7rem 0.7rem;
+  margin: 0.45rem auto 0.75rem;
+  width: fit-content;
 }
 
 :is(.miru-datepicker-wrapper .react-datepicker, .react-datepicker.miru-datepicker)
@@ -949,13 +950,14 @@ input[type="number"] {
 :is(.miru-datepicker-wrapper .react-datepicker, .react-datepicker.miru-datepicker)
   .react-datepicker__week {
   display: grid;
-  grid-template-columns: repeat(7, minmax(0, 1fr));
+  grid-template-columns: repeat(7, 2.35rem);
+  justify-content: center;
   gap: 0.2rem;
 }
 
 :is(.miru-datepicker-wrapper .react-datepicker, .react-datepicker.miru-datepicker)
   .react-datepicker__day-name {
-  width: 2.35rem;
+  width: 100%;
   height: 2.1rem;
   margin: 0;
   display: inline-flex;
@@ -969,7 +971,7 @@ input[type="number"] {
 
 :is(.miru-datepicker-wrapper .react-datepicker, .react-datepicker.miru-datepicker)
   .react-datepicker__day {
-  width: 2.35rem;
+  width: 100%;
   height: 2.2rem;
   margin: 0;
   display: inline-flex;

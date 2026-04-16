@@ -7,6 +7,8 @@ import { CaretLeft, CaretRight } from "phosphor-react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
+const formatWeekdayLabel = (dayName: string) => dayName.slice(0, 2);
+
 const CustomDatePicker = ({
   handleChange,
   date,
@@ -69,6 +71,7 @@ const CustomDatePicker = ({
     <DatePicker
       inline
       calendarClassName="miru-datepicker miru-datepicker--single"
+      formatWeekDay={formatWeekdayLabel}
       selected={parseDate(date)}
       maxDate={maxDate}
       wrapperClassName="datePicker miru-datepicker-wrapper"

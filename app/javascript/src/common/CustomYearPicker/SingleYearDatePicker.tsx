@@ -7,6 +7,8 @@ import { CaretLeft, CaretRight } from "phosphor-react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
+const formatWeekdayLabel = (dayName: string) => dayName.slice(0, 2);
+
 type SingleYearDatePickerProps = {
   handleChange: any;
   date: any;
@@ -51,6 +53,7 @@ const SingleYearDatePicker = ({
     <DatePicker
       inline
       calendarClassName="miru-datepicker miru-datepicker--single"
+      formatWeekDay={formatWeekdayLabel}
       maxDate={dayjs(`${selectedYear}-12-31`).toDate()}
       minDate={dayjs(`${selectedYear}-01-01`).toDate()}
       selected={parseDate(date)}
