@@ -37,4 +37,58 @@ RSpec.describe WeeklyReminderForMissedEntriesService do
       expect(service).not_to have_received(:check_entries_and_send_mail).with(unsubscribed_user, company)
     end
   end
+
+  describe "#check_entries_and_send_mail" do
+    let(:company) { create(:company, working_hours: "40") }
+    let(:user) { create(:user, current_workspace_id: company.id) }
+    let(:service) { described_class.new }
+
+    before do
+      create(:employment, company:, user:)
+      user.add_role :employee, company
+      allow(service).to receive(:send_mail)
+    end
+
+    it "does not send reminder when previous week spans months and total is complete" do
+      travel_to Time.zone.local(2026, 4, 6, 14, 0, 0) do
+        monday_previous_week = Date.new(2026, 3, 30)
+
+        [0, 1, 2, 3, 4].each do |offset|
+          project = create(:project, client: create(:client, company:))
+          create(
+            :timesheet_entry,
+            user:,
+            project:,
+            duration: 480,
+            work_date: monday_previous_week + offset.days
+          )
+        end
+
+        service.check_entries_and_send_mail(user, company)
+      end
+
+      expect(service).not_to have_received(:send_mail)
+    end
+
+    it "sends reminder when previous week total is below the expected weekly hours" do
+      travel_to Time.zone.local(2026, 4, 6, 14, 0, 0) do
+        monday_previous_week = Date.new(2026, 3, 30)
+
+        [0, 1, 2].each do |offset|
+          project = create(:project, client: create(:client, company:))
+          create(
+            :timesheet_entry,
+            user:,
+            project:,
+            duration: 480,
+            work_date: monday_previous_week + offset.days
+          )
+        end
+
+        service.check_entries_and_send_mail(user, company)
+      end
+
+      expect(service).to have_received(:send_mail).once
+    end
+  end
 end

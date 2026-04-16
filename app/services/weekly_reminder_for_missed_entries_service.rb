@@ -18,8 +18,7 @@ class WeeklyReminderForMissedEntriesService
 
     name = user.full_name
     company_name = company.name
-    start_date = 1.week.ago.beginning_of_week
-    end_date = 1.week.ago.end_of_week
+    start_date, end_date = previous_week_date_range
 
     limit = weekly_limit(company:)
 
@@ -31,29 +30,36 @@ class WeeklyReminderForMissedEntriesService
       send_mail(recipients: user.email, name:, start_date:, end_date:, company_name:)
     end
   end
-end
 
-def user_is_admin_or_employee?(user, company)
-  user.has_role?(:admin, company) || user.has_role?(:employee, company)
-end
+  private
 
-def send_mail(recipients:, name:, start_date:, end_date:, company_name:)
-  SendWeeklyReminderToUserMailer.with(
-    recipients:,
-    name:,
-    start_date:,
-    end_date:,
-    company_name:
-  ).notify_user_about_missed_entries.deliver_later
-end
+    def user_is_admin_or_employee?(user, company)
+      user.has_role?(:admin, company) || user.has_role?(:employee, company)
+    end
 
-def get_entries_for_period(user:, company:, start_date:, end_date:)
-  user.timesheet_entries.kept.in_workspace(company).during(start_date, end_date) +
-    user.timeoff_entries.during(start_date, end_date)
-end
+    def send_mail(recipients:, name:, start_date:, end_date:, company_name:)
+      SendWeeklyReminderToUserMailer.with(
+        recipients:,
+        name:,
+        start_date:,
+        end_date:,
+        company_name:
+      ).notify_user_about_missed_entries.deliver_later
+    end
 
-def weekly_limit(company:)
-  return 0 if company.working_hours.to_i == 0
+    def get_entries_for_period(user:, company:, start_date:, end_date:)
+      user.timesheet_entries.kept.in_workspace(company).during(start_date, end_date) +
+        user.timeoff_entries.during(start_date, end_date)
+    end
 
-  company.working_hours.to_i.hours.in_minutes
+    def weekly_limit(company:)
+      return 0 if company.working_hours.to_i == 0
+
+      company.working_hours.to_i.hours.in_minutes
+    end
+
+    def previous_week_date_range
+      previous_week = Time.zone.today.prev_week
+      [previous_week.beginning_of_week, previous_week.end_of_week]
+    end
 end
