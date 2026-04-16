@@ -979,7 +979,11 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
                 setUpdateView={setUpdateView}
               />
             )}
-            {newTimeoffEntryView && <TimeoffForm />}
+            {newTimeoffEntryView && (
+              <TimeoffForm
+                isDisplayEditTimeoffEntryForm={Boolean(editTimeoffEntryId)}
+              />
+            )}
             <AddEntryButton
               copyingLastWeek={copyingLastWeek}
               handleCopyLastWeek={handleCopyLastWeek}
