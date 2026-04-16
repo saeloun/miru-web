@@ -29,6 +29,24 @@ class TimeoffEntryPolicy < ApplicationPolicy
       return false
     end
 
-    user_owner_role? || user_admin_role? || user_employee_role?
+    return false if stale_entry_for_non_admin?
+    return true if user_owner_role? || user_admin_role?
+    return false unless user_employee_role?
+    return false unless record.user_id == user.id
+    return false if stale_entry_for_standard_user?
+
+    true
   end
+
+  private
+
+    def stale_entry_for_standard_user?
+      return false if record.leave_date.blank?
+
+      record.leave_date < 7.days.ago.to_date
+    end
+
+    def stale_entry_for_non_admin?
+      stale_entry_for_standard_user? && !user_admin_role?
+    end
 end

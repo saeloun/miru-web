@@ -39,5 +39,26 @@ RSpec.describe "Api::V1::TimesheetEntry::BulkActionController#destroy", type: :r
 
       expect(response).to have_http_status(:forbidden)
     end
+
+    it "rejects employees when selected entries are older than a week" do
+      employee = create(:user, current_workspace_id: company.id)
+      create(:employment, company:, user: employee)
+      employee.add_role :employee, company
+      employee.remove_role :owner, company
+      employee.remove_role :admin, company
+      old_entry = create(
+        :timesheet_entry,
+        user: employee,
+        project:,
+        work_date: 8.days.ago.to_date
+      )
+
+      sign_out user
+      send_request :delete, api_v1_bulk_action_path,
+        params: { source: { ids: [old_entry.id] } },
+        headers: auth_headers(employee)
+
+      expect(response).to have_http_status(:forbidden)
+    end
   end
 end

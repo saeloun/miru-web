@@ -30,6 +30,11 @@ RSpec.describe TimesheetEntryPolicy, type: :policy do
         expect(subject).to permit(user, timesheet_entry)
       end
 
+      it "is permitted to update entries older than a week" do
+        timesheet_entry.update!(work_date: 8.days.ago.to_date)
+        expect(subject).to permit(user, timesheet_entry)
+      end
+
       it "is not permitted to update timesheet_entry in different company" do
         client.update(company_id: company2.id)
         expect(subject).not_to permit(user, timesheet_entry)
@@ -44,6 +49,11 @@ RSpec.describe TimesheetEntryPolicy, type: :policy do
 
     permissions :destroy? do
       it "is permitted to destroy" do
+        expect(subject).to permit(user, timesheet_entry)
+      end
+
+      it "is permitted to destroy entries older than a week" do
+        timesheet_entry.update!(work_date: 8.days.ago.to_date)
         expect(subject).to permit(user, timesheet_entry)
       end
 
@@ -80,6 +90,11 @@ RSpec.describe TimesheetEntryPolicy, type: :policy do
           it "is permitted to update the entry" do
             expect(subject).to permit(user, timesheet_entry)
           end
+
+          it "is not permitted to update entries older than a week" do
+            timesheet_entry.update!(work_date: 8.days.ago.to_date)
+            expect(subject).not_to permit(user, timesheet_entry)
+          end
         end
 
         context "when entry is billed" do
@@ -112,6 +127,11 @@ RSpec.describe TimesheetEntryPolicy, type: :policy do
         expect(subject).not_to permit(user, timesheet_entry)
       end
 
+      it "is not permitted to destroy own entries older than a week" do
+        timesheet_entry.update!(user:, work_date: 8.days.ago.to_date)
+        expect(subject).not_to permit(user, timesheet_entry)
+      end
+
       it "is not permitted to destroy client in different company" do
         client.update(company_id: company2.id)
         expect(subject).not_to permit(user, timesheet_entry)
@@ -126,6 +146,24 @@ RSpec.describe TimesheetEntryPolicy, type: :policy do
 
         expect(scope.to_a).to match_array([timesheet_entry])
         expect(scope.to_a).not_to include(timesheet_entry1)
+      end
+    end
+  end
+
+  context "when user is an owner" do
+    before do
+      create(:employment, company:, user:)
+      user.add_role :owner, company
+    end
+
+    permissions :update?, :destroy? do
+      it "permits recent entries" do
+        expect(subject).to permit(user, timesheet_entry)
+      end
+
+      it "forbids entries older than a week" do
+        timesheet_entry.update!(work_date: 8.days.ago.to_date)
+        expect(subject).not_to permit(user, timesheet_entry)
       end
     end
   end
