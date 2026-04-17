@@ -105,6 +105,8 @@ test-*.spec.ts
 !app/assets/images/*.png
 !app/javascript/assets/images/auth/*.png
 !spec/support/fixtures/*.png
+!docs/static/img/architecture/
+!docs/static/img/architecture/*.png
 .playwright-mcp/
 test-results/
 playwright-report/

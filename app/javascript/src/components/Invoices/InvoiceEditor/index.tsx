@@ -278,8 +278,18 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
     [submissionLineItems]
   );
 
+  const hasInvalidLineItems = useMemo(
+    () =>
+      activeLineItems.some(
+        item => Number(item?.quantity || 0) <= 0 || Number(item?.rate || 0) <= 0
+      ),
+    [activeLineItems]
+  );
+
   const canSubmitInvoice =
-    Boolean(formData.clientId) && activeLineItems.length > 0;
+    Boolean(formData.clientId) &&
+    activeLineItems.length > 0 &&
+    !hasInvalidLineItems;
 
   const isSentInvoice = ["sent", "viewed", "overdue", "paid"].includes(
     formData.status

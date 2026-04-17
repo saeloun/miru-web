@@ -416,6 +416,37 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
     }
   };
 
+  const handleDeleteInvoiceFromList = async (id: string) => {
+    if (!id) return;
+
+    const shouldDelete = window.confirm(
+      i18n.t("invoices.deleteInvoiceConfirm")
+    );
+    if (!shouldDelete) return;
+
+    try {
+      setIsLoading(true);
+      await invoiceApi.deleteInvoice(id);
+
+      if (
+        String(selectedInvoiceId) === String(id) ||
+        String(previewData?.id) === String(id)
+      ) {
+        setSelectedInvoiceId(null);
+        setSelectedInvoice(null);
+        setPreviewData(null);
+        setViewMode("list");
+      }
+
+      await loadInvoices();
+    } catch (err) {
+      console.error("Error deleting invoice:", err);
+      toast.error(i18n.t("somethingWentWrong"));
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handleSendReminderFromList = async (
     id: string,
     invoiceEmail?: { subject: string; message: string; recipients: string[] }
@@ -570,6 +601,7 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
           onMarkPaid={handleMarkPaid}
           onWaive={handleWaiveInvoice}
           onDownload={handleDownload}
+          onDelete={handleDeleteInvoiceFromList}
           onLoadMore={loadMoreInvoices}
           isLoading={isListLoading || isLoading}
           isLoadingMore={isLoadingMore}

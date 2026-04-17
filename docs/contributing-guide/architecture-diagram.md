@@ -8,6 +8,9 @@ sidebar_position: 8
 This page contains the current high-level architecture diagram for `miru-web`.
 
 - Open the standalone diagram: [`/files/architecture/miru-web-architecture.html`](/files/architecture/miru-web-architecture.html)
+- Preview image:
+
+![Miru system architecture diagram](/img/architecture/miru-web-architecture.png)
 
 ## Scope
 
