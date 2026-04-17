@@ -45,11 +45,11 @@ const TableRow = ({ timeoffEntry }) => {
   const leaveName = customLeave?.name || leaveType?.name || holidayInfo?.name;
 
   return (
-    <tr className="flex items-center justify-between py-4">
-      <td className="flex text-left text-base font-normal tracking-widest lg:w-1/4">
+    <tr className="grid w-full grid-cols-[minmax(8rem,1.15fr)_minmax(12rem,1.9fr)_minmax(6rem,0.85fr)] items-center gap-4 px-4 py-4">
+      <td className="text-left text-base font-normal tracking-widest">
         {leaveDate}
       </td>
-      <td className="flex w-1/3 items-center whitespace-pre-wrap py-2.5 text-left text-base font-normal text-foreground lg:w-4/12">
+      <td className="flex items-center whitespace-pre-wrap py-2.5 text-left text-base font-normal text-foreground">
         <div
           className="mr-2 hidden h-6 w-6 items-center justify-center rounded-full text-white lg:flex"
           style={{ backgroundColor: leaveColor?.value }}
@@ -58,7 +58,7 @@ const TableRow = ({ timeoffEntry }) => {
         </div>
         <span>{leaveName}</span>
       </td>
-      <td className="flex w-1/3 flex-col whitespace-nowrap pb-2.5 text-right text-base lg:mt-0 lg:table-cell lg:w-3/12 lg:items-center lg:pl-8">
+      <td className="whitespace-nowrap pb-2.5 text-right text-base">
         {minToHHMM(duration)}
       </td>
     </tr>

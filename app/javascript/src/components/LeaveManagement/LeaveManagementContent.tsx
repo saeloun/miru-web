@@ -80,6 +80,10 @@ const LeaveManagementContent = ({
       ? (totalTimeoffEntriesDuration || 0) / (workingHoursPerDay * 60)
       : 0;
 
+  const leaveBreakdown = leaveBalance.filter(
+    item => item.type === "leave" || item.type === "custom_leave"
+  );
+
   const timeoffEntriesByDate = timeoffEntries.reduce((acc, entry) => {
     const key = entry.leaveDateIso || entry.leaveDate;
     if (!key) return acc;
@@ -211,14 +215,14 @@ const LeaveManagementContent = ({
         />
       </div>
 
-      {/* Leave Balance Cards */}
-      {leaveBalance && leaveBalance.length > 0 && (
+      {/* Leave balance breakdown (leave types only) */}
+      {leaveBreakdown.length > 0 && (
         <div>
           <h3 className="mb-4 text-lg font-semibold text-foreground">
             {getLeaveBalanaceDateText()}
           </h3>
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-            {leaveBalance.map((leaveType, index) => (
+            {leaveBreakdown.map((leaveType, index) => (
               <LeaveBlock
                 key={index}
                 leaveType={leaveType}
@@ -265,6 +269,7 @@ const LeaveManagementContent = ({
             <div className="flex justify-center p-4 sm:p-5">
               <Calendar
                 className="rounded-xl border border-border bg-background"
+                mode="single"
                 month={selectedDate}
                 onMonthChange={setSelectedDate}
                 onSelect={date => date && setSelectedDate(date)}
