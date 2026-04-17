@@ -103,6 +103,8 @@ const ProjectsTable: React.FC = () => {
   const { data, isLoading, error } = useQuery({
     queryKey: ["projects"],
     queryFn: fetchProjects,
+    refetchOnMount: "always",
+    refetchOnWindowFocus: true,
   });
 
   const deleteMutation = useMutation({
@@ -160,15 +162,21 @@ const ProjectsTable: React.FC = () => {
     switch (status) {
       case "active":
         return (
-          <span className="text-sm font-medium text-foreground">{i18n.t("projects.active")}</span>
+          <span className="text-sm font-medium text-foreground">
+            {i18n.t("projects.active")}
+          </span>
         );
       case "paused":
         return (
-          <span className="text-sm font-medium text-foreground">{i18n.t("projects.paused")}</span>
+          <span className="text-sm font-medium text-foreground">
+            {i18n.t("projects.paused")}
+          </span>
         );
       case "completed":
         return (
-          <span className="text-sm font-medium text-foreground">{i18n.t("projects.completed")}</span>
+          <span className="text-sm font-medium text-foreground">
+            {i18n.t("projects.completed")}
+          </span>
         );
       default:
         return (
@@ -226,7 +234,9 @@ const ProjectsTable: React.FC = () => {
       header: i18n.t("client"),
       cell: ({ row }) => {
         const clientName =
-          row.original.client_name || row.original.client?.name || i18n.t("projects.noClient");
+          row.original.client_name ||
+          row.original.client?.name ||
+          i18n.t("projects.noClient");
 
         return (
           <span className="text-sm font-medium text-foreground">
@@ -273,7 +283,9 @@ const ProjectsTable: React.FC = () => {
       header: i18n.t("type"),
       cell: ({ row }) =>
         row.original.billable ? (
-          <span className="text-sm font-medium text-foreground">{i18n.t("billable")}</span>
+          <span className="text-sm font-medium text-foreground">
+            {i18n.t("billable")}
+          </span>
         ) : (
           <span className="text-sm font-medium text-muted-foreground">
             {i18n.t("nonBillable")}
@@ -359,7 +371,9 @@ const ProjectsTable: React.FC = () => {
       <div className="flex items-center justify-center h-96">
         <div className="text-center">
           <Warning size={48} className="mx-auto mb-4 text-muted-foreground" />
-          <p className="text-muted-foreground">{i18n.t("projects.failedToLoadProjects")}</p>
+          <p className="text-muted-foreground">
+            {i18n.t("projects.failedToLoadProjects")}
+          </p>
         </div>
       </div>
     );
@@ -408,7 +422,9 @@ const ProjectsTable: React.FC = () => {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{i18n.t("projects.totalHours")}</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              {i18n.t("projects.totalHours")}
+            </CardTitle>
             <Timer size={20} className="text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -421,7 +437,9 @@ const ProjectsTable: React.FC = () => {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{i18n.t("projects.teamMembers")}</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              {i18n.t("projects.teamMembers")}
+            </CardTitle>
             <Users size={20} className="text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -477,7 +495,9 @@ const ProjectsTable: React.FC = () => {
           <DialogHeader>
             <DialogTitle>{i18n.t("projects.deleteProject")}</DialogTitle>
             <DialogDescription>
-              {i18n.t("projects.deleteProjectConfirm", { name: selectedProject?.name })}
+              {i18n.t("projects.deleteProjectConfirm", {
+                name: selectedProject?.name,
+              })}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
@@ -492,7 +512,9 @@ const ProjectsTable: React.FC = () => {
               onClick={confirmDelete}
               disabled={deleteMutation.isPending}
             >
-              {deleteMutation.isPending ? i18n.t("projects.deleting") : i18n.t("delete")}
+              {deleteMutation.isPending
+                ? i18n.t("projects.deleting")
+                : i18n.t("delete")}
             </Button>
           </DialogFooter>
         </DialogContent>
