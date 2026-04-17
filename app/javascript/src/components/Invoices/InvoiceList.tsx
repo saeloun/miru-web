@@ -32,6 +32,7 @@ import {
   Warning,
   FileText,
   Hourglass,
+  Trash,
   Funnel,
   X,
   CircleNotch,
@@ -61,6 +62,7 @@ interface InvoiceListProps {
   onMarkPaid?: (invoice: Invoice) => void;
   onWaive?: (invoice: Invoice) => void;
   onDownload?: (id: string) => void;
+  onDelete?: (id: string) => Promise<void> | void;
   onLoadMore?: () => void;
   isLoading?: boolean;
   hasMore?: boolean;
@@ -78,6 +80,7 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
   onMarkPaid,
   onWaive,
   onDownload,
+  onDelete,
   onLoadMore,
   isLoading = false,
   hasMore = false,
@@ -320,6 +323,15 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
               >
                 <PaperPlaneTilt className="h-4 w-4 mr-2" />
                 {i18n.t("invoices.sendInvoice")}
+              </DropdownMenuItem>
+            )}
+            {invoice.status === "draft" && (
+              <DropdownMenuItem
+                data-testid={`invoice-action-delete-${invoice.id}`}
+                onClick={() => onDelete?.(invoice.id)}
+              >
+                <Trash className="h-4 w-4 mr-2" />
+                {i18n.t("delete")}
               </DropdownMenuItem>
             )}
             {invoice.status === "overdue" && (
