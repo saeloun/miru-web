@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import dayjs from "dayjs";
 import {
   Calendar,
@@ -13,7 +13,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "../../../ui/card";
 import { Button } from "../../../ui/button";
 import { Input } from "../../../ui/input";
 import { Label } from "../../../ui/label";
-import { Separator } from "../../../ui/separator";
 import { i18n } from "../../../../i18n";
 import CustomReactSelect from "common/CustomReactSelect";
 import SingleYearDatePicker from "common/CustomYearPicker/SingleYearDatePicker";
@@ -81,6 +80,8 @@ const buildMonthGrid = (year, month) => {
   );
 };
 
+type TabKey = "public" | "optional" | "glance";
+
 const OrganizationHolidaysEditor = ({
   canManageHolidays,
   isDesktop,
@@ -113,7 +114,9 @@ const OrganizationHolidaysEditor = ({
   optionalHolidayErrors,
   updateHolidayDetails,
 }) => {
+  const [activeTab, setActiveTab] = useState<TabKey>("public");
   const canEdit = canManageHolidays && isEditable;
+
   const allHolidays = [...holidayList, ...optionalHolidaysList]
     .map(holiday => {
       const holidayDate = buildHolidayDate(holiday.date, dateFormat);
@@ -149,10 +152,29 @@ const OrganizationHolidaysEditor = ({
     return accumulator;
   }, {});
 
+  const tabs: { key: TabKey; label: string; icon: React.ReactNode }[] = [
+    {
+      key: "public",
+      label: i18n.t("holidaysSettings.publicHolidays"),
+      icon: <Gift size={16} weight="bold" />,
+    },
+    {
+      key: "optional",
+      label: i18n.t("holidaysSettings.optionalHolidays"),
+      icon: <CalendarPlus size={16} weight="bold" />,
+    },
+    {
+      key: "glance",
+      label: i18n.t("holidaysSettings.yearAtAGlance"),
+      icon: <Calendar size={16} weight="bold" />,
+    },
+  ];
+
   return (
     <div className="min-h-screen bg-muted/40 font-geist">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-6 flex flex-wrap items-center justify-end gap-3">
+        {/* Top bar: year selector + actions */}
+        <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-2 bg-muted rounded-lg px-3 py-2">
             <Calendar
               size={16}
@@ -175,50 +197,357 @@ const OrganizationHolidaysEditor = ({
               })}
             </select>
           </div>
-          {canEdit ? (
-            <Button
-              onClick={handleCancelAction}
-              variant="outline"
-              className="font-geist-medium"
-            >
-              {i18n.t("cancel")}
-            </Button>
-          ) : null}
-          {canManageHolidays ? (
-            <Button
-              onClick={() => {
-                if (canEdit) {
-                  updateHolidayDetails();
-                } else {
-                  setIsEditable(true);
-                }
-              }}
-              className="font-geist-medium"
-            >
-              {canEdit
-                ? i18n.t("preferencesSettings.saveChanges")
-                : i18n.t("edit")}
-            </Button>
-          ) : null}
+          <div className="flex items-center gap-2">
+            {canEdit ? (
+              <Button
+                onClick={handleCancelAction}
+                variant="outline"
+                className="font-geist-medium"
+              >
+                {i18n.t("cancel")}
+              </Button>
+            ) : null}
+            {canManageHolidays ? (
+              <Button
+                onClick={() => {
+                  if (canEdit) {
+                    updateHolidayDetails();
+                  } else {
+                    setIsEditable(true);
+                  }
+                }}
+                className="font-geist-medium"
+              >
+                {canEdit
+                  ? i18n.t("preferencesSettings.saveChanges")
+                  : i18n.t("edit")}
+              </Button>
+            ) : null}
+          </div>
         </div>
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Public Holidays */}
-          <div className="lg:col-span-2">
-            <Card className="border-border shadow-sm">
-              <CardHeader className="pb-4">
-                <CardTitle className="text-lg font-geist-semibold flex items-center gap-2">
+
+        {/* Summary strip */}
+        <Card className="border-border shadow-sm mb-6">
+          <CardContent className="py-4">
+            <div className="flex flex-wrap items-center gap-6 divide-x divide-border">
+              <div className="flex items-center gap-2 pr-6">
+                <span className="text-sm text-muted-foreground font-geist-regular">
+                  {i18n.t("holidaysSettings.year")}
+                </span>
+                <span className="text-lg font-geist-semibold">
+                  {currentYear}
+                </span>
+              </div>
+              <div className="flex items-center gap-2 pl-6">
+                <Gift
+                  size={16}
+                  className="text-muted-foreground"
+                  weight="bold"
+                />
+                <span className="text-sm text-muted-foreground font-geist-regular">
+                  {i18n.t("holidaysSettings.publicHolidays")}
+                </span>
+                <span className="text-lg font-geist-semibold">
+                  {holidayList.length}
+                </span>
+              </div>
+              {enableOptionalHolidays && (
+                <>
+                  <div className="flex items-center gap-2 pl-6">
+                    <CalendarPlus
+                      size={16}
+                      className="text-muted-foreground"
+                      weight="bold"
+                    />
+                    <span className="text-sm text-muted-foreground font-geist-regular">
+                      {i18n.t("holidaysSettings.optionalHolidays")}
+                    </span>
+                    <span className="text-lg font-geist-semibold">
+                      {optionalHolidaysList.length}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2 pl-6">
+                    <span className="text-sm text-muted-foreground font-geist-regular">
+                      {i18n.t("holidaysSettings.allowedPerEmployee")}
+                    </span>
+                    <span className="text-lg font-geist-semibold">
+                      {totalOptionalHolidays || 0}
+                    </span>
+                  </div>
+                </>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Tabs */}
+        <div className="mb-6 flex gap-1 rounded-lg bg-muted p-1">
+          {tabs.map(tab => (
+            <button
+              key={tab.key}
+              onClick={() => setActiveTab(tab.key)}
+              className={`flex items-center gap-2 rounded-md px-4 py-2.5 text-sm font-geist-medium transition-colors ${
+                activeTab === tab.key
+                  ? "bg-background text-foreground shadow-sm"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              {tab.icon}
+              {tab.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Tab content */}
+        {activeTab === "public" && (
+          <Card className="border-border shadow-sm">
+            <CardHeader className="pb-4">
+              <CardTitle className="text-lg font-geist-semibold flex items-center gap-2">
+                <Gift className="h-5 w-5 text-muted-foreground" weight="bold" />
+                {i18n.t("holidaysSettings.publicHolidays")}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {canEdit ? (
+                /* Edit mode: form-style rows */
+                <div className="space-y-3">
+                  {holidayList.map((holiday, index) => (
+                    <div
+                      key={index}
+                      className="flex items-start gap-3 p-3 bg-muted/40 rounded-lg"
+                    >
+                      <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div className="relative">
+                          <Label className="text-xs font-geist-medium text-muted-foreground uppercase tracking-wider mb-1">
+                            {i18n.t("date")}
+                          </Label>
+                          <div
+                            className="relative cursor-pointer"
+                            onClick={() => {
+                              setShowDatePicker({
+                                visibility: !showDatePicker.visibility,
+                                index,
+                              });
+                            }}
+                          >
+                            <Input
+                              readOnly
+                              className={`font-geist-regular cursor-pointer pr-10 ${
+                                holidayErrors[index]?.date
+                                  ? "border-destructive"
+                                  : ""
+                              }`}
+                              placeholder={i18n.t(
+                                "holidaysSettings.selectDate"
+                              )}
+                              value={holiday.date}
+                            />
+                            <Calendar
+                              className="absolute right-3 top-1/2 -translate-y-1/2 text-primary"
+                              size={16}
+                              weight="bold"
+                            />
+                          </div>
+                          {index === showDatePicker.index &&
+                            showDatePicker.visibility && (
+                              <div className="absolute z-10 mt-1">
+                                <SingleYearDatePicker
+                                  dateFormat={dateFormat}
+                                  selectedYear={currentYear}
+                                  setVisibility={showDatePicker.visibility}
+                                  wrapperRef={wrapperRef}
+                                  date={
+                                    holiday.date ||
+                                    dayjs().set("year", currentYear)
+                                  }
+                                  handleChange={e =>
+                                    handleDatePicker(e, index, false)
+                                  }
+                                />
+                              </div>
+                            )}
+                          {holidayErrors[index]?.date && (
+                            <p className="mt-1 text-xs text-destructive">
+                              {holidayErrors[index].date.join(", ")}
+                            </p>
+                          )}
+                        </div>
+                        <div>
+                          <Label className="text-xs font-geist-medium text-muted-foreground uppercase tracking-wider mb-1">
+                            {i18n.t("holidaysSettings.holidayName")}
+                          </Label>
+                          <Input
+                            className={`font-geist-regular ${
+                              holidayErrors[index]?.name
+                                ? "border-destructive"
+                                : ""
+                            }`}
+                            placeholder={i18n.t(
+                              "holidaysSettings.enterHolidayName"
+                            )}
+                            value={holiday.name}
+                            onChange={e =>
+                              handleHolidateNameChange(e, index, false)
+                            }
+                          />
+                          {holidayErrors[index]?.name && (
+                            <p className="mt-1 text-xs text-destructive">
+                              {holidayErrors[index].name.join(", ")}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                      <Button
+                        aria-label="Delete holiday"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleDeleteHoliday(false, index)}
+                        className="mt-7 text-destructive hover:bg-destructive/10 hover:text-destructive"
+                      >
+                        <Trash size={16} weight="bold" />
+                      </Button>
+                    </div>
+                  ))}
+                  <Button
+                    variant="outline"
+                    onClick={() => handleAddHoliday(false)}
+                    className="w-full border-dashed border-border font-geist-medium text-muted-foreground hover:border-primary/40 hover:text-foreground"
+                  >
+                    <Plus size={16} weight="bold" className="mr-2" />
+                    {i18n.t("holidaysSettings.addHoliday")}
+                  </Button>
+                </div>
+              ) : holidayList.length > 0 ? (
+                /* Read mode: compact table */
+                <div className="overflow-hidden rounded-lg border border-border">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="border-b border-border bg-muted/40">
+                        <th className="px-4 py-3 text-left text-xs font-geist-medium text-muted-foreground uppercase tracking-wider">
+                          {i18n.t("date")}
+                        </th>
+                        <th className="px-4 py-3 text-left text-xs font-geist-medium text-muted-foreground uppercase tracking-wider">
+                          {i18n.t("holidaysSettings.holidayName")}
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {holidayList.map((holiday, index) => (
+                        <tr
+                          key={index}
+                          className="border-b border-border last:border-0 hover:bg-muted/20 transition-colors"
+                        >
+                          <td className="px-4 py-3 text-sm font-geist-regular text-foreground">
+                            {holiday.date}
+                          </td>
+                          <td className="px-4 py-3 text-sm font-geist-regular text-foreground">
+                            {holiday.name}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ) : (
+                <div className="text-center py-8">
                   <Gift
+                    size={48}
+                    className="mx-auto mb-3 text-muted-foreground"
+                    weight="thin"
+                  />
+                  <p className="text-muted-foreground font-geist-regular mb-3">
+                    {i18n.t("holidaysSettings.noPublicHolidaysConfigured")}
+                  </p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        )}
+
+        {activeTab === "optional" && (
+          <Card className="border-border shadow-sm">
+            <CardHeader className="pb-4">
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-lg font-geist-semibold flex items-center gap-2">
+                  <CalendarPlus
                     className="h-5 w-5 text-muted-foreground"
                     weight="bold"
                   />
-                  {i18n.t("holidaysSettings.publicHolidays")}
+                  {i18n.t("holidaysSettings.optionalHolidays")}
                 </CardTitle>
-              </CardHeader>
+                <button
+                  onClick={handleCheckboxClick}
+                  className="transition-colors"
+                  disabled={!canEdit}
+                  type="button"
+                >
+                  {enableOptionalHolidays ? (
+                    <ToggleRight
+                      size={32}
+                      className="text-primary"
+                      weight="fill"
+                    />
+                  ) : (
+                    <ToggleLeft
+                      size={32}
+                      className="text-muted-foreground"
+                      weight="fill"
+                    />
+                  )}
+                </button>
+              </div>
+            </CardHeader>
+            {enableOptionalHolidays && (
               <CardContent>
-                <div className="space-y-3">
-                  {holidayList.length > 0 ? (
-                    <>
-                      {holidayList.map((holiday, index) => (
+                <div className="space-y-4">
+                  {/* Configuration — inline row */}
+                  <div className="flex flex-wrap items-end gap-4 pb-4 border-b border-border">
+                    <div className="w-40">
+                      <Label className="text-xs font-geist-medium text-muted-foreground uppercase tracking-wider">
+                        {i18n.t("holidaysSettings.totalAllowed")}
+                      </Label>
+                      <Input
+                        type="number"
+                        min={0}
+                        className="font-geist-regular mt-1"
+                        disabled={!canEdit}
+                        placeholder={i18n.t("holidaysSettings.enterNumber")}
+                        value={totalOptionalHolidays}
+                        onChange={handleChangeTotalOpHoliday}
+                      />
+                    </div>
+                    <div className="w-48">
+                      <Label className="text-xs font-geist-medium text-muted-foreground uppercase tracking-wider">
+                        {i18n.t("holidaysSettings.frequency")}
+                      </Label>
+                      <div className="mt-1">
+                        <CustomReactSelect
+                          isDisabled={!canEdit}
+                          handleOnChange={handleChangeRepetitionOpHoliday}
+                          id="allocationFrequency"
+                          label=""
+                          name="allocationFrequency"
+                          options={allocationFrequency}
+                          styles={customStyles}
+                          wrapperClassName="h-10"
+                          components={{ IndicatorSeparator: () => null }}
+                          value={
+                            optionalRepetitionType
+                              ? allocationFrequency.filter(
+                                  option =>
+                                    option.value === optionalRepetitionType
+                                )
+                              : allocationFrequency[0]
+                          }
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {canEdit ? (
+                    /* Edit mode: form-style rows */
+                    <div className="space-y-3">
+                      {optionalHolidaysList.map((optionalHoliday, index) => (
                         <div
                           key={index}
                           className="flex items-start gap-3 p-3 bg-muted/40 rounded-lg"
@@ -231,10 +560,9 @@ const OrganizationHolidaysEditor = ({
                               <div
                                 className="relative cursor-pointer"
                                 onClick={() => {
-                                  if (!canEdit) return;
-
-                                  setShowDatePicker({
-                                    visibility: !showDatePicker.visibility,
+                                  setShowOptionalDatePicker({
+                                    visibility:
+                                      !showOptionalDatePicker.visibility,
                                     index,
                                   });
                                 }}
@@ -242,7 +570,7 @@ const OrganizationHolidaysEditor = ({
                                 <Input
                                   readOnly
                                   className={`font-geist-regular cursor-pointer pr-10 ${
-                                    holidayErrors[index]?.date
+                                    optionalHolidayErrors[index]?.date
                                       ? "border-destructive"
                                       : ""
                                   }`}
@@ -250,7 +578,7 @@ const OrganizationHolidaysEditor = ({
                                   placeholder={i18n.t(
                                     "holidaysSettings.selectDate"
                                   )}
-                                  value={holiday.date}
+                                  value={optionalHoliday.date}
                                 />
                                 <Calendar
                                   className="absolute right-3 top-1/2 -translate-y-1/2 text-primary"
@@ -258,27 +586,29 @@ const OrganizationHolidaysEditor = ({
                                   weight="bold"
                                 />
                               </div>
-                              {index === showDatePicker.index &&
-                                showDatePicker.visibility && (
+                              {index === showOptionalDatePicker.index &&
+                                showOptionalDatePicker.visibility && (
                                   <div className="absolute z-10 mt-1">
                                     <SingleYearDatePicker
                                       dateFormat={dateFormat}
                                       selectedYear={currentYear}
-                                      setVisibility={showDatePicker.visibility}
-                                      wrapperRef={wrapperRef}
+                                      wrapperRef={optionalWrapperRef}
                                       date={
-                                        holiday.date ||
+                                        optionalHoliday.date ||
                                         dayjs().set("year", currentYear)
                                       }
                                       handleChange={e =>
-                                        handleDatePicker(e, index, false)
+                                        handleDatePicker(e, index, true)
+                                      }
+                                      setVisibility={
+                                        showOptionalDatePicker.visibility
                                       }
                                     />
                                   </div>
                                 )}
-                              {holidayErrors[index]?.date && (
+                              {optionalHolidayErrors[index]?.date && (
                                 <p className="mt-1 text-xs text-destructive">
-                                  {holidayErrors[index].date.join(", ")}
+                                  {optionalHolidayErrors[index].date.join(", ")}
                                 </p>
                               )}
                             </div>
@@ -288,7 +618,7 @@ const OrganizationHolidaysEditor = ({
                               </Label>
                               <Input
                                 className={`font-geist-regular ${
-                                  holidayErrors[index]?.name
+                                  optionalHolidayErrors[index]?.name
                                     ? "border-destructive"
                                     : ""
                                 }`}
@@ -296,489 +626,191 @@ const OrganizationHolidaysEditor = ({
                                 placeholder={i18n.t(
                                   "holidaysSettings.enterHolidayName"
                                 )}
-                                value={holiday.name}
+                                value={optionalHoliday.name}
                                 onChange={e =>
-                                  handleHolidateNameChange(e, index, false)
+                                  handleHolidateNameChange(e, index, true)
                                 }
                               />
-                              {holidayErrors[index]?.name && (
+                              {optionalHolidayErrors[index]?.name && (
                                 <p className="mt-1 text-xs text-destructive">
-                                  {holidayErrors[index].name.join(", ")}
+                                  {optionalHolidayErrors[index].name.join(", ")}
                                 </p>
                               )}
                             </div>
                           </div>
-                          {canEdit ? (
-                            <Button
-                              aria-label="Delete holiday"
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => handleDeleteHoliday(false, index)}
-                              className="mt-7 text-destructive hover:bg-destructive/10 hover:text-destructive"
-                            >
-                              <Trash size={16} weight="bold" />
-                            </Button>
-                          ) : null}
+                          <Button
+                            aria-label="Delete holiday"
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleDeleteHoliday(true, index)}
+                            className="mt-7 text-destructive hover:bg-destructive/10 hover:text-destructive"
+                          >
+                            <Trash size={16} weight="bold" />
+                          </Button>
                         </div>
                       ))}
-                      {canEdit ? (
-                        <Button
-                          variant="outline"
-                          onClick={() => handleAddHoliday(false)}
-                          className="w-full border-dashed border-border font-geist-medium text-muted-foreground hover:border-primary/40 hover:text-foreground"
-                        >
-                          <Plus size={16} weight="bold" className="mr-2" />
-                          {i18n.t("holidaysSettings.addHoliday")}
-                        </Button>
-                      ) : null}
-                    </>
+                      <Button
+                        variant="outline"
+                        onClick={() => handleAddHoliday(true)}
+                        className="w-full border-dashed border-border font-geist-medium text-muted-foreground hover:border-primary/40 hover:text-foreground"
+                      >
+                        <Plus size={16} weight="bold" className="mr-2" />
+                        {i18n.t("holidaysSettings.addOptionalHoliday")}
+                      </Button>
+                    </div>
+                  ) : optionalHolidaysList.length > 0 ? (
+                    /* Read mode: compact table */
+                    <div className="overflow-hidden rounded-lg border border-border">
+                      <table className="w-full">
+                        <thead>
+                          <tr className="border-b border-border bg-muted/40">
+                            <th className="px-4 py-3 text-left text-xs font-geist-medium text-muted-foreground uppercase tracking-wider">
+                              {i18n.t("date")}
+                            </th>
+                            <th className="px-4 py-3 text-left text-xs font-geist-medium text-muted-foreground uppercase tracking-wider">
+                              {i18n.t("holidaysSettings.holidayName")}
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {optionalHolidaysList.map((holiday, index) => (
+                            <tr
+                              key={index}
+                              className="border-b border-border last:border-0 hover:bg-muted/20 transition-colors"
+                            >
+                              <td className="px-4 py-3 text-sm font-geist-regular text-foreground">
+                                {holiday.date}
+                              </td>
+                              <td className="px-4 py-3 text-sm font-geist-regular text-foreground">
+                                {holiday.name}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
                   ) : (
-                    <div className="text-center py-8">
-                      <Gift
-                        size={48}
-                        className="mx-auto mb-3 text-muted-foreground"
+                    <div className="text-center py-6">
+                      <CalendarPlus
+                        size={36}
+                        className="mx-auto mb-2 text-muted-foreground"
                         weight="thin"
                       />
-                      <p className="text-muted-foreground font-geist-regular mb-3">
-                        {i18n.t("holidaysSettings.noPublicHolidaysConfigured")}
+                      <p className="text-sm text-muted-foreground font-geist-regular mb-3">
+                        {i18n.t(
+                          "holidaysSettings.noOptionalHolidaysConfigured"
+                        )}
                       </p>
-                      {canEdit ? (
-                        <Button
-                          variant="outline"
-                          onClick={() => handleAddHoliday(false)}
-                          className="font-geist-medium"
-                        >
-                          <Plus size={16} weight="bold" className="mr-2" />
-                          {i18n.t("holidaysSettings.addFirstHoliday")}
-                        </Button>
-                      ) : null}
                     </div>
                   )}
                 </div>
               </CardContent>
-            </Card>
+            )}
+          </Card>
+        )}
 
-            {/* Optional Holidays */}
-            <Card className="border-border shadow-sm mt-6">
-              <CardHeader className="pb-4">
-                <div className="flex items-center justify-between">
-                  <CardTitle className="text-lg font-geist-semibold flex items-center gap-2">
-                    <CalendarPlus
-                      className="h-5 w-5 text-muted-foreground"
-                      weight="bold"
-                    />
-                    {i18n.t("holidaysSettings.optionalHolidays")}
-                  </CardTitle>
-                  <button
-                    onClick={handleCheckboxClick}
-                    className="transition-colors"
-                    disabled={!canEdit}
-                    type="button"
+        {activeTab === "glance" && (
+          <Card className="border-border bg-card shadow-sm">
+            <CardHeader className="pb-4">
+              <CardTitle className="text-lg font-geist-semibold text-card-foreground">
+                {i18n.t("holidaysSettings.yearAtAGlance")}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div
+                className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4"
+                data-testid="holidays-calendar"
+              >
+                {monthLabels.map((monthLabel, monthIndex) => (
+                  <div
+                    key={`${monthLabel}-${monthIndex}`}
+                    className="rounded-xl border border-border bg-muted/30 p-4"
                   >
-                    {enableOptionalHolidays ? (
-                      <ToggleRight
-                        size={32}
-                        className="text-primary"
-                        weight="fill"
-                      />
-                    ) : (
-                      <ToggleLeft
-                        size={32}
-                        className="text-muted-foreground"
-                        weight="fill"
-                      />
-                    )}
-                  </button>
-                </div>
-              </CardHeader>
-              {enableOptionalHolidays && (
-                <CardContent>
-                  <div className="space-y-4">
-                    {/* Configuration */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pb-4 border-b border-border">
-                      <div>
-                        <Label className="text-xs font-geist-medium text-muted-foreground uppercase tracking-wider">
-                          {i18n.t("holidaysSettings.totalAllowed")}
-                        </Label>
-                        <Input
-                          type="number"
-                          min={0}
-                          className="font-geist-regular mt-1"
-                          disabled={!canEdit}
-                          placeholder={i18n.t("holidaysSettings.enterNumber")}
-                          value={totalOptionalHolidays}
-                          onChange={handleChangeTotalOpHoliday}
-                        />
-                      </div>
-                      <div>
-                        <Label className="text-xs font-geist-medium text-muted-foreground uppercase tracking-wider">
-                          {i18n.t("holidaysSettings.frequency")}
-                        </Label>
-                        <div className="mt-1">
-                          <CustomReactSelect
-                            isDisabled={!canEdit}
-                            handleOnChange={handleChangeRepetitionOpHoliday}
-                            id="allocationFrequency"
-                            label=""
-                            name="allocationFrequency"
-                            options={allocationFrequency}
-                            styles={customStyles}
-                            wrapperClassName="h-10"
-                            components={{
-                              IndicatorSeparator: () => null,
-                            }}
-                            value={
-                              optionalRepetitionType
-                                ? allocationFrequency.filter(
-                                    option =>
-                                      option.value === optionalRepetitionType
-                                  )
-                                : allocationFrequency[0]
-                            }
-                          />
-                        </div>
-                      </div>
+                    <div className="mb-3 flex items-center justify-between">
+                      <p className="text-xs font-geist-semibold uppercase tracking-[0.24em] text-muted-foreground">
+                        {monthLabel}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {holidaysByMonth[monthIndex]?.length || 0}
+                      </p>
                     </div>
-
-                    {/* Optional Holiday List */}
-                    <div className="space-y-3">
-                      {optionalHolidaysList.length > 0 ? (
-                        <>
-                          {optionalHolidaysList.map(
-                            (optionalHoliday, index) => (
-                              <div
-                                key={index}
-                                className="flex items-start gap-3 p-3 bg-muted/40 rounded-lg"
-                              >
-                                <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                  <div className="relative">
-                                    <Label className="text-xs font-geist-medium text-muted-foreground uppercase tracking-wider mb-1">
-                                      {i18n.t("date")}
-                                    </Label>
-                                    <div
-                                      className="relative cursor-pointer"
-                                      onClick={() => {
-                                        if (!canEdit) return;
-
-                                        setShowOptionalDatePicker({
-                                          visibility:
-                                            !showOptionalDatePicker.visibility,
-                                          index,
-                                        });
-                                      }}
-                                    >
-                                      <Input
-                                        readOnly
-                                        className={`font-geist-regular cursor-pointer pr-10 ${
-                                          optionalHolidayErrors[index]?.date
-                                            ? "border-destructive"
-                                            : ""
-                                        }`}
-                                        disabled={!canEdit}
-                                        placeholder={i18n.t(
-                                          "holidaysSettings.selectDate"
-                                        )}
-                                        value={optionalHoliday.date}
-                                      />
-                                      <Calendar
-                                        className="absolute right-3 top-1/2 -translate-y-1/2 text-primary"
-                                        size={16}
-                                        weight="bold"
-                                      />
-                                    </div>
-                                    {index === showOptionalDatePicker.index &&
-                                      showOptionalDatePicker.visibility && (
-                                        <div className="absolute z-10 mt-1">
-                                          <SingleYearDatePicker
-                                            dateFormat={dateFormat}
-                                            selectedYear={currentYear}
-                                            wrapperRef={optionalWrapperRef}
-                                            date={
-                                              optionalHoliday.date ||
-                                              dayjs().set("year", currentYear)
-                                            }
-                                            handleChange={e =>
-                                              handleDatePicker(e, index, true)
-                                            }
-                                            setVisibility={
-                                              showOptionalDatePicker.visibility
-                                            }
-                                          />
-                                        </div>
-                                      )}
-                                    {optionalHolidayErrors[index]?.date && (
-                                      <p className="mt-1 text-xs text-destructive">
-                                        {optionalHolidayErrors[index].date.join(
-                                          ", "
-                                        )}
-                                      </p>
-                                    )}
-                                  </div>
-                                  <div>
-                                    <Label className="text-xs font-geist-medium text-muted-foreground uppercase tracking-wider mb-1">
-                                      {i18n.t("holidaysSettings.holidayName")}
-                                    </Label>
-                                    <Input
-                                      className={`font-geist-regular ${
-                                        optionalHolidayErrors[index]?.name
-                                          ? "border-destructive"
-                                          : ""
-                                      }`}
-                                      disabled={!canEdit}
-                                      placeholder={i18n.t(
-                                        "holidaysSettings.enterHolidayName"
-                                      )}
-                                      value={optionalHoliday.name}
-                                      onChange={e =>
-                                        handleHolidateNameChange(e, index, true)
-                                      }
-                                    />
-                                    {optionalHolidayErrors[index]?.name && (
-                                      <p className="mt-1 text-xs text-destructive">
-                                        {optionalHolidayErrors[index].name.join(
-                                          ", "
-                                        )}
-                                      </p>
-                                    )}
-                                  </div>
-                                </div>
-                                {canEdit ? (
-                                  <Button
-                                    aria-label="Delete holiday"
-                                    variant="ghost"
-                                    size="sm"
-                                    onClick={() =>
-                                      handleDeleteHoliday(true, index)
-                                    }
-                                    className="mt-7 text-destructive hover:bg-destructive/10 hover:text-destructive"
-                                  >
-                                    <Trash size={16} weight="bold" />
-                                  </Button>
-                                ) : null}
-                              </div>
-                            )
-                          )}
-                          {canEdit ? (
-                            <Button
-                              variant="outline"
-                              onClick={() => handleAddHoliday(true)}
-                              className="w-full border-dashed border-border font-geist-medium text-muted-foreground hover:border-primary/40 hover:text-foreground"
-                            >
-                              <Plus size={16} weight="bold" className="mr-2" />
-                              {i18n.t("holidaysSettings.addOptionalHoliday")}
-                            </Button>
-                          ) : null}
-                        </>
-                      ) : (
-                        <div className="text-center py-6">
-                          <CalendarPlus
-                            size={36}
-                            className="mx-auto mb-2 text-muted-foreground"
-                            weight="thin"
-                          />
-                          <p className="text-sm text-muted-foreground font-geist-regular mb-3">
-                            {i18n.t(
-                              "holidaysSettings.noOptionalHolidaysConfigured"
-                            )}
-                          </p>
-                          {canEdit ? (
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => handleAddHoliday(true)}
-                              className="font-geist-medium"
-                            >
-                              <Plus size={14} weight="bold" className="mr-1" />
-                              {i18n.t("holidaysSettings.addOptionalHoliday")}
-                            </Button>
-                          ) : null}
-                        </div>
-                      )}
+                    <div className="grid grid-cols-7 gap-1 text-[10px] text-muted-foreground mb-1">
+                      {weekdayLabels.map((label, labelIndex) => (
+                        <span
+                          key={`${monthLabel}-${label}-${labelIndex}`}
+                          className="text-center font-geist-medium"
+                        >
+                          {label}
+                        </span>
+                      ))}
                     </div>
-                  </div>
-                </CardContent>
-              )}
-            </Card>
-          </div>
-
-          {/* Sidebar Summary */}
-          <div className="space-y-6">
-            <Card className="border-border shadow-sm">
-              <CardHeader className="pb-4">
-                <CardTitle className="text-lg font-geist-semibold">
-                  {i18n.t("summary")}
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-muted-foreground font-geist-regular">
-                      {i18n.t("holidaysSettings.year")}
-                    </span>
-                    <span className="font-geist-semibold">{currentYear}</span>
-                  </div>
-                  <Separator />
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-muted-foreground font-geist-regular">
-                      {i18n.t("holidaysSettings.publicHolidays")}
-                    </span>
-                    <span className="font-geist-semibold">
-                      {holidayList.length}
-                    </span>
-                  </div>
-                  {enableOptionalHolidays && (
-                    <>
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm text-muted-foreground font-geist-regular">
-                          {i18n.t("holidaysSettings.optionalHolidays")}
-                        </span>
-                        <span className="font-geist-semibold">
-                          {optionalHolidaysList.length}
-                        </span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm text-muted-foreground font-geist-regular">
-                          {i18n.t("holidaysSettings.allowedPerEmployee")}
-                        </span>
-                        <span className="font-geist-semibold">
-                          {totalOptionalHolidays || 0}
-                        </span>
-                      </div>
-                    </>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="border-border bg-card shadow-sm">
-              <CardHeader className="pb-4">
-                <CardTitle className="text-sm font-geist-semibold text-card-foreground">
-                  {i18n.t("holidaysSettings.yearAtAGlance")}
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div
-                  className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2"
-                  data-testid="holidays-calendar"
-                >
-                  {monthLabels.map((monthLabel, monthIndex) => (
-                    <div
-                      key={`${monthLabel}-${monthIndex}`}
-                      className="rounded-xl border border-border bg-muted/30 p-3"
-                    >
-                      <div className="mb-2 flex items-center justify-between">
-                        <p className="text-xs font-geist-semibold uppercase tracking-[0.24em] text-muted-foreground">
-                          {monthLabel}
-                        </p>
-                        <p className="text-[11px] text-muted-foreground">
-                          {holidaysByMonth[monthIndex]?.length || 0}
-                        </p>
-                      </div>
-                      <div className="grid grid-cols-7 gap-1 text-[10px] text-muted-foreground">
-                        {weekdayLabels.map((label, labelIndex) => (
-                          <span
-                            key={`${monthLabel}-${label}-${labelIndex}`}
-                            className="text-center"
+                    <div className="space-y-1">
+                      {buildMonthGrid(currentYear, monthIndex).map(
+                        (week, weekIndex) => (
+                          <div
+                            key={`${monthLabel}-week-${weekIndex}`}
+                            className="grid grid-cols-7 gap-1"
                           >
-                            {label}
-                          </span>
-                        ))}
-                      </div>
-                      <div className="mt-1 space-y-1">
-                        {buildMonthGrid(currentYear, monthIndex).map(
-                          (week, weekIndex) => (
-                            <div
-                              key={`${monthLabel}-week-${weekIndex}`}
-                              className="grid grid-cols-7 gap-1"
-                            >
-                              {week.map((day, dayIndex) => {
-                                if (!day) {
-                                  return (
-                                    <span
-                                      key={`${monthLabel}-blank-${weekIndex}-${dayIndex}`}
-                                    />
-                                  );
-                                }
-
-                                const isoDate = dayjs(
-                                  new Date(currentYear, monthIndex, day)
-                                ).format("YYYY-MM-DD");
-                                const holiday = holidayMap[isoDate];
-
+                            {week.map((day, dayIndex) => {
+                              if (!day) {
                                 return (
                                   <span
-                                    key={`${monthLabel}-${day}`}
-                                    data-testid={
-                                      holiday
-                                        ? `holiday-calendar-day-${isoDate}`
-                                        : undefined
-                                    }
-                                    className={`flex h-6 items-center justify-center rounded-md text-[11px] ${
-                                      holiday
-                                        ? "bg-primary text-primary-foreground font-geist-semibold"
-                                        : "text-foreground"
-                                    }`}
-                                    title={holiday?.name}
-                                  >
-                                    {day}
-                                  </span>
+                                    key={`${monthLabel}-blank-${weekIndex}-${dayIndex}`}
+                                  />
                                 );
-                              })}
-                            </div>
-                          )
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+                              }
 
-            <Card className="border-border bg-card shadow-sm">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-sm font-geist-semibold text-card-foreground">
-                  {i18n.t("holidaysSettings.holidaySchedule")}
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                {allHolidays.length > 0 ? (
-                  <div className="space-y-3" data-testid="holidays-list">
-                    {allHolidays.map(holiday => (
-                      <div
-                        key={`${holiday.categoryKey}-${
-                          holiday.name
-                        }-${holiday.parsedDate.format("YYYY-MM-DD")}`}
-                        className="rounded-xl border border-border bg-muted/20 p-3"
-                      >
-                        <div className="flex items-start justify-between gap-3">
-                          <div>
-                            <p className="text-sm font-geist-semibold text-foreground">
-                              {holiday.name}
-                            </p>
-                            <p className="text-xs text-muted-foreground">
-                              {holiday.parsedDate.format("ddd, D MMM YYYY")}
-                            </p>
+                              const isoDate = dayjs(
+                                new Date(currentYear, monthIndex, day)
+                              ).format("YYYY-MM-DD");
+                              const holiday = holidayMap[isoDate];
+
+                              return (
+                                <span
+                                  key={`${monthLabel}-${day}`}
+                                  data-testid={
+                                    holiday
+                                      ? `holiday-calendar-day-${isoDate}`
+                                      : undefined
+                                  }
+                                  className={`flex h-7 w-7 items-center justify-center rounded-md text-xs ${
+                                    holiday
+                                      ? "bg-primary text-primary-foreground font-geist-semibold"
+                                      : "text-foreground"
+                                  }`}
+                                  title={holiday?.name}
+                                >
+                                  {day}
+                                </span>
+                              );
+                            })}
                           </div>
-                          <span className="rounded-full bg-muted px-2 py-1 text-[10px] font-geist-semibold uppercase tracking-[0.18em] text-muted-foreground">
-                            {i18n.t(
-                              `holidaysSettings.categories.${holiday.categoryKey}`
-                            )}
-                          </span>
+                        )
+                      )}
+                    </div>
+                    {/* Holiday names for this month */}
+                    {holidaysByMonth[monthIndex] &&
+                      holidaysByMonth[monthIndex].length > 0 && (
+                        <div className="mt-3 border-t border-border pt-2 space-y-1">
+                          {holidaysByMonth[monthIndex].map((h, idx) => (
+                            <div
+                              key={idx}
+                              className="flex items-center gap-1.5"
+                            >
+                              <span className="h-1.5 w-1.5 rounded-full bg-primary shrink-0" />
+                              <span className="text-[11px] text-muted-foreground truncate">
+                                {h.name}
+                              </span>
+                            </div>
+                          ))}
                         </div>
-                      </div>
-                    ))}
+                      )}
                   </div>
-                ) : (
-                  <div className="rounded-xl border border-dashed border-border bg-muted/20 px-4 py-6 text-center text-sm text-muted-foreground">
-                    {i18n.t("holidaysSettings.noHolidaysAddedForYear", {
-                      year: currentYear,
-                    })}
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </div>
-        </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
       </div>
     </div>
   );
