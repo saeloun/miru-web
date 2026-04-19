@@ -8,6 +8,7 @@ export enum ApiStatus {
 export enum Roles {
   ADMIN = "admin",
   OWNER = "owner",
+  MANAGER = "manager",
   BOOK_KEEPER = "book_keeper",
   EMPLOYEE = "employee",
   CLIENT = "client",

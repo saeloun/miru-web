@@ -1,0 +1,13 @@
+Hello,
+
+<%= @alert[:title] %>
+
+<%= @alert[:message] %>
+
+<% if @alert[:metadata].present? %>
+<% @alert[:metadata].each do |key, value| %>
+<%= key.to_s.humanize %>: <%= value %>
+<% end %>
+<% end %>
+
+Visit Miru to review your analytics dashboard.

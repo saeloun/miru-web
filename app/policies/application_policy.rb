@@ -3,7 +3,7 @@
 class ApplicationPolicy
   attr_reader :user, :record
 
-  ROLES = %i[owner admin employee book_keeper client]
+  ROLES = %i[owner admin manager employee book_keeper client]
   def initialize(user, record)
     @user = user
     @record = record

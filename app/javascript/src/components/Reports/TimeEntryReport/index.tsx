@@ -71,6 +71,7 @@ import {
   ChartTooltipContent,
 } from "../../ui/chart";
 import ShareReportButton from "../ShareReportButton";
+import ViewInAnalyticsButton from "../ViewInAnalyticsButton";
 import {
   buildSearchParams,
   formatReportApiDate,
@@ -370,6 +371,19 @@ const TimeEntryReport: React.FC = () => {
       .sort((left, right) => right.duration - left.duration)
       .slice(0, 8);
   }, [lastPage?.groupByTotalDuration?.groupedDurations, reports]);
+
+  const analyticsUrl = useMemo(() => {
+    const params = buildSearchParams({
+      preset: dateRangePreset,
+      from: formatReportQueryDate(dateRange?.from),
+      to: formatReportQueryDate(dateRange?.to),
+      members: selectedTeamMembers.length > 0 ? selectedTeamMembers.join(",") : undefined,
+    });
+
+    const queryString = params.toString();
+
+    return queryString ? `/analytics/team?${queryString}` : "/analytics/team";
+  }, [dateRange?.from, dateRange?.to, dateRangePreset, selectedTeamMembers]);
 
   useEffect(() => {
     setSearchParams(
@@ -805,6 +819,8 @@ const TimeEntryReport: React.FC = () => {
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
+
+              <ViewInAnalyticsButton to={analyticsUrl} />
 
               <ShareReportButton />
             </div>

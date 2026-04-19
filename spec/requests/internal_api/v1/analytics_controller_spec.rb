@@ -35,6 +35,34 @@ RSpec.describe "InternalApi::V1::AnalyticsController", type: :request do
       expect(json_response["meta"]).to be_present
     end
 
+    it "logs analytics page views" do
+      expect {
+        send_request :get,
+          "/internal_api/v1/analytics/client_analysis",
+          params: { from: "2026-04-01", to: "2026-04-18", view_context: "client_analysis" },
+          headers: auth_headers(user)
+      }.to change(Ahoy::Event, :count).by(1)
+
+      event = Ahoy::Event.order(:id).last
+      expect(event.name).to eq("view_analytics")
+      expect(event.properties).to include(
+        "type" => "analytics",
+        "page_type" => "client_analysis",
+        "report_type" => "client_analysis",
+        "company_id" => company.id,
+        "user_id" => user.id
+      )
+    end
+
+    it "can skip tracking for supporting dashboard queries" do
+      expect {
+        send_request :get,
+          "/internal_api/v1/analytics/team_productivity",
+          params: { from: "2026-04-01", to: "2026-04-18", track_view: false },
+          headers: auth_headers(user)
+      }.not_to change(Ahoy::Event, :count)
+    end
+
     it "returns comparison metrics" do
       send_request :get, "/internal_api/v1/analytics/comparison", params: { from: "2026-04-01", to: "2026-04-18" }, headers: auth_headers(user)
 
@@ -97,6 +125,54 @@ RSpec.describe "InternalApi::V1::AnalyticsController", type: :request do
       send_request :get, "/internal_api/v1/analytics/expense_trends", params: { from: "2026-04-01", to: "2026-04-18" }, headers: auth_headers(user)
 
       expect(response).to have_http_status(:forbidden)
+    end
+  end
+
+  context "when user is manager" do
+    let(:managed_user) { create(:user, current_workspace_id: company.id) }
+    let(:other_user) { create(:user, current_workspace_id: company.id) }
+    let(:managed_client) { create(:client, company:, name: "Managed Client") }
+    let(:other_client) { create(:client, company:, name: "Other Client") }
+    let(:managed_project) { create(:project, client: managed_client, billable: true) }
+    let(:other_project) { create(:project, client: other_client, billable: true) }
+
+    before do
+      create(:employment, company:, user: managed_user, joined_at: Date.new(2026, 1, 1), resigned_at: nil)
+      create(:employment, company:, user: other_user, joined_at: Date.new(2026, 1, 1), resigned_at: nil)
+      create(:project_member, user: user, project: managed_project)
+      create(:project_member, user: managed_user, project: managed_project)
+      create(:project_member, user: other_user, project: other_project)
+
+      managed_invoice = create(:invoice, company:, client: managed_client, issue_date: Date.new(2026, 4, 5), due_date: Date.new(2026, 4, 25), amount: 400, amount_due: 0, amount_paid: 400, base_currency_amount: 400, status: :paid)
+      other_invoice = create(:invoice, company:, client: other_client, issue_date: Date.new(2026, 4, 6), due_date: Date.new(2026, 4, 25), amount: 500, amount_due: 0, amount_paid: 500, base_currency_amount: 500, status: :paid)
+      create(:payment, invoice: managed_invoice, amount: 400, base_currency_amount: 400, transaction_date: Date.new(2026, 4, 10), status: :paid, transaction_type: :bank_transfer)
+      create(:payment, invoice: other_invoice, amount: 500, base_currency_amount: 500, transaction_date: Date.new(2026, 4, 10), status: :paid, transaction_type: :bank_transfer)
+      create(:timesheet_entry, user: managed_user, project: managed_project, duration: 120, work_date: Date.new(2026, 4, 8), bill_status: :unbilled)
+      create(:timesheet_entry, user: other_user, project: other_project, duration: 240, work_date: Date.new(2026, 4, 8), bill_status: :unbilled)
+      create(:expense, company:, project: managed_project, date: Date.new(2026, 4, 8), amount: 50)
+      create(:expense, company:, project: other_project, date: Date.new(2026, 4, 8), amount: 90)
+
+      user.add_role :manager, company
+    end
+
+    it "allows access but scopes analytics to managed team data" do
+      send_request :get, "/internal_api/v1/analytics/team_productivity", params: { from: "2026-04-01", to: "2026-04-18" }, headers: auth_headers(user)
+
+      expect(response).to have_http_status(:ok)
+      expect(json_response["members"].pluck("user_id")).to include(user.id, managed_user.id)
+      expect(json_response["members"].pluck("user_id")).not_to include(other_user.id)
+
+      send_request :get, "/internal_api/v1/analytics/client_analysis", params: { from: "2026-04-01", to: "2026-04-18" }, headers: auth_headers(user)
+
+      expect(response).to have_http_status(:ok)
+      expect(json_response["clients"].pluck("client_name")).to include("Managed Client")
+      expect(json_response["clients"].pluck("client_name")).not_to include("Other Client")
+
+      send_request :get, "/internal_api/v1/analytics/expense_trends", params: { from: "2026-04-01", to: "2026-04-18" }, headers: auth_headers(user)
+
+      expect(response).to have_http_status(:ok)
+      expect(json_response["project_trends"].pluck("name")).to include(managed_project.name)
+      expect(json_response["project_trends"].pluck("name")).not_to include(other_project.name)
     end
   end
 

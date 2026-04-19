@@ -7,11 +7,13 @@ import { analyticsApi } from "apis/api";
 import { Paths, Roles } from "../../constants";
 import { useUserContext } from "../../context/UserContext";
 import AnalyticsPageLayout from "./components/AnalyticsPageLayout";
+import AnalyticsInsights from "./components/AnalyticsInsights";
 import AnalyticsFilters from "./components/AnalyticsFilters";
 import {
   AnalyticsEmptyState,
   AnalyticsErrorState,
   AnalyticsLoading,
+  AnalyticsRestrictedState,
 } from "./components/AnalyticsStates";
 import { useAnalyticsFilters } from "./useAnalyticsFilters";
 import {
@@ -68,6 +70,7 @@ const AnalyticsHome: React.FC = () => {
   const isFinancialRole = [
     Roles.ADMIN,
     Roles.OWNER,
+    Roles.MANAGER,
     Roles.BOOK_KEEPER,
   ].includes(companyRole as Roles);
   const currency = company?.base_currency || "USD";
@@ -75,7 +78,11 @@ const AnalyticsHome: React.FC = () => {
   const comparisonQuery = useQuery({
     queryKey: ["analytics", "dashboard", "comparison", from, to],
     queryFn: async () => {
-      const response = await analyticsApi.getComparison({ from, to });
+      const response = await analyticsApi.getComparison({
+        from,
+        to,
+        view_context: "dashboard",
+      });
 
       return response.data as ComparisonResponse;
     },
@@ -85,7 +92,11 @@ const AnalyticsHome: React.FC = () => {
   const teamQuery = useQuery({
     queryKey: ["analytics", "dashboard", "team", from, to],
     queryFn: async () => {
-      const response = await analyticsApi.getTeamProductivity({ from, to });
+      const response = await analyticsApi.getTeamProductivity({
+        from,
+        to,
+        track_view: false,
+      });
 
       return response.data as TeamProductivityResponse;
     },
@@ -94,7 +105,11 @@ const AnalyticsHome: React.FC = () => {
   const clientQuery = useQuery({
     queryKey: ["analytics", "dashboard", "clients", from, to],
     queryFn: async () => {
-      const response = await analyticsApi.getClientAnalysis({ from, to });
+      const response = await analyticsApi.getClientAnalysis({
+        from,
+        to,
+        track_view: false,
+      });
 
       return response.data as ClientAnalysisResponse;
     },
@@ -104,7 +119,11 @@ const AnalyticsHome: React.FC = () => {
   const expenseQuery = useQuery({
     queryKey: ["analytics", "dashboard", "expenses", from, to],
     queryFn: async () => {
-      const response = await analyticsApi.getExpenseTrends({ from, to });
+      const response = await analyticsApi.getExpenseTrends({
+        from,
+        to,
+        track_view: false,
+      });
 
       return response.data as ExpenseTrendsResponse;
     },
@@ -122,6 +141,7 @@ const AnalyticsHome: React.FC = () => {
     teamQuery.isError ||
     clientQuery.isError ||
     expenseQuery.isError;
+  const showTeamData = !isLoading && !hasError && Boolean(teamQuery.data);
 
   return (
     <AnalyticsPageLayout
@@ -172,8 +192,15 @@ const AnalyticsHome: React.FC = () => {
         />
       ) : null}
 
-      {!isLoading && !hasError && teamQuery.data ? (
+      {showTeamData ? (
         <>
+          <AnalyticsInsights
+            utilizationRate={teamQuery.data?.summary.utilization_rate}
+            currentRevenue={comparisonQuery.data?.metrics.collected_revenue.current}
+            previousRevenue={comparisonQuery.data?.metrics.collected_revenue.previous}
+            anomalyCount={expenseQuery.data?.summary.anomaly_count}
+          />
+
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
             <Card className="border-border">
               <CardHeader className="pb-2">
@@ -191,27 +218,39 @@ const AnalyticsHome: React.FC = () => {
                 </CardTitle>
               </CardHeader>
             </Card>
-            <Card className="border-border">
-              <CardHeader className="pb-2">
-                <CardDescription>Total revenue</CardDescription>
-                <CardTitle className="text-2xl">
-                  {formatStandardCurrency(
-                    comparisonQuery.data?.metrics.invoiced_revenue
-                      ? "USD"
-                      : "USD",
-                    clientQuery.data?.summary.total_revenue || 0
-                  )}
-                </CardTitle>
-              </CardHeader>
-            </Card>
-            <Card className="border-border">
-              <CardHeader className="pb-2">
-                <CardDescription>Anomalies</CardDescription>
-                <CardTitle className="text-2xl">
-                  {expenseQuery.data?.summary.anomaly_count || 0}
-                </CardTitle>
-              </CardHeader>
-            </Card>
+            {isFinancialRole ? (
+              <>
+                <Card className="border-border">
+                  <CardHeader className="pb-2">
+                    <CardDescription>Total revenue</CardDescription>
+                    <CardTitle className="text-2xl">
+                      {formatStandardCurrency(
+                        currency,
+                        clientQuery.data?.summary.total_revenue || 0
+                      )}
+                    </CardTitle>
+                  </CardHeader>
+                </Card>
+                <Card className="border-border">
+                  <CardHeader className="pb-2">
+                    <CardDescription>Anomalies</CardDescription>
+                    <CardTitle className="text-2xl">
+                      {expenseQuery.data?.summary.anomaly_count || 0}
+                    </CardTitle>
+                  </CardHeader>
+                </Card>
+              </>
+            ) : (
+              <Card className="border-dashed border-border/80 bg-muted/20 md:col-span-2 xl:col-span-2">
+                <CardHeader>
+                  <CardDescription>Financial analytics</CardDescription>
+                  <CardTitle className="text-xl">Restricted for employees</CardTitle>
+                </CardHeader>
+                <CardContent className="text-sm text-muted-foreground">
+                  Revenue, client, and expense summaries are visible only to owners, admins, and book keepers.
+                </CardContent>
+              </Card>
+            )}
           </div>
 
           <div className="grid gap-4 xl:grid-cols-2">
@@ -239,57 +278,60 @@ const AnalyticsHome: React.FC = () => {
               </CardContent>
             </Card>
 
-            <Card className="border-border">
-              <CardHeader>
-                <CardTitle>Highlights</CardTitle>
-                <CardDescription>
-                  Quick takeaways from the selected period.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="rounded-lg border border-border p-4">
-                  <div className="text-sm text-muted-foreground">
-                    Current vs previous revenue
+            {isFinancialRole ? (
+              <Card className="border-border">
+                <CardHeader>
+                  <CardTitle>Highlights</CardTitle>
+                  <CardDescription>
+                    Quick takeaways from the selected period.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="rounded-lg border border-border p-4">
+                    <div className="text-sm text-muted-foreground">
+                      Current vs previous revenue
+                    </div>
+                    <div className="mt-1 text-xl font-semibold text-foreground">
+                      {comparisonQuery.data
+                        ? `${formatStandardCurrency(
+                            currency,
+                            comparisonQuery.data.metrics.collected_revenue.current
+                          )} (${comparisonQuery.data.metrics.collected_revenue.change_percentage.toFixed(
+                            2
+                          )}%)`
+                        : "Unavailable"}
+                    </div>
                   </div>
-                  <div className="mt-1 text-xl font-semibold text-foreground">
-                    {comparisonQuery.data
-                      ? `${formatStandardCurrency(
-                          currency,
-                          comparisonQuery.data.metrics.collected_revenue.current
-                        )} (${comparisonQuery.data.metrics.collected_revenue.change_percentage.toFixed(
-                          2
-                        )}%)`
-                      : "Unavailable"}
+                  <div className="rounded-lg border border-border p-4">
+                    <div className="text-sm text-muted-foreground">Top client</div>
+                    <div className="mt-1 text-xl font-semibold text-foreground">
+                      {clientQuery.data?.top_clients[0]
+                        ? `${clientQuery.data.top_clients[0].client_name} · ${formatCompactCurrency(
+                            currency,
+                            clientQuery.data.top_clients[0].total_revenue
+                          )}`
+                        : "No client history"}
+                    </div>
                   </div>
-                </div>
-                <div className="rounded-lg border border-border p-4">
-                  <div className="text-sm text-muted-foreground">
-                    Top client
+                  <div className="rounded-lg border border-border p-4">
+                    <div className="text-sm text-muted-foreground">
+                      Average hourly rate
+                    </div>
+                    <div className="mt-1 text-xl font-semibold text-foreground">
+                      {formatStandardCurrency(
+                        currency,
+                        teamQuery.data.summary.average_hourly_rate
+                      )}
+                    </div>
                   </div>
-                  <div className="mt-1 text-xl font-semibold text-foreground">
-                    {clientQuery.data?.top_clients[0]
-                      ? `${
-                          clientQuery.data.top_clients[0].client_name
-                        } · ${formatCompactCurrency(
-                          currency,
-                          clientQuery.data.top_clients[0].total_revenue
-                        )}`
-                      : "No client history"}
-                  </div>
-                </div>
-                <div className="rounded-lg border border-border p-4">
-                  <div className="text-sm text-muted-foreground">
-                    Average hourly rate
-                  </div>
-                  <div className="mt-1 text-xl font-semibold text-foreground">
-                    {formatStandardCurrency(
-                      currency,
-                      teamQuery.data.summary.average_hourly_rate
-                    )}
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+            ) : (
+              <AnalyticsRestrictedState
+                title="Financial highlights are restricted"
+                description="Employees can review team utilization here, but revenue, client, and expense highlights are available only to financial roles."
+              />
+            )}
           </div>
         </>
       ) : null}

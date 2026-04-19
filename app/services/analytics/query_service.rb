@@ -32,9 +32,9 @@ module Analytics
       def build_payload
         case report_type
         when "revenue_forecast"
-          Analytics::RevenueForecastService.process(company:, horizon: filters.fetch(:horizon, 3))
+          Analytics::RevenueForecastService.process(company:, horizon: filters.fetch(:horizon, 3), client_ids: filters[:client_ids])
         when "comparison"
-          Analytics::ComparativeAnalysisService.process(company:, from: filters.fetch(:from), to: filters.fetch(:to), user_ids: filters[:user_ids])
+          Analytics::ComparativeAnalysisService.process(company:, from: filters.fetch(:from), to: filters.fetch(:to), user_ids: filters[:user_ids], client_ids: filters[:client_ids], project_ids: filters[:project_ids])
         when "client_analysis"
           Analytics::ClientRevenueAnalytics.process(company:, from: filters.fetch(:from), to: filters.fetch(:to), client_ids: filters[:client_ids])
         when "team_productivity"

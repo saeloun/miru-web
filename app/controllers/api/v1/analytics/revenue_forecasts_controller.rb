@@ -12,10 +12,15 @@ class Api::V1::Analytics::RevenueForecastsController < Api::V1::ApplicationContr
       return
     end
 
+    scope = Analytics::ScopeResolver.process(user: current_user, company: current_company)
+
     payload = Analytics::QueryService.process(
       report_type: :revenue_forecast,
       company: current_company,
-      filters: { horizon: }
+      filters: {
+        horizon:,
+        client_ids: scope[:role] == "manager" ? scope[:client_ids] : []
+      }
     )
 
     response.set_header("X-Analytics-Canonical-Endpoint", "/internal_api/v1/analytics/revenue_forecast")

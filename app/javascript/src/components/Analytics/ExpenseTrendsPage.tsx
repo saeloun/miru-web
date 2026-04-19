@@ -1,16 +1,20 @@
 import React from "react";
-import { useQuery } from "@tanstack/react-query";
-import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { Area, AreaChart, CartesianGrid, ReferenceDot, XAxis, YAxis } from "recharts";
 
 import { analyticsApi, projectsApi } from "apis/api";
 import { Roles } from "../../constants";
 import { useUserContext } from "../../context/UserContext";
+import { useIsMobile } from "../../hooks/use-mobile";
 import AnalyticsPageLayout from "./components/AnalyticsPageLayout";
 import AnalyticsFilters from "./components/AnalyticsFilters";
+import AnalyticsExportActions from "./components/AnalyticsExportActions";
+import AnalyticsSavedReports from "./components/AnalyticsSavedReports";
 import {
   AnalyticsEmptyState,
   AnalyticsErrorState,
   AnalyticsLoading,
+  AnalyticsRestrictedState,
 } from "./components/AnalyticsStates";
 import { useAnalyticsFilters } from "./useAnalyticsFilters";
 import { AnalyticsOption, ExpenseTrendsResponse } from "./types";
@@ -42,6 +46,7 @@ import { WarningCircle } from "phosphor-react";
 
 const ExpenseTrendsPage: React.FC = () => {
   const { companyRole, company } = useUserContext();
+  const isMobile = useIsMobile();
   const {
     dateRange,
     setDateRange,
@@ -56,6 +61,7 @@ const ExpenseTrendsPage: React.FC = () => {
   const isFinancialRole = [
     Roles.ADMIN,
     Roles.OWNER,
+    Roles.MANAGER,
     Roles.BOOK_KEEPER,
   ].includes(companyRole as Roles);
   const currency = company?.base_currency || "USD";
@@ -71,7 +77,7 @@ const ExpenseTrendsPage: React.FC = () => {
         label: project.name,
       })) as AnalyticsOption[];
     },
-    enabled: isFinancialRole,
+    enabled: isFinancialRole && companyRole !== Roles.MANAGER,
   });
 
   const query = useQuery({
@@ -80,6 +86,7 @@ const ExpenseTrendsPage: React.FC = () => {
       const response = await analyticsApi.getExpenseTrends({
         from,
         to,
+        view_context: "expense_trends",
         project_ids: selectedIds.length > 0 ? selectedIds.join(",") : undefined,
       });
 
@@ -88,7 +95,7 @@ const ExpenseTrendsPage: React.FC = () => {
     enabled: isFinancialRole,
   });
 
-  const categorySeries = (query.data?.category_trends || []).slice(0, 4);
+  const categorySeries = (query.data?.category_trends || []).slice(0, isMobile ? 2 : 4);
   const namedSeries = categorySeries.map((trend, index) => ({
     ...trend,
     seriesKey: `series_${index + 1}`,
@@ -112,10 +119,45 @@ const ExpenseTrendsPage: React.FC = () => {
     {} as Record<string, { label: string; color: string }>
   );
 
+  const visibleAnomalies = (query.data?.anomalies || []).filter(anomaly =>
+    namedSeries.some(series => series.name === anomaly.name)
+  );
+
+  const exportMutation = useMutation({
+    mutationFn: async (format: "csv" | "pdf") => {
+      const response = await analyticsApi.downloadExport(
+        "expense_trends",
+        format,
+        {
+          from,
+          to,
+          project_ids: selectedIds.length > 0 ? selectedIds.join(",") : undefined,
+        }
+      );
+
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `expense_trends_${new Date().toISOString().slice(0, 10)}.${format}`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    },
+  });
+
   return (
     <AnalyticsPageLayout
       title="Expense Trends"
       description="Track category and project spend over time and surface unusual spikes."
+      actions={
+        isFinancialRole ? (
+          <AnalyticsExportActions
+            isExporting={exportMutation.isPending}
+            onExport={format => exportMutation.mutate(format)}
+          />
+        ) : null
+      }
       filters={
         <AnalyticsFilters
           dateRange={dateRange}
@@ -126,21 +168,27 @@ const ExpenseTrendsPage: React.FC = () => {
             setDateRange(resolveAnalyticsPreset(value));
           }}
           selectedIds={selectedIds}
-          onSelectedIdsChange={setSelectedIds}
-          options={optionsQuery.data || []}
-          multiSelectLabel="Projects"
+          onSelectedIdsChange={companyRole === Roles.MANAGER ? undefined : setSelectedIds}
+          options={companyRole === Roles.MANAGER ? [] : optionsQuery.data || []}
+          multiSelectLabel={companyRole === Roles.MANAGER ? undefined : "Projects"}
         />
       }
     >
       {!isFinancialRole ? (
-        <Alert>
-          <WarningCircle className="h-4 w-4" />
-          <AlertTitle>Financial analytics access is limited</AlertTitle>
-          <AlertDescription>
-            Expense trend analytics are available only to owners, admins, and
-            book keepers.
-          </AlertDescription>
-        </Alert>
+        <div className="space-y-4">
+          <Alert>
+            <WarningCircle className="h-4 w-4" />
+            <AlertTitle>Financial analytics access is limited</AlertTitle>
+            <AlertDescription>
+              Expense trend analytics are available only to owners, admins, and
+              book keepers.
+            </AlertDescription>
+          </Alert>
+          <AnalyticsRestrictedState
+            title="Expense trends are restricted"
+            description="This page relies on company-wide expense and project spending data that employees cannot access."
+          />
+        </div>
       ) : null}
       {isFinancialRole && (query.isLoading || optionsQuery.isLoading) ? (
         <AnalyticsLoading rows={4} />
@@ -219,7 +267,7 @@ const ExpenseTrendsPage: React.FC = () => {
                   className="h-[320px] w-full"
                   config={chartConfig}
                 >
-                  <LineChart
+                  <AreaChart
                     data={chartData}
                     margin={{ left: 12, right: 12, top: 8 }}
                   >
@@ -227,6 +275,7 @@ const ExpenseTrendsPage: React.FC = () => {
                     <XAxis
                       axisLine={false}
                       dataKey="label"
+                      tickFormatter={value => (isMobile ? String(value).split(" ")[0] : value)}
                       tickLine={false}
                       minTickGap={20}
                     />
@@ -245,16 +294,31 @@ const ExpenseTrendsPage: React.FC = () => {
                       }
                     />
                     {namedSeries.map(trend => (
-                      <Line
+                      <Area
                         key={trend.seriesKey}
                         dataKey={trend.seriesKey}
-                        dot={false}
+                        fill={`var(--color-${trend.seriesKey})`}
+                        fillOpacity={0.18}
                         stroke={`var(--color-${trend.seriesKey})`}
                         strokeWidth={2.5}
                         type="monotone"
                       />
                     ))}
-                  </LineChart>
+                    {visibleAnomalies.map(anomaly => {
+                      const label = namedSeries[0]?.monthly_totals.find(point => point.month === anomaly.month)?.label || anomaly.month;
+
+                      return (
+                        <ReferenceDot
+                          key={`${anomaly.name}-${anomaly.month}`}
+                          x={label}
+                          y={anomaly.amount}
+                          fill="#dc2626"
+                          r={5}
+                          stroke="#ffffff"
+                        />
+                      );
+                    })}
+                  </AreaChart>
                 </ChartContainer>
               </CardContent>
             </Card>
@@ -332,6 +396,17 @@ const ExpenseTrendsPage: React.FC = () => {
               </CardContent>
             </Card>
           </div>
+
+          <AnalyticsSavedReports
+            reportType="expense_trends"
+            filters={{
+              preset,
+              from,
+              to,
+              projects: selectedIds.length > 0 ? selectedIds.join(",") : undefined,
+            }}
+            allowSave={isFinancialRole}
+          />
         </>
       ) : null}
     </AnalyticsPageLayout>

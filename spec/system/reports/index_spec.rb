@@ -223,6 +223,25 @@ RSpec.describe "Reports", type: :system, js: true do
       end
     end
 
+    it "opens team analytics from the time entry report" do
+      included_client = create(:client, company:, name: "Analytics Alpha Client")
+      project = create(:project, client: included_client, name: "Analytics Alpha Project")
+      create(:project_member, user: admin, project:)
+      create(:timesheet_entry, user: admin, project:, duration: 180, work_date: Date.current)
+
+      with_forgery_protection do
+        visit "/reports/time-entry?teamMembers=#{admin.id}&preset=custom&from=#{Date.current.iso8601}&to=#{Date.current.iso8601}"
+
+        click_link "View in Analytics"
+
+        expect(page).to have_current_path(
+          "/analytics/team?preset=custom&from=#{Date.current.iso8601}&to=#{Date.current.iso8601}&members=#{admin.id}",
+          wait: 10
+        )
+        expect(page).to have_content("Team Analytics", wait: 10)
+      end
+    end
+
     it "loads the revenue by client report" do
       client = create(:client, company:, name: "Client Alpha")
       create(:invoice, company:, client:, status: :paid, amount: 1000, amount_paid: 1000, amount_due: 0)
@@ -305,6 +324,24 @@ RSpec.describe "Reports", type: :system, js: true do
         copied_url = page.evaluate_script("window.__copiedReportUrl")
         expect(copied_url).to include("/reports/revenue-by-client")
         expect(copied_url).to include("clients=#{client.id}")
+      end
+    end
+
+    it "opens client analytics from the revenue by client report" do
+      client = create(:client, company:, name: "Revenue Analytics Client")
+      create(:project, client:, billable: true, name: "Revenue Analytics Project")
+      create(:invoice, company:, client:, status: :paid, amount: 1200, amount_paid: 1200, amount_due: 0)
+
+      with_forgery_protection do
+        visit "/reports/revenue-by-client?clients=#{client.id}&preset=custom&from=#{Date.current.iso8601}&to=#{Date.current.iso8601}"
+
+        click_link "View in Analytics"
+
+        expect(page).to have_current_path(
+          "/analytics/clients?preset=custom&from=#{Date.current.iso8601}&to=#{Date.current.iso8601}&clients=#{client.id}",
+          wait: 10
+        )
+        expect(page).to have_content("Client Insights", wait: 10)
       end
     end
 
@@ -429,6 +466,24 @@ RSpec.describe "Reports", type: :system, js: true do
         expect(page).to have_no_content("Payment Filter Beta")
         expect(page).to have_content("Visa")
         expect(page).to have_no_content("Bank transfer")
+      end
+    end
+
+    it "opens client analytics from the payments report" do
+      client = create(:client, company:, name: "Payment Analytics Client")
+      invoice = create(:invoice, company:, client:, status: :paid, amount: 2000, amount_paid: 2000, amount_due: 0)
+      create(:payment, invoice:, amount: 500, transaction_type: :visa, status: :paid, transaction_date: Date.current)
+
+      with_forgery_protection do
+        visit "/reports/payments?clients=#{client.id}&preset=custom&from=#{Date.current.iso8601}&to=#{Date.current.iso8601}"
+
+        click_link "View in Analytics"
+
+        expect(page).to have_current_path(
+          "/analytics/clients?preset=custom&from=#{Date.current.iso8601}&to=#{Date.current.iso8601}&clients=#{client.id}",
+          wait: 10
+        )
+        expect(page).to have_content("Client Insights", wait: 10)
       end
     end
   end

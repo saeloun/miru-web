@@ -107,7 +107,7 @@ export const AppNavbar: React.FC = () => {
       label: "Analytics",
       path: Paths.ANALYTICS,
       icon: BarChart3,
-      allowedRoles: ["admin", "owner", "book_keeper", "employee"],
+      allowedRoles: ["admin", "owner", "manager", "book_keeper", "employee"],
     },
     {
       label: t("nav.payments"),

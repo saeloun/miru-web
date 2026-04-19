@@ -18,6 +18,9 @@ default: &default
         refresh_cached_analytics_reports:
           class: Analytics::RefreshCachedReportsJob
           schedule: '0 * * * *'
+        analytics_threshold_notifications:
+          class: Analytics::ThresholdNotificationsJob
+          schedule: '0 * * * *'
   workers:
     - queues: default
       threads: 5
@@ -53,6 +56,9 @@ production:
           schedule: '0 1 * * *'
         refresh_cached_analytics_reports:
           class: Analytics::RefreshCachedReportsJob
+          schedule: '0 * * * *'
+        analytics_threshold_notifications:
+          class: Analytics::ThresholdNotificationsJob
           schedule: '0 * * * *'
         database_backup:
           class: DatabaseBackupJob

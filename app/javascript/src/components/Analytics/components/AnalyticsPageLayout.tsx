@@ -17,6 +17,7 @@ type AnalyticsPageLayoutProps = {
   description: string;
   children: React.ReactNode;
   filters?: React.ReactNode;
+  actions?: React.ReactNode;
 };
 
 const AnalyticsPageLayout: React.FC<AnalyticsPageLayoutProps> = ({
@@ -24,13 +25,15 @@ const AnalyticsPageLayout: React.FC<AnalyticsPageLayoutProps> = ({
   description,
   children,
   filters,
+  actions,
 }) => {
   const location = useLocation();
 
   return (
     <div className="w-full space-y-6 p-4">
       <div className="flex flex-col gap-4">
-        <div>
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+          <div>
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <Link className="hover:text-foreground" to={Paths.ANALYTICS}>
               Analytics
@@ -46,6 +49,8 @@ const AnalyticsPageLayout: React.FC<AnalyticsPageLayoutProps> = ({
             {title}
           </h1>
           <p className="mt-1 text-sm text-muted-foreground">{description}</p>
+          </div>
+          {actions}
         </div>
 
         <div className="flex flex-wrap gap-2">

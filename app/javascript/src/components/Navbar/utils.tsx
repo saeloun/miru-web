@@ -60,7 +60,7 @@ const navOptions = [
     logo: <ReportsIcon className="mr-0 md:mr-4" size={26} />,
     label: "Analytics",
     path: Paths.ANALYTICS,
-    allowedRoles: ["admin", "owner", "book_keeper", "employee"],
+    allowedRoles: ["admin", "owner", "manager", "book_keeper", "employee"],
   },
   {
     logo: <PaymentsIcon className="mr-0 md:mr-4" size={26} />,

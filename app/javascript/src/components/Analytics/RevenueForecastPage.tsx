@@ -1,5 +1,5 @@
 import React from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
 import { TrendUp, WarningCircle } from "phosphor-react";
@@ -7,8 +7,12 @@ import { TrendUp, WarningCircle } from "phosphor-react";
 import { analyticsApi } from "apis/api";
 import { Paths, Roles } from "../../constants";
 import { useUserContext } from "../../context/UserContext";
+import { useIsMobile } from "../../hooks/use-mobile";
 import { currencyFormat } from "helpers";
 import AnalyticsPageLayout from "./components/AnalyticsPageLayout";
+import { AnalyticsRestrictedState } from "./components/AnalyticsStates";
+import AnalyticsExportActions from "./components/AnalyticsExportActions";
+import AnalyticsSavedReports from "./components/AnalyticsSavedReports";
 import {
   Card,
   CardContent,
@@ -79,16 +83,20 @@ const RevenueForecastLoading = () => (
 const RevenueForecastPage: React.FC = () => {
   const [horizon, setHorizon] = React.useState<number>(6);
   const { companyRole } = useUserContext();
+  const isMobile = useIsMobile();
   const isFinancialRole = [
     Roles.ADMIN,
     Roles.OWNER,
+    Roles.MANAGER,
     Roles.BOOK_KEEPER,
   ].includes(companyRole as Roles);
 
   const { data, isLoading, isError, error, refetch, isFetching } = useQuery({
     queryKey: ["analytics", "revenue-forecast", horizon],
     queryFn: async () => {
-      const response = await analyticsApi.getRevenueForecast(horizon);
+      const response = await analyticsApi.getRevenueForecast(horizon, {
+        view_context: "revenue_forecast",
+      });
 
       return response.data as RevenueForecastResponse;
     },
@@ -101,13 +109,16 @@ const RevenueForecastPage: React.FC = () => {
     point => (point.collected_revenue ?? 0) > 0
   );
 
+  const visibleHistoricalPeriods = isMobile ? historicalPeriods.slice(-6) : historicalPeriods;
+  const visibleForecastPeriods = isMobile ? forecastPeriods.slice(0, Math.min(horizon, 3)) : forecastPeriods;
+
   const chartData = [
-    ...historicalPeriods.map(point => ({
+    ...visibleHistoricalPeriods.map(point => ({
       label: point.label,
       collected_revenue: point.collected_revenue ?? 0,
       forecast_revenue: null,
     })),
-    ...forecastPeriods.map(point => ({
+    ...visibleForecastPeriods.map(point => ({
       label: point.label,
       collected_revenue: null,
       forecast_revenue: point.forecast_revenue ?? 0,
@@ -136,10 +147,37 @@ const RevenueForecastPage: React.FC = () => {
     0
   );
 
+  const exportMutation = useMutation({
+    mutationFn: async (format: "csv" | "pdf") => {
+      const response = await analyticsApi.downloadExport(
+        "revenue_forecast",
+        format,
+        { horizon }
+      );
+
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `revenue_forecast_${new Date().toISOString().slice(0, 10)}.${format}`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    },
+  });
+
   return (
     <AnalyticsPageLayout
       title="Revenue Forecast"
       description="Compare recent collections with the next projected months using a moving average forecast."
+      actions={
+        isFinancialRole ? (
+          <AnalyticsExportActions
+            isExporting={exportMutation.isPending}
+            onExport={format => exportMutation.mutate(format)}
+          />
+        ) : null
+      }
     >
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div />
@@ -157,14 +195,20 @@ const RevenueForecastPage: React.FC = () => {
       </div>
 
       {!isFinancialRole && (
-        <Alert>
-          <WarningCircle className="h-4 w-4" />
-          <AlertTitle>Financial analytics access is limited</AlertTitle>
-          <AlertDescription>
-            Employees can access the Analytics section, but revenue forecast
-            data is only available to owners, admins, and book keepers.
-          </AlertDescription>
-        </Alert>
+        <div className="space-y-4">
+          <Alert>
+            <WarningCircle className="h-4 w-4" />
+            <AlertTitle>Financial analytics access is limited</AlertTitle>
+            <AlertDescription>
+              Employees can access the Analytics section, but revenue forecast
+              data is only available to owners, admins, and book keepers.
+            </AlertDescription>
+          </Alert>
+          <AnalyticsRestrictedState
+            title="Revenue forecast is restricted"
+            description="This view uses workspace-level billing and payment data. Ask an owner, admin, or book keeper if you need access."
+          />
+        </div>
       )}
 
       {isFinancialRole && (isLoading || isFetching) ? (
@@ -258,6 +302,7 @@ const RevenueForecastPage: React.FC = () => {
                   <XAxis
                     axisLine={false}
                     dataKey="label"
+                    tickFormatter={value => (isMobile ? String(value).split(" ")[0] : value)}
                     tickLine={false}
                     minTickGap={20}
                   />
@@ -303,6 +348,12 @@ const RevenueForecastPage: React.FC = () => {
               </ChartContainer>
             </CardContent>
           </Card>
+
+          <AnalyticsSavedReports
+            reportType="revenue_forecast"
+            filters={{ horizon }}
+            allowSave={isFinancialRole}
+          />
         </>
       ) : null}
     </AnalyticsPageLayout>

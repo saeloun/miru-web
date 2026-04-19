@@ -8,9 +8,10 @@ module Analytics
     PAYMENT_AMOUNT_SQL = Arel.sql("COALESCE(payments.base_currency_amount, payments.amount)").freeze
     INVOICE_AMOUNT_SQL = Arel.sql("COALESCE(invoices.base_currency_amount, invoices.amount)").freeze
 
-    def initialize(company:, horizon: 3)
+    def initialize(company:, horizon: 3, client_ids: nil)
       @company = company
       @horizon = normalize_horizon(horizon)
+      @client_ids = Array(client_ids).compact_blank
     end
 
     def process
@@ -29,7 +30,14 @@ module Analytics
 
     private
 
-      attr_reader :company, :horizon
+      attr_reader :company, :horizon, :client_ids
+
+      def scoped_invoices
+        @scoped_invoices ||= begin
+          relation = company.invoices.kept
+          client_ids.present? ? relation.where(client_id: client_ids) : relation
+        end
+      end
 
       def normalize_horizon(value)
         parsed_value = value.to_i
@@ -49,7 +57,7 @@ module Analytics
       def monthly_collected_revenue
         Payment
           .joins(:invoice)
-          .where(invoices: { company_id: company.id, discarded_at: nil })
+          .where(invoices: { company_id: company.id, discarded_at: nil, client_id: client_ids.presence || scoped_invoices.select(:client_id) })
           .where.not(payments: { status: [Payment.statuses[:failed], Payment.statuses[:cancelled]] })
           .where(payments: { transaction_date: historical_range })
           .group("DATE_TRUNC('month', payments.transaction_date)")
@@ -57,8 +65,7 @@ module Analytics
       end
 
       def monthly_invoiced_revenue
-        company.invoices
-          .kept
+        scoped_invoices
           .where.not(status: :draft)
           .where(issue_date: historical_range)
           .group("DATE_TRUNC('month', invoices.issue_date)")

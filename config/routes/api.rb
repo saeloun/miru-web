@@ -231,5 +231,10 @@ namespace :internal_api, defaults: { format: "json" } do
     get "analytics/client_analysis", to: "analytics#client_analysis"
     get "analytics/team_productivity", to: "analytics#team_productivity"
     get "analytics/expense_trends", to: "analytics#expense_trends"
+    get "analytics/exports/:report_type", to: "analytics_exports#show"
+    get "analytics/reports", to: "analytics_reports#index"
+    post "analytics/reports", to: "analytics_reports#create"
+    get "analytics/reports/:id", to: "analytics_reports#show"
+    delete "analytics/reports/:id", to: "analytics_reports#destroy"
   end
 end

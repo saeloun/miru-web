@@ -1,13 +1,16 @@
 import React from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 
 import { analyticsApi, teamApi } from "apis/api";
 import { unmapList } from "mapper/mappedIndex";
 import { Roles } from "../../constants";
 import { useUserContext } from "../../context/UserContext";
+import { useIsMobile } from "../../hooks/use-mobile";
 import AnalyticsPageLayout from "./components/AnalyticsPageLayout";
 import AnalyticsFilters from "./components/AnalyticsFilters";
+import AnalyticsExportActions from "./components/AnalyticsExportActions";
+import AnalyticsSavedReports from "./components/AnalyticsSavedReports";
 import {
   AnalyticsEmptyState,
   AnalyticsErrorState,
@@ -44,6 +47,7 @@ const chartConfig = {
 
 const TeamAnalyticsPage: React.FC = () => {
   const { companyRole, company } = useUserContext();
+  const isMobile = useIsMobile();
   const {
     dateRange,
     setDateRange,
@@ -55,6 +59,7 @@ const TeamAnalyticsPage: React.FC = () => {
     to,
   } = useAnalyticsFilters({ filterKey: "members" });
   const isEmployee = companyRole === Roles.EMPLOYEE;
+  const isManager = companyRole === Roles.MANAGER;
   const currency = company?.base_currency || "USD";
 
   const optionsQuery = useQuery({
@@ -67,7 +72,7 @@ const TeamAnalyticsPage: React.FC = () => {
         label: member.name,
       })) as AnalyticsOption[];
     },
-    enabled: !isEmployee,
+    enabled: !isEmployee && !isManager,
   });
 
   const query = useQuery({
@@ -76,24 +81,59 @@ const TeamAnalyticsPage: React.FC = () => {
       const response = await analyticsApi.getTeamProductivity({
         from,
         to,
+        view_context: "team_productivity",
         user_ids: selectedIds.length > 0 ? selectedIds.join(",") : undefined,
       });
 
       return response.data as TeamProductivityResponse;
     },
+    refetchInterval: 60000,
+    refetchOnWindowFocus: true,
   });
 
   const members = query.data?.members || [];
-  const chartData = members.slice(0, 8).map(member => ({
+  const chartData = members.slice(0, isMobile ? 5 : 8).map(member => ({
     name: member.user_name,
     billable_hours: member.billable_hours,
     non_billable_hours: member.non_billable_hours,
   }));
 
+  const exportMutation = useMutation({
+    mutationFn: async (format: "csv" | "pdf") => {
+      const response = await analyticsApi.downloadExport(
+        "team_productivity",
+        format,
+        {
+          from,
+          to,
+          user_ids:
+            !isEmployee && selectedIds.length > 0
+              ? selectedIds.join(",")
+              : undefined,
+        }
+      );
+
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `team_analytics_${new Date().toISOString().slice(0, 10)}.${format}`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    },
+  });
+
   return (
     <AnalyticsPageLayout
       title="Team Analytics"
       description="Track utilization, billable contribution, and realized hourly value across your team."
+      actions={
+        <AnalyticsExportActions
+          isExporting={exportMutation.isPending}
+          onExport={format => exportMutation.mutate(format)}
+        />
+      }
       filters={
         <AnalyticsFilters
           dateRange={dateRange}
@@ -104,9 +144,9 @@ const TeamAnalyticsPage: React.FC = () => {
             setDateRange(resolveAnalyticsPreset(value));
           }}
           selectedIds={isEmployee ? [] : selectedIds}
-          onSelectedIdsChange={isEmployee ? undefined : setSelectedIds}
-          options={isEmployee ? [] : optionsQuery.data || []}
-          multiSelectLabel={isEmployee ? undefined : "Team members"}
+          onSelectedIdsChange={isEmployee || isManager ? undefined : setSelectedIds}
+          options={isEmployee || isManager ? [] : optionsQuery.data || []}
+          multiSelectLabel={isEmployee || isManager ? undefined : "Team members"}
         />
       }
     >
@@ -207,11 +247,13 @@ const TeamAnalyticsPage: React.FC = () => {
                       fill="var(--color-billable_hours)"
                       radius={[4, 4, 0, 0]}
                     />
-                    <Bar
-                      dataKey="non_billable_hours"
-                      fill="var(--color-non_billable_hours)"
-                      radius={[4, 4, 0, 0]}
-                    />
+                    {!isMobile ? (
+                      <Bar
+                        dataKey="non_billable_hours"
+                        fill="var(--color-non_billable_hours)"
+                        radius={[4, 4, 0, 0]}
+                      />
+                    ) : null}
                   </BarChart>
                 </ChartContainer>
               </CardContent>
@@ -269,6 +311,19 @@ const TeamAnalyticsPage: React.FC = () => {
               </Table>
             </CardContent>
           </Card>
+
+          <AnalyticsSavedReports
+            reportType="team_productivity"
+            filters={{
+              preset,
+              from,
+              to,
+              ...(isEmployee
+                ? {}
+                : { members: selectedIds.length > 0 ? selectedIds.join(",") : undefined }),
+            }}
+            allowSave={true}
+          />
         </>
       ) : null}
     </AnalyticsPageLayout>

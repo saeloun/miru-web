@@ -32,7 +32,7 @@ class AnalyticsPolicy < ApplicationPolicy
     end
 
     def financial_analytics_access?
-      company_analytics_access? || user_book_keeper_role?
+      company_analytics_access? || user_book_keeper_role? || user_manager_role?
     end
 
     def self_analytics_access?

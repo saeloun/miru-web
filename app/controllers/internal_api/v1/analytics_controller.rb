@@ -8,7 +8,7 @@ class InternalApi::V1::AnalyticsController < Api::V1::ApplicationController
     horizon = validated_horizon!
     return if performed?
 
-    render_analytics_payload(:revenue_forecast, horizon:)
+    render_analytics_payload(:revenue_forecast, horizon:, client_ids: scoped_client_ids)
   end
 
   def comparison
@@ -16,7 +16,13 @@ class InternalApi::V1::AnalyticsController < Api::V1::ApplicationController
     date_filters = validated_date_filters!
     return if performed?
 
-    render_analytics_payload(:comparison, **date_filters)
+    render_analytics_payload(
+      :comparison,
+      **date_filters,
+      user_ids: scoped_team_user_ids,
+      client_ids: scoped_client_ids,
+      project_ids: scoped_project_ids
+    )
   end
 
   def client_analysis
@@ -24,7 +30,7 @@ class InternalApi::V1::AnalyticsController < Api::V1::ApplicationController
     date_filters = validated_date_filters!
     return if performed?
 
-    render_analytics_payload(:client_analysis, **date_filters, client_ids: normalized_ids(params[:client_ids]))
+    render_analytics_payload(:client_analysis, **date_filters, client_ids: scoped_client_ids)
   end
 
   def team_productivity
@@ -40,14 +46,29 @@ class InternalApi::V1::AnalyticsController < Api::V1::ApplicationController
     date_filters = validated_date_filters!
     return if performed?
 
-    render_analytics_payload(:expense_trends, **date_filters, project_ids: normalized_ids(params[:project_ids]))
+    render_analytics_payload(:expense_trends, **date_filters, project_ids: scoped_project_ids)
   end
 
   private
 
+    def analytics_scope
+      @analytics_scope ||= Analytics::ScopeResolver.process(user: current_user, company: current_company)
+    end
+
     def render_analytics_payload(report_type, **filters)
+      track_analytics_view(report_type)
       payload = Analytics::QueryService.process(report_type:, company: current_company, filters:)
       render json: payload.merge("meta" => financial_api_meta(currency: current_company.base_currency))
+    end
+
+    def track_analytics_view(default_report_type)
+      return if ActiveModel::Type::Boolean.new.cast(params[:track_view]) == false
+
+      Analytics::TrackingService.new(user: current_user).track_analytics_page_view(
+        page_type: params[:view_context].presence || default_report_type,
+        report_type: default_report_type,
+        company_id: current_company.id
+      )
     end
 
     def validated_horizon!
@@ -95,9 +116,28 @@ class InternalApi::V1::AnalyticsController < Api::V1::ApplicationController
     end
 
     def scoped_team_user_ids
-      return [current_user.id] if current_user.primary_role(current_company) == "employee"
+      return [current_user.id] if analytics_scope[:role] == "employee"
+      return intersect_scope_ids(normalized_ids(params[:user_ids]), analytics_scope[:user_ids]) if analytics_scope[:role] == "manager"
 
       normalized_ids(params[:user_ids])
+    end
+
+    def scoped_client_ids
+      return intersect_scope_ids(normalized_ids(params[:client_ids]), analytics_scope[:client_ids]) if analytics_scope[:role] == "manager"
+
+      normalized_ids(params[:client_ids])
+    end
+
+    def scoped_project_ids
+      return intersect_scope_ids(normalized_ids(params[:project_ids]), analytics_scope[:project_ids]) if analytics_scope[:role] == "manager"
+
+      normalized_ids(params[:project_ids])
+    end
+
+    def intersect_scope_ids(requested_ids, allowed_ids)
+      return allowed_ids if requested_ids.blank?
+
+      requested_ids & allowed_ids
     end
 
     def parse_date(value)

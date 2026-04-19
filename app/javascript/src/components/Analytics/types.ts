@@ -17,6 +17,21 @@ export type AnalyticsFiltersState = {
   selectedIds: number[];
 };
 
+export type SavedAnalyticsReport = {
+  id: number;
+  name: string;
+  report_type:
+    | "revenue_forecast"
+    | "team_productivity"
+    | "client_analysis"
+    | "expense_trends";
+  filters: Record<string, any>;
+  created_at: string;
+  created_by_id: number;
+  creator_name: string;
+  can_delete: boolean;
+};
+
 export type RevenueForecastPoint = {
   month: string;
   label: string;

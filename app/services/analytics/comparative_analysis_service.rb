@@ -2,11 +2,13 @@
 
 module Analytics
   class ComparativeAnalysisService < ApplicationService
-    def initialize(company:, from:, to:, user_ids: nil)
+    def initialize(company:, from:, to:, user_ids: nil, client_ids: nil, project_ids: nil)
       @company = company
       @from = from.to_date
       @to = to.to_date
       @user_ids = Array(user_ids).compact_blank
+      @client_ids = Array(client_ids).compact_blank
+      @project_ids = Array(project_ids).compact_blank
     end
 
     def process
@@ -19,7 +21,7 @@ module Analytics
 
     private
 
-      attr_reader :company, :from, :to, :user_ids
+      attr_reader :company, :from, :to, :user_ids, :client_ids, :project_ids
 
       def build_metrics
         {
@@ -77,6 +79,7 @@ module Analytics
       def collected_revenue_for(range)
         Payment.joins(:invoice)
           .where(invoices: { company_id: company.id, discarded_at: nil })
+          .yield_self { |scope| client_ids.present? ? scope.where(invoices: { client_id: client_ids }) : scope }
           .where(payments: { transaction_date: range })
           .where.not(payments: { status: [Payment.statuses[:failed], Payment.statuses[:cancelled]] })
           .sum(Arel.sql("COALESCE(payments.base_currency_amount, payments.amount)"))
@@ -86,6 +89,7 @@ module Analytics
 
       def invoiced_revenue_for(range)
         company.invoices.kept
+          .yield_self { |scope| client_ids.present? ? scope.where(client_id: client_ids) : scope }
           .where(issue_date: range)
           .where.not(status: :draft)
           .sum(Arel.sql("COALESCE(base_currency_amount, amount)"))
@@ -94,7 +98,9 @@ module Analytics
       end
 
       def expenses_for(range)
-        company.expenses.kept.where(date: range).sum(:amount).to_f.round(2)
+        company.expenses.kept.where(date: range)
+          .yield_self { |scope| project_ids.present? ? scope.where(project_id: project_ids) : scope }
+          .sum(:amount).to_f.round(2)
       end
 
       def compare_metric(current_value, previous_value)

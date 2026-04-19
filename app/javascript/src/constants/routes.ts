@@ -243,7 +243,7 @@ export const ROUTES = [
   {
     path: Paths.ANALYTICS,
     subRoutes: AnalyticsRoutes,
-    authorisedRoles: [ADMIN, OWNER, BOOK_KEEPER, EMPLOYEE],
+    authorisedRoles: [ADMIN, OWNER, BOOK_KEEPER, EMPLOYEE, "manager"],
   },
   {
     path: Paths.PROJECTS,

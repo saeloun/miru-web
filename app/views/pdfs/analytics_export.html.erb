@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title><%= export_payload[:title] %></title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; padding: 20px; color: #111827; }
+    h1 { margin-bottom: 8px; }
+    h2 { margin-top: 24px; margin-bottom: 8px; }
+    .meta, .summary { margin-bottom: 16px; }
+    table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+    th, td { border: 1px solid #d1d5db; padding: 8px; text-align: left; font-size: 12px; }
+    th { background: #f3f4f6; }
+    .muted { color: #6b7280; font-size: 12px; }
+  </style>
+</head>
+<body>
+  <h1><%= export_payload[:title] %></h1>
+  <p class="muted"><%= current_company.name %></p>
+
+  <% if export_payload[:filters].present? %>
+    <div class="meta">
+      <table>
+        <tbody>
+          <% export_payload[:filters].each do |row| %>
+            <tr>
+              <th><%= row[0] %></th>
+              <td><%= row[1] %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% end %>
+
+  <div class="summary">
+    <h2>Summary</h2>
+    <table>
+      <tbody>
+        <% export_payload[:summary_rows].each do |row| %>
+          <tr>
+            <th><%= row[0] %></th>
+            <td><%= row[1] %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+
+  <% export_payload[:tables].each do |table| %>
+    <h2><%= table[:title] %></h2>
+    <table>
+      <thead>
+        <tr>
+          <% table[:headers].each do |header| %>
+            <th><%= header %></th>
+          <% end %>
+        </tr>
+      </thead>
+      <tbody>
+        <% table[:rows].each do |row| %>
+          <tr>
+            <% row.each do |cell| %>
+              <td><%= cell %></td>
+            <% end %>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% end %>
+</body>
+</html>

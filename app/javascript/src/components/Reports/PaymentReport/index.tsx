@@ -70,6 +70,7 @@ import {
   parseReportQueryDate,
 } from "../filterUtils";
 import { i18n } from "../../../i18n";
+import ViewInAnalyticsButton from "../ViewInAnalyticsButton";
 
 interface Payment {
   id: number;
@@ -275,6 +276,19 @@ const PaymentReport: React.FC = () => {
     );
     setStatusFilter(current => (current === nextStatus ? current : nextStatus));
   }, [searchParams]);
+
+  const analyticsUrl = React.useMemo(() => {
+    const params = buildSearchParams({
+      preset: dateRangePreset,
+      from: formatReportQueryDate(dateRange?.from),
+      to: formatReportQueryDate(dateRange?.to),
+      clients: selectedClients.length > 0 ? selectedClients.join(",") : undefined,
+    });
+
+    const queryString = params.toString();
+
+    return queryString ? `/analytics/clients?${queryString}` : "/analytics/clients";
+  }, [dateRange?.from, dateRange?.to, dateRangePreset, selectedClients]);
 
   const handleDateRangePreset = (preset: string) => {
     setDateRange(resolvePaymentPreset(preset));
@@ -654,6 +668,8 @@ const PaymentReport: React.FC = () => {
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
+
+              <ViewInAnalyticsButton to={analyticsUrl} />
             </div>
           </div>
         </div>

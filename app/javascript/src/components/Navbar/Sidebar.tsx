@@ -116,6 +116,7 @@ const Sidebar: React.FC = () => {
       allowedRoles: [
         Roles.ADMIN,
         Roles.OWNER,
+        Roles.MANAGER,
         Roles.BOOK_KEEPER,
         Roles.EMPLOYEE,
       ],

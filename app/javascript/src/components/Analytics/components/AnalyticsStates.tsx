@@ -77,3 +77,15 @@ export const AnalyticsEmptyState: React.FC<{
     </CardContent>
   </Card>
 );
+
+export const AnalyticsRestrictedState: React.FC<{
+  title: string;
+  description: string;
+}> = ({ title, description }) => (
+  <Card className="border-dashed border-border/80 bg-muted/20">
+    <CardHeader>
+      <h3 className="text-lg font-semibold text-foreground">{title}</h3>
+      <p className="text-sm text-muted-foreground">{description}</p>
+    </CardHeader>
+  </Card>
+);

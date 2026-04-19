@@ -1,17 +1,22 @@
 import React from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
 
 import { analyticsApi, clientsApi } from "apis/api";
 import { unmapClientList } from "mapper/mappedIndex";
 import { Roles } from "../../constants";
 import { useUserContext } from "../../context/UserContext";
+import { useIsMobile } from "../../hooks/use-mobile";
 import AnalyticsPageLayout from "./components/AnalyticsPageLayout";
 import AnalyticsFilters from "./components/AnalyticsFilters";
+import AnalyticsExportActions from "./components/AnalyticsExportActions";
+import AnalyticsSavedReports from "./components/AnalyticsSavedReports";
+import ClientRevenueHeatmap from "./components/ClientRevenueHeatmap";
 import {
   AnalyticsEmptyState,
   AnalyticsErrorState,
   AnalyticsLoading,
+  AnalyticsRestrictedState,
 } from "./components/AnalyticsStates";
 import { useAnalyticsFilters } from "./useAnalyticsFilters";
 import { AnalyticsOption, ClientAnalysisResponse } from "./types";
@@ -46,6 +51,7 @@ const chartConfig = {
 
 const ClientInsightsPage: React.FC = () => {
   const { companyRole, company } = useUserContext();
+  const isMobile = useIsMobile();
   const {
     dateRange,
     setDateRange,
@@ -60,6 +66,7 @@ const ClientInsightsPage: React.FC = () => {
   const isFinancialRole = [
     Roles.ADMIN,
     Roles.OWNER,
+    Roles.MANAGER,
     Roles.BOOK_KEEPER,
   ].includes(companyRole as Roles);
   const currency = company?.base_currency || "USD";
@@ -76,7 +83,7 @@ const ClientInsightsPage: React.FC = () => {
         })
       ) as AnalyticsOption[];
     },
-    enabled: isFinancialRole,
+    enabled: isFinancialRole && companyRole !== Roles.MANAGER,
   });
 
   const query = useQuery({
@@ -85,6 +92,7 @@ const ClientInsightsPage: React.FC = () => {
       const response = await analyticsApi.getClientAnalysis({
         from,
         to,
+        view_context: "client_analysis",
         client_ids: selectedIds.length > 0 ? selectedIds.join(",") : undefined,
       });
 
@@ -96,10 +104,41 @@ const ClientInsightsPage: React.FC = () => {
   const clients = query.data?.clients || [];
   const topClient = query.data?.top_clients[0];
 
+  const exportMutation = useMutation({
+    mutationFn: async (format: "csv" | "pdf") => {
+      const response = await analyticsApi.downloadExport(
+        "client_analysis",
+        format,
+        {
+          from,
+          to,
+          client_ids: selectedIds.length > 0 ? selectedIds.join(",") : undefined,
+        }
+      );
+
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `client_insights_${new Date().toISOString().slice(0, 10)}.${format}`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    },
+  });
+
   return (
     <AnalyticsPageLayout
       title="Client Insights"
       description="Understand which clients contribute the most revenue and how fast they pay."
+      actions={
+        isFinancialRole ? (
+          <AnalyticsExportActions
+            isExporting={exportMutation.isPending}
+            onExport={format => exportMutation.mutate(format)}
+          />
+        ) : null
+      }
       filters={
         <AnalyticsFilters
           dateRange={dateRange}
@@ -110,21 +149,27 @@ const ClientInsightsPage: React.FC = () => {
             setDateRange(resolveAnalyticsPreset(value));
           }}
           selectedIds={selectedIds}
-          onSelectedIdsChange={setSelectedIds}
-          options={optionsQuery.data || []}
-          multiSelectLabel="Clients"
+          onSelectedIdsChange={companyRole === Roles.MANAGER ? undefined : setSelectedIds}
+          options={companyRole === Roles.MANAGER ? [] : optionsQuery.data || []}
+          multiSelectLabel={companyRole === Roles.MANAGER ? undefined : "Clients"}
         />
       }
     >
       {!isFinancialRole ? (
-        <Alert>
-          <WarningCircle className="h-4 w-4" />
-          <AlertTitle>Financial analytics access is limited</AlertTitle>
-          <AlertDescription>
-            Client revenue analytics are available only to owners, admins, and
-            book keepers.
-          </AlertDescription>
-        </Alert>
+        <div className="space-y-4">
+          <Alert>
+            <WarningCircle className="h-4 w-4" />
+            <AlertTitle>Financial analytics access is limited</AlertTitle>
+            <AlertDescription>
+              Client revenue analytics are available only to owners, admins, and
+              book keepers.
+            </AlertDescription>
+          </Alert>
+          <AnalyticsRestrictedState
+            title="Client insights are restricted"
+            description="This page summarizes invoices, collections, and payment timing across the workspace."
+          />
+        </div>
       ) : null}
       {isFinancialRole && (query.isLoading || optionsQuery.isLoading) ? (
         <AnalyticsLoading rows={5} />
@@ -307,13 +352,14 @@ const ClientInsightsPage: React.FC = () => {
                       config={chartConfig}
                     >
                       <LineChart
-                        data={topClient.monthly_trend}
+                        data={isMobile ? topClient.monthly_trend.slice(-6) : topClient.monthly_trend}
                         margin={{ left: 12, right: 12, top: 8 }}
                       >
                         <CartesianGrid vertical={false} />
                         <XAxis
                           axisLine={false}
                           dataKey="label"
+                          tickFormatter={value => (isMobile ? String(value).split(" ")[0] : value)}
                           tickLine={false}
                           minTickGap={20}
                         />
@@ -345,6 +391,19 @@ const ClientInsightsPage: React.FC = () => {
               ) : null}
             </div>
           </div>
+
+          <ClientRevenueHeatmap clients={clients} isMobile={isMobile} />
+
+          <AnalyticsSavedReports
+            reportType="client_analysis"
+            filters={{
+              preset,
+              from,
+              to,
+              clients: selectedIds.length > 0 ? selectedIds.join(",") : undefined,
+            }}
+            allowSave={isFinancialRole}
+          />
         </>
       ) : null}
     </AnalyticsPageLayout>
