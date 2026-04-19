@@ -104,6 +104,12 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
           roles: ["admin", "owner", "book_keeper"],
         },
         {
+          label: "Analytics",
+          href: "/analytics",
+          icon: ChartLine,
+          roles: ["admin", "owner", "manager", "book_keeper", "employee"],
+        },
+        {
           label: t("nav.expenses"),
           href: "/expenses",
           icon: CurrencyCircleDollar,

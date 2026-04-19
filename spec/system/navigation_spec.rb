@@ -87,4 +87,33 @@ RSpec.describe "Application Navigation", type: :system, js: true do
       expect(page).to have_css("#react-root", wait: 10)
     end
   end
+
+  context "when signed in as an employee" do
+    let(:employee) { create(:user, current_workspace_id: company.id) }
+
+    before do
+      create(:employment, company:, user: employee)
+      employee.add_role :employee, company
+      sign_in(employee)
+    end
+
+    it "shows analytics in navigation and allows employee-safe analytics routes" do
+      with_forgery_protection do
+        visit "/time-tracking"
+
+        expect(page).to have_content("Analytics", wait: 10)
+        click_link "Analytics"
+
+        expect(page).to have_current_path("/analytics", wait: 10)
+        expect(page).to have_content("Analytics", wait: 10)
+        expect(page).to have_content("Team utilization", wait: 10)
+        expect(page).to have_content("Restricted for employees", wait: 10)
+
+        visit "/analytics/team"
+
+        expect(page).to have_current_path("/analytics/team", wait: 10)
+        expect(page).to have_content("Team Analytics", wait: 10)
+      end
+    end
+  end
 end
