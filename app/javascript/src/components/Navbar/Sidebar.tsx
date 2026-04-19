@@ -110,6 +110,19 @@ const Sidebar: React.FC = () => {
       description: i18n.t("navbar.reportsDescription"),
     },
     {
+      icon: <BarChart3 className="h-5 w-5" />,
+      label: "Analytics",
+      path: Paths.ANALYTICS,
+      allowedRoles: [
+        Roles.ADMIN,
+        Roles.OWNER,
+        Roles.BOOK_KEEPER,
+        Roles.EMPLOYEE,
+      ],
+      badge: null,
+      description: "Forecasts and performance insights",
+    },
+    {
       icon: <CreditCard className="h-5 w-5" />,
       label: i18n.t("navbar.payments"),
       path: Paths.PAYMENTS,
@@ -250,6 +263,9 @@ const Sidebar: React.FC = () => {
     item.allowedRoles.includes(companyRole)
   );
 
+  const isNavItemActive = (path: string) =>
+    location.pathname === path || location.pathname.startsWith(`${path}/`);
+
   // Enhanced NavItem component with better shadcn patterns
   const NavItem = ({ item, isActive, isSubItem = false }) => {
     const content = (
@@ -366,7 +382,7 @@ const Sidebar: React.FC = () => {
             {/* Main Navigation */}
             <div className="space-y-1">
               {filteredMainItems.map(item => {
-                const isActive = location.pathname === item.path;
+                const isActive = isNavItemActive(item.path);
 
                 return (
                   <NavItem key={item.path} item={item} isActive={isActive} />

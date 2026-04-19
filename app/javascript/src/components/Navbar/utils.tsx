@@ -57,6 +57,12 @@ const navOptions = [
     allowedRoles: ["admin", "owner", "book_keeper"],
   },
   {
+    logo: <ReportsIcon className="mr-0 md:mr-4" size={26} />,
+    label: "Analytics",
+    path: Paths.ANALYTICS,
+    allowedRoles: ["admin", "owner", "book_keeper", "employee"],
+  },
+  {
     logo: <PaymentsIcon className="mr-0 md:mr-4" size={26} />,
     label: i18n.t("navbar.payments"),
     path: Paths.PAYMENTS,

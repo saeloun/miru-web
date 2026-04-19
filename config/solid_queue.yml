@@ -15,6 +15,9 @@ default: &default
         sync_stripe_subscriptions:
           class: SyncStripeSubscriptionsJob
           schedule: '0 1 * * *'
+        refresh_cached_analytics_reports:
+          class: Analytics::RefreshCachedReportsJob
+          schedule: '0 * * * *'
   workers:
     - queues: default
       threads: 5
@@ -48,6 +51,9 @@ production:
         sync_stripe_subscriptions:
           class: SyncStripeSubscriptionsJob
           schedule: '0 1 * * *'
+        refresh_cached_analytics_reports:
+          class: Analytics::RefreshCachedReportsJob
+          schedule: '0 * * * *'
         database_backup:
           class: DatabaseBackupJob
           schedule: '<%= ENV.fetch("DATABASE_BACKUP_CRON", "*/30 * * * *") %>'

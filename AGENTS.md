@@ -50,4 +50,6 @@ Keep this file short. Treat it as a router for repo-specific rules.
 - Keep controllers thin and move business logic to models or services where appropriate.
 - Respect existing authorization patterns unless the task is to change them.
 - Prefer Faker-backed values in factories unless a spec needs a fixed literal.
+- Workspace analytics lives under `app/services/analytics`. `Analytics::RevenueForecastService` forecasts collected revenue from successful payments; `AnalyticsReport` stores saved report metadata in `filters` JSONB with `created_by_id`; expense analytics can group by optional `expenses.project_id`.
+- If the shell does not have Ruby/Node on PATH, bootstrap repo runtime with local `mise` and run commands as `~/.local/bin/mise exec -- <command>`. Local Postgres in this workspace is reachable at `127.0.0.1:5432` with `postgres/postgres` for development and test tasks.
 - `CLAUDE.md` may exist for tool compatibility, but `AGENTS.md` remains the source of truth.

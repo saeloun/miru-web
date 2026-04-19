@@ -24,6 +24,7 @@ export enum Paths {
   CLIENTS = "/clients",
   INVOICES = "/invoices/*",
   REPORTS = "/reports",
+  ANALYTICS = "/analytics",
   PROJECTS = "/projects",
   SUBSCRIPTIONS = "/subscriptions",
   PAYMENTS = "/payments",

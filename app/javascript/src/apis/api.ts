@@ -515,6 +515,33 @@ export const reportsClientRevenueApi = {
 };
 export const clientRevenueApi = reportsClientRevenueApi;
 
+export const analyticsApi = {
+  getRevenueForecast: (horizon: number | string) =>
+    http.get(`/analytics/revenue_forecasts`, {
+      params: { horizon },
+    }),
+  getComparison: (params: Record<string, any>) =>
+    http.get(`/internal_api/v1/analytics/comparison`, {
+      baseURL: "",
+      params,
+    }),
+  getTeamProductivity: (params: Record<string, any>) =>
+    http.get(`/internal_api/v1/analytics/team_productivity`, {
+      baseURL: "",
+      params,
+    }),
+  getClientAnalysis: (params: Record<string, any>) =>
+    http.get(`/internal_api/v1/analytics/client_analysis`, {
+      baseURL: "",
+      params,
+    }),
+  getExpenseTrends: (params: Record<string, any>) =>
+    http.get(`/internal_api/v1/analytics/expense_trends`, {
+      baseURL: "",
+      params,
+    }),
+};
+
 // Team
 const teamPath = "/team";
 export const teamApi = {

@@ -99,6 +99,12 @@ namespace :api, defaults: { format: "json" } do
       end
     end
 
+    # Compatibility-only route kept for existing frontend consumers.
+    # InternalApi::V1::AnalyticsController is the canonical analytics backend interface.
+    namespace :analytics do
+      resources :revenue_forecasts, only: [:index]
+    end
+
     resources :workspaces, only: [:index, :update]
     resource :subscription, only: [:show] do
       post :checkout
@@ -214,5 +220,16 @@ namespace :api, defaults: { format: "json" } do
     match "*path", to: "application#not_found", via: :all, constraints: lambda { |req|
       req.path.exclude?("rails/active_storage") && req.path.include?("api")
     }
+  end
+end
+
+namespace :internal_api, defaults: { format: "json" } do
+  namespace :v1 do
+    # Canonical analytics backend interface.
+    get "analytics/revenue_forecast", to: "analytics#revenue_forecast"
+    get "analytics/comparison", to: "analytics#comparison"
+    get "analytics/client_analysis", to: "analytics#client_analysis"
+    get "analytics/team_productivity", to: "analytics#team_productivity"
+    get "analytics/expense_trends", to: "analytics#expense_trends"
   end
 end
