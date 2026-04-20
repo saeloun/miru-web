@@ -73,9 +73,9 @@
     --accent-foreground: 0 0% 98%;
     --destructive: 355 100% 70%;
     --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 100% / 0.1;
-    --input: 0 0% 100% / 0.15;
-    --ring: 0 0% 45%;
+    --border: 0 0% 100% / 0.16;
+    --input: 0 0% 100% / 0.24;
+    --ring: 0 0% 72%;
 
     --gradient-start: 10 10 10;
     --gradient-end: 38 38 38;
@@ -375,13 +375,13 @@
   .form {
     &__textarea,
     &__select {
-      @apply focus:outline-none block w-full rounded border bg-muted px-3 py-2 text-sm font-medium tracking-wider text-foreground;
+      @apply block w-full rounded-md border border-input bg-background px-3 py-2 text-sm font-medium tracking-wider text-foreground shadow-sm transition-colors focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/30;
     }
     &__input_submit {
       @apply focus:outline-none flex h-10 w-full cursor-pointer justify-center rounded border border-transparent bg-primary py-1 px-4 font-sans text-base font-medium tracking-widest text-primary-foreground shadow-sm hover:opacity-90;
     }
     &__input {
-      @apply focus:outline-none block h-8 w-full rounded border bg-muted px-3 py-2 text-sm font-medium tracking-wider text-foreground;
+      @apply block h-8 w-full rounded-md border border-input bg-background px-3 py-2 text-sm font-medium tracking-wider text-foreground shadow-sm transition-colors focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/30;
     }
     &__label {
       @apply block text-xs font-normal tracking-wider text-foreground;
@@ -819,8 +819,8 @@
 
 .input-phone-number input:focus {
   outline: none !important;
-  border: none !important;
-  box-shadow: none !important;
+  border-color: hsl(var(--ring)) !important;
+  box-shadow: 0 0 0 2px hsl(var(--ring) / 0.3) !important;
 }
 
 .input-phone-number .PhoneInputInput {
@@ -843,23 +843,47 @@
 .phone-input-clean .PhoneInputInput,
 .phone-input-modern .PhoneInputInput {
   width: 100%;
-  border: 1px solid var(--border);
+  border: 1px solid hsl(var(--input));
   border-radius: calc(var(--radius) - 2px);
-  background: var(--background);
+  background: hsl(var(--background));
   padding: 0.5rem 0.75rem;
   font-size: 0.875rem;
-  color: var(--foreground);
+  color: hsl(var(--foreground));
+  box-shadow: 0 1px 2px hsl(var(--foreground) / 0.05);
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease;
 }
 
 .phone-input-clean .PhoneInputInput:focus,
 .phone-input-modern .PhoneInputInput:focus {
   outline: none;
-  box-shadow: 0 0 0 2px color-mix(in oklab, var(--ring) 40%, transparent);
+  border-color: hsl(var(--ring));
+  box-shadow: 0 0 0 2px hsl(var(--ring) / 0.3);
 }
 
 .phone-input-clean .PhoneInputCountry,
 .phone-input-modern .PhoneInputCountry {
   margin-right: 0.5rem;
+}
+.phone-input-clean .PhoneInputCountrySelect,
+.phone-input-modern .PhoneInputCountrySelect {
+  border: 1px solid hsl(var(--input));
+  border-radius: calc(var(--radius) - 2px);
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
+  box-shadow: 0 1px 2px hsl(var(--foreground) / 0.05);
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease;
+}
+.phone-input-clean .PhoneInputCountrySelect:focus,
+.phone-input-modern .PhoneInputCountrySelect:focus {
+  outline: none;
+  border-color: hsl(var(--ring));
+  box-shadow: 0 0 0 2px hsl(var(--ring) / 0.3);
 }
 
 .profile-setting-image:hover img {

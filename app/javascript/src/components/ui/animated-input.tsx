@@ -49,7 +49,7 @@ const AnimatedInput = React.forwardRef<HTMLInputElement, AnimatedInputProps>(
           ref={ref}
           className={cn(
             "transition-all duration-200",
-            isFocused && "border-primary",
+            isFocused && "!border-ring",
             className
           )}
           onFocus={e => {
