@@ -43,7 +43,7 @@ module PdfGeneration
         }
 
         # Allow overriding the Chrome/Chromium path via ENV for portability
-        browser_path = ENV["FERRUM_BROWSER_PATH"] || ENV["GOOGLE_CHROME_SHIM"] || ENV["CHROME_PATH"]
+        browser_path = ENV["BROWSER_PATH"] || ENV["FERRUM_BROWSER_PATH"] || ENV["GOOGLE_CHROME_SHIM"] || ENV["CHROME_PATH"]
         if browser_path && !browser_path.empty?
           opts[:browser_path] = browser_path
         end

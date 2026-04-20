@@ -16,6 +16,7 @@ RSpec.describe Analytics::ThresholdNotificationsJob, type: :job do
     admin.add_role :admin, company
     employee.add_role :employee, company
     Rails.cache.clear
+    clear_enqueued_jobs
   end
 
   it "sends threshold alert emails to financial recipients" do
@@ -26,6 +27,18 @@ RSpec.describe Analytics::ThresholdNotificationsJob, type: :job do
     expect {
       described_class.perform_now([company.id])
     }.to have_enqueued_mail(AnalyticsMailer, :threshold_alert)
+  end
+
+  it "does not notify employees" do
+    allow(Analytics::ThresholdEvaluator).to receive(:process).and_return([
+      { type: "low_utilization", title: "Low utilization detected", message: "Alert", metadata: {} }
+    ])
+
+    described_class.perform_now([company.id])
+
+    mail = enqueued_jobs.last
+    args = mail[:args].last["params"] || mail[:args].last[:params]
+    expect(args["recipients"] || args[:recipients]).to match_array([owner.email, admin.email])
   end
 
   it "does not resend the same alert within the anti-spam window" do

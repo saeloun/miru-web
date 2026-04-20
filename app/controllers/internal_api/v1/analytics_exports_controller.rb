@@ -6,6 +6,8 @@ class InternalApi::V1::AnalyticsExportsController < Api::V1::ApplicationControll
   SUPPORTED_HORIZONS = [3, 6, 12].freeze
 
   def show
+    authorize :analytics, :index?
+
     return render_validation_error("Unsupported analytics export") unless SUPPORTED_REPORT_TYPES.include?(params[:report_type])
     return render_validation_error("Unsupported export format") unless SUPPORTED_FORMATS.include?(request.format.symbol.to_s)
 
@@ -19,6 +21,8 @@ class InternalApi::V1::AnalyticsExportsController < Api::V1::ApplicationControll
       type: download_service.content_type,
       disposition: "attachment",
       filename: download_service.filename
+  rescue Ferrum::BinaryNotFoundError, Ferrum::ProcessTimeoutError, Ferrum::DeadBrowserError => error
+    render_pdf_generation_error(error)
   end
 
   private
@@ -140,5 +144,13 @@ class InternalApi::V1::AnalyticsExportsController < Api::V1::ApplicationControll
 
     def render_validation_error(message)
       render json: { error: message }, status: :unprocessable_entity
+    end
+
+    def render_pdf_generation_error(error)
+      Rails.logger.warn("Analytics PDF export unavailable: #{error.class}: #{error.message}")
+
+      render json: {
+        error: "PDF export is temporarily unavailable because the browser renderer is not configured on this environment. CSV export remains available."
+      }, status: :service_unavailable
     end
 end
