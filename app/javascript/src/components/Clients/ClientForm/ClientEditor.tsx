@@ -185,7 +185,10 @@ const ClientEditor = ({
             </div>
             {/* Address Line 1 */}
             <div className="space-y-2">
-              <Label htmlFor="address1">{i18n.t("clients.addressLine1")}</Label>
+              <Label htmlFor="address1">
+                {i18n.t("clients.addressLine1")}{" "}
+                <span className="text-red-500">*</span>
+              </Label>
               <Input
                 id="address1"
                 name="address1"
@@ -221,7 +224,9 @@ const ClientEditor = ({
             <div className="grid grid-cols-2 gap-4">
               {/* Country */}
               <div className="space-y-2">
-                <Label htmlFor="country">{i18n.t("country")}</Label>
+                <Label htmlFor="country">
+                  {i18n.t("country")} <span className="text-red-500">*</span>
+                </Label>
                 <Select
                   value={values.country?.value || ""}
                   onValueChange={value => {
@@ -257,7 +262,9 @@ const ClientEditor = ({
               </div>
               {/* State */}
               <div className="space-y-2">
-                <Label htmlFor="state">{i18n.t("state")}</Label>
+                <Label htmlFor="state">
+                  {i18n.t("state")} <span className="text-red-500">*</span>
+                </Label>
                 <Input
                   id="state"
                   name="state"
@@ -277,7 +284,9 @@ const ClientEditor = ({
             <div className="grid grid-cols-2 gap-4">
               {/* City */}
               <div className="space-y-2">
-                <Label htmlFor="city">{i18n.t("city")}</Label>
+                <Label htmlFor="city">
+                  {i18n.t("city")} <span className="text-red-500">*</span>
+                </Label>
                 <Input
                   id="city"
                   name="city"
@@ -294,7 +303,9 @@ const ClientEditor = ({
               </div>
               {/* Zipcode */}
               <div className="space-y-2">
-                <Label htmlFor="zipcode">{i18n.t("zipcode")}</Label>
+                <Label htmlFor="zipcode">
+                  {i18n.t("zipcode")} <span className="text-red-500">*</span>
+                </Label>
                 <Input
                   id="zipcode"
                   name="zipcode"
@@ -312,7 +323,9 @@ const ClientEditor = ({
             </div>
             {/* Currency */}
             <div className="space-y-2">
-              <Label htmlFor="currency">{i18n.t("currency")}</Label>
+              <Label htmlFor="currency">
+                {i18n.t("currency")} <span className="text-red-500">*</span>
+              </Label>
               <Select
                 value={values.currency?.value || ""}
                 onValueChange={value => {
@@ -343,6 +356,10 @@ const ClientEditor = ({
             </div>
             {/* Submit Button */}
             <div className="pt-4">
+              <p className="mb-2 text-xs text-muted-foreground">
+                * Required: Name, Address Line 1, Country, State, City, Zipcode,
+                Currency
+              </p>
               <Button
                 type="submit"
                 className="w-full bg-gray-900 hover:bg-gray-800 text-white"
