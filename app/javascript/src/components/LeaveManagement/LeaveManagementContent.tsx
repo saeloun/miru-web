@@ -286,11 +286,13 @@ const LeaveManagementContent = ({
                 classNames={{
                   months: "flex flex-col",
                   month: "space-y-4",
-                  table: "w-full border-collapse",
-                  head_cell:
+                  month_grid: "w-full border-collapse",
+                  weekday:
                     "text-muted-foreground rounded-md w-10 font-normal text-[0.8rem]",
-                  cell: "h-10 w-10 p-0 text-center text-sm relative",
-                  day: "h-10 w-10 p-0 font-normal",
+                  day: "h-10 w-10 p-0 text-center text-sm relative",
+                  day_button: "h-10 w-10 p-0 font-normal rounded-md",
+                  selected:
+                    "[&>button]:bg-primary [&>button]:text-primary-foreground [&>button]:hover:bg-primary [&>button]:hover:text-primary-foreground",
                 }}
               />
             </div>
