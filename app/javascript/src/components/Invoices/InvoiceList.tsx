@@ -394,6 +394,60 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
         />
       )}
 
+      {/* Summary Stats */}
+      {filteredInvoices.length > 0 && (
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
+          <Card>
+            <CardContent className="p-4">
+              <div className="text-2xl font-bold">
+                {filteredInvoices.filter(inv => inv.status === "draft").length}
+              </div>
+              <div className="text-sm text-muted-foreground">
+                {i18n.t("invoices.draft")}
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-4">
+              <div className="text-2xl font-bold">
+                {filteredInvoices.filter(inv => inv.status === "sent").length}
+              </div>
+              <div className="text-sm text-muted-foreground">
+                {i18n.t("invoices.sent")}
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-4">
+              <div className="text-2xl font-bold">
+                {
+                  filteredInvoices.filter(inv => inv.status === "overdue")
+                    .length
+                }
+              </div>
+              <div className="text-sm text-muted-foreground">
+                {i18n.t("invoices.overdue")}
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-4">
+              <div className="text-2xl font-bold">
+                {currencyFormat(
+                  summary?.currency || invoices[0]?.currency || "USD",
+                  filteredInvoices
+                    .filter(inv => inv.status === "paid")
+                    .reduce((sum, inv) => sum + inv.amount, 0)
+                )}
+              </div>
+              <div className="text-sm text-muted-foreground">
+                {i18n.t("invoices.collected")}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
       {/* Search Only */}
       <Card>
         <CardContent className="p-4">
@@ -556,59 +610,6 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
         </div>
       )}
 
-      {/* Summary Stats */}
-      {filteredInvoices.length > 0 && (
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <Card>
-            <CardContent className="p-4">
-              <div className="text-2xl font-bold">
-                {filteredInvoices.filter(inv => inv.status === "draft").length}
-              </div>
-              <div className="text-sm text-muted-foreground">
-                {i18n.t("invoices.draft")}
-              </div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-4">
-              <div className="text-2xl font-bold">
-                {filteredInvoices.filter(inv => inv.status === "sent").length}
-              </div>
-              <div className="text-sm text-muted-foreground">
-                {i18n.t("invoices.sent")}
-              </div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-4">
-              <div className="text-2xl font-bold">
-                {
-                  filteredInvoices.filter(inv => inv.status === "overdue")
-                    .length
-                }
-              </div>
-              <div className="text-sm text-muted-foreground">
-                {i18n.t("invoices.overdue")}
-              </div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-4">
-              <div className="text-2xl font-bold">
-                {currencyFormat(
-                  "USD",
-                  filteredInvoices
-                    .filter(inv => inv.status === "paid")
-                    .reduce((sum, inv) => sum + inv.amount, 0)
-                )}
-              </div>
-              <div className="text-sm text-muted-foreground">
-                {i18n.t("invoices.collected")}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      )}
       {activeInvoice && isSending && (
         <SendInvoice
           handleSubmit={handleSendSubmit}
