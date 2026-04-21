@@ -36,6 +36,7 @@ import {
   Funnel,
   X,
   CircleNotch,
+  CaretDown,
 } from "phosphor-react";
 
 import { ApiStatus as InvoiceStatus } from "../../constants";
@@ -497,7 +498,15 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
                 <TableHead>{i18n.t("invoices.invoice")}</TableHead>
                 <TableHead>{i18n.t("client")}</TableHead>
                 <TableHead>{i18n.t("status")}</TableHead>
-                <TableHead>{i18n.t("invoices.issueDate")}</TableHead>
+                <TableHead>
+                  <span className="inline-flex items-center gap-1">
+                    {i18n.t("invoices.issueDate")}
+                    <CaretDown
+                      aria-label="Sorted descending"
+                      className="h-3.5 w-3.5 text-muted-foreground"
+                    />
+                  </span>
+                </TableHead>
                 <TableHead>{i18n.t("invoices.dueDate")}</TableHead>
                 <TableHead className="text-right">{i18n.t("amount")}</TableHead>
                 <TableHead className="w-12"></TableHead>
