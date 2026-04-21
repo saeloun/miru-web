@@ -523,13 +523,13 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
       </div>
 
       {/* Content */}
-      <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col lg:flex-row gap-8 p-6">
+      <div className="mx-auto max-w-[96rem]">
+        <div className="grid grid-cols-1 gap-8 p-4 sm:p-6 lg:grid-cols-12">
           {/* Form Section */}
           <div
             className={cn(
-              "flex-1 space-y-6",
-              showPreview ? "lg:max-w-3xl" : ""
+              "min-w-0 space-y-6",
+              showPreview ? "lg:col-span-7" : "lg:col-span-12"
             )}
           >
             {/* Basic Details */}
@@ -762,7 +762,7 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
 
           {/* Preview Section */}
           {showPreview && (
-            <div className="flex-1 lg:max-w-2xl lg:sticky lg:top-24 lg:h-fit">
+            <div className="min-w-0 lg:col-span-5 lg:sticky lg:top-24 lg:h-fit">
               <InvoicePreview invoice={previewInvoice} isEditing={true} />
             </div>
           )}

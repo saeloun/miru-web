@@ -557,8 +557,37 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
     navigate("/invoices");
   };
 
+  const printInvoiceView = () => {
+    const elementsToHide = Array.from(
+      document.querySelectorAll<HTMLElement>(".invoice-print-hide")
+    );
+    const previousDisplayValues = elementsToHide.map(el => el.style.display);
+    let restored = false;
+
+    const restoreVisibility = () => {
+      if (restored) return;
+      restored = true;
+      elementsToHide.forEach((el, index) => {
+        el.style.display = previousDisplayValues[index];
+      });
+      window.removeEventListener("afterprint", restoreVisibility);
+    };
+
+    elementsToHide.forEach(el => {
+      el.style.display = "none";
+    });
+
+    window.addEventListener("afterprint", restoreVisibility, { once: true });
+    window.print();
+    window.setTimeout(restoreVisibility, 1000);
+  };
+
   const renderBackButton = () => (
-    <Button variant="outline" onClick={handleBackToList} className="mb-6">
+    <Button
+      variant="outline"
+      onClick={handleBackToList}
+      className="invoice-print-hide mb-6"
+    >
       <ArrowLeft className="h-4 w-4 mr-2" />
       {i18n.t("invoices.backToInvoices")}
     </Button>
@@ -728,7 +757,7 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
             }
             break;
           case "print":
-            window.print();
+            printInvoiceView();
             break;
           case "share":
             // Share functionality can be implemented later
