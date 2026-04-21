@@ -25,9 +25,17 @@ class WeeklyReminderForMissedEntriesService
 
     limit = weekly_limit(company:)
 
-    entries = get_entries_for_period(user:, company:, start_date:, end_date:)
-
-    entries_total_duration = entries.sum(&:duration)
+    timesheet_entries, timeoff_entries = get_entries_for_period(
+      user:,
+      company:,
+      start_date:,
+      end_date:
+    )
+    entries_total_duration = total_duration_in_minutes(
+      company:,
+      timesheet_entries:,
+      timeoff_entries:
+    )
 
     if entries_total_duration < limit
       send_weekly_reminder_once(
@@ -69,14 +77,49 @@ class WeeklyReminderForMissedEntriesService
     end
 
     def get_entries_for_period(user:, company:, start_date:, end_date:)
-      user.timesheet_entries.kept.in_workspace(company).during(start_date, end_date) +
+      [
+        user.timesheet_entries.kept.in_workspace(company).during(start_date, end_date),
         user.timeoff_entries.during(start_date, end_date)
+      ]
     end
 
     def weekly_limit(company:)
       return 0 if company.working_hours.to_i == 0
 
       company.working_hours.to_i.hours.in_minutes
+    end
+
+    # Some older/imported workspaces stored timesheet durations in hours
+    # while the current app stores durations in minutes. Normalize before
+    # comparing against weekly limits to avoid false reminder emails.
+    def total_duration_in_minutes(company:, timesheet_entries:, timeoff_entries:)
+      normalized_timesheet_total = normalize_timesheet_duration(
+        company:,
+        timesheet_entries:
+      )
+      timeoff_total = timeoff_entries.sum(&:duration).to_f
+
+      normalized_timesheet_total + timeoff_total
+    end
+
+    def normalize_timesheet_duration(company:, timesheet_entries:)
+      total = timesheet_entries.sum(&:duration).to_f
+
+      return total unless durations_recorded_in_hours?(company:, timesheet_entries:, total:)
+
+      total * 60
+    end
+
+    def durations_recorded_in_hours?(company:, timesheet_entries:, total:)
+      return false if timesheet_entries.blank?
+
+      working_days = company.working_days.to_i
+      working_days = 5 if working_days.zero?
+      entries_count = timesheet_entries.size
+
+      entries_count <= working_days + 2 &&
+        timesheet_entries.all? { |entry| entry.duration.to_f <= 24 } &&
+        total <= company.working_hours.to_f * 1.5
     end
 
     def previous_week_date_range
