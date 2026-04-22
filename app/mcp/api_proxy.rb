@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "rack/mock"
+require "uri"
 
 module MCP
   module Miru
@@ -58,11 +59,28 @@ module MCP
           end
 
           def default_headers(authorization:)
-            {
+            headers = {
               "HTTP_AUTHORIZATION" => authorization.to_s,
               "HTTP_ACCEPT" => "application/json",
               "CONTENT_TYPE" => "application/json"
             }
+
+            host = default_host
+            headers["HTTP_HOST"] = host if host.present?
+            headers
+          end
+
+          def default_host
+            uri = URI.parse(ENV.fetch("APP_BASE_URL", ""))
+            return if uri.host.blank?
+
+            if uri.port && uri.port != uri.default_port
+              "#{uri.host}:#{uri.port}"
+            else
+              uri.host
+            end
+          rescue URI::InvalidURIError
+            nil
           end
 
           def normalize_headers(headers)
