@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe "Api::V1::Mcp#handle", type: :request do
+RSpec.describe "Api::V1::MCP#handle", type: :request do
   let(:user) { create(:user, current_workspace_id: company.id) }
   let(:cli_token) { CliSession.issue_for(user:, company:).last }
 
@@ -104,7 +104,7 @@ RSpec.describe "Api::V1::Mcp#handle", type: :request do
         "CONTENT_TYPE" => "application/json",
         "ACCEPT" => "application/json, text/event-stream",
         "MCP-Protocol-Version" => "2025-03-26",
-        "Mcp-Method" => mcp_method
+        "MCP-Method" => mcp_method
       })
     end
 end

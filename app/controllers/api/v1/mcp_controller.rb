@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Api::V1::McpController < Api::V1::ApplicationController
+class Api::V1::MCPController < Api::V1::ApplicationController
   skip_after_action :verify_authorized
 
   before_action :ensure_mcp_enabled!
