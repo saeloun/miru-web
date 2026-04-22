@@ -44,6 +44,8 @@ Rails.application.routes.draw do
 
   draw(:api)
 
+  match "/mcp", to: "api/v1/mcp#handle", via: [:get, :post, :delete], as: :mcp
+
   resources :workspaces, only: [:update]
 
   resources :invoices, only: [], module: :invoices do

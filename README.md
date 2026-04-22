@@ -144,6 +144,8 @@ For detailed information on how to use Miru Web and its various features, please
 
 For local development on this branch, see CLAUDE.md and docs under `docs/`.
 
+For CLI and MCP setup details, see [`docs/miru-cli.md`](docs/miru-cli.md) and [`docs/miru-mcp.md`](docs/miru-mcp.md).
+
 ## Localization Automation
 
 Miru supports automated locale maintenance with `i18n-tasks`.

@@ -1,0 +1,23 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require_relative "../config/environment"
+
+token = ENV.fetch("MIRU_MCP_TOKEN", "").to_s.strip
+if token.blank?
+  warn("MIRU_MCP_TOKEN is required for stdio MCP mode")
+  exit(1)
+end
+
+authorization = token.start_with?("Bearer ") ? token : "Bearer #{token}"
+pro_access = MCP::Miru::ProAccessChecker.pro_access?(authorization: authorization)
+
+server = MCP::Miru::ServerFactory.build(
+  server_context: {
+    authorization: authorization,
+    pro_access: pro_access
+  }
+)
+
+transport = MCP::Server::Transports::StdioTransport.new(server)
+transport.open

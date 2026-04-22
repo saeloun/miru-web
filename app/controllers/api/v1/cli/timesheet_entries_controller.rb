@@ -25,14 +25,7 @@ class Api::V1::Cli::TimesheetEntriesController < Api::V1::Cli::BaseController
     authorize current_timesheet_entry
 
     current_timesheet_entry.project = project
-    current_timesheet_entry.update!(
-      duration: cli_timesheet_entry_params[:duration_minutes],
-      work_date: cli_timesheet_entry_params[:work_date],
-      note: cli_timesheet_entry_params[:note],
-      bill_status: cli_timesheet_entry_params[:bill_status],
-      source: "cli",
-      source_metadata: cli_timesheet_entry_params[:source_metadata]
-    )
+    current_timesheet_entry.update!(update_attributes)
 
     render json: {
       notice: I18n.t("timesheet_entry.update.message"),
@@ -67,5 +60,17 @@ class Api::V1::Cli::TimesheetEntriesController < Api::V1::Cli::BaseController
         :bill_status,
         source_metadata: {}
       )
+    end
+
+    def update_attributes
+      attrs = {
+        duration: cli_timesheet_entry_params[:duration_minutes],
+        work_date: cli_timesheet_entry_params[:work_date],
+        source: "cli"
+      }
+      attrs[:note] = cli_timesheet_entry_params[:note] if cli_timesheet_entry_params.key?(:note)
+      attrs[:bill_status] = cli_timesheet_entry_params[:bill_status] if cli_timesheet_entry_params.key?(:bill_status)
+      attrs[:source_metadata] = cli_timesheet_entry_params[:source_metadata] if cli_timesheet_entry_params.key?(:source_metadata)
+      attrs
     end
 end
