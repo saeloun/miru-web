@@ -185,6 +185,21 @@ jobs:
           bundler-cache: true
           bundler: latest
 
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9
+          run_install: false
+
+      - name: Install pnpm packages
+        run: |
+          PUPPETEER_SKIP_DOWNLOAD=true pnpm install --frozen-lockfile
+
       - name: Setup test database
         run: bundle exec rails db:prepare
 
