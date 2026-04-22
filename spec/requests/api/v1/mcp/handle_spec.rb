@@ -1,0 +1,110 @@
+# frozen_string_literal: true
+
+require "rails_helper"
+
+RSpec.describe "Api::V1::Mcp#handle", type: :request do
+  let(:user) { create(:user, current_workspace_id: company.id) }
+  let(:cli_token) { CliSession.issue_for(user:, company:).last }
+
+  before do
+    create(:employment, company:, user:)
+    user.add_role :employee, company
+  end
+
+  describe "pro entitlement gate" do
+    let(:company) { create(:company, plan_tier: "free") }
+
+    it "returns forbidden for free workspaces" do
+      post mcp_path, params: initialize_payload.to_json, headers: mcp_headers(cli_token:, mcp_method: "initialize")
+
+      expect(response).to have_http_status(:forbidden)
+      expect(json_response.dig("error", "data", "error")).to eq("forbidden_feature")
+    end
+  end
+
+  describe "pro access allowlist" do
+    context "with paid plan" do
+      let(:company) { create(:company, plan_tier: "paid") }
+
+      it "accepts initialize requests" do
+        post mcp_path, params: initialize_payload.to_json, headers: mcp_headers(cli_token:, mcp_method: "initialize")
+
+        expect(response).to have_http_status(:ok)
+        expect(json_response["result"]).to be_present
+      end
+    end
+
+    context "with active trial" do
+      let(:company) do
+        create(
+          :company,
+          plan_tier: "free",
+          trial_started_at: 1.day.ago,
+          trial_ends_at: 29.days.from_now
+        )
+      end
+
+      it "accepts initialize requests" do
+        post mcp_path, params: initialize_payload.to_json, headers: mcp_headers(cli_token:, mcp_method: "initialize")
+
+        expect(response).to have_http_status(:ok)
+      end
+    end
+
+    context "with billing exempt workspace" do
+      let(:company) { create(:company, plan_tier: "free", billing_exempt: true) }
+
+      it "accepts initialize requests" do
+        post mcp_path, params: initialize_payload.to_json, headers: mcp_headers(cli_token:, mcp_method: "initialize")
+
+        expect(response).to have_http_status(:ok)
+      end
+    end
+  end
+
+  describe "origin validation" do
+    let(:company) { create(:company, plan_tier: "paid") }
+
+    around do |example|
+      original = ENV["MCP_ALLOWED_ORIGINS"]
+      ENV["MCP_ALLOWED_ORIGINS"] = "https://allowed.miru.test"
+      example.run
+      ENV["MCP_ALLOWED_ORIGINS"] = original
+    end
+
+    it "rejects requests from disallowed origins" do
+      headers = mcp_headers(cli_token:, mcp_method: "initialize").merge("Origin" => "https://evil.example")
+      post mcp_path, params: initialize_payload.to_json, headers: headers
+
+      expect(response).to have_http_status(:forbidden)
+      expect(json_response.dig("error", "data", "error")).to eq("invalid_origin")
+    end
+  end
+
+  private
+
+    def initialize_payload
+      {
+        jsonrpc: "2.0",
+        id: "1",
+        method: "initialize",
+        params: {
+          protocolVersion: "2025-03-26",
+          capabilities: {},
+          clientInfo: {
+            name: "miru-spec",
+            version: "1.0.0"
+          }
+        }
+      }
+    end
+
+    def mcp_headers(cli_token:, mcp_method:)
+      cli_auth_headers(cli_token, {
+        "CONTENT_TYPE" => "application/json",
+        "ACCEPT" => "application/json, text/event-stream",
+        "MCP-Protocol-Version" => "2025-03-26",
+        "Mcp-Method" => mcp_method
+      })
+    end
+end
