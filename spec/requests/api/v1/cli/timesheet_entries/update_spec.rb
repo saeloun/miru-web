@@ -59,6 +59,27 @@ RSpec.describe "Api::V1::Cli::TimesheetEntries#update", type: :request do
     )
   end
 
+  it "preserves optional fields when they are omitted" do
+    timesheet_entry.update!(
+      note: "Keep me",
+      bill_status: "non_billable",
+      source_metadata: { "tool" => "codex", "skill" => "existing" }
+    )
+
+    send_request :patch, api_v1_cli_timesheet_entry_path(timesheet_entry), params: {
+      timesheet_entry: {
+        project_id: other_project.id,
+        duration_minutes: 45,
+        work_date: Date.current.iso8601
+      }
+    }, headers: cli_auth_headers(cli_token)
+
+    expect(response).to have_http_status(:ok)
+    expect(timesheet_entry.reload.note).to eq("Keep me")
+    expect(timesheet_entry.reload.bill_status).to eq("non_billable")
+    expect(timesheet_entry.reload.source_metadata).to eq({ "tool" => "codex", "skill" => "existing" })
+  end
+
   it "does not allow updating another user's timesheet entry" do
     other_user = create(:user, current_workspace_id: company.id)
     create(:employment, company:, user: other_user)

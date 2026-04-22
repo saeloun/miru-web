@@ -65,12 +65,14 @@ module MCP
             end
 
             def error_response(message, details: {})
+              normalized_details = details.to_h.deep_stringify_keys.except("error")
+
               MCP::Tool::Response.new(
                 [{
                   type: "text",
                   text: JSON.pretty_generate({
                     error: message,
-                    details: details
+                    details: normalized_details.presence
                   })
                 }],
                 error: true
