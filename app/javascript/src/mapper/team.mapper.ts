@@ -1,15 +1,31 @@
-const normalizeStatus = item => {
-  if (item.status === true) return "active";
+type TeamStatus = "active" | "inactive" | "invited";
 
-  if (item.status === false) return item.isTeamMember ? "inactive" : "invited";
+interface RawTeamMember {
+  status?: boolean | string | null;
+  statusText?: string | null;
+  isTeamMember?: boolean;
+  [key: string]: unknown;
+}
 
-  const normalizedStatus = String(item.status || "").toLowerCase();
+const normalizeStatus = (item: RawTeamMember): TeamStatus => {
+  const rawStatus = item.statusText ?? item.status;
+  if (rawStatus === true) return "active";
+
+  if (rawStatus === false) return item.isTeamMember ? "inactive" : "invited";
+
+  const normalizedStatus = String(rawStatus ?? "").toLowerCase();
   if (normalizedStatus === "pending") return "invited";
 
-  return normalizedStatus || "inactive";
+  if (normalizedStatus === "active") return "active";
+
+  if (normalizedStatus === "inactive") return "inactive";
+
+  if (normalizedStatus === "invited") return "invited";
+
+  return item.isTeamMember ? "active" : "invited";
 };
 
-const mapper = item => ({
+const mapper = (item: RawTeamMember) => ({
   id: item.id,
   firstName: item.firstName,
   lastName: item.lastName,

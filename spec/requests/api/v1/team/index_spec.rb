@@ -34,10 +34,10 @@ RSpec.describe "Api::V1::Team#index", type: :request do
 
     it "checks if correct team members data is returned" do
       actual_team_data = @team_data.map do |member|
-                            member.slice("id", "name", "email", "role", "status", "isTeamMember", "hoursLogged", "billableHours", "projects")
+                            member.slice("id", "name", "email", "role", "status", "statusText", "isTeamMember", "hoursLogged", "billableHours", "projects")
                           end
       actual_invited_user_data = @invitation_data.map do |member|
-                                   member.slice("id", "name", "email", "role", "status", "isTeamMember")
+                                   member.slice("id", "name", "email", "role", "status", "statusText", "isTeamMember")
                                  end
 
       expected_team_data = [{
@@ -45,7 +45,8 @@ RSpec.describe "Api::V1::Team#index", type: :request do
         "name" => user.full_name,
         "email" => user.email,
         "role" => "admin",
-        "status" => "active",
+        "status" => true,
+        "statusText" => "active",
         "isTeamMember" => true,
         "hoursLogged" => 0.0,
         "billableHours" => 0.0,
@@ -57,7 +58,8 @@ RSpec.describe "Api::V1::Team#index", type: :request do
         "name" => invitation.full_name,
         "email" => invitation.recipient_email,
         "role" => "employee",
-        "status" => "pending",
+        "status" => false,
+        "statusText" => "pending",
         "isTeamMember" => false
       }]
 
@@ -79,7 +81,8 @@ RSpec.describe "Api::V1::Team#index", type: :request do
         "name" => "#{user.first_name} #{user.last_name}",
         "email" => user.email,
         "role" => "admin",
-        "status" => "active",
+        "status" => true,
+        "statusText" => "active",
         "isTeamMember" => true,
         "employmentType" => employment.employment_type,
         "joinedAtDate" => employment.joined_at.strftime("%Y-%m-%d"),
