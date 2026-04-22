@@ -3,12 +3,27 @@ type TeamStatus = "active" | "inactive" | "invited";
 interface RawTeamMember {
   status?: boolean | string | null;
   statusText?: string | null;
+  status_text?: string | null;
   isTeamMember?: boolean;
-  [key: string]: unknown;
+  id?: number | string;
+  firstName?: string;
+  lastName?: string;
+  name?: string;
+  email?: string;
+  phone?: string;
+  profilePicture?: string;
+  role?: string;
+  designation?: string;
+  department?: string;
+  employmentType?: string;
+  joinedAtDate?: string;
+  hoursLogged?: number;
+  billableHours?: number;
+  projects?: number;
 }
 
-const normalizeStatus = (item: RawTeamMember): TeamStatus => {
-  const rawStatus = item.statusText ?? item.status;
+const normalizeStatusToString = (item: RawTeamMember): TeamStatus => {
+  const rawStatus = item.statusText ?? item.status_text ?? item.status;
   if (rawStatus === true) return "active";
 
   if (rawStatus === false) return item.isTeamMember ? "inactive" : "invited";
@@ -36,7 +51,7 @@ const mapper = (item: RawTeamMember) => ({
   role: item.role,
   designation: item.designation,
   department: item.department,
-  status: normalizeStatus(item),
+  status: normalizeStatusToString(item),
   profilePicture: item.profilePicture,
   isTeamMember: item.isTeamMember,
   employmentType: item.employmentType,
