@@ -525,6 +525,7 @@ export const teamApi = {
 
     return http.get(`${teamPath}?${queryParams}`);
   },
+  getRemovalImpact: (id: any) => http.get(`${teamPath}/${id}/removal_impact`),
   destroyTeamMember: (id: any) => http.delete(`${teamPath}/${id}`),
   updateTeamMember: (id: any, payload: any) =>
     http.put(`${teamPath}/${id}`, payload),

@@ -54,6 +54,27 @@ class Api::V1::TeamController < Api::V1::ApplicationController
     }, status: 200
   end
 
+  def removal_impact
+    authorize employment, :destroy?, policy_class: TeamPolicy
+
+    impact = Team::RemovalImpactService.new(
+      current_company: current_company,
+      member: employment.user
+    ).process
+
+    render json: {
+      removalImpact: {
+        projectAssignmentsCount: impact[:project_assignments_count],
+        projectNames: impact[:project_names],
+        unbilledEntriesCount: impact[:unbilled_entries_count],
+        unbilledMinutes: impact[:unbilled_minutes],
+        uninvoicedAmount: impact[:uninvoiced_amount],
+        invoicedEntriesCount: impact[:invoiced_entries_count],
+        hasRisk: impact[:has_risk]
+      }
+    }, status: 200
+  end
+
   private
 
     def employment

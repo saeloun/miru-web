@@ -78,6 +78,16 @@ interface TeamMemberFormState {
   role: string;
 }
 
+interface RemovalImpact {
+  projectAssignmentsCount: number;
+  projectNames: string[];
+  unbilledEntriesCount: number;
+  unbilledMinutes: number;
+  uninvoicedAmount: number;
+  invoicedEntriesCount: number;
+  hasRisk: boolean;
+}
+
 const fetchTeamMembers = async (): Promise<TeamData> => {
   const response = await teamApi.get("page=1&items=1000");
   const teamMembers = unmapList(response);
@@ -97,6 +107,8 @@ const TeamTable: React.FC = () => {
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null);
+  const [deleteImpact, setDeleteImpact] = useState<RemovalImpact | null>(null);
+  const [loadingDeleteImpact, setLoadingDeleteImpact] = useState(false);
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["team"],
@@ -199,9 +211,20 @@ const TeamTable: React.FC = () => {
     setShowEditDialog(true);
   };
 
-  const handleDelete = (member: TeamMember) => {
+  const handleDelete = async (member: TeamMember) => {
     setSelectedMember(member);
+    setDeleteImpact(null);
     setShowDeleteDialog(true);
+    setLoadingDeleteImpact(true);
+
+    try {
+      const response = await teamApi.getRemovalImpact(member.id);
+      setDeleteImpact(response.data?.removalImpact || null);
+    } catch {
+      toast.error(i18n.t("team.failedToLoadTeamMembers"));
+    } finally {
+      setLoadingDeleteImpact(false);
+    }
   };
 
   const confirmDelete = () => {
@@ -661,13 +684,65 @@ const TeamTable: React.FC = () => {
       </Card>
 
       {/* Delete Confirmation Dialog */}
-      <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+      <Dialog
+        open={showDeleteDialog}
+        onOpenChange={value => {
+          setShowDeleteDialog(value);
+          if (!value) {
+            setDeleteImpact(null);
+            setSelectedMember(null);
+          }
+        }}
+      >
         <DialogContent>
           <DialogHeader>
             <DialogTitle>{i18n.t("team.deleteUser")}</DialogTitle>
             <DialogDescription>
               {i18n.t("team.deleteUserConfirm", { name: selectedMember?.name })}
             </DialogDescription>
+            {loadingDeleteImpact ? (
+              <p className="text-sm text-muted-foreground">
+                Checking active assignments and uninvoiced work...
+              </p>
+            ) : (
+              deleteImpact?.hasRisk && (
+                <div className="rounded-md border border-amber-300 bg-amber-50 p-3 text-sm text-amber-900">
+                  <p className="font-medium">
+                    Warning: This member has active work in this workspace.
+                  </p>
+                  <ul className="mt-2 list-disc space-y-1 pl-5">
+                    {deleteImpact.projectAssignmentsCount > 0 && (
+                      <li>
+                        Assigned to {deleteImpact.projectAssignmentsCount}{" "}
+                        {deleteImpact.projectAssignmentsCount === 1
+                          ? "project"
+                          : "projects"}
+                        {deleteImpact.projectNames.length > 0 &&
+                          ` (${deleteImpact.projectNames
+                            .slice(0, 2)
+                            .join(", ")}${
+                            deleteImpact.projectNames.length > 2 ? ", ..." : ""
+                          })`}
+                      </li>
+                    )}
+                    {deleteImpact.unbilledEntriesCount > 0 && (
+                      <li>
+                        {(
+                          Number(deleteImpact.unbilledMinutes || 0) / 60
+                        ).toFixed(1)}{" "}
+                        unbilled hours across{" "}
+                        {deleteImpact.unbilledEntriesCount} entries (estimated
+                        value: $
+                        {Number(deleteImpact.uninvoicedAmount || 0).toFixed(2)})
+                      </li>
+                    )}
+                    {deleteImpact.invoicedEntriesCount === 0 && (
+                      <li>No billed entries found for this member.</li>
+                    )}
+                  </ul>
+                </div>
+              )
+            )}
           </DialogHeader>
           <DialogFooter>
             <Button

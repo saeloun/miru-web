@@ -151,6 +151,7 @@ namespace :api, defaults: { format: "json" } do
     end
 
     resources :team, only: [:index, :destroy, :update] do
+      member { get "removal_impact" }
       resource :details, only: [:show, :update], controller: "team_members/details"
       resource :avatar, only: [:update, :destroy], controller: "team_members/avatar"
       collection { put "update_team_members" }
