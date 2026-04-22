@@ -14,6 +14,8 @@
 - Draft invoice line-item inputs now stay visually aligned with the standard invoice row layout while typing a new manual entry
 - Time-tracking entry flows now rehydrate saved state reliably on the same page and use more stable system-spec selectors
 - System-spec support code was consolidated by removing dead helper modules and stabilizing auth/request-capture teardown
+- Weekly reminder processing now better distinguishes legacy hour-based timesheet data from minute-based entries to avoid false reminder emails for users who met weekly hour targets
+- Mailer layout branding now uses asset helper URLs with production `action_mailer.asset_host` to keep email logo assets resolvable in production mail clients
 
 ## 3.0.0 - 2026-03-29
 
