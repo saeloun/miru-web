@@ -98,7 +98,7 @@ const ForgotPassword = () => {
                       type="submit"
                       className={`form__button whitespace-nowrap ${
                         !values?.email?.trim()
-                          ? "cursor-not-allowed border-transparent bg-muted text-muted-foreground hover:border-transparent"
+                          ? "cursor-not-allowed border-transparent bg-muted text-foreground/70 hover:border-transparent"
                           : "cursor-pointer"
                       }`}
                     >
