@@ -22,6 +22,29 @@ interface RawTeamMember {
   projects?: number;
 }
 
+export interface TeamMember {
+  id?: number | string;
+  firstName?: string;
+  lastName?: string;
+  name?: string;
+  email?: string;
+  phone?: string;
+  avatar?: string;
+  role?: string;
+  designation?: string;
+  department?: string;
+  status: TeamStatus;
+  profilePicture?: string;
+  isTeamMember?: boolean;
+  employmentType?: string;
+  joinedAtDate?: string;
+  hoursLogged?: number;
+  billableHours?: number;
+  projects?: number;
+}
+
+// Accepts legacy boolean status and modern string status/statusText payloads.
+// Unknown or missing values default to active for team members and invited for invitations.
 const normalizeStatusToString = (item: RawTeamMember): TeamStatus => {
   const rawStatus = item.statusText ?? item.status_text ?? item.status;
   if (rawStatus === true) return "active";
@@ -40,7 +63,7 @@ const normalizeStatusToString = (item: RawTeamMember): TeamStatus => {
   return item.isTeamMember ? "active" : "invited";
 };
 
-const mapper = (item: RawTeamMember) => ({
+export const mapTeamMember = (item: RawTeamMember): TeamMember => ({
   id: item.id,
   firstName: item.firstName,
   lastName: item.lastName,
@@ -63,7 +86,7 @@ const mapper = (item: RawTeamMember) => ({
 
 const unmapList = input => {
   let { combinedDetails } = input.data;
-  combinedDetails = combinedDetails.map(item => ({ ...mapper(item) }));
+  combinedDetails = combinedDetails.map(item => ({ ...mapTeamMember(item) }));
 
   return combinedDetails;
 };

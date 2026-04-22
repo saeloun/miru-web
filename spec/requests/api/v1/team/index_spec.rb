@@ -59,7 +59,7 @@ RSpec.describe "Api::V1::Team#index", type: :request do
         "email" => invitation.recipient_email,
         "role" => "employee",
         "status" => false,
-        "statusText" => "pending",
+        "statusText" => "invited",
         "isTeamMember" => false
       }]
 
