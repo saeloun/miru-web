@@ -137,6 +137,48 @@ RSpec.describe WeeklyReminderForMissedEntriesService do
       expect(service).not_to have_received(:send_mail)
     end
 
+    it "does not send reminder when legacy hourly durations are split across many entries" do
+      travel_to Time.zone.local(2026, 4, 6, 14, 0, 0) do
+        monday_previous_week = Date.new(2026, 3, 30)
+        project = create(:project, client: create(:client, company:))
+
+        10.times do |index|
+          create(
+            :timesheet_entry,
+            user:,
+            project:,
+            duration: 4.5,
+            work_date: monday_previous_week + (index % 5).days
+          )
+        end
+
+        service.check_entries_and_send_mail(user, company, notification_preference)
+      end
+
+      expect(service).not_to have_received(:send_mail)
+    end
+
+    it "still sends reminder for minute granularity entries below weekly target" do
+      travel_to Time.zone.local(2026, 4, 6, 14, 0, 0) do
+        monday_previous_week = Date.new(2026, 3, 30)
+        project = create(:project, client: create(:client, company:))
+
+        10.times do |index|
+          create(
+            :timesheet_entry,
+            user:,
+            project:,
+            duration: 15,
+            work_date: monday_previous_week + (index % 5).days
+          )
+        end
+
+        service.check_entries_and_send_mail(user, company, notification_preference)
+      end
+
+      expect(service).to have_received(:send_mail).once
+    end
+
     it "sends reminder when legacy hourly durations are still below weekly target" do
       travel_to Time.zone.local(2026, 4, 6, 14, 0, 0) do
         monday_previous_week = Date.new(2026, 3, 30)

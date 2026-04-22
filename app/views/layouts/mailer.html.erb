@@ -526,7 +526,7 @@
                       <% if content_for?(:email_badge) %>
                         <%= yield :email_badge %>
                       <% else %>
-                        <img src="<%= "#{root_url}miruLogoWithText.svg" %>" alt="<%= t("mailers.layout.brand") %>" width="132" class="email-brand-logo" style="display: block; width: 132px; height: auto;" />
+                        <img src="<%= image_url("miruLogoWithText.svg") %>" alt="<%= t("mailers.layout.brand") %>" width="132" class="email-brand-logo" style="display: block; width: 132px; height: auto;" />
                       <% end %>
                     </td>
                   </tr>

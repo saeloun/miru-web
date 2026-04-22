@@ -113,13 +113,20 @@ class WeeklyReminderForMissedEntriesService
     def durations_recorded_in_hours?(company:, timesheet_entries:, total:)
       return false if timesheet_entries.blank?
 
-      working_days = company.working_days.to_i
-      working_days = 5 if working_days.zero?
-      entries_count = timesheet_entries.size
+      durations = timesheet_entries.map { |entry| entry.duration.to_f }
+      max_duration = durations.max.to_f
 
-      entries_count <= working_days + 2 &&
-        timesheet_entries.all? { |entry| entry.duration.to_f <= 24 } &&
-        total <= company.working_hours.to_f * 1.5
+      return false if max_duration > 24
+      return false if total > company.working_hours.to_f * 2
+      return false if minute_granularity_durations?(durations)
+
+      durations.any? { |duration| (duration % 1).positive? } || max_duration <= 12
+    end
+
+    def minute_granularity_durations?(durations)
+      durations.all? do |duration|
+        duration == duration.to_i && (duration % 15).zero?
+      end
     end
 
     def previous_week_date_range
