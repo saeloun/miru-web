@@ -1,3 +1,14 @@
+const normalizeStatus = item => {
+  if (item.status === true) return "active";
+
+  if (item.status === false) return item.isTeamMember ? "inactive" : "invited";
+
+  const normalizedStatus = String(item.status || "").toLowerCase();
+  if (normalizedStatus === "pending") return "invited";
+
+  return normalizedStatus || "inactive";
+};
+
 const mapper = item => ({
   id: item.id,
   firstName: item.firstName,
@@ -9,7 +20,7 @@ const mapper = item => ({
   role: item.role,
   designation: item.designation,
   department: item.department,
-  status: item.status,
+  status: normalizeStatus(item),
   profilePicture: item.profilePicture,
   isTeamMember: item.isTeamMember,
   employmentType: item.employmentType,

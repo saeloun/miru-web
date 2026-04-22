@@ -45,7 +45,7 @@ RSpec.describe "Api::V1::Team#index", type: :request do
         "name" => user.full_name,
         "email" => user.email,
         "role" => "admin",
-        "status" => true,
+        "status" => "active",
         "isTeamMember" => true,
         "hoursLogged" => 0.0,
         "billableHours" => 0.0,
@@ -57,7 +57,7 @@ RSpec.describe "Api::V1::Team#index", type: :request do
         "name" => invitation.full_name,
         "email" => invitation.recipient_email,
         "role" => "employee",
-        "status" => false,
+        "status" => "pending",
         "isTeamMember" => false
       }]
 
@@ -79,7 +79,7 @@ RSpec.describe "Api::V1::Team#index", type: :request do
         "name" => "#{user.first_name} #{user.last_name}",
         "email" => user.email,
         "role" => "admin",
-        "status" => true,
+        "status" => "active",
         "isTeamMember" => true,
         "employmentType" => employment.employment_type,
         "joinedAtDate" => employment.joined_at.strftime("%Y-%m-%d"),
