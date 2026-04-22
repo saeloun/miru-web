@@ -145,5 +145,23 @@ RSpec.describe "MCP write tools" do
 
       expect(MCP::Miru::IdempotencyStore).not_to have_received(:fetch)
     end
+
+    it "returns stable write error code without leaking exception text" do
+      allow(MCP::Miru::IdempotencyStore).to receive(:fetch).and_raise(StandardError, "sensitive upstream detail")
+
+      response = MCP::Miru::Tools::TimeCreateTool.call(
+        project_id: 1,
+        duration_minutes: 60,
+        work_date: "2026-04-22",
+        server_context:
+      )
+
+      payload = JSON.parse(response.content.first.fetch(:text))
+      expect(response.error?).to eq(true)
+      expect(payload["error"]).to eq("Request failed")
+      expect(payload.dig("details", "code")).to eq("REQUEST_FAILED")
+      expect(payload.dig("details", "error")).to be_nil
+      expect(payload.to_json).not_to include("sensitive upstream detail")
+    end
   end
 end

@@ -30,7 +30,8 @@ module MCP
 
               response_from_result(result)
             rescue StandardError => e
-              error_response("Request failed", details: { error: e.message })
+              Rails.logger.error("[MCP][#{tool_name}] write_request failed: #{e.class}: #{e.message}")
+              error_response("Request failed", details: { code: "REQUEST_FAILED" })
             end
 
             def response_from_result(result)
