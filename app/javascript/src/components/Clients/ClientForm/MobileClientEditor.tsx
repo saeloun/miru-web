@@ -18,7 +18,11 @@ import worldCountries from "world-countries";
 
 import { clientSchema, getInitialvalues } from "./formValidationSchema";
 import UploadLogo from "./UploadLogo";
-import { formatFormData, disableBtn } from "./utils";
+import {
+  formatFormData,
+  disableBtn,
+  getMissingRequiredClientFields,
+} from "./utils";
 
 import { currencyListOptions } from "../../OrganizationSetup/FinancialDetailsForm/utils";
 import { i18n } from "../../../i18n";
@@ -111,6 +115,19 @@ const MobileClientEditor = ({
         >
           {(props: FormikProps<FormValues>) => {
             const { touched, errors, setFieldValue, values } = props;
+            const fieldLabels = {
+              name: i18n.t("name"),
+              address1: i18n.t("clients.addressLine1"),
+              country: i18n.t("country"),
+              state: i18n.t("state"),
+              city: i18n.t("city"),
+              zipcode: i18n.t("zipcode"),
+              currency: i18n.t("currency"),
+            };
+
+            const missingRequiredFields = getMissingRequiredClientFields(
+              values
+            ).map(key => fieldLabels[key as keyof typeof fieldLabels]);
 
             return (
               <Form>
@@ -355,6 +372,12 @@ const MobileClientEditor = ({
                     * Required: Name, Address Line 1, Country, State, City,
                     Zipcode, Currency
                   </p>
+                  {missingRequiredFields.length > 0 && (
+                    <p className="mb-2 text-xs text-amber-600">
+                      Missing required fields:{" "}
+                      {missingRequiredFields.join(", ")}
+                    </p>
+                  )}
                   {client?.id ? (
                     <Button
                       className="w-full p-2 text-center text-base font-bold"

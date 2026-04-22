@@ -62,3 +62,23 @@ export const disableBtn = (values, errors, submitting) => {
 
   return true;
 };
+
+export const getMissingRequiredClientFields = values => {
+  const requiredFieldKeys = [
+    "name",
+    "address1",
+    "country",
+    "state",
+    "city",
+    "zipcode",
+    "currency",
+  ];
+
+  return requiredFieldKeys.filter(key => {
+    if (key === "country" || key === "currency") {
+      return !values[key]?.value;
+    }
+
+    return !values[key];
+  });
+};
