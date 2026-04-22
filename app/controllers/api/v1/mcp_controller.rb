@@ -100,7 +100,7 @@ class Api::V1::MCPController < Api::V1::ApplicationController
       return if raw_body.blank?
 
       payload = JSON.parse(raw_body)
-      payload["id"]
+      payload.is_a?(Hash) ? payload["id"] : nil
     rescue JSON::ParserError
       nil
     end

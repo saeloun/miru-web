@@ -6,6 +6,10 @@ module MCP
       class TimeUpdateTool < BaseTool
         tool_name "miru.time.update"
         description "Update a timesheet entry"
+        # Distinguishes omitted optional fields from explicit nil values.
+        UNSET = Object.new.freeze
+        private_constant :UNSET
+
         input_schema(
           properties: {
             id: { type: "integer" },
@@ -23,17 +27,8 @@ module MCP
         annotations read_only_hint: false, destructive_hint: false
 
         class << self
-          def call(id:, project_id:, duration_minutes:, work_date:, note: nil, bill_status: "unbilled", source_metadata: nil, dry_run: false, idempotency_key: nil, server_context:)
-            body = {
-              timesheet_entry: {
-                project_id: project_id,
-                duration_minutes: duration_minutes,
-                work_date: work_date,
-                note: note,
-                bill_status: bill_status,
-                source_metadata: merged_source_metadata(source_metadata)
-              }
-            }
+          def call(id:, project_id:, duration_minutes:, work_date:, note: UNSET, bill_status: UNSET, source_metadata: UNSET, dry_run: false, idempotency_key: nil, server_context:)
+            body = { timesheet_entry: update_attributes(project_id:, duration_minutes:, work_date:, note:, bill_status:, source_metadata:) }
 
             write_request(
               method: :patch,
@@ -46,6 +41,20 @@ module MCP
           rescue StandardError => e
             error_response("Failed to update timesheet entry", details: { error: e.message })
           end
+
+          private
+
+            def update_attributes(project_id:, duration_minutes:, work_date:, note:, bill_status:, source_metadata:)
+              attributes = {
+                project_id: project_id,
+                duration_minutes: duration_minutes,
+                work_date: work_date
+              }
+              attributes[:note] = note unless note.equal?(UNSET)
+              attributes[:bill_status] = bill_status unless bill_status.equal?(UNSET)
+              attributes[:source_metadata] = merged_source_metadata(source_metadata) unless source_metadata.equal?(UNSET)
+              attributes
+            end
         end
       end
     end

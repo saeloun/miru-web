@@ -22,4 +22,17 @@ RSpec.describe MCP::Miru::ToolCatalog do
       "miru.expense.create"
     ])
   end
+
+  it "keeps all tools namespaced and unique" do
+    names = described_class::TOOLS.pluck(:name)
+
+    expect(names).to all(start_with("miru."))
+    expect(names.uniq.size).to eq(names.size)
+  end
+
+  it "contains both read-only and write tools" do
+    readonly_values = described_class::TOOLS.pluck(:read_only).uniq
+
+    expect(readonly_values).to include(true, false)
+  end
 end

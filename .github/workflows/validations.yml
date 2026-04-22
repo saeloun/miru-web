@@ -22,7 +22,8 @@ jobs:
     if: github.event_name != 'push' || !contains(github.event.head_commit.message, 'skip ci')
     env:
       RAILS_ENV: test
-      DB_HOST: localhost
+      # Use the GitHub Actions service hostname inside the job network.
+      DB_HOST: postgres
       DB_USER: root
       DB_PASS: password
       CI: true
@@ -185,7 +186,7 @@ jobs:
         run: bundle exec rails db:prepare
 
       - name: Run MCP RuboCop checks
-        run: bundle exec rubocop app/mcp app/controllers/api/v1/mcp_controller.rb app/services/mcp/client.rb spec/mcp spec/requests/api/v1/mcp
+        run: bundle exec rubocop app/mcp app/controllers/api/v1/mcp_controller.rb app/services/mcp/miru/client.rb spec/mcp spec/requests/api/v1/mcp spec/services/mcp
 
       - name: Run bundler-audit
         run: |

@@ -12,7 +12,7 @@ Miru ships an MCP implementation built on the Ruby SDK (`mcp` gem, `~> 0.13.0`) 
 
 - HTTP MCP endpoint: `POST/GET/DELETE /mcp`
 - MCP stdio server entrypoint: `bin/miru-mcp`
-- Ruby client wrapper: `app/services/mcp/client.rb` (`MCP::Miru::Client`)
+- Ruby client wrapper: `app/services/mcp/miru/client.rb` (`MCP::Miru::Client`)
 - Tool catalog + namespaced tools: `app/mcp/**`
 
 All tools are namespaced under `miru.*`.
@@ -242,7 +242,7 @@ Useful checks:
 
 ```bash
 rtk mise exec -- bundle exec rails routes -g mcp
-rtk mise exec -- bundle exec rubocop app/mcp app/controllers/api/v1/mcp_controller.rb app/services/mcp/client.rb spec/mcp spec/requests/api/v1/mcp
+rtk mise exec -- bundle exec rubocop app/mcp app/controllers/api/v1/mcp_controller.rb app/services/mcp/miru/client.rb spec/mcp spec/requests/api/v1/mcp spec/services/mcp/client_spec.rb
 ```
 
 PR verification checklist:
@@ -279,7 +279,7 @@ Then connect to Miru over HTTP MCP (no local Miru server code required).
 
 If you want external package distribution later:
 
-1. Extract `app/mcp/**` + `app/services/mcp/client.rb` into a separate gem (for example `miru-mcp`).
+1. Extract `app/mcp/**` + `app/services/mcp/miru/client.rb` into a separate gem (for example `miru-mcp`).
 2. Keep `bin/miru-mcp` in that gem for standalone stdio usage.
 3. Publish to RubyGems and pin version from `miru-web`.
 4. Keep tool schema/version compatibility documented per release.
@@ -294,7 +294,7 @@ For now, the recommended production path is to consume MCP directly from this re
   - rotate token immediately on suspected exposure
 - Entitlement bypass risk:
   - keep Pro gate coverage in request specs (`403`, JSON-RPC `-32003`)
-  - verify every MCP write path still requires authenticated bearer context
+  - verify every MCP write path still requires an authenticated bearer context
 - Availability / abuse:
   - apply endpoint rate limits at ingress for `/mcp`
   - monitor request count, error rate, and latency for MCP traffic

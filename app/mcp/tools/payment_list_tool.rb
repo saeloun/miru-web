@@ -24,7 +24,9 @@ module MCP
 
             response_from_result(result)
           rescue StandardError => e
-            error_response("Failed to list payments", details: { error: e.message })
+            # Avoid leaking upstream/internal exception text in tool responses.
+            Rails.logger.error("[MCP][miru.payment.list] #{e.class}: #{e.message} backtrace=#{Array(e.backtrace).first(5).join(' | ')}")
+            error_response("Failed to list payments", details: { code: "PAYMENT_LIST_FAILED" })
           end
         end
       end

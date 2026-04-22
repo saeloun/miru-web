@@ -16,7 +16,8 @@ module MCP
           return MCP::Miru::ApiProxy::Result.from_h(cached) if cached.present?
 
           result = yield
-          Rails.cache.write(cache_key, result.to_h, expires_in: CACHE_TTL)
+          # Idempotency keys should not pin transient failures; allow retries on non-2xx results.
+          Rails.cache.write(cache_key, result.to_h, expires_in: CACHE_TTL) if result.success?
           result
         end
 
