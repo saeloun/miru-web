@@ -1,3 +1,43 @@
+import { i18n } from "../../../i18n";
+
+type SelectOption = { value?: string } | null | undefined;
+
+interface ClientRequiredValues {
+  name?: string;
+  address1?: string;
+  country?: SelectOption;
+  state?: string;
+  city?: string;
+  zipcode?: string;
+  currency?: SelectOption;
+}
+
+export const REQUIRED_CLIENT_FIELD_KEYS = [
+  "name",
+  "address1",
+  "country",
+  "state",
+  "city",
+  "zipcode",
+  "currency",
+] as const;
+
+export type RequiredClientFieldKey =
+  (typeof REQUIRED_CLIENT_FIELD_KEYS)[number];
+
+export const getRequiredClientFieldLabels = (): Record<
+  RequiredClientFieldKey,
+  string
+> => ({
+  name: i18n.t("name"),
+  address1: i18n.t("clients.addressLine1"),
+  country: i18n.t("country"),
+  state: i18n.t("state"),
+  city: i18n.t("city"),
+  zipcode: i18n.t("zipcode"),
+  currency: i18n.t("currency"),
+});
+
 export const formatFormData = (
   formData,
   values,
@@ -63,22 +103,13 @@ export const disableBtn = (values, errors, submitting) => {
   return true;
 };
 
-export const getMissingRequiredClientFields = values => {
-  const requiredFieldKeys = [
-    "name",
-    "address1",
-    "country",
-    "state",
-    "city",
-    "zipcode",
-    "currency",
-  ];
-
-  return requiredFieldKeys.filter(key => {
+export const getMissingRequiredClientFields = (
+  values: ClientRequiredValues
+): RequiredClientFieldKey[] =>
+  REQUIRED_CLIENT_FIELD_KEYS.filter(key => {
     if (key === "country" || key === "currency") {
       return !values[key]?.value;
     }
 
     return !values[key];
   });
-};

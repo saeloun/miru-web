@@ -22,6 +22,7 @@ import {
   formatFormData,
   disableBtn,
   getMissingRequiredClientFields,
+  getRequiredClientFieldLabels,
 } from "./utils";
 
 import { currencyListOptions } from "../../OrganizationSetup/FinancialDetailsForm/utils";
@@ -115,19 +116,11 @@ const MobileClientEditor = ({
         >
           {(props: FormikProps<FormValues>) => {
             const { touched, errors, setFieldValue, values } = props;
-            const fieldLabels = {
-              name: i18n.t("name"),
-              address1: i18n.t("clients.addressLine1"),
-              country: i18n.t("country"),
-              state: i18n.t("state"),
-              city: i18n.t("city"),
-              zipcode: i18n.t("zipcode"),
-              currency: i18n.t("currency"),
-            };
+            const fieldLabels = getRequiredClientFieldLabels();
 
             const missingRequiredFields = getMissingRequiredClientFields(
               values
-            ).map(key => fieldLabels[key as keyof typeof fieldLabels]);
+            ).map(key => fieldLabels[key]);
 
             return (
               <Form>
@@ -373,7 +366,10 @@ const MobileClientEditor = ({
                     Zipcode, Currency
                   </p>
                   {missingRequiredFields.length > 0 && (
-                    <p className="mb-2 text-xs text-amber-600">
+                    <p
+                      className="mb-2 text-xs text-amber-600"
+                      aria-live="polite"
+                    >
                       Missing required fields:{" "}
                       {missingRequiredFields.join(", ")}
                     </p>
