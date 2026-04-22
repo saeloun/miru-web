@@ -55,6 +55,28 @@ RSpec.describe "Api::V1::Client#create", type: :request do
         expect(response).to have_http_status(:unprocessable_content)
         expect(json_response["errors"]).to eq("Addresses address line 1 can't be blank")
       end
+
+      it "creates client when email is blank and another blank-email client already exists" do
+        create(:client, company:, email: "")
+        address_details = attributes_for(:address)
+        client = attributes_for(:client, email: "", addresses_attributes: [address_details])
+
+        send_request :post, api_v1_clients_path(client:), headers: auth_headers(user)
+
+        expect(response).to have_http_status(:created)
+        expect(json_response.dig("client", "email")).to be_nil
+      end
+
+      it "throws 422 when email already exists in same company" do
+        existing = create(:client, company:, email: "existing@example.com")
+        address_details = attributes_for(:address)
+        client = attributes_for(:client, email: existing.email, addresses_attributes: [address_details])
+
+        send_request :post, api_v1_clients_path(client:), headers: auth_headers(user)
+
+        expect(response).to have_http_status(:unprocessable_content)
+        expect(json_response["errors"]).to eq("Email has already been taken")
+      end
     end
   end
 

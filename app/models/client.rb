@@ -23,10 +23,12 @@ class Client < ApplicationRecord
   belongs_to :company
 
   before_save :strip_attributes
+  before_validation :normalize_optional_email
   validates :name, presence: true, length: { maximum: 30 },
     uniqueness: { scope: :company_id, case_sensitive: false, message: "The client %{value} already exists" }
   validates :phone, length: { maximum: 15 }
-  # validates :email, presence: true, uniqueness: { scope: :company_id }, format: { with: Devise.email_regexp }
+  validates :email, format: { with: Devise.email_regexp }, allow_blank: true
+  validates :email, uniqueness: { scope: :company_id, case_sensitive: false }, allow_blank: true
 
   after_discard :discard_projects
 
@@ -174,5 +176,11 @@ class Client < ApplicationRecord
 
     def strip_attributes
       name.strip!
+    end
+
+    # Keep optional email truly optional by avoiding duplicate blank-string collisions
+    # against the unique DB index on [email, company_id].
+    def normalize_optional_email
+      self.email = email.to_s.strip.presence
     end
 end

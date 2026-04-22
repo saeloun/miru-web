@@ -17,7 +17,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
@@ -42,6 +41,8 @@ import {
   CaretDown,
   ArrowUp,
   ArrowDown,
+  CopySimple,
+  Eye,
 } from "phosphor-react";
 import { currencyFormat } from "../../helpers/currency";
 import { useUserContext } from "../../context/UserContext";
@@ -262,22 +263,23 @@ const ClientsTable: React.FC = () => {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuLabel>{i18n.t("actions")}</DropdownMenuLabel>
               <DropdownMenuItem
                 onClick={() => navigator.clipboard.writeText(client.id)}
               >
+                <CopySimple size={16} className="mr-2" />
                 {i18n.t("clients.copyClientId")}
               </DropdownMenuItem>
-              <DropdownMenuSeparator />
               <DropdownMenuItem
                 onClick={() => navigate(`/clients/${client.id}`)}
               >
+                <Eye size={16} className="mr-2" />
                 {i18n.t("clients.viewDetails")}
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => handleEdit(client)}>
                 <PencilSimple size={16} className="mr-2" />
                 {i18n.t("clients.editClient")}
               </DropdownMenuItem>
+              <DropdownMenuSeparator />
               <DropdownMenuItem
                 onClick={() => handleDelete(client)}
                 className="text-destructive focus:text-destructive"
