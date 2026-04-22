@@ -8,12 +8,17 @@ module MCP
           private
 
             def proxy_request(method:, path:, server_context:, params: nil, body: nil)
+              headers = {}
+              host = host_from(server_context)
+              headers["Host"] = host if host.present?
+
               MCP::Miru::ApiProxy.request(
                 method: method,
                 path: path,
                 params: params,
                 body: body,
-                authorization: authorization_from(server_context)
+                authorization: authorization_from(server_context),
+                headers: headers
               )
             end
 
@@ -91,6 +96,10 @@ module MCP
               return token if token.start_with?("Bearer ")
 
               token.present? ? "Bearer #{token}" : ""
+            end
+
+            def host_from(server_context)
+              context(server_context)[:host].to_s.strip
             end
 
             def merged_source_metadata(source_metadata)

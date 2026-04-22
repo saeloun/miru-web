@@ -80,6 +80,21 @@ RSpec.describe "Api::V1::MCP#handle", type: :request do
         expect(response).to have_http_status(:ok)
         expect(json_response["result"]).to be_present
       end
+
+      it "forwards request host to proxy-backed tool calls" do
+        allow(MCP::Miru::ApiProxy).to receive(:request).and_call_original
+
+        post mcp_path, params: tool_call_payload(name: "miru.workspace.whoami").to_json, headers: mcp_headers(cli_token:, mcp_method: "tools/call")
+
+        expect(response).to have_http_status(:ok)
+        expect(MCP::Miru::ApiProxy).to have_received(:request).with(
+          hash_including(
+            method: :get,
+            path: "/api/v1/users/_me",
+            headers: hash_including("Host" => "www.example.com")
+          )
+        )
+      end
     end
 
     context "with active trial" do
@@ -182,5 +197,17 @@ RSpec.describe "Api::V1::MCP#handle", type: :request do
         "MCP-Protocol-Version" => "2025-03-26",
         "MCP-Method" => mcp_method
       })
+    end
+
+    def tool_call_payload(name:, arguments: {})
+      {
+        jsonrpc: "2.0",
+        id: "tool-1",
+        method: "tools/call",
+        params: {
+          name: name,
+          arguments: arguments
+        }
+      }
     end
 end

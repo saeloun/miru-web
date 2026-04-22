@@ -22,6 +22,7 @@ class Api::V1::MCPController < Api::V1::ApplicationController
     def mcp_server_context
       {
         authorization: request.headers["Authorization"],
+        host: request.host_with_port,
         user_id: current_user.id,
         company_id: current_company.id,
         pro_access: current_company.pro_access?
