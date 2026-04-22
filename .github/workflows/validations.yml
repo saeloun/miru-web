@@ -33,8 +33,6 @@ jobs:
           POSTGRES_DB: miru_web_test
           POSTGRES_USER: root
           POSTGRES_PASSWORD: password
-        ports:
-          - 5432:5432
         options: >-
           --health-cmd="pg_isready -U root -d miru_web_test"
           --health-interval=10s
@@ -146,6 +144,60 @@ jobs:
             tmp/parallel_runtime_rspec.log
             log/test.log
           if-no-files-found: warn
+
+  mcp-focused:
+    name: MCP focused specs
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    if: github.event_name != 'push' || !contains(github.event.head_commit.message, 'skip ci')
+    env:
+      RAILS_ENV: test
+      DB_HOST: localhost
+      DB_USER: root
+      DB_PASS: password
+      CI: true
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: miru_web_test
+          POSTGRES_USER: root
+          POSTGRES_PASSWORD: password
+        options: >-
+          --health-cmd="pg_isready -U root -d miru_web_test"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '4.0.1'
+          bundler-cache: true
+          bundler: latest
+
+      - name: Setup test database
+        run: bundle exec rails db:prepare
+
+      - name: Run MCP RuboCop checks
+        run: bundle exec rubocop app/mcp app/controllers/api/v1/mcp_controller.rb app/services/mcp/client.rb spec/mcp spec/requests/api/v1/mcp
+
+      - name: Run bundler-audit
+        run: |
+          gem install bundler-audit --no-document
+          bundler-audit check --update
+
+      - name: Run MCP focused specs
+        run: |
+          bundle exec rspec \
+            spec/mcp/tool_catalog_spec.rb \
+            spec/mcp/server_factory_spec.rb \
+            spec/requests/api/v1/mcp/handle_spec.rb
 
   security-audit:
     name: Security audit

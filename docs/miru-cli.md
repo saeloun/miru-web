@@ -4,6 +4,8 @@
 
 Miru CLI is the command-line interface for Miru.
 
+For MCP server/client setup and AI-agent integration, see [Miru MCP Server and Client](./miru-mcp.md).
+
 It is intended to work equally well for:
 
 - humans working in a terminal
