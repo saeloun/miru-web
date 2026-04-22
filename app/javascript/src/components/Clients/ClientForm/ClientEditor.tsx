@@ -21,7 +21,12 @@ import { Button } from "../../ui/button";
 
 import { clientSchema, getInitialvalues } from "./formValidationSchema";
 import UploadLogo from "./UploadLogo";
-import { disableBtn, formatFormData } from "./utils";
+import {
+  disableBtn,
+  formatFormData,
+  getMissingRequiredClientFields,
+  getRequiredClientFieldLabels,
+} from "./utils";
 
 import { currencyListOptions } from "../../OrganizationSetup/FinancialDetailsForm/utils";
 import { i18n } from "../../../i18n";
@@ -107,6 +112,12 @@ const ClientEditor = ({
           handleChange,
           handleBlur,
         } = props;
+
+        const fieldLabels = getRequiredClientFieldLabels();
+
+        const missingRequiredFields = getMissingRequiredClientFields(
+          values
+        ).map(key => fieldLabels[key]);
 
         return (
           <Form className="space-y-4">
@@ -360,6 +371,11 @@ const ClientEditor = ({
                 * Required: Name, Address Line 1, Country, State, City, Zipcode,
                 Currency
               </p>
+              {missingRequiredFields.length > 0 && (
+                <p className="mb-2 text-xs text-amber-600" aria-live="polite">
+                  Missing required fields: {missingRequiredFields.join(", ")}
+                </p>
+              )}
               <Button
                 type="submit"
                 className="w-full bg-gray-900 hover:bg-gray-800 text-white"
