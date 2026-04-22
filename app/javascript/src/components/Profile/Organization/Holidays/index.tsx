@@ -58,6 +58,47 @@ const Holidays = () => {
 
   const navigate = useNavigate();
 
+  const sortHolidaysByDate = useCallback(
+    holidays => {
+      const toSortableTime = (value: string) => {
+        if (!value) return Number.MAX_SAFE_INTEGER;
+
+        const parts = value.split(".");
+        if (parts.length !== 3) return Number.MAX_SAFE_INTEGER;
+
+        const [first, second, third] = parts;
+        let year = "";
+        let month = "";
+        let day = "";
+
+        switch (dateFormat) {
+          case "YYYY.MM.DD":
+            [year, month, day] = [first, second, third];
+            break;
+          case "MM.DD.YYYY":
+            [month, day, year] = [first, second, third];
+            break;
+          default:
+            [day, month, year] = [first, second, third];
+            break;
+        }
+
+        const normalizedDate = `${year}-${month.padStart(
+          2,
+          "0"
+        )}-${day.padStart(2, "0")}`;
+        const timestamp = Date.parse(normalizedDate);
+
+        return Number.isNaN(timestamp) ? Number.MAX_SAFE_INTEGER : timestamp;
+      };
+
+      return [...holidays].sort(
+        (left, right) => toSortableTime(left.date) - toSortableTime(right.date)
+      );
+    },
+    [dateFormat]
+  );
+
   useOutsideClick(wrapperRef, () => {
     setShowDatePicker({
       visibility: false,
@@ -96,21 +137,25 @@ const Holidays = () => {
         time_period_optional_holidays &&
           setOptionalRepetitionType(time_period_optional_holidays);
 
-        const newNationalHolidays = national_holidays.map(holiday => ({
-          ...holiday,
-        }));
+        const newNationalHolidays = sortHolidaysByDate(
+          national_holidays.map(holiday => ({
+            ...holiday,
+          }))
+        );
 
-        const newOptionalHolidays = optional_holidays.map(holiday => ({
-          ...holiday,
-        }));
+        const newOptionalHolidays = sortHolidaysByDate(
+          optional_holidays.map(holiday => ({
+            ...holiday,
+          }))
+        );
         setHolidayList(newNationalHolidays);
         setOptionalHolidaysList(newOptionalHolidays);
         setCurrentYearHolidaysList([
-          ...national_holidays,
-          ...optional_holidays,
+          ...newNationalHolidays,
+          ...newOptionalHolidays,
         ]);
-        setCurrentYearPublicHolidays(national_holidays);
-        setCurrentYearOptionalHolidays(optional_holidays);
+        setCurrentYearPublicHolidays(newNationalHolidays);
+        setCurrentYearOptionalHolidays(newOptionalHolidays);
       } else {
         setEnableOptionalHolidays(false);
         setTotalOptionalHolidays(0);
@@ -122,7 +167,7 @@ const Holidays = () => {
         setCurrentYearOptionalHolidays([]);
       }
     },
-    [currentYear]
+    [currentYear, sortHolidaysByDate]
   );
 
   const fetchHolidays = useCallback(async () => {
