@@ -93,6 +93,13 @@ Show current config:
 miru config show
 ```
 
+Print current CLI token (for MCP/client setup):
+
+```bash
+miru config token
+miru config token --format shell
+```
+
 Set a different Miru instance:
 
 ```bash
@@ -416,6 +423,7 @@ miru invoice send --id 1 --recipients client@example.com
 ## Security and Scoping
 
 - CLI requests use a dedicated bearer token
+- retrieve the current CLI token with `miru config token` when wiring MCP clients
 - the CLI session is tied to a user and workspace
 - all normal authentication and authorization remain in force
 - `client list` respects the authenticated user's normal client visibility

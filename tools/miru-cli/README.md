@@ -61,6 +61,7 @@ miru login --base-url <url> --email <email> --password <password>
 miru logout
 miru whoami
 miru config show
+miru config token [--format <raw|shell>]
 miru config set-base-url --url <url>
 miru capabilities
 miru client list [--query <term>]
@@ -84,6 +85,13 @@ miru time delete --id <id>
 - the CLI uses a dedicated server-issued CLI token
 - sessions last 7 days
 - each successful request refreshes the session for another 7 days
+
+Token helpers:
+
+```bash
+miru config token
+miru config token --format shell
+```
 
 ## Current Scope
 
