@@ -21,9 +21,10 @@ function Calendar({
           "flex flex-col sm:flex-row gap-4 sm:gap-6 items-start justify-center",
         month: "space-y-3",
         month_caption:
-          "relative flex h-10 items-center justify-center rounded-md bg-muted/40 px-10",
-        caption_label: "text-sm font-semibold text-foreground",
-        nav: "pointer-events-none absolute inset-x-3 top-3 flex items-center justify-between",
+          "relative flex h-10 items-center justify-center rounded-md bg-muted/40 px-10 pointer-events-none",
+        caption_label:
+          "text-sm font-semibold text-foreground pointer-events-none",
+        nav: "pointer-events-none absolute inset-x-3 top-3 z-10 flex items-center justify-between",
         button_previous: cn(
           buttonVariants({ variant: "outline" }),
           "pointer-events-auto static h-7 w-7 border-border bg-background/80 p-0 text-foreground/80 hover:bg-accent hover:text-foreground"
