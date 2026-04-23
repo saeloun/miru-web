@@ -5,13 +5,16 @@ import { currencyFormat, minToHHMM, lineTotalCalc } from "helpers";
 
 const LineItem = ({ currency, item, dateFormat, strikeAmount = "" }) => {
   const date = dayjs(item.date).format(dateFormat);
+  const displayName =
+    [item.first_name, item.last_name].filter(Boolean).join(" ").trim() ||
+    item.name ||
+    "";
 
   return (
     <>
       <tr>
         <td className="px-1 pt-5 pb-2 text-left text-base font-medium text-foreground ">
-          {item.name}
-          {item.first_name} {item.last_name}
+          {displayName}
         </td>
         <td className="px-1 pt-5 pb-2 text-right text-base font-medium text-foreground ">
           {date}

@@ -16,8 +16,8 @@ const LineItemEditorRow = ({
   dateFormat,
 }) => {
   const strName =
+    [item.first_name, item.last_name].filter(Boolean).join(" ").trim() ||
     item.name ||
-    [item.first_name, item.last_name].filter(Boolean).join(" ") ||
     "";
   const [name, setName] = useState<string>(strName);
   const [lineItemDate, setLineItemDate] = useState(
