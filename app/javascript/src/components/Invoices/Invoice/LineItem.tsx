@@ -1,14 +1,38 @@
 import React from "react";
 
 import dayjs from "dayjs";
-import { currencyFormat, minToHHMM, lineTotalCalc } from "helpers";
+import {
+  currencyFormat,
+  getLineItemDisplayName,
+  minToHHMM,
+  lineTotalCalc,
+} from "helpers";
 
-const LineItem = ({ currency, item, dateFormat, strikeAmount = "" }) => {
+type LineItemProps = {
+  currency: string;
+  dateFormat: string;
+  strikeAmount?: string;
+  item: {
+    amount?: number | string | null;
+    date: string;
+    description: string;
+    first_name?: string | null;
+    last_name?: string | null;
+    lineTotal?: number | string | null;
+    name?: string | null;
+    quantity: number | string;
+    rate: number | string;
+  };
+};
+
+const LineItem = ({
+  currency,
+  item,
+  dateFormat,
+  strikeAmount = "",
+}: LineItemProps) => {
   const date = dayjs(item.date).format(dateFormat);
-  const displayName =
-    [item.first_name, item.last_name].filter(Boolean).join(" ").trim() ||
-    item.name ||
-    "";
+  const displayName = getLineItemDisplayName(item);
 
   return (
     <>
