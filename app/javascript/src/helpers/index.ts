@@ -8,6 +8,7 @@ import { useDebounce } from "./debounce";
 import { getDisplayAvatarUrl, getGravatarUrl } from "./gravatar";
 import { minFromHHMM, minToHHMM } from "./hhmmParser";
 import { lineTotalCalc } from "./lineTotalCalc";
+import { getLineItemDisplayName } from "./lineItemDisplayName";
 import { getNumberWithOrdinal } from "./ordinal";
 import { useOutsideClick } from "./outsideClick";
 import useKeypress from "./useKeyPress";
@@ -26,6 +27,7 @@ export {
   minFromHHMM,
   minToHHMM,
   lineTotalCalc,
+  getLineItemDisplayName,
   useDebounce,
   useOutsideClick,
   useKeypress,

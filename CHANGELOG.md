@@ -10,6 +10,7 @@
 ### Changed
 
 - Invoice creation and editing now guard against duplicate draft line items, preserve zero-value amounts, and clamp totals to zero when the last line item is removed
+- Invoice line-item rows now prefer employee first/last names over description-backed fallback text so selected employee names render correctly on new invoices (rendering-only change, no DB impact)
 - Time-tracking entry creation no longer shows a duplicate saved entry before refresh when the visible list rehydrates
 - Draft invoice line-item inputs now stay visually aligned with the standard invoice row layout while typing a new manual entry
 - Client creation forms now mark all required fields consistently and show a live "Missing required fields" summary when the submit button is disabled

@@ -2,7 +2,13 @@ import React, { useRef, useState, useEffect } from "react";
 
 import CustomDatePicker from "common/CustomDatePicker";
 import dayjs from "dayjs";
-import { minFromHHMM, minToHHMM, lineTotalCalc, currencyFormat } from "helpers";
+import {
+  currencyFormat,
+  getLineItemDisplayName,
+  lineTotalCalc,
+  minFromHHMM,
+  minToHHMM,
+} from "helpers";
 import { DeleteIcon, CalendarIcon } from "miruIcons";
 import TextareaAutosize from "react-textarea-autosize";
 import { i18n } from "../../../../i18n";
@@ -15,10 +21,7 @@ const LineItemEditorRow = ({
   selectedOption,
   dateFormat,
 }) => {
-  const strName =
-    item.name ||
-    [item.first_name, item.last_name].filter(Boolean).join(" ") ||
-    "";
+  const strName = getLineItemDisplayName(item);
   const [name, setName] = useState<string>(strName);
   const [lineItemDate, setLineItemDate] = useState(
     dayjs(item.date, "YYYY-MM-DD").format(dateFormat)
@@ -32,6 +35,10 @@ const LineItemEditorRow = ({
   const [showDatePicker, setShowDatePicker] = useState<boolean>(false);
   const [showCalendarIcon, setShowCalendarIcon] = useState<boolean>(false);
   const datePickerRef = useRef(null);
+
+  useEffect(() => {
+    setName(strName);
+  }, [strName]);
 
   useEffect(() => {
     const names = name.split(" ");
