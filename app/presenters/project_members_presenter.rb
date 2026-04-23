@@ -16,6 +16,6 @@ class ProjectMembersPresenter
   private
 
     def project_members_hourly_rate(project)
-      @_project_members_hourly_rate ||= project.project_members.pluck(:user_id, :hourly_rate).to_h
+      project.project_members.pluck(:user_id, :hourly_rate).to_h
     end
 end
