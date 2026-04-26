@@ -560,6 +560,8 @@ pt-BR:
         routing_number: Número de roteamento
         swift_code: Código Swift
         tax_id: Número de Identificação Fiscal
+        ein: EIN
+        us_taxpayer_id: U.S. Taxpayer ID
         vat_number: Número de IVA
       prepared_by: Preparado por %{company_name}, emitido por %{issue_date}, com vencimento
         em %{due_date}.

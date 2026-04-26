@@ -568,6 +568,8 @@ hi:
         routing_number: राउटिंग नम्बर
         swift_code: स्विफ्ट कोड
         tax_id: टैक्स आईडी
+        ein: EIN
+        us_taxpayer_id: U.S. Taxpayer ID
         vat_number: वैट संख्या
       prepared_by: "%{company_name} द्वारा तैयार, %{issue_date} को जारी, %{due_date}
         को देय।"

@@ -574,6 +574,8 @@ const locale = {
     taxId: "ID Pajak: %{value}",
     vatNumber: "Nomor PPN: %{value}",
     gstNumber: "Nomor GST: %{value}",
+    ein: "EIN: %{value}",
+    usTaxpayerId: "U.S. Taxpayer ID: %{value}",
     bankDetails: "Detail Bank",
     bankName: "Nama Bank: %{value}",
     accountNumber: "Nomor Rekening: %{value}",

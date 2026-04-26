@@ -563,6 +563,8 @@ ur:
         routing_number: روٹنگ نمبر
         swift_code: سوئفٹ کوڈ
         tax_id: ٹیکس ID
+        ein: EIN
+        us_taxpayer_id: U.S. Taxpayer ID
         vat_number: VAT نمبر
       prepared_by: "%{company_name} کے ذریعہ تیار کردہ، %{issue_date} جاری کیا گیا،
         %{due_date} کی وجہ سے۔"

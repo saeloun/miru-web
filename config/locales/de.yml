@@ -576,6 +576,8 @@ de:
         routing_number: Routingnummer
         swift_code: SWIFT-Code
         tax_id: Steuer-ID
+        ein: EIN
+        us_taxpayer_id: U.S. Taxpayer ID
         vat_number: Umsatzsteuer-Identifikationsnummer
       prepared_by: Erstellt von %{company_name}, herausgegeben von %{issue_date},
         fällig von %{due_date}.

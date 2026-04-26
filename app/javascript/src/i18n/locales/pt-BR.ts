@@ -576,6 +576,8 @@ const locale = {
     taxId: "ID Fiscal: %{value}",
     vatNumber: "Número do IVA: %{value}",
     gstNumber: "Número do GST: %{value}",
+    ein: "EIN: %{value}",
+    usTaxpayerId: "U.S. Taxpayer ID: %{value}",
     bankDetails: "Dados Bancários",
     bankName: "Nome do Banco: %{value}",
     accountNumber: "Número da Conta: %{value}",

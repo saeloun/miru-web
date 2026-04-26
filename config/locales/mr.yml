@@ -566,6 +566,8 @@ mr:
         routing_number: राउटिंग नंबर
         swift_code: स्विफ्ट कोड
         tax_id: कर ओळखपत्र
+        ein: EIN
+        us_taxpayer_id: U.S. Taxpayer ID
         vat_number: व्हॅट क्रमांक
       prepared_by: "%{company_name} यांनी तयार केले, %{issue_date} रोजी जारी केले,
         %{due_date} रोजी देय."

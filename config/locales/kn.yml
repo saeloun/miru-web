@@ -556,6 +556,8 @@ kn:
         routing_number: ರೂಟಿಂಗ್ ಸಂಖ್ಯೆ
         swift_code: SWIFT ಕೋಡ್
         tax_id: ತೆರಿಗೆ ಐಡಿ
+        ein: EIN
+        us_taxpayer_id: U.S. Taxpayer ID
         vat_number: ವ್ಯಾಟ್ ಸಂಖ್ಯೆ
       prepared_by: "%{company_name} ಸಿದ್ಧಪಡಿಸಿದ್ದು, %{issue_date} ಬಿಡುಗಡೆ ಮಾಡಿದ್ದು,
         %{due_date} ಕ್ಕೆ ನಿಗದಿಯಾಗಿದೆ."

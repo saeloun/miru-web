@@ -105,6 +105,8 @@ const initialState = {
   taxId: "",
   vatNumber: "",
   gstNumber: "",
+  ein: "",
+  usTaxpayerId: "",
 };
 
 const errorState = {
@@ -226,6 +228,8 @@ const OrgEdit = () => {
       taxId: companyDetails.tax_id || "",
       vatNumber: companyDetails.vat_number || "",
       gstNumber: companyDetails.gst_number || "",
+      ein: companyDetails.ein || "",
+      usTaxpayerId: companyDetails.us_taxpayer_id || "",
     };
 
     setOrgDetails(organizationSchema);
@@ -501,6 +505,8 @@ const OrgEdit = () => {
       formD.append("company[tax_id]", orgDetails.taxId || "");
       formD.append("company[vat_number]", orgDetails.vatNumber || "");
       formD.append("company[gst_number]", orgDetails.gstNumber || "");
+      formD.append("company[ein]", orgDetails.ein || "");
+      formD.append("company[us_taxpayer_id]", orgDetails.usTaxpayerId || "");
 
       if (orgDetails.logo) {
         formD.append("company[logo]", orgDetails.logo);

@@ -576,6 +576,8 @@ const locale = {
     taxId: "Vergi No: %{value}",
     vatNumber: "KDV Numarası: %{value}",
     gstNumber: "GST Numarası: %{value}",
+    ein: "EIN: %{value}",
+    usTaxpayerId: "U.S. Taxpayer ID: %{value}",
     bankDetails: "Banka Bilgileri",
     bankName: "Banka Adı: %{value}",
     accountNumber: "Hesap Numarası: %{value}",

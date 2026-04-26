@@ -578,6 +578,8 @@ const locale = {
     taxId: "పన్ను గుర్తింపు సంఖ్య: __PH__0__",
     vatNumber: "VAT సంఖ్య: __PH__0__",
     gstNumber: "GST సంఖ్య: __PH__0__",
+    ein: "EIN: %{value}",
+    usTaxpayerId: "U.S. Taxpayer ID: %{value}",
     bankDetails: "బ్యాంకు వివరాలు",
     bankName: "బ్యాంకు పేరు: __PH__0__",
     accountNumber: "ఖాతా సంఖ్య: __PH__0__",

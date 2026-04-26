@@ -519,6 +519,8 @@ zh-CN:
         routing_number: 路由号码
         swift_code: SWIFT代码
         tax_id: 税务识别号
+        ein: EIN
+        us_taxpayer_id: U.S. Taxpayer ID
         vat_number: 增值税号
       prepared_by: 由 %{company_name} 编制，%{issue_date} 签发，%{due_date} 到期。
       reference: 参考：%{reference}

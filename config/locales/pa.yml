@@ -560,6 +560,8 @@ pa:
         routing_number: ਰੂਟਿੰਗ ਨੰਬਰ
         swift_code: ਸ੍ਵਿਫ਼ਤ ਕਉਡ
         tax_id: ਟੈਕਸ ਆਈਡੀ
+        ein: EIN
+        us_taxpayer_id: U.S. Taxpayer ID
         vat_number: ਵੈਟ ਨੰਬਰ
       prepared_by: "%{company_name} ਦੁਆਰਾ ਤਿਆਰ ਕੀਤਾ ਗਿਆ, %{issue_date} ਜਾਰੀ ਕੀਤਾ ਗਿਆ,
         %{due_date} ਦੇਣਯੋਗ ਹੈ।"

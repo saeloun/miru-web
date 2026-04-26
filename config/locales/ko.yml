@@ -525,6 +525,8 @@ ko:
         routing_number: 라우팅 번호
         swift_code: SWIFT 코드
         tax_id: 세금 ID
+        ein: EIN
+        us_taxpayer_id: U.S. Taxpayer ID
         vat_number: 부가가치세 번호
       prepared_by: '작성자: %{company_name}, 발행일: %{issue_date}, 제출 기한: %{due_date}.'
       reference: '참고: %{reference}'

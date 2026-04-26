@@ -582,6 +582,8 @@ const locale = {
     taxId: "Steuer-ID: %{value}",
     vatNumber: "USt-IdNr.: %{value}",
     gstNumber: "GST-Nummer: %{value}",
+    ein: "EIN: %{value}",
+    usTaxpayerId: "U.S. Taxpayer ID: %{value}",
     bankDetails: "Bankdaten",
     bankName: "Bankname: %{value}",
     accountNumber: "Kontonummer: %{value}",

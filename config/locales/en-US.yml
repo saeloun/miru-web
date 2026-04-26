@@ -545,6 +545,8 @@ en-US:
         routing_number: Routing Number
         swift_code: SWIFT Code
         tax_id: Tax ID
+        ein: EIN
+        us_taxpayer_id: U.S. Taxpayer ID
         vat_number: VAT Number
       prepared_by: Prepared by %{company_name}, issued %{issue_date}, due %{due_date}.
       reference: 'Reference: %{reference}'

@@ -557,6 +557,8 @@ ar:
         routing_number: رقم التوجيه
         swift_code: رمز السرعة
         tax_id: رقم التعريف الضريبي
+        ein: EIN
+        us_taxpayer_id: U.S. Taxpayer ID
         vat_number: رقم ضريبة القيمة المضافة
       prepared_by: أُعدّ بواسطة %{company_name}، وصدر بواسطة %{issue_date}، ويستحق
         الدفع %{due_date}.

@@ -51,7 +51,9 @@ RSpec.describe "Api::V1::Invoices#create", type: :request do
           bank_name: "QA Bank",
           bank_account_number: "12345678",
           bank_routing_number: "987654321",
-          bank_swift_code: "QABKUS33"
+          bank_swift_code: "QABKUS33",
+          ein: "12-3456789",
+          us_taxpayer_id: "US-TIN-1234"
         )
 
         send_request :post, api_v1_invoices_path(
@@ -77,6 +79,8 @@ RSpec.describe "Api::V1::Invoices#create", type: :request do
         expect(json_response.dig("company", "name")).to eq(company.name)
         expect(json_response.dig("company", "phoneNumber")).to eq(company.business_phone)
         expect(json_response.dig("company", "taxId")).to eq(company.tax_id)
+        expect(json_response.dig("company", "ein")).to eq(company.ein)
+        expect(json_response.dig("company", "usTaxpayerId")).to eq(company.us_taxpayer_id)
         expect(json_response.dig("company", "logo")).to end_with(company.company_logo)
         expect(json_response.dig("company", "bankName")).to eq(company.bank_name)
         expect(json_response.dig("company", "bankAccountNumber")).to eq(company.bank_account_number)

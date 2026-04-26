@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_16_194500) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_27_090000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_stat_statements"
@@ -243,6 +243,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_16_194500) do
     t.string "country", null: false
     t.datetime "created_at", null: false
     t.string "date_format"
+    t.string "ein"
     t.string "fiscal_year_end"
     t.string "gst_number"
     t.string "name", null: false
@@ -258,6 +259,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_16_194500) do
     t.datetime "trial_ends_at"
     t.datetime "trial_started_at"
     t.datetime "updated_at", null: false
+    t.string "us_taxpayer_id"
     t.string "vat_number"
     t.string "working_days", default: "5"
     t.string "working_hours", default: "40"

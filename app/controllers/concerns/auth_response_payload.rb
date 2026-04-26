@@ -30,6 +30,8 @@ module AuthResponsePayload
         "date_format",
         "business_phone",
         "tax_id",
+        "ein",
+        "us_taxpayer_id",
         "plan_tier"
       ).merge(
         "address" => company.current_address,

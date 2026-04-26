@@ -512,6 +512,8 @@ ja:
         routing_number: ルーティング番号
         swift_code: スウィフトコード
         tax_id: 納税者番号
+        ein: EIN
+        us_taxpayer_id: U.S. Taxpayer ID
         vat_number: VAT番号
       prepared_by: 作成者：%{company_name}、発行者：%{issue_date}、支払期限：%{due_date}。
       reference: '参照: %{reference}'

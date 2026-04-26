@@ -563,6 +563,8 @@ nl:
         routing_number: Routingnummer
         swift_code: SWIFT-code
         tax_id: Belastingnummer
+        ein: EIN
+        us_taxpayer_id: U.S. Taxpayer ID
         vat_number: BTW-nummer
       prepared_by: Opgesteld door %{company_name}, uitgegeven door %{issue_date},
         verschuldigd op %{due_date}.

@@ -565,6 +565,8 @@ es:
         routing_number: Número de ruta
         swift_code: Código SWIFT
         tax_id: Número de identificación fiscal
+        ein: EIN
+        us_taxpayer_id: U.S. Taxpayer ID
         vat_number: Número de IVA
       prepared_by: Preparado por %{company_name}, emitido %{issue_date}, con vencimiento
         %{due_date}.

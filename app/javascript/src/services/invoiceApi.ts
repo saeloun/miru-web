@@ -67,6 +67,8 @@ export interface Invoice {
     taxId?: string;
     vatNumber?: string;
     gstNumber?: string;
+    ein?: string;
+    usTaxpayerId?: string;
     bankName?: string;
     bankAccountNumber?: string;
     bankRoutingNumber?: string;
@@ -549,6 +551,10 @@ class InvoiceApiService {
           apiInvoice.company?.vatNumber || apiInvoice.company?.vat_number,
         gstNumber:
           apiInvoice.company?.gstNumber || apiInvoice.company?.gst_number,
+        ein: apiInvoice.company?.ein,
+        usTaxpayerId:
+          apiInvoice.company?.usTaxpayerId ||
+          apiInvoice.company?.us_taxpayer_id,
         bankName: apiInvoice.company?.bankName || apiInvoice.company?.bank_name,
         bankAccountNumber:
           apiInvoice.company?.bankAccountNumber ||

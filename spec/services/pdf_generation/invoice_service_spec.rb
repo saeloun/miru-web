@@ -12,7 +12,9 @@ RSpec.describe PdfGeneration::InvoiceService do
       bank_swift_code: "FSTBUS33",
       tax_id: "TAX-123",
       vat_number: "VAT-456",
-      gst_number: "GST-789"
+      gst_number: "GST-789",
+      ein: "12-3456789",
+      us_taxpayer_id: "987-65-4321"
     )
   end
   let(:client) { create(:client, company: company) }
@@ -81,6 +83,8 @@ RSpec.describe PdfGeneration::InvoiceService do
         expect(locals[:company_logo]).to eq(logo_url)
         expect(locals[:invoice].company.bank_name).to eq("First Bank")
         expect(locals[:invoice].company.tax_id).to eq("TAX-123")
+        expect(locals[:invoice].company.ein).to eq("12-3456789")
+        expect(locals[:invoice].company.us_taxpayer_id).to eq("987-65-4321")
         expect(locals[:invoice_amount]).to be_present
         expect(locals[:invoice_tax]).to be_present
         expect(locals[:invoice_discount]).to be_present

@@ -93,7 +93,9 @@ RSpec.describe "Api::V1::Invoices#show", type: :request do
         bank_swift_code: "QABKUS33",
         tax_id: "TAX-123",
         vat_number: "VAT-123",
-        gst_number: "GST-123"
+        gst_number: "GST-123",
+        ein: "12-3456789",
+        us_taxpayer_id: "US-TIN-1234"
       )
 
       send_request :get, api_v1_invoice_path(invoice.id), headers: auth_headers(user)
@@ -106,6 +108,8 @@ RSpec.describe "Api::V1::Invoices#show", type: :request do
       expect(json_response.dig("company", "taxId")).to be_nil
       expect(json_response.dig("company", "vatNumber")).to be_nil
       expect(json_response.dig("company", "gstNumber")).to be_nil
+      expect(json_response.dig("company", "ein")).to be_nil
+      expect(json_response.dig("company", "usTaxpayerId")).to be_nil
     end
   end
 

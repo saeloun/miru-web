@@ -564,6 +564,8 @@ id:
         routing_number: Nomor Routing
         swift_code: Kode SWIFT
         tax_id: Nomor Identifikasi Pajak
+        ein: EIN
+        us_taxpayer_id: U.S. Taxpayer ID
         vat_number: Nomor PPN
       prepared_by: Disiapkan oleh %{company_name}, diterbitkan %{issue_date}, jatuh
         tempo %{due_date}.

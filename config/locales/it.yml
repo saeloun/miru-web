@@ -566,6 +566,8 @@ it:
         routing_number: Numero di instradamento
         swift_code: Codice SWIFT
         tax_id: Codice fiscale
+        ein: EIN
+        us_taxpayer_id: U.S. Taxpayer ID
         vat_number: Partita IVA
       prepared_by: Preparato da %{company_name}, emesso da %{issue_date}, scadenza
         %{due_date}.

@@ -545,6 +545,8 @@ const locale = {
     taxId: "税务ID: %{value}",
     vatNumber: "增值税号: %{value}",
     gstNumber: "GST号: %{value}",
+    ein: "EIN: %{value}",
+    usTaxpayerId: "U.S. Taxpayer ID: %{value}",
     bankDetails: "银行信息",
     bankName: "银行名称: %{value}",
     accountNumber: "账户号: %{value}",

@@ -576,6 +576,8 @@ const locale = {
     taxId: "ತೆರಿಗೆ ಐಡಿ: %{value}",
     vatNumber: "VAT ಸಂಖ್ಯೆ: %{value}",
     gstNumber: "GST ಸಂಖ್ಯೆ: %{value}",
+    ein: "EIN: %{value}",
+    usTaxpayerId: "U.S. Taxpayer ID: %{value}",
     bankDetails: "ಬ್ಯಾಂಕ್ ವಿವರಗಳು",
     bankName: "ಬ್ಯಾಂಕ್ ಹೆಸರು: %{value}",
     accountNumber: "ಖಾತೆ ಸಂಖ್ಯೆ: %{value}",

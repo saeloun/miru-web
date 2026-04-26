@@ -561,6 +561,8 @@ tr:
         routing_number: Yönlendirme Numarası
         swift_code: Swift kodu
         tax_id: Vergi Kimlik Numarası
+        ein: EIN
+        us_taxpayer_id: U.S. Taxpayer ID
         vat_number: KDV Numarası
       prepared_by: "%{company_name} tarafından hazırlanmış, %{issue_date} tarihinde
         yayınlanmış, %{due_date} tarihinde teslim edilmesi gerekmektedir."

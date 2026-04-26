@@ -52,6 +52,8 @@ interface InvoicePreviewProps {
       taxId?: string;
       vatNumber?: string;
       gstNumber?: string;
+      ein?: string;
+      usTaxpayerId?: string;
       bankName?: string;
       bankAccountNumber?: string;
       bankRoutingNumber?: string;
@@ -466,6 +468,16 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
                 <p>
                   {i18n.t("invoices.gstNumber", {
                     value: invoice.company.gstNumber,
+                  })}
+                </p>
+              )}
+              {invoice.company.ein && (
+                <p>{i18n.t("invoices.ein", { value: invoice.company.ein })}</p>
+              )}
+              {invoice.company.usTaxpayerId && (
+                <p>
+                  {i18n.t("invoices.usTaxpayerId", {
+                    value: invoice.company.usTaxpayerId,
                   })}
                 </p>
               )}

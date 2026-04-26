@@ -560,6 +560,8 @@ gu:
         routing_number: રૂટીંગ નંબર
         swift_code: SWIFT કોડ
         tax_id: ટેક્સ ID
+        ein: EIN
+        us_taxpayer_id: U.S. Taxpayer ID
         vat_number: વેટ નંબર
       prepared_by: "%{company_name} દ્વારા તૈયાર કરાયેલ, %{issue_date} જારી કરાયેલ,
         %{due_date} ચૂકવવાની બાકી."

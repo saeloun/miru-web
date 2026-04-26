@@ -567,6 +567,8 @@ const locale = {
     taxId: "세금 ID: %{value}",
     vatNumber: "VAT 번호: %{value}",
     gstNumber: "GST 번호: %{value}",
+    ein: "EIN: %{value}",
+    usTaxpayerId: "U.S. Taxpayer ID: %{value}",
     bankDetails: "은행 정보",
     bankName: "은행명: %{value}",
     accountNumber: "계좌번호: %{value}",

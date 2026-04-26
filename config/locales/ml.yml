@@ -566,6 +566,8 @@ ml:
         routing_number: റൂട്ടിംഗ് നമ്പർ
         swift_code: സ്വിഫ്റ്റ് കോഡ്
         tax_id: ടാക്സ് ഐഡി
+        ein: EIN
+        us_taxpayer_id: U.S. Taxpayer ID
         vat_number: വാറ്റ് നമ്പർ
       prepared_by: "%{company_name} തയ്യാറാക്കിയത്, %{issue_date} ഇഷ്യൂ ചെയ്തത്, %{due_date}
         നൽകേണ്ടത്."

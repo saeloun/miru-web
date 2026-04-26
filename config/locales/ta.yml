@@ -573,6 +573,8 @@ ta:
         routing_number: ரூட்டிங் எண்
         swift_code: ஸ்விஃப்ட் குறியீடு
         tax_id: வரி அடையாள எண்
+        ein: EIN
+        us_taxpayer_id: U.S. Taxpayer ID
         vat_number: VAT எண்
       prepared_by: "%{company_name} என்பவரால் தயாரிக்கப்பட்டது, %{issue_date} அன்று
         வெளியிடப்பட்டது, %{due_date} அன்று செலுத்தப்பட வேண்டும்."

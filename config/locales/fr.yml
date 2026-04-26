@@ -571,6 +571,8 @@ fr:
         routing_number: Numéro de routage
         swift_code: Code rapide
         tax_id: Numéro d'identification fiscale
+        ein: EIN
+        us_taxpayer_id: U.S. Taxpayer ID
         vat_number: Numéro de TVA
       prepared_by: Préparé par %{company_name}, émis %{issue_date}, à recevoir %{due_date}.
       reference: 'Référence : %{reference}'

@@ -555,6 +555,8 @@ te:
         routing_number: రూటింగ్ సంఖ్య
         swift_code: స్విఫ్ట్ కోడ్
         tax_id: పన్ను గుర్తింపు సంఖ్య
+        ein: EIN
+        us_taxpayer_id: U.S. Taxpayer ID
         vat_number: వ్యాట్ నంబర్
       prepared_by: "%{company_name} చే తయారు చేయబడింది, %{issue_date} జారీ చేయబడింది,
         గడువు %{due_date}."

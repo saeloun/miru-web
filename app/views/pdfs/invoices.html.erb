@@ -365,7 +365,9 @@
       [t("pdfs.invoices.payment_rows.swift_code"), invoice.company.bank_swift_code],
       [t("pdfs.invoices.payment_rows.tax_id"), invoice.company.tax_id],
       [t("pdfs.invoices.payment_rows.vat_number"), invoice.company.vat_number],
-      [t("pdfs.invoices.payment_rows.gst_number"), invoice.company.gst_number]
+      [t("pdfs.invoices.payment_rows.gst_number"), invoice.company.gst_number],
+      [t("pdfs.invoices.payment_rows.ein"), invoice.company.ein],
+      [t("pdfs.invoices.payment_rows.us_taxpayer_id"), invoice.company.us_taxpayer_id]
     ].select { |_, value| value.present? }
   %>
 

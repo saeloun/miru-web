@@ -570,6 +570,8 @@ const locale = {
     taxId: "税務ID: %{value}",
     vatNumber: "VAT番号: %{value}",
     gstNumber: "GST番号: %{value}",
+    ein: "EIN: %{value}",
+    usTaxpayerId: "U.S. Taxpayer ID: %{value}",
     bankDetails: "銀行情報",
     bankName: "銀行名: %{value}",
     accountNumber: "口座番号: %{value}",
