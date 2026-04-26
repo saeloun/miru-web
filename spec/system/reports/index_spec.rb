@@ -338,6 +338,29 @@ RSpec.describe "Reports", type: :system, js: true do
       end
     end
 
+    it "keeps accounts aging filter and export controls readable in dark mode" do
+      client = create(:client, company:, name: "Dark Mode Aging Client")
+      create(:project, client:, billable: true, name: "Dark Mode Aging Project")
+      create(:invoice, company:, client:, status: :sent, amount: 5000, amount_due: 5000, issue_date: 90.days.ago, due_date: 60.days.ago)
+
+      with_forgery_protection do
+        visit "/reports/accounts-aging?asOf=#{Date.current.iso8601}"
+        page.execute_script("localStorage.setItem('miru-theme', 'dark')")
+        visit "/reports/accounts-aging?asOf=#{Date.current.iso8601}"
+
+        expect_reports_shell("Accounts Aging")
+
+        button_styles = page.evaluate_script(<<~JS)
+          Array.from(document.querySelectorAll("button"))
+            .filter((button) => ["As of #{Date.current.strftime("%b %-d, %Y")}", "Clients", "Export"].includes(button.textContent.trim().replace(/\\s+/g, " ")))
+            .map((button) => getComputedStyle(button).backgroundColor)
+        JS
+
+        expect(button_styles.size).to eq(3)
+        expect(button_styles).not_to include("rgb(255, 255, 255)")
+      end
+    end
+
     it "loads the outstanding and overdue invoices report" do
       client = create(:client, company:, name: "Pending Client")
       create(:invoice, company:, client:, status: :overdue, amount: 2000, amount_due: 2000, issue_date: 60.days.ago, due_date: 30.days.ago)
