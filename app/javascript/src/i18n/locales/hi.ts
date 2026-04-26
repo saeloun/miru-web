@@ -2169,6 +2169,10 @@ const locale = {
     notSpecified: "निर्दिष्ट नहीं",
     noDevicesFound: "कोई उपकरण नहीं मिला",
     newDevice: "नया उपकरण",
+    deviceTypeRequired: "उपकरण प्रकार आवश्यक है",
+    modelNameRequired: "मॉडल/नाम आवश्यक है",
+    serialNumberRequired: "सीरियल नंबर आवश्यक है",
+    requiredFieldsError: "सहेजने से पहले आवश्यक उपकरण फ़ील्ड भरें",
     unsavedChangesPrompt:
       "आपके पास बिना सहेजे बदलाव हैं। क्या आप वाकई रद्द करना चाहते हैं?",
   },

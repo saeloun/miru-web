@@ -1965,6 +1965,10 @@ const en = {
     notSpecified: "Not specified",
     noDevicesFound: "No devices found",
     newDevice: "New Device",
+    deviceTypeRequired: "Device type is required",
+    modelNameRequired: "Model/Name is required",
+    serialNumberRequired: "Serial number is required",
+    requiredFieldsError: "Complete the required device fields before saving",
     unsavedChangesPrompt:
       "You have unsaved changes. Are you sure you want to cancel?",
   },

@@ -40,6 +40,33 @@ RSpec.describe "Devices#update", type: :request do
       end
     end
 
+    context "when user clears required device details" do
+      it "does not update the device" do
+        send_request :patch, api_v1_user_device_path(
+          user_id: user.id,
+          id: device_of_user.id,
+          params: {
+            device: {
+              device_type: "",
+              name: "",
+              serial_number: "",
+              specifications: {
+                processor: "",
+                ram: "",
+                graphics: ""
+              }
+            }
+          }
+        ), headers: auth_headers(user)
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(json_response["errors"]).to be_present
+        expect(device_of_user.reload.name).to be_present
+        expect(device_of_user.serial_number).to be_present
+        expect(device_of_user.device_type).to eq("laptop")
+      end
+    end
+
     context "when user wants to update details of an employee of his own workspace" do
       before do
         create(:employment, company:, user: employee)

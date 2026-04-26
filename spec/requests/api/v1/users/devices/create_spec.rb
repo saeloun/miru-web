@@ -36,6 +36,29 @@ RSpec.describe "Devices#create", type: :request do
       end
     end
 
+    context "when user submits an empty device" do
+      it "does not create the device" do
+        expect do
+          send_request :post, api_v1_user_devices_path(
+            user_id: user.id,
+            device: {
+              device_type: "",
+              name: "",
+              serial_number: "",
+              specifications: {
+                processor: "",
+                ram: "",
+                graphics: ""
+              }
+            }
+          ), headers: auth_headers(user)
+        end.not_to change(Device, :count)
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(json_response["errors"]).to be_present
+      end
+    end
+
     context "when user wants to create device detail of an employee of his workspace" do
       before do
         create(:employment, company:, user: employee)

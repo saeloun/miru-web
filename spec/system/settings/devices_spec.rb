@@ -35,6 +35,22 @@ RSpec.describe "Settings - Devices", type: :system, js: true do
     expect(page).to have_content("MBP-001", wait: 10)
   end
 
+  it "blocks saving an empty device from the edit screen" do
+    sign_in(owner)
+
+    visit "/settings/devices/edit"
+    find("h3", text: "Add Another Device").click
+
+    expect do
+      click_on "Save Changes"
+      expect(page).to have_content("Device type is required", wait: 10)
+    end.not_to change(Device, :count)
+
+    expect(page).to have_current_path("/settings/devices/edit", wait: 10)
+    expect(page).to have_content("Model/Name is required")
+    expect(page).to have_content("Serial number is required")
+  end
+
   it "shows an employee only their own devices" do
     create(:device, user_id: employee.id, company_id: company.id, name: "Employee Laptop")
     create(:device, user_id: owner.id, company_id: company.id, name: "Owner Laptop")
