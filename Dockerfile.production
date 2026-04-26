@@ -46,7 +46,7 @@ RUN NODE_ENV=production pnpm install --frozen-lockfile --ignore-scripts
 COPY . .
 
 # Precompile assets
-RUN SECRET_KEY_BASE=dummy RAILS_ENV=production bundle exec rails assets:precompile
+RUN SECRET_KEY_BASE_DUMMY=1 RAILS_ENV=production bundle exec rails assets:precompile
 
 # Clean up unnecessary files
 RUN rm -rf node_modules tmp/cache vendor/bundle/ruby/*/cache/*.gem && \
