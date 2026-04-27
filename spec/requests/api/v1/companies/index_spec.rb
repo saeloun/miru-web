@@ -3,7 +3,7 @@
 require "rails_helper"
 
 RSpec.describe "Api::V1::Companies::index", type: :request do
-  let(:company) { create(:company) }
+  let(:company) { create(:company, ein: "12-3456789", us_taxpayer_id: "987-65-4321") }
   let(:user) { create(:user, current_workspace_id: company.id) }
 
   before do
