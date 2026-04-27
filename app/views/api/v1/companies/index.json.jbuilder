@@ -22,6 +22,8 @@ json.company_details do
   json.tax_id current_company.tax_id
   json.vat_number current_company.vat_number
   json.gst_number current_company.gst_number
+  json.ein current_company.ein
+  json.us_taxpayer_id current_company.us_taxpayer_id
   json.address do
     json.partial! "internal_api/v1/partial/address", locals: { address: }
   end
