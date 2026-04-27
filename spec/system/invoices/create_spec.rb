@@ -45,6 +45,41 @@ RSpec.describe "Invoice creation", type: :system, js: true do
     end
   end
 
+  it "keeps send failure feedback clear after creating a new invoice" do
+    allow(InvoicePayment::PdfGeneration)
+      .to receive(:process)
+      .and_raise(StandardError, "PDF generation failed")
+
+    with_forgery_protection do
+      visit_new_invoice_for(client)
+
+      fill_in "invoiceNumber", with: "INV-SEND-FAIL-001"
+      add_manual_line_item(
+        name: "Send failure item",
+        rate: "100",
+        quantity: "01:00",
+        description: "PDF failure path"
+      )
+
+      expect do
+        click_button "Send Invoice"
+        expect(page).to have_text("Failed to generate PDF", wait: 10)
+      end.to change(Invoice, :count).by(1)
+
+      invoice = Invoice.find_by!(invoice_number: "INV-SEND-FAIL-001")
+      expect(invoice).to be_draft
+      expect(page).to have_current_path("/invoices/#{invoice.id}/edit", ignore_query: true, wait: 10)
+      expect(page).to have_no_text("Invoice created successfully")
+
+      expect do
+        click_button "Send Invoice"
+        expect(page).to have_text("Failed to generate PDF", wait: 10)
+      end.not_to change(Invoice, :count)
+
+      expect(page).to have_no_text("Invoice number has already been taken")
+    end
+  end
+
   it "shows the manual entry name in the invoice preview before saving" do
     with_forgery_protection do
       visit_new_invoice_for(client)

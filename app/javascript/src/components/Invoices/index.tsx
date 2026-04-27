@@ -27,6 +27,12 @@ interface InvoicesPageProps {
   initialClientId?: string;
 }
 
+type InvoiceEmailPayload = {
+  subject: string;
+  message: string;
+  recipients: string[];
+};
+
 const InvoicesPage: React.FC<InvoicesPageProps> = ({
   initialMode = "list",
   initialInvoiceId,
@@ -72,6 +78,22 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
   const clearError = () => {
     setPageError(null);
     clearListError();
+  };
+
+  const invoiceRequestErrorMessage = (err: any, fallback: string) => {
+    if (err.response?.data?.error) {
+      return err.response.data.error;
+    }
+
+    if (err.response?.data?.errors) {
+      const errors = err.response.data.errors;
+
+      return Array.isArray(errors)
+        ? errors.join(", ")
+        : Object.values(errors).flat().join(", ");
+    }
+
+    return err.message || fallback;
   };
 
   const syncInvoiceState = (invoice: Invoice) => {
@@ -301,6 +323,8 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
   };
 
   const handleSendInvoice = async (invoiceData: InvoiceFormData) => {
+    let savedInvoice: Invoice | null = null;
+
     try {
       setIsLoading(true);
 
@@ -313,24 +337,29 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
         return;
       }
 
+      const invoiceDataForSave = {
+        ...invoiceData,
+        status: selectedInvoice?.status || "draft",
+      };
+
       // First save the invoice if it's new
       let invoiceId = invoiceData.id;
       if (!invoiceId) {
-        const newInvoice = await invoiceApi.createInvoice(invoiceData);
+        const newInvoice = await invoiceApi.createInvoice(invoiceDataForSave);
         invoiceId = newInvoice.id;
+        savedInvoice = newInvoice;
         setSelectedInvoiceId(newInvoice.id);
         setSelectedInvoice(newInvoice);
         setPreviewData(newInvoice);
-        toast.success(i18n.t("invoices.invoiceCreated"));
       } else {
         const updatedInvoice = await invoiceApi.updateInvoice(
           invoiceId,
-          invoiceData
+          invoiceDataForSave
         );
+        savedInvoice = updatedInvoice;
         setSelectedInvoiceId(updatedInvoice.id);
         setSelectedInvoice(updatedInvoice);
         setPreviewData(updatedInvoice);
-        toast.success(i18n.t("invoices.invoiceUpdated"));
       }
 
       // Then send the invoice
@@ -358,19 +387,17 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
     } catch (err: any) {
       console.error("Error sending invoice:", err);
 
-      if (err.response?.data?.error) {
-        toast.error(err.response.data.error);
-      } else if (err.response?.data?.errors) {
-        const errors = err.response.data.errors;
-        const errorMessage = Array.isArray(errors)
-          ? errors.join(", ")
-          : Object.values(errors).flat().join(", ");
-        toast.error(errorMessage);
-      } else if (err.message) {
-        toast.error(err.message);
-      } else {
-        toast.error(i18n.t("invoices.failedToSend"));
+      if (savedInvoice) {
+        setSelectedInvoiceId(savedInvoice.id);
+        setSelectedInvoice(savedInvoice);
+        setPreviewData(savedInvoice);
+        setViewMode("edit");
+        navigate(`/invoices/${savedInvoice.id}/edit`);
       }
+
+      toast.error(
+        invoiceRequestErrorMessage(err, i18n.t("invoices.failedToSend"))
+      );
       clearError();
     } finally {
       setIsLoading(false);
@@ -379,7 +406,7 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
 
   const handleSendInvoiceFromList = async (
     id: string,
-    invoiceEmail?: { subject: string; message: string; recipients: string[] }
+    invoiceEmail?: InvoiceEmailPayload
   ) => {
     try {
       const invoice = invoices.find(inv => inv.id === id) || selectedInvoice;
@@ -410,8 +437,11 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
         syncInvoiceState(refreshedInvoice);
       }
       await loadInvoices(); // Refresh the invoice list
-    } catch (err) {
-      toast.error(i18n.t("invoices.failedToSend"));
+    } catch (err: any) {
+      toast.error(
+        invoiceRequestErrorMessage(err, i18n.t("invoices.failedToSend"))
+      );
+      err.toastHandled = true;
       throw err;
     }
   };
@@ -449,7 +479,7 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
 
   const handleSendReminderFromList = async (
     id: string,
-    invoiceEmail?: { subject: string; message: string; recipients: string[] }
+    invoiceEmail?: InvoiceEmailPayload
   ) => {
     try {
       const invoice = invoices.find(inv => inv.id === id) || selectedInvoice;
@@ -474,8 +504,11 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
       );
 
       await loadInvoices();
-    } catch (err) {
-      toast.error("Failed to send reminder");
+    } catch (err: any) {
+      toast.error(
+        invoiceRequestErrorMessage(err, i18n.t("invoices.failedToSend"))
+      );
+      err.toastHandled = true;
       throw err;
     }
   };

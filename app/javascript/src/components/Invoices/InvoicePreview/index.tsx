@@ -233,6 +233,8 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
       setSendStatus(InvoiceStatus.ERROR);
       console.error("Send failed:", error);
 
+      if (error.toastHandled) return;
+
       if (error.response?.data?.error) {
         toast.error(error.response.data.error);
       } else if (error.response?.data?.errors) {
