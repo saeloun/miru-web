@@ -370,8 +370,8 @@ export const invoicesApi = {
   sendInvoice: (id: any, payload: any) =>
     http.post(`${invoicesPath}/${id}/send_invoice`, payload),
   viewInvoice: (id: any) => http.get(`${invoicesPath}/${id}/view`),
-  paymentSuccess: (id: any) =>
-    http.get(`${invoicesPath}/${id}/payments/success`),
+  paymentSuccess: (id?: string, query = "") =>
+    http.get(`${invoicesPath}/${id}/payments/success${query}`),
   waiveInvoice: (id: any) => http.patch(`${invoicesPath}/waived/${id}`),
   invoiceLogs: (id: any) => http.get(`${invoicesPath}/action_trails/${id}`),
   sendReminder: (id: any, payload: any) =>

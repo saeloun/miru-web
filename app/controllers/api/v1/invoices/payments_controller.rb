@@ -9,7 +9,12 @@ class Api::V1::Invoices::PaymentsController < Api::V1::ApplicationController
 
   def success
     if params[:provider] == PaymentsProvider::RAZORPAY_PROVIDER
-      return render json: { invoice: @invoice, notice: I18n.t("invoices.payments.success.success") }, status: 200 if @invoice.paid?
+      if @invoice.paid?
+        return render json: {
+          invoice: payment_success_invoice_payload,
+          notice: I18n.t("invoices.payments.success.success")
+        }, status: 200
+      end
 
       return render json: { error: I18n.t("invoices.payments.success.failure") }, status: 422
     end
@@ -24,9 +29,9 @@ class Api::V1::Invoices::PaymentsController < Api::V1::ApplicationController
           invoice_id: @invoice.id,
           subject: "Payment Confirmation of Invoice #{@invoice.invoice_number} by #{@invoice.client.name}"
         )
-        render json: { invoice: @invoice, notice: I18n.t("invoices.payments.success.success") }, status: 200
+        render json: { invoice: payment_success_invoice_payload, notice: I18n.t("invoices.payments.success.success") }, status: 200
       else
-        render json: { invoice: @invoice, notice: I18n.t("invoices.payments.success.success") }, status: 200
+        render json: { invoice: payment_success_invoice_payload, notice: I18n.t("invoices.payments.success.success") }, status: 200
       end
     else
       render json: { error: I18n.t("invoices.payments.success.failure") }, status: 422
@@ -42,5 +47,17 @@ class Api::V1::Invoices::PaymentsController < Api::V1::ApplicationController
     def track_event
       create_stripe = "create_stripe"
       Invoices::EventTrackerService.new(create_stripe, @invoice, params).process
+    end
+
+    def payment_success_invoice_payload
+      @invoice.slice(
+        :id,
+        :invoice_number,
+        :status,
+        :amount,
+        :amount_due,
+        :amount_paid,
+        :currency
+      )
     end
 end
