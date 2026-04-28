@@ -252,7 +252,10 @@ const Invoices = () => {
       const res = await PaymentsProviders.get();
       const paymentsProviders = res.data.paymentsProviders;
       const stripe = paymentsProviders.find(p => p.name === "stripe");
-      setIsStripeEnabled(!!stripe && stripe.enabled);
+      const upi = paymentsProviders.find(p => p.name === "upi");
+      setIsStripeEnabled(
+        (!!stripe && stripe.enabled) || (!!upi && upi.enabled)
+      );
     } catch {
       Toastr.error(i18n.t("invoices.errorConnectingPayments"));
     }

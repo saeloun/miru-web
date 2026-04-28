@@ -13,6 +13,10 @@ class PaymentSettingsPolicy < ApplicationPolicy
     user_owner_role? || user_admin_role?
   end
 
+  def update_upi?
+    user_owner_role? || user_admin_role?
+  end
+
   def refresh_stripe_connect?
     user_owner_role? || user_admin_role?
   end

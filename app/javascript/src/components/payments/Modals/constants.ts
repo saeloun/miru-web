@@ -10,4 +10,5 @@ export const transactionTypes = [
   { label: "Debit Card", value: "debit_card" },
   { label: "Paypal", value: "paypal" },
   { label: "Stripe", value: "stripe" },
+  { label: "UPI", value: "upi" },
 ];

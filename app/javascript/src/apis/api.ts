@@ -405,6 +405,8 @@ export const logoutApi = () => http.delete(`/users/logout`);
 // Payment Settings
 export const paymentSettingsApi = {
   get: () => http.get(`/payments/settings`),
+  updateUpi: (provider: any) =>
+    http.patch(`/payments/settings/upi`, { provider }),
   connectStripe: () => http.post(`/payments/settings/stripe/connect`),
   disconnectStripe: () => http.delete(`/payments/settings/stripe/disconnect`),
 };
