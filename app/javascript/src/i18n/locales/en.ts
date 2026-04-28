@@ -2148,8 +2148,12 @@ const en = {
       payments: {
         title: "Cash ledger",
         description:
-          "Every payment lands in one ledger with method, status, and source.",
+          "Accept Stripe cards or free UPI QR payments, then keep every payment in one ledger.",
       },
+    },
+    paymentBadges: {
+      upiQr: "Free UPI QR",
+      stripe: "Stripe cards",
     },
     validation: {
       emailRequired: "Email is required",
