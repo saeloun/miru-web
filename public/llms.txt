@@ -1,0 +1,22 @@
+# Miru App
+
+> Authenticated application for Miru time tracking, invoicing, expenses, payments, reports, API, CLI, and MCP workflows.
+
+Miru helps teams that bill by the hour track work, manage clients and projects, generate invoices, collect payments, manage expenses, and report on revenue.
+
+## Agent Interfaces
+
+- App homepage: https://app.miru.so/
+- OpenAPI: https://app.miru.so/openapi.json
+- API catalog: https://app.miru.so/.well-known/api-catalog
+- MCP endpoint: https://app.miru.so/mcp
+- MCP Server Card: https://app.miru.so/.well-known/mcp/server-card.json
+- Agent skills: https://app.miru.so/.well-known/agent-skills/index.json
+- Marketing/docs: https://miru.so/docs
+- AI-agent guide: https://miru.so/ai-agents
+
+## Agent Guidance
+
+Use OpenAPI or MCP for authenticated work when a user explicitly authorizes access. Avoid browser automation for time, invoice, expense, and report workflows when a structured API or MCP tool is available.
+
+Read-only workflows are safe for summaries and reporting. Write workflows should be scoped, explicit, and review-first when they affect invoices, expenses, payments, or client communication.

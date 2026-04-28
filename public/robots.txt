@@ -1,1 +1,103 @@
-# See https://www.robotstxt.org/robotstxt.html for documentation on how to use the robots.txt file
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /rails/
+Disallow: /users/
+Disallow: /settings/
+Disallow: /invoices/
+Disallow: /expenses/
+Disallow: /time-tracking/
+
+User-agent: GPTBot
+Allow: /
+Disallow: /api/
+Disallow: /rails/
+Disallow: /users/
+Disallow: /settings/
+Disallow: /invoices/
+Disallow: /expenses/
+Disallow: /time-tracking/
+
+User-agent: ChatGPT-User
+Allow: /
+Disallow: /api/
+Disallow: /rails/
+Disallow: /users/
+Disallow: /settings/
+Disallow: /invoices/
+Disallow: /expenses/
+Disallow: /time-tracking/
+
+User-agent: OAI-SearchBot
+Allow: /
+Disallow: /api/
+Disallow: /rails/
+Disallow: /users/
+Disallow: /settings/
+Disallow: /invoices/
+Disallow: /expenses/
+Disallow: /time-tracking/
+
+User-agent: Claude-Web
+Allow: /
+Disallow: /api/
+Disallow: /rails/
+Disallow: /users/
+Disallow: /settings/
+Disallow: /invoices/
+Disallow: /expenses/
+Disallow: /time-tracking/
+
+User-agent: ClaudeBot
+Allow: /
+Disallow: /api/
+Disallow: /rails/
+Disallow: /users/
+Disallow: /settings/
+Disallow: /invoices/
+Disallow: /expenses/
+Disallow: /time-tracking/
+
+User-agent: Anthropic-AI
+Allow: /
+Disallow: /api/
+Disallow: /rails/
+Disallow: /users/
+Disallow: /settings/
+Disallow: /invoices/
+Disallow: /expenses/
+Disallow: /time-tracking/
+
+User-agent: PerplexityBot
+Allow: /
+Disallow: /api/
+Disallow: /rails/
+Disallow: /users/
+Disallow: /settings/
+Disallow: /invoices/
+Disallow: /expenses/
+Disallow: /time-tracking/
+
+User-agent: CCBot
+Allow: /
+Disallow: /api/
+Disallow: /rails/
+Disallow: /users/
+Disallow: /settings/
+Disallow: /invoices/
+Disallow: /expenses/
+Disallow: /time-tracking/
+
+User-agent: Google-Extended
+Allow: /
+Disallow: /api/
+Disallow: /rails/
+Disallow: /users/
+Disallow: /settings/
+Disallow: /invoices/
+Disallow: /expenses/
+Disallow: /time-tracking/
+
+Content-Signal: ai-train=yes, search=yes, ai-input=yes
+
+Sitemap: https://app.miru.so/sitemap.xml

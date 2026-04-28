@@ -1,0 +1,41 @@
+# Miru App
+
+Miru is an open-source application for teams that bill by the hour. The authenticated app handles time tracking, clients, projects, team members, invoices, expenses, payments, reports, workspace settings, API access, CLI workflows, and MCP access.
+
+## Core Workflows
+
+1. Authenticate as a Miru user.
+2. Select or inspect the active workspace.
+3. List clients and projects.
+4. Create, update, or review time entries.
+5. Generate and send invoices.
+6. Create and review expenses.
+7. Inspect payments and reports.
+
+## Machine-Readable Resources
+
+- OpenAPI: https://app.miru.so/openapi.json
+- API catalog: https://app.miru.so/.well-known/api-catalog
+- MCP endpoint: https://app.miru.so/mcp
+- MCP Server Card: https://app.miru.so/.well-known/mcp/server-card.json
+- Agent skills: https://app.miru.so/.well-known/agent-skills/index.json
+- Public product docs: https://miru.so/docs
+- AI-agent guide: https://miru.so/ai-agents
+- Public LLM context: https://miru.so/llms-full.txt
+
+## API Surface Summary
+
+The app exposes JSON APIs under `/api/v1`. Important areas include users, clients, projects, timesheet entries, invoices, expenses, payments, reports, workspaces, teams, and CLI-specific endpoints. Authenticated agents should use bearer-token authorization.
+
+## MCP Surface Summary
+
+Miru's MCP endpoint is available at `/mcp`. It exposes tools for capabilities, workspace identity, projects, clients, time entries, invoices, payments, and expenses. Write operations should be performed only after the user has clearly authorized the action.
+
+## Safe Agent Patterns
+
+- Prefer read-only summaries for reporting, unbilled work, outstanding invoices, client status, and workspace context.
+- For time-entry creation, require project, date, duration, and a clear note.
+- For expense creation, require amount, category, date, and supporting description.
+- For invoice sending, prepare and summarize the action before sending client-facing email.
+- Use MCP or OpenAPI for authenticated data. Do not scrape private app HTML when a structured interface exists.
+- Keep bearer tokens private and never expose them in generated content, issue comments, or logs.

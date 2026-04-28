@@ -77,6 +77,11 @@ Rails.application.routes.draw do
     suffix.present? ? "https://docs.miru.so/#{suffix}#{query}" : "https://docs.miru.so#{query}"
   }
 
+  get "/openapi.json", to: "agent_readiness#openapi", defaults: { format: :json }
+  get "/.well-known/api-catalog", to: "agent_readiness#api_catalog"
+  get "/.well-known/mcp/server-card.json", to: "agent_readiness#mcp_server_card", defaults: { format: :json }
+  get "/.well-known/agent-skills/index.json", to: "agent_readiness#agent_skills", defaults: { format: :json }
+
   root "home#index"
 
   match "*path", via: :all, to: "home#index", constraints: lambda { |req|
