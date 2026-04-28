@@ -22,7 +22,8 @@ class Payment < ApplicationRecord
     :credit_card,
     :debit_card,
     :paypal,
-    :stripe
+    :stripe,
+    :upi
   ]
 
   belongs_to :invoice

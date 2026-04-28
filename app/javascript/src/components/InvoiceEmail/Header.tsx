@@ -7,6 +7,7 @@ import getStatusCssClass from "utils/getBadgeStatus";
 const Header = ({
   invoice,
   stripeUrl,
+  upiPayment,
   isStripeConnected,
   setIsInvoiceEmail,
   setShowConnectPaymentDialog,
@@ -62,6 +63,8 @@ const Header = ({
                   setShowStripeDisabledDialog(true);
                 } else if (isStripeConnected) {
                   window.location.href = stripeUrl;
+                } else if (upiPayment?.payment_link) {
+                  window.location.href = upiPayment.payment_link;
                 } else {
                   setIsInvoiceEmail(true);
                   setShowConnectPaymentDialog(true);
@@ -94,6 +97,7 @@ interface Invoice {
 interface InvoiceEmailProps {
   invoice: Invoice;
   stripeUrl: string;
+  upiPayment?: { payment_link?: string };
   isStripeConnected: boolean;
   setIsInvoiceEmail: (_value) => void;
   setShowConnectPaymentDialog: (_value) => void;

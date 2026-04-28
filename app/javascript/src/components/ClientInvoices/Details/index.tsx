@@ -51,6 +51,7 @@ const ClientInvoiceDetails = () => {
       lineItems,
       company,
       client,
+      upi_payment,
       stripe_connected_account,
     } = data;
 
@@ -62,6 +63,7 @@ const ClientInvoiceDetails = () => {
             setShowConnectPaymentDialog={setShowConnectPaymentDialog}
             setShowStripeDisabledDialog={setShowStripeDisabledDialog}
             stripeUrl={url}
+            upiPayment={upi_payment}
             stripe_connected_account={stripe_connected_account}
           />
           <div className="m-0 mt-5 mb-10 w-full bg-muted p-0">
@@ -71,6 +73,7 @@ const ClientInvoiceDetails = () => {
               invoice={invoice}
               lineItems={lineItems}
               logo={logo}
+              upiPayment={upi_payment}
             />
           </div>
           {showConnectPaymentDialog && (

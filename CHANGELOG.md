@@ -4,6 +4,7 @@
 
 ### Added
 
+- UPI payment settings with free Miru-branded QR generation for INR invoices, including public invoice and PDF invoice display
 - Falcon server support and a parallel system-spec runner with schema-aware database prep skipping
 - CRUD-focused system coverage for invoice editing and time-tracking flows
 

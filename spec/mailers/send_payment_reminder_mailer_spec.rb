@@ -16,6 +16,7 @@ RSpec.describe SendPaymentReminderMailer, type: :mailer do
     let(:mail) {
       SendPaymentReminderMailer.with(selected_invoices: [invoice.id], subject:, recipients:, message:).send_payment_reminder
     }
+    let(:body) { mail.html_part&.body&.decoded || mail.body.decoded }
 
     it "renders the headers" do
       expect(mail.subject).to eq(subject)
@@ -23,10 +24,10 @@ RSpec.describe SendPaymentReminderMailer, type: :mailer do
     end
 
     it "renders the body" do
-      expect(mail.body.encoded).to include("Payment reminder")
-      expect(mail.body.encoded).to include(invoice.invoice_number)
-      expect(mail.body.encoded).to include("Open invoice")
-      expect(mail.body.encoded).to include("Amount due")
+      expect(body).to include("Payment reminder")
+      expect(body).to include(invoice.invoice_number)
+      expect(body).to include("Open invoice")
+      expect(body).to include("Amount due")
     end
   end
 end

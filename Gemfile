@@ -249,3 +249,5 @@ gem "strong_migrations"
 
 gem "redis", "~> 5.4"
 gem "dotenv", groups: [:development, :test]
+
+gem "rqrcode", "~> 3.2"

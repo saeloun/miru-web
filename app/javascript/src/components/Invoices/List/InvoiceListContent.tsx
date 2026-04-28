@@ -31,8 +31,8 @@ const InvoiceListContent = ({
   downloading,
   handleReset,
   params,
-  isStripeEnabled,
-  setIsStripeEnabled,
+  isPaymentEnabled,
+  setIsPaymentEnabled,
   hasMoreInvoices,
   loadingMoreInvoices,
   loadMoreTriggerRef,
@@ -69,11 +69,11 @@ const InvoiceListContent = ({
         fetchInvoices={fetchInvoices}
         invoices={invoices}
         isDesktop={isDesktop}
-        isStripeEnabled={isStripeEnabled}
+        isPaymentEnabled={isPaymentEnabled}
         selectInvoices={selectInvoices}
         selectedInvoices={selectedInvoices}
         setInvoiceToDelete={setInvoiceToDelete}
-        setIsStripeEnabled={setIsStripeEnabled}
+        setIsPaymentEnabled={setIsPaymentEnabled}
         setShowDeleteDialog={setShowDeleteDialog}
       />
       <div className="mt-4 flex flex-col items-center gap-2 pb-2 text-sm text-gray-500">

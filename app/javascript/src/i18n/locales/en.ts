@@ -763,6 +763,7 @@ const en = {
     allTypes: "All Types",
     cardPayment: "Card Payment",
     bankTransfer: "Bank Transfer",
+    upi: "UPI",
     wireTransfer: "Wire Transfer",
     achTransfer: "ACH Transfer",
     paypal: "PayPal",
@@ -1620,6 +1621,27 @@ const en = {
       "Failed to load payment settings. Please try again later.",
     stripeDescription:
       "Accept credit cards, debit cards, and popular payment methods",
+    upiTitle: "UPI",
+    upiDescription:
+      "Show a no-fee UPI QR code on INR invoices. Clients can pay with PhonePe, Google Pay, Paytm, BHIM, or any UPI app.",
+    upiId: "UPI ID",
+    enterUpiId: "name@bank",
+    payeeName: "Payee name",
+    enterPayeeName: "Business or account name",
+    merchantCategoryCode: "Merchant category code",
+    merchantCategoryCodeOptional: "Optional",
+    showUpiOnInvoices: "Show UPI QR on INR invoices",
+    saveUpi: "Save UPI",
+    savingUpi: "Saving...",
+    upiSaved: "UPI settings saved.",
+    upiSaveFailed: "Failed to save UPI settings.",
+    copyUpiId: "Copy UPI ID",
+    copyPaymentLink: "Copy payment link",
+    copied: "Copied",
+    copyFailed: "Failed to copy.",
+    freeUpiQr: "Free UPI QR",
+    noGatewayFees:
+      "No gateway fee. Payments are recorded manually after receipt.",
     connectedTo: "Connected to",
     connected: "Connected",
     stripeAccountFallback: "Stripe Account",
@@ -2127,8 +2149,12 @@ const en = {
       payments: {
         title: "Cash ledger",
         description:
-          "Every payment lands in one ledger with method, status, and source.",
+          "Accept Stripe cards or free UPI QR payments, then keep every payment in one ledger.",
       },
+    },
+    paymentBadges: {
+      upiQr: "Free UPI QR",
+      stripe: "Stripe cards",
     },
     validation: {
       emailRequired: "Email is required",
