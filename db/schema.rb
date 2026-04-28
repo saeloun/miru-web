@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_28_165333) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_28_170000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_stat_statements"
@@ -299,6 +299,17 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_28_165333) do
   end
 
   create_table "data_migrations", primary_key: "version", id: :string, force: :cascade do |t|
+  end
+
+  create_table "desktop_current_timers", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.datetime "created_at", null: false
+    t.jsonb "current_timer", default: {}, null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["company_id"], name: "index_desktop_current_timers_on_company_id"
+    t.index ["user_id", "company_id"], name: "index_desktop_current_timers_on_user_id_and_company_id", unique: true
+    t.index ["user_id"], name: "index_desktop_current_timers_on_user_id"
   end
 
   create_table "devices", force: :cascade do |t|
@@ -979,6 +990,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_28_165333) do
   add_foreign_key "custom_leave_users", "custom_leaves", column: "custom_leave_id"
   add_foreign_key "custom_leave_users", "users"
   add_foreign_key "custom_leaves", "leaves", column: "leave_id"
+  add_foreign_key "desktop_current_timers", "companies"
+  add_foreign_key "desktop_current_timers", "users"
   add_foreign_key "devices", "companies"
   add_foreign_key "devices", "users"
   add_foreign_key "employments", "companies"

@@ -62,6 +62,9 @@ namespace :api, defaults: { format: "json" } do
       resources :expenses, only: [:index, :create]
       resources :timesheet_entries, only: [:create, :update, :destroy]
     end
+    namespace :desktop do
+      resource :current_timer, only: [:show, :update], controller: "current_timers"
+    end
     namespace :agent do
       resource :capabilities, only: [:show], controller: "capabilities"
       resources :timesheet_entries, only: [:create]
