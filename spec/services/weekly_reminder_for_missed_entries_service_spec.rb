@@ -71,6 +71,27 @@ RSpec.describe WeeklyReminderForMissedEntriesService do
       expect(service).not_to have_received(:send_mail)
     end
 
+    it "does not send reminder when previous week exceeds the expected weekly hours" do
+      travel_to Time.zone.local(2026, 4, 20, 14, 0, 0) do
+        monday_previous_week = Date.new(2026, 4, 13)
+
+        [0, 1, 2, 3, 4].each do |offset|
+          project = create(:project, client: create(:client, company:))
+          create(
+            :timesheet_entry,
+            user:,
+            project:,
+            duration: 540,
+            work_date: monday_previous_week + offset.days
+          )
+        end
+
+        service.check_entries_and_send_mail(user, company, notification_preference)
+      end
+
+      expect(service).not_to have_received(:send_mail)
+    end
+
     it "sends reminder when previous week total is below the expected weekly hours" do
       travel_to Time.zone.local(2026, 4, 6, 14, 0, 0) do
         monday_previous_week = Date.new(2026, 3, 30)
@@ -85,6 +106,26 @@ RSpec.describe WeeklyReminderForMissedEntriesService do
             work_date: monday_previous_week + offset.days
           )
         end
+
+        service.check_entries_and_send_mail(user, company, notification_preference)
+      end
+
+      expect(service).to have_received(:send_mail).once
+    end
+
+    it "ignores time off from other workspaces when checking weekly totals" do
+      travel_to Time.zone.local(2026, 4, 6, 14, 0, 0) do
+        other_company = create(:company)
+        other_leave = create(:leave, company: other_company, year: 2026)
+        other_leave_type = create(:leave_type, leave: other_leave)
+
+        create(
+          :timeoff_entry,
+          user:,
+          leave_type: other_leave_type,
+          duration: 2400,
+          leave_date: Date.new(2026, 3, 30)
+        )
 
         service.check_entries_and_send_mail(user, company, notification_preference)
       end

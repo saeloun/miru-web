@@ -509,24 +509,32 @@
 
     </style>
   </head>
-  <body>
+  <body style="margin: 0; padding: 0; width: 100%; min-width: 100%; background-color: #f5f7fb; color: #020617; font-family: Inter, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;">
     <% preheader = content_for?(:email_preheader) ? yield(:email_preheader).to_s.strip : t("mailers.layout.preheader") %>
     <div style="display: none; max-height: 0; overflow: hidden; opacity: 0; mso-hide: all;">
       <%= preheader %>
     </div>
-    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="email-shell">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="email-shell" style="width: 100%; margin: 0; padding: 32px 16px; background-color: #f5f7fb; border-collapse: collapse;">
       <tr>
-        <td align="center">
-          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="email-card">
+        <td align="center" style="padding: 0;">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="email-card" style="width: 100%; max-width: 720px; background-color: #ffffff; border: 1px solid #e5e7eb; border-radius: 30px; overflow: hidden;">
             <tr>
-              <td class="email-brand">
+              <td class="email-brand" style="padding: 34px 38px 24px; text-align: center; background-color: #ffffff; border-bottom: 1px solid #e5e7eb;">
                 <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center">
                   <tr>
                     <td align="center">
                       <% if content_for?(:email_badge) %>
                         <%= yield :email_badge %>
                       <% else %>
-                        <img src="<%= image_url("miruLogoWithText.svg") %>" alt="<%= t("mailers.layout.brand") %>" width="132" class="email-brand-logo" style="display: block; width: 132px; height: auto;" />
+                        <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" aria-label="<%= t("mailers.layout.brand") %>" style="margin: 0 auto; border-collapse: collapse;">
+                          <tr>
+                            <td style="width: 34px; height: 34px; border-radius: 10px; background-color: #020617; color: #ffffff; font-size: 18px; font-weight: 800; line-height: 34px; text-align: center;">M</td>
+                            <td style="padding-left: 10px; text-align: left;">
+                              <div style="color: #020617; font-size: 22px; font-weight: 800; line-height: 1;">Miru</div>
+                              <div style="margin-top: 4px; color: #64748b; font-size: 9px; font-weight: 700; letter-spacing: 0.18em; line-height: 1.2;">TRACK. BILL. GET PAID.</div>
+                            </td>
+                          </tr>
+                        </table>
                       <% end %>
                     </td>
                   </tr>

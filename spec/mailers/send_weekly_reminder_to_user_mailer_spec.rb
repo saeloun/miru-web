@@ -28,6 +28,23 @@ RSpec.describe SendWeeklyReminderToUserMailer, type: :mailer do
       expect(mailer.body.encoded).to include(formatted_end_date)
     end
 
+    it "renders the reminder email without relying on remote logo assets or class-only button styles" do
+      mailer = described_class.with(
+        recipients: user.email,
+        name: user.full_name,
+        start_date:,
+        end_date:,
+        company_name: company.name
+      ).notify_user_about_missed_entries
+      body = mailer.body.decoded
+
+      expect(body).to include("TRACK. BILL. GET PAID.")
+      expect(body).not_to include("miruLogoWithText.svg")
+      expect(body).to include("background-color: #f5f7fb")
+      expect(body).to include("background-color: #020617")
+      expect(body).to include("text-decoration: none")
+    end
+
     context "with notification preferences" do
       context "when user has notifications enabled" do
         let!(:notification_preference) do

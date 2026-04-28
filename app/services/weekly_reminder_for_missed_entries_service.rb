@@ -79,7 +79,7 @@ class WeeklyReminderForMissedEntriesService
     def get_entries_for_period(user:, company:, start_date:, end_date:)
       [
         user.timesheet_entries.kept.in_workspace(company).during(start_date, end_date),
-        user.timeoff_entries.during(start_date, end_date)
+        user.timeoff_entries.from_workspace(company.id).during(start_date, end_date)
       ]
     end
 
