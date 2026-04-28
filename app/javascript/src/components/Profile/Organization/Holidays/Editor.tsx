@@ -117,6 +117,7 @@ const OrganizationHolidaysEditor = ({
   const [activeTab, setActiveTab] = useState<TabKey>("public");
   const canEdit = canManageHolidays && isEditable;
 
+  const categorySortOrder = { public: 0, optional: 1 };
   const allHolidays = [...holidayList, ...optionalHolidaysList]
     .map(holiday => {
       const holidayDate = buildHolidayDate(holiday.date, dateFormat);
@@ -130,9 +131,15 @@ const OrganizationHolidaysEditor = ({
       };
     })
     .filter(Boolean)
-    .sort(
-      (left, right) => left.parsedDate.valueOf() - right.parsedDate.valueOf()
-    );
+    .sort((left, right) => {
+      const categoryComparison =
+        categorySortOrder[left.categoryKey] -
+        categorySortOrder[right.categoryKey];
+
+      if (categoryComparison !== 0) return categoryComparison;
+
+      return left.parsedDate.valueOf() - right.parsedDate.valueOf();
+    });
 
   const holidaysByMonth = allHolidays.reduce((accumulator, holiday) => {
     const month = holiday.parsedDate.month();
