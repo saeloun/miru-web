@@ -124,6 +124,11 @@ class AgentReadinessController < ActionController::Base
               href: "#{root_url}.well-known/mcp/server-card.json",
               type: "application/json",
               title: "Miru MCP Server Card"
+            },
+            {
+              href: "#{root_url}.well-known/agent-card.json",
+              type: "application/json",
+              title: "Miru A2A Agent Card"
             }
           ],
           "https://www.iana.org/assignments/relation/service-doc": [
@@ -190,6 +195,48 @@ class AgentReadinessController < ActionController::Base
             "https://miru.so/ai-agents",
             "https://miru.so/docs"
           ]
+        }
+      ]
+    }
+  end
+
+  def agent_card
+    render json: {
+      name: "Miru",
+      version: miru_version,
+      description: "Agent-facing discovery for Miru, an open-source time tracking, invoicing, expenses, payments, and automation platform for teams that bill by the hour.",
+      url: "#{root_url}.well-known/agent-card.json",
+      provider: {
+        name: "Miru",
+        url: "https://miru.so"
+      },
+      supportedInterfaces: [
+        {
+          protocol: "mcp",
+          transport: "streamable-http",
+          url: "#{root_url}mcp"
+        },
+        {
+          protocol: "openapi",
+          transport: "https",
+          url: "#{root_url}openapi.json"
+        }
+      ],
+      capabilities: {
+        streaming: true,
+        tools: true,
+        authentication: "bearer-token"
+      },
+      skills: [
+        {
+          id: "miru-time-invoice-expense-automation",
+          name: "Automate Miru billing workflows",
+          description: "Use Miru MCP or OpenAPI to inspect workspaces, list clients and projects, manage time entries, send invoices, and create expenses with explicit user authorization."
+        },
+        {
+          id: "miru-agent-discovery",
+          name: "Discover Miru agent resources",
+          description: "Use llms.txt, llms-full.txt, API catalog, OpenAPI, and MCP metadata to understand Miru's public documentation and authenticated automation surfaces."
         }
       ]
     }

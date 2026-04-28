@@ -82,6 +82,7 @@ Rails.application.routes.draw do
   get "/.well-known/api-catalog", to: "agent_readiness#api_catalog"
   get "/.well-known/mcp/server-card.json", to: "agent_readiness#mcp_server_card", defaults: { format: :json }
   get "/.well-known/agent-skills/index.json", to: "agent_readiness#agent_skills", defaults: { format: :json }
+  get "/.well-known/agent-card.json", to: "agent_readiness#agent_card", defaults: { format: :json }
 
   root "home#index"
 

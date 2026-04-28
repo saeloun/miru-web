@@ -28,6 +28,19 @@ RSpec.describe "Agent readiness discovery", type: :request do
     expect(response.parsed_body["skills"].first["resources"]).to include(a_string_ending_with("/openapi.json"))
   end
 
+  it "serves an A2A agent card" do
+    get "/.well-known/agent-card.json"
+
+    expect(response).to have_http_status(:ok)
+    expect(response.parsed_body["name"]).to eq("Miru")
+    expect(response.parsed_body["supportedInterfaces"]).to include(
+      a_hash_including("protocol" => "mcp", "transport" => "streamable-http", "url" => a_string_ending_with("/mcp"))
+    )
+    expect(response.parsed_body["skills"]).to include(
+      a_hash_including("id" => "miru-time-invoice-expense-automation")
+    )
+  end
+
   it "serves an OpenAPI description" do
     get "/openapi.json"
 
