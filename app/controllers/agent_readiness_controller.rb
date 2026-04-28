@@ -1,6 +1,112 @@
 # frozen_string_literal: true
 
 class AgentReadinessController < ActionController::Base
+  ROBOTS_TXT = <<~ROBOTS
+    User-agent: *
+    Allow: /
+    Disallow: /api/
+    Disallow: /rails/
+    Disallow: /users/
+    Disallow: /settings/
+    Disallow: /invoices/
+    Disallow: /expenses/
+    Disallow: /time-tracking/
+
+    User-agent: GPTBot
+    Allow: /
+    Disallow: /api/
+    Disallow: /rails/
+    Disallow: /users/
+    Disallow: /settings/
+    Disallow: /invoices/
+    Disallow: /expenses/
+    Disallow: /time-tracking/
+
+    User-agent: ChatGPT-User
+    Allow: /
+    Disallow: /api/
+    Disallow: /rails/
+    Disallow: /users/
+    Disallow: /settings/
+    Disallow: /invoices/
+    Disallow: /expenses/
+    Disallow: /time-tracking/
+
+    User-agent: OAI-SearchBot
+    Allow: /
+    Disallow: /api/
+    Disallow: /rails/
+    Disallow: /users/
+    Disallow: /settings/
+    Disallow: /invoices/
+    Disallow: /expenses/
+    Disallow: /time-tracking/
+
+    User-agent: Claude-Web
+    Allow: /
+    Disallow: /api/
+    Disallow: /rails/
+    Disallow: /users/
+    Disallow: /settings/
+    Disallow: /invoices/
+    Disallow: /expenses/
+    Disallow: /time-tracking/
+
+    User-agent: ClaudeBot
+    Allow: /
+    Disallow: /api/
+    Disallow: /rails/
+    Disallow: /users/
+    Disallow: /settings/
+    Disallow: /invoices/
+    Disallow: /expenses/
+    Disallow: /time-tracking/
+
+    User-agent: Anthropic-AI
+    Allow: /
+    Disallow: /api/
+    Disallow: /rails/
+    Disallow: /users/
+    Disallow: /settings/
+    Disallow: /invoices/
+    Disallow: /expenses/
+    Disallow: /time-tracking/
+
+    User-agent: PerplexityBot
+    Allow: /
+    Disallow: /api/
+    Disallow: /rails/
+    Disallow: /users/
+    Disallow: /settings/
+    Disallow: /invoices/
+    Disallow: /expenses/
+    Disallow: /time-tracking/
+
+    User-agent: CCBot
+    Allow: /
+    Disallow: /api/
+    Disallow: /rails/
+    Disallow: /users/
+    Disallow: /settings/
+    Disallow: /invoices/
+    Disallow: /expenses/
+    Disallow: /time-tracking/
+
+    User-agent: Google-Extended
+    Allow: /
+    Disallow: /api/
+    Disallow: /rails/
+    Disallow: /users/
+    Disallow: /settings/
+    Disallow: /invoices/
+    Disallow: /expenses/
+    Disallow: /time-tracking/
+
+    Content-Signal: ai-train=yes, search=yes, ai-input=yes
+
+    Sitemap: https://app.miru.so/sitemap.xml
+  ROBOTS
+
   before_action :set_agent_headers
 
   def api_catalog
@@ -91,6 +197,12 @@ class AgentReadinessController < ActionController::Base
 
   def openapi
     render json: openapi_document
+  end
+
+  def robots
+    response.headers["Cache-Control"] = "no-store"
+
+    render plain: ROBOTS_TXT, content_type: "text/plain; charset=utf-8"
   end
 
   private

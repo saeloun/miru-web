@@ -35,4 +35,15 @@ RSpec.describe "Agent readiness discovery", type: :request do
     expect(response.parsed_body["openapi"]).to eq("3.1.0")
     expect(response.parsed_body.dig("paths", "/mcp", "post", "summary")).to eq("Miru MCP streamable HTTP endpoint")
   end
+
+  it "serves AI-aware robots rules without long-lived static caching" do
+    get "/robots.txt"
+
+    expect(response).to have_http_status(:ok)
+    expect(response.media_type).to eq("text/plain")
+    expect(response.body).to include("User-agent: GPTBot")
+    expect(response.body).to include("Content-Signal: ai-train=yes, search=yes, ai-input=yes")
+    expect(response.headers["Cache-Control"]).to eq("no-store")
+    expect(response.headers["Content-Signal"]).to eq("ai-train=yes, search=yes, ai-input=yes")
+  end
 end

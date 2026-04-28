@@ -78,6 +78,7 @@ Rails.application.routes.draw do
   }
 
   get "/openapi.json", to: "agent_readiness#openapi", defaults: { format: :json }
+  get "/robots.txt", to: "agent_readiness#robots", defaults: { format: :text }
   get "/.well-known/api-catalog", to: "agent_readiness#api_catalog"
   get "/.well-known/mcp/server-card.json", to: "agent_readiness#mcp_server_card", defaults: { format: :json }
   get "/.well-known/agent-skills/index.json", to: "agent_readiness#agent_skills", defaults: { format: :json }
