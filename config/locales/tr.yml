@@ -54,6 +54,9 @@ tr:
       success: Avatar başarıyla silindi.
     update:
       success: Avatar başarıyla güncellendi.
+    validation:
+      file_too_large: must be smaller than %{size_mb}MB
+      invalid_content_type: must be a PNG, JPG, JPEG, or WEBP image
   client:
     add: MÜŞTERİ EKLE
     address:
@@ -557,11 +560,11 @@ tr:
       payment_rows:
         account_number: Hesap Numarası
         bank_name: Banka Adı
+        ein: EIN
         gst_number: GST Numarası
         routing_number: Yönlendirme Numarası
         swift_code: Swift kodu
         tax_id: Vergi Kimlik Numarası
-        ein: EIN
         us_taxpayer_id: U.S. Taxpayer ID
         vat_number: KDV Numarası
       prepared_by: "%{company_name} tarafından hazırlanmış, %{issue_date} tarihinde
@@ -740,9 +743,11 @@ tr:
       message: Çalışma saatleri çizelgesi oluşturuldu.
     destroy:
       failure: Zaman çizelgesi girişlerini silme işlemi başarısız oldu.
+      locked: Only admins can delete entries older than 7 days
       message: Çalışma saatleri çizelgesi silindi
     update:
       failure: Zaman çizelgesi girişlerinin güncellenmesi başarısız oldu.
+      locked: Only admins can edit entries older than 7 days
       message: Çalışma saatleri çizelgesi güncellendi.
   totp:
     disable_passkey_first: Kimlik doğrulama uygulamasının 2FA'sını etkinleştirmeden

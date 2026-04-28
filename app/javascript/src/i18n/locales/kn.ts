@@ -1,3 +1,6 @@
+import en from "./en";
+import mergeLocale from "../mergeLocale";
+
 const locale = {
   invalidImageFormatSize:
     "ತಪ್ಪಾದ ಫೈಲ್ ಫಾರ್ಮ್ಯಾಟ್. ದಯವಿಟ್ಟು PNG ಅಥವಾ JPG ಪ್ರಕಾರದ ಚಿತ್ರವನ್ನು ಅಪ್‌ಲೋಡ್ ಮಾಡಿ. ಗರಿಷ್ಠ ಗಾತ್ರ (%{fileSize}KB)",
@@ -2189,4 +2192,4 @@ const locale = {
   },
 };
 
-export default locale;
+export default mergeLocale(en, locale);

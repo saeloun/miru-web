@@ -1,3 +1,6 @@
+import en from "./en";
+import mergeLocale from "../mergeLocale";
+
 const locale = {
   invalidImageFormatSize:
     "잘못된 파일 형식입니다. PNG 또는 JPG 형식의 이미지를 업로드하세요. 최대 크기 (%{fileSize}KB)",
@@ -2140,4 +2143,4 @@ const locale = {
   },
 };
 
-export default locale;
+export default mergeLocale(en, locale);

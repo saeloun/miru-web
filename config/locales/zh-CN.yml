@@ -54,6 +54,9 @@ zh-CN:
       success: 头像已成功删除
     update:
       success: 头像已成功更新
+    validation:
+      file_too_large: must be smaller than %{size_mb}MB
+      invalid_content_type: must be a PNG, JPG, JPEG, or WEBP image
   client:
     add: 添加客户
     address:
@@ -515,11 +518,11 @@ zh-CN:
       payment_rows:
         account_number: 帐号
         bank_name: 银行名称
+        ein: EIN
         gst_number: 商品及服务税号
         routing_number: 路由号码
         swift_code: SWIFT代码
         tax_id: 税务识别号
-        ein: EIN
         us_taxpayer_id: U.S. Taxpayer ID
         vat_number: 增值税号
       prepared_by: 由 %{company_name} 编制，%{issue_date} 签发，%{due_date} 到期。
@@ -694,9 +697,11 @@ zh-CN:
       message: 创建工时表
     destroy:
       failure: 删除工时表条目失败
+      locked: Only admins can delete entries older than 7 days
       message: 已删除工时表
     update:
       failure: 更新工时表条目失败
+      locked: Only admins can edit entries older than 7 days
       message: 工时表已更新
   totp:
     disable_passkey_first: 启用身份验证器应用程序双因素身份验证之前，请先禁用所需的密码密钥登录。

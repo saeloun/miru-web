@@ -1,3 +1,6 @@
+import en from "./en";
+import mergeLocale from "../mergeLocale";
+
 const locale = {
   invalidImageFormatSize:
     "Yanlış dosya formatı. Lütfen PNG veya JPG türünde bir resim yükleyin. Maks. boyut (%{fileSize}KB)",
@@ -2180,4 +2183,4 @@ const locale = {
   },
 };
 
-export default locale;
+export default mergeLocale(en, locale);

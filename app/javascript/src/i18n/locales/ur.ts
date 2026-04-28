@@ -1,3 +1,6 @@
+import en from "./en";
+import mergeLocale from "../mergeLocale";
+
 const locale = {
   invalidImageFormatSize:
     "غلط فائل فارمیٹ۔ براہ کرم PNG یا JPG قسم کی تصویر اپ لوڈ کریں۔ زیادہ سے زیادہ سائز (%{fileSize}KB)",
@@ -2171,4 +2174,4 @@ const locale = {
   },
 };
 
-export default locale;
+export default mergeLocale(en, locale);

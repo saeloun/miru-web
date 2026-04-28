@@ -54,6 +54,9 @@ fr:
       success: Avatar supprimé avec succès
     update:
       success: Avatar mis à jour avec succès
+    validation:
+      file_too_large: must be smaller than %{size_mb}MB
+      invalid_content_type: must be a PNG, JPG, JPEG, or WEBP image
   client:
     add: AJOUTER UN CLIENT
     address:
@@ -567,11 +570,11 @@ fr:
       payment_rows:
         account_number: Numéro de compte
         bank_name: Nom de la banque
+        ein: EIN
         gst_number: Numéro de TPS
         routing_number: Numéro de routage
         swift_code: Code rapide
         tax_id: Numéro d'identification fiscale
-        ein: EIN
         us_taxpayer_id: U.S. Taxpayer ID
         vat_number: Numéro de TVA
       prepared_by: Préparé par %{company_name}, émis %{issue_date}, à recevoir %{due_date}.
@@ -750,9 +753,11 @@ fr:
       message: Feuille de temps créée
     destroy:
       failure: Échec de la suppression des entrées de la feuille de temps
+      locked: Only admins can delete entries older than 7 days
       message: Feuille de temps supprimée
     update:
       failure: Échec de la mise à jour des entrées de la feuille de temps
+      locked: Only admins can edit entries older than 7 days
       message: Feuille de temps mise à jour
   totp:
     disable_passkey_first: Désactivez la connexion par code d'accès requis avant d'activer

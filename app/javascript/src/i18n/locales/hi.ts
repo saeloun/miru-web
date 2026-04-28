@@ -1,3 +1,6 @@
+import en from "./en";
+import mergeLocale from "../mergeLocale";
+
 const locale = {
   invalidImageFormatSize:
     "गलत फ़ाइल प्रारूप। कृपया PNG या JPG प्रकार की छवि अपलोड करें। अधिकतम आकार (%{fileSize}KB)",
@@ -2301,4 +2304,4 @@ const locale = {
   selectRow: "पंक्ति का चयन करें",
 };
 
-export default locale;
+export default mergeLocale(en, locale);

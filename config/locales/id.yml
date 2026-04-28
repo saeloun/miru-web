@@ -54,6 +54,9 @@ id:
       success: Avatar berhasil dihapus.
     update:
       success: Avatar berhasil diperbarui.
+    validation:
+      file_too_large: must be smaller than %{size_mb}MB
+      invalid_content_type: must be a PNG, JPG, JPEG, or WEBP image
   client:
     add: TAMBAHKAN KLIEN
     address:
@@ -560,11 +563,11 @@ id:
       payment_rows:
         account_number: Nomor Rekening
         bank_name: Nama Bank
+        ein: EIN
         gst_number: Nomor GST
         routing_number: Nomor Routing
         swift_code: Kode SWIFT
         tax_id: Nomor Identifikasi Pajak
-        ein: EIN
         us_taxpayer_id: U.S. Taxpayer ID
         vat_number: Nomor PPN
       prepared_by: Disiapkan oleh %{company_name}, diterbitkan %{issue_date}, jatuh
@@ -743,9 +746,11 @@ id:
       message: Lembar waktu telah dibuat.
     destroy:
       failure: Gagal menghapus entri lembar waktu.
+      locked: Only admins can delete entries older than 7 days
       message: Lembar waktu dihapus
     update:
       failure: Gagal memperbarui entri lembar waktu.
+      locked: Only admins can edit entries older than 7 days
       message: Lembar waktu telah diperbarui.
   totp:
     disable_passkey_first: Nonaktifkan persyaratan kata sandi saat masuk sebelum mengaktifkan

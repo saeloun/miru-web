@@ -54,6 +54,9 @@ te:
       success: అవతార్ విజయవంతంగా తొలగించబడింది
     update:
       success: అవతార్ విజయవంతంగా నవీకరించబడింది
+    validation:
+      file_too_large: must be smaller than %{size_mb}MB
+      invalid_content_type: must be a PNG, JPG, JPEG, or WEBP image
   client:
     add: క్లయింట్‌ను జోడించండి
     address:
@@ -551,11 +554,11 @@ te:
       payment_rows:
         account_number: ఖాతా సంఖ్య
         bank_name: బ్యాంకు పేరు
+        ein: EIN
         gst_number: GST సంఖ్య
         routing_number: రూటింగ్ సంఖ్య
         swift_code: స్విఫ్ట్ కోడ్
         tax_id: పన్ను గుర్తింపు సంఖ్య
-        ein: EIN
         us_taxpayer_id: U.S. Taxpayer ID
         vat_number: వ్యాట్ నంబర్
       prepared_by: "%{company_name} చే తయారు చేయబడింది, %{issue_date} జారీ చేయబడింది,
@@ -734,9 +737,11 @@ te:
       message: టైమ్‌షీట్ సృష్టించబడింది
     destroy:
       failure: టైమ్‌షీట్ ఎంట్రీలను తొలగించడంలో విఫలమయ్యారు
+      locked: Only admins can delete entries older than 7 days
       message: టైమ్‌షీట్ తొలగించబడింది
     update:
       failure: టైమ్‌షీట్ ఎంట్రీలను అప్‌డేట్ చేయడంలో విఫలమయ్యారు
+      locked: Only admins can edit entries older than 7 days
       message: టైమ్‌షీట్ నవీకరించబడింది
   totp:
     disable_passkey_first: అథెంటికేటర్ యాప్ 2FAను ఎనేబుల్ చేసే ముందు, అవసరమైన పాస్‌కీ

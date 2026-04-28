@@ -54,6 +54,9 @@ gu:
       success: અવતાર સફળતાપૂર્વક કાઢી નાખ્યો
     update:
       success: અવતાર સફળતાપૂર્વક અપડેટ થયો
+    validation:
+      file_too_large: must be smaller than %{size_mb}MB
+      invalid_content_type: must be a PNG, JPG, JPEG, or WEBP image
   client:
     add: ક્લાયન્ટ ઉમેરો
     address:
@@ -556,11 +559,11 @@ gu:
       payment_rows:
         account_number: એકાઉન્ટ નંબર
         bank_name: બેંકનું નામ
+        ein: EIN
         gst_number: GST નંબર
         routing_number: રૂટીંગ નંબર
         swift_code: SWIFT કોડ
         tax_id: ટેક્સ ID
-        ein: EIN
         us_taxpayer_id: U.S. Taxpayer ID
         vat_number: વેટ નંબર
       prepared_by: "%{company_name} દ્વારા તૈયાર કરાયેલ, %{issue_date} જારી કરાયેલ,
@@ -739,9 +742,11 @@ gu:
       message: ટાઇમશીટ બનાવી
     destroy:
       failure: ટાઇમશીટ એન્ટ્રીઓ કાઢી નાખવામાં નિષ્ફળ થયાં
+      locked: Only admins can delete entries older than 7 days
       message: ટાઇમશીટ કાઢી નાખી
     update:
       failure: ટાઇમશીટ એન્ટ્રીઓ અપડેટ કરવામાં નિષ્ફળ થયાં
+      locked: Only admins can edit entries older than 7 days
       message: ટાઇમશીટ અપડેટ કરી
   totp:
     disable_passkey_first: પ્રમાણકર્તા એપ્લિકેશન 2FA સક્ષમ કરતા પહેલા જરૂરી પાસકી

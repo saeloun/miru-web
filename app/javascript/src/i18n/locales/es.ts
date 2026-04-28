@@ -1,3 +1,6 @@
+import en from "./en";
+import mergeLocale from "../mergeLocale";
+
 const locale = {
   invalidImageFormatSize:
     "Formato de archivo incorrecto. Por favor, suba una imagen de tipo PNG o JPG. Tamaño máx. (%{fileSize}KB)",
@@ -2205,4 +2208,4 @@ const locale = {
   },
 };
 
-export default locale;
+export default mergeLocale(en, locale);
