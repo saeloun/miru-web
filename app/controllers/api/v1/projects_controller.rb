@@ -14,7 +14,11 @@ class Api::V1::ProjectsController < Api::V1::ApplicationController
     end
 
     projects = projects.includes(:client, project_members: :user)
-    clients = projects.filter_map(&:client).uniq(&:id)
+    clients = if policy(Project).create?
+      current_company.clients.kept.order(:name)
+    else
+      projects.filter_map(&:client).uniq(&:id)
+    end
     total_durations = TimesheetEntry.kept.where(project_id: projects.select(:id)).group(:project_id).sum(:duration)
 
     render :index, locals: {
