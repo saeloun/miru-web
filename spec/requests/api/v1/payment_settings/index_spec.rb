@@ -20,6 +20,7 @@ RSpec.describe "Api::V1::PaymentSettings#index", type: :request do
       expect(json_response["providers"]).to have_key("upi")
       expect(json_response["providers"]["stripe"]).to have_key("connected")
       expect(json_response["providers"]["stripe"]["connected"]).to be(false)
+      expect(json_response["providers"]["stripe"]["enabled"]).to be(false)
       expect(json_response["providers"]["upi"]["connected"]).to be(false)
     end
 

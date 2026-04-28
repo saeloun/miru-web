@@ -1638,6 +1638,7 @@ const en = {
     copyUpiId: "Copy UPI ID",
     copyPaymentLink: "Copy payment link",
     copied: "Copied",
+    copyFailed: "Failed to copy.",
     freeUpiQr: "Free UPI QR",
     noGatewayFees:
       "No gateway fee. Payments are recorded manually after receipt.",

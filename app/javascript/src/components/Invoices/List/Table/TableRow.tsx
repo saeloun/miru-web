@@ -27,9 +27,9 @@ const TableRow = ({
   fetchInvoices,
   isDesktop,
   index,
-  isStripeEnabled,
+  isPaymentEnabled,
 
-  _setIsStripeEnabled,
+  _setIsPaymentEnabled,
 }) => {
   const [sendStatus, setSendStatus] = useState<InvoicesStatus>(
     InvoicesStatus.IDLE
@@ -173,7 +173,7 @@ const TableRow = ({
               isDesktop={isDesktop}
               isMenuOpen={isMenuOpen}
               isSending={isSending}
-              isStripeEnabled={isStripeEnabled}
+              isPaymentEnabled={isPaymentEnabled}
               setInvoiceToDelete={setInvoiceToDelete}
               setIsMenuOpen={setIsMenuOpen}
               setIsSendReminder={setIsSendReminder}
@@ -218,7 +218,7 @@ const TableRow = ({
               status={sendStatus}
             />
           )}
-        {!isStripeEnabled && showConnectPaymentDialog && (
+        {!isPaymentEnabled && showConnectPaymentDialog && (
           <ConnectPaymentGateway
             invoice={invoice}
             setIsSending={setIsSending}
@@ -282,7 +282,7 @@ const TableRow = ({
           isDesktop={isDesktop}
           isMenuOpen={isMenuOpen}
           isSending={isSending}
-          isStripeEnabled={isStripeEnabled}
+          isPaymentEnabled={isPaymentEnabled}
           setInvoiceToDelete={setInvoiceToDelete}
           setIsMenuOpen={setIsMenuOpen}
           setIsSendReminder={setIsSendReminder}

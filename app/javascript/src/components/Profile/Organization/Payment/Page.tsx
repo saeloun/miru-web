@@ -134,8 +134,13 @@ const OrganizationPaymentSettingsPage: React.FC<
   const copyText = async (value: string) => {
     if (!value) return;
 
-    await navigator.clipboard.writeText(value);
-    toast.success(i18n.t("paymentSettingsPage.copied"));
+    try {
+      await navigator.clipboard.writeText(value);
+      toast.success(i18n.t("paymentSettingsPage.copied"));
+    } catch (error) {
+      console.error("Failed to copy to clipboard:", error);
+      toast.error(i18n.t("paymentSettingsPage.copyFailed"));
+    }
   };
 
   const connectStripe = async () => {

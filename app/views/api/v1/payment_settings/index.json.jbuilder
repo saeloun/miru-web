@@ -5,7 +5,9 @@ json.deep_format_keys!
 
 json.providers do
   json.stripe do
-    json.connected stripe_connected_account.nil? ? false : stripe_connected_account.details_submitted
+    stripe_enabled = stripe_connected_account.nil? ? false : stripe_connected_account.details_submitted
+    json.connected stripe_enabled
+    json.enabled stripe_enabled
   end
   json.upi do
     json.connected upi_provider&.upi_configured? || false

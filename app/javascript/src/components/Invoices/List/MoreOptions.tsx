@@ -31,7 +31,7 @@ const MoreOptions = ({
   setIsSendReminder,
   showConnectPaymentDialog,
   setShowConnectPaymentDialog,
-  isStripeEnabled,
+  isPaymentEnabled,
 }) => {
   const navigate = useNavigate();
 
@@ -47,7 +47,7 @@ const MoreOptions = ({
             id="sendInvoiceButton"
             onClick={e => {
               e.stopPropagation();
-              if (isStripeEnabled) {
+              if (isPaymentEnabled) {
                 setIsSending(!isSending);
               } else {
                 setShowConnectPaymentDialog(!showConnectPaymentDialog);
@@ -186,7 +186,7 @@ const MoreOptions = ({
               e.stopPropagation();
               setIsSending(!isSending);
               setShowMoreOptions(false);
-              if (isStripeEnabled) {
+              if (isPaymentEnabled) {
                 setIsSending(!isSending);
                 setShowMoreOptions(false);
               } else {
