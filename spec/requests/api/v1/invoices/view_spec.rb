@@ -40,6 +40,17 @@ RSpec.describe "Api::V1::Invoices::View#index", type: :request do
         expect(json_response.dig("company", "ein")).to be_nil
         expect(json_response.dig("company", "us_taxpayer_id")).to be_nil
       end
+
+      it "does not report Stripe as connected when Stripe account retrieval fails" do
+        create(:stripe_connected_account, company:, account_id: "acct_local_stale")
+        allow(Stripe::Account).to receive(:retrieve)
+          .and_raise(Stripe::AuthenticationError.new("No API key provided"))
+
+        send_request :get, api_v1_invoices_view_path(invoice.external_view_key)
+
+        expect(response).to be_successful
+        expect(json_response["stripe_connected_account"]).to be(false)
+      end
     end
 
     context "when the client viewed the invoice" do
