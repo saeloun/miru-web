@@ -56,6 +56,7 @@ const OrganizationPaymentSettingsPage: React.FC<
   const [isConnecting, setIsConnecting] = useState<boolean>(false);
   const [isDisconnecting, setIsDisconnecting] = useState<boolean>(false);
   const [isSavingUpi, setIsSavingUpi] = useState<boolean>(false);
+  const [isSavingRazorpay, setIsSavingRazorpay] = useState<boolean>(false);
   const [accountLink, setAccountLink] = useState<string | null>(null);
   const [stripeAccountDetails, setStripeAccountDetails] = useState<any>(null);
   const [upiSettings, setUpiSettings] = useState({
@@ -67,6 +68,17 @@ const OrganizationPaymentSettingsPage: React.FC<
     paymentLink: "",
     qrCodeSvg: "",
     qrCodeDataUri: "",
+  });
+
+  const [razorpaySettings, setRazorpaySettings] = useState({
+    enabled: false,
+    enabledOnInvoices: true,
+    keyId: "",
+    keySecret: "",
+    keySecretConfigured: false,
+    linkedAccountId: "",
+    platformFeePercent: "5",
+    routeTransfersEnabled: false,
   });
 
   const fetchPaymentSettings = async () => {
@@ -90,6 +102,20 @@ const OrganizationPaymentSettingsPage: React.FC<
           qrCodeDataUri: upi.qrCodeDataUri || "",
         });
       }
+      const razorpay = res.data.providers.razorpay;
+      if (razorpay) {
+        setRazorpaySettings(settings => ({
+          ...settings,
+          enabled: !!razorpay.enabled,
+          enabledOnInvoices: razorpay.enabledOnInvoices ?? true,
+          keyId: razorpay.keyId || "",
+          keySecret: "",
+          keySecretConfigured: !!razorpay.keySecretConfigured,
+          linkedAccountId: razorpay.linkedAccountId || "",
+          platformFeePercent: razorpay.platformFeePercent || "5",
+          routeTransfersEnabled: !!razorpay.routeTransfersEnabled,
+        }));
+      }
       setStatus(PaymentSettingsStatus.SUCCESS);
     } catch (error) {
       console.error("Failed to fetch payment settings:", error);
@@ -99,6 +125,10 @@ const OrganizationPaymentSettingsPage: React.FC<
 
   const updateUpiSetting = (key: string, value: string | boolean) => {
     setUpiSettings(settings => ({ ...settings, [key]: value }));
+  };
+
+  const updateRazorpaySetting = (key: string, value: string | boolean) => {
+    setRazorpaySettings(settings => ({ ...settings, [key]: value }));
   };
 
   const saveUpiSettings = async () => {
@@ -128,6 +158,39 @@ const OrganizationPaymentSettingsPage: React.FC<
       toast.error(i18n.t("paymentSettingsPage.upiSaveFailed"));
     } finally {
       setIsSavingUpi(false);
+    }
+  };
+
+  const saveRazorpaySettings = async () => {
+    try {
+      setIsSavingRazorpay(true);
+      const res = await paymentSettings.updateRazorpay({
+        enabled: razorpaySettings.enabled,
+        enabled_on_invoices: razorpaySettings.enabledOnInvoices,
+        key_id: razorpaySettings.keyId,
+        key_secret: razorpaySettings.keySecret,
+        linked_account_id: razorpaySettings.linkedAccountId,
+        platform_fee_percent: razorpaySettings.platformFeePercent,
+        route_transfers_enabled: razorpaySettings.routeTransfersEnabled,
+      });
+      const razorpay = res.data.providers.razorpay;
+      setRazorpaySettings(settings => ({
+        ...settings,
+        enabled: !!razorpay.enabled,
+        enabledOnInvoices: razorpay.enabledOnInvoices ?? true,
+        keyId: razorpay.keyId || "",
+        keySecret: "",
+        keySecretConfigured: !!razorpay.keySecretConfigured,
+        linkedAccountId: razorpay.linkedAccountId || "",
+        platformFeePercent: razorpay.platformFeePercent || "5",
+        routeTransfersEnabled: !!razorpay.routeTransfersEnabled,
+      }));
+      toast.success(i18n.t("paymentSettingsPage.razorpaySaved"));
+    } catch (error) {
+      console.error("Failed to save Razorpay settings:", error);
+      toast.error(i18n.t("paymentSettingsPage.razorpaySaveFailed"));
+    } finally {
+      setIsSavingRazorpay(false);
     }
   };
 
@@ -481,6 +544,191 @@ const OrganizationPaymentSettingsPage: React.FC<
                           </div>
                         </div>
                       )}
+                    </div>
+                  </div>
+
+                  {/* Razorpay Provider */}
+                  <div className="rounded-lg border border-border bg-card p-6">
+                    <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
+                      <div className="flex min-w-0 flex-1 items-start space-x-4">
+                        <div className="flex h-12 w-12 items-center justify-center rounded-lg border border-border bg-muted">
+                          <CreditCard className="h-7 w-7 text-primary" />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <div className="flex flex-wrap items-center gap-2">
+                            <h3 className="text-lg font-medium text-foreground">
+                              {i18n.t("paymentSettingsPage.razorpayTitle")}
+                            </h3>
+                            <Badge
+                              variant="secondary"
+                              className="border-border bg-accent text-foreground"
+                            >
+                              {i18n.t("paymentSettingsPage.indiaPayments")}
+                            </Badge>
+                          </div>
+                          <p className="mt-1 text-sm text-muted-foreground">
+                            {i18n.t("paymentSettingsPage.razorpayDescription")}
+                          </p>
+
+                          <div className="mt-5 grid grid-cols-1 gap-4 md:grid-cols-2">
+                            <div className="space-y-2">
+                              <Label htmlFor="razorpay_key_id">
+                                {i18n.t("paymentSettingsPage.razorpayKeyId")}
+                              </Label>
+                              <Input
+                                id="razorpay_key_id"
+                                value={razorpaySettings.keyId}
+                                placeholder="rzp_live_..."
+                                onChange={e =>
+                                  updateRazorpaySetting("keyId", e.target.value)
+                                }
+                              />
+                            </div>
+                            <div className="space-y-2">
+                              <Label htmlFor="razorpay_key_secret">
+                                {i18n.t(
+                                  "paymentSettingsPage.razorpayKeySecret"
+                                )}
+                              </Label>
+                              <Input
+                                id="razorpay_key_secret"
+                                type="password"
+                                value={razorpaySettings.keySecret}
+                                placeholder={
+                                  razorpaySettings.keySecretConfigured
+                                    ? i18n.t(
+                                        "paymentSettingsPage.secretAlreadySaved"
+                                      )
+                                    : i18n.t(
+                                        "paymentSettingsPage.enterKeySecret"
+                                      )
+                                }
+                                onChange={e =>
+                                  updateRazorpaySetting(
+                                    "keySecret",
+                                    e.target.value
+                                  )
+                                }
+                              />
+                            </div>
+                            <div className="space-y-2">
+                              <Label htmlFor="razorpay_linked_account">
+                                {i18n.t("paymentSettingsPage.linkedAccountId")}
+                              </Label>
+                              <Input
+                                id="razorpay_linked_account"
+                                value={razorpaySettings.linkedAccountId}
+                                placeholder="acc_..."
+                                onChange={e =>
+                                  updateRazorpaySetting(
+                                    "linkedAccountId",
+                                    e.target.value
+                                  )
+                                }
+                              />
+                            </div>
+                            <div className="space-y-2">
+                              <Label htmlFor="razorpay_platform_fee">
+                                {i18n.t("paymentSettingsPage.platformFee")}
+                              </Label>
+                              <Input
+                                id="razorpay_platform_fee"
+                                min="0"
+                                max="30"
+                                step="0.1"
+                                type="number"
+                                value={razorpaySettings.platformFeePercent}
+                                onChange={e =>
+                                  updateRazorpaySetting(
+                                    "platformFeePercent",
+                                    e.target.value
+                                  )
+                                }
+                              />
+                            </div>
+                            <div className="flex items-end">
+                              <div className="flex w-full items-center justify-between rounded-md border border-border px-3 py-2">
+                                <Label
+                                  htmlFor="razorpay_on_invoices"
+                                  className="text-sm font-medium"
+                                >
+                                  {i18n.t(
+                                    "paymentSettingsPage.showRazorpayOnInvoices"
+                                  )}
+                                </Label>
+                                <Switch
+                                  id="razorpay_on_invoices"
+                                  checked={razorpaySettings.enabledOnInvoices}
+                                  onCheckedChange={checked =>
+                                    updateRazorpaySetting(
+                                      "enabledOnInvoices",
+                                      checked
+                                    )
+                                  }
+                                />
+                              </div>
+                            </div>
+                            <div className="flex items-end">
+                              <div className="flex w-full items-center justify-between rounded-md border border-border px-3 py-2">
+                                <Label
+                                  htmlFor="razorpay_route_transfers"
+                                  className="text-sm font-medium"
+                                >
+                                  {i18n.t("paymentSettingsPage.routeTransfers")}
+                                </Label>
+                                <Switch
+                                  id="razorpay_route_transfers"
+                                  checked={
+                                    razorpaySettings.routeTransfersEnabled
+                                  }
+                                  onCheckedChange={checked =>
+                                    updateRazorpaySetting(
+                                      "routeTransfersEnabled",
+                                      checked
+                                    )
+                                  }
+                                />
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center">
+                            <div className="flex items-center gap-2 rounded-md border border-border px-3 py-2">
+                              <DeviceMobile className="h-4 w-4 text-muted-foreground" />
+                              <Label
+                                htmlFor="razorpay_enabled"
+                                className="text-sm font-medium"
+                              >
+                                {i18n.t("paymentSettingsPage.connected")}
+                              </Label>
+                              <Switch
+                                id="razorpay_enabled"
+                                checked={razorpaySettings.enabled}
+                                onCheckedChange={checked =>
+                                  updateRazorpaySetting("enabled", checked)
+                                }
+                              />
+                            </div>
+                            <Button
+                              onClick={saveRazorpaySettings}
+                              disabled={isSavingRazorpay}
+                              className="bg-primary hover:bg-primary/90"
+                            >
+                              {isSavingRazorpay ? (
+                                <>
+                                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                  {i18n.t("paymentSettingsPage.savingRazorpay")}
+                                </>
+                              ) : (
+                                i18n.t("paymentSettingsPage.saveRazorpay")
+                              )}
+                            </Button>
+                            <p className="text-sm text-muted-foreground">
+                              {i18n.t("paymentSettingsPage.razorpayRouteNote")}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
 

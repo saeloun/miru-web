@@ -35,7 +35,44 @@ RSpec.describe PaymentsProvider, type: :model do
     end
 
     describe "inclusion" do
-      it { is_expected.to validate_inclusion_of(:name).in_array(%w(stripe)) }
+      it { is_expected.to validate_inclusion_of(:name).in_array(%w(stripe upi razorpay)) }
+    end
+
+    context "when Razorpay is enabled" do
+      subject(:provider) do
+        build(:payments_provider, name: PaymentsProvider::RAZORPAY_PROVIDER, enabled: true)
+      end
+
+      it "requires API credentials" do
+        expect(provider).not_to be_valid
+        expect(provider.errors[:base]).to include("Razorpay key id and key secret are required")
+      end
+
+      it "requires a linked account when Route transfers are enabled" do
+        provider.key_id = "rzp_test_123"
+        provider.key_secret = "secret"
+        provider.route_transfers_enabled = true
+
+        expect(provider).not_to be_valid
+        expect(provider.errors[:linked_account_id]).to be_present
+      end
+
+      it "defaults the platform fee to 5%" do
+        provider.key_id = "rzp_test_123"
+        provider.key_secret = "secret"
+
+        expect(provider).to be_valid
+        expect(provider.platform_fee_percent).to eq("5.0")
+      end
+
+      it "rejects invalid platform fees" do
+        provider.key_id = "rzp_test_123"
+        provider.key_secret = "secret"
+        provider.platform_fee_percent = "invalid"
+
+        expect(provider).not_to be_valid
+        expect(provider.errors[:platform_fee_percent]).to be_present
+      end
     end
   end
 

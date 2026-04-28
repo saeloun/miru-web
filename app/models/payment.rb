@@ -23,7 +23,8 @@ class Payment < ApplicationRecord
     :debit_card,
     :paypal,
     :stripe,
-    :upi
+    :upi,
+    :razorpay
   ]
 
   belongs_to :invoice

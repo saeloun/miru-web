@@ -51,7 +51,9 @@ const ClientInvoiceDetails = () => {
       lineItems,
       company,
       client,
+      bank_payment,
       upi_payment,
+      razorpay_payment,
       stripe_connected_account,
     } = data;
 
@@ -64,6 +66,7 @@ const ClientInvoiceDetails = () => {
             setShowStripeDisabledDialog={setShowStripeDisabledDialog}
             stripeUrl={url}
             upiPayment={upi_payment}
+            razorpayPayment={razorpay_payment}
             stripe_connected_account={stripe_connected_account}
           />
           <div className="m-0 mt-5 mb-10 w-full bg-muted p-0">
@@ -73,6 +76,7 @@ const ClientInvoiceDetails = () => {
               invoice={invoice}
               lineItems={lineItems}
               logo={logo}
+              bankPayment={bank_payment}
               upiPayment={upi_payment}
             />
           </div>

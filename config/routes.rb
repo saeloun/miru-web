@@ -52,6 +52,7 @@ Rails.application.routes.draw do
     resources :payments, only: [:new] do
       collection do
         get :cancel
+        get :razorpay_success
       end
     end
   end

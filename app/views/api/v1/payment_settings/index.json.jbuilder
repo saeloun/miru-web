@@ -27,4 +27,14 @@ json.providers do
       json.qr_code_data_uri nil
     end
   end
+  json.razorpay do
+    json.connected razorpay_provider&.razorpay_configured? || false
+    json.enabled razorpay_provider&.enabled? || false
+    json.enabled_on_invoices razorpay_provider&.enabled_on_invoices? || false
+    json.key_id razorpay_provider&.key_id
+    json.key_secret_configured razorpay_provider&.key_secret.present? || false
+    json.linked_account_id razorpay_provider&.linked_account_id
+    json.platform_fee_percent razorpay_provider&.platform_fee_percent || "5"
+    json.route_transfers_enabled razorpay_provider&.route_transfers_enabled? || false
+  end
 end

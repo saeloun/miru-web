@@ -14,7 +14,7 @@ RSpec.describe "Api::V1::Invoices::View#index", type: :request do
         expect(response).to be_successful
       end
 
-      it "does not expose company financial details" do
+      it "keeps company financial details private and exposes bank payment details" do
         company.update!(
           bank_name: "QA Bank",
           bank_account_number: "12345678",
@@ -39,6 +39,13 @@ RSpec.describe "Api::V1::Invoices::View#index", type: :request do
         expect(json_response.dig("company", "gst_number")).to be_nil
         expect(json_response.dig("company", "ein")).to be_nil
         expect(json_response.dig("company", "us_taxpayer_id")).to be_nil
+        expect(json_response.dig("bank_payment", "enabled")).to be(true)
+        expect(json_response.dig("bank_payment", "title")).to eq("US bank details")
+        expect(json_response.dig("bank_payment", "bank_name")).to eq("QA Bank")
+        expect(json_response.dig("bank_payment", "bank_account_number")).to eq("12345678")
+        expect(json_response.dig("bank_payment", "bank_routing_number")).to eq("987654321")
+        expect(json_response.dig("bank_payment", "bank_swift_code")).to eq("QABKUS33")
+        expect(json_response.dig("razorpay_payment", "enabled")).to be(false)
       end
 
       it "does not report Stripe as connected when Stripe account retrieval fails" do

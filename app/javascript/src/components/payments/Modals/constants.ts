@@ -11,4 +11,5 @@ export const transactionTypes = [
   { label: "Paypal", value: "paypal" },
   { label: "Stripe", value: "stripe" },
   { label: "UPI", value: "upi" },
+  { label: "Razorpay", value: "razorpay" },
 ];

@@ -6,7 +6,7 @@ class Api::V1::PaymentSettingsController < Api::V1::ApplicationController
   def index
     authorize :index, policy_class: PaymentSettingsPolicy
 
-    render :index, locals: { stripe_connected_account:, upi_provider: }
+    render :index, locals: { stripe_connected_account:, upi_provider:, razorpay_provider: }
   end
 
   def connect_stripe
@@ -35,9 +35,21 @@ class Api::V1::PaymentSettingsController < Api::V1::ApplicationController
     upi_provider.assign_attributes(upi_provider_attributes)
 
     if upi_provider.save
-      render :index, locals: { stripe_connected_account:, upi_provider: }
+      render :index, locals: { stripe_connected_account:, upi_provider:, razorpay_provider: }
     else
       render json: { errors: upi_provider.errors.to_hash(true) }, status: 422
+    end
+  end
+
+  def update_razorpay
+    authorize :update_razorpay, policy_class: PaymentSettingsPolicy
+
+    razorpay_provider.assign_attributes(razorpay_provider_attributes)
+
+    if razorpay_provider.save
+      render :index, locals: { stripe_connected_account:, upi_provider:, razorpay_provider: }
+    else
+      render json: { errors: razorpay_provider.errors.to_hash(true) }, status: 422
     end
   end
 
@@ -49,6 +61,10 @@ class Api::V1::PaymentSettingsController < Api::V1::ApplicationController
 
     def upi_provider
       @_upi_provider ||= current_company.payments_providers.find_or_initialize_by(name: PaymentsProvider::UPI_PROVIDER)
+    end
+
+    def razorpay_provider
+      @_razorpay_provider ||= current_company.payments_providers.find_or_initialize_by(name: PaymentsProvider::RAZORPAY_PROVIDER)
     end
 
     def upi_params
@@ -74,6 +90,37 @@ class Api::V1::PaymentSettingsController < Api::V1::ApplicationController
         merchant_category_code: upi_params[:merchant_category_code].to_s.strip,
         enabled_on_invoices: boolean_type.cast(upi_params[:enabled_on_invoices])
       }
+    end
+
+    def razorpay_params
+      params.require(:provider).permit(
+        :enabled,
+        :enabled_on_invoices,
+        :key_id,
+        :key_secret,
+        :linked_account_id,
+        :platform_fee_percent,
+        :route_transfers_enabled
+      )
+    end
+
+    def razorpay_provider_attributes
+      key_id = razorpay_params[:key_id].to_s.strip
+      secret = razorpay_params[:key_secret].to_s.strip
+
+      attrs = {
+        connected: key_id.present? && (secret.present? || razorpay_provider.key_secret.present?),
+        enabled: boolean_type.cast(razorpay_params[:enabled]),
+        accepted_payment_methods: ["razorpay"],
+        enabled_on_invoices: boolean_type.cast(razorpay_params[:enabled_on_invoices]),
+        key_id:,
+        linked_account_id: razorpay_params[:linked_account_id].to_s.strip,
+        platform_fee_percent: razorpay_params[:platform_fee_percent].to_s.strip,
+        route_transfers_enabled: boolean_type.cast(razorpay_params[:route_transfers_enabled])
+      }
+
+      attrs[:key_secret] = secret if secret.present?
+      attrs
     end
 
     def boolean_type

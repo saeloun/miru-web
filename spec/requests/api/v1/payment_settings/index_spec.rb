@@ -18,10 +18,12 @@ RSpec.describe "Api::V1::PaymentSettings#index", type: :request do
       expect(response).to have_http_status(:ok)
       expect(json_response["providers"]).to have_key("stripe")
       expect(json_response["providers"]).to have_key("upi")
+      expect(json_response["providers"]).to have_key("razorpay")
       expect(json_response["providers"]["stripe"]).to have_key("connected")
       expect(json_response["providers"]["stripe"]["connected"]).to be(false)
       expect(json_response["providers"]["stripe"]["enabled"]).to be(false)
       expect(json_response["providers"]["upi"]["connected"]).to be(false)
+      expect(json_response["providers"]["razorpay"]["connected"]).to be(false)
     end
 
     it "updates UPI payment settings" do
@@ -53,6 +55,41 @@ RSpec.describe "Api::V1::PaymentSettings#index", type: :request do
       provider = company.payments_providers.find_by!(name: PaymentsProvider::UPI_PROVIDER)
       expect(provider.connected).to be(true)
       expect(provider.accepted_payment_methods).to eq(["upi"])
+    end
+
+    it "updates Razorpay payment settings without exposing the key secret" do
+      patch(
+        "/api/v1/payments/settings/razorpay",
+        params: {
+          provider: {
+            enabled: true,
+            enabled_on_invoices: true,
+            key_id: "rzp_test_123",
+            key_secret: "secret",
+            linked_account_id: "acc_test_123",
+            platform_fee_percent: "5",
+            route_transfers_enabled: true
+          }
+        },
+        headers: auth_headers(user)
+      )
+
+      expect(response).to have_http_status(:ok)
+      razorpay = json_response["providers"]["razorpay"]
+      expect(razorpay["connected"]).to be(true)
+      expect(razorpay["enabled"]).to be(true)
+      expect(razorpay["keyId"]).to eq("rzp_test_123")
+      expect(razorpay["keySecretConfigured"]).to be(true)
+      expect(razorpay).not_to have_key("keySecret")
+      expect(razorpay["linkedAccountId"]).to eq("acc_test_123")
+      expect(razorpay["platformFeePercent"]).to eq("5.0")
+      expect(razorpay["routeTransfersEnabled"]).to be(true)
+
+      provider = company.payments_providers.find_by!(name: PaymentsProvider::RAZORPAY_PROVIDER)
+      expect(provider.accepted_payment_methods).to eq(["razorpay"])
+      expect(provider.key_secret).to eq("secret")
+      expect(provider.settings["key_secret"]).to be_nil
+      expect(provider.settings["key_secret_ciphertext"]).to be_present
     end
 
     it "rejects invalid UPI IDs" do
