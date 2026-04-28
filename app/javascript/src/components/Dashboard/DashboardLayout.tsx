@@ -29,6 +29,7 @@ import useThemeMode from "../../common/useThemeMode";
 import { hasProAccess } from "../../lib/planAccess";
 import { t } from "../../i18n";
 import CompactLocaleSwitcher from "../common/CompactLocaleSwitcher";
+import DashboardTimerControl from "./DashboardTimerControl";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -340,6 +341,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
               </h1>
             </div>
             <div className="flex items-center gap-2">
+              <DashboardTimerControl />
               <CompactLocaleSwitcher />
               <ThemeToggle compact />
               <button

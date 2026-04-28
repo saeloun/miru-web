@@ -665,6 +665,16 @@ export const timeTrackingApi = {
     }),
 };
 
+export const desktopCurrentTimerApi = {
+  get: () => http.get("/desktop/current_timer", { skipErrorToast: true }),
+  update: (payload: any) =>
+    http.put(
+      "/desktop/current_timer",
+      { current_timer: payload },
+      { skipErrorToast: true }
+    ),
+};
+
 // Workspaces
 export const workspacesApi = {
   get: () => http.get(`/workspaces`),
