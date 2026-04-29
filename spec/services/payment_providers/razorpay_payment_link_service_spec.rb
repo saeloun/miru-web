@@ -65,6 +65,73 @@ RSpec.describe PaymentProviders::RazorpayPaymentLinkService do
       expect(payment_url).to eq("https://rzp.io/rzp/test")
       expect(invoice.reload.razorpay_payment_link_id).to eq("plink_test_123")
       expect(invoice.razorpay_payment_link_url).to eq("https://rzp.io/rzp/test")
+      expect(invoice.razorpay_payment_link_status).to eq("created")
+    end
+
+    it "reuses an active existing payment link and refreshes the stored status" do
+      invoice.update!(
+        razorpay_payment_link_id: "plink_test_123",
+        razorpay_payment_link_url: "https://rzp.io/rzp/test",
+        razorpay_payment_link_status: "created"
+      )
+      expect(client_double).to receive(:fetch_payment_link)
+        .with("plink_test_123")
+        .and_return({ "id" => "plink_test_123", "status" => "partially_paid" })
+      expect(client_double).not_to receive(:create_payment_link)
+
+      payment_url = described_class.new(
+        invoice:,
+        provider:,
+        callback_url: "https://app.test/invoices/#{invoice.id}/payments/razorpay_success"
+      ).process
+
+      expect(payment_url).to eq("https://rzp.io/rzp/test")
+      expect(invoice.reload.razorpay_payment_link_status).to eq("partially_paid")
+    end
+
+    it "recreates an inactive existing payment link" do
+      invoice.update!(
+        razorpay_payment_link_id: "plink_old",
+        razorpay_payment_link_url: "https://rzp.io/rzp/old",
+        razorpay_payment_link_status: "created"
+      )
+      expect(client_double).to receive(:fetch_payment_link)
+        .with("plink_old")
+        .and_return({ "id" => "plink_old", "status" => "expired" })
+      expect(client_double).to receive(:create_payment_link)
+        .and_return({ "id" => "plink_new", "short_url" => "https://rzp.io/rzp/new", "status" => "created" })
+
+      payment_url = described_class.new(
+        invoice:,
+        provider:,
+        callback_url: "https://app.test/invoices/#{invoice.id}/payments/razorpay_success"
+      ).process
+
+      expect(payment_url).to eq("https://rzp.io/rzp/new")
+      expect(invoice.reload.razorpay_payment_link_id).to eq("plink_new")
+      expect(invoice.razorpay_payment_link_url).to eq("https://rzp.io/rzp/new")
+      expect(invoice.razorpay_payment_link_status).to eq("created")
+    end
+
+    it "keeps the stored link when Razorpay fetch fails" do
+      invoice.update!(
+        razorpay_payment_link_id: "plink_test_123",
+        razorpay_payment_link_url: "https://rzp.io/rzp/test",
+        razorpay_payment_link_status: "created"
+      )
+      expect(client_double).to receive(:fetch_payment_link)
+        .with("plink_test_123")
+        .and_raise(PaymentProviders::RazorpayClient::Error, "Razorpay unavailable")
+      expect(client_double).not_to receive(:create_payment_link)
+
+      payment_url = described_class.new(
+        invoice:,
+        provider:,
+        callback_url: "https://app.test/invoices/#{invoice.id}/payments/razorpay_success"
+      ).process
+
+      expect(payment_url).to eq("https://rzp.io/rzp/test")
+      expect(invoice.reload.razorpay_payment_link_id).to eq("plink_test_123")
     end
   end
 end

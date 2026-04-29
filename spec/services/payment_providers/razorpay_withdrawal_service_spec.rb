@@ -72,6 +72,36 @@ RSpec.describe PaymentProviders::RazorpayWithdrawalService do
     expect(payout.failure_reason).to eq("Insufficient balance")
   end
 
+  it "normalizes initiated payout responses to processing" do
+    allow(payout_service).to receive(:process).and_return(
+      {
+        "id" => "pout_test_123",
+        "status" => "initiated",
+        "processed_at" => nil
+      }
+    )
+
+    payout = described_class.new(payment:, automatic: false).process
+
+    expect(payout).to be_processing
+    expect(payout.external_id).to eq("pout_test_123")
+  end
+
+  it "normalizes rejected payout responses to failed and records nested status details" do
+    allow(payout_service).to receive(:process).and_return(
+      {
+        "id" => "pout_test_123",
+        "status" => "rejected",
+        "status_details" => { "description" => "UPI handle is invalid" }
+      }
+    )
+
+    payout = described_class.new(payment:, automatic: false).process
+
+    expect(payout).to be_failed
+    expect(payout.failure_reason).to eq("UPI handle is invalid")
+  end
+
   it "does nothing for automatic payout when payouts are disabled" do
     provider.update!(settings: provider.settings.merge("payouts_enabled" => false))
 
@@ -85,5 +115,37 @@ RSpec.describe PaymentProviders::RazorpayWithdrawalService do
     expect {
       described_class.new(payment:, automatic: false).process
     }.to raise_error(PaymentProviders::RazorpayWithdrawalService::Error, /Only Razorpay payments/)
+  end
+
+  it "rejects non-INR manual withdrawals" do
+    payment.update!(payment_currency: "USD")
+
+    expect {
+      described_class.new(payment:, automatic: false).process
+    }.to raise_error(PaymentProviders::RazorpayWithdrawalService::Error, /Only INR payments/)
+  end
+
+  it "rejects manual withdrawals when Razorpay payouts are disabled" do
+    provider.update!(settings: provider.settings.merge("payouts_enabled" => false))
+
+    expect {
+      described_class.new(payment:, automatic: false).process
+    }.to raise_error(PaymentProviders::RazorpayWithdrawalService::Error, /Razorpay payouts are not enabled/)
+  end
+
+  it "rejects manual withdrawals without a payout account number" do
+    allow_any_instance_of(PaymentsProvider).to receive(:payout_account_number).and_return("")
+
+    expect {
+      described_class.new(payment:, automatic: false).process
+    }.to raise_error(PaymentProviders::RazorpayWithdrawalService::Error, /payout account number is missing/)
+  end
+
+  it "rejects manual withdrawals without a payout UPI ID" do
+    allow_any_instance_of(PaymentsProvider).to receive(:payout_upi_id).and_return("")
+
+    expect {
+      described_class.new(payment:, automatic: false).process
+    }.to raise_error(PaymentProviders::RazorpayWithdrawalService::Error, /payout UPI ID is missing/)
   end
 end

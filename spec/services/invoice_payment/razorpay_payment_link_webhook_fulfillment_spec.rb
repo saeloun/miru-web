@@ -115,6 +115,43 @@ RSpec.describe InvoicePayment::RazorpayPaymentLinkWebhookFulfillment do
     expect(Payment.count).to eq(1)
   end
 
+  it "finds the invoice by reference id when notes are missing" do
+    reference_payload = JSON.parse(payload)
+    reference_payload["payload"]["payment_link"]["entity"].delete("notes")
+    reference_payload = reference_payload.to_json
+
+    result = described_class.new(payload: reference_payload, signature: sign(reference_payload)).process
+
+    expect(result).to be(true)
+    expect(invoice.reload).to be_paid
+    expect(invoice.razorpay_payment_link_status).to eq("paid")
+  end
+
+  it "rejects paid events without a matching invoice" do
+    missing_invoice_payload = JSON.parse(payload)
+    missing_invoice_payload["payload"]["payment_link"]["entity"]["notes"]["miru_invoice_id"] = "99999999"
+    missing_invoice_payload["payload"]["payment_link"]["entity"]["reference_id"] = "miru-inv-99999999"
+    missing_invoice_payload = missing_invoice_payload.to_json
+
+    fulfillment = described_class.new(payload: missing_invoice_payload, signature: sign(missing_invoice_payload))
+
+    expect(fulfillment.process).to be(false)
+    expect(fulfillment.error).to eq("Invoice not found")
+    expect(invoice.reload).not_to be_paid
+    expect(Payment.count).to eq(0)
+  end
+
+  it "rejects paid events when the invoice has no enabled Razorpay provider" do
+    provider.update!(enabled: false)
+
+    fulfillment = described_class.new(payload:, signature:)
+
+    expect(fulfillment.process).to be(false)
+    expect(fulfillment.error).to eq("Razorpay webhook secret is not configured")
+    expect(invoice.reload).not_to be_paid
+    expect(Payment.count).to eq(0)
+  end
+
   it "clears a cancelled payment link so a fresh link can be created later" do
     cancelled_payload = JSON.parse(payload)
     cancelled_payload["event"] = "payment_link.cancelled"
