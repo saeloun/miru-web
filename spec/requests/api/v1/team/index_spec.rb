@@ -34,18 +34,33 @@ RSpec.describe "Api::V1::Team#index", type: :request do
 
     it "checks if correct team members data is returned" do
       actual_team_data = @team_data.map do |member|
-                            member.slice("id", "name", "email", "role", "status", "is_team_member")
+                            member.slice("id", "name", "email", "role", "status", "statusText", "isTeamMember", "hoursLogged", "billableHours", "projects")
                           end
       actual_invited_user_data = @invitation_data.map do |member|
-                                   member.slice("id", "name", "email", "role", "status", "is_team_member")
+                                   member.slice("id", "name", "email", "role", "status", "statusText", "isTeamMember")
                                  end
 
       expected_team_data = [{
-        "id" => user.id, "name" => user.full_name, "email" => user.email, "role" => "admin", "status" => true
+        "id" => user.id,
+        "name" => user.full_name,
+        "email" => user.email,
+        "role" => "admin",
+        "status" => true,
+        "statusText" => "active",
+        "isTeamMember" => true,
+        "hoursLogged" => 0.0,
+        "billableHours" => 0.0,
+        "projects" => 0
       }]
 
       expected_invited_user_data = [{
-        "id" => invitation.id, "name" => invitation.full_name, "email" => invitation.recipient_email, "role" => "employee", "status" => false
+        "id" => invitation.id,
+        "name" => invitation.full_name,
+        "email" => invitation.recipient_email,
+        "role" => "employee",
+        "status" => false,
+        "statusText" => "invited",
+        "isTeamMember" => false
       }]
 
       expect(actual_team_data).to eq(expected_team_data)
@@ -67,9 +82,13 @@ RSpec.describe "Api::V1::Team#index", type: :request do
         "email" => user.email,
         "role" => "admin",
         "status" => true,
+        "statusText" => "active",
         "isTeamMember" => true,
         "employmentType" => employment.employment_type,
-        "joinedAtDate" => employment.joined_at.strftime("%Y-%m-%d")
+        "joinedAtDate" => employment.joined_at.strftime("%Y-%m-%d"),
+        "hoursLogged" => 0.0,
+        "billableHours" => 0.0,
+        "projects" => 0
       )
       expect(json_response["combinedDetails"].first["profilePicture"]).to be_present
     end

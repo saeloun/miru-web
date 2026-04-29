@@ -55,6 +55,9 @@ pt-BR:
       success: Avatar excluído com sucesso
     update:
       success: Avatar atualizado com sucesso
+    validation:
+      file_too_large: must be smaller than %{size_mb}MB
+      invalid_content_type: must be a PNG, JPG, JPEG, or WEBP image
   client:
     add: ADICIONAR CLIENTE
     address:
@@ -556,10 +559,12 @@ pt-BR:
       payment_rows:
         account_number: Número de conta
         bank_name: Nome do banco
+        ein: EIN
         gst_number: Número GST
         routing_number: Número de roteamento
         swift_code: Código Swift
         tax_id: Número de Identificação Fiscal
+        us_taxpayer_id: U.S. Taxpayer ID
         vat_number: Número de IVA
       prepared_by: Preparado por %{company_name}, emitido por %{issue_date}, com vencimento
         em %{due_date}.
@@ -738,9 +743,11 @@ pt-BR:
       message: Folha de ponto criada
     destroy:
       failure: Falha ao excluir registros da folha de ponto
+      locked: Only admins can delete entries older than 7 days
       message: Folha de ponto excluída
     update:
       failure: Falha ao atualizar as entradas da folha de ponto.
+      locked: Only admins can edit entries older than 7 days
       message: Folha de ponto atualizada
   totp:
     disable_passkey_first: Desative a exigência de senha para login antes de ativar

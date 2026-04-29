@@ -29,4 +29,27 @@ RSpec.describe "Api::V1::Projects index", type: :request do
     expect(body["clients"].pluck("name")).to eq(["Assigned Client"])
     expect(body["projects"].first["totalHours"]).to eq(2.5)
   end
+
+  context "when user can create projects" do
+    let(:admin) { create(:user, current_workspace_id: company.id) }
+    let!(:admin_employment) { create(:employment, company:, user: admin) }
+    let!(:client_without_project) { create(:client, company:, name: "Client Without Project") }
+
+    before do
+      admin.add_role :admin, company
+    end
+
+    it "returns all active company clients for the create project dropdown" do
+      get "/api/v1/projects",
+        params: {},
+        headers: auth_headers(admin)
+
+      expect(response).to have_http_status(:ok)
+      body = response.parsed_body
+
+      expect(body["clients"].pluck("name")).to eq(
+        ["Assigned Client", "Client Without Project", "Other Client"]
+      )
+    end
+  end
 end

@@ -68,7 +68,7 @@ RUN bundle exec bootsnap precompile app/ lib/
 RUN NODE_ENV=production bin/vite build
 
 # Precompile Rails assets
-RUN SECRET_KEY_BASE=DUMMY ./bin/rails assets:precompile
+RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
 
 # Final stage for app image
 FROM base

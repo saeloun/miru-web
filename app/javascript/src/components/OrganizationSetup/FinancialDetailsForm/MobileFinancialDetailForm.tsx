@@ -85,7 +85,9 @@ const MobileFinancialDetailForm = ({
                     }}
                   >
                     <SelectTrigger className="h-12">
-                      <SelectValue placeholder={i18n.t("orgSetup.selectBaseCurrency")} />
+                      <SelectValue
+                        placeholder={i18n.t("orgSetup.selectBaseCurrency")}
+                      />
                     </SelectTrigger>
                     <SelectContent>
                       {currencyListOptions.map(currency => (
@@ -148,7 +150,9 @@ const MobileFinancialDetailForm = ({
                     }}
                   >
                     <SelectTrigger className="h-12">
-                      <SelectValue placeholder={i18n.t("orgSetup.selectFiscalYearEnd")} />
+                      <SelectValue
+                        placeholder={i18n.t("orgSetup.selectFiscalYearEnd")}
+                      />
                     </SelectTrigger>
                     <SelectContent>
                       {fiscalYearEndOptions.map(yearEnd => (
@@ -180,7 +184,9 @@ const MobileFinancialDetailForm = ({
                     }}
                   >
                     <SelectTrigger className="h-12">
-                      <SelectValue placeholder={i18n.t("orgSetup.selectDateFormat")} />
+                      <SelectValue
+                        placeholder={i18n.t("orgSetup.selectDateFormat")}
+                      />
                     </SelectTrigger>
                     <SelectContent>
                       {dateFormatOptions.map(dateFormat => (

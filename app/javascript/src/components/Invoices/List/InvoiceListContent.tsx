@@ -2,6 +2,7 @@ import React from "react";
 
 import BulkActionsWrapper from "./BulkActionsWrapper";
 import NoInvoices from "./NoInvoices";
+import PaymentSetupPrompt from "./PaymentSetupPrompt";
 import InfiniteScrollRecentlyUpdated from "./RecentlyUpdated/InfiniteScrollRecentlyUpdated";
 import InvoiceListTable from "./Table/InvoiceListTable";
 
@@ -31,8 +32,8 @@ const InvoiceListContent = ({
   downloading,
   handleReset,
   params,
-  isStripeEnabled,
-  setIsStripeEnabled,
+  isPaymentEnabled,
+  setIsPaymentEnabled,
   hasMoreInvoices,
   loadingMoreInvoices,
   loadMoreTriggerRef,
@@ -50,6 +51,9 @@ const InvoiceListContent = ({
         filterParams={filterParams}
         setFilterParams={setFilterParams}
       />
+      {isPaymentEnabled === false && (
+        <PaymentSetupPrompt isDesktop={isDesktop} />
+      )}
       <InfiniteScrollRecentlyUpdated />
       <BulkActionsWrapper
         clearCheckboxes={clearCheckboxes}
@@ -69,11 +73,11 @@ const InvoiceListContent = ({
         fetchInvoices={fetchInvoices}
         invoices={invoices}
         isDesktop={isDesktop}
-        isStripeEnabled={isStripeEnabled}
+        isPaymentEnabled={isPaymentEnabled}
         selectInvoices={selectInvoices}
         selectedInvoices={selectedInvoices}
         setInvoiceToDelete={setInvoiceToDelete}
-        setIsStripeEnabled={setIsStripeEnabled}
+        setIsPaymentEnabled={setIsPaymentEnabled}
         setShowDeleteDialog={setShowDeleteDialog}
       />
       <div className="mt-4 flex flex-col items-center gap-2 pb-2 text-sm text-gray-500">

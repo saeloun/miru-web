@@ -28,6 +28,24 @@ RSpec.describe "Root#index", type: :request do
       expect(response.body).to include("<status>ok</status>")
     end
 
+    it "returns markdown for agent content negotiation requests" do
+      send_request :get, root_path, headers: { "Accept" => "text/markdown" }
+
+      expect(response).to have_http_status(:ok)
+      expect(response.media_type).to eq("text/markdown")
+      expect(response.body).to include("# Miru App")
+      expect(response.body).to include("OpenAPI:")
+    end
+
+    it "adds agent discovery headers to the homepage" do
+      send_request :get, root_path
+
+      expect(response.headers["Link"]).to include('/.well-known/api-catalog>; rel="api-catalog"')
+      expect(response.headers["Link"]).to include('/openapi.json>; rel="service-desc"')
+      expect(response.headers["Content-Signal"]).to eq("ai-train=yes, search=yes, ai-input=yes")
+      expect(response.headers["Vary"]).to include("Accept")
+    end
+
     it "returns not found for .well-known paths" do
       send_request :get, "/.well-known/assetlinks.json"
       expect(response).to have_http_status(:not_found)

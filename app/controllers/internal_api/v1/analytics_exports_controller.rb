@@ -102,8 +102,8 @@ class InternalApi::V1::AnalyticsExportsController < Api::V1::ApplicationControll
 
     def normalized_ids(raw_value)
       values = case raw_value
-      when String then raw_value.split(",")
-      else Array(raw_value)
+               when String then raw_value.split(",")
+               else Array(raw_value)
       end
 
       values.map(&:to_s).map(&:strip).reject(&:blank?).map(&:to_i).uniq
@@ -151,6 +151,6 @@ class InternalApi::V1::AnalyticsExportsController < Api::V1::ApplicationControll
 
       render json: {
         error: "PDF export is temporarily unavailable because the browser renderer is not configured on this environment. CSV export remains available."
-      }, status: :service_unavailable
+      }, status: 503
     end
 end

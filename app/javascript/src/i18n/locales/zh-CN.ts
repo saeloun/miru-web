@@ -1,3 +1,6 @@
+import en from "./en";
+import mergeLocale from "../mergeLocale";
+
 const locale = {
   invalidImageFormatSize:
     "文件格式不正确。请上传PNG或JPG格式的图片。最大尺寸（%{fileSize}KB）",
@@ -545,6 +548,8 @@ const locale = {
     taxId: "税务ID: %{value}",
     vatNumber: "增值税号: %{value}",
     gstNumber: "GST号: %{value}",
+    ein: "EIN: %{value}",
+    usTaxpayerId: "U.S. Taxpayer ID: %{value}",
     bankDetails: "银行信息",
     bankName: "银行名称: %{value}",
     accountNumber: "账户号: %{value}",
@@ -2055,4 +2060,4 @@ const locale = {
   },
 };
 
-export default locale;
+export default mergeLocale(en, locale);

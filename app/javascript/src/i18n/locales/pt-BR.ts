@@ -1,3 +1,6 @@
+import en from "./en";
+import mergeLocale from "../mergeLocale";
+
 const locale = {
   invalidImageFormatSize:
     "Formato de arquivo incorreto. Por favor, envie uma imagem do tipo PNG ou JPG. Tamanho máximo (%{fileSize}KB)",
@@ -576,6 +579,8 @@ const locale = {
     taxId: "ID Fiscal: %{value}",
     vatNumber: "Número do IVA: %{value}",
     gstNumber: "Número do GST: %{value}",
+    ein: "EIN: %{value}",
+    usTaxpayerId: "U.S. Taxpayer ID: %{value}",
     bankDetails: "Dados Bancários",
     bankName: "Nome do Banco: %{value}",
     accountNumber: "Número da Conta: %{value}",
@@ -2192,4 +2197,4 @@ const locale = {
   },
 };
 
-export default locale;
+export default mergeLocale(en, locale);

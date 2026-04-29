@@ -13,6 +13,8 @@ import getStatusCssClass from "utils/getBadgeStatus";
 const Header = ({
   invoice,
   stripeUrl,
+  upiPayment,
+  razorpayPayment,
   stripe_connected_account,
   setShowConnectPaymentDialog,
   setShowStripeDisabledDialog,
@@ -86,8 +88,13 @@ const Header = ({
                 if (status != "paid") {
                   if (stripe_connected_account && !stripe_enabled) {
                     setShowStripeDisabledDialog(true);
-                  } else if (stripe_connected_account) {
+                  } else if (
+                    stripe_connected_account ||
+                    razorpayPayment?.enabled
+                  ) {
                     window.location.href = stripeUrl;
+                  } else if (upiPayment?.payment_link) {
+                    window.location.href = upiPayment.payment_link;
                   } else {
                     setShowConnectPaymentDialog(true);
                   }

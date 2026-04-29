@@ -1,3 +1,6 @@
+import en from "./en";
+import mergeLocale from "../mergeLocale";
+
 const locale = {
   invalidImageFormatSize:
     "ఫైల్ ఫార్మాట్ తప్పుగా ఉంది. దయచేసి PNG లేదా JPG రకానికి చెందిన చిత్రాన్ని అప్‌లోడ్ చేయండి. గరిష్ట పరిమాణం (%{fileSize}KB)",
@@ -578,6 +581,8 @@ const locale = {
     taxId: "పన్ను గుర్తింపు సంఖ్య: __PH__0__",
     vatNumber: "VAT సంఖ్య: __PH__0__",
     gstNumber: "GST సంఖ్య: __PH__0__",
+    ein: "EIN: %{value}",
+    usTaxpayerId: "U.S. Taxpayer ID: %{value}",
     bankDetails: "బ్యాంకు వివరాలు",
     bankName: "బ్యాంకు పేరు: __PH__0__",
     accountNumber: "ఖాతా సంఖ్య: __PH__0__",
@@ -2190,4 +2195,4 @@ const locale = {
   },
 };
 
-export default locale;
+export default mergeLocale(en, locale);

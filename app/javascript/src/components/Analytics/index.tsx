@@ -165,7 +165,7 @@ const AnalyticsHome: React.FC = () => {
           <AlertTitle>Some analytics are limited</AlertTitle>
           <AlertDescription>
             Employees can access team analytics, but financial analytics remain
-            available only to owners, admins, and book keepers.
+            available only to owners, admins, managers, and book keepers.
           </AlertDescription>
         </Alert>
       ) : null}
@@ -196,8 +196,12 @@ const AnalyticsHome: React.FC = () => {
         <>
           <AnalyticsInsights
             utilizationRate={teamQuery.data?.summary.utilization_rate}
-            currentRevenue={comparisonQuery.data?.metrics.collected_revenue.current}
-            previousRevenue={comparisonQuery.data?.metrics.collected_revenue.previous}
+            currentRevenue={
+              comparisonQuery.data?.metrics.collected_revenue.current
+            }
+            previousRevenue={
+              comparisonQuery.data?.metrics.collected_revenue.previous
+            }
             anomalyCount={expenseQuery.data?.summary.anomaly_count}
           />
 
@@ -244,10 +248,13 @@ const AnalyticsHome: React.FC = () => {
               <Card className="border-dashed border-border/80 bg-muted/20 md:col-span-2 xl:col-span-2">
                 <CardHeader>
                   <CardDescription>Financial analytics</CardDescription>
-                  <CardTitle className="text-xl">Restricted for employees</CardTitle>
+                  <CardTitle className="text-xl">
+                    Restricted for employees
+                  </CardTitle>
                 </CardHeader>
                 <CardContent className="text-sm text-muted-foreground">
-                  Revenue, client, and expense summaries are visible only to owners, admins, and book keepers.
+                  Revenue, client, and expense summaries are visible only to
+                  owners, admins, managers, and book keepers.
                 </CardContent>
               </Card>
             )}
@@ -295,7 +302,8 @@ const AnalyticsHome: React.FC = () => {
                       {comparisonQuery.data
                         ? `${formatStandardCurrency(
                             currency,
-                            comparisonQuery.data.metrics.collected_revenue.current
+                            comparisonQuery.data.metrics.collected_revenue
+                              .current
                           )} (${comparisonQuery.data.metrics.collected_revenue.change_percentage.toFixed(
                             2
                           )}%)`
@@ -303,10 +311,14 @@ const AnalyticsHome: React.FC = () => {
                     </div>
                   </div>
                   <div className="rounded-lg border border-border p-4">
-                    <div className="text-sm text-muted-foreground">Top client</div>
+                    <div className="text-sm text-muted-foreground">
+                      Top client
+                    </div>
                     <div className="mt-1 text-xl font-semibold text-foreground">
                       {clientQuery.data?.top_clients[0]
-                        ? `${clientQuery.data.top_clients[0].client_name} · ${formatCompactCurrency(
+                        ? `${
+                            clientQuery.data.top_clients[0].client_name
+                          } · ${formatCompactCurrency(
                             currency,
                             clientQuery.data.top_clients[0].total_revenue
                           )}`

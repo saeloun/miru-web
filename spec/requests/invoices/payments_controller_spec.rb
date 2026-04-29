@@ -45,6 +45,63 @@ RSpec.describe Invoices::PaymentsController, type: :request do
         expect(response).to redirect_to(success_path)
       end
     end
+
+    context "when Razorpay is enabled for an INR invoice", vcr: false do
+      before do
+        invoice.update!(currency: "INR")
+        create(
+          :payments_provider,
+          company:,
+          name: PaymentsProvider::RAZORPAY_PROVIDER,
+          enabled: true,
+          connected: true,
+          settings: {
+            key_id: "rzp_test_123",
+            key_secret: "secret",
+            enabled_on_invoices: true
+          }
+        )
+        allow_any_instance_of(PaymentProviders::RazorpayPaymentLinkService)
+          .to receive(:process)
+          .and_return("https://rzp.io/rzp/test")
+      end
+
+      it "redirects to a Razorpay Payment Link" do
+        subject
+
+        expect(response.status).to eq 302
+        expect(response).to redirect_to("https://rzp.io/rzp/test")
+      end
+    end
+
+    context "when Razorpay is disabled on invoices for an INR invoice", vcr: false do
+      before do
+        invoice.update!(currency: "INR")
+        provider = build(
+          :payments_provider,
+          company:,
+          name: PaymentsProvider::RAZORPAY_PROVIDER,
+          enabled: true,
+          connected: true,
+          settings: {
+            key_id: "rzp_test_123",
+            enabled_on_invoices: false
+          }
+        )
+        provider.key_secret = "secret"
+        provider.save!
+      end
+
+      it "falls back to Stripe checkout" do
+        expect_any_instance_of(PaymentProviders::RazorpayPaymentLinkService)
+          .not_to receive(:process)
+
+        subject
+
+        expect(response.status).to eq 302
+        expect(response).to redirect_to(success_path)
+      end
+    end
   end
 
   describe "GET success", :vcr do

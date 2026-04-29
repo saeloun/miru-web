@@ -144,6 +144,73 @@ For detailed information on how to use Miru Web and its various features, please
 
 For local development on this branch, see CLAUDE.md and docs under `docs/`.
 
+For CLI and MCP setup details, see [`docs/miru-cli.md`](docs/miru-cli.md) and [`docs/miru-mcp.md`](docs/miru-mcp.md).
+
+## MCP + CLI (Agent And Automation Ready)
+
+Miru ships first-party MCP support (Ruby SDK based) and a CLI token flow for agent clients.
+
+What ships in this repository:
+
+- HTTP MCP endpoint: `https://<your-miru-host>/mcp`
+- stdio MCP entrypoint: `bin/miru-mcp`
+- Miru CLI: `tools/miru-cli` (installable `miru` command)
+- namespaced tools under `miru.*`
+
+Feature availability:
+
+- MCP is Pro-gated by workspace plan
+- allowed: paid workspaces, active trials, billing-exempt workspaces
+- blocked: free workspaces without trial (returns `403` with JSON-RPC `-32003`)
+
+### Quickstart (Hosted Miru)
+
+Install and authenticate:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/saeloun/miru-web/main/tools/miru-cli/install.sh | bash
+miru login --base-url https://app.miru.so --email user@example.com --password '***'
+```
+
+Export token for MCP clients:
+
+```bash
+export MIRU_CLI_TOKEN="$(miru config token)"
+```
+
+Example Codex MCP config:
+
+```toml
+[mcp_servers.miru]
+url = "https://app.miru.so/mcp"
+bearer_token_env_var = "MIRU_CLI_TOKEN"
+```
+
+### Supported MCP Tools (CLI Parity)
+
+| MCP Tool | Equivalent CLI command |
+| --- | --- |
+| `miru.capabilities` | `miru capabilities` |
+| `miru.workspace.whoami` | `miru whoami` |
+| `miru.project.list` | `miru project list` |
+| `miru.client.list` | `miru client list` |
+| `miru.time.list` | `miru time list` |
+| `miru.time.create` | `miru time create` |
+| `miru.time.update` | `miru time update` |
+| `miru.time.delete` | `miru time delete` |
+| `miru.invoice.list` | `miru invoice list` |
+| `miru.invoice.show` | `miru invoice show` |
+| `miru.invoice.send` | `miru invoice send` |
+| `miru.payment.list` | `miru payment list` |
+| `miru.payment.show` | `miru payment show` |
+| `miru.expense.list` | `miru expense list` |
+| `miru.expense.create` | `miru expense create` |
+
+For full setup details, safety conventions (`dry_run`, `idempotency_key`), and troubleshooting:
+
+- [`docs/miru-cli.md`](docs/miru-cli.md)
+- [`docs/miru-mcp.md`](docs/miru-mcp.md)
+
 ## Localization Automation
 
 Miru supports automated locale maintenance with `i18n-tasks`.

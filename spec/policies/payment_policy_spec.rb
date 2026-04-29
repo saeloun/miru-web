@@ -28,4 +28,22 @@ RSpec.describe PaymentPolicy, type: :policy do
       end
     end
   end
+
+  permissions :withdraw? do
+    it "permits owner and admin" do
+      %i[owner admin].each do |role|
+        user.add_role(role, company)
+        expect(described_class).to permit(user, record)
+        user.remove_role(role, company)
+      end
+    end
+
+    it "forbids book keeper, employee, and client" do
+      %i[book_keeper employee client].each do |role|
+        user.add_role(role, company)
+        expect(described_class).not_to permit(user, record)
+        user.remove_role(role, company)
+      end
+    end
+  end
 end

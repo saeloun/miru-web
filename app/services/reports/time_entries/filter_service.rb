@@ -48,7 +48,7 @@ class Reports::TimeEntries::FilterService < ApplicationService
       # If we have a client filter while grouping by project, filter projects by client
       if params[:client].present?
         client_ids = Array(params[:client])
-        project_ids = Project.where(client_id: client_ids).pluck(:id)
+        project_ids = current_company.projects.where(client_id: client_ids).pluck(:id)
         @es_filter = { project_id: project_ids }
       else
         @es_filter = { project_id: projects_query.pluck(:id) }

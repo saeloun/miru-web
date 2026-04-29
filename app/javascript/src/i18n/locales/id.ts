@@ -1,3 +1,6 @@
+import en from "./en";
+import mergeLocale from "../mergeLocale";
+
 const locale = {
   invalidImageFormatSize:
     "Format file salah. Silakan unggah gambar bertipe PNG atau JPG. Ukuran maks (%{fileSize}KB)",
@@ -574,6 +577,8 @@ const locale = {
     taxId: "ID Pajak: %{value}",
     vatNumber: "Nomor PPN: %{value}",
     gstNumber: "Nomor GST: %{value}",
+    ein: "EIN: %{value}",
+    usTaxpayerId: "U.S. Taxpayer ID: %{value}",
     bankDetails: "Detail Bank",
     bankName: "Nama Bank: %{value}",
     accountNumber: "Nomor Rekening: %{value}",
@@ -2189,4 +2194,4 @@ const locale = {
   },
 };
 
-export default locale;
+export default mergeLocale(en, locale);

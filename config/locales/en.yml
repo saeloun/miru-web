@@ -49,6 +49,10 @@ en:
     tagline: Run your agency’s ops from one command center.
   application_controller:
     not_found: Route not found
+  errors:
+    stripe:
+      connect_not_enabled: Stripe Connect is not enabled for this Stripe account. Enable Connect in Stripe Dashboard and try again.
+      generic: "%{message}"
   avatar:
     destroy:
       success: Avatar deleted successfully
@@ -548,6 +552,8 @@ en:
         routing_number: Routing Number
         swift_code: SWIFT Code
         tax_id: Tax ID
+        ein: EIN
+        us_taxpayer_id: U.S. Taxpayer ID
         vat_number: VAT Number
       prepared_by: Prepared by %{company_name}, issued %{issue_date}, due %{due_date}.
       reference: 'Reference: %{reference}'

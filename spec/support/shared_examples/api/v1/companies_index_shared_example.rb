@@ -17,5 +17,7 @@ shared_examples "Api::V1::Companies::index success response" do
     expect(json_response["company_details"]["address"]["state"]).to eq(address.state)
     expect(json_response["company_details"]["address"]["country"]).to eq(address.country)
     expect(json_response["company_details"]["address"]["pin"]).to eq(address.pin)
+    expect(json_response["company_details"]["ein"]).to eq(company.ein)
+    expect(json_response["company_details"]["us_taxpayer_id"]).to eq(company.us_taxpayer_id)
   end
 end

@@ -1,3 +1,6 @@
+import en from "./en";
+import mergeLocale from "../mergeLocale";
+
 const locale = {
   invalidImageFormatSize:
     "തെറ്റായ ഫയൽ ഫോർമാറ്റ്. ദയവായി PNG അല്ലെങ്കിൽ JPG തരത്തിലുള്ള ചിത്രം അപ്‌ലോഡ് ചെയ്യുക. പരമാവധി വലുപ്പം (%{fileSize}KB)",
@@ -587,6 +590,8 @@ const locale = {
     taxId: "നികുതി ഐഡി: %{value}",
     vatNumber: "VAT നമ്പർ: %{value}",
     gstNumber: "GST നമ്പർ: %{value}",
+    ein: "EIN: %{value}",
+    usTaxpayerId: "U.S. Taxpayer ID: %{value}",
     bankDetails: "ബാങ്ക് വിശദാംശങ്ങൾ",
     bankName: "ബാങ്ക് പേര്: %{value}",
     accountNumber: "അക്കൗണ്ട് നമ്പർ: %{value}",
@@ -2214,4 +2219,4 @@ const locale = {
   },
 };
 
-export default locale;
+export default mergeLocale(en, locale);

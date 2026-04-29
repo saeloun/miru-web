@@ -28,6 +28,8 @@ import {
 } from "../../../../ui/select";
 import { Badge } from "../../../../ui/badge";
 import { i18n } from "../../../../../i18n";
+import { cn } from "../../../../../lib/utils";
+import { Toastr } from "StyledComponents";
 
 interface DeviceSpec {
   ram?: string;
@@ -43,6 +45,12 @@ interface Device {
   serial_number: string;
   specifications: DeviceSpec;
 }
+
+type RequiredDeviceField = "device_type" | "name" | "serial_number";
+type DeviceErrors = Record<
+  number,
+  Partial<Record<RequiredDeviceField, string>>
+>;
 
 interface DeviceEditPageProps {
   devices: Device[];
@@ -71,6 +79,53 @@ const DeviceEditPage: React.FC<DeviceEditPageProps> = ({
 }) => {
   const [devices, setDevices] = useState<Device[]>(initialDevices);
   const [hasChanges, setHasChanges] = useState(false);
+  const [deviceErrors, setDeviceErrors] = useState<DeviceErrors>({});
+
+  const requiredFieldErrors: Record<RequiredDeviceField, string> = {
+    device_type: i18n.t("devices.deviceTypeRequired"),
+    name: i18n.t("devices.modelNameRequired"),
+    serial_number: i18n.t("devices.serialNumberRequired"),
+  };
+
+  const validateDevices = (devicesToValidate: Device[]) =>
+    devicesToValidate.reduce<DeviceErrors>((errors, device, index) => {
+      const fieldErrors = (
+        Object.keys(requiredFieldErrors) as RequiredDeviceField[]
+      ).reduce<Partial<Record<RequiredDeviceField, string>>>(
+        (result, field) => {
+          if (!device[field]?.trim()) {
+            result[field] = requiredFieldErrors[field];
+          }
+
+          return result;
+        },
+        {}
+      );
+
+      if (Object.keys(fieldErrors).length > 0) {
+        errors[index] = fieldErrors;
+      }
+
+      return errors;
+    }, {});
+
+  const clearFieldError = (index: number, field: string) => {
+    if (!["device_type", "name", "serial_number"].includes(field)) return;
+
+    setDeviceErrors(currentErrors => {
+      const nextErrors = { ...currentErrors };
+      const nextFieldErrors = { ...nextErrors[index] };
+      delete nextFieldErrors[field as RequiredDeviceField];
+
+      if (Object.keys(nextFieldErrors).length > 0) {
+        nextErrors[index] = nextFieldErrors;
+      } else {
+        delete nextErrors[index];
+      }
+
+      return nextErrors;
+    });
+  };
 
   const handleDeviceChange = (index: number, field: string, value: string) => {
     const updatedDevices = [...devices];
@@ -88,6 +143,7 @@ const DeviceEditPage: React.FC<DeviceEditPageProps> = ({
     }
     setDevices(updatedDevices);
     setHasChanges(true);
+    clearFieldError(index, field);
   };
 
   const addDevice = () => {
@@ -109,10 +165,20 @@ const DeviceEditPage: React.FC<DeviceEditPageProps> = ({
   const removeDevice = (index: number) => {
     const updatedDevices = devices.filter((_, i) => i !== index);
     setDevices(updatedDevices);
+    setDeviceErrors(validateDevices(updatedDevices));
     setHasChanges(true);
   };
 
   const handleSave = () => {
+    const validationErrors = validateDevices(devices);
+    setDeviceErrors(validationErrors);
+
+    if (Object.keys(validationErrors).length > 0) {
+      Toastr.error(i18n.t("devices.requiredFieldsError"));
+
+      return;
+    }
+
     onSave(devices);
     setHasChanges(false);
   };
@@ -182,7 +248,8 @@ const DeviceEditPage: React.FC<DeviceEditPageProps> = ({
                   {/* Device Type */}
                   <div className="space-y-2">
                     <Label htmlFor={`device-type-${index}`}>
-                      {i18n.t("devices.deviceType")}
+                      {i18n.t("devices.deviceType")}{" "}
+                      <span className="text-destructive">*</span>
                     </Label>
                     <Select
                       value={device.device_type}
@@ -190,7 +257,14 @@ const DeviceEditPage: React.FC<DeviceEditPageProps> = ({
                         handleDeviceChange(index, "device_type", value)
                       }
                     >
-                      <SelectTrigger id={`device-type-${index}`}>
+                      <SelectTrigger
+                        id={`device-type-${index}`}
+                        aria-invalid={Boolean(deviceErrors[index]?.device_type)}
+                        className={cn(
+                          deviceErrors[index]?.device_type &&
+                            "border-destructive"
+                        )}
+                      >
                         <SelectValue
                           placeholder={i18n.t("devices.selectDeviceType")}
                         />
@@ -206,33 +280,54 @@ const DeviceEditPage: React.FC<DeviceEditPageProps> = ({
                         ))}
                       </SelectContent>
                     </Select>
+                    {deviceErrors[index]?.device_type && (
+                      <p className="text-xs text-destructive">
+                        {deviceErrors[index]?.device_type}
+                      </p>
+                    )}
                   </div>
 
                   {/* Model/Name */}
                   <div className="space-y-2">
                     <Label htmlFor={`model-${index}`}>
-                      {i18n.t("devices.modelName")}
+                      {i18n.t("devices.modelName")}{" "}
+                      <span className="text-destructive">*</span>
                     </Label>
                     <Input
                       id={`model-${index}`}
                       type="text"
                       value={device.name}
+                      aria-invalid={Boolean(deviceErrors[index]?.name)}
+                      className={cn(
+                        deviceErrors[index]?.name && "border-destructive"
+                      )}
                       onChange={e =>
                         handleDeviceChange(index, "name", e.target.value)
                       }
                       placeholder={i18n.t("devices.modelNamePlaceholder")}
                     />
+                    {deviceErrors[index]?.name && (
+                      <p className="text-xs text-destructive">
+                        {deviceErrors[index]?.name}
+                      </p>
+                    )}
                   </div>
 
                   {/* Serial Number */}
                   <div className="space-y-2">
                     <Label htmlFor={`serial-${index}`}>
-                      {i18n.t("devices.serialNumber")}
+                      {i18n.t("devices.serialNumber")}{" "}
+                      <span className="text-destructive">*</span>
                     </Label>
                     <Input
                       id={`serial-${index}`}
                       type="text"
                       value={device.serial_number}
+                      aria-invalid={Boolean(deviceErrors[index]?.serial_number)}
+                      className={cn(
+                        deviceErrors[index]?.serial_number &&
+                          "border-destructive"
+                      )}
                       onChange={e =>
                         handleDeviceChange(
                           index,
@@ -242,6 +337,11 @@ const DeviceEditPage: React.FC<DeviceEditPageProps> = ({
                       }
                       placeholder={i18n.t("devices.serialNumberPlaceholder")}
                     />
+                    {deviceErrors[index]?.serial_number && (
+                      <p className="text-xs text-destructive">
+                        {deviceErrors[index]?.serial_number}
+                      </p>
+                    )}
                   </div>
 
                   {/* RAM/Memory */}

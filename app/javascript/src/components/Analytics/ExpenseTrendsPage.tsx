@@ -1,6 +1,13 @@
 import React from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { Area, AreaChart, CartesianGrid, ReferenceDot, XAxis, YAxis } from "recharts";
+import {
+  Area,
+  AreaChart,
+  CartesianGrid,
+  ReferenceDot,
+  XAxis,
+  YAxis,
+} from "recharts";
 
 import { analyticsApi, projectsApi } from "apis/api";
 import { Roles } from "../../constants";
@@ -95,7 +102,11 @@ const ExpenseTrendsPage: React.FC = () => {
     enabled: isFinancialRole,
   });
 
-  const categorySeries = (query.data?.category_trends || []).slice(0, isMobile ? 2 : 4);
+  const categorySeries = (query.data?.category_trends || []).slice(
+    0,
+    isMobile ? 2 : 4
+  );
+
   const namedSeries = categorySeries.map((trend, index) => ({
     ...trend,
     seriesKey: `series_${index + 1}`,
@@ -131,14 +142,17 @@ const ExpenseTrendsPage: React.FC = () => {
         {
           from,
           to,
-          project_ids: selectedIds.length > 0 ? selectedIds.join(",") : undefined,
+          project_ids:
+            selectedIds.length > 0 ? selectedIds.join(",") : undefined,
         }
       );
 
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement("a");
       link.href = url;
-      link.download = `expense_trends_${new Date().toISOString().slice(0, 10)}.${format}`;
+      link.download = `expense_trends_${new Date()
+        .toISOString()
+        .slice(0, 10)}.${format}`;
       document.body.appendChild(link);
       link.click();
       link.remove();
@@ -168,9 +182,13 @@ const ExpenseTrendsPage: React.FC = () => {
             setDateRange(resolveAnalyticsPreset(value));
           }}
           selectedIds={selectedIds}
-          onSelectedIdsChange={companyRole === Roles.MANAGER ? undefined : setSelectedIds}
+          onSelectedIdsChange={
+            companyRole === Roles.MANAGER ? undefined : setSelectedIds
+          }
           options={companyRole === Roles.MANAGER ? [] : optionsQuery.data || []}
-          multiSelectLabel={companyRole === Roles.MANAGER ? undefined : "Projects"}
+          multiSelectLabel={
+            companyRole === Roles.MANAGER ? undefined : "Projects"
+          }
         />
       }
     >
@@ -181,7 +199,7 @@ const ExpenseTrendsPage: React.FC = () => {
             <AlertTitle>Financial analytics access is limited</AlertTitle>
             <AlertDescription>
               Expense trend analytics are available only to owners, admins, and
-              book keepers.
+              managers, and book keepers.
             </AlertDescription>
           </Alert>
           <AnalyticsRestrictedState
@@ -275,7 +293,9 @@ const ExpenseTrendsPage: React.FC = () => {
                     <XAxis
                       axisLine={false}
                       dataKey="label"
-                      tickFormatter={value => (isMobile ? String(value).split(" ")[0] : value)}
+                      tickFormatter={value =>
+                        isMobile ? String(value).split(" ")[0] : value
+                      }
                       tickLine={false}
                       minTickGap={20}
                     />
@@ -305,7 +325,10 @@ const ExpenseTrendsPage: React.FC = () => {
                       />
                     ))}
                     {visibleAnomalies.map(anomaly => {
-                      const label = namedSeries[0]?.monthly_totals.find(point => point.month === anomaly.month)?.label || anomaly.month;
+                      const label =
+                        namedSeries[0]?.monthly_totals.find(
+                          point => point.month === anomaly.month
+                        )?.label || anomaly.month;
 
                       return (
                         <ReferenceDot
@@ -403,7 +426,8 @@ const ExpenseTrendsPage: React.FC = () => {
               preset,
               from,
               to,
-              projects: selectedIds.length > 0 ? selectedIds.join(",") : undefined,
+              projects:
+                selectedIds.length > 0 ? selectedIds.join(",") : undefined,
             }}
             allowSave={isFinancialRole}
           />

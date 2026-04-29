@@ -58,6 +58,14 @@ interface Payment {
   currency: string;
   exchangeRate?: number;
   baseCurrencyAmount?: number;
+  razorpayPayout?: {
+    id: string | number;
+    externalId?: string;
+    status: string;
+    triggeredBy: string;
+    failureReason?: string;
+    recipientUpiId?: string;
+  };
 }
 
 interface PaymentsData {
@@ -97,6 +105,7 @@ const normalizePayment = (payment: any, baseCurrency: string): Payment => ({
   exchangeRate: payment.exchangeRate ?? payment.exchange_rate,
   baseCurrencyAmount:
     payment.baseCurrencyAmount ?? payment.base_currency_amount,
+  razorpayPayout: payment.razorpayPayout ?? payment.razorpay_payout,
 });
 
 const fetchPayments = async (): Promise<PaymentsData> => {
@@ -133,6 +142,10 @@ const PaymentsTable: React.FC = () => {
   const [showManualEntryModal, setShowManualEntryModal] = useState(false);
   const [invoiceList, setInvoiceList] = useState<any>([]);
   const [dateFormat, setDateFormat] = useState("");
+  const [withdrawingPaymentId, setWithdrawingPaymentId] = useState<
+    string | number | null
+  >(null);
+
   const [visiblePaymentCount, setVisiblePaymentCount] =
     useState(PAYMENTS_BATCH_SIZE);
 
@@ -158,6 +171,22 @@ const PaymentsTable: React.FC = () => {
       setShowManualEntryModal(true);
     } catch (e) {
       toast.error(i18n.t("payments.failedToLoadInvoicesForPaymentEntry"));
+    }
+  };
+
+  const withdrawRazorpayPayment = async (payment: Payment) => {
+    try {
+      setWithdrawingPaymentId(payment.id);
+      await paymentsApi.withdraw(payment.id);
+      toast.success(i18n.t("payments.razorpayWithdrawalQueued"));
+      await fetchPaymentList();
+    } catch (error: any) {
+      toast.error(
+        error?.response?.data?.error ||
+          i18n.t("payments.razorpayWithdrawalFailed")
+      );
+    } finally {
+      setWithdrawingPaymentId(null);
     }
   };
 
@@ -199,6 +228,8 @@ const PaymentsTable: React.FC = () => {
       debit_card: i18n.t("payments.debitCard"),
       cash: i18n.t("payments.cash"),
       credit_card: i18n.t("payments.creditCard"),
+      upi: i18n.t("payments.upi"),
+      razorpay: i18n.t("payments.razorpay"),
     };
 
     return (
@@ -233,6 +264,46 @@ const PaymentsTable: React.FC = () => {
 
     return statusLabels[status] || status;
   };
+
+  const getPayoutStatusLabel = (status?: string) => {
+    if (!status) return i18n.t("payments.notWithdrawn");
+
+    const payoutStatusLabels = {
+      pending: i18n.t("payments.withdrawalPending"),
+      processing: i18n.t("payments.withdrawalProcessing"),
+      queued: i18n.t("payments.withdrawalQueued"),
+      processed: i18n.t("payments.withdrawalProcessed"),
+      failed: i18n.t("payments.withdrawalFailed"),
+      reversed: i18n.t("payments.withdrawalReversed"),
+      cancelled: i18n.t("payments.withdrawalCancelled"),
+    };
+
+    return payoutStatusLabels[status] || status;
+  };
+
+  const getPayoutBadgeClassName = (status?: string) => {
+    switch (status) {
+      case "processed":
+        return "bg-primary/10 text-primary border-primary/20";
+      case "failed":
+      case "reversed":
+      case "cancelled":
+        return "bg-card text-destructive border-border";
+      case "pending":
+      case "processing":
+      case "queued":
+        return "bg-muted text-foreground border-border";
+      default:
+        return "bg-card text-muted-foreground border-border";
+    }
+  };
+
+  const canWithdrawRazorpayPayment = (payment: Payment) =>
+    payment.transactionType === "razorpay" &&
+    (!payment.razorpayPayout ||
+      ["failed", "reversed", "cancelled"].includes(
+        payment.razorpayPayout.status
+      ));
 
   const columns: ColumnDef<Payment>[] = [
     {
@@ -377,16 +448,41 @@ const PaymentsTable: React.FC = () => {
       ),
     },
     {
+      id: "withdrawal",
+      header: i18n.t("payments.withdrawal"),
+      cell: ({ row }) => {
+        const payout = row.original.razorpayPayout;
+
+        if (row.original.transactionType !== "razorpay") {
+          return <span className="text-sm text-muted-foreground">—</span>;
+        }
+
+        return (
+          <Badge
+            variant="outline"
+            className={getPayoutBadgeClassName(payout?.status)}
+          >
+            {getPayoutStatusLabel(payout?.status)}
+          </Badge>
+        );
+      },
+    },
+    {
       id: "actions",
       enableHiding: false,
       cell: ({ row }) => {
         const payment = row.original;
+        const canWithdraw = canWithdrawRazorpayPayment(payment);
 
         return (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0">
-                <span className="sr-only">{i18n.t("payments.openMenu")}</span>
+              <Button
+                variant="ghost"
+                className="h-8 w-8 p-0"
+                aria-label={i18n.t("payments.openMenu")}
+                data-testid={`payment-actions-trigger-${payment.id}`}
+              >
                 <DotsThree className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
@@ -406,6 +502,20 @@ const PaymentsTable: React.FC = () => {
                 >
                   <Eye className="h-4 w-4 mr-2" />
                   {i18n.t("payments.viewInvoice")}
+                </DropdownMenuItem>
+              )}
+              {payment.transactionType === "razorpay" && isAdminUser && (
+                <DropdownMenuItem
+                  disabled={!canWithdraw || withdrawingPaymentId === payment.id}
+                  data-testid={`payment-action-withdraw-${payment.id}`}
+                  onClick={() => withdrawRazorpayPayment(payment)}
+                >
+                  <ArrowDown className="h-4 w-4 mr-2" />
+                  {withdrawingPaymentId === payment.id
+                    ? i18n.t("payments.withdrawing")
+                    : payment.razorpayPayout
+                    ? i18n.t("payments.retryWithdrawal")
+                    : i18n.t("payments.withdrawToUpi")}
                 </DropdownMenuItem>
               )}
               <DropdownMenuItem>

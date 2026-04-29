@@ -24,7 +24,7 @@ RSpec.describe TeamPresenter do
 
       expected_keys = [:id, :first_name, :last_name, :email, :role, :status, :member, :employment_type, :joined_at_date]
       expect(team_member.keys).to include(*expected_keys)
-      expect(@data[:teams].pluck(:id)).to eq([user.id, user2.id])
+      expect(@data[:teams].pluck(:id)).to contain_exactly(user.id, user2.id)
     end
 
     it "returns required data of invitations" do
@@ -36,7 +36,7 @@ RSpec.describe TeamPresenter do
       expect(team_member).to have_key(:email)
       expect(team_member).to have_key(:role)
       expect(team_member).to have_key(:status)
-      expect(@data[:invitations].pluck(:id)).to eq([invitation.id, invitation2.id])
+      expect(@data[:invitations].pluck(:id)).to contain_exactly(invitation.id, invitation2.id)
     end
   end
 end

@@ -54,6 +54,8 @@ interface InvoicePreviewProps {
       taxId?: string;
       vatNumber?: string;
       gstNumber?: string;
+      ein?: string;
+      usTaxpayerId?: string;
       bankName?: string;
       bankAccountNumber?: string;
       bankRoutingNumber?: string;
@@ -233,6 +235,8 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
       setSendStatus(InvoiceStatus.ERROR);
       console.error("Send failed:", error);
 
+      if (error.toastHandled) return;
+
       if (error.response?.data?.error) {
         toast.error(error.response.data.error);
       } else if (error.response?.data?.errors) {
@@ -250,7 +254,28 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
   };
 
   const handlePrint = () => {
+    const elementsToHide = Array.from(
+      document.querySelectorAll<HTMLElement>(".invoice-print-hide")
+    );
+    const previousDisplayValues = elementsToHide.map(el => el.style.display);
+    let restored = false;
+
+    const restoreVisibility = () => {
+      if (restored) return;
+      restored = true;
+      elementsToHide.forEach((el, index) => {
+        el.style.display = previousDisplayValues[index];
+      });
+      window.removeEventListener("afterprint", restoreVisibility);
+    };
+
+    elementsToHide.forEach(el => {
+      el.style.display = "none";
+    });
+
+    window.addEventListener("afterprint", restoreVisibility, { once: true });
     window.print();
+    window.setTimeout(restoreVisibility, 1000);
   };
 
   const handleEdit = () => {
@@ -295,7 +320,7 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
     <div className="w-full max-w-4xl mx-auto" data-testid="invoice-preview">
       {/* Action Bar */}
       {!isEditing && (
-        <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="invoice-print-hide mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex flex-wrap items-center gap-2">
             <Badge className={cn("capitalize", getStatusColor(invoice.status))}>
               {invoice.status}
@@ -447,6 +472,16 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
                 <p>
                   {i18n.t("invoices.gstNumber", {
                     value: invoice.company.gstNumber,
+                  })}
+                </p>
+              )}
+              {invoice.company.ein && (
+                <p>{i18n.t("invoices.ein", { value: invoice.company.ein })}</p>
+              )}
+              {invoice.company.usTaxpayerId && (
+                <p>
+                  {i18n.t("invoices.usTaxpayerId", {
+                    value: invoice.company.usTaxpayerId,
                   })}
                 </p>
               )}

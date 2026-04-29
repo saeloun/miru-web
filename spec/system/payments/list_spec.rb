@@ -167,6 +167,122 @@ RSpec.describe "Payments page", type: :system, js: true do
     end
   end
 
+  context "with Razorpay withdrawals" do
+    let(:company) { create(:india_company, base_currency: "INR") }
+    let(:client) { create(:client, company:, currency: "INR", name: "Razorpay Client") }
+    let!(:not_withdrawn_invoice) do
+      create(
+        :invoice,
+        company:,
+        client:,
+        currency: "INR",
+        status: :paid,
+        invoice_number: "INV-RZP-001",
+        amount: 1200.00,
+        amount_due: 0.00,
+        amount_paid: 1200.00
+      )
+    end
+    let!(:queued_invoice) do
+      create(
+        :invoice,
+        company:,
+        client:,
+        currency: "INR",
+        status: :paid,
+        invoice_number: "INV-RZP-002",
+        amount: 800.00,
+        amount_due: 0.00,
+        amount_paid: 800.00
+      )
+    end
+    let!(:failed_invoice) do
+      create(
+        :invoice,
+        company:,
+        client:,
+        currency: "INR",
+        status: :paid,
+        invoice_number: "INV-RZP-003",
+        amount: 900.00,
+        amount_due: 0.00,
+        amount_paid: 900.00
+      )
+    end
+    let!(:not_withdrawn_payment) do
+      create(
+        :payment,
+        invoice: not_withdrawn_invoice,
+        amount: 1200.00,
+        transaction_type: :razorpay,
+        payment_currency: "INR",
+        transaction_date: Date.current,
+        note: "Razorpay no payout"
+      )
+    end
+    let!(:queued_payment) do
+      create(
+        :payment,
+        invoice: queued_invoice,
+        amount: 800.00,
+        transaction_type: :razorpay,
+        payment_currency: "INR",
+        transaction_date: Date.current,
+        note: "Razorpay queued payout"
+      )
+    end
+    let!(:failed_payment) do
+      create(
+        :payment,
+        invoice: failed_invoice,
+        amount: 900.00,
+        transaction_type: :razorpay,
+        payment_currency: "INR",
+        transaction_date: Date.current,
+        note: "Razorpay failed payout"
+      )
+    end
+
+    before do
+      create(:razorpay_payout, payment: queued_payment, status: :queued)
+      create(:razorpay_payout, payment: failed_payment, status: :failed)
+    end
+
+    it "shows withdrawal status and manual withdrawal actions" do
+      with_forgery_protection do
+        visit "/payments"
+
+        expect(page).to have_css("#react-root", wait: 10)
+        expect(page).to have_content("INV-RZP-001", wait: 10)
+        expect(page).to have_content("INV-RZP-002")
+        expect(page).to have_content("INV-RZP-003")
+        expect(page).to have_content("Razorpay")
+        expect(page).to have_content("Not withdrawn")
+        expect(page).to have_content("Queued")
+        expect(page).to have_content("Failed")
+
+        find("[data-testid='payment-actions-trigger-#{not_withdrawn_payment.id}']").click
+        expect(page).to have_css(
+          "[data-testid='payment-action-withdraw-#{not_withdrawn_payment.id}']",
+          text: "Withdraw to UPI",
+          wait: 10
+        )
+
+        visit "/payments"
+        expect(page).to have_css(
+          "[data-testid='payment-actions-trigger-#{failed_payment.id}']",
+          wait: 10
+        )
+        find("[data-testid='payment-actions-trigger-#{failed_payment.id}']").click
+        expect(page).to have_css(
+          "[data-testid='payment-action-withdraw-#{failed_payment.id}']",
+          text: "Retry withdrawal",
+          wait: 10
+        )
+      end
+    end
+  end
+
   context "role access" do
     let(:employee) { create(:user, current_workspace_id: company.id) }
 

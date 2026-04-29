@@ -19,13 +19,16 @@ Rails.application.routes.draw do
     mount PgHero::Engine, at: "/pghero"
   end
 
-  # Analytics Dashboard (Super Admin and authorized users only)
-  authenticate :user, lambda { |u| u.has_analytics_access? } do
-    resources :analytics, only: [:index] do
-      collection do
-        get :revenue
-        get :activity
-        get :currency
+  # Legacy server-rendered analytics dashboard for super admins. The product
+  # analytics workspace lives in the React app under /analytics.
+  authenticate :user, lambda { |u| u.super_admin? } do
+    scope "/admin", as: "admin" do
+      resources :analytics, only: [:index] do
+        collection do
+          get :revenue
+          get :activity
+          get :currency
+        end
       end
     end
   end
@@ -44,12 +47,15 @@ Rails.application.routes.draw do
 
   draw(:api)
 
+  match "/mcp", to: "api/v1/mcp#handle", via: [:get, :post, :delete], as: :mcp
+
   resources :workspaces, only: [:update]
 
   resources :invoices, only: [], module: :invoices do
     resources :payments, only: [:new] do
       collection do
         get :cancel
+        get :razorpay_success
       end
     end
   end
@@ -65,6 +71,8 @@ Rails.application.routes.draw do
 
   namespace :webhooks do
     post "stripe/checkout/fulfillment", to: "stripe#fulfill_stripe_checkout"
+    post "razorpay/payment_links", to: "razorpay#payment_links"
+    post "razorpay/payouts", to: "razorpay#payouts"
   end
 
   # Keep docs reachable from the main app domain.
@@ -74,6 +82,13 @@ Rails.application.routes.draw do
     query = request.query_string.present? ? "?#{request.query_string}" : ""
     suffix.present? ? "https://docs.miru.so/#{suffix}#{query}" : "https://docs.miru.so#{query}"
   }
+
+  get "/openapi.json", to: "agent_readiness#openapi", defaults: { format: :json }
+  get "/robots.txt", to: "agent_readiness#robots", defaults: { format: :text }
+  get "/.well-known/api-catalog", to: "agent_readiness#api_catalog"
+  get "/.well-known/mcp/server-card.json", to: "agent_readiness#mcp_server_card", defaults: { format: :json }
+  get "/.well-known/agent-skills/index.json", to: "agent_readiness#agent_skills", defaults: { format: :json }
+  get "/.well-known/agent-card.json", to: "agent_readiness#agent_card", defaults: { format: :json }
 
   root "home#index"
 

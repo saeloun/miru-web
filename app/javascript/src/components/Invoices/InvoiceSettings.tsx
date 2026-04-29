@@ -172,7 +172,9 @@ const InvoiceSettings = ({
                         }
                       }}
                     />
-                    <h4 className="pl-2">{i18n.t("invoices.acceptCreditCards")}</h4>
+                    <h4 className="pl-2">
+                      {i18n.t("invoices.acceptCreditCards")}
+                    </h4>
                   </div>
                   <div className="mt-6 flex justify-between">
                     <img src={VisaSVG} />

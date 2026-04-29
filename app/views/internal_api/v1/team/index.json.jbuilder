@@ -7,7 +7,7 @@ json.combined_details do
   json.array! combined_details do |item|
     if item[:data_type] == "Team"
       json.extract! item, :id, :first_name, :last_name, :name, :email, :role, :is_team_member,
-        :employment_type, :joined_at_date
+        :employment_type, :joined_at_date, :hours_logged, :billable_hours, :projects
       json.status item[:status] == "active"
       json.profile_picture user_avatar(item[:member])
     else

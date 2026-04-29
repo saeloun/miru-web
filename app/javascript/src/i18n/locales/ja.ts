@@ -1,3 +1,6 @@
+import en from "./en";
+import mergeLocale from "../mergeLocale";
+
 const locale = {
   invalidImageFormatSize:
     "ファイル形式が正しくありません。PNGまたはJPG形式の画像をアップロードしてください。最大サイズ（%{fileSize}KB）",
@@ -570,6 +573,8 @@ const locale = {
     taxId: "税務ID: %{value}",
     vatNumber: "VAT番号: %{value}",
     gstNumber: "GST番号: %{value}",
+    ein: "EIN: %{value}",
+    usTaxpayerId: "U.S. Taxpayer ID: %{value}",
     bankDetails: "銀行情報",
     bankName: "銀行名: %{value}",
     accountNumber: "口座番号: %{value}",
@@ -2155,4 +2160,4 @@ const locale = {
   },
 };
 
-export default locale;
+export default mergeLocale(en, locale);

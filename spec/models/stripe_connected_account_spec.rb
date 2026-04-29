@@ -53,6 +53,13 @@ RSpec.describe StripeConnectedAccount, type: :model do
           .and_return(OpenStruct.new({ details_submitted: true }))
         expect(stripe_connected_account.details_submitted).to be(true)
       end
+
+      it "returns false when Stripe cannot retrieve the account" do
+        allow(Stripe::Account).to receive(:retrieve)
+          .and_raise(Stripe::AuthenticationError.new("No API key provided"))
+
+        expect(stripe_connected_account.details_submitted).to be(false)
+      end
     end
 
     describe "#url" do

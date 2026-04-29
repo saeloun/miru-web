@@ -28,7 +28,7 @@ class InternalApi::V1::AnalyticsReportsController < Api::V1::ApplicationControll
     authorize report
 
     if report.save
-      render json: { report: serialize_report(report) }, status: :created
+      render json: { report: serialize_report(report) }, status: 201
     else
       render json: { errors: report.errors.full_messages }, status: :unprocessable_entity
     end
@@ -39,7 +39,7 @@ class InternalApi::V1::AnalyticsReportsController < Api::V1::ApplicationControll
     authorize report
 
     report.destroy!
-    head :no_content
+    head 204
   end
 
   private

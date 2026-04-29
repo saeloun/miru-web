@@ -54,6 +54,9 @@ ml:
       success: അവതാർ വിജയകരമായി ഇല്ലാതാക്കി
     update:
       success: അവതാർ വിജയകരമായി അപ്ഡേറ്റ് ചെയ്തു
+    validation:
+      file_too_large: must be smaller than %{size_mb}MB
+      invalid_content_type: must be a PNG, JPG, JPEG, or WEBP image
   client:
     add: ക്ലയന്റിനെ ചേർക്കുക
     address:
@@ -562,10 +565,12 @@ ml:
       payment_rows:
         account_number: അക്കൗണ്ട് നമ്പർ
         bank_name: ബാങ്ക് പേര്
+        ein: EIN
         gst_number: ജിഎസ്ടി നമ്പർ
         routing_number: റൂട്ടിംഗ് നമ്പർ
         swift_code: സ്വിഫ്റ്റ് കോഡ്
         tax_id: ടാക്സ് ഐഡി
+        us_taxpayer_id: U.S. Taxpayer ID
         vat_number: വാറ്റ് നമ്പർ
       prepared_by: "%{company_name} തയ്യാറാക്കിയത്, %{issue_date} ഇഷ്യൂ ചെയ്തത്, %{due_date}
         നൽകേണ്ടത്."
@@ -743,9 +748,11 @@ ml:
       message: ടൈംഷീറ്റ് സൃഷ്ടിച്ചു
     destroy:
       failure: ടൈംഷീറ്റ് എൻട്രികൾ ഇല്ലാതാക്കാനായില്ല
+      locked: Only admins can delete entries older than 7 days
       message: ടൈംഷീറ്റ് ഇല്ലാതാക്കി
     update:
       failure: ടൈംഷീറ്റ് എൻട്രികൾ അപ്ഡേറ്റ് ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു
+      locked: Only admins can edit entries older than 7 days
       message: ടൈംഷീറ്റ് അപ്ഡേറ്റ് ചെയ്തു
   totp:
     disable_passkey_first: ഓതന്റിക്കേറ്റർ ആപ്പ് 2FA പ്രവർത്തനക്ഷമമാക്കുന്നതിന് മുമ്പ്

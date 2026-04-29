@@ -27,6 +27,31 @@ RSpec.describe "Creating Project", type: :system, js: true do
       end
     end
 
+    it "creates a non-billable project with an existing client" do
+      with_forgery_protection do
+        visit "/projects"
+        expect(page).to have_content("Projects", wait: 10)
+
+        click_button "New Project"
+        find("#client").click
+        find("[role='option']", text: client.name).click
+        fill_in "project-name", with: "Website redesign"
+        find("[data-testid='non-billable-project-type']").click
+
+        expect(page).to have_css(
+          "[data-testid='non-billable-project-type'] button[data-state='checked']"
+        )
+
+        click_button "Create project"
+
+        expect(page).to have_content("Website redesign", wait: 10)
+        expect(Project.last).to have_attributes(
+          client_id: client.id,
+          billable: false
+        )
+      end
+    end
+
     context "when creating a project without a name" do
       it "add project button is disabled" do
         with_forgery_protection do

@@ -20,8 +20,12 @@ const BulkActions = ({
       <div className="flex items-center justify-end">
         <span className="text-xs font-semibold leading-4 text-foreground lg:text-sm lg:leading-5">
           {selectedInvoiceCount > 1
-            ? `${selectedInvoiceCount} ${i18n.t("invoices.invoices").toLowerCase()}`
-            : `${selectedInvoiceCount} ${i18n.t("invoices.invoice").toLowerCase()}`}
+            ? `${selectedInvoiceCount} ${i18n
+                .t("invoices.invoices")
+                .toLowerCase()}`
+            : `${selectedInvoiceCount} ${i18n
+                .t("invoices.invoice")
+                .toLowerCase()}`}
         </span>
         <button
           className="ml-2 p-1 hover:bg-muted lg:ml-4"

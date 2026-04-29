@@ -1,3 +1,6 @@
+import en from "./en";
+import mergeLocale from "../mergeLocale";
+
 const locale = {
   invalidImageFormatSize:
     "गलत फ़ाइल प्रारूप। कृपया PNG या JPG प्रकार की छवि अपलोड करें। अधिकतम आकार (%{fileSize}KB)",
@@ -563,6 +566,8 @@ const locale = {
     taxId: "कर आईडी: %{value}",
     vatNumber: "वैट नंबर: %{value}",
     gstNumber: "जीएसटी नंबर: %{value}",
+    ein: "EIN: %{value}",
+    usTaxpayerId: "U.S. Taxpayer ID: %{value}",
     bankDetails: "बैंक विवरण",
     bankName: "बैंक का नाम: %{value}",
     accountNumber: "खाता संख्या: %{value}",
@@ -1626,6 +1631,10 @@ const locale = {
     enterVatNumber: "VAT नंबर दर्ज करें",
     gstNumber: "GST नंबर",
     enterGstNumber: "GST नंबर दर्ज करें",
+    ein: "EIN",
+    enterEin: "Enter EIN",
+    usTaxpayerId: "U.S. Taxpayer ID",
+    enterUsTaxpayerId: "Enter U.S. taxpayer ID",
   },
   invoiceHistory: {
     minuteAgo: "%{count} मिनट पहले",
@@ -2163,6 +2172,10 @@ const locale = {
     notSpecified: "निर्दिष्ट नहीं",
     noDevicesFound: "कोई उपकरण नहीं मिला",
     newDevice: "नया उपकरण",
+    deviceTypeRequired: "उपकरण प्रकार आवश्यक है",
+    modelNameRequired: "मॉडल/नाम आवश्यक है",
+    serialNumberRequired: "सीरियल नंबर आवश्यक है",
+    requiredFieldsError: "सहेजने से पहले आवश्यक उपकरण फ़ील्ड भरें",
     unsavedChangesPrompt:
       "आपके पास बिना सहेजे बदलाव हैं। क्या आप वाकई रद्द करना चाहते हैं?",
   },
@@ -2291,4 +2304,4 @@ const locale = {
   selectRow: "पंक्ति का चयन करें",
 };
 
-export default locale;
+export default mergeLocale(en, locale);

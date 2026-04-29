@@ -54,6 +54,9 @@ ko:
       success: 아바타가 성공적으로 삭제되었습니다.
     update:
       success: 아바타가 성공적으로 업데이트되었습니다.
+    validation:
+      file_too_large: must be smaller than %{size_mb}MB
+      invalid_content_type: must be a PNG, JPG, JPEG, or WEBP image
   client:
     add: 클라이언트 추가
     address:
@@ -521,10 +524,12 @@ ko:
       payment_rows:
         account_number: 계좌번호
         bank_name: 은행명
+        ein: EIN
         gst_number: GST 번호
         routing_number: 라우팅 번호
         swift_code: SWIFT 코드
         tax_id: 세금 ID
+        us_taxpayer_id: U.S. Taxpayer ID
         vat_number: 부가가치세 번호
       prepared_by: '작성자: %{company_name}, 발행일: %{issue_date}, 제출 기한: %{due_date}.'
       reference: '참고: %{reference}'
@@ -698,9 +703,11 @@ ko:
       message: 근무 시간표가 생성되었습니다
     destroy:
       failure: 근무 시간 기록 항목을 삭제하는 데 실패했습니다.
+      locked: Only admins can delete entries older than 7 days
       message: 근무 시간표 삭제됨
     update:
       failure: 근무 시간표 항목 업데이트에 실패했습니다.
+      locked: Only admins can edit entries older than 7 days
       message: 근무 시간표가 업데이트되었습니다.
   totp:
     disable_passkey_first: 인증 앱의 2단계 인증을 활성화하기 전에 필수 암호 키 로그인을 비활성화하세요.

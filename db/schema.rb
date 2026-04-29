@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_18_134500) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_29_130000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_stat_statements"
@@ -254,9 +254,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_18_134500) do
     t.boolean "billing_exempt", default: false, null: false
     t.string "business_phone"
     t.boolean "calendar_enabled", default: true
+    t.boolean "cancel_at_period_end", default: false, null: false
     t.string "country", null: false
     t.datetime "created_at", null: false
     t.string "date_format"
+    t.string "ein"
     t.string "fiscal_year_end"
     t.string "gst_number"
     t.string "name", null: false
@@ -272,6 +274,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_18_134500) do
     t.datetime "trial_ends_at"
     t.datetime "trial_started_at"
     t.datetime "updated_at", null: false
+    t.string "us_taxpayer_id"
     t.string "vat_number"
     t.string "working_days", default: "5"
     t.string "working_hours", default: "40"
@@ -311,6 +314,17 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_18_134500) do
   end
 
   create_table "data_migrations", primary_key: "version", id: :string, force: :cascade do |t|
+  end
+
+  create_table "desktop_current_timers", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.datetime "created_at", null: false
+    t.jsonb "current_timer", default: {}, null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["company_id"], name: "index_desktop_current_timers_on_company_id"
+    t.index ["user_id", "company_id"], name: "index_desktop_current_timers_on_user_id_and_company_id", unique: true
+    t.index ["user_id"], name: "index_desktop_current_timers_on_user_id"
   end
 
   create_table "devices", force: :cascade do |t|
@@ -640,6 +654,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_18_134500) do
     t.datetime "created_at", null: false
     t.boolean "enabled", default: false
     t.string "name", null: false
+    t.jsonb "settings", default: {}, null: false
     t.datetime "updated_at", null: false
     t.index ["company_id"], name: "index_payments_providers_on_company_id"
     t.index ["connected"], name: "index_payments_providers_on_connected"
@@ -682,6 +697,34 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_18_134500) do
     t.index ["discarded_at"], name: "index_projects_on_discarded_at"
     t.index ["name", "client_id"], name: "index_projects_on_name_and_client_id", unique: true
     t.index ["name"], name: "index_projects_on_name_trgm", opclass: :gin_trgm_ops, using: :gin
+  end
+
+  create_table "razorpay_payouts", force: :cascade do |t|
+    t.decimal "amount", precision: 20, scale: 2, null: false
+    t.datetime "created_at", null: false
+    t.string "currency", default: "INR", null: false
+    t.string "external_id"
+    t.text "failure_reason"
+    t.string "idempotency_key", null: false
+    t.string "mode", default: "UPI", null: false
+    t.bigint "payment_id", null: false
+    t.datetime "processed_at"
+    t.jsonb "raw_response", default: {}, null: false
+    t.string "recipient_email"
+    t.string "recipient_name"
+    t.string "recipient_phone"
+    t.string "recipient_upi_id", null: false
+    t.string "reference_id", null: false
+    t.bigint "requested_by_id"
+    t.integer "status", default: 0, null: false
+    t.integer "triggered_by", default: 0, null: false
+    t.datetime "updated_at", null: false
+    t.index ["external_id"], name: "index_razorpay_payouts_on_external_id", unique: true, where: "(external_id IS NOT NULL)"
+    t.index ["idempotency_key"], name: "index_razorpay_payouts_on_idempotency_key", unique: true
+    t.index ["payment_id", "status"], name: "index_razorpay_payouts_on_payment_id_and_status"
+    t.index ["payment_id"], name: "index_razorpay_payouts_on_payment_id"
+    t.index ["reference_id"], name: "index_razorpay_payouts_on_reference_id", unique: true
+    t.index ["requested_by_id"], name: "index_razorpay_payouts_on_requested_by_id"
   end
 
   create_table "roles", force: :cascade do |t|
@@ -1004,6 +1047,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_18_134500) do
   add_foreign_key "custom_leave_users", "custom_leaves", column: "custom_leave_id"
   add_foreign_key "custom_leave_users", "users"
   add_foreign_key "custom_leaves", "leaves", column: "leave_id"
+  add_foreign_key "desktop_current_timers", "companies"
+  add_foreign_key "desktop_current_timers", "users"
   add_foreign_key "devices", "companies"
   add_foreign_key "devices", "users"
   add_foreign_key "employments", "companies"
@@ -1034,6 +1079,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_18_134500) do
   add_foreign_key "project_members", "projects"
   add_foreign_key "project_members", "users"
   add_foreign_key "projects", "clients"
+  add_foreign_key "razorpay_payouts", "payments"
+  add_foreign_key "razorpay_payouts", "users", column: "requested_by_id"
   add_foreign_key "solid_queue_blocked_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_claimed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_failed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade

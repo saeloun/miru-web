@@ -54,6 +54,9 @@ ta:
       success: அவதார் வெற்றிகரமாக நீக்கப்பட்டது
     update:
       success: அவதார் வெற்றிகரமாகப் புதுப்பிக்கப்பட்டது
+    validation:
+      file_too_large: must be smaller than %{size_mb}MB
+      invalid_content_type: must be a PNG, JPG, JPEG, or WEBP image
   client:
     add: வாடிக்கையாளரைச் சேர்க்கவும்
     address:
@@ -569,10 +572,12 @@ ta:
       payment_rows:
         account_number: கணக்கு எண்
         bank_name: வங்கியின் பெயர்
+        ein: EIN
         gst_number: ஜிஎஸ்டி எண்
         routing_number: ரூட்டிங் எண்
         swift_code: ஸ்விஃப்ட் குறியீடு
         tax_id: வரி அடையாள எண்
+        us_taxpayer_id: U.S. Taxpayer ID
         vat_number: VAT எண்
       prepared_by: "%{company_name} என்பவரால் தயாரிக்கப்பட்டது, %{issue_date} அன்று
         வெளியிடப்பட்டது, %{due_date} அன்று செலுத்தப்பட வேண்டும்."
@@ -750,9 +755,11 @@ ta:
       message: நேரத் தாள் உருவாக்கப்பட்டது
     destroy:
       failure: நேர அட்டவணைப் பதிவுகளை நீக்க முடியவில்லை
+      locked: Only admins can delete entries older than 7 days
       message: நேர அட்டவணை நீக்கப்பட்டது
     update:
       failure: நேர அட்டவணைப் பதிவுகளைப் புதுப்பிக்க முடியவில்லை
+      locked: Only admins can edit entries older than 7 days
       message: நேர அட்டவணை புதுப்பிக்கப்பட்டது
   totp:
     disable_passkey_first: அங்கீகரிப்பான் செயலியின் 2FA-ஐ இயக்குவதற்கு முன், தேவையான

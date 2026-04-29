@@ -62,6 +62,9 @@ namespace :api, defaults: { format: "json" } do
       resources :expenses, only: [:index, :create]
       resources :timesheet_entries, only: [:create, :update, :destroy]
     end
+    namespace :desktop do
+      resource :current_timer, only: [:show, :update], controller: "current_timers"
+    end
     namespace :agent do
       resource :capabilities, only: [:show], controller: "capabilities"
       resources :timesheet_entries, only: [:create]
@@ -157,6 +160,7 @@ namespace :api, defaults: { format: "json" } do
     end
 
     resources :team, only: [:index, :destroy, :update] do
+      member { get "removal_impact" }
       resource :details, only: [:show, :update], controller: "team_members/details"
       resource :avatar, only: [:update, :destroy], controller: "team_members/avatar"
       collection { put "update_team_members" }
@@ -173,6 +177,8 @@ namespace :api, defaults: { format: "json" } do
 
     # Non-Resourceful Routes
     get "payments/settings", to: "payment_settings#index"
+    patch "payments/settings/upi", to: "payment_settings#update_upi"
+    patch "payments/settings/razorpay", to: "payment_settings#update_razorpay"
     post "payments/settings/stripe/connect", to: "payment_settings#connect_stripe"
     delete "payments/settings/stripe/disconnect", to: "payment_settings#destroy"
     get "calendars/redirect", to: "calendars#redirect", as: "redirect"
@@ -184,7 +190,9 @@ namespace :api, defaults: { format: "json" } do
       resources :providers, only: [:index, :update]
     end
 
-    resources :payments, only: [:new, :create, :index, :show]
+    resources :payments, only: [:new, :create, :index, :show] do
+      post :withdraw, on: :member
+    end
     resources :holidays, only: [:update, :index], param: :year
 
     namespace :dashboard do

@@ -1,20 +1,22 @@
+import {
+  getSelectControlStyles,
+  getSelectMenuStyles,
+  selectPalette,
+} from "../shared";
+
 export const customErrStyles = isDesktopView => ({
-  control: provided => ({
-    ...provided,
-    backgroundColor: "hsl(var(--background))",
-    minHeight: 48,
-    padding: "0",
-    border: "1px solid hsl(var(--destructive))",
-    borderColor: "hsl(var(--destructive))",
-  }),
-  menu: provided => ({
-    ...provided,
-    fontSize: "12px",
-    letterSpacing: "2px",
-    zIndex: 2,
-    backgroundColor: "hsl(var(--popover))",
-    border: "1px solid hsl(var(--input))",
-  }),
+  control: (provided, state) =>
+    getSelectControlStyles(provided, {
+      borderColor: selectPalette.destructive,
+      isFocused: state.isFocused,
+      isError: true,
+    }),
+  menu: provided =>
+    getSelectMenuStyles(provided, {
+      fontSize: isDesktopView ? "14px" : "13px",
+      letterSpacing: "normal",
+      zIndex: 50,
+    }),
   valueContainer: provided => ({
     ...provided,
     overflow: "visible",
@@ -25,17 +27,17 @@ export const customErrStyles = isDesktopView => ({
     top: "-40%",
     transition: "top 0.2s, font-size 0.2s",
     fontSize: 9,
-    backgroundColor: "hsl(var(--background))",
-    color: "hsl(var(--destructive))",
+    backgroundColor: selectPalette.background,
+    color: selectPalette.destructive,
   }),
   dropdownIndicator: base => ({
     ...base,
-    color: "#5B34EA", // Custom colour
+    color: selectPalette.muted,
   }),
   singleValue: base => ({
     ...base,
     fontWeight: 500,
     fontSize: isDesktopView ? 16 : 14,
-    color: "hsl(var(--foreground))",
+    color: selectPalette.text,
   }),
 });

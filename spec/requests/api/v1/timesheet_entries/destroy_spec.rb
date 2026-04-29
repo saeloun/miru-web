@@ -33,6 +33,18 @@ RSpec.describe "Api::V1::TimesheetEntry#destroy", type: :request do
       expect(json_response["notice"]).to match("Timesheet deleted")
       expect(timesheet_entry.reload).to be_discarded
     end
+
+    it "does not destroy entries from another workspace" do
+      other_company = create(:company)
+      other_client = create(:client, company: other_company)
+      other_project = create(:project, client: other_client)
+      other_entry = create(:timesheet_entry, project: other_project)
+
+      send_request :delete, api_v1_timesheet_entry_path(other_entry), headers: auth_headers(user)
+
+      expect(response).to have_http_status(:not_found)
+      expect(other_entry.reload).not_to be_discarded
+    end
   end
 
   context "when user is an employee" do

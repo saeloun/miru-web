@@ -142,7 +142,9 @@ const AddEditProject = ({
       <DialogContent className="max-w-lg">
         <DialogHeader>
           <DialogTitle>
-            {isEdit ? i18n.t("projects.editProject") : i18n.t("projects.createProject")}
+            {isEdit
+              ? i18n.t("projects.editProject")
+              : i18n.t("projects.createProject")}
           </DialogTitle>
           <DialogDescription>
             {i18n.t("projects.createProjectDescription")}
@@ -173,7 +175,9 @@ const AddEditProject = ({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="project-name">{i18n.t("projects.projectName")}</Label>
+            <Label htmlFor="project-name">
+              {i18n.t("projects.projectName")}
+            </Label>
             <Input
               id="project-name"
               placeholder={i18n.t("projects.enterProjectName")}
@@ -190,7 +194,11 @@ const AddEditProject = ({
               value={projectType}
               onValueChange={setProjectType}
             >
-              <div className="flex items-center justify-between rounded-xl border border-border bg-card px-4 py-3">
+              <div
+                className="flex cursor-pointer items-center justify-between rounded-xl border border-border bg-card px-4 py-3"
+                data-testid="billable-project-type"
+                onClick={() => setProjectType("Billable")}
+              >
                 <div>
                   <Label className="text-sm font-medium" htmlFor="billable">
                     {i18n.t("billable")}
@@ -201,7 +209,11 @@ const AddEditProject = ({
                 </div>
                 <RadioGroupItem value="Billable" id="billable" />
               </div>
-              <div className="flex items-center justify-between rounded-xl border border-border bg-card px-4 py-3">
+              <div
+                className="flex cursor-pointer items-center justify-between rounded-xl border border-border bg-card px-4 py-3"
+                data-testid="non-billable-project-type"
+                onClick={() => setProjectType("Non-Billable")}
+              >
                 <div>
                   <Label className="text-sm font-medium" htmlFor="non-billable">
                     {i18n.t("nonBillable")}
@@ -231,7 +243,9 @@ const AddEditProject = ({
               type="button"
               onClick={handleSubmit}
             >
-              {isEdit ? i18n.t("projects.saveChanges") : i18n.t("projects.createProject")}
+              {isEdit
+                ? i18n.t("projects.saveChanges")
+                : i18n.t("projects.createProject")}
             </Button>
           </div>
         </div>

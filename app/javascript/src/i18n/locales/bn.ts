@@ -1,3 +1,6 @@
+import en from "./en";
+import mergeLocale from "../mergeLocale";
+
 const locale = {
   invalidImageFormatSize:
     "ভুল ফাইল ফরম্যাট। অনুগ্রহ করে PNG বা JPG ধরনের একটি ছবি আপলোড করুন। সর্বোচ্চ আকার (%{fileSize}KB)",
@@ -576,6 +579,8 @@ const locale = {
     taxId: "কর আইডি: %{value}",
     vatNumber: "ভ্যাট নম্বর: %{value}",
     gstNumber: "জিএসটি নম্বর: %{value}",
+    ein: "EIN: %{value}",
+    usTaxpayerId: "U.S. Taxpayer ID: %{value}",
     bankDetails: "ব্যাংক বিবরণ",
     bankName: "ব্যাংকের নাম: %{value}",
     accountNumber: "অ্যাকাউন্ট নম্বর: %{value}",
@@ -2179,4 +2184,4 @@ const locale = {
   },
 };
 
-export default locale;
+export default mergeLocale(en, locale);

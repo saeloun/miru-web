@@ -124,7 +124,7 @@ const ResetPassword = () => {
                       disabled={isSubmitBtnDisable(values)}
                       className={`form__button whitespace-nowrap ${
                         isSubmitBtnDisable(values)
-                          ? "cursor-not-allowed border-transparent bg-muted text-muted-foreground hover:border-transparent"
+                          ? "cursor-not-allowed border-transparent bg-muted text-foreground/70 hover:border-transparent"
                           : "cursor-pointer"
                       }`}
                     >
@@ -134,7 +134,9 @@ const ResetPassword = () => {
                   <p className="mb-3 mt-3 text-center font-geist text-xs font-normal not-italic text-foreground">
                     <span className="form__link inline cursor-pointer">
                       <a href={Paths.LOGIN}>
-                        <span className="mr-2 inline-block">{i18n.t("auth.backToLogin")}</span>
+                        <span className="mr-2 inline-block">
+                          {i18n.t("auth.backToLogin")}
+                        </span>
                       </a>
                     </span>
                   </p>

@@ -1,3 +1,6 @@
+import en from "./en";
+import mergeLocale from "../mergeLocale";
+
 const locale = {
   invalidImageFormatSize:
     "Onjuweldig bestandsformaat. Upload een afbeelding van het type PNG of JPG. Max grootte (%{fileSize}KB)",
@@ -576,6 +579,8 @@ const locale = {
     taxId: "Belasting ID: %{value}",
     vatNumber: "BTW-nummer: %{value}",
     gstNumber: "GST-nummer: %{value}",
+    ein: "EIN: %{value}",
+    usTaxpayerId: "U.S. Taxpayer ID: %{value}",
     bankDetails: "Bankgegevens",
     bankName: "Banknaam: %{value}",
     accountNumber: "Rekeningnummer: %{value}",
@@ -2189,4 +2194,4 @@ const locale = {
   },
 };
 
-export default locale;
+export default mergeLocale(en, locale);

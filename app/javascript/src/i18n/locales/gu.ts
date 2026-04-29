@@ -1,3 +1,6 @@
+import en from "./en";
+import mergeLocale from "../mergeLocale";
+
 const locale = {
   invalidImageFormatSize:
     "ખોટું ફાઇલ ફોર્મેટ. કૃપા કરીને PNG અથવા JPG પ્રકારની છબી અપલોડ કરો. મહત્તમ કદ (%{fileSize}KB)",
@@ -574,6 +577,8 @@ const locale = {
     taxId: "ટેક્સ ID: %{value}",
     vatNumber: "વેટ નંબર: %{value}",
     gstNumber: "GST નંબર: %{value}",
+    ein: "EIN: %{value}",
+    usTaxpayerId: "U.S. Taxpayer ID: %{value}",
     bankDetails: "બેંક વિગતો",
     bankName: "બેંકનું નામ: %{value}",
     accountNumber: "એકાઉન્ટ નંબર: %{value}",
@@ -2173,4 +2178,4 @@ const locale = {
   },
 };
 
-export default locale;
+export default mergeLocale(en, locale);

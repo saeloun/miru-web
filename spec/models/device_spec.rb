@@ -43,7 +43,10 @@ RSpec.describe Device, type: :model do
     end
   end
 
-  describe "Length" do
+  describe "Validations" do
+    it { is_expected.to validate_presence_of(:device_type) }
+    it { is_expected.to validate_presence_of(:name) }
+    it { is_expected.to validate_presence_of(:serial_number) }
     it { is_expected.to validate_length_of(:name).is_at_most(100) }
   end
 

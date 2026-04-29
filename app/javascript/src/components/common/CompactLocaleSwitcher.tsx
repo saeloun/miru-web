@@ -2,7 +2,12 @@ import React, { useEffect, useState } from "react";
 import { GlobeHemisphereWest, SpinnerGap } from "phosphor-react";
 import { profileApi } from "apis/api";
 import { useUserContext } from "context/UserContext";
-import { LANGUAGE_OPTIONS, SupportedLocale, setStoredLocale, t } from "../../i18n";
+import {
+  LANGUAGE_OPTIONS,
+  SupportedLocale,
+  setStoredLocale,
+  t,
+} from "../../i18n";
 import {
   Select,
   SelectContent,

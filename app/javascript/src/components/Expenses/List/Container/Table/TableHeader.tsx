@@ -33,7 +33,8 @@ const TableHeader = () => (
         className="table-cell w-2/5 py-5 pr-4 text-left text-xs font-medium tracking-widest text-foreground lg:hidden"
         scope="col"
       >
-        {i18n.t("expenses.category").toUpperCase()} / {i18n.t("expenses.vendor").toUpperCase()}
+        {i18n.t("expenses.category").toUpperCase()} /{" "}
+        {i18n.t("expenses.vendor").toUpperCase()}
       </th>
       <th
         className="table-cell w-1/5 py-5 pr-4 text-left text-xs font-medium tracking-widest text-foreground lg:hidden"

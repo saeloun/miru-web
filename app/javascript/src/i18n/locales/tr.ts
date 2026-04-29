@@ -1,3 +1,6 @@
+import en from "./en";
+import mergeLocale from "../mergeLocale";
+
 const locale = {
   invalidImageFormatSize:
     "Yanlış dosya formatı. Lütfen PNG veya JPG türünde bir resim yükleyin. Maks. boyut (%{fileSize}KB)",
@@ -576,6 +579,8 @@ const locale = {
     taxId: "Vergi No: %{value}",
     vatNumber: "KDV Numarası: %{value}",
     gstNumber: "GST Numarası: %{value}",
+    ein: "EIN: %{value}",
+    usTaxpayerId: "U.S. Taxpayer ID: %{value}",
     bankDetails: "Banka Bilgileri",
     bankName: "Banka Adı: %{value}",
     accountNumber: "Hesap Numarası: %{value}",
@@ -2178,4 +2183,4 @@ const locale = {
   },
 };
 
-export default locale;
+export default mergeLocale(en, locale);

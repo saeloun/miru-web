@@ -186,11 +186,15 @@ export const ResponsiveTeamStats: React.FC<any> = props => {
   if (isDesktop) {
     return (
       <div className="rounded-lg border border-border bg-card p-6 shadow-sm">
-        <h3 className="text-lg font-semibold mb-4">{i18n.t("team.teamOverview")}</h3>
+        <h3 className="text-lg font-semibold mb-4">
+          {i18n.t("team.teamOverview")}
+        </h3>
         <div className="grid grid-cols-4 gap-6">
           <div>
             <p className="text-2xl font-bold">{props.totalMembers}</p>
-            <p className="text-sm text-muted-foreground">{i18n.t("team.totalMembers")}</p>
+            <p className="text-sm text-muted-foreground">
+              {i18n.t("team.totalMembers")}
+            </p>
           </div>
           <div>
             <p className="text-2xl font-bold text-foreground">
@@ -202,13 +206,17 @@ export const ResponsiveTeamStats: React.FC<any> = props => {
             <p className="text-2xl font-bold text-primary">
               {props.totalProjects}
             </p>
-            <p className="text-sm text-muted-foreground">{i18n.t("navbar.projects")}</p>
+            <p className="text-sm text-muted-foreground">
+              {i18n.t("navbar.projects")}
+            </p>
           </div>
           <div>
             <p className="text-2xl font-bold text-foreground">
               {props.totalHours}h
             </p>
-            <p className="text-sm text-muted-foreground">{i18n.t("thisMonth")}</p>
+            <p className="text-sm text-muted-foreground">
+              {i18n.t("thisMonth")}
+            </p>
           </div>
         </div>
       </div>
@@ -221,7 +229,9 @@ export const ResponsiveTeamStats: React.FC<any> = props => {
       <div className="grid grid-cols-2 gap-4">
         <div className="text-center">
           <p className="text-xl font-bold">{props.totalMembers}</p>
-          <p className="text-xs text-muted-foreground">{i18n.t("team.totalMembers")}</p>
+          <p className="text-xs text-muted-foreground">
+            {i18n.t("team.totalMembers")}
+          </p>
         </div>
         <div className="text-center">
           <p className="text-xl font-bold text-foreground">
@@ -233,7 +243,9 @@ export const ResponsiveTeamStats: React.FC<any> = props => {
           <p className="text-xl font-bold text-primary">
             {props.totalProjects}
           </p>
-          <p className="text-xs text-muted-foreground">{i18n.t("navbar.projects")}</p>
+          <p className="text-xs text-muted-foreground">
+            {i18n.t("navbar.projects")}
+          </p>
         </div>
         <div className="text-center">
           <p className="text-xl font-bold text-foreground">

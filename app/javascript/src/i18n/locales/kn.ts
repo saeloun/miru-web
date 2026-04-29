@@ -1,3 +1,6 @@
+import en from "./en";
+import mergeLocale from "../mergeLocale";
+
 const locale = {
   invalidImageFormatSize:
     "ತಪ್ಪಾದ ಫೈಲ್ ಫಾರ್ಮ್ಯಾಟ್. ದಯವಿಟ್ಟು PNG ಅಥವಾ JPG ಪ್ರಕಾರದ ಚಿತ್ರವನ್ನು ಅಪ್‌ಲೋಡ್ ಮಾಡಿ. ಗರಿಷ್ಠ ಗಾತ್ರ (%{fileSize}KB)",
@@ -576,6 +579,8 @@ const locale = {
     taxId: "ತೆರಿಗೆ ಐಡಿ: %{value}",
     vatNumber: "VAT ಸಂಖ್ಯೆ: %{value}",
     gstNumber: "GST ಸಂಖ್ಯೆ: %{value}",
+    ein: "EIN: %{value}",
+    usTaxpayerId: "U.S. Taxpayer ID: %{value}",
     bankDetails: "ಬ್ಯಾಂಕ್ ವಿವರಗಳು",
     bankName: "ಬ್ಯಾಂಕ್ ಹೆಸರು: %{value}",
     accountNumber: "ಖಾತೆ ಸಂಖ್ಯೆ: %{value}",
@@ -2187,4 +2192,4 @@ const locale = {
   },
 };
 
-export default locale;
+export default mergeLocale(en, locale);

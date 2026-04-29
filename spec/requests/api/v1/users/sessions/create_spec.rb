@@ -73,6 +73,7 @@ RSpec.describe "Api::V1::Users::Sessions#create", type: :request do
       expect(response).to have_http_status(:ok)
       expect(json_response["notice"]).to eq(I18n.t("devise.sessions.signed_in"))
       expect(json_response).to have_key("user")
+      expect(json_response.dig("user", "token")).to be_present
       expect(json_response).to have_key("avatar_url")
       expect(json_response).to have_key("company_role")
       expect(json_response).to have_key("confirmed_user")

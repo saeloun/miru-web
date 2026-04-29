@@ -12,7 +12,7 @@ RSpec.describe Analytics::ThresholdEvaluator do
 
     alerts = described_class.new(company:).process
 
-    expect(alerts.map { |alert| alert[:type] }).to include("low_utilization")
+    expect(alerts.pluck(:type)).to include("low_utilization")
   end
 
   it "returns revenue drop alert" do
@@ -22,7 +22,7 @@ RSpec.describe Analytics::ThresholdEvaluator do
 
     alerts = described_class.new(company:).process
 
-    expect(alerts.map { |alert| alert[:type] }).to include("revenue_drop")
+    expect(alerts.pluck(:type)).to include("revenue_drop")
   end
 
   it "returns expense anomaly alert" do
@@ -32,7 +32,7 @@ RSpec.describe Analytics::ThresholdEvaluator do
 
     alerts = described_class.new(company:).process
 
-    expect(alerts.map { |alert| alert[:type] }).to include("expense_anomaly")
+    expect(alerts.pluck(:type)).to include("expense_anomaly")
   end
 
   it "returns no alerts when thresholds are healthy" do

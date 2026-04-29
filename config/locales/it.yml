@@ -54,6 +54,9 @@ it:
       success: Avatar eliminato con successo
     update:
       success: Aggiornamento dell'avatar riuscito
+    validation:
+      file_too_large: must be smaller than %{size_mb}MB
+      invalid_content_type: must be a PNG, JPG, JPEG, or WEBP image
   client:
     add: AGGIUNGI CLIENTE
     address:
@@ -562,10 +565,12 @@ it:
       payment_rows:
         account_number: Numero di conto
         bank_name: Nome della banca
+        ein: EIN
         gst_number: Numero GST
         routing_number: Numero di instradamento
         swift_code: Codice SWIFT
         tax_id: Codice fiscale
+        us_taxpayer_id: U.S. Taxpayer ID
         vat_number: Partita IVA
       prepared_by: Preparato da %{company_name}, emesso da %{issue_date}, scadenza
         %{due_date}.
@@ -744,9 +749,11 @@ it:
       message: Foglio presenze creato
     destroy:
       failure: Impossibile eliminare le voci del foglio presenze
+      locked: Only admins can delete entries older than 7 days
       message: Foglio presenze eliminato
     update:
       failure: Impossibile aggiornare le voci del foglio presenze.
+      locked: Only admins can edit entries older than 7 days
       message: Foglio presenze aggiornato
   totp:
     disable_passkey_first: Disabilita l'accesso tramite password prima di abilitare

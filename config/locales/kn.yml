@@ -54,6 +54,9 @@ kn:
       success: ಅವತಾರ್ ಅನ್ನು ಯಶಸ್ವಿಯಾಗಿ ಅಳಿಸಲಾಗಿದೆ
     update:
       success: ಅವತಾರ್ ಅನ್ನು ಯಶಸ್ವಿಯಾಗಿ ನವೀಕರಿಸಲಾಗಿದೆ
+    validation:
+      file_too_large: must be smaller than %{size_mb}MB
+      invalid_content_type: must be a PNG, JPG, JPEG, or WEBP image
   client:
     add: ಕ್ಲೈಂಟ್ ಸೇರಿಸಿ
     address:
@@ -552,10 +555,12 @@ kn:
       payment_rows:
         account_number: ಖಾತೆ ಸಂಖ್ಯೆ
         bank_name: ಬ್ಯಾಂಕ್ ಹೆಸರು
+        ein: EIN
         gst_number: ಜಿಎಸ್ಟಿ ಸಂಖ್ಯೆ
         routing_number: ರೂಟಿಂಗ್ ಸಂಖ್ಯೆ
         swift_code: SWIFT ಕೋಡ್
         tax_id: ತೆರಿಗೆ ಐಡಿ
+        us_taxpayer_id: U.S. Taxpayer ID
         vat_number: ವ್ಯಾಟ್ ಸಂಖ್ಯೆ
       prepared_by: "%{company_name} ಸಿದ್ಧಪಡಿಸಿದ್ದು, %{issue_date} ಬಿಡುಗಡೆ ಮಾಡಿದ್ದು,
         %{due_date} ಕ್ಕೆ ನಿಗದಿಯಾಗಿದೆ."
@@ -733,9 +738,11 @@ kn:
       message: ಟೈಮ್‌ಶೀಟ್ ರಚಿಸಲಾಗಿದೆ
     destroy:
       failure: ಟೈಮ್‌ಶೀಟ್ ನಮೂದುಗಳನ್ನು ಅಳಿಸಲು ವಿಫಲವಾಗಿದೆ.
+      locked: Only admins can delete entries older than 7 days
       message: ಟೈಮ್‌ಶೀಟ್ ಅಳಿಸಲಾಗಿದೆ
     update:
       failure: ಟೈಮ್‌ಶೀಟ್ ನಮೂದುಗಳನ್ನು ನವೀಕರಿಸಲು ವಿಫಲವಾಗಿದೆ.
+      locked: Only admins can edit entries older than 7 days
       message: ಟೈಮ್‌ಶೀಟ್ ಅನ್ನು ನವೀಕರಿಸಲಾಗಿದೆ
   totp:
     disable_passkey_first: ದೃಢೀಕರಣ ಅಪ್ಲಿಕೇಶನ್ 2FA ಅನ್ನು ಸಕ್ರಿಯಗೊಳಿಸುವ ಮೊದಲು ಅಗತ್ಯವಿರುವ

@@ -163,6 +163,9 @@ const PaymentFilters: React.FC<PaymentFiltersProps> = ({
               <SelectItem value="stripe">
                 {i18n.t("payments.stripe")}
               </SelectItem>
+              <SelectItem value="razorpay">
+                {i18n.t("payments.razorpay")}
+              </SelectItem>
               <SelectItem value="cash">{i18n.t("payments.cash")}</SelectItem>
               <SelectItem value="check">{i18n.t("payments.check")}</SelectItem>
             </SelectContent>

@@ -60,5 +60,35 @@ RSpec.describe "Api::V1::TimesheetEntry::BulkActionController#destroy", type: :r
 
       expect(response).to have_http_status(:forbidden)
     end
+
+    it "does not destroy entries from another workspace" do
+      other_company = create(:company)
+      other_client = create(:client, company: other_company)
+      other_project = create(:project, client: other_client)
+      other_entry = create(:timesheet_entry, project: other_project)
+
+      send_request :delete, api_v1_bulk_action_path,
+        params: { source: { ids: [other_entry.id] } },
+        headers: auth_headers(user)
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(other_entry.reload).not_to be_discarded
+    end
+
+    it "only destroys current workspace entries when mixed ids are submitted" do
+      other_company = create(:company)
+      other_client = create(:client, company: other_company)
+      other_project = create(:project, client: other_client)
+      other_entry = create(:timesheet_entry, project: other_project)
+      current_entry = create(:timesheet_entry, user:, project:)
+
+      send_request :delete, api_v1_bulk_action_path,
+        params: { source: { ids: [current_entry.id, other_entry.id] } },
+        headers: auth_headers(user)
+
+      expect(response).to have_http_status(:ok)
+      expect(current_entry.reload).to be_discarded
+      expect(other_entry.reload).not_to be_discarded
+    end
   end
 end

@@ -309,7 +309,7 @@ module Analytics
       end
 
       def default_review_status
-        TimesheetEntry.review_statuses.keys.include?("not_required") ? :not_required : TimesheetEntry.review_statuses.keys.first.to_sym
+        TimesheetEntry.review_statuses.key?("not_required") ? :not_required : TimesheetEntry.review_statuses.keys.first.to_sym
       end
 
       def client_currency_for(client)
@@ -321,23 +321,23 @@ module Analytics
       end
 
       def paid_transaction_type
-        Payment.transaction_types.keys.include?("bank_transfer") ? :bank_transfer : Payment.transaction_types.keys.first.to_sym
+        Payment.transaction_types.key?("bank_transfer") ? :bank_transfer : Payment.transaction_types.keys.first.to_sym
       end
 
       def paid_payment_status
-        Payment.statuses.keys.include?("paid") ? :paid : Payment.statuses.keys.first.to_sym
+        Payment.statuses.key?("paid") ? :paid : Payment.statuses.keys.first.to_sym
       end
 
       def partial_payment_status
-        Payment.statuses.keys.include?("partially_paid") ? :partially_paid : Payment.statuses.keys.first.to_sym
+        Payment.statuses.key?("partially_paid") ? :partially_paid : Payment.statuses.keys.first.to_sym
       end
 
       def business_expense_type
-        Expense.expense_types.keys.include?("business") ? :business : Expense.expense_types.keys.first.to_sym
+        Expense.expense_types.key?("business") ? :business : Expense.expense_types.keys.first.to_sym
       end
 
       def approved_expense_status
-        Expense.statuses.keys.include?("approved") ? :approved : Expense.statuses.keys.first.to_sym
+        Expense.statuses.key?("approved") ? :approved : Expense.statuses.keys.first.to_sym
       end
 
       def print_summary

@@ -55,6 +55,9 @@ de:
       success: Avatar erfolgreich gelöscht
     update:
       success: Avatar erfolgreich aktualisiert
+    validation:
+      file_too_large: must be smaller than %{size_mb}MB
+      invalid_content_type: must be a PNG, JPG, JPEG, or WEBP image
   client:
     add: Client hinzufügen
     address:
@@ -572,10 +575,12 @@ de:
       payment_rows:
         account_number: Kontonummer
         bank_name: Name der Bank
+        ein: EIN
         gst_number: GST-Nummer
         routing_number: Routingnummer
         swift_code: SWIFT-Code
         tax_id: Steuer-ID
+        us_taxpayer_id: U.S. Taxpayer ID
         vat_number: Umsatzsteuer-Identifikationsnummer
       prepared_by: Erstellt von %{company_name}, herausgegeben von %{issue_date},
         fällig von %{due_date}.
@@ -754,9 +759,11 @@ de:
       message: Stundenzettel erstellt
     destroy:
       failure: Fehler beim Löschen der Stundenzetteleinträge
+      locked: Only admins can delete entries older than 7 days
       message: Stundenzettel gelöscht
     update:
       failure: Fehler beim Aktualisieren der Stundenzetteleinträge
+      locked: Only admins can edit entries older than 7 days
       message: Stundenzettel aktualisiert
   totp:
     disable_passkey_first: Deaktivieren Sie die Anmeldung mit erforderlichem Passkey,

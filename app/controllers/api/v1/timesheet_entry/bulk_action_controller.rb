@@ -6,11 +6,11 @@ class Api::V1::TimesheetEntry::BulkActionController < Api::V1::ApplicationContro
 
   def update
     authorize TimesheetEntry, :bulk_update?
+    timesheet_entries = policy_scope(TimesheetEntry)
 
     ids = Array(params[:ids]).reject(&:blank?)
     return render json: { error: I18n.t("timesheet_entry.update.failure", default: "No entries selected") }, status: :unprocessable_entity if ids.empty?
 
-    timesheet_entries = policy_scope(TimesheetEntry)
     target_project = ProjectPolicy::Scope.new(current_user, current_company).resolve.find(params[:project_id])
     updated_entries = timesheet_entries.where(id: ids)
     return render json: { error: I18n.t("timesheet_entry.update.failure", default: "No entries found") }, status: :unprocessable_entity if updated_entries.empty?

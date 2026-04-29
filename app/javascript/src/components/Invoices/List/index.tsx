@@ -2,7 +2,7 @@ import { ApiStatus as InvoicesStatus, LocalStorageKeys } from "constants/index";
 
 import React, { Fragment, useEffect, useState } from "react";
 
-import { invoicesApi, PaymentsProviders } from "apis/api";
+import { invoicesApi, paymentSettings } from "apis/api";
 import Loader from "common/Loader/index";
 import withLayout from "common/Mobile/HOC/withLayout";
 import { useUserContext } from "context/UserContext";
@@ -65,7 +65,7 @@ const Invoices = () => {
   const [recentlyUpdatedInvoices, setRecentlyUpdatedInvoices] =
     useState<any>(null);
   const [downloading, setDownloading] = useState<boolean>(false);
-  const [isStripeEnabled, setIsStripeEnabled] = useState<boolean>(null);
+  const [isPaymentEnabled, setIsPaymentEnabled] = useState<boolean>(null);
   const selectedInvoiceCount = selectedInvoices.length;
   const isInvoiceSelected = selectedInvoiceCount > 0;
   const [selectedInvoiceCounter, setSelectedInvoiceCounter] =
@@ -205,7 +205,7 @@ const Invoices = () => {
       params.query
     );
     loadInvoices();
-    fetchPaymentsProvidersSettings();
+    fetchPaymentSettings();
     setSearchParams(cleanParams(params));
   }, [params.invoices_per_page, params.query, filterParams]);
 
@@ -247,12 +247,20 @@ const Invoices = () => {
     await loadInvoices();
   };
 
-  const fetchPaymentsProvidersSettings = async () => {
+  const fetchPaymentSettings = async () => {
     try {
-      const res = await PaymentsProviders.get();
-      const paymentsProviders = res.data.paymentsProviders;
-      const stripe = paymentsProviders.find(p => p.name === "stripe");
-      setIsStripeEnabled(!!stripe && stripe.enabled);
+      const res = await paymentSettings.get();
+      const { stripe, upi, razorpay } = res.data.providers;
+      const stripeEnabled = !!stripe?.enabled || !!stripe?.connected;
+      const upiEnabledOnInvoices = !!upi?.enabled && !!upi?.enabledOnInvoices;
+      const razorpayEnabledOnInvoices =
+        !!razorpay?.enabled &&
+        !!razorpay?.connected &&
+        !!razorpay?.enabledOnInvoices;
+
+      setIsPaymentEnabled(
+        stripeEnabled || upiEnabledOnInvoices || razorpayEnabledOnInvoices
+      );
     } catch {
       Toastr.error(i18n.t("invoices.errorConnectingPayments"));
     }
@@ -327,7 +335,7 @@ const Invoices = () => {
             invoices={invoices}
             isDesktop={isDesktop}
             isInvoiceSelected={isInvoiceSelected}
-            isStripeEnabled={isStripeEnabled}
+            isPaymentEnabled={isPaymentEnabled}
             params={params}
             recentlyUpdatedInvoices={recentlyUpdatedInvoices}
             selectInvoices={selectInvoices}
@@ -335,7 +343,7 @@ const Invoices = () => {
             selectedInvoices={selectedInvoices}
             setFilterParams={setFilterParams}
             setInvoiceToDelete={setInvoiceToDelete}
-            setIsStripeEnabled={setIsStripeEnabled}
+            setIsPaymentEnabled={setIsPaymentEnabled}
             setShowBulkDeleteDialog={setShowBulkDeleteDialog}
             setShowBulkDownloadDialog={setShowBulkDownloadDialog}
             setShowDeleteDialog={setShowDeleteDialog}

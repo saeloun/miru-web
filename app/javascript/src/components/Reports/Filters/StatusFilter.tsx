@@ -17,7 +17,9 @@ const StatusFilter = ({
       className="flex items-center justify-between px-5 hover:text-primary"
       onClick={handleStatusFilterToggle}
     >
-      <h5 className="text-xs font-bold leading-4 tracking-wider">{i18n.t("status").toUpperCase()}</h5>
+      <h5 className="text-xs font-bold leading-4 tracking-wider">
+        {i18n.t("status").toUpperCase()}
+      </h5>
       <div className="flex items-center">
         {filters.status.length > 0 && (
           <span className="mr-7 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs font-semibold text-white">

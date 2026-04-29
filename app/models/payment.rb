@@ -22,10 +22,14 @@ class Payment < ApplicationRecord
     :credit_card,
     :debit_card,
     :paypal,
-    :stripe
+    :stripe,
+    :upi,
+    :razorpay
   ]
 
   belongs_to :invoice
+  has_many :razorpay_payouts, dependent: :destroy
+
   delegate :company, to: :invoice
 
   before_validation :set_status, if: :new_record?

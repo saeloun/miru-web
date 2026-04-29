@@ -22,10 +22,7 @@ const ErrorPage = () => {
           <div className="rounded-full border border-border bg-background px-4 py-2 text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">
             Error 404
           </div>
-          <img
-            className="mt-8 h-auto w-40 lg:w-48"
-            src={MiruLogoWithTextSVG}
-          />
+          <img className="mt-8 h-auto w-40 lg:w-48" src={MiruLogoWithTextSVG} />
           <div className="mt-8 text-6xl font-semibold tracking-[-0.04em] text-foreground lg:text-7xl">
             404
           </div>
@@ -51,11 +48,7 @@ const ErrorPage = () => {
 
   const Main = withLayout(ErrorPageLayout, !isDesktop, !isDesktop);
 
-  return isDesktop ? (
-    ErrorPageLayout()
-  ) : (
-    <Main />
-  );
+  return isDesktop ? ErrorPageLayout() : <Main />;
 };
 
 export default ErrorPage;

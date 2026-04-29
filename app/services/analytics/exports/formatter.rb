@@ -185,7 +185,7 @@ module Analytics
         end
 
         def trend_labels(trends)
-          trends.first&.dig(:monthly_totals)&.map { |point| point[:label] } || []
+          trends.first&.dig(:monthly_totals)&.pluck(:label) || []
         end
 
         def export_filters

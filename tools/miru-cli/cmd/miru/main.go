@@ -204,7 +204,7 @@ func logout() error {
 
 func manageConfig(args []string) error {
 	if len(args) == 0 {
-		return fmt.Errorf("usage: miru config <show|set-base-url> ...")
+		return fmt.Errorf("usage: miru config <show|token|set-base-url> ...")
 	}
 
 	switch args[0] {
@@ -230,6 +230,33 @@ func manageConfig(args []string) error {
 
 		fmt.Println(string(data))
 		return nil
+	case "token":
+		flags, err := parseFlags(args[1:])
+		if err != nil {
+			return err
+		}
+
+		stored, err := loadConfig()
+		if err != nil {
+			return err
+		}
+
+		token := strings.TrimSpace(stored.Token)
+		if token == "" {
+			return fmt.Errorf("no CLI token found; run `miru login` first")
+		}
+
+		format := defaultString(flags["format"], "raw")
+		switch format {
+		case "raw":
+			fmt.Println(token)
+			return nil
+		case "shell":
+			fmt.Printf("export MIRU_CLI_TOKEN=%q\n", token)
+			return nil
+		default:
+			return fmt.Errorf("usage: miru config token [--format <raw|shell>]")
+		}
 	case "set-base-url":
 		flags, err := parseFlags(args[1:])
 		if err != nil {
@@ -250,7 +277,7 @@ func manageConfig(args []string) error {
 		fmt.Printf("Base URL set to %s\n", baseURL)
 		return nil
 	default:
-		return fmt.Errorf("usage: miru config <show|set-base-url> ...")
+		return fmt.Errorf("usage: miru config <show|token|set-base-url> ...")
 	}
 }
 
@@ -950,6 +977,7 @@ func printHelp() {
 miru logout
 miru whoami
 miru config show
+miru config token [--format <raw|shell>]
 miru config set-base-url --url <url>
 miru version
 miru upgrade

@@ -11,7 +11,14 @@ class StripeConnectedAccount < ApplicationRecord
 
   validates :account_id, uniqueness: true
 
-  delegate :details_submitted, to: :retrieve
+  def details_submitted
+    retrieve.details_submitted
+  rescue Stripe::StripeError => e
+    Rails.logger.warn(
+      "Unable to retrieve Stripe connected account #{account_id}: #{e.class} - #{e.message}"
+    )
+    false
+  end
 
   def url
     Stripe::AccountLink.create(

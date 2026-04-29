@@ -18,7 +18,12 @@ import worldCountries from "world-countries";
 
 import { clientSchema, getInitialvalues } from "./formValidationSchema";
 import UploadLogo from "./UploadLogo";
-import { formatFormData, disableBtn } from "./utils";
+import {
+  formatFormData,
+  disableBtn,
+  getMissingRequiredClientFields,
+  getRequiredClientFieldLabels,
+} from "./utils";
 
 import { currencyListOptions } from "../../OrganizationSetup/FinancialDetailsForm/utils";
 import { i18n } from "../../../i18n";
@@ -111,6 +116,11 @@ const MobileClientEditor = ({
         >
           {(props: FormikProps<FormValues>) => {
             const { touched, errors, setFieldValue, values } = props;
+            const fieldLabels = getRequiredClientFieldLabels();
+
+            const missingRequiredFields = getMissingRequiredClientFields(
+              values
+            ).map(key => fieldLabels[key]);
 
             return (
               <Form>
@@ -138,7 +148,7 @@ const MobileClientEditor = ({
                     autoFocus
                     resetErrorOnChange
                     id="name"
-                    label={i18n.t("name")}
+                    label={`${i18n.t("name")} *`}
                     marginBottom="mb-0"
                     name="name"
                     setFieldValue={setFieldValue}
@@ -198,7 +208,7 @@ const MobileClientEditor = ({
                     <InputField
                       resetErrorOnChange
                       id="address1"
-                      label={i18n.t("clients.addressLine1")}
+                      label={`${i18n.t("clients.addressLine1")} *`}
                       name="address1"
                       setFieldValue={setFieldValue}
                     />
@@ -227,7 +237,7 @@ const MobileClientEditor = ({
                   <div className="flex w-1/2 flex-col py-0 pr-2">
                     <div className="field relative">
                       <label className="absolute -top-1 left-0 z-1 ml-3 origin-0 bg-white px-1 text-xsm font-medium text-muted-foreground duration-300">
-                        {i18n.t("country")}
+                        {i18n.t("country")} *
                       </label>
                       <Select
                         value={values.country?.value || ""}
@@ -271,7 +281,7 @@ const MobileClientEditor = ({
                     <InputField
                       resetErrorOnChange
                       id="state"
-                      label={i18n.t("state")}
+                      label={`${i18n.t("state")} *`}
                       name="state"
                       setFieldValue={setFieldValue}
                     />
@@ -287,7 +297,7 @@ const MobileClientEditor = ({
                     <InputField
                       resetErrorOnChange
                       id="city"
-                      label={i18n.t("city")}
+                      label={`${i18n.t("city")} *`}
                       name="city"
                       setFieldValue={setFieldValue}
                     />
@@ -300,7 +310,7 @@ const MobileClientEditor = ({
                     <InputField
                       resetErrorOnChange
                       id="zipcode"
-                      label={i18n.t("zipcode")}
+                      label={`${i18n.t("zipcode")} *`}
                       name="zipcode"
                       setFieldValue={setFieldValue}
                     />
@@ -313,7 +323,7 @@ const MobileClientEditor = ({
                 <div className="mt-4">
                   <div className="field relative mb-5">
                     <label className="absolute -top-1 left-0 z-1 ml-3 origin-0 bg-white px-1 text-xsm font-medium text-muted-foreground duration-300">
-                      {i18n.t("currency")}
+                      {i18n.t("currency")} *
                     </label>
                     <Select
                       value={values.currency?.value || ""}
@@ -351,6 +361,19 @@ const MobileClientEditor = ({
                   </div>
                 </div>
                 <div className="actions mt-auto">
+                  <p className="mb-2 text-xs text-muted-foreground">
+                    * Required: Name, Address Line 1, Country, State, City,
+                    Zipcode, Currency
+                  </p>
+                  {missingRequiredFields.length > 0 && (
+                    <p
+                      className="mb-2 text-xs text-amber-600"
+                      aria-live="polite"
+                    >
+                      Missing required fields:{" "}
+                      {missingRequiredFields.join(", ")}
+                    </p>
+                  )}
                   {client?.id ? (
                     <Button
                       className="w-full p-2 text-center text-base font-bold"

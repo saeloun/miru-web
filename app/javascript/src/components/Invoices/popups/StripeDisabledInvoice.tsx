@@ -14,7 +14,9 @@ const StripeDisabledInvoice = ({
     onClose={() => setShowStripeDisabledDialog(false)}
   >
     <div className="mt-2 mb-4 flex items-center justify-between">
-      <h6 className="text-2xl font-bold">{i18n.t("invoices.stripeDisabled")}</h6>
+      <h6 className="text-2xl font-bold">
+        {i18n.t("invoices.stripeDisabled")}
+      </h6>
       <Button
         className="text-foreground"
         style="ternary"

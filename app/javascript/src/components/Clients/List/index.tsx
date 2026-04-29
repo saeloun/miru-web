@@ -79,7 +79,9 @@ const ClientList = ({
                   }}
                 >
                   <PlusIcon size={20} weight="bold" />
-                  <span className="ml-2 inline-block text-xl">{i18n.t("clients.addClients")}</span>
+                  <span className="ml-2 inline-block text-xl">
+                    {i18n.t("clients.addClients")}
+                  </span>
                 </button>
               </EmptyStates>
             )}

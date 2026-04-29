@@ -20,6 +20,7 @@ import {
   CurrencyCircleDollar,
   Tree,
   SignOut,
+  Monitor,
 } from "phosphor-react";
 import { useLocation } from "react-router-dom";
 import { useUserContext } from "context/UserContext";
@@ -29,6 +30,7 @@ import useThemeMode from "../../common/useThemeMode";
 import { hasProAccess } from "../../lib/planAccess";
 import { t } from "../../i18n";
 import CompactLocaleSwitcher from "../common/CompactLocaleSwitcher";
+import DashboardTimerControl from "./DashboardTimerControl";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -66,6 +68,13 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
           href: "/time-tracking",
           icon: Timer,
           roles: ["admin", "owner", "employee"],
+        },
+        {
+          label: "Desktop App",
+          href: "https://miru.so/features/desktop-app?utm_source=app.miru.so&utm_medium=sidebar&utm_campaign=desktop-app",
+          icon: Monitor,
+          external: true,
+          roles: ["admin", "owner", "book_keeper", "employee", "client"],
         },
         {
           label: t("nav.clients"),
@@ -346,6 +355,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
               </h1>
             </div>
             <div className="flex items-center gap-2">
+              <DashboardTimerControl />
               <CompactLocaleSwitcher />
               <ThemeToggle compact />
               <button

@@ -50,6 +50,8 @@ interface OrgEditFormProps {
     taxId: string;
     vatNumber: string;
     gstNumber: string;
+    ein: string;
+    usTaxpayerId: string;
   };
   isDragActive: boolean;
   getInputProps: () => any;
@@ -167,6 +169,8 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
     taxId,
     vatNumber,
     gstNumber,
+    ein,
+    usTaxpayerId,
   } = orgDetails;
 
   return (
@@ -910,6 +914,40 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                       }
                       className="border-border"
                       placeholder={i18n.t("organization.enterGstNumber")}
+                    />
+                  </FormField>
+
+                  <FormField label={i18n.t("organization.ein")} htmlFor="ein">
+                    <Input
+                      id="ein"
+                      aria-label="EIN"
+                      type="text"
+                      value={ein || ""}
+                      onChange={e =>
+                        handleChangeCompanyDetails(e.target.value, "ein")
+                      }
+                      className="border-border"
+                      placeholder={i18n.t("organization.enterEin")}
+                    />
+                  </FormField>
+
+                  <FormField
+                    label={i18n.t("organization.usTaxpayerId")}
+                    htmlFor="us_taxpayer_id"
+                  >
+                    <Input
+                      id="us_taxpayer_id"
+                      aria-label="U.S. Taxpayer ID"
+                      type="text"
+                      value={usTaxpayerId || ""}
+                      onChange={e =>
+                        handleChangeCompanyDetails(
+                          e.target.value,
+                          "usTaxpayerId"
+                        )
+                      }
+                      className="border-border"
+                      placeholder={i18n.t("organization.enterUsTaxpayerId")}
                     />
                   </FormField>
                 </div>

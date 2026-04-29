@@ -46,7 +46,6 @@ RSpec.describe "Analytics", type: :system, js: true do
       work_date: Date.new(2026, 4, 8),
       bill_status: :unbilled
     )
-
   end
 
   after { travel_back }

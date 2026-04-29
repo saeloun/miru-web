@@ -109,8 +109,13 @@ const RevenueForecastPage: React.FC = () => {
     point => (point.collected_revenue ?? 0) > 0
   );
 
-  const visibleHistoricalPeriods = isMobile ? historicalPeriods.slice(-6) : historicalPeriods;
-  const visibleForecastPeriods = isMobile ? forecastPeriods.slice(0, Math.min(horizon, 3)) : forecastPeriods;
+  const visibleHistoricalPeriods = isMobile
+    ? historicalPeriods.slice(-6)
+    : historicalPeriods;
+
+  const visibleForecastPeriods = isMobile
+    ? forecastPeriods.slice(0, Math.min(horizon, 3))
+    : forecastPeriods;
 
   const chartData = [
     ...visibleHistoricalPeriods.map(point => ({
@@ -158,7 +163,9 @@ const RevenueForecastPage: React.FC = () => {
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement("a");
       link.href = url;
-      link.download = `revenue_forecast_${new Date().toISOString().slice(0, 10)}.${format}`;
+      link.download = `revenue_forecast_${new Date()
+        .toISOString()
+        .slice(0, 10)}.${format}`;
       document.body.appendChild(link);
       link.click();
       link.remove();
@@ -201,12 +208,13 @@ const RevenueForecastPage: React.FC = () => {
             <AlertTitle>Financial analytics access is limited</AlertTitle>
             <AlertDescription>
               Employees can access the Analytics section, but revenue forecast
-              data is only available to owners, admins, and book keepers.
+              data is only available to owners, admins, managers, and book
+              keepers.
             </AlertDescription>
           </Alert>
           <AnalyticsRestrictedState
             title="Revenue forecast is restricted"
-            description="This view uses workspace-level billing and payment data. Ask an owner, admin, or book keeper if you need access."
+            description="This view uses billing and payment data. Ask an owner, admin, manager, or book keeper if you need access."
           />
         </div>
       )}
@@ -302,7 +310,9 @@ const RevenueForecastPage: React.FC = () => {
                   <XAxis
                     axisLine={false}
                     dataKey="label"
-                    tickFormatter={value => (isMobile ? String(value).split(" ")[0] : value)}
+                    tickFormatter={value =>
+                      isMobile ? String(value).split(" ")[0] : value
+                    }
                     tickLine={false}
                     minTickGap={20}
                   />

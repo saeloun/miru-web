@@ -158,6 +158,145 @@ RSpec.describe "Time Tracking - Add Entry", type: :system, js: true do
     )
   end
 
+  it "hydrates the web timer from the shared MiruTime desktop state" do
+    synced_at = 2.minutes.from_now.iso8601(3)
+    create(
+      :desktop_current_timer,
+      company:,
+      user:,
+      current_timer: {
+        "billable" => false,
+        "elapsed_ms" => 180_000,
+        "notes" => "Desktop handoff task",
+        "project_name" => project.name,
+        "running" => true,
+        "source" => "desktop",
+        "started_at" => 3.minutes.ago.iso8601(3),
+        "synced_at" => synced_at,
+        "task_name" => "Desktop handoff task",
+        "timer_deck" => {
+          "activeTimerId" => "desktop-active",
+          "version" => 2,
+          "timers" => [
+            {
+              "client" => client.name,
+              "description" => "Desktop handoff task",
+              "elapsedTime" => 180_000,
+              "id" => "desktop-active",
+              "isRunning" => true,
+              "project" => project.name,
+              "projectId" => project.id,
+              "startTime" => 3.minutes.ago.to_i * 1000
+            }
+          ]
+        }
+      }
+    )
+
+    visit "/time-tracking"
+
+    expect(page).to have_css("[data-testid='inline-web-timer']", wait: 10)
+    expect(page).to have_css("[data-testid='timer-desktop-sync']", wait: 10)
+    expect(page).to have_text("Shared with MiruTime", wait: 10)
+    expect(page).to have_text(project.name, wait: 10)
+    expect(page).to have_field(
+      "timer-description-inline",
+      with: "Desktop handoff task",
+      wait: 10
+    )
+
+    timer_deck = page.evaluate_script(
+      "JSON.parse(localStorage.getItem('miru_timer_state'))"
+    )
+
+    expect(timer_deck["activeTimerId"]).to eq("desktop-active")
+    expect(timer_deck["timers"].first).to include(
+      "description" => "Desktop handoff task",
+      "isRunning" => true,
+      "projectId" => project.id
+    )
+  end
+
+  it "creates and switches between multiple timers" do
+    visit "/time-tracking"
+    expect(page).to have_css("#react-root", wait: 10)
+    expect(page).to have_button(start_timer_label, wait: 10)
+
+    click_button start_timer_label
+    expect(page).to have_css("[data-testid='inline-web-timer']", wait: 10)
+
+    select_radix("Project", project.name)
+    fill_in "timer-description-inline", with: "First task timer"
+
+    find("[data-testid='timer-new']", wait: 10).click
+    expect(page).to have_field("timer-description-inline", with: "", wait: 10)
+    fill_in "timer-description-inline", with: "Second task timer"
+
+    within("[data-testid='timer-switcher']") do
+      expect(page).to have_content("First task timer")
+      expect(page).to have_content("Second task timer")
+      find("[data-testid='timer-switcher-item']", text: "First task timer").click
+    end
+
+    expect(page).to have_field(
+      "timer-description-inline",
+      with: "First task timer",
+      wait: 10
+    )
+
+    within("[data-testid='timer-switcher']") do
+      find("[data-testid='timer-switcher-item']", text: "Second task timer").click
+    end
+
+    expect(page).to have_field(
+      "timer-description-inline",
+      with: "Second task timer",
+      wait: 10
+    )
+
+    timer_deck = page.evaluate_script(
+      "JSON.parse(localStorage.getItem('miru_timer_state'))"
+    )
+
+    expect(timer_deck["version"]).to eq(2)
+    expect(timer_deck["timers"].size).to eq(2)
+    expect(timer_deck["timers"].count { |timer| timer["isRunning"] }).to eq(1)
+  end
+
+  it "resumes a saved entry as a single persisted timer" do
+    note = "Resume timer source"
+    create(
+      :timesheet_entry,
+      user:,
+      project:,
+      work_date: Date.current,
+      duration: 90,
+      note:
+    )
+
+    visit "/time-tracking"
+    expect(page).to have_css("#react-root", wait: 10)
+    expect(page).to have_content(note, wait: 10)
+
+    find("[data-testid='resume-timer-entry']", match: :first, wait: 10).click
+
+    expect(page).to have_css("[data-testid='inline-web-timer']", wait: 10)
+    expect(page).to have_field("timer-description-inline", with: note, wait: 10)
+
+    timer_deck = page.evaluate_script(
+      "JSON.parse(localStorage.getItem('miru_timer_state'))"
+    )
+
+    expect(timer_deck["version"]).to eq(2)
+    expect(timer_deck["timers"].size).to eq(1)
+    expect(timer_deck["activeTimerId"]).to eq(timer_deck["timers"].first["id"])
+    expect(timer_deck["timers"].first).to include(
+      "description" => note,
+      "isRunning" => true,
+      "projectId" => project.id
+    )
+  end
+
   it "saves a restored running timer into today's entries" do
     note = "Persisted timer save path"
 
@@ -185,6 +324,18 @@ RSpec.describe "Time Tracking - Add Entry", type: :system, js: true do
     expect(page).to have_text(pause_timer_label, wait: 10)
     expect(page).to have_text(project.name, wait: 10)
     expect(page).to have_field("timer-description-inline", with: note, wait: 10)
+
+    timer_deck = page.evaluate_script(
+      "JSON.parse(localStorage.getItem('miru_timer_state'))"
+    )
+
+    expect(timer_deck["version"]).to eq(2)
+    expect(timer_deck["timers"].size).to eq(1)
+    expect(timer_deck["activeTimerId"]).to eq(timer_deck["timers"].first["id"])
+    expect(timer_deck["timers"].first).to include(
+      "description" => note,
+      "projectId" => project.id
+    )
 
     expect do
       within "[data-testid='inline-web-timer']" do

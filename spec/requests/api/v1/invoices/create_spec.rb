@@ -51,7 +51,9 @@ RSpec.describe "Api::V1::Invoices#create", type: :request do
           bank_name: "QA Bank",
           bank_account_number: "12345678",
           bank_routing_number: "987654321",
-          bank_swift_code: "QABKUS33"
+          bank_swift_code: "QABKUS33",
+          ein: "12-3456789",
+          us_taxpayer_id: "US-TIN-1234"
         )
 
         send_request :post, api_v1_invoices_path(
@@ -77,6 +79,8 @@ RSpec.describe "Api::V1::Invoices#create", type: :request do
         expect(json_response.dig("company", "name")).to eq(company.name)
         expect(json_response.dig("company", "phoneNumber")).to eq(company.business_phone)
         expect(json_response.dig("company", "taxId")).to eq(company.tax_id)
+        expect(json_response.dig("company", "ein")).to eq(company.ein)
+        expect(json_response.dig("company", "usTaxpayerId")).to eq(company.us_taxpayer_id)
         expect(json_response.dig("company", "logo")).to end_with(company.company_logo)
         expect(json_response.dig("company", "bankName")).to eq(company.bank_name)
         expect(json_response.dig("company", "bankAccountNumber")).to eq(company.bank_account_number)
@@ -199,6 +203,34 @@ RSpec.describe "Api::V1::Invoices#create", type: :request do
         expect(json_response["currency"]).to eq("EUR")
         expect(json_response["baseCurrencyAmount"].to_f).to eq(360.0)
         expect(json_response.dig("client", "currency")).to eq("EUR")
+      end
+
+      it "does not create invoices for clients from another workspace" do
+        other_company = create(:company)
+        other_client = create(:client, company: other_company)
+
+        expect do
+          send_request :post, api_v1_invoices_path(
+            invoice: {
+              client_id: other_client.id,
+              invoice_number: "INV-CROSS-WORKSPACE-001",
+              issue_date: Date.current.iso8601,
+              due_date: 30.days.from_now.to_date.iso8601,
+              status: "draft",
+              currency: company.base_currency,
+              invoice_line_items_attributes: [
+                {
+                  name: "Cross workspace attempt",
+                  description: "Should not persist",
+                  date: Date.current.iso8601,
+                  rate: 100,
+                  quantity: 60
+                }
+              ]
+            }), headers: auth_headers(user)
+        end.not_to change(Invoice, :count)
+
+        expect(response).to have_http_status(:not_found)
       end
 
       it "supports USD, EUR, and INR invoices within the same company" do

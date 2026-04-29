@@ -1,3 +1,6 @@
+import en from "./en";
+import mergeLocale from "../mergeLocale";
+
 const locale = {
   invalidImageFormatSize:
     "غلط فائل فارمیٹ۔ براہ کرم PNG یا JPG قسم کی تصویر اپ لوڈ کریں۔ زیادہ سے زیادہ سائز (%{fileSize}KB)",
@@ -574,6 +577,8 @@ const locale = {
     taxId: "ٹیکس آئی ڈی: %{value}",
     vatNumber: "VAT نمبر: %{value}",
     gstNumber: "GST نمبر: %{value}",
+    ein: "EIN: %{value}",
+    usTaxpayerId: "U.S. Taxpayer ID: %{value}",
     bankDetails: "بینک تفصیلات",
     bankName: "بینک کا نام: %{value}",
     accountNumber: "اکاؤنٹ نمبر: %{value}",
@@ -2169,4 +2174,4 @@ const locale = {
   },
 };
 
-export default locale;
+export default mergeLocale(en, locale);

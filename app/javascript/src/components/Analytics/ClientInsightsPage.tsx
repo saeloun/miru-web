@@ -112,14 +112,17 @@ const ClientInsightsPage: React.FC = () => {
         {
           from,
           to,
-          client_ids: selectedIds.length > 0 ? selectedIds.join(",") : undefined,
+          client_ids:
+            selectedIds.length > 0 ? selectedIds.join(",") : undefined,
         }
       );
 
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement("a");
       link.href = url;
-      link.download = `client_insights_${new Date().toISOString().slice(0, 10)}.${format}`;
+      link.download = `client_insights_${new Date()
+        .toISOString()
+        .slice(0, 10)}.${format}`;
       document.body.appendChild(link);
       link.click();
       link.remove();
@@ -149,9 +152,13 @@ const ClientInsightsPage: React.FC = () => {
             setDateRange(resolveAnalyticsPreset(value));
           }}
           selectedIds={selectedIds}
-          onSelectedIdsChange={companyRole === Roles.MANAGER ? undefined : setSelectedIds}
+          onSelectedIdsChange={
+            companyRole === Roles.MANAGER ? undefined : setSelectedIds
+          }
           options={companyRole === Roles.MANAGER ? [] : optionsQuery.data || []}
-          multiSelectLabel={companyRole === Roles.MANAGER ? undefined : "Clients"}
+          multiSelectLabel={
+            companyRole === Roles.MANAGER ? undefined : "Clients"
+          }
         />
       }
     >
@@ -162,7 +169,7 @@ const ClientInsightsPage: React.FC = () => {
             <AlertTitle>Financial analytics access is limited</AlertTitle>
             <AlertDescription>
               Client revenue analytics are available only to owners, admins, and
-              book keepers.
+              managers, and book keepers.
             </AlertDescription>
           </Alert>
           <AnalyticsRestrictedState
@@ -352,14 +359,20 @@ const ClientInsightsPage: React.FC = () => {
                       config={chartConfig}
                     >
                       <LineChart
-                        data={isMobile ? topClient.monthly_trend.slice(-6) : topClient.monthly_trend}
+                        data={
+                          isMobile
+                            ? topClient.monthly_trend.slice(-6)
+                            : topClient.monthly_trend
+                        }
                         margin={{ left: 12, right: 12, top: 8 }}
                       >
                         <CartesianGrid vertical={false} />
                         <XAxis
                           axisLine={false}
                           dataKey="label"
-                          tickFormatter={value => (isMobile ? String(value).split(" ")[0] : value)}
+                          tickFormatter={value =>
+                            isMobile ? String(value).split(" ")[0] : value
+                          }
                           tickLine={false}
                           minTickGap={20}
                         />
@@ -400,7 +413,8 @@ const ClientInsightsPage: React.FC = () => {
               preset,
               from,
               to,
-              clients: selectedIds.length > 0 ? selectedIds.join(",") : undefined,
+              clients:
+                selectedIds.length > 0 ? selectedIds.join(",") : undefined,
             }}
             allowSave={isFinancialRole}
           />

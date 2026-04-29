@@ -1,6 +1,7 @@
 import React from "react";
 
 import { Button } from "components/ui/button";
+import { Paths } from "constants/index";
 import { useProfileContext } from "context/Profile/ProfileContext";
 import { ArrowLeftIcon } from "miruIcons";
 import { useNavigate } from "react-router-dom";
@@ -21,7 +22,7 @@ const Header = () => {
           size="icon"
           type="button"
           variant="outline"
-          onClick={() => navigate("/teams")}
+          onClick={() => navigate(Paths.TEAM.replace("/*", ""))}
         >
           <ArrowLeftIcon size={20} />
         </Button>

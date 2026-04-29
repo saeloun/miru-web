@@ -13,6 +13,7 @@ class Device < ApplicationRecord
 
   # Validations
   after_initialize :set_default_specifications, if: :new_record?
+  validates :device_type, :name, :serial_number, presence: true
   validates :name, length: { maximum: 100 }
 
   private

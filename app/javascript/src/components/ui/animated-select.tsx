@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { CaretDown, Check } from "phosphor-react";
 import { cn } from "../../lib/utils";
+import { FORM_CONTROL_SURFACE_CLASS } from "./form-control-classes";
 
 interface AnimatedSelectProps {
   options: Array<{ value: string; label: string; id?: number }>;
@@ -42,8 +43,8 @@ const AnimatedSelect: React.FC<AnimatedSelectProps> = ({
     },
     focus: {
       scale: 1.02,
-      borderColor: "oklch(0.5016 0.2506 282.3585)",
-      boxShadow: "0 0 0 3px oklch(0.5016 0.2506 282.3585 / 0.1)",
+      borderColor: "hsl(var(--ring))",
+      boxShadow: "0 0 0 2px hsl(var(--ring) / 0.3)",
       transition: {
         type: "spring",
         stiffness: 300,
@@ -100,7 +101,7 @@ const AnimatedSelect: React.FC<AnimatedSelectProps> = ({
       },
     }),
     hover: {
-      backgroundColor: "oklch(0.5016 0.2506 282.3585 / 0.1)",
+      backgroundColor: "hsl(var(--accent))",
       x: 4,
       transition: {
         type: "spring",
@@ -128,10 +129,10 @@ const AnimatedSelect: React.FC<AnimatedSelectProps> = ({
         whileFocus="focus"
         disabled={disabled}
         className={cn(
-          "relative w-full cursor-pointer rounded-lg border border-input bg-background px-3 py-2 text-left text-sm ring-offset-background transition-colors",
-          "focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
+          "relative w-full cursor-pointer rounded-lg px-3 py-2 text-left text-sm transition-colors",
+          FORM_CONTROL_SURFACE_CLASS,
           "disabled:cursor-not-allowed disabled:opacity-50",
-          isOpen && "ring-2 ring-ring ring-offset-2"
+          isOpen && "ring-2 ring-ring/35"
         )}
         onClick={() => !disabled && setIsOpen(!isOpen)}
         onBlur={() => setTimeout(() => setIsOpen(false), 150)}
@@ -160,7 +161,7 @@ const AnimatedSelect: React.FC<AnimatedSelectProps> = ({
             initial="initial"
             animate="animate"
             exit="exit"
-            className="absolute z-50 mt-1 max-h-60 w-full overflow-auto rounded-lg border bg-popover py-1 shadow-lg ring-1 ring-black/5"
+            className="absolute z-50 mt-1 max-h-60 w-full overflow-auto rounded-lg border !border-input bg-popover py-1 shadow-lg"
           >
             {options.map((option, index) => (
               <motion.button

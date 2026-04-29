@@ -54,6 +54,9 @@ mr:
       success: अवतार यशस्वीरित्या हटवला गेला.
     update:
       success: अवतार यशस्वीरित्या अपडेट झाला.
+    validation:
+      file_too_large: must be smaller than %{size_mb}MB
+      invalid_content_type: must be a PNG, JPG, JPEG, or WEBP image
   client:
     add: क्लायंट जोडा
     address:
@@ -562,10 +565,12 @@ mr:
       payment_rows:
         account_number: खाते क्रमांक
         bank_name: बँकेचे नाव
+        ein: EIN
         gst_number: जीएसटी क्रमांक
         routing_number: राउटिंग नंबर
         swift_code: स्विफ्ट कोड
         tax_id: कर ओळखपत्र
+        us_taxpayer_id: U.S. Taxpayer ID
         vat_number: व्हॅट क्रमांक
       prepared_by: "%{company_name} यांनी तयार केले, %{issue_date} रोजी जारी केले,
         %{due_date} रोजी देय."
@@ -743,9 +748,11 @@ mr:
       message: टाइमशीट तयार केली
     destroy:
       failure: टाइमशीट नोंदी हटवण्यात अयशस्वी झाले.
+      locked: Only admins can delete entries older than 7 days
       message: टाइमशीट हटवली
     update:
       failure: टाइमशीट नोंदी अद्ययावत करण्यात अयशस्वी झाले.
+      locked: Only admins can edit entries older than 7 days
       message: टाइमशीट अद्ययावत केली.
   totp:
     disable_passkey_first: ऑथेंटिकेटर ॲपचे २एफए (2FA) सक्षम करण्यापूर्वी आवश्यक पासकी

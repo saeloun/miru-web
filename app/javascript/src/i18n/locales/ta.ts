@@ -1,3 +1,6 @@
+import en from "./en";
+import mergeLocale from "../mergeLocale";
+
 const locale = {
   invalidImageFormatSize:
     "தவறான கோப்பு வடிவம். PNG அல்லது JPG வகை படத்தை பதிவேற்றவும். அதிகபட்ச அளவு (%{fileSize}KB)",
@@ -592,6 +595,8 @@ const locale = {
     taxId: "வரி அடையாளம்: %{value}",
     vatNumber: "VAT எண்: %{value}",
     gstNumber: "GST எண்: %{value}",
+    ein: "EIN: %{value}",
+    usTaxpayerId: "U.S. Taxpayer ID: %{value}",
     bankDetails: "வங்கி விவரங்கள்",
     bankName: "வங்கி பெயர்: %{value}",
     accountNumber: "கணக்கு எண்: %{value}",
@@ -2235,4 +2240,4 @@ const locale = {
   },
 };
 
-export default locale;
+export default mergeLocale(en, locale);

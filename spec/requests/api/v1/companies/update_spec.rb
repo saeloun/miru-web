@@ -33,6 +33,8 @@ RSpec.describe "Api::V1::Companies::update", type: :request do
               tax_id: "TAX-123",
               vat_number: "VAT-456",
               gst_number: "GST-789",
+              ein: "12-3456789",
+              us_taxpayer_id: "987-65-4321",
               addresses_attributes: [{
                 id: company.current_address.id,
                 address_line_1: "updated address"
@@ -68,6 +70,8 @@ RSpec.describe "Api::V1::Companies::update", type: :request do
         expect(company.tax_id).to eq("TAX-123")
         expect(company.vat_number).to eq("VAT-456")
         expect(company.gst_number).to eq("GST-789")
+        expect(company.ein).to eq("12-3456789")
+        expect(company.us_taxpayer_id).to eq("987-65-4321")
         expect(company.current_address.address_line_1).to eq("updated address")
       end
     end

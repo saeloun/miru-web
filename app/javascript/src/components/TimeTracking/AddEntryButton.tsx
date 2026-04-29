@@ -32,6 +32,7 @@ const AddEntryButton: React.FC<AddEntryButtonProps> = ({
     <div className="flex flex-col gap-3 md:flex-row">
       {showCopyLastWeek && handleCopyLastWeek && (
         <Button
+          type="button"
           size="default"
           variant="outline"
           className="h-10 rounded-lg text-sm font-medium"
@@ -43,6 +44,7 @@ const AddEntryButton: React.FC<AddEntryButtonProps> = ({
         </Button>
       )}
       <Button
+        type="button"
         size="default"
         className="h-10 w-full rounded-lg bg-primary text-sm font-medium text-primary-foreground hover:bg-primary/90 md:w-auto md:min-w-40"
         onClick={handleClick}
@@ -52,6 +54,7 @@ const AddEntryButton: React.FC<AddEntryButtonProps> = ({
       </Button>
       {handleOpenTimeoffForm && (
         <Button
+          type="button"
           size="default"
           variant="outline"
           className="h-10 w-full rounded-lg text-sm font-medium md:w-auto md:min-w-40"

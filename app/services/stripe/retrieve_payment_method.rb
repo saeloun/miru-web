@@ -19,7 +19,7 @@ class Stripe::RetrievePaymentMethod < ApplicationService
   private
 
     def retrieve_payment_method
-      return nil if payment_method.nil? && account_id.nil?
+      return nil if payment_method.nil? || account_id.nil?
 
       Stripe::PaymentMethod.retrieve(
         payment_method,

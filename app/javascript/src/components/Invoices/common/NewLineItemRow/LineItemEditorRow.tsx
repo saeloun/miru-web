@@ -2,7 +2,13 @@ import React, { useRef, useState, useEffect } from "react";
 
 import CustomDatePicker from "common/CustomDatePicker";
 import dayjs from "dayjs";
-import { minFromHHMM, minToHHMM, lineTotalCalc, currencyFormat } from "helpers";
+import {
+  currencyFormat,
+  getLineItemDisplayName,
+  lineTotalCalc,
+  minFromHHMM,
+  minToHHMM,
+} from "helpers";
 import { DeleteIcon, CalendarIcon } from "miruIcons";
 import TextareaAutosize from "react-textarea-autosize";
 import { i18n } from "../../../../i18n";
@@ -15,10 +21,7 @@ const LineItemEditorRow = ({
   selectedOption,
   dateFormat,
 }) => {
-  const strName =
-    item.name ||
-    [item.first_name, item.last_name].filter(Boolean).join(" ") ||
-    "";
+  const strName = getLineItemDisplayName(item);
   const [name, setName] = useState<string>(strName);
   const [lineItemDate, setLineItemDate] = useState(
     dayjs(item.date, "YYYY-MM-DD").format(dateFormat)
@@ -32,6 +35,10 @@ const LineItemEditorRow = ({
   const [showDatePicker, setShowDatePicker] = useState<boolean>(false);
   const [showCalendarIcon, setShowCalendarIcon] = useState<boolean>(false);
   const datePickerRef = useRef(null);
+
+  useEffect(() => {
+    setName(strName);
+  }, [strName]);
 
   useEffect(() => {
     const names = name.split(" ");
@@ -92,7 +99,7 @@ const LineItemEditorRow = ({
       <tr className="invoice-items-row cursor-pointer">
         <td className="px-1 py-3 text-left text-base font-normal text-foreground ">
           <input
-            className="focus:outline-none w-full rounded bg-transparent p-1 text-sm font-medium text-foreground focus:border-border focus:bg-white focus:ring-1 focus:ring-ring"
+            className="focus:outline-none w-full rounded border border-transparent bg-transparent p-1 text-sm font-medium text-foreground focus:border-border focus:bg-background focus:ring-1 focus:ring-ring"
             placeholder={name}
             type="text"
             value={name}
@@ -107,7 +114,7 @@ const LineItemEditorRow = ({
               placeholder={i18n.t("invoices.selectDate")}
               type="text"
               value={lineItemDate}
-              className={`focus:outline-none w-full cursor-pointer appearance-none rounded border-0 border-transparent bg-transparent p-1 pl-2 text-right text-sm font-medium text-foreground focus:bg-white focus:bg-white focus:ring-1 focus:ring-ring ${
+              className={`focus:outline-none w-full cursor-pointer appearance-none rounded border border-transparent bg-transparent p-1 pl-2 text-right text-sm font-medium text-foreground focus:border-border focus:bg-background focus:ring-1 focus:ring-ring ${
                 showCalendarIcon ? "pr-9" : "pr-1"
               }`}
               onBlur={() => setShowCalendarIcon(false)}
@@ -123,7 +130,10 @@ const LineItemEditorRow = ({
             )}
           </div>
           {showDatePicker && (
-            <div className="absolute" ref={datePickerRef}>
+            <div
+              className="absolute top-[calc(100%+0.25rem)] right-0 z-50"
+              ref={datePickerRef}
+            >
               <CustomDatePicker
                 date={lineItemDate}
                 dateFormat={dateFormat}
@@ -136,7 +146,7 @@ const LineItemEditorRow = ({
         </td>
         <td className="px-1 py-3 text-right text-base font-normal text-foreground ">
           <input
-            className="focus:outline-none w-full rounded bg-transparent p-1 text-right text-sm font-medium text-foreground focus:border-border focus:bg-white focus:ring-1 focus:ring-ring"
+            className="focus:outline-none w-full rounded border border-transparent bg-transparent p-1 text-right text-sm font-medium text-foreground focus:border-border focus:bg-background focus:ring-1 focus:ring-ring"
             placeholder={i18n.t("invoices.rate")}
             type="text"
             value={rate}
@@ -146,7 +156,7 @@ const LineItemEditorRow = ({
         </td>
         <td className="px-1 py-3 text-right text-base font-normal text-foreground ">
           <input
-            className="focus:outline-none w-full rounded bg-transparent p-1 text-right text-sm font-medium text-foreground focus:border-border focus:bg-white focus:ring-1 focus:ring-ring"
+            className="focus:outline-none w-full rounded border border-transparent bg-transparent p-1 text-right text-sm font-medium text-foreground focus:border-border focus:bg-background focus:ring-1 focus:ring-ring"
             placeholder={i18n.t("invoices.quantity")}
             type="text"
             value={quantity}
@@ -176,7 +186,7 @@ const LineItemEditorRow = ({
           colSpan={2}
         >
           <TextareaAutosize
-            className="focus:outline-none w-full rounded bg-transparent p-1 text-sm font-medium text-muted-foreground focus:border-border focus:bg-white focus:ring-1 focus:ring-ring"
+            className="focus:outline-none w-full rounded border border-transparent bg-transparent p-1 text-sm font-medium text-muted-foreground focus:border-border focus:bg-background focus:ring-1 focus:ring-ring"
             placeholder={i18n.t("invoices.enterDescription")}
             value={description}
             onChange={e => setDescription(e.target["value"])}

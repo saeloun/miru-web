@@ -323,7 +323,7 @@ const SignUpForm = () => {
                       type="submit"
                       className={`w-full rounded-xl border px-4 py-3 text-sm font-medium transition ${
                         isBtnDisabled(values, errors)
-                          ? "cursor-not-allowed border-transparent bg-muted text-muted-foreground"
+                          ? "cursor-not-allowed border-transparent bg-muted text-foreground/70"
                           : "cursor-pointer border-transparent bg-primary text-primary-foreground hover:bg-primary/90"
                       }`}
                     >

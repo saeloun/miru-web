@@ -39,10 +39,15 @@ const RecentlyUpdated = ({ recentlyUpdatedInvoices }) => {
   return (
     <div className="mt-8 mb-8">
       <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <h2 className="text-xl font-bold text-gray-900">{i18n.t("invoices.recentlyUpdated")}</h2>
+        <h2 className="text-xl font-bold text-gray-900">
+          {i18n.t("invoices.recentlyUpdated")}
+        </h2>
         {recentlyUpdatedInvoices?.length > 0 && (
           <span className="rounded-full bg-muted px-3 py-1 text-sm text-muted-foreground">
-            {i18n.t("invoices.showingOf", { shown: Math.min(visibleCount, recentlyUpdatedInvoices.length), total: recentlyUpdatedInvoices.length })}
+            {i18n.t("invoices.showingOf", {
+              shown: Math.min(visibleCount, recentlyUpdatedInvoices.length),
+              total: recentlyUpdatedInvoices.length,
+            })}
           </span>
         )}
       </div>

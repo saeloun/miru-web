@@ -1,3 +1,6 @@
+import en from "./en";
+import mergeLocale from "../mergeLocale";
+
 const locale = {
   invalidImageFormatSize:
     "잘못된 파일 형식입니다. PNG 또는 JPG 형식의 이미지를 업로드하세요. 최대 크기 (%{fileSize}KB)",
@@ -567,6 +570,8 @@ const locale = {
     taxId: "세금 ID: %{value}",
     vatNumber: "VAT 번호: %{value}",
     gstNumber: "GST 번호: %{value}",
+    ein: "EIN: %{value}",
+    usTaxpayerId: "U.S. Taxpayer ID: %{value}",
     bankDetails: "은행 정보",
     bankName: "은행명: %{value}",
     accountNumber: "계좌번호: %{value}",
@@ -2138,4 +2143,4 @@ const locale = {
   },
 };
 
-export default locale;
+export default mergeLocale(en, locale);

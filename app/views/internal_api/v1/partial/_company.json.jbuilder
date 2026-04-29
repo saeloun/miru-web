@@ -16,4 +16,6 @@ if local_assigns.fetch(:include_financial_details, true)
   json.tax_id company.tax_id
   json.vat_number company.vat_number
   json.gst_number company.gst_number
+  json.ein company.ein
+  json.us_taxpayer_id company.us_taxpayer_id
 end

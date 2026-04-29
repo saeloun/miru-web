@@ -7,16 +7,47 @@ class Invoices::PaymentsController < ApplicationController
   before_action :ensure_invoice_unpaid, only: [:new]
 
   def new
-    session = @invoice.create_checkout_session!(
-      success_url: request.base_url + "/invoices/#{@invoice.id}/payments/success",
-      cancel_url: cancel_invoice_payments_url(@invoice)
-    )
+    payment_url = if razorpay_provider.present?
+      PaymentProviders::RazorpayPaymentLinkService.new(
+        invoice: @invoice,
+        provider: razorpay_provider,
+        callback_url: razorpay_success_invoice_payments_url(@invoice)
+      ).process
+    else
+      session = @invoice.create_checkout_session!(
+        success_url: request.base_url + "/invoices/#{@invoice.id}/payments/success",
+        cancel_url: cancel_invoice_payments_url(@invoice)
+      )
+      session.url
+    end
 
-    redirect_to session.url, allow_other_host: true
+    redirect_to payment_url, allow_other_host: true
+  rescue PaymentProviders::RazorpayClient::Error => error
+    Rails.logger.warn(
+      "Razorpay payment link failed for invoice #{@invoice.id}: #{error.message}"
+    )
+    redirect_to cancel_invoice_payments_url(@invoice),
+      alert: "Unable to create Razorpay payment link"
   end
 
   def cancel
     render
+  end
+
+  def razorpay_success
+    fulfilled = InvoicePayment::RazorpayPaymentLinkFulfillment.process(
+      invoice: @invoice,
+      params:
+    )
+
+    redirect_url = request.base_url + "/invoices/#{@invoice.id}/payments/success?provider=razorpay"
+    if fulfilled
+      redirect_to redirect_url, allow_other_host: false
+    else
+      redirect_to redirect_url,
+        allow_other_host: false,
+        alert: "Unable to verify Razorpay payment"
+    end
   end
 
   private
@@ -29,5 +60,24 @@ class Invoices::PaymentsController < ApplicationController
       if @invoice.paid?
         redirect_to request.base_url + "/invoices/#{@invoice.id}/payments/success"
       end
+    end
+
+    def razorpay_provider
+      return unless @invoice.currency == "INR"
+      return @_razorpay_provider if instance_variable_defined?(:@_razorpay_provider)
+
+      provider = @invoice.company.payments_providers.find_by(
+        name: PaymentsProvider::RAZORPAY_PROVIDER,
+        enabled: true
+      )
+
+      @_razorpay_provider =
+        if enabled_and_configured_for_invoices?(provider)
+          provider
+        end
+    end
+
+    def enabled_and_configured_for_invoices?(provider)
+      provider&.enabled_on_invoices? && provider.razorpay_configured?
     end
 end

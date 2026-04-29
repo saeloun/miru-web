@@ -36,6 +36,7 @@ import {
   Funnel,
   X,
   CircleNotch,
+  CaretDown,
 } from "phosphor-react";
 
 import { ApiStatus as InvoiceStatus } from "../../constants";
@@ -394,6 +395,60 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
         />
       )}
 
+      {/* Summary Stats */}
+      {filteredInvoices.length > 0 && (
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
+          <Card>
+            <CardContent className="p-4">
+              <div className="text-2xl font-bold">
+                {filteredInvoices.filter(inv => inv.status === "draft").length}
+              </div>
+              <div className="text-sm text-muted-foreground">
+                {i18n.t("invoices.draft")}
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-4">
+              <div className="text-2xl font-bold">
+                {filteredInvoices.filter(inv => inv.status === "sent").length}
+              </div>
+              <div className="text-sm text-muted-foreground">
+                {i18n.t("invoices.sent")}
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-4">
+              <div className="text-2xl font-bold">
+                {
+                  filteredInvoices.filter(inv => inv.status === "overdue")
+                    .length
+                }
+              </div>
+              <div className="text-sm text-muted-foreground">
+                {i18n.t("invoices.overdue")}
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-4">
+              <div className="text-2xl font-bold">
+                {currencyFormat(
+                  summary?.currency || invoices[0]?.currency || "USD",
+                  filteredInvoices
+                    .filter(inv => inv.status === "paid")
+                    .reduce((sum, inv) => sum + inv.amount, 0)
+                )}
+              </div>
+              <div className="text-sm text-muted-foreground">
+                {i18n.t("invoices.collected")}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
       {/* Search Only */}
       <Card>
         <CardContent className="p-4">
@@ -443,7 +498,15 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
                 <TableHead>{i18n.t("invoices.invoice")}</TableHead>
                 <TableHead>{i18n.t("client")}</TableHead>
                 <TableHead>{i18n.t("status")}</TableHead>
-                <TableHead>{i18n.t("invoices.issueDate")}</TableHead>
+                <TableHead>
+                  <span className="inline-flex items-center gap-1">
+                    {i18n.t("invoices.issueDate")}
+                    <CaretDown
+                      aria-label="Sorted descending"
+                      className="h-3.5 w-3.5 text-muted-foreground"
+                    />
+                  </span>
+                </TableHead>
                 <TableHead>{i18n.t("invoices.dueDate")}</TableHead>
                 <TableHead className="text-right">{i18n.t("amount")}</TableHead>
                 <TableHead className="w-12"></TableHead>
@@ -556,59 +619,6 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
         </div>
       )}
 
-      {/* Summary Stats */}
-      {filteredInvoices.length > 0 && (
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <Card>
-            <CardContent className="p-4">
-              <div className="text-2xl font-bold">
-                {filteredInvoices.filter(inv => inv.status === "draft").length}
-              </div>
-              <div className="text-sm text-muted-foreground">
-                {i18n.t("invoices.draft")}
-              </div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-4">
-              <div className="text-2xl font-bold">
-                {filteredInvoices.filter(inv => inv.status === "sent").length}
-              </div>
-              <div className="text-sm text-muted-foreground">
-                {i18n.t("invoices.sent")}
-              </div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-4">
-              <div className="text-2xl font-bold">
-                {
-                  filteredInvoices.filter(inv => inv.status === "overdue")
-                    .length
-                }
-              </div>
-              <div className="text-sm text-muted-foreground">
-                {i18n.t("invoices.overdue")}
-              </div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-4">
-              <div className="text-2xl font-bold">
-                {currencyFormat(
-                  "USD",
-                  filteredInvoices
-                    .filter(inv => inv.status === "paid")
-                    .reduce((sum, inv) => sum + inv.amount, 0)
-                )}
-              </div>
-              <div className="text-sm text-muted-foreground">
-                {i18n.t("invoices.collected")}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      )}
       {activeInvoice && isSending && (
         <SendInvoice
           handleSubmit={handleSendSubmit}

@@ -41,7 +41,12 @@ class Invoice < ApplicationRecord
   accepts_nested_attributes_for :invoice_line_items, allow_destroy: true
 
   # Payment info details
-  store_accessor :payment_infos, :stripe_payment_intent
+  store_accessor :payment_infos,
+    :stripe_payment_intent,
+    :razorpay_payment_link_id,
+    :razorpay_payment_link_url,
+    :razorpay_payment_link_status,
+    :razorpay_payment_id
 
   before_validation :set_external_view_key, on: :create
   before_validation :set_currency_from_client, if: :should_sync_currency_from_client?

@@ -4,6 +4,8 @@
 
 Miru CLI is the command-line interface for Miru.
 
+For MCP server/client setup and AI-agent integration, see [Miru MCP Server and Client](./miru-mcp.md).
+
 It is intended to work equally well for:
 
 - humans working in a terminal
@@ -91,11 +93,51 @@ Show current config:
 miru config show
 ```
 
+Print current CLI token (for MCP/client setup):
+
+```bash
+miru config token
+miru config token --format shell
+```
+
 Set a different Miru instance:
 
 ```bash
 miru config set-base-url --url http://127.0.0.1:9000
 ```
+
+## Use CLI Token With MCP Clients
+
+Miru MCP uses the same authenticated CLI token. There is no separate MCP login flow.
+
+Export the active CLI token:
+
+```bash
+export MIRU_CLI_TOKEN="$(miru config token)"
+```
+
+For tools that expect shell assignment format:
+
+```bash
+miru config token --format shell
+```
+
+Example MCP config (Codex):
+
+```toml
+[mcp_servers.miru]
+url = "https://app.miru.so/mcp"
+bearer_token_env_var = "MIRU_CLI_TOKEN"
+```
+
+For stdio mode from this repo:
+
+```bash
+cd /path/to/miru-web
+MIRU_MCP_TOKEN="$MIRU_CLI_TOKEN" bin/miru-mcp
+```
+
+See [Miru MCP Server and Client](./miru-mcp.md) for protocol details, Pro gating, and tool schemas.
 
 ## Command Reference
 
@@ -414,6 +456,7 @@ miru invoice send --id 1 --recipients client@example.com
 ## Security and Scoping
 
 - CLI requests use a dedicated bearer token
+- retrieve the current CLI token with `miru config token` when wiring MCP clients
 - the CLI session is tied to a user and workspace
 - all normal authentication and authorization remain in force
 - `client list` respects the authenticated user's normal client visibility
@@ -488,18 +531,19 @@ miru upgrade
 
 ## Current Scope
 
-Version `0.1.0` currently supports:
+Current supported CLI surface:
 
-- client listing
-- expense list/create
-- authentication and config management
-- project listing
-- time list/create/update/delete
-- invoice list/show/send
-- payment list/show
+- authentication + session: `login`, `logout`, `whoami`
+- config: `config show`, `config token`, `config set-base-url`
+- discovery: `help`, `version`, `capabilities`
+- projects: `project list`
+- clients: `client list`
+- time: `time list`, `time create`, `time update`, `time delete`
+- expenses: `expense list`, `expense create`
+- invoices: `invoice list`, `invoice show`, `invoice send`
+- payments: `payment list`, `payment show`
 
-Planned next:
+MCP parity:
 
-- client list
-- expense create/list
-- invoice draft creation
+- MCP tools are namespaced under `miru.*` and map directly to the command set above.
+- Full mapping table: [Miru MCP Server and Client](./miru-mcp.md#tool-coverage-cli-parity)

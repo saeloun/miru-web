@@ -159,5 +159,47 @@ RSpec.describe Team::IndexDecorator do
         expect(result[:combined_data]).to be_empty
       end
     end
+
+    context "with timesheet and project assignments" do
+      let!(:employee) { create(:user, first_name: "Amit", last_name: "Saeloun", email: "amit@example.com") }
+      let!(:employment) { create(:employment, user: employee, company: company) }
+      let!(:client) { create(:client, company: company) }
+      let!(:project1) { create(:project, client: client, billable: true) }
+      let!(:project2) { create(:project, client: client, billable: false) }
+
+      before do
+        employee.add_role(:employee, company)
+        create(:project_member, user: employee, project: project1)
+        create(:project_member, user: employee, project: project2)
+
+        create(:timesheet_entry,
+          user: employee,
+          project: project1,
+          duration: 120,
+          work_date: Time.zone.today,
+          bill_status: :unbilled)
+        create(:timesheet_entry,
+          user: employee,
+          project: project2,
+          duration: 60,
+          work_date: Time.zone.today,
+          bill_status: :non_billable)
+        create(:timesheet_entry,
+          user: employee,
+          project: project1,
+          duration: 300,
+          work_date: 2.months.ago.to_date,
+          bill_status: :unbilled)
+      end
+
+      it "includes monthly hours, billable hours, and project count for each employee" do
+        result = subject
+        employee_data = result[:combined_data].find { |item| item[:email] == employee.email }
+
+        expect(employee_data[:hours_logged]).to eq(3.0)
+        expect(employee_data[:billable_hours]).to eq(2.0)
+        expect(employee_data[:projects]).to eq(2)
+      end
+    end
   end
 end

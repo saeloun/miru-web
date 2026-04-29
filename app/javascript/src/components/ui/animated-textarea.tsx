@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import { cn } from "../../lib/utils";
+import { FORM_CONTROL_SURFACE_CLASS } from "./form-control-classes";
 
 interface AnimatedTextareaProps
   extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
@@ -66,12 +67,12 @@ const AnimatedTextarea: React.FC<AnimatedTextareaProps> = ({
 
   const textareaVariants = {
     initial: {
-      borderColor: "oklch(0.8985 0.0078 286.38)",
-      boxShadow: "none",
+      borderColor: "hsl(var(--input))",
+      boxShadow: "0 1px 2px hsl(var(--foreground) / 0.05)",
     },
     focus: {
-      borderColor: "oklch(0.5016 0.2506 282.3585)",
-      boxShadow: "0 0 0 3px oklch(0.5016 0.2506 282.3585 / 0.1)",
+      borderColor: "hsl(var(--ring))",
+      boxShadow: "0 0 0 2px hsl(var(--ring) / 0.3)",
       transition: {
         type: "spring",
         stiffness: 300,
@@ -79,8 +80,8 @@ const AnimatedTextarea: React.FC<AnimatedTextareaProps> = ({
       },
     },
     error: {
-      borderColor: "oklch(0.6280 0.2007 17.3807)",
-      boxShadow: "0 0 0 3px oklch(0.6280 0.2007 17.3807 / 0.1)",
+      borderColor: "hsl(var(--destructive))",
+      boxShadow: "0 0 0 2px hsl(var(--destructive) / 0.24)",
     },
   };
 
@@ -88,12 +89,12 @@ const AnimatedTextarea: React.FC<AnimatedTextareaProps> = ({
     initial: {
       scale: 1,
       y: 0,
-      color: "oklch(0.5584 0.014 286.38)",
+      color: "hsl(var(--muted-foreground))",
     },
     focus: {
       scale: 0.85,
       y: -24,
-      color: "oklch(0.5016 0.2506 282.3585)",
+      color: "hsl(var(--ring))",
       transition: {
         type: "spring",
         stiffness: 400,
@@ -103,7 +104,7 @@ const AnimatedTextarea: React.FC<AnimatedTextareaProps> = ({
     filled: {
       scale: 0.85,
       y: -24,
-      color: "oklch(0.5584 0.014 286.38)",
+      color: "hsl(var(--muted-foreground))",
       transition: {
         type: "spring",
         stiffness: 400,
@@ -172,8 +173,8 @@ const AnimatedTextarea: React.FC<AnimatedTextareaProps> = ({
           variants={textareaVariants}
           animate={error ? "error" : isFocused ? "focus" : "initial"}
           className={cn(
-            "w-full rounded-lg border bg-background px-3 py-3 text-sm transition-colors",
-            "focus:outline-none resize-none",
+            "w-full rounded-lg px-3 py-3 text-sm resize-none",
+            FORM_CONTROL_SURFACE_CLASS,
             "disabled:cursor-not-allowed disabled:opacity-50",
             "placeholder:text-muted-foreground",
             label && (isFocused || hasContent) && "pt-6 pb-2",

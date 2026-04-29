@@ -52,7 +52,9 @@ const DeleteMember = ({ user }) => {
     >
       <div className="flex items-center justify-between">
         <h6 className="text-2xl font-bold">
-          {user.isTeamMember ? i18n.t("team.deleteUser") : i18n.t("team.deleteInvite")}
+          {user.isTeamMember
+            ? i18n.t("team.deleteUser")
+            : i18n.t("team.deleteInvite")}
         </h6>
         <Button
           style="ternary"

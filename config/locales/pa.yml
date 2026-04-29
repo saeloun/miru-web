@@ -54,6 +54,9 @@ pa:
       success: ਅਵਤਾਰ ਸਫਲਤਾਪੂਰਵਕ ਮਿਟਾਇਆ ਗਿਆ
     update:
       success: ਅਵਤਾਰ ਸਫਲਤਾਪੂਰਵਕ ਅੱਪਡੇਟ ਕੀਤਾ ਗਿਆ
+    validation:
+      file_too_large: must be smaller than %{size_mb}MB
+      invalid_content_type: must be a PNG, JPG, JPEG, or WEBP image
   client:
     add: ਕਲਾਇੰਟ ਸ਼ਾਮਲ ਕਰੋ
     address:
@@ -556,10 +559,12 @@ pa:
       payment_rows:
         account_number: ਅਕਾਊਂਟ ਨੰਬਰ
         bank_name: ਬੈਂਕ ਦਾ ਨਾਮ
+        ein: EIN
         gst_number: ਜੀਐਸਟੀ ਨੰਬਰ
         routing_number: ਰੂਟਿੰਗ ਨੰਬਰ
         swift_code: ਸ੍ਵਿਫ਼ਤ ਕਉਡ
         tax_id: ਟੈਕਸ ਆਈਡੀ
+        us_taxpayer_id: U.S. Taxpayer ID
         vat_number: ਵੈਟ ਨੰਬਰ
       prepared_by: "%{company_name} ਦੁਆਰਾ ਤਿਆਰ ਕੀਤਾ ਗਿਆ, %{issue_date} ਜਾਰੀ ਕੀਤਾ ਗਿਆ,
         %{due_date} ਦੇਣਯੋਗ ਹੈ।"
@@ -737,9 +742,11 @@ pa:
       message: ਟਾਈਮਸ਼ੀਟ ਬਣਾਈ ਗਈ
     destroy:
       failure: ਟਾਈਮਸ਼ੀਟ ਐਂਟਰੀਆਂ ਨੂੰ ਮਿਟਾਉਣਾ ਅਸਫਲ ਰਿਹਾ
+      locked: Only admins can delete entries older than 7 days
       message: ਟਾਈਮਸ਼ੀਟ ਮਿਟਾਈ ਗਈ
     update:
       failure: ਟਾਈਮਸ਼ੀਟ ਐਂਟਰੀਆਂ ਨੂੰ ਅੱਪਡੇਟ ਕਰਨ ਵਿੱਚ ਅਸਫਲ ਰਿਹਾ
+      locked: Only admins can edit entries older than 7 days
       message: ਟਾਈਮਸ਼ੀਟ ਅੱਪਡੇਟ ਕੀਤੀ ਗਈ
   totp:
     disable_passkey_first: ਪ੍ਰਮਾਣਕ ਐਪ 2FA ਨੂੰ ਸਮਰੱਥ ਬਣਾਉਣ ਤੋਂ ਪਹਿਲਾਂ ਲੋੜੀਂਦੇ ਪਾਸਕੀ

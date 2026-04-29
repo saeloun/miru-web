@@ -3,7 +3,7 @@ import React from "react";
 import classNames from "classnames";
 
 const defaultInputBoxClassName =
-  "form__input block h-12 w-full appearance-none border-border bg-background p-4 text-sm text-foreground lg:text-base";
+  "form__input block h-12 w-full appearance-none border-input bg-background p-4 text-sm text-foreground shadow-sm transition-colors focus:border-ring focus:ring-2 focus:ring-ring/30 lg:text-base";
 const defaultWrapperClassName = "outline relative h-12";
 const defaultLabelClassname =
   "absolute top-0.5 z-1 h-6 origin-0 bg-background p-2 text-sm font-medium text-muted-foreground duration-300 2xl:text-base";

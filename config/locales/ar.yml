@@ -54,6 +54,9 @@ ar:
       success: تم حذف الصورة الرمزية بنجاح
     update:
       success: تم تحديث الصورة الرمزية بنجاح
+    validation:
+      file_too_large: must be smaller than %{size_mb}MB
+      invalid_content_type: must be a PNG, JPG, JPEG, or WEBP image
   client:
     add: إضافة عميل
     address:
@@ -553,10 +556,12 @@ ar:
       payment_rows:
         account_number: رقم الحساب
         bank_name: اسم البنك
+        ein: EIN
         gst_number: رقم ضريبة السلع والخدمات
         routing_number: رقم التوجيه
         swift_code: رمز السرعة
         tax_id: رقم التعريف الضريبي
+        us_taxpayer_id: U.S. Taxpayer ID
         vat_number: رقم ضريبة القيمة المضافة
       prepared_by: أُعدّ بواسطة %{company_name}، وصدر بواسطة %{issue_date}، ويستحق
         الدفع %{due_date}.
@@ -733,9 +738,11 @@ ar:
       message: تم إنشاء جدول زمني
     destroy:
       failure: فشل حذف إدخالات جدول الدوام
+      locked: Only admins can delete entries older than 7 days
       message: تم حذف جدول الدوام
     update:
       failure: فشل تحديث إدخالات جدول الدوام
+      locked: Only admins can edit entries older than 7 days
       message: تم تحديث جدول الدوام
   totp:
     disable_passkey_first: قم بتعطيل تسجيل الدخول باستخدام رمز المرور المطلوب قبل

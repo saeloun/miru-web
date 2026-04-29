@@ -82,10 +82,10 @@ const RecentSales: React.FC<RecentSalesProps> = ({ invoices, className }) => {
   return (
     <Card className={className}>
       <CardHeader>
-        <CardTitle className="text-lg font-semibold">{i18n.t("invoiceDashboard.recentSales")}</CardTitle>
-        <CardDescription className="text-sm text-muted-foreground">
-          
-        </CardDescription>
+        <CardTitle className="text-lg font-semibold">
+          {i18n.t("invoiceDashboard.recentSales")}
+        </CardTitle>
+        <CardDescription className="text-sm text-muted-foreground"></CardDescription>
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
@@ -130,7 +130,9 @@ const RecentSales: React.FC<RecentSalesProps> = ({ invoices, className }) => {
 
                   <div className="flex items-center justify-between">
                     <p className="text-xs text-muted-foreground">
-                      {i18n.t("invoices.invoiceHash", { number: invoice.invoiceNumber })}
+                      {i18n.t("invoices.invoiceHash", {
+                        number: invoice.invoiceNumber,
+                      })}
                     </p>
                     <p className="text-sm font-medium">
                       {currencyFormat(invoice.currency, invoice.amount)}
@@ -167,9 +169,7 @@ const RecentSales: React.FC<RecentSalesProps> = ({ invoices, className }) => {
               <p className="text-sm font-medium text-muted-foreground">
                 {i18n.t("noResultsFound")}
               </p>
-              <p className="text-xs text-muted-foreground">
-                
-              </p>
+              <p className="text-xs text-muted-foreground"></p>
             </div>
           )}
         </div>
@@ -177,7 +177,11 @@ const RecentSales: React.FC<RecentSalesProps> = ({ invoices, className }) => {
         {sortedInvoices.length > 0 && (
           <div className="mt-4 pt-4 border-t border-border/40">
             <div className="flex items-center justify-between text-xs text-muted-foreground">
-              <span>{i18n.t("invoices.showingRecentTransactions", { count: sortedInvoices.length })}</span>
+              <span>
+                {i18n.t("invoices.showingRecentTransactions", {
+                  count: sortedInvoices.length,
+                })}
+              </span>
               <button className="font-medium text-foreground hover:text-foreground/80">
                 {i18n.t("all")} →
               </button>

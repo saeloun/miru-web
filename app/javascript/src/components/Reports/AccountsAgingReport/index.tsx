@@ -397,7 +397,7 @@ const AccountsAgingReport: React.FC = () => {
               <Button
                 variant="outline"
                 className={cn(
-                  "w-[200px] justify-start text-left font-normal bg-white",
+                  "w-[200px] justify-start text-left font-normal",
                   !asOfDate && "text-muted-foreground"
                 )}
               >
@@ -420,7 +420,7 @@ const AccountsAgingReport: React.FC = () => {
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="bg-white">
+              <Button variant="outline">
                 {getMultiFilterLabel(
                   i18n.t("reports.clients"),
                   selectedClients.length,
@@ -461,7 +461,7 @@ const AccountsAgingReport: React.FC = () => {
           {/* Export Dropdown */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="bg-white">
+              <Button variant="outline">
                 <Download className="mr-2 h-4 w-4" />
                 {i18n.t("reports.export")}
                 <ChevronDown className="ml-2 h-4 w-4" />

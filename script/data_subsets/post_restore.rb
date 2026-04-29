@@ -17,12 +17,15 @@ canonical_roles = {
 }
 
 User.find_each do |user|
-  user.password = test_password
-  user.password_confirmation = test_password
-  user.confirmed_at ||= Time.current
-  user.reset_password_token = nil
-  user.reset_password_sent_at = nil
-  user.save!
+  user_attrs = {
+    encrypted_password: Devise::Encryptor.digest(User, test_password),
+    confirmed_at: user.confirmed_at || Time.current,
+    reset_password_token: nil,
+    reset_password_sent_at: nil
+  }
+  user_attrs[:password_changed_at] = Time.current if user.has_attribute?(:password_changed_at)
+
+  user.update_columns(user_attrs)
 end
 
 if company.present?

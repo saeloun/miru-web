@@ -83,6 +83,7 @@ class Api::V1::SubscriptionsController < Api::V1::ApplicationController
         billing_exempt: current_company.billing_exempt,
         subscription_status: current_company.current_subscription_status,
         subscription_ends_at: current_company.subscription_ends_at,
+        cancel_at_period_end: current_company.cancel_at_period_end,
         subscription_interval: current_company.try(:subscription_interval),
         has_stripe_customer: current_company.stripe_customer_id.present?,
         team_member_limit: current_company.team_member_limit,
