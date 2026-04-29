@@ -45,6 +45,7 @@ class Api::V1::PaymentSettingsController < Api::V1::ApplicationController
     authorize :update_razorpay, policy_class: PaymentSettingsPolicy
 
     razorpay_provider.assign_attributes(razorpay_provider_attributes)
+    assign_razorpay_secrets_if_present
 
     if razorpay_provider.save
       render :index, locals: { stripe_connected_account:, upi_provider:, razorpay_provider: }
@@ -98,9 +99,15 @@ class Api::V1::PaymentSettingsController < Api::V1::ApplicationController
         :enabled_on_invoices,
         :key_id,
         :key_secret,
+        :webhook_secret,
         :linked_account_id,
         :platform_fee_percent,
-        :route_transfers_enabled
+        :route_transfers_enabled,
+        :payouts_enabled,
+        :payout_account_number,
+        :payout_upi_id,
+        :payout_purpose,
+        :payout_queue_if_low_balance
       )
     end
 
@@ -116,11 +123,24 @@ class Api::V1::PaymentSettingsController < Api::V1::ApplicationController
         key_id:,
         linked_account_id: razorpay_params[:linked_account_id].to_s.strip,
         platform_fee_percent: razorpay_params[:platform_fee_percent].to_s.strip,
-        route_transfers_enabled: boolean_type.cast(razorpay_params[:route_transfers_enabled])
+        route_transfers_enabled: boolean_type.cast(razorpay_params[:route_transfers_enabled]),
+        payouts_enabled: boolean_type.cast(razorpay_params[:payouts_enabled]),
+        payout_account_number: razorpay_params[:payout_account_number].to_s.strip,
+        payout_upi_id: razorpay_params[:payout_upi_id].to_s.strip,
+        payout_purpose: razorpay_params[:payout_purpose].to_s.strip,
+        payout_queue_if_low_balance: boolean_type.cast(razorpay_params[:payout_queue_if_low_balance])
       }
 
-      attrs[:key_secret] = secret if secret.present?
       attrs
+    end
+
+    # Secret fields are write-only: an empty string keeps the existing encrypted value.
+    def assign_razorpay_secrets_if_present
+      key_secret = razorpay_params[:key_secret].to_s.strip
+      webhook_secret = razorpay_params[:webhook_secret].to_s.strip
+
+      razorpay_provider.key_secret = key_secret if key_secret.present?
+      razorpay_provider.webhook_secret = webhook_secret if webhook_secret.present?
     end
 
     def boolean_type

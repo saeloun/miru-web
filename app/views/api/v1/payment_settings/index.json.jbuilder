@@ -33,8 +33,14 @@ json.providers do
     json.enabled_on_invoices razorpay_provider&.enabled_on_invoices? || false
     json.key_id razorpay_provider&.key_id
     json.key_secret_configured razorpay_provider&.key_secret.present? || false
+    json.webhook_secret_configured razorpay_provider&.webhook_secret.present? || false
     json.linked_account_id razorpay_provider&.linked_account_id
     json.platform_fee_percent razorpay_provider&.platform_fee_percent || "5"
     json.route_transfers_enabled razorpay_provider&.route_transfers_enabled? || false
+    json.payouts_enabled razorpay_provider&.payouts_enabled? || false
+    json.payout_account_number razorpay_provider&.payout_account_number
+    json.payout_upi_id razorpay_provider&.payout_upi_id
+    json.payout_purpose razorpay_provider&.payout_purpose || "payout"
+    json.payout_queue_if_low_balance razorpay_provider&.payout_queue_if_low_balance? || false
   end
 end

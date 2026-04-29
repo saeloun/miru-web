@@ -76,9 +76,16 @@ const OrganizationPaymentSettingsPage: React.FC<
     keyId: "",
     keySecret: "",
     keySecretConfigured: false,
+    webhookSecret: "",
+    webhookSecretConfigured: false,
     linkedAccountId: "",
     platformFeePercent: "5",
     routeTransfersEnabled: false,
+    payoutsEnabled: false,
+    payoutAccountNumber: "",
+    payoutUpiId: "",
+    payoutPurpose: "payout",
+    payoutQueueIfLowBalance: false,
   });
 
   const fetchPaymentSettings = async () => {
@@ -111,9 +118,16 @@ const OrganizationPaymentSettingsPage: React.FC<
           keyId: razorpay.keyId || "",
           keySecret: "",
           keySecretConfigured: !!razorpay.keySecretConfigured,
+          webhookSecret: "",
+          webhookSecretConfigured: !!razorpay.webhookSecretConfigured,
           linkedAccountId: razorpay.linkedAccountId || "",
           platformFeePercent: razorpay.platformFeePercent || "5",
           routeTransfersEnabled: !!razorpay.routeTransfersEnabled,
+          payoutsEnabled: !!razorpay.payoutsEnabled,
+          payoutAccountNumber: razorpay.payoutAccountNumber || "",
+          payoutUpiId: razorpay.payoutUpiId || "",
+          payoutPurpose: razorpay.payoutPurpose || "payout",
+          payoutQueueIfLowBalance: !!razorpay.payoutQueueIfLowBalance,
         }));
       }
       setStatus(PaymentSettingsStatus.SUCCESS);
@@ -169,9 +183,15 @@ const OrganizationPaymentSettingsPage: React.FC<
         enabled_on_invoices: razorpaySettings.enabledOnInvoices,
         key_id: razorpaySettings.keyId,
         key_secret: razorpaySettings.keySecret,
+        webhook_secret: razorpaySettings.webhookSecret,
         linked_account_id: razorpaySettings.linkedAccountId,
         platform_fee_percent: razorpaySettings.platformFeePercent,
         route_transfers_enabled: razorpaySettings.routeTransfersEnabled,
+        payouts_enabled: razorpaySettings.payoutsEnabled,
+        payout_account_number: razorpaySettings.payoutAccountNumber,
+        payout_upi_id: razorpaySettings.payoutUpiId,
+        payout_purpose: razorpaySettings.payoutPurpose,
+        payout_queue_if_low_balance: razorpaySettings.payoutQueueIfLowBalance,
       });
       const razorpay = res.data.providers.razorpay;
       setRazorpaySettings(settings => ({
@@ -181,9 +201,16 @@ const OrganizationPaymentSettingsPage: React.FC<
         keyId: razorpay.keyId || "",
         keySecret: "",
         keySecretConfigured: !!razorpay.keySecretConfigured,
+        webhookSecret: "",
+        webhookSecretConfigured: !!razorpay.webhookSecretConfigured,
         linkedAccountId: razorpay.linkedAccountId || "",
         platformFeePercent: razorpay.platformFeePercent || "5",
         routeTransfersEnabled: !!razorpay.routeTransfersEnabled,
+        payoutsEnabled: !!razorpay.payoutsEnabled,
+        payoutAccountNumber: razorpay.payoutAccountNumber || "",
+        payoutUpiId: razorpay.payoutUpiId || "",
+        payoutPurpose: razorpay.payoutPurpose || "payout",
+        payoutQueueIfLowBalance: !!razorpay.payoutQueueIfLowBalance,
       }));
       toast.success(i18n.t("paymentSettingsPage.razorpaySaved"));
     } catch (error) {
@@ -612,6 +639,33 @@ const OrganizationPaymentSettingsPage: React.FC<
                               />
                             </div>
                             <div className="space-y-2">
+                              <Label htmlFor="razorpay_webhook_secret">
+                                {i18n.t(
+                                  "paymentSettingsPage.razorpayWebhookSecret"
+                                )}
+                              </Label>
+                              <Input
+                                id="razorpay_webhook_secret"
+                                type="password"
+                                value={razorpaySettings.webhookSecret}
+                                placeholder={
+                                  razorpaySettings.webhookSecretConfigured
+                                    ? i18n.t(
+                                        "paymentSettingsPage.secretAlreadySaved"
+                                      )
+                                    : i18n.t(
+                                        "paymentSettingsPage.enterWebhookSecret"
+                                      )
+                                }
+                                onChange={e =>
+                                  updateRazorpaySetting(
+                                    "webhookSecret",
+                                    e.target.value
+                                  )
+                                }
+                              />
+                            </div>
+                            <div className="space-y-2">
                               <Label htmlFor="razorpay_linked_account">
                                 {i18n.t("paymentSettingsPage.linkedAccountId")}
                               </Label>
@@ -668,6 +722,56 @@ const OrganizationPaymentSettingsPage: React.FC<
                                 />
                               </div>
                             </div>
+                            <div className="space-y-2">
+                              <Label htmlFor="razorpay_payout_account">
+                                {i18n.t(
+                                  "paymentSettingsPage.payoutAccountNumber"
+                                )}
+                              </Label>
+                              <Input
+                                id="razorpay_payout_account"
+                                value={razorpaySettings.payoutAccountNumber}
+                                placeholder="RazorpayX account number"
+                                onChange={e =>
+                                  updateRazorpaySetting(
+                                    "payoutAccountNumber",
+                                    e.target.value
+                                  )
+                                }
+                              />
+                            </div>
+                            <div className="space-y-2">
+                              <Label htmlFor="razorpay_payout_upi">
+                                {i18n.t("paymentSettingsPage.payoutUpiId")}
+                              </Label>
+                              <Input
+                                id="razorpay_payout_upi"
+                                value={razorpaySettings.payoutUpiId}
+                                placeholder="business@upi"
+                                onChange={e =>
+                                  updateRazorpaySetting(
+                                    "payoutUpiId",
+                                    e.target.value
+                                  )
+                                }
+                              />
+                            </div>
+                            <div className="space-y-2">
+                              <Label htmlFor="razorpay_payout_purpose">
+                                {i18n.t("paymentSettingsPage.payoutPurpose")}
+                              </Label>
+                              <Input
+                                id="razorpay_payout_purpose"
+                                value={razorpaySettings.payoutPurpose}
+                                placeholder="payout"
+                                onChange={e =>
+                                  updateRazorpaySetting(
+                                    "payoutPurpose",
+                                    e.target.value
+                                  )
+                                }
+                              />
+                            </div>
                             <div className="flex items-end">
                               <div className="flex w-full items-center justify-between rounded-md border border-border px-3 py-2">
                                 <Label
@@ -684,6 +788,48 @@ const OrganizationPaymentSettingsPage: React.FC<
                                   onCheckedChange={checked =>
                                     updateRazorpaySetting(
                                       "routeTransfersEnabled",
+                                      checked
+                                    )
+                                  }
+                                />
+                              </div>
+                            </div>
+                            <div className="flex items-end">
+                              <div className="flex w-full items-center justify-between rounded-md border border-border px-3 py-2">
+                                <Label
+                                  htmlFor="razorpay_payouts_enabled"
+                                  className="text-sm font-medium"
+                                >
+                                  {i18n.t("paymentSettingsPage.upiPayouts")}
+                                </Label>
+                                <Switch
+                                  id="razorpay_payouts_enabled"
+                                  checked={razorpaySettings.payoutsEnabled}
+                                  onCheckedChange={checked =>
+                                    updateRazorpaySetting(
+                                      "payoutsEnabled",
+                                      checked
+                                    )
+                                  }
+                                />
+                              </div>
+                            </div>
+                            <div className="flex items-end">
+                              <div className="flex w-full items-center justify-between rounded-md border border-border px-3 py-2">
+                                <Label
+                                  htmlFor="razorpay_queue_payouts"
+                                  className="text-sm font-medium"
+                                >
+                                  {i18n.t("paymentSettingsPage.queuePayouts")}
+                                </Label>
+                                <Switch
+                                  id="razorpay_queue_payouts"
+                                  checked={
+                                    razorpaySettings.payoutQueueIfLowBalance
+                                  }
+                                  onCheckedChange={checked =>
+                                    updateRazorpaySetting(
+                                      "payoutQueueIfLowBalance",
                                       checked
                                     )
                                   }

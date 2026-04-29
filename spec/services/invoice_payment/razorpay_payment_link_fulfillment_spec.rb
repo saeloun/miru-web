@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require "openssl"
 require "rails_helper"
 
 RSpec.describe InvoicePayment::RazorpayPaymentLinkFulfillment do
@@ -39,15 +38,7 @@ RSpec.describe InvoicePayment::RazorpayPaymentLinkFulfillment do
     end
     let(:payment_link_status) { "paid" }
     let(:payment_id) { "pay_test_123" }
-    let(:signature_payload) do
-      [
-        "plink_test_123",
-        "miru-inv-#{invoice.id}",
-        payment_link_status,
-        payment_id
-      ].join("|")
-    end
-    let(:signature) { OpenSSL::HMAC.hexdigest("SHA256", "secret", signature_payload) }
+    let(:signature) { "valid-signature" }
     let(:callback_params) do
       {
         razorpay_payment_link_id: "plink_test_123",
@@ -64,6 +55,7 @@ RSpec.describe InvoicePayment::RazorpayPaymentLinkFulfillment do
         .to receive(:new)
         .with(provider:)
         .and_return(client_double)
+      allow(client_double).to receive(:verify_payment_link_signature).and_return(true)
       allow(PaymentMailer).to receive_message_chain(:with, :payment, :deliver_later)
       allow_any_instance_of(Invoice).to receive(:send_to_client_email)
     end
@@ -89,7 +81,7 @@ RSpec.describe InvoicePayment::RazorpayPaymentLinkFulfillment do
     end
 
     it "rejects an invalid signature" do
-      callback_params[:razorpay_signature] = "bad-signature"
+      allow(client_double).to receive(:verify_payment_link_signature).and_return(false)
 
       expect(described_class.process(invoice:, params: callback_params)).to be(false)
       expect(Payment.count).to eq(0)

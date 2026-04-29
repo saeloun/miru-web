@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "openssl"
-
 class InvoicePayment::RazorpayPaymentLinkFulfillment < ApplicationService
   attr_reader :invoice, :params, :provider
 
@@ -34,18 +32,17 @@ class InvoicePayment::RazorpayPaymentLinkFulfillment < ApplicationService
       provider&.razorpay_configured? &&
         invoice.razorpay_payment_link_id == payment_link_id &&
         payment_status == "paid" &&
-        secure_compare(expected_signature, razorpay_signature)
+        client.verify_payment_link_signature(payment_link_signature_attributes)
     end
 
-    def expected_signature
-      payload = [
-        payment_link_id,
-        payment_link_reference_id,
-        payment_status,
-        razorpay_payment_id
-      ].join("|")
-
-      OpenSSL::HMAC.hexdigest("SHA256", provider.key_secret, payload)
+    def payment_link_signature_attributes
+      {
+        payment_link_id:,
+        payment_link_reference_id:,
+        payment_link_status: payment_status,
+        razorpay_payment_id:,
+        razorpay_signature:
+      }
     end
 
     def payment_params(payment_link)
@@ -73,12 +70,6 @@ class InvoicePayment::RazorpayPaymentLinkFulfillment < ApplicationService
 
     def amount_from_subunits(amount)
       Money.from_cents(amount, invoice.currency).amount
-    end
-
-    def secure_compare(expected, actual)
-      return false if expected.blank? || actual.blank?
-
-      ActiveSupport::SecurityUtils.secure_compare(expected, actual)
     end
 
     def payment_link_id

@@ -13,7 +13,8 @@ This directory is the operational source of truth for AI-assisted engineering wo
 1. Read [workflow.md](workflow.md) for repo-safe Git and runtime behavior.
 2. Read [testing.md](testing.md) for required verification commands.
 3. Read [production.md](production.md) before deploy, restore, or live validation.
-4. Use [qmd-codex-gstack.md](qmd-codex-gstack.md) for low-token retrieval workflows.
+4. Read [razorpay.md](razorpay.md) before changing Razorpay payments, webhooks, or payouts.
+5. Use [qmd-codex-gstack.md](qmd-codex-gstack.md) for low-token retrieval workflows.
 
 ## Recommended Command Sequence
 
@@ -43,4 +44,3 @@ curl -I https://app.miru.so/health
 
 - Hosted docs: `https://docs.miru.so`
 - App shortcut: `https://app.miru.so/docs`
-
