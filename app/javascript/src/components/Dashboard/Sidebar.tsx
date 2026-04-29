@@ -23,6 +23,7 @@ export interface NavigationItem {
   icon: React.ComponentType<any>;
   badge?: string | number;
   children?: NavigationItem[];
+  external?: boolean;
   roles?: string[];
   isActive?: boolean;
 }
@@ -128,23 +129,56 @@ const SidebarItem: React.FC<{
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
-              <Link
-                to={item.href}
-                className={cn(
-                  "flex items-center justify-center py-2 text-sm rounded-lg transition-colors",
-                  "w-10 h-10 mx-auto",
-                  level > 0 && "ml-4",
-                  isActive
-                    ? "bg-primary/10 text-primary"
-                    : "text-muted-foreground hover:text-foreground hover:bg-accent"
-                )}
-              >
-                <ItemContent />
-              </Link>
+              {item.external ? (
+                <a
+                  href={item.href}
+                  className={cn(
+                    "flex items-center justify-center py-2 text-sm rounded-lg transition-colors",
+                    "w-10 h-10 mx-auto",
+                    level > 0 && "ml-4",
+                    isActive
+                      ? "bg-primary/10 text-primary"
+                      : "text-muted-foreground hover:text-foreground hover:bg-accent"
+                  )}
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
+                  <ItemContent />
+                </a>
+              ) : (
+                <Link
+                  to={item.href}
+                  className={cn(
+                    "flex items-center justify-center py-2 text-sm rounded-lg transition-colors",
+                    "w-10 h-10 mx-auto",
+                    level > 0 && "ml-4",
+                    isActive
+                      ? "bg-primary/10 text-primary"
+                      : "text-muted-foreground hover:text-foreground hover:bg-accent"
+                  )}
+                >
+                  <ItemContent />
+                </Link>
+              )}
             </TooltipTrigger>
             <TooltipContent side="right">{item.label}</TooltipContent>
           </Tooltip>
         </TooltipProvider>
+      ) : item.external ? (
+        <a
+          href={item.href}
+          className={cn(
+            "flex items-center gap-3 px-3 py-2 text-sm rounded-lg transition-colors",
+            level > 0 && "ml-4",
+            isActive
+              ? "bg-primary/10 text-primary"
+              : "text-muted-foreground hover:text-foreground hover:bg-accent"
+          )}
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          <ItemContent />
+        </a>
       ) : (
         <Link
           to={item.href}
