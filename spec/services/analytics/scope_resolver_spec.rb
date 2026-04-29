@@ -30,4 +30,18 @@ RSpec.describe Analytics::ScopeResolver do
     expect(result[:client_ids]).to eq([client.id])
     expect(result[:user_ids]).to match_array([manager.id, managed_user.id])
   end
+
+  it "keeps client roles explicit and unscoped" do
+    client_user = create(:user, current_workspace_id: company.id)
+    client_user.add_role :client, company
+
+    result = described_class.new(user: client_user, company: company).process
+
+    expect(result).to include(
+      role: "client",
+      user_ids: [],
+      client_ids: [],
+      project_ids: []
+    )
+  end
 end

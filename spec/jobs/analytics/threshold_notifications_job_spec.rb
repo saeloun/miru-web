@@ -16,6 +16,7 @@ RSpec.describe Analytics::ThresholdNotificationsJob, type: :job do
     admin.add_role :admin, company
     employee.add_role :employee, company
     Rails.cache.clear
+    AnalyticsThresholdNotificationLog.delete_all
     clear_enqueued_jobs
   end
 
@@ -26,7 +27,7 @@ RSpec.describe Analytics::ThresholdNotificationsJob, type: :job do
 
     expect {
       described_class.perform_now([company.id])
-    }.to have_enqueued_mail(AnalyticsMailer, :threshold_alert)
+    }.to have_enqueued_mail(AnalyticsMailer, :threshold_alert).twice
   end
 
   it "does not notify employees" do
@@ -36,9 +37,12 @@ RSpec.describe Analytics::ThresholdNotificationsJob, type: :job do
 
     described_class.perform_now([company.id])
 
-    mail = enqueued_jobs.last
-    args = mail[:args].last["params"] || mail[:args].last[:params]
-    expect(args["recipients"] || args[:recipients]).to match_array([owner.email, admin.email])
+    recipients = enqueued_jobs.map do |job|
+      params = job[:args].last["params"] || job[:args].last[:params]
+      params["recipient"] || params[:recipient]
+    end
+
+    expect(recipients).to match_array([owner.email, admin.email])
   end
 
   it "does not resend the same alert within the anti-spam window" do
@@ -49,7 +53,21 @@ RSpec.describe Analytics::ThresholdNotificationsJob, type: :job do
     expect {
       described_class.perform_now([company.id])
       described_class.perform_now([company.id])
-    }.to have_enqueued_mail(AnalyticsMailer, :threshold_alert).once
+    }.to have_enqueued_mail(AnalyticsMailer, :threshold_alert).twice
+  end
+
+  it "records an atomic notification claim" do
+    allow(Analytics::ThresholdEvaluator).to receive(:process).and_return([
+      { type: "low_utilization", title: "Low utilization detected", message: "Alert", metadata: {} }
+    ])
+
+    expect {
+      described_class.perform_now([company.id])
+    }.to change(AnalyticsThresholdNotificationLog, :count).by(1)
+
+    log = AnalyticsThresholdNotificationLog.last
+    expect(log.company_id).to eq(company.id)
+    expect(log.alert_type).to eq("low_utilization")
   end
 
   it "does not notify when there are no alerts" do

@@ -10,7 +10,7 @@ RSpec.describe AnalyticsMailer, type: :mailer do
     it "renders the analytics threshold email" do
       mail = described_class.with(
         company_id: company.id,
-        recipients: [recipient.email],
+        recipient: recipient.email,
         alert: {
           type: "low_utilization",
           title: "Low utilization detected",

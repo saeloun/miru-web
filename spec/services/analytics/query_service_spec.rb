@@ -36,6 +36,22 @@ RSpec.describe Analytics::QueryService do
         project_ids: [3]
       )
     end
+
+    it "uses default date filters for saved report refreshes without explicit dates" do
+      travel_to Time.zone.local(2026, 4, 18, 12, 0, 0) do
+        allow(Analytics::CacheStore).to receive(:fetch).and_yield
+        allow(Analytics::TeamProductivityAnalytics).to receive(:process).and_return({ summary: {} })
+
+        described_class.new(report_type: :team_productivity, company:, filters: {}).process
+
+        expect(Analytics::TeamProductivityAnalytics).to have_received(:process).with(
+          company: company,
+          from: Date.new(2026, 3, 20),
+          to: Date.new(2026, 4, 18),
+          user_ids: nil
+        )
+      end
+    end
   end
 
   describe "#refresh!" do

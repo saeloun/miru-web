@@ -17,6 +17,16 @@ RSpec.describe "InternalApi::V1::AnalyticsReportsController", type: :request do
       filters: { "horizon" => 6 }
     )
   end
+  let!(:team_report) do
+    create(
+      :analytics_report,
+      company:,
+      creator:,
+      name: "Team snapshot",
+      report_type: :team_productivity,
+      filters: { "preset" => "custom", "from" => "2026-04-01", "to" => "2026-04-18" }
+    )
+  end
 
   before do
     create(:employment, company:, user: creator)
@@ -34,9 +44,9 @@ RSpec.describe "InternalApi::V1::AnalyticsReportsController", type: :request do
       send_request :get, "/internal_api/v1/analytics/reports", headers: auth_headers(creator)
 
       expect(response).to have_http_status(:ok)
-      expect(json_response["reports"].first).to include(
-        "name" => "Revenue snapshot",
-        "report_type" => "revenue_forecast"
+      expect(json_response["reports"]).to include(
+        include("name" => "Revenue snapshot", "report_type" => "revenue_forecast"),
+        include("name" => "Team snapshot", "report_type" => "team_productivity")
       )
     end
 
@@ -95,27 +105,37 @@ RSpec.describe "InternalApi::V1::AnalyticsReportsController", type: :request do
   end
 
   describe "GET /internal_api/v1/analytics/reports/:id" do
-    it "allows other workspace users to load a saved report" do
+    it "allows other workspace users to load an allowed saved report" do
+      sign_in viewer
+
+      send_request :get,
+        "/internal_api/v1/analytics/reports/#{team_report.id}",
+        headers: auth_headers(viewer)
+
+      expect(response).to have_http_status(:ok)
+      expect(json_response["report"]).to include(
+        "name" => "Team snapshot",
+        "can_delete" => false
+      )
+    end
+
+    it "prevents employees from opening financial saved reports" do
       sign_in viewer
 
       send_request :get,
         "/internal_api/v1/analytics/reports/#{own_report.id}",
         headers: auth_headers(viewer)
 
-      expect(response).to have_http_status(:ok)
-      expect(json_response["report"]).to include(
-        "name" => "Revenue snapshot",
-        "can_delete" => false
-      )
+      expect(response).to have_http_status(:not_found)
     end
 
     it "logs saved report opens" do
-      sign_in viewer
+      sign_in creator
 
       expect {
         send_request :get,
           "/internal_api/v1/analytics/reports/#{own_report.id}",
-          headers: auth_headers(viewer)
+          headers: auth_headers(creator)
       }.to change(Ahoy::Event, :count).by(1)
 
       event = Ahoy::Event.order(:id).last
@@ -125,7 +145,7 @@ RSpec.describe "InternalApi::V1::AnalyticsReportsController", type: :request do
         "report_id" => own_report.id,
         "report_type" => "revenue_forecast",
         "company_id" => company.id,
-        "user_id" => viewer.id
+        "user_id" => creator.id
       )
     end
   end
@@ -149,7 +169,7 @@ RSpec.describe "InternalApi::V1::AnalyticsReportsController", type: :request do
         "/internal_api/v1/analytics/reports/#{own_report.id}",
         headers: auth_headers(viewer)
 
-      expect(response).to have_http_status(:forbidden)
+      expect(response).to have_http_status(:not_found)
       expect(AnalyticsReport.exists?(own_report.id)).to be(true)
     end
   end

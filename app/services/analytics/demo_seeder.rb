@@ -34,7 +34,9 @@ module Analytics
       attr_reader :company, :counts, :users, :clients, :projects
 
       def default_company
-        Company.joins(:employments).merge(Employment.kept).distinct.first || Company.first
+        return Company.find(ENV["ANALYTICS_DEMO_COMPANY_ID"]) if ENV["ANALYTICS_DEMO_COMPANY_ID"].present?
+
+        Company.joins(:employments).merge(Employment.kept).distinct.order(:id).first || Company.order(:id).first
       end
 
       def setup_users
@@ -57,15 +59,17 @@ module Analytics
 
       def ensure_user!(email:, first_name:, last_name:, roles:)
         user = User.find_or_initialize_by(email: email)
-        user.assign_attributes(
+        created = user.new_record?
+        attrs = {
           first_name: first_name,
           last_name: last_name,
-          password: PASSWORD,
-          password_confirmation: PASSWORD,
           confirmed_at: user.confirmed_at || Time.current,
           current_workspace_id: company.id
-        )
-        created = user.new_record?
+        }
+        attrs[:password] = PASSWORD if created
+        attrs[:password_confirmation] = PASSWORD if created
+
+        user.assign_attributes(attrs)
         user.save!
 
         Employment.find_or_create_by!(company: company, user: user)

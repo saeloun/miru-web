@@ -4,7 +4,6 @@ class Analytics::ThresholdNotificationsJob < ApplicationJob
   queue_as :default
 
   NOTIFICATION_TTL = 12.hours
-  FALLBACK_CACHE = ActiveSupport::Cache::MemoryStore.new
 
   def perform(company_ids = nil)
     companies_scope(company_ids).find_each do |company|
@@ -14,15 +13,15 @@ class Analytics::ThresholdNotificationsJob < ApplicationJob
       next if alerts.blank? || recipients.blank?
 
       alerts.each do |alert|
-        next if recently_notified?(company.id, alert[:type])
+        next unless claim_notification!(company.id, alert[:type])
 
-        AnalyticsMailer.with(
-          company_id: company.id,
-          recipients: recipients,
-          alert: alert
-        ).threshold_alert.deliver_later
-
-        mark_notified(company.id, alert[:type])
+        recipients.each do |recipient|
+          AnalyticsMailer.with(
+            company_id: company.id,
+            recipient: recipient,
+            alert: alert
+          ).threshold_alert.deliver_later
+        end
       end
     end
   end
@@ -34,25 +33,25 @@ class Analytics::ThresholdNotificationsJob < ApplicationJob
     end
 
     def notification_recipients_for(company)
-      company.users.with_role([:owner, :admin, :book_keeper], company).distinct.select do |user|
+      company.users.with_role([:owner, :admin, :book_keeper], company).distinct.filter_map do |user|
         preference = company.notification_preferences.find_by(user_id: user.id)
-        preference.nil? || preference.can_receive_emails?
-      end.map(&:email).uniq
+        user.email if preference.nil? || preference.can_receive_emails?
+      end.uniq
     end
 
-    def recently_notified?(company_id, alert_type)
-      cache_store.read(cache_key(company_id, alert_type)).present?
-    end
+    def claim_notification!(company_id, alert_type)
+      AnalyticsThresholdNotificationLog
+        .where(company_id: company_id, alert_type: alert_type)
+        .where("notified_at < ?", NOTIFICATION_TTL.ago)
+        .delete_all
 
-    def mark_notified(company_id, alert_type)
-      cache_store.write(cache_key(company_id, alert_type), Time.current.iso8601, expires_in: NOTIFICATION_TTL)
-    end
-
-    def cache_key(company_id, alert_type)
-      "analytics:threshold_notification:#{company_id}:#{alert_type}"
-    end
-
-    def cache_store
-      Rails.cache.is_a?(ActiveSupport::Cache::NullStore) ? FALLBACK_CACHE : Rails.cache
+      AnalyticsThresholdNotificationLog.create!(
+        company_id: company_id,
+        alert_type: alert_type,
+        notified_at: Time.current
+      )
+      true
+    rescue ActiveRecord::RecordNotUnique, ActiveRecord::RecordInvalid
+      false
     end
 end

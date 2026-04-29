@@ -177,10 +177,13 @@ const AnalyticsHome: React.FC = () => {
           title="Unable to load analytics dashboard"
           description="One or more analytics endpoints did not respond. Retry after the data refreshes."
           onRetry={() => {
-            comparisonQuery.refetch();
             teamQuery.refetch();
-            clientQuery.refetch();
-            expenseQuery.refetch();
+
+            if (isFinancialRole) {
+              comparisonQuery.refetch();
+              clientQuery.refetch();
+              expenseQuery.refetch();
+            }
           }}
         />
       ) : null}

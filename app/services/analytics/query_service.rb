@@ -34,16 +34,24 @@ module Analytics
         when "revenue_forecast"
           Analytics::RevenueForecastService.process(company:, horizon: filters.fetch(:horizon, 3), client_ids: filters[:client_ids])
         when "comparison"
-          Analytics::ComparativeAnalysisService.process(company:, from: filters.fetch(:from), to: filters.fetch(:to), user_ids: filters[:user_ids], client_ids: filters[:client_ids], project_ids: filters[:project_ids])
+          Analytics::ComparativeAnalysisService.process(company:, from: filter_from, to: filter_to, user_ids: filters[:user_ids], client_ids: filters[:client_ids], project_ids: filters[:project_ids])
         when "client_analysis"
-          Analytics::ClientRevenueAnalytics.process(company:, from: filters.fetch(:from), to: filters.fetch(:to), client_ids: filters[:client_ids])
+          Analytics::ClientRevenueAnalytics.process(company:, from: filter_from, to: filter_to, client_ids: filters[:client_ids])
         when "team_productivity"
-          Analytics::TeamProductivityAnalytics.process(company:, from: filters.fetch(:from), to: filters.fetch(:to), user_ids: filters[:user_ids])
+          Analytics::TeamProductivityAnalytics.process(company:, from: filter_from, to: filter_to, user_ids: filters[:user_ids])
         when "expense_trends"
-          Analytics::ExpenseTrendAnalyzer.process(company:, from: filters.fetch(:from), to: filters.fetch(:to), project_ids: filters[:project_ids])
+          Analytics::ExpenseTrendAnalyzer.process(company:, from: filter_from, to: filter_to, project_ids: filters[:project_ids])
         else
           raise ArgumentError, "Unsupported analytics report type: #{report_type}"
         end
+      end
+
+      def filter_from
+        filters[:from].presence || 29.days.ago.to_date
+      end
+
+      def filter_to
+        filters[:to].presence || Date.current
       end
   end
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_29_130000) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_29_145000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_stat_statements"
@@ -147,6 +147,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_29_130000) do
     t.index ["company_id"], name: "index_analytics_reports_on_company_id"
     t.index ["created_by_id"], name: "index_analytics_reports_on_created_by_id"
     t.index ["filters"], name: "index_analytics_reports_on_filters", using: :gin
+  end
+
+  create_table "analytics_threshold_notification_logs", force: :cascade do |t|
+    t.string "alert_type", null: false
+    t.bigint "company_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "notified_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id", "alert_type"], name: "index_analytics_threshold_logs_on_company_and_alert", unique: true
+    t.index ["company_id"], name: "index_analytics_threshold_notification_logs_on_company_id"
   end
 
   create_table "audits", force: :cascade do |t|
@@ -1035,6 +1045,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_29_130000) do
   add_foreign_key "agents", "users"
   add_foreign_key "analytics_reports", "companies"
   add_foreign_key "analytics_reports", "users", column: "created_by_id"
+  add_foreign_key "analytics_threshold_notification_logs", "companies"
   add_foreign_key "carryovers", "companies"
   add_foreign_key "carryovers", "leave_types"
   add_foreign_key "carryovers", "users"
@@ -1056,6 +1067,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_29_130000) do
   add_foreign_key "expense_categories", "companies"
   add_foreign_key "expenses", "companies"
   add_foreign_key "expenses", "expense_categories"
+  add_foreign_key "expenses", "projects"
   add_foreign_key "expenses", "users"
   add_foreign_key "expenses", "vendors"
   add_foreign_key "holiday_infos", "holidays"

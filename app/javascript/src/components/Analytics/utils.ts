@@ -61,15 +61,23 @@ export const buildTrendSeries = (
 ) => {
   if (trends.length === 0) return [];
 
-  const labels = trends[0].monthly_totals.map(point => point.label);
+  const labels = Array.from(
+    new Set(
+      trends.flatMap(trend => trend.monthly_totals.map(point => point.label))
+    )
+  );
 
-  return labels.map((label, index) =>
+  return labels.map(label =>
     trends.reduce(
-      (row, trend) => ({
-        ...row,
-        label,
-        [trend.name]: trend.monthly_totals[index]?.amount || 0,
-      }),
+      (row, trend) => {
+        const point = trend.monthly_totals.find(point => point.label === label);
+
+        return {
+          ...row,
+          label,
+          [trend.name]: point?.amount ?? 0,
+        };
+      },
       { label } as Record<string, string | number>
     )
   );

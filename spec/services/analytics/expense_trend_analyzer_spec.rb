@@ -39,8 +39,8 @@ RSpec.describe Analytics::ExpenseTrendAnalyzer do
           name: "Travel",
           month: "2026-03-01",
           amount: 500.0,
-          rolling_average: 233.33,
-          threshold: 350.0
+          rolling_average: 100.0,
+          threshold: 150.0
         )
       )
     end

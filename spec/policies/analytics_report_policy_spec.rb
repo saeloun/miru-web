@@ -33,6 +33,12 @@ RSpec.describe AnalyticsReportPolicy, type: :policy do
     end
   end
 
+  permissions :show? do
+    it "denies employees from financial saved reports" do
+      expect(described_class).not_to permit(employee, financial_report)
+    end
+  end
+
   permissions :create? do
     it "allows financial roles to create financial reports" do
       expect(described_class).to permit(owner, financial_report)

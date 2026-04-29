@@ -60,6 +60,8 @@ const TeamAnalyticsPage: React.FC = () => {
   } = useAnalyticsFilters({ filterKey: "members" });
   const isEmployee = companyRole === Roles.EMPLOYEE;
   const isManager = companyRole === Roles.MANAGER;
+  const canFilterMembers = !isEmployee && !isManager;
+  const effectiveSelectedIds = canFilterMembers ? selectedIds : [];
   const currency = company?.base_currency || "USD";
 
   const optionsQuery = useQuery({
@@ -72,17 +74,20 @@ const TeamAnalyticsPage: React.FC = () => {
         label: member.name,
       })) as AnalyticsOption[];
     },
-    enabled: !isEmployee && !isManager,
+    enabled: canFilterMembers,
   });
 
   const query = useQuery({
-    queryKey: ["analytics", "team", from, to, selectedIds],
+    queryKey: ["analytics", "team", from, to, effectiveSelectedIds],
     queryFn: async () => {
       const response = await analyticsApi.getTeamProductivity({
         from,
         to,
         view_context: "team_productivity",
-        user_ids: selectedIds.length > 0 ? selectedIds.join(",") : undefined,
+        user_ids:
+          effectiveSelectedIds.length > 0
+            ? effectiveSelectedIds.join(",")
+            : undefined,
       });
 
       return response.data as TeamProductivityResponse;
@@ -107,8 +112,8 @@ const TeamAnalyticsPage: React.FC = () => {
           from,
           to,
           user_ids:
-            !isEmployee && selectedIds.length > 0
-              ? selectedIds.join(",")
+            effectiveSelectedIds.length > 0
+              ? effectiveSelectedIds.join(",")
               : undefined,
         }
       );
@@ -116,7 +121,9 @@ const TeamAnalyticsPage: React.FC = () => {
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement("a");
       link.href = url;
-      link.download = `team_analytics_${new Date().toISOString().slice(0, 10)}.${format}`;
+      link.download = `team_analytics_${new Date()
+        .toISOString()
+        .slice(0, 10)}.${format}`;
       document.body.appendChild(link);
       link.click();
       link.remove();
@@ -143,10 +150,10 @@ const TeamAnalyticsPage: React.FC = () => {
             setPreset(value);
             setDateRange(resolveAnalyticsPreset(value));
           }}
-          selectedIds={isEmployee ? [] : selectedIds}
-          onSelectedIdsChange={isEmployee || isManager ? undefined : setSelectedIds}
-          options={isEmployee || isManager ? [] : optionsQuery.data || []}
-          multiSelectLabel={isEmployee || isManager ? undefined : "Team members"}
+          selectedIds={effectiveSelectedIds}
+          onSelectedIdsChange={canFilterMembers ? setSelectedIds : undefined}
+          options={canFilterMembers ? optionsQuery.data || [] : []}
+          multiSelectLabel={canFilterMembers ? "Team members" : undefined}
         />
       }
     >
@@ -318,9 +325,9 @@ const TeamAnalyticsPage: React.FC = () => {
               preset,
               from,
               to,
-              ...(isEmployee
-                ? {}
-                : { members: selectedIds.length > 0 ? selectedIds.join(",") : undefined }),
+              ...(canFilterMembers && effectiveSelectedIds.length > 0
+                ? { members: effectiveSelectedIds.join(",") }
+                : {}),
             }}
             allowSave={true}
           />

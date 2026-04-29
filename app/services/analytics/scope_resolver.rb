@@ -26,8 +26,9 @@ module Analytics
         return "book_keeper" if user.has_cached_role?(:book_keeper, company)
         return "manager" if user.has_cached_role?(:manager, company)
         return "employee" if user.has_cached_role?(:employee, company)
+        return "client" if user.has_cached_role?(:client, company)
 
-        "employee"
+        nil
       end
 
       def scoped_project_ids

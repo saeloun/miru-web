@@ -1255,6 +1255,7 @@ const en = {
     profile: "Profile",
     projects: "Projects",
     reports: "Reports",
+    analytics: "Analytics",
     settings: "Settings",
     team: "Team",
     payments: "Payments",

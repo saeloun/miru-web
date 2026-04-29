@@ -26,6 +26,8 @@ module Analytics
       attr_reader :company, :from, :to
 
       def low_utilization?
+        return false if team_summary[:team_size].to_i.zero?
+
         team_summary[:utilization_rate].to_f < LOW_UTILIZATION_THRESHOLD
       end
 

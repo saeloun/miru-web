@@ -29,7 +29,7 @@ RSpec.describe Analytics::ClientRevenueAnalytics do
         total_collected_revenue: 350.0,
         average_invoice_amount: 216.67,
         average_payment_frequency_days: 20.5,
-        average_payment_cycle_days: 7.0,
+        average_payment_cycle_days: 14.0,
         payment_count: 2
       )
 

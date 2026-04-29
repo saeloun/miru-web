@@ -53,13 +53,17 @@ module Analytics
       def anomalies
         @anomalies ||= monthly_expenses_by_category.flat_map do |category_name, monthly_totals|
           positive_months = monthly_totals.values.count(&:positive?)
-          next [] if positive_months < 2
-
-          rolling_average = average(monthly_totals.values)
-          threshold = (rolling_average * ANOMALY_MULTIPLIER).round(2)
+          next [] if positive_months < 3
 
           monthly_totals.filter_map do |month, amount|
-            next unless amount > threshold && amount.positive?
+            next unless amount.positive?
+
+            comparison_values = monthly_totals.except(month).values.select(&:positive?)
+            next if comparison_values.size < 2
+
+            rolling_average = average(comparison_values)
+            threshold = (rolling_average * ANOMALY_MULTIPLIER).round(2)
+            next unless amount > threshold
 
             {
               dimension: "category",

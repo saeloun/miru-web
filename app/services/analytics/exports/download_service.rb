@@ -68,7 +68,18 @@ module Analytics
             end
           end
 
-          [rows, headers]
+          [rows.map { |row| sanitize_csv_row(row) }, sanitize_csv_row(headers)]
+        end
+
+        def sanitize_csv_row(row)
+          row.map { |cell| sanitize_csv_cell(cell) }
+        end
+
+        def sanitize_csv_cell(cell)
+          return cell unless cell.is_a?(String)
+          return "'#{cell}" if cell.match?(/\A[=+\-@\t\r\n]/)
+
+          cell
         end
     end
   end

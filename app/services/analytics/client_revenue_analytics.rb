@@ -117,7 +117,7 @@ module Analytics
           total_collected_revenue: clients.sum { |client| client[:collected_revenue] }.round(2),
           average_invoice_amount: invoice_count.positive? ? (total_revenue / invoice_count).round(2) : 0.0,
           average_payment_frequency_days: average_of(clients.pluck(:payment_frequency_days)),
-          average_payment_cycle_days: average_of(clients.pluck(:payment_cycle_days)),
+          average_payment_cycle_days: average_of(clients.filter_map { |client| client[:payment_cycle_days] if client[:payment_count].positive? }),
           payment_count:
         }
       end
@@ -174,7 +174,7 @@ module Analytics
       end
 
       def average_of(values)
-        filtered_values = values.map(&:to_f)
+        filtered_values = values.compact.map(&:to_f)
         return 0.0 if filtered_values.empty?
 
         (filtered_values.sum / filtered_values.size).round(2)
