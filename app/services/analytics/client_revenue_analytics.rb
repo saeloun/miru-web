@@ -86,13 +86,14 @@ module Analytics
       end
 
       def build_client_summary(client)
-        invoice_data = invoice_totals.fetch(client.id, { total_revenue: 0.0, invoice_count: 0 })
-        payment_data = payment_totals.fetch(client.id, { collected_revenue: 0.0, payment_count: 0, payment_cycle_days: 0.0 })
-        payment_dates = payment_dates_by_client.fetch(client.id, [])
-        monthly_trend = build_monthly_trend(client.id)
+        client_id = client.id
+        invoice_data = invoice_totals.fetch(client_id, { total_revenue: 0.0, invoice_count: 0 })
+        payment_data = payment_totals.fetch(client_id, { collected_revenue: 0.0, payment_count: 0, payment_cycle_days: 0.0 })
+        payment_dates = payment_dates_by_client.fetch(client_id, [])
+        monthly_trend = build_monthly_trend(client_id)
 
         {
-          client_id: client.id,
+          client_id: client_id,
           client_name: client.name,
           total_revenue: invoice_data[:total_revenue].round(2),
           collected_revenue: payment_data[:collected_revenue].round(2),

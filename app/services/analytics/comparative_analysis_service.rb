@@ -2,6 +2,7 @@
 
 module Analytics
   class ComparativeAnalysisService < ApplicationService
+    # :reek:LongParameterList
     def initialize(company:, from:, to:, user_ids: nil, client_ids: nil, project_ids: nil)
       @company = company
       @from = from.to_date

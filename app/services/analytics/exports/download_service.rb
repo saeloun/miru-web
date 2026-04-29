@@ -47,8 +47,7 @@ module Analytics
         end
 
         def csv_content
-          rows = []
-          export_payload[:summary_rows].each { |row| rows << row }
+          rows = export_payload[:summary_rows].dup
 
           export_payload[:tables].each do |table|
             rows << [] if rows.any?
@@ -57,18 +56,18 @@ module Analytics
           end
 
           headers = ["Metric", "Value"]
-          first_table = export_payload[:tables].first
-          if first_table
-            rows = export_payload[:summary_rows].dup
-            export_payload[:tables].each do |table|
-              rows << [] if rows.any?
-              rows << [table[:title]]
-              rows << table[:headers]
-              rows.concat(table[:rows])
-            end
-          end
+          rows = csv_rows_with_table_headers if export_payload[:tables].any?
 
           [rows.map { |row| sanitize_csv_row(row) }, sanitize_csv_row(headers)]
+        end
+
+        def csv_rows_with_table_headers
+          export_payload[:tables].each_with_object(export_payload[:summary_rows].dup) do |table, rows|
+            rows << [] if rows.any?
+            rows << [table[:title]]
+            rows << table[:headers]
+            rows.concat(table[:rows])
+          end
         end
 
         def sanitize_csv_row(row)
