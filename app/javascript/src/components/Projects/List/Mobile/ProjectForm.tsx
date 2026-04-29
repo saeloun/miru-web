@@ -153,7 +153,9 @@ const ProjectForm = ({
     <div className="z-50 flex h-full w-full flex-col">
       <div className="flex items-center justify-between border-b border-border bg-background px-4 py-3">
         <span className="w-full pl-6 text-center text-base font-semibold leading-5 text-foreground">
-          {editProjectData?.id ? i18n.t("projects.editProjectDetails") : i18n.t("projects.addNewProject")}
+          {editProjectData?.id
+            ? i18n.t("projects.editProjectDetails")
+            : i18n.t("projects.addNewProject")}
         </span>
         <X
           className="cursor-pointer text-foreground"
@@ -195,7 +197,9 @@ const ProjectForm = ({
                 <Dialog open={showClientList} onOpenChange={setShowClientList}>
                   <DialogContent className="max-w-sm">
                     <DialogHeader>
-                      <DialogTitle>{i18n.t("projects.selectClient")}</DialogTitle>
+                      <DialogTitle>
+                        {i18n.t("projects.selectClient")}
+                      </DialogTitle>
                     </DialogHeader>
                     <div className="relative mt-2 flex w-full items-center">
                       <input
@@ -299,7 +303,9 @@ const ProjectForm = ({
                 className="h-11 w-full text-base font-semibold"
                 type="submit"
               >
-                {isEdit ? i18n.t("projects.editProject") : i18n.t("projects.addProject")}
+                {isEdit
+                  ? i18n.t("projects.editProject")
+                  : i18n.t("projects.addProject")}
               </Button>
             </Form>
           );

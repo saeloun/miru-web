@@ -116,9 +116,9 @@ const InfiniteScrollRecentlyUpdated: React.FC<RecentlyUpdatedProps> = ({
         setError(i18n.t("invoices.failedToLoad"));
         if (pageNum === 1) {
           Toastr.error(
-            `${i18n.t("invoices.failedToLoad")} ${i18n.t(
-              "invoices.recentlyUpdated"
-            ).toLowerCase()}`
+            `${i18n.t("invoices.failedToLoad")} ${i18n
+              .t("invoices.recentlyUpdated")
+              .toLowerCase()}`
           );
         }
       } finally {
@@ -180,7 +180,9 @@ const InfiniteScrollRecentlyUpdated: React.FC<RecentlyUpdatedProps> = ({
           </h2>
         </div>
         <div className="w-full py-8 text-center bg-gray-50 rounded-lg">
-          <p className="text-sm text-gray-500">{i18n.t("invoices.noRecentlyUpdated")}</p>
+          <p className="text-sm text-gray-500">
+            {i18n.t("invoices.noRecentlyUpdated")}
+          </p>
         </div>
       </div>
     );
@@ -200,10 +202,15 @@ const InfiniteScrollRecentlyUpdated: React.FC<RecentlyUpdatedProps> = ({
         {orderedInvoices.length > 0 && (
           <div className="flex items-center gap-2">
             <span className="text-xs text-gray-500">
-              {i18n.t("invoices.showingOf", { shown: orderedInvoices.length, total: totalCount })}
+              {i18n.t("invoices.showingOf", {
+                shown: orderedInvoices.length,
+                total: totalCount,
+              })}
             </span>
             {hasMore && (
-              <span className="text-xs text-gray-400">• {i18n.t("invoices.scrollForMore")}</span>
+              <span className="text-xs text-gray-400">
+                • {i18n.t("invoices.scrollForMore")}
+              </span>
             )}
           </div>
         )}
@@ -227,7 +234,9 @@ const InfiniteScrollRecentlyUpdated: React.FC<RecentlyUpdatedProps> = ({
             <div className="flex items-center justify-center mx-1.5 w-36 h-32 rounded-lg border border-gray-200 bg-gray-50 animate-pulse">
               <div className="text-center">
                 <div className="inline-block h-6 w-6 animate-spin rounded-full border-2 border-solid border-[#5E58F1] border-r-transparent"></div>
-                <p className="mt-2 text-xs text-gray-500">{i18n.t("loading")}</p>
+                <p className="mt-2 text-xs text-gray-500">
+                  {i18n.t("loading")}
+                </p>
               </div>
             </div>
           )}
@@ -236,7 +245,9 @@ const InfiniteScrollRecentlyUpdated: React.FC<RecentlyUpdatedProps> = ({
           {error && !loading && (
             <div className="flex items-center justify-center mx-1.5 w-36 h-32 rounded-lg border border-red-200 bg-red-50">
               <div className="text-center p-3">
-                <p className="text-xs text-red-600 mb-2">{i18n.t("invoices.failedToLoad")}</p>
+                <p className="text-xs text-red-600 mb-2">
+                  {i18n.t("invoices.failedToLoad")}
+                </p>
                 <button
                   onClick={handleRetry}
                   className="text-xs text-[#5E58F1] hover:underline"
@@ -267,7 +278,9 @@ const InfiniteScrollRecentlyUpdated: React.FC<RecentlyUpdatedProps> = ({
                     d="M9 5l7 7-7 7"
                   />
                 </svg>
-                <p className="text-xs text-gray-500">{i18n.t("invoices.scrollForMore")}</p>
+                <p className="text-xs text-gray-500">
+                  {i18n.t("invoices.scrollForMore")}
+                </p>
               </div>
             </div>
           )}
@@ -289,7 +302,9 @@ const InfiniteScrollRecentlyUpdated: React.FC<RecentlyUpdatedProps> = ({
                     d="M5 13l4 4L19 7"
                   />
                 </svg>
-                <p className="text-xs text-gray-500">{i18n.t("invoices.allCaughtUp")}</p>
+                <p className="text-xs text-gray-500">
+                  {i18n.t("invoices.allCaughtUp")}
+                </p>
               </div>
             </div>
           )}

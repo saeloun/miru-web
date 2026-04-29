@@ -40,7 +40,9 @@ const ConnectPaymentGateway = ({
       onClose={() => setShowConnectPaymentDialog(false)}
     >
       <div className="mt-2 mb-4 flex items-center justify-between">
-        <h6 className="text-2xl font-bold">{i18n.t("invoices.noPaymentGateway")}</h6>
+        <h6 className="text-2xl font-bold">
+          {i18n.t("invoices.noPaymentGateway")}
+        </h6>
         <button
           className="text-foreground"
           type="button"

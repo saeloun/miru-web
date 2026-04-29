@@ -106,7 +106,8 @@ export const TimeEntryReportMobileView = ({
                   </div>
                   {report.entries?.length > 0 && (
                     <p className="text-right font-sans text-sm font-medium text-foreground">
-                      {i18n.t("reports.totalHours")} :{` ${getTotalHoursLogged(report.entries)}`}
+                      {i18n.t("reports.totalHours")} :
+                      {` ${getTotalHoursLogged(report.entries)}`}
                     </p>
                   )}
                 </div>

@@ -152,7 +152,9 @@ const Header = ({
                       }}
                     >
                       <FileCsvIcon color="#5E58F1" size={16} weight="bold" />
-                      <span className="ml-3 text-sm">{i18n.t("reports.exportAsCsv")}</span>
+                      <span className="ml-3 text-sm">
+                        {i18n.t("reports.exportAsCsv")}
+                      </span>
                     </button>
                   </li>
                   <li>
@@ -164,7 +166,9 @@ const Header = ({
                       }}
                     >
                       <FilePdfIcon color="#5E58F1" size={16} weight="bold" />
-                      <span className="ml-3 text-sm">{i18n.t("reports.exportAsPdf")}</span>
+                      <span className="ml-3 text-sm">
+                        {i18n.t("reports.exportAsPdf")}
+                      </span>
                     </button>
                   </li>
                 </Fragment>

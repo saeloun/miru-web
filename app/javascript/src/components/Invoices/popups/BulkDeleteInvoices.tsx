@@ -32,7 +32,9 @@ const BulkDeleteInvoices = ({
       }}
     >
       <div className="mb-8 mt-4 flex-col">
-        <h6 className="mb-2 text-2xl font-bold">{i18n.t("invoices.deleteInvoices")}</h6>
+        <h6 className="mb-2 text-2xl font-bold">
+          {i18n.t("invoices.deleteInvoices")}
+        </h6>
         <p className="mt-2 font-normal">
           {i18n.t("invoices.deleteInvoicesConfirm")}
         </p>

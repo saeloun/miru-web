@@ -64,7 +64,8 @@ const BulkActionsWrapper = ({
                 setShowBulkDeleteDialog(true);
               }}
             >
-              <DeleteIcon className="mr-2" size={16} weight="bold" /> {i18n.t("delete")}
+              <DeleteIcon className="mr-2" size={16} weight="bold" />{" "}
+              {i18n.t("delete")}
             </li>
           </MoreOptions>
         )}

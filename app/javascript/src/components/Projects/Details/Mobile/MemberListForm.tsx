@@ -112,7 +112,9 @@ const MembersListForm = ({
         <DialogHeader className="border-b border-border px-4 py-4 text-left">
           <div className="flex items-start justify-between gap-3">
             <div>
-              <DialogTitle>{i18n.t("projects.manageProjectMembers")}</DialogTitle>
+              <DialogTitle>
+                {i18n.t("projects.manageProjectMembers")}
+              </DialogTitle>
               <DialogDescription>
                 {i18n.t("projects.manageProjectMembersDescription")}
               </DialogDescription>
