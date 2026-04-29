@@ -16,4 +16,14 @@ Rails.application.config.middleware.insert_before 0, Rack::Cors do
       methods: [:get, :options],
       credentials: true
   end
+
+  if Rails.env.local?
+    allow do
+      origins(/\Ahttp:\/\/(localhost|127\.0\.0\.1):\d+\z/)
+
+      resource "/api/v1/*",
+        headers: :any,
+        methods: [:get, :post, :put, :patch, :delete, :options]
+    end
+  end
 end
