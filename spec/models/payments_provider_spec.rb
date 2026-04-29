@@ -35,7 +35,83 @@ RSpec.describe PaymentsProvider, type: :model do
     end
 
     describe "inclusion" do
-      it { is_expected.to validate_inclusion_of(:name).in_array(%w(stripe)) }
+      it { is_expected.to validate_inclusion_of(:name).in_array(%w(stripe upi razorpay)) }
+    end
+
+    context "when Razorpay is enabled" do
+      subject(:provider) do
+        build(:payments_provider, name: PaymentsProvider::RAZORPAY_PROVIDER, enabled: true)
+      end
+
+      it "requires API credentials" do
+        expect(provider).not_to be_valid
+        expect(provider.errors[:base]).to include("Razorpay key id and key secret are required")
+      end
+
+      it "requires a linked account when Route transfers are enabled" do
+        provider.key_id = "rzp_test_123"
+        provider.key_secret = "secret"
+        provider.route_transfers_enabled = true
+
+        expect(provider).not_to be_valid
+        expect(provider.errors[:linked_account_id]).to be_present
+      end
+
+      it "defaults the platform fee to 5%" do
+        provider.key_id = "rzp_test_123"
+        provider.key_secret = "secret"
+
+        expect(provider).to be_valid
+        expect(provider.platform_fee_percent).to eq("5.0")
+        expect(provider.payout_purpose).to eq("payout")
+      end
+
+      it "rejects invalid platform fees" do
+        provider.key_id = "rzp_test_123"
+        provider.key_secret = "secret"
+        provider.platform_fee_percent = "invalid"
+
+        expect(provider).not_to be_valid
+        expect(provider.errors[:platform_fee_percent]).to be_present
+      end
+
+      it "encrypts API and webhook secrets" do
+        provider.key_id = "rzp_test_123"
+        provider.key_secret = "secret"
+        provider.webhook_secret = "webhook_secret"
+
+        expect(provider).to be_valid
+        expect(provider.settings["key_secret"]).to be_nil
+        expect(provider.settings["webhook_secret"]).to be_nil
+        expect(provider.settings["key_secret_ciphertext"]).to be_present
+        expect(provider.settings["webhook_secret_ciphertext"]).to be_present
+      end
+
+      it "keeps encrypted secrets when blank values are assigned" do
+        provider.key_id = "rzp_test_123"
+        provider.key_secret = "secret"
+        provider.webhook_secret = "webhook_secret"
+        key_secret_ciphertext = provider.settings["key_secret_ciphertext"]
+        webhook_secret_ciphertext = provider.settings["webhook_secret_ciphertext"]
+
+        provider.key_secret = ""
+        provider.webhook_secret = nil
+
+        expect(provider.key_secret).to eq("secret")
+        expect(provider.webhook_secret).to eq("webhook_secret")
+        expect(provider.settings["key_secret_ciphertext"]).to eq(key_secret_ciphertext)
+        expect(provider.settings["webhook_secret_ciphertext"]).to eq(webhook_secret_ciphertext)
+      end
+
+      it "requires RazorpayX account and UPI ID when UPI payouts are enabled" do
+        provider.key_id = "rzp_test_123"
+        provider.key_secret = "secret"
+        provider.payouts_enabled = true
+
+        expect(provider).not_to be_valid
+        expect(provider.errors[:payout_account_number]).to be_present
+        expect(provider.errors[:payout_upi_id]).to be_present
+      end
     end
   end
 

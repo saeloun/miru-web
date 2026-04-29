@@ -352,12 +352,50 @@
       font-size: 10px;
       line-height: 1.5;
     }
+
+    .upi-panel {
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid #e2e8f0;
+    }
+
+    .upi-brand {
+      color: #0f172a;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .upi-qr {
+      display: block;
+      width: 132px;
+      height: 132px;
+      margin-top: 8px;
+      padding: 8px;
+      border: 1px solid #dbe3ec;
+      border-radius: 12px;
+      background: #ffffff;
+    }
+
+    .upi-id {
+      margin: 8px 0 0;
+      color: #0f172a;
+      font-size: 11px;
+      font-weight: 700;
+      word-break: break-word;
+    }
   </style>
 </head>
 <body>
   <%
     reference = invoice.reference.presence || "-"
     billed_to = client.formatted_address.presence || client.email.presence || "-"
+    upi_provider = invoice.company.payments_providers.find_by(name: PaymentsProvider::UPI_PROVIDER, enabled: true)
+    upi_payment =
+      if upi_provider&.enabled_on_invoices? && invoice.currency == "INR"
+        PaymentProviders::UpiIntentService.new(provider: upi_provider, invoice:).details
+      end
     payment_rows = [
       [t("pdfs.invoices.payment_rows.bank_name"), invoice.company.bank_name],
       [t("pdfs.invoices.payment_rows.account_number"), invoice.company.bank_account_number],
@@ -480,6 +518,22 @@
                       </tr>
                     <% end %>
                   </table>
+                  <% if upi_payment.present? %>
+                    <div class="upi-panel">
+                      <div class="upi-brand">Miru UPI</div>
+                      <div class="upi-qr"><%= upi_payment[:qr_code_svg].html_safe %></div>
+                      <p class="upi-id"><%= upi_payment[:upi_id] %></p>
+                    </div>
+                  <% end %>
+                </div>
+              <% elsif upi_payment.present? %>
+                <div class="summary-card meta-panel">
+                  <p class="section-title" style="margin-top: 0;"><%= t("pdfs.invoices.payment_details") %></p>
+                  <div class="upi-panel" style="margin-top: 0; padding-top: 0; border-top: none;">
+                    <div class="upi-brand">Miru UPI</div>
+                    <div class="upi-qr"><%= upi_payment[:qr_code_svg].html_safe %></div>
+                    <p class="upi-id"><%= upi_payment[:upi_id] %></p>
+                  </div>
                 </div>
               <% end %>
             </td>

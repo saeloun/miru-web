@@ -19,7 +19,9 @@ const ClientFilter = ({
       className="flex items-center justify-between px-5 hover:text-primary"
       onClick={handleClientFilterToggle}
     >
-      <h5 className="text-xs font-bold leading-4 tracking-wider">{i18n.t("reports.clients").toUpperCase()}</h5>
+      <h5 className="text-xs font-bold leading-4 tracking-wider">
+        {i18n.t("reports.clients").toUpperCase()}
+      </h5>
       <div className="flex items-center">
         {selectedClients.length > 0 &&
           selectedClients[0].label != "All Clients" && (

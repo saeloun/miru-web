@@ -20,7 +20,9 @@ export const EmptyStatesMobileView = ({ setNewEntryView, setEditEntryId }) => (
       }}
     >
       <PlusIcon size={18} weight="bold" />
-      <span className="ml-3 inline-block text-lg">{i18n.t("timeTracking.newTimeEntry")}</span>
+      <span className="ml-3 inline-block text-lg">
+        {i18n.t("timeTracking.newTimeEntry")}
+      </span>
     </button>
   </EmptyStates>
 );

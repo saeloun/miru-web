@@ -17,7 +17,7 @@ const Success = () => {
   const fetchPaymentSuccess = async () => {
     try {
       setLoading(true);
-      const res = await invoicesApi.paymentSuccess(id);
+      const res = await invoicesApi.paymentSuccess(id, window.location.search);
 
       setError("");
       setInvoice(res?.data?.invoice);

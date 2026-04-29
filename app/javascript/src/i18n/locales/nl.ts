@@ -1,3 +1,6 @@
+import en from "./en";
+import mergeLocale from "../mergeLocale";
+
 const locale = {
   invalidImageFormatSize:
     "Onjuweldig bestandsformaat. Upload een afbeelding van het type PNG of JPG. Max grootte (%{fileSize}KB)",
@@ -2191,4 +2194,4 @@ const locale = {
   },
 };
 
-export default locale;
+export default mergeLocale(en, locale);

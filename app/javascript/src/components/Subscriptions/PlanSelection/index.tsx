@@ -33,7 +33,9 @@ const PlanSelection = () => {
   return (
     <div className="flex min-h-screen items-center justify-center">
       <div className="w-96 rounded bg-white p-6 shadow-xl">
-        <h1 className="text-base font-bold text-foreground">{i18n.t("subscriptions.planDetails")}</h1>
+        <h1 className="text-base font-bold text-foreground">
+          {i18n.t("subscriptions.planDetails")}
+        </h1>
         <div className="mt-6 flex items-center justify-between">
           <label className="text-xs text-foreground">
             {i18n.t("subscriptions.numberOfTeamMembers")}{" "}
@@ -47,7 +49,9 @@ const PlanSelection = () => {
         </div>
         <div className="my-6 bg-muted p-4">
           <div className="mb-4 border-b pb-4">
-            <h6 className="text-xs text-foreground">{i18n.t("subscriptions.plan")}</h6>
+            <h6 className="text-xs text-foreground">
+              {i18n.t("subscriptions.plan")}
+            </h6>
             <div className="flex justify-between">
               <h5 className="text-base font-semibold text-foreground">
                 {i18n.t("subscriptions.basicPlan")}
@@ -66,7 +70,9 @@ const PlanSelection = () => {
             </div>
           </div>
           <div className="mb-4 border-b pb-4">
-            <h6 className="text-xs text-foreground">{i18n.t("subscriptions.addOns")}</h6>
+            <h6 className="text-xs text-foreground">
+              {i18n.t("subscriptions.addOns")}
+            </h6>
             <div className="flex justify-between">
               <h5 className="text-base font-semibold text-foreground">
                 {i18n.t("subscriptions.oneTeamMember")}
@@ -76,7 +82,11 @@ const PlanSelection = () => {
               </span>
             </div>
             <div className="w-half flex justify-between">
-              <p className="text-xs text-muted-foreground">{i18n.t("subscriptions.basicPlanPerUser", { rate: plan.teammember.rate })}</p>
+              <p className="text-xs text-muted-foreground">
+                {i18n.t("subscriptions.basicPlanPerUser", {
+                  rate: plan.teammember.rate,
+                })}
+              </p>
               <span className="text-right text-xs text-muted-foreground">
                 {i18n.t("subscriptions.chargedEveryMonth")}
               </span>
@@ -84,7 +94,9 @@ const PlanSelection = () => {
           </div>
           <div>
             <div className="flex justify-between">
-              <h5 className="text-2xl font-semibold text-foreground">{i18n.t("total")}</h5>
+              <h5 className="text-2xl font-semibold text-foreground">
+                {i18n.t("total")}
+              </h5>
               <div className="text-right">
                 <h5 className="text-2xl font-semibold text-foreground">
                   {total}$
@@ -96,7 +108,9 @@ const PlanSelection = () => {
             </div>
           </div>
         </div>
-        <button className="form__input_submit">{i18n.t("subscriptions.reviewAndPay")}</button>
+        <button className="form__input_submit">
+          {i18n.t("subscriptions.reviewAndPay")}
+        </button>
       </div>
     </div>
   );

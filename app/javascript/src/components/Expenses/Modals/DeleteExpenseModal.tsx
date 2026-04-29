@@ -29,7 +29,9 @@ const DeleteExpenseModal = ({
       onClose={() => setShowDeleteExpenseModal(false)}
     >
       <div className="my-8 flex-col">
-        <h6 className="mb-2 text-2xl font-bold">{i18n.t("expenses.deleteExpense")}</h6>
+        <h6 className="mb-2 text-2xl font-bold">
+          {i18n.t("expenses.deleteExpense")}
+        </h6>
         <p className="mt-2 font-normal">
           {i18n.t("expenses.deleteExpenseConfirm")}
         </p>

@@ -12,8 +12,8 @@ const InvoiceListTable = ({
   setInvoiceToDelete,
   fetchInvoices,
   isDesktop,
-  isStripeEnabled,
-  setIsStripeEnabled,
+  isPaymentEnabled,
+  setIsPaymentEnabled,
 }) => (
   <table
     className="min-w-full divide-y divide-gray-200 overflow-x-scroll lg:mt-4"
@@ -37,11 +37,11 @@ const InvoiceListTable = ({
           invoice={invoice}
           isDesktop={isDesktop}
           isSelected={selectedInvoices.includes(invoice.id)}
-          isStripeEnabled={isStripeEnabled}
+          isPaymentEnabled={isPaymentEnabled}
           key={invoice.id}
           selectInvoices={selectInvoices}
           setInvoiceToDelete={setInvoiceToDelete}
-          setIsStripeEnabled={setIsStripeEnabled}
+          setIsPaymentEnabled={setIsPaymentEnabled}
           setShowDeleteDialog={setShowDeleteDialog}
         />
       ))}

@@ -67,7 +67,11 @@ const List = () => {
 
   const ReportsLayout = () => (
     <div className="p-4">
-      {isDesktop && <div className="mt-4 text-3xl font-bold">{i18n.t("reports.reports")}</div>}
+      {isDesktop && (
+        <div className="mt-4 text-3xl font-bold">
+          {i18n.t("reports.reports")}
+        </div>
+      )}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:gap-4">
         {getListDetails().map(
           (item, key) =>

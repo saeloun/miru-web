@@ -1,3 +1,6 @@
+import en from "./en";
+import mergeLocale from "../mergeLocale";
+
 const locale = {
   invalidImageFormatSize:
     "ファイル形式が正しくありません。PNGまたはJPG形式の画像をアップロードしてください。最大サイズ（%{fileSize}KB）",
@@ -2157,4 +2160,4 @@ const locale = {
   },
 };
 
-export default locale;
+export default mergeLocale(en, locale);

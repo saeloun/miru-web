@@ -81,7 +81,9 @@ const PaymentDetails: React.FC<PaymentDetailsProps> = ({ invoice }) => {
                 <div className="grid grid-cols-3 gap-4 text-sm">
                   <div className="flex items-center gap-2">
                     <Calendar className="h-4 w-4 text-muted-foreground" />
-                    <span className="text-muted-foreground">{i18n.t("date")}:</span>
+                    <span className="text-muted-foreground">
+                      {i18n.t("date")}:
+                    </span>
                     <span className="font-medium text-foreground">
                       {payment.transactionDate}
                     </span>
@@ -89,14 +91,18 @@ const PaymentDetails: React.FC<PaymentDetailsProps> = ({ invoice }) => {
 
                   <div className="flex items-center gap-2">
                     <CurrencyDollar className="h-4 w-4 text-muted-foreground" />
-                    <span className="text-muted-foreground">{i18n.t("amount")}:</span>
+                    <span className="text-muted-foreground">
+                      {i18n.t("amount")}:
+                    </span>
                     <span className="font-semibold text-foreground">
                       {currencyFormat(invoice.currency, payment.amount)}
                     </span>
                   </div>
 
                   <div>
-                    <span className="text-muted-foreground">{i18n.t("type")}:</span>
+                    <span className="text-muted-foreground">
+                      {i18n.t("type")}:
+                    </span>
                     <span className="ml-2 font-medium text-foreground">
                       {payment.transactionType}
                     </span>
@@ -105,7 +111,8 @@ const PaymentDetails: React.FC<PaymentDetailsProps> = ({ invoice }) => {
 
                 {payment.note && (
                   <div className="mt-2 text-sm text-muted-foreground">
-                    <span className="font-medium">{i18n.t("notes")}:</span> {payment.note}
+                    <span className="font-medium">{i18n.t("notes")}:</span>{" "}
+                    {payment.note}
                   </div>
                 )}
               </div>

@@ -1,3 +1,6 @@
+import en from "./en";
+import mergeLocale from "../mergeLocale";
+
 const locale = {
   invalidImageFormatSize:
     "ખોટું ફાઇલ ફોર્મેટ. કૃપા કરીને PNG અથવા JPG પ્રકારની છબી અપલોડ કરો. મહત્તમ કદ (%{fileSize}KB)",
@@ -2175,4 +2178,4 @@ const locale = {
   },
 };
 
-export default locale;
+export default mergeLocale(en, locale);

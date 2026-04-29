@@ -171,6 +171,8 @@ namespace :api, defaults: { format: "json" } do
 
     # Non-Resourceful Routes
     get "payments/settings", to: "payment_settings#index"
+    patch "payments/settings/upi", to: "payment_settings#update_upi"
+    patch "payments/settings/razorpay", to: "payment_settings#update_razorpay"
     post "payments/settings/stripe/connect", to: "payment_settings#connect_stripe"
     delete "payments/settings/stripe/disconnect", to: "payment_settings#destroy"
     get "calendars/redirect", to: "calendars#redirect", as: "redirect"

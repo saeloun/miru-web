@@ -370,8 +370,8 @@ export const invoicesApi = {
   sendInvoice: (id: any, payload: any) =>
     http.post(`${invoicesPath}/${id}/send_invoice`, payload),
   viewInvoice: (id: any) => http.get(`${invoicesPath}/${id}/view`),
-  paymentSuccess: (id: any) =>
-    http.get(`${invoicesPath}/${id}/payments/success`),
+  paymentSuccess: (id?: string, query = "") =>
+    http.get(`${invoicesPath}/${id}/payments/success${query}`),
   waiveInvoice: (id: any) => http.patch(`${invoicesPath}/waived/${id}`),
   invoiceLogs: (id: any) => http.get(`${invoicesPath}/action_trails/${id}`),
   sendReminder: (id: any, payload: any) =>
@@ -405,6 +405,10 @@ export const logoutApi = () => http.delete(`/users/logout`);
 // Payment Settings
 export const paymentSettingsApi = {
   get: () => http.get(`/payments/settings`),
+  updateUpi: (provider: any) =>
+    http.patch(`/payments/settings/upi`, { provider }),
+  updateRazorpay: (provider: any) =>
+    http.patch(`/payments/settings/razorpay`, { provider }),
   connectStripe: () => http.post(`/payments/settings/stripe/connect`),
   disconnectStripe: () => http.delete(`/payments/settings/stripe/disconnect`),
 };
@@ -661,6 +665,16 @@ export const timeTrackingApi = {
         user_id: uid,
       },
     }),
+};
+
+export const desktopCurrentTimerApi = {
+  get: () => http.get("/desktop/current_timer", { skipErrorToast: true }),
+  update: (payload: any) =>
+    http.put(
+      "/desktop/current_timer",
+      { current_timer: payload },
+      { skipErrorToast: true }
+    ),
 };
 
 // Workspaces

@@ -1,3 +1,6 @@
+import en from "./en";
+import mergeLocale from "../mergeLocale";
+
 const locale = {
   invalidImageFormatSize:
     "തെറ്റായ ഫയൽ ഫോർമാറ്റ്. ദയവായി PNG അല്ലെങ്കിൽ JPG തരത്തിലുള്ള ചിത്രം അപ്‌ലോഡ് ചെയ്യുക. പരമാവധി വലുപ്പം (%{fileSize}KB)",
@@ -2216,4 +2219,4 @@ const locale = {
   },
 };
 
-export default locale;
+export default mergeLocale(en, locale);

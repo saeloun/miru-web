@@ -54,6 +54,9 @@ nl:
       success: Avatar succesvol verwijderd
     update:
       success: Avatar succesvol bijgewerkt
+    validation:
+      file_too_large: must be smaller than %{size_mb}MB
+      invalid_content_type: must be a PNG, JPG, JPEG, or WEBP image
   client:
     add: KLANT TOEVOEGEN
     address:
@@ -559,11 +562,11 @@ nl:
       payment_rows:
         account_number: Rekeningnummer
         bank_name: Banknaam
+        ein: EIN
         gst_number: GST-nummer
         routing_number: Routingnummer
         swift_code: SWIFT-code
         tax_id: Belastingnummer
-        ein: EIN
         us_taxpayer_id: U.S. Taxpayer ID
         vat_number: BTW-nummer
       prepared_by: Opgesteld door %{company_name}, uitgegeven door %{issue_date},
@@ -743,9 +746,11 @@ nl:
       message: Urenregistratie aangemaakt
     destroy:
       failure: Het verwijderen van urenregistraties is mislukt.
+      locked: Only admins can delete entries older than 7 days
       message: Urenregistratie verwijderd
     update:
       failure: Het bijwerken van de urenregistratie is mislukt.
+      locked: Only admins can edit entries older than 7 days
       message: Urenregistratie bijgewerkt
   totp:
     disable_passkey_first: Schakel de vereiste wachtwoordaanmelding uit voordat u

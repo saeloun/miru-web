@@ -56,7 +56,7 @@ module AuthResponsePayload
 
     def desktop_signed_in_payload(user, company:, google_oauth_success:)
       {
-        user: safe_user_payload(user),
+        user: auth_user_payload(user, include_token: true),
         avatar_url: user.avatar_url,
         company_role: company_role_payload(user, company),
         confirmed_user: user.confirmed?,

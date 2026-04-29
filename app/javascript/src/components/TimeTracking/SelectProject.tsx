@@ -166,7 +166,9 @@ const SelectProject: React.FC<Iprops> = ({
             >
               <SelectValue
                 placeholder={
-                  client ? i18n.t("timeTracking.selectProject") : i18n.t("timeTracking.selectClientFirst")
+                  client
+                    ? i18n.t("timeTracking.selectProject")
+                    : i18n.t("timeTracking.selectClientFirst")
                 }
               />
             </SelectTrigger>

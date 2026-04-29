@@ -1,3 +1,6 @@
+import en from "./en";
+import mergeLocale from "../mergeLocale";
+
 const locale = {
   invalidImageFormatSize:
     "चुकीचा फाइल फॉरमॅट. कृपया PNG किंवा JPG प्रकारची इमेज अपलोड करा. कमाल आकार (%{fileSize}KB)",
@@ -2173,4 +2176,4 @@ const locale = {
   },
 };
 
-export default locale;
+export default mergeLocale(en, locale);

@@ -54,6 +54,9 @@ es:
       success: Avatar eliminado correctamente
     update:
       success: Avatar actualizado correctamente
+    validation:
+      file_too_large: must be smaller than %{size_mb}MB
+      invalid_content_type: must be a PNG, JPG, JPEG, or WEBP image
   client:
     add: AÑADIR CLIENTE
     address:
@@ -561,11 +564,11 @@ es:
       payment_rows:
         account_number: Número de cuenta
         bank_name: Nombre del banco
+        ein: EIN
         gst_number: Número de GST
         routing_number: Número de ruta
         swift_code: Código SWIFT
         tax_id: Número de identificación fiscal
-        ein: EIN
         us_taxpayer_id: U.S. Taxpayer ID
         vat_number: Número de IVA
       prepared_by: Preparado por %{company_name}, emitido %{issue_date}, con vencimiento
@@ -747,9 +750,11 @@ es:
       message: Hoja de horas creada
     destroy:
       failure: No se pudieron eliminar las entradas de la hoja de horas.
+      locked: Only admins can delete entries older than 7 days
       message: Hoja de horas eliminada
     update:
       failure: No se pudieron actualizar las entradas de la hoja de horas.
+      locked: Only admins can edit entries older than 7 days
       message: Hoja de horas actualizada
   totp:
     disable_passkey_first: Desactive el inicio de sesión con clave de acceso obligatoria

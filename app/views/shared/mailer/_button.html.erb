@@ -1,7 +1,23 @@
-<table role="presentation" cellpadding="0" cellspacing="0" border="0" class="email-button-wrap">
+<% secondary = local_assigns[:secondary] %>
+<% button_styles = [
+  "display: inline-block",
+  "min-width: 210px",
+  "padding: 14px 22px",
+  "border: 1px solid #{secondary ? "#d7dde5" : "#020617"}",
+  "border-radius: 999px",
+  "background-color: #{secondary ? "#ffffff" : "#020617"}",
+  "color: #{secondary ? "#0f172a" : "#ffffff"}",
+  "font-size: 14px",
+  "font-weight: 700",
+  "line-height: 1.2",
+  "text-align: center",
+  "text-decoration: none"
+].join("; ") %>
+
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" class="email-button-wrap" style="margin: 28px 0 0; width: 100%; border-collapse: collapse;">
   <tr>
-    <td class="email-button-cell">
-      <a href="<%= href %>" target="<%= local_assigns.fetch(:target, "_blank") %>" class="email-button <%= local_assigns[:secondary] ? "email-button-secondary" : "" %>"><%= label %></a>
+    <td class="email-button-cell" style="text-align: center;">
+      <a href="<%= href %>" target="<%= local_assigns.fetch(:target, "_blank") %>" class="email-button <%= secondary ? "email-button-secondary" : "" %>" style="<%= button_styles %>"><%= label %></a>
     </td>
   </tr>
 </table>

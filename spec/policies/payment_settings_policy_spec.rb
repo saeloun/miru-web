@@ -19,6 +19,12 @@ RSpec.describe PaymentSettingsPolicy, type: :policy do
         expect(subject).to permit(user, :payment_settings)
       end
     end
+
+    permissions :update_razorpay? do
+      it "is permitted to update Razorpay settings" do
+        expect(subject).to permit(user, :payment_settings)
+      end
+    end
   end
 
   context "when user is an employee" do
@@ -29,6 +35,12 @@ RSpec.describe PaymentSettingsPolicy, type: :policy do
 
     permissions :index? do
       it "is not permitted to access index" do
+        expect(subject).not_to permit(user, :payment_settings)
+      end
+    end
+
+    permissions :update_razorpay? do
+      it "is not permitted to update Razorpay settings" do
         expect(subject).not_to permit(user, :payment_settings)
       end
     end

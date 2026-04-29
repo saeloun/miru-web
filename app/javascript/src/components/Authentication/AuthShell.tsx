@@ -157,6 +157,14 @@ const AuthShell = ({ children, description, title }: AuthShellProps) => {
                   <p className="max-w-xl text-sm leading-6 text-muted-foreground">
                     {t("auth.heroDescription")}
                   </p>
+                  <div className="flex flex-wrap gap-2 pt-2">
+                    <span className="rounded-full border border-border bg-background px-3 py-1 text-xs font-semibold text-foreground">
+                      {t("auth.paymentBadges.upiQr")}
+                    </span>
+                    <span className="rounded-full border border-border bg-background px-3 py-1 text-xs font-semibold text-foreground">
+                      {t("auth.paymentBadges.stripe")}
+                    </span>
+                  </div>
                 </div>
               </div>
               <div className="space-y-4">

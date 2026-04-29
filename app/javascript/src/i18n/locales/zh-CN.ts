@@ -1,3 +1,6 @@
+import en from "./en";
+import mergeLocale from "../mergeLocale";
+
 const locale = {
   invalidImageFormatSize:
     "文件格式不正确。请上传PNG或JPG格式的图片。最大尺寸（%{fileSize}KB）",
@@ -2057,4 +2060,4 @@ const locale = {
   },
 };
 
-export default locale;
+export default mergeLocale(en, locale);

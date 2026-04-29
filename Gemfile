@@ -115,6 +115,11 @@ gem "active_interaction"
 # For stripe payments
 gem "stripe"
 
+# Official SDK for Razorpay Payment Links, webhook/payment-link signature
+# verification and RazorpayX payout requests. Keep the range on the audited
+# 3.2 patch line because this wraps money movement and secrets.
+gem "razorpay", "~> 3.2.3"
+
 # Background job processing adapter and dashboard
 gem "mission_control-jobs"
 gem "solid_queue", "~> 0.6"
@@ -249,3 +254,5 @@ gem "strong_migrations"
 
 gem "redis", "~> 5.4"
 gem "dotenv", groups: [:development, :test]
+
+gem "rqrcode", "~> 3.2"

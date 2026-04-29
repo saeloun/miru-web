@@ -1,3 +1,6 @@
+import en from "./en";
+import mergeLocale from "../mergeLocale";
+
 const locale = {
   invalidImageFormatSize:
     "ఫైల్ ఫార్మాట్ తప్పుగా ఉంది. దయచేసి PNG లేదా JPG రకానికి చెందిన చిత్రాన్ని అప్‌లోడ్ చేయండి. గరిష్ట పరిమాణం (%{fileSize}KB)",
@@ -2192,4 +2195,4 @@ const locale = {
   },
 };
 
-export default locale;
+export default mergeLocale(en, locale);

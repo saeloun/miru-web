@@ -54,6 +54,9 @@ en-GB:
       success: Avatar deleted successfully
     update:
       success: Avatar updated successfully
+    validation:
+      file_too_large: must be smaller than %{size_mb}MB
+      invalid_content_type: must be a PNG, JPG, JPEG, or WEBP image
   client:
     add: ADD CLIENT
     address:
@@ -541,11 +544,11 @@ en-GB:
       payment_rows:
         account_number: Account Number
         bank_name: Bank Name
+        ein: EIN
         gst_number: GST Number
         routing_number: Routing Number
         swift_code: SWIFT Code
         tax_id: Tax ID
-        ein: EIN
         us_taxpayer_id: U.S. Taxpayer ID
         vat_number: VAT Number
       prepared_by: Prepared by %{company_name}, issued %{issue_date}, due %{due_date}.

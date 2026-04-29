@@ -52,6 +52,7 @@ Rails.application.routes.draw do
     resources :payments, only: [:new] do
       collection do
         get :cancel
+        get :razorpay_success
       end
     end
   end
@@ -67,6 +68,7 @@ Rails.application.routes.draw do
 
   namespace :webhooks do
     post "stripe/checkout/fulfillment", to: "stripe#fulfill_stripe_checkout"
+    post "razorpay/payment_links", to: "razorpay#payment_links"
   end
 
   # Keep docs reachable from the main app domain.

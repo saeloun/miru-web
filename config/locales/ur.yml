@@ -54,6 +54,9 @@ ur:
       success: اوتار کامیابی سے حذف ہو گیا۔
     update:
       success: اوتار کامیابی کے ساتھ اپ ڈیٹ ہو گیا۔
+    validation:
+      file_too_large: must be smaller than %{size_mb}MB
+      invalid_content_type: must be a PNG, JPG, JPEG, or WEBP image
   client:
     add: کلائنٹ شامل کریں۔
     address:
@@ -559,11 +562,11 @@ ur:
       payment_rows:
         account_number: اکاؤنٹ نمبر
         bank_name: بینک کا نام
+        ein: EIN
         gst_number: جی ایس ٹی نمبر
         routing_number: روٹنگ نمبر
         swift_code: سوئفٹ کوڈ
         tax_id: ٹیکس ID
-        ein: EIN
         us_taxpayer_id: U.S. Taxpayer ID
         vat_number: VAT نمبر
       prepared_by: "%{company_name} کے ذریعہ تیار کردہ، %{issue_date} جاری کیا گیا،
@@ -742,9 +745,11 @@ ur:
       message: ٹائم شیٹ بنائی گئی۔
     destroy:
       failure: ٹائم شیٹ کے اندراجات کو حذف کرنے میں ناکام
+      locked: Only admins can delete entries older than 7 days
       message: ٹائم شیٹ حذف کر دی گئی۔
     update:
       failure: ٹائم شیٹ اندراجات کو اپ ڈیٹ کرنے میں ناکام
+      locked: Only admins can edit entries older than 7 days
       message: ٹائم شیٹ کو اپ ڈیٹ کر دیا گیا۔
   totp:
     disable_passkey_first: مستند ایپ 2FA کو فعال کرنے سے پہلے مطلوبہ پاسکی سائن ان

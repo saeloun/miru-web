@@ -54,6 +54,9 @@ ja:
       success: アバターは正常に削除されました
     update:
       success: アバターの更新に成功しました
+    validation:
+      file_too_large: must be smaller than %{size_mb}MB
+      invalid_content_type: must be a PNG, JPG, JPEG, or WEBP image
   client:
     add: クライアントを追加
     address:
@@ -508,11 +511,11 @@ ja:
       payment_rows:
         account_number: 口座番号
         bank_name: 銀行名
+        ein: EIN
         gst_number: GST番号
         routing_number: ルーティング番号
         swift_code: スウィフトコード
         tax_id: 納税者番号
-        ein: EIN
         us_taxpayer_id: U.S. Taxpayer ID
         vat_number: VAT番号
       prepared_by: 作成者：%{company_name}、発行者：%{issue_date}、支払期限：%{due_date}。
@@ -687,9 +690,11 @@ ja:
       message: タイムシートが作成されました
     destroy:
       failure: タイムシートエントリの削除に失敗しました
+      locked: Only admins can delete entries older than 7 days
       message: タイムシートが削除されました
     update:
       failure: タイムシートのエントリの更新に失敗しました
+      locked: Only admins can edit entries older than 7 days
       message: タイムシートが更新されました
   totp:
     disable_passkey_first: 認証アプリの2要素認証を有効にする前に、パスキーによるサインインを無効にしてください。

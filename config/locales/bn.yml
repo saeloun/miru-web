@@ -54,6 +54,9 @@ bn:
       success: অবতার সফলভাবে মুছে ফেলা হয়েছে
     update:
       success: অবতার সফলভাবে আপডেট করা হয়েছে
+    validation:
+      file_too_large: must be smaller than %{size_mb}MB
+      invalid_content_type: must be a PNG, JPG, JPEG, or WEBP image
   client:
     add: ক্লায়েন্ট যোগ করুন
     address:
@@ -563,11 +566,11 @@ bn:
       payment_rows:
         account_number: অ্যাকাউন্ট নম্বর
         bank_name: ব্যাংকের নাম
+        ein: EIN
         gst_number: জিএসটি নম্বর
         routing_number: রাউটিং নম্বর
         swift_code: সুইফট কোড
         tax_id: ট্যাক্স আইডি
-        ein: EIN
         us_taxpayer_id: U.S. Taxpayer ID
         vat_number: ভ্যাট নম্বর
       prepared_by: প্রস্তুত করেছেন %{company_name}, ইস্যু করা হয়েছে %{issue_date},
@@ -746,9 +749,11 @@ bn:
       message: টাইমশিট তৈরি করা হয়েছে
     destroy:
       failure: টাইমশিট এন্ট্রিগুলি মুছে ফেলা সম্ভব হয়নি
+      locked: Only admins can delete entries older than 7 days
       message: টাইমশিট মুছে ফেলা হয়েছে
     update:
       failure: টাইমশিট এন্ট্রি আপডেট করতে ব্যর্থ হয়েছে
+      locked: Only admins can edit entries older than 7 days
       message: টাইমশিট আপডেট করা হয়েছে
   totp:
     disable_passkey_first: অথেন্টিকেটর অ্যাপের ২এফএ চালু করার আগে প্রয়োজনীয় পাসকি

@@ -172,7 +172,9 @@ const AddEntryMobile = ({
       >
         <SidePanel.Header className="mb-2 flex items-center justify-between bg-primary px-5 py-5 text-white lg:bg-white lg:font-bold lg:text-foreground">
           <span className="flex w-full items-center justify-center pl-6 text-base font-medium leading-5">
-            {editEntryId ? i18n.t("timeTracking.editTimeEntry") : i18n.t("timeTracking.newTimeEntry")}
+            {editEntryId
+              ? i18n.t("timeTracking.editTimeEntry")
+              : i18n.t("timeTracking.newTimeEntry")}
           </span>
           <Button style="ternary" onClick={handleClose}>
             <XIcon className="text-white lg:text-foreground" size={16} />
@@ -468,7 +470,9 @@ const AddEntryMobile = ({
                   onClick={handleDuplicate}
                 >
                   <CopyIcon className="mr-2 text-primary" size={20} />
-                  <span className="font-bold">{i18n.t("timeTracking.copyLastWeek")}</span>
+                  <span className="font-bold">
+                    {i18n.t("timeTracking.copyLastWeek")}
+                  </span>
                 </Button>
                 <Button
                   className="flex w-1/2 items-center justify-center rounded border border-destructive py-2 text-destructive"
