@@ -105,9 +105,14 @@ module Subscriptions
       def value_from(object, key)
         return if object.nil?
 
+        if object.respond_to?(:[])
+          value = object[key]
+          return value unless value.nil?
+        end
+
         object.public_send(key) if object.respond_to?(key)
-      rescue NoMethodError
-        object[key] if object.respond_to?(:[])
+      rescue NoMethodError, TypeError, IndexError
+        nil
       end
 
       def notify_plan_purchase!(target_company, stripe_subscription)
@@ -121,7 +126,7 @@ module Subscriptions
           company_id: target_company.id,
           alert_email:,
           plan_label: target_company.current_plan_label.to_s.humanize.titleize,
-          stripe_subscription_id: stripe_subscription.id,
+          stripe_subscription_id: subscription_value(stripe_subscription, :id),
           subscription_interval: stripe_subscription_interval(stripe_subscription),
           seat_quantity: target_company.billable_team_seats,
           billing_url: "#{ENV['APP_BASE_URL']}/settings/billing"
