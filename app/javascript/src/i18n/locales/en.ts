@@ -820,6 +820,8 @@ const en = {
     stop: "Stop",
     reset: "Reset",
     timer: "Timer",
+    newTimer: "New timer",
+    untitledTimer: "Untitled timer",
     saveTimeEntry: "Save Time Entry",
     saveTimeEntryDescription:
       "You tracked %{time}. Would you like to save this as a time entry?",

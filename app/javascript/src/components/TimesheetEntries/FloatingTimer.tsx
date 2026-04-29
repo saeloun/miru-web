@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import axios from "axios";
 import { Card, CardContent } from "../ui/card";
 import { Button } from "../ui/button";
@@ -27,6 +27,7 @@ import {
   Timer,
   CaretDown,
   CaretUp,
+  Plus,
 } from "phosphor-react";
 import { cn } from "../../lib/utils";
 import { toast } from "sonner";
@@ -35,10 +36,17 @@ import { i18n } from "../../i18n";
 import { timesheetEntryApi } from "apis/api";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import {
-  loadStoredTimerState,
-  persistTimerState,
-  clearStoredTimerState,
+  createTimerState,
+  loadStoredTimerDeck,
+  persistTimerDeck,
   defaultTimerState,
+  TIMER_DECK_VERSION,
+  emptyTimerDeck,
+  formatTimerDuration,
+  pauseRunningTimers,
+  timerElapsedMs,
+  type StoredTimerDeck,
+  type StoredTimerState,
 } from "utils/timeTrackingTimer";
 
 interface FloatingTimerProps {
@@ -54,7 +62,25 @@ interface FloatingTimerProps {
   } | null;
 }
 
-type TimerState = ReturnType<typeof defaultTimerState>;
+type TimerState = StoredTimerState;
+type TimerDeck = StoredTimerDeck;
+
+// Timer decks must always have at least one timer and a valid active timer id.
+const ensureTimerDeck = (deck: TimerDeck | null | undefined): TimerDeck => {
+  if (deck?.version !== TIMER_DECK_VERSION || !deck.timers?.length) {
+    return emptyTimerDeck();
+  }
+
+  const activeTimerId = deck.timers.some(
+    timer => timer.id === deck.activeTimerId
+  )
+    ? deck.activeTimerId
+    : deck.timers[0].id;
+
+  return activeTimerId === deck.activeTimerId
+    ? deck
+    : { ...deck, activeTimerId };
+};
 
 const FloatingTimer: React.FC<FloatingTimerProps> = ({
   onSaveEntry,
@@ -68,9 +94,20 @@ const FloatingTimer: React.FC<FloatingTimerProps> = ({
 
   const [isMinimized, setIsMinimized] = useState(false);
   const [showSaveDialog, setShowSaveDialog] = useState(false);
-  const [timer, setTimer] = useState<TimerState>(() => loadStoredTimerState());
+  const [timerDeck, setTimerDeck] = useState<TimerDeck>(() =>
+    ensureTimerDeck(loadStoredTimerDeck())
+  );
 
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const timer = useMemo(
+    () =>
+      timerDeck.timers.find(
+        currentTimer => currentTimer.id === timerDeck.activeTimerId
+      ) ||
+      timerDeck.timers[0] ||
+      defaultTimerState(),
+    [timerDeck]
+  );
 
   // Fetch projects and clients from API
   const { data: projectsData } = useQuery({
@@ -102,25 +139,65 @@ const FloatingTimer: React.FC<FloatingTimerProps> = ({
     },
   });
 
-  useEffect(() => {
-    persistTimerState(timer);
-  }, [timer]);
+  const updateActiveTimer = (
+    updater: (timerState: TimerState) => TimerState
+  ) => {
+    setTimerDeck(prev => ({
+      ...prev,
+      timers: prev.timers.map(currentTimer =>
+        currentTimer.id === prev.activeTimerId
+          ? updater(currentTimer)
+          : currentTimer
+      ),
+    }));
+  };
 
   useEffect(() => {
-    setTimer(loadStoredTimerState());
+    persistTimerDeck(timerDeck);
+  }, [timerDeck]);
+
+  useEffect(() => {
+    setTimerDeck(ensureTimerDeck(loadStoredTimerDeck()));
   }, [externalSyncKey]);
 
   useEffect(() => {
     if (!resumeFromEntry) return;
 
-    setTimer({
-      isRunning: true,
-      startTime: resumeFromEntry.resumeAt,
-      elapsedTime: 0,
-      client: resumeFromEntry.client,
-      project: resumeFromEntry.project,
-      description: resumeFromEntry.description || "",
-      projectId: resumeFromEntry.projectId,
+    setTimerDeck(prev => {
+      const existingTimer = prev.timers.find(
+        currentTimer =>
+          currentTimer.projectId === resumeFromEntry.projectId &&
+          currentTimer.project === resumeFromEntry.project &&
+          currentTimer.description === (resumeFromEntry.description || "") &&
+          currentTimer.startTime &&
+          Math.abs(currentTimer.startTime - resumeFromEntry.resumeAt) < 5000
+      );
+
+      const resumedTimer = {
+        ...(existingTimer || createTimerState()),
+        isRunning: true,
+        startTime: resumeFromEntry.resumeAt,
+        client: resumeFromEntry.client,
+        project: resumeFromEntry.project,
+        description: resumeFromEntry.description || "",
+        projectId: resumeFromEntry.projectId,
+      };
+
+      const pausedTimers = pauseRunningTimers(
+        prev.timers,
+        resumeFromEntry.resumeAt,
+        resumedTimer.id
+      );
+
+      return {
+        activeTimerId: resumedTimer.id,
+        timers: existingTimer
+          ? pausedTimers.map(currentTimer =>
+              currentTimer.id === resumedTimer.id ? resumedTimer : currentTimer
+            )
+          : [...pausedTimers, resumedTimer],
+        version: TIMER_DECK_VERSION,
+      };
     });
   }, [resumeFromEntry]);
 
@@ -128,18 +205,16 @@ const FloatingTimer: React.FC<FloatingTimerProps> = ({
   useEffect(() => {
     if (timer.isRunning) {
       intervalRef.current = setInterval(() => {
-        setTimer(prev => ({
+        const now = Date.now();
+
+        updateActiveTimer(prev => ({
           ...prev,
-          elapsedTime: prev.startTime
-            ? Date.now() - prev.startTime
-            : prev.elapsedTime,
+          elapsedTime: timerElapsedMs(prev, now),
         }));
       }, 1000);
-    } else {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-        intervalRef.current = null;
-      }
+    } else if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
     }
 
     return () => {
@@ -147,31 +222,32 @@ const FloatingTimer: React.FC<FloatingTimerProps> = ({
         clearInterval(intervalRef.current);
       }
     };
-  }, [timer.isRunning, timer.startTime]);
-
-  const formatTime = (milliseconds: number) => {
-    const seconds = Math.floor(milliseconds / 1000);
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    const secs = seconds % 60;
-
-    return `${hours.toString().padStart(2, "0")}:${minutes
-      .toString()
-      .padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
-  };
+  }, [timerDeck.activeTimerId, timer.isRunning, timer.startTime]);
 
   const startTimer = () => {
-    setTimer(prev => ({
+    const now = Date.now();
+
+    setTimerDeck(prev => ({
       ...prev,
-      isRunning: true,
-      startTime: Date.now() - prev.elapsedTime,
+      timers: pauseRunningTimers(prev.timers, now, prev.activeTimerId).map(
+        currentTimer =>
+          currentTimer.id === prev.activeTimerId
+            ? {
+                ...currentTimer,
+                elapsedTime: timerElapsedMs(currentTimer, now),
+                isRunning: true,
+                startTime: now - timerElapsedMs(currentTimer, now),
+              }
+            : currentTimer
+      ),
     }));
     toast.success(i18n.t("timer.timerStarted"));
   };
 
   const pauseTimer = () => {
-    setTimer(prev => ({
+    updateActiveTimer(prev => ({
       ...prev,
+      elapsedTime: timerElapsedMs(prev),
       isRunning: false,
       startTime: null,
     }));
@@ -179,7 +255,15 @@ const FloatingTimer: React.FC<FloatingTimerProps> = ({
   };
 
   const stopTimer = () => {
-    if (timer.elapsedTime > 0) {
+    const elapsedTime = timerElapsedMs(timer);
+
+    if (elapsedTime > 0) {
+      updateActiveTimer(prev => ({
+        ...prev,
+        elapsedTime,
+        isRunning: false,
+        startTime: null,
+      }));
       setShowSaveDialog(true);
     } else {
       resetTimer();
@@ -187,8 +271,28 @@ const FloatingTimer: React.FC<FloatingTimerProps> = ({
   };
 
   const resetTimer = () => {
-    setTimer(defaultTimerState());
-    clearStoredTimerState();
+    setTimerDeck(prev => {
+      if (prev.timers.length <= 1) {
+        const nextTimer = defaultTimerState();
+
+        return {
+          activeTimerId: nextTimer.id,
+          timers: [nextTimer],
+          version: TIMER_DECK_VERSION,
+        };
+      }
+
+      const remainingTimers = prev.timers.filter(
+        currentTimer => currentTimer.id !== prev.activeTimerId
+      );
+      const nextActiveTimer = remainingTimers[0] || defaultTimerState();
+
+      return {
+        activeTimerId: nextActiveTimer.id,
+        timers: remainingTimers.length ? remainingTimers : [nextActiveTimer],
+        version: TIMER_DECK_VERSION,
+      };
+    });
     toast.info(i18n.t("timer.timerReset"));
   };
 
@@ -243,7 +347,7 @@ const FloatingTimer: React.FC<FloatingTimerProps> = ({
   const handleProjectChange = (projectName: string) => {
     const project = projectsData?.projects.find(p => p.name === projectName);
     if (project) {
-      setTimer(prev => ({
+      updateActiveTimer(prev => ({
         ...prev,
         project: projectName,
         client: project.client,
@@ -252,8 +356,95 @@ const FloatingTimer: React.FC<FloatingTimerProps> = ({
     }
   };
 
+  const addTimer = () => {
+    const now = Date.now();
+    const nextTimer = {
+      ...createTimerState(),
+      isRunning: true,
+      startTime: now,
+    };
+
+    setTimerDeck(prev => ({
+      activeTimerId: nextTimer.id,
+      timers: [...pauseRunningTimers(prev.timers, now), nextTimer],
+      version: TIMER_DECK_VERSION,
+    }));
+  };
+
+  const switchTimer = (timerId: string) => {
+    const now = Date.now();
+
+    setTimerDeck(prev => ({
+      activeTimerId: timerId,
+      timers: pauseRunningTimers(prev.timers, now, timerId).map(currentTimer =>
+        currentTimer.id === timerId
+          ? {
+              ...currentTimer,
+              elapsedTime: timerElapsedMs(currentTimer, now),
+              isRunning: true,
+              startTime: now - timerElapsedMs(currentTimer, now),
+            }
+          : currentTimer
+      ),
+      version: TIMER_DECK_VERSION,
+    }));
+  };
+
+  const timerLabel = (timerState: TimerState) =>
+    timerState.description ||
+    timerState.project ||
+    i18n.t("timer.untitledTimer");
+
   const isPristineTimer =
-    !timer.isRunning && timer.elapsedTime === 0 && !timer.project;
+    timerDeck.timers.length === 1 &&
+    !timer.isRunning &&
+    timer.elapsedTime === 0 &&
+    !timer.project &&
+    !timer.description;
+
+  const timerSwitcher = (
+    <div
+      className="flex flex-wrap items-center gap-2"
+      data-testid="timer-switcher"
+    >
+      {timerDeck.timers.map(currentTimer => {
+        const isActive = currentTimer.id === timerDeck.activeTimerId;
+
+        return (
+          <button
+            key={currentTimer.id}
+            type="button"
+            aria-pressed={isActive}
+            data-testid="timer-switcher-item"
+            onClick={() => switchTimer(currentTimer.id)}
+            className={cn(
+              "min-w-28 max-w-48 rounded-md border px-3 py-2 text-left text-xs transition",
+              isActive
+                ? "border-primary bg-primary/10 text-foreground"
+                : "border-border bg-background text-muted-foreground hover:bg-muted"
+            )}
+          >
+            <span className="block truncate font-medium">
+              {timerLabel(currentTimer)}
+            </span>
+            <span className="block font-mono tabular-nums">
+              {formatTimerDuration(timerElapsedMs(currentTimer))}
+            </span>
+          </button>
+        );
+      })}
+      <Button
+        type="button"
+        size="sm"
+        variant="outline"
+        onClick={addTimer}
+        data-testid="timer-new"
+      >
+        <Plus size={14} className="mr-1" />
+        {i18n.t("timer.newTimer")}
+      </Button>
+    </div>
+  );
 
   const saveEntrySummary = (
     <>
@@ -268,7 +459,7 @@ const FloatingTimer: React.FC<FloatingTimerProps> = ({
         <div>
           <Label>{i18n.t("timeTracking.duration")}</Label>
           <p className="text-sm text-muted-foreground">
-            {formatTime(timer.elapsedTime)}
+            {formatTimerDuration(timer.elapsedTime)}
           </p>
         </div>
 
@@ -360,7 +551,7 @@ const FloatingTimer: React.FC<FloatingTimerProps> = ({
                       {i18n.t("timer.webTimerLabel")}
                     </p>
                     <p className="font-mono text-3xl font-bold text-foreground">
-                      {formatTime(timer.elapsedTime)}
+                      {formatTimerDuration(timer.elapsedTime)}
                     </p>
                   </div>
                 </div>
@@ -389,6 +580,8 @@ const FloatingTimer: React.FC<FloatingTimerProps> = ({
                   </Button>
                 </div>
               </div>
+
+              {timerSwitcher}
 
               <div className="grid gap-3 lg:grid-cols-[minmax(0,280px)_1fr]">
                 <div className="space-y-2">
@@ -422,7 +615,7 @@ const FloatingTimer: React.FC<FloatingTimerProps> = ({
                     id="timer-description-inline"
                     value={timer.description}
                     onChange={e =>
-                      setTimer(prev => ({
+                      updateActiveTimer(prev => ({
                         ...prev,
                         description: e.target.value,
                       }))
@@ -442,7 +635,7 @@ const FloatingTimer: React.FC<FloatingTimerProps> = ({
               <DialogTitle>{i18n.t("timer.saveTimeEntry")}</DialogTitle>
               <DialogDescription>
                 {i18n.t("timer.saveTimeEntryDescription", {
-                  time: formatTime(timer.elapsedTime),
+                  time: formatTimerDuration(timer.elapsedTime),
                 })}
               </DialogDescription>
             </DialogHeader>
@@ -479,7 +672,7 @@ const FloatingTimer: React.FC<FloatingTimerProps> = ({
                     }
                   />
                   <span className="font-mono text-lg font-bold text-foreground">
-                    {formatTime(timer.elapsedTime)}
+                    {formatTimerDuration(timer.elapsedTime)}
                   </span>
                 </div>
                 <div className="flex gap-1">
@@ -532,9 +725,11 @@ const FloatingTimer: React.FC<FloatingTimerProps> = ({
                   </div>
                 </div>
 
+                {timerSwitcher}
+
                 <div className="text-center">
                   <div className="mb-2 font-mono text-3xl font-bold text-foreground">
-                    {formatTime(timer.elapsedTime)}
+                    {formatTimerDuration(timer.elapsedTime)}
                   </div>
                   <div className="flex justify-center gap-2">
                     {timer.isRunning ? (
@@ -587,7 +782,7 @@ const FloatingTimer: React.FC<FloatingTimerProps> = ({
                       id="timer-description"
                       value={timer.description}
                       onChange={e =>
-                        setTimer(prev => ({
+                        updateActiveTimer(prev => ({
                           ...prev,
                           description: e.target.value,
                         }))
@@ -610,7 +805,7 @@ const FloatingTimer: React.FC<FloatingTimerProps> = ({
             <DialogTitle>{i18n.t("timer.saveTimeEntry")}</DialogTitle>
             <DialogDescription>
               {i18n.t("timer.saveTimeEntryDescription", {
-                time: formatTime(timer.elapsedTime),
+                time: formatTimerDuration(timer.elapsedTime),
               })}
             </DialogDescription>
           </DialogHeader>
