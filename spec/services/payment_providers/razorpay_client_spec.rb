@@ -39,6 +39,16 @@ RSpec.describe PaymentProviders::RazorpayClient do
     end
   end
 
+  describe "#notify_payment_link" do
+    it "uses the official Razorpay Payment Link notify endpoint" do
+      response = instance_double(Razorpay::Entity, attributes: { "success" => true })
+
+      expect(Razorpay::PaymentLink).to receive(:notify_by).with("plink_test_123", "sms").and_return(response)
+
+      expect(client.notify_payment_link("plink_test_123", "sms")).to eq("success" => true)
+    end
+  end
+
   describe "#verify_payment_link_signature" do
     let(:signature_payload) { "plink_test_123|miru-inv-1|paid|pay_test_123" }
     let(:signature) { OpenSSL::HMAC.hexdigest("SHA256", "secret", signature_payload) }

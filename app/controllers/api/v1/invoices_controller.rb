@@ -128,6 +128,33 @@ class Api::V1::InvoicesController < Api::V1::ApplicationController
     end
   end
 
+  def razorpay_payment_link
+    authorize invoice
+
+    return render json: { error: "Invoice is already paid" }, status: 422 if invoice.paid?
+    return render json: { error: "Razorpay payments are available only for INR invoices" }, status: 422 unless invoice.currency == "INR"
+    return render json: { error: "Razorpay is not enabled for invoices" }, status: 422 unless razorpay_provider
+    return render json: { error: "SMS payment links are not enabled for this workspace" }, status: 422 if notify_sms? && !razorpay_sms_available?
+    return render json: { error: "Client phone is required to send SMS payment links" }, status: 422 if notify_sms? && invoice.client.phone.blank?
+
+    service = PaymentProviders::RazorpayPaymentLinkService.new(
+      invoice:,
+      provider: razorpay_provider,
+      callback_url: razorpay_success_invoice_payments_url(invoice),
+      notify_sms: notify_sms?
+    )
+    payment_link_url = service.process
+
+    render json: {
+      message: service.sms_sent? ? "Razorpay payment link sent by SMS" : "Razorpay payment link ready",
+      payment_link_url:,
+      sms_sent: service.sms_sent?
+    }, status: service.sms_sent? ? 202 : 200
+  rescue PaymentProviders::RazorpayClient::Error => error
+    Rails.logger.warn("Razorpay payment link failed for invoice #{invoice.id}: #{error.message}")
+    render json: { error: error.message.presence || "Unable to create Razorpay payment link" }, status: 422
+  end
+
   def download
     authorize invoice
 
@@ -165,6 +192,28 @@ class Api::V1::InvoicesController < Api::V1::ApplicationController
 
     def invoice_email_params
       params.require(:invoice_email).permit(:subject, :message, recipients: [])
+    end
+
+    def razorpay_provider
+      return @_razorpay_provider if instance_variable_defined?(:@_razorpay_provider)
+
+      provider = current_company.payments_providers.find_by(
+        name: PaymentsProvider::RAZORPAY_PROVIDER,
+        enabled: true
+      )
+
+      @_razorpay_provider =
+        if provider&.enabled_on_invoices? && provider.razorpay_configured?
+          provider
+        end
+    end
+
+    def notify_sms?
+      ActiveModel::Type::Boolean.new.cast(params[:notify_sms]) == true
+    end
+
+    def razorpay_sms_available?
+      current_company.country == "IN" && current_company.pro_access? && razorpay_provider&.sms_notifications_enabled?
     end
 
     def track_event

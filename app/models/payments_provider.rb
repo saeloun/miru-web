@@ -16,6 +16,7 @@ class PaymentsProvider < ApplicationRecord
     :linked_account_id,
     :platform_fee_percent,
     :route_transfers_enabled,
+    :sms_notifications_enabled,
     :webhook_secret,
     :payouts_enabled,
     :payout_account_number,
@@ -100,6 +101,10 @@ class PaymentsProvider < ApplicationRecord
 
   def route_transfers_enabled?
     ActiveModel::Type::Boolean.new.cast(route_transfers_enabled)
+  end
+
+  def sms_notifications_enabled?
+    ActiveModel::Type::Boolean.new.cast(sms_notifications_enabled)
   end
 
   def payouts_enabled?

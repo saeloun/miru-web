@@ -70,6 +70,7 @@ RSpec.describe "Api::V1::PaymentSettings#index", type: :request do
             linked_account_id: "acc_test_123",
             platform_fee_percent: "5",
             route_transfers_enabled: true,
+            sms_notifications_enabled: true,
             payouts_enabled: true,
             payout_account_number: "7878780080316316",
             payout_upi_id: "vendor@upi",
@@ -91,6 +92,8 @@ RSpec.describe "Api::V1::PaymentSettings#index", type: :request do
       expect(razorpay["linkedAccountId"]).to eq("acc_test_123")
       expect(razorpay["platformFeePercent"]).to eq("5.0")
       expect(razorpay["routeTransfersEnabled"]).to be(true)
+      expect(razorpay["smsNotificationsAvailable"]).to be(false)
+      expect(razorpay["smsNotificationsEnabled"]).to be(false)
       expect(razorpay["payoutsEnabled"]).to be(true)
       expect(razorpay["payoutAccountNumber"]).to eq("7878780080316316")
       expect(razorpay["payoutUpiId"]).to eq("vendor@upi")
@@ -99,12 +102,38 @@ RSpec.describe "Api::V1::PaymentSettings#index", type: :request do
 
       provider = company.payments_providers.find_by!(name: PaymentsProvider::RAZORPAY_PROVIDER)
       expect(provider.accepted_payment_methods).to eq(["razorpay"])
+      expect(provider.sms_notifications_enabled?).to be(false)
       expect(provider.key_secret).to eq("secret")
       expect(provider.webhook_secret).to eq("webhook_secret")
       expect(provider.settings["key_secret"]).to be_nil
       expect(provider.settings["webhook_secret"]).to be_nil
       expect(provider.settings["key_secret_ciphertext"]).to be_present
       expect(provider.settings["webhook_secret_ciphertext"]).to be_present
+    end
+
+    context "when the workspace has Indian pro access" do
+      let(:company) { create(:india_company, plan_tier: "paid") }
+
+      it "allows Razorpay SMS payment link notifications" do
+        patch(
+          "/api/v1/payments/settings/razorpay",
+          params: {
+            provider: {
+              enabled: true,
+              enabled_on_invoices: true,
+              key_id: "rzp_test_123",
+              key_secret: "secret",
+              sms_notifications_enabled: true
+            }
+          },
+          headers: auth_headers(user)
+        )
+
+        expect(response).to have_http_status(:ok)
+        razorpay = json_response["providers"]["razorpay"]
+        expect(razorpay["smsNotificationsAvailable"]).to be(true)
+        expect(razorpay["smsNotificationsEnabled"]).to be(true)
+      end
     end
 
     it "keeps existing encrypted Razorpay secrets when secret fields are blank" do

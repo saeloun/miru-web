@@ -136,6 +136,7 @@ namespace :api, defaults: { format: "json" } do
       member do
         post :send_invoice
         post :send_reminder
+        post :razorpay_payment_link
         get :download
       end
     end
