@@ -20,15 +20,7 @@ class InvoicePayment::RazorpayPaymentLinkWebhookFulfillment
     return expire_payment_link if INACTIVE_LINK_EVENTS.include?(event)
     return true if superseded_payment_link?
 
-    payment = nil
-    invoice.reload
-    invoice.with_lock do
-      return true if invoice.paid?
-      return true if duplicate_payment?
-
-      payment = InvoicePayment::Settle.process(payment_params, invoice)
-      invoice.update!(payment_infos: processed_payment_infos)
-    end
+    payment = settle_new_payment
     enqueue_auto_payout(payment) if payment.present?
     send_payment_emails if invoice.paid? && payment.present?
 
@@ -110,6 +102,17 @@ class InvoicePayment::RazorpayPaymentLinkWebhookFulfillment
 
     def duplicate_payment?
       payment_id.present? && stored_processed_payment_ids.include?(payment_id)
+    end
+
+    def settle_new_payment
+      invoice.reload
+      invoice.with_lock do
+        return if invoice.paid? || duplicate_payment?
+
+        InvoicePayment::Settle.process(payment_params, invoice).tap do
+          invoice.update!(payment_infos: processed_payment_infos)
+        end
+      end
     end
 
     def superseded_payment_link?
