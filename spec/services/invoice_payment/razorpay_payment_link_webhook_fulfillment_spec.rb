@@ -82,6 +82,7 @@ RSpec.describe InvoicePayment::RazorpayPaymentLinkWebhookFulfillment do
     expect(result).to be(true)
     expect(invoice.reload).to be_paid
     expect(invoice.razorpay_payment_id).to eq("pay_test_123")
+    expect(invoice.payment_infos["razorpay_processed_payment_ids"]).to eq(["pay_test_123"])
     expect(Payment.last.transaction_type).to eq("razorpay")
   end
 
@@ -113,6 +114,44 @@ RSpec.describe InvoicePayment::RazorpayPaymentLinkWebhookFulfillment do
 
     expect(invoice.reload.amount_paid).to eq(500)
     expect(Payment.count).to eq(1)
+  end
+
+  it "ignores paid webhook deliveries for superseded payment links" do
+    old_payload = JSON.parse(payload)
+    old_payload["payload"]["payment_link"]["entity"]["id"] = "plink_old"
+    old_payload["payload"]["payment"]["entity"]["id"] = "pay_old"
+    old_payload = old_payload.to_json
+
+    result = described_class.new(payload: old_payload, signature: sign(old_payload)).process
+
+    expect(result).to be(true)
+    expect(invoice.reload).not_to be_paid
+    expect(invoice.razorpay_payment_link_id).to eq("plink_test_123")
+    expect(Payment.count).to eq(0)
+  end
+
+  it "does not replay an older partial Razorpay payment after a newer partial payment" do
+    first_payment = partial_payment_payload(amount: 40_000, payment_id: "pay_1")
+    second_payment = partial_payment_payload(amount: 30_000, payment_id: "pay_2")
+
+    described_class.new(payload: first_payment, signature: sign(first_payment)).process
+    described_class.new(payload: second_payment, signature: sign(second_payment)).process
+    described_class.new(payload: first_payment, signature: sign(first_payment)).process
+
+    expect(invoice.reload.amount_paid).to eq(700)
+    expect(invoice.payment_infos["razorpay_processed_payment_ids"]).to contain_exactly("pay_1", "pay_2")
+    expect(Payment.where(transaction_type: "razorpay").count).to eq(2)
+  end
+
+  it "settles invoices even when payment info metadata is nil" do
+    invoice.update_column(:payment_infos, nil)
+
+    result = described_class.new(payload:, signature:).process
+
+    expect(result).to be(true)
+    expect(invoice.reload).to be_paid
+    expect(invoice.payment_infos["razorpay_payment_id"]).to eq("pay_test_123")
+    expect(invoice.payment_infos["razorpay_processed_payment_ids"]).to eq(["pay_test_123"])
   end
 
   it "finds the invoice by reference id when notes are missing" do
@@ -215,5 +254,14 @@ RSpec.describe InvoicePayment::RazorpayPaymentLinkWebhookFulfillment do
 
   def sign(body)
     OpenSSL::HMAC.hexdigest("SHA256", "webhook_secret", body)
+  end
+
+  def partial_payment_payload(amount:, payment_id:)
+    partial_payload = JSON.parse(payload)
+    partial_payload["event"] = "payment_link.partially_paid"
+    partial_payload["payload"]["payment_link"]["entity"]["amount_paid"] = amount
+    partial_payload["payload"]["payment"]["entity"]["id"] = payment_id
+    partial_payload["payload"]["payment"]["entity"]["amount"] = amount
+    partial_payload.to_json
   end
 end

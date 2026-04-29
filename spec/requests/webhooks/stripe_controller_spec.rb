@@ -101,4 +101,21 @@ RSpec.describe "Stripe webhooks", type: :request do
       subscription:
     )
   end
+
+  it "routes checkout payment completions to invoice fulfillment without hitting Stripe" do
+    event = OpenStruct.new(
+      type: "checkout.session.completed",
+      data: OpenStruct.new(object: OpenStruct.new(mode: "payment"))
+    )
+
+    allow(Stripe::Webhook).to receive(:construct_event).and_return(event)
+    allow(InvoicePayment::StripeCheckoutFulfillment).to receive(:process)
+      .with(event)
+      .and_return(true)
+
+    post "/webhooks/stripe/checkout/fulfillment", params: "{}", headers: headers
+
+    expect(response).to have_http_status(:ok)
+    expect(InvoicePayment::StripeCheckoutFulfillment).to have_received(:process).with(event)
+  end
 end

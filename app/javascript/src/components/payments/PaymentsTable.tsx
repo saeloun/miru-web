@@ -477,8 +477,12 @@ const PaymentsTable: React.FC = () => {
         return (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0">
-                <span className="sr-only">{i18n.t("payments.openMenu")}</span>
+              <Button
+                variant="ghost"
+                className="h-8 w-8 p-0"
+                aria-label={i18n.t("payments.openMenu")}
+                data-testid={`payment-actions-trigger-${payment.id}`}
+              >
                 <DotsThree className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
@@ -503,6 +507,7 @@ const PaymentsTable: React.FC = () => {
               {payment.transactionType === "razorpay" && isAdminUser && (
                 <DropdownMenuItem
                   disabled={!canWithdraw || withdrawingPaymentId === payment.id}
+                  data-testid={`payment-action-withdraw-${payment.id}`}
                   onClick={() => withdrawRazorpayPayment(payment)}
                 >
                   <ArrowDown className="h-4 w-4 mr-2" />

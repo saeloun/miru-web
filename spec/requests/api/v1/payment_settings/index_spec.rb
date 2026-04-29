@@ -160,6 +160,33 @@ RSpec.describe "Api::V1::PaymentSettings#index", type: :request do
       expect(response).to have_http_status(:unprocessable_content)
       expect(json_response["errors"]).to have_key("upi_id")
     end
+
+    it "rejects invalid Razorpay payout and route settings" do
+      patch(
+        "/api/v1/payments/settings/razorpay",
+        params: {
+          provider: {
+            enabled: true,
+            enabled_on_invoices: true,
+            key_id: "rzp_test_123",
+            key_secret: "secret",
+            platform_fee_percent: "31",
+            route_transfers_enabled: true,
+            linked_account_id: "",
+            payouts_enabled: true,
+            payout_account_number: "7878780080316316",
+            payout_upi_id: "bad-upi",
+            payout_purpose: "payout"
+          }
+        },
+        headers: auth_headers(user)
+      )
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(json_response["errors"]).to have_key("platform_fee_percent")
+      expect(json_response["errors"]).to have_key("linked_account_id")
+      expect(json_response["errors"]).to have_key("payout_upi_id")
+    end
   end
 
   context "when user is an employee" do

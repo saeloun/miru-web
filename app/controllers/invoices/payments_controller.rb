@@ -63,9 +63,21 @@ class Invoices::PaymentsController < ApplicationController
     end
 
     def razorpay_provider
-      @_razorpay_provider ||= @invoice.company.payments_providers.find_by(
+      return unless @invoice.currency == "INR"
+      return @_razorpay_provider if instance_variable_defined?(:@_razorpay_provider)
+
+      provider = @invoice.company.payments_providers.find_by(
         name: PaymentsProvider::RAZORPAY_PROVIDER,
         enabled: true
-      ).presence if @invoice.currency == "INR"
+      )
+
+      @_razorpay_provider =
+        if enabled_and_configured_for_invoices?(provider)
+          provider
+        end
+    end
+
+    def enabled_and_configured_for_invoices?(provider)
+      provider&.enabled_on_invoices? && provider.razorpay_configured?
     end
 end

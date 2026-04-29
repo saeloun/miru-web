@@ -59,4 +59,89 @@ RSpec.describe PaymentProviders::RazorpayUpiPayoutService do
       idempotency_key: "idem-123"
     )
   end
+
+  it "uses a recipient UPI override when provided" do
+    described_class.new(
+      provider:,
+      amount: 125,
+      recipient: {
+        name: "Vendor",
+        email: "vendor@example.com",
+        upi_id: "recipient@upi"
+      },
+      reference_id: "miru-payout-2",
+      idempotency_key: "idem-456"
+    ).process
+
+    expect(client).to have_received(:create_upi_payout).with(
+      hash_including(
+        fund_account: hash_including(
+          vpa: { address: "recipient@upi" }
+        )
+      ),
+      idempotency_key: "idem-456"
+    )
+  end
+
+  it "requires enabled payouts before calling Razorpay" do
+    provider.update!(settings: provider.settings.merge("payouts_enabled" => false))
+
+    expect {
+      described_class.new(
+        provider:,
+        amount: 125,
+        recipient: { name: "Vendor", email: "vendor@example.com" },
+        reference_id: "miru-payout-3",
+        idempotency_key: "idem-789"
+      ).process
+    }.to raise_error(ArgumentError, /payouts are not enabled/)
+
+    expect(client).not_to have_received(:create_upi_payout)
+  end
+
+  it "requires payout account details before calling Razorpay" do
+    allow(provider).to receive(:payout_account_number).and_return("")
+
+    expect {
+      described_class.new(
+        provider:,
+        amount: 125,
+        recipient: { name: "Vendor", email: "vendor@example.com" },
+        reference_id: "miru-payout-4",
+        idempotency_key: "idem-101"
+      ).process
+    }.to raise_error(ArgumentError, /account number is missing/)
+
+    expect(client).not_to have_received(:create_upi_payout)
+  end
+
+  it "requires a UPI ID before calling Razorpay" do
+    allow(provider).to receive(:payout_upi_id).and_return("")
+
+    expect {
+      described_class.new(
+        provider:,
+        amount: 125,
+        recipient: { name: "Vendor", email: "vendor@example.com" },
+        reference_id: "miru-payout-5",
+        idempotency_key: "idem-102"
+      ).process
+    }.to raise_error(ArgumentError, /UPI ID is missing/)
+
+    expect(client).not_to have_received(:create_upi_payout)
+  end
+
+  it "requires an idempotency key before calling Razorpay" do
+    expect {
+      described_class.new(
+        provider:,
+        amount: 125,
+        recipient: { name: "Vendor", email: "vendor@example.com" },
+        reference_id: "miru-payout-6",
+        idempotency_key: ""
+      ).process
+    }.to raise_error(ArgumentError, /Idempotency key is missing/)
+
+    expect(client).not_to have_received(:create_upi_payout)
+  end
 end

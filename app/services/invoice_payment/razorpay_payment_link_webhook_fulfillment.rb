@@ -18,15 +18,18 @@ class InvoicePayment::RazorpayPaymentLinkWebhookFulfillment
     return fail_with("Razorpay webhook secret is not configured") if provider&.webhook_secret.blank?
     return fail_with("Invalid Razorpay webhook signature", :invalid_signature) unless valid_signature?
     return expire_payment_link if INACTIVE_LINK_EVENTS.include?(event)
-    return true if invoice.paid?
-    return true if duplicate_payment?
+    return true if superseded_payment_link?
 
-    payment = InvoicePayment::Settle.process(payment_params, invoice)
-    invoice.update!(
-      razorpay_payment_id: payment_id.presence || invoice.razorpay_payment_id,
-      razorpay_payment_link_status: payment_link_status
-    )
-    enqueue_auto_payout(payment)
+    payment = nil
+    invoice.reload
+    invoice.with_lock do
+      return true if invoice.paid?
+      return true if duplicate_payment?
+
+      payment = InvoicePayment::Settle.process(payment_params, invoice)
+      invoice.update!(payment_infos: processed_payment_infos)
+    end
+    enqueue_auto_payout(payment) if payment.present?
     send_payment_emails if invoice.paid? && payment.present?
 
     true
@@ -106,7 +109,30 @@ class InvoicePayment::RazorpayPaymentLinkWebhookFulfillment
     end
 
     def duplicate_payment?
-      payment_id.present? && invoice.razorpay_payment_id == payment_id
+      payment_id.present? && stored_processed_payment_ids.include?(payment_id)
+    end
+
+    def superseded_payment_link?
+      payment_link_id.present? &&
+        invoice.razorpay_payment_link_id.present? &&
+        invoice.razorpay_payment_link_id != payment_link_id
+    end
+
+    def processed_payment_ids
+      (stored_processed_payment_ids + [payment_id]).compact_blank.uniq
+    end
+
+    def processed_payment_infos
+      # Keep every processed payment id so replayed partial-payment webhooks cannot be settled twice.
+      (invoice.payment_infos || {}).merge(
+        "razorpay_payment_id" => payment_id.presence || invoice.razorpay_payment_id,
+        "razorpay_payment_link_status" => payment_link_status,
+        "razorpay_processed_payment_ids" => processed_payment_ids
+      )
+    end
+
+    def stored_processed_payment_ids
+      Array((invoice.payment_infos || {})["razorpay_processed_payment_ids"]).compact_blank
     end
 
     def expire_payment_link
