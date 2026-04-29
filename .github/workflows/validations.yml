@@ -42,7 +42,7 @@ jobs:
           --health-retries=5
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
@@ -52,12 +52,12 @@ jobs:
           bundler: latest
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: 22
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v5
         with:
           version: 9
           run_install: false
@@ -69,7 +69,7 @@ jobs:
           echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_OUTPUT
 
       - name: Setup pnpm cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: |
             ${{ steps.pnpm-cache.outputs.STORE_PATH }}
@@ -79,7 +79,7 @@ jobs:
             ${{ runner.os }}-pnpm-
 
       - name: Restore parallel runtime log cache
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v5
         with:
           path: tmp/parallel_runtime_rspec.log
           key: ${{ runner.os }}-parallel-rspec-runtime-${{ github.ref_name }}-${{ github.sha }}
@@ -128,14 +128,14 @@ jobs:
 
       - name: Save parallel runtime log cache
         if: ${{ always() && hashFiles('tmp/parallel_runtime_rspec.log') != '' }}
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@v5
         with:
           path: tmp/parallel_runtime_rspec.log
           key: ${{ runner.os }}-parallel-rspec-runtime-${{ github.ref_name }}-${{ github.sha }}
 
       - name: Upload test results
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: test-results
           path: |
@@ -155,7 +155,7 @@ jobs:
       contents: read
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
