@@ -115,6 +115,39 @@ RSpec.describe InvoicePayment::RazorpayPaymentLinkWebhookFulfillment do
     expect(Payment.count).to eq(1)
   end
 
+  it "clears a cancelled payment link so a fresh link can be created later" do
+    cancelled_payload = JSON.parse(payload)
+    cancelled_payload["event"] = "payment_link.cancelled"
+    cancelled_payload["payload"].delete("payment")
+    cancelled_payload["payload"]["payment_link"]["entity"]["status"] = "cancelled"
+    cancelled_payload["payload"]["payment_link"]["entity"]["cancelled_at"] = Time.zone.local(2026, 4, 29, 12, 10, 0).to_i
+    cancelled_payload = cancelled_payload.to_json
+
+    result = described_class.new(payload: cancelled_payload, signature: sign(cancelled_payload)).process
+
+    expect(result).to be(true)
+    expect(invoice.reload.razorpay_payment_link_id).to be_nil
+    expect(invoice.razorpay_payment_link_url).to be_nil
+    expect(invoice.razorpay_payment_link_status).to eq("cancelled")
+    expect(Payment.count).to eq(0)
+  end
+
+  it "ignores inactive webhook deliveries for superseded payment links" do
+    expired_payload = JSON.parse(payload)
+    expired_payload["event"] = "payment_link.expired"
+    expired_payload["payload"].delete("payment")
+    expired_payload["payload"]["payment_link"]["entity"]["id"] = "plink_old"
+    expired_payload["payload"]["payment_link"]["entity"]["status"] = "expired"
+    expired_payload = expired_payload.to_json
+
+    result = described_class.new(payload: expired_payload, signature: sign(expired_payload)).process
+
+    expect(result).to be(true)
+    expect(invoice.reload.razorpay_payment_link_id).to eq("plink_test_123")
+    expect(invoice.razorpay_payment_link_url).to eq("https://rzp.io/rzp/test")
+    expect(invoice.razorpay_payment_link_status).to be_nil
+  end
+
   it "rejects invalid signatures without mutating invoice payments" do
     fulfillment = described_class.new(payload:, signature: "bad")
 

@@ -16,7 +16,8 @@ module PaymentProviders
       response = client.create_payment_link(payment_link_payload)
       invoice.update!(
         razorpay_payment_link_id: response.fetch("id"),
-        razorpay_payment_link_url: response.fetch("short_url")
+        razorpay_payment_link_url: response.fetch("short_url"),
+        razorpay_payment_link_status: response["status"].presence || "created"
       )
 
       response.fetch("short_url")
@@ -30,9 +31,16 @@ module PaymentProviders
 
       def existing_payment_link
         payment_link = client.fetch_payment_link(invoice.razorpay_payment_link_id)
-        return invoice.razorpay_payment_link_url if payment_link["status"].in?(["created", "partially_paid"])
+        if payment_link["status"].in?(["created", "partially_paid"])
+          invoice.update!(razorpay_payment_link_status: payment_link["status"]) if invoice.razorpay_payment_link_status != payment_link["status"]
+          return invoice.razorpay_payment_link_url
+        end
 
-        invoice.update!(razorpay_payment_link_id: nil, razorpay_payment_link_url: nil)
+        invoice.update!(
+          razorpay_payment_link_id: nil,
+          razorpay_payment_link_url: nil,
+          razorpay_payment_link_status: payment_link["status"]
+        )
         process
       rescue PaymentProviders::RazorpayClient::Error
         invoice.razorpay_payment_link_url

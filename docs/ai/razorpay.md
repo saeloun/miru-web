@@ -15,13 +15,41 @@
 
 ## Webhook Setup
 
-- Configure this endpoint in Razorpay Dashboard:
+- Configure this Payment Gateway endpoint in Razorpay Dashboard:
   - `https://app.miru.so/webhooks/razorpay/payment_links`
 - Subscribe to:
   - `payment_link.paid`
-  - `payment_link.partially_paid` if partial payments are enabled later.
-- Set a webhook secret in Razorpay Dashboard and paste the same value into Miru Payment Settings.
+  - `payment_link.partially_paid`
+  - `payment_link.cancelled`
+  - `payment_link.expired`
+- Configure this RazorpayX endpoint in RazorpayX Dashboard:
+  - `https://app.miru.so/webhooks/razorpay/payouts`
+- Subscribe to:
+  - `payout.pending`
+  - `payout.queued`
+  - `payout.initiated`
+  - `payout.processed`
+  - `payout.updated`
+  - `payout.failed`
+  - `payout.rejected`
+  - `payout.reversed`
+  - `payout.cancelled`
+- Set a webhook secret in Razorpay Dashboard and paste the same value into Miru Payment Settings. The secret does not need to be the API key secret.
 - For staging/local tunnel testing, configure a separate Razorpay Test Mode webhook and a separate test webhook secret.
+- Razorpay signs the raw request body in the `X-Razorpay-Signature` header with HMAC-SHA256. Do not parse or re-serialize the body before signature verification.
+- Razorpay may deliver duplicate events and may not always deliver events in order. Miru handles duplicate Payment Link payments by Razorpay payment id, clears cancelled/expired links so the next invoice payment attempt creates a fresh link, and updates payout state from signed payout events.
+
+## Dashboard Onboarding
+
+1. In Miru, open Settings → Payment Settings → Razorpay.
+2. Click **Open Razorpay** and copy the live Key ID and Key Secret from Razorpay Dashboard.
+3. Save the Key ID and Key Secret in Miru.
+4. Copy the webhook setup block from Miru. It includes both production URLs and the event names to select.
+5. In Razorpay Dashboard → Accounts & Settings → Webhooks, add the Payment Links webhook URL and select the Payment Link events above.
+6. In RazorpayX Dashboard → My Account & Settings → Developer Controls, add the payouts webhook URL and select the payout events above.
+7. Use the same webhook secret value in both Razorpay dashboards and in Miru unless there is an operational reason to rotate them separately.
+8. Enable **Show Razorpay on INR invoices** after keys and webhook secret are saved.
+9. Enable **UPI payouts** only after RazorpayX is activated, the RazorpayX account number is present, and the payout UPI ID is verified.
 
 ## Webhook Rotation
 

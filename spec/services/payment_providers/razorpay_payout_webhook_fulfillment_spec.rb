@@ -50,6 +50,19 @@ RSpec.describe PaymentProviders::RazorpayPayoutWebhookFulfillment do
     expect(payout.processed_at).to be_present
   end
 
+  it "uses the payout entity status for payout.updated webhook deliveries" do
+    updated_payload = JSON.parse(payload)
+    updated_payload["event"] = "payout.updated"
+    updated_payload["payload"]["payout"]["entity"]["status"] = "queued"
+    updated_payload["payload"]["payout"]["entity"]["processed_at"] = nil
+    updated_payload = updated_payload.to_json
+
+    fulfillment = described_class.new(payload: updated_payload, signature: sign(updated_payload))
+
+    expect(fulfillment.process).to be(true)
+    expect(payout.reload).to be_queued
+  end
+
   it "rejects invalid signatures" do
     fulfillment = described_class.new(payload:, signature: "bad")
 

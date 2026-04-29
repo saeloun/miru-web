@@ -45,6 +45,7 @@ class Invoice < ApplicationRecord
     :stripe_payment_intent,
     :razorpay_payment_link_id,
     :razorpay_payment_link_url,
+    :razorpay_payment_link_status,
     :razorpay_payment_id
 
   before_validation :set_external_view_key, on: :create

@@ -7,6 +7,7 @@ module PaymentProviders
       "payout.queued" => :queued,
       "payout.initiated" => :processing,
       "payout.processed" => :processed,
+      "payout.updated" => nil,
       "payout.failed" => :failed,
       "payout.rejected" => :failed,
       "payout.reversed" => :reversed,
@@ -27,7 +28,7 @@ module PaymentProviders
       return fail_with("Invalid Razorpay webhook signature", :invalid_signature) unless valid_signature?
 
       payout.update!(
-        status: STATUS_BY_EVENT.fetch(event),
+        status: next_status,
         failure_reason: failure_reason,
         raw_response: payout.raw_response.merge("webhook" => parsed_payload),
         processed_at: processed_at
@@ -82,6 +83,18 @@ module PaymentProviders
         payout_entity["failure_reason"].presence ||
           payout_entity.dig("status_details", "description").presence ||
           payout_entity.dig("error", "description").presence
+      end
+
+      def next_status
+        STATUS_BY_EVENT.fetch(event) || status_from_payload || :processing
+      end
+
+      def status_from_payload
+        status = payout_entity["status"].to_s
+        return :processing if status == "initiated"
+        return :failed if status == "rejected"
+
+        status.to_sym if RazorpayPayout.statuses.key?(status)
       end
 
       def processed_at

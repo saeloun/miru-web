@@ -5,6 +5,8 @@
 ### Added
 
 - UPI payment settings with free Miru-branded QR generation for INR invoices, including public invoice and PDF invoice display
+- Razorpay webhook handling for cancelled and expired Payment Links, plus `payout.updated` status refreshes
+- Razorpay onboarding docs with exact Payment Links and RazorpayX webhook setup steps
 - Falcon server support and a parallel system-spec runner with schema-aware database prep skipping
 - CRUD-focused system coverage for invoice editing and time-tracking flows
 
@@ -20,6 +22,7 @@
 - System-spec support code was consolidated by removing dead helper modules and stabilizing auth/request-capture teardown
 - Weekly reminder processing now better distinguishes legacy hour-based timesheet data from minute-based entries to avoid false reminder emails for users who met weekly hour targets
 - Mailer layout branding now uses asset helper URLs with production `action_mailer.asset_host` to keep email logo assets resolvable in production mail clients
+- Razorpay Payment Settings now copies the production webhook URLs with the required event names for faster dashboard setup
 
 ## 3.0.0 - 2026-03-29
 

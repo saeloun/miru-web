@@ -1674,6 +1674,13 @@ const en = {
     razorpayWebhookSecret: "Webhook secret",
     razorpayWebhookUrl: "Webhook URL",
     copyWebhookUrl: "Copy webhook URL",
+    copyWebhookSetup: "Copy setup",
+    openRazorpayWebhooks: "Open webhooks",
+    openRazorpayX: "Open RazorpayX",
+    razorpayPaymentWebhookUrl: "Payment Links webhook",
+    razorpayPayoutWebhookUrl: "Payouts webhook",
+    razorpayPaymentWebhookEvents: "Payment Link events",
+    razorpayPayoutWebhookEvents: "Payout events",
     enterKeySecret: "Enter key secret",
     enterWebhookSecret: "Enter webhook secret",
     secretAlreadySaved: "Secret already saved",
@@ -1696,7 +1703,7 @@ const en = {
     razorpaySaved: "Razorpay settings saved.",
     razorpaySaveFailed: "Failed to save Razorpay settings.",
     razorpayRouteNote:
-      "Cards and UPI are controlled in Razorpay Dashboard. Payment webhooks should point to /webhooks/razorpay/payment_links and payout webhooks to /webhooks/razorpay/payouts. UPI payouts require RazorpayX account activation.",
+      "Cards and UPI are controlled in Razorpay Dashboard. Use the setup box above to copy the webhook URLs and event names. UPI payouts require RazorpayX account activation.",
     razorpayChecklist: {
       title: "Razorpay launch checklist",
       progress: "%{completed}/%{total} ready",
@@ -1711,7 +1718,7 @@ const en = {
       invoiceDescription: "Keep Razorpay enabled and visible on INR invoices.",
       webhookTitle: "Automatic reconciliation",
       webhookDescription:
-        "Create payment_links and payout webhooks in Razorpay and save the same secret here.",
+        "Create Payment Links and RazorpayX payout webhooks, select the listed events, and save the same secret here.",
       payoutsTitle: "UPI payouts",
       payoutsDescription:
         "Optional. Enable only after RazorpayX is active and payout details are present.",

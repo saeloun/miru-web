@@ -91,6 +91,40 @@ const OrganizationPaymentSettingsPage: React.FC<
 
   const razorpayWebhookUrl = `${window.location.origin}/webhooks/razorpay/payment_links`;
   const razorpayPayoutWebhookUrl = `${window.location.origin}/webhooks/razorpay/payouts`;
+  const razorpayPaymentWebhookEvents = [
+    "payment_link.paid",
+    "payment_link.partially_paid",
+    "payment_link.cancelled",
+    "payment_link.expired",
+  ];
+
+  const razorpayPayoutWebhookEvents = [
+    "payout.pending",
+    "payout.queued",
+    "payout.initiated",
+    "payout.processed",
+    "payout.updated",
+    "payout.failed",
+    "payout.rejected",
+    "payout.reversed",
+    "payout.cancelled",
+  ];
+
+  const razorpayWebhookSetupText = [
+    `${i18n.t(
+      "paymentSettingsPage.razorpayPaymentWebhookUrl"
+    )}: ${razorpayWebhookUrl}`,
+    `${i18n.t(
+      "paymentSettingsPage.razorpayPaymentWebhookEvents"
+    )}: ${razorpayPaymentWebhookEvents.join(", ")}`,
+    `${i18n.t(
+      "paymentSettingsPage.razorpayPayoutWebhookUrl"
+    )}: ${razorpayPayoutWebhookUrl}`,
+    `${i18n.t(
+      "paymentSettingsPage.razorpayPayoutWebhookEvents"
+    )}: ${razorpayPayoutWebhookEvents.join(", ")}`,
+  ].join("\n");
+
   const razorpayKeysReady =
     razorpaySettings.keyId.trim().length > 0 &&
     (razorpaySettings.keySecretConfigured ||
@@ -781,23 +815,71 @@ const OrganizationPaymentSettingsPage: React.FC<
                                   <code className="mt-1 block break-all text-xs text-muted-foreground">
                                     {razorpayWebhookUrl}
                                   </code>
+                                  <p className="mt-1 text-xs text-muted-foreground">
+                                    {i18n.t(
+                                      "paymentSettingsPage.razorpayPaymentWebhookEvents"
+                                    )}
+                                    : {razorpayPaymentWebhookEvents.join(", ")}
+                                  </p>
                                   <code className="mt-1 block break-all text-xs text-muted-foreground">
                                     {razorpayPayoutWebhookUrl}
                                   </code>
+                                  <p className="mt-1 text-xs text-muted-foreground">
+                                    {i18n.t(
+                                      "paymentSettingsPage.razorpayPayoutWebhookEvents"
+                                    )}
+                                    : {razorpayPayoutWebhookEvents.join(", ")}
+                                  </p>
                                 </div>
-                                <Button
-                                  variant="outline"
-                                  size="sm"
-                                  className="shrink-0 bg-background"
-                                  onClick={() =>
-                                    copyText(
-                                      `${razorpayWebhookUrl}\n${razorpayPayoutWebhookUrl}`
-                                    )
-                                  }
-                                >
-                                  <Copy className="mr-2 h-4 w-4" />
-                                  {i18n.t("paymentSettingsPage.copyWebhookUrl")}
-                                </Button>
+                                <div className="flex flex-wrap gap-2">
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    className="shrink-0 bg-background"
+                                    onClick={() =>
+                                      copyText(razorpayWebhookSetupText)
+                                    }
+                                  >
+                                    <Copy className="mr-2 h-4 w-4" />
+                                    {i18n.t(
+                                      "paymentSettingsPage.copyWebhookSetup"
+                                    )}
+                                  </Button>
+                                  <Button
+                                    asChild
+                                    variant="outline"
+                                    size="sm"
+                                    className="shrink-0 bg-background"
+                                  >
+                                    <a
+                                      href="https://dashboard.razorpay.com/app/webhooks"
+                                      rel="noreferrer"
+                                      target="_blank"
+                                    >
+                                      {i18n.t(
+                                        "paymentSettingsPage.openRazorpayWebhooks"
+                                      )}
+                                      <ExternalLink className="ml-2 h-4 w-4" />
+                                    </a>
+                                  </Button>
+                                  <Button
+                                    asChild
+                                    variant="outline"
+                                    size="sm"
+                                    className="shrink-0 bg-background"
+                                  >
+                                    <a
+                                      href="https://x.razorpay.com/"
+                                      rel="noreferrer"
+                                      target="_blank"
+                                    >
+                                      {i18n.t(
+                                        "paymentSettingsPage.openRazorpayX"
+                                      )}
+                                      <ExternalLink className="ml-2 h-4 w-4" />
+                                    </a>
+                                  </Button>
+                                </div>
                               </div>
                             </div>
                           </div>

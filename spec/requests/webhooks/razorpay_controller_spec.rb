@@ -127,6 +127,26 @@ RSpec.describe "Razorpay webhooks", type: :request do
     expect(Payment.count).to eq(0)
   end
 
+  it "accepts inactive payment link webhook deliveries" do
+    expired_payload = JSON.parse(payload)
+    expired_payload["event"] = "payment_link.expired"
+    expired_payload["payload"].delete("payment")
+    expired_payload["payload"]["payment_link"]["entity"]["status"] = "expired"
+    expired_payload["payload"]["payment_link"]["entity"]["expired_at"] = Time.zone.local(2026, 4, 29, 13, 0, 0).to_i
+    expired_payload = expired_payload.to_json
+
+    post "/webhooks/razorpay/payment_links", params: expired_payload, headers: {
+      "CONTENT_TYPE" => "application/json",
+      "HTTP_X_RAZORPAY_SIGNATURE" => sign(expired_payload)
+    }
+
+    expect(response).to have_http_status(:ok)
+    expect(invoice.reload.razorpay_payment_link_id).to be_nil
+    expect(invoice.razorpay_payment_link_url).to be_nil
+    expect(invoice.razorpay_payment_link_status).to eq("expired")
+    expect(Payment.count).to eq(0)
+  end
+
   it "returns a controlled server error when processing raises unexpectedly" do
     allow_any_instance_of(InvoicePayment::RazorpayPaymentLinkWebhookFulfillment)
       .to receive(:process)

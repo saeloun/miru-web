@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
 class InvoicePayment::RazorpayPaymentLinkWebhookFulfillment
-  SUPPORTED_EVENTS = ["payment_link.paid", "payment_link.partially_paid"].freeze
+  PAYMENT_EVENTS = ["payment_link.paid", "payment_link.partially_paid"].freeze
+  INACTIVE_LINK_EVENTS = ["payment_link.cancelled", "payment_link.expired"].freeze
+  SUPPORTED_EVENTS = (PAYMENT_EVENTS + INACTIVE_LINK_EVENTS).freeze
 
   attr_reader :payload, :signature, :error, :error_code
 
@@ -15,11 +17,15 @@ class InvoicePayment::RazorpayPaymentLinkWebhookFulfillment
     return fail_with("Invoice not found") if invoice.blank?
     return fail_with("Razorpay webhook secret is not configured") if provider&.webhook_secret.blank?
     return fail_with("Invalid Razorpay webhook signature", :invalid_signature) unless valid_signature?
+    return expire_payment_link if INACTIVE_LINK_EVENTS.include?(event)
     return true if invoice.paid?
     return true if duplicate_payment?
 
     payment = InvoicePayment::Settle.process(payment_params, invoice)
-    invoice.update!(razorpay_payment_id: payment_id.presence || invoice.razorpay_payment_id)
+    invoice.update!(
+      razorpay_payment_id: payment_id.presence || invoice.razorpay_payment_id,
+      razorpay_payment_link_status: payment_link_status
+    )
     enqueue_auto_payout(payment)
     send_payment_emails if invoice.paid? && payment.present?
 
@@ -84,7 +90,7 @@ class InvoicePayment::RazorpayPaymentLinkWebhookFulfillment
     end
 
     def payment_link_notes
-      @_payment_link_notes ||= payment_link["notes"].presence || {}
+      @_payment_link_notes ||= payment_link["notes"].is_a?(Hash) ? payment_link["notes"] : {}
     end
 
     def payment
@@ -101,6 +107,25 @@ class InvoicePayment::RazorpayPaymentLinkWebhookFulfillment
 
     def duplicate_payment?
       payment_id.present? && invoice.razorpay_payment_id == payment_id
+    end
+
+    def expire_payment_link
+      return true if payment_link_id.present? && invoice.razorpay_payment_link_id != payment_link_id
+
+      invoice.update!(
+        razorpay_payment_link_id: nil,
+        razorpay_payment_link_url: nil,
+        razorpay_payment_link_status: payment_link_status
+      )
+      true
+    end
+
+    def payment_link_id
+      payment_link["id"].to_s
+    end
+
+    def payment_link_status
+      payment_link["status"].presence || event.delete_prefix("payment_link.")
     end
 
     def amount_from_subunits(amount)
