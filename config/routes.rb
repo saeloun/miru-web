@@ -19,13 +19,16 @@ Rails.application.routes.draw do
     mount PgHero::Engine, at: "/pghero"
   end
 
-  # Analytics Dashboard (Super Admin and authorized users only)
-  authenticate :user, lambda { |u| u.has_analytics_access? } do
-    resources :analytics, only: [:index] do
-      collection do
-        get :revenue
-        get :activity
-        get :currency
+  # Legacy server-rendered analytics dashboard for super admins. The product
+  # analytics workspace lives in the React app under /analytics.
+  authenticate :user, lambda { |u| u.super_admin? } do
+    scope "/admin", as: "admin" do
+      resources :analytics, only: [:index] do
+        collection do
+          get :revenue
+          get :activity
+          get :currency
+        end
       end
     end
   end

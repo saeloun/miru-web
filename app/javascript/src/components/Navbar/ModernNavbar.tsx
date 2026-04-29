@@ -104,6 +104,12 @@ export const AppNavbar: React.FC = () => {
       allowedRoles: ["admin", "owner", "book_keeper"],
     },
     {
+      label: "Analytics",
+      path: Paths.ANALYTICS,
+      icon: BarChart3,
+      allowedRoles: ["admin", "owner", "manager", "book_keeper", "employee"],
+    },
+    {
       label: t("nav.payments"),
       path: Paths.PAYMENTS,
       icon: CreditCard,
@@ -126,6 +132,9 @@ export const AppNavbar: React.FC = () => {
   const filteredNavItems = navigationItems.filter(item =>
     item.allowedRoles.includes(companyRole || "")
   );
+
+  const isNavItemActive = (path: string) =>
+    location.pathname === path || location.pathname.startsWith(`${path}/`);
 
   const handleLogout = async () => {
     try {
@@ -165,7 +174,7 @@ export const AppNavbar: React.FC = () => {
         <ul className="space-y-1">
           {filteredNavItems.map(item => {
             const Icon = item.icon;
-            const isActive = location.pathname === item.path;
+            const isActive = isNavItemActive(item.path);
 
             return (
               <li key={item.path}>

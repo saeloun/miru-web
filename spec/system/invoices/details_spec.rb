@@ -43,10 +43,51 @@ RSpec.describe "Invoice detail view", type: :system, js: true do
       expect(page).to have_content("Gotham City Council", wait: 10)
       expect(page).to have_content("$50.00", wait: 10)
       expect(page).to have_content("Description", wait: 10)
-      expect(page).to have_content("API integration work", wait: 10)
-      expect(page).to have_content("Draft", wait: 10, normalize_ws: true)
+        expect(page).to have_content("API integration work", wait: 10)
+        expect(page).to have_content("Draft", wait: 10, normalize_ws: true)
+      end
     end
-  end
+
+    it "shows a compact client analytics summary on invoice details" do
+      paid_invoice = create(:invoice,
+        company:,
+        client:,
+        status: :paid,
+        invoice_number: "INV-2024-010",
+        amount: 1200.00,
+        amount_paid: 1200.00,
+        amount_due: 0,
+        issue_date: Date.current - 30.days,
+        due_date: Date.current - 10.days)
+      create(:payment,
+        invoice: paid_invoice,
+        amount: 1200.00,
+        base_currency_amount: 1200.00,
+        status: :paid,
+        transaction_date: Date.current - 15.days,
+        transaction_type: :bank_transfer)
+
+      invoice = create(:invoice,
+        company:,
+        client:,
+        status: :draft,
+        invoice_number: "INV-2024-011",
+        amount: 800.00,
+        amount_due: 800.00,
+        issue_date: Date.current,
+        due_date: Date.current + 15.days)
+
+      with_forgery_protection do
+        visit "/invoices/#{invoice.id}"
+
+        expect(page).to have_css("#react-root", wait: 10)
+        expect(page).to have_content("CLIENT ANALYTICS", wait: 10)
+        expect(page).to have_content("Total revenue", wait: 10)
+        expect(page).to have_content("Average invoice", wait: 10)
+        expect(page).to have_content("Payment cycle", wait: 10)
+        expect(page).to have_content("Payment frequency", wait: 10)
+      end
+    end
 
   it "shows a zero subtotal when line items total to zero" do
     invoice = create(:invoice,

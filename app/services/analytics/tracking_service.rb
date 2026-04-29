@@ -205,6 +205,30 @@ module Analytics
       ))
     end
 
+    def track_analytics_page_view(page_type:, company_id:, report_type: nil, saved_report_id: nil, metadata: {})
+      track_event("view_analytics", metadata.merge(
+        type: :analytics,
+        page_type: page_type,
+        report_type: report_type || page_type,
+        saved_report_id: saved_report_id,
+        company_id: company_id,
+        user_id: user&.id,
+        viewed_at: Time.current
+      ))
+    end
+
+    def track_saved_analytics_report_view(report:, company_id:, metadata: {})
+      track_event("view_saved_analytics_report", metadata.merge(
+        type: :analytics_report,
+        report_id: report.id,
+        report_type: report.report_type,
+        company_id: company_id,
+        created_by_id: report.created_by_id,
+        user_id: user&.id,
+        viewed_at: Time.current
+      ))
+    end
+
     # Search Events
     def track_search(query, results_count, search_type, metadata = {})
       track_event("search_performed", metadata.merge(

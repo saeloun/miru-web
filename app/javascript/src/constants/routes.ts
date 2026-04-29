@@ -37,6 +37,23 @@ const PaymentsTable = lazy(
   () => import("../components/payments/PaymentsTable")
 );
 const ReportsTable = lazy(() => import("../components/Reports/ReportsTable"));
+const AnalyticsHome = lazy(() => import("../components/Analytics"));
+const RevenueForecastPage = lazy(
+  () => import("../components/Analytics/RevenueForecastPage")
+);
+
+const TeamAnalyticsPage = lazy(
+  () => import("../components/Analytics/TeamAnalyticsPage")
+);
+
+const ClientInsightsPage = lazy(
+  () => import("../components/Analytics/ClientInsightsPage")
+);
+
+const ExpenseTrendsPage = lazy(
+  () => import("../components/Analytics/ExpenseTrendsPage")
+);
+
 const OutstandingInvoiceReport = lazy(
   () => import("../components/Reports/OutstandingInvoiceReport")
 );
@@ -95,6 +112,15 @@ const ReportsRoutes = [
   { path: "total-hours", Component: withReportsGate(TotalHoursReport) },
   { path: "accounts-aging", Component: withReportsGate(AccountsAgingReport) },
   { path: "payments", Component: withReportsGate(PaymentReport) },
+];
+
+const AnalyticsRoutes = [
+  { path: "", Component: AnalyticsHome },
+  { path: "revenue-forecast", Component: RevenueForecastPage },
+  { path: "team", Component: TeamAnalyticsPage },
+  { path: "clients", Component: ClientInsightsPage },
+  { path: "expenses", Component: ExpenseTrendsPage },
+  { path: "*", Component: ErrorPage },
 ];
 
 const ProjectsRoutes = [
@@ -213,6 +239,11 @@ export const ROUTES = [
     path: Paths.REPORTS,
     subRoutes: ReportsRoutes,
     authorisedRoles: [ADMIN, OWNER, BOOK_KEEPER],
+  },
+  {
+    path: Paths.ANALYTICS,
+    subRoutes: AnalyticsRoutes,
+    authorisedRoles: [ADMIN, OWNER, BOOK_KEEPER, EMPLOYEE, "manager"],
   },
   {
     path: Paths.PROJECTS,

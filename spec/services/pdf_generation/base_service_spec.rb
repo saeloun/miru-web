@@ -98,6 +98,30 @@ RSpec.describe PdfGeneration::BaseService do
       end
     end
 
+    it "ignores blank browser path overrides and uses the first present fallback" do
+      original_browser_path = ENV["BROWSER_PATH"]
+      original_ferrum_browser_path = ENV["FERRUM_BROWSER_PATH"]
+      original_google_chrome_shim = ENV["GOOGLE_CHROME_SHIM"]
+      original_chrome_path = ENV["CHROME_PATH"]
+
+      begin
+        ENV["BROWSER_PATH"] = ""
+        ENV["FERRUM_BROWSER_PATH"] = "/tmp/chromium"
+        ENV.delete("GOOGLE_CHROME_SHIM")
+        ENV.delete("CHROME_PATH")
+        allow(Ferrum::Browser).to receive(:new).and_return(instance_double(Ferrum::Browser, quit: true))
+
+        service.send(:create_browser)
+
+        expect(Ferrum::Browser).to have_received(:new).with(hash_including(browser_path: "/tmp/chromium"))
+      ensure
+        ENV["BROWSER_PATH"] = original_browser_path
+        ENV["FERRUM_BROWSER_PATH"] = original_ferrum_browser_path
+        ENV["GOOGLE_CHROME_SHIM"] = original_google_chrome_shim
+        ENV["CHROME_PATH"] = original_chrome_path
+      end
+    end
+
     it "uses a longer process timeout on CI" do
       original_ci = ENV["CI"]
       original_ferrum_process_timeout = ENV["FERRUM_PROCESS_TIMEOUT"]

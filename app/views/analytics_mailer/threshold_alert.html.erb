@@ -1,0 +1,15 @@
+<p>Hello,</p>
+
+<p><strong><%= @alert[:title] %></strong></p>
+
+<p><%= @alert[:message] %></p>
+
+<% if @alert[:metadata].present? %>
+  <ul>
+    <% @alert[:metadata].each do |key, value| %>
+      <li><strong><%= key.to_s.humanize %>:</strong> <%= value %></li>
+    <% end %>
+  </ul>
+<% end %>
+
+<p>Visit Miru to review your analytics dashboard.</p>

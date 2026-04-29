@@ -72,6 +72,7 @@ import {
   ChartTooltipContent,
 } from "../../ui/chart";
 import ShareReportButton from "../ShareReportButton";
+import ViewInAnalyticsButton from "../ViewInAnalyticsButton";
 import {
   buildSearchParams,
   formatReportApiDate,
@@ -240,6 +241,19 @@ const RevenueByClientReport: React.FC = () => {
     () => (data?.clients || []).slice(0, 8),
     [data?.clients]
   );
+
+  const analyticsUrl = useMemo(() => {
+    const params = buildSearchParams({
+      preset: dateRangePreset,
+      from: formatReportQueryDate(dateRange?.from),
+      to: formatReportQueryDate(dateRange?.to),
+      clients: selectedClients.length > 0 ? selectedClients.join(",") : undefined,
+    });
+
+    const queryString = params.toString();
+
+    return queryString ? `/analytics/clients?${queryString}` : "/analytics/clients";
+  }, [dateRange?.from, dateRange?.to, dateRangePreset, selectedClients]);
 
   useEffect(() => {
     setSearchParams(
@@ -558,6 +572,8 @@ const RevenueByClientReport: React.FC = () => {
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
+
+              <ViewInAnalyticsButton to={analyticsUrl} />
 
               <ShareReportButton />
             </div>

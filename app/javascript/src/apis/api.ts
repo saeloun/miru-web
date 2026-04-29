@@ -520,6 +520,62 @@ export const reportsClientRevenueApi = {
 };
 export const clientRevenueApi = reportsClientRevenueApi;
 
+export const analyticsApi = {
+  getRevenueForecast: (
+    horizon: number | string,
+    extraParams: Record<string, any> = {}
+  ) =>
+    http.get(`/analytics/revenue_forecasts`, {
+      params: { horizon, ...extraParams },
+    }),
+  downloadExport: (
+    reportType: string,
+    format: "csv" | "pdf",
+    params: Record<string, any>
+  ) =>
+    http.get(`/internal_api/v1/analytics/exports/${reportType}.${format}`, {
+      baseURL: "",
+      params,
+      responseType: "blob",
+    }),
+  getSavedReports: () =>
+    http.get(`/internal_api/v1/analytics/reports`, {
+      baseURL: "",
+    }),
+  createSavedReport: (payload: any) =>
+    http.post(`/internal_api/v1/analytics/reports`, payload, {
+      baseURL: "",
+    }),
+  getSavedReport: (id: number | string) =>
+    http.get(`/internal_api/v1/analytics/reports/${id}`, {
+      baseURL: "",
+    }),
+  deleteSavedReport: (id: number | string) =>
+    http.delete(`/internal_api/v1/analytics/reports/${id}`, {
+      baseURL: "",
+    }),
+  getComparison: (params: Record<string, any>) =>
+    http.get(`/internal_api/v1/analytics/comparison`, {
+      baseURL: "",
+      params,
+    }),
+  getTeamProductivity: (params: Record<string, any>) =>
+    http.get(`/internal_api/v1/analytics/team_productivity`, {
+      baseURL: "",
+      params,
+    }),
+  getClientAnalysis: (params: Record<string, any>) =>
+    http.get(`/internal_api/v1/analytics/client_analysis`, {
+      baseURL: "",
+      params,
+    }),
+  getExpenseTrends: (params: Record<string, any>) =>
+    http.get(`/internal_api/v1/analytics/expense_trends`, {
+      baseURL: "",
+      params,
+    }),
+};
+
 // Team
 const teamPath = "/team";
 export const teamApi = {

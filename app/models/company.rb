@@ -21,6 +21,7 @@ class Company < ApplicationRecord
   has_many :devices, dependent: :destroy
   has_many :invitations, dependent: :destroy
   has_many :expenses, dependent: :destroy
+  has_many :analytics_reports, dependent: :destroy
   has_many :client_members, dependent: :destroy
   has_many :leaves, class_name: "Leave", dependent: :destroy
   has_many :leave_types, through: :leaves, dependent: :destroy
