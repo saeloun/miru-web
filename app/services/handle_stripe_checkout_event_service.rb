@@ -24,6 +24,8 @@ class HandleStripeCheckoutEventService
 
   def process
     fetch_event
+    return if status.present?
+
     handle_event
   end
 

@@ -55,12 +55,13 @@ module Subscriptions
 
       def sync_company!(target_company, stripe_subscription)
         was_paid = target_company.plan_tier == "paid"
+        subscription_period_end = stripe_subscription_period_end(stripe_subscription)
 
         target_company.apply_stripe_subscription!(
-          stripe_customer_id: stripe_subscription.customer,
-          stripe_subscription_id: stripe_subscription.id,
-          subscription_status: stripe_subscription.status,
-          subscription_ends_at: timestamp_to_time(stripe_subscription.current_period_end),
+          stripe_customer_id: subscription_value(stripe_subscription, :customer),
+          stripe_subscription_id: subscription_value(stripe_subscription, :id),
+          subscription_status: subscription_value(stripe_subscription, :status),
+          subscription_ends_at: timestamp_to_time(subscription_period_end),
           subscription_interval: stripe_subscription_interval(stripe_subscription)
         )
 
@@ -80,13 +81,38 @@ module Subscriptions
       end
 
       def stripe_subscription_interval(stripe_subscription)
-        stripe_subscription
-          .items
-          &.data
-          &.first
-          &.price
-          &.recurring
-          &.interval
+        items = subscription_value(stripe_subscription, :items)
+        first_item =
+          value_from(items, :data)&.first ||
+          value_from(items, "data")&.first
+        price = value_from(first_item, :price) || value_from(first_item, "price")
+        recurring = value_from(price, :recurring) || value_from(price, "recurring")
+
+        value_from(recurring, :interval) || value_from(recurring, "interval")
+      end
+
+      def stripe_subscription_period_end(stripe_subscription)
+        value_from(stripe_subscription, :current_period_end) ||
+          value_from(stripe_subscription, "current_period_end") ||
+          value_from(value_from(stripe_subscription, :current_period), :end) ||
+          value_from(value_from(stripe_subscription, "current_period"), "end")
+      end
+
+      def subscription_value(stripe_subscription, key)
+        value_from(stripe_subscription, key) || value_from(stripe_subscription, key.to_s)
+      end
+
+      def value_from(object, key)
+        return if object.nil?
+
+        if object.respond_to?(:[])
+          value = object[key]
+          return value unless value.nil?
+        end
+
+        object.public_send(key) if object.respond_to?(key)
+      rescue NoMethodError, TypeError, IndexError
+        nil
       end
 
       def notify_plan_purchase!(target_company, stripe_subscription)
@@ -100,7 +126,7 @@ module Subscriptions
           company_id: target_company.id,
           alert_email:,
           plan_label: target_company.current_plan_label.to_s.humanize.titleize,
-          stripe_subscription_id: stripe_subscription.id,
+          stripe_subscription_id: subscription_value(stripe_subscription, :id),
           subscription_interval: stripe_subscription_interval(stripe_subscription),
           seat_quantity: target_company.billable_team_seats,
           billing_url: "#{ENV['APP_BASE_URL']}/settings/billing"
