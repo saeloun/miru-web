@@ -73,7 +73,11 @@ RSpec.describe InvoicePayment::RazorpayPaymentLinkWebhookFulfillment do
   end
 
   it "settles the invoice when the Razorpay webhook signature is valid" do
-    result = described_class.new(payload:, signature:).process
+    result = nil
+
+    expect {
+      result = described_class.new(payload:, signature:).process
+    }.to have_enqueued_job(RazorpayPayoutJob)
 
     expect(result).to be(true)
     expect(invoice.reload).to be_paid

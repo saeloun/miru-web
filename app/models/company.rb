@@ -13,6 +13,7 @@ class Company < ApplicationRecord
   has_many :timesheet_entries, through: :clients
   has_many :invoices
   has_many :payments, through: :invoices
+  has_many :razorpay_payouts, through: :payments
   has_many :agents, dependent: :destroy
   has_one :stripe_connected_account, dependent: :destroy
   has_many :payments_providers, dependent: :destroy

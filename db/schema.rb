@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_28_170000) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_29_113000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_stat_statements"
@@ -674,6 +674,34 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_28_170000) do
     t.index ["name"], name: "index_projects_on_name_trgm", opclass: :gin_trgm_ops, using: :gin
   end
 
+  create_table "razorpay_payouts", force: :cascade do |t|
+    t.decimal "amount", precision: 20, scale: 2, null: false
+    t.datetime "created_at", null: false
+    t.string "currency", default: "INR", null: false
+    t.string "external_id"
+    t.text "failure_reason"
+    t.string "idempotency_key", null: false
+    t.string "mode", default: "UPI", null: false
+    t.bigint "payment_id", null: false
+    t.datetime "processed_at"
+    t.jsonb "raw_response", default: {}, null: false
+    t.string "recipient_email"
+    t.string "recipient_name"
+    t.string "recipient_phone"
+    t.string "recipient_upi_id", null: false
+    t.string "reference_id", null: false
+    t.bigint "requested_by_id"
+    t.integer "status", default: 0, null: false
+    t.integer "triggered_by", default: 0, null: false
+    t.datetime "updated_at", null: false
+    t.index ["external_id"], name: "index_razorpay_payouts_on_external_id", unique: true, where: "(external_id IS NOT NULL)"
+    t.index ["idempotency_key"], name: "index_razorpay_payouts_on_idempotency_key", unique: true
+    t.index ["payment_id", "status"], name: "index_razorpay_payouts_on_payment_id_and_status"
+    t.index ["payment_id"], name: "index_razorpay_payouts_on_payment_id"
+    t.index ["reference_id"], name: "index_razorpay_payouts_on_reference_id", unique: true
+    t.index ["requested_by_id"], name: "index_razorpay_payouts_on_requested_by_id"
+  end
+
   create_table "roles", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "name"
@@ -1022,6 +1050,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_28_170000) do
   add_foreign_key "project_members", "projects"
   add_foreign_key "project_members", "users"
   add_foreign_key "projects", "clients"
+  add_foreign_key "razorpay_payouts", "payments"
+  add_foreign_key "razorpay_payouts", "users", column: "requested_by_id"
   add_foreign_key "solid_queue_blocked_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_claimed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_failed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade

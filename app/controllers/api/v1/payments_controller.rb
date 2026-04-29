@@ -2,7 +2,7 @@
 
 class Api::V1::PaymentsController < Api::V1::ApplicationController
   before_action :set_invoice, only: [:create]
-  before_action :set_payment, only: [:show]
+  before_action :set_payment, only: [:show, :withdraw]
   after_action :track_event, only: [:create]
 
   def new
@@ -38,7 +38,7 @@ class Api::V1::PaymentsController < Api::V1::ApplicationController
   def index
     authorize :index, policy_class: PaymentPolicy
 
-    payments = current_company.payments.includes(invoice: [:client])
+    payments = current_company.payments.includes(:razorpay_payouts, invoice: [:client])
 
     # Add search functionality
     if params[:query].present?
@@ -65,6 +65,22 @@ class Api::V1::PaymentsController < Api::V1::ApplicationController
     }
   end
 
+  def withdraw
+    authorize @payment, :withdraw?, policy_class: PaymentPolicy
+
+    payout = PaymentProviders::RazorpayWithdrawalService.new(
+      payment: @payment,
+      requested_by: current_user,
+      automatic: false
+    ).process
+
+    render json: {
+      payout: PaymentsPresenter.serialize_razorpay_payout(payout)
+    }, status: 202
+  rescue PaymentProviders::RazorpayWithdrawalService::Error => error
+    render json: { error: error.message }, status: 422
+  end
+
   private
 
     def payment_params
@@ -78,7 +94,7 @@ class Api::V1::PaymentsController < Api::V1::ApplicationController
     end
 
     def set_payment
-      @payment = current_company.payments.includes(invoice: [:client]).find(params[:id])
+      @payment = current_company.payments.includes(:razorpay_payouts, invoice: [:client]).find(params[:id])
     end
 
     def track_event

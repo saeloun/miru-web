@@ -142,7 +142,67 @@ RSpec.describe "Razorpay webhooks", type: :request do
     expect(response).to have_http_status(:internal_server_error)
     expect(JSON.parse(response.body)["error"]).to eq("Unable to process Razorpay webhook")
     expect(Sentry).to have_received(:capture_exception).with(instance_of(StandardError), hash_including(:extra)) if defined?(Sentry)
-    expect(Rails.logger).to have_received(:error).with(include("[Razorpay webhook] payment_links failed"))
+    expect(Rails.logger).to have_received(:error).with(include("[Razorpay webhook] razorpay_payment_links failed"))
+  end
+
+  it "handles payout webhook deliveries" do
+    payout_payload = { event: "payout.processed", payload: { payout: { entity: { id: "pout_test_123" } } } }.to_json
+    payout_signature = sign(payout_payload)
+    fulfillment = instance_double(PaymentProviders::RazorpayPayoutWebhookFulfillment, process: true)
+    allow(PaymentProviders::RazorpayPayoutWebhookFulfillment).to receive(:new).and_return(fulfillment)
+
+    post "/webhooks/razorpay/payouts", params: payout_payload, headers: {
+      "CONTENT_TYPE" => "application/json",
+      "HTTP_X_RAZORPAY_SIGNATURE" => payout_signature
+    }
+
+    expect(response).to have_http_status(:ok)
+    expect(JSON.parse(response.body)["status"]).to eq("ok")
+    expect(PaymentProviders::RazorpayPayoutWebhookFulfillment).to have_received(:new).with(
+      payload: payout_payload,
+      signature: payout_signature
+    )
+  end
+
+  it "returns unauthorized for invalid payout webhook signatures" do
+    payout_payload = { event: "payout.failed", payload: { payout: { entity: { id: "pout_test_123" } } } }.to_json
+    fulfillment = instance_double(
+      PaymentProviders::RazorpayPayoutWebhookFulfillment,
+      process: false,
+      error: "Invalid Razorpay webhook signature",
+      error_code: :invalid_signature
+    )
+    allow(PaymentProviders::RazorpayPayoutWebhookFulfillment).to receive(:new).and_return(fulfillment)
+
+    post "/webhooks/razorpay/payouts", params: payout_payload, headers: {
+      "CONTENT_TYPE" => "application/json",
+      "HTTP_X_RAZORPAY_SIGNATURE" => "bad"
+    }
+
+    expect(response).to have_http_status(:unauthorized)
+    expect(JSON.parse(response.body)["error"]).to eq("Invalid Razorpay webhook signature")
+  end
+
+  it "logs payout webhook exceptions with the payout webhook tag" do
+    payout_payload = { event: "payout.processed" }.to_json
+    allow(PaymentProviders::RazorpayPayoutWebhookFulfillment).to receive(:new).and_raise(StandardError, "boom")
+    allow(Rails.logger).to receive(:error)
+    allow(Sentry).to receive(:capture_exception) if defined?(Sentry)
+
+    post "/webhooks/razorpay/payouts", params: payout_payload, headers: {
+      "CONTENT_TYPE" => "application/json",
+      "HTTP_X_RAZORPAY_SIGNATURE" => sign(payout_payload)
+    }
+
+    expect(response).to have_http_status(:internal_server_error)
+    expect(JSON.parse(response.body)["error"]).to eq("Unable to process Razorpay webhook")
+    if defined?(Sentry)
+      expect(Sentry).to have_received(:capture_exception).with(
+        instance_of(StandardError),
+        hash_including(extra: hash_including(webhook: "razorpay_payouts"))
+      )
+    end
+    expect(Rails.logger).to have_received(:error).with(include("[Razorpay webhook] razorpay_payouts failed"))
   end
 
   def sign(body)

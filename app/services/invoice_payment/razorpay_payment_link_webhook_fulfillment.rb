@@ -20,6 +20,7 @@ class InvoicePayment::RazorpayPaymentLinkWebhookFulfillment
 
     payment = InvoicePayment::Settle.process(payment_params, invoice)
     invoice.update!(razorpay_payment_id: payment_id.presence || invoice.razorpay_payment_id)
+    enqueue_auto_payout(payment)
     send_payment_emails if invoice.paid? && payment.present?
 
     true
@@ -116,6 +117,12 @@ class InvoicePayment::RazorpayPaymentLinkWebhookFulfillment
         invoice_id: invoice.id,
         subject: "Payment Confirmation of Invoice #{invoice.invoice_number} by #{invoice.client.name}"
       )
+    end
+
+    def enqueue_auto_payout(payment)
+      return if payment.blank?
+
+      RazorpayPayoutJob.perform_later(payment.id)
     end
 
     def fail_with(message, code = nil)

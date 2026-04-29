@@ -69,6 +69,7 @@ Rails.application.routes.draw do
   namespace :webhooks do
     post "stripe/checkout/fulfillment", to: "stripe#fulfill_stripe_checkout"
     post "razorpay/payment_links", to: "razorpay#payment_links"
+    post "razorpay/payouts", to: "razorpay#payouts"
   end
 
   # Keep docs reachable from the main app domain.

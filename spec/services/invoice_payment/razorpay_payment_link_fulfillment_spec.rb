@@ -70,7 +70,13 @@ RSpec.describe InvoicePayment::RazorpayPaymentLinkFulfillment do
         }
       )
 
-      expect(described_class.process(invoice:, params: callback_params)).to be(true)
+      result = nil
+
+      expect {
+        result = described_class.process(invoice:, params: callback_params)
+      }.to have_enqueued_job(RazorpayPayoutJob)
+
+      expect(result).to be(true)
 
       payment = Payment.last
       expect(payment.invoice).to eq(invoice)

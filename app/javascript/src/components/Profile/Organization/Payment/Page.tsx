@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   CreditCard,
   Warning as AlertCircle,
@@ -47,6 +47,7 @@ interface OrganizationPaymentSettingsPageProps {
 const OrganizationPaymentSettingsPage: React.FC<
   OrganizationPaymentSettingsPageProps
 > = ({ onBack }) => {
+  const razorpayProviderRef = useRef<HTMLDivElement | null>(null);
   const [status, setStatus] = useState<PaymentSettingsStatus>(
     PaymentSettingsStatus.IDLE
   );
@@ -87,6 +88,61 @@ const OrganizationPaymentSettingsPage: React.FC<
     payoutPurpose: "payout",
     payoutQueueIfLowBalance: false,
   });
+
+  const razorpayWebhookUrl = `${window.location.origin}/webhooks/razorpay/payment_links`;
+  const razorpayPayoutWebhookUrl = `${window.location.origin}/webhooks/razorpay/payouts`;
+  const razorpayKeysReady =
+    razorpaySettings.keyId.trim().length > 0 &&
+    (razorpaySettings.keySecretConfigured ||
+      razorpaySettings.keySecret.trim().length > 0);
+
+  const razorpayInvoicesReady =
+    razorpaySettings.enabled && razorpaySettings.enabledOnInvoices;
+
+  const razorpayWebhookReady =
+    razorpaySettings.webhookSecretConfigured ||
+    razorpaySettings.webhookSecret.trim().length > 0;
+
+  const razorpayPayoutsReady =
+    !razorpaySettings.payoutsEnabled ||
+    (razorpaySettings.payoutAccountNumber.trim().length > 0 &&
+      razorpaySettings.payoutUpiId.trim().length > 0);
+
+  const razorpayChecklist = [
+    {
+      complete: razorpayKeysReady,
+      title: i18n.t("paymentSettingsPage.razorpayChecklist.keysTitle"),
+      description: i18n.t(
+        "paymentSettingsPage.razorpayChecklist.keysDescription"
+      ),
+    },
+    {
+      complete: razorpayInvoicesReady,
+      title: i18n.t("paymentSettingsPage.razorpayChecklist.invoiceTitle"),
+      description: i18n.t(
+        "paymentSettingsPage.razorpayChecklist.invoiceDescription"
+      ),
+    },
+    {
+      complete: razorpayWebhookReady,
+      title: i18n.t("paymentSettingsPage.razorpayChecklist.webhookTitle"),
+      description: i18n.t(
+        "paymentSettingsPage.razorpayChecklist.webhookDescription"
+      ),
+    },
+    {
+      complete: razorpayPayoutsReady,
+      title: i18n.t("paymentSettingsPage.razorpayChecklist.payoutsTitle"),
+      description: i18n.t(
+        "paymentSettingsPage.razorpayChecklist.payoutsDescription"
+      ),
+    },
+  ];
+
+  const completedRazorpaySteps = razorpayChecklist.filter(
+    step => step.complete
+  ).length;
+  const razorpayReadyForInvoices = razorpayKeysReady && razorpayInvoicesReady;
 
   const fetchPaymentSettings = async () => {
     try {
@@ -176,6 +232,35 @@ const OrganizationPaymentSettingsPage: React.FC<
   };
 
   const saveRazorpaySettings = async () => {
+    if (
+      razorpaySettings.enabled &&
+      razorpaySettings.keyId.trim().length === 0
+    ) {
+      toast.error(i18n.t("paymentSettingsPage.razorpayKeyIdRequired"));
+
+      return;
+    }
+
+    if (
+      razorpaySettings.enabled &&
+      !razorpaySettings.keySecretConfigured &&
+      razorpaySettings.keySecret.trim().length === 0
+    ) {
+      toast.error(i18n.t("paymentSettingsPage.razorpayKeySecretRequired"));
+
+      return;
+    }
+
+    if (
+      razorpaySettings.payoutsEnabled &&
+      (razorpaySettings.payoutAccountNumber.trim().length === 0 ||
+        razorpaySettings.payoutUpiId.trim().length === 0)
+    ) {
+      toast.error(i18n.t("paymentSettingsPage.razorpayPayoutDetailsRequired"));
+
+      return;
+    }
+
     try {
       setIsSavingRazorpay(true);
       const res = await paymentSettings.updateRazorpay({
@@ -261,6 +346,17 @@ const OrganizationPaymentSettingsPage: React.FC<
   useEffect(() => {
     fetchPaymentSettings();
   }, []);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+
+    if (params.get("provider") === "razorpay") {
+      razorpayProviderRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+  }, [status]);
 
   useEffect(() => {
     if (accountLink) {
@@ -575,7 +671,10 @@ const OrganizationPaymentSettingsPage: React.FC<
                   </div>
 
                   {/* Razorpay Provider */}
-                  <div className="rounded-lg border border-border bg-card p-6">
+                  <div
+                    className="rounded-lg border border-border bg-card p-6"
+                    ref={razorpayProviderRef}
+                  >
                     <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
                       <div className="flex min-w-0 flex-1 items-start space-x-4">
                         <div className="flex h-12 w-12 items-center justify-center rounded-lg border border-border bg-muted">
@@ -596,6 +695,112 @@ const OrganizationPaymentSettingsPage: React.FC<
                           <p className="mt-1 text-sm text-muted-foreground">
                             {i18n.t("paymentSettingsPage.razorpayDescription")}
                           </p>
+
+                          <div className="mt-5 rounded-lg border border-primary/20 bg-primary/5 p-4">
+                            <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                              <div>
+                                <div className="flex flex-wrap items-center gap-2">
+                                  <h4 className="text-sm font-semibold text-foreground">
+                                    {i18n.t(
+                                      "paymentSettingsPage.razorpayChecklist.title"
+                                    )}
+                                  </h4>
+                                  <Badge
+                                    variant="secondary"
+                                    className="border-border bg-background text-foreground"
+                                  >
+                                    {i18n.t(
+                                      "paymentSettingsPage.razorpayChecklist.progress",
+                                      {
+                                        completed: completedRazorpaySteps,
+                                        total: razorpayChecklist.length,
+                                      }
+                                    )}
+                                  </Badge>
+                                </div>
+                                <p className="mt-1 text-sm text-muted-foreground">
+                                  {razorpayReadyForInvoices
+                                    ? i18n.t(
+                                        "paymentSettingsPage.razorpayChecklist.readyDescription"
+                                      )
+                                    : i18n.t(
+                                        "paymentSettingsPage.razorpayChecklist.pendingDescription"
+                                      )}
+                                </p>
+                              </div>
+                              <Button
+                                asChild
+                                size="sm"
+                                variant="outline"
+                                className="shrink-0 bg-background"
+                              >
+                                <a
+                                  href="https://dashboard.razorpay.com/app/payment-links"
+                                  rel="noreferrer"
+                                  target="_blank"
+                                >
+                                  {i18n.t(
+                                    "paymentSettingsPage.openRazorpayDashboard"
+                                  )}
+                                  <ExternalLink className="ml-2 h-4 w-4" />
+                                </a>
+                              </Button>
+                            </div>
+
+                            <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2">
+                              {razorpayChecklist.map(step => (
+                                <div
+                                  className="flex items-start gap-3 rounded-md border border-border bg-background p-3"
+                                  key={step.title}
+                                >
+                                  {step.complete ? (
+                                    <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
+                                  ) : (
+                                    <AlertCircle className="mt-0.5 h-5 w-5 shrink-0 text-muted-foreground" />
+                                  )}
+                                  <div>
+                                    <p className="text-sm font-medium text-foreground">
+                                      {step.title}
+                                    </p>
+                                    <p className="mt-1 text-xs leading-5 text-muted-foreground">
+                                      {step.description}
+                                    </p>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+
+                            <div className="mt-4 rounded-md border border-border bg-background p-3">
+                              <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+                                <div className="min-w-0">
+                                  <p className="text-sm font-medium text-foreground">
+                                    {i18n.t(
+                                      "paymentSettingsPage.razorpayWebhookUrl"
+                                    )}
+                                  </p>
+                                  <code className="mt-1 block break-all text-xs text-muted-foreground">
+                                    {razorpayWebhookUrl}
+                                  </code>
+                                  <code className="mt-1 block break-all text-xs text-muted-foreground">
+                                    {razorpayPayoutWebhookUrl}
+                                  </code>
+                                </div>
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  className="shrink-0 bg-background"
+                                  onClick={() =>
+                                    copyText(
+                                      `${razorpayWebhookUrl}\n${razorpayPayoutWebhookUrl}`
+                                    )
+                                  }
+                                >
+                                  <Copy className="mr-2 h-4 w-4" />
+                                  {i18n.t("paymentSettingsPage.copyWebhookUrl")}
+                                </Button>
+                              </div>
+                            </div>
+                          </div>
 
                           <div className="mt-5 grid grid-cols-1 gap-4 md:grid-cols-2">
                             <div className="space-y-2">

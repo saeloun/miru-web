@@ -26,7 +26,8 @@ RSpec.describe "Api::V1::Payments#index", type: :request do
                                       status: payment.status,
                                       currency: payment.payment_currency || payment.invoice.currency || company.base_currency,
                                       exchangeRate: payment.exchange_rate,
-                                      baseCurrencyAmount: payment.base_currency_amount
+                                      baseCurrencyAmount: payment.base_currency_amount,
+                                      razorpayPayout: nil
                                     }
                                   end
                                 }

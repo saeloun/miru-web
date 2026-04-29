@@ -184,7 +184,9 @@ namespace :api, defaults: { format: "json" } do
       resources :providers, only: [:index, :update]
     end
 
-    resources :payments, only: [:new, :create, :index, :show]
+    resources :payments, only: [:new, :create, :index, :show] do
+      post :withdraw, on: :member
+    end
     resources :holidays, only: [:update, :index], param: :year
 
     namespace :dashboard do

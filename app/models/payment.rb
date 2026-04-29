@@ -28,6 +28,8 @@ class Payment < ApplicationRecord
   ]
 
   belongs_to :invoice
+  has_many :razorpay_payouts, dependent: :destroy
+
   delegate :company, to: :invoice
 
   before_validation :set_status, if: :new_record?

@@ -578,10 +578,17 @@ const en = {
     paymentGatewayError:
       "Error. Please reach out to the invoice sender to connect a payment gateway to enable you to make invoice payment",
     paymentGatewayWarning:
-      "You have not connected any payment gateway with Miru. Do you want to send invoice without a payment gateway?",
-    goToPaymentSettings: "Go to Payment Settings",
+      "Connect Razorpay for Indian cards and UPI, or add a free UPI QR before sending this invoice.",
+    goToPaymentSettings: "Set Up Payments",
     backToInvoices: "Back to Invoices",
     sendWithoutPaymentGateway: "Send Without Payment Gateway",
+    paymentSetupPromptTitle: "Get paid faster on invoices",
+    paymentSetupPromptDescription:
+      "Set up Razorpay Payment Links for Indian cards, UPI, wallets, and netbanking, or add a free UPI QR for direct transfers.",
+    razorpayCardsAndUpi: "Razorpay cards + UPI",
+    freeUpiQr: "Free UPI QR",
+    paymentLinksAndWebhooks: "Auto reconciliation",
+    setUpRazorpay: "Set up Razorpay",
     stripeDisabled: "Stripe disabled for this invoice",
     stripeDisabledMessage:
       "The sender hasn't enabled Stripe payments for this invoice. You can reach out to them to activate it, or choose an alternative payment method like ACH.",
@@ -743,10 +750,24 @@ const en = {
     showingPaymentsCount: "Showing %{visible} of %{total}",
     notes: "Notes",
     paymentMethod: "Payment Method",
+    withdrawal: "Withdrawal",
     openMenu: "Open menu",
     copyTransactionId: "Copy transaction ID",
     viewInvoice: "View invoice",
     downloadReceipt: "Download receipt",
+    withdrawToUpi: "Withdraw to UPI",
+    retryWithdrawal: "Retry withdrawal",
+    withdrawing: "Withdrawing...",
+    razorpayWithdrawalQueued: "Razorpay withdrawal queued.",
+    razorpayWithdrawalFailed: "Failed to create Razorpay withdrawal.",
+    notWithdrawn: "Not withdrawn",
+    withdrawalPending: "Pending",
+    withdrawalProcessing: "Processing",
+    withdrawalQueued: "Queued",
+    withdrawalProcessed: "Processed",
+    withdrawalFailed: "Failed",
+    withdrawalReversed: "Reversed",
+    withdrawalCancelled: "Cancelled",
     manual: "Manual",
     visa: "Visa",
     mastercard: "Mastercard",
@@ -1647,12 +1668,20 @@ const en = {
     razorpayDescription:
       "Accept INR invoice payments through Razorpay Payment Links for UPI, Indian credit and debit cards, netbanking, wallets, and other methods enabled in your Razorpay Dashboard.",
     indiaPayments: "India payments",
+    openRazorpayDashboard: "Open Razorpay",
     razorpayKeyId: "Key ID",
     razorpayKeySecret: "Key secret",
     razorpayWebhookSecret: "Webhook secret",
+    razorpayWebhookUrl: "Webhook URL",
+    copyWebhookUrl: "Copy webhook URL",
     enterKeySecret: "Enter key secret",
     enterWebhookSecret: "Enter webhook secret",
     secretAlreadySaved: "Secret already saved",
+    razorpayKeyIdRequired: "Add a Razorpay key ID before enabling Razorpay.",
+    razorpayKeySecretRequired:
+      "Add a Razorpay key secret before enabling Razorpay.",
+    razorpayPayoutDetailsRequired:
+      "Add the RazorpayX account number and payout UPI ID before enabling UPI payouts.",
     linkedAccountId: "Route linked account ID",
     platformFee: "Platform fee %",
     showRazorpayOnInvoices: "Show Razorpay on INR invoices",
@@ -1667,7 +1696,26 @@ const en = {
     razorpaySaved: "Razorpay settings saved.",
     razorpaySaveFailed: "Failed to save Razorpay settings.",
     razorpayRouteNote:
-      "Cards and UPI are controlled in Razorpay Dashboard. Webhooks should point to /webhooks/razorpay/payment_links. UPI payouts require RazorpayX account activation.",
+      "Cards and UPI are controlled in Razorpay Dashboard. Payment webhooks should point to /webhooks/razorpay/payment_links and payout webhooks to /webhooks/razorpay/payouts. UPI payouts require RazorpayX account activation.",
+    razorpayChecklist: {
+      title: "Razorpay launch checklist",
+      progress: "%{completed}/%{total} ready",
+      pendingDescription:
+        "Finish the required items once and every INR invoice can carry a Razorpay payment link.",
+      readyDescription:
+        "Razorpay can be shown on INR invoices. Add the webhook secret for automatic payment reconciliation.",
+      keysTitle: "Live API keys",
+      keysDescription:
+        "Save the live key ID and secret from the Razorpay Dashboard.",
+      invoiceTitle: "Invoice payment links",
+      invoiceDescription: "Keep Razorpay enabled and visible on INR invoices.",
+      webhookTitle: "Automatic reconciliation",
+      webhookDescription:
+        "Create payment_links and payout webhooks in Razorpay and save the same secret here.",
+      payoutsTitle: "UPI payouts",
+      payoutsDescription:
+        "Optional. Enable only after RazorpayX is active and payout details are present.",
+    },
     bankName: "Bank",
     accountNumber: "Account number",
     routingNumber: "Routing / IFSC",

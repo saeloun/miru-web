@@ -71,7 +71,9 @@ const ConnectPaymentGateway = ({
                 e.stopPropagation();
                 setShowConnectPaymentDialog(false);
                 updateInvoice();
-                navigate("/settings/payment");
+                navigate(
+                  "/settings/payment?provider=razorpay&source=send_invoice"
+                );
               }}
             >
               {i18n.t("invoices.goToPaymentSettings")}

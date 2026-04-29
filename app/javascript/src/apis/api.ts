@@ -420,6 +420,7 @@ export const paymentsApi = {
   create: (payload: any) => http.post(`/payments`, payload),
   show: (id: any, queryParam: string) =>
     http.get(`/payments/${id}${queryParam}`),
+  withdraw: (id: string | number) => http.post(`/payments/${id}/withdraw`),
   update: (id: any, payload: any) => http.patch(`/payments/${id}`, payload),
   destroy: (id: any) => http.delete(`/payments/${id}`),
   getInvoiceList: () => http.get(`/payments/new`),

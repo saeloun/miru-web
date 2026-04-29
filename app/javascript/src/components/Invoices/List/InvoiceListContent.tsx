@@ -2,6 +2,7 @@ import React from "react";
 
 import BulkActionsWrapper from "./BulkActionsWrapper";
 import NoInvoices from "./NoInvoices";
+import PaymentSetupPrompt from "./PaymentSetupPrompt";
 import InfiniteScrollRecentlyUpdated from "./RecentlyUpdated/InfiniteScrollRecentlyUpdated";
 import InvoiceListTable from "./Table/InvoiceListTable";
 
@@ -50,6 +51,9 @@ const InvoiceListContent = ({
         filterParams={filterParams}
         setFilterParams={setFilterParams}
       />
+      {isPaymentEnabled === false && (
+        <PaymentSetupPrompt isDesktop={isDesktop} />
+      )}
       <InfiniteScrollRecentlyUpdated />
       <BulkActionsWrapper
         clearCheckboxes={clearCheckboxes}
