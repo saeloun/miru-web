@@ -15,8 +15,22 @@ export interface StoredTimerState {
 
 export interface StoredTimerDeck {
   activeTimerId: string;
+  syncedAt?: string | null;
   timers: StoredTimerState[];
   version: typeof TIMER_DECK_VERSION;
+}
+
+export interface DesktopCurrentTimer {
+  billable?: boolean;
+  elapsed_ms?: number;
+  notes?: string;
+  project_name?: string;
+  running?: boolean;
+  source?: string | null;
+  started_at?: string | null;
+  synced_at?: string | null;
+  task_name?: string;
+  timer_deck?: Partial<StoredTimerDeck> | null;
 }
 
 const DEFAULT_TIMER_ID = "default";
@@ -125,7 +139,7 @@ const normalizeTimer = (timer: Partial<StoredTimerState>): StoredTimerState => {
   };
 };
 
-const normalizeTimerDeck = (parsed: any): StoredTimerDeck => {
+export const normalizeTimerDeck = (parsed: any): StoredTimerDeck => {
   if (Array.isArray(parsed?.timers)) {
     const timers = parsed.timers.map(normalizeTimer);
     const activeTimerId = timers.some(
@@ -136,6 +150,7 @@ const normalizeTimerDeck = (parsed: any): StoredTimerDeck => {
 
     return {
       activeTimerId,
+      syncedAt: parsed.syncedAt || parsed.synced_at || null,
       timers: timers.length ? timers : [defaultTimerState()],
       version: TIMER_DECK_VERSION,
     };
@@ -145,6 +160,7 @@ const normalizeTimerDeck = (parsed: any): StoredTimerDeck => {
 
   return {
     activeTimerId: migratedTimer.id,
+    syncedAt: parsed?.syncedAt || parsed?.synced_at || null,
     timers: [migratedTimer],
     version: TIMER_DECK_VERSION,
   };
@@ -180,7 +196,13 @@ export const loadStoredTimerState = (): StoredTimerState => {
 export const persistTimerDeck = (deck: StoredTimerDeck) => {
   if (typeof window === "undefined") return;
 
-  localStorage.setItem(TIMER_STORAGE_KEY, JSON.stringify(deck));
+  localStorage.setItem(
+    TIMER_STORAGE_KEY,
+    JSON.stringify({
+      ...deck,
+      syncedAt: new Date().toISOString(),
+    })
+  );
   dispatchTimerSync();
 };
 
@@ -196,6 +218,7 @@ export const persistTimerState = (timer: StoredTimerState) => {
 
   persistTimerDeck({
     activeTimerId: timer.id,
+    syncedAt: new Date().toISOString(),
     timers,
     version: TIMER_DECK_VERSION,
   });
@@ -239,7 +262,103 @@ export const startTimerFromEntry = ({
 
   persistTimerDeck({
     activeTimerId: timer.id,
+    syncedAt: new Date().toISOString(),
     timers: [...pausedTimers, timer],
     version: TIMER_DECK_VERSION,
   });
+};
+
+export const timerDeckHasWork = (deck: StoredTimerDeck) =>
+  deck.timers.some(timerHasWork);
+
+const parseDesktopStartTime = (value?: string | null) => {
+  if (!value) return null;
+
+  const parsed = Date.parse(value);
+
+  return Number.isNaN(parsed) ? null : parsed;
+};
+
+export const timerDeckFromDesktopCurrentTimer = (
+  currentTimer?: DesktopCurrentTimer | null
+): StoredTimerDeck => {
+  if (!currentTimer) return emptyTimerDeck();
+
+  if (currentTimer.timer_deck) {
+    return normalizeTimerDeck({
+      ...currentTimer.timer_deck,
+      syncedAt: currentTimer.synced_at || currentTimer.timer_deck.syncedAt,
+    });
+  }
+
+  const timer = normalizeTimer({
+    client: "",
+    description: currentTimer.notes || currentTimer.task_name || "",
+    elapsedTime: Math.max(currentTimer.elapsed_ms || 0, 0),
+    id: "desktop-current",
+    isRunning: Boolean(currentTimer.running),
+    project: currentTimer.project_name || "",
+    projectId: 0,
+    startTime: parseDesktopStartTime(currentTimer.started_at),
+  });
+
+  return {
+    activeTimerId: timer.id,
+    syncedAt: currentTimer.synced_at || null,
+    timers: [timer],
+    version: TIMER_DECK_VERSION,
+  };
+};
+
+export const shouldAdoptRemoteTimerDeck = (
+  remoteDeck: StoredTimerDeck,
+  localDeck: StoredTimerDeck
+) => {
+  if (!timerDeckHasWork(remoteDeck)) return false;
+
+  if (!timerDeckHasWork(localDeck)) return true;
+
+  const remoteSyncedAt = Date.parse(remoteDeck.syncedAt || "");
+  const localSyncedAt = Date.parse(localDeck.syncedAt || "");
+
+  if (Number.isNaN(remoteSyncedAt)) return false;
+
+  if (Number.isNaN(localSyncedAt)) return true;
+
+  return remoteSyncedAt > localSyncedAt;
+};
+
+export const currentTimerFromTimerDeck = (
+  deck: StoredTimerDeck
+): DesktopCurrentTimer => {
+  const activeTimer =
+    deck.timers.find(timer => timer.id === deck.activeTimerId) ||
+    deck.timers[0] ||
+    defaultTimerState();
+  const elapsedMs = timerElapsedMs(activeTimer);
+  const syncedAt = new Date().toISOString();
+
+  return {
+    billable: false,
+    elapsed_ms: elapsedMs,
+    notes: activeTimer.description,
+    project_name: activeTimer.project,
+    running: activeTimer.isRunning,
+    source: "web",
+    started_at:
+      activeTimer.isRunning && activeTimer.startTime
+        ? new Date(activeTimer.startTime).toISOString()
+        : null,
+    synced_at: syncedAt,
+    task_name: activeTimer.description,
+    timer_deck: {
+      ...deck,
+      syncedAt,
+      timers: deck.timers.map(timer => ({
+        ...timer,
+        elapsedTime: timerElapsedMs(timer),
+      })),
+      version: TIMER_DECK_VERSION,
+    },
+  };
 };

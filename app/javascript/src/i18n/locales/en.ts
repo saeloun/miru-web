@@ -812,7 +812,7 @@ const en = {
     webTimer: "Web timer",
     webTimerLabel: "Web Timer",
     trackLiveWork:
-      "Track live work in real time, then save it straight into today's entry list.",
+      "Track live work in real time. Web and MiruTime stay in sync for the active workspace.",
     startTimer: "Start Timer",
     pause: "Pause",
     resume: "Resume",
@@ -822,6 +822,9 @@ const en = {
     timer: "Timer",
     newTimer: "New timer",
     untitledTimer: "Untitled timer",
+    activeTimers: "%{count} active",
+    localTimer: "Local timer",
+    sharedWithDesktop: "Shared with MiruTime",
     saveTimeEntry: "Save Time Entry",
     saveTimeEntryDescription:
       "You tracked %{time}. Would you like to save this as a time entry?",
