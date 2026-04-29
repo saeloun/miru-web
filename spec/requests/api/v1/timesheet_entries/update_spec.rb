@@ -81,6 +81,43 @@ RSpec.describe "Api::V1::TimesheetEntry#update", type: :request do
         expect(json_response["entry"]["bill_status"]).to match("unbilled")
       end
     end
+
+    it "does not update entries from another workspace" do
+      other_company = create(:company)
+      other_client = create(:client, company: other_company)
+      other_project = create(:project, client: other_client)
+      other_entry = create(:timesheet_entry, project: other_project, note: "Other workspace")
+
+      send_request :patch, api_v1_timesheet_entry_path(other_entry.id), params: {
+        project_id: project.id,
+        timesheet_entry: {
+          duration: 20,
+          note: "Updated across workspace"
+        }
+      }, headers: auth_headers(user)
+
+      expect(response).to have_http_status(:not_found)
+      expect(other_entry.reload.note).to eq("Other workspace")
+    end
+
+    it "does not move entries to projects from another workspace" do
+      other_company = create(:company)
+      other_client = create(:client, company: other_company)
+      other_project = create(:project, client: other_client)
+
+      send_request :patch, api_v1_timesheet_entry_path(timesheet_entry.id), params: {
+        project_id: other_project.id,
+        timesheet_entry: {
+          duration: 20,
+          note: "Invalid move"
+        }
+      }, headers: auth_headers(user)
+
+      expect(response).to have_http_status(:not_found)
+      timesheet_entry.reload
+      expect(timesheet_entry.project_id).to eq(project.id)
+      expect(timesheet_entry.note).to eq("Test note")
+    end
   end
 
   context "when user is an employee" do

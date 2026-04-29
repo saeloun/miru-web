@@ -65,5 +65,42 @@ RSpec.describe "Api::V1::TimesheetEntry::BulkActionController#update", type: :re
 
       expect(response).to have_http_status(:forbidden)
     end
+
+    it "rejects an empty selection" do
+      send_request :patch, api_v1_bulk_action_path,
+        params: { ids: [], project_id: project2.id },
+        headers: auth_headers(user)
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(json_response["error"]).to eq("Failed to update timesheet entries")
+    end
+
+    it "does not update entries from another workspace" do
+      other_company = create(:company)
+      other_client = create(:client, company: other_company)
+      other_project = create(:project, client: other_client)
+      other_entry = create(:timesheet_entry, project: other_project)
+
+      send_request :patch, api_v1_bulk_action_path,
+        params: { ids: [other_entry.id], project_id: project2.id },
+        headers: auth_headers(user)
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(json_response["error"]).to eq("Failed to update timesheet entries")
+      expect(other_entry.reload.project_id).to eq(other_project.id)
+    end
+
+    it "does not move entries to projects from another workspace" do
+      other_company = create(:company)
+      other_client = create(:client, company: other_company)
+      other_project = create(:project, client: other_client)
+
+      send_request :patch, api_v1_bulk_action_path,
+        params: { ids: [timesheet_entry3.id], project_id: other_project.id },
+        headers: auth_headers(user)
+
+      expect(response).to have_http_status(:not_found)
+      expect(timesheet_entry3.reload.project_id).to eq(project1.id)
+    end
   end
 end
