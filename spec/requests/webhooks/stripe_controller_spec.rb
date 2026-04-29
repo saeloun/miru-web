@@ -118,4 +118,27 @@ RSpec.describe "Stripe webhooks", type: :request do
     expect(response).to have_http_status(:ok)
     expect(InvoicePayment::StripeCheckoutFulfillment).to have_received(:process).with(event)
   end
+
+  it "settles invoice payment on payment_intent.succeeded" do
+    event = OpenStruct.new(
+      type: "payment_intent.succeeded",
+      data: OpenStruct.new(
+        object: OpenStruct.new(
+          id: "pi_123",
+          amount_received: 1000,
+          amount: 1000,
+          currency: "usd"
+        )
+      ),
+      created: Time.zone.now.to_i
+    )
+
+    allow(Stripe::Webhook).to receive(:construct_event).and_return(event)
+    allow(InvoicePayment::StripePaymentSucceeded).to receive(:process).and_return(true)
+
+    post "/webhooks/stripe/checkout/fulfillment", params: "{}", headers: headers
+
+    expect(response).to have_http_status(:ok)
+    expect(InvoicePayment::StripePaymentSucceeded).to have_received(:process).with(event)
+  end
 end

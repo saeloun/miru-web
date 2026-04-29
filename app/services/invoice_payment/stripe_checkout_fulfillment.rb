@@ -11,10 +11,13 @@ class InvoicePayment::StripeCheckoutFulfillment < ApplicationService
   end
 
   def process
-    @invoice = Invoice.find(event.data.object.metadata.invoice_id)
-    if is_valid_event?
-      InvoicePayment::Settle.process(payment_params, invoice)
-    end
+    @invoice = find_invoice
+    return false if invoice.blank?
+
+    return false unless is_valid_event?
+    return true if duplicate_payment?
+
+    InvoicePayment::Settle.process(payment_params, invoice)
     rescue StandardError => error
       Rails.logger.error error.message
       Rails.logger.error error.backtrace.join("\n")
@@ -24,9 +27,11 @@ class InvoicePayment::StripeCheckoutFulfillment < ApplicationService
   private
 
     def is_valid_event?
-      invoice.stripe_payment_intent == data_object.payment_intent &&
-      is_checkout_status_complete? &&
-      is_payment_status_paid?
+      return false unless is_checkout_status_complete? && is_payment_status_paid?
+
+      return true if invoice.stripe_payment_intent.blank? || data_object.payment_intent.blank?
+
+      invoice.stripe_payment_intent == data_object.payment_intent
     end
 
     def is_checkout_status_complete?
@@ -65,5 +70,21 @@ class InvoicePayment::StripeCheckoutFulfillment < ApplicationService
       ).process
 
       payment_method&.billing_details&.name
+    rescue StandardError => error
+      Rails.logger.warn("Stripe cardholder name lookup failed for invoice #{invoice.id}: #{error.message}")
+      nil
+    end
+
+    def find_invoice
+      invoice_id = data_object&.metadata&.invoice_id
+      return Invoice.find_by(id: invoice_id) if invoice_id.present?
+
+      return nil if data_object.payment_intent.blank?
+
+      Invoice.where("payment_infos ->> 'stripe_payment_intent' = ?", data_object.payment_intent).first
+    end
+
+    def duplicate_payment?
+      invoice.paid?
     end
 end
