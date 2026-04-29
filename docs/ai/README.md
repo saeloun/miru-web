@@ -14,7 +14,8 @@ This directory is the operational source of truth for AI-assisted engineering wo
 2. Read [testing.md](testing.md) for required verification commands.
 3. Read [production.md](production.md) before deploy, restore, or live validation.
 4. Read [razorpay.md](razorpay.md) before changing Razorpay payments, webhooks, or payouts.
-5. Use [qmd-codex-gstack.md](qmd-codex-gstack.md) for low-token retrieval workflows.
+5. Read [stripe.md](stripe.md) before changing Stripe setup, checkout, subscriptions, or webhooks.
+6. Use [qmd-codex-gstack.md](qmd-codex-gstack.md) for low-token retrieval workflows.
 
 ## Recommended Command Sequence
 
