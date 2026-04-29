@@ -1806,6 +1806,7 @@ const en = {
     billingCadence: "Billing cadence",
     monthly: "Monthly",
     yearly: "Yearly",
+    unknown: "Unknown",
     notSubscribedYet: "Not subscribed yet",
     startTrial: "Start 30-day Pro trial",
     startingTrial: "Starting trial...",

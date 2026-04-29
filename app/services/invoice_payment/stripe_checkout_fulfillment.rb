@@ -29,7 +29,7 @@ class InvoicePayment::StripeCheckoutFulfillment < ApplicationService
     def is_valid_event?
       return false unless is_checkout_status_complete? && is_payment_status_paid?
 
-      return true if invoice.stripe_payment_intent.blank? || data_object.payment_intent.blank?
+      return true if invoice.stripe_payment_intent.blank? && data_object.payment_intent.blank?
 
       invoice.stripe_payment_intent == data_object.payment_intent
     end

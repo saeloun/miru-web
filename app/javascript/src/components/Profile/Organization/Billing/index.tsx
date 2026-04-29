@@ -327,10 +327,19 @@ const Billing = () => {
   } as const;
 
   const isCurrentProPlan = summary?.plan_tier === "paid";
-  const currentPlanCadenceLabel =
-    summary?.subscription_interval === "year"
-      ? i18n.t("billingSettings.yearly")
-      : i18n.t("billingSettings.monthly");
+  const cadenceLabel = (
+    interval: string | null | undefined,
+    fallback = i18n.t("billingSettings.unknown")
+  ) => {
+    if (interval === "year") return i18n.t("billingSettings.yearly");
+
+    if (interval === "month") return i18n.t("billingSettings.monthly");
+
+    if (!interval) return fallback;
+
+    return i18n.t("billingSettings.unknown");
+  };
+  const currentPlanCadenceLabel = cadenceLabel(summary?.subscription_interval);
 
   return (
     <div className="mx-auto flex w-full max-w-5xl flex-col gap-6 p-4 sm:p-6">
@@ -405,11 +414,10 @@ const Billing = () => {
                     {i18n.t("billingSettings.billingCadence")}
                   </p>
                   <p className="mt-1 text-base font-medium text-foreground">
-                    {summary.subscription_interval === "year"
-                      ? i18n.t("billingSettings.yearly")
-                      : summary.subscription_interval === "month"
-                      ? i18n.t("billingSettings.monthly")
-                      : i18n.t("billingSettings.notSubscribedYet")}
+                    {cadenceLabel(
+                      summary.subscription_interval,
+                      i18n.t("billingSettings.notSubscribedYet")
+                    )}
                   </p>
                 </div>
               </div>

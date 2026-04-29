@@ -59,11 +59,8 @@ class HandleStripeCheckoutEventService
           set_response({ message: "Invalid payload!" }, 400)
         end
       when STRIPE_PAYMENT_INTENT_SUCCEEDED_EVENT
-        if InvoicePayment::StripePaymentSucceeded.process(event)
-          set_response({ success: true }, :ok)
-        else
-          set_response({ message: "Invalid payload!" }, 400)
-        end
+        InvoicePayment::StripePaymentSucceeded.process(event)
+        set_response({ success: true }, :ok)
       when STRIPE_CUSTOMER_SUBSCRIPTION_CREATED_EVENT,
         STRIPE_CUSTOMER_SUBSCRIPTION_UPDATED_EVENT,
         STRIPE_CUSTOMER_SUBSCRIPTION_DELETED_EVENT

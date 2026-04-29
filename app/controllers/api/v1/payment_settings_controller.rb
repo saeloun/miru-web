@@ -155,9 +155,9 @@ class Api::V1::PaymentSettingsController < Api::V1::ApplicationController
 
     def stripe_connect_error_message(error)
       if error.message.to_s.include?("signed up for Connect")
-        "Stripe Connect is not enabled for this Stripe account. Enable Connect in Stripe Dashboard and try again."
+        I18n.t("errors.stripe.connect_not_enabled")
       else
-        error.message
+        I18n.t("errors.stripe.generic", message: error.message.to_s)
       end
     end
 end
