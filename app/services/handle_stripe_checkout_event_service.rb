@@ -7,6 +7,7 @@ class HandleStripeCheckoutEventService
   STRIPE_CHECKOUT_SESSION_COMPLETED_EVENT = "checkout.session.completed"
   STRIPE_CHECKOUT_SESSION_EXPIRED_EVENT = "checkout.session.expired"
   STRIPE_PAYMENT_INTENT_FAILED_EVENT = "payment_intent.payment_failed"
+  STRIPE_PAYMENT_INTENT_SUCCEEDED_EVENT = "payment_intent.succeeded"
   STRIPE_CUSTOMER_SUBSCRIPTION_CREATED_EVENT = "customer.subscription.created"
   STRIPE_CUSTOMER_SUBSCRIPTION_UPDATED_EVENT = "customer.subscription.updated"
   STRIPE_CUSTOMER_SUBSCRIPTION_DELETED_EVENT = "customer.subscription.deleted"
@@ -57,6 +58,9 @@ class HandleStripeCheckoutEventService
         else
           set_response({ message: "Invalid payload!" }, 400)
         end
+      when STRIPE_PAYMENT_INTENT_SUCCEEDED_EVENT
+        InvoicePayment::StripePaymentSucceeded.process(event)
+        set_response({ success: true }, :ok)
       when STRIPE_CUSTOMER_SUBSCRIPTION_CREATED_EVENT,
         STRIPE_CUSTOMER_SUBSCRIPTION_UPDATED_EVENT,
         STRIPE_CUSTOMER_SUBSCRIPTION_DELETED_EVENT

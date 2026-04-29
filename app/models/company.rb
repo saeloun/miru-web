@@ -165,13 +165,15 @@ class Company < ApplicationRecord
     stripe_subscription_id: nil,
     subscription_status:,
     subscription_ends_at: nil,
-    subscription_interval: nil
+    subscription_interval: nil,
+    cancel_at_period_end: false
   )
     attrs = {
       stripe_customer_id:,
       subscription_status:,
       subscription_ends_at:,
-      plan_tier: stripe_subscription_access?(subscription_status) ? "paid" : "free"
+      plan_tier: stripe_subscription_access?(subscription_status) ? "paid" : "free",
+      cancel_at_period_end:
     }
 
     attrs[:stripe_subscription_id] = stripe_subscription_id if has_attribute?(:stripe_subscription_id)
@@ -184,7 +186,8 @@ class Company < ApplicationRecord
     attrs = {
       plan_tier: "free",
       subscription_status: "canceled",
-      subscription_ends_at: nil
+      subscription_ends_at: nil,
+      cancel_at_period_end: false
     }
 
     attrs[:stripe_subscription_id] = nil if has_attribute?(:stripe_subscription_id)

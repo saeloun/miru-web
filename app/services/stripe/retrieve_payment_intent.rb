@@ -19,7 +19,7 @@ class Stripe::RetrievePaymentIntent < ApplicationService
   private
 
     def retrieve_payment_intent
-      return nil if payment_intent.nil? && account_id.nil?
+      return nil if payment_intent.nil? || account_id.nil?
 
       Stripe::PaymentIntent.retrieve(
         payment_intent,

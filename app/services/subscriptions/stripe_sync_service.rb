@@ -62,7 +62,8 @@ module Subscriptions
           stripe_subscription_id: subscription_value(stripe_subscription, :id),
           subscription_status: subscription_value(stripe_subscription, :status),
           subscription_ends_at: timestamp_to_time(subscription_period_end),
-          subscription_interval: stripe_subscription_interval(stripe_subscription)
+          subscription_interval: stripe_subscription_interval(stripe_subscription),
+          cancel_at_period_end: subscription_boolean_value(stripe_subscription, :cancel_at_period_end)
         )
 
         if notify_plan_purchase && !was_paid && target_company.plan_tier == "paid"
@@ -100,6 +101,11 @@ module Subscriptions
 
       def subscription_value(stripe_subscription, key)
         value_from(stripe_subscription, key) || value_from(stripe_subscription, key.to_s)
+      end
+
+      def subscription_boolean_value(stripe_subscription, key)
+        value = ActiveModel::Type::Boolean.new.cast(subscription_value(stripe_subscription, key))
+        value.nil? ? false : value
       end
 
       def value_from(object, key)

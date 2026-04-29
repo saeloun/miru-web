@@ -26,6 +26,22 @@ RSpec.describe "Api::V1::PaymentSettings#connect_stripe", type: :request do
       expect(json_response).to have_key("accountLink")
       expect(json_response["accountLink"]).to eq("https://connect.stripe.com/setup/s/something")
     end
+
+    it "returns a helpful error when Stripe Connect is not enabled" do
+      allow(Stripe::Account).to receive(:create).and_raise(
+        Stripe::InvalidRequestError.new(
+          "You can only create new accounts if you've signed up for Connect.",
+          "account"
+        )
+      )
+
+      send_request :post, api_v1_payments_settings_stripe_connect_path, headers: auth_headers(user)
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(json_response["errors"]).to eq(
+        "Stripe Connect is not enabled for this Stripe account. Enable Connect in Stripe Dashboard and try again."
+      )
+    end
   end
 
   context "when user is an employee" do

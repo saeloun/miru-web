@@ -17,6 +17,8 @@ class Api::V1::PaymentSettingsController < Api::V1::ApplicationController
     render :connect_stripe, locals: { stripe_connected_account: account }
   rescue ActiveRecord::RecordNotUnique
     render :connect_stripe, locals: { stripe_connected_account: current_company.reload.stripe_connected_account }
+  rescue Stripe::StripeError => e
+    render json: { errors: stripe_connect_error_message(e) }, status: 422
   end
 
   def destroy
@@ -149,5 +151,13 @@ class Api::V1::PaymentSettingsController < Api::V1::ApplicationController
 
     def save_stripe_settings
       PaymentProviders::CreateStripeProviderService.process(current_company)
+    end
+
+    def stripe_connect_error_message(error)
+      if error.message.to_s.include?("signed up for Connect")
+        I18n.t("errors.stripe.connect_not_enabled")
+      else
+        I18n.t("errors.stripe.generic", message: error.message.to_s)
+      end
     end
 end

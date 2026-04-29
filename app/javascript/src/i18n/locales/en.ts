@@ -1806,6 +1806,7 @@ const en = {
     billingCadence: "Billing cadence",
     monthly: "Monthly",
     yearly: "Yearly",
+    unknown: "Unknown",
     notSubscribedYet: "Not subscribed yet",
     startTrial: "Start 30-day Pro trial",
     startingTrial: "Starting trial...",
@@ -1851,6 +1852,9 @@ const en = {
       proTrialEnded: "Pro trial ended",
       proTrialEndedDescription:
         "Your workspace has returned to the free plan. Upgrade in Stripe to restore Pro access.",
+      subscriptionScheduledToCancel: "Subscription scheduled to cancel",
+      subscriptionScheduledToCancelOn:
+        "Your Pro access remains active until %{date}.",
       seatLimitReached: "Seat limit reached",
       seatLimitReachedDescription:
         "Upgrade in Stripe to add more than 3 members to this workspace.",

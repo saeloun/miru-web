@@ -42,6 +42,7 @@ type BillingSummary = {
   billing_exempt: boolean;
   subscription_status: string | null;
   subscription_ends_at: string | null;
+  cancel_at_period_end?: boolean;
   subscription_interval?: string | null;
   has_stripe_customer: boolean;
   team_member_limit: number;
@@ -325,6 +326,21 @@ const Billing = () => {
     ],
   } as const;
 
+  const isCurrentProPlan = summary?.plan_tier === "paid";
+  const cadenceLabel = (
+    interval: string | null | undefined,
+    fallback = i18n.t("billingSettings.unknown")
+  ) => {
+    if (interval === "year") return i18n.t("billingSettings.yearly");
+
+    if (interval === "month") return i18n.t("billingSettings.monthly");
+
+    if (!interval) return fallback;
+
+    return i18n.t("billingSettings.unknown");
+  };
+  const currentPlanCadenceLabel = cadenceLabel(summary?.subscription_interval);
+
   return (
     <div className="mx-auto flex w-full max-w-5xl flex-col gap-6 p-4 sm:p-6">
       {billingResult === "success" && (
@@ -398,11 +414,10 @@ const Billing = () => {
                     {i18n.t("billingSettings.billingCadence")}
                   </p>
                   <p className="mt-1 text-base font-medium text-foreground">
-                    {summary.subscription_interval === "year"
-                      ? i18n.t("billingSettings.yearly")
-                      : summary.subscription_interval === "month"
-                      ? i18n.t("billingSettings.monthly")
-                      : i18n.t("billingSettings.notSubscribedYet")}
+                    {cadenceLabel(
+                      summary.subscription_interval,
+                      i18n.t("billingSettings.notSubscribedYet")
+                    )}
                   </p>
                 </div>
               </div>
@@ -430,6 +445,26 @@ const Billing = () => {
                   </AlertDescription>
                 </Alert>
               )}
+
+              {summary.plan_tier === "paid" &&
+                summary.cancel_at_period_end &&
+                summary.subscription_ends_at && (
+                  <Alert>
+                    <AlertTitle>
+                      {i18n.t(
+                        "billingSettings.alerts.subscriptionScheduledToCancel"
+                      )}
+                    </AlertTitle>
+                    <AlertDescription>
+                      {i18n.t(
+                        "billingSettings.alerts.subscriptionScheduledToCancelOn",
+                        {
+                          date: formatDate(summary.subscription_ends_at),
+                        }
+                      )}
+                    </AlertDescription>
+                  </Alert>
+                )}
 
               {summary.team_member_limit_reached && !summary.pro_access && (
                 <Alert>
@@ -671,7 +706,13 @@ const Billing = () => {
                       })}
                     </Badge>
                   )}
-                  <Badge>{i18n.t("billingSettings.recommended")}</Badge>
+                  <Badge>
+                    {isCurrentProPlan
+                      ? `${i18n.t(
+                          "billingSettings.currentPlan"
+                        )} (${currentPlanCadenceLabel})`
+                      : i18n.t("billingSettings.recommended")}
+                  </Badge>
                 </div>
               </div>
               <p className="mt-2 text-2xl font-semibold text-foreground">
