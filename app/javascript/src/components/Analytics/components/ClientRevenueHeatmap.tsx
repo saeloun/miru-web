@@ -28,10 +28,14 @@ const ClientRevenueHeatmap: React.FC<ClientRevenueHeatmapProps> = ({
     monthly_trend: client.monthly_trend.slice(isMobile ? -6 : 0),
   }));
 
-  const monthLabels = visibleClients[0]?.monthly_trend.map(({ label }) => label) || [];
+  const monthLabels =
+    visibleClients[0]?.monthly_trend.map(({ label }) => label) || [];
+
   const maxRevenue = Math.max(
     0,
-    ...visibleClients.flatMap(client => client.monthly_trend.map(point => point.revenue || 0))
+    ...visibleClients.flatMap(client =>
+      client.monthly_trend.map(point => point.revenue || 0)
+    )
   );
 
   if (visibleClients.length === 0) return null;
@@ -47,11 +51,16 @@ const ClientRevenueHeatmap: React.FC<ClientRevenueHeatmapProps> = ({
       <CardContent className="overflow-x-auto">
         <div
           className="grid min-w-max gap-2"
-          style={{ gridTemplateColumns: `180px repeat(${monthLabels.length}, minmax(56px, 1fr))` }}
+          style={{
+            gridTemplateColumns: `180px repeat(${monthLabels.length}, minmax(56px, 1fr))`,
+          }}
         >
           <div />
           {monthLabels.map(label => (
-            <div key={label} className="text-center text-xs font-medium text-muted-foreground">
+            <div
+              key={label}
+              className="text-center text-xs font-medium text-muted-foreground"
+            >
               {label}
             </div>
           ))}
@@ -63,8 +72,13 @@ const ClientRevenueHeatmap: React.FC<ClientRevenueHeatmapProps> = ({
               </div>
 
               {client.monthly_trend.map(month => {
-                const intensity = maxRevenue > 0 ? month.revenue / maxRevenue : 0;
-                const backgroundColor = `rgba(37, 99, 235, ${Math.max(0.1, intensity)})`;
+                const intensity =
+                  maxRevenue > 0 ? month.revenue / maxRevenue : 0;
+
+                const backgroundColor = `rgba(37, 99, 235, ${Math.max(
+                  0.1,
+                  intensity
+                )})`;
 
                 return (
                   <div

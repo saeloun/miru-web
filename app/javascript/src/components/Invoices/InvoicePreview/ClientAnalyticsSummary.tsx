@@ -37,9 +37,12 @@ const ClientAnalyticsSummary: React.FC<ClientAnalyticsSummaryProps> = ({
   clientId,
 }) => {
   const { company, companyRole } = useUserContext();
-  const canViewClientAnalytics = [Roles.ADMIN, Roles.OWNER, Roles.MANAGER, Roles.BOOK_KEEPER].includes(
-    companyRole as Roles
-  );
+  const canViewClientAnalytics = [
+    Roles.ADMIN,
+    Roles.OWNER,
+    Roles.MANAGER,
+    Roles.BOOK_KEEPER,
+  ].includes(companyRole as Roles);
   const currency = company?.base_currency || company?.baseCurrency || "USD";
   const from = subDays(new Date(), 365).toISOString().slice(0, 10);
   const to = new Date().toISOString().slice(0, 10);
@@ -101,8 +104,9 @@ const ClientAnalyticsSummary: React.FC<ClientAnalyticsSummaryProps> = ({
   }
 
   const TrendIcon =
-    trendIconMap[(client.trend_direction as keyof typeof trendIconMap) || "flat"] ||
-    Minus;
+    trendIconMap[
+      (client.trend_direction as keyof typeof trendIconMap) || "flat"
+    ] || Minus;
 
   return (
     <Card className="mb-8 border-border bg-muted/20">

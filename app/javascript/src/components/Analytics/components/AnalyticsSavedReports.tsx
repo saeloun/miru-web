@@ -7,7 +7,11 @@ import { useNavigate } from "react-router-dom";
 import { analyticsApi } from "apis/api";
 import { useUserContext } from "../../../context/UserContext";
 import { SavedAnalyticsReport } from "../types";
-import { analyticsReportLabelMap, analyticsReportPathMap, buildSavedReportSearch } from "../savedReports";
+import {
+  analyticsReportLabelMap,
+  analyticsReportPathMap,
+  buildSavedReportSearch,
+} from "../savedReports";
 import { Button } from "../../ui/button";
 import {
   Dialog,
@@ -18,7 +22,13 @@ import {
   DialogTitle,
 } from "../../ui/dialog";
 import { Input } from "../../ui/input";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "../../ui/card";
 
 type AnalyticsSavedReportsProps = {
   reportType: SavedAnalyticsReport["report_type"];
@@ -41,6 +51,7 @@ const AnalyticsSavedReports: React.FC<AnalyticsSavedReportsProps> = ({
     queryKey: ["analytics", "saved-reports"],
     queryFn: async () => {
       const response = await analyticsApi.getSavedReports();
+
       return response.data.reports as SavedAnalyticsReport[];
     },
   });
@@ -57,14 +68,18 @@ const AnalyticsSavedReports: React.FC<AnalyticsSavedReportsProps> = ({
     onSuccess: () => {
       setOpen(false);
       setName("");
-      queryClient.invalidateQueries({ queryKey: ["analytics", "saved-reports"] });
+      queryClient.invalidateQueries({
+        queryKey: ["analytics", "saved-reports"],
+      });
     },
   });
 
   const deleteMutation = useMutation({
     mutationFn: async (id: number) => analyticsApi.deleteSavedReport(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["analytics", "saved-reports"] });
+      queryClient.invalidateQueries({
+        queryKey: ["analytics", "saved-reports"],
+      });
     },
   });
 
@@ -88,9 +103,13 @@ const AnalyticsSavedReports: React.FC<AnalyticsSavedReportsProps> = ({
       </CardHeader>
       <CardContent className="space-y-3">
         {reportsQuery.isLoading ? (
-          <p className="text-sm text-muted-foreground">Loading saved reports...</p>
+          <p className="text-sm text-muted-foreground">
+            Loading saved reports...
+          </p>
         ) : reportsQuery.isError ? (
-          <p className="text-sm text-destructive">Unable to load saved reports.</p>
+          <p className="text-sm text-destructive">
+            Unable to load saved reports.
+          </p>
         ) : reports.length === 0 ? (
           <p className="text-sm text-muted-foreground">
             No saved analytics reports yet.
@@ -104,24 +123,33 @@ const AnalyticsSavedReports: React.FC<AnalyticsSavedReportsProps> = ({
               <div>
                 <div className="font-medium text-foreground">{report.name}</div>
                 <div className="mt-1 text-sm text-muted-foreground">
-                  {analyticsReportLabelMap[report.report_type]} · {report.creator_name} · {format(new Date(report.created_at), "MMM dd, yyyy")}
+                  {analyticsReportLabelMap[report.report_type]} ·{" "}
+                  {report.creator_name} ·{" "}
+                  {format(new Date(report.created_at), "MMM dd, yyyy")}
                 </div>
               </div>
               <div className="flex gap-2">
                 <Button
                   variant="outline"
                   onClick={async () => {
-                    const response = await analyticsApi.getSavedReport(report.id);
-                    const savedReport = response.data.report as SavedAnalyticsReport;
+                    const response = await analyticsApi.getSavedReport(
+                      report.id
+                    );
+
+                    const savedReport = response.data
+                      .report as SavedAnalyticsReport;
 
                     navigate(
-                      `${analyticsReportPathMap[savedReport.report_type]}${buildSavedReportSearch(savedReport.filters)}`
+                      `${
+                        analyticsReportPathMap[savedReport.report_type]
+                      }${buildSavedReportSearch(savedReport.filters)}`
                     );
                   }}
                 >
                   Open
                 </Button>
-                {report.can_delete || Number(report.created_by_id) === Number(user.id) ? (
+                {report.can_delete ||
+                Number(report.created_by_id) === Number(user.id) ? (
                   <Button
                     variant="ghost"
                     disabled={deleteMutation.isPending}

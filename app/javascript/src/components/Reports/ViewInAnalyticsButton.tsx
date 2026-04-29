@@ -8,7 +8,9 @@ type ViewInAnalyticsButtonProps = {
   to: string;
 };
 
-const ViewInAnalyticsButton: React.FC<ViewInAnalyticsButtonProps> = ({ to }) => (
+const ViewInAnalyticsButton: React.FC<ViewInAnalyticsButtonProps> = ({
+  to,
+}) => (
   <Button asChild variant="outline">
     <Link to={to}>
       <ChartBar className="mr-2 h-4 w-4" />

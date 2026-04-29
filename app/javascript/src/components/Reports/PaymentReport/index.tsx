@@ -282,12 +282,15 @@ const PaymentReport: React.FC = () => {
       preset: dateRangePreset,
       from: formatReportQueryDate(dateRange?.from),
       to: formatReportQueryDate(dateRange?.to),
-      clients: selectedClients.length > 0 ? selectedClients.join(",") : undefined,
+      clients:
+        selectedClients.length > 0 ? selectedClients.join(",") : undefined,
     });
 
     const queryString = params.toString();
 
-    return queryString ? `/analytics/clients?${queryString}` : "/analytics/clients";
+    return queryString
+      ? `/analytics/clients?${queryString}`
+      : "/analytics/clients";
   }, [dateRange?.from, dateRange?.to, dateRangePreset, selectedClients]);
 
   const handleDateRangePreset = (preset: string) => {

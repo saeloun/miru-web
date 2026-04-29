@@ -377,7 +377,10 @@ const TimeEntryReport: React.FC = () => {
       preset: dateRangePreset,
       from: formatReportQueryDate(dateRange?.from),
       to: formatReportQueryDate(dateRange?.to),
-      members: selectedTeamMembers.length > 0 ? selectedTeamMembers.join(",") : undefined,
+      members:
+        selectedTeamMembers.length > 0
+          ? selectedTeamMembers.join(",")
+          : undefined,
     });
 
     const queryString = params.toString();

@@ -34,21 +34,21 @@ const AnalyticsPageLayout: React.FC<AnalyticsPageLayoutProps> = ({
       <div className="flex flex-col gap-4">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
           <div>
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Link className="hover:text-foreground" to={Paths.ANALYTICS}>
-              Analytics
-            </Link>
-            {location.pathname !== Paths.ANALYTICS && (
-              <>
-                <span>/</span>
-                <span>{title}</span>
-              </>
-            )}
-          </div>
-          <h1 className="mt-2 text-3xl font-semibold tracking-tight text-foreground">
-            {title}
-          </h1>
-          <p className="mt-1 text-sm text-muted-foreground">{description}</p>
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <Link className="hover:text-foreground" to={Paths.ANALYTICS}>
+                Analytics
+              </Link>
+              {location.pathname !== Paths.ANALYTICS && (
+                <>
+                  <span>/</span>
+                  <span>{title}</span>
+                </>
+              )}
+            </div>
+            <h1 className="mt-2 text-3xl font-semibold tracking-tight text-foreground">
+              {title}
+            </h1>
+            <p className="mt-1 text-sm text-muted-foreground">{description}</p>
           </div>
           {actions}
         </div>

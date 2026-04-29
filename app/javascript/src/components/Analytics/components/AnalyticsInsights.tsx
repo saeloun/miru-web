@@ -41,7 +41,9 @@ const AnalyticsInsights: React.FC<AnalyticsInsightsProps> = ({
   if (anomalyCount > 0) {
     insights.push({
       title: "Expense anomalies detected",
-      description: `${anomalyCount} expense anomaly${anomalyCount === 1 ? " was" : "ies were"} detected in the selected period.`,
+      description: `${anomalyCount} expense anomaly${
+        anomalyCount === 1 ? " was" : "ies were"
+      } detected in the selected period.`,
       icon: <TrendUp className="h-4 w-4" />,
     });
   }

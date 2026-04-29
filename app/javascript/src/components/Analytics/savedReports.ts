@@ -26,5 +26,6 @@ export const buildSavedReportSearch = (filters: Record<string, any>) => {
   );
 
   const queryString = params.toString();
+
   return queryString ? `?${queryString}` : "";
 };
