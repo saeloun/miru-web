@@ -33,9 +33,11 @@ RSpec.describe PaymentProviders::RazorpayUpiPayoutService do
     described_class.new(
       provider:,
       amount: 125.50,
-      contact_name: "Vendor",
-      contact_email: "vendor@example.com",
-      contact_phone: "9876543210",
+      recipient: {
+        name: "Vendor",
+        email: "vendor@example.com",
+        phone: "9876543210"
+      },
       reference_id: "miru-payout-1",
       idempotency_key: "idem-123"
     ).process

@@ -2,15 +2,12 @@
 
 module PaymentProviders
   class RazorpayUpiPayoutService
-    attr_reader :provider, :amount, :upi_id, :contact_name, :contact_email, :contact_phone, :reference_id, :idempotency_key
+    attr_reader :provider, :amount, :recipient, :reference_id, :idempotency_key
 
-    def initialize(provider:, amount:, upi_id: nil, contact_name:, contact_email:, contact_phone: nil, reference_id:, idempotency_key:)
+    def initialize(provider:, amount:, recipient:, reference_id:, idempotency_key:)
       @provider = provider
       @amount = amount
-      @upi_id = upi_id.presence || provider.payout_upi_id
-      @contact_name = contact_name
-      @contact_email = contact_email
-      @contact_phone = contact_phone
+      @recipient = recipient
       @reference_id = reference_id
       @idempotency_key = idempotency_key
     end
@@ -54,6 +51,22 @@ module PaymentProviders
 
       def amount_subunits
         (amount.to_d * Money::Currency.new("INR").subunit_to_unit).round.to_i
+      end
+
+      def upi_id
+        recipient[:upi_id].presence || provider.payout_upi_id
+      end
+
+      def contact_name
+        recipient.fetch(:name)
+      end
+
+      def contact_email
+        recipient.fetch(:email)
+      end
+
+      def contact_phone
+        recipient[:phone]
       end
 
       def client
