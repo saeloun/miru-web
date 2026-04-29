@@ -190,5 +190,24 @@ RSpec.describe Reports::TimeEntries::FilterService do
         end
       end
     end
+
+    context "when client filter is provided for projects" do
+      it "only returns projects from the current company" do
+        current_company_client = create(:client, company:)
+        current_company_project = create(:project, client: current_company_client)
+        other_company = create(:company)
+        other_company_client = create(:client, company: other_company)
+        other_company_project = create(:project, client: other_company_client)
+
+        page_service = described_class.new(
+          { group_by: "project", client: [current_company_client.id, other_company_client.id] },
+          company
+        )
+        page_service.process
+
+        expect(page_service.es_filter).to eq({ project_id: [current_company_project.id] })
+        expect(page_service.es_filter[:project_id]).not_to include(other_company_project.id)
+      end
+    end
   end
 end

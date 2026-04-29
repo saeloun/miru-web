@@ -49,6 +49,34 @@ RSpec.describe "Api::V1::TimesheetEntry#create", type: :request do
       expect(created_entry.duration).to eq(20)
       expect(created_entry.bill_status).to eq("unbilled")
     end
+
+    it "does not create entries on projects from another workspace" do
+      other_company = create(:company)
+      other_client = create(:client, company: other_company)
+      other_project = create(:project, client: other_client)
+
+      expect do
+        send_request :post, api_v1_timesheet_entry_index_path,
+          params: entry_params.merge(project_id: other_project.id),
+          headers: auth_headers(user)
+      end.not_to change(TimesheetEntry, :count)
+
+      expect(response).to have_http_status(:not_found)
+    end
+
+    it "does not create entries for users from another workspace" do
+      other_company = create(:company)
+      other_user = create(:user, current_workspace_id: other_company.id)
+      create(:employment, company: other_company, user: other_user)
+
+      expect do
+        send_request :post, api_v1_timesheet_entry_index_path,
+          params: entry_params.merge(user_id: other_user.id),
+          headers: auth_headers(user)
+      end.not_to change(TimesheetEntry, :count)
+
+      expect(response).to have_http_status(:not_found)
+    end
   end
 
   context "when user is an employee" do

@@ -52,6 +52,30 @@ RSpec.describe "Api::V1::Desktop::CurrentTimers", type: :request do
         "task_name" => "Development"
       )
     end
+
+    it "does not return a timer from another workspace" do
+      other_company = create(:company)
+      create(:employment, company: other_company, user:)
+      create(
+        :desktop_current_timer,
+        company: other_company,
+        user:,
+        current_timer: {
+          elapsed_ms: 999_000,
+          notes: "Other workspace timer",
+          running: true
+        }
+      )
+
+      send_request :get, api_v1_desktop_current_timer_path
+
+      expect(response).to have_http_status(:ok)
+      expect(json_response["current_timer"]).to include(
+        "elapsed_ms" => 0,
+        "notes" => "",
+        "running" => false
+      )
+    end
   end
 
   describe "PUT /api/v1/desktop/current_timer" do
@@ -105,6 +129,32 @@ RSpec.describe "Api::V1::Desktop::CurrentTimers", type: :request do
         "notes" => "Updated",
         "running" => false
       )
+    end
+
+    it "sanitizes invalid and oversized timer payload values" do
+      send_request :put, api_v1_desktop_current_timer_path, params: {
+        current_timer: {
+          billable: "1",
+          elapsed_ms: -10_000,
+          notes: "n" * 2_100,
+          project_name: "p" * 250,
+          running: "0",
+          started_at: "not a timestamp",
+          task_name: "t" * 140,
+          ignored: "not persisted"
+        }
+      }
+
+      expect(response).to have_http_status(:ok)
+      timer = json_response["current_timer"]
+      expect(timer["billable"]).to be(true)
+      expect(timer["elapsed_ms"]).to eq(0)
+      expect(timer["notes"].length).to eq(2_000)
+      expect(timer["project_name"].length).to eq(200)
+      expect(timer["running"]).to be(false)
+      expect(timer["started_at"]).to be_nil
+      expect(timer["task_name"].length).to eq(120)
+      expect(timer).not_to have_key("ignored")
     end
 
     it "does not allow unauthenticated sync" do

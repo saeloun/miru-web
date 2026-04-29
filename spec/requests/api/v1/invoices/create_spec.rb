@@ -205,6 +205,34 @@ RSpec.describe "Api::V1::Invoices#create", type: :request do
         expect(json_response.dig("client", "currency")).to eq("EUR")
       end
 
+      it "does not create invoices for clients from another workspace" do
+        other_company = create(:company)
+        other_client = create(:client, company: other_company)
+
+        expect do
+          send_request :post, api_v1_invoices_path(
+            invoice: {
+              client_id: other_client.id,
+              invoice_number: "INV-CROSS-WORKSPACE-001",
+              issue_date: Date.current.iso8601,
+              due_date: 30.days.from_now.to_date.iso8601,
+              status: "draft",
+              currency: company.base_currency,
+              invoice_line_items_attributes: [
+                {
+                  name: "Cross workspace attempt",
+                  description: "Should not persist",
+                  date: Date.current.iso8601,
+                  rate: 100,
+                  quantity: 60
+                }
+              ]
+            }), headers: auth_headers(user)
+        end.not_to change(Invoice, :count)
+
+        expect(response).to have_http_status(:not_found)
+      end
+
       it "supports USD, EUR, and INR invoices within the same company" do
         eur_client = create(:client, company:, currency: "EUR", name: "Euro Client")
         inr_client = create(:client, company:, currency: "INR", name: "India Client")
