@@ -2,7 +2,7 @@
 
 class Api::V1::Users::RegistrationsController < Devise::RegistrationsController
   respond_to :json
-  skip_forgery_protection
+  protect_from_forgery with: :null_session, only: :create
 
   def respond_with(user, _opts = {})
     if user.errors.present?
