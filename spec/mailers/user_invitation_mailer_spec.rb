@@ -31,6 +31,7 @@ RSpec.describe UserInvitationMailer, type: :mailer do
         sender_details:
       ).send_user_invitation
     end
+    let(:body) { mail.html_part&.body&.decoded || mail.body.decoded }
 
     it "renders the headers" do
       expect(mail.subject).to eq("You're invited to join Miru")
@@ -38,11 +39,11 @@ RSpec.describe UserInvitationMailer, type: :mailer do
     end
 
     it "renders the body" do
-      expect(mail.body.encoded).to include("Accept the invite, create your password, and you are in.")
-      expect(mail.body.encoded).to include("Join Miru")
-      expect(mail.body.encoded).to include("support@getmiru.com")
-      expect(mail.body.encoded).to include(company.name)
-      expect(mail.body.encoded).to include(user.full_name)
+      expect(body).to include("Accept the invite, create your password, and you are in.")
+      expect(body).to include("Join Miru")
+      expect(body).to include("support@getmiru.com")
+      expect(body).to include(company.name)
+      expect(body).to include(user.full_name)
     end
 
     it "uses the recipient locale when available" do
@@ -60,10 +61,11 @@ RSpec.describe UserInvitationMailer, type: :mailer do
       expect(localized_mail.subject).to eq(
         I18n.with_locale(:te) { I18n.t("mailers.user_invitation_mailer.send_user_invitation.subject") }
       )
-      expect(localized_mail.body.encoded).to include(
+      localized_body = localized_mail.html_part&.body&.decoded || localized_mail.body.decoded
+      expect(localized_body).to include(
         I18n.with_locale(:te) { I18n.t("mailers.user_invitation_mailer.send_user_invitation.get_started_title") }
       )
-      expect(localized_mail.body.encoded).not_to include("translation missing")
+      expect(localized_body).not_to include("translation missing")
     end
   end
 end

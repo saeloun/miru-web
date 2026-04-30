@@ -16,7 +16,7 @@ RSpec.describe "Responsive mailer previews", type: :system, js: true do
     ]
 
     page.current_window.resize_to(390, 844)
-    visit "/users/sign_in"
+    visit "/400.html"
 
     previews.each do |mail|
       html = mail.html_part&.body&.decoded || mail.body.decoded

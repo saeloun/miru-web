@@ -36,8 +36,11 @@ RSpec.describe SendWeeklyReminderToUserMailer, type: :mailer do
         end_date:,
         company_name: company.name
       ).notify_user_about_missed_entries
-      body = mailer.body.decoded
+      body = mailer.html_part.body.decoded
 
+      expect(mailer.attachments["miruLogoWithText.png"]).to be_present
+      expect(mailer.attachments["miruLogoWithText.png"].content_type).to include("image/png")
+      expect(body).to include("cid:")
       expect(body).to include("TRACK. BILL. GET PAID.")
       expect(body).not_to include("miruLogoWithText.svg")
       expect(body).to include("background-color: #f5f7fb")

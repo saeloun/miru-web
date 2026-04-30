@@ -78,7 +78,7 @@
 
       .email-brand-logo {
         display: block;
-        width: 144px;
+        width: 120px;
         height: auto;
         margin: 0 auto;
       }
@@ -463,7 +463,7 @@
         }
 
         .email-brand-logo {
-          width: 124px !important;
+          width: 120px !important;
         }
 
         .email-highlight {
@@ -525,6 +525,9 @@
                     <td align="center">
                       <% if content_for?(:email_badge) %>
                         <%= yield :email_badge %>
+                      <% elsif miru_logo_attachment_url.present? %>
+                        <img src="<%= miru_logo_attachment_url %>" width="120" height="48" alt="<%= t("mailers.layout.brand") %>" class="email-brand-logo" style="display: block; width: 120px; height: 48px; margin: 0 auto; border: 0; outline: none; text-decoration: none;" />
+                        <div style="margin-top: 8px; color: #64748b; font-size: 9px; font-weight: 700; letter-spacing: 0.18em; line-height: 1.2;">TRACK. BILL. GET PAID.</div>
                       <% else %>
                         <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" aria-label="<%= t("mailers.layout.brand") %>" style="margin: 0 auto; border-collapse: collapse;">
                           <tr>

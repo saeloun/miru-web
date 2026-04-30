@@ -4,6 +4,8 @@ class ApplicationMailer < ActionMailer::Base
   append_view_path Rails.root.join("app", "views", "mailers")
   default from: ENV["DEFAULT_MAILER_SENDER"] || "test@example.com"
   layout "mailer"
+  before_action :attach_miru_logo
+  helper_method :miru_logo_attachment_url
 
   rescue_from Postmark::InactiveRecipientError do |exception|
     self.class.handle_inactive_recipient(exception)
@@ -36,6 +38,22 @@ class ApplicationMailer < ActionMailer::Base
 
     def extract_inactive_emails(message)
       self.class.send(:extract_inactive_emails, message)
+    end
+
+    def attach_miru_logo
+      return if attachments["miruLogoWithText.png"].present?
+
+      logo_path = Rails.root.join("public", "miruLogoWithText.png")
+      return unless logo_path.exist?
+
+      attachments.inline["miruLogoWithText.png"] = {
+        content: logo_path.binread,
+        mime_type: "image/png"
+      }
+    end
+
+    def miru_logo_attachment_url
+      attachments["miruLogoWithText.png"]&.url
     end
 
     def with_recipient_locale(user, &block)
