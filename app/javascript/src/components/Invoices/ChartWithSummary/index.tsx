@@ -24,6 +24,12 @@ interface ChartWithSummaryProps {
   baseCurrency: string;
   filterParams: any;
   setFilterParams: (params: any) => void;
+  statusCounts?: {
+    all?: number;
+    overdue?: number;
+    outstanding?: number;
+    draft?: number;
+  };
 }
 
 const ChartWithSummary: React.FC<ChartWithSummaryProps> = ({
@@ -31,6 +37,7 @@ const ChartWithSummary: React.FC<ChartWithSummaryProps> = ({
   baseCurrency,
   filterParams,
   setFilterParams,
+  statusCounts,
 }) => {
   const [revenueData, setRevenueData] = useState<any[]>([]);
   const [selectedPeriod] = useState("year");
@@ -38,6 +45,22 @@ const ChartWithSummary: React.FC<ChartWithSummaryProps> = ({
   const [currentMonthRevenue, setCurrentMonthRevenue] = useState(0);
   const [currentMonthInvoices, setCurrentMonthInvoices] = useState(0);
   const [currentMonthLabel, setCurrentMonthLabel] = useState("-");
+
+  const formatFullMonthLabel = (value: unknown, fallback?: string): string => {
+    if (typeof value === "string" && value.trim()) return value.trim();
+
+    if (fallback) return fallback;
+
+    return "-";
+  };
+
+  const formatXAxisTick = (value: string) => {
+    const match = value.match(/^([A-Za-z]{3,})\s+(\d{4})$/);
+
+    if (!match) return value;
+
+    return `${match[1]} '${match[2].slice(-2)}`;
+  };
 
   const parseNumber = (value: unknown): number => {
     if (typeof value === "number") return Number.isFinite(value) ? value : 0;
@@ -74,6 +97,13 @@ const ChartWithSummary: React.FC<ChartWithSummaryProps> = ({
 
       const monthlyData = scopedData.map(item => ({
         month: item.month || item.label || item.name,
+        fullMonth: formatFullMonthLabel(
+          item.full_month ?? item.fullMonth,
+          [item.month || item.label || item.name, item.year]
+            .filter(Boolean)
+            .join(" ")
+            .trim()
+        ),
         revenue: parseNumber(
           item.monthly_revenue ?? item.revenue ?? item.value ?? item.amount
         ),
@@ -104,6 +134,7 @@ const ChartWithSummary: React.FC<ChartWithSummaryProps> = ({
           statistics.current_month_invoices ?? latestPoint?.invoice_count ?? 0
         ),
         currentMonthLabel:
+          latestPoint?.fullMonth ||
           latestPoint?.month ||
           latestPoint?.label ||
           latestPoint?.name ||
@@ -171,16 +202,17 @@ const ChartWithSummary: React.FC<ChartWithSummaryProps> = ({
 
   const summaryItems = [
     {
-      label: i18n.t("all"),
+      label: "Unpaid",
       value: totalAmount,
+      count: statusCounts?.all ?? 0,
       colorClass: "text-foreground",
       bgClass: "bg-muted/40 hover:bg-accent",
       onClick: resetFilters,
-      isReset: true,
     },
     {
       label: i18n.t("invoices.overdue"),
       value: overdueAmount,
+      count: statusCounts?.overdue ?? 0,
       colorClass: "text-foreground",
       bgClass: "bg-muted/40 hover:bg-accent",
       onClick: () => applyFilter([{ value: "overdue", label: "OVERDUE" }]),
@@ -188,6 +220,7 @@ const ChartWithSummary: React.FC<ChartWithSummaryProps> = ({
     {
       label: i18n.t("invoices.outstanding"),
       value: openAmount,
+      count: statusCounts?.outstanding ?? 0,
       colorClass: "text-foreground",
       bgClass: "bg-muted/40 hover:bg-accent",
       onClick: () =>
@@ -199,6 +232,7 @@ const ChartWithSummary: React.FC<ChartWithSummaryProps> = ({
     {
       label: i18n.t("invoices.draft"),
       value: draftAmount,
+      count: statusCounts?.draft ?? 0,
       colorClass: "text-muted-foreground",
       bgClass: "bg-muted/40 hover:bg-accent",
       onClick: () => applyFilter([{ value: "draft", label: "DRAFT" }]),
@@ -209,7 +243,7 @@ const ChartWithSummary: React.FC<ChartWithSummaryProps> = ({
     if (active && payload && payload.length) {
       return (
         <div className="rounded-lg border border-border bg-card/95 p-4 shadow-xl backdrop-blur-sm">
-          <p className="mb-2 font-semibold text-foreground">{`${label} ${new Date().getFullYear()}`}</p>
+          <p className="mb-2 font-semibold text-foreground">{label}</p>
           <div className="space-y-1">
             {payload.map((pld, index) => (
               <div
@@ -350,7 +384,7 @@ const ChartWithSummary: React.FC<ChartWithSummaryProps> = ({
                       strokeOpacity={0.5}
                     />
                     <XAxis
-                      dataKey="month"
+                      dataKey="fullMonth"
                       tick={{
                         fill: "hsl(var(--muted-foreground))",
                         fontSize: 10,
@@ -359,6 +393,7 @@ const ChartWithSummary: React.FC<ChartWithSummaryProps> = ({
                       axisLine={false}
                       tickLine={false}
                       tickMargin={10}
+                      tickFormatter={formatXAxisTick}
                     />
                     <YAxis
                       tick={{
@@ -447,6 +482,9 @@ const ChartWithSummary: React.FC<ChartWithSummaryProps> = ({
                   </p>
                   <p className={`text-xl font-bold ${item.colorClass}`}>
                     {currencyFormat(baseCurrency, item.value)}
+                  </p>
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    {Math.round(item.count || 0)} {i18n.t("invoices.invoices")}
                   </p>
                 </div>
                 <svg
