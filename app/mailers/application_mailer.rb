@@ -63,7 +63,6 @@ class ApplicationMailer < ActionMailer::Base
     def default_reply_to_address
       ENV["REPLY_TO_EMAIL"].presence || self.class.default[:reply_to] || SUPPORT_EMAIL
     end
-
     def with_recipient_locale(user, &block)
       locale = user&.locale.presence || I18n.default_locale
       I18n.with_locale(locale, &block)
