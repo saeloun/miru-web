@@ -92,6 +92,33 @@ RSpec.describe "Api::V1::Mobile::Collections#create", type: :request do
     expect(json_response.dig("client", "id")).to eq(existing_client.id)
   end
 
+  it "reuses an existing customer login by phone without creating duplicates" do
+    existing_customer = create(:user, current_workspace_id: company.id, phone: "+919876543210")
+    existing_customer.add_role :client, company
+    create(:employment, company:, user: existing_customer)
+
+    2.times do
+      post "/api/v1/mobile/collections",
+        params: { collection: { name: "Asha Rao", phone: "9876543210" } },
+        headers: auth_headers(user)
+    end
+
+    client = Client.find_by!(company:, phone: "+919876543210")
+    expect(response).to have_http_status(:created)
+    expect(json_response.dig("customer_user", "id")).to eq(existing_customer.id)
+    expect(User.where(phone: "+919876543210").count).to eq(1)
+    expect(company.client_members.where(client:, user: existing_customer).count).to eq(1)
+  end
+
+  it "creates a synthetic customer email when only name and phone are provided" do
+    post "/api/v1/mobile/collections",
+      params: { collection: { name: "Asha Rao", phone: "9876543210" } },
+      headers: auth_headers(user)
+
+    expect(response).to have_http_status(:created)
+    expect(json_response.dig("customer_user", "email")).to eq("customer-#{company.id}-919876543210@customers.miru.local")
+  end
+
   it "forbids employees" do
     user.remove_role :admin, company
     user.add_role :employee, company
