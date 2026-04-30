@@ -820,6 +820,8 @@ const en = {
     stop: "Stop",
     reset: "Reset",
     timer: "Timer",
+    timerDeck: "Timer deck",
+    switchTimer: "Switch timer",
     newTimer: "New timer",
     untitledTimer: "Untitled timer",
     activeTimers: "%{count} active",
