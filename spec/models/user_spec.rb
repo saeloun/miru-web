@@ -234,6 +234,20 @@ RSpec.describe User, type: :model do
     end
   end
 
+  describe "#send_to_hubspot" do
+    it "does not fail user creation when the HubSpot job cannot be enqueued" do
+      allow(HubspotIntegrationJob).to receive(:perform_later).and_raise(StandardError, "queue unavailable")
+      allow(Rails.logger).to receive(:warn)
+
+      new_user = build(:user)
+
+      expect { new_user.save! }.not_to raise_error
+      expect(Rails.logger).to have_received(:warn).with(
+        a_string_matching("HubSpot signup enqueue failed for user_id=#{new_user.id}: StandardError: queue unavailable")
+      )
+    end
+  end
+
   describe "#assign_company_and_role" do
     before do
       user.remove_role :admin, company
