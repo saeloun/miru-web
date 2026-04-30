@@ -48,7 +48,7 @@ class InvoiceMailer < ApplicationMailer
       mail(
         to: recipients,
         subject: subject,
-        reply_to: ENV["REPLY_TO_EMAIL"]
+        reply_to: default_reply_to_address
       )
     end
 

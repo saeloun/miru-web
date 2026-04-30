@@ -13,7 +13,7 @@ class SendWeeklyReminderToUserMailer < ApplicationMailer
       mail(
         to: recipients,
         subject: I18n.t("mailers.send_weekly_reminder_to_user_mailer.notify_user_about_missed_entries.subject"),
-        reply_to: ENV["REPLY_TO_EMAIL"]
+        reply_to: default_reply_to_address
       )
     end
   end

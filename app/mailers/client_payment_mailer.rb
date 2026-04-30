@@ -13,7 +13,7 @@ class ClientPaymentMailer < ApplicationMailer
       mail(
         to: @invoice.client.email,
         subject: params[:subject].presence || I18n.t("mailers.client_payment_mailer.payment.subject", invoice_number: @invoice.invoice_number),
-        reply_to: ENV["REPLY_TO_EMAIL"]
+        reply_to: default_reply_to_address
       )
 
       @invoice.update_columns(client_payment_sent_at: DateTime.current)

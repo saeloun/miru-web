@@ -19,10 +19,13 @@ RSpec.describe AnalyticsMailer, type: :mailer do
         }
       ).threshold_alert
 
+      body = mail.html_part&.body&.decoded || mail.body.decoded
+
       expect(mail.to).to eq([recipient.email])
       expect(mail.subject).to include("Acme Analytics")
-      expect(mail.body.encoded).to include("Low utilization detected")
-      expect(mail.body.encoded).to include("55.0")
+      expect(body).to include("Low utilization detected")
+      expect(body).to include("55.0")
+      expect(body).to include("View analytics")
     end
   end
 end

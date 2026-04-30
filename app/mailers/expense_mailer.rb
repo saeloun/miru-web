@@ -9,7 +9,7 @@ class ExpenseMailer < ApplicationMailer
       mail(
         to: recipients,
         subject: I18n.t("mailers.expense_mailer.submitted.subject", submitter_name: @expense.submitter_name),
-        reply_to: ENV["REPLY_TO_EMAIL"]
+        reply_to: default_reply_to_address
       )
     end
   end
@@ -22,7 +22,7 @@ class ExpenseMailer < ApplicationMailer
       mail(
         to: recipients,
         subject: I18n.t("mailers.expense_mailer.paid.subject"),
-        reply_to: ENV["REPLY_TO_EMAIL"]
+        reply_to: default_reply_to_address
       )
     end
   end
@@ -35,7 +35,7 @@ class ExpenseMailer < ApplicationMailer
       mail(
         to: recipients,
         subject: I18n.t("mailers.expense_mailer.approved.subject"),
-        reply_to: ENV["REPLY_TO_EMAIL"]
+        reply_to: default_reply_to_address
       )
     end
   end
@@ -48,7 +48,7 @@ class ExpenseMailer < ApplicationMailer
       mail(
         to: recipients,
         subject: I18n.t("mailers.expense_mailer.rejected.subject"),
-        reply_to: ENV["REPLY_TO_EMAIL"]
+        reply_to: default_reply_to_address
       )
     end
   end

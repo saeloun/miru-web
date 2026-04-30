@@ -4,6 +4,11 @@ require "rails_helper"
 
 RSpec.describe "Invoice PDF Email Sending", type: :request do
   include ActiveJob::TestHelper
+
+  def decoded_html_body(email)
+    email.html_part&.body&.decoded || email.body.decoded
+  end
+
   let(:company) { create(:company, name: "Test Company") }
   let(:user) { create(:user, current_workspace: company) }
   let(:client) { create(:client, company: company, name: "Test Client", email: "client@example.com") }
@@ -103,12 +108,7 @@ RSpec.describe "Invoice PDF Email Sending", type: :request do
       email = ActionMailer::Base.deliveries.last
       expect(email).not_to be_nil
       expect(email.subject).to eq("Invoice INV-2024-001 from Test Company")
-      # Check both HTML and text parts for the content
-      email_body = email.body.to_s
-      if email.multipart?
-        email_body = email.parts.map(&:body).join(" ")
-      end
-      expect(email_body).to include("Please find attached your invoice")
+      expect(decoded_html_body(email)).to include("Please find attached your invoice")
     end
 
     it "includes company branding in email" do
@@ -121,8 +121,10 @@ RSpec.describe "Invoice PDF Email Sending", type: :request do
       end
 
       email = ActionMailer::Base.deliveries.last
-      expect(email.from).to eq(Array(ApplicationMailer.default[:from]))
-      expect(email.body.encoded).to include("Awesome Company")
+      default_from = Mail::Address.new(ApplicationMailer.default[:from])
+      expect(email.from).to eq([default_from.address])
+      expect(email[:from].display_names).to include(default_from.display_name)
+      expect(decoded_html_body(email)).to include("Awesome Company")
     end
 
     context "error handling" do

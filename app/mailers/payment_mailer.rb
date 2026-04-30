@@ -15,7 +15,7 @@ class PaymentMailer < ApplicationMailer
         mail(
           to: recipients,
           subject: params[:subject].presence || I18n.t("mailers.payment_mailer.payment.subject", invoice_number: @invoice.invoice_number),
-          reply_to: ENV["REPLY_TO_EMAIL"]
+          reply_to: default_reply_to_address
         )
       end
 

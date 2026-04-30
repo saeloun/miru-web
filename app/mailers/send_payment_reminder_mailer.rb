@@ -15,7 +15,7 @@ class SendPaymentReminderMailer < ApplicationMailer
     mail(
       to: recipients,
       subject: params[:subject].presence || I18n.t("mailers.send_payment_reminder_mailer.send_payment_reminder.subject", company_name: @company.name),
-      reply_to: ENV["REPLY_TO_EMAIL"]
+      reply_to: default_reply_to_address
     )
   end
 
