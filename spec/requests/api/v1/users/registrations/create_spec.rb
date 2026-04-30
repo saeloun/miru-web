@@ -5,6 +5,15 @@ require "rails_helper"
 RSpec.describe "Api::V1::Users::Registrations#create", type: :request do
   let(:company) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id, password: "welcome12") }
+  let(:desktop_signup_json) do
+    {
+      email: generate(:user_email),
+      first_name: "Desktop",
+      last_name: "Smoke",
+      locale: "en",
+      password: "Password123!"
+    }
+  end
 
   context "when signs up with valid info" do
     valid_email = "miru@example.com"
@@ -24,6 +33,17 @@ RSpec.describe "Api::V1::Users::Registrations#create", type: :request do
       }
       expect(response).to have_http_status(:ok)
       expect(json_response["notice"]).to eq(I18n.t("devise.registrations.signed_up"))
+    end
+
+    it "creates user successfully from the desktop app payload" do
+      send_request :post, api_v1_users_signup_path, params: {
+        user: desktop_signup_json
+      }
+
+      expect(response).to have_http_status(:ok)
+      expect(json_response["notice"]).to eq(I18n.t("devise.registrations.signed_up"))
+      expect(json_response["email"]).to eq(desktop_signup_json[:email])
+      expect(User.find_by!(email: desktop_signup_json[:email]).locale).to eq("en-US")
     end
   end
 

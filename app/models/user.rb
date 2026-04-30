@@ -366,6 +366,8 @@ class User < ApplicationRecord
 
     def send_to_hubspot
       HubspotIntegrationJob.perform_later(email, first_name, last_name)
+    rescue StandardError => error
+      Rails.logger.warn("HubSpot signup enqueue failed for user_id=#{id}: #{error.class}: #{error.message}")
     end
 
     def normalized_otp_code(code)
