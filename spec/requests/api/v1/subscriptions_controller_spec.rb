@@ -177,6 +177,11 @@ RSpec.describe Api::V1::SubscriptionsController, type: :request do
       expect(url).to include("client_reference_id=#{company.id}")
       expect(url).to include("billing_interval=yearly")
       expect(url).to include("quantity=2")
+      expect(JSON.parse(response.body).dig("agent_payment_options", "stripe_link_cli")).to include(
+        "provider" => "stripe_link_cli",
+        "supported" => true,
+        "credential_type" => "virtual_card"
+      )
     end
 
     it "returns 422 when stripe price is not configured" do
@@ -207,6 +212,10 @@ RSpec.describe Api::V1::SubscriptionsController, type: :request do
 
       expect(response).to have_http_status(:ok)
       expect(JSON.parse(response.body)["url"]).to eq("https://checkout.stripe.com/test")
+      expect(JSON.parse(response.body).dig("agent_payment_options", "stripe_link_cli", "spend_request")).to include(
+        "amount" => 100,
+        "currency" => "usd"
+      )
       expect(company.reload.stripe_customer_id).to eq("cus_123")
       expect(Stripe::Checkout::Session).to have_received(:create).with(
         hash_including(

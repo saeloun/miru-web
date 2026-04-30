@@ -14,6 +14,7 @@ import {
   ShieldCheck,
   Sparkle,
   Storefront,
+  TerminalWindow,
 } from "phosphor-react";
 import { toast } from "sonner";
 
@@ -894,11 +895,18 @@ const Billing = () => {
                 <p className="text-sm text-muted-foreground">
                   {i18n.t("billingSettings.checkoutDescription")}
                 </p>
+                <p className="text-sm text-muted-foreground">
+                  {i18n.t("billingSettings.linkCliDescription")}
+                </p>
               </div>
               <div className="flex flex-wrap gap-2">
                 <Badge variant="outline" className="gap-1.5 px-3 py-1">
                   <ShieldCheck size={14} weight="fill" />
                   {i18n.t("billingSettings.poweredByStripe")}
+                </Badge>
+                <Badge variant="outline" className="gap-1.5 px-3 py-1">
+                  <TerminalWindow size={14} weight="fill" />
+                  {i18n.t("billingSettings.linkCliCompatible")}
                 </Badge>
                 <Badge variant="secondary" className="gap-1.5 px-3 py-1">
                   <ClockClockwise size={14} weight="fill" />

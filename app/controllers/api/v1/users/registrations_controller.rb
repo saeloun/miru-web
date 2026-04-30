@@ -8,7 +8,13 @@ class Api::V1::Users::RegistrationsController < Devise::RegistrationsController
     if user.errors.present?
       render json: { error: user.errors }, status: 422
     else
-      render json: { notice: I18n.t("devise.registrations.signed_up"), email: user.email }, status: 200
+      render json: {
+        notice: I18n.t("devise.registrations.signed_up"),
+        email: user.email,
+        agent_payment_options: {
+          stripe_link_cli: Subscriptions::StripeLinkCliPaymentOption.signup_payload
+        }
+      }, status: 200
     end
   end
 

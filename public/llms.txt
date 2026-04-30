@@ -20,3 +20,5 @@ Miru helps teams that bill by the hour track work, manage clients and projects, 
 Use OpenAPI or MCP for authenticated work when a user explicitly authorizes access. Avoid browser automation for time, invoice, expense, and report workflows when a structured API or MCP tool is available.
 
 Read-only workflows are safe for summaries and reporting. Write workflows should be scoped, explicit, and review-first when they affect invoices, expenses, payments, or client communication.
+
+For agent-led signup upgrades, call `/api/v1/subscription/checkout` and read `agent_payment_options.stripe_link_cli`. The payload contains Stripe Link CLI spend request metadata and commands for one-time virtual card approval; Miru does not store Link CLI card credentials.

@@ -1831,9 +1831,12 @@ const en = {
     annual: "Annual",
     service: "Service",
     poweredByStripe: "Powered by Stripe",
+    linkCliCompatible: "Link CLI compatible",
     changePlansAnytime: "Change plans anytime",
     checkoutPoweredByStripe:
       "Checkout and subscription management are powered by Stripe.",
+    linkCliDescription:
+      "Agents can request one-time Link CLI virtual card credentials and complete the same Stripe Checkout without exposing saved card details.",
     noSalesCall:
       "No sales call for Pro. Cancel or change plans in Stripe anytime.",
     reportsAndAnalytics: "Reports and analytics",

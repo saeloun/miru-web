@@ -33,6 +33,11 @@ RSpec.describe "Api::V1::Users::Registrations#create", type: :request do
       }
       expect(response).to have_http_status(:ok)
       expect(json_response["notice"]).to eq(I18n.t("devise.registrations.signed_up"))
+      expect(json_response.dig("agent_payment_options", "stripe_link_cli")).to include(
+        "provider" => "stripe_link_cli",
+        "checkout_endpoint" => "/api/v1/subscription/checkout",
+        "requires_authenticated_workspace" => true
+      )
     end
 
     it "creates user successfully from the desktop app payload" do

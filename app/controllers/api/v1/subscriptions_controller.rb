@@ -12,7 +12,7 @@ class Api::V1::SubscriptionsController < Api::V1::ApplicationController
 
     plan_page_url = checkout_plan_page_url
     if plan_page_url.present?
-      render json: { url: plan_page_url }, status: 200
+      render json: checkout_payload(plan_page_url), status: 200
       return
     end
 
@@ -36,7 +36,7 @@ class Api::V1::SubscriptionsController < Api::V1::ApplicationController
       }
     )
 
-    render json: { url: session.url }, status: 200
+    render json: checkout_payload(session.url), status: 200
   rescue Stripe::StripeError => e
     render json: { errors: e.message }, status: 422
   end
@@ -111,6 +111,22 @@ class Api::V1::SubscriptionsController < Api::V1::ApplicationController
       uri.to_s
     rescue URI::InvalidURIError
       url
+    end
+
+    def checkout_payload(url)
+      {
+        url:,
+        agent_payment_options: {
+          stripe_link_cli: Subscriptions::StripeLinkCliPaymentOption.new(
+            company: current_company,
+            user: current_user,
+            interval: billing_interval,
+            quantity: checkout_seat_quantity,
+            checkout_url: url,
+            base_url: request.base_url
+          ).payload
+        }
+      }
     end
 
     def billing_interval
