@@ -123,6 +123,7 @@ const ChartWithSummary: React.FC<ChartWithSummaryProps> = ({
           : 0;
 
       const apiTrend = parseNumber(statistics.trend);
+      const latestMonthlyPoint = monthlyData[monthlyData.length - 1];
 
       return {
         monthlyData,
@@ -134,10 +135,10 @@ const ChartWithSummary: React.FC<ChartWithSummaryProps> = ({
           statistics.current_month_invoices ?? latestPoint?.invoice_count ?? 0
         ),
         currentMonthLabel:
-          latestPoint?.fullMonth ||
-          latestPoint?.month ||
-          latestPoint?.label ||
-          latestPoint?.name ||
+          latestMonthlyPoint?.fullMonth ||
+          latestMonthlyPoint?.month ||
+          latestMonthlyPoint?.label ||
+          latestMonthlyPoint?.name ||
           data?.period?.end_date?.split(" ")?.[0] ||
           "-",
       };
@@ -202,7 +203,7 @@ const ChartWithSummary: React.FC<ChartWithSummaryProps> = ({
 
   const summaryItems = [
     {
-      label: "Unpaid",
+      label: i18n.t("invoices.unpaid"),
       value: totalAmount,
       count: statusCounts?.all ?? 0,
       colorClass: "text-foreground",
