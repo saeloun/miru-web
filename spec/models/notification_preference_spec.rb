@@ -86,6 +86,30 @@ RSpec.describe NotificationPreference, type: :model do
     end
   end
 
+  describe "#can_receive_analytics_threshold_notifications?" do
+    it "uses the monthly report digest opt-in" do
+      notification_preference.update!(
+        monthly_report_digest_enabled: true,
+        unsubscribed_from_all: false
+      )
+
+      expect(notification_preference.can_receive_analytics_threshold_notifications?).to be true
+    end
+
+    it "does not allow analytics alerts by default" do
+      expect(notification_preference.can_receive_analytics_threshold_notifications?).to be false
+    end
+
+    it "respects unsubscribe from all" do
+      notification_preference.update!(
+        monthly_report_digest_enabled: true,
+        unsubscribed_from_all: true
+      )
+
+      expect(notification_preference.can_receive_analytics_threshold_notifications?).to be false
+    end
+  end
+
   describe "#unsubscribed_from_all" do
     context "when user unsubscribes from all" do
       before do
