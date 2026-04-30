@@ -68,6 +68,10 @@ namespace :api, defaults: { format: "json" } do
     namespace :mobile do
       resource :bootstrap, only: [:show], controller: "bootstrap"
       resource :current_timer, only: [:show, :update], controller: "current_timers"
+      resource :otp, only: [], controller: "otps" do
+        post :request, action: :create
+        post :verify
+      end
       resources :collections, only: [:create]
     end
     namespace :agent do

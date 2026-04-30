@@ -5,10 +5,12 @@ class Api::V1::Mobile::CollectionsController < Api::V1::ApplicationController
     authorize Client, :create?
 
     client = nil
+    customer_user = nil
     invoice = nil
 
     ActiveRecord::Base.transaction do
       client = find_or_create_client!
+      customer_user = ensure_customer_login!(client)
       invoice = create_invoice!(client) if collection_amount.positive?
     end
 
@@ -22,6 +24,7 @@ class Api::V1::Mobile::CollectionsController < Api::V1::ApplicationController
     render json: {
       message: collection_message(invoice:, sms_sent:),
       client: client_payload(client),
+      customer_user: customer_user && customer_user_payload(customer_user),
       invoice: invoice && invoice_payload(invoice),
       payment_link_url:,
       sms_sent:
@@ -63,6 +66,39 @@ class Api::V1::Mobile::CollectionsController < Api::V1::ApplicationController
         phone: normalized_phone,
         currency: collection_currency
       )
+    end
+
+    def ensure_customer_login!(client)
+      return if client.phone.blank?
+
+      user = User.kept.find_by(phone: client.phone)
+      user ||= User.kept.find_by(email: client.email) if client.email.present?
+      user ||= build_customer_user(client)
+
+      user.skip_reconfirmation! if user.persisted? && user.respond_to?(:skip_reconfirmation!)
+      user.assign_attributes(phone: client.phone, current_workspace_id: current_company.id)
+      user.save! if user.changed?
+
+      current_company.employments.find_or_create_by!(user:)
+      user.add_role(:client, current_company) unless user.has_role?(:client, current_company)
+      current_company.client_members.find_or_create_by!(client:, user:)
+
+      user
+    end
+
+    def build_customer_user(client)
+      user = User.new(
+        email: customer_email(client),
+        first_name: customer_first_name(client),
+        last_name: customer_last_name(client),
+        password: Devise.friendly_token.first(20),
+        phone: client.phone,
+        current_workspace_id: current_company.id
+      )
+      user.skip_password_validation = true
+      user.skip_confirmation!
+      user.save!
+      user
     end
 
     def create_invoice!(client)
@@ -176,6 +212,29 @@ class Api::V1::Mobile::CollectionsController < Api::V1::ApplicationController
 
     def client_payload(client)
       client.slice(:id, :name, :email, :phone, :currency)
+    end
+
+    def customer_user_payload(user)
+      user.slice(:id, :email, :first_name, :last_name, :phone, :current_workspace_id)
+    end
+
+    def customer_email(client)
+      return client.email if client.email.present? && User.kept.where(email: client.email).none?
+
+      digits = client.phone.to_s.gsub(/\D/, "")
+      "customer-#{current_company.id}-#{digits}@customers.miru.local"
+    end
+
+    def customer_first_name(client)
+      customer_name_parts(client).first || "Customer"
+    end
+
+    def customer_last_name(client)
+      customer_name_parts(client).drop(1).join(" ").presence || "Guest"
+    end
+
+    def customer_name_parts(client)
+      @_customer_name_parts ||= client.name.to_s.scan(/[A-Za-z]+/).map { |part| part.first(20) }.presence || ["Customer", "Guest"]
     end
 
     def invoice_payload(invoice)

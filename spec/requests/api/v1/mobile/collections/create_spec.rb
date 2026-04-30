@@ -18,9 +18,16 @@ RSpec.describe "Api::V1::Mobile::Collections#create", type: :request do
       params: { collection: { name: "Asha Rao", phone: "9876543210" } },
       headers: auth_headers(user)
 
+    customer = User.find_by(phone: "+919876543210")
+    client = Client.find_by!(company:, phone: "+919876543210")
+
     expect(response).to have_http_status(:created)
     expect(json_response.dig("client", "name")).to eq("Asha Rao")
     expect(json_response.dig("client", "phone")).to eq("+919876543210")
+    expect(json_response.dig("customer_user", "id")).to eq(customer.id)
+    expect(customer).to be_confirmed
+    expect(customer).to have_role(:client, company)
+    expect(company.client_members.exists?(client:, user: customer)).to eq(true)
     expect(json_response["invoice"]).to be_nil
   end
 
