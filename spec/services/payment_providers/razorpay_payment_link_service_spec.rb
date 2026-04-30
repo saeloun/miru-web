@@ -80,7 +80,8 @@ RSpec.describe PaymentProviders::RazorpayPaymentLinkService do
 
         expect(payload[:reference_id]).to be_nil
         expect(payload[:notes]).to be_nil
-        expect(payload[:options]).to be_nil
+        expect(payload.dig(:options, :order, :transfers, 0, :account)).to eq("acc_test_123")
+        expect(payload.dig(:options, :order, :transfers, 0, :amount)).to eq(114_000)
         expect(payload[:amount]).to eq(120_000)
         expect(payload[:callback_method]).to eq("get")
         { "id" => "plink_test_retry", "short_url" => "https://rzp.io/rzp/retry", "status" => "created" }
@@ -96,6 +97,21 @@ RSpec.describe PaymentProviders::RazorpayPaymentLinkService do
       expect(invoice.reload.razorpay_payment_link_id).to eq("plink_test_retry")
       expect(invoice.razorpay_payment_link_url).to eq("https://rzp.io/rzp/retry")
       expect(invoice.razorpay_payment_link_status).to eq("created")
+    end
+
+    it "re-raises non amount-format Razorpay errors without retrying" do
+      expect(client_double).to receive(:create_payment_link).once.and_raise(
+        PaymentProviders::RazorpayClient::Error,
+        "request timeout from Razorpay"
+      )
+
+      expect do
+        described_class.new(
+          invoice:,
+          provider:,
+          callback_url: "https://app.test/invoices/#{invoice.id}/payments/razorpay_success"
+        ).process
+      end.to raise_error(PaymentProviders::RazorpayClient::Error, "request timeout from Razorpay")
     end
 
     it "reuses an active existing payment link and refreshes the stored status" do

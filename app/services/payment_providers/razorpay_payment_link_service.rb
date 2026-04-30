@@ -75,7 +75,10 @@ module PaymentProviders
           notify: { sms: false, email: false },
           callback_url:,
           callback_method: "get"
-        }
+        }.tap do |payload|
+          route_options = route_transfer_options
+          payload[:options] = route_options if route_options.present?
+        end
       end
 
       def create_payment_link_with_fallback
@@ -90,7 +93,8 @@ module PaymentProviders
       end
 
       def amount_whole_number_error?(error)
-        error.message.to_s.downcase.include?("amount, should be a whole number")
+        message = error.message.to_s
+        message.match?(/\bamount\b.*\b(whole|whole\s*number)\b/i)
       end
 
       def customer_payload
