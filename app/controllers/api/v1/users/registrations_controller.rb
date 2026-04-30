@@ -2,6 +2,7 @@
 
 class Api::V1::Users::RegistrationsController < Devise::RegistrationsController
   respond_to :json
+  skip_forgery_protection
 
   def respond_with(user, _opts = {})
     if user.errors.present?
