@@ -35,6 +35,10 @@ class NotificationPreference < ApplicationRecord
     can_receive_emails? && monthly_report_digest_enabled
   end
 
+  def can_receive_analytics_threshold_notifications?
+    can_receive_monthly_report_digest?
+  end
+
   # Unsubscribe from all emails
   def unsubscribe_all!
     update!(unsubscribed_from_all: true)
