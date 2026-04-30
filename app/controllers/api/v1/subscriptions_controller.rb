@@ -117,14 +117,14 @@ class Api::V1::SubscriptionsController < Api::V1::ApplicationController
       {
         url:,
         agent_payment_options: {
-          stripe_link_cli: Subscriptions::StripeLinkCliPaymentOption.new(
+          stripe_link_cli: Subscriptions::StripeLinkCliPaymentOption.new({
             company: current_company,
             user: current_user,
             interval: billing_interval,
             quantity: checkout_seat_quantity,
             checkout_url: url,
             base_url: request.base_url
-          ).payload
+          }).payload
         }
       }
     end

@@ -7,14 +7,14 @@ RSpec.describe Subscriptions::StripeLinkCliPaymentOption do
   let(:user) { create(:user, email: "agent-buyer@example.com") }
 
   it "builds a Link CLI spend request payload for Miru Pro checkout" do
-    payload = described_class.new(
+    payload = described_class.new({
       company:,
       user:,
       interval: "monthly",
       quantity: 4,
       checkout_url: "https://checkout.stripe.com/c/pay/cs_test_123",
       base_url: "https://app.miru.so"
-    ).payload
+    }).payload
 
     expect(payload).to include(
       "provider" => "stripe_link_cli",
@@ -40,14 +40,14 @@ RSpec.describe Subscriptions::StripeLinkCliPaymentOption do
   end
 
   it "marks oversized Link CLI spend requests as unsupported" do
-    payload = described_class.new(
+    payload = described_class.new({
       company:,
       user:,
       interval: "yearly",
       quantity: 51,
       checkout_url: "https://checkout.stripe.com/c/pay/cs_test_123",
       base_url: "https://app.miru.so"
-    ).payload
+    }).payload
 
     expect(payload["supported"]).to be(false)
     expect(payload["unsupported_reason"]).to include("50000 cents")

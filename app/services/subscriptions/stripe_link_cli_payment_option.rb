@@ -27,13 +27,13 @@ module Subscriptions
       }
     end
 
-    def initialize(company:, user:, interval:, quantity:, checkout_url:, base_url:)
-      @company = company
-      @user = user
-      @interval = interval
-      @quantity = quantity.to_i.clamp(1, 1_000)
-      @checkout_url = checkout_url
-      @base_url = base_url
+    def initialize(context)
+      @company = context.fetch(:company)
+      @user = context.fetch(:user)
+      @interval = context.fetch(:interval)
+      @quantity = context.fetch(:quantity).to_i.clamp(1, 1_000)
+      @checkout_url = context.fetch(:checkout_url)
+      @base_url = context.fetch(:base_url)
     end
 
     def payload
