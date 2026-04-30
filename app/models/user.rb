@@ -52,6 +52,11 @@ class User < ApplicationRecord
   has_many :custom_leaves, through: :custom_leave_users, source: :custom_leave
   has_many :carryovers
   has_many :notification_preferences, dependent: :destroy
+  has_many :created_analytics_reports,
+    class_name: "AnalyticsReport",
+    foreign_key: :created_by_id,
+    inverse_of: :creator,
+    dependent: :destroy
 
   rolify strict: true
 

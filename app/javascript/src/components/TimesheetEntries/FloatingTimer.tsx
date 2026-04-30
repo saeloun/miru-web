@@ -28,15 +28,17 @@ import {
   CaretDown,
   CaretUp,
   Plus,
+  Desktop,
 } from "phosphor-react";
 import { cn } from "../../lib/utils";
 import { toast } from "sonner";
 import { useUserContext } from "../../context/UserContext";
 import { i18n } from "../../i18n";
-import { timesheetEntryApi } from "apis/api";
+import { desktopCurrentTimerApi, timesheetEntryApi } from "apis/api";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import {
   createTimerState,
+  currentTimerFromTimerDeck,
   loadStoredTimerDeck,
   persistTimerDeck,
   defaultTimerState,
@@ -44,6 +46,9 @@ import {
   emptyTimerDeck,
   formatTimerDuration,
   pauseRunningTimers,
+  shouldAdoptRemoteTimerDeck,
+  timerDeckFromDesktopCurrentTimer,
+  timerDeckHasWork,
   timerElapsedMs,
   type StoredTimerDeck,
   type StoredTimerState,
@@ -94,11 +99,16 @@ const FloatingTimer: React.FC<FloatingTimerProps> = ({
 
   const [isMinimized, setIsMinimized] = useState(false);
   const [showSaveDialog, setShowSaveDialog] = useState(false);
+  const [hasLoadedDesktopTimer, setHasLoadedDesktopTimer] = useState(false);
+  const [isDesktopSynced, setIsDesktopSynced] = useState(false);
   const [timerDeck, setTimerDeck] = useState<TimerDeck>(() =>
     ensureTimerDeck(loadStoredTimerDeck())
   );
 
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const desktopSyncRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const hasMountedTimerDeckRef = useRef(false);
+  const latestTimerDeckRef = useRef(timerDeck);
   const timer = useMemo(
     () =>
       timerDeck.timers.find(
@@ -153,8 +163,79 @@ const FloatingTimer: React.FC<FloatingTimerProps> = ({
   };
 
   useEffect(() => {
+    latestTimerDeckRef.current = timerDeck;
+  }, [timerDeck]);
+
+  useEffect(() => {
+    if (!hasMountedTimerDeckRef.current) {
+      hasMountedTimerDeckRef.current = true;
+
+      return;
+    }
+
     persistTimerDeck(timerDeck);
   }, [timerDeck]);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    desktopCurrentTimerApi
+      .get()
+      .then(response => {
+        if (!isMounted) return;
+
+        const remoteDeck = ensureTimerDeck(
+          timerDeckFromDesktopCurrentTimer(response.data?.current_timer)
+        );
+
+        setTimerDeck(currentDeck => {
+          const localDeck = ensureTimerDeck(currentDeck);
+
+          return shouldAdoptRemoteTimerDeck(remoteDeck, localDeck)
+            ? remoteDeck
+            : localDeck;
+        });
+        setIsDesktopSynced(timerDeckHasWork(remoteDeck));
+      })
+      .catch(() => {
+        if (isMounted) setIsDesktopSynced(false);
+      })
+      .finally(() => {
+        if (isMounted) setHasLoadedDesktopTimer(true);
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [company?.id, user?.id]);
+
+  useEffect(() => {
+    if (!hasLoadedDesktopTimer) return;
+
+    if (desktopSyncRef.current) return;
+
+    const hasRunningTimer = timerDeck.timers.some(
+      currentTimer => currentTimer.isRunning
+    );
+    const delay = hasRunningTimer ? 10_000 : 600;
+
+    desktopSyncRef.current = setTimeout(() => {
+      const deck = latestTimerDeckRef.current;
+      desktopSyncRef.current = null;
+
+      desktopCurrentTimerApi
+        .update(currentTimerFromTimerDeck(deck))
+        .then(() => setIsDesktopSynced(timerDeckHasWork(deck)))
+        .catch(() => setIsDesktopSynced(false));
+    }, delay);
+
+    return () => {
+      if (!hasRunningTimer && desktopSyncRef.current) {
+        clearTimeout(desktopSyncRef.current);
+        desktopSyncRef.current = null;
+      }
+    };
+  }, [timerDeck, hasLoadedDesktopTimer]);
 
   useEffect(() => {
     setTimerDeck(ensureTimerDeck(loadStoredTimerDeck()));
@@ -409,6 +490,7 @@ const FloatingTimer: React.FC<FloatingTimerProps> = ({
     >
       {timerDeck.timers.map(currentTimer => {
         const isActive = currentTimer.id === timerDeck.activeTimerId;
+        const isRunning = currentTimer.isRunning;
 
         return (
           <button
@@ -420,12 +502,19 @@ const FloatingTimer: React.FC<FloatingTimerProps> = ({
             className={cn(
               "min-w-28 max-w-48 rounded-md border px-3 py-2 text-left text-xs transition",
               isActive
-                ? "border-primary bg-primary/10 text-foreground"
-                : "border-border bg-background text-muted-foreground hover:bg-muted"
+                ? "border-sky-300 bg-sky-50 text-sky-950 shadow-sm dark:border-sky-700 dark:bg-sky-950/40 dark:text-sky-50"
+                : "border-border bg-background text-muted-foreground hover:bg-muted",
+              isRunning && "ring-1 ring-emerald-300 dark:ring-emerald-800"
             )}
           >
-            <span className="block truncate font-medium">
-              {timerLabel(currentTimer)}
+            <span className="flex items-center gap-1.5 truncate font-medium">
+              <span
+                className={cn(
+                  "h-1.5 w-1.5 shrink-0 rounded-full",
+                  isRunning ? "bg-emerald-500" : "bg-muted-foreground/40"
+                )}
+              />
+              <span className="truncate">{timerLabel(currentTimer)}</span>
             </span>
             <span className="block font-mono tabular-nums">
               {formatTimerDuration(timerElapsedMs(currentTimer))}
@@ -444,6 +533,23 @@ const FloatingTimer: React.FC<FloatingTimerProps> = ({
         {i18n.t("timer.newTimer")}
       </Button>
     </div>
+  );
+
+  const desktopSyncBadge = (
+    <span
+      className={cn(
+        "inline-flex items-center gap-1 rounded-full border px-2 py-1 text-xs font-medium",
+        isDesktopSynced
+          ? "border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-900 dark:bg-emerald-950/40 dark:text-emerald-200"
+          : "border-border bg-muted text-muted-foreground"
+      )}
+      data-testid="timer-desktop-sync"
+    >
+      <Desktop size={13} weight="duotone" />
+      {isDesktopSynced
+        ? i18n.t("timer.sharedWithDesktop")
+        : i18n.t("timer.localTimer")}
+    </span>
   );
 
   const saveEntrySummary = (
@@ -492,12 +598,14 @@ const FloatingTimer: React.FC<FloatingTimerProps> = ({
   if (isPristineTimer) {
     if (isInline) {
       return (
-        <Card className="mb-4 border border-border bg-card/95 shadow-sm">
+        <Card className="mb-4 overflow-hidden border border-sky-200 bg-card shadow-sm dark:border-sky-900">
+          <div className="h-1 bg-gradient-to-r from-sky-500 via-emerald-500 to-amber-400" />
           <CardContent className="flex flex-col gap-3 p-4 lg:flex-row lg:items-center lg:justify-between">
             <div className="space-y-1">
-              <div className="flex items-center gap-2 text-sm font-semibold text-foreground">
+              <div className="flex flex-wrap items-center gap-2 text-sm font-semibold text-foreground">
                 <Timer size={18} className="text-primary" />
                 <span>{i18n.t("timer.webTimer")}</span>
+                {desktopSyncBadge}
               </div>
               <p className="text-sm text-muted-foreground">
                 {i18n.t("timer.trackLiveWork")}
@@ -527,13 +635,21 @@ const FloatingTimer: React.FC<FloatingTimerProps> = ({
       <>
         <Card
           className={cn(
-            "mb-4 border shadow-sm transition-all duration-300",
+            "mb-4 overflow-hidden border shadow-sm transition-all duration-300",
             timer.isRunning
-              ? "border-green-500 bg-green-50/40"
-              : "border-border bg-card/95"
+              ? "border-emerald-300 bg-emerald-50/40 dark:border-emerald-800 dark:bg-emerald-950/20"
+              : "border-border bg-card"
           )}
           data-testid="inline-web-timer"
         >
+          <div
+            className={cn(
+              "h-1",
+              timer.isRunning
+                ? "bg-gradient-to-r from-emerald-500 via-sky-500 to-amber-400"
+                : "bg-gradient-to-r from-sky-500 via-slate-300 to-amber-400"
+            )}
+          />
           <CardContent className="p-4">
             <div className="flex flex-col gap-4">
               <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
@@ -553,6 +669,14 @@ const FloatingTimer: React.FC<FloatingTimerProps> = ({
                     <p className="font-mono text-3xl font-bold text-foreground">
                       {formatTimerDuration(timer.elapsedTime)}
                     </p>
+                    <div className="mt-2 flex flex-wrap items-center gap-2">
+                      {desktopSyncBadge}
+                      <span className="rounded-full border border-border bg-background px-2 py-1 text-xs font-medium text-muted-foreground">
+                        {i18n.t("timer.activeTimers", {
+                          count: timerDeck.timers.length,
+                        })}
+                      </span>
+                    </div>
                   </div>
                 </div>
 

@@ -21,6 +21,7 @@ class Company < ApplicationRecord
   has_many :devices, dependent: :destroy
   has_many :invitations, dependent: :destroy
   has_many :expenses, dependent: :destroy
+  has_many :analytics_reports, dependent: :destroy
   has_many :client_members, dependent: :destroy
   has_many :leaves, class_name: "Leave", dependent: :destroy
   has_many :leave_types, through: :leaves, dependent: :destroy
@@ -165,13 +166,15 @@ class Company < ApplicationRecord
     stripe_subscription_id: nil,
     subscription_status:,
     subscription_ends_at: nil,
-    subscription_interval: nil
+    subscription_interval: nil,
+    cancel_at_period_end: false
   )
     attrs = {
       stripe_customer_id:,
       subscription_status:,
       subscription_ends_at:,
-      plan_tier: stripe_subscription_access?(subscription_status) ? "paid" : "free"
+      plan_tier: stripe_subscription_access?(subscription_status) ? "paid" : "free",
+      cancel_at_period_end:
     }
 
     attrs[:stripe_subscription_id] = stripe_subscription_id if has_attribute?(:stripe_subscription_id)
@@ -184,7 +187,8 @@ class Company < ApplicationRecord
     attrs = {
       plan_tier: "free",
       subscription_status: "canceled",
-      subscription_ends_at: nil
+      subscription_ends_at: nil,
+      cancel_at_period_end: false
     }
 
     attrs[:stripe_subscription_id] = nil if has_attribute?(:stripe_subscription_id)

@@ -9,6 +9,7 @@ exclude_paths:
   - "app/services/database_backup_service.rb"
   - "app/services/date_range_service.rb"
   - "app/services/expenses/fetch_service.rb"
+  - "app/services/analytics/demo_seeder.rb"
   - "app/services/reports/accounts_aging/download_service.rb"
   - "app/services/reports/accounts_aging/fetch_overdue_amount.rb"
   - "app/services/reports/monthly_cash_flow_digest.rb"

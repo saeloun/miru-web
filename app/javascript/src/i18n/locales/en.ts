@@ -812,7 +812,7 @@ const en = {
     webTimer: "Web timer",
     webTimerLabel: "Web Timer",
     trackLiveWork:
-      "Track live work in real time, then save it straight into today's entry list.",
+      "Track live work in real time. Web and MiruTime stay in sync for the active workspace.",
     startTimer: "Start Timer",
     pause: "Pause",
     resume: "Resume",
@@ -820,8 +820,13 @@ const en = {
     stop: "Stop",
     reset: "Reset",
     timer: "Timer",
+    timerDeck: "Timer deck",
+    switchTimer: "Switch timer",
     newTimer: "New timer",
     untitledTimer: "Untitled timer",
+    activeTimers: "%{count} active",
+    localTimer: "Local timer",
+    sharedWithDesktop: "Shared with MiruTime",
     saveTimeEntry: "Save Time Entry",
     saveTimeEntryDescription:
       "You tracked %{time}. Would you like to save this as a time entry?",
@@ -1252,6 +1257,7 @@ const en = {
     profile: "Profile",
     projects: "Projects",
     reports: "Reports",
+    analytics: "Analytics",
     settings: "Settings",
     team: "Team",
     payments: "Payments",
@@ -1806,6 +1812,7 @@ const en = {
     billingCadence: "Billing cadence",
     monthly: "Monthly",
     yearly: "Yearly",
+    unknown: "Unknown",
     notSubscribedYet: "Not subscribed yet",
     startTrial: "Start 30-day Pro trial",
     startingTrial: "Starting trial...",
@@ -1824,9 +1831,12 @@ const en = {
     annual: "Annual",
     service: "Service",
     poweredByStripe: "Powered by Stripe",
+    linkCliCompatible: "Link CLI compatible",
     changePlansAnytime: "Change plans anytime",
     checkoutPoweredByStripe:
       "Checkout and subscription management are powered by Stripe.",
+    linkCliDescription:
+      "Agents can request one-time Link CLI virtual card credentials and complete the same Stripe Checkout without exposing saved card details.",
     noSalesCall:
       "No sales call for Pro. Cancel or change plans in Stripe anytime.",
     reportsAndAnalytics: "Reports and analytics",
@@ -1851,6 +1861,9 @@ const en = {
       proTrialEnded: "Pro trial ended",
       proTrialEndedDescription:
         "Your workspace has returned to the free plan. Upgrade in Stripe to restore Pro access.",
+      subscriptionScheduledToCancel: "Subscription scheduled to cancel",
+      subscriptionScheduledToCancelOn:
+        "Your Pro access remains active until %{date}.",
       seatLimitReached: "Seat limit reached",
       seatLimitReachedDescription:
         "Upgrade in Stripe to add more than 3 members to this workspace.",

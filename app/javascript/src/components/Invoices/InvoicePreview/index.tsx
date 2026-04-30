@@ -21,6 +21,7 @@ import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { lineTotalCalc, minToHHMM } from "../../../helpers";
 import { i18n } from "../../../i18n";
+import ClientAnalyticsSummary from "./ClientAnalyticsSummary";
 
 interface InvoicePreviewProps {
   invoice: {
@@ -37,6 +38,7 @@ interface InvoicePreviewProps {
     reference?: string;
     notes?: string;
     client: {
+      id?: string | number;
       name: string;
       email: string;
       address?: string;
@@ -560,6 +562,8 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
             )}
           </div>
         </div>
+
+        <ClientAnalyticsSummary clientId={invoice.client.id} />
 
         {/* Line Items Table */}
         <div className="mb-8">

@@ -17,6 +17,7 @@ class Project < ApplicationRecord
   belongs_to :client
   has_many :timesheet_entries, inverse_of: :project
   has_many :project_members, dependent: :destroy
+  has_many :expenses, dependent: :nullify
 
   # Validations
   validates :name, presence: true,

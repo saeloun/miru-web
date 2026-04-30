@@ -29,6 +29,8 @@ class Expense < ApplicationRecord
   has_many_attached :receipts
   belongs_to :company
   belongs_to :user, optional: true
+  belongs_to :expense_category, optional: true
+  belongs_to :project, optional: true
 
   validates :date, presence: true
   validates :amount, numericality: { greater_than: 0 }

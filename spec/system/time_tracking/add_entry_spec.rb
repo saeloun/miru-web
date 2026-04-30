@@ -158,6 +158,65 @@ RSpec.describe "Time Tracking - Add Entry", type: :system, js: true do
     )
   end
 
+  it "hydrates the web timer from the shared MiruTime desktop state" do
+    synced_at = 2.minutes.from_now.iso8601(3)
+    create(
+      :desktop_current_timer,
+      company:,
+      user:,
+      current_timer: {
+        "billable" => false,
+        "elapsed_ms" => 180_000,
+        "notes" => "Desktop handoff task",
+        "project_name" => project.name,
+        "running" => true,
+        "source" => "desktop",
+        "started_at" => 3.minutes.ago.iso8601(3),
+        "synced_at" => synced_at,
+        "task_name" => "Desktop handoff task",
+        "timer_deck" => {
+          "activeTimerId" => "desktop-active",
+          "version" => 2,
+          "timers" => [
+            {
+              "client" => client.name,
+              "description" => "Desktop handoff task",
+              "elapsedTime" => 180_000,
+              "id" => "desktop-active",
+              "isRunning" => true,
+              "project" => project.name,
+              "projectId" => project.id,
+              "startTime" => 3.minutes.ago.to_i * 1000
+            }
+          ]
+        }
+      }
+    )
+
+    visit "/time-tracking"
+
+    expect(page).to have_css("[data-testid='inline-web-timer']", wait: 10)
+    expect(page).to have_css("[data-testid='timer-desktop-sync']", wait: 10)
+    expect(page).to have_text("Shared with MiruTime", wait: 10)
+    expect(page).to have_text(project.name, wait: 10)
+    expect(page).to have_field(
+      "timer-description-inline",
+      with: "Desktop handoff task",
+      wait: 10
+    )
+
+    timer_deck = page.evaluate_script(
+      "JSON.parse(localStorage.getItem('miru_timer_state'))"
+    )
+
+    expect(timer_deck["activeTimerId"]).to eq("desktop-active")
+    expect(timer_deck["timers"].first).to include(
+      "description" => "Desktop handoff task",
+      "isRunning" => true,
+      "projectId" => project.id
+    )
+  end
+
   it "creates and switches between multiple timers" do
     visit "/time-tracking"
     expect(page).to have_css("#react-root", wait: 10)

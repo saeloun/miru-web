@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_29_113000) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_29_145000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_stat_statements"
@@ -135,6 +135,30 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_29_113000) do
     t.index ["visit_token"], name: "index_ahoy_visits_on_visit_token", unique: true
   end
 
+  create_table "analytics_reports", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.datetime "created_at", null: false
+    t.bigint "created_by_id", null: false
+    t.jsonb "filters", default: {}, null: false
+    t.string "name", null: false
+    t.integer "report_type", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id", "report_type", "created_at"], name: "index_analytics_reports_on_company_report_type_created_at"
+    t.index ["company_id"], name: "index_analytics_reports_on_company_id"
+    t.index ["created_by_id"], name: "index_analytics_reports_on_created_by_id"
+    t.index ["filters"], name: "index_analytics_reports_on_filters", using: :gin
+  end
+
+  create_table "analytics_threshold_notification_logs", force: :cascade do |t|
+    t.string "alert_type", null: false
+    t.bigint "company_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "notified_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id", "alert_type"], name: "index_analytics_threshold_logs_on_company_and_alert", unique: true
+    t.index ["company_id"], name: "index_analytics_threshold_notification_logs_on_company_id"
+  end
+
   create_table "audits", force: :cascade do |t|
     t.string "action"
     t.integer "associated_id"
@@ -240,6 +264,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_29_113000) do
     t.boolean "billing_exempt", default: false, null: false
     t.string "business_phone"
     t.boolean "calendar_enabled", default: true
+    t.boolean "cancel_at_period_end", default: false, null: false
     t.string "country", null: false
     t.datetime "created_at", null: false
     t.string "date_format"
@@ -384,17 +409,21 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_29_113000) do
     t.bigint "expense_category_id"
     t.integer "expense_type"
     t.datetime "paid_at"
+    t.bigint "project_id"
     t.integer "status", default: 0, null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id"
     t.bigint "vendor_id"
     t.string "vendor_name"
+    t.index ["company_id", "date", "expense_category_id"], name: "index_expenses_on_company_date_category"
+    t.index ["company_id", "date", "project_id"], name: "index_expenses_on_company_date_project"
     t.index ["company_id"], name: "index_expenses_on_company_id"
     t.index ["date"], name: "index_expenses_on_date"
     t.index ["description"], name: "index_expenses_on_description_trgm", opclass: :gin_trgm_ops, using: :gin
     t.index ["discarded_at"], name: "index_expenses_on_discarded_at"
     t.index ["expense_category_id"], name: "index_expenses_on_expense_category_id"
     t.index ["expense_type"], name: "index_expenses_on_expense_type"
+    t.index ["project_id"], name: "index_expenses_on_project_id"
     t.index ["status"], name: "index_expenses_on_status"
     t.index ["user_id"], name: "index_expenses_on_user_id"
     t.index ["vendor_id"], name: "index_expenses_on_vendor_id"
@@ -474,6 +503,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_29_113000) do
     t.bigint "timesheet_entry_id"
     t.datetime "updated_at", null: false
     t.index ["invoice_id"], name: "index_invoice_line_items_on_invoice_id"
+    t.index ["timesheet_entry_id", "date"], name: "index_invoice_line_items_on_timesheet_entry_date"
     t.index ["timesheet_entry_id"], name: "index_invoice_line_items_on_timesheet_entry_id"
   end
 
@@ -504,7 +534,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_29_113000) do
     t.boolean "stripe_enabled", default: true
     t.decimal "tax", precision: 20, scale: 2, default: "0.0"
     t.datetime "updated_at", null: false
+    t.index ["client_id", "issue_date", "status"], name: "index_invoices_on_client_issue_date_status"
     t.index ["client_id"], name: "index_invoices_on_client_id"
+    t.index ["company_id", "issue_date", "status"], name: "index_invoices_on_company_issue_date_status"
     t.index ["company_id", "status"], name: "index_invoices_on_company_id_and_status"
     t.index ["company_id"], name: "index_invoices_on_company_id"
     t.index ["discarded_at"], name: "index_invoices_on_discarded_at"
@@ -569,8 +601,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_29_113000) do
     t.index ["period_date"], name: "index_metrics_on_period_date"
     t.index ["trackable_type", "trackable_id", "metric_type", "period", "period_date"], name: "index_metrics_on_trackable_and_type_and_period", unique: true
     t.index ["trackable_type", "trackable_id"], name: "index_metrics_on_trackable"
-    t.check_constraint "metric_type::text = ANY (ARRAY['hours_logged'::character varying, 'invoice_summary'::character varying, 'project_stats'::character varying, 'client_revenue'::character varying, 'team_utilization'::character varying, 'outstanding_amounts'::character varying, 'overdue_amounts'::character varying, 'timesheet_summary'::character varying]::text[])", name: "valid_metric_type"
-    t.check_constraint "period::text = ANY (ARRAY['hour'::character varying, 'day'::character varying, 'week'::character varying, 'month'::character varying, 'quarter'::character varying, 'year'::character varying, 'all_time'::character varying]::text[])", name: "valid_period"
+    t.check_constraint "metric_type::text = ANY (ARRAY['hours_logged'::character varying::text, 'invoice_summary'::character varying::text, 'project_stats'::character varying::text, 'client_revenue'::character varying::text, 'team_utilization'::character varying::text, 'outstanding_amounts'::character varying::text, 'overdue_amounts'::character varying::text, 'timesheet_summary'::character varying::text])", name: "valid_metric_type"
+    t.check_constraint "period::text = ANY (ARRAY['hour'::character varying::text, 'day'::character varying::text, 'week'::character varying::text, 'month'::character varying::text, 'quarter'::character varying::text, 'year'::character varying::text, 'all_time'::character varying::text])", name: "valid_period"
   end
 
   create_table "notification_preferences", force: :cascade do |t|
@@ -607,6 +639,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_29_113000) do
     t.decimal "amount", precision: 20, scale: 2, default: "0.0"
     t.decimal "base_currency_amount", precision: 20, scale: 2
     t.datetime "created_at", null: false
+    t.datetime "discarded_at"
     t.decimal "exchange_rate", precision: 18, scale: 10
     t.date "exchange_rate_date"
     t.bigint "invoice_id", null: false
@@ -617,6 +650,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_29_113000) do
     t.date "transaction_date", null: false
     t.integer "transaction_type", null: false
     t.datetime "updated_at", null: false
+    t.index ["discarded_at"], name: "index_payments_on_discarded_at"
+    t.index ["invoice_id", "transaction_date", "status"], name: "index_payments_on_invoice_transaction_date_status"
     t.index ["invoice_id"], name: "index_payments_on_invoice_id"
     t.index ["status"], name: "index_payments_on_status"
     t.index ["transaction_date"], name: "index_payments_on_transaction_date"
@@ -894,10 +929,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_29_113000) do
     t.index ["bill_status"], name: "index_timesheet_entries_on_bill_status"
     t.index ["discarded_at"], name: "index_timesheet_entries_on_discarded_at"
     t.index ["note"], name: "index_timesheet_entries_on_note_trgm", opclass: :gin_trgm_ops, using: :gin
+    t.index ["project_id", "work_date"], name: "index_timesheet_entries_on_project_work_date"
     t.index ["project_id"], name: "index_timesheet_entries_on_project_id"
     t.index ["review_status", "bill_status"], name: "index_timesheet_entries_on_review_status_and_bill_status"
     t.index ["review_status"], name: "index_timesheet_entries_on_review_status"
     t.index ["source"], name: "index_timesheet_entries_on_source"
+    t.index ["user_id", "work_date", "bill_status"], name: "index_timesheet_entries_on_user_work_date_bill_status"
     t.index ["user_id", "work_date"], name: "index_timesheet_entries_on_user_id_and_work_date"
     t.index ["user_id"], name: "index_timesheet_entries_on_user_id"
     t.index ["work_date"], name: "index_timesheet_entries_on_work_date"
@@ -1006,6 +1043,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_29_113000) do
   add_foreign_key "agents", "companies"
   add_foreign_key "agents", "projects", column: "default_project_id"
   add_foreign_key "agents", "users"
+  add_foreign_key "analytics_reports", "companies"
+  add_foreign_key "analytics_reports", "users", column: "created_by_id"
+  add_foreign_key "analytics_threshold_notification_logs", "companies"
   add_foreign_key "carryovers", "companies"
   add_foreign_key "carryovers", "leave_types"
   add_foreign_key "carryovers", "users"
@@ -1027,6 +1067,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_29_113000) do
   add_foreign_key "expense_categories", "companies"
   add_foreign_key "expenses", "companies"
   add_foreign_key "expenses", "expense_categories"
+  add_foreign_key "expenses", "projects"
   add_foreign_key "expenses", "users"
   add_foreign_key "expenses", "vendors"
   add_foreign_key "holiday_infos", "holidays"

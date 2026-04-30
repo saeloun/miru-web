@@ -49,6 +49,10 @@ en:
     tagline: Run your agency’s ops from one command center.
   application_controller:
     not_found: Route not found
+  errors:
+    stripe:
+      connect_not_enabled: Stripe Connect is not enabled for this Stripe account. Enable Connect in Stripe Dashboard and try again.
+      generic: "%{message}"
   avatar:
     destroy:
       success: Avatar deleted successfully

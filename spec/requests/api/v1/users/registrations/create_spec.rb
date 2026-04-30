@@ -33,6 +33,33 @@ RSpec.describe "Api::V1::Users::Registrations#create", type: :request do
       }
       expect(response).to have_http_status(:ok)
       expect(json_response["notice"]).to eq(I18n.t("devise.registrations.signed_up"))
+      expect(json_response.dig("agent_payment_options", "stripe_link_cli")).to include(
+        "provider" => "stripe_link_cli",
+        "checkout_endpoint" => "/api/v1/subscription/checkout",
+        "requires_authenticated_workspace" => true
+      )
+    end
+
+    it "creates user successfully from the desktop app payload" do
+      send_request :post, api_v1_users_signup_path, params: {
+        user: desktop_signup_json
+      }
+
+      expect(response).to have_http_status(:ok)
+      expect(json_response["notice"]).to eq(I18n.t("devise.registrations.signed_up"))
+      expect(json_response["email"]).to eq(desktop_signup_json[:email])
+      expect(User.find_by!(email: desktop_signup_json[:email]).locale).to eq("en-US")
+    end
+
+    it "does not require a browser csrf token for JSON desktop signup" do
+      with_forgery_protection do
+        post api_v1_users_signup_path, params: {
+          user: desktop_signup_json.merge(email: generate(:user_email))
+        }, as: :json
+      end
+
+      expect(response).to have_http_status(:ok)
+      expect(json_response["notice"]).to eq(I18n.t("devise.registrations.signed_up"))
     end
 
     it "creates user successfully from the desktop app payload" do

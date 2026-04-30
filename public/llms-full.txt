@@ -27,6 +27,8 @@ Miru is an open-source application for teams that bill by the hour. The authenti
 
 The app exposes JSON APIs under `/api/v1`. Important areas include users, clients, projects, timesheet entries, invoices, expenses, payments, reports, workspaces, teams, and CLI-specific endpoints. Authenticated agents should use bearer-token authorization.
 
+Subscription checkout supports agent-led payment through Stripe Link CLI. Call `POST /api/v1/subscription/checkout` and read `agent_payment_options.stripe_link_cli` for merchant metadata, spend request details, and Link CLI commands. The user approves a one-time virtual card credential in Link; Miru never stores that credential.
+
 ## MCP Surface Summary
 
 Miru's MCP endpoint is available at `/mcp`. It exposes tools for capabilities, workspace identity, projects, clients, time entries, invoices, payments, and expenses. Write operations should be performed only after the user has clearly authorized the action.
