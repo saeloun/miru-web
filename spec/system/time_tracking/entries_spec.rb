@@ -147,5 +147,23 @@ RSpec.describe "Time Tracking Entries", type: :system, js: true do
           .or have_content("Add Entry", wait: 10)
       end
     end
+
+    it "hides the empty state while adding an entry" do
+      with_forgery_protection do
+        visit "/time-tracking"
+
+        expect(page).to have_css("#react-root", wait: 10)
+        expect(page).to have_content("No time entries yet", wait: 10)
+
+        find("button", text: /Add Entry/, match: :first, wait: 10).click
+
+        expect(page).to have_button("Save Entry", disabled: true, wait: 10)
+        expect(page).to have_no_content("No time entries yet", wait: 10)
+        expect(page).to have_no_content(
+          'Click "Add Entry" to log your first time entry for this day',
+          wait: 10
+        )
+      end
+    end
   end
 end

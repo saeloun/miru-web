@@ -29,6 +29,7 @@ interface TimeEntriesDisplayProps {
   setSelectedFullDate: (value: string) => void;
   dayInfo?: any[];
   view?: string;
+  hideEmptyState?: boolean;
 }
 
 const TimeEntriesDisplay: React.FC<TimeEntriesDisplayProps> = ({
@@ -47,6 +48,7 @@ const TimeEntriesDisplay: React.FC<TimeEntriesDisplayProps> = ({
   setSelectedFullDate,
   dayInfo = [],
   view = "week",
+  hideEmptyState = false,
 }) => {
   const [reviewMode, setReviewMode] = useState<"day" | "week">("day");
   const { companyRole, isDesktop } = useUserContext();
@@ -325,6 +327,10 @@ const TimeEntriesDisplay: React.FC<TimeEntriesDisplayProps> = ({
         </div>
       </div>
     );
+  }
+
+  if (hideEmptyState) {
+    return null;
   }
 
   return (
