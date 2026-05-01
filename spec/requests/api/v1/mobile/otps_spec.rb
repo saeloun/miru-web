@@ -56,9 +56,9 @@ RSpec.describe "Api::V1::Mobile::Otps", type: :request do
 
   it "requests OTP through MSG91 when widget credentials are configured outside test" do
     allow(Rails.env).to receive(:test?).and_return(false)
-    send_stub = stub_request(:post, "https://api.msg91.com/api/v5/widget/sendOtp")
+    send_stub = stub_request(:post, "https://control.msg91.com/api/v5/widget/sendOtp")
       .to_return(status: 200, body: { type: "success", message: "request-123" }.to_json)
-    verify_stub = stub_request(:post, "https://api.msg91.com/api/v5/widget/verifyOtp")
+    verify_stub = stub_request(:post, "https://control.msg91.com/api/v5/widget/verifyOtp")
       .to_return(status: 200, body: { type: "success", "access-token": "jwt-token" }.to_json)
 
     with_env(MSG91_AUTH_KEY: "msg91-secret", MSG91_TOKEN_AUTH: "token-secret", MSG91_WIDGET_ID: "widget-123") do

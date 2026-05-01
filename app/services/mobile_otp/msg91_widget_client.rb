@@ -4,7 +4,7 @@ require "net/http"
 
 module MobileOtp
   class Msg91WidgetClient
-    BASE_URL = "https://api.msg91.com/api/v5/widget"
+    BASE_URL = ENV.fetch("MSG91_WIDGET_BASE_URL", "https://control.msg91.com/api/v5/widget")
     SEND_OTP_URL = "#{BASE_URL}/sendOtp"
     VERIFY_OTP_URL = "#{BASE_URL}/verifyOtp"
     VERIFY_ACCESS_TOKEN_URL = "#{BASE_URL}/verifyAccessToken"

@@ -12,7 +12,7 @@ RSpec.describe MobileOtp::Msg91WidgetClient do
   end
 
   it "sends OTP through the MSG91 widget API" do
-    stub = stub_request(:post, "https://api.msg91.com/api/v5/widget/sendOtp")
+    stub = stub_request(:post, "https://control.msg91.com/api/v5/widget/sendOtp")
       .with { |request|
         payload = JSON.parse(request.body)
         request.headers["Authkey"].blank? &&
@@ -31,7 +31,7 @@ RSpec.describe MobileOtp::Msg91WidgetClient do
   end
 
   it "verifies OTP and returns the access token" do
-    stub = stub_request(:post, "https://api.msg91.com/api/v5/widget/verifyOtp")
+    stub = stub_request(:post, "https://control.msg91.com/api/v5/widget/verifyOtp")
       .with { |request|
         payload = JSON.parse(request.body)
         request.headers["Authkey"].blank? &&
@@ -51,7 +51,7 @@ RSpec.describe MobileOtp::Msg91WidgetClient do
   end
 
   it "verifies access tokens" do
-    stub = stub_request(:post, "https://api.msg91.com/api/v5/widget/verifyAccessToken")
+    stub = stub_request(:post, "https://control.msg91.com/api/v5/widget/verifyAccessToken")
       .with { |request|
         payload = JSON.parse(request.body)
         request.headers["Authkey"] == "msg91-secret" &&
