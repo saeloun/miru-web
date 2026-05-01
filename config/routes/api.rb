@@ -29,6 +29,11 @@ namespace :api, defaults: { format: "json" } do
           post :recovery_codes, action: :regenerate_recovery_codes
         end
       end
+
+      resource :otp, only: [], controller: "otps" do
+        post :request, action: :create
+        post :verify
+      end
     end
 
     resource :chatbase_token, only: [:show]
@@ -147,6 +152,7 @@ namespace :api, defaults: { format: "json" } do
       member do
         post :send_invoice
         post :send_reminder
+        post :razorpay_payment_link
         get :download
       end
     end

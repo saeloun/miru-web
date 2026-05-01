@@ -70,6 +70,7 @@ RSpec.describe "Api::V1::Mobile::Collections#create", type: :request do
       "sms_sent" => true
     )
     expect(json_response.dig("invoice", "amount_due")).to eq("1500.0")
+    expect(json_response.dig("invoice", "payment_url")).to eq(new_invoice_payment_url(invoice))
     expect(invoice).to be_sent
     expect(invoice.currency).to eq("INR")
     expect(PaymentProviders::RazorpayPaymentLinkService).to have_received(:new).with(
@@ -78,6 +79,32 @@ RSpec.describe "Api::V1::Mobile::Collections#create", type: :request do
       callback_url: razorpay_success_invoice_payments_url(invoice),
       notify_sms: true
     )
+  end
+
+  it "creates a USD invoice with the public invoice payment URL" do
+    expect(PaymentProviders::RazorpayPaymentLinkService).not_to receive(:new)
+
+    post "/api/v1/mobile/collections",
+      params: {
+        collection: {
+          amount: "125",
+          currency: "USD",
+          create_payment_link: false,
+          name: "Maya Collins",
+          note: "Follow-up adjustment",
+          notify_sms: false,
+          phone: "+1 415 555 0100"
+        }
+      },
+      headers: auth_headers(user)
+
+    invoice = Invoice.last
+    expect(response).to have_http_status(:created)
+    expect(json_response["message"]).to eq("Invoice created")
+    expect(json_response.dig("invoice", "currency")).to eq("USD")
+    expect(json_response.dig("invoice", "payment_url")).to eq(new_invoice_payment_url(invoice))
+    expect(json_response["payment_link_url"]).to be_nil
+    expect(json_response["sms_sent"]).to be(false)
   end
 
   it "reuses an existing payer by normalized phone number" do

@@ -21,6 +21,10 @@ module PaymentProviders
       with_sdk { normalize_response(Razorpay::PaymentLink.fetch(payment_link_id)) }
     end
 
+    def notify_payment_link(payment_link_id, medium)
+      with_sdk { normalize_response(Razorpay::PaymentLink.notify_by(payment_link_id, medium)) }
+    end
+
     def create_upi_payout(payload, idempotency_key:)
       with_sdk(headers: { "X-Payout-Idempotency" => idempotency_key }) do
         normalize_response(Razorpay::Request.new("payouts").create(payload))

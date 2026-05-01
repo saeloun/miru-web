@@ -68,6 +68,26 @@ RSpec.describe PaymentProviders::RazorpayPaymentLinkService do
       expect(invoice.razorpay_payment_link_status).to eq("created")
     end
 
+    it "asks Razorpay to send SMS when requested" do
+      client.update!(phone: "+919876543210")
+      expect(client_double).to receive(:create_payment_link) do |payload|
+        expect(payload.dig(:notify, :sms)).to be(true)
+        expect(payload.dig(:customer, :contact)).to eq("+919876543210")
+
+        { "id" => "plink_test_123", "short_url" => "https://rzp.io/rzp/test" }
+      end
+
+      service = described_class.new(
+        invoice:,
+        provider:,
+        callback_url: "https://app.test/invoices/#{invoice.id}/payments/razorpay_success",
+        notify_sms: true
+      )
+
+      expect(service.process).to eq("https://rzp.io/rzp/test")
+      expect(service.sms_sent?).to be(true)
+    end
+
     it "reuses an active existing payment link and refreshes the stored status" do
       invoice.update!(
         razorpay_payment_link_id: "plink_test_123",
@@ -87,6 +107,29 @@ RSpec.describe PaymentProviders::RazorpayPaymentLinkService do
 
       expect(payment_url).to eq("https://rzp.io/rzp/test")
       expect(invoice.reload.razorpay_payment_link_status).to eq("partially_paid")
+    end
+
+    it "resends an active existing payment link by SMS when requested" do
+      invoice.update!(
+        razorpay_payment_link_id: "plink_test_123",
+        razorpay_payment_link_url: "https://rzp.io/rzp/test",
+        razorpay_payment_link_status: "created"
+      )
+      expect(client_double).to receive(:fetch_payment_link)
+        .with("plink_test_123")
+        .and_return({ "id" => "plink_test_123", "status" => "created" })
+      expect(client_double).to receive(:notify_payment_link).with("plink_test_123", "sms").and_return({ "success" => true })
+      expect(client_double).not_to receive(:create_payment_link)
+
+      service = described_class.new(
+        invoice:,
+        provider:,
+        callback_url: "https://app.test/invoices/#{invoice.id}/payments/razorpay_success",
+        notify_sms: true
+      )
+
+      expect(service.process).to eq("https://rzp.io/rzp/test")
+      expect(service.sms_sent?).to be(true)
     end
 
     it "recreates an inactive existing payment link" do
