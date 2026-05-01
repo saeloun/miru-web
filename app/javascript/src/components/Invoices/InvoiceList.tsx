@@ -225,6 +225,41 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
     matchesInvoiceFilters(invoice)
   );
 
+  const toCount = (value: unknown, fallback = 0): number => {
+    if (typeof value === "number") {
+      return Number.isFinite(value) ? value : fallback;
+    }
+
+    if (typeof value === "string") {
+      const parsed = Number(value);
+
+      return Number.isFinite(parsed) ? parsed : fallback;
+    }
+
+    return fallback;
+  };
+
+  const fallbackDraftCount = filteredInvoices.filter(
+    inv => inv.status === "draft"
+  ).length;
+
+  const fallbackOverdueCount = filteredInvoices.filter(
+    inv => inv.status === "overdue"
+  ).length;
+
+  const fallbackOpenCount = filteredInvoices.filter(inv =>
+    ["sent", "viewed"].includes(inv.status)
+  ).length;
+
+  const cardCounts = {
+    draft: toCount(summary?.draftCount, fallbackDraftCount),
+    overdue: toCount(summary?.overdueCount, fallbackOverdueCount),
+    outstanding: toCount(summary?.openCount, fallbackOpenCount),
+  };
+
+  const allCardCount =
+    cardCounts.draft + cardCounts.overdue + cardCounts.outstanding;
+
   const hasActiveFilters =
     searchTerm.trim().length > 0 || filterParams.status.length > 0;
 
@@ -392,61 +427,13 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
           baseCurrency={summary?.currency || invoices[0]?.currency || "USD"}
           filterParams={filterParams}
           setFilterParams={setFilterParams}
+          statusCounts={{
+            all: allCardCount,
+            draft: cardCounts.draft,
+            overdue: cardCounts.overdue,
+            outstanding: cardCounts.outstanding,
+          }}
         />
-      )}
-
-      {/* Summary Stats */}
-      {filteredInvoices.length > 0 && (
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
-          <Card>
-            <CardContent className="p-4">
-              <div className="text-2xl font-bold">
-                {filteredInvoices.filter(inv => inv.status === "draft").length}
-              </div>
-              <div className="text-sm text-muted-foreground">
-                {i18n.t("invoices.draft")}
-              </div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-4">
-              <div className="text-2xl font-bold">
-                {filteredInvoices.filter(inv => inv.status === "sent").length}
-              </div>
-              <div className="text-sm text-muted-foreground">
-                {i18n.t("invoices.sent")}
-              </div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-4">
-              <div className="text-2xl font-bold">
-                {
-                  filteredInvoices.filter(inv => inv.status === "overdue")
-                    .length
-                }
-              </div>
-              <div className="text-sm text-muted-foreground">
-                {i18n.t("invoices.overdue")}
-              </div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-4">
-              <div className="text-2xl font-bold">
-                {currencyFormat(
-                  summary?.currency || invoices[0]?.currency || "USD",
-                  filteredInvoices
-                    .filter(inv => inv.status === "paid")
-                    .reduce((sum, inv) => sum + inv.amount, 0)
-                )}
-              </div>
-              <div className="text-sm text-muted-foreground">
-                {i18n.t("invoices.collected")}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
       )}
 
       {/* Search Only */}

@@ -559,6 +559,7 @@ const en = {
     overdue: "Overdue",
     collected: "Collected",
     paid: "Paid",
+    unpaid: "Unpaid",
     outstanding: "Outstanding",
 
     // Email
