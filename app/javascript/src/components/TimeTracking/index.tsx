@@ -1033,6 +1033,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
                 setSelectedFullDate={setSelectedFullDate}
                 dayInfo={dayInfo}
                 view={view}
+                hideEmptyState={newEntryView || newTimeoffEntryView}
               />
             </div>
           )}
