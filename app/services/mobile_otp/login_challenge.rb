@@ -132,6 +132,7 @@ module MobileOtp
         )
 
         return true if response.access_token.blank?
+        return true if Msg91WidgetClient.token_auth.present?
 
         token_response = Msg91WidgetClient.verify_access_token(access_token: response.access_token)
         verified_identifier = msg91_identifier(token_response.identifier)

@@ -6,6 +6,7 @@ RSpec.describe MobileOtp::Msg91WidgetClient do
   around do |example|
     with_env(
       MSG91_AUTH_KEY: "msg91-secret",
+      MSG91_TOKEN_AUTH: "token-secret",
       MSG91_WIDGET_ID: "widget-123"
     ) { example.run }
   end
@@ -14,10 +15,11 @@ RSpec.describe MobileOtp::Msg91WidgetClient do
     stub = stub_request(:post, "https://api.msg91.com/api/v5/widget/sendOtp")
       .with { |request|
         payload = JSON.parse(request.body)
-        request.headers["Authkey"] == "msg91-secret" &&
+        request.headers["Authkey"].blank? &&
           payload == {
             "widgetId" => "widget-123",
-            "identifier" => "919876543210"
+            "identifier" => "919876543210",
+            "tokenAuth" => "token-secret"
           }
       }
       .to_return(status: 200, body: { type: "success", message: "request-123" }.to_json)
@@ -32,11 +34,12 @@ RSpec.describe MobileOtp::Msg91WidgetClient do
     stub = stub_request(:post, "https://api.msg91.com/api/v5/widget/verifyOtp")
       .with { |request|
         payload = JSON.parse(request.body)
-        request.headers["Authkey"] == "msg91-secret" &&
+        request.headers["Authkey"].blank? &&
           payload == {
             "widgetId" => "widget-123",
             "reqId" => "request-123",
-            "otp" => "123456"
+            "otp" => "123456",
+            "tokenAuth" => "token-secret"
           }
       }
       .to_return(status: 200, body: { type: "success", "access-token": "jwt-token" }.to_json)

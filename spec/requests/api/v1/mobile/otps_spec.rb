@@ -60,10 +60,8 @@ RSpec.describe "Api::V1::Mobile::Otps", type: :request do
       .to_return(status: 200, body: { type: "success", message: "request-123" }.to_json)
     verify_stub = stub_request(:post, "https://api.msg91.com/api/v5/widget/verifyOtp")
       .to_return(status: 200, body: { type: "success", "access-token": "jwt-token" }.to_json)
-    access_token_stub = stub_request(:post, "https://api.msg91.com/api/v5/widget/verifyAccessToken")
-      .to_return(status: 200, body: { type: "success", message: "919876543210" }.to_json)
 
-    with_env(MSG91_AUTH_KEY: "msg91-secret", MSG91_WIDGET_ID: "widget-123") do
+    with_env(MSG91_AUTH_KEY: "msg91-secret", MSG91_TOKEN_AUTH: "token-secret", MSG91_WIDGET_ID: "widget-123") do
       post "/api/v1/mobile/otp/request", params: { phone: "9876543210" }
 
       expect(response).to have_http_status(:accepted)
@@ -81,7 +79,6 @@ RSpec.describe "Api::V1::Mobile::Otps", type: :request do
 
     expect(send_stub).to have_been_requested
     expect(verify_stub).to have_been_requested
-    expect(access_token_stub).to have_been_requested
   end
 
   def with_env(values)

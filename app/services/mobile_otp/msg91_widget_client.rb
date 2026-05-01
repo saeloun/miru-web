@@ -14,7 +14,7 @@ module MobileOtp
     class Error < StandardError; end
 
     def self.configured?
-      auth_key.present? && widget_id.present?
+      widget_id.present? && (token_auth.present? || auth_key.present?)
     end
 
     def self.send_otp(identifier:)
@@ -33,6 +33,10 @@ module MobileOtp
       ENV["MSG91_AUTH_KEY"].presence || ENV["MSG91_AUTHKEY"].presence
     end
 
+    def self.token_auth
+      ENV["MSG91_TOKEN_AUTH"].presence || ENV["MSG91_TOKENAUTH"].presence
+    end
+
     def self.widget_id
       ENV["MSG91_WIDGET_ID"].presence
     end
@@ -40,7 +44,8 @@ module MobileOtp
     def send_otp(identifier:)
       body = post_json(SEND_OTP_URL, {
         widgetId: widget_id,
-        identifier:
+        identifier:,
+        **token_payload
       })
 
       unless success_response?(body)
@@ -57,7 +62,8 @@ module MobileOtp
       body = post_json(VERIFY_OTP_URL, {
         widgetId: widget_id,
         reqId: req_id,
-        otp: otp.to_s.gsub(/\D/, "")
+        otp: otp.to_s.gsub(/\D/, ""),
+        **token_payload
       })
 
       message = body["message"].to_s
@@ -92,7 +98,7 @@ module MobileOtp
 
         uri = URI.parse(url)
         request = Net::HTTP::Post.new(uri)
-        request["authkey"] = auth_key
+        request["authkey"] = auth_key if use_auth_key?(url)
         request.content_type = "application/json"
         request.body = payload.to_json
 
@@ -127,6 +133,18 @@ module MobileOtp
 
       def auth_key
         self.class.auth_key
+      end
+
+      def token_auth
+        self.class.token_auth
+      end
+
+      def token_payload
+        token_auth.present? ? { tokenAuth: token_auth } : {}
+      end
+
+      def use_auth_key?(url)
+        url == VERIFY_ACCESS_TOKEN_URL || token_auth.blank?
       end
 
       def widget_id

@@ -46,6 +46,8 @@ envVarGroups:
         sync: false
       - key: MSG91_AUTH_KEY
         sync: false
+      - key: MSG91_TOKEN_AUTH
+        sync: false
       - key: MSG91_WIDGET_ID
         sync: false
       - key: GOOGLE_OAUTH_CLIENT_ID

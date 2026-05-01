@@ -2,8 +2,10 @@
 
 Miru phone OTP login uses MSG91 OTP Widget first when these env vars are present:
 
-- `MSG91_AUTH_KEY`
 - `MSG91_WIDGET_ID`
+- `MSG91_TOKEN_AUTH`
+
+`MSG91_AUTH_KEY` is supported as a fallback for server-side MSG91 calls, but the OTP Widget send/verify flow should use `MSG91_TOKEN_AUTH`.
 
 The MSG91 widget must be configured in the MSG91 dashboard under OTP Widgets. Miru calls:
 
@@ -11,7 +13,7 @@ The MSG91 widget must be configured in the MSG91 dashboard under OTP Widgets. Mi
 - `https://api.msg91.com/api/v5/widget/verifyOtp`
 - `https://api.msg91.com/api/v5/widget/verifyAccessToken`
 
-All calls use the `authkey` header and the configured widget id. Do not expose the auth key to the browser or mobile app.
+Send and verify calls use `tokenAuth` in the JSON body and the configured widget id. Do not expose `MSG91_TOKEN_AUTH` or `MSG91_AUTH_KEY` to the browser or mobile app.
 
 Use the same configured MSG91 OTP widget for both Miru mobile login and the web app Phone OTP tab. The browser and mobile clients never call MSG91 directly; they call Miru, and Miru sends and verifies OTPs through MSG91 server-side.
 
