@@ -48,12 +48,22 @@ class InvoicePayment::RazorpayPaymentLinkWebhookFulfillment
     def invoice
       @_invoice ||= begin
         invoice_id = payment_link_notes["miru_invoice_id"].presence || reference_invoice_id
-        Invoice.kept.find_by(id: invoice_id)
+        if invoice_id.present?
+          Invoice.kept.find_by(id: invoice_id)
+        else
+          invoice_from_payment_link_id
+        end
       end
     end
 
     def reference_invoice_id
       payment_link["reference_id"].to_s.delete_prefix("miru-inv-")
+    end
+
+    def invoice_from_payment_link_id
+      return if payment_link_id.blank?
+
+      Invoice.kept.find_by("payment_infos ->> 'razorpay_payment_link_id' = ?", payment_link_id)
     end
 
     def provider
