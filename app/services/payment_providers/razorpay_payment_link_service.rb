@@ -13,7 +13,7 @@ module PaymentProviders
     def process
       return existing_payment_link if existing_payment_link?
 
-      response = client.create_payment_link(payment_link_payload)
+      response = create_payment_link_with_fallback
       invoice.update!(
         razorpay_payment_link_id: response.fetch("id"),
         razorpay_payment_link_url: response.fetch("short_url"),
@@ -63,6 +63,38 @@ module PaymentProviders
           route_options = route_transfer_options
           payload[:options] = route_options if route_options.present?
         end
+      end
+
+      def minimal_payment_link_payload
+        {
+          amount: amount_subunits,
+          currency: invoice.currency,
+          accept_partial: false,
+          description: "Invoice #{invoice.invoice_number} from #{invoice.company.name}",
+          customer: customer_payload,
+          notify: { sms: false, email: false },
+          callback_url:,
+          callback_method: "get"
+        }.tap do |payload|
+          route_options = route_transfer_options
+          payload[:options] = route_options if route_options.present?
+        end
+      end
+
+      def create_payment_link_with_fallback
+        client.create_payment_link(payment_link_payload)
+      rescue PaymentProviders::RazorpayClient::Error => error
+        raise error unless amount_whole_number_error?(error)
+
+        Rails.logger.warn(
+          "Retrying Razorpay payment link creation with minimal payload for invoice #{invoice.id}: #{error.message}"
+        )
+        client.create_payment_link(minimal_payment_link_payload)
+      end
+
+      def amount_whole_number_error?(error)
+        message = error.message.to_s
+        message.match?(/\bamount\b.*\b(whole|whole\s*number)\b/i)
       end
 
       def customer_payload

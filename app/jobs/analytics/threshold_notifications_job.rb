@@ -35,7 +35,7 @@ class Analytics::ThresholdNotificationsJob < ApplicationJob
     def notification_recipients_for(company)
       company.users.with_role([:owner, :admin, :book_keeper], company).distinct.filter_map do |user|
         preference = company.notification_preferences.find_by(user_id: user.id)
-        user.email if preference.nil? || preference.can_receive_emails?
+        user.email if preference&.can_receive_analytics_threshold_notifications?
       end.uniq
     end
 

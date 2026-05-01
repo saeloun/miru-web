@@ -95,7 +95,9 @@ RSpec.describe InvoiceMailer, type: :mailer do
     end
 
     it "uses the application mailer sender instead of a noreply fallback" do
-      expect(mail.from).to eq(Array(ApplicationMailer.default[:from]))
+      default_from = Mail::Address.new(ApplicationMailer.default[:from])
+      expect(mail.from).to eq([default_from.address])
+      expect(mail[:from].display_names).to include(default_from.display_name)
       expect(mail.from).not_to eq(["noreply@example.com"])
       expect(mail.subject).to eq(subject)
       expect(mail.to).to eq(recipients)

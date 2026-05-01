@@ -40,6 +40,7 @@ RSpec.describe MonthlyReportsMailer, type: :mailer do
         month: "2026-03-01"
       ).cash_flow_digest
     end
+    let(:body) { mail.html_part&.body&.decoded || mail.body.decoded }
 
     it "renders the headers" do
       expect(mail.to).to eq([user.email])
@@ -47,11 +48,11 @@ RSpec.describe MonthlyReportsMailer, type: :mailer do
     end
 
     it "renders the body" do
-      expect(mail.body.encoded).to include("March cash flow digest")
-      expect(mail.body.encoded).to include("Top money-in sources")
-      expect(mail.body.encoded).to include("Haul Hub Inc")
-      expect(mail.body.encoded).to include("Saeloun Payroll")
-      expect(mail.body.encoded).to include("View reports in Miru")
+      expect(body).to include("March cash flow digest")
+      expect(body).to include("Top money-in sources")
+      expect(body).to include("Haul Hub Inc")
+      expect(body).to include("Saeloun Payroll")
+      expect(body).to include("View reports in Miru")
     end
   end
 end

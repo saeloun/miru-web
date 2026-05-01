@@ -1,14 +1,15 @@
-<!DOCTYPE html>
-<html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="color-scheme" content="light only" />
-    <meta name="supported-color-schemes" content="light" />
+    <meta name="x-apple-disable-message-reformatting" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="supported-color-schemes" content="light dark" />
     <style>
       :root {
-        color-scheme: light only;
-        supported-color-schemes: light;
+        color-scheme: light dark;
+        supported-color-schemes: light dark;
       }
 
       body,
@@ -23,6 +24,9 @@
       td {
         mso-table-lspace: 0pt;
         mso-table-rspace: 0pt;
+      }
+      td {
+        word-break: break-word;
       }
 
       img {
@@ -48,37 +52,33 @@
 
       .email-shell {
         width: 100%;
-        background:
-          radial-gradient(circle at top, rgba(255, 255, 255, 0.96), rgba(255, 255, 255, 0) 26%),
-          radial-gradient(circle at left top, rgba(15, 23, 42, 0.03), rgba(15, 23, 42, 0) 24%),
-          linear-gradient(180deg, #f8fafc 0%, #edf2f7 100%);
-        padding: 60px 16px;
+        background-color: #f5f7fb;
+        padding: 44px 16px;
       }
 
       .email-card {
         width: 100%;
-        max-width: 720px;
+        max-width: 640px;
         background-color: #ffffff;
         border: 1px solid #e5e7eb;
-        border-radius: 30px;
+        border-radius: 8px;
         overflow: hidden;
-        box-shadow: 0 28px 72px rgba(15, 23, 42, 0.08);
       }
 
       .email-card-inner {
-        padding: 36px 38px 38px;
+        padding: 40px 44px 42px;
       }
 
       .email-brand {
-        padding: 34px 38px 24px;
+        padding: 34px 44px 26px;
         text-align: center;
-        background: linear-gradient(180deg, #ffffff 0%, #fbfcfd 100%);
+        background-color: #ffffff;
         border-bottom: 1px solid #e5e7eb;
       }
 
       .email-brand-logo {
         display: block;
-        width: 144px;
+        width: 120px;
         height: auto;
         margin: 0 auto;
       }
@@ -95,10 +95,10 @@
       .email-title {
         margin: 12px 0 0;
         color: #020617;
-        font-size: 42px;
+        font-size: 28px;
         font-weight: 700;
-        line-height: 0.98;
-        letter-spacing: -0.055em;
+        line-height: 1.25;
+        letter-spacing: 0;
         max-width: 520px;
         margin-left: auto;
         margin-right: auto;
@@ -132,11 +132,10 @@
 
       .email-highlight {
         margin: 24px 0;
-        padding: 30px 24px;
+        padding: 26px 24px;
         border: 1px solid #e7ebf0;
-        border-radius: 22px;
-        background: linear-gradient(180deg, #fbfcfe 0%, #f5f8fb 100%);
-        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85);
+        border-radius: 8px;
+        background-color: #f8fafc;
         text-align: center;
       }
 
@@ -152,10 +151,10 @@
       .email-highlight-value {
         margin: 0;
         color: #020617;
-        font-size: 40px;
+        font-size: 34px;
         font-weight: 700;
         line-height: 1.08;
-        letter-spacing: -0.05em;
+        letter-spacing: 0;
       }
 
       .email-highlight-caption {
@@ -177,33 +176,33 @@
       .email-panel {
         margin: 24px 0;
         padding: 20px 22px;
-        border-radius: 18px;
+        border-radius: 8px;
         border: 1px solid #e6ebf1;
         background-color: #ffffff;
       }
 
       .email-panel-soft {
-        background: linear-gradient(180deg, #ffffff 0%, #fafbfd 100%);
+        background-color: #f8fafc;
       }
 
       .email-panel-accent {
-        background: linear-gradient(180deg, #fbfcfd 0%, #f4f7fb 100%);
+        background-color: #f8fafc;
         border-color: #d5dde7;
       }
 
       .email-panel-success {
         border-color: rgba(22, 163, 74, 0.18);
-        background: linear-gradient(180deg, rgba(240, 253, 244, 0.98) 0%, rgba(236, 253, 245, 0.92) 100%);
+        background-color: #f0fdf4;
       }
 
       .email-panel-warning {
         border-color: rgba(245, 158, 11, 0.24);
-        background: linear-gradient(180deg, rgba(245, 158, 11, 0.08) 0%, rgba(255, 251, 235, 0.95) 100%);
+        background-color: #fffbeb;
       }
 
       .email-panel-danger {
         border-color: rgba(239, 68, 68, 0.24);
-        background: linear-gradient(180deg, rgba(239, 68, 68, 0.08) 0%, rgba(254, 242, 242, 0.95) 100%);
+        background-color: #fef2f2;
       }
 
       .email-panel-title {
@@ -228,23 +227,25 @@
 
       .email-button {
         display: inline-block;
-        padding: 15px 24px;
-        border-radius: 14px;
+        padding: 0;
+        border-radius: 4px;
         background: #0f172a;
+        border: 12px solid #0f172a;
+        border-left-width: 22px;
+        border-right-width: 22px;
         color: #ffffff !important;
         font-size: 15px;
         font-weight: 700;
-        line-height: 1;
-        letter-spacing: 0.01em;
+        line-height: 1.2;
+        letter-spacing: 0;
         text-decoration: none;
-        box-shadow: 0 10px 24px rgba(15, 23, 42, 0.12);
+        box-sizing: border-box;
       }
 
       .email-button-secondary {
         background: #ffffff;
-        border: 1px solid #d2d9e2;
+        border-color: #d2d9e2;
         color: #0f172a !important;
-        box-shadow: none;
       }
 
       .email-divider {
@@ -266,9 +267,8 @@
       .detail-card {
         width: 100%;
         border: 1px solid #e7ebf0;
-        border-radius: 18px;
+        border-radius: 8px;
         background-color: #ffffff;
-        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85);
       }
 
       .detail-card td {
@@ -309,8 +309,7 @@
         border-collapse: collapse;
         border-top: 1px solid #e7ebf0;
         border-bottom: 1px solid #e7ebf0;
-        background: linear-gradient(180deg, #ffffff 0%, #fcfcfd 100%);
-        border-radius: 18px;
+        background-color: #ffffff;
       }
 
       .email-fact-table td {
@@ -347,9 +346,9 @@
       }
 
       .email-footer-card {
-        border-radius: 18px;
+        border-radius: 8px;
         border: 1px solid #e6ebf1;
-        background: linear-gradient(180deg, #ffffff 0%, #fafbfd 100%);
+        background-color: #ffffff;
       }
 
       .email-footer-card td {
@@ -382,6 +381,7 @@
         font-size: 38px;
         font-weight: 700;
         line-height: 1.05;
+        letter-spacing: 0;
       }
 
       .digest-caption {
@@ -403,8 +403,8 @@
 
       .digest-trend-bar {
         width: 100%;
-        border-radius: 999px 999px 4px 4px;
-        background: linear-gradient(180deg, rgba(15, 23, 42, 0.94) 0%, rgba(59, 130, 246, 0.3) 100%);
+        border-radius: 4px 4px 0 0;
+        background-color: #0f172a;
       }
 
       .digest-trend-labels {
@@ -439,11 +439,11 @@
 
       @media only screen and (max-width: 640px) {
         .email-shell {
-          padding: 18px 10px !important;
+          padding: 20px 8px !important;
         }
 
         .email-card {
-          border-radius: 24px !important;
+          border-radius: 0 !important;
         }
 
         .email-brand {
@@ -459,11 +459,11 @@
         }
 
         .email-title {
-          font-size: 30px !important;
+          font-size: 24px !important;
         }
 
         .email-brand-logo {
-          width: 124px !important;
+          width: 120px !important;
         }
 
         .email-highlight {
@@ -471,7 +471,7 @@
         }
 
         .email-highlight-value {
-          font-size: 32px !important;
+          font-size: 28px !important;
         }
 
         .detail-cell,
@@ -507,28 +507,89 @@
         }
       }
 
+      @media (prefers-color-scheme: dark) {
+        body,
+        .email-shell {
+          background-color: #111827 !important;
+          color: #f8fafc !important;
+        }
+        .email-card,
+        .email-brand,
+        .email-footer-card,
+        .detail-card,
+        .email-fact-table {
+          background-color: #1f2937 !important;
+          border-color: #374151 !important;
+        }
+        .email-body,
+        .email-title,
+        .email-subtitle,
+        .email-highlight-value,
+        .detail-value,
+        .email-fact-value,
+        .email-panel-title,
+        .digest-value,
+        a {
+          color: #f8fafc !important;
+        }
+        .email-eyebrow,
+        .email-muted,
+        .email-highlight-caption,
+        .detail-subvalue,
+        .email-footer-card td,
+        .email-fact-key {
+          color: #cbd5e1 !important;
+        }
+        .email-highlight,
+        .email-panel,
+        .email-panel-soft {
+          background-color: #111827 !important;
+          border-color: #374151 !important;
+        }
+        .email-button {
+          background-color: #f8fafc !important;
+          border-color: #f8fafc !important;
+          color: #111827 !important;
+        }
+        .email-button-secondary {
+          background-color: #1f2937 !important;
+          border-color: #64748b !important;
+          color: #f8fafc !important;
+        }
+      }
+
     </style>
+    <!--[if mso]>
+    <style type="text/css">
+      body, table, td, a, p, div {
+        font-family: Arial, sans-serif !important;
+      }
+    </style>
+    <![endif]-->
   </head>
   <body style="margin: 0; padding: 0; width: 100%; min-width: 100%; background-color: #f5f7fb; color: #020617; font-family: Inter, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;">
     <% preheader = content_for?(:email_preheader) ? yield(:email_preheader).to_s.strip : t("mailers.layout.preheader") %>
     <div style="display: none; max-height: 0; overflow: hidden; opacity: 0; mso-hide: all;">
       <%= preheader %>
     </div>
-    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="email-shell" style="width: 100%; margin: 0; padding: 32px 16px; background-color: #f5f7fb; border-collapse: collapse;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="email-shell" style="width: 100%; margin: 0; padding: 44px 16px; background-color: #f5f7fb; border-collapse: collapse;">
       <tr>
         <td align="center" style="padding: 0;">
-          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="email-card" style="width: 100%; max-width: 720px; background-color: #ffffff; border: 1px solid #e5e7eb; border-radius: 30px; overflow: hidden;">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="email-card" style="width: 100%; max-width: 640px; background-color: #ffffff; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden;">
             <tr>
-              <td class="email-brand" style="padding: 34px 38px 24px; text-align: center; background-color: #ffffff; border-bottom: 1px solid #e5e7eb;">
+              <td class="email-brand" style="padding: 34px 44px 26px; text-align: center; background-color: #ffffff; border-bottom: 1px solid #e5e7eb;">
                 <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center">
                   <tr>
                     <td align="center">
                       <% if content_for?(:email_badge) %>
                         <%= yield :email_badge %>
+                      <% elsif miru_logo_attachment_url.present? %>
+                        <img src="<%= miru_logo_attachment_url %>" width="120" height="48" alt="<%= t("mailers.layout.brand") %>" class="email-brand-logo" style="display: block; width: 120px; height: 48px; margin: 0 auto; border: 0; outline: none; text-decoration: none;" />
+                        <div style="margin-top: 8px; color: #64748b; font-size: 9px; font-weight: 700; letter-spacing: 0.18em; line-height: 1.2;">TRACK. BILL. GET PAID.</div>
                       <% else %>
                         <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" aria-label="<%= t("mailers.layout.brand") %>" style="margin: 0 auto; border-collapse: collapse;">
                           <tr>
-                            <td style="width: 34px; height: 34px; border-radius: 10px; background-color: #020617; color: #ffffff; font-size: 18px; font-weight: 800; line-height: 34px; text-align: center;">M</td>
+                            <td style="width: 34px; height: 34px; border-radius: 8px; background-color: #020617; color: #ffffff; font-size: 18px; font-weight: 800; line-height: 34px; text-align: center;">M</td>
                             <td style="padding-left: 10px; text-align: left;">
                               <div style="color: #020617; font-size: 22px; font-weight: 800; line-height: 1;">Miru</div>
                               <div style="margin-top: 4px; color: #64748b; font-size: 9px; font-weight: 700; letter-spacing: 0.18em; line-height: 1.2;">TRACK. BILL. GET PAID.</div>

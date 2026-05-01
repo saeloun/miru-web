@@ -20,6 +20,7 @@ Keep this file short. Treat it as a router for repo-specific rules.
 10. Preserve unrelated work in a dirty tree. Do not revert user changes just to simplify your own task.
 11. When the user asks for a larger batch, keep going until the batch is done, blocked, or risky without input.
 12. When resolving GitHub issues and posting resolution comments (with user approval), include verification images/screenshots as evidence.
+13. Before merging any PR, inspect CodeRabbit review feedback and fix every actionable item. Do not merge with unresolved CodeRabbit feedback unless the user explicitly approves deferring a specific item.
 
 ## Repo Workflow
 

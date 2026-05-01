@@ -1,15 +1,18 @@
-<p>Hello,</p>
-
-<p><strong><%= @alert[:title] %></strong></p>
-
-<p><%= @alert[:message] %></p>
-
-<% if @alert[:metadata].present? %>
-  <ul>
-    <% @alert[:metadata].each do |key, value| %>
-      <li><strong><%= key.to_s.humanize %>:</strong> <%= value %></li>
-    <% end %>
-  </ul>
+<% content_for :email_preheader, "#{@company.name}: #{@alert[:title]}" %>
+<% content_for :email_eyebrow, "Analytics alert" %>
+<% content_for :email_title, @alert[:title] %>
+<% content_for :email_subtitle do %>
+  <%= @alert[:message] %>
 <% end %>
 
-<p>Visit Miru to review your analytics dashboard.</p>
+<div class="email-panel email-panel-warning">
+  <p class="email-panel-title"><%= @company.name %></p>
+  <p style="margin: 0;">Review this threshold alert in Miru before taking action.</p>
+</div>
+
+<% if @alert[:metadata].present? %>
+  <%= render "shared/mailer/fact_rows",
+    rows: @alert[:metadata].map { |key, value| { label: key.to_s.humanize, value: value } } %>
+<% end %>
+
+<%= render "shared/mailer/button", href: @analytics_url, label: "View analytics" %>

@@ -11,7 +11,7 @@ class SubscriptionMailer < ApplicationMailer
     mail(
       to: @recipient.email,
       subject: "Your Miru Pro trial is active",
-      reply_to: ENV["REPLY_TO_EMAIL"]
+      reply_to: default_reply_to_address
     )
   end
 
@@ -28,7 +28,7 @@ class SubscriptionMailer < ApplicationMailer
     mail(
       to: @alert_email,
       subject: "Cha-ching! #{@company.name} bought #{@display_plan_label}",
-      reply_to: ENV["REPLY_TO_EMAIL"]
+      reply_to: default_reply_to_address
     )
   end
 
