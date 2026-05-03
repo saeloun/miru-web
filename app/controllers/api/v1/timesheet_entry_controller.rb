@@ -29,7 +29,7 @@ class Api::V1::TimesheetEntryController < Api::V1::ApplicationController
   def create
     authorize TimesheetEntry
     timesheet_entry = current_project.timesheet_entries.new(timesheet_entry_params)
-    timesheet_entry.user = current_company.users.find(params[:user_id])
+    timesheet_entry.user = timesheet_entry_user
     render json: {
       notice: I18n.t("timesheet_entry.create.message"),
       entry: timesheet_entry.snippet
@@ -63,6 +63,16 @@ class Api::V1::TimesheetEntryController < Api::V1::ApplicationController
 
     def current_timesheet_entry
       @_current_timesheet_entry ||= current_company.timesheet_entries.kept.find(params[:id])
+    end
+
+    def timesheet_entry_user
+      if current_user.has_role?(:owner, current_company) || current_user.has_role?(:admin, current_company)
+        return current_company.users.find(params[:user_id] || current_user.id)
+      end
+
+      return current_user if params[:user_id].blank? || params[:user_id].to_i == current_user.id
+
+      raise Pundit::NotAuthorizedError
     end
 
     def timesheet_entry_params
