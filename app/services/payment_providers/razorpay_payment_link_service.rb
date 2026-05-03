@@ -4,10 +4,12 @@ module PaymentProviders
   class RazorpayPaymentLinkService
     attr_reader :invoice, :provider, :callback_url
 
-    def initialize(invoice:, provider:, callback_url:)
+    def initialize(invoice:, provider:, callback_url:, notify_sms: false)
       @invoice = invoice
       @provider = provider
       @callback_url = callback_url
+      @notify_sms = notify_sms
+      @sms_sent = false
     end
 
     def process
@@ -19,8 +21,13 @@ module PaymentProviders
         razorpay_payment_link_url: response.fetch("short_url"),
         razorpay_payment_link_status: response["status"].presence || "created"
       )
+      @sms_sent = notify_sms?
 
       response.fetch("short_url")
+    end
+
+    def sms_sent?
+      @sms_sent
     end
 
     private
@@ -33,6 +40,7 @@ module PaymentProviders
         payment_link = client.fetch_payment_link(invoice.razorpay_payment_link_id)
         if payment_link["status"].in?(["created", "partially_paid"])
           invoice.update!(razorpay_payment_link_status: payment_link["status"]) if invoice.razorpay_payment_link_status != payment_link["status"]
+          notify_existing_payment_link if notify_sms?
           return invoice.razorpay_payment_link_url
         end
 
@@ -54,7 +62,7 @@ module PaymentProviders
           description: "Invoice #{invoice.invoice_number} from #{invoice.company.name}",
           reference_id: reference_id,
           customer: customer_payload,
-          notify: { sms: false, email: false },
+          notify: { sms: notify_sms?, email: false },
           reminder_enable: true,
           callback_url:,
           callback_method: "get",
@@ -100,8 +108,18 @@ module PaymentProviders
       def customer_payload
         {
           name: invoice.client.name,
-          email: invoice.client.email
+          email: invoice.client.email,
+          contact: invoice.client.phone
         }.compact
+      end
+
+      def notify_existing_payment_link
+        client.notify_payment_link(invoice.razorpay_payment_link_id, "sms")
+        @sms_sent = true
+      end
+
+      def notify_sms?
+        ActiveModel::Type::Boolean.new.cast(@notify_sms)
       end
 
       def notes_payload

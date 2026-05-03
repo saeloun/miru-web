@@ -13,7 +13,7 @@ gem "pg"
 
 # Use Puma as rollback ballast while Falcon is rolled out.
 gem "puma", "~> 6.6"
-gem "falcon"
+gem "falcon", require: false
 gem "falcon-rails"
 
 # Reduces boot times through caching

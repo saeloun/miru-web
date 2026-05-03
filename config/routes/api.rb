@@ -65,6 +65,15 @@ namespace :api, defaults: { format: "json" } do
     namespace :desktop do
       resource :current_timer, only: [:show, :update], controller: "current_timers"
     end
+    namespace :mobile do
+      resource :bootstrap, only: [:show], controller: "bootstrap"
+      resource :current_timer, only: [:show, :update], controller: "current_timers"
+      resource :otp, only: [], controller: "otps" do
+        post :request, action: :create
+        post :verify
+      end
+      resources :collections, only: [:index, :create]
+    end
     namespace :agent do
       resource :capabilities, only: [:show], controller: "capabilities"
       resources :timesheet_entries, only: [:create]
@@ -138,6 +147,7 @@ namespace :api, defaults: { format: "json" } do
       member do
         post :send_invoice
         post :send_reminder
+        post :razorpay_payment_link
         get :download
       end
     end

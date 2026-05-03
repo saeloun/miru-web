@@ -37,6 +37,10 @@ class InvoicePolicy < ApplicationPolicy
     authorize_owner_admin
   end
 
+  def razorpay_payment_link?
+    authorize_owner_admin
+  end
+
   def permitted_attributes
     [
       :issue_date, :due_date, :status,
