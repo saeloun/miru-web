@@ -235,6 +235,69 @@ RSpec.describe "Api::V1::Mobile::Collections", type: :request do
     expect(json_response.dig("invoice", "invoice_number")).to eq(Invoice.last.invoice_number)
   end
 
+  it "records manual payment against an existing open mobile collection" do
+    invoice = create_mobile_collection_invoice(amount: 2200, collector: user)
+
+    post "/api/v1/mobile/collections/#{invoice.id}/manual_payment",
+      params: {
+        collection: {
+          manual_reference: "UPI777",
+          note: "Collected after home visit",
+          payment_method: "upi"
+        }
+      },
+      headers: auth_headers(user)
+
+    payment = invoice.reload.payments.last
+
+    expect(response).to have_http_status(:ok)
+    expect(json_response).to include("message" => "UPI payment recorded")
+    expect(json_response.dig("invoice", "status")).to eq("paid")
+    expect(json_response.dig("payment", "transaction_type")).to eq("upi")
+    expect(invoice).to be_paid
+    expect(payment.amount).to eq(2200)
+    expect(payment.note).to include("UPI ref: UPI777")
+  end
+
+  it "sends a Razorpay payment link for an existing open mobile collection" do
+    provider = create_razorpay_provider!
+    invoice = create_mobile_collection_invoice(amount: 1600, collector: user)
+    allow(PaymentProviders::RazorpayPaymentLinkService).to receive(:new).and_return(service)
+
+    post "/api/v1/mobile/collections/#{invoice.id}/payment_link",
+      params: { collection: { notify_sms: true } },
+      headers: auth_headers(user)
+
+    expect(response).to have_http_status(:accepted)
+    expect(json_response).to include(
+      "message" => "Payment link sent by SMS",
+      "payment_link_url" => "https://rzp.io/rzp/mobile",
+      "sms_sent" => true
+    )
+    expect(PaymentProviders::RazorpayPaymentLinkService).to have_received(:new).with(
+      invoice:,
+      provider:,
+      callback_url: razorpay_success_invoice_payments_url(invoice),
+      notify_sms: true
+    )
+  end
+
+  it "does not let employees settle another collector's mobile collection" do
+    other_user = create(:user, current_workspace_id: company.id)
+    create(:employment, company:, user: other_user)
+    other_user.add_role :employee, company
+    user.remove_role :admin, company
+    user.add_role :employee, company
+    other_invoice = create_mobile_collection_invoice(amount: 1200, collector: other_user)
+
+    post "/api/v1/mobile/collections/#{other_invoice.id}/manual_payment",
+      params: { collection: { payment_method: "cash" } },
+      headers: auth_headers(user)
+
+    expect(response).to have_http_status(:not_found)
+    expect(other_invoice.reload).not_to be_paid
+  end
+
   it "lists the collection ledger for managers" do
     paid_invoice = create_mobile_collection_invoice(amount: 3000, collector: user)
     InvoicePayment::Settle.process(

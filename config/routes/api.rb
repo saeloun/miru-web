@@ -74,7 +74,12 @@ namespace :api, defaults: { format: "json" } do
         post :request, action: :create
         post :verify
       end
-      resources :collections, only: [:index, :create]
+      resources :collections, only: [:index, :create] do
+        member do
+          post :manual_payment
+          post :payment_link
+        end
+      end
     end
     namespace :agent do
       resource :capabilities, only: [:show], controller: "capabilities"

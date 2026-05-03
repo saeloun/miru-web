@@ -73,6 +73,59 @@ class Api::V1::Mobile::CollectionsController < Api::V1::ApplicationController
     render json: { error: error.message.presence || "Unable to create Razorpay payment link" }, status: 422
   end
 
+  def manual_payment
+    invoice = current_mobile_collection
+    return render json: { error: "Collection is already paid" }, status: 422 if invoice.paid?
+
+    payment_method = mobile_collection_action_payment_method
+    unless MANUAL_PAYMENT_METHODS.include?(payment_method)
+      return render json: { error: "Payment method must be cash or upi" }, status: 422
+    end
+
+    amount = mobile_collection_action_amount(invoice)
+    return render json: { error: "Enter an amount to record a payment" }, status: 422 if amount <= 0
+
+    payment = record_manual_payment!(
+      invoice,
+      amount:,
+      payment_method:,
+      note: mobile_collection_action_payment_note(payment_method)
+    )
+    invoice.reload
+
+    render_collection_response(
+      client: invoice.client,
+      customer_user: customer_user_for(invoice.client),
+      invoice:,
+      payment:,
+      payment_link_url: invoice.razorpay_payment_link_url,
+      sms_sent: false,
+      status: :ok,
+      message: "#{payment_method.upcase} payment recorded"
+    )
+  end
+
+  def payment_link
+    invoice = current_mobile_collection
+    return render json: { error: "Collection is already paid" }, status: 422 if invoice.paid?
+
+    payment_link_url, sms_sent = create_razorpay_payment_link!(invoice, notify_sms: mobile_collection_action_notify_sms?)
+
+    render_collection_response(
+      client: invoice.client,
+      customer_user: customer_user_for(invoice.client),
+      invoice: invoice.reload,
+      payment: invoice.payments.order(created_at: :desc).first,
+      payment_link_url:,
+      sms_sent:,
+      status: sms_sent ? :accepted : :ok,
+      message: sms_sent ? "Payment link sent by SMS" : "Payment link ready"
+    )
+  rescue PaymentProviders::RazorpayClient::Error => error
+    Rails.logger.warn("Mobile collection payment link failed: #{error.message}")
+    render json: { error: error.message.presence || "Unable to create Razorpay payment link" }, status: 422
+  end
+
   private
 
     def collection_params
@@ -92,6 +145,11 @@ class Api::V1::Mobile::CollectionsController < Api::V1::ApplicationController
       )
     end
 
+    def collection_action_params
+      params.fetch(:collection, ActionController::Parameters.new)
+        .permit(:amount, :note, :notify_sms, :payment_method, :manual_reference)
+    end
+
     def authorize_mobile_collection!
       raise Pundit::NotAuthorizedError unless current_company&.pro_access? && mobile_collection_actor?
     end
@@ -109,6 +167,10 @@ class Api::V1::Mobile::CollectionsController < Api::V1::ApplicationController
       return scope if mobile_collection_manager?
 
       scope.where("payment_infos ->> 'mobile_collector_user_id' = ?", current_user.id.to_s)
+    end
+
+    def current_mobile_collection
+      @_current_mobile_collection ||= mobile_collection_scope.includes(:client, :payments).find(params[:id])
     end
 
     def find_or_create_client!
@@ -193,40 +255,43 @@ class Api::V1::Mobile::CollectionsController < Api::V1::ApplicationController
       )
     end
 
-    def record_manual_payment!(invoice)
+    def record_manual_payment!(
+      invoice,
+      amount: collection_amount,
+      payment_method: manual_payment_method,
+      note: manual_payment_note
+    )
       InvoicePayment::Settle.process(
         {
           invoice_id: invoice.id,
           transaction_date: Date.current,
-          transaction_type: manual_payment_method,
-          amount: collection_amount,
-          note: manual_payment_note,
+          transaction_type: payment_method,
+          amount:,
+          note:,
           name: current_user.full_name
         },
         invoice
       )
     end
 
-    def create_razorpay_payment_link!(invoice)
-      return [nil, false] unless create_payment_link?
-
-      validate_razorpay_payment_link!(invoice)
+    def create_razorpay_payment_link!(invoice, notify_sms: notify_sms?)
+      validate_razorpay_payment_link!(invoice, notify_sms:)
 
       service = PaymentProviders::RazorpayPaymentLinkService.new(
         invoice:,
         provider: razorpay_provider,
         callback_url: razorpay_success_invoice_payments_url(invoice),
-        notify_sms: notify_sms?
+        notify_sms:
       )
 
       [service.process, service.sms_sent?]
     end
 
-    def validate_razorpay_payment_link!(invoice)
+    def validate_razorpay_payment_link!(invoice, notify_sms:)
       raise PaymentProviders::RazorpayClient::Error, "Razorpay payments are available only for INR invoices" unless invoice.currency == "INR"
       raise PaymentProviders::RazorpayClient::Error, "Razorpay is not enabled for invoices" unless razorpay_provider
-      raise PaymentProviders::RazorpayClient::Error, "SMS payment links are not enabled for this workspace" if notify_sms? && !razorpay_sms_available?
-      raise PaymentProviders::RazorpayClient::Error, "Client phone is required to send SMS payment links" if notify_sms? && invoice.client.phone.blank?
+      raise PaymentProviders::RazorpayClient::Error, "SMS payment links are not enabled for this workspace" if notify_sms && !razorpay_sms_available?
+      raise PaymentProviders::RazorpayClient::Error, "Client phone is required to send SMS payment links" if notify_sms && invoice.client.phone.blank?
     end
 
     def collection_amount
@@ -271,6 +336,31 @@ class Api::V1::Mobile::CollectionsController < Api::V1::ApplicationController
       return if reference.blank?
 
       "#{manual_payment_method.upcase} ref: #{reference}"
+    end
+
+    def mobile_collection_action_payment_method
+      collection_action_params[:payment_method].to_s.strip.downcase
+    end
+
+    def mobile_collection_action_amount(invoice)
+      value = collection_action_params[:amount].to_s.strip
+      return invoice.amount_due.to_d if value.blank?
+
+      BigDecimal(value)
+    rescue ArgumentError
+      0.to_d
+    end
+
+    def mobile_collection_action_payment_note(payment_method)
+      note = collection_action_params[:note].to_s.strip.presence || "Mobile collection"
+      reference = collection_action_params[:manual_reference].to_s.strip.presence
+      reference_note = reference && "#{payment_method.upcase} ref: #{reference}"
+
+      [note, reference_note].compact.join(" - ")
+    end
+
+    def mobile_collection_action_notify_sms?
+      ActiveModel::Type::Boolean.new.cast(collection_action_params[:notify_sms]) == true
     end
 
     def idempotency_key
@@ -339,9 +429,9 @@ class Api::V1::Mobile::CollectionsController < Api::V1::ApplicationController
       "Invoice created"
     end
 
-    def render_collection_response(client:, customer_user:, invoice:, payment:, payment_link_url:, sms_sent:, status:)
+    def render_collection_response(client:, customer_user:, invoice:, payment:, payment_link_url:, sms_sent:, status:, message: nil)
       render json: {
-        message: collection_message(invoice:, sms_sent:),
+        message: message || collection_message(invoice:, sms_sent:),
         client: client_payload(client),
         customer_user: customer_user && customer_user_payload(customer_user),
         invoice: invoice && invoice_payload(invoice),
