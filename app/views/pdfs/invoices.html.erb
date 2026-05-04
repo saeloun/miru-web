@@ -421,12 +421,13 @@
                     <%= image_tag company_logo, class: "invoice-logo" %>
                   </div>
                 <% end %>
+                <% company_contact = invoice.company.business_phone.presence || invoice.company.current_address&.formatted_address %>
                 <div class="invoice-brand-copy">
                   <p class="invoice-kicker"><%= t("pdfs.invoices.client_invoice") %></p>
                   <p class="invoice-company"><%= invoice.company.name %></p>
-                  <p class="invoice-company-meta">
-                    <%= invoice.company.business_phone.presence || invoice.company.email.presence || invoice.company.formatted_address %>
-                  </p>
+                  <% if company_contact.present? %>
+                    <p class="invoice-company-meta"><%= company_contact %></p>
+                  <% end %>
                 </div>
               </div>
             </td>
