@@ -1,6 +1,6 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 
-import CustomDatePicker from "common/CustomDatePicker";
+import { DatePicker } from "../../../ui/date-picker";
 import dayjs from "dayjs";
 import {
   currencyFormat,
@@ -9,7 +9,7 @@ import {
   minFromHHMM,
   minToHHMM,
 } from "helpers";
-import { DeleteIcon, CalendarIcon } from "miruIcons";
+import { DeleteIcon } from "miruIcons";
 import TextareaAutosize from "react-textarea-autosize";
 import { i18n } from "../../../../i18n";
 
@@ -23,8 +23,8 @@ const LineItemEditorRow = ({
 }) => {
   const strName = getLineItemDisplayName(item);
   const [name, setName] = useState<string>(strName);
-  const [lineItemDate, setLineItemDate] = useState(
-    dayjs(item.date, "YYYY-MM-DD").format(dateFormat)
+  const [lineItemDate, setLineItemDate] = useState<Date>(
+    dayjs(item.date).isValid() ? dayjs(item.date).toDate() : new Date()
   );
   const [description, setDescription] = useState<string>(item.description);
   const [rate, setRate] = useState<number>(item.rate);
@@ -32,9 +32,6 @@ const LineItemEditorRow = ({
   const [lineTotal, setLineTotal] = useState<string>(
     item.lineTotal ?? item.amount ?? lineTotalCalc(item.quantity, item.rate)
   );
-  const [showDatePicker, setShowDatePicker] = useState<boolean>(false);
-  const [showCalendarIcon, setShowCalendarIcon] = useState<boolean>(false);
-  const datePickerRef = useRef(null);
 
   useEffect(() => {
     setName(strName);
@@ -47,7 +44,7 @@ const LineItemEditorRow = ({
       first_name: names.splice(0, 1)[0],
       last_name: names.join(" "),
       name,
-      date: lineItemDate,
+      date: dayjs(lineItemDate).format("YYYY-MM-DD"),
       description,
       rate,
       quantity: minFromHHMM(quantity),
@@ -89,9 +86,10 @@ const LineItemEditorRow = ({
     setLineTotal(lineTotalCalc(qtyInMin, rate));
   };
 
-  const handleDatePicker = selectedDate => {
-    setLineItemDate(selectedDate);
-    setShowDatePicker(false);
+  const handleDateSelect = (selectedDate: Date | undefined) => {
+    if (selectedDate) {
+      setLineItemDate(selectedDate);
+    }
   };
 
   return (
@@ -107,42 +105,14 @@ const LineItemEditorRow = ({
             onKeyDown={closeEditField}
           />
         </td>
-        <td className="relative px-1 py-3 text-right text-base font-normal text-foreground ">
-          <div onClick={() => setShowDatePicker(!showDatePicker)}>
-            <input
-              readOnly
-              placeholder={i18n.t("invoices.selectDate")}
-              type="text"
-              value={lineItemDate}
-              className={`focus:outline-none w-full cursor-pointer appearance-none rounded border border-transparent bg-transparent p-1 pl-2 text-right text-sm font-medium text-foreground focus:border-border focus:bg-background focus:ring-1 focus:ring-ring ${
-                showCalendarIcon ? "pr-9" : "pr-1"
-              }`}
-              onBlur={() => setShowCalendarIcon(false)}
-              onFocus={() => setShowCalendarIcon(true)}
-              onKeyDown={closeEditField}
-            />
-            {showCalendarIcon && (
-              <CalendarIcon
-                className="absolute top-0 right-0 mx-3 mt-4"
-                color="#5E58F1"
-                size={20}
-              />
-            )}
-          </div>
-          {showDatePicker && (
-            <div
-              className="absolute top-[calc(100%+0.25rem)] right-0 z-50"
-              ref={datePickerRef}
-            >
-              <CustomDatePicker
-                date={lineItemDate}
-                dateFormat={dateFormat}
-                handleChange={handleDatePicker}
-                setVisibility={setShowDatePicker}
-                wrapperRef={datePickerRef}
-              />
-            </div>
-          )}
+        <td className="px-1 py-3 text-right text-base font-normal text-foreground ">
+          <DatePicker
+            date={lineItemDate}
+            onSelect={handleDateSelect}
+            placeholder={i18n.t("invoices.selectDate")}
+            displayFormat="MMM d, yyyy"
+            className="h-9 w-full justify-start px-2 text-sm"
+          />
         </td>
         <td className="px-1 py-3 text-right text-base font-normal text-foreground ">
           <input

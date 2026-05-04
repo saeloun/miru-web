@@ -121,7 +121,10 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
     id: invoice?.id,
     invoiceNumber: invoice?.invoiceNumber || "",
     status: invoice?.status || "draft",
-    clientId: invoice?.clientId || initialClientId || "",
+    clientId:
+      invoice?.clientId !== undefined && invoice?.clientId !== null
+        ? String(invoice.clientId)
+        : initialClientId || "",
     issueDate: parseDate(invoice?.issueDate) || new Date(),
     dueDate:
       parseDate(invoice?.dueDate) ||
@@ -626,6 +629,7 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
                         <Calendar
                           mode="single"
                           selected={formData.issueDate}
+                          defaultMonth={formData.issueDate}
                           onSelect={date => {
                             if (!date) return;
                             setFormData(current => ({
@@ -662,6 +666,7 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
                         <Calendar
                           mode="single"
                           selected={formData.dueDate}
+                          defaultMonth={formData.dueDate}
                           onSelect={date => {
                             if (!date) return;
                             setFormData(current => ({
