@@ -295,6 +295,39 @@ const TimeEntryReport: React.FC = () => {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
 
+  const buildTimeEntryReportParams = (
+    extraParams: Record<string, string | number> = {}
+  ) => {
+    const params = new URLSearchParams();
+
+    Object.entries(extraParams).forEach(([key, value]) => {
+      params.set(key, String(value));
+    });
+
+    params.set("group_by", groupBy);
+
+    if (dateRange?.from) {
+      params.set("date_range", "custom");
+      params.set("from", formatReportApiDate(dateRange.from) || "");
+      params.set(
+        "to",
+        formatReportApiDate(dateRange.to || dateRange.from) || ""
+      );
+    } else if (dateRangePreset) {
+      params.set("date_range", dateRangePreset);
+    }
+
+    selectedClients.forEach(clientId => {
+      params.append("client[]", String(clientId));
+    });
+
+    selectedTeamMembers.forEach(teamMemberId => {
+      params.append("team_member[]", String(teamMemberId));
+    });
+
+    return params;
+  };
+
   const {
     data,
     isLoading,
@@ -312,17 +345,8 @@ const TimeEntryReport: React.FC = () => {
     ],
     initialPageParam: 1,
     queryFn: async ({ pageParam = 1 }) => {
-      const params = new URLSearchParams({
+      const params = buildTimeEntryReportParams({
         page: String(pageParam),
-        group_by: groupBy,
-        ...(dateRange?.from && { from: formatReportApiDate(dateRange.from) }),
-        ...(dateRange?.to && { to: formatReportApiDate(dateRange.to) }),
-        ...(selectedClients.length > 0 && {
-          client: selectedClients.join(","),
-        }),
-        ...(selectedTeamMembers.length > 0 && {
-          team_member: selectedTeamMembers.join(","),
-        }),
       });
 
       const response = await axios.get(
@@ -495,17 +519,8 @@ const TimeEntryReport: React.FC = () => {
 
   const downloadMutation = useMutation({
     mutationFn: async (formatType: "csv" | "pdf") => {
-      const params = new URLSearchParams({
+      const params = buildTimeEntryReportParams({
         format: formatType,
-        group_by: groupBy,
-        ...(dateRange?.from && { from: formatReportApiDate(dateRange.from) }),
-        ...(dateRange?.to && { to: formatReportApiDate(dateRange.to) }),
-        ...(selectedClients.length > 0 && {
-          client: selectedClients.join(","),
-        }),
-        ...(selectedTeamMembers.length > 0 && {
-          team_member: selectedTeamMembers.join(","),
-        }),
       });
 
       const response = await axios.get(
@@ -686,7 +701,11 @@ const TimeEntryReport: React.FC = () => {
                     defaultMonth={dateRange?.from}
                     selected={dateRange}
                     onSelect={range => {
-                      setDateRange(range);
+                      setDateRange(
+                        range?.from && !range.to
+                          ? { from: range.from, to: range.from }
+                          : range
+                      );
                       setDateRangePreset("custom");
                     }}
                     numberOfMonths={2}
