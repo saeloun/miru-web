@@ -2506,7 +2506,7 @@ const en = {
       week: "This Week",
       month: "This Month",
       quarter: "This Quarter",
-      year: "This Year",
+      year: "Current Financial Year",
     },
     stats: {
       revenue: "Revenue",
@@ -2527,7 +2527,8 @@ const en = {
     },
     charts: {
       revenueMomentumTitle: "Revenue Momentum",
-      revenueMomentumDescription: "Monthly revenue trend over the past year",
+      revenueMomentumDescription:
+        "Monthly revenue trend for the current financial year",
       revenueTrendEyebrow: "REVENUE TREND",
       revenueLeadersTitle: "Revenue Leaders",
       revenueLeadersDescription: "Top clients by revenue contribution",

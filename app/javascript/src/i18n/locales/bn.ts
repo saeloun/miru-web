@@ -2146,7 +2146,7 @@ const locale = {
       week: "এই সপ্তাহে",
       month: "এই মাসে",
       quarter: "এই ত্রৈমাসিকে",
-      year: "এই বছর",
+      year: "বর্তমান আর্থিক বছর",
     },
     stats: {
       revenue: "রাজস্ব",
@@ -2167,7 +2167,8 @@ const locale = {
     },
     charts: {
       revenueMomentumTitle: "রাজস্ব গতি",
-      revenueMomentumDescription: "গত এক বছরে মাসিক আয়ের প্রবণতা",
+      revenueMomentumDescription:
+        "বর্তমান আর্থিক বছরের জন্য মাসিক আয়ের প্রবণতা",
       revenueTrendEyebrow: "রাজস্ব প্রবণতা",
       revenueLeadersTitle: "রাজস্ব নেতারা",
       revenueLeadersDescription: "রাজস্ব অবদানের ভিত্তিতে শীর্ষ গ্রাহক",

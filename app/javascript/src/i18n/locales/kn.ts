@@ -2153,7 +2153,7 @@ const locale = {
       week: "ಈ ವಾರ",
       month: "ಈ ತಿಂಗಳು",
       quarter: "ಈ ತ್ರೈಮಾಸಿಕ",
-      year: "ಈ ವರ್ಷ",
+      year: "ಪ್ರಸ್ತುತ ಆರ್ಥಿಕ ವರ್ಷ",
     },
     stats: {
       revenue: "ಆದಾಯ",
@@ -2174,7 +2174,7 @@ const locale = {
     },
     charts: {
       revenueMomentumTitle: "ಆದಾಯದ ಆವೇಗ",
-      revenueMomentumDescription: "ಕಳೆದ ವರ್ಷದ ಮಾಸಿಕ ಆದಾಯದ ಪ್ರವೃತ್ತಿ",
+      revenueMomentumDescription: "ಪ್ರಸ್ತುತ ಆರ್ಥಿಕ ವರ್ಷದ ಮಾಸಿಕ ಆದಾಯದ ಪ್ರವೃತ್ತಿ",
       revenueTrendEyebrow: "ಆದಾಯ ಪ್ರವೃತ್ತಿ",
       revenueLeadersTitle: "ಕಂದಾಯ ನಾಯಕರು",
       revenueLeadersDescription: "ಆದಾಯದ ಕೊಡುಗೆಯ ಪ್ರಕಾರ ಉನ್ನತ ಕ್ಲೈಂಟ್‌ಗಳು",

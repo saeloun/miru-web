@@ -2105,7 +2105,7 @@ const locale = {
       week: "이번 주",
       month: "이번 달",
       quarter: "이번 분기",
-      year: "올해",
+      year: "현재 회계연도",
     },
     stats: {
       revenue: "수익",
@@ -2126,7 +2126,7 @@ const locale = {
     },
     charts: {
       revenueMomentumTitle: "수익 모멘텀",
-      revenueMomentumDescription: "지난 1년간 월별 매출 추세",
+      revenueMomentumDescription: "현재 회계연도의 월별 매출 추세",
       revenueTrendEyebrow: "수익 추세",
       revenueLeadersTitle: "매출 선도 기업",
       revenueLeadersDescription: "수익 기여도 기준 주요 고객",

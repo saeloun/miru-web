@@ -2154,7 +2154,7 @@ const locale = {
       week: "Deze week",
       month: "Deze maand",
       quarter: "Dit kwartaal",
-      year: "Dit jaar",
+      year: "Huidig Boekjaar",
     },
     stats: {
       revenue: "Winst",
@@ -2176,7 +2176,7 @@ const locale = {
     charts: {
       revenueMomentumTitle: "Omzetmomentum",
       revenueMomentumDescription:
-        "Maandelijkse omzetontwikkeling over het afgelopen jaar",
+        "Maandelijkse omzetontwikkeling voor het huidige boekjaar",
       revenueTrendEyebrow: "OMZETTREND",
       revenueLeadersTitle: "Omzetleiders",
       revenueLeadersDescription:
