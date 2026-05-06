@@ -2154,7 +2154,7 @@ const locale = {
       week: "Minggu Ini",
       month: "Bulan Ini",
       quarter: "Kuartal ini",
-      year: "Tahun ini",
+      year: "Tahun Fiskal Saat Ini",
     },
     stats: {
       revenue: "Pendapatan",
@@ -2176,7 +2176,7 @@ const locale = {
     charts: {
       revenueMomentumTitle: "Momentum Pendapatan",
       revenueMomentumDescription:
-        "Tren pendapatan bulanan selama setahun terakhir",
+        "Tren pendapatan bulanan untuk tahun keuangan saat ini",
       revenueTrendEyebrow: "TREN PENDAPATAN",
       revenueLeadersTitle: "Pemimpin Pendapatan",
       revenueLeadersDescription:

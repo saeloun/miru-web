@@ -2140,7 +2140,7 @@ const locale = {
       week: "આ અઠવાડિયે",
       month: "આ મહિનો",
       quarter: "આ ક્વાર્ટર",
-      year: "આ વર્ષે",
+      year: "વર્તમાન નાણાકીય વર્ષ",
     },
     stats: {
       revenue: "આવક",
@@ -2161,7 +2161,8 @@ const locale = {
     },
     charts: {
       revenueMomentumTitle: "આવકનો વેગ",
-      revenueMomentumDescription: "ગયા વર્ષનો માસિક આવકનો ટ્રેન્ડ",
+      revenueMomentumDescription:
+        "વર્તમાન નાણાકીય વર્ષ માટે માસિક આવકનો ટ્રેન્ડ",
       revenueTrendEyebrow: "રેવન્યુ ટ્રેન્ડ",
       revenueLeadersTitle: "મહેસૂલ નેતાઓ",
       revenueLeadersDescription: "આવક યોગદાન દ્વારા ટોચના ગ્રાહકો",
