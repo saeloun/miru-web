@@ -558,6 +558,28 @@ RSpec.describe "Time Tracking - Add Entry", type: :system, js: true do
     )
   end
 
+  it "keeps add-entry actions from submitting the time tracking page" do
+    visit "/time-tracking"
+    expect(page).to have_css("#react-root", wait: 10)
+    switch_to("Week")
+
+    click_button "Add Entry"
+
+    expect(find_button("Save Entry", disabled: :all, wait: 10)["type"]).to eq(
+      "button"
+    )
+
+    cancel_button = find_button("Cancel", wait: 10)
+    expect(cancel_button["type"]).to eq("button")
+
+    cancel_button.click
+
+    expect(page).to have_current_path("/time-tracking", ignore_query: true)
+    expect(page).to have_button("Add Entry", wait: 10)
+    expect(page).to have_no_button("Save Entry")
+    expect(page).to have_no_text("The page you were looking for doesn't exist")
+  end
+
   it "prefills the form from a recent shortcut and duplicates the last entry into the selected day" do
     recent_note = "Recent shortcut work"
     create(

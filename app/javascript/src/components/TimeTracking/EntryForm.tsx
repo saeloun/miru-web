@@ -658,6 +658,7 @@ const AddEntry: React.FC<Iprops> = ({
             <div className="flex flex-col gap-3 pt-4">
               {editEntryId === 0 ? (
                 <Button
+                  type="button"
                   size="lg"
                   disabled={handleDisableBtn()}
                   onClick={() => {
@@ -670,6 +671,7 @@ const AddEntry: React.FC<Iprops> = ({
                 </Button>
               ) : (
                 <Button
+                  type="button"
                   size="lg"
                   disabled={handleDisableBtn()}
                   onClick={() => {
@@ -681,6 +683,7 @@ const AddEntry: React.FC<Iprops> = ({
                 </Button>
               )}
               <Button
+                type="button"
                 variant="outline"
                 size="lg"
                 onClick={() => {
