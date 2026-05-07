@@ -172,8 +172,15 @@ const PaymentEntryForm = ({
         const initialFocusedInvoiceIndex =
           selectedInvoiceIndex >= 0 ? selectedInvoiceIndex : 0;
 
+        const focusInvoiceSelect = () => {
+          window.requestAnimationFrame(() => {
+            document.getElementById("manual-payment-invoice-select")?.focus();
+          });
+        };
+
         const selectInvoiceOption = invoiceOption => {
           setShowSelectMenu(false);
+          focusInvoiceSelect();
           setFieldValue("invoice", invoiceOption);
           setFieldValue("amount", invoiceOption.amount ?? "");
         };
@@ -181,6 +188,10 @@ const PaymentEntryForm = ({
         const toggleInvoiceMenu = () => {
           setFocusedInvoiceIndex(initialFocusedInvoiceIndex);
           setShowSelectMenu(previous => !previous);
+        };
+
+        const handleInvoiceSelectPointerDown = () => {
+          toggleInvoiceMenu();
         };
 
         const handleInvoiceMenuKeyDown = event => {
@@ -229,6 +240,7 @@ const PaymentEntryForm = ({
             case "Escape":
               event.preventDefault();
               setShowSelectMenu(false);
+              focusInvoiceSelect();
               break;
             default:
               break;
@@ -268,8 +280,8 @@ const PaymentEntryForm = ({
                       data-testid="manual-payment-invoice-select"
                       id="manual-payment-invoice-select"
                       type="button"
-                      onClick={toggleInvoiceMenu}
                       onKeyDown={handleInvoiceMenuKeyDown}
+                      onPointerDown={handleInvoiceSelectPointerDown}
                     >
                       {invoice ? (
                         <span>

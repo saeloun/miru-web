@@ -39,16 +39,24 @@ RSpec.describe "Adding payment entry", type: :system, js: true do
   end
 
   def select_manual_payment_invoice_with_keyboard(invoice)
-    invoice_select = find("[data-testid='manual-payment-invoice-select']", wait: 10)
+    find("[data-testid='manual-payment-invoice-select']", wait: 10)
 
-    invoice_select.click
-    invoice_select.send_keys(:down, :enter)
+    page.execute_script("document.getElementById('manual-payment-invoice-select').focus()")
+    expect(page).to have_css("[data-testid='manual-payment-invoice-select']:focus", wait: 10)
+
+    page.driver.browser.keyboard.type(:Enter)
+    expect(page).to have_css("[data-testid='manual-payment-invoice-options']", wait: 10)
+    expect(page).to have_css("[role='option']", text: invoice.invoice_number, wait: 10)
+
+    page.driver.browser.keyboard.type(:down)
+    page.driver.browser.keyboard.type(:Enter)
 
     expect(page).to have_css(
       "[data-testid='manual-payment-invoice-select']",
       text: invoice.invoice_number,
       wait: 10
     )
+    expect(page).to have_css("[data-testid='manual-payment-invoice-select']:focus", wait: 10)
   end
 
   def select_desktop_transaction_type(type)
@@ -122,8 +130,17 @@ RSpec.describe "Adding payment entry", type: :system, js: true do
 
     it "selects an invoice from the modal with keyboard navigation" do
       with_forgery_protection do
+        keyboard_invoice = create(:invoice,
+          client:,
+          company:,
+          status: "sent",
+          invoice_number: "INV-MANUAL-002",
+          amount: 275.00,
+          amount_due: 275.00,
+          outstanding_amount: 275.00)
+
         open_manual_payment_modal
-        select_manual_payment_invoice_with_keyboard(invoice)
+        select_manual_payment_invoice_with_keyboard(keyboard_invoice)
 
         expect(page).to have_field("paymentAmount", disabled: false, wait: 10)
       end
