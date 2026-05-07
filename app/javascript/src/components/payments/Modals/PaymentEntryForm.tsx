@@ -4,7 +4,6 @@ import { payment } from "apis/api";
 import CustomDatePicker from "common/CustomDatePicker";
 import { CustomInputText } from "common/CustomInputText";
 import CustomReactSelect from "common/CustomReactSelect";
-import { CustomValueContainer } from "common/CustomReactSelectStyle";
 import { CustomTextareaAutosize } from "common/CustomTextareaAutosize";
 import { useUserContext } from "context/UserContext";
 import dayjs from "dayjs";
@@ -15,13 +14,6 @@ import { CalendarIcon } from "miruIcons";
 import { CaretDown } from "phosphor-react";
 import { useNavigate } from "react-router-dom";
 import { i18n } from "../../../i18n";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../../ui/select";
 import { Badge, MobileMoreOptions, Toastr } from "StyledComponents";
 import getStatusCssClass from "utils/getBadgeStatus";
 
@@ -66,6 +58,7 @@ const PaymentEntryForm = ({
         invoice => invoice.value === Number(invoiceId)
       ) || null
     : null;
+  const invoices = invoiceList?.invoiceList || [];
 
   const initialValues = {
     ...paymentEntryInitialValues,
@@ -109,8 +102,10 @@ const PaymentEntryForm = ({
     if (
       !isAddPaymentBtnActive(invoice, transactionDate, transactionType, amount)
     ) {
-      return;
+      return false;
     }
+
+    setIsLoading(true);
 
     try {
       const sanitized = mapPayment({
@@ -122,15 +117,19 @@ const PaymentEntryForm = ({
       });
       await payment.create(sanitized);
       Toastr.success(i18n.t("payments.manualEntryAdded"));
-      setIsLoading(false);
       fetchPaymentList();
       fetchInvoiceList();
       setShowManualEntryModal(false);
       if (invoiceId) {
         navigate(`/invoices/${invoiceId}`);
       }
+
+      return true;
     } catch {
       Toastr.error(i18n.t("payments.failedToAddManualEntry"));
+
+      return false;
+    } finally {
       setIsLoading(false);
     }
   };
@@ -144,8 +143,8 @@ const PaymentEntryForm = ({
       enableReinitialize
       initialValues={initialValues}
       onSubmit={async (values, { resetForm }) => {
-        await handleAddPayment(values);
-        resetForm();
+        const saved = await handleAddPayment(values);
+        if (saved) resetForm();
       }}
     >
       {(props: FormikProps<PaymentEntryFormValues>) => {
@@ -181,105 +180,98 @@ const PaymentEntryForm = ({
             <div className="relative mt-4">
               <div className="field">
                 <div className="mt-1" id="invoice" ref={wrapperSelectRef}>
-                  <div
-                    className="relative mt-3"
-                    id="invoicesList"
-                    onClick={handleShowSelectMenu}
-                  >
-                    <CustomReactSelect
-                      ignoreDisabledFontColor
-                      isDisabled
-                      isSearchable
-                      classNamePrefix="border-0 font-medium text-foreground"
-                      defaultValue={invoice}
-                      id="invoice"
-                      label={i18n.t("payments.invoice")}
-                      name="invoiceSearch"
-                      options={invoiceList.invoiceList}
-                      value={invoice}
-                      components={{
-                        ValueContainer: CustomValueContainer,
-                        IndicatorSeparator: () => null,
-                      }}
-                      handleOnChange={val => {
-                        setShowSelectMenu(!showSelectMenu);
-                        setFieldValue("invoice", val);
-                        setFieldValue("amount", val?.amount ?? "");
-                      }}
-                    />
+                  <div className="relative mt-3" id="invoicesList">
+                    <label
+                      className="absolute top-0.5 left-1 z-1 h-6 origin-0 bg-background p-2 text-base font-medium text-muted-foreground duration-300"
+                      htmlFor="manual-payment-invoice-select"
+                    >
+                      {i18n.t("payments.invoice")}
+                    </label>
+                    <button
+                      aria-expanded={showSelectMenu}
+                      aria-haspopup="listbox"
+                      className="flex min-h-14 w-full items-center justify-between rounded-md border border-border bg-background px-4 pt-6 pb-2 text-left text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
+                      data-testid="manual-payment-invoice-select"
+                      id="manual-payment-invoice-select"
+                      type="button"
+                      onClick={handleShowSelectMenu}
+                    >
+                      {invoice ? (
+                        <span>
+                          <span className="block font-medium">
+                            {invoice.label}
+                          </span>
+                          <span className="block text-muted-foreground">
+                            {invoice.invoiceNumber}
+                          </span>
+                        </span>
+                      ) : (
+                        <span className="text-muted-foreground">
+                          {i18n.t("payments.searchByClientOrInvoice")}
+                        </span>
+                      )}
+                      <CaretDown
+                        className={`h-4 w-4 text-muted-foreground transition-transform ${
+                          showSelectMenu ? "rotate-180" : ""
+                        }`}
+                      />
+                    </button>
                     {showSelectMenu && (
                       <div
-                        className="absolute right-0 top-0 z-15 min-h-24 w-full flex-col items-end rounded-md border border-border bg-background p-2 shadow-c1 group-hover:flex"
-                        id="transactionDate"
-                        onClick={e => e.stopPropagation()}
+                        className="absolute right-0 top-full z-50 mt-1 max-h-80 min-h-24 w-full overflow-y-auto rounded-md border border-border bg-background shadow-lg"
+                        data-testid="manual-payment-invoice-options"
+                        role="listbox"
                       >
-                        <Select
-                          defaultOpen
-                          value={invoice?.value?.toString() || ""}
-                          onValueChange={value => {
-                            const selectedInvoice =
-                              invoiceList.invoiceList.find(
-                                inv => inv.value.toString() === value
+                        {invoices.map(invoiceOption => (
+                          <button
+                            aria-selected={
+                              invoice?.value === invoiceOption.value
+                            }
+                            className="flex w-full cursor-pointer flex-col gap-2 p-2 text-left hover:bg-muted sm:flex-row sm:items-center sm:justify-between sm:gap-0"
+                            key={invoiceOption.value}
+                            role="option"
+                            type="button"
+                            onClick={() => {
+                              setShowSelectMenu(false);
+                              setFieldValue("invoice", invoiceOption);
+                              setFieldValue(
+                                "amount",
+                                invoiceOption.amount ?? ""
                               );
-                            setShowSelectMenu(!showSelectMenu);
-                            setFieldValue("invoice", selectedInvoice);
-                            setFieldValue(
-                              "amount",
-                              selectedInvoice?.amount ?? ""
-                            );
-                          }}
-                        >
-                          <SelectTrigger className="m-0 mt-2 w-full border-0 font-medium text-foreground">
-                            <SelectValue
-                              placeholder={i18n.t(
-                                "payments.searchByClientOrInvoice"
-                              )}
-                            />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {invoiceList.invoiceList.map(invoiceOption => (
-                              <SelectItem
-                                key={invoiceOption.value}
-                                value={invoiceOption.value.toString()}
-                              >
-                                <div className="flex w-full cursor-pointer flex-col gap-2 p-2 sm:flex-row sm:items-center sm:justify-between sm:gap-0">
-                                  <div className="w-full py-2 pr-0 pl-0 text-left sm:w-2/6 sm:py-3 sm:pr-2">
-                                    <div className="truncate text-sm font-medium leading-5 text-foreground">
-                                      {invoiceOption.label}
-                                    </div>
-                                    <div className="pt-1 text-sm font-normal leading-5 text-muted-foreground">
-                                      {invoiceOption.invoiceNumber}
-                                    </div>
-                                  </div>
-                                  <div className="w-full px-0 py-2 text-left sm:w-2/6 sm:px-2 sm:py-3 sm:text-right">
-                                    <div className="text-base font-bold leading-5 text-foreground">
-                                      {baseCurrency &&
-                                        currencyFormat(
-                                          baseCurrency,
-                                          invoiceOption.amount
-                                        )}
-                                    </div>
-                                    <div className="pt-1 text-sm font-medium leading-5 text-muted-foreground">
-                                      {dayjs(invoiceOption.invoiceDate).format(
-                                        dateFormat
-                                      )}
-                                    </div>
-                                  </div>
-                                  <div className="w-full py-1 pl-0 pr-0 text-left text-sm font-semibold leading-4 tracking-wider sm:w-2/6 sm:py-3 sm:pl-2 sm:text-right">
-                                    <span className="rounded-lg">
-                                      <Badge
-                                        className={`${getStatusCssClass(
-                                          invoiceOption.status
-                                        )} uppercase`}
-                                        text={invoiceOption.status}
-                                      />
-                                    </span>
-                                  </div>
-                                </div>
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
+                            }}
+                          >
+                            <span className="w-full py-2 pr-0 pl-0 sm:w-2/6 sm:py-3 sm:pr-2">
+                              <span className="block truncate text-sm font-medium leading-5 text-foreground">
+                                {invoiceOption.label}
+                              </span>
+                              <span className="block pt-1 text-sm font-normal leading-5 text-muted-foreground">
+                                {invoiceOption.invoiceNumber}
+                              </span>
+                            </span>
+                            <span className="w-full px-0 py-2 sm:w-2/6 sm:px-2 sm:py-3 sm:text-right">
+                              <span className="block text-base font-bold leading-5 text-foreground">
+                                {baseCurrency &&
+                                  currencyFormat(
+                                    baseCurrency,
+                                    invoiceOption.amount
+                                  )}
+                              </span>
+                              <span className="block pt-1 text-sm font-medium leading-5 text-muted-foreground">
+                                {dayjs(invoiceOption.invoiceDate).format(
+                                  dateFormat
+                                )}
+                              </span>
+                            </span>
+                            <span className="w-full py-1 pl-0 pr-0 text-sm font-semibold leading-4 tracking-wider sm:w-2/6 sm:py-3 sm:pl-2 sm:text-right">
+                              <Badge
+                                className={`${getStatusCssClass(
+                                  invoiceOption.status
+                                )} uppercase`}
+                                text={invoiceOption.status}
+                              />
+                            </span>
+                          </button>
+                        ))}
                       </div>
                     )}
                   </div>
@@ -455,12 +447,12 @@ const PaymentEntryForm = ({
             </div>
             <div className="actions mx-auto mt-4 mb-4 w-full">
               <button
-                disabled={isLoading}
+                disabled={!isPaymentBtnActive() || isLoading}
                 type="submit"
                 className={
                   isPaymentBtnActive() && !isLoading
                     ? "focus:outline-none flex h-10 w-full cursor-pointer items-center justify-center rounded border border-transparent bg-primary py-1 px-4 font-sans text-base font-medium uppercase tracking-widest text-primary-foreground shadow-sm hover:bg-primary/90"
-                    : "focus:outline-none flex h-10 w-full cursor-pointer items-center justify-center rounded border border-transparent bg-secondary py-1 px-4 font-sans text-base font-medium uppercase tracking-widest text-primary-foreground shadow-sm"
+                    : "focus:outline-none flex h-10 w-full cursor-not-allowed items-center justify-center rounded border border-transparent bg-secondary py-1 px-4 font-sans text-base font-medium uppercase tracking-widest text-secondary-foreground opacity-80 shadow-sm"
                 }
               >
                 {i18n.t("payments.addPayment")}
