@@ -84,6 +84,7 @@ RSpec.describe "Invoice editor preview", type: :system, js: true do
       overflowing_preview_nodes = page.evaluate_script(<<~JS)
         (() => {
           const preview = document.querySelector('[data-testid="invoice-preview"]');
+          if (!preview) return ["preview element not found"];
           const previewRight = preview.getBoundingClientRect().right;
 
           return Array.from(preview.querySelectorAll('table, td, p, span, div'))
