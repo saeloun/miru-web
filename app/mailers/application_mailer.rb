@@ -8,8 +8,8 @@ class ApplicationMailer < ActionMailer::Base
     reply_to: ENV["REPLY_TO_EMAIL"].presence || SUPPORT_EMAIL
   )
   layout "mailer"
-  before_action :attach_miru_logo
-  helper_method :miru_logo_attachment_url
+  before_action :attach_miru_logos
+  helper_method :miru_logo_dark_url, :miru_logo_light_url, :email_company_logo_url, :email_company_name
 
   rescue_from Postmark::InactiveRecipientError do |exception|
     self.class.handle_inactive_recipient(exception)
@@ -44,20 +44,38 @@ class ApplicationMailer < ActionMailer::Base
       self.class.send(:extract_inactive_emails, message)
     end
 
-    def attach_miru_logo
-      return if attachments["miruLogoWithText.png"].present?
-
-      logo_path = Rails.root.join("public", "miruLogoWithText.png")
-      return unless logo_path.exist?
-
-      attachments.inline["miruLogoWithText.png"] = {
-        content: logo_path.binread,
-        mime_type: "image/png"
-      }
+    def attach_miru_logos
+      attach_inline_logo("MiruLogoDarkWithText.png")
+      attach_inline_logo("MiruLogoLightWithText.png")
     end
 
-    def miru_logo_attachment_url
-      attachments["miruLogoWithText.png"]&.url
+    def miru_logo_dark_url
+      attachments["MiruLogoDarkWithText.png"]&.url
+    end
+
+    def miru_logo_light_url
+      attachments["MiruLogoLightWithText.png"]&.url
+    end
+
+    def attach_inline_logo(filename)
+      return if attachments[filename].present?
+
+      path = Rails.root.join("public", filename)
+      return unless path.exist?
+
+      attachments.inline[filename] = { content: path.binread, mime_type: "image/png" }
+    end
+
+    def email_company_logo_url
+      return @company_logo if @company_logo.present?
+      return @company_details[:logo] if @company_details&.[](:logo).present?
+      logo_company_url(@company) if @company&.logo&.attached?
+    end
+
+    def email_company_name
+      return @company&.name if @company&.name.present?
+      return @company_details&.[](:name) if @company_details&.[](:name).present?
+      t("mailers.layout.brand")
     end
 
     def default_reply_to_address
