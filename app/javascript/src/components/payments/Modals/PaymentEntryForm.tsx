@@ -366,11 +366,13 @@ const PaymentEntryForm = ({
                       {transactionTypes.map(type => (
                         <li key={type.value}>
                           <button
+                            aria-selected={transactionType === type.value}
                             className={`flex w-full items-center rounded-sm px-3 py-2 text-left text-sm ${
                               transactionType === type.value
                                 ? "bg-muted font-medium text-foreground"
                                 : "text-foreground hover:bg-muted"
                             }`}
+                            role="option"
                             type="button"
                             onClick={() => {
                               setFieldValue("transactionType", type.value);
