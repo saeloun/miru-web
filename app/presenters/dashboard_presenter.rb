@@ -11,6 +11,28 @@ class DashboardPresenter
     @from_date = from_date || calculate_from_date
   end
 
+  def fiscal_year_end_month
+    return 12 unless company.fiscal_year_end.present?
+
+    # Map month names to month numbers
+    month_mapping = {
+      "january" => 1, "jan" => 1,
+      "february" => 2, "feb" => 2,
+      "march" => 3, "mar" => 3,
+      "april" => 4, "apr" => 4,
+      "may" => 5,
+      "june" => 6, "jun" => 6,
+      "july" => 7, "jul" => 7,
+      "august" => 8, "aug" => 8,
+      "september" => 9, "sep" => 9, "sept" => 9,
+      "october" => 10, "oct" => 10,
+      "november" => 11, "nov" => 11,
+      "december" => 12, "dec" => 12
+    }
+
+    month_mapping[company.fiscal_year_end.downcase.strip] || 12
+  end
+
   def data
     {
       stats: stats_data,
@@ -32,7 +54,18 @@ class DashboardPresenter
       when "month"
         to_date.beginning_of_month
       when "year"
-        to_date.beginning_of_year
+        # Use fiscal year if configured, otherwise calendar year
+        fiscal_end_month = fiscal_year_end_month
+        fiscal_start_month = fiscal_end_month == 12 ? 1 : fiscal_end_month + 1
+
+        # Determine the fiscal year start date
+        if to_date.month >= fiscal_start_month
+          # We're in the current fiscal year
+          Date.new(to_date.year, fiscal_start_month, 1)
+        else
+          # We're in the previous fiscal year
+          Date.new(to_date.year - 1, fiscal_start_month, 1)
+        end
       else
         to_date.beginning_of_year
       end
@@ -109,6 +142,8 @@ class DashboardPresenter
 
         chart_data << {
           month: current_date.strftime("%b"),
+          full_month: current_date.strftime("%B %Y"),
+          year: current_date.year,
           revenue: amount_value(cumulative_revenue),
           monthly_revenue: amount_value(month_revenue),
           invoices: invoice_count_for_month(current_date)

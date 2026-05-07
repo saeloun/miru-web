@@ -166,6 +166,19 @@ RSpec.describe InvoicePayment::RazorpayPaymentLinkWebhookFulfillment do
     expect(invoice.razorpay_payment_link_status).to eq("paid")
   end
 
+  it "finds the invoice by stored payment link id when fallback payload metadata is missing" do
+    fallback_payload = JSON.parse(payload)
+    fallback_payload["payload"]["payment_link"]["entity"].delete("notes")
+    fallback_payload["payload"]["payment_link"]["entity"].delete("reference_id")
+    fallback_payload = fallback_payload.to_json
+
+    result = described_class.new(payload: fallback_payload, signature: sign(fallback_payload)).process
+
+    expect(result).to be(true)
+    expect(invoice.reload).to be_paid
+    expect(invoice.razorpay_payment_link_status).to eq("paid")
+  end
+
   it "rejects paid events without a matching invoice" do
     missing_invoice_payload = JSON.parse(payload)
     missing_invoice_payload["payload"]["payment_link"]["entity"]["notes"]["miru_invoice_id"] = "99999999"

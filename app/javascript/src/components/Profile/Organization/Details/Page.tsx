@@ -193,7 +193,7 @@ const OrganizationSettingsPage: React.FC<OrganizationSettingsPageProps> = ({
         <div className="mb-6 flex justify-end">
           <Button
             onClick={handleEditClick}
-            className="bg-primary hover:bg-primary text-white font-geist-medium"
+            className="font-geist-medium"
             size="sm"
           >
             <PencilSimple className="h-4 w-4 mr-2" />

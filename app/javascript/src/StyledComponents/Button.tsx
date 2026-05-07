@@ -5,9 +5,10 @@ import classnames from "classnames";
 const DEFAULT_STYLE = "rounded text-center p-2";
 
 const PRIMARY =
-  "bg-primary hover:bg-primary/90 text-white  border border-primary hover:border-primary";
+  "bg-primary hover:bg-primary/90 text-primary-foreground border border-primary hover:border-primary";
 
-const PRIMARY_DISABLED = "bg-secondary text-white border border-border";
+const PRIMARY_DISABLED =
+  "bg-secondary text-secondary-foreground border border-border";
 
 const SECONDARY =
   "bg-transparent hover:bg-secondary text-primary border border-primary";

@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe "Api::V1::Mobile::Collections#create", type: :request do
+RSpec.describe "Api::V1::Mobile::Collections", type: :request do
   let(:company) { create(:india_company, base_currency: "INR", plan_tier: "paid") }
   let(:user) { create(:user, current_workspace_id: company.id) }
   let(:service) { instance_double(PaymentProviders::RazorpayPaymentLinkService, process: "https://rzp.io/rzp/mobile", sms_sent?: true) }
@@ -32,21 +32,7 @@ RSpec.describe "Api::V1::Mobile::Collections#create", type: :request do
   end
 
   it "creates an INR invoice and sends a Razorpay payment link SMS" do
-    provider = build(
-      :payments_provider,
-      company:,
-      name: PaymentsProvider::RAZORPAY_PROVIDER,
-      connected: true,
-      enabled: true,
-      accepted_payment_methods: ["razorpay"],
-      settings: {
-        enabled_on_invoices: true,
-        key_id: "rzp_test_123",
-        sms_notifications_enabled: true
-      }
-    )
-    provider.key_secret = "secret"
-    provider.save!
+    provider = create_razorpay_provider!
     allow(PaymentProviders::RazorpayPaymentLinkService).to receive(:new).and_return(service)
 
     post "/api/v1/mobile/collections",
@@ -70,7 +56,6 @@ RSpec.describe "Api::V1::Mobile::Collections#create", type: :request do
       "sms_sent" => true
     )
     expect(json_response.dig("invoice", "amount_due")).to eq("1500.0")
-    expect(json_response.dig("invoice", "payment_url")).to eq(new_invoice_payment_url(invoice))
     expect(invoice).to be_sent
     expect(invoice.currency).to eq("INR")
     expect(PaymentProviders::RazorpayPaymentLinkService).to have_received(:new).with(
@@ -81,30 +66,51 @@ RSpec.describe "Api::V1::Mobile::Collections#create", type: :request do
     )
   end
 
-  it "creates a USD invoice with the public invoice payment URL" do
-    expect(PaymentProviders::RazorpayPaymentLinkService).not_to receive(:new)
+  it "creates a Razorpay link on an idempotent retry when the invoice already exists" do
+    provider = create_razorpay_provider!
+    link_service = instance_double(PaymentProviders::RazorpayPaymentLinkService, process: "https://rzp.io/rzp/retry", sms_sent?: false)
+    allow(PaymentProviders::RazorpayPaymentLinkService).to receive(:new).and_return(link_service)
 
     post "/api/v1/mobile/collections",
       params: {
         collection: {
-          amount: "125",
-          currency: "USD",
-          create_payment_link: false,
-          name: "Maya Collins",
-          note: "Follow-up adjustment",
-          notify_sms: false,
-          phone: "+1 415 555 0100"
+          amount: "1500",
+          idempotency_key: "retry-link-1500",
+          name: "Asha Rao",
+          phone: "+91 98765 43210"
         }
       },
       headers: auth_headers(user)
 
     invoice = Invoice.last
-    expect(response).to have_http_status(:created)
-    expect(json_response["message"]).to eq("Invoice created")
-    expect(json_response.dig("invoice", "currency")).to eq("USD")
-    expect(json_response.dig("invoice", "payment_url")).to eq(new_invoice_payment_url(invoice))
-    expect(json_response["payment_link_url"]).to be_nil
-    expect(json_response["sms_sent"]).to be(false)
+    expect(invoice.razorpay_payment_link_url).to be_blank
+
+    expect do
+      post "/api/v1/mobile/collections",
+        params: {
+          collection: {
+            amount: "1500",
+            create_payment_link: true,
+            idempotency_key: "retry-link-1500",
+            name: "Asha Rao",
+            phone: "+91 98765 43210"
+          }
+        },
+        headers: auth_headers(user)
+    end.not_to change(Invoice, :count)
+
+    expect(response).to have_http_status(:ok)
+    expect(json_response).to include(
+      "message" => "Payment link ready",
+      "payment_link_url" => "https://rzp.io/rzp/retry",
+      "sms_sent" => false
+    )
+    expect(PaymentProviders::RazorpayPaymentLinkService).to have_received(:new).with(
+      invoice:,
+      provider:,
+      callback_url: razorpay_success_invoice_payments_url(invoice),
+      notify_sms: false
+    )
   end
 
   it "reuses an existing payer by normalized phone number" do
@@ -146,14 +152,229 @@ RSpec.describe "Api::V1::Mobile::Collections#create", type: :request do
     expect(json_response.dig("customer_user", "email")).to eq("customer-#{company.id}-919876543210@customers.miru.local")
   end
 
-  it "forbids employees" do
+  it "allows employees on pro teams to collect payments in the field" do
     user.remove_role :admin, company
     user.add_role :employee, company
+
+    post "/api/v1/mobile/collections",
+      params: {
+        collection: {
+          amount: "3000",
+          idempotency_key: "employee-collection-1",
+          name: "Asha Rao",
+          payment_method: "upi",
+          phone: "9876543210"
+        }
+      },
+      headers: auth_headers(user)
+
+    invoice = Invoice.last
+
+    expect(response).to have_http_status(:created)
+    expect(json_response["message"]).to eq("UPI payment recorded")
+    expect(invoice).to be_paid
+    expect(invoice.payments.last.transaction_type).to eq("upi")
+  end
+
+  it "forbids mobile collections for non-pro teams" do
+    company.update!(plan_tier: "free")
 
     post "/api/v1/mobile/collections",
       params: { collection: { name: "Asha Rao", phone: "9876543210" } },
       headers: auth_headers(user)
 
     expect(response).to have_http_status(:forbidden)
+  end
+
+  it "records manual cash and upi payments against the invoice" do
+    post "/api/v1/mobile/collections",
+      params: {
+        collection: {
+          amount: "1800",
+          manual_reference: "UPI123",
+          name: "Asha Rao",
+          note: "Home visit",
+          payment_method: "upi",
+          phone: "9876543210"
+        }
+      },
+      headers: auth_headers(user)
+
+    invoice = Invoice.last
+    payment = invoice.payments.last
+
+    expect(response).to have_http_status(:created)
+    expect(json_response.dig("payment", "transaction_type")).to eq("upi")
+    expect(json_response.dig("invoice", "status")).to eq("paid")
+    expect(invoice).to be_paid
+    expect(payment.amount).to eq(1800)
+    expect(payment.note).to include("UPI ref: UPI123")
+  end
+
+  it "does not duplicate invoices for idempotent mobile collection retries" do
+    payload = {
+      collection: {
+        amount: "3000",
+        idempotency_key: "retry-key-3000",
+        name: "Asha Rao",
+        payment_method: "upi",
+        phone: "9876543210"
+      }
+    }
+
+    expect do
+      2.times do
+        post "/api/v1/mobile/collections",
+          params: payload,
+          headers: auth_headers(user)
+      end
+    end.to change(Invoice, :count).by(1)
+      .and change(Payment, :count).by(1)
+
+    expect(response).to have_http_status(:ok)
+    expect(json_response.dig("invoice", "invoice_number")).to eq(Invoice.last.invoice_number)
+  end
+
+  it "records manual payment against an existing open mobile collection" do
+    invoice = create_mobile_collection_invoice(amount: 2200, collector: user)
+
+    post "/api/v1/mobile/collections/#{invoice.id}/manual_payment",
+      params: {
+        collection: {
+          manual_reference: "UPI777",
+          note: "Collected after home visit",
+          payment_method: "upi"
+        }
+      },
+      headers: auth_headers(user)
+
+    payment = invoice.reload.payments.last
+
+    expect(response).to have_http_status(:ok)
+    expect(json_response).to include("message" => "UPI payment recorded")
+    expect(json_response.dig("invoice", "status")).to eq("paid")
+    expect(json_response.dig("payment", "transaction_type")).to eq("upi")
+    expect(invoice).to be_paid
+    expect(payment.amount).to eq(2200)
+    expect(payment.note).to include("UPI ref: UPI777")
+  end
+
+  it "sends a Razorpay payment link for an existing open mobile collection" do
+    provider = create_razorpay_provider!
+    invoice = create_mobile_collection_invoice(amount: 1600, collector: user)
+    allow(PaymentProviders::RazorpayPaymentLinkService).to receive(:new).and_return(service)
+
+    post "/api/v1/mobile/collections/#{invoice.id}/payment_link",
+      params: { collection: { notify_sms: true } },
+      headers: auth_headers(user)
+
+    expect(response).to have_http_status(:accepted)
+    expect(json_response).to include(
+      "message" => "Payment link sent by SMS",
+      "payment_link_url" => "https://rzp.io/rzp/mobile",
+      "sms_sent" => true
+    )
+    expect(PaymentProviders::RazorpayPaymentLinkService).to have_received(:new).with(
+      invoice:,
+      provider:,
+      callback_url: razorpay_success_invoice_payments_url(invoice),
+      notify_sms: true
+    )
+  end
+
+  it "does not let employees settle another collector's mobile collection" do
+    other_user = create(:user, current_workspace_id: company.id)
+    create(:employment, company:, user: other_user)
+    other_user.add_role :employee, company
+    user.remove_role :admin, company
+    user.add_role :employee, company
+    other_invoice = create_mobile_collection_invoice(amount: 1200, collector: other_user)
+
+    post "/api/v1/mobile/collections/#{other_invoice.id}/manual_payment",
+      params: { collection: { payment_method: "cash" } },
+      headers: auth_headers(user)
+
+    expect(response).to have_http_status(:not_found)
+    expect(other_invoice.reload).not_to be_paid
+  end
+
+  it "lists the collection ledger for managers" do
+    paid_invoice = create_mobile_collection_invoice(amount: 3000, collector: user)
+    InvoicePayment::Settle.process(
+      {
+        invoice_id: paid_invoice.id,
+        transaction_date: Date.current,
+        transaction_type: "upi",
+        amount: 3000,
+        note: "UPI ref: 101",
+        name: user.full_name
+      },
+      paid_invoice
+    )
+
+    create_mobile_collection_invoice(amount: 1200, collector: user)
+
+    get "/api/v1/mobile/collections", headers: auth_headers(user)
+
+    expect(response).to have_http_status(:ok)
+    expect(json_response["collections"].size).to eq(2)
+    expect(json_response.dig("summary", "count")).to eq(2)
+    expect(json_response.dig("summary", "paid_count")).to eq(1)
+    expect(json_response.dig("summary", "by_method", "upi")).to eq("3000.0")
+    expect(json_response.dig("collections", 0, "collector", "id")).to eq(user.id)
+  end
+
+  it "limits employees to their own collection ledger" do
+    other_user = create(:user, current_workspace_id: company.id)
+    create(:employment, company:, user: other_user)
+    other_user.add_role :employee, company
+    user.remove_role :admin, company
+    user.add_role :employee, company
+
+    own_invoice = create_mobile_collection_invoice(amount: 3000, collector: user)
+    create_mobile_collection_invoice(amount: 1200, collector: other_user)
+
+    get "/api/v1/mobile/collections", headers: auth_headers(user)
+
+    expect(response).to have_http_status(:ok)
+    expect(json_response["collections"].size).to eq(1)
+    expect(json_response.dig("collections", 0, "invoice", "id")).to eq(own_invoice.id)
+  end
+
+  def create_mobile_collection_invoice(amount:, collector:)
+    client = create(:client, company:, currency: "INR")
+
+    create(
+      :invoice,
+      company:,
+      client:,
+      amount_value: amount,
+      currency: "INR",
+      status: :sent,
+      payment_infos: {
+        mobile_collection_source: "mobile",
+        mobile_collector_user_id: collector.id.to_s,
+        mobile_collector_name: collector.full_name
+      }
+    )
+  end
+
+  def create_razorpay_provider!
+    provider = build(
+      :payments_provider,
+      company:,
+      name: PaymentsProvider::RAZORPAY_PROVIDER,
+      connected: true,
+      enabled: true,
+      accepted_payment_methods: ["razorpay"],
+      settings: {
+        enabled_on_invoices: true,
+        key_id: "rzp_test_123",
+        sms_notifications_enabled: true
+      }
+    )
+    provider.key_secret = "secret"
+    provider.save!
+    provider
   end
 end

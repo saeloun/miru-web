@@ -109,7 +109,7 @@ export const RevenueAreaChart: React.FC<RevenueChartProps> = ({
               strokeOpacity={0.5}
             />
             <XAxis
-              dataKey="month"
+              dataKey="full_month"
               tickLine={false}
               axisLine={false}
               tickMargin={12}
@@ -117,6 +117,13 @@ export const RevenueAreaChart: React.FC<RevenueChartProps> = ({
                 fill: "hsl(var(--muted-foreground))",
                 fontSize: 11,
                 fontWeight: 500,
+              }}
+              tickFormatter={value => {
+                // Format "January 2024" to "Jan '24"
+                const match = value.match(/^([A-Za-z]+)\s+(\d{4})$/);
+                if (!match) return value;
+
+                return `${match[1].slice(0, 3)} '${match[2].slice(-2)}`;
               }}
             />
             <YAxis
@@ -135,9 +142,7 @@ export const RevenueAreaChart: React.FC<RevenueChartProps> = ({
               cursor={{ stroke: "hsl(var(--border))", strokeWidth: 1 }}
               content={
                 <ChartTooltipContent
-                  labelFormatter={value =>
-                    `${value} ${new Date().getFullYear()}`
-                  }
+                  labelFormatter={value => value}
                   formatter={(value: any) =>
                     currencyFormat(baseCurrency, value)
                   }

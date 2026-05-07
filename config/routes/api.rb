@@ -73,11 +73,18 @@ namespace :api, defaults: { format: "json" } do
     namespace :mobile do
       resource :bootstrap, only: [:show], controller: "bootstrap"
       resource :current_timer, only: [:show, :update], controller: "current_timers"
+      resources :time_tracking, only: [:index], path: "time-tracking", controller: "/api/v1/time_tracking"
+      resources :timesheet_entries, only: [:index, :create, :update, :destroy], controller: "/api/v1/timesheet_entry"
       resource :otp, only: [], controller: "otps" do
         post :request, action: :create
         post :verify
       end
-      resources :collections, only: [:create]
+      resources :collections, only: [:index, :create] do
+        member do
+          post :manual_payment
+          post :payment_link
+        end
+      end
     end
     namespace :agent do
       resource :capabilities, only: [:show], controller: "capabilities"

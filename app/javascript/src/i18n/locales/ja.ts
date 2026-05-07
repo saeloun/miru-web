@@ -2122,7 +2122,7 @@ const locale = {
       week: "今週",
       month: "今月",
       quarter: "今四半期",
-      year: "今年",
+      year: "現在の会計年度",
     },
     stats: {
       revenue: "収益",
@@ -2143,7 +2143,7 @@ const locale = {
     },
     charts: {
       revenueMomentumTitle: "収益の勢い",
-      revenueMomentumDescription: "過去1年間の月間収益の推移",
+      revenueMomentumDescription: "現在の会計年度の月間収益の推移",
       revenueTrendEyebrow: "収益動向",
       revenueLeadersTitle: "収益リーダー",
       revenueLeadersDescription: "収益貢献度上位顧客",

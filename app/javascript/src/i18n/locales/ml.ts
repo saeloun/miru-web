@@ -2179,7 +2179,7 @@ const locale = {
       week: "ഈ ആഴ്ച",
       month: "ഈ മാസം",
       quarter: "ഈ പാദം",
-      year: "ഈ വര്ഷം",
+      year: "നിലവിലെ സാമ്പത്തിക വർഷം",
     },
     stats: {
       revenue: "വരുമാനം",
@@ -2200,7 +2200,8 @@ const locale = {
     },
     charts: {
       revenueMomentumTitle: "വരുമാന മൊമന്റം",
-      revenueMomentumDescription: "കഴിഞ്ഞ വർഷത്തെ പ്രതിമാസ വരുമാന പ്രവണത",
+      revenueMomentumDescription:
+        "നിലവിലെ സാമ്പത്തിക വർഷത്തെ പ്രതിമാസ വരുമാന പ്രവണത",
       revenueTrendEyebrow: "വരുമാന പ്രവണത",
       revenueLeadersTitle: "റവന്യൂ നേതാക്കൾ",
       revenueLeadersDescription: "വരുമാന സംഭാവന പ്രകാരം മികച്ച ക്ലയന്റുകൾ",

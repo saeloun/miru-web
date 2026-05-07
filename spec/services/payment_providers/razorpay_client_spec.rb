@@ -19,11 +19,15 @@ RSpec.describe PaymentProviders::RazorpayClient do
   let(:client) { described_class.new(provider:) }
 
   describe "#create_payment_link" do
-    it "uses the official Razorpay Payment Link SDK resource" do
+    it "creates payment links through the SDK request layer with JSON payloads" do
       payload = { amount: 1000, currency: "INR" }
-      response = instance_double(Razorpay::Entity, attributes: { "id" => "plink_test_123" })
+      request = instance_double(Razorpay::Request)
+      response = instance_double(HTTParty::Response, parsed_response: { "id" => "plink_test_123" })
 
-      expect(Razorpay::PaymentLink).to receive(:create).with(payload).and_return(response)
+      expect(Razorpay::Request).to receive(:new).with("payment_links").and_return(request)
+      expect(request).to receive(:request)
+        .with(:post, "/v1/payment_links", payload.to_json)
+        .and_return(response)
 
       expect(client.create_payment_link(payload)).to eq("id" => "plink_test_123")
     end
@@ -36,6 +40,16 @@ RSpec.describe PaymentProviders::RazorpayClient do
       expect(Razorpay::PaymentLink).to receive(:fetch).with("plink_test_123").and_return(response)
 
       expect(client.fetch_payment_link("plink_test_123")).to eq("id" => "plink_test_123", "status" => "paid")
+    end
+  end
+
+  describe "#notify_payment_link" do
+    it "uses the official Razorpay Payment Link notify endpoint" do
+      response = instance_double(Razorpay::Entity, attributes: { "success" => true })
+
+      expect(Razorpay::PaymentLink).to receive(:notify_by).with("plink_test_123", "sms").and_return(response)
+
+      expect(client.notify_payment_link("plink_test_123", "sms")).to eq("success" => true)
     end
   end
 

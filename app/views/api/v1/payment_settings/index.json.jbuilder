@@ -37,6 +37,8 @@ json.providers do
     json.linked_account_id razorpay_provider&.linked_account_id
     json.platform_fee_percent razorpay_provider&.platform_fee_percent || "5"
     json.route_transfers_enabled razorpay_provider&.route_transfers_enabled? || false
+    json.sms_notifications_available current_company.country == "IN" && current_company.pro_access?
+    json.sms_notifications_enabled razorpay_provider&.sms_notifications_enabled? || false
     json.payouts_enabled razorpay_provider&.payouts_enabled? || false
     json.payout_account_number razorpay_provider&.payout_account_number
     json.payout_upi_id razorpay_provider&.payout_upi_id

@@ -105,6 +105,7 @@ class Api::V1::PaymentSettingsController < Api::V1::ApplicationController
         :linked_account_id,
         :platform_fee_percent,
         :route_transfers_enabled,
+        :sms_notifications_enabled,
         :payouts_enabled,
         :payout_account_number,
         :payout_upi_id,
@@ -126,6 +127,7 @@ class Api::V1::PaymentSettingsController < Api::V1::ApplicationController
         linked_account_id: razorpay_params[:linked_account_id].to_s.strip,
         platform_fee_percent: razorpay_params[:platform_fee_percent].to_s.strip,
         route_transfers_enabled: boolean_type.cast(razorpay_params[:route_transfers_enabled]),
+        sms_notifications_enabled: razorpay_sms_notifications_allowed? && boolean_type.cast(razorpay_params[:sms_notifications_enabled]),
         payouts_enabled: boolean_type.cast(razorpay_params[:payouts_enabled]),
         payout_account_number: razorpay_params[:payout_account_number].to_s.strip,
         payout_upi_id: razorpay_params[:payout_upi_id].to_s.strip,
@@ -147,6 +149,10 @@ class Api::V1::PaymentSettingsController < Api::V1::ApplicationController
 
     def boolean_type
       @_boolean_type ||= ActiveModel::Type::Boolean.new
+    end
+
+    def razorpay_sms_notifications_allowed?
+      current_company.country == "IN" && current_company.pro_access?
     end
 
     def save_stripe_settings

@@ -3,7 +3,7 @@
 require "rails_helper"
 
 RSpec.describe "Api::V1::Mobile::Bootstrap", type: :request do
-  let(:company) { create(:company, base_currency: "INR", date_format: "DD-MM-YYYY") }
+  let(:company) { create(:india_company, base_currency: "INR", date_format: "DD-MM-YYYY") }
   let(:user) { create(:user, current_workspace_id: company.id) }
 
   before do
@@ -30,9 +30,17 @@ RSpec.describe "Api::V1::Mobile::Bootstrap", type: :request do
       "projects" => true,
       "expenses" => true,
       "invoices" => true,
+      "collections" => false,
       "payments" => true,
       "payment_settings" => true,
       "team" => true
+    )
+    expect(json_response["collection_settings"]).to include(
+      "enabled" => false,
+      "default_currency" => "INR",
+      "manual_payment_methods" => [],
+      "razorpay_payment_links_enabled" => false,
+      "sms_payment_links_enabled" => false
     )
   end
 
@@ -47,9 +55,55 @@ RSpec.describe "Api::V1::Mobile::Bootstrap", type: :request do
       "projects" => true,
       "expenses" => true,
       "invoices" => false,
+      "collections" => false,
       "payments" => false,
       "payment_settings" => false,
       "team" => false
+    )
+  end
+
+  it "enables field collections for pro team employees" do
+    company.update!(plan_tier: "paid")
+    user.add_role :employee, company
+
+    send_request :get, api_v1_mobile_bootstrap_path, headers: auth_headers(user)
+
+    expect(response).to have_http_status(:ok)
+    expect(json_response.dig("capabilities", "collections")).to eq(true)
+    expect(json_response["collection_settings"]).to include(
+      "enabled" => true,
+      "default_currency" => "INR",
+      "manual_payment_methods" => ["cash", "upi"],
+      "razorpay_payment_links_enabled" => false,
+      "sms_payment_links_enabled" => false
+    )
+  end
+
+  it "exposes mobile Razorpay collection availability to field employees" do
+    company.update!(plan_tier: "paid")
+    user.add_role :employee, company
+    provider = build(
+      :payments_provider,
+      company:,
+      name: PaymentsProvider::RAZORPAY_PROVIDER,
+      connected: true,
+      enabled: true,
+      accepted_payment_methods: ["razorpay"],
+      settings: {
+        enabled_on_invoices: true,
+        key_id: "rzp_test_123",
+        sms_notifications_enabled: true
+      }
+    )
+    provider.key_secret = "secret"
+    provider.save!
+
+    send_request :get, api_v1_mobile_bootstrap_path, headers: auth_headers(user)
+
+    expect(response).to have_http_status(:ok)
+    expect(json_response["collection_settings"]).to include(
+      "razorpay_payment_links_enabled" => true,
+      "sms_payment_links_enabled" => true
     )
   end
 end

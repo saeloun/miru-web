@@ -30,8 +30,11 @@ json.invoices invoices do |invoice|
     json.id invoice.client_id
     json.name invoice.client&.name
     json.email invoice.client&.email if invoice.client&.email
+    json.phone invoice.client&.phone if invoice.client&.phone
     json.logo invoice.client&.logo_url if invoice.client&.logo_url
   end
+  json.razorpay_payment_link_url invoice.razorpay_payment_link_url
+  json.razorpay_payment_link_status invoice.razorpay_payment_link_status
 end
 
 json.pagination_details do
@@ -83,8 +86,11 @@ json.recentlyUpdatedInvoices recently_updated_invoices do |invoice|
     json.id invoice.client_id
     json.name invoice.client&.name
     json.email invoice.client&.email if invoice.client&.email
+    json.phone invoice.client&.phone if invoice.client&.phone
     json.logo invoice.client&.logo_url if invoice.client&.logo_url
   end
+  json.razorpay_payment_link_url invoice.razorpay_payment_link_url
+  json.razorpay_payment_link_status invoice.razorpay_payment_link_status
 end
 
 json.recentlyUpdatedTotalCount recently_updated_total_count

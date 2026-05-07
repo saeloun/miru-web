@@ -14,7 +14,10 @@ module PaymentProviders
     end
 
     def create_payment_link(payload)
-      with_sdk { normalize_response(Razorpay::PaymentLink.create(payload)) }
+      with_sdk(headers: { "Content-Type" => "application/json" }) do
+        request = Razorpay::Request.new("payment_links")
+        normalize_response(request.request(:post, "/v1/payment_links", JSON.generate(payload)))
+      end
     end
 
     def fetch_payment_link(payment_link_id)
@@ -74,6 +77,7 @@ module PaymentProviders
       end
 
       def normalize_response(response)
+        return response.parsed_response if response.respond_to?(:parsed_response)
         return response.attributes if response.respond_to?(:attributes)
 
         response
