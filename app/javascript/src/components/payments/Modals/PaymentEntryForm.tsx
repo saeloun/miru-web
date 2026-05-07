@@ -44,6 +44,7 @@ const PaymentEntryForm = ({
 
   const [showDatePicker, setShowDatePicker] = useState<any>(false);
   const [showSelectMenu, setShowSelectMenu] = useState(false);
+  const [focusedInvoiceIndex, setFocusedInvoiceIndex] = useState(0);
   const [showDesktopTransactionTypes, setShowDesktopTransactionTypes] =
     useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -77,6 +78,7 @@ const PaymentEntryForm = ({
     const close = e => {
       if (e.keyCode === 27) {
         setShowDatePicker({ visibility: false });
+        setShowSelectMenu(false);
         setShowDesktopTransactionTypes(false);
       }
     };
@@ -134,10 +136,6 @@ const PaymentEntryForm = ({
     }
   };
 
-  const handleShowSelectMenu = () => {
-    setShowSelectMenu(!showSelectMenu);
-  };
-
   return (
     <Formik
       enableReinitialize
@@ -167,6 +165,76 @@ const PaymentEntryForm = ({
           type => type.value === transactionType
         );
 
+        const selectedInvoiceIndex = invoices.findIndex(
+          invoiceOption => invoiceOption.value === invoice?.value
+        );
+
+        const initialFocusedInvoiceIndex =
+          selectedInvoiceIndex >= 0 ? selectedInvoiceIndex : 0;
+
+        const selectInvoiceOption = invoiceOption => {
+          setShowSelectMenu(false);
+          setFieldValue("invoice", invoiceOption);
+          setFieldValue("amount", invoiceOption.amount ?? "");
+        };
+
+        const toggleInvoiceMenu = () => {
+          setFocusedInvoiceIndex(initialFocusedInvoiceIndex);
+          setShowSelectMenu(previous => !previous);
+        };
+
+        const handleInvoiceMenuKeyDown = event => {
+          if (!invoices.length) return;
+
+          if (
+            !showSelectMenu &&
+            ["ArrowDown", "ArrowUp", "Enter", " "].includes(event.key)
+          ) {
+            event.preventDefault();
+            setFocusedInvoiceIndex(initialFocusedInvoiceIndex);
+            setShowSelectMenu(true);
+
+            return;
+          }
+
+          if (!showSelectMenu) return;
+
+          switch (event.key) {
+            case "ArrowDown":
+              event.preventDefault();
+              setFocusedInvoiceIndex(
+                currentIndex => (currentIndex + 1) % invoices.length
+              );
+              break;
+            case "ArrowUp":
+              event.preventDefault();
+              setFocusedInvoiceIndex(
+                currentIndex =>
+                  (currentIndex - 1 + invoices.length) % invoices.length
+              );
+              break;
+            case "Home":
+              event.preventDefault();
+              setFocusedInvoiceIndex(0);
+              break;
+            case "End":
+              event.preventDefault();
+              setFocusedInvoiceIndex(invoices.length - 1);
+              break;
+            case "Enter":
+            case " ":
+              event.preventDefault();
+              selectInvoiceOption(invoices[focusedInvoiceIndex] || invoices[0]);
+              break;
+            case "Escape":
+              event.preventDefault();
+              setShowSelectMenu(false);
+              break;
+            default:
+              break;
+          }
+        };
+
         const isPaymentBtnActive = () =>
           isAddPaymentBtnActive(
             invoice,
@@ -188,13 +256,20 @@ const PaymentEntryForm = ({
                       {i18n.t("payments.invoice")}
                     </label>
                     <button
+                      aria-activedescendant={
+                        showSelectMenu && invoices[focusedInvoiceIndex]
+                          ? `manual-payment-invoice-option-${invoices[focusedInvoiceIndex].value}`
+                          : undefined
+                      }
+                      aria-controls="manual-payment-invoice-options"
                       aria-expanded={showSelectMenu}
                       aria-haspopup="listbox"
                       className="flex min-h-14 w-full items-center justify-between rounded-md border border-border bg-background px-4 pt-6 pb-2 text-left text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
                       data-testid="manual-payment-invoice-select"
                       id="manual-payment-invoice-select"
                       type="button"
-                      onClick={handleShowSelectMenu}
+                      onClick={toggleInvoiceMenu}
+                      onKeyDown={handleInvoiceMenuKeyDown}
                     >
                       {invoice ? (
                         <span>
@@ -220,25 +295,29 @@ const PaymentEntryForm = ({
                       <div
                         className="absolute right-0 top-full z-50 mt-1 max-h-80 min-h-24 w-full overflow-y-auto rounded-md border border-border bg-background shadow-lg"
                         data-testid="manual-payment-invoice-options"
+                        id="manual-payment-invoice-options"
+                        onKeyDown={handleInvoiceMenuKeyDown}
                         role="listbox"
                       >
-                        {invoices.map(invoiceOption => (
+                        {invoices.map((invoiceOption, index) => (
                           <button
                             aria-selected={
                               invoice?.value === invoiceOption.value
                             }
-                            className="flex w-full cursor-pointer flex-col gap-2 p-2 text-left hover:bg-muted sm:flex-row sm:items-center sm:justify-between sm:gap-0"
+                            className={`flex w-full cursor-pointer flex-col gap-2 p-2 text-left hover:bg-muted focus:outline-none sm:flex-row sm:items-center sm:justify-between sm:gap-0 ${
+                              focusedInvoiceIndex === index
+                                ? "bg-muted ring-1 ring-ring"
+                                : ""
+                            }`}
+                            id={`manual-payment-invoice-option-${invoiceOption.value}`}
                             key={invoiceOption.value}
                             role="option"
+                            tabIndex={focusedInvoiceIndex === index ? 0 : -1}
                             type="button"
                             onClick={() => {
-                              setShowSelectMenu(false);
-                              setFieldValue("invoice", invoiceOption);
-                              setFieldValue(
-                                "amount",
-                                invoiceOption.amount ?? ""
-                              );
+                              selectInvoiceOption(invoiceOption);
                             }}
+                            onMouseEnter={() => setFocusedInvoiceIndex(index)}
                           >
                             <span className="w-full py-2 pr-0 pl-0 sm:w-2/6 sm:py-3 sm:pr-2">
                               <span className="block truncate text-sm font-medium leading-5 text-foreground">

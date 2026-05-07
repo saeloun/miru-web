@@ -38,6 +38,19 @@ RSpec.describe "Adding payment entry", type: :system, js: true do
     )
   end
 
+  def select_manual_payment_invoice_with_keyboard(invoice)
+    invoice_select = find("[data-testid='manual-payment-invoice-select']", wait: 10)
+
+    invoice_select.click
+    invoice_select.send_keys(:down, :enter)
+
+    expect(page).to have_css(
+      "[data-testid='manual-payment-invoice-select']",
+      text: invoice.invoice_number,
+      wait: 10
+    )
+  end
+
   def select_desktop_transaction_type(type)
     within("#transactionType") do
       find("button", text: "Select Transaction Type", match: :first, wait: 10).click
@@ -104,6 +117,15 @@ RSpec.describe "Adding payment entry", type: :system, js: true do
         expect(payment.invoice_id).to eq(invoice.id)
         expect(payment.amount).to eq(BigDecimal("123.45"))
         expect(payment.transaction_type).to eq("bank_transfer")
+      end
+    end
+
+    it "selects an invoice from the modal with keyboard navigation" do
+      with_forgery_protection do
+        open_manual_payment_modal
+        select_manual_payment_invoice_with_keyboard(invoice)
+
+        expect(page).to have_field("paymentAmount", disabled: false, wait: 10)
       end
     end
 
