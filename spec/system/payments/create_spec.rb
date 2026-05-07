@@ -51,13 +51,16 @@ RSpec.describe "Adding payment entry", type: :system, js: true do
     target_option_id = page.evaluate_script(<<~JS)
       (() => {
         const targetInvoiceNumber = #{invoice.invoice_number.to_json};
+        const normalize = text => text.replace(/\\s+/g, " ").trim();
         const options = Array.from(
           document.querySelectorAll(
             '[data-testid="manual-payment-invoice-options"] [role="option"]'
           )
         );
         const targetOption = options.find(option =>
-          option.textContent.includes(targetInvoiceNumber)
+          Array.from(option.querySelectorAll("span")).some(
+            span => normalize(span.textContent) === targetInvoiceNumber
+          )
         );
 
         return targetOption ? targetOption.id : null;
