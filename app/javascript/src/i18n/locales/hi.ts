@@ -1301,7 +1301,7 @@ const locale = {
       week: "इस सप्ताह",
       month: "इस महीने",
       quarter: "इस तिमाही",
-      year: "इस साल",
+      year: "वर्तमान वित्तीय वर्ष",
     },
     stats: {
       revenue: "आय",
@@ -1322,7 +1322,8 @@ const locale = {
     },
     charts: {
       revenueMomentumTitle: "राजस्व गति",
-      revenueMomentumDescription: "पिछले एक वर्ष में मासिक राजस्व का रुझान",
+      revenueMomentumDescription:
+        "वर्तमान वित्तीय वर्ष के लिए मासिक राजस्व का रुझान",
       revenueTrendEyebrow: "राजस्व प्रवृत्ति",
       revenueLeadersTitle: "राजस्व नेता",
       revenueLeadersDescription: "राजस्व योगदान के आधार पर शीर्ष ग्राहक",

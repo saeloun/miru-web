@@ -2145,7 +2145,7 @@ const locale = {
       week: "Bu hafta",
       month: "Bu Ay",
       quarter: "Bu Çeyrek",
-      year: "Bu Yıl",
+      year: "Mevcut Mali Yıl",
     },
     stats: {
       revenue: "Hasılat",
@@ -2166,7 +2166,7 @@ const locale = {
     },
     charts: {
       revenueMomentumTitle: "Gelir Momentumu",
-      revenueMomentumDescription: "Geçtiğimiz yıl boyunca aylık gelir trendi",
+      revenueMomentumDescription: "Mevcut mali yıl için aylık gelir trendi",
       revenueTrendEyebrow: "GELİR TRENDİ",
       revenueLeadersTitle: "Gelir Liderleri",
       revenueLeadersDescription: "Gelir katkısına göre en büyük müşteriler",
