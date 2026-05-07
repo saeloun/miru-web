@@ -27,8 +27,8 @@ RSpec.describe "Adding payment entry", type: :system, js: true do
         # Wait for payments page to load
         expect(page).to have_content("Payments")
 
-        first(:button, "Add Manual Entry", minimum: 1).click
-        expect(page).to have_content("Add Manual Entry", wait: 10)
+        first(:button, "ADD MANUAL ENTRY", minimum: 1).click
+        expect(page).to have_content("Add Payment", wait: 10)
         expect(page).to have_selector("#invoice", wait: 10)
         expect(page).to have_selector("#transactionType", wait: 10)
       end
@@ -38,20 +38,23 @@ RSpec.describe "Adding payment entry", type: :system, js: true do
       with_forgery_protection do
         visit "/payments?invoiceId=#{invoice.id}"
 
-        first(:button, "Add Manual Entry", minimum: 1).click
+        first(:button, "ADD MANUAL ENTRY", minimum: 1).click
         within("#transactionType") do
           find("button", text: "Select Transaction Type", match: :first, wait: 10).click
+          find("button", text: "Bank Transfer", wait: 10).click
         end
-        find("[role='option']", text: "Bank Transfer", wait: 10).click
+        expect(page).to have_field("paymentAmount", disabled: false)
+        fill_in "paymentAmount", with: "123.45"
 
         expect do
-          click_button "ADD PAYMENT"
+          click_button "Add Payment"
           expect(page).to have_content("Manual entry added successfully.", wait: 10)
         end.to change(Payment, :count).by(1)
 
         payment = Payment.order(:id).last
 
         expect(payment.invoice_id).to eq(invoice.id)
+        expect(payment.amount).to eq(BigDecimal("123.45"))
         expect(payment.transaction_type).to eq("bank_transfer")
       end
     end
