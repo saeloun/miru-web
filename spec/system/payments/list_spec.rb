@@ -105,6 +105,33 @@ RSpec.describe "Payments page", type: :system, js: true do
         expect(page).to have_css("[role='option']", text: "Credit Card", wait: 10)
       end
     end
+
+    it "filters payment history by note and restores the ledger when search is cleared" do
+      with_forgery_protection do
+        visit "/payments"
+
+        search = find_field(
+          placeholder: "Search by invoice, client, method, or notes...",
+          wait: 10
+        )
+        search.set("Partial payment installment")
+
+        within("table") do
+          expect(page).to have_content("Partial payment installment", wait: 10)
+          expect(page).to have_content("INV-PAY-002")
+          expect(page).not_to have_content("Full payment received")
+          expect(page).not_to have_content("Payment declined by bank")
+        end
+
+        search.set("")
+
+        within("table") do
+          expect(page).to have_content("Full payment received", wait: 10)
+          expect(page).to have_content("Partial payment installment")
+          expect(page).to have_content("Payment declined by bank")
+        end
+      end
+    end
   end
 
   context "when there are no payments" do
