@@ -366,6 +366,7 @@ const AddEntry: React.FC<Iprops> = ({
           </div>
           {isNewEntry && latestTrackedEntry && (
             <Button
+              type="button"
               variant="outline"
               size="sm"
               data-testid="duplicate-last-entry"
