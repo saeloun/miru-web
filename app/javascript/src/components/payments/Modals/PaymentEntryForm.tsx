@@ -12,6 +12,7 @@ import { Form, Formik, FormikProps } from "formik";
 import { currencyFormat, useOutsideClick } from "helpers";
 import { mapPayment } from "mapper/mappedIndex";
 import { CalendarIcon } from "miruIcons";
+import { CaretDown } from "phosphor-react";
 import { useNavigate } from "react-router-dom";
 import { i18n } from "../../../i18n";
 import {
@@ -51,10 +52,13 @@ const PaymentEntryForm = ({
 
   const [showDatePicker, setShowDatePicker] = useState<any>(false);
   const [showSelectMenu, setShowSelectMenu] = useState(false);
+  const [showDesktopTransactionTypes, setShowDesktopTransactionTypes] =
+    useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const wrapperSelectRef = useRef(null);
   const wrapperCalendartRef = useRef(null);
+  const wrapperDesktopTransactionTypeRef = useRef(null);
 
   const navigate = useNavigate();
   const selectedInvoiceFromUrl = invoiceId
@@ -80,6 +84,7 @@ const PaymentEntryForm = ({
     const close = e => {
       if (e.keyCode === 27) {
         setShowDatePicker({ visibility: false });
+        setShowDesktopTransactionTypes(false);
       }
     };
     window.addEventListener("keydown", close);
@@ -93,6 +98,10 @@ const PaymentEntryForm = ({
 
   useOutsideClick(wrapperCalendartRef, () => {
     setShowDatePicker({ visibility: false });
+  });
+
+  useOutsideClick(wrapperDesktopTransactionTypeRef, () => {
+    setShowDesktopTransactionTypes(false);
   });
 
   const handleAddPayment = async values => {
@@ -154,6 +163,10 @@ const PaymentEntryForm = ({
           showTransactionTypes,
           note,
         } = values;
+
+        const selectedTransactionType = transactionTypes.find(
+          type => type.value === transactionType
+        );
 
         const isPaymentBtnActive = () =>
           isAddPaymentBtnActive(
@@ -315,31 +328,63 @@ const PaymentEntryForm = ({
               onClick={() => setFieldValue("showTransactionTypes", true)}
             >
               {isDesktop ? (
-                <div className="field relative">
-                  <label className="absolute -top-1 left-0 z-1 ml-3 origin-0 bg-background px-1 text-xsm font-medium text-muted-foreground duration-300">
-                    {i18n.t("payments.transactionType")}
-                  </label>
-                  <Select
-                    value={transactionType || ""}
-                    onValueChange={value =>
-                      setFieldValue("transactionType", value)
+                <div
+                  className="field relative"
+                  ref={wrapperDesktopTransactionTypeRef}
+                >
+                  <button
+                    aria-label={i18n.t("payments.transactionType")}
+                    aria-expanded={showDesktopTransactionTypes}
+                    aria-haspopup="listbox"
+                    className="flex h-12 w-full items-center justify-between rounded-md border border-border bg-background px-4 text-left text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
+                    type="button"
+                    onClick={() =>
+                      setShowDesktopTransactionTypes(previous => !previous)
                     }
                   >
-                    <SelectTrigger className="mt-1 bg-background text-foreground">
-                      <SelectValue
-                        placeholder={i18n.t(
-                          "payments.selectTransactionTypeBtn"
-                        )}
-                      />
-                    </SelectTrigger>
-                    <SelectContent>
+                    <span
+                      className={
+                        transactionType
+                          ? "text-foreground"
+                          : "text-muted-foreground"
+                      }
+                    >
+                      {selectedTransactionType?.label ||
+                        i18n.t("payments.selectTransactionTypeBtn")}
+                    </span>
+                    <CaretDown
+                      className={`h-4 w-4 text-muted-foreground transition-transform ${
+                        showDesktopTransactionTypes ? "rotate-180" : ""
+                      }`}
+                    />
+                  </button>
+                  {showDesktopTransactionTypes && (
+                    <ul
+                      className="absolute z-20 mt-1 max-h-60 w-full overflow-y-auto rounded-md border border-border bg-background p-1 shadow-lg"
+                      role="listbox"
+                    >
                       {transactionTypes.map(type => (
-                        <SelectItem key={type.value} value={type.value}>
-                          {type.label}
-                        </SelectItem>
+                        <li key={type.value}>
+                          <button
+                            aria-selected={transactionType === type.value}
+                            className={`flex w-full items-center rounded-sm px-3 py-2 text-left text-sm ${
+                              transactionType === type.value
+                                ? "bg-muted font-medium text-foreground"
+                                : "text-foreground hover:bg-muted"
+                            }`}
+                            role="option"
+                            type="button"
+                            onClick={() => {
+                              setFieldValue("transactionType", type.value);
+                              setShowDesktopTransactionTypes(false);
+                            }}
+                          >
+                            {type.label}
+                          </button>
+                        </li>
                       ))}
-                    </SelectContent>
-                  </Select>
+                    </ul>
+                  )}
                 </div>
               ) : (
                 <>
@@ -385,19 +430,16 @@ const PaymentEntryForm = ({
             </div>
             <div className="mt-4">
               <CustomInputText
-                disabled
                 id="paymentAmount"
                 inputBoxClassName="form__input block h-12 w-full appearance-none border-border bg-background p-4 text-base text-foreground focus-within:border-primary"
                 label={i18n.t("payments.paymentAmount")}
                 labelClassName="absolute top-0.5 left-1 h-6 z-1 origin-0 bg-background p-2 text-base font-medium duration-300 text-muted-foreground"
+                min="0"
                 name="paymentAmount"
-                type="text"
-                value={
-                  amount && baseCurrency
-                    ? currencyFormat(baseCurrency, amount)
-                    : ""
-                }
-                onChange={() => {}}
+                step="0.01"
+                type="number"
+                value={amount ?? ""}
+                onChange={e => setFieldValue("amount", e.target.value)}
               />
             </div>
             <div className="mt-4">
