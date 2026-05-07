@@ -324,7 +324,7 @@ const PaymentEntryForm = ({
                             id={`manual-payment-invoice-option-${invoiceOption.value}`}
                             key={invoiceOption.value}
                             role="option"
-                            tabIndex={focusedInvoiceIndex === index ? 0 : -1}
+                            tabIndex={-1}
                             type="button"
                             onClick={() => {
                               selectInvoiceOption(invoiceOption);

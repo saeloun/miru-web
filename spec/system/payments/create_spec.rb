@@ -48,7 +48,46 @@ RSpec.describe "Adding payment entry", type: :system, js: true do
     expect(page).to have_css("[data-testid='manual-payment-invoice-options']", wait: 10)
     expect(page).to have_css("[role='option']", text: invoice.invoice_number, wait: 10)
 
-    page.driver.browser.keyboard.type(:down)
+    target_option_id = page.evaluate_script(<<~JS)
+      (() => {
+        const targetInvoiceNumber = #{invoice.invoice_number.to_json};
+        const options = Array.from(
+          document.querySelectorAll(
+            '[data-testid="manual-payment-invoice-options"] [role="option"]'
+          )
+        );
+        const targetOption = options.find(option =>
+          option.textContent.includes(targetInvoiceNumber)
+        );
+
+        return targetOption ? targetOption.id : null;
+      })()
+    JS
+    expect(target_option_id).to be_present
+
+    target_option_index = page.evaluate_script(<<~JS)
+      (() => {
+        return Array.from(
+          document.querySelectorAll(
+            '[data-testid="manual-payment-invoice-options"] [role="option"]'
+          )
+        ).findIndex(option => option.id === #{target_option_id.to_json});
+      })()
+    JS
+    expect(target_option_index).to be >= 0
+
+    if target_option_index.zero?
+      page.driver.browser.keyboard.type(:down)
+      page.driver.browser.keyboard.type(:up)
+    else
+      target_option_index.times { page.driver.browser.keyboard.type(:down) }
+    end
+
+    expect(page).to have_css(
+      "[data-testid='manual-payment-invoice-select'][aria-activedescendant='#{target_option_id}']",
+      wait: 10
+    )
+
     page.driver.browser.keyboard.type(:Enter)
 
     expect(page).to have_css(
