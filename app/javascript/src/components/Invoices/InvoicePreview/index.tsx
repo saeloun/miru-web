@@ -702,7 +702,7 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
               {invoice.discount > 0 && (
                 <div className="flex justify-between gap-4 py-2">
                   <span className="text-muted-foreground print:text-gray-600">
-                    Discount
+                    {i18n.t("invoices.discount")}
                   </span>
                   <span className="min-w-0 break-words text-right font-medium text-red-600">
                     -{currencyFormat(currency, invoice.discount)}
@@ -712,7 +712,7 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
               {invoice.tax > 0 && (
                 <div className="flex justify-between gap-4 py-2">
                   <span className="text-muted-foreground print:text-gray-600">
-                    Tax
+                    {i18n.t("invoices.tax")}
                   </span>
                   <span className="min-w-0 break-words text-right font-medium text-foreground print:text-gray-900">
                     {currencyFormat(currency, invoice.tax)}

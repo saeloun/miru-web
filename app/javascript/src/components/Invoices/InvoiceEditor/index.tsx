@@ -454,8 +454,13 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
               </p>
             </div>
             <div className="flex flex-wrap gap-2 sm:gap-3">
-              <div className="flex rounded-md border border-input bg-background p-0.5 min-[1800px]:hidden">
+              <div
+                aria-label="Invoice editor view mode"
+                className="flex rounded-md border border-input bg-background p-0.5 min-[1800px]:hidden"
+                role="group"
+              >
                 <Button
+                  aria-label={i18n.t("edit")}
                   aria-pressed={!isPreviewMode}
                   className={cn(
                     "h-8 gap-1.5 px-3",
@@ -470,6 +475,7 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
                   <span className="hidden sm:inline">{i18n.t("edit")}</span>
                 </Button>
                 <Button
+                  aria-label={i18n.t("preview")}
                   aria-pressed={isPreviewMode}
                   className={cn(
                     "h-8 gap-1.5 px-3",
