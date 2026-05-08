@@ -49,6 +49,24 @@ module MiruWeb
 
     config.active_model.i18n_customize_full_message = true
     config.i18n.fallbacks = true
+    config.active_storage.variable_content_types = %w[
+      image/png
+      image/gif
+      image/jpeg
+      image/tiff
+      image/bmp
+      image/vnd.adobe.photoshop
+      image/vnd.microsoft.icon
+      image/webp
+      image/avif
+      image/heic
+      image/heif
+    ]
+    config.active_storage.web_image_content_types = %w[
+      image/png
+      image/jpeg
+      image/gif
+    ]
     # Props handling managed in React components
 
     # Use a real queuing backend for Active Job (and separate queues per environment).
@@ -91,6 +109,11 @@ module MiruWeb
           ActiveStorage::Blob.service = ActiveStorage::Blob.services.fetch(service_name)
         end
       end
+    end
+
+    initializer "miru_web.active_storage_content_types", after: "active_storage.configs" do |app|
+      ActiveStorage.variable_content_types = app.config.active_storage.variable_content_types
+      ActiveStorage.web_image_content_types = app.config.active_storage.web_image_content_types
     end
 
     initializer "miru_web.active_storage_verifier", after: "active_storage.verifier" do |app|

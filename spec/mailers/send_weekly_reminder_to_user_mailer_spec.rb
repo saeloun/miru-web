@@ -38,8 +38,10 @@ RSpec.describe SendWeeklyReminderToUserMailer, type: :mailer do
       ).notify_user_about_missed_entries
       body = mailer.html_part.body.decoded
 
-      expect(mailer.attachments["miruLogoWithText.png"]).to be_present
-      expect(mailer.attachments["miruLogoWithText.png"].content_type).to include("image/png")
+      expect(mailer.attachments["MiruLogoDarkWithText.png"]).to be_present
+      expect(mailer.attachments["MiruLogoDarkWithText.png"].content_type).to include("image/png")
+      expect(mailer.attachments["MiruLogoLightWithText.png"]).to be_present
+      expect(mailer.attachments["MiruLogoLightWithText.png"].content_type).to include("image/png")
       expect(body).to include("cid:")
       expect(body).to include("TRACK. BILL. GET PAID.")
       expect(body).not_to include("miruLogoWithText.svg")
