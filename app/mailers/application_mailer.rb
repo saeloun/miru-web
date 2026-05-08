@@ -49,7 +49,7 @@ class ApplicationMailer < ActionMailer::Base
     end
 
     def attach_miru_logos
-      MIRU_LOGO_FILES.each_value { |filename, path| attach_inline_logo(filename, path) }
+      MIRU_LOGO_FILES.each_value { |(filename, path)| attach_inline_logo(filename, path) }
     end
 
     def miru_logo_dark_url

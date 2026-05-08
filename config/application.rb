@@ -112,6 +112,8 @@ module MiruWeb
     end
 
     initializer "miru_web.active_storage_content_types", after: "active_storage.configs" do |app|
+      next if ActiveStorage.variable_content_types.present? && ActiveStorage.web_image_content_types.present?
+
       ActiveStorage.variable_content_types = app.config.active_storage.variable_content_types
       ActiveStorage.web_image_content_types = app.config.active_storage.web_image_content_types
     end
