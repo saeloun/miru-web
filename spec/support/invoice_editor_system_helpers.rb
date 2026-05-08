@@ -201,7 +201,7 @@ module InvoiceEditorSystemHelpers
   def show_invoice_preview
     return false if has_css?("[data-testid='invoice-preview']", wait: 1)
 
-    find("button", text: /preview/i, wait: 10).click
+    find("button", exact_text: "preview", wait: 10).click
     expect(page).to have_css("[data-testid='invoice-preview']", wait: 10)
 
     true
@@ -210,7 +210,7 @@ module InvoiceEditorSystemHelpers
   def show_invoice_editor
     return if has_button?("Save", wait: 1)
 
-    find("button", text: /edit/i, wait: 10).click
+    find("button", exact_text: "Edit", wait: 10).click
     expect(page).to have_button("Save", wait: 10)
   end
 
