@@ -27,7 +27,7 @@ import {
   FloppyDisk,
   PaperPlaneTilt,
   Eye,
-  EyeSlash,
+  PencilSimple,
 } from "phosphor-react";
 import InvoiceTable from "../common/InvoiceTable";
 import InvoicePreview from "../InvoicePreview";
@@ -102,7 +102,7 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
     return `${prefix}${paddedDigits}`;
   };
 
-  const [showPreview, setShowPreview] = useState(true);
+  const [isPreviewMode, setIsPreviewMode] = useState(false);
   const [submitIntent, setSubmitIntent] = useState<"save" | "send" | null>(
     null
   );
@@ -454,18 +454,36 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
               </p>
             </div>
             <div className="flex flex-wrap gap-2 sm:gap-3">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setShowPreview(!showPreview)}
-                className="lg:hidden"
-              >
-                {showPreview ? (
-                  <EyeSlash className="h-4 w-4" />
-                ) : (
+              <div className="flex rounded-md border border-input bg-background p-0.5 min-[1800px]:hidden">
+                <Button
+                  aria-pressed={!isPreviewMode}
+                  className={cn(
+                    "h-8 gap-1.5 px-3",
+                    !isPreviewMode && "bg-accent text-accent-foreground"
+                  )}
+                  size="sm"
+                  type="button"
+                  variant="ghost"
+                  onClick={() => setIsPreviewMode(false)}
+                >
+                  <PencilSimple className="h-4 w-4" />
+                  <span className="hidden sm:inline">{i18n.t("edit")}</span>
+                </Button>
+                <Button
+                  aria-pressed={isPreviewMode}
+                  className={cn(
+                    "h-8 gap-1.5 px-3",
+                    isPreviewMode && "bg-accent text-accent-foreground"
+                  )}
+                  size="sm"
+                  type="button"
+                  variant="ghost"
+                  onClick={() => setIsPreviewMode(true)}
+                >
                   <Eye className="h-4 w-4" />
-                )}
-              </Button>
+                  <span className="hidden sm:inline">{i18n.t("preview")}</span>
+                </Button>
+              </div>
               <Button variant="outline" size="sm" onClick={onCancel}>
                 {i18n.t("cancel")}
               </Button>
@@ -529,13 +547,13 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
       </div>
 
       {/* Content */}
-      <div className="mx-auto max-w-[96rem]">
-        <div className="grid grid-cols-1 gap-8 p-4 sm:p-6 lg:grid-cols-12">
+      <div className="mx-auto max-w-[110rem]">
+        <div className="grid grid-cols-1 gap-8 p-4 sm:p-6 min-[1800px]:grid-cols-2">
           {/* Form Section */}
           <div
             className={cn(
               "min-w-0 space-y-6",
-              showPreview ? "lg:col-span-7" : "lg:col-span-12"
+              isPreviewMode && "hidden min-[1800px]:block"
             )}
           >
             {/* Basic Details */}
@@ -687,7 +705,7 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
                 </CardDescription>
               </CardHeader>
               <CardContent className="p-0">
-                <div className="px-6 py-4">
+                <div className="px-4 py-4 sm:px-6">
                   <InvoiceTable
                     clientCurrency={formData.currency}
                     dateFormat={company?.dateFormat || "MM/dd/yyyy"}
@@ -767,11 +785,14 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
           </div>
 
           {/* Preview Section */}
-          {showPreview && (
-            <div className="min-w-0 lg:col-span-5 lg:sticky lg:top-24 lg:h-fit">
-              <InvoicePreview invoice={previewInvoice} isEditing={true} />
-            </div>
-          )}
+          <div
+            className={cn(
+              "min-w-0 min-[1800px]:sticky min-[1800px]:top-24 min-[1800px]:h-fit",
+              !isPreviewMode && "hidden min-[1800px]:block"
+            )}
+          >
+            <InvoicePreview invoice={previewInvoice} isEditing={true} />
+          </div>
         </div>
       </div>
     </div>

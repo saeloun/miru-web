@@ -567,7 +567,7 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
 
         {/* Line Items Table */}
         <div className="mb-8">
-          <div className="space-y-3 sm:hidden">
+          <div className="space-y-3 lg:hidden">
             {invoice.lineItems.map((item, index) => (
               <div
                 className="rounded-lg border border-border p-4"
@@ -622,8 +622,15 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
               </div>
             ))}
           </div>
-          <div className="hidden sm:block">
-            <table className="w-full">
+          <div className="hidden lg:block">
+            <table className="w-full table-fixed">
+              <colgroup>
+                <col className="w-[42%]" />
+                <col className="w-[16%]" />
+                <col className="w-[12%]" />
+                <col className="w-[15%]" />
+                <col className="w-[15%]" />
+              </colgroup>
               <thead>
                 <tr className="border-b-2 border-border print:border-gray-200">
                   <th className="px-2 py-3 text-left text-sm font-semibold text-foreground print:text-gray-700">
@@ -649,10 +656,10 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
                     key={item.id || index}
                     className="border-b border-border/70 print:border-gray-100"
                   >
-                    <td className="px-2 py-3 text-sm text-foreground print:text-gray-900">
-                      <div className="space-y-1">
+                    <td className="min-w-0 px-2 py-3 text-sm text-foreground print:text-gray-900">
+                      <div className="min-w-0 space-y-1">
                         {item.name && (
-                          <p className="font-medium">{item.name}</p>
+                          <p className="break-words font-medium">{item.name}</p>
                         )}
                         {item.description && (
                           <p className="whitespace-pre-wrap break-words text-muted-foreground print:text-gray-600">
@@ -661,16 +668,16 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
                         )}
                       </div>
                     </td>
-                    <td className="px-2 py-3 text-center text-sm text-muted-foreground print:text-gray-600">
+                    <td className="whitespace-nowrap px-2 py-3 text-center text-sm text-muted-foreground print:text-gray-600">
                       {item.date ? formatDate(item.date) : "-"}
                     </td>
-                    <td className="px-2 py-3 text-center text-sm text-foreground print:text-gray-900">
+                    <td className="whitespace-nowrap px-2 py-3 text-center text-sm text-foreground print:text-gray-900">
                       {formatQuantity(item.quantity)}
                     </td>
-                    <td className="px-2 py-3 text-right text-sm text-foreground print:text-gray-900">
+                    <td className="whitespace-nowrap px-2 py-3 text-right text-sm text-foreground print:text-gray-900">
                       {currencyFormat(currency, item.rate)}
                     </td>
-                    <td className="px-2 py-3 text-right text-sm font-medium text-foreground print:text-gray-900">
+                    <td className="whitespace-nowrap px-2 py-3 text-right text-sm font-medium text-foreground print:text-gray-900">
                       {formatLineAmount(item)}
                     </td>
                   </tr>
@@ -684,40 +691,40 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
         <div className="mb-8 flex justify-end">
           <div className="w-full sm:w-80">
             <div className="space-y-2 text-sm">
-              <div className="flex justify-between py-2">
+              <div className="flex justify-between gap-4 py-2">
                 <span className="text-muted-foreground print:text-gray-600">
                   {i18n.t("invoices.subtotal")}
                 </span>
-                <span className="font-medium text-foreground print:text-gray-900">
+                <span className="min-w-0 break-words text-right font-medium text-foreground print:text-gray-900">
                   {currencyFormat(currency, invoice.subtotal ?? invoice.amount)}
                 </span>
               </div>
               {invoice.discount > 0 && (
-                <div className="flex justify-between py-2">
+                <div className="flex justify-between gap-4 py-2">
                   <span className="text-muted-foreground print:text-gray-600">
                     Discount
                   </span>
-                  <span className="font-medium text-red-600">
+                  <span className="min-w-0 break-words text-right font-medium text-red-600">
                     -{currencyFormat(currency, invoice.discount)}
                   </span>
                 </div>
               )}
               {invoice.tax > 0 && (
-                <div className="flex justify-between py-2">
+                <div className="flex justify-between gap-4 py-2">
                   <span className="text-muted-foreground print:text-gray-600">
                     Tax
                   </span>
-                  <span className="font-medium text-foreground print:text-gray-900">
+                  <span className="min-w-0 break-words text-right font-medium text-foreground print:text-gray-900">
                     {currencyFormat(currency, invoice.tax)}
                   </span>
                 </div>
               )}
               <Separator className="my-2" />
-              <div className="flex justify-between py-2">
+              <div className="flex justify-between gap-4 py-2">
                 <span className="text-base font-semibold text-foreground print:text-gray-900">
                   {i18n.t("reports.totalDue")}
                 </span>
-                <span className="text-xl font-bold text-foreground print:text-gray-900">
+                <span className="min-w-0 break-words text-right text-xl font-bold text-foreground print:text-gray-900">
                   {currencyFormat(currency, invoice.amount)}
                 </span>
               </div>
