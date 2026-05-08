@@ -392,7 +392,7 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
               <Button
                 data-testid="invoice-preview-send-action"
                 size="sm"
-                className="bg-[#5E58F1] hover:bg-[#4D47E0]"
+                className="bg-foreground text-background hover:bg-foreground/90"
                 onClick={() => void handleAction("send")}
                 disabled={isSending}
               >
@@ -408,7 +408,7 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
               <Button
                 data-testid="invoice-preview-reminder-action"
                 size="sm"
-                className="bg-[#5E58F1] hover:bg-[#4D47E0]"
+                className="bg-foreground text-background hover:bg-foreground/90"
                 onClick={() => void handleAction("send")}
                 disabled={isSending}
               >
