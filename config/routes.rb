@@ -51,6 +51,10 @@ Rails.application.routes.draw do
 
   resources :workspaces, only: [:update]
 
+  resources :companies, only: [] do
+    member { get :logo }
+  end
+
   resources :invoices, only: [], module: :invoices do
     resources :payments, only: [:new] do
       collection do
