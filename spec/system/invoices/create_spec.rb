@@ -92,6 +92,8 @@ RSpec.describe "Invoice creation", type: :system, js: true do
         description: "Preview name check"
       )
 
+      show_invoice_preview
+
       within "[data-testid='invoice-preview']" do
         expect(page).to have_text("Manual preview item", wait: 10)
         expect(page).to have_text("Preview name check", wait: 10)
@@ -111,10 +113,14 @@ RSpec.describe "Invoice creation", type: :system, js: true do
     with_forgery_protection do
       visit_new_invoice_for(client)
 
-      expect(page).to have_text(company.name, wait: 10)
-      expect(page).to have_text("100 Market St", wait: 10)
-      expect(page).to have_text("TAX-123", wait: 10)
-      expect(page).not_to have_text("support@getmiru.com", wait: 1)
+      show_invoice_preview
+
+      within "[data-testid='invoice-preview']" do
+        expect(page).to have_text(company.name, wait: 10)
+        expect(page).to have_text("100 Market St", wait: 10)
+        expect(page).to have_text("TAX-123", wait: 10)
+        expect(page).not_to have_text("support@getmiru.com", wait: 1)
+      end
     end
   end
 
