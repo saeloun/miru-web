@@ -111,6 +111,85 @@ RSpec.describe "Time Tracking Entries", type: :system, js: true do
     end
   end
 
+  context "with entries for multiple employees" do
+    let(:employee) do
+      create(
+        :user,
+        current_workspace_id: company.id,
+        first_name: "Taylor",
+        last_name: "Employee"
+      )
+    end
+
+    before do
+      create(:employment, company:, user: employee)
+      create(:project_member, user: employee, project:)
+      employee.add_role :employee, company
+      create(:timesheet_entry,
+        user:,
+        project:,
+        duration: 120.0,
+        note: "Admin-only planning",
+        work_date: Date.current)
+      create(:timesheet_entry,
+        user: employee,
+        project:,
+        duration: 180.0,
+        note: "Employee-only delivery",
+        work_date: Date.current)
+    end
+
+    it "does not leak another employee's entries until the admin switches users" do
+      with_forgery_protection do
+        open_week_review
+
+        expect(page).to have_content("Admin-only planning", wait: 10)
+        expect(page).not_to have_content("Employee-only delivery")
+        expect(page).to have_content("2h", wait: 10)
+        expect(page).to have_content("1 entry", wait: 10)
+
+        find('[data-testid="user-select"]', wait: 10).click
+        find('[role="option"]', text: employee.full_name, wait: 10).click
+        find("[data-testid='time-review-week']", wait: 10).click
+
+        expect(page).to have_content("Employee-only delivery", wait: 10)
+        expect(page).not_to have_content("Admin-only planning")
+        expect(page).to have_content("3h", wait: 10)
+        expect(page).to have_content("1 entry", wait: 10)
+      end
+    end
+  end
+
+  context "with discarded entries" do
+    before do
+      create(:timesheet_entry,
+        user:,
+        project:,
+        duration: 120.0,
+        note: "Active review entry",
+        work_date: Date.current)
+      discarded_entry = create(:timesheet_entry,
+        user:,
+        project:,
+        duration: 300.0,
+        note: "Discarded review entry",
+        work_date: Date.current)
+      discarded_entry.discard
+    end
+
+    it "excludes discarded entries from week review and totals" do
+      with_forgery_protection do
+        open_week_review
+
+        expect(page).to have_content("Active review entry", wait: 10)
+        expect(page).not_to have_content("Discarded review entry")
+        expect(page).to have_content(/week total/i, wait: 10)
+        expect(page).to have_content("2h", wait: 10)
+        expect(page).to have_content("1 entry", wait: 10)
+      end
+    end
+  end
+
   context "when employee views their own entries" do
     let(:employee) { create(:user, current_workspace_id: company.id) }
 
