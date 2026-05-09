@@ -20,6 +20,11 @@ class Api::V1::Clients::InvoicesController < Api::V1::ApplicationController
       end
     end
 
+    if params[:query].present?
+      search_term = ActiveRecord::Base.sanitize_sql_like(params[:query].to_s.strip)
+      invoices = invoices.where("invoice_number ILIKE ?", "%#{search_term}%")
+    end
+
     invoices_query = invoices.order(invoice_number: :desc)
 
     # Apply pagination
