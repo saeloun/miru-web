@@ -1503,6 +1503,7 @@ const en = {
     zipPostalCode: "Zip/Postal Code",
     zipPlaceholder: "12345",
     languageDescription: "Choose your preferred language for the interface.",
+    account: "Account",
     security: "Security",
     userFallback: "User",
     currentPasswordPlaceholder: "Enter current password",
