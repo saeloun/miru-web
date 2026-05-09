@@ -83,6 +83,27 @@
         margin: 0 auto;
       }
 
+      .email-company-logo {
+        display: block;
+        width: 72px;
+        height: 72px;
+        object-fit: cover;
+        border-radius: 12px;
+        margin: 0 auto;
+      }
+
+      .email-brand-logo-wrap {
+        display: inline-block;
+        width: 72px;
+        height: 72px;
+        border-radius: 12px;
+        border: 1px solid #e5e7eb;
+        background-color: #f8fafc;
+        overflow: hidden;
+        line-height: 0;
+        font-size: 0;
+      }
+
       .email-eyebrow {
         margin: 20px 0 0;
         color: #64748b;
@@ -462,8 +483,14 @@
           font-size: 24px !important;
         }
 
-        .email-brand-logo {
-          width: 120px !important;
+        .email-company-logo {
+          width: 72px !important;
+          height: 72px !important;
+        }
+
+        .email-brand-logo-wrap {
+          width: 72px !important;
+          height: 72px !important;
         }
 
         .email-highlight {
@@ -508,6 +535,9 @@
       }
 
       @media (prefers-color-scheme: dark) {
+        .logo-light-mode { display: none !important; }
+        .logo-dark-mode { display: block !important; }
+
         body,
         .email-shell {
           background-color: #111827 !important;
@@ -569,6 +599,8 @@
   </head>
   <body style="margin: 0; padding: 0; width: 100%; min-width: 100%; background-color: #f5f7fb; color: #020617; font-family: Inter, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;">
     <% preheader = content_for?(:email_preheader) ? yield(:email_preheader).to_s.strip : t("mailers.layout.preheader") %>
+    <% brand_logo_url = email_company_logo_url %>
+    <% brand_name = email_company_name %>
     <div style="display: none; max-height: 0; overflow: hidden; opacity: 0; mso-hide: all;">
       <%= preheader %>
     </div>
@@ -583,8 +615,15 @@
                     <td align="center">
                       <% if content_for?(:email_badge) %>
                         <%= yield :email_badge %>
-                      <% elsif miru_logo_attachment_url.present? %>
-                        <img src="<%= miru_logo_attachment_url %>" width="120" height="48" alt="<%= t("mailers.layout.brand") %>" class="email-brand-logo" style="display: block; width: 120px; height: 48px; margin: 0 auto; border: 0; outline: none; text-decoration: none;" />
+                      <% elsif brand_logo_url.present? %>
+                        <div class="email-brand-logo-wrap" style="display: inline-block; width: 72px; height: 72px; border-radius: 12px; border: 1px solid #e5e7eb; background-color: #f8fafc; overflow: hidden; line-height: 0; font-size: 0;">
+                          <img src="<%= brand_logo_url %>" width="72" height="72" alt="<%= brand_name %>" class="email-company-logo" style="display: block; width: 72px; height: 72px; object-fit: cover; border-radius: 12px; border: 0; outline: none; text-decoration: none;" />
+                        </div>
+                      <% elsif miru_logo_dark_url.present? %>
+                        <img src="<%= miru_logo_dark_url %>" width="120" alt="<%= t("mailers.layout.brand") %>" class="email-brand-logo logo-light-mode" style="display: block; width: 120px; height: auto; margin: 0 auto; border: 0; outline: none; text-decoration: none;" />
+                        <% if miru_logo_light_url.present? %>
+                          <img src="<%= miru_logo_light_url %>" width="120" alt="<%= t("mailers.layout.brand") %>" class="email-brand-logo logo-dark-mode" style="display: none; width: 120px; height: auto; margin: 0 auto; border: 0; outline: none; text-decoration: none;" />
+                        <% end %>
                         <div style="margin-top: 8px; color: #64748b; font-size: 9px; font-weight: 700; letter-spacing: 0.18em; line-height: 1.2;">TRACK. BILL. GET PAID.</div>
                       <% else %>
                         <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" aria-label="<%= t("mailers.layout.brand") %>" style="margin: 0 auto; border-collapse: collapse;">
@@ -621,6 +660,14 @@
                 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="email-footer-card">
                   <tr>
                     <td>
+                      <% if brand_logo_url.blank? && miru_logo_dark_url.present? %>
+                        <div style="margin-bottom: 14px;">
+                          <img src="<%= miru_logo_dark_url %>" width="80" alt="<%= t("mailers.layout.brand") %>" class="logo-light-mode" style="display: block; width: 80px; height: auto; margin: 0 auto; border: 0; outline: none; text-decoration: none;" />
+                          <% if miru_logo_light_url.present? %>
+                            <img src="<%= miru_logo_light_url %>" width="80" alt="<%= t("mailers.layout.brand") %>" class="logo-dark-mode" style="display: none; width: 80px; height: auto; margin: 0 auto; border: 0; outline: none; text-decoration: none;" />
+                          <% end %>
+                        </div>
+                      <% end %>
                       <div><%= t("mailers.layout.footer_body") %></div>
                       <div style="margin-top: 12px;">
                         <a href="https://app.miru.so" target="_blank" class="email-footer-link"><%= t("mailers.layout.footer_site") %></a>

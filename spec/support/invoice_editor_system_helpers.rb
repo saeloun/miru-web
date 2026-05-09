@@ -4,7 +4,7 @@ module InvoiceEditorSystemHelpers
   def formatted_invoice_currency(amount, currency)
     case currency
     when "EUR"
-      "#{format('%.2f', amount).tr('.', ',')} €"
+      "€#{format('%.2f', amount)}"
     when "INR"
       "₹#{format('%.2f', amount)}"
     else
@@ -198,13 +198,35 @@ module InvoiceEditorSystemHelpers
     click_button "Save"
   end
 
+  def show_invoice_preview
+    return false if has_css?("[data-testid='invoice-preview']", wait: 1)
+
+    find("button", exact_text: "preview", wait: 10).click
+    expect(page).to have_css("[data-testid='invoice-preview']", wait: 10)
+
+    true
+  end
+
+  def show_invoice_editor
+    return if has_button?("Save", wait: 1)
+
+    find("button", exact_text: "Edit", wait: 10).click
+    expect(page).to have_button("Save", wait: 10)
+  end
+
   def expect_invoice_preview_totals(currency:, subtotal:, total_due:, discount: nil, tax: nil)
-    expect(page).to have_text("Subtotal", wait: 10)
-    expect(page).to have_text(formatted_invoice_currency(subtotal, currency), wait: 10)
-    expect(page).to have_text("Total Due", wait: 10)
-    expect(page).to have_text(formatted_invoice_currency(total_due, currency), wait: 10)
-    expect(page).to have_text("-#{formatted_invoice_currency(discount, currency)}", wait: 10) if discount
-    expect(page).to have_text(formatted_invoice_currency(tax, currency), wait: 10) if tax
+    toggled_preview = show_invoice_preview
+
+    within "[data-testid='invoice-preview']" do
+      expect(page).to have_text("Subtotal", wait: 10)
+      expect(page).to have_text(formatted_invoice_currency(subtotal, currency), wait: 10)
+      expect(page).to have_text("Total Due", wait: 10)
+      expect(page).to have_text(formatted_invoice_currency(total_due, currency), wait: 10)
+      expect(page).to have_text("-#{formatted_invoice_currency(discount, currency)}", wait: 10) if discount
+      expect(page).to have_text(formatted_invoice_currency(tax, currency), wait: 10) if tax
+    end
+  ensure
+    show_invoice_editor if toggled_preview
   end
 end
 

@@ -2137,7 +2137,7 @@ const locale = {
       week: "या आठवड्यात",
       month: "या महिन्यात",
       quarter: "या तिमाहीत",
-      year: "या वर्षी",
+      year: "चालू आर्थिक वर्ष",
     },
     stats: {
       revenue: "महसूल",
@@ -2158,7 +2158,7 @@ const locale = {
     },
     charts: {
       revenueMomentumTitle: "महसूल गती",
-      revenueMomentumDescription: "गेल्या वर्षभरातील मासिक महसुलाचा कल",
+      revenueMomentumDescription: "चालू आर्थिक वर्षासाठी मासिक महसुलाचा कल",
       revenueTrendEyebrow: "महसुलाचा कल",
       revenueLeadersTitle: "महसूल नेते",
       revenueLeadersDescription: "महसूल योगदानानुसार प्रमुख ग्राहक",

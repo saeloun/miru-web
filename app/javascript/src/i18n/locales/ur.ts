@@ -2136,7 +2136,7 @@ const locale = {
       week: "اس ہفتے",
       month: "اس مہینے",
       quarter: "اس سہ ماہی",
-      year: "اس سال",
+      year: "موجودہ مالی سال",
     },
     stats: {
       revenue: "آمدنی",
@@ -2157,7 +2157,8 @@ const locale = {
     },
     charts: {
       revenueMomentumTitle: "آمدنی کی رفتار",
-      revenueMomentumDescription: "گزشتہ سال کے دوران ماہانہ آمدنی کا رجحان",
+      revenueMomentumDescription:
+        "موجودہ مالی سال کے لیے ماہانہ آمدنی کا رجحان",
       revenueTrendEyebrow: "ریوینیو کا رجحان",
       revenueLeadersTitle: "ریونیو لیڈرز",
       revenueLeadersDescription: "آمدنی میں شراکت کے لحاظ سے سرفہرست کلائنٹس",

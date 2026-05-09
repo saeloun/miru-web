@@ -2199,7 +2199,7 @@ const locale = {
       week: "இந்த வாரம்",
       month: "இந்த மாதம்",
       quarter: "இந்தக் காலாண்டில்",
-      year: "இந்த ஆண்டு",
+      year: "தற்போதைய நிதியாண்டு",
     },
     stats: {
       revenue: "வருவாய்",
@@ -2220,7 +2220,8 @@ const locale = {
     },
     charts: {
       revenueMomentumTitle: "வருவாய் உத்வேகம்",
-      revenueMomentumDescription: "கடந்த ஆண்டின் மாதாந்திர வருவாய் போக்கு",
+      revenueMomentumDescription:
+        "தற்போதைய நிதியாண்டிற்கான மாதாந்திர வருவாய் போக்கு",
       revenueTrendEyebrow: "வருவாய் போக்கு",
       revenueLeadersTitle: "வருவாய் தலைவர்கள்",
       revenueLeadersDescription:

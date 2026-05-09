@@ -317,7 +317,10 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto" data-testid="invoice-preview">
+    <div
+      className="mx-auto w-full min-w-0 max-w-4xl"
+      data-testid="invoice-preview"
+    >
       {/* Action Bar */}
       {!isEditing && (
         <div className="invoice-print-hide mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -392,7 +395,7 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
               <Button
                 data-testid="invoice-preview-send-action"
                 size="sm"
-                className="bg-[#5E58F1] hover:bg-[#4D47E0]"
+                className="bg-foreground text-background hover:bg-foreground/90"
                 onClick={() => void handleAction("send")}
                 disabled={isSending}
               >
@@ -408,7 +411,7 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
               <Button
                 data-testid="invoice-preview-reminder-action"
                 size="sm"
-                className="bg-[#5E58F1] hover:bg-[#4D47E0]"
+                className="bg-foreground text-background hover:bg-foreground/90"
                 onClick={() => void handleAction("send")}
                 disabled={isSending}
               >
@@ -433,10 +436,10 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
       )}
 
       {/* Invoice Preview Card */}
-      <Card className="border-border bg-background p-4 text-foreground shadow-sm print:border-gray-200 print:bg-white print:text-gray-900 sm:p-8">
+      <Card className="overflow-hidden border-border bg-background p-4 text-foreground shadow-sm print:overflow-visible print:border-gray-200 print:bg-white print:text-gray-900 sm:p-8">
         {/* Header */}
-        <div className="mb-8 flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
-          <div>
+        <div className="mb-8 flex min-w-0 flex-col gap-6">
+          <div className="min-w-0">
             {invoice.company?.logo ? (
               <img
                 src={invoice.company.logo}
@@ -488,41 +491,41 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
             </div>
           </div>
 
-          <div className="text-left sm:text-right">
-            <h2 className="mb-2 text-3xl font-bold text-foreground print:text-gray-900">
+          <div className="w-full min-w-0 text-left">
+            <h2 className="mb-2 break-words text-3xl font-bold text-foreground print:text-gray-900">
               {i18n.t("invoices.invoice")}
             </h2>
             <div className="text-sm space-y-1">
               <p className="text-muted-foreground print:text-gray-600">
                 {i18n.t("invoices.invoiceNumber")}
               </p>
-              <p className="text-lg font-semibold text-foreground print:text-gray-900">
+              <p className="break-words text-lg font-semibold text-foreground [overflow-wrap:anywhere] print:text-gray-900">
                 #{invoice.invoiceNumber}
               </p>
             </div>
             <div className="mt-4 text-sm space-y-1">
               <div className="flex justify-between gap-4">
-                <span className="text-muted-foreground print:text-gray-600">
+                <span className="shrink-0 text-muted-foreground print:text-gray-600">
                   {i18n.t("invoices.issueDate")}:
                 </span>
-                <span className="font-medium text-foreground print:text-gray-900">
+                <span className="min-w-0 flex-1 break-words text-right font-medium text-foreground [overflow-wrap:anywhere] print:text-gray-900">
                   {formatDate(invoice.issueDate)}
                 </span>
               </div>
               <div className="flex justify-between gap-4">
-                <span className="text-muted-foreground print:text-gray-600">
+                <span className="shrink-0 text-muted-foreground print:text-gray-600">
                   {i18n.t("invoices.dueDate")}:
                 </span>
-                <span className="font-medium text-foreground print:text-gray-900">
+                <span className="min-w-0 flex-1 break-words text-right font-medium text-foreground [overflow-wrap:anywhere] print:text-gray-900">
                   {formatDate(invoice.dueDate)}
                 </span>
               </div>
               {invoice.reference && (
                 <div className="flex justify-between gap-4">
-                  <span className="text-muted-foreground print:text-gray-600">
+                  <span className="shrink-0 text-muted-foreground print:text-gray-600">
                     {i18n.t("invoices.reference")}:
                   </span>
-                  <span className="font-medium text-foreground print:text-gray-900">
+                  <span className="min-w-0 flex-1 break-words text-right font-medium text-foreground [overflow-wrap:anywhere] print:text-gray-900">
                     {invoice.reference}
                   </span>
                 </div>
@@ -567,7 +570,7 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
 
         {/* Line Items Table */}
         <div className="mb-8">
-          <div className="space-y-3 sm:hidden">
+          <div className="space-y-3 lg:hidden">
             {invoice.lineItems.map((item, index) => (
               <div
                 className="rounded-lg border border-border p-4"
@@ -622,8 +625,15 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
               </div>
             ))}
           </div>
-          <div className="hidden sm:block">
-            <table className="w-full">
+          <div className="hidden min-w-0 lg:block">
+            <table className="w-full table-fixed">
+              <colgroup>
+                <col className="w-[42%]" />
+                <col className="w-[16%]" />
+                <col className="w-[12%]" />
+                <col className="w-[15%]" />
+                <col className="w-[15%]" />
+              </colgroup>
               <thead>
                 <tr className="border-b-2 border-border print:border-gray-200">
                   <th className="px-2 py-3 text-left text-sm font-semibold text-foreground print:text-gray-700">
@@ -649,28 +659,30 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
                     key={item.id || index}
                     className="border-b border-border/70 print:border-gray-100"
                   >
-                    <td className="px-2 py-3 text-sm text-foreground print:text-gray-900">
-                      <div className="space-y-1">
+                    <td className="min-w-0 px-2 py-3 align-top text-sm text-foreground print:text-gray-900">
+                      <div className="min-w-0 space-y-1">
                         {item.name && (
-                          <p className="font-medium">{item.name}</p>
+                          <p className="break-words font-medium [overflow-wrap:anywhere]">
+                            {item.name}
+                          </p>
                         )}
                         {item.description && (
-                          <p className="whitespace-pre-wrap break-words text-muted-foreground print:text-gray-600">
+                          <p className="whitespace-pre-wrap break-words text-muted-foreground [overflow-wrap:anywhere] print:text-gray-600">
                             {item.description}
                           </p>
                         )}
                       </div>
                     </td>
-                    <td className="px-2 py-3 text-center text-sm text-muted-foreground print:text-gray-600">
+                    <td className="px-2 py-3 text-center align-top text-sm text-muted-foreground print:text-gray-600">
                       {item.date ? formatDate(item.date) : "-"}
                     </td>
-                    <td className="px-2 py-3 text-center text-sm text-foreground print:text-gray-900">
+                    <td className="break-words px-2 py-3 text-center align-top text-sm tabular-nums text-foreground [overflow-wrap:anywhere] print:text-gray-900">
                       {formatQuantity(item.quantity)}
                     </td>
-                    <td className="px-2 py-3 text-right text-sm text-foreground print:text-gray-900">
+                    <td className="break-words px-2 py-3 text-right align-top text-sm tabular-nums text-foreground [overflow-wrap:anywhere] print:text-gray-900">
                       {currencyFormat(currency, item.rate)}
                     </td>
-                    <td className="px-2 py-3 text-right text-sm font-medium text-foreground print:text-gray-900">
+                    <td className="break-words px-2 py-3 text-right align-top text-sm font-medium tabular-nums text-foreground [overflow-wrap:anywhere] print:text-gray-900">
                       {formatLineAmount(item)}
                     </td>
                   </tr>
@@ -682,42 +694,42 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
 
         {/* Totals */}
         <div className="mb-8 flex justify-end">
-          <div className="w-full sm:w-80">
+          <div className="w-full min-w-0 sm:w-80">
             <div className="space-y-2 text-sm">
-              <div className="flex justify-between py-2">
+              <div className="flex justify-between gap-4 py-2">
                 <span className="text-muted-foreground print:text-gray-600">
                   {i18n.t("invoices.subtotal")}
                 </span>
-                <span className="font-medium text-foreground print:text-gray-900">
+                <span className="min-w-0 break-words text-right font-medium tabular-nums text-foreground [overflow-wrap:anywhere] print:text-gray-900">
                   {currencyFormat(currency, invoice.subtotal ?? invoice.amount)}
                 </span>
               </div>
               {invoice.discount > 0 && (
-                <div className="flex justify-between py-2">
+                <div className="flex justify-between gap-4 py-2">
                   <span className="text-muted-foreground print:text-gray-600">
-                    Discount
+                    {i18n.t("invoices.discount")}
                   </span>
-                  <span className="font-medium text-red-600">
+                  <span className="min-w-0 break-words text-right font-medium tabular-nums text-red-600 [overflow-wrap:anywhere]">
                     -{currencyFormat(currency, invoice.discount)}
                   </span>
                 </div>
               )}
               {invoice.tax > 0 && (
-                <div className="flex justify-between py-2">
+                <div className="flex justify-between gap-4 py-2">
                   <span className="text-muted-foreground print:text-gray-600">
-                    Tax
+                    {i18n.t("invoices.tax")}
                   </span>
-                  <span className="font-medium text-foreground print:text-gray-900">
+                  <span className="min-w-0 break-words text-right font-medium tabular-nums text-foreground [overflow-wrap:anywhere] print:text-gray-900">
                     {currencyFormat(currency, invoice.tax)}
                   </span>
                 </div>
               )}
               <Separator className="my-2" />
-              <div className="flex justify-between py-2">
+              <div className="flex justify-between gap-4 py-2">
                 <span className="text-base font-semibold text-foreground print:text-gray-900">
                   {i18n.t("reports.totalDue")}
                 </span>
-                <span className="text-xl font-bold text-foreground print:text-gray-900">
+                <span className="min-w-0 break-words text-right text-xl font-bold tabular-nums text-foreground [overflow-wrap:anywhere] print:text-gray-900">
                   {currencyFormat(currency, invoice.amount)}
                 </span>
               </div>

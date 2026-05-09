@@ -2155,7 +2155,7 @@ const locale = {
       week: "ఈ వారం",
       month: "ఈ నెల",
       quarter: "ఈ త్రైమాసికంలో",
-      year: "ఈ సంవత్సరం",
+      year: "ప్రస్తుత ఆర్థిక సంవత్సరం",
     },
     stats: {
       revenue: "ఆదాయం",
@@ -2176,7 +2176,8 @@ const locale = {
     },
     charts: {
       revenueMomentumTitle: "రాబడి ఊపందుకోవడం",
-      revenueMomentumDescription: "గత సంవత్సరంలో నెలవారీ ఆదాయ ధోరణి",
+      revenueMomentumDescription:
+        "ప్రస్తుత ఆర్థిక సంవత్సరానికి నెలవారీ ఆదాయ ధోరణి",
       revenueTrendEyebrow: "ఆదాయ ధోరణి",
       revenueLeadersTitle: "రెవెన్యూ లీడర్లు",
       revenueLeadersDescription: "ఆదాయ సహకారం ప్రకారం అగ్రశ్రేణి క్లయింట్లు",

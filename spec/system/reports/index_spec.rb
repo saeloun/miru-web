@@ -193,6 +193,45 @@ RSpec.describe "Reports", type: :system, js: true do
       end
     end
 
+    it "applies time entry date and client filters from the toolbar controls" do
+      included_client = create(:client, company:, name: "Toolbar Filter Alpha Client")
+      excluded_client = create(:client, company:, name: "Toolbar Filter Beta Client")
+      current_client = create(:client, company:, name: "Toolbar Filter Current Client")
+      included_project = create(:project, client: included_client, name: "Toolbar Alpha Project")
+      excluded_project = create(:project, client: excluded_client, name: "Toolbar Beta Project")
+      current_project = create(:project, client: current_client, name: "Toolbar Current Project")
+      last_month_date = 1.month.ago.beginning_of_month + 1.day
+      create(:project_member, user: admin, project: included_project)
+      create(:project_member, user: admin, project: excluded_project)
+      create(:project_member, user: admin, project: current_project)
+      create(:timesheet_entry, user: admin, project: included_project, duration: 240, work_date: last_month_date)
+      create(:timesheet_entry, user: admin, project: excluded_project, duration: 180, work_date: last_month_date)
+      create(:timesheet_entry, user: admin, project: current_project, duration: 120, work_date: Date.current)
+
+      with_forgery_protection do
+        visit "/reports/time-entry"
+
+        expect_reports_shell("Time Reports")
+        expect(page).to have_content("Toolbar Filter Current Client", wait: 10)
+
+        find("button", text: "This Month", match: :first).click
+        find("[role='option']", text: "Last Month", match: :first).click
+
+        expect(page).to have_content("Toolbar Filter Alpha Client", wait: 10)
+        expect(page).to have_content("Toolbar Filter Beta Client", wait: 10)
+        expect(page).to have_no_content("Toolbar Filter Current Client")
+
+        find("button", text: "Clients", match: :first).click
+        find("[role='menuitemcheckbox']", text: "Toolbar Filter Alpha Client", match: :first).click
+        page.send_keys(:escape)
+
+        expect(page).to have_content("Toolbar Filter Alpha Client", wait: 10)
+        expect(page).to have_no_content("Toolbar Filter Beta Client")
+        expect(page).to have_no_content("Toolbar Filter Current Client")
+        expect(page.current_url).to include("clients=#{included_client.id}")
+      end
+    end
+
     it "copies the time entry report permalink" do
       client = create(:client, company:, name: "Permalink Client")
       project = create(:project, client:, name: "Permalink Project")

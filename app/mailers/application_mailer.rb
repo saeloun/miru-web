@@ -8,8 +8,12 @@ class ApplicationMailer < ActionMailer::Base
     reply_to: ENV["REPLY_TO_EMAIL"].presence || SUPPORT_EMAIL
   )
   layout "mailer"
-  before_action :attach_miru_logo
-  helper_method :miru_logo_attachment_url
+  helper_method :miru_logo_dark_url, :miru_logo_light_url, :email_company_logo_url, :email_company_name
+
+  MIRU_LOGO_FILES = {
+    dark: ["MiruLogoDarkWithText.png", Rails.root.join("app", "assets", "images", "MiruLogoWithText.png")],
+    light: ["MiruLogoLightWithText.png", Rails.root.join("app", "assets", "images", "MiruLogoLightWithText.png")]
+  }.freeze
 
   rescue_from Postmark::InactiveRecipientError do |exception|
     self.class.handle_inactive_recipient(exception)
@@ -44,20 +48,49 @@ class ApplicationMailer < ActionMailer::Base
       self.class.send(:extract_inactive_emails, message)
     end
 
-    def attach_miru_logo
-      return if attachments["miruLogoWithText.png"].present?
-
-      logo_path = Rails.root.join("public", "miruLogoWithText.png")
-      return unless logo_path.exist?
-
-      attachments.inline["miruLogoWithText.png"] = {
-        content: logo_path.binread,
-        mime_type: "image/png"
-      }
+    def attach_miru_logos
+      MIRU_LOGO_FILES.each_value { |(filename, path)| attach_inline_logo(filename, path) }
     end
 
-    def miru_logo_attachment_url
-      attachments["miruLogoWithText.png"]&.url
+    def miru_logo_dark_url
+      attach_miru_logos
+      attachments[MIRU_LOGO_FILES[:dark].first]&.url
+    end
+
+    def miru_logo_light_url
+      attach_miru_logos
+      attachments[MIRU_LOGO_FILES[:light].first]&.url
+    end
+
+    def attach_inline_logo(filename, path)
+      return if attachments[filename].present?
+
+      return unless path.exist?
+
+      attachments.inline[filename] = { content: path.binread, mime_type: "image/png" }
+    end
+
+    def email_company_logo_url
+      company = email_company_record
+
+      return logo_company_url(company) if company&.logo&.attached?
+      return @company_logo if @company_logo.present?
+
+      @company_details[:logo] if @company_details&.[](:logo).present?
+    end
+
+    def email_company_name
+      company = email_company_record
+
+      return company.name if company&.name.present?
+      return @company if @company.is_a?(String) && @company.present?
+      return @company_details&.[](:name) if @company_details&.[](:name).present?
+
+      t("mailers.layout.brand")
+    end
+
+    def email_company_record
+      @company if @company.respond_to?(:logo) && @company.respond_to?(:name)
     end
 
     def default_reply_to_address

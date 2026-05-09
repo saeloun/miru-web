@@ -21,6 +21,19 @@ RSpec.describe InvoiceMailer, type: :mailer do
       expect(mail.body.encoded).to include(invoice.invoice_number)
     end
 
+    context "when the company has a logo" do
+      let(:company) { create :company, :with_logo, name: "Saeloun Logo Co" }
+
+      it "renders the organization logo instead of attaching Miru fallback logos" do
+        body = mail.html_part.body.decoded
+
+        expect(body).to include("/companies/#{company.id}/logo")
+        expect(body).to include('alt="Saeloun Logo Co"')
+        expect(mail.attachments["MiruLogoDarkWithText.png"]).to be_nil
+        expect(mail.attachments["MiruLogoLightWithText.png"]).to be_nil
+      end
+    end
+
     context "with notification preferences" do
       let(:admin_user) { create(:user, current_workspace_id: company.id) }
 

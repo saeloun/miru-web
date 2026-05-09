@@ -2022,7 +2022,7 @@ const locale = {
       week: "本星期",
       month: "本月",
       quarter: "本季度",
-      year: "今年",
+      year: "当前财年",
     },
     stats: {
       revenue: "收入",
@@ -2043,7 +2043,7 @@ const locale = {
     },
     charts: {
       revenueMomentumTitle: "营收势头",
-      revenueMomentumDescription: "过去一年的月度收入趋势",
+      revenueMomentumDescription: "当前财年的月度收入趋势",
       revenueTrendEyebrow: "收入趋势",
       revenueLeadersTitle: "营收领先者",
       revenueLeadersDescription: "按营收贡献排名前列的客户",

@@ -2177,7 +2177,7 @@ const locale = {
       week: "Diese Woche",
       month: "Diesen Monat",
       quarter: "Dieses Quartal",
-      year: "Dieses Jahr",
+      year: "Aktuelles Geschäftsjahr",
     },
     stats: {
       revenue: "Einnahmen",
@@ -2199,7 +2199,7 @@ const locale = {
     charts: {
       revenueMomentumTitle: "Umsatzdynamik",
       revenueMomentumDescription:
-        "Monatliche Umsatzentwicklung im vergangenen Jahr",
+        "Monatliche Umsatzentwicklung für das laufende Geschäftsjahr",
       revenueTrendEyebrow: "Umsatztrend",
       revenueLeadersTitle: "Umsatzführer",
       revenueLeadersDescription: "Umsatzstärkste Kunden nach Beitrag",

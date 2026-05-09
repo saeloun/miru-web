@@ -2181,7 +2181,7 @@ const locale = {
       week: "Cette semaine",
       month: "Ce mois-ci",
       quarter: "Ce trimestre",
-      year: "Cette année",
+      year: "Exercice Financier Actuel",
     },
     stats: {
       revenue: "Revenu",
@@ -2203,7 +2203,7 @@ const locale = {
     charts: {
       revenueMomentumTitle: "Dynamique des revenus",
       revenueMomentumDescription:
-        "Évolution mensuelle du chiffre d'affaires au cours de l'année écoulée",
+        "Évolution mensuelle du chiffre d'affaires pour l'exercice en cours",
       revenueTrendEyebrow: "TENDANCE DES REVENUS",
       revenueLeadersTitle: "Leaders en matière de revenus",
       revenueLeadersDescription:

@@ -1,7 +1,7 @@
 import { format, isValid, parseISO } from "date-fns";
 
 export const formatReportApiDate = (date?: Date) =>
-  date ? format(date, "dd/MM/yyyy") : undefined;
+  date ? format(date, "yyyy-MM-dd") : undefined;
 
 export const formatReportQueryDate = (date?: Date) =>
   date ? format(date, "yyyy-MM-dd") : undefined;

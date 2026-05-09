@@ -2126,7 +2126,7 @@ const locale = {
       week: "ਇਸ ਹਫ਼ਤੇ",
       month: "ਇਸ ਮਹੀਨੇ",
       quarter: "ਇਸ ਤਿਮਾਹੀ",
-      year: "ਇਸ ਸਾਲ",
+      year: "ਮੌਜੂਦਾ ਵਿੱਤੀ ਸਾਲ",
     },
     stats: {
       revenue: "ਮਾਲੀਆ",
@@ -2147,7 +2147,7 @@ const locale = {
     },
     charts: {
       revenueMomentumTitle: "ਆਮਦਨ ਦੀ ਗਤੀ",
-      revenueMomentumDescription: "ਪਿਛਲੇ ਸਾਲ ਦੌਰਾਨ ਮਾਸਿਕ ਆਮਦਨ ਦਾ ਰੁਝਾਨ",
+      revenueMomentumDescription: "ਮੌਜੂਦਾ ਵਿੱਤੀ ਸਾਲ ਲਈ ਮਾਸਿਕ ਆਮਦਨ ਦਾ ਰੁਝਾਨ",
       revenueTrendEyebrow: "ਰੈਵੇਨਿਊ ਟ੍ਰੈਂਡ",
       revenueLeadersTitle: "ਮਾਲੀਆ ਆਗੂ",
       revenueLeadersDescription: "ਆਮਦਨ ਯੋਗਦਾਨ ਦੇ ਹਿਸਾਬ ਨਾਲ ਪ੍ਰਮੁੱਖ ਗਾਹਕ",

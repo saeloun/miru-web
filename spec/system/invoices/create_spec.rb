@@ -63,7 +63,10 @@ RSpec.describe "Invoice creation", type: :system, js: true do
 
       expect do
         click_button "Send Invoice"
-        expect(page).to have_text("Failed to generate PDF", wait: 10)
+        expect(page).to have_text(
+          "Invoice was saved as a draft, but sending failed: Failed to generate PDF",
+          wait: 10
+        )
       end.to change(Invoice, :count).by(1)
 
       invoice = Invoice.find_by!(invoice_number: "INV-SEND-FAIL-001")
@@ -73,7 +76,10 @@ RSpec.describe "Invoice creation", type: :system, js: true do
 
       expect do
         click_button "Send Invoice"
-        expect(page).to have_text("Failed to generate PDF", wait: 10)
+        expect(page).to have_text(
+          "Invoice was saved as a draft, but sending failed: Failed to generate PDF",
+          wait: 10
+        )
       end.not_to change(Invoice, :count)
 
       expect(page).to have_no_text("Invoice number has already been taken")
@@ -91,6 +97,8 @@ RSpec.describe "Invoice creation", type: :system, js: true do
         quantity: "02:00",
         description: "Preview name check"
       )
+
+      show_invoice_preview
 
       within "[data-testid='invoice-preview']" do
         expect(page).to have_text("Manual preview item", wait: 10)
@@ -111,10 +119,14 @@ RSpec.describe "Invoice creation", type: :system, js: true do
     with_forgery_protection do
       visit_new_invoice_for(client)
 
-      expect(page).to have_text(company.name, wait: 10)
-      expect(page).to have_text("100 Market St", wait: 10)
-      expect(page).to have_text("TAX-123", wait: 10)
-      expect(page).not_to have_text("support@getmiru.com", wait: 1)
+      show_invoice_preview
+
+      within "[data-testid='invoice-preview']" do
+        expect(page).to have_text(company.name, wait: 10)
+        expect(page).to have_text("100 Market St", wait: 10)
+        expect(page).to have_text("TAX-123", wait: 10)
+        expect(page).not_to have_text("support@getmiru.com", wait: 1)
+      end
     end
   end
 
