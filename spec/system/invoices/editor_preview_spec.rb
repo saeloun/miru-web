@@ -40,12 +40,17 @@ RSpec.describe "Invoice editor preview", type: :system, js: true do
       expect(page).to have_css("#react-root", wait: 10)
       expect(page).to have_text("Edit invoice", wait: 10)
       expect(page).to have_text("Fill in the details and preview the invoice before sending it.", wait: 10)
-      expect(page).to have_content("Description", wait: 10)
-      expect(page).not_to have_text("undefined undefined", wait: 1)
-      expect(page).to have_text("15:00", wait: 10)
-      expect(page).to have_text("$1,500.00", wait: 10)
-      expect(page).not_to have_text("$90,000.00", wait: 1)
-      expect(page).not_to have_css("[data-testid='invoice-preview'] table", text: "$0.00", wait: 1)
+
+      show_invoice_preview
+
+      within "[data-testid='invoice-preview']" do
+        expect(page).to have_content("Description", wait: 10)
+        expect(page).not_to have_text("undefined undefined", wait: 1)
+        expect(page).to have_text("15:00", wait: 10)
+        expect(page).to have_text("$1,500.00", wait: 10)
+        expect(page).not_to have_text("$90,000.00", wait: 1)
+        expect(page).not_to have_css("table", text: "$0.00", wait: 1)
+      end
     end
   end
 
@@ -74,9 +79,13 @@ RSpec.describe "Invoice editor preview", type: :system, js: true do
       visit "/invoices/#{invoice.id}/edit"
 
       expect(page).to have_css("#react-root", wait: 10)
-      expect(page).to have_text("INV-LARGE-VALUES-001", wait: 10)
-      expect(page).to have_text("EnterpriseComplianceArchitectureReview", wait: 10)
-      expect(page).to have_text("$493,826.80", wait: 10)
+      show_invoice_preview
+
+      within "[data-testid='invoice-preview']" do
+        expect(page).to have_text("INV-LARGE-VALUES-001", wait: 10)
+        expect(page).to have_text("EnterpriseComplianceArchitectureReview", wait: 10)
+        expect(page).to have_text("$493,826.80", wait: 10)
+      end
 
       expect(page.evaluate_script("document.documentElement.scrollWidth <= window.innerWidth + 1")).to be(true)
       expect(page.evaluate_script("document.body.scrollWidth <= window.innerWidth + 1")).to be(true)
