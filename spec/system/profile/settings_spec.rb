@@ -52,7 +52,7 @@ RSpec.describe "Profile Settings", type: :system, js: true do
       expect(page).to have_css("[data-testid='profile-account-card']", wait: 10)
       within("[data-testid='profile-account-card']") do
         expect(page).to have_content("Account")
-        expect(page).to have_button("Logout")
+        expect(page).to have_css("[data-testid='profile-settings-logout-button']")
       end
     end
   end
