@@ -18,10 +18,10 @@ const LineItemEditorRow = ({
   item,
   handleDelete,
   setSelectedOption,
-  selectedOption,
   dateFormat,
 }) => {
   const strName = getLineItemDisplayName(item);
+  const rowKey = item.id || item.timesheet_entry_id || strName;
   const [name, setName] = useState<string>(strName);
   const [lineItemDate, setLineItemDate] = useState<Date>(
     dayjs(item.date).isValid() ? dayjs(item.date).toDate() : new Date()
@@ -32,10 +32,6 @@ const LineItemEditorRow = ({
   const [lineTotal, setLineTotal] = useState<string>(
     item.lineTotal ?? item.amount ?? lineTotalCalc(item.quantity, item.rate)
   );
-
-  useEffect(() => {
-    setName(strName);
-  }, [strName]);
 
   useEffect(() => {
     const names = name.split(" ");
@@ -51,20 +47,34 @@ const LineItemEditorRow = ({
       lineTotal,
     };
 
-    const selectedOptionArr = selectedOption.map(option => {
-      if (
-        (option.id && option.id === item.id) ||
-        (option.timesheet_entry_id &&
-          option.timesheet_entry_id === item.timesheet_entry_id)
-      ) {
-        return newItem;
+    const matchesItem = option => {
+      const itemHasId = item.id !== undefined && item.id !== null;
+      const itemHasTimesheetEntryId =
+        item.timesheet_entry_id !== undefined &&
+        item.timesheet_entry_id !== null;
+
+      if (itemHasId) {
+        return option.id === item.id;
       }
 
-      return option;
-    });
+      if (itemHasTimesheetEntryId) {
+        return option.timesheet_entry_id === item.timesheet_entry_id;
+      }
+
+      return option === item;
+    };
+
+    const updateSelectedOption = currentSelectedOption =>
+      currentSelectedOption.map(option => {
+        if (matchesItem(option)) {
+          return newItem;
+        }
+
+        return option;
+      });
 
     if (name) {
-      setSelectedOption(selectedOptionArr);
+      setSelectedOption(updateSelectedOption);
     }
   }, [name, lineItemDate, description, quantity, rate, lineTotal]);
 
@@ -94,10 +104,15 @@ const LineItemEditorRow = ({
 
   return (
     <>
-      <tr className="invoice-items-row cursor-pointer">
+      <tr
+        className="invoice-items-row cursor-pointer"
+        data-line-item-row-key={rowKey}
+        data-testid="invoice-line-item-row"
+      >
         <td className="px-1 py-3 text-left text-base font-normal text-foreground ">
           <input
             className="focus:outline-none w-full rounded border border-transparent bg-transparent p-1 text-sm font-medium text-foreground focus:border-border focus:bg-background focus:ring-1 focus:ring-ring"
+            data-testid="invoice-line-item-name"
             placeholder={name}
             type="text"
             value={name}
@@ -117,6 +132,7 @@ const LineItemEditorRow = ({
         <td className="px-1 py-3 text-right text-base font-normal text-foreground ">
           <input
             className="focus:outline-none w-full rounded border border-transparent bg-transparent p-1 text-right text-sm font-medium text-foreground focus:border-border focus:bg-background focus:ring-1 focus:ring-ring"
+            data-testid="invoice-line-item-rate"
             placeholder={i18n.t("invoices.rate")}
             type="text"
             value={rate}
@@ -127,6 +143,7 @@ const LineItemEditorRow = ({
         <td className="px-1 py-3 text-right text-base font-normal text-foreground ">
           <input
             className="focus:outline-none w-full rounded border border-transparent bg-transparent p-1 text-right text-sm font-medium text-foreground focus:border-border focus:bg-background focus:ring-1 focus:ring-ring"
+            data-testid="invoice-line-item-quantity"
             placeholder={i18n.t("invoices.quantity")}
             type="text"
             value={quantity}
@@ -157,6 +174,7 @@ const LineItemEditorRow = ({
         >
           <TextareaAutosize
             className="focus:outline-none w-full rounded border border-transparent bg-transparent p-1 text-sm font-medium text-muted-foreground focus:border-border focus:bg-background focus:ring-1 focus:ring-ring"
+            data-testid="invoice-line-item-description"
             placeholder={i18n.t("invoices.enterDescription")}
             value={description}
             onChange={e => setDescription(e.target["value"])}

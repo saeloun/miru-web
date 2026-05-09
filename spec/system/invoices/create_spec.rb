@@ -26,8 +26,7 @@ RSpec.describe "Invoice creation", type: :system, js: true do
         description: "Local save check"
       )
 
-      expect(page).to have_text("Manual item", wait: 10)
-      expect(page).to have_text("Local save check", wait: 10)
+      expect_invoice_line_item("Manual item", description: "Local save check")
 
       save_invoice
 
@@ -195,8 +194,8 @@ RSpec.describe "Invoice creation", type: :system, js: true do
 
       visit_invoice_editor(invoice)
 
-      expect(page).to have_text("Committed item", wait: 10)
-      expect(page).to have_text("Pending item", wait: 10)
+      expect_invoice_line_item("Committed item")
+      expect_invoice_line_item("Pending item")
       expect(invoice.invoice_line_items.count).to eq(2)
     end
   end

@@ -37,7 +37,6 @@ const NewLineItemRow = ({
       dateFormat={dateFormat}
       handleDelete={handleDelete}
       item={item}
-      selectedOption={selectedOption}
       setSelectedOption={setSelectedOption}
     />
   );

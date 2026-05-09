@@ -162,26 +162,44 @@ module InvoiceEditorSystemHelpers
 
   def commit_pending_manual_line_item(name:)
     find("[data-testid='invoice-manual-entry-quantity']", wait: 10).send_keys(:enter)
-    expect(page).to have_text(name, wait: 10)
+    expect_invoice_line_item(name)
   end
 
   def add_timesheet_line_item(description:)
     click_button "LINE ITEMS"
     find("[data-testid='invoice-manual-entry-name']", wait: 10).click
     find("#entriesList", text: description, wait: 10).click
-    expect(page).to have_text(description, wait: 10)
+    expect(page).to have_field(with: description, wait: 10)
   end
 
   def update_invoice_line_item(original_name:, name: nil, rate: nil, quantity: nil, description: nil)
     row = find_invoice_line_item_row(original_name)
-    inputs = row.all("input")
+    row_selector = "[data-line-item-row-key='#{row["data-line-item-row-key"]}']"
 
-    inputs[0].set(name) if name
-    inputs[2].set(rate) if rate
-    inputs[3].set(quantity) if quantity
+    if rate
+      find(row_selector, wait: 10)
+        .find("[data-testid='invoice-line-item-rate']", wait: 10)
+        .set(rate)
+    end
+
+    if quantity
+      find(row_selector, wait: 10)
+        .find("[data-testid='invoice-line-item-quantity']", wait: 10)
+        .set(quantity)
+    end
 
     if description
-      row.find(:xpath, "following-sibling::tr[1]//textarea", wait: 10).set(description)
+      find(row_selector, wait: 10).find(
+        :xpath,
+        "following-sibling::tr[1]//*[@data-testid='invoice-line-item-description']",
+        wait: 10
+      ).set(description)
+    end
+
+    if name
+      find(row_selector, wait: 10)
+        .find("[data-testid='invoice-line-item-name']", wait: 10)
+        .set(name)
     end
   end
 
@@ -191,6 +209,15 @@ module InvoiceEditorSystemHelpers
 
   def find_invoice_line_item_row(name)
     find(:fillable_field, with: name, wait: 10).find(:xpath, "./ancestor::tr[1]")
+  end
+
+  def expect_invoice_line_item(name, description: nil)
+    row = find_invoice_line_item_row(name)
+    expect(row).to have_field(type: "text", with: name, wait: 10)
+
+    if description
+      expect(page).to have_field(with: description, wait: 10)
+    end
   end
 
   def save_invoice
@@ -208,10 +235,10 @@ module InvoiceEditorSystemHelpers
   end
 
   def show_invoice_editor
-    return if has_button?("Save", wait: 1)
+    return if has_field?("invoiceNumber", wait: 1)
 
     find("button", exact_text: "Edit", wait: 10).click
-    expect(page).to have_button("Save", wait: 10)
+    expect(page).to have_field("invoiceNumber", wait: 10)
   end
 
   def expect_invoice_preview_totals(currency:, subtotal:, total_due:, discount: nil, tax: nil)
