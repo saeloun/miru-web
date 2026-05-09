@@ -71,20 +71,22 @@ class ApplicationMailer < ActionMailer::Base
     end
 
     def email_company_logo_url
+      company_details = @company_details&.with_indifferent_access
       company = email_company_record
 
       return logo_company_url(company) if company&.logo&.attached?
       return @company_logo if @company_logo.present?
 
-      @company_details[:logo] if @company_details&.[](:logo).present?
+      company_details[:logo] if company_details&.[](:logo).present?
     end
 
     def email_company_name
+      company_details = @company_details&.with_indifferent_access
       company = email_company_record
 
       return company.name if company&.name.present?
       return @company if @company.is_a?(String) && @company.present?
-      return @company_details&.[](:name) if @company_details&.[](:name).present?
+      return company_details[:name] if company_details&.[](:name).present?
 
       t("mailers.layout.brand")
     end

@@ -30,7 +30,14 @@ class DashboardPresenter
       "december" => 12, "dec" => 12
     }
 
-    month_mapping[company.fiscal_year_end.downcase.strip] || 12
+    fiscal_year_end = company.fiscal_year_end.downcase.strip
+    parsed_month = month_mapping[fiscal_year_end]
+    return parsed_month if parsed_month
+
+    Rails.logger.warn(
+      "[DashboardPresenter] Invalid fiscal_year_end=#{company.fiscal_year_end.inspect} for company_id=#{company.id}; defaulting to 12"
+    )
+    12
   end
 
   def data

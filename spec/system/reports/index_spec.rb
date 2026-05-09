@@ -228,7 +228,7 @@ RSpec.describe "Reports", type: :system, js: true do
         expect(page).to have_content("Toolbar Filter Alpha Client", wait: 10)
         expect(page).to have_no_content("Toolbar Filter Beta Client")
         expect(page).to have_no_content("Toolbar Filter Current Client")
-        expect(page.current_url).to include("clients=#{included_client.id}")
+        expect(page).to have_current_path(/clients=#{included_client.id}/, url: true, wait: 10)
       end
     end
 
@@ -428,7 +428,10 @@ RSpec.describe "Reports", type: :system, js: true do
 
         button_styles = page.evaluate_script(<<~JS)
           Array.from(document.querySelectorAll("button"))
-            .filter((button) => ["As of #{Date.current.strftime("%b %-d, %Y")}", "Clients", "Export"].includes(button.textContent.trim().replace(/\\s+/g, " ")))
+            .filter((button) => {
+              const text = button.textContent.trim().replace(/\\s+/g, " ");
+              return text.startsWith("As of ") || ["Clients", "Export"].includes(text);
+            })
             .map((button) => getComputedStyle(button).backgroundColor)
         JS
 

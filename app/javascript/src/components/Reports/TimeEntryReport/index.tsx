@@ -701,11 +701,7 @@ const TimeEntryReport: React.FC = () => {
                     defaultMonth={dateRange?.from}
                     selected={dateRange}
                     onSelect={range => {
-                      setDateRange(
-                        range?.from && !range.to
-                          ? { from: range.from, to: range.from }
-                          : range
-                      );
+                      setDateRange(range);
                       setDateRangePreset("custom");
                     }}
                     numberOfMonths={2}

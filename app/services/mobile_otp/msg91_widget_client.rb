@@ -8,6 +8,8 @@ module MobileOtp
     SEND_OTP_URL = "#{BASE_URL}/sendOtp"
     VERIFY_OTP_URL = "#{BASE_URL}/verifyOtp"
     VERIFY_ACCESS_TOKEN_URL = "#{BASE_URL}/verifyAccessToken"
+    HTTP_OPEN_TIMEOUT = 5
+    HTTP_READ_TIMEOUT = 10
 
     Response = Struct.new(:req_id, :access_token, :identifier, keyword_init: true)
 
@@ -103,6 +105,8 @@ module MobileOtp
         request.body = payload.to_json
 
         response = Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == "https") do |http|
+          http.open_timeout = HTTP_OPEN_TIMEOUT
+          http.read_timeout = HTTP_READ_TIMEOUT
           http.request(request)
         end
 
@@ -119,10 +123,14 @@ module MobileOtp
       end
 
       def success_response?(body)
+        message = body["message"].to_s
+        successful_message = message.match?(/\b(success(?:ful|fully)?|verified)\b/i) &&
+          !message.match?(/\b(unsuccess(?:ful)?|not\s+verified|failed|failure|invalid|error)\b/i)
+
         body["type"].to_s.casecmp("success").zero? ||
           body["status"].to_s.casecmp("success").zero? ||
           body["success"] == true ||
-          body["message"].to_s.match?(/success|verified/i) ||
+          successful_message ||
           body["access-token"].present? ||
           body["access_token"].present?
       end

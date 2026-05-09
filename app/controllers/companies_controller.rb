@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 class CompaniesController < ApplicationController
-  skip_before_action :authenticate_user!
-  skip_after_action :verify_authorized
+  skip_before_action :authenticate_user!, only: :logo
+  skip_after_action :verify_authorized, only: :logo
 
   def logo
     company = Company.find_by(id: params[:id])
