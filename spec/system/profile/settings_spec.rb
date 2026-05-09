@@ -37,6 +37,26 @@ RSpec.describe "Profile Settings", type: :system, js: true do
     end
   end
 
+  it "moves logout from the dashboard header to profile account settings" do
+    with_forgery_protection do
+      visit "/dashboard"
+
+      expect(page).to have_css("#react-root", wait: 10)
+      within("header") do
+        expect(page).not_to have_button("Logout")
+      end
+
+      visit "/settings/profile"
+
+      expect(page).to have_css("#react-root", wait: 10)
+      expect(page).to have_css("[data-testid='profile-account-card']", wait: 10)
+      within("[data-testid='profile-account-card']") do
+        expect(page).to have_content("Account")
+        expect(page).to have_css("[data-testid='profile-settings-logout-button']")
+      end
+    end
+  end
+
   it "boots the app in the user's saved locale" do
     user.update!(locale: "hi")
 

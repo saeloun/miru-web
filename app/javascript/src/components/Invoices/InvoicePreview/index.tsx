@@ -395,7 +395,7 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
               <Button
                 data-testid="invoice-preview-send-action"
                 size="sm"
-                className="bg-[#5E58F1] hover:bg-[#4D47E0]"
+                className="bg-foreground text-background hover:bg-foreground/90"
                 onClick={() => void handleAction("send")}
                 disabled={isSending}
               >
@@ -411,7 +411,7 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
               <Button
                 data-testid="invoice-preview-reminder-action"
                 size="sm"
-                className="bg-[#5E58F1] hover:bg-[#4D47E0]"
+                className="bg-foreground text-background hover:bg-foreground/90"
                 onClick={() => void handleAction("send")}
                 disabled={isSending}
               >
@@ -570,7 +570,7 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
 
         {/* Line Items Table */}
         <div className="mb-8">
-          <div className="space-y-3 sm:hidden">
+          <div className="space-y-3 lg:hidden">
             {invoice.lineItems.map((item, index) => (
               <div
                 className="rounded-lg border border-border p-4"
@@ -625,14 +625,14 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
               </div>
             ))}
           </div>
-          <div className="hidden min-w-0 sm:block">
+          <div className="hidden min-w-0 lg:block">
             <table className="w-full table-fixed">
               <colgroup>
-                <col className="w-[34%]" />
-                <col className="w-[18%]" />
+                <col className="w-[42%]" />
                 <col className="w-[16%]" />
-                <col className="w-[16%]" />
-                <col className="w-[16%]" />
+                <col className="w-[12%]" />
+                <col className="w-[15%]" />
+                <col className="w-[15%]" />
               </colgroup>
               <thead>
                 <tr className="border-b-2 border-border print:border-gray-200">
@@ -659,7 +659,7 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
                     key={item.id || index}
                     className="border-b border-border/70 print:border-gray-100"
                   >
-                    <td className="px-2 py-3 align-top text-sm text-foreground print:text-gray-900">
+                    <td className="min-w-0 px-2 py-3 align-top text-sm text-foreground print:text-gray-900">
                       <div className="min-w-0 space-y-1">
                         {item.name && (
                           <p className="break-words font-medium [overflow-wrap:anywhere]">
@@ -707,7 +707,7 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
               {invoice.discount > 0 && (
                 <div className="flex justify-between gap-4 py-2">
                   <span className="text-muted-foreground print:text-gray-600">
-                    Discount
+                    {i18n.t("invoices.discount")}
                   </span>
                   <span className="min-w-0 break-words text-right font-medium tabular-nums text-red-600 [overflow-wrap:anywhere]">
                     -{currencyFormat(currency, invoice.discount)}
@@ -717,7 +717,7 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
               {invoice.tax > 0 && (
                 <div className="flex justify-between gap-4 py-2">
                   <span className="text-muted-foreground print:text-gray-600">
-                    Tax
+                    {i18n.t("invoices.tax")}
                   </span>
                   <span className="min-w-0 break-words text-right font-medium tabular-nums text-foreground [overflow-wrap:anywhere] print:text-gray-900">
                     {currencyFormat(currency, invoice.tax)}

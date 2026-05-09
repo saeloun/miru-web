@@ -395,9 +395,17 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
         navigate(`/invoices/${savedInvoice.id}/edit`);
       }
 
-      toast.error(
-        invoiceRequestErrorMessage(err, i18n.t("invoices.failedToSend"))
+      const errorMessage = invoiceRequestErrorMessage(
+        err,
+        i18n.t("invoices.failedToSend")
       );
+
+      toast.error(
+        savedInvoice
+          ? `Invoice was saved as a draft, but sending failed: ${errorMessage}`
+          : errorMessage
+      );
+      err.toastHandled = true;
       clearError();
     } finally {
       setIsLoading(false);

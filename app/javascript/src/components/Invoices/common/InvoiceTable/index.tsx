@@ -164,7 +164,7 @@ const InvoiceTable = ({
   return (
     <Fragment>
       <div className="w-full overflow-x-auto">
-        <table className="w-full table-fixed bg-card">
+        <table className="min-w-[760px] w-full table-fixed bg-card">
           <colgroup>
             <col className="w-[38%]" />
             <col className="w-[18%]" />
