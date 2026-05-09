@@ -29,6 +29,11 @@ namespace :api, defaults: { format: "json" } do
           post :recovery_codes, action: :regenerate_recovery_codes
         end
       end
+
+      resource :otp, only: [], controller: "otps" do
+        post :request, action: :create
+        post :verify
+      end
     end
 
     resource :chatbase_token, only: [:show]

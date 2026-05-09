@@ -223,6 +223,50 @@ RSpec.describe "Invoice listing", type: :system, js: true do
         expect(page).to have_content("INV-WE-002")
       end
     end
+
+    it "filters by client name and recovers the loaded list when search is cleared" do
+      with_forgery_protection do
+        visit "/invoices"
+
+        search = find_field(placeholder: "Search invoices...", wait: 10)
+        search.set("Wayne Enterprises")
+
+        within("table") do
+          expect(page).to have_content("Wayne Enterprises", wait: 10)
+          expect(page).to have_content("INV-WE-002")
+          expect(page).not_to have_content("Stark Industries")
+          expect(page).not_to have_content("INV-SI-001")
+        end
+        expect(page).to have_content(
+          "Viewing 1 matching invoices from 2 loaded",
+          wait: 10
+        )
+
+        search.set("missing client")
+        expect(page).to have_content("No results found", wait: 10)
+        expect(page).not_to have_content("INV-WE-002")
+
+        search.set("")
+        within("table") do
+          expect(page).to have_content("Stark Industries", wait: 10)
+          expect(page).to have_content("Wayne Enterprises")
+          expect(page).to have_content("INV-SI-001")
+          expect(page).to have_content("INV-WE-002")
+        end
+      end
+    end
+
+    it "opens the invoice detail view from a table row" do
+      with_forgery_protection do
+        visit "/invoices"
+
+        find("[data-testid='invoice-row-#{invoice_one.id}']", wait: 10).click
+
+        expect(page).to have_current_path("/invoices/#{invoice_one.id}", wait: 10)
+        expect(page).to have_content("INV-SI-001", wait: 10)
+        expect(page).to have_content("Stark Industries", wait: 10)
+      end
+    end
   end
 
   context "with more invoices than the first table page" do

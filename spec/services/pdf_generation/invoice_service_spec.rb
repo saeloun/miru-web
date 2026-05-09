@@ -171,5 +171,24 @@ RSpec.describe PdfGeneration::InvoiceService do
 
       expect { service.process }.not_to raise_error
     end
+
+    it "renders company address metadata when business phone is blank" do
+      allow_any_instance_of(ActionController::Base).to receive(:render_to_string).and_call_original
+      company.update!(business_phone: nil)
+
+      rendered_service = described_class.new(invoice.reload, logo_url, root_url)
+
+      expect(rendered_service.html_content).to include(company.current_address.formatted_address)
+    end
+
+    it "omits company metadata when business phone and address are both blank" do
+      allow_any_instance_of(ActionController::Base).to receive(:render_to_string).and_call_original
+      company.update!(business_phone: nil)
+      company.addresses.destroy_all
+
+      rendered_service = described_class.new(invoice.reload, logo_url, root_url)
+
+      expect(rendered_service.html_content).not_to include('<p class="invoice-company-meta">')
+    end
   end
 end

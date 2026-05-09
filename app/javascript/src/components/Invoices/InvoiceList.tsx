@@ -31,6 +31,7 @@ import {
   Circle,
   Warning,
   FileText,
+  PencilSimple,
   Hourglass,
   Trash,
   Funnel,
@@ -45,6 +46,7 @@ import ChartWithSummary from "./ChartWithSummary";
 import { currencyFormat } from "../../helpers/currency";
 import { useUserContext } from "../../context/UserContext";
 import { i18n } from "../../i18n";
+import { useNavigate } from "react-router-dom";
 
 interface InvoiceListProps {
   invoices: Invoice[];
@@ -88,6 +90,7 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
   isLoadingMore = false,
 }) => {
   const { companyRole } = useUserContext();
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
   const [activeInvoice, setActiveInvoice] = useState<Invoice | null>(null);
   const [isSending, setIsSending] = useState(false);
@@ -359,6 +362,15 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
               >
                 <PaperPlaneTilt className="h-4 w-4 mr-2" />
                 {i18n.t("invoices.sendInvoice")}
+              </DropdownMenuItem>
+            )}
+            {invoice.status === "draft" && (
+              <DropdownMenuItem
+                data-testid={`invoice-action-edit-${invoice.id}`}
+                onClick={() => navigate(`/invoices/${invoice.id}/edit`)}
+              >
+                <PencilSimple className="h-4 w-4 mr-2" />
+                {i18n.t("invoices.editInvoicePage")}
               </DropdownMenuItem>
             )}
             {invoice.status === "draft" && (

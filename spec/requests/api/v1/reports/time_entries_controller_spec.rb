@@ -52,8 +52,8 @@ RSpec.describe Api::V1::Reports::TimeEntriesController, type: :request do
 
       get api_v1_reports_time_entries_path, params: {
         date_range: "custom",
-        from: Date.current.strftime("%d/%m/%Y"),
-        to: Date.current.strftime("%d/%m/%Y")
+        from: Date.current.iso8601,
+        to: Date.current.iso8601
       }
 
       json = JSON.parse(response.body)
@@ -181,8 +181,8 @@ RSpec.describe Api::V1::Reports::TimeEntriesController, type: :request do
     it "applies filters to download" do
       get download_api_v1_reports_time_entries_path(format: :csv), params: {
         date_range: "custom",
-        from: Date.current.strftime("%d/%m/%Y"),
-        to: Date.current.strftime("%d/%m/%Y")
+        from: Date.current.iso8601,
+        to: Date.current.iso8601
       }
 
       expect(response).to have_http_status(:ok)

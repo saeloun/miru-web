@@ -6,13 +6,11 @@ module MobileOtp
 
     class InvalidTokenError < StandardError; end
 
-    def self.issue(payload, code:)
-      verifier.generate(
-        payload.merge(
-          "code_digest" => digest(code),
-          "expires_at" => TTL.from_now.to_i
-        )
-      )
+    def self.issue(payload, code: nil)
+      token_payload = payload.merge("expires_at" => TTL.from_now.to_i)
+      token_payload["code_digest"] = digest(code) if code.present?
+
+      verifier.generate(token_payload)
     end
 
     def self.verify(token)
@@ -26,6 +24,8 @@ module MobileOtp
 
     def self.valid_code?(payload, code)
       expected = payload["code_digest"].to_s
+      return false if expected.blank?
+
       actual = digest(code)
       return false unless expected.bytesize == actual.bytesize
 

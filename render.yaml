@@ -44,6 +44,12 @@ envVarGroups:
         sync: false
       - key: STRIPE_PLAN_PAGE_URL
         sync: false
+      - key: MSG91_AUTH_KEY
+        sync: false
+      - key: MSG91_TOKEN_AUTH
+        sync: false
+      - key: MSG91_WIDGET_ID
+        sync: false
       - key: GOOGLE_OAUTH_CLIENT_ID
         sync: false
       - key: GOOGLE_OAUTH_CLIENT_SECRET

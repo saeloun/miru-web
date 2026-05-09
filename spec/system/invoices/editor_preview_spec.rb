@@ -40,12 +40,72 @@ RSpec.describe "Invoice editor preview", type: :system, js: true do
       expect(page).to have_css("#react-root", wait: 10)
       expect(page).to have_text("Edit invoice", wait: 10)
       expect(page).to have_text("Fill in the details and preview the invoice before sending it.", wait: 10)
-      expect(page).to have_content("Description", wait: 10)
-      expect(page).not_to have_text("undefined undefined", wait: 1)
-      expect(page).to have_text("15:00", wait: 10)
-      expect(page).to have_text("$1,500.00", wait: 10)
-      expect(page).not_to have_text("$90,000.00", wait: 1)
-      expect(page).not_to have_text("$0.00", wait: 1)
+
+      show_invoice_preview
+
+      within "[data-testid='invoice-preview']" do
+        expect(page).to have_content("Description", wait: 10)
+        expect(page).not_to have_text("undefined undefined", wait: 1)
+        expect(page).to have_text("15:00", wait: 10)
+        expect(page).to have_text("$1,500.00", wait: 10)
+        expect(page).not_to have_text("$90,000.00", wait: 1)
+        expect(page).not_to have_css("table", text: "$0.00", wait: 1)
+      end
+    end
+  end
+
+  it "keeps large preview values and long line item text within the invoice card" do
+    invoice = create(:invoice,
+      company:,
+      client:,
+      status: :draft,
+      invoice_number: "INV-LARGE-VALUES-001",
+      amount: 493_826.80,
+      amount_due: 493_826.80,
+      issue_date: Date.new(2024, 3, 1),
+      due_date: Date.new(2024, 3, 31))
+
+    create(:invoice_line_item,
+      invoice:,
+      timesheet_entry: nil,
+      name: "EnterpriseComplianceArchitectureReview" * 4,
+      description: "LongPreviewDescriptionWithoutNaturalBreaks" * 8,
+      rate: 12_345.67,
+      quantity: 2400,
+      date: Date.new(2024, 3, 12))
+
+    with_forgery_protection do
+      page.current_window.resize_to(1024, 900)
+      visit "/invoices/#{invoice.id}/edit"
+
+      expect(page).to have_css("#react-root", wait: 10)
+      show_invoice_preview
+
+      within "[data-testid='invoice-preview']" do
+        expect(page).to have_text("INV-LARGE-VALUES-001", wait: 10)
+        expect(page).to have_text("EnterpriseComplianceArchitectureReview", wait: 10)
+        expect(page).to have_text("$493,826.80", wait: 10)
+      end
+
+      expect(page.evaluate_script("document.documentElement.scrollWidth <= window.innerWidth + 1")).to be(true)
+      expect(page.evaluate_script("document.body.scrollWidth <= window.innerWidth + 1")).to be(true)
+
+      overflowing_preview_nodes = page.evaluate_script(<<~JS)
+        (() => {
+          const preview = document.querySelector('[data-testid="invoice-preview"]');
+          if (!preview) return ["preview element not found"];
+          const previewRight = preview.getBoundingClientRect().right;
+
+          return Array.from(preview.querySelectorAll('table, td, p, span, div'))
+            .filter((element) => element.offsetParent !== null)
+            .filter((element) => element.getBoundingClientRect().right > previewRight + 1)
+            .map((element) => element.textContent.trim().slice(0, 60));
+        })()
+      JS
+
+      expect(overflowing_preview_nodes).to eq([])
+    ensure
+      page.current_window.resize_to(1400, 1000)
     end
   end
 
