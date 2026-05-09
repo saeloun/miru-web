@@ -28,6 +28,12 @@ Keep this file short. Treat it as a router for repo-specific rules.
 - On SPA pages, prefer settled route checks over generic `networkidle` when background requests stay alive.
 - If a user reports a live production bug, reproduce it on the real domain when practical before declaring root cause.
 
+## gstack
+
+- gstack is required for AI-assisted work in this repo. If `~/.claude/skills/gstack/bin` is missing, stop and ask the user to install it with `git clone --depth 1 https://github.com/garrytan/gstack.git ~/.claude/skills/gstack && cd ~/.claude/skills/gstack && ./setup --team`.
+- Use gstack skills for QA, review, investigate, ship, land-and-deploy, canary, and browser workflows when they match the task.
+- Keep gstack as a global install. Do not vendor `.claude/skills/gstack/` or `.agents/skills/gstack/` into this repo.
+
 ## Local Development
 
 - Primary local app URL: `http://127.0.0.1:3000`
