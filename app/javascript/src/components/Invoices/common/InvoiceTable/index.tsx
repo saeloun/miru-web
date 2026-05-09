@@ -72,7 +72,6 @@ const InvoiceTable = ({
     wrapperRef,
     () => {
       setShowNewLineItemTable(false);
-      setAddNew(false);
     },
     addNew
   );

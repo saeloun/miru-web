@@ -11,11 +11,15 @@ export function DatePicker({
   onSelect,
   placeholder = "Pick a date",
   className,
+  displayFormat = "PPP",
+  showIcon = true,
 }: {
   date?: Date;
   onSelect: (date: Date | undefined) => void;
   placeholder?: string;
   className?: string;
+  displayFormat?: string;
+  showIcon?: boolean;
 }) {
   return (
     <Popover>
@@ -23,19 +27,28 @@ export function DatePicker({
         <Button
           variant={"outline"}
           className={cn(
-            "w-full justify-start text-left font-normal border-input bg-background hover:bg-accent/60",
+            "w-full justify-start py-0 text-left font-normal border-input bg-background hover:bg-accent/60",
             !date && "text-muted-foreground",
             className
           )}
         >
-          <CalendarIcon className="mr-2 h-4 w-4" />
-          {date ? format(date, "PPP") : <span>{placeholder}</span>}
+          {showIcon && <CalendarIcon className="h-4 w-4 shrink-0" />}
+          {date ? (
+            <span className={cn("leading-none truncate", showIcon && "ml-2")}>
+              {format(date, displayFormat)}
+            </span>
+          ) : (
+            <span className={cn("leading-none truncate", showIcon && "ml-2")}>
+              {placeholder}
+            </span>
+          )}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-2 rounded-xl border-border bg-popover shadow-lg">
         <Calendar
           mode="single"
           selected={date}
+          defaultMonth={date}
           onSelect={onSelect}
           initialFocus
         />
