@@ -14,25 +14,32 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "../../../../ui/popover";
+import { i18n } from "../../../../../i18n";
 import { FORM_CONTROL_SURFACE_CLASS } from "../../../../ui/form-control-classes";
 
 type Option = { label: string; value: string };
 
 type CountryComboboxProps = {
+  id?: string;
   options: Option[];
   value: Option;
   onChange: (option: Option) => void;
   isErr?: boolean;
   placeholder?: string;
+  searchPlaceholder?: string;
+  emptyMessage?: string;
   className?: string;
 };
 
 export const CountryCombobox = ({
+  id,
   options = [],
   value,
   onChange,
   isErr = false,
-  placeholder = "Select country",
+  placeholder = i18n.t("profile.selectCountry"),
+  searchPlaceholder = i18n.t("profile.searchCountry"),
+  emptyMessage = i18n.t("profile.noCountryFound"),
   className = "",
 }: CountryComboboxProps) => {
   const [open, setOpen] = useState(false);
@@ -43,6 +50,7 @@ export const CountryCombobox = ({
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <button
+          id={id}
           type="button"
           role="combobox"
           aria-expanded={open}
@@ -66,9 +74,9 @@ export const CountryCombobox = ({
         align="start"
       >
         <Command>
-          <CommandInput placeholder="Search country..." />
+          <CommandInput placeholder={searchPlaceholder} />
           <CommandList>
-            <CommandEmpty>No country found.</CommandEmpty>
+            <CommandEmpty>{emptyMessage}</CommandEmpty>
             <CommandGroup>
               {options.map(option => (
                 <CommandItem

@@ -431,6 +431,7 @@ const ProfileEditor = ({
                     {i18n.t("country")}
                   </label>
                   <CountryCombobox
+                    id="current_country_select"
                     options={countries}
                     value={{
                       label: personalDetails.addresses.country,
