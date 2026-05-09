@@ -19,6 +19,7 @@ import flags from "react-phone-number-input/flags";
 import "react-phone-number-input/style.css";
 import CustomDatePicker from "common/CustomDatePicker";
 import CustomReactSelect from "common/CustomReactSelect";
+import { CountryCombobox } from "./CountryCombobox";
 import { ErrorSpan } from "common/ErrorSpan";
 import { i18n, LANGUAGE_OPTIONS, t } from "../../../../../i18n";
 import { Card, CardContent, CardHeader, CardTitle } from "../../../../ui/card";
@@ -429,16 +430,15 @@ const ProfileEditor = ({
                   >
                     {i18n.t("country")}
                   </label>
-                  <CustomReactSelect
-                    handleOnChange={value => handleOnChangeCountry(value)}
-                    isErr={!!errDetails.country_err}
-                    label={i18n.t("country")}
-                    name="current_country_select"
+                  <CountryCombobox
+                    id="current_country_select"
                     options={countries}
                     value={{
                       label: personalDetails.addresses.country,
                       value: personalDetails.addresses.country,
                     }}
+                    onChange={handleOnChangeCountry}
+                    isErr={!!errDetails.country_err}
                     className="font-geist-regular"
                   />
                   {errDetails.country_err && (
