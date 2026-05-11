@@ -55,8 +55,8 @@ RSpec.describe "Api::V1::Invoices#index", type: :request do
         json = JSON.parse(response.body)
 
         expect(json["invoices"].length).to eq(2)
-        expect(json["pagination_details"]["page"]).to eq(1)
-        expect(json["pagination_details"]["total"]).to eq(5)
+        expect(json["paginationDetails"]["page"]).to eq(1)
+        expect(json["paginationDetails"]["total"]).to eq(5)
       end
 
       it "returns second page of results" do
@@ -65,7 +65,7 @@ RSpec.describe "Api::V1::Invoices#index", type: :request do
         json = JSON.parse(response.body)
 
         expect(json["invoices"].length).to eq(2)
-        expect(json["pagination_details"]["page"]).to eq(2)
+        expect(json["paginationDetails"]["page"]).to eq(2)
       end
 
       it "defaults to 10 items per page when per is not specified" do
