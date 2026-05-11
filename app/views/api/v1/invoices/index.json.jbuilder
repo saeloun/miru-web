@@ -1,40 +1,15 @@
 # frozen_string_literal: true
 
-json.invoices invoices do |invoice|
-  json.id invoice.id
-  json.invoice_number invoice.invoice_number
-  json.client_id invoice.client_id
-  json.client_name invoice.client&.name
-  json.status invoice.status
-  json.issue_date invoice.issue_date
-  json.due_date invoice.due_date
-  json.amount invoice.amount.to_f
-  json.amount_due invoice.amount_due.to_f
-  json.outstanding_amount invoice.outstanding_amount.to_f
-  json.base_currency_amount invoice.base_currency_amount.to_f
-  json.exchange_rate invoice.respond_to?(:exchange_rate) ? invoice.exchange_rate.to_f : 0.0
-  json.tax invoice.tax.to_f
-  json.discount invoice.discount.to_f
-  json.currency(
-    if invoice.draft? && invoice.client&.currency.present?
-      invoice.client.currency
-    else
-      invoice.currency || current_company.base_currency
-    end
-  )
-  json.created_at invoice.created_at
-  json.updated_at invoice.updated_at
+json.key_format! camelize: :lower
+json.deep_format_keys!
 
-  # Include client details for frontend to use
-  json.client do
-    json.id invoice.client_id
-    json.name invoice.client&.name
-    json.email invoice.client&.email if invoice.client&.email
-    json.phone invoice.client&.phone if invoice.client&.phone
-    json.logo invoice.client&.logo_url if invoice.client&.logo_url
-  end
-  json.razorpay_payment_link_url invoice.razorpay_payment_link_url
-  json.razorpay_payment_link_status invoice.razorpay_payment_link_status
+json.invoices invoices do |invoice|
+  json.partial! "api/v1/invoices/index_invoice",
+    invoice:,
+    current_company:,
+    virtual_verified_invitations_allowed: @virtual_verified_invitations_allowed,
+    include_created_at: true,
+    include_tax_and_discount: true
 end
 
 json.pagination_details do
@@ -61,36 +36,10 @@ end
 json.meta meta
 
 json.recentlyUpdatedInvoices recently_updated_invoices do |invoice|
-  json.id invoice.id
-  json.invoice_number invoice.invoice_number
-  json.client_id invoice.client_id
-  json.client_name invoice.client&.name
-  json.status invoice.status
-  json.issue_date invoice.issue_date
-  json.due_date invoice.due_date
-  json.amount invoice.amount.to_f
-  json.amount_due invoice.amount_due.to_f
-  json.outstanding_amount invoice.outstanding_amount.to_f
-  json.base_currency_amount invoice.base_currency_amount.to_f
-  json.exchange_rate invoice.respond_to?(:exchange_rate) ? invoice.exchange_rate.to_f : 0.0
-  json.currency(
-    if invoice.draft? && invoice.client&.currency.present?
-      invoice.client.currency
-    else
-      invoice.currency || current_company.base_currency
-    end
-  )
-  json.updated_at invoice.updated_at
-
-  json.client do
-    json.id invoice.client_id
-    json.name invoice.client&.name
-    json.email invoice.client&.email if invoice.client&.email
-    json.phone invoice.client&.phone if invoice.client&.phone
-    json.logo invoice.client&.logo_url if invoice.client&.logo_url
-  end
-  json.razorpay_payment_link_url invoice.razorpay_payment_link_url
-  json.razorpay_payment_link_status invoice.razorpay_payment_link_status
+  json.partial! "api/v1/invoices/index_invoice",
+    invoice:,
+    current_company:,
+    virtual_verified_invitations_allowed: @virtual_verified_invitations_allowed
 end
 
 json.recentlyUpdatedTotalCount recently_updated_total_count

@@ -3,8 +3,8 @@
 require "rails_helper"
 
 RSpec.describe "Api::V1::Invoices#index", type: :request do
-  let_it_be(:company) { create(:company) }
-  let_it_be(:client) { create(:client, company: company) }
+  let_it_be(:company) { create(:company, base_currency: "USD", date_format: "MM-DD-YYYY") }
+  let_it_be(:client) { create(:client, company: company, currency: "EUR") }
   let(:user) { create(:user, current_workspace_id: company.id) }
 
   before do
@@ -55,8 +55,8 @@ RSpec.describe "Api::V1::Invoices#index", type: :request do
         json = JSON.parse(response.body)
 
         expect(json["invoices"].length).to eq(2)
-        expect(json["pagination_details"]["page"]).to eq(1)
-        expect(json["pagination_details"]["total"]).to eq(5)
+        expect(json["paginationDetails"]["page"]).to eq(1)
+        expect(json["paginationDetails"]["total"]).to eq(5)
       end
 
       it "returns second page of results" do
@@ -65,7 +65,7 @@ RSpec.describe "Api::V1::Invoices#index", type: :request do
         json = JSON.parse(response.body)
 
         expect(json["invoices"].length).to eq(2)
-        expect(json["pagination_details"]["page"]).to eq(2)
+        expect(json["paginationDetails"]["page"]).to eq(2)
       end
 
       it "defaults to 10 items per page when per is not specified" do
@@ -96,6 +96,23 @@ RSpec.describe "Api::V1::Invoices#index", type: :request do
         expect(summary).to have_key("overdueAmount")
         expect(summary).to have_key("totalAmount")
         expect(summary).to have_key("currency")
+      end
+
+      it "includes company metadata and client member emails for sending invoices" do
+        member_user = create(:user, email: "client-member@example.com")
+        create(:client_member, company:, client:, user: member_user)
+        invoice = create(:invoice, company:, client:, status: "draft", invoice_number: "INV-META")
+
+        get api_v1_invoices_path, params: { query: "INV-META" }
+
+        json = JSON.parse(response.body)
+        invoice_json = json["invoices"].find { |item| item["invoiceNumber"] == invoice.invoice_number }
+
+        expect(invoice_json.dig("client", "clientMembersEmails")).to include("client-member@example.com")
+        expect(invoice_json.dig("company", "name")).to eq(company.name)
+        expect(invoice_json.dig("company", "baseCurrency")).to eq("USD")
+        expect(invoice_json.dig("company", "currency")).to eq("EUR")
+        expect(invoice_json.dig("company", "dateFormat")).to eq("MM-DD-YYYY")
       end
     end
 
