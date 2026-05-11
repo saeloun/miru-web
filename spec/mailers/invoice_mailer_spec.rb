@@ -27,8 +27,17 @@ RSpec.describe InvoiceMailer, type: :mailer do
       it "renders the organization logo instead of attaching Miru fallback logos" do
         body = mail.html_part.body.decoded
 
-        expect(body).to include("/companies/#{company.id}/logo")
+        # Company logo should be attached inline with cid: reference
         expect(body).to include('alt="Saeloun Logo Co"')
+        expect(body).to match(/src="cid:[^"]+/)
+
+        # Company logo should be in attachments with inline disposition
+        company_logo_attachment = mail.attachments.find { |a| a.filename&.start_with?("company_logo_#{company.id}") }
+        expect(company_logo_attachment).to be_present
+        expect(company_logo_attachment.content_type).to match(/image/)
+        expect(company_logo_attachment["content-disposition"].to_s).to include("inline")
+
+        # Miru fallback logos should not be attached
         expect(mail.attachments["MiruLogoDarkWithText.png"]).to be_nil
         expect(mail.attachments["MiruLogoLightWithText.png"]).to be_nil
       end

@@ -26,9 +26,7 @@ class PaymentMailer < ApplicationMailer
   private
 
     def company_logo
-      @invoice.company.logo.attached? ?
-        polymorphic_url(@invoice.company.logo) :
-        ""
+      attach_company_logo_inline(@invoice.company)
     end
 
     def recipients_with_role
