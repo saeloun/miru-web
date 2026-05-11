@@ -63,6 +63,7 @@ export interface Invoice {
     email: string;
     name: string;
     baseCurrency: string;
+    currency?: string;
     dateFormat: string;
     taxId?: string;
     vatNumber?: string;
@@ -269,7 +270,8 @@ class InvoiceApiService {
         currency: "USD",
       },
       meta: response.data.meta,
-      pagy: response.data.pagination_details ||
+      pagy: response.data.paginationDetails ||
+        response.data.pagination_details ||
         response.data.pagy || { page: 1, pages: 1, total: 0 },
     };
   }
