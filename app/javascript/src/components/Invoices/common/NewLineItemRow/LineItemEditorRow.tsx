@@ -1,6 +1,6 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 
-import CustomDatePicker from "common/CustomDatePicker";
+import { DatePicker } from "../../../ui/date-picker";
 import dayjs from "dayjs";
 import {
   currencyFormat,
@@ -9,7 +9,7 @@ import {
   minFromHHMM,
   minToHHMM,
 } from "helpers";
-import { DeleteIcon, CalendarIcon } from "miruIcons";
+import { DeleteIcon } from "miruIcons";
 import TextareaAutosize from "react-textarea-autosize";
 import { i18n } from "../../../../i18n";
 
@@ -18,13 +18,13 @@ const LineItemEditorRow = ({
   item,
   handleDelete,
   setSelectedOption,
-  selectedOption,
   dateFormat,
 }) => {
   const strName = getLineItemDisplayName(item);
+  const rowKey = item.id || item.timesheet_entry_id || strName;
   const [name, setName] = useState<string>(strName);
-  const [lineItemDate, setLineItemDate] = useState(
-    dayjs(item.date, "YYYY-MM-DD").format(dateFormat)
+  const [lineItemDate, setLineItemDate] = useState<Date>(
+    dayjs(item.date).isValid() ? dayjs(item.date).toDate() : new Date()
   );
   const [description, setDescription] = useState<string>(item.description);
   const [rate, setRate] = useState<number>(item.rate);
@@ -32,13 +32,6 @@ const LineItemEditorRow = ({
   const [lineTotal, setLineTotal] = useState<string>(
     item.lineTotal ?? item.amount ?? lineTotalCalc(item.quantity, item.rate)
   );
-  const [showDatePicker, setShowDatePicker] = useState<boolean>(false);
-  const [showCalendarIcon, setShowCalendarIcon] = useState<boolean>(false);
-  const datePickerRef = useRef(null);
-
-  useEffect(() => {
-    setName(strName);
-  }, [strName]);
 
   useEffect(() => {
     const names = name.split(" ");
@@ -47,27 +40,41 @@ const LineItemEditorRow = ({
       first_name: names.splice(0, 1)[0],
       last_name: names.join(" "),
       name,
-      date: lineItemDate,
+      date: dayjs(lineItemDate).format("YYYY-MM-DD"),
       description,
       rate,
       quantity: minFromHHMM(quantity),
       lineTotal,
     };
 
-    const selectedOptionArr = selectedOption.map(option => {
-      if (
-        (option.id && option.id === item.id) ||
-        (option.timesheet_entry_id &&
-          option.timesheet_entry_id === item.timesheet_entry_id)
-      ) {
-        return newItem;
+    const matchesItem = option => {
+      const itemHasId = item.id !== undefined && item.id !== null;
+      const itemHasTimesheetEntryId =
+        item.timesheet_entry_id !== undefined &&
+        item.timesheet_entry_id !== null;
+
+      if (itemHasId) {
+        return option.id === item.id;
       }
 
-      return option;
-    });
+      if (itemHasTimesheetEntryId) {
+        return option.timesheet_entry_id === item.timesheet_entry_id;
+      }
+
+      return option === item;
+    };
+
+    const updateSelectedOption = currentSelectedOption =>
+      currentSelectedOption.map(option => {
+        if (matchesItem(option)) {
+          return newItem;
+        }
+
+        return option;
+      });
 
     if (name) {
-      setSelectedOption(selectedOptionArr);
+      setSelectedOption(updateSelectedOption);
     }
   }, [name, lineItemDate, description, quantity, rate, lineTotal]);
 
@@ -89,17 +96,23 @@ const LineItemEditorRow = ({
     setLineTotal(lineTotalCalc(qtyInMin, rate));
   };
 
-  const handleDatePicker = selectedDate => {
-    setLineItemDate(selectedDate);
-    setShowDatePicker(false);
+  const handleDateSelect = (selectedDate: Date | undefined) => {
+    if (selectedDate) {
+      setLineItemDate(selectedDate);
+    }
   };
 
   return (
     <>
-      <tr className="invoice-items-row cursor-pointer">
+      <tr
+        className="invoice-items-row cursor-pointer"
+        data-line-item-row-key={rowKey}
+        data-testid="invoice-line-item-row"
+      >
         <td className="px-1 py-3 text-left text-base font-normal text-foreground ">
           <input
             className="focus:outline-none w-full rounded border border-transparent bg-transparent p-1 text-sm font-medium text-foreground focus:border-border focus:bg-background focus:ring-1 focus:ring-ring"
+            data-testid="invoice-line-item-name"
             placeholder={name}
             type="text"
             value={name}
@@ -107,46 +120,19 @@ const LineItemEditorRow = ({
             onKeyDown={closeEditField}
           />
         </td>
-        <td className="relative px-1 py-3 text-right text-base font-normal text-foreground ">
-          <div onClick={() => setShowDatePicker(!showDatePicker)}>
-            <input
-              readOnly
-              placeholder={i18n.t("invoices.selectDate")}
-              type="text"
-              value={lineItemDate}
-              className={`focus:outline-none w-full cursor-pointer appearance-none rounded border border-transparent bg-transparent p-1 pl-2 text-right text-sm font-medium text-foreground focus:border-border focus:bg-background focus:ring-1 focus:ring-ring ${
-                showCalendarIcon ? "pr-9" : "pr-1"
-              }`}
-              onBlur={() => setShowCalendarIcon(false)}
-              onFocus={() => setShowCalendarIcon(true)}
-              onKeyDown={closeEditField}
-            />
-            {showCalendarIcon && (
-              <CalendarIcon
-                className="absolute top-0 right-0 mx-3 mt-4"
-                color="#5E58F1"
-                size={20}
-              />
-            )}
-          </div>
-          {showDatePicker && (
-            <div
-              className="absolute top-[calc(100%+0.25rem)] right-0 z-50"
-              ref={datePickerRef}
-            >
-              <CustomDatePicker
-                date={lineItemDate}
-                dateFormat={dateFormat}
-                handleChange={handleDatePicker}
-                setVisibility={setShowDatePicker}
-                wrapperRef={datePickerRef}
-              />
-            </div>
-          )}
+        <td className="px-1 py-3 text-right text-base font-normal text-foreground ">
+          <DatePicker
+            date={lineItemDate}
+            onSelect={handleDateSelect}
+            placeholder={i18n.t("invoices.selectDate")}
+            displayFormat="MMM d, yyyy"
+            className="h-9 w-full justify-start px-2 text-sm"
+          />
         </td>
         <td className="px-1 py-3 text-right text-base font-normal text-foreground ">
           <input
             className="focus:outline-none w-full rounded border border-transparent bg-transparent p-1 text-right text-sm font-medium text-foreground focus:border-border focus:bg-background focus:ring-1 focus:ring-ring"
+            data-testid="invoice-line-item-rate"
             placeholder={i18n.t("invoices.rate")}
             type="text"
             value={rate}
@@ -157,6 +143,7 @@ const LineItemEditorRow = ({
         <td className="px-1 py-3 text-right text-base font-normal text-foreground ">
           <input
             className="focus:outline-none w-full rounded border border-transparent bg-transparent p-1 text-right text-sm font-medium text-foreground focus:border-border focus:bg-background focus:ring-1 focus:ring-ring"
+            data-testid="invoice-line-item-quantity"
             placeholder={i18n.t("invoices.quantity")}
             type="text"
             value={quantity}
@@ -187,6 +174,7 @@ const LineItemEditorRow = ({
         >
           <TextareaAutosize
             className="focus:outline-none w-full rounded border border-transparent bg-transparent p-1 text-sm font-medium text-muted-foreground focus:border-border focus:bg-background focus:ring-1 focus:ring-ring"
+            data-testid="invoice-line-item-description"
             placeholder={i18n.t("invoices.enterDescription")}
             value={description}
             onChange={e => setDescription(e.target["value"])}

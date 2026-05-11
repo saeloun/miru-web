@@ -72,7 +72,6 @@ const InvoiceTable = ({
     wrapperRef,
     () => {
       setShowNewLineItemTable(false);
-      setAddNew(false);
     },
     addNew
   );
@@ -161,6 +160,21 @@ const InvoiceTable = ({
     );
   };
 
+  const lineItemKey = (item, index, prefix) => {
+    if (item.id !== undefined && item.id !== null) {
+      return `${prefix}-invoice-line-item-${item.id}`;
+    }
+
+    if (
+      item.timesheet_entry_id !== undefined &&
+      item.timesheet_entry_id !== null
+    ) {
+      return `${prefix}-timesheet-entry-${item.timesheet_entry_id}`;
+    }
+
+    return `${prefix}-${index}`;
+  };
+
   return (
     <Fragment>
       <div className="w-full overflow-x-auto">
@@ -185,7 +199,7 @@ const InvoiceTable = ({
                       clientCurrency={clientCurrency}
                       dateFormat={dateFormat}
                       item={item}
-                      key={index}
+                      key={lineItemKey(item, index, "manual")}
                       selectedOption={manualEntryArr}
                       setSelectedOption={setManualEntryArr}
                     />
@@ -199,7 +213,7 @@ const InvoiceTable = ({
                       clientCurrency={clientCurrency}
                       dateFormat={dateFormat}
                       item={item}
-                      key={index}
+                      key={lineItemKey(item, index, "selected")}
                       selectedOption={selectedLineItems}
                       setSelectedOption={setSelectedLineItems}
                     />

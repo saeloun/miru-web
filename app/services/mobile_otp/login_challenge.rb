@@ -48,7 +48,7 @@ module MobileOtp
       result_body = issue_challenge(user:, company:)
       RequestResult.new(body: result_body, status: 202)
     rescue Msg91WidgetClient::Error => error
-      Rails.logger.warn("MSG91 OTP request failed for #{phone}: #{error.message}")
+      Rails.logger.warn("MSG91 OTP request failed: #{error.message}")
       RequestResult.new(body: { error: error.message.presence || "Unable to send OTP" }, status: 422)
     end
 
@@ -62,9 +62,9 @@ module MobileOtp
 
       raise ChallengeToken::InvalidTokenError unless valid
 
-      user = User.kept.find(payload.fetch("user_id"))
-      company = Company.find(payload.fetch("company_id"))
-      raise ChallengeToken::InvalidTokenError unless user.employed_at?(company.id)
+      user = User.kept.find_by(id: payload.fetch("user_id"))
+      company = Company.find_by(id: payload.fetch("company_id"))
+      raise ChallengeToken::InvalidTokenError unless user && company && user.employed_at?(company.id)
 
       user.update!(current_workspace_id: company.id) if user.current_workspace_id != company.id
       VerificationResult.new(user:, company:)
@@ -131,8 +131,8 @@ module MobileOtp
           otp: code
         )
 
-        return true if response.access_token.blank?
         return true if Msg91WidgetClient.token_auth.present?
+        return false if response.access_token.blank?
 
         token_response = Msg91WidgetClient.verify_access_token(access_token: response.access_token)
         verified_identifier = msg91_identifier(token_response.identifier)

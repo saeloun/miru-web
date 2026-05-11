@@ -141,7 +141,8 @@ const ManualEntry = ({
                     date={selectedDate}
                     onSelect={handleDateSelect}
                     placeholder={i18n.t("invoices.selectDate")}
-                    className="w-full text-sm"
+                    displayFormat="MMM d, yyyy"
+                    className="h-9 w-full justify-start px-2 text-sm"
                   />
                 </div>
               </TooltipTrigger>

@@ -50,6 +50,17 @@ RSpec.describe MobileOtp::Msg91WidgetClient do
     expect(stub).to have_been_requested
   end
 
+  it "rejects negative verification messages that contain success words" do
+    stub = stub_request(:post, "https://control.msg91.com/api/v5/widget/verifyOtp")
+      .to_return(status: 200, body: { message: "not verified" }.to_json)
+
+    expect {
+      described_class.verify_otp(req_id: "request-123", otp: "123456")
+    }.to raise_error(described_class::Error, "MSG91 OTP verification failed")
+
+    expect(stub).to have_been_requested
+  end
+
   it "verifies access tokens" do
     stub = stub_request(:post, "https://control.msg91.com/api/v5/widget/verifyAccessToken")
       .with { |request|

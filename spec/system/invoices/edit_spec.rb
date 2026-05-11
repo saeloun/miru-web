@@ -109,9 +109,9 @@ RSpec.describe "Invoice editing", type: :system, js: true do
 
       visit_invoice_editor(invoice)
 
-      expect(page).to have_text("Keep me", wait: 10)
-      expect(page).to have_text("Added item", wait: 10)
-      expect(page).not_to have_text("Remove me")
+      expect_invoice_line_item("Keep me")
+      expect_invoice_line_item("Added item")
+      expect(page).not_to have_field(type: "text", with: "Remove me", wait: 1)
       expect(invoice.invoice_line_items.count).to eq(2)
     end
   end
@@ -175,8 +175,8 @@ RSpec.describe "Invoice editing", type: :system, js: true do
 
       visit_invoice_editor(invoice)
 
-      expect(page).to have_text("Original item updated", wait: 10)
-      expect(page).to have_text("Brand new item", wait: 10)
+      expect_invoice_line_item("Original item updated")
+      expect_invoice_line_item("Brand new item")
       expect(page).not_to have_field(type: "text", with: "Original item", wait: 1)
     end
   end
