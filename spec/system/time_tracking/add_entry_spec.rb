@@ -379,11 +379,13 @@ RSpec.describe "Time Tracking - Add Entry", type: :system, js: true do
 
     visit "/time-tracking"
     expect(page).to have_css("#react-root", wait: 10)
-    expect(page).to have_button(pause_timer_label, wait: 10)
-    expect(page).to have_text(project.name, wait: 10)
+    within "[data-testid='inline-web-timer']" do
+      expect(page).to have_button(pause_timer_label, wait: 10)
+      expect(page).to have_text(project.name, wait: 10)
 
-    click_button pause_timer_label
-    expect(page).to have_button("Start", wait: 10)
+      click_button pause_timer_label
+    end
+    expect(page).to have_button("Resume", wait: 10)
   end
 
   it "keeps the selected day visible when switching between week and month views" do
@@ -556,6 +558,28 @@ RSpec.describe "Time Tracking - Add Entry", type: :system, js: true do
     )
   end
 
+  it "keeps add-entry actions from submitting the time tracking page" do
+    visit "/time-tracking"
+    expect(page).to have_css("#react-root", wait: 10)
+    switch_to("Week")
+
+    click_button "Add Entry"
+
+    expect(find_button("Save Entry", disabled: :all, wait: 10)["type"]).to eq(
+      "button"
+    )
+
+    cancel_button = find_button("Cancel", wait: 10)
+    expect(cancel_button["type"]).to eq("button")
+
+    cancel_button.click
+
+    expect(page).to have_current_path("/time-tracking", ignore_query: true)
+    expect(page).to have_button("Add Entry", wait: 10)
+    expect(page).to have_no_button("Save Entry")
+    expect(page).to have_no_text("The page you were looking for doesn't exist")
+  end
+
   it "prefills the form from a recent shortcut and duplicates the last entry into the selected day" do
     recent_note = "Recent shortcut work"
     create(
@@ -582,8 +606,11 @@ RSpec.describe "Time Tracking - Add Entry", type: :system, js: true do
     expect(find("input[name='timeInput']", wait: 10).value).to eq("01:35")
     expect(find("textarea[name='notes']", wait: 10).value).to eq(recent_note)
 
+    duplicate_button = find("[data-testid='duplicate-last-entry']", wait: 10)
+    expect(duplicate_button["type"]).to eq("button")
+
     expect do
-      find("[data-testid='duplicate-last-entry']", wait: 10).click
+      duplicate_button.click
       expect(page).to have_button("Add Entry", wait: 10)
     end.to change {
       TimesheetEntry.where(
@@ -593,6 +620,8 @@ RSpec.describe "Time Tracking - Add Entry", type: :system, js: true do
         note: recent_note
       ).count
     }.by(1)
+    expect(page).to have_current_path("/time-tracking", ignore_query: true)
+    expect(page).to have_no_text("The page you were looking for doesn't exist")
   end
 
   it "copies last week's entries into the current week" do

@@ -11,11 +11,13 @@ import {
   Calendar,
   Lock,
   Globe,
+  SignOut,
 } from "phosphor-react";
 import { Card, CardContent, CardHeader, CardTitle } from "../../../ui/card";
 import { Button } from "../../../ui/button";
 import { Separator } from "../../../ui/separator";
 import { Badge } from "../../../ui/badge";
+import { handleLogout } from "../../../Navbar/utils";
 import { i18n } from "../../../../i18n";
 
 dayjs.extend(customParseFormat);
@@ -187,6 +189,32 @@ const PersonalProfileSummary = ({
                 </div>
               </CardContent>
             </Card>
+
+            {isCalledFromSettings && (
+              <Card
+                className="border-border shadow-sm"
+                data-testid="profile-account-card"
+              >
+                <CardHeader className="pb-4">
+                  <CardTitle className="text-lg font-geist-semibold flex items-center gap-2">
+                    <SignOut className="h-5 w-5 text-muted-foreground" />
+                    {i18n.t("profile.account")}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    className="w-full gap-2 font-geist-medium"
+                    data-testid="profile-settings-logout-button"
+                    onClick={handleLogout}
+                  >
+                    <SignOut className="h-4 w-4" />
+                    {i18n.t("navbar.logout")}
+                  </Button>
+                </CardContent>
+              </Card>
+            )}
 
             {isCalledFromSettings && (
               <Card className="border-border shadow-sm">

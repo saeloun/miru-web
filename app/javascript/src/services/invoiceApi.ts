@@ -287,9 +287,13 @@ class InvoiceApiService {
    * Create a new invoice
    */
   async createInvoice(invoiceData: InvoiceFormData): Promise<Invoice> {
-    const response = await axios.post(`/invoices`, {
-      invoice: this.formatInvoiceForApi(invoiceData),
-    });
+    const response = await axios.post(
+      `/invoices`,
+      {
+        invoice: this.formatInvoiceForApi(invoiceData),
+      },
+      { skipErrorToast: true }
+    );
 
     return this.transformApiInvoice(response.data.invoice || response.data);
   }
@@ -301,9 +305,13 @@ class InvoiceApiService {
     id: string,
     invoiceData: InvoiceFormData
   ): Promise<Invoice> {
-    const response = await axios.patch(`/invoices/${id}`, {
-      invoice: this.formatInvoiceForApi(invoiceData),
-    });
+    const response = await axios.patch(
+      `/invoices/${id}`,
+      {
+        invoice: this.formatInvoiceForApi(invoiceData),
+      },
+      { skipErrorToast: true }
+    );
 
     return this.transformApiInvoice(response.data.invoice || response.data);
   }
@@ -326,9 +334,13 @@ class InvoiceApiService {
       recipients: string[];
     }
   ): Promise<{ message: string }> {
-    const response = await axios.post(`/invoices/${id}/send_invoice`, {
-      invoice_email: emailData,
-    });
+    const response = await axios.post(
+      `/invoices/${id}/send_invoice`,
+      {
+        invoice_email: emailData,
+      },
+      { skipErrorToast: true }
+    );
 
     return response.data;
   }
@@ -341,9 +353,13 @@ class InvoiceApiService {
       recipients: string[];
     }
   ): Promise<{ message: string }> {
-    const response = await axios.post(`/invoices/${id}/send_reminder`, {
-      invoice_email: emailData,
-    });
+    const response = await axios.post(
+      `/invoices/${id}/send_reminder`,
+      {
+        invoice_email: emailData,
+      },
+      { skipErrorToast: true }
+    );
 
     return response.data;
   }

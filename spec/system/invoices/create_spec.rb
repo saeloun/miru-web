@@ -62,7 +62,10 @@ RSpec.describe "Invoice creation", type: :system, js: true do
 
       expect do
         click_button "Send Invoice"
-        expect(page).to have_text("Failed to generate PDF", wait: 10)
+        expect(page).to have_text(
+          "Invoice was saved as a draft, but sending failed: Failed to generate PDF",
+          wait: 10
+        )
       end.to change(Invoice, :count).by(1)
 
       invoice = Invoice.find_by!(invoice_number: "INV-SEND-FAIL-001")
@@ -72,7 +75,10 @@ RSpec.describe "Invoice creation", type: :system, js: true do
 
       expect do
         click_button "Send Invoice"
-        expect(page).to have_text("Failed to generate PDF", wait: 10)
+        expect(page).to have_text(
+          "Invoice was saved as a draft, but sending failed: Failed to generate PDF",
+          wait: 10
+        )
       end.not_to change(Invoice, :count)
 
       expect(page).to have_no_text("Invoice number has already been taken")
