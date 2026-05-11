@@ -23,7 +23,7 @@ class ClientPaymentMailer < ApplicationMailer
   private
 
     def company_logo
-      attach_company_logo_inline(@invoice.company)
+      attached_company_logo_url(@invoice.company)
     end
 
     def format_date

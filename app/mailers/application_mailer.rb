@@ -73,7 +73,6 @@ class ApplicationMailer < ActionMailer::Base
     def attach_company_logo_inline(company)
       return "" unless company&.logo&.attached?
 
-      # Attach logo inline for email display
       logo_filename = "company_logo_#{company.id}.#{company.logo.filename.extension}"
       unless attachments[logo_filename].present?
         attachments.inline[logo_filename] = {
@@ -83,6 +82,12 @@ class ApplicationMailer < ActionMailer::Base
       end
 
       attachments[logo_filename].url
+    end
+
+    def attached_company_logo_url(company)
+      return "" unless company&.logo&.attached?
+
+      polymorphic_url(company.logo)
     end
 
     def email_company_logo_url

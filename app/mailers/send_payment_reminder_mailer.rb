@@ -22,6 +22,6 @@ class SendPaymentReminderMailer < ApplicationMailer
   private
 
     def company_logo
-      attach_company_logo_inline(@invoices.first.company)
+      attached_company_logo_url(@invoices.first.company)
     end
 end

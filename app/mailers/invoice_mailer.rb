@@ -59,7 +59,7 @@ class InvoiceMailer < ApplicationMailer
     end
 
     def company_logo
-      attach_company_logo_inline(@company)
+      attached_company_logo_url(@company)
     end
 
     def can_send_invoice?
