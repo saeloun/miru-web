@@ -32,7 +32,7 @@
 FactoryBot.define do
   factory :client do
     company
-    name { Faker::Name.unique.name[0..30] }
+    name { Faker::Name.unique.name[0...30] }
     email { Faker::Internet.unique.email }
     phone { Faker::PhoneNumber.phone_number_with_country_code.slice(0, 15) }
     currency { "USD" }
