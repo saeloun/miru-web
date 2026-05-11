@@ -122,6 +122,20 @@ RSpec.describe "Api::V1::Profile#update", type: :request do
       expect(json_response["errors"]).to eq(["Password must be at least 8 characters long"])
     end
 
+    it "throws error when new password is same as current password" do
+      params = {
+        user: {
+          first_name: "Example", last_name: "User", current_password: "testing12", password: "testing12",
+          password_confirmation: "testing12"
+        }
+      }
+
+      send_request(:put, api_v1_profile_path, params:, headers: auth_headers(user))
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(json_response["errors"]).to eq(["Password must be different from current password"])
+    end
+
     it "ignores unexpected social account keys" do
       params = {
         user: {

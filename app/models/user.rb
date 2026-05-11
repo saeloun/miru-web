@@ -80,6 +80,7 @@ class User < ApplicationRecord
   validate :date_of_birth_cannot_be_in_future
   validate :phone_length_within_limit
   validate :validate_avatar_constraints
+  validate :password_must_differ_from_current_password, if: :password_being_changed?
 
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
@@ -317,6 +318,16 @@ class User < ApplicationRecord
       return unless date_of_birth > Date.current
 
       errors.add(:date_of_birth, "cannot be in the future")
+    end
+
+    def password_being_changed?
+      password.present? && current_password.present?
+    end
+
+    def password_must_differ_from_current_password
+      return unless valid_password?(password)
+
+      errors.add(:password, :same_as_current_password)
     end
 
     def phone_length_within_limit

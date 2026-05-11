@@ -26,5 +26,6 @@ en-GB:
             password:
               blank: can't be blank
               too_short: must be at least %{count} characters long
+              same_as_current_password: must be different from current password
             password_confirmation:
               confirmation: doesn't match with new password
