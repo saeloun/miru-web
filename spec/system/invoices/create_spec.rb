@@ -150,6 +150,30 @@ RSpec.describe "Invoice creation", type: :system, js: true do
     end
   end
 
+  it "keeps manual invoice number edits until the client changes" do
+    beta_client = create(:client, company:, name: "Beta Labs")
+
+    with_forgery_protection do
+      visit_new_invoice_for(client)
+
+      expect(page).to have_field("invoiceNumber", with: "INV-#{client.id.to_s.rjust(3, '0')}-001", wait: 10)
+
+      fill_in "invoiceNumber", with: "INV-CUSTOM-001"
+      expect(page).to have_field("invoiceNumber", with: "INV-CUSTOM-001", wait: 2)
+
+      fill_in "invoiceNumber", with: ""
+      expect(page).to have_field("invoiceNumber", with: "", wait: 2)
+
+      fill_in "invoiceNumber", with: "INV-CUSTOM-002"
+      expect(page).to have_field("invoiceNumber", with: "INV-CUSTOM-002", wait: 2)
+
+      select_invoice_client(beta_client.name)
+
+      expect(page).to have_button(beta_client.name, wait: 10)
+      expect(page).to have_field("invoiceNumber", with: "INV-#{beta_client.id.to_s.rjust(3, '0')}-001", wait: 10)
+    end
+  end
+
   it "saves committed and pending manual line items exactly once" do
     with_forgery_protection do
       visit_new_invoice_for(client)
@@ -413,6 +437,7 @@ RSpec.describe "Invoice creation", type: :system, js: true do
 
   it "persists the switched client currency when saving after changing clients" do
     eur_client = create(:client, company:, name: "Euro Save Labs", currency: "EUR")
+    switched_invoice_number = "INV-#{eur_client.id.to_s.rjust(3, '0')}-001"
     create(:exchange_rate, from_currency: "EUR", to_currency: "USD", rate: 1.2, date: Date.current)
 
     with_forgery_protection do
@@ -428,6 +453,7 @@ RSpec.describe "Invoice creation", type: :system, js: true do
 
       select_invoice_client(eur_client.name)
       expect(page).to have_button(eur_client.name, wait: 10)
+      expect(page).to have_field("invoiceNumber", with: switched_invoice_number, wait: 10)
       expect_invoice_preview_totals(
         currency: "EUR",
         subtotal: 200.0,
@@ -441,7 +467,7 @@ RSpec.describe "Invoice creation", type: :system, js: true do
       expect(page).to have_text("Invoice created successfully", wait: 10)
 
       response_body = JSON.parse(last_invoice_mutation_response.fetch("body"))
-      invoice = Invoice.find_by!(invoice_number: "INV-SWITCH-SAVE-001")
+      invoice = Invoice.find_by!(invoice_number: switched_invoice_number)
 
       expect(invoice.client_id).to eq(eur_client.id)
       expect(invoice.currency).to eq("EUR")
