@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+json.key_format! camelize: :lower
+json.deep_format_keys!
+
 json.invoices invoices do |invoice|
   json.id invoice.id
   json.invoice_number invoice.invoice_number
@@ -32,6 +35,14 @@ json.invoices invoices do |invoice|
     json.email invoice.client&.email if invoice.client&.email
     json.phone invoice.client&.phone if invoice.client&.phone
     json.logo invoice.client&.logo_url if invoice.client&.logo_url
+    json.client_members_emails invoice.client&.send_invoice_emails(@virtual_verified_invitations_allowed) || []
+  end
+  # Include minimal company details for send invoice functionality
+  json.company do
+    json.name current_company.name
+    json.base_currency current_company.base_currency
+    json.currency current_company.base_currency
+    json.date_format current_company.date_format
   end
   json.razorpay_payment_link_url invoice.razorpay_payment_link_url
   json.razorpay_payment_link_status invoice.razorpay_payment_link_status
@@ -88,6 +99,14 @@ json.recentlyUpdatedInvoices recently_updated_invoices do |invoice|
     json.email invoice.client&.email if invoice.client&.email
     json.phone invoice.client&.phone if invoice.client&.phone
     json.logo invoice.client&.logo_url if invoice.client&.logo_url
+    json.client_members_emails invoice.client&.send_invoice_emails(@virtual_verified_invitations_allowed) || []
+  end
+  # Include minimal company details for send invoice functionality
+  json.company do
+    json.name current_company.name
+    json.base_currency current_company.base_currency
+    json.currency current_company.base_currency
+    json.date_format current_company.date_format
   end
   json.razorpay_payment_link_url invoice.razorpay_payment_link_url
   json.razorpay_payment_link_status invoice.razorpay_payment_link_status
