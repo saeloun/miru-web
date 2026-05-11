@@ -27,10 +27,31 @@ RSpec.describe InvoiceMailer, type: :mailer do
       it "renders the organization logo instead of attaching Miru fallback logos" do
         body = mail.html_part.body.decoded
 
-        expect(body).to include("/companies/#{company.id}/logo")
         expect(body).to include('alt="Saeloun Logo Co"')
+        expect(body).to match(/src="cid:[^"]+/)
+
+        company_logo_attachment = mail.attachments.find { |a| a.filename&.start_with?("company_logo_#{company.id}") }
+        expect(company_logo_attachment).to be_present
+        expect(company_logo_attachment.content_type).to match(/image/)
+        expect(company_logo_attachment["content-disposition"].to_s).to include("inline")
+
         expect(mail.attachments["MiruLogoDarkWithText.png"]).to be_nil
         expect(mail.attachments["MiruLogoLightWithText.png"]).to be_nil
+      end
+
+      it "keeps the PDF logo URL separate from the inline email attachment URL" do
+        expect(InvoicePayment::PdfGeneration).to receive(:process) do |generated_invoice, logo_url, root_url|
+          expect(generated_invoice).to eq(invoice)
+          expect(logo_url).to include("test-image.png")
+          expect(logo_url).not_to start_with("cid:")
+          expect(root_url).to be_present
+
+          "%PDF-1.4 invoice"
+        end
+
+        body = mail.html_part.body.decoded
+
+        expect(body).to match(/src="cid:[^"]+/)
       end
     end
 

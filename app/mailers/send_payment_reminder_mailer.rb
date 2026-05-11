@@ -22,8 +22,6 @@ class SendPaymentReminderMailer < ApplicationMailer
   private
 
     def company_logo
-      @invoices.first.company.logo.attached? ?
-        polymorphic_url(@invoices.first.company.logo) :
-        ""
+      attached_company_logo_url(@invoices.first.company)
     end
 end

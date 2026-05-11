@@ -70,11 +70,31 @@ class ApplicationMailer < ActionMailer::Base
       attachments.inline[filename] = { content: path.binread, mime_type: "image/png" }
     end
 
+    def attach_company_logo_inline(company)
+      return "" unless company&.logo&.attached?
+
+      logo_filename = "company_logo_#{company.id}.#{company.logo.filename.extension}"
+      unless attachments[logo_filename].present?
+        attachments.inline[logo_filename] = {
+          content: company.logo.download,
+          mime_type: company.logo.content_type
+        }
+      end
+
+      attachments[logo_filename].url
+    end
+
+    def attached_company_logo_url(company)
+      return "" unless company&.logo&.attached?
+
+      polymorphic_url(company.logo)
+    end
+
     def email_company_logo_url
       company_details = @company_details&.with_indifferent_access
       company = email_company_record
 
-      return logo_company_url(company) if company&.logo&.attached?
+      return attach_company_logo_inline(company) if company&.logo&.attached?
       return @company_logo if @company_logo.present?
 
       company_details[:logo] if company_details&.[](:logo).present?

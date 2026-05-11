@@ -23,5 +23,22 @@ RSpec.describe SendReminderMailer, type: :mailer do
       expect(body).to include("is still awaiting payment")
       expect(body).to include("Open invoice")
     end
+
+    context "when the company has a logo" do
+      let(:company) { create :company, :with_logo, name: "Saeloun Logo Co" }
+
+      it "uses a public logo URL for PDF generation and an inline logo in the email" do
+        expect(InvoicePayment::PdfGeneration).to receive(:process) do |generated_invoice, logo_url, root_url|
+          expect(generated_invoice).to eq(invoice)
+          expect(logo_url).to include("test-image.png")
+          expect(logo_url).not_to start_with("cid:")
+          expect(root_url).to be_present
+
+          "%PDF-1.4 reminder"
+        end
+
+        expect(body).to match(/src="cid:[^"]+/)
+      end
+    end
   end
 end
