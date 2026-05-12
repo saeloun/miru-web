@@ -39,6 +39,20 @@ RSpec.describe "Settings billing", type: :system, js: true do
     end
   end
 
+  it "explains client portal users included in seat usage" do
+    client_portal_user = create(:user, current_workspace_id: company.id)
+    create(:employment, company:, user: client_portal_user)
+    client_portal_user.add_role :client, company
+
+    with_forgery_protection do
+      visit "/settings/billing"
+
+      expect(page).to have_content("2/3 seats used", wait: 10)
+      expect(page).to have_content("Client portal users included in seat count", wait: 10)
+      expect(page).to have_content("Your seat count includes 1 client portal user(s) who have login access", wait: 10)
+    end
+  end
+
   it "shows localized billing copy in Hindi" do
     user.update!(locale: "hi")
 
