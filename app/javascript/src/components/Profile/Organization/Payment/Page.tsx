@@ -66,6 +66,7 @@ const OrganizationPaymentSettingsPage: React.FC = () => {
     qrCodeSvg: "",
     qrCodeDataUri: "",
   });
+  const canEnableUpi = upiSettings.upiId.trim().length > 0;
 
   const [razorpaySettings, setRazorpaySettings] = useState({
     enabled: false,
@@ -650,8 +651,12 @@ const OrganizationPaymentSettingsPage: React.FC = () => {
                               <Switch
                                 id="upi_enabled"
                                 checked={upiSettings.enabled}
+                                disabled={!canEnableUpi}
                                 onCheckedChange={checked =>
-                                  updateUpiSetting("enabled", checked)
+                                  updateUpiSetting(
+                                    "enabled",
+                                    canEnableUpi ? checked : false
+                                  )
                                 }
                               />
                             </div>

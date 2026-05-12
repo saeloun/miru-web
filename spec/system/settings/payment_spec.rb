@@ -67,6 +67,9 @@ RSpec.describe "Settings - Payment", type: :system, js: true do
         visit "/settings/payment"
 
         expect(page).to have_field("upi_id", wait: 10)
+        expect(page).to have_css("#upi_enabled:disabled")
+        expect(find("#upi_enabled")["aria-checked"]).to eq("false")
+
         fill_in "upi_id", with: "syeda.sanaharmain@gmail.com"
         click_on "Save UPI"
 
@@ -130,6 +133,7 @@ RSpec.describe "Settings - Payment", type: :system, js: true do
         fill_in "upi_id", with: ""
 
         expect(find("#upi_enabled")["aria-checked"]).to eq("false")
+        expect(page).to have_css("#upi_enabled:disabled")
         expect(page).to have_no_css("[data-testid='upi-qr-preview']")
 
         click_on "Save UPI"
