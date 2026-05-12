@@ -165,6 +165,29 @@ RSpec.describe "Api::V1::Team#destroy", type: :request do
         }.not_to change(company.employments.kept, :count)
       end
     end
+
+    context "when owner tries to delete self and another owner exists" do
+      let(:another_owner) { create(:user, current_workspace_id: company.id) }
+
+      before do
+        create(:employment, company:, user: owner_user)
+        create(:employment, company:, user: another_owner)
+        owner_user.add_role :owner, company
+        another_owner.add_role :owner, company
+        sign_in owner_user
+      end
+
+      it "allows self removal" do
+        owner_employment = company.employments.kept.find_by!(user: owner_user)
+
+        expect {
+          send_request :delete, api_v1_team_path(owner_user), headers: auth_headers(owner_user)
+        }.to change(company.employments.kept, :count).by(-1)
+
+        expect(response).to be_successful
+        expect(owner_employment.reload.discarded?).to be_truthy
+      end
+    end
   end
 
   context "when current user is an employee" do

@@ -44,12 +44,20 @@ class Api::V1::TeamController < Api::V1::ApplicationController
   end
 
   def destroy
-    authorize employment, policy_class: TeamPolicy
-    employment.user.remove_roles_for(current_company)
-    employment.discard!
+    removed_user = nil
+
+    current_company.with_lock do
+      target_employment = employment
+      target_employment.lock!
+      authorize target_employment, policy_class: TeamPolicy
+
+      removed_user = target_employment.user
+      removed_user.remove_roles_for(current_company)
+      target_employment.discard!
+    end
 
     render json: {
-      user: employment.user,
+      user: removed_user,
       notice: I18n.t("team.delete.success.message")
     }, status: 200
   end
