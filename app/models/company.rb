@@ -106,15 +106,7 @@ class Company < ApplicationRecord
   end
 
   def client_portal_users_count
-    user_ids_with_only_client_role = users.with_kept_employments
-      .joins(:roles)
-      .group("users.id, roles.resource_id, roles.resource_type")
-      .having("COUNT(roles.id) = 1 AND MAX(roles.name) = 'client' \
-              AND roles.resource_id = #{id} \
-              AND roles.resource_type = 'Company'")
-      .pluck("users.id")
-
-    user_ids_with_only_client_role.count
+    User.from(users_with_only_client_role_for_company.select("users.id"), :client_portal_users).count
   end
 
   def team_member_limit_reached?
@@ -222,18 +214,20 @@ class Company < ApplicationRecord
   end
 
   def employees_without_client_role
-    user_ids_with_only_client_role = users.with_kept_employments
-      .joins(:roles)
-      .group("users.id, roles.resource_id, roles.resource_type")
-      .having("COUNT(roles.id) = 1 AND MAX(roles.name) = 'client' \
-              AND roles.resource_id = #{id} \
-              AND roles.resource_type = 'Company'")
-      .pluck("users.id")
-
-    users.with_kept_employments.where.not(id: user_ids_with_only_client_role).distinct
+    users.with_kept_employments
+      .where.not(id: users_with_only_client_role_for_company.select("users.id"))
+      .distinct
   end
 
   private
+
+    def users_with_only_client_role_for_company
+      users.with_kept_employments
+        .joins(:roles)
+        .where(roles: { resource_id: id, resource_type: "Company" })
+        .group("users.id")
+        .having("COUNT(roles.id) = 1 AND MAX(roles.name) = ?", "client")
+    end
 
     def stripe_subscription_access?(status)
       %w[active trialing past_due].include?(status.to_s)

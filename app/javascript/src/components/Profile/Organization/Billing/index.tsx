@@ -434,7 +434,6 @@ const Billing = () => {
                       "billingSettings.alerts.clientPortalUsersDescription",
                       {
                         count: summary.client_portal_users_count,
-                        total: summary.used_team_seats,
                       }
                     )}
                   </AlertDescription>
