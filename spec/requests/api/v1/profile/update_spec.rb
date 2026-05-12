@@ -136,6 +136,20 @@ RSpec.describe "Api::V1::Profile#update", type: :request do
       expect(json_response["errors"]).to eq(["Password must be different from current password"])
     end
 
+    it "throws current password error when current password is incorrect even if new password matches existing password" do
+      params = {
+        user: {
+          first_name: "Example", last_name: "User", current_password: "incorrect", password: "testing12",
+          password_confirmation: "testing12"
+        }
+      }
+
+      send_request(:put, api_v1_profile_path, params:, headers: auth_headers(user))
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(json_response["errors"]).to eq(["Current password is invalid"])
+    end
+
     it "ignores unexpected social account keys" do
       params = {
         user: {

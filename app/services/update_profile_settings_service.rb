@@ -40,7 +40,10 @@ class UpdateProfileSettingsService
   private
 
     def new_password_same_as_current_password?
-      user_params[:password].present? && current_user.valid_password?(user_params[:password])
+      user_params[:password].present? &&
+        user_params[:current_password].present? &&
+        current_user.valid_password?(user_params[:current_password]) &&
+        user_params[:password] == user_params[:current_password]
     end
 
     def success_payload(notice)

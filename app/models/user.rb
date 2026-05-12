@@ -325,7 +325,8 @@ class User < ApplicationRecord
     end
 
     def password_must_differ_from_current_password
-      return unless valid_password?(password)
+      return unless valid_password?(current_password)
+      return unless password == current_password
 
       errors.add(:password, :same_as_current_password)
     end
