@@ -25,6 +25,11 @@ class UpdateProfileSettingsService
   end
 
   def update_user_with_password
+    if new_password_same_as_current_password?
+      current_user.errors.add(:password, :same_as_current_password)
+      return { res: { errors: current_user.errors.full_messages }, status: :unprocessable_content }
+    end
+
     if current_user.update_with_password(user_params)
       { res: success_payload(I18n.t("password.update.success")), status: :ok }
     else
@@ -33,6 +38,13 @@ class UpdateProfileSettingsService
   end
 
   private
+
+    def new_password_same_as_current_password?
+      user_params[:password].present? &&
+        user_params[:current_password].present? &&
+        current_user.valid_password?(user_params[:current_password]) &&
+        user_params[:password] == user_params[:current_password]
+    end
 
     def success_payload(notice)
       {
