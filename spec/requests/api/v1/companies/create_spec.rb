@@ -311,7 +311,7 @@ RSpec.describe "Api::V1::Companies::create", type: :request do
           send_request :post, api_v1_companies_path, params: {
             company: {
               name: "zero labs llc",
-              business_phone: "+01 123123",
+              business_phone: "+919876543210",
               country: "india",
               timezone: "+5:30 Chennai",
               base_currency: "INR",
