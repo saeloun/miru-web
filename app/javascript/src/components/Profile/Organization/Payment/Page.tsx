@@ -40,13 +40,9 @@ import { i18n } from "../../../../i18n";
 import { MiruLogoWithTextSVG } from "miruIcons";
 import { toast } from "sonner";
 
-interface OrganizationPaymentSettingsPageProps {
-  onBack?: () => void;
-}
+const UPI_ID_PATTERN = /^[a-zA-Z0-9._-]{2,256}@[a-zA-Z][a-zA-Z0-9_-]{2,64}$/;
 
-const OrganizationPaymentSettingsPage: React.FC<
-  OrganizationPaymentSettingsPageProps
-> = ({ onBack }) => {
+const OrganizationPaymentSettingsPage: React.FC = () => {
   const razorpayProviderRef = useRef<HTMLDivElement | null>(null);
   const [status, setStatus] = useState<PaymentSettingsStatus>(
     PaymentSettingsStatus.IDLE
@@ -228,7 +224,22 @@ const OrganizationPaymentSettingsPage: React.FC<
   };
 
   const updateUpiSetting = (key: string, value: string | boolean) => {
-    setUpiSettings(settings => ({ ...settings, [key]: value }));
+    setUpiSettings(settings => {
+      const nextSettings = { ...settings, [key]: value };
+
+      if (
+        key === "upiId" &&
+        typeof value === "string" &&
+        value.trim().length === 0
+      ) {
+        nextSettings.enabled = false;
+        nextSettings.paymentLink = "";
+        nextSettings.qrCodeSvg = "";
+        nextSettings.qrCodeDataUri = "";
+      }
+
+      return nextSettings;
+    });
   };
 
   const updateRazorpaySetting = (key: string, value: string | boolean) => {
@@ -236,12 +247,20 @@ const OrganizationPaymentSettingsPage: React.FC<
   };
 
   const saveUpiSettings = async () => {
+    const upiId = upiSettings.upiId.trim();
+
+    if (upiId.length > 0 && !UPI_ID_PATTERN.test(upiId)) {
+      toast.error(i18n.t("paymentSettingsPage.invalidUpiId"));
+
+      return;
+    }
+
     try {
       setIsSavingUpi(true);
       const res = await paymentSettings.updateUpi({
-        enabled: upiSettings.enabled || upiSettings.upiId.trim().length > 0,
+        enabled: upiId.length > 0 && upiSettings.enabled,
         enabled_on_invoices: upiSettings.enabledOnInvoices,
-        upi_id: upiSettings.upiId,
+        upi_id: upiId,
         payee_name: upiSettings.payeeName,
         merchant_category_code: upiSettings.merchantCategoryCode,
       });
@@ -409,13 +428,6 @@ const OrganizationPaymentSettingsPage: React.FC<
   return (
     <div className="min-h-screen bg-muted/40">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {onBack && (
-          <div className="mb-6 flex justify-end">
-            <Button variant="outline" onClick={onBack}>
-              {i18n.t("paymentSettingsPage.backToSettings")}
-            </Button>
-          </div>
-        )}
         <div className="space-y-6">
           {/* Payment Providers Section */}
           <Card className="border-border shadow-sm">
@@ -633,7 +645,7 @@ const OrganizationPaymentSettingsPage: React.FC<
                                 htmlFor="upi_enabled"
                                 className="text-sm font-medium"
                               >
-                                {i18n.t("paymentSettingsPage.connected")}
+                                {i18n.t("paymentSettingsPage.enableUpi")}
                               </Label>
                               <Switch
                                 id="upi_enabled"
@@ -665,19 +677,30 @@ const OrganizationPaymentSettingsPage: React.FC<
                       </div>
 
                       {upiSettings.qrCodeDataUri && (
-                        <div className="w-full shrink-0 rounded-lg border border-border bg-background p-4 lg:w-64">
-                          <div className="mb-3 flex items-center justify-center border-b border-border pb-3">
+                        <div
+                          className="w-full shrink-0 rounded-lg border border-border bg-card p-4 lg:w-64"
+                          data-testid="upi-qr-preview"
+                        >
+                          <div
+                            className="mb-3 flex items-center justify-center rounded-md border border-slate-200 bg-white px-3 py-2"
+                            data-testid="upi-logo-surface"
+                          >
                             <img
                               alt="Miru"
                               className="h-6"
                               src={MiruLogoWithTextSVG}
                             />
                           </div>
-                          <img
-                            alt="UPI QR code"
-                            className="mx-auto h-40 w-40"
-                            src={upiSettings.qrCodeDataUri}
-                          />
+                          <div
+                            className="mx-auto flex h-44 w-44 items-center justify-center rounded-md border border-slate-200 bg-white p-2"
+                            data-testid="upi-qr-surface"
+                          >
+                            <img
+                              alt="UPI QR code"
+                              className="h-40 w-40"
+                              src={upiSettings.qrCodeDataUri}
+                            />
+                          </div>
                           <p className="mt-3 break-all text-center text-sm font-medium text-foreground">
                             {upiSettings.upiId}
                           </p>

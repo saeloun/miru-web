@@ -18,6 +18,7 @@ RSpec.describe "Settings - Payment", type: :system, js: true do
         visit "/settings/payment"
 
         expect(page).to have_css("#react-root", wait: 10)
+        expect(page).not_to have_button("Back to Settings")
       end
     end
 
@@ -54,8 +55,89 @@ RSpec.describe "Settings - Payment", type: :system, js: true do
         expect(page).to have_field("upi_id", with: "saeloun@upi")
         expect(page).to have_css("img[alt='Miru']")
         expect(page).to have_css("img[alt='UPI QR code']")
+        expect(page).to have_css("[data-testid='upi-logo-surface'].bg-white")
+        expect(page).to have_css("[data-testid='upi-qr-surface'].bg-white")
         expect(page).to have_content("Copy UPI ID")
         expect(page).to have_content("Copy payment link")
+      end
+    end
+
+    it "rejects email-like UPI IDs before saving" do
+      with_forgery_protection do
+        visit "/settings/payment"
+
+        expect(page).to have_field("upi_id", wait: 10)
+        fill_in "upi_id", with: "syeda.sanaharmain@gmail.com"
+        click_on "Save UPI"
+
+        expect(page).to have_content("Enter a valid UPI ID, for example name@bank.", wait: 10)
+        expect(company.payments_providers.find_by(name: PaymentsProvider::UPI_PROVIDER)).to be_nil
+      end
+    end
+
+    it "saves a connected UPI ID as disabled when the Enable UPI switch is turned off" do
+      provider = create(
+        :payments_provider,
+        company:,
+        name: PaymentsProvider::UPI_PROVIDER,
+        enabled: true,
+        connected: true,
+        settings: {
+          upi_id: "saeloun@upi",
+          payee_name: "Saeloun",
+          enabled_on_invoices: true
+        }
+      )
+
+      with_forgery_protection do
+        visit "/settings/payment"
+
+        expect(page).to have_field("upi_id", with: "saeloun@upi", wait: 10)
+        expect(find("#upi_enabled")["aria-checked"]).to eq("true")
+
+        find("#upi_enabled").click
+        expect(find("#upi_enabled")["aria-checked"]).to eq("false")
+
+        click_on "Save UPI"
+
+        expect(page).to have_content("UPI settings saved.", wait: 10)
+        expect(provider.reload.upi_id).to eq("saeloun@upi")
+        expect(provider.connected).to be(true)
+        expect(provider.enabled).to be(false)
+      end
+    end
+
+    it "clears the QR preview and disconnects UPI when the UPI ID is blank" do
+      provider = create(
+        :payments_provider,
+        company:,
+        name: PaymentsProvider::UPI_PROVIDER,
+        enabled: true,
+        connected: true,
+        settings: {
+          upi_id: "saeloun@upi",
+          payee_name: "Saeloun",
+          enabled_on_invoices: true
+        }
+      )
+
+      with_forgery_protection do
+        visit "/settings/payment"
+
+        expect(page).to have_field("upi_id", with: "saeloun@upi", wait: 10)
+        expect(page).to have_css("[data-testid='upi-qr-preview']")
+
+        fill_in "upi_id", with: ""
+
+        expect(find("#upi_enabled")["aria-checked"]).to eq("false")
+        expect(page).to have_no_css("[data-testid='upi-qr-preview']")
+
+        click_on "Save UPI"
+
+        expect(page).to have_content("UPI settings saved.", wait: 10)
+        expect(provider.reload.upi_id).to eq("")
+        expect(provider.connected).to be(false)
+        expect(provider.enabled).to be(false)
       end
     end
 

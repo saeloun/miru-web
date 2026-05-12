@@ -83,6 +83,7 @@ class Api::V1::PaymentSettingsController < Api::V1::ApplicationController
     def upi_provider_attributes
       enabled = boolean_type.cast(upi_params[:enabled])
       upi_id = upi_params[:upi_id].to_s.strip
+      enabled = false if upi_id.blank?
 
       {
         connected: upi_id.present?,
