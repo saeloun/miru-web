@@ -48,6 +48,7 @@ type BillingSummary = {
   has_stripe_customer: boolean;
   team_member_limit: number;
   used_team_seats: number;
+  client_portal_users_count: number;
   team_member_limit_reached: boolean;
   trial_active: boolean;
   trial_available: boolean;
@@ -422,6 +423,22 @@ const Billing = () => {
                   </p>
                 </div>
               </div>
+
+              {summary.client_portal_users_count > 0 && (
+                <Alert>
+                  <AlertTitle>
+                    {i18n.t("billingSettings.alerts.clientPortalUsersTitle")}
+                  </AlertTitle>
+                  <AlertDescription>
+                    {i18n.t(
+                      "billingSettings.alerts.clientPortalUsersDescription",
+                      {
+                        count: summary.client_portal_users_count,
+                      }
+                    )}
+                  </AlertDescription>
+                </Alert>
+              )}
 
               {summary.trial_active && summary.trial_ends_at && (
                 <Alert>

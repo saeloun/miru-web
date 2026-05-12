@@ -1872,6 +1872,9 @@ const en = {
       seatLimitReached: "Seat limit reached",
       seatLimitReachedDescription:
         "Upgrade in Stripe to add more than 3 members to this workspace.",
+      clientPortalUsersTitle: "Client portal users included in seat count",
+      clientPortalUsersDescription:
+        "Your seat count includes %{count} client portal user(s) who have login access. These users can view their invoices, projects, and time entries. Team members are managed on the Team page.",
     },
     errors: {
       unableToOpenStripeCheckout: "Unable to open Stripe checkout",
