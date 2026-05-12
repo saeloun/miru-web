@@ -4,9 +4,13 @@ import {
   getStoredBrowserTimeZone,
   i18n,
 } from "../../../i18n";
+import {
+  hasMaximumPhoneDigits,
+  hasMinimumPhoneDigits,
+  isValidOptionalPhoneNumber,
+} from "utils/phoneValidation";
 
 import * as Yup from "yup";
-import { isValidPhoneNumber } from "libphonenumber-js";
 
 const zipcodeRegExp = /^(?=.*[A-Za-z0-9])[A-Za-z0-9\s-]{1,10}$/;
 
@@ -16,11 +20,20 @@ export const companyDetailsFormValidationSchema = Yup.object().shape({
     .max(30, i18n.t("auth.validation.max30")),
   business_phone: Yup.string()
     .test(
+      "phone-number-min-length",
+      i18n.t("auth.validation.phoneMin2Digits"),
+      hasMinimumPhoneDigits
+    )
+    .test(
+      "phone-number-length",
+      i18n.t("auth.validation.phoneMax15Digits"),
+      hasMaximumPhoneDigits
+    )
+    .test(
       "is-valid-phone",
       i18n.t("auth.validation.validBusinessPhone"),
-      value => !value || isValidPhoneNumber(value)
-    )
-    .max(15, i18n.t("auth.validation.max15")),
+      isValidOptionalPhoneNumber
+    ),
   address_line_1: Yup.string()
     .required(i18n.t("auth.validation.addressLineRequired"))
     .max(50, i18n.t("auth.validation.max50")),

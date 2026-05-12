@@ -335,6 +335,7 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                       className="phone-input-clean"
                       defaultCountry="US"
                       flags={flags}
+                      limitMaxLength
                       value={companyPhone}
                       onChange={value =>
                         handleChangeCompanyDetails(value, "companyPhone")

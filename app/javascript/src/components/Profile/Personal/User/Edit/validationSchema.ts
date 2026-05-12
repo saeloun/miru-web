@@ -2,7 +2,11 @@ import * as Yup from "yup";
 import { i18n } from "../../../../../i18n";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
-import { isValidPhoneNumber } from "libphonenumber-js";
+import {
+  hasMaximumPhoneDigits,
+  hasMinimumPhoneDigits,
+  isValidOptionalPhoneNumber,
+} from "utils/phoneValidation";
 
 dayjs.extend(customParseFormat);
 
@@ -46,14 +50,19 @@ export const userSchema = {
   phone_number: Yup.string()
     .nullable()
     .test(
-      "is-valid-phone",
-      i18n.t("auth.validation.validBusinessPhone"),
-      value => !value || isValidPhoneNumber(value)
+      "phone-number-min-length",
+      i18n.t("auth.validation.mobileMin2Digits"),
+      hasMinimumPhoneDigits
     )
     .test(
       "phone-number-length",
-      i18n.t("auth.validation.max15"),
-      value => !value || value.length <= 15
+      i18n.t("auth.validation.mobile15Digits"),
+      hasMaximumPhoneDigits
+    )
+    .test(
+      "is-valid-phone",
+      i18n.t("auth.validation.validBusinessPhone"),
+      isValidOptionalPhoneNumber
     ),
   changePassword: Yup.boolean(),
   password: Yup.string().when("changePassword", {

@@ -30,7 +30,12 @@
 FactoryBot.define do
   factory :company do
     name { "Saeloun" }
-    business_phone { Faker::PhoneNumber.cell_phone_in_e164.slice(0, 15) }
+    business_phone do
+      exchange_code = Faker::Number.between(from: 200, to: 999)
+      subscriber_number = format("%04d", Faker::Number.between(from: 0, to: 9999))
+
+      "+1415#{exchange_code}#{subscriber_number}"
+    end
     base_currency { Faker::Currency.code }
     standard_price { Faker::Number.decimal(l_digits: 3, r_digits: 2) }
     fiscal_year_end { "December" }

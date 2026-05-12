@@ -192,7 +192,7 @@ RSpec.describe "Api::V1::Invoices#update", type: :request do
   it "returns company data needed by the editor preview" do
     company.addresses.first.update!(address_line_1: "100 Market St", city: "San Francisco", state: "CA", country: "USA", pin: "94105")
     company.update!(
-      business_phone: "+15550199",
+      business_phone: "+14155552671",
       tax_id: "TAX-123",
       bank_name: "QA Bank",
       bank_account_number: "12345678",

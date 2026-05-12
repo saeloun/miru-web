@@ -120,11 +120,18 @@ RSpec.describe User, type: :model do
       expect(user.errors[:date_of_birth]).to include("cannot be in the future")
     end
 
-    it "does not allow a phone number longer than 15 characters" do
+    it "does not allow a phone number longer than 15 digits" do
       user.phone = "+1234567890123456"
 
       expect(user).not_to be_valid
-      expect(user.errors[:phone]).to include("is too long (maximum is 15 characters)")
+      expect(user.errors[:phone]).to include("cannot exceed 15 digits")
+    end
+
+    it "does not allow a phone number shorter than 2 digits" do
+      user.phone = "+1"
+
+      expect(user).not_to be_valid
+      expect(user.errors[:phone]).to include("must contain at least 2 digits")
     end
 
     it "does not allow an invalid phone number" do
@@ -138,6 +145,13 @@ RSpec.describe User, type: :model do
       user.phone = "+14155552671"
 
       expect(user).to be_valid
+    end
+
+    it "does not allow an invalid Indian phone number" do
+      user.phone = "+9198765432101"
+
+      expect(user).not_to be_valid
+      expect(user.errors[:phone]).to include("is invalid")
     end
 
     it "allows a blank phone number" do

@@ -118,18 +118,17 @@ RSpec.describe "Api::V1::Client#create", type: :request do
           expect(json_response["errors"]).to include("Phone is invalid")
         end
 
-        it "throws 422 for phone number exceeding 15 characters" do
+        it "throws 422 for phone number exceeding 15 digits" do
           address_details = attributes_for(:address)
           client = attributes_for(:client, phone: "+1234567890123456", addresses_attributes: [address_details])
           send_request :post, api_v1_clients_path(client:), headers: auth_headers(user)
           expect(response).to have_http_status(:unprocessable_content)
-          # Phone validation fails first, so we get "is invalid" error
-          expect(json_response["errors"]).to match(/Phone is (invalid|too long)/)
+          expect(json_response["errors"]).to include("Phone cannot exceed 15 digits")
         end
 
         it "throws 422 for invalid Indian phone number" do
           address_details = attributes_for(:address)
-          client = attributes_for(:client, phone: "+9112345", addresses_attributes: [address_details])
+          client = attributes_for(:client, phone: "+9198765432101", addresses_attributes: [address_details])
           send_request :post, api_v1_clients_path(client:), headers: auth_headers(user)
           expect(response).to have_http_status(:unprocessable_content)
           expect(json_response["errors"]).to include("Phone is invalid")

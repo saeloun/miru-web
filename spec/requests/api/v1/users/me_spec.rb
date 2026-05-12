@@ -7,7 +7,7 @@ RSpec.describe "Api::V1::Users#me", type: :request do
     create(
       :company,
       date_format: "DD-MM-YYYY",
-      business_phone: "+15550199",
+      business_phone: "+14155552671",
       tax_id: "TAX-123",
       ein: "12-3456789",
       us_taxpayer_id: "987-65-4321"

@@ -170,6 +170,7 @@ export const OrganizationEditPage = ({
               className="phone-input-modern"
               defaultCountry="US"
               flags={flags}
+              limitMaxLength
               value={companyPhone}
               onChange={value =>
                 handleChangeCompanyDetails(value, "companyPhone")

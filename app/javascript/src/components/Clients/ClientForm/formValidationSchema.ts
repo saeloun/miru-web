@@ -1,9 +1,13 @@
 import { currencyList } from "constants/currencyList";
 
 import { i18n } from "../../../i18n";
+import {
+  hasMaximumPhoneDigits,
+  hasMinimumPhoneDigits,
+  isValidOptionalPhoneNumber,
+} from "utils/phoneValidation";
 import worldCountries from "world-countries";
 import * as Yup from "yup";
-import { isValidPhoneNumber } from "libphonenumber-js";
 
 interface Currency {
   code: string;
@@ -17,11 +21,20 @@ const clientSchema = Yup.object().shape({
   email: Yup.string().email(i18n.t("auth.validation.invalidEmail")),
   phone: Yup.string()
     .test(
+      "phone-number-min-length",
+      i18n.t("auth.validation.phoneMin2Digits"),
+      hasMinimumPhoneDigits
+    )
+    .test(
+      "phone-number-length",
+      i18n.t("auth.validation.phoneMax15Digits"),
+      hasMaximumPhoneDigits
+    )
+    .test(
       "is-valid-phone",
       i18n.t("auth.validation.validBusinessPhone"),
-      value => !value || isValidPhoneNumber(value)
-    )
-    .max(15, i18n.t("auth.validation.max15")),
+      isValidOptionalPhoneNumber
+    ),
   address1: Yup.string()
     .required(i18n.t("auth.validation.addressLineRequired"))
     .max(50, i18n.t("auth.validation.max50")),

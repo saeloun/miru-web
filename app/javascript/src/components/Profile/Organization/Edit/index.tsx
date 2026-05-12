@@ -10,9 +10,13 @@ import { useDropzone } from "react-dropzone";
 import { useNavigate } from "react-router-dom";
 import { Toastr } from "StyledComponents";
 import { sendGAPageView } from "utils/googleAnalytics";
+import {
+  hasMaximumPhoneDigits,
+  hasMinimumPhoneDigits,
+  isValidOptionalPhoneNumber,
+} from "utils/phoneValidation";
 import worldCountries from "world-countries";
 import * as Yup from "yup";
-import { isValidPhoneNumber } from "libphonenumber-js";
 
 import OrgEditForm from "./OrgEditForm";
 
@@ -22,11 +26,20 @@ const orgSchema = Yup.object().shape({
     .max(30, i18n.t("auth.validation.max30")),
   companyPhone: Yup.string()
     .test(
+      "phone-number-min-length",
+      i18n.t("auth.validation.phoneMin2Digits"),
+      hasMinimumPhoneDigits
+    )
+    .test(
+      "phone-number-length",
+      i18n.t("auth.validation.phoneMax15Digits"),
+      hasMaximumPhoneDigits
+    )
+    .test(
       "is-valid-phone",
       i18n.t("auth.validation.validBusinessPhone"),
-      value => !value || isValidPhoneNumber(value)
-    )
-    .max(15, i18n.t("auth.validation.max15")),
+      isValidOptionalPhoneNumber
+    ),
   companyAddr: Yup.object().shape({
     addressLine1: Yup.string()
       .required(i18n.t("auth.validation.addressLine1Required"))

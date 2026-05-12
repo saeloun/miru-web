@@ -50,7 +50,6 @@ RSpec.describe Company, type: :model do
     it { is_expected.to validate_presence_of(:country) }
     it { is_expected.to validate_presence_of(:base_currency) }
     it { is_expected.to validate_length_of(:name).is_at_most(30) }
-    it { is_expected.to validate_length_of(:business_phone).is_at_most(15) }
 
     it do
       expect(subject).to validate_numericality_of(:standard_price).is_greater_than_or_equal_to(0)
@@ -85,8 +84,20 @@ RSpec.describe Company, type: :model do
         expect(company.errors[:business_phone]).to include("is invalid")
       end
 
-      it "rejects phone number exceeding 15 characters" do
+      it "rejects phone number shorter than 2 digits" do
+        company.business_phone = "+1"
+        expect(company).not_to be_valid
+        expect(company.errors[:business_phone]).to include("must contain at least 2 digits")
+      end
+
+      it "rejects phone number exceeding 15 digits" do
         company.business_phone = "+1234567890123456"
+        expect(company).not_to be_valid
+        expect(company.errors[:business_phone]).to include("cannot exceed 15 digits")
+      end
+
+      it "rejects invalid Indian phone number" do
+        company.business_phone = "+9198765432101"
         expect(company).not_to be_valid
         expect(company.errors[:business_phone]).to include("is invalid")
       end

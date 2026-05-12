@@ -321,6 +321,7 @@ const CompanyDetailsForm = ({
                     flags={flags}
                     id="business_phone"
                     name="business_phone"
+                    limitMaxLength
                     value={values.business_phone}
                     onChange={phone => {
                       setFieldValue("business_phone", phone);

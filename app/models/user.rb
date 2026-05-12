@@ -2,6 +2,7 @@
 
 class User < ApplicationRecord
   include Devise::JWT::RevocationStrategies::JTIMatcher
+  include PhoneNumberValidatable
 
   TOTP_ISSUER = "Miru"
   RECOVERY_CODES_COUNT = 8
@@ -78,7 +79,7 @@ class User < ApplicationRecord
     length: { maximum: 20 }
   validates :locale, inclusion: { in: LocaleConfig::SUPPORTED_LOCALES }
   validate :date_of_birth_cannot_be_in_future
-  validates :phone, phone: { possible: true, allow_blank: true }, length: { maximum: 15 }
+  validate :phone_must_be_valid
   validate :validate_avatar_constraints
   validate :password_must_differ_from_current_password, if: :password_being_changed?
 
@@ -336,6 +337,10 @@ class User < ApplicationRecord
       return unless password == current_password
 
       errors.add(:password, :same_as_current_password)
+    end
+
+    def phone_must_be_valid
+      validate_phone_number(:phone)
     end
 
     def set_token

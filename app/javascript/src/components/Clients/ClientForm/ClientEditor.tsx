@@ -186,6 +186,7 @@ const ClientEditor = ({
                   flags={flags}
                   id="phone"
                   name="phone"
+                  limitMaxLength
                   value={values.phone}
                   onChange={phone => setFieldValue("phone", phone)}
                 />

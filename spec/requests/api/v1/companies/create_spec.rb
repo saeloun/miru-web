@@ -199,7 +199,7 @@ RSpec.describe "Api::V1::Companies::create", type: :request do
         end
 
         it "allows blank phone number" do
-          expect(Company.last.business_phone).to eq("")
+          expect(Company.last.business_phone).to be_nil
         end
       end
 
@@ -251,7 +251,7 @@ RSpec.describe "Api::V1::Companies::create", type: :request do
         end
       end
 
-      context "with phone number exceeding 15 characters" do
+      context "with phone number exceeding 15 digits" do
         before do
           send_request :post, api_v1_companies_path, params: {
             company: {
@@ -275,7 +275,7 @@ RSpec.describe "Api::V1::Companies::create", type: :request do
         end
 
         it "returns validation error" do
-          expect(json_response["errors"]).to include("Business phone is invalid")
+          expect(json_response["errors"]).to include("Business phone cannot exceed 15 digits")
         end
 
         it "does not create the company" do
@@ -296,6 +296,34 @@ RSpec.describe "Api::V1::Companies::create", type: :request do
               }
             }, headers: auth_headers(user)
           }.not_to change(Company, :count)
+        end
+      end
+
+      context "with invalid Indian phone number" do
+        before do
+          send_request :post, api_v1_companies_path, params: {
+            company: {
+              name: "Test Company",
+              business_phone: "+9198765432101",
+              country: "India",
+              timezone: "+5:30 Chennai",
+              base_currency: "INR",
+              standard_price: 1000,
+              fiscal_year_end: "Jan-Dec",
+              date_format: "DD-MM-YYYY",
+              addresses_attributes: [address],
+              working_days: "5",
+              working_hours: "40"
+            }
+          }, headers: auth_headers(user)
+        end
+
+        it "returns error response" do
+          expect(response).to have_http_status(:unprocessable_entity)
+        end
+
+        it "returns validation error" do
+          expect(json_response["errors"]).to include("Business phone is invalid")
         end
       end
     end

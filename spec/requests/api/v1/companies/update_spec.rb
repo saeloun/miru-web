@@ -227,7 +227,7 @@ RSpec.describe "Api::V1::Companies::update", type: :request do
         end
 
         it "allows blank phone number" do
-          expect(company.reload.business_phone).to eq("")
+          expect(company.reload.business_phone).to be_nil
         end
       end
 
@@ -263,7 +263,7 @@ RSpec.describe "Api::V1::Companies::update", type: :request do
         end
       end
 
-      context "with phone number exceeding 15 characters" do
+      context "with phone number exceeding 15 digits" do
         before do
           send_request(
             :put, "#{api_v1_companies_path}/#{company[:id]}", params: {
@@ -285,13 +285,39 @@ RSpec.describe "Api::V1::Companies::update", type: :request do
         end
 
         it "returns validation error" do
-          expect(json_response["errors"]).to include("Business phone is invalid")
+          expect(json_response["errors"]).to include("Business phone cannot exceed 15 digits")
         end
 
         it "does not update the phone number" do
           original_phone = company.business_phone
           company.reload
           expect(company.business_phone).to eq(original_phone)
+        end
+      end
+
+      context "with invalid Indian phone number" do
+        before do
+          send_request(
+            :put, "#{api_v1_companies_path}/#{company[:id]}", params: {
+              company: {
+                business_phone: "+9198765432101",
+                timezone: "IN",
+                base_currency: "Rs",
+                standard_price: "1000",
+                fiscal_year_end: "April",
+                date_format: "DD/MM/YYYY",
+                working_days: "5",
+                working_hours: "40"
+              }
+            }, headers: auth_headers(user))
+        end
+
+        it "returns error response" do
+          expect(response).to have_http_status(:unprocessable_entity)
+        end
+
+        it "returns validation error" do
+          expect(json_response["errors"]).to include("Business phone is invalid")
         end
       end
 
