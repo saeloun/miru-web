@@ -98,7 +98,7 @@ RSpec.describe "Api::V1::TeamMembers::DetailsController#update", type: :request 
 
     it "is unsuccessful" do
       expect(response).to have_http_status(:unprocessable_content)
-      expect(json_response["errors"]).to include("Phone is invalid")
+      expect(json_response["errors"]).to include("Phone cannot exceed 15 digits")
     end
   end
 
@@ -115,7 +115,7 @@ RSpec.describe "Api::V1::TeamMembers::DetailsController#update", type: :request 
 
     it "is unsuccessful" do
       expect(response).to have_http_status(:unprocessable_content)
-      expect(json_response["errors"]).to include("Phone is invalid")
+      expect(json_response["errors"]).to include("Phone must contain at least 2 digits")
     end
   end
 
