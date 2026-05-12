@@ -77,6 +77,9 @@ gem "brakeman", require: false
 # currency list and conversion
 gem "money"
 
+# Phone number validation using Google's libphonenumber
+gem "phonelib"
+
 # aws storage account
 gem "aws-sdk-s3", require: false
 

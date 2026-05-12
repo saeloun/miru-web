@@ -52,6 +52,7 @@
     "js-cookie": "^3.0.5",
     "js-logger": "^1.6.1",
     "jszip": "^3.10.1",
+    "libphonenumber-js": "^1.13.1",
     "phosphor-react": "^1.4.1",
     "rc-steps": "^6.0.0",
     "react": "^19.1.1",

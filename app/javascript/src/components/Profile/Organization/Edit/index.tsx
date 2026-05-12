@@ -12,20 +12,21 @@ import { Toastr } from "StyledComponents";
 import { sendGAPageView } from "utils/googleAnalytics";
 import worldCountries from "world-countries";
 import * as Yup from "yup";
+import { isValidPhoneNumber } from "libphonenumber-js";
 
 import OrgEditForm from "./OrgEditForm";
-
-const phoneRegExp =
-  /^((\+\d{1,3}(-| )?\(?\d\)?(-| )?\d{1,3})|(\(?\d{2,3}\)?))(-| )?(\d{3,4})(-| )?(\d{4})(( x| ext)\d{1,5}){0,1}$/;
 
 const orgSchema = Yup.object().shape({
   companyName: Yup.string()
     .required(i18n.t("auth.validation.nameRequired"))
     .max(30, i18n.t("auth.validation.max30")),
-  companyPhone: Yup.string().matches(
-    phoneRegExp,
-    i18n.t("auth.validation.validBusinessPhone")
-  ),
+  companyPhone: Yup.string()
+    .test(
+      "is-valid-phone",
+      i18n.t("auth.validation.validBusinessPhone"),
+      value => !value || isValidPhoneNumber(value)
+    )
+    .max(15, i18n.t("auth.validation.max15")),
   companyAddr: Yup.object().shape({
     addressLine1: Yup.string()
       .required(i18n.t("auth.validation.addressLine1Required"))

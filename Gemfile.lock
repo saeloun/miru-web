@@ -571,6 +571,7 @@ GEM
       activesupport (>= 6.1)
     pghero (3.7.0)
       activerecord (>= 7.1)
+    phonelib (0.10.20)
     postmark (1.25.1)
       json
     postmark-rails (0.22.1)
@@ -1013,6 +1014,7 @@ DEPENDENCIES
   pg
   pg_search (~> 2.3)
   pghero
+  phonelib
   postmark-rails
   propshaft
   puma (~> 6.6)

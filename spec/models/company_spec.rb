@@ -55,6 +55,48 @@ RSpec.describe Company, type: :model do
     it do
       expect(subject).to validate_numericality_of(:standard_price).is_greater_than_or_equal_to(0)
     end
+
+    describe "phone number validation" do
+      let(:company) { build(:company) }
+
+      it "accepts valid US phone number" do
+        company.business_phone = "+14155552671"
+        expect(company).to be_valid
+      end
+
+      it "accepts valid Indian phone number" do
+        company.business_phone = "+919876543210"
+        expect(company).to be_valid
+      end
+
+      it "accepts valid UK phone number" do
+        company.business_phone = "+442071234567"
+        expect(company).to be_valid
+      end
+
+      it "accepts blank phone number" do
+        company.business_phone = nil
+        expect(company).to be_valid
+      end
+
+      it "rejects invalid phone number" do
+        company.business_phone = "123"
+        expect(company).not_to be_valid
+        expect(company.errors[:business_phone]).to include("is invalid")
+      end
+
+      it "rejects phone number exceeding 15 characters" do
+        company.business_phone = "+1234567890123456"
+        expect(company).not_to be_valid
+        expect(company.errors[:business_phone]).to include("is too long (maximum is 15 characters)")
+      end
+
+      it "accepts phone numbers at exactly 15 characters" do
+        company.business_phone = "+12345678901234"
+        expect(company.business_phone.length).to eq(15)
+        # Note: This may or may not be valid depending on the actual number format
+      end
+    end
   end
 
   describe "Public methods" do

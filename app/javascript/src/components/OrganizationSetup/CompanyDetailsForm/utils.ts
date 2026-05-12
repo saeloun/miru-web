@@ -6,19 +6,21 @@ import {
 } from "../../../i18n";
 
 import * as Yup from "yup";
+import { isValidPhoneNumber } from "libphonenumber-js";
 
-const phoneRegExp =
-  /^((\+\d{1,3}(-| )?\(?\d\)?(-| )?\d{1,3})|(\(?\d{2,3}\)?))(-| )?(\d{3,4})(-| )?(\d{4})(( x| ext)\d{1,5}){0,1}$/;
 const zipcodeRegExp = /^(?=.*[A-Za-z0-9])[A-Za-z0-9\s-]{1,10}$/;
 
 export const companyDetailsFormValidationSchema = Yup.object().shape({
   company_name: Yup.string()
     .required(i18n.t("auth.validation.nameRequired"))
     .max(30, i18n.t("auth.validation.max30")),
-  business_phone: Yup.string().matches(
-    phoneRegExp,
-    i18n.t("auth.validation.validBusinessPhone")
-  ),
+  business_phone: Yup.string()
+    .test(
+      "is-valid-phone",
+      i18n.t("auth.validation.validBusinessPhone"),
+      value => !value || isValidPhoneNumber(value)
+    )
+    .max(15, i18n.t("auth.validation.max15")),
   address_line_1: Yup.string()
     .required(i18n.t("auth.validation.addressLineRequired"))
     .max(50, i18n.t("auth.validation.max50")),

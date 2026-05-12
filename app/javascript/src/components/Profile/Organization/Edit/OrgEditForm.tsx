@@ -336,6 +336,7 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                       defaultCountry="US"
                       flags={flags}
                       value={companyPhone}
+                      maxLength={15}
                       onChange={value =>
                         handleChangeCompanyDetails(value, "companyPhone")
                       }

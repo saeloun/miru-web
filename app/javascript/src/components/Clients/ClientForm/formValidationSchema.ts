@@ -3,9 +3,7 @@ import { currencyList } from "constants/currencyList";
 import { i18n } from "../../../i18n";
 import worldCountries from "world-countries";
 import * as Yup from "yup";
-
-const phoneRegExp =
-  /^((\+\d{1,3}(-| )?\(?\d\)?(-| )?\d{1,3})|(\(?\d{2,3}\)?))(-| )?(\d{3,4})(-| )?(\d{4})(( x| ext)\d{1,5}){0,1}$/;
+import { isValidPhoneNumber } from "libphonenumber-js";
 
 interface Currency {
   code: string;
@@ -17,10 +15,13 @@ const clientSchema = Yup.object().shape({
     .required(i18n.t("auth.validation.nameRequired"))
     .max(30, i18n.t("auth.validation.max30")),
   email: Yup.string().email(i18n.t("auth.validation.invalidEmail")),
-  phone: Yup.string().matches(
-    phoneRegExp,
-    i18n.t("auth.validation.validBusinessPhone")
-  ),
+  phone: Yup.string()
+    .test(
+      "is-valid-phone",
+      i18n.t("auth.validation.validBusinessPhone"),
+      value => !value || isValidPhoneNumber(value)
+    )
+    .max(15, i18n.t("auth.validation.max15")),
   address1: Yup.string()
     .required(i18n.t("auth.validation.addressLineRequired"))
     .max(50, i18n.t("auth.validation.max50")),
