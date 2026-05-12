@@ -133,6 +133,32 @@ RSpec.describe User, type: :model do
       expect(user).not_to be_valid
       expect(user.errors[:phone]).to include("must contain at least 2 digits")
     end
+
+    describe "password reuse validation" do
+      let(:user) { create(:user, password: "testing12") }
+
+      it "does not allow updating the password to the current password" do
+        result = user.update_with_password(
+          current_password: "testing12",
+          password: "testing12",
+          password_confirmation: "testing12"
+        )
+
+        expect(result).to be(false)
+        expect(user.errors.details[:password]).to include(error: :same_as_current_password)
+      end
+
+      it "allows updating the password to a different password" do
+        result = user.update_with_password(
+          current_password: "testing12",
+          password: "newtesting12",
+          password_confirmation: "newtesting12"
+        )
+
+        expect(result).to be(true)
+        expect(user.reload.valid_password?("newtesting12")).to be(true)
+      end
+    end
   end
 
   describe "Callbacks" do

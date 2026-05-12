@@ -68,7 +68,7 @@ class User < ApplicationRecord
 
   # Attribute accessor
   attribute :locale, :string, default: "en-US"
-  attr_accessor :current_company, :role, :skip_password_validation
+  attr_accessor :current_company, :current_password, :role, :skip_password_validation
 
   # Validations
   after_initialize :set_default_social_accounts, if: :new_record?
@@ -110,6 +110,13 @@ class User < ApplicationRecord
 
     record = find_by(id: key)
     record if record && record.authenticatable_salt == salt
+  end
+
+  def update_with_password(params)
+    self.current_password = params[:current_password] || params["current_password"]
+    super
+  ensure
+    self.current_password = nil
   end
 
   # Callbacks
