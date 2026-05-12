@@ -322,7 +322,6 @@ const CompanyDetailsForm = ({
                     id="business_phone"
                     name="business_phone"
                     value={values.business_phone}
-                    maxLength={15}
                     onChange={phone => {
                       setFieldValue("business_phone", phone);
                     }}

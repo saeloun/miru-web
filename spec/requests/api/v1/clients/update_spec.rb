@@ -29,7 +29,7 @@ RSpec.describe "Api::V1::Clients#update", type: :request do
               id: client.id,
               name: "Test Client",
               email: "updated@example.com",
-              phone: "Test phone",
+              phone: "+14155552671",
               addresses_attributes: [{
                 id: client.current_address.id,
                 address_line_1: "updated address"
@@ -69,6 +69,94 @@ RSpec.describe "Api::V1::Clients#update", type: :request do
         expect(json_response["errors"]).to be_present
       end
     end
+
+    context "phone number validation" do
+      it "updates client with valid US phone number" do
+        send_request(
+          :patch, api_v1_client_path(client), params: {
+            client: {
+              id: client.id,
+              phone: "+14155552671"
+            }
+          }, headers: auth_headers(user))
+        expect(response).to have_http_status(:ok)
+        expect(client.reload.phone).to eq("+14155552671")
+      end
+
+      it "updates client with valid Indian phone number" do
+        send_request(
+          :patch, api_v1_client_path(client), params: {
+            client: {
+              id: client.id,
+              phone: "+919876543210"
+            }
+          }, headers: auth_headers(user))
+        expect(response).to have_http_status(:ok)
+        expect(client.reload.phone).to eq("+919876543210")
+      end
+
+      it "updates client with valid UK phone number" do
+        send_request(
+          :patch, api_v1_client_path(client), params: {
+            client: {
+              id: client.id,
+              phone: "+442071234567"
+            }
+          }, headers: auth_headers(user))
+        expect(response).to have_http_status(:ok)
+        expect(client.reload.phone).to eq("+442071234567")
+      end
+
+      it "updates client with blank phone number" do
+        send_request(
+          :patch, api_v1_client_path(client), params: {
+            client: {
+              id: client.id,
+              phone: ""
+            }
+          }, headers: auth_headers(user))
+        expect(response).to have_http_status(:ok)
+        # Empty string is stored as empty string, not nil
+        expect(client.reload.phone).to be_blank
+      end
+
+      it "returns error for invalid phone number" do
+        send_request(
+          :patch, api_v1_client_path(client), params: {
+            client: {
+              id: client.id,
+              phone: "123"
+            }
+          }, headers: auth_headers(user))
+        expect(response).to have_http_status(:unprocessable_content)
+        expect(json_response["errors"]).to include("Phone is invalid")
+      end
+
+      it "returns error for phone number exceeding 15 characters" do
+        send_request(
+          :patch, api_v1_client_path(client), params: {
+            client: {
+              id: client.id,
+              phone: "+1234567890123456"
+            }
+          }, headers: auth_headers(user))
+        expect(response).to have_http_status(:unprocessable_content)
+        # Phone validation fails first, so we get "is invalid" error
+        expect(json_response["errors"]).to match(/Phone is (invalid|too long)/)
+      end
+
+      it "returns error for invalid Indian phone number" do
+        send_request(
+          :patch, api_v1_client_path(client), params: {
+            client: {
+              id: client.id,
+              phone: "+9112345"
+            }
+          }, headers: auth_headers(user))
+        expect(response).to have_http_status(:unprocessable_content)
+        expect(json_response["errors"]).to include("Phone is invalid")
+      end
+    end
   end
 
   context "when user is an employee" do
@@ -83,7 +171,7 @@ RSpec.describe "Api::V1::Clients#update", type: :request do
             id: client.id,
             name: "Test Client",
             email: "test@example.com",
-            phone: "Test phone",
+            phone: "+14155552671",
             addresses_attributes: [attributes_for(:address)]
           }
         }, headers: auth_headers(user))
@@ -106,7 +194,7 @@ RSpec.describe "Api::V1::Clients#update", type: :request do
             id: client.id,
             name: "Test Client",
             email: "test@example.com",
-            phone: "Test phone",
+            phone: "+14155552671",
             addresses_attributes: [attributes_for(:address)]
           }
         }, headers: auth_headers(user))
@@ -125,7 +213,7 @@ RSpec.describe "Api::V1::Clients#update", type: :request do
             id: client.id,
             name: "Test Client",
             email: "test@example.com",
-            phone: "Test phone",
+            phone: "+14155552671",
             addresses_attributes: [attributes_for(:address)]
           }
         })
@@ -148,7 +236,7 @@ RSpec.describe "Api::V1::Clients#update", type: :request do
             id: client.id,
             name: "Test Client",
             email: "test@example.com",
-            phone: "Test phone",
+            phone: "+14155552671",
             addresses_attributes: [attributes_for(:address)]
           }
         }, headers: auth_headers(user)

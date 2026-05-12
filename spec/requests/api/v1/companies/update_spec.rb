@@ -19,7 +19,7 @@ RSpec.describe "Api::V1::Companies::update", type: :request do
           :put, "#{api_v1_companies_path}/#{company[:id]}", params: {
             company: {
               name: "Test Company",
-              business_phone: "Test phone",
+              business_phone: "+919876543210",
               country: "India",
               timezone: "IN",
               base_currency: "Rs",
@@ -57,7 +57,7 @@ RSpec.describe "Api::V1::Companies::update", type: :request do
         company.reload
         company.current_address.reload
         expect(company.name).to eq("Test Company")
-        expect(company.business_phone).to eq("Test phone")
+        expect(company.business_phone).to eq("+919876543210")
         expect(company.standard_price).to eq(1000)
         expect(company.fiscal_year_end).to eq("April")
         expect(company.base_currency).to eq("Rs")
@@ -362,7 +362,7 @@ RSpec.describe "Api::V1::Companies::update", type: :request do
           :put, "#{api_v1_companies_path}/#{company[:id]}", params: {
             company: {
               name: "Test Company",
-              business_phone: "Test phone",
+              business_phone: "+919876543210",
               country: "India",
               timezone: "IN",
               base_currency: "Rs",

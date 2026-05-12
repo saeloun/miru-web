@@ -16,7 +16,7 @@ RSpec.describe "Api::V1::Companies::create", type: :request do
         send_request :post, api_v1_companies_path, params: {
           company: {
             name: "zero labs llc",
-            business_phone: "+01 123123",
+            business_phone: "+919876543210",
             country: "india",
             timezone: "+5:30 Chennai",
             base_currency: "INR",
@@ -36,7 +36,7 @@ RSpec.describe "Api::V1::Companies::create", type: :request do
         change(Company, :count).by(1)
         change(Address, :count).by(1)
         expect(company.name).to eq("zero labs llc")
-        expect(company.business_phone).to eq("+01 123123")
+        expect(company.business_phone).to eq("+919876543210")
         expect(company.base_currency).to eq("INR")
         expect(company.standard_price).to eq(1000)
         expect(company.date_format).to eq("DD-MM-YYYY")

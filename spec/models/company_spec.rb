@@ -88,13 +88,7 @@ RSpec.describe Company, type: :model do
       it "rejects phone number exceeding 15 characters" do
         company.business_phone = "+1234567890123456"
         expect(company).not_to be_valid
-        expect(company.errors[:business_phone]).to include("is too long (maximum is 15 characters)")
-      end
-
-      it "accepts phone numbers at exactly 15 characters" do
-        company.business_phone = "+12345678901234"
-        expect(company.business_phone.length).to eq(15)
-        # Note: This may or may not be valid depending on the actual number format
+        expect(company.errors[:business_phone]).to include("is invalid")
       end
     end
   end

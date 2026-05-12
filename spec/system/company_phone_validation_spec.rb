@@ -57,7 +57,7 @@ RSpec.describe "Company Phone Number Validation", :js, type: :system do
       click_button "Save Changes"
 
       expect(page).to have_content("Company details updated successfully")
-      expect(company.reload.business_phone).to be_nil
+      expect(company.reload.business_phone).to be_blank
     end
   end
 end

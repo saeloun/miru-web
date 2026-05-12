@@ -2,17 +2,9 @@ import * as Yup from "yup";
 import { i18n } from "../../../../../i18n";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
+import { isValidPhoneNumber } from "libphonenumber-js";
 
 dayjs.extend(customParseFormat);
-
-const phoneDigitsWithinLimit = phoneNumber =>
-  phoneNumber ? phoneNumber.replace(/\D/g, "").length <= 15 : true;
-
-const phoneDigitsAboveMinimum = phoneNumber => {
-  if (!phoneNumber) return true;
-
-  return phoneNumber.replace(/\D/g, "").length >= 2;
-};
 
 export const userSchema = {
   first_name: Yup.string()
@@ -54,14 +46,14 @@ export const userSchema = {
   phone_number: Yup.string()
     .nullable()
     .test(
-      "phone-number-min-length",
-      i18n.t("auth.validation.mobileMin2Digits"),
-      value => phoneDigitsAboveMinimum(value)
+      "is-valid-phone",
+      i18n.t("auth.validation.validBusinessPhone"),
+      value => !value || isValidPhoneNumber(value)
     )
     .test(
       "phone-number-length",
-      i18n.t("auth.validation.mobile15Digits"),
-      value => phoneDigitsWithinLimit(value)
+      i18n.t("auth.validation.max15"),
+      value => !value || value.length <= 15
     ),
   changePassword: Yup.boolean(),
   password: Yup.string().when("changePassword", {
