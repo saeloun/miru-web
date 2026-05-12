@@ -105,6 +105,18 @@ class Company < ApplicationRecord
     [used_team_seats, 1].max
   end
 
+  def client_portal_users_count
+    user_ids_with_only_client_role = users.with_kept_employments
+      .joins(:roles)
+      .group("users.id, roles.resource_id, roles.resource_type")
+      .having("COUNT(roles.id) = 1 AND MAX(roles.name) = 'client' \
+              AND roles.resource_id = #{id} \
+              AND roles.resource_type = 'Company'")
+      .pluck("users.id")
+
+    user_ids_with_only_client_role.count
+  end
+
   def team_member_limit_reached?
     return false if team_member_limit.infinite?
 
