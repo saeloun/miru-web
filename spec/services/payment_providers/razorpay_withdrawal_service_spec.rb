@@ -3,7 +3,7 @@
 require "rails_helper"
 
 RSpec.describe PaymentProviders::RazorpayWithdrawalService do
-  let(:company) { create(:india_company, base_currency: "INR", business_phone: "9876543210") }
+  let(:company) { create(:india_company, base_currency: "INR", business_phone: "+919876543210") }
   let(:client) { create(:client, company:, currency: "INR", email: "client@example.com") }
   let(:invoice) { create(:invoice, company:, client:, currency: "INR", status: "paid") }
   let(:payment) { create(:payment, invoice:, transaction_type: :razorpay, payment_currency: "INR", amount: 1000) }

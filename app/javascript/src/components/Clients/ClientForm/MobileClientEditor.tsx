@@ -183,6 +183,7 @@ const MobileClientEditor = ({
                           flags={flags}
                           id="phone"
                           name="phone"
+                          limitMaxLength
                           smartCaret={false}
                           value={formType == "edit" ? client.phone : ""}
                           onChange={phone => {

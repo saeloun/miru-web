@@ -1,11 +1,13 @@
 import { currencyList } from "constants/currencyList";
 
 import { i18n } from "../../../i18n";
+import {
+  hasMaximumPhoneDigits,
+  hasMinimumPhoneDigits,
+  isValidOptionalPhoneNumber,
+} from "utils/phoneValidation";
 import worldCountries from "world-countries";
 import * as Yup from "yup";
-
-const phoneRegExp =
-  /^((\+\d{1,3}(-| )?\(?\d\)?(-| )?\d{1,3})|(\(?\d{2,3}\)?))(-| )?(\d{3,4})(-| )?(\d{4})(( x| ext)\d{1,5}){0,1}$/;
 
 interface Currency {
   code: string;
@@ -17,10 +19,22 @@ const clientSchema = Yup.object().shape({
     .required(i18n.t("auth.validation.nameRequired"))
     .max(30, i18n.t("auth.validation.max30")),
   email: Yup.string().email(i18n.t("auth.validation.invalidEmail")),
-  phone: Yup.string().matches(
-    phoneRegExp,
-    i18n.t("auth.validation.validBusinessPhone")
-  ),
+  phone: Yup.string()
+    .test(
+      "phone-number-min-length",
+      i18n.t("auth.validation.phoneMin2Digits"),
+      hasMinimumPhoneDigits
+    )
+    .test(
+      "phone-number-length",
+      i18n.t("auth.validation.phoneMax15Digits"),
+      hasMaximumPhoneDigits
+    )
+    .test(
+      "is-valid-phone",
+      i18n.t("auth.validation.validBusinessPhone"),
+      isValidOptionalPhoneNumber
+    ),
   address1: Yup.string()
     .required(i18n.t("auth.validation.addressLineRequired"))
     .max(50, i18n.t("auth.validation.max50")),

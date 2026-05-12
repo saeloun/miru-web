@@ -194,5 +194,14 @@ RSpec.describe "Api::V1::Profile#update", type: :request do
       expect(response).to have_http_status(:unprocessable_content)
       expect(json_response["errors"]).to eq(["Phone must contain at least 2 digits"])
     end
+
+    it "rejects an invalid Indian phone number" do
+      params = { user: { phone: "+9198765432101" } }
+
+      send_request(:put, api_v1_profile_path, params:, headers: auth_headers(user))
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(json_response["errors"]).to eq(["Phone is invalid"])
+    end
   end
 end

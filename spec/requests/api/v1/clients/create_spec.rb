@@ -77,6 +77,63 @@ RSpec.describe "Api::V1::Client#create", type: :request do
         expect(response).to have_http_status(:unprocessable_content)
         expect(json_response["errors"]).to eq("Email has already been taken")
       end
+
+      context "phone number validation" do
+        it "creates client with valid US phone number" do
+          address_details = attributes_for(:address)
+          client = attributes_for(:client, phone: "+14155552671", addresses_attributes: [address_details])
+          send_request :post, api_v1_clients_path(client:), headers: auth_headers(user)
+          expect(response).to have_http_status(:created)
+          expect(json_response["client"]["phone"]).to eq("+14155552671")
+        end
+
+        it "creates client with valid Indian phone number" do
+          address_details = attributes_for(:address)
+          client = attributes_for(:client, phone: "+919876543210", addresses_attributes: [address_details])
+          send_request :post, api_v1_clients_path(client:), headers: auth_headers(user)
+          expect(response).to have_http_status(:created)
+          expect(json_response["client"]["phone"]).to eq("+919876543210")
+        end
+
+        it "creates client with valid UK phone number" do
+          address_details = attributes_for(:address)
+          client = attributes_for(:client, phone: "+442071234567", addresses_attributes: [address_details])
+          send_request :post, api_v1_clients_path(client:), headers: auth_headers(user)
+          expect(response).to have_http_status(:created)
+          expect(json_response["client"]["phone"]).to eq("+442071234567")
+        end
+
+        it "creates client with blank phone number" do
+          address_details = attributes_for(:address)
+          client = attributes_for(:client, phone: "", addresses_attributes: [address_details])
+          send_request :post, api_v1_clients_path(client:), headers: auth_headers(user)
+          expect(response).to have_http_status(:created)
+        end
+
+        it "throws 422 for invalid phone number" do
+          address_details = attributes_for(:address)
+          client = attributes_for(:client, phone: "123", addresses_attributes: [address_details])
+          send_request :post, api_v1_clients_path(client:), headers: auth_headers(user)
+          expect(response).to have_http_status(:unprocessable_content)
+          expect(json_response["errors"]).to include("Phone is invalid")
+        end
+
+        it "throws 422 for phone number exceeding 15 digits" do
+          address_details = attributes_for(:address)
+          client = attributes_for(:client, phone: "+1234567890123456", addresses_attributes: [address_details])
+          send_request :post, api_v1_clients_path(client:), headers: auth_headers(user)
+          expect(response).to have_http_status(:unprocessable_content)
+          expect(json_response["errors"]).to include("Phone cannot exceed 15 digits")
+        end
+
+        it "throws 422 for invalid Indian phone number" do
+          address_details = attributes_for(:address)
+          client = attributes_for(:client, phone: "+9198765432101", addresses_attributes: [address_details])
+          send_request :post, api_v1_clients_path(client:), headers: auth_headers(user)
+          expect(response).to have_http_status(:unprocessable_content)
+          expect(json_response["errors"]).to include("Phone is invalid")
+        end
+      end
     end
   end
 

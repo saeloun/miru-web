@@ -134,6 +134,32 @@ RSpec.describe User, type: :model do
       expect(user.errors[:phone]).to include("must contain at least 2 digits")
     end
 
+    it "does not allow an invalid phone number" do
+      user.phone = "123"
+
+      expect(user).not_to be_valid
+      expect(user.errors[:phone]).to include("is invalid")
+    end
+
+    it "allows a valid phone number" do
+      user.phone = "+14155552671"
+
+      expect(user).to be_valid
+    end
+
+    it "does not allow an invalid Indian phone number" do
+      user.phone = "+9198765432101"
+
+      expect(user).not_to be_valid
+      expect(user.errors[:phone]).to include("is invalid")
+    end
+
+    it "allows a blank phone number" do
+      user.phone = nil
+
+      expect(user).to be_valid
+    end
+
     describe "password reuse validation" do
       let(:user) { create(:user, password: "testing12") }
 

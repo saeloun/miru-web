@@ -10,22 +10,36 @@ import { useDropzone } from "react-dropzone";
 import { useNavigate } from "react-router-dom";
 import { Toastr } from "StyledComponents";
 import { sendGAPageView } from "utils/googleAnalytics";
+import {
+  hasMaximumPhoneDigits,
+  hasMinimumPhoneDigits,
+  isValidOptionalPhoneNumber,
+} from "utils/phoneValidation";
 import worldCountries from "world-countries";
 import * as Yup from "yup";
 
 import OrgEditForm from "./OrgEditForm";
 
-const phoneRegExp =
-  /^((\+\d{1,3}(-| )?\(?\d\)?(-| )?\d{1,3})|(\(?\d{2,3}\)?))(-| )?(\d{3,4})(-| )?(\d{4})(( x| ext)\d{1,5}){0,1}$/;
-
 const orgSchema = Yup.object().shape({
   companyName: Yup.string()
     .required(i18n.t("auth.validation.nameRequired"))
     .max(30, i18n.t("auth.validation.max30")),
-  companyPhone: Yup.string().matches(
-    phoneRegExp,
-    i18n.t("auth.validation.validBusinessPhone")
-  ),
+  companyPhone: Yup.string()
+    .test(
+      "phone-number-min-length",
+      i18n.t("auth.validation.phoneMin2Digits"),
+      hasMinimumPhoneDigits
+    )
+    .test(
+      "phone-number-length",
+      i18n.t("auth.validation.phoneMax15Digits"),
+      hasMaximumPhoneDigits
+    )
+    .test(
+      "is-valid-phone",
+      i18n.t("auth.validation.validBusinessPhone"),
+      isValidOptionalPhoneNumber
+    ),
   companyAddr: Yup.object().shape({
     addressLine1: Yup.string()
       .required(i18n.t("auth.validation.addressLine1Required"))

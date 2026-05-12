@@ -4,6 +4,7 @@ class Client < ApplicationRecord
   include Discardable
   include Searchable
   include MetricsTracking
+  include PhoneNumberValidatable
 
   # Configure pg_search
   pg_search_scope :pg_search,
@@ -26,7 +27,7 @@ class Client < ApplicationRecord
   before_validation :normalize_optional_email
   validates :name, presence: true, length: { maximum: 30 },
     uniqueness: { scope: :company_id, case_sensitive: false, message: "The client %{value} already exists" }
-  validates :phone, length: { maximum: 15 }
+  validate :phone_must_be_valid
   validates :email, format: { with: Devise.email_regexp }, allow_blank: true
   validates :email, uniqueness: { scope: :company_id, case_sensitive: false }, allow_blank: true
 
@@ -165,6 +166,10 @@ class Client < ApplicationRecord
   end
 
   private
+
+    def phone_must_be_valid
+      validate_phone_number(:phone)
+    end
 
     def stripe_connected_account
       StripeConnectedAccount.find_by!(company:)

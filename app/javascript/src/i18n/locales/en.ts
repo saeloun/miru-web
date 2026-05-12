@@ -2284,6 +2284,8 @@ const en = {
       acceptTerms: "You must accept the terms",
       nameRequired: "Name cannot be blank",
       max30: "Maximum 30 characters are allowed",
+      phoneMin2Digits: "Phone number must contain at least 2 digits",
+      phoneMax15Digits: "Phone number cannot exceed 15 digits",
       validBusinessPhone: "Please enter a valid business phone number",
       addressLineRequired: "Address line cannot be blank",
       addressLine1Required: "Address Line 1 cannot be blank",

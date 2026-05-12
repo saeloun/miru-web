@@ -118,7 +118,7 @@ module Analytics
         created = client.new_record?
         client.assign_attributes(
           name: name,
-          phone: "555#{rand(1_000_000..9_999_999)}"
+          phone: "+14155552671"
         )
         client.currency = company.base_currency if client.respond_to?(:currency)
         client.save!

@@ -2,6 +2,7 @@
 
 class Company < ApplicationRecord
   include MetricsTracking
+  include PhoneNumberValidatable
 
   # Associations
   has_many :employments, dependent: :destroy
@@ -38,7 +39,7 @@ class Company < ApplicationRecord
   # Validations
   validates :name, :standard_price, :country, :base_currency, presence: true
   validates :name, length: { maximum: 30 }
-  validates :business_phone, length: { maximum: 15 }
+  validate :business_phone_must_be_valid
   validates :standard_price, numericality: { greater_than_or_equal_to: 0 }
 
   # scopes
@@ -220,6 +221,10 @@ class Company < ApplicationRecord
   end
 
   private
+
+    def business_phone_must_be_valid
+      validate_phone_number(:business_phone)
+    end
 
     def users_with_only_client_role_for_company
       users.with_kept_employments

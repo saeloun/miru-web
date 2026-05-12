@@ -59,7 +59,12 @@ FactoryBot.define do
     password { "Password123!" }
     confirmed_at { Date.today }
     date_of_birth { Faker::Date.between(from: "1990-01-01", to: "2000-01-01") }
-    phone { "+1#{Faker::Number.number(digits: 10)}" }
+    phone do
+      exchange_code = Faker::Number.between(from: 200, to: 999)
+      subscriber_number = format("%04d", Faker::Number.between(from: 0, to: 9999))
+
+      "+1415#{exchange_code}#{subscriber_number}"
+    end
     personal_email_id { generate(:personal_email) }
     current_workspace factory: :company
 
