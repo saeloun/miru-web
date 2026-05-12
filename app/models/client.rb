@@ -26,7 +26,7 @@ class Client < ApplicationRecord
   before_validation :normalize_optional_email
   validates :name, presence: true, length: { maximum: 30 },
     uniqueness: { scope: :company_id, case_sensitive: false, message: "The client %{value} already exists" }
-  validates :phone, phone: { possible: true, allow_blank: true }, length: { maximum: 15 }
+  validates :phone, phone: { possible: true, allow_blank: true }, length: { maximum: 16 }
   validates :email, format: { with: Devise.email_regexp }, allow_blank: true
   validates :email, uniqueness: { scope: :company_id, case_sensitive: false }, allow_blank: true
 

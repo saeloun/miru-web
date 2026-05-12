@@ -46,7 +46,7 @@ RSpec.describe Client, type: :model do
 
 
     it { is_expected.to validate_length_of(:name).is_at_most(30) }
-    it { is_expected.to validate_length_of(:phone).is_at_most(15) }
+    it { is_expected.to validate_length_of(:phone).is_at_most(16) }
 
     describe "phone number validation" do
       let(:client) { build(:client) }
@@ -77,10 +77,10 @@ RSpec.describe Client, type: :model do
         expect(client.errors[:phone]).to include("is invalid")
       end
 
-      it "rejects phone number exceeding 15 characters" do
-        client.phone = "+1234567890123456"
+      it "rejects phone number exceeding 16 characters" do
+        client.phone = "+12345678901234567"
         expect(client).not_to be_valid
-        expect(client.errors[:phone]).to include("is invalid")
+        expect(client.errors[:phone]).to include("is too long (maximum is 16 characters)")
       end
     end
   end

@@ -26,7 +26,12 @@ const orgSchema = Yup.object().shape({
       i18n.t("auth.validation.validBusinessPhone"),
       value => !value || isValidPhoneNumber(value)
     )
-    .max(15, i18n.t("auth.validation.max15")),
+    .test("phone-number-length", i18n.t("auth.validation.max15"), value => {
+      if (!value) return true;
+      const digits = value.replace(/\D/g, "");
+
+      return digits.length <= 15;
+    }),
   companyAddr: Yup.object().shape({
     addressLine1: Yup.string()
       .required(i18n.t("auth.validation.addressLine1Required"))

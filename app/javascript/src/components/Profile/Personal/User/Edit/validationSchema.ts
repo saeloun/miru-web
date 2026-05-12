@@ -50,11 +50,12 @@ export const userSchema = {
       i18n.t("auth.validation.validBusinessPhone"),
       value => !value || isValidPhoneNumber(value)
     )
-    .test(
-      "phone-number-length",
-      i18n.t("auth.validation.max15"),
-      value => !value || value.length <= 15
-    ),
+    .test("phone-number-length", i18n.t("auth.validation.max15"), value => {
+      if (!value) return true;
+      const digits = value.replace(/\D/g, "");
+
+      return digits.length <= 15;
+    }),
   changePassword: Yup.boolean(),
   password: Yup.string().when("changePassword", {
     is: true,
