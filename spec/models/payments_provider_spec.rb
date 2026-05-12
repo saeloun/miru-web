@@ -38,6 +38,32 @@ RSpec.describe PaymentsProvider, type: :model do
       it { is_expected.to validate_inclusion_of(:name).in_array(%w(stripe upi razorpay)) }
     end
 
+    context "when UPI is configured" do
+      subject(:provider) do
+        build(
+          :payments_provider,
+          name: PaymentsProvider::UPI_PROVIDER,
+          enabled: true,
+          settings: { upi_id: upi_id }
+        )
+      end
+
+      context "with a valid UPI ID" do
+        let(:upi_id) { "saeloun@upi" }
+
+        it { is_expected.to be_valid }
+      end
+
+      context "with an email address" do
+        let(:upi_id) { "syeda.sanaharmain@gmail.com" }
+
+        it "rejects it as an invalid UPI ID" do
+          expect(provider).not_to be_valid
+          expect(provider.errors[:upi_id]).to be_present
+        end
+      end
+    end
+
     context "when Razorpay is enabled" do
       subject(:provider) do
         build(:payments_provider, name: PaymentsProvider::RAZORPAY_PROVIDER, enabled: true)

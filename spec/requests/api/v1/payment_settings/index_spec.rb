@@ -57,6 +57,85 @@ RSpec.describe "Api::V1::PaymentSettings#index", type: :request do
       expect(provider.accepted_payment_methods).to eq(["upi"])
     end
 
+    it "saves a disabled UPI provider without forcing it back on when a UPI ID exists" do
+      create(
+        :payments_provider,
+        company:,
+        name: PaymentsProvider::UPI_PROVIDER,
+        connected: true,
+        enabled: true,
+        accepted_payment_methods: ["upi"],
+        settings: {
+          upi_id: "saeloun@upi",
+          payee_name: "Saeloun",
+          enabled_on_invoices: true
+        }
+      )
+
+      patch(
+        "/api/v1/payments/settings/upi",
+        params: {
+          provider: {
+            enabled: false,
+            enabled_on_invoices: true,
+            upi_id: "saeloun@upi",
+            payee_name: "Saeloun"
+          }
+        },
+        headers: auth_headers(user)
+      )
+
+      expect(response).to have_http_status(:ok)
+      upi = json_response["providers"]["upi"]
+      expect(upi["connected"]).to be(true)
+      expect(upi["enabled"]).to be(false)
+
+      provider = company.payments_providers.find_by!(name: PaymentsProvider::UPI_PROVIDER)
+      expect(provider.connected).to be(true)
+      expect(provider.enabled).to be(false)
+    end
+
+    it "clears and disconnects UPI when the UPI ID is blank" do
+      create(
+        :payments_provider,
+        company:,
+        name: PaymentsProvider::UPI_PROVIDER,
+        connected: true,
+        enabled: true,
+        accepted_payment_methods: ["upi"],
+        settings: {
+          upi_id: "saeloun@upi",
+          payee_name: "Saeloun",
+          enabled_on_invoices: true
+        }
+      )
+
+      patch(
+        "/api/v1/payments/settings/upi",
+        params: {
+          provider: {
+            enabled: true,
+            enabled_on_invoices: true,
+            upi_id: "",
+            payee_name: "Saeloun"
+          }
+        },
+        headers: auth_headers(user)
+      )
+
+      expect(response).to have_http_status(:ok)
+      upi = json_response["providers"]["upi"]
+      expect(upi["connected"]).to be(false)
+      expect(upi["enabled"]).to be(false)
+      expect(upi["upiId"]).to eq("")
+      expect(upi["qrCodeDataUri"]).to be_nil
+
+      provider = company.payments_providers.find_by!(name: PaymentsProvider::UPI_PROVIDER)
+      expect(provider.connected).to be(false)
+      expect(provider.enabled).to be(false)
+      expect(provider.upi_id).to eq("")
+    end
+
     it "updates Razorpay payment settings without exposing the key secret" do
       patch(
         "/api/v1/payments/settings/razorpay",
@@ -181,6 +260,23 @@ RSpec.describe "Api::V1::PaymentSettings#index", type: :request do
             enabled: true,
             enabled_on_invoices: true,
             upi_id: "not-a-upi-id"
+          }
+        },
+        headers: auth_headers(user)
+      )
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(json_response["errors"]).to have_key("upi_id")
+    end
+
+    it "rejects email addresses as UPI IDs" do
+      patch(
+        "/api/v1/payments/settings/upi",
+        params: {
+          provider: {
+            enabled: true,
+            enabled_on_invoices: true,
+            upi_id: "syeda.sanaharmain@gmail.com"
           }
         },
         headers: auth_headers(user)
