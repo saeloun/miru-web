@@ -5,7 +5,7 @@ class PaymentsProvider < ApplicationRecord
   UPI_PROVIDER = "upi"
   RAZORPAY_PROVIDER = "razorpay"
   PROVIDERS = [STRIPE_PROVIDER, UPI_PROVIDER, RAZORPAY_PROVIDER].freeze
-  UPI_ID_REGEX = /\A[a-zA-Z0-9._-]{2,256}@[a-zA-Z][a-zA-Z0-9._-]{2,64}\z/
+  UPI_ID_REGEX = /\A[a-zA-Z0-9._-]{2,256}@[a-zA-Z][a-zA-Z0-9_-]{2,64}\z/
 
   store_accessor :settings,
     :upi_id,
