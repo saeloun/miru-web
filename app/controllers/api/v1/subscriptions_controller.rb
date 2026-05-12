@@ -88,6 +88,7 @@ class Api::V1::SubscriptionsController < Api::V1::ApplicationController
         has_stripe_customer: current_company.stripe_customer_id.present?,
         team_member_limit: current_company.team_member_limit,
         used_team_seats: current_company.used_team_seats,
+        client_portal_users_count: current_company.client_portal_users_count,
         team_member_limit_reached: current_company.team_member_limit_reached?,
         trial_active: current_company.trial_active?,
         trial_available: current_company.trial_available?,

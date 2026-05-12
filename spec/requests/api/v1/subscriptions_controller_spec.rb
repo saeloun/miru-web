@@ -85,6 +85,20 @@ RSpec.describe Api::V1::SubscriptionsController, type: :request do
       expect(body["trial_active"]).to eq(false)
       expect(body["trial_available"]).to eq(true)
       expect(body["pro_access"]).to eq(false)
+      expect(body["client_portal_users_count"]).to eq(0)
+    end
+
+    it "returns client portal users included in the seat count" do
+      client_portal_user = create(:user, current_workspace_id: company.id)
+      create(:employment, company:, user: client_portal_user)
+      client_portal_user.add_role(:client, company)
+
+      get "/api/v1/subscription", headers: headers
+
+      expect(response).to have_http_status(:ok)
+      body = JSON.parse(response.body)
+      expect(body["used_team_seats"]).to eq(2)
+      expect(body["client_portal_users_count"]).to eq(1)
     end
 
     it "returns trial summary when the company is on a pro trial" do

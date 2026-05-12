@@ -243,6 +243,42 @@ RSpec.describe Company, type: :model do
       end
     end
 
+    describe "#client_portal_users_count" do
+      let(:team_member) { create(:user, current_workspace_id: company.id) }
+      let(:client_portal_user) { create(:user, current_workspace_id: company.id) }
+      let(:mixed_role_user) { create(:user, current_workspace_id: company.id) }
+      let(:other_company_client) { create(:user, current_workspace_id: company.id) }
+      let(:discarded_client_user) { create(:user, current_workspace_id: company.id) }
+      let(:other_company) { create(:company) }
+
+      before do
+        create(:employment, company:, user: team_member)
+        team_member.add_role(:employee, company)
+
+        create(:employment, company:, user: client_portal_user)
+        client_portal_user.add_role(:client, company)
+
+        create(:employment, company:, user: mixed_role_user)
+        mixed_role_user.add_role(:client, company)
+        mixed_role_user.add_role(:employee, company)
+
+        create(:employment, company:, user: other_company_client)
+        other_company_client.add_role(:client, other_company)
+
+        create(:employment, company:, user: discarded_client_user, discarded_at: Time.current)
+        discarded_client_user.add_role(:client, company)
+      end
+
+      it "counts kept users whose only company role is client" do
+        expect(company.client_portal_users_count).to eq(1)
+      end
+
+      it "excludes only client portal users from employee lists" do
+        expect(company.employees_without_client_role).to include(team_member, mixed_role_user, other_company_client)
+        expect(company.employees_without_client_role).not_to include(client_portal_user, discarded_client_user)
+      end
+    end
+
     describe "#apply_stripe_subscription!" do
       it "marks the company as paid for active subscriptions" do
         company.apply_stripe_subscription!(

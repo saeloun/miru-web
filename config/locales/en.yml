@@ -640,6 +640,7 @@ en:
     team_policy:
       destroy?: You are not authorized to destroy team.
       edit?: You are not authorized to edit team.
+      last_owner_self_removal: You cannot remove yourself because you are the only workspace owner.
       update?: You are not authorized to update team.
   registration:
     confirm_password: confirm password
