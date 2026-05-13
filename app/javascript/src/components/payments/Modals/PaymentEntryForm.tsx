@@ -412,6 +412,7 @@ const PaymentEntryForm = ({
                   value={
                     transactionDate && dayjs(transactionDate).format(dateFormat)
                   }
+                  wrapperClassName="outline-none relative h-12"
                   onChange={() => {}}
                 />
                 <CalendarIcon
@@ -547,6 +548,7 @@ const PaymentEntryForm = ({
                 step="0.01"
                 type="number"
                 value={amount ?? ""}
+                wrapperClassName="outline-none relative h-12"
                 onChange={e => setFieldValue("amount", e.target.value)}
               />
             </div>
@@ -558,6 +560,7 @@ const PaymentEntryForm = ({
                 name="NotesOptional"
                 rows={5}
                 value={note}
+                wrapperClassName="outline-none relative"
                 onChange={e => setFieldValue("note", e.target.value)}
               />
             </div>
