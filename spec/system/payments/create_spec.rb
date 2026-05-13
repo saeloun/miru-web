@@ -201,6 +201,13 @@ RSpec.describe "Adding payment entry", type: :system, js: true do
             expect(page).to have_content("No invoices available", wait: 10)
             expect(page).to have_content("Create an invoice first to add a payment")
           end
+
+          page.driver.browser.keyboard.type(:Escape)
+
+          expect(page).not_to have_css(
+            "[data-testid='manual-payment-invoice-options']",
+            wait: 10
+          )
         end
       end
     end
