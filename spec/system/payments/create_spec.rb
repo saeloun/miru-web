@@ -154,7 +154,9 @@ RSpec.describe "Adding payment entry", type: :system, js: true do
 
         wrapper_styles.each_value do |styles|
           expect(styles.fetch("className").split).to include("outline-none")
-          expect(styles.fetch("outlineColor")).to eq("rgba(0, 0, 0, 0)")
+          expect(["rgba(0, 0, 0, 0)", "transparent"]).to include(
+            styles.fetch("outlineColor")
+          )
         end
       end
     end
