@@ -804,6 +804,8 @@ const en = {
     manualEntryAdded: "Manual entry added successfully.",
     failedToAddManualEntry: "Failed to add manual entry",
     searchByClientOrInvoice: "Search by client name or invoice ID",
+    noInvoicesAvailable: "No invoices available",
+    createInvoiceFirstToAddPayment: "Create an invoice first to add a payment",
     selectTransactionTypeBtn: "Select Transaction Type",
     noPaymentFound: "No payment found!",
   },

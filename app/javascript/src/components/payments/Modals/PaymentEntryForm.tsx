@@ -195,8 +195,6 @@ const PaymentEntryForm = ({
         };
 
         const handleInvoiceMenuKeyDown = event => {
-          if (!invoices.length) return;
-
           if (
             !showSelectMenu &&
             ["ArrowDown", "ArrowUp", "Enter", " "].includes(event.key)
@@ -209,6 +207,16 @@ const PaymentEntryForm = ({
           }
 
           if (!showSelectMenu) return;
+
+          if (!invoices.length) {
+            if (event.key === "Escape") {
+              event.preventDefault();
+              setShowSelectMenu(false);
+              focusInvoiceSelect();
+            }
+
+            return;
+          }
 
           switch (event.key) {
             case "ArrowDown":
@@ -311,58 +319,75 @@ const PaymentEntryForm = ({
                         onKeyDown={handleInvoiceMenuKeyDown}
                         role="listbox"
                       >
-                        {invoices.map((invoiceOption, index) => (
-                          <button
-                            aria-selected={
-                              invoice?.value === invoiceOption.value
-                            }
-                            className={`flex w-full cursor-pointer flex-col gap-2 p-2 text-left hover:bg-muted focus:outline-none sm:flex-row sm:items-center sm:justify-between sm:gap-0 ${
-                              focusedInvoiceIndex === index
-                                ? "bg-muted ring-1 ring-ring"
-                                : ""
-                            }`}
-                            id={`manual-payment-invoice-option-${invoiceOption.value}`}
-                            key={invoiceOption.value}
-                            role="option"
-                            tabIndex={-1}
-                            type="button"
-                            onClick={() => {
-                              selectInvoiceOption(invoiceOption);
-                            }}
-                            onMouseEnter={() => setFocusedInvoiceIndex(index)}
-                          >
-                            <span className="w-full py-2 pr-0 pl-0 sm:w-2/6 sm:py-3 sm:pr-2">
-                              <span className="block truncate text-sm font-medium leading-5 text-foreground">
-                                {invoiceOption.label}
+                        {invoices.length ? (
+                          invoices.map((invoiceOption, index) => (
+                            <button
+                              aria-selected={
+                                invoice?.value === invoiceOption.value
+                              }
+                              className={`flex w-full cursor-pointer flex-col gap-2 p-2 text-left hover:bg-muted focus:outline-none sm:flex-row sm:items-center sm:justify-between sm:gap-0 ${
+                                focusedInvoiceIndex === index
+                                  ? "bg-muted ring-1 ring-ring"
+                                  : ""
+                              }`}
+                              id={`manual-payment-invoice-option-${invoiceOption.value}`}
+                              key={invoiceOption.value}
+                              role="option"
+                              tabIndex={-1}
+                              type="button"
+                              onClick={() => {
+                                selectInvoiceOption(invoiceOption);
+                              }}
+                              onMouseEnter={() => setFocusedInvoiceIndex(index)}
+                            >
+                              <span className="w-full py-2 pr-0 pl-0 sm:w-2/6 sm:py-3 sm:pr-2">
+                                <span className="block truncate text-sm font-medium leading-5 text-foreground">
+                                  {invoiceOption.label}
+                                </span>
+                                <span className="block pt-1 text-sm font-normal leading-5 text-muted-foreground">
+                                  {invoiceOption.invoiceNumber}
+                                </span>
                               </span>
-                              <span className="block pt-1 text-sm font-normal leading-5 text-muted-foreground">
-                                {invoiceOption.invoiceNumber}
-                              </span>
-                            </span>
-                            <span className="w-full px-0 py-2 sm:w-2/6 sm:px-2 sm:py-3 sm:text-right">
-                              <span className="block text-base font-bold leading-5 text-foreground">
-                                {baseCurrency &&
-                                  currencyFormat(
-                                    baseCurrency,
-                                    invoiceOption.amount
+                              <span className="w-full px-0 py-2 sm:w-2/6 sm:px-2 sm:py-3 sm:text-right">
+                                <span className="block text-base font-bold leading-5 text-foreground">
+                                  {baseCurrency &&
+                                    currencyFormat(
+                                      baseCurrency,
+                                      invoiceOption.amount
+                                    )}
+                                </span>
+                                <span className="block pt-1 text-sm font-medium leading-5 text-muted-foreground">
+                                  {dayjs(invoiceOption.invoiceDate).format(
+                                    dateFormat
                                   )}
+                                </span>
                               </span>
-                              <span className="block pt-1 text-sm font-medium leading-5 text-muted-foreground">
-                                {dayjs(invoiceOption.invoiceDate).format(
-                                  dateFormat
-                                )}
+                              <span className="w-full py-1 pl-0 pr-0 text-sm font-semibold leading-4 tracking-wider sm:w-2/6 sm:py-3 sm:pl-2 sm:text-right">
+                                <Badge
+                                  className={`${getStatusCssClass(
+                                    invoiceOption.status
+                                  )} uppercase`}
+                                  text={invoiceOption.status}
+                                />
                               </span>
-                            </span>
-                            <span className="w-full py-1 pl-0 pr-0 text-sm font-semibold leading-4 tracking-wider sm:w-2/6 sm:py-3 sm:pl-2 sm:text-right">
-                              <Badge
-                                className={`${getStatusCssClass(
-                                  invoiceOption.status
-                                )} uppercase`}
-                                text={invoiceOption.status}
-                              />
-                            </span>
-                          </button>
-                        ))}
+                            </button>
+                          ))
+                        ) : (
+                          <div
+                            aria-disabled="true"
+                            className="flex min-h-24 flex-col justify-center px-4 py-3"
+                            role="option"
+                          >
+                            <p className="text-sm font-medium text-foreground">
+                              {i18n.t("payments.noInvoicesAvailable")}
+                            </p>
+                            <p className="mt-1 text-sm text-muted-foreground">
+                              {i18n.t(
+                                "payments.createInvoiceFirstToAddPayment"
+                              )}
+                            </p>
+                          </div>
+                        )}
                       </div>
                     )}
                   </div>
