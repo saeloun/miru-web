@@ -57,6 +57,38 @@ RSpec.describe "Profile Settings", type: :system, js: true do
     end
   end
 
+  it "renders the profile logout action as a subtle destructive control" do
+    with_forgery_protection do
+      visit "/settings/profile"
+
+      logout_button_selector = "[data-testid='profile-settings-logout-button']"
+
+      expect(page).to have_css("#react-root", wait: 10)
+      expect(page).to have_css(logout_button_selector, wait: 10)
+
+      logout_button = find(logout_button_selector)
+      logout_classes = logout_button[:class]
+      logout_styles = page.evaluate_script(<<~JS)
+        (() => {
+          const button = document.querySelector("#{logout_button_selector}");
+          const styles = window.getComputedStyle(button);
+
+          return {
+            backgroundColor: styles.backgroundColor,
+            color: styles.color
+          };
+        })();
+      JS
+
+      expect(logout_classes).to include("border-destructive/30")
+      expect(logout_classes).to include("text-destructive")
+      expect(logout_classes).to include("hover:bg-destructive/10")
+      expect(logout_classes).not_to include("bg-red-500")
+      expect(logout_classes).not_to include("text-white")
+      expect(logout_styles["backgroundColor"]).not_to eq("rgb(239, 68, 68)")
+    end
+  end
+
   it "boots the app in the user's saved locale" do
     user.update!(locale: "hi")
 

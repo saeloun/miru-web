@@ -203,9 +203,9 @@ const PersonalProfileSummary = ({
                 </CardHeader>
                 <CardContent>
                   <Button
-                    variant="destructive"
+                    variant="outline"
                     size="sm"
-                    className="w-full gap-2 font-geist-medium"
+                    className="w-full gap-2 border-destructive/30 text-destructive hover:bg-destructive/10 hover:text-destructive font-geist-medium"
                     data-testid="profile-settings-logout-button"
                     onClick={handleLogout}
                   >
