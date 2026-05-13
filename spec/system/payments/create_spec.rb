@@ -188,6 +188,23 @@ RSpec.describe "Adding payment entry", type: :system, js: true do
       end
     end
 
+    context "when there are no invoices available" do
+      let!(:invoice) { nil }
+
+      it "shows an empty state in the manual payment invoice dropdown" do
+        with_forgery_protection do
+          open_manual_payment_modal
+
+          find("[data-testid='manual-payment-invoice-select']", wait: 10).click
+
+          within("[data-testid='manual-payment-invoice-options']") do
+            expect(page).to have_content("No invoices available", wait: 10)
+            expect(page).to have_content("Create an invoice first to add a payment")
+          end
+        end
+      end
+    end
+
     it "keeps selected payment values visible when the save fails" do
       with_forgery_protection do
         open_manual_payment_modal
