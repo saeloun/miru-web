@@ -161,6 +161,7 @@ const en = {
   dataTable: {
     noResults: "No results.",
     rowsSelected: "%{selected} of %{total} row(s) selected.",
+    clearSelection: "Clear selection",
     pageOf: "Page %{page} of %{total}",
   },
 
@@ -754,6 +755,9 @@ const en = {
     withdrawal: "Withdrawal",
     openMenu: "Open menu",
     copyTransactionId: "Copy transaction ID",
+    copyTransactionIds: "Copy transaction IDs",
+    transactionIdsCopied: "%{count} transaction ID(s) copied.",
+    transactionIdsCopyFailed: "Failed to copy transaction IDs.",
     viewInvoice: "View invoice",
     downloadReceipt: "Download receipt",
     withdrawToUpi: "Withdraw to UPI",

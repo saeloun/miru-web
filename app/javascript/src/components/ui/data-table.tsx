@@ -32,8 +32,15 @@ import {
   CaretRight,
   CaretDoubleLeft,
   CaretDoubleRight,
+  X,
 } from "phosphor-react";
 import { i18n } from "../../i18n";
+
+interface DataTableSelectionActions<TData> {
+  selectedRows: TData[];
+  filteredRows: TData[];
+  clearSelection: () => void;
+}
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -43,6 +50,9 @@ interface DataTableProps<TData, TValue> {
   showColumnVisibility?: boolean;
   showPagination?: boolean;
   onRowClick?: (row: TData) => void;
+  renderSelectedRowsActions?: (
+    actions: DataTableSelectionActions<TData>
+  ) => React.ReactNode;
 }
 
 export function DataTable<TData, TValue>({
@@ -53,6 +63,7 @@ export function DataTable<TData, TValue>({
   showColumnVisibility = false,
   showPagination = true,
   onRowClick,
+  renderSelectedRowsActions,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -86,6 +97,17 @@ export function DataTable<TData, TValue>({
       globalFilter,
     },
   });
+
+  const selectedRows = table
+    .getFilteredSelectedRowModel()
+    .rows.map(row => row.original);
+
+  const filteredRows = table
+    .getFilteredRowModel()
+    .rows.map(row => row.original);
+
+  const selectedRowCount = selectedRows.length;
+  const clearSelection = () => table.resetRowSelection();
 
   return (
     <div className="w-full">
@@ -121,6 +143,38 @@ export function DataTable<TData, TValue>({
           </DropdownMenu>
         )}
       </div>
+      {selectedRowCount > 0 && (
+        <div
+          className="mb-3 flex flex-col gap-3 rounded-md border border-border bg-muted/50 px-3 py-2 sm:flex-row sm:items-center sm:justify-between"
+          data-testid="data-table-selection-toolbar"
+        >
+          <span
+            className="text-sm font-medium text-foreground"
+            data-testid="data-table-selection-count"
+          >
+            {i18n.t("dataTable.rowsSelected", {
+              selected: selectedRowCount,
+              total: filteredRows.length,
+            })}
+          </span>
+          <div className="flex flex-wrap items-center gap-2">
+            {renderSelectedRowsActions?.({
+              selectedRows,
+              filteredRows,
+              clearSelection,
+            })}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={clearSelection}
+              className="text-muted-foreground hover:text-foreground"
+            >
+              <X className="mr-2 h-4 w-4" />
+              {i18n.t("dataTable.clearSelection")}
+            </Button>
+          </div>
+        </div>
+      )}
       <div className="rounded-md border">
         <Table>
           <TableHeader>

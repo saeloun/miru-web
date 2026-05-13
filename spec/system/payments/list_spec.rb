@@ -132,6 +132,46 @@ RSpec.describe "Payments page", type: :system, js: true do
         end
       end
     end
+
+    it "shows bulk actions and readable dark-mode checkboxes after selecting payments" do
+      with_forgery_protection do
+        visit "/payments"
+        page.execute_script("localStorage.setItem('miru-theme', 'dark')")
+        page.execute_script("document.documentElement.classList.add('dark')")
+        visit "/payments"
+
+        expect(page).to have_content("INV-PAY-001", wait: 10)
+
+        select_all = find("[role='checkbox'][aria-label='Select all']", wait: 10)
+        checkbox_styles = page.evaluate_script(<<~JS)
+          (() => {
+            const checkbox = document.querySelector("[role='checkbox'][aria-label='Select all']");
+            const styles = window.getComputedStyle(checkbox);
+
+            return {
+              backgroundColor: styles.backgroundColor,
+              borderColor: styles.borderColor,
+              borderRadius: styles.borderRadius,
+              borderWidth: styles.borderWidth
+            };
+          })()
+        JS
+
+        expect(checkbox_styles["borderColor"]).not_to eq("rgba(0, 0, 0, 0)")
+        expect(checkbox_styles["borderWidth"]).to eq("1px")
+        expect(checkbox_styles["borderRadius"].to_f).to be <= 4
+
+        select_all.click
+
+        expect(page).to have_css("[data-testid='data-table-selection-toolbar']", wait: 10)
+        expect(page).to have_css("[data-testid='data-table-selection-count']", text: "3 of 3 row(s) selected.")
+        expect(page).to have_button("Copy transaction IDs")
+        expect(page).to have_button("Clear selection")
+
+        find("button", text: "Clear selection").click
+        expect(page).to have_no_css("[data-testid='data-table-selection-toolbar']")
+      end
+    end
   end
 
   context "when there are no payments" do

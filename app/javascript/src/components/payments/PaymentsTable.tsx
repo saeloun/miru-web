@@ -35,6 +35,7 @@ import {
   ArrowDown,
   CaretUp,
   CaretDown,
+  Copy,
 } from "phosphor-react";
 import { currencyFormat } from "../../helpers/currency";
 import { useUserContext } from "../../context/UserContext";
@@ -187,6 +188,23 @@ const PaymentsTable: React.FC = () => {
       );
     } finally {
       setWithdrawingPaymentId(null);
+    }
+  };
+
+  const copySelectedTransactionIds = async (selectedPayments: Payment[]) => {
+    const transactionIds = selectedPayments
+      .map(payment => payment.transactionId)
+      .filter(Boolean);
+
+    try {
+      await navigator.clipboard.writeText(transactionIds.join("\n"));
+      toast.success(
+        i18n.t("payments.transactionIdsCopied", {
+          count: transactionIds.length,
+        })
+      );
+    } catch {
+      toast.error(i18n.t("payments.transactionIdsCopyFailed"));
     }
   };
 
@@ -639,6 +657,16 @@ const PaymentsTable: React.FC = () => {
               <DataTable
                 columns={columns}
                 data={visiblePayments}
+                renderSelectedRowsActions={({ selectedRows }) => (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => copySelectedTransactionIds(selectedRows)}
+                  >
+                    <Copy className="mr-2 h-4 w-4" />
+                    {i18n.t("payments.copyTransactionIds")}
+                  </Button>
+                )}
                 searchPlaceholder={i18n.t(
                   "payments.searchByInvoiceClientMethodOrNotes"
                 )}
