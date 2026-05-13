@@ -355,7 +355,7 @@ class DashboardPresenter
 
     def team_size
       return 1 if employee_scoped?
-      return company.users.count unless client_scoped?
+      return company.employments.kept.count unless client_scoped?
 
       scoped_projects.joins(:project_members).distinct.count("project_members.user_id")
     end
