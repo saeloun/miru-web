@@ -312,19 +312,19 @@
           <p><%= invoice.company.business_phone %></p>
         <% end %>
         <% if invoice.company.tax_id.present? %>
-          <p>Tax ID: <%= invoice.company.tax_id %></p>
+          <p><%= t("pdfs.invoices.payment_rows.tax_id") %>: <%= invoice.company.tax_id %></p>
         <% end %>
         <% if invoice.company.vat_number.present? %>
-          <p>VAT Number: <%= invoice.company.vat_number %></p>
+          <p><%= t("pdfs.invoices.payment_rows.vat_number") %>: <%= invoice.company.vat_number %></p>
         <% end %>
         <% if invoice.company.gst_number.present? %>
-          <p>GST Number: <%= invoice.company.gst_number %></p>
+          <p><%= t("pdfs.invoices.payment_rows.gst_number") %>: <%= invoice.company.gst_number %></p>
         <% end %>
         <% if invoice.company.ein.present? %>
-          <p>EIN: <%= invoice.company.ein %></p>
+          <p><%= t("pdfs.invoices.payment_rows.ein") %>: <%= invoice.company.ein %></p>
         <% end %>
         <% if invoice.company.us_taxpayer_id.present? %>
-          <p>U.S. Taxpayer ID: <%= invoice.company.us_taxpayer_id %></p>
+          <p><%= t("pdfs.invoices.payment_rows.us_taxpayer_id") %>: <%= invoice.company.us_taxpayer_id %></p>
         <% end %>
       </div>
     </div>
@@ -341,12 +341,12 @@
           <span class="invoice-meta-value"><%= invoice.formatted_issue_date %></span>
         </div>
         <div class="invoice-meta-row">
-          <span class="invoice-meta-label"><%= t("pdfs.invoices.amount_due") %>:</span>
+          <span class="invoice-meta-label"><%= t("pdfs.invoices.due_date") %>:</span>
           <span class="invoice-meta-value"><%= invoice.formatted_due_date %></span>
         </div>
         <% if reference %>
           <div class="invoice-meta-row">
-            <span class="invoice-meta-label">Reference:</span>
+            <span class="invoice-meta-label"><%= t("pdfs.invoices.reference_label") %>:</span>
             <span class="invoice-meta-value"><%= reference %></span>
           </div>
         <% end %>
@@ -379,7 +379,7 @@
             <th class="text-center" style="width: 16%;"><%= t("pdfs.invoices.table.date") %></th>
             <th class="text-center" style="width: 12%;"><%= t("pdfs.invoices.table.qty") %></th>
             <th class="text-right" style="width: 15%;"><%= t("pdfs.invoices.table.rate") %></th>
-            <th class="text-right" style="width: 15%;">Amount</th>
+            <th class="text-right" style="width: 15%;"><%= t("pdfs.invoices.table.amount") %></th>
           </tr>
         </thead>
         <tbody>
@@ -424,7 +424,7 @@
         <% end %>
         <hr class="totals-divider">
         <div class="totals-grand-row">
-          <span class="totals-grand-label"><%= t("pdfs.invoices.total") %> Due</span>
+          <span class="totals-grand-label"><%= t("pdfs.invoices.total_due") %></span>
           <span class="totals-grand-value"><%= total %></span>
         </div>
       </div>
@@ -444,7 +444,7 @@
 
     <!-- Footer -->
     <div class="invoice-footer">
-      <p>Thank you for your business!</p>
+      <p><%= t("pdfs.invoices.thank_you") %></p>
     </div>
   </div>
 </body>
