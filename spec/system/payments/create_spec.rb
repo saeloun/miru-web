@@ -126,6 +126,41 @@ RSpec.describe "Adding payment entry", type: :system, js: true do
       end
     end
 
+    it "keeps manual payment form fields on the same border treatment" do
+      with_forgery_protection do
+        open_manual_payment_modal
+
+        wrapper_styles = page.evaluate_script(<<~JS)
+          (() => {
+            return ["transactionDate", "paymentAmount", "NotesOptional"].reduce(
+              (stylesByField, fieldId) => {
+                const field = document.getElementById(fieldId);
+                const wrapper = field?.parentElement;
+                const wrapperStyles = wrapper
+                  ? window.getComputedStyle(wrapper)
+                  : null;
+
+                stylesByField[fieldId] = {
+                  className: wrapper?.className || "",
+                  outlineColor: wrapperStyles?.outlineColor || "",
+                };
+
+                return stylesByField;
+              },
+              {}
+            );
+          })()
+        JS
+
+        wrapper_styles.each_value do |styles|
+          expect(styles.fetch("className").split).to include("outline-none")
+          expect(["rgba(0, 0, 0, 0)", "transparent"]).to include(
+            styles.fetch("outlineColor")
+          )
+        end
+      end
+    end
+
     it "creates a manual payment after selecting a desktop transaction type" do
       with_forgery_protection do
         visit "/payments?invoiceId=#{invoice.id}"
