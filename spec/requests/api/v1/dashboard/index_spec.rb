@@ -21,6 +21,20 @@ RSpec.describe "Api::V1::Dashboard#index", type: :request do
     it "returns dashboard data" do
       expect(json_response).to be_a(Hash)
     end
+
+    it "counts distinct users with kept employments as team size" do
+      teammate = create(:user, current_workspace_id: company.id)
+      former_teammate = create(:user, current_workspace_id: company.id)
+
+      create(:employment, company:, user:)
+      create(:employment, company:, user: teammate)
+      discarded_employment = create(:employment, company:, user: former_teammate)
+      discarded_employment.discard!
+
+      send_request :get, api_v1_dashboard_index_path, headers: auth_headers(user)
+
+      expect(json_response.dig("stats", "team_size")).to eq(2)
+    end
   end
 
   context "when user is an employee" do
