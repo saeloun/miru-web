@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_14_123500) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_14_130000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_stat_statements"
@@ -491,6 +491,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_14_123500) do
     t.index ["role"], name: "index_invitations_on_role"
     t.index ["sender_id"], name: "index_invitations_on_sender_id"
     t.index ["token"], name: "index_invitations_on_token", unique: true
+  end
+
+  create_table "invoice_line_item_time_entries", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "invoice_line_item_id", null: false
+    t.bigint "timesheet_entry_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["invoice_line_item_id", "timesheet_entry_id"], name: "idx_line_item_time_entries_unique_pair", unique: true
+    t.index ["invoice_line_item_id"], name: "idx_line_item_time_entries_on_invoice_line_item_id"
+    t.index ["timesheet_entry_id"], name: "idx_line_item_time_entries_on_timesheet_entry_id"
   end
 
   create_table "invoice_line_items", force: :cascade do |t|
@@ -1077,6 +1087,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_14_123500) do
   add_foreign_key "invitations", "clients"
   add_foreign_key "invitations", "companies"
   add_foreign_key "invitations", "users", column: "sender_id"
+  add_foreign_key "invoice_line_item_time_entries", "invoice_line_items"
+  add_foreign_key "invoice_line_item_time_entries", "timesheet_entries"
   add_foreign_key "invoice_line_items", "invoices"
   add_foreign_key "invoice_line_items", "timesheet_entries"
   add_foreign_key "invoices", "clients"

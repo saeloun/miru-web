@@ -33,10 +33,17 @@ module GenerateInvoice
       # merging selected_entries from params with ids already present in other invoice line items
       def filtered_ids
         discarded_invoice_ids = Invoice.kept.pluck(:id)
-        @filtered_ids ||= params[:selected_entries].to_a | InvoiceLineItem.joins(:timesheet_entry)
+        direct_entry_ids = InvoiceLineItem.joins(:timesheet_entry)
           .where(invoice_id: discarded_invoice_ids)
           .where(timesheet_entries: { bill_status: "unbilled", discarded_at: nil })
           .pluck(:timesheet_entry_id)
+        linked_entry_ids = InvoiceLineItemTimeEntry
+          .joins(:timesheet_entry, :invoice_line_item)
+          .where(invoice_line_items: { invoice_id: discarded_invoice_ids })
+          .where(timesheet_entries: { bill_status: "unbilled", discarded_at: nil })
+          .pluck(:timesheet_entry_id)
+
+        @filtered_ids ||= params[:selected_entries].to_a | direct_entry_ids | linked_entry_ids
       end
 
       def where_clause
@@ -83,19 +90,63 @@ module GenerateInvoice
       def format_timesheet_entries(timesheet_entries)
         user_project_rates = ProjectMembersPresenter.new(projects).project_to_member_hourly_rate
 
+        return format_project_aggregates(timesheet_entries, user_project_rates) if group_by_project?
+
         timesheet_entries.map do |timesheet_entry|
+          rate = user_project_rates[timesheet_entry.project_id][timesheet_entry.user_id]
+
           {
+            selection_id: "timesheet-entry-#{timesheet_entry.id}",
             timesheet_entry_id: timesheet_entry.id,
+            linked_timesheet_entry_ids: [],
             user_id: timesheet_entry.user_id,
             project_id: timesheet_entry.project_id,
+            project_name: timesheet_entry.project.name,
             first_name: timesheet_entry.user.first_name,
             last_name: timesheet_entry.user.last_name,
             description: timesheet_entry.note,
             date: timesheet_entry.work_date,
             quantity: timesheet_entry.duration,
-            rate: user_project_rates[timesheet_entry.project_id][timesheet_entry.user_id]
+            rate:
           }
         end
+      end
+
+      def group_by_project?
+        ActiveModel::Type::Boolean.new.cast(params[:group_by_project])
+      end
+
+      def format_project_aggregates(timesheet_entries, user_project_rates)
+        timesheet_entries
+          .group_by { |entry| [entry.project_id, entry.user_id, user_project_rates[entry.project_id][entry.user_id]] }
+          .map do |(project_id, user_id, rate), entries|
+            first_entry = entries.first
+            work_dates = entries.map(&:work_date)
+
+            {
+              selection_id: "project-aggregate-#{project_id}-#{user_id}-#{formatted_rate(rate)}",
+              timesheet_entry_id: nil,
+              linked_timesheet_entry_ids: entries.map(&:id),
+              user_id:,
+              project_id:,
+              project_name: first_entry.project.name,
+              first_name: nil,
+              last_name: nil,
+              name: first_entry.project.name,
+              description: "#{first_entry.user.full_name} - #{entries.size} entries",
+              date: work_dates.min,
+              date_range: [work_dates.min, work_dates.max].uniq.join(" - "),
+              quantity: entries.sum(&:duration),
+              rate:,
+              entry_count: entries.size
+            }
+          end
+      end
+
+      def formatted_rate(rate)
+        return rate.to_s("F") if rate.is_a?(BigDecimal)
+
+        rate.to_s
       end
   end
 end

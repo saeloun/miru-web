@@ -51,7 +51,8 @@ class InvoicePolicy < ApplicationPolicy
       invoice_line_items_attributes: [
         :id, :name, :description,
         :date, :timesheet_entry_id,
-        :rate, :quantity, :_destroy
+        :rate, :quantity, :_destroy,
+        linked_timesheet_entry_ids: []
       ]
     ]
   end

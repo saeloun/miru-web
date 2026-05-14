@@ -15,6 +15,7 @@ export interface InvoiceItem {
   date?: string;
   work_date?: string;
   timesheet_entry_id?: string;
+  linked_timesheet_entry_ids?: Array<string | number>;
   lineTotal?: number;
   _destroy?: boolean;
 }
@@ -447,6 +448,7 @@ class InvoiceApiService {
           invoiceData.dateFormat
         ),
         timesheet_entry_id: item.timesheet_entry_id,
+        linked_timesheet_entry_ids: item.linked_timesheet_entry_ids || [],
         quantity: item.quantity || 0,
         rate: item.rate || 0,
         amount:
@@ -546,6 +548,8 @@ class InvoiceApiService {
         date: item.date || item.work_date,
         work_date: item.work_date || item.date,
         timesheet_entry_id: item.timesheet_entry_id || item.timesheetEntryId,
+        linked_timesheet_entry_ids:
+          item.linked_timesheet_entry_ids || item.linkedTimesheetEntryIds || [],
         amount:
           item.amount === null ||
           item.amount === undefined ||
