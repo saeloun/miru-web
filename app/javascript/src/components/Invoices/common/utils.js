@@ -4,9 +4,12 @@ import { lineTotalCalc } from "helpers";
 import { Toastr } from "StyledComponents";
 
 const selectedEntryIds = entry =>
-  entry.linked_timesheet_entry_ids?.length
-    ? entry.linked_timesheet_entry_ids
-    : [entry.timesheet_entry_id].filter(Boolean);
+  [
+    ...new Set([
+      entry.timesheet_entry_id,
+      ...(entry.linked_timesheet_entry_ids || []),
+    ]),
+  ].filter(Boolean);
 
 const selectionId = item => item.selection_id || item.timesheet_entry_id;
 

@@ -10,11 +10,15 @@ RSpec.describe InvoiceLineItemTimeEntry, type: :model do
 
   describe "validations" do
     it "does not allow the same time entry to be linked twice to one line item" do
-      invoice_line_item = create(:invoice_line_item)
+      invoice = create(:invoice)
+      project = create(:project, client: invoice.client, billable: true)
+      user = create(:user, current_workspace: invoice.company)
+      source_entry = create(:timesheet_entry, user:, project:, bill_status: "unbilled")
+      invoice_line_item = create(:invoice_line_item, invoice:, timesheet_entry: source_entry)
       time_entry = create(
         :timesheet_entry,
-        user: invoice_line_item.timesheet_entry.user,
-        project: invoice_line_item.timesheet_entry.project,
+        user:,
+        project:,
         bill_status: "unbilled"
       )
       create(:invoice_line_item_time_entry, invoice_line_item:, timesheet_entry: time_entry)
