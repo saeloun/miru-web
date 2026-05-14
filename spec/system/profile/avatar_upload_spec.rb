@@ -32,7 +32,7 @@ RSpec.describe "Profile avatar upload", type: :system, js: true do
   end
 
   it "uploads and reapplies a cropped avatar from profile edit", :skip_flaky_canvas do
-    skip "Canvas-based image cropping is unreliable in headless Chrome CI"
+    skip "Canvas-based image cropping is unreliable in headless Chrome CI" if ENV["CI"].present?
     with_forgery_protection do
       visit "/settings/profile/edit"
       expect(page).to have_css("#react-root", wait: 15)
@@ -47,7 +47,7 @@ RSpec.describe "Profile avatar upload", type: :system, js: true do
   end
 
   it "removes avatar after uploading from profile edit", :skip_flaky_canvas do
-    skip "Canvas-based image cropping is unreliable in headless Chrome CI"
+    skip "Canvas-based image cropping is unreliable in headless Chrome CI" if ENV["CI"].present?
     with_forgery_protection do
       visit "/settings/profile/edit"
       expect(page).to have_css("#react-root", wait: 15)
