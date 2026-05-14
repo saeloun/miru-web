@@ -283,6 +283,7 @@
   <%
     reference = invoice.reference.presence
     billed_to_address = client.formatted_address.presence
+    client_ein = client.ein.presence
     client_email = client.email.presence
     client_phone = client.phone.presence
 
@@ -360,6 +361,9 @@
       <div class="client-details">
         <% if billed_to_address %>
           <p><%= billed_to_address %></p>
+        <% end %>
+        <% if client_ein %>
+          <p><%= t("pdfs.invoices.payment_rows.ein") %>: <%= client_ein %></p>
         <% end %>
         <% if client_email %>
           <p><%= client_email %></p>

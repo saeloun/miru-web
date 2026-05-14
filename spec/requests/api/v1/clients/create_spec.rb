@@ -19,12 +19,14 @@ RSpec.describe "Api::V1::Client#create", type: :request do
     describe "#create" do
       it "creates the client successfully" do
         address_details = attributes_for(:address)
-        client = attributes_for(:client, addresses_attributes: [address_details])
+        client = attributes_for(:client, ein: "12-3456789", addresses_attributes: [address_details])
         send_request :post, api_v1_clients_path(client:), headers: auth_headers(user)
         expect(response).to have_http_status(:created)
         change(Client, :count).by(1)
         change(Address, :count).by(1)
         expect(json_response["client"]["email"]).to eq(client[:email])
+        expect(json_response["client"]["ein"]).to eq("12-3456789")
+        expect(Client.last.ein).to eq("12-3456789")
         expect(json_response["client"]["address"]["address_line_1"]).to eq(address_details[:address_line_1])
         expect(json_response["client"]["address"]["address_line_2"]).to eq(address_details[:address_line_2])
         expect(json_response["client"]["address"]["city"]).to eq(address_details[:city])

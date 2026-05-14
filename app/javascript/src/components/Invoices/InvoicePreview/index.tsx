@@ -43,6 +43,7 @@ interface InvoicePreviewProps {
       email: string;
       address?: string;
       phone?: string;
+      ein?: string;
       taxId?: string;
     };
     company: {
@@ -556,6 +557,11 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
             {invoice.client.phone && (
               <p className="text-muted-foreground print:text-gray-600">
                 {invoice.client.phone}
+              </p>
+            )}
+            {invoice.client.ein && (
+              <p className="text-muted-foreground print:text-gray-600">
+                {i18n.t("invoices.ein", { value: invoice.client.ein })}
               </p>
             )}
             {invoice.client.taxId && (

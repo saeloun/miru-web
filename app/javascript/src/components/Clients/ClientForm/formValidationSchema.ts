@@ -19,6 +19,7 @@ const clientSchema = Yup.object().shape({
     .required(i18n.t("auth.validation.nameRequired"))
     .max(30, i18n.t("auth.validation.max30")),
   email: Yup.string().email(i18n.t("auth.validation.invalidEmail")),
+  ein: Yup.string().max(30, i18n.t("auth.validation.max30")),
   phone: Yup.string()
     .test(
       "phone-number-min-length",
@@ -83,6 +84,7 @@ const getCurrencyLabel = (currency?: string): string => {
 const getInitialvalues = (client?: any) => ({
   name: client?.name || "",
   email: client?.email || "",
+  ein: client?.ein || "",
   phone: client?.phone || "",
   address1: client?.address?.address_line_1 || "",
   address2: client?.address?.address_line_2 || "",

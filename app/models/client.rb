@@ -66,6 +66,7 @@ class Client < ApplicationRecord
       id:,
       name:,
       email:,
+      ein:,
       phone:,
       currency:,
       previousInvoiceNumber: invoices.kept.order(created_at: :desc).pick(:invoice_number) || 0,

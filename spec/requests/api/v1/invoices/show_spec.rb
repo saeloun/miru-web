@@ -17,8 +17,12 @@ RSpec.describe "Api::V1::Invoices#show", type: :request do
     end
 
     it "returns the invoice" do
+      company.invoices.first.client.update!(ein: "12-3456789")
+
       send_request :get, api_v1_invoice_path(company.invoices.first.id), headers: auth_headers(user)
+
       expect(response).to have_http_status(:ok)
+      expect(json_response.dig("client", "ein")).to eq("12-3456789")
     end
 
     it "returns the client's current currency for a reopened draft invoice" do

@@ -14,6 +14,8 @@ RSpec.describe "Invoice detail view", type: :system, js: true do
   end
 
   it "shows the key details for a draft invoice" do
+    company.update!(ein: "12-3456789")
+    client.update!(ein: "98-7654321")
     invoice = create(:invoice,
       company:,
       client:,
@@ -41,6 +43,8 @@ RSpec.describe "Invoice detail view", type: :system, js: true do
       expect(page).to have_content("Invoice Number", wait: 10)
       expect(page).to have_content("#INV-2024-001", wait: 10)
       expect(page).to have_content("Gotham City Council", wait: 10)
+      expect(page).to have_content("EIN: 12-3456789", wait: 10)
+      expect(page).to have_content("EIN: 98-7654321", wait: 10)
       expect(page).to have_content("$50.00", wait: 10)
       expect(page).to have_content("Description", wait: 10)
       expect(page).to have_content("API integration work", wait: 10)

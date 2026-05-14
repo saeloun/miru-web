@@ -17,7 +17,7 @@ RSpec.describe PdfGeneration::InvoiceService do
       us_taxpayer_id: "987-65-4321"
     )
   end
-  let(:client) { create(:client, company: company) }
+  let(:client) { create(:client, company: company, ein: "98-7654321") }
   let(:invoice) do
     create(:invoice,
       client: client,
@@ -85,6 +85,7 @@ RSpec.describe PdfGeneration::InvoiceService do
         expect(locals[:invoice].company.tax_id).to eq("TAX-123")
         expect(locals[:invoice].company.ein).to eq("12-3456789")
         expect(locals[:invoice].company.us_taxpayer_id).to eq("987-65-4321")
+        expect(locals[:client].ein).to eq("98-7654321")
         expect(locals[:invoice_amount]).to be_present
         expect(locals[:invoice_tax]).to be_present
         expect(locals[:invoice_discount]).to be_present
@@ -228,6 +229,7 @@ RSpec.describe PdfGeneration::InvoiceService do
       expect(html).to include("VAT code: VAT-456")
       expect(html).to include("GST code: GST-789")
       expect(html).to include("Employer number: 12-3456789")
+      expect(html).to include("Employer number: 98-7654321")
       expect(html).to include("US payer code: 987-65-4321")
       expect(html).to include("Line amount")
       expect(html).to include("Balance outstanding")

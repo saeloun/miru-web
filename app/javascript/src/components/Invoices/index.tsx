@@ -123,6 +123,9 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
     taxId: currentCompany?.taxId || currentCompany?.tax_id || "",
     vatNumber: currentCompany?.vatNumber || currentCompany?.vat_number || "",
     gstNumber: currentCompany?.gstNumber || currentCompany?.gst_number || "",
+    ein: currentCompany?.ein || "",
+    usTaxpayerId:
+      currentCompany?.usTaxpayerId || currentCompany?.us_taxpayer_id || "",
     bankName: currentCompany?.bankName || currentCompany?.bank_name || "",
     bankAccountNumber:
       currentCompany?.bankAccountNumber ||
@@ -254,6 +257,8 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
         taxId: fallbackCompany.taxId,
         vatNumber: fallbackCompany.vatNumber,
         gstNumber: fallbackCompany.gstNumber,
+        ein: fallbackCompany.ein,
+        usTaxpayerId: fallbackCompany.usTaxpayerId,
         bankName: fallbackCompany.bankName,
         bankAccountNumber: fallbackCompany.bankAccountNumber,
         bankRoutingNumber: fallbackCompany.bankRoutingNumber,
