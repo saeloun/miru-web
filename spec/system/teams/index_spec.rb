@@ -118,7 +118,7 @@ RSpec.describe "Team Member", type: :system, js: true do
 
           expect(page).to have_content(employee_user.email, wait: 10)
 
-          all("button", text: "Open menu").last.click
+          find("tr", text: employee_user.email, wait: 10).find("button", text: "Open menu").click
 
           find("[role='menuitem']", text: "Delete User", wait: 10).click
           within("[role='dialog']") do
@@ -126,6 +126,46 @@ RSpec.describe "Team Member", type: :system, js: true do
           end
 
           expect(page).to have_no_content(employee_user.email, wait: 10)
+        end
+      end
+
+      it "opens the delete confirmation with stable member copy" do
+        with_forgery_protection do
+          visit "/team"
+
+          expect(page).to have_content(employee_user.email, wait: 10)
+
+          page.execute_script(<<~JS)
+            window.__teamDeleteDialogTexts = [];
+            new MutationObserver(() => {
+              const dialog = document.querySelector("[role='dialog']");
+              if (dialog) window.__teamDeleteDialogTexts.push(dialog.innerText);
+            }).observe(document.body, {
+              childList: true,
+              characterData: true,
+              subtree: true
+            });
+          JS
+
+          find("tr", text: employee_user.email, wait: 10).find("button", text: "Open menu").click
+          find("[role='menuitem']", text: "Delete User", wait: 10).click
+
+          within("[role='dialog']") do
+            expect(page).to have_text(
+              "Are you sure you want to delete user #{employee_user.full_name}? This action cannot be reversed.",
+              wait: 10
+            )
+            expect(page).to have_no_text("Checking active assignments")
+            expect(page).to have_no_text("undefined")
+            expect(page).to have_no_text("%{name}")
+          end
+
+          observed_text = page.evaluate_script("window.__teamDeleteDialogTexts.join('\\n')")
+
+          expect(observed_text).to include(employee_user.full_name)
+          expect(observed_text).not_to include("Checking active assignments")
+          expect(observed_text).not_to include("undefined")
+          expect(observed_text).not_to include("%{name}")
         end
       end
     end
