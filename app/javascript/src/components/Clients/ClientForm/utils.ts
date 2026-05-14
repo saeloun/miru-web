@@ -48,6 +48,7 @@ export const formatFormData = (
 ) => {
   formData.append("client[name]", values.name);
   formData.append("client[email]", values.email || "");
+  formData.append("client[ein]", values.ein || "");
   formData.append("client[phone]", values.phone);
   formData.append("client[currency]", values.currency?.value);
 

@@ -111,9 +111,11 @@ RSpec.describe "Invoice creation", type: :system, js: true do
     company.update!(
       business_phone: "+14155552671",
       tax_id: "TAX-123",
+      ein: "12-3456789",
       bank_name: "QA Bank",
       bank_account_number: "12345678"
     )
+    client.update!(ein: "98-7654321")
 
     with_forgery_protection do
       visit_new_invoice_for(client)
@@ -124,6 +126,8 @@ RSpec.describe "Invoice creation", type: :system, js: true do
         expect(page).to have_text(company.name, wait: 10)
         expect(page).to have_text("100 Market St", wait: 10)
         expect(page).to have_text("TAX-123", wait: 10)
+        expect(page).to have_text("EIN: 12-3456789", wait: 10)
+        expect(page).to have_text("EIN: 98-7654321", wait: 10)
         expect(page).not_to have_text("support@getmiru.com", wait: 1)
       end
     end

@@ -1,9 +1,11 @@
 import React from "react";
 
 import { Avatar } from "StyledComponents";
+import { i18n } from "../../../../i18n";
 
 const CompanyInfo = ({ company, logo = "" }) => {
   const phoneNumber = company?.phoneNumber || company?.phone_number;
+  const companyEin = company?.ein;
   const { address_line_1, address_line_2, city, state, country, pin } =
     company.address;
 
@@ -32,6 +34,7 @@ const CompanyInfo = ({ company, logo = "" }) => {
         <p className="whitespace-pre">
           {`${address_line_1},\n ${address_line_2},\n ${city}, ${state}, ${country},\n ${pin}`}
         </p>
+        {companyEin && <p>{i18n.t("invoices.ein", { value: companyEin })}</p>}
       </div>
     </div>
   );

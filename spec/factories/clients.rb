@@ -8,6 +8,7 @@
 #  address      :string
 #  currency     :string           default("USD"), not null
 #  discarded_at :datetime
+#  ein          :string
 #  email        :string
 #  name         :string           not null
 #  phone        :string

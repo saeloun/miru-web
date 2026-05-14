@@ -25,6 +25,8 @@ export interface Client {
   email: string;
   address: string;
   logo?: string;
+  ein?: string;
+  taxId?: string;
   currency?: string;
   clientCurrency?: string;
   previousInvoiceNumber?: string;
@@ -396,6 +398,8 @@ class InvoiceApiService {
       email: clientDetail.email,
       address: clientDetail.address || "",
       logo: clientDetail.logo,
+      ein: clientDetail.ein || "",
+      taxId: clientDetail.taxId || clientDetail.tax_id || "",
       currency: clientDetail.currency,
       clientCurrency:
         clientDetail.clientCurrency || clientDetail.client_currency,
@@ -496,6 +500,8 @@ class InvoiceApiService {
         email: apiInvoice.client?.email || "",
         address: formatAddress(apiInvoice.client?.address),
         logo: apiInvoice.client?.logo,
+        ein: apiInvoice.client?.ein || "",
+        taxId: apiInvoice.client?.taxId || apiInvoice.client?.tax_id || "",
         phone: apiInvoice.client?.phone || "",
         currency:
           apiInvoice.client?.clientCurrency ||

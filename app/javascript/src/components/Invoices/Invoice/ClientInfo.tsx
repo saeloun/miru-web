@@ -4,6 +4,7 @@ import { i18n } from "../../../i18n";
 const ClientInfo = ({ client }) => {
   const { address_line_1, address_line_2, city, state, country, pin } =
     client?.address ?? {};
+  const clientEin = client?.ein;
 
   return (
     <div className="relative w-full rounded border border-border bg-muted px-4 py-3 lg:mr-4 lg:w-4/12">
@@ -23,6 +24,12 @@ const ClientInfo = ({ client }) => {
               }\n${city}, ${state}, ${country},\n${pin}`
             : i18n.t("noResultsFound")}
           <br />
+          {clientEin && (
+            <>
+              {i18n.t("invoices.ein", { value: clientEin })}
+              <br />
+            </>
+          )}
           {client.phone}
         </p>
       </div>

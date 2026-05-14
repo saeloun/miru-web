@@ -176,6 +176,21 @@ const MobileClientEditor = ({
                 </div>
                 <div className="mt-4">
                   <div className="field relative">
+                    <InputField
+                      resetErrorOnChange
+                      id="ein"
+                      label={i18n.t("organization.ein")}
+                      name="ein"
+                      setFieldValue={setFieldValue}
+                    />
+                    <InputErrors
+                      fieldErrors={errors.ein}
+                      fieldTouched={touched.ein}
+                    />
+                  </div>
+                </div>
+                <div className="mt-4">
+                  <div className="field relative">
                     <div className="flex flex-col">
                       <div className="outline relative flex h-12 flex-row rounded border border-border bg-white p-4 pt-2">
                         <PhoneInput
@@ -431,6 +446,7 @@ interface MobileClientEditorProps {
 interface FormValues {
   name: string;
   email: string;
+  ein: string;
   phone: string;
   address1: string;
   address2: string;

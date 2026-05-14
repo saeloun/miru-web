@@ -6,6 +6,8 @@ class Client < ApplicationRecord
   include MetricsTracking
   include PhoneNumberValidatable
 
+  EIN_FORMAT = /\A\d{2}-\d{7}\z/
+
   # Configure pg_search
   pg_search_scope :pg_search,
     against: [:name, :email, :phone, :address],
@@ -30,6 +32,9 @@ class Client < ApplicationRecord
   validate :phone_must_be_valid
   validates :email, format: { with: Devise.email_regexp }, allow_blank: true
   validates :email, uniqueness: { scope: :company_id, case_sensitive: false }, allow_blank: true
+  validates :ein,
+    format: { with: EIN_FORMAT, message: "must be a valid 9-digit EIN (NN-NNNNNNN)" },
+    allow_blank: true
 
   after_discard :discard_projects
 
@@ -66,6 +71,7 @@ class Client < ApplicationRecord
       id:,
       name:,
       email:,
+      ein: valid_ein,
       phone:,
       currency:,
       previousInvoiceNumber: invoices.kept.order(created_at: :desc).pick(:invoice_number) || 0,
@@ -79,6 +85,10 @@ class Client < ApplicationRecord
     logo.attached? ? Rails.application.routes.url_helpers.polymorphic_url(
       logo, only_path: true
     ) : ""
+  end
+
+  def valid_ein
+    ein if ein.present? && ein.match?(EIN_FORMAT)
   end
 
   def client_overdue_and_outstanding_calculation

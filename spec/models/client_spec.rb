@@ -8,6 +8,7 @@
 #  address      :string
 #  currency     :string           default("USD"), not null
 #  discarded_at :datetime
+#  ein          :string
 #  email        :string
 #  name         :string           not null
 #  phone        :string
@@ -46,6 +47,29 @@ RSpec.describe Client, type: :model do
 
 
     it { is_expected.to validate_length_of(:name).is_at_most(30) }
+
+    describe "EIN validation" do
+      it "accepts blank and NN-NNNNNNN formatted EIN values" do
+        expect(build(:client, ein: nil)).to be_valid
+        expect(build(:client, ein: "")).to be_valid
+        expect(build(:client, ein: "12-3456789")).to be_valid
+      end
+
+      it "rejects invalid EIN values" do
+        client = build(:client, ein: "123456789")
+
+        expect(client).not_to be_valid
+        expect(client.errors[:ein]).to include("must be a valid 9-digit EIN (NN-NNNNNNN)")
+      end
+
+      it "does not expose invalid persisted EIN values in client detail payloads" do
+        client = create(:client, ein: "12-3456789")
+        client.update_column(:ein, "invalid")
+
+        expect(client.reload.client_detail[:ein]).to be_nil
+      end
+    end
+
     describe "phone number validation" do
       let(:client) { build(:client) }
 

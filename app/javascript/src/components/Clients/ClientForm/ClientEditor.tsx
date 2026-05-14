@@ -177,6 +177,20 @@ const ClientEditor = ({
                 <p className="text-xs text-red-600">{errors.email}</p>
               )}
             </div>
+            <div className="space-y-2">
+              <Label htmlFor="ein">{i18n.t("organization.ein")}</Label>
+              <Input
+                id="ein"
+                name="ein"
+                value={values.ein}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className={errors.ein && touched.ein ? "border-red-500" : ""}
+              />
+              {errors.ein && touched.ein && (
+                <p className="text-xs text-red-600">{errors.ein}</p>
+              )}
+            </div>
             {/* Phone Field */}
             <div className="space-y-2">
               <Label htmlFor="phone">{i18n.t("phone")}</Label>
@@ -416,6 +430,7 @@ interface ClientEditorProps {
 interface FormValues {
   name: string;
   email: string;
+  ein: string;
   phone: string;
   address1: string;
   address2: string;

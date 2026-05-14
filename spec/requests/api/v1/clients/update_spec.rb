@@ -29,6 +29,7 @@ RSpec.describe "Api::V1::Clients#update", type: :request do
               id: client.id,
               name: "Test Client",
               email: "updated@example.com",
+              ein: "98-7654321",
               phone: "+14155552671",
               addresses_attributes: [{
                 id: client.current_address.id,
@@ -42,6 +43,7 @@ RSpec.describe "Api::V1::Clients#update", type: :request do
         client.reload
         expect(client.name).to eq("Test Client")
         expect(client.email).to eq("updated@example.com")
+        expect(client.ein).to eq("98-7654321")
         expect(client.current_address.address_line_1).to eq("updated address")
       end
 
