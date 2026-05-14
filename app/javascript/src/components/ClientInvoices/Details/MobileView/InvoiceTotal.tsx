@@ -9,6 +9,7 @@ const InvoiceTotal = ({ invoice, lineItems, strikeAmount }) => {
     .toFixed(2);
 
   const { currency, amount_due, amount_paid, discount, tax } = invoice;
+  const invoiceTaxes = invoice.invoiceTaxes || invoice.invoice_taxes || [];
   const total = Number(subTotal) + Number(tax) - Number(discount);
 
   const AmountComponent = ({ label, value }) => (
@@ -31,7 +32,17 @@ const InvoiceTotal = ({ invoice, lineItems, strikeAmount }) => {
         <AmountComponent label={i18n.t("invoices.discount")} value={discount} />
       </div>
       <div className="py-2">
-        <AmountComponent label={i18n.t("invoices.tax")} value={tax} />
+        {invoiceTaxes.length > 0 ? (
+          invoiceTaxes.map(invoiceTax => (
+            <AmountComponent
+              key={invoiceTax.id || invoiceTax.name}
+              label={invoiceTax.name}
+              value={invoiceTax.amount}
+            />
+          ))
+        ) : (
+          <AmountComponent label={i18n.t("invoices.tax")} value={tax} />
+        )}
         <AmountComponent label={i18n.t("total")} value={total} />
         <AmountComponent
           label={i18n.t("invoices.amountPaid")}

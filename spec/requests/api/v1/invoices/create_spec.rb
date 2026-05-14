@@ -36,7 +36,7 @@ RSpec.describe "Api::V1::Invoices#create", type: :request do
         expect(response).to have_http_status(:ok)
         expected_attrs =
           ["amount", "amountDue", "amountPaid", "baseCurrencyAmount", "client", "currency", "discount", "dueDate",
-           "company", "id", "invoiceLineItems", "invoiceNumber", "issueDate",
+           "company", "id", "invoiceLineItems", "invoiceNumber", "invoiceTaxes", "issueDate",
            "outstandingAmount", "reference", "status", "stripeEnabled", "tax"]
         expect(json_response.keys.sort).to match_array(expected_attrs)
         # Verify searchable immediately without reindex
@@ -210,6 +210,45 @@ RSpec.describe "Api::V1::Invoices#create", type: :request do
         expect(invoice.amount_due.to_f).to eq(275.0)
         expect(json_response["amount"].to_f).to eq(275.0)
         expect(json_response["amountDue"].to_f).to eq(275.0)
+      end
+
+      it "calculates invoice totals from configured invoice taxes" do
+        cgst = create(:tax_configuration, company:, name: "CGST", calculation_method: "percentage", value: 9)
+        sgst = create(:tax_configuration, company:, name: "SGST", calculation_method: "percentage", value: 9)
+
+        send_request :post, api_v1_invoices_path(
+          invoice: {
+            client_id: client.id,
+            invoice_number: "INV-MULTI-TAX-001",
+            issue_date: Date.current.iso8601,
+            due_date: 30.days.from_now.to_date.iso8601,
+            status: "draft",
+            currency: company.base_currency,
+            invoice_taxes_attributes: [
+              { tax_configuration_id: cgst.id },
+              { tax_configuration_id: sgst.id }
+            ],
+            invoice_line_items_attributes: [
+              {
+                name: "Implementation",
+                description: "Taxable work",
+                date: Date.current.iso8601,
+                rate: 100,
+                quantity: 600
+              }
+            ]
+          }), headers: auth_headers(user)
+
+        expect(response).to have_http_status(:ok)
+
+        invoice = Invoice.find_by!(invoice_number: "INV-MULTI-TAX-001")
+        expect(invoice.tax.to_f).to eq(180.0)
+        expect(invoice.amount.to_f).to eq(1180.0)
+        expect(invoice.invoice_taxes.pluck(:name, :amount)).to match_array([
+          ["CGST", 90.to_d],
+          ["SGST", 90.to_d]
+        ])
+        expect(json_response.fetch("invoiceTaxes").pluck("name")).to match_array(["CGST", "SGST"])
       end
 
       it "creates an invoice in the client currency and returns it in the response" do

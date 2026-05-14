@@ -420,7 +420,14 @@
             <span class="totals-row-discount">-<%= invoice_discount %></span>
           </div>
         <% end %>
-        <% if invoice.tax.present? && invoice.tax > 0 %>
+        <% if invoice_taxes.present? %>
+          <% invoice_taxes.each do |invoice_tax| %>
+            <div class="totals-row">
+              <span class="totals-row-label"><%= invoice_tax[:name] %></span>
+              <span class="totals-row-value"><%= invoice_tax[:amount] %></span>
+            </div>
+          <% end %>
+        <% elsif invoice.tax.present? && invoice.tax > 0 %>
           <div class="totals-row">
             <span class="totals-row-label"><%= t("pdfs.invoices.tax") %></span>
             <span class="totals-row-value"><%= invoice_tax %></span>

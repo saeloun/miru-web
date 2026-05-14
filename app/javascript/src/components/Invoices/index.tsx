@@ -12,6 +12,7 @@ import {
   Invoice,
   Client,
   InvoiceFormData,
+  TaxConfiguration,
 } from "../../services/invoiceApi";
 import { useUserContext } from "../../context/UserContext";
 import { toast } from "sonner";
@@ -59,6 +60,9 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
     string | null
   >(null);
   const [clients, setClients] = useState<Client[]>([]);
+  const [taxConfigurations, setTaxConfigurations] = useState<
+    TaxConfiguration[]
+  >([]);
   const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
   const {
     invoices,
@@ -144,6 +148,7 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
   useEffect(() => {
     loadInvoices();
     loadClients();
+    loadTaxConfigurations();
 
     if (!initialInvoiceId) return;
 
@@ -181,6 +186,14 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
       setClients(formattedClients);
     } catch (err) {
       console.error("Error loading clients:", err);
+    }
+  };
+
+  const loadTaxConfigurations = async () => {
+    try {
+      setTaxConfigurations(await invoiceApi.getTaxConfigurations());
+    } catch (err) {
+      console.error("Error loading tax configurations:", err);
     }
   };
 
@@ -244,6 +257,7 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
       ),
       currency: invoiceData.currency,
       tax: invoiceData.tax,
+      invoiceTaxes: invoiceData.invoiceTaxes,
       discount: invoiceData.discount,
       reference: invoiceData.reference,
       invoiceLineItems: invoiceData.invoiceLineItems,
@@ -692,6 +706,7 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
           <InvoiceEditor
             clients={clients}
             company={fallbackCompany}
+            taxConfigurations={taxConfigurations}
             initialClientId={initialClientId}
             onSave={handleSaveInvoice}
             onSend={handleSendInvoice}
@@ -715,6 +730,7 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
         reference: selectedInvoice.reference,
         invoiceLineItems: selectedInvoice.invoiceLineItems || [],
         tax: selectedInvoice.tax,
+        invoiceTaxes: selectedInvoice.invoiceTaxes || [],
         discount: selectedInvoice.discount,
         currency: selectedInvoice.currency,
         status: selectedInvoice.status,
@@ -749,6 +765,7 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
             invoice={editFormData}
             clients={clients}
             company={formattedCompany}
+            taxConfigurations={taxConfigurations}
             onSave={handleSaveInvoice}
             onSend={handleSendInvoice}
             onPreview={handlePreview}

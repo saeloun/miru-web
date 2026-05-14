@@ -16,3 +16,6 @@ end
 json.invoice_line_items invoice.invoice_line_items do |invoice_line_item|
   json.partial! "internal_api/v1/partial/invoice_line_item", locals: { invoice_line_item: }
 end
+json.invoice_taxes invoice.invoice_taxes do |invoice_tax|
+  json.partial! "internal_api/v1/partial/invoice_tax", locals: { invoice_tax: }
+end

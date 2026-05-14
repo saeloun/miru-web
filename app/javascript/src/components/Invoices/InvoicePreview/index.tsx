@@ -32,6 +32,11 @@ interface InvoicePreviewProps {
     dueDate: string | Date;
     amount: number;
     tax: number;
+    invoiceTaxes?: Array<{
+      id?: string;
+      name: string;
+      amount: number;
+    }>;
     discount: number;
     subtotal: number;
     currency: string;
@@ -720,16 +725,30 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
                   </span>
                 </div>
               )}
-              {invoice.tax > 0 && (
-                <div className="flex justify-between gap-4 py-2">
-                  <span className="text-muted-foreground print:text-gray-600">
-                    {i18n.t("invoices.tax")}
-                  </span>
-                  <span className="min-w-0 break-words text-right font-medium tabular-nums text-foreground [overflow-wrap:anywhere] print:text-gray-900">
-                    {currencyFormat(currency, invoice.tax)}
-                  </span>
-                </div>
-              )}
+              {invoice.invoiceTaxes?.length > 0
+                ? invoice.invoiceTaxes.map(invoiceTax => (
+                    <div
+                      key={invoiceTax.id || invoiceTax.name}
+                      className="flex justify-between gap-4 py-2"
+                    >
+                      <span className="text-muted-foreground print:text-gray-600">
+                        {invoiceTax.name}
+                      </span>
+                      <span className="min-w-0 break-words text-right font-medium tabular-nums text-foreground [overflow-wrap:anywhere] print:text-gray-900">
+                        {currencyFormat(currency, invoiceTax.amount)}
+                      </span>
+                    </div>
+                  ))
+                : invoice.tax > 0 && (
+                    <div className="flex justify-between gap-4 py-2">
+                      <span className="text-muted-foreground print:text-gray-600">
+                        {i18n.t("invoices.tax")}
+                      </span>
+                      <span className="min-w-0 break-words text-right font-medium tabular-nums text-foreground [overflow-wrap:anywhere] print:text-gray-900">
+                        {currencyFormat(currency, invoice.tax)}
+                      </span>
+                    </div>
+                  )}
               <Separator className="my-2" />
               <div className="flex justify-between gap-4 py-2">
                 <span className="text-base font-semibold text-foreground print:text-gray-900">

@@ -414,6 +414,19 @@ export const paymentSettingsApi = {
 };
 export const paymentSettings = paymentSettingsApi;
 
+export const taxConfigurationsApi = {
+  get: () => http.get(`/tax_configurations`),
+  create: (taxConfiguration: any) =>
+    http.post(`/tax_configurations`, {
+      tax_configuration: taxConfiguration,
+    }),
+  update: (id: string | number, taxConfiguration: any) =>
+    http.patch(`/tax_configurations/${id}`, {
+      tax_configuration: taxConfiguration,
+    }),
+  destroy: (id: string | number) => http.delete(`/tax_configurations/${id}`),
+};
+
 // Payments
 export const paymentsApi = {
   get: (queryParams = "") => http.get(`/payments${queryParams}`),
