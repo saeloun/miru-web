@@ -19,7 +19,12 @@ const clientSchema = Yup.object().shape({
     .required(i18n.t("auth.validation.nameRequired"))
     .max(30, i18n.t("auth.validation.max30")),
   email: Yup.string().email(i18n.t("auth.validation.invalidEmail")),
-  ein: Yup.string().max(30, i18n.t("auth.validation.max30")),
+  ein: Yup.string()
+    .matches(/^\d{2}-\d{7}$/, {
+      excludeEmptyString: true,
+      message: i18n.t("auth.validation.invalidEin"),
+    })
+    .max(30, i18n.t("auth.validation.max30")),
   phone: Yup.string()
     .test(
       "phone-number-min-length",
