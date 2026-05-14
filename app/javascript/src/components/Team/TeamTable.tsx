@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { ColumnDef } from "@tanstack/react-table";
@@ -88,6 +88,15 @@ interface RemovalImpact {
   hasRisk: boolean;
 }
 
+const formatDeleteImpactProjectNames = (projectNames: string[]) => {
+  if (!projectNames.length) return "";
+
+  const visibleProjectNames = projectNames.slice(0, 2).join(", ");
+  const truncatedSuffix = projectNames.length > 2 ? ", ..." : "";
+
+  return ` (${visibleProjectNames}${truncatedSuffix})`;
+};
+
 const fetchTeamMembers = async (): Promise<TeamData> => {
   const response = await teamApi.get("page=1&items=1000");
   const teamMembers = unmapList(response);
@@ -108,7 +117,7 @@ const TeamTable: React.FC = () => {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null);
   const [deleteImpact, setDeleteImpact] = useState<RemovalImpact | null>(null);
-  const [loadingDeleteImpact, setLoadingDeleteImpact] = useState(false);
+  const deleteImpactRequestIdRef = useRef(0);
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["team"],
@@ -212,18 +221,25 @@ const TeamTable: React.FC = () => {
   };
 
   const handleDelete = async (member: TeamMember) => {
+    const requestId = ++deleteImpactRequestIdRef.current;
+
     setSelectedMember(member);
     setDeleteImpact(null);
-    setShowDeleteDialog(true);
-    setLoadingDeleteImpact(true);
 
     try {
       const response = await teamApi.getRemovalImpact(member.id);
+      if (requestId !== deleteImpactRequestIdRef.current) return;
+
       setDeleteImpact(response.data?.removalImpact || null);
     } catch {
+      if (requestId !== deleteImpactRequestIdRef.current) return;
+
+      setDeleteImpact(null);
       toast.error(i18n.t("team.failedToLoadTeamMembers"));
     } finally {
-      setLoadingDeleteImpact(false);
+      if (requestId === deleteImpactRequestIdRef.current) {
+        setShowDeleteDialog(true);
+      }
     }
   };
 
@@ -700,48 +716,40 @@ const TeamTable: React.FC = () => {
             <DialogDescription>
               {i18n.t("team.deleteUserConfirm", { name: selectedMember?.name })}
             </DialogDescription>
-            {loadingDeleteImpact ? (
-              <p className="text-sm text-muted-foreground">
-                Checking active assignments and uninvoiced work...
-              </p>
-            ) : (
-              deleteImpact?.hasRisk && (
-                <div className="rounded-md border border-amber-300 bg-amber-50 p-3 text-sm text-amber-900">
-                  <p className="font-medium">
-                    Warning: This member has active work in this workspace.
-                  </p>
-                  <ul className="mt-2 list-disc space-y-1 pl-5">
-                    {deleteImpact.projectAssignmentsCount > 0 && (
-                      <li>
-                        Assigned to {deleteImpact.projectAssignmentsCount}{" "}
-                        {deleteImpact.projectAssignmentsCount === 1
-                          ? "project"
-                          : "projects"}
-                        {deleteImpact.projectNames.length > 0 &&
-                          ` (${deleteImpact.projectNames
-                            .slice(0, 2)
-                            .join(", ")}${
-                            deleteImpact.projectNames.length > 2 ? ", ..." : ""
-                          })`}
-                      </li>
-                    )}
-                    {deleteImpact.unbilledEntriesCount > 0 && (
-                      <li>
-                        {(
+            {deleteImpact?.hasRisk && (
+              <div className="rounded-md border border-amber-300 bg-amber-50 p-3 text-sm text-amber-900">
+                <p className="font-medium">
+                  {i18n.t("team.deleteImpact.warningTitle")}
+                </p>
+                <ul className="mt-2 list-disc space-y-1 pl-5">
+                  {deleteImpact.projectAssignmentsCount > 0 && (
+                    <li>
+                      {i18n.t("team.deleteImpact.assignedProjects", {
+                        count: deleteImpact.projectAssignmentsCount,
+                        projectNames: formatDeleteImpactProjectNames(
+                          deleteImpact.projectNames
+                        ),
+                      })}
+                    </li>
+                  )}
+                  {deleteImpact.unbilledEntriesCount > 0 && (
+                    <li>
+                      {i18n.t("team.deleteImpact.unbilledHours", {
+                        amount: Number(
+                          deleteImpact.uninvoicedAmount || 0
+                        ).toFixed(2),
+                        count: deleteImpact.unbilledEntriesCount,
+                        hours: (
                           Number(deleteImpact.unbilledMinutes || 0) / 60
-                        ).toFixed(1)}{" "}
-                        unbilled hours across{" "}
-                        {deleteImpact.unbilledEntriesCount} entries (estimated
-                        value: $
-                        {Number(deleteImpact.uninvoicedAmount || 0).toFixed(2)})
-                      </li>
-                    )}
-                    {deleteImpact.invoicedEntriesCount === 0 && (
-                      <li>No billed entries found for this member.</li>
-                    )}
-                  </ul>
-                </div>
-              )
+                        ).toFixed(1),
+                      })}
+                    </li>
+                  )}
+                  {deleteImpact.invoicedEntriesCount === 0 && (
+                    <li>{i18n.t("team.deleteImpact.noBilledEntries")}</li>
+                  )}
+                </ul>
+              </div>
             )}
           </DialogHeader>
           <DialogFooter>

@@ -439,6 +439,19 @@ const en = {
     deleteInvite: "Delete Invite",
     deleteUserConfirm:
       "Are you sure you want to delete user %{name}? This action cannot be reversed.",
+    deleteImpact: {
+      warningTitle: "Warning: This member has active work in this workspace.",
+      assignedProjects: {
+        one: "Assigned to %{count} project%{projectNames}",
+        other: "Assigned to %{count} projects%{projectNames}",
+      },
+      unbilledHours: {
+        one: "%{hours} unbilled hours across %{count} entry (estimated value: $%{amount})",
+        other:
+          "%{hours} unbilled hours across %{count} entries (estimated value: $%{amount})",
+      },
+      noBilledEntries: "No billed entries found for this member.",
+    },
     admin: "Admin",
     employee: "Employee",
     bookkeeper: "Bookkeeper",
