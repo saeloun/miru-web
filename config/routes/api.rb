@@ -173,6 +173,7 @@ namespace :api, defaults: { format: "json" } do
 
     resources :companies, only: [:index, :create, :update], concerns: :addressable do
       resource :purge_logo, only: [:destroy], controller: "companies/purge_logo"
+      resource :invoice_signature, only: [:show, :create, :destroy], controller: "companies/invoice_signatures"
     end
 
     resources :currency_pairs, only: [] do

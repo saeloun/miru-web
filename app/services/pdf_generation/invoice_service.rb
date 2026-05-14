@@ -30,7 +30,8 @@ module PdfGeneration
           client: invoice.client,
           invoice_line_items: build_line_items,
           sub_total: format_currency(subtotal),
-          total: format_currency(total)
+          total: format_currency(total),
+          signature_url: resolve_signature_url
         }
       end
 
@@ -62,6 +63,20 @@ module PdfGeneration
 
       def format_currency(amount)
         FormatAmountService.new(invoice.currency, amount).process
+      end
+
+      def resolve_signature_url
+        company = invoice.company
+        client = invoice.client
+
+        return nil unless client.signature_enabled?
+        return nil unless company.invoice_signature.attached?
+
+        Rails.application.routes.url_helpers.polymorphic_url(
+          company.invoice_signature, only_path: true
+        )
+      rescue StandardError
+        nil
       end
 
       def invoice_pdf_options

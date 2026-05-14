@@ -126,6 +126,18 @@ RSpec.describe Client, type: :model do
     it { is_expected.to belong_to(:company) }
   end
 
+  describe "signature_enabled" do
+    it "defaults to false for a new client" do
+      client = create(:client)
+      expect(client.signature_enabled).to eq(false)
+    end
+
+    it "responds to signature_enabled?" do
+      client = create(:client)
+      expect(client.signature_enabled?).to eq(false)
+    end
+  end
+
   describe "Public methods" do
     describe "#total_hours_logged" do
       let(:company) { create(:company) }

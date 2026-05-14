@@ -27,6 +27,8 @@ import {
 
 import { currencyListOptions } from "../../OrganizationSetup/FinancialDetailsForm/utils";
 import { i18n } from "../../../i18n";
+import { Switch } from "../../ui/switch";
+import { useUserContext } from "../../../context/UserContext";
 
 const MobileClientEditor = ({
   client,
@@ -48,6 +50,7 @@ const MobileClientEditor = ({
 }: MobileClientEditorProps) => {
   const [fileUploadError, setFileUploadError] = useState<string>("");
   const [countries, setCountries] = useState([]);
+  const { isAdminUser } = useUserContext();
 
   const assignCountries = async allCountries => {
     const countryData = await allCountries.map(country => ({
@@ -376,6 +379,31 @@ const MobileClientEditor = ({
                     </Select>
                   </div>
                 </div>
+                {/* Signature Toggle - only shown for edit mode and admin/owner users */}
+                {formType === "edit" && isAdminUser && (
+                  <div className="mt-4 flex items-center justify-between rounded-lg border p-4">
+                    <div className="space-y-0.5">
+                      <label
+                        className="text-sm font-medium"
+                        htmlFor="signatureEnabled"
+                      >
+                        {i18n.t("clients.includeSignatureOnInvoices")}
+                      </label>
+                      <p className="text-xs text-muted-foreground">
+                        {i18n.t(
+                          "clients.includeSignatureOnInvoicesDescription"
+                        )}
+                      </p>
+                    </div>
+                    <Switch
+                      id="signatureEnabled"
+                      checked={values.signatureEnabled}
+                      onCheckedChange={checked =>
+                        setFieldValue("signatureEnabled", checked)
+                      }
+                    />
+                  </div>
+                )}
                 <div className="actions mt-auto">
                   <p className="mb-2 text-xs text-muted-foreground">
                     * Required: Name, Address Line 1, Country, State, City,
@@ -456,6 +484,7 @@ interface FormValues {
   zipcode: string;
   currency: any;
   logo: any;
+  signatureEnabled: boolean;
 }
 
 export default MobileClientEditor;

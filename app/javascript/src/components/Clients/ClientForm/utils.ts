@@ -72,6 +72,13 @@ export const formatFormData = (
     formData.append("client[logo]", "");
   }
 
+  if (!isNewForm && values.signatureEnabled !== undefined) {
+    formData.append(
+      "client[signature_enabled]",
+      values.signatureEnabled ? "true" : "false"
+    );
+  }
+
   return formData;
 };
 

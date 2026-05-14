@@ -62,6 +62,7 @@ class ClientPolicy < ApplicationPolicy
       :ein,
       :logo,
       :currency,
+      :signature_enabled,
       addresses_attributes: [:id, :address_line_1, :address_line_2, :city, :state, :country, :pin]
     ]
   end

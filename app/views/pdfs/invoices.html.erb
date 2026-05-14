@@ -434,6 +434,13 @@
       </div>
     </div>
 
+    <!-- Signature -->
+    <% if signature_url.present? %>
+      <div style="margin-top: 20px; margin-bottom: 24px;">
+        <img src="<%= signature_url %>" style="max-height: 80px; width: auto;" alt="Signature" />
+      </div>
+    <% end %>
+
     <!-- Payment Details -->
     <% if has_payment_info %>
       <div class="payment-section">

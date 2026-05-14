@@ -74,11 +74,16 @@ class Client < ApplicationRecord
       ein: valid_ein,
       phone:,
       currency:,
+      signature_enabled:,
       previousInvoiceNumber: invoices.kept.order(created_at: :desc).pick(:invoice_number) || 0,
       logo: logo_url,
       minutes_spent: minutes_spent || total_hours_logged(time_frame),
       address: current_address
     }
+  end
+
+  def signature_enabled?
+    signature_enabled
   end
 
   def logo_url
