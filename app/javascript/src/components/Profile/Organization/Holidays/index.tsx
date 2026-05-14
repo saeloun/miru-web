@@ -395,7 +395,7 @@ const Holidays = () => {
     try {
       setHolidayErrors({} as Record<number, Record<string, string[]>>);
       setOptionalHolidayErrors({} as Record<number, Record<string, string[]>>);
-      await holidaysApi.updateHolidays(currentYear, payload);
+      await holidaysApi.updateHolidays(currentYear, { holiday: payload });
       fetchHolidays();
       setIsEditable(false);
     } catch (error) {
