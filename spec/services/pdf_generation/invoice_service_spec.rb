@@ -192,6 +192,51 @@ RSpec.describe PdfGeneration::InvoiceService do
       expect(rendered_service.html_content).to include(address.formatted_address)
     end
 
+    it "renders invoice PDF metadata with localized labels" do
+      allow_any_instance_of(ActionController::Base).to receive(:render_to_string).and_call_original
+      invoice.update!(reference: "PO-1234")
+
+      I18n.backend.store_translations(:en, {
+        pdfs: {
+          invoices: {
+            due_date: "Payment deadline",
+            reference_label: "External reference",
+            table: {
+              amount: "Line amount"
+            },
+            payment_rows: {
+              tax_id: "Company tax code",
+              vat_number: "VAT code",
+              gst_number: "GST code",
+              ein: "Employer number",
+              us_taxpayer_id: "US payer code"
+            },
+            thank_you: "Custom invoice footer",
+            total_due: "Balance outstanding"
+          }
+        }
+      })
+
+      html = I18n.with_locale(:en) do
+        described_class.new(invoice.reload, logo_url, root_url).html_content
+      end
+
+      expect(html).to include("Payment deadline:")
+      expect(html).to include(invoice.formatted_due_date)
+      expect(html).to include("External reference:")
+      expect(html).to include("Company tax code: TAX-123")
+      expect(html).to include("VAT code: VAT-456")
+      expect(html).to include("GST code: GST-789")
+      expect(html).to include("Employer number: 12-3456789")
+      expect(html).to include("US payer code: 987-65-4321")
+      expect(html).to include("Line amount")
+      expect(html).to include("Balance outstanding")
+      expect(html).to include("Custom invoice footer")
+      expect(html).not_to include("Amount Due:</span>\n          <span class=\"invoice-meta-value\">#{invoice.formatted_due_date}")
+    ensure
+      I18n.reload!
+    end
+
     it "omits company metadata when business phone and address are both blank" do
       allow_any_instance_of(ActionController::Base).to receive(:render_to_string).and_call_original
       company.update!(business_phone: nil)
