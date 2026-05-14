@@ -148,14 +148,18 @@ const Holidays = () => {
             ...holiday,
           }))
         );
-        setHolidayList(newNationalHolidays);
-        setOptionalHolidaysList(newOptionalHolidays);
+
+        const cloneHolidays = holidayItems =>
+          holidayItems.map(holiday => ({ ...holiday }));
+
+        setHolidayList(cloneHolidays(newNationalHolidays));
+        setOptionalHolidaysList(cloneHolidays(newOptionalHolidays));
         setCurrentYearHolidaysList([
-          ...newNationalHolidays,
-          ...newOptionalHolidays,
+          ...cloneHolidays(newNationalHolidays),
+          ...cloneHolidays(newOptionalHolidays),
         ]);
-        setCurrentYearPublicHolidays(newNationalHolidays);
-        setCurrentYearOptionalHolidays(newOptionalHolidays);
+        setCurrentYearPublicHolidays(cloneHolidays(newNationalHolidays));
+        setCurrentYearOptionalHolidays(cloneHolidays(newOptionalHolidays));
       } else {
         setEnableOptionalHolidays(false);
         setTotalOptionalHolidays(0);
@@ -190,9 +194,11 @@ const Holidays = () => {
 
   const handleDatePicker = (date, index, isoptionalHoliday) => {
     if (!isoptionalHoliday) {
-      const holidayListDetail = [...holidayList];
-      holidayListDetail[index].date = date;
-      setHolidayList([...holidayListDetail]);
+      setHolidayList(
+        holidayList.map((holiday, holidayIndex) =>
+          holidayIndex === index ? { ...holiday, date } : holiday
+        )
+      );
       setShowDatePicker({ visibility: false, index: 0 });
       if (holidayErrors[index]?.date) {
         const newErrors = { ...holidayErrors };
@@ -207,9 +213,11 @@ const Holidays = () => {
         setHolidayErrors(newErrors);
       }
     } else {
-      const holidayListDetail = [...optionalHolidaysList];
-      holidayListDetail[index].date = date;
-      setOptionalHolidaysList([...holidayListDetail]);
+      setOptionalHolidaysList(
+        optionalHolidaysList.map((holiday, holidayIndex) =>
+          holidayIndex === index ? { ...holiday, date } : holiday
+        )
+      );
       setShowOptionalDatePicker({ visibility: false, index: 0 });
       if (optionalHolidayErrors[index]?.date) {
         const newErrors = { ...optionalHolidayErrors };
@@ -293,10 +301,14 @@ const Holidays = () => {
   };
 
   const handleHolidateNameChange = (e, index, isoptionalHoliday) => {
+    const name = e.target.value;
+
     if (!isoptionalHoliday) {
-      const holidayListDetail = [...holidayList];
-      holidayListDetail[index].name = e.target.value;
-      setHolidayList([...holidayListDetail]);
+      setHolidayList(
+        holidayList.map((holiday, holidayIndex) =>
+          holidayIndex === index ? { ...holiday, name } : holiday
+        )
+      );
       if (holidayErrors[index]?.name) {
         const newErrors = { ...holidayErrors };
         if (newErrors[index]) {
@@ -310,9 +322,11 @@ const Holidays = () => {
         setHolidayErrors(newErrors);
       }
     } else {
-      const holidayListDetail = [...optionalHolidaysList];
-      holidayListDetail[index].name = e.target.value;
-      setOptionalHolidaysList([...holidayListDetail]);
+      setOptionalHolidaysList(
+        optionalHolidaysList.map((holiday, holidayIndex) =>
+          holidayIndex === index ? { ...holiday, name } : holiday
+        )
+      );
       if (optionalHolidayErrors[index]?.name) {
         const newErrors = { ...optionalHolidayErrors };
         if (newErrors[index]) {
