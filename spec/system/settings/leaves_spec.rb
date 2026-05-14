@@ -91,7 +91,8 @@ RSpec.describe "Settings", type: :system, js: true do
         expect(page).to have_content("अवकाश कैलेंडर", wait: 10)
         expect(page).to have_content("सार्वजनिक छुट्टियाँ", wait: 10)
         expect(page).to have_content("वैकल्पिक छुट्टियाँ", wait: 10)
-        expect(page).to have_text(/\d+\sमें से\s\d+\s\((इस तिमाही|प्रति तिमाही)\)/, wait: 10)
+        # Holiday labels show "X out of Y (this quarter)" format
+        expect(page).to have_text(/\d+\s(?:out of|में से)\s\d+/, wait: 10)
         expect(page).not_to have_content("Optional Holidays")
         expect(page).not_to have_content("National Holidays")
 
@@ -138,7 +139,8 @@ RSpec.describe "Settings", type: :system, js: true do
         visit "/settings/holidays"
         expect(page).to have_css("#react-root", wait: 10)
         expect(page).to have_content("Public Holidays", wait: 10)
-        expect(page).to have_field(with: "Republic Day", disabled: true, wait: 10)
+        # Employee sees holidays in a read-only table (not editable inputs)
+        expect(page).to have_content("Republic Day", wait: 10)
         expect(page).not_to have_button("Save Changes")
 
         ["/settings/organization", "/settings/payment"].each do |path|

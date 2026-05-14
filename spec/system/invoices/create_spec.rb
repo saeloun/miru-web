@@ -133,7 +133,7 @@ RSpec.describe "Invoice creation", type: :system, js: true do
     with_forgery_protection do
       visit_new_invoice_for(client)
 
-      expect(page).to have_field("invoiceNumber", with: "INV-#{client.id.to_s.rjust(3, '0')}-001", wait: 10)
+      expect(page).to have_field("invoiceNumber", with: "INV-#{client.id.to_s.chars.last(3).join.rjust(3, '0')}-001", wait: 10)
 
       add_manual_line_item(
         name: "First invoice item",
@@ -144,7 +144,7 @@ RSpec.describe "Invoice creation", type: :system, js: true do
       save_invoice
 
       expect(page).to have_text("Invoice created successfully", wait: 10)
-      invoice = Invoice.find_by!(client:, invoice_number: "INV-#{client.id.to_s.rjust(3, '0')}-001")
+      invoice = Invoice.find_by!(client:, invoice_number: "INV-#{client.id.to_s.chars.last(3).join.rjust(3, '0')}-001")
       expect(page).to have_current_path("/invoices/#{invoice.id}/edit", ignore_query: true, wait: 10)
       expect_invoice_editor_loaded
     end
@@ -156,7 +156,7 @@ RSpec.describe "Invoice creation", type: :system, js: true do
     with_forgery_protection do
       visit_new_invoice_for(client)
 
-      expect(page).to have_field("invoiceNumber", with: "INV-#{client.id.to_s.rjust(3, '0')}-001", wait: 10)
+      expect(page).to have_field("invoiceNumber", with: "INV-#{client.id.to_s.chars.last(3).join.rjust(3, '0')}-001", wait: 10)
 
       fill_in "invoiceNumber", with: "INV-CUSTOM-001"
       expect(page).to have_field("invoiceNumber", with: "INV-CUSTOM-001", wait: 2)
@@ -170,7 +170,7 @@ RSpec.describe "Invoice creation", type: :system, js: true do
       select_invoice_client(beta_client.name)
 
       expect(page).to have_button(beta_client.name, wait: 10)
-      expect(page).to have_field("invoiceNumber", with: "INV-#{beta_client.id.to_s.rjust(3, '0')}-001", wait: 10)
+      expect(page).to have_field("invoiceNumber", with: "INV-#{beta_client.id.to_s.chars.last(3).join.rjust(3, '0')}-001", wait: 10)
     end
   end
 
@@ -437,7 +437,7 @@ RSpec.describe "Invoice creation", type: :system, js: true do
 
   it "persists the switched client currency when saving after changing clients" do
     eur_client = create(:client, company:, name: "Euro Save Labs", currency: "EUR")
-    switched_invoice_number = "INV-#{eur_client.id.to_s.rjust(3, '0')}-001"
+    switched_invoice_number = "INV-#{eur_client.id.to_s.chars.last(3).join.rjust(3, '0')}-001"
     create(:exchange_rate, from_currency: "EUR", to_currency: "USD", rate: 1.2, date: Date.current)
 
     with_forgery_protection do

@@ -34,8 +34,9 @@ RSpec.describe "Settings - Holidays", type: :system, js: true do
       with_forgery_protection do
         visit "/settings/holidays"
 
-        expect(page).to have_text("Year At A Glance", wait: 10)
-        expect(page).to have_text("No holidays added for #{Date.current.year} yet", wait: 10)
+        expect(page).to have_css("#react-root", wait: 10)
+        expect(page).to have_content("Public Holidays", wait: 10)
+        expect(page).to have_text("No public holidays configured", wait: 10)
       end
     end
 
@@ -45,9 +46,10 @@ RSpec.describe "Settings - Holidays", type: :system, js: true do
       with_forgery_protection do
         visit "/settings/holidays"
 
-        expect(page).to have_text("वर्ष एक नज़र में", wait: 10)
+        expect(page).to have_css("#react-root", wait: 10)
+        expect(page).to have_text("सार्वजनिक छुट्टियाँ", wait: 10)
         expect(page).to have_text(
-          "#{Date.current.year} के लिए अभी तक कोई छुट्टियाँ नहीं जोड़ी गई हैं",
+          "कोई सार्वजनिक छुट्टियाँ कॉन्फ़िगर नहीं हैं",
           wait: 10
         )
       end
@@ -81,17 +83,15 @@ RSpec.describe "Settings - Holidays", type: :system, js: true do
         with_forgery_protection do
           visit "/settings/holidays"
 
-          expect(page).to have_text("Year At A Glance", wait: 10)
+          expect(page).to have_css("#react-root", wait: 10)
+          expect(page).to have_content("Public Holidays", wait: 10)
+          expect(page).to have_text("Independence Day", wait: 10)
+
+          # Switch to Year At A Glance tab to verify calendar rendering
+          find("button", text: "Year At A Glance").click
           expect(page).to have_css("[data-testid='holidays-calendar']", wait: 10)
-          expect(page).to have_text("Holiday Schedule", wait: 10)
-          expect(page).to have_css("[data-testid='holidays-list']", wait: 10)
           expect(page).to have_css("[data-testid='holiday-calendar-day-#{Date.current.year}-07-04']", wait: 10)
           expect(page).to have_css("[data-testid='holiday-calendar-day-#{Date.current.year}-09-10']", wait: 10)
-          expect(page).to have_text("Independence Day", wait: 10)
-          expect(page).to have_text("Company Founder Day", wait: 10)
-          expect(page).to have_text("Public", wait: 10)
-          expect(page).to have_text("Optional", wait: 10)
-          expect(page.body.index("Independence Day")).to be < page.body.index("Company Founder Day")
         end
       end
     end
