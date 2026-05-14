@@ -541,6 +541,7 @@ en:
       client_invoice: Client Invoice
       discount: Discount
       due: 'Due: %{due_date}'
+      due_date: Due Date
       invoice_number: Invoice Number
       issue_date: Issue Date
       paid: 'Paid: %{amount}'
@@ -557,8 +558,10 @@ en:
         vat_number: VAT Number
       prepared_by: Prepared by %{company_name}, issued %{issue_date}, due %{due_date}.
       reference: 'Reference: %{reference}'
+      reference_label: Reference
       sub_total: Sub total
       table:
+        amount: Amount
         date: Date
         description: Description
         line_total: Line Total
@@ -566,8 +569,10 @@ en:
         qty: Qty
         rate: Rate
       tax: Tax
+      thank_you: Thank you for your business!
       title: Invoice
       total: Total
+      total_due: Total Due
       total_invoice_amount: Total invoice amount
       work_summary: Work Summary
     outstanding_overdue_invoices:
