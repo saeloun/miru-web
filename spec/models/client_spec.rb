@@ -51,6 +51,7 @@ RSpec.describe Client, type: :model do
     describe "EIN validation" do
       it "accepts blank and NN-NNNNNNN formatted EIN values" do
         expect(build(:client, ein: nil)).to be_valid
+        expect(build(:client, ein: "")).to be_valid
         expect(build(:client, ein: "12-3456789")).to be_valid
       end
 
