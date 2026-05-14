@@ -62,7 +62,10 @@ const NewLineItemTable = ({
               >
                 <div className="flex w-full lg:hidden">
                   <span className="w-1/2 text-left text-sm font-medium text-foreground">
-                    {item.first_name} {item.last_name}
+                    {item.project_name}
+                    <span className="block text-xs text-muted-foreground">
+                      {item.first_name} {item.last_name}
+                    </span>
                   </span>
                   <span className="w-1/2 text-right text-xs font-medium text-foreground">
                     {date} • {hoursLogged}
@@ -72,7 +75,10 @@ const NewLineItemTable = ({
                   {item.description}
                 </span>
                 <span className="hidden w-1/5 text-left text-sm font-medium text-foreground lg:inline">
-                  {item.first_name} {item.last_name}
+                  {item.project_name}
+                  <span className="block text-xs text-muted-foreground">
+                    {item.first_name} {item.last_name}
+                  </span>
                 </span>
                 <span className="hidden w-3/5 whitespace-normal text-left text-xs font-medium text-muted-foreground lg:inline">
                   {item.description}

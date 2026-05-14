@@ -325,6 +325,57 @@ RSpec.describe "Invoice creation", type: :system, js: true do
     end
   end
 
+  it "creates grouped project invoice line items from selected time entries" do
+    employee = create(:user, current_workspace_id: company.id, first_name: "Nina", last_name: "Sharp")
+    create(:employment, company:, user: employee)
+    employee.add_role :employee, company
+
+    platform_project = create(:project, client:, name: "Platform Build", billable: true)
+    mobile_project = create(:project, client:, name: "Mobile App", billable: true)
+    create(:project_member, project: platform_project, user: employee, hourly_rate: 100)
+    create(:project_member, project: mobile_project, user: employee, hourly_rate: 125)
+    platform_entries = [
+      create(:timesheet_entry, user: employee, project: platform_project, bill_status: :unbilled, duration: 120, note: "API work"),
+      create(:timesheet_entry, user: employee, project: platform_project, bill_status: :unbilled, duration: 60, note: "Review work")
+    ]
+    mobile_entry = create(:timesheet_entry, user: employee, project: mobile_project, bill_status: :unbilled, duration: 90, note: "Mobile QA")
+
+    with_forgery_protection do
+      visit_new_invoice_for(client)
+
+      fill_in "invoiceNumber", with: "INV-PROJECT-GROUP-001"
+      click_button "LINE ITEMS"
+      find("[data-testid='invoice-manual-entry-name']", wait: 10).click
+      click_button "Select Time Entries"
+      check "Group by project"
+      click_button "APPLY"
+
+      expect(page).to have_text("Platform Build", wait: 10)
+      expect(page).to have_text("Mobile App", wait: 10)
+
+      find("thead input.custom__checkbox", visible: :all, wait: 10).click
+      click_button "ADD ENTRIES"
+
+      expect_invoice_line_item("Platform Build")
+      expect_invoice_line_item("Mobile App")
+      expect(page).to have_css("[data-testid='invoice-line-item-quantity'][value='03:00']", wait: 10)
+      expect(page).to have_css("[data-testid='invoice-line-item-quantity'][value='01:30']", wait: 10)
+
+      save_invoice
+
+      expect(page).to have_text("Invoice created successfully", wait: 10)
+
+      invoice = Invoice.find_by!(invoice_number: "INV-PROJECT-GROUP-001")
+      platform_line_item = invoice.invoice_line_items.find_by!(name: "Platform Build")
+      mobile_line_item = invoice.invoice_line_items.find_by!(name: "Mobile App")
+
+      expect(platform_line_item.quantity).to eq(180)
+      expect(platform_line_item.linked_timesheet_entry_ids).to match_array(platform_entries.map(&:id))
+      expect(mobile_line_item.quantity).to eq(90)
+      expect(mobile_line_item.linked_timesheet_entry_ids).to eq([mobile_entry.id])
+    end
+  end
+
   {
     "USD" => { subtotal: 410.0, total_due: 395.0 },
     "EUR" => { subtotal: 410.0, total_due: 395.0 },

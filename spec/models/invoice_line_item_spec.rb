@@ -45,13 +45,18 @@ RSpec.describe InvoiceLineItem, type: :model do
   end
 
   describe "callbacks" do
-    it { is_expected.to callback(:unlock_timesheet_entry).before(:destroy) }
+    it { is_expected.to callback(:unlock_timesheet_entries).before(:destroy) }
   end
 
   describe "Associations" do
     describe "belongs to" do
       it { is_expected.to belong_to(:invoice) }
       it { is_expected.to belong_to(:timesheet_entry).optional(true) }
+    end
+
+    describe "has many" do
+      it { is_expected.to have_many(:invoice_line_item_time_entries).dependent(:destroy) }
+      it { is_expected.to have_many(:linked_timesheet_entries).through(:invoice_line_item_time_entries) }
     end
   end
 

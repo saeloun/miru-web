@@ -113,8 +113,7 @@ class Invoice < ApplicationRecord
   end
 
   def update_timesheet_entry_status!
-    timesheet_entry_ids = invoice_line_items.pluck(:timesheet_entry_id)
-    TimesheetEntry.kept.where(id: timesheet_entry_ids).update!(bill_status: :billed)
+    TimesheetEntry.kept.where(id: invoice_timesheet_entry_ids).update!(bill_status: :billed)
   end
 
   def create_checkout_session!(success_url:, cancel_url:)
@@ -188,13 +187,21 @@ class Invoice < ApplicationRecord
     end
 
     def lock_timesheet_entries
-      timesheet_entry_ids = invoice_line_items.pluck(:timesheet_entry_id)
-      TimesheetEntry.in_workspace(company).where(id: timesheet_entry_ids).update!(locked: true)
+      TimesheetEntry.in_workspace(company).where(id: invoice_timesheet_entry_ids).update!(locked: true)
     end
 
     def unlock_timesheet_entries
-      timesheet_entry_ids = invoice_line_items.pluck(:timesheet_entry_id)
-      TimesheetEntry.in_workspace(company).where(id: timesheet_entry_ids).update!(locked: false)
+      TimesheetEntry.in_workspace(company).where(id: invoice_timesheet_entry_ids).update!(locked: false)
+    end
+
+    def invoice_timesheet_entry_ids
+      direct_ids = invoice_line_items.pluck(:timesheet_entry_id)
+      linked_ids = InvoiceLineItemTimeEntry
+        .joins(:invoice_line_item)
+        .where(invoice_line_items: { invoice_id: id })
+        .pluck(:timesheet_entry_id)
+
+      (direct_ids + linked_ids).compact.uniq
     end
 
     def same_currency?

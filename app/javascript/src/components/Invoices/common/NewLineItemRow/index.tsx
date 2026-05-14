@@ -10,6 +10,8 @@ const NewLineItemRow = ({
   removeElement = false,
   dateFormat,
 }) => {
+  const selectionId = item => item.selection_id || item.timesheet_entry_id;
+
   const handleDelete = item => {
     const deleteItem = {
       ...item,
@@ -19,6 +21,7 @@ const NewLineItemRow = ({
     const selectedOptionArr = selectedOption.map(option => {
       if (
         (item.id && option.id === item.id) ||
+        (selectionId(item) && selectionId(option) === selectionId(item)) ||
         (option.timesheet_entry_id &&
           option.timesheet_entry_id === item.timesheet_entry_id)
       ) {

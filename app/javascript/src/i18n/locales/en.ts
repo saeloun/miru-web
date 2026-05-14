@@ -542,6 +542,7 @@ const en = {
     rate: "Rate",
     quantity: "Quantity",
     selectTimeEntries: "Select Time Entries",
+    groupByProject: "Group by project",
     entriesSelected: "%{count} entries selected",
     resetSelectedEntries: "Reset Selected Entries",
     addEntries: "ADD ENTRIES",

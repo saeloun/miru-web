@@ -9,6 +9,13 @@ import TimeEntrySelectionTable from "./TimeEntrySelectionTable";
 import { fetchMultipleNewLineItems } from "../common/utils";
 import { i18n } from "../../../i18n";
 
+const selectedEntryIds = entry =>
+  entry.linked_timesheet_entry_ids?.length
+    ? entry.linked_timesheet_entry_ids
+    : [entry.timesheet_entry_id].filter(Boolean);
+
+const selectionId = item => item.selection_id || item.timesheet_entry_id;
+
 const MultipleEntriesModal = ({
   selectedClient,
   selectedOption,
@@ -21,6 +28,7 @@ const MultipleEntriesModal = ({
     teamMembers: [],
     dateRange: { label: "All", value: "all", from: "", to: "" },
     searchTerm: "",
+    groupByProject: false,
   };
 
   const [lineItems, setLineItems] = useState<any>([]);
@@ -34,10 +42,10 @@ const MultipleEntriesModal = ({
 
   const handleItemSelection = id => {
     const checkboxes = lineItems.map(item => {
-      if (item.timesheet_entry_id === id) {
+      if (selectionId(item) === id) {
         if (item.checked) {
           const selectedItem = selectedLineItems.filter(
-            lineItem => lineItem.timesheet_entry_id !== item.timesheet_entry_id
+            lineItem => selectionId(lineItem) !== selectionId(item)
           );
           setSelectedLineItems(selectedItem);
           setAllCheckboxSelected(false);
@@ -63,7 +71,7 @@ const MultipleEntriesModal = ({
       checked: e.target.checked,
     }));
     if (e.target.checked) {
-      setSelectedLineItems(lineItems);
+      setSelectedLineItems(checkedLineItems);
     } else {
       setSelectedLineItems([]);
     }
@@ -102,7 +110,9 @@ const MultipleEntriesModal = ({
 
     selectedOption.forEach(entry => {
       if (!entry._destroy) {
-        filterQueryParams += `&selected_entries[]=${entry.timesheet_entry_id}`;
+        selectedEntryIds(entry).forEach(id => {
+          filterQueryParams += `&selected_entries[]=${id}`;
+        });
       }
     });
 
@@ -122,6 +132,10 @@ const MultipleEntriesModal = ({
       filterQueryParams += `&date_range=${value}`;
       filterQueryParams += `&from=${from}`;
       filterQueryParams += `&to=${to}`;
+    }
+
+    if (filterParams.groupByProject) {
+      filterQueryParams += "&group_by_project=true";
     }
 
     return `${filterQueryParams}`;

@@ -11,7 +11,9 @@ end
 # new line items data according to filters and search term
 json.new_line_item_entries new_line_item_entries do |line_item|
   json.extract! line_item,
-    :timesheet_entry_id, :user_id, :project_id, :first_name, :last_name, :description, :date, :quantity, :rate
+    :selection_id, :timesheet_entry_id, :linked_timesheet_entry_ids, :user_id, :project_id,
+    :project_name, :first_name, :last_name, :name, :description, :date, :date_range,
+    :quantity, :rate, :entry_count
 end
 
 # sends total number of new line item entry count
