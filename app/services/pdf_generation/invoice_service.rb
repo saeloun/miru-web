@@ -2,11 +2,12 @@
 
 module PdfGeneration
   class InvoiceService < HtmlTemplateService
-    attr_reader :invoice, :company_logo_url
+    attr_reader :invoice, :company_logo_url, :root_url
 
     def initialize(invoice, company_logo_url = nil, root_url = nil)
       @invoice = invoice
       @company_logo_url = company_logo_url
+      @root_url = root_url
 
       super(
         "pdfs/invoices",
@@ -72,9 +73,13 @@ module PdfGeneration
         return nil unless client.signature_enabled?
         return nil unless company.invoice_signature.attached?
 
-        Rails.application.routes.url_helpers.polymorphic_url(
-          company.invoice_signature, only_path: true
+        signature_path = Rails.application.routes.url_helpers.polymorphic_url(
+          company.invoice_signature,
+          only_path: true
         )
+        return signature_path if root_url.blank?
+
+        "#{root_url.delete_suffix('/')}#{signature_path}"
       rescue StandardError
         nil
       end

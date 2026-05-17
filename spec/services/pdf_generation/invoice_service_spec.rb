@@ -178,6 +178,7 @@ RSpec.describe PdfGeneration::InvoiceService do
           locals = args[:locals]
           expect(locals[:signature_url]).to be_present
           expect(locals[:signature_url]).to be_a(String)
+          expect(locals[:signature_url]).to start_with(root_url)
 
           "<html><body>Invoice</body></html>"
         end

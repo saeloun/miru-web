@@ -24,7 +24,8 @@ RSpec.describe "Api::V1::Clients#show", type: :request do
       it "returns the total hours logged for a client in that week" do
         client_details = {
           id: client_1.id, name: client_1.name, email: client_1.email, phone: client_1.phone,
-          address: client_1.current_address, logo: "", currency: client_1.currency
+          address: client_1.current_address, logo: "", currency: client_1.currency,
+          signature_enabled: false
         }
         project_details = client_1.project_details(time_frame)
         total_minutes = (project_details.pluck(:minutes_spent)).sum

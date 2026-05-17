@@ -17,6 +17,7 @@ const InvoiceSignature: React.FC = () => {
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isUploading, setIsUploading] = useState<boolean>(false);
+  const [isDeleting, setIsDeleting] = useState<boolean>(false);
   const [signatureUrl, setSignatureUrl] = useState<string | null>(null);
   const [filename, setFilename] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -79,7 +80,10 @@ const InvoiceSignature: React.FC = () => {
   };
 
   const handleDelete = async () => {
+    if (!companyId || isDeleting) return;
+
     setError(null);
+    setIsDeleting(true);
 
     try {
       await invoiceSignatureApi.destroy(companyId);
@@ -88,6 +92,8 @@ const InvoiceSignature: React.FC = () => {
       Toastr.success("Invoice signature removed");
     } catch {
       setError("Failed to remove signature");
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -136,7 +142,7 @@ const InvoiceSignature: React.FC = () => {
               )}
               <div className="mt-3 flex gap-2">
                 <Button
-                  disabled={isUploading}
+                  disabled={isUploading || isDeleting}
                   onClick={handleUploadClick}
                   size="sm"
                   variant="outline"
@@ -145,13 +151,14 @@ const InvoiceSignature: React.FC = () => {
                   Replace
                 </Button>
                 <Button
+                  disabled={isDeleting}
                   onClick={handleDelete}
                   size="sm"
                   variant="outline"
                   className="text-destructive hover:bg-destructive/10"
                 >
                   <Trash className="mr-1 h-3 w-3" />
-                  Delete
+                  {isDeleting ? "Deleting..." : "Delete"}
                 </Button>
               </div>
             </div>

@@ -24,6 +24,7 @@ import {
   getMissingRequiredClientFields,
   getRequiredClientFieldLabels,
 } from "./utils";
+import type { ClientFormValues as FormValues } from "./types";
 
 import { currencyListOptions } from "../../OrganizationSetup/FinancialDetailsForm/utils";
 import { i18n } from "../../../i18n";
@@ -469,22 +470,6 @@ interface MobileClientEditorProps {
   handleEdit?: any;
   setShowDialog: any;
   fetchDetails?: any;
-}
-
-interface FormValues {
-  name: string;
-  email: string;
-  ein: string;
-  phone: string;
-  address1: string;
-  address2: string;
-  country: any;
-  state: any;
-  city: any;
-  zipcode: string;
-  currency: any;
-  logo: any;
-  signatureEnabled: boolean;
 }
 
 export default MobileClientEditor;
