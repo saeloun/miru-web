@@ -1548,6 +1548,8 @@ const en = {
     removePhoto: "Remove photo",
     uploadPhotoFailed: "Failed to upload profile image.",
     removePhotoFailed: "Failed to remove profile image.",
+    avatarUpdated: "Avatar updated successfully",
+    avatarRemoved: "Avatar deleted successfully",
     adjustProfilePhoto: "Adjust profile photo",
     adjustProfilePhotoDescription:
       "Choose the part of the image you want to keep.",
