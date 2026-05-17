@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
-require "mini_magick"
-
 class Api::V1::Companies::InvoiceSignaturesController < Api::V1::ApplicationController
+  PNG_SIGNATURE = "\x89PNG\r\n\x1A\n".b
+  PNG_HEADER_BYTES = 24
+
   def show
     authorize current_company, :show?
 
@@ -30,20 +31,16 @@ class Api::V1::Companies::InvoiceSignaturesController < Api::V1::ApplicationCont
       return render json: { error: "File size must not exceed 500KB" }, status: :unprocessable_entity
     end
 
-    image = nil
+    dimensions = png_dimensions(file)
 
-    begin
-      file.tempfile.rewind
-      image = MiniMagick::Image.read(file.tempfile)
-
-      if image.width > 300 || image.height > 150
-        return render json: { error: "Dimensions must not exceed 300x150 pixels" }, status: :unprocessable_entity
-      end
-    rescue MiniMagick::Error, MiniMagick::Invalid
+    unless dimensions
       return render json: { error: "File is not a valid PNG image" }, status: :unprocessable_entity
-    ensure
-      image.destroy! if image&.respond_to?(:destroy!)
-      file.tempfile.rewind
+    end
+
+    width, height = dimensions
+
+    if width > 300 || height > 150
+      return render json: { error: "Dimensions must not exceed 300x150 pixels" }, status: :unprocessable_entity
     end
 
     current_company.invoice_signature.attach(file)
@@ -61,4 +58,17 @@ class Api::V1::Companies::InvoiceSignaturesController < Api::V1::ApplicationCont
 
     render json: { notice: "Invoice signature removed" }, status: 200
   end
+
+  private
+
+    def png_dimensions(file)
+      file.tempfile.rewind
+      header = file.tempfile.read(PNG_HEADER_BYTES)
+      return nil unless header&.bytesize == PNG_HEADER_BYTES
+      return nil unless header.byteslice(0, PNG_SIGNATURE.bytesize) == PNG_SIGNATURE
+
+      header.byteslice(16, 8).unpack("NN")
+    ensure
+      file.tempfile.rewind
+    end
 end
