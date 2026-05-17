@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_14_130000) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_14_133200) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_stat_statements"
@@ -518,6 +518,20 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_14_130000) do
     t.index ["timesheet_entry_id"], name: "index_invoice_line_items_on_timesheet_entry_id"
   end
 
+  create_table "invoice_taxes", force: :cascade do |t|
+    t.decimal "amount", precision: 20, scale: 2, default: "0.0", null: false
+    t.integer "calculation_method", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.bigint "invoice_id", null: false
+    t.string "name", null: false
+    t.bigint "tax_configuration_id"
+    t.datetime "updated_at", null: false
+    t.decimal "value", precision: 20, scale: 4, default: "0.0", null: false
+    t.index ["invoice_id", "tax_configuration_id"], name: "index_invoice_taxes_on_invoice_id_and_tax_configuration_id"
+    t.index ["invoice_id"], name: "index_invoice_taxes_on_invoice_id"
+    t.index ["tax_configuration_id"], name: "index_invoice_taxes_on_tax_configuration_id"
+  end
+
   create_table "invoices", force: :cascade do |t|
     t.decimal "amount", precision: 20, scale: 2, default: "0.0"
     t.decimal "amount_due", precision: 20, scale: 2, default: "0.0"
@@ -898,6 +912,19 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_14_130000) do
     t.index ["company_id"], name: "index_stripe_connected_accounts_on_company_id", unique: true
   end
 
+  create_table "tax_configurations", force: :cascade do |t|
+    t.integer "calculation_method", default: 0, null: false
+    t.bigint "company_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "discarded_at"
+    t.string "name", null: false
+    t.datetime "updated_at", null: false
+    t.decimal "value", precision: 20, scale: 4, default: "0.0", null: false
+    t.index ["company_id", "name"], name: "index_tax_configurations_on_company_id_and_name"
+    t.index ["company_id"], name: "index_tax_configurations_on_company_id"
+    t.index ["discarded_at"], name: "index_tax_configurations_on_discarded_at"
+  end
+
   create_table "timeoff_entries", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.bigint "custom_leave_id"
@@ -1091,6 +1118,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_14_130000) do
   add_foreign_key "invoice_line_item_time_entries", "timesheet_entries"
   add_foreign_key "invoice_line_items", "invoices"
   add_foreign_key "invoice_line_items", "timesheet_entries"
+  add_foreign_key "invoice_taxes", "invoices"
+  add_foreign_key "invoice_taxes", "tax_configurations"
   add_foreign_key "invoices", "clients"
   add_foreign_key "invoices", "companies"
   add_foreign_key "leave_types", "leaves", column: "leave_id"
@@ -1113,6 +1142,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_14_130000) do
   add_foreign_key "solid_queue_recurring_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_scheduled_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "stripe_connected_accounts", "companies"
+  add_foreign_key "tax_configurations", "companies"
   add_foreign_key "timeoff_entries", "custom_leaves", column: "custom_leave_id"
   add_foreign_key "timeoff_entries", "leave_types"
   add_foreign_key "timeoff_entries", "users"

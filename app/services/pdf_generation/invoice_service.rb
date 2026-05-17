@@ -29,6 +29,7 @@ module PdfGeneration
           company_logo: company_logo_url || "",
           client: invoice.client,
           invoice_line_items: build_line_items,
+          invoice_taxes: build_invoice_taxes,
           sub_total: format_currency(subtotal),
           total: format_currency(total)
         }
@@ -48,6 +49,15 @@ module PdfGeneration
         tax = invoice.tax || 0
         discount = invoice.discount || 0
         subtotal + tax - discount
+      end
+
+      def build_invoice_taxes
+        invoice.invoice_taxes.map do |invoice_tax|
+          {
+            name: invoice_tax.name,
+            amount: format_currency(invoice_tax.amount)
+          }
+        end
       end
 
       def formatted_invoice_amounts

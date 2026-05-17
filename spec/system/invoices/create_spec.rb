@@ -292,6 +292,53 @@ RSpec.describe "Invoice creation", type: :system, js: true do
     end
   end
 
+  it "creates an invoice with multiple configured taxes" do
+    create(:tax_configuration, company:, name: "CGST", calculation_method: "percentage", value: 9)
+    create(:tax_configuration, company:, name: "SGST", calculation_method: "percentage", value: 9)
+
+    with_forgery_protection do
+      visit_new_invoice_for(client)
+
+      fill_in "invoiceNumber", with: "INV-CONFIGURED-TAX-001"
+      add_manual_line_item(
+        name: "Taxable implementation",
+        rate: "100",
+        quantity: "10:00",
+        description: "GST taxable work"
+      )
+
+      find("label", text: "CGST", wait: 10).click
+      find("label", text: "SGST", wait: 10).click
+
+      show_invoice_preview
+      within "[data-testid='invoice-preview']" do
+        expect(page).to have_text("$1,000.00", wait: 10)
+        expect(page).to have_text("$1,180.00", wait: 10)
+        expect(page).to have_text("CGST", wait: 10)
+        expect(page).to have_text("SGST", wait: 10)
+        expect(page).to have_text(formatted_invoice_currency(90, currency), wait: 10)
+      end
+      show_invoice_editor
+
+      save_invoice
+
+      expect(page).to have_text("Invoice created successfully", wait: 10)
+
+      invoice = Invoice.find_by!(invoice_number: "INV-CONFIGURED-TAX-001")
+      expect(invoice.tax.to_f).to eq(180.0)
+      expect(invoice.amount.to_f).to eq(1180.0)
+      expect(invoice.invoice_taxes.pluck(:name, :amount)).to match_array([
+        ["CGST", 90.to_d],
+        ["SGST", 90.to_d]
+      ])
+      expect(
+        parsed_last_invoice_mutation_request_body
+          .dig("invoice", "invoice_taxes_attributes")
+          .pluck("name")
+      ).to match_array(["CGST", "SGST"])
+    end
+  end
+
   it "applies a custom date filter in the time entry picker without leaving the invoice form" do
     project = create(:project, client:, billable: true)
     create(:project_member, project:, user:, hourly_rate: 95)

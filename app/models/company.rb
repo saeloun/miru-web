@@ -13,6 +13,7 @@ class Company < ApplicationRecord
   has_one_attached :logo
   has_many :timesheet_entries, through: :clients
   has_many :invoices
+  has_many :tax_configurations, dependent: :destroy
   has_many :payments, through: :invoices
   has_many :razorpay_payouts, through: :payments
   has_many :agents, dependent: :destroy

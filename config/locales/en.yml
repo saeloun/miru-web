@@ -101,6 +101,13 @@ en:
         success: Company Logo successfully removed
     update:
       success: Changes saved successfully
+  tax_configurations:
+    create:
+      success: Tax configuration saved successfully
+    destroy:
+      success: Tax configuration deleted successfully
+    update:
+      success: Tax configuration updated successfully
   company:
     address: address
     base_currency: base currency

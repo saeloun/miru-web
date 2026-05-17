@@ -532,6 +532,7 @@ const en = {
     taxDiscountNotes: "Tax, discount, and notes",
     discount: "Discount",
     tax: "Tax",
+    taxConfigurations: "Tax configurations",
     additionalNotesPlaceholder: "Additional notes or payment instructions",
     enterName: "Enter name",
     enterNameTooltip: "Enter the name for this line item",
