@@ -151,7 +151,7 @@ const InvoiceSignature: React.FC = () => {
                   Replace
                 </Button>
                 <Button
-                  disabled={isDeleting}
+                  disabled={isUploading || isDeleting}
                   onClick={handleDelete}
                   size="sm"
                   variant="outline"
