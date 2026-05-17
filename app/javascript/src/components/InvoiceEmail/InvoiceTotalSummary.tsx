@@ -38,8 +38,8 @@ const InvoiceTotalSummary = ({ invoice, lineItems, strikeAmount }) => {
             </td>
           </tr>
           {invoiceTaxes.length > 0 ? (
-            invoiceTaxes.map(invoiceTax => (
-              <tr key={invoiceTax.id || invoiceTax.name}>
+            invoiceTaxes.map((invoiceTax, index) => (
+              <tr key={invoiceTax.id || `${invoiceTax.name}-${index}`}>
                 <td className="pt-4 pr-10 text-right text-base font-normal text-foreground">
                   {invoiceTax.name}
                 </td>

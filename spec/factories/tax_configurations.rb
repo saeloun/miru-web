@@ -3,7 +3,7 @@
 FactoryBot.define do
   factory :tax_configuration do
     company
-    name { "GST" }
+    sequence(:name) { |n| "Tax #{n}" }
     calculation_method { "percentage" }
     value { 9 }
   end

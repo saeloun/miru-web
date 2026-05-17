@@ -3,16 +3,57 @@ import React from "react";
 import { currencyFormat } from "helpers";
 import { i18n } from "../../../../i18n";
 
-const InvoiceTotal = ({ invoice, lineItems, strikeAmount }) => {
+type InvoiceTax = {
+  id?: number | string;
+  name: string;
+  amount: number | string;
+  calculation_method?: string;
+  value?: number | string;
+};
+
+type Invoice = {
+  currency: string;
+  amount_due: number | string;
+  amount_paid: number | string;
+  discount: number | string;
+  tax: number | string;
+  invoiceTaxes?: InvoiceTax[];
+  invoice_taxes?: InvoiceTax[];
+};
+
+type LineItem = {
+  rate: number | string;
+  quantity: number | string;
+};
+
+type InvoiceTotalProps = {
+  invoice: Invoice;
+  lineItems: LineItem[];
+  strikeAmount: string;
+};
+
+type AmountComponentProps = {
+  label: string;
+  value: number | string;
+};
+
+const InvoiceTotal = ({
+  invoice,
+  lineItems,
+  strikeAmount,
+}: InvoiceTotalProps) => {
   const subTotal = lineItems
-    .reduce((prev, curr) => prev + (curr.rate * curr.quantity) / 60, 0)
+    .reduce(
+      (prev, curr) => prev + (Number(curr.rate) * Number(curr.quantity)) / 60,
+      0
+    )
     .toFixed(2);
 
   const { currency, amount_due, amount_paid, discount, tax } = invoice;
   const invoiceTaxes = invoice.invoiceTaxes || invoice.invoice_taxes || [];
   const total = Number(subTotal) + Number(tax) - Number(discount);
 
-  const AmountComponent = ({ label, value }) => (
+  const AmountComponent = ({ label, value }: AmountComponentProps) => (
     <div className="flex w-full items-center justify-between">
       <span className="mb-2 w-1/2 text-right text-sm font-normal leading-5 text-foreground">
         {label}
@@ -33,9 +74,9 @@ const InvoiceTotal = ({ invoice, lineItems, strikeAmount }) => {
       </div>
       <div className="py-2">
         {invoiceTaxes.length > 0 ? (
-          invoiceTaxes.map(invoiceTax => (
+          invoiceTaxes.map((invoiceTax, index) => (
             <AmountComponent
-              key={invoiceTax.id || invoiceTax.name}
+              key={invoiceTax.id || `${invoiceTax.name}-${index}`}
               label={invoiceTax.name}
               value={invoiceTax.amount}
             />
