@@ -335,6 +335,9 @@ const en = {
     invoiceSelected: "%{count} invoice selected",
     invoicesSelected: "%{count} invoices selected",
     noProjectsAddedYet: "No project has been added to this client yet.",
+    includeSignatureOnInvoices: "Include signature on invoices",
+    includeSignatureOnInvoicesDescription:
+      "When enabled, the company signature will appear on invoices for this client.",
   },
 
   // Contacts

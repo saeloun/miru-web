@@ -107,6 +107,7 @@ const getInitialvalues = (client?: any) => ({
     label: getCurrencyLabel(client?.currency),
     value: client?.currency || "",
   },
+  signatureEnabled: client?.signature_enabled || false,
 });
 
 export { clientSchema, getInitialvalues };

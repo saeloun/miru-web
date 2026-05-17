@@ -294,6 +294,18 @@ export const companiesApi = {
   removeLogo: (id: any) => http.delete(`${companiesPath}/${id}/purge_logo`),
 };
 
+// Invoice Signature
+export const invoiceSignatureApi = {
+  show: (companyId: any) =>
+    http.get(`${companiesPath}/${companyId}/invoice_signature`),
+  create: (companyId: any, payload: FormData) =>
+    http.post(`${companiesPath}/${companyId}/invoice_signature`, payload, {
+      headers: { "Content-Type": "multipart/form-data" },
+    }),
+  destroy: (companyId: any) =>
+    http.delete(`${companiesPath}/${companyId}/invoice_signature`),
+};
+
 // Company Users
 export const companyUsersApi = { get: () => http.get(`/employments`) };
 

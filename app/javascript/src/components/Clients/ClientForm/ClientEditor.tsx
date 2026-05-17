@@ -18,6 +18,8 @@ import {
 import { Input } from "../../ui/input";
 import { Label } from "../../ui/label";
 import { Button } from "../../ui/button";
+import { Switch } from "../../ui/switch";
+import { useUserContext } from "../../../context/UserContext";
 
 import { clientSchema, getInitialvalues } from "./formValidationSchema";
 import UploadLogo from "./UploadLogo";
@@ -27,6 +29,7 @@ import {
   getMissingRequiredClientFields,
   getRequiredClientFieldLabels,
 } from "./utils";
+import type { ClientFormValues as FormValues } from "./types";
 
 import { currencyListOptions } from "../../OrganizationSetup/FinancialDetailsForm/utils";
 import { i18n } from "../../../i18n";
@@ -49,6 +52,7 @@ const ClientEditor = ({
 }: ClientEditorProps) => {
   const [fileUploadError, setFileUploadError] = useState<string>("");
   const [countries, setCountries] = useState([]);
+  const { isAdminUser } = useUserContext();
 
   const assignCountries = async allCountries => {
     const countryData = await allCountries.map(country => ({
@@ -380,6 +384,26 @@ const ClientEditor = ({
                 <p className="text-xs text-red-600">{errors.currency}</p>
               )}
             </div>
+            {/* Signature Toggle - only shown for edit mode and admin/owner users */}
+            {formType === "edit" && isAdminUser && (
+              <div className="flex items-center justify-between rounded-lg border p-4">
+                <div className="space-y-0.5">
+                  <Label htmlFor="signatureEnabled">
+                    {i18n.t("clients.includeSignatureOnInvoices")}
+                  </Label>
+                  <p className="text-sm text-muted-foreground">
+                    {i18n.t("clients.includeSignatureOnInvoicesDescription")}
+                  </p>
+                </div>
+                <Switch
+                  id="signatureEnabled"
+                  checked={values.signatureEnabled}
+                  onCheckedChange={checked =>
+                    setFieldValue("signatureEnabled", checked)
+                  }
+                />
+              </div>
+            )}
             {/* Submit Button */}
             <div className="pt-4">
               <p className="mb-2 text-xs text-muted-foreground">
@@ -399,7 +423,7 @@ const ClientEditor = ({
                 {submitting
                   ? i18n.t("timeTracking.saving")
                   : formType === "edit"
-                  ? i18n.t("clients.editClient")
+                  ? i18n.t("save")
                   : i18n.t("clients.addNewClient")}
               </Button>
             </div>
@@ -425,21 +449,6 @@ interface ClientEditorProps {
   submitting: boolean;
   setSubmitting: any;
   fetchDetails?: any;
-}
-
-interface FormValues {
-  name: string;
-  email: string;
-  ein: string;
-  phone: string;
-  address1: string;
-  address2: string;
-  country: any;
-  state: string;
-  city: string;
-  zipcode: string;
-  currency: any;
-  logo: any;
 }
 
 export default ClientEditor;

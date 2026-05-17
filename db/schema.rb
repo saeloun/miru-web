@@ -245,6 +245,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_14_133200) do
     t.string "email"
     t.string "name", null: false
     t.string "phone"
+    t.boolean "signature_enabled", default: false, null: false
     t.string "stripe_id"
     t.datetime "updated_at", null: false
     t.index ["company_id"], name: "index_clients_on_company_id"

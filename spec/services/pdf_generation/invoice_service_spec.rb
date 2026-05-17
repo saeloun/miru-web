@@ -160,6 +160,90 @@ RSpec.describe PdfGeneration::InvoiceService do
     end
   end
 
+  describe "signature resolution" do
+    let(:signature_file) { Rails.root.join("spec", "support", "fixtures", "test-image.png") }
+
+    context "when signature_enabled is true and company has signature attached" do
+      before do
+        client.update!(signature_enabled: true)
+        company.invoice_signature.attach(
+          io: File.open(signature_file),
+          filename: "signature.png",
+          content_type: "image/png"
+        )
+      end
+
+      it "includes signature_url in the template locals" do
+        expect_any_instance_of(ActionController::Base).to receive(:render_to_string) do |_, args|
+          locals = args[:locals]
+          expect(locals[:signature_url]).to be_present
+          expect(locals[:signature_url]).to be_a(String)
+          expect(locals[:signature_url]).to start_with(root_url)
+
+          "<html><body>Invoice</body></html>"
+        end
+
+        service.process
+      end
+    end
+
+    context "when signature_enabled is true but company has no signature attached" do
+      before do
+        client.update!(signature_enabled: true)
+      end
+
+      it "returns nil for signature_url in the template locals" do
+        expect_any_instance_of(ActionController::Base).to receive(:render_to_string) do |_, args|
+          locals = args[:locals]
+          expect(locals[:signature_url]).to be_nil
+
+          "<html><body>Invoice</body></html>"
+        end
+
+        service.process
+      end
+    end
+
+    context "when signature_enabled is false and company has signature attached" do
+      before do
+        client.update!(signature_enabled: false)
+        company.invoice_signature.attach(
+          io: File.open(signature_file),
+          filename: "signature.png",
+          content_type: "image/png"
+        )
+      end
+
+      it "returns nil for signature_url in the template locals" do
+        expect_any_instance_of(ActionController::Base).to receive(:render_to_string) do |_, args|
+          locals = args[:locals]
+          expect(locals[:signature_url]).to be_nil
+
+          "<html><body>Invoice</body></html>"
+        end
+
+        service.process
+      end
+    end
+
+    context "when signature_enabled is false and company has no signature attached" do
+      before do
+        client.update!(signature_enabled: false)
+      end
+
+      it "returns nil for signature_url in the template locals" do
+        expect_any_instance_of(ActionController::Base).to receive(:render_to_string) do |_, args|
+          locals = args[:locals]
+          expect(locals[:signature_url]).to be_nil
+
+          "<html><body>Invoice</body></html>"
+        end
+
+        service.process
+      end
+    end
+  end
+
   describe "error handling" do
     it "handles invoices without line items" do
       invoice.invoice_line_items.destroy_all
