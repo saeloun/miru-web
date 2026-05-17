@@ -8,6 +8,7 @@ import OrgEdit from "components/Profile/Organization/Edit";
 import Holidays from "components/Profile/Organization/Holidays";
 import Billing from "components/Profile/Organization/Billing";
 import PaymentSettings from "components/Profile/Organization/Payment";
+import TaxConfigurationSettings from "components/Profile/Organization/TaxConfiguration";
 import AllocatedDevicesDetails from "components/Profile/Personal/Devices";
 import AllocatedDevicesEdit from "components/Profile/Personal/Devices/Edit";
 import EmploymentDetails from "components/Profile/Personal/Employment";
@@ -183,6 +184,15 @@ export const SETTINGS = [
     icon: <PaymentsIcon className="mr-2" size={20} weight="bold" />,
     authorisedRoles: [ADMIN, OWNER],
     Component: PaymentSettings,
+    category: "organization",
+    isTab: true,
+  },
+  {
+    label: "TAX CONFIGURATION",
+    path: "tax-configuration",
+    icon: <PaymentsIcon className="mr-2" size={20} weight="bold" />,
+    authorisedRoles: [ADMIN, OWNER],
+    Component: TaxConfigurationSettings,
     category: "organization",
     isTab: true,
   },

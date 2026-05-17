@@ -181,6 +181,7 @@ class Api::V1::InvoicesController < Api::V1::ApplicationController
       @_invoice ||= current_company.invoices.kept.includes(
         :client,
         { invoice_line_items: :timesheet_entry },
+        { invoice_taxes: :tax_configuration },
         { company: { logo_attachment: :blob } }
          )
         .find(params[:id])

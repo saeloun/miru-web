@@ -1,7 +1,18 @@
 # frozen_string_literal: true
 
 json.url new_invoice_payment_url(invoice)
-json.invoice invoice
+json.invoice invoice.as_json.merge(
+  invoice_taxes: invoice.invoice_taxes.map { |invoice_tax|
+    {
+      id: invoice_tax.id,
+      tax_configuration_id: invoice_tax.tax_configuration_id,
+      name: invoice_tax.name,
+      calculation_method: invoice_tax.calculation_method,
+      value: invoice_tax.value.to_f,
+      amount: invoice_tax.amount.to_f
+    }
+  }
+)
 json.logo invoice.company.company_logo
 json.lineItems invoice.invoice_line_items
 json.stripe_connected_account stripe_connected_account&.details_submitted || false

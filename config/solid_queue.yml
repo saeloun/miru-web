@@ -20,7 +20,7 @@ default: &default
           schedule: '0 * * * *'
         analytics_threshold_notifications:
           class: Analytics::ThresholdNotificationsJob
-          schedule: '0 * * * *'
+          schedule: '0 10 * * 1 Asia/Kolkata'
   workers:
     - queues: default
       threads: 5
@@ -59,7 +59,7 @@ production:
           schedule: '0 * * * *'
         analytics_threshold_notifications:
           class: Analytics::ThresholdNotificationsJob
-          schedule: '0 * * * *'
+          schedule: '0 10 * * 1 Asia/Kolkata'
         database_backup:
           class: DatabaseBackupJob
           schedule: '<%= ENV.fetch("DATABASE_BACKUP_CRON", "*/30 * * * *") %>'

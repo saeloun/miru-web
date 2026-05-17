@@ -535,6 +535,7 @@ const en = {
     taxDiscountNotes: "Tax, discount, and notes",
     discount: "Discount",
     tax: "Tax",
+    taxConfigurations: "Tax configurations",
     additionalNotesPlaceholder: "Additional notes or payment instructions",
     enterName: "Enter name",
     enterNameTooltip: "Enter the name for this line item",
@@ -1551,6 +1552,8 @@ const en = {
     removePhoto: "Remove photo",
     uploadPhotoFailed: "Failed to upload profile image.",
     removePhotoFailed: "Failed to remove profile image.",
+    avatarUpdated: "Avatar updated successfully",
+    avatarRemoved: "Avatar deleted successfully",
     adjustProfilePhoto: "Adjust profile photo",
     adjustProfilePhotoDescription:
       "Choose the part of the image you want to keep.",

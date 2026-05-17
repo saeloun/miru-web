@@ -3,7 +3,7 @@
 class Analytics::ThresholdNotificationsJob < ApplicationJob
   queue_as :default
 
-  NOTIFICATION_TTL = 12.hours
+  NOTIFICATION_TTL = 1.week
 
   def perform(company_ids = nil)
     companies_scope(company_ids).find_each do |company|

@@ -86,7 +86,7 @@ Current deterministic rules:
 - collected revenue below `70%` of previous period
 - expense anomalies present
 
-Duplicate notifications are suppressed for 12 hours per company and alert type.
+Threshold notifications run once per week. Duplicate notifications are suppressed for one week per company and alert type.
 
 ## Audit Logging
 

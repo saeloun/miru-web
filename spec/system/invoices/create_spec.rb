@@ -137,7 +137,7 @@ RSpec.describe "Invoice creation", type: :system, js: true do
     with_forgery_protection do
       visit_new_invoice_for(client)
 
-      expect(page).to have_field("invoiceNumber", with: "INV-#{client.id.to_s.rjust(3, '0')}-001", wait: 10)
+      expect(page).to have_field("invoiceNumber", with: "INV-#{client.id.to_s.chars.last(3).join.rjust(3, '0')}-001", wait: 10)
 
       add_manual_line_item(
         name: "First invoice item",
@@ -148,7 +148,7 @@ RSpec.describe "Invoice creation", type: :system, js: true do
       save_invoice
 
       expect(page).to have_text("Invoice created successfully", wait: 10)
-      invoice = Invoice.find_by!(client:, invoice_number: "INV-#{client.id.to_s.rjust(3, '0')}-001")
+      invoice = Invoice.find_by!(client:, invoice_number: "INV-#{client.id.to_s.chars.last(3).join.rjust(3, '0')}-001")
       expect(page).to have_current_path("/invoices/#{invoice.id}/edit", ignore_query: true, wait: 10)
       expect_invoice_editor_loaded
     end
@@ -160,7 +160,7 @@ RSpec.describe "Invoice creation", type: :system, js: true do
     with_forgery_protection do
       visit_new_invoice_for(client)
 
-      expect(page).to have_field("invoiceNumber", with: "INV-#{client.id.to_s.rjust(3, '0')}-001", wait: 10)
+      expect(page).to have_field("invoiceNumber", with: "INV-#{client.id.to_s.chars.last(3).join.rjust(3, '0')}-001", wait: 10)
 
       fill_in "invoiceNumber", with: "INV-CUSTOM-001"
       expect(page).to have_field("invoiceNumber", with: "INV-CUSTOM-001", wait: 2)
@@ -174,7 +174,7 @@ RSpec.describe "Invoice creation", type: :system, js: true do
       select_invoice_client(beta_client.name)
 
       expect(page).to have_button(beta_client.name, wait: 10)
-      expect(page).to have_field("invoiceNumber", with: "INV-#{beta_client.id.to_s.rjust(3, '0')}-001", wait: 10)
+      expect(page).to have_field("invoiceNumber", with: "INV-#{beta_client.id.to_s.chars.last(3).join.rjust(3, '0')}-001", wait: 10)
     end
   end
 
@@ -289,6 +289,53 @@ RSpec.describe "Invoice creation", type: :system, js: true do
       )
       expect(invoice.amount.to_f).to eq(387.5)
       expect(invoice.amount_due.to_f).to eq(387.5)
+    end
+  end
+
+  it "creates an invoice with multiple configured taxes" do
+    create(:tax_configuration, company:, name: "CGST", calculation_method: "percentage", value: 9)
+    create(:tax_configuration, company:, name: "SGST", calculation_method: "percentage", value: 9)
+
+    with_forgery_protection do
+      visit_new_invoice_for(client)
+
+      fill_in "invoiceNumber", with: "INV-CONFIGURED-TAX-001"
+      add_manual_line_item(
+        name: "Taxable implementation",
+        rate: "100",
+        quantity: "10:00",
+        description: "GST taxable work"
+      )
+
+      find("label", text: "CGST", wait: 10).click
+      find("label", text: "SGST", wait: 10).click
+
+      show_invoice_preview
+      within "[data-testid='invoice-preview']" do
+        expect(page).to have_text("$1,000.00", wait: 10)
+        expect(page).to have_text("$1,180.00", wait: 10)
+        expect(page).to have_text("CGST", wait: 10)
+        expect(page).to have_text("SGST", wait: 10)
+        expect(page).to have_text(formatted_invoice_currency(90, currency), wait: 10)
+      end
+      show_invoice_editor
+
+      save_invoice
+
+      expect(page).to have_text("Invoice created successfully", wait: 10)
+
+      invoice = Invoice.find_by!(invoice_number: "INV-CONFIGURED-TAX-001")
+      expect(invoice.tax.to_f).to eq(180.0)
+      expect(invoice.amount.to_f).to eq(1180.0)
+      expect(invoice.invoice_taxes.pluck(:name, :amount)).to match_array([
+        ["CGST", 90.to_d],
+        ["SGST", 90.to_d]
+      ])
+      expect(
+        parsed_last_invoice_mutation_request_body
+          .dig("invoice", "invoice_taxes_attributes")
+          .pluck("name")
+      ).to match_array(["CGST", "SGST"])
     end
   end
 
@@ -492,7 +539,7 @@ RSpec.describe "Invoice creation", type: :system, js: true do
 
   it "persists the switched client currency when saving after changing clients" do
     eur_client = create(:client, company:, name: "Euro Save Labs", currency: "EUR")
-    switched_invoice_number = "INV-#{eur_client.id.to_s.rjust(3, '0')}-001"
+    switched_invoice_number = "INV-#{eur_client.id.to_s.chars.last(3).join.rjust(3, '0')}-001"
     create(:exchange_rate, from_currency: "EUR", to_currency: "USD", rate: 1.2, date: Date.current)
 
     with_forgery_protection do

@@ -14,8 +14,8 @@ RSpec.describe AnalyticsMailer, type: :mailer do
         alert: {
           type: "low_utilization",
           title: "Low utilization detected",
-          message: "Team utilization is below 60% for the selected period.",
-          metadata: { utilization_rate: 55.0 }
+          message: "Team utilization is below 60% for the previous completed week.",
+          metadata: { utilization_rate: 55.0, total_hours: 20.0, billable_hours: 11.0 }
         }
       ).threshold_alert
 
@@ -25,6 +25,7 @@ RSpec.describe AnalyticsMailer, type: :mailer do
       expect(mail.subject).to include("Acme Analytics")
       expect(body).to include("Low utilization detected")
       expect(body).to include("55.0")
+      expect(body).to include("20.0")
       expect(body).to include("View analytics")
     end
   end

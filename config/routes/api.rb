@@ -163,6 +163,7 @@ namespace :api, defaults: { format: "json" } do
         get :download
       end
     end
+    resources :tax_configurations, only: [:index, :create, :update, :destroy]
     resources :project_members, only: [:update]
     resources :employments, only: [:index, :show, :update]
     resources :timezones, only: [:index]

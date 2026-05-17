@@ -53,6 +53,10 @@ class InvoicePolicy < ApplicationPolicy
         :date, :timesheet_entry_id,
         :rate, :quantity, :_destroy,
         linked_timesheet_entry_ids: []
+      ],
+      invoice_taxes_attributes: [
+        :id, :tax_configuration_id, :name,
+        :calculation_method, :value, :amount, :_destroy
       ]
     ]
   end

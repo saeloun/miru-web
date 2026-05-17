@@ -20,7 +20,14 @@ RSpec.describe "Adding payment entry", type: :system, js: true do
   def open_manual_payment_modal
     visit "/payments"
 
-    expect(page).to have_content("Payments", wait: 10)
+    # Ensure the payments page loaded (admin-only page)
+    expect(page).to have_css("#react-root", wait: 15)
+    # If redirected away from payments, revisit (handles race condition with role setup)
+    unless page.has_current_path?("/payments", wait: 2)
+      visit "/payments"
+      expect(page).to have_css("#react-root", wait: 10)
+    end
+    expect(page).to have_content("Payment History", wait: 10)
     first(:button, "ADD MANUAL ENTRY", minimum: 1).click
     expect(page).to have_content("Add Payment", wait: 10)
   end

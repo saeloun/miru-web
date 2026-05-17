@@ -9,6 +9,7 @@ const InvoiceTotalSummary = ({ invoice, lineItems, strikeAmount }) => {
     .toFixed(2);
 
   const { amount_due, amount_paid, currency, discount, tax } = invoice;
+  const invoiceTaxes = invoice.invoiceTaxes || invoice.invoice_taxes || [];
 
   const total = Number(subTotal) + Number(tax) - Number(discount);
 
@@ -36,16 +37,31 @@ const InvoiceTotalSummary = ({ invoice, lineItems, strikeAmount }) => {
               {currencyFormat(currency, parseFloat(discount).toFixed(2))}
             </td>
           </tr>
-          <tr>
-            <td className="pt-4 pr-10 text-right text-base font-normal text-foreground">
-              {i18n.t("pdfs.invoices.tax")}
-            </td>
-            <td
-              className={`w-22 pt-4 text-right text-base font-bold text-foreground ${strikeAmount}`}
-            >
-              {currencyFormat(currency, tax)}
-            </td>
-          </tr>
+          {invoiceTaxes.length > 0 ? (
+            invoiceTaxes.map((invoiceTax, index) => (
+              <tr key={invoiceTax.id || `${invoiceTax.name}-${index}`}>
+                <td className="pt-4 pr-10 text-right text-base font-normal text-foreground">
+                  {invoiceTax.name}
+                </td>
+                <td
+                  className={`w-22 pt-4 text-right text-base font-bold text-foreground ${strikeAmount}`}
+                >
+                  {currencyFormat(currency, invoiceTax.amount)}
+                </td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td className="pt-4 pr-10 text-right text-base font-normal text-foreground">
+                {i18n.t("pdfs.invoices.tax")}
+              </td>
+              <td
+                className={`w-22 pt-4 text-right text-base font-bold text-foreground ${strikeAmount}`}
+              >
+                {currencyFormat(currency, tax)}
+              </td>
+            </tr>
+          )}
           <tr>
             <td className="pt-1 pr-10 text-right text-base font-normal text-foreground">
               {i18n.t("pdfs.invoices.total")}

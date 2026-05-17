@@ -113,7 +113,13 @@ RSpec.describe InvoicePolicy, type: :policy do
         issue_date due_date status invoice_number reference amount outstanding_amount
         tax amount_paid amount_due discount client_id external_view_key stripe_enabled
         base_currency_amount currency
-      ].push(invoice_line_items_attributes:)
+      ].push(
+        invoice_line_items_attributes:,
+        invoice_taxes_attributes: [
+          :id, :tax_configuration_id, :name,
+          :calculation_method, :value, :amount, :_destroy
+        ]
+      )
     end
 
     it "returns array of an attributes" do

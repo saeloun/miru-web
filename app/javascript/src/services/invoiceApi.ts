@@ -20,6 +20,25 @@ export interface InvoiceItem {
   _destroy?: boolean;
 }
 
+export interface TaxConfiguration {
+  id: string;
+  name: string;
+  calculationMethod: "percentage" | "flat";
+  value: number;
+}
+
+export interface InvoiceTax {
+  id?: string;
+  taxConfigurationId?: string;
+  tax_configuration_id?: string;
+  name: string;
+  calculationMethod?: "percentage" | "flat";
+  calculation_method?: "percentage" | "flat";
+  value: number;
+  amount: number;
+  _destroy?: boolean;
+}
+
 export interface Client {
   id: string;
   name: string;
@@ -53,6 +72,7 @@ export interface Invoice {
   baseCurrencyAmount?: number;
   currency: string;
   tax?: number;
+  invoiceTaxes?: InvoiceTax[];
   discount?: number;
   reference?: string;
   amountPaid?: number;
@@ -90,6 +110,7 @@ export interface InvoiceFormData {
   reference?: string;
   invoiceLineItems: InvoiceItem[];
   tax?: number;
+  invoiceTaxes?: InvoiceTax[];
   discount?: number;
   currency: string;
   status:
@@ -410,6 +431,23 @@ class InvoiceApiService {
     }));
   }
 
+  async getTaxConfigurations(): Promise<TaxConfiguration[]> {
+    const response = await axios.get(`/tax_configurations`);
+
+    return (
+      response.data.taxConfigurations ||
+      response.data.tax_configurations ||
+      []
+    ).map((taxConfiguration: any) => ({
+      id: String(taxConfiguration.id),
+      name: taxConfiguration.name,
+      calculationMethod:
+        taxConfiguration.calculationMethod ||
+        taxConfiguration.calculation_method,
+      value: parseFloat(taxConfiguration.value || 0),
+    }));
+  }
+
   /**
    * Format invoice data for API submission
    */
@@ -430,6 +468,23 @@ class InvoiceApiService {
       discount: invoiceData.discount || 0,
       currency: invoiceData.currency,
       status: invoiceData.status,
+      invoice_taxes_attributes: (invoiceData.invoiceTaxes || []).map(tax => ({
+        id:
+          invoiceData.id &&
+          tax.id &&
+          tax.id !== "new" &&
+          !String(tax.id).startsWith("draft-")
+            ? tax.id
+            : undefined,
+        tax_configuration_id:
+          tax.taxConfigurationId || tax.tax_configuration_id || undefined,
+        name: tax.name,
+        calculation_method:
+          tax.calculationMethod || tax.calculation_method || "percentage",
+        value: tax.value || 0,
+        amount: tax.amount || 0,
+        _destroy: tax._destroy || false,
+      })),
       invoice_line_items_attributes: invoiceData.invoiceLineItems.map(item => ({
         id:
           invoiceData.id &&
@@ -527,6 +582,21 @@ class InvoiceApiService {
       ),
       currency: apiInvoice.currency,
       tax: parseFloat(apiInvoice.tax || 0),
+      invoiceTaxes: (
+        apiInvoice.invoiceTaxes ||
+        apiInvoice.invoice_taxes ||
+        []
+      ).map((tax: any) => ({
+        id: tax.id ? String(tax.id) : undefined,
+        taxConfigurationId:
+          tax.taxConfigurationId || tax.tax_configuration_id
+            ? String(tax.taxConfigurationId || tax.tax_configuration_id)
+            : undefined,
+        name: tax.name,
+        calculationMethod: tax.calculationMethod || tax.calculation_method,
+        value: parseFloat(tax.value || 0),
+        amount: parseFloat(tax.amount || 0),
+      })),
       discount: parseFloat(apiInvoice.discount || 0),
       reference: apiInvoice.reference,
       amountPaid: parseFloat(
