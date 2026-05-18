@@ -47,12 +47,13 @@ const Header = ({ setnewClient, isAdminUser, setShowDialog }) => {
           <UnifiedSearch
             searchAction={fetchClients}
             placeholder={i18n.t("searchClients")}
-            renderItem={item => (
+            renderItem={(item, searchQuery) => (
               <SearchDataRow
                 item={item}
                 urlPrefix="clients"
                 displayField="label"
                 idField="value"
+                searchQuery={searchQuery}
               />
             )}
             onSelect={client => {

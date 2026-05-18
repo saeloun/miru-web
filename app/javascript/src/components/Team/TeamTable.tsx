@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
 import { DataTable } from "../ui/data-table";
+import { HighlightedCell } from "../ui/highlight-text";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -380,7 +381,9 @@ const TeamTable: React.FC = () => {
               </AvatarFallback>
             </Avatar>
             <div>
-              <p className="font-medium text-foreground">{member.name}</p>
+              <p className="font-medium text-foreground">
+                <HighlightedCell text={member.name} />
+              </p>
               <p className="text-sm text-muted-foreground">{member.email}</p>
             </div>
           </div>
