@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
 import { DataTable } from "../ui/data-table";
+import { HighlightedCell } from "../ui/highlight-text";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -196,6 +197,9 @@ const ExpensesTable: React.FC = () => {
   const [totalExpenseCount, setTotalExpenseCount] = useState(0);
   const [hasMoreExpenses, setHasMoreExpenses] = useState(false);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [filteredExpenseCount, setFilteredExpenseCount] = useState<
+    number | null
+  >(null);
 
   // Form state
   const [formData, setFormData] = useState({
@@ -645,11 +649,11 @@ const ExpensesTable: React.FC = () => {
       cell: ({ row }) => (
         <div>
           <p className="text-sm font-medium text-foreground">
-            {row.original.description}
+            <HighlightedCell text={row.original.description} />
           </p>
           {row.original.notes && (
             <p className="mt-1 max-w-xs truncate text-xs text-muted-foreground">
-              {row.original.notes}
+              <HighlightedCell text={row.original.notes} />
             </p>
           )}
         </div>
@@ -666,7 +670,11 @@ const ExpensesTable: React.FC = () => {
             ),
             cell: ({ row }: { row: { original: Expense } }) => (
               <span className="text-sm text-foreground">
-                {row.original.createdBy || "—"}
+                {row.original.createdBy ? (
+                  <HighlightedCell text={row.original.createdBy} />
+                ) : (
+                  "—"
+                )}
               </span>
             ),
           } as ColumnDef<Expense>,
@@ -693,7 +701,9 @@ const ExpensesTable: React.FC = () => {
             >
               {category.icon}
             </span>
-            <span className="text-sm text-foreground">{category.label}</span>
+            <span className="text-sm text-foreground">
+              <HighlightedCell text={category.label} />
+            </span>
           </div>
         );
       },
@@ -707,7 +717,11 @@ const ExpensesTable: React.FC = () => {
       ),
       cell: ({ row }) => (
         <span className="text-sm text-muted-foreground">
-          {row.original.vendor || "—"}
+          {row.original.vendor ? (
+            <HighlightedCell text={row.original.vendor} />
+          ) : (
+            "—"
+          )}
         </span>
       ),
     },
@@ -968,13 +982,20 @@ const ExpensesTable: React.FC = () => {
                   data={expenses}
                   searchPlaceholder={i18n.t("expenses.searchExpenses")}
                   showPagination={false}
+                  onFilteredRowCountChange={setFilteredExpenseCount}
                 />
                 <div className="flex flex-col items-center gap-2 pb-2 pt-4 text-sm text-muted-foreground">
                   <span>
-                    {i18n.t("expenses.showingOfTotal", {
-                      visible: visibleExpenseCount,
-                      total: totalExpenseCount,
-                    })}
+                    {filteredExpenseCount !== null &&
+                    filteredExpenseCount < visibleExpenseCount
+                      ? i18n.t("expenses.viewingMatchingExpenses", {
+                          filtered: filteredExpenseCount,
+                          total: totalExpenseCount,
+                        })
+                      : i18n.t("expenses.showingOfTotal", {
+                          visible: visibleExpenseCount,
+                          total: totalExpenseCount,
+                        })}
                   </span>
                   {hasMoreExpenses && !isLoadingMore && (
                     <span>{i18n.t("expenses.scrollToLoadMore")}</span>
@@ -985,9 +1006,12 @@ const ExpensesTable: React.FC = () => {
                   {isLoadingMore && (
                     <span>{i18n.t("expenses.loadingMoreExpenses")}</span>
                   )}
-                  {!hasMoreExpenses && totalExpenseCount > 0 && (
-                    <span>{i18n.t("expenses.allExpensesLoaded")}</span>
-                  )}
+                  {!hasMoreExpenses &&
+                    totalExpenseCount > 0 &&
+                    (filteredExpenseCount === null ||
+                      filteredExpenseCount >= visibleExpenseCount) && (
+                      <span>{i18n.t("expenses.allExpensesLoaded")}</span>
+                    )}
                 </div>
               </>
             ) : (

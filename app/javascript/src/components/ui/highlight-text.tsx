@@ -19,7 +19,7 @@ export const HighlightText: React.FC<HighlightTextProps> = ({
   text,
   query,
   className,
-  highlightClassName = "bg-yellow-200 dark:bg-yellow-800 rounded-sm px-0",
+  highlightClassName = "bg-yellow-200 rounded-sm px-0",
 }) => {
   if (!query || !text) {
     return <span className={className}>{text}</span>;

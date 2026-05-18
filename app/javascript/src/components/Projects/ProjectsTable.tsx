@@ -100,6 +100,9 @@ const ProjectsTable: React.FC = () => {
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [filteredProjectCount, setFilteredProjectCount] = useState<
+    number | null
+  >(null);
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["projects"],
@@ -463,12 +466,27 @@ const ProjectsTable: React.FC = () => {
         </CardHeader>
         <CardContent>
           {projects.length > 0 ? (
-            <DataTable
-              columns={columns}
-              data={projects}
-              searchPlaceholder={i18n.t("projects.searchProjects")}
-              onRowClick={project => navigate(`/projects/${project.id}`)}
-            />
+            <>
+              <DataTable
+                columns={columns}
+                data={projects}
+                searchPlaceholder={i18n.t("projects.searchProjects")}
+                onRowClick={project => navigate(`/projects/${project.id}`)}
+                showPagination={false}
+                onFilteredRowCountChange={setFilteredProjectCount}
+              />
+              {filteredProjectCount !== null &&
+                filteredProjectCount < projects.length && (
+                  <div className="flex justify-center pt-4 text-sm text-muted-foreground">
+                    <span>
+                      {i18n.t("projects.viewingMatchingProjects", {
+                        filtered: filteredProjectCount,
+                        total: projects.length,
+                      })}
+                    </span>
+                  </div>
+                )}
+            </>
           ) : (
             <div className="py-12 text-center">
               <Briefcase
