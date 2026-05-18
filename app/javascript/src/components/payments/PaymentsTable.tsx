@@ -208,6 +208,30 @@ const PaymentsTable: React.FC = () => {
     }
   };
 
+  const downloadSelectedPayments = async (selectedPayments: Payment[]) => {
+    const ids = selectedPayments.map(p => p.id);
+
+    try {
+      const response = await paymentsApi.bulkDownload(ids);
+      const blob = new Blob([response.data], { type: "text/csv" });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `payments_export_${
+        new Date().toISOString().split("T")[0]
+      }.csv`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+      toast.success(
+        i18n.t("payments.bulkDownloadSuccess", { count: ids.length })
+      );
+    } catch {
+      toast.error(i18n.t("payments.bulkDownloadFailed"));
+    }
+  };
+
   const baseCurrency = company?.baseCurrency || data?.baseCurrency || "USD";
   const payments = data?.payments || [];
 
@@ -658,14 +682,24 @@ const PaymentsTable: React.FC = () => {
                 columns={columns}
                 data={visiblePayments}
                 renderSelectedRowsActions={({ selectedRows }) => (
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => copySelectedTransactionIds(selectedRows)}
-                  >
-                    <Copy className="mr-2 h-4 w-4" />
-                    {i18n.t("payments.copyTransactionIds")}
-                  </Button>
+                  <>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => copySelectedTransactionIds(selectedRows)}
+                    >
+                      <Copy className="mr-2 h-4 w-4" />
+                      {i18n.t("payments.copyTransactionIds")}
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => downloadSelectedPayments(selectedRows)}
+                    >
+                      <Download className="mr-2 h-4 w-4" />
+                      {i18n.t("payments.downloadSelected")}
+                    </Button>
+                  </>
                 )}
                 searchPlaceholder={i18n.t(
                   "payments.searchByInvoiceClientMethodOrNotes"
