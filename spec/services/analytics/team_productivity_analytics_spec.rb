@@ -101,4 +101,39 @@ RSpec.describe Analytics::TeamProductivityAnalytics do
       expect(result[:members].pluck(:user_id)).to eq([first_user.id])
     end
   end
+
+  describe "legacy hourly durations" do
+    let(:company) { create(:company, base_currency: "USD", working_days: "5", working_hours: "40") }
+    let(:client) { create(:client, company:) }
+    let(:project) { create(:project, client:, billable: true) }
+    let(:user) { create(:user, current_workspace: company) }
+    let(:period_start) { Date.new(2026, 4, 6) }
+    let(:period_end) { Date.new(2026, 4, 10) }
+
+    before do
+      create(:employment, company:, user:, joined_at: Date.new(2026, 1, 1), resigned_at: nil)
+
+      5.times do |offset|
+        create(
+          :timesheet_entry,
+          user:,
+          project:,
+          duration: 8.0,
+          work_date: period_start + offset.days,
+          bill_status: :unbilled
+        )
+      end
+    end
+
+    it "normalizes hourly durations before calculating utilization" do
+      result = described_class.new(company:, from: period_start, to: period_end).process
+
+      expect(result[:summary]).to include(
+        total_hours: 40.0,
+        billable_hours: 40.0,
+        utilization_rate: 100.0,
+        billable_ratio: 100.0
+      )
+    end
+  end
 end

@@ -84,7 +84,7 @@ RSpec.describe Analytics::ThresholdNotificationsJob, type: :job do
     }.to have_enqueued_mail(AnalyticsMailer, :threshold_alert).twice
   end
 
-  it "resends the same alert after one week" do
+  it "resends the same alert after exactly one week" do
     allow(Analytics::ThresholdEvaluator).to receive(:process).and_return([
       { type: "low_utilization", title: "Low utilization detected", message: "Alert", metadata: {} }
     ])
@@ -92,7 +92,7 @@ RSpec.describe Analytics::ThresholdNotificationsJob, type: :job do
     travel_to Time.zone.local(2026, 5, 4, 10, 0, 0) do
       expect {
         described_class.perform_now([company.id])
-        travel 1.week + 1.minute
+        travel 1.week
         described_class.perform_now([company.id])
       }.to have_enqueued_mail(AnalyticsMailer, :threshold_alert).exactly(4).times
     end

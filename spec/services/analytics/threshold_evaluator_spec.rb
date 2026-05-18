@@ -65,6 +65,35 @@ RSpec.describe Analytics::ThresholdEvaluator do
     expect(alerts.pluck(:type)).not_to include("low_utilization")
   end
 
+  it "does not alert on low utilization when legacy hourly durations meet the weekly target" do
+    company.update!(working_days: "5", working_hours: "40")
+    user = create(:user, current_workspace: company)
+    client = create(:client, company:)
+    project = create(:project, client:, billable: true)
+    period_start = Date.new(2026, 4, 6)
+    period_end = Date.new(2026, 4, 10)
+
+    create(:employment, company:, user:, joined_at: Date.new(2026, 1, 1), resigned_at: nil)
+
+    5.times do |offset|
+      create(
+        :timesheet_entry,
+        user:,
+        project:,
+        duration: 8.0,
+        work_date: period_start + offset.days,
+        bill_status: :unbilled
+      )
+    end
+
+    allow(Analytics::ComparativeAnalysisService).to receive(:process).and_return({ metrics: { collected_revenue: { current: 1000.0, previous: 1000.0 } } })
+    allow(Analytics::ExpenseTrendAnalyzer).to receive(:process).and_return({ anomalies: [] })
+
+    alerts = described_class.new(company:, from: period_start, to: period_end).process
+
+    expect(alerts.pluck(:type)).not_to include("low_utilization")
+  end
+
   it "uses the previous completed week by default" do
     allow(Analytics::TeamProductivityAnalytics).to receive(:process).and_return({ summary: { utilization_rate: 85.0, total_hours: 20.0, billable_hours: 17.0, team_size: 3 } })
     allow(Analytics::ComparativeAnalysisService).to receive(:process).and_return({ metrics: { collected_revenue: { current: 1000.0, previous: 1000.0 } } })

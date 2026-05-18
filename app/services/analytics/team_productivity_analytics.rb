@@ -41,17 +41,23 @@ module Analytics
       end
 
       def entry_totals
-        @entry_totals ||= scoped_entries.group(:user_id).pluck(
-          :user_id,
-          Arel.sql("COALESCE(SUM(duration), 0)"),
-          Arel.sql("COALESCE(SUM(CASE WHEN bill_status IN (#{BILLABLE_STATUSES.join(',')}) THEN duration ELSE 0 END), 0)"),
-          Arel.sql("COALESCE(SUM(CASE WHEN bill_status = #{TimesheetEntry.bill_statuses[:non_billable]} THEN duration ELSE 0 END), 0)")
-        ).each_with_object({}) do |(user_id, total_minutes, billable_minutes, non_billable_minutes), totals|
-          totals[user_id] = {
-            total_minutes: total_minutes.to_f,
-            billable_minutes: billable_minutes.to_f,
-            non_billable_minutes: non_billable_minutes.to_f
-          }
+        @entry_totals ||= begin
+          totals_by_user = Hash.new { |totals, user_id| totals[user_id] = default_entry_totals.merge(durations: []) }
+
+          scoped_entries.pluck(:user_id, :duration, :bill_status).each do |user_id, duration, bill_status|
+            duration = duration.to_f
+            totals = totals_by_user[user_id]
+            totals[:durations] << duration
+            totals[:total_minutes] += duration
+
+            if billable_status?(bill_status)
+              totals[:billable_minutes] += duration
+            elsif non_billable_status?(bill_status)
+              totals[:non_billable_minutes] += duration
+            end
+          end
+
+          totals_by_user.transform_values { |totals| normalize_entry_totals(totals) }
         end
       end
 
@@ -126,6 +132,48 @@ module Analytics
 
       def business_days_between(start_date, end_date)
         (start_date..end_date).count { |date| !date.saturday? && !date.sunday? }
+      end
+
+      def billable_status?(bill_status)
+        BILLABLE_STATUSES.include?(bill_status) ||
+          BILLABLE_STATUSES.include?(TimesheetEntry.bill_statuses[bill_status])
+      end
+
+      def non_billable_status?(bill_status)
+        bill_status == "non_billable" ||
+          bill_status == TimesheetEntry.bill_statuses["non_billable"]
+      end
+
+      # Some older/imported workspaces stored timesheet durations in hours while
+      # the current app stores durations in minutes. Normalize before computing
+      # utilization to avoid false low-utilization alerts.
+      def normalize_entry_totals(totals)
+        durations = totals.delete(:durations)
+        return totals unless durations_recorded_in_hours?(durations:, total: totals[:total_minutes])
+
+        {
+          total_minutes: totals[:total_minutes] * 60,
+          billable_minutes: totals[:billable_minutes] * 60,
+          non_billable_minutes: totals[:non_billable_minutes] * 60
+        }
+      end
+
+      def durations_recorded_in_hours?(durations:, total:)
+        return false if durations.blank?
+
+        max_duration = durations.max.to_f
+
+        return false if max_duration > 24
+        return false if total > company.working_hours.to_f * 2
+        return false if minute_granularity_durations?(durations)
+
+        durations.any? { |duration| (duration % 1).positive? } || max_duration <= 12
+      end
+
+      def minute_granularity_durations?(durations)
+        durations.all? do |duration|
+          duration == duration.to_i && (duration % 15).zero?
+        end
       end
 
       def percentage(numerator, denominator)

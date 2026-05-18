@@ -42,7 +42,7 @@ class Analytics::ThresholdNotificationsJob < ApplicationJob
     def claim_notification!(company_id, alert_type)
       AnalyticsThresholdNotificationLog
         .where(company_id: company_id, alert_type: alert_type)
-        .where("notified_at < ?", NOTIFICATION_TTL.ago)
+        .where("notified_at <= ?", NOTIFICATION_TTL.ago)
         .delete_all
 
       AnalyticsThresholdNotificationLog.create!(
