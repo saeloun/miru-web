@@ -313,7 +313,7 @@ const en = {
     clientUpdatedSuccessfully: "Client updated successfully",
     noClientsYet: "Looks like there aren't any clients added yet.",
     viewingMatchingClients:
-      "Viewing {{filtered}} matching client(s) from {{total}} loaded",
+      "Viewing %{filtered} matching client(s) from %{total} loaded",
     deleting: "Deleting...",
     addYourFirstClient: "Add Your First Client",
     addNewClientDescription: "Fill in the details below to add a new client.",
@@ -397,7 +397,7 @@ const en = {
     createFirstProject: "Create your first project to get started.",
     noProjectsYet: "No projects yet",
     viewingMatchingProjects:
-      "Viewing {{filtered}} matching project(s) from {{total}} loaded",
+      "Viewing %{filtered} matching project(s) from %{total} loaded",
     workingOnProjects:
       "Track billable and non-billable work across your projects.",
     active: "Active",
@@ -469,7 +469,7 @@ const en = {
     failedToLoadTeamMembers: "Failed to load team members",
     noTeamMembersYet: "No team members yet",
     viewingMatchingMembers:
-      "Viewing {{filtered}} matching member(s) from {{total}} loaded",
+      "Viewing %{filtered} matching member(s) from %{total} loaded",
     totalHours: "Total Hours",
     billableHours: "Billable hours",
     usersPerPage: "users/page",
@@ -775,7 +775,7 @@ const en = {
       "Search by invoice, client, method, or notes...",
     showingPaymentsCount: "Showing %{visible} of %{total}",
     viewingMatchingPayments:
-      "Viewing {{filtered}} matching payment(s) from {{total}} loaded",
+      "Viewing %{filtered} matching payment(s) from %{total} loaded",
     notes: "Notes",
     paymentMethod: "Payment Method",
     withdrawal: "Withdrawal",
@@ -1201,7 +1201,7 @@ const en = {
     submitFirstExpense: "Submit your first expense",
     showingOfTotal: "Showing %{visible} of %{total}",
     viewingMatchingExpenses:
-      "Viewing {{filtered}} matching expense(s) from {{total}} loaded",
+      "Viewing %{filtered} matching expense(s) from %{total} loaded",
     scrollToLoadMore: "Scroll to load more expenses",
     loadingMoreExpenses: "Loading more expenses...",
     allExpensesLoaded: "All expenses loaded",
