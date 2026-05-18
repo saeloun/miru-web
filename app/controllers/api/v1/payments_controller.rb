@@ -81,6 +81,24 @@ class Api::V1::PaymentsController < Api::V1::ApplicationController
     render json: { error: error.message }, status: 422
   end
 
+  def bulk_download
+    authorize :bulk_download, policy_class: PaymentPolicy
+
+    payment_ids = params[:ids].to_s.split(",").map(&:to_i)
+    payments = current_company.payments.includes(invoice: :client).where(id: payment_ids)
+
+    if payments.empty?
+      render json: { error: "No payments found for the given IDs" }, status: 404
+      return
+    end
+
+    csv_data = generate_bulk_csv(payments)
+    send_data csv_data,
+      filename: "payments_export_#{Date.current}.csv",
+      type: "text/csv",
+      disposition: "attachment"
+  end
+
   private
 
     def payment_params
@@ -100,5 +118,26 @@ class Api::V1::PaymentsController < Api::V1::ApplicationController
     def track_event
       create_payment = "create_payment"
       Invoices::EventTrackerService.new(create_payment, @invoice, params).process
+    end
+
+    def generate_bulk_csv(payments)
+      require "csv"
+
+      CSV.generate(headers: true) do |csv|
+        csv << ["Date", "Client", "Invoice Number", "Payment Method", "Transaction ID", "Amount", "Currency", "Status", "Notes"]
+        payments.each do |payment|
+          csv << [
+            payment.transaction_date,
+            payment.invoice&.client&.name || "Unknown Client",
+            payment.invoice&.invoice_number,
+            payment.transaction_type&.humanize,
+            "PAY-#{payment.id}",
+            payment.amount,
+            payment.payment_currency || payment.company&.base_currency,
+            payment.status&.humanize,
+            payment.note
+          ]
+        end
+      end
     end
 end

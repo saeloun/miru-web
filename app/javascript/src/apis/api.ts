@@ -450,6 +450,11 @@ export const paymentsApi = {
   update: (id: any, payload: any) => http.patch(`/payments/${id}`, payload),
   destroy: (id: any) => http.delete(`/payments/${id}`),
   getInvoiceList: () => http.get(`/payments/new`),
+  bulkDownload: (ids: (string | number)[]) =>
+    http.get(`/payments/bulk_download`, {
+      params: { ids: ids.join(",") },
+      responseType: "blob",
+    }),
 };
 export const payments = paymentsApi;
 export const payment = paymentsApi;

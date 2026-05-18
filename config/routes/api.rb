@@ -216,6 +216,7 @@ namespace :api, defaults: { format: "json" } do
 
     resources :payments, only: [:new, :create, :index, :show] do
       post :withdraw, on: :member
+      get :bulk_download, on: :collection
     end
     resources :holidays, only: [:update, :index], param: :year
 
