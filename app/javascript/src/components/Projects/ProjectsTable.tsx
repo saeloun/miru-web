@@ -12,6 +12,7 @@ import {
 } from "../ui/card";
 import { Button } from "../ui/button";
 import { DataTable } from "../ui/data-table";
+import { HighlightedCell } from "../ui/highlight-text";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -218,7 +219,9 @@ const ProjectsTable: React.FC = () => {
               <Briefcase size={16} />
             </div>
             <div>
-              <p className="font-medium text-foreground">{project.name}</p>
+              <p className="font-medium text-foreground">
+                <HighlightedCell text={project.name} />
+              </p>
               {project.description && (
                 <p className="max-w-xs truncate text-sm text-muted-foreground">
                   {project.description}
@@ -240,7 +243,7 @@ const ProjectsTable: React.FC = () => {
 
         return (
           <span className="text-sm font-medium text-foreground">
-            {clientName}
+            <HighlightedCell text={clientName} />
           </span>
         );
       },

@@ -36,10 +36,11 @@ class ApiHandler {
     this.axios.interceptors.response.use(
       (response: any) => {
         if (response) {
-          const { data, status } = response;
+          const { data, status, config } = response;
           (response as any).success = status >= 200 && status < 300;
+          const shouldSkipSuccessToast = Boolean(config?.skipSuccessToast);
           const { reset_session, notice } = data || {};
-          if (data && !reset_session && notice) {
+          if (data && !reset_session && notice && !shouldSkipSuccessToast) {
             Toastr.success(notice);
           }
         }
