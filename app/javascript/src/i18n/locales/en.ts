@@ -312,6 +312,8 @@ const en = {
     clientAddedSuccessfully: "Client added successfully",
     clientUpdatedSuccessfully: "Client updated successfully",
     noClientsYet: "Looks like there aren't any clients added yet.",
+    viewingMatchingClients:
+      "Viewing %{filtered} matching client(s) from %{total} loaded",
     deleting: "Deleting...",
     addYourFirstClient: "Add Your First Client",
     addNewClientDescription: "Fill in the details below to add a new client.",
@@ -394,6 +396,8 @@ const en = {
     searchProjects: "Search projects...",
     createFirstProject: "Create your first project to get started.",
     noProjectsYet: "No projects yet",
+    viewingMatchingProjects:
+      "Viewing %{filtered} matching project(s) from %{total} loaded",
     workingOnProjects:
       "Track billable and non-billable work across your projects.",
     active: "Active",
@@ -464,6 +468,8 @@ const en = {
     user: "USER",
     failedToLoadTeamMembers: "Failed to load team members",
     noTeamMembersYet: "No team members yet",
+    viewingMatchingMembers:
+      "Viewing %{filtered} matching member(s) from %{total} loaded",
     totalHours: "Total Hours",
     billableHours: "Billable hours",
     usersPerPage: "users/page",
@@ -690,7 +696,7 @@ const en = {
     // Counters
     showingOf: "Showing %{shown} of %{total}",
     viewingMatching:
-      "Viewing %{filtered} matching invoices from %{loaded} loaded",
+      "Viewing %{filtered} matching invoice(s) from %{loaded} loaded",
     loadedOf: "Loaded %{loaded} of %{total}",
     showingRecentTransactions: "Showing %{count} recent transactions",
     updatedAt: "Updated %{date}",
@@ -768,6 +774,8 @@ const en = {
     searchByInvoiceClientMethodOrNotes:
       "Search by invoice, client, method, or notes...",
     showingPaymentsCount: "Showing %{visible} of %{total}",
+    viewingMatchingPayments:
+      "Viewing %{filtered} matching payment(s) from %{total} loaded",
     notes: "Notes",
     paymentMethod: "Payment Method",
     withdrawal: "Withdrawal",
@@ -1192,6 +1200,8 @@ const en = {
     selectValidCategory: "Please select a valid category",
     submitFirstExpense: "Submit your first expense",
     showingOfTotal: "Showing %{visible} of %{total}",
+    viewingMatchingExpenses:
+      "Viewing %{filtered} matching expense(s) from %{total} loaded",
     scrollToLoadMore: "Scroll to load more expenses",
     loadingMoreExpenses: "Loading more expenses...",
     allExpensesLoaded: "All expenses loaded",

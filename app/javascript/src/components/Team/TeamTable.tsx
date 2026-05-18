@@ -118,6 +118,9 @@ const TeamTable: React.FC = () => {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null);
   const [deleteImpact, setDeleteImpact] = useState<RemovalImpact | null>(null);
+  const [filteredTeamCount, setFilteredTeamCount] = useState<number | null>(
+    null
+  );
   const deleteImpactRequestIdRef = useRef(0);
 
   const { data, isLoading, error } = useQuery({
@@ -675,12 +678,26 @@ const TeamTable: React.FC = () => {
       <Card className="border-border">
         <CardContent>
           {teamMembers.length > 0 ? (
-            <DataTable
-              columns={columns}
-              data={teamMembers}
-              searchPlaceholder={i18n.t("search")}
-              showPagination={false}
-            />
+            <>
+              <DataTable
+                columns={columns}
+                data={teamMembers}
+                searchPlaceholder={i18n.t("search")}
+                showPagination={false}
+                onFilteredRowCountChange={setFilteredTeamCount}
+              />
+              {filteredTeamCount !== null &&
+                filteredTeamCount < teamMembers.length && (
+                  <div className="flex justify-center pt-4 text-sm text-muted-foreground">
+                    <span>
+                      {i18n.t("team.viewingMatchingMembers", {
+                        filtered: filteredTeamCount,
+                        total: teamMembers.length,
+                      })}
+                    </span>
+                  </div>
+                )}
+            </>
           ) : (
             <div className="text-center py-12">
               <Users size={48} className="mx-auto mb-4 text-muted-foreground" />
