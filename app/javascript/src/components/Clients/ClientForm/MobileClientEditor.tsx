@@ -13,7 +13,7 @@ import { Form, Formik, FormikProps } from "formik";
 import { XIcon } from "miruIcons";
 import PhoneInput from "react-phone-number-input";
 import flags from "react-phone-number-input/flags";
-import { Button, SidePanel, Toastr } from "StyledComponents";
+import { Button, SidePanel } from "StyledComponents";
 import worldCountries from "world-countries";
 
 import { clientSchema, getInitialvalues } from "./formValidationSchema";
@@ -82,7 +82,6 @@ const MobileClientEditor = ({
         const res = await clientApi.create(formData);
         setClientData([...clientData, { ...res.data, minutes: 0 }]);
         setnewClient(false);
-        Toastr.success(i18n.t("clients.clientAddedSuccessfully"));
       } catch {
         setSubmitting(false);
       }

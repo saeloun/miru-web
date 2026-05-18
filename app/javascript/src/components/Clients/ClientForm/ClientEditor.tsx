@@ -4,7 +4,6 @@ import { Formik, Form, FormikProps } from "formik";
 import PhoneInput from "react-phone-number-input";
 import flags from "react-phone-number-input/flags";
 import "react-phone-number-input/style.css";
-import { Toastr } from "StyledComponents";
 import worldCountries from "world-countries";
 import { clientApi } from "apis/api";
 import { motion } from "framer-motion";
@@ -84,7 +83,6 @@ const ClientEditor = ({
         setClientData([...clientData, { ...res.data.client, minutes: 0 }]);
         setSubmitting(false);
         setnewClient(false);
-        Toastr.success(i18n.t("clients.clientAddedSuccessfully"));
       } catch {
         setSubmitting(false);
       }
@@ -94,7 +92,6 @@ const ClientEditor = ({
         setSubmitting(false);
         setShowEditDialog(false);
         fetchDetails();
-        Toastr.success(i18n.t("clients.clientUpdatedSuccessfully"));
       } catch {
         setSubmitting(false);
       }
