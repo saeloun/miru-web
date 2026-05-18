@@ -19,10 +19,13 @@ import {
   House,
   CurrencyCircleDollar,
   Tree,
+  SignOut,
   Monitor,
 } from "phosphor-react";
 import { useLocation } from "react-router-dom";
 import { useUserContext } from "context/UserContext";
+import { logoutApi } from "apis/api";
+import { Toastr } from "StyledComponents";
 import ThemeToggle from "../../common/ThemeToggle";
 import useThemeMode from "../../common/useThemeMode";
 import { hasProAccess } from "../../lib/planAccess";
@@ -208,6 +211,16 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
     return item?.label || t("nav.dashboard");
   }, [location.pathname, filteredNavigation]);
 
+  const handleLogout = async () => {
+    try {
+      await logoutApi({ skipErrorToast: true });
+      window.location.href = "/";
+    } catch (error) {
+      console.error("Logout failed:", error);
+      Toastr.error(t("somethingWentWrong"));
+    }
+  };
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (mobileOpen && !(event.target as Element).closest(".mobile-sidebar")) {
@@ -347,6 +360,17 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
               <DashboardTimerControl />
               <CompactLocaleSwitcher />
               <ThemeToggle compact />
+              <button
+                type="button"
+                aria-label={t("nav.logout")}
+                onClick={handleLogout}
+                className="inline-flex items-center gap-2 rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground transition hover:bg-accent"
+              >
+                <SignOut size={16} aria-hidden="true" />
+                <span className="sr-only sm:not-sr-only">
+                  {t("nav.logout")}
+                </span>
+              </button>
             </div>
           </div>
         </header>

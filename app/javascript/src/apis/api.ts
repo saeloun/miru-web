@@ -413,7 +413,7 @@ export const leavesApi = {
 };
 
 // Logout
-export const logoutApi = () => http.delete(`/users/logout`);
+export const logoutApi = (config = {}) => http.delete(`/users/logout`, config);
 
 // Payment Settings
 export const paymentSettingsApi = {
