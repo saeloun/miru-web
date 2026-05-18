@@ -1,6 +1,7 @@
 import React from "react";
 
 import { UnifiedSearch } from "../../ui/enhanced-search";
+import { HighlightText } from "../../ui/highlight-text";
 import { i18n } from "../../../i18n";
 import { useUserContext } from "context/UserContext";
 import { currencyFormat } from "helpers";
@@ -8,7 +9,7 @@ import { PlusIcon } from "miruIcons";
 import { useNavigate } from "react-router-dom";
 import { Button } from "StyledComponents";
 
-const SearchDataRow = ({ item }) => {
+const SearchDataRow = ({ item, searchQuery = "" }) => {
   const { company } = useUserContext();
   const navigate = useNavigate();
 
@@ -22,7 +23,7 @@ const SearchDataRow = ({ item }) => {
       onClick={() => handleClick(item)}
     >
       <span className="w-4/12 truncate whitespace-nowrap text-left text-base font-normal tracking-wider text-foreground">
-        {item.label}
+        <HighlightText text={item.label || ""} query={searchQuery} />
       </span>
       <span className="w-4/12 truncate whitespace-nowrap text-center text-base font-normal tracking-wider text-foreground">
         {item.date}
@@ -72,7 +73,9 @@ const Header = ({
         searchAction={searchAction}
         placeholder={i18n.t("expenses.searchExpenses")}
         onSelect={handleSelect}
-        renderItem={item => <SearchDataRow item={item} />}
+        renderItem={(item, searchQuery) => (
+          <SearchDataRow item={item} searchQuery={searchQuery} />
+        )}
         clearSearch={clearSearch}
         handleEnter={fetchSearchResults}
         className="w-full sm:w-64"
