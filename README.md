@@ -199,6 +199,7 @@ bearer_token_env_var = "MIRU_CLI_TOKEN"
 | `miru.time.update` | `miru time update` |
 | `miru.time.delete` | `miru time delete` |
 | `miru.invoice.list` | `miru invoice list` |
+| `miru.invoice.create` | `miru invoice create` |
 | `miru.invoice.show` | `miru invoice show` |
 | `miru.invoice.send` | `miru invoice send` |
 | `miru.payment.list` | `miru payment list` |

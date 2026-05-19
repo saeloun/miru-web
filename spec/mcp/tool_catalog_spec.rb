@@ -14,6 +14,7 @@ RSpec.describe MCP::Miru::ToolCatalog do
       "miru.time.update",
       "miru.time.delete",
       "miru.invoice.list",
+      "miru.invoice.create",
       "miru.invoice.show",
       "miru.invoice.send",
       "miru.payment.list",

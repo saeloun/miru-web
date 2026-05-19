@@ -13,6 +13,7 @@ module MCP
         { name: "miru.time.update", description: "Update a timesheet entry", read_only: false },
         { name: "miru.time.delete", description: "Delete a timesheet entry", read_only: false },
         { name: "miru.invoice.list", description: "List invoices visible to the authenticated user", read_only: true },
+        { name: "miru.invoice.create", description: "Create one draft invoice", read_only: false },
         { name: "miru.invoice.show", description: "Show one invoice", read_only: true },
         { name: "miru.invoice.send", description: "Send one invoice email", read_only: false },
         { name: "miru.payment.list", description: "List payments visible to the authenticated user", read_only: true },
