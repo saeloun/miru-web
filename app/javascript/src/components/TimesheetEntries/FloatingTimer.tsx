@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
-import axios from "axios";
+import axios, { desktopCurrentTimerApi, timesheetEntryApi } from "apis/api";
 import { Card, CardContent } from "../ui/card";
 import { Button } from "../ui/button";
 import { Label } from "../ui/label";
@@ -34,7 +34,6 @@ import { cn } from "../../lib/utils";
 import { toast } from "sonner";
 import { useUserContext } from "../../context/UserContext";
 import { i18n } from "../../i18n";
-import { desktopCurrentTimerApi, timesheetEntryApi } from "apis/api";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import {
   createTimerState,

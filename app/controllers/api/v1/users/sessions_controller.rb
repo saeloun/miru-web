@@ -41,7 +41,7 @@ class Api::V1::Users::SessionsController < Devise::SessionsController
   def me
     if current_user
       render json: {
-        user: safe_user_payload(current_user).merge(
+        user: auth_user_payload(current_user, include_token: true).merge(
           "date_of_birth" => current_user.date_of_birth,
           "phone" => current_user.phone,
           "personal_email_id" => current_user.personal_email_id,

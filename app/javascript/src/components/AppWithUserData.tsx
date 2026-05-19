@@ -13,7 +13,10 @@ import {
 import Loader from "../common/Loader/index";
 import Main from "./Main";
 import { reportClientError } from "utils/runtimeRecovery";
-import { getValueFromLocalStorage } from "utils/storage";
+import {
+  getSessionRequestHeaders,
+  hasStoredAuthCredentials,
+} from "utils/authHeaders";
 
 const AUTH_PATH_PREFIXES = [
   "/user/sign_in",
@@ -64,11 +67,6 @@ type UserDataState = {
   loading: boolean;
   authResolution: AuthResolution;
 };
-
-const getCsrfToken = () =>
-  document.querySelector('[name="csrf-token"]')?.getAttribute("content") || "";
-
-const hasStoredAuthToken = () => Boolean(getValueFromLocalStorage("authToken"));
 
 const delay = (ms: number) =>
   new Promise(resolve => {
@@ -142,10 +140,7 @@ const AppWithUserData = (props: any) => {
 
       try {
         const response = await fetch("/api/v1/users/_me", {
-          headers: {
-            "Content-Type": "application/json",
-            "X-CSRF-TOKEN": getCsrfToken(),
-          },
+          headers: getSessionRequestHeaders(),
           credentials: "include",
         });
 
@@ -166,7 +161,7 @@ const AppWithUserData = (props: any) => {
 
         const shouldRetryUnauthorized =
           response.status === 401 &&
-          hasStoredAuthToken() &&
+          hasStoredAuthCredentials() &&
           attempt < AUTH_BOOTSTRAP_MAX_RETRIES;
 
         const shouldRetryTransientStatus =
