@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 
+import { getSessionRequestHeaders } from "utils/authHeaders";
+
 interface User {
   id: number;
   first_name: string;
@@ -44,13 +46,7 @@ export const useCurrentUser = (): UseCurrentUserReturn => {
 
       const response = await fetch("/api/v1/users/_me", {
         method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          "X-CSRF-TOKEN":
-            document
-              .querySelector('[name="csrf-token"]')
-              ?.getAttribute("content") || "",
-        },
+        headers: getSessionRequestHeaders(),
         credentials: "include",
       });
 

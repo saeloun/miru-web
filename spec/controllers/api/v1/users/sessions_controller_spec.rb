@@ -94,7 +94,7 @@ RSpec.describe Api::V1::Users::SessionsController, type: :controller do
 
         json_response = JSON.parse(response.body)
         expect(json_response["user"]["email"]).to eq(user.email)
-        expect(json_response["user"]).not_to have_key("token")
+        expect(json_response["user"]["token"]).to eq(user.token)
         expect(json_response["user"]["current_workspace_id"]).to eq(user.current_workspace_id)
         expect(json_response["user"]["avatar_url"]).to eq(user.avatar_url)
         expect(json_response["user"]["avatar_url"]).to be_present
@@ -104,6 +104,15 @@ RSpec.describe Api::V1::Users::SessionsController, type: :controller do
         expect(json_response["user"]).not_to have_key("confirmed")
         expect(json_response["company_role"]).to eq("admin")
         expect(json_response["company"]["id"]).to eq(company.id)
+      end
+
+      it "does not rotate the browser session limiter for stateless token auth" do
+        original_unique_session_id = user.reload.unique_session_id
+
+        get :me, format: :json
+
+        expect(response).to have_http_status(:ok)
+        expect(user.reload.unique_session_id).to eq(original_unique_session_id)
       end
     end
 

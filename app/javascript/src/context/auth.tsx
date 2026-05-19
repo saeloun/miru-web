@@ -1,6 +1,6 @@
 import React, { createContext, useReducer, Dispatch } from "react";
 
-import { getValueFromLocalStorage } from "utils/storage";
+import { getStoredAuthCredentials } from "utils/authHeaders";
 
 import authReducer, { AuthAction, AuthState } from "../reducers/auth";
 
@@ -9,13 +9,12 @@ const AuthDispatchContext = createContext<Dispatch<AuthAction> | undefined>(
   undefined
 );
 
-const token = getValueFromLocalStorage("authToken");
-const email = getValueFromLocalStorage("authEmail");
+const credentials = getStoredAuthCredentials();
 
 const initialState: AuthState = {
-  isLoggedIn: !!token,
-  authToken: token || null,
-  authEmail: email || null,
+  isLoggedIn: Boolean(credentials),
+  authToken: credentials?.token || null,
+  authEmail: credentials?.email || null,
 };
 
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {

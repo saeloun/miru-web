@@ -50,7 +50,7 @@ const Main: React.FC<MainProps> = props => {
       authDispatch({
         type: "LOGIN",
         payload: {
-          token: user.token || "session", // Use session-based auth
+          token: user.token || null,
           email: user.email,
         },
       });
