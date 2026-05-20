@@ -101,4 +101,23 @@ test.describe("Dashboard — Stats And Charts", () => {
         ).toBeVisible();
         await expect(page.getByText(/no revenue data available/i)).toBeVisible();
     });
+
+    // PR #2287 — team size stat displays correctly (excludes discarded employments)
+    test("team size stat shows a numeric value from the live API", async ({ page }) => {
+        await goToDashboard(page);
+
+        const teamSizeCard = page
+            .getByRole("heading", { name: "Team Size", exact: true })
+            .locator("..")
+            .locator("..");
+        await expect(teamSizeCard).toBeVisible({ timeout: 10_000 });
+
+        const cardText = await teamSizeCard.innerText();
+        const numbers = cardText.match(/\d+/g);
+        expect(numbers).not.toBeNull();
+        if (numbers) {
+            const teamSize = parseInt(numbers[0], 10);
+            expect(teamSize).toBeGreaterThan(0);
+        }
+    });
 });

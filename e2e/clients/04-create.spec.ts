@@ -59,4 +59,16 @@ test.describe("Create Client", () => {
             page.getByRole("heading", { name: /add new client/i }),
         ).not.toBeVisible();
     });
+
+    // PR #2294 — client form has an EIN field
+    test("client form has an EIN field", async ({ page }) => {
+        await goToClients(page);
+        await page.getByRole("button", { name: /add new client/i }).click();
+        await expect(
+            page.getByRole("heading", { name: /add new client/i }),
+        ).toBeVisible({ timeout: 10_000 });
+
+        const einField = page.locator("#ein, [name*='ein'], input[placeholder*='EIN']").first();
+        await expect(einField).toBeVisible({ timeout: 10_000 });
+    });
 });

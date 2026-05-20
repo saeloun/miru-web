@@ -157,4 +157,40 @@ test.describe("Holidays Settings — Public Holidays", () => {
 
         await page.getByRole("button", { name: /cancel/i }).click({ timeout: 10_000 });
     });
+
+    // PR #2291 — editing a holiday name persists after save and page reload
+    test("editing a holiday name persists after save", async ({ page }) => {
+        const originalName = uniqueHolidayName("EditPersist");
+        const updatedName = uniqueHolidayName("Renamed");
+
+        await upsertHolidays(page, TEST_YEAR, {
+            nationalHolidays: [{ name: originalName, date: `${TEST_YEAR}-09-15` }],
+        });
+
+        try {
+            await goToHolidaysAndWaitFor(page, originalName);
+            await page.getByRole("button", { name: /edit/i }).click();
+            await expect(page.getByRole("button", { name: /save changes/i })).toBeVisible({ timeout: 5_000 });
+
+            const inputs = page.locator("input[placeholder='Enter holiday name']");
+            const count = await inputs.count();
+            for (let i = 0; i < count; i++) {
+                const val = await inputs.nth(i).inputValue();
+                if (val === originalName) {
+                    await inputs.nth(i).fill(updatedName);
+                    break;
+                }
+            }
+
+            await page.getByRole("button", { name: /save changes/i }).click();
+            const toast = page.locator("[data-sonner-toast]");
+            await expect(toast.first()).toBeVisible({ timeout: 10_000 });
+
+            await page.reload();
+            await page.waitForLoadState("networkidle");
+            await expect(page.getByText(updatedName)).toBeVisible({ timeout: 10_000 });
+        } finally {
+            await cleanupHolidaysByName(page, TEST_YEAR, [originalName, updatedName]);
+        }
+    });
 });

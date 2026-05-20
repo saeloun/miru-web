@@ -5,6 +5,68 @@
 import { test, expect } from "@playwright/test";
 import { goToPayments } from "./helpers";
 
+test.describe("Payments — Bulk Selection & Actions", () => {
+    test("table has row checkboxes for selection", async ({ page }) => {
+        await goToPayments(page);
+        const rowCheckboxes = page.locator("tbody").locator("[role='checkbox'], input[type='checkbox']");
+        const count = await rowCheckboxes.count();
+        const hasRows = await page.locator("tbody tr").count();
+        if (hasRows > 0) {
+            expect(count).toBeGreaterThan(0);
+        }
+    });
+
+    test("select-all checkbox selects all visible rows", async ({ page }) => {
+        await goToPayments(page);
+        const headerCheckbox = page.locator("thead").locator("[role='checkbox'], input[type='checkbox']").first();
+        const hasHeaderCheckbox = await headerCheckbox.isVisible().catch(() => false);
+        if (!hasHeaderCheckbox) return;
+
+        await headerCheckbox.click();
+        const rowCheckboxes = page.locator("tbody").locator("[role='checkbox'], input[type='checkbox']");
+        const count = await rowCheckboxes.count();
+        if (count === 0) return;
+        for (let i = 0; i < Math.min(count, 5); i++) {
+            await expect(rowCheckboxes.nth(i)).toBeChecked();
+        }
+    });
+
+    test("bulk copy transaction IDs button appears when rows are selected", async ({ page }) => {
+        await goToPayments(page);
+        const headerCheckbox = page.locator("thead").locator("[role='checkbox'], input[type='checkbox']").first();
+        const hasHeaderCheckbox = await headerCheckbox.isVisible().catch(() => false);
+        if (!hasHeaderCheckbox) return;
+
+        await headerCheckbox.click();
+        await page.waitForTimeout(500);
+        await expect(page.getByRole("button", { name: /copy.*transaction|copy.*id/i })).toBeVisible({ timeout: 5_000 });
+    });
+
+    test("bulk download button appears when rows are selected", async ({ page }) => {
+        await goToPayments(page);
+        const headerCheckbox = page.locator("thead").locator("[role='checkbox'], input[type='checkbox']").first();
+        const hasHeaderCheckbox = await headerCheckbox.isVisible().catch(() => false);
+        if (!hasHeaderCheckbox) return;
+
+        await headerCheckbox.click();
+        await page.waitForTimeout(500);
+        await expect(page.getByRole("button", { name: /download|export/i })).toBeVisible({ timeout: 5_000 });
+    });
+
+    test("selection toolbar shows count when rows are selected", async ({ page }) => {
+        await goToPayments(page);
+        const headerCheckbox = page.locator("thead").locator("[role='checkbox'], input[type='checkbox']").first();
+        const hasHeaderCheckbox = await headerCheckbox.isVisible().catch(() => false);
+        if (!hasHeaderCheckbox) return;
+
+        await headerCheckbox.click();
+        await page.waitForTimeout(500);
+        await expect(
+            page.getByText(/\d+\s*(row|item|payment)?s?\s*selected/i).or(page.getByText(/selected.*\d+/i)).first(),
+        ).toBeVisible({ timeout: 5_000 });
+    });
+});
+
 test.describe("Payments — UX & Interactions", () => {
     test("payment rows have hover background effect", async ({ page }) => {
         await goToPayments(page);

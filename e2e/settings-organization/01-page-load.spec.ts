@@ -76,4 +76,23 @@ test.describe("Organization Settings — Page Load & Layout", () => {
         await goToOrgSettings(page);
         await expect(page.getByText(/working hours/i).first()).toBeVisible();
     });
+
+    // PR #2299 — invoice signature section is visible
+    test("invoice signature section is visible", async ({ page }) => {
+        await goToOrgSettings(page);
+        await expect(page.getByText(/invoice.*signature|signature/i).first()).toBeVisible({ timeout: 15_000 });
+    });
+
+    // PR #2299 — signature section has upload or management controls
+    test("signature section has upload or management controls", async ({ page }) => {
+        await goToOrgSettings(page);
+        await expect(page.getByText(/invoice.*signature|signature/i).first()).toBeVisible({ timeout: 15_000 });
+
+        const hasUploadBtn = await page.getByRole("button", { name: /upload|choose|browse/i }).isVisible().catch(() => false);
+        const hasDeleteBtn = await page.getByRole("button", { name: /delete.*signature|remove/i }).isVisible().catch(() => false);
+        const hasFileInput = await page.locator("input[type='file']").count() > 0;
+        const hasPreviewImg = await page.locator("img[alt*='signature' i]").isVisible().catch(() => false);
+
+        expect(hasUploadBtn || hasDeleteBtn || hasFileInput || hasPreviewImg).toBeTruthy();
+    });
 });

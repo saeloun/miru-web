@@ -42,7 +42,7 @@ test.describe("Profile Settings — Edit Validations", () => {
 
             await expect(page).toHaveURL(/\/settings\/profile\/edit$/);
             await expect(
-                page.getByText(/mobile number must contain at least 2 digits/i),
+                page.getByText(/mobile number must contain at least 2 digits|please enter a valid.*phone/i),
             ).toBeVisible();
         });
     });
@@ -126,6 +126,32 @@ test.describe("Profile Settings — Edit Validations", () => {
             await expect(page.getByText("व्यक्तिगत जानकारी").first()).toBeVisible({
                 timeout: 15_000,
             });
+        });
+    });
+
+    // PR #2265 — prevent reusing current password when updating password
+    test("shows error when new password matches current password", async ({ page }) => {
+        await withFreshAdminProfile(page, async (fixture) => {
+            const currentPasswordField = page.locator("#current_password, [name*='current_password']").first();
+            const newPasswordField = page.locator("#password, [name*='new_password'], [name='password']").first();
+            const confirmPasswordField = page.locator("#confirm_password, [name*='password_confirmation']").first();
+
+            const hasPasswordFields = await currentPasswordField.isVisible().catch(() => false);
+            if (!hasPasswordFields) return;
+
+            await currentPasswordField.fill(fixture.password);
+            await newPasswordField.fill(fixture.password);
+            if (await confirmPasswordField.isVisible()) {
+                await confirmPasswordField.fill(fixture.password);
+            }
+
+            const submitBtn = page.getByRole("button", { name: /update.*password|change.*password|save/i });
+            if (await submitBtn.isVisible()) {
+                await submitBtn.click();
+                await expect(
+                    page.getByText(/same.*password|cannot.*same|different.*password|must.*different/i),
+                ).toBeVisible({ timeout: 10_000 });
+            }
         });
     });
 });

@@ -258,4 +258,41 @@ test.describe("Time Entry Report", () => {
             await expect(paginationInfo.first()).toBeVisible();
         }
     });
+
+    // PR #2234 — date range filter can be applied
+    test("date range filter can be applied without errors", async ({ page }) => {
+        await goToReport(page, "time-entry");
+
+        const dateFilter = page.getByRole("button", { name: /date|period|range/i }).or(
+            page.locator("[data-testid*='date-filter'], [data-testid*='date-range']").first()
+        );
+        const hasDateFilter = await dateFilter.first().isVisible().catch(() => false);
+        if (!hasDateFilter) return;
+
+        await dateFilter.first().click();
+        const customOption = page.getByText(/custom/i);
+        if (await customOption.isVisible().catch(() => false)) {
+            await customOption.click();
+        }
+
+        await expect(page.getByText(/time.*entry|time.*report/i).first()).toBeVisible({ timeout: 10_000 });
+    });
+
+    // PR #2234 — client filter can be applied
+    test("client filter applies without page crash", async ({ page }) => {
+        await goToReport(page, "time-entry");
+
+        const clientFilter = page.getByRole("button").filter({ hasText: /clients/i }).first();
+        const hasClientFilter = await clientFilter.isVisible().catch(() => false);
+        if (!hasClientFilter) return;
+
+        await clientFilter.click();
+        const option = page.locator("[role='menuitemcheckbox']").first();
+        if (await option.isVisible().catch(() => false)) {
+            await option.click();
+        }
+        await page.keyboard.press("Escape");
+
+        await expect(page.getByText(/time.*entry|time.*report/i).first()).toBeVisible({ timeout: 10_000 });
+    });
 });

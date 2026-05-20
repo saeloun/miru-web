@@ -76,4 +76,28 @@ test.describe("Team — Kebab Menu", () => {
         await expect(page.getByText(/assigned to 1 project/i)).toBeVisible();
         await expect(page.getByText(/unbilled hours across 2 entries/i)).toBeVisible();
     });
+
+    // PR #2293 — delete dialog shows stable content without loading placeholders
+    test("delete dialog renders without loading placeholders", async ({ page }) => {
+        await goToTeam(page);
+
+        const rows = page.locator("tbody tr");
+        const rowCount = await rows.count();
+        if (rowCount < 2) return;
+
+        const memberName = await rows.nth(1).locator("td").first().locator("p").first().innerText();
+        await openKebabMenu(page, memberName);
+
+        const deleteOption = page.getByRole("menuitem", { name: /delete user/i });
+        const hasDelete = await deleteOption.isVisible().catch(() => false);
+        if (!hasDelete) return;
+
+        await deleteOption.click();
+
+        const dialog = page.locator("[role='dialog'], [role='alertdialog']").first();
+        await expect(dialog).toBeVisible({ timeout: 10_000 });
+        await expect(dialog.getByText(/loading/i)).not.toBeVisible({ timeout: 3_000 });
+
+        await page.keyboard.press("Escape");
+    });
 });

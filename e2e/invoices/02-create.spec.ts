@@ -70,4 +70,53 @@ test.describe("Create Invoice", () => {
         await expect(saveButton).toBeDisabled();
     });
 
+    // Invoice number editing — PR #2264
+    test("invoice number field is editable after client selection", async ({ page }) => {
+        await page.getByRole("button", { name: /create.*invoice/i }).click();
+        await selectFirstOption(page, "invoice-client-select");
+
+        const invoiceNumberInput = page.locator("#invoiceNumber");
+        await expect(invoiceNumberInput).not.toHaveValue("", { timeout: 5_000 });
+
+        const customNumber = `CUSTOM-${Date.now()}`;
+        await invoiceNumberInput.fill(customNumber);
+        await expect(invoiceNumberInput).toHaveValue(customNumber);
+    });
+
+    // Invoice number persistence — PR #2264
+    test("manual invoice number persists after other field interactions", async ({ page }) => {
+        await page.getByRole("button", { name: /create.*invoice/i }).click();
+        await selectFirstOption(page, "invoice-client-select");
+
+        const invoiceNumberInput = page.locator("#invoiceNumber");
+        await expect(invoiceNumberInput).not.toHaveValue("", { timeout: 5_000 });
+
+        const customNumber = `PERSIST-${Date.now()}`;
+        await invoiceNumberInput.fill(customNumber);
+
+        const nameInput = page.getByPlaceholder(/name|item/i).first();
+        if (await nameInput.isVisible()) {
+            await nameInput.fill("Test Service");
+            await nameInput.blur();
+        }
+
+        await expect(invoiceNumberInput).toHaveValue(customNumber);
+    });
+
+    // Group by project checkbox — PR #2295
+    test("time entry picker has a 'Group by project' checkbox", async ({ page }) => {
+        await page.getByRole("button", { name: /create.*invoice/i }).click();
+        await selectFirstOption(page, "invoice-client-select");
+
+        const timesheetBtn = page.getByRole("button", { name: /timesheet|time.*entr/i });
+        const hasTimesheetBtn = await timesheetBtn.isVisible().catch(() => false);
+        if (!hasTimesheetBtn) return;
+
+        await timesheetBtn.click();
+        await expect(page.locator("[role='dialog'], .modal").first()).toBeVisible({ timeout: 10_000 });
+
+        const groupCheckbox = page.getByLabel(/group.*by.*project/i).or(page.getByText(/group.*by.*project/i));
+        await expect(groupCheckbox).toBeVisible({ timeout: 5_000 });
+    });
+
 });

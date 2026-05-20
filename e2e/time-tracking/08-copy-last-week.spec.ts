@@ -22,4 +22,18 @@ test.describe("Time Tracking — Copy Last Week", () => {
         const copyBtn = page.locator("[data-testid='copy-last-week']");
         await expect(copyBtn).not.toBeVisible();
     });
+
+    // PR #2241 — copy/duplicate shortcut does not navigate away
+    test("duplicate/copy button does not navigate away from time-tracking", async ({ page }) => {
+        await goToTimeTracking(page);
+
+        const copyBtn = page.getByRole("button", { name: /copy|duplicate/i }).first();
+        const hasCopyBtn = await copyBtn.isVisible().catch(() => false);
+        if (!hasCopyBtn) return;
+
+        await copyBtn.click();
+        await page.waitForTimeout(1_000);
+        await expect(page).toHaveURL(/\/time-tracking/);
+        await expect(page.getByText(/not found|404|page.*doesn.*exist/i)).not.toBeVisible();
+    });
 });

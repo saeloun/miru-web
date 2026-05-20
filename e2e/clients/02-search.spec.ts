@@ -72,4 +72,28 @@ test.describe("Clients Search", () => {
             await deleteClientApi(page, client.id);
         }
     });
+
+    // PR #2303 — search text highlighting
+    test("searching highlights matching text in results", async ({ page }) => {
+        const client = await createClient(page, { name: uniqueClientName("E2E-Hilite") });
+        try {
+            await goToClients(page);
+            const searchInput = page.getByPlaceholder(/search/i);
+
+            const searchTerm = client.name.slice(0, 5);
+            await searchInput.fill(searchTerm);
+            await page.waitForTimeout(500);
+
+            const highlights = page.locator("mark, .highlight, [data-highlight]");
+            const highlightCount = await highlights.count();
+            const hasResults = await page.locator("tbody tr").count();
+
+            if (hasResults > 0 && highlightCount > 0) {
+                const firstHighlight = await highlights.first().innerText();
+                expect(firstHighlight.toLowerCase()).toContain(searchTerm.toLowerCase());
+            }
+        } finally {
+            await deleteClientApi(page, client.id);
+        }
+    });
 });

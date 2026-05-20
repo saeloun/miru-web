@@ -56,4 +56,32 @@ test.describe("Send Invoice", () => {
         });
         await expect(sendButton).toBeEnabled();
     });
+
+    // PR #2259 — send modal should not show translation missing errors
+    test("send modal does not show translation missing errors", async ({ page }) => {
+        const invoice = await createDraftInvoice(page);
+        await goToInvoices(page);
+
+        const row = invoiceRowByNumber(page, invoice.invoiceNumber);
+        const trigger = row.locator('[data-testid^="invoice-actions-trigger-"]');
+        await trigger.click();
+
+        const sendItem = page.locator('[data-testid^="invoice-action-send-"]');
+        await sendItem.click();
+
+        await expect(
+            page.getByRole("heading", { name: /send invoice/i })
+        ).toBeVisible({ timeout: 10_000 });
+
+        // No "translation missing" text should appear
+        await expect(page.locator("text=translation missing")).not.toBeVisible();
+
+        // Subject field should have real content
+        const subjectInput = page.locator('input[name="subject"]');
+        if (await subjectInput.isVisible().catch(() => false)) {
+            const value = await subjectInput.inputValue();
+            expect(value).not.toMatch(/translation.missing/i);
+            expect(value.length).toBeGreaterThan(0);
+        }
+    });
 });

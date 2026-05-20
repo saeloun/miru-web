@@ -49,25 +49,50 @@ test.describe("Edit Client", () => {
                 page.getByRole("heading", { name: /edit client/i }),
             ).toBeVisible({ timeout: 10_000 });
 
-            // Wait for form to load
             const dialog = page.getByRole("dialog");
             const nameInput = dialog.locator("#name");
             await expect(nameInput).toBeVisible({ timeout: 10_000 });
 
-            // Modify the name
             await nameInput.clear();
             await nameInput.fill("CancelledClientName");
 
-            // Close the dialog (click the X button or press Escape)
             await page.keyboard.press("Escape");
 
             await expect(
                 page.getByRole("heading", { name: /edit client/i }),
             ).not.toBeVisible();
 
-            // Original name should still be in the table
             await expect(page.locator("tbody").getByText(client.name)).toBeVisible();
             await expect(page.locator("tbody").getByText("CancelledClientName")).not.toBeVisible();
+        } finally {
+            await deleteClientApi(page, client.id);
+        }
+    });
+
+    // PR #2301 — saving a client shows only one success toast (no duplicates)
+    test("saving a client shows at most one success toast", async ({ page }) => {
+        const client = await createClient(page, { name: uniqueClientName("E2E-Toast") });
+        try {
+            await goToClients(page);
+            await openKebabMenu(page, client.name);
+            await page.getByRole("menuitem", { name: /edit client/i }).click();
+
+            await expect(
+                page.getByRole("heading", { name: /edit client/i }),
+            ).toBeVisible({ timeout: 10_000 });
+
+            const dialog = page.getByRole("dialog");
+            const saveBtn = dialog.getByRole("button", { name: /save|update/i });
+            await expect(saveBtn).toBeVisible({ timeout: 5_000 });
+            await saveBtn.click();
+
+            const toasts = page.locator("[data-sonner-toast]");
+            await expect(toasts.first()).toBeVisible({ timeout: 10_000 });
+            await page.waitForTimeout(1_500);
+
+            const successToasts = page.locator("[data-sonner-toast]").filter({ hasText: /success|updated|saved/i });
+            const toastCount = await successToasts.count();
+            expect(toastCount).toBeLessThanOrEqual(1);
         } finally {
             await deleteClientApi(page, client.id);
         }

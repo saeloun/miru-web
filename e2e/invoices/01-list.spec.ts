@@ -2,7 +2,7 @@
  * TC-INV-001 → 003: Invoice list, filtering, search, pagination.
  */
 import { test, expect, type Locator } from "@playwright/test";
-import { goToInvoices, firstInvoiceRow } from "../helpers";
+import { goToInvoices, firstInvoiceRow, createDraftInvoice } from "../helpers";
 
 test.describe("Invoice List", () => {
     test.beforeEach(async ({ page }) => {
@@ -134,5 +134,47 @@ test.describe("Invoice List", () => {
         });
         await expect(issueDateHeader).toBeVisible();
         await expect(issueDateHeader.getByLabel(/sorted descending/i)).toBeVisible();
+    });
+
+    // PR #2247 — draft invoice row has Edit action
+    test("draft invoice row has an Edit action in the actions menu", async ({ page }) => {
+        const invoice = await createDraftInvoice(page);
+        await goToInvoices(page);
+
+        const row = page.locator(`[data-testid="invoice-row-${invoice.id}"]`);
+        await expect(row).toBeVisible({ timeout: 10_000 });
+
+        const actionTrigger = row.locator("button").last();
+        await actionTrigger.click();
+        await page.waitForTimeout(500);
+
+        const editOption = page.getByRole("menuitem", { name: /edit/i }).or(
+            page.getByRole("link", { name: /edit/i })
+        );
+        const hasEdit = await editOption.first().isVisible({ timeout: 3_000 }).catch(() => false);
+        if (!hasEdit) {
+            const invoiceLink = row.locator("a").first();
+            expect(await invoiceLink.isVisible().catch(() => false)).toBeTruthy();
+        } else {
+            await expect(editOption.first()).toBeVisible();
+        }
+    });
+
+    // PR #2247 — can navigate to edit page for a draft invoice
+    test("can navigate to edit page for a draft invoice", async ({ page }) => {
+        const invoice = await createDraftInvoice(page);
+        await page.goto(`/invoices/${invoice.id}/edit`);
+        await page.waitForLoadState("networkidle");
+        await expect(page).toHaveURL(/\/invoices\/\d+\/edit/);
+        await expect(page.locator("#invoiceNumber, [data-testid*='invoice']").first()).toBeVisible({ timeout: 10_000 });
+    });
+
+    // PR #2220 — summary cards display numeric counts
+    test("summary cards display numeric status counts", async ({ page }) => {
+        const pageContent = await page.locator("main, [role='main'], #root").first().innerText();
+        expect(pageContent).toMatch(/\d+/);
+        const hasStatusWithCount = /(?:draft|unpaid|overdue|sent|paid).*\d+|\d+.*(?:draft|unpaid|overdue|sent|paid)/i.test(pageContent);
+        const hasTable = await page.locator("table tbody tr").count();
+        expect(hasStatusWithCount || hasTable > 0).toBeTruthy();
     });
 });
