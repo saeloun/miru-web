@@ -324,7 +324,7 @@ const ProfileEditor = ({
                         false
                       );
                     }}
-                    label={t("common.language")}
+                    label=""
                     name="locale"
                     options={LANGUAGE_OPTIONS}
                     value={
@@ -359,7 +359,7 @@ const ProfileEditor = ({
                 </label>
                 <CustomReactSelect
                   handleOnChange={handleOnChangeAddrType}
-                  label={i18n.t("profile.addressType")}
+                  label=""
                   name="address_select"
                   options={addressOptions}
                   value={addrType.value ? addrType : addressOptions[0]}

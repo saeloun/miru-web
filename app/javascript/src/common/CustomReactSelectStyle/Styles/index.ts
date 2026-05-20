@@ -38,7 +38,7 @@ export const customStyles = (
       position: "absolute",
       top: isFloating ? "-40%" : "15%",
       transition: "top 0.5s",
-      fontSize: isFloating ? 9 : isDesktopView ? 16 : 14,
+      fontSize: isFloating ? 9 : 14,
       backgroundColor: selectPalette.background,
       color: isFloating ? selectPalette.subtle : selectPalette.muted,
     };
@@ -57,7 +57,7 @@ export const customStyles = (
   singleValue: (base, state) => ({
     ...base,
     fontWeight: 500,
-    fontSize: isDesktopView ? 16 : 14,
+    fontSize: 14,
     color:
       state.isDisabled && !ignoreDisabledFontColor
         ? selectPalette.muted

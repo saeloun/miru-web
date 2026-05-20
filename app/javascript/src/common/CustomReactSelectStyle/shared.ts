@@ -23,13 +23,14 @@ export const getSelectControlStyles = (
 ) => ({
   ...provided,
   backgroundColor: selectPalette.background,
-  minHeight: 48,
+  minHeight: 40,
+  borderRadius: 6,
   padding: "0",
   border: `1px solid ${borderColor}`,
   borderColor,
   boxShadow: isFocused
     ? `0 0 0 2px ${
-        isError ? "hsl(var(--destructive) / 0.24)" : "hsl(var(--ring) / 0.3)"
+        isError ? "hsl(var(--destructive) / 0.24)" : "hsl(var(--ring) / 0.35)"
       }`
     : "0 1px 2px hsl(var(--foreground) / 0.05)",
   transition: "border-color 0.2s ease, box-shadow 0.2s ease",

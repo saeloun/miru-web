@@ -4,6 +4,7 @@
 @import "react-responsive-carousel/lib/styles/carousel.min.css";
 
 @layer base {
+
   /* Inter font is loaded from Google Fonts via HTML head */
   body {
     font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -98,35 +99,62 @@
 
   /* Monochrome theme - Pure black and white for maximum contrast */
   .monochrome {
-    --background: 0 0% 100%; /* Pure white */
-    --foreground: 0 0% 0%; /* Pure black */
-    --card: 0 0% 98%; /* Off-white cards */
-    --card-foreground: 0 0% 0%; /* Pure black text */
-    --popover: 0 0% 100%; /* Pure white */
-    --popover-foreground: 0 0% 0%; /* Pure black text */
-    --primary: 0 0% 0%; /* Pure black primary */
-    --primary-foreground: 0 0% 100%; /* Pure white text */
-    --secondary: 0 0% 95%; /* Light gray secondary */
-    --secondary-foreground: 0 0% 0%; /* Pure black text */
-    --muted: 0 0% 90%; /* Light gray muted */
-    --muted-foreground: 0 0% 40%; /* Dark gray text */
-    --accent: 0 0% 0%; /* Pure black accent */
-    --accent-foreground: 0 0% 100%; /* Pure white text */
-    --destructive: 0 0% 20%; /* Dark gray destructive */
-    --destructive-foreground: 0 0% 100%; /* Pure white text */
-    --border: 0 0% 85%; /* Light gray border */
-    --input: 0 0% 95%; /* Light gray input */
-    --ring: 0 0% 0%; /* Pure black focus ring */
+    --background: 0 0% 100%;
+    /* Pure white */
+    --foreground: 0 0% 0%;
+    /* Pure black */
+    --card: 0 0% 98%;
+    /* Off-white cards */
+    --card-foreground: 0 0% 0%;
+    /* Pure black text */
+    --popover: 0 0% 100%;
+    /* Pure white */
+    --popover-foreground: 0 0% 0%;
+    /* Pure black text */
+    --primary: 0 0% 0%;
+    /* Pure black primary */
+    --primary-foreground: 0 0% 100%;
+    /* Pure white text */
+    --secondary: 0 0% 95%;
+    /* Light gray secondary */
+    --secondary-foreground: 0 0% 0%;
+    /* Pure black text */
+    --muted: 0 0% 90%;
+    /* Light gray muted */
+    --muted-foreground: 0 0% 40%;
+    /* Dark gray text */
+    --accent: 0 0% 0%;
+    /* Pure black accent */
+    --accent-foreground: 0 0% 100%;
+    /* Pure white text */
+    --destructive: 0 0% 20%;
+    /* Dark gray destructive */
+    --destructive-foreground: 0 0% 100%;
+    /* Pure white text */
+    --border: 0 0% 85%;
+    /* Light gray border */
+    --input: 0 0% 95%;
+    /* Light gray input */
+    --ring: 0 0% 0%;
+    /* Pure black focus ring */
 
     /* Sidebar specific variables for monochrome theme */
-    --sidebar: 0 0% 95%; /* Light gray sidebar */
-    --sidebar-foreground: 0 0% 0%; /* Pure black text */
-    --sidebar-primary: 0 0% 0%; /* Pure black primary */
-    --sidebar-primary-foreground: 0 0% 100%; /* Pure white text */
-    --sidebar-accent: 0 0% 85%; /* Light gray accent */
-    --sidebar-accent-foreground: 0 0% 0%; /* Pure black text */
-    --sidebar-border: 0 0% 80%; /* Gray border */
-    --sidebar-ring: 0 0% 0%; /* Pure black focus ring */
+    --sidebar: 0 0% 95%;
+    /* Light gray sidebar */
+    --sidebar-foreground: 0 0% 0%;
+    /* Pure black text */
+    --sidebar-primary: 0 0% 0%;
+    /* Pure black primary */
+    --sidebar-primary-foreground: 0 0% 100%;
+    /* Pure white text */
+    --sidebar-accent: 0 0% 85%;
+    /* Light gray accent */
+    --sidebar-accent-foreground: 0 0% 0%;
+    /* Pure black text */
+    --sidebar-border: 0 0% 80%;
+    /* Gray border */
+    --sidebar-ring: 0 0% 0%;
+    /* Pure black focus ring */
   }
 
   .field_with_errors {
@@ -143,7 +171,7 @@
     @apply border-border;
     transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
   }
-  
+
   body {
     @apply bg-background text-foreground font-sans antialiased;
     font-feature-settings: "rlig" 1, "calt" 1;
@@ -157,49 +185,60 @@
   .text-gray-900 {
     color: hsl(var(--foreground)) !important;
   }
+
   .text-gray-800,
   .text-gray-700 {
     color: hsl(var(--foreground)) !important;
     opacity: 0.92;
   }
+
   .text-gray-600,
   .text-gray-500 {
     color: hsl(var(--muted-foreground)) !important;
   }
+
   .text-gray-400,
   .text-gray-300 {
     color: hsl(var(--muted-foreground)) !important;
     opacity: 0.78;
   }
+
   .bg-gray-50 {
     background-color: hsl(var(--muted) / 0.5) !important;
   }
+
   .bg-gray-100 {
     background-color: hsl(var(--muted) / 0.75) !important;
   }
+
   .bg-gray-200 {
     background-color: hsl(var(--muted)) !important;
   }
+
   .border-gray-100,
   .border-gray-200,
   .border-gray-300 {
     border-color: hsl(var(--border)) !important;
   }
+
   .hover\:bg-gray-50:hover {
     background-color: hsl(var(--accent)) !important;
   }
+
   .hover\:bg-gray-100:hover {
     background-color: hsl(var(--accent)) !important;
   }
+
   .hover\:text-gray-900:hover {
     color: hsl(var(--foreground)) !important;
   }
+
   .hover\:text-gray-700:hover,
   .hover\:text-gray-600:hover {
     color: hsl(var(--foreground)) !important;
     opacity: 0.9;
   }
-  
+
   /* Maintain Manrope for specific elements that need it */
   .font-manrope {
     font-family: "Manrope", serif !important;
@@ -275,12 +314,15 @@
     user-select: none;
     @apply fixed right-0 bottom-0 top-0 w-80 bg-white;
   }
+
   .sidebar__footer {
     @apply flex h-full items-end justify-center p-6;
   }
+
   .sidebar__reset {
     @apply focus:outline-none mr-2 w-6/12 items-center rounded border-2 border-primary bg-transparent bg-transparent py-1 px-4 text-base text-base font-medium tracking-widest text-primary shadow-sm hover:text-primary;
   }
+
   .sidebar__apply {
     @apply focus:outline-none w-6/12 items-center rounded border-2 border-primary bg-transparent bg-primary py-1 px-4 text-base text-base font-medium tracking-widest text-white shadow-sm hover:border-primary;
   }
@@ -288,6 +330,7 @@
   .button-icon__back {
     @apply mr-4 h-8 p-1;
   }
+
   .button-icon__back:hover {
     background-color: rgba(205, 214, 223, 0.2);
     @apply rounded;
@@ -297,14 +340,17 @@
     &__button {
       @apply rounded p-2;
     }
+
     &__button:hover {
       background-color: rgba(205, 214, 223, 0.2);
       @apply rounded;
     }
+
     &__wrapper {
       box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.1);
       @apply absolute right-0 w-64 rounded-xl bg-white py-5;
     }
+
     &__list-item {
       @apply block flex w-full items-center px-5 py-1.5 text-sm text-primary hover:bg-muted;
     }
@@ -314,22 +360,28 @@
     &__title {
       @apply text-xl font-extrabold leading-7 text-gray-900 lg:text-3xl;
     }
+
     &__searchWrap {
       @apply flex items-center;
     }
+
     &__searchInnerWrapper {
       @apply relative mt-1 rounded-md shadow-sm md:ml-5;
+
       input {
         @apply bg-muted text-tiny font-medium;
+
         width: 224px;
         padding: 7px 6px;
       }
+
       @media screen and (min-width: 500px) {
         input {
           width: 324px;
           padding: 7px 6px;
         }
       }
+
       @media screen and (min-width: 1200px) {
         input {
           width: 424px;
@@ -337,9 +389,11 @@
         }
       }
     }
+
     &__searchInput {
-      @apply focus:outline-none block h-8 w-24 appearance-none rounded border border-gray-100 bg-muted px-3  py-2 text-xs font-semibold tracking-wider text-foreground shadow-sm focus:border-border focus:ring-ring sm:w-40 sm:text-sm md:w-64 lg:w-96;
+      @apply focus:outline-none block h-8 w-24 appearance-none rounded border border-gray-100 bg-muted px-3 py-2 text-xs font-semibold tracking-wider text-foreground shadow-sm focus:border-border focus:ring-ring sm:w-40 sm:text-sm md:w-64 lg:w-96;
     }
+
     &__button {
       @apply focus:outline-none ml-2 flex inline-flex h-10 cursor-pointer items-center justify-center rounded border border-primary bg-transparent bg-transparent px-3 py-3 font-sans text-xs font-medium tracking-widest text-primary shadow-sm hover:border-primary hover:text-primary sm:px-1 lg:border-2 lg:py-1 lg:px-4 lg:text-base;
     }
@@ -349,12 +403,15 @@
     &__wrap {
       @apply flex w-full items-stretch border-t border-border pt-5 text-foreground sm:flex-row;
     }
+
     &__box {
       @apply flex flex-col items-start justify-start border-r border-primary pl-2 pr-6 md:px-10;
     }
+
     &__box:last-child {
       @apply border-r-0 border-b-0 pb-0;
     }
+
     &__box:nth-last-child(2) {
       @apply border-b-0 pb-0;
     }
@@ -364,49 +421,63 @@
     &__outer-wrapper {
       @apply mx-auto font-manrope lg:max-w-3xl xl:max-w-7xl;
     }
+
     &__middle-wrapper {
       @apply px-3 sm:px-6 md:px-10 lg:px-0 xl:px-22;
     }
+
     &__inner-wrapper {
       @apply xl:px-2;
     }
   }
 
   .form {
+
     &__textarea,
     &__select {
       @apply block w-full rounded-md border border-input bg-background px-3 py-2 text-sm font-medium tracking-wider text-foreground shadow-sm transition-colors focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/30;
     }
+
     &__input_submit {
       @apply focus:outline-none flex h-10 w-full cursor-pointer justify-center rounded border border-transparent bg-primary py-1 px-4 font-sans text-base font-medium tracking-widest text-primary-foreground shadow-sm hover:opacity-90;
     }
+
     &__input {
       @apply block h-8 w-full rounded-md border border-input bg-background px-3 py-2 text-sm font-medium tracking-wider text-foreground shadow-sm transition-colors focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/30;
     }
+
     &__label {
       @apply block text-xs font-normal tracking-wider text-foreground;
     }
+
     &__title {
       @apply text-base font-extrabold tracking-normal text-foreground;
     }
+
     &__button {
       @apply focus:outline-none flex inline-flex h-10 w-full cursor-pointer items-center justify-center rounded border border-transparent bg-primary py-1 px-4 text-base font-bold tracking-widest text-primary-foreground shadow-sm hover:opacity-90;
     }
+
     &__button_outline {
       @apply focus:outline-none ml-2 flex inline-flex h-10 w-full cursor-pointer items-center justify-center rounded border-2 border-primary bg-transparent bg-transparent py-1 px-4 text-base font-semibold tracking-widest text-primary shadow-sm hover:border-primary hover:text-primary;
     }
+
     &__error {
       @apply block text-xs font-semibold tracking-wider text-red-600;
     }
+
     &__link {
       @apply font-bold tracking-wider text-primary hover:text-primary;
     }
+
     &__save {
       @apply focus:outline-none ml-2 flex inline-flex h-10 w-full cursor-pointer items-center justify-center rounded border border-transparent bg-primary py-1 px-4 text-base font-semibold tracking-widest text-primary-foreground shadow-sm hover:opacity-90;
     }
+
     &__cancel {
       @apply focus:outline-none ml-2 flex inline-flex h-10 w-full cursor-pointer items-center justify-center rounded border-2 border-primary bg-transparent py-1 px-4 text-base font-semibold tracking-widest text-primary shadow-sm hover:border-primary;
     }
+
     &__radio {
       @apply h-4 w-4 border-primary text-foreground focus:ring-ring;
     }
@@ -414,9 +485,11 @@
 
   .button {
     @apply focus:outline-none h-10 w-48 rounded text-base font-bold tracking-widest;
+
     &__bg_transparent {
       @apply button border border-primary bg-transparent text-primary hover:text-primary;
     }
+
     &__bg_purple {
       @apply button bg-primary text-primary-foreground hover:opacity-90;
     }
@@ -426,6 +499,7 @@
     &__icon {
       @apply h-4 w-4 cursor-pointer text-primary;
     }
+
     &__position {
       @apply absolute inset-y-0 right-0 flex items-center pr-3 text-sm leading-5;
     }
@@ -435,33 +509,43 @@
     &__position {
       @apply mt-6 px-1 sm:flex sm:items-center sm:justify-between sm:px-0;
     }
+
     &__title-width {
       @apply w-full sm:w-1/5;
     }
+
     &__title {
       @apply py-1 text-3xl font-bold leading-7 text-gray-900 sm:text-4xl;
     }
+
     &__search-width {
       @apply mt-6 w-full sm:mt-0 sm:w-3/5;
     }
+
     &__search {
       @apply sm:pr-6 md:pr-10 lg:pr-6 xl:pr-48 xxl:pr-56;
     }
+
     &__search-input {
       @apply focus:outline-none block h-8 w-full rounded border border-gray-100 bg-muted px-3 py-2 pr-10 text-xs font-semibold text-foreground shadow-sm focus:border-border focus:ring-ring sm:text-sm;
     }
+
     &__search-image {
       @apply absolute inset-y-0 right-0 my-2 flex h-4 cursor-pointer items-center pr-3;
     }
+
     &__new-user-width {
       @apply mt-6 w-full sm:mt-0 sm:w-1/4;
     }
+
     &__new-user-position {
       @apply md:ml-3 lg:ml-5 xl:ml-22;
     }
+
     &__new-user-button {
       @apply focus:outline-none flex inline-flex h-10 w-full cursor-pointer items-center justify-center rounded border-2 border-primary bg-transparent bg-transparent py-1 text-base font-semibold tracking-widest text-primary shadow-sm hover:border-primary hover:text-primary sm:ml-2 md:px-4;
     }
+
     &__button-image {
       @apply -ml-0.5 mr-2 h-4 w-4;
     }
@@ -471,48 +555,63 @@
     &__flex {
       @apply flex flex-col;
     }
+
     &__position-one {
       @apply -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8;
     }
+
     &__position-two {
       @apply inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8;
     }
+
     &__border {
       @apply overflow-hidden border-b-2 border-border;
     }
+
     &__width {
       @apply mt-4 min-w-full divide-y divide-gray-200;
     }
+
     &__header {
       @apply p-5 text-left text-xs font-normal tracking-widest text-muted-foreground;
     }
+
     &__cell {
       @apply p-4 text-left text-xs font-normal tracking-normal text-foreground;
     }
+
     &__body {
       @apply divide-y divide-gray-200 bg-white;
     }
+
     &__data {
       @apply whitespace-nowrap px-3 py-3;
     }
+
     &__button {
       @apply h-6 rounded hover:bg-secondary hover:bg-opacity-20;
     }
+
     &__button-design {
       @apply text-right text-sm font-medium;
     }
+
     &__pending {
       @apply inline-flex rounded-full bg-accent px-2 text-xs font-semibold leading-5 tracking-widest text-primary;
     }
+
     &__text {
       @apply text-xs font-normal text-foreground;
     }
+
     &__name {
       @apply text-base font-normal text-foreground;
     }
+
     &__avatar {
       @apply h-6 w-6 rounded-full;
     }
+
     &__import_header {
       @apply w-1/2 px-2 py-1 text-left text-xs font-normal tracking-widest text-muted-foreground;
     }
@@ -522,27 +621,35 @@
     &__modal {
       @apply fixed inset-0 z-50 flex w-full items-center justify-center overflow-hidden px-5;
     }
+
     &__container {
       @apply z-50 mx-auto w-full max-w-md overflow-y-auto rounded-xl bg-white shadow-lg;
     }
+
     &__container__import__modal {
       @apply z-50 mx-auto w-full max-w-400 overflow-y-auto rounded-xl bg-white shadow-lg;
     }
+
     &__content {
       @apply py-4 px-3 text-left;
     }
+
     &__position {
       @apply mx-3 flex items-center justify-between;
     }
+
     &__title {
       @apply text-base font-extrabold;
     }
+
     &__close {
       @apply z-50 cursor-pointer;
     }
+
     &__button {
       @apply rounded p-2 hover:bg-secondary hover:bg-opacity-20;
     }
+
     &__form {
       @apply mx-3 mb-3 flex justify-center;
     }
@@ -550,16 +657,19 @@
 }
 
 .custom {
-  &__checkbox:checked + div {
+  &__checkbox:checked+div {
     @apply border-primary;
   }
-  &__checkbox:checked + div .custom__checkbox-tick {
+
+  &__checkbox:checked+div .custom__checkbox-tick {
     @apply block;
   }
-  &__checkbox:indeterminate + div .custom__checkbox-dash {
+
+  &__checkbox:indeterminate+div .custom__checkbox-dash {
     @apply block;
   }
-  &__radio:checked + label i {
+
+  &__radio:checked+label i {
     @apply bg-primary;
     box-shadow: 0px 0px 0px 2px white inset;
   }
@@ -569,6 +679,7 @@
   &__subheading {
     @apply flex w-full items-center justify-between px-5;
   }
+
   &__subheading-text {
     @apply text-xs tracking-widest text-foreground;
   }
@@ -578,13 +689,16 @@
   &___control {
     height: 32px;
   }
+
   &__placeholder {
     font-size: 14px;
     color: #a5a3ad;
   }
+
   &__dropdown-indicator {
     padding: 4px !important;
   }
+
   &__multi-value {
     font-size: 12px;
     background-color: #e1e6ec;
@@ -593,9 +707,11 @@
     align-items: center;
     justify-content: center;
   }
+
   &__option {
     font-size: 12px;
   }
+
   &__value-container {
     padding-top: 0 !important;
     padding-bottom: 0 !important;
@@ -614,6 +730,7 @@
   &__th {
     @apply py-5 text-left text-xs font-normal tracking-widest text-muted-foreground;
   }
+
   &__tr {
     @apply py-6 text-xs text-foreground;
   }
@@ -640,6 +757,7 @@
 
 .hoverIcon:hover {
   background-color: #f5f7f9;
+
   .iconWrapper {
     @apply visible;
   }
@@ -654,7 +772,7 @@
   box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.1);
 }
 
-.hoverButton:hover + span {
+.hoverButton:hover+span {
   @apply visible;
 }
 
@@ -681,7 +799,7 @@
     opacity: 0;
   }
 
-  & + div {
+  &+div {
     vertical-align: middle;
     width: 40px;
     height: 20px;
@@ -694,22 +812,22 @@
     cursor: pointer;
   }
 
-  &:checked + div {
+  &:checked+div {
     width: 48px;
     background-position: 0 0;
     background-color: #e1e6ec;
   }
 
-  & + div {
+  &+div {
     width: 48px;
     height: 24px;
   }
 
-  &:checked + div {
+  &:checked+div {
     background-color: #5b34ea;
   }
 
-  & + div > div {
+  &+div>div {
     float: left;
     width: 16px;
     height: 16px;
@@ -726,13 +844,13 @@
     margin-left: 3px;
   }
 
-  &:checked + div > div {
+  &:checked+div>div {
     -webkit-transform: translate3d(20px, 0, 0);
     transform: translate3d(20px, 0, 0);
     background-color: #ffffff;
   }
 
-  &:checked + div > div {
+  &:checked+div>div {
     -webkit-transform: translate3d(25px, 0, 0);
     transform: translate3d(25px, 0, 0);
   }
@@ -752,16 +870,14 @@
   border-radius: 16px;
   transition: opacity 0.3s ease;
   background-size: 30px 30px;
-  background-image: linear-gradient(
-    135deg,
-    #5b34ea 25%,
-    #9d85f2 25%,
-    #9d85f2 50%,
-    #5b34ea 50%,
-    #5b34ea 75%,
-    #9d85f2 75%,
-    #9d85f2
-  );
+  background-image: linear-gradient(135deg,
+      #5b34ea 25%,
+      #9d85f2 25%,
+      #9d85f2 50%,
+      #5b34ea 50%,
+      #5b34ea 75%,
+      #9d85f2 75%,
+      #9d85f2);
   animation: barberpole 1.5s linear infinite;
 }
 
@@ -769,6 +885,7 @@
   from {
     background-position: 0 0;
   }
+
   to {
     background-position: 60px 30px;
   }
@@ -788,17 +905,17 @@
   -webkit-box-orient: vertical;
 }
 
-.outline input:focus-within ~ label,
-.outline input:not(:placeholder-shown) ~ label {
+.outline input:focus-within~label,
+.outline input:not(:placeholder-shown)~label {
   @apply top-2 z-0 ml-3 -translate-y-4 scale-75 transform px-1 py-0 text-xs text-muted-foreground;
 }
 
-.outline input:focus-within ~ label.p-0,
-.outline input:not(:placeholder-shown) ~ label.p-0 {
+.outline input:focus-within~label.p-0,
+.outline input:not(:placeholder-shown)~label.p-0 {
   padding: 0 !important;
 }
 
-.outline input.error-input ~ label {
+.outline input.error-input~label {
   color: #e04646 !important;
 }
 
@@ -812,15 +929,24 @@
   color: #fff;
 }
 
-.tootlip-project{
+.tootlip-project {
   border-radius: 4px;
   transform: translateX(-50%);
 }
 
 .input-phone-number input:focus {
   outline: none !important;
-  border-color: hsl(var(--ring)) !important;
-  box-shadow: 0 0 0 2px hsl(var(--ring) / 0.3) !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.input-phone-number .PhoneInputCountry {
+  margin-right: 0.5rem;
+}
+
+.input-phone-number .PhoneInputCountryIcon {
+  width: 1.25em;
+  height: 1.25em;
 }
 
 .input-phone-number .PhoneInputInput {
@@ -831,6 +957,7 @@
   padding: 0;
   margin: 0;
   color: inherit;
+  font-size: 0.875rem;
 }
 
 .phone-input-clean,
@@ -867,6 +994,7 @@
 .phone-input-modern .PhoneInputCountry {
   margin-right: 0.5rem;
 }
+
 .phone-input-clean .PhoneInputCountrySelect,
 .phone-input-modern .PhoneInputCountrySelect {
   border: 1px solid hsl(var(--input));
@@ -879,6 +1007,7 @@
     box-shadow 0.2s ease,
     background-color 0.2s ease;
 }
+
 .phone-input-clean .PhoneInputCountrySelect:focus,
 .phone-input-modern .PhoneInputCountrySelect:focus {
   outline: none;
@@ -942,13 +1071,11 @@ input[type="number"] {
   box-shadow: 0 14px 40px hsl(var(--foreground) / 0.12);
 }
 
-:is(.miru-datepicker-wrapper .react-datepicker, .react-datepicker.miru-datepicker)
-  .react-datepicker__triangle {
+:is(.miru-datepicker-wrapper .react-datepicker, .react-datepicker.miru-datepicker) .react-datepicker__triangle {
   display: none;
 }
 
-:is(.miru-datepicker-wrapper .react-datepicker, .react-datepicker.miru-datepicker)
-  .react-datepicker__header {
+:is(.miru-datepicker-wrapper .react-datepicker, .react-datepicker.miru-datepicker) .react-datepicker__header {
   background: hsl(var(--muted) / 0.45);
   border-bottom: 1px solid hsl(var(--border));
   border-top-left-radius: 0.875rem;
@@ -956,31 +1083,26 @@ input[type="number"] {
   padding-top: 0.5rem;
 }
 
-:is(.miru-datepicker-wrapper .react-datepicker, .react-datepicker.miru-datepicker)
-  .react-datepicker__current-month {
+:is(.miru-datepicker-wrapper .react-datepicker, .react-datepicker.miru-datepicker) .react-datepicker__current-month {
   color: hsl(var(--foreground));
   font-size: 0.875rem;
   font-weight: 600;
 }
 
-:is(.miru-datepicker-wrapper .react-datepicker, .react-datepicker.miru-datepicker)
-  .react-datepicker__month {
+:is(.miru-datepicker-wrapper .react-datepicker, .react-datepicker.miru-datepicker) .react-datepicker__month {
   margin: 0.45rem auto 0.75rem;
   width: fit-content;
 }
 
-:is(.miru-datepicker-wrapper .react-datepicker, .react-datepicker.miru-datepicker)
-  .react-datepicker__day-names,
-:is(.miru-datepicker-wrapper .react-datepicker, .react-datepicker.miru-datepicker)
-  .react-datepicker__week {
+:is(.miru-datepicker-wrapper .react-datepicker, .react-datepicker.miru-datepicker) .react-datepicker__day-names,
+:is(.miru-datepicker-wrapper .react-datepicker, .react-datepicker.miru-datepicker) .react-datepicker__week {
   display: grid;
   grid-template-columns: repeat(7, 2.35rem);
   justify-content: center;
   gap: 0.2rem;
 }
 
-:is(.miru-datepicker-wrapper .react-datepicker, .react-datepicker.miru-datepicker)
-  .react-datepicker__day-name {
+:is(.miru-datepicker-wrapper .react-datepicker, .react-datepicker.miru-datepicker) .react-datepicker__day-name {
   width: 100%;
   height: 2.1rem;
   margin: 0;
@@ -993,8 +1115,7 @@ input[type="number"] {
   letter-spacing: 0.015em;
 }
 
-:is(.miru-datepicker-wrapper .react-datepicker, .react-datepicker.miru-datepicker)
-  .react-datepicker__day {
+:is(.miru-datepicker-wrapper .react-datepicker, .react-datepicker.miru-datepicker) .react-datepicker__day {
   width: 100%;
   height: 2.2rem;
   margin: 0;
@@ -1006,49 +1127,40 @@ input[type="number"] {
   transition: background-color 120ms ease, color 120ms ease;
 }
 
-:is(.miru-datepicker-wrapper .react-datepicker, .react-datepicker.miru-datepicker)
-  .react-datepicker__day:hover {
+:is(.miru-datepicker-wrapper .react-datepicker, .react-datepicker.miru-datepicker) .react-datepicker__day:hover {
   background: hsl(var(--accent));
   color: hsl(var(--accent-foreground));
 }
 
-:is(.miru-datepicker-wrapper .react-datepicker, .react-datepicker.miru-datepicker)
-  .react-datepicker__day--today {
+:is(.miru-datepicker-wrapper .react-datepicker, .react-datepicker.miru-datepicker) .react-datepicker__day--today {
   background: hsl(var(--accent) / 0.85);
   font-weight: 700;
 }
 
-:is(.miru-datepicker-wrapper .react-datepicker, .react-datepicker.miru-datepicker)
-  .react-datepicker__day--keyboard-selected {
+:is(.miru-datepicker-wrapper .react-datepicker, .react-datepicker.miru-datepicker) .react-datepicker__day--keyboard-selected {
   background: hsl(var(--primary) / 0.15);
   color: hsl(var(--foreground));
 }
 
-:is(.miru-datepicker-wrapper .react-datepicker, .react-datepicker.miru-datepicker)
-  .react-datepicker__day--selected,
-:is(.miru-datepicker-wrapper .react-datepicker, .react-datepicker.miru-datepicker)
-  .react-datepicker__day--in-selecting-range,
-:is(.miru-datepicker-wrapper .react-datepicker, .react-datepicker.miru-datepicker)
-  .react-datepicker__day--in-range {
+:is(.miru-datepicker-wrapper .react-datepicker, .react-datepicker.miru-datepicker) .react-datepicker__day--selected,
+:is(.miru-datepicker-wrapper .react-datepicker, .react-datepicker.miru-datepicker) .react-datepicker__day--in-selecting-range,
+:is(.miru-datepicker-wrapper .react-datepicker, .react-datepicker.miru-datepicker) .react-datepicker__day--in-range {
   background: hsl(var(--primary));
   color: hsl(var(--primary-foreground));
 }
 
-:is(.miru-datepicker-wrapper .react-datepicker, .react-datepicker.miru-datepicker)
-  .react-datepicker__day--outside-month {
+:is(.miru-datepicker-wrapper .react-datepicker, .react-datepicker.miru-datepicker) .react-datepicker__day--outside-month {
   color: hsl(var(--muted-foreground));
   opacity: 0.6;
 }
 
-:is(.miru-datepicker-wrapper .react-datepicker, .react-datepicker.miru-datepicker)
-  .react-datepicker__day--disabled {
+:is(.miru-datepicker-wrapper .react-datepicker, .react-datepicker.miru-datepicker) .react-datepicker__day--disabled {
   color: hsl(var(--muted-foreground));
   opacity: 0.45;
   cursor: not-allowed;
 }
 
-:is(.miru-datepicker-wrapper .react-datepicker, .react-datepicker.miru-datepicker)
-  .react-datepicker__day--disabled:hover {
+:is(.miru-datepicker-wrapper .react-datepicker, .react-datepicker.miru-datepicker) .react-datepicker__day--disabled:hover {
   background: transparent;
 }
 
@@ -1060,7 +1172,7 @@ input[type="number"] {
   padding: 0.3rem 0.25rem 0.2rem;
 }
 
-.headerWrapper > div {
+.headerWrapper>div {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
