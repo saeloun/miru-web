@@ -29,6 +29,10 @@ RSpec.describe "Api::V1::Users::Sessions#create", type: :request do
       }
       expect(response).to have_http_status(:ok)
       expect(json_response["notice"]).to eq(I18n.t("devise.sessions.signed_in"))
+      expect(json_response.dig("user", "token")).to be_nil
+      set_cookie_header = Array(response.headers["Set-Cookie"]).join("\n")
+      expect(set_cookie_header).to include("_miru_web_session")
+      expect(set_cookie_header).to match(/expires=/i)
     end
 
     it "persists the requested locale on sign in" do
@@ -280,7 +284,7 @@ RSpec.describe "Api::V1::Users::Sessions#create", type: :request do
       expect(response).to have_http_status(:ok)
       expect(json_response["notice"]).to eq(I18n.t("devise.sessions.signed_in"))
       expect(json_response.dig("user", "email")).to eq(user.email)
-      expect(json_response.dig("user", "token")).to be_present
+      expect(json_response.dig("user", "token")).to be_nil
     end
   end
 

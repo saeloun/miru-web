@@ -12,7 +12,6 @@ interface MainProps {
   user?: {
     current_workspace_id?: string;
     email?: string;
-    token?: string;
   };
   companyRole?: string;
   company?: object;
@@ -39,7 +38,11 @@ const Main: React.FC<MainProps> = props => {
   // Save last visited page for unauthenticated users
   useEffect(() => {
     if (!isLoggedIn && user) {
-      Cookies.set("lastVisitedPage", location.pathname, { expires: 7 });
+      Cookies.set("lastVisitedPage", location.pathname, {
+        expires: 7,
+        sameSite: "lax",
+        secure: window.location.protocol === "https:",
+      });
     }
   }, [isLoggedIn, user, location.pathname]);
 
@@ -50,7 +53,7 @@ const Main: React.FC<MainProps> = props => {
       authDispatch({
         type: "LOGIN",
         payload: {
-          token: user.token || null,
+          token: null,
           email: user.email,
         },
       });

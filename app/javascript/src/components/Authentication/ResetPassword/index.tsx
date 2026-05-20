@@ -8,7 +8,6 @@ import MiruLogoWatermark from "common/MiruLogoWatermark";
 import useThemeMode from "common/useThemeMode";
 import { Formik, Form, FormikProps } from "formik";
 import { MiruLogoWithTextSVG } from "miruIcons";
-import { setToLocalStorage } from "utils/storage";
 
 import { i18n } from "../../../i18n";
 import {
@@ -35,8 +34,6 @@ const ResetPassword = () => {
     try {
       const res = await authenticationApi.resetPassword(payload);
       if (res.status === 200) {
-        setToLocalStorage("authToken", res.data.user.token);
-        setToLocalStorage("authEmail", res.data.user.email);
         setTimeout(() => {
           window.location.assign(`${window.location.origin}`);
         }, 500);

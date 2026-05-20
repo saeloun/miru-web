@@ -31,7 +31,7 @@ class Api::V1::Users::OtpsController < Api::V1::ApplicationController
       result.user,
       company: result.company,
       notice: I18n.t("devise.sessions.signed_in"),
-      include_token: true
+      include_token: false
     ), status: 200
   rescue MobileOtp::ChallengeToken::InvalidTokenError, KeyError
     render json: { error: "OTP expired or invalid. Request a new code." }, status: 422

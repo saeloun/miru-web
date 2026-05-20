@@ -47,19 +47,17 @@ const SignInForm = () => {
     "";
 
   const completeLogin = ({ company, company_role, user, security_warning }) => {
-    if (!user?.token) {
-      throw new Error("No authentication token received");
-    }
+    const { token: _token, ...safeUser } = user || {};
 
     authDispatch({
       type: "LOGIN",
       payload: {
-        token: user.token,
-        email: user.email,
+        token: null,
+        email: safeUser.email,
       },
     });
 
-    localStorage.setItem("user", JSON.stringify(user));
+    localStorage.setItem("user", JSON.stringify(safeUser));
     localStorage.setItem("company_role", company_role || "");
     if (company) {
       localStorage.setItem("company", JSON.stringify(company));

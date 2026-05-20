@@ -2,10 +2,7 @@ import axios from "axios";
 import { Toastr } from "StyledComponents";
 import { getActiveLocale } from "../i18n";
 
-import {
-  clearCredentialsFromLocalStorage,
-  getValueFromLocalStorage,
-} from "utils/storage";
+import { clearCredentialsFromLocalStorage } from "utils/storage";
 import {
   getCsrfToken,
   getSessionRequestHeaders,
@@ -178,10 +175,7 @@ class ApiHandler {
   }
 
   handleUnauthorizedSession(error: any) {
-    const token = getValueFromLocalStorage("authToken");
-    if (token) {
-      clearCredentialsFromLocalStorage();
-    }
+    clearCredentialsFromLocalStorage();
 
     reportClientError("api-401-invalid-session", error, {
       reason: "confirmed-unauthorized",

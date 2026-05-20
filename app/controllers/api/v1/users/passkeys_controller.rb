@@ -86,7 +86,7 @@ class Api::V1::Users::PasskeysController < Api::V1::ApplicationController
       user,
       company: current_company,
       notice: I18n.t("devise.sessions.signed_in"),
-      include_token: true
+      include_token: false
     ), status: 200
   end
 

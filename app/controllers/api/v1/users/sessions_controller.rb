@@ -35,13 +35,14 @@ class Api::V1::Users::SessionsController < Devise::SessionsController
   def destroy
     sign_out(current_user)
     reset_session
+    response.headers["Clear-Site-Data"] = "\"storage\""
     render json: { notice: I18n.t("devise.sessions.signed_out"), reset_session: true }, status: 200
   end
 
   def me
     if current_user
       render json: {
-        user: auth_user_payload(current_user, include_token: true).merge(
+        user: auth_user_payload(current_user).merge(
           "date_of_birth" => current_user.date_of_birth,
           "phone" => current_user.phone,
           "personal_email_id" => current_user.personal_email_id,
@@ -118,7 +119,7 @@ class Api::V1::Users::SessionsController < Devise::SessionsController
           user,
           company: current_company,
           notice: I18n.t("devise.sessions.signed_in"),
-          include_token: true
+          include_token: false
         )
       ), status: 200
     end
