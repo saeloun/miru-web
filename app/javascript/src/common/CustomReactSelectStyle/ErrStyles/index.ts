@@ -37,7 +37,7 @@ export const customErrStyles = isDesktopView => ({
   singleValue: base => ({
     ...base,
     fontWeight: 500,
-    fontSize: isDesktopView ? 16 : 14,
+    fontSize: 14,
     color: selectPalette.text,
   }),
 });

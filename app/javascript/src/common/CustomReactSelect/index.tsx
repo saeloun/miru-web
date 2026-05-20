@@ -91,7 +91,7 @@ export const CustomReactSelect = ({
 
   return (
     <div
-      className={`outline relative ${wrapperClassName}`}
+      className={`outline-none relative ${wrapperClassName}`}
       onClick={handleOnClick}
     >
       <Select
