@@ -123,7 +123,7 @@ const FloatingTimer: React.FC<FloatingTimerProps> = ({
     queryKey: ["projects"],
     queryFn: async () => {
       try {
-        const projectsResponse = await axios.get("/api/v1/projects");
+        const projectsResponse = await axios.get("/projects");
         const projects = projectsResponse.data.projects || [];
         const clients = projectsResponse.data.clients || [];
 
