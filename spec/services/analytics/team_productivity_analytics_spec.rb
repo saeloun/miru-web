@@ -100,5 +100,19 @@ RSpec.describe Analytics::TeamProductivityAnalytics do
       expect(result[:summary][:team_size]).to eq(1)
       expect(result[:members].pluck(:user_id)).to eq([first_user.id])
     end
+
+    it "excludes users whose only company role is client" do
+      client_portal_user = create(:user, current_workspace: company)
+      create(:employment, company:, user: client_portal_user, joined_at: Date.new(2026, 1, 1), resigned_at: nil)
+      client_portal_user.add_role(:client, company)
+
+      result = described_class.new(company:, from: period_start, to: period_end).process
+
+      expect(result[:members].pluck(:user_id)).not_to include(client_portal_user.id)
+      expect(result[:summary]).to include(
+        team_size: 2,
+        utilization_rate: 7.5
+      )
+    end
   end
 end

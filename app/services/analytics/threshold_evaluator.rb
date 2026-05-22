@@ -5,10 +5,11 @@ module Analytics
     LOW_UTILIZATION_THRESHOLD = 60.0
     REVENUE_DROP_FACTOR = 0.7
 
-    def initialize(company:, from: 29.days.ago.to_date, to: Date.current)
+    def initialize(company:, from: nil, to: nil)
+      default_period = previous_completed_week
       @company = company
-      @from = from.to_date
-      @to = to.to_date
+      @from = (from || default_period.begin).to_date
+      @to = (to || default_period.end).to_date
     end
 
     def process
@@ -27,6 +28,7 @@ module Analytics
 
       def low_utilization?
         return false if team_summary[:team_size].to_i.zero?
+        return false if team_summary[:total_hours].to_f.zero?
 
         team_summary[:utilization_rate].to_f < LOW_UTILIZATION_THRESHOLD
       end
@@ -47,9 +49,11 @@ module Analytics
         {
           type: "low_utilization",
           title: "Low utilization detected",
-          message: "Team utilization is below 60% for the selected period.",
+          message: "Team utilization is below 60% for the previous completed week.",
           metadata: {
             utilization_rate: team_summary[:utilization_rate],
+            total_hours: team_summary[:total_hours],
+            billable_hours: team_summary[:billable_hours],
             team_size: team_summary[:team_size],
             from: from.iso8601,
             to: to.iso8601
@@ -107,6 +111,12 @@ module Analytics
           from: from,
           to: to
         )
+      end
+
+      def previous_completed_week
+        previous_week_start = Date.current.prev_week.beginning_of_week
+
+        previous_week_start..previous_week_start.end_of_week
       end
   end
 end

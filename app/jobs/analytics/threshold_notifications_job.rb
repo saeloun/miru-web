@@ -3,7 +3,7 @@
 class Analytics::ThresholdNotificationsJob < ApplicationJob
   queue_as :default
 
-  NOTIFICATION_TTL = 12.hours
+  NOTIFICATION_TTL = 1.week
 
   def perform(company_ids = nil)
     companies_scope(company_ids).find_each do |company|
@@ -42,7 +42,7 @@ class Analytics::ThresholdNotificationsJob < ApplicationJob
     def claim_notification!(company_id, alert_type)
       AnalyticsThresholdNotificationLog
         .where(company_id: company_id, alert_type: alert_type)
-        .where("notified_at < ?", NOTIFICATION_TTL.ago)
+        .where("notified_at <= ?", NOTIFICATION_TTL.ago)
         .delete_all
 
       AnalyticsThresholdNotificationLog.create!(
