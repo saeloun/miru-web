@@ -40,6 +40,20 @@ RSpec.describe "Solid Queue schedule" do
     )
   end
 
+  it "runs analytics threshold notifications weekly on Monday at 1 AM Eastern" do
+    default_task = config.dig("default", "dispatchers", 0, "recurring_tasks", "analytics_threshold_notifications")
+    production_task = config.dig("production", "dispatchers", 0, "recurring_tasks", "analytics_threshold_notifications")
+
+    expect(default_task).to include(
+      "class" => "Analytics::ThresholdNotificationsJob",
+      "schedule" => "0 1 * * 1 America/New_York"
+    )
+    expect(production_task).to include(
+      "class" => "Analytics::ThresholdNotificationsJob",
+      "schedule" => "0 1 * * 1 America/New_York"
+    )
+  end
+
   it "runs database backups every 30 minutes in production by default" do
     production_task = config.dig("production", "dispatchers", 0, "recurring_tasks", "database_backup")
 
