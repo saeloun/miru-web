@@ -1,6 +1,6 @@
-import React, { createContext, useReducer, Dispatch } from "react";
+import React, { createContext, useEffect, useReducer, Dispatch } from "react";
 
-import { getValueFromLocalStorage } from "utils/storage";
+import { clearCredentialsFromLocalStorage } from "utils/storage";
 
 import authReducer, { AuthAction, AuthState } from "../reducers/auth";
 
@@ -9,17 +9,18 @@ const AuthDispatchContext = createContext<Dispatch<AuthAction> | undefined>(
   undefined
 );
 
-const token = getValueFromLocalStorage("authToken");
-const email = getValueFromLocalStorage("authEmail");
-
 const initialState: AuthState = {
-  isLoggedIn: !!token,
-  authToken: token || null,
-  authEmail: email || null,
+  isLoggedIn: false,
+  authToken: null,
+  authEmail: null,
 };
 
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [state, dispatch] = useReducer(authReducer, initialState);
+
+  useEffect(() => {
+    clearCredentialsFromLocalStorage();
+  }, []);
 
   return (
     <AuthStateContext.Provider value={state}>

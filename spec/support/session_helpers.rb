@@ -74,82 +74,9 @@ module SessionHelpers
       const payload = arguments[0];
       window.localStorage.clear();
       window.sessionStorage.clear();
-      window.localStorage.setItem("authToken", payload.user.token);
-      window.localStorage.setItem("authEmail", payload.user.email);
       window.localStorage.setItem("user", JSON.stringify(payload.user));
       window.localStorage.setItem("company_role", payload.company_role || "");
       window.localStorage.setItem("company", JSON.stringify(payload.company));
-
-      if (window.__miruSystemAuthPatched && window.__miruSystemAuthRestore) {
-        window.__miruSystemAuthRestore();
-      }
-
-      if (!window.__miruSystemAuthPatched) {
-        const authHeaders = () => {
-          const token = window.localStorage.getItem("authToken");
-          const email = window.localStorage.getItem("authEmail");
-          const csrfToken =
-            document.querySelector('meta[name="csrf-token"]')?.getAttribute("content");
-
-          return {
-            ...(token && email
-              ? { "X-Auth-Token": token, "X-Auth-Email": email }
-              : {}),
-            ...(csrfToken ? { "X-CSRF-TOKEN": csrfToken } : {}),
-          };
-        };
-
-        const shouldAttachHeaders = input => {
-          try {
-            const url =
-              typeof input === "string" ? new URL(input, window.location.origin) : new URL(input.url, window.location.origin);
-
-            return url.origin === window.location.origin;
-          } catch (_error) {
-            return true;
-          }
-        };
-
-        const originalFetch = window.fetch.bind(window);
-        window.fetch = (input, init = {}) => {
-          if (!shouldAttachHeaders(input)) return originalFetch(input, init);
-
-          const headers = new Headers(init.headers || {});
-          Object.entries(authHeaders()).forEach(([key, value]) => {
-            headers.set(key, value);
-          });
-
-          return originalFetch(input, { ...init, headers });
-        };
-
-        const originalOpen = XMLHttpRequest.prototype.open;
-        const originalSend = XMLHttpRequest.prototype.send;
-
-        XMLHttpRequest.prototype.open = function (...args) {
-          this.__miruRequestUrl = args[1];
-          return originalOpen.apply(this, args);
-        };
-
-        XMLHttpRequest.prototype.send = function (...args) {
-          if (shouldAttachHeaders(this.__miruRequestUrl)) {
-            Object.entries(authHeaders()).forEach(([key, value]) => {
-              this.setRequestHeader(key, value);
-            });
-          }
-
-          return originalSend.apply(this, args);
-        };
-
-        window.__miruSystemAuthRestore = () => {
-          window.fetch = originalFetch;
-          XMLHttpRequest.prototype.open = originalOpen;
-          XMLHttpRequest.prototype.send = originalSend;
-          delete window.__miruSystemAuthRestore;
-          window.__miruSystemAuthPatched = false;
-        };
-
-        window.__miruSystemAuthPatched = true;
-      }
     JS
   end
 
@@ -159,9 +86,8 @@ module SessionHelpers
 
   def ensure_authenticated_session!
     page.execute_script(<<~JS)
-      if (window.__miruSystemAuthPatched && typeof window.fetch === "function") {
-        return;
-      }
+      window.localStorage.removeItem("authToken");
+      window.localStorage.removeItem("authEmail");
     JS
   end
 

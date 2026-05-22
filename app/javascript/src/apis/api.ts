@@ -2,10 +2,13 @@ import axios from "axios";
 import { Toastr } from "StyledComponents";
 import { getActiveLocale } from "../i18n";
 
+import { clearCredentialsFromLocalStorage } from "utils/storage";
 import {
-  clearCredentialsFromLocalStorage,
-  getValueFromLocalStorage,
-} from "utils/storage";
+  getCsrfToken,
+  getSessionRequestHeaders,
+  getStoredAuthHeaders,
+  shouldAttachStoredAuthHeaders,
+} from "utils/authHeaders";
 import { reportClientError } from "utils/runtimeRecovery";
 
 const AUTH_PATH_PREFIXES = [
@@ -108,10 +111,19 @@ class ApiHandler {
 
     this.axios.interceptors.request.use(
       async (config: any) => {
+        config.headers ||= {};
+
         if (config?.data instanceof FormData) {
           delete config.headers["Content-Type"];
         }
 
+        if (shouldAttachStoredAuthHeaders(config.url)) {
+          Object.entries(getStoredAuthHeaders()).forEach(([key, value]) => {
+            config.headers[key] = value;
+          });
+        }
+
+        config.headers["X-CSRF-TOKEN"] = this.getCsrfToken();
         config.headers["X-Miru-Locale"] = getActiveLocale();
 
         return config;
@@ -121,10 +133,7 @@ class ApiHandler {
   }
 
   getCsrfToken() {
-    return (
-      document.querySelector('[name="csrf-token"]')?.getAttribute("content") ||
-      ""
-    );
+    return getCsrfToken();
   }
 
   isAuthPage() {
@@ -152,11 +161,7 @@ class ApiHandler {
     if (!this.sessionValidationPromise) {
       this.sessionValidationPromise = fetch("/api/v1/users/_me", {
         method: "GET",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          "X-CSRF-TOKEN": this.getCsrfToken(),
-        },
+        headers: getSessionRequestHeaders(),
         credentials: "include",
       })
         .then(response => !response.ok)
@@ -170,10 +175,7 @@ class ApiHandler {
   }
 
   handleUnauthorizedSession(error: any) {
-    const token = getValueFromLocalStorage("authToken");
-    if (token) {
-      clearCredentialsFromLocalStorage();
-    }
+    clearCredentialsFromLocalStorage();
 
     reportClientError("api-401-invalid-session", error, {
       reason: "confirmed-unauthorized",

@@ -37,6 +37,10 @@ class Api::V1::Cli::CapabilitiesController < Api::V1::Cli::BaseController
           description: "List invoices visible to the authenticated user"
         },
         {
+          name: "invoice create",
+          description: "Create a draft invoice with one or more line items"
+        },
+        {
           name: "invoice show",
           description: "Show a single invoice"
         },

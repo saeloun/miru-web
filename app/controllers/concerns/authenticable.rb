@@ -22,7 +22,7 @@ module Authenticable
       user = user_email && User.find_by(email: user_email)
 
       if user && auth_token && Devise.secure_compare(user.token, auth_token)
-        sign_in user, store: false
+        sign_in user, store: false, skip_session_limitable: true
       else
         render json: { error: I18n.t("devise.failure.unauthenticated") }, status: 401
       end
@@ -35,7 +35,7 @@ module Authenticable
       return false unless session
 
       @current_cli_session = session
-      sign_in session.user, store: false
+      sign_in session.user, store: false, skip_session_limitable: true
       true
     end
 
@@ -46,7 +46,7 @@ module Authenticable
       user = warden.authenticate(scope: :user)
       return false unless user
 
-      sign_in user, store: false
+      sign_in user, store: false, skip_session_limitable: true
       true
     rescue StandardError
       false

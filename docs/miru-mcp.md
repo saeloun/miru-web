@@ -202,6 +202,7 @@ Miru MCP currently supports the same major billing/time primitives as Miru CLI:
 | `miru.time.update` | write | `miru time update` |
 | `miru.time.delete` | write | `miru time delete` |
 | `miru.invoice.list` | read | `miru invoice list` |
+| `miru.invoice.create` | write | `miru invoice create` |
 | `miru.invoice.show` | read | `miru invoice show` |
 | `miru.invoice.send` | write | `miru invoice send` |
 | `miru.payment.list` | read | `miru payment list` |

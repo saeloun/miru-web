@@ -29,6 +29,7 @@ import { Separator } from "../../../../ui/separator";
 import PasskeysPanel from "./PasskeysPanel";
 import TotpPanel from "./TotpPanel";
 import LocaleSelector from "../../../../../common/LocaleSelector";
+import { getSessionRequestHeaders } from "utils/authHeaders";
 
 const ProfileEditor = ({
   avatarSection,
@@ -642,17 +643,9 @@ const ProfileEditor = ({
                 showLabel
                 onLocaleChange={async newLocale => {
                   try {
-                    const csrfToken =
-                      document
-                        .querySelector('[name="csrf-token"]')
-                        ?.getAttribute("content") || "";
-
                     await fetch("/api/v1/profile", {
                       method: "PATCH",
-                      headers: {
-                        "Content-Type": "application/json",
-                        "X-CSRF-TOKEN": csrfToken,
-                      },
+                      headers: getSessionRequestHeaders(),
                       credentials: "include",
                       body: JSON.stringify({ user: { locale: newLocale } }),
                     });

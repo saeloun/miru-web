@@ -7,6 +7,8 @@
 - UPI payment settings with free Miru-branded QR generation for INR invoices, including public invoice and PDF invoice display
 - Razorpay webhook handling for cancelled and expired Payment Links, plus `payout.updated` status refreshes
 - Razorpay onboarding docs with exact Payment Links and RazorpayX webhook setup steps
+- Miru CLI `invoice create` and matching MCP `miru.invoice.create` support for draft invoice creation from terminal or agent workflows
+- Miru CLI installs and upgrades now resolve the latest tagged CLI release instead of the moving `main` branch
 - Falcon server support and a parallel system-spec runner with schema-aware database prep skipping
 - CRUD-focused system coverage for invoice editing and time-tracking flows
 

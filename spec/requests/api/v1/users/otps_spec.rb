@@ -24,7 +24,7 @@ RSpec.describe "Api::V1::Users::Otps", type: :request do
     }
 
     expect(response).to have_http_status(:ok)
-    expect(json_response.dig("user", "token")).to eq(user.reload.token)
+    expect(json_response.dig("user", "token")).to be_nil
     expect(json_response["company_role"]).to eq("admin")
     expect(json_response.dig("company", "id")).to eq(company.id)
   end

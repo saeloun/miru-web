@@ -1,4 +1,5 @@
 import { useQuery, useInfiniteQuery } from "@tanstack/react-query";
+import { getSessionRequestHeaders } from "utils/authHeaders";
 
 interface DashboardStats {
   total_revenue: number;
@@ -40,13 +41,7 @@ const fetchDashboardData = async (
 
   try {
     const response = await fetch(`/api/v1/dashboard?timeframe=${timeframe}`, {
-      headers: {
-        "Content-Type": "application/json",
-        "X-CSRF-TOKEN":
-          document
-            .querySelector('[name="csrf-token"]')
-            ?.getAttribute("content") || "",
-      },
+      headers: getSessionRequestHeaders(),
       credentials: "include",
       signal: controller.signal,
     });
@@ -106,13 +101,7 @@ const fetchActivities = async ({
     const response = await fetch(
       `/api/v1/dashboard/activities?offset=${pageParam}&per_page=10`,
       {
-        headers: {
-          "Content-Type": "application/json",
-          "X-CSRF-TOKEN":
-            document
-              .querySelector('[name="csrf-token"]')
-              ?.getAttribute("content") || "",
-        },
+        headers: getSessionRequestHeaders(),
         credentials: "include",
         signal: controller.signal,
       }

@@ -7,18 +7,20 @@ export interface AuthState {
 }
 
 export type AuthAction =
-  | { type: "LOGIN"; payload: { token: string; email: string } }
+  | { type: "LOGIN"; payload: { token?: string | null; email: string } }
   | { type: "LOGOUT" };
 
 const authReducer = (state: AuthState, action: AuthAction): AuthState => {
   switch (action.type) {
     case "LOGIN": {
-      setToLocalStorage("authToken", action.payload.token);
-      setToLocalStorage("authEmail", action.payload.email);
+      const authToken = action.payload.token || null;
+
+      setToLocalStorage("authToken", null);
+      setToLocalStorage("authEmail", null);
 
       return {
         isLoggedIn: true,
-        authToken: action.payload.token,
+        authToken,
         authEmail: action.payload.email,
       };
     }

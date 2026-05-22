@@ -13,6 +13,7 @@ module MCP
         MCP::Miru::Tools::TimeUpdateTool,
         MCP::Miru::Tools::TimeDeleteTool,
         MCP::Miru::Tools::InvoiceListTool,
+        MCP::Miru::Tools::InvoiceCreateTool,
         MCP::Miru::Tools::InvoiceShowTool,
         MCP::Miru::Tools::InvoiceSendTool,
         MCP::Miru::Tools::PaymentListTool,

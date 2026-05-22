@@ -9,7 +9,7 @@ fi
 GOBIN_DIR="${HOME}/.local/bin"
 mkdir -p "${GOBIN_DIR}"
 
-mise exec go@1.24.1 -- env GOBIN="${GOBIN_DIR}" go install github.com/saeloun/miru-web/tools/miru-cli/cmd/miru@main
+mise exec go@1.24.1 -- env GOBIN="${GOBIN_DIR}" go install github.com/saeloun/miru-web/tools/miru-cli/cmd/miru@latest
 
 cat <<EOF
 Miru CLI installed to ${GOBIN_DIR}/miru
