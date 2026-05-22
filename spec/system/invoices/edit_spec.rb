@@ -116,6 +116,54 @@ RSpec.describe "Invoice editing", type: :system, js: true do
     end
   end
 
+  it "removes an unchecked configured tax while editing a draft invoice" do
+    cgst = create(:tax_configuration, company:, name: "CGST", calculation_method: "percentage", value: 9)
+    sgst = create(:tax_configuration, company:, name: "SGST", calculation_method: "percentage", value: 9)
+    invoice = create(:invoice,
+      company:,
+      client:,
+      invoice_number: "INV-EDIT-TAX-001",
+      tax: 180,
+      amount: 1180,
+      amount_due: 1180)
+    create(:invoice_line_item,
+      invoice:,
+      timesheet_entry: nil,
+      name: "Taxable item",
+      description: "Configured tax edit",
+      rate: 100,
+      quantity: 600)
+    create(:invoice_tax, invoice:, tax_configuration: cgst)
+    sgst_invoice_tax = create(:invoice_tax, invoice:, tax_configuration: sgst)
+
+    with_forgery_protection do
+      visit_invoice_editor(invoice)
+
+      find("label", text: "SGST", wait: 10).click
+      save_invoice
+
+      expect(last_invoice_mutation_response).to include(
+        "method" => "PATCH",
+        "status" => 200,
+        "ok" => true
+      ), -> { last_invoice_mutation_response.inspect }
+      expect(page).to have_text("Invoice updated successfully", wait: 10)
+
+      payload_taxes =
+        parsed_last_invoice_mutation_request_body
+          .dig("invoice", "invoice_taxes_attributes")
+      removed_tax_payload = payload_taxes.find { |tax| tax["id"].to_s == sgst_invoice_tax.id.to_s }
+
+      expect(removed_tax_payload).to include("_destroy" => true)
+
+      invoice.reload
+      expect(invoice.invoice_taxes.pluck(:name)).to eq(["CGST"])
+      expect(invoice.tax.to_f).to eq(90.0)
+      expect(invoice.amount.to_f).to eq(1090.0)
+      expect(invoice.amount_due.to_f).to eq(1090.0)
+    end
+  end
+
   it "updates an existing line item and adds one new line item without duplicating either" do
     invoice = create(:invoice,
       company:,

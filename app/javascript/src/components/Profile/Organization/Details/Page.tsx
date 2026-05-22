@@ -18,6 +18,7 @@ import { useNavigate } from "react-router-dom";
 import { Skeleton } from "../../../ui/skeleton";
 import worldCountries from "world-countries";
 import { i18n } from "../../../../i18n";
+import InvoiceSignature from "../InvoiceSignature";
 
 interface OrganizationDetails {
   id: string | null;
@@ -417,6 +418,9 @@ const OrganizationSettingsPage: React.FC<OrganizationSettingsPageProps> = ({
                 )}
               </CardContent>
             </Card>
+
+            {/* Invoice Signature Card */}
+            <InvoiceSignature />
           </div>
         )}
       </div>

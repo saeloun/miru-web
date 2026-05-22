@@ -189,6 +189,113 @@ RSpec.describe "Api::V1::Invoices#update", type: :request do
     expect(json_response["amountDue"].to_f).to eq(240.0)
   end
 
+  it "recalculates configured taxes while the invoice is a draft" do
+    tax_configuration = create(:tax_configuration, company:, name: "GST", calculation_method: "percentage", value: 10)
+    line_item = create(:invoice_line_item,
+      invoice:,
+      timesheet_entry: nil,
+      name: "Taxable item",
+      description: "Original line item",
+      rate: 100,
+      quantity: 60)
+    create(:invoice_tax, invoice:, tax_configuration:, name: "GST", calculation_method: "percentage", value: 10, amount: 10)
+
+    send_request :patch, api_v1_invoice_path(invoice), params: {
+      invoice: {
+        client_id: client.id,
+        invoice_number: "INV-UP-001",
+        issue_date: invoice.issue_date.iso8601,
+        due_date: invoice.due_date.iso8601,
+        status: "draft",
+        currency: company.base_currency,
+        invoice_taxes_attributes: [
+          {
+            id: invoice.invoice_taxes.first.id,
+            tax_configuration_id: tax_configuration.id,
+            name: "GST",
+            calculation_method: "percentage",
+            value: 10
+          }
+        ],
+        invoice_line_items_attributes: [
+          {
+            id: line_item.id,
+            name: "Taxable item",
+            description: "Original line item",
+            date: line_item.date.iso8601,
+            rate: 200,
+            quantity: 120
+          }
+        ]
+      }
+    }, headers: auth_headers(user)
+
+    expect(response).to have_http_status(:ok)
+
+    invoice.reload
+    expect(invoice.tax.to_f).to eq(40.0)
+    expect(invoice.amount.to_f).to eq(440.0)
+    expect(invoice.invoice_taxes.first.amount.to_f).to eq(40.0)
+  end
+
+  it "preserves configured tax snapshots once the invoice is sent" do
+    tax_configuration = create(:tax_configuration, company:, name: "GST", calculation_method: "percentage", value: 10)
+    sent_invoice = create(:invoice, company:, client:, status: :sent, invoice_number: "INV-SENT-TAX-001")
+    line_item = create(:invoice_line_item,
+      invoice: sent_invoice,
+      timesheet_entry: nil,
+      name: "Sent item",
+      description: "Frozen tax line item",
+      rate: 100,
+      quantity: 60)
+    invoice_tax = create(:invoice_tax,
+      invoice: sent_invoice,
+      tax_configuration:,
+      name: "GST",
+      calculation_method: "percentage",
+      value: 10,
+      amount: 10)
+    sent_invoice.update_columns(tax: 10, amount: 110, amount_due: 110, outstanding_amount: 110)
+
+    send_request :patch, api_v1_invoice_path(sent_invoice), params: {
+      invoice: {
+        client_id: client.id,
+        invoice_number: "INV-SENT-TAX-001",
+        issue_date: sent_invoice.issue_date.iso8601,
+        due_date: sent_invoice.due_date.iso8601,
+        status: "sent",
+        currency: company.base_currency,
+        invoice_taxes_attributes: [
+          {
+            id: invoice_tax.id,
+            tax_configuration_id: tax_configuration.id,
+            name: "GST",
+            calculation_method: "percentage",
+            value: 10,
+            amount: 10
+          }
+        ],
+        invoice_line_items_attributes: [
+          {
+            id: line_item.id,
+            name: "Sent item",
+            description: "Frozen tax line item",
+            date: line_item.date.iso8601,
+            rate: 200,
+            quantity: 120
+          }
+        ]
+      }
+    }, headers: auth_headers(user)
+
+    expect(response).to have_http_status(:ok)
+
+    sent_invoice.reload
+    expect(sent_invoice.invoice_taxes.first.amount.to_f).to eq(10.0)
+    expect(sent_invoice.tax.to_f).to eq(10.0)
+    expect(sent_invoice.amount.to_f).to eq(410.0)
+  end
+
   it "returns company data needed by the editor preview" do
     company.addresses.first.update!(address_line_1: "100 Market St", city: "San Francisco", state: "CA", country: "USA", pin: "94105")
     company.update!(

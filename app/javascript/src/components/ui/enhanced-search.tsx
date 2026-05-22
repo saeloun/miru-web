@@ -73,7 +73,7 @@ export interface UnifiedSearchProps {
   placeholder?: string;
   className?: string;
   onSelect?: (item: SearchItem) => void;
-  renderItem?: (item: SearchItem) => React.ReactNode;
+  renderItem?: (item: SearchItem, searchQuery?: string) => React.ReactNode;
   debounceMs?: number;
   minSearchLength?: number;
   maxResults?: number;
@@ -485,7 +485,7 @@ export const UnifiedSearch = forwardRef<HTMLInputElement, UnifiedSearchProps>(
       if (renderItem) {
         return (
           <div onClick={() => handleSelect(item)} className="cursor-pointer">
-            {renderItem(item)}
+            {renderItem(item, deferredQuery)}
           </div>
         );
       }
@@ -739,7 +739,7 @@ export const UnifiedSearch = forwardRef<HTMLInputElement, UnifiedSearchProps>(
                             onClick={() => handleSelect(item)}
                             className="cursor-pointer"
                           >
-                            {renderItem(item)}
+                            {renderItem(item, deferredQuery)}
                           </div>
                         ) : (
                           <DefaultSearchResultItem

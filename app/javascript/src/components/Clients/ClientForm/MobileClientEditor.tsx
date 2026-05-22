@@ -13,7 +13,7 @@ import { Form, Formik, FormikProps } from "formik";
 import { XIcon } from "miruIcons";
 import PhoneInput from "react-phone-number-input";
 import flags from "react-phone-number-input/flags";
-import { Button, SidePanel, Toastr } from "StyledComponents";
+import { Button, SidePanel } from "StyledComponents";
 import worldCountries from "world-countries";
 
 import { clientSchema, getInitialvalues } from "./formValidationSchema";
@@ -24,9 +24,12 @@ import {
   getMissingRequiredClientFields,
   getRequiredClientFieldLabels,
 } from "./utils";
+import type { ClientFormValues as FormValues } from "./types";
 
 import { currencyListOptions } from "../../OrganizationSetup/FinancialDetailsForm/utils";
 import { i18n } from "../../../i18n";
+import { Switch } from "../../ui/switch";
+import { useUserContext } from "../../../context/UserContext";
 
 const MobileClientEditor = ({
   client,
@@ -48,6 +51,7 @@ const MobileClientEditor = ({
 }: MobileClientEditorProps) => {
   const [fileUploadError, setFileUploadError] = useState<string>("");
   const [countries, setCountries] = useState([]);
+  const { isAdminUser } = useUserContext();
 
   const assignCountries = async allCountries => {
     const countryData = await allCountries.map(country => ({
@@ -78,7 +82,6 @@ const MobileClientEditor = ({
         const res = await clientApi.create(formData);
         setClientData([...clientData, { ...res.data, minutes: 0 }]);
         setnewClient(false);
-        Toastr.success(i18n.t("clients.clientAddedSuccessfully"));
       } catch {
         setSubmitting(false);
       }
@@ -171,6 +174,21 @@ const MobileClientEditor = ({
                     <InputErrors
                       fieldErrors={errors.email}
                       fieldTouched={touched.email}
+                    />
+                  </div>
+                </div>
+                <div className="mt-4">
+                  <div className="field relative">
+                    <InputField
+                      resetErrorOnChange
+                      id="ein"
+                      label={i18n.t("organization.ein")}
+                      name="ein"
+                      setFieldValue={setFieldValue}
+                    />
+                    <InputErrors
+                      fieldErrors={errors.ein}
+                      fieldTouched={touched.ein}
                     />
                   </div>
                 </div>
@@ -361,6 +379,31 @@ const MobileClientEditor = ({
                     </Select>
                   </div>
                 </div>
+                {/* Signature Toggle - only shown for edit mode and admin/owner users */}
+                {formType === "edit" && isAdminUser && (
+                  <div className="mt-4 flex items-center justify-between rounded-lg border p-4">
+                    <div className="space-y-0.5">
+                      <label
+                        className="text-sm font-medium"
+                        htmlFor="signatureEnabled"
+                      >
+                        {i18n.t("clients.includeSignatureOnInvoices")}
+                      </label>
+                      <p className="text-xs text-muted-foreground">
+                        {i18n.t(
+                          "clients.includeSignatureOnInvoicesDescription"
+                        )}
+                      </p>
+                    </div>
+                    <Switch
+                      id="signatureEnabled"
+                      checked={values.signatureEnabled}
+                      onCheckedChange={checked =>
+                        setFieldValue("signatureEnabled", checked)
+                      }
+                    />
+                  </div>
+                )}
                 <div className="actions mt-auto">
                   <p className="mb-2 text-xs text-muted-foreground">
                     * Required: Name, Address Line 1, Country, State, City,
@@ -426,20 +469,6 @@ interface MobileClientEditorProps {
   handleEdit?: any;
   setShowDialog: any;
   fetchDetails?: any;
-}
-
-interface FormValues {
-  name: string;
-  email: string;
-  phone: string;
-  address1: string;
-  address2: string;
-  country: any;
-  state: any;
-  city: any;
-  zipcode: string;
-  currency: any;
-  logo: any;
 }
 
 export default MobileClientEditor;

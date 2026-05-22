@@ -3,9 +3,11 @@
 class InvoiceLineItem < ApplicationRecord
   belongs_to :invoice
   belongs_to :timesheet_entry, optional: true
+  has_many :invoice_line_item_time_entries, dependent: :destroy
+  has_many :linked_timesheet_entries, through: :invoice_line_item_time_entries, source: :timesheet_entry
 
   before_update :capture_previous_invoice_id, if: :will_save_change_to_invoice_id?
-  before_destroy :unlock_timesheet_entry
+  before_destroy :unlock_timesheet_entries
   after_save :sync_invoice_totals
   after_destroy :sync_invoice_totals
 
@@ -13,6 +15,7 @@ class InvoiceLineItem < ApplicationRecord
   validates :rate, numericality: { greater_than_or_equal_to: 0 }
   validates :quantity, numericality: { greater_than_or_equal_to: 0 }
   validate :timesheet_entry_belongs_to_invoice_company
+  validate :linked_timesheet_entries_belong_to_invoice_company
 
   def self.total_cost_of_all_line_items
     (self.sum("quantity * rate") / 60.0).round(3)
@@ -57,10 +60,23 @@ class InvoiceLineItem < ApplicationRecord
       errors.add(:timesheet_entry, "must belong to the same company")
     end
 
-    def unlock_timesheet_entry
-      if invoice.draft? && timesheet_entry.present?
-        timesheet_entry.update!(locked: false)
-      end
+    def linked_timesheet_entries_belong_to_invoice_company
+      return if invoice.blank? || linked_timesheet_entries.blank?
+
+      invalid_entry = linked_timesheet_entries.find { |entry| entry.company&.id != invoice.company_id }
+      return unless invalid_entry
+
+      errors.add(:linked_timesheet_entries, "must belong to the same company")
+    end
+
+    def unlock_timesheet_entries
+      return unless invoice.draft?
+
+      TimesheetEntry.where(id: associated_timesheet_entry_ids).update!(locked: false)
+    end
+
+    def associated_timesheet_entry_ids
+      ([timesheet_entry_id] + linked_timesheet_entry_ids).compact.uniq
     end
 
     def capture_previous_invoice_id

@@ -335,6 +335,9 @@ const en = {
     invoiceSelected: "%{count} invoice selected",
     invoicesSelected: "%{count} invoices selected",
     noProjectsAddedYet: "No project has been added to this client yet.",
+    includeSignatureOnInvoices: "Include signature on invoices",
+    includeSignatureOnInvoicesDescription:
+      "When enabled, the company signature will appear on invoices for this client.",
   },
 
   // Contacts
@@ -439,6 +442,19 @@ const en = {
     deleteInvite: "Delete Invite",
     deleteUserConfirm:
       "Are you sure you want to delete user %{name}? This action cannot be reversed.",
+    deleteImpact: {
+      warningTitle: "Warning: This member has active work in this workspace.",
+      assignedProjects: {
+        one: "Assigned to %{count} project%{projectNames}",
+        other: "Assigned to %{count} projects%{projectNames}",
+      },
+      unbilledHours: {
+        one: "%{hours} unbilled hours across %{count} entry (estimated value: $%{amount})",
+        other:
+          "%{hours} unbilled hours across %{count} entries (estimated value: $%{amount})",
+      },
+      noBilledEntries: "No billed entries found for this member.",
+    },
     admin: "Admin",
     employee: "Employee",
     bookkeeper: "Bookkeeper",
@@ -519,6 +535,7 @@ const en = {
     taxDiscountNotes: "Tax, discount, and notes",
     discount: "Discount",
     tax: "Tax",
+    taxConfigurations: "Tax configurations",
     additionalNotesPlaceholder: "Additional notes or payment instructions",
     enterName: "Enter name",
     enterNameTooltip: "Enter the name for this line item",
@@ -529,6 +546,7 @@ const en = {
     rate: "Rate",
     quantity: "Quantity",
     selectTimeEntries: "Select Time Entries",
+    groupByProject: "Group by project",
     entriesSelected: "%{count} entries selected",
     resetSelectedEntries: "Reset Selected Entries",
     addEntries: "ADD ENTRIES",
@@ -758,6 +776,9 @@ const en = {
     copyTransactionIds: "Copy transaction IDs",
     transactionIdsCopied: "%{count} transaction ID(s) copied.",
     transactionIdsCopyFailed: "Failed to copy transaction IDs.",
+    downloadSelected: "Download selected",
+    bulkDownloadSuccess: "%{count} payment(s) exported successfully.",
+    bulkDownloadFailed: "Failed to download selected payments.",
     viewInvoice: "View invoice",
     downloadReceipt: "Download receipt",
     withdrawToUpi: "Withdraw to UPI",
@@ -1534,6 +1555,8 @@ const en = {
     removePhoto: "Remove photo",
     uploadPhotoFailed: "Failed to upload profile image.",
     removePhotoFailed: "Failed to remove profile image.",
+    avatarUpdated: "Avatar updated successfully",
+    avatarRemoved: "Avatar deleted successfully",
     adjustProfilePhoto: "Adjust profile photo",
     adjustProfilePhotoDescription:
       "Choose the part of the image you want to keep.",
@@ -2290,6 +2313,7 @@ const en = {
       acceptTerms: "You must accept the terms",
       nameRequired: "Name cannot be blank",
       max30: "Maximum 30 characters are allowed",
+      invalidEin: "EIN must use NN-NNNNNNN format",
       phoneMin2Digits: "Phone number must contain at least 2 digits",
       phoneMax15Digits: "Phone number cannot exceed 15 digits",
       validBusinessPhone: "Please enter a valid business phone number",

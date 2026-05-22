@@ -13,6 +13,7 @@ import {
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
 import { DataTable } from "../ui/data-table";
+import { HighlightedCell } from "../ui/highlight-text";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -192,7 +193,9 @@ const ClientsTable: React.FC = () => {
 
         return (
           <div>
-            <p className="font-medium text-foreground">{client.name}</p>
+            <p className="font-medium text-foreground">
+              <HighlightedCell text={client.name} />
+            </p>
             <p className="text-sm text-muted-foreground">{client.email}</p>
           </div>
         );

@@ -123,6 +123,7 @@ const Header = ({ showSearch, params, setParams }) => {
                   display={params.query !== searchQuery}
                   list={searchResult}
                   status={status}
+                  searchQuery={searchQuery}
                 />
               </div>
             </div>
@@ -165,6 +166,7 @@ const Header = ({ showSearch, params, setParams }) => {
                   display={params.query !== searchQuery}
                   list={searchResult}
                   status={status}
+                  searchQuery={searchQuery}
                 />
               </div>
             </div>

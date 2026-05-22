@@ -29,6 +29,7 @@ RSpec.describe "Api::V1::Clients#update", type: :request do
               id: client.id,
               name: "Test Client",
               email: "updated@example.com",
+              ein: "98-7654321",
               phone: "+14155552671",
               addresses_attributes: [{
                 id: client.current_address.id,
@@ -42,6 +43,7 @@ RSpec.describe "Api::V1::Clients#update", type: :request do
         client.reload
         expect(client.name).to eq("Test Client")
         expect(client.email).to eq("updated@example.com")
+        expect(client.ein).to eq("98-7654321")
         expect(client.current_address.address_line_1).to eq("updated address")
       end
 
@@ -154,6 +156,69 @@ RSpec.describe "Api::V1::Clients#update", type: :request do
           }, headers: auth_headers(user))
         expect(response).to have_http_status(:unprocessable_content)
         expect(json_response["errors"]).to include("Phone is invalid")
+      end
+    end
+  end
+
+  context "when updating signature_enabled" do
+    context "when user is an admin" do
+      before do
+        client
+        create(:employment, company:, user:)
+        user.add_role :admin, company
+        sign_in user
+      end
+
+      it "updates signature_enabled from false to true" do
+        expect(client.signature_enabled).to be(false)
+
+        send_request(
+          :patch, api_v1_client_path(client), params: {
+            client: {
+              id: client.id,
+              signature_enabled: true
+            }
+          }, headers: auth_headers(user))
+
+        expect(response).to have_http_status(:ok)
+        expect(client.reload.signature_enabled).to be(true)
+      end
+
+      it "updates signature_enabled from true to false" do
+        client.update!(signature_enabled: true)
+
+        send_request(
+          :patch, api_v1_client_path(client), params: {
+            client: {
+              id: client.id,
+              signature_enabled: false
+            }
+          }, headers: auth_headers(user))
+
+        expect(response).to have_http_status(:ok)
+        expect(client.reload.signature_enabled).to be(false)
+      end
+    end
+
+    context "when user is an employee" do
+      before do
+        client
+        create(:employment, company:, user:)
+        user.add_role :employee, company
+        sign_in user
+      end
+
+      it "returns HTTP 403 and does not update signature_enabled" do
+        send_request(
+          :patch, api_v1_client_path(client), params: {
+            client: {
+              id: client.id,
+              signature_enabled: true
+            }
+          }, headers: auth_headers(user))
+
+        expect(response).to have_http_status(:forbidden)
+        expect(client.reload.signature_enabled).to be(false)
       end
     end
   end

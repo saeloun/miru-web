@@ -7,3 +7,4 @@ json.date invoice_line_item.date
 json.rate invoice_line_item.rate
 json.quantity invoice_line_item.quantity
 json.timesheet_entry_id invoice_line_item.timesheet_entry_id
+json.linked_timesheet_entry_ids invoice_line_item.linked_timesheet_entry_ids

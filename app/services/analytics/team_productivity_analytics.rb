@@ -144,6 +144,9 @@ module Analytics
           bill_status == TimesheetEntry.bill_statuses["non_billable"]
       end
 
+      # Some older/imported workspaces stored timesheet durations in hours while
+      # the current app stores durations in minutes. Normalize before computing
+      # utilization to avoid false low-utilization alerts.
       def normalize_entry_totals(totals)
         durations = totals.delete(:durations)
         return totals unless durations_recorded_in_hours?(durations:, total: totals[:total_minutes])

@@ -15,7 +15,27 @@ export interface InvoiceItem {
   date?: string;
   work_date?: string;
   timesheet_entry_id?: string;
+  linked_timesheet_entry_ids?: Array<string | number>;
   lineTotal?: number;
+  _destroy?: boolean;
+}
+
+export interface TaxConfiguration {
+  id: string;
+  name: string;
+  calculationMethod: "percentage" | "flat";
+  value: number;
+}
+
+export interface InvoiceTax {
+  id?: string;
+  taxConfigurationId?: string;
+  tax_configuration_id?: string;
+  name: string;
+  calculationMethod?: "percentage" | "flat";
+  calculation_method?: "percentage" | "flat";
+  value: number;
+  amount: number;
   _destroy?: boolean;
 }
 
@@ -25,6 +45,8 @@ export interface Client {
   email: string;
   address: string;
   logo?: string;
+  ein?: string;
+  taxId?: string;
   currency?: string;
   clientCurrency?: string;
   previousInvoiceNumber?: string;
@@ -50,6 +72,7 @@ export interface Invoice {
   baseCurrencyAmount?: number;
   currency: string;
   tax?: number;
+  invoiceTaxes?: InvoiceTax[];
   discount?: number;
   reference?: string;
   amountPaid?: number;
@@ -87,6 +110,7 @@ export interface InvoiceFormData {
   reference?: string;
   invoiceLineItems: InvoiceItem[];
   tax?: number;
+  invoiceTaxes?: InvoiceTax[];
   discount?: number;
   currency: string;
   status:
@@ -396,12 +420,31 @@ class InvoiceApiService {
       email: clientDetail.email,
       address: clientDetail.address || "",
       logo: clientDetail.logo,
+      ein: clientDetail.ein || "",
+      taxId: clientDetail.taxId || clientDetail.tax_id || "",
       currency: clientDetail.currency,
       clientCurrency:
         clientDetail.clientCurrency || clientDetail.client_currency,
       previousInvoiceNumber:
         clientDetail.previousInvoiceNumber ||
         clientDetail.previous_invoice_number,
+    }));
+  }
+
+  async getTaxConfigurations(): Promise<TaxConfiguration[]> {
+    const response = await axios.get(`/tax_configurations`);
+
+    return (
+      response.data.taxConfigurations ||
+      response.data.tax_configurations ||
+      []
+    ).map((taxConfiguration: any) => ({
+      id: String(taxConfiguration.id),
+      name: taxConfiguration.name,
+      calculationMethod:
+        taxConfiguration.calculationMethod ||
+        taxConfiguration.calculation_method,
+      value: parseFloat(taxConfiguration.value || 0),
     }));
   }
 
@@ -425,6 +468,23 @@ class InvoiceApiService {
       discount: invoiceData.discount || 0,
       currency: invoiceData.currency,
       status: invoiceData.status,
+      invoice_taxes_attributes: (invoiceData.invoiceTaxes || []).map(tax => ({
+        id:
+          invoiceData.id &&
+          tax.id &&
+          tax.id !== "new" &&
+          !String(tax.id).startsWith("draft-")
+            ? tax.id
+            : undefined,
+        tax_configuration_id:
+          tax.taxConfigurationId || tax.tax_configuration_id || undefined,
+        name: tax.name,
+        calculation_method:
+          tax.calculationMethod || tax.calculation_method || "percentage",
+        value: tax.value || 0,
+        amount: tax.amount || 0,
+        _destroy: tax._destroy || false,
+      })),
       invoice_line_items_attributes: invoiceData.invoiceLineItems.map(item => ({
         id:
           invoiceData.id &&
@@ -443,6 +503,7 @@ class InvoiceApiService {
           invoiceData.dateFormat
         ),
         timesheet_entry_id: item.timesheet_entry_id,
+        linked_timesheet_entry_ids: item.linked_timesheet_entry_ids || [],
         quantity: item.quantity || 0,
         rate: item.rate || 0,
         amount:
@@ -496,6 +557,8 @@ class InvoiceApiService {
         email: apiInvoice.client?.email || "",
         address: formatAddress(apiInvoice.client?.address),
         logo: apiInvoice.client?.logo,
+        ein: apiInvoice.client?.ein || "",
+        taxId: apiInvoice.client?.taxId || apiInvoice.client?.tax_id || "",
         phone: apiInvoice.client?.phone || "",
         currency:
           apiInvoice.client?.clientCurrency ||
@@ -519,6 +582,21 @@ class InvoiceApiService {
       ),
       currency: apiInvoice.currency,
       tax: parseFloat(apiInvoice.tax || 0),
+      invoiceTaxes: (
+        apiInvoice.invoiceTaxes ||
+        apiInvoice.invoice_taxes ||
+        []
+      ).map((tax: any) => ({
+        id: tax.id ? String(tax.id) : undefined,
+        taxConfigurationId:
+          tax.taxConfigurationId || tax.tax_configuration_id
+            ? String(tax.taxConfigurationId || tax.tax_configuration_id)
+            : undefined,
+        name: tax.name,
+        calculationMethod: tax.calculationMethod || tax.calculation_method,
+        value: parseFloat(tax.value || 0),
+        amount: parseFloat(tax.amount || 0),
+      })),
       discount: parseFloat(apiInvoice.discount || 0),
       reference: apiInvoice.reference,
       amountPaid: parseFloat(
@@ -540,6 +618,8 @@ class InvoiceApiService {
         date: item.date || item.work_date,
         work_date: item.work_date || item.date,
         timesheet_entry_id: item.timesheet_entry_id || item.timesheetEntryId,
+        linked_timesheet_entry_ids:
+          item.linked_timesheet_entry_ids || item.linkedTimesheetEntryIds || [],
         amount:
           item.amount === null ||
           item.amount === undefined ||

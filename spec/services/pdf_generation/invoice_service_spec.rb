@@ -17,7 +17,7 @@ RSpec.describe PdfGeneration::InvoiceService do
       us_taxpayer_id: "987-65-4321"
     )
   end
-  let(:client) { create(:client, company: company) }
+  let(:client) { create(:client, company: company, ein: "98-7654321") }
   let(:invoice) do
     create(:invoice,
       client: client,
@@ -85,6 +85,7 @@ RSpec.describe PdfGeneration::InvoiceService do
         expect(locals[:invoice].company.tax_id).to eq("TAX-123")
         expect(locals[:invoice].company.ein).to eq("12-3456789")
         expect(locals[:invoice].company.us_taxpayer_id).to eq("987-65-4321")
+        expect(locals[:client].ein).to eq("98-7654321")
         expect(locals[:invoice_amount]).to be_present
         expect(locals[:invoice_tax]).to be_present
         expect(locals[:invoice_discount]).to be_present
@@ -159,6 +160,90 @@ RSpec.describe PdfGeneration::InvoiceService do
     end
   end
 
+  describe "signature resolution" do
+    let(:signature_file) { Rails.root.join("spec", "support", "fixtures", "test-image.png") }
+
+    context "when signature_enabled is true and company has signature attached" do
+      before do
+        client.update!(signature_enabled: true)
+        company.invoice_signature.attach(
+          io: File.open(signature_file),
+          filename: "signature.png",
+          content_type: "image/png"
+        )
+      end
+
+      it "includes signature_url in the template locals" do
+        expect_any_instance_of(ActionController::Base).to receive(:render_to_string) do |_, args|
+          locals = args[:locals]
+          expect(locals[:signature_url]).to be_present
+          expect(locals[:signature_url]).to be_a(String)
+          expect(locals[:signature_url]).to start_with(root_url)
+
+          "<html><body>Invoice</body></html>"
+        end
+
+        service.process
+      end
+    end
+
+    context "when signature_enabled is true but company has no signature attached" do
+      before do
+        client.update!(signature_enabled: true)
+      end
+
+      it "returns nil for signature_url in the template locals" do
+        expect_any_instance_of(ActionController::Base).to receive(:render_to_string) do |_, args|
+          locals = args[:locals]
+          expect(locals[:signature_url]).to be_nil
+
+          "<html><body>Invoice</body></html>"
+        end
+
+        service.process
+      end
+    end
+
+    context "when signature_enabled is false and company has signature attached" do
+      before do
+        client.update!(signature_enabled: false)
+        company.invoice_signature.attach(
+          io: File.open(signature_file),
+          filename: "signature.png",
+          content_type: "image/png"
+        )
+      end
+
+      it "returns nil for signature_url in the template locals" do
+        expect_any_instance_of(ActionController::Base).to receive(:render_to_string) do |_, args|
+          locals = args[:locals]
+          expect(locals[:signature_url]).to be_nil
+
+          "<html><body>Invoice</body></html>"
+        end
+
+        service.process
+      end
+    end
+
+    context "when signature_enabled is false and company has no signature attached" do
+      before do
+        client.update!(signature_enabled: false)
+      end
+
+      it "returns nil for signature_url in the template locals" do
+        expect_any_instance_of(ActionController::Base).to receive(:render_to_string) do |_, args|
+          locals = args[:locals]
+          expect(locals[:signature_url]).to be_nil
+
+          "<html><body>Invoice</body></html>"
+        end
+
+        service.process
+      end
+    end
+  end
+
   describe "error handling" do
     it "handles invoices without line items" do
       invoice.invoice_line_items.destroy_all
@@ -228,6 +313,7 @@ RSpec.describe PdfGeneration::InvoiceService do
       expect(html).to include("VAT code: VAT-456")
       expect(html).to include("GST code: GST-789")
       expect(html).to include("Employer number: 12-3456789")
+      expect(html).to include("Employer number: 98-7654321")
       expect(html).to include("US payer code: 987-65-4321")
       expect(html).to include("Line amount")
       expect(html).to include("Balance outstanding")

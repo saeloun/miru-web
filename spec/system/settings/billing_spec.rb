@@ -137,7 +137,13 @@ RSpec.describe "Settings billing", type: :system, js: true do
 
       expect(page).to have_content("Pro Trial", wait: 10)
       expect(page).to have_content("Pro trial active", wait: 10)
-      expect(page).to have_content(trial_ends_at.strftime("%B %-d, %Y"), wait: 10)
+      # Date format depends on browser locale (e.g., "June 11, 2026" or "11 June 2026")
+      day = trial_ends_at.day.to_s
+      month = trial_ends_at.strftime("%B")
+      year = trial_ends_at.strftime("%Y")
+      expect(page).to have_content(day, wait: 10)
+      expect(page).to have_content(month, wait: 10)
+      expect(page).to have_content(year, wait: 10)
       expect(page).not_to have_button("Start 30-day Pro trial")
     end
   end

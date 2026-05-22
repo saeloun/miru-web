@@ -20,6 +20,11 @@ json.outstanding_amount invoice.outstanding_amount.to_f
 json.base_currency_amount invoice.base_currency_amount.to_f
 json.exchange_rate invoice.respond_to?(:exchange_rate) ? invoice.exchange_rate.to_f : 0.0
 json.tax invoice.tax.to_f if local_assigns.fetch(:include_tax_and_discount, false)
+if local_assigns.fetch(:include_tax_and_discount, false)
+  json.invoice_taxes invoice.invoice_taxes do |invoice_tax|
+    json.partial! "internal_api/v1/partial/invoice_tax", locals: { invoice_tax: }
+  end
+end
 json.discount invoice.discount.to_f if local_assigns.fetch(:include_tax_and_discount, false)
 json.currency invoice_currency
 json.created_at invoice.created_at if local_assigns.fetch(:include_created_at, false)

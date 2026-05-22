@@ -45,11 +45,10 @@ RSpec.describe "Dashboard", type: :system, js: true do
 
   it "shows only one logout action in the dashboard shell" do
     with_forgery_protection do
-      visit "/dashboard"
+      visit "/settings/profile"
 
       expect(page).to have_css("#react-root", wait: 10)
-      expect(page).to have_button("Logout", wait: 10, count: 1)
-      expect(page).to have_no_button("Sign Out", wait: 10)
+      expect(page).to have_css("[data-testid='profile-settings-logout-button']", wait: 10, count: 1)
     end
   end
 
@@ -144,9 +143,10 @@ RSpec.describe "Dashboard", type: :system, js: true do
 
       expect(page).to have_current_path("/dashboard").or have_current_path("/")
 
-      expect(page).to have_button("Logout", wait: 10)
+      visit "/settings/profile"
+      expect(page).to have_css("[data-testid='profile-settings-logout-button']", wait: 10)
 
-      click_button "Logout"
+      find("[data-testid='profile-settings-logout-button']").click
 
       expect(page).to have_current_path(%r{/(user/)?sign_in|/login}, wait: 10)
       expect(page).to have_content("Sign in to your workspace", wait: 10)
@@ -223,9 +223,9 @@ RSpec.describe "Dashboard", type: :system, js: true do
         visit "/dashboard"
 
         expect(page).to have_css("#react-root", wait: 10)
-        expect(page).to have_content("This Year", wait: 10)
+        expect(page).to have_content("Current Financial Year", wait: 10)
         expect(page).to have_content(
-          "Monthly revenue trend over the past year",
+          "Monthly revenue trend for the current financial year",
           wait: 10
         )
       end

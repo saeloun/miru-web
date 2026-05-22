@@ -21,7 +21,8 @@ const LineItemEditorRow = ({
   dateFormat,
 }) => {
   const strName = getLineItemDisplayName(item);
-  const rowKey = item.id || item.timesheet_entry_id || strName;
+  const rowKey =
+    item.id || item.selection_id || item.timesheet_entry_id || strName;
   const [name, setName] = useState<string>(strName);
   const [lineItemDate, setLineItemDate] = useState<Date>(
     dayjs(item.date).isValid() ? dayjs(item.date).toDate() : new Date()
@@ -53,8 +54,15 @@ const LineItemEditorRow = ({
         item.timesheet_entry_id !== undefined &&
         item.timesheet_entry_id !== null;
 
+      const itemHasSelectionId =
+        item.selection_id !== undefined && item.selection_id !== null;
+
       if (itemHasId) {
         return option.id === item.id;
+      }
+
+      if (itemHasSelectionId) {
+        return option.selection_id === item.selection_id;
       }
 
       if (itemHasTimesheetEntryId) {

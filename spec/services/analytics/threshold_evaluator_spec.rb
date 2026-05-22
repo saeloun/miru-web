@@ -16,7 +16,7 @@ RSpec.describe Analytics::ThresholdEvaluator do
   end
 
   it "returns revenue drop alert" do
-    allow(Analytics::TeamProductivityAnalytics).to receive(:process).and_return({ summary: { utilization_rate: 80.0, team_size: 3 } })
+    allow(Analytics::TeamProductivityAnalytics).to receive(:process).and_return({ summary: { utilization_rate: 80.0, total_hours: 20.0, billable_hours: 16.0, team_size: 3 } })
     allow(Analytics::ComparativeAnalysisService).to receive(:process).and_return({ metrics: { collected_revenue: { current: 600.0, previous: 1000.0, change_percentage: -40.0 } } })
     allow(Analytics::ExpenseTrendAnalyzer).to receive(:process).and_return({ anomalies: [] })
 
@@ -26,7 +26,7 @@ RSpec.describe Analytics::ThresholdEvaluator do
   end
 
   it "returns expense anomaly alert" do
-    allow(Analytics::TeamProductivityAnalytics).to receive(:process).and_return({ summary: { utilization_rate: 80.0, team_size: 3 } })
+    allow(Analytics::TeamProductivityAnalytics).to receive(:process).and_return({ summary: { utilization_rate: 80.0, total_hours: 20.0, billable_hours: 16.0, team_size: 3 } })
     allow(Analytics::ComparativeAnalysisService).to receive(:process).and_return({ metrics: { collected_revenue: { current: 1000.0, previous: 1000.0 } } })
     allow(Analytics::ExpenseTrendAnalyzer).to receive(:process).and_return({ anomalies: [{ name: "Travel" }] })
 
@@ -36,7 +36,7 @@ RSpec.describe Analytics::ThresholdEvaluator do
   end
 
   it "returns no alerts when thresholds are healthy" do
-    allow(Analytics::TeamProductivityAnalytics).to receive(:process).and_return({ summary: { utilization_rate: 85.0, team_size: 3 } })
+    allow(Analytics::TeamProductivityAnalytics).to receive(:process).and_return({ summary: { utilization_rate: 85.0, total_hours: 20.0, billable_hours: 17.0, team_size: 3 } })
     allow(Analytics::ComparativeAnalysisService).to receive(:process).and_return({ metrics: { collected_revenue: { current: 1000.0, previous: 1000.0 } } })
     allow(Analytics::ExpenseTrendAnalyzer).to receive(:process).and_return({ anomalies: [] })
 

@@ -163,6 +163,7 @@ namespace :api, defaults: { format: "json" } do
         get :download
       end
     end
+    resources :tax_configurations, only: [:index, :create, :update, :destroy]
     resources :project_members, only: [:update]
     resources :employments, only: [:index, :show, :update]
     resources :timezones, only: [:index]
@@ -173,6 +174,7 @@ namespace :api, defaults: { format: "json" } do
 
     resources :companies, only: [:index, :create, :update], concerns: :addressable do
       resource :purge_logo, only: [:destroy], controller: "companies/purge_logo"
+      resource :invoice_signature, only: [:show, :create, :destroy], controller: "companies/invoice_signatures"
     end
 
     resources :currency_pairs, only: [] do
@@ -214,6 +216,7 @@ namespace :api, defaults: { format: "json" } do
 
     resources :payments, only: [:new, :create, :index, :show] do
       post :withdraw, on: :member
+      get :bulk_download, on: :collection
     end
     resources :holidays, only: [:update, :index], param: :year
 

@@ -2,10 +2,7 @@ import axios from "axios";
 import { Toastr } from "StyledComponents";
 import { getActiveLocale } from "../i18n";
 
-import {
-  clearCredentialsFromLocalStorage,
-  getValueFromLocalStorage,
-} from "utils/storage";
+import { clearCredentialsFromLocalStorage } from "utils/storage";
 import {
   getCsrfToken,
   getSessionRequestHeaders,
@@ -42,10 +39,11 @@ class ApiHandler {
     this.axios.interceptors.response.use(
       (response: any) => {
         if (response) {
-          const { data, status } = response;
+          const { data, status, config } = response;
           (response as any).success = status >= 200 && status < 300;
+          const shouldSkipSuccessToast = Boolean(config?.skipSuccessToast);
           const { reset_session, notice } = data || {};
-          if (data && !reset_session && notice) {
+          if (data && !reset_session && notice && !shouldSkipSuccessToast) {
             Toastr.success(notice);
           }
         }
@@ -177,10 +175,7 @@ class ApiHandler {
   }
 
   handleUnauthorizedSession(error: any) {
-    const token = getValueFromLocalStorage("authToken");
-    if (token) {
-      clearCredentialsFromLocalStorage();
-    }
+    clearCredentialsFromLocalStorage();
 
     reportClientError("api-401-invalid-session", error, {
       reason: "confirmed-unauthorized",
@@ -302,6 +297,18 @@ export const companiesApi = {
   removeLogo: (id: any) => http.delete(`${companiesPath}/${id}/purge_logo`),
 };
 
+// Invoice Signature
+export const invoiceSignatureApi = {
+  show: (companyId: any) =>
+    http.get(`${companiesPath}/${companyId}/invoice_signature`),
+  create: (companyId: any, payload: FormData) =>
+    http.post(`${companiesPath}/${companyId}/invoice_signature`, payload, {
+      headers: { "Content-Type": "multipart/form-data" },
+    }),
+  destroy: (companyId: any) =>
+    http.delete(`${companiesPath}/${companyId}/invoice_signature`),
+};
+
 // Company Users
 export const companyUsersApi = { get: () => http.get(`/employments`) };
 
@@ -408,7 +415,7 @@ export const leavesApi = {
 };
 
 // Logout
-export const logoutApi = () => http.delete(`/users/logout`);
+export const logoutApi = (config = {}) => http.delete(`/users/logout`, config);
 
 // Payment Settings
 export const paymentSettingsApi = {
@@ -422,6 +429,19 @@ export const paymentSettingsApi = {
 };
 export const paymentSettings = paymentSettingsApi;
 
+export const taxConfigurationsApi = {
+  get: () => http.get(`/tax_configurations`),
+  create: (taxConfiguration: any) =>
+    http.post(`/tax_configurations`, {
+      tax_configuration: taxConfiguration,
+    }),
+  update: (id: string | number, taxConfiguration: any) =>
+    http.patch(`/tax_configurations/${id}`, {
+      tax_configuration: taxConfiguration,
+    }),
+  destroy: (id: string | number) => http.delete(`/tax_configurations/${id}`),
+};
+
 // Payments
 export const paymentsApi = {
   get: (queryParams = "") => http.get(`/payments${queryParams}`),
@@ -432,6 +452,11 @@ export const paymentsApi = {
   update: (id: any, payload: any) => http.patch(`/payments/${id}`, payload),
   destroy: (id: any) => http.delete(`/payments/${id}`),
   getInvoiceList: () => http.get(`/payments/new`),
+  bulkDownload: (ids: (string | number)[]) =>
+    http.get(`/payments/bulk_download`, {
+      params: { ids: ids.join(",") },
+      responseType: "blob",
+    }),
 };
 export const payments = paymentsApi;
 export const payment = paymentsApi;

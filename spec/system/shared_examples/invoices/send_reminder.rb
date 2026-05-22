@@ -12,6 +12,9 @@ RSpec.shared_examples "Send Reminder", type: :system do
       find("[data-testid='invoice-actions-trigger-#{invoice.id}']").click
       find("[data-testid='invoice-action-reminder-#{invoice.id}']").click
 
+      expect(page).to have_content("Send Reminder", wait: 10)
+      click_button "Send Reminder"
+
       expect(page).to have_content("A reminder has been sent", wait: 10)
     end
   end

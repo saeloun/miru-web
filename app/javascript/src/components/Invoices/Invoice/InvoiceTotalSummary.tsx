@@ -9,6 +9,7 @@ const InvoiceTotalSummary = ({ invoice, strikeAmount = "" }) => {
     0
   );
   const tax = invoice.tax;
+  const invoiceTaxes = invoice.invoiceTaxes || invoice.invoice_taxes || [];
   const discount = invoice.discount;
   const total = Number(subTotal) + Number(tax) - Number(discount);
 
@@ -42,16 +43,31 @@ const InvoiceTotalSummary = ({ invoice, strikeAmount = "" }) => {
               )}
             </td>
           </tr>
-          <tr>
-            <td className="pt-4 pr-4 text-right text-base font-normal text-foreground sm:pr-10">
-              {i18n.t("invoices.tax")}
-            </td>
-            <td
-              className={`w-22 pt-4 text-right text-base font-bold text-foreground ${strikeAmount}`}
-            >
-              {currencyFormat(invoice.currency, tax)}
-            </td>
-          </tr>
+          {invoiceTaxes.length > 0 ? (
+            invoiceTaxes.map(invoiceTax => (
+              <tr key={invoiceTax.id || invoiceTax.name}>
+                <td className="pt-4 pr-4 text-right text-base font-normal text-foreground sm:pr-10">
+                  {invoiceTax.name}
+                </td>
+                <td
+                  className={`w-22 pt-4 text-right text-base font-bold text-foreground ${strikeAmount}`}
+                >
+                  {currencyFormat(invoice.currency, invoiceTax.amount)}
+                </td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td className="pt-4 pr-4 text-right text-base font-normal text-foreground sm:pr-10">
+                {i18n.t("invoices.tax")}
+              </td>
+              <td
+                className={`w-22 pt-4 text-right text-base font-bold text-foreground ${strikeAmount}`}
+              >
+                {currencyFormat(invoice.currency, tax)}
+              </td>
+            </tr>
+          )}
           <tr>
             <td className="pt-1 pr-4 text-right text-base font-normal text-foreground sm:pr-10">
               {i18n.t("total")}

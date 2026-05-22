@@ -79,6 +79,40 @@ RSpec.describe ClientPolicy, type: :policy do
     end
   end
 
+  describe "#permitted_attributes" do
+    let(:addresses_attributes) do
+      %i[id address_line_1 address_line_2 city state country pin]
+    end
+
+    let(:expected_attributes) do
+      %i[name phone email ein logo currency signature_enabled].push(addresses_attributes:)
+    end
+
+    context "when user is an owner" do
+      subject { described_class.new(owner, client).permitted_attributes }
+
+      it "includes signature_enabled" do
+        expect(subject).to include(:signature_enabled)
+      end
+
+      it "returns all permitted attributes" do
+        expect(subject).to match_array(expected_attributes)
+      end
+    end
+
+    context "when user is an admin" do
+      subject { described_class.new(admin, client).permitted_attributes }
+
+      it "includes signature_enabled" do
+        expect(subject).to include(:signature_enabled)
+      end
+
+      it "returns all permitted attributes" do
+        expect(subject).to match_array(expected_attributes)
+      end
+    end
+  end
+
   describe "policy_scope" do
     let(:another_company) { create(:company) }
     let(:client_2) { create(:client, company:, name: "Zulu") }

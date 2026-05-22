@@ -103,14 +103,23 @@ RSpec.describe InvoicePolicy, type: :policy do
     subject { described_class.new(employee, company).permitted_attributes }
 
     let(:invoice_line_items_attributes) do
-      %i[id name description date timesheet_entry_id rate quantity _destroy]
+      [
+        :id, :name, :description, :date, :timesheet_entry_id,
+        :rate, :quantity, :_destroy, { linked_timesheet_entry_ids: [] }
+      ]
     end
     let(:attributes) do
       %i[
         issue_date due_date status invoice_number reference amount outstanding_amount
         tax amount_paid amount_due discount client_id external_view_key stripe_enabled
         base_currency_amount currency
-      ].push(invoice_line_items_attributes:)
+      ].push(
+        invoice_line_items_attributes:,
+        invoice_taxes_attributes: [
+          :id, :tax_configuration_id, :name,
+          :calculation_method, :value, :amount, :_destroy
+        ]
+      )
     end
 
     it "returns array of an attributes" do

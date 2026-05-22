@@ -170,7 +170,7 @@ Upgrades the CLI.
 Behavior:
 
 - when run from a local Miru checkout, it upgrades from that checked-out repo
-- otherwise it upgrades from `github.com/saeloun/miru-web/tools/miru-cli/cmd/miru@main`
+- otherwise it upgrades from `github.com/saeloun/miru-web/tools/miru-cli/cmd/miru@latest`
 
 ## Project Commands
 
@@ -372,6 +372,66 @@ Example:
 miru invoice show --id 1
 ```
 
+### `miru invoice create`
+
+Creates a draft invoice with one or more line items.
+
+Options:
+
+- `--client-id <id>` required
+- `--invoice-number <number>` required
+- `--issue-date <YYYY-MM-DD>` required
+- `--due-date <YYYY-MM-DD>` required
+- `--line-item <name|description|YYYY-MM-DD|rate|minutes>` required unless `--line-items-json` or `--payload-file` is used
+- `--line-items-json <json>` optional JSON array for advanced line-item payloads
+- `--payload-file <path>` optional full invoice JSON payload; the file may contain either `{ "invoice": { ... } }` or the invoice object
+- `--currency <code>` optional
+- `--reference <text>` optional
+- `--status <status>` optional, defaults to `draft`
+- `--discount <amount>` optional
+- `--tax <amount>` optional
+- `--tax-configuration-id <id>` optional and repeatable
+- `--stripe-enabled <true|false>` optional
+
+Examples:
+
+```bash
+miru invoice create \
+  --client-id 2 \
+  --invoice-number INV-CLI-001 \
+  --issue-date 2026-05-19 \
+  --due-date 2026-06-18 \
+  --currency USD \
+  --line-item "Implementation|API work|2026-05-19|150|120"
+```
+
+For generated or agent-authored invoices, a payload file is usually cleaner:
+
+```json
+{
+  "invoice": {
+    "client_id": 2,
+    "invoice_number": "INV-CLI-002",
+    "issue_date": "2026-05-19",
+    "due_date": "2026-06-18",
+    "status": "draft",
+    "invoice_line_items_attributes": [
+      {
+        "name": "Implementation",
+        "description": "API work",
+        "date": "2026-05-19",
+        "rate": 150,
+        "quantity": 120
+      }
+    ]
+  }
+}
+```
+
+```bash
+miru invoice create --payload-file invoice.json
+```
+
 ### `miru invoice send`
 
 Sends an invoice email.
@@ -449,7 +509,12 @@ miru time update --id 631 --project-id 2 --duration 45 --date 2026-03-09 --note 
 ### Send an invoice
 
 ```bash
-miru invoice list --status draft
+miru invoice create \
+  --client-id 2 \
+  --invoice-number INV-CLI-001 \
+  --issue-date 2026-05-19 \
+  --due-date 2026-06-18 \
+  --line-item "Implementation|API work|2026-05-19|150|120"
 miru invoice send --id 1 --recipients client@example.com
 ```
 
@@ -477,6 +542,7 @@ miru invoice send --id 1 --recipients client@example.com
 - `miru expense list` -> `GET /api/v1/cli/expenses`
 - `miru expense create` -> `POST /api/v1/cli/expenses`
 - `miru invoice list` -> `GET /api/v1/invoices`
+- `miru invoice create` -> `POST /api/v1/invoices`
 - `miru invoice show` -> `GET /api/v1/invoices/:id`
 - `miru invoice send` -> `POST /api/v1/invoices/:id/send_invoice`
 - `miru payment list` -> `GET /api/v1/payments`
@@ -540,7 +606,7 @@ Current supported CLI surface:
 - clients: `client list`
 - time: `time list`, `time create`, `time update`, `time delete`
 - expenses: `expense list`, `expense create`
-- invoices: `invoice list`, `invoice show`, `invoice send`
+- invoices: `invoice list`, `invoice create`, `invoice show`, `invoice send`
 - payments: `payment list`, `payment show`
 
 MCP parity:

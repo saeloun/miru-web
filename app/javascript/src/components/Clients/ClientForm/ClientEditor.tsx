@@ -4,7 +4,6 @@ import { Formik, Form, FormikProps } from "formik";
 import PhoneInput from "react-phone-number-input";
 import flags from "react-phone-number-input/flags";
 import "react-phone-number-input/style.css";
-import { Toastr } from "StyledComponents";
 import worldCountries from "world-countries";
 import { clientApi } from "apis/api";
 import { motion } from "framer-motion";
@@ -18,6 +17,8 @@ import {
 import { Input } from "../../ui/input";
 import { Label } from "../../ui/label";
 import { Button } from "../../ui/button";
+import { Switch } from "../../ui/switch";
+import { useUserContext } from "../../../context/UserContext";
 
 import { clientSchema, getInitialvalues } from "./formValidationSchema";
 import UploadLogo from "./UploadLogo";
@@ -27,6 +28,7 @@ import {
   getMissingRequiredClientFields,
   getRequiredClientFieldLabels,
 } from "./utils";
+import type { ClientFormValues as FormValues } from "./types";
 
 import { currencyListOptions } from "../../OrganizationSetup/FinancialDetailsForm/utils";
 import { i18n } from "../../../i18n";
@@ -49,6 +51,7 @@ const ClientEditor = ({
 }: ClientEditorProps) => {
   const [fileUploadError, setFileUploadError] = useState<string>("");
   const [countries, setCountries] = useState([]);
+  const { isAdminUser } = useUserContext();
 
   const assignCountries = async allCountries => {
     const countryData = await allCountries.map(country => ({
@@ -80,7 +83,6 @@ const ClientEditor = ({
         setClientData([...clientData, { ...res.data.client, minutes: 0 }]);
         setSubmitting(false);
         setnewClient(false);
-        Toastr.success(i18n.t("clients.clientAddedSuccessfully"));
       } catch {
         setSubmitting(false);
       }
@@ -90,7 +92,6 @@ const ClientEditor = ({
         setSubmitting(false);
         setShowEditDialog(false);
         fetchDetails();
-        Toastr.success(i18n.t("clients.clientUpdatedSuccessfully"));
       } catch {
         setSubmitting(false);
       }
@@ -175,6 +176,20 @@ const ClientEditor = ({
               />
               {errors.email && touched.email && (
                 <p className="text-xs text-red-600">{errors.email}</p>
+              )}
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="ein">{i18n.t("organization.ein")}</Label>
+              <Input
+                id="ein"
+                name="ein"
+                value={values.ein}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className={errors.ein && touched.ein ? "border-red-500" : ""}
+              />
+              {errors.ein && touched.ein && (
+                <p className="text-xs text-red-600">{errors.ein}</p>
               )}
             </div>
             {/* Phone Field */}
@@ -366,6 +381,26 @@ const ClientEditor = ({
                 <p className="text-xs text-red-600">{errors.currency}</p>
               )}
             </div>
+            {/* Signature Toggle - only shown for edit mode and admin/owner users */}
+            {formType === "edit" && isAdminUser && (
+              <div className="flex items-center justify-between rounded-lg border p-4">
+                <div className="space-y-0.5">
+                  <Label htmlFor="signatureEnabled">
+                    {i18n.t("clients.includeSignatureOnInvoices")}
+                  </Label>
+                  <p className="text-sm text-muted-foreground">
+                    {i18n.t("clients.includeSignatureOnInvoicesDescription")}
+                  </p>
+                </div>
+                <Switch
+                  id="signatureEnabled"
+                  checked={values.signatureEnabled}
+                  onCheckedChange={checked =>
+                    setFieldValue("signatureEnabled", checked)
+                  }
+                />
+              </div>
+            )}
             {/* Submit Button */}
             <div className="pt-4">
               <p className="mb-2 text-xs text-muted-foreground">
@@ -385,7 +420,7 @@ const ClientEditor = ({
                 {submitting
                   ? i18n.t("timeTracking.saving")
                   : formType === "edit"
-                  ? i18n.t("clients.editClient")
+                  ? i18n.t("save")
                   : i18n.t("clients.addNewClient")}
               </Button>
             </div>
@@ -411,20 +446,6 @@ interface ClientEditorProps {
   submitting: boolean;
   setSubmitting: any;
   fetchDetails?: any;
-}
-
-interface FormValues {
-  name: string;
-  email: string;
-  phone: string;
-  address1: string;
-  address2: string;
-  country: any;
-  state: string;
-  city: string;
-  zipcode: string;
-  currency: any;
-  logo: any;
 }
 
 export default ClientEditor;

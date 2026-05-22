@@ -3,8 +3,9 @@ import React from "react";
 import { currencyFormat } from "helpers";
 import { useNavigate } from "react-router-dom";
 import getStatusCssClass from "utils/getBadgeStatus";
+import { HighlightText } from "../../../ui/highlight-text";
 
-const SearchDataRow = ({ invoice }) => {
+const SearchDataRow = ({ invoice, searchQuery = "" }) => {
   const navigate = useNavigate();
 
   const handleClick = invoice => {
@@ -20,10 +21,10 @@ const SearchDataRow = ({ invoice }) => {
     >
       <div className="col-span-6 p-0 font-medium tracking-wider sm:col-span-5">
         <div className="pb-1 text-sm font-medium capitalize text-foreground">
-          {client.name}
+          <HighlightText text={client.name || ""} query={searchQuery} />
         </div>
         <div className="text-sm font-normal text-muted-foreground">
-          {invoiceNumber}
+          <HighlightText text={invoiceNumber || ""} query={searchQuery} />
         </div>
       </div>
       <div className="col-span-4 font-bold tracking-wider sm:col-span-4">

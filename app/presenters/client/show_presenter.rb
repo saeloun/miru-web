@@ -15,7 +15,8 @@ class Client::ShowPresenter
       address: client.current_address,
       phone: client.phone,
       logo: client.logo_url,
-      currency: client.currency
+      currency: client.currency,
+      signature_enabled: client.signature_enabled
     }
   end
 end

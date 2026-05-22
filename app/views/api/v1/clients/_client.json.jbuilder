@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 json.client do
-  json.extract! client, :id, :name, :email, :phone
+  json.extract! client, :id, :name, :email, :ein, :phone
 
   json.logo client.logo.attached? ? client.logo_url : nil
 

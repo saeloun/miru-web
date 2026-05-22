@@ -85,6 +85,40 @@ RSpec.describe "MCP write tools" do
       expect(payload.dig("request", "path")).to eq("/api/v1/cli/expenses")
     end
 
+    it "returns write preview for miru.invoice.create" do
+      response = MCP::Miru::Tools::InvoiceCreateTool.call(
+        client_id: 42,
+        invoice_number: "INV-MCP-001",
+        issue_date: "2026-05-19",
+        due_date: "2026-06-18",
+        currency: "USD",
+        line_items: [
+          {
+            name: "Implementation",
+            description: "API work",
+            date: "2026-05-19",
+            rate: 150,
+            quantity: 120
+          }
+        ],
+        invoice_taxes: [{ tax_configuration_id: 3 }],
+        dry_run: true,
+        server_context:
+      )
+
+      payload = JSON.parse(response.content.first.fetch(:text))
+      expect(response.error?).to eq(false)
+      expect(payload.dig("request", "method")).to eq("POST")
+      expect(payload.dig("request", "path")).to eq("/api/v1/invoices")
+      expect(payload.dig("request", "body", "invoice", "invoice_line_items_attributes").first).to include(
+        "name" => "Implementation",
+        "quantity" => 120
+      )
+      expect(payload.dig("request", "body", "invoice", "invoice_taxes_attributes").first).to eq(
+        "tax_configuration_id" => 3
+      )
+    end
+
     it "compacts recipient list for miru.invoice.send" do
       response = MCP::Miru::Tools::InvoiceSendTool.call(
         id: 123,

@@ -3,6 +3,16 @@ import { invoiceLineItemsApi, invoicesApi } from "apis/api";
 import { lineTotalCalc } from "helpers";
 import { Toastr } from "StyledComponents";
 
+const selectedEntryIds = entry =>
+  [
+    ...new Set([
+      entry.timesheet_entry_id,
+      ...(entry.linked_timesheet_entry_ids || []),
+    ]),
+  ].filter(Boolean);
+
+const selectionId = item => item.selection_id || item.timesheet_entry_id;
+
 export const generateInvoiceLineItems = (
   selectedLineItems,
   manualEntryArr,
@@ -24,6 +34,7 @@ export const generateInvoiceLineItems = (
         timesheet_entry_id: item.time_sheet_entry
           ? item.time_sheet_entry
           : item.timesheet_entry_id,
+        linked_timesheet_entry_ids: item.linked_timesheet_entry_ids || [],
         _destroy: !!item._destroy,
       };
     })
@@ -59,7 +70,9 @@ export const fetchNewLineItems = async (
     let selectedEntriesString = "";
     selectedEntries.forEach(entry => {
       if (!entry._destroy) {
-        selectedEntriesString += `&selected_entries[]=${entry.timesheet_entry_id}`;
+        selectedEntryIds(entry).forEach(id => {
+          selectedEntriesString += `&selected_entries[]=${id}`;
+        });
       }
     });
     const queryParams = `client_id=${selectedClient.id}${selectedEntriesString}`;
@@ -83,13 +96,12 @@ export const fetchMultipleNewLineItems = async (
 ) => {
   const res = await invoiceLineItemsApi.getLineItems(handleFilterParams());
   const itemSelected = id =>
-    selectedLineItems.filter(
-      selectedItem => id == selectedItem.timesheet_entry_id
-    ).length;
+    selectedLineItems.filter(selectedItem => id == selectionId(selectedItem))
+      .length;
 
   const items = res.data.new_line_item_entries.map(item => ({
     ...item,
-    checked: itemSelected(item.timesheet_entry_id),
+    checked: itemSelected(selectionId(item)),
     lineTotal: lineTotalCalc(item.quantity, item.rate),
   }));
 

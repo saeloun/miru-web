@@ -12,15 +12,21 @@ RSpec.describe "Api::V1::Invoices::LineItems#index", type: :request do
 
   let(:expected_invoice_line_items) do
     [{
+      "selection_id": "timesheet-entry-#{timesheet_entry.id}",
       "timesheet_entry_id": timesheet_entry.id,
+      "linked_timesheet_entry_ids": [],
       "user_id": user.id,
       "project_id": project.id,
+      "project_name": project.name,
       "first_name": user.first_name,
       "last_name": user.last_name,
+      "name": nil,
       "description": timesheet_entry.note,
       "date": timesheet_entry.work_date,
+      "date_range": nil,
       "quantity": timesheet_entry.duration,
-      "rate": project_member.hourly_rate
+      "rate": project_member.hourly_rate,
+      "entry_count": nil
     }]
   end
 
@@ -116,6 +122,51 @@ RSpec.describe "Api::V1::Invoices::LineItems#index", type: :request do
       expect(response).to have_http_status(:ok)
       expect(json_response["filter_options"]).to eq(JSON.parse(filter_options.to_json))
       expect(json_response["new_line_item_entries"]).to eq(JSON.parse(expected_invoice_line_items.to_json))
+    end
+
+    it "aggregates unbilled entries by project, member, and rate" do
+      project_member.update!(hourly_rate: 100)
+      second_entry = create(
+        :timesheet_entry,
+        user:,
+        project:,
+        bill_status: "unbilled",
+        duration: 90,
+        work_date: timesheet_entry.work_date + 1.day
+      )
+      other_project = create(:project, billable: true, client:, name: "Mobile App")
+      create(:project_member, user:, project: other_project, hourly_rate: 125)
+      other_entry = create(
+        :timesheet_entry,
+        user:,
+        project: other_project,
+        bill_status: "unbilled",
+        duration: 60
+      )
+
+      send_request :get, api_v1_line_items_invoices_path(client_id: client.id), params: {
+        group_by_project: true
+      }, headers: auth_headers(user)
+
+      expect(response).to have_http_status(:ok)
+      expect(json_response["new_line_item_entries"].size).to eq(2)
+
+      project_group = json_response["new_line_item_entries"].detect { |entry| entry["project_id"] == project.id }
+      expect(project_group).to include(
+        "selection_id" => "project-aggregate-#{project.id}-#{user.id}-100.0",
+        "timesheet_entry_id" => nil,
+        "project_name" => project.name,
+        "name" => project.name,
+        "description" => "#{user.full_name} - 2 entries",
+        "quantity" => timesheet_entry.duration + second_entry.duration,
+        "rate" => "100.0",
+        "entry_count" => 2
+      )
+      expect(project_group["linked_timesheet_entry_ids"]).to match_array([timesheet_entry.id, second_entry.id])
+
+      other_group = json_response["new_line_item_entries"].detect { |entry| entry["project_id"] == other_project.id }
+      expect(other_group["linked_timesheet_entry_ids"]).to eq([other_entry.id])
+      expect(other_group["quantity"]).to eq(60)
     end
 
     it "excludes entries already used by another draft invoice" do

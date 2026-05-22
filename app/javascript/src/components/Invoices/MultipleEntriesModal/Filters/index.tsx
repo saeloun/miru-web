@@ -37,7 +37,8 @@ const Filters = ({
   const isResetActive =
     filters.teamMembers.length > 0 ||
     filters.dateRange.label !== "All" ||
-    filters.searchTerm !== "";
+    filters.searchTerm !== "" ||
+    filters.groupByProject;
 
   useEffect(() => {
     const { value, from, to } = filterParams.dateRange;
@@ -224,6 +225,17 @@ const Filters = ({
           setFilters={setFilters}
           teamMembers={teamMembers}
         />
+        <label className="ml-2 flex items-center gap-2 text-sm font-medium text-foreground">
+          <input
+            checked={filters.groupByProject}
+            className="h-4 w-4 accent-primary"
+            type="checkbox"
+            onChange={e =>
+              setFilters({ ...filters, groupByProject: e.target.checked })
+            }
+          />
+          {i18n.t("invoices.groupByProject")}
+        </label>
         <div className="ml-2 w-1/2 lg:w-auto">
           <Select
             name="dateRange"

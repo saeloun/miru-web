@@ -37,13 +37,13 @@ RSpec.describe "Profile Settings", type: :system, js: true do
     end
   end
 
-  it "moves logout from the dashboard header to profile account settings" do
+  it "shows logout in the dashboard header and profile account settings" do
     with_forgery_protection do
       visit "/dashboard"
 
       expect(page).to have_css("#react-root", wait: 10)
       within("header") do
-        expect(page).not_to have_button("Logout")
+        expect(page).to have_button("Logout", wait: 10)
       end
 
       visit "/settings/profile"

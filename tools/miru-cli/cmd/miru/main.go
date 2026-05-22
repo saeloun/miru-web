@@ -13,9 +13,10 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
+	"time"
 )
 
-const version = "0.1.0"
+const version = "0.2.0"
 
 type client struct {
 	baseURL string
@@ -83,7 +84,7 @@ func main() {
 		err = cli.projects(args[1:])
 	case "expense":
 		err = cli.expenses(args[1:])
-	case "invoice":
+	case "invoice", "invoices":
 		err = cli.invoices(args[1:])
 	case "payment":
 		err = cli.payments(args[1:])
@@ -342,7 +343,7 @@ func upgradeCommand(gobinDir string) (*exec.Cmd, error) {
 		"GOBIN="+gobinDir,
 		"go",
 		"install",
-		"github.com/saeloun/miru-web/tools/miru-cli/cmd/miru@main",
+		"github.com/saeloun/miru-web/tools/miru-cli/cmd/miru@latest",
 	), nil
 }
 
@@ -441,12 +442,14 @@ func (c *client) timeEntries(args []string) error {
 
 func (c *client) invoices(args []string) error {
 	if len(args) == 0 {
-		return fmt.Errorf("usage: miru invoice <list|show|send> ...")
+		return fmt.Errorf("usage: miru invoice <list|create|show|send> ...")
 	}
 
 	switch args[0] {
 	case "list":
 		return c.listInvoices(args[1:])
+	case "create":
+		return c.createInvoice(args[1:])
 	case "show":
 		return c.showInvoice(args[1:])
 	case "send":
@@ -656,6 +659,192 @@ func (c *client) showInvoice(args []string) error {
 	}
 
 	return c.get("/api/v1/invoices/"+id, nil)
+}
+
+func (c *client) createInvoice(args []string) error {
+	body, err := buildCreateInvoiceBody(args)
+	if err != nil {
+		return err
+	}
+
+	return c.post("/api/v1/invoices", body)
+}
+
+func buildCreateInvoiceBody(args []string) (map[string]any, error) {
+	flags, err := parseRepeatedFlags(args)
+	if err != nil {
+		return nil, err
+	}
+	if err := validateAllowedFlags(flags, map[string]bool{
+		"amount-paid":          true,
+		"client-id":            true,
+		"currency":             true,
+		"discount":             true,
+		"due-date":             true,
+		"invoice-number":       true,
+		"issue-date":           true,
+		"line-item":            true,
+		"line-items-json":      true,
+		"payload-file":         true,
+		"reference":            true,
+		"status":               true,
+		"stripe-enabled":       true,
+		"tax":                  true,
+		"tax-configuration-id": true,
+	}); err != nil {
+		return nil, err
+	}
+
+	if payloadFile := flagValue(flags, "payload-file"); payloadFile != "" {
+		return readInvoicePayloadFile(payloadFile)
+	}
+
+	clientID, err := positiveIntFlag(flags, "client-id")
+	if err != nil {
+		return nil, err
+	}
+
+	invoiceNumber := strings.TrimSpace(flagValue(flags, "invoice-number"))
+	issueDate := strings.TrimSpace(flagValue(flags, "issue-date"))
+	dueDate := strings.TrimSpace(flagValue(flags, "due-date"))
+	if invoiceNumber == "" || issueDate == "" || dueDate == "" {
+		return nil, fmt.Errorf("usage: miru invoice create --client-id <id> --invoice-number <number> --issue-date <YYYY-MM-DD> --due-date <YYYY-MM-DD> --line-item <name|description|YYYY-MM-DD|rate|minutes>")
+	}
+	if err := validateDateFlag("issue-date", issueDate); err != nil {
+		return nil, err
+	}
+	if err := validateDateFlag("due-date", dueDate); err != nil {
+		return nil, err
+	}
+
+	lineItems, err := invoiceLineItems(flags)
+	if err != nil {
+		return nil, err
+	}
+
+	invoice := map[string]any{
+		"client_id":                     clientID,
+		"invoice_number":                invoiceNumber,
+		"issue_date":                    issueDate,
+		"due_date":                      dueDate,
+		"status":                        defaultString(flagValue(flags, "status"), "draft"),
+		"invoice_line_items_attributes": lineItems,
+	}
+
+	for _, option := range []string{"currency", "reference"} {
+		if value := strings.TrimSpace(flagValue(flags, option)); value != "" {
+			invoice[strings.ReplaceAll(option, "-", "_")] = value
+		}
+	}
+
+	for _, option := range []string{"discount", "tax", "amount-paid"} {
+		if err := setNonNegativeFloatFlag(invoice, flags, option); err != nil {
+			return nil, err
+		}
+	}
+
+	if stripeEnabled := strings.TrimSpace(flagValue(flags, "stripe-enabled")); stripeEnabled != "" {
+		enabled, err := strconv.ParseBool(stripeEnabled)
+		if err != nil {
+			return nil, fmt.Errorf("stripe-enabled must be true or false")
+		}
+		invoice["stripe_enabled"] = enabled
+	}
+
+	if taxConfigurationIDs := flags["tax-configuration-id"]; len(taxConfigurationIDs) > 0 {
+		invoiceTaxes := make([]map[string]any, 0, len(taxConfigurationIDs))
+		for _, value := range taxConfigurationIDs {
+			id, err := parsePositiveInt("tax-configuration-id", value)
+			if err != nil {
+				return nil, err
+			}
+			invoiceTaxes = append(invoiceTaxes, map[string]any{"tax_configuration_id": id})
+		}
+		invoice["invoice_taxes_attributes"] = invoiceTaxes
+	}
+
+	return map[string]any{"invoice": invoice}, nil
+}
+
+func readInvoicePayloadFile(path string) (map[string]any, error) {
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return nil, err
+	}
+
+	var body map[string]any
+	if err := json.Unmarshal(data, &body); err != nil {
+		return nil, fmt.Errorf("payload-file must contain valid JSON: %w", err)
+	}
+	if _, ok := body["invoice"]; ok {
+		return body, nil
+	}
+
+	return map[string]any{"invoice": body}, nil
+}
+
+func invoiceLineItems(flags map[string][]string) ([]map[string]any, error) {
+	if lineItemsJSON := strings.TrimSpace(flagValue(flags, "line-items-json")); lineItemsJSON != "" {
+		var lineItems []map[string]any
+		if err := json.Unmarshal([]byte(lineItemsJSON), &lineItems); err != nil {
+			return nil, fmt.Errorf("line-items-json must be a JSON array: %w", err)
+		}
+		if len(lineItems) == 0 {
+			return nil, fmt.Errorf("at least one invoice line item is required")
+		}
+		return lineItems, nil
+	}
+
+	values := flags["line-item"]
+	if len(values) == 0 {
+		return nil, fmt.Errorf("at least one --line-item or --line-items-json value is required")
+	}
+
+	lineItems := make([]map[string]any, 0, len(values))
+	for _, value := range values {
+		lineItem, err := parseInvoiceLineItem(value)
+		if err != nil {
+			return nil, err
+		}
+		lineItems = append(lineItems, lineItem)
+	}
+
+	return lineItems, nil
+}
+
+func parseInvoiceLineItem(value string) (map[string]any, error) {
+	parts := strings.Split(value, "|")
+	if len(parts) != 5 {
+		return nil, fmt.Errorf("line-item must be <name|description|YYYY-MM-DD|rate|minutes>")
+	}
+
+	name := strings.TrimSpace(parts[0])
+	description := strings.TrimSpace(parts[1])
+	date := strings.TrimSpace(parts[2])
+	if name == "" {
+		return nil, fmt.Errorf("line-item name is required")
+	}
+	if err := validateDateFlag("line-item date", date); err != nil {
+		return nil, err
+	}
+
+	rate, err := parseNonNegativeFloat("line-item rate", parts[3])
+	if err != nil {
+		return nil, err
+	}
+
+	quantity, err := parseNonNegativeFloat("line-item minutes", parts[4])
+	if err != nil {
+		return nil, err
+	}
+
+	return map[string]any{
+		"name":        name,
+		"description": description,
+		"date":        date,
+		"rate":        rate,
+		"quantity":    quantity,
+	}, nil
 }
 
 func (c *client) sendInvoice(args []string) error {
@@ -928,6 +1117,94 @@ func parseFlags(args []string) (map[string]string, error) {
 	return flags, nil
 }
 
+func parseRepeatedFlags(args []string) (map[string][]string, error) {
+	flags := map[string][]string{}
+
+	for index := 0; index < len(args); index++ {
+		if !strings.HasPrefix(args[index], "--") {
+			return nil, fmt.Errorf("unknown argument: %s", args[index])
+		}
+
+		key := strings.TrimPrefix(args[index], "--")
+		index++
+		if index >= len(args) {
+			return nil, fmt.Errorf("missing value for --%s", key)
+		}
+		flags[key] = append(flags[key], args[index])
+	}
+
+	return flags, nil
+}
+
+func validateAllowedFlags(flags map[string][]string, allowed map[string]bool) error {
+	for flag := range flags {
+		if !allowed[flag] {
+			return fmt.Errorf("unknown flag: --%s", flag)
+		}
+	}
+
+	return nil
+}
+
+func flagValue(flags map[string][]string, name string) string {
+	values := flags[name]
+	if len(values) == 0 {
+		return ""
+	}
+
+	return values[len(values)-1]
+}
+
+func positiveIntFlag(flags map[string][]string, name string) (int, error) {
+	value := strings.TrimSpace(flagValue(flags, name))
+	if value == "" {
+		return 0, fmt.Errorf("%s is required", name)
+	}
+
+	return parsePositiveInt(name, value)
+}
+
+func parsePositiveInt(name, value string) (int, error) {
+	parsed, err := strconv.Atoi(strings.TrimSpace(value))
+	if err != nil || parsed <= 0 {
+		return 0, fmt.Errorf("%s must be a positive integer", name)
+	}
+
+	return parsed, nil
+}
+
+func setNonNegativeFloatFlag(target map[string]any, flags map[string][]string, name string) error {
+	value := strings.TrimSpace(flagValue(flags, name))
+	if value == "" {
+		return nil
+	}
+
+	parsed, err := parseNonNegativeFloat(name, value)
+	if err != nil {
+		return err
+	}
+
+	target[strings.ReplaceAll(name, "-", "_")] = parsed
+	return nil
+}
+
+func parseNonNegativeFloat(name, value string) (float64, error) {
+	parsed, err := strconv.ParseFloat(strings.TrimSpace(value), 64)
+	if err != nil || parsed < 0 {
+		return 0, fmt.Errorf("%s must be a non-negative number", name)
+	}
+
+	return parsed, nil
+}
+
+func validateDateFlag(name, value string) error {
+	if _, err := time.Parse("2006-01-02", value); err != nil {
+		return fmt.Errorf("%s must use YYYY-MM-DD", name)
+	}
+
+	return nil
+}
+
 func unauthenticatedRequest(method, target string, body map[string]any) ([]byte, error) {
 	var payload io.Reader
 
@@ -987,6 +1264,7 @@ miru project list [--search <term>]
 miru expense list [--query <term>]
 miru expense create --amount <amount> --date <YYYY-MM-DD> --category <name> [--vendor <name>] [--description <text>] [--type <business|personal>]
 miru invoice list [--query <term>] [--page <page>] [--per <count>] [--status <status>]
+miru invoice create --client-id <id> --invoice-number <number> --issue-date <YYYY-MM-DD> --due-date <YYYY-MM-DD> --line-item <name|description|YYYY-MM-DD|rate|minutes>
 miru invoice show --id <id>
 miru invoice send --id <id> --recipients <email1,email2> [--subject <text>] [--message <text>]
 miru payment list [--query <term>]

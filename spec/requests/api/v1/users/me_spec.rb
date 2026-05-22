@@ -46,6 +46,7 @@ RSpec.describe "Api::V1::Users#me", type: :request do
       expect(json_response["user"]["locale"]).to eq(user.locale)
       expect(json_response["user"]["social_accounts"]).to eq(user.social_accounts)
       expect(json_response["user"]["date_format"]).to eq(company.date_format)
+      expect(json_response["user"]).not_to have_key("token")
     end
 
     it "returns company info" do

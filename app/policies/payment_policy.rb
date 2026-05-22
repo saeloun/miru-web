@@ -9,6 +9,10 @@ class PaymentPolicy < ApplicationPolicy
     index?
   end
 
+  def bulk_download?
+    index?
+  end
+
   def create?
     user_owner_role? || user_admin_role? || user_book_keeper_role?
   end

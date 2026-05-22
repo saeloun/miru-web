@@ -283,6 +283,7 @@
   <%
     reference = invoice.reference.presence
     billed_to_address = client.formatted_address.presence
+    client_ein = client.ein.presence
     client_email = client.email.presence
     client_phone = client.phone.presence
 
@@ -361,6 +362,9 @@
         <% if billed_to_address %>
           <p><%= billed_to_address %></p>
         <% end %>
+        <% if client_ein %>
+          <p><%= t("pdfs.invoices.payment_rows.ein") %>: <%= client_ein %></p>
+        <% end %>
         <% if client_email %>
           <p><%= client_email %></p>
         <% end %>
@@ -416,7 +420,14 @@
             <span class="totals-row-discount">-<%= invoice_discount %></span>
           </div>
         <% end %>
-        <% if invoice.tax.present? && invoice.tax > 0 %>
+        <% if invoice_taxes.present? %>
+          <% invoice_taxes.each do |invoice_tax| %>
+            <div class="totals-row">
+              <span class="totals-row-label"><%= invoice_tax[:name] %></span>
+              <span class="totals-row-value"><%= invoice_tax[:amount] %></span>
+            </div>
+          <% end %>
+        <% elsif invoice.tax.present? && invoice.tax > 0 %>
           <div class="totals-row">
             <span class="totals-row-label"><%= t("pdfs.invoices.tax") %></span>
             <span class="totals-row-value"><%= invoice_tax %></span>
@@ -429,6 +440,13 @@
         </div>
       </div>
     </div>
+
+    <!-- Signature -->
+    <% if signature_url.present? %>
+      <div style="margin-top: 20px; margin-bottom: 24px;">
+        <img src="<%= signature_url %>" style="max-height: 80px; width: auto;" alt="Signature" />
+      </div>
+    <% end %>
 
     <!-- Payment Details -->
     <% if has_payment_info %>

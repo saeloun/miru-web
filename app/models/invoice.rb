@@ -37,8 +37,10 @@ class Invoice < ApplicationRecord
   belongs_to :company
   belongs_to :client
   has_many :invoice_line_items, dependent: :destroy
+  has_many :invoice_taxes, dependent: :destroy
   has_many :payments, dependent: :destroy
   accepts_nested_attributes_for :invoice_line_items, allow_destroy: true
+  accepts_nested_attributes_for :invoice_taxes, allow_destroy: true
 
   # Payment info details
   store_accessor :payment_infos,
@@ -113,8 +115,7 @@ class Invoice < ApplicationRecord
   end
 
   def update_timesheet_entry_status!
-    timesheet_entry_ids = invoice_line_items.pluck(:timesheet_entry_id)
-    TimesheetEntry.kept.where(id: timesheet_entry_ids).update!(bill_status: :billed)
+    TimesheetEntry.kept.where(id: invoice_timesheet_entry_ids).update!(bill_status: :billed)
   end
 
   def create_checkout_session!(success_url:, cancel_url:)
@@ -188,13 +189,21 @@ class Invoice < ApplicationRecord
     end
 
     def lock_timesheet_entries
-      timesheet_entry_ids = invoice_line_items.pluck(:timesheet_entry_id)
-      TimesheetEntry.in_workspace(company).where(id: timesheet_entry_ids).update!(locked: true)
+      TimesheetEntry.in_workspace(company).where(id: invoice_timesheet_entry_ids).update!(locked: true)
     end
 
     def unlock_timesheet_entries
-      timesheet_entry_ids = invoice_line_items.pluck(:timesheet_entry_id)
-      TimesheetEntry.in_workspace(company).where(id: timesheet_entry_ids).update!(locked: false)
+      TimesheetEntry.in_workspace(company).where(id: invoice_timesheet_entry_ids).update!(locked: false)
+    end
+
+    def invoice_timesheet_entry_ids
+      direct_ids = invoice_line_items.pluck(:timesheet_entry_id)
+      linked_ids = InvoiceLineItemTimeEntry
+        .joins(:invoice_line_item)
+        .where(invoice_line_items: { invoice_id: id })
+        .pluck(:timesheet_entry_id)
+
+      (direct_ids + linked_ids).compact.uniq
     end
 
     def same_currency?
@@ -228,12 +237,14 @@ class Invoice < ApplicationRecord
         will_save_change_to_tax? ||
         will_save_change_to_amount_paid? ||
         will_save_change_to_status? ||
+        invoice_taxes_changed_for_autosave? ||
         (association(:invoice_line_items).loaded? &&
           invoice_line_items.any? { |item| item.changed_for_autosave? || item.marked_for_destruction? })
     end
 
     def calculated_totals_from_line_items(line_items)
       subtotal = line_items.sum { |item| (item.quantity.to_f / 60) * item.rate.to_f }.round(2)
+      sync_invoice_tax_amounts(subtotal)
       total_attributes_for(subtotal)
     end
 
@@ -242,6 +253,7 @@ class Invoice < ApplicationRecord
       return zero_total_attributes if line_item_totals.empty?
 
       subtotal = line_item_totals.sum { |quantity, rate| (quantity.to_f / 60) * rate.to_f }.round(2)
+      sync_invoice_tax_amounts(subtotal)
       total_attributes_for(subtotal)
     end
 
@@ -350,5 +362,25 @@ class Invoice < ApplicationRecord
 
     def reset_skip_line_item_total_sync
       self.skip_line_item_total_sync = false
+    end
+
+    def invoice_taxes_changed_for_autosave?
+      association(:invoice_taxes).loaded? &&
+        invoice_taxes.any? { |invoice_tax| invoice_tax.changed_for_autosave? || invoice_tax.marked_for_destruction? }
+    end
+
+    def sync_invoice_tax_amounts(subtotal)
+      active_invoice_taxes = invoice_taxes.reject(&:marked_for_destruction?)
+      return if active_invoice_taxes.empty?
+
+      if should_recalculate_invoice_taxes?
+        active_invoice_taxes.each { |invoice_tax| invoice_tax.sync_amount_from_subtotal(subtotal) }
+      end
+
+      self.tax = active_invoice_taxes.sum { |invoice_tax| BigDecimal(invoice_tax.amount.to_s) }.round(2)
+    end
+
+    def should_recalculate_invoice_taxes?
+      new_record? || draft? || status_in_database.to_s == "draft"
     end
 end

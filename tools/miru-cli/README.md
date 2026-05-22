@@ -69,6 +69,7 @@ miru project list [--search <term>]
 miru expense list [--query <term>]
 miru expense create --amount <amount> --date <YYYY-MM-DD> --category <name> [--vendor <name>] [--description <text>] [--type <business|personal>]
 miru invoice list [--query <term>] [--page <page>] [--per <count>] [--status <status>]
+miru invoice create --client-id <id> --invoice-number <number> --issue-date <YYYY-MM-DD> --due-date <YYYY-MM-DD> --line-item <name|description|YYYY-MM-DD|rate|minutes>
 miru invoice show --id <id>
 miru invoice send --id <id> --recipients <email1,email2> [--subject <text>] [--message <text>]
 miru payment list [--query <term>]
@@ -95,11 +96,11 @@ miru config token --format shell
 
 ## Current Scope
 
-Version `0.1.0` supports:
+Version `0.2.0` supports:
 
 - client listing
 - expense list/create
 - project listing
 - time list/create/update/delete
-- invoice list/show/send
+- invoice list/create/show/send
 - payment list/show

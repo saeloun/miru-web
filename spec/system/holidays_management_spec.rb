@@ -118,6 +118,21 @@ RSpec.describe "Holidays Management", type: :system, js: true do
         expect(page).to have_field(with: "Christmas Day")
       end
 
+      it "persists edited holiday names after saving and refreshing" do
+        visit "/settings/holidays"
+        click_button "Edit"
+
+        find("input[value='Christmas']").fill_in with: "Christmas Day"
+        click_button "Save Changes"
+
+        expect(page).to have_content("Holiday Info updated successfully", wait: 10)
+        expect(public_holiday.reload.name).to eq("Christmas Day")
+
+        page.refresh
+
+        expect(page).to have_content("Christmas Day", wait: 10)
+      end
+
       it "lists public holidays before optional holidays in the year view" do
         visit "/settings/holidays"
 

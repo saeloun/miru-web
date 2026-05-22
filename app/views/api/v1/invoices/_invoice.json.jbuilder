@@ -16,6 +16,9 @@ json.amount_due invoice.amount_due
 json.base_currency_amount invoice.base_currency_amount
 json.discount invoice.discount
 json.tax invoice.tax
+json.invoice_taxes invoice.invoice_taxes do |invoice_tax|
+  json.partial! "internal_api/v1/partial/invoice_tax", locals: { invoice_tax: }
+end
 json.status invoice.status
 json.stripe_enabled invoice.stripe_enabled
 json.invoice_line_items invoice.invoice_line_items do |invoice_line_item|
@@ -25,6 +28,8 @@ json.invoice_line_items invoice.invoice_line_items do |invoice_line_item|
   json.date invoice_line_item.date
   json.rate invoice_line_item.rate
   json.quantity invoice_line_item.quantity
+  json.timesheet_entry_id invoice_line_item.timesheet_entry_id
+  json.linked_timesheet_entry_ids invoice_line_item.linked_timesheet_entry_ids
 end
 json.client do
   json.partial! "internal_api/v1/partial/client", locals: { client: }

@@ -15,8 +15,8 @@ const authReducer = (state: AuthState, action: AuthAction): AuthState => {
     case "LOGIN": {
       const authToken = action.payload.token || null;
 
-      setToLocalStorage("authToken", authToken);
-      setToLocalStorage("authEmail", action.payload.email);
+      setToLocalStorage("authToken", null);
+      setToLocalStorage("authEmail", null);
 
       return {
         isLoggedIn: true,

@@ -30,6 +30,17 @@ const TimeEntrySelectionTable = ({
   dateFormat,
 }) => {
   const { isDesktop } = useUserContext();
+  const selectionId = item => item.selection_id || item.timesheet_entry_id;
+  const formattedDate = item => {
+    if (item.date_range) {
+      return item.date_range
+        .split(" - ")
+        .map(date => dayjs(date).format(dateFormat))
+        .join(" - ");
+    }
+
+    return dayjs(item.date).format(dateFormat);
+  };
 
   return (
     <table className="table__width mt-0 lg:mt-4">
@@ -48,9 +59,12 @@ const TimeEntrySelectionTable = ({
               </div>
             </th>
             <th className="table__header w-1/5 p-3 text-left">
+              {i18n.t("project")}
+            </th>
+            <th className="table__header w-1/5 p-3 text-left">
               {i18n.t("invoices.nameHeader")}
             </th>
-            <th className="table__header w-3/5 p-3 text-left">
+            <th className="table__header w-2/5 p-3 text-left">
               {i18n.t("invoices.descriptionHeader")}
             </th>
             <th className="table__header p-3 text-right">
@@ -87,7 +101,7 @@ const TimeEntrySelectionTable = ({
       <tbody>
         {lineItems.map((item, index) => {
           const hoursLogged = minToHHMM(item.quantity);
-          const date = dayjs(item.date).format(dateFormat);
+          const date = formattedDate(item);
 
           return isDesktop ? (
             <tr key={index}>
@@ -97,17 +111,18 @@ const TimeEntrySelectionTable = ({
                     checked={item.checked}
                     className="custom__checkbox absolute h-8 w-8 opacity-0"
                     type="checkbox"
-                    onChange={() =>
-                      handleItemSelection(item.timesheet_entry_id)
-                    }
+                    onChange={() => handleItemSelection(selectionId(item))}
                   />
                   <CheckboxIcon />
                 </div>
               </td>
               <td className="table__data w-1/5 text-left text-left text-sm font-medium text-foreground">
+                {item.project_name}
+              </td>
+              <td className="table__data w-1/5 text-left text-left text-sm font-medium text-foreground">
                 {item.first_name} {item.last_name}
               </td>
-              <td className="table__data w-3/5 whitespace-normal text-left text-xs font-medium text-muted-foreground">
+              <td className="table__data w-2/5 whitespace-normal text-left text-xs font-medium text-muted-foreground">
                 {item.description}
               </td>
               <td className="table__data text-right text-xs font-medium text-foreground">
@@ -126,15 +141,18 @@ const TimeEntrySelectionTable = ({
                       checked={item.checked}
                       className="custom__checkbox absolute h-4 w-4 opacity-0"
                       type="checkbox"
-                      onChange={() =>
-                        handleItemSelection(item.timesheet_entry_id)
-                      }
+                      onChange={() => handleItemSelection(selectionId(item))}
                     />
                     <CheckboxIcon />
                   </div>
                 </td>
                 <td className="w-1/2 pt-3 text-left text-left text-sm font-medium text-foreground">
-                  {item.first_name} {item.last_name}
+                  {item.project_name}
+                  {item.first_name || item.last_name ? (
+                    <span className="block text-xs text-muted-foreground">
+                      {item.first_name} {item.last_name}
+                    </span>
+                  ) : null}
                 </td>
                 <td className="pt-3 text-right text-xs font-medium text-foreground">
                   {date} • {hoursLogged}

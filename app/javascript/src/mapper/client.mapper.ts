@@ -8,6 +8,7 @@ const getClientList = input =>
     name: client.name,
     logo: client.logo,
     currency: client.currency,
+    signature_enabled: client.signature_enabled,
   }));
 
 const unmapClientList = input => {
@@ -75,6 +76,7 @@ const unmapClientDetails = input => {
       logo: data.client_details.logo,
       currency: data.client_details.currency,
       client_currency: data.client_details.client_currency,
+      signature_enabled: data.client_details.signature_enabled,
       clientMembersEmails: data.client_members_emails,
       invitations: data.invitations,
     },

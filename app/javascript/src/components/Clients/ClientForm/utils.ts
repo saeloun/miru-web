@@ -48,6 +48,7 @@ export const formatFormData = (
 ) => {
   formData.append("client[name]", values.name);
   formData.append("client[email]", values.email || "");
+  formData.append("client[ein]", values.ein || "");
   formData.append("client[phone]", values.phone);
   formData.append("client[currency]", values.currency?.value);
 
@@ -69,6 +70,13 @@ export const formatFormData = (
     formData.append("client[logo]", clientLogo);
   } else if (!clientLogoUrl && !isNewForm) {
     formData.append("client[logo]", "");
+  }
+
+  if (!isNewForm && values.signatureEnabled !== undefined) {
+    formData.append(
+      "client[signature_enabled]",
+      values.signatureEnabled ? "true" : "false"
+    );
   }
 
   return formData;

@@ -38,10 +38,26 @@ RSpec.describe Company, type: :model do
     it { is_expected.to have_many(:clients).dependent(:destroy) }
     it { is_expected.to have_many(:projects).through(:clients).dependent(:destroy) }
     it { is_expected.to have_one_attached(:logo) }
+    it { is_expected.to have_one_attached(:invoice_signature) }
     it { is_expected.to have_many(:current_workspace_users).dependent(:nullify) }
     it { is_expected.to have_many(:addresses).dependent(:destroy) }
     it { is_expected.to have_many(:devices).dependent(:destroy) }
     it { is_expected.to have_many(:expenses).dependent(:destroy) }
+  end
+
+  describe "invoice_signature attachment" do
+    let(:company) { create(:company) }
+
+    it "can attach a PNG file as invoice_signature" do
+      file_path = Rails.root.join("spec", "support", "fixtures", "test-image.png")
+      company.invoice_signature.attach(io: File.open(file_path), filename: "signature.png", content_type: "image/png")
+
+      expect(company.invoice_signature).to be_attached
+    end
+
+    it "is not attached by default" do
+      expect(company.invoice_signature).not_to be_attached
+    end
   end
 
   describe "Validations" do

@@ -10,6 +10,7 @@ import { Button } from "../../ui/button";
 import { Input } from "../../ui/input";
 import { Label } from "../../ui/label";
 import { Textarea } from "../../ui/textarea";
+import { Checkbox } from "../../ui/checkbox";
 import {
   Select,
   SelectContent,
@@ -34,11 +35,13 @@ import InvoicePreview from "../InvoicePreview";
 import { fetchNewLineItems } from "../common/utils";
 import { lineTotalCalc } from "../../../helpers";
 import { i18n } from "../../../i18n";
+import { InvoiceTax, TaxConfiguration } from "../../../services/invoiceApi";
 
 interface InvoiceEditorProps {
   invoice?: any;
   clients: any[];
   company?: any;
+  taxConfigurations?: TaxConfiguration[];
   initialClientId?: string;
   onSave?: (invoice: any) => void;
   onSend?: (invoice: any) => void;
@@ -67,6 +70,7 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
     bankRoutingNumber: "",
     bankSwiftCode: "",
   },
+  taxConfigurations = [],
   initialClientId = "",
   onSave,
   onSend,
@@ -133,6 +137,7 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
     notes: invoice?.notes || "",
     discount: invoice?.discount || 0,
     tax: invoice?.tax || 0,
+    invoiceTaxes: invoice?.invoiceTaxes || [],
     currency:
       invoice?.currency ||
       clients.find(
@@ -378,10 +383,131 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
     [committedSubtotal, pendingManualSubtotal]
   );
 
-  const total = useMemo(
-    () => subtotal - formData.discount + formData.tax,
-    [subtotal, formData.discount, formData.tax]
+  const calculateTaxAmount = (
+    calculationMethod: "percentage" | "flat",
+    value: number
+  ) => {
+    if (calculationMethod === "percentage") {
+      return Number(((subtotal * Number(value || 0)) / 100).toFixed(2));
+    }
+
+    return Number(Number(value || 0).toFixed(2));
+  };
+
+  const activeInvoiceTaxes = useMemo<InvoiceTax[]>(
+    () =>
+      (formData.invoiceTaxes || [])
+        .filter(tax => !tax._destroy)
+        .map(tax => {
+          const calculationMethod =
+            tax.calculationMethod || tax.calculation_method || "percentage";
+          const frozenAmount = Number(tax.amount || 0);
+
+          return {
+            ...tax,
+            calculationMethod,
+            amount: isSentInvoice
+              ? frozenAmount
+              : calculateTaxAmount(calculationMethod, Number(tax.value || 0)),
+          };
+        }),
+    [formData.invoiceTaxes, isSentInvoice, subtotal]
   );
+
+  const submissionInvoiceTaxes = useMemo<InvoiceTax[]>(
+    () =>
+      (formData.invoiceTaxes || []).map(tax => {
+        const calculationMethod =
+          tax.calculationMethod || tax.calculation_method || "percentage";
+        const frozenAmount = Number(tax.amount || 0);
+
+        return {
+          ...tax,
+          calculationMethod,
+          amount:
+            isSentInvoice || tax._destroy
+              ? frozenAmount
+              : calculateTaxAmount(calculationMethod, Number(tax.value || 0)),
+        };
+      }),
+    [formData.invoiceTaxes, isSentInvoice, subtotal]
+  );
+
+  const taxTotal = useMemo(
+    () =>
+      activeInvoiceTaxes.length > 0
+        ? activeInvoiceTaxes.reduce((sum, tax) => sum + Number(tax.amount), 0)
+        : Number(formData.tax || 0),
+    [activeInvoiceTaxes, formData.tax]
+  );
+
+  const total = useMemo(
+    () => subtotal - formData.discount + taxTotal,
+    [subtotal, formData.discount, taxTotal]
+  );
+
+  const taxConfigurationSelected = (taxConfiguration: TaxConfiguration) =>
+    activeInvoiceTaxes.some(
+      tax => String(tax.taxConfigurationId) === String(taxConfiguration.id)
+    );
+
+  const toggleTaxConfiguration = (
+    taxConfiguration: TaxConfiguration,
+    checked: boolean
+  ) => {
+    if (checked) {
+      if (taxConfigurationSelected(taxConfiguration)) return;
+
+      const amount = calculateTaxAmount(
+        taxConfiguration.calculationMethod,
+        taxConfiguration.value
+      );
+
+      setFormData(current => {
+        const existingActiveTaxes = (current.invoiceTaxes || []).filter(
+          tax => !tax._destroy
+        );
+
+        return {
+          ...current,
+          invoiceTaxes: [
+            ...(current.invoiceTaxes || []),
+            {
+              id: `draft-${taxConfiguration.id}`,
+              taxConfigurationId: taxConfiguration.id,
+              name: taxConfiguration.name,
+              calculationMethod: taxConfiguration.calculationMethod,
+              value: taxConfiguration.value,
+              amount,
+            },
+          ],
+          tax:
+            amount +
+            existingActiveTaxes.reduce(
+              (sum, tax) => sum + Number(tax.amount || 0),
+              0
+            ),
+        };
+      });
+
+      return;
+    }
+
+    setFormData(current => {
+      const invoiceTaxes = (current.invoiceTaxes || []).map(tax =>
+        String(tax.taxConfigurationId) === String(taxConfiguration.id)
+          ? { ...tax, _destroy: true }
+          : tax
+      );
+      const activeTaxes = invoiceTaxes.filter(tax => !tax._destroy);
+
+      return {
+        ...current,
+        invoiceTaxes,
+        tax: activeTaxes.length > 0 ? current.tax : 0,
+      };
+    });
+  };
 
   const formatAddress = (address: any) => {
     if (!address) return "";
@@ -408,6 +534,8 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
     ...formData,
     amount: total,
     subtotal,
+    tax: taxTotal,
+    invoiceTaxes: activeInvoiceTaxes,
     currency: formData.currency,
     client: selectedClient,
     lineItems: activeLineItems,
@@ -516,6 +644,8 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
                   onSave &&
                     onSave({
                       ...formData,
+                      tax: taxTotal,
+                      invoiceTaxes: submissionInvoiceTaxes,
                       invoiceLineItems: submissionLineItems,
                     });
                 }}
@@ -542,6 +672,8 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
                     onSend({
                       ...formData,
                       status: "sent",
+                      tax: taxTotal,
+                      invoiceTaxes: submissionInvoiceTaxes,
                       invoiceLineItems: submissionLineItems,
                     });
                 }}
@@ -782,7 +914,10 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
                       type="number"
                       min={0}
                       step="0.01"
-                      value={formData.tax}
+                      disabled={activeInvoiceTaxes.length > 0}
+                      value={
+                        activeInvoiceTaxes.length > 0 ? taxTotal : formData.tax
+                      }
                       onChange={e =>
                         setFormData({
                           ...formData,
@@ -792,6 +927,59 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
                     />
                   </div>
                 </div>
+
+                {taxConfigurations.length > 0 && (
+                  <div className="space-y-3">
+                    <Label>{i18n.t("invoices.taxConfigurations")}</Label>
+                    <div className="space-y-2 rounded-md border border-border p-3">
+                      {taxConfigurations.map(taxConfiguration => {
+                        const checked =
+                          taxConfigurationSelected(taxConfiguration);
+
+                        const amount = checked
+                          ? activeInvoiceTaxes.find(
+                              tax =>
+                                String(tax.taxConfigurationId) ===
+                                String(taxConfiguration.id)
+                            )?.amount || 0
+                          : calculateTaxAmount(
+                              taxConfiguration.calculationMethod,
+                              taxConfiguration.value
+                            );
+
+                        return (
+                          <label
+                            key={taxConfiguration.id}
+                            className="flex items-center justify-between gap-3 text-sm"
+                          >
+                            <span className="flex min-w-0 items-center gap-2">
+                              <Checkbox
+                                checked={checked}
+                                disabled={isSentInvoice}
+                                onCheckedChange={value =>
+                                  toggleTaxConfiguration(
+                                    taxConfiguration,
+                                    value === true
+                                  )
+                                }
+                              />
+                              <span className="truncate">
+                                {taxConfiguration.name}
+                                {taxConfiguration.calculationMethod ===
+                                "percentage"
+                                  ? ` (${taxConfiguration.value}%)`
+                                  : ""}
+                              </span>
+                            </span>
+                            <span className="shrink-0 tabular-nums">
+                              {formData.currency} {amount.toFixed(2)}
+                            </span>
+                          </label>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
 
                 <div>
                   <Label htmlFor="notes">{i18n.t("notes")}</Label>

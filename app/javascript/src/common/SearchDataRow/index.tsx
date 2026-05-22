@@ -1,6 +1,7 @@
 import React from "react";
 
 import { useNavigate } from "react-router-dom";
+import { HighlightText } from "../../components/ui/highlight-text";
 
 interface ISearchDataRowProps {
   item: {
@@ -13,6 +14,7 @@ interface ISearchDataRowProps {
   urlPrefix: string;
   displayField?: string;
   idField?: string;
+  searchQuery?: string;
 }
 
 const SearchDataRow = ({
@@ -20,6 +22,7 @@ const SearchDataRow = ({
   urlPrefix,
   displayField = "name",
   idField = "id",
+  searchQuery = "",
 }: ISearchDataRowProps) => {
   const navigate = useNavigate();
 
@@ -36,7 +39,7 @@ const SearchDataRow = ({
       onClick={handleClick}
     >
       <p className="w-5/12 whitespace-nowrap pl-3 pr-6 text-base font-normal tracking-wider text-foreground">
-        {displayText}
+        <HighlightText text={displayText} query={searchQuery} />
       </p>
     </div>
   );

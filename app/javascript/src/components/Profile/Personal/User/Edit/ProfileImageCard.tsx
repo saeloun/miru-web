@@ -246,6 +246,7 @@ const ProfileImageCard = ({
       setImageLoadFailed(false);
       onAvatarChange(nextUrl);
       closeEditor();
+      toast.success(response.data.notice || i18n.t("profile.avatarUpdated"));
     } catch (error) {
       toast.error(
         resolveApiErrorMessage(error, i18n.t("profile.uploadPhotoFailed"))
@@ -258,12 +259,13 @@ const ProfileImageCard = ({
   const handleDelete = async () => {
     try {
       setIsUploading(true);
-      await teamApi.destroyTeamMemberAvatar(userId, {
+      const response = await teamApi.destroyTeamMemberAvatar(userId, {
         skipErrorToast: true,
       });
       setPreviewUrl(null);
       setImageLoadFailed(false);
       onAvatarChange(null);
+      toast.success(response.data.notice || i18n.t("profile.avatarRemoved"));
     } catch (error) {
       toast.error(
         resolveApiErrorMessage(error, i18n.t("profile.removePhotoFailed"))
