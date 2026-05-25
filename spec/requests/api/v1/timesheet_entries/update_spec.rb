@@ -184,7 +184,7 @@ RSpec.describe "Api::V1::TimesheetEntry#update", type: :request do
 
     context "when the entry is older than one week" do
       before do
-        timesheet_entry.update!(work_date: 30.days.ago)
+        timesheet_entry.update!(work_date: 31.days.ago)
       end
 
       it "returns forbidden for updates" do
