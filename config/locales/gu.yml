@@ -742,11 +742,11 @@ gu:
       message: ટાઇમશીટ બનાવી
     destroy:
       failure: ટાઇમશીટ એન્ટ્રીઓ કાઢી નાખવામાં નિષ્ફળ થયાં
-      locked: Only admins can delete entries older than 7 days
+      locked: "Only admins can delete entries older than %{days} days"
       message: ટાઇમશીટ કાઢી નાખી
     update:
       failure: ટાઇમશીટ એન્ટ્રીઓ અપડેટ કરવામાં નિષ્ફળ થયાં
-      locked: Only admins can edit entries older than 7 days
+      locked: "Only admins can edit entries older than %{days} days"
       message: ટાઇમશીટ અપડેટ કરી
   totp:
     disable_passkey_first: પ્રમાણકર્તા એપ્લિકેશન 2FA સક્ષમ કરતા પહેલા જરૂરી પાસકી

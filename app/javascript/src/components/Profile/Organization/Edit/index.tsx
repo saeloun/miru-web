@@ -62,6 +62,12 @@ const orgSchema = Yup.object().shape({
   companyWorkingDays: Yup.string().required(
     i18n.t("auth.validation.workingDaysRequired")
   ),
+  timesheetEditDays: Yup.number()
+    .typeError(i18n.t("auth.validation.amountMustBeNumber"))
+    .integer(i18n.t("auth.validation.amountMustBeNumber"))
+    .min(1, i18n.t("organization.timesheetEditDaysMin"))
+    .max(365, i18n.t("organization.timesheetEditDaysMax"))
+    .required(i18n.t("organization.timesheetEditDaysRequired")),
 });
 
 const fiscalYearOptions = [

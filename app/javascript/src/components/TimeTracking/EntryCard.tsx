@@ -1,7 +1,14 @@
 import React from "react";
 import dayjs from "dayjs";
 import { minToHHMM } from "helpers";
-import { Trash, PencilSimple, Clock, Briefcase, Play } from "phosphor-react";
+import {
+  Trash,
+  PencilSimple,
+  Clock,
+  Briefcase,
+  Play,
+  LockSimple,
+} from "phosphor-react";
 import { Card, CardContent } from "../ui/card";
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
@@ -48,7 +55,7 @@ const isOutsideEditWindow = (workDate, editDays: number) => {
 };
 
 const canEditTimeEntry = (billStatus, role, workDate, editDays: number) => {
-  if (isOutsideEditWindow(workDate, editDays)) return isAdminRole(role);
+  if (isOutsideEditWindow(workDate, editDays)) return isPrivilegedRole(role);
 
   if (isPrivilegedRole(role)) return true;
 
@@ -80,6 +87,9 @@ const EntryCard: React.FC<props> = ({
     work_date,
     timesheetEditDays
   );
+
+  const isWindowLocked =
+    isOutsideEditWindow(work_date, timesheetEditDays) && !canManageEntry;
   const sourceSkill = source_metadata?.skill;
   const sourceServer = source_metadata?.mcp_server;
 
@@ -213,22 +223,33 @@ const EntryCard: React.FC<props> = ({
               </div>
             </div>
 
-            {canManageEntry && (
-              <div className="flex items-center gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="h-9"
-                  data-testid="resume-timer-entry"
-                  onClick={e => {
-                    e.stopPropagation();
-                    handleResumeTimer({ client, project, projectId, note });
-                  }}
-                  title={i18n.t("timeTracking.resumeTimer")}
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                className="h-9"
+                data-testid="resume-timer-entry"
+                onClick={e => {
+                  e.stopPropagation();
+                  handleResumeTimer({ client, project, projectId, note });
+                }}
+                title={i18n.t("timeTracking.resumeTimer")}
+              >
+                <Play className="mr-1 h-4 w-4" />
+                {i18n.t("timeTracking.resume")}
+              </Button>
+              {isWindowLocked && (
+                <span
+                  className="flex items-center gap-1 text-xs text-muted-foreground"
+                  title={i18n.t("timeTracking.editWindowClosed", {
+                    days: timesheetEditDays,
+                  })}
                 >
-                  <Play className="mr-1 h-4 w-4" />
-                  {i18n.t("timeTracking.resume")}
-                </Button>
+                  <LockSimple className="h-3 w-3" />
+                  {i18n.t("timeTracking.editClosed")}
+                </span>
+              )}
+              {canManageEntry && (
                 <div className="flex items-center gap-1 opacity-0 transition-all duration-200 group-hover:opacity-100">
                   <Button
                     variant="ghost"
@@ -256,8 +277,8 @@ const EntryCard: React.FC<props> = ({
                     <Trash className="h-4 w-4" />
                   </Button>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
           </div>
         </div>
       </CardContent>

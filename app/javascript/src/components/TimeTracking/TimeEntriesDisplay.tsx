@@ -93,7 +93,8 @@ const TimeEntriesDisplay: React.FC<TimeEntriesDisplayProps> = ({
   const reviewEntries = reviewMode === "week" ? weekEntries : entries || [];
   const shouldRenderReviewPanel = hasEntries || canShowWeekReview;
 
-  const isAdminUser = companyRole === Roles["ADMIN"];
+  const isPrivilegedUser =
+    companyRole === Roles["ADMIN"] || companyRole === Roles["OWNER"];
 
   const isOutsideEditWindow = (entryDate: string) => {
     const parsedDate = dayjs(entryDate, dateFormats, true);
@@ -123,7 +124,8 @@ const TimeEntriesDisplay: React.FC<TimeEntriesDisplayProps> = ({
         entry.display_date || entry.leave_date || selectedFullDate;
 
       const canManageTimeoff =
-        !holidayDetails && (!isOutsideEditWindow(entryDate) || isAdminUser);
+        !holidayDetails &&
+        (!isOutsideEditWindow(entryDate) || isPrivilegedUser);
 
       const handleEditTimeoff = () => {
         if (!canManageTimeoff) return;

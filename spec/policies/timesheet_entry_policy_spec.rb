@@ -77,7 +77,7 @@ RSpec.describe TimesheetEntryPolicy, type: :policy do
     end
 
     permissions :create? do
-      it "is not permitted to create timesheet_entry" do
+      it "is permitted to create timesheet_entry" do
         expect(subject).to permit(user, TimesheetEntry)
       end
     end
@@ -94,6 +94,24 @@ RSpec.describe TimesheetEntryPolicy, type: :policy do
           it "is not permitted to update entries outside the edit window" do
             timesheet_entry.update!(work_date: 31.days.ago.to_date)
             expect(subject).not_to permit(user, timesheet_entry)
+          end
+
+          it "is permitted to update an entry exactly at the boundary (work_date == cutoff)" do
+            # work_date < edit_days.days.ago is strict less-than, so the boundary day is editable
+            timesheet_entry.update!(work_date: 30.days.ago.to_date)
+            expect(subject).to permit(user, timesheet_entry)
+          end
+
+          it "is not permitted when company has a custom edit window and entry exceeds it" do
+            company.update!(timesheet_edit_days: 7)
+            timesheet_entry.update!(work_date: 8.days.ago.to_date)
+            expect(subject).not_to permit(user, timesheet_entry)
+          end
+
+          it "is permitted when company has a custom edit window and entry is within it" do
+            company.update!(timesheet_edit_days: 7)
+            timesheet_entry.update!(work_date: 6.days.ago.to_date)
+            expect(subject).to permit(user, timesheet_entry)
           end
         end
 
@@ -161,9 +179,9 @@ RSpec.describe TimesheetEntryPolicy, type: :policy do
         expect(subject).to permit(user, timesheet_entry)
       end
 
-      it "forbids entries outside the edit window" do
+      it "permits entries outside the edit window (owners bypass the window)" do
         timesheet_entry.update!(work_date: 31.days.ago.to_date)
-        expect(subject).not_to permit(user, timesheet_entry)
+        expect(subject).to permit(user, timesheet_entry)
       end
     end
   end

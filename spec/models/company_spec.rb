@@ -71,6 +71,50 @@ RSpec.describe Company, type: :model do
       expect(subject).to validate_numericality_of(:standard_price).is_greater_than_or_equal_to(0)
     end
 
+    describe "timesheet_edit_days validation" do
+      let(:company) { build(:company) }
+
+      it "defaults to 30 days" do
+        expect(company.timesheet_edit_days).to eq(30)
+      end
+
+      it "accepts valid value within range" do
+        company.timesheet_edit_days = 14
+        expect(company).to be_valid
+      end
+
+      it "accepts minimum value of 1" do
+        company.timesheet_edit_days = 1
+        expect(company).to be_valid
+      end
+
+      it "accepts maximum value of 365" do
+        company.timesheet_edit_days = 365
+        expect(company).to be_valid
+      end
+
+      it "rejects 0" do
+        company.timesheet_edit_days = 0
+        expect(company).not_to be_valid
+        expect(company.errors[:timesheet_edit_days]).to be_present
+      end
+
+      it "rejects negative values" do
+        company.timesheet_edit_days = -1
+        expect(company).not_to be_valid
+      end
+
+      it "rejects values above 365" do
+        company.timesheet_edit_days = 366
+        expect(company).not_to be_valid
+      end
+
+      it "rejects non-integer values" do
+        company.timesheet_edit_days = 1.5
+        expect(company).not_to be_valid
+      end
+    end
+
     describe "phone number validation" do
       let(:company) { build(:company) }
 

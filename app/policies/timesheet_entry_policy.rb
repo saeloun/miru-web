@@ -22,7 +22,7 @@ class TimesheetEntryPolicy < ApplicationPolicy
   end
 
   def update?
-    return false if stale_entry_for_non_admin?
+    return false if stale_entry_for_non_privileged?
     return true if privileged_role_for_record?
 
     record.user_id == user.id && !record.billed?
@@ -46,9 +46,8 @@ class TimesheetEntryPolicy < ApplicationPolicy
       record.work_date < edit_days.days.ago.to_date
     end
 
-    def stale_entry_for_non_admin?
-      stale_entry_for_standard_user? &&
-        !user.has_role?(:admin, record.project.client.company)
+    def stale_entry_for_non_privileged?
+      stale_entry_for_standard_user? && !privileged_role_for_record?
     end
 
     class Scope < ApplicationPolicy
