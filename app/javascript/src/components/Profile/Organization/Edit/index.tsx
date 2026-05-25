@@ -112,6 +112,7 @@ const initialState = {
   logo: null,
   companyWorkingHours: "0",
   companyWorkingDays: "0",
+  timesheetEditDays: "30",
   bankName: "",
   bankAccountNumber: "",
   bankRoutingNumber: "",
@@ -235,6 +236,7 @@ const OrgEdit = () => {
       logo: null,
       companyWorkingHours: companyDetails.working_hours,
       companyWorkingDays: companyDetails.working_days,
+      timesheetEditDays: (companyDetails.timesheet_edit_days ?? 30).toString(),
       bankName: companyDetails.bank_name || "",
       bankAccountNumber: companyDetails.bank_account_number || "",
       bankRoutingNumber: companyDetails.bank_routing_number || "",
@@ -501,6 +503,10 @@ const OrgEdit = () => {
 
       formD.append("company[working_hours]", orgDetails.companyWorkingHours);
       formD.append("company[working_days]", orgDetails.companyWorkingDays);
+      formD.append(
+        "company[timesheet_edit_days]",
+        orgDetails.timesheetEditDays
+      );
 
       // Bank information
       formD.append("company[bank_name]", orgDetails.bankName || "");

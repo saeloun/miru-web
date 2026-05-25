@@ -1423,6 +1423,9 @@ const en = {
     workSchedule: "Work Schedule",
     workingDaysPerWeek: "Working Days per Week",
     workingHoursPerWeek: "Working Hours per Week",
+    timesheetEditWindowDays: "Timesheet Edit Window",
+    timesheetEditWindowHint:
+      "Days employees can log or edit unbilled time entries (relative to work date). Admins can always edit.",
     bankInformation: "Bank Information",
     bankName: "Bank Name",
     enterBankName: "Enter bank name",

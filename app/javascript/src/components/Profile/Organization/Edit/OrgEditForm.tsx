@@ -43,6 +43,7 @@ interface OrgEditFormProps {
     companyFiscalYear: string;
     companyWorkingDays: string;
     companyWorkingHours: string;
+    timesheetEditDays: string;
     bankName: string;
     bankAccountNumber: string;
     bankRoutingNumber: string;
@@ -162,6 +163,7 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
     companyFiscalYear,
     companyWorkingDays,
     companyWorkingHours,
+    timesheetEditDays,
     bankName,
     bankAccountNumber,
     bankRoutingNumber,
@@ -759,6 +761,35 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                       min="1"
                       max="168"
                     />
+                  </FormField>
+                </div>
+
+                <div className="mt-4">
+                  <FormField
+                    label={i18n.t("organization.timesheetEditWindowDays")}
+                    htmlFor="timesheet_edit_days"
+                  >
+                    <div className="flex items-center gap-3">
+                      <Input
+                        id="timesheet_edit_days"
+                        aria-label="Timesheet edit window (days)"
+                        type="number"
+                        value={timesheetEditDays || "30"}
+                        onChange={e =>
+                          handleChangeCompanyDetails(
+                            e.target.value,
+                            "timesheetEditDays"
+                          )
+                        }
+                        className="border-border w-28"
+                        placeholder="30"
+                        min="1"
+                        max="365"
+                      />
+                      <p className="text-xs text-muted-foreground">
+                        {i18n.t("organization.timesheetEditWindowHint")}
+                      </p>
+                    </div>
                   </FormField>
                 </div>
               </CardContent>

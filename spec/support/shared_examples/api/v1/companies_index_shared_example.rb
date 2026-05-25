@@ -19,5 +19,10 @@ shared_examples "Api::V1::Companies::index success response" do
     expect(json_response["company_details"]["address"]["pin"]).to eq(address.pin)
     expect(json_response["company_details"]["ein"]).to eq(company.ein)
     expect(json_response["company_details"]["us_taxpayer_id"]).to eq(company.us_taxpayer_id)
+    expect(json_response["company_details"]["timesheet_edit_days"]).to eq(company.timesheet_edit_days)
+  end
+
+  it "returns the timesheet edit window defaulting to 30" do
+    expect(json_response["company_details"]["timesheet_edit_days"]).to eq(30)
   end
 end

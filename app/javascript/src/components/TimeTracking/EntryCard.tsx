@@ -38,15 +38,17 @@ const isPrivilegedRole = role =>
 
 const isAdminRole = role => role === Roles["ADMIN"];
 
-const isOlderThanOneWeek = workDate => {
+const isOutsideEditWindow = (workDate, editDays: number) => {
   const parsedDate = dayjs(workDate);
   if (!workDate || !parsedDate.isValid()) return false;
 
-  return dayjs().startOf("day").diff(parsedDate.startOf("day"), "day") > 7;
+  return (
+    dayjs().startOf("day").diff(parsedDate.startOf("day"), "day") > editDays
+  );
 };
 
-const canEditTimeEntry = (billStatus, role, workDate) => {
-  if (isOlderThanOneWeek(workDate)) return isAdminRole(role);
+const canEditTimeEntry = (billStatus, role, workDate, editDays: number) => {
+  if (isOutsideEditWindow(workDate, editDays)) return isAdminRole(role);
 
   if (isPrivilegedRole(role)) return true;
 
@@ -70,8 +72,14 @@ const EntryCard: React.FC<props> = ({
   handleDuplicate,
   handleResumeTimer,
 }) => {
-  const { isDesktop, companyRole } = useUserContext();
-  const canManageEntry = canEditTimeEntry(bill_status, companyRole, work_date);
+  const { isDesktop, companyRole, company } = useUserContext();
+  const timesheetEditDays: number = (company as any)?.timesheet_edit_days ?? 30;
+  const canManageEntry = canEditTimeEntry(
+    bill_status,
+    companyRole,
+    work_date,
+    timesheetEditDays
+  );
   const sourceSkill = source_metadata?.skill;
   const sourceServer = source_metadata?.mcp_server;
 
