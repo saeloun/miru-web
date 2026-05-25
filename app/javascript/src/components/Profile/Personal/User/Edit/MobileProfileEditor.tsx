@@ -158,8 +158,8 @@ const MobileProfileEditor = ({
             )}
           </div>
         </div>
-        <div className="mt-2 flex w-full flex-row">
-          <div className="flex w-1/2 flex-col py-3" ref={wrapperRef}>
+        <div className="mt-2 flex w-full flex-col gap-2">
+          <div className="flex flex-col py-1" ref={wrapperRef}>
             <div
               className="field relative flex w-full flex-col px-2"
               onClick={() =>
@@ -204,7 +204,7 @@ const MobileProfileEditor = ({
               </div>
             )}
           </div>
-          <div className="w-1/2 px-1">
+          <div className="w-full px-2 py-1">
             <CustomReactSelect
               handleOnChange={option => {
                 updateBasicDetails(option?.value || "en", "locale", false);
@@ -227,8 +227,8 @@ const MobileProfileEditor = ({
           <PhoneIcon className="mr-2 text-muted-foreground" size={13.5} />{" "}
           {i18n.t("profile.contactInformation")}
         </span>
-        <div className="mt-2 flex w-full flex-row">
-          <div className="w-1/2 px-1">
+        <div className="mt-2 flex w-full flex-col gap-3">
+          <div className="px-1">
             <div
               className={`field-outline relative flex h-12 flex-row items-center rounded-md border bg-background px-2 text-sm ring-offset-background focus-within:ring-2 focus-within:ring-offset-2 ${
                 errDetails.phone_number_err
@@ -261,7 +261,7 @@ const MobileProfileEditor = ({
               />
             )}
           </div>
-          <div className="w-1/2 px-1">
+          <div className="px-1">
             <CustomInputText
               id="email_id"
               label={i18n.t("profile.personalEmail")}
@@ -464,8 +464,8 @@ const MobileProfileEditor = ({
           <GlobeIcon className="mr-2 text-muted-foreground" size={13.5} />
           {i18n.t("profile.socialProfiles")}
         </span>
-        <div className="mt-2 flex w-full flex-row">
-          <div className="flex w-1/2 flex-col px-1">
+        <div className="mt-2 flex w-full flex-col gap-3">
+          <div className="flex flex-col px-1">
             <CustomInputText
               id="linkedin"
               inputBoxClassName={`${inputClass} border-border`}
@@ -479,7 +479,7 @@ const MobileProfileEditor = ({
               }}
             />
           </div>
-          <div className="flex w-1/2 flex-col px-1">
+          <div className="flex flex-col px-1">
             <CustomInputText
               id="github"
               inputBoxClassName={`${inputClass} border-border`}

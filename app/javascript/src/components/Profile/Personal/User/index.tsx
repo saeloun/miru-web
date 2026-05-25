@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { teamsApi } from "apis/api";
 import Loader from "common/Loader/index";
@@ -16,7 +16,6 @@ import { getDisplayAvatarUrl } from "helpers";
 import { sendGAPageView } from "utils/googleAnalytics";
 import { i18n } from "../../../../i18n";
 
-import MobilePersonalDetails from "./MobilePersonalDetails";
 import PersonalProfileSummary from "./PersonalProfileSummary";
 
 const UserDetailsView = () => {
@@ -99,47 +98,32 @@ const UserDetailsView = () => {
 
   return (
     <div className="flex w-full flex-col">
-      {isDesktop && (
-        <Fragment>
-          <DetailsHeader
-            showButtons
-            editAction={handleEditClick}
-            isDisableUpdateBtn={false}
-            subTitle=""
-            title={i18n.t("profile.personalDetails")}
-          />
-          {isLoading ? (
-            <Loader className="min-h-70v" />
-          ) : (
-            <PersonalProfileSummary
-              avatarUrl={displayAvatarUrl}
-              handleEditClick={handleEditClick}
-              isCalledFromSettings={isCalledFromSettings}
-              personalDetails={personalDetails}
-            />
-          )}
-        </Fragment>
+      {isDesktop ? (
+        <DetailsHeader
+          showButtons
+          editAction={handleEditClick}
+          isDisableUpdateBtn={false}
+          subTitle=""
+          title={i18n.t("profile.personalDetails")}
+        />
+      ) : (
+        <MobileEditHeader
+          href="edit"
+          title={i18n.t("profile.personalDetails")}
+          backHref={
+            isCalledFromSettings ? "/settings/" : `/team/${currentUserId}/`
+          }
+        />
       )}
-      {!isDesktop && (
-        <Fragment>
-          <MobileEditHeader
-            href="edit"
-            title={i18n.t("profile.personalDetails")}
-            backHref={
-              isCalledFromSettings ? "/settings/" : `/team/${currentUserId}/`
-            }
-          />
-          {isLoading ? (
-            <Loader className="min-h-70v" />
-          ) : (
-            <MobilePersonalDetails
-              avatarUrl={displayAvatarUrl}
-              handleEditClick={handleEditClick}
-              isCalledFromSettings={isCalledFromSettings}
-              personalDetails={personalDetails}
-            />
-          )}
-        </Fragment>
+      {isLoading ? (
+        <Loader className="min-h-70v" />
+      ) : (
+        <PersonalProfileSummary
+          avatarUrl={displayAvatarUrl}
+          handleEditClick={handleEditClick}
+          isCalledFromSettings={isCalledFromSettings}
+          personalDetails={personalDetails}
+        />
       )}
       <Outlet />
     </div>
