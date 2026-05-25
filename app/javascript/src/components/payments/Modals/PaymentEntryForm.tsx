@@ -496,7 +496,17 @@ const PaymentEntryForm = ({
                 <div
                   className="relative"
                   ref={wrapperMobileTransactionTypeRef}
+                  role="button"
+                  tabIndex={0}
+                  aria-haspopup="listbox"
+                  aria-expanded={showMobileTransactionTypes}
                   onClick={() => setShowMobileTransactionTypes(true)}
+                  onKeyDown={event => {
+                    if (event.key === "Enter" || event.key === " ") {
+                      event.preventDefault();
+                      setShowMobileTransactionTypes(true);
+                    }
+                  }}
                 >
                   <CustomReactSelect
                     isDisabled
