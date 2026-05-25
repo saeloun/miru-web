@@ -40,7 +40,7 @@ RSpec.describe "Api::V1::TimesheetEntry::BulkActionController#destroy", type: :r
       expect(response).to have_http_status(:forbidden)
     end
 
-    it "rejects employees when selected entries are older than a week" do
+    it "rejects employees when selected entries are outside the edit window" do
       employee = create(:user, current_workspace_id: company.id)
       create(:employment, company:, user: employee)
       employee.add_role :employee, company
@@ -50,7 +50,7 @@ RSpec.describe "Api::V1::TimesheetEntry::BulkActionController#destroy", type: :r
         :timesheet_entry,
         user: employee,
         project:,
-        work_date: 8.days.ago.to_date
+        work_date: 31.days.ago.to_date
       )
 
       sign_out user

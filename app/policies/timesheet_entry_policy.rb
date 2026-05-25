@@ -42,7 +42,8 @@ class TimesheetEntryPolicy < ApplicationPolicy
     def stale_entry_for_standard_user?
       return false if record.work_date.blank?
 
-      record.work_date < 7.days.ago.to_date
+      edit_days = record.project.client.company.timesheet_edit_days
+      record.work_date < edit_days.days.ago.to_date
     end
 
     def stale_entry_for_non_admin?

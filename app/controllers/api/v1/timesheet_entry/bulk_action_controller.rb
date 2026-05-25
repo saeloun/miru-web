@@ -18,7 +18,8 @@ class Api::V1::TimesheetEntry::BulkActionController < Api::V1::ApplicationContro
       return render json: {
         error: I18n.t(
           "timesheet_entry.update.locked",
-          default: "Only admins can edit entries older than 7 days"
+          days: current_company.timesheet_edit_days,
+          default: "Only admins can edit entries older than %{days} days"
         )
       }, status: 403
     end
@@ -37,7 +38,8 @@ class Api::V1::TimesheetEntry::BulkActionController < Api::V1::ApplicationContro
       return render json: {
         error: I18n.t(
           "timesheet_entry.destroy.locked",
-          default: "Only admins can delete entries older than 7 days"
+          days: current_company.timesheet_edit_days,
+          default: "Only admins can delete entries older than %{days} days"
         )
       }, status: 403
     end
@@ -60,6 +62,6 @@ class Api::V1::TimesheetEntry::BulkActionController < Api::V1::ApplicationContro
     end
 
     def entry_locked_for_standard_user?(entry)
-      entry.work_date.present? && entry.work_date < 7.days.ago.to_date
+      entry.work_date.present? && entry.work_date < current_company.timesheet_edit_days.days.ago.to_date
     end
 end

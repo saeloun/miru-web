@@ -30,8 +30,8 @@ RSpec.describe TimesheetEntryPolicy, type: :policy do
         expect(subject).to permit(user, timesheet_entry)
       end
 
-      it "is permitted to update entries older than a week" do
-        timesheet_entry.update!(work_date: 8.days.ago.to_date)
+      it "is permitted to update entries outside the edit window" do
+        timesheet_entry.update!(work_date: 31.days.ago.to_date)
         expect(subject).to permit(user, timesheet_entry)
       end
 
@@ -52,8 +52,8 @@ RSpec.describe TimesheetEntryPolicy, type: :policy do
         expect(subject).to permit(user, timesheet_entry)
       end
 
-      it "is permitted to destroy entries older than a week" do
-        timesheet_entry.update!(work_date: 8.days.ago.to_date)
+      it "is permitted to destroy entries outside the edit window" do
+        timesheet_entry.update!(work_date: 31.days.ago.to_date)
         expect(subject).to permit(user, timesheet_entry)
       end
 
@@ -91,8 +91,8 @@ RSpec.describe TimesheetEntryPolicy, type: :policy do
             expect(subject).to permit(user, timesheet_entry)
           end
 
-          it "is not permitted to update entries older than a week" do
-            timesheet_entry.update!(work_date: 8.days.ago.to_date)
+          it "is not permitted to update entries outside the edit window" do
+            timesheet_entry.update!(work_date: 31.days.ago.to_date)
             expect(subject).not_to permit(user, timesheet_entry)
           end
         end
@@ -127,8 +127,8 @@ RSpec.describe TimesheetEntryPolicy, type: :policy do
         expect(subject).not_to permit(user, timesheet_entry)
       end
 
-      it "is not permitted to destroy own entries older than a week" do
-        timesheet_entry.update!(user:, work_date: 8.days.ago.to_date)
+      it "is not permitted to destroy own entries outside the edit window" do
+        timesheet_entry.update!(user:, work_date: 31.days.ago.to_date)
         expect(subject).not_to permit(user, timesheet_entry)
       end
 
@@ -161,8 +161,8 @@ RSpec.describe TimesheetEntryPolicy, type: :policy do
         expect(subject).to permit(user, timesheet_entry)
       end
 
-      it "forbids entries older than a week" do
-        timesheet_entry.update!(work_date: 8.days.ago.to_date)
+      it "forbids entries outside the edit window" do
+        timesheet_entry.update!(work_date: 31.days.ago.to_date)
         expect(subject).not_to permit(user, timesheet_entry)
       end
     end
