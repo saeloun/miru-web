@@ -191,8 +191,9 @@ const MonthCalendar: React.FC<Iprops> = ({
         totalMonthDuration={totalMonthDuration}
       />
       <Card className="mt-4">
-        <CardContent className="p-6">
-          <div className="grid grid-cols-8 gap-4 mb-4">
+        <CardContent className="p-1.5 sm:p-4 md:p-6">
+          {/* Mobile: 7 columns (days only). Desktop: 8 columns (7 days + weekly total) */}
+          <div className="grid grid-cols-7 md:grid-cols-8 gap-0.5 md:gap-4 mb-1.5 md:mb-4">
             {[
               i18n.t("timeTracking.dayAbbr.mon"),
               i18n.t("timeTracking.dayAbbr.tue"),
@@ -204,23 +205,26 @@ const MonthCalendar: React.FC<Iprops> = ({
             ].map((day, index) => (
               <div
                 key={index}
-                className="text-center text-sm font-semibold text-muted-foreground"
+                className="text-center text-[10px] md:text-sm font-semibold text-muted-foreground truncate"
               >
                 {day}
               </div>
             ))}
-            <div className="text-center text-sm font-semibold text-muted-foreground">
+            <div className="hidden md:block text-center text-sm font-semibold text-muted-foreground">
               {i18n.t("total")}
             </div>
           </div>
           {monthData.map((weekInfo, weekIndex) => (
-            <div key={weekIndex} className="grid grid-cols-8 gap-4 mb-3">
+            <div
+              key={weekIndex}
+              className="grid grid-cols-7 md:grid-cols-8 gap-0.5 md:gap-4 mb-0.5 md:mb-3"
+            >
               {Array.from(Array(7).keys()).map(dayNum =>
                 weekInfo[dayNum] ? (
                   <button
                     key={dayNum}
                     className={cn(
-                      "relative h-20 rounded-lg border-2 bg-card p-2",
+                      "relative h-11 md:h-20 rounded border md:border-2 md:rounded-lg bg-card p-0.5 md:p-2 overflow-hidden",
                       "hover:bg-accent hover:border-accent-foreground/20 transition-colors",
                       "focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
                       weekInfo[dayNum]["isoDate"] === selectedFullDate
@@ -232,42 +236,37 @@ const MonthCalendar: React.FC<Iprops> = ({
                       setSelectDate(dayNum);
                     }}
                   >
-                    <div className="flex flex-col h-full justify-between">
-                      <div className="flex justify-end">
-                        <span
-                          className={cn(
-                            "text-sm font-medium",
-                            weekInfo[dayNum]["isoDate"] === todayIso
-                              ? "bg-primary text-primary-foreground px-2 py-0.5 rounded-full"
-                              : "text-muted-foreground"
-                          )}
-                        >
-                          {weekInfo[dayNum]["day"]}
-                        </span>
-                      </div>
-                      <div className="text-right">
-                        <span className="text-lg font-semibold">
-                          {(() => {
-                            if (weekInfo[dayNum]["totalDuration"] > 0) {
-                              return minToHHMM(
-                                weekInfo[dayNum]["totalDuration"]
-                              );
-                            } else if (weekInfo[dayNum]["isoDate"] < todayIso) {
-                              return "00:00";
-                            }
+                    <div className="flex flex-col h-full justify-between items-center md:items-end">
+                      <span
+                        className={cn(
+                          "text-[9px] md:text-sm font-medium leading-none",
+                          weekInfo[dayNum]["isoDate"] === todayIso
+                            ? "bg-primary text-primary-foreground px-1 md:px-2 py-0.5 rounded-full"
+                            : "text-muted-foreground"
+                        )}
+                      >
+                        {weekInfo[dayNum]["day"]}
+                      </span>
+                      <span className="text-[9px] md:text-lg font-semibold leading-none tabular-nums text-foreground">
+                        {(() => {
+                          if (weekInfo[dayNum]["totalDuration"] > 0) {
+                            return minToHHMM(weekInfo[dayNum]["totalDuration"]);
+                          } else if (weekInfo[dayNum]["isoDate"] < todayIso) {
+                            return "00:00";
+                          }
 
-                            return "";
-                          })()}
-                        </span>
-                      </div>
+                          return "";
+                        })()}
+                      </span>
                     </div>
                   </button>
                 ) : (
-                  <div key={dayNum} className="h-20" />
+                  <div key={dayNum} className="h-11 md:h-20" />
                 )
               )}
-              <div className="h-20 rounded-lg bg-muted/50 border-2 border-border flex items-end justify-end p-2">
-                <span className="text-lg font-bold">
+              {/* Weekly total - hidden on mobile, visible on md+ */}
+              <div className="hidden md:flex h-20 rounded-lg bg-muted/50 border-2 border-border items-end justify-end p-2 overflow-hidden">
+                <span className="text-lg font-bold leading-tight tabular-nums">
                   {(() => {
                     if (weekInfo[7]) {
                       return minToHHMM(weekInfo[7]);

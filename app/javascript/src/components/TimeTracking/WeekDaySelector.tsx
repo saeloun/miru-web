@@ -30,7 +30,7 @@ const WeekDaySelector: React.FC<WeekDaySelectorProps> = ({
     const isWeekend = normalizedDay === "SUN" || normalizedDay === "SAT";
 
     const buttonClasses = cn(
-      "relative transition-all duration-200 cursor-pointer text-center rounded-lg border px-3 py-3",
+      "relative transition-all duration-200 cursor-pointer text-center rounded-lg border px-1 py-2 sm:px-3 sm:py-3 overflow-hidden",
       // Selected state takes priority
       isSelected && "border-primary bg-primary/10 ring-2 ring-primary/20",
       // Today state (only if not selected)
@@ -69,11 +69,11 @@ const WeekDaySelector: React.FC<WeekDaySelectorProps> = ({
           </div>
         )}
 
-        <div className="flex flex-col items-center justify-center space-y-1">
+        <div className="flex flex-col items-center justify-center gap-0.5 sm:space-y-1">
           {/* Day name */}
           <p
             className={cn(
-              "text-[10px] font-bold uppercase tracking-[0.15em]",
+              "text-[9px] sm:text-[10px] font-bold uppercase tracking-wide sm:tracking-[0.15em]",
               isSelected
                 ? "text-primary font-extrabold"
                 : isToday
@@ -89,7 +89,7 @@ const WeekDaySelector: React.FC<WeekDaySelectorProps> = ({
           {/* Date number */}
           <p
             className={cn(
-              "text-lg font-bold",
+              "text-base sm:text-lg font-bold leading-tight",
               isSelected || isToday ? "text-primary" : "text-foreground"
             )}
           >
@@ -97,14 +97,9 @@ const WeekDaySelector: React.FC<WeekDaySelectorProps> = ({
           </p>
 
           {/* Month */}
-          <p className="text-[9px] font-medium text-muted-foreground">
+          <p className="text-[8px] sm:text-[9px] font-medium text-muted-foreground leading-tight">
             {d.month}
           </p>
-          {isSelected && (
-            <p className="text-[9px] font-semibold uppercase tracking-[0.15em] text-primary">
-              Selected
-            </p>
-          )}
         </div>
       </button>
     );
@@ -112,7 +107,7 @@ const WeekDaySelector: React.FC<WeekDaySelectorProps> = ({
 
   return (
     <div className="w-full mb-6">
-      <div className="grid grid-cols-7 gap-2">
+      <div className="grid grid-cols-7 gap-1 sm:gap-2">
         {dayInfo.map((d, index) => renderDayButton(d, index))}
       </div>
     </div>

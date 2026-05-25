@@ -89,7 +89,7 @@ export const CustomCreatableSelect = ({
 
   return (
     <div
-      className={`outline relative ${wrapperClassName}`}
+      className={`field-outline relative ${wrapperClassName}`}
       onClick={handleOnClick}
     >
       <CreatableSelect

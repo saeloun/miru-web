@@ -230,7 +230,7 @@ const MobileProfileEditor = ({
         <div className="mt-2 flex w-full flex-row">
           <div className="w-1/2 px-1">
             <div
-              className={`outline relative flex h-12 flex-row items-center rounded-md border bg-background px-2 text-sm ring-offset-background focus-within:ring-2 focus-within:ring-offset-2 ${
+              className={`field-outline relative flex h-12 flex-row items-center rounded-md border bg-background px-2 text-sm ring-offset-background focus-within:ring-2 focus-within:ring-offset-2 ${
                 errDetails.phone_number_err
                   ? "border-destructive focus-within:ring-destructive"
                   : "border-input focus-within:ring-ring"

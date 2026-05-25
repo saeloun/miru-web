@@ -45,6 +45,7 @@ const App = (props: any) => (
         <AuthProvider>
           <Toaster
             richColors
+            closeButton
             duration={5000}
             position="top-right"
             toastOptions={{
@@ -58,6 +59,8 @@ const App = (props: any) => (
                   "border-destructive/40 bg-destructive/10 text-destructive",
                 warning: "border-border bg-card text-card-foreground",
                 info: "border-border bg-card text-card-foreground",
+                closeButton:
+                  "!left-auto !right-2 !top-1/2 !-translate-y-1/2 !translate-x-0",
               },
             }}
           />

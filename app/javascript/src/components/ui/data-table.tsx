@@ -122,7 +122,7 @@ export function DataTable<TData, TValue>({
 
   return (
     <DataTableSearchContext.Provider value={globalFilter}>
-      <div className="w-full">
+      <div className="w-full min-w-0 overflow-hidden">
         <div className="flex items-center justify-between py-4">
           <Input
             placeholder={searchPlaceholder}
@@ -189,7 +189,7 @@ export function DataTable<TData, TValue>({
             </div>
           </div>
         )}
-        <div className="rounded-md border">
+        <div className="rounded-md border overflow-x-auto">
           <Table>
             <TableHeader>
               {table.getHeaderGroups().map(headerGroup => (
@@ -253,14 +253,14 @@ export function DataTable<TData, TValue>({
           </Table>
         </div>
         {showPagination && (
-          <div className="flex items-center justify-between space-x-2 py-4">
-            <div className="flex-1 text-sm text-muted-foreground">
+          <div className="flex flex-wrap items-center justify-between gap-2 py-4">
+            <div className="text-sm text-muted-foreground">
               {i18n.t("dataTable.rowsSelected", {
                 selected: table.getFilteredSelectedRowModel().rows.length,
                 total: table.getFilteredRowModel().rows.length,
               })}
             </div>
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center gap-1 sm:gap-2">
               <Button
                 variant="outline"
                 size="sm"

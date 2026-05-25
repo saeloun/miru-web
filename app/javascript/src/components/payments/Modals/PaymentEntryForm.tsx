@@ -14,7 +14,7 @@ import { CalendarIcon } from "miruIcons";
 import { CaretDown } from "phosphor-react";
 import { useNavigate } from "react-router-dom";
 import { i18n } from "../../../i18n";
-import { Badge, MobileMoreOptions, Toastr } from "StyledComponents";
+import { Badge, Toastr } from "StyledComponents";
 import getStatusCssClass from "utils/getBadgeStatus";
 
 import { transactionTypes } from "./constants";
@@ -510,29 +510,28 @@ const PaymentEntryForm = ({
                     )}
                   />
                   {showTransactionTypes && (
-                    <MobileMoreOptions
-                      className="max-h-[70vh] w-full overflow-y-auto md:max-h-[60vh] md:w-3/4 lg:max-h-[40vh]"
-                      setVisibilty={setShowTransactionTypes}
-                      visibilty={showTransactionTypes}
-                    >
-                      {transactionTypes.map((transaction, index) => (
-                        <li
-                          className="flex items-center pb-5 font-sans text-sm font-normal capitalize leading-5 text-foreground hover:bg-muted"
-                          key={index}
-                          onClick={() => {
-                            if (transaction?.value) {
-                              setFieldValue(
-                                "transactionType",
-                                transaction.value
-                              );
-                            }
-                            setFieldValue("showTransactionTypes", false);
-                          }}
-                        >
-                          {transaction.label}
-                        </li>
-                      ))}
-                    </MobileMoreOptions>
+                    <div className="absolute left-0 right-0 top-full z-50 mt-1 max-h-60 overflow-y-auto rounded-md border border-border bg-background shadow-lg">
+                      <ul className="py-1">
+                        {transactionTypes.map((transaction, index) => (
+                          <li
+                            className="flex cursor-pointer items-center px-4 py-3 font-sans text-sm font-normal capitalize leading-5 text-foreground hover:bg-muted"
+                            key={index}
+                            onClick={e => {
+                              e.stopPropagation();
+                              if (transaction?.value) {
+                                setFieldValue(
+                                  "transactionType",
+                                  transaction.value
+                                );
+                              }
+                              setFieldValue("showTransactionTypes", false);
+                            }}
+                          >
+                            {transaction.label}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
                   )}
                 </>
               )}

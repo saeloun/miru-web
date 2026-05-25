@@ -141,7 +141,6 @@ const TeamTable: React.FC = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["team"] });
-      toast.success(i18n.t("team.deleteUser"));
       setShowDeleteDialog(false);
     },
     onError: () => {
@@ -160,7 +159,6 @@ const TeamTable: React.FC = () => {
       }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["team"] });
-      toast.success(i18n.t("team.inviteMember"));
       setShowInviteDialog(false);
       setMemberForm({
         firstName: "",
@@ -199,7 +197,6 @@ const TeamTable: React.FC = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["team"] });
-      toast.success(i18n.t("team.editMember"));
       setShowEditDialog(false);
       setSelectedMember(null);
     },

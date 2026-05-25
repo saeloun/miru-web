@@ -1069,13 +1069,16 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
           setSelectedFullDate={setSelectedFullDate}
           setUpdateView={setUpdateView}
         />
-        {!isDesktop && (
-          <FloatingTimer
-            onSaveEntry={handleTimerSaved}
-            externalSyncKey={timerSyncKey}
-            resumeFromEntry={resumeTimerEntry}
-          />
-        )}
+        {!isDesktop &&
+          !newEntryView &&
+          !editEntryId &&
+          !newTimeoffEntryView && (
+            <FloatingTimer
+              onSaveEntry={handleTimerSaved}
+              externalSyncKey={timerSyncKey}
+              resumeFromEntry={resumeTimerEntry}
+            />
+          )}
       </div>
     </TimesheetEntriesContext.Provider>
   );
