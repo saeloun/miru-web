@@ -210,7 +210,8 @@ const ExpensesTable: React.FC = () => {
     notes: "",
   });
   const [customCategorySelected, setCustomCategorySelected] = useState(false);
-  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [showAddDatePicker, setShowAddDatePicker] = useState(false);
+  const [showEditDatePicker, setShowEditDatePicker] = useState(false);
 
   const normalizeExpenseAmount = (value: string) => {
     const normalizedValue = value.replace(/[^0-9,.-]/g, "").replace(/,/g, "");
@@ -330,6 +331,8 @@ const ExpensesTable: React.FC = () => {
     });
     setSelectedExpense(null);
     setReceiptFiles([]);
+    setShowAddDatePicker(false);
+    setShowEditDatePicker(false);
   };
 
   const handleEdit = (expense: Expense) => {
@@ -505,8 +508,7 @@ const ExpensesTable: React.FC = () => {
     );
 
   const baseCurrency = company?.baseCurrency || "USD";
-  const dateFormat =
-    company?.date_format || company?.dateFormat || "DD-MM-YYYY";
+  const dateFormat = company?.dateFormat || "DD-MM-YYYY";
 
   const canManageReimbursements = ["admin", "owner", "book_keeper"].includes(
     companyRole || ""
@@ -1042,11 +1044,11 @@ const ExpensesTable: React.FC = () => {
                   value={
                     formData.date ? dayjs(formData.date).format(dateFormat) : ""
                   }
-                  onClick={() => setShowDatePicker(!showDatePicker)}
+                  onClick={() => setShowAddDatePicker(!showAddDatePicker)}
                   className="cursor-pointer"
                   placeholder={i18n.t("date")}
                 />
-                {showDatePicker && (
+                {showAddDatePicker && (
                   <div className="absolute z-50 mt-1">
                     <CustomDatePicker
                       date={
@@ -1057,7 +1059,7 @@ const ExpensesTable: React.FC = () => {
                           ...formData,
                           date: dayjs(date).format("YYYY-MM-DD"),
                         });
-                        setShowDatePicker(false);
+                        setShowAddDatePicker(false);
                       }}
                     />
                   </div>
@@ -1283,11 +1285,11 @@ const ExpensesTable: React.FC = () => {
                   value={
                     formData.date ? dayjs(formData.date).format(dateFormat) : ""
                   }
-                  onClick={() => setShowDatePicker(!showDatePicker)}
+                  onClick={() => setShowEditDatePicker(!showEditDatePicker)}
                   className="cursor-pointer"
                   placeholder={i18n.t("date")}
                 />
-                {showDatePicker && (
+                {showEditDatePicker && (
                   <div className="absolute z-50 mt-1">
                     <CustomDatePicker
                       date={
@@ -1298,7 +1300,7 @@ const ExpensesTable: React.FC = () => {
                           ...formData,
                           date: dayjs(date).format("YYYY-MM-DD"),
                         });
-                        setShowDatePicker(false);
+                        setShowEditDatePicker(false);
                       }}
                     />
                   </div>
