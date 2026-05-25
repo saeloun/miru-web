@@ -493,7 +493,11 @@ const PaymentEntryForm = ({
                   )}
                 </div>
               ) : (
-                <div className="relative" ref={wrapperMobileTransactionTypeRef}>
+                <div
+                  className="relative"
+                  ref={wrapperMobileTransactionTypeRef}
+                  onClick={() => setShowMobileTransactionTypes(true)}
+                >
                   <CustomReactSelect
                     isDisabled
                     label={i18n.t("payments.transactionType")}
