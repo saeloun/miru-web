@@ -111,7 +111,9 @@ const UserDetailsView = () => {
           href="edit"
           title={i18n.t("profile.personalDetails")}
           backHref={
-            isCalledFromSettings ? "/settings/" : `/team/${currentUserId}/`
+            isCalledFromSettings
+              ? "/settings/"
+              : `/team/${memberId || currentUserId}/`
           }
         />
       )}

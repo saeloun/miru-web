@@ -25,7 +25,6 @@ interface PaymentEntryFormValues {
   transactionDate: any;
   amount: any;
   transactionType: any;
-  showTransactionTypes: boolean;
   note: any;
 }
 
@@ -47,11 +46,15 @@ const PaymentEntryForm = ({
   const [focusedInvoiceIndex, setFocusedInvoiceIndex] = useState(0);
   const [showDesktopTransactionTypes, setShowDesktopTransactionTypes] =
     useState<boolean>(false);
+
+  const [showMobileTransactionTypes, setShowMobileTransactionTypes] =
+    useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const wrapperSelectRef = useRef(null);
   const wrapperCalendartRef = useRef(null);
   const wrapperDesktopTransactionTypeRef = useRef(null);
+  const wrapperMobileTransactionTypeRef = useRef(null);
 
   const navigate = useNavigate();
   const selectedInvoiceFromUrl = invoiceId
@@ -80,6 +83,7 @@ const PaymentEntryForm = ({
         setShowDatePicker({ visibility: false });
         setShowSelectMenu(false);
         setShowDesktopTransactionTypes(false);
+        setShowMobileTransactionTypes(false);
       }
     };
     window.addEventListener("keydown", close);
@@ -97,6 +101,10 @@ const PaymentEntryForm = ({
 
   useOutsideClick(wrapperDesktopTransactionTypeRef, () => {
     setShowDesktopTransactionTypes(false);
+  });
+
+  useOutsideClick(wrapperMobileTransactionTypeRef, () => {
+    setShowMobileTransactionTypes(false);
   });
 
   const handleAddPayment = async values => {
@@ -142,24 +150,17 @@ const PaymentEntryForm = ({
       initialValues={initialValues}
       onSubmit={async (values, { resetForm }) => {
         const saved = await handleAddPayment(values);
-        if (saved) resetForm();
+        if (saved) {
+          resetForm();
+          setShowMobileTransactionTypes(false);
+        }
       }}
     >
       {(props: FormikProps<PaymentEntryFormValues>) => {
         const { values, setFieldValue } = props;
 
-        const setShowTransactionTypes = visibilty => {
-          setFieldValue("showTransactionTypes", visibilty);
-        };
-
-        const {
-          invoice,
-          transactionDate,
-          amount,
-          transactionType,
-          showTransactionTypes,
-          note,
-        } = values;
+        const { invoice, transactionDate, amount, transactionType, note } =
+          values;
 
         const selectedTransactionType = transactionTypes.find(
           type => type.value === transactionType
@@ -431,11 +432,7 @@ const PaymentEntryForm = ({
                 />
               )}
             </div>
-            <div
-              className="relative mt-4"
-              id="transactionType"
-              onClick={() => setFieldValue("showTransactionTypes", true)}
-            >
+            <div className="relative mt-4" id="transactionType">
               {isDesktop ? (
                 <div
                   className="field relative"
@@ -496,26 +493,28 @@ const PaymentEntryForm = ({
                   )}
                 </div>
               ) : (
-                <>
+                <div className="relative" ref={wrapperMobileTransactionTypeRef}>
                   <CustomReactSelect
                     isDisabled
                     label={i18n.t("payments.transactionType")}
                     name="transactionType"
                     options={transactionTypes}
-                    handleonFocus={() =>
-                      setFieldValue("showTransactionTypes", true)
-                    }
+                    handleonFocus={() => setShowMobileTransactionTypes(true)}
                     value={transactionTypes.find(
                       type => type.value == transactionType
                     )}
                   />
-                  {showTransactionTypes && (
+                  {showMobileTransactionTypes && (
                     <div className="absolute left-0 right-0 top-full z-50 mt-1 max-h-60 overflow-y-auto rounded-md border border-border bg-background shadow-lg">
-                      <ul className="py-1">
+                      <ul className="py-1" role="listbox">
                         {transactionTypes.map((transaction, index) => (
                           <li
                             className="flex cursor-pointer items-center px-4 py-3 font-sans text-sm font-normal capitalize leading-5 text-foreground hover:bg-muted"
                             key={index}
+                            role="option"
+                            aria-selected={
+                              transactionType === transaction.value
+                            }
                             onClick={e => {
                               e.stopPropagation();
                               if (transaction?.value) {
@@ -524,7 +523,7 @@ const PaymentEntryForm = ({
                                   transaction.value
                                 );
                               }
-                              setFieldValue("showTransactionTypes", false);
+                              setShowMobileTransactionTypes(false);
                             }}
                           >
                             {transaction.label}
@@ -533,7 +532,7 @@ const PaymentEntryForm = ({
                       </ul>
                     </div>
                   )}
-                </>
+                </div>
               )}
             </div>
             <div className="mt-4">

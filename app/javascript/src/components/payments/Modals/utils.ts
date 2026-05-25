@@ -6,5 +6,4 @@ export const paymentEntryInitialValues = {
   transactionType: null,
   note: "",
   amount: "",
-  showTransactionTypes: false,
 };
