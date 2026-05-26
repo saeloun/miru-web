@@ -738,11 +738,11 @@ ar:
       message: تم إنشاء جدول زمني
     destroy:
       failure: فشل حذف إدخالات جدول الدوام
-      locked: "Only admins can delete entries older than %{days} days"
+      locked: "Only admins and owners can delete entries older than %{days} days"
       message: تم حذف جدول الدوام
     update:
       failure: فشل تحديث إدخالات جدول الدوام
-      locked: "Only admins can edit entries older than %{days} days"
+      locked: "Only admins and owners can edit entries older than %{days} days"
       message: تم تحديث جدول الدوام
   totp:
     disable_passkey_first: قم بتعطيل تسجيل الدخول باستخدام رمز المرور المطلوب قبل

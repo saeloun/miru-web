@@ -737,11 +737,11 @@ te:
       message: టైమ్‌షీట్ సృష్టించబడింది
     destroy:
       failure: టైమ్‌షీట్ ఎంట్రీలను తొలగించడంలో విఫలమయ్యారు
-      locked: "Only admins can delete entries older than %{days} days"
+      locked: "Only admins and owners can delete entries older than %{days} days"
       message: టైమ్‌షీట్ తొలగించబడింది
     update:
       failure: టైమ్‌షీట్ ఎంట్రీలను అప్‌డేట్ చేయడంలో విఫలమయ్యారు
-      locked: "Only admins can edit entries older than %{days} days"
+      locked: "Only admins and owners can edit entries older than %{days} days"
       message: టైమ్‌షీట్ నవీకరించబడింది
   totp:
     disable_passkey_first: అథెంటికేటర్ యాప్ 2FAను ఎనేబుల్ చేసే ముందు, అవసరమైన పాస్‌కీ

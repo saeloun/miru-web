@@ -746,11 +746,11 @@ id:
       message: Lembar waktu telah dibuat.
     destroy:
       failure: Gagal menghapus entri lembar waktu.
-      locked: "Only admins can delete entries older than %{days} days"
+      locked: "Only admins and owners can delete entries older than %{days} days"
       message: Lembar waktu dihapus
     update:
       failure: Gagal memperbarui entri lembar waktu.
-      locked: "Only admins can edit entries older than %{days} days"
+      locked: "Only admins and owners can edit entries older than %{days} days"
       message: Lembar waktu telah diperbarui.
   totp:
     disable_passkey_first: Nonaktifkan persyaratan kata sandi saat masuk sebelum mengaktifkan

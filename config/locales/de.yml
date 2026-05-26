@@ -759,11 +759,11 @@ de:
       message: Stundenzettel erstellt
     destroy:
       failure: Fehler beim Löschen der Stundenzetteleinträge
-      locked: "Only admins can delete entries older than %{days} days"
+      locked: "Only admins and owners can delete entries older than %{days} days"
       message: Stundenzettel gelöscht
     update:
       failure: Fehler beim Aktualisieren der Stundenzetteleinträge
-      locked: "Only admins can edit entries older than %{days} days"
+      locked: "Only admins and owners can edit entries older than %{days} days"
       message: Stundenzettel aktualisiert
   totp:
     disable_passkey_first: Deaktivieren Sie die Anmeldung mit erforderlichem Passkey,

@@ -753,11 +753,11 @@ fr:
       message: Feuille de temps créée
     destroy:
       failure: Échec de la suppression des entrées de la feuille de temps
-      locked: "Only admins can delete entries older than %{days} days"
+      locked: "Only admins and owners can delete entries older than %{days} days"
       message: Feuille de temps supprimée
     update:
       failure: Échec de la mise à jour des entrées de la feuille de temps
-      locked: "Only admins can edit entries older than %{days} days"
+      locked: "Only admins and owners can edit entries older than %{days} days"
       message: Feuille de temps mise à jour
   totp:
     disable_passkey_first: Désactivez la connexion par code d'accès requis avant d'activer

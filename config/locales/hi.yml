@@ -751,11 +751,11 @@ hi:
       message: टाइमशीट बनाई गई
     destroy:
       failure: टाइमशीट प्रविष्टियों को हटाने में विफलता
-      locked: "Only admins can delete entries older than %{days} days"
+      locked: "Only admins and owners can delete entries older than %{days} days"
       message: टाइमशीट हटा दी गई
     update:
       failure: टाइमशीट प्रविष्टियों को अपडेट करने में विफल
-      locked: "Only admins can edit entries older than %{days} days"
+      locked: "Only admins and owners can edit entries older than %{days} days"
       message: टाइमशीट अपडेट हो गई
   totp:
     disable_passkey_first: ऑथेंटिकेटर ऐप 2FA को सक्षम करने से पहले आवश्यक पासकी साइन

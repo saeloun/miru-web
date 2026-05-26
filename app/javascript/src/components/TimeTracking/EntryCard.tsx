@@ -43,8 +43,6 @@ interface props {
 const isPrivilegedRole = role =>
   role === Roles["OWNER"] || role === Roles["ADMIN"];
 
-const isAdminRole = role => role === Roles["ADMIN"];
-
 const isOutsideEditWindow = (workDate, editDays: number) => {
   const parsedDate = dayjs(workDate);
   if (!workDate || !parsedDate.isValid()) return false;
