@@ -690,11 +690,11 @@ ja:
       message: タイムシートが作成されました
     destroy:
       failure: タイムシートエントリの削除に失敗しました
-      locked: "Only admins and owners can delete entries older than %{days} days"
+      locked: "管理者とオーナーのみ%{days}日より古いエントリを削除できます"
       message: タイムシートが削除されました
     update:
       failure: タイムシートのエントリの更新に失敗しました
-      locked: "Only admins and owners can edit entries older than %{days} days"
+      locked: "管理者とオーナーのみ%{days}日より古いエントリを編集できます"
       message: タイムシートが更新されました
   totp:
     disable_passkey_first: 認証アプリの2要素認証を有効にする前に、パスキーによるサインインを無効にしてください。

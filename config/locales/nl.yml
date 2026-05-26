@@ -746,11 +746,11 @@ nl:
       message: Urenregistratie aangemaakt
     destroy:
       failure: Het verwijderen van urenregistraties is mislukt.
-      locked: "Only admins and owners can delete entries older than %{days} days"
+      locked: "Alleen beheerders en eigenaren kunnen vermeldingen ouder dan %{days} dagen verwijderen"
       message: Urenregistratie verwijderd
     update:
       failure: Het bijwerken van de urenregistratie is mislukt.
-      locked: "Only admins and owners can edit entries older than %{days} days"
+      locked: "Alleen beheerders en eigenaren kunnen vermeldingen ouder dan %{days} dagen bewerken"
       message: Urenregistratie bijgewerkt
   totp:
     disable_passkey_first: Schakel de vereiste wachtwoordaanmelding uit voordat u

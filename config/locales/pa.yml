@@ -742,11 +742,11 @@ pa:
       message: ਟਾਈਮਸ਼ੀਟ ਬਣਾਈ ਗਈ
     destroy:
       failure: ਟਾਈਮਸ਼ੀਟ ਐਂਟਰੀਆਂ ਨੂੰ ਮਿਟਾਉਣਾ ਅਸਫਲ ਰਿਹਾ
-      locked: "Only admins and owners can delete entries older than %{days} days"
+      locked: "ਸਿਰਫ਼ ਐਡਮਿਨ ਅਤੇ ਮਾਲਕ %{days} ਦਿਨਾਂ ਤੋਂ ਪੁਰਾਣੀਆਂ ਐਂਟਰੀਆਂ ਮਿਟਾ ਸਕਦੇ ਹਨ"
       message: ਟਾਈਮਸ਼ੀਟ ਮਿਟਾਈ ਗਈ
     update:
       failure: ਟਾਈਮਸ਼ੀਟ ਐਂਟਰੀਆਂ ਨੂੰ ਅੱਪਡੇਟ ਕਰਨ ਵਿੱਚ ਅਸਫਲ ਰਿਹਾ
-      locked: "Only admins and owners can edit entries older than %{days} days"
+      locked: "ਸਿਰਫ਼ ਐਡਮਿਨ ਅਤੇ ਮਾਲਕ %{days} ਦਿਨਾਂ ਤੋਂ ਪੁਰਾਣੀਆਂ ਐਂਟਰੀਆਂ ਸੰਪਾਦਿਤ ਕਰ ਸਕਦੇ ਹਨ"
       message: ਟਾਈਮਸ਼ੀਟ ਅੱਪਡੇਟ ਕੀਤੀ ਗਈ
   totp:
     disable_passkey_first: ਪ੍ਰਮਾਣਕ ਐਪ 2FA ਨੂੰ ਸਮਰੱਥ ਬਣਾਉਣ ਤੋਂ ਪਹਿਲਾਂ ਲੋੜੀਂਦੇ ਪਾਸਕੀ

@@ -697,11 +697,11 @@ zh-CN:
       message: 创建工时表
     destroy:
       failure: 删除工时表条目失败
-      locked: "Only admins and owners can delete entries older than %{days} days"
+      locked: "只有管理员和所有者才能删除超过 %{days} 天的条目"
       message: 已删除工时表
     update:
       failure: 更新工时表条目失败
-      locked: "Only admins and owners can edit entries older than %{days} days"
+      locked: "只有管理员和所有者才能编辑超过 %{days} 天的条目"
       message: 工时表已更新
   totp:
     disable_passkey_first: 启用身份验证器应用程序双因素身份验证之前，请先禁用所需的密码密钥登录。

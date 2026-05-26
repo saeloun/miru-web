@@ -748,11 +748,11 @@ mr:
       message: टाइमशीट तयार केली
     destroy:
       failure: टाइमशीट नोंदी हटवण्यात अयशस्वी झाले.
-      locked: "Only admins and owners can delete entries older than %{days} days"
+      locked: "फक्त प्रशासक आणि मालक %{days} दिवसांपेक्षा जुन्या नोंदी हटवू शकतात"
       message: टाइमशीट हटवली
     update:
       failure: टाइमशीट नोंदी अद्ययावत करण्यात अयशस्वी झाले.
-      locked: "Only admins and owners can edit entries older than %{days} days"
+      locked: "फक्त प्रशासक आणि मालक %{days} दिवसांपेक्षा जुन्या नोंदी संपादित करू शकतात"
       message: टाइमशीट अद्ययावत केली.
   totp:
     disable_passkey_first: ऑथेंटिकेटर ॲपचे २एफए (2FA) सक्षम करण्यापूर्वी आवश्यक पासकी

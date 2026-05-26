@@ -738,11 +738,11 @@ kn:
       message: ಟೈಮ್‌ಶೀಟ್ ರಚಿಸಲಾಗಿದೆ
     destroy:
       failure: ಟೈಮ್‌ಶೀಟ್ ನಮೂದುಗಳನ್ನು ಅಳಿಸಲು ವಿಫಲವಾಗಿದೆ.
-      locked: "Only admins and owners can delete entries older than %{days} days"
+      locked: "ಕೇವಲ ನಿರ್ವಾಹಕರು ಮತ್ತು ಮಾಲೀಕರು %{days} ದಿನಗಳಿಗಿಂತ ಹಳೆಯ ನಮೂದುಗಳನ್ನು ಅಳಿಸಬಹುದು"
       message: ಟೈಮ್‌ಶೀಟ್ ಅಳಿಸಲಾಗಿದೆ
     update:
       failure: ಟೈಮ್‌ಶೀಟ್ ನಮೂದುಗಳನ್ನು ನವೀಕರಿಸಲು ವಿಫಲವಾಗಿದೆ.
-      locked: "Only admins and owners can edit entries older than %{days} days"
+      locked: "ಕೇವಲ ನಿರ್ವಾಹಕರು ಮತ್ತು ಮಾಲೀಕರು %{days} ದಿನಗಳಿಗಿಂತ ಹಳೆಯ ನಮೂದುಗಳನ್ನು ಸಂಪಾದಿಸಬಹುದು"
       message: ಟೈಮ್‌ಶೀಟ್ ಅನ್ನು ನವೀಕರಿಸಲಾಗಿದೆ
   totp:
     disable_passkey_first: ದೃಢೀಕರಣ ಅಪ್ಲಿಕೇಶನ್ 2FA ಅನ್ನು ಸಕ್ರಿಯಗೊಳಿಸುವ ಮೊದಲು ಅಗತ್ಯವಿರುವ
