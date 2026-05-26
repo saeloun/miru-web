@@ -767,6 +767,7 @@ export const OrgEditForm: React.FC<OrgEditFormProps> = ({
                 <div className="mt-4">
                   <FormField
                     label={i18n.t("organization.timesheetEditWindowDays")}
+                    error={errDetails.timesheetEditDaysErr}
                     htmlFor="timesheet_edit_days"
                   >
                     <div className="flex items-center gap-3">

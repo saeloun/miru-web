@@ -102,5 +102,21 @@ RSpec.describe "Api::V1::TimesheetEntry::BulkActionController#update", type: :re
       expect(response).to have_http_status(:not_found)
       expect(timesheet_entry3.reload.project_id).to eq(project1.id)
     end
+
+    it "rejects employees when selected entries are billed" do
+      employee = create(:user, current_workspace_id: company.id)
+      create(:employment, company:, user: employee)
+      employee.add_role :employee, company
+      create(:project_member, project: project1, user: employee)
+      billed_entry = create(:timesheet_entry, user: employee, project: project1)
+      billed_entry.update_column(:bill_status, TimesheetEntry.bill_statuses[:billed])
+
+      sign_out user
+      send_request :patch, api_v1_bulk_action_path,
+        params: { ids: [billed_entry.id], project_id: project1.id },
+        headers: auth_headers(employee)
+
+      expect(response).to have_http_status(:forbidden)
+    end
   end
 end

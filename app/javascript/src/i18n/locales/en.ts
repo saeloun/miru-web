@@ -191,7 +191,7 @@ const en = {
     editEntry: "Edit entry",
     deleteEntry: "Delete entry",
     editClosed: "Edit closed",
-    editWindowClosed: "Editing closed — entry is older than {{days}} days",
+    editWindowClosed: "Editing closed — entry is older than %{days} days",
     deleteTimeEntry: "Delete Time Entry",
     deleteTimeEntryConfirm: "Are you sure you want to delete this time entry?",
     durationRequired: "Duration is required",

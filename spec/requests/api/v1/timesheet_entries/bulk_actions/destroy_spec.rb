@@ -90,5 +90,22 @@ RSpec.describe "Api::V1::TimesheetEntry::BulkActionController#destroy", type: :r
       expect(current_entry.reload).to be_discarded
       expect(other_entry.reload).not_to be_discarded
     end
+
+    it "rejects employees when selected entries are billed" do
+      employee = create(:user, current_workspace_id: company.id)
+      create(:employment, company:, user: employee)
+      employee.add_role :employee, company
+      billed_entry = create(:timesheet_entry, user: employee, project:)
+      billed_entry.update_column(:bill_status, TimesheetEntry.bill_statuses[:billed])
+
+      sign_out user
+      sign_in employee
+      send_request :delete, api_v1_bulk_action_path,
+        params: { source: { ids: [billed_entry.id] } },
+        headers: auth_headers(employee)
+
+      expect(response).to have_http_status(:forbidden)
+      expect(billed_entry.reload).not_to be_discarded
+    end
   end
 end

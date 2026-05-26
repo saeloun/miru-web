@@ -14,7 +14,7 @@ class Api::V1::TimesheetEntry::BulkActionController < Api::V1::ApplicationContro
     target_project = ProjectPolicy::Scope.new(current_user, current_company).resolve.find(params[:project_id])
     updated_entries = timesheet_entries.where(id: ids)
     return render json: { error: I18n.t("timesheet_entry.update.failure", default: "No entries found") }, status: :unprocessable_entity if updated_entries.empty?
-    if !privileged_user? && updated_entries.any? { |entry| entry_locked_for_non_privileged?(entry) }
+    if updated_entries.any? { |entry| entry_locked?(entry) }
       return render json: {
         error: I18n.t(
           "timesheet_entry.update.locked",
@@ -34,7 +34,7 @@ class Api::V1::TimesheetEntry::BulkActionController < Api::V1::ApplicationContro
 
     timesheet_entries = policy_scope(TimesheetEntry)
     entries_to_discard = timesheet_entries.where(id: ids_params)
-    if !privileged_user? && entries_to_discard.any? { |entry| entry_locked_for_non_privileged?(entry) }
+    if entries_to_discard.any? { |entry| entry_locked?(entry) }
       return render json: {
         error: I18n.t(
           "timesheet_entry.destroy.locked",
@@ -62,7 +62,9 @@ class Api::V1::TimesheetEntry::BulkActionController < Api::V1::ApplicationContro
         current_user.has_role?(:owner, current_company)
     end
 
-    def entry_locked_for_non_privileged?(entry)
-      entry.work_date.present? && entry.work_date < current_company.timesheet_edit_days.days.ago.to_date
+    def entry_locked?(entry)
+      return false if privileged_user?
+
+      entry.billed? || (entry.work_date.present? && entry.work_date < current_company.timesheet_edit_days.days.ago.to_date)
     end
 end

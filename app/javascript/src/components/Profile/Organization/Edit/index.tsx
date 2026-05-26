@@ -140,6 +140,7 @@ const errorState = {
   countryErr: "",
   cityErr: "",
   zipcodeErr: "",
+  timesheetEditDaysErr: "",
 };
 
 const OrgEdit = () => {
@@ -429,6 +430,7 @@ const OrgEdit = () => {
           companyRate: orgDetails.companyRate,
           companyWorkingDays: orgDetails.companyWorkingDays,
           companyWorkingHours: orgDetails.companyWorkingHours,
+          timesheetEditDays: Number(orgDetails.timesheetEditDays),
         },
         { abortEarly: false }
       );
@@ -445,6 +447,7 @@ const OrgEdit = () => {
         cityErr: "",
         zipcodeErr: "",
         companyRateErr: "",
+        timesheetEditDaysErr: "",
       };
 
       err.inner.map(item => {
