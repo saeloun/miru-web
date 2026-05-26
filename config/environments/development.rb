@@ -35,7 +35,7 @@ Rails.application.configure do
   # Store uploaded files on the local file system (see config/storage.yml for options).
   config.active_storage.service = :local
 
-  # Don't care if the mailer can't send.
+  # Raise delivery errors so mailer failures surface during development.
   config.action_mailer.raise_delivery_errors = true
 
   # Configure letter_opener for email testing
