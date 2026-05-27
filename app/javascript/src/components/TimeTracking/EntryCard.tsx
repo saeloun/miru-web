@@ -53,11 +53,13 @@ const isOutsideEditWindow = (workDate, editDays: number) => {
 };
 
 const canEditTimeEntry = (billStatus, role, workDate, editDays: number) => {
+  if (billStatus === "billed") return false;
+
   if (isOutsideEditWindow(workDate, editDays)) return isPrivilegedRole(role);
 
   if (isPrivilegedRole(role)) return true;
 
-  return billStatus !== "billed";
+  return true;
 };
 
 const EntryCard: React.FC<props> = ({

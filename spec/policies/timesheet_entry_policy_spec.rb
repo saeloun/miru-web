@@ -35,6 +35,11 @@ RSpec.describe TimesheetEntryPolicy, type: :policy do
         expect(subject).to permit(user, timesheet_entry)
       end
 
+      it "is not permitted to update billed entries" do
+        timesheet_entry.update_column(:bill_status, TimesheetEntry.bill_statuses[:billed])
+        expect(subject).not_to permit(user, timesheet_entry)
+      end
+
       it "is not permitted to update timesheet_entry in different company" do
         client.update(company_id: company2.id)
         expect(subject).not_to permit(user, timesheet_entry)
@@ -55,6 +60,11 @@ RSpec.describe TimesheetEntryPolicy, type: :policy do
       it "is permitted to destroy entries outside the edit window" do
         timesheet_entry.update!(work_date: 31.days.ago.to_date)
         expect(subject).to permit(user, timesheet_entry)
+      end
+
+      it "is not permitted to destroy billed entries" do
+        timesheet_entry.update_column(:bill_status, TimesheetEntry.bill_statuses[:billed])
+        expect(subject).not_to permit(user, timesheet_entry)
       end
 
       it "is not permitted to destroy timesheet_entry in different company" do
@@ -182,6 +192,11 @@ RSpec.describe TimesheetEntryPolicy, type: :policy do
       it "permits entries outside the edit window (owners bypass the window)" do
         timesheet_entry.update!(work_date: 31.days.ago.to_date)
         expect(subject).to permit(user, timesheet_entry)
+      end
+
+      it "does not permit billed entries" do
+        timesheet_entry.update_column(:bill_status, TimesheetEntry.bill_statuses[:billed])
+        expect(subject).not_to permit(user, timesheet_entry)
       end
     end
   end

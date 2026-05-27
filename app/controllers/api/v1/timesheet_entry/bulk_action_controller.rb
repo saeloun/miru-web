@@ -63,8 +63,9 @@ class Api::V1::TimesheetEntry::BulkActionController < Api::V1::ApplicationContro
     end
 
     def entry_locked?(entry)
+      return true if entry.billed?
       return false if privileged_user?
 
-      entry.billed? || (entry.work_date.present? && entry.work_date < current_company.timesheet_edit_days.days.ago.to_date)
+      entry.work_date.present? && entry.work_date < current_company.timesheet_edit_days.days.ago.to_date
     end
 end

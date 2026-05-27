@@ -118,5 +118,17 @@ RSpec.describe "Api::V1::TimesheetEntry::BulkActionController#update", type: :re
 
       expect(response).to have_http_status(:forbidden)
     end
+
+    it "rejects admins when selected entries are billed" do
+      billed_entry = create(:timesheet_entry, user:, project: project1)
+      billed_entry.update_column(:bill_status, TimesheetEntry.bill_statuses[:billed])
+
+      send_request :patch, api_v1_bulk_action_path,
+        params: { ids: [billed_entry.id], project_id: project2.id },
+        headers: auth_headers(user)
+
+      expect(response).to have_http_status(:forbidden)
+      expect(billed_entry.reload.project_id).to eq(project1.id)
+    end
   end
 end

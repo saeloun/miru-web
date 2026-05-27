@@ -107,5 +107,17 @@ RSpec.describe "Api::V1::TimesheetEntry::BulkActionController#destroy", type: :r
       expect(response).to have_http_status(:forbidden)
       expect(billed_entry.reload).not_to be_discarded
     end
+
+    it "rejects admins when selected entries are billed" do
+      billed_entry = create(:timesheet_entry, user:, project:)
+      billed_entry.update_column(:bill_status, TimesheetEntry.bill_statuses[:billed])
+
+      send_request :delete, api_v1_bulk_action_path,
+        params: { source: { ids: [billed_entry.id] } },
+        headers: auth_headers(user)
+
+      expect(response).to have_http_status(:forbidden)
+      expect(billed_entry.reload).not_to be_discarded
+    end
   end
 end

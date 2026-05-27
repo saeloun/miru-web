@@ -1427,7 +1427,7 @@ const en = {
     workingHoursPerWeek: "Working Hours per Week",
     timesheetEditWindowDays: "Timesheet Edit Window (days)",
     timesheetEditWindowHint:
-      "Days employees can log or edit unbilled time entries (relative to work date). Admins and owners can always edit.",
+      "Days employees can log or edit unbilled time entries (relative to work date). Admins and owners can always edit unbilled entries.",
     timesheetEditDaysMin: "Edit window must be at least 1 day",
     timesheetEditDaysMax: "Edit window cannot exceed 365 days",
     timesheetEditDaysRequired: "Edit window is required",

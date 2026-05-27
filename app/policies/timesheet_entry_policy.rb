@@ -22,10 +22,11 @@ class TimesheetEntryPolicy < ApplicationPolicy
   end
 
   def update?
+    return false if record.billed?
     return false if stale_entry_for_non_privileged?
     return true if privileged_role_for_record?
 
-    record.user_id == user.id && !record.billed?
+    record.user_id == user.id
   end
 
   def destroy?
