@@ -30,9 +30,14 @@ RSpec.describe TimesheetEntryPolicy, type: :policy do
         expect(subject).to permit(user, timesheet_entry)
       end
 
-      it "is permitted to update entries older than a week" do
-        timesheet_entry.update!(work_date: 8.days.ago.to_date)
+      it "is permitted to update entries outside the edit window" do
+        timesheet_entry.update!(work_date: 31.days.ago.to_date)
         expect(subject).to permit(user, timesheet_entry)
+      end
+
+      it "is not permitted to update billed entries" do
+        timesheet_entry.update_column(:bill_status, TimesheetEntry.bill_statuses[:billed])
+        expect(subject).not_to permit(user, timesheet_entry)
       end
 
       it "is not permitted to update timesheet_entry in different company" do
@@ -52,9 +57,14 @@ RSpec.describe TimesheetEntryPolicy, type: :policy do
         expect(subject).to permit(user, timesheet_entry)
       end
 
-      it "is permitted to destroy entries older than a week" do
-        timesheet_entry.update!(work_date: 8.days.ago.to_date)
+      it "is permitted to destroy entries outside the edit window" do
+        timesheet_entry.update!(work_date: 31.days.ago.to_date)
         expect(subject).to permit(user, timesheet_entry)
+      end
+
+      it "is not permitted to destroy billed entries" do
+        timesheet_entry.update_column(:bill_status, TimesheetEntry.bill_statuses[:billed])
+        expect(subject).not_to permit(user, timesheet_entry)
       end
 
       it "is not permitted to destroy timesheet_entry in different company" do
@@ -77,7 +87,7 @@ RSpec.describe TimesheetEntryPolicy, type: :policy do
     end
 
     permissions :create? do
-      it "is not permitted to create timesheet_entry" do
+      it "is permitted to create timesheet_entry" do
         expect(subject).to permit(user, TimesheetEntry)
       end
     end
@@ -91,9 +101,27 @@ RSpec.describe TimesheetEntryPolicy, type: :policy do
             expect(subject).to permit(user, timesheet_entry)
           end
 
-          it "is not permitted to update entries older than a week" do
+          it "is not permitted to update entries outside the edit window" do
+            timesheet_entry.update!(work_date: 31.days.ago.to_date)
+            expect(subject).not_to permit(user, timesheet_entry)
+          end
+
+          it "is permitted to update an entry exactly at the boundary (work_date == cutoff)" do
+            # work_date < edit_days.days.ago is strict less-than, so the boundary day is editable
+            timesheet_entry.update!(work_date: 30.days.ago.to_date)
+            expect(subject).to permit(user, timesheet_entry)
+          end
+
+          it "is not permitted when company has a custom edit window and entry exceeds it" do
+            company.update!(timesheet_edit_days: 7)
             timesheet_entry.update!(work_date: 8.days.ago.to_date)
             expect(subject).not_to permit(user, timesheet_entry)
+          end
+
+          it "is permitted when company has a custom edit window and entry is within it" do
+            company.update!(timesheet_edit_days: 7)
+            timesheet_entry.update!(work_date: 6.days.ago.to_date)
+            expect(subject).to permit(user, timesheet_entry)
           end
         end
 
@@ -127,8 +155,8 @@ RSpec.describe TimesheetEntryPolicy, type: :policy do
         expect(subject).not_to permit(user, timesheet_entry)
       end
 
-      it "is not permitted to destroy own entries older than a week" do
-        timesheet_entry.update!(user:, work_date: 8.days.ago.to_date)
+      it "is not permitted to destroy own entries outside the edit window" do
+        timesheet_entry.update!(user:, work_date: 31.days.ago.to_date)
         expect(subject).not_to permit(user, timesheet_entry)
       end
 
@@ -161,8 +189,13 @@ RSpec.describe TimesheetEntryPolicy, type: :policy do
         expect(subject).to permit(user, timesheet_entry)
       end
 
-      it "forbids entries older than a week" do
-        timesheet_entry.update!(work_date: 8.days.ago.to_date)
+      it "permits entries outside the edit window (owners bypass the window)" do
+        timesheet_entry.update!(work_date: 31.days.ago.to_date)
+        expect(subject).to permit(user, timesheet_entry)
+      end
+
+      it "does not permit billed entries" do
+        timesheet_entry.update_column(:bill_status, TimesheetEntry.bill_statuses[:billed])
         expect(subject).not_to permit(user, timesheet_entry)
       end
     end

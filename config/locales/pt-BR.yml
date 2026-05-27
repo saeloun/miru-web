@@ -743,11 +743,11 @@ pt-BR:
       message: Folha de ponto criada
     destroy:
       failure: Falha ao excluir registros da folha de ponto
-      locked: Only admins can delete entries older than 7 days
+      locked: "Somente administradores e proprietários podem excluir entradas com mais de %{days} dias"
       message: Folha de ponto excluída
     update:
       failure: Falha ao atualizar as entradas da folha de ponto.
-      locked: Only admins can edit entries older than 7 days
+      locked: "Somente administradores e proprietários podem editar entradas com mais de %{days} dias"
       message: Folha de ponto atualizada
   totp:
     disable_passkey_first: Desative a exigência de senha para login antes de ativar

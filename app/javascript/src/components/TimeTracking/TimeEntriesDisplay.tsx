@@ -51,7 +51,8 @@ const TimeEntriesDisplay: React.FC<TimeEntriesDisplayProps> = ({
   hideEmptyState = false,
 }) => {
   const [reviewMode, setReviewMode] = useState<"day" | "week">("day");
-  const { companyRole, isDesktop } = useUserContext();
+  const { companyRole, isDesktop, company } = useUserContext();
+  const timesheetEditDays: number = (company as any)?.timesheet_edit_days ?? 30;
   const dateFormats = [
     "YYYY-MM-DD",
     "MM-DD-YYYY",
@@ -92,13 +93,17 @@ const TimeEntriesDisplay: React.FC<TimeEntriesDisplayProps> = ({
   const reviewEntries = reviewMode === "week" ? weekEntries : entries || [];
   const shouldRenderReviewPanel = hasEntries || canShowWeekReview;
 
-  const isAdminUser = companyRole === Roles["ADMIN"];
+  const isPrivilegedUser =
+    companyRole === Roles["ADMIN"] || companyRole === Roles["OWNER"];
 
-  const isOlderThanOneWeek = (entryDate: string) => {
+  const isOutsideEditWindow = (entryDate: string) => {
     const parsedDate = dayjs(entryDate, dateFormats, true);
     if (!parsedDate.isValid()) return false;
 
-    return dayjs().startOf("day").diff(parsedDate.startOf("day"), "day") > 7;
+    return (
+      dayjs().startOf("day").diff(parsedDate.startOf("day"), "day") >
+      timesheetEditDays
+    );
   };
 
   const renderEntry = (entry: any, index: number) => {
@@ -119,7 +124,8 @@ const TimeEntriesDisplay: React.FC<TimeEntriesDisplayProps> = ({
         entry.display_date || entry.leave_date || selectedFullDate;
 
       const canManageTimeoff =
-        !holidayDetails && (!isOlderThanOneWeek(entryDate) || isAdminUser);
+        !holidayDetails &&
+        (!isOutsideEditWindow(entryDate) || isPrivilegedUser);
 
       const handleEditTimeoff = () => {
         if (!canManageTimeoff) return;

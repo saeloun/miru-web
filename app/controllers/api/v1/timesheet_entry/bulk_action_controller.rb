@@ -14,11 +14,12 @@ class Api::V1::TimesheetEntry::BulkActionController < Api::V1::ApplicationContro
     target_project = ProjectPolicy::Scope.new(current_user, current_company).resolve.find(params[:project_id])
     updated_entries = timesheet_entries.where(id: ids)
     return render json: { error: I18n.t("timesheet_entry.update.failure", default: "No entries found") }, status: :unprocessable_entity if updated_entries.empty?
-    if standard_user? && updated_entries.any? { |entry| entry_locked_for_standard_user?(entry) }
+    if updated_entries.any? { |entry| entry_locked?(entry) }
       return render json: {
         error: I18n.t(
           "timesheet_entry.update.locked",
-          default: "Only admins can edit entries older than 7 days"
+          days: current_company.timesheet_edit_days,
+          default: "Only admins and owners can edit entries older than %{days} days"
         )
       }, status: 403
     end
@@ -33,11 +34,12 @@ class Api::V1::TimesheetEntry::BulkActionController < Api::V1::ApplicationContro
 
     timesheet_entries = policy_scope(TimesheetEntry)
     entries_to_discard = timesheet_entries.where(id: ids_params)
-    if standard_user? && entries_to_discard.any? { |entry| entry_locked_for_standard_user?(entry) }
+    if entries_to_discard.any? { |entry| entry_locked?(entry) }
       return render json: {
         error: I18n.t(
           "timesheet_entry.destroy.locked",
-          default: "Only admins can delete entries older than 7 days"
+          days: current_company.timesheet_edit_days,
+          default: "Only admins and owners can delete entries older than %{days} days"
         )
       }, status: 403
     end
@@ -55,11 +57,15 @@ class Api::V1::TimesheetEntry::BulkActionController < Api::V1::ApplicationContro
       params.require(:source).require(:ids)
     end
 
-    def standard_user?
-      !current_user.has_role?(:admin, current_company)
+    def privileged_user?
+      current_user.has_role?(:admin, current_company) ||
+        current_user.has_role?(:owner, current_company)
     end
 
-    def entry_locked_for_standard_user?(entry)
-      entry.work_date.present? && entry.work_date < 7.days.ago.to_date
+    def entry_locked?(entry)
+      return true if entry.billed?
+      return false if privileged_user?
+
+      entry.work_date.present? && entry.work_date < current_company.timesheet_edit_days.days.ago.to_date
     end
 end
