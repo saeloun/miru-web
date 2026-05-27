@@ -271,7 +271,7 @@ const PaymentEntryForm = ({
                 <div className="mt-1" id="invoice" ref={wrapperSelectRef}>
                   <div className="relative mt-3" id="invoicesList">
                     <label
-                      className="absolute top-0.5 left-1 z-1 h-6 origin-0 bg-background p-2 text-base font-medium text-muted-foreground duration-300"
+                      className="absolute top-2 left-1 z-10 ml-3 -translate-y-4 scale-75 origin-0 transform bg-background px-1 py-0 text-base font-medium text-muted-foreground whitespace-nowrap"
                       htmlFor="manual-payment-invoice-select"
                     >
                       {i18n.t("payments.invoice")}
@@ -285,7 +285,7 @@ const PaymentEntryForm = ({
                       aria-controls="manual-payment-invoice-options"
                       aria-expanded={showSelectMenu}
                       aria-haspopup="listbox"
-                      className="flex min-h-14 w-full items-center justify-between rounded-md border border-border bg-background px-4 pt-6 pb-2 text-left text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
+                      className="flex min-h-12 w-full items-center justify-between rounded-md border border-border bg-background px-4 py-3 text-left text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
                       data-testid="manual-payment-invoice-select"
                       id="manual-payment-invoice-select"
                       type="button"
