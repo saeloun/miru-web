@@ -87,6 +87,7 @@
     "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "^19.8.1",
     "@eslint/compat": "^1.3.2",
+    "@playwright/test": "1.58.2",
     "@radix-ui/react-slot": "^1.2.3",
     "@typescript-eslint/eslint-plugin": "^8.41.0",
     "@typescript-eslint/parser": "^8.41.0",
