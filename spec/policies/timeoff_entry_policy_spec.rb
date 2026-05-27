@@ -49,9 +49,9 @@ RSpec.describe TimeoffEntryPolicy, type: :policy do
       expect(described_class).not_to permit(employee, record)
     end
 
-    it "forbids owner for entries older than a week" do
+    it "permits owner for entries older than a week (owner bypasses the stale check)" do
       record.update!(leave_date: 8.days.ago.to_date)
-      expect(described_class).not_to permit(owner, record)
+      expect(described_class).to permit(owner, record)
       expect(described_class).to permit(admin, record)
     end
 

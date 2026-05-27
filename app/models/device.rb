@@ -19,7 +19,7 @@ class Device < ApplicationRecord
   private
 
     def set_default_specifications
-      self.specifications = {
+      self.specifications ||= {
         "processor": "",
         "ram": "",
         "graphics": ""

@@ -100,7 +100,7 @@ const MobileFinancialDetailForm = ({
                 </div>
                 {/* Standard Rate */}
                 <div className="field relative">
-                  <div className="outline relative">
+                  <div className="field-outline relative">
                     <Field
                       name="standard_rate"
                       placeholder=" "

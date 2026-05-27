@@ -55,7 +55,7 @@ export const CustomAdvanceInput = ({
 
   return (
     <div
-      className={classNames("outline relative", wrapperClassName)}
+      className={classNames("field-outline relative", wrapperClassName)}
       ref={inputRef}
       onClick={() => setFocused(true)}
     >

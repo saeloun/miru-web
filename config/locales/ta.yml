@@ -755,11 +755,11 @@ ta:
       message: நேரத் தாள் உருவாக்கப்பட்டது
     destroy:
       failure: நேர அட்டவணைப் பதிவுகளை நீக்க முடியவில்லை
-      locked: Only admins can delete entries older than 7 days
+      locked: "நிர்வாகிகளும் உரிமையாளர்களும் மட்டுமே %{days} நாட்களுக்கும் மேலான பதிவுகளை நீக்கலாம்"
       message: நேர அட்டவணை நீக்கப்பட்டது
     update:
       failure: நேர அட்டவணைப் பதிவுகளைப் புதுப்பிக்க முடியவில்லை
-      locked: Only admins can edit entries older than 7 days
+      locked: "நிர்வாகிகளும் உரிமையாளர்களும் மட்டுமே %{days} நாட்களுக்கும் மேலான பதிவுகளை திருத்தலாம்"
       message: நேர அட்டவணை புதுப்பிக்கப்பட்டது
   totp:
     disable_passkey_first: அங்கீகரிப்பான் செயலியின் 2FA-ஐ இயக்குவதற்கு முன், தேவையான

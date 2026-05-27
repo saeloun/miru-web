@@ -293,14 +293,14 @@ const OrganizationHolidaysEditor = ({
             <button
               key={tab.key}
               onClick={() => setActiveTab(tab.key)}
-              className={`flex items-center gap-2 rounded-md px-4 py-2.5 text-sm font-geist-medium transition-colors ${
+              className={`flex flex-1 min-w-0 items-center justify-center gap-1.5 rounded-md px-2 sm:px-4 py-2.5 text-xs sm:text-sm font-geist-medium transition-colors ${
                 activeTab === tab.key
                   ? "bg-background text-foreground shadow-sm"
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
-              {tab.icon}
-              {tab.label}
+              <span className="shrink-0">{tab.icon}</span>
+              <span className="truncate">{tab.label}</span>
             </button>
           ))}
         </div>
@@ -725,13 +725,13 @@ const OrganizationHolidaysEditor = ({
             </CardHeader>
             <CardContent>
               <div
-                className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4"
+                className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
                 data-testid="holidays-calendar"
               >
                 {monthLabels.map((monthLabel, monthIndex) => (
                   <div
                     key={`${monthLabel}-${monthIndex}`}
-                    className="rounded-xl border border-border bg-muted/30 p-4"
+                    className="rounded-xl border border-border bg-muted/30 p-2 sm:p-4 min-w-0 overflow-hidden"
                   >
                     <div className="mb-3 flex items-center justify-between">
                       <p className="text-xs font-geist-semibold uppercase tracking-[0.24em] text-muted-foreground">
@@ -741,7 +741,7 @@ const OrganizationHolidaysEditor = ({
                         {holidaysByMonth[monthIndex]?.length || 0}
                       </p>
                     </div>
-                    <div className="grid grid-cols-7 gap-1 text-[10px] text-muted-foreground mb-1">
+                    <div className="grid grid-cols-7 gap-px text-[10px] text-muted-foreground mb-1">
                       {weekdayLabels.map((label, labelIndex) => (
                         <span
                           key={`${monthLabel}-${label}-${labelIndex}`}
@@ -751,12 +751,12 @@ const OrganizationHolidaysEditor = ({
                         </span>
                       ))}
                     </div>
-                    <div className="space-y-1">
+                    <div className="space-y-px">
                       {buildMonthGrid(currentYear, monthIndex).map(
                         (week, weekIndex) => (
                           <div
                             key={`${monthLabel}-week-${weekIndex}`}
-                            className="grid grid-cols-7 gap-1"
+                            className="grid grid-cols-7 gap-px"
                           >
                             {week.map((day, dayIndex) => {
                               if (!day) {
@@ -780,7 +780,7 @@ const OrganizationHolidaysEditor = ({
                                       ? `holiday-calendar-day-${isoDate}`
                                       : undefined
                                   }
-                                  className={`flex h-7 w-7 items-center justify-center rounded-md text-xs ${
+                                  className={`flex aspect-square items-center justify-center rounded-md text-[10px] sm:text-xs ${
                                     holiday
                                       ? "bg-primary text-primary-foreground font-geist-semibold"
                                       : "text-foreground"

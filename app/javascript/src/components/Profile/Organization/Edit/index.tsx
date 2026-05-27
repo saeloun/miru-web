@@ -62,6 +62,12 @@ const orgSchema = Yup.object().shape({
   companyWorkingDays: Yup.string().required(
     i18n.t("auth.validation.workingDaysRequired")
   ),
+  timesheetEditDays: Yup.number()
+    .typeError(i18n.t("auth.validation.amountMustBeNumber"))
+    .integer(i18n.t("auth.validation.amountMustBeNumber"))
+    .min(1, i18n.t("organization.timesheetEditDaysMin"))
+    .max(365, i18n.t("organization.timesheetEditDaysMax"))
+    .required(i18n.t("organization.timesheetEditDaysRequired")),
 });
 
 const fiscalYearOptions = [
@@ -112,6 +118,7 @@ const initialState = {
   logo: null,
   companyWorkingHours: "0",
   companyWorkingDays: "0",
+  timesheetEditDays: "30",
   bankName: "",
   bankAccountNumber: "",
   bankRoutingNumber: "",
@@ -133,6 +140,7 @@ const errorState = {
   countryErr: "",
   cityErr: "",
   zipcodeErr: "",
+  timesheetEditDaysErr: "",
 };
 
 const OrgEdit = () => {
@@ -235,6 +243,7 @@ const OrgEdit = () => {
       logo: null,
       companyWorkingHours: companyDetails.working_hours,
       companyWorkingDays: companyDetails.working_days,
+      timesheetEditDays: (companyDetails.timesheet_edit_days ?? 30).toString(),
       bankName: companyDetails.bank_name || "",
       bankAccountNumber: companyDetails.bank_account_number || "",
       bankRoutingNumber: companyDetails.bank_routing_number || "",
@@ -421,6 +430,7 @@ const OrgEdit = () => {
           companyRate: orgDetails.companyRate,
           companyWorkingDays: orgDetails.companyWorkingDays,
           companyWorkingHours: orgDetails.companyWorkingHours,
+          timesheetEditDays: Number(orgDetails.timesheetEditDays),
         },
         { abortEarly: false }
       );
@@ -437,6 +447,7 @@ const OrgEdit = () => {
         cityErr: "",
         zipcodeErr: "",
         companyRateErr: "",
+        timesheetEditDaysErr: "",
       };
 
       err.inner.map(item => {
@@ -501,6 +512,10 @@ const OrgEdit = () => {
 
       formD.append("company[working_hours]", orgDetails.companyWorkingHours);
       formD.append("company[working_days]", orgDetails.companyWorkingDays);
+      formD.append(
+        "company[timesheet_edit_days]",
+        orgDetails.timesheetEditDays
+      );
 
       // Bank information
       formD.append("company[bank_name]", orgDetails.bankName || "");

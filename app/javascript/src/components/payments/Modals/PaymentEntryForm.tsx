@@ -14,7 +14,7 @@ import { CalendarIcon } from "miruIcons";
 import { CaretDown } from "phosphor-react";
 import { useNavigate } from "react-router-dom";
 import { i18n } from "../../../i18n";
-import { Badge, MobileMoreOptions, Toastr } from "StyledComponents";
+import { Badge, Toastr } from "StyledComponents";
 import getStatusCssClass from "utils/getBadgeStatus";
 
 import { transactionTypes } from "./constants";
@@ -25,7 +25,6 @@ interface PaymentEntryFormValues {
   transactionDate: any;
   amount: any;
   transactionType: any;
-  showTransactionTypes: boolean;
   note: any;
 }
 
@@ -47,11 +46,15 @@ const PaymentEntryForm = ({
   const [focusedInvoiceIndex, setFocusedInvoiceIndex] = useState(0);
   const [showDesktopTransactionTypes, setShowDesktopTransactionTypes] =
     useState<boolean>(false);
+
+  const [showMobileTransactionTypes, setShowMobileTransactionTypes] =
+    useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const wrapperSelectRef = useRef(null);
   const wrapperCalendartRef = useRef(null);
   const wrapperDesktopTransactionTypeRef = useRef(null);
+  const wrapperMobileTransactionTypeRef = useRef(null);
 
   const navigate = useNavigate();
   const selectedInvoiceFromUrl = invoiceId
@@ -80,6 +83,7 @@ const PaymentEntryForm = ({
         setShowDatePicker({ visibility: false });
         setShowSelectMenu(false);
         setShowDesktopTransactionTypes(false);
+        setShowMobileTransactionTypes(false);
       }
     };
     window.addEventListener("keydown", close);
@@ -97,6 +101,10 @@ const PaymentEntryForm = ({
 
   useOutsideClick(wrapperDesktopTransactionTypeRef, () => {
     setShowDesktopTransactionTypes(false);
+  });
+
+  useOutsideClick(wrapperMobileTransactionTypeRef, () => {
+    setShowMobileTransactionTypes(false);
   });
 
   const handleAddPayment = async values => {
@@ -142,24 +150,17 @@ const PaymentEntryForm = ({
       initialValues={initialValues}
       onSubmit={async (values, { resetForm }) => {
         const saved = await handleAddPayment(values);
-        if (saved) resetForm();
+        if (saved) {
+          resetForm();
+          setShowMobileTransactionTypes(false);
+        }
       }}
     >
       {(props: FormikProps<PaymentEntryFormValues>) => {
         const { values, setFieldValue } = props;
 
-        const setShowTransactionTypes = visibilty => {
-          setFieldValue("showTransactionTypes", visibilty);
-        };
-
-        const {
-          invoice,
-          transactionDate,
-          amount,
-          transactionType,
-          showTransactionTypes,
-          note,
-        } = values;
+        const { invoice, transactionDate, amount, transactionType, note } =
+          values;
 
         const selectedTransactionType = transactionTypes.find(
           type => type.value === transactionType
@@ -431,11 +432,7 @@ const PaymentEntryForm = ({
                 />
               )}
             </div>
-            <div
-              className="relative mt-4"
-              id="transactionType"
-              onClick={() => setFieldValue("showTransactionTypes", true)}
-            >
+            <div className="relative mt-4" id="transactionType">
               {isDesktop ? (
                 <div
                   className="field relative"
@@ -496,45 +493,60 @@ const PaymentEntryForm = ({
                   )}
                 </div>
               ) : (
-                <>
+                <div
+                  className="relative"
+                  ref={wrapperMobileTransactionTypeRef}
+                  role="button"
+                  tabIndex={0}
+                  aria-haspopup="listbox"
+                  aria-expanded={showMobileTransactionTypes}
+                  onClick={() => setShowMobileTransactionTypes(true)}
+                  onKeyDown={event => {
+                    if (event.key === "Enter" || event.key === " ") {
+                      event.preventDefault();
+                      setShowMobileTransactionTypes(true);
+                    }
+                  }}
+                >
                   <CustomReactSelect
                     isDisabled
                     label={i18n.t("payments.transactionType")}
                     name="transactionType"
                     options={transactionTypes}
-                    handleonFocus={() =>
-                      setFieldValue("showTransactionTypes", true)
-                    }
+                    handleonFocus={() => setShowMobileTransactionTypes(true)}
                     value={transactionTypes.find(
                       type => type.value == transactionType
                     )}
                   />
-                  {showTransactionTypes && (
-                    <MobileMoreOptions
-                      className="max-h-[70vh] w-full overflow-y-auto md:max-h-[60vh] md:w-3/4 lg:max-h-[40vh]"
-                      setVisibilty={setShowTransactionTypes}
-                      visibilty={showTransactionTypes}
-                    >
-                      {transactionTypes.map((transaction, index) => (
-                        <li
-                          className="flex items-center pb-5 font-sans text-sm font-normal capitalize leading-5 text-foreground hover:bg-muted"
-                          key={index}
-                          onClick={() => {
-                            if (transaction?.value) {
-                              setFieldValue(
-                                "transactionType",
-                                transaction.value
-                              );
+                  {showMobileTransactionTypes && (
+                    <div className="absolute left-0 right-0 top-full z-50 mt-1 max-h-60 overflow-y-auto rounded-md border border-border bg-background shadow-lg">
+                      <ul className="py-1" role="listbox">
+                        {transactionTypes.map((transaction, index) => (
+                          <li
+                            className="flex cursor-pointer items-center px-4 py-3 font-sans text-sm font-normal capitalize leading-5 text-foreground hover:bg-muted"
+                            key={index}
+                            role="option"
+                            aria-selected={
+                              transactionType === transaction.value
                             }
-                            setFieldValue("showTransactionTypes", false);
-                          }}
-                        >
-                          {transaction.label}
-                        </li>
-                      ))}
-                    </MobileMoreOptions>
+                            onClick={e => {
+                              e.stopPropagation();
+                              if (transaction?.value) {
+                                setFieldValue(
+                                  "transactionType",
+                                  transaction.value
+                                );
+                              }
+                              setShowMobileTransactionTypes(false);
+                            }}
+                          >
+                            {transaction.label}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
                   )}
-                </>
+                </div>
               )}
             </div>
             <div className="mt-4">

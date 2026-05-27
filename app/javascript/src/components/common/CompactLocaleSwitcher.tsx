@@ -44,8 +44,11 @@ const CompactLocaleSwitcher: React.FC = () => {
   };
 
   return (
-    <div className="inline-flex items-center gap-2 rounded-lg border border-border bg-card px-2 py-1">
-      <GlobeHemisphereWest size={16} className="text-muted-foreground" />
+    <div className="inline-flex items-center gap-1 sm:gap-2 rounded-lg border border-border bg-card px-1.5 sm:px-2 py-1">
+      <GlobeHemisphereWest
+        size={16}
+        className="text-muted-foreground shrink-0"
+      />
       <Select
         value={selectedLocale}
         onValueChange={handleChange}
@@ -53,10 +56,12 @@ const CompactLocaleSwitcher: React.FC = () => {
       >
         <SelectTrigger
           aria-label={t("common.language")}
-          className="h-8 min-w-[128px] border-0 bg-transparent px-1 text-sm shadow-none focus:ring-0 focus:ring-offset-0"
+          className="h-7 sm:h-8 min-w-0 w-auto border-0 bg-transparent px-0.5 sm:px-1 text-xs sm:text-sm shadow-none focus:ring-0 focus:ring-offset-0 whitespace-nowrap"
           data-testid="compact-locale-switcher"
         >
-          <SelectValue placeholder={t("common.language")} />
+          <span className="hidden sm:inline">
+            <SelectValue placeholder={t("common.language")} />
+          </span>
         </SelectTrigger>
         <SelectContent align="end">
           {LANGUAGE_OPTIONS.map(option => (

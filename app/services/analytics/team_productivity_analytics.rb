@@ -29,7 +29,7 @@ module Analytics
 
       def scoped_users
         @scoped_users ||= begin
-          relation = company.users.with_kept_employments.distinct.order(:first_name, :last_name)
+          relation = company.employees_without_client_role.distinct.order(:first_name, :last_name)
           user_ids.present? ? relation.where(id: user_ids) : relation
         end
       end

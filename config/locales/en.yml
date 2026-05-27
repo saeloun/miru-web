@@ -743,11 +743,11 @@ en:
       message: Timesheet created
     destroy:
       failure: Failed to delete timesheet entries
-      locked: Only admins can delete entries older than 7 days
+      locked: "Only admins and owners can delete entries older than %{days} days"
       message: Timesheet deleted
     update:
       failure: Failed to update timesheet entries
-      locked: Only admins can edit entries older than 7 days
+      locked: "Only admins and owners can edit entries older than %{days} days"
       message: Timesheet updated
   totp:
     disable_passkey_first: Disable required passkey sign in before enabling authenticator

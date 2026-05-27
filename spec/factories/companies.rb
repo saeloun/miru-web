@@ -21,6 +21,7 @@
 #  standard_price      :decimal(, )      default(0.0), not null
 #  timezone            :string
 #  vat_number          :string
+#  timesheet_edit_days :integer          default(30), not null
 #  working_days        :string           default("5")
 #  working_hours       :string           default("40")
 #  created_at          :datetime         not null

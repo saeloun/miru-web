@@ -103,46 +103,44 @@ const Header = ({
 
   return (
     <Card className="mb-6 w-full rounded-lg border border-border bg-card shadow-sm">
-      <CardContent className="p-5">
-        <div className="flex w-full flex-wrap items-center justify-between gap-3 sm:flex-nowrap sm:gap-4">
-          <div className="flex items-center gap-2">
+      <CardContent className="p-2.5 sm:p-5">
+        <div className="flex w-full items-center gap-1 sm:gap-2 md:gap-4">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={getTodayAction}
+            data-testid="time-nav-today"
+            className="px-2 sm:px-4 py-1.5 sm:py-2 font-bold text-[11px] sm:text-sm border-border hover:bg-accent hover:text-accent-foreground transition-all duration-200 shrink-0"
+          >
+            {i18n.t("today")}
+          </Button>
+          {isDesktop && !handleTodayButton && (
             <Button
-              variant="outline"
+              variant="ghost"
               size="sm"
-              onClick={getTodayAction}
-              data-testid="time-nav-today"
-              className="px-4 py-2 font-bold text-sm border-border hover:bg-accent hover:text-accent-foreground transition-all duration-200"
+              onClick={getLastWeekAction}
+              className="px-3 py-2 text-sm font-semibold text-muted-foreground hover:bg-accent hover:text-foreground shrink-0"
             >
-              {i18n.t("today")}
+              {i18n.t("lastWeek")}
             </Button>
-            {isDesktop && !handleTodayButton && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={getLastWeekAction}
-                className="px-3 py-2 text-sm font-semibold text-muted-foreground hover:bg-accent hover:text-foreground"
-              >
-                {i18n.t("lastWeek")}
-              </Button>
-            )}
-          </div>
+          )}
 
-          <div className="flex min-w-0 flex-1 items-center justify-center gap-2 sm:gap-4">
+          <div className="flex min-w-0 flex-1 items-center justify-center gap-0.5 sm:gap-2 md:gap-4">
             <Button
               variant="ghost"
               size="sm"
               onClick={getLeftArrowAction}
               data-testid="time-nav-prev"
-              className="h-10 w-10 shrink-0 p-0 hover:bg-accent transition-all duration-200"
+              className="h-6 w-6 sm:h-10 sm:w-10 shrink-0 p-0 hover:bg-accent transition-all duration-200"
             >
-              <CaretLeft className="h-5 w-5" />
+              <CaretLeft className="h-3.5 w-3.5 sm:h-5 sm:w-5" />
             </Button>
             {(!!dayInfo.length || text) && (
               <>
-                <div className="flex min-w-0 items-center gap-2 sm:gap-3">
-                  <Calendar className="h-5 w-5 shrink-0 text-primary sm:h-6 sm:w-6" />
+                <div className="flex min-w-0 items-center gap-1 sm:gap-3">
+                  <Calendar className="hidden sm:block h-5 w-5 shrink-0 text-primary md:h-6 md:w-6" />
                   <h2
-                    className="cursor-pointer text-base font-semibold tracking-tight text-foreground transition-colors hover:text-primary sm:text-xl"
+                    className="cursor-pointer text-[11px] sm:text-base font-semibold tracking-tight text-foreground transition-colors hover:text-primary md:text-xl truncate"
                     onClick={() => {
                       !isDesktop && setOpenOsCalendar(!openOsCalendar);
                     }}
@@ -174,17 +172,17 @@ const Header = ({
               size="sm"
               onClick={getRightArrowAction}
               data-testid="time-nav-next"
-              className="h-10 w-10 shrink-0 p-0 hover:bg-accent transition-all duration-200"
+              className="h-6 w-6 sm:h-10 sm:w-10 shrink-0 p-0 hover:bg-accent transition-all duration-200"
             >
-              <CaretRight className="h-5 w-5" />
+              <CaretRight className="h-3.5 w-3.5 sm:h-5 sm:w-5" />
             </Button>
           </div>
 
-          <div className="weekly-total ml-auto rounded-lg border border-border bg-muted/40 px-3 py-2 text-right min-w-0 shrink-0 sm:px-4">
-            <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">
+          <div className="weekly-total rounded-md sm:rounded-lg border border-border bg-muted/40 px-1.5 sm:px-3 py-0.5 sm:py-2 text-right shrink-0 md:px-4">
+            <div className="text-[7px] sm:text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">
               {i18n.t("total")}
             </div>
-            <div className="text-lg font-bold tabular-nums text-foreground">
+            <div className="text-[11px] sm:text-lg font-bold tabular-nums text-foreground">
               {getTotal() || "00:00"}
             </div>
           </div>

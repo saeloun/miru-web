@@ -13,7 +13,7 @@
   <tr>
     <%= render "shared/mailer/detail_card",
       label: t("mailers.labels.payment_method"),
-      value: @invoice.payments.any?(&:present?) ? @invoice.payments.pluck(:transaction_type).to_sentence.upcase : "STRIPE" %>
+      value: @invoice.payments.order(created_at: :desc).first&.transaction_type&.humanize&.upcase || "STRIPE" %>
     <%= render "shared/mailer/detail_card", label: t("mailers.labels.amount_paid"), value: @amount %>
   </tr>
   <tr>

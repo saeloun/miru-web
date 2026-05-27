@@ -35,8 +35,12 @@ Rails.application.configure do
   # Store uploaded files on the local file system (see config/storage.yml for options).
   config.active_storage.service = :local
 
-  # Don't care if the mailer can't send.
-  config.action_mailer.raise_delivery_errors = false
+  # Raise delivery errors so mailer failures surface during development.
+  config.action_mailer.raise_delivery_errors = true
+
+  # Configure letter_opener for email testing
+  config.action_mailer.delivery_method = :letter_opener
+  config.action_mailer.perform_deliveries = true
 
   # Make template changes take effect immediately.
   config.action_mailer.perform_caching = false
@@ -68,6 +72,11 @@ Rails.application.configure do
 
   # Uncomment if you wish to allow Action Cable access from any origin.
   # config.action_cable.disable_request_forgery_protection = true
+
+  # Allow ngrok tunnels for local webhook/integration testing.
+  # Uncomment and replace with your own ngrok hostname, or use the regex to allow any ngrok domain.
+  # config.hosts << /[a-z0-9-]+\.ngrok-free\.dev/
+  # config.hosts << "your-ngrok-hostname.ngrok-free.app"
 
   # Raise error when a before_action's only/except options reference missing actions.
   config.action_controller.raise_on_missing_callback_actions = true

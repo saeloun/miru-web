@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_14_133200) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_25_143125) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_stat_statements"
@@ -282,6 +282,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_14_133200) do
     t.string "subscription_interval"
     t.string "subscription_status"
     t.string "tax_id"
+    t.integer "timesheet_edit_days", default: 30, null: false
     t.string "timezone"
     t.datetime "trial_ends_at"
     t.datetime "trial_started_at"
