@@ -381,7 +381,9 @@ const Holidays = () => {
     if (!canManageHolidays) return;
 
     const newHolidayErrors = validateHolidayRows(holidayList);
-    const newOptionalHolidayErrors = validateHolidayRows(optionalHolidaysList);
+    const newOptionalHolidayErrors = enableOptionalHolidays
+      ? validateHolidayRows(optionalHolidaysList)
+      : {};
 
     if (
       Object.keys(newHolidayErrors).length > 0 ||
@@ -389,6 +391,14 @@ const Holidays = () => {
     ) {
       setHolidayErrors(newHolidayErrors);
       setOptionalHolidayErrors(newOptionalHolidayErrors);
+
+      if (Object.keys(newOptionalHolidayErrors).length > 0) {
+        Toastr.error(
+          i18n.t("holidaysSettings.optionalHolidaysHaveErrors", {
+            defaultValue: "Some optional holidays have missing fields.",
+          })
+        );
+      }
 
       return;
     }

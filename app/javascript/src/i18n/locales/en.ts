@@ -1657,6 +1657,7 @@ const en = {
     enterHolidayName: "Enter holiday name",
     selectDate: "Select date",
     nameCannotBeBlank: "Holiday Name can not be blank",
+    optionalHolidaysHaveErrors: "Some optional holidays have missing fields.",
     addHoliday: "Add Holiday",
     addFirstHoliday: "Add First Holiday",
     addOptionalHoliday: "Add Optional Holiday",
