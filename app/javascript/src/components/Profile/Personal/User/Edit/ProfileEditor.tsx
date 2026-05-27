@@ -332,7 +332,7 @@ const ProfileEditor = ({
                 </label>
                 <CustomReactSelect
                   handleOnChange={handleOnChangeAddrType}
-                  label={i18n.t("profile.addressType")}
+                  label=""
                   name="address_select"
                   options={addressOptions}
                   value={addrType.value ? addrType : addressOptions[0]}
