@@ -8,6 +8,7 @@ import { useOutsideClick } from "helpers";
 import { useNavigate } from "react-router-dom";
 import { Toastr } from "StyledComponents";
 import { sendGAPageView } from "utils/googleAnalytics";
+import { i18n } from "../../../../i18n";
 
 import OrganizationHolidaysEditor from "./Editor";
 import { companyDateFormat, makePayload } from "./utils";
@@ -354,8 +355,43 @@ const Holidays = () => {
     setOptionalRepetitionType(e.value);
   };
 
+  const validateHolidayRows = (
+    list: any[]
+  ): Record<number, Record<string, string[]>> => {
+    const errors: Record<number, Record<string, string[]>> = {};
+    list.forEach((holiday, index) => {
+      const rowErrors: Record<string, string[]> = {};
+      if (!holiday.date?.trim()) {
+        rowErrors.date = [i18n.t("dateCannotBeBlank")];
+      }
+
+      if (!holiday.name?.trim()) {
+        rowErrors.name = [i18n.t("holidaysSettings.nameCannotBeBlank")];
+      }
+
+      if (Object.keys(rowErrors).length > 0) {
+        errors[index] = rowErrors;
+      }
+    });
+
+    return errors;
+  };
+
   const handleUpdateHolidayDetails = () => {
     if (!canManageHolidays) return;
+
+    const newHolidayErrors = validateHolidayRows(holidayList);
+    const newOptionalHolidayErrors = validateHolidayRows(optionalHolidaysList);
+
+    if (
+      Object.keys(newHolidayErrors).length > 0 ||
+      Object.keys(newOptionalHolidayErrors).length > 0
+    ) {
+      setHolidayErrors(newHolidayErrors);
+      setOptionalHolidayErrors(newOptionalHolidayErrors);
+
+      return;
+    }
 
     const totalHolidayList = makePayload(
       [...holidayList, ...optionalHolidaysList],

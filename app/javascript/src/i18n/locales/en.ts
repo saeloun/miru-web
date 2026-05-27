@@ -1656,6 +1656,7 @@ const en = {
     holidayName: "Holiday Name",
     enterHolidayName: "Enter holiday name",
     selectDate: "Select date",
+    nameCannotBeBlank: "Holiday Name can not be blank",
     addHoliday: "Add Holiday",
     addFirstHoliday: "Add First Holiday",
     addOptionalHoliday: "Add Optional Holiday",
