@@ -7,12 +7,13 @@
 bin/dev
 
 # 2. Run all notification tests
-npm run test:e2e:notifications
+pnpm test:e2e:notifications
 ```
 
 ## ✅ Expected Results (After Fix)
 
 ### Reminder Logic Tests
+
 - ✅ 45 hours logged → NO reminder
 - ✅ 30 hours logged → Reminder sent
 - ✅ 40 hours logged → NO reminder
@@ -21,12 +22,14 @@ npm run test:e2e:notifications
 - ✅ Timeoff included in calculation
 
 ### Email Asset Tests
+
 - ✅ 0 broken images
 - ✅ Logo visible
 - ✅ Styles applied
 - ✅ Absolute URLs used
 
 ### Settings UI Tests
+
 - ✅ Page loads
 - ✅ Toggle works
 - ✅ Settings persist
@@ -74,23 +77,27 @@ open http://localhost:3000/letter_opener
 ## 🆘 Common Issues
 
 ### "No projects found"
+
 ```bash
 rails db:seed
 ```
 
 ### "Email not found"
+
 ```bash
 # Check letter_opener is configured
 open http://localhost:3000/letter_opener
 ```
 
 ### "Endpoint not found"
+
 ```bash
 # Verify route exists
 rails routes | grep trigger_weekly_reminder
 ```
 
 ### Tests are flaky
+
 ```bash
 # Run serially
 npx playwright test e2e/notifications --workers=1
@@ -114,12 +121,12 @@ open http://localhost:3000/letter_opener
 
 ## 🎯 Test Coverage Summary
 
-| Test Category | Test Count | Coverage |
-|--------------|------------|----------|
-| Reminder Logic | 6 tests | Core bug scenarios |
-| Email Assets | 8 tests | Asset loading issues |
-| Settings UI | 10 tests | User preferences |
-| **Total** | **24 tests** | **Complete coverage** |
+| Test Category  | Test Count   | Coverage              |
+| -------------- | ------------ | --------------------- |
+| Reminder Logic | 6 tests      | Core bug scenarios    |
+| Email Assets   | 8 tests      | Asset loading issues  |
+| Settings UI    | 10 tests     | User preferences      |
+| **Total**      | **24 tests** | **Complete coverage** |
 
 ## ✨ After Tests Pass
 

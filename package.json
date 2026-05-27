@@ -147,7 +147,11 @@
     "mobile:web": "pnpm --dir apps/mobile web",
     "mobile:typecheck": "pnpm --dir apps/mobile exec tsc --noEmit",
     "postinstall": "node -e \"if (process.env.NODE_ENV !== 'production') { require('child_process').execSync('lefthook install', {stdio: 'inherit'}); }\"",
-    "build": "vite build --outDir public"
+    "build": "vite build --outDir public",
+    "test:e2e": "playwright test",
+    "test:e2e:list": "playwright test --list",
+    "test:e2e:notifications": "playwright test --project=notifications",
+    "test:e2e:ui": "playwright test --ui"
   },
   "browserslist": [
     "defaults"

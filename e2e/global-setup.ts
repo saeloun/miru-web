@@ -4,14 +4,14 @@
  */
 import { execFileSync } from "node:child_process";
 import { test as setup, expect, request } from "@playwright/test";
+import { E2E_BASE_URL } from "./config";
 import { TEST_PASSWORD } from "./helpers";
 
 const AUTH_FILE = "e2e/.auth/admin.json";
-const BASE_URL = "http://127.0.0.1:3000";
 const GLOBAL_ADMIN_EMAIL = "codex.e2e.admin@saeloun.example";
 
 function ensureGlobalAdminCredentials() {
-    const rubyCode = `
+  const rubyCode = `
 require "json"
 
 password = ${JSON.stringify(TEST_PASSWORD)}
@@ -38,93 +38,84 @@ puts({
 }.to_json)
 `;
 
-    const output = execFileSync(
-        "mise",
-        ["exec", "--", "bundle", "exec", "rails", "runner", rubyCode],
-        {
-            cwd: process.cwd(),
-            encoding: "utf8",
-        },
-    );
+  const output = execFileSync(
+    "mise",
+    ["exec", "--", "bundle", "exec", "rails", "runner", rubyCode],
+    {
+      cwd: process.cwd(),
+      encoding: "utf8",
+    }
+  );
 
-    const lastLine = output
-        .split(/\r?\n/)
-        .map(line => line.trim())
-        .filter(Boolean)
-        .at(-1);
+  const lastLine = output
+    .split(/\r?\n/)
+    .map(line => line.trim())
+    .filter(Boolean)
+    .at(-1);
 
-    if (!lastLine) throw new Error("Failed to provision global admin credentials");
-    return JSON.parse(lastLine) as { email: string; password: string; company_id: number };
+  if (!lastLine)
+    throw new Error("Failed to provision global admin credentials");
+  return JSON.parse(lastLine) as {
+    email: string;
+    password: string;
+    company_id: number;
+  };
 }
 
 setup("authenticate as admin", async ({ page }) => {
-    const credentials = ensureGlobalAdminCredentials();
-    const apiContext = await request.newContext({
-        baseURL: BASE_URL,
+  const credentials = ensureGlobalAdminCredentials();
+  const apiContext = await request.newContext({
+    baseURL: E2E_BASE_URL,
+  });
+
+  try {
+    const response = await apiContext.post("/api/v1/users/login", {
+      data: {
+        user: {
+          email: credentials.email,
+          password: credentials.password,
+          locale: "en-US",
+        },
+      },
     });
 
-    try {
-        const response = await apiContext.post("/api/v1/users/login", {
-            data: {
-                user: {
-                    email: credentials.email,
-                    password: credentials.password,
-                    locale: "en-US",
-                },
-            },
-        });
+    expect(
+      response.ok(),
+      `Admin login failed with status ${response.status()}`
+    ).toBeTruthy();
 
-        expect(
-            response.ok(),
-            `Admin login failed with status ${response.status()}`
-        ).toBeTruthy();
+    const authPayload = await response.json();
+    expect(authPayload.requires_passkey).not.toBeTruthy();
+    expect(authPayload.requires_totp).not.toBeTruthy();
+    expect(authPayload.user?.email).toBe(credentials.email);
 
-        const authPayload = await response.json();
-        expect(authPayload.requires_passkey).not.toBeTruthy();
-        expect(authPayload.requires_totp).not.toBeTruthy();
-        expect(authPayload.user?.token).toBeTruthy();
+    const requestState = await apiContext.storageState();
+    await page.context().addCookies(requestState.cookies);
 
-        const requestState = await apiContext.storageState();
-        await page.context().addCookies(requestState.cookies);
+    // Seed the same auth-related localStorage the web sign-in flow writes.
+    await page.goto("/");
+    await page.evaluate(payload => {
+      window.localStorage.clear();
+      window.sessionStorage.clear();
+      window.localStorage.setItem("user", JSON.stringify(payload.user));
+      window.localStorage.setItem("company_role", payload.company_role || "");
+      if (payload.company) {
+        window.localStorage.setItem("company", JSON.stringify(payload.company));
+      }
+      window.localStorage.setItem("miru-locale", "en-US");
+    }, authPayload);
 
-        // Seed the same auth-related localStorage the web sign-in flow writes.
-        await page.goto("/");
-        await page.evaluate(payload => {
-            window.localStorage.clear();
-            window.sessionStorage.clear();
-            window.localStorage.setItem(
-                "authToken",
-                JSON.stringify(payload.user.token)
-            );
-            window.localStorage.setItem(
-                "authEmail",
-                JSON.stringify(payload.user.email)
-            );
-            window.localStorage.setItem("user", JSON.stringify(payload.user));
-            window.localStorage.setItem(
-                "company_role",
-                payload.company_role || ""
-            );
-            if (payload.company) {
-                window.localStorage.setItem(
-                    "company",
-                    JSON.stringify(payload.company)
-                );
-            }
-            window.localStorage.setItem("miru-locale", "en-US");
-        }, authPayload);
+    await page.goto("/dashboard");
+    await page.waitForResponse(
+      response =>
+        response.url().includes("/api/v1/users/_me") &&
+        response.status() === 200,
+      { timeout: 15_000 }
+    );
+    await page.waitForURL("**/dashboard", { timeout: 15_000 });
+  } finally {
+    await apiContext.dispose();
+  }
 
-        await page.goto("/dashboard");
-        await page.waitForResponse(
-            response =>
-                response.url().includes("/api/v1/users/_me") &&
-                response.status() === 200,
-            { timeout: 15_000 }
-        );
-        await page.waitForURL("**/dashboard", { timeout: 15_000 });
-    } finally {
-        await apiContext.dispose();
-    }
-
-    await page.context().storageState({ path: AUTH_FILE });
+  await page.context().storageState({ path: AUTH_FILE });
 });
