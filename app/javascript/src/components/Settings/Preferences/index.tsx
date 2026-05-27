@@ -286,9 +286,9 @@ const PreferencesSettingsPage: React.FC = () => {
       {/* Header */}
       <div className="sticky top-0 z-10 border-b border-border bg-background/95 backdrop-blur">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
+          <div className="flex flex-col gap-3 py-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <h1 className="text-2xl font-semibold text-foreground">
+              <h1 className="text-xl font-semibold text-foreground sm:text-2xl">
                 {i18n.t("preferencesSettings.title")}
               </h1>
               <p className="mt-1 text-sm text-muted-foreground">
@@ -296,7 +296,7 @@ const PreferencesSettingsPage: React.FC = () => {
               </p>
             </div>
             {hasChanges && (
-              <div className="flex items-center space-x-3">
+              <div className="flex flex-wrap items-center gap-2">
                 <Button
                   variant="outline"
                   onClick={handleCancel}
@@ -395,13 +395,15 @@ const PreferencesSettingsPage: React.FC = () => {
               )}
             >
               <CardHeader className="border-b border-border bg-muted/30">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-3">
-                    {getCategoryIcon(
-                      categoryKey as PreferenceItem["categoryKey"]
-                    )}
-                    <div>
-                      <CardTitle className="text-lg font-semibold">
+                <div className="flex items-start justify-between gap-2">
+                  <div className="flex items-center space-x-3 min-w-0">
+                    <div className="shrink-0">
+                      {getCategoryIcon(
+                        categoryKey as PreferenceItem["categoryKey"]
+                      )}
+                    </div>
+                    <div className="min-w-0">
+                      <CardTitle className="text-base font-semibold sm:text-lg">
                         {getCategoryTitle(
                           categoryKey as PreferenceItem["categoryKey"]
                         )}
@@ -414,7 +416,7 @@ const PreferencesSettingsPage: React.FC = () => {
                     </div>
                   </div>
                   {!unsubscribedAll && (
-                    <Badge variant="secondary" className="text-xs">
+                    <Badge variant="secondary" className="shrink-0 text-xs">
                       {i18n.t("preferencesSettings.enabledCount", {
                         count: items.filter(i => i.enabled).length,
                         total: items.length,
@@ -428,18 +430,18 @@ const PreferencesSettingsPage: React.FC = () => {
                   <div
                     key={preference.id}
                     className={cn(
-                      "px-6 py-4 flex items-start justify-between",
+                      "flex items-start justify-between gap-3 px-4 py-3 sm:px-6 sm:py-4",
                       !unsubscribedAll &&
                         "transition-colors hover:bg-accent/40",
                       index !== items.length - 1 && "border-b border-border"
                     )}
                   >
-                    <div className="flex items-start space-x-3 flex-1">
-                      <div className="mt-0.5 flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-muted">
+                    <div className="flex min-w-0 flex-1 items-start gap-3">
+                      <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-border bg-muted sm:h-9 sm:w-9">
                         {getPreferenceIcon(preference.iconKey)}
                       </div>
-                      <div className="space-y-1 flex-1">
-                        <div className="flex items-center space-x-2">
+                      <div className="min-w-0 flex-1 space-y-1">
+                        <div className="flex flex-wrap items-center gap-2">
                           <Label
                             htmlFor={preference.id}
                             className={cn(
@@ -468,7 +470,7 @@ const PreferencesSettingsPage: React.FC = () => {
                         </div>
                         <p
                           className={cn(
-                            "text-sm pr-4",
+                            "text-sm",
                             unsubscribedAll
                               ? "text-muted-foreground/70"
                               : "text-muted-foreground"
@@ -483,7 +485,7 @@ const PreferencesSettingsPage: React.FC = () => {
                       checked={preference.enabled}
                       onCheckedChange={() => handleToggle(preference.id)}
                       disabled={unsubscribedAll}
-                      className="data-[state=checked]:bg-primary"
+                      className="mt-0.5 shrink-0 data-[state=checked]:bg-primary"
                     />
                   </div>
                 ))}

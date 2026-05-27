@@ -258,54 +258,62 @@ const TimeEntriesDisplay: React.FC<TimeEntriesDisplayProps> = ({
 
     return (
       <div className="space-y-4">
-        <div className="mb-6 flex items-center justify-between border-b border-border pb-6">
-          <div>
-            <h3 className="text-xl font-semibold tracking-tight text-foreground">
-              {parsedDate.format("dddd")}
-            </h3>
-            <p className="mt-2 text-base font-medium text-muted-foreground">
-              {reviewMode === "week"
-                ? `${dayjs(dayInfo[0]?.fullDate, dateFormats, true).format(
-                    "MMM D"
-                  )} to ${dayjs(dayInfo[6]?.fullDate, dateFormats, true).format(
-                    "MMM D, YYYY"
-                  )}`
-                : parsedDate.format("MMMM D, YYYY")}
-            </p>
+        <div className="mb-6 border-b border-border pb-6">
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <h3 className="text-lg sm:text-xl font-semibold tracking-tight text-foreground">
+                {parsedDate.format("dddd")}
+              </h3>
+              <p className="mt-1 sm:mt-2 text-sm sm:text-base font-medium text-muted-foreground">
+                {reviewMode === "week"
+                  ? `${dayjs(dayInfo[0]?.fullDate, dateFormats, true).format(
+                      "MMM D"
+                    )} to ${dayjs(
+                      dayInfo[6]?.fullDate,
+                      dateFormats,
+                      true
+                    ).format("MMM D, YYYY")}`
+                  : parsedDate.format("MMMM D, YYYY")}
+              </p>
+            </div>
+            <div className="flex items-center gap-2 sm:gap-3">
+              {canShowWeekReview && (
+                <div className="flex items-center gap-1 sm:gap-2 rounded-full border border-border bg-card p-1">
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant={reviewMode === "day" ? "default" : "ghost"}
+                    data-testid="time-review-day"
+                    className="text-xs sm:text-sm px-2 sm:px-3"
+                    onClick={() => setReviewMode("day")}
+                  >
+                    {i18n.t("timeTracking.selectedDay")}
+                  </Button>
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant={reviewMode === "week" ? "default" : "ghost"}
+                    data-testid="time-review-week"
+                    className="text-xs sm:text-sm px-2 sm:px-3"
+                    onClick={() => setReviewMode("week")}
+                  >
+                    {i18n.t("timeTracking.thisWeek")}
+                  </Button>
+                </div>
+              )}
+            </div>
           </div>
-          <div className="flex items-center gap-3">
-            {canShowWeekReview && (
-              <div className="flex items-center gap-2 rounded-full border border-border bg-card p-1">
-                <Button
-                  type="button"
-                  size="sm"
-                  variant={reviewMode === "day" ? "default" : "ghost"}
-                  data-testid="time-review-day"
-                  onClick={() => setReviewMode("day")}
-                >
-                  {i18n.t("timeTracking.selectedDay")}
-                </Button>
-                <Button
-                  type="button"
-                  size="sm"
-                  variant={reviewMode === "week" ? "default" : "ghost"}
-                  data-testid="time-review-week"
-                  onClick={() => setReviewMode("week")}
-                >
-                  {i18n.t("timeTracking.thisWeek")}
-                </Button>
-              </div>
-            )}
-            <div className="rounded-2xl border border-border bg-muted/40 px-8 py-4 text-right">
-              <div className="mb-2 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+          <div className="mt-3 flex items-center justify-end">
+            <div className="rounded-xl sm:rounded-2xl border border-border bg-muted/40 px-4 sm:px-8 py-2 sm:py-4 text-right">
+              <div className="mb-1 sm:mb-2 text-[10px] sm:text-sm font-semibold uppercase tracking-wider text-muted-foreground">
                 {reviewMode === "week"
                   ? i18n.t("timeTracking.weekTotal")
                   : i18n.t("timeTracking.dayTotal")}
               </div>
-              <div className="text-2xl font-semibold tracking-tight text-primary tabular-nums">
+              <div className="text-lg sm:text-2xl font-semibold tracking-tight text-primary tabular-nums">
                 {totalHours}h {totalMinutes > 0 ? `${totalMinutes}m` : ""}
               </div>
-              <div className="mt-2 text-sm font-medium text-muted-foreground">
+              <div className="mt-1 sm:mt-2 text-xs sm:text-sm font-medium text-muted-foreground">
                 {reviewEntries.length}{" "}
                 {reviewEntries.length === 1
                   ? i18n.t("timeTracking.entry")

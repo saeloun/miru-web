@@ -195,7 +195,7 @@ const MobileClientEditor = ({
                 <div className="mt-4">
                   <div className="field relative">
                     <div className="flex flex-col">
-                      <div className="outline relative flex h-12 flex-row rounded border border-border bg-white p-4 pt-2">
+                      <div className="field-outline relative flex h-12 flex-row rounded border border-border bg-white p-4 pt-2">
                         <PhoneInput
                           className="input-phone-number w-full border-transparent focus:border-transparent focus:ring-0"
                           flags={flags}

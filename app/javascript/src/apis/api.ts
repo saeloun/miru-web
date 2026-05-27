@@ -201,12 +201,16 @@ const http = Api.axios;
 // Auth
 export const authenticationApi = {
   signin: (payload: any) =>
-    http.post("/users/login", {
-      user: {
-        ...payload,
-        locale: getActiveLocale(),
+    http.post(
+      "/users/login",
+      {
+        user: {
+          ...payload,
+          locale: getActiveLocale(),
+        },
       },
-    }),
+      { skipSuccessToast: true }
+    ),
   signup: (payload: any) =>
     http.post("/users/signup", {
       user: {

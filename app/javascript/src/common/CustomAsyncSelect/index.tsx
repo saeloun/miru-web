@@ -31,7 +31,7 @@ export const CustomAsyncSelect = ({
   };
 
   return (
-    <div className="outline relative">
+    <div className="field-outline relative">
       <AsyncSelect
         cacheOptions={cacheOptions}
         classNamePrefix={classNamePrefix}

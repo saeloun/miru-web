@@ -266,7 +266,7 @@ const LeaveManagementContent = ({
                 </div>
               </div>
             </div>
-            <div className="flex justify-center p-4 sm:p-5">
+            <div className="flex justify-center p-2 sm:p-5">
               <Calendar
                 className="rounded-xl border border-border bg-background"
                 mode="single"
@@ -286,11 +286,12 @@ const LeaveManagementContent = ({
                 classNames={{
                   months: "flex flex-col",
                   month: "space-y-4",
-                  month_grid: "w-full border-collapse",
+                  month_grid: "border-collapse",
                   weekday:
-                    "text-muted-foreground rounded-md w-10 font-normal text-[0.8rem]",
-                  day: "h-10 w-10 p-0 text-center text-sm relative",
-                  day_button: "h-10 w-10 p-0 font-normal rounded-md",
+                    "text-muted-foreground rounded-md w-8 sm:w-10 font-normal text-[0.8rem] text-center",
+                  day: "h-8 w-8 sm:h-10 sm:w-10 p-0 text-center text-sm relative",
+                  day_button:
+                    "h-8 w-8 sm:h-10 sm:w-10 p-0 font-normal rounded-md",
                   selected:
                     "[&>button]:bg-primary [&>button]:text-primary-foreground [&>button]:hover:bg-primary [&>button]:hover:text-primary-foreground",
                 }}
