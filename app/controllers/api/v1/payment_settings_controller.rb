@@ -6,7 +6,7 @@ class Api::V1::PaymentSettingsController < Api::V1::ApplicationController
   def index
     authorize :index, policy_class: PaymentSettingsPolicy
 
-    render :index, locals: { stripe_connected_account:, upi_provider:, razorpay_provider: }
+    render :index, locals: payment_settings_locals
   end
 
   def connect_stripe
@@ -37,7 +37,7 @@ class Api::V1::PaymentSettingsController < Api::V1::ApplicationController
     upi_provider.assign_attributes(upi_provider_attributes)
 
     if upi_provider.save
-      render :index, locals: { stripe_connected_account:, upi_provider:, razorpay_provider: }
+      render :index, locals: payment_settings_locals
     else
       render json: { errors: upi_provider.errors.to_hash(true) }, status: 422
     end
@@ -50,7 +50,7 @@ class Api::V1::PaymentSettingsController < Api::V1::ApplicationController
     assign_razorpay_secrets_if_present
 
     if razorpay_provider.save
-      render :index, locals: { stripe_connected_account:, upi_provider:, razorpay_provider: }
+      render :index, locals: payment_settings_locals
     else
       render json: { errors: razorpay_provider.errors.to_hash(true) }, status: 422
     end
@@ -68,6 +68,21 @@ class Api::V1::PaymentSettingsController < Api::V1::ApplicationController
 
     def razorpay_provider
       @_razorpay_provider ||= current_company.payments_providers.find_or_initialize_by(name: PaymentsProvider::RAZORPAY_PROVIDER)
+    end
+
+    def quickbooks_connection
+      @_quickbooks_connection ||= current_company.quickbooks_connections.active.find_by(
+        environment: QuickBooks::Configuration.environment
+      )
+    end
+
+    def payment_settings_locals
+      {
+        stripe_connected_account:,
+        upi_provider:,
+        razorpay_provider:,
+        quickbooks_connection:
+      }
     end
 
     def upi_params

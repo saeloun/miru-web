@@ -205,6 +205,13 @@ namespace :api, defaults: { format: "json" } do
     patch "payments/settings/razorpay", to: "payment_settings#update_razorpay"
     post "payments/settings/stripe/connect", to: "payment_settings#connect_stripe"
     delete "payments/settings/stripe/disconnect", to: "payment_settings#destroy"
+    namespace :integrations do
+      get "quickbooks/status", to: "quickbooks#status"
+      post "quickbooks/connect", to: "quickbooks#connect"
+      get "quickbooks/callback", to: "quickbooks#callback"
+      delete "quickbooks/disconnect", to: "quickbooks#disconnect"
+      patch "quickbooks/settings", to: "quickbooks#settings"
+    end
     get "calendars/redirect", to: "calendars#redirect", as: "redirect"
     get "calendars/callback", to: "calendars#callback", as: "callback"
     get "calendars/calendars", to: "calendars#calendars", as: "calendars"
