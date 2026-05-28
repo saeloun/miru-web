@@ -749,11 +749,11 @@ bn:
       message: টাইমশিট তৈরি করা হয়েছে
     destroy:
       failure: টাইমশিট এন্ট্রিগুলি মুছে ফেলা সম্ভব হয়নি
-      locked: Only admins can delete entries older than 7 days
+      locked: "শুধুমাত্র অ্যাডমিন এবং মালিকরা %{days} দিনের বেশি পুরানো এন্ট্রি মুছতে পারবেন"
       message: টাইমশিট মুছে ফেলা হয়েছে
     update:
       failure: টাইমশিট এন্ট্রি আপডেট করতে ব্যর্থ হয়েছে
-      locked: Only admins can edit entries older than 7 days
+      locked: "শুধুমাত্র অ্যাডমিন এবং মালিকরা %{days} দিনের বেশি পুরানো এন্ট্রি সম্পাদনা করতে পারবেন"
       message: টাইমশিট আপডেট করা হয়েছে
   totp:
     disable_passkey_first: অথেন্টিকেটর অ্যাপের ২এফএ চালু করার আগে প্রয়োজনীয় পাসকি

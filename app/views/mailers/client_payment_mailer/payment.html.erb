@@ -18,7 +18,7 @@
 <%= render "shared/mailer/fact_rows", rows: [
   { label: t("mailers.labels.invoice"), value: @invoice.invoice_number },
   { label: t("mailers.labels.paid_on"), value: l(@invoice.updated_at.to_date, format: :long) },
-  { label: t("mailers.labels.payment_method"), value: @invoice.payments.any?(&:present?) ? @invoice.payments.pluck(:transaction_type).to_sentence.upcase : "STRIPE" },
+  { label: t("mailers.labels.payment_method"), value: @invoice.payments.order(created_at: :desc).first&.transaction_type&.humanize&.upcase || "STRIPE" },
   { label: t("mailers.labels.issued_to"), value: @invoice.client.name }
 ] %>
 

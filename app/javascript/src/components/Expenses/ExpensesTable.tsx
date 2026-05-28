@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { ColumnDef } from "@tanstack/react-table";
 import Loader from "common/Loader/index";
@@ -54,6 +54,11 @@ import { i18n } from "../../i18n";
 import ReceiptPreviewDialog from "./ReceiptPreviewDialog";
 import { findCategoryMeta } from "./utils";
 import { useLocation, useNavigate } from "react-router-dom";
+import dayjs from "dayjs";
+import customParseFormat from "dayjs/plugin/customParseFormat";
+import CustomDatePicker from "common/CustomDatePicker";
+
+dayjs.extend(customParseFormat);
 
 interface Expense {
   id: string;
@@ -208,6 +213,17 @@ const ExpensesTable: React.FC = () => {
     notes: "",
   });
   const [customCategorySelected, setCustomCategorySelected] = useState(false);
+  const [showAddDatePicker, setShowAddDatePicker] = useState(false);
+  const [showEditDatePicker, setShowEditDatePicker] = useState(false);
+  const addDatePickerRef = useRef<HTMLDivElement>(null);
+  const editDatePickerRef = useRef<HTMLDivElement>(null);
+
+  const toPickerDate = (value?: string) => {
+    if (!value) return new Date();
+    const parsed = dayjs(value, "YYYY-MM-DD", true);
+
+    return parsed.isValid() ? parsed.toDate() : new Date();
+  };
 
   const normalizeExpenseAmount = (value: string) => {
     const normalizedValue = value.replace(/[^0-9,.-]/g, "").replace(/,/g, "");
@@ -236,7 +252,6 @@ const ExpensesTable: React.FC = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["expenses"] });
-      toast.success(i18n.t("expenses.expenseDeletedSuccessfully"));
       setShowDeleteDialog(false);
     },
     onError: () => {
@@ -250,7 +265,6 @@ const ExpensesTable: React.FC = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["expenses"] });
-      toast.success(i18n.t("expenses.expenseCreatedSuccessfully"));
       if (isNewExpenseRoute) {
         navigate("/expenses", { replace: true });
       }
@@ -272,7 +286,6 @@ const ExpensesTable: React.FC = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["expenses"] });
-      toast.success(i18n.t("expenses.expenseUpdatedSuccessfully"));
       setShowEditDialog(false);
       resetForm();
     },
@@ -287,7 +300,6 @@ const ExpensesTable: React.FC = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["expenses"] });
-      toast.success(i18n.t("expenses.expenseMarkedAsPaid"));
     },
     onError: () => {
       toast.error(i18n.t("expenses.failedToMarkAsPaid"));
@@ -300,7 +312,6 @@ const ExpensesTable: React.FC = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["expenses"] });
-      toast.success(i18n.t("expenses.expenseApproved"));
     },
     onError: () => {
       toast.error(i18n.t("expenses.failedToApprove"));
@@ -313,7 +324,6 @@ const ExpensesTable: React.FC = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["expenses"] });
-      toast.success(i18n.t("expenses.expenseRejected"));
     },
     onError: () => {
       toast.error(i18n.t("expenses.failedToReject"));
@@ -333,6 +343,8 @@ const ExpensesTable: React.FC = () => {
     });
     setSelectedExpense(null);
     setReceiptFiles([]);
+    setShowAddDatePicker(false);
+    setShowEditDatePicker(false);
   };
 
   const handleEdit = (expense: Expense) => {
@@ -341,8 +353,10 @@ const ExpensesTable: React.FC = () => {
     let dateForInput = expense.date;
     if (dateForInput && !dateForInput.includes("-")) {
       // If it's in some other format, try to parse it
-      const date = new Date(dateForInput);
-      dateForInput = date.toISOString().split("T")[0];
+      const parsed = dayjs(dateForInput);
+      if (parsed.isValid()) {
+        dateForInput = parsed.format("YYYY-MM-DD");
+      }
     }
 
     setFormData({
@@ -508,6 +522,8 @@ const ExpensesTable: React.FC = () => {
     );
 
   const baseCurrency = company?.baseCurrency || "USD";
+  const dateFormat = company?.dateFormat || "DD-MM-YYYY";
+
   const canManageReimbursements = ["admin", "owner", "book_keeper"].includes(
     companyRole || ""
   );
@@ -622,15 +638,11 @@ const ExpensesTable: React.FC = () => {
         </Button>
       ),
       cell: ({ row }) => {
-        const date = new Date(row.original.date);
+        const date = dayjs(row.original.date, "YYYY-MM-DD", true);
 
         return (
           <span className="text-sm text-foreground">
-            {date.toLocaleDateString("en-US", {
-              month: "short",
-              day: "numeric",
-              year: "numeric",
-            })}
+            {date.isValid() ? date.format("MMM D, YYYY") : row.original.date}
           </span>
         );
       },
@@ -1034,15 +1046,36 @@ const ExpensesTable: React.FC = () => {
               <Label htmlFor="date" className="text-right">
                 {i18n.t("date")}
               </Label>
-              <Input
-                id="date"
-                type="date"
-                value={formData.date}
-                onChange={e =>
-                  setFormData({ ...formData, date: e.target.value })
-                }
-                className="col-span-3"
-              />
+              <div className="col-span-3 relative" ref={addDatePickerRef}>
+                <Input
+                  id="date"
+                  type="text"
+                  readOnly
+                  value={
+                    formData.date ? dayjs(formData.date).format(dateFormat) : ""
+                  }
+                  onClick={() => setShowAddDatePicker(!showAddDatePicker)}
+                  className="cursor-pointer"
+                  placeholder={i18n.t("date")}
+                />
+                {showAddDatePicker && (
+                  <div className="absolute z-50 mt-1">
+                    <CustomDatePicker
+                      date={toPickerDate(formData.date)}
+                      visibility={showAddDatePicker}
+                      wrapperRef={addDatePickerRef}
+                      setVisibility={setShowAddDatePicker}
+                      handleChange={date => {
+                        setFormData({
+                          ...formData,
+                          date: dayjs(date).format("YYYY-MM-DD"),
+                        });
+                        setShowAddDatePicker(false);
+                      }}
+                    />
+                  </div>
+                )}
+              </div>
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="description" className="text-right">
@@ -1255,15 +1288,36 @@ const ExpensesTable: React.FC = () => {
               <Label htmlFor="edit-date" className="text-right">
                 {i18n.t("date")}
               </Label>
-              <Input
-                id="edit-date"
-                type="date"
-                value={formData.date}
-                onChange={e =>
-                  setFormData({ ...formData, date: e.target.value })
-                }
-                className="col-span-3"
-              />
+              <div className="col-span-3 relative" ref={editDatePickerRef}>
+                <Input
+                  id="edit-date"
+                  type="text"
+                  readOnly
+                  value={
+                    formData.date ? dayjs(formData.date).format(dateFormat) : ""
+                  }
+                  onClick={() => setShowEditDatePicker(!showEditDatePicker)}
+                  className="cursor-pointer"
+                  placeholder={i18n.t("date")}
+                />
+                {showEditDatePicker && (
+                  <div className="absolute z-50 mt-1">
+                    <CustomDatePicker
+                      date={toPickerDate(formData.date)}
+                      visibility={showEditDatePicker}
+                      wrapperRef={editDatePickerRef}
+                      setVisibility={setShowEditDatePicker}
+                      handleChange={date => {
+                        setFormData({
+                          ...formData,
+                          date: dayjs(date).format("YYYY-MM-DD"),
+                        });
+                        setShowEditDatePicker(false);
+                      }}
+                    />
+                  </div>
+                )}
+              </div>
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="edit-description" className="text-right">

@@ -28,7 +28,7 @@ const Header = ({
       </div>
     </div>
     <div className="flex flex-col gap-3 lg:flex-row lg:flex-wrap lg:items-center lg:justify-end">
-      <div className="inline-flex h-10 items-center gap-1.5 rounded-xl border border-border bg-card px-1.5 shadow-sm">
+      <div className="flex h-10 w-full items-center rounded-xl border border-border bg-card px-1.5 shadow-sm lg:inline-flex lg:w-auto lg:gap-1.5">
         <Button
           className="h-8 w-8 shrink-0 rounded-lg"
           onClick={() => setCurrentYear(currentYear - 1)}
@@ -38,7 +38,7 @@ const Header = ({
         >
           <CaretLeft className="h-4 w-4" />
         </Button>
-        <div className="min-w-[5.5rem] px-1 text-center text-sm font-semibold text-foreground">
+        <div className="flex-1 text-center text-sm font-semibold text-foreground lg:min-w-[5.5rem] lg:flex-none lg:px-1">
           {currentYear}
         </div>
         <Button

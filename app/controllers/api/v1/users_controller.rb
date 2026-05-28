@@ -28,7 +28,8 @@ class Api::V1::UsersController < Api::V1::BaseController
           "fiscal_year_end",
           "date_format",
           "business_phone",
-          "tax_id"
+          "tax_id",
+          "timesheet_edit_days"
         )&.merge(
           "address" => current_company&.current_address,
           "logo" => current_company&.company_logo,

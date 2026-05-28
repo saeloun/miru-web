@@ -45,6 +45,15 @@ RSpec.describe "Api::V1::TimesheetEntry#destroy", type: :request do
       expect(response).to have_http_status(:not_found)
       expect(other_entry.reload).not_to be_discarded
     end
+
+    it "does not destroy billed entries" do
+      timesheet_entry.update_column(:bill_status, TimesheetEntry.bill_statuses[:billed])
+
+      send_request :delete, api_v1_timesheet_entry_path(timesheet_entry), headers: auth_headers(user)
+
+      expect(response).to have_http_status(:forbidden)
+      expect(timesheet_entry.reload).not_to be_discarded
+    end
   end
 
   context "when user is an employee" do
@@ -71,7 +80,7 @@ RSpec.describe "Api::V1::TimesheetEntry#destroy", type: :request do
 
     context "when entry is older than one week" do
       before do
-        timesheet_entry.update!(work_date: 30.days.ago)
+        timesheet_entry.update!(work_date: 31.days.ago)
       end
 
       it "returns forbidden" do

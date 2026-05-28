@@ -240,7 +240,10 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
 
   return (
     <div
-      className={cn("min-h-screen bg-background text-foreground", className)}
+      className={cn(
+        "min-h-screen bg-background text-foreground overflow-x-hidden",
+        className
+      )}
     >
       {mobileOpen && (
         <div
@@ -272,17 +275,6 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
             <Sidebar
               navigationGroups={filteredNavigation}
               isCollapsed={false}
-              logo={
-                <div className="flex items-center gap-3">
-                  <img
-                    src={MiruLogoSVG}
-                    alt="Miru"
-                    className="h-6 w-6"
-                    style={logoStyle}
-                  />
-                  <span className="font-semibold text-foreground">Miru</span>
-                </div>
-              }
               user={{
                 id: user?.id,
                 name:
@@ -338,44 +330,44 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
 
       <div
         className={cn(
-          "transition-all duration-300",
+          "transition-all duration-300 min-w-0 overflow-x-hidden",
           sidebarCollapsed ? "lg:ml-16" : "lg:ml-64"
         )}
       >
-        <button
-          onClick={() => setMobileOpen(true)}
-          className="fixed left-4 top-4 z-20 rounded-lg border border-border bg-card p-3 shadow-md transition-colors hover:bg-accent lg:hidden"
-        >
-          <List size={20} weight="light" />
-        </button>
-
         <header className="sticky top-0 z-10 border-b border-border bg-background/90 backdrop-blur">
-          <div className="flex items-center justify-between gap-3 pl-20 pr-4 py-4 sm:px-6 lg:px-8">
-            <div className="flex items-center gap-3">
-              <h1 className="text-lg font-semibold text-foreground lg:text-xl">
+          <div className="flex items-center justify-between gap-3 px-3 py-3 sm:px-4 sm:py-4 md:px-6 lg:px-8">
+            <div className="flex items-center gap-3 min-w-0">
+              <button
+                onClick={() => setMobileOpen(true)}
+                className="rounded-lg border border-border bg-card p-2.5 shadow-sm transition-colors hover:bg-accent lg:hidden shrink-0"
+              >
+                <List size={20} weight="light" />
+              </button>
+              <h1 className="text-base sm:text-lg font-semibold text-foreground lg:text-xl truncate">
                 {pageTitle}
               </h1>
             </div>
-            <div className="flex items-center gap-2">
-              <DashboardTimerControl />
+            <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+              <div className="hidden md:block">
+                <DashboardTimerControl />
+              </div>
               <CompactLocaleSwitcher />
               <ThemeToggle compact />
               <button
                 type="button"
                 aria-label={t("nav.logout")}
                 onClick={handleLogout}
-                className="inline-flex items-center gap-2 rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground transition hover:bg-accent"
+                className="inline-flex items-center rounded-lg border border-border bg-card p-2 sm:px-3 sm:py-2 text-sm text-foreground transition hover:bg-accent"
               >
                 <SignOut size={16} aria-hidden="true" />
-                <span className="sr-only sm:not-sr-only">
-                  {t("nav.logout")}
-                </span>
               </button>
             </div>
           </div>
         </header>
 
-        <main className="px-4 pb-8 pt-4 lg:px-8">{children}</main>
+        <main className="px-4 pb-8 pt-4 lg:px-8 w-full min-w-0 overflow-x-hidden">
+          {children}
+        </main>
       </div>
     </div>
   );

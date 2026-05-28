@@ -743,11 +743,11 @@ tr:
       message: Çalışma saatleri çizelgesi oluşturuldu.
     destroy:
       failure: Zaman çizelgesi girişlerini silme işlemi başarısız oldu.
-      locked: Only admins can delete entries older than 7 days
+      locked: "Yalnızca yöneticiler ve sahipler %{days} günden eski girdileri silebilir"
       message: Çalışma saatleri çizelgesi silindi
     update:
       failure: Zaman çizelgesi girişlerinin güncellenmesi başarısız oldu.
-      locked: Only admins can edit entries older than 7 days
+      locked: "Yalnızca yöneticiler ve sahipler %{days} günden eski girdileri düzenleyebilir"
       message: Çalışma saatleri çizelgesi güncellendi.
   totp:
     disable_passkey_first: Kimlik doğrulama uygulamasının 2FA'sını etkinleştirmeden

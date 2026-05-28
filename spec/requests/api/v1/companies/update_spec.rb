@@ -40,7 +40,8 @@ RSpec.describe "Api::V1::Companies::update", type: :request do
                 address_line_1: "updated address"
               }],
               working_days: "5",
-              working_hours: "40"
+              working_hours: "40",
+              timesheet_edit_days: 14
             }
           }, headers: auth_headers(user))
       end
@@ -63,6 +64,7 @@ RSpec.describe "Api::V1::Companies::update", type: :request do
         expect(company.base_currency).to eq("Rs")
         expect(company.working_days).to eq("5")
         expect(company.working_hours).to eq("40")
+        expect(company.timesheet_edit_days).to eq(14)
         expect(company.bank_name).to eq("First Bank")
         expect(company.bank_account_number).to eq("123456789")
         expect(company.bank_routing_number).to eq("987654321")
@@ -371,6 +373,39 @@ RSpec.describe "Api::V1::Companies::update", type: :request do
         it "updates the business phone" do
           expect(company.reload.business_phone).to eq("+33123456789")
         end
+      end
+    end
+  end
+
+  context "when updating timesheet_edit_days" do
+    before do
+      create(:employment, company:, user:)
+      user.add_role :admin, company
+      sign_in user
+    end
+
+    context "with a custom value" do
+      before do
+        send_request(
+          :put, "#{api_v1_companies_path}/#{company[:id]}", params: {
+            company: {
+              name: company.name,
+              standard_price: company.standard_price,
+              base_currency: company.base_currency,
+              country: company.country,
+              timesheet_edit_days: 45
+            }
+          }, headers: auth_headers(user))
+      end
+
+      it "persists the custom edit window" do
+        expect(company.reload.timesheet_edit_days).to eq(45)
+      end
+    end
+
+    context "with the default (no value supplied)" do
+      it "defaults to 30 days on a new company" do
+        expect(company.timesheet_edit_days).to eq(30)
       end
     end
   end

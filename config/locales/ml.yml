@@ -748,11 +748,11 @@ ml:
       message: ടൈംഷീറ്റ് സൃഷ്ടിച്ചു
     destroy:
       failure: ടൈംഷീറ്റ് എൻട്രികൾ ഇല്ലാതാക്കാനായില്ല
-      locked: Only admins can delete entries older than 7 days
+      locked: "അഡ്മിൻമാർക്കും ഉടമകൾക്കും മാത്രം %{days} ദിവസത്തിലധികം പഴക്കമുള്ള എൻട്രികൾ ഇല്ലാതാക്കാൻ കഴിയും"
       message: ടൈംഷീറ്റ് ഇല്ലാതാക്കി
     update:
       failure: ടൈംഷീറ്റ് എൻട്രികൾ അപ്ഡേറ്റ് ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു
-      locked: Only admins can edit entries older than 7 days
+      locked: "അഡ്മിൻമാർക്കും ഉടമകൾക്കും മാത്രം %{days} ദിവസത്തിലധികം പഴക്കമുള്ള എൻട്രികൾ എഡിറ്റ് ചെയ്യാൻ കഴിയും"
       message: ടൈംഷീറ്റ് അപ്ഡേറ്റ് ചെയ്തു
   totp:
     disable_passkey_first: ഓതന്റിക്കേറ്റർ ആപ്പ് 2FA പ്രവർത്തനക്ഷമമാക്കുന്നതിന് മുമ്പ്

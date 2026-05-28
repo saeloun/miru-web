@@ -11,7 +11,7 @@ export const CustomTextareaAutosize = ({
   value,
   onChange,
   label,
-  wrapperClassName = "outline relative",
+  wrapperClassName = "field-outline relative",
   rows,
   maxRows,
   maxLength = 100000000,

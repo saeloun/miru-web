@@ -457,10 +457,10 @@ const OrganizationPaymentSettingsPage: React.FC = () => {
               ) : (
                 <div className="space-y-6">
                   {/* Stripe Provider */}
-                  <div className="rounded-lg border border-border bg-card p-6">
-                    <div className="flex items-start justify-between">
-                      <div className="flex items-start space-x-4">
-                        <div className="flex h-12 w-12 items-center justify-center rounded-lg border border-border bg-muted">
+                  <div className="rounded-lg border border-border bg-card p-4 sm:p-6">
+                    <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                      <div className="flex min-w-0 flex-1 items-start gap-4">
+                        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg border border-border bg-muted">
                           <svg
                             className="h-7 w-7"
                             viewBox="0 0 24 24"
@@ -472,7 +472,7 @@ const OrganizationPaymentSettingsPage: React.FC = () => {
                             />
                           </svg>
                         </div>
-                        <div className="flex-1">
+                        <div className="min-w-0 flex-1">
                           <h3 className="text-lg font-medium text-foreground">
                             Stripe
                           </h3>
@@ -503,7 +503,7 @@ const OrganizationPaymentSettingsPage: React.FC = () => {
                           )}
                         </div>
                       </div>
-                      <div className="flex items-center space-x-2">
+                      <div className="flex shrink-0 items-center gap-2">
                         {isStripeConnected ? (
                           <>
                             <Badge className="border-border bg-accent text-foreground">
@@ -542,13 +542,13 @@ const OrganizationPaymentSettingsPage: React.FC = () => {
                   </div>
 
                   {/* UPI Provider */}
-                  <div className="rounded-lg border border-border bg-card p-6">
+                  <div className="rounded-lg border border-border bg-card p-4 sm:p-6">
                     <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
-                      <div className="flex min-w-0 flex-1 items-start space-x-4">
-                        <div className="flex h-12 w-12 items-center justify-center rounded-lg border border-border bg-muted">
-                          <QrCode className="h-7 w-7 text-primary" />
-                        </div>
-                        <div className="min-w-0 flex-1">
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-3 mb-2">
+                          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-border bg-muted">
+                            <QrCode className="h-6 w-6 text-primary" />
+                          </div>
                           <div className="flex flex-wrap items-center gap-2">
                             <h3 className="text-lg font-medium text-foreground">
                               {i18n.t("paymentSettingsPage.upiTitle")}
@@ -560,7 +560,9 @@ const OrganizationPaymentSettingsPage: React.FC = () => {
                               {i18n.t("paymentSettingsPage.freeUpiQr")}
                             </Badge>
                           </div>
-                          <p className="mt-1 text-sm text-muted-foreground">
+                        </div>
+                        <div className="min-w-0">
+                          <p className="text-sm text-muted-foreground">
                             {i18n.t("paymentSettingsPage.upiDescription")}
                           </p>
 
@@ -616,7 +618,7 @@ const OrganizationPaymentSettingsPage: React.FC = () => {
                               />
                             </div>
                             <div className="flex items-end">
-                              <div className="flex w-full items-center justify-between rounded-md border border-border px-3 py-2">
+                              <div className="flex w-full items-center justify-between py-2">
                                 <Label
                                   htmlFor="upi_on_invoices"
                                   className="text-sm font-medium"
@@ -640,7 +642,7 @@ const OrganizationPaymentSettingsPage: React.FC = () => {
                           </div>
 
                           <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center">
-                            <div className="flex items-center gap-2 rounded-md border border-border px-3 py-2">
+                            <div className="flex items-center gap-2 py-1">
                               <DeviceMobile className="h-4 w-4 text-muted-foreground" />
                               <Label
                                 htmlFor="upi_enabled"
@@ -734,15 +736,15 @@ const OrganizationPaymentSettingsPage: React.FC = () => {
 
                   {/* Razorpay Provider */}
                   <div
-                    className="rounded-lg border border-border bg-card p-6"
+                    className="rounded-lg border border-border bg-card p-4 sm:p-6"
                     ref={razorpayProviderRef}
                   >
                     <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
-                      <div className="flex min-w-0 flex-1 items-start space-x-4">
-                        <div className="flex h-12 w-12 items-center justify-center rounded-lg border border-border bg-muted">
-                          <CreditCard className="h-7 w-7 text-primary" />
-                        </div>
-                        <div className="min-w-0 flex-1">
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-3 mb-2">
+                          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-border bg-muted">
+                            <CreditCard className="h-6 w-6 text-primary" />
+                          </div>
                           <div className="flex flex-wrap items-center gap-2">
                             <h3 className="text-lg font-medium text-foreground">
                               {i18n.t("paymentSettingsPage.razorpayTitle")}
@@ -754,7 +756,9 @@ const OrganizationPaymentSettingsPage: React.FC = () => {
                               {i18n.t("paymentSettingsPage.indiaPayments")}
                             </Badge>
                           </div>
-                          <p className="mt-1 text-sm text-muted-foreground">
+                        </div>
+                        <div className="min-w-0">
+                          <p className="text-sm text-muted-foreground">
                             {i18n.t("paymentSettingsPage.razorpayDescription")}
                           </p>
 
@@ -1016,7 +1020,7 @@ const OrganizationPaymentSettingsPage: React.FC = () => {
                               />
                             </div>
                             <div className="flex items-end">
-                              <div className="flex w-full items-center justify-between rounded-md border border-border px-3 py-2">
+                              <div className="flex w-full items-center justify-between py-2">
                                 <Label
                                   htmlFor="razorpay_on_invoices"
                                   className="text-sm font-medium"
@@ -1088,7 +1092,7 @@ const OrganizationPaymentSettingsPage: React.FC = () => {
                               />
                             </div>
                             <div className="flex items-end">
-                              <div className="flex w-full items-center justify-between rounded-md border border-border px-3 py-2">
+                              <div className="flex w-full items-center justify-between py-2">
                                 <Label
                                   htmlFor="razorpay_route_transfers"
                                   className="text-sm font-medium"
@@ -1110,7 +1114,7 @@ const OrganizationPaymentSettingsPage: React.FC = () => {
                               </div>
                             </div>
                             <div className="flex items-end">
-                              <div className="flex w-full items-center justify-between rounded-md border border-border px-3 py-2">
+                              <div className="flex w-full items-center justify-between py-2">
                                 <Label
                                   htmlFor="razorpay_payouts_enabled"
                                   className="text-sm font-medium"
@@ -1130,7 +1134,7 @@ const OrganizationPaymentSettingsPage: React.FC = () => {
                               </div>
                             </div>
                             <div className="flex items-end">
-                              <div className="flex w-full items-center justify-between rounded-md border border-border px-3 py-2">
+                              <div className="flex w-full items-center justify-between py-2">
                                 <Label
                                   htmlFor="razorpay_queue_payouts"
                                   className="text-sm font-medium"
@@ -1154,7 +1158,7 @@ const OrganizationPaymentSettingsPage: React.FC = () => {
                           </div>
 
                           <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center">
-                            <div className="flex items-center gap-2 rounded-md border border-border px-3 py-2">
+                            <div className="flex items-center gap-2 py-1">
                               <DeviceMobile className="h-4 w-4 text-muted-foreground" />
                               <Label
                                 htmlFor="razorpay_enabled"

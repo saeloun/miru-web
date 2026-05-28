@@ -43,6 +43,7 @@ class Company < ApplicationRecord
   validates :name, length: { maximum: 30 }
   validate :business_phone_must_be_valid
   validates :standard_price, numericality: { greater_than_or_equal_to: 0 }
+  validates :timesheet_edit_days, numericality: { only_integer: true, in: 1..365 }
 
   # scopes
   scope :with_kept_employments, -> { merge(Employment.kept) }

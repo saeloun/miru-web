@@ -15,6 +15,7 @@ json.company_details do
   json.logo_url
   json.working_days current_company.working_days
   json.working_hours current_company.working_hours
+  json.timesheet_edit_days current_company.timesheet_edit_days
   json.bank_name current_company.bank_name
   json.bank_account_number current_company.bank_account_number
   json.bank_routing_number current_company.bank_routing_number

@@ -67,7 +67,7 @@ RSpec.describe "Api::V1::TimesheetEntry#update", type: :request do
         timesheet_entry.update!(bill_status: "billed")
       end
 
-      it "they should be able to update billed time entry record to unbiiled successfully" do
+      it "they should not be able to update billed time entry records" do
         expect(timesheet_entry.bill_status).to eq("billed")
 
         send_request :patch, api_v1_timesheet_entry_path(timesheet_entry.id), params: {
@@ -77,8 +77,9 @@ RSpec.describe "Api::V1::TimesheetEntry#update", type: :request do
           }
         }, headers: auth_headers(user)
 
-        expect(response).to be_successful
-        expect(json_response["entry"]["bill_status"]).to match("unbilled")
+        expect(response).to have_http_status(:forbidden)
+        expect(json_response["errors"]).to include("You are not authorized to perform this action.")
+        expect(timesheet_entry.reload.bill_status).to eq("billed")
       end
     end
 
@@ -184,7 +185,7 @@ RSpec.describe "Api::V1::TimesheetEntry#update", type: :request do
 
     context "when the entry is older than one week" do
       before do
-        timesheet_entry.update!(work_date: 30.days.ago)
+        timesheet_entry.update!(work_date: 31.days.ago)
       end
 
       it "returns forbidden for updates" do

@@ -745,11 +745,11 @@ ur:
       message: ٹائم شیٹ بنائی گئی۔
     destroy:
       failure: ٹائم شیٹ کے اندراجات کو حذف کرنے میں ناکام
-      locked: Only admins can delete entries older than 7 days
+      locked: "صرف ایڈمن اور مالکان %{days} دنوں سے پرانی اندراجات کو حذف کر سکتے ہیں"
       message: ٹائم شیٹ حذف کر دی گئی۔
     update:
       failure: ٹائم شیٹ اندراجات کو اپ ڈیٹ کرنے میں ناکام
-      locked: Only admins can edit entries older than 7 days
+      locked: "صرف ایڈمن اور مالکان %{days} دنوں سے پرانی اندراجات کو ترمیم کر سکتے ہیں"
       message: ٹائم شیٹ کو اپ ڈیٹ کر دیا گیا۔
   totp:
     disable_passkey_first: مستند ایپ 2FA کو فعال کرنے سے پہلے مطلوبہ پاسکی سائن ان
