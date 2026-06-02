@@ -33,21 +33,40 @@ module QuickBooks
           reference = quickbooks_reference_for(record, entity_type)
           digest = payload_digest(desired_payload)
 
-          if reference.synced? && reference.payload_digest == digest
-            increment_summary!(run, "skipped")
-            return reference
-          end
+          return skip_duplicate_export!(run, reference) if duplicate_payload?(reference, digest)
 
           operation = reference.synced? ? "Update" : "Create"
+          entity = write_remote_entity!(entity_type, operation, reference, desired_payload, update_payload)
+          sync_reference!(reference, entity, digest)
+          record_successful_export!(run, reference, entity_type, operation, digest)
+
+          reference
+        rescue StandardError => error
+          handle_export_failure!(run, reference, record, entity_type, digest, error)
+          raise
+        end
+
+        def duplicate_payload?(reference, digest)
+          reference.synced? && reference.payload_digest == digest
+        end
+
+        def skip_duplicate_export!(run, reference)
+          increment_summary!(run, "skipped")
+          reference
+        end
+
+        def write_remote_entity!(entity_type, operation, reference, desired_payload, update_payload)
           response = qbo_client.post(
             entity_path(entity_type),
             operation == "Update" ? update_payload.call(reference) : desired_payload,
             operation == "Update" ? { operation: "update" } : {}
           )
-          entity = response.fetch(entity_type) do
+          response.fetch(entity_type) do
             raise QuickBooks::Error, "QuickBooks #{entity_type} response was missing #{entity_type}"
           end
+        end
 
+        def sync_reference!(reference, entity, digest)
           reference.update!(
             company: connection.company,
             quickbooks_connection: connection,
@@ -59,6 +78,9 @@ module QuickBooks
             payload_digest: digest,
             last_error: nil
           )
+        end
+
+        def record_successful_export!(run, reference, entity_type, operation, digest)
           record_sync_event!(
             run:,
             entity_type:,
@@ -68,9 +90,9 @@ module QuickBooks
             status: :processed
           )
           increment_summary!(run, operation.underscore)
+        end
 
-          reference
-        rescue StandardError => error
+        def handle_export_failure!(run, reference, record, entity_type, digest, error)
           reference ||= quickbooks_reference_for(record, entity_type)
           mark_reference_failed!(reference, record, entity_type, digest, error)
           record_sync_event!(
@@ -78,12 +100,11 @@ module QuickBooks
             entity_type:,
             entity_id: reference.quickbooks_entity_id,
             operation: "Export",
-            digest: digest || payload_digest({ "record" => "#{record.class.name}:#{record.id}", "entity" => entity_type }),
+            digest: digest || failed_payload_digest(record, entity_type),
             status: :failed,
             error:
           )
           increment_summary!(run, "failed")
-          raise
         end
 
         def quickbooks_reference_for(record, entity_type)
@@ -173,6 +194,10 @@ module QuickBooks
 
         def payload_digest(payload)
           Digest::SHA256.hexdigest(canonical_json(payload))
+        end
+
+        def failed_payload_digest(record, entity_type)
+          payload_digest({ "record" => "#{record.class.name}:#{record.id}", "entity" => entity_type })
         end
 
         def canonical_json(value)
