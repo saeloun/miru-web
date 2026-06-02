@@ -155,6 +155,18 @@ class Api::V1::InvoicesController < Api::V1::ApplicationController
     render json: { error: error.message.presence || "Unable to create Razorpay payment link" }, status: 422
   end
 
+  def quickbooks_sync
+    authorize invoice, :quickbooks_sync?
+    connection = active_quickbooks_connection
+    unless connection
+      render json: { errors: "Connect QuickBooks before syncing invoices" }, status: 404
+      return
+    end
+
+    QuickBooks::ExportInvoiceJob.perform_later(connection.id, invoice.id, "manual")
+    render json: quickbooks_sync_payload("Invoice", invoice.id), status: 202
+  end
+
   def download
     authorize invoice
 
@@ -215,6 +227,24 @@ class Api::V1::InvoicesController < Api::V1::ApplicationController
 
     def razorpay_sms_available?
       current_company.country == "IN" && current_company.pro_access? && razorpay_provider&.sms_notifications_enabled?
+    end
+
+    def active_quickbooks_connection
+      current_company.quickbooks_connections.active.find_by(
+        environment: QuickBooks::Configuration.environment
+      )
+    end
+
+    def quickbooks_sync_payload(record_type, record_id)
+      {
+        quickbooks: {
+          sync: {
+            status: "queued",
+            recordType: record_type,
+            recordId: record_id
+          }
+        }
+      }
     end
 
     def track_event

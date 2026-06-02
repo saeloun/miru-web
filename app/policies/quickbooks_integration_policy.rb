@@ -20,4 +20,8 @@ class QuickbooksIntegrationPolicy < ApplicationPolicy
   def settings?
     status?
   end
+
+  def sync?
+    status?
+  end
 end

@@ -61,6 +61,30 @@ class Api::V1::Integrations::QuickbooksController < Api::V1::ApplicationControll
     render json: quickbooks_payload(connection)
   end
 
+  def sync
+    authorize :quickbooks_integration, policy_class: QuickbooksIntegrationPolicy
+    connection = active_connection
+    unless connection
+      render json: { errors: "Connect QuickBooks before syncing records" }, status: 404
+      return
+    end
+
+    clients_queued = enqueue_clients(connection)
+    invoices_queued = enqueue_invoices(connection)
+    payments_queued = enqueue_payments(connection)
+
+    render json: {
+      quickbooks: {
+        sync: {
+          status: "queued",
+          clientsQueued: clients_queued,
+          invoicesQueued: invoices_queued,
+          paymentsQueued: payments_queued
+        }
+      }
+    }, status: 202
+  end
+
   private
 
     def upsert_connection!(token_response)
@@ -135,6 +159,33 @@ class Api::V1::Integrations::QuickbooksController < Api::V1::ApplicationControll
 
     def quickbooks_settings_path(result:)
       "/settings/payment?quickbooks=#{result}"
+    end
+
+    def enqueue_clients(connection)
+      count = 0
+      current_company.clients.kept.select(:id).find_each do |client|
+        QuickBooks::ExportCustomerJob.perform_later(connection.id, client.id, "manual")
+        count += 1
+      end
+      count
+    end
+
+    def enqueue_invoices(connection)
+      count = 0
+      current_company.invoices.kept.select(:id).find_each do |invoice|
+        QuickBooks::ExportInvoiceJob.perform_later(connection.id, invoice.id, "manual")
+        count += 1
+      end
+      count
+    end
+
+    def enqueue_payments(connection)
+      count = 0
+      current_company.payments.select(:id).find_each do |payment|
+        QuickBooks::ExportPaymentJob.perform_later(connection.id, payment.id, "manual")
+        count += 1
+      end
+      count
     end
 
     def expires_at(seconds)

@@ -20,6 +20,15 @@ module QuickBooks
       parsed_response(response)
     end
 
+    def post(path, payload, params = {})
+      ensure_access_token!
+      response = http.post(path) do |request|
+        request.params.update(default_params.merge(params))
+        request.body = JSON.generate(payload)
+      end
+      parsed_response(response)
+    end
+
     private
 
       attr_reader :connection, :token_refresher, :configuration

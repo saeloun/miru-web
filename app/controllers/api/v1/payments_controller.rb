@@ -2,7 +2,7 @@
 
 class Api::V1::PaymentsController < Api::V1::ApplicationController
   before_action :set_invoice, only: [:create]
-  before_action :set_payment, only: [:show, :withdraw]
+  before_action :set_payment, only: [:show, :withdraw, :quickbooks_sync]
   after_action :track_event, only: [:create]
 
   def new
@@ -81,6 +81,18 @@ class Api::V1::PaymentsController < Api::V1::ApplicationController
     render json: { error: error.message }, status: 422
   end
 
+  def quickbooks_sync
+    authorize @payment, :quickbooks_sync?, policy_class: PaymentPolicy
+    connection = active_quickbooks_connection
+    unless connection
+      render json: { errors: "Connect QuickBooks before syncing payments" }, status: 404
+      return
+    end
+
+    QuickBooks::ExportPaymentJob.perform_later(connection.id, @payment.id, "manual")
+    render json: quickbooks_sync_payload("Payment", @payment.id), status: 202
+  end
+
   def bulk_download
     authorize :bulk_download, policy_class: PaymentPolicy
 
@@ -113,6 +125,24 @@ class Api::V1::PaymentsController < Api::V1::ApplicationController
 
     def set_payment
       @payment = current_company.payments.includes(:razorpay_payouts, invoice: [:client]).find(params[:id])
+    end
+
+    def active_quickbooks_connection
+      current_company.quickbooks_connections.active.find_by(
+        environment: QuickBooks::Configuration.environment
+      )
+    end
+
+    def quickbooks_sync_payload(record_type, record_id)
+      {
+        quickbooks: {
+          sync: {
+            status: "queued",
+            recordType: record_type,
+            recordId: record_id
+          }
+        }
+      }
     end
 
     def track_event

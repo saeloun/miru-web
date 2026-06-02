@@ -126,6 +126,35 @@ RSpec.describe "Api::V1::Integrations::QuickbooksController", type: :request do
     end
   end
 
+  describe "POST /api/v1/integrations/quickbooks/sync" do
+    it "queues outbound client, invoice, and payment exports" do
+      connection = create(:quickbooks_connection, company:)
+      invoice = create(:invoice, company:)
+      payment = create(:payment, invoice:)
+
+      expect {
+        post "/api/v1/integrations/quickbooks/sync", headers: auth_headers(user)
+      }.to have_enqueued_job(QuickBooks::ExportCustomerJob).with(connection.id, invoice.client.id, "manual")
+        .and have_enqueued_job(QuickBooks::ExportInvoiceJob).with(connection.id, invoice.id, "manual")
+        .and have_enqueued_job(QuickBooks::ExportPaymentJob).with(connection.id, payment.id, "manual")
+
+      expect(response).to have_http_status(:accepted)
+      expect(json_response.dig("quickbooks", "sync")).to include(
+        "status" => "queued",
+        "clientsQueued" => 1,
+        "invoicesQueued" => 1,
+        "paymentsQueued" => 1
+      )
+    end
+
+    it "returns an error when QuickBooks is not connected" do
+      post "/api/v1/integrations/quickbooks/sync", headers: auth_headers(user)
+
+      expect(response).to have_http_status(:not_found)
+      expect(json_response["errors"]).to eq("Connect QuickBooks before syncing records")
+    end
+  end
+
   describe "DELETE /api/v1/integrations/quickbooks/disconnect" do
     it "disconnects the active connection" do
       connection = create(:quickbooks_connection, company:)
