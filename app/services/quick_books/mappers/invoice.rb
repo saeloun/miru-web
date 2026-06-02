@@ -63,8 +63,9 @@ module QuickBooks
         end
 
         def lines(invoice)
-          sales_lines = invoice.invoice_line_items.map { |line_item| sales_line(line_item) }
-          sales_lines = [fallback_sales_line(invoice)] if sales_lines.empty?
+          taxable = BigDecimal(invoice.tax.to_s).positive?
+          sales_lines = invoice.invoice_line_items.map { |line_item| sales_line(line_item, taxable:) }
+          sales_lines = [fallback_sales_line(invoice, taxable:)] if sales_lines.empty?
 
           if BigDecimal(invoice.discount.to_s).positive?
             sales_lines << discount_line(invoice)
@@ -73,7 +74,7 @@ module QuickBooks
           sales_lines
         end
 
-        def sales_line(line_item)
+        def sales_line(line_item, taxable:)
           amount = money(line_item.hours_spent * line_item.rate)
           detail = {
             "ItemRef" => { "value" => connection.service_item_id },
@@ -81,7 +82,7 @@ module QuickBooks
             "UnitPrice" => money(line_item.rate),
             "ServiceDate" => qbo_date(line_item.date)
           }
-          detail["TaxCodeRef"] = { "value" => connection.tax_code_id } if connection.tax_code_id.present?
+          detail["TaxCodeRef"] = { "value" => connection.tax_code_id } if taxable && connection.tax_code_id.present?
 
           compact_payload(
             "DetailType" => "SalesItemLineDetail",
@@ -91,13 +92,13 @@ module QuickBooks
           )
         end
 
-        def fallback_sales_line(invoice)
+        def fallback_sales_line(invoice, taxable:)
           detail = {
             "ItemRef" => { "value" => connection.service_item_id },
             "Qty" => 1,
             "UnitPrice" => money(invoice.amount)
           }
-          detail["TaxCodeRef"] = { "value" => connection.tax_code_id } if connection.tax_code_id.present?
+          detail["TaxCodeRef"] = { "value" => connection.tax_code_id } if taxable && connection.tax_code_id.present?
 
           compact_payload(
             "DetailType" => "SalesItemLineDetail",

@@ -8,6 +8,8 @@ module QuickBooks
     SANDBOX_BASE_URL = "https://sandbox-quickbooks.api.intuit.com"
     PRODUCTION_BASE_URL = "https://quickbooks.api.intuit.com"
     DEFAULT_MINOR_VERSION = "75"
+    REQUEST_OPEN_TIMEOUT = 5
+    REQUEST_TIMEOUT = 15
 
     class << self
       def client_id
@@ -61,6 +63,13 @@ module QuickBooks
         client_id.present? && client_secret.present? && redirect_uri.present?
       end
 
+      def request_timeout_options
+        {
+          open_timeout: REQUEST_OPEN_TIMEOUT,
+          timeout: REQUEST_TIMEOUT
+        }
+      end
+
       private
 
         def env_or_credentials(*env_names, credential_key:)
@@ -73,8 +82,16 @@ module QuickBooks
         end
 
         def default_redirect_uri
-          base_url = ENV["APP_BASE_URL"].presence || "http://localhost:3000"
+          base_url = ENV["APP_BASE_URL"].presence || local_redirect_base_url
+          return if base_url.blank?
+
           "#{base_url.delete_suffix('/')}/api/v1/integrations/quickbooks/callback"
+        end
+
+        def local_redirect_base_url
+          return "http://localhost:3000" if Rails.env.development? || Rails.env.test?
+
+          nil
         end
     end
   end

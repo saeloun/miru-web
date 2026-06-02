@@ -72,6 +72,47 @@ RSpec.describe QuickBooks::Exporters::Customer do
       expect(reference.payload_digest).not_to eq("old-digest")
     end
 
+    it "does not reuse a reference from a different QuickBooks connection" do
+      old_connection = create(
+        :quickbooks_connection,
+        company:,
+        realm_id: "old-realm",
+        status: :disconnected,
+        disconnected_at: 1.day.ago
+      )
+      stale_reference = create(
+        :quickbooks_reference,
+        company:,
+        quickbooks_connection: old_connection,
+        miru_record: client,
+        quickbooks_entity_type: "Customer",
+        quickbooks_entity_id: "stale-321",
+        quickbooks_sync_token: "9"
+      )
+      allow(qbo_client).to receive(:post).and_return(
+        "Customer" => {
+          "Id" => "321",
+          "SyncToken" => "0"
+        }
+      )
+
+      reference = described_class.new(connection:, qbo_client:).export!(client)
+
+      expect(qbo_client).to have_received(:post).with(
+        "/v3/company/1234567890/customer",
+        hash_excluding("Id", "SyncToken", "sparse"),
+        {}
+      )
+      expect(reference).to have_attributes(
+        quickbooks_connection: connection,
+        quickbooks_entity_id: "321",
+        quickbooks_sync_token: "0"
+      )
+      expect(reference.id).not_to eq(stale_reference.id)
+      expect(stale_reference.reload.quickbooks_entity_id).to eq("stale-321")
+      expect(QuickbooksReference.where(miru_record: client, quickbooks_entity_type: "Customer").count).to eq(2)
+    end
+
     it "records failed references, sync runs, and sync events when QuickBooks rejects the export" do
       allow(qbo_client).to receive(:post).and_raise(QuickBooks::Error, "remote unavailable")
 
@@ -97,6 +138,26 @@ RSpec.describe QuickBooks::Exporters::Customer do
       expect(sync_event).to be_failed
       expect(sync_event.quickbooks_entity_id).to eq(reference.quickbooks_entity_id)
       expect(sync_event.error).to eq("remote unavailable")
+    end
+
+    it "appends sync events for repeated failed export attempts" do
+      allow(qbo_client).to receive(:post).and_raise(QuickBooks::Error, "remote unavailable")
+
+      2.times do
+        expect {
+          described_class.new(connection:, qbo_client:).export!(client)
+        }.to raise_error(QuickBooks::Error, "remote unavailable")
+      end
+
+      sync_events = QuickbooksSyncEvent.where(
+        quickbooks_connection: connection,
+        quickbooks_entity_type: "Customer",
+        quickbooks_entity_id: "pending-Customer-#{client.id}",
+        status: :failed
+      )
+
+      expect(sync_events.count).to eq(2)
+      expect(sync_events.pluck(:payload_digest).uniq.size).to eq(1)
     end
   end
 end

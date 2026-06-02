@@ -26,4 +26,18 @@ RSpec.describe QuickbooksConnection, type: :model do
       expect(connection.refresh_token).to be_nil
     end
   end
+
+  describe "#reconnect_required?" do
+    it "returns true when the refresh token lifetime has expired" do
+      connection = build(:quickbooks_connection, refresh_token_expires_at: 1.minute.ago)
+
+      expect(connection).to be_reconnect_required
+    end
+
+    it "returns false while a connected refresh token is still valid" do
+      connection = build(:quickbooks_connection, refresh_token_expires_at: 1.day.from_now)
+
+      expect(connection).not_to be_reconnect_required
+    end
+  end
 end

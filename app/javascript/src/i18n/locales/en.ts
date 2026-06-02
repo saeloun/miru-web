@@ -1799,6 +1799,7 @@ const en = {
     quickBooksTaxCode: "Tax code ID",
     quickBooksConnect: "Connect QuickBooks",
     quickBooksConnecting: "Connecting...",
+    quickBooksConnected: "QuickBooks connected.",
     quickBooksConnectFailed: "Failed to connect QuickBooks.",
     quickBooksDisconnected: "QuickBooks disconnected.",
     quickBooksDisconnectFailed: "Failed to disconnect QuickBooks.",

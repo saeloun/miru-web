@@ -109,10 +109,11 @@ module QuickBooks
 
         def quickbooks_reference_for(record, entity_type)
           QuickbooksReference.find_or_initialize_by(
-            company: connection.company,
+            quickbooks_connection: connection,
             miru_record: record,
             quickbooks_entity_type: entity_type
           ).tap do |reference|
+            reference.company = connection.company
             reference.quickbooks_connection = connection
             reference.quickbooks_entity_id ||= pending_entity_id(record, entity_type)
             reference.direction ||= :miru_to_quickbooks
@@ -147,22 +148,19 @@ module QuickBooks
         end
 
         def record_sync_event!(run:, entity_type:, entity_id:, operation:, digest:, status:, error: nil)
-          event = QuickbooksSyncEvent.find_or_initialize_by(
-            quickbooks_connection: connection,
-            quickbooks_entity_type: entity_type,
-            quickbooks_entity_id: entity_id,
-            payload_digest: digest
-          )
-          event.assign_attributes(
+          QuickbooksSyncEvent.create!(
             company: connection.company,
+            quickbooks_connection: connection,
             quickbooks_sync_run: run,
             source:,
+            quickbooks_entity_type: entity_type,
+            quickbooks_entity_id: entity_id,
             operation:,
+            payload_digest: digest,
             event_time: Time.current,
             status:,
             error: error&.message
           )
-          event.save!
         end
 
         def mark_reference_failed!(reference, record, entity_type, digest, error)

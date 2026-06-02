@@ -170,6 +170,36 @@ RSpec.describe "Api::V1::Integrations::QuickbooksController", type: :request do
       expect(json_response.dig("quickbooks", "mappingSettings", "serviceItemId")).to eq("7")
     end
 
+    it "clears submitted blank mapping settings" do
+      connection = create(
+        :quickbooks_connection,
+        company:,
+        settings: {
+          "income_account_id" => "42",
+          "deposit_account_id" => "99",
+          "service_item_id" => "7"
+        }
+      )
+
+      patch(
+        "/api/v1/integrations/quickbooks/settings",
+        params: {
+          quickbooks: {
+            deposit_account_id: "",
+            service_item_id: ""
+          }
+        },
+        headers: auth_headers(user)
+      )
+
+      expect(response).to have_http_status(:ok)
+      expect(json_response.dig("quickbooks", "mappingSettings", "incomeAccountId")).to eq("42")
+      expect(json_response.dig("quickbooks", "mappingSettings", "depositAccountId")).to be_nil
+      expect(json_response.dig("quickbooks", "mappingSettings", "serviceItemId")).to be_nil
+      expect(connection.reload.deposit_account_id).to be_nil
+      expect(connection.service_item_id).to be_nil
+    end
+
     it "returns an error when QuickBooks is not connected" do
       patch(
         "/api/v1/integrations/quickbooks/settings",
@@ -187,6 +217,7 @@ RSpec.describe "Api::V1::Integrations::QuickbooksController", type: :request do
       connection = create(:quickbooks_connection, company:)
       invoice = create(:invoice, company:)
       payment = create(:payment, invoice:)
+      create(:payment, invoice:).update_column(:discarded_at, Time.current)
 
       expect {
         post "/api/v1/integrations/quickbooks/sync", headers: auth_headers(user)

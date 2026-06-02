@@ -38,7 +38,10 @@ module QuickBooks
       end
 
       def http
-        Faraday.new(url: configuration.base_url(connection.environment)) do |faraday|
+        Faraday.new(
+          url: configuration.base_url(connection.environment),
+          request: configuration.request_timeout_options
+        ) do |faraday|
           faraday.headers["Accept"] = "application/json"
           faraday.headers["Content-Type"] = "application/json"
           faraday.request :authorization, "Bearer", connection.access_token

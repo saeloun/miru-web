@@ -773,8 +773,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_28_190533) do
     t.string "quickbooks_sync_token"
     t.integer "status", default: 0, null: false
     t.datetime "updated_at", null: false
-    t.index ["company_id", "miru_record_type", "miru_record_id", "quickbooks_entity_type"], name: "idx_qbo_refs_miru_record_entity", unique: true
     t.index ["company_id"], name: "index_quickbooks_references_on_company_id"
+    t.index ["quickbooks_connection_id", "miru_record_type", "miru_record_id", "quickbooks_entity_type"], name: "idx_qbo_refs_miru_record_entity", unique: true
     t.index ["quickbooks_connection_id", "quickbooks_entity_type", "quickbooks_entity_id"], name: "idx_qbo_refs_qbo_entity", unique: true
     t.index ["quickbooks_connection_id"], name: "index_quickbooks_references_on_quickbooks_connection_id"
   end
@@ -785,7 +785,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_28_190533) do
     t.text "error"
     t.datetime "event_time"
     t.string "operation"
-    t.string "payload_digest"
+    t.string "payload_digest", null: false
     t.bigint "quickbooks_connection_id", null: false
     t.string "quickbooks_entity_id", null: false
     t.string "quickbooks_entity_type", null: false
@@ -795,7 +795,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_28_190533) do
     t.datetime "updated_at", null: false
     t.index ["company_id", "status"], name: "index_quickbooks_sync_events_on_company_id_and_status"
     t.index ["company_id"], name: "index_quickbooks_sync_events_on_company_id"
-    t.index ["quickbooks_connection_id", "quickbooks_entity_type", "quickbooks_entity_id", "payload_digest"], name: "idx_qbo_events_idempotency", unique: true
+    t.index ["quickbooks_connection_id", "quickbooks_entity_type", "quickbooks_entity_id", "payload_digest"], name: "idx_qbo_events_lookup"
     t.index ["quickbooks_connection_id"], name: "index_quickbooks_sync_events_on_quickbooks_connection_id"
     t.index ["quickbooks_sync_run_id"], name: "index_quickbooks_sync_events_on_quickbooks_sync_run_id"
   end

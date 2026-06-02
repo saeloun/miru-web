@@ -57,7 +57,7 @@ class Api::V1::Integrations::QuickbooksController < Api::V1::ApplicationControll
       return
     end
 
-    connection.update!(settings: connection.settings.merge(settings_params.to_h.compact_blank))
+    connection.update!(settings: connection.settings.merge(normalized_settings_params))
     render json: quickbooks_payload(connection)
   end
 
@@ -168,7 +168,7 @@ class Api::V1::Integrations::QuickbooksController < Api::V1::ApplicationControll
     end
 
     def enqueue_payments(connection)
-      enqueue_record_ids(current_company.payments) do |payment_id|
+      enqueue_record_ids(current_company.payments.where(discarded_at: nil)) do |payment_id|
         QuickBooks::ExportPaymentJob.perform_later(connection.id, payment_id, "manual")
       end
     end
@@ -197,5 +197,9 @@ class Api::V1::Integrations::QuickbooksController < Api::V1::ApplicationControll
         :service_item_id,
         :tax_code_id
       )
+    end
+
+    def normalized_settings_params
+      settings_params.to_h.transform_values { |value| value.presence }
     end
 end

@@ -9,6 +9,7 @@ module QuickBooks
     def perform(quickbooks_connection_id, payment_id, trigger = "manual")
       connection = QuickbooksConnection.active.find(quickbooks_connection_id)
       payment = connection.company.payments
+        .where(discarded_at: nil)
         .includes(invoice: [:client, :invoice_line_items, :invoice_taxes])
         .find(payment_id)
 

@@ -30,11 +30,20 @@ class QuickbooksSyncRun < ApplicationRecord
 
   before_validation :ensure_summary
 
+  validate :company_matches_quickbooks_connection
+
   validates :direction, :trigger, :status, presence: true
 
   private
 
     def ensure_summary
       self.summary ||= {}
+    end
+
+    def company_matches_quickbooks_connection
+      return if company.blank? || quickbooks_connection.blank?
+      return if quickbooks_connection.company_id == company_id
+
+      errors.add(:quickbooks_connection, "must belong to the same company")
     end
 end

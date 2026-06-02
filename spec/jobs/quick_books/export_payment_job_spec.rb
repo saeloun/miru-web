@@ -19,4 +19,19 @@ RSpec.describe QuickBooks::ExportPaymentJob, type: :job do
     )
     expect(exporter).to have_received(:export!).with(payment, trigger: :manual)
   end
+
+  it "does not export discarded payments" do
+    connection = create(:quickbooks_connection)
+    invoice = create(:invoice, company: connection.company)
+    payment = create(:payment, invoice:)
+
+    payment.update_column(:discarded_at, Time.current)
+    allow(QuickBooks::Exporters::Payment).to receive(:new)
+
+    expect {
+      described_class.perform_now(connection.id, payment.id)
+    }.to raise_error(ActiveRecord::RecordNotFound)
+
+    expect(QuickBooks::Exporters::Payment).not_to have_received(:new)
+  end
 end

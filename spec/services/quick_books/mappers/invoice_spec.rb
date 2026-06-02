@@ -51,6 +51,28 @@ RSpec.describe QuickBooks::Mappers::Invoice do
       )
     end
 
+    it "omits the tax code from untaxed invoice lines" do
+      connection.update!(settings: connection.settings.merge("tax_code_id" => "TAX"))
+      invoice = create(:invoice, company:, client:, tax: 0)
+      create(:invoice_line_item, invoice:, timesheet_entry: nil, quantity: 60, rate: 200)
+
+      payload = described_class.new(connection:).payload(invoice.reload, customer_reference:)
+
+      expect(payload["Line"].first["SalesItemLineDetail"]).not_to have_key("TaxCodeRef")
+    end
+
+    it "includes the tax code on taxed invoice lines" do
+      connection.update!(settings: connection.settings.merge("tax_code_id" => "TAX"))
+      invoice = create(:invoice, company:, client:, tax: 10)
+      create(:invoice_line_item, invoice:, timesheet_entry: nil, quantity: 60, rate: 200)
+
+      payload = described_class.new(connection:).payload(invoice.reload, customer_reference:)
+
+      expect(payload["Line"].first["SalesItemLineDetail"]).to include(
+        "TaxCodeRef" => { "value" => "TAX" }
+      )
+    end
+
     it "requires a service item mapping" do
       connection.update!(settings: connection.settings.merge("service_item_id" => nil))
       invoice = create(:invoice, company:, client:)

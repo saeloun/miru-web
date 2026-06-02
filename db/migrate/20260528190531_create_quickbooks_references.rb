@@ -21,7 +21,7 @@ class CreateQuickbooksReferences < ActiveRecord::Migration[8.1]
     end
 
     add_index :quickbooks_references,
-      [:company_id, :miru_record_type, :miru_record_id, :quickbooks_entity_type],
+      [:quickbooks_connection_id, :miru_record_type, :miru_record_id, :quickbooks_entity_type],
       unique: true,
       name: "idx_qbo_refs_miru_record_entity"
 

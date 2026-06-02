@@ -40,7 +40,7 @@ module QuickBooks
       attr_reader :configuration
 
       def token_request!(params)
-        response = Faraday.post(configuration::TOKEN_URL) do |request|
+        response = http.post do |request|
           request.headers["Authorization"] = "Basic #{basic_auth_token}"
           request.headers["Accept"] = "application/json"
           request.headers["Content-Type"] = "application/x-www-form-urlencoded"
@@ -62,6 +62,10 @@ module QuickBooks
 
       def basic_auth_token
         Base64.strict_encode64("#{configuration.client_id}:#{configuration.client_secret}")
+      end
+
+      def http
+        Faraday.new(url: configuration::TOKEN_URL, request: configuration.request_timeout_options)
       end
   end
 end

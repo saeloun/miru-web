@@ -10,7 +10,7 @@ class CreateQuickbooksSyncEvents < ActiveRecord::Migration[8.1]
       t.string :quickbooks_entity_type, null: false
       t.string :quickbooks_entity_id, null: false
       t.string :operation
-      t.string :payload_digest
+      t.string :payload_digest, null: false
       t.datetime :event_time
       t.integer :status, null: false, default: 0
       t.text :error
@@ -20,8 +20,7 @@ class CreateQuickbooksSyncEvents < ActiveRecord::Migration[8.1]
 
     add_index :quickbooks_sync_events,
       [:quickbooks_connection_id, :quickbooks_entity_type, :quickbooks_entity_id, :payload_digest],
-      unique: true,
-      name: "idx_qbo_events_idempotency"
+      name: "idx_qbo_events_lookup"
 
     add_index :quickbooks_sync_events, [:company_id, :status]
   end

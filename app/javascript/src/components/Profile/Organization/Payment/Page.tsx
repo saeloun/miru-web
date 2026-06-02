@@ -496,6 +496,29 @@ const OrganizationPaymentSettingsPage: React.FC = () => {
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
+    const quickBooksResult = params.get("quickbooks");
+
+    if (!quickBooksResult) return;
+
+    if (quickBooksResult === "connected") {
+      toast.success(i18n.t("paymentSettingsPage.quickBooksConnected"));
+    } else if (quickBooksResult === "error") {
+      toast.error(i18n.t("paymentSettingsPage.quickBooksConnectFailed"));
+    }
+
+    params.delete("quickbooks");
+    const search = params.toString();
+    const path = [
+      window.location.pathname,
+      search ? `?${search}` : "",
+      window.location.hash,
+    ].join("");
+
+    window.history.replaceState({}, document.title, path);
+  }, []);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
 
     if (params.get("provider") === "razorpay") {
       razorpayProviderRef.current?.scrollIntoView({
