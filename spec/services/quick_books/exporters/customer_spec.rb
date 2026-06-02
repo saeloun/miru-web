@@ -71,5 +71,32 @@ RSpec.describe QuickBooks::Exporters::Customer do
       expect(reference.reload.quickbooks_sync_token).to eq("1")
       expect(reference.payload_digest).not_to eq("old-digest")
     end
+
+    it "records failed references, sync runs, and sync events when QuickBooks rejects the export" do
+      allow(qbo_client).to receive(:post).and_raise(QuickBooks::Error, "remote unavailable")
+
+      expect {
+        described_class.new(connection:, qbo_client:).export!(client)
+      }.to raise_error(QuickBooks::Error, "remote unavailable")
+
+      reference = QuickbooksReference.find_by!(
+        company:,
+        miru_record: client,
+        quickbooks_entity_type: "Customer"
+      )
+      expect(reference).to be_failed
+      expect(reference.quickbooks_entity_id).to eq("pending-Customer-#{client.id}")
+      expect(reference.last_error).to eq("remote unavailable")
+
+      sync_run = QuickbooksSyncRun.find_by!(quickbooks_connection: connection)
+      expect(sync_run).to be_failed
+      expect(sync_run.error).to eq("remote unavailable")
+      expect(sync_run.summary).to include("failed" => 1)
+
+      sync_event = QuickbooksSyncEvent.find_by!(quickbooks_sync_run: sync_run)
+      expect(sync_event).to be_failed
+      expect(sync_event.quickbooks_entity_id).to eq(reference.quickbooks_entity_id)
+      expect(sync_event.error).to eq("remote unavailable")
+    end
   end
 end

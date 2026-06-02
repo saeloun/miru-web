@@ -229,24 +229,6 @@ class Api::V1::InvoicesController < Api::V1::ApplicationController
       current_company.country == "IN" && current_company.pro_access? && razorpay_provider&.sms_notifications_enabled?
     end
 
-    def active_quickbooks_connection
-      current_company.quickbooks_connections.active.find_by(
-        environment: QuickBooks::Configuration.environment
-      )
-    end
-
-    def quickbooks_sync_payload(record_type, record_id)
-      {
-        quickbooks: {
-          sync: {
-            status: "queued",
-            recordType: record_type,
-            recordId: record_id
-          }
-        }
-      }
-    end
-
     def track_event
       Invoices::EventTrackerService.new(params[:action], @invoice || invoice, params).process
     end

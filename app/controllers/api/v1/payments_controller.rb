@@ -127,24 +127,6 @@ class Api::V1::PaymentsController < Api::V1::ApplicationController
       @payment = current_company.payments.includes(:razorpay_payouts, invoice: [:client]).find(params[:id])
     end
 
-    def active_quickbooks_connection
-      current_company.quickbooks_connections.active.find_by(
-        environment: QuickBooks::Configuration.environment
-      )
-    end
-
-    def quickbooks_sync_payload(record_type, record_id)
-      {
-        quickbooks: {
-          sync: {
-            status: "queued",
-            recordType: record_type,
-            recordId: record_id
-          }
-        }
-      }
-    end
-
     def track_event
       create_payment = "create_payment"
       Invoices::EventTrackerService.new(create_payment, @invoice, params).process

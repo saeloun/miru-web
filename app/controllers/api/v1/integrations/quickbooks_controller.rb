@@ -39,19 +39,19 @@ class Api::V1::Integrations::QuickbooksController < Api::V1::ApplicationControll
 
     redirect_to quickbooks_settings_path(result: "connected")
   rescue QuickBooks::Error, ActiveRecord::RecordInvalid => e
-    Rails.logger.warn("QuickBooks OAuth callback failed: #{e.class}: #{e.message}")
+    Rails.logger.warn("QuickBooks OAuth callback failed: #{e.class}")
     redirect_to quickbooks_settings_path(result: "error")
   end
 
   def disconnect
     authorize :quickbooks_integration, policy_class: QuickbooksIntegrationPolicy
-    active_connection&.disconnect!
+    active_quickbooks_connection&.disconnect!
     render json: quickbooks_payload
   end
 
   def settings
     authorize :quickbooks_integration, policy_class: QuickbooksIntegrationPolicy
-    connection = active_connection
+    connection = active_quickbooks_connection
     unless connection
       render json: { errors: "Connect QuickBooks before saving settings" }, status: 404
       return
@@ -63,7 +63,7 @@ class Api::V1::Integrations::QuickbooksController < Api::V1::ApplicationControll
 
   def sync
     authorize :quickbooks_integration, policy_class: QuickbooksIntegrationPolicy
-    connection = active_connection
+    connection = active_quickbooks_connection
     unless connection
       render json: { errors: "Connect QuickBooks before syncing records" }, status: 404
       return
@@ -112,16 +112,10 @@ class Api::V1::Integrations::QuickbooksController < Api::V1::ApplicationControll
 
       connection.update!(settings: connection.settings.merge("company_name" => company_name))
     rescue QuickBooks::Error => e
-      Rails.logger.info("QuickBooks company info fetch failed: #{e.message}")
+      Rails.logger.info("QuickBooks company info fetch failed: #{e.class}")
     end
 
-    def active_connection
-      @_active_connection ||= current_company.quickbooks_connections.active.find_by(
-        environment: QuickBooks::Configuration.environment
-      )
-    end
-
-    def quickbooks_payload(connection = active_connection)
+    def quickbooks_payload(connection = active_quickbooks_connection)
       {
         quickbooks: {
           configured: QuickBooks::Configuration.configured?,
@@ -162,28 +156,30 @@ class Api::V1::Integrations::QuickbooksController < Api::V1::ApplicationControll
     end
 
     def enqueue_clients(connection)
-      count = 0
-      current_company.clients.kept.select(:id).find_each do |client|
-        QuickBooks::ExportCustomerJob.perform_later(connection.id, client.id, "manual")
-        count += 1
+      enqueue_record_ids(current_company.clients.kept) do |client_id|
+        QuickBooks::ExportCustomerJob.perform_later(connection.id, client_id, "manual")
       end
-      count
     end
 
     def enqueue_invoices(connection)
-      count = 0
-      current_company.invoices.kept.select(:id).find_each do |invoice|
-        QuickBooks::ExportInvoiceJob.perform_later(connection.id, invoice.id, "manual")
-        count += 1
+      enqueue_record_ids(current_company.invoices.kept) do |invoice_id|
+        QuickBooks::ExportInvoiceJob.perform_later(connection.id, invoice_id, "manual")
       end
-      count
     end
 
     def enqueue_payments(connection)
+      enqueue_record_ids(current_company.payments) do |payment_id|
+        QuickBooks::ExportPaymentJob.perform_later(connection.id, payment_id, "manual")
+      end
+    end
+
+    def enqueue_record_ids(relation)
       count = 0
-      current_company.payments.select(:id).find_each do |payment|
-        QuickBooks::ExportPaymentJob.perform_later(connection.id, payment.id, "manual")
-        count += 1
+      relation.in_batches do |batch|
+        batch.pluck(:id).each do |record_id|
+          yield record_id
+          count += 1
+        end
       end
       count
     end
