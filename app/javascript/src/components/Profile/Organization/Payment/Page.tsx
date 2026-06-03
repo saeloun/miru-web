@@ -11,6 +11,7 @@ import {
   QrCode,
   Copy,
   DeviceMobile,
+  ArrowsClockwise,
 } from "@phosphor-icons/react";
 import {
   Card,
@@ -60,6 +61,8 @@ const OrganizationPaymentSettingsPage: React.FC = () => {
   const [isDisconnectingQuickBooks, setIsDisconnectingQuickBooks] =
     useState<boolean>(false);
   const [isSavingQuickBooks, setIsSavingQuickBooks] = useState<boolean>(false);
+  const [isSyncingQuickBooks, setIsSyncingQuickBooks] =
+    useState<boolean>(false);
   const [accountLink, setAccountLink] = useState<string | null>(null);
   const [stripeAccountDetails, setStripeAccountDetails] = useState<any>(null);
   const [upiSettings, setUpiSettings] = useState({
@@ -450,6 +453,26 @@ const OrganizationPaymentSettingsPage: React.FC = () => {
       toast.error(i18n.t("paymentSettingsPage.quickBooksSaveFailed"));
     } finally {
       setIsSavingQuickBooks(false);
+    }
+  };
+
+  const syncQuickBooksWorkspace = async () => {
+    try {
+      setIsSyncingQuickBooks(true);
+      const res = await quickBooksApi.sync();
+      const sync = res.data.quickbooks.sync;
+      toast.success(
+        i18n.t("paymentSettingsPage.quickBooksSyncQueued", {
+          clients: sync.clientsQueued,
+          invoices: sync.invoicesQueued,
+          payments: sync.paymentsQueued,
+        })
+      );
+    } catch (error) {
+      console.error("Failed to sync QuickBooks workspace:", error);
+      toast.error(i18n.t("paymentSettingsPage.quickBooksSyncFailed"));
+    } finally {
+      setIsSyncingQuickBooks(false);
     }
   };
 
@@ -1514,6 +1537,25 @@ const OrganizationPaymentSettingsPage: React.FC = () => {
                                 i18n.t(
                                   "paymentSettingsPage.quickBooksSaveMappings"
                                 )
+                              )}
+                            </Button>
+                            <Button
+                              variant="outline"
+                              onClick={syncQuickBooksWorkspace}
+                              disabled={isSyncingQuickBooks}
+                            >
+                              {isSyncingQuickBooks ? (
+                                <>
+                                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                  {i18n.t(
+                                    "paymentSettingsPage.quickBooksSyncing"
+                                  )}
+                                </>
+                              ) : (
+                                <>
+                                  <ArrowsClockwise className="mr-2 h-4 w-4" />
+                                  {i18n.t("paymentSettingsPage.quickBooksSync")}
+                                </>
                               )}
                             </Button>
                             <Button

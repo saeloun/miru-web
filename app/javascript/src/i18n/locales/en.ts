@@ -1807,6 +1807,11 @@ const en = {
     quickBooksSaving: "Saving...",
     quickBooksSaved: "QuickBooks mappings saved.",
     quickBooksSaveFailed: "Failed to save QuickBooks mappings.",
+    quickBooksSync: "Sync workspace",
+    quickBooksSyncing: "Syncing...",
+    quickBooksSyncQueued:
+      "QuickBooks sync queued: %{clients} clients, %{invoices} invoices, and %{payments} payments.",
+    quickBooksSyncFailed: "Failed to queue QuickBooks sync. Please try again.",
     stripeAccountFallback: "Stripe Account",
     chargesEnabled: "Charges Enabled",
     connectStripe: "Connect Stripe",

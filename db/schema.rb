@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_28_190533) do
+ActiveRecord::Schema[8.1].define(version: 2026_06_03_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_stat_statements"
@@ -754,6 +754,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_28_190533) do
     t.datetime "updated_at", null: false
     t.index ["company_id", "environment"], name: "idx_qbo_connections_active_company_environment", unique: true, where: "(disconnected_at IS NULL)"
     t.index ["company_id"], name: "index_quickbooks_connections_on_company_id"
+    t.index ["id", "company_id"], name: "idx_qbo_connections_id_company", unique: true
     t.index ["realm_id", "environment"], name: "idx_qbo_connections_active_realm_environment", unique: true, where: "((realm_id IS NOT NULL) AND (disconnected_at IS NULL))"
   end
 
@@ -814,6 +815,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_28_190533) do
     t.datetime "updated_at", null: false
     t.index ["company_id", "status"], name: "index_quickbooks_sync_runs_on_company_id_and_status"
     t.index ["company_id"], name: "index_quickbooks_sync_runs_on_company_id"
+    t.index ["id", "quickbooks_connection_id", "company_id"], name: "idx_qbo_runs_id_connection_company", unique: true
     t.index ["quickbooks_connection_id", "created_at"], name: "idx_on_quickbooks_connection_id_created_at_fbda7af87c"
     t.index ["quickbooks_connection_id"], name: "index_quickbooks_sync_runs_on_quickbooks_connection_id"
   end
@@ -1220,11 +1222,15 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_28_190533) do
   add_foreign_key "quickbooks_connections", "companies"
   add_foreign_key "quickbooks_references", "companies"
   add_foreign_key "quickbooks_references", "quickbooks_connections"
+  add_foreign_key "quickbooks_references", "quickbooks_connections", column: ["quickbooks_connection_id", "company_id"], primary_key: ["id", "company_id"], name: "fk_qbo_refs_connection_company"
   add_foreign_key "quickbooks_sync_events", "companies"
   add_foreign_key "quickbooks_sync_events", "quickbooks_connections"
+  add_foreign_key "quickbooks_sync_events", "quickbooks_connections", column: ["quickbooks_connection_id", "company_id"], primary_key: ["id", "company_id"], name: "fk_qbo_events_connection_company"
   add_foreign_key "quickbooks_sync_events", "quickbooks_sync_runs"
+  add_foreign_key "quickbooks_sync_events", "quickbooks_sync_runs", column: ["quickbooks_sync_run_id", "quickbooks_connection_id", "company_id"], primary_key: ["id", "quickbooks_connection_id", "company_id"], name: "fk_qbo_events_run_connection_company"
   add_foreign_key "quickbooks_sync_runs", "companies"
   add_foreign_key "quickbooks_sync_runs", "quickbooks_connections"
+  add_foreign_key "quickbooks_sync_runs", "quickbooks_connections", column: ["quickbooks_connection_id", "company_id"], primary_key: ["id", "company_id"], name: "fk_qbo_runs_connection_company"
   add_foreign_key "razorpay_payouts", "payments"
   add_foreign_key "razorpay_payouts", "users", column: "requested_by_id"
   add_foreign_key "solid_queue_blocked_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade

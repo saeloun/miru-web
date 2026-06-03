@@ -16,5 +16,17 @@ RSpec.describe QuickbooksSyncRun, type: :model do
       expect(sync_run).not_to be_valid
       expect(sync_run.errors[:quickbooks_connection]).to include("must belong to the same company")
     end
+
+    it "enforces the QuickBooks connection company at the database level" do
+      company = create(:company)
+      other_company = create(:company)
+      sync_run = build(
+        :quickbooks_sync_run,
+        company:,
+        quickbooks_connection: create(:quickbooks_connection, company: other_company)
+      )
+
+      expect { sync_run.save!(validate: false) }.to raise_error(ActiveRecord::InvalidForeignKey)
+    end
   end
 end
