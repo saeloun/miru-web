@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Card, CardContent } from "../ui/card";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
+import { HighlightText } from "../ui/highlight-text";
 import SendInvoice from "./common/InvoiceForm/SendInvoice";
 
 import {
@@ -540,13 +541,20 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
                     >
                       <TableCell>
                         <div className="font-medium">
-                          #{invoice.invoiceNumber}
+                          #
+                          <HighlightText
+                            text={invoice.invoiceNumber}
+                            query={searchTerm}
+                          />
                         </div>
                       </TableCell>
                       <TableCell>
                         <div>
                           <div className="font-medium">
-                            {invoice.client.name}
+                            <HighlightText
+                              text={invoice.client.name}
+                              query={searchTerm}
+                            />
                           </div>
                           <div className="text-sm text-muted-foreground">
                             {invoice.client.email}

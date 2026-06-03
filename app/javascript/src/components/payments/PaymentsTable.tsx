@@ -14,6 +14,7 @@ import {
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
 import { DataTable } from "../ui/data-table";
+import { HighlightedCell } from "../ui/highlight-text";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -149,6 +150,10 @@ const PaymentsTable: React.FC = () => {
 
   const [visiblePaymentCount, setVisiblePaymentCount] =
     useState(PAYMENTS_BATCH_SIZE);
+
+  const [filteredPaymentCount, setFilteredPaymentCount] = useState<
+    number | null
+  >(null);
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["payments"],
@@ -404,7 +409,7 @@ const PaymentsTable: React.FC = () => {
         if (!payment.invoiceId) {
           return (
             <span className="font-medium text-muted-foreground">
-              #{payment.invoiceNumber}
+              #<HighlightedCell text={payment.invoiceNumber} />
             </span>
           );
         }
@@ -414,7 +419,7 @@ const PaymentsTable: React.FC = () => {
             className="font-medium text-primary hover:underline"
             onClick={() => navigate(`/invoices/${payment.invoiceId}`)}
           >
-            #{payment.invoiceNumber}
+            #<HighlightedCell text={payment.invoiceNumber} />
           </button>
         );
       },
@@ -427,7 +432,9 @@ const PaymentsTable: React.FC = () => {
 
         return (
           <div>
-            <p className="font-medium text-foreground">{payment.clientName}</p>
+            <p className="font-medium text-foreground">
+              <HighlightedCell text={payment.clientName} />
+            </p>
           </div>
         );
       },
@@ -468,7 +475,11 @@ const PaymentsTable: React.FC = () => {
       header: i18n.t("payments.notes"),
       cell: ({ row }) => (
         <span className="line-clamp-1 text-sm text-muted-foreground">
-          {row.original.note || "—"}
+          {row.original.note ? (
+            <HighlightedCell text={row.original.note} />
+          ) : (
+            "—"
+          )}
         </span>
       ),
     },
@@ -705,13 +716,20 @@ const PaymentsTable: React.FC = () => {
                   "payments.searchByInvoiceClientMethodOrNotes"
                 )}
                 showPagination={false}
+                onFilteredRowCountChange={setFilteredPaymentCount}
               />
               <div className="flex flex-col items-center gap-2 pb-2 text-sm text-muted-foreground">
                 <span>
-                  {i18n.t("payments.showingPaymentsCount", {
-                    visible: visiblePayments.length,
-                    total: payments.length,
-                  })}
+                  {filteredPaymentCount !== null &&
+                  filteredPaymentCount < visiblePayments.length
+                    ? i18n.t("payments.viewingMatchingPayments", {
+                        filtered: filteredPaymentCount,
+                        total: payments.length,
+                      })
+                    : i18n.t("payments.showingPaymentsCount", {
+                        visible: visiblePayments.length,
+                        total: payments.length,
+                      })}
                 </span>
                 {hasMorePayments && (
                   <span>{i18n.t("payments.scrollToLoadMore")}</span>
@@ -719,9 +737,11 @@ const PaymentsTable: React.FC = () => {
                 {hasMorePayments && (
                   <div ref={loadMorePaymentsRef} className="h-8 w-full" />
                 )}
-                {!hasMorePayments && (
-                  <span>{i18n.t("payments.allPaymentsLoaded")}</span>
-                )}
+                {!hasMorePayments &&
+                  (filteredPaymentCount === null ||
+                    filteredPaymentCount >= visiblePayments.length) && (
+                    <span>{i18n.t("payments.allPaymentsLoaded")}</span>
+                  )}
               </div>
             </div>
           ) : (
