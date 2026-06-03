@@ -482,74 +482,78 @@ const OrganizationHolidaysEditor = ({
                   />
                   {i18n.t("holidaysSettings.optionalHolidays")}
                 </CardTitle>
-                <button
-                  onClick={handleCheckboxClick}
-                  className="transition-colors"
-                  disabled={!canEdit}
-                  type="button"
-                >
-                  {enableOptionalHolidays ? (
-                    <ToggleRight
-                      size={32}
-                      className="text-primary"
-                      weight="fill"
-                    />
-                  ) : (
-                    <ToggleLeft
-                      size={32}
-                      className="text-muted-foreground"
-                      weight="fill"
-                    />
-                  )}
-                </button>
+                {canManageHolidays && (
+                  <button
+                    onClick={handleCheckboxClick}
+                    className="transition-colors"
+                    disabled={!canEdit}
+                    type="button"
+                  >
+                    {enableOptionalHolidays ? (
+                      <ToggleRight
+                        size={32}
+                        className="text-primary"
+                        weight="fill"
+                      />
+                    ) : (
+                      <ToggleLeft
+                        size={32}
+                        className="text-muted-foreground"
+                        weight="fill"
+                      />
+                    )}
+                  </button>
+                )}
               </div>
             </CardHeader>
             {enableOptionalHolidays && (
               <CardContent>
                 <div className="space-y-4">
-                  {/* Configuration — inline row */}
-                  <div className="flex flex-wrap items-end gap-4 pb-4 border-b border-border">
-                    <div className="w-40">
-                      <Label className="text-xs font-geist-medium text-muted-foreground uppercase tracking-wider">
-                        {i18n.t("holidaysSettings.totalAllowed")}
-                      </Label>
-                      <Input
-                        type="number"
-                        min={0}
-                        className="font-geist-regular mt-1"
-                        disabled={!canEdit}
-                        placeholder={i18n.t("holidaysSettings.enterNumber")}
-                        value={totalOptionalHolidays}
-                        onChange={handleChangeTotalOpHoliday}
-                      />
-                    </div>
-                    <div className="w-48">
-                      <Label className="text-xs font-geist-medium text-muted-foreground uppercase tracking-wider">
-                        {i18n.t("holidaysSettings.frequency")}
-                      </Label>
-                      <div className="mt-1">
-                        <CustomReactSelect
-                          isDisabled={!canEdit}
-                          handleOnChange={handleChangeRepetitionOpHoliday}
-                          id="allocationFrequency"
-                          label=""
-                          name="allocationFrequency"
-                          options={allocationFrequency}
-                          styles={customStyles}
-                          wrapperClassName="h-10"
-                          components={{ IndicatorSeparator: () => null }}
-                          value={
-                            optionalRepetitionType
-                              ? allocationFrequency.filter(
-                                  option =>
-                                    option.value === optionalRepetitionType
-                                )
-                              : allocationFrequency[0]
-                          }
+                  {/* Configuration — inline row (admin only) */}
+                  {canManageHolidays && (
+                    <div className="flex flex-wrap items-end gap-4 pb-4 border-b border-border">
+                      <div className="w-40">
+                        <Label className="text-xs font-geist-medium text-muted-foreground uppercase tracking-wider">
+                          {i18n.t("holidaysSettings.totalAllowed")}
+                        </Label>
+                        <Input
+                          type="number"
+                          min={0}
+                          className="font-geist-regular mt-1"
+                          disabled={!canEdit}
+                          placeholder={i18n.t("holidaysSettings.enterNumber")}
+                          value={totalOptionalHolidays}
+                          onChange={handleChangeTotalOpHoliday}
                         />
                       </div>
+                      <div className="w-48">
+                        <Label className="text-xs font-geist-medium text-muted-foreground uppercase tracking-wider">
+                          {i18n.t("holidaysSettings.frequency")}
+                        </Label>
+                        <div className="mt-1">
+                          <CustomReactSelect
+                            isDisabled={!canEdit}
+                            handleOnChange={handleChangeRepetitionOpHoliday}
+                            id="allocationFrequency"
+                            label=""
+                            name="allocationFrequency"
+                            options={allocationFrequency}
+                            styles={customStyles}
+                            wrapperClassName="h-10"
+                            components={{ IndicatorSeparator: () => null }}
+                            value={
+                              optionalRepetitionType
+                                ? allocationFrequency.filter(
+                                    option =>
+                                      option.value === optionalRepetitionType
+                                  )
+                                : allocationFrequency[0]
+                            }
+                          />
+                        </div>
+                      </div>
                     </div>
-                  </div>
+                  )}
 
                   {canEdit ? (
                     /* Edit mode: form-style rows */
