@@ -1,23 +1,27 @@
 import dayjs from "dayjs";
 
+import {
+  getSelectControlStyles,
+  getSelectMenuStyles,
+  selectPalette,
+} from "common/CustomReactSelectStyle/shared";
+
 export const customStyles = {
-  control: (provided, state) => ({
+  control: (provided, state) =>
+    getSelectControlStyles(provided, {
+      borderColor: state.isFocused ? selectPalette.focus : selectPalette.border,
+      isFocused: state.isFocused,
+    }),
+  menu: provided =>
+    getSelectMenuStyles(provided, {
+      fontSize: "14px",
+      zIndex: 50,
+    }),
+  menuList: provided => ({
     ...provided,
-    backgroundColor: "#FFFFFF",
-    minHeight: 48,
-    padding: "0",
-    borderColor: state.isFocused ? "#5E58F1" : "#D7DEE5",
-    borderWidth: "1px",
-    boxShadow: state.isFocused && "0 0 0 1px #5E58F1",
-    "&:hover": {
-      borderColor: "#5E58F1",
-    },
-  }),
-  menu: provided => ({
-    ...provided,
-    fontSize: "12px",
-    letterSpacing: "2px",
-    zIndex: 5,
+    backgroundColor: selectPalette.menuBackground,
+    paddingTop: 6,
+    paddingBottom: 6,
   }),
   placeholder: base => ({
     ...base,
@@ -25,14 +29,29 @@ export const customStyles = {
     top: "-30%",
     transition: "top 0.2s, font-size 0.2s",
     fontSize: 10,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: selectPalette.background,
+    color: selectPalette.muted,
   }),
-  option: provided => ({
+  singleValue: base => ({
+    ...base,
+    color: selectPalette.text,
+    fontSize: 14,
+    fontWeight: 500,
+  }),
+  option: (provided, state) => ({
     ...provided,
-    cursor: "pointer",
-    "&:hover": {
-      background: "#D7DEE5",
-    },
+    backgroundColor: state.isSelected
+      ? selectPalette.optionSelected
+      : state.isFocused
+      ? selectPalette.optionHover
+      : selectPalette.menuBackground,
+    color:
+      state.isSelected || state.isFocused
+        ? selectPalette.optionText
+        : selectPalette.optionTextMuted,
+    cursor: state.isDisabled ? "not-allowed" : "pointer",
+    fontSize: 14,
+    fontWeight: state.isSelected ? 600 : 500,
   }),
 };
 
