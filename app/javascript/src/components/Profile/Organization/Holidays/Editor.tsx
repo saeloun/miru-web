@@ -293,11 +293,10 @@ const OrganizationHolidaysEditor = ({
             <button
               key={tab.key}
               onClick={() => setActiveTab(tab.key)}
-              className={`flex flex-1 min-w-0 items-center justify-center gap-1.5 rounded-md px-2 sm:px-4 py-2.5 text-xs sm:text-sm font-geist-medium transition-colors ${
-                activeTab === tab.key
-                  ? "bg-background text-foreground shadow-sm"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
+              className={`flex flex-1 min-w-0 items-center justify-center gap-1.5 rounded-md px-2 sm:px-4 py-2.5 text-xs sm:text-sm font-geist-medium transition-colors ${activeTab === tab.key
+                ? "bg-background text-foreground shadow-sm"
+                : "text-muted-foreground hover:text-foreground"
+                }`}
             >
               <span className="shrink-0">{tab.icon}</span>
               <span className="truncate">{tab.label}</span>
@@ -339,11 +338,10 @@ const OrganizationHolidaysEditor = ({
                           >
                             <Input
                               readOnly
-                              className={`font-geist-regular cursor-pointer pr-10 ${
-                                holidayErrors[index]?.date
-                                  ? "border-destructive"
-                                  : ""
-                              }`}
+                              className={`font-geist-regular cursor-pointer pr-10 ${holidayErrors[index]?.date
+                                ? "border-destructive"
+                                : ""
+                                }`}
                               placeholder={i18n.t(
                                 "holidaysSettings.selectDate"
                               )}
@@ -384,11 +382,10 @@ const OrganizationHolidaysEditor = ({
                             {i18n.t("holidaysSettings.holidayName")}
                           </Label>
                           <Input
-                            className={`font-geist-regular ${
-                              holidayErrors[index]?.name
-                                ? "border-destructive"
-                                : ""
-                            }`}
+                            className={`font-geist-regular ${holidayErrors[index]?.name
+                              ? "border-destructive"
+                              : ""
+                              }`}
                             placeholder={i18n.t(
                               "holidaysSettings.enterHolidayName"
                             )}
@@ -475,19 +472,38 @@ const OrganizationHolidaysEditor = ({
           <Card className="border-border shadow-sm">
             <CardHeader className="pb-4">
               <div className="flex items-center justify-between">
-                <CardTitle className="text-lg font-geist-semibold flex items-center gap-2">
-                  <CalendarPlus
-                    className="h-5 w-5 text-muted-foreground"
-                    weight="bold"
-                  />
-                  {i18n.t("holidaysSettings.optionalHolidays")}
-                </CardTitle>
-                {canManageHolidays && (
+                <div className="flex items-center gap-3">
+                  <CardTitle className="text-lg font-geist-semibold flex items-center gap-2">
+                    <CalendarPlus
+                      className="h-5 w-5 text-muted-foreground"
+                      weight="bold"
+                    />
+                    {i18n.t("holidaysSettings.optionalHolidays")}
+                  </CardTitle>
+                  {!canEdit && (
+                    <span
+                      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-geist-medium ${enableOptionalHolidays
+                        ? "bg-primary/10 text-primary"
+                        : "bg-muted text-muted-foreground"
+                        }`}
+                    >
+                      {enableOptionalHolidays
+                        ? i18n.t("enabled")
+                        : i18n.t("disabled")}
+                    </span>
+                  )}
+                </div>
+                {canManageHolidays && canEdit && (
                   <button
                     onClick={handleCheckboxClick}
                     className="transition-colors"
-                    disabled={!canEdit}
                     type="button"
+                    aria-label={
+                      enableOptionalHolidays
+                        ? i18n.t("holidaysSettings.disableOptionalHolidays")
+                        : i18n.t("holidaysSettings.enableOptionalHolidays")
+                    }
+                    aria-pressed={enableOptionalHolidays}
                   >
                     {enableOptionalHolidays ? (
                       <ToggleRight
@@ -511,47 +527,62 @@ const OrganizationHolidaysEditor = ({
                 <div className="space-y-4">
                   {/* Configuration — inline row (admin only) */}
                   {canManageHolidays && (
-                    <div className="flex flex-wrap items-end gap-4 pb-4 border-b border-border">
-                      <div className="w-40">
-                        <Label className="text-xs font-geist-medium text-muted-foreground uppercase tracking-wider">
-                          {i18n.t("holidaysSettings.totalAllowed")}
-                        </Label>
-                        <Input
-                          type="number"
-                          min={0}
-                          className="font-geist-regular mt-1"
-                          disabled={!canEdit}
-                          placeholder={i18n.t("holidaysSettings.enterNumber")}
-                          value={totalOptionalHolidays}
-                          onChange={handleChangeTotalOpHoliday}
-                        />
-                      </div>
-                      <div className="w-48">
-                        <Label className="text-xs font-geist-medium text-muted-foreground uppercase tracking-wider">
-                          {i18n.t("holidaysSettings.frequency")}
-                        </Label>
-                        <div className="mt-1">
-                          <CustomReactSelect
-                            isDisabled={!canEdit}
-                            handleOnChange={handleChangeRepetitionOpHoliday}
-                            id="allocationFrequency"
-                            label=""
-                            name="allocationFrequency"
-                            options={allocationFrequency}
-                            styles={customStyles}
-                            wrapperClassName="h-10"
-                            components={{ IndicatorSeparator: () => null }}
-                            value={
-                              optionalRepetitionType
-                                ? allocationFrequency.filter(
-                                    option =>
-                                      option.value === optionalRepetitionType
-                                  )
-                                : allocationFrequency[0]
-                            }
-                          />
+                    <div className="pb-4 border-b border-border">
+                      {canEdit ? (
+                        <div className="flex flex-wrap items-end gap-4">
+                          <div className="w-40">
+                            <Label className="text-xs font-geist-medium text-muted-foreground uppercase tracking-wider">
+                              {i18n.t("holidaysSettings.totalAllowed")}
+                            </Label>
+                            <Input
+                              type="number"
+                              min={0}
+                              className="font-geist-regular mt-1"
+                              placeholder={i18n.t(
+                                "holidaysSettings.enterNumber"
+                              )}
+                              value={totalOptionalHolidays}
+                              onChange={handleChangeTotalOpHoliday}
+                            />
+                          </div>
+                          <div className="w-48">
+                            <Label className="text-xs font-geist-medium text-muted-foreground uppercase tracking-wider">
+                              {i18n.t("holidaysSettings.frequency")}
+                            </Label>
+                            <div className="mt-1">
+                              <CustomReactSelect
+                                handleOnChange={handleChangeRepetitionOpHoliday}
+                                id="allocationFrequency"
+                                label=""
+                                name="allocationFrequency"
+                                options={allocationFrequency}
+                                styles={customStyles}
+                                components={{ IndicatorSeparator: () => null }}
+                                value={
+                                  optionalRepetitionType
+                                    ? allocationFrequency.filter(
+                                      option =>
+                                        option.value ===
+                                        optionalRepetitionType
+                                    )
+                                    : allocationFrequency[0]
+                                }
+                              />
+                            </div>
+                          </div>
                         </div>
-                      </div>
+                      ) : (
+                        <p className="text-sm font-geist-regular text-muted-foreground">
+                          {i18n.t("holidaysSettings.optionalHolidayPolicy", {
+                            count: Number(totalOptionalHolidays) || 0,
+                            frequency:
+                              allocationFrequency.find(
+                                option =>
+                                  option.value === optionalRepetitionType
+                              )?.label || optionalRepetitionType,
+                          })}
+                        </p>
+                      )}
                     </div>
                   )}
 
@@ -580,11 +611,10 @@ const OrganizationHolidaysEditor = ({
                               >
                                 <Input
                                   readOnly
-                                  className={`font-geist-regular cursor-pointer pr-10 ${
-                                    optionalHolidayErrors[index]?.date
-                                      ? "border-destructive"
-                                      : ""
-                                  }`}
+                                  className={`font-geist-regular cursor-pointer pr-10 ${optionalHolidayErrors[index]?.date
+                                    ? "border-destructive"
+                                    : ""
+                                    }`}
                                   disabled={!canEdit}
                                   placeholder={i18n.t(
                                     "holidaysSettings.selectDate"
@@ -628,11 +658,10 @@ const OrganizationHolidaysEditor = ({
                                 {i18n.t("holidaysSettings.holidayName")}
                               </Label>
                               <Input
-                                className={`font-geist-regular ${
-                                  optionalHolidayErrors[index]?.name
-                                    ? "border-destructive"
-                                    : ""
-                                }`}
+                                className={`font-geist-regular ${optionalHolidayErrors[index]?.name
+                                  ? "border-destructive"
+                                  : ""
+                                  }`}
                                 disabled={!canEdit}
                                 placeholder={i18n.t(
                                   "holidaysSettings.enterHolidayName"
@@ -784,11 +813,10 @@ const OrganizationHolidaysEditor = ({
                                       ? `holiday-calendar-day-${isoDate}`
                                       : undefined
                                   }
-                                  className={`flex aspect-square items-center justify-center rounded-md text-[10px] sm:text-xs ${
-                                    holiday
-                                      ? "bg-primary text-primary-foreground font-geist-semibold"
-                                      : "text-foreground"
-                                  }`}
+                                  className={`flex aspect-square items-center justify-center rounded-md text-[10px] sm:text-xs ${holiday
+                                    ? "bg-primary text-primary-foreground font-geist-semibold"
+                                    : "text-foreground"
+                                    }`}
                                   title={holiday?.name}
                                 >
                                   {day}
