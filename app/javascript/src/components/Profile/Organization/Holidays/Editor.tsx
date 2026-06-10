@@ -183,6 +183,10 @@ const OrganizationHolidaysEditor = ({
     optionalRepetitionType ||
     "";
 
+  const optionalHolidayFrequencyLabel = (
+    optionalHolidayFrequency || i18n.t("allocationFrequencies.perYear")
+  ).toLocaleLowerCase();
+
   const optionalHolidayPolicyKey =
     optionalHolidayCount === 1
       ? "holidaysSettings.optionalHolidayPolicy"
@@ -590,8 +594,7 @@ const OrganizationHolidaysEditor = ({
                         <p className="text-sm font-geist-regular text-muted-foreground">
                           {i18n.t(optionalHolidayPolicyKey, {
                             count: optionalHolidayCount,
-                            frequency:
-                              optionalHolidayFrequency.toLocaleLowerCase(),
+                            frequency: optionalHolidayFrequencyLabel,
                           })}
                         </p>
                       )}
