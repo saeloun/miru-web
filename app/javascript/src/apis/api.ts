@@ -433,6 +433,16 @@ export const paymentSettingsApi = {
 };
 export const paymentSettings = paymentSettingsApi;
 
+export const quickBooksApi = {
+  status: () => http.get(`/integrations/quickbooks/status`),
+  connect: () => http.post(`/integrations/quickbooks/connect`),
+  disconnect: () => http.delete(`/integrations/quickbooks/disconnect`),
+  sync: () =>
+    http.post(`/integrations/quickbooks/sync`, {}, { skipErrorToast: true }),
+  updateSettings: (quickbooks: any) =>
+    http.patch(`/integrations/quickbooks/settings`, { quickbooks }),
+};
+
 export const taxConfigurationsApi = {
   get: () => http.get(`/tax_configurations`),
   create: (taxConfiguration: any) =>

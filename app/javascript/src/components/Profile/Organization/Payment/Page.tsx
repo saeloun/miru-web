@@ -11,6 +11,7 @@ import {
   QrCode,
   Copy,
   DeviceMobile,
+  ArrowsClockwise,
 } from "@phosphor-icons/react";
 import {
   Card,
@@ -33,7 +34,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../../../ui/dialog";
-import { paymentSettings } from "apis/api";
+import { paymentSettings, quickBooksApi } from "apis/api";
 import { ApiStatus as PaymentSettingsStatus } from "../../../../constants/index";
 import { Skeleton } from "../../../ui/skeleton";
 import { i18n } from "../../../../i18n";
@@ -54,6 +55,14 @@ const OrganizationPaymentSettingsPage: React.FC = () => {
   const [isDisconnecting, setIsDisconnecting] = useState<boolean>(false);
   const [isSavingUpi, setIsSavingUpi] = useState<boolean>(false);
   const [isSavingRazorpay, setIsSavingRazorpay] = useState<boolean>(false);
+  const [isConnectingQuickBooks, setIsConnectingQuickBooks] =
+    useState<boolean>(false);
+
+  const [isDisconnectingQuickBooks, setIsDisconnectingQuickBooks] =
+    useState<boolean>(false);
+  const [isSavingQuickBooks, setIsSavingQuickBooks] = useState<boolean>(false);
+  const [isSyncingQuickBooks, setIsSyncingQuickBooks] =
+    useState<boolean>(false);
   const [accountLink, setAccountLink] = useState<string | null>(null);
   const [stripeAccountDetails, setStripeAccountDetails] = useState<any>(null);
   const [upiSettings, setUpiSettings] = useState({
@@ -84,6 +93,21 @@ const OrganizationPaymentSettingsPage: React.FC = () => {
     payoutUpiId: "",
     payoutPurpose: "payout",
     payoutQueueIfLowBalance: false,
+  });
+
+  const [quickBooksSettings, setQuickBooksSettings] = useState({
+    configured: false,
+    connected: false,
+    status: "",
+    environment: "sandbox",
+    realmId: "",
+    companyName: "",
+    reconnectRequired: false,
+    incomeAccountId: "",
+    accountsReceivableAccountId: "",
+    depositAccountId: "",
+    serviceItemId: "",
+    taxCodeId: "",
   });
 
   const razorpayWebhookUrl = `${window.location.origin}/webhooks/razorpay/payment_links`;
@@ -175,6 +199,26 @@ const OrganizationPaymentSettingsPage: React.FC = () => {
   ).length;
   const razorpayReadyForInvoices = razorpayKeysReady && razorpayInvoicesReady;
 
+  const applyQuickBooksSettings = (quickbooks: any = {}) => {
+    const mappingSettings = quickbooks.mappingSettings || {};
+
+    setQuickBooksSettings({
+      configured: !!quickbooks.configured,
+      connected: !!quickbooks.connected,
+      status: quickbooks.status || "",
+      environment: quickbooks.environment || "sandbox",
+      realmId: quickbooks.realmId || "",
+      companyName: quickbooks.companyName || "",
+      reconnectRequired: !!quickbooks.reconnectRequired,
+      incomeAccountId: mappingSettings.incomeAccountId || "",
+      accountsReceivableAccountId:
+        mappingSettings.accountsReceivableAccountId || "",
+      depositAccountId: mappingSettings.depositAccountId || "",
+      serviceItemId: mappingSettings.serviceItemId || "",
+      taxCodeId: mappingSettings.taxCodeId || "",
+    });
+  };
+
   const fetchPaymentSettings = async () => {
     try {
       setStatus(PaymentSettingsStatus.LOADING);
@@ -217,6 +261,7 @@ const OrganizationPaymentSettingsPage: React.FC = () => {
           payoutQueueIfLowBalance: !!razorpay.payoutQueueIfLowBalance,
         }));
       }
+      applyQuickBooksSettings(res.data.providers.quickbooks);
       setStatus(PaymentSettingsStatus.SUCCESS);
     } catch (error) {
       console.error("Failed to fetch payment settings:", error);
@@ -245,6 +290,10 @@ const OrganizationPaymentSettingsPage: React.FC = () => {
 
   const updateRazorpaySetting = (key: string, value: string | boolean) => {
     setRazorpaySettings(settings => ({ ...settings, [key]: value }));
+  };
+
+  const updateQuickBooksSetting = (key: string, value: string) => {
+    setQuickBooksSettings(settings => ({ ...settings, [key]: value }));
   };
 
   const saveUpiSettings = async () => {
@@ -360,6 +409,73 @@ const OrganizationPaymentSettingsPage: React.FC = () => {
     }
   };
 
+  const connectQuickBooks = async () => {
+    try {
+      setIsConnectingQuickBooks(true);
+      const res = await quickBooksApi.connect();
+      window.location.assign(res.data.authorizationUrl);
+    } catch (error) {
+      console.error("Failed to connect QuickBooks:", error);
+      toast.error(i18n.t("paymentSettingsPage.quickBooksConnectFailed"));
+      setIsConnectingQuickBooks(false);
+    }
+  };
+
+  const disconnectQuickBooks = async () => {
+    try {
+      setIsDisconnectingQuickBooks(true);
+      const res = await quickBooksApi.disconnect();
+      applyQuickBooksSettings(res.data.quickbooks);
+      toast.success(i18n.t("paymentSettingsPage.quickBooksDisconnected"));
+    } catch (error) {
+      console.error("Failed to disconnect QuickBooks:", error);
+      toast.error(i18n.t("paymentSettingsPage.quickBooksDisconnectFailed"));
+    } finally {
+      setIsDisconnectingQuickBooks(false);
+    }
+  };
+
+  const saveQuickBooksSettings = async () => {
+    try {
+      setIsSavingQuickBooks(true);
+      const res = await quickBooksApi.updateSettings({
+        income_account_id: quickBooksSettings.incomeAccountId,
+        accounts_receivable_account_id:
+          quickBooksSettings.accountsReceivableAccountId,
+        deposit_account_id: quickBooksSettings.depositAccountId,
+        service_item_id: quickBooksSettings.serviceItemId,
+        tax_code_id: quickBooksSettings.taxCodeId,
+      });
+      applyQuickBooksSettings(res.data.quickbooks);
+      toast.success(i18n.t("paymentSettingsPage.quickBooksSaved"));
+    } catch (error) {
+      console.error("Failed to save QuickBooks settings:", error);
+      toast.error(i18n.t("paymentSettingsPage.quickBooksSaveFailed"));
+    } finally {
+      setIsSavingQuickBooks(false);
+    }
+  };
+
+  const syncQuickBooksWorkspace = async () => {
+    try {
+      setIsSyncingQuickBooks(true);
+      const res = await quickBooksApi.sync();
+      const sync = res.data.quickbooks.sync;
+      toast.success(
+        i18n.t("paymentSettingsPage.quickBooksSyncQueued", {
+          clients: sync.clientsQueued,
+          invoices: sync.invoicesQueued,
+          payments: sync.paymentsQueued,
+        })
+      );
+    } catch (error) {
+      console.error("Failed to sync QuickBooks workspace:", error);
+      toast.error(i18n.t("paymentSettingsPage.quickBooksSyncFailed"));
+    } finally {
+      setIsSyncingQuickBooks(false);
+    }
+  };
+
   const copyText = async (value: string) => {
     if (!value) return;
 
@@ -399,6 +515,29 @@ const OrganizationPaymentSettingsPage: React.FC = () => {
 
   useEffect(() => {
     fetchPaymentSettings();
+  }, []);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const quickBooksResult = params.get("quickbooks");
+
+    if (!quickBooksResult) return;
+
+    if (quickBooksResult === "connected") {
+      toast.success(i18n.t("paymentSettingsPage.quickBooksConnected"));
+    } else if (quickBooksResult === "error") {
+      toast.error(i18n.t("paymentSettingsPage.quickBooksConnectFailed"));
+    }
+
+    params.delete("quickbooks");
+    const search = params.toString();
+    const path = [
+      window.location.pathname,
+      search ? `?${search}` : "",
+      window.location.hash,
+    ].join("");
+
+    window.history.replaceState({}, document.title, path);
   }, []);
 
   useEffect(() => {
@@ -1193,6 +1332,273 @@ const OrganizationPaymentSettingsPage: React.FC = () => {
                             </p>
                           </div>
                         </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* QuickBooks Accounting */}
+                  <div className="rounded-lg border border-border bg-card p-4 sm:p-6">
+                    <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
+                      <div className="min-w-0 flex-1">
+                        <div className="mb-2 flex items-center gap-3">
+                          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-border bg-muted">
+                            <Building2 className="h-6 w-6 text-primary" />
+                          </div>
+                          <div className="flex flex-wrap items-center gap-2">
+                            <h3 className="text-lg font-medium text-foreground">
+                              {i18n.t("paymentSettingsPage.quickBooksTitle")}
+                            </h3>
+                            <Badge
+                              variant="secondary"
+                              className="border-border bg-accent text-foreground"
+                            >
+                              {quickBooksSettings.connected
+                                ? i18n.t("paymentSettingsPage.connected")
+                                : i18n.t(
+                                    "paymentSettingsPage.quickBooksAccounting"
+                                  )}
+                            </Badge>
+                          </div>
+                        </div>
+
+                        <p className="text-sm text-muted-foreground">
+                          {i18n.t("paymentSettingsPage.quickBooksDescription")}
+                        </p>
+
+                        {!quickBooksSettings.configured && (
+                          <Alert className="mt-5 border-primary/20 bg-primary/5">
+                            <AlertCircle className="h-4 w-4" />
+                            <AlertTitle>
+                              {i18n.t(
+                                "paymentSettingsPage.quickBooksSetupRequired"
+                              )}
+                            </AlertTitle>
+                            <AlertDescription>
+                              {i18n.t(
+                                "paymentSettingsPage.quickBooksSetupDescription"
+                              )}
+                            </AlertDescription>
+                          </Alert>
+                        )}
+
+                        {quickBooksSettings.connected && (
+                          <div className="mt-5 space-y-5">
+                            <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+                              <div className="rounded-md border border-border bg-background p-3">
+                                <p className="text-xs text-muted-foreground">
+                                  {i18n.t(
+                                    "paymentSettingsPage.quickBooksCompany"
+                                  )}
+                                </p>
+                                <p className="mt-1 truncate text-sm font-medium text-foreground">
+                                  {quickBooksSettings.companyName ||
+                                    quickBooksSettings.realmId ||
+                                    i18n.t(
+                                      "paymentSettingsPage.quickBooksConnectedCompany"
+                                    )}
+                                </p>
+                              </div>
+                              <div className="rounded-md border border-border bg-background p-3">
+                                <p className="text-xs text-muted-foreground">
+                                  {i18n.t(
+                                    "paymentSettingsPage.quickBooksEnvironment"
+                                  )}
+                                </p>
+                                <p className="mt-1 text-sm font-medium capitalize text-foreground">
+                                  {quickBooksSettings.environment}
+                                </p>
+                              </div>
+                              <div className="rounded-md border border-border bg-background p-3">
+                                <p className="text-xs text-muted-foreground">
+                                  {i18n.t(
+                                    "paymentSettingsPage.quickBooksRealm"
+                                  )}
+                                </p>
+                                <p className="mt-1 truncate text-sm font-medium text-foreground">
+                                  {quickBooksSettings.realmId}
+                                </p>
+                              </div>
+                            </div>
+
+                            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                              <div className="space-y-2">
+                                <Label htmlFor="quickbooks_income_account_id">
+                                  {i18n.t(
+                                    "paymentSettingsPage.quickBooksIncomeAccount"
+                                  )}
+                                </Label>
+                                <Input
+                                  id="quickbooks_income_account_id"
+                                  value={quickBooksSettings.incomeAccountId}
+                                  onChange={event =>
+                                    updateQuickBooksSetting(
+                                      "incomeAccountId",
+                                      event.target.value
+                                    )
+                                  }
+                                  placeholder="79"
+                                />
+                              </div>
+                              <div className="space-y-2">
+                                <Label htmlFor="quickbooks_ar_account_id">
+                                  {i18n.t(
+                                    "paymentSettingsPage.quickBooksArAccount"
+                                  )}
+                                </Label>
+                                <Input
+                                  id="quickbooks_ar_account_id"
+                                  value={
+                                    quickBooksSettings.accountsReceivableAccountId
+                                  }
+                                  onChange={event =>
+                                    updateQuickBooksSetting(
+                                      "accountsReceivableAccountId",
+                                      event.target.value
+                                    )
+                                  }
+                                  placeholder="84"
+                                />
+                              </div>
+                              <div className="space-y-2">
+                                <Label htmlFor="quickbooks_deposit_account_id">
+                                  {i18n.t(
+                                    "paymentSettingsPage.quickBooksDepositAccount"
+                                  )}
+                                </Label>
+                                <Input
+                                  id="quickbooks_deposit_account_id"
+                                  value={quickBooksSettings.depositAccountId}
+                                  onChange={event =>
+                                    updateQuickBooksSetting(
+                                      "depositAccountId",
+                                      event.target.value
+                                    )
+                                  }
+                                  placeholder="35"
+                                />
+                              </div>
+                              <div className="space-y-2">
+                                <Label htmlFor="quickbooks_service_item_id">
+                                  {i18n.t(
+                                    "paymentSettingsPage.quickBooksServiceItem"
+                                  )}
+                                </Label>
+                                <Input
+                                  id="quickbooks_service_item_id"
+                                  value={quickBooksSettings.serviceItemId}
+                                  onChange={event =>
+                                    updateQuickBooksSetting(
+                                      "serviceItemId",
+                                      event.target.value
+                                    )
+                                  }
+                                  placeholder="1"
+                                />
+                              </div>
+                              <div className="space-y-2">
+                                <Label htmlFor="quickbooks_tax_code_id">
+                                  {i18n.t(
+                                    "paymentSettingsPage.quickBooksTaxCode"
+                                  )}
+                                </Label>
+                                <Input
+                                  id="quickbooks_tax_code_id"
+                                  value={quickBooksSettings.taxCodeId}
+                                  onChange={event =>
+                                    updateQuickBooksSetting(
+                                      "taxCodeId",
+                                      event.target.value
+                                    )
+                                  }
+                                  placeholder="TAX"
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="flex shrink-0 flex-col gap-2 sm:flex-row lg:flex-col">
+                        {quickBooksSettings.connected ? (
+                          <>
+                            <Button
+                              onClick={saveQuickBooksSettings}
+                              disabled={isSavingQuickBooks}
+                              className="bg-primary hover:bg-primary/90"
+                            >
+                              {isSavingQuickBooks ? (
+                                <>
+                                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                  {i18n.t(
+                                    "paymentSettingsPage.quickBooksSaving"
+                                  )}
+                                </>
+                              ) : (
+                                i18n.t(
+                                  "paymentSettingsPage.quickBooksSaveMappings"
+                                )
+                              )}
+                            </Button>
+                            <Button
+                              variant="outline"
+                              onClick={syncQuickBooksWorkspace}
+                              disabled={isSyncingQuickBooks}
+                            >
+                              {isSyncingQuickBooks ? (
+                                <>
+                                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                  {i18n.t(
+                                    "paymentSettingsPage.quickBooksSyncing"
+                                  )}
+                                </>
+                              ) : (
+                                <>
+                                  <ArrowsClockwise className="mr-2 h-4 w-4" />
+                                  {i18n.t("paymentSettingsPage.quickBooksSync")}
+                                </>
+                              )}
+                            </Button>
+                            <Button
+                              variant="outline"
+                              onClick={disconnectQuickBooks}
+                              disabled={isDisconnectingQuickBooks}
+                            >
+                              {isDisconnectingQuickBooks ? (
+                                <>
+                                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                  {i18n.t("paymentSettingsPage.disconnecting")}
+                                </>
+                              ) : (
+                                i18n.t("paymentSettingsPage.disconnect")
+                              )}
+                            </Button>
+                          </>
+                        ) : (
+                          <Button
+                            onClick={connectQuickBooks}
+                            disabled={
+                              !quickBooksSettings.configured ||
+                              isConnectingQuickBooks
+                            }
+                            className="bg-primary hover:bg-primary/90"
+                          >
+                            {isConnectingQuickBooks ? (
+                              <>
+                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                {i18n.t(
+                                  "paymentSettingsPage.quickBooksConnecting"
+                                )}
+                              </>
+                            ) : (
+                              <>
+                                {i18n.t(
+                                  "paymentSettingsPage.quickBooksConnect"
+                                )}
+                                <ArrowRight className="ml-2 h-4 w-4" />
+                              </>
+                            )}
+                          </Button>
+                        )}
                       </div>
                     </div>
                   </div>
