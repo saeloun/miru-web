@@ -1,10 +1,9 @@
 import React, { useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import Cookies from "js-cookie";
 
 import { useAuthState, useAuthDispatch } from "context/auth";
 import { useUserContext } from "context/UserContext";
-import { loginGoogleAuth } from "utils/googleOauthLogin";
 
 import AppRouter from "./Routes/AppRouter";
 
@@ -26,14 +25,6 @@ const Main: React.FC<MainProps> = props => {
   const location = useLocation();
   const { isLoggedIn } = useAuthState();
   const { user, authResolution } = useUserContext();
-  const navigate = useNavigate();
-
-  // Handle Google OAuth success
-  useEffect(() => {
-    if (!isLoggedIn && props?.googleOauthSuccess) {
-      loginGoogleAuth(user?.token, user?.email, authDispatch, navigate);
-    }
-  }, [isLoggedIn, props?.googleOauthSuccess, user, authDispatch, navigate]);
 
   // Save last visited page for unauthenticated users
   useEffect(() => {

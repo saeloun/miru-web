@@ -17,6 +17,7 @@ import {
   getSessionRequestHeaders,
   hasStoredAuthCredentials,
 } from "utils/authHeaders";
+import { toast } from "sonner";
 
 const AUTH_PATH_PREFIXES = [
   "/user/sign_in",
@@ -68,6 +69,13 @@ type UserDataState = {
   authResolution: AuthResolution;
 };
 
+type FlashMessages = {
+  alert?: string;
+  error?: string;
+  notice?: string;
+  success?: string;
+};
+
 const delay = (ms: number) =>
   new Promise(resolve => {
     setTimeout(resolve, ms);
@@ -107,6 +115,23 @@ const AppWithUserData = (props: any) => {
   });
   const [localeReady, setLocaleReady] = useState(false);
   const [initialLocale, setInitialLocale] = useState("en-US");
+  const flashMessages: FlashMessages = props.flashMessages || {};
+
+  useEffect(() => {
+    const errorMessage = flashMessages.error || flashMessages.alert;
+    const successMessage = flashMessages.success || flashMessages.notice;
+
+    if (errorMessage) {
+      toast.error(errorMessage);
+    } else if (successMessage) {
+      toast.success(successMessage);
+    }
+  }, [
+    flashMessages.alert,
+    flashMessages.error,
+    flashMessages.notice,
+    flashMessages.success,
+  ]);
 
   // Fetch user details from _me endpoint on mount
   useEffect(() => {
