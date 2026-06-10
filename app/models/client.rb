@@ -25,7 +25,7 @@ class Client < ApplicationRecord
   has_one_attached :logo
   belongs_to :company
 
-  before_save :strip_attributes
+  before_validation :strip_attributes
   before_validation :normalize_optional_email
   validates :name, presence: true, length: { maximum: 30 },
     uniqueness: { scope: :company_id, case_sensitive: false, message: "The client %{value} already exists" }
@@ -195,7 +195,7 @@ class Client < ApplicationRecord
     end
 
     def strip_attributes
-      name.strip!
+      self.name = name.strip if name.present?
     end
 
     # Keep optional email truly optional by avoiding duplicate blank-string collisions
