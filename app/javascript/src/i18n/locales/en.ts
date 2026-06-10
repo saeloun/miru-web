@@ -23,6 +23,8 @@ const en = {
   next: "Next",
   done: "Done",
   loading: "Loading...",
+  enabled: "Enabled",
+  disabled: "Disabled",
   actions: "Actions",
   openMenu: "Open menu",
   filters: "Filters",
@@ -1283,10 +1285,10 @@ const en = {
 
   // Allocation frequencies
   allocationFrequencies: {
-    perWeek: "per week",
-    perMonth: "per month",
-    perQuarter: "per quarter",
-    perYear: "per year",
+    perWeek: "Per Week",
+    perMonth: "Per Month",
+    perQuarter: "Per Quarter",
+    perYear: "Per Year",
   },
 
   // Navbar
@@ -1676,6 +1678,12 @@ const en = {
     totalAllowed: "Total Allowed",
     enterNumber: "Enter number",
     frequency: "Frequency",
+    enableOptionalHolidays: "Enable optional holidays",
+    disableOptionalHolidays: "Disable optional holidays",
+    optionalHolidayPolicy:
+      "Employees can take up to %{count} optional holiday %{frequency}",
+    optionalHolidayPolicy_plural:
+      "Employees can take up to %{count} optional holidays %{frequency}",
     allowedPerEmployee: "Allowed per Employee",
     yearAtAGlance: "Year At A Glance",
     holidaySchedule: "Holiday Schedule",
