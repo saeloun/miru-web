@@ -29,7 +29,7 @@ gem "devise"
 gem "devise-security"
 gem "devise-pwned_password"
 gem "devise-jwt"
-gem "devise_invitable"
+gem "devise_invitable", ">= 2.0.12"
 gem "webauthn"
 gem "rotp"
 
@@ -94,7 +94,7 @@ gem "discard", "~> 1.2"
 gem "rolify", "~> 6.0"
 
 # OAuth Gems
-gem "omniauth-google-oauth2", "~> 1.0"
+gem "omniauth-google-oauth2", "~> 1.1", ">= 1.1.2"
 gem "omniauth-github", "~> 2.0"
 gem "omniauth-rails_csrf_protection", "~> 1.0", require: false
 
