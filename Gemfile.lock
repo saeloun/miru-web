@@ -245,7 +245,7 @@ GEM
       pwned (~> 2.4)
     devise-security (0.18.0)
       devise (>= 4.3.0)
-    devise_invitable (2.0.11)
+    devise_invitable (2.0.12)
       actionmailer (>= 5.0)
       devise (>= 4.6)
     dexter (0.1.0)
@@ -541,20 +541,21 @@ GEM
       snaky_hash (~> 2.0, >= 2.0.5)
       version_gem (~> 1.1, >= 1.1.11)
     observer (0.1.2)
-    omniauth (2.1.1)
+    omniauth (2.1.4)
       hashie (>= 3.4.6)
+      logger
       rack (>= 2.2.3)
       rack-protection
     omniauth-github (2.0.1)
       omniauth (~> 2.0)
       omniauth-oauth2 (~> 1.8)
-    omniauth-google-oauth2 (1.1.1)
-      jwt (>= 2.0)
-      oauth2 (~> 2.0.6)
+    omniauth-google-oauth2 (1.2.2)
+      jwt (>= 2.9.2)
+      oauth2 (~> 2.0)
       omniauth (~> 2.0)
-      omniauth-oauth2 (~> 1.8.0)
-    omniauth-oauth2 (1.8.0)
-      oauth2 (>= 1.4, < 3)
+      omniauth-oauth2 (~> 1.8)
+    omniauth-oauth2 (1.9.0)
+      oauth2 (>= 2.0.2, < 3)
       omniauth (~> 2.0)
     omniauth-rails_csrf_protection (1.0.1)
       actionpack (>= 4.2)
@@ -609,7 +610,7 @@ GEM
     protocol-url (0.4.0)
     protocol-websocket (0.20.2)
       protocol-http (~> 0.2)
-    psych (5.3.1)
+    psych (5.4.0)
       date
       stringio
     public_suffix (7.0.5)
@@ -625,8 +626,10 @@ GEM
       rack (>= 1.0, < 4)
     rack-cors (2.0.0)
       rack (>= 2.0.0)
-    rack-protection (3.0.5)
-      rack
+    rack-protection (4.2.1)
+      base64 (>= 0.1.0)
+      logger (>= 1.6.0)
+      rack (>= 3.0.0, < 4)
     rack-proxy (0.7.7)
       rack
     rack-session (2.1.2)
@@ -953,7 +956,7 @@ GEM
     yard-sorbet (0.9.0)
       sorbet-runtime
       yard
-    zeitwerk (2.7.5)
+    zeitwerk (2.8.2)
 
 PLATFORMS
   arm64-darwin-21
@@ -984,7 +987,7 @@ DEPENDENCIES
   devise-jwt
   devise-pwned_password
   devise-security
-  devise_invitable
+  devise_invitable (>= 2.0.12)
   dexter
   discard (~> 1.2)
   dotenv
@@ -1016,7 +1019,7 @@ DEPENDENCIES
   nokogiri (>= 1.19.1)
   observer
   omniauth-github (~> 2.0)
-  omniauth-google-oauth2 (~> 1.0)
+  omniauth-google-oauth2 (~> 1.1, >= 1.1.2)
   omniauth-rails_csrf_protection (~> 1.0)
   ostruct
   pagy (~> 8.0)
