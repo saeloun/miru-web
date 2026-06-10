@@ -227,5 +227,43 @@ RSpec.describe "Api::V1::Invitations#create", type: :request do
       expect(response).to have_http_status(:created)
       expect(Invitation.count).to eq(1)
     end
+
+    it "allows another team invite after a team member is deleted" do
+      company.employments.kept.where.not(user:).first.discard!
+
+      send_request :post, api_v1_invitations_path, params: {
+        first_name: "Replacement",
+        last_name: "Member",
+        recipient_email: "replacement@example.com",
+        role: "employee"
+      }, headers: auth_headers(user)
+
+      expect(response).to have_http_status(:created)
+      expect(Invitation.last.recipient_email).to eq("replacement@example.com")
+    end
+
+    it "allows another team invite after an invited member is deleted" do
+      company.employments.kept.where.not(user:).first.discard!
+      invitation = create(:invitation, company:, role: "employee")
+
+      expect(company.reload.team_member_limit_reached?).to eq(true)
+
+      expect {
+        send_request :delete, api_v1_invitation_path(invitation), headers: auth_headers(user)
+      }.to change(Invitation, :count).by(-1)
+
+      expect(response).to have_http_status(:ok)
+      expect(company.reload.team_member_limit_reached?).to eq(false)
+
+      send_request :post, api_v1_invitations_path, params: {
+        first_name: "Replacement",
+        last_name: "Member",
+        recipient_email: "replacement@example.com",
+        role: "employee"
+      }, headers: auth_headers(user)
+
+      expect(response).to have_http_status(:created)
+      expect(Invitation.last.recipient_email).to eq("replacement@example.com")
+    end
   end
 end
