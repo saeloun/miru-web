@@ -227,5 +227,19 @@ RSpec.describe "Api::V1::Invitations#create", type: :request do
       expect(response).to have_http_status(:created)
       expect(Invitation.count).to eq(1)
     end
+
+    it "allows another team invite after a team member is deleted" do
+      company.employments.kept.where.not(user:).first.discard!
+
+      send_request :post, api_v1_invitations_path, params: {
+        first_name: "Replacement",
+        last_name: "Member",
+        recipient_email: "replacement@example.com",
+        role: "employee"
+      }, headers: auth_headers(user)
+
+      expect(response).to have_http_status(:created)
+      expect(Invitation.last.recipient_email).to eq("replacement@example.com")
+    end
   end
 end
