@@ -612,7 +612,7 @@ GEM
       date
       stringio
     public_suffix (7.0.5)
-    puma (6.6.1)
+    puma (7.2.1)
       nio4r (~> 2.0)
     pundit (2.3.0)
       activesupport (>= 3.0.0)
@@ -1026,7 +1026,7 @@ DEPENDENCIES
   phonelib
   postmark-rails
   propshaft
-  puma (~> 6.6)
+  puma (~> 7.2)
   pundit (~> 2.2)
   rack-attack
   rack-cors (= 2.0.0)
