@@ -444,7 +444,6 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
             all: allCardCount,
             draft: cardCounts.draft,
             overdue: cardCounts.overdue,
-            outstanding: cardCounts.outstanding,
           }}
         />
       )}
