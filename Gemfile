@@ -12,7 +12,7 @@ gem "rails", "~> 8.1.2"
 gem "pg"
 
 # Use Puma as rollback ballast while Falcon is rolled out.
-gem "puma", "~> 6.6"
+gem "puma", "~> 7.2"
 gem "falcon", require: false
 gem "falcon-rails"
 
