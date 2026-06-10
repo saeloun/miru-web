@@ -176,6 +176,17 @@ const OrganizationHolidaysEditor = ({
       icon: <Calendar size={16} weight="bold" />,
     },
   ];
+  const optionalHolidayCount = Number(totalOptionalHolidays) || 0;
+  const optionalHolidayFrequency =
+    allocationFrequency.find(option => option.value === optionalRepetitionType)
+      ?.label ||
+    optionalRepetitionType ||
+    "";
+
+  const optionalHolidayPolicyKey =
+    optionalHolidayCount === 1
+      ? "holidaysSettings.optionalHolidayPolicy"
+      : "holidaysSettings.optionalHolidayPolicy_plural";
 
   return (
     <div className="min-h-screen bg-muted/40 font-geist">
@@ -293,10 +304,11 @@ const OrganizationHolidaysEditor = ({
             <button
               key={tab.key}
               onClick={() => setActiveTab(tab.key)}
-              className={`flex flex-1 min-w-0 items-center justify-center gap-1.5 rounded-md px-2 sm:px-4 py-2.5 text-xs sm:text-sm font-geist-medium transition-colors ${activeTab === tab.key
-                ? "bg-background text-foreground shadow-sm"
-                : "text-muted-foreground hover:text-foreground"
-                }`}
+              className={`flex flex-1 min-w-0 items-center justify-center gap-1.5 rounded-md px-2 sm:px-4 py-2.5 text-xs sm:text-sm font-geist-medium transition-colors ${
+                activeTab === tab.key
+                  ? "bg-background text-foreground shadow-sm"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
             >
               <span className="shrink-0">{tab.icon}</span>
               <span className="truncate">{tab.label}</span>
@@ -338,10 +350,11 @@ const OrganizationHolidaysEditor = ({
                           >
                             <Input
                               readOnly
-                              className={`font-geist-regular cursor-pointer pr-10 ${holidayErrors[index]?.date
-                                ? "border-destructive"
-                                : ""
-                                }`}
+                              className={`font-geist-regular cursor-pointer pr-10 ${
+                                holidayErrors[index]?.date
+                                  ? "border-destructive"
+                                  : ""
+                              }`}
                               placeholder={i18n.t(
                                 "holidaysSettings.selectDate"
                               )}
@@ -382,10 +395,11 @@ const OrganizationHolidaysEditor = ({
                             {i18n.t("holidaysSettings.holidayName")}
                           </Label>
                           <Input
-                            className={`font-geist-regular ${holidayErrors[index]?.name
-                              ? "border-destructive"
-                              : ""
-                              }`}
+                            className={`font-geist-regular ${
+                              holidayErrors[index]?.name
+                                ? "border-destructive"
+                                : ""
+                            }`}
                             placeholder={i18n.t(
                               "holidaysSettings.enterHolidayName"
                             )}
@@ -482,10 +496,11 @@ const OrganizationHolidaysEditor = ({
                   </CardTitle>
                   {!canEdit && (
                     <span
-                      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-geist-medium ${enableOptionalHolidays
-                        ? "bg-primary/10 text-primary"
-                        : "bg-muted text-muted-foreground"
-                        }`}
+                      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-geist-medium ${
+                        enableOptionalHolidays
+                          ? "bg-primary/10 text-primary"
+                          : "bg-muted text-muted-foreground"
+                      }`}
                     >
                       {enableOptionalHolidays
                         ? i18n.t("enabled")
@@ -561,10 +576,10 @@ const OrganizationHolidaysEditor = ({
                                 value={
                                   optionalRepetitionType
                                     ? allocationFrequency.filter(
-                                      option =>
-                                        option.value ===
-                                        optionalRepetitionType
-                                    )
+                                        option =>
+                                          option.value ===
+                                          optionalRepetitionType
+                                      )
                                     : allocationFrequency[0]
                                 }
                               />
@@ -573,13 +588,10 @@ const OrganizationHolidaysEditor = ({
                         </div>
                       ) : (
                         <p className="text-sm font-geist-regular text-muted-foreground">
-                          {i18n.t("holidaysSettings.optionalHolidayPolicy", {
-                            count: Number(totalOptionalHolidays) || 0,
+                          {i18n.t(optionalHolidayPolicyKey, {
+                            count: optionalHolidayCount,
                             frequency:
-                              allocationFrequency.find(
-                                option =>
-                                  option.value === optionalRepetitionType
-                              )?.label || optionalRepetitionType,
+                              optionalHolidayFrequency.toLocaleLowerCase(),
                           })}
                         </p>
                       )}
@@ -611,10 +623,11 @@ const OrganizationHolidaysEditor = ({
                               >
                                 <Input
                                   readOnly
-                                  className={`font-geist-regular cursor-pointer pr-10 ${optionalHolidayErrors[index]?.date
-                                    ? "border-destructive"
-                                    : ""
-                                    }`}
+                                  className={`font-geist-regular cursor-pointer pr-10 ${
+                                    optionalHolidayErrors[index]?.date
+                                      ? "border-destructive"
+                                      : ""
+                                  }`}
                                   disabled={!canEdit}
                                   placeholder={i18n.t(
                                     "holidaysSettings.selectDate"
@@ -658,10 +671,11 @@ const OrganizationHolidaysEditor = ({
                                 {i18n.t("holidaysSettings.holidayName")}
                               </Label>
                               <Input
-                                className={`font-geist-regular ${optionalHolidayErrors[index]?.name
-                                  ? "border-destructive"
-                                  : ""
-                                  }`}
+                                className={`font-geist-regular ${
+                                  optionalHolidayErrors[index]?.name
+                                    ? "border-destructive"
+                                    : ""
+                                }`}
                                 disabled={!canEdit}
                                 placeholder={i18n.t(
                                   "holidaysSettings.enterHolidayName"
@@ -813,10 +827,11 @@ const OrganizationHolidaysEditor = ({
                                       ? `holiday-calendar-day-${isoDate}`
                                       : undefined
                                   }
-                                  className={`flex aspect-square items-center justify-center rounded-md text-[10px] sm:text-xs ${holiday
-                                    ? "bg-primary text-primary-foreground font-geist-semibold"
-                                    : "text-foreground"
-                                    }`}
+                                  className={`flex aspect-square items-center justify-center rounded-md text-[10px] sm:text-xs ${
+                                    holiday
+                                      ? "bg-primary text-primary-foreground font-geist-semibold"
+                                      : "text-foreground"
+                                  }`}
                                   title={holiday?.name}
                                 >
                                   {day}
