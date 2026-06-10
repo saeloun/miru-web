@@ -62,15 +62,13 @@ RSpec.describe "Team Member", type: :system, js: true do
 
     context "when free plan seat limit is reached" do
       let(:company) { create(:company, plan_tier: "free") }
+      let!(:pending_invitation) { create(:invitation, company:, sender: user) }
 
       before do
         create(:employment, company:, user:)
         create(:employment, company:, user: employee_user)
-        extra_user = create(:user, current_workspace_id: company.id)
-        create(:employment, company:, user: extra_user)
         user.add_role :admin, company
         employee_user.add_role :employee, company
-        extra_user.add_role :employee, company
         sign_in(user)
       end
 
@@ -79,6 +77,31 @@ RSpec.describe "Team Member", type: :system, js: true do
           visit "/team"
 
           expect(page).to have_button("Upgrade to add more members", wait: 10)
+        end
+      end
+
+      it "allows inviting another member after deleting an existing member" do
+        with_forgery_protection do
+          visit "/team"
+
+          expect(page).to have_content(employee_user.email, wait: 10)
+          expect(page).to have_content(pending_invitation.recipient_email, wait: 10)
+          expect(page).to have_button("Upgrade to add more members", wait: 10)
+
+          find("tr", text: employee_user.email, wait: 10).find("button", text: "Open menu").click
+          find("[role='menuitem']", text: "Delete User", wait: 10).click
+
+          within("[role='dialog']") do
+            click_on "Delete"
+          end
+
+          expect(page).to have_no_content(employee_user.email, wait: 10)
+          expect(page).to have_content(pending_invitation.recipient_email, wait: 10)
+          expect(page).to have_no_button("Upgrade to add more members", wait: 10)
+          expect(page).to have_button("Invite Member", disabled: false, wait: 10)
+
+          click_button "Invite Member"
+          expect(page).to have_css("[role='dialog']", text: "Invite Member")
         end
       end
     end
