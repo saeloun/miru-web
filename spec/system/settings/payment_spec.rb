@@ -185,6 +185,61 @@ RSpec.describe "Settings - Payment", type: :system, js: true do
       end
     end
 
+    it "queues a manual QuickBooks workspace sync from the connected card" do
+      connection = create(:quickbooks_connection, company:)
+      invoice = create(:invoice, company:)
+      payment = create(:payment, invoice:)
+      clear_enqueued_jobs
+
+      with_forgery_protection do
+        visit "/settings/payment"
+
+        expect(page).to have_content("QuickBooks Online", wait: 10)
+        expect(page).to have_button("Sync workspace", wait: 10)
+
+        click_on "Sync workspace"
+
+        expect(page).to have_content(
+          "QuickBooks sync queued: 1 clients, 1 invoices, and 1 payments.",
+          wait: 10
+        )
+      end
+
+      expect(QuickBooks::ExportCustomerJob).to have_been_enqueued.with(
+        connection.id,
+        invoice.client.id,
+        "manual"
+      )
+      expect(QuickBooks::ExportInvoiceJob).to have_been_enqueued.with(
+        connection.id,
+        invoice.id,
+        "manual"
+      )
+      expect(QuickBooks::ExportPaymentJob).to have_been_enqueued.with(
+        connection.id,
+        payment.id,
+        "manual"
+      )
+    end
+
+    it "shows a clear error when manual QuickBooks sync cannot be queued" do
+      connection = create(:quickbooks_connection, company:)
+
+      with_forgery_protection do
+        visit "/settings/payment"
+
+        expect(page).to have_button("Sync workspace", wait: 10)
+        connection.disconnect!
+
+        click_on "Sync workspace"
+
+        expect(page).to have_content(
+          "Failed to queue QuickBooks sync. Please try again.",
+          wait: 10
+        )
+      end
+    end
+
     it "admin has full access" do
       with_forgery_protection do
         visit "/settings/payment"

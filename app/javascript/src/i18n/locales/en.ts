@@ -23,6 +23,8 @@ const en = {
   next: "Next",
   done: "Done",
   loading: "Loading...",
+  enabled: "Enabled",
+  disabled: "Disabled",
   actions: "Actions",
   openMenu: "Open menu",
   filters: "Filters",
@@ -314,6 +316,8 @@ const en = {
     clientAddedSuccessfully: "Client added successfully",
     clientUpdatedSuccessfully: "Client updated successfully",
     noClientsYet: "Looks like there aren't any clients added yet.",
+    viewingMatchingClients:
+      "Viewing %{filtered} matching client(s) from %{total} loaded",
     deleting: "Deleting...",
     addYourFirstClient: "Add Your First Client",
     addNewClientDescription: "Fill in the details below to add a new client.",
@@ -396,6 +400,8 @@ const en = {
     searchProjects: "Search projects...",
     createFirstProject: "Create your first project to get started.",
     noProjectsYet: "No projects yet",
+    viewingMatchingProjects:
+      "Viewing %{filtered} matching project(s) from %{total} loaded",
     workingOnProjects:
       "Track billable and non-billable work across your projects.",
     active: "Active",
@@ -466,6 +472,8 @@ const en = {
     user: "USER",
     failedToLoadTeamMembers: "Failed to load team members",
     noTeamMembersYet: "No team members yet",
+    viewingMatchingMembers:
+      "Viewing %{filtered} matching member(s) from %{total} loaded",
     totalHours: "Total Hours",
     billableHours: "Billable hours",
     usersPerPage: "users/page",
@@ -692,7 +700,7 @@ const en = {
     // Counters
     showingOf: "Showing %{shown} of %{total}",
     viewingMatching:
-      "Viewing %{filtered} matching invoices from %{loaded} loaded",
+      "Viewing %{filtered} matching invoice(s) from %{loaded} loaded",
     loadedOf: "Loaded %{loaded} of %{total}",
     showingRecentTransactions: "Showing %{count} recent transactions",
     updatedAt: "Updated %{date}",
@@ -770,6 +778,8 @@ const en = {
     searchByInvoiceClientMethodOrNotes:
       "Search by invoice, client, method, or notes...",
     showingPaymentsCount: "Showing %{visible} of %{total}",
+    viewingMatchingPayments:
+      "Viewing %{filtered} matching payment(s) from %{total} loaded",
     notes: "Notes",
     paymentMethod: "Payment Method",
     withdrawal: "Withdrawal",
@@ -1194,6 +1204,8 @@ const en = {
     selectValidCategory: "Please select a valid category",
     submitFirstExpense: "Submit your first expense",
     showingOfTotal: "Showing %{visible} of %{total}",
+    viewingMatchingExpenses:
+      "Viewing %{filtered} matching expense(s) from %{total} loaded",
     scrollToLoadMore: "Scroll to load more expenses",
     loadingMoreExpenses: "Loading more expenses...",
     allExpensesLoaded: "All expenses loaded",
@@ -1273,10 +1285,10 @@ const en = {
 
   // Allocation frequencies
   allocationFrequencies: {
-    perWeek: "per week",
-    perMonth: "per month",
-    perQuarter: "per quarter",
-    perYear: "per year",
+    perWeek: "Per Week",
+    perMonth: "Per Month",
+    perQuarter: "Per Quarter",
+    perYear: "Per Year",
   },
 
   // Navbar
@@ -1656,6 +1668,8 @@ const en = {
     holidayName: "Holiday Name",
     enterHolidayName: "Enter holiday name",
     selectDate: "Select date",
+    nameCannotBeBlank: "Holiday Name can not be blank",
+    optionalHolidaysHaveErrors: "Some optional holidays have missing fields.",
     addHoliday: "Add Holiday",
     addFirstHoliday: "Add First Holiday",
     addOptionalHoliday: "Add Optional Holiday",
@@ -1664,6 +1678,12 @@ const en = {
     totalAllowed: "Total Allowed",
     enterNumber: "Enter number",
     frequency: "Frequency",
+    enableOptionalHolidays: "Enable optional holidays",
+    disableOptionalHolidays: "Disable optional holidays",
+    optionalHolidayPolicy:
+      "Employees can take up to %{count} optional holiday %{frequency}",
+    optionalHolidayPolicy_plural:
+      "Employees can take up to %{count} optional holidays %{frequency}",
     allowedPerEmployee: "Allowed per Employee",
     yearAtAGlance: "Year At A Glance",
     holidaySchedule: "Holiday Schedule",
@@ -1781,6 +1801,37 @@ const en = {
     connectedTo: "Connected to",
     connected: "Connected",
     enableUpi: "Enable UPI",
+    quickBooksTitle: "QuickBooks Online",
+    quickBooksAccounting: "Accounting sync",
+    quickBooksDescription:
+      "Sync Miru clients, invoices, and payments with QuickBooks Online accounting.",
+    quickBooksSetupRequired: "OAuth credentials required",
+    quickBooksSetupDescription:
+      "Add QuickBooks OAuth credentials before connecting a company.",
+    quickBooksCompany: "Company",
+    quickBooksConnectedCompany: "Connected company",
+    quickBooksEnvironment: "Environment",
+    quickBooksRealm: "Realm ID",
+    quickBooksIncomeAccount: "Income account ID",
+    quickBooksArAccount: "A/R account ID",
+    quickBooksDepositAccount: "Deposit account ID",
+    quickBooksServiceItem: "Service item ID",
+    quickBooksTaxCode: "Tax code ID",
+    quickBooksConnect: "Connect QuickBooks",
+    quickBooksConnecting: "Connecting...",
+    quickBooksConnected: "QuickBooks connected.",
+    quickBooksConnectFailed: "Failed to connect QuickBooks.",
+    quickBooksDisconnected: "QuickBooks disconnected.",
+    quickBooksDisconnectFailed: "Failed to disconnect QuickBooks.",
+    quickBooksSaveMappings: "Save mappings",
+    quickBooksSaving: "Saving...",
+    quickBooksSaved: "QuickBooks mappings saved.",
+    quickBooksSaveFailed: "Failed to save QuickBooks mappings.",
+    quickBooksSync: "Sync workspace",
+    quickBooksSyncing: "Syncing...",
+    quickBooksSyncQueued:
+      "QuickBooks sync queued: %{clients} clients, %{invoices} invoices, and %{payments} payments.",
+    quickBooksSyncFailed: "Failed to queue QuickBooks sync. Please try again.",
     stripeAccountFallback: "Stripe Account",
     chargesEnabled: "Charges Enabled",
     connectStripe: "Connect Stripe",

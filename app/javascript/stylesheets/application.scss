@@ -755,8 +755,12 @@
   transition: opacity 3000ms ease-in;
 }
 
+.hoverIcon {
+  @apply transition-colors;
+}
+
 .hoverIcon:hover {
-  background-color: #f5f7f9;
+  background-color: hsl(var(--muted));
 
   .iconWrapper {
     @apply visible;

@@ -7,6 +7,8 @@ class HomeController < ApplicationController
   after_action :add_agent_discovery_headers, only: [:index]
 
   def index
+    @app_props = react_app_props
+
     if current_user && current_user.has_role?(:super_admin)
       redirect_to admin_root_path
     elsif markdown_request?
@@ -26,6 +28,13 @@ class HomeController < ApplicationController
 
     def set_google_oauth_success
       @google_oauth_success = params[:google_oauth_success]
+    end
+
+    def react_app_props
+      {
+        googleOauthSuccess: ActiveModel::Type::Boolean.new.cast(@google_oauth_success),
+        flashMessages: flash.to_hash.slice("alert", "error", "notice", "success")
+      }
     end
 
     def markdown_request?

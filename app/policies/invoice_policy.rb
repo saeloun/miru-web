@@ -41,6 +41,10 @@ class InvoicePolicy < ApplicationPolicy
     authorize_owner_admin
   end
 
+  def quickbooks_sync?
+    authorize_owner_admin
+  end
+
   def permitted_attributes
     [
       :issue_date, :due_date, :status,

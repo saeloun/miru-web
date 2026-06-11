@@ -45,4 +45,21 @@ json.providers do
     json.payout_purpose razorpay_provider&.payout_purpose || "payout"
     json.payout_queue_if_low_balance razorpay_provider&.payout_queue_if_low_balance? || false
   end
+  json.quickbooks do
+    json.configured QuickBooks::Configuration.configured?
+    json.connected quickbooks_connection&.connected? || false
+    json.status quickbooks_connection&.status
+    json.environment QuickBooks::Configuration.environment
+    json.realm_id quickbooks_connection&.realm_id
+    json.company_name quickbooks_connection&.company_name
+    json.last_successful_sync_at quickbooks_connection&.last_successful_sync_at&.iso8601
+    json.reconnect_required quickbooks_connection&.reconnect_required? || false
+    json.mapping_settings do
+      json.income_account_id quickbooks_connection&.income_account_id
+      json.accounts_receivable_account_id quickbooks_connection&.accounts_receivable_account_id
+      json.deposit_account_id quickbooks_connection&.deposit_account_id
+      json.service_item_id quickbooks_connection&.service_item_id
+      json.tax_code_id quickbooks_connection&.tax_code_id
+    end
+  end
 end

@@ -65,6 +65,7 @@ interface TeamMember {
   hoursLogged?: number;
   billableHours?: number;
   status: "active" | "inactive" | "invited";
+  isTeamMember?: boolean;
 }
 
 interface TeamData {
@@ -109,6 +110,14 @@ const fetchTeamMembers = async (): Promise<TeamData> => {
   };
 };
 
+const reservesTeamSeat = (member: TeamMember) =>
+  member.role !== Roles.CLIENT &&
+  (member.status === "active" || member.status === "invited");
+
+const isInvitedMember = (member: TeamMember | null) =>
+  Boolean(member) &&
+  (member.status === "invited" || member.isTeamMember === false);
+
 const TeamTable: React.FC = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -118,6 +127,9 @@ const TeamTable: React.FC = () => {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null);
   const [deleteImpact, setDeleteImpact] = useState<RemovalImpact | null>(null);
+  const [filteredTeamCount, setFilteredTeamCount] = useState<number | null>(
+    null
+  );
   const deleteImpactRequestIdRef = useRef(0);
 
   const { data, isLoading, error } = useQuery({
@@ -132,12 +144,15 @@ const TeamTable: React.FC = () => {
     role: Roles.EMPLOYEE,
   });
 
-  const teamSeatLimitReached =
-    !company?.pro_access && Boolean(company?.team_member_limit_reached);
-
   const deleteMutation = useMutation({
-    mutationFn: async (memberId: string) => {
-      await teamApi.destroyTeamMember(memberId);
+    mutationFn: async (member: TeamMember) => {
+      if (isInvitedMember(member)) {
+        await teamApi.deleteInvitedMember(member.id);
+
+        return;
+      }
+
+      await teamApi.destroyTeamMember(member.id);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["team"] });
@@ -224,6 +239,12 @@ const TeamTable: React.FC = () => {
     setSelectedMember(member);
     setDeleteImpact(null);
 
+    if (isInvitedMember(member)) {
+      setShowDeleteDialog(true);
+
+      return;
+    }
+
     try {
       const response = await teamApi.getRemovalImpact(member.id);
       if (requestId !== deleteImpactRequestIdRef.current) return;
@@ -243,7 +264,7 @@ const TeamTable: React.FC = () => {
 
   const confirmDelete = () => {
     if (selectedMember) {
-      deleteMutation.mutate(selectedMember.id);
+      deleteMutation.mutate(selectedMember);
     }
   };
 
@@ -522,7 +543,9 @@ const TeamTable: React.FC = () => {
                 className="text-destructive"
               >
                 <Trash size={16} className="mr-2" />
-                {i18n.t("team.deleteUser")}
+                {isInvitedMember(member)
+                  ? i18n.t("team.deleteInvite")
+                  : i18n.t("team.deleteUser")}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -551,6 +574,16 @@ const TeamTable: React.FC = () => {
   const teamMembers = data?.teamMembers || [];
   const totalCount = data?.totalCount || teamMembers.length;
   const activeMembers = teamMembers.filter(m => m.status === "active").length;
+  const reservedTeamSeats = teamMembers.filter(reservesTeamSeat).length;
+  const teamMemberLimit = Number(company?.team_member_limit);
+  const hasTeamMemberLimit =
+    Number.isFinite(teamMemberLimit) && teamMemberLimit > 0;
+
+  const teamSeatLimitReached =
+    !company?.pro_access &&
+    hasTeamMemberLimit &&
+    reservedTeamSeats >= teamMemberLimit;
+
   const totalHours = teamMembers.reduce(
     (sum, m) => sum + (m.hoursLogged || 0),
     0
@@ -672,12 +705,26 @@ const TeamTable: React.FC = () => {
       <Card className="border-border">
         <CardContent>
           {teamMembers.length > 0 ? (
-            <DataTable
-              columns={columns}
-              data={teamMembers}
-              searchPlaceholder={i18n.t("search")}
-              showPagination={false}
-            />
+            <>
+              <DataTable
+                columns={columns}
+                data={teamMembers}
+                searchPlaceholder={i18n.t("search")}
+                showPagination={false}
+                onFilteredRowCountChange={setFilteredTeamCount}
+              />
+              {filteredTeamCount !== null &&
+                filteredTeamCount < teamMembers.length && (
+                  <div className="flex justify-center pt-4 text-sm text-muted-foreground">
+                    <span>
+                      {i18n.t("team.viewingMatchingMembers", {
+                        filtered: filteredTeamCount,
+                        total: teamMembers.length,
+                      })}
+                    </span>
+                  </div>
+                )}
+            </>
           ) : (
             <div className="text-center py-12">
               <Users size={48} className="mx-auto mb-4 text-muted-foreground" />
@@ -712,7 +759,11 @@ const TeamTable: React.FC = () => {
       >
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>{i18n.t("team.deleteUser")}</DialogTitle>
+            <DialogTitle>
+              {isInvitedMember(selectedMember)
+                ? i18n.t("team.deleteInvite")
+                : i18n.t("team.deleteUser")}
+            </DialogTitle>
             <DialogDescription>
               {i18n.t("team.deleteUserConfirm", { name: selectedMember?.name })}
             </DialogDescription>

@@ -160,6 +160,7 @@ namespace :api, defaults: { format: "json" } do
         post :send_invoice
         post :send_reminder
         post :razorpay_payment_link
+        post :quickbooks_sync
         get :download
       end
     end
@@ -205,6 +206,14 @@ namespace :api, defaults: { format: "json" } do
     patch "payments/settings/razorpay", to: "payment_settings#update_razorpay"
     post "payments/settings/stripe/connect", to: "payment_settings#connect_stripe"
     delete "payments/settings/stripe/disconnect", to: "payment_settings#destroy"
+    namespace :integrations do
+      get "quickbooks/status", to: "quickbooks#status"
+      post "quickbooks/connect", to: "quickbooks#connect"
+      get "quickbooks/callback", to: "quickbooks#callback"
+      delete "quickbooks/disconnect", to: "quickbooks#disconnect"
+      patch "quickbooks/settings", to: "quickbooks#settings"
+      post "quickbooks/sync", to: "quickbooks#sync"
+    end
     get "calendars/redirect", to: "calendars#redirect", as: "redirect"
     get "calendars/callback", to: "calendars#callback", as: "callback"
     get "calendars/calendars", to: "calendars#calendars", as: "calendars"
@@ -216,6 +225,7 @@ namespace :api, defaults: { format: "json" } do
 
     resources :payments, only: [:new, :create, :index, :show] do
       post :withdraw, on: :member
+      post :quickbooks_sync, on: :member
       get :bulk_download, on: :collection
     end
     resources :holidays, only: [:update, :index], param: :year

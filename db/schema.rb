@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_25_143125) do
+ActiveRecord::Schema[8.1].define(version: 2026_06_03_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_stat_statements"
@@ -736,6 +736,90 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_25_143125) do
     t.index ["name"], name: "index_projects_on_name_trgm", opclass: :gin_trgm_ops, using: :gin
   end
 
+  create_table "quickbooks_connections", force: :cascade do |t|
+    t.text "access_token_ciphertext"
+    t.datetime "access_token_expires_at"
+    t.bigint "company_id", null: false
+    t.datetime "connected_at"
+    t.datetime "created_at", null: false
+    t.datetime "disconnected_at"
+    t.integer "environment", default: 0, null: false
+    t.datetime "last_refresh_at"
+    t.datetime "last_successful_sync_at"
+    t.string "realm_id"
+    t.text "refresh_token_ciphertext"
+    t.datetime "refresh_token_expires_at"
+    t.jsonb "settings", default: {}, null: false
+    t.integer "status", default: 0, null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id", "environment"], name: "idx_qbo_connections_active_company_environment", unique: true, where: "(disconnected_at IS NULL)"
+    t.index ["company_id"], name: "index_quickbooks_connections_on_company_id"
+    t.index ["id", "company_id"], name: "idx_qbo_connections_id_company", unique: true
+    t.index ["realm_id", "environment"], name: "idx_qbo_connections_active_realm_environment", unique: true, where: "((realm_id IS NOT NULL) AND (disconnected_at IS NULL))"
+  end
+
+  create_table "quickbooks_references", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.datetime "created_at", null: false
+    t.integer "direction", default: 2, null: false
+    t.text "last_error"
+    t.datetime "last_seen_in_quickbooks_at"
+    t.datetime "last_synced_at"
+    t.bigint "miru_record_id", null: false
+    t.string "miru_record_type", null: false
+    t.string "payload_digest"
+    t.bigint "quickbooks_connection_id", null: false
+    t.string "quickbooks_entity_id", null: false
+    t.string "quickbooks_entity_type", null: false
+    t.string "quickbooks_sync_token"
+    t.integer "status", default: 0, null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id"], name: "index_quickbooks_references_on_company_id"
+    t.index ["quickbooks_connection_id", "miru_record_type", "miru_record_id", "quickbooks_entity_type"], name: "idx_qbo_refs_miru_record_entity", unique: true
+    t.index ["quickbooks_connection_id", "quickbooks_entity_type", "quickbooks_entity_id"], name: "idx_qbo_refs_qbo_entity", unique: true
+    t.index ["quickbooks_connection_id"], name: "index_quickbooks_references_on_quickbooks_connection_id"
+  end
+
+  create_table "quickbooks_sync_events", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.datetime "created_at", null: false
+    t.text "error"
+    t.datetime "event_time"
+    t.string "operation"
+    t.string "payload_digest", null: false
+    t.bigint "quickbooks_connection_id", null: false
+    t.string "quickbooks_entity_id", null: false
+    t.string "quickbooks_entity_type", null: false
+    t.bigint "quickbooks_sync_run_id"
+    t.integer "source", default: 0, null: false
+    t.integer "status", default: 0, null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id", "status"], name: "index_quickbooks_sync_events_on_company_id_and_status"
+    t.index ["company_id"], name: "index_quickbooks_sync_events_on_company_id"
+    t.index ["quickbooks_connection_id", "quickbooks_entity_type", "quickbooks_entity_id", "payload_digest"], name: "idx_qbo_events_lookup"
+    t.index ["quickbooks_connection_id"], name: "index_quickbooks_sync_events_on_quickbooks_connection_id"
+    t.index ["quickbooks_sync_run_id"], name: "index_quickbooks_sync_events_on_quickbooks_sync_run_id"
+  end
+
+  create_table "quickbooks_sync_runs", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.datetime "created_at", null: false
+    t.integer "direction", default: 2, null: false
+    t.text "error"
+    t.datetime "finished_at"
+    t.bigint "quickbooks_connection_id", null: false
+    t.datetime "started_at"
+    t.integer "status", default: 0, null: false
+    t.jsonb "summary", default: {}, null: false
+    t.integer "trigger", default: 0, null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id", "status"], name: "index_quickbooks_sync_runs_on_company_id_and_status"
+    t.index ["company_id"], name: "index_quickbooks_sync_runs_on_company_id"
+    t.index ["id", "quickbooks_connection_id", "company_id"], name: "idx_qbo_runs_id_connection_company", unique: true
+    t.index ["quickbooks_connection_id", "created_at"], name: "idx_on_quickbooks_connection_id_created_at_fbda7af87c"
+    t.index ["quickbooks_connection_id"], name: "index_quickbooks_sync_runs_on_quickbooks_connection_id"
+  end
+
   create_table "razorpay_payouts", force: :cascade do |t|
     t.decimal "amount", precision: 20, scale: 2, null: false
     t.datetime "created_at", null: false
@@ -1135,6 +1219,18 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_25_143125) do
   add_foreign_key "project_members", "projects"
   add_foreign_key "project_members", "users"
   add_foreign_key "projects", "clients"
+  add_foreign_key "quickbooks_connections", "companies"
+  add_foreign_key "quickbooks_references", "companies"
+  add_foreign_key "quickbooks_references", "quickbooks_connections"
+  add_foreign_key "quickbooks_references", "quickbooks_connections", column: ["quickbooks_connection_id", "company_id"], primary_key: ["id", "company_id"], name: "fk_qbo_refs_connection_company"
+  add_foreign_key "quickbooks_sync_events", "companies"
+  add_foreign_key "quickbooks_sync_events", "quickbooks_connections"
+  add_foreign_key "quickbooks_sync_events", "quickbooks_connections", column: ["quickbooks_connection_id", "company_id"], primary_key: ["id", "company_id"], name: "fk_qbo_events_connection_company"
+  add_foreign_key "quickbooks_sync_events", "quickbooks_sync_runs"
+  add_foreign_key "quickbooks_sync_events", "quickbooks_sync_runs", column: ["quickbooks_sync_run_id", "quickbooks_connection_id", "company_id"], primary_key: ["id", "quickbooks_connection_id", "company_id"], name: "fk_qbo_events_run_connection_company"
+  add_foreign_key "quickbooks_sync_runs", "companies"
+  add_foreign_key "quickbooks_sync_runs", "quickbooks_connections"
+  add_foreign_key "quickbooks_sync_runs", "quickbooks_connections", column: ["quickbooks_connection_id", "company_id"], primary_key: ["id", "company_id"], name: "fk_qbo_runs_connection_company"
   add_foreign_key "razorpay_payouts", "payments"
   add_foreign_key "razorpay_payouts", "users", column: "requested_by_id"
   add_foreign_key "solid_queue_blocked_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
