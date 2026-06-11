@@ -35,6 +35,12 @@ Keep this file short. Treat it as a router for repo-specific rules.
 - Use gstack skills for QA, review, investigate, ship, land-and-deploy, canary, and browser workflows when they match the task.
 - Keep gstack as a global install. Do not vendor `.claude/skills/gstack/` or `.agents/skills/gstack/` into this repo.
 
+## Superpowers, gstack, and gbrain
+
+- Superpowers workflows may use gstack and gbrain together: use Superpowers for worktree/TDD/debugging discipline, gstack for repo QA/review/ship/deploy workflows, and gbrain for memory, persona, mentor, and semantic history lookup.
+- Before non-trivial planning, review, or bug work, query gbrain for relevant Miru/HaulHub/review history when it is available; if gbrain is unhealthy, continue with local repo evidence and say so plainly.
+- Do not paste secrets or private raw dumps into prompts. Prefer `gbrain query`, `gbrain search`, `gbrain capture`, or source-backed summaries over loading large private corpora directly.
+
 ## Local Development
 
 - Primary local app URL: `http://127.0.0.1:3000`
