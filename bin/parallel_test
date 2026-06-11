@@ -26,6 +26,31 @@ options = {
   failures_log: ENV.fetch("PARALLEL_FAILURES_LOG", "tmp/failing_specs.txt")
 }
 
+def spec_files_for(paths, exclude_system:)
+  spec_files = if paths.empty?
+    Dir["spec/**/*_spec.rb"]
+  else
+    paths.flat_map do |path|
+      File.directory?(path) ? Dir["#{path}/**/*_spec.rb"] : path
+    end
+  end
+
+  spec_files = spec_files.select { |path| path.end_with?("_spec.rb") }
+  return spec_files unless exclude_system
+
+  spec_files.reject { |path| path.start_with?("spec/system/", "spec/system_skip/") }
+end
+
+def runtime_log_usable?(runtime_log, spec_files)
+  return false unless File.exist?(runtime_log) && !File.zero?(runtime_log)
+
+  runtime_entries = File.readlines(runtime_log, chomp: true).count do |line|
+    line.include?("_spec.rb:")
+  end
+
+  runtime_entries >= spec_files.count
+end
+
 OptionParser.new do |opts|
   opts.banner = "Usage: bin/parallel_test [options] [spec_files]"
 
@@ -78,8 +103,13 @@ parallel_env = {
   "PARALLEL_FAILURES_LOG" => options[:failures_log]
 }
 
-if File.exist?(options[:runtime_log]) && !File.zero?(options[:runtime_log])
+spec_files = spec_files_for(ARGV, exclude_system: options[:exclude_system])
+
+if runtime_log_usable?(options[:runtime_log], spec_files)
   command.concat(["--group-by", "runtime"])
+elsif File.exist?(options[:runtime_log]) && !File.zero?(options[:runtime_log])
+  warn "Ignoring stale parallel runtime log at #{options[:runtime_log]} " \
+       "(does not cover #{spec_files.count} spec files)"
 end
 
 # Add spec files or directories
