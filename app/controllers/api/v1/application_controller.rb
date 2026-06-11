@@ -5,6 +5,7 @@ class Api::V1::ApplicationController < ActionController::API
   include ActionController::MimeResponds
   include ErrorHandler
   include CurrentCompanyConcern
+  include QuickbooksConnectionAccess
   include Pagy::Backend
   include SetCurrentDetails
   include Authenticable

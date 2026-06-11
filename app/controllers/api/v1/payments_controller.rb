@@ -2,7 +2,7 @@
 
 class Api::V1::PaymentsController < Api::V1::ApplicationController
   before_action :set_invoice, only: [:create]
-  before_action :set_payment, only: [:show, :withdraw]
+  before_action :set_payment, only: [:show, :withdraw, :quickbooks_sync]
   after_action :track_event, only: [:create]
 
   def new
@@ -79,6 +79,18 @@ class Api::V1::PaymentsController < Api::V1::ApplicationController
     }, status: 202
   rescue PaymentProviders::RazorpayWithdrawalService::Error => error
     render json: { error: error.message }, status: 422
+  end
+
+  def quickbooks_sync
+    authorize @payment, :quickbooks_sync?, policy_class: PaymentPolicy
+    connection = active_quickbooks_connection
+    unless connection
+      render json: { errors: "Connect QuickBooks before syncing payments" }, status: 404
+      return
+    end
+
+    QuickBooks::ExportPaymentJob.perform_later(connection.id, @payment.id, "manual")
+    render json: quickbooks_sync_payload("Payment", @payment.id), status: 202
   end
 
   def bulk_download

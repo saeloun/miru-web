@@ -176,6 +176,21 @@ const OrganizationHolidaysEditor = ({
       icon: <Calendar size={16} weight="bold" />,
     },
   ];
+  const optionalHolidayCount = Number(totalOptionalHolidays) || 0;
+  const optionalHolidayFrequency =
+    allocationFrequency.find(option => option.value === optionalRepetitionType)
+      ?.label ||
+    optionalRepetitionType ||
+    "";
+
+  const optionalHolidayFrequencyLabel = (
+    optionalHolidayFrequency || i18n.t("allocationFrequencies.perYear")
+  ).toLocaleLowerCase();
+
+  const optionalHolidayPolicyKey =
+    optionalHolidayCount === 1
+      ? "holidaysSettings.optionalHolidayPolicy"
+      : "holidaysSettings.optionalHolidayPolicy_plural";
 
   return (
     <div className="min-h-screen bg-muted/40 font-geist">
@@ -475,81 +490,116 @@ const OrganizationHolidaysEditor = ({
           <Card className="border-border shadow-sm">
             <CardHeader className="pb-4">
               <div className="flex items-center justify-between">
-                <CardTitle className="text-lg font-geist-semibold flex items-center gap-2">
-                  <CalendarPlus
-                    className="h-5 w-5 text-muted-foreground"
-                    weight="bold"
-                  />
-                  {i18n.t("holidaysSettings.optionalHolidays")}
-                </CardTitle>
-                <button
-                  onClick={handleCheckboxClick}
-                  className="transition-colors"
-                  disabled={!canEdit}
-                  type="button"
-                >
-                  {enableOptionalHolidays ? (
-                    <ToggleRight
-                      size={32}
-                      className="text-primary"
-                      weight="fill"
+                <div className="flex items-center gap-3">
+                  <CardTitle className="text-lg font-geist-semibold flex items-center gap-2">
+                    <CalendarPlus
+                      className="h-5 w-5 text-muted-foreground"
+                      weight="bold"
                     />
-                  ) : (
-                    <ToggleLeft
-                      size={32}
-                      className="text-muted-foreground"
-                      weight="fill"
-                    />
+                    {i18n.t("holidaysSettings.optionalHolidays")}
+                  </CardTitle>
+                  {!canEdit && (
+                    <span
+                      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-geist-medium ${
+                        enableOptionalHolidays
+                          ? "bg-primary/10 text-primary"
+                          : "bg-muted text-muted-foreground"
+                      }`}
+                    >
+                      {enableOptionalHolidays
+                        ? i18n.t("enabled")
+                        : i18n.t("disabled")}
+                    </span>
                   )}
-                </button>
+                </div>
+                {canManageHolidays && canEdit && (
+                  <button
+                    onClick={handleCheckboxClick}
+                    className="transition-colors"
+                    type="button"
+                    aria-label={
+                      enableOptionalHolidays
+                        ? i18n.t("holidaysSettings.disableOptionalHolidays")
+                        : i18n.t("holidaysSettings.enableOptionalHolidays")
+                    }
+                    aria-pressed={enableOptionalHolidays}
+                  >
+                    {enableOptionalHolidays ? (
+                      <ToggleRight
+                        size={32}
+                        className="text-primary"
+                        weight="fill"
+                      />
+                    ) : (
+                      <ToggleLeft
+                        size={32}
+                        className="text-muted-foreground"
+                        weight="fill"
+                      />
+                    )}
+                  </button>
+                )}
               </div>
             </CardHeader>
             {enableOptionalHolidays && (
               <CardContent>
                 <div className="space-y-4">
-                  {/* Configuration — inline row */}
-                  <div className="flex flex-wrap items-end gap-4 pb-4 border-b border-border">
-                    <div className="w-40">
-                      <Label className="text-xs font-geist-medium text-muted-foreground uppercase tracking-wider">
-                        {i18n.t("holidaysSettings.totalAllowed")}
-                      </Label>
-                      <Input
-                        type="number"
-                        min={0}
-                        className="font-geist-regular mt-1"
-                        disabled={!canEdit}
-                        placeholder={i18n.t("holidaysSettings.enterNumber")}
-                        value={totalOptionalHolidays}
-                        onChange={handleChangeTotalOpHoliday}
-                      />
+                  {/* Configuration — inline row (admin only) */}
+                  {canManageHolidays && (
+                    <div className="pb-4 border-b border-border">
+                      {canEdit ? (
+                        <div className="flex flex-wrap items-end gap-4">
+                          <div className="w-40">
+                            <Label className="text-xs font-geist-medium text-muted-foreground uppercase tracking-wider">
+                              {i18n.t("holidaysSettings.totalAllowed")}
+                            </Label>
+                            <Input
+                              type="number"
+                              min={0}
+                              className="font-geist-regular mt-1"
+                              placeholder={i18n.t(
+                                "holidaysSettings.enterNumber"
+                              )}
+                              value={totalOptionalHolidays}
+                              onChange={handleChangeTotalOpHoliday}
+                            />
+                          </div>
+                          <div className="w-48">
+                            <Label className="text-xs font-geist-medium text-muted-foreground uppercase tracking-wider">
+                              {i18n.t("holidaysSettings.frequency")}
+                            </Label>
+                            <div className="mt-1">
+                              <CustomReactSelect
+                                handleOnChange={handleChangeRepetitionOpHoliday}
+                                id="allocationFrequency"
+                                label=""
+                                name="allocationFrequency"
+                                options={allocationFrequency}
+                                styles={customStyles}
+                                components={{ IndicatorSeparator: () => null }}
+                                value={
+                                  optionalRepetitionType
+                                    ? allocationFrequency.filter(
+                                        option =>
+                                          option.value ===
+                                          optionalRepetitionType
+                                      )
+                                    : allocationFrequency[0]
+                                }
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      ) : (
+                        <p className="text-sm font-geist-regular text-muted-foreground">
+                          {i18n.t(optionalHolidayPolicyKey, {
+                            count: optionalHolidayCount,
+                            frequency: optionalHolidayFrequencyLabel,
+                          })}
+                        </p>
+                      )}
                     </div>
-                    <div className="w-48">
-                      <Label className="text-xs font-geist-medium text-muted-foreground uppercase tracking-wider">
-                        {i18n.t("holidaysSettings.frequency")}
-                      </Label>
-                      <div className="mt-1">
-                        <CustomReactSelect
-                          isDisabled={!canEdit}
-                          handleOnChange={handleChangeRepetitionOpHoliday}
-                          id="allocationFrequency"
-                          label=""
-                          name="allocationFrequency"
-                          options={allocationFrequency}
-                          styles={customStyles}
-                          wrapperClassName="h-10"
-                          components={{ IndicatorSeparator: () => null }}
-                          value={
-                            optionalRepetitionType
-                              ? allocationFrequency.filter(
-                                  option =>
-                                    option.value === optionalRepetitionType
-                                )
-                              : allocationFrequency[0]
-                          }
-                        />
-                      </div>
-                    </div>
-                  </div>
+                  )}
 
                   {canEdit ? (
                     /* Edit mode: form-style rows */

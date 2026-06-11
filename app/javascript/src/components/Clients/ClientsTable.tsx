@@ -105,6 +105,9 @@ const ClientsTable: React.FC = () => {
   const [clientLogoUrl, setClientLogoUrl] = useState<string>("");
   const [submitting, setSubmitting] = useState(false);
   const [loadingClient, setLoadingClient] = useState(false);
+  const [filteredClientCount, setFilteredClientCount] = useState<number | null>(
+    null
+  );
 
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: ["clients", timeFrame],
@@ -424,11 +427,26 @@ const ClientsTable: React.FC = () => {
         </CardHeader>
         <CardContent>
           {data?.clientList && data.clientList.length > 0 ? (
-            <DataTable
-              columns={columns}
-              data={data.clientList}
-              searchPlaceholder={i18n.t("searchClients")}
-            />
+            <>
+              <DataTable
+                columns={columns}
+                data={data.clientList}
+                searchPlaceholder={i18n.t("searchClients")}
+                showPagination={false}
+                onFilteredRowCountChange={setFilteredClientCount}
+              />
+              {filteredClientCount !== null &&
+                filteredClientCount < data.clientList.length && (
+                  <div className="flex justify-center pt-4 text-sm text-muted-foreground">
+                    <span>
+                      {i18n.t("clients.viewingMatchingClients", {
+                        filtered: filteredClientCount,
+                        total: data.clientList.length,
+                      })}
+                    </span>
+                  </div>
+                )}
+            </>
           ) : (
             <div className="text-center py-12">
               <Buildings

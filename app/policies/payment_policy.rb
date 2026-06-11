@@ -24,4 +24,8 @@ class PaymentPolicy < ApplicationPolicy
   def withdraw?
     user_owner_role? || user_admin_role?
   end
+
+  def quickbooks_sync?
+    user_owner_role? || user_admin_role?
+  end
 end

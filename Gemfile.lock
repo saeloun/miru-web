@@ -143,8 +143,8 @@ GEM
     audited (5.8.0)
       activerecord (>= 5.2, < 8.2)
       activesupport (>= 5.2, < 8.2)
-    auth-sanitizer (0.1.2)
-      version_gem (~> 1.1, >= 1.1.9)
+    auth-sanitizer (0.2.1)
+      version_gem (~> 1.1, >= 1.1.10)
     aws-eventstream (1.4.0)
     aws-partitions (1.1206.0)
     aws-sdk-core (3.241.4)
@@ -245,7 +245,7 @@ GEM
       pwned (~> 2.4)
     devise-security (0.18.0)
       devise (>= 4.3.0)
-    devise_invitable (2.0.11)
+    devise_invitable (2.0.12)
       actionmailer (>= 5.0)
       devise (>= 4.6)
     dexter (0.1.0)
@@ -334,7 +334,7 @@ GEM
       faraday-net_http (>= 2.0, < 3.5)
       json
       logger
-    faraday-net_http (3.4.2)
+    faraday-net_http (3.4.4)
       net-http (~> 0.5)
     ferrum (0.17.2)
       addressable (~> 2.5)
@@ -391,7 +391,8 @@ GEM
       signet (>= 0.16, < 2.a)
     hash_dot (2.5.0)
     hashdiff (1.2.1)
-    hashie (5.0.0)
+    hashie (5.1.0)
+      logger
     highline (3.1.2)
       reline
     httparty (0.24.2)
@@ -434,7 +435,7 @@ GEM
       actionview (>= 7.0.0)
       activesupport (>= 7.0.0)
     jmespath (1.6.2)
-    json (2.19.3)
+    json (2.19.8)
     json-schema (6.2.0)
       addressable (~> 2.8)
       bigdecimal (>= 3.1, < 5)
@@ -502,12 +503,12 @@ GEM
       i18n (>= 0.6.4, <= 2)
     msgpack (1.8.0)
     multi_json (1.15.0)
-    multi_xml (0.8.1)
+    multi_xml (0.9.1)
       bigdecimal (>= 3.1, < 5)
     mutex_m (0.3.0)
     net-http (0.9.1)
       uri (>= 0.11.1)
-    net-imap (0.6.4)
+    net-imap (0.6.4.1)
       date
       net-protocol
     net-pop (0.1.2)
@@ -530,30 +531,31 @@ GEM
       racc (~> 1.4)
     nokogiri (1.19.3-x86_64-linux-gnu)
       racc (~> 1.4)
-    oauth2 (2.0.19)
-      auth-sanitizer (~> 0.1)
+    oauth2 (2.0.22)
+      auth-sanitizer (~> 0.2, >= 0.2.1)
       faraday (>= 0.17.3, < 4.0)
       jwt (>= 1.0, < 4.0)
       logger (~> 1.2)
       multi_xml (~> 0.5)
       rack (>= 1.2, < 4)
-      snaky_hash (~> 2.0, >= 2.0.3)
-      version_gem (~> 1.1, >= 1.1.9)
+      snaky_hash (~> 2.0, >= 2.0.5)
+      version_gem (~> 1.1, >= 1.1.11)
     observer (0.1.2)
-    omniauth (2.1.1)
+    omniauth (2.1.4)
       hashie (>= 3.4.6)
+      logger
       rack (>= 2.2.3)
       rack-protection
     omniauth-github (2.0.1)
       omniauth (~> 2.0)
       omniauth-oauth2 (~> 1.8)
-    omniauth-google-oauth2 (1.1.1)
-      jwt (>= 2.0)
-      oauth2 (~> 2.0.6)
+    omniauth-google-oauth2 (1.2.2)
+      jwt (>= 2.9.2)
+      oauth2 (~> 2.0)
       omniauth (~> 2.0)
-      omniauth-oauth2 (~> 1.8.0)
-    omniauth-oauth2 (1.8.0)
-      oauth2 (>= 1.4, < 3)
+      omniauth-oauth2 (~> 1.8)
+    omniauth-oauth2 (1.9.0)
+      oauth2 (>= 2.0.2, < 3)
       omniauth (~> 2.0)
     omniauth-rails_csrf_protection (1.0.1)
       actionpack (>= 4.2)
@@ -608,11 +610,11 @@ GEM
     protocol-url (0.4.0)
     protocol-websocket (0.20.2)
       protocol-http (~> 0.2)
-    psych (5.3.1)
+    psych (5.4.0)
       date
       stringio
     public_suffix (7.0.5)
-    puma (6.6.1)
+    puma (7.2.1)
       nio4r (~> 2.0)
     pundit (2.3.0)
       activesupport (>= 3.0.0)
@@ -624,8 +626,10 @@ GEM
       rack (>= 1.0, < 4)
     rack-cors (2.0.0)
       rack (>= 2.0.0)
-    rack-protection (3.0.5)
-      rack
+    rack-protection (4.2.1)
+      base64 (>= 0.1.0)
+      logger (>= 1.6.0)
+      rack (>= 3.0.0, < 4)
     rack-proxy (0.7.7)
       rack
     rack-session (2.1.2)
@@ -818,7 +822,7 @@ GEM
       simplecov_json_formatter (~> 0.1)
     simplecov-html (0.12.3)
     simplecov_json_formatter (0.1.4)
-    snaky_hash (2.0.4)
+    snaky_hash (2.0.5)
       hashie (>= 0.1.0, < 6)
       version_gem (>= 1.1.8, < 3)
     solid_cable (3.0.12)
@@ -905,7 +909,7 @@ GEM
     uri (1.1.1)
     useragent (0.16.11)
     vcr (6.4.0)
-    version_gem (1.1.9)
+    version_gem (1.1.11)
     vite_rails (3.0.20)
       railties (>= 5.1, < 9)
       vite_ruby (~> 3.0, >= 3.2.2)
@@ -952,7 +956,7 @@ GEM
     yard-sorbet (0.9.0)
       sorbet-runtime
       yard
-    zeitwerk (2.7.5)
+    zeitwerk (2.8.2)
 
 PLATFORMS
   arm64-darwin-21
@@ -983,7 +987,7 @@ DEPENDENCIES
   devise-jwt
   devise-pwned_password
   devise-security
-  devise_invitable
+  devise_invitable (>= 2.0.12)
   dexter
   discard (~> 1.2)
   dotenv
@@ -1015,7 +1019,7 @@ DEPENDENCIES
   nokogiri (>= 1.19.1)
   observer
   omniauth-github (~> 2.0)
-  omniauth-google-oauth2 (~> 1.0)
+  omniauth-google-oauth2 (~> 1.1, >= 1.1.2)
   omniauth-rails_csrf_protection (~> 1.0)
   ostruct
   pagy (~> 8.0)
@@ -1026,7 +1030,7 @@ DEPENDENCIES
   phonelib
   postmark-rails
   propshaft
-  puma (~> 6.6)
+  puma (~> 7.2)
   pundit (~> 2.2)
   rack-attack
   rack-cors (= 2.0.0)

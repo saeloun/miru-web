@@ -61,6 +61,7 @@ interface DataTableProps<TData, TValue> {
   showColumnVisibility?: boolean;
   showPagination?: boolean;
   onRowClick?: (row: TData) => void;
+  onFilteredRowCountChange?: (count: number) => void;
   renderSelectedRowsActions?: (
     actions: DataTableSelectionActions<TData>
   ) => React.ReactNode;
@@ -74,6 +75,7 @@ export function DataTable<TData, TValue>({
   showColumnVisibility = false,
   showPagination = true,
   onRowClick,
+  onFilteredRowCountChange,
   renderSelectedRowsActions,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
@@ -119,6 +121,10 @@ export function DataTable<TData, TValue>({
 
   const selectedRowCount = selectedRows.length;
   const clearSelection = () => table.resetRowSelection();
+
+  React.useEffect(() => {
+    onFilteredRowCountChange?.(filteredRows.length);
+  }, [filteredRows.length, onFilteredRowCountChange]);
 
   return (
     <DataTableSearchContext.Provider value={globalFilter}>

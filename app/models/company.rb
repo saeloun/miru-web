@@ -20,6 +20,10 @@ class Company < ApplicationRecord
   has_many :agents, dependent: :destroy
   has_one :stripe_connected_account, dependent: :destroy
   has_many :payments_providers, dependent: :destroy
+  has_many :quickbooks_connections, dependent: :destroy
+  has_many :quickbooks_references, dependent: :destroy
+  has_many :quickbooks_sync_runs, dependent: :destroy
+  has_many :quickbooks_sync_events, dependent: :destroy
   has_many :addresses, as: :addressable, dependent: :destroy
   has_many :devices, dependent: :destroy
   has_many :invitations, dependent: :destroy

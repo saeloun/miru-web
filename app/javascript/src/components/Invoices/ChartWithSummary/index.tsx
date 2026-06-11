@@ -27,7 +27,6 @@ interface ChartWithSummaryProps {
   statusCounts?: {
     all?: number;
     overdue?: number;
-    outstanding?: number;
     draft?: number;
   };
 }
@@ -217,18 +216,6 @@ const ChartWithSummary: React.FC<ChartWithSummaryProps> = ({
       colorClass: "text-foreground",
       bgClass: "bg-muted/40 hover:bg-accent",
       onClick: () => applyFilter([{ value: "overdue", label: "OVERDUE" }]),
-    },
-    {
-      label: i18n.t("invoices.outstanding"),
-      value: openAmount,
-      count: statusCounts?.outstanding ?? 0,
-      colorClass: "text-foreground",
-      bgClass: "bg-muted/40 hover:bg-accent",
-      onClick: () =>
-        applyFilter([
-          { value: "sent", label: "SENT" },
-          { value: "viewed", label: "VIEWED" },
-        ]),
     },
     {
       label: i18n.t("invoices.draft"),
