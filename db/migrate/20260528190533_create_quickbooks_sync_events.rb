@@ -19,7 +19,7 @@ class CreateQuickbooksSyncEvents < ActiveRecord::Migration[8.1]
     end
 
     add_index :quickbooks_sync_events,
-      [:quickbooks_connection_id, :quickbooks_entity_type, :quickbooks_entity_id, :payload_digest],
+      [:quickbooks_connection_id, :quickbooks_entity_type, :quickbooks_entity_id],
       name: "idx_qbo_events_lookup"
 
     add_index :quickbooks_sync_events, [:company_id, :status]
