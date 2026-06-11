@@ -796,7 +796,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_03_120000) do
     t.datetime "updated_at", null: false
     t.index ["company_id", "status"], name: "index_quickbooks_sync_events_on_company_id_and_status"
     t.index ["company_id"], name: "index_quickbooks_sync_events_on_company_id"
-    t.index ["quickbooks_connection_id", "quickbooks_entity_type", "quickbooks_entity_id", "payload_digest"], name: "idx_qbo_events_lookup"
+    t.index ["quickbooks_connection_id", "quickbooks_entity_type", "quickbooks_entity_id"], name: "idx_qbo_events_lookup"
     t.index ["quickbooks_connection_id"], name: "index_quickbooks_sync_events_on_quickbooks_connection_id"
     t.index ["quickbooks_sync_run_id"], name: "index_quickbooks_sync_events_on_quickbooks_sync_run_id"
   end
