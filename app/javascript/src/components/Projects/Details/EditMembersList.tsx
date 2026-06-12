@@ -104,8 +104,7 @@ const EditMembersList = ({
           removed_member_ids: removedIds,
         },
       });
-      setExistingMembers(members);
-      handleAddProjectDetails();
+      await handleAddProjectDetails();
       closeAddRemoveMembers();
       toast.success(i18n.t("projects.teamMembersUpdated"));
     } catch (error) {

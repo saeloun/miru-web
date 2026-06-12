@@ -70,9 +70,7 @@ const ProjectDetails = () => {
 
   const currencySymb = currencySymbol(project?.client_currency);
 
-  const handleAddProjectDetails = () => {
-    fetchProject();
-  };
+  const handleAddProjectDetails = () => fetchProject();
 
   useEffect(() => {
     sendGAPageView();
