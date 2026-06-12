@@ -499,6 +499,13 @@ const en = {
     lastNameRequired: "Last Name cannot be blank",
     invalidEmail: "Invalid email ID",
     emailRequired: "Email ID cannot be blank",
+    permanentlyDeleteUser: "Permanently Delete User",
+    permanentlyDeleteUserConfirm:
+      "This will permanently delete the user account and all associated data. This action cannot be undone.",
+    typeEmailToConfirm: "Type the user's email address to confirm:",
+    permanentlyDeleting: "Deleting...",
+    permanentDeleteSuccess: "User has been permanently deleted.",
+    permanentDeleteFailed: "Failed to permanently delete user.",
   },
 
   // Invoices

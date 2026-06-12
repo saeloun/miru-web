@@ -47,4 +47,17 @@ class Api::V1::UsersController < Api::V1::BaseController
       render json: { user: nil, company: nil, company_role: nil }, status: 401
     end
   end
+
+  def destroy
+    target_user = User.find(params[:id])
+    authorize target_user, policy_class: SuperAdminUserPolicy
+
+    raise ActiveRecord::RecordNotFound if target_user.id == current_user.id
+
+    target_user.destroy!
+
+    render json: {
+      notice: I18n.t("user.super_admin_delete.success", email: target_user.email)
+    }, status: 200
+  end
 end

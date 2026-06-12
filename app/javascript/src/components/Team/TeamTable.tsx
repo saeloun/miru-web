@@ -121,10 +121,15 @@ const isInvitedMember = (member: TeamMember | null) =>
 const TeamTable: React.FC = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { isAdminUser, company } = useUserContext();
+  const { isAdminUser, company, isSuperAdmin } = useUserContext();
   const [showInviteDialog, setShowInviteDialog] = useState(false);
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [showPermanentDeleteDialog, setShowPermanentDeleteDialog] =
+    useState(false);
+
+  const [permanentDeleteConfirmEmail, setPermanentDeleteConfirmEmail] =
+    useState("");
   const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null);
   const [deleteImpact, setDeleteImpact] = useState<RemovalImpact | null>(null);
   const [filteredTeamCount, setFilteredTeamCount] = useState<number | null>(
@@ -221,6 +226,33 @@ const TeamTable: React.FC = () => {
       );
     },
   });
+
+  const permanentDeleteMutation = useMutation({
+    mutationFn: async (member: TeamMember) => {
+      await teamApi.deleteUser(member.id);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["team"] });
+      setShowPermanentDeleteDialog(false);
+      setPermanentDeleteConfirmEmail("");
+      toast.success(i18n.t("team.permanentDeleteSuccess"));
+    },
+    onError: () => {
+      toast.error(i18n.t("team.permanentDeleteFailed"));
+    },
+  });
+
+  const handlePermanentDelete = (member: TeamMember) => {
+    setSelectedMember(member);
+    setPermanentDeleteConfirmEmail("");
+    setShowPermanentDeleteDialog(true);
+  };
+
+  const confirmPermanentDelete = () => {
+    if (selectedMember) {
+      permanentDeleteMutation.mutate(selectedMember);
+    }
+  };
 
   const handleEdit = (member: TeamMember) => {
     setSelectedMember(member);
@@ -547,6 +579,15 @@ const TeamTable: React.FC = () => {
                   ? i18n.t("team.deleteInvite")
                   : i18n.t("team.deleteUser")}
               </DropdownMenuItem>
+              {isSuperAdmin && !isInvitedMember(member) && (
+                <DropdownMenuItem
+                  onClick={() => handlePermanentDelete(member)}
+                  className="text-destructive font-semibold"
+                >
+                  <Trash size={16} className="mr-2" />
+                  {i18n.t("team.permanentlyDeleteUser")}
+                </DropdownMenuItem>
+              )}
             </DropdownMenuContent>
           </DropdownMenu>
         );
@@ -929,6 +970,7 @@ const TeamTable: React.FC = () => {
         open={showEditDialog}
         onOpenChange={handleDialogClose(setShowEditDialog)}
       >
+        {" "}
         <DialogContent className="border-border bg-card text-foreground sm:max-w-xl">
           <DialogHeader>
             <DialogTitle>{i18n.t("team.editMember")}</DialogTitle>
@@ -1019,6 +1061,64 @@ const TeamTable: React.FC = () => {
               disabled={!memberFormComplete || editMutation.isPending}
             >
               {i18n.t("save")}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Permanent Delete Confirmation Dialog — super admins only */}
+      <Dialog
+        open={showPermanentDeleteDialog}
+        onOpenChange={value => {
+          setShowPermanentDeleteDialog(value);
+          if (!value) {
+            setPermanentDeleteConfirmEmail("");
+            setSelectedMember(null);
+          }
+        }}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="text-destructive">
+              {i18n.t("team.permanentlyDeleteUser")}
+            </DialogTitle>
+            <DialogDescription>
+              {i18n.t("team.permanentlyDeleteUserConfirm")}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3 py-2">
+            <p className="text-sm font-medium text-foreground">
+              {i18n.t("team.typeEmailToConfirm")}
+            </p>
+            <p className="text-sm font-mono text-muted-foreground">
+              {selectedMember?.email}
+            </p>
+            <input
+              type="email"
+              value={permanentDeleteConfirmEmail}
+              onChange={e => setPermanentDeleteConfirmEmail(e.target.value)}
+              placeholder={selectedMember?.email ?? ""}
+              className="flex h-11 w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground outline-none ring-offset-background placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring"
+            />
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setShowPermanentDeleteDialog(false)}
+            >
+              {i18n.t("cancel")}
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={confirmPermanentDelete}
+              disabled={
+                permanentDeleteConfirmEmail !== selectedMember?.email ||
+                permanentDeleteMutation.isPending
+              }
+            >
+              {permanentDeleteMutation.isPending
+                ? i18n.t("team.permanentlyDeleting")
+                : i18n.t("team.permanentlyDeleteUser")}
             </Button>
           </DialogFooter>
         </DialogContent>

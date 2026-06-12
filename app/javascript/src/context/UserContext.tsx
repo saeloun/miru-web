@@ -2,6 +2,7 @@ import { createContext, useContext } from "react";
 
 const UserContext = createContext({
   isAdminUser: false,
+  isSuperAdmin: false,
   locale: "en-US",
   setLocale: value => {},
   user: {
@@ -12,6 +13,7 @@ const UserContext = createContext({
     last_name: "",
     id: "",
     locale: "en-US",
+    is_super_admin: false,
   },
   avatarUrl: "",
   setCurrentAvatarUrl: value => {},
