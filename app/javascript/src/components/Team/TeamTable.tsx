@@ -121,7 +121,12 @@ const isInvitedMember = (member: TeamMember | null) =>
 const TeamTable: React.FC = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { isAdminUser, company } = useUserContext();
+  const {
+    isAdminUser,
+    company,
+    companyRole,
+    user: currentUser,
+  } = useUserContext();
   const [showInviteDialog, setShowInviteDialog] = useState(false);
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
@@ -266,6 +271,22 @@ const TeamTable: React.FC = () => {
     if (selectedMember) {
       deleteMutation.mutate(selectedMember);
     }
+  };
+
+  // Returns true when the current user is permitted to delete a member.
+  // Rules (mirrors TeamPolicy on the server):
+  //  - Owners cannot delete themselves (ownership transfer required).
+  //  - Admins cannot delete owners.
+  const canDeleteMember = (member: TeamMember): boolean => {
+    if (companyRole === Roles.OWNER && member.id === currentUser.id) {
+      return false;
+    }
+
+    if (companyRole === Roles.ADMIN && member.role === Roles.OWNER) {
+      return false;
+    }
+
+    return true;
   };
 
   const getRoleIcon = (role: string) => {
@@ -538,15 +559,17 @@ const TeamTable: React.FC = () => {
                 <PencilSimple size={16} className="mr-2" />
                 {i18n.t("team.editMember")}
               </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => handleDelete(member)}
-                className="text-destructive"
-              >
-                <Trash size={16} className="mr-2" />
-                {isInvitedMember(member)
-                  ? i18n.t("team.deleteInvite")
-                  : i18n.t("team.deleteUser")}
-              </DropdownMenuItem>
+              {canDeleteMember(member) && (
+                <DropdownMenuItem
+                  onClick={() => handleDelete(member)}
+                  className="text-destructive"
+                >
+                  <Trash size={16} className="mr-2" />
+                  {isInvitedMember(member)
+                    ? i18n.t("team.deleteInvite")
+                    : i18n.t("team.deleteUser")}
+                </DropdownMenuItem>
+              )}
             </DropdownMenuContent>
           </DropdownMenu>
         );

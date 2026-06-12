@@ -1,4 +1,4 @@
-import { TeamModalType } from "constants/index";
+import { TeamModalType, Roles } from "constants/index";
 
 import React from "react";
 
@@ -18,10 +18,26 @@ type Iprops = {
 
 const MoreOptions = ({ item, setShowMoreOptions, showMoreOptions }: Iprops) => {
   const { setModalState } = useList();
-  const { isDesktop } = useUserContext();
+  const { isDesktop, companyRole, user: currentUser } = useUserContext();
 
   const handleResendInvite = async () => {
     await teamApi.resendInvite(item.id);
+  };
+
+  // Returns true when the current user is permitted to delete a member.
+  // Mirrors TeamPolicy on the server:
+  //  - Owners cannot delete themselves (ownership transfer required).
+  //  - Admins cannot delete owners.
+  const canDeleteMember = (member: any): boolean => {
+    if (companyRole === Roles.OWNER && member.id === currentUser.id) {
+      return false;
+    }
+
+    if (companyRole === Roles.ADMIN && member.role === Roles.OWNER) {
+      return false;
+    }
+
+    return true;
   };
 
   const handleAction = (e, action) => {
@@ -51,16 +67,18 @@ const MoreOptions = ({ item, setShowMoreOptions, showMoreOptions }: Iprops) => {
           <EditIcon size={16} weight="bold" />
         </Button>
       </Tooltip>
-      <Tooltip content={i18n.t("delete")}>
-        <Button
-          style="ternary"
-          onClick={e => {
-            handleAction(e, TeamModalType.DELETE);
-          }}
-        >
-          <DeleteIcon className="text-destructive" size={16} weight="bold" />
-        </Button>
-      </Tooltip>
+      {canDeleteMember(item) && (
+        <Tooltip content={i18n.t("delete")}>
+          <Button
+            style="ternary"
+            onClick={e => {
+              handleAction(e, TeamModalType.DELETE);
+            }}
+          >
+            <DeleteIcon className="text-destructive" size={16} weight="bold" />
+          </Button>
+        </Tooltip>
+      )}
     </HoverMoreOptions>
   ) : (
     <MobileMoreOptions
@@ -77,16 +95,18 @@ const MoreOptions = ({ item, setShowMoreOptions, showMoreOptions }: Iprops) => {
         <EditIcon className="mr-4" color="#5E58F1" size={16} />
         {i18n.t("edit")}
       </li>
-      <li
-        className="flex items-center px-2 pt-3 text-sm leading-5 text-destructive"
-        onClick={e => {
-          setShowMoreOptions(false);
-          handleAction(e, TeamModalType.DELETE);
-        }}
-      >
-        <DeleteIcon className="mr-4" size={16} />
-        {i18n.t("delete")}
-      </li>
+      {canDeleteMember(item) && (
+        <li
+          className="flex items-center px-2 pt-3 text-sm leading-5 text-destructive"
+          onClick={e => {
+            setShowMoreOptions(false);
+            handleAction(e, TeamModalType.DELETE);
+          }}
+        >
+          <DeleteIcon className="mr-4" size={16} />
+          {i18n.t("delete")}
+        </li>
+      )}
     </MobileMoreOptions>
   );
 };

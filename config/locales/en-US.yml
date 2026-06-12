@@ -636,7 +636,8 @@ en-US:
     team_policy:
       destroy?: You are not authorized to destroy team.
       edit?: You are not authorized to edit team.
-      last_owner_self_removal: You cannot remove yourself because you are the only workspace owner.
+      owner_self_removal: You cannot remove yourself. Transfer ownership to another user first.
+      admin_cannot_remove_owner: Admins cannot remove the workspace owner.
       update?: You are not authorized to update team.
   registration:
     confirm_password: confirm password

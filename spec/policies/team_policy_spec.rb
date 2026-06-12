@@ -70,4 +70,35 @@ RSpec.describe TeamPolicy, type: :policy, test_ploi: true do
       end
     end
   end
+
+  permissions :destroy? do
+    let(:owner_employment) { create(:employment, company:, user: owner) }
+    let(:admin_employment) { create(:employment, company:, user: admin) }
+    let(:employee_employment) { create(:employment, company:, user: employee) }
+
+    context "when an admin tries to remove the owner" do
+      it "does not grant permission" do
+        expect(described_class).not_to permit(admin, owner_employment)
+      end
+    end
+
+    context "when an admin removes a non-owner member" do
+      it "grants permission" do
+        expect(described_class).to permit(admin, employee_employment)
+      end
+    end
+
+    context "when an owner tries to remove themselves" do
+      it "does not grant permission" do
+        expect(described_class).not_to permit(owner, owner_employment)
+      end
+    end
+
+    context "when an owner removes another member" do
+      it "grants permission" do
+        expect(described_class).to permit(owner, admin_employment)
+        expect(described_class).to permit(owner, employee_employment)
+      end
+    end
+  end
 end
