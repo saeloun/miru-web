@@ -119,7 +119,7 @@ const LineItemEditorRow = ({
       >
         <td className="px-1 py-3 text-left text-base font-normal text-foreground ">
           <input
-            className="focus:outline-none w-full rounded border border-transparent bg-transparent p-1 text-sm font-medium text-foreground focus:border-border focus:bg-background focus:ring-1 focus:ring-ring"
+            className="focus:outline-none w-full rounded border border-border bg-background p-1 text-sm font-medium text-foreground focus:border-primary focus:ring-1 focus:ring-ring"
             data-testid="invoice-line-item-name"
             placeholder={name}
             type="text"
@@ -139,7 +139,7 @@ const LineItemEditorRow = ({
         </td>
         <td className="px-1 py-3 text-right text-base font-normal text-foreground ">
           <input
-            className="focus:outline-none w-full rounded border border-transparent bg-transparent p-1 text-right text-sm font-medium text-foreground focus:border-border focus:bg-background focus:ring-1 focus:ring-ring"
+            className="focus:outline-none w-full rounded border border-border bg-background p-1 text-right text-sm font-medium text-foreground focus:border-primary focus:ring-1 focus:ring-ring"
             data-testid="invoice-line-item-rate"
             placeholder={i18n.t("invoices.rate")}
             type="text"
@@ -150,7 +150,7 @@ const LineItemEditorRow = ({
         </td>
         <td className="px-1 py-3 text-right text-base font-normal text-foreground ">
           <input
-            className="focus:outline-none w-full rounded border border-transparent bg-transparent p-1 text-right text-sm font-medium text-foreground focus:border-border focus:bg-background focus:ring-1 focus:ring-ring"
+            className="focus:outline-none w-full rounded border border-border bg-background p-1 text-right text-sm font-medium text-foreground focus:border-primary focus:ring-1 focus:ring-ring"
             data-testid="invoice-line-item-quantity"
             placeholder={i18n.t("invoices.quantity")}
             type="text"
@@ -181,7 +181,7 @@ const LineItemEditorRow = ({
           colSpan={2}
         >
           <TextareaAutosize
-            className="focus:outline-none w-full rounded border border-transparent bg-transparent p-1 text-sm font-medium text-muted-foreground focus:border-border focus:bg-background focus:ring-1 focus:ring-ring"
+            className="focus:outline-none w-full rounded border border-border bg-background p-1 text-sm font-medium text-muted-foreground focus:border-primary focus:ring-1 focus:ring-ring"
             data-testid="invoice-line-item-description"
             placeholder={i18n.t("invoices.enterDescription")}
             value={description}

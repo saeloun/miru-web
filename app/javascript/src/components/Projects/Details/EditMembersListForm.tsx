@@ -60,12 +60,10 @@ const EditMembersListForm = ({
   };
 
   const isSubmitDisabled =
-    members.length === 0 ||
     members.some(
       member =>
         !member.id || member.hourlyRate === "" || Number(member.hourlyRate) < 0
-    ) ||
-    Object.keys(errors).length > 0;
+    ) || Object.keys(errors).length > 0;
 
   return (
     <form className="space-y-6" onSubmit={handleSubmit}>
