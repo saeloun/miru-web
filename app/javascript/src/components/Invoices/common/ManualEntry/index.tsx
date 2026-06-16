@@ -119,7 +119,7 @@ const ManualEntry = ({
               <TooltipTrigger asChild>
                 <input
                   data-testid="invoice-manual-entry-name"
-                  className="focus:outline-none w-full rounded border border-transparent bg-transparent p-1 text-sm font-medium text-foreground focus:border-border focus:bg-background focus:ring-1 focus:ring-ring"
+                  className="focus:outline-none w-full rounded border border-border bg-background p-1 text-sm font-medium text-foreground focus:border-primary focus:ring-1 focus:ring-ring"
                   placeholder={i18n.t("invoices.enterName")}
                   type="text"
                   value={name}
@@ -159,7 +159,7 @@ const ManualEntry = ({
               <TooltipTrigger asChild>
                 <input
                   data-testid="invoice-manual-entry-rate"
-                  className="focus:outline-none w-full rounded border border-transparent bg-transparent p-1 text-right text-sm font-medium text-foreground focus:border-border focus:bg-background focus:ring-1 focus:ring-ring"
+                  className="focus:outline-none w-full rounded border border-border bg-background p-1 text-right text-sm font-medium text-foreground focus:border-primary focus:ring-1 focus:ring-ring"
                   placeholder="0.00"
                   type="number"
                   value={rate}
@@ -177,7 +177,7 @@ const ManualEntry = ({
               <TooltipTrigger asChild>
                 <input
                   data-testid="invoice-manual-entry-quantity"
-                  className="focus:outline-none w-full rounded border border-transparent bg-transparent p-1 text-right text-sm font-medium text-foreground focus:border-border focus:bg-background focus:ring-1 focus:ring-ring"
+                  className="focus:outline-none w-full rounded border border-border bg-background p-1 text-right text-sm font-medium text-foreground focus:border-primary focus:ring-1 focus:ring-ring"
                   placeholder="00:00"
                   type="text"
                   value={qtyInHHrMin}
@@ -247,7 +247,7 @@ const ManualEntry = ({
               <TooltipTrigger asChild>
                 <TextareaAutosize
                   data-testid="invoice-manual-entry-description"
-                  className="focus:outline-none w-full rounded border border-transparent bg-transparent p-1 text-sm font-medium text-muted-foreground focus:border-border focus:bg-background focus:ring-1 focus:ring-ring"
+                  className="focus:outline-none w-full rounded border border-border bg-background p-1 text-sm font-medium text-muted-foreground focus:border-primary focus:ring-1 focus:ring-ring"
                   placeholder={i18n.t("invoices.enterDescription")}
                   value={description}
                   onChange={e => setDescription(e.target["value"])}
