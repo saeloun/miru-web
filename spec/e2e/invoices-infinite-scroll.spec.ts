@@ -1,5 +1,7 @@
 import { test, expect } from "playwright/test";
 
+const appUrl = process.env.PLAYWRIGHT_APP_URL || "http://127.0.0.1:3000";
+
 const invoice = (id: number) => ({
   id,
   amount: "100.0",
@@ -47,7 +49,7 @@ test("invoice infinite scroll loads the next filtered page", async ({
   });
   page.on("pageerror", error => consoleErrors.push(error.message));
 
-  await page.goto("http://127.0.0.1:3001/user/sign_in");
+  await page.goto(`${appUrl}/user/sign_in`);
   await page.getByRole("textbox", { name: "Email" }).fill("vipul@saeloun.com");
   await page.getByRole("textbox", { name: "Password" }).fill("password");
   await page.getByRole("button", { name: "Sign in", exact: true }).click();
@@ -82,7 +84,7 @@ test("invoice infinite scroll loads the next filtered page", async ({
     });
   });
 
-  await page.goto("http://127.0.0.1:3001/invoices");
+  await page.goto(`${appUrl}/invoices`);
   await expect(page.getByText("INV-001")).toBeVisible();
   await page.getByRole("button", { name: /Draft.*40 Invoices/ }).click();
   await expect(page.getByText("Scroll to load more invoices")).toBeVisible();
