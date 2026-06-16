@@ -613,15 +613,11 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
                   total: totalInvoices,
                 })}
           </span>
-          {!hasActiveFilters && hasMore && !isLoadingMore && (
+          {hasMore && !isLoadingMore && (
             <span>{i18n.t("invoices.scrollToLoadMore")}</span>
           )}
-          {!hasActiveFilters && hasMore && !isLoadingMore && (
-            <div className="h-8 w-full" />
-          )}
-          {!hasActiveFilters && !hasMore && (
-            <span>{i18n.t("invoices.allInvoicesLoaded")}</span>
-          )}
+          {hasMore && !isLoadingMore && <div className="h-8 w-full" />}
+          {!hasMore && <span>{i18n.t("invoices.allInvoicesLoaded")}</span>}
         </div>
       )}
 
