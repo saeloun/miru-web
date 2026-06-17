@@ -267,6 +267,14 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
   const hasActiveFilters =
     searchTerm.trim().length > 0 || filterParams.status.length > 0;
 
+  const shouldKeepLoadingFilteredInvoices =
+    hasActiveFilters &&
+    filteredInvoices.length < 100 &&
+    hasMore &&
+    !isLoading &&
+    !isLoadingMore &&
+    Boolean(onLoadMore);
+
   // Infinite scroll implementation
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -294,6 +302,12 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
       }
     };
   }, [hasMore, isLoadingMore, onLoadMore]);
+
+  useEffect(() => {
+    if (shouldKeepLoadingFilteredInvoices) {
+      onLoadMore?.();
+    }
+  }, [onLoadMore, shouldKeepLoadingFilteredInvoices]);
 
   const canManageInvoices = companyRole === "owner" || companyRole === "admin";
 

@@ -20,7 +20,7 @@ interface UsePaginatedInvoicesResult {
   loadMoreInvoices: () => Promise<void>;
 }
 
-const DEFAULT_PER_PAGE = 50;
+const DEFAULT_PER_PAGE = 100;
 
 export const usePaginatedInvoices = (): UsePaginatedInvoicesResult => {
   const [invoices, setInvoices] = useState<Invoice[]>([]);
