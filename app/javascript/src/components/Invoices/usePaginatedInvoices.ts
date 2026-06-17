@@ -20,7 +20,7 @@ interface UsePaginatedInvoicesResult {
   loadMoreInvoices: () => Promise<void>;
 }
 
-const DEFAULT_PER_PAGE = 100;
+export const INVOICES_PAGE_SIZE = 100;
 
 export const usePaginatedInvoices = (): UsePaginatedInvoicesResult => {
   const [invoices, setInvoices] = useState<Invoice[]>([]);
@@ -52,7 +52,7 @@ export const usePaginatedInvoices = (): UsePaginatedInvoicesResult => {
         }
 
         const response = await invoiceApi.getInvoices({
-          per: DEFAULT_PER_PAGE,
+          per: INVOICES_PAGE_SIZE,
           page,
         } as any);
 

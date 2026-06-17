@@ -48,6 +48,7 @@ import { currencyFormat } from "../../helpers/currency";
 import { useUserContext } from "../../context/UserContext";
 import { i18n } from "../../i18n";
 import { useNavigate } from "react-router-dom";
+import { INVOICES_PAGE_SIZE } from "./usePaginatedInvoices";
 
 interface InvoiceListProps {
   invoices: Invoice[];
@@ -269,7 +270,7 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
 
   const shouldKeepLoadingFilteredInvoices =
     hasActiveFilters &&
-    filteredInvoices.length < 100 &&
+    filteredInvoices.length < INVOICES_PAGE_SIZE &&
     hasMore &&
     !isLoading &&
     !isLoadingMore &&
