@@ -48,6 +48,7 @@ import { currencyFormat } from "../../helpers/currency";
 import { useUserContext } from "../../context/UserContext";
 import { i18n } from "../../i18n";
 import { useNavigate } from "react-router-dom";
+import { INVOICES_PAGE_SIZE } from "./usePaginatedInvoices";
 
 interface InvoiceListProps {
   invoices: Invoice[];
@@ -267,6 +268,14 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
   const hasActiveFilters =
     searchTerm.trim().length > 0 || filterParams.status.length > 0;
 
+  const shouldKeepLoadingFilteredInvoices =
+    hasActiveFilters &&
+    filteredInvoices.length < INVOICES_PAGE_SIZE &&
+    hasMore &&
+    !isLoading &&
+    !isLoadingMore &&
+    Boolean(onLoadMore);
+
   // Infinite scroll implementation
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -294,6 +303,12 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
       }
     };
   }, [hasMore, isLoadingMore, onLoadMore]);
+
+  useEffect(() => {
+    if (shouldKeepLoadingFilteredInvoices) {
+      onLoadMore?.();
+    }
+  }, [onLoadMore, shouldKeepLoadingFilteredInvoices]);
 
   const canManageInvoices = companyRole === "owner" || companyRole === "admin";
 
