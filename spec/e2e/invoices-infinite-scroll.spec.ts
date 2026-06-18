@@ -96,6 +96,88 @@ test("invoice infinite scroll loads the next filtered page", async ({
   expect(consoleErrors).toEqual([]);
 });
 
+test("unpaid summary card hides paid invoices", async ({ page }) => {
+  test.setTimeout(60_000);
+
+  const consoleErrors: string[] = [];
+  const invoices = [
+    invoice(1, "draft"),
+    invoice(2, "sent"),
+    invoice(3, "overdue"),
+    invoice(4, "paid"),
+  ];
+
+  page.on("console", message => {
+    if (message.type() === "error") consoleErrors.push(message.text());
+  });
+  page.on("pageerror", error => consoleErrors.push(error.message));
+
+  await page.goto(`${appUrl}/user/sign_in`, { waitUntil: "domcontentloaded" });
+  await page.getByTestId("app-loaded").waitFor({ timeout: 30_000 });
+  await page.getByRole("textbox", { name: "Email" }).fill("vipul@saeloun.com");
+  await page.getByRole("textbox", { name: "Password" }).fill("password");
+  await page.getByRole("button", { name: "Sign in", exact: true }).click();
+  await page.waitForURL("**/dashboard", { timeout: 10000 });
+
+  await page.route("**/api/v1/payments/settings", route =>
+    route.fulfill({
+      json: { providers: { stripe: {}, upi: {}, razorpay: {} } },
+    })
+  );
+  await page.route("**/api/v1/invoices/analytics/monthly_revenue", route =>
+    route.fulfill({
+      json: { chart_data: [], statistics: {} },
+    })
+  );
+  await page.route("**/api/v1/invoices/recently_updated?**", route =>
+    route.fulfill({
+      json: {
+        invoices: [],
+        meta: { has_more: false, total_count: 0 },
+      },
+    })
+  );
+  await page.route("**/api/v1/invoices**", route => {
+    const url = new URL(route.request().url());
+    if (url.pathname !== "/api/v1/invoices") return route.fallback();
+
+    return route.fulfill({
+      json: {
+        invoices,
+        paginationDetails: { page: 1, pages: 1, total: 4 },
+        summary: {
+          draftAmount: 100,
+          openAmount: 100,
+          outstandingAmount: 200,
+          overdueAmount: 100,
+          draftCount: 1,
+          openCount: 1,
+          outstandingCount: 2,
+          overdueCount: 1,
+          paidCount: 1,
+          totalCount: 4,
+          totalAmount: 300,
+          currency: "USD",
+        },
+        recentlyUpdatedInvoices: [],
+        recentlyUpdatedTotalCount: 4,
+        meta: {},
+      },
+    });
+  });
+
+  await page.goto(`${appUrl}/invoices`, { waitUntil: "domcontentloaded" });
+  await expect(page.getByText(/#INV-004/)).toBeVisible();
+  await page.getByRole("button", { name: /Unpaid.*3 Invoices/ }).click();
+
+  await expect(page.getByText(/#INV-001/)).toBeVisible();
+  await expect(page.getByText(/#INV-002/)).toBeVisible();
+  await expect(page.getByText(/#INV-003/)).toBeVisible();
+  await expect(page.getByText(/#INV-004/)).toBeHidden();
+  await expect(page.getByText(/Viewing 3 matching invoice/)).toBeVisible();
+  expect(consoleErrors).toEqual([]);
+});
+
 test("filtered invoice list keeps loading until matching invoices are found", async ({
   page,
 }) => {
