@@ -175,12 +175,13 @@ const ChartWithSummary: React.FC<ChartWithSummaryProps> = ({
     });
   };
 
-  const resetFilters = () => {
-    setFilterParams({
-      ...filterParams,
-      status: [],
-    });
-  };
+  const applyUnpaidFilter = () =>
+    applyFilter([
+      { value: "draft", label: "DRAFT" },
+      { value: "sent", label: "SENT" },
+      { value: "viewed", label: "VIEWED" },
+      { value: "overdue", label: "OVERDUE" },
+    ]);
 
   // Parse values to ensure they're numbers
   const parseAmount = (value: number | string): number => {
@@ -207,7 +208,7 @@ const ChartWithSummary: React.FC<ChartWithSummaryProps> = ({
       count: statusCounts?.all ?? 0,
       colorClass: "text-foreground",
       bgClass: "bg-muted/40 hover:bg-accent",
-      onClick: resetFilters,
+      onClick: applyUnpaidFilter,
     },
     {
       label: i18n.t("invoices.overdue"),
