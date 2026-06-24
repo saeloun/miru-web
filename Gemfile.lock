@@ -193,7 +193,7 @@ GEM
       xpath (~> 3.2)
     cbor (0.5.10.1)
     chunky_png (1.4.0)
-    concurrent-ruby (1.3.6)
+    concurrent-ruby (1.3.7)
     connection_pool (3.0.2)
     console (1.34.3)
       fiber-annotation
