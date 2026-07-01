@@ -594,10 +594,12 @@ const PaymentsTable: React.FC = () => {
                     : i18n.t("payments.withdrawToUpi")}
                 </DropdownMenuItem>
               )}
-              <DropdownMenuItem onClick={() => downloadReceipt(payment)}>
-                <Download className="h-4 w-4 mr-2" />
-                {i18n.t("payments.downloadReceipt")}
-              </DropdownMenuItem>
+              {payment.invoiceId && (
+                <DropdownMenuItem onClick={() => downloadReceipt(payment)}>
+                  <Download className="h-4 w-4 mr-2" />
+                  {i18n.t("payments.downloadReceipt")}
+                </DropdownMenuItem>
+              )}
             </DropdownMenuContent>
           </DropdownMenu>
         );
