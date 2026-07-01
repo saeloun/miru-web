@@ -42,6 +42,39 @@ RSpec.describe Expense, type: :model do
     it { is_expected.to validate_numericality_of(:amount).is_greater_than(0) }
   end
 
+  describe "currency" do
+    it "defaults to the company base currency" do
+      company = build(:company, base_currency: "INR")
+      expense = build(:expense, company:, currency: nil)
+
+      expense.valid?
+
+      expect(expense.currency).to eq("INR")
+    end
+
+    it "normalizes currency codes" do
+      expense.currency = " inr "
+
+      expense.valid?
+
+      expect(expense.currency).to eq("INR")
+    end
+
+    it "requires a three-letter currency code" do
+      expense.currency = "US"
+
+      expect(expense).not_to be_valid
+      expect(expense.errors[:currency]).to be_present
+    end
+
+    it "requires a known currency code" do
+      expense.currency = "ZZZ"
+
+      expect(expense).not_to be_valid
+      expect(expense.errors[:currency]).to be_present
+    end
+  end
+
   describe "validate enum" do
     it do
       expect(subject).to define_enum_for(:expense_type)

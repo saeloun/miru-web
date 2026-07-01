@@ -98,7 +98,12 @@ const ExpenseDetails = () => {
             handleDelete={handleDelete}
             handleEdit={handleEdit}
           />
-          <Expense currency={company.base_currency} expense={expense} />
+          <Expense
+            currency={
+              expense.currency || company.base_currency || company.baseCurrency
+            }
+            expense={expense}
+          />
         </Fragment>
       )}
       {showEditExpenseModal &&

@@ -7,6 +7,7 @@ json.expenses expenses do |expense|
   json.extract! expense,
     :id,
     :amount,
+    :currency,
     :expense_type,
     :description,
     :status,
@@ -25,4 +26,5 @@ json.categories categories do | category |
   json.name category[:name]
 end
 
+json.summary summary
 json.pagy pagination_details

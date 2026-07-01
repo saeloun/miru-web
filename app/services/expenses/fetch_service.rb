@@ -17,6 +17,7 @@ class Expenses::FetchService
     {
       expenses:,
       pagination_details: pagination_details(scoped_expenses.count),
+      summary: summary(scoped_expenses),
       categories: expense_categories
     }
   end
@@ -89,6 +90,19 @@ class Expenses::FetchService
         last: current_page >= total_pages,
         page: current_page,
         total: total_count
+      }
+    end
+
+    def summary(expenses)
+      base_currency = current_company.base_currency
+      base_currency_expenses = expenses.where(currency: base_currency)
+
+      {
+        base_currency:,
+        total_amount: base_currency_expenses.sum(:amount),
+        business_amount: base_currency_expenses.business.sum(:amount),
+        personal_amount: base_currency_expenses.personal.sum(:amount),
+        excluded_currency_count: expenses.where.not(currency: base_currency).count
       }
     end
 

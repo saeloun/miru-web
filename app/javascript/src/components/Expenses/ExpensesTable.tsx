@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { ColumnDef } from "@tanstack/react-table";
 import Loader from "common/Loader/index";
 import useInfiniteLoadTrigger from "../../hooks/useInfiniteLoadTrigger";
+import { currencyList } from "constants/currencyList";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
@@ -61,16 +62,22 @@ import CustomDatePicker from "common/CustomDatePicker";
 
 dayjs.extend(customParseFormat);
 
+const EXPENSE_CURRENCY_OPTIONS = Array.from(
+  new Set(currencyList.map(currency => currency.code))
+).sort();
+
 interface Expense {
   id: string;
   date: string;
   description: string;
   amount: number;
+  currency: string;
   category: string;
   vendor?: string;
   client?: string;
   project?: string;
   receipts?: string[];
+  notes?: string;
   expenseType: "business" | "personal";
   status: "submitted" | "approved" | "rejected" | "paid";
   paidAt?: string | null;
@@ -89,9 +96,13 @@ interface ExpenseOption {
 interface ExpensesData {
   expenses: Expense[];
   categories: ExpenseOption[];
-  totalAmount: number;
-  businessAmount: number;
-  personalAmount: number;
+  summary: {
+    baseCurrency: string;
+    totalAmount: number;
+    businessAmount: number;
+    personalAmount: number;
+    excludedCurrencyCount: number;
+  };
   paginationDetails: {
     page: number;
     pages: number;
@@ -132,6 +143,7 @@ const fetchExpenses = async (
     date: expense.date,
     description: expense.description,
     amount: Number(expense.amount) || 0,
+    currency: expense.currency || "USD",
     category: expense.categoryName || "",
     vendor: expense.vendorName || "",
     receipts: expense.receipts || [],
@@ -147,21 +159,18 @@ const fetchExpenses = async (
     paidAt: expense.paidAt || null,
     createdBy: expense.submitterName || "",
   }));
-  const totalAmount = expenses.reduce((sum, e) => sum + e.amount, 0);
-  const businessAmount = expenses
-    .filter(e => e.expenseType === "business")
-    .reduce((sum, e) => sum + e.amount, 0);
-
-  const personalAmount = expenses
-    .filter(e => e.expenseType === "personal")
-    .reduce((sum, e) => sum + e.amount, 0);
 
   return {
     expenses,
     categories: response.data.categories || [],
-    totalAmount,
-    businessAmount,
-    personalAmount,
+    summary: {
+      baseCurrency: response.data.summary?.baseCurrency || "USD",
+      totalAmount: Number(response.data.summary?.totalAmount) || 0,
+      businessAmount: Number(response.data.summary?.businessAmount) || 0,
+      personalAmount: Number(response.data.summary?.personalAmount) || 0,
+      excludedCurrencyCount:
+        Number(response.data.summary?.excludedCurrencyCount) || 0,
+    },
     paginationDetails: {
       page:
         Number(
@@ -187,6 +196,8 @@ const ExpensesTable: React.FC = () => {
   const EXPENSES_BATCH_SIZE = 25;
   const queryClient = useQueryClient();
   const { company, companyRole } = useUserContext();
+  const baseCurrency = company?.baseCurrency || company?.base_currency || "USD";
+  const dateFormat = company?.dateFormat || "DD-MM-YYYY";
   const location = useLocation();
   const navigate = useNavigate();
   const isNewExpenseRoute = location.pathname.endsWith("/expenses/new");
@@ -211,6 +222,7 @@ const ExpensesTable: React.FC = () => {
     date: new Date().toISOString().split("T")[0],
     description: "",
     amount: "",
+    currency: baseCurrency,
     category: "",
     vendor: "",
     expenseType: "business",
@@ -340,6 +352,7 @@ const ExpensesTable: React.FC = () => {
       date: new Date().toISOString().split("T")[0],
       description: "",
       amount: "",
+      currency: baseCurrency,
       category: "",
       vendor: "",
       expenseType: "business",
@@ -367,6 +380,7 @@ const ExpensesTable: React.FC = () => {
       date: dateForInput,
       description: expense.description,
       amount: expense.amount.toString(),
+      currency: expense.currency || baseCurrency,
       category: expense.category,
       vendor: expense.vendor || "",
       expenseType: expense.expenseType === "personal" ? "personal" : "business",
@@ -414,6 +428,7 @@ const ExpensesTable: React.FC = () => {
     payload.append("expense[date]", formData.date);
     payload.append("expense[description]", formData.description);
     payload.append("expense[amount]", normalizeExpenseAmount(formData.amount));
+    payload.append("expense[currency]", formData.currency);
     payload.append("expense[category_name]", trimmedCategory);
     payload.append("expense[expense_type]", formData.expenseType);
 
@@ -524,9 +539,6 @@ const ExpensesTable: React.FC = () => {
         Submitted
       </Badge>
     );
-
-  const baseCurrency = company?.baseCurrency || "USD";
-  const dateFormat = company?.dateFormat || "DD-MM-YYYY";
 
   const canManageReimbursements = ["admin", "owner", "book_keeper"].includes(
     companyRole || ""
@@ -757,7 +769,10 @@ const ExpensesTable: React.FC = () => {
       ),
       cell: ({ row }) => (
         <div className="text-sm font-semibold text-foreground">
-          {currencyFormat(baseCurrency, row.original.amount)}
+          {currencyFormat(
+            row.original.currency || baseCurrency,
+            row.original.amount
+          )}
         </div>
       ),
     },
@@ -892,9 +907,16 @@ const ExpensesTable: React.FC = () => {
   }
 
   const expenses = visibleExpenses;
-  const totalAmount = data?.totalAmount || 0;
-  const businessAmount = data?.businessAmount || 0;
-  const personalAmount = data?.personalAmount || 0;
+  const summary = data?.summary;
+  const summaryCurrency = summary?.baseCurrency || baseCurrency;
+  const totalAmount = summary?.totalAmount || 0;
+  const businessAmount = summary?.businessAmount || 0;
+  const personalAmount = summary?.personalAmount || 0;
+  const excludedCurrencyCount = summary?.excludedCurrencyCount || 0;
+  const summaryCaption =
+    excludedCurrencyCount > 0
+      ? `${excludedCurrencyCount} non-${summaryCurrency} expenses excluded`
+      : i18n.t("allTime");
 
   return (
     <div className="min-h-screen bg-background">
@@ -918,16 +940,16 @@ const ExpensesTable: React.FC = () => {
           <Card className="border-border shadow-sm">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">
-                Total Expenses
+                Total Expenses ({summaryCurrency})
               </CardTitle>
               <CurrencyDollar size={20} className="text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-semibold text-foreground">
-                {currencyFormat(baseCurrency, totalAmount)}
+                {currencyFormat(summaryCurrency, totalAmount)}
               </div>
               <p className="mt-1 text-xs text-muted-foreground">
-                {i18n.t("allTime")}
+                {summaryCaption}
               </p>
             </CardContent>
           </Card>
@@ -935,13 +957,13 @@ const ExpensesTable: React.FC = () => {
           <Card className="border-border shadow-sm">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">
-                Business
+                Business ({summaryCurrency})
               </CardTitle>
               <CheckCircle size={20} className="text-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-semibold text-foreground">
-                {currencyFormat(baseCurrency, businessAmount)}
+                {currencyFormat(summaryCurrency, businessAmount)}
               </div>
               <p className="mt-1 text-xs text-muted-foreground">
                 {i18n.t("expenses.businessExpenses")}
@@ -952,13 +974,13 @@ const ExpensesTable: React.FC = () => {
           <Card className="border-border shadow-sm">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">
-                {i18n.t("expenses.personal")}
+                {i18n.t("expenses.personal")} ({summaryCurrency})
               </CardTitle>
               <XCircle size={20} className="text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-semibold text-foreground">
-                {currencyFormat(baseCurrency, personalAmount)}
+                {currencyFormat(summaryCurrency, personalAmount)}
               </div>
               <p className="mt-1 text-xs text-muted-foreground">
                 {i18n.t("expenses.personalExpenses")}
@@ -1132,6 +1154,28 @@ const ExpensesTable: React.FC = () => {
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="currency" className="text-right">
+                {i18n.t("currency")}
+              </Label>
+              <Select
+                value={formData.currency}
+                onValueChange={value =>
+                  setFormData({ ...formData, currency: value })
+                }
+              >
+                <SelectTrigger id="currency" className="col-span-3">
+                  <SelectValue placeholder={i18n.t("currency")} />
+                </SelectTrigger>
+                <SelectContent>
+                  {EXPENSE_CURRENCY_OPTIONS.map(currency => (
+                    <SelectItem key={currency} value={currency}>
+                      {currency}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="category" className="text-right">
                 {i18n.t("expenses.category")}
               </Label>
@@ -1286,6 +1330,7 @@ const ExpensesTable: React.FC = () => {
               disabled={
                 !formData.description ||
                 !hasAmount ||
+                !formData.currency ||
                 !formData.category ||
                 createMutation.isPending
               }
@@ -1372,6 +1417,28 @@ const ExpensesTable: React.FC = () => {
                 className="col-span-3"
                 placeholder="0.00"
               />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="edit-currency" className="text-right">
+                {i18n.t("currency")}
+              </Label>
+              <Select
+                value={formData.currency}
+                onValueChange={value =>
+                  setFormData({ ...formData, currency: value })
+                }
+              >
+                <SelectTrigger id="edit-currency" className="col-span-3">
+                  <SelectValue placeholder={i18n.t("currency")} />
+                </SelectTrigger>
+                <SelectContent>
+                  {EXPENSE_CURRENCY_OPTIONS.map(currency => (
+                    <SelectItem key={currency} value={currency}>
+                      {currency}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="edit-category" className="text-right">
@@ -1532,6 +1599,7 @@ const ExpensesTable: React.FC = () => {
               disabled={
                 !formData.description ||
                 !hasAmount ||
+                !formData.currency ||
                 !formData.category ||
                 updateMutation.isPending
               }
