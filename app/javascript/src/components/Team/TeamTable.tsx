@@ -46,7 +46,7 @@ import { teamApi } from "apis/api";
 import { unmapList, unmapPagyData } from "../../mapper/team.mapper";
 import { toast } from "sonner";
 import { Roles } from "../../constants/index";
-import { getDisplayAvatarUrl } from "../../helpers";
+import { canDeleteTeamMember, getDisplayAvatarUrl } from "../../helpers";
 
 interface TeamMember {
   id: string;
@@ -271,22 +271,6 @@ const TeamTable: React.FC = () => {
     if (selectedMember) {
       deleteMutation.mutate(selectedMember);
     }
-  };
-
-  // Returns true when the current user is permitted to delete a member.
-  // Rules (mirrors TeamPolicy on the server):
-  //  - Owners cannot delete themselves (ownership transfer required).
-  //  - Admins cannot delete owners.
-  const canDeleteMember = (member: TeamMember): boolean => {
-    if (companyRole === Roles.OWNER && member.id === currentUser.id) {
-      return false;
-    }
-
-    if (companyRole === Roles.ADMIN && member.role === Roles.OWNER) {
-      return false;
-    }
-
-    return true;
   };
 
   const getRoleIcon = (role: string) => {
@@ -559,7 +543,7 @@ const TeamTable: React.FC = () => {
                 <PencilSimple size={16} className="mr-2" />
                 {i18n.t("team.editMember")}
               </DropdownMenuItem>
-              {canDeleteMember(member) && (
+              {canDeleteTeamMember(companyRole, member, currentUser) && (
                 <DropdownMenuItem
                   onClick={() => handleDelete(member)}
                   className="text-destructive"

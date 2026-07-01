@@ -88,6 +88,21 @@ RSpec.describe TeamPolicy, type: :policy, test_ploi: true do
       end
     end
 
+    context "when an admin removes another admin" do
+      let(:other_admin) { create(:user, current_workspace_id: company.id) }
+      let(:other_admin_employment) do
+        create(:employment, company:, user: other_admin)
+      end
+
+      before do
+        other_admin.add_role :admin, company
+      end
+
+      it "grants permission" do
+        expect(described_class).to permit(admin, other_admin_employment)
+      end
+    end
+
     context "when an owner tries to remove themselves" do
       it "does not grant permission" do
         expect(described_class).not_to permit(owner, owner_employment)

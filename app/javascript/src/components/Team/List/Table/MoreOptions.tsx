@@ -1,4 +1,4 @@
-import { TeamModalType, Roles } from "constants/index";
+import { TeamModalType } from "constants/index";
 
 import React from "react";
 
@@ -6,6 +6,7 @@ import { teamApi } from "apis/api";
 import HoverMoreOptions from "common/HoverMoreOptions";
 import { useList } from "context/TeamContext";
 import { useUserContext } from "context/UserContext";
+import { canDeleteTeamMember } from "helpers/teamPermissions";
 import { i18n } from "../../../../i18n";
 import { DeleteIcon, EditIcon, ResendInviteIcon } from "miruIcons";
 import { Button, MobileMoreOptions, Tooltip } from "StyledComponents";
@@ -22,22 +23,6 @@ const MoreOptions = ({ item, setShowMoreOptions, showMoreOptions }: Iprops) => {
 
   const handleResendInvite = async () => {
     await teamApi.resendInvite(item.id);
-  };
-
-  // Returns true when the current user is permitted to delete a member.
-  // Mirrors TeamPolicy on the server:
-  //  - Owners cannot delete themselves (ownership transfer required).
-  //  - Admins cannot delete owners.
-  const canDeleteMember = (member: any): boolean => {
-    if (companyRole === Roles.OWNER && member.id === currentUser.id) {
-      return false;
-    }
-
-    if (companyRole === Roles.ADMIN && member.role === Roles.OWNER) {
-      return false;
-    }
-
-    return true;
   };
 
   const handleAction = (e, action) => {
@@ -67,7 +52,7 @@ const MoreOptions = ({ item, setShowMoreOptions, showMoreOptions }: Iprops) => {
           <EditIcon size={16} weight="bold" />
         </Button>
       </Tooltip>
-      {canDeleteMember(item) && (
+      {canDeleteTeamMember(companyRole, item, currentUser) && (
         <Tooltip content={i18n.t("delete")}>
           <Button
             style="ternary"
@@ -95,7 +80,7 @@ const MoreOptions = ({ item, setShowMoreOptions, showMoreOptions }: Iprops) => {
         <EditIcon className="mr-4" color="#5E58F1" size={16} />
         {i18n.t("edit")}
       </li>
-      {canDeleteMember(item) && (
+      {canDeleteTeamMember(companyRole, item, currentUser) && (
         <li
           className="flex items-center px-2 pt-3 text-sm leading-5 text-destructive"
           onClick={e => {

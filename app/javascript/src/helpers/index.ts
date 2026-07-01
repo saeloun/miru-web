@@ -11,6 +11,7 @@ import { lineTotalCalc } from "./lineTotalCalc";
 import { getLineItemDisplayName } from "./lineItemDisplayName";
 import { getNumberWithOrdinal } from "./ordinal";
 import { useOutsideClick } from "./outsideClick";
+import { canDeleteTeamMember } from "./teamPermissions";
 import useKeypress from "./useKeyPress";
 import { validateTimesheetEntry } from "./validateTimesheetEntry";
 
@@ -30,6 +31,7 @@ export {
   getLineItemDisplayName,
   useDebounce,
   useOutsideClick,
+  canDeleteTeamMember,
   useKeypress,
   validateTimesheetEntry,
 };
