@@ -73,6 +73,28 @@ RSpec.describe "Api::V1::Expense#index", type: :request do
           })
       end
 
+      it "returns full-dataset summary information in the company base currency" do
+        summary = json_response["summary"]
+
+        expect(summary["baseCurrency"]).to eq(company.base_currency)
+        expect(BigDecimal(summary["totalAmount"].to_s)).to eq(expense1.amount + expense2.amount)
+        expect(BigDecimal(summary["businessAmount"].to_s)).to eq([expense1, expense2].select(&:business?).sum(&:amount))
+        expect(BigDecimal(summary["personalAmount"].to_s)).to eq([expense1, expense2].select(&:personal?).sum(&:amount))
+        expect(summary["excludedCurrencyCount"]).to eq(0)
+      end
+
+      it "excludes non-base-currency expenses from summary totals" do
+        other_currency = company.base_currency == "USD" ? "INR" : "USD"
+        create(:expense, company:, user: admin, currency: other_currency, amount: 123.45, expense_type: :business)
+
+        send_request :get, api_v1_expenses_path
+        summary = json_response["summary"]
+
+        expect(summary["baseCurrency"]).to eq(company.base_currency)
+        expect(BigDecimal(summary["totalAmount"].to_s)).to eq(expense1.amount + expense2.amount)
+        expect(summary["excludedCurrencyCount"]).to eq(1)
+      end
+
       it "returns list of categories in the response" do
         expect(json_response["categories"]).to eq(
           ExpenseCategory::DEFAULT_CATEGORIES.map { |category| { "name" => category[:name] } })

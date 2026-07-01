@@ -37,10 +37,24 @@ class Expense < ApplicationRecord
   validates :date, presence: true
   validates :amount, numericality: { greater_than: 0 }
   validates :currency, presence: true, format: { with: /\A[A-Z]{3}\z/ }
+  validate :known_currency_code
 
   before_validation :normalize_currency
 
   scope :kept_ordered, -> { kept.order(created_at: :desc) }
+
+  def self.normalize_params(attributes)
+    permitted = attributes.to_h
+    vendor_name = permitted.delete("vendor_name").to_s.strip
+    category_name = permitted.delete("category_name").to_s.strip
+    currency = permitted.delete("currency").to_s.strip.upcase
+
+    permitted["vendor_name"] = vendor_name if vendor_name.present?
+    permitted["category_name"] = category_name if category_name.present?
+    permitted["currency"] = currency if currency.present?
+
+    permitted
+  end
 
   def display_vendor_name
     vendor_name.to_s.strip
@@ -112,6 +126,13 @@ class Expense < ApplicationRecord
     def normalize_currency
       self.currency = currency.to_s.strip.upcase if currency.present?
       self.currency = company&.base_currency.presence || "USD" if currency.blank?
+    end
+
+    def known_currency_code
+      return if currency.blank?
+      return if Money::Currency.find(currency).present?
+
+      errors.add(:currency, :invalid)
     end
 
     def reviewer_emails

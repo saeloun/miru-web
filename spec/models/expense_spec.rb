@@ -66,6 +66,13 @@ RSpec.describe Expense, type: :model do
       expect(expense).not_to be_valid
       expect(expense.errors[:currency]).to be_present
     end
+
+    it "requires a known currency code" do
+      expense.currency = "ZZZ"
+
+      expect(expense).not_to be_valid
+      expect(expense.errors[:currency]).to be_present
+    end
   end
 
   describe "validate enum" do

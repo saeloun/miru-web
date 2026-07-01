@@ -26,4 +26,5 @@ json.categories categories do | category |
   json.name category[:name]
 end
 
+json.summary summary
 json.pagy pagination_details

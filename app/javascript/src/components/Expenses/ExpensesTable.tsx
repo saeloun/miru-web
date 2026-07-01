@@ -96,6 +96,13 @@ interface ExpenseOption {
 interface ExpensesData {
   expenses: Expense[];
   categories: ExpenseOption[];
+  summary: {
+    baseCurrency: string;
+    totalAmount: number;
+    businessAmount: number;
+    personalAmount: number;
+    excludedCurrencyCount: number;
+  };
   paginationDetails: {
     page: number;
     pages: number;
@@ -156,6 +163,14 @@ const fetchExpenses = async (
   return {
     expenses,
     categories: response.data.categories || [],
+    summary: {
+      baseCurrency: response.data.summary?.baseCurrency || "USD",
+      totalAmount: Number(response.data.summary?.totalAmount) || 0,
+      businessAmount: Number(response.data.summary?.businessAmount) || 0,
+      personalAmount: Number(response.data.summary?.personalAmount) || 0,
+      excludedCurrencyCount:
+        Number(response.data.summary?.excludedCurrencyCount) || 0,
+    },
     paginationDetails: {
       page:
         Number(
@@ -892,22 +907,16 @@ const ExpensesTable: React.FC = () => {
   }
 
   const expenses = visibleExpenses;
-  const baseCurrencyExpenses = visibleExpenses.filter(
-    expense => (expense.currency || baseCurrency) === baseCurrency
-  );
-
-  const totalAmount = baseCurrencyExpenses.reduce(
-    (sum, expense) => sum + expense.amount,
-    0
-  );
-
-  const businessAmount = baseCurrencyExpenses
-    .filter(expense => expense.expenseType === "business")
-    .reduce((sum, expense) => sum + expense.amount, 0);
-
-  const personalAmount = baseCurrencyExpenses
-    .filter(expense => expense.expenseType === "personal")
-    .reduce((sum, expense) => sum + expense.amount, 0);
+  const summary = data?.summary;
+  const summaryCurrency = summary?.baseCurrency || baseCurrency;
+  const totalAmount = summary?.totalAmount || 0;
+  const businessAmount = summary?.businessAmount || 0;
+  const personalAmount = summary?.personalAmount || 0;
+  const excludedCurrencyCount = summary?.excludedCurrencyCount || 0;
+  const summaryCaption =
+    excludedCurrencyCount > 0
+      ? `${excludedCurrencyCount} non-${summaryCurrency} expenses excluded`
+      : i18n.t("allTime");
 
   return (
     <div className="min-h-screen bg-background">
@@ -931,16 +940,16 @@ const ExpensesTable: React.FC = () => {
           <Card className="border-border shadow-sm">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">
-                Total Expenses
+                Total Expenses ({summaryCurrency})
               </CardTitle>
               <CurrencyDollar size={20} className="text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-semibold text-foreground">
-                {currencyFormat(baseCurrency, totalAmount)}
+                {currencyFormat(summaryCurrency, totalAmount)}
               </div>
               <p className="mt-1 text-xs text-muted-foreground">
-                {i18n.t("allTime")}
+                {summaryCaption}
               </p>
             </CardContent>
           </Card>
@@ -948,13 +957,13 @@ const ExpensesTable: React.FC = () => {
           <Card className="border-border shadow-sm">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">
-                Business
+                Business ({summaryCurrency})
               </CardTitle>
               <CheckCircle size={20} className="text-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-semibold text-foreground">
-                {currencyFormat(baseCurrency, businessAmount)}
+                {currencyFormat(summaryCurrency, businessAmount)}
               </div>
               <p className="mt-1 text-xs text-muted-foreground">
                 {i18n.t("expenses.businessExpenses")}
@@ -965,13 +974,13 @@ const ExpensesTable: React.FC = () => {
           <Card className="border-border shadow-sm">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">
-                {i18n.t("expenses.personal")}
+                {i18n.t("expenses.personal")} ({summaryCurrency})
               </CardTitle>
               <XCircle size={20} className="text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-semibold text-foreground">
-                {currencyFormat(baseCurrency, personalAmount)}
+                {currencyFormat(summaryCurrency, personalAmount)}
               </div>
               <p className="mt-1 text-xs text-muted-foreground">
                 {i18n.t("expenses.personalExpenses")}

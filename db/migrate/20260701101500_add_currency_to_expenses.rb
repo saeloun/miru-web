@@ -20,13 +20,10 @@ class AddCurrencyToExpenses < ActiveRecord::Migration[8.0]
       SQL
 
       change_column_default :expenses, :currency, from: nil, to: "USD"
-      change_column_null :expenses, :currency, false
-      add_check_constraint :expenses, "currency ~ '^[A-Z]{3}$'", name: "expenses_currency_iso_code"
     end
   end
 
   def down
-    remove_check_constraint :expenses, name: "expenses_currency_iso_code"
     remove_column :expenses, :currency
   end
 end
