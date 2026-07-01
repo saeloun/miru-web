@@ -793,6 +793,7 @@ const en = {
     bulkDownloadFailed: "Failed to download selected payments.",
     viewInvoice: "View invoice",
     downloadReceipt: "Download receipt",
+    downloadReceiptFailed: "Failed to download receipt.",
     withdrawToUpi: "Withdraw to UPI",
     retryWithdrawal: "Retry withdrawal",
     withdrawing: "Withdrawing...",
