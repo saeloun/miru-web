@@ -504,8 +504,6 @@ const en = {
       "This will permanently delete the user account and all associated data. This action cannot be undone.",
     typeEmailToConfirm: "Type the user's email address to confirm:",
     permanentlyDeleting: "Deleting...",
-    permanentDeleteSuccess: "User has been permanently deleted.",
-    permanentDeleteFailed: "Failed to permanently delete user.",
   },
 
   // Invoices
@@ -800,6 +798,7 @@ const en = {
     bulkDownloadFailed: "Failed to download selected payments.",
     viewInvoice: "View invoice",
     downloadReceipt: "Download receipt",
+    downloadReceiptFailed: "Failed to download receipt.",
     withdrawToUpi: "Withdraw to UPI",
     retryWithdrawal: "Retry withdrawal",
     withdrawing: "Withdrawing...",

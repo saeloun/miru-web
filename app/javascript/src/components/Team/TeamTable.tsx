@@ -46,7 +46,7 @@ import { teamApi } from "apis/api";
 import { unmapList, unmapPagyData } from "../../mapper/team.mapper";
 import { toast } from "sonner";
 import { Roles } from "../../constants/index";
-import { getDisplayAvatarUrl } from "../../helpers";
+import { canDeleteTeamMember, getDisplayAvatarUrl } from "../../helpers";
 
 interface TeamMember {
   id: string;
@@ -121,7 +121,13 @@ const isInvitedMember = (member: TeamMember | null) =>
 const TeamTable: React.FC = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { isAdminUser, company, isSuperAdmin } = useUserContext();
+  const {
+    isAdminUser,
+    isSuperAdmin,
+    company,
+    companyRole,
+    user: currentUser,
+  } = useUserContext();
   const [showInviteDialog, setShowInviteDialog] = useState(false);
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
@@ -235,10 +241,6 @@ const TeamTable: React.FC = () => {
       queryClient.invalidateQueries({ queryKey: ["team"] });
       setShowPermanentDeleteDialog(false);
       setPermanentDeleteConfirmEmail("");
-      toast.success(i18n.t("team.permanentDeleteSuccess"));
-    },
-    onError: () => {
-      toast.error(i18n.t("team.permanentDeleteFailed"));
     },
   });
 
@@ -545,7 +547,7 @@ const TeamTable: React.FC = () => {
       cell: ({ row }) => {
         const member = row.original;
 
-        if (!isAdminUser) return null;
+        if (!isAdminUser && !isSuperAdmin) return null;
 
         return (
           <DropdownMenu>
@@ -570,24 +572,28 @@ const TeamTable: React.FC = () => {
                 <PencilSimple size={16} className="mr-2" />
                 {i18n.t("team.editMember")}
               </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => handleDelete(member)}
-                className="text-destructive"
-              >
-                <Trash size={16} className="mr-2" />
-                {isInvitedMember(member)
-                  ? i18n.t("team.deleteInvite")
-                  : i18n.t("team.deleteUser")}
-              </DropdownMenuItem>
-              {isSuperAdmin && !isInvitedMember(member) && (
+              {canDeleteTeamMember(companyRole, member, currentUser) && (
                 <DropdownMenuItem
-                  onClick={() => handlePermanentDelete(member)}
-                  className="text-destructive font-semibold"
+                  onClick={() => handleDelete(member)}
+                  className="text-destructive"
                 >
                   <Trash size={16} className="mr-2" />
-                  {i18n.t("team.permanentlyDeleteUser")}
+                  {isInvitedMember(member)
+                    ? i18n.t("team.deleteInvite")
+                    : i18n.t("team.deleteUser")}
                 </DropdownMenuItem>
               )}
+              {isSuperAdmin &&
+                !isInvitedMember(member) &&
+                member.status === "active" && (
+                  <DropdownMenuItem
+                    onClick={() => handlePermanentDelete(member)}
+                    className="text-destructive font-semibold"
+                  >
+                    <Trash size={16} className="mr-2" />
+                    {i18n.t("team.permanentlyDeleteUser")}
+                  </DropdownMenuItem>
+                )}
             </DropdownMenuContent>
           </DropdownMenu>
         );

@@ -49,8 +49,7 @@ class Api::V1::Users::SessionsController < Devise::SessionsController
           "social_accounts" => current_user.social_accounts,
           "date_format" => current_company&.date_format,
           "avatar_url" => current_user.avatar_url,
-          "password_changed_at" => current_user.password_changed_at,
-          "is_super_admin" => current_user.super_admin?
+          "password_changed_at" => current_user.password_changed_at
         ),
         company_role: company_role_payload(current_user, current_company),
         company: company_payload(current_company)

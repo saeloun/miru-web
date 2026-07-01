@@ -40,7 +40,7 @@ import {
 } from "phosphor-react";
 import { currencyFormat } from "../../helpers/currency";
 import { useUserContext } from "../../context/UserContext";
-import { payment, paymentsApi } from "apis/api";
+import { invoicesApi, payment, paymentsApi } from "apis/api";
 import { toast } from "sonner";
 import { unmapPayment } from "../../mapper/mappedIndex";
 import AddManualEntry from "./Modals/AddManualEntry";
@@ -234,6 +234,29 @@ const PaymentsTable: React.FC = () => {
       );
     } catch {
       toast.error(i18n.t("payments.bulkDownloadFailed"));
+    }
+  };
+
+  const downloadReceipt = async (payment: Payment) => {
+    if (!payment.invoiceId) {
+      toast.error(i18n.t("payments.downloadReceiptFailed"));
+
+      return;
+    }
+
+    try {
+      const response = await invoicesApi.downloadInvoice(payment.invoiceId);
+      const blob = new Blob([response.data], { type: "application/pdf" });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `receipt-${payment.invoiceNumber}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch {
+      toast.error(i18n.t("payments.downloadReceiptFailed"));
     }
   };
 
@@ -571,10 +594,12 @@ const PaymentsTable: React.FC = () => {
                     : i18n.t("payments.withdrawToUpi")}
                 </DropdownMenuItem>
               )}
-              <DropdownMenuItem>
-                <Download className="h-4 w-4 mr-2" />
-                {i18n.t("payments.downloadReceipt")}
-              </DropdownMenuItem>
+              {payment.invoiceId && (
+                <DropdownMenuItem onClick={() => downloadReceipt(payment)}>
+                  <Download className="h-4 w-4 mr-2" />
+                  {i18n.t("payments.downloadReceipt")}
+                </DropdownMenuItem>
+              )}
             </DropdownMenuContent>
           </DropdownMenu>
         );
