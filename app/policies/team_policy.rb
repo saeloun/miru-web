@@ -25,27 +25,27 @@ class TeamPolicy < ApplicationPolicy
       return false
     end
 
-    return false if only_owner_removing_self?
+    return false if owner_removing_self?
+    return false if admin_removing_owner?
 
     user_owner_role? || user_admin_role?
   end
 
-  def only_owner_removing_self?
+  # Owners must transfer ownership before removing themselves.
+  def owner_removing_self?
     return false unless record.user_id == user.id
     return false unless user.has_role?(:owner, record.company)
 
-    is_last_owner = owner_role_count_for_company <= 1
-    @error_message_key = :last_owner_self_removal if is_last_owner
-    is_last_owner
+    @error_message_key = :owner_self_removal
+    true
   end
 
-  def owner_role_count_for_company
-    User
-      .joins(:roles, :employments)
-      .where(roles: { name: "owner", resource_type: "Company", resource_id: record.company_id })
-      .merge(User.kept)
-      .merge(Employment.kept.where(company_id: record.company_id))
-      .distinct
-      .count
+  # Admins are not permitted to remove owners.
+  def admin_removing_owner?
+    return false unless user_admin_role?
+    return false unless record.user.has_role?(:owner, record.company)
+
+    @error_message_key = :admin_cannot_remove_owner
+    true
   end
 end

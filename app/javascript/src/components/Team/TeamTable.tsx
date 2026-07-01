@@ -46,7 +46,7 @@ import { teamApi } from "apis/api";
 import { unmapList, unmapPagyData } from "../../mapper/team.mapper";
 import { toast } from "sonner";
 import { Roles } from "../../constants/index";
-import { getDisplayAvatarUrl } from "../../helpers";
+import { canDeleteTeamMember, getDisplayAvatarUrl } from "../../helpers";
 
 interface TeamMember {
   id: string;
@@ -121,7 +121,12 @@ const isInvitedMember = (member: TeamMember | null) =>
 const TeamTable: React.FC = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { isAdminUser, company } = useUserContext();
+  const {
+    isAdminUser,
+    company,
+    companyRole,
+    user: currentUser,
+  } = useUserContext();
   const [showInviteDialog, setShowInviteDialog] = useState(false);
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
@@ -538,15 +543,17 @@ const TeamTable: React.FC = () => {
                 <PencilSimple size={16} className="mr-2" />
                 {i18n.t("team.editMember")}
               </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => handleDelete(member)}
-                className="text-destructive"
-              >
-                <Trash size={16} className="mr-2" />
-                {isInvitedMember(member)
-                  ? i18n.t("team.deleteInvite")
-                  : i18n.t("team.deleteUser")}
-              </DropdownMenuItem>
+              {canDeleteTeamMember(companyRole, member, currentUser) && (
+                <DropdownMenuItem
+                  onClick={() => handleDelete(member)}
+                  className="text-destructive"
+                >
+                  <Trash size={16} className="mr-2" />
+                  {isInvitedMember(member)
+                    ? i18n.t("team.deleteInvite")
+                    : i18n.t("team.deleteUser")}
+                </DropdownMenuItem>
+              )}
             </DropdownMenuContent>
           </DropdownMenu>
         );
