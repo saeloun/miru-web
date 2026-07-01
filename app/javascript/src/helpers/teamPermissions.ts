@@ -16,7 +16,14 @@ export const canDeleteTeamMember = (
 ) => {
   if (companyRole !== Roles.OWNER && companyRole !== Roles.ADMIN) return false;
 
-  if (companyRole === Roles.OWNER && member.id === currentUser.id) return false;
+  if (
+    companyRole === Roles.OWNER &&
+    member.id != null &&
+    currentUser.id != null &&
+    String(member.id) === String(currentUser.id)
+  ) {
+    return false;
+  }
 
   if (companyRole === Roles.ADMIN && member.role === Roles.OWNER) return false;
 
