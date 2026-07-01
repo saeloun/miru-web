@@ -41,13 +41,14 @@ RSpec.describe "Api::V1::Expense#show", type: :request do
       it "returns expected data in the response" do
         expected_response = {
           "amount": expense[:amount].to_s,
+          "currency": expense.currency,
           "type": expense[:expense_type],
           "vendorName": "Jetway",
           "categoryName": "Travel",
           "description": expense[:description],
           "receipts": expense.attached_receipts_urls
         }
-        expect(json_response.slice("amount", "type", "vendorName", "categoryName", "description", "receipts"))
+        expect(json_response.slice("amount", "currency", "type", "vendorName", "categoryName", "description", "receipts"))
           .to eq(JSON.parse(expected_response.to_json))
       end
     end

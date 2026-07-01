@@ -32,8 +32,13 @@ class Expense < ApplicationRecord
   belongs_to :expense_category, optional: true
   belongs_to :project, optional: true
 
+  attribute :currency, :string, default: nil
+
   validates :date, presence: true
   validates :amount, numericality: { greater_than: 0 }
+  validates :currency, presence: true, format: { with: /\A[A-Z]{3}\z/ }
+
+  before_validation :normalize_currency
 
   scope :kept_ordered, -> { kept.order(created_at: :desc) }
 
@@ -43,6 +48,10 @@ class Expense < ApplicationRecord
 
   def display_category_name
     category_name.to_s.strip
+  end
+
+  def display_currency
+    currency.presence || company&.base_currency.presence || "USD"
   end
 
   def submitter_name
@@ -99,6 +108,11 @@ class Expense < ApplicationRecord
   end
 
   private
+
+    def normalize_currency
+      self.currency = currency.to_s.strip.upcase if currency.present?
+      self.currency = company&.base_currency.presence || "USD" if currency.blank?
+    end
 
     def reviewer_emails
       company

@@ -7,6 +7,7 @@ json.expenses expenses do |expense|
   json.extract! expense,
     :id,
     :amount,
+    :currency,
     :expense_type,
     :description,
     :status,

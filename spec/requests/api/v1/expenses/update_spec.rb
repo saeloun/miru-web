@@ -33,7 +33,8 @@ RSpec.describe "Api::V1::Expense#update", type: :request do
         params: {
           expense: {
             description: "Updated description",
-            amount: 420.50
+            amount: 420.50,
+            currency: "inr"
           }
         },
         headers: auth_headers(admin)
@@ -44,6 +45,7 @@ RSpec.describe "Api::V1::Expense#update", type: :request do
       expense.reload
       expect(expense.description).to eq("Updated description")
       expect(expense.amount.to_f).to eq(420.50)
+      expect(expense.currency).to eq("INR")
     end
   end
 

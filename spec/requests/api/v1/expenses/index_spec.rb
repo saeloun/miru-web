@@ -44,6 +44,7 @@ RSpec.describe "Api::V1::Expense#index", type: :request do
                           {
                             "id" => expense.id,
                             "amount" => expense.amount.to_s,
+                            "currency" => expense.currency,
                             "date" => CompanyDateFormattingService.new(expense.date, company:).process,
                             "expenseType" => expense.expense_type,
                             "categoryName" => expense.category_name,

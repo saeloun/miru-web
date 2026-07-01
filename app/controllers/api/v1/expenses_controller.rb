@@ -97,6 +97,7 @@ class Api::V1::ExpensesController < Api::V1::ApplicationController
         :date,
         :description,
         :expense_type,
+        :currency,
         :category_name,
         :vendor_name,
         receipts: []
@@ -116,9 +117,11 @@ class Api::V1::ExpensesController < Api::V1::ApplicationController
       permitted = expense_params.to_h
       vendor_name = permitted.delete("vendor_name").to_s.strip
       category_name = permitted.delete("category_name").to_s.strip
+      currency = permitted.delete("currency").to_s.strip.upcase
 
       permitted["vendor_name"] = vendor_name if vendor_name.present?
       permitted["category_name"] = category_name if category_name.present?
+      permitted["currency"] = currency if currency.present?
 
       permitted
     end

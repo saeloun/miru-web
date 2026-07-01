@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { ColumnDef } from "@tanstack/react-table";
 import Loader from "common/Loader/index";
 import useInfiniteLoadTrigger from "../../hooks/useInfiniteLoadTrigger";
+import { currencyList } from "constants/currencyList";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
@@ -61,16 +62,22 @@ import CustomDatePicker from "common/CustomDatePicker";
 
 dayjs.extend(customParseFormat);
 
+const EXPENSE_CURRENCY_OPTIONS = Array.from(
+  new Set(currencyList.map(currency => currency.code))
+).sort();
+
 interface Expense {
   id: string;
   date: string;
   description: string;
   amount: number;
+  currency: string;
   category: string;
   vendor?: string;
   client?: string;
   project?: string;
   receipts?: string[];
+  notes?: string;
   expenseType: "business" | "personal";
   status: "submitted" | "approved" | "rejected" | "paid";
   paidAt?: string | null;
@@ -89,9 +96,6 @@ interface ExpenseOption {
 interface ExpensesData {
   expenses: Expense[];
   categories: ExpenseOption[];
-  totalAmount: number;
-  businessAmount: number;
-  personalAmount: number;
   paginationDetails: {
     page: number;
     pages: number;
@@ -132,6 +136,7 @@ const fetchExpenses = async (
     date: expense.date,
     description: expense.description,
     amount: Number(expense.amount) || 0,
+    currency: expense.currency || "USD",
     category: expense.categoryName || "",
     vendor: expense.vendorName || "",
     receipts: expense.receipts || [],
@@ -147,21 +152,10 @@ const fetchExpenses = async (
     paidAt: expense.paidAt || null,
     createdBy: expense.submitterName || "",
   }));
-  const totalAmount = expenses.reduce((sum, e) => sum + e.amount, 0);
-  const businessAmount = expenses
-    .filter(e => e.expenseType === "business")
-    .reduce((sum, e) => sum + e.amount, 0);
-
-  const personalAmount = expenses
-    .filter(e => e.expenseType === "personal")
-    .reduce((sum, e) => sum + e.amount, 0);
 
   return {
     expenses,
     categories: response.data.categories || [],
-    totalAmount,
-    businessAmount,
-    personalAmount,
     paginationDetails: {
       page:
         Number(
@@ -187,6 +181,8 @@ const ExpensesTable: React.FC = () => {
   const EXPENSES_BATCH_SIZE = 25;
   const queryClient = useQueryClient();
   const { company, companyRole } = useUserContext();
+  const baseCurrency = company?.baseCurrency || company?.base_currency || "USD";
+  const dateFormat = company?.dateFormat || "DD-MM-YYYY";
   const location = useLocation();
   const navigate = useNavigate();
   const isNewExpenseRoute = location.pathname.endsWith("/expenses/new");
@@ -211,6 +207,7 @@ const ExpensesTable: React.FC = () => {
     date: new Date().toISOString().split("T")[0],
     description: "",
     amount: "",
+    currency: baseCurrency,
     category: "",
     vendor: "",
     expenseType: "business",
@@ -340,6 +337,7 @@ const ExpensesTable: React.FC = () => {
       date: new Date().toISOString().split("T")[0],
       description: "",
       amount: "",
+      currency: baseCurrency,
       category: "",
       vendor: "",
       expenseType: "business",
@@ -367,6 +365,7 @@ const ExpensesTable: React.FC = () => {
       date: dateForInput,
       description: expense.description,
       amount: expense.amount.toString(),
+      currency: expense.currency || baseCurrency,
       category: expense.category,
       vendor: expense.vendor || "",
       expenseType: expense.expenseType === "personal" ? "personal" : "business",
@@ -414,6 +413,7 @@ const ExpensesTable: React.FC = () => {
     payload.append("expense[date]", formData.date);
     payload.append("expense[description]", formData.description);
     payload.append("expense[amount]", normalizeExpenseAmount(formData.amount));
+    payload.append("expense[currency]", formData.currency);
     payload.append("expense[category_name]", trimmedCategory);
     payload.append("expense[expense_type]", formData.expenseType);
 
@@ -524,9 +524,6 @@ const ExpensesTable: React.FC = () => {
         Submitted
       </Badge>
     );
-
-  const baseCurrency = company?.baseCurrency || "USD";
-  const dateFormat = company?.dateFormat || "DD-MM-YYYY";
 
   const canManageReimbursements = ["admin", "owner", "book_keeper"].includes(
     companyRole || ""
@@ -757,7 +754,10 @@ const ExpensesTable: React.FC = () => {
       ),
       cell: ({ row }) => (
         <div className="text-sm font-semibold text-foreground">
-          {currencyFormat(baseCurrency, row.original.amount)}
+          {currencyFormat(
+            row.original.currency || baseCurrency,
+            row.original.amount
+          )}
         </div>
       ),
     },
@@ -892,9 +892,22 @@ const ExpensesTable: React.FC = () => {
   }
 
   const expenses = visibleExpenses;
-  const totalAmount = data?.totalAmount || 0;
-  const businessAmount = data?.businessAmount || 0;
-  const personalAmount = data?.personalAmount || 0;
+  const baseCurrencyExpenses = visibleExpenses.filter(
+    expense => (expense.currency || baseCurrency) === baseCurrency
+  );
+
+  const totalAmount = baseCurrencyExpenses.reduce(
+    (sum, expense) => sum + expense.amount,
+    0
+  );
+
+  const businessAmount = baseCurrencyExpenses
+    .filter(expense => expense.expenseType === "business")
+    .reduce((sum, expense) => sum + expense.amount, 0);
+
+  const personalAmount = baseCurrencyExpenses
+    .filter(expense => expense.expenseType === "personal")
+    .reduce((sum, expense) => sum + expense.amount, 0);
 
   return (
     <div className="min-h-screen bg-background">
@@ -1132,6 +1145,28 @@ const ExpensesTable: React.FC = () => {
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="currency" className="text-right">
+                {i18n.t("currency")}
+              </Label>
+              <Select
+                value={formData.currency}
+                onValueChange={value =>
+                  setFormData({ ...formData, currency: value })
+                }
+              >
+                <SelectTrigger id="currency" className="col-span-3">
+                  <SelectValue placeholder={i18n.t("currency")} />
+                </SelectTrigger>
+                <SelectContent>
+                  {EXPENSE_CURRENCY_OPTIONS.map(currency => (
+                    <SelectItem key={currency} value={currency}>
+                      {currency}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="category" className="text-right">
                 {i18n.t("expenses.category")}
               </Label>
@@ -1286,6 +1321,7 @@ const ExpensesTable: React.FC = () => {
               disabled={
                 !formData.description ||
                 !hasAmount ||
+                !formData.currency ||
                 !formData.category ||
                 createMutation.isPending
               }
@@ -1372,6 +1408,28 @@ const ExpensesTable: React.FC = () => {
                 className="col-span-3"
                 placeholder="0.00"
               />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="edit-currency" className="text-right">
+                {i18n.t("currency")}
+              </Label>
+              <Select
+                value={formData.currency}
+                onValueChange={value =>
+                  setFormData({ ...formData, currency: value })
+                }
+              >
+                <SelectTrigger id="edit-currency" className="col-span-3">
+                  <SelectValue placeholder={i18n.t("currency")} />
+                </SelectTrigger>
+                <SelectContent>
+                  {EXPENSE_CURRENCY_OPTIONS.map(currency => (
+                    <SelectItem key={currency} value={currency}>
+                      {currency}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="edit-category" className="text-right">
@@ -1532,6 +1590,7 @@ const ExpensesTable: React.FC = () => {
               disabled={
                 !formData.description ||
                 !hasAmount ||
+                !formData.currency ||
                 !formData.category ||
                 updateMutation.isPending
               }

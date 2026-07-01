@@ -34,7 +34,7 @@ RSpec.describe "Api::V1::Expense#create", type: :request do
 
     describe "#create" do
       before do
-        @expense = attributes_for(:expense).merge(category_name: "Travel", vendor_name: "Jetway")
+        @expense = attributes_for(:expense).merge(category_name: "Travel", vendor_name: "Jetway", currency: "INR")
 
         send_request :post, api_v1_expenses_path(expense: @expense)
       end
@@ -46,18 +46,20 @@ RSpec.describe "Api::V1::Expense#create", type: :request do
       it "creates expense entry in the db" do
         expect(json_response["id"]).to eq(Expense.last.id)
         expect(Expense.last.user).to eq(admin)
+        expect(Expense.last.currency).to eq("INR")
       end
 
       it "returns expected data in the response" do
         expected_response = {
           "amount": @expense[:amount].to_s,
+          "currency": "INR",
           "type": @expense[:expense_type],
           "vendorName": "Jetway",
           "categoryName": "Travel",
           "description": @expense[:description]
 
         }
-        expect(json_response.slice("amount", "type", "vendorName", "categoryName", "description"))
+        expect(json_response.slice("amount", "currency", "type", "vendorName", "categoryName", "description"))
           .to eq(JSON.parse(expected_response.to_json))
       end
     end
@@ -85,6 +87,7 @@ RSpec.describe "Api::V1::Expense#create", type: :request do
 
       expect(response).to have_http_status(:ok)
       expect(Expense.last.user).to eq(employee)
+      expect(Expense.last.currency).to eq(company.base_currency)
       expect(Expense.last.receipts.count).to eq(1)
     end
   end
