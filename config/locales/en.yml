@@ -766,6 +766,9 @@ en:
       failure:
         disabled: Your access has been disabled.
         pending_invitation: Your account is not activated yet.
+    super_admin_delete:
+      sole_owner: "Cannot permanently delete this user because they are the only owner of: %{companies}. Transfer ownership or delete the company before deleting this user."
+      success: User %{email} has been permanently deleted.
   workspaces:
     update:
       failure: Failed to switch workspace

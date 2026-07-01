@@ -283,6 +283,7 @@ const AppWithUserData = (props: any) => {
   const calendarConnected = user?.calendar_connected;
 
   const isAdminUser = [Roles.ADMIN, Roles.OWNER].includes(companyRole);
+  const isSuperAdmin = Boolean(user?.is_super_admin);
 
   const [isDesktop, setIsDesktop] = useState<boolean>(window.innerWidth > 1023);
   const [selectedTab, setSelectedTab] = useState(null);
@@ -334,6 +335,7 @@ const AppWithUserData = (props: any) => {
           setCurrentAvatarUrl,
           companyRole,
           isAdminUser,
+          isSuperAdmin,
           calendarEnabled,
           calendarConnected,
           confirmedUser,

@@ -648,6 +648,7 @@ export const teamApi = {
   updateInvitedMember: (id: any, payload: any) =>
     http.put(`/invitations/${id}`, payload),
   deleteInvitedMember: (id: any) => http.delete(`/invitations/${id}`),
+  deleteUser: (id: any) => http.delete(`/users/${id}`),
 };
 
 // Subscriptions
