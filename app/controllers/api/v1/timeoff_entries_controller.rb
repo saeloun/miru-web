@@ -50,7 +50,15 @@ class Api::V1::TimeoffEntriesController < Api::V1::ApplicationController
     end
 
     def load_user!
-      @user ||= current_company.users.find(params[:timeoff_entry][:user_id])
+      requested_user_id = params[:timeoff_entry][:user_id]
+
+      unless current_user.has_role?(:owner, current_company) || current_user.has_role?(:admin, current_company)
+        if requested_user_id.present? && requested_user_id.to_i != current_user.id
+          raise Pundit::NotAuthorizedError
+        end
+      end
+
+      @user ||= current_company.users.find(requested_user_id)
     end
 
     def load_leave_type!

@@ -94,6 +94,22 @@ RSpec.describe "Api::V1::TimeoffEntry#create", type: :request do
 
         expect(response).to have_http_status(:not_found)
       end
+
+      it "does not allow creating a timeoff entry for another coworker" do
+        coworker = create(:user, current_workspace_id: company.id)
+        create(:employment, company:, user: coworker)
+
+        timeoff_entry = attributes_for(
+          :timeoff_entry,
+          user_id: coworker.id,
+          leave_type_id: leave_type.id
+        )
+
+        send_request :post, api_v1_timeoff_entries_path(timeoff_entry:), headers: auth_headers(user)
+
+        expect(response).to have_http_status(:forbidden)
+        expect(TimeoffEntry.where(user_id: coworker.id)).to be_empty
+      end
     end
   end
 

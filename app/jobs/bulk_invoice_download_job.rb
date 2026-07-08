@@ -3,15 +3,17 @@
 class BulkInvoiceDownloadJob < ApplicationJob
   queue_as :default
 
-  def perform(invoice_ids, company_logo, download_id, root_url, current_url_options)
+  def perform(invoice_ids, company_logo, download_id, root_url, current_url_options, company_id = nil)
     ActiveStorage::Current.url_options = current_url_options
 
     # Create or update the status to 'processing'
-    bulk_download_status = BulkInvoiceDownloadStatus.find_or_create_by(download_id:)
-    bulk_download_status.update(status: "processing")
+    bulk_download_status = BulkInvoiceDownloadStatus.find_or_create_by(download_id:) do |status|
+      status.company_id = company_id
+    end
+    bulk_download_status.update(status: "processing", company_id:)
 
     begin
-      file_url = BulkInvoiceDownloadService.new(invoice_ids, company_logo, root_url).process
+      file_url = BulkInvoiceDownloadService.new(invoice_ids, company_logo, root_url, company_id).process
       bulk_download_status.update(status: "completed", file_url:)
     rescue StandardError => e
       Rails.logger.error "Error in BulkInvoiceDownloadJob: #{e.message}"

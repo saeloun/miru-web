@@ -19,7 +19,7 @@ RSpec.describe Invoices::PaymentsController, type: :request do
   describe "GET new", :vcr do
     subject { send_request :get, new_invoice_payment_path(params) }
 
-    let(:success_path) { "/invoices/#{invoice.id}/payments/success" }
+    let(:success_path) { "/invoices/#{invoice.external_view_key}/payments/success" }
     let(:checkout_response) { Struct.new(:url).new(success_path) }
 
     before do

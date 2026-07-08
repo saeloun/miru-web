@@ -15,7 +15,7 @@ class Invoices::PaymentsController < ApplicationController
       ).process
     else
       session = @invoice.create_checkout_session!(
-        success_url: request.base_url + "/invoices/#{@invoice.id}/payments/success",
+        success_url: request.base_url + "/invoices/#{@invoice.external_view_key}/payments/success",
         cancel_url: cancel_invoice_payments_url(@invoice)
       )
       session.url
@@ -40,7 +40,7 @@ class Invoices::PaymentsController < ApplicationController
       params:
     )
 
-    redirect_url = request.base_url + "/invoices/#{@invoice.id}/payments/success?provider=razorpay"
+    redirect_url = request.base_url + "/invoices/#{@invoice.external_view_key}/payments/success?provider=razorpay"
     if fulfilled
       redirect_to redirect_url, allow_other_host: false
     else
@@ -58,7 +58,7 @@ class Invoices::PaymentsController < ApplicationController
 
     def ensure_invoice_unpaid
       if @invoice.paid?
-        redirect_to request.base_url + "/invoices/#{@invoice.id}/payments/success"
+        redirect_to request.base_url + "/invoices/#{@invoice.external_view_key}/payments/success"
       end
     end
 

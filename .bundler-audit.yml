@@ -1,9 +1,11 @@
 ---
 ignore:
-  - GHSA-96qw-h329-v5rg
-  - CVE-2026-25765
-  # CVE-2026-38969: WEBrick trailer reparsing; webrick is a transitive
-  # dev/test dependency (selenium-webdriver, google-apis) and never serves
-  # traffic (Puma in all environments). No patched release exists yet
+  # CVE-2026-38969: WEBrick trailer reparsing / request smuggling. webrick is a
+  # runtime dependency of ferrum (via ferrum_pdf, our production PDF renderer),
+  # so it ships in production - but ferrum only uses it to serve trusted, locally
+  # generated HTML to a localhost headless Chromium for PDF rendering. It never
+  # serves external traffic (Puma/Falcon front all real requests), so the smuggling
+  # vector is not reachable by an attacker. No patched release exists yet
   # (latest is 1.9.2). Remove once webrick > 1.9.2 ships.
+  # Owner: platform. Review: 2026-10-01.
   - CVE-2026-38969

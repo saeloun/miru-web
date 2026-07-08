@@ -19,6 +19,9 @@ class Rack::Attack
       "/api/v1/users/forgot_password",
       "/api/v1/users/resend_confirmation_email",
       "/api/v1/users/passkeys/authenticate",
+      "/api/v1/users/otp/request",
+      "/api/v1/users/otp/verify",
+      "/api/v1/users/totp/authenticate",
       "/api/v1/mobile/otp/request",
       "/api/v1/mobile/otp/verify"
     ].include?(req.path)

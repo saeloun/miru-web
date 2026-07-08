@@ -117,6 +117,24 @@ RSpec.describe "Api::V1::Invoices#show", type: :request do
     end
   end
 
+  context "when user is a client of a different client" do
+    let(:other_client) { create(:client, company:) }
+    let(:user) { create(:user, email: "invoice-show-other-client@example.com", current_workspace_id: company.id) }
+    let(:invoice) { company.invoices.first }
+
+    before do
+      create(:client_member, company:, client: other_client, user:)
+      user.add_role :client, company
+      sign_in user
+    end
+
+    it "cannot view an invoice belonging to another client" do
+      send_request :get, api_v1_invoice_path(invoice.id), headers: auth_headers(user)
+
+      expect(response).to have_http_status(:forbidden)
+    end
+  end
+
   context "when unauthenticated" do
     it "is not permitted to view time entry report" do
       send_request :get, api_v1_invoice_path(company.invoices.first.id)

@@ -3,8 +3,9 @@
 class BulkInvoiceDownloadService
   attr_reader :invoices, :company_logo, :root_url
 
-  def initialize(invoice_ids, company_logo, root_url)
-    @invoices = Invoice.includes(:client, :invoice_line_items).where(id: invoice_ids)
+  def initialize(invoice_ids, company_logo, root_url, company_id = nil)
+    @invoices = Invoice.includes(:client, :invoice_line_items)
+      .where(company_id:, id: invoice_ids)
     @company_logo = company_logo
     @root_url = root_url
   end

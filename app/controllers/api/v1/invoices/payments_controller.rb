@@ -41,7 +41,7 @@ class Api::V1::Invoices::PaymentsController < Api::V1::ApplicationController
   private
 
     def load_invoice
-      @invoice = Invoice.includes(client: :company).find(params[:id])
+      @invoice = Invoice.includes(client: :company).find_by!(external_view_key: params[:id])
     end
 
     def track_event
