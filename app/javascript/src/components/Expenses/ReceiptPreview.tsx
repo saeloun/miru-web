@@ -15,6 +15,9 @@ const pdfPattern = /\.pdf(\?.*)?$/i;
 const fileNameFromUrl = (url: string) =>
   decodeURIComponent(url.split("/").pop()?.split("?")[0] || "receipt");
 
+const downloadUrl = (url: string) =>
+  `${url}${url.includes("?") ? "&" : "?"}disposition=attachment`;
+
 const isImage = (url: string) => imagePattern.test(url);
 const isPdf = (url: string) => pdfPattern.test(url);
 
@@ -55,7 +58,7 @@ const ReceiptPreview: React.FC<ReceiptPreviewProps> = ({ receipts }) => {
                   </a>
                 </Button>
                 <Button asChild size="sm" variant="ghost">
-                  <a href={receipt} download={fileName}>
+                  <a href={downloadUrl(receipt)} download={fileName}>
                     <FileArrowDown size={16} className="mr-2" />
                     Download
                   </a>
