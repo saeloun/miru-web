@@ -52,13 +52,22 @@ const ReceiptPreview: React.FC<ReceiptPreviewProps> = ({ receipts }) => {
               </div>
               <div className="ml-3 flex items-center gap-2">
                 <Button asChild size="sm" variant="outline">
-                  <a href={receipt} target="_blank" rel="noreferrer">
+                  <a
+                    aria-label={`Open ${fileName} in new tab`}
+                    href={receipt}
+                    rel="noreferrer"
+                    target="_blank"
+                  >
                     <ArrowSquareOut size={16} className="mr-2" />
                     Open
                   </a>
                 </Button>
                 <Button asChild size="sm" variant="ghost">
-                  <a href={downloadUrl(receipt)} download={fileName}>
+                  <a
+                    aria-label={`Download ${fileName}`}
+                    download={fileName}
+                    href={downloadUrl(receipt)}
+                  >
                     <FileArrowDown size={16} className="mr-2" />
                     Download
                   </a>
