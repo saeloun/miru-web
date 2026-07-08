@@ -2,3 +2,8 @@
 ignore:
   - GHSA-96qw-h329-v5rg
   - CVE-2026-25765
+  # CVE-2026-38969: WEBrick trailer reparsing; webrick is a transitive
+  # dev/test dependency (selenium-webdriver, google-apis) and never serves
+  # traffic (Puma in all environments). No patched release exists yet
+  # (latest is 1.9.2). Remove once webrick > 1.9.2 ships.
+  - CVE-2026-38969

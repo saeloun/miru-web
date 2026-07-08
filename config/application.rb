@@ -67,6 +67,18 @@ module MiruWeb
       image/jpeg
       image/gif
     ]
+    config.active_storage.content_types_allowed_inline = %w[
+      image/webp
+      image/avif
+      image/png
+      image/gif
+      image/jpeg
+      image/tiff
+      image/bmp
+      image/vnd.adobe.photoshop
+      image/vnd.microsoft.icon
+      application/pdf
+    ]
     # Props handling managed in React components
 
     # Use a real queuing backend for Active Job (and separate queues per environment).
@@ -112,10 +124,14 @@ module MiruWeb
     end
 
     initializer "miru_web.active_storage_content_types", after: "active_storage.configs" do |app|
-      next if ActiveStorage.variable_content_types.present? && ActiveStorage.web_image_content_types.present?
+      if ActiveStorage.variable_content_types.blank? || ActiveStorage.web_image_content_types.blank?
+        ActiveStorage.variable_content_types = app.config.active_storage.variable_content_types
+        ActiveStorage.web_image_content_types = app.config.active_storage.web_image_content_types
+      end
 
-      ActiveStorage.variable_content_types = app.config.active_storage.variable_content_types
-      ActiveStorage.web_image_content_types = app.config.active_storage.web_image_content_types
+      if ActiveStorage.content_types_allowed_inline.blank?
+        ActiveStorage.content_types_allowed_inline = app.config.active_storage.content_types_allowed_inline
+      end
     end
 
     initializer "miru_web.active_storage_verifier", after: "active_storage.verifier" do |app|
