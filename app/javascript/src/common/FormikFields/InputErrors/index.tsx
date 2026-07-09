@@ -5,7 +5,7 @@ const InputErrors = ({ fieldErrors, fieldTouched, addMargin = true }) =>
     <div
       className={`mx-0 ${
         addMargin && "mb-6"
-      } block text-xs tracking-wider text-red-600`}
+      } block text-xs tracking-wider text-destructive`}
     >
       <div>{fieldErrors}</div>
     </div>
