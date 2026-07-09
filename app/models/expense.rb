@@ -3,6 +3,8 @@
 class Expense < ApplicationRecord
   include Discardable
   include Searchable
+
+  audited only: [:amount, :base_currency_amount, :currency, :date, :expense_type, :status, :paid_at, :category_name]
   enum :expense_type, [
       :personal,
       :business

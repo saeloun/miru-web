@@ -29,8 +29,16 @@ module Api::V1
         report_data = generate_payment_report(payments)
 
         respond_to do |format|
-          format.csv { send_data generate_csv(report_data), filename: "payment_report_#{Date.current}.csv" }
-          format.pdf { send_data generate_pdf(report_data), filename: "payment_report_#{Date.current}.pdf" }
+          format.csv do
+            send_data generate_csv(report_data),
+              type: "text/csv", disposition: "attachment",
+              filename: "payment_report_#{Date.current}.csv"
+          end
+          format.pdf do
+            send_data generate_pdf(report_data),
+              type: "application/pdf", disposition: "attachment",
+              filename: "payment_report_#{Date.current}.pdf"
+          end
         end
       end
 
@@ -129,8 +137,7 @@ module Api::V1
         end
 
         def generate_pdf(report_data)
-          # TODO: Implement PDF generation using Grover or similar
-          "PDF generation not yet implemented"
+          ::Reports::GeneratePdf.new(:payments, report_data, current_company).process
         end
 
         def format_client_options

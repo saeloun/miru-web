@@ -1,0 +1,59 @@
+<style>
+  .payments-report table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    font-family: Arial, sans-serif;
+  }
+  .payments-report th,
+  .payments-report td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+  .payments-report th {
+    background-color: #f4f4f4;
+  }
+  .payments-report td.amount {
+    text-align: right;
+  }
+  .payments-report .total-row {
+    font-weight: bold;
+  }
+</style>
+
+<div class="payments-report">
+  <h1>Payments report</h1>
+  <% base_currency = current_company.base_currency.presence || "USD" %>
+  <table>
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Client</th>
+        <th>Invoice</th>
+        <th>Method</th>
+        <th>Status</th>
+        <th>Amount (<%= base_currency %>)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% total = 0 %>
+      <% report_data.each do |payment| %>
+        <% amount = payment[:base_currency_amount] || payment[:amount] %>
+        <% total += amount.to_f %>
+        <tr>
+          <td><%= payment[:payment_date] %></td>
+          <td><%= payment[:client_name] %></td>
+          <td><%= payment[:invoice_number] %></td>
+          <td><%= payment[:payment_method] %></td>
+          <td><%= payment[:status].to_s.humanize %></td>
+          <td class="amount"><%= FormatAmountService.new(base_currency, amount).process %></td>
+        </tr>
+      <% end %>
+      <tr class="total-row">
+        <td colspan="5">Total</td>
+        <td class="amount"><%= FormatAmountService.new(base_currency, total).process %></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
