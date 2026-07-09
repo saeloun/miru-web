@@ -17,8 +17,8 @@
     --card-foreground: 0 0% 4%;
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 4%;
-    --primary: 0 0% 9%;
-    --primary-foreground: 0 0% 98%;
+    --primary: 253 81% 56%;
+    --primary-foreground: 0 0% 100%;
     --secondary: 0 0% 96%;
     --secondary-foreground: 0 0% 9%;
     --muted: 0 0% 96%;
@@ -29,14 +29,14 @@
     --destructive-foreground: 0 0% 98%;
     --border: 0 0% 90%;
     --input: 0 0% 90%;
-    --ring: 0 0% 63%;
+    --ring: 253 81% 56%;
     --radius: 0.75rem;
 
-    --chart-1: 20 100% 47%;
-    --chart-2: 178 100% 29%;
-    --chart-3: 198 73% 23%;
-    --chart-4: 45 100% 49%;
-    --chart-5: 39 100% 49%;
+    --chart-1: 253 81% 56%;
+    --chart-2: 210 90% 55%;
+    --chart-3: 330 75% 58%;
+    --chart-4: 38 92% 55%;
+    --chart-5: 240 5% 55%;
 
     --gradient-start: 23 23 23;
     --gradient-end: 63 63 70;
@@ -49,12 +49,12 @@
 
     --sidebar: 0 0% 98%;
     --sidebar-foreground: 0 0% 4%;
-    --sidebar-primary: 0 0% 9%;
-    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-primary: 253 81% 56%;
+    --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 0 0% 96%;
     --sidebar-accent-foreground: 0 0% 9%;
     --sidebar-border: 0 0% 90%;
-    --sidebar-ring: 0 0% 63%;
+    --sidebar-ring: 253 81% 56%;
   }
 
   .dark {
@@ -64,8 +64,8 @@
     --card-foreground: 0 0% 98%;
     --popover: 0 0% 9%;
     --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 90%;
-    --primary-foreground: 0 0% 9%;
+    --primary: 253 82% 62%;
+    --primary-foreground: 0 0% 100%;
     --secondary: 0 0% 15%;
     --secondary-foreground: 0 0% 98%;
     --muted: 0 0% 15%;
@@ -76,7 +76,7 @@
     --destructive-foreground: 0 0% 98%;
     --border: 0 0% 100% / 0.16;
     --input: 0 0% 100% / 0.24;
-    --ring: 0 0% 72%;
+    --ring: 253 82% 62%;
 
     --gradient-start: 10 10 10;
     --gradient-end: 38 38 38;
@@ -89,12 +89,12 @@
 
     --sidebar: 0 0% 9%;
     --sidebar-foreground: 0 0% 98%;
-    --sidebar-primary: 220 81% 49%;
-    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-primary: 253 82% 62%;
+    --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 0 0% 15%;
     --sidebar-accent-foreground: 0 0% 98%;
     --sidebar-border: 0 0% 100% / 0.1;
-    --sidebar-ring: 0 0% 45%;
+    --sidebar-ring: 253 82% 62%;
   }
 
   /* Monochrome theme - Pure black and white for maximum contrast */
