@@ -40,6 +40,7 @@ class Expense < ApplicationRecord
   validate :known_currency_code
 
   before_validation :normalize_currency
+  before_validation :calculate_base_currency_amount
 
   scope :kept_ordered, -> { kept.order(created_at: :desc) }
 
@@ -126,6 +127,45 @@ class Expense < ApplicationRecord
     def normalize_currency
       self.currency = currency.to_s.strip.upcase if currency.present?
       self.currency = company&.base_currency.presence || "USD" if currency.blank?
+    end
+
+    def calculate_base_currency_amount
+      return if amount.blank?
+      return unless new_record? || amount_changed? || currency_changed? || date_changed?
+
+      base_currency = company&.base_currency
+      if base_currency.blank? || currency.blank? || currency == base_currency
+        self.exchange_rate = 1.0
+        self.base_currency_amount = amount
+        return
+      end
+
+      expense_date = date || Date.current
+      rate = CurrencyConversionService.get_exchange_rate(currency, base_currency, expense_date)
+
+      if rate
+        self.exchange_rate = rate
+        self.exchange_rate_date = expense_date
+        self.base_currency_amount = (amount * rate).round(2)
+      else
+        self.exchange_rate = 1.0
+        self.base_currency_amount = amount
+        report_missing_exchange_rate(expense_date)
+      end
+    end
+
+    def report_missing_exchange_rate(expense_date)
+      Sentry.capture_message(
+        "Expense recorded with 1:1 fallback exchange rate",
+        level: :warning,
+        extra: {
+          expense_id: id,
+          currency:,
+          base_currency: company&.base_currency,
+          amount:,
+          expense_date:
+        }
+      )
     end
 
     def known_currency_code

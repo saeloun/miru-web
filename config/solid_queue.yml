@@ -21,6 +21,9 @@ default: &default
         analytics_threshold_notifications:
           class: Analytics::ThresholdNotificationsJob
           schedule: '0 1 * * 1 America/New_York'
+        update_exchange_rates:
+          class: UpdateExchangeRatesJob
+          schedule: '0 2 * * *'  # Runs every day at 2AM UTC to warm the FX rate cache
   workers:
     - queues: default
       threads: 5
@@ -60,6 +63,9 @@ production:
         analytics_threshold_notifications:
           class: Analytics::ThresholdNotificationsJob
           schedule: '0 1 * * 1 America/New_York'
+        update_exchange_rates:
+          class: UpdateExchangeRatesJob
+          schedule: '0 2 * * *'
         database_backup:
           class: DatabaseBackupJob
           schedule: '<%= ENV.fetch("DATABASE_BACKUP_CRON", "*/30 * * * *") %>'

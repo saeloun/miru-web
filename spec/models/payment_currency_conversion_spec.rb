@@ -63,6 +63,27 @@ RSpec.describe "Payment Currency Conversion", type: :model do
       end
     end
 
+    context "when no exchange rate can be determined" do
+      let(:payment) { build(:payment, invoice: eur_invoice, amount: 500.00, transaction_date: Date.current) }
+
+      before do
+        eur_invoice.update_columns(exchange_rate: nil)
+        allow(CurrencyConversionService).to receive(:get_exchange_rate).with("EUR", "USD", anything).and_return(nil)
+      end
+
+      it "records a 1:1 fallback and reports it to Sentry" do
+        expect(Sentry).to receive(:capture_message) do |message, **options|
+          expect(message).to eq("Payment recorded with 1:1 fallback exchange rate")
+          expect(options[:level]).to eq(:warning)
+        end
+
+        payment.save!
+
+        expect(payment.exchange_rate).to eq(1.0)
+        expect(payment.base_currency_amount).to eq(500.00)
+      end
+    end
+
     context "with partial payment in foreign currency" do
       let(:payment1) { build(:payment, invoice: eur_invoice, amount: 300.00, transaction_date: Date.current) }
       let(:payment2) { build(:payment, invoice: eur_invoice, amount: 400.00, transaction_date: 5.days.from_now) }

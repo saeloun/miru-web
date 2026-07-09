@@ -65,7 +65,7 @@ RSpec.describe Api::V1::Reports::PaymentsController, type: :request do
 
         expect(payment_data.keys).to match_array([
           "id", "payment_date", "transaction_id", "payment_method",
-          "client_name", "invoice_number", "amount", "notes", "status"
+          "client_name", "invoice_number", "amount", "base_currency_amount", "notes", "status"
         ])
 
         expect(payment_data["client_name"]).to eq(client.name)

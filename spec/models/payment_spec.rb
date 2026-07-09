@@ -109,4 +109,24 @@ RSpec.describe Payment, type: :model do
       expect(payment.settles?(invoice)).to eq(true)
     end
   end
+
+  describe "soft deletion" do
+    it "can be discarded rather than hard deleted" do
+      payment = create(:payment, invoice: create(:invoice, amount_due: 300), amount: 300)
+
+      payment.discard
+
+      expect(payment.reload).to be_discarded
+      expect(Payment.kept).not_to include(payment)
+    end
+
+    it "prevents an invoice with payments from being hard destroyed" do
+      invoice = create(:invoice, amount_due: 300)
+      create(:payment, invoice:, amount: 300)
+
+      expect(invoice.destroy).to be_falsey
+      expect(invoice.errors[:base]).to be_present
+      expect(Invoice.exists?(invoice.id)).to be(true)
+    end
+  end
 end

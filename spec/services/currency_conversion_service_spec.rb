@@ -139,6 +139,42 @@ RSpec.describe CurrencyConversionService do
     end
   end
 
+  describe "historical rate accuracy" do
+    let(:from_currency) { "EUR" }
+    let(:to_currency) { "USD" }
+    let(:historical_date) { 30.days.ago.to_date }
+
+    it "does not query the latest-only exchangerate-api for a past date" do
+      rate = described_class.send(:fetch_from_exchangerate_api, from_currency, to_currency, historical_date)
+
+      expect(rate).to be_nil
+    end
+
+    it "does not query the latest-only fixer.io for a past date" do
+      allow(ENV).to receive(:[]).and_call_original
+      allow(ENV).to receive(:[]).with("FIXER_API_KEY").and_return("test-key")
+      stub = stub_request(:get, /data.fixer.io/)
+        .to_return(status: 200, body: { success: true, rates: { "USD" => 1.25 } }.to_json)
+
+      rate = described_class.send(:fetch_from_fixer_io, from_currency, to_currency, historical_date)
+
+      expect(rate).to be_nil
+      expect(stub).not_to have_been_requested
+    end
+
+    it "prefers the dated frankfurter rate over today's latest rate for a past date" do
+      stub_request(:get, /api.exchangerate-api.com/)
+        .to_return(status: 200, body: { rates: { "USD" => 1.30 } }.to_json)
+      stub_request(:get, "https://api.frankfurter.app/#{historical_date}?from=EUR&to=USD")
+        .to_return(status: 200, body: { rates: { "USD" => 1.09 } }.to_json)
+
+      rate = described_class.send(:fetch_and_store_rate, from_currency, to_currency, historical_date)
+
+      expect(rate).to eq(1.09)
+      expect(ExchangeRate.rate_for(from_currency, to_currency, historical_date)).to eq(1.09)
+    end
+  end
+
   describe "rate caching and expiry" do
     let(:from_currency) { "EUR" }
     let(:to_currency) { "USD" }

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_07_08_120000) do
+ActiveRecord::Schema[8.1].define(version: 2026_07_09_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_stat_statements"
@@ -405,6 +405,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_08_120000) do
 
   create_table "expenses", force: :cascade do |t|
     t.decimal "amount", precision: 20, scale: 2, default: "0.0", null: false
+    t.decimal "base_currency_amount", precision: 20, scale: 2
     t.string "category_name"
     t.bigint "company_id", null: false
     t.datetime "created_at", null: false
@@ -412,6 +413,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_08_120000) do
     t.date "date", null: false
     t.text "description"
     t.datetime "discarded_at"
+    t.decimal "exchange_rate", precision: 18, scale: 10
+    t.date "exchange_rate_date"
     t.bigint "expense_category_id"
     t.integer "expense_type"
     t.datetime "paid_at"
