@@ -6,22 +6,21 @@ import { i18n } from "../../../../../i18n";
 const TableTotal = ({ currency, clientList }) => {
   const report = clientList.reduce(
     (acc, client) => {
+      const amountOverdue = client.amount_overdue || {};
+
       acc.zero_to_thirty_days += parseFloat(
-        client.amount_overdue.zero_to_thirty_days
+        amountOverdue.zero_to_thirty_days || 0
       );
 
       acc.thirty_one_to_sixty_days += parseFloat(
-        client.amount_overdue.thirty_one_to_sixty_days
+        amountOverdue.thirty_one_to_sixty_days || 0
       );
 
       acc.sixty_one_to_ninety_days += parseFloat(
-        client.amount_overdue.sixty_one_to_ninety_days
+        amountOverdue.sixty_one_to_ninety_days || 0
       );
-
-      acc.ninety_plus_days += parseFloat(
-        client.amount_overdue.ninety_plus_days
-      );
-      acc.total += parseFloat(client.amount_overdue.total);
+      acc.ninety_plus_days += parseFloat(amountOverdue.ninety_plus_days || 0);
+      acc.total += parseFloat(amountOverdue.total || 0);
 
       return acc;
     },

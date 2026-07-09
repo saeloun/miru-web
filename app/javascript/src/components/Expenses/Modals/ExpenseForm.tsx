@@ -82,7 +82,7 @@ const ExpenseForm = ({
     const formData = new FormData();
 
     formData.append("expense[amount]", amount);
-    formData.append("expense[date]", expenseDate);
+    formData.append("expense[date]", dayjs(expenseDate).format("YYYY-MM-DD"));
     formData.append("expense[description]", description);
     formData.append("expense[expense_type]", expenseType);
     formData.append("expense[category_name]", category);
@@ -133,7 +133,15 @@ const ExpenseForm = ({
   const UploadCard = () => (
     <div
       className="mt-2 flex cursor-pointer items-center justify-center rounded border border-dashed border-border p-4"
+      role="button"
+      tabIndex={0}
       onClick={handleFileUpload}
+      onKeyDown={event => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          handleFileUpload();
+        }
+      }}
     >
       <FileIcon className="text-muted-foreground" size={16} weight="bold" />
       <span className="text-center text-base font-bold text-muted-foreground">

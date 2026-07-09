@@ -48,6 +48,7 @@ import {
 import { currencyFormat } from "../../helpers/currency";
 import { useUserContext } from "../../context/UserContext";
 import { clientsApi } from "apis/api";
+import { reportClientError } from "utils/runtimeRecovery";
 import { unmapClientList } from "../../mapper/mappedIndex";
 import { toast } from "sonner";
 import { i18n } from "../../i18n";
@@ -78,7 +79,7 @@ const fetchClients = async (timeFrame = "week"): Promise<ClientsData> => {
 
     return unmapClientList({ data: res.data });
   } catch (error) {
-    console.warn("Clients API error, using fallback data", error);
+    reportClientError("clients:fetch", error);
 
     return {
       clientList: [],
