@@ -59,6 +59,21 @@ RSpec.describe "Api::V1::BulkPreviousEmployments#update", type: :request do
         headers: auth_headers(user)
       expect(response).to have_http_status(:ok)
     end
+
+    it "cannot update a coworker's employment details" do
+      patch api_v1_bulk_previous_employment_path(target_user),
+        params: {
+          employments: {
+            current_employment: { designation: "Hacked" },
+            added_employments: [],
+            updated_employments: [],
+            removed_employment_ids: []
+          }
+        },
+        headers: auth_headers(user)
+
+      expect(response).to have_http_status(:forbidden)
+    end
   end
 
   context "when the target user belongs to another company" do

@@ -45,7 +45,7 @@ module Api::V1
       private
 
         def filter_payments
-          scope = current_company.payments.includes(:invoice, invoice: :client)
+          scope = current_company.payments.kept.includes(:invoice, invoice: :client)
 
           from_date = parse_date(params[:from])
           to_date = parse_date(params[:to])

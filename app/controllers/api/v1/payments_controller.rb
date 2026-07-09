@@ -38,7 +38,7 @@ class Api::V1::PaymentsController < Api::V1::ApplicationController
   def index
     authorize :index, policy_class: PaymentPolicy
 
-    payments = current_company.payments.includes(:razorpay_payouts, invoice: [:client])
+    payments = current_company.payments.kept.includes(:razorpay_payouts, invoice: [:client])
 
     # Add search functionality
     if params[:query].present?

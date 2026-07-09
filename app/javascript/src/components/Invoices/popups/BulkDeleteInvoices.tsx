@@ -18,9 +18,12 @@ const BulkDeleteInvoices = ({
   fetchInvoices,
 }: IProps) => {
   const destroyInvoices = async invoices_ids => {
-    await invoicesApi.destroyBulk({ invoices_ids });
-    setShowBulkDeleteDialog(false);
-    fetchInvoices();
+    try {
+      await invoicesApi.destroyBulk({ invoices_ids });
+    } finally {
+      setShowBulkDeleteDialog(false);
+      fetchInvoices();
+    }
   };
 
   return (

@@ -41,7 +41,7 @@ class CurrencyConversionService
       end
 
       def fetch_from_ecb(from_currency, to_currency, date)
-        response = request_json("https://api.frankfurter.app/#{date}?from=#{from_currency}&to=#{to_currency}")
+        response = request_json("https://api.frankfurter.app/#{date.to_date}?from=#{from_currency}&to=#{to_currency}")
         response&.dig("rates", to_currency)&.to_f
       end
 

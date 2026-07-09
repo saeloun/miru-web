@@ -64,6 +64,7 @@ class Payment < ApplicationRecord
 
     def calculate_base_currency_amount
       return if invoice.blank? || amount.blank?
+      return unless new_record? || amount_changed? || payment_currency_changed? || transaction_date_changed?
 
       # Set payment currency if not set
       self.payment_currency ||= invoice&.currency
