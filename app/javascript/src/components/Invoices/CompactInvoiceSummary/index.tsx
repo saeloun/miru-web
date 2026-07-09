@@ -64,8 +64,9 @@ const CompactInvoiceSummary: React.FC<CompactInvoiceSummaryProps> = ({
       label: i18n.t("invoiceDashboard.allInvoices"),
       value: overdueAmount + openAmount + draftAmount,
       icon: ArrowCounterClockwise,
-      colorClass: "text-[#5E58F1]",
-      bgClass: "bg-[#5E58F1]/5 hover:bg-[#5E58F1]/10 border-[#5E58F1]/20",
+      colorClass: "text-[hsl(var(--primary))]",
+      bgClass:
+        "bg-[hsl(var(--primary))]/5 hover:bg-[hsl(var(--primary))]/10 border-[hsl(var(--primary))]/20",
       onClick: resetFilters,
       isReset: true,
     },

@@ -39,13 +39,13 @@ const SidebarDateRangeFilter = ({
             <div
               className={cn(
                 "p-1.5 rounded-md transition-colors",
-                isActive ? "bg-[#5E58F1]/10" : "bg-gray-100"
+                isActive ? "bg-[hsl(var(--primary))]/10" : "bg-gray-100"
               )}
             >
               <Calendar
                 className={cn(
                   "h-4 w-4",
-                  isActive ? "text-[#5E58F1]" : "text-gray-600"
+                  isActive ? "text-[hsl(var(--primary))]" : "text-gray-600"
                 )}
               />
             </div>
@@ -64,7 +64,7 @@ const SidebarDateRangeFilter = ({
             {isActive && (
               <Badge
                 variant="secondary"
-                className="h-5 px-1.5 bg-[#5E58F1] text-white text-xs"
+                className="h-5 px-1.5 bg-[hsl(var(--primary))] text-white text-xs"
               >
                 1
               </Badge>
@@ -94,7 +94,7 @@ const SidebarDateRangeFilter = ({
               <RadioGroupItem
                 value={dateRangeOption.value}
                 id={dateRangeOption.value}
-                className="border-gray-300 text-[#5E58F1] focus:ring-[#5E58F1]"
+                className="border-gray-300 text-[hsl(var(--primary))] focus:ring-[hsl(var(--primary))]"
               />
               <Label
                 htmlFor={dateRangeOption.value}

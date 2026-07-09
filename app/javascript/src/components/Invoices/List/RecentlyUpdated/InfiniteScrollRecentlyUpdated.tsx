@@ -233,7 +233,7 @@ const InfiniteScrollRecentlyUpdated: React.FC<RecentlyUpdatedProps> = ({
           {loading && (
             <div className="flex items-center justify-center mx-1.5 w-36 h-32 rounded-lg border border-gray-200 bg-gray-50 animate-pulse">
               <div className="text-center">
-                <div className="inline-block h-6 w-6 animate-spin rounded-full border-2 border-solid border-[#5E58F1] border-r-transparent"></div>
+                <div className="inline-block h-6 w-6 animate-spin rounded-full border-2 border-solid border-[hsl(var(--primary))] border-r-transparent"></div>
                 <p className="mt-2 text-xs text-gray-500">
                   {i18n.t("loading")}
                 </p>
@@ -250,7 +250,7 @@ const InfiniteScrollRecentlyUpdated: React.FC<RecentlyUpdatedProps> = ({
                 </p>
                 <button
                   onClick={handleRetry}
-                  className="text-xs text-[#5E58F1] hover:underline"
+                  className="text-xs text-[hsl(var(--primary))] hover:underline"
                 >
                   {i18n.t("common.retry")}
                 </button>

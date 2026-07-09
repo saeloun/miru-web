@@ -28,7 +28,7 @@ const MobileHeader = ({
         className="ml-2 rounded border border-primary p-3"
         onClick={() => setShowManualEntryModal(true)}
       >
-        <PlusIcon color="#5E58F1" size={16} weight="bold" />
+        <PlusIcon color="hsl(var(--primary))" size={16} weight="bold" />
       </button>
     </div>
   </div>

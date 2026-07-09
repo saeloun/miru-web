@@ -106,7 +106,11 @@ const Header = ({
             <ul className="menuButton__wrapper" ref={menuRef}>
               <li onClick={handleAddProject}>
                 <button className="menuButton__list-item">
-                  <ReportsIcon color="#5E58F1" size={16} weight="bold" />
+                  <ReportsIcon
+                    color="hsl(var(--primary))"
+                    size={16}
+                    weight="bold"
+                  />
                   <span className="ml-3">{i18n.t("clients.addProject")}</span>
                 </button>
               </li>
@@ -238,7 +242,7 @@ const Header = ({
               setShowMobileModal(false);
             }}
           >
-            <EditIcon color="#5E58F1" size={16} />
+            <EditIcon color="hsl(var(--primary))" size={16} />
             <span className="ml-3">{i18n.t("edit")}</span>
           </li>
           <li

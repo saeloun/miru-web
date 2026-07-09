@@ -182,7 +182,7 @@ const ExpenseForm = ({
             />
             <CalendarIcon
               className="absolute top-0 bottom-0 right-1 mx-2 my-3 cursor-pointer"
-              color="#5E58F1"
+              color="hsl(var(--primary))"
               size={20}
             />
           </div>

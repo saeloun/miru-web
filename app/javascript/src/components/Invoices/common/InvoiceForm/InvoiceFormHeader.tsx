@@ -51,7 +51,11 @@ const InvoiceFormHeader = ({
           style="ternary"
           onClick={() => setShowInvoiceSetting(true)}
         >
-          <SettingIcon className="mr-2.5" color="#5E58F1" size={15} />
+          <SettingIcon
+            className="mr-2.5"
+            color="hsl(var(--primary))"
+            size={15}
+          />
           {i18n.t("invoices.settings")}
         </Button>
       </div>

@@ -190,9 +190,9 @@ const Filters = ({
     }),
     option: (styles, { isSelected }) => ({
       ...styles,
-      backgroundColor: isSelected && "#5E58F1",
+      backgroundColor: isSelected && "hsl(var(--primary))",
       "&:hover": {
-        backgroundColor: isSelected ? "#5E58F1" : "#F5F7F9",
+        backgroundColor: isSelected ? "hsl(var(--primary))" : "#F5F7F9",
       },
     }),
   };

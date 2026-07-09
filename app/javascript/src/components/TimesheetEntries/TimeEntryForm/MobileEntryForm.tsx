@@ -202,7 +202,7 @@ const AddEntryMobile = () => {
                   />
                   <CaretDownIcon
                     className="absolute top-0 bottom-0 right-1 mx-2 my-3 "
-                    color="#5E58F1"
+                    color="hsl(var(--primary))"
                     size={20}
                     weight="bold"
                   />
@@ -285,7 +285,7 @@ const AddEntryMobile = () => {
                   />
                   <CaretDownIcon
                     className="absolute top-0 bottom-0 right-1 mx-2 my-3 "
-                    color="#5E58F1"
+                    color="hsl(var(--primary))"
                     size={20}
                     weight="bold"
                   />
@@ -381,7 +381,7 @@ const AddEntryMobile = () => {
                   />
                   <CalendarIcon
                     className="absolute top-0 bottom-0 right-1 mx-2 my-3 "
-                    color="#5E58F1"
+                    color="hsl(var(--primary))"
                     size={20}
                     weight="bold"
                   />

@@ -107,7 +107,7 @@ const InvoiceListHeader = ({
               {appliedFilterCount}
             </span>
           )}
-          <FilterIcon color="#5E58F1" size={18} weight="bold" />
+          <FilterIcon color="hsl(var(--primary))" size={18} weight="bold" />
         </Button>
       </div>
       <Button

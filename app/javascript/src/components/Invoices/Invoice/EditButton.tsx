@@ -13,7 +13,7 @@ const EditButton = ({ editInvoiceLink }) => (
     >
       <div className="flex flex-row items-center justify-between self-center">
         <div className="mr-1">
-          <PencilIcon color="#5E58F1" size={16} weight="bold" />
+          <PencilIcon color="hsl(var(--primary))" size={16} weight="bold" />
         </div>
         <p className="ml-1 text-base font-bold tracking-widest text-primary">
           {i18n.t("edit").toUpperCase()}
