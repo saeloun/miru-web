@@ -10,7 +10,7 @@ const CalendarCell = ({ dayNum, weekInfo, handleWeekday }) => {
 
   return (
     <div
-      className={`flex h-14 w-16 cursor-pointer justify-end rounded-md border-2 bg-white p-1 xl:w-24
+      className={`flex h-14 w-16 cursor-pointer justify-end rounded-md border-2 bg-card p-1 xl:w-24
                     ${
                       weekInfo[dayNum]["date"] === selectedFullDate
                         ? "border-primary"

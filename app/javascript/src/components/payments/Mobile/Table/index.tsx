@@ -6,11 +6,11 @@ import TableHeader from "./TableHeader";
 import TableRow from "./TableRow";
 
 const TableOnMobileView = ({ payments, baseCurrency }: TableProps) => (
-  <table className="mt-4 min-w-full divide-y divide-gray-200">
+  <table className="mt-4 min-w-full divide-y divide-border">
     <thead>
       <TableHeader />
     </thead>
-    <tbody className="block min-w-full divide-y divide-gray-200 bg-white pb-24">
+    <tbody className="block min-w-full divide-y divide-border bg-card pb-24">
       {payments.map(
         (payment, index) =>
           payment && (

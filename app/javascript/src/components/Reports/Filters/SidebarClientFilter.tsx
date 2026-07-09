@@ -36,27 +36,29 @@ const SidebarClientFilter = ({
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen}>
       <CollapsibleTrigger className="w-full">
-        <div className="flex items-center justify-between py-3 px-4 rounded-lg hover:bg-gray-50 transition-colors">
+        <div className="flex items-center justify-between py-3 px-4 rounded-lg hover:bg-muted transition-colors">
           <div className="flex items-center gap-3">
             <div
               className={cn(
                 "p-1.5 rounded-md transition-colors",
-                isActive ? "bg-[hsl(var(--primary))]/10" : "bg-gray-100"
+                isActive ? "bg-[hsl(var(--primary))]/10" : "bg-muted"
               )}
             >
               <Users
                 className={cn(
                   "h-4 w-4",
-                  isActive ? "text-[hsl(var(--primary))]" : "text-gray-600"
+                  isActive
+                    ? "text-[hsl(var(--primary))]"
+                    : "text-muted-foreground"
                 )}
               />
             </div>
             <div className="text-left">
-              <p className="text-sm font-medium text-gray-900">
+              <p className="text-sm font-medium text-foreground">
                 {i18n.t("reports.clients")}
               </p>
               {isActive && (
-                <p className="text-xs text-gray-500 mt-0.5">
+                <p className="text-xs text-muted-foreground mt-0.5">
                   {i18n.t("reports.selected", { count: activeCount })}
                 </p>
               )}
@@ -72,9 +74,9 @@ const SidebarClientFilter = ({
               </Badge>
             )}
             {isOpen ? (
-              <CaretUp className="h-4 w-4 text-gray-400" />
+              <CaretUp className="h-4 w-4 text-muted-foreground" />
             ) : (
-              <CaretDown className="h-4 w-4 text-gray-400" />
+              <CaretDown className="h-4 w-4 text-muted-foreground" />
             )}
           </div>
         </div>
@@ -84,19 +86,19 @@ const SidebarClientFilter = ({
         <div className="mt-3 space-y-3">
           {/* MagnifyingGlass Input */}
           <div className="relative">
-            <MagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <MagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               placeholder={i18n.t("reports.searchClientsFilter")}
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
-              className="pl-9 pr-9 h-9 text-sm border-gray-200 focus:border-[hsl(var(--primary))] focus:ring-[hsl(var(--primary))]"
+              className="pl-9 pr-9 h-9 text-sm border-border focus:border-[hsl(var(--primary))] focus:ring-[hsl(var(--primary))]"
             />
             {searchQuery && (
               <button
                 onClick={() => setSearchQuery("")}
                 className="absolute right-3 top-1/2 -translate-y-1/2"
               >
-                <X className="h-4 w-4 text-gray-400 hover:text-gray-600" />
+                <X className="h-4 w-4 text-muted-foreground hover:text-muted-foreground" />
               </button>
             )}
           </div>
@@ -116,18 +118,18 @@ const SidebarClientFilter = ({
                       onClick={() => handleSelectClient(client)}
                       className={cn(
                         "flex items-center gap-3 p-2 rounded-md cursor-pointer transition-colors",
-                        "hover:bg-gray-50",
+                        "hover:bg-muted",
                         isChecked && "bg-[hsl(var(--primary))]/5"
                       )}
                     >
                       <Checkbox
                         id={`client-${client.id}`}
                         checked={isChecked}
-                        className="border-gray-300 data-[state=checked]:bg-[hsl(var(--primary))] data-[state=checked]:border-[hsl(var(--primary))]"
+                        className="border-border data-[state=checked]:bg-[hsl(var(--primary))] data-[state=checked]:border-[hsl(var(--primary))]"
                       />
                       <Label
                         htmlFor={`client-${client.id}`}
-                        className="text-sm font-normal text-gray-700 cursor-pointer flex-1"
+                        className="text-sm font-normal text-muted-foreground cursor-pointer flex-1"
                       >
                         {client.label}
                       </Label>
@@ -138,7 +140,7 @@ const SidebarClientFilter = ({
                   );
                 })
               ) : (
-                <div className="text-center py-4 text-sm text-gray-500">
+                <div className="text-center py-4 text-sm text-muted-foreground">
                   {i18n.t("noResultsFound")}
                 </div>
               )}
@@ -148,7 +150,7 @@ const SidebarClientFilter = ({
           {/* Quick Stats */}
           {filteredClientList.length > 0 && (
             <div className="pt-2 border-t">
-              <p className="text-xs text-gray-500">
+              <p className="text-xs text-muted-foreground">
                 {i18n.t("reports.showingClientsCount", {
                   shown: filteredClientList.length,
                   total: filteredClientList.length,

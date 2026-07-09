@@ -32,7 +32,7 @@ const PlanSelection = () => {
 
   return (
     <div className="flex min-h-screen items-center justify-center">
-      <div className="w-96 rounded bg-white p-6 shadow-xl">
+      <div className="w-96 rounded bg-card p-6 shadow-xl">
         <h1 className="text-base font-bold text-foreground">
           {i18n.t("subscriptions.planDetails")}
         </h1>

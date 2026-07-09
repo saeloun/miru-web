@@ -124,7 +124,7 @@ const MobilePaymentReminder = ({
           <XIcon className="text-white" size={16} weight="bold" />
         </Button>
       </div>
-      <div className="bg-gray-100">
+      <div className="bg-muted">
         <div className="mx-auto my-2 flex px-10 py-1">
           <Steps
             current={currentStep - 1}

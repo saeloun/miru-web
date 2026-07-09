@@ -51,10 +51,10 @@ const ThemeToggle: React.FC<ThemeToggleProps> = ({
             setIsMinimized(false);
             setIsOpen(true);
           }}
-          className="group bg-white border border-gray-200 rounded-full p-3 shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-110"
+          className="group bg-card border border-border rounded-full p-3 shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-110"
           aria-label={i18n.t("themeSelector.open")}
         >
-          <Palette className="h-5 w-5 text-gray-600 group-hover:text-[hsl(var(--primary))]" />
+          <Palette className="h-5 w-5 text-muted-foreground group-hover:text-[hsl(var(--primary))]" />
         </button>
       </div>
     );
@@ -65,13 +65,13 @@ const ThemeToggle: React.FC<ThemeToggleProps> = ({
       <div className="fixed bottom-6 right-6 z-50">
         <button
           onClick={() => setIsOpen(true)}
-          className="group flex items-center gap-2 bg-white border border-gray-200 rounded-full px-4 py-2.5 shadow-lg hover:shadow-xl transition-all duration-200"
+          className="group flex items-center gap-2 bg-card border border-border rounded-full px-4 py-2.5 shadow-lg hover:shadow-xl transition-all duration-200"
         >
-          <Palette className="h-5 w-5 text-gray-600 group-hover:text-[hsl(var(--primary))]" />
-          <span className="text-sm font-medium text-gray-700">
+          <Palette className="h-5 w-5 text-muted-foreground group-hover:text-[hsl(var(--primary))]" />
+          <span className="text-sm font-medium text-muted-foreground">
             {i18n.t("theme")}
           </span>
-          <CaretRight className="h-4 w-4 text-gray-400 group-hover:translate-x-0.5 transition-transform" />
+          <CaretRight className="h-4 w-4 text-muted-foreground group-hover:translate-x-0.5 transition-transform" />
         </button>
       </div>
     );
@@ -87,23 +87,23 @@ const ThemeToggle: React.FC<ThemeToggleProps> = ({
 
       {/* Theme Selector Panel */}
       <div className="fixed bottom-6 right-6 z-50 animate-in slide-in-from-bottom-4 duration-300">
-        <div className="bg-white rounded-2xl shadow-2xl border border-gray-200 p-6 w-80 max-w-[calc(100vw-3rem)]">
+        <div className="bg-card rounded-2xl shadow-2xl border border-border p-6 w-80 max-w-[calc(100vw-3rem)]">
           {/* Header */}
           <div className="flex items-center justify-between mb-5">
             <div>
-              <h3 className="text-lg font-semibold text-gray-900">
+              <h3 className="text-lg font-semibold text-foreground">
                 {i18n.t("themeSelector.choose")}
               </h3>
-              <p className="text-sm text-gray-500 mt-1">
+              <p className="text-sm text-muted-foreground mt-1">
                 {i18n.t("themeSelector.description")}
               </p>
             </div>
             <button
               onClick={() => setIsOpen(false)}
-              className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors"
+              className="p-1.5 hover:bg-muted rounded-lg transition-colors"
               aria-label={i18n.t("themeSelector.close")}
             >
-              <X className="h-4 w-4 text-gray-500" />
+              <X className="h-4 w-4 text-muted-foreground" />
             </button>
           </div>
 
@@ -127,7 +127,7 @@ const ThemeToggle: React.FC<ThemeToggleProps> = ({
                     "w-full flex items-start gap-3 p-3 rounded-xl border-2 transition-all duration-200",
                     isActive
                       ? "border-[hsl(var(--primary))] bg-purple-50/50"
-                      : "border-gray-200 hover:border-gray-300 hover:bg-gray-50/50"
+                      : "border-border hover:border-border hover:bg-muted/50"
                   )}
                 >
                   {/* Preview */}
@@ -142,7 +142,7 @@ const ThemeToggle: React.FC<ThemeToggleProps> = ({
                         "h-6 w-6",
                         isActive
                           ? "text-[hsl(var(--primary))]"
-                          : "text-gray-600"
+                          : "text-muted-foreground"
                       )}
                     />
                   </div>
@@ -155,7 +155,7 @@ const ThemeToggle: React.FC<ThemeToggleProps> = ({
                           "font-medium",
                           isActive
                             ? "text-[hsl(var(--primary))]"
-                            : "text-gray-900"
+                            : "text-foreground"
                         )}
                       >
                         {theme.name}
@@ -166,7 +166,7 @@ const ThemeToggle: React.FC<ThemeToggleProps> = ({
                         </span>
                       )}
                     </div>
-                    <p className="text-sm text-gray-500 mt-0.5">
+                    <p className="text-sm text-muted-foreground mt-0.5">
                       {theme.description}
                     </p>
                   </div>
@@ -176,17 +176,17 @@ const ThemeToggle: React.FC<ThemeToggleProps> = ({
           </div>
 
           {/* Footer */}
-          <div className="mt-5 pt-4 border-t border-gray-100">
+          <div className="mt-5 pt-4 border-t border-border">
             <div className="flex items-center justify-between">
               <button
                 onClick={() => setIsMinimized(true)}
-                className="text-sm text-gray-500 hover:text-gray-700 transition-colors"
+                className="text-sm text-muted-foreground hover:text-muted-foreground transition-colors"
               >
                 {i18n.t("themeSelector.minimize")}
               </button>
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                <span className="text-xs text-gray-500">
+                <span className="text-xs text-muted-foreground">
                   {i18n.t("themeSelector.previewActive")}
                 </span>
               </div>

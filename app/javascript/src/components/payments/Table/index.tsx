@@ -6,11 +6,11 @@ import TableRow from "./TableRow";
 import { TableProps } from "../interfaces";
 
 const Table = ({ payments, baseCurrency }: TableProps) => (
-  <table className="min-w-full divide-y divide-gray-200">
+  <table className="min-w-full divide-y divide-border">
     <thead>
       <TableHeader />
     </thead>
-    <tbody className="min-w-full divide-y divide-gray-200 bg-white">
+    <tbody className="min-w-full divide-y divide-border bg-card">
       {payments.map(
         (payment, index) =>
           payment && (

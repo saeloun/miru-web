@@ -98,10 +98,10 @@ const MobileClientEditor = ({
 
   return (
     <SidePanel
-      WrapperClassname="z-50 justify-content-between lg:hidden bg-white"
+      WrapperClassname="z-50 justify-content-between lg:hidden bg-card"
       setFilterVisibilty={setShowDialog}
     >
-      <SidePanel.Header className="mb-2 flex items-center justify-between bg-primary px-5 py-5 text-white lg:bg-white lg:font-bold lg:text-foreground">
+      <SidePanel.Header className="mb-2 flex items-center justify-between bg-primary px-5 py-5 text-white lg:bg-card lg:font-bold lg:text-foreground">
         <span className="flex w-full items-center justify-center pl-6 text-base font-medium leading-5">
           {client?.id
             ? i18n.t("clients.editClient")
@@ -195,7 +195,7 @@ const MobileClientEditor = ({
                 <div className="mt-4">
                   <div className="field relative">
                     <div className="flex flex-col">
-                      <div className="field-outline relative flex h-12 flex-row rounded border border-border bg-white p-4 pt-2">
+                      <div className="field-outline relative flex h-12 flex-row rounded border border-border bg-card p-4 pt-2">
                         <PhoneInput
                           className="input-phone-number w-full border-transparent focus:border-transparent focus:ring-0"
                           flags={flags}
@@ -209,7 +209,7 @@ const MobileClientEditor = ({
                           }}
                         />
                         <label
-                          className="absolute -top-1 left-0 z-1 ml-3 origin-0 bg-white px-1 text-xsm font-medium text-muted-foreground duration-300"
+                          className="absolute -top-1 left-0 z-1 ml-3 origin-0 bg-card px-1 text-xsm font-medium text-muted-foreground duration-300"
                           htmlFor="phone"
                         >
                           {i18n.t("phone")}
@@ -255,7 +255,7 @@ const MobileClientEditor = ({
                 <div className="mb-5 flex flex-row">
                   <div className="flex w-1/2 flex-col py-0 pr-2">
                     <div className="field relative">
-                      <label className="absolute -top-1 left-0 z-1 ml-3 origin-0 bg-white px-1 text-xsm font-medium text-muted-foreground duration-300">
+                      <label className="absolute -top-1 left-0 z-1 ml-3 origin-0 bg-card px-1 text-xsm font-medium text-muted-foreground duration-300">
                         {i18n.t("country")} *
                       </label>
                       <Select
@@ -341,7 +341,7 @@ const MobileClientEditor = ({
                 </div>
                 <div className="mt-4">
                   <div className="field relative mb-5">
-                    <label className="absolute -top-1 left-0 z-1 ml-3 origin-0 bg-white px-1 text-xsm font-medium text-muted-foreground duration-300">
+                    <label className="absolute -top-1 left-0 z-1 ml-3 origin-0 bg-card px-1 text-xsm font-medium text-muted-foreground duration-300">
                       {i18n.t("currency")} *
                     </label>
                     <Select

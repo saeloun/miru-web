@@ -34,27 +34,29 @@ const SidebarDateRangeFilter = ({
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen}>
       <CollapsibleTrigger className="w-full">
-        <div className="flex items-center justify-between py-3 px-4 rounded-lg hover:bg-gray-50 transition-colors">
+        <div className="flex items-center justify-between py-3 px-4 rounded-lg hover:bg-muted transition-colors">
           <div className="flex items-center gap-3">
             <div
               className={cn(
                 "p-1.5 rounded-md transition-colors",
-                isActive ? "bg-[hsl(var(--primary))]/10" : "bg-gray-100"
+                isActive ? "bg-[hsl(var(--primary))]/10" : "bg-muted"
               )}
             >
               <Calendar
                 className={cn(
                   "h-4 w-4",
-                  isActive ? "text-[hsl(var(--primary))]" : "text-gray-600"
+                  isActive
+                    ? "text-[hsl(var(--primary))]"
+                    : "text-muted-foreground"
                 )}
               />
             </div>
             <div className="text-left">
-              <p className="text-sm font-medium text-gray-900">
+              <p className="text-sm font-medium text-foreground">
                 {i18n.t("dateRange")}
               </p>
               {isActive && (
-                <p className="text-xs text-gray-500 mt-0.5">
+                <p className="text-xs text-muted-foreground mt-0.5">
                   {filters.dateRange.label}
                 </p>
               )}
@@ -70,9 +72,9 @@ const SidebarDateRangeFilter = ({
               </Badge>
             )}
             {isOpen ? (
-              <CaretUp className="h-4 w-4 text-gray-400" />
+              <CaretUp className="h-4 w-4 text-muted-foreground" />
             ) : (
-              <CaretDown className="h-4 w-4 text-gray-400" />
+              <CaretDown className="h-4 w-4 text-muted-foreground" />
             )}
           </div>
         </div>
@@ -85,7 +87,7 @@ const SidebarDateRangeFilter = ({
               key={dateRangeOption.value}
               className={cn(
                 "flex items-center space-x-3 p-2 rounded-md transition-colors",
-                "hover:bg-gray-50 cursor-pointer"
+                "hover:bg-muted cursor-pointer"
               )}
               onClick={() =>
                 handleSelectFilter(dateRangeOption, { name: "dateRange" })
@@ -94,11 +96,11 @@ const SidebarDateRangeFilter = ({
               <RadioGroupItem
                 value={dateRangeOption.value}
                 id={dateRangeOption.value}
-                className="border-gray-300 text-[hsl(var(--primary))] focus:ring-[hsl(var(--primary))]"
+                className="border-border text-[hsl(var(--primary))] focus:ring-[hsl(var(--primary))]"
               />
               <Label
                 htmlFor={dateRangeOption.value}
-                className="text-sm font-normal text-gray-700 cursor-pointer flex-1"
+                className="text-sm font-normal text-muted-foreground cursor-pointer flex-1"
               >
                 {dateRangeOption.label}
               </Label>
@@ -107,7 +109,7 @@ const SidebarDateRangeFilter = ({
         </RadioGroup>
 
         {showCustomFilter && (
-          <div className="mt-4 p-3 bg-gray-50 rounded-lg">
+          <div className="mt-4 p-3 bg-muted rounded-lg">
             <CustomDateRangeWithInput
               dateRange={dateRange}
               handleOpenDateCalendar={handleOpenDateCalendar}

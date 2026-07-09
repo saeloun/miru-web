@@ -41,7 +41,7 @@ const Table = ({ invoices, selectedInvoices, setSelectedInvoices }) => {
 
   return (
     <div className="h-full overflow-y-auto pb-10/100">
-      <table className="min-w-full divide-y divide-gray-200 overflow-x-scroll overflow-y-scroll lg:mt-4">
+      <table className="min-w-full divide-y divide-border overflow-x-scroll overflow-y-scroll lg:mt-4">
         <TableHeader handleCheck={handleCheck} isChecked={isChecked} />
         <tbody>
           {invoices.map((invoice, idx) => (

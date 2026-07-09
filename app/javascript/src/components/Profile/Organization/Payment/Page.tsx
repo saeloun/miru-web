@@ -828,7 +828,7 @@ const OrganizationPaymentSettingsPage: React.FC = () => {
                           data-testid="upi-qr-preview"
                         >
                           <div
-                            className="mb-3 flex items-center justify-center rounded-md border border-slate-200 bg-white px-3 py-2"
+                            className="mb-3 flex items-center justify-center rounded-md border border-slate-200 bg-card px-3 py-2"
                             data-testid="upi-logo-surface"
                           >
                             <img
@@ -838,7 +838,7 @@ const OrganizationPaymentSettingsPage: React.FC = () => {
                             />
                           </div>
                           <div
-                            className="mx-auto flex h-44 w-44 items-center justify-center rounded-md border border-slate-200 bg-white p-2"
+                            className="mx-auto flex h-44 w-44 items-center justify-center rounded-md border border-slate-200 bg-card p-2"
                             data-testid="upi-qr-surface"
                           >
                             <img

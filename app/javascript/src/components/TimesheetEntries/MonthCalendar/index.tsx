@@ -98,7 +98,7 @@ const MonthCalendar = () => {
                     <InvalidEmptyCalendarCell key={`invalid-cell-${dayNum}`} />
                   )
                 )}
-                <div className="relative h-14 w-16 rounded-md bg-white font-semibold xl:w-24 xl:font-bold">
+                <div className="relative h-14 w-16 rounded-md bg-card font-semibold xl:w-24 xl:font-bold">
                   <div className="absolute bottom-0 right-0 flex justify-end p-1">
                     <p className="mr-auto text-xl xl:text-2xl" id={weekInfo[7]}>
                       {(() => {

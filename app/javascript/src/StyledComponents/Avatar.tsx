@@ -31,7 +31,7 @@ const Avatar = ({
     "md:text-xl text-xs md:font-medium font-light leading-none text-white";
 
   const DEFAULT_STYLE_INITIALS_WRAPPER =
-    "inline-flex rounded-full items-center justify-center bg-gray-500";
+    "inline-flex rounded-full items-center justify-center bg-muted0";
 
   useEffect(() => {
     if (name) {

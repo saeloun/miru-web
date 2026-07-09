@@ -23,7 +23,7 @@ const TERNARY =
 const TERNARY_DISABLED = "bg-transparent text-muted-foreground border-0";
 
 const DASHED =
-  "bg-white rounded border border-dashed border-border text-center text-base font-bold tracking-wider text-muted-foreground";
+  "bg-card rounded border border-dashed border-border text-center text-base font-bold tracking-wider text-muted-foreground";
 
 const DELETE = "bg-destructive hover:bg-destructive/90 text-white";
 

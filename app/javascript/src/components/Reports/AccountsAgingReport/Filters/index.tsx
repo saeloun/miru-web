@@ -65,7 +65,7 @@ const Filters = ({
 
   return (
     <SidePanel WrapperClassname="z-50" setFilterVisibilty={setIsFilterVisible}>
-      <SidePanel.Header className="mb-2 flex items-center justify-between bg-primary px-5 py-5 text-white lg:bg-white lg:font-bold lg:text-foreground">
+      <SidePanel.Header className="mb-2 flex items-center justify-between bg-primary px-5 py-5 text-white lg:bg-card lg:font-bold lg:text-foreground">
         {isDesktop ? (
           <h4 className="flex items-center text-base">
             <FilterIcon className="mr-2.5" size={16} />{" "}

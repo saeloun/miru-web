@@ -50,7 +50,7 @@ const CustomCheckbox: React.FC<CustomCheckboxProps> = ({
       <div
         className={`pointer-events-none col-start-1 row-start-1 ${
           isUpdatedDesign ? "mr-0 h-4 w-4" : "mr-2 h-3 w-3 md:h-5 md:w-5"
-        } grid flex-shrink-0 content-center justify-items-center rounded-sm border border-primary bg-white focus-within:border-blue-500 md:border-2`}
+        } grid flex-shrink-0 content-center justify-items-center rounded-sm border border-primary bg-card focus-within:border-blue-500 md:border-2`}
       >
         {!isUpdatedDesign ? (
           <svg

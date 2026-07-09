@@ -175,12 +175,12 @@ const InfiniteScrollRecentlyUpdated: React.FC<RecentlyUpdatedProps> = ({
     return (
       <div className="mt-6 mb-4">
         <div className="flex items-center justify-between mb-3">
-          <h2 className="text-base font-semibold text-gray-900 lg:text-lg">
+          <h2 className="text-base font-semibold text-foreground lg:text-lg">
             {i18n.t("invoices.recentlyUpdated")}
           </h2>
         </div>
-        <div className="w-full py-8 text-center bg-gray-50 rounded-lg">
-          <p className="text-sm text-gray-500">
+        <div className="w-full py-8 text-center bg-muted rounded-lg">
+          <p className="text-sm text-muted-foreground">
             {i18n.t("invoices.noRecentlyUpdated")}
           </p>
         </div>
@@ -192,7 +192,7 @@ const InfiniteScrollRecentlyUpdated: React.FC<RecentlyUpdatedProps> = ({
     <div className="mt-6 mb-4">
       <div className="flex items-center justify-between mb-3">
         <div>
-          <h2 className="text-base font-semibold text-gray-900 lg:text-lg">
+          <h2 className="text-base font-semibold text-foreground lg:text-lg">
             {i18n.t("invoices.recentlyUpdated")}
           </h2>
           <p className="text-xs text-muted-foreground">
@@ -201,14 +201,14 @@ const InfiniteScrollRecentlyUpdated: React.FC<RecentlyUpdatedProps> = ({
         </div>
         {orderedInvoices.length > 0 && (
           <div className="flex items-center gap-2">
-            <span className="text-xs text-gray-500">
+            <span className="text-xs text-muted-foreground">
               {i18n.t("invoices.showingOf", {
                 shown: orderedInvoices.length,
                 total: totalCount,
               })}
             </span>
             {hasMore && (
-              <span className="text-xs text-gray-400">
+              <span className="text-xs text-muted-foreground">
                 • {i18n.t("invoices.scrollForMore")}
               </span>
             )}
@@ -231,10 +231,10 @@ const InfiniteScrollRecentlyUpdated: React.FC<RecentlyUpdatedProps> = ({
 
           {/* Loading indicator */}
           {loading && (
-            <div className="flex items-center justify-center mx-1.5 w-36 h-32 rounded-lg border border-gray-200 bg-gray-50 animate-pulse">
+            <div className="flex items-center justify-center mx-1.5 w-36 h-32 rounded-lg border border-border bg-muted animate-pulse">
               <div className="text-center">
                 <div className="inline-block h-6 w-6 animate-spin rounded-full border-2 border-solid border-[hsl(var(--primary))] border-r-transparent"></div>
-                <p className="mt-2 text-xs text-gray-500">
+                <p className="mt-2 text-xs text-muted-foreground">
                   {i18n.t("loading")}
                 </p>
               </div>
@@ -262,11 +262,11 @@ const InfiniteScrollRecentlyUpdated: React.FC<RecentlyUpdatedProps> = ({
           {hasMore && !loading && !error && (
             <div
               ref={observerTarget}
-              className="flex items-center justify-center mx-1.5 w-36 h-32 rounded-lg border border-dashed border-gray-300 bg-gradient-to-r from-gray-50 to-white"
+              className="flex items-center justify-center mx-1.5 w-36 h-32 rounded-lg border border-dashed border-border bg-gradient-to-r from-gray-50 to-white"
             >
               <div className="text-center">
                 <svg
-                  className="w-6 h-6 text-gray-400 mx-auto mb-1"
+                  className="w-6 h-6 text-muted-foreground mx-auto mb-1"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -278,7 +278,7 @@ const InfiniteScrollRecentlyUpdated: React.FC<RecentlyUpdatedProps> = ({
                     d="M9 5l7 7-7 7"
                   />
                 </svg>
-                <p className="text-xs text-gray-500">
+                <p className="text-xs text-muted-foreground">
                   {i18n.t("invoices.scrollForMore")}
                 </p>
               </div>
@@ -287,7 +287,7 @@ const InfiniteScrollRecentlyUpdated: React.FC<RecentlyUpdatedProps> = ({
 
           {/* End of list indicator */}
           {!hasMore && orderedInvoices.length > 0 && (
-            <div className="flex items-center justify-center mx-1.5 w-36 h-32 rounded-lg border border-gray-200 bg-gray-50">
+            <div className="flex items-center justify-center mx-1.5 w-36 h-32 rounded-lg border border-border bg-muted">
               <div className="text-center p-3">
                 <svg
                   className="w-6 h-6 text-green-500 mx-auto mb-1"
@@ -302,7 +302,7 @@ const InfiniteScrollRecentlyUpdated: React.FC<RecentlyUpdatedProps> = ({
                     d="M5 13l4 4L19 7"
                   />
                 </svg>
-                <p className="text-xs text-gray-500">
+                <p className="text-xs text-muted-foreground">
                   {i18n.t("invoices.allCaughtUp")}
                 </p>
               </div>

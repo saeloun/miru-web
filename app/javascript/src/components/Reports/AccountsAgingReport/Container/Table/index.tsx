@@ -44,9 +44,9 @@ const Table = ({ accountsAgingReport }) => {
 
   return (
     <div className="overflow-x-auto">
-      <table className="mt-4 min-w-[56rem] divide-y divide-gray-200 lg:min-w-full">
+      <table className="mt-4 min-w-[56rem] divide-y divide-border lg:min-w-full">
         {isDesktop && <TableHeader sortClientList={sortClientList} />}
-        <tbody className="flex flex-col divide-y divide-gray-200 bg-white">
+        <tbody className="flex flex-col divide-y divide-border bg-card">
           {loading ? (
             <tr className="tracking-wide flex items-center justify-center text-base font-medium text-primary">
               <td>{i18n.t("loading")}</td>

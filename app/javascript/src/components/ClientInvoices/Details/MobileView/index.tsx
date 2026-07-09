@@ -69,7 +69,7 @@ const MobileView = ({ data }) => {
         />
         {upi_payment?.qr_code_data_uri && (
           <div className="border-b border-border px-4 py-4">
-            <div className="rounded-lg border border-border bg-white p-4">
+            <div className="rounded-lg border border-border bg-card p-4">
               <div className="mb-3 flex items-center justify-center border-b border-border pb-3">
                 <img alt="Miru" className="h-6" src={MiruLogoWithTextSVG} />
               </div>
@@ -86,7 +86,7 @@ const MobileView = ({ data }) => {
         )}
         {bankRows.length > 0 && (
           <div className="border-b border-border px-4 py-4">
-            <div className="rounded-lg border border-border bg-white p-4">
+            <div className="rounded-lg border border-border bg-card p-4">
               <p className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
                 {bank_payment?.title || i18n.t("invoices.bankDetails")}
               </p>
@@ -107,7 +107,7 @@ const MobileView = ({ data }) => {
           </div>
         )}
       </div>
-      <div className="sticky bottom-0 left-0 right-0 z-50 flex w-full items-center justify-between  bg-white p-4 shadow-c1">
+      <div className="sticky bottom-0 left-0 right-0 z-50 flex w-full items-center justify-between  bg-card p-4 shadow-c1">
         <Button
           className="mr-2 flex w-full items-center justify-center px-4 py-2"
           style="primary"

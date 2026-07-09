@@ -98,7 +98,7 @@ const InvoiceListHeader = ({
           fullWidthOnMobile={true}
         />
         <Button
-          className="relative flex h-10 w-10 items-center justify-center rounded-lg border border-gray-200 bg-white hover:bg-gray-50 transition-colors"
+          className="relative flex h-10 w-10 items-center justify-center rounded-lg border border-border bg-card hover:bg-muted transition-colors"
           style="ternary"
           onClick={() => setIsFilterVisible(true)}
         >

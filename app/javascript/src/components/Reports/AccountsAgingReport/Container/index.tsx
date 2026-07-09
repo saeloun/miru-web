@@ -11,7 +11,7 @@ const AccountsAgingResults = () => {
   const { accountsAgingReport } = useEntry();
 
   return accountsAgingReport.clientList.length ? (
-    <div className="bg-white p-4 lg:p-0">
+    <div className="bg-card p-4 lg:p-0">
       <SummaryDashboard
         currency={accountsAgingReport.currency}
         showPointer={false}
