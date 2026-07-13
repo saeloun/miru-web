@@ -19,6 +19,7 @@ import {
 } from "components/Invoices/common/InvoiceForm/SendInvoice/utils";
 import { ApiStatus as InvoiceStatus } from "constants/index";
 import { i18n } from "../../../../i18n";
+import type { InvoiceEmail } from "../../../../types/email";
 
 const SendInvoiceContainer = ({
   invoice,
@@ -44,12 +45,6 @@ const SendInvoiceContainer = ({
       )}
     </div>
   );
-
-  interface InvoiceEmail {
-    recipients: string[];
-    subject: string;
-    message: string;
-  }
 
   const [invoiceEmail, setInvoiceEmail] = useState<InvoiceEmail>({
     subject: emailSubject(invoice, isSendReminder),

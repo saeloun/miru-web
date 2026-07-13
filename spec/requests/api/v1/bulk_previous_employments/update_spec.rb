@@ -61,6 +61,55 @@ RSpec.describe "Api::V1::BulkPreviousEmployments#update", type: :request do
     end
   end
 
+  context "when an employee tries to update another member" do
+    before do
+      user.add_role :employee, company
+      sign_in user
+    end
+
+    it "is forbidden" do
+      patch api_v1_bulk_previous_employment_path(target_user),
+        params: {
+          employments: {
+            current_employment: {
+              designation: "Hacked Title",
+              employment_type: "full_time"
+            },
+            added_employments: [],
+            updated_employments: [],
+            removed_employment_ids: []
+          }
+        },
+        headers: auth_headers(user)
+      expect(response).to have_http_status(:forbidden)
+    end
+  end
+
+  context "when the target user belongs to another company" do
+    let(:other_company) { create(:company) }
+    let(:other_user) { create(:user, current_workspace_id: other_company.id) }
+
+    before do
+      create(:employment, company: other_company, user: other_user)
+      user.add_role :admin, company
+      sign_in user
+    end
+
+    it "returns not found" do
+      patch api_v1_bulk_previous_employment_path(other_user),
+        params: {
+          employments: {
+            current_employment: {},
+            added_employments: [],
+            updated_employments: [],
+            removed_employment_ids: []
+          }
+        },
+        headers: auth_headers(user)
+      expect(response).to have_http_status(:not_found)
+    end
+  end
+
   context "when unauthenticated" do
     it "returns unauthorized" do
       patch api_v1_bulk_previous_employment_path(target_user),

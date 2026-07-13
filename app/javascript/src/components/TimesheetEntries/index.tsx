@@ -602,14 +602,15 @@ const TimesheetEntries = ({ user, isAdminUser }: Iprops) => {
   };
 
   const handleAddEntryDateChange = date => {
-    const date1 = dayjs(date).weekday(dayjs().weekday());
+    const d = dayjs(date);
+    const date1 = d.weekday(dayjs().weekday());
     const date2 = dayjs();
 
     const days = date1.diff(date2, "days");
     setWeekDay(days > 0 ? days + 1 : days); //The difference between selected date to current date is always comes 1 day less. This condition resolves that issue.
-    setSelectDate(dayjs(date).weekday());
-    setCurrentMonthNumber(dayjs(date).get("month"));
-    setCurrentYear(dayjs(date).year());
+    setSelectDate(d.weekday());
+    setCurrentMonthNumber(d.get("month"));
+    setCurrentYear(d.year());
   };
 
   if (loading) {

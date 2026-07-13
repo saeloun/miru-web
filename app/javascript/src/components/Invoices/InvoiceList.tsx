@@ -108,7 +108,6 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
   });
   const observerTarget = useRef<HTMLDivElement>(null);
 
-  // Use summary from API or calculate fallback
   const calculatedSummary = summary || {
     overdueAmount: invoices
       .filter(inv => inv.status === "overdue")

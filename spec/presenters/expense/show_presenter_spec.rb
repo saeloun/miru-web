@@ -18,6 +18,7 @@ RSpec.describe Expense::ShowPresenter do
           vendor_name: "Jetway",
           category_name: "Travel",
           amount: expense.amount,
+          currency: expense.currency,
           date: expense.formatted_date,
           description: expense.description,
           type: expense.expense_type,

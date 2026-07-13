@@ -87,7 +87,6 @@ const TableRow = ({ payment, baseCurrency }: TableRowProps) => {
     );
   };
 
-  // Check if payment currency differs from organization base currency
   const showConversion = currency && baseCurrency && currency !== baseCurrency;
   const convertedAmount =
     showConversion && exchangeRate ? amount * exchangeRate : null;

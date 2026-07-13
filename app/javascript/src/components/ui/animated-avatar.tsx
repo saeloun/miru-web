@@ -102,7 +102,6 @@ const AnimatedAvatar: React.FC<AnimatedAvatarProps> = ({
   const sizeClass = sizeClasses[size];
   const textSize = textSizes[size];
 
-  // Generate a consistent color based on name
   const getColorFromName = (name: string) => {
     const colors = [
       "bg-gradient-to-br from-blue-400 to-blue-600",
@@ -176,7 +175,6 @@ const AnimatedAvatar: React.FC<AnimatedAvatarProps> = ({
     );
   }
 
-  // Default avatar
   return (
     <motion.div
       className={`relative ${sizeClass} ${className}`}

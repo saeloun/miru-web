@@ -22,7 +22,7 @@ const InvoiceSignature: React.FC = () => {
   const [filename, setFilename] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const companyId = (company as any)?.id;
+  const companyId = company?.id;
 
   const fetchSignature = useCallback(async () => {
     if (!companyId) return;

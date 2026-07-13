@@ -7,7 +7,6 @@ import { useUserContext } from "context/UserContext";
 const Dashboard = props => {
   const userContext = useUserContext();
 
-  // Use context data if props are not available (for client-side navigation)
   const user = props.user || userContext.user;
   const companyRole = props.companyRole || userContext.companyRole;
   const isAdminUser =

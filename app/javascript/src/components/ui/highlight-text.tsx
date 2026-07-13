@@ -8,13 +8,6 @@ interface HighlightTextProps {
   highlightClassName?: string;
 }
 
-/**
- * Highlights matching portions of text based on a search query.
- * Similar to browser Ctrl+F highlighting behavior.
- *
- * If query is empty or text is empty, renders the text as-is.
- * Escapes regex special characters in the query for safe matching.
- */
 export const HighlightText: React.FC<HighlightTextProps> = ({
   text,
   query,
@@ -60,11 +53,6 @@ interface HighlightedCellProps {
   className?: string;
 }
 
-/**
- * A convenience component for use inside DataTable cell renderers.
- * Automatically reads the current search query from DataTable context
- * and highlights matching text.
- */
 export const HighlightedCell: React.FC<HighlightedCellProps> = ({
   text,
   className,

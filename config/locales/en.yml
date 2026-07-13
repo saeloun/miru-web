@@ -47,6 +47,11 @@ en:
   app:
     name: Miru Agency OS
     tagline: Run your agency’s ops from one command center.
+  attachment:
+    validation:
+      file_too_large: must be smaller than %{size_mb}MB
+      invalid_content_type: has an unsupported content type
+      too_many_files: cannot exceed %{count} files
   application_controller:
     not_found: Route not found
   errors:
@@ -652,7 +657,8 @@ en:
     team_policy:
       destroy?: You are not authorized to destroy team.
       edit?: You are not authorized to edit team.
-      last_owner_self_removal: You cannot remove yourself because you are the only workspace owner.
+      owner_self_removal: You cannot remove yourself. Transfer ownership to another user first.
+      admin_cannot_remove_owner: Admins cannot remove the workspace owner.
       update?: You are not authorized to update team.
   registration:
     confirm_password: confirm password
@@ -765,6 +771,9 @@ en:
       failure:
         disabled: Your access has been disabled.
         pending_invitation: Your account is not activated yet.
+    super_admin_delete:
+      sole_owner: "Cannot permanently delete this user because they are the only owner of: %{companies}. Transfer ownership or delete the company before deleting this user."
+      success: User %{email} has been permanently deleted.
   workspaces:
     update:
       failure: Failed to switch workspace

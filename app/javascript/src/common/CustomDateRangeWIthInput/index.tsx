@@ -5,17 +5,13 @@ import dayjs from "dayjs";
 import { CaretLeft, CaretRight } from "phosphor-react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import type { DateRange } from "../../types/dateRange";
 
 import {
   validDateFormats,
   months,
   CUSTOM_DATE_RANGE_ERRORS,
 } from "../CustomDateRangePicker/utils";
-
-interface DateRange {
-  from: string;
-  to: string;
-}
 
 const formatWeekdayLabel = (dayName: string) => dayName.slice(0, 2);
 

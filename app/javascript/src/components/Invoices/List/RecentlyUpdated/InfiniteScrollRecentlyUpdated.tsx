@@ -3,20 +3,7 @@ import { invoicesApi } from "apis/api";
 import { Toastr } from "StyledComponents";
 import RecentlyUpdatedCard from "./RecentlyUpdatedCard";
 import { i18n } from "../../../../i18n";
-
-interface Invoice {
-  id: number | string;
-  invoiceNumber: string;
-  amount: number;
-  currency: string;
-  status: string;
-  updatedAt?: string;
-  client: {
-    name: string;
-    logo?: string;
-    email: string;
-  };
-}
+import type { Invoice } from "../../../../types/invoice";
 
 interface RecentlyUpdatedProps {
   initialInvoices?: Invoice[];
@@ -80,7 +67,6 @@ const InfiniteScrollRecentlyUpdated: React.FC<RecentlyUpdatedProps> = ({
     []
   );
 
-  // Fetch invoices function
   const fetchInvoices = useCallback(
     async (pageNum: number) => {
       if (loading) return;

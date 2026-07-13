@@ -28,7 +28,9 @@ RSpec.describe "Api::V1::Cli::Expenses#index", type: :request do
     send_request :get, api_v1_cli_expenses_path, params: { query: "Flight" }, headers: cli_auth_headers(cli_token)
 
     expect(response).to have_http_status(:ok)
-    expect(json_response["expenses"]).to contain_exactly(include("id" => expense.id, "category_name" => "Travel"))
+    expect(json_response["expenses"]).to contain_exactly(
+      include("id" => expense.id, "category_name" => "Travel", "currency" => expense.currency)
+    )
     expect(json_response["categories"]).to include(include("name" => "Travel"))
   end
 

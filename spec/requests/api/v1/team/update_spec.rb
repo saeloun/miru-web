@@ -33,6 +33,15 @@ RSpec.describe "Api::V1::Team#update", type: :request do
         .to change { employee_user.primary_role(company) }.from("employee").to("admin")
     end
 
+    it "does not allow an admin to promote themselves to owner" do
+      expect {
+        send_request :put, api_v1_team_path(admin_user), params: { role: "owner" },
+          headers: auth_headers(admin_user)
+      }.not_to change { admin_user.reload.primary_role(company) }.from("admin")
+
+      expect(response).to have_http_status(:forbidden)
+    end
+
     context "when team member is present in multiple company" do
       let(:team_user) { create(:user) }
       let(:other_company_1) { create(:company) }

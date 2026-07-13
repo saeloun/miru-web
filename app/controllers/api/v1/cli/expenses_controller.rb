@@ -43,19 +43,13 @@ class Api::V1::Cli::ExpensesController < Api::V1::Cli::BaseController
         :date,
         :description,
         :expense_type,
+        :currency,
         :category_name,
         :vendor_name
       )
     end
 
     def normalized_expense_params
-      permitted = expense_params.to_h
-      vendor_name = permitted.delete("vendor_name").to_s.strip
-      category_name = permitted.delete("category_name").to_s.strip
-
-      permitted["vendor_name"] = vendor_name if vendor_name.present?
-      permitted["category_name"] = category_name if category_name.present?
-
-      permitted
+      Expense.normalize_params(expense_params)
     end
 end

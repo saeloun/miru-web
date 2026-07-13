@@ -13,6 +13,7 @@ class Expense::ShowPresenter
       vendor_name: expense.display_vendor_name,
       category_name: expense.display_category_name,
       amount: expense.amount,
+      currency: expense.display_currency,
       date: expense.formatted_date,
       description: expense.description,
       type: expense.expense_type,

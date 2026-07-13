@@ -47,4 +47,58 @@ class Api::V1::UsersController < Api::V1::BaseController
       render json: { user: nil, company: nil, company_role: nil }, status: 401
     end
   end
+
+  def destroy
+    target_user = User.find(params[:id])
+    authorize target_user, policy_class: SuperAdminUserPolicy
+
+    sole_owner_companies = sole_owner_companies_for(target_user)
+    if sole_owner_companies.exists?
+      render json: {
+        errors: I18n.t(
+          "user.super_admin_delete.sole_owner",
+          companies: sole_owner_companies.pluck(:name).join(", ")
+        )
+      }, status: 422
+
+      return
+    end
+
+    Audited::Audit.create!(
+      auditable: target_user,
+      associated: current_company,
+      user: current_user,
+      action: "super_admin_delete",
+      audited_changes: {
+        actor_id: current_user.id,
+        actor_email: current_user.email,
+        target_user_id: target_user.id,
+        target_user_email: target_user.email,
+        occurred_at: Time.current.iso8601
+      },
+      comment: "Super admin permanently deleted user"
+    )
+
+    target_user.destroy!
+
+    render json: {
+      notice: I18n.t("user.super_admin_delete.success", email: target_user.email)
+    }, status: 200
+  end
+
+  private
+
+    def sole_owner_companies_for(user)
+      owner_company_ids = user.roles.where(name: "owner", resource_type: "Company").pluck(:resource_id)
+      return Company.none if owner_company_ids.blank?
+
+      sole_owner_company_ids = Role.joins(:users)
+        .where(name: "owner", resource_type: "Company", resource_id: owner_company_ids)
+        .where(users: { discarded_at: nil })
+        .group(:resource_id)
+        .having("COUNT(users.id) = 1")
+        .pluck(:resource_id)
+
+      Company.where(id: sole_owner_company_ids).order(:name)
+    end
 end

@@ -9,7 +9,6 @@ class SendPaymentReminderMailer < ApplicationMailer
     @company_logo = company_logo
     @amount = FormatAmountService.new(@company.base_currency, @invoices.first.amount).process
 
-    # pdf = InvoicePayment::PdfGeneration.process(@invoice, @company_logo, root_url)
     # attachments["invoice_#{@invoice.invoice_number}.pdf"] = pdf
 
     mail(

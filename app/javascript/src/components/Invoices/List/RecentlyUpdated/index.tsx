@@ -16,7 +16,6 @@ const RecentlyUpdated = ({ recentlyUpdatedInvoices }) => {
       (container.scrollLeft / (container.scrollWidth - container.clientWidth)) *
       100;
 
-    // Load more when scrolled 80% to the right
     if (
       scrollPercentage > 80 &&
       visibleCount < recentlyUpdatedInvoices.length
@@ -31,7 +30,7 @@ const RecentlyUpdated = ({ recentlyUpdatedInvoices }) => {
     const container = scrollContainerRef.current;
     if (!container) return;
 
-    container.addEventListener("scroll", handleScroll);
+    container.addEventListener("scroll", handleScroll, { passive: true });
 
     return () => container.removeEventListener("scroll", handleScroll);
   }, [handleScroll]);

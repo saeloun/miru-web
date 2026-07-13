@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_03_120000) do
+ActiveRecord::Schema[8.1].define(version: 2026_07_01_101700) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_stat_statements"
@@ -406,6 +406,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_03_120000) do
     t.string "category_name"
     t.bigint "company_id", null: false
     t.datetime "created_at", null: false
+    t.string "currency", default: "USD"
     t.date "date", null: false
     t.text "description"
     t.datetime "discarded_at"
@@ -430,6 +431,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_03_120000) do
     t.index ["status"], name: "index_expenses_on_status"
     t.index ["user_id"], name: "index_expenses_on_user_id"
     t.index ["vendor_id"], name: "index_expenses_on_vendor_id"
+    t.check_constraint "currency IS NOT NULL AND currency::text ~ '^[A-Z]{3}$'::text", name: "expenses_currency_iso_code"
   end
 
   create_table "holiday_infos", force: :cascade do |t|

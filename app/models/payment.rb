@@ -63,7 +63,6 @@ class Payment < ApplicationRecord
     def calculate_base_currency_amount
       return if invoice.blank? || amount.blank?
 
-      # Set payment currency if not set
       self.payment_currency ||= invoice&.currency
 
       # If same currency, base_currency_amount equals amount
@@ -73,7 +72,6 @@ class Payment < ApplicationRecord
         return
       end
 
-      # Get the exchange rate for the payment date
       payment_date = transaction_date || Date.current
       rate = CurrencyConversionService.get_exchange_rate(
         payment_currency,

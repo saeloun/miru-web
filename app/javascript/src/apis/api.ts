@@ -3,12 +3,7 @@ import { Toastr } from "StyledComponents";
 import { getActiveLocale } from "../i18n";
 
 import { clearCredentialsFromLocalStorage } from "utils/storage";
-import {
-  getCsrfToken,
-  getSessionRequestHeaders,
-  getStoredAuthHeaders,
-  shouldAttachStoredAuthHeaders,
-} from "utils/authHeaders";
+import { getCsrfToken, getSessionRequestHeaders } from "utils/authHeaders";
 import { reportClientError } from "utils/runtimeRecovery";
 
 const AUTH_PATH_PREFIXES = [
@@ -115,12 +110,6 @@ class ApiHandler {
 
         if (config?.data instanceof FormData) {
           delete config.headers["Content-Type"];
-        }
-
-        if (shouldAttachStoredAuthHeaders(config.url)) {
-          Object.entries(getStoredAuthHeaders()).forEach(([key, value]) => {
-            config.headers[key] = value;
-          });
         }
 
         config.headers["X-CSRF-TOKEN"] = this.getCsrfToken();
@@ -648,6 +637,7 @@ export const teamApi = {
   updateInvitedMember: (id: any, payload: any) =>
     http.put(`/invitations/${id}`, payload),
   deleteInvitedMember: (id: any) => http.delete(`/invitations/${id}`),
+  deleteUser: (id: any) => http.delete(`/users/${id}`),
 };
 
 // Subscriptions

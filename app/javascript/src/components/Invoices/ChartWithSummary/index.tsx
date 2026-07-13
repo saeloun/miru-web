@@ -183,7 +183,6 @@ const ChartWithSummary: React.FC<ChartWithSummaryProps> = ({
       { value: "overdue", label: "OVERDUE" },
     ]);
 
-  // Parse values to ensure they're numbers
   const parseAmount = (value: number | string): number => {
     if (typeof value === "number") return value;
     const parsed = parseFloat(value.toString());

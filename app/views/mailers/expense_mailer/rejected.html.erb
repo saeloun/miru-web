@@ -7,7 +7,7 @@
 
 <div class="email-highlight">
   <p class="email-highlight-label"><%= t("mailers.labels.amount") %></p>
-  <p class="email-highlight-value"><%= FormatAmountService.new(@company.base_currency, @expense.amount).process %></p>
+  <p class="email-highlight-value"><%= FormatAmountService.new(@expense.display_currency, @expense.amount).process %></p>
   <p class="email-highlight-caption"><%= @expense.display_category_name.presence || "-" %></p>
 </div>
 

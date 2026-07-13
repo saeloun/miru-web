@@ -114,7 +114,7 @@
     "tailwind-merge": "^3.3.1",
     "tailwindcss": "^3.4.0",
     "tailwindcss-animate": "^1.0.7",
-    "vite": "^6.4.1",
+    "vite": "^6.4.3",
     "vite-plugin-ruby": "^5.1.1"
   },
   "lint-staged": {
@@ -168,14 +168,18 @@
       "flatted": "3.4.2",
       "immutable@^5": "5.1.5",
       "diff@^4": "4.0.4",
-      "js-yaml@^4": "4.1.1",
+      "@babel/core": ">=7.29.6 <8",
+      "js-yaml@^4": ">=4.2.0 <5",
       "ajv@^8": "8.18.0",
       "ajv@^6": "6.14.0",
+      "fast-uri": ">=3.1.2 <4",
+      "form-data": ">=4.0.6",
       "brace-expansion@^1": "1.1.13",
       "brace-expansion@^2": "2.0.3",
+      "brace-expansion@^5": ">=5.0.6",
       "@isaacs/brace-expansion": "5.0.1",
-      "lodash": "4.17.23",
-      "lodash-es": "4.17.23",
+      "lodash": ">=4.18.0",
+      "lodash-es": ">=4.18.0",
       "glob@^10": "10.5.0"
     }
   },

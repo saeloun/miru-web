@@ -42,7 +42,6 @@ const RouteConfig = () => {
     }
   }, [location.pathname, setIsCalledFromSettings, setIsCalledFromTeam]);
 
-  // Check if we're in team or settings context
   const isTeamContext = location.pathname.startsWith("/team");
   const isSettingsContext = location.pathname.startsWith("/settings");
 

@@ -34,7 +34,6 @@ const InvoiceListHeader = ({
         data: { invoices },
       } = await invoicesApi.get(searchParams);
 
-      // Transform for UnifiedSearch interface
       return (
         invoices?.map(invoice => ({
           id: invoice.id,

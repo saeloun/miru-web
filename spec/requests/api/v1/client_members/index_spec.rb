@@ -44,6 +44,27 @@ RSpec.describe "Api::V1::ClientMembers", type: :request do
     end
   end
 
+  describe "PUT #update" do
+    let(:member_user) { create(:user, current_workspace_id: company.id) }
+    let!(:member_employment) { create(:employment, company:, user: member_user) }
+    let!(:client_member) { create(:client_member, client:, company:, user: member_user) }
+
+    before do
+      create(:employment, company:, user:)
+      user.add_role :admin, company
+      sign_in user
+    end
+
+    it "accepts the client role" do
+      expect {
+        send_request :put, api_v1_client_client_member_path(client, client_member),
+          params: { first_name: "Jane", last_name: "Smith" }, headers: auth_headers(user)
+      }.to change { member_user.reload.primary_role(company) }.from("employee").to("client")
+
+      expect(response).to have_http_status(:ok)
+    end
+  end
+
   describe "DELETE #destroy" do
     let(:member_user) { create(:user, current_workspace_id: company.id) }
     let!(:member_employment) { create(:employment, company:, user: member_user) }

@@ -8,9 +8,11 @@ class Api::V1::Mobile::CollectionsController < Api::V1::ApplicationController
 
   def index
     invoices = mobile_collection_scope.includes(:client, :payments).order(created_at: :desc).limit(50).to_a
+    collector_ids = invoices.filter_map { |invoice| invoice.payment_infos["mobile_collector_user_id"] }
+    collectors_by_id = User.kept.where(id: collector_ids).index_by(&:id)
 
     render json: {
-      collections: invoices.map { |invoice| collection_payload(invoice) },
+      collections: invoices.map { |invoice| collection_payload(invoice, collectors_by_id) },
       summary: ledger_summary(invoices)
     }, status: 200
   end
@@ -441,13 +443,13 @@ class Api::V1::Mobile::CollectionsController < Api::V1::ApplicationController
       }, status:
     end
 
-    def collection_payload(invoice)
+    def collection_payload(invoice, collectors_by_id)
       payment = invoice.payments.max_by(&:created_at)
 
       {
         id: invoice.id,
         client: client_payload(invoice.client),
-        collector: collector_payload(invoice),
+        collector: collector_payload(invoice, collectors_by_id),
         invoice: invoice_payload(invoice),
         payment: payment && payment_payload(payment),
         payment_method: payment&.transaction_type || invoice.payment_infos["mobile_collection_payment_method"],
@@ -460,9 +462,9 @@ class Api::V1::Mobile::CollectionsController < Api::V1::ApplicationController
       }
     end
 
-    def collector_payload(invoice)
+    def collector_payload(invoice, collectors_by_id)
       collector_id = invoice.payment_infos["mobile_collector_user_id"]
-      collector = User.kept.find_by(id: collector_id) if collector_id.present?
+      collector = collectors_by_id[collector_id.to_i] if collector_id.present?
 
       {
         id: collector&.id || collector_id,

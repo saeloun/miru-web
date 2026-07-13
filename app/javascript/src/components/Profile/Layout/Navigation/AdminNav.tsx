@@ -9,7 +9,6 @@ import { SETTINGS } from "../routes";
 const AdminNav = () => {
   const { companyRole } = useUserContext();
 
-  // Get all settings that should be shown as tabs
   const allSettings = SETTINGS.filter(
     ({ isTab, authorisedRoles }) =>
       isTab && authorisedRoles.includes(companyRole)

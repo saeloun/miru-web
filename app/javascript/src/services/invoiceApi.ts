@@ -1,6 +1,10 @@
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import axios from "../apis/api";
+import type { Invoice } from "../types/invoice";
+import type { Client } from "../types/timeTracking";
+
+export type { Client, Invoice };
 
 dayjs.extend(customParseFormat);
 
@@ -37,67 +41,6 @@ export interface InvoiceTax {
   value: number;
   amount: number;
   _destroy?: boolean;
-}
-
-export interface Client {
-  id: string;
-  name: string;
-  email: string;
-  address: string;
-  logo?: string;
-  ein?: string;
-  taxId?: string;
-  currency?: string;
-  clientCurrency?: string;
-  previousInvoiceNumber?: string;
-}
-
-export interface Invoice {
-  id: string;
-  invoiceNumber: string;
-  clientId?: string;
-  client: Client;
-  status:
-    | "draft"
-    | "sent"
-    | "paid"
-    | "overdue"
-    | "viewed"
-    | "declined"
-    | "sending"
-    | "waived";
-  issueDate: string;
-  dueDate: string;
-  amount: number;
-  baseCurrencyAmount?: number;
-  currency: string;
-  tax?: number;
-  invoiceTaxes?: InvoiceTax[];
-  discount?: number;
-  reference?: string;
-  amountPaid?: number;
-  amountDue?: number;
-  updatedAt?: string;
-  createdAt?: string;
-  invoiceLineItems?: InvoiceItem[];
-  company?: {
-    phone: string;
-    address: string;
-    email: string;
-    name: string;
-    baseCurrency: string;
-    currency?: string;
-    dateFormat: string;
-    taxId?: string;
-    vatNumber?: string;
-    gstNumber?: string;
-    ein?: string;
-    usTaxpayerId?: string;
-    bankName?: string;
-    bankAccountNumber?: string;
-    bankRoutingNumber?: string;
-    bankSwiftCode?: string;
-  };
 }
 
 export interface InvoiceFormData {
@@ -247,9 +190,6 @@ class InvoiceApiService {
       : date;
   }
 
-  /**
-   * Fetch invoices with optional filters and pagination
-   */
   async getInvoices(
     filters: InvoiceFilters = {}
   ): Promise<InvoiceListResponse> {
@@ -300,18 +240,12 @@ class InvoiceApiService {
     };
   }
 
-  /**
-   * Fetch a single invoice by ID
-   */
   async getInvoice(id: string): Promise<Invoice> {
     const response = await axios.get(`/invoices/${id}`);
 
     return this.transformApiInvoice(response.data);
   }
 
-  /**
-   * Create a new invoice
-   */
   async createInvoice(invoiceData: InvoiceFormData): Promise<Invoice> {
     const response = await axios.post(
       `/invoices`,
@@ -324,9 +258,6 @@ class InvoiceApiService {
     return this.transformApiInvoice(response.data.invoice || response.data);
   }
 
-  /**
-   * Update an existing invoice
-   */
   async updateInvoice(
     id: string,
     invoiceData: InvoiceFormData
@@ -342,16 +273,10 @@ class InvoiceApiService {
     return this.transformApiInvoice(response.data.invoice || response.data);
   }
 
-  /**
-   * Delete an invoice
-   */
   async deleteInvoice(id: string): Promise<void> {
     await axios.delete(`/invoices/${id}`);
   }
 
-  /**
-   * Send an invoice via email
-   */
   async sendInvoice(
     id: string,
     emailData: {
@@ -396,9 +321,6 @@ class InvoiceApiService {
     return response.data;
   }
 
-  /**
-   * Download invoice PDF
-   */
   async downloadInvoice(id: string): Promise<Blob> {
     const response = await axios.get(`/invoices/${id}/download`, {
       responseType: "blob",
@@ -407,13 +329,9 @@ class InvoiceApiService {
     return response.data;
   }
 
-  /**
-   * Fetch clients for invoice creation
-   */
   async getClients(): Promise<Client[]> {
     const response = await axios.get(`/clients`);
 
-    // Transform the client_details response to match our Client interface
     return (response.data.client_details || []).map((clientDetail: any) => ({
       id: clientDetail.id,
       name: clientDetail.name,
@@ -448,9 +366,6 @@ class InvoiceApiService {
     }));
   }
 
-  /**
-   * Format invoice data for API submission
-   */
   private formatInvoiceForApi(invoiceData: InvoiceFormData) {
     return {
       invoice_number: invoiceData.invoiceNumber,
@@ -515,18 +430,13 @@ class InvoiceApiService {
     };
   }
 
-  /**
-   * Transform API invoice response to our Invoice interface
-   */
   transformApiInvoice(apiInvoice: any): Invoice {
-    // Helper function to safely format address
     const formatAddress = (addressData: any): string => {
       if (typeof addressData === "string") {
         return addressData;
       }
 
       if (typeof addressData === "object" && addressData) {
-        // Handle address object with individual fields
         const parts = [];
         if (addressData.address_line_1) parts.push(addressData.address_line_1);
 

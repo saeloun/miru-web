@@ -1,7 +1,9 @@
 import { createContext, useContext } from "react";
+import type { Company } from "../types/company";
 
 const UserContext = createContext({
   isAdminUser: false,
+  isSuperAdmin: false,
   locale: "en-US",
   setLocale: value => {},
   user: {
@@ -12,6 +14,7 @@ const UserContext = createContext({
     last_name: "",
     id: "",
     locale: "en-US",
+    is_super_admin: false,
   },
   avatarUrl: "",
   setCurrentAvatarUrl: value => {},
@@ -22,7 +25,7 @@ const UserContext = createContext({
   selectedTab: null,
   googleOauthSuccess: false,
   setSelectedTab: value => {},
-  company: null,
+  company: null as Company | null,
   setCompany: value => {},
   calendarEnabled: false,
   calendarConnected: false,

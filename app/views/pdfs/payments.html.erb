@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Payments Report</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background-color: #f4f4f4;
+    }
+  </style>
+</head>
+<body>
+  <h1>Payments Report</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Client</th>
+        <th>Invoice Number</th>
+        <th>Payment Method</th>
+        <th>Transaction ID</th>
+        <th>Amount</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% report_data.each do |payment| %>
+        <tr>
+          <td><%= CompanyDateFormattingService.new(payment[:payment_date], company: current_company).process %></td>
+          <td><%= payment[:client_name] %></td>
+          <td><%= payment[:invoice_number] %></td>
+          <td><%= payment[:payment_method] %></td>
+          <td><%= payment[:transaction_id] %></td>
+          <td><%= FormatAmountService.new(current_company.base_currency || "USD", payment[:amount]).process %></td>
+          <td><%= payment[:status] %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</body>
+</html>

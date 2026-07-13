@@ -34,8 +34,10 @@ const ExpenseDetails = () => {
 
   const fetchExpense = async () => {
     try {
-      const resData = await expensesApi.show(params.expenseId);
-      const res = await expensesApi.index();
+      const [resData, res] = await Promise.all([
+        expensesApi.show(params.expenseId),
+        expensesApi.index(),
+      ]);
       const data = setCategoryData(res.data.categories);
       res.data.categories = data;
       setExpenseData(res.data);
@@ -98,7 +100,12 @@ const ExpenseDetails = () => {
             handleDelete={handleDelete}
             handleEdit={handleEdit}
           />
-          <Expense currency={company.base_currency} expense={expense} />
+          <Expense
+            currency={
+              expense.currency || company.base_currency || company.baseCurrency
+            }
+            expense={expense}
+          />
         </Fragment>
       )}
       {showEditExpenseModal &&

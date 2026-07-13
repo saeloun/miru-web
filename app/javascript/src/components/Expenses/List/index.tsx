@@ -78,20 +78,6 @@ const Expenses = () => {
         expenseData={expenseData}
         fetchExpenses={fetchExpenses}
       />
-      {/* TODO: Fix pagination backend (missing attributes: items,page) and uncomment
-      <Pagination
-        isPerPageVisible
-        currentPage={pagy?.page}
-        handleClick={handlePageChange}
-        handleClickOnPerPage={handleClickOnPerPage}
-        isFirstPage={isFirstPage()}
-        isLastPage={isLastPage()}
-        itemsPerPage={pagy?.items}
-        nextPage={pagy?.next}
-        prevPage={pagy?.prev}
-        title="expenses/page"
-        totalPages={pagy?.pages}
-      /> */}
       {showAddExpenseModal && (
         <AddExpenseModal
           expenseData={expenseData}

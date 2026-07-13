@@ -6,27 +6,22 @@ class NotificationPreference < ApplicationRecord
 
   validates :notification_enabled, inclusion: { in: [true, false] }
 
-  # Check if user should receive any emails
   def can_receive_emails?
     !unsubscribed_from_all
   end
 
-  # Check if user should receive weekly reminders
   def can_receive_weekly_reminder?
     can_receive_emails? && notification_enabled
   end
 
-  # Check if user should receive invoice notifications
   def can_receive_invoice_notifications?
     can_receive_emails? && invoice_email_notifications
   end
 
-  # Check if user should receive payment notifications
   def can_receive_payment_notifications?
     can_receive_emails? && payment_email_notifications
   end
 
-  # Check if user should receive timesheet reminders
   def can_receive_timesheet_reminders?
     can_receive_emails? && timesheet_reminder_enabled
   end

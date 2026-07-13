@@ -37,7 +37,6 @@ const Main: React.FC<MainProps> = props => {
     }
   }, [isLoggedIn, user, location.pathname]);
 
-  // Update auth context when user data is available
   useEffect(() => {
     if (user && user.email && !isLoggedIn) {
       // User is authenticated via Rails session

@@ -156,7 +156,7 @@ RSpec.describe "Api::V1::Team#destroy", type: :request do
         send_request :delete, api_v1_team_path(owner_user), headers: auth_headers(owner_user)
 
         expect(response).to have_http_status(:forbidden)
-        expect(json_response["errors"]).to eq(I18n.t("pundit.team_policy.last_owner_self_removal"))
+        expect(json_response["errors"]).to eq(I18n.t("pundit.team_policy.owner_self_removal"))
       end
 
       it "does not discard the owner employment" do
@@ -177,16 +177,66 @@ RSpec.describe "Api::V1::Team#destroy", type: :request do
         sign_in owner_user
       end
 
-      it "allows self removal" do
+      it "still forbids self removal until ownership is transferred" do
         owner_employment = company.employments.kept.find_by!(user: owner_user)
 
         expect {
           send_request :delete, api_v1_team_path(owner_user), headers: auth_headers(owner_user)
+        }.not_to change(company.employments.kept, :count)
+
+        expect(response).to have_http_status(:forbidden)
+        expect(json_response["errors"]).to eq(I18n.t("pundit.team_policy.owner_self_removal"))
+        expect(owner_employment.reload.discarded?).to be_falsey
+      end
+    end
+
+    context "when owner removes another member" do
+      let(:team_user) { create(:user, current_workspace_id: company.id) }
+
+      before do
+        create(:employment, company:, user: owner_user)
+        @team_company_user = create(:employment, company:, user: team_user)
+        owner_user.add_role :owner, company
+        team_user.add_role :employee, company
+        sign_in owner_user
+      end
+
+      it "allows removing the member" do
+        expect {
+          send_request :delete, api_v1_team_path(team_user), headers: auth_headers(owner_user)
         }.to change(company.employments.kept, :count).by(-1)
 
         expect(response).to be_successful
-        expect(owner_employment.reload.discarded?).to be_truthy
+        expect(@team_company_user.reload.discarded?).to be_truthy
       end
+    end
+  end
+
+  describe "when admin tries to remove the owner" do
+    let(:admin_user) { create(:user, current_workspace_id: company.id) }
+    let(:owner_user) { create(:user, current_workspace_id: company.id) }
+
+    before do
+      create(:employment, company:, user: admin_user)
+      @owner_employment = create(:employment, company:, user: owner_user)
+      admin_user.add_role :admin, company
+      owner_user.add_role :owner, company
+      sign_in admin_user
+    end
+
+    it "returns forbidden response with a clear message" do
+      send_request :delete, api_v1_team_path(owner_user), headers: auth_headers(admin_user)
+
+      expect(response).to have_http_status(:forbidden)
+      expect(json_response["errors"]).to eq(I18n.t("pundit.team_policy.admin_cannot_remove_owner"))
+    end
+
+    it "does not discard the owner employment" do
+      expect {
+        send_request :delete, api_v1_team_path(owner_user), headers: auth_headers(admin_user)
+      }.not_to change(company.employments.kept, :count)
+
+      expect(@owner_employment.reload.discarded?).to be_falsey
     end
   end
 

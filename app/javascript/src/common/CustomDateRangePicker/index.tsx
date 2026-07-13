@@ -7,13 +7,9 @@ import { CaretLeft, CaretRight } from "phosphor-react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { i18n } from "../../i18n";
+import type { DateRange } from "../../types/dateRange";
 
 import { validDateFormats, months, CUSTOM_DATE_RANGE_ERRORS } from "./utils";
-
-interface DateRange {
-  from: string;
-  to: string;
-}
 
 const formatWeekdayLabel = (dayName: string) => dayName.slice(0, 2);
 

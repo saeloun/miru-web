@@ -4,6 +4,12 @@ class Company < ApplicationRecord
   include MetricsTracking
   include PhoneNumberValidatable
 
+  MAX_ATTACHMENT_SIZE_MB = 5
+  ATTACHMENT_CONTENT_TYPES = {
+    logo: %w[image/png image/jpeg image/jpg image/webp],
+    invoice_signature: %w[image/png]
+  }.freeze
+
   # Associations
   has_many :employments, dependent: :destroy
   has_many :users, -> { kept }, through: :employments
@@ -46,6 +52,7 @@ class Company < ApplicationRecord
   validates :name, :standard_price, :country, :base_currency, presence: true
   validates :name, length: { maximum: 30 }
   validate :business_phone_must_be_valid
+  validate :validate_attachment_constraints
   validates :standard_price, numericality: { greater_than_or_equal_to: 0 }
   validates :timesheet_edit_days, numericality: { only_integer: true, in: 1..365 }
 
@@ -228,6 +235,21 @@ class Company < ApplicationRecord
   end
 
   private
+
+    def validate_attachment_constraints
+      ATTACHMENT_CONTENT_TYPES.each do |name, allowed_content_types|
+        attachment = public_send(name)
+        next unless attachment.attached?
+
+        if attachment.blob.byte_size > MAX_ATTACHMENT_SIZE_MB.megabytes
+          errors.add(name, I18n.t("attachment.validation.file_too_large", size_mb: MAX_ATTACHMENT_SIZE_MB))
+        end
+
+        next if allowed_content_types.include?(attachment.blob.content_type)
+
+        errors.add(name, I18n.t("attachment.validation.invalid_content_type"))
+      end
+    end
 
     def business_phone_must_be_valid
       validate_phone_number(:business_phone)

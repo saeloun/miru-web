@@ -144,7 +144,6 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
     logo: currentCompany?.logo || "",
   };
 
-  // Load initial data
   useEffect(() => {
     loadInvoices();
     loadClients();
@@ -166,7 +165,6 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
   const loadClients = async () => {
     try {
       const clientList = await invoiceApi.getClients();
-      // Format client addresses to ensure they're strings
       const formattedClients = clientList.map(client => ({
         ...client,
         address:
@@ -238,7 +236,6 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
   };
 
   const handlePreview = (invoiceData: InvoiceFormData) => {
-    // Convert form data to invoice preview format
     const client = clients.find(
       c => String(c.id) === String(invoiceData.clientId)
     );
@@ -381,7 +378,6 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
         setPreviewData(updatedInvoice);
       }
 
-      // Then send the invoice
       if (invoiceId) {
         const response = await invoiceApi.sendInvoice(invoiceId, {
           subject: `Invoice ${invoiceData.invoiceNumber}`,
@@ -576,7 +572,6 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
 
   const handleDownload = async (id: string) => {
     try {
-      // Find the invoice to get the invoice number
       const invoice = invoices.find(inv => inv.id === id) || selectedInvoice;
       const filename = `invoice-${invoice?.invoiceNumber || id}.pdf`;
 
@@ -588,7 +583,6 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
         throw new Error("Invalid response from server - expected PDF blob");
       }
 
-      // Create download link
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
@@ -736,7 +730,6 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
         status: selectedInvoice.status,
       };
 
-      // Format company address if it's an object
       const formattedCompany = selectedInvoice.company
         ? {
             ...selectedInvoice.company,
@@ -828,7 +821,6 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
         }
       };
 
-      // Convert invoiceLineItems to lineItems for InvoicePreview
       const previewInvoice = {
         ...invoiceToPreview,
         lineItems: invoiceToPreview.invoiceLineItems || [],

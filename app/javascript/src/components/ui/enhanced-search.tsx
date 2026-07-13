@@ -119,7 +119,6 @@ const SearchSkeleton = memo(() => (
   </div>
 ));
 
-// Helper functions for enhanced search results
 const getTypeIcon = (type?: SearchItem["type"]) => {
   const iconProps = { className: "h-4 w-4", "aria-hidden": true };
 
@@ -362,13 +361,11 @@ export const UnifiedSearch = forwardRef<HTMLInputElement, UnifiedSearchProps>(
     const debouncedQuery = useDebounce(query, debounceMs);
     const deferredQuery = useDeferredValue(debouncedQuery);
 
-    // Use a ref to store the latest search action to avoid dependency issues
     const searchActionRef = useRef(searchAction);
     useEffect(() => {
       searchActionRef.current = searchAction;
     }, [searchAction]);
 
-    // Add keyboard shortcut (Cmd+K / Ctrl+K) to focus search
     useEffect(() => {
       const handleKeyboardShortcut = (e: KeyboardEvent) => {
         if ((e.metaKey || e.ctrlKey) && e.key === "k") {

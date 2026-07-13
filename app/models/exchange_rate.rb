@@ -12,7 +12,6 @@ class ExchangeRate < ApplicationRecord
   scope :between, ->(from, to) { where(from_currency: from, to_currency: to) }
 
   class << self
-    # Get exchange rate for a specific date, falls back to latest available
     def rate_for(from_currency, to_currency, date = Date.current)
       return 1.0 if from_currency == to_currency
 
@@ -37,7 +36,6 @@ class ExchangeRate < ApplicationRecord
       rate&.rate
     end
 
-    # Create or update rate for a date
     def set_rate(from_currency, to_currency, rate, date = Date.current, source = "manual")
       exchange_rate = find_or_initialize_by(
         from_currency: from_currency,

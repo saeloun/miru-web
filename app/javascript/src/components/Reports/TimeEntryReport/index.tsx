@@ -72,6 +72,7 @@ import {
 } from "../../ui/chart";
 import ShareReportButton from "../ShareReportButton";
 import ViewInAnalyticsButton from "../ViewInAnalyticsButton";
+import type { TimeEntry } from "../../../types/timeTracking";
 import {
   buildSearchParams,
   formatReportApiDate,
@@ -176,20 +177,6 @@ const ReportGroupTable: React.FC<{
     </Card>
   );
 };
-
-interface TimeEntry {
-  id: number;
-  userId?: number;
-  projectId?: number;
-  duration: number;
-  note: string;
-  workDate: string;
-  billStatus: string;
-  teamMember?: string;
-  project?: string;
-  client?: string;
-  clientLogo?: string;
-}
 
 interface ReportGroup {
   label: string;

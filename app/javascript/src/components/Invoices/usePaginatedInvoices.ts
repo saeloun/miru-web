@@ -54,7 +54,7 @@ export const usePaginatedInvoices = (): UsePaginatedInvoicesResult => {
         const response = await invoiceApi.getInvoices({
           per: INVOICES_PAGE_SIZE,
           page,
-        } as any);
+        });
 
         setInvoices(previousInvoices => {
           if (!append) return response.invoices;

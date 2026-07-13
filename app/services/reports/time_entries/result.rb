@@ -35,7 +35,6 @@ class Reports::TimeEntries::Result < ApplicationService
       GROUP_BY_INPUT_TO_GROUP_ID_FIELD[group_by.to_s]
 
       grouped_data = es_response.group_by { |entry|
-        # Get the label based on group_by field
         case group_by.to_s
         when "client"
           entry.try(:client_name) || entry[:client_name] || ""
@@ -47,7 +46,6 @@ class Reports::TimeEntries::Result < ApplicationService
           ""
         end
       }.map do |label, entries|
-        # Get the ID from the first entry based on group_by field
         id = case group_by.to_s
              when "client"
                entries.first.try(:client_id) || entries.first[:client_id]

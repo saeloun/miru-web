@@ -20,6 +20,7 @@ RSpec.describe "Api::V1::Cli::Expenses#create", type: :request do
         date: Date.current.iso8601,
         description: "Lunch with client",
         expense_type: "business",
+        currency: "INR",
         category_name: "Meals",
         vendor_name: "Cafe"
       }
@@ -28,7 +29,9 @@ RSpec.describe "Api::V1::Cli::Expenses#create", type: :request do
     expect(response).to have_http_status(:created)
     expect(json_response["notice"]).to eq(I18n.t("expenses.create"))
     expect(json_response.dig("expense", "category_name")).to eq("Meals")
+    expect(json_response.dig("expense", "currency")).to eq("INR")
     expect(Expense.last.user).to eq(user)
+    expect(Expense.last.currency).to eq("INR")
   end
 
   it "creates an expense for an employee" do

@@ -12,6 +12,7 @@ module AuthResponsePayload
       payload[:token] = user.token if include_token
       payload[:avatar_url] = user.avatar_url if include_avatar
       payload[:confirmed] = user.confirmed? if include_confirmed
+      payload[:is_super_admin] = user.super_admin?
       payload
     end
 

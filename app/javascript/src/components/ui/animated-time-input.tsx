@@ -117,7 +117,6 @@ const AnimatedTimeInput: React.FC<AnimatedTimeInputProps> = ({
   const inputRef = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Initialize display value based on mode
   useEffect(() => {
     if (initTime && initTime !== "00:00") {
       setTime(initTime);
@@ -206,7 +205,6 @@ const AnimatedTimeInput: React.FC<AnimatedTimeInputProps> = ({
 
       setDisplayValue(formattedVal);
 
-      // Convert to HH:MM format for the callback
       const hhmmValue = convertToHHMM(formattedVal, mode);
       setTime(hhmmValue);
       onTimeChange?.(hhmmValue);
