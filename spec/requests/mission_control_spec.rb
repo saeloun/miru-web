@@ -9,8 +9,6 @@ RSpec.describe "Mission Control authentication", type: :request do
     }
   end
 
-  let(:user) { create(:user) }
-
   around do |example|
     original_username = ENV["SOLID_QUEUE_USERNAME"]
     original_password = ENV["SOLID_QUEUE_PASSWORD"]
@@ -25,7 +23,7 @@ RSpec.describe "Mission Control authentication", type: :request do
   end
 
   before do
-    sign_in user
+    allow_any_instance_of(ApplicationController).to receive(:authenticate_user!).and_return(true)
   end
 
   it "requires credentials" do
