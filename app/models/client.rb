@@ -7,6 +7,8 @@ class Client < ApplicationRecord
   include PhoneNumberValidatable
 
   EIN_FORMAT = /\A\d{2}-\d{7}\z/
+  MAX_LOGO_SIZE_MB = 5
+  ALLOWED_LOGO_CONTENT_TYPES = %w[image/png image/jpeg image/jpg].freeze
 
   # Configure pg_search
   pg_search_scope :pg_search,
@@ -30,6 +32,7 @@ class Client < ApplicationRecord
   validates :name, presence: true, length: { maximum: 30 },
     uniqueness: { scope: :company_id, case_sensitive: false, message: "The client %{value} already exists" }
   validate :phone_must_be_valid
+  validate :validate_logo_constraints
   validates :email, format: { with: Devise.email_regexp }, allow_blank: true
   validates :email, uniqueness: { scope: :company_id, case_sensitive: false }, allow_blank: true
   validates :ein,
@@ -181,6 +184,18 @@ class Client < ApplicationRecord
   end
 
   private
+
+    def validate_logo_constraints
+      return unless logo.attached?
+
+      if logo.blob.byte_size > MAX_LOGO_SIZE_MB.megabytes
+        errors.add(:logo, I18n.t("attachment.validation.file_too_large", size_mb: MAX_LOGO_SIZE_MB))
+      end
+
+      return if ALLOWED_LOGO_CONTENT_TYPES.include?(logo.blob.content_type)
+
+      errors.add(:logo, I18n.t("attachment.validation.invalid_content_type"))
+    end
 
     def phone_must_be_valid
       validate_phone_number(:phone)

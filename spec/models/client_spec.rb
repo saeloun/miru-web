@@ -38,6 +38,40 @@ RSpec.describe Client, type: :model do
   describe "Validations" do
     it { is_expected.to validate_presence_of(:name) }
 
+    describe "logo constraints" do
+      let(:client) { build(:client) }
+
+      def attach_logo(content_type:, byte_size: 1.kilobyte)
+        client.logo.attach(
+          io: StringIO.new("x" * byte_size),
+          filename: "logo",
+          content_type:,
+          identify: false
+        )
+      end
+
+      it "rejects an oversized logo" do
+        attach_logo(content_type: "image/png", byte_size: 5.megabytes + 1)
+
+        expect(client).not_to be_valid
+        expect(client.errors[:logo]).to be_present
+      end
+
+      it "rejects SVG content" do
+        attach_logo(content_type: "image/svg+xml")
+
+        expect(client).not_to be_valid
+        expect(client.errors[:logo]).to be_present
+      end
+
+      it "accepts a JPEG logo within the size limit" do
+        attach_logo(content_type: "image/jpeg")
+
+        expect(client).to be_valid
+        expect(client.errors[:logo]).to be_empty
+      end
+    end
+
     it "validates case-insensitive uniqueness of name within the scope of company_id" do
       existing_client = create(:client)
       new_client = build(:client, name: existing_client.name.upcase, company: existing_client.company)
