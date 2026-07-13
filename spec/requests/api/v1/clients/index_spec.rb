@@ -13,7 +13,8 @@ RSpec.describe "Api::V1::Clients#index", type: :request do
       client: visible_client,
       invoice_number: "VC-004",
       issue_date: Date.current,
-      due_date: 30.days.from_now.to_date)
+      due_date: 30.days.from_now.to_date,
+      created_at: 1.day.ago)
   end
 
   before do
@@ -22,6 +23,10 @@ RSpec.describe "Api::V1::Clients#index", type: :request do
   end
 
   it "allows a book keeper to fetch clients for the current company" do
+    create(:invoice, company:, client: visible_client, invoice_number: "VC-003", created_at: 2.days.ago)
+    discarded_invoice = create(:invoice, company:, client: visible_client, invoice_number: "VC-005")
+    discarded_invoice.discard!
+
     get "/api/v1/clients"
 
     expect(response).to have_http_status(:ok)

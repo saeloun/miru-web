@@ -190,6 +190,26 @@ RSpec.describe "Api::V1::Invoices#index", type: :request do
       end
     end
 
+    describe "client member emails" do
+      it "returns only kept client member emails in both invoice lists" do
+        client = create(:client, company:)
+        invoice = create(:invoice, company:, client:, issue_date: Date.current)
+        kept_member = create(:client_member, client:, company:)
+        discarded_member = create(:client_member, client:, company:)
+        discarded_member.discard!
+
+        send_request :get,
+          api_v1_invoices_path(client_id: client.id, invoices_per_page: 50),
+          headers: auth_headers(book_keeper)
+
+        invoice_payload = json_response["invoices"].find { |item| item["id"] == invoice.id }
+        recently_updated_payload = json_response["recentlyUpdatedInvoices"].find { |item| item["id"] == invoice.id }
+
+        expect(invoice_payload.dig("client", "clientMembersEmails")).to eq([kept_member.user.email])
+        expect(recently_updated_payload.dig("client", "clientMembersEmails")).to eq([kept_member.user.email])
+      end
+    end
+
     describe "search query" do
       it "returns invoices when query partially matches client name" do
         query = company.clients.first.name[0..2]

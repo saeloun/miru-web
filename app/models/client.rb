@@ -69,7 +69,7 @@ class Client < ApplicationRecord
     end
   end
 
-  def client_detail(time_frame = "week", minutes_spent: nil)
+  def client_detail(time_frame = "week", minutes_spent: nil, previous_invoice_number: nil)
     {
       id:,
       name:,
@@ -78,7 +78,7 @@ class Client < ApplicationRecord
       phone:,
       currency:,
       signature_enabled:,
-      previousInvoiceNumber: invoices.kept.order(created_at: :desc).pick(:invoice_number) || 0,
+      previousInvoiceNumber: previous_invoice_number || invoices.kept.order(created_at: :desc).pick(:invoice_number) || 0,
       logo: logo_url,
       minutes_spent: minutes_spent || total_hours_logged(time_frame),
       address: current_address
@@ -168,7 +168,9 @@ class Client < ApplicationRecord
 
 
   def client_members_emails
-    client_members.kept.includes(:user).pluck("users.email")
+    client_members.each_with_object([]) do |client_member, emails|
+      emails << client_member.user.email if client_member.kept?
+    end
   end
 
   def client_virtual_verified_emails
