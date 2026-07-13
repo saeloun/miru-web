@@ -28,7 +28,7 @@ module Api::V1
         payments = filter_payments
         report_data = generate_payment_report(payments)
 
-        if request.query_parameters[:format] == "pdf"
+        if request.query_parameters[:format] == "pdf" || params[:format] == "pdf"
           send_data generate_pdf(report_data),
             filename: "payment_report_#{Date.current}.pdf", type: "application/pdf"
         else
