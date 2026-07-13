@@ -28,9 +28,12 @@ module Api::V1
         payments = filter_payments
         report_data = generate_payment_report(payments)
 
-        respond_to do |format|
-          format.csv { send_data generate_csv(report_data), filename: "payment_report_#{Date.current}.csv" }
-          format.pdf { send_data generate_pdf(report_data), filename: "payment_report_#{Date.current}.pdf" }
+        if request.query_parameters[:format] == "pdf"
+          send_data generate_pdf(report_data),
+            filename: "payment_report_#{Date.current}.pdf", type: "application/pdf"
+        else
+          send_data generate_csv(report_data),
+            filename: "payment_report_#{Date.current}.csv", type: "text/csv"
         end
       end
 

@@ -13,12 +13,20 @@ RSpec.describe "Api::V1::Reports::PaymentsController#download", type: :request d
     sign_in admin
   end
 
-  it "downloads a PDF report" do
-    send_request :get, "/api/v1/reports/payments/download.pdf", headers: auth_headers(admin)
+  it "downloads a PDF report when the frontend requests format=pdf as a query param" do
+    send_request :get, "/api/v1/reports/payments/download?format=pdf", headers: auth_headers(admin)
 
     expect(response).to have_http_status(:ok)
     expect(response.media_type).to eq("application/pdf")
     expect(response.body[0, 4]).to eq("%PDF")
     expect(response.headers["Content-Disposition"]).to include("payment_report_#{Date.current}.pdf")
+  end
+
+  it "downloads a CSV report by default" do
+    send_request :get, "/api/v1/reports/payments/download?format=csv", headers: auth_headers(admin)
+
+    expect(response).to have_http_status(:ok)
+    expect(response.media_type).to eq("text/csv")
+    expect(response.headers["Content-Disposition"]).to include("payment_report_#{Date.current}.csv")
   end
 end
