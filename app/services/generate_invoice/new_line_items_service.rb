@@ -67,10 +67,8 @@ module GenerateInvoice
       end
 
       def search_timesheet_entries(search_term, where_clause)
-        # Use the custom search method from Searchable concern
         entries = TimesheetEntry.includes(:user, project: :client)
 
-        # Apply where conditions
         where_clause.each do |key, value|
           entries = if value.is_a?(Hash) && value.key?(:not)
             entries.where.not(key => value[:not])
@@ -79,7 +77,6 @@ module GenerateInvoice
           end
         end
 
-        # Apply search if not wildcard
         if search_term.present? && search_term != "*"
           entries = entries.pg_search(search_term) if entries.respond_to?(:pg_search)
         end

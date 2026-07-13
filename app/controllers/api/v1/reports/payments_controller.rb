@@ -96,7 +96,6 @@ module Api::V1
         def calculate_summary(report_data)
           total_amount = report_data.sum { |r| r[:amount] }
 
-          # Group by payment method
           by_method = report_data.group_by { |r| r[:payment_method] }
           method_breakdown = by_method.transform_values { |payments| payments.sum { |p| p[:amount] } }
 

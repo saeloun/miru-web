@@ -85,12 +85,9 @@ class Reports::OutstandingOverdueInvoices::ReportDecorator < ApplicationService
     end
 
     def invoice_amount_due_in_base_currency(invoice)
-      # Use amount_due for unpaid portion
       amount_due = invoice.amount_due || invoice.amount
 
-      # Apply currency conversion if needed
       if invoice.base_currency_amount.to_f > 0.00 && invoice.amount.to_f > 0.00
-        # Calculate the ratio of amount_due to full amount, then apply to base currency
         ratio = amount_due.to_f / invoice.amount.to_f
         ratio * invoice.base_currency_amount
       else

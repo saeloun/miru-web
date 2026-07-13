@@ -7,12 +7,10 @@ module MetricsTracking
     has_many :metrics, as: :trackable, dependent: :destroy
   end
 
-  # Get or calculate a metric for this object
   def metric(type, period = :week, date = Date.current)
     Metric.fetch_or_calculate(self, type, period, date)
   end
 
-  # Get aggregated data for a specific metric
   def metric_data(type, period = :week, date = Date.current)
     metric(type, period, date).data
   end
@@ -35,7 +33,6 @@ module MetricsTracking
     metrics.each(&:calculate!)
   end
 
-  # Get metrics for a date range
   def metrics_for_range(type, start_date, end_date)
     metrics
       .for_type(type)

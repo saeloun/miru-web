@@ -21,10 +21,8 @@ module PdfGeneration
         browser = create_browser
 
         begin
-          # Load HTML content
           load_html_in_browser(browser)
 
-          # Generate PDF (returns Base64-encoded data)
           pdf_base64 = browser.pdf(**pdf_options)
 
           # Decode and return the raw PDF binary data
@@ -79,7 +77,6 @@ module PdfGeneration
       end
 
       def load_html_in_browser(browser)
-        # Create a data URL from the HTML content
         html_data_url = "data:text/html;charset=utf-8," + ERB::Util.url_encode(html_content)
         browser.go_to(html_data_url)
         browser.network.wait_for_idle

@@ -6,7 +6,6 @@ class Api::V1::Clients::InvoicesController < Api::V1::ApplicationController
   def index
     authorize current_user, policy_class: Clients::InvoicesPolicy
 
-    # Apply filtering
     invoices = @client.invoices.kept.includes(:company)
 
     # Handle legacy ransack-style params
@@ -27,7 +26,6 @@ class Api::V1::Clients::InvoicesController < Api::V1::ApplicationController
 
     invoices_query = invoices.order(invoice_number: :desc)
 
-    # Apply pagination
     pagy, paginated_invoices = pagy(
       invoices_query,
       items: params[:items] || params[:invoices_per_page] || 20,

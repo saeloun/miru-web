@@ -262,7 +262,6 @@ module Analytics
     private
 
       def track_event(name, properties = {})
-        # Filter out nil values and ensure proper data types
         clean_properties = properties.reject { |_, v| v.nil? }
 
         # Track with Ahoy

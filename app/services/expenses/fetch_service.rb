@@ -30,19 +30,15 @@ class Expenses::FetchService
 
       expenses = base_scope
 
-      # Apply search if present
       if filters.search_term.present?
         expenses = expenses.search(filters.search_term)
       end
 
-      # Apply filters from where_clause
       if filters.where_clause.present?
-        # Apply date range filter if present
         if filters.where_clause[:date].present?
           expenses = expenses.where(date: filters.where_clause[:date])
         end
 
-        # Apply expense_type filter if present
         if filters.where_clause[:expense_type].present?
           expenses = expenses.where(expense_type: filters.where_clause[:expense_type])
         end
