@@ -74,7 +74,6 @@ const Layout = () => {
     setShowMobileNav(mobileNavVisibility);
   }, [location]);
 
-  // Initialize personal details with current user data when in settings context
   useEffect(() => {
     if (isCalledFromSettings && user) {
       setSettingsStates(prevState => ({

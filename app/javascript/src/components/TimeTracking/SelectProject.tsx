@@ -88,11 +88,9 @@ const SelectProject: React.FC<Iprops> = ({
 
   const handleSaveButton = () => {
     if (client && project && (hours || minutes)) {
-      // Calculate total duration in minutes
       const totalMinutes =
         parseInt(hours || "0") * 60 + parseInt(minutes || "0");
 
-      // Set the project as selected
       setProjectSelected(true);
       setProjectId();
 

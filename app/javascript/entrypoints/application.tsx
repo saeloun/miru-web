@@ -16,7 +16,6 @@ import "../stylesheets/application.scss";
 import "../src/styles/geist.css";
 import AppWithUserData from "../src/components/AppWithUserData";
 
-// Initialize Rails
 Rails.start();
 ActiveStorage.start();
 installRuntimeRecoveryHandlers();

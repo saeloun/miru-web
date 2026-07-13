@@ -118,7 +118,6 @@ const FloatingTimer: React.FC<FloatingTimerProps> = ({
     [timerDeck]
   );
 
-  // Fetch projects and clients from API
   const { data: projectsData } = useQuery({
     queryKey: ["projects"],
     queryFn: async () => {

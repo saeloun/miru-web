@@ -111,7 +111,6 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
     null
   );
 
-  // Helper function to ensure valid Date object
   const parseDate = (date: any): Date | undefined => {
     if (!date) return undefined;
 
@@ -177,7 +176,6 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
       };
     }
 
-    // Ensure address is a string
     const formattedClient = { ...client };
     if (
       formattedClient.address &&
@@ -207,7 +205,6 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
       selectedClient.id
     );
 
-    // Check if client has changed
     const clientChanged = lastClientIdRef.current !== formData.clientId;
 
     if (clientChanged) {

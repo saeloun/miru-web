@@ -146,7 +146,6 @@ const AddEntry: React.FC<Iprops> = ({
       setProject(entry.project);
       setProjectId(entry.project_id);
       setNote(entry.note);
-      // Set task type from entry if available
       setTaskType(entry.task_type || "development");
     }
   };

@@ -18,7 +18,6 @@ const Header = () => {
       const res = await teamApi.search(searchString);
       const dropdownList = unmapList(res);
 
-      // Transform for enhanced search
       return (
         dropdownList?.map(member => ({
           id: member.id,
@@ -44,7 +43,6 @@ const Header = () => {
         searchAction={fetchTeamList}
         placeholder={i18n.t("search")}
         onSelect={member => {
-          // Handle team member selection if needed
         }}
         className="w-full sm:w-64"
         variant="input"

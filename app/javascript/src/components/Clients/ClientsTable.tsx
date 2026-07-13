@@ -123,7 +123,6 @@ const ClientsTable: React.FC = () => {
     setClientLogoUrl("");
     setShowEditDialog(true);
     try {
-      // Fetch full client details including address
       const response = await clientsApi.show(client.id, "");
       const fullClientData = response.data.client_details;
       setEditClientData(fullClientData);

@@ -11,22 +11,18 @@ const getReportData = async ({
   filters = {},
 }) => {
   try {
-    // Build query params for filtering invoices
     const queryParams = new URLSearchParams();
 
-    // Filter for outstanding and overdue statuses
     queryParams.append("status[]", "sent");
     queryParams.append("status[]", "viewed");
     queryParams.append("status[]", "overdue");
 
-    // Add client filters if provided
     if (filters.clients && filters.clients.length > 0) {
       filters.clients.forEach(client => {
         queryParams.append("client_ids[]", client.value);
       });
     }
 
-    // Add date range filters if provided
     if (filters.dateRange && filters.dateRange.value) {
       if (filters.dateRange.from) {
         queryParams.append("from_date", filters.dateRange.from);
@@ -37,10 +33,8 @@ const getReportData = async ({
       }
     }
 
-    // Use existing invoices API with filters
     const res = await invoicesApi.get(queryParams.toString());
 
-    // Process invoices data to match the expected format
     const invoices = res.data.invoices || [];
     const clientsMap = new Map();
 
@@ -62,7 +56,6 @@ const getReportData = async ({
       const client = clientsMap.get(clientId);
       client.invoices.push(invoice);
 
-      // Calculate amounts using amount_due
       const amountDue = invoice.amount_due || invoice.amount || 0;
 
       if (invoice.status === "overdue") {
@@ -72,10 +65,8 @@ const getReportData = async ({
       }
     });
 
-    // Convert map to array
     const clientsList = Array.from(clientsMap.values());
 
-    // Calculate summary
     const summary = {
       totalInvoiceAmount: invoices.reduce(
         (sum, inv) => sum + parseFloat(inv.amount_due || inv.amount || 0),

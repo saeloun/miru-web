@@ -32,7 +32,6 @@ const Header = ({
       }
 
       try {
-        // Use API endpoint for search
         const response = await paymentsApi.get(
           `?query=${encodeURIComponent(searchQuery)}`
         );
@@ -42,7 +41,6 @@ const Header = ({
         setShowSearchedPayments(true);
         setParams({ ...params, query: searchQuery });
 
-        // Transform for UnifiedSearch interface
         return searchResults.slice(0, 10).map(payment => ({
           id: payment.id,
           label: payment.invoiceNumber,

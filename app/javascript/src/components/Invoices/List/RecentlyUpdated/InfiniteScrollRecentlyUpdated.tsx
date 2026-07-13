@@ -80,7 +80,6 @@ const InfiniteScrollRecentlyUpdated: React.FC<RecentlyUpdatedProps> = ({
     []
   );
 
-  // Fetch invoices function
   const fetchInvoices = useCallback(
     async (pageNum: number) => {
       if (loading) return;

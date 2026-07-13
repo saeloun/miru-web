@@ -343,7 +343,6 @@ const AccountsAgingReport: React.FC = () => {
     },
   });
 
-  // Handle infinite scroll
   useEffect(() => {
     const handleScroll = () => {
       if (tableRef.current) {

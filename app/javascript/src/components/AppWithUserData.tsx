@@ -130,7 +130,6 @@ const AppWithUserData = (props: any) => {
     flashMessages.success,
   ]);
 
-  // Fetch user details from _me endpoint on mount
   useEffect(() => {
     let isCancelled = false;
     let recoveryTimer: ReturnType<typeof setTimeout> | null = null;
@@ -298,7 +297,6 @@ const AppWithUserData = (props: any) => {
     handleOverlayVisibility(false);
   }, []);
 
-  // Update states when user data changes
   useEffect(() => {
     if (user?.avatar_url) {
       setCurrentAvatarUrl(user.avatar_url);

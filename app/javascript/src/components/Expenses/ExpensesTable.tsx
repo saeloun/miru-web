@@ -366,7 +366,6 @@ const ExpensesTable: React.FC = () => {
 
   const handleEdit = (expense: Expense) => {
     setSelectedExpense(expense);
-    // Convert date to YYYY-MM-DD format for the input field
     let dateForInput = expense.date;
     if (dateForInput && !dateForInput.includes("-")) {
       // If it's in some other format, try to parse it

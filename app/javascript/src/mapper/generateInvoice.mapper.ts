@@ -65,7 +65,6 @@ const getCompanyDetails = (input: CompanyDetails) => ({
 });
 
 const unmapGenerateInvoice = input => {
-  // Handle both snake_case (from API) and camelCase
   const companyDetails = getCompanyDetails(
     input.company_details || input.companyDetails
   );

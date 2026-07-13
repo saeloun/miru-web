@@ -119,7 +119,6 @@ export const RevenueAreaChart: React.FC<RevenueChartProps> = ({
                 fontWeight: 500,
               }}
               tickFormatter={value => {
-                // Format "January 2024" to "Jan '24"
                 const fullMonth = String(value);
                 const match = fullMonth.match(/^([A-Za-z]+)\s+(\d{4})$/);
                 if (!match) return fullMonth;
