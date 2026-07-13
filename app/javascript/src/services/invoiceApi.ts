@@ -1,6 +1,10 @@
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import axios from "../apis/api";
+import type { Invoice } from "../types/invoice";
+import type { Client } from "../types/timeTracking";
+
+export type { Client, Invoice };
 
 dayjs.extend(customParseFormat);
 
@@ -37,67 +41,6 @@ export interface InvoiceTax {
   value: number;
   amount: number;
   _destroy?: boolean;
-}
-
-export interface Client {
-  id: string;
-  name: string;
-  email: string;
-  address: string;
-  logo?: string;
-  ein?: string;
-  taxId?: string;
-  currency?: string;
-  clientCurrency?: string;
-  previousInvoiceNumber?: string;
-}
-
-export interface Invoice {
-  id: string;
-  invoiceNumber: string;
-  clientId?: string;
-  client: Client;
-  status:
-    | "draft"
-    | "sent"
-    | "paid"
-    | "overdue"
-    | "viewed"
-    | "declined"
-    | "sending"
-    | "waived";
-  issueDate: string;
-  dueDate: string;
-  amount: number;
-  baseCurrencyAmount?: number;
-  currency: string;
-  tax?: number;
-  invoiceTaxes?: InvoiceTax[];
-  discount?: number;
-  reference?: string;
-  amountPaid?: number;
-  amountDue?: number;
-  updatedAt?: string;
-  createdAt?: string;
-  invoiceLineItems?: InvoiceItem[];
-  company?: {
-    phone: string;
-    address: string;
-    email: string;
-    name: string;
-    baseCurrency: string;
-    currency?: string;
-    dateFormat: string;
-    taxId?: string;
-    vatNumber?: string;
-    gstNumber?: string;
-    ein?: string;
-    usTaxpayerId?: string;
-    bankName?: string;
-    bankAccountNumber?: string;
-    bankRoutingNumber?: string;
-    bankSwiftCode?: string;
-  };
 }
 
 export interface InvoiceFormData {

@@ -80,7 +80,7 @@ const EntryCard: React.FC<props> = ({
   handleResumeTimer,
 }) => {
   const { isDesktop, companyRole, company } = useUserContext();
-  const timesheetEditDays: number = (company as any)?.timesheet_edit_days ?? 30;
+  const timesheetEditDays: number = company?.timesheet_edit_days ?? 30;
   const canManageEntry = canEditTimeEntry(
     bill_status,
     companyRole,

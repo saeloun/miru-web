@@ -42,8 +42,7 @@ const Header = () => {
       <UnifiedSearch
         searchAction={fetchTeamList}
         placeholder={i18n.t("search")}
-        onSelect={member => {
-        }}
+        onSelect={member => {}}
         className="w-full sm:w-64"
         variant="input"
         size="md"

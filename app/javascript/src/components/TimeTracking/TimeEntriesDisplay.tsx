@@ -52,7 +52,7 @@ const TimeEntriesDisplay: React.FC<TimeEntriesDisplayProps> = ({
 }) => {
   const [reviewMode, setReviewMode] = useState<"day" | "week">("day");
   const { companyRole, isDesktop, company } = useUserContext();
-  const timesheetEditDays: number = (company as any)?.timesheet_edit_days ?? 30;
+  const timesheetEditDays: number = company?.timesheet_edit_days ?? 30;
   const dateFormats = [
     "YYYY-MM-DD",
     "MM-DD-YYYY",

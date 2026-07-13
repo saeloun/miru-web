@@ -45,30 +45,7 @@ import { toast } from "sonner";
 import { unmapPayment } from "../../mapper/mappedIndex";
 import AddManualEntry from "./Modals/AddManualEntry";
 import { i18n } from "../../i18n";
-
-interface Payment {
-  id: string | number;
-  invoiceId: string | number | null;
-  invoiceNumber: string;
-  clientName: string;
-  amount: number;
-  status: string;
-  transactionDate: string;
-  transactionType: string;
-  transactionId: string;
-  note?: string;
-  currency: string;
-  exchangeRate?: number;
-  baseCurrencyAmount?: number;
-  razorpayPayout?: {
-    id: string | number;
-    externalId?: string;
-    status: string;
-    triggeredBy: string;
-    failureReason?: string;
-    recipientUpiId?: string;
-  };
-}
+import type { Payment } from "../../types/payment";
 
 interface PaymentsData {
   payments: Payment[];

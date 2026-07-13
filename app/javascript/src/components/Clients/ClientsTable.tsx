@@ -51,17 +51,8 @@ import { clientsApi } from "apis/api";
 import { unmapClientList } from "../../mapper/mappedIndex";
 import { toast } from "sonner";
 import { i18n } from "../../i18n";
+import type { Client } from "../../types/timeTracking";
 import ClientEditor from "./ClientForm/ClientEditor";
-interface Client {
-  id: string;
-  name: string;
-  email: string;
-  phone?: string;
-  address?: string;
-  logo?: string;
-  minutes: number;
-  currency?: string;
-}
 
 interface ClientsData {
   clientList: Client[];

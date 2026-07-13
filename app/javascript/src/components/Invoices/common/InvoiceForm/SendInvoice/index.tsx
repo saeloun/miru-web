@@ -18,6 +18,7 @@ import {
   isEmailValid,
 } from "./utils";
 import { i18n } from "../../../../../i18n";
+import type { InvoiceEmail } from "../../../../../types/email";
 
 const SendInvoice = ({
   status,
@@ -229,12 +230,6 @@ const SendInvoice = ({
     </Modal>
   );
 };
-
-interface InvoiceEmail {
-  subject: string;
-  message: string;
-  recipients: string[];
-}
 
 interface Iprops {
   status: any;

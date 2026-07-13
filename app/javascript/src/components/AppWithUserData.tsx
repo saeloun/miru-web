@@ -15,6 +15,7 @@ import Main from "./Main";
 import { reportClientError } from "utils/runtimeRecovery";
 import { getSessionRequestHeaders } from "utils/authHeaders";
 import { toast } from "sonner";
+import type { Company } from "../types/company";
 
 const AUTH_PATH_PREFIXES = [
   "/user/sign_in",
@@ -60,7 +61,7 @@ type AuthResolution = "authenticated" | "unauthenticated" | "unknown";
 
 type UserDataState = {
   user: any;
-  company: any;
+  company: Company | null;
   companyRole: string | null;
   loading: boolean;
   authResolution: AuthResolution;

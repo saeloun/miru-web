@@ -11,20 +11,7 @@ import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 import { cn } from "../../lib/utils";
 import { i18n } from "../../i18n";
-
-interface Client {
-  id: number;
-  name: string;
-  email?: string;
-  phone?: string;
-}
-
-interface Project {
-  id: number;
-  name: string;
-  billable: boolean;
-  client_id: number;
-}
+import type { Client, Project } from "../../types/timeTracking";
 
 interface Iprops {
   clients: Client[];
