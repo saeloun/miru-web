@@ -66,6 +66,29 @@ RSpec.describe Team::UpdateService do
       end
     end
 
+    context "when an admin demotes an existing owner" do
+      let(:new_role) { "manager" }
+
+      before { user.add_role(:owner, company) }
+
+      it "rejects the role change" do
+        expect { process }.to raise_error(Pundit::NotAuthorizedError)
+
+        expect(user.reload.primary_role(company)).to eq("owner")
+      end
+    end
+
+    context "when an owner demotes another owner" do
+      let(:actor_role) { :owner }
+      let(:new_role) { "manager" }
+
+      before { user.add_role(:owner, company) }
+
+      it "updates the user's role" do
+        expect { process }.to change { user.reload.primary_role(company) }.from("owner").to("manager")
+      end
+    end
+
     context "when an admin changes an employee to manager" do
       let(:new_role) { "manager" }
 

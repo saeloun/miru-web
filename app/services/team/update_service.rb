@@ -40,6 +40,7 @@ module Team
 
         raise Pundit::NotAuthorizedError if actor == user
         raise Pundit::NotAuthorizedError if new_role == :owner && !actor.has_role?(:owner, current_company)
+        raise Pundit::NotAuthorizedError if current_role == :owner && !actor.has_role?(:owner, current_company)
       end
 
       def update_company_user_role
