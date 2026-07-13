@@ -111,29 +111,19 @@ const normalizePayment = (payment: any, baseCurrency: string): Payment => ({
 });
 
 const fetchPayments = async (): Promise<PaymentsData> => {
-  try {
-    const response = await paymentsApi.get("");
-    const baseCurrency =
-      response.data.baseCurrency || response.data.base_currency || "USD";
+  const response = await paymentsApi.get("");
+  const baseCurrency =
+    response.data.baseCurrency || response.data.base_currency || "USD";
 
-    const payments = (response.data.payments || []).map(payment =>
-      normalizePayment(payment, baseCurrency)
-    );
+  const payments = (response.data.payments || []).map(payment =>
+    normalizePayment(payment, baseCurrency)
+  );
 
-    return {
-      payments,
-      baseCurrency,
-      total: response.data.total ?? payments.length,
-    };
-  } catch (error) {
-    console.warn("Payments API error, using fallback data", error);
-
-    return {
-      payments: [],
-      baseCurrency: "USD",
-      total: 0,
-    };
-  }
+  return {
+    payments,
+    baseCurrency,
+    total: response.data.total ?? payments.length,
+  };
 };
 
 const PaymentsTable: React.FC = () => {

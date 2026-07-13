@@ -73,22 +73,9 @@ interface ClientsData {
 }
 
 const fetchClients = async (timeFrame = "week"): Promise<ClientsData> => {
-  try {
-    const res = await clientsApi.get(`?time_frame=${timeFrame}`);
+  const res = await clientsApi.get(`?time_frame=${timeFrame}`);
 
-    return unmapClientList({ data: res.data });
-  } catch (error) {
-    console.warn("Clients API error, using fallback data", error);
-
-    return {
-      clientList: [],
-      totalMinutes: 0,
-      overdueOutstandingAmount: {
-        overdue: 0,
-        outstanding: 0,
-      },
-    };
-  }
+  return unmapClientList({ data: res.data });
 };
 
 const ClientsTable: React.FC = () => {
