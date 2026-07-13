@@ -23,7 +23,7 @@ class Api::V1::TeamController < Api::V1::ApplicationController
   def update
     authorize employment, policy_class: TeamPolicy
     user = Team::UpdateService.new(
-      user_params:, current_company:, new_role: params[:role], user: employment.user).process
+      actor: current_user, user_params:, current_company:, new_role: params[:role], user: employment.user).process
     render :update, locals: { user:, employment: }, status: 200
   end
 
