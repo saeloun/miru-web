@@ -13,10 +13,7 @@ import {
 import Loader from "../common/Loader/index";
 import Main from "./Main";
 import { reportClientError } from "utils/runtimeRecovery";
-import {
-  getSessionRequestHeaders,
-  hasStoredAuthCredentials,
-} from "utils/authHeaders";
+import { getSessionRequestHeaders } from "utils/authHeaders";
 import { toast } from "sonner";
 
 const AUTH_PATH_PREFIXES = [
@@ -184,17 +181,9 @@ const AppWithUserData = (props: any) => {
           return;
         }
 
-        const shouldRetryUnauthorized =
-          response.status === 401 &&
-          hasStoredAuthCredentials() &&
-          attempt < AUTH_BOOTSTRAP_MAX_RETRIES;
-
-        const shouldRetryTransientStatus =
+        const shouldRetry =
           TRANSIENT_AUTH_STATUSES.has(response.status) &&
           attempt < AUTH_BOOTSTRAP_MAX_RETRIES;
-
-        const shouldRetry =
-          shouldRetryUnauthorized || shouldRetryTransientStatus;
 
         if (shouldRetry) {
           reportClientError("auth-bootstrap-retry", response.statusText, {
