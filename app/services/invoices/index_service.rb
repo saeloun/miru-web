@@ -33,7 +33,7 @@ module Invoices
       def base_invoices
         current_company.invoices
           .kept
-          .includes(:client)
+          .includes(client: { client_members: :user })
           .order(issue_date: :desc, updated_at: :desc, id: :desc)
       end
 
@@ -160,7 +160,7 @@ module Invoices
       def recently_updated_invoices
         current_company.invoices
           .kept
-          .includes(:client)
+          .includes(client: { client_members: :user })
           .order(updated_at: :desc, id: :desc)
           .limit(10)
       end

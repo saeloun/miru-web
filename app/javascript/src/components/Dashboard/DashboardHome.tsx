@@ -121,7 +121,7 @@ const DashboardHome: React.FC<DashboardHomeProps> = ({
       }
     };
 
-    el.addEventListener("scroll", onScroll);
+    el.addEventListener("scroll", onScroll, { passive: true });
 
     return () => el.removeEventListener("scroll", onScroll);
   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);

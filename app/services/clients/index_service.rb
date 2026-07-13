@@ -32,7 +32,7 @@ module Clients
           base_clients
         end
 
-        clients.includes(:addresses, :invoices, logo_attachment: :blob)
+        clients.includes(:addresses, logo_attachment: :blob)
       end
 
       def user_assigned_clients
@@ -72,9 +72,14 @@ module Clients
 
       def client_details(clients)
         minutes_by_client = total_minutes_by_client(clients)
+        previous_invoice_numbers = previous_invoice_numbers_by_client(clients)
 
         clients.map do |client|
-          client.client_detail(time_frame, minutes_spent: minutes_by_client.fetch(client.id, 0))
+          client.client_detail(
+            time_frame,
+            minutes_spent: minutes_by_client.fetch(client.id, 0),
+            previous_invoice_number: previous_invoice_numbers.fetch(client.id, 0)
+          )
         end
       end
 
@@ -104,6 +109,18 @@ module Clients
           .where(work_date: DateRangeService.new(timeframe: time_frame).process)
           .group("projects.client_id")
           .sum(:duration)
+      end
+
+      def previous_invoice_numbers_by_client(clients)
+        client_ids = clients.map(&:id)
+        return {} if client_ids.empty?
+
+        current_company.invoices.kept
+          .where(client_id: client_ids)
+          .select("DISTINCT ON (client_id) client_id, invoice_number")
+          .order("client_id, created_at DESC")
+          .index_by(&:client_id)
+          .transform_values(&:invoice_number)
       end
 
       def invoice_totals_by_client(clients)

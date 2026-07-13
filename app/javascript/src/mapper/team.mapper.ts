@@ -1,4 +1,6 @@
-type TeamStatus = "active" | "inactive" | "invited";
+import type { TeamMember, TeamStatus } from "../types/team";
+
+export type { TeamMember };
 
 interface RawTeamMember {
   status?: boolean | string | null;
@@ -15,27 +17,6 @@ interface RawTeamMember {
   role?: string;
   designation?: string;
   department?: string;
-  employmentType?: string;
-  joinedAtDate?: string;
-  hoursLogged?: number;
-  billableHours?: number;
-  projects?: number;
-}
-
-export interface TeamMember {
-  id?: number | string;
-  firstName?: string;
-  lastName?: string;
-  name?: string;
-  email?: string;
-  phone?: string;
-  avatar?: string;
-  role?: string;
-  designation?: string;
-  department?: string;
-  status: TeamStatus;
-  profilePicture?: string;
-  isTeamMember?: boolean;
   employmentType?: string;
   joinedAtDate?: string;
   hoursLogged?: number;

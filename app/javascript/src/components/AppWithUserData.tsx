@@ -13,11 +13,9 @@ import {
 import Loader from "../common/Loader/index";
 import Main from "./Main";
 import { reportClientError } from "utils/runtimeRecovery";
-import {
-  getSessionRequestHeaders,
-  hasStoredAuthCredentials,
-} from "utils/authHeaders";
+import { getSessionRequestHeaders } from "utils/authHeaders";
 import { toast } from "sonner";
+import type { Company } from "../types/company";
 
 const AUTH_PATH_PREFIXES = [
   "/user/sign_in",
@@ -63,7 +61,7 @@ type AuthResolution = "authenticated" | "unauthenticated" | "unknown";
 
 type UserDataState = {
   user: any;
-  company: any;
+  company: Company | null;
   companyRole: string | null;
   loading: boolean;
   authResolution: AuthResolution;
@@ -133,7 +131,6 @@ const AppWithUserData = (props: any) => {
     flashMessages.success,
   ]);
 
-  // Fetch user details from _me endpoint on mount
   useEffect(() => {
     let isCancelled = false;
     let recoveryTimer: ReturnType<typeof setTimeout> | null = null;
@@ -184,17 +181,9 @@ const AppWithUserData = (props: any) => {
           return;
         }
 
-        const shouldRetryUnauthorized =
-          response.status === 401 &&
-          hasStoredAuthCredentials() &&
-          attempt < AUTH_BOOTSTRAP_MAX_RETRIES;
-
-        const shouldRetryTransientStatus =
+        const shouldRetry =
           TRANSIENT_AUTH_STATUSES.has(response.status) &&
           attempt < AUTH_BOOTSTRAP_MAX_RETRIES;
-
-        const shouldRetry =
-          shouldRetryUnauthorized || shouldRetryTransientStatus;
 
         if (shouldRetry) {
           reportClientError("auth-bootstrap-retry", response.statusText, {
@@ -309,7 +298,6 @@ const AppWithUserData = (props: any) => {
     handleOverlayVisibility(false);
   }, []);
 
-  // Update states when user data changes
   useEffect(() => {
     if (user?.avatar_url) {
       setCurrentAvatarUrl(user.avatar_url);

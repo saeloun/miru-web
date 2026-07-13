@@ -6,7 +6,6 @@ class BulkInvoiceDownloadJob < ApplicationJob
   def perform(invoice_ids, company_logo, download_id, root_url, current_url_options)
     ActiveStorage::Current.url_options = current_url_options
 
-    # Create or update the status to 'processing'
     bulk_download_status = BulkInvoiceDownloadStatus.find_or_create_by(download_id:)
     bulk_download_status.update(status: "processing")
 

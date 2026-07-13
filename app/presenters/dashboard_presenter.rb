@@ -104,7 +104,6 @@ class DashboardPresenter
         }
       end
 
-      # Calculate revenue
       total_revenue = employee_scoped? ? 0 : period_invoices.sum(:amount)
       previous_period_revenue = employee_scoped? ? 0 : calculate_previous_period_revenue
       revenue_trend = employee_scoped? ? 0 : calculate_trend(total_revenue, previous_period_revenue)
@@ -113,7 +112,6 @@ class DashboardPresenter
       previous_active_projects = active_project_count_for(previous_period_range)
       projects_trend = calculate_trend(active_projects, previous_active_projects)
 
-      # Calculate hours
       billable_hours = calculate_billable_hours
       previous_billable_hours = calculate_previous_billable_hours
       hours_trend = calculate_trend(billable_hours, previous_billable_hours)
@@ -138,7 +136,6 @@ class DashboardPresenter
         .group(Arel.sql("DATE_TRUNC('month', issue_date)"))
         .sum(:amount)
 
-      # Build chart data with cumulative revenue
       chart_data = []
       current_date = from_date.beginning_of_month
       cumulative_revenue = 0
@@ -177,7 +174,6 @@ class DashboardPresenter
         }
       end
 
-      # Sort and take top 6
       total_revenue = client_data.sum { |c| c[:revenue] }
 
       client_data

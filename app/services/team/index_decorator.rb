@@ -58,14 +58,18 @@ class Team::IndexDecorator < ApplicationService
     end
 
     def build_employee_data(user, employment, aggregated_metrics)
+      company_roles = user.roles.select do |role|
+        role.resource_type == "Company" && role.resource_id == current_company.id
+      end
+
       {
         id: user.id,
         first_name: user.first_name,
         last_name: user.last_name,
         name: user.full_name,
         email: user.email,
-        role: user.roles.where(resource: current_company).first&.name || "employee",
-        roles: user.roles.where(resource: current_company).pluck(:name),
+        role: company_roles.first&.name || "employee",
+        roles: company_roles.map(&:name),
         status: "active",
         is_team_member: true,
         type: "employee",

@@ -47,7 +47,6 @@ class Reports::TimeEntries::ReportService
       filter_service = Reports::TimeEntries::FilterService.new(params, current_company)
       filter_service.process
 
-      # Convert client_id to project_id for TimesheetEntry filtering
       filter_hash = filter_service.es_filter
       if filter_hash[:client_id]
         project_ids = Project.where(client_id: filter_hash[:client_id]).pluck(:id)
@@ -56,15 +55,12 @@ class Reports::TimeEntries::ReportService
 
       entries = search_timesheet_entries(where_clause.merge(filter_hash))
 
-      # Use Pagy for pagination
       @pagy_data, @reports = pagy(entries, items: 50, page: params[:page])
     end
 
     def search_timesheet_entries(where_clause, page = nil)
-      # Build the base query with necessary joins for ordering
       base_query = TimesheetEntry.includes(:user, project: :client)
 
-      # Apply where conditions
       where_clause.each do |key, value|
         base_query = if value.is_a?(Hash) && value.key?(:not)
           base_query.where.not(key => value[:not])
@@ -73,7 +69,6 @@ class Reports::TimeEntries::ReportService
         end
       end
 
-      # Apply ordering based on group_by parameter
       ordered_query = case params[:group_by]
                       when "project"
                         base_query.joins(:project).order("projects.name ASC, work_date DESC")
@@ -85,7 +80,6 @@ class Reports::TimeEntries::ReportService
                         base_query.joins(project: :client).order("clients.name ASC, work_date DESC")
       end
 
-      # Return the query result with pagination if needed
       if page
         ordered_query.page(page).per(50)
       else
@@ -97,7 +91,6 @@ class Reports::TimeEntries::ReportService
       group_by = params[:group_by]&.to_sym || :client
       return unless [:client, :project, :team_member].include?(group_by)
 
-      # Use the same where clause as the main query
       default_filter = current_company_filter.merge(this_month_filter).merge(active_time_entries)
       where_conditions = default_filter.merge(TimeEntries::Filters.process(params))
 
@@ -112,7 +105,6 @@ class Reports::TimeEntries::ReportService
                                     raise ArgumentError, "Unsupported group_by: #{group_by}"
       end
 
-      # Convert client_id filter to proper join condition
       if where_conditions.key?(:client_id)
         project_ids = Project.where(client_id: where_conditions[:client_id]).pluck(:id)
         where_conditions[:project_id] = project_ids

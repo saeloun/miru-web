@@ -1,9 +1,13 @@
 import Logger from "js-logger";
 
 const setToLocalStorage = (key, value) => {
-  if (value !== null) {
-    localStorage.setItem(key, JSON.stringify(value));
-  } else localStorage.removeItem(key);
+  try {
+    if (value !== null) {
+      localStorage.setItem(key, JSON.stringify(value));
+    } else localStorage.removeItem(key);
+  } catch (error) {
+    Logger.error(error);
+  }
 };
 
 const getValueFromLocalStorage = key => {
@@ -27,10 +31,6 @@ const getValueFromLocalStorage = key => {
   return response;
 };
 
-const removeFromLocalStorage = key => {
-  localStorage.removeItem(key);
-};
-
 const clearCredentialsFromLocalStorage = () => {
   setToLocalStorage("authEmail", null);
   setToLocalStorage("authToken", null);
@@ -40,5 +40,4 @@ export {
   setToLocalStorage,
   getValueFromLocalStorage,
   clearCredentialsFromLocalStorage,
-  removeFromLocalStorage,
 };

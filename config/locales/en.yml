@@ -47,6 +47,11 @@ en:
   app:
     name: Miru Agency OS
     tagline: Run your agency’s ops from one command center.
+  attachment:
+    validation:
+      file_too_large: must be smaller than %{size_mb}MB
+      invalid_content_type: has an unsupported content type
+      too_many_files: cannot exceed %{count} files
   application_controller:
     not_found: Route not found
   errors:

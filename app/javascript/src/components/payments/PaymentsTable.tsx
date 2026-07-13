@@ -45,30 +45,7 @@ import { toast } from "sonner";
 import { unmapPayment } from "../../mapper/mappedIndex";
 import AddManualEntry from "./Modals/AddManualEntry";
 import { i18n } from "../../i18n";
-
-interface Payment {
-  id: string | number;
-  invoiceId: string | number | null;
-  invoiceNumber: string;
-  clientName: string;
-  amount: number;
-  status: string;
-  transactionDate: string;
-  transactionType: string;
-  transactionId: string;
-  note?: string;
-  currency: string;
-  exchangeRate?: number;
-  baseCurrencyAmount?: number;
-  razorpayPayout?: {
-    id: string | number;
-    externalId?: string;
-    status: string;
-    triggeredBy: string;
-    failureReason?: string;
-    recipientUpiId?: string;
-  };
-}
+import type { Payment } from "../../types/payment";
 
 interface PaymentsData {
   payments: Payment[];
@@ -111,29 +88,19 @@ const normalizePayment = (payment: any, baseCurrency: string): Payment => ({
 });
 
 const fetchPayments = async (): Promise<PaymentsData> => {
-  try {
-    const response = await paymentsApi.get("");
-    const baseCurrency =
-      response.data.baseCurrency || response.data.base_currency || "USD";
+  const response = await paymentsApi.get("");
+  const baseCurrency =
+    response.data.baseCurrency || response.data.base_currency || "USD";
 
-    const payments = (response.data.payments || []).map(payment =>
-      normalizePayment(payment, baseCurrency)
-    );
+  const payments = (response.data.payments || []).map(payment =>
+    normalizePayment(payment, baseCurrency)
+  );
 
-    return {
-      payments,
-      baseCurrency,
-      total: response.data.total ?? payments.length,
-    };
-  } catch (error) {
-    console.warn("Payments API error, using fallback data", error);
-
-    return {
-      payments: [],
-      baseCurrency: "USD",
-      total: 0,
-    };
-  }
+  return {
+    payments,
+    baseCurrency,
+    total: response.data.total ?? payments.length,
+  };
 };
 
 const PaymentsTable: React.FC = () => {
@@ -162,7 +129,7 @@ const PaymentsTable: React.FC = () => {
 
   const fetchInvoiceList = async () => {
     const { data } = await payment.getInvoiceList();
-    const sanitized = await unmapPayment(data);
+    const sanitized = unmapPayment(data);
     setInvoiceList(sanitized);
     setDateFormat(data.company.dateFormat);
   };

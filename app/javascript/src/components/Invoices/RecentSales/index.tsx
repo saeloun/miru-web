@@ -71,7 +71,6 @@ const RecentSales: React.FC<RecentSalesProps> = ({ invoices, className }) => {
     return ((currentAmount - previousAmount) / previousAmount) * 100;
   };
 
-  // Sort by most recent first
   const sortedInvoices = [...invoices]
     .sort(
       (a, b) =>

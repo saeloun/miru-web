@@ -40,7 +40,6 @@ class Api::V1::PaymentsController < Api::V1::ApplicationController
 
     payments = current_company.payments.includes(:razorpay_payouts, invoice: [:client])
 
-    # Add search functionality
     if params[:query].present?
       search_query = ActiveRecord::Base.sanitize_sql_like(params[:query].to_s.strip.downcase)
       payments = payments.joins(invoice: :client)

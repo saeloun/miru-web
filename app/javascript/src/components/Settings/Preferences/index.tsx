@@ -76,7 +76,6 @@ const PreferencesSettingsPage: React.FC = () => {
       const isUnsubscribed = res.data.unsubscribed_from_all || false;
       setUnsubscribedAll(isUnsubscribed);
 
-      // Map API response to our preference items - only show actual features
       const prefs: PreferenceItem[] = [
         {
           id: "weekly_reminder",
@@ -155,7 +154,6 @@ const PreferencesSettingsPage: React.FC = () => {
     );
     setPreferences(updatedPreferences);
 
-    // Check if there are changes
     const hasChanges =
       JSON.stringify(updatedPreferences) !== JSON.stringify(savedPreferences) ||
       unsubscribedAll;
@@ -165,7 +163,6 @@ const PreferencesSettingsPage: React.FC = () => {
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      // Build the update payload based on changed preferences
       const payload: any = {
         unsubscribed_from_all: unsubscribedAll,
       };

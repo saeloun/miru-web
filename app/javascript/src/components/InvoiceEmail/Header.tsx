@@ -3,6 +3,7 @@ import React from "react";
 import { ReportsIcon } from "miruIcons";
 import { Badge, Tooltip } from "StyledComponents";
 import getStatusCssClass from "utils/getBadgeStatus";
+import type { Invoice } from "../../types/invoice";
 
 const Header = ({
   invoice,
@@ -86,13 +87,6 @@ const Header = ({
     </div>
   </div>
 );
-
-interface Invoice {
-  invoice_number: number;
-  status: string;
-  amount: number;
-  stripe_enabled: boolean;
-}
 
 interface InvoiceEmailProps {
   invoice: Invoice;

@@ -322,7 +322,6 @@ class Invoice < ApplicationRecord
       end
       return unless amount_changed? || currency_changed? || new_record?
 
-      # Get the exchange rate for the invoice date
       invoice_date = issue_date || Date.current
       rate = CurrencyConversionService.get_exchange_rate(
         currency || client&.currency,

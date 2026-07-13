@@ -85,7 +85,6 @@ const WeeklyEntries: React.FC<Props> = ({
   };
 
   const handleSaveNewEntry = (duration: number, note: string) => {
-    // Create initial entries array with the duration and note for the first day
     const initialEntries = new Array(7).fill(null);
     initialEntries[0] = {
       duration,

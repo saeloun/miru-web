@@ -312,7 +312,8 @@ RSpec.describe "Api::V1::Mobile::Collections", type: :request do
       paid_invoice
     )
 
-    create_mobile_collection_invoice(amount: 1200, collector: user)
+    other_collector = create(:user, current_workspace_id: company.id)
+    other_invoice = create_mobile_collection_invoice(amount: 1200, collector: other_collector)
 
     get "/api/v1/mobile/collections", headers: auth_headers(user)
 
@@ -321,7 +322,24 @@ RSpec.describe "Api::V1::Mobile::Collections", type: :request do
     expect(json_response.dig("summary", "count")).to eq(2)
     expect(json_response.dig("summary", "paid_count")).to eq(1)
     expect(json_response.dig("summary", "by_method", "upi")).to eq("3000.0")
-    expect(json_response.dig("collections", 0, "collector", "id")).to eq(user.id)
+    collections_by_invoice_id = json_response["collections"].index_by { |collection| collection.dig("invoice", "id") }
+    expect(collections_by_invoice_id.dig(paid_invoice.id, "collector")).to eq(
+      "id" => user.id,
+      "name" => user.full_name
+    )
+    expect(collections_by_invoice_id.dig(other_invoice.id, "collector")).to eq(
+      "id" => other_collector.id,
+      "name" => other_collector.full_name
+    )
+  end
+
+  it "returns an empty collector payload when a collection has no collector" do
+    invoice = create_mobile_collection_invoice(amount: 1200, collector: nil)
+
+    get "/api/v1/mobile/collections", headers: auth_headers(user)
+
+    collection = json_response["collections"].find { |item| item.dig("invoice", "id") == invoice.id }
+    expect(collection["collector"]).to eq({})
   end
 
   it "limits employees to their own collection ledger" do
@@ -343,6 +361,11 @@ RSpec.describe "Api::V1::Mobile::Collections", type: :request do
 
   def create_mobile_collection_invoice(amount:, collector:)
     client = create(:client, company:, currency: "INR")
+    payment_infos = { mobile_collection_source: "mobile" }
+    if collector
+      payment_infos[:mobile_collector_user_id] = collector.id.to_s
+      payment_infos[:mobile_collector_name] = collector.full_name
+    end
 
     create(
       :invoice,
@@ -351,11 +374,7 @@ RSpec.describe "Api::V1::Mobile::Collections", type: :request do
       amount_value: amount,
       currency: "INR",
       status: :sent,
-      payment_infos: {
-        mobile_collection_source: "mobile",
-        mobile_collector_user_id: collector.id.to_s,
-        mobile_collector_name: collector.full_name
-      }
+      payment_infos:
     )
   end
 

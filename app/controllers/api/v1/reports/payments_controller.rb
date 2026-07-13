@@ -96,7 +96,6 @@ module Api::V1
         def calculate_summary(report_data)
           total_amount = report_data.sum { |r| r[:amount] }
 
-          # Group by payment method
           by_method = report_data.group_by { |r| r[:payment_method] }
           method_breakdown = by_method.transform_values { |payments| payments.sum { |p| p[:amount] } }
 
@@ -128,8 +127,7 @@ module Api::V1
         end
 
         def generate_pdf(report_data)
-          # TODO: Implement PDF generation using Grover or similar
-          "PDF generation not yet implemented"
+          ::Reports::GeneratePdf.new(:payments, report_data, current_company).process
         end
 
         def format_client_options

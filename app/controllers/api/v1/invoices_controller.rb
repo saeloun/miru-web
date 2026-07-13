@@ -64,16 +64,13 @@ class Api::V1::InvoicesController < Api::V1::ApplicationController
   def send_invoice
     authorize invoice
 
-    # Validate parameters
     recipients = invoice_email_params[:recipients] || []
-    # Filter out blank entries
     recipients = recipients.reject(&:blank?)
 
     if recipients.empty?
       return render json: { error: I18n.t("invoices_controller.send_invoice.recipients_required") }, status: 422
     end
 
-    # Check recipient limit
     if recipients.size > 5
       return render json: { error: I18n.t("invoices_controller.send_invoice.recipient_limit") }, status: 422
     end
@@ -83,7 +80,6 @@ class Api::V1::InvoicesController < Api::V1::ApplicationController
       return render json: { error: I18n.t("invoices_controller.send_invoice.already_paid") }, status: 422
     end
 
-    # Generate PDF
     begin
       pdf_data = InvoicePayment::PdfGeneration.process(invoice, current_company.company_logo, root_url)
     rescue StandardError => e
@@ -91,7 +87,6 @@ class Api::V1::InvoicesController < Api::V1::ApplicationController
       return render json: { error: I18n.t("invoices_controller.send_invoice.pdf_failed") }, status: 500
     end
 
-    # Send email with PDF attachment
     # Encode PDF data as base64 to avoid encoding issues in job queue
     InvoiceMailer.with(
       invoice: invoice,

@@ -30,10 +30,6 @@ interface UseCurrentUserReturn {
   refetch: () => Promise<void>;
 }
 
-/**
- * Custom hook to fetch and manage current user data from the _me endpoint
- * This ensures we always have fresh user data from the server instead of relying on localStorage
- */
 export const useCurrentUser = (): UseCurrentUserReturn => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);

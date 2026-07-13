@@ -67,6 +67,42 @@ RSpec.describe Company, type: :model do
     it { is_expected.to validate_presence_of(:base_currency) }
     it { is_expected.to validate_length_of(:name).is_at_most(30) }
 
+    describe "attachment constraints" do
+      let(:company) { build(:company) }
+
+      def attach_file(attachment, content_type:, byte_size: 1.kilobyte)
+        company.public_send(attachment).attach(
+          io: StringIO.new("x" * byte_size),
+          filename: "file",
+          content_type:,
+          identify: false
+        )
+      end
+
+      [:logo, :invoice_signature].each do |attachment|
+        it "rejects an oversized #{attachment}" do
+          attach_file(attachment, content_type: "image/png", byte_size: 5.megabytes + 1)
+
+          expect(company).not_to be_valid
+          expect(company.errors[attachment]).to be_present
+        end
+
+        it "rejects SVG content for #{attachment}" do
+          attach_file(attachment, content_type: "image/svg+xml")
+
+          expect(company).not_to be_valid
+          expect(company.errors[attachment]).to be_present
+        end
+
+        it "accepts a PNG #{attachment} within the size limit" do
+          attach_file(attachment, content_type: "image/png")
+
+          expect(company).to be_valid
+          expect(company.errors[attachment]).to be_empty
+        end
+      end
+    end
+
     it do
       expect(subject).to validate_numericality_of(:standard_price).is_greater_than_or_equal_to(0)
     end

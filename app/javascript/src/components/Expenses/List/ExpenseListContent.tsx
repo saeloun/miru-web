@@ -6,9 +6,6 @@ import Table from "./Container/Table";
 
 const ExpenseListContent = ({ expenseData, fetchExpenses }) => (
   <div className="mt-4 lg:mt-6 h-full">
-    {/* TODO: Uncomment and integrate when API is ready
-      <ExpensesSummary />
-    */}
     {expenseData?.expenses?.length > 0 ? (
       <Table expenses={expenseData?.expenses} fetchExpenses={fetchExpenses} />
     ) : (

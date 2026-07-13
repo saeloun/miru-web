@@ -11,7 +11,7 @@ class Reports::GeneratePdf
 
   def process
     case report_type
-    when :time_entries, :accounts_aging, :client_revenues, :outstanding_overdue_invoices
+    when :time_entries, :accounts_aging, :client_revenues, :outstanding_overdue_invoices, :payments
       generate_pdf(report_type)
     else
       raise ArgumentError, "Unsupported report type: #{report_type}"
@@ -21,7 +21,6 @@ class Reports::GeneratePdf
   private
 
     def generate_pdf(report_type)
-      # Use the new PDF generation service with Ferrum
       template_path = "pdfs/#{report_type}"
       html_content = ApplicationController.render(
         template: template_path,
