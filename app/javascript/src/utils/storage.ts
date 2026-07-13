@@ -1,9 +1,13 @@
 import Logger from "js-logger";
 
 const setToLocalStorage = (key, value) => {
-  if (value !== null) {
-    localStorage.setItem(key, JSON.stringify(value));
-  } else localStorage.removeItem(key);
+  try {
+    if (value !== null) {
+      localStorage.setItem(key, JSON.stringify(value));
+    } else localStorage.removeItem(key);
+  } catch (error) {
+    Logger.error(error);
+  }
 };
 
 const getValueFromLocalStorage = key => {

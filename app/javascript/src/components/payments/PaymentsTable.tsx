@@ -152,7 +152,7 @@ const PaymentsTable: React.FC = () => {
 
   const fetchInvoiceList = async () => {
     const { data } = await payment.getInvoiceList();
-    const sanitized = await unmapPayment(data);
+    const sanitized = unmapPayment(data);
     setInvoiceList(sanitized);
     setDateFormat(data.company.dateFormat);
   };

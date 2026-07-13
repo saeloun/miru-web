@@ -33,7 +33,7 @@ const Payments = () => {
   const fetchInvoiceList = async () => {
     try {
       const { data } = await payment.getInvoiceList();
-      const sanitzed = await unmapPayment(data);
+      const sanitzed = unmapPayment(data);
       setInvoiceList(sanitzed);
       setDateFormat(data.company.dateFormat);
     } catch (err) {

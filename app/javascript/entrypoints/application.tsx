@@ -24,7 +24,13 @@ installRuntimeRecoveryHandlers();
 const THEME_STORAGE_KEY = "miru-theme";
 
 const applyInitialTheme = () => {
-  const savedTheme = window.localStorage.getItem(THEME_STORAGE_KEY);
+  let savedTheme = null;
+  try {
+    savedTheme = window.localStorage.getItem(THEME_STORAGE_KEY);
+  } catch {
+    savedTheme = null;
+  }
+
   const preferredTheme =
     savedTheme === "light" || savedTheme === "dark"
       ? savedTheme

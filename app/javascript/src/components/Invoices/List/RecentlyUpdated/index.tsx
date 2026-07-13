@@ -31,7 +31,7 @@ const RecentlyUpdated = ({ recentlyUpdatedInvoices }) => {
     const container = scrollContainerRef.current;
     if (!container) return;
 
-    container.addEventListener("scroll", handleScroll);
+    container.addEventListener("scroll", handleScroll, { passive: true });
 
     return () => container.removeEventListener("scroll", handleScroll);
   }, [handleScroll]);
