@@ -24,6 +24,13 @@ class Rack::Attack
     ].include?(req.path)
   end
 
+  throttle("auth/otp/ip", limit: 10, period: 1.minute) do |req|
+    req.ip if req.post? && [
+      "/api/v1/users/totp/authenticate",
+      "/api/v1/users/otp/verify"
+    ].include?(req.path)
+  end
+
   throttled_response = lambda do |_env|
     [429, { "Content-Type" => "application/json" }, [{ error: "Too many requests. Please try again later." }.to_json]]
   end
