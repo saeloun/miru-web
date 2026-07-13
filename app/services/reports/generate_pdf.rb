@@ -11,7 +11,7 @@ class Reports::GeneratePdf
 
   def process
     case report_type
-    when :time_entries, :accounts_aging, :client_revenues, :outstanding_overdue_invoices
+    when :time_entries, :accounts_aging, :client_revenues, :outstanding_overdue_invoices, :payments
       generate_pdf(report_type)
     else
       raise ArgumentError, "Unsupported report type: #{report_type}"

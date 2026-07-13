@@ -128,8 +128,7 @@ module Api::V1
         end
 
         def generate_pdf(report_data)
-          # TODO: Implement PDF generation using Grover or similar
-          "PDF generation not yet implemented"
+          ::Reports::GeneratePdf.new(:payments, report_data, current_company).process
         end
 
         def format_client_options
