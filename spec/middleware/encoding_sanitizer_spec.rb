@@ -84,6 +84,15 @@ RSpec.describe EncodingSanitizer do
 
         expect(response_env["rack.input"]).to equal(input)
       end
+
+      it "returns bad request when Rack rejects malformed multipart data" do
+        app = ->(_env) { raise Rack::Multipart::BoundaryTooLongError, "bad multipart" }
+
+        status, _headers, body = described_class.new(app).call({})
+
+        expect(status).to eq(400)
+        expect(body).to eq(["Bad Request"])
+      end
     end
   end
 

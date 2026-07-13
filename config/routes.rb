@@ -37,6 +37,7 @@ Rails.application.routes.draw do
     confirmations: "users/confirmations",
     omniauth_callbacks: "users/omniauth_callbacks"
   }
+  get "/users/sign_in", to: "home#index", as: :new_user_session
 
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 
@@ -96,7 +97,7 @@ Rails.application.routes.draw do
 
   root "home#index"
 
-  match "*path", via: :all, to: "home#index", constraints: lambda { |req|
+  get "*path", to: "home#index", constraints: lambda { |req|
     req.path.exclude?("rails/active_storage") &&
     !req.path.start_with?("/api/") &&
     !req.path.include?("packs/") &&

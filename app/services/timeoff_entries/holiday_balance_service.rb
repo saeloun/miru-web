@@ -51,7 +51,7 @@ module TimeoffEntries
       end
 
       def optional_holidays_summary
-        no_of_allowed_optional_holidays = holiday.no_of_allowed_optional_holidays
+        no_of_allowed_optional_holidays = holiday.no_of_allowed_optional_holidays.to_i
         time_period_optional_holidays = holiday.time_period_optional_holidays
 
         total_optional_entries = TimeoffEntries::CalculateOptionalHolidayTimeoffEntriesService.new(

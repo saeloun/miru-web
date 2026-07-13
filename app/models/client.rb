@@ -75,7 +75,7 @@ class Client < ApplicationRecord
       phone:,
       currency:,
       signature_enabled:,
-      previousInvoiceNumber: invoices.kept.order(created_at: :desc).pick(:invoice_number) || 0,
+      previousInvoiceNumber: invoices.select(&:kept?).max_by(&:created_at)&.invoice_number || 0,
       logo: logo_url,
       minutes_spent: minutes_spent || total_hours_logged(time_frame),
       address: current_address

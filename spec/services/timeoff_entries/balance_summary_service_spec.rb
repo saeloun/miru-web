@@ -46,4 +46,24 @@ RSpec.describe TimeoffEntries::BalanceSummaryService do
       timeoff_entries_duration: timeoff_entry.duration
     )
   end
+
+  it "treats a missing optional holiday allowance as zero" do
+    create(
+      :holiday,
+      company:,
+      year:,
+      enable_optional_holidays: false,
+      no_of_allowed_optional_holidays: nil
+    )
+
+    result = described_class.process(
+      current_user: user,
+      current_company: company,
+      user_id: user.id,
+      year:
+    )
+
+    expect(result[:leave_balance].find { |balance| balance[:id] == "optional" })
+      .to include(net_days: 0)
+  end
 end
