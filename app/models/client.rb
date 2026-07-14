@@ -67,6 +67,13 @@ class Client < ApplicationRecord
   end
 
   def client_detail(time_frame = "week", minutes_spent: nil)
+    latest_invoice_number =
+      if association(:invoices).loaded?
+        invoices.select(&:kept?).max_by(&:created_at)&.invoice_number
+      else
+        invoices.kept.order(created_at: :desc).pick(:invoice_number)
+      end
+
     {
       id:,
       name:,
@@ -75,7 +82,7 @@ class Client < ApplicationRecord
       phone:,
       currency:,
       signature_enabled:,
-      previousInvoiceNumber: invoices.select(&:kept?).max_by(&:created_at)&.invoice_number || 0,
+      previousInvoiceNumber: latest_invoice_number || 0,
       logo: logo_url,
       minutes_spent: minutes_spent || total_hours_logged(time_frame),
       address: current_address

@@ -21,6 +21,11 @@ RSpec.describe "Api::V1::Users::Sessions#destroy", type: :request do
       send_request :delete, api_v1_users_logout_path, headers: { "Authorization" => "Bearer invalid" }
 
       expect(response).to have_http_status(:ok)
+      expect(json_response["notice"]).to eq(I18n.t("devise.sessions.signed_out"))
+
+      get api_v1_users_me_path
+
+      expect(response).to have_http_status(:unauthorized)
     end
   end
 

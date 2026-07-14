@@ -38,7 +38,12 @@ RSpec.describe Clients::IndexService do
     it "does not query the latest invoice once per client" do
       latest_invoice_queries = []
       subscriber = ActiveSupport::Notifications.subscribe("sql.active_record") do |*, payload|
-        latest_invoice_queries << payload[:sql] if payload[:sql].start_with?('SELECT "invoices"."invoice_number"')
+        sql = payload[:sql].to_s.gsub(%r{/\\*.*?\\*/}m, "").squish
+        next unless sql.match?(/FROM "invoices"/i)
+        next unless sql.match?(/WHERE .*"invoices"\."client_id" = /i)
+        next unless sql.match?(/ORDER BY .*"invoices"\."created_at".*LIMIT/i)
+
+        latest_invoice_queries << sql
       end
 
       described_class.process(company, owner, nil, "week")
