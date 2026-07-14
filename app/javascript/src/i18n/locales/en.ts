@@ -1915,7 +1915,7 @@ const en = {
     yearly: "Yearly",
     unknown: "Unknown",
     notSubscribedYet: "Not subscribed yet",
-    startTrial: "Start 30-day Pro trial",
+    startTrial: "Start 14-day Pro trial",
     startingTrial: "Starting trial...",
     upgradeWithStripe: "Upgrade with Stripe",
     openingStripe: "Opening Stripe...",
@@ -1961,7 +1961,7 @@ const en = {
       proTrialActiveUntil: "Your workspace has Pro access until %{date}.",
       proTrialEnded: "Pro trial ended",
       proTrialEndedDescription:
-        "Your workspace has returned to the free plan. Upgrade in Stripe to restore Pro access.",
+        "Your workspace no longer has Pro access. Upgrade in Stripe to restore it.",
       subscriptionScheduledToCancel: "Subscription scheduled to cancel",
       subscriptionScheduledToCancelOn:
         "Your Pro access remains active until %{date}.",
@@ -1978,9 +1978,6 @@ const en = {
       unableToStartProTrial: "Unable to start your Pro trial",
     },
     recommendations: {
-      freeTitle: "Stay on Free until you need controls",
-      freeDescription:
-        "Free works well for very small teams. Move to Pro when you need SSO, stronger reports, and more than 3 seats.",
       proTitle: "Pro is the right fit",
       proDescription:
         "For growing teams, Pro gives you SSO, finance visibility, and enough room to scale without enterprise overhead.",
@@ -1991,7 +1988,7 @@ const en = {
     highlights: {
       seatsTitle: "More seats without admin pain",
       seatsDescription:
-        "Move past the 3-seat free limit and keep onboarding simple.",
+        "Move past the 3-seat limit and keep onboarding simple.",
       ssoTitle: "SSO and stronger controls",
       ssoDescription: "Give growing teams secure access without extra tools.",
       financeTitle: "Finance visibility that stays calm",
@@ -1999,7 +1996,6 @@ const en = {
         "Know margin, billing cadence, and team usage without extra setup.",
     },
     planDescriptions: {
-      free: "Self-host Miru with core tracking, invoicing, payments, and up to 3 team seats.",
       pro: "Pro adds reports, SSO, more seats, and calmer admin controls without enterprise overhead.",
       enterprise:
         "Procurement-friendly contracts, advanced controls, and support for larger teams that need security review.",
@@ -2007,13 +2003,8 @@ const en = {
         "We host, upgrade, back up, and support Miru for you on a dedicated setup.",
     },
     planBullets: {
-      free: {
-        coreProduct: "Self-hosted core product",
-        tracking: "Time tracking, invoices, payments",
-        dashboard: "Dashboard visibility for a small team",
-      },
       pro: {
-        trial: "30-day free trial before paying",
+        trial: "14-day free trial included",
         sso: "SSO, advanced reporting, stronger admin controls",
         fit: "Best fit for agencies and growing teams",
       },
@@ -2029,18 +2020,19 @@ const en = {
       },
     },
     heroDescription:
-      "Start on Free, move to Pro when the team needs more control, or let us run Miru for you. Pro stays inexpensive, yearly saves real money, and billing stays simple because checkout and subscription management are powered by Stripe.",
+      "Every workspace starts with a 14-day Pro trial. Upgrade when the team is ready, or let us run Miru for you. Pro stays inexpensive, yearly saves real money, and billing stays simple because checkout and subscription management are powered by Stripe.",
     seatEstimatorDescription:
-      "Use this to compare Free vs Pro and decide whether monthly or yearly makes more sense.",
+      "Use this to estimate your Pro spend and decide whether monthly or yearly makes more sense.",
     yearlyDiscountDescription:
       "Two free months per seat compared with monthly pricing.",
     checkoutDescription:
       "Start the trial without a sales process, upgrade when you are ready, and manage billing yourself whenever you need.",
     plans: {
       unknown: "Unknown",
-      free: "Free",
       freePro: "Free Pro",
       proTrial: "Pro Trial",
+      trialExpired: "Trial expired",
+      noPlan: "No active plan",
       paid: "Paid",
       enterprise: "Enterprise",
       hostedEnterprise: "Hosted Enterprise",

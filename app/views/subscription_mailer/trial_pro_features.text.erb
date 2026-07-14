@@ -1,0 +1,13 @@
+<%= t("mailers.subscription.trial_pro_features_text.greeting", name: @recipient.first_name.presence || @recipient.email) %>
+
+<%= t("mailers.subscription.trial_pro_features_text.body", company: @company.name) %>
+
+<%= t("mailers.subscription.trial_pro_features_text.reports") %>
+<%= t("mailers.subscription.trial_pro_features_text.seats") %>
+<%= t("mailers.subscription.trial_pro_features_text.controls") %>
+
+<%= t("mailers.subscription.trial_pro_features_text.pricing") %>
+
+<%= t("mailers.subscription.trial_pro_features_text.trial_ends", date: @trial_end_date_text) %>
+
+<%= t("mailers.subscription.trial_pro_features_text.upgrade", url: @billing_url) %>

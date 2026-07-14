@@ -144,7 +144,7 @@ RSpec.describe Api::V1::SubscriptionsController, type: :request do
   end
 
   describe "POST /api/v1/subscription/trial" do
-    it "starts a 30-day trial and returns the updated summary" do
+    it "starts a 14-day trial and returns the updated summary" do
       travel_to(Time.zone.local(2026, 3, 11, 12, 0, 0)) do
         expect do
           post "/api/v1/subscription/trial", headers: headers
@@ -154,11 +154,11 @@ RSpec.describe Api::V1::SubscriptionsController, type: :request do
         body = JSON.parse(response.body)
 
         expect(company.reload.trial_started_at).to eq(Time.current)
-        expect(company.trial_ends_at).to eq(30.days.from_now)
+        expect(company.trial_ends_at).to eq(14.days.from_now)
         expect(body["plan_label"]).to eq("pro_trial")
         expect(body["subscription_status"]).to eq("trialing")
         expect(body["pro_access"]).to eq(true)
-        expect(body["notice"]).to eq("Your 30-day Pro trial has started")
+        expect(body["notice"]).to eq("Your 14-day Pro trial has started")
       end
     end
 

@@ -23,7 +23,7 @@ RSpec.describe "Settings billing", type: :system, js: true do
       expect(page).to have_content("Membership", wait: 10)
       expect(page).to have_content("CURRENT PLAN", wait: 10)
       expect(page).to have_content("1/3 seats used", wait: 10)
-      expect(page).to have_button("Start 30-day Pro trial", wait: 10)
+      expect(page).to have_button("Start 14-day Pro trial", wait: 10)
       expect(page).to have_button("Upgrade with Stripe", wait: 10)
       expect(page).to have_content("Hosted Enterprise", wait: 10)
       expect(page).to have_button("Monthly", wait: 10)
@@ -62,7 +62,7 @@ RSpec.describe "Settings billing", type: :system, js: true do
       expect(page).to have_content("सदस्यता", wait: 10)
       expect(page).to have_content("वर्तमान प्लान", wait: 10)
       expect(page).to have_content("रिपोर्ट और एनालिटिक्स", wait: 10)
-      expect(page).to have_button("30-दिन का Pro ट्रायल शुरू करें", wait: 10)
+      expect(page).to have_button("14-दिन का Pro ट्रायल शुरू करें", wait: 10)
       expect(page).to have_button("Stripe के साथ अपग्रेड करें", wait: 10)
     end
   end
@@ -144,7 +144,7 @@ RSpec.describe "Settings billing", type: :system, js: true do
       expect(page).to have_content(day, wait: 10)
       expect(page).to have_content(month, wait: 10)
       expect(page).to have_content(year, wait: 10)
-      expect(page).not_to have_button("Start 30-day Pro trial")
+      expect(page).not_to have_button("Start 14-day Pro trial")
     end
   end
 
@@ -162,7 +162,7 @@ RSpec.describe "Settings billing", type: :system, js: true do
 
       expect(page).to have_content("Paid", wait: 10)
       expect(page).to have_button("Manage billing in Stripe", wait: 10)
-      expect(page).not_to have_button("Start 30-day Pro trial")
+      expect(page).not_to have_button("Start 14-day Pro trial")
       expect(page).not_to have_button("Upgrade with Stripe")
       expect(page).to have_content("Monthly", wait: 10)
     end

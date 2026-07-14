@@ -2,15 +2,49 @@
 
 class SubscriptionMailer < ApplicationMailer
   def trial_started
-    @company = Company.find(params[:company_id])
-    @recipient = User.find(params[:recipient_id])
-    @trial_ends_at = @company.trial_ends_at
-    @trial_end_date_text = @trial_ends_at&.in_time_zone(resolved_time_zone)&.strftime("%B %-d, %Y")
-    @billing_url = "#{ENV['APP_BASE_URL']}/settings/billing"
+    load_trial_context
 
     mail(
       to: @recipient.email,
       subject: "Your Miru Pro trial is active",
+      reply_to: default_reply_to_address
+    )
+  end
+
+  def trial_getting_started
+    load_trial_context
+
+    mail(
+      to: @recipient.email,
+      subject: "Make the most of your Miru Pro trial",
+      reply_to: default_reply_to_address
+    )
+  end
+
+  def trial_pro_features
+    load_trial_context
+
+    mail(
+      to: @recipient.email,
+      subject: "See what your team keeps with Miru Pro",
+      reply_to: default_reply_to_address
+    )
+  end
+
+  def trial_ending_reminder
+    load_trial_context
+    @days_remaining = params[:days_remaining].to_i
+
+    subject =
+      if @days_remaining <= 1
+        "Your Miru Pro trial ends tomorrow"
+      else
+        "Your Miru Pro trial ends in #{@days_remaining} days"
+      end
+
+    mail(
+      to: @recipient.email,
+      subject:,
       reply_to: default_reply_to_address
     )
   end
@@ -34,12 +68,16 @@ class SubscriptionMailer < ApplicationMailer
 
   private
 
-    def resolved_time_zone
-      raw_zone = @company.timezone.presence
-      return Time.zone if raw_zone.blank?
+    def load_trial_context
+      @company = Company.find(params[:company_id])
+      @recipient = User.find(params[:recipient_id])
+      @trial_ends_at = @company.trial_ends_at
+      @trial_end_date_text = @trial_ends_at&.in_time_zone(resolved_time_zone)&.strftime("%B %-d, %Y")
+      @app_url = ENV["APP_BASE_URL"]
+      @billing_url = "#{ENV['APP_BASE_URL']}/settings/billing"
+    end
 
-      ActiveSupport::TimeZone[raw_zone] ||
-        ActiveSupport::TimeZone[raw_zone.sub(/\A\(GMT[^)]*\)\s*/, "")] ||
-        Time.zone
+    def resolved_time_zone
+      @company.resolved_time_zone
     end
 end

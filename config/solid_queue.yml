@@ -15,6 +15,9 @@ default: &default
         sync_stripe_subscriptions:
           class: SyncStripeSubscriptionsJob
           schedule: '0 1 * * *'
+        trial_emails:
+          class: TrialEmailsJob
+          schedule: '0 9 * * *'
         refresh_cached_analytics_reports:
           class: Analytics::RefreshCachedReportsJob
           schedule: '0 * * * *'
@@ -54,6 +57,9 @@ production:
         sync_stripe_subscriptions:
           class: SyncStripeSubscriptionsJob
           schedule: '0 1 * * *'
+        trial_emails:
+          class: TrialEmailsJob
+          schedule: '<%= ENV.fetch("TRIAL_EMAILS_CRON", "0 9 * * *") %>'
         refresh_cached_analytics_reports:
           class: Analytics::RefreshCachedReportsJob
           schedule: '0 * * * *'

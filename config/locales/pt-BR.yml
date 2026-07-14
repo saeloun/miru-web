@@ -467,7 +467,7 @@ pt-BR:
         stripe_subscription: 'Assinatura Stripe: %{id}'
         team_seats: 'Lugares da equipe: %{seats}'
       trial_started:
-        body_html: Seu período de avaliação de 30 dias do Miru Pro para <strong>%{company}</strong>
+        body_html: Seu período de avaliação de 14 dias do Miru Pro para <strong>%{company}</strong>
           já está ativo.
         cta: Faturamento aberto
         eyebrow: Cobrança
@@ -476,11 +476,11 @@ pt-BR:
         greeting_html: Olá <strong>%{name}</strong> ,
         preheader: Seu período de avaliação do Miru Pro agora está ativo.
         subtitle: Explore a faturação, os relatórios e o restante do fluxo de trabalho
-          do Pro durante o seu período experimental de 30 dias.
+          do Pro durante o seu período experimental de 14 dias.
         title: Seu período de teste do Miru Pro está ativo.
         trial_ends: O julgamento termina
       trial_started_text:
-        body: Seu período de avaliação de 30 dias do Miru Pro para %{company} já está
+        body: Seu período de avaliação de 14 dias do Miru Pro para %{company} já está
           ativo.
         greeting: Olá %{name},
         review_billing: Revisar a fatura em %{url}.
@@ -700,7 +700,7 @@ pt-BR:
     no_billing_customer: Não existe nenhum cliente de faturamento para esta empresa.
     pricing_not_configured: O preço da assinatura do Stripe não está configurado.
     trial_not_eligible: Seu espaço de trabalho não é elegível para um teste do Pro.
-    trial_started: Seu período de teste Pro de 30 dias começou.
+    trial_started: Seu período de teste Pro de 14 dias começou.
   team:
     changed_email: E-mail alterado
     create_new_user: Criar novo usuário
