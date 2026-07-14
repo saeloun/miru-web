@@ -563,6 +563,10 @@ const Billing = () => {
               <ClockClockwise size={14} weight="fill" />
               {i18n.t("billingSettings.saveTwoMonths")}
             </Badge>
+            <Badge variant="outline" className="gap-1.5 px-3 py-1">
+              <CheckCircle size={14} weight="fill" />
+              {i18n.t("billingSettings.noCreditCardRequired")}
+            </Badge>
           </div>
           <CardTitle className="text-2xl tracking-tight">
             {i18n.t("billingSettings.heroTitle")}

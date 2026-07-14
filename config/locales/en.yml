@@ -471,7 +471,8 @@ en:
         team_seats: 'Team seats: %{seats}'
       trial_ending_reminder:
         after_trial: After the trial ends, the workspace drops to 3 seats and dashboard-only
-          reporting until you upgrade.
+          reporting until you upgrade. Nothing is charged automatically — there is
+          no card on file.
         body_html: The Miru Pro trial for <strong>%{company}</strong> ends in %{days}
           days, on %{date}.
         body_tomorrow_html: The Miru Pro trial for <strong>%{company}</strong> ends
@@ -549,7 +550,8 @@ en:
         preheader: Reports, SSO, and room for your whole team — for $1 per member
           per month.
         price_caption: per team member per month — pay yearly and get two months
-          free. One recovered invoice usually covers the year.
+          free. One recovered invoice usually covers the year. No card on file until
+          you choose to upgrade.
         price_label: Miru Pro pricing
         price_value: "$1"
         reports_body: Know margin, utilization, and who owes you money at a glance.
@@ -579,7 +581,8 @@ en:
         cta: Open billing
         eyebrow: Billing
         footer_body: You can review billing, compare plans, and upgrade at any time
-          from your billing settings.
+          from your billing settings. There is no card on file — nothing is charged
+          unless you choose to upgrade.
         greeting_html: Hello <strong>%{name}</strong>,
         preheader: Your Miru Pro trial is now active.
         subtitle: Explore billing, reports, and the rest of the Pro workflow during
@@ -587,7 +590,8 @@ en:
         title: Your Miru Pro trial is live
         trial_ends: Trial ends
       trial_started_text:
-        body: Your 14-day Miru Pro trial for %{company} is now active.
+        body: Your 14-day Miru Pro trial for %{company} is now active. No credit card
+          required — nothing is charged unless you upgrade.
         greeting: Hello %{name},
         review_billing: Review billing at %{url}.
         trial_ends: Trial ends on %{date}.
