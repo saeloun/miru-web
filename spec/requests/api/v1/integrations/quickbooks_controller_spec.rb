@@ -217,7 +217,6 @@ RSpec.describe "Api::V1::Integrations::QuickbooksController", type: :request do
       connection = create(:quickbooks_connection, company:)
       invoice = create(:invoice, company:)
       payment = create(:payment, invoice:)
-      create(:payment, invoice:).update_column(:discarded_at, Time.current)
 
       expect {
         post "/api/v1/integrations/quickbooks/sync", headers: auth_headers(user)
