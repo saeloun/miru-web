@@ -1916,6 +1916,7 @@ const en = {
     unknown: "Unknown",
     notSubscribedYet: "Not subscribed yet",
     startTrial: "Start 14-day Pro trial",
+    noCreditCardRequired: "No credit card required",
     startingTrial: "Starting trial...",
     upgradeWithStripe: "Upgrade with Stripe",
     openingStripe: "Opening Stripe...",
@@ -2004,7 +2005,7 @@ const en = {
     },
     planBullets: {
       pro: {
-        trial: "14-day free trial included",
+        trial: "14-day free trial — no credit card required",
         sso: "SSO, advanced reporting, stronger admin controls",
         fit: "Best fit for agencies and growing teams",
       },
@@ -2307,7 +2308,7 @@ const en = {
     signUp: {
       title: "Create your workspace",
       description:
-        "Set up clients, projects, invoices, and payments in one clear operating system.",
+        "Start your free 14-day Pro trial — no credit card required. Clients, projects, invoices, and payments in one clear operating system.",
       continueWithGoogle: "Continue with Google",
       continueWithGitHub: "Continue with GitHub",
       orUseEmail: "or use email",
