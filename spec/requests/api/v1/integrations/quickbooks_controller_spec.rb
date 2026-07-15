@@ -249,6 +249,22 @@ RSpec.describe "Api::V1::Integrations::QuickbooksController", type: :request do
 
       expect(response).to have_http_status(:forbidden)
     end
+
+    it "does not queue payments for discarded invoices" do
+      connection = create(:quickbooks_connection, company:)
+      discarded_invoice = create(:invoice, company:)
+      kept_invoice = create(:invoice, company:)
+      discarded_payment = create(:payment, invoice: discarded_invoice)
+      kept_payment = create(:payment, invoice: kept_invoice)
+      discarded_invoice.discard
+
+      post "/api/v1/integrations/quickbooks/sync", headers: auth_headers(user)
+
+      expect(response).to have_http_status(:accepted)
+      expect(json_response.dig("quickbooks", "sync", "paymentsQueued")).to eq(1)
+      expect(QuickBooks::ExportPaymentJob).to have_been_enqueued.with(connection.id, kept_payment.id, "manual")
+      expect(QuickBooks::ExportPaymentJob).not_to have_been_enqueued.with(connection.id, discarded_payment.id, "manual")
+    end
   end
 
   describe "DELETE /api/v1/integrations/quickbooks/disconnect" do

@@ -168,7 +168,7 @@ class Api::V1::Integrations::QuickbooksController < Api::V1::ApplicationControll
     end
 
     def enqueue_payments(connection)
-      enqueue_record_ids(current_company.payments) do |payment_id|
+      enqueue_record_ids(current_company.payments.for_kept_invoices) do |payment_id|
         QuickBooks::ExportPaymentJob.perform_later(connection.id, payment_id, "manual")
       end
     end

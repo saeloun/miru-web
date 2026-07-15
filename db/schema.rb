@@ -792,7 +792,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_15_000000) do
     t.text "error"
     t.datetime "event_time"
     t.string "operation"
-    t.string "payload_digest"
+    t.string "payload_digest", null: false
     t.bigint "quickbooks_connection_id", null: false
     t.string "quickbooks_entity_id", null: false
     t.string "quickbooks_entity_type", null: false
