@@ -20,12 +20,12 @@ RSpec.describe QuickBooks::ExportPaymentJob, type: :job do
     expect(exporter).to have_received(:export!).with(payment, trigger: :manual)
   end
 
-  it "does not export discarded payments" do
+  it "does not export payments from another company" do
     connection = create(:quickbooks_connection)
-    invoice = create(:invoice, company: connection.company)
+    other_company = create(:company)
+    invoice = create(:invoice, company: other_company)
     payment = create(:payment, invoice:)
 
-    payment.update_column(:discarded_at, Time.current)
     allow(QuickBooks::Exporters::Payment).to receive(:new)
 
     expect {

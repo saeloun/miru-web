@@ -469,21 +469,129 @@ en:
         plan: 'Plan: %{plan}'
         stripe_subscription: 'Stripe subscription: %{id}'
         team_seats: 'Team seats: %{seats}'
+      trial_ending_reminder:
+        after_trial: After the trial ends, the workspace drops to 3 seats and dashboard-only
+          reporting until you upgrade. Nothing is charged automatically — there is
+          no card on file.
+        body_html: The Miru Pro trial for <strong>%{company}</strong> ends in %{days}
+          days, on %{date}.
+        body_tomorrow_html: The Miru Pro trial for <strong>%{company}</strong> ends
+          tomorrow, on %{date}.
+        countdown_days: "%{days} days left"
+        countdown_label: Pro access ends
+        countdown_tomorrow: Tomorrow
+        cta: Upgrade now
+        eyebrow: Your Pro trial
+        greeting_html: Hello <strong>%{name}</strong>,
+        keep_controls: SSO, audit trails, and admin controls
+        keep_html: Upgrade now to keep reports, SSO, and seats for your whole team.
+          Pro starts at <strong>$1 per team member per month</strong>, and yearly
+          saves two months.
+        keep_reports: Reports and analytics — margin, utilization, and accounts aging,
+          live
+        keep_seats: Seats for the whole team — up to 100
+        preheader: Your Miru Pro trial is ending soon.
+        subtitle: Upgrade to keep Pro access for your whole team without interruption.
+        title_days: "%{days} days left on your Pro trial"
+        title_tomorrow: Last day of your Pro trial
+        trial_ends: Trial ends
+      trial_ending_reminder_text:
+        body: The Miru Pro trial for %{company} ends in %{days} days, on %{date}.
+        body_tomorrow: The Miru Pro trial for %{company} ends tomorrow, on %{date}.
+        greeting: Hello %{name},
+        keep: Upgrade now to keep reports, SSO, and seats for your whole team. Pro
+          starts at $1 per team member per month.
+        upgrade: Upgrade at %{url}.
+      trial_getting_started:
+        body_html: You are two days into the Miru Pro trial for <strong>%{company}</strong>.
+          Teams that set up these three things see the value well before the trial
+          ends.
+        cta: Open Miru
+        eyebrow: Getting started
+        footer_body: Invite your team so everyone's hours land in one place — Pro
+          covers up to 100 seats.
+        greeting_html: Hello <strong>%{name}</strong>,
+        invoicing_body: Turn unbilled entries into a client-ready invoice in a couple
+          of clicks, and let clients pay online through Stripe.
+        invoicing_title: Turn hours into invoices
+        preheader: Three things to set up while your Pro trial is fresh.
+        reports_body: Revenue by client, outstanding and overdue invoices, and team
+          utilization — live in your Pro reports, no spreadsheets.
+        reports_title: See the whole business
+        subtitle: Three quick setups that make the trial pay off.
+        title: Get your workspace humming
+        tracking_body: Log hours against clients and projects as you work; billable
+          totals and utilization build themselves.
+        tracking_title: Track time as you go
+        trial_ends: Trial ends
+      trial_getting_started_text:
+        body: You are two days into the Miru Pro trial for %{company}. Three things
+          worth setting up now.
+        greeting: Hello %{name},
+        invoicing: 'Invoices: turn unbilled entries into a client-ready invoice and
+          get paid online through Stripe.'
+        open_app: Open Miru at %{url}.
+        reports: 'Reports: revenue by client, outstanding invoices, and team utilization,
+          live.'
+        tracking: 'Time tracking: log hours against clients and projects; billable
+          totals build themselves.'
+        trial_ends: Trial ends on %{date}.
+      trial_pro_features:
+        body_html: A few days into the <strong>%{company}</strong> trial is the right
+          time to look at what your team keeps by staying on Pro.
+        controls_body: SSO, audit trails, and admin controls keep access tidy as
+          the team grows — without extra tools.
+        controls_title: Controls that scale with you
+        cta: Upgrade to Pro
+        eyebrow: Your Pro trial
+        footer_body: Questions about plans or pricing? Just reply to this email —
+          a human reads these.
+        greeting_html: Hello <strong>%{name}</strong>,
+        preheader: Reports, SSO, and room for your whole team — for $1 per member
+          per month.
+        price_caption: per team member per month — pay yearly and get two months
+          free. One recovered invoice usually covers the year. No card on file until
+          you choose to upgrade.
+        price_label: Miru Pro pricing
+        price_value: "$1"
+        reports_body: Know margin, utilization, and who owes you money at a glance.
+          Accounts aging and revenue reports stay live as the team logs time.
+        reports_title: Finance visibility that stays calm
+        seats_body: Go past the 3-seat limit and bring the whole team — Pro covers
+          up to 100 seats.
+        seats_title: Room for the whole team
+        subtitle: Everything the trial unlocked stays, for less than a coffee per
+          member.
+        title: What your team keeps with Pro
+        trial_ends: Trial ends
+      trial_pro_features_text:
+        body: A few days into the %{company} trial is the right time to look at what
+          your team keeps by staying on Pro.
+        controls: 'Controls: SSO, audit trails, and admin controls as the team grows.'
+        greeting: Hello %{name},
+        pricing: Pro is $1 per team member per month, or two months free on yearly.
+        reports: 'Reports: margin, utilization, accounts aging, and revenue at a
+          glance.'
+        seats: 'Seats: go past the 3-seat limit — Pro covers up to 100 seats.'
+        trial_ends: Trial ends on %{date}.
+        upgrade: Upgrade at %{url}.
       trial_started:
-        body_html: Your 30-day Miru Pro trial for <strong>%{company}</strong> is now
+        body_html: Your 14-day Miru Pro trial for <strong>%{company}</strong> is now
           active.
         cta: Open billing
         eyebrow: Billing
         footer_body: You can review billing, compare plans, and upgrade at any time
-          from your billing settings.
+          from your billing settings. There is no card on file — nothing is charged
+          unless you choose to upgrade.
         greeting_html: Hello <strong>%{name}</strong>,
         preheader: Your Miru Pro trial is now active.
         subtitle: Explore billing, reports, and the rest of the Pro workflow during
-          your 30-day trial.
+          your 14-day trial.
         title: Your Miru Pro trial is live
         trial_ends: Trial ends
       trial_started_text:
-        body: Your 30-day Miru Pro trial for %{company} is now active.
+        body: Your 14-day Miru Pro trial for %{company} is now active. No credit card
+          required — nothing is charged unless you upgrade.
         greeting: Hello %{name},
         review_billing: Review billing at %{url}.
         trial_ends: Trial ends on %{date}.
@@ -706,7 +814,7 @@ en:
     no_billing_customer: No billing customer exists for this company
     pricing_not_configured: Stripe subscription pricing is not configured
     trial_not_eligible: Your workspace is not eligible for a Pro trial
-    trial_started: Your 30-day Pro trial has started
+    trial_started: Your 14-day Pro trial has started
   team:
     changed_email: Changed Email
     create_new_user: Create New User

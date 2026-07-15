@@ -472,7 +472,7 @@ es:
         stripe_subscription: 'Suscripción a Stripe: %{id}'
         team_seats: 'Asientos del equipo: %{seats}'
       trial_started:
-        body_html: Tu prueba gratuita de 30 días de Miru Pro para <strong>%{company}</strong>
+        body_html: Tu prueba gratuita de 14 días de Miru Pro para <strong>%{company}</strong>
           ya está activa.
         cta: Facturación abierta
         eyebrow: Facturación
@@ -480,12 +480,12 @@ es:
           plan en cualquier momento desde la configuración de facturación.
         greeting_html: Hola <strong>%{name}</strong> ,
         preheader: Tu prueba gratuita de Miru Pro ya está activa.
-        subtitle: Durante tu prueba gratuita de 30 días, explora la facturación, los
+        subtitle: Durante tu prueba gratuita de 14 días, explora la facturación, los
           informes y el resto del flujo de trabajo de la versión Pro.
         title: Tu prueba gratuita de Miru Pro ya está disponible.
         trial_ends: Finaliza el juicio
       trial_started_text:
-        body: Tu prueba gratuita de 30 días de Miru Pro para %{company} ya está activa.
+        body: Tu prueba gratuita de 14 días de Miru Pro para %{company} ya está activa.
         greeting: Hola %{name},
         review_billing: Revise la facturación en %{url}.
         trial_ends: El juicio finaliza el %{date}.
@@ -707,7 +707,7 @@ es:
       está establecida.
     trial_not_eligible: Tu espacio de trabajo no cumple los requisitos para una prueba
       Pro.
-    trial_started: Tu prueba Pro de 30 días ha comenzado.
+    trial_started: Tu prueba Pro de 14 días ha comenzado.
   team:
     changed_email: Correo electrónico cambiado
     create_new_user: Crear nuevo usuario

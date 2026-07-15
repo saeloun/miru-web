@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_07_01_101700) do
+ActiveRecord::Schema[8.1].define(version: 2026_07_15_000000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_stat_statements"
@@ -182,11 +182,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_01_101700) do
   end
 
   create_table "bulk_invoice_download_statuses", force: :cascade do |t|
+    t.bigint "company_id"
     t.datetime "created_at", null: false
     t.string "download_id"
     t.string "file_url"
     t.string "status"
     t.datetime "updated_at", null: false
+    t.index ["company_id"], name: "index_bulk_invoice_download_statuses_on_company_id"
   end
 
   create_table "carryovers", force: :cascade do |t|
@@ -284,6 +286,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_01_101700) do
     t.string "tax_id"
     t.integer "timesheet_edit_days", default: 30, null: false
     t.string "timezone"
+    t.date "trial_email_last_sent_on"
     t.datetime "trial_ends_at"
     t.datetime "trial_started_at"
     t.datetime "updated_at", null: false
@@ -403,6 +406,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_01_101700) do
 
   create_table "expenses", force: :cascade do |t|
     t.decimal "amount", precision: 20, scale: 2, default: "0.0", null: false
+    t.decimal "base_currency_amount", precision: 20, scale: 2
     t.string "category_name"
     t.bigint "company_id", null: false
     t.datetime "created_at", null: false
@@ -410,6 +414,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_01_101700) do
     t.date "date", null: false
     t.text "description"
     t.datetime "discarded_at"
+    t.decimal "exchange_rate", precision: 18, scale: 10
+    t.date "exchange_rate_date"
     t.bigint "expense_category_id"
     t.integer "expense_type"
     t.datetime "paid_at"
@@ -630,8 +636,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_01_101700) do
     t.index ["period_date"], name: "index_metrics_on_period_date"
     t.index ["trackable_type", "trackable_id", "metric_type", "period", "period_date"], name: "index_metrics_on_trackable_and_type_and_period", unique: true
     t.index ["trackable_type", "trackable_id"], name: "index_metrics_on_trackable"
-    t.check_constraint "metric_type::text = ANY (ARRAY['hours_logged'::character varying::text, 'invoice_summary'::character varying::text, 'project_stats'::character varying::text, 'client_revenue'::character varying::text, 'team_utilization'::character varying::text, 'outstanding_amounts'::character varying::text, 'overdue_amounts'::character varying::text, 'timesheet_summary'::character varying::text])", name: "valid_metric_type"
-    t.check_constraint "period::text = ANY (ARRAY['hour'::character varying::text, 'day'::character varying::text, 'week'::character varying::text, 'month'::character varying::text, 'quarter'::character varying::text, 'year'::character varying::text, 'all_time'::character varying::text])", name: "valid_period"
+    t.check_constraint "metric_type::text = ANY (ARRAY['hours_logged'::character varying, 'invoice_summary'::character varying, 'project_stats'::character varying, 'client_revenue'::character varying, 'team_utilization'::character varying, 'outstanding_amounts'::character varying, 'overdue_amounts'::character varying, 'timesheet_summary'::character varying]::text[])", name: "valid_metric_type"
+    t.check_constraint "period::text = ANY (ARRAY['hour'::character varying, 'day'::character varying, 'week'::character varying, 'month'::character varying, 'quarter'::character varying, 'year'::character varying, 'all_time'::character varying]::text[])", name: "valid_period"
   end
 
   create_table "notification_preferences", force: :cascade do |t|
@@ -668,7 +674,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_01_101700) do
     t.decimal "amount", precision: 20, scale: 2, default: "0.0"
     t.decimal "base_currency_amount", precision: 20, scale: 2
     t.datetime "created_at", null: false
-    t.datetime "discarded_at"
     t.decimal "exchange_rate", precision: 18, scale: 10
     t.date "exchange_rate_date"
     t.bigint "invoice_id", null: false
@@ -679,7 +684,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_01_101700) do
     t.date "transaction_date", null: false
     t.integer "transaction_type", null: false
     t.datetime "updated_at", null: false
-    t.index ["discarded_at"], name: "index_payments_on_discarded_at"
     t.index ["invoice_id", "transaction_date", "status"], name: "index_payments_on_invoice_transaction_date_status"
     t.index ["invoice_id"], name: "index_payments_on_invoice_id"
     t.index ["status"], name: "index_payments_on_status"
@@ -798,7 +802,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_01_101700) do
     t.datetime "updated_at", null: false
     t.index ["company_id", "status"], name: "index_quickbooks_sync_events_on_company_id_and_status"
     t.index ["company_id"], name: "index_quickbooks_sync_events_on_company_id"
-    t.index ["quickbooks_connection_id", "quickbooks_entity_type", "quickbooks_entity_id"], name: "idx_qbo_events_lookup"
+    t.index ["quickbooks_connection_id", "quickbooks_entity_type", "quickbooks_entity_id", "payload_digest"], name: "idx_qbo_events_idempotency", unique: true, where: "(status = 1)"
     t.index ["quickbooks_connection_id"], name: "index_quickbooks_sync_events_on_quickbooks_connection_id"
     t.index ["quickbooks_sync_run_id"], name: "index_quickbooks_sync_events_on_quickbooks_sync_run_id"
   end

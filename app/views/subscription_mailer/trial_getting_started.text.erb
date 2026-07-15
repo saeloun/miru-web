@@ -1,0 +1,11 @@
+<%= t("mailers.subscription.trial_getting_started_text.greeting", name: @recipient.first_name.presence || @recipient.email) %>
+
+<%= t("mailers.subscription.trial_getting_started_text.body", company: @company.name) %>
+
+<%= t("mailers.subscription.trial_getting_started_text.tracking") %>
+<%= t("mailers.subscription.trial_getting_started_text.invoicing") %>
+<%= t("mailers.subscription.trial_getting_started_text.reports") %>
+
+<%= t("mailers.subscription.trial_getting_started_text.trial_ends", date: @trial_end_date_text) %>
+
+<%= t("mailers.subscription.trial_getting_started_text.open_app", url: @app_url) %>

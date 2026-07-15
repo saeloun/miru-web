@@ -1,0 +1,42 @@
+<% content_for :email_preheader, t("mailers.subscription.trial_getting_started.preheader") %>
+<% content_for :email_eyebrow, t("mailers.subscription.trial_getting_started.eyebrow") %>
+<% content_for :email_title, t("mailers.subscription.trial_getting_started.title") %>
+<% content_for :email_subtitle do %>
+  <%= t("mailers.subscription.trial_getting_started.subtitle") %>
+<% end %>
+
+<p><%= t("mailers.subscription.trial_getting_started.greeting_html", name: @recipient.first_name.presence || @recipient.email) %></p>
+
+<p><%= t("mailers.subscription.trial_getting_started.body_html", company: @company.name) %></p>
+
+<% [
+  { title: t("mailers.subscription.trial_getting_started.tracking_title"),
+    body: t("mailers.subscription.trial_getting_started.tracking_body") },
+  { title: t("mailers.subscription.trial_getting_started.invoicing_title"),
+    body: t("mailers.subscription.trial_getting_started.invoicing_body") },
+  { title: t("mailers.subscription.trial_getting_started.reports_title"),
+    body: t("mailers.subscription.trial_getting_started.reports_body") }
+].each_with_index do |step, index| %>
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="email-panel email-panel-soft" style="margin: 14px 0; border-collapse: separate;">
+    <tr>
+      <td style="width: 44px; padding: 20px 0 20px 20px; vertical-align: top;">
+        <div style="width: 30px; height: 30px; border-radius: 8px; background-color: #020617; color: #ffffff; font-size: 15px; font-weight: 800; line-height: 30px; text-align: center;"><%= index + 1 %></div>
+      </td>
+      <td style="padding: 18px 22px;">
+        <p class="email-panel-title" style="margin: 0 0 6px;"><%= step[:title] %></p>
+        <p style="margin: 0; font-size: 14px; line-height: 1.7;"><%= step[:body] %></p>
+      </td>
+    </tr>
+  </table>
+<% end %>
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="detail-grid" style="margin-top: 24px;">
+  <tr>
+    <%= render "shared/mailer/detail_card", label: t("mailers.labels.workspace"), value: @company.name %>
+    <%= render "shared/mailer/detail_card", label: t("mailers.subscription.trial_getting_started.trial_ends"), value: @trial_end_date_text %>
+  </tr>
+</table>
+
+<p><%= t("mailers.subscription.trial_getting_started.footer_body") %></p>
+
+<%= render "shared/mailer/button", href: @app_url, label: t("mailers.subscription.trial_getting_started.cta") %>

@@ -1,0 +1,11 @@
+<%= t("mailers.subscription.trial_ending_reminder_text.greeting", name: @recipient.first_name.presence || @recipient.email) %>
+
+<% if @days_remaining <= 1 %>
+<%= t("mailers.subscription.trial_ending_reminder_text.body_tomorrow", company: @company.name, date: @trial_end_date_text) %>
+<% else %>
+<%= t("mailers.subscription.trial_ending_reminder_text.body", company: @company.name, days: @days_remaining, date: @trial_end_date_text) %>
+<% end %>
+
+<%= t("mailers.subscription.trial_ending_reminder_text.keep") %>
+
+<%= t("mailers.subscription.trial_ending_reminder_text.upgrade", url: @billing_url) %>

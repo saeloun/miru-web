@@ -1491,7 +1491,7 @@ const locale = {
     monthly: "월간 간행물",
     yearly: "매년",
     notSubscribedYet: "아직 구독하지 않았습니다",
-    startTrial: "30일 프로 체험판을 시작하세요",
+    startTrial: "14일 프로 체험판을 시작하세요",
     startingTrial: "시험 시작 중...",
     upgradeWithStripe: "Stripe로 업그레이드하세요",
     openingStripe: "Stripe 열기...",
@@ -1583,7 +1583,7 @@ const locale = {
         dashboard: "소규모 팀을 위한 대시보드 가시성",
       },
       pro: {
-        trial: "결제 전 30일 무료 체험",
+        trial: "결제 전 14일 무료 체험",
         sso: "SSO, 고급 보고 기능, 강화된 관리자 제어 기능",
         fit: "에이전시 및 성장하는 팀에 가장 적합합니다.",
       },

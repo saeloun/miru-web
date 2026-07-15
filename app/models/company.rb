@@ -5,6 +5,7 @@ class Company < ApplicationRecord
   include PhoneNumberValidatable
 
   MAX_ATTACHMENT_SIZE_MB = 5
+  TRIAL_LENGTH = 14.days
   ATTACHMENT_CONTENT_TYPES = {
     logo: %w[image/png image/jpeg image/jpg image/webp],
     invoice_signature: %w[image/png]
@@ -156,6 +157,15 @@ class Company < ApplicationRecord
     %w[active trialing past_due].include?(subscription_status.to_s)
   end
 
+  def resolved_time_zone
+    raw_zone = timezone.presence
+    return Time.zone if raw_zone.blank?
+
+    ActiveSupport::TimeZone[raw_zone] ||
+      ActiveSupport::TimeZone[raw_zone.sub(/\A\(GMT[^)]*\)\s*/, "")] ||
+      Time.zone
+  end
+
   def current_plan_label
     return "free_pro" if billing_exempt?
     return "pro_trial" if trial_active?
@@ -176,7 +186,7 @@ class Company < ApplicationRecord
 
     update!(
       trial_started_at: starts_at,
-      trial_ends_at: starts_at + 30.days
+      trial_ends_at: starts_at + TRIAL_LENGTH
     )
   end
 

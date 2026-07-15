@@ -1520,7 +1520,7 @@ const locale = {
     monthly: "Aylık",
     yearly: "Yıllık",
     notSubscribedYet: "Henüz abone olmadınız mı?",
-    startTrial: "30 günlük Pro deneme sürümünü başlatın",
+    startTrial: "14 günlük Pro deneme sürümünü başlatın",
     startingTrial: "Duruşma başlıyor...",
     upgradeWithStripe: "Stripe ile yükseltin",
     openingStripe: "Açılış Şeridi...",
@@ -1615,7 +1615,7 @@ const locale = {
         dashboard: "Küçük bir ekip için kontrol paneli görünürlüğü",
       },
       pro: {
-        trial: "Ücretli ödeme yapmadan önce 30 günlük ücretsiz deneme süresi.",
+        trial: "Ücretli ödeme yapmadan önce 14 günlük ücretsiz deneme süresi.",
         sso: "SSO, gelişmiş raporlama, daha güçlü yönetim kontrolleri",
         fit: "Ajanslar ve büyüyen ekipler için en uygun çözüm.",
       },

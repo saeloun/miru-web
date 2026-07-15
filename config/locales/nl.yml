@@ -469,7 +469,7 @@ nl:
         stripe_subscription: 'Stripe-abonnement: %{id}'
         team_seats: 'Teamplaatsen: %{seats}'
       trial_started:
-        body_html: Je 30-daagse proefperiode van Miru Pro voor <strong>%{company}</strong>
+        body_html: Je 14-daagse proefperiode van Miru Pro voor <strong>%{company}</strong>
           is nu actief.
         cta: Open facturering
         eyebrow: Facturering
@@ -478,11 +478,11 @@ nl:
         greeting_html: Hallo <strong>%{name}</strong> ,
         preheader: Je Miru Pro-proefperiode is nu actief.
         subtitle: Ontdek de facturering, rapporten en de rest van de Pro-workflow
-          tijdens uw 30-daagse proefperiode.
+          tijdens uw 14-daagse proefperiode.
         title: Je Miru Pro-proefperiode is nu actief.
         trial_ends: Proces beëindigd
       trial_started_text:
-        body: Je 30-daagse proefperiode van Miru Pro voor %{company} is nu actief.
+        body: Je 14-daagse proefperiode van Miru Pro voor %{company} is nu actief.
         greeting: Hallo %{name},
         review_billing: Controleer de facturering bij %{url}.
         trial_ends: De proef eindigt op %{date}.
@@ -703,7 +703,7 @@ nl:
     no_billing_customer: Er bestaat geen factuurklant voor dit bedrijf.
     pricing_not_configured: De abonnementsprijzen van Stripe zijn niet geconfigureerd.
     trial_not_eligible: Uw werkruimte komt niet in aanmerking voor een Pro-proefperiode.
-    trial_started: Je 30-daagse Pro-proefperiode is begonnen.
+    trial_started: Je 14-daagse Pro-proefperiode is begonnen.
   team:
     changed_email: E-mailadres gewijzigd
     create_new_user: Nieuwe gebruiker aanmaken
