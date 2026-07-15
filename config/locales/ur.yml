@@ -471,7 +471,7 @@ ur:
         stripe_subscription: 'اسٹرائپ سبسکرپشن: %{id}'
         team_seats: 'ٹیم کی نشستیں: %{seats}'
       trial_started:
-        body_html: "<strong>%{company}</strong> کے لیے آپ کا 30 دن کا Miru Pro ٹرائل
+        body_html: "<strong>%{company}</strong> کے لیے آپ کا 14 دن کا Miru Pro ٹرائل
           اب فعال ہے۔"
         cta: بلنگ کھولیں۔
         eyebrow: بلنگ
@@ -479,12 +479,12 @@ ur:
           ہیں، منصوبوں کا موازنہ کر سکتے ہیں اور اپ گریڈ کر سکتے ہیں۔
         greeting_html: ہیلو <strong>%{name}</strong> ،
         preheader: آپ کا Miru Pro ٹرائل اب فعال ہے۔
-        subtitle: اپنے 30 دن کے ٹرائل کے دوران بلنگ، رپورٹس اور پرو ورک فلو کا بقیہ
+        subtitle: اپنے 14 دن کے ٹرائل کے دوران بلنگ، رپورٹس اور پرو ورک فلو کا بقیہ
           حصہ دریافت کریں۔
         title: آپ کا Miru Pro ٹرائل لائیو ہے۔
         trial_ends: آزمائش ختم ہوتی ہے۔
       trial_started_text:
-        body: "%{company} کے لیے آپ کا 30 دن کا Miru Pro ٹرائل اب فعال ہے۔"
+        body: "%{company} کے لیے آپ کا 14 دن کا Miru Pro ٹرائل اب فعال ہے۔"
         greeting: ہیلو %{name}،
         review_billing: "%{url} پر بلنگ کا جائزہ لیں۔"
         trial_ends: آزمائش %{date} کو ختم ہوتی ہے۔
@@ -702,7 +702,7 @@ ur:
     no_billing_customer: اس کمپنی کے لیے کوئی بلنگ کسٹمر موجود نہیں ہے۔
     pricing_not_configured: پٹی سبسکرپشن کی قیمتوں کا تعین کنفیگر نہیں ہے۔
     trial_not_eligible: آپ کی ورک اسپیس پرو ٹرائل کے لیے اہل نہیں ہے۔
-    trial_started: آپ کا 30 دن کا پرو ٹرائل شروع ہو گیا ہے۔
+    trial_started: آپ کا 14 دن کا پرو ٹرائل شروع ہو گیا ہے۔
   team:
     changed_email: تبدیل شدہ ای میل
     create_new_user: نیا صارف بنائیں

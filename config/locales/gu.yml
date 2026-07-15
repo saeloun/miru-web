@@ -468,7 +468,7 @@ gu:
         stripe_subscription: 'સ્ટ્રાઇપ સબ્સ્ક્રિપ્શન: %{id}'
         team_seats: 'ટીમ સીટ: %{seats}'
       trial_started:
-        body_html: "<strong>%{company}</strong> માટે તમારી 30-દિવસની Miru Pro ટ્રાયલ
+        body_html: "<strong>%{company}</strong> માટે તમારી 14-દિવસની Miru Pro ટ્રાયલ
           હવે સક્રિય છે."
         cta: બિલિંગ ખોલો
         eyebrow: બિલિંગ
@@ -476,12 +476,12 @@ gu:
           શકો છો, યોજનાઓની તુલના કરી શકો છો અને અપગ્રેડ કરી શકો છો.
         greeting_html: હેલો <strong>%{name}</strong> ,
         preheader: તમારી મીરુ પ્રો ટ્રાયલ હવે સક્રિય છે.
-        subtitle: તમારા 30-દિવસના અજમાયશ દરમિયાન બિલિંગ, રિપોર્ટ્સ અને બાકીના પ્રો
+        subtitle: તમારા 14-દિવસના અજમાયશ દરમિયાન બિલિંગ, રિપોર્ટ્સ અને બાકીના પ્રો
           વર્કફ્લોનું અન્વેષણ કરો.
         title: તમારી મીરુ પ્રો ટ્રાયલ લાઇવ છે
         trial_ends: અજમાયશ સમાપ્ત થાય છે
       trial_started_text:
-        body: "%{company} માટે તમારી 30-દિવસની Miru Pro ટ્રાયલ હવે સક્રિય છે."
+        body: "%{company} માટે તમારી 14-દિવસની Miru Pro ટ્રાયલ હવે સક્રિય છે."
         greeting: હેલો %{name},
         review_billing: "%{url} પર બિલિંગની સમીક્ષા કરો."
         trial_ends: ટ્રાયલ %{date} ના રોજ સમાપ્ત થાય છે.
@@ -699,7 +699,7 @@ gu:
     no_billing_customer: આ કંપની માટે કોઈ બિલિંગ ગ્રાહક અસ્તિત્વમાં નથી.
     pricing_not_configured: સ્ટ્રાઇપ સબ્સ્ક્રિપ્શન કિંમત ગોઠવેલ નથી
     trial_not_eligible: તમારું કાર્યસ્થળ પ્રો ટ્રાયલ માટે યોગ્યતા ધરાવતું નથી
-    trial_started: તમારી 30-દિવસની પ્રો ટ્રાયલ શરૂ થઈ ગઈ છે.
+    trial_started: તમારી 14-દિવસની પ્રો ટ્રાયલ શરૂ થઈ ગઈ છે.
   team:
     changed_email: બદલાયેલ ઇમેઇલ
     create_new_user: નવો વપરાશકર્તા બનાવો

@@ -481,7 +481,7 @@ de:
         stripe_subscription: 'Stripe-Abonnement: %{id}'
         team_seats: 'Teamplätze: %{seats}'
       trial_started:
-        body_html: Ihre 30-tägige Miru Pro-Testversion für <strong>%{company}</strong>
+        body_html: Ihre 14-tägige Miru Pro-Testversion für <strong>%{company}</strong>
           ist jetzt aktiv.
         cta: Offene Abrechnung
         eyebrow: Abrechnung
@@ -489,12 +489,12 @@ de:
           einsehen, Tarife vergleichen und ein Upgrade durchführen.
         greeting_html: Hallo <strong>%{name}</strong> ,
         preheader: Ihre Miru Pro-Testversion ist jetzt aktiv.
-        subtitle: Erkunden Sie während Ihrer 30-tägigen Testphase die Abrechnung,
+        subtitle: Erkunden Sie während Ihrer 14-tägigen Testphase die Abrechnung,
           Berichte und den restlichen Pro-Workflow.
         title: Ihre Miru Pro-Testversion ist aktiv.
         trial_ends: Prozess endet
       trial_started_text:
-        body: Ihre 30-tägige Miru Pro-Testversion für %{company} ist jetzt aktiv.
+        body: Ihre 14-tägige Miru Pro-Testversion für %{company} ist jetzt aktiv.
         greeting: Hallo %{name},
         review_billing: Rechnung unter %{url} prüfen.
         trial_ends: Der Prozess endet am %{date}.
@@ -716,7 +716,7 @@ de:
     no_billing_customer: Für dieses Unternehmen existiert kein Rechnungskunde.
     pricing_not_configured: Die Stripe-Abonnementpreise sind nicht konfiguriert.
     trial_not_eligible: Ihr Arbeitsbereich ist nicht für eine Pro-Testversion berechtigt.
-    trial_started: Ihre 30-tägige Pro-Testphase hat begonnen.
+    trial_started: Ihre 14-tägige Pro-Testphase hat begonnen.
   team:
     changed_email: E-Mail-Adresse geändert
     create_new_user: Neuen Benutzer erstellen

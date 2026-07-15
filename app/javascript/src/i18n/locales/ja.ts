@@ -1501,7 +1501,7 @@ const locale = {
     monthly: "月刊",
     yearly: "年間",
     notSubscribedYet: "まだ登録していません",
-    startTrial: "30日間のプロ版無料トライアルを開始する",
+    startTrial: "14日間のプロ版無料トライアルを開始する",
     startingTrial: "トライアルを開始します...",
     upgradeWithStripe: "Stripeでアップグレード",
     openingStripe: "オープニングストライプ...",
@@ -1596,7 +1596,7 @@ const locale = {
         dashboard: "小規模チーム向けのダッシュボードの可視性",
       },
       pro: {
-        trial: "料金を支払う前に30日間無料でお試しいただけます",
+        trial: "料金を支払う前に14日間無料でお試しいただけます",
         sso: "SSO、高度なレポート機能、より強力な管理者制御",
         fit: "代理店や成長中のチームに最適",
       },

@@ -433,17 +433,17 @@ zh-CN:
         stripe_subscription: Stripe订阅：%{id}
         team_seats: 团队席位：%{seats}
       trial_started:
-        body_html: 您针对<strong>%{company} 的</strong>30 天 Miru Pro 试用版现已激活。
+        body_html: 您针对<strong>%{company} 的</strong>14 天 Miru Pro 试用版现已激活。
         cta: 公开账单
         eyebrow: 账单
         footer_body: 您可以随时在账单设置中查看账单、比较套餐和升级。
         greeting_html: 你好<strong>%{name}</strong> ，
         preheader: 您的 Miru Pro 试用版现已激活。
-        subtitle: 在 30 天试用期内，探索计费、报告和 Pro 工作流程的其他功能。
+        subtitle: 在 14 天试用期内，探索计费、报告和 Pro 工作流程的其他功能。
         title: 您的 Miru Pro 试用版已上线
         trial_ends: 审判结束
       trial_started_text:
-        body: 您针对 %{company} 的 30 天 Miru Pro 试用版现已激活。
+        body: 您针对 %{company} 的 14 天 Miru Pro 试用版现已激活。
         greeting: 你好 %{name}，
         review_billing: 审核账单，地址为 %{url}。
         trial_ends: 试验于 %{date} 结束。
@@ -654,7 +654,7 @@ zh-CN:
     no_billing_customer: 这家公司没有计费客户。
     pricing_not_configured: Stripe订阅定价尚未配置
     trial_not_eligible: 您的工作区不符合专业版试用条件。
-    trial_started: 您的 30 天专业版试用期已开始
+    trial_started: 您的 14 天专业版试用期已开始
   team:
     changed_email: 更改电子邮件
     create_new_user: 创建新用户

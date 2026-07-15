@@ -1523,7 +1523,7 @@ const locale = {
     monthly: "Maandelijks",
     yearly: "Jaarlijks",
     notSubscribedYet: "Nog geen abonnee?",
-    startTrial: "Start de 30-daagse Pro-proefperiode.",
+    startTrial: "Start de 14-daagse Pro-proefperiode.",
     startingTrial: "Proces begint...",
     upgradeWithStripe: "Upgrade met Stripe",
     openingStripe: "Openingsstrip...",
@@ -1619,7 +1619,7 @@ const locale = {
         dashboard: "Dashboardoverzicht voor een klein team",
       },
       pro: {
-        trial: "30 dagen gratis proefperiode, voordat u betaalt.",
+        trial: "14 dagen gratis proefperiode, voordat u betaalt.",
         sso: "SSO, geavanceerde rapportage, strengere beheerdersopties",
         fit: "Ideaal voor bureaus en groeiende teams.",
       },

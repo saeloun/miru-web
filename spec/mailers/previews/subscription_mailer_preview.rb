@@ -7,9 +7,34 @@ class SubscriptionMailerPreview < ActionMailer::Preview
 
   def trial_started
     company = sample_company
-    company.update!(trial_ends_at: 30.days.from_now) if company.trial_ends_at.blank?
+    company.update!(trial_ends_at: 14.days.from_now) if company.trial_ends_at.blank?
 
     SubscriptionMailer.with(company_id: company.id, recipient_id: sample_user.id).trial_started
+  end
+
+  def trial_getting_started
+    company = sample_company
+    company.update!(trial_ends_at: 12.days.from_now) if company.trial_ends_at.blank?
+
+    SubscriptionMailer.with(company_id: company.id, recipient_id: sample_user.id).trial_getting_started
+  end
+
+  def trial_pro_features
+    company = sample_company
+    company.update!(trial_ends_at: 9.days.from_now) if company.trial_ends_at.blank?
+
+    SubscriptionMailer.with(company_id: company.id, recipient_id: sample_user.id).trial_pro_features
+  end
+
+  def trial_ending_reminder
+    company = sample_company
+    company.update!(trial_ends_at: 2.days.from_now) if company.trial_ends_at.blank?
+
+    SubscriptionMailer.with(
+      company_id: company.id,
+      recipient_id: sample_user.id,
+      days_remaining: 2
+    ).trial_ending_reminder
   end
 
   def plan_purchased

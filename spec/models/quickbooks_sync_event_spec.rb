@@ -10,6 +10,12 @@ RSpec.describe QuickbooksSyncEvent, type: :model do
       expect(event).not_to be_valid
       expect(event.errors[:payload_digest]).to include("can't be blank")
     end
+
+    it "enforces payload digest presence at the database level" do
+      event = build(:quickbooks_sync_event, payload_digest: nil)
+
+      expect { event.save!(validate: false) }.to raise_error(ActiveRecord::NotNullViolation)
+    end
   end
 
   describe "tenant consistency" do

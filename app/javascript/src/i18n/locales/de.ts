@@ -1538,7 +1538,7 @@ const locale = {
     monthly: "Monatlich",
     yearly: "Jährlich",
     notSubscribedYet: "Noch nicht abonniert",
-    startTrial: "30-tägige Pro-Testversion starten",
+    startTrial: "14-tägige Pro-Testversion starten",
     startingTrial: "Testlauf wird gestartet...",
     upgradeWithStripe: "Upgrade mit Stripe",
     openingStripe: "Öffnungsstreifen...",
@@ -1636,7 +1636,7 @@ const locale = {
         dashboard: "Übersichtlichkeit des Dashboards für ein kleines Team",
       },
       pro: {
-        trial: "30 Tage kostenlos testen, bevor Sie bezahlen",
+        trial: "14 Tage kostenlos testen, bevor Sie bezahlen",
         sso: "SSO, erweiterte Berichtsfunktionen, stärkere Administratorkontrollen",
         fit: "Ideal geeignet für Agenturen und wachsende Teams",
       },

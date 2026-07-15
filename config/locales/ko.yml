@@ -439,17 +439,17 @@ ko:
         stripe_subscription: 'Stripe 구독: %{id}'
         team_seats: '팀 좌석 수: %{seats}'
       trial_started:
-        body_html: "<strong>%{company}</strong> 에 대한 Miru Pro 30일 무료 체험이 시작되었습니다."
+        body_html: "<strong>%{company}</strong> 에 대한 Miru Pro 14일 무료 체험이 시작되었습니다."
         cta: 오픈빌딩
         eyebrow: 청구
         footer_body: 청구 설정에서 언제든지 청구 내역을 확인하고, 요금제를 비교하고, 업그레이드할 수 있습니다.
         greeting_html: 안녕하세요 <strong>%{name} 님</strong> ,
         preheader: Miru Pro 체험판이 활성화되었습니다.
-        subtitle: 30일 무료 체험 기간 동안 청구, 보고서 및 기타 Pro 워크플로를 살펴보세요.
+        subtitle: 14일 무료 체험 기간 동안 청구, 보고서 및 기타 Pro 워크플로를 살펴보세요.
         title: Miru Pro 체험판이 시작되었습니다.
         trial_ends: 재판 종료
       trial_started_text:
-        body: "%{company}에 대한 Miru Pro 30일 무료 체험이 시작되었습니다."
+        body: "%{company}에 대한 Miru Pro 14일 무료 체험이 시작되었습니다."
         greeting: 안녕하세요 %{name}님,
         review_billing: "%{url}에서 청구 내역을 검토하세요."
         trial_ends: 재판은 %{date}에 종료됩니다.
@@ -660,7 +660,7 @@ ko:
     no_billing_customer: 이 회사에는 청구 고객이 없습니다.
     pricing_not_configured: Stripe 구독 요금이 설정되어 있지 않습니다.
     trial_not_eligible: 귀하의 작업 공간은 Pro 체험판을 이용할 수 없습니다.
-    trial_started: 30일 프로 체험판이 시작되었습니다.
+    trial_started: 14일 프로 체험판이 시작되었습니다.
   team:
     changed_email: 이메일 주소가 변경되었습니다
     create_new_user: 새 사용자 생성

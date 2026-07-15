@@ -1532,7 +1532,7 @@ const locale = {
     monthly: "Mensual",
     yearly: "Anual",
     notSubscribedYet: "Aún no te has suscrito",
-    startTrial: "Comienza tu prueba Pro de 30 días",
+    startTrial: "Comienza tu prueba Pro de 14 días",
     startingTrial: "Iniciando el juicio...",
     upgradeWithStripe: "Actualiza con Stripe",
     openingStripe: "Franja de apertura...",
@@ -1627,7 +1627,7 @@ const locale = {
         dashboard: "Visibilidad del panel de control para un equipo pequeño",
       },
       pro: {
-        trial: "Prueba gratuita de 30 días antes de pagar.",
+        trial: "Prueba gratuita de 14 días antes de pagar.",
         sso: "Inicio de sesión único (SSO), informes avanzados, controles administrativos más robustos",
         fit: "Ideal para agencias y equipos en crecimiento.",
       },

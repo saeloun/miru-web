@@ -33,6 +33,86 @@ RSpec.describe SubscriptionMailer, type: :mailer do
     end
   end
 
+  describe "#trial_getting_started" do
+    it "emails the recipient a day-two feature tour with the trial end date" do
+      company = create(:company, name: "Saeloun Inc")
+      user = create(:user, email: "vipul@saeloun.com", first_name: "Vipul")
+      trial_end = Time.zone.local(2026, 4, 10, 12, 0, 0)
+      company.update!(trial_started_at: trial_end - 14.days, trial_ends_at: trial_end)
+
+      mail = described_class.with(company_id: company.id, recipient_id: user.id).trial_getting_started
+
+      expect(mail.to).to eq(["vipul@saeloun.com"])
+      expect(mail.subject).to eq("Make the most of your Miru Pro trial")
+      expect(mail.html_part.body.decoded).to include("Saeloun Inc")
+      expect(mail.html_part.body.decoded).to include("Track time as you go")
+      expect(mail.html_part.body.decoded).to include("Turn hours into invoices")
+      expect(mail.html_part.body.decoded).to include("April 10, 2026")
+      expect(mail.text_part.body.decoded).to include("Saeloun Inc")
+      expect(mail.text_part.body.decoded).to include("April 10, 2026")
+    end
+  end
+
+  describe "#trial_pro_features" do
+    it "emails the recipient the day-five conversion pitch with pricing" do
+      company = create(:company, name: "Saeloun Inc")
+      user = create(:user, email: "vipul@saeloun.com", first_name: "Vipul")
+      trial_end = Time.zone.local(2026, 4, 10, 12, 0, 0)
+      company.update!(trial_started_at: trial_end - 14.days, trial_ends_at: trial_end)
+
+      mail = described_class.with(company_id: company.id, recipient_id: user.id).trial_pro_features
+
+      expect(mail.to).to eq(["vipul@saeloun.com"])
+      expect(mail.subject).to eq("See what your team keeps with Miru Pro")
+      expect(mail.html_part.body.decoded).to include("Saeloun Inc")
+      expect(mail.html_part.body.decoded).to include("$1")
+      expect(mail.html_part.body.decoded).to include("per team member per month")
+      expect(mail.html_part.body.decoded).to include("Upgrade to Pro")
+      expect(mail.text_part.body.decoded).to include("Saeloun Inc")
+      expect(mail.text_part.body.decoded).to include("$1 per team member per month")
+    end
+  end
+
+  describe "#trial_ending_reminder" do
+    it "emails a day-count reminder asking to upgrade" do
+      company = create(:company, name: "Saeloun Inc")
+      user = create(:user, email: "vipul@saeloun.com", first_name: "Vipul")
+      trial_end = Time.zone.local(2026, 4, 10, 12, 0, 0)
+      company.update!(trial_started_at: trial_end - 14.days, trial_ends_at: trial_end)
+
+      mail = described_class.with(
+        company_id: company.id,
+        recipient_id: user.id,
+        days_remaining: 7
+      ).trial_ending_reminder
+
+      expect(mail.to).to eq(["vipul@saeloun.com"])
+      expect(mail.subject).to eq("Your Miru Pro trial ends in 7 days")
+      expect(mail.html_part.body.decoded).to include("Saeloun Inc")
+      expect(mail.html_part.body.decoded).to include("ends in 7")
+      expect(mail.html_part.body.decoded).to include("Upgrade now")
+      expect(mail.html_part.body.decoded).to include("April 10, 2026")
+      expect(mail.text_part.body.decoded).to include("ends in 7")
+    end
+
+    it "switches to tomorrow wording on the last day" do
+      company = create(:company, name: "Saeloun Inc")
+      user = create(:user, email: "vipul@saeloun.com", first_name: "Vipul")
+      trial_end = Time.zone.local(2026, 4, 10, 12, 0, 0)
+      company.update!(trial_started_at: trial_end - 14.days, trial_ends_at: trial_end)
+
+      mail = described_class.with(
+        company_id: company.id,
+        recipient_id: user.id,
+        days_remaining: 1
+      ).trial_ending_reminder
+
+      expect(mail.subject).to eq("Your Miru Pro trial ends tomorrow")
+      expect(mail.html_part.body.decoded).to include("ends tomorrow")
+      expect(mail.text_part.body.decoded).to include("ends tomorrow")
+    end
+  end
+
   describe "#plan_purchased" do
     it "emails the configured internal recipient with the purchase details" do
       company = create(:company, name: "Saeloun Inc")

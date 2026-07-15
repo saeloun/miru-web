@@ -1438,7 +1438,7 @@ const locale = {
     monthly: "月度",
     yearly: "每年",
     notSubscribedYet: "尚未订阅",
-    startTrial: "开始 30 天专业版试用",
+    startTrial: "开始 14 天专业版试用",
     startingTrial: "开始审判……",
     upgradeWithStripe: "使用 Stripe 升级",
     openingStripe: "开场条纹...",
@@ -1523,7 +1523,7 @@ const locale = {
         dashboard: "小型团队的仪表盘可见性",
       },
       pro: {
-        trial: "30 天免费试用期，之后再决定是否付费",
+        trial: "14 天免费试用期，之后再决定是否付费",
         sso: "单点登录、高级报告、更强大的管理员控制",
         fit: "最适合代理机构和成长型团队",
       },

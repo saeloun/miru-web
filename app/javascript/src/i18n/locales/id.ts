@@ -1522,7 +1522,7 @@ const locale = {
     monthly: "Bulanan",
     yearly: "Tahunan",
     notSubscribedYet: "Belum berlangganan",
-    startTrial: "Mulai uji coba Pro 30 hari",
+    startTrial: "Mulai uji coba Pro 14 hari",
     startingTrial: "Memulai persidangan...",
     upgradeWithStripe: "Tingkatkan dengan Stripe",
     openingStripe: "Garis Pembuka...",
@@ -1618,7 +1618,7 @@ const locale = {
         dashboard: "Visibilitas dasbor untuk tim kecil",
       },
       pro: {
-        trial: "Uji coba gratis 30 hari sebelum membayar",
+        trial: "Uji coba gratis 14 hari sebelum membayar",
         sso: "SSO, pelaporan tingkat lanjut, kontrol admin yang lebih kuat.",
         fit: "Sangat cocok untuk agensi dan tim yang sedang berkembang.",
       },

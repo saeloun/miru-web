@@ -470,7 +470,7 @@ tr:
         stripe_subscription: 'Stripe aboneliği: %{id}'
         team_seats: 'Takım koltukları: %{seats}'
       trial_started:
-        body_html: "<strong>%{company}</strong> için 30 günlük Miru Pro deneme sürümünüz
+        body_html: "<strong>%{company}</strong> için 14 günlük Miru Pro deneme sürümünüz
           artık aktif."
         cta: Açık faturalama
         eyebrow: Faturalama
@@ -478,12 +478,12 @@ tr:
           inceleyebilir, planları karşılaştırabilir ve yükseltme yapabilirsiniz.
         greeting_html: Merhaba <strong>%{name}</strong> ,
         preheader: Miru Pro deneme sürümünüz artık aktif.
-        subtitle: 30 günlük deneme süreniz boyunca faturalandırma, raporlar ve Pro
+        subtitle: 14 günlük deneme süreniz boyunca faturalandırma, raporlar ve Pro
           iş akışının geri kalanını keşfedin.
         title: Miru Pro deneme sürümünüz aktif.
         trial_ends: Dava sona erdi
       trial_started_text:
-        body: "%{company} için 30 günlük Miru Pro deneme sürümünüz artık aktif."
+        body: "%{company} için 14 günlük Miru Pro deneme sürümünüz artık aktif."
         greeting: Merhaba %{name},
         review_billing: "%{url} adresindeki faturalandırmayı inceleyin."
         trial_ends: Duruşma %{date} tarihinde sona eriyor.
@@ -700,7 +700,7 @@ tr:
     no_billing_customer: Bu şirketin faturalandırılacak müşterisi bulunmamaktadır.
     pricing_not_configured: Stripe abonelik fiyatlandırması yapılandırılmamış.
     trial_not_eligible: Çalışma alanınız Pro deneme sürümü için uygun değil.
-    trial_started: 30 günlük Pro deneme sürümünüz başladı.
+    trial_started: 14 günlük Pro deneme sürümünüz başladı.
   team:
     changed_email: E-posta adresi değiştirildi
     create_new_user: Yeni Kullanıcı Oluştur
