@@ -17,7 +17,7 @@ module TimeoffEntries
       balance_summary = TimeoffEntries::BalanceSummaryService.process(
         current_user:,
         current_company:,
-        user_id:,
+        user_id: resolved_user_id,
         year:
       )
 
@@ -39,9 +39,18 @@ module TimeoffEntries
 
         @_timeoff_entries ||= TimeoffEntry.from_workspace(current_company.id)
           .includes(:leave_type, :holiday_info, :custom_leave)
-          .where(user_id:)
+          .where(user_id: resolved_user_id)
           .during(start_date, end_date)
           .distinct
+      end
+
+      def resolved_user_id
+        @_resolved_user_id ||=
+          if admin? && user_id.present?
+            current_company.users.find(user_id).id
+          else
+            current_user.id
+          end
       end
   end
 end

@@ -34,6 +34,33 @@ RSpec.describe "Api::V1::TimeoffEntries#index", type: :request do
       expect(json_response).to have_key("timeoffEntries")
       expect(json_response).to have_key("employees")
     end
+
+    it "returns timeoff index response without a user id" do
+      leave = create(:leave, company:, year: Date.current.year)
+      leave_type = create(:leave_type, leave:)
+
+      send_request :get,
+        api_v1_timeoff_entries_path,
+        params: { year: Date.current.year },
+        headers: auth_headers(admin)
+
+      expect(response).to have_http_status(:ok)
+      expect(json_response).to have_key("leaveBalance")
+      expect(json_response["leaveBalance"].pluck("id")).to include(leave_type.id)
+    end
+
+    it "returns not found for a user id outside the company" do
+      leave = create(:leave, company:, year: Date.current.year)
+      create(:leave_type, leave:)
+      outside_user = create(:user)
+
+      send_request :get,
+        api_v1_timeoff_entries_path,
+        params: { user_id: outside_user.id, year: Date.current.year },
+        headers: auth_headers(admin)
+
+      expect(response).to have_http_status(:not_found)
+    end
   end
 
   context "when user is an employee" do
@@ -49,6 +76,29 @@ RSpec.describe "Api::V1::TimeoffEntries#index", type: :request do
 
       expect(response).to have_http_status(:ok)
       expect(json_response).to have_key("timeoffEntries")
+    end
+
+    it "only returns the employee's own entries when another user's id is passed" do
+      leave = create(:leave, company:, year: Date.current.year)
+      leave_type = create(:leave_type, leave:)
+      own_entry = create(
+        :timeoff_entry,
+        user: employee, leave_type:, leave_date: Date.current, duration: 60
+      )
+      other_entry = create(
+        :timeoff_entry,
+        user: admin, leave_type:, leave_date: Date.current - 1.day, duration: 120
+      )
+
+      send_request :get,
+        api_v1_timeoff_entries_path,
+        params: { user_id: admin.id, year: Date.current.year },
+        headers: auth_headers(employee)
+
+      expect(response).to have_http_status(:ok)
+      returned_ids = json_response["timeoffEntries"].pluck("id")
+      expect(returned_ids).to include(own_entry.id)
+      expect(returned_ids).not_to include(other_entry.id)
     end
   end
 
