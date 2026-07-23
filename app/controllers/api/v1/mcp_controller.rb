@@ -9,7 +9,12 @@ class Api::V1::MCPController < Api::V1::ApplicationController
 
   def handle
     server = MCP::Miru::ServerFactory.build(server_context: mcp_server_context)
-    transport = MCP::Server::Transports::StreamableHTTPTransport.new(server, stateless: true)
+    transport = MCP::Server::Transports::StreamableHTTPTransport.new(
+      server,
+      stateless: true,
+      allowed_hosts: [request.host],
+      allowed_origins: transport_allowed_origins
+    )
     status, response_headers, body = transport.handle_request(request)
 
     response_headers.each { |key, value| response.set_header(key, value) }
@@ -59,7 +64,7 @@ class Api::V1::MCPController < Api::V1::ApplicationController
     end
 
     def validate_origin_header!
-      origin = request.headers["Origin"].to_s.strip
+      origin = request.headers["Origin"].to_s.strip.downcase
       return if origin.blank?
       return if allowed_origins.include?(origin)
 
@@ -76,10 +81,17 @@ class Api::V1::MCPController < Api::V1::ApplicationController
     def allowed_origins
       configured = ENV.fetch("MCP_ALLOWED_ORIGINS", "")
         .split(/[,\s]+/)
-        .map(&:strip)
+        .map { |origin| origin.strip.downcase }
         .reject(&:blank?)
 
-      configured.presence || [request.base_url]
+      configured | [request.base_url.downcase]
+    end
+
+    def transport_allowed_origins
+      origin = request.headers["Origin"].to_s
+      return allowed_origins if origin.present?
+
+      allowed_origins + [origin.downcase]
     end
 
     def render_mcp_error(status:, code:, message:, data: nil)
@@ -98,6 +110,7 @@ class Api::V1::MCPController < Api::V1::ApplicationController
       return unless request.post?
 
       raw_body = request.raw_post.to_s
+      return if raw_body.bytesize > 1.megabyte
       return if raw_body.blank?
 
       payload = JSON.parse(raw_body)
