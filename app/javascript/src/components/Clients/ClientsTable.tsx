@@ -65,9 +65,9 @@ interface ClientsData {
 }
 
 const fetchClients = async (timeFrame = "week"): Promise<ClientsData> => {
-  const res = await clientsApi.get(`?time_frame=${timeFrame}`);
-
   try {
+    const res = await clientsApi.get(`?time_frame=${timeFrame}`);
+
     return unmapClientList({ data: res.data });
   } catch (error) {
     reportClientError("clients:fetch", error);

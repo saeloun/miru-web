@@ -11,6 +11,7 @@ RSpec.describe "Reports Currency Calculations", type: :model do
   let(:gbp_client) { create(:client, company: company, currency: "GBP") }
   let(:jpy_client) { create(:client, company: company, currency: "JPY") }
   let(:inr_client) { create(:client, company: company, currency: "INR") }
+  let(:historical_payment_date) { 5.days.ago.to_date }
 
   before do
     # Setup exchange rates
@@ -22,7 +23,7 @@ RSpec.describe "Reports Currency Calculations", type: :model do
     # Mock the service
     allow(CurrencyConversionService).to receive(:get_exchange_rate) do |from, to, date|
       case [from, to]
-      when ["EUR", "USD"] then date == 5.days.ago.to_date ? 1.16 : 1.18
+      when ["EUR", "USD"] then date == historical_payment_date ? 1.16 : 1.18
       when ["GBP", "USD"] then 1.35
       when ["JPY", "USD"] then 0.0068
       when ["INR", "USD"] then 0.012
@@ -158,7 +159,7 @@ RSpec.describe "Reports Currency Calculations", type: :model do
       [
         create(:payment, invoice: invoices_with_payments[:usd], amount: 5000.00, transaction_date: Date.current),
         create(:payment, invoice: invoices_with_payments[:eur], amount: 1500.00, transaction_date: Date.current),
-        create(:payment, invoice: invoices_with_payments[:eur], amount: 1500.00, transaction_date: 5.days.ago),
+        create(:payment, invoice: invoices_with_payments[:eur], amount: 1500.00, transaction_date: historical_payment_date),
         create(:payment, invoice: invoices_with_payments[:gbp], amount: 1000.00, transaction_date: Date.current)
       ]
     end
