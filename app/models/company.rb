@@ -208,10 +208,7 @@ class Company < ApplicationRecord
 
     attrs[:stripe_subscription_id] = stripe_subscription_id if has_attribute?(:stripe_subscription_id)
     attrs[:subscription_interval] = subscription_interval if has_attribute?(:subscription_interval)
-    if attrs[:plan_tier] == "paid"
-      attrs[:trial_started_at] = nil
-      attrs[:trial_ends_at] = nil
-    end
+    attrs[:trial_ends_at] = nil if attrs[:plan_tier] == "paid"
 
     update!(attrs)
   end
