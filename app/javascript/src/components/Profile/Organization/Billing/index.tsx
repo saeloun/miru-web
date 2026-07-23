@@ -140,7 +140,10 @@ const Billing = () => {
     sendGAPageView();
     const query = new URLSearchParams(window.location.search);
     const billing = query.get("billing");
-    if (billing) setBillingResult(billing);
+    if (billing) {
+      setBillingResult(billing);
+      window.history.replaceState({}, "", window.location.pathname);
+    }
 
     if (billing !== "success") {
       fetchSummary();
@@ -150,6 +153,7 @@ const Billing = () => {
 
     let isMounted = true;
     let attempts = 0;
+    let loadedSummary = false;
     let timer = 0;
 
     setFinalizing(true);
@@ -160,6 +164,7 @@ const Billing = () => {
         const response = await subscriptionsApi.show();
         if (!isMounted) return;
 
+        loadedSummary = true;
         setSummary(response.data);
         setSeatEstimate(Math.max(response.data.used_team_seats || 3, 3));
         setStatus(ApiStatus.SUCCESS);
@@ -177,7 +182,11 @@ const Billing = () => {
 
       if (attempts >= 10) {
         setFinalizing(false);
-        setBillingResult("delayed");
+        if (loadedSummary) {
+          setBillingResult("delayed");
+        } else {
+          setStatus(ApiStatus.ERROR);
+        }
 
         return;
       }
