@@ -14,7 +14,7 @@ import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import updateLocale from "dayjs/plugin/updateLocale";
 import weekday from "dayjs/plugin/weekday";
-import { minToHHMM } from "helpers";
+import { buildDateParseFormats, minToHHMM } from "helpers";
 import Logger from "js-logger";
 import { sendGAPageView } from "utils/googleAnalytics";
 import { Button } from "../ui/button";
@@ -91,14 +91,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
   const [copyingLastWeek, setCopyingLastWeek] = useState<boolean>(false);
   const [timerSyncKey, setTimerSyncKey] = useState<number>(0);
   const [resumeTimerEntry, setResumeTimerEntry] = useState<any>(null);
-  const dateParseFormats = [
-    dateFormat,
-    "YYYY-MM-DD",
-    "MM-DD-YYYY",
-    "DD-MM-YYYY",
-    "MM/DD/YYYY",
-    "DD/MM/YYYY",
-  ];
+  const dateParseFormats = buildDateParseFormats(dateFormat);
 
   const employeeOptions = employees.map(e => ({
     value: `${e["id"]}`,

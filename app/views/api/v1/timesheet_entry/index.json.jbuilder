@@ -24,6 +24,7 @@ json.entries do
             json.leave_date CompanyDateFormattingService.new(entry[:leave_date], company:).process
             json.holiday_info_id entry[:holiday_info_id]
             json.leave_type_id entry[:leave_type_id]
+            json.custom_leave_id entry[:custom_leave_id]
             json.user_id entry[:user_id]
           end
         end

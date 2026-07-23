@@ -100,8 +100,8 @@ module TimeoffEntries
       end
 
       def user_joined_date
-        employee_id = admin? ? user_id : current_user.id
-        user = User.find(employee_id)
+        employee_id = admin? && user_id.present? ? user_id : current_user.id
+        user = current_company.users.find(employee_id)
         user.employments.kept.find_by(company_id: current_company.id)&.joined_at
       end
 
