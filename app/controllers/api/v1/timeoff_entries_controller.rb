@@ -31,6 +31,8 @@ class Api::V1::TimeoffEntriesController < Api::V1::ApplicationController
   end
 
   def update
+    authorize @timeoff_entry
+
     @timeoff_entry.assign_attributes(timeoff_params)
     authorize @timeoff_entry
 

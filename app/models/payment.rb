@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class Payment < ApplicationRecord
-  include Discardable
-
   # Audit all payment and currency conversion details
   audited only: [:amount, :base_currency_amount, :exchange_rate, :exchange_rate_date, :payment_currency, :transaction_date, :status]
 

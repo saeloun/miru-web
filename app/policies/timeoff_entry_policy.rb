@@ -28,6 +28,8 @@ class TimeoffEntryPolicy < ApplicationPolicy
 
   def authorize_current_user
     company_id = record.company&.id
+    return false if record.persisted? && company_id.nil?
+
     if company_id && user.current_workspace_id != company_id
       @error_message_key = :different_workspace
       return false
