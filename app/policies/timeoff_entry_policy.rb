@@ -6,7 +6,10 @@ class TimeoffEntryPolicy < ApplicationPolicy
   end
 
   def create?
-    user_owner_role? || user_admin_role? || user_employee_role?
+    return true if user_owner_role? || user_admin_role?
+    return false unless user_employee_role?
+
+    record.user_id == user.id
   end
 
   def update?
@@ -24,7 +27,8 @@ class TimeoffEntryPolicy < ApplicationPolicy
   end
 
   def authorize_current_user
-    unless user.current_workspace_id == record.company.id
+    company_id = record.company&.id
+    if company_id && user.current_workspace_id != company_id
       @error_message_key = :different_workspace
       return false
     end

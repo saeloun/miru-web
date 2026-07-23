@@ -38,7 +38,7 @@ class Api::V1::PaymentsController < Api::V1::ApplicationController
   def index
     authorize :index, policy_class: PaymentPolicy
 
-    payments = current_company.payments.kept.includes(:razorpay_payouts, invoice: [:client])
+    payments = current_company.payments.includes(:razorpay_payouts, invoice: [:client])
 
     if params[:query].present?
       search_query = ActiveRecord::Base.sanitize_sql_like(params[:query].to_s.strip.downcase)
@@ -119,7 +119,7 @@ class Api::V1::PaymentsController < Api::V1::ApplicationController
     end
 
     def set_invoice
-      @invoice = current_company.invoices.find(payment_params[:invoice_id])
+      @invoice = current_company.invoices.kept.find(payment_params[:invoice_id])
     end
 
     def set_payment

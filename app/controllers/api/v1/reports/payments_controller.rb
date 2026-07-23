@@ -28,24 +28,19 @@ module Api::V1
         payments = filter_payments
         report_data = generate_payment_report(payments)
 
-        respond_to do |format|
-          format.csv do
-            send_data generate_csv(report_data),
-              type: "text/csv", disposition: "attachment",
-              filename: "payment_report_#{Date.current}.csv"
-          end
-          format.pdf do
-            send_data generate_pdf(report_data),
-              type: "application/pdf", disposition: "attachment",
-              filename: "payment_report_#{Date.current}.pdf"
-          end
+        if request.query_parameters[:format] == "pdf" || params[:format] == "pdf"
+          send_data generate_pdf(report_data),
+            filename: "payment_report_#{Date.current}.pdf", type: "application/pdf"
+        else
+          send_data generate_csv(report_data),
+            filename: "payment_report_#{Date.current}.csv", type: "text/csv"
         end
       end
 
       private
 
         def filter_payments
-          scope = current_company.payments.kept.includes(:invoice, invoice: :client)
+          scope = current_company.payments.includes(:invoice, invoice: :client)
 
           from_date = parse_date(params[:from])
           to_date = parse_date(params[:to])

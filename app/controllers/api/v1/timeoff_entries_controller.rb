@@ -23,16 +23,18 @@ class Api::V1::TimeoffEntriesController < Api::V1::ApplicationController
   end
 
   def create
-    authorize TimeoffEntry
+    timeoff_entry = @user.timeoff_entries.new(timeoff_params)
+    authorize timeoff_entry
 
-    timeoff_entry = @user.timeoff_entries.create!(timeoff_params)
+    timeoff_entry.save!
     render json: { notice: I18n.t("timeoff_entries.create.success"), timeoff_entry: }, status: 200
   end
 
   def update
+    @timeoff_entry.assign_attributes(timeoff_params)
     authorize @timeoff_entry
 
-    @timeoff_entry.update!(timeoff_params)
+    @timeoff_entry.save!
     render json: { notice: I18n.t("timeoff_entries.update.success"), timeoff_entry: @timeoff_entry }, status: 200
   end
 
@@ -50,15 +52,7 @@ class Api::V1::TimeoffEntriesController < Api::V1::ApplicationController
     end
 
     def load_user!
-      requested_user_id = params[:timeoff_entry][:user_id]
-
-      unless current_user.has_role?(:owner, current_company) || current_user.has_role?(:admin, current_company)
-        if requested_user_id.present? && requested_user_id.to_i != current_user.id
-          raise Pundit::NotAuthorizedError
-        end
-      end
-
-      @user ||= current_company.users.find(requested_user_id)
+      @user ||= current_company.users.find(params[:timeoff_entry][:user_id].to_s)
     end
 
     def load_leave_type!
