@@ -7,7 +7,7 @@ import { useTimesheetEntries } from "context/TimesheetEntries";
 import { useUserContext } from "context/UserContext";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
-import { minFromHHMM, minToHHMM } from "helpers";
+import { buildDateParseFormats, minFromHHMM, minToHHMM } from "helpers";
 
 import { i18n } from "../../../i18n";
 import DesktopTimeoffForm from "./DesktopTimeoffForm";
@@ -154,6 +154,18 @@ const TimeoffForm = ({ isDisplayEditTimeoffEntryForm = false }) => {
     return allEntries.find(entry => entry.id === editTimeoffEntryId);
   };
 
+  const parseLeaveDate = (leaveDate?: string) => {
+    if (!leaveDate) return null;
+
+    const parsedDate = dayjs(
+      leaveDate,
+      buildDateParseFormats(company?.date_format || company?.dateFormat),
+      true
+    );
+
+    return parsedDate.isValid() ? parsedDate.format("YYYY-MM-DD") : null;
+  };
+
   const handleFillData = () => {
     const timeoffEntry = findEditableTimeoffEntry();
 
@@ -161,28 +173,8 @@ const TimeoffForm = ({ isDisplayEditTimeoffEntryForm = false }) => {
       setDuration(minToHHMM(timeoffEntry?.duration || 0));
       setNote(timeoffEntry?.note || "");
       if (timeoffEntry?.leave_date) {
-        const companyDateFormat =
-          company?.date_format || company?.dateFormat || "YYYY-MM-DD";
-
-        const parsedDate = dayjs(
-          timeoffEntry.leave_date,
-          [
-            companyDateFormat,
-            companyDateFormat.replace(/-/g, "."),
-            "YYYY-MM-DD",
-            "DD-MM-YYYY",
-            "MM-DD-YYYY",
-            "MM.DD.YYYY",
-            "DD.MM.YYYY",
-            "YYYY.MM.DD",
-          ],
-          true
-        );
-
         setSelectedDate(
-          parsedDate.isValid()
-            ? parsedDate.format("YYYY-MM-DD")
-            : selectedFullDate
+          parseLeaveDate(timeoffEntry.leave_date) || selectedFullDate
         );
       }
 
@@ -249,9 +241,7 @@ const TimeoffForm = ({ isDisplayEditTimeoffEntryForm = false }) => {
     if (isValidTimeEntry()) {
       const payload = {
         duration: timeoffEntry?.duration || minFromHHMM(duration),
-        leave_date: timeoffEntry?.leave_date
-          ? dayjs(timeoffEntry.leave_date).format("YYYY-MM-DD")
-          : selectedDate,
+        leave_date: parseLeaveDate(timeoffEntry?.leave_date) || selectedDate,
         user_id: selectedEmployeeId,
         note: timeoffEntry?.note || note,
       };
@@ -314,19 +304,15 @@ const TimeoffForm = ({ isDisplayEditTimeoffEntryForm = false }) => {
       );
 
       if (updateRes.status >= 200 && updateRes.status < 300) {
-        const refreshed =
-          (await refreshVisibleEntries?.(selectedEmployeeId)) ||
+        (await refreshVisibleEntries?.(selectedEmployeeId)) ||
           (await fetchEntries(selectedDate, selectedDate));
-        fetchEntriesOfMonths();
 
-        if (refreshed) {
-          setEditTimeoffEntryId(0);
-          setNewTimeoffEntryView(false);
-          setUpdateView(true);
-          handleAddEntryDateChange(dayjs(selectedDate));
-          if (dayjs(selectedDate).isValid()) {
-            setSelectedFullDate(dayjs(selectedDate).format("YYYY-MM-DD"));
-          }
+        setEditTimeoffEntryId(0);
+        setNewTimeoffEntryView(false);
+        setUpdateView(true);
+        handleAddEntryDateChange(dayjs(selectedDate));
+        if (dayjs(selectedDate).isValid()) {
+          setSelectedFullDate(dayjs(selectedDate).format("YYYY-MM-DD"));
         }
       }
     }

@@ -3,6 +3,7 @@ import { cashFormatter } from "./cashFormater";
 import { companyDateFormater } from "./companyDateFormater";
 import { currencyFormat } from "./currency";
 import { currencySymbol } from "./currencySymbol";
+import { buildDateParseFormats } from "./dateParseFormats";
 import { getMonthFromString } from "./dateParser";
 import { useDebounce } from "./debounce";
 import { getDisplayAvatarUrl, getGravatarUrl } from "./gravatar";
@@ -16,6 +17,7 @@ import useKeypress from "./useKeyPress";
 import { validateTimesheetEntry } from "./validateTimesheetEntry";
 
 export {
+  buildDateParseFormats,
   bytesToSize,
   cashFormatter,
   companyDateFormater,

@@ -6,7 +6,7 @@ import customParseFormat from "dayjs/plugin/customParseFormat";
 import { Button } from "../ui/button";
 import { Card, CardContent } from "../ui/card";
 import { Badge } from "../ui/badge";
-import { minToHHMM } from "../../helpers";
+import { buildDateParseFormats, minToHHMM } from "../../helpers";
 import { i18n } from "../../i18n";
 import { useUserContext } from "../../context/UserContext";
 import { Roles } from "../../constants";
@@ -53,20 +53,9 @@ const TimeEntriesDisplay: React.FC<TimeEntriesDisplayProps> = ({
   const [reviewMode, setReviewMode] = useState<"day" | "week">("day");
   const { companyRole, isDesktop, company } = useUserContext();
   const timesheetEditDays: number = company?.timesheet_edit_days ?? 30;
-  const companyDateFormat = company?.date_format || company?.dateFormat;
-  const dateFormats = [
-    ...(companyDateFormat
-      ? [companyDateFormat, companyDateFormat.replace(/-/g, ".")]
-      : []),
-    "YYYY-MM-DD",
-    "MM-DD-YYYY",
-    "DD-MM-YYYY",
-    "MM/DD/YYYY",
-    "DD/MM/YYYY",
-    "MM.DD.YYYY",
-    "DD.MM.YYYY",
-    "YYYY.MM.DD",
-  ];
+  const dateFormats = buildDateParseFormats(
+    company?.date_format || company?.dateFormat
+  );
   const parsedDate = dayjs(selectedFullDate, dateFormats, true);
   const isoDate = parsedDate.format("YYYY-MM-DD");
   const entryDateCandidates = [
