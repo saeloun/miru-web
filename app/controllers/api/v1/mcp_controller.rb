@@ -9,7 +9,11 @@ class Api::V1::MCPController < Api::V1::ApplicationController
 
   def handle
     server = MCP::Miru::ServerFactory.build(server_context: mcp_server_context)
-    transport = MCP::Server::Transports::StreamableHTTPTransport.new(server, stateless: true)
+    transport = MCP::Server::Transports::StreamableHTTPTransport.new(
+      server,
+      stateless: true,
+      dns_rebinding_protection: false
+    )
     status, response_headers, body = transport.handle_request(request)
 
     response_headers.each { |key, value| response.set_header(key, value) }
