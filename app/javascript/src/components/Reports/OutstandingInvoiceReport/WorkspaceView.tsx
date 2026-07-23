@@ -26,25 +26,7 @@ import { currencyFormat } from "../../../helpers/currency";
 import { useUserContext } from "../../../context/UserContext";
 import { i18n } from "../../../i18n";
 import { invoicesApi } from "apis/api";
-
-interface Invoice {
-  id: string;
-  invoice_number: string;
-  client_id: string;
-  client_name: string;
-  client?: {
-    id: string;
-    name: string;
-    logo?: string;
-  };
-  amount: number;
-  amount_due: number;
-  issue_date: string;
-  due_date: string;
-  status: "sent" | "viewed" | "overdue";
-  currency: string;
-  base_currency_amount?: number;
-}
+import type { Invoice } from "../../../types/invoice";
 
 interface ClientGroup {
   client_id: string;

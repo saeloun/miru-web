@@ -39,10 +39,6 @@ import { i18n } from "../../i18n";
 // Context to expose the current search query to cell renderers
 const DataTableSearchContext = React.createContext<string>("");
 
-/**
- * Hook to access the current DataTable search/filter query from within cell renderers.
- * Use with HighlightText to highlight matching text in table cells.
- */
 export function useDataTableSearch(): string {
   return React.useContext(DataTableSearchContext);
 }

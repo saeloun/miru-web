@@ -16,7 +16,6 @@ const Header = ({ setnewClient, isAdminUser, setShowDialog }) => {
       const res = await clientApi.get(`?query=${searchString}`);
       const dropdownList = unmapClientListForDropdown(res);
 
-      // Transform for UnifiedSearch interface
       return (
         dropdownList?.map(client => ({
           id: client.value || client.id,
@@ -57,7 +56,6 @@ const Header = ({ setnewClient, isAdminUser, setShowDialog }) => {
               />
             )}
             onSelect={client => {
-              // Handle client selection if needed
             }}
             className="w-full sm:w-64"
             variant="input"

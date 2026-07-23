@@ -31,6 +31,18 @@ RSpec.describe Reports::GeneratePdf do
       end
     end
 
+    context "when report type is payments" do
+      subject { described_class.new(:payments, report_data, current_company) }
+
+      it "generates PDF for payments" do
+        allow(ApplicationController).to receive(:render).and_return("<html>Report HTML</html>")
+        allow_any_instance_of(PdfGeneration::BaseService).to receive(:process).and_return("PDF Content")
+
+        result = subject.process
+        expect(result).to eq("PDF Content")
+      end
+    end
+
     context "when report type is unsupported" do
       it "raises ArgumentError" do
         expect {

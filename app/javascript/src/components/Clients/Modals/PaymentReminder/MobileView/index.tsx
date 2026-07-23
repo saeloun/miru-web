@@ -5,6 +5,7 @@ import { XIcon } from "miruIcons";
 import Steps from "rc-steps";
 import { Button, Toastr } from "StyledComponents";
 import { i18n } from "../../../../../i18n";
+import type { SendPaymentReminderEmail } from "../../../../../types/email";
 
 import MobileTable from "./MobileTable";
 
@@ -191,11 +192,5 @@ const MobilePaymentReminder = ({
     </div>
   );
 };
-
-interface SendPaymentReminderEmail {
-  subject: string;
-  message: string;
-  recipients: string[];
-}
 
 export default MobilePaymentReminder;

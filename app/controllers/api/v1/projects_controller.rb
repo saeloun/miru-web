@@ -4,7 +4,6 @@ class Api::V1::ProjectsController < Api::V1::ApplicationController
   def index
     authorize Project
 
-    # Search projects using ransack or pg_search
     projects_scope = ProjectPolicy::Scope.new(current_user, current_company).resolve
 
     projects = if params[:search_term].present?

@@ -67,6 +67,16 @@ RSpec.describe "Api::V1::Team#index", type: :request do
       expect(actual_invited_user_data).to eq(expected_invited_user_data)
     end
 
+    it "uses the employee fallback for a member without a company role" do
+      roleless_user = create(:user, current_workspace_id: company.id)
+      create(:employment, company:, user: roleless_user)
+
+      send_request :get, api_v1_team_index_path, headers: auth_headers(user)
+
+      roleless_member = json_response["combinedDetails"].find { |member| member["id"] == roleless_user.id }
+      expect(roleless_member["role"]).to eq("employee")
+    end
+
     it "can search a user from the team" do
       send_request :get, api_v1_team_index_path(
         q: { first_name_or_last_name_or_email_cont: user.first_name }

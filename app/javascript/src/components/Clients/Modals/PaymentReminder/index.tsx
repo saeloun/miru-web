@@ -6,6 +6,7 @@ import "rc-steps/assets/index.css";
 import { Button, Modal, Toastr } from "StyledComponents";
 import { clientApi } from "apis/api";
 import { i18n } from "../../../../i18n";
+import type { SendPaymentReminderEmail } from "../../../../types/email";
 
 import EmailPreview from "./EmailPreview";
 import Step from "./Step";
@@ -196,11 +197,5 @@ const PaymentReminder = ({
     </Modal>
   );
 };
-
-interface SendPaymentReminderEmail {
-  subject: string;
-  message: string;
-  recipients: string[];
-}
 
 export default PaymentReminder;

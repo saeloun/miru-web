@@ -6,6 +6,8 @@ class Payment < ApplicationRecord
   # Audit all payment and currency conversion details
   audited only: [:amount, :base_currency_amount, :exchange_rate, :exchange_rate_date, :payment_currency, :transaction_date, :status]
 
+  scope :for_kept_invoices, -> { joins(:invoice).merge(Invoice.kept).distinct }
+
   enum :status, [
     :paid,
     :partially_paid,
@@ -66,7 +68,6 @@ class Payment < ApplicationRecord
       return if invoice.blank? || amount.blank?
       return unless new_record? || amount_changed? || payment_currency_changed? || transaction_date_changed?
 
-      # Set payment currency if not set
       self.payment_currency ||= invoice&.currency
 
       # If same currency, base_currency_amount equals amount
@@ -76,7 +77,6 @@ class Payment < ApplicationRecord
         return
       end
 
-      # Get the exchange rate for the payment date
       payment_date = transaction_date || Date.current
       rate = CurrencyConversionService.get_exchange_rate(
         payment_currency,

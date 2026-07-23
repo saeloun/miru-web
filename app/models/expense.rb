@@ -5,6 +5,14 @@ class Expense < ApplicationRecord
   include Searchable
 
   audited only: [:amount, :base_currency_amount, :currency, :date, :expense_type, :status, :paid_at, :category_name]
+
+  MAX_RECEIPT_SIZE_MB = 10
+  MAX_RECEIPTS = 10
+  ALLOWED_RECEIPT_CONTENT_TYPES = %w[
+    image/png image/jpeg image/jpg image/webp application/pdf text/csv application/vnd.ms-excel
+    application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+  ].freeze
+
   enum :expense_type, [
       :personal,
       :business
@@ -40,6 +48,7 @@ class Expense < ApplicationRecord
   validates :amount, numericality: { greater_than: 0 }
   validates :currency, presence: true, format: { with: /\A[A-Z]{3}\z/ }
   validate :known_currency_code
+  validate :validate_receipt_constraints
 
   before_validation :normalize_currency
   before_validation :calculate_base_currency_amount
@@ -125,6 +134,24 @@ class Expense < ApplicationRecord
   end
 
   private
+
+    def validate_receipt_constraints
+      return unless receipts.attached?
+
+      if receipts.size > MAX_RECEIPTS
+        errors.add(:receipts, I18n.t("attachment.validation.too_many_files", count: MAX_RECEIPTS))
+      end
+
+      receipts.each do |receipt|
+        if receipt.blob.byte_size > MAX_RECEIPT_SIZE_MB.megabytes
+          errors.add(:receipts, I18n.t("attachment.validation.file_too_large", size_mb: MAX_RECEIPT_SIZE_MB))
+        end
+
+        next if ALLOWED_RECEIPT_CONTENT_TYPES.include?(receipt.blob.content_type)
+
+        errors.add(:receipts, I18n.t("attachment.validation.invalid_content_type"))
+      end
+    end
 
     def normalize_currency
       self.currency = currency.to_s.strip.upcase if currency.present?

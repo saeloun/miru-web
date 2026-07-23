@@ -1,0 +1,57 @@
+<% content_for :email_preheader, t("mailers.subscription.trial_ending_reminder.preheader") %>
+<% content_for :email_eyebrow, t("mailers.subscription.trial_ending_reminder.eyebrow") %>
+<% content_for :email_title, @days_remaining <= 1 ? t("mailers.subscription.trial_ending_reminder.title_tomorrow") : t("mailers.subscription.trial_ending_reminder.title_days", days: @days_remaining) %>
+<% content_for :email_subtitle do %>
+  <%= t("mailers.subscription.trial_ending_reminder.subtitle") %>
+<% end %>
+
+<p><%= t("mailers.subscription.trial_ending_reminder.greeting_html", name: @recipient.first_name.presence || @recipient.email) %></p>
+
+<p>
+  <% if @days_remaining <= 1 %>
+    <%= t("mailers.subscription.trial_ending_reminder.body_tomorrow_html", company: @company.name, date: @trial_end_date_text) %>
+  <% else %>
+    <%= t("mailers.subscription.trial_ending_reminder.body_html", company: @company.name, days: @days_remaining, date: @trial_end_date_text) %>
+  <% end %>
+</p>
+
+<div class="email-highlight">
+  <p class="email-highlight-label"><%= t("mailers.subscription.trial_ending_reminder.countdown_label") %></p>
+  <p class="email-highlight-value">
+    <% if @days_remaining <= 1 %>
+      <%= t("mailers.subscription.trial_ending_reminder.countdown_tomorrow") %>
+    <% else %>
+      <%= t("mailers.subscription.trial_ending_reminder.countdown_days", days: @days_remaining) %>
+    <% end %>
+  </p>
+  <p class="email-highlight-caption"><%= @trial_end_date_text %></p>
+</div>
+
+<%= render "shared/mailer/button", href: @billing_url, label: t("mailers.subscription.trial_ending_reminder.cta") %>
+
+<p style="margin-top: 28px;"><%= t("mailers.subscription.trial_ending_reminder.keep_html") %></p>
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="email-panel email-panel-soft" style="border-collapse: separate;">
+  <% [
+    t("mailers.subscription.trial_ending_reminder.keep_reports"),
+    t("mailers.subscription.trial_ending_reminder.keep_seats"),
+    t("mailers.subscription.trial_ending_reminder.keep_controls")
+  ].each do |item| %>
+    <tr>
+      <td style="width: 34px; padding: 8px 0 8px 20px; vertical-align: top;">
+        <span style="color: #16a34a; font-size: 15px; font-weight: 800;">&#10003;</span>
+      </td>
+      <td style="padding: 8px 22px 8px 0; font-size: 14px; line-height: 1.7;"><%= item %></td>
+    </tr>
+  <% end %>
+</table>
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="email-panel email-panel-warning" style="border-collapse: separate;">
+  <tr>
+    <td style="padding: 16px 22px; font-size: 14px; line-height: 1.7;">
+      <%= t("mailers.subscription.trial_ending_reminder.after_trial") %>
+    </td>
+  </tr>
+</table>
+
+<%= render "shared/mailer/button", href: @billing_url, label: t("mailers.subscription.trial_ending_reminder.cta") %>

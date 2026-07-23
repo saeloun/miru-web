@@ -14,6 +14,7 @@ class CreateCompanyService
     company.save!
     add_current_user_to_company
     create_notification_preference
+    start_pro_trial
     company
   end
 
@@ -30,5 +31,17 @@ class CreateCompanyService
       NotificationPreference.find_or_create_by(
         user_id: current_user.id,
         company_id: company.id)
+    end
+
+    def start_pro_trial
+      return unless company.trial_available?
+
+      company.start_pro_trial!
+      return unless TrialEmailsJob.billing_configured?
+
+      SubscriptionMailer.with(
+        company_id: company.id,
+        recipient_id: current_user.id
+      ).trial_started.deliver_later
     end
 end

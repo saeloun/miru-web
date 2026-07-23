@@ -435,7 +435,6 @@ const OrgEdit = () => {
         { abortEarly: false }
       );
       await updateOrgDetails();
-      //navigate(`/settings/organization`, { replace: true });
     } catch (err) {
       const errObj = {
         companyNameErr: "",

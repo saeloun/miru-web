@@ -158,7 +158,11 @@ const Billing = () => {
       return i18n.t("billingSettings.plans.paid");
     }
 
-    return i18n.t("billingSettings.plans.free");
+    if (summary.subscription_status === "trial_expired") {
+      return i18n.t("billingSettings.plans.trialExpired");
+    }
+
+    return i18n.t("billingSettings.plans.noPlan");
   };
 
   const formatDate = (value?: string | null) => {
@@ -213,13 +217,6 @@ const Billing = () => {
       priceByInterval.yearly.proPerSeat);
 
   const recommendation = (() => {
-    if (seatEstimate <= 3) {
-      return {
-        title: i18n.t("billingSettings.recommendations.freeTitle"),
-        description: i18n.t("billingSettings.recommendations.freeDescription"),
-      };
-    }
-
     if (seatEstimate <= 25) {
       return {
         title: i18n.t("billingSettings.recommendations.proTitle"),
@@ -238,49 +235,42 @@ const Billing = () => {
   const pricingRows = [
     {
       feature: i18n.t("billingSettings.table.bestFor"),
-      free: i18n.t("billingSettings.table.selfHostedTeams"),
       pro: i18n.t("billingSettings.table.growingServiceTeams"),
       enterprise: i18n.t("billingSettings.table.largeOrgs"),
       hostedEnterprise: i18n.t("billingSettings.table.managedTeams"),
     },
     {
       feature: i18n.t("billingSettings.table.timeTracking"),
-      free: i18n.t("billingSettings.table.included"),
       pro: i18n.t("billingSettings.table.included"),
       enterprise: i18n.t("billingSettings.table.included"),
       hostedEnterprise: i18n.t("billingSettings.table.included"),
     },
     {
       feature: i18n.t("billingSettings.table.invoicesAndPayments"),
-      free: i18n.t("billingSettings.table.included"),
       pro: i18n.t("billingSettings.table.included"),
       enterprise: i18n.t("billingSettings.table.included"),
       hostedEnterprise: i18n.t("billingSettings.table.included"),
     },
     {
       feature: i18n.t("billingSettings.table.reportsAndDashboards"),
-      free: i18n.t("billingSettings.table.dashboardOnly"),
       pro: i18n.t("billingSettings.table.reportsAndAnalytics"),
       enterprise: i18n.t("billingSettings.table.reportsAndAnalytics"),
       hostedEnterprise: i18n.t("billingSettings.table.reportsAndAnalytics"),
     },
     {
       feature: i18n.t("billingSettings.table.sso"),
-      free: i18n.t("billingSettings.table.notIncluded"),
       pro: i18n.t("billingSettings.table.included"),
       enterprise: i18n.t("billingSettings.table.included"),
       hostedEnterprise: i18n.t("billingSettings.table.included"),
     },
     {
       feature: i18n.t("billingSettings.table.auditAndAdminControls"),
-      free: i18n.t("billingSettings.table.notIncluded"),
       pro: i18n.t("billingSettings.table.included"),
       enterprise: i18n.t("billingSettings.table.included"),
       hostedEnterprise: i18n.t("billingSettings.table.included"),
     },
     {
       feature: i18n.t("billingSettings.table.support"),
-      free: i18n.t("billingSettings.table.community"),
       pro: i18n.t("billingSettings.table.priorityEmail"),
       enterprise: i18n.t("billingSettings.table.priorityOnboarding"),
       hostedEnterprise: i18n.t("billingSettings.table.managedOnboarding"),
@@ -306,11 +296,6 @@ const Billing = () => {
   ];
 
   const planBullets = {
-    free: [
-      i18n.t("billingSettings.planBullets.free.coreProduct"),
-      i18n.t("billingSettings.planBullets.free.tracking"),
-      i18n.t("billingSettings.planBullets.free.dashboard"),
-    ],
     pro: [
       i18n.t("billingSettings.planBullets.pro.trial"),
       i18n.t("billingSettings.planBullets.pro.sso"),
@@ -578,6 +563,10 @@ const Billing = () => {
               <ClockClockwise size={14} weight="fill" />
               {i18n.t("billingSettings.saveTwoMonths")}
             </Badge>
+            <Badge variant="outline" className="gap-1.5 px-3 py-1">
+              <CheckCircle size={14} weight="fill" />
+              {i18n.t("billingSettings.noCreditCardRequired")}
+            </Badge>
           </div>
           <CardTitle className="text-2xl tracking-tight">
             {i18n.t("billingSettings.heroTitle")}
@@ -682,37 +671,7 @@ const Billing = () => {
             </div>
           </div>
 
-          <div className="grid gap-4 xl:grid-cols-4">
-            <div className="rounded-xl border border-border bg-card p-4 shadow-sm">
-              <div className="flex items-center justify-between">
-                <h3 className="text-base font-semibold text-foreground">
-                  {i18n.t("billingSettings.plans.free")}
-                </h3>
-                <Badge variant="outline">
-                  {i18n.t("billingSettings.openSource")}
-                </Badge>
-              </div>
-              <p className="mt-2 text-2xl font-semibold text-foreground">$0</p>
-              <p className="mt-2 text-sm text-muted-foreground">
-                {i18n.t("billingSettings.planDescriptions.free")}
-              </p>
-              <div className="mt-4 space-y-2">
-                {planBullets.free.map(item => (
-                  <div
-                    key={item}
-                    className="flex items-start gap-2 text-sm text-muted-foreground"
-                  >
-                    <CheckCircle
-                      size={16}
-                      weight="fill"
-                      className="mt-0.5 shrink-0 text-foreground"
-                    />
-                    <span>{item}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
+          <div className="grid gap-4 xl:grid-cols-3">
             <div className="rounded-xl border border-primary/40 bg-card p-4 shadow-sm ring-1 ring-primary/10">
               <div className="flex items-center justify-between">
                 <h3 className="text-base font-semibold text-foreground">Pro</h3>
@@ -770,17 +729,19 @@ const Billing = () => {
                       : i18n.t("billingSettings.startTrial")}
                   </Button>
                 )}
-                {!summary?.billing_exempt && summary?.plan_tier !== "paid" && (
-                  <Button
-                    className="w-full"
-                    onClick={startCheckout}
-                    disabled={processingCheckout}
-                  >
-                    {processingCheckout
-                      ? i18n.t("billingSettings.openingStripe")
-                      : i18n.t("billingSettings.upgradeWithStripe")}
-                  </Button>
-                )}
+                {summary &&
+                  !summary.billing_exempt &&
+                  summary.plan_tier !== "paid" && (
+                    <Button
+                      className="w-full"
+                      onClick={startCheckout}
+                      disabled={processingCheckout}
+                    >
+                      {processingCheckout
+                        ? i18n.t("billingSettings.openingStripe")
+                        : i18n.t("billingSettings.upgradeWithStripe")}
+                    </Button>
+                  )}
                 <p className="text-xs text-muted-foreground">
                   {i18n.t("billingSettings.noSalesCall")}
                 </p>
@@ -877,7 +838,6 @@ const Billing = () => {
                   <TableHead>
                     {i18n.t("billingSettings.table.feature")}
                   </TableHead>
-                  <TableHead>{i18n.t("billingSettings.plans.free")}</TableHead>
                   <TableHead>Pro</TableHead>
                   <TableHead>
                     {i18n.t("billingSettings.plans.enterprise")}
@@ -893,7 +853,6 @@ const Billing = () => {
                     <TableCell className="font-medium text-foreground">
                       {row.feature}
                     </TableCell>
-                    <TableCell>{row.free}</TableCell>
                     <TableCell>{row.pro}</TableCell>
                     <TableCell>{row.enterprise}</TableCell>
                     <TableCell>{row.hostedEnterprise}</TableCell>

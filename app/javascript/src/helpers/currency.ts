@@ -33,14 +33,12 @@ const currencyFormat = (
   notation?: "standard" | "compact",
   localeOverride?: string
 ) => {
-  // Default to USD if no currency provided
   const currency = baseCurrency || "USD";
   const activeLocale =
     normalizedLocale(localeOverride) ||
     normalizedLocale(getActiveLocale()) ||
     fallbackLocaleByCurrency(currency);
 
-  // Ensure amount is a valid number, default to 0 if not
   const numericAmount =
     typeof amount === "number" && !isNaN(amount)
       ? amount

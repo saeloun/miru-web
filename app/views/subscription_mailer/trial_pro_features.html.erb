@@ -1,0 +1,50 @@
+<% content_for :email_preheader, t("mailers.subscription.trial_pro_features.preheader") %>
+<% content_for :email_eyebrow, t("mailers.subscription.trial_pro_features.eyebrow") %>
+<% content_for :email_title, t("mailers.subscription.trial_pro_features.title") %>
+<% content_for :email_subtitle do %>
+  <%= t("mailers.subscription.trial_pro_features.subtitle") %>
+<% end %>
+
+<p><%= t("mailers.subscription.trial_pro_features.greeting_html", name: @recipient.first_name.presence || @recipient.email) %></p>
+
+<p><%= t("mailers.subscription.trial_pro_features.body_html", company: @company.name) %></p>
+
+<div class="email-highlight">
+  <p class="email-highlight-label"><%= t("mailers.subscription.trial_pro_features.price_label") %></p>
+  <p class="email-highlight-value"><%= t("mailers.subscription.trial_pro_features.price_value") %></p>
+  <p class="email-highlight-caption"><%= t("mailers.subscription.trial_pro_features.price_caption") %></p>
+</div>
+
+<%= render "shared/mailer/button", href: @billing_url, label: t("mailers.subscription.trial_pro_features.cta") %>
+
+<% [
+  { title: t("mailers.subscription.trial_pro_features.reports_title"),
+    body: t("mailers.subscription.trial_pro_features.reports_body") },
+  { title: t("mailers.subscription.trial_pro_features.seats_title"),
+    body: t("mailers.subscription.trial_pro_features.seats_body") },
+  { title: t("mailers.subscription.trial_pro_features.controls_title"),
+    body: t("mailers.subscription.trial_pro_features.controls_body") }
+].each do |feature| %>
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="email-panel" style="margin: 14px 0; border-collapse: separate;">
+    <tr>
+      <td style="width: 40px; padding: 20px 0 20px 20px; vertical-align: top;">
+        <div style="width: 26px; height: 26px; border-radius: 50%; background-color: #f0fdf4; border: 1px solid rgba(22, 163, 74, 0.3); color: #16a34a; font-size: 14px; font-weight: 800; line-height: 26px; text-align: center;">&#10003;</div>
+      </td>
+      <td style="padding: 18px 22px;">
+        <p class="email-panel-title" style="margin: 0 0 6px;"><%= feature[:title] %></p>
+        <p style="margin: 0; font-size: 14px; line-height: 1.7;"><%= feature[:body] %></p>
+      </td>
+    </tr>
+  </table>
+<% end %>
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="detail-grid" style="margin-top: 24px;">
+  <tr>
+    <%= render "shared/mailer/detail_card", label: t("mailers.labels.workspace"), value: @company.name %>
+    <%= render "shared/mailer/detail_card", label: t("mailers.subscription.trial_pro_features.trial_ends"), value: @trial_end_date_text %>
+  </tr>
+</table>
+
+<p><%= t("mailers.subscription.trial_pro_features.footer_body") %></p>
+
+<%= render "shared/mailer/button", href: @billing_url, label: t("mailers.subscription.trial_pro_features.cta") %>

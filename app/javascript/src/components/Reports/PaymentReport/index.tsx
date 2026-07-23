@@ -71,18 +71,7 @@ import {
 } from "../filterUtils";
 import { i18n } from "../../../i18n";
 import ViewInAnalyticsButton from "../ViewInAnalyticsButton";
-
-interface Payment {
-  id: number;
-  payment_date: string;
-  transaction_id: string;
-  payment_method: string;
-  client_name: string;
-  invoice_number: string;
-  amount: number;
-  notes?: string;
-  status: string;
-}
+import type { Payment } from "../../../types/payment";
 
 interface PaymentReportData {
   payments: Payment[];

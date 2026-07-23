@@ -23,6 +23,6 @@ class Api::V1::BulkPreviousEmploymentsController < Api::V1::ApplicationControlle
     end
 
     def user
-      @_user ||= employment.user
+      @_user ||= current_company.users.find_by!(id: params[:id])
     end
 end

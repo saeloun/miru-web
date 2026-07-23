@@ -1,5 +1,3 @@
-import { setToLocalStorage } from "utils/storage";
-
 export interface AuthState {
   isLoggedIn: boolean;
   authToken: string | null;
@@ -15,9 +13,6 @@ const authReducer = (state: AuthState, action: AuthAction): AuthState => {
     case "LOGIN": {
       const authToken = action.payload.token || null;
 
-      setToLocalStorage("authToken", null);
-      setToLocalStorage("authEmail", null);
-
       return {
         isLoggedIn: true,
         authToken,
@@ -25,9 +20,6 @@ const authReducer = (state: AuthState, action: AuthAction): AuthState => {
       };
     }
     case "LOGOUT": {
-      setToLocalStorage("authToken", null);
-      setToLocalStorage("authEmail", null);
-
       return { isLoggedIn: false, authToken: null, authEmail: null };
     }
     default: {

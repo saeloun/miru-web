@@ -52,17 +52,8 @@ import { reportClientError } from "utils/runtimeRecovery";
 import { unmapClientList } from "../../mapper/mappedIndex";
 import { toast } from "sonner";
 import { i18n } from "../../i18n";
+import type { Client } from "../../types/timeTracking";
 import ClientEditor from "./ClientForm/ClientEditor";
-interface Client {
-  id: string;
-  name: string;
-  email: string;
-  phone?: string;
-  address?: string;
-  logo?: string;
-  minutes: number;
-  currency?: string;
-}
 
 interface ClientsData {
   clientList: Client[];
@@ -74,21 +65,13 @@ interface ClientsData {
 }
 
 const fetchClients = async (timeFrame = "week"): Promise<ClientsData> => {
-  try {
-    const res = await clientsApi.get(`?time_frame=${timeFrame}`);
+  const res = await clientsApi.get(`?time_frame=${timeFrame}`);
 
+  try {
     return unmapClientList({ data: res.data });
   } catch (error) {
     reportClientError("clients:fetch", error);
-
-    return {
-      clientList: [],
-      totalMinutes: 0,
-      overdueOutstandingAmount: {
-        overdue: 0,
-        outstanding: 0,
-      },
-    };
+    throw error;
   }
 };
 
@@ -137,7 +120,6 @@ const ClientsTable: React.FC = () => {
     setClientLogoUrl("");
     setShowEditDialog(true);
     try {
-      // Fetch full client details including address
       const response = await clientsApi.show(client.id, "");
       const fullClientData = response.data.client_details;
       setEditClientData(fullClientData);

@@ -10,20 +10,16 @@ module PgSearchable
     scope :search, ->(query, options = {}) do
       scope = all
 
-      # Handle search query
       unless query.blank? || query == "*"
         columns = options[:fields] || searchable_columns
 
         if database_supports_trigrams?
-          # Use PostgreSQL trigram similarity for fuzzy matching
           scope = search_with_trigrams(scope, columns, query)
         else
-          # Fallback to LIKE queries if trigrams not available
           scope = search_with_like(scope, columns, query)
         end
       end
 
-      # Apply filters
       if options[:where].present?
         options[:where].each do |key, value|
           scope = if value.is_a?(Hash) && value.key?(:not)
@@ -34,15 +30,12 @@ module PgSearchable
         end
       end
 
-      # Apply ordering - if using trigrams, order by similarity score
       if options[:order].present?
         scope = scope.order(options[:order])
       elsif !query.blank? && query != "*" && database_supports_trigrams?
-        # Order by relevance when using trigram search
         scope = scope.order(Arel.sql("similarity_score DESC"))
       end
 
-      # Apply pagination
       if options[:page] && options[:per_page]
         offset = (options[:page].to_i - 1) * options[:per_page].to_i
         scope = scope.offset(offset).limit(options[:per_page])
@@ -64,7 +57,6 @@ module PgSearchable
       if database_supports_trigrams?
         search_with_trigrams(all, columns, query, threshold: threshold)
       else
-        # Fallback to regular search if trigrams not available
         search(query)
       end
     end
@@ -84,13 +76,11 @@ module PgSearchable
         quoted_query = conn.quote(query)
         quoted_table = conn.quote_table_name(table_name)
 
-        # Build similarity conditions
         similarity_conditions = columns.map do |col|
           quoted_col = conn.quote_column_name(col)
           "#{quoted_table}.#{quoted_col} % #{quoted_query}"
         end.join(" OR ")
 
-        # Calculate similarity scores for ordering
         similarity_scores = columns.map do |col|
           quoted_col = conn.quote_column_name(col)
           "similarity(#{quoted_table}.#{quoted_col}, #{quoted_query})"
@@ -130,7 +120,6 @@ module PgSearchable
   end
 
   class_methods do
-    # Define which columns are searchable
     def searchable_columns(*columns)
       if columns.any?
         @searchable_columns = columns.map(&:to_s)

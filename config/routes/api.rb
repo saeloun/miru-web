@@ -54,7 +54,6 @@ namespace :api, defaults: { format: "json" } do
       end
     end
 
-    resources :project, only: [:index]
     resources :timesheet_entry do
       collection do
         resource :bulk_action, only: [:update, :destroy], controller: "timesheet_entry/bulk_action"

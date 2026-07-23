@@ -42,11 +42,9 @@ const Header = ({
 }) => {
   const navigate = useNavigate();
 
-  // Convert fetchSearchResults to return proper SearchItem format
   const searchAction = async (query: string) => {
     const results = await fetchSearchResults(query, true);
 
-    // Transform results to match SearchItem interface
     return (
       results?.map(expense => ({
         id: expense.value || expense.id,

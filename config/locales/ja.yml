@@ -427,17 +427,17 @@ ja:
         stripe_subscription: 'Stripeのサブスクリプション: %{id}'
         team_seats: チーム席数：%{seats}
       trial_started:
-        body_html: "<strong>%{company}</strong>用の Miru Pro 30 日間無料トライアルが有効になりました。"
+        body_html: "<strong>%{company}</strong>用の Miru Pro 14 日間無料トライアルが有効になりました。"
         cta: オープン請求
         eyebrow: 請求する
         footer_body: 請求設定から、いつでも請求内容の確認、プランの比較、アップグレードを行うことができます。
         greeting_html: こんにちは<strong>%{name} さん</strong>、
         preheader: Miru Proの無料トライアルが有効になりました。
-        subtitle: 30日間の無料トライアル期間中に、請求、レポート、その他のProワークフローを体験してください。
+        subtitle: 14日間の無料トライアル期間中に、請求、レポート、その他のProワークフローを体験してください。
         title: Miru Proの無料トライアルが開始されました。
         trial_ends: 裁判終了
       trial_started_text:
-        body: "%{company} 用の Miru Pro 30 日間無料トライアルが有効になりました。"
+        body: "%{company} 用の Miru Pro 14 日間無料トライアルが有効になりました。"
         greeting: こんにちは %{name}、
         review_billing: "%{url}で請求内容を確認してください。"
         trial_ends: 試行は%{date}で終了します。
@@ -647,7 +647,7 @@ ja:
     no_billing_customer: この会社には請求先顧客が存在しません。
     pricing_not_configured: Stripeのサブスクリプション料金が設定されていません
     trial_not_eligible: お客様のワークスペースはProトライアルの対象外です
-    trial_started: 30日間のProトライアルが開始されました
+    trial_started: 14日間のProトライアルが開始されました
   team:
     changed_email: メールアドレスを変更しました
     create_new_user: 新規ユーザーを作成する

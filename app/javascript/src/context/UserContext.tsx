@@ -1,4 +1,5 @@
 import { createContext, useContext } from "react";
+import type { Company } from "../types/company";
 
 const UserContext = createContext({
   isAdminUser: false,
@@ -24,7 +25,7 @@ const UserContext = createContext({
   selectedTab: null,
   googleOauthSuccess: false,
   setSelectedTab: value => {},
-  company: null,
+  company: null as Company | null,
   setCompany: value => {},
   calendarEnabled: false,
   calendarConnected: false,

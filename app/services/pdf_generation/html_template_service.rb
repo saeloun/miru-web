@@ -10,7 +10,6 @@ module PdfGeneration
       @locals = locals
       @root_url = root_url
 
-      # Generate HTML from template and pass to parent
       html = render_html_from_template
       super(html, options)
     end
@@ -25,12 +24,10 @@ module PdfGeneration
           locals: locals
         )
 
-        # Process URLs to be absolute if root_url is provided
         root_url ? process_urls_in_html(html) : html
       end
 
       def process_urls_in_html(html)
-        # Convert relative URLs to absolute URLs
         html.gsub(/(?:src|href)=["']\/([^"']+)["']/) do |match|
           path = Regexp.last_match(1)
           match.sub("/#{path}", "#{root_url}/#{path}")

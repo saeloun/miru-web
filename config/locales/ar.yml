@@ -461,7 +461,7 @@ ar:
         stripe_subscription: 'اشتراك سترايب: %{id}'
         team_seats: 'مقاعد الفريق: %{seats}'
       trial_started:
-        body_html: تم تفعيل تجربتك المجانية لمدة 30 يومًا لبرنامج Miru Pro الخاص بك
+        body_html: تم تفعيل تجربتك المجانية لمدة 14 يومًا لبرنامج Miru Pro الخاص بك
           لجهاز <strong>%{company}</strong> .
         cta: الفواتير المفتوحة
         eyebrow: الفواتير
@@ -470,11 +470,11 @@ ar:
         greeting_html: مرحباً <strong>%{name}</strong> ،
         preheader: تم تفعيل النسخة التجريبية من برنامج Miru Pro الخاص بك الآن.
         subtitle: استكشف نظام الفوترة والتقارير وبقية سير العمل الاحترافي خلال فترة
-          التجربة المجانية التي تبلغ 30 يومًا.
+          التجربة المجانية التي تبلغ 14 يومًا.
         title: تجربتك المجانية لبرنامج Miru Pro متاحة الآن
         trial_ends: انتهاء المحاكمة
       trial_started_text:
-        body: تم تفعيل تجربتك المجانية لمدة 30 يومًا لبرنامج Miru Pro الخاص بك لجهاز
+        body: تم تفعيل تجربتك المجانية لمدة 14 يومًا لبرنامج Miru Pro الخاص بك لجهاز
           %{company}.
         greeting: مرحباً %{name}،
         review_billing: مراجعة الفواتير في %{url}.
@@ -695,7 +695,7 @@ ar:
     no_billing_customer: لا يوجد عميل فوترة لهذه الشركة
     pricing_not_configured: لم يتم ضبط أسعار اشتراكات Stripe
     trial_not_eligible: مساحة عملك غير مؤهلة لتجربة النسخة التجريبية الاحترافية
-    trial_started: لقد بدأت فترة تجربتك المجانية لمدة 30 يومًا لـ Pro
+    trial_started: لقد بدأت فترة تجربتك المجانية لمدة 14 يومًا لـ Pro
   team:
     changed_email: تم تغيير البريد الإلكتروني
     create_new_user: إنشاء مستخدمين جدد

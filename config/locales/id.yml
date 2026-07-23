@@ -471,7 +471,7 @@ id:
         stripe_subscription: 'Langganan Stripe: %{id}'
         team_seats: 'Kursi tim: %{seats}'
       trial_started:
-        body_html: Masa uji coba Miru Pro 30 hari Anda untuk <strong>%{company}</strong>
+        body_html: Masa uji coba Miru Pro 14 hari Anda untuk <strong>%{company}</strong>
           kini aktif.
         cta: Tagihan terbuka
         eyebrow: Penagihan
@@ -480,11 +480,11 @@ id:
         greeting_html: Halo <strong>%{name}</strong> ,
         preheader: Masa uji coba Miru Pro Anda kini aktif.
         subtitle: Jelajahi penagihan, laporan, dan alur kerja Pro lainnya selama masa
-          uji coba 30 hari Anda.
+          uji coba 14 hari Anda.
         title: Uji coba Miru Pro Anda telah dimulai.
         trial_ends: Percobaan berakhir
       trial_started_text:
-        body: Masa uji coba Miru Pro 30 hari Anda untuk %{company} kini aktif.
+        body: Masa uji coba Miru Pro 14 hari Anda untuk %{company} kini aktif.
         greeting: Halo %{name},
         review_billing: Tinjau tagihan di %{url}.
         trial_ends: Percobaan berakhir pada %{date}.
@@ -703,7 +703,7 @@ id:
     no_billing_customer: Tidak ada pelanggan yang terdaftar untuk perusahaan ini.
     pricing_not_configured: Harga langganan Stripe belum dikonfigurasi.
     trial_not_eligible: Ruang kerja Anda tidak memenuhi syarat untuk uji coba Pro.
-    trial_started: Masa uji coba Pro 30 hari Anda telah dimulai.
+    trial_started: Masa uji coba Pro 14 hari Anda telah dimulai.
   team:
     changed_email: Email telah diubah.
     create_new_user: Buat Pengguna Baru

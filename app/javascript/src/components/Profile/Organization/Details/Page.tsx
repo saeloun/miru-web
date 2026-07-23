@@ -132,7 +132,6 @@ const OrganizationSettingsPage: React.FC<OrganizationSettingsPageProps> = ({
       return i18n.t("organizationSettingsPage.defaults.noAddress");
     }
 
-    // Handle object addresses (likely from the API)
     if (typeof address === "object" && address !== null) {
       const parts = [];
       if (address.address_line_1) parts.push(address.address_line_1);
@@ -160,7 +159,6 @@ const OrganizationSettingsPage: React.FC<OrganizationSettingsPageProps> = ({
       );
     }
 
-    // Handle string addresses
     if (typeof address === "string") {
       const parts = address.split(",").map(part => part.trim());
 

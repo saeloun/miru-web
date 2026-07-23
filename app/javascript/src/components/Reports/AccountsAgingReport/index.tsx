@@ -349,7 +349,6 @@ const AccountsAgingReport: React.FC = () => {
     },
   });
 
-  // Handle infinite scroll
   useEffect(() => {
     const handleScroll = () => {
       if (tableRef.current) {
@@ -365,7 +364,7 @@ const AccountsAgingReport: React.FC = () => {
 
     const tableElement = tableRef.current;
     if (tableElement) {
-      tableElement.addEventListener("scroll", handleScroll);
+      tableElement.addEventListener("scroll", handleScroll, { passive: true });
 
       return () => tableElement.removeEventListener("scroll", handleScroll);
     }

@@ -209,21 +209,17 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
         holiday_infos,
       } = data;
 
-      // Ensure clients is an array
       const clientsArray = Array.isArray(clients) ? clients : [];
       setClients(clientsArray);
 
-      // Ensure projects is an object keyed by client name
       const projectsObj = projects || {};
       setProjects(projectsObj);
 
-      // Ensure employees is an array
       const employeesArray = Array.isArray(employees) ? employees : [];
       setEmployees(employeesArray);
       setLeaveTypes(Array.isArray(leave_types) ? leave_types : []);
       setHolidayList(Array.isArray(holiday_infos) ? holiday_infos : []);
 
-      // Ensure entries is an object
       const entriesObj = entries || {};
       setEntryList(entriesObj);
 
@@ -487,7 +483,6 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
     const isoDate = normalizeEntryDateKey(date);
     const newValue = { ...entryList };
 
-    // Check if entries exist for this date
     if (newValue[isoDate]) {
       newValue[isoDate] = newValue[isoDate].filter(e => {
         if (e["id"] == entryId) {

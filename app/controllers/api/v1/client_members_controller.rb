@@ -14,7 +14,7 @@ class Api::V1::ClientMembersController < Api::V1::ApplicationController
     authorize client, policy_class: ClientMemberPolicy
 
     Team::UpdateService.new(
-      user_params:, current_company:, new_role: "client", user: employment.user).process
+      actor: current_user, user_params:, current_company:, new_role: "client", user: employment.user).process
 
     render json: {
       notice: "Contact updated successfully"

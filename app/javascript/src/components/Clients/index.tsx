@@ -80,6 +80,8 @@ const Clients = ({ isAdminUser }) => {
       }
     };
     window.addEventListener("keydown", close);
+
+    return () => window.removeEventListener("keydown", close);
   }, []);
 
   if (loading) {

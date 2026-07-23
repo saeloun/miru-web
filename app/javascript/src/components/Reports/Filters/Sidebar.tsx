@@ -80,7 +80,6 @@ const ReportFiltersPanel = ({
     selectedInput
   );
 
-  // Calculate active filter count
   const getActiveFilterCount = () => {
     let count = 0;
     if (filters.dateRange.value !== "all") count++;

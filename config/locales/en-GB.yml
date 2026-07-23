@@ -454,20 +454,22 @@ en-GB:
         stripe_subscription: 'Stripe subscription: %{id}'
         team_seats: 'Team seats: %{seats}'
       trial_started:
-        body_html: Your 30-day Miru Pro trial for <strong>%{company}</strong> is now
+        body_html: Your 14-day Miru Pro trial for <strong>%{company}</strong> is now
           active.
         cta: Open billing
         eyebrow: Billing
         footer_body: You can review billing, compare plans, and upgrade at any time
-          from your billing settings.
+          from your billing settings. There is no card on file — nothing is charged
+          unless you choose to upgrade.
         greeting_html: Hello <strong>%{name}</strong>,
         preheader: Your Miru Pro trial is now active.
         subtitle: Explore billing, reports, and the rest of the Pro workflow during
-          your 30-day trial.
+          your 14-day trial.
         title: Your Miru Pro trial is live
         trial_ends: Trial ends
       trial_started_text:
-        body: Your 30-day Miru Pro trial for %{company} is now active.
+        body: Your 14-day Miru Pro trial for %{company} is now active. No credit card
+          required — nothing is charged unless you upgrade.
         greeting: Hello %{name},
         review_billing: Review billing at %{url}.
         trial_ends: Trial ends on %{date}.
@@ -683,7 +685,7 @@ en-GB:
     no_billing_customer: No billing customer exists for this company
     pricing_not_configured: Stripe subscription pricing is not configured
     trial_not_eligible: Your workspace is not eligible for a Pro trial
-    trial_started: Your 30-day Pro trial has started
+    trial_started: Your 14-day Pro trial has started
   team:
     changed_email: Changed Email
     create_new_user: Create New User

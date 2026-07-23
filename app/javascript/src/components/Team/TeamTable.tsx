@@ -47,26 +47,7 @@ import { unmapList, unmapPagyData } from "../../mapper/team.mapper";
 import { toast } from "sonner";
 import { Roles } from "../../constants/index";
 import { canDeleteTeamMember, getDisplayAvatarUrl } from "../../helpers";
-
-interface TeamMember {
-  id: string;
-  firstName: string;
-  lastName: string;
-  name: string;
-  email: string;
-  phone?: string;
-  avatar?: string;
-  role: string;
-  designation?: string;
-  department?: string;
-  joinedDate: string;
-  lastActive?: string;
-  projects?: number;
-  hoursLogged?: number;
-  billableHours?: number;
-  status: "active" | "inactive" | "invited";
-  isTeamMember?: boolean;
-}
+import type { TeamMember } from "../../types/team";
 
 interface TeamData {
   teamMembers: TeamMember[];

@@ -50,37 +50,8 @@ import { useUserContext } from "../../context/UserContext";
 import { projectApi } from "apis/api";
 import { toast } from "sonner";
 import { i18n } from "../../i18n";
+import type { Project } from "../../types/timeTracking";
 import AddEditProject from "./Modals/AddEditProject";
-
-interface TeamMember {
-  id: string;
-  name: string;
-  avatar?: string;
-  email: string;
-}
-
-interface Project {
-  id: string;
-  name: string;
-  client_id?: string;
-  client_name?: string;
-  client?: {
-    id: string;
-    name: string;
-    logo?: string;
-  };
-  status?: "active" | "paused" | "completed";
-  billable: boolean;
-  totalHours?: number;
-  allocatedHours?: number;
-  teamMembers?: TeamMember[];
-  startDate?: string;
-  endDate?: string;
-  description?: string;
-  hourlyRate?: number;
-  created_at?: string;
-  updated_at?: string;
-}
 
 interface ProjectsData {
   projects: Project[];
@@ -112,7 +83,7 @@ const ProjectsTable: React.FC = () => {
   });
 
   const deleteMutation = useMutation({
-    mutationFn: async (projectId: string) => {
+    mutationFn: async (projectId: string | number) => {
       await projectApi.destroy(projectId);
     },
     onSuccess: () => {
@@ -130,7 +101,7 @@ const ProjectsTable: React.FC = () => {
       ...project,
       clientName: project.client_name || project.client?.name || "",
       isBillable: project.billable,
-    } as any);
+    });
     setShowEditDialog(true);
   };
 
@@ -543,7 +514,7 @@ const ProjectsTable: React.FC = () => {
 
       {showNewProjectDialog && (
         <AddEditProject
-          setEditProjectData={setSelectedProject as any}
+          setEditProjectData={setSelectedProject}
           editProjectData={{}}
           setShowProjectModal={setShowNewProjectDialog}
           showProjectModal={showNewProjectDialog}
@@ -554,11 +525,11 @@ const ProjectsTable: React.FC = () => {
 
       {showEditDialog && selectedProject && (
         <AddEditProject
-          setEditProjectData={setSelectedProject as any}
-          editProjectData={selectedProject as any}
+          setEditProjectData={setSelectedProject}
+          editProjectData={selectedProject}
           setShowProjectModal={setShowEditDialog}
           showProjectModal={showEditDialog}
-          projectData={selectedProject as any}
+          projectData={selectedProject}
           fetchProjectList={refreshProjectList}
         />
       )}
