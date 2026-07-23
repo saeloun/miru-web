@@ -52,6 +52,7 @@ import {
 import { useUserContext } from "../../context/UserContext";
 import useThemeMode from "common/useThemeMode";
 import { WorkspaceApi } from "apis/api";
+import { reportClientError } from "utils/runtimeRecovery";
 import { MiruLogoSVG } from "miruIcons";
 import { Paths, Roles } from "../../constants";
 import { i18n } from "../../i18n";
@@ -248,7 +249,18 @@ const Sidebar: React.FC = () => {
         setCurrentWorkspace(current);
       }
     } catch (error) {
-      console.error("Failed to fetch workspaces:", error);
+      reportClientError("workspaces:fetch", error);
+    }
+  };
+
+  const handleWorkspaceSwitch = async workspace => {
+    if (workspace.id === currentWorkspace?.id) return;
+
+    try {
+      await WorkspaceApi.update(workspace.id);
+      window.location.href = "/";
+    } catch (error) {
+      reportClientError("workspaces:switch", error);
     }
   };
 
@@ -533,10 +545,7 @@ const Sidebar: React.FC = () => {
                         "cursor-pointer gap-3",
                         workspace.id === currentWorkspace.id && "bg-accent"
                       )}
-                      onClick={() => {
-                        // Switch workspace logic
-                        // TODO: Implement workspace switching
-                      }}
+                      onClick={() => handleWorkspaceSwitch(workspace)}
                     >
                       <div className="flex h-6 w-6 items-center justify-center rounded bg-primary/10">
                         <Buildings className="h-3 w-3 text-primary" />

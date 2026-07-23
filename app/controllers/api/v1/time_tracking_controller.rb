@@ -33,6 +33,7 @@ class Api::V1::TimeTrackingController < Api::V1::ApplicationController
 
     def set_user
       user_id = params[:user_id] || current_user.id
-      @user = current_company.users.find(user_id)
+      company = current_company || raise(ActiveRecord::RecordNotFound, "Company not found")
+      @user = company.users.find(user_id)
     end
 end

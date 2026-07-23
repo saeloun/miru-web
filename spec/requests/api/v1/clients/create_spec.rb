@@ -80,6 +80,22 @@ RSpec.describe "Api::V1::Client#create", type: :request do
         expect(json_response["errors"]).to eq("Email has already been taken")
       end
 
+      it "returns 422 when the database catches a uniqueness race" do
+        address_details = attributes_for(:address)
+        client_attributes = attributes_for(:client, addresses_attributes: [address_details])
+
+        allow(Client).to receive(:new).and_wrap_original do |original, *args|
+          client = original.call(*args)
+          allow(client).to receive(:save!).and_raise(ActiveRecord::RecordNotUnique)
+          client
+        end
+
+        send_request :post, api_v1_clients_path(client: client_attributes), headers: auth_headers(user)
+
+        expect(response).to have_http_status(:unprocessable_content)
+        expect(json_response["errors"]).to eq("has already been taken")
+      end
+
       context "phone number validation" do
         it "creates client with valid US phone number" do
           address_details = attributes_for(:address)

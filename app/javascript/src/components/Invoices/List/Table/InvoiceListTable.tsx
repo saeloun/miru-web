@@ -16,7 +16,7 @@ const InvoiceListTable = ({
   setIsPaymentEnabled,
 }) => (
   <table
-    className="min-w-full divide-y divide-gray-200 overflow-x-scroll lg:mt-4"
+    className="min-w-full divide-y divide-border overflow-x-scroll lg:mt-4"
     id="invoicesListTable"
   >
     <thead>
@@ -28,7 +28,7 @@ const InvoiceListTable = ({
         selectedInvoices={selectedInvoices}
       />
     </thead>
-    <tbody className="min-w-full divide-y divide-gray-200 bg-white">
+    <tbody className="min-w-full divide-y divide-border bg-card">
       {invoices.map((invoice, index) => (
         <TableRow
           deselectInvoices={deselectInvoices}

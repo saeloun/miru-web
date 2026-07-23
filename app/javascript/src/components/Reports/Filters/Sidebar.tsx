@@ -325,7 +325,7 @@ const ReportFiltersPanel = ({
       >
         <SheetHeader className="px-6 py-4 border-b bg-gradient-to-r from-white to-gray-50">
           <div className="flex items-center justify-between">
-            <SheetTitle className="flex items-center gap-2 text-lg font-semibold text-gray-900">
+            <SheetTitle className="flex items-center gap-2 text-lg font-semibold text-foreground">
               <div className="rounded-lg bg-primary/10 p-2">
                 <Funnel className="h-4 w-4 text-primary" />
               </div>
@@ -343,7 +343,7 @@ const ReportFiltersPanel = ({
               variant="ghost"
               size="icon"
               onClick={() => setIsFilterVisible(false)}
-              className="h-8 w-8 rounded-full hover:bg-gray-100"
+              className="h-8 w-8 rounded-full hover:bg-muted"
             >
               <X className="h-4 w-4" />
             </Button>
@@ -410,7 +410,7 @@ const ReportFiltersPanel = ({
             <Button
               variant="outline"
               onClick={handleReset}
-              className="flex-1 font-medium border-gray-200 hover:bg-gray-50"
+              className="flex-1 font-medium border-border hover:bg-muted"
             >
               <ArrowCounterClockwise className="h-4 w-4 mr-2" />
               {i18n.t("reset")}

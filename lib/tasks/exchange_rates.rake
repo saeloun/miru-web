@@ -94,6 +94,33 @@ namespace :exchange_rates do
     puts "  Failed: #{failed_count} invoices"
   end
   
+  desc "Recalculate base_currency_amount for all expenses"
+  task recalculate_expenses: :environment do
+    puts "Recalculating base_currency_amount for all expenses..."
+
+    updated_count = 0
+    failed_count = 0
+
+    Expense.find_each do |expense|
+      begin
+        expense.send(:calculate_base_currency_amount)
+        if expense.save
+          updated_count += 1
+        else
+          puts "✗ Failed to update expense ##{expense.id}: #{expense.errors.full_messages.join(', ')}"
+          failed_count += 1
+        end
+      rescue => e
+        puts "✗ Error updating expense ##{expense.id}: #{e.message}"
+        failed_count += 1
+      end
+    end
+
+    puts "\nSummary:"
+    puts "  Updated: #{updated_count} expenses"
+    puts "  Failed: #{failed_count} expenses"
+  end
+
   desc "Recalculate base_currency_amount for all payments"
   task recalculate_payments: :environment do
     puts "Recalculating base_currency_amount for all payments..."

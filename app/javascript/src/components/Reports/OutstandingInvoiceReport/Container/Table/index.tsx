@@ -18,9 +18,9 @@ const Table = ({ outstandingOverdueInvoice }) => (
               report={report}
             />
             <div className="overflow-x-auto">
-              <table className="mt-1 min-w-[48rem] divide-y divide-gray-200 lg:min-w-full">
+              <table className="mt-1 min-w-[48rem] divide-y divide-border lg:min-w-full">
                 <TableHeader />
-                <tbody className="divide-y divide-gray-200 bg-white">
+                <tbody className="divide-y divide-border bg-card">
                   {outstandingOverdueInvoice.currency &&
                     report.invoices.map((invoice, index) => (
                       <Fragment key={index}>

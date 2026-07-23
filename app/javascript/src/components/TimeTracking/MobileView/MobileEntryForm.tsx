@@ -167,10 +167,10 @@ const AddEntryMobile = ({
     <>
       <SidePanel
         disableOutsideClick
-        WrapperClassname="z-50 justify-content-between lg:hidden bg-white"
+        WrapperClassname="z-50 justify-content-between lg:hidden bg-card"
         setFilterVisibilty={setNewEntryView}
       >
-        <SidePanel.Header className="mb-2 flex items-center justify-between bg-primary px-5 py-5 text-white lg:bg-white lg:font-bold lg:text-foreground">
+        <SidePanel.Header className="mb-2 flex items-center justify-between bg-primary px-5 py-5 text-white lg:bg-card lg:font-bold lg:text-foreground">
           <span className="flex w-full items-center justify-center pl-6 text-base font-medium leading-5">
             {editEntryId
               ? i18n.t("timeTracking.editTimeEntry")
@@ -201,7 +201,7 @@ const AddEntryMobile = ({
                   />
                   <CaretDownIcon
                     className="absolute top-0 bottom-0 right-1 mx-2 my-3 "
-                    color="#5E58F1"
+                    color="hsl(var(--primary))"
                     size={20}
                     weight="bold"
                   />
@@ -284,7 +284,7 @@ const AddEntryMobile = ({
                   />
                   <CaretDownIcon
                     className="absolute top-0 bottom-0 right-1 mx-2 my-3 "
-                    color="#5E58F1"
+                    color="hsl(var(--primary))"
                     size={20}
                     weight="bold"
                   />
@@ -380,7 +380,7 @@ const AddEntryMobile = ({
                   />
                   <CalendarIcon
                     className="absolute top-0 bottom-0 right-1 mx-2 my-3 "
-                    color="#5E58F1"
+                    color="hsl(var(--primary))"
                     size={20}
                     weight="bold"
                   />
@@ -411,7 +411,7 @@ const AddEntryMobile = ({
                   />
                   <CaretDownIcon
                     className="absolute top-0 bottom-0 right-1 mx-2 my-3"
-                    color="#5E58F1"
+                    color="hsl(var(--primary))"
                     size={20}
                     weight="bold"
                   />
@@ -448,7 +448,7 @@ const AddEntryMobile = ({
                   />
                 </Button>
                 <TimeInput
-                  className="focus:outline-none w-full max-w-[10rem] cursor-pointer rounded text-center text-xl font-bold text-foreground placeholder:text-muted-foreground focus:border-border focus:bg-white focus:ring-1 focus:ring-ring"
+                  className="focus:outline-none w-full max-w-[10rem] cursor-pointer rounded text-center text-xl font-bold text-foreground placeholder:text-muted-foreground focus:border-border focus:bg-card focus:ring-1 focus:ring-ring"
                   initTime={duration}
                   name="timeInput"
                   onTimeChange={handleDurationChange}

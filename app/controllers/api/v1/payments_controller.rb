@@ -119,7 +119,7 @@ class Api::V1::PaymentsController < Api::V1::ApplicationController
     end
 
     def set_invoice
-      @invoice = current_company.invoices.find(payment_params[:invoice_id])
+      @invoice = current_company.invoices.kept.find(payment_params[:invoice_id])
     end
 
     def set_payment

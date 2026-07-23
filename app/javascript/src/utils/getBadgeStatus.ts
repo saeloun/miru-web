@@ -19,7 +19,7 @@ const getStatusCssClass = status => {
     unbilled: "bg-yellow-100 text-yellow-800",
 
     // Neutral states
-    waived: "bg-gray-200 text-gray-700",
+    waived: "bg-muted text-muted-foreground",
     nonbilled: "bg-slate-100 text-slate-700",
     non_billable: "bg-zinc-100 text-zinc-700",
 
@@ -28,12 +28,12 @@ const getStatusCssClass = status => {
     failed: "bg-red-100 text-red-800",
     refunded: "bg-purple-100 text-purple-800",
     processing: "bg-indigo-100 text-indigo-800",
-    cancelled: "bg-gray-200 text-gray-700",
+    cancelled: "bg-muted text-muted-foreground",
   };
   const lowerCaseStatus = status.toLowerCase().replace(/\s+/g, "_");
 
   return `rounded-full px-2.5 py-1 text-xs tracking-wide font-semibold ${
-    STATUS_LIST[lowerCaseStatus] || "bg-gray-100 text-gray-700"
+    STATUS_LIST[lowerCaseStatus] || "bg-muted text-muted-foreground"
   }`;
 };
 

@@ -40,7 +40,7 @@ const OutstandingInvoiceResults = () => {
 
   return outstandingOverdueInvoice.clientList.length > 0 ? (
     outstandingOverdueInvoice.currency && (
-      <div className="bg-white p-4 lg:p-0">
+      <div className="bg-card p-4 lg:p-0">
         <SummaryDashboard
           currency={outstandingOverdueInvoice.currency}
           showPointer={false}

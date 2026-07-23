@@ -158,7 +158,7 @@ const SendInvoiceContainer = ({
                         </div>
                         <div className="flex gap-2">
                           <input
-                            className="w-full rounded border border-border bg-white px-3 py-2 text-sm"
+                            className="w-full rounded border border-border bg-card px-3 py-2 text-sm"
                             data-testid="invoice-recipient-input"
                             placeholder={i18n.t("invoices.recipientEmailId")}
                             type="email"

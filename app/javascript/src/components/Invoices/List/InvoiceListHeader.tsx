@@ -97,7 +97,7 @@ const InvoiceListHeader = ({
           fullWidthOnMobile={true}
         />
         <Button
-          className="relative flex h-10 w-10 items-center justify-center rounded-lg border border-gray-200 bg-white hover:bg-gray-50 transition-colors"
+          className="relative flex h-10 w-10 items-center justify-center rounded-lg border border-border bg-card hover:bg-muted transition-colors"
           style="ternary"
           onClick={() => setIsFilterVisible(true)}
         >
@@ -106,7 +106,7 @@ const InvoiceListHeader = ({
               {appliedFilterCount}
             </span>
           )}
-          <FilterIcon color="#5E58F1" size={18} weight="bold" />
+          <FilterIcon color="hsl(var(--primary))" size={18} weight="bold" />
         </Button>
       </div>
       <Button

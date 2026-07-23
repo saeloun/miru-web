@@ -53,6 +53,19 @@ RSpec.describe "Api::V1::Reports::PaymentsController::#index", type: :request do
     expect(json_response["filterOptions"]["clients"].pluck("name")).to include(client1.name, client2.name)
   end
 
+  it "totals the summary in base currency rather than raw payment amounts" do
+    matching_payment.update_columns(base_currency_amount: 650)
+
+    send_request :get, api_v1_reports_payments_path,
+      params: { payment_method: "visa", status: "paid" },
+      headers: auth_headers(user)
+
+    expect(response).to have_http_status(:ok)
+    expect(json_response["payments"].pluck("id")).to eq([matching_payment.id])
+    expect(json_response["summary"]["total_amount"].to_f).to eq(650.0)
+    expect(json_response["summary"]["total_amount"].to_f).not_to eq(matching_payment.amount.to_f)
+  end
+
   it "filters payments when only a from date is provided" do
     send_request :get, api_v1_reports_payments_path,
       params: { from: 1.day.ago.iso8601 },

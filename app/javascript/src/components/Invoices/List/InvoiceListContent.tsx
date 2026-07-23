@@ -80,7 +80,7 @@ const InvoiceListContent = ({
         setIsPaymentEnabled={setIsPaymentEnabled}
         setShowDeleteDialog={setShowDeleteDialog}
       />
-      <div className="mt-4 flex flex-col items-center gap-2 pb-2 text-sm text-gray-500">
+      <div className="mt-4 flex flex-col items-center gap-2 pb-2 text-sm text-muted-foreground">
         <span>
           {i18n.t("invoices.invoices")}: {invoices.length} / {totalInvoices}
         </span>

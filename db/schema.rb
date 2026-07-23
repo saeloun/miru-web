@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_07_15_000000) do
+ActiveRecord::Schema[8.1].define(version: 2026_07_15_010000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_stat_statements"
@@ -1176,6 +1176,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_15_000000) do
   add_foreign_key "analytics_reports", "companies"
   add_foreign_key "analytics_reports", "users", column: "created_by_id"
   add_foreign_key "analytics_threshold_notification_logs", "companies"
+  add_foreign_key "bulk_invoice_download_statuses", "companies", validate: false
   add_foreign_key "carryovers", "companies"
   add_foreign_key "carryovers", "leave_types"
   add_foreign_key "carryovers", "users"

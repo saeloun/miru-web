@@ -48,6 +48,7 @@ import {
 import { currencyFormat } from "../../helpers/currency";
 import { useUserContext } from "../../context/UserContext";
 import { clientsApi } from "apis/api";
+import { reportClientError } from "utils/runtimeRecovery";
 import { unmapClientList } from "../../mapper/mappedIndex";
 import { toast } from "sonner";
 import { i18n } from "../../i18n";
@@ -64,9 +65,14 @@ interface ClientsData {
 }
 
 const fetchClients = async (timeFrame = "week"): Promise<ClientsData> => {
-  const res = await clientsApi.get(`?time_frame=${timeFrame}`);
+  try {
+    const res = await clientsApi.get(`?time_frame=${timeFrame}`);
 
-  return unmapClientList({ data: res.data });
+    return unmapClientList({ data: res.data });
+  } catch (error) {
+    reportClientError("clients:fetch", error);
+    throw error;
+  }
 };
 
 const ClientsTable: React.FC = () => {

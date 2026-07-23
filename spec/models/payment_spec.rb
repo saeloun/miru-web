@@ -109,4 +109,15 @@ RSpec.describe Payment, type: :model do
       expect(payment.settles?(invoice)).to eq(true)
     end
   end
+
+  describe "invoice destruction guard" do
+    it "prevents an invoice with payments from being hard destroyed" do
+      invoice = create(:invoice, amount_due: 300)
+      create(:payment, invoice:, amount: 300)
+
+      expect(invoice.destroy).to be_falsey
+      expect(invoice.errors[:base]).to be_present
+      expect(Invoice.exists?(invoice.id)).to be(true)
+    end
+  end
 end

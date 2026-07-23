@@ -42,9 +42,13 @@ class Api::V1::ApplicationController < ActionController::API
           currency: currency || current_company&.base_currency,
           decimal_precision: 2
         },
-        timezone: Time.zone.tzinfo.name,
+        timezone: company_time_zone.tzinfo.name,
         generated_at: Time.current.iso8601
       }
+    end
+
+    def company_time_zone
+      ActiveSupport::TimeZone[current_company&.timezone.to_s] || Time.zone
     end
 
     def switch_locale(&action)

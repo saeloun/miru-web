@@ -39,7 +39,7 @@ const MobileTable = ({ invoices, selectedInvoices, setSelectedInvoices }) => {
     <div className="flex h-screen w-full flex-col">
       <div className="h-full overflow-x-scroll p-0 font-sans">
         <div className="z-50 flex h-full w-full flex-col">
-          <table className="min-w-full divide-y divide-gray-200 overflow-x-scroll overflow-y-scroll">
+          <table className="min-w-full divide-y divide-border overflow-x-scroll overflow-y-scroll">
             <MobileTableHeader
               handleCheck={handleCheck}
               isChecked={isChecked}

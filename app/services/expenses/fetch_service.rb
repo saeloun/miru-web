@@ -91,15 +91,21 @@ class Expenses::FetchService
 
     def summary(expenses)
       base_currency = current_company.base_currency
-      base_currency_expenses = expenses.where(currency: base_currency)
 
       {
         base_currency:,
-        total_amount: base_currency_expenses.sum(:amount),
-        business_amount: base_currency_expenses.business.sum(:amount),
-        personal_amount: base_currency_expenses.personal.sum(:amount),
-        excluded_currency_count: expenses.where.not(currency: base_currency).count
+        total_amount: base_currency_total(expenses, base_currency),
+        business_amount: base_currency_total(expenses.business, base_currency),
+        personal_amount: base_currency_total(expenses.personal, base_currency)
       }
+    end
+
+    def base_currency_total(scope, base_currency)
+      expression = ActiveRecord::Base.sanitize_sql_array(
+        ["CASE WHEN currency = ? THEN amount ELSE COALESCE(base_currency_amount, 0) END", base_currency]
+      )
+
+      scope.sum(Arel.sql(expression))
     end
 
     def expense_categories

@@ -163,7 +163,7 @@ const ClientSelection = ({
               defaultMenuIsOpen
               isSearchable
               className="client-select m-0 mt-2  w-full text-white"
-              classNamePrefix="m-0 truncate font-medium text-sm text-foreground bg-white"
+              classNamePrefix="m-0 truncate font-medium text-sm text-foreground bg-card"
               components={{ DropdownIndicator, IndicatorSeparator: () => null }}
               defaultValue={null}
               inputId="clientSelect"

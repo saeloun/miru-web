@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Api::V1::ClientsController < Api::V1::ApplicationController
+  rescue_from ActiveRecord::RecordNotUnique, with: :record_not_unique
+
   def index
     authorize Client
     response = Clients::IndexService.process(
@@ -93,6 +95,10 @@ class Api::V1::ClientsController < Api::V1::ApplicationController
   end
 
   private
+
+    def record_not_unique
+      render json: { errors: I18n.t("errors.messages.taken") }, status: 422
+    end
 
     def client
       @_client ||= current_company.clients.find(params[:id])

@@ -169,4 +169,16 @@ RSpec.describe "Api::V1::TimeTracking#index", type: :request do
       expect(json_response["projects"]).to be_nil.or eq({})
     end
   end
+
+  context "when the user has no workspace" do
+    let(:user) { create(:user, current_workspace: nil) }
+
+    it "returns not found instead of crashing" do
+      sign_in user
+
+      send_request :get, api_v1_time_tracking_index_path, headers: auth_headers(user)
+
+      expect(response).to have_http_status(:not_found)
+    end
+  end
 end

@@ -83,7 +83,7 @@ const Header = ({
       />
       {/* Todo: Uncomment when filter functionality is added
         <Button className="relative ml-7" style="ternary">
-          <FilterIcon color="#5E58F1" size={16} />
+          <FilterIcon color="hsl(var(--primary))" size={16} />
         </Button>
         */}
 

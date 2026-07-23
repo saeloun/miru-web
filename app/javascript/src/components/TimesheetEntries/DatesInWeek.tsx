@@ -22,7 +22,7 @@ const WeeklyEntries = () => {
               key={index}
               style={BUTTON_STYLES.calendarCell}
               className={`my-2 h-12 w-26 items-center rounded-xl border-2 border-transparent px-5 py-1 text-left ${
-                index === selectDate && "border-primary bg-white"
+                index === selectDate && "border-primary bg-card"
               }`}
               onClick={() => {
                 setSelectDate(index);

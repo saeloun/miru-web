@@ -64,6 +64,7 @@ class Payment < ApplicationRecord
 
     def calculate_base_currency_amount
       return if invoice.blank? || amount.blank?
+      return unless new_record? || amount_changed? || payment_currency_changed? || transaction_date_changed?
 
       self.payment_currency ||= invoice&.currency
 
@@ -96,7 +97,22 @@ class Payment < ApplicationRecord
           self.exchange_rate = 1.0
           self.exchange_rate_date = payment_date
           self.base_currency_amount = amount
+          report_missing_exchange_rate(payment_date)
         end
       end
+    end
+
+    def report_missing_exchange_rate(payment_date)
+      Sentry.capture_message(
+        "Payment recorded with 1:1 fallback exchange rate",
+        level: :warning,
+        extra: {
+          invoice_id: invoice&.id,
+          payment_currency:,
+          base_currency: company&.base_currency,
+          amount:,
+          payment_date:
+        }
+      )
     end
 end

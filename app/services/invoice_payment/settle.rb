@@ -11,8 +11,10 @@ module InvoicePayment
     end
 
     def process
-      @payment = Payment.create!(payment_params)
-      @invoice.settle!(payment)
+      ActiveRecord::Base.transaction do
+        @payment = Payment.create!(payment_params)
+        @invoice.settle!(payment)
+      end
       @payment
     end
   end

@@ -33,7 +33,8 @@ RSpec.describe "Api::V1::Invoices::Payments#success", type: :request do
   end
 
   it "returns a limited invoice payload for verified Razorpay success" do
-    send_request :get, api_v1_invoices_success_path(invoice, provider: PaymentsProvider::RAZORPAY_PROVIDER)
+    send_request :get,
+      api_v1_invoices_success_path(invoice.external_view_key, provider: PaymentsProvider::RAZORPAY_PROVIDER)
 
     expect(response).to have_http_status(:ok)
     expect(json_response.dig("invoice", "id")).to eq(invoice.id)
@@ -47,7 +48,7 @@ RSpec.describe "Api::V1::Invoices::Payments#success", type: :request do
     payment_intent = instance_double(InvoicePayment::StripePaymentIntent, process: true)
     allow(InvoicePayment::StripePaymentIntent).to receive(:new).and_return(payment_intent)
 
-    send_request :get, api_v1_invoices_success_path(unpaid_invoice)
+    send_request :get, api_v1_invoices_success_path(unpaid_invoice.external_view_key)
 
     expect(response).to have_http_status(:ok)
     expect(json_response.dig("invoice", "id")).to eq(unpaid_invoice.id)
@@ -58,9 +59,16 @@ RSpec.describe "Api::V1::Invoices::Payments#success", type: :request do
   end
 
   it "rejects Razorpay success while the invoice is not paid" do
-    send_request :get, api_v1_invoices_success_path(unpaid_invoice, provider: PaymentsProvider::RAZORPAY_PROVIDER)
+    send_request :get,
+      api_v1_invoices_success_path(unpaid_invoice.external_view_key, provider: PaymentsProvider::RAZORPAY_PROVIDER)
 
     expect(response).to have_http_status(:unprocessable_content)
     expect(json_response["error"]).to eq(I18n.t("invoices.payments.success.failure"))
+  end
+
+  it "cannot be reached by guessing the sequential invoice id" do
+    send_request :get, api_v1_invoices_success_path(invoice.id, provider: PaymentsProvider::RAZORPAY_PROVIDER)
+
+    expect(response).to have_http_status(:not_found)
   end
 end

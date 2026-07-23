@@ -151,7 +151,11 @@ const Header = ({
                         handleDownload("csv");
                       }}
                     >
-                      <FileCsvIcon color="#5E58F1" size={16} weight="bold" />
+                      <FileCsvIcon
+                        color="hsl(var(--primary))"
+                        size={16}
+                        weight="bold"
+                      />
                       <span className="ml-3 text-sm">
                         {i18n.t("reports.exportAsCsv")}
                       </span>
@@ -165,7 +169,11 @@ const Header = ({
                         handleDownload("pdf");
                       }}
                     >
-                      <FilePdfIcon color="#5E58F1" size={16} weight="bold" />
+                      <FilePdfIcon
+                        color="hsl(var(--primary))"
+                        size={16}
+                        weight="bold"
+                      />
                       <span className="ml-3 text-sm">
                         {i18n.t("reports.exportAsPdf")}
                       </span>
@@ -231,7 +239,7 @@ const Header = ({
                 >
                   <XIcon
                     className="inline-block"
-                    color="#5E58F1"
+                    color="hsl(var(--primary))"
                     size={12}
                     weight="bold"
                   />

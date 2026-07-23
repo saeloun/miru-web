@@ -241,4 +241,26 @@ RSpec.describe WeeklyReminderForMissedEntriesService do
       expect(service).to have_received(:send_mail).once
     end
   end
+
+  describe "#previous_week_date_range" do
+    it "derives the previous-week window from the company's timezone" do
+      service = described_class.new
+      utc_company = create(:company, timezone: "UTC")
+      kolkata_company = create(:company, timezone: "Asia/Kolkata")
+
+      # 2026-07-05 20:00 UTC (Sunday) is already Monday 2026-07-06 in Asia/Kolkata
+      travel_to(Time.utc(2026, 7, 5, 20, 0, 0)) do
+        utc_today = ActiveSupport::TimeZone["UTC"].today
+        kolkata_today = ActiveSupport::TimeZone["Asia/Kolkata"].today
+        expect(kolkata_today).to eq(utc_today + 1)
+
+        utc_range = service.send(:previous_week_date_range, utc_company)
+        kolkata_range = service.send(:previous_week_date_range, kolkata_company)
+
+        expect(utc_range).to eq([utc_today.prev_week.beginning_of_week, utc_today.prev_week.end_of_week])
+        expect(kolkata_range).to eq([kolkata_today.prev_week.beginning_of_week, kolkata_today.prev_week.end_of_week])
+        expect(kolkata_range).not_to eq(utc_range)
+      end
+    end
+  end
 end

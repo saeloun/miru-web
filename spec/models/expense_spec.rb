@@ -124,4 +124,19 @@ RSpec.describe Expense, type: :model do
   describe "Associations" do
     it { is_expected.to belong_to(:company) }
   end
+
+  describe "audit trail" do
+    it "records who changed an expense and how when it is approved" do
+      expense = create(:expense, status: :submitted)
+
+      expect { expense.approve! }.to change { expense.audits.count }.by(1)
+      expect(expense.audits.last.audited_changes).to include("status")
+    end
+
+    it "records the amount and currency on creation" do
+      expense = create(:expense, amount: 100, currency: "USD")
+
+      expect(expense.audits.last.audited_changes).to include("amount", "currency")
+    end
+  end
 end

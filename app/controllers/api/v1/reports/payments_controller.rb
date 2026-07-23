@@ -90,6 +90,7 @@ module Api::V1
               client_name: client&.name || "Unknown Client",
               invoice_number: invoice&.invoice_number,
               amount: payment.amount,
+              base_currency_amount: payment.base_currency_amount.to_f.positive? ? payment.base_currency_amount : payment.amount,
               notes: payment.note,
               status: payment.status || "paid"
             }
@@ -97,10 +98,10 @@ module Api::V1
         end
 
         def calculate_summary(report_data)
-          total_amount = report_data.sum { |r| r[:amount] }
+          total_amount = report_data.sum { |r| r[:base_currency_amount] }
 
           by_method = report_data.group_by { |r| r[:payment_method] }
-          method_breakdown = by_method.transform_values { |payments| payments.sum { |p| p[:amount] } }
+          method_breakdown = by_method.transform_values { |payments| payments.sum { |p| p[:base_currency_amount] } }
 
           {
             total_amount: total_amount,
