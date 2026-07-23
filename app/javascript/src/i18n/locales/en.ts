@@ -1955,6 +1955,9 @@ const en = {
     alerts: {
       subscriptionUpdatedTitle: "Subscription updated",
       subscriptionUpdated: "Your plan was updated in Stripe successfully.",
+      finalizing: "Finalizing your subscription…",
+      finalizingDelayed:
+        "Payment received — your Pro access will appear shortly. Refresh in a minute.",
       checkoutCancelled: "Checkout cancelled",
       noSubscriptionChanges: "No changes were made to your subscription.",
       unableToLoad: "Unable to load billing details",

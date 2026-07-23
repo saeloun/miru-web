@@ -64,6 +64,7 @@ const Billing = () => {
   const [processingPortal, setProcessingPortal] = useState(false);
   const [processingTrial, setProcessingTrial] = useState(false);
   const [billingResult, setBillingResult] = useState<string | null>(null);
+  const [finalizing, setFinalizing] = useState(false);
   const [billingInterval, setBillingInterval] = useState<"monthly" | "yearly">(
     "monthly"
   );
@@ -137,10 +138,59 @@ const Billing = () => {
 
   useEffect(() => {
     sendGAPageView();
-    fetchSummary();
     const query = new URLSearchParams(window.location.search);
     const billing = query.get("billing");
     if (billing) setBillingResult(billing);
+
+    if (billing !== "success") {
+      fetchSummary();
+
+      return;
+    }
+
+    let isMounted = true;
+    let attempts = 0;
+    let timer = 0;
+
+    setFinalizing(true);
+    setStatus(ApiStatus.LOADING);
+
+    const pollSummary = async () => {
+      try {
+        const response = await subscriptionsApi.show();
+        if (!isMounted) return;
+
+        setSummary(response.data);
+        setSeatEstimate(Math.max(response.data.used_team_seats || 3, 3));
+        setStatus(ApiStatus.SUCCESS);
+        attempts += 1;
+
+        if (response.data.plan_tier === "paid") {
+          setFinalizing(false);
+
+          return;
+        }
+      } catch {
+        if (!isMounted) return;
+        attempts += 1;
+      }
+
+      if (attempts >= 10) {
+        setFinalizing(false);
+        setBillingResult("delayed");
+
+        return;
+      }
+
+      timer = window.setTimeout(pollSummary, 2000);
+    };
+
+    pollSummary();
+
+    return () => {
+      isMounted = false;
+      window.clearTimeout(timer);
+    };
   }, []);
 
   const planLabel = () => {
@@ -333,10 +383,24 @@ const Billing = () => {
       {billingResult === "success" && (
         <Alert>
           <AlertTitle>
-            {i18n.t("billingSettings.alerts.subscriptionUpdatedTitle")}
+            {i18n.t(
+              finalizing
+                ? "billingSettings.alerts.finalizing"
+                : "billingSettings.alerts.subscriptionUpdatedTitle"
+            )}
           </AlertTitle>
+          {!finalizing && (
+            <AlertDescription>
+              {i18n.t("billingSettings.alerts.subscriptionUpdated")}
+            </AlertDescription>
+          )}
+        </Alert>
+      )}
+
+      {billingResult === "delayed" && (
+        <Alert>
           <AlertDescription>
-            {i18n.t("billingSettings.alerts.subscriptionUpdated")}
+            {i18n.t("billingSettings.alerts.finalizingDelayed")}
           </AlertDescription>
         </Alert>
       )}
@@ -526,13 +590,18 @@ const Billing = () => {
                   </Button>
                 )}
 
-                {!summary.billing_exempt && summary.plan_tier !== "paid" && (
-                  <Button onClick={startCheckout} disabled={processingCheckout}>
-                    {processingCheckout
-                      ? i18n.t("billingSettings.openingStripe")
-                      : i18n.t("billingSettings.upgradeWithStripe")}
-                  </Button>
-                )}
+                {!finalizing &&
+                  !summary.billing_exempt &&
+                  summary.plan_tier !== "paid" && (
+                    <Button
+                      onClick={startCheckout}
+                      disabled={processingCheckout}
+                    >
+                      {processingCheckout
+                        ? i18n.t("billingSettings.openingStripe")
+                        : i18n.t("billingSettings.upgradeWithStripe")}
+                    </Button>
+                  )}
 
                 {(summary.plan_tier === "paid" ||
                   summary.has_stripe_customer) && (
@@ -729,7 +798,8 @@ const Billing = () => {
                       : i18n.t("billingSettings.startTrial")}
                   </Button>
                 )}
-                {summary &&
+                {!finalizing &&
+                  summary &&
                   !summary.billing_exempt &&
                   summary.plan_tier !== "paid" && (
                     <Button
