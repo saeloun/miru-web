@@ -168,14 +168,14 @@ class Company < ApplicationRecord
 
   def current_plan_label
     return "free_pro" if billing_exempt?
-    return "pro_trial" if trial_active?
     return "paid" if plan_tier == "paid"
+    return "pro_trial" if trial_active?
 
     "free"
   end
 
   def current_subscription_status
-    return "trialing" if trial_active?
+    return "trialing" if trial_active? && plan_tier != "paid"
     return "trial_expired" if trial_expired? && plan_tier != "paid"
 
     subscription_status
@@ -208,6 +208,7 @@ class Company < ApplicationRecord
 
     attrs[:stripe_subscription_id] = stripe_subscription_id if has_attribute?(:stripe_subscription_id)
     attrs[:subscription_interval] = subscription_interval if has_attribute?(:subscription_interval)
+    attrs[:trial_ends_at] = nil if attrs[:plan_tier] == "paid"
 
     update!(attrs)
   end

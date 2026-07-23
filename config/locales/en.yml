@@ -811,6 +811,7 @@ en:
     forgot_password: forgot password ?
     unlock_instruction: didn't receive unlock instructions?
   subscriptions:
+    already_subscribed: "Your workspace already has an active paid subscription. Use Manage billing to make changes."
     no_billing_customer: No billing customer exists for this company
     pricing_not_configured: Stripe subscription pricing is not configured
     trial_not_eligible: Your workspace is not eligible for a Pro trial

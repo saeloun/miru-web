@@ -10,6 +10,11 @@ class Api::V1::SubscriptionsController < Api::V1::ApplicationController
   def checkout
     authorize current_company, policy_class: CompanyPolicy
 
+    if current_company.plan_tier == "paid"
+      render json: { errors: I18n.t("subscriptions.already_subscribed") }, status: 422
+      return
+    end
+
     plan_page_url = checkout_plan_page_url
     if plan_page_url.present?
       render json: checkout_payload(plan_page_url), status: 200
