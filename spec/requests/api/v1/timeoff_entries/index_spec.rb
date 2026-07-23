@@ -34,6 +34,18 @@ RSpec.describe "Api::V1::TimeoffEntries#index", type: :request do
       expect(json_response).to have_key("timeoffEntries")
       expect(json_response).to have_key("employees")
     end
+
+    it "returns timeoff index response without a user id" do
+      leave = create(:leave, company:, year: Date.current.year)
+      create(:leave_type, leave:)
+
+      send_request :get,
+        api_v1_timeoff_entries_path,
+        params: { year: Date.current.year },
+        headers: auth_headers(admin)
+
+      expect(response).to have_http_status(:ok)
+    end
   end
 
   context "when user is an employee" do

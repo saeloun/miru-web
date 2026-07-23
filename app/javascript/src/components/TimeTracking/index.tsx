@@ -93,11 +93,15 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
   const [resumeTimerEntry, setResumeTimerEntry] = useState<any>(null);
   const dateParseFormats = [
     dateFormat,
+    dateFormat.replace(/-/g, "."),
     "YYYY-MM-DD",
     "MM-DD-YYYY",
     "DD-MM-YYYY",
     "MM/DD/YYYY",
     "DD/MM/YYYY",
+    "MM.DD.YYYY",
+    "DD.MM.YYYY",
+    "YYYY.MM.DD",
   ];
 
   const employeeOptions = employees.map(e => ({

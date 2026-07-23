@@ -53,12 +53,19 @@ const TimeEntriesDisplay: React.FC<TimeEntriesDisplayProps> = ({
   const [reviewMode, setReviewMode] = useState<"day" | "week">("day");
   const { companyRole, isDesktop, company } = useUserContext();
   const timesheetEditDays: number = company?.timesheet_edit_days ?? 30;
+  const companyDateFormat = company?.date_format || company?.dateFormat;
   const dateFormats = [
+    ...(companyDateFormat
+      ? [companyDateFormat, companyDateFormat.replace(/-/g, ".")]
+      : []),
     "YYYY-MM-DD",
     "MM-DD-YYYY",
     "DD-MM-YYYY",
     "MM/DD/YYYY",
     "DD/MM/YYYY",
+    "MM.DD.YYYY",
+    "DD.MM.YYYY",
+    "YYYY.MM.DD",
   ];
   const parsedDate = dayjs(selectedFullDate, dateFormats, true);
   const isoDate = parsedDate.format("YYYY-MM-DD");
