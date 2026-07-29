@@ -1961,6 +1961,11 @@ const en = {
       monthly: "Billed month to month",
       yearlySavings: "Save 2 months per seat",
     },
+    featureGate: {
+      reportsTitle: "Reports is a Pro feature",
+      reportsDescription:
+        "Upgrade to Pro to unlock Reports, analytics, and exports.",
+    },
     alerts: {
       subscriptionUpdatedTitle: "Subscription updated",
       subscriptionUpdated: "Your plan was updated in Stripe successfully.",
