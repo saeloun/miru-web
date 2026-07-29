@@ -32,6 +32,6 @@ class Api::V1::ProjectMembersController < Api::V1::ApplicationController
     end
 
     def project
-      @_project ||= Project.find_by(id: params[:id])
+      @_project ||= current_company.projects.find(params[:id])
     end
 end
