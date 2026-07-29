@@ -3,6 +3,8 @@ require 'csv'
 namespace :import do
   desc 'Seed data from CSV file'
   task seed_data_from_csv: :environment do
+    abort "Refusing to import demo users in production." if Rails.env.production?
+
     csv_files = ['lib/csvs/time-entries.csv', 'lib/csvs/timesheet-entries-data.csv']
 
     if ENV["SEED_DATA_FROM_CSV"].present?

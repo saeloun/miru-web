@@ -1,5 +1,9 @@
 # frozen_string_literal: true
 
+if Rails.env.production? && ENV["MIRU_SEED_PASSWORD"].blank?
+  abort "MIRU_SEED_PASSWORD is required to seed production."
+end
+
 require "faker"
 
 Faker::Config.random = Random.new(2025)
@@ -7,7 +11,7 @@ Faker::UniqueGenerator.clear
 
 START_DATE = Date.new(2025, 1, 1)
 END_DATE = Date.current
-PASSWORD = "password"
+PASSWORD = ENV.fetch("MIRU_SEED_PASSWORD", "password")
 
 def phone(number)
   number.to_s.gsub(/[^0-9+]/, "")[0, 15]
@@ -487,14 +491,15 @@ pending_client_invitation.update!(
 puts "Invitations ready"
 puts "Seed complete"
 puts "Login credentials:"
-puts "- vipul@saeloun.com / #{PASSWORD} (owner)"
-puts "- hello@saeloun.com / #{PASSWORD} (super admin + owner)"
-puts "- supriya@saeloun.com / #{PASSWORD} (admin)"
-puts "- accounts@saeloun.com / #{PASSWORD} (book keeper)"
-puts "- sonam@saeloun.com / #{PASSWORD} (employee)"
-puts "- keshav@saeloun.com / #{PASSWORD} (employee)"
-puts "- amit@saeloun.com / #{PASSWORD} (employee)"
-puts "- oliver@example.com / #{PASSWORD} (client)"
-puts "- maya.client@example.com / #{PASSWORD} (client)"
-puts "- finance.microsoft@example.com / #{PASSWORD} (client)"
-puts "- accounts.acme@example.com / #{PASSWORD} (client)"
+puts "- vipul@saeloun.com (owner)"
+puts "- hello@saeloun.com (super admin + owner)"
+puts "- supriya@saeloun.com (admin)"
+puts "- accounts@saeloun.com (book keeper)"
+puts "- sonam@saeloun.com (employee)"
+puts "- keshav@saeloun.com (employee)"
+puts "- amit@saeloun.com (employee)"
+puts "- oliver@example.com (client)"
+puts "- maya.client@example.com (client)"
+puts "- finance.microsoft@example.com (client)"
+puts "- accounts.acme@example.com (client)"
+puts "Development password: #{PASSWORD}" unless Rails.env.production?

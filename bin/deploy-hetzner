@@ -136,7 +136,7 @@ setup_database() {
   echo "🗄️  Setting up database..."
   
   # Run database migrations
-  bundle exec kamal app exec --reuse "bin/rails db:create db:migrate db:seed"
+  bundle exec kamal app exec --reuse "bin/rails db:create db:migrate"
 }
 
 # Function to clone staging data
