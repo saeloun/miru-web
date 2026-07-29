@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { X } from "phosphor-react";
 import { useNavigate } from "react-router-dom";
 
@@ -10,13 +10,21 @@ import { Button } from "../../ui/button";
 const TrialBanner = () => {
   const { company } = useUserContext();
   const navigate = useNavigate();
-  const dismissalKey = `trialBannerDismissed:${new Intl.DateTimeFormat(
-    "en-CA"
-  ).format(new Date())}`;
+  const dismissalKey = company
+    ? `trialBannerDismissed:${company.id}:${new Intl.DateTimeFormat(
+        "en-CA"
+      ).format(new Date())}`
+    : null;
 
   const [dismissedFor, setDismissedFor] = useState(() =>
-    localStorage.getItem(dismissalKey) ? dismissalKey : null
+    dismissalKey && localStorage.getItem(dismissalKey) ? dismissalKey : null
   );
+
+  useEffect(() => {
+    setDismissedFor(
+      dismissalKey && localStorage.getItem(dismissalKey) ? dismissalKey : null
+    );
+  }, [dismissalKey]);
 
   const trialEndsAt = company?.trial_ends_at
     ? new Date(company.trial_ends_at)
@@ -25,11 +33,8 @@ const TrialBanner = () => {
   const hasProPlan =
     company?.plan_tier === "paid" || Boolean(company?.billing_exempt);
 
-  const isTrialActive =
-    !hasProPlan && trialEndsAt !== null && trialEndsAt.getTime() > Date.now();
-
-  const isTrialExpired =
-    !hasProPlan && trialEndsAt !== null && trialEndsAt.getTime() <= Date.now();
+  const isTrialActive = !hasProPlan && company?.trial_active === true;
+  const isTrialExpired = !hasProPlan && company?.trial_expired === true;
 
   if (!company || hasProPlan || (!isTrialActive && !isTrialExpired)) {
     return null;
@@ -85,6 +90,8 @@ const TrialBanner = () => {
             type="button"
             variant="ghost"
             onClick={() => {
+              if (!dismissalKey) return;
+
               localStorage.setItem(dismissalKey, "true");
               setDismissedFor(dismissalKey);
             }}

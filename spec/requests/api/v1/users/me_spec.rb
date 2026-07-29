@@ -61,7 +61,13 @@ RSpec.describe "Api::V1::Users#me", type: :request do
       expect(json_response["company"]["us_taxpayer_id"]).to eq(company.us_taxpayer_id)
       expect(json_response["company"]["address"]["address_line_1"]).to eq(company.current_address.address_line_1)
       expect(json_response["company"]["logo"]).to eq(company.company_logo)
-      expect(json_response["company"]).to include("trial_active", "trial_ends_at", "trial_expired")
+      expect(json_response["company"]).to include(
+        "billing_exempt" => false,
+        "subscription_status" => "trialing",
+        "trial_active" => true,
+        "trial_ends_at" => company.trial_ends_at.iso8601(3),
+        "trial_expired" => false
+      )
     end
 
     it "returns the user role" do
