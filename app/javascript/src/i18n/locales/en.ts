@@ -46,6 +46,15 @@ const en = {
   toggleSidebar: "Toggle Sidebar",
   morePages: "More pages",
 
+  trialBanner: {
+    daysLeftOne: "1 day left in your Pro trial",
+    daysLeft: "%{count} days left in your Pro trial",
+    upgrade: "Upgrade",
+    trialEndedTitle: "Your Pro trial has ended",
+    trialEndedDescription:
+      "Upgrade to keep Reports, analytics, and your full team.",
+  },
+
   // Common labels
   name: "Name",
   email: "Email",
