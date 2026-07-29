@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_07_29_000000) do
+ActiveRecord::Schema[8.1].define(version: 2026_07_29_000100) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_stat_statements"
@@ -188,6 +188,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_29_000000) do
     t.string "file_url"
     t.string "status"
     t.datetime "updated_at", null: false
+    t.index ["company_id", "download_id"], name: "idx_on_company_id_download_id_432c83202c", unique: true
     t.index ["company_id"], name: "index_bulk_invoice_download_statuses_on_company_id"
   end
 
