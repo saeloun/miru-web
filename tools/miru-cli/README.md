@@ -13,7 +13,7 @@ Full documentation lives in [docs/miru-cli.md](/Users/sward/saeloun/miru-web/doc
 ## Install
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/saeloun/miru-web/main/tools/miru-cli/install.sh | bash
+mise exec go@1.24.1 -- env GOBIN="$HOME/.local/bin" go install github.com/saeloun/miru-web/tools/miru-cli/cmd/miru@618b9ddb7b15d31cd3d43f09e707ee55ec621a07
 ```
 
 For local development:
@@ -55,7 +55,6 @@ Pull all work I did in Jira today, summarize it hour by hour when the issue hist
 ```bash
 miru help
 miru version
-miru upgrade
 miru login --email <email>
 miru login --base-url <url> --email <email>
 miru logout

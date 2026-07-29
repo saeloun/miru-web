@@ -7,7 +7,7 @@ import { Badge } from "../../../ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "../../../ui/card";
 
 const cliInstallCommand =
-  "curl -fsSL https://raw.githubusercontent.com/saeloun/miru-web/main/tools/miru-cli/install.sh | bash";
+  'mise exec go@1.24.1 -- env GOBIN="$HOME/.local/bin" go install github.com/saeloun/miru-web/tools/miru-cli/cmd/miru@618b9ddb7b15d31cd3d43f09e707ee55ec621a07';
 
 const commandGroups = [
   {

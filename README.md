@@ -168,8 +168,8 @@ Feature availability:
 Install and authenticate:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/saeloun/miru-web/main/tools/miru-cli/install.sh | bash
-miru login --base-url https://app.miru.so --email user@example.com --password '***'
+mise exec go@1.24.1 -- env GOBIN="$HOME/.local/bin" go install github.com/saeloun/miru-web/tools/miru-cli/cmd/miru@618b9ddb7b15d31cd3d43f09e707ee55ec621a07
+miru login --base-url https://app.miru.so --email user@example.com
 ```
 
 Export token for MCP clients:

@@ -272,7 +272,7 @@ LAUNCH_MATRIX_BASE_URL=https://app.miru.so mise exec -- ./bin/verify-launch-matr
 CLI hosted verification:
 
 ```bash
-miru login --base-url https://app.miru.so --email user@example.com --password '...'
+miru login --base-url https://app.miru.so --email user@example.com
 miru whoami
 miru project list
 miru time list --from 2026-03-01 --to 2026-03-31
