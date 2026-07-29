@@ -19,10 +19,10 @@ The CLI does not have a separate permission model. Every command runs with the s
 ### Hosted or public install
 
 ```bash
-mise exec go@1.24.1 -- env GOBIN="$HOME/.local/bin" go install github.com/saeloun/miru-web/tools/miru-cli/cmd/miru@618b9ddb7b15d31cd3d43f09e707ee55ec621a07
+mise exec go@1.25.12 -- env GOBIN="$HOME/.local/bin" go install github.com/saeloun/miru-web/tools/miru-cli/cmd/miru@b45dee47c3aa58d6312dabfad3b40012b04071fd
 ```
 
-This installs `miru` into `~/.local/bin/miru` using `mise` and Go `1.24.1`.
+This installs `miru` into `~/.local/bin/miru` using `mise` and Go `1.25.12`.
 
 ### Local development install
 
@@ -581,7 +581,7 @@ miru login --email user@example.com
 ### Reinstall the CLI
 
 ```bash
-mise exec go@1.24.1 -- env GOBIN="$HOME/.local/bin" go install github.com/saeloun/miru-web/tools/miru-cli/cmd/miru@618b9ddb7b15d31cd3d43f09e707ee55ec621a07
+mise exec go@1.25.12 -- env GOBIN="$HOME/.local/bin" go install github.com/saeloun/miru-web/tools/miru-cli/cmd/miru@b45dee47c3aa58d6312dabfad3b40012b04071fd
 ```
 
 ## Current Scope

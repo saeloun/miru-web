@@ -168,7 +168,7 @@ Feature availability:
 Install and authenticate:
 
 ```bash
-mise exec go@1.24.1 -- env GOBIN="$HOME/.local/bin" go install github.com/saeloun/miru-web/tools/miru-cli/cmd/miru@618b9ddb7b15d31cd3d43f09e707ee55ec621a07
+mise exec go@1.25.12 -- env GOBIN="$HOME/.local/bin" go install github.com/saeloun/miru-web/tools/miru-cli/cmd/miru@b45dee47c3aa58d6312dabfad3b40012b04071fd
 miru login --base-url https://app.miru.so --email user@example.com
 ```
 
