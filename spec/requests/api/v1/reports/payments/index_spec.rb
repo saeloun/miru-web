@@ -92,4 +92,13 @@ RSpec.describe "Api::V1::Reports::PaymentsController::#index", type: :request do
     expect(response).to have_http_status(:ok)
     expect(json_response["payments"].pluck("id")).to match_array([matching_payment.id, other_payment.id])
   end
+
+  it "rejects reports that exceed the row limit" do
+    stub_const("Api::V1::Reports::PaymentsController::MAX_REPORT_PAYMENTS", 1)
+
+    send_request :get, api_v1_reports_payments_path, headers: auth_headers(user)
+
+    expect(response).to have_http_status(:unprocessable_content)
+    expect(json_response["error"]).to include("narrow the filters")
+  end
 end

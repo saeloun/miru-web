@@ -7,14 +7,16 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"net"
 	"net/http"
 	"net/url"
 	"os"
-	"os/exec"
 	"path/filepath"
 	"strconv"
 	"strings"
 	"time"
+
+	"golang.org/x/term"
 )
 
 const version = "0.2.0"
@@ -64,11 +66,6 @@ func main() {
 	case "version":
 		printVersion()
 		return
-	case "upgrade":
-		if err := upgrade(); err != nil {
-			fail(err)
-		}
-		return
 	}
 
 	cli, err := newClient()
@@ -114,6 +111,10 @@ func newClient() (*client, error) {
 	if baseURL == "" {
 		baseURL = "https://app.miru.so"
 	}
+	baseURL, err := validateBaseURL(baseURL)
+	if err != nil {
+		return nil, err
+	}
 
 	missing := make([]string, 0, 1)
 	if token == "" {
@@ -124,7 +125,7 @@ func newClient() (*client, error) {
 	}
 
 	return &client{
-		baseURL: strings.TrimRight(baseURL, "/"),
+		baseURL: baseURL,
 		token:   token,
 	}, nil
 }
@@ -135,17 +136,19 @@ func login(args []string) error {
 		return err
 	}
 
-	baseURL := strings.TrimRight(defaultString(flags["base-url"], "https://app.miru.so"), "/")
+	baseURL, err := validateBaseURL(defaultString(flags["base-url"], "https://app.miru.so"))
+	if err != nil {
+		return err
+	}
 	email := strings.TrimSpace(flags["email"])
 	if flags["password"] != "" {
 		return fmt.Errorf("--password is not supported because it exposes credentials in process arguments")
 	}
 	fmt.Print("Password: ")
-	password, err := bufio.NewReader(os.Stdin).ReadString('\n')
+	password, err := readPassword()
 	if err != nil {
 		return fmt.Errorf("read password: %w", err)
 	}
-	password = strings.TrimSpace(password)
 
 	if email == "" || password == "" {
 		return fmt.Errorf("usage: miru login [--base-url <url>] --email <email>")
@@ -273,9 +276,12 @@ func manageConfig(args []string) error {
 			return err
 		}
 
-		baseURL := strings.TrimRight(flags["url"], "/")
-		if baseURL == "" {
+		if flags["url"] == "" {
 			return fmt.Errorf("usage: miru config set-base-url --url <url>")
+		}
+		baseURL, err := validateBaseURL(flags["url"])
+		if err != nil {
+			return err
 		}
 
 		stored, _ := loadConfig()
@@ -293,51 +299,6 @@ func manageConfig(args []string) error {
 
 func printVersion() {
 	fmt.Printf("miru %s\n", version)
-}
-
-func upgrade() error {
-	if _, err := exec.LookPath("mise"); err != nil {
-		return fmt.Errorf("mise is required to upgrade Miru CLI")
-	}
-
-	homeDir, err := os.UserHomeDir()
-	if err != nil {
-		return err
-	}
-
-	gobinDir := filepath.Join(homeDir, ".local", "bin")
-	if err := os.MkdirAll(gobinDir, 0o755); err != nil {
-		return err
-	}
-
-	command, err := upgradeCommand(gobinDir)
-	if err != nil {
-		return err
-	}
-	command.Stdout = os.Stdout
-	command.Stderr = os.Stderr
-	command.Stdin = os.Stdin
-
-	if err := command.Run(); err != nil {
-		return err
-	}
-
-	fmt.Printf("Miru CLI upgraded in %s\n", gobinDir)
-	return nil
-}
-
-func upgradeCommand(gobinDir string) (*exec.Cmd, error) {
-	return exec.Command(
-		"mise",
-		"exec",
-		"go@1.24.1",
-		"--",
-		"env",
-		"GOBIN="+gobinDir,
-		"go",
-		"install",
-		"github.com/saeloun/miru-web/tools/miru-cli/cmd/miru@latest",
-	), nil
 }
 
 func (c *client) whoami() error {
@@ -1221,15 +1182,49 @@ func defaultString(value, fallback string) string {
 	return value
 }
 
+func validateBaseURL(raw string) (string, error) {
+	parsed, err := url.Parse(strings.TrimSpace(raw))
+	if err != nil || parsed.Host == "" || parsed.Scheme == "" || parsed.User != nil ||
+		parsed.RawQuery != "" || parsed.Fragment != "" {
+		return "", fmt.Errorf("base URL must be an HTTPS URL, or HTTP on loopback")
+	}
+
+	parsed.Scheme = strings.ToLower(parsed.Scheme)
+	if parsed.Scheme == "http" {
+		host := parsed.Hostname()
+		ip := net.ParseIP(host)
+		if host != "localhost" && (ip == nil || !ip.IsLoopback()) {
+			return "", fmt.Errorf("base URL must use HTTPS outside loopback")
+		}
+	} else if parsed.Scheme != "https" {
+		return "", fmt.Errorf("base URL must be an HTTPS URL, or HTTP on loopback")
+	}
+
+	return strings.TrimRight(parsed.String(), "/"), nil
+}
+
+func readPassword() (string, error) {
+	if term.IsTerminal(int(os.Stdin.Fd())) {
+		password, err := term.ReadPassword(int(os.Stdin.Fd()))
+		fmt.Println()
+		return strings.TrimSpace(string(password)), err
+	}
+
+	password, err := bufio.NewReader(os.Stdin).ReadString('\n')
+	if err != nil && !errors.Is(err, io.EOF) {
+		return "", err
+	}
+	return strings.TrimSpace(password), nil
+}
+
 func printHelp() {
-	fmt.Println(`miru login [--base-url <url>] --email <email> --password <password>
+	fmt.Println(`miru login [--base-url <url>] --email <email>
 miru logout
 miru whoami
 miru config show
 miru config token [--format <raw|shell>]
 miru config set-base-url --url <url>
 miru version
-miru upgrade
 miru capabilities
 miru client list [--query <term>]
 miru project list [--search <term>]

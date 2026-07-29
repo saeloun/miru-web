@@ -4,17 +4,15 @@ module SuperAdmin
   extend ActiveSupport::Concern
 
   SUPER_ADMIN_EMAILS = [
-    "vipul@example.com",
-    "hello@example.com",
-    "hello@saeloun.com" # Adding the existing test user
+    "hello@saeloun.com"
   ].freeze
 
   included do
-    scope :super_admins, -> { where(email: SUPER_ADMIN_EMAILS) }
+    scope :super_admins, -> { where(email: SUPER_ADMIN_EMAILS).where.not(confirmed_at: nil) }
   end
 
   def super_admin?
-    SUPER_ADMIN_EMAILS.include?(email)
+    confirmed? && SUPER_ADMIN_EMAILS.include?(email)
   end
 
   def has_analytics_access?

@@ -3,13 +3,15 @@
 module Api::V1
   module Reports
     class PaymentsController < Api::V1::ApplicationController
+      MAX_REPORT_PAYMENTS = 5_000
+
       after_action :verify_authorized
 
       def index
         authorize :report, :index?
 
-        payments = filter_payments
-        report_data = generate_payment_report(payments)
+        report_data = bounded_report_data
+        return if performed?
 
         render json: {
           payments: report_data,
@@ -25,8 +27,8 @@ module Api::V1
       def download
         authorize :report, :index?
 
-        payments = filter_payments
-        report_data = generate_payment_report(payments)
+        report_data = bounded_report_data
+        return if performed?
 
         if request.query_parameters[:format] == "pdf" || params[:format] == "pdf"
           send_data generate_pdf(report_data),
@@ -38,6 +40,18 @@ module Api::V1
       end
 
       private
+
+        def bounded_report_data
+          payments = filter_payments.limit(MAX_REPORT_PAYMENTS + 1).to_a
+          if payments.size > MAX_REPORT_PAYMENTS
+            render json: {
+              error: "The report exceeds #{MAX_REPORT_PAYMENTS} payments; narrow the filters and try again."
+            }, status: 422
+            return
+          end
+
+          generate_payment_report(payments)
+        end
 
         def filter_payments
           scope = current_company.payments.includes(:invoice, invoice: :client)

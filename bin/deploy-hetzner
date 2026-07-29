@@ -4,6 +4,12 @@ set -e
 echo "🚀 Miru 2.0 Upgrade - Hetzner Deployment Script"
 echo "================================================"
 
+if [ "${1:-}" == "--clone-data" ]; then
+  echo "❌ Refusing to copy unsanitized staging data to a review server."
+  echo "Use script/data_subsets to prepare a sanitized dataset instead."
+  exit 1
+fi
+
 # Load environment variables
 if [ -f ".env.kamal.local" ]; then
   export $(cat .env.kamal.local | grep -v '^#' | xargs)
@@ -78,14 +84,14 @@ setup_server() {
   
   # Install Docker on the server
   echo "Installing Docker on the server..."
-  ssh $SSH_USER@$HETZNER_SERVER_IP << 'EOF'
+  ssh "$SSH_USER@$HETZNER_SERVER_IP" << 'EOF'
     # Update system
     apt-get update
     apt-get upgrade -y
     
     # Install Docker
     if ! command -v docker &> /dev/null; then
-      curl -fsSL https://get.docker.com | sh
+      apt-get install -y docker.io
       systemctl enable docker
       systemctl start docker
     fi
@@ -109,7 +115,7 @@ setup_kamal() {
   echo "🐋 Setting up Kamal..."
   
   # Login to GitHub Container Registry
-  echo $GITHUB_TOKEN | docker login ghcr.io -u $GITHUB_USERNAME --password-stdin
+  printf '%s' "$GITHUB_TOKEN" | docker login ghcr.io -u "$GITHUB_USERNAME" --password-stdin
   
   # Setup Kamal server
   bundle exec kamal server bootstrap
@@ -137,32 +143,6 @@ setup_database() {
   bundle exec kamal app exec --reuse "bin/rails db:create db:migrate"
 }
 
-# Function to clone staging data
-clone_staging_data() {
-  echo "📋 Cloning data from staging..."
-  
-  if [ -n "$STAGING_DATABASE_URL" ]; then
-    STAGING_BACKUP=$(mktemp "${TMPDIR:-/tmp}/miru-staging-backup.XXXXXX.sql")
-    chmod 600 "$STAGING_BACKUP"
-    trap 'rm -f "$STAGING_BACKUP"' EXIT
-
-    # Create a backup from staging
-    echo "Creating backup from staging database..."
-    pg_dump "$STAGING_DATABASE_URL" > "$STAGING_BACKUP"
-    
-    # Restore to new database
-    echo "Restoring to review database..."
-    bundle exec kamal accessory exec postgres \
-      "psql -U miru_2_0_upgrade -d miru_2_0_upgrade" < "$STAGING_BACKUP"
-
-    rm -f "$STAGING_BACKUP"
-    trap - EXIT
-    echo "✅ Data cloned successfully"
-  else
-    echo "⚠️  STAGING_DATABASE_URL not set. Skipping data clone."
-  fi
-}
-
 # Main deployment flow
 echo ""
 echo "Starting deployment process..."
@@ -188,11 +168,6 @@ deploy_app
 
 # Step 5: Setup database
 setup_database
-
-# Step 6: Clone staging data (optional)
-if [ "$1" == "--clone-data" ]; then
-  clone_staging_data
-fi
 
 echo ""
 echo "✅ Deployment complete!"
