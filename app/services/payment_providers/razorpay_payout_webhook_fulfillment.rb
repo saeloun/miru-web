@@ -13,6 +13,12 @@ module PaymentProviders
       "payout.reversed" => :reversed,
       "payout.cancelled" => :cancelled
     }.freeze
+    STATUS_RANK = {
+      "queued" => 0,
+      "pending" => 1,
+      "processing" => 2,
+      "processed" => 3
+    }.freeze
 
     attr_reader :payload, :signature, :error, :error_code
 
@@ -26,6 +32,7 @@ module PaymentProviders
       return fail_with("Razorpay payout not found") if payout.blank?
       return fail_with("Razorpay webhook secret is not configured") if provider&.webhook_secret.blank?
       return fail_with("Invalid Razorpay webhook signature", :invalid_signature) unless valid_signature?
+      return true unless transition_allowed?
 
       payout.update!(
         status: next_status,
@@ -102,6 +109,17 @@ module PaymentProviders
         return if timestamp.blank?
 
         Time.zone.at(timestamp.to_i)
+      end
+
+      def transition_allowed?
+        current_status = payout.status
+        target_status = next_status.to_s
+
+        return target_status == "reversed" if current_status == "processed"
+        return false if payout.terminal?
+        return true unless STATUS_RANK.key?(current_status) && STATUS_RANK.key?(target_status)
+
+        STATUS_RANK.fetch(target_status) > STATUS_RANK.fetch(current_status)
       end
 
       def fail_with(message, code = nil)
