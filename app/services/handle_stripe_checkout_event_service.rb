@@ -76,7 +76,8 @@ class HandleStripeCheckoutEventService
       checkout_session = event.data.object
 
       if checkout_session.mode == "subscription"
-        company_id = checkout_session.metadata&.company_id
+        company_id = checkout_session.metadata&.company_id.presence ||
+          checkout_session.client_reference_id.presence
         company = Company.find_by(id: company_id)
 
         success =

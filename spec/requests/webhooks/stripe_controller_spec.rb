@@ -35,6 +35,34 @@ RSpec.describe "Stripe webhooks", type: :request do
     )
   end
 
+  it "syncs a payment link checkout completion using the client reference" do
+    event = OpenStruct.new(
+      type: "checkout.session.completed",
+      data: OpenStruct.new(
+        object: OpenStruct.new(
+          mode: "subscription",
+          customer: "cus_123",
+          subscription: "sub_123",
+          metadata: OpenStruct.new,
+          client_reference_id: company.id.to_s
+        )
+      )
+    )
+
+    allow(Stripe::Webhook).to receive(:construct_event).and_return(event)
+    allow(Subscriptions::StripeSyncService).to receive(:process).and_return(true)
+
+    post "/webhooks/stripe/checkout/fulfillment", params: "{}", headers: headers
+
+    expect(response).to have_http_status(:ok)
+    expect(Subscriptions::StripeSyncService).to have_received(:process).with(
+      company:,
+      stripe_customer_id: "cus_123",
+      stripe_subscription_id: "sub_123",
+      notify_plan_purchase: true
+    )
+  end
+
   it "enqueues a plan purchase alert when checkout upgrades a free workspace" do
     allow(ENV).to receive(:[]).and_call_original
     allow(ENV).to receive(:[]).with("PLAN_PURCHASE_ALERT_EMAIL").and_return("vipul@saeloun.com")
