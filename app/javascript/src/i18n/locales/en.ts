@@ -1965,6 +1965,9 @@ const en = {
       reportsTitle: "Reports is a Pro feature",
       reportsDescription:
         "Upgrade to Pro to unlock Reports, analytics, and exports.",
+      seatsTitle: "You've reached your free plan's team limit",
+      seatsDescription:
+        "Upgrade to Pro to add unlimited team members to this workspace.",
     },
     alerts: {
       subscriptionUpdatedTitle: "Subscription updated",
