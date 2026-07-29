@@ -281,7 +281,7 @@ class Api::V1::Mobile::CollectionsController < Api::V1::ApplicationController
       service = PaymentProviders::RazorpayPaymentLinkService.new(
         invoice:,
         provider: razorpay_provider,
-        callback_url: razorpay_success_invoice_payments_url(invoice),
+        callback_url: razorpay_success_invoice_payments_url(invoice.external_view_key),
         notify_sms:
       )
 
@@ -532,7 +532,7 @@ class Api::V1::Mobile::CollectionsController < Api::V1::ApplicationController
         outstanding_amount: invoice.outstanding_amount,
         currency: invoice.currency,
         due_date: invoice.due_date,
-        payment_url: new_invoice_payment_url(invoice),
+        payment_url: new_invoice_payment_url(invoice.external_view_key),
         razorpay_payment_link_url: invoice.razorpay_payment_link_url,
         razorpay_payment_link_status: invoice.razorpay_payment_link_status
       }

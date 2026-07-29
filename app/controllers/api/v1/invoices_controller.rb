@@ -135,7 +135,7 @@ class Api::V1::InvoicesController < Api::V1::ApplicationController
     service = PaymentProviders::RazorpayPaymentLinkService.new(
       invoice:,
       provider: razorpay_provider,
-      callback_url: razorpay_success_invoice_payments_url(invoice),
+      callback_url: razorpay_success_invoice_payments_url(invoice.external_view_key),
       notify_sms: notify_sms?
     )
     payment_link_url = service.process

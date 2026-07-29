@@ -61,7 +61,7 @@ RSpec.describe "Api::V1::Mobile::Collections", type: :request do
     expect(PaymentProviders::RazorpayPaymentLinkService).to have_received(:new).with(
       invoice:,
       provider:,
-      callback_url: razorpay_success_invoice_payments_url(invoice),
+      callback_url: razorpay_success_invoice_payments_url(invoice.external_view_key),
       notify_sms: true
     )
   end
@@ -108,7 +108,7 @@ RSpec.describe "Api::V1::Mobile::Collections", type: :request do
     expect(PaymentProviders::RazorpayPaymentLinkService).to have_received(:new).with(
       invoice:,
       provider:,
-      callback_url: razorpay_success_invoice_payments_url(invoice),
+      callback_url: razorpay_success_invoice_payments_url(invoice.external_view_key),
       notify_sms: false
     )
   end
@@ -330,7 +330,7 @@ RSpec.describe "Api::V1::Mobile::Collections", type: :request do
     expect(PaymentProviders::RazorpayPaymentLinkService).to have_received(:new).with(
       invoice:,
       provider:,
-      callback_url: razorpay_success_invoice_payments_url(invoice),
+      callback_url: razorpay_success_invoice_payments_url(invoice.external_view_key),
       notify_sms: true
     )
   end

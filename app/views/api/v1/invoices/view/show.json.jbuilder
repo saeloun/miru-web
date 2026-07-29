@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-json.url new_invoice_payment_url(invoice)
+json.url new_invoice_payment_url(invoice.external_view_key)
 json.invoice invoice.slice(
   :id,
   :amount,
