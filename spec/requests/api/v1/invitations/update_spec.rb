@@ -50,6 +50,16 @@ RSpec.describe "Api::V1::Invitations#update", type: :request do
       expect(invitation.role).to eq("admin")
     end
 
+    it "forbids changing an invitation to owner" do
+      send_request :patch,
+        api_v1_invitation_path(invitation),
+        params: { role: "owner" },
+        headers: auth_headers(admin)
+
+      expect(response).to have_http_status(:forbidden)
+      expect(invitation.reload).to be_employee
+    end
+
     it "returns not found for an invitation from another company" do
       send_request :patch,
         api_v1_invitation_path(other_invitation),

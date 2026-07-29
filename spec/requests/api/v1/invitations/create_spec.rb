@@ -13,6 +13,32 @@ RSpec.describe "Api::V1::Invitations#create", type: :request do
   end
 
   context "when new user is invited" do
+    it "forbids an admin from inviting an owner" do
+      send_request :post, api_v1_invitations_path, params: {
+        first_name: "New",
+        last_name: "Owner",
+        recipient_email: "new-owner@example.com",
+        role: "owner"
+      }, headers: auth_headers(user)
+
+      expect(response).to have_http_status(:forbidden)
+      expect(Invitation.count).to eq(0)
+    end
+
+    it "allows an owner to invite another owner" do
+      user.add_role :owner, company
+
+      send_request :post, api_v1_invitations_path, params: {
+        first_name: "New",
+        last_name: "Owner",
+        recipient_email: "new-owner@example.com",
+        role: "owner"
+      }, headers: auth_headers(user)
+
+      expect(response).to have_http_status(:created)
+      expect(Invitation.last).to be_owner
+    end
+
     describe "passed valid first_name, last_name, email and role" do
       before do
         send_request :post, api_v1_invitations_path, params: {

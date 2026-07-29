@@ -5,6 +5,7 @@ class Api::V1::InvitationsController < Api::V1::ApplicationController
 
   def create
     authorize :invitation
+    authorize :invitation, :assign_owner? if invitation_params[:role] == "owner"
 
     if current_company.pro_access? == false && !current_company.can_add_team_member_role?(invitation_params[:role])
       return render json: {
@@ -22,6 +23,7 @@ class Api::V1::InvitationsController < Api::V1::ApplicationController
 
   def update
     authorize @invitation
+    authorize @invitation, :assign_owner? if invitation_params[:role] == "owner"
 
     @invitation.update!(invitation_params)
     render :update, locals: {
