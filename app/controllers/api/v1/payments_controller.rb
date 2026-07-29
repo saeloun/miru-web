@@ -132,23 +132,21 @@ class Api::V1::PaymentsController < Api::V1::ApplicationController
     end
 
     def generate_bulk_csv(payments)
-      require "csv"
-
-      CSV.generate(headers: true) do |csv|
-        csv << ["Date", "Client", "Invoice Number", "Payment Method", "Transaction ID", "Amount", "Currency", "Status", "Notes"]
-        payments.each do |payment|
-          csv << [
-            payment.transaction_date,
-            payment.invoice&.client&.name || "Unknown Client",
-            payment.invoice&.invoice_number,
-            payment.transaction_type&.humanize,
-            "PAY-#{payment.id}",
-            payment.amount,
-            payment.payment_currency || payment.company&.base_currency,
-            payment.status&.humanize,
-            payment.note
-          ]
-        end
+      headers = ["Date", "Client", "Invoice Number", "Payment Method", "Transaction ID", "Amount", "Currency", "Status", "Notes"]
+      rows = payments.map do |payment|
+        [
+          payment.transaction_date,
+          payment.invoice&.client&.name || "Unknown Client",
+          payment.invoice&.invoice_number,
+          payment.transaction_type&.humanize,
+          "PAY-#{payment.id}",
+          payment.amount,
+          payment.payment_currency || payment.company&.base_currency,
+          payment.status&.humanize,
+          payment.note
+        ]
       end
+
+      Reports::GenerateCsv.new(rows, headers).process
     end
 end

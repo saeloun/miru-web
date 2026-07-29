@@ -112,22 +112,20 @@ module Api::V1
         end
 
         def generate_csv(report_data)
-          require "csv"
-
-          CSV.generate(headers: true) do |csv|
-            csv << ["Date", "Client", "Invoice Number", "Payment Method", "Transaction ID", "Amount", "Status"]
-            report_data.each do |payment|
-              csv << [
-                payment[:payment_date],
-                payment[:client_name],
-                payment[:invoice_number],
-                payment[:payment_method],
-                payment[:transaction_id],
-                payment[:amount],
-                payment[:status]
-              ]
-            end
+          headers = ["Date", "Client", "Invoice Number", "Payment Method", "Transaction ID", "Amount", "Status"]
+          rows = report_data.map do |payment|
+            [
+              payment[:payment_date],
+              payment[:client_name],
+              payment[:invoice_number],
+              payment[:payment_method],
+              payment[:transaction_id],
+              payment[:amount],
+              payment[:status]
+            ]
           end
+
+          ::Reports::GenerateCsv.new(rows, headers).process
         end
 
         def generate_pdf(report_data)
