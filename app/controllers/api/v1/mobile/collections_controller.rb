@@ -208,6 +208,7 @@ class Api::V1::Mobile::CollectionsController < Api::V1::ApplicationController
 
       user = User.kept.find_by(phone: client.phone)
       return if user && !user.employments.kept.exists?(company: current_company)
+      return if user && !user.has_role?(:client, current_company)
       return if user.nil? && client.email.present? && User.kept.exists?(email: client.email)
 
       user ||= build_customer_user(client)

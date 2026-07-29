@@ -73,5 +73,28 @@ RSpec.describe CliSession, type: :model do
       expect(described_class.authenticate(token)).to be_nil
       expect(session.reload.revoked_at).to be_present
     end
+
+    it "rejects a session issued from stale authentication state" do
+      company = create(:company)
+      user = create(:user, current_workspace_id: company.id)
+      stale_user = User.find(user.id)
+      create(:employment, company:, user:)
+      user.add_role(:employee, company)
+      user.update!(password: "newpassword", password_confirmation: "newpassword")
+      session, token = described_class.issue_for(user: stale_user, company:)
+
+      expect(described_class.authenticate(token)).to be_nil
+      expect(session.reload.revoked_at).to be_present
+    end
+
+    it "revokes active sessions when MFA is enabled" do
+      company = create(:company)
+      user = create(:user, current_workspace_id: company.id)
+      session = described_class.issue_for(user:, company:).first
+
+      user.update!(otp_required_for_login: true)
+
+      expect(session.reload.revoked_at).to be_present
+    end
   end
 end

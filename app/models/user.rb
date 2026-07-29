@@ -127,7 +127,7 @@ class User < ApplicationRecord
   before_validation :normalize_locale
   before_validation :ensure_auth_extension_identifiers, on: :create
 
-  after_update :revoke_cli_sessions, if: :saved_change_to_encrypted_password?
+  after_update :revoke_cli_sessions, if: :authentication_state_changed?
   after_commit :send_to_hubspot, on: :create
 
   def primary_role(company)
@@ -324,6 +324,12 @@ class User < ApplicationRecord
 
     def revoke_cli_sessions
       CliSession.active.where(user: self).update_all(revoked_at: Time.current)
+    end
+
+    def authentication_state_changed?
+      saved_change_to_encrypted_password? ||
+        saved_change_to_otp_required_for_login? ||
+        saved_change_to_passkey_required_for_login?
     end
 
     def date_of_birth_cannot_be_in_future

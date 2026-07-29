@@ -16,6 +16,7 @@ class CliSession < ApplicationRecord
       user: user,
       company: company,
       token_digest: digest(plain_token),
+      auth_state_digest: auth_state_digest(user),
       expires_at: SESSION_LIFETIME.from_now,
       last_used_at: Time.current
     )
@@ -30,6 +31,7 @@ class CliSession < ApplicationRecord
     return unless session
 
     unless session.user.kept? &&
+        session.auth_state_digest == auth_state_digest(session.user) &&
         session.user.employments.kept.exists?(company_id: session.company_id) &&
         session.user.roles.exists?(resource: session.company)
       session.revoke!
@@ -46,5 +48,13 @@ class CliSession < ApplicationRecord
 
   def self.digest(plain_token)
     Digest::SHA256.hexdigest(plain_token)
+  end
+
+  def self.auth_state_digest(user)
+    digest([
+      user.encrypted_password,
+      user.otp_required_for_login?,
+      user.passkey_required_for_login?
+    ].join(":"))
   end
 end

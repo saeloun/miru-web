@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-if Rails.env.production? && ENV["MIRU_SEED_PASSWORD"].blank?
-  abort "MIRU_SEED_PASSWORD is required to seed production."
-end
+abort "Demo seeds are disabled in production." if Rails.env.production?
 
 require "faker"
 

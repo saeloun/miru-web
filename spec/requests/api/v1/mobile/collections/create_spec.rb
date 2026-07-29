@@ -159,6 +159,20 @@ RSpec.describe "Api::V1::Mobile::Collections", type: :request do
     expect(existing_customer).not_to have_role(:client, company)
   end
 
+  it "does not link a same-workspace employee as a customer" do
+    employee = create(:user, current_workspace_id: company.id, phone: "+919876543210")
+    create(:employment, company:, user: employee)
+    employee.add_role(:employee, company)
+
+    post "/api/v1/mobile/collections",
+      params: { collection: { name: "Asha Rao", phone: "9876543210" } },
+      headers: auth_headers(user)
+
+    expect(response).to have_http_status(:created)
+    expect(json_response["customer_user"]).to be_nil
+    expect(employee).not_to have_role(:client, company)
+  end
+
   it "does not bind an existing account to a new collection phone" do
     victim_company = create(:company)
     victim = create(
