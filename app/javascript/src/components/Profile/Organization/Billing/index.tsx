@@ -143,8 +143,8 @@ const Billing = () => {
     const billing = query.get("billing");
     const feature = query.get("feature");
     setFeatureGate(feature);
-    if (billing) {
-      setBillingResult(billing);
+    if (billing || feature) {
+      if (billing) setBillingResult(billing);
       window.history.replaceState({}, "", window.location.pathname);
     }
 
@@ -428,7 +428,7 @@ const Billing = () => {
         </Alert>
       )}
 
-      {featureGate === "reports" && summary && summary.plan_tier !== "paid" && (
+      {featureGate === "reports" && summary && !summary.pro_access && (
         <Alert>
           <AlertTitle>
             {i18n.t("billingSettings.featureGate.reportsTitle")}
