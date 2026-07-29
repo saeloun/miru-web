@@ -191,11 +191,13 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
 
   const filterNavigationGroup = group => ({
     ...group,
-    items: group.items.filter(
-      item =>
-        (!item.roles || item.roles.includes(companyRole)) &&
-        !(item.href === "/reports" && !hasProAccess(company))
-    ),
+    items: group.items
+      .filter(item => !item.roles || item.roles.includes(companyRole))
+      .map(item =>
+        item.href === "/reports" && !hasProAccess(company)
+          ? { ...item, href: "/settings/billing?feature=reports" }
+          : item
+      ),
   });
 
   // prettier-ignore
