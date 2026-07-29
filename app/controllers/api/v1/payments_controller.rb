@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class Api::V1::PaymentsController < Api::V1::ApplicationController
+  # ponytail: hard cap; add cursor pagination when workspaces outgrow this response.
   MAX_INDEX_PAYMENTS = 500
 
   before_action :set_invoice, only: [:create]
