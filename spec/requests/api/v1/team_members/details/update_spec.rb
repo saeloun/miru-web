@@ -160,6 +160,7 @@ RSpec.describe "Api::V1::TeamMembers::DetailsController#update", type: :request 
 
   context "when logged in user wants to update details of another employee from a different company" do
     before do
+      create(:employment, user:, company:)
       employment2 = create(:employment, user: user2, company: company2)
       user.add_role :employee, company
       user2.add_role :employee, company2
@@ -178,6 +179,7 @@ RSpec.describe "Api::V1::TeamMembers::DetailsController#update", type: :request 
 
   context "when logged in user wants to update details of another employee from his own company" do
     before do
+      create(:employment, user:, company:)
       employment2 = create(:employment, user: user2, company:)
       user.add_role :employee, company
       user2.add_role :employee, company
@@ -197,6 +199,7 @@ RSpec.describe "Api::V1::TeamMembers::DetailsController#update", type: :request 
 
   context "when logged in Owner wants to update details of another employee from a different company" do
     before do
+      create(:employment, user:, company:)
       employment2 = create(:employment, user: user2, company: company2)
       user.add_role :owner, company
       user2.add_role :employee, company2
@@ -215,6 +218,7 @@ RSpec.describe "Api::V1::TeamMembers::DetailsController#update", type: :request 
 
   context "when logged in Admin wants to update details of another employee from a different company" do
     before do
+      create(:employment, user:, company:)
       employment2 = create(:employment, user: user2, company: company2)
       user.add_role :admin, company
       user2.add_role :employee, company2
@@ -228,6 +232,24 @@ RSpec.describe "Api::V1::TeamMembers::DetailsController#update", type: :request 
 
     it "is unsuccessful" do
       expect(response).to have_http_status(:not_found)
+    end
+  end
+
+  context "when an admin attempts to change another member's login phone" do
+    it "rejects the change" do
+      admin = create(:user, current_workspace_id: company.id)
+      create(:employment, user: admin, company:)
+      admin.add_role :admin, company
+      original_phone = user.phone
+      sign_in admin
+
+      send_request :patch, api_v1_team_details_path(
+        team_id: employment.user_id,
+        params: { user: { phone: "+14155552671" } }
+      ), headers: auth_headers(admin)
+
+      expect(response).to have_http_status(:forbidden)
+      expect(user.reload.phone).to eq(original_phone)
     end
   end
 end

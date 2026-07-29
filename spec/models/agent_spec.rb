@@ -31,4 +31,16 @@ RSpec.describe Agent, type: :model do
       expect(agent.errors[:default_project]).to include("must belong to the same company")
     end
   end
+
+  describe "#backing_user_active_for_company?" do
+    it "rejects a user whose employment was discarded" do
+      company = create(:company)
+      user = create(:user, current_workspace_id: company.id)
+      employment = create(:employment, company:, user:)
+      agent = create(:agent, company:, user:)
+      employment.discard!
+
+      expect(agent.backing_user_active_for_company?).to be(false)
+    end
+  end
 end

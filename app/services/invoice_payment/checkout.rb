@@ -39,7 +39,7 @@ module InvoicePayment
       end
 
       def currency
-        company.base_currency
+        invoice.currency
       end
 
       def stripe_connected_account
@@ -51,12 +51,12 @@ module InvoicePayment
           {
             line_items: [{
               price_data: {
-                currency: company.base_currency.downcase,
+                currency: currency.downcase,
                 product_data: {
                   name: invoice.invoice_number,
                   description:
                 },
-                unit_amount: invoice.unit_amount(company.base_currency)
+                unit_amount: invoice.unit_amount(currency)
               },
               quantity: 1
             }],

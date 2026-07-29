@@ -110,6 +110,13 @@ RSpec.describe Payment, type: :model do
     end
   end
 
+  it "does not settle an invoice with a differently denominated payment" do
+    invoice = create(:invoice, currency: "EUR", amount_due: 100)
+    payment = build(:payment, invoice:, amount: 100, payment_currency: "USD")
+
+    expect(payment.settles?(invoice)).to be(false)
+  end
+
   describe "invoice destruction guard" do
     it "prevents an invoice with payments from being hard destroyed" do
       invoice = create(:invoice, amount_due: 300)

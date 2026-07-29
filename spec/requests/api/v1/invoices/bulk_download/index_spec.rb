@@ -41,6 +41,18 @@ RSpec.describe "Api::V1::Invoices::BulkDownbload#index", type: :request do
         subject
         expect(BulkInvoiceDownloadJob).to have_been_enqueued.on_queue("default")
       end
+
+      it "rejects requests above the invoice limit" do
+        send_request :get, api_v1_invoices_bulk_download_index_path, params: {
+          bulk_invoices: {
+            invoice_ids: (1..26).to_a,
+            download_id:
+          }
+        }, headers: auth_headers(user)
+
+        expect(response).to have_http_status(:unprocessable_content)
+        expect(json_response["error"]).to include("limited to 25 invoices")
+      end
     end
 
     context "when user is employee" do

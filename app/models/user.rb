@@ -123,6 +123,7 @@ class User < ApplicationRecord
   # Callbacks
   after_discard :discard_project_members
   before_create :set_token
+  before_update :set_token, if: :authentication_state_will_change?
   before_save :mark_password_changed_at, if: :will_save_change_to_encrypted_password?
   before_validation :normalize_locale
   before_validation :ensure_auth_extension_identifiers, on: :create
@@ -168,6 +169,8 @@ class User < ApplicationRecord
   end
 
   def current_workspace(load_associations: [:logo_attachment])
+    return if employments.exists?(company_id: current_workspace_id) && !employed_at?(current_workspace_id)
+
     @_current_workspace ||= Company.includes(load_associations).find_by(id: current_workspace_id)
   end
 
@@ -330,6 +333,12 @@ class User < ApplicationRecord
       saved_change_to_encrypted_password? ||
         saved_change_to_otp_required_for_login? ||
         saved_change_to_passkey_required_for_login?
+    end
+
+    def authentication_state_will_change?
+      will_save_change_to_encrypted_password? ||
+        will_save_change_to_otp_required_for_login? ||
+        will_save_change_to_passkey_required_for_login?
     end
 
     def date_of_birth_cannot_be_in_future

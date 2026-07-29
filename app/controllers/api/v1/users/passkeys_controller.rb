@@ -71,6 +71,9 @@ class Api::V1::Users::PasskeysController < Api::V1::ApplicationController
     raise Passkeys::ChallengeToken::InvalidTokenError unless payload["type"] == "authentication"
 
     user = User.find(payload["user_id"])
+    company = Company.find_by(id: payload["company_id"])
+    raise ActiveRecord::RecordNotFound unless user.active_for_authentication? && company && user.employed_at?(company.id)
+
     credential, passkey = relying_party.verify_authentication(
       authentication_params[:credential].to_h,
       payload["challenge"],
@@ -85,7 +88,7 @@ class Api::V1::Users::PasskeysController < Api::V1::ApplicationController
 
     render json: signed_in_payload(
       user,
-      company: current_company,
+      company:,
       notice: I18n.t("devise.sessions.signed_in"),
       include_token: false
     ), status: 200

@@ -26,7 +26,7 @@ class Api::V1::Agent::TimesheetEntriesController < Api::V1::Agent::BaseControlle
   private
 
     def project
-      @project ||= current_company.projects.kept.find(
+      @project ||= ProjectPolicy::Scope.new(current_agent.user, current_company).resolve.find(
         agent_timesheet_entry_params[:project_id].presence || current_agent.default_project_id
       )
     end

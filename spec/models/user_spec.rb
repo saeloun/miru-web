@@ -335,4 +335,12 @@ RSpec.describe User, type: :model do
       expect(user.roles.where(resource: company_2).first.name).to eq("employee")
     end
   end
+
+  describe "#current_workspace" do
+    it "does not return a workspace after its employment is discarded" do
+      user.employments.find_by!(company:).discard!
+
+      expect(user.current_workspace).to be_nil
+    end
+  end
 end

@@ -17,9 +17,21 @@ RSpec.describe "Api::V1::Users::Sessions#create", type: :request do
 
   before do
     host! "localhost"
+    create(:employment, company:, user:)
   end
 
   context "when logged in with valid email and password" do
+    it "rejects cross-origin login requests" do
+      post api_v1_users_login_path, params: {
+        user: {
+          email: user.email,
+          password: user.password
+        }
+      }, headers: { "Origin" => "https://evil.example" }
+
+      expect(response).to have_http_status(:forbidden)
+    end
+
     it "logs the user successfully" do
       send_request :post, api_v1_users_login_path, params: {
         user: {
@@ -286,6 +298,29 @@ RSpec.describe "Api::V1::Users::Sessions#create", type: :request do
       expect(json_response.dig("user", "email")).to eq(user.email)
       expect(json_response.dig("user", "token")).to be_nil
     end
+
+    it "rejects passkey completion after workspace access is removed" do
+      post api_v1_users_login_path, params: {
+        user: {
+          email: user.email,
+          password: user.password
+        }
+      }
+
+      assertion = fake_client.get(
+        challenge: json_response.dig("public_key", "challenge"),
+        rp_id: "localhost",
+        allow_credentials: [user.passkeys.first.external_id]
+      )
+      user.employments.find_by!(company:).discard!
+
+      post "/api/v1/users/passkeys/authenticate", params: {
+        pending_token: json_response["pending_token"],
+        credential: assertion
+      }
+
+      expect(response).to have_http_status(:unauthorized)
+    end
   end
 
   context "when the account requires an authenticator code" do
@@ -348,6 +383,26 @@ RSpec.describe "Api::V1::Users::Sessions#create", type: :request do
       expect(response).to have_http_status(:ok)
       expect(json_response["notice"]).to eq(I18n.t("devise.sessions.signed_in"))
       expect(json_response.dig("user", "email")).to eq(user.email)
+    end
+
+    it "rejects authenticator completion after workspace access is removed" do
+      post api_v1_users_login_path, params: {
+        user: {
+          email: user.email,
+          password: user.password
+        }
+      }
+      pending_token = json_response["pending_token"]
+      user.employments.find_by!(company:).discard!
+      travel 31.seconds
+      code = ROTP::TOTP.new(user.reload.otp_secret, issuer: User::TOTP_ISSUER).now
+
+      post "/api/v1/users/totp/authenticate", params: {
+        pending_token:,
+        code:
+      }
+
+      expect(response).to have_http_status(:unauthorized)
     end
   end
 end

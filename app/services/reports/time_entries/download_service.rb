@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Reports::TimeEntries::DownloadService < Reports::DownloadService
+  MAX_ENTRIES = 5_000
+
   attr_reader :reports
 
   def initialize(params, current_company)
@@ -20,8 +22,14 @@ class Reports::TimeEntries::DownloadService < Reports::DownloadService
           )
           .process
         @reports = reports + reports_data[:reports]
+        raise ArgumentError, "Time entry exports are limited to #{MAX_ENTRIES} entries" if report_entry_count > MAX_ENTRIES
+
         next_page = reports_data[:pagination_details][:next]
       end
+    end
+
+    def report_entry_count
+      reports.sum { |report| Array(report[:entries]).size }
     end
 
     def generate_pdf

@@ -4,6 +4,8 @@ module Api
   module V1
     module Dashboard
       class ActivitiesController < Api::V1::ApplicationController
+        MAX_ACTIVITY_SOURCE_ROWS = 500
+
         after_action :verify_authorized
 
         def index
@@ -33,10 +35,14 @@ module Api
           def fetch_activities
             invoices = scoped_invoices
               .where.not(status: "draft")
+              .order(updated_at: :desc)
+              .limit(MAX_ACTIVITY_SOURCE_ROWS)
               .includes(:client)
               .map { |invoice| build_invoice_activity(invoice) }
 
             payments = scoped_payments
+              .order(created_at: :desc)
+              .limit(MAX_ACTIVITY_SOURCE_ROWS)
               .includes(invoice: :client)
               .map { |payment| build_payment_activity(payment) }
 

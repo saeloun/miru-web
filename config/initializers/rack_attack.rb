@@ -14,6 +14,22 @@ class Rack::Attack
     req.ip if req.post? && req.path == "/api/v1/users/login"
   end
 
+  throttle("auth/signup/ip", limit: 5, period: 1.minute) do |req|
+    req.ip if req.post? && req.path == "/api/v1/users/signup"
+  end
+
+  throttle("analytics/pdf/ip", limit: 5, period: 1.minute) do |req|
+    req.ip if req.get? && req.path.match?(%r{\A/internal_api/v1/analytics/exports/[^/]+\.pdf\z})
+  end
+
+  throttle("invitations/resend/ip", limit: 5, period: 1.minute) do |req|
+    req.ip if req.post? && req.path.match?(%r{\A/api/v1/invitations/\d+/resend\z})
+  end
+
+  throttle("invoice/checkout/ip", limit: 10, period: 1.minute) do |req|
+    req.ip if req.get? && req.path.match?(%r{\A/invoices/[^/]+/payments/new\z})
+  end
+
   throttle("auth/recovery/ip", limit: 10, period: 1.minute) do |req|
     req.ip if req.post? && [
       "/api/v1/users/forgot_password",

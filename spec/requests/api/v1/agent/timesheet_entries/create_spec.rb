@@ -13,6 +13,7 @@ RSpec.describe "Api::V1::Agent::TimesheetEntries#create", type: :request do
 
   before do
     create(:employment, company:, user:)
+    create(:project_member, project:, user:)
     user.add_role :employee, company
   end
 
@@ -71,6 +72,21 @@ RSpec.describe "Api::V1::Agent::TimesheetEntries#create", type: :request do
     }, headers: { "Authorization" => "Bearer #{agent_token}" }
 
     expect(response).to have_http_status(:unauthorized)
+  end
+
+  it "rejects a project outside the backing user's membership scope" do
+    other_project = create(:project, client:)
+
+    send_request :post, api_v1_agent_timesheet_entries_path, params: {
+      timesheet_entry: {
+        project_id: other_project.id,
+        duration_minutes: 30,
+        work_date: Date.current.iso8601
+      }
+    }, headers: { "Authorization" => "Bearer #{agent_token}" }
+
+    expect(response).to have_http_status(:not_found)
+    expect(TimesheetEntry.where(project: other_project, user:)).to be_empty
   end
 
   it "returns unauthorized for missing or malformed tokens" do

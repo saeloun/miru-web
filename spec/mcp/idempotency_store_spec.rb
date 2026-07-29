@@ -91,5 +91,19 @@ RSpec.describe MCP::Miru::IdempotencyStore do
 
       expect(calls).to eq(2)
     end
+
+    it "does not run a duplicate request while the first request is in progress" do
+      cache_key = described_class.send(
+        :build_key,
+        tool_name:,
+        idempotency_key: "in-progress",
+        authorization:
+      )
+      cache_store.write("#{cache_key}:lock", true, expires_in: 30.seconds)
+
+      expect {
+        described_class.fetch(tool_name:, idempotency_key: "in-progress", authorization:) { result }
+      }.to raise_error(/already in progress/)
+    end
   end
 end

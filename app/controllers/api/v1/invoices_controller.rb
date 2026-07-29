@@ -108,12 +108,16 @@ class Api::V1::InvoicesController < Api::V1::ApplicationController
 
   def send_reminder
     authorize invoice
+    recipients = invoice_email_params[:recipients].to_a.reject(&:blank?).uniq
+    if recipients.empty? || recipients.size > 5
+      return render json: { error: I18n.t("invoices_controller.send_invoice.recipient_limit") }, status: 422
+    end
 
     if invoice.overdue?
       SendReminderMailer.with(
         invoice:,
         subject: invoice_email_params[:subject],
-        recipients: invoice_email_params[:recipients],
+        recipients:,
         message: invoice_email_params[:message]
       ).send_reminder.deliver_later
 

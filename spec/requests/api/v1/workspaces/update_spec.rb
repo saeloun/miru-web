@@ -66,4 +66,18 @@ RSpec.describe "Api::V1::Workspaces#update", type: :request, tt: true do
       expect(json_response["error"]).to match("You need to sign in or sign up before continuing.")
     end
   end
+
+  context "when the employment was discarded" do
+    it "does not allow the former workspace to be selected" do
+      create(:employment, company:, user:)
+      discarded_employment = create(:employment, company: company_2, user:)
+      discarded_employment.discard!
+      sign_in user
+
+      send_request :patch, api_v1_workspace_path(company_2)
+
+      expect(response).to have_http_status(:forbidden)
+      expect(user.reload.current_workspace_id).to eq(company.id)
+    end
+  end
 end

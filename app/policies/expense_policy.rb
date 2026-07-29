@@ -16,7 +16,9 @@ class ExpensePolicy < ApplicationPolicy
   end
 
   def update?
-    authorize_current_user
+    return false unless same_workspace?
+
+    elevated_access? || (own_submitted_expense? && (record.submitted? || record.rejected?))
   end
 
   def destroy?

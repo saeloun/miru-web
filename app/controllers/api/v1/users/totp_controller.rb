@@ -75,6 +75,7 @@ class Api::V1::Users::TotpController < Api::V1::ApplicationController
 
     user = User.find(payload["user_id"])
     company = Company.find_by(id: payload["company_id"]) || user.current_workspace
+    raise ActiveRecord::RecordNotFound unless user.active_for_authentication? && company && user.employed_at?(company.id)
 
     unless valid_second_factor?(user)
       render json: { error: I18n.t("totp.invalid_verification") }, status: 422

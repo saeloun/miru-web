@@ -19,7 +19,7 @@ const commandGroups = [
     titleKey: "authenticateOnce",
     icon: <Browser size={18} weight="duotone" />,
     lines: [
-      "miru login --email you@example.com --password password",
+      "miru login --email you@example.com",
       "miru config set-base-url --url http://127.0.0.1:3000",
     ],
   },

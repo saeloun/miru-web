@@ -99,8 +99,6 @@ setup_server() {
     ufw allow 80/tcp
     ufw allow 443/tcp
     ufw allow 3000/tcp  # For the app
-    ufw allow 5432/tcp  # For PostgreSQL
-    ufw allow 6379/tcp  # For Redis
     
     echo "✅ Server setup complete"
 EOF
@@ -144,16 +142,21 @@ clone_staging_data() {
   echo "📋 Cloning data from staging..."
   
   if [ -n "$STAGING_DATABASE_URL" ]; then
+    STAGING_BACKUP=$(mktemp "${TMPDIR:-/tmp}/miru-staging-backup.XXXXXX.sql")
+    chmod 600 "$STAGING_BACKUP"
+    trap 'rm -f "$STAGING_BACKUP"' EXIT
+
     # Create a backup from staging
     echo "Creating backup from staging database..."
-    pg_dump $STAGING_DATABASE_URL > /tmp/staging_backup.sql
+    pg_dump "$STAGING_DATABASE_URL" > "$STAGING_BACKUP"
     
     # Restore to new database
     echo "Restoring to review database..."
     bundle exec kamal accessory exec postgres \
-      "psql -U miru_2_0_upgrade -d miru_2_0_upgrade" < /tmp/staging_backup.sql
-    
-    rm /tmp/staging_backup.sql
+      "psql -U miru_2_0_upgrade -d miru_2_0_upgrade" < "$STAGING_BACKUP"
+
+    rm -f "$STAGING_BACKUP"
+    trap - EXIT
     echo "✅ Data cloned successfully"
   else
     echo "⚠️  STAGING_DATABASE_URL not set. Skipping data clone."

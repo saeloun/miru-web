@@ -26,6 +26,7 @@ RSpec.describe Api::V1::SubscriptionsController, type: :request do
       employee.add_role(:employee, company)
       create(:employment, company:, user: book_keeper)
       book_keeper.add_role(:book_keeper, company)
+      create(:employment, company:, user: client)
       client.add_role(:client, company)
     end
 

@@ -7,6 +7,7 @@ class Api::V1::Users::SessionsController < Devise::SessionsController
   include CurrentCompanyConcern
 
   before_action :authenticate_user_using_x_auth_token, only: :me
+  before_action :reject_cross_origin_login!, only: :create
 
   respond_to :json
 
@@ -61,6 +62,15 @@ class Api::V1::Users::SessionsController < Devise::SessionsController
   end
 
   private
+
+    def reject_cross_origin_login!
+      source = request.headers["Origin"].presence || request.referer
+      return if source.blank? || URI.parse(source).origin == request.base_url
+
+      render json: { error: "Cross-origin login is not allowed" }, status: 403
+    rescue URI::InvalidURIError
+      render json: { error: "Cross-origin login is not allowed" }, status: 403
+    end
 
     def revoke_bearer_token
       token = Warden::JWTAuth::HeaderParser.from_env(request.env)

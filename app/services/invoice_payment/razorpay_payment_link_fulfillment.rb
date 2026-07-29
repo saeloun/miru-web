@@ -11,13 +11,17 @@ class InvoicePayment::RazorpayPaymentLinkFulfillment < ApplicationService
 
   def process
     return false unless valid_payment?
-    return true if invoice.paid?
-
     payment_link = client.fetch_payment_link(payment_link_id)
     return false unless payment_link["status"] == "paid"
 
-    payment = InvoicePayment::Settle.process(payment_params(payment_link), invoice)
-    invoice.update!(razorpay_payment_id: razorpay_payment_id)
+    payment = nil
+    invoice.with_lock do
+      return true if invoice.paid?
+
+      payment = InvoicePayment::Settle.process(payment_params(payment_link), invoice)
+      invoice.update!(razorpay_payment_id:)
+    end
+
     enqueue_auto_payout(payment)
     send_payment_emails if invoice.paid? && payment.present?
 
@@ -52,6 +56,8 @@ class InvoicePayment::RazorpayPaymentLinkFulfillment < ApplicationService
         transaction_date: Time.zone.at(payment_link.fetch("updated_at", Time.current.to_i)).to_date,
         transaction_type: "razorpay",
         amount: amount_from_subunits(payment_link.fetch("amount_paid")),
+        payment_currency: invoice.currency,
+        provider_event_id: "razorpay:#{razorpay_payment_id}",
         note: "Razorpay_Payment_Link_Success",
         name: payment_link.dig("customer", "name")
       }

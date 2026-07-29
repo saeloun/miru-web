@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"bytes"
 	"encoding/json"
 	"errors"
@@ -136,10 +137,18 @@ func login(args []string) error {
 
 	baseURL := strings.TrimRight(defaultString(flags["base-url"], "https://app.miru.so"), "/")
 	email := strings.TrimSpace(flags["email"])
-	password := flags["password"]
+	if flags["password"] != "" {
+		return fmt.Errorf("--password is not supported because it exposes credentials in process arguments")
+	}
+	fmt.Print("Password: ")
+	password, err := bufio.NewReader(os.Stdin).ReadString('\n')
+	if err != nil {
+		return fmt.Errorf("read password: %w", err)
+	}
+	password = strings.TrimSpace(password)
 
 	if email == "" || password == "" {
-		return fmt.Errorf("usage: miru login [--base-url <url>] --email <email> --password <password>")
+		return fmt.Errorf("usage: miru login [--base-url <url>] --email <email>")
 	}
 
 	body := map[string]any{
@@ -318,22 +327,6 @@ func upgrade() error {
 }
 
 func upgradeCommand(gobinDir string) (*exec.Cmd, error) {
-	if repoDir, ok := findLocalCLIRepo(); ok {
-		command := exec.Command(
-			"mise",
-			"exec",
-			"go@1.24.1",
-			"--",
-			"env",
-			"GOBIN="+gobinDir,
-			"go",
-			"install",
-			"./cmd/miru",
-		)
-		command.Dir = repoDir
-		return command, nil
-	}
-
 	return exec.Command(
 		"mise",
 		"exec",
@@ -345,27 +338,6 @@ func upgradeCommand(gobinDir string) (*exec.Cmd, error) {
 		"install",
 		"github.com/saeloun/miru-web/tools/miru-cli/cmd/miru@latest",
 	), nil
-}
-
-func findLocalCLIRepo() (string, bool) {
-	workingDir, err := os.Getwd()
-	if err != nil {
-		return "", false
-	}
-
-	current := workingDir
-	for {
-		candidate := filepath.Join(current, "tools", "miru-cli", "go.mod")
-		if _, err := os.Stat(candidate); err == nil {
-			return filepath.Join(current, "tools", "miru-cli"), true
-		}
-
-		parent := filepath.Dir(current)
-		if parent == current {
-			return "", false
-		}
-		current = parent
-	}
 }
 
 func (c *client) whoami() error {

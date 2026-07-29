@@ -9,6 +9,7 @@ RSpec.describe Api::V1::Dashboard::ActivitiesController, type: :request do
   let(:project) { create(:project, client: client) }
 
   before do
+    create(:employment, company:, user:)
     user.add_role(:admin, company)
     sign_in user
     user.update(current_workspace_id: company.id)

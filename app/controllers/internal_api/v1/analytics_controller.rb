@@ -2,6 +2,7 @@
 
 class InternalApi::V1::AnalyticsController < Api::V1::ApplicationController
   SUPPORTED_HORIZONS = [3, 6, 12].freeze
+  MAX_DATE_RANGE_DAYS = 366
 
   def revenue_forecast
     authorize :analytics, :revenue_forecast?
@@ -98,6 +99,11 @@ class InternalApi::V1::AnalyticsController < Api::V1::ApplicationController
 
       if from > to
         render_validation_error("from must be before or equal to to")
+        return
+      end
+
+      if to - from > MAX_DATE_RANGE_DAYS
+        render_validation_error("date range must not exceed one year")
         return
       end
 

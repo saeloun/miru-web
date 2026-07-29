@@ -9,6 +9,11 @@ class UpdateProfileSettingsService
   end
 
   def process
+    if user_params[:password].present? && user_params[:current_password].blank?
+      current_user.errors.add(:current_password, :blank)
+      return { res: { errors: current_user.errors.full_messages }, status: :unprocessable_content }
+    end
+
     if user_params[:current_password].blank?
       update_user_without_password
     else

@@ -93,4 +93,31 @@ RSpec.describe Api::V1::BaseController, type: :controller do
       expect(JSON.parse(response.body)["error"]).to eq("Route not found")
     end
   end
+
+  describe "legacy X-Auth authentication" do
+    it "rejects a discarded user" do
+      user.discard!
+
+      get :index
+
+      expect(response).to have_http_status(:unauthorized)
+    end
+
+    it "rejects a user whose current employment was discarded" do
+      user.employments.find_by!(company:).discard!
+
+      get :index
+
+      expect(response).to have_http_status(:unauthorized)
+    end
+
+    it "rejects the old token after a password change" do
+      user.update!(password: "new secure password", password_confirmation: "new secure password")
+
+      get :index
+
+      expect(response).to have_http_status(:unauthorized)
+      expect(user.reload.token).not_to eq(request.headers["X-Auth-Token"])
+    end
+  end
 end

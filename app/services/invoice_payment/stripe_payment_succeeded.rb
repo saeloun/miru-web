@@ -30,6 +30,7 @@ class InvoicePayment::StripePaymentSucceeded < ApplicationService
         transaction_date: DateTime.strptime(event.created.to_s, "%s").to_date,
         transaction_type: "stripe",
         amount: Money.from_cents(amount_total_cents, data_object.currency).amount,
+        payment_currency: data_object.currency.upcase,
         note: "Stripe_Payment_Success"
       }
     end

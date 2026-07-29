@@ -42,6 +42,7 @@ class Payment < ApplicationRecord
 
   def settles?(invoice)
     return false if invoice.blank? || amount.blank?
+    return false unless (payment_currency.presence || invoice.currency).casecmp?(invoice.currency)
 
     invoice.amount_due <= amount
   end

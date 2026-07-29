@@ -25,7 +25,7 @@ class Agent < ApplicationRecord
     return false if user.blank? || company.blank?
     return false unless user.active_for_authentication?
 
-    user.current_workspace_id == company_id || user.employed_at?(company_id)
+    user.employed_at?(company_id)
   end
 
   private
@@ -38,7 +38,6 @@ class Agent < ApplicationRecord
 
     def user_belongs_to_company
       return if user.blank? || company.blank?
-      return if user.current_workspace_id == company_id
       return if user.employed_at?(company_id)
 
       errors.add(:user, "must belong to the same company")
