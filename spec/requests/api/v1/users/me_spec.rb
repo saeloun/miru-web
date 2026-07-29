@@ -10,7 +10,9 @@ RSpec.describe "Api::V1::Users#me", type: :request do
       business_phone: "+14155552671",
       tax_id: "TAX-123",
       ein: "12-3456789",
-      us_taxpayer_id: "987-65-4321"
+      us_taxpayer_id: "987-65-4321",
+      trial_started_at: 1.day.ago,
+      trial_ends_at: 29.days.from_now
     )
   end
   let(:user) do
@@ -59,6 +61,7 @@ RSpec.describe "Api::V1::Users#me", type: :request do
       expect(json_response["company"]["us_taxpayer_id"]).to eq(company.us_taxpayer_id)
       expect(json_response["company"]["address"]["address_line_1"]).to eq(company.current_address.address_line_1)
       expect(json_response["company"]["logo"]).to eq(company.company_logo)
+      expect(json_response["company"]).to include("trial_active", "trial_ends_at", "trial_expired")
     end
 
     it "returns the user role" do
