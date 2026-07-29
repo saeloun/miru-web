@@ -47,7 +47,10 @@ class ProjectMemberService
   private
 
     def validate_added_members!
-      added_user_ids = Array(members[:added_members]).pluck("id").map(&:to_i)
+      added_user_ids = Array(members[:added_members])
+        .select { |member| member.key?("hourly_rate") }
+        .pluck("id")
+        .map(&:to_i)
       return if added_user_ids.empty?
 
       company = members[:project].client.company
