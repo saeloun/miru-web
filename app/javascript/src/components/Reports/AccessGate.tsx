@@ -18,7 +18,7 @@ const ReportsAccessGate: React.FC<{ children: React.ReactNode }> = ({
   }
 
   if (!hasProAccess(effectiveCompany)) {
-    return <Navigate replace to="/settings/billing" />;
+    return <Navigate replace to="/settings/billing?feature=reports" />;
   }
 
   return <>{children}</>;

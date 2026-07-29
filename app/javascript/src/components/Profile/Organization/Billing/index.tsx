@@ -64,6 +64,7 @@ const Billing = () => {
   const [processingPortal, setProcessingPortal] = useState(false);
   const [processingTrial, setProcessingTrial] = useState(false);
   const [billingResult, setBillingResult] = useState<string | null>(null);
+  const [featureGate, setFeatureGate] = useState<string | null>(null);
   const [finalizing, setFinalizing] = useState(false);
   const [billingInterval, setBillingInterval] = useState<"monthly" | "yearly">(
     "monthly"
@@ -140,8 +141,10 @@ const Billing = () => {
     sendGAPageView();
     const query = new URLSearchParams(window.location.search);
     const billing = query.get("billing");
-    if (billing) {
-      setBillingResult(billing);
+    const feature = query.get("feature");
+    setFeatureGate(feature);
+    if (billing || feature) {
+      if (billing) setBillingResult(billing);
       window.history.replaceState({}, "", window.location.pathname);
     }
 
@@ -421,6 +424,28 @@ const Billing = () => {
           </AlertTitle>
           <AlertDescription>
             {i18n.t("billingSettings.alerts.noSubscriptionChanges")}
+          </AlertDescription>
+        </Alert>
+      )}
+
+      {featureGate === "reports" && summary && !summary.pro_access && (
+        <Alert>
+          <AlertTitle>
+            {i18n.t("billingSettings.featureGate.reportsTitle")}
+          </AlertTitle>
+          <AlertDescription>
+            {i18n.t("billingSettings.featureGate.reportsDescription")}
+          </AlertDescription>
+        </Alert>
+      )}
+
+      {featureGate === "seats" && summary && !summary.pro_access && (
+        <Alert>
+          <AlertTitle>
+            {i18n.t("billingSettings.featureGate.seatsTitle")}
+          </AlertTitle>
+          <AlertDescription>
+            {i18n.t("billingSettings.featureGate.seatsDescription")}
           </AlertDescription>
         </Alert>
       )}
