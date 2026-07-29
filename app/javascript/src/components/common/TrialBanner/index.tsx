@@ -18,16 +18,24 @@ const TrialBanner = () => {
     localStorage.getItem(dismissalKey) ? dismissalKey : null
   );
 
-  if (
-    !company ||
-    company.plan_tier === "paid" ||
-    company.billing_exempt ||
-    (!company.trial_active && !company.trial_expired)
-  ) {
+  const trialEndsAt = company?.trial_ends_at
+    ? new Date(company.trial_ends_at)
+    : null;
+
+  const hasProPlan =
+    company?.plan_tier === "paid" || Boolean(company?.billing_exempt);
+
+  const isTrialActive =
+    !hasProPlan && trialEndsAt !== null && trialEndsAt.getTime() > Date.now();
+
+  const isTrialExpired =
+    !hasProPlan && trialEndsAt !== null && trialEndsAt.getTime() <= Date.now();
+
+  if (!company || hasProPlan || (!isTrialActive && !isTrialExpired)) {
     return null;
   }
 
-  if (company.trial_expired) {
+  if (isTrialExpired) {
     return (
       <Alert className="mb-4" variant="destructive">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -49,19 +57,13 @@ const TrialBanner = () => {
     );
   }
 
-  if (
-    !company.trial_active ||
-    !company.trial_ends_at ||
-    dismissedFor === dismissalKey
-  ) {
+  if (!isTrialActive || trialEndsAt === null || dismissedFor === dismissalKey) {
     return null;
   }
 
   const daysLeft = Math.max(
-    0,
-    Math.ceil(
-      (new Date(company.trial_ends_at).getTime() - Date.now()) / 86_400_000
-    )
+    1,
+    Math.ceil((trialEndsAt.getTime() - Date.now()) / 86_400_000)
   );
 
   return (
