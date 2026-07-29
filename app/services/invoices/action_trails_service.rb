@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 class Invoices::ActionTrailsService < ApplicationService
-  attr_reader :invoice_id, :events, :users, :trails, :payment_events, :payment_trails
+  attr_reader :invoice, :events, :users, :trails, :payment_events, :payment_trails
 
-  def initialize(invoice_id)
-    @invoice_id = invoice_id
+  def initialize(invoice)
+    @invoice = invoice
     @events = nil
     @payment_events = nil
     @users = {}
@@ -23,13 +23,10 @@ class Invoices::ActionTrailsService < ApplicationService
   private
 
     def fetch_events
-      @events = Ahoy::Event.where_properties({ type: :invoice, id: invoice_id.to_i }).order({ time: :desc })
+      @events = Ahoy::Event.where_properties({ type: :invoice, id: invoice.id }).order({ time: :desc })
     end
 
     def fetch_payment_events
-      invoice = Invoice.find_by(id: invoice_id)
-      return [] if invoice.nil?
-
       @payment_events = invoice.payments.order(created_at: :desc)
     end
 
@@ -79,7 +76,6 @@ class Invoices::ActionTrailsService < ApplicationService
 
     def generic_trail_data(event)
       if event.user_id.nil?
-        invoice = Invoice.find_by(id: event.properties["id"])
         {
           type: event.name,
           user_name: invoice.client.name,
@@ -87,10 +83,11 @@ class Invoices::ActionTrailsService < ApplicationService
         }
       else
         user_id = Integer(event.user_id)
+        event_user = users[user_id]
         {
           type: event.name,
-          user_name: users[user_id].full_name,
-          user: users[user_id],
+          user_name: event_user&.full_name,
+          user: event_user&.slice(:id, :email),
           created_at: event.time
         }
       end

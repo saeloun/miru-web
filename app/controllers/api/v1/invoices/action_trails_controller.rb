@@ -2,9 +2,10 @@
 
 class Api::V1::Invoices::ActionTrailsController < Api::V1::ApplicationController
   def show
-    authorize :show, policy_class: Invoices::ActionTrailsPolicy
+    invoice = current_company.invoices.find(params[:id])
+    authorize invoice, policy_class: Invoices::ActionTrailsPolicy
 
-    action_trails_service = Invoices::ActionTrailsService.new(params[:id])
+    action_trails_service = Invoices::ActionTrailsService.new(invoice)
     action_trails_service.process
     action_trails = action_trails_service.trails
     payment_trails = action_trails_service.payment_trails
