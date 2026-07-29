@@ -207,6 +207,7 @@ class Api::V1::Mobile::CollectionsController < Api::V1::ApplicationController
       return if client.phone.blank?
 
       user = User.kept.find_by(phone: client.phone)
+      return if user && !user.employments.kept.exists?(company: current_company)
       return if user.nil? && client.email.present? && User.kept.exists?(email: client.email)
 
       user ||= build_customer_user(client)
@@ -492,8 +493,7 @@ class Api::V1::Mobile::CollectionsController < Api::V1::ApplicationController
     def customer_user_for(client)
       return if client.blank?
 
-      current_company.client_members.includes(:user).find_by(client:)&.user ||
-        User.kept.find_by(phone: client.phone)
+      current_company.client_members.includes(:user).find_by(client:)&.user
     end
 
     def customer_user_payload(user)

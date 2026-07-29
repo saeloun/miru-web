@@ -60,6 +60,33 @@ RSpec.describe "Api::V1::Invitations#update", type: :request do
       expect(invitation.reload).to be_employee
     end
 
+    it "forbids changing an owner invitation" do
+      invitation.update!(role: :owner)
+
+      send_request :patch,
+        api_v1_invitation_path(invitation),
+        params: { role: "employee" },
+        headers: auth_headers(admin)
+
+      expect(response).to have_http_status(:forbidden)
+      expect(invitation.reload).to be_owner
+    end
+
+    it "checks owner access in the CLI-bound workspace" do
+      owner_company = create(:company)
+      admin.update!(current_workspace_id: owner_company.id)
+      admin.add_role(:owner, owner_company)
+      sign_out admin
+      cli_token = CliSession.issue_for(user: admin, company:).last
+
+      put api_v1_invitation_path(invitation),
+        params: { role: "owner" },
+        headers: { "Authorization" => "Bearer #{cli_token}" }
+
+      expect(response).to have_http_status(:forbidden)
+      expect(invitation.reload).to be_employee
+    end
+
     it "rejects numeric owner roles" do
       put api_v1_invitation_path(invitation),
         params: { role: 0 },
