@@ -101,6 +101,47 @@ RSpec.describe TrialEmailsJob do
     expect { described_class.perform_now }.not_to have_enqueued_mail(SubscriptionMailer)
   end
 
+  it "sends the expired email for a trial that ended within three days" do
+    start_trial(days_ago: 15)
+
+    expect { described_class.perform_now }.to have_enqueued_mail(SubscriptionMailer, :trial_expired)
+      .with(params: { company_id: company.id, recipient_id: owner.id }, args: [])
+
+    expect(company.reload.trial_expired_email_sent_at).to eq(Time.current)
+  end
+
+  it "sends the expired email only once across repeated runs" do
+    start_trial(days_ago: 15)
+
+    expect do
+      described_class.perform_now
+      described_class.perform_now
+    end.to have_enqueued_mail(SubscriptionMailer, :trial_expired).exactly(:once)
+  end
+
+  it "does not send the expired email to a paid company" do
+    start_trial(days_ago: 15)
+    company.update!(plan_tier: "paid")
+
+    expect { described_class.perform_now }.not_to have_enqueued_mail(SubscriptionMailer, :trial_expired)
+  end
+
+  it "does not send the expired email when the trial ended more than three days ago" do
+    start_trial(days_ago: 18)
+
+    expect { described_class.perform_now }.not_to have_enqueued_mail(SubscriptionMailer, :trial_expired)
+  end
+
+  it "does not send the expired email when Stripe billing is not configured" do
+    %w[STRIPE_PLAN_PAGE_URL STRIPE_SUBSCRIPTION_PRICE_ID STRIPE_SUBSCRIPTION_PRICE_ID_MONTHLY
+       STRIPE_SUBSCRIPTION_PRICE_ID_YEARLY].each do |key|
+      allow(ENV).to receive(:[]).with(key).and_return(nil)
+    end
+    start_trial(days_ago: 15)
+
+    expect { described_class.perform_now }.not_to have_enqueued_mail(SubscriptionMailer, :trial_expired)
+  end
+
   it "sends at most one email per company per day across repeated runs" do
     start_trial(days_ago: 2)
 
