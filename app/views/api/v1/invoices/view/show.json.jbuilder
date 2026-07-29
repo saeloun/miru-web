@@ -1,7 +1,21 @@
 # frozen_string_literal: true
 
 json.url new_invoice_payment_url(invoice)
-json.invoice invoice.as_json.merge(
+json.invoice invoice.slice(
+  :id,
+  :amount,
+  :amount_due,
+  :amount_paid,
+  :currency,
+  :discount,
+  :due_date,
+  :invoice_number,
+  :issue_date,
+  :reference,
+  :status,
+  :stripe_enabled,
+  :tax
+).merge(
   invoice_taxes: invoice.invoice_taxes.map { |invoice_tax|
     {
       id: invoice_tax.id,

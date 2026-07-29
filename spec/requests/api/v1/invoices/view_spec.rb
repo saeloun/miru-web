@@ -14,6 +14,21 @@ RSpec.describe "Api::V1::Invoices::View#index", type: :request do
         expect(response).to be_successful
       end
 
+      it "does not expose internal payment metadata" do
+        invoice.update!(
+          payment_infos: {
+            stripe_payment_intent: "pi_internal",
+            razorpay_payment_link_id: "plink_internal"
+          }
+        )
+
+        send_request :get, api_v1_invoices_view_path(invoice.external_view_key)
+
+        expect(response).to be_successful
+        expect(json_response["invoice"]).not_to have_key("payment_infos")
+        expect(json_response["invoice"].to_json).not_to include("pi_internal", "plink_internal")
+      end
+
       it "keeps company financial details private and exposes bank payment details" do
         company.update!(
           bank_name: "QA Bank",
