@@ -407,10 +407,19 @@ const UserDetailsEdit = () => {
     await refetchCurrentUser();
   };
 
+  const requestCurrentPassword = () =>
+    window.prompt(i18n.t("auth.validation.currentPasswordPrompt"));
+
   const handleRegisterPasskey = async () => {
+    const currentPassword = requestCurrentPassword();
+    if (!currentPassword) return;
+
     try {
       setPasskeysBusy(true);
-      const optionsResponse = await passkeysApi.registrationOptions();
+      const optionsResponse = await passkeysApi.registrationOptions({
+        current_password: currentPassword,
+      });
+
       const credential = await beginPasskeyRegistration(
         optionsResponse.data.public_key
       );
@@ -434,9 +443,14 @@ const UserDetailsEdit = () => {
   };
 
   const handleRemovePasskey = async id => {
+    const currentPassword = requestCurrentPassword();
+    if (!currentPassword) return;
+
     try {
       setPasskeysBusy(true);
-      const response = await passkeysApi.destroy(id);
+      const response = await passkeysApi.destroy(id, {
+        current_password: currentPassword,
+      });
       syncPasskeys(response.data);
       toast.success(i18n.t("passkeys.removedSuccess"));
     } catch (error) {
@@ -449,9 +463,15 @@ const UserDetailsEdit = () => {
   };
 
   const handleTogglePasskeyRequirement = async required => {
+    const currentPassword = requestCurrentPassword();
+    if (!currentPassword) return;
+
     try {
       setPasskeysBusy(true);
-      const response = await passkeysApi.updateRequirement({ required });
+      const response = await passkeysApi.updateRequirement({
+        required,
+        current_password: currentPassword,
+      });
       syncPasskeys(response.data);
       toast.success(
         required
@@ -469,9 +489,14 @@ const UserDetailsEdit = () => {
   };
 
   const handleSetupTotp = async () => {
+    const currentPassword = requestCurrentPassword();
+    if (!currentPassword) return;
+
     try {
       setTotpBusy(true);
-      const response = await totpApi.setup();
+      const response = await totpApi.setup({
+        current_password: currentPassword,
+      });
       syncTotp(response.data);
       setTotpVerificationCode("");
       toast.success(i18n.t("twoFactor.setupReadySuccess"));
@@ -501,9 +526,14 @@ const UserDetailsEdit = () => {
   };
 
   const handleDisableTotp = async () => {
+    const currentPassword = requestCurrentPassword();
+    if (!currentPassword) return;
+
     try {
       setTotpBusy(true);
-      const response = await totpApi.destroy();
+      const response = await totpApi.destroy({
+        current_password: currentPassword,
+      });
       syncTotp(response.data);
       setTotpVerificationCode("");
       toast.success(i18n.t("twoFactor.disabledSuccess"));
@@ -517,9 +547,14 @@ const UserDetailsEdit = () => {
   };
 
   const handleRegenerateRecoveryCodes = async () => {
+    const currentPassword = requestCurrentPassword();
+    if (!currentPassword) return;
+
     try {
       setTotpBusy(true);
-      const response = await totpApi.regenerateRecoveryCodes();
+      const response = await totpApi.regenerateRecoveryCodes({
+        current_password: currentPassword,
+      });
       syncTotp(response.data);
       toast.success(i18n.t("twoFactor.regeneratedSuccess"));
     } catch (error) {

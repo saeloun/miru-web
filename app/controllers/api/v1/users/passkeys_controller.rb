@@ -6,6 +6,7 @@ class Api::V1::Users::PasskeysController < Api::V1::ApplicationController
   skip_before_action :authenticate_user!, only: :authenticate
   skip_before_action :authenticate_user_using_x_auth_token, only: :authenticate
   skip_before_action :set_virtual_verified_invitations_allowed, only: :authenticate
+  before_action :require_current_password!, only: [:registration_options, :update_requirement, :destroy]
 
   rescue_from Passkeys::ChallengeToken::InvalidTokenError, with: :render_invalid_passkey_token
   rescue_from ::WebAuthn::Error, with: :render_invalid_passkey_response
@@ -131,7 +132,7 @@ class Api::V1::Users::PasskeysController < Api::V1::ApplicationController
     end
 
     def requirement_params
-      params.permit(:required)
+      params.permit(:required, :current_password)
     end
 
     def render_passkeys(status: :ok, notice: nil)

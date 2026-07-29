@@ -4,6 +4,7 @@ class Api::V1::Users::TotpController < Api::V1::ApplicationController
   include AuthResponsePayload
 
   skip_before_action :authenticate_user!, only: :authenticate
+  before_action :require_current_password!, only: [:setup, :regenerate_recovery_codes, :destroy]
 
   rescue_from Passkeys::ChallengeToken::InvalidTokenError, with: :render_invalid_token
 
