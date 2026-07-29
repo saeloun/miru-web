@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-password = ENV.fetch("DEMO_MATRIX_PASSWORD", "password")
+password = ENV.fetch("DEMO_MATRIX_PASSWORD")
 company = Company.find_by(name: "Saeloun Inc") || Company.first
 
 raise "No company found" unless company
@@ -81,7 +81,6 @@ puts(
   {
     company_id: company.id,
     company_name: company.name,
-    password:,
     demo_client_id: demo_client.id,
     demo_client_email: demo_client.email,
     demo_project_id: demo_project.id,
