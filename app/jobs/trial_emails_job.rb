@@ -108,7 +108,10 @@ class TrialEmailsJob < ApplicationJob
       company.with_lock do
         return if company.trial_expired_email_sent_at.present?
 
-        recipients(company).each do |user|
+        eligible_recipients = recipients(company).to_a
+        return if eligible_recipients.empty?
+
+        eligible_recipients.each do |user|
           SubscriptionMailer.with(company_id: company.id, recipient_id: user.id).trial_expired.deliver_later
         end
 

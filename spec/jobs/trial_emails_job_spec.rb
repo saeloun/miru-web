@@ -119,6 +119,14 @@ RSpec.describe TrialEmailsJob do
     end.to have_enqueued_mail(SubscriptionMailer, :trial_expired).exactly(:once)
   end
 
+  it "does not stamp the marker when there are no eligible recipients so it can retry" do
+    start_trial(days_ago: 15)
+    create(:notification_preference, company:, user: owner, unsubscribed_from_all: true)
+
+    expect { described_class.perform_now }.not_to have_enqueued_mail(SubscriptionMailer, :trial_expired)
+    expect(company.reload.trial_expired_email_sent_at).to be_nil
+  end
+
   it "does not send the expired email to a paid company" do
     start_trial(days_ago: 15)
     company.update!(plan_tier: "paid")
