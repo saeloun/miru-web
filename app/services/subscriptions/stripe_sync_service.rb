@@ -54,6 +54,8 @@ module Subscriptions
       end
 
       def sync_company!(target_company, stripe_subscription)
+        became_paid = false
+
         target_company.with_lock do
           was_paid = target_company.plan_tier == "paid"
           subscription_period_end = stripe_subscription_period_end(stripe_subscription)
@@ -68,16 +70,16 @@ module Subscriptions
           )
 
           became_paid = !was_paid && target_company.plan_tier == "paid"
-          if became_paid
-            Analytics::TrackingService.new.track_subscription_purchased(
-              target_company,
-              subscription_id: subscription_value(stripe_subscription, :id),
-              subscription_status: subscription_value(stripe_subscription, :status)
-            )
-          end
-
-          notify_plan_purchase!(target_company, stripe_subscription) if notify_plan_purchase && became_paid
         end
+
+        return unless became_paid
+
+        Analytics::TrackingService.new.track_subscription_purchased(
+          target_company,
+          subscription_id: subscription_value(stripe_subscription, :id),
+          subscription_status: subscription_value(stripe_subscription, :status)
+        )
+        notify_plan_purchase!(target_company, stripe_subscription) if notify_plan_purchase
       end
 
       def disable_company!(target_company)
