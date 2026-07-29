@@ -25,6 +25,35 @@ module Analytics
       ))
     end
 
+    def track_trial_started(company, metadata = {})
+      track_event("trial_started", metadata.merge(
+        company_id: company.id,
+        user_id: user&.id,
+        trial_ends_at: company.trial_ends_at,
+        started_at: Time.current
+      ))
+    end
+
+    def track_subscription_checkout_started(company, interval:, seat_quantity:, provider:)
+      track_event("subscription_checkout_started", {
+        company_id: company.id,
+        user_id: user&.id,
+        interval:,
+        seat_quantity:,
+        provider:,
+        started_at: Time.current
+      })
+    end
+
+    def track_subscription_purchased(company, metadata = {})
+      track_event("subscription_purchased", metadata.merge(
+        company_id: company.id,
+        subscription_interval: company.subscription_interval,
+        seat_quantity: company.billable_team_seats,
+        converted_at: Time.current
+      ))
+    end
+
     def track_logout(metadata = {})
       track_event("user_logout", metadata.merge(
         user_id: user&.id,

@@ -37,6 +37,7 @@ class CreateCompanyService
       return unless company.trial_available?
 
       company.start_pro_trial!
+      Analytics::TrackingService.new(user: current_user).track_trial_started(company, source: "organization_setup")
       return unless TrialEmailsJob.billing_configured?
 
       SubscriptionMailer.with(

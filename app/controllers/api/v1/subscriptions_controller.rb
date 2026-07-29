@@ -17,6 +17,7 @@ class Api::V1::SubscriptionsController < Api::V1::ApplicationController
 
     plan_page_url = checkout_plan_page_url
     if plan_page_url.present?
+      track_checkout_started("stripe_plan_page")
       render json: checkout_payload(plan_page_url), status: 200
       return
     end
@@ -41,6 +42,7 @@ class Api::V1::SubscriptionsController < Api::V1::ApplicationController
       }
     )
 
+    track_checkout_started("stripe_checkout")
     render json: checkout_payload(session.url), status: 200
   rescue Stripe::StripeError => e
     render json: { errors: e.message }, status: 422
@@ -68,6 +70,7 @@ class Api::V1::SubscriptionsController < Api::V1::ApplicationController
     authorize current_company, policy_class: CompanyPolicy
 
     current_company.start_pro_trial!
+    Analytics::TrackingService.new(user: current_user).track_trial_started(current_company, source: "billing")
     SubscriptionMailer.with(company_id: current_company.id, recipient_id: current_user.id).trial_started.deliver_later
 
     render_summary(notice: I18n.t("subscriptions.trial_started"))
@@ -165,5 +168,14 @@ class Api::V1::SubscriptionsController < Api::V1::ApplicationController
 
     def checkout_seat_quantity
       @checkout_seat_quantity ||= current_company.billable_team_seats
+    end
+
+    def track_checkout_started(provider)
+      Analytics::TrackingService.new(user: current_user).track_subscription_checkout_started(
+        current_company,
+        interval: billing_interval,
+        seat_quantity: checkout_seat_quantity,
+        provider:
+      )
     end
 end
