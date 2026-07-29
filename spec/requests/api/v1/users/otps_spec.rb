@@ -29,16 +29,23 @@ RSpec.describe "Api::V1::Users::Otps", type: :request do
     expect(json_response.dig("company", "id")).to eq(company.id)
   end
 
-  it "returns workspace choices when the phone belongs to multiple workspaces" do
+  it "does not disclose workspace choices before OTP verification" do
     other_company = create(:company, name: "Other")
     create(:employment, company: other_company, user:)
     user.add_role :admin, other_company
 
     post "/api/v1/users/otp/request", params: { phone: "+91 98765 43210" }
 
-    expect(response).to have_http_status(:conflict)
-    expect(json_response["requires_workspace"]).to eq(true)
-    workspace_ids = json_response["workspaces"].pluck("id")
-    expect(workspace_ids).to contain_exactly(company.id, other_company.id)
+    expect(response).to have_http_status(:accepted)
+    expect(json_response).not_to have_key("workspaces")
+    expect(json_response["pending_token"]).to be_present
+  end
+
+  it "returns the same challenge shape for an unknown phone" do
+    post "/api/v1/users/otp/request", params: { phone: "+91 99999 99999" }
+
+    expect(response).to have_http_status(:accepted)
+    expect(json_response).to include("message" => "OTP sent", "otp_sent" => true)
+    expect(json_response["pending_token"]).to be_present
   end
 end
