@@ -110,4 +110,33 @@ RSpec.describe InvoicePayment::Settle do
       expect(client1_sent_invoice1.status).to eq("paid")
     end
   end
+
+  context "when Stripe settles the invoice" do
+    let(:invoice) do
+      create(
+        :invoice,
+        client: client1,
+        status: "sent",
+        amount: 100,
+        amount_due: 100,
+        amount_paid: 0
+      )
+    end
+    let(:payment_params) do
+      {
+        invoice_id: invoice.id,
+        transaction_date: Date.current,
+        transaction_type: "stripe",
+        amount: 100,
+        note: "Stripe payment"
+      }
+    end
+
+    it "enqueues payment confirmations at settlement time" do
+      expect {
+        described_class.process(payment_params, invoice)
+      }.to have_enqueued_mail(PaymentMailer, :payment)
+        .and have_enqueued_mail(ClientPaymentMailer, :payment)
+    end
+  end
 end
