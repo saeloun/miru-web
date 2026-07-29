@@ -143,6 +143,29 @@ RSpec.describe "Api::V1::Mobile::Collections", type: :request do
     expect(company.client_members.where(client:, user: existing_customer).count).to eq(1)
   end
 
+  it "does not bind an existing account to a new collection phone" do
+    victim_company = create(:company)
+    victim = create(
+      :user,
+      current_workspace_id: victim_company.id,
+      email: "victim@example.com",
+      phone: "+919999999999"
+    )
+
+    post "/api/v1/mobile/collections",
+      params: { collection: { name: "Victim", email: victim.email, phone: "9876543210" } },
+      headers: auth_headers(user)
+
+    expect(response).to have_http_status(:created)
+    expect(json_response["customer_user"]).to be_nil
+    expect(victim.reload).to have_attributes(
+      phone: "+919999999999",
+      current_workspace_id: victim_company.id
+    )
+    expect(victim).not_to have_role(:client, company)
+    expect(company.employments.exists?(user: victim)).to eq(false)
+  end
+
   it "creates a synthetic customer email when only name and phone are provided" do
     post "/api/v1/mobile/collections",
       params: { collection: { name: "Asha Rao", phone: "9876543210" } },
