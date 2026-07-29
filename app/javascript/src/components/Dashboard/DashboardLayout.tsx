@@ -31,6 +31,7 @@ import useThemeMode from "../../common/useThemeMode";
 import { hasProAccess } from "../../lib/planAccess";
 import { t } from "../../i18n";
 import CompactLocaleSwitcher from "../common/CompactLocaleSwitcher";
+import TrialBanner from "../common/TrialBanner";
 import DashboardTimerControl from "./DashboardTimerControl";
 
 interface DashboardLayoutProps {
@@ -190,11 +191,13 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
 
   const filterNavigationGroup = group => ({
     ...group,
-    items: group.items.filter(
-      item =>
-        (!item.roles || item.roles.includes(companyRole)) &&
-        !(item.href === "/reports" && !hasProAccess(company))
-    ),
+    items: group.items
+      .filter(item => !item.roles || item.roles.includes(companyRole))
+      .map(item =>
+        item.href === "/reports" && !hasProAccess(company)
+          ? { ...item, href: "/settings/billing?feature=reports" }
+          : item
+      ),
   });
 
   // prettier-ignore
@@ -366,6 +369,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
         </header>
 
         <main className="px-4 pb-8 pt-4 lg:px-8 w-full min-w-0 overflow-x-hidden">
+          <TrialBanner />
           {children}
         </main>
       </div>

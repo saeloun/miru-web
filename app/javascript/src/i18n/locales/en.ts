@@ -46,6 +46,15 @@ const en = {
   toggleSidebar: "Toggle Sidebar",
   morePages: "More pages",
 
+  trialBanner: {
+    daysLeftOne: "1 day left in your Pro trial",
+    daysLeft: "%{count} days left in your Pro trial",
+    upgrade: "Upgrade",
+    trialEndedTitle: "Your Pro trial has ended",
+    trialEndedDescription:
+      "Upgrade to keep Reports, analytics, and your full team.",
+  },
+
   // Common labels
   name: "Name",
   email: "Email",
@@ -1951,6 +1960,14 @@ const en = {
     planCadence: {
       monthly: "Billed month to month",
       yearlySavings: "Save 2 months per seat",
+    },
+    featureGate: {
+      reportsTitle: "Reports is a Pro feature",
+      reportsDescription:
+        "Upgrade to Pro to unlock Reports, analytics, and exports.",
+      seatsTitle: "You've reached your free plan's team limit",
+      seatsDescription:
+        "Upgrade to Pro to add unlimited team members to this workspace.",
     },
     alerts: {
       subscriptionUpdatedTitle: "Subscription updated",
