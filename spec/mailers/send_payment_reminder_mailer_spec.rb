@@ -14,7 +14,13 @@ RSpec.describe SendPaymentReminderMailer, type: :mailer do
       "You can find the respective payment links along with the invoice details given below"
     }
     let(:mail) {
-      SendPaymentReminderMailer.with(selected_invoices: [invoice.id], subject:, recipients:, message:).send_payment_reminder
+      SendPaymentReminderMailer.with(
+        client_id: client.id,
+        selected_invoices: [invoice.id],
+        subject:,
+        recipients:,
+        message:
+      ).send_payment_reminder
     }
     let(:body) { mail.html_part&.body&.decoded || mail.body.decoded }
 

@@ -2,10 +2,11 @@
 
 class SendPaymentReminderMailer < ApplicationMailer
   def send_payment_reminder
-    @invoices = Invoice.where(id: params[:selected_invoices])
+    @client = Client.find(params[:client_id])
+    @invoices = @client.invoices.find(params[:selected_invoices])
     recipients = params[:recipients]
     @message = params[:message]
-    @company = @invoices.first.company
+    @company = @client.company
     @company_logo = company_logo
     @amount = FormatAmountService.new(@company.base_currency, @invoices.first.amount).process
 
