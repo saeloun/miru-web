@@ -113,6 +113,22 @@ RSpec.describe SubscriptionMailer, type: :mailer do
     end
   end
 
+  describe "#trial_expired" do
+    it "emails the recipient with the billing URL" do
+      company = create(:company, name: "Saeloun Inc")
+      user = create(:user, email: "vipul@saeloun.com", first_name: "Vipul")
+      allow(ENV).to receive(:[]).and_call_original
+      allow(ENV).to receive(:[]).with("APP_BASE_URL").and_return("https://app.miru.so")
+
+      mail = described_class.with(company_id: company.id, recipient_id: user.id).trial_expired
+
+      expect(mail.to).to eq(["vipul@saeloun.com"])
+      expect(mail.subject).to eq("Your Miru Pro trial has ended — upgrade to keep your team")
+      expect(mail.html_part.body.decoded).to include("https://app.miru.so/settings/billing")
+      expect(mail.text_part.body.decoded).to include("https://app.miru.so/settings/billing")
+    end
+  end
+
   describe "#plan_purchased" do
     it "emails the configured internal recipient with the purchase details" do
       company = create(:company, name: "Saeloun Inc")
