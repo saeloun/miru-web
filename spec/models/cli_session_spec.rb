@@ -20,6 +20,8 @@ RSpec.describe CliSession, type: :model do
     it "extends the expiry when the token is used" do
       company = create(:company)
       user = create(:user, current_workspace_id: company.id)
+      create(:employment, company:, user:)
+      user.add_role(:employee, company)
       cli_session, plain_token = described_class.issue_for(user:, company:)
       original_expires_at = cli_session.expires_at
       authenticated_session = nil
@@ -31,6 +33,45 @@ RSpec.describe CliSession, type: :model do
       end
 
       expect(cli_session.reload.expires_at).to be > original_expires_at
+    end
+
+    it "revokes a token when the user is deactivated" do
+      company = create(:company)
+      user = create(:user, current_workspace_id: company.id)
+      create(:employment, company:, user:)
+      user.add_role(:employee, company)
+      session, token = described_class.issue_for(user:, company:)
+
+      user.discard!
+
+      expect(described_class.authenticate(token)).to be_nil
+      expect(session.reload.revoked_at).to be_present
+    end
+
+    it "revokes a token when company membership is removed" do
+      company = create(:company)
+      user = create(:user, current_workspace_id: company.id)
+      employment = create(:employment, company:, user:)
+      user.add_role(:employee, company)
+      session, token = described_class.issue_for(user:, company:)
+
+      employment.discard!
+
+      expect(described_class.authenticate(token)).to be_nil
+      expect(session.reload.revoked_at).to be_present
+    end
+
+    it "revokes a token when the user has no company role" do
+      company = create(:company)
+      user = create(:user, current_workspace_id: company.id)
+      create(:employment, company:, user:)
+      user.add_role(:employee, company)
+      session, token = described_class.issue_for(user:, company:)
+
+      user.remove_role(:employee, company)
+
+      expect(described_class.authenticate(token)).to be_nil
+      expect(session.reload.revoked_at).to be_present
     end
   end
 end

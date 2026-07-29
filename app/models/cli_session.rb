@@ -29,6 +29,13 @@ class CliSession < ApplicationRecord
     session = active.includes(:user, :company).find_by(token_digest: digest(plain_token))
     return unless session
 
+    unless session.user.kept? &&
+        session.user.employments.kept.exists?(company_id: session.company_id) &&
+        session.user.roles.exists?(resource: session.company)
+      session.revoke!
+      return
+    end
+
     session.update_columns(last_used_at: Time.current, expires_at: SESSION_LIFETIME.from_now)
     session
   end
