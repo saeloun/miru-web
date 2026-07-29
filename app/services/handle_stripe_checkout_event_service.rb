@@ -72,13 +72,30 @@ class HandleStripeCheckoutEventService
       end
     end
 
+    def resolve_subscription_company(checkout_session)
+      metadata = checkout_session.metadata
+      company_id = (metadata && metadata.to_h[:company_id]).presence ||
+        checkout_session.client_reference_id.presence
+      Company.find_by(id: company_id)
+    end
+
+    def mismatched_company?(company, stripe_customer_id)
+      company.present? &&
+        company.stripe_customer_id.present? &&
+        stripe_customer_id.present? &&
+        company.stripe_customer_id != stripe_customer_id
+    end
+
     def handle_checkout_session_completed
       checkout_session = event.data.object
 
       if checkout_session.mode == "subscription"
-        company_id = checkout_session.metadata&.company_id.presence ||
-          checkout_session.client_reference_id.presence
-        company = Company.find_by(id: company_id)
+        company = resolve_subscription_company(checkout_session)
+
+        if mismatched_company?(company, checkout_session.customer)
+          set_response({ message: "Invalid payload!" }, 400)
+          return
+        end
 
         success =
           Subscriptions::StripeSyncService.process(
