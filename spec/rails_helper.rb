@@ -41,6 +41,9 @@ VCR.configure do |config|
   config.configure_rspec_metadata!
   config.allow_http_connections_when_no_cassette = true
   config.ignore_hosts "127.0.0.1", "localhost", "analytics-api.buildkite.com"
+  config.before_record do |interaction|
+    interaction.request.headers["Authorization"] = ["<FILTERED>"] if interaction.request.headers["Authorization"]
+  end
 end
 
 RSpec.configure do |config|
