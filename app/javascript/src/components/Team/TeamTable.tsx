@@ -645,7 +645,7 @@ const TeamTable: React.FC = () => {
               <button
                 type="button"
                 className="text-sm font-medium text-primary hover:underline"
-                onClick={() => navigate("/settings/billing")}
+                onClick={() => navigate("/settings/billing?feature=seats")}
               >
                 {i18n.t("team.upgradePlan")}
               </button>

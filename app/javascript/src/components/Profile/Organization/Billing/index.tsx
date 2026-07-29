@@ -439,6 +439,17 @@ const Billing = () => {
         </Alert>
       )}
 
+      {featureGate === "seats" && summary && !summary.pro_access && (
+        <Alert>
+          <AlertTitle>
+            {i18n.t("billingSettings.featureGate.seatsTitle")}
+          </AlertTitle>
+          <AlertDescription>
+            {i18n.t("billingSettings.featureGate.seatsDescription")}
+          </AlertDescription>
+        </Alert>
+      )}
+
       <Card className="border-border bg-card shadow-sm">
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle>{i18n.t("billingSettings.membership")}</CardTitle>
