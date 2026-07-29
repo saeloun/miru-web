@@ -208,7 +208,7 @@ RSpec.describe Api::V1::SubscriptionsController, type: :request do
       expect(Ahoy::Event.where(name: "subscription_checkout_started").last.properties).to include(
         "company_id" => company.id,
         "user_id" => user.id,
-        "interval" => "yearly",
+        "billing_interval" => "yearly",
         "seat_quantity" => 2,
         "provider" => "stripe_plan_page"
       )
@@ -252,7 +252,7 @@ RSpec.describe Api::V1::SubscriptionsController, type: :request do
       expect(Ahoy::Event.where(name: "subscription_checkout_started").last.properties).to include(
         "company_id" => company.id,
         "user_id" => user.id,
-        "interval" => "monthly",
+        "billing_interval" => "monthly",
         "seat_quantity" => 1,
         "provider" => "stripe_checkout"
       )

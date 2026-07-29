@@ -44,7 +44,7 @@ RSpec.describe Subscriptions::StripeSyncService do
         "company_id" => company.id,
         "subscription_id" => "sub_123",
         "subscription_status" => "active",
-        "subscription_interval" => "month",
+        "billing_interval" => "monthly",
         "seat_quantity" => 1
       )
     end
