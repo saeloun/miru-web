@@ -192,5 +192,20 @@ RSpec.describe "Api::V1::Invoices::LineItems#index", type: :request do
       expect(response).to have_http_status(:not_found)
       expect(json_response["error"]).to eq("Client not found")
     end
+
+    it "does not return entries when filtering by another workspace's client" do
+      other_company = create(:company)
+      other_client = create(:client, company: other_company)
+      other_project = create(:project, client: other_client, billable: true)
+      other_entry = create(:timesheet_entry, project: other_project, bill_status: "unbilled")
+
+      send_request :get, api_v1_line_items_invoices_path(client_id: client.id), params: {
+        client: [other_client.id]
+      }, headers: auth_headers(user)
+
+      expect(response).to have_http_status(:ok)
+      expect(json_response["new_line_item_entries"]).to be_empty
+      expect(json_response.to_json).not_to include(other_entry.note)
+    end
   end
 end
