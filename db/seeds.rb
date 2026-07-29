@@ -502,4 +502,3 @@ puts "- oliver@example.com (client)"
 puts "- maya.client@example.com (client)"
 puts "- finance.microsoft@example.com (client)"
 puts "- accounts.acme@example.com (client)"
-puts "Development password: #{PASSWORD}" unless Rails.env.production?

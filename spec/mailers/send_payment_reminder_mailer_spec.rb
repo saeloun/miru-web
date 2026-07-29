@@ -35,5 +35,17 @@ RSpec.describe SendPaymentReminderMailer, type: :mailer do
       expect(body).to include("Open invoice")
       expect(body).to include("Amount due")
     end
+
+    it "rejects invoices from another client" do
+      other_invoice = create(:invoice)
+      foreign_mail = SendPaymentReminderMailer.with(
+        client_id: client.id,
+        selected_invoices: [other_invoice.id],
+        recipients:,
+        message:
+      ).send_payment_reminder
+
+      expect { foreign_mail.body }.to raise_error(ActiveRecord::RecordNotFound)
+    end
   end
 end

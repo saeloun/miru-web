@@ -2,6 +2,7 @@
 
 class Api::V1::InvitationsController < Api::V1::ApplicationController
   before_action :set_invitation, only: [:update, :destroy, :resend]
+  before_action :validate_role, only: [:create, :update]
 
   def create
     authorize :invitation
@@ -50,6 +51,13 @@ class Api::V1::InvitationsController < Api::V1::ApplicationController
 
     def invitation_params
       params.permit(policy(:invitation).permitted_attributes)
+    end
+
+    def validate_role
+      return unless invitation_params.key?(:role)
+      return if invitation_params[:role].blank? || Invitation.roles.key?(invitation_params[:role])
+
+      render json: { errors: "Role is invalid" }, status: 400
     end
 
     def set_invitation

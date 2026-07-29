@@ -143,6 +143,19 @@ RSpec.describe "Api::V1::Mobile::Collections", type: :request do
     expect(company.client_members.where(client:, user: existing_customer).count).to eq(1)
   end
 
+  it "does not move an existing customer login to another workspace" do
+    other_company = create(:company)
+    existing_customer = create(:user, current_workspace_id: other_company.id, phone: "+919876543210")
+
+    post "/api/v1/mobile/collections",
+      params: { collection: { name: "Asha Rao", phone: "9876543210" } },
+      headers: auth_headers(user)
+
+    expect(response).to have_http_status(:created)
+    expect(json_response.dig("customer_user", "id")).to eq(existing_customer.id)
+    expect(existing_customer.reload.current_workspace_id).to eq(other_company.id)
+  end
+
   it "does not bind an existing account to a new collection phone" do
     victim_company = create(:company)
     victim = create(

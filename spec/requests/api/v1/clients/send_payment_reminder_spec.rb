@@ -39,6 +39,16 @@ RSpec.describe "Api::V1::Clients#send_payment_reminder", type: :request do
     expect(response).to have_http_status(:not_found)
   end
 
+  it "rejects an empty invoice selection" do
+    expect do
+      post send_payment_reminder_api_v1_client_path(client),
+        params: reminder_params([], [recipient.email]),
+        headers: auth_headers(admin)
+    end.not_to have_enqueued_mail(SendPaymentReminderMailer, :send_payment_reminder)
+
+    expect(response).to have_http_status(:not_found)
+  end
+
   def reminder_params(invoice_ids, recipients)
     {
       client_email: {

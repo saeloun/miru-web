@@ -15,4 +15,8 @@ RSpec.describe "Production seeds" do
   it "does not run seeds during deployment" do
     expect(Rails.root.join("bin/deploy-hetzner").read).not_to include("db:seed")
   end
+
+  it "does not print the configured password" do
+    expect(Rails.root.join("db/seeds.rb").read).not_to match(/puts.*PASSWORD/)
+  end
 end

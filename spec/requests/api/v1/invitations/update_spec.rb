@@ -60,6 +60,16 @@ RSpec.describe "Api::V1::Invitations#update", type: :request do
       expect(invitation.reload).to be_employee
     end
 
+    it "rejects numeric owner roles" do
+      put api_v1_invitation_path(invitation),
+        params: { role: 0 },
+        headers: auth_headers(admin),
+        as: :json
+
+      expect(response).to have_http_status(:bad_request)
+      expect(invitation.reload).to be_employee
+    end
+
     it "returns not found for an invitation from another company" do
       send_request :patch,
         api_v1_invitation_path(other_invitation),

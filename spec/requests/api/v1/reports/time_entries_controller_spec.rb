@@ -200,6 +200,17 @@ RSpec.describe Api::V1::Reports::TimeEntriesController, type: :request do
       expect(response).to have_http_status(:ok)
     end
 
+    it "does not download entries from another company" do
+      other_client = create(:client)
+      other_project = create(:project, client: other_client, name: "Foreign project")
+      create(:timesheet_entry, project: other_project, work_date: Date.current)
+
+      get download_api_v1_reports_time_entries_path(format: :csv), params: { client: [other_client.id] }
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).not_to include("Foreign project")
+    end
+
     context "when user is not authorized" do
       before do
         user.remove_role(:admin, company)

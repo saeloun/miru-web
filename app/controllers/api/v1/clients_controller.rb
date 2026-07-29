@@ -84,7 +84,9 @@ class Api::V1::ClientsController < Api::V1::ApplicationController
   def send_payment_reminder
     authorize client
 
-    selected_invoices = client.invoices.find(client_email_params[:selected_invoices])
+    invoice_ids = client_email_params[:selected_invoices]
+    raise ActiveRecord::RecordNotFound if invoice_ids.blank?
+    selected_invoices = client.invoices.find(invoice_ids)
     SendPaymentReminderMailer.with(
       client_id: client.id,
       recipients: client.send_invoice_emails(@virtual_verified_invitations_allowed),
