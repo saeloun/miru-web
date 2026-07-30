@@ -6,7 +6,7 @@ description: Learn how to work with documentation
 
 Thank you for your interest in contributing to the documentation for Miru Web! Your contributions help improve the user experience and make it easier for others to use and understand the application.
 
-Miru Docs is built using [Docusaurus 2](https://v2.docusaurus.io/), a modern static website generator. This guide will walk you through the steps required to set up the project locally and make changes to the documentation.
+Miru Docs is built using [Docusaurus 3](https://docusaurus.io/), a modern static website generator. This guide will walk you through the steps required to set up the project locally and make changes to the documentation.
 
 ## Installation
 
@@ -22,13 +22,13 @@ git clone https://github.com/<your-name>/miru-web.git
 
 ```bash
 cd miru-web/docs
-yarn install
+pnpm install
 ```
 
 #### 4. Start the development server
 
 ```bash
-yarn start
+pnpm start
 ```
 
 #### 5. Navigate to [http://localhost:3000](http://localhost:3000) to access your running app.
