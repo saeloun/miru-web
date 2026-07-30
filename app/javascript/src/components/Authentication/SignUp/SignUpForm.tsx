@@ -43,6 +43,7 @@ const SignUpForm = () => {
     try {
       const { first_name, last_name, email, password, confirm_password } =
         values;
+      const searchParams = new URLSearchParams(window.location.search);
 
       const payload = {
         first_name,
@@ -50,6 +51,18 @@ const SignUpForm = () => {
         email,
         password,
         password_confirmation: confirm_password,
+        ...[
+          "utm_source",
+          "utm_medium",
+          "utm_campaign",
+          "utm_term",
+          "utm_content",
+        ].reduce((attribution, key) => {
+          const value = searchParams.get(key);
+          if (value) attribution[key] = value;
+
+          return attribution;
+        }, {} as Record<string, string>),
       };
       const res = await authenticationApi.signup(payload);
       navigate(`/email_confirmation?email=${res.data.email}`);

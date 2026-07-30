@@ -2,6 +2,8 @@
 
 module Analytics
   class TrackingService
+    BILLING_INTERVALS = { "month" => "monthly", "year" => "yearly" }.freeze
+
     attr_reader :user, :ahoy
 
     def initialize(user: nil, ahoy: nil)
@@ -15,6 +17,42 @@ module Analytics
         user_id: user&.id,
         email: user&.email,
         login_time: Time.current
+      ))
+    end
+
+    def track_signup(metadata = {})
+      track_event("user_signup", metadata.merge(
+        user_id: user&.id,
+        signed_up_at: Time.current
+      ))
+    end
+
+    def track_trial_started(company, metadata = {})
+      track_event("trial_started", metadata.merge(
+        company_id: company.id,
+        user_id: user&.id,
+        trial_ends_at: company.trial_ends_at,
+        started_at: Time.current
+      ))
+    end
+
+    def track_subscription_checkout_started(company, interval:, seat_quantity:, provider:)
+      track_event("subscription_checkout_started", {
+        company_id: company.id,
+        user_id: user&.id,
+        billing_interval: normalized_billing_interval(interval),
+        seat_quantity:,
+        provider:,
+        started_at: Time.current
+      })
+    end
+
+    def track_subscription_purchased(company, metadata = {})
+      track_event("subscription_purchased", metadata.merge(
+        company_id: company.id,
+        billing_interval: normalized_billing_interval(company.subscription_interval),
+        seat_quantity: company.billable_team_seats,
+        converted_at: Time.current
       ))
     end
 
@@ -260,6 +298,10 @@ module Analytics
     end
 
     private
+
+      def normalized_billing_interval(interval)
+        BILLING_INTERVALS.fetch(interval.to_s, interval)
+      end
 
       def track_event(name, properties = {})
         clean_properties = properties.reject { |_, v| v.nil? }

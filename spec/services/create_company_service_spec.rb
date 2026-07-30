@@ -19,12 +19,20 @@ RSpec.describe CreateCompanyService do
 
     it "starts the 14-day pro trial for the new company" do
       travel_to(Time.zone.local(2026, 7, 14, 12, 0, 0)) do
-        company = described_class.new(user, params: company_params).process
+        company = nil
+        expect do
+          company = described_class.new(user, params: company_params).process
+        end.to change { Ahoy::Event.where(name: "trial_started").count }.by(1)
 
         expect(company.trial_started_at).to eq(Time.current)
         expect(company.trial_ends_at).to eq(14.days.from_now)
         expect(company.trial_active?).to be(true)
         expect(company.pro_access?).to be(true)
+        expect(Ahoy::Event.where(name: "trial_started").last.properties).to include(
+          "company_id" => company.id,
+          "user_id" => user.id,
+          "source" => "organization_setup"
+        )
       end
     end
 

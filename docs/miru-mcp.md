@@ -67,7 +67,7 @@ When blocked, `/mcp` returns HTTP `403` with JSON-RPC error code `-32003` and `e
 Notes:
 
 - If `MCP_SERVER_ENABLED=false`, endpoint returns HTTP `404` with JSON-RPC code `-32004`.
-- If `MCP_ALLOWED_ORIGINS` is unset, allowed origin defaults to the current request base URL.
+- The current request base URL (same origin) is always allowed; `MCP_ALLOWED_ORIGINS` adds extra origins on top of it. Matching is case-insensitive.
 - If `Origin` header is provided and not allowed, endpoint returns HTTP `403` with code `-32001`.
 
 ## Authentication
