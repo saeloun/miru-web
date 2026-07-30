@@ -20,7 +20,7 @@ Follow these steps to **sign** **up** on **Miru:**
 
 Follow the steps mentioned below to log in:
 
-- Go to [miru.so](https://app.miru.so/signup)
+- Go to [miru.so](https://app.miru.so/login)
 - Enter your **Miru Email** and **Password**
 - Click on the **login** button and you’ll be directed to your **Miru account**
 
@@ -28,7 +28,7 @@ Follow the steps mentioned below to log in:
 
 In case, you have forgotten your password, you can perform the following steps:
 
-- Visit [miru.so](https://app.miru.so/signup) and click on “**Get Started**”
+- Visit [miru.so](https://app.miru.so/password/new)
 - Click on the button, **reset your password**, and enter your email ID here
 - You will now receive a **password reset** email from Miru
 - Open the email and click on the **reset password** option
