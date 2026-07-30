@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_07_29_160113) do
+ActiveRecord::Schema[8.1].define(version: 2026_07_30_000000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_stat_statements"
@@ -613,6 +613,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_29_160113) do
     t.index ["company_id"], name: "index_leaves_on_company_id"
     t.index ["discarded_at"], name: "index_leaves_on_discarded_at"
     t.index ["year", "company_id"], name: "index_leaves_on_year_and_company_id", unique: true
+  end
+
+  create_table "mcp_idempotency_records", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "expires_at", null: false
+    t.string "key_digest", null: false
+    t.jsonb "response", null: false
+    t.datetime "updated_at", null: false
+    t.index ["expires_at"], name: "index_mcp_idempotency_records_on_expires_at"
+    t.index ["key_digest"], name: "index_mcp_idempotency_records_on_key_digest", unique: true
   end
 
   create_table "metrics", force: :cascade do |t|
