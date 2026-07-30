@@ -13,9 +13,12 @@ class InvoicePayment::StripePaymentSucceeded < ApplicationService
   def process
     @invoice = Invoice.where("payment_infos ->> 'stripe_payment_intent' = ?", data_object.id).first
     return false if invoice.blank?
-    return true if invoice.paid?
 
-    InvoicePayment::Settle.process(payment_params, invoice)
+    invoice.with_lock do
+      return true if invoice.paid? || Payment.exists?(provider_event_id: event.id)
+
+      InvoicePayment::Settle.process(payment_params, invoice)
+    end
   rescue StandardError => error
     Rails.logger.error error.message
     Rails.logger.error error.backtrace.join("\n")
@@ -31,7 +34,8 @@ class InvoicePayment::StripePaymentSucceeded < ApplicationService
         transaction_type: "stripe",
         amount: Money.from_cents(amount_total_cents, data_object.currency).amount,
         payment_currency: data_object.currency.upcase,
-        note: "Stripe_Payment_Success"
+        note: "Stripe_Payment_Success",
+        provider_event_id: event.id
       }
     end
 

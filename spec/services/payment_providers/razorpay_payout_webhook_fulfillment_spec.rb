@@ -50,6 +50,21 @@ RSpec.describe PaymentProviders::RazorpayPayoutWebhookFulfillment do
     expect(payout.processed_at).to be_present
   end
 
+  it "rechecks the payout transition after acquiring the lock" do
+    allow(RazorpayPayout).to receive(:find_by).and_return(payout)
+    expect(payout).to receive(:with_lock) do |&block|
+      payout.update_columns(status: RazorpayPayout.statuses.fetch("processed"))
+      payout.reload
+      block.call
+    end
+
+    fulfillment = described_class.new(payload:, signature: sign(payload))
+
+    expect(fulfillment.process).to be(true)
+    expect(payout.reload).to be_processed
+    expect(payout.raw_response).to eq({})
+  end
+
   it "ignores payout.updated deliveries that would regress status" do
     updated_payload = JSON.parse(payload)
     updated_payload["event"] = "payout.updated"

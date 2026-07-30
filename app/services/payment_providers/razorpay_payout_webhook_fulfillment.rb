@@ -32,14 +32,17 @@ module PaymentProviders
       return fail_with("Razorpay payout not found") if payout.blank?
       return fail_with("Razorpay webhook secret is not configured") if provider&.webhook_secret.blank?
       return fail_with("Invalid Razorpay webhook signature", :invalid_signature) unless valid_signature?
-      return true unless transition_allowed?
 
-      payout.update!(
-        status: next_status,
-        failure_reason: failure_reason,
-        raw_response: payout.raw_response.merge("webhook" => parsed_payload),
-        processed_at: processed_at
-      )
+      payout.with_lock do
+        if transition_allowed?
+          payout.update!(
+            status: next_status,
+            failure_reason: failure_reason,
+            raw_response: payout.raw_response.merge("webhook" => parsed_payload),
+            processed_at: processed_at
+          )
+        end
+      end
       true
     rescue JSON::ParserError
       fail_with("Invalid Razorpay webhook payload")
