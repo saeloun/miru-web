@@ -42,7 +42,9 @@ class Api::V1::TeamMembers::DetailsController < Api::V1::ApplicationController
     end
 
     def changing_another_users_phone?
-      detail_params.key?(:phone) && employment.user_id != current_user.id
+      employment.user_id != current_user.id &&
+        detail_params.key?(:phone) &&
+        detail_params[:phone].to_s != employment.user.phone.to_s
     end
 
     def render_forbidden_phone_change

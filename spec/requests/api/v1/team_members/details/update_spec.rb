@@ -304,5 +304,20 @@ RSpec.describe "Api::V1::TeamMembers::DetailsController#update", type: :request 
         expect(user.reload.phone).to eq(original_phone)
       end
     end
+
+    it "allows other profile changes when the phone is unchanged" do
+      admin = create(:user, current_workspace_id: company.id)
+      create(:employment, user: admin, company:)
+      admin.add_role :admin, company
+      sign_in admin
+
+      send_request :patch, api_v1_team_details_path(
+        team_id: employment.user_id,
+        params: { user: { first_name: "Updated", phone: user.phone } }
+      ), headers: auth_headers(admin)
+
+      expect(response).to have_http_status(:ok)
+      expect(user.reload.first_name).to eq("Updated")
+    end
   end
 end
