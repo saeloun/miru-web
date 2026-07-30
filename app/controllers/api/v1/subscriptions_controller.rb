@@ -142,14 +142,15 @@ class Api::V1::SubscriptionsController < Api::V1::ApplicationController
     end
 
     def checkout_price_id
-      interval_key =
+      candidates =
         if billing_interval == "yearly"
-          "STRIPE_SUBSCRIPTION_PRICE_ID_YEARLY"
+          %w[STRIPE_SUBSCRIPTION_PRICE_ID_YEARLY STRIPE_YEARLY_PRICE_ID]
         else
-          "STRIPE_SUBSCRIPTION_PRICE_ID_MONTHLY"
+          %w[STRIPE_SUBSCRIPTION_PRICE_ID_MONTHLY STRIPE_MONTHLY_PRICE_ID]
         end
+      candidates << "STRIPE_SUBSCRIPTION_PRICE_ID"
 
-      ENV[interval_key].presence || ENV["STRIPE_SUBSCRIPTION_PRICE_ID"].to_s
+      candidates.filter_map { |name| ENV[name].presence }.first.to_s
     end
 
     def ensure_stripe_customer_id
