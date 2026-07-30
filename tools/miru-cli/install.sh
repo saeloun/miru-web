@@ -9,7 +9,10 @@ fi
 GOBIN_DIR="${HOME}/.local/bin"
 mkdir -p "${GOBIN_DIR}"
 
-mise exec go@1.24.1 -- env GOBIN="${GOBIN_DIR}" go install github.com/saeloun/miru-web/tools/miru-cli/cmd/miru@latest
+# ponytail: pin until release automation publishes immutable, reviewed CLI tags.
+MIRU_CLI_REVISION="b45dee47c3aa58d6312dabfad3b40012b04071fd"
+mise exec go@1.25.12 -- env GOBIN="${GOBIN_DIR}" \
+  go install "github.com/saeloun/miru-web/tools/miru-cli/cmd/miru@${MIRU_CLI_REVISION}"
 
 cat <<EOF
 Miru CLI installed to ${GOBIN_DIR}/miru

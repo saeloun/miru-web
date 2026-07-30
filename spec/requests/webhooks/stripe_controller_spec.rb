@@ -3,6 +3,14 @@
 require "rails_helper"
 
 RSpec.describe "Stripe webhooks", type: :request do
+  it "rejects oversized webhook bodies before verification" do
+    post "/webhooks/stripe/checkout/fulfillment",
+      params: "x" * (Webhooks::StripeController::MAX_WEBHOOK_BODY_BYTES + 1),
+      headers: { "CONTENT_TYPE" => "application/octet-stream" }
+
+    expect(response).to have_http_status(:content_too_large)
+  end
+
   include ActiveJob::TestHelper
 
   let(:company) { create(:company, stripe_customer_id: "cus_123") }

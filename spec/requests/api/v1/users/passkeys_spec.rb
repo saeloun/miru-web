@@ -32,7 +32,7 @@ RSpec.describe "Api::V1::Users::Passkeys", type: :request do
 
   describe "POST /api/v1/users/passkeys/registration_options" do
     it "returns registration options and persists a webauthn id" do
-      post "/api/v1/users/passkeys/registration_options"
+      post "/api/v1/users/passkeys/registration_options", params: { current_password: "welcome12" }
 
       expect(response).to have_http_status(:ok)
       expect(json_response["challenge_token"]).to be_present
@@ -43,7 +43,7 @@ RSpec.describe "Api::V1::Users::Passkeys", type: :request do
 
   describe "POST /api/v1/users/passkeys" do
     it "registers a passkey" do
-      post "/api/v1/users/passkeys/registration_options"
+      post "/api/v1/users/passkeys/registration_options", params: { current_password: "welcome12" }
 
       credential = fake_client.create(challenge: json_response.dig("public_key", "challenge"), rp_id: "localhost")
 
@@ -61,7 +61,7 @@ RSpec.describe "Api::V1::Users::Passkeys", type: :request do
 
   describe "PATCH /api/v1/users/passkeys/requirement" do
     it "rejects enabling requirement without a passkey" do
-      patch "/api/v1/users/passkeys/requirement", params: { required: true }
+      patch "/api/v1/users/passkeys/requirement", params: { required: true, current_password: "welcome12" }
 
       expect(response).to have_http_status(:unprocessable_content)
       expect(json_response["error"]).to eq("Add a passkey before requiring it for sign in.")
@@ -73,7 +73,7 @@ RSpec.describe "Api::V1::Users::Passkeys", type: :request do
       passkey = register_passkey
       user.update!(passkey_required_for_login: true)
 
-      delete "/api/v1/users/passkeys/#{passkey.id}"
+      delete "/api/v1/users/passkeys/#{passkey.id}", params: { current_password: "welcome12" }
 
       expect(response).to have_http_status(:ok)
       expect(user.reload.passkeys.count).to eq(0)
@@ -81,8 +81,24 @@ RSpec.describe "Api::V1::Users::Passkeys", type: :request do
     end
   end
 
+  it "rejects cross-origin passkey authentication" do
+    post "/api/v1/users/passkeys/authenticate",
+      params: { pending_token: "pending-token", credential: {} },
+      headers: { "Origin" => "https://attacker.example" }
+
+    expect(response).to have_http_status(:forbidden)
+    expect(json_response["error"]).to eq("Cross-origin authentication is not allowed")
+  end
+
+  it "requires the current password for passkey security changes" do
+    post "/api/v1/users/passkeys/registration_options", params: { current_password: "wrong" }
+
+    expect(response).to have_http_status(:unprocessable_content)
+    expect(json_response["error"]).to eq("Current password is invalid")
+  end
+
   def register_passkey
-    post "/api/v1/users/passkeys/registration_options"
+    post "/api/v1/users/passkeys/registration_options", params: { current_password: "welcome12" }
     challenge_token = json_response["challenge_token"]
     challenge = json_response.dig("public_key", "challenge")
 

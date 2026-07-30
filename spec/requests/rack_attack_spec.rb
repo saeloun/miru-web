@@ -41,4 +41,15 @@ RSpec.describe "RackAttack OTP throttles", type: :request do
 
   include_examples "an OTP verification throttle", "/api/v1/users/totp/authenticate"
   include_examples "an OTP verification throttle", "/api/v1/users/otp/verify"
+
+  it "throttles report PDF generation" do
+    5.times do
+      get "/api/v1/reports/payments/download.pdf", headers: headers
+      expect(response).not_to have_http_status(:too_many_requests)
+    end
+
+    get "/api/v1/reports/payments/download.pdf", headers: headers
+
+    expect(response).to have_http_status(:too_many_requests)
+  end
 end

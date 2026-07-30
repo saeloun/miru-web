@@ -11,7 +11,7 @@ class Api::V1::WorkspacesController < Api::V1::ApplicationController
   def update
     authorize :update, policy_class: WorkspacePolicy
 
-    workspace = current_user.companies.find(params[:id])
+    workspace = current_user.companies.with_kept_employments.find(params[:id])
     current_user.update!(current_workspace_id: workspace.id)
 
     render json: {

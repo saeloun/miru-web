@@ -31,6 +31,12 @@ class Api::V1::ApplicationController < ActionController::API
 
   private
 
+    def require_current_password!
+      return if current_user.valid_password?(params[:current_password].to_s)
+
+      render json: { error: "Current password is invalid" }, status: 422
+    end
+
     def financial_api_meta(currency: nil)
       {
         i18n: {

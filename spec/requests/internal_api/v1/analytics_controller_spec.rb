@@ -232,5 +232,14 @@ RSpec.describe "InternalApi::V1::AnalyticsController", type: :request do
       expect(response).to have_http_status(:unprocessable_entity)
       expect(json_response["error"]).to include("from must be before or equal to to")
     end
+
+    it "rejects date ranges longer than one year" do
+      send_request :get, "/internal_api/v1/analytics/comparison",
+        params: { from: "2024-01-01", to: "2026-04-18" },
+        headers: auth_headers(user)
+
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(json_response["error"]).to include("date range must not exceed one year")
+    end
   end
 end

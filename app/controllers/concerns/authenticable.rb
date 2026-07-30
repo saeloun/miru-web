@@ -21,11 +21,15 @@ module Authenticable
       auth_token = request.headers["X-Auth-Token"].presence
       user = user_email && User.find_by(email: user_email)
 
-      if user && auth_token && Devise.secure_compare(user.token, auth_token)
+      if legacy_token_active?(user) && auth_token && Devise.secure_compare(user.token, auth_token)
         sign_in user, store: false, skip_session_limitable: true
       else
         render json: { error: I18n.t("devise.failure.unauthenticated") }, status: 401
       end
+    end
+
+    def legacy_token_active?(user)
+      user&.active_for_authentication? && user.employed_at?(user.current_workspace_id)
     end
 
     def authenticate_user_using_cli_token
@@ -36,6 +40,8 @@ module Authenticable
 
       @current_cli_session = session
       sign_in session.user, store: false, skip_session_limitable: true
+      current_user.current_workspace = session.company
+      current_user.clear_attribute_changes([:current_workspace_id])
       true
     end
 

@@ -13,6 +13,8 @@ RSpec.describe ProjectMemberService do
     let!(:removed_member) { create(:project_member, project:, user: removed_user, hourly_rate: 60) }
 
     it "adds, updates, and discards members in one transaction" do
+      create(:employment, company:, user: added_user)
+
       described_class.new(
         project:,
         added_members: [{ "id" => added_user.id, "hourly_rate" => 75 }],

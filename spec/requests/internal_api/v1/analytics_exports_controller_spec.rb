@@ -116,5 +116,14 @@ RSpec.describe "InternalApi::V1::AnalyticsExportsController", type: :request do
 
       expect([404, 422]).to include(response.status)
     end
+
+    it "rejects date ranges longer than one year" do
+      send_request :get,
+        "/internal_api/v1/analytics/exports/team_productivity.csv?from=2024-01-01&to=2026-04-18",
+        headers: auth_headers(admin)
+
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response.parsed_body["error"]).to include("date range must not exceed one year")
+    end
   end
 end

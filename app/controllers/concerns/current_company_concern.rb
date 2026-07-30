@@ -14,6 +14,6 @@ module CurrentCompanyConcern
 
     @_current_company ||= cli_company ||
       current_user&.current_workspace ||
-      current_user.companies.includes(:logo_attachment).first
+      current_user.companies.with_kept_employments.includes(:logo_attachment).first
   end
 end

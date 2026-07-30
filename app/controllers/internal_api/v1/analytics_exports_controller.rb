@@ -4,6 +4,7 @@ class InternalApi::V1::AnalyticsExportsController < Api::V1::ApplicationControll
   SUPPORTED_REPORT_TYPES = %w[revenue_forecast team_productivity client_analysis expense_trends].freeze
   SUPPORTED_FORMATS = %w[csv pdf].freeze
   SUPPORTED_HORIZONS = [3, 6, 12].freeze
+  MAX_DATE_RANGE_DAYS = 366
 
   def show
     authorize :analytics, :index?
@@ -85,6 +86,10 @@ class InternalApi::V1::AnalyticsExportsController < Api::V1::ApplicationControll
         to = parsed_to || Date.current
         if from > to
           render_validation_error("from must be before or equal to to")
+          return {}
+        end
+        if to - from > MAX_DATE_RANGE_DAYS
+          render_validation_error("date range must not exceed one year")
           return {}
         end
 

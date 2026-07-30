@@ -228,23 +228,26 @@ export const authenticationApi = {
 
 export const passkeysApi = {
   index: () => http.get("/users/passkeys"),
-  registrationOptions: () => http.post("/users/passkeys/registration_options"),
+  registrationOptions: (payload: any) =>
+    http.post("/users/passkeys/registration_options", payload),
   create: (payload: any) => http.post("/users/passkeys", payload),
   authenticate: (payload: any) =>
     http.post("/users/passkeys/authenticate", payload),
   updateRequirement: (payload: any) =>
     http.patch("/users/passkeys/requirement", payload),
-  destroy: (id: number) => http.delete(`/users/passkeys/${id}`),
+  destroy: (id: number, payload: any) =>
+    http.delete(`/users/passkeys/${id}`, { data: payload }),
 };
 
 export const totpApi = {
   show: () => http.get("/users/totp"),
-  setup: () => http.post("/users/totp/setup"),
+  setup: (payload: any) => http.post("/users/totp/setup", payload),
   confirm: (payload: any) => http.post("/users/totp/confirm", payload),
   authenticate: (payload: any) =>
     http.post("/users/totp/authenticate", payload),
-  regenerateRecoveryCodes: () => http.post("/users/totp/recovery_codes"),
-  destroy: () => http.delete("/users/totp"),
+  regenerateRecoveryCodes: (payload: any) =>
+    http.post("/users/totp/recovery_codes", payload),
+  destroy: (payload: any) => http.delete("/users/totp", { data: payload }),
 };
 
 // Clients

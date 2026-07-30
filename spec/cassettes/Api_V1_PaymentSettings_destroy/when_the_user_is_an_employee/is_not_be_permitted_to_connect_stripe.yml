@@ -10,7 +10,7 @@ http_interactions:
       User-Agent:
       - Stripe/v1 RubyBindings/8.2.0
       Authorization:
-      - Bearer stripe_secret_key
+      - "<FILTERED>"
       Content-Type:
       - application/x-www-form-urlencoded
       X-Stripe-Client-User-Agent:
@@ -56,7 +56,7 @@ http_interactions:
       Vary:
       - Origin
       Www-Authenticate:
-      - Bearer realm="Stripe"
+      - "<FILTERED>"
       X-Robots-Tag:
       - none
       X-Wc:

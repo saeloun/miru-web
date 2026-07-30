@@ -33,6 +33,7 @@ import { t } from "../../i18n";
 import CompactLocaleSwitcher from "../common/CompactLocaleSwitcher";
 import TrialBanner from "../common/TrialBanner";
 import DashboardTimerControl from "./DashboardTimerControl";
+import { clearStoredTimerState } from "../../utils/timeTrackingTimer";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -217,8 +218,10 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
   const handleLogout = async () => {
     try {
       await logoutApi({ skipErrorToast: true });
+      clearStoredTimerState();
       window.location.href = "/";
     } catch (error) {
+      clearStoredTimerState();
       console.error("Logout failed:", error);
       Toastr.error(t("somethingWentWrong"));
     }

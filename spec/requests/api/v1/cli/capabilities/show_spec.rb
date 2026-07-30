@@ -27,4 +27,14 @@ RSpec.describe "Api::V1::Cli::Capabilities#show", type: :request do
       json_response["commands"].find { |command| command["name"] == "time update" }
     ).to include("supports_source_metadata" => true)
   end
+
+  it "rejects a token after employment is discarded" do
+    token = cli_token
+    company.employments.find_by!(user:).discard!
+
+    send_request :get, api_v1_cli_capabilities_path, headers: cli_auth_headers(token)
+
+    expect(response).to have_http_status(:unauthorized)
+    expect(issued_cli_session.first.reload.revoked_at).to be_present
+  end
 end

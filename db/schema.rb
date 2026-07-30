@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_07_29_160113) do
+ActiveRecord::Schema[8.1].define(version: 2026_07_30_000000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_stat_statements"
@@ -188,6 +188,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_29_160113) do
     t.string "file_url"
     t.string "status"
     t.datetime "updated_at", null: false
+    t.index ["company_id", "download_id"], name: "idx_on_company_id_download_id_432c83202c", unique: true
     t.index ["company_id"], name: "index_bulk_invoice_download_statuses_on_company_id"
   end
 
@@ -209,6 +210,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_29_160113) do
   end
 
   create_table "cli_sessions", force: :cascade do |t|
+    t.string "auth_state_digest"
     t.bigint "company_id", null: false
     t.datetime "created_at", null: false
     t.datetime "expires_at", null: false
@@ -613,6 +615,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_29_160113) do
     t.index ["year", "company_id"], name: "index_leaves_on_year_and_company_id", unique: true
   end
 
+  create_table "mcp_idempotency_records", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "expires_at", null: false
+    t.string "key_digest", null: false
+    t.jsonb "response", null: false
+    t.datetime "updated_at", null: false
+    t.index ["expires_at"], name: "index_mcp_idempotency_records_on_expires_at"
+    t.index ["key_digest"], name: "index_mcp_idempotency_records_on_key_digest", unique: true
+  end
+
   create_table "metrics", force: :cascade do |t|
     t.datetime "calculated_at", null: false
     t.datetime "created_at", null: false
@@ -681,12 +693,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_29_160113) do
     t.string "name"
     t.text "note"
     t.string "payment_currency"
+    t.string "provider_event_id"
     t.integer "status", null: false
     t.date "transaction_date", null: false
     t.integer "transaction_type", null: false
     t.datetime "updated_at", null: false
     t.index ["invoice_id", "transaction_date", "status"], name: "index_payments_on_invoice_transaction_date_status"
     t.index ["invoice_id"], name: "index_payments_on_invoice_id"
+    t.index ["provider_event_id"], name: "index_payments_on_provider_event_id", unique: true
     t.index ["status"], name: "index_payments_on_status"
     t.index ["transaction_date"], name: "index_payments_on_transaction_date"
   end

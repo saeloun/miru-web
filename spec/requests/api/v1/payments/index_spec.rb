@@ -46,6 +46,15 @@ RSpec.describe "Api::V1::Payments#index", type: :request do
 
         expect(json_response["payments"]).to eq(JSON.parse(expected_api_response.to_json))
       end
+
+      it "caps the response size" do
+        stub_const("Api::V1::PaymentsController::MAX_INDEX_PAYMENTS", 2)
+
+        get api_v1_payments_path, headers: auth_headers(user)
+
+        expect(response).to have_http_status(:ok)
+        expect(json_response["payments"].size).to eq(2)
+      end
     end
   end
 

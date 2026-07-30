@@ -47,7 +47,7 @@ RSpec.describe "Api::V1::Invoices#razorpay_payment_link", type: :request do
     expect(PaymentProviders::RazorpayPaymentLinkService).to have_received(:new).with(
       invoice: invoice,
       provider: provider,
-      callback_url: razorpay_success_invoice_payments_url(invoice),
+      callback_url: razorpay_success_invoice_payments_url(invoice.external_view_key),
       notify_sms: false
     )
   end
@@ -66,7 +66,7 @@ RSpec.describe "Api::V1::Invoices#razorpay_payment_link", type: :request do
     expect(PaymentProviders::RazorpayPaymentLinkService).to have_received(:new).with(
       invoice: invoice,
       provider: provider,
-      callback_url: razorpay_success_invoice_payments_url(invoice),
+      callback_url: razorpay_success_invoice_payments_url(invoice.external_view_key),
       notify_sms: true
     )
   end

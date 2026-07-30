@@ -39,10 +39,10 @@ for var in "${required_vars[@]}"; do
     fi
 done
 
-# Set default SECRET_KEY_BASE if placeholder
+# Refuse to deploy with the documented placeholder.
 if [ "$SECRET_KEY_BASE" = "your_secret_key_base_here" ]; then
-    echo -e "${YELLOW}⚠️  Generating SECRET_KEY_BASE...${NC}"
-    export SECRET_KEY_BASE="92f9b55fa1e2135f147c5844fb6679116544bb78d4e3b66c8292b582294a4859d9691d5f3e714b7ff410a272c081877979a8402b5dc10787aad2d7ede2ddea93"
+    echo -e "${RED}❌ SECRET_KEY_BASE must be replaced with a unique secret${NC}"
+    exit 1
 fi
 
 # Build assets first

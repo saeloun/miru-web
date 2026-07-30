@@ -207,12 +207,11 @@ class Api::V1::Mobile::CollectionsController < Api::V1::ApplicationController
       return if client.phone.blank?
 
       user = User.kept.find_by(phone: client.phone)
-      user ||= User.kept.find_by(email: client.email) if client.email.present?
-      user ||= build_customer_user(client)
+      return if user && !user.employments.kept.exists?(company: current_company)
+      return if user && !user.has_role?(:client, current_company)
+      return if user.nil? && client.email.present? && User.kept.exists?(email: client.email)
 
-      user.skip_reconfirmation! if user.persisted? && user.respond_to?(:skip_reconfirmation!)
-      user.assign_attributes(phone: client.phone, current_workspace_id: current_company.id)
-      user.save! if user.changed?
+      user ||= build_customer_user(client)
 
       current_company.employments.find_or_create_by!(user:)
       user.add_role(:client, current_company) unless user.has_role?(:client, current_company)
@@ -282,7 +281,7 @@ class Api::V1::Mobile::CollectionsController < Api::V1::ApplicationController
       service = PaymentProviders::RazorpayPaymentLinkService.new(
         invoice:,
         provider: razorpay_provider,
-        callback_url: razorpay_success_invoice_payments_url(invoice),
+        callback_url: razorpay_success_invoice_payments_url(invoice.external_view_key),
         notify_sms:
       )
 
@@ -495,8 +494,7 @@ class Api::V1::Mobile::CollectionsController < Api::V1::ApplicationController
     def customer_user_for(client)
       return if client.blank?
 
-      current_company.client_members.includes(:user).find_by(client:)&.user ||
-        User.kept.find_by(phone: client.phone)
+      current_company.client_members.includes(:user).find_by(client:)&.user
     end
 
     def customer_user_payload(user)
@@ -534,7 +532,7 @@ class Api::V1::Mobile::CollectionsController < Api::V1::ApplicationController
         outstanding_amount: invoice.outstanding_amount,
         currency: invoice.currency,
         due_date: invoice.due_date,
-        payment_url: new_invoice_payment_url(invoice),
+        payment_url: new_invoice_payment_url(invoice.external_view_key),
         razorpay_payment_link_url: invoice.razorpay_payment_link_url,
         razorpay_payment_link_status: invoice.razorpay_payment_link_status
       }

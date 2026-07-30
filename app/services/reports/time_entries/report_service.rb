@@ -59,7 +59,7 @@ class Reports::TimeEntries::ReportService
     end
 
     def search_timesheet_entries(where_clause, page = nil)
-      base_query = TimesheetEntry.includes(:user, project: :client)
+      base_query = current_company.timesheet_entries.includes(:user, project: :client)
 
       where_clause.each do |key, value|
         base_query = if value.is_a?(Hash) && value.key?(:not)
@@ -111,7 +111,7 @@ class Reports::TimeEntries::ReportService
         where_conditions.delete(:client_id)
       end
 
-      grouped_durations = TimesheetEntry.kept.joins(joins_clause)
+      grouped_durations = current_company.timesheet_entries.kept.joins(joins_clause)
         .where(where_conditions)
         .group(group_field)
         .sum(:duration)

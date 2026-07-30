@@ -20,5 +20,7 @@ class Api::V1::Reports::TimeEntriesController < Api::V1::ApplicationController
     else
       send_data data, type: "text/csv", disposition: "attachment", filename: "time_entries_report.csv"
     end
+  rescue ArgumentError => error
+    render json: { error: error.message }, status: 422
   end
 end

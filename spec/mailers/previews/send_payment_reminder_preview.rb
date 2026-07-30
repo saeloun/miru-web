@@ -13,6 +13,7 @@ class SendPaymentReminderPreview < ActionMailer::Preview
     invoice_ids = [sample_invoice.id] if invoice_ids.empty?
 
     SendPaymentReminderMailer.with(
+      client_id: client.id,
       recipients: [client.email],
       selected_invoices: invoice_ids,
       message: "This is a gentle reminder to complete payments for the following invoices. "\

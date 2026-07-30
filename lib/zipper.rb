@@ -13,7 +13,8 @@ class Zipper
   def zip
     Zip::File.open(tempfile.path, create: true) do |zipfile|
       files_hash.each do |file_hash|
-        zipfile.add(file_hash[:name], file_hash[:file])
+        name = File.basename(file_hash[:name].to_s.tr("\\", "/"))
+        zipfile.add(name, file_hash[:file])
       end
     end
   end

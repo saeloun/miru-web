@@ -13,6 +13,7 @@ import { i18n } from "../../../../../i18n";
 import { pickPrimaryAddress, teamsMapper } from "mapper/teams.mapper";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
+import { Button, Modal } from "StyledComponents";
 import { beginPasskeyRegistration } from "utils/passkeys";
 import worldCountries from "world-countries";
 import * as Yup from "yup";
@@ -85,6 +86,11 @@ const UserDetailsEdit = () => {
   const [totpVerificationCode, setTotpVerificationCode] = useState("");
   const [recoveryCodes, setRecoveryCodes] = useState([]);
   const [recoveryCodesCount, setRecoveryCodesCount] = useState(0);
+  const [reauthPassword, setReauthPassword] = useState("");
+  const [showReauthDialog, setShowReauthDialog] = useState(false);
+  const passwordResolverRef = useRef<
+    ((password: string | null) => void) | null
+  >(null);
 
   const navigateToPath = isCalledFromSettings
     ? "/settings"
@@ -284,6 +290,15 @@ const UserDetailsEdit = () => {
         userSchema["current_password"] = personalDetails.currentPassword;
         userSchema["password"] = personalDetails.password;
         userSchema["password_confirmation"] = personalDetails.confirmPassword;
+      } else if (
+        initialPersonalDetails &&
+        personalDetails.phone_number !== initialPersonalDetails.phone_number &&
+        String(currentUserId) === String(currentUser?.id)
+      ) {
+        const currentPassword = await requestCurrentPassword();
+        if (!currentPassword) return;
+
+        userSchema["current_password"] = currentPassword;
       }
 
       const payload = {
@@ -407,10 +422,30 @@ const UserDetailsEdit = () => {
     await refetchCurrentUser();
   };
 
+  const requestCurrentPassword = () =>
+    new Promise<string | null>(resolve => {
+      passwordResolverRef.current = resolve;
+      setReauthPassword("");
+      setShowReauthDialog(true);
+    });
+
+  const finishPasswordRequest = (password: string | null) => {
+    passwordResolverRef.current?.(password);
+    passwordResolverRef.current = null;
+    setReauthPassword("");
+    setShowReauthDialog(false);
+  };
+
   const handleRegisterPasskey = async () => {
+    const currentPassword = await requestCurrentPassword();
+    if (!currentPassword) return;
+
     try {
       setPasskeysBusy(true);
-      const optionsResponse = await passkeysApi.registrationOptions();
+      const optionsResponse = await passkeysApi.registrationOptions({
+        current_password: currentPassword,
+      });
+
       const credential = await beginPasskeyRegistration(
         optionsResponse.data.public_key
       );
@@ -434,9 +469,14 @@ const UserDetailsEdit = () => {
   };
 
   const handleRemovePasskey = async id => {
+    const currentPassword = await requestCurrentPassword();
+    if (!currentPassword) return;
+
     try {
       setPasskeysBusy(true);
-      const response = await passkeysApi.destroy(id);
+      const response = await passkeysApi.destroy(id, {
+        current_password: currentPassword,
+      });
       syncPasskeys(response.data);
       toast.success(i18n.t("passkeys.removedSuccess"));
     } catch (error) {
@@ -449,9 +489,15 @@ const UserDetailsEdit = () => {
   };
 
   const handleTogglePasskeyRequirement = async required => {
+    const currentPassword = await requestCurrentPassword();
+    if (!currentPassword) return;
+
     try {
       setPasskeysBusy(true);
-      const response = await passkeysApi.updateRequirement({ required });
+      const response = await passkeysApi.updateRequirement({
+        required,
+        current_password: currentPassword,
+      });
       syncPasskeys(response.data);
       toast.success(
         required
@@ -469,9 +515,14 @@ const UserDetailsEdit = () => {
   };
 
   const handleSetupTotp = async () => {
+    const currentPassword = await requestCurrentPassword();
+    if (!currentPassword) return;
+
     try {
       setTotpBusy(true);
-      const response = await totpApi.setup();
+      const response = await totpApi.setup({
+        current_password: currentPassword,
+      });
       syncTotp(response.data);
       setTotpVerificationCode("");
       toast.success(i18n.t("twoFactor.setupReadySuccess"));
@@ -501,9 +552,14 @@ const UserDetailsEdit = () => {
   };
 
   const handleDisableTotp = async () => {
+    const currentPassword = await requestCurrentPassword();
+    if (!currentPassword) return;
+
     try {
       setTotpBusy(true);
-      const response = await totpApi.destroy();
+      const response = await totpApi.destroy({
+        current_password: currentPassword,
+      });
       syncTotp(response.data);
       setTotpVerificationCode("");
       toast.success(i18n.t("twoFactor.disabledSuccess"));
@@ -517,9 +573,14 @@ const UserDetailsEdit = () => {
   };
 
   const handleRegenerateRecoveryCodes = async () => {
+    const currentPassword = await requestCurrentPassword();
+    if (!currentPassword) return;
+
     try {
       setTotpBusy(true);
-      const response = await totpApi.regenerateRecoveryCodes();
+      const response = await totpApi.regenerateRecoveryCodes({
+        current_password: currentPassword,
+      });
       syncTotp(response.data);
       toast.success(i18n.t("twoFactor.regeneratedSuccess"));
     } catch (error) {
@@ -690,6 +751,57 @@ const UserDetailsEdit = () => {
           )}
         </Fragment>
       )}
+      <Modal
+        isOpen={showReauthDialog}
+        onClose={() => finishPasswordRequest(null)}
+      >
+        <form
+          onSubmit={event => {
+            event.preventDefault();
+            if (reauthPassword) finishPasswordRequest(reauthPassword);
+          }}
+        >
+          <h2 className="text-lg font-semibold text-foreground">
+            {i18n.t("auth.validation.currentPasswordPrompt")}
+          </h2>
+          <input
+            aria-hidden="true"
+            autoComplete="username"
+            className="sr-only"
+            name="username"
+            readOnly
+            tabIndex={-1}
+            type="email"
+            value={currentUser?.email || user?.email || ""}
+          />
+          <label
+            className="mt-4 block text-sm font-medium text-foreground"
+            htmlFor="security-current-password"
+          >
+            {i18n.t("settings.currentPassword")}
+          </label>
+          <input
+            autoFocus
+            autoComplete="current-password"
+            className="mt-2 block h-12 w-full rounded border border-border bg-background px-3 text-foreground"
+            id="security-current-password"
+            type="password"
+            value={reauthPassword}
+            onChange={event => setReauthPassword(event.target.value)}
+          />
+          <div className="mt-6 flex justify-end gap-3">
+            <Button
+              style="secondary"
+              onClick={() => finishPasswordRequest(null)}
+            >
+              {i18n.t("cancel")}
+            </Button>
+            <Button disabled={!reauthPassword} type="submit">
+              {i18n.t("continue")}
+            </Button>
+          </div>
+        </form>
+      </Modal>
     </Fragment>
   );
 };

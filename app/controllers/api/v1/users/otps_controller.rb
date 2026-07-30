@@ -2,10 +2,12 @@
 
 class Api::V1::Users::OtpsController < Api::V1::ApplicationController
   include AuthResponsePayload
+  include SameOriginAuthentication
 
   skip_before_action :authenticate_user!
   skip_before_action :authenticate_user_using_x_auth_token
   skip_before_action :set_virtual_verified_invitations_allowed
+  before_action :reject_cross_origin_authentication!, only: :verify
 
   def create
     skip_authorization

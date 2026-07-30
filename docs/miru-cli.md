@@ -19,10 +19,10 @@ The CLI does not have a separate permission model. Every command runs with the s
 ### Hosted or public install
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/saeloun/miru-web/main/tools/miru-cli/install.sh | bash
+mise exec go@1.25.12 -- env GOBIN="$HOME/.local/bin" go install github.com/saeloun/miru-web/tools/miru-cli/cmd/miru@b45dee47c3aa58d6312dabfad3b40012b04071fd
 ```
 
-This installs `miru` into `~/.local/bin/miru` using `mise` and Go `1.24.1`.
+This installs `miru` into `~/.local/bin/miru` using `mise` and Go `1.25.12`.
 
 ### Local development install
 
@@ -44,7 +44,7 @@ mise exec -- env GOBIN="$HOME/.local/bin" go install ./cmd/miru
 Log in with email and password:
 
 ```bash
-miru login --email user@example.com --password your-password
+miru login --email user@example.com
 ```
 
 By default this uses:
@@ -56,7 +56,7 @@ https://app.miru.so
 For local or self-hosted Miru:
 
 ```bash
-miru login --base-url http://127.0.0.1:9000 --email user@example.com --password your-password
+miru login --base-url http://127.0.0.1:9000 --email user@example.com
 miru config set-base-url --url http://127.0.0.1:9000
 ```
 
@@ -162,15 +162,6 @@ Fetches the current authenticated user and workspace.
 #### `miru logout`
 
 Revokes the CLI session and removes local credentials.
-
-#### `miru upgrade`
-
-Upgrades the CLI.
-
-Behavior:
-
-- when run from a local Miru checkout, it upgrades from that checked-out repo
-- otherwise it upgrades from `github.com/saeloun/miru-web/tools/miru-cli/cmd/miru@latest`
 
 ## Project Commands
 
@@ -559,7 +550,7 @@ miru invoice send --id 1 --recipients client@example.com
 Log in again:
 
 ```bash
-miru login --email user@example.com --password your-password
+miru login --email user@example.com
 ```
 
 ### Wrong server
@@ -584,15 +575,13 @@ miru project list --search <term>
 Run:
 
 ```bash
-miru login --email user@example.com --password your-password
+miru login --email user@example.com
 ```
 
-### Upgrade the CLI
-
-Run:
+### Reinstall the CLI
 
 ```bash
-miru upgrade
+mise exec go@1.25.12 -- env GOBIN="$HOME/.local/bin" go install github.com/saeloun/miru-web/tools/miru-cli/cmd/miru@b45dee47c3aa58d6312dabfad3b40012b04071fd
 ```
 
 ## Current Scope

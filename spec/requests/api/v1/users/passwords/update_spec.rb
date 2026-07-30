@@ -19,6 +19,22 @@ RSpec.describe "Api::V1::Users::Passwords#update", type: :request do
         expect(response).to have_http_status(:ok)
         expect(JSON.parse(response.body)).to include("notice" => I18n.t("password.update.success"))
       end
+
+      it "revokes active CLI sessions" do
+        company = create(:company)
+        cli_session = CliSession.issue_for(user:, company:).first
+        token = user.send(:set_reset_password_token)
+
+        send_request :put, api_v1_users_reset_password_path, params: {
+          user: {
+            reset_password_token: token, password: "newpassword",
+            password_confirmation: "newpassword"
+          }
+        }
+
+        expect(response).to have_http_status(:ok)
+        expect(cli_session.reload.revoked_at).to be_present
+      end
     end
 
     context "with invalid token" do

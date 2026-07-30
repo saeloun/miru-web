@@ -84,6 +84,11 @@ RSpec.describe InvoicePayment::RazorpayPaymentLinkFulfillment do
       expect(payment.amount).to eq(1000)
       expect(invoice.reload).to be_paid
       expect(invoice.razorpay_payment_id).to eq(payment_id)
+      expect(payment.provider_event_id).to eq("razorpay:#{payment_id}")
+
+      expect {
+        described_class.process(invoice:, params: callback_params)
+      }.not_to change(Payment, :count)
     end
 
     it "rejects an invalid signature" do

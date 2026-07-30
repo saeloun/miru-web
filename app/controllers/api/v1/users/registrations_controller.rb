@@ -1,10 +1,13 @@
 # frozen_string_literal: true
 
 class Api::V1::Users::RegistrationsController < Devise::RegistrationsController
+  include SameOriginAuthentication
+
   SIGNUP_ATTRIBUTION_KEYS = %i[utm_source utm_medium utm_campaign utm_term utm_content].freeze
 
   respond_to :json
   protect_from_forgery with: :null_session, only: :create
+  before_action :reject_cross_origin_authentication!, only: :create
 
   def respond_with(user, _opts = {})
     if user.errors.present?

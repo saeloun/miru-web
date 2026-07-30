@@ -49,4 +49,25 @@ RSpec.describe "RackAttack auth throttles", type: :request do
     expect(response).to have_http_status(:too_many_requests)
     expect(response.parsed_body["error"]).to eq("Too many requests. Please try again later.")
   end
+
+  it "throttles repeated signup attempts from the same ip" do
+    payload = {
+      user: {
+        email: "invalid",
+        first_name: "Rate",
+        last_name: "Limited",
+        password: "Password123!",
+        password_confirmation: "Password123!"
+      }
+    }.to_json
+
+    5.times do
+      post api_v1_users_signup_path, params: payload, headers: json_headers
+      expect(response).to have_http_status(:unprocessable_entity)
+    end
+
+    post api_v1_users_signup_path, params: payload, headers: json_headers
+
+    expect(response).to have_http_status(:too_many_requests)
+  end
 end

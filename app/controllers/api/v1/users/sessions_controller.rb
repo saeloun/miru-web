@@ -5,8 +5,10 @@ class Api::V1::Users::SessionsController < Devise::SessionsController
   include Authenticable
   include AuthResponsePayload
   include CurrentCompanyConcern
+  include SameOriginAuthentication
 
   before_action :authenticate_user_using_x_auth_token, only: :me
+  before_action :reject_cross_origin_authentication!, only: :create
 
   respond_to :json
 

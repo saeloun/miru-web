@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-test_password = ENV.fetch("SANITIZED_SUBSET_TEST_PASSWORD", "password")
+test_password = ENV.fetch("SANITIZED_SUBSET_TEST_PASSWORD")
 company = Company.find_by(name: "Saeloun Inc") || Company.first
 
 canonical_roles = {
@@ -42,7 +42,6 @@ end
 puts(
   {
     users: User.count,
-    password: test_password,
     company_id: company&.id,
     canonical_roles: canonical_roles.transform_values(&:to_s),
     sample_emails: User.order(:email).limit(10).pluck(:email)

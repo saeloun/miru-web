@@ -59,6 +59,14 @@ RSpec.describe User, type: :model do
     create(:employment, company:, user:)
   end
 
+  describe "#super_admin?" do
+    it "requires a confirmed Saeloun account" do
+      expect(build_stubbed(:user, email: "hello@saeloun.com")).to be_super_admin
+      expect(build_stubbed(:user, email: "vipul@example.com")).not_to be_super_admin
+      expect(build_stubbed(:user, email: "hello@saeloun.com", confirmed_at: nil)).not_to be_super_admin
+    end
+  end
+
   describe "Associations" do
     it { is_expected.to have_many(:companies).through(:employments) }
     it { is_expected.to have_many(:employments).dependent(:destroy) }
@@ -333,6 +341,14 @@ RSpec.describe User, type: :model do
       user.remove_roles_for(company)
       expect(user.roles.where(resource: company)).to eq([])
       expect(user.roles.where(resource: company_2).first.name).to eq("employee")
+    end
+  end
+
+  describe "#current_workspace" do
+    it "does not return a workspace after its employment is discarded" do
+      user.employments.find_by!(company:).discard!
+
+      expect(user.current_workspace).to be_nil
     end
   end
 end

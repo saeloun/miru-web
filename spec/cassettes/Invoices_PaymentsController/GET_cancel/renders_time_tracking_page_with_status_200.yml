@@ -10,7 +10,7 @@ http_interactions:
       User-Agent:
       - Stripe/v1 RubyBindings/6.2.0
       Authorization:
-      - Bearer sk_test_51EXIAiEQYiNu1q8E22PeN6N5pMswpv0Q5dwRApDrqfIuGvyoKTCX5KaKdWWIEZht8LjSF85v7lxPOKrxBFFs7vLp00QvWOAKgM
+      - "<FILTERED>"
       Content-Type:
       - application/x-www-form-urlencoded
       X-Stripe-Client-Telemetry:

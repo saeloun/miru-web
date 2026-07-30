@@ -6,6 +6,29 @@ import (
 	"testing"
 )
 
+func TestValidateBaseURL(t *testing.T) {
+	tests := map[string]bool{
+		"https://app.miru.so":     true,
+		"http://localhost:3000":   true,
+		"http://127.0.0.1:3000":   true,
+		"http://[::1]:3000":       true,
+		"http://miru.example.com": false,
+		"app.miru.so":             false,
+		"https://user@miru.so":    false,
+		"https://miru.so?q=token": false,
+	}
+
+	for raw, valid := range tests {
+		_, err := validateBaseURL(raw)
+		if valid && err != nil {
+			t.Errorf("expected %q to be valid: %v", raw, err)
+		}
+		if !valid && err == nil {
+			t.Errorf("expected %q to be rejected", raw)
+		}
+	}
+}
+
 func TestBuildCreateInvoiceBodyFromFlags(t *testing.T) {
 	body, err := buildCreateInvoiceBody([]string{
 		"--client-id", "42",

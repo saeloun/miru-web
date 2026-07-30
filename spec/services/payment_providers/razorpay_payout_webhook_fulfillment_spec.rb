@@ -50,7 +50,22 @@ RSpec.describe PaymentProviders::RazorpayPayoutWebhookFulfillment do
     expect(payout.processed_at).to be_present
   end
 
-  it "uses the payout entity status for payout.updated webhook deliveries" do
+  it "rechecks the payout transition after acquiring the lock" do
+    allow(RazorpayPayout).to receive(:find_by).and_return(payout)
+    expect(payout).to receive(:with_lock) do |&block|
+      payout.update_columns(status: RazorpayPayout.statuses.fetch("processed"))
+      payout.reload
+      block.call
+    end
+
+    fulfillment = described_class.new(payload:, signature: sign(payload))
+
+    expect(fulfillment.process).to be(true)
+    expect(payout.reload).to be_processed
+    expect(payout.raw_response).to eq({})
+  end
+
+  it "ignores payout.updated deliveries that would regress status" do
     updated_payload = JSON.parse(payload)
     updated_payload["event"] = "payout.updated"
     updated_payload["payload"]["payout"]["entity"]["status"] = "queued"
@@ -60,7 +75,8 @@ RSpec.describe PaymentProviders::RazorpayPayoutWebhookFulfillment do
     fulfillment = described_class.new(payload: updated_payload, signature: sign(updated_payload))
 
     expect(fulfillment.process).to be(true)
-    expect(payout.reload).to be_queued
+    expect(payout.reload).to be_processing
+    expect(payout.raw_response).to eq({})
   end
 
   it "normalizes rejected payout.updated webhook deliveries to failed" do
@@ -90,6 +106,19 @@ RSpec.describe PaymentProviders::RazorpayPayoutWebhookFulfillment do
     expect(fulfillment.process).to be(true)
     expect(payout.reload).to be_failed
     expect(payout.failure_reason).to eq("UPI handle is invalid")
+  end
+
+  it "allows a processed payout to transition to reversed" do
+    payout.update!(status: :processed)
+    reversed_payload = JSON.parse(payload)
+    reversed_payload["event"] = "payout.reversed"
+    reversed_payload["payload"]["payout"]["entity"]["status"] = "reversed"
+    reversed_payload = reversed_payload.to_json
+
+    fulfillment = described_class.new(payload: reversed_payload, signature: sign(reversed_payload))
+
+    expect(fulfillment.process).to be(true)
+    expect(payout.reload).to be_reversed
   end
 
   it "ignores unsupported payout events without mutating the payout" do

@@ -2,6 +2,7 @@
 FROM ruby:3.2.4-slim AS base
 
 ARG NODE_VERSION=20.18.2
+ARG NODESOURCE_SETUP_SHA256=2c4c6683a17b6f4128898a7b521e3c8bb725a99ffaf1b5e32ac97c6fa7d381be
 
 ENV BUNDLE_PATH="/usr/local/bundle"
 ENV GEM_HOME="/usr/local/bundle/gems"
@@ -14,7 +15,10 @@ RUN mkdir -p tmp/pids
 RUN apt-get update && apt-get install -y --no-install-recommends curl gnupg2 && \
     echo "deb https://dl.yarnpkg.com/debian/ stable main" > /etc/apt/sources.list.d/yarn.list && \
     curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
-    curl -sL https://deb.nodesource.com/setup_lts.x | bash - && \
+    curl -fsSL https://deb.nodesource.com/setup_20.x -o /tmp/nodesource_setup.sh && \
+    echo "${NODESOURCE_SETUP_SHA256}  /tmp/nodesource_setup.sh" | sha256sum -c - && \
+    bash /tmp/nodesource_setup.sh && \
+    rm /tmp/nodesource_setup.sh && \
     apt-get install -y --no-install-recommends nodejs yarn && \
     npm --version && \
     apt-get clean && rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*

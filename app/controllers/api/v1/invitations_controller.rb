@@ -2,9 +2,11 @@
 
 class Api::V1::InvitationsController < Api::V1::ApplicationController
   before_action :set_invitation, only: [:update, :destroy, :resend]
+  before_action :validate_role, only: [:create, :update]
 
   def create
     authorize :invitation
+    authorize current_company.invitations.new, :assign_owner? if invitation_params[:role] == "owner"
 
     if current_company.pro_access? == false && !current_company.can_add_team_member_role?(invitation_params[:role])
       return render json: {
@@ -22,6 +24,7 @@ class Api::V1::InvitationsController < Api::V1::ApplicationController
 
   def update
     authorize @invitation
+    authorize @invitation, :assign_owner? if @invitation.owner? || invitation_params[:role] == "owner"
 
     @invitation.update!(invitation_params)
     render :update, locals: {
@@ -48,6 +51,13 @@ class Api::V1::InvitationsController < Api::V1::ApplicationController
 
     def invitation_params
       params.permit(policy(:invitation).permitted_attributes)
+    end
+
+    def validate_role
+      return unless invitation_params.key?(:role)
+      return if invitation_params[:role].blank? || Invitation.roles.key?(invitation_params[:role])
+
+      render json: { errors: "Role is invalid" }, status: 400
     end
 
     def set_invitation

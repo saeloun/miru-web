@@ -8,6 +8,7 @@ RSpec.describe Api::V1::Users::SessionsController, type: :controller do
 
   before do
     @request.env["devise.mapping"] = Devise.mappings[:user]
+    create(:employment, company:, user:)
     user.add_role(:admin, company)
   end
 
@@ -131,6 +132,7 @@ RSpec.describe Api::V1::Users::SessionsController, type: :controller do
       let(:user_without_role) { create(:user, current_workspace_id: company.id) }
 
       before do
+        create(:employment, company:, user: user_without_role)
         request.headers["X-Auth-Email"] = user_without_role.email
         request.headers["X-Auth-Token"] = user_without_role.token
       end

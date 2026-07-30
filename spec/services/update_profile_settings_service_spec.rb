@@ -4,6 +4,16 @@ require "rails_helper"
 
 RSpec.describe UpdateProfileSettingsService do
   describe "#process" do
+    it "requires the current password when changing the password" do
+      result = described_class.new(
+        user,
+        ActionController::Parameters.new(password: "new secure password", password_confirmation: "new secure password")
+      ).process
+
+      expect(result[:status]).to eq(:unprocessable_content)
+      expect(user.reload.valid_password?("new secure password")).to be(false)
+    end
+
     let(:user) { create(:user) }
 
     it "updates without password when current_password is blank" do

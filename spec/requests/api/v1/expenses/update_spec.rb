@@ -63,6 +63,18 @@ RSpec.describe "Api::V1::Expense#update", type: :request do
       employee_expense.reload
       expect(employee_expense.description).to eq("Updated reimbursement")
     end
+
+    it "cannot update their own approved expense" do
+      employee_expense.update!(status: :approved)
+
+      send_request :patch,
+        api_v1_expense_path(employee_expense),
+        params: { expense: { amount: 1 } },
+        headers: auth_headers(employee)
+
+      expect(response).to have_http_status(:forbidden)
+      expect(employee_expense.reload.amount).not_to eq(1)
+    end
   end
 
   context "when the user is a book keeper" do

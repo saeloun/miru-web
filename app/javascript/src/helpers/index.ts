@@ -6,7 +6,7 @@ import { currencySymbol } from "./currencySymbol";
 import { buildDateParseFormats } from "./dateParseFormats";
 import { getMonthFromString } from "./dateParser";
 import { useDebounce } from "./debounce";
-import { getDisplayAvatarUrl, getGravatarUrl } from "./gravatar";
+import { getDisplayAvatarUrl } from "./gravatar";
 import { minFromHHMM, minToHHMM } from "./hhmmParser";
 import { lineTotalCalc } from "./lineTotalCalc";
 import { getLineItemDisplayName } from "./lineItemDisplayName";
@@ -24,7 +24,6 @@ export {
   currencyFormat,
   currencySymbol,
   getDisplayAvatarUrl,
-  getGravatarUrl,
   getMonthFromString,
   getNumberWithOrdinal,
   minFromHHMM,

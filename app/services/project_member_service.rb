@@ -7,6 +7,8 @@ class ProjectMemberService
   end
 
   def process
+    validate_added_members!
+
     ActiveRecord::Base.transaction do
       add_new_members(members[:added_members])
       update_existing_members(members[:updated_members])
@@ -41,4 +43,18 @@ class ProjectMemberService
 
     members[:project].project_members.where(user_id: removed_members).discard_all
   end
+
+  private
+
+    def validate_added_members!
+      added_user_ids = Array(members[:added_members])
+        .select { |member| member.key?("hourly_rate") }
+        .pluck("id")
+        .map(&:to_i)
+      return if added_user_ids.empty?
+
+      company = members[:project].client.company
+      allowed_user_ids = company.employments.kept.where(user_id: added_user_ids).pluck(:user_id)
+      raise ActiveRecord::RecordNotFound unless added_user_ids.uniq.sort == allowed_user_ids.uniq.sort
+    end
 end

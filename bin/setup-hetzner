@@ -116,12 +116,12 @@ if ! hcloud server describe $SERVER_NAME 2>/dev/null; then
   
   # Setup server
   echo "🔧 Setting up server..."
-  ssh -o StrictHostKeyChecking=no root@$SERVER_IP << 'ENDSSH'
+  ssh "root@$SERVER_IP" << 'ENDSSH'
     apt-get update
     apt-get upgrade -y
     
     # Install Docker
-    curl -fsSL https://get.docker.com | sh
+    apt-get install -y docker.io
     systemctl enable docker
     systemctl start docker
     

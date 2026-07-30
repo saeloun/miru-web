@@ -190,6 +190,14 @@ RSpec.describe "Api::V1::Payments#bulk_download", type: :request do
         expect(response.body).to include("First payment")
       end
 
+      it "neutralizes spreadsheet formulas in payment notes" do
+        payment1.update!(note: "=1+1")
+
+        get "/api/v1/payments/bulk_download", params: { ids: payment1.id.to_s }
+
+        expect(CSV.parse(response.body).second.last).to eq("'=1+1")
+      end
+
       it "includes transaction type in humanized form" do
         get "/api/v1/payments/bulk_download", params: { ids: payment1.id.to_s }
 

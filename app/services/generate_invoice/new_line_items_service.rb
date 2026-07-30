@@ -47,12 +47,16 @@ module GenerateInvoice
       end
 
       def where_clause
+        allowed_project_ids = @projects.ids
+        filters = TimeEntries::Filters.process(params)
+        filters[:project_id] = Array(filters[:project_id]) & allowed_project_ids if filters[:project_id]
+
         {
-          project_id: @projects.pluck(:id),
+          project_id: allowed_project_ids,
           id: { not: filtered_ids },
           bill_status: "unbilled",
           discarded_at: nil
-        }.merge(TimeEntries::Filters.process(params))
+        }.merge(filters)
       end
 
       def search_term

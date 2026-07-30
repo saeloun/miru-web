@@ -61,7 +61,7 @@ RSpec.describe "Api::V1::Mobile::Collections", type: :request do
     expect(PaymentProviders::RazorpayPaymentLinkService).to have_received(:new).with(
       invoice:,
       provider:,
-      callback_url: razorpay_success_invoice_payments_url(invoice),
+      callback_url: razorpay_success_invoice_payments_url(invoice.external_view_key),
       notify_sms: true
     )
   end
@@ -108,7 +108,7 @@ RSpec.describe "Api::V1::Mobile::Collections", type: :request do
     expect(PaymentProviders::RazorpayPaymentLinkService).to have_received(:new).with(
       invoice:,
       provider:,
-      callback_url: razorpay_success_invoice_payments_url(invoice),
+      callback_url: razorpay_success_invoice_payments_url(invoice.external_view_key),
       notify_sms: false
     )
   end
@@ -141,6 +141,59 @@ RSpec.describe "Api::V1::Mobile::Collections", type: :request do
     expect(json_response.dig("customer_user", "id")).to eq(existing_customer.id)
     expect(User.where(phone: "+919876543210").count).to eq(1)
     expect(company.client_members.where(client:, user: existing_customer).count).to eq(1)
+  end
+
+  it "does not link an existing customer login from another workspace" do
+    other_company = create(:company)
+    existing_customer = create(:user, current_workspace_id: other_company.id, phone: "+919876543210")
+    create(:employment, company: other_company, user: existing_customer)
+
+    post "/api/v1/mobile/collections",
+      params: { collection: { name: "Asha Rao", phone: "9876543210" } },
+      headers: auth_headers(user)
+
+    expect(response).to have_http_status(:created)
+    expect(json_response["customer_user"]).to be_nil
+    expect(existing_customer.reload.current_workspace_id).to eq(other_company.id)
+    expect(company.employments.exists?(user: existing_customer)).to eq(false)
+    expect(existing_customer).not_to have_role(:client, company)
+  end
+
+  it "does not link a same-workspace employee as a customer" do
+    employee = create(:user, current_workspace_id: company.id, phone: "+919876543210")
+    create(:employment, company:, user: employee)
+    employee.add_role(:employee, company)
+
+    post "/api/v1/mobile/collections",
+      params: { collection: { name: "Asha Rao", phone: "9876543210" } },
+      headers: auth_headers(user)
+
+    expect(response).to have_http_status(:created)
+    expect(json_response["customer_user"]).to be_nil
+    expect(employee).not_to have_role(:client, company)
+  end
+
+  it "does not bind an existing account to a new collection phone" do
+    victim_company = create(:company)
+    victim = create(
+      :user,
+      current_workspace_id: victim_company.id,
+      email: "victim@example.com",
+      phone: "+919999999999"
+    )
+
+    post "/api/v1/mobile/collections",
+      params: { collection: { name: "Victim", email: victim.email, phone: "9876543210" } },
+      headers: auth_headers(user)
+
+    expect(response).to have_http_status(:created)
+    expect(json_response["customer_user"]).to be_nil
+    expect(victim.reload).to have_attributes(
+      phone: "+919999999999",
+      current_workspace_id: victim_company.id
+    )
+    expect(victim).not_to have_role(:client, company)
+    expect(company.employments.exists?(user: victim)).to eq(false)
   end
 
   it "creates a synthetic customer email when only name and phone are provided" do
@@ -277,7 +330,7 @@ RSpec.describe "Api::V1::Mobile::Collections", type: :request do
     expect(PaymentProviders::RazorpayPaymentLinkService).to have_received(:new).with(
       invoice:,
       provider:,
-      callback_url: razorpay_success_invoice_payments_url(invoice),
+      callback_url: razorpay_success_invoice_payments_url(invoice.external_view_key),
       notify_sms: true
     )
   end

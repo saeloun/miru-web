@@ -69,8 +69,13 @@ timeoff_conditions << "(custom_leave_id IS NOT NULL AND custom_leave_id NOT IN (
 tables_to_truncate = %w[
   ahoy_events
   ahoy_visits
+  agent_keys
   bulk_invoice_download_statuses
+  cli_sessions
+  devices
+  identities
   notifications
+  passkeys
   metrics
   exchange_rate_usages
   currency_pairs
@@ -189,7 +194,20 @@ User.where(id: keep_user_ids).order(:id).find_each do |user|
     email: email,
     personal_email_id: email,
     phone: "+1555#{user.id.to_s.rjust(6, '0')}",
-    social_accounts: { github_url: "", linkedin_url: "" }
+    social_accounts: { github_url: "", linkedin_url: "" },
+    encrypted_password: User.new(password: SecureRandom.base58(32)).encrypted_password,
+    token: SecureRandom.base58(50),
+    jti: SecureRandom.uuid,
+    unique_session_id: SecureRandom.uuid,
+    reset_password_token: nil,
+    reset_password_sent_at: nil,
+    confirmation_token: nil,
+    unlock_token: nil,
+    remember_created_at: nil,
+    otp_secret_ciphertext: nil,
+    otp_required_for_login: false,
+    passkey_required_for_login: false,
+    recovery_codes: []
   )
 end
 
@@ -230,7 +248,15 @@ Invoice.order(:id).find_each.with_index(1) do |invoice, index|
 end
 
 Payment.order(:id).find_each.with_index(1) do |payment, index|
-  update_known_columns(payment, name: "Payment #{index}")
+  update_known_columns(payment, name: "Payment #{index}", note: nil, provider_event_id: nil)
+end
+
+TimesheetEntry.order(:id).find_each.with_index(1) do |entry, index|
+  update_known_columns(entry, note: "Sanitized time entry #{index}", source_metadata: {}, proof_metadata: {}, proof_url: nil)
+end
+
+Expense.order(:id).find_each.with_index(1) do |expense, index|
+  update_known_columns(expense, description: "Sanitized expense #{index}", receipts: [])
 end
 
 NotificationPreference.find_each do |preference|

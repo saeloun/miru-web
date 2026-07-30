@@ -25,24 +25,14 @@ module MobileOtp
 
       users = User.kept.where(phone:).includes(:employments, :roles)
       if users.empty?
-        return RequestResult.new(body: { error: "No Miru customer login found for this phone" }, status: 404)
+        return RequestResult.new(body: issue_dummy_challenge, status: 202)
       end
 
       companies = companies_for(users)
-      if companies.many? && company_id.blank?
-        return RequestResult.new(
-          body: {
-            requires_workspace: true,
-            workspaces: companies.map { |company| company.slice(:id, :name) }
-          },
-          status: 409
-        )
-      end
-
-      company = selected_company(companies)
+      company = selected_company(users, companies)
       user = users.detect { |current_user| current_user.employed_at?(company&.id) }
       unless company && user
-        return RequestResult.new(body: { error: "No Miru customer login found for this workspace" }, status: 404)
+        return RequestResult.new(body: issue_dummy_challenge, status: 202)
       end
 
       result_body = issue_challenge(user:, company:)
@@ -80,6 +70,17 @@ module MobileOtp
         else
           issue_internal_challenge(user:, company:)
         end
+      end
+
+      def issue_dummy_challenge
+        code = otp_code
+        {
+          message: "OTP sent",
+          otp_sent: true,
+          pending_token: ChallengeToken.issue({ "phone" => phone }, code:),
+          expires_in: ChallengeToken::TTL.to_i,
+          test_code: Rails.env.test? ? code : nil
+        }.compact
       end
 
       def issue_msg91_challenge(user:, company:)
@@ -149,8 +150,11 @@ module MobileOtp
         Company.where(id: users.flat_map { |user| user.employments.kept.pluck(:company_id) }.uniq).order(:name).to_a
       end
 
-      def selected_company(companies)
-        return companies.first if company_id.blank?
+      def selected_company(users, companies)
+        if company_id.blank?
+          current_workspace_id = users.filter_map(&:current_workspace_id).find { |id| companies.any? { |company| company.id == id } }
+          return companies.find { |company| company.id == current_workspace_id } || companies.first
+        end
 
         companies.detect { |company| company.id == company_id.to_i }
       end

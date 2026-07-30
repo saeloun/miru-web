@@ -13,6 +13,10 @@ class InvitationPolicy < ApplicationPolicy
     user_owner_role? || user_admin_role?
   end
 
+  def assign_owner?
+    user_owner_role?(record.company)
+  end
+
   def destroy?
     user_owner_role? || user_admin_role?
   end
