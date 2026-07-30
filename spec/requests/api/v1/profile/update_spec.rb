@@ -6,6 +6,24 @@ RSpec.describe "Api::V1::Profile#update", type: :request do
   let(:user) { create(:user, password: "testing12") }
   let(:company) { create(:company) }
 
+  it "does not persist the CLI session workspace while updating the user" do
+    browser_company = create(:company)
+    create(:employment, company:, user:)
+    create(:employment, company: browser_company, user:)
+    user.add_role :employee, company
+    user.update!(current_workspace_id: browser_company.id)
+    _, cli_token = CliSession.issue_for(user:, company:)
+
+    send_request(
+      :put,
+      api_v1_profile_path,
+      params: { user: { first_name: "Sam" } },
+      headers: cli_auth_headers(cli_token))
+
+    expect(response).to have_http_status(:ok)
+    expect(user.reload).to have_attributes(first_name: "Sam", current_workspace_id: browser_company.id)
+  end
+
   describe "update user details" do
     before do
       user.add_role :employee, company
