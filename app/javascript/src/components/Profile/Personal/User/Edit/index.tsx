@@ -290,6 +290,15 @@ const UserDetailsEdit = () => {
         userSchema["current_password"] = personalDetails.currentPassword;
         userSchema["password"] = personalDetails.password;
         userSchema["password_confirmation"] = personalDetails.confirmPassword;
+      } else if (
+        initialPersonalDetails &&
+        personalDetails.phone_number !== initialPersonalDetails.phone_number &&
+        String(currentUserId) === String(currentUser?.id)
+      ) {
+        const currentPassword = await requestCurrentPassword();
+        if (!currentPassword) return;
+
+        userSchema["current_password"] = currentPassword;
       }
 
       const payload = {

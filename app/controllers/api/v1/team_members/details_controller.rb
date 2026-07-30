@@ -11,7 +11,13 @@ class Api::V1::TeamMembers::DetailsController < Api::V1::ApplicationController
     user = employment.user
     return render_forbidden_phone_change if changing_another_users_phone?
 
-    user.update!(detail_params)
+    if employment.user_id == current_user.id
+      result = UpdateProfileSettingsService.new(user, detail_params).process
+      return render json: result[:res], status: result[:status] unless result[:status] == :ok
+    else
+      user.update!(detail_params.except(:current_password))
+    end
+
     safe_user = user.as_json(
       only: [:id, :first_name, :last_name, :email, :date_of_birth, :phone, :personal_email_id],
       methods: [:full_name]
@@ -30,7 +36,7 @@ class Api::V1::TeamMembers::DetailsController < Api::V1::ApplicationController
 
     def detail_params
       params.require(:user).permit(
-        :first_name, :last_name, :date_of_birth, :phone, :personal_email_id,
+        :first_name, :last_name, :date_of_birth, :phone, :personal_email_id, :current_password,
         social_accounts: [:github_url, :linkedin_url]
       )
     end

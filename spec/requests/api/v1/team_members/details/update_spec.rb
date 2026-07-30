@@ -15,6 +15,7 @@ RSpec.describe "Api::V1::TeamMembers::DetailsController#update", type: :request 
       first_name: user.first_name,
       last_name: Faker::Alphanumeric.alpha(number: 2..10),
       phone: "+14155552671",
+      current_password: "Password123!",
       date_of_birth: Faker::Date.between(from: "1990-01-01", to: "2000-01-01"),
       personal_email_id: Faker::Internet.email,
       social_accounts: {
@@ -155,6 +156,40 @@ RSpec.describe "Api::V1::TeamMembers::DetailsController#update", type: :request 
       expect(json_response["date_of_birth"]).to eq(JSON.parse(@user_details["date_of_birth"].to_json))
       expect(json_response["phone"]).to eq(JSON.parse(@user_details["phone"].to_json))
       expect(json_response["social_accounts"]).to eq(JSON.parse(@user_details["social_accounts"].to_json))
+    end
+  end
+
+  context "when an employee changes their own phone without the current password" do
+    it "rejects the change" do
+      user.add_role :employee, company
+      original_phone = user.phone
+      sign_in user
+
+      send_request :patch, api_v1_team_details_path(
+        team_id: employment.user_id,
+        params: { user: { phone: "+14155552671" } }
+      ), headers: auth_headers(user)
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(json_response["errors"]).to eq(["Current password can't be blank"])
+      expect(user.reload.phone).to eq(original_phone)
+    end
+  end
+
+  context "when an employee changes their own phone with the wrong current password" do
+    it "rejects the change" do
+      user.add_role :employee, company
+      original_phone = user.phone
+      sign_in user
+
+      send_request :patch, api_v1_team_details_path(
+        team_id: employment.user_id,
+        params: { user: { phone: "+14155552671", current_password: "wrong" } }
+      ), headers: auth_headers(user)
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(json_response["errors"]).to eq(["Current password is invalid"])
+      expect(user.reload.phone).to eq(original_phone)
     end
   end
 
