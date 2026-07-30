@@ -48,6 +48,7 @@ type BillingSummary = {
   has_stripe_customer: boolean;
   team_member_limit: number;
   used_team_seats: number;
+  billable_team_seats: number;
   client_portal_users_count: number;
   team_member_limit_reached: boolean;
   trial_active: boolean;
@@ -76,7 +77,7 @@ const Billing = () => {
       setStatus(ApiStatus.LOADING);
       const response = await subscriptionsApi.show();
       setSummary(response.data);
-      setSeatEstimate(Math.max(response.data.used_team_seats || 3, 3));
+      setSeatEstimate(Math.max(response.data.billable_team_seats || 3, 3));
       setStatus(ApiStatus.SUCCESS);
     } catch {
       setStatus(ApiStatus.ERROR);
@@ -169,7 +170,7 @@ const Billing = () => {
 
         loadedSummary = true;
         setSummary(response.data);
-        setSeatEstimate(Math.max(response.data.used_team_seats || 3, 3));
+        setSeatEstimate(Math.max(response.data.billable_team_seats || 3, 3));
         setStatus(ApiStatus.SUCCESS);
         attempts += 1;
 

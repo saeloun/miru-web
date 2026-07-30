@@ -386,15 +386,23 @@ RSpec.describe Company, type: :model do
 
     describe "#billable_team_seats" do
       it "returns at least one seat for billing" do
-        expect(company.billable_team_seats).to eq([company.used_team_seats, 1].max)
+        expect(create(:company).billable_team_seats).to eq(1)
       end
 
-      it "matches the kept employment count when the team grows" do
-        baseline = company.used_team_seats
+      it "matches the non-client kept employment count when the team grows" do
         second_user = create(:user)
         create(:employment, company:, user: second_user)
 
-        expect(company.billable_team_seats).to eq(baseline + 1)
+        expect(company.billable_team_seats).to eq(3)
+      end
+
+      it "excludes client-only users from billing but counts them as used seats" do
+        client_portal_user = create(:user)
+        create(:employment, company:, user: client_portal_user)
+        client_portal_user.add_role(:client, company)
+
+        expect(company.billable_team_seats).to eq(2)
+        expect(company.used_team_seats).to eq(3)
       end
     end
 
