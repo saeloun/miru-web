@@ -49,6 +49,22 @@ RSpec.describe "Api::V1::Mobile::Otps", type: :request do
     expect(json_response["pending_token"]).to be_present
   end
 
+  it "rejects verification for a workspace the customer cannot access" do
+    other_company = create(:company)
+    post "/api/v1/mobile/otp/request", params: {
+      phone: "9876543210",
+      company_id: other_company.id
+    }
+
+    post "/api/v1/mobile/otp/verify", params: {
+      pending_token: json_response["pending_token"],
+      code: "123456"
+    }
+
+    expect(response).to have_http_status(:unprocessable_content)
+    expect(json_response["error"]).to eq("Invalid OTP")
+  end
+
   it "rejects an invalid OTP" do
     post "/api/v1/mobile/otp/request", params: { phone: "9876543210" }
 
