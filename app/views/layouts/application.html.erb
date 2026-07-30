@@ -3,7 +3,7 @@
   <head>
   <% page_title = content_for?(:title) ? yield(:title) : "#{t('app.name')} | Time tracking and invoicing" %>
   <% page_description = content_for?(:meta_description) ? yield(:meta_description) : "#{t('app.name')} is an open-source platform for time tracking, invoicing, payments, and operations for agencies and small companies." %>
-  <% canonical_url = content_for?(:canonical_url) ? yield(:canonical_url) : request.original_url %>
+  <% canonical_url = content_for?(:canonical_url) ? yield(:canonical_url) : "#{request.base_url}#{request.path}" %>
   <title><%= page_title %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="description" content="<%= page_description %>">
