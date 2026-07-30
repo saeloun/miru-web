@@ -9,6 +9,7 @@ RSpec.describe "SEO metadata", type: :request do
       utm_medium: "email",
       utm_campaign: "1k_mrr"
     }
+    expect(response).to have_http_status(:ok)
 
     document = Nokogiri::HTML(response.body)
 
