@@ -98,6 +98,7 @@ RSpec.describe Api::V1::SubscriptionsController, type: :request do
       expect(response).to have_http_status(:ok)
       body = JSON.parse(response.body)
       expect(body["used_team_seats"]).to eq(2)
+      expect(body["billable_team_seats"]).to eq(1)
       expect(body["client_portal_users_count"]).to eq(1)
     end
 
