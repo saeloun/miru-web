@@ -286,5 +286,23 @@ RSpec.describe "Api::V1::TeamMembers::DetailsController#update", type: :request 
       expect(response).to have_http_status(:forbidden)
       expect(user.reload.phone).to eq(original_phone)
     end
+
+    it "rejects clearing the phone" do
+      admin = create(:user, current_workspace_id: company.id)
+      create(:employment, user: admin, company:)
+      admin.add_role :admin, company
+      original_phone = user.phone
+      sign_in admin
+
+      [nil, "", " "].each do |phone|
+        send_request :patch, api_v1_team_details_path(
+          team_id: employment.user_id,
+          params: { user: { phone: } }
+        ), headers: auth_headers(admin)
+
+        expect(response).to have_http_status(:forbidden)
+        expect(user.reload.phone).to eq(original_phone)
+      end
+    end
   end
 end
