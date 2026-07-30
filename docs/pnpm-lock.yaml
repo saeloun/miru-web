@@ -9,6 +9,11 @@ overrides:
   postcss: '>=8.5.18 <9'
   brace-expansion: 5.0.8
 
+patchedDependencies:
+  brace-expansion@5.0.8:
+    hash: l3xpanqdk35n36dqjc56ytcqai
+    path: patches/brace-expansion@5.0.8.patch
+
 importers:
 
   .:
@@ -8098,7 +8103,7 @@ snapshots:
       widest-line: 4.0.1
       wrap-ansi: 8.1.0
 
-  brace-expansion@5.0.8:
+  brace-expansion@5.0.8(patch_hash=l3xpanqdk35n36dqjc56ytcqai):
     dependencies:
       balanced-match: 4.0.4
 
@@ -10108,11 +10113,11 @@ snapshots:
 
   minimatch@10.2.5:
     dependencies:
-      brace-expansion: 5.0.8
+      brace-expansion: 5.0.8(patch_hash=l3xpanqdk35n36dqjc56ytcqai)
 
   minimatch@3.1.5:
     dependencies:
-      brace-expansion: 5.0.8
+      brace-expansion: 5.0.8(patch_hash=l3xpanqdk35n36dqjc56ytcqai)
 
   minimist@1.2.8: {}
 

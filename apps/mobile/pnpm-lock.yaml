@@ -8,6 +8,11 @@ overrides:
   tar@^7: '>=7.5.21 <8'
   brace-expansion: 5.0.8
 
+patchedDependencies:
+  brace-expansion@5.0.8:
+    hash: l3xpanqdk35n36dqjc56ytcqai
+    path: patches/brace-expansion@5.0.8.patch
+
 importers:
 
   .:
@@ -4031,7 +4036,7 @@ snapshots:
     dependencies:
       big-integer: 1.6.52
 
-  brace-expansion@5.0.8:
+  brace-expansion@5.0.8(patch_hash=l3xpanqdk35n36dqjc56ytcqai):
     dependencies:
       balanced-match: 4.0.4
 
@@ -5097,15 +5102,15 @@ snapshots:
 
   minimatch@10.2.4:
     dependencies:
-      brace-expansion: 5.0.8
+      brace-expansion: 5.0.8(patch_hash=l3xpanqdk35n36dqjc56ytcqai)
 
   minimatch@3.1.5:
     dependencies:
-      brace-expansion: 5.0.8
+      brace-expansion: 5.0.8(patch_hash=l3xpanqdk35n36dqjc56ytcqai)
 
   minimatch@9.0.9:
     dependencies:
-      brace-expansion: 5.0.8
+      brace-expansion: 5.0.8(patch_hash=l3xpanqdk35n36dqjc56ytcqai)
 
   minimist@1.2.8: {}
 
