@@ -99,6 +99,7 @@ RSpec.describe Api::V1::SubscriptionsController, type: :request do
       expect(response).to have_http_status(:ok)
       body = JSON.parse(response.body)
       expect(body["used_team_seats"]).to eq(2)
+      expect(body["billable_team_seats"]).to eq(1)
       expect(body["client_portal_users_count"]).to eq(1)
     end
 
@@ -148,8 +149,10 @@ RSpec.describe Api::V1::SubscriptionsController, type: :request do
     it "starts a 14-day trial and returns the updated summary" do
       travel_to(Time.zone.local(2026, 3, 11, 12, 0, 0)) do
         expect do
-          post "/api/v1/subscription/trial", headers: headers
-        end.to have_enqueued_mail(SubscriptionMailer, :trial_started)
+          expect do
+            post "/api/v1/subscription/trial", headers: headers
+          end.to have_enqueued_mail(SubscriptionMailer, :trial_started)
+        end.to change { Ahoy::Event.where(name: "trial_started").count }.by(1)
 
         expect(response).to have_http_status(:ok)
         body = JSON.parse(response.body)
@@ -160,6 +163,11 @@ RSpec.describe Api::V1::SubscriptionsController, type: :request do
         expect(body["subscription_status"]).to eq("trialing")
         expect(body["pro_access"]).to eq(true)
         expect(body["notice"]).to eq("Your 14-day Pro trial has started")
+        expect(Ahoy::Event.where(name: "trial_started").last.properties).to include(
+          "company_id" => company.id,
+          "user_id" => user.id,
+          "source" => "billing"
+        )
       end
     end
 
@@ -169,7 +177,9 @@ RSpec.describe Api::V1::SubscriptionsController, type: :request do
         trial_ends_at: 15.days.ago
       )
 
-      post "/api/v1/subscription/trial", headers: headers
+      expect {
+        post "/api/v1/subscription/trial", headers: headers
+      }.not_to change { Ahoy::Event.where(name: "trial_started").count }
 
       expect(response).to have_http_status(:unprocessable_content)
       expect(JSON.parse(response.body)["errors"]).to eq("Your workspace is not eligible for a Pro trial")
@@ -197,6 +207,13 @@ RSpec.describe Api::V1::SubscriptionsController, type: :request do
         "supported" => true,
         "credential_type" => "virtual_card"
       )
+      expect(Ahoy::Event.where(name: "subscription_checkout_started").last.properties).to include(
+        "company_id" => company.id,
+        "user_id" => user.id,
+        "billing_interval" => "yearly",
+        "seat_quantity" => 2,
+        "provider" => "stripe_plan_page"
+      )
     end
 
     it "returns 422 when stripe price is not configured" do
@@ -204,17 +221,85 @@ RSpec.describe Api::V1::SubscriptionsController, type: :request do
       allow(ENV).to receive(:[]).with("STRIPE_PLAN_PAGE_URL").and_return(nil)
       allow(ENV).to receive(:[]).with("STRIPE_SUBSCRIPTION_PRICE_ID_MONTHLY").and_return(nil)
       allow(ENV).to receive(:[]).with("STRIPE_SUBSCRIPTION_PRICE_ID_YEARLY").and_return(nil)
+      allow(ENV).to receive(:[]).with("STRIPE_MONTHLY_PRICE_ID").and_return(nil)
+      allow(ENV).to receive(:[]).with("STRIPE_YEARLY_PRICE_ID").and_return(nil)
       allow(ENV).to receive(:[]).with("STRIPE_SUBSCRIPTION_PRICE_ID").and_return(nil)
+
+      expect {
+        post "/api/v1/subscription/checkout", headers: headers
+      }.not_to change { Ahoy::Event.where(name: "subscription_checkout_started").count }
+
+      expect(response).to have_http_status(:unprocessable_content)
+    end
+
+    it "uses the Render monthly price when the existing monthly price is not configured" do
+      allow(ENV).to receive(:[]).and_call_original
+      allow(ENV).to receive(:[]).with("STRIPE_PLAN_PAGE_URL").and_return(nil)
+      allow(ENV).to receive(:[]).with("STRIPE_SUBSCRIPTION_PRICE_ID_MONTHLY").and_return(nil)
+      allow(ENV).to receive(:[]).with("STRIPE_SUBSCRIPTION_PRICE_ID_YEARLY").and_return(nil)
+      allow(ENV).to receive(:[]).with("STRIPE_MONTHLY_PRICE_ID").and_return("price_render_monthly")
+      allow(ENV).to receive(:[]).with("STRIPE_YEARLY_PRICE_ID").and_return(nil)
+      allow(ENV).to receive(:[]).with("STRIPE_SUBSCRIPTION_PRICE_ID").and_return(nil)
+
+      allow(Stripe::Customer).to receive(:create).and_return(OpenStruct.new(id: "cus_monthly"))
+      allow(Stripe::Checkout::Session).to receive(:create)
+        .and_return(OpenStruct.new(url: "https://checkout.stripe.com/monthly"))
 
       post "/api/v1/subscription/checkout", headers: headers
 
-      expect(response).to have_http_status(:unprocessable_content)
+      expect(response).to have_http_status(:ok)
+      expect(Stripe::Checkout::Session).to have_received(:create).with(
+        hash_including(line_items: [{ price: "price_render_monthly", quantity: 1 }])
+      )
+    end
+
+    it "uses the Render yearly price when the existing yearly price is not configured" do
+      allow(ENV).to receive(:[]).and_call_original
+      allow(ENV).to receive(:[]).with("STRIPE_PLAN_PAGE_URL").and_return(nil)
+      allow(ENV).to receive(:[]).with("STRIPE_SUBSCRIPTION_PRICE_ID_MONTHLY").and_return(nil)
+      allow(ENV).to receive(:[]).with("STRIPE_SUBSCRIPTION_PRICE_ID_YEARLY").and_return(nil)
+      allow(ENV).to receive(:[]).with("STRIPE_MONTHLY_PRICE_ID").and_return(nil)
+      allow(ENV).to receive(:[]).with("STRIPE_YEARLY_PRICE_ID").and_return("price_render_yearly")
+      allow(ENV).to receive(:[]).with("STRIPE_SUBSCRIPTION_PRICE_ID").and_return(nil)
+
+      allow(Stripe::Customer).to receive(:create).and_return(OpenStruct.new(id: "cus_yearly"))
+      allow(Stripe::Checkout::Session).to receive(:create)
+        .and_return(OpenStruct.new(url: "https://checkout.stripe.com/yearly"))
+
+      post "/api/v1/subscription/checkout", params: { interval: "yearly" }, headers: headers
+
+      expect(response).to have_http_status(:ok)
+      expect(Stripe::Checkout::Session).to have_received(:create).with(
+        hash_including(line_items: [{ price: "price_render_yearly", quantity: 1 }])
+      )
+    end
+
+    it "falls back to the shared subscription price" do
+      allow(ENV).to receive(:[]).and_call_original
+      allow(ENV).to receive(:[]).with("STRIPE_PLAN_PAGE_URL").and_return(nil)
+      allow(ENV).to receive(:[]).with("STRIPE_SUBSCRIPTION_PRICE_ID_MONTHLY").and_return(nil)
+      allow(ENV).to receive(:[]).with("STRIPE_SUBSCRIPTION_PRICE_ID_YEARLY").and_return(nil)
+      allow(ENV).to receive(:[]).with("STRIPE_MONTHLY_PRICE_ID").and_return(nil)
+      allow(ENV).to receive(:[]).with("STRIPE_YEARLY_PRICE_ID").and_return(nil)
+      allow(ENV).to receive(:[]).with("STRIPE_SUBSCRIPTION_PRICE_ID").and_return("price_shared")
+
+      allow(Stripe::Customer).to receive(:create).and_return(OpenStruct.new(id: "cus_shared"))
+      allow(Stripe::Checkout::Session).to receive(:create)
+        .and_return(OpenStruct.new(url: "https://checkout.stripe.com/shared"))
+
+      post "/api/v1/subscription/checkout", headers: headers
+
+      expect(response).to have_http_status(:ok)
+      expect(Stripe::Checkout::Session).to have_received(:create).with(
+        hash_including(line_items: [{ price: "price_shared", quantity: 1 }])
+      )
     end
 
     it "creates a monthly checkout session when configured" do
       allow(ENV).to receive(:[]).and_call_original
       allow(ENV).to receive(:[]).with("STRIPE_PLAN_PAGE_URL").and_return(nil)
       allow(ENV).to receive(:[]).with("STRIPE_SUBSCRIPTION_PRICE_ID_MONTHLY").and_return("price_monthly")
+      allow(ENV).to receive(:[]).with("STRIPE_MONTHLY_PRICE_ID").and_return("price_render_monthly")
       allow(ENV).to receive(:[]).with("STRIPE_SUBSCRIPTION_PRICE_ID").and_return(nil)
 
       stripe_customer = OpenStruct.new(id: "cus_123")
@@ -232,6 +317,13 @@ RSpec.describe Api::V1::SubscriptionsController, type: :request do
         "currency" => "usd"
       )
       expect(company.reload.stripe_customer_id).to eq("cus_123")
+      expect(Ahoy::Event.where(name: "subscription_checkout_started").last.properties).to include(
+        "company_id" => company.id,
+        "user_id" => user.id,
+        "billing_interval" => "monthly",
+        "seat_quantity" => 1,
+        "provider" => "stripe_checkout"
+      )
       expect(Stripe::Checkout::Session).to have_received(:create).with(
         hash_including(
           line_items: [{ price: "price_monthly", quantity: 1 }],
@@ -250,6 +342,7 @@ RSpec.describe Api::V1::SubscriptionsController, type: :request do
       allow(ENV).to receive(:[]).and_call_original
       allow(ENV).to receive(:[]).with("STRIPE_PLAN_PAGE_URL").and_return(nil)
       allow(ENV).to receive(:[]).with("STRIPE_SUBSCRIPTION_PRICE_ID_YEARLY").and_return("price_yearly")
+      allow(ENV).to receive(:[]).with("STRIPE_YEARLY_PRICE_ID").and_return("price_render_yearly")
       allow(ENV).to receive(:[]).with("STRIPE_SUBSCRIPTION_PRICE_ID").and_return(nil)
       extra_user = create(:user, current_workspace_id: company.id)
       create(:employment, company:, user: extra_user)

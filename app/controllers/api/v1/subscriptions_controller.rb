@@ -17,6 +17,7 @@ class Api::V1::SubscriptionsController < Api::V1::ApplicationController
 
     plan_page_url = checkout_plan_page_url
     if plan_page_url.present?
+      track_checkout_started("stripe_plan_page")
       render json: checkout_payload(plan_page_url), status: 200
       return
     end
@@ -41,6 +42,7 @@ class Api::V1::SubscriptionsController < Api::V1::ApplicationController
       }
     )
 
+    track_checkout_started("stripe_checkout")
     render json: checkout_payload(session.url), status: 200
   rescue Stripe::StripeError => e
     render json: { errors: e.message }, status: 422
@@ -68,6 +70,7 @@ class Api::V1::SubscriptionsController < Api::V1::ApplicationController
     authorize current_company, policy_class: CompanyPolicy
 
     current_company.start_pro_trial!
+    Analytics::TrackingService.new(user: current_user).track_trial_started(current_company, source: "billing")
     SubscriptionMailer.with(company_id: current_company.id, recipient_id: current_user.id).trial_started.deliver_later
 
     render_summary(notice: I18n.t("subscriptions.trial_started"))
@@ -93,6 +96,7 @@ class Api::V1::SubscriptionsController < Api::V1::ApplicationController
         has_stripe_customer: current_company.stripe_customer_id.present?,
         team_member_limit: current_company.team_member_limit,
         used_team_seats: current_company.used_team_seats,
+        billable_team_seats: current_company.billable_team_seats,
         client_portal_users_count: current_company.client_portal_users_count,
         team_member_limit_reached: current_company.team_member_limit_reached?,
         trial_active: current_company.trial_active?,
@@ -141,14 +145,15 @@ class Api::V1::SubscriptionsController < Api::V1::ApplicationController
     end
 
     def checkout_price_id
-      interval_key =
+      candidates =
         if billing_interval == "yearly"
-          "STRIPE_SUBSCRIPTION_PRICE_ID_YEARLY"
+          %w[STRIPE_SUBSCRIPTION_PRICE_ID_YEARLY STRIPE_YEARLY_PRICE_ID]
         else
-          "STRIPE_SUBSCRIPTION_PRICE_ID_MONTHLY"
+          %w[STRIPE_SUBSCRIPTION_PRICE_ID_MONTHLY STRIPE_MONTHLY_PRICE_ID]
         end
+      candidates << "STRIPE_SUBSCRIPTION_PRICE_ID"
 
-      ENV[interval_key].presence || ENV["STRIPE_SUBSCRIPTION_PRICE_ID"].to_s
+      candidates.filter_map { |name| ENV[name].presence }.first.to_s
     end
 
     def ensure_stripe_customer_id
@@ -165,5 +170,14 @@ class Api::V1::SubscriptionsController < Api::V1::ApplicationController
 
     def checkout_seat_quantity
       @checkout_seat_quantity ||= current_company.billable_team_seats
+    end
+
+    def track_checkout_started(provider)
+      Analytics::TrackingService.new(user: current_user).track_subscription_checkout_started(
+        current_company,
+        interval: billing_interval,
+        seat_quantity: checkout_seat_quantity,
+        provider:
+      )
     end
 end

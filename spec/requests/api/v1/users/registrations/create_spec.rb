@@ -28,15 +28,29 @@ RSpec.describe "Api::V1::Users::Registrations#create", type: :request do
     }
 
     it "creates user successfully" do
-      send_request :post, api_v1_users_signup_path, params: {
-        user: valid_user_json
-      }
+      expect {
+        send_request :post, api_v1_users_signup_path, params: {
+          user: valid_user_json.merge(
+            utm_source: "miru.so",
+            utm_medium: "pricing-page",
+            utm_campaign: "signup",
+            utm_content: "x" * 300
+          )
+        }
+      }.to change { Ahoy::Event.where(name: "user_signup").count }.by(1)
+
       expect(response).to have_http_status(:ok)
       expect(json_response["notice"]).to eq(I18n.t("devise.registrations.signed_up"))
       expect(json_response.dig("agent_payment_options", "stripe_link_cli")).to include(
         "provider" => "stripe_link_cli",
         "checkout_endpoint" => "/api/v1/subscription/checkout",
         "requires_authenticated_workspace" => true
+      )
+      expect(Ahoy::Event.where(name: "user_signup").last.properties).to include(
+        "utm_source" => "miru.so",
+        "utm_medium" => "pricing-page",
+        "utm_campaign" => "signup",
+        "utm_content" => "x" * 255
       )
     end
 
@@ -117,9 +131,12 @@ RSpec.describe "Api::V1::Users::Registrations#create", type: :request do
 }
 
     it "wont create user if email already exists" do
-      send_request :post, api_v1_users_signup_path, params: {
-        user: valid_user_json
-      }
+      expect {
+        send_request :post, api_v1_users_signup_path, params: {
+          user: valid_user_json
+        }
+      }.not_to change { Ahoy::Event.where(name: "user_signup").count }
+
       expect(response).to have_http_status(:unprocessable_content)
       expect(json_response["error"]).to eq({ "email" => ["Email ID already exists"] })
     end

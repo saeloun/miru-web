@@ -118,7 +118,7 @@ class Company < ApplicationRecord
   end
 
   def billable_team_seats
-    [used_team_seats, 1].max
+    [employees_without_client_role.count, 1].max
   end
 
   def client_portal_users_count

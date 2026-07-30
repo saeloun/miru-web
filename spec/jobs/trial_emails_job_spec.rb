@@ -25,12 +25,24 @@ RSpec.describe TrialEmailsJob do
 
   it "sends nothing when Stripe billing is not configured" do
     %w[STRIPE_PLAN_PAGE_URL STRIPE_SUBSCRIPTION_PRICE_ID STRIPE_SUBSCRIPTION_PRICE_ID_MONTHLY
-       STRIPE_SUBSCRIPTION_PRICE_ID_YEARLY].each do |key|
+       STRIPE_SUBSCRIPTION_PRICE_ID_YEARLY STRIPE_MONTHLY_PRICE_ID STRIPE_YEARLY_PRICE_ID].each do |key|
       allow(ENV).to receive(:[]).with(key).and_return(nil)
     end
     start_trial(days_ago: 2)
 
     expect { described_class.perform_now }.not_to have_enqueued_mail(SubscriptionMailer)
+  end
+
+  it "sends the getting started email when only the Render monthly price is configured" do
+    %w[STRIPE_PLAN_PAGE_URL STRIPE_SUBSCRIPTION_PRICE_ID STRIPE_SUBSCRIPTION_PRICE_ID_MONTHLY
+       STRIPE_SUBSCRIPTION_PRICE_ID_YEARLY STRIPE_YEARLY_PRICE_ID].each do |key|
+      allow(ENV).to receive(:[]).with(key).and_return(nil)
+    end
+    allow(ENV).to receive(:[]).with("STRIPE_MONTHLY_PRICE_ID").and_return("price_monthly")
+    start_trial(days_ago: 2)
+
+    expect { described_class.perform_now }.to have_enqueued_mail(SubscriptionMailer, :trial_getting_started)
+      .with(params: { company_id: company.id, recipient_id: owner.id }, args: [])
   end
 
   it "sends the getting started email on day two of the trial" do
@@ -142,7 +154,7 @@ RSpec.describe TrialEmailsJob do
 
   it "does not send the expired email when Stripe billing is not configured" do
     %w[STRIPE_PLAN_PAGE_URL STRIPE_SUBSCRIPTION_PRICE_ID STRIPE_SUBSCRIPTION_PRICE_ID_MONTHLY
-       STRIPE_SUBSCRIPTION_PRICE_ID_YEARLY].each do |key|
+       STRIPE_SUBSCRIPTION_PRICE_ID_YEARLY STRIPE_MONTHLY_PRICE_ID STRIPE_YEARLY_PRICE_ID].each do |key|
       allow(ENV).to receive(:[]).with(key).and_return(nil)
     end
     start_trial(days_ago: 15)

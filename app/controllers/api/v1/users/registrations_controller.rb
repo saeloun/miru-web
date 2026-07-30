@@ -3,6 +3,8 @@
 class Api::V1::Users::RegistrationsController < Devise::RegistrationsController
   include SameOriginAuthentication
 
+  SIGNUP_ATTRIBUTION_KEYS = %i[utm_source utm_medium utm_campaign utm_term utm_content].freeze
+
   respond_to :json
   protect_from_forgery with: :null_session, only: :create
   before_action :reject_cross_origin_authentication!, only: :create
@@ -11,6 +13,8 @@ class Api::V1::Users::RegistrationsController < Devise::RegistrationsController
     if user.errors.present?
       render json: { error: user.errors }, status: 422
     else
+      Analytics::TrackingService.new(user:).track_signup(signup_attribution)
+
       render json: {
         notice: I18n.t("devise.registrations.signed_up"),
         email: user.email,
@@ -27,5 +31,9 @@ class Api::V1::Users::RegistrationsController < Devise::RegistrationsController
       params.require(:user).permit(
         :first_name, :last_name, :email, :password, :password_confirmation, :locale
       )
+    end
+
+    def signup_attribution
+      params.require(:user).permit(*SIGNUP_ATTRIBUTION_KEYS).to_h.transform_values { |value| value.to_s[0, 255] }
     end
 end
