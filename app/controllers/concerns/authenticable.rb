@@ -40,6 +40,7 @@ module Authenticable
 
       @current_cli_session = session
       sign_in session.user, store: false, skip_session_limitable: true
+      current_user.current_workspace = session.company
       true
     end
 
