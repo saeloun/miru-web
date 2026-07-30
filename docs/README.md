@@ -20,7 +20,7 @@ This repository contains the documentation website for Miru, built with [Docusau
 ## 🚀 Quick Start
 
 ### Prerequisites
-- Node.js 18+ (we use Node 22.11.0)
+- Node.js 20+ (Node 22 recommended)
 - pnpm 9+
 
 ### Installation
@@ -104,14 +104,9 @@ For substantial improvements:
 
 ### Running Tests
 ```bash
-# Check for broken links and build issues
-pnpm run build
-
-# Lint markdown files
-pnpm run lint
-
-# Spell check (if configured)
-pnpm run spell-check
+# Check configuration types and build the static site
+pnpm typecheck
+pnpm build
 ```
 
 ## 📋 Available Scripts
