@@ -9,9 +9,18 @@ class UpdateProfileSettingsService
   end
 
   def process
-    if user_params[:password].present? && user_params[:current_password].blank?
+    if sensitive_change? && user_params[:current_password].blank?
       current_user.errors.add(:current_password, :blank)
       return { res: { errors: current_user.errors.full_messages }, status: :unprocessable_content }
+    end
+
+    if phone_change? && user_params[:password].blank?
+      unless current_user.valid_password?(user_params[:current_password])
+        current_user.errors.add(:current_password, :invalid)
+        return { res: { errors: current_user.errors.full_messages }, status: :unprocessable_content }
+      end
+
+      return update_user_without_password
     end
 
     if user_params[:current_password].blank?
@@ -43,6 +52,14 @@ class UpdateProfileSettingsService
   end
 
   private
+
+    def sensitive_change?
+      user_params[:password].present? || phone_change?
+    end
+
+    def phone_change?
+      user_params.key?(:phone) && user_params[:phone].to_s != current_user.phone.to_s
+    end
 
     def new_password_same_as_current_password?
       user_params[:password].present? &&

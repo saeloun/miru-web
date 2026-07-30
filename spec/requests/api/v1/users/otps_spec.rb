@@ -49,6 +49,20 @@ RSpec.describe "Api::V1::Users::Otps", type: :request do
     expect(json_response["pending_token"]).to be_present
   end
 
+  it "rejects cross-origin OTP verification" do
+    post "/api/v1/users/otp/request", params: { phone: "9876543210" }
+
+    post "/api/v1/users/otp/verify",
+      params: {
+        pending_token: json_response["pending_token"],
+        code: "123456"
+      },
+      headers: { "Origin" => "https://attacker.example" }
+
+    expect(response).to have_http_status(:forbidden)
+    expect(json_response["error"]).to eq("Cross-origin authentication is not allowed")
+  end
+
   it "rejects verification after workspace access is removed" do
     post "/api/v1/users/otp/request", params: { phone: "9876543210" }
     pending_token = json_response["pending_token"]

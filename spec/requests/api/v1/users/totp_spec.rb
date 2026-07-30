@@ -75,6 +75,15 @@ RSpec.describe "Api::V1::Users::Totp", type: :request do
     end
   end
 
+  it "rejects cross-origin TOTP authentication" do
+    post "/api/v1/users/totp/authenticate",
+      params: { pending_token: "pending-token", code: "123456" },
+      headers: { "Origin" => "https://attacker.example" }
+
+    expect(response).to have_http_status(:forbidden)
+    expect(json_response["error"]).to eq("Cross-origin authentication is not allowed")
+  end
+
   it "requires the current password for TOTP security changes" do
     post "/api/v1/users/totp/setup", params: { current_password: "wrong" }
 

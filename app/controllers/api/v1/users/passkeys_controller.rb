@@ -2,10 +2,12 @@
 
 class Api::V1::Users::PasskeysController < Api::V1::ApplicationController
   include AuthResponsePayload
+  include SameOriginAuthentication
 
   skip_before_action :authenticate_user!, only: :authenticate
   skip_before_action :authenticate_user_using_x_auth_token, only: :authenticate
   skip_before_action :set_virtual_verified_invitations_allowed, only: :authenticate
+  before_action :reject_cross_origin_authentication!, only: :authenticate
   before_action :require_current_password!, only: [:registration_options, :update_requirement, :destroy]
 
   rescue_from Passkeys::ChallengeToken::InvalidTokenError, with: :render_invalid_passkey_token
