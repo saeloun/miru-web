@@ -9,10 +9,14 @@ class TrialEmailsJob < ApplicationJob
   # Self-hosted instances without Stripe pricing have no upgrade path, so
   # trial emails would only nag admins about a checkout that cannot succeed.
   def self.billing_configured?
-    ENV["STRIPE_PLAN_PAGE_URL"].present? ||
-      ENV["STRIPE_SUBSCRIPTION_PRICE_ID"].present? ||
-      ENV["STRIPE_SUBSCRIPTION_PRICE_ID_MONTHLY"].present? ||
-      ENV["STRIPE_SUBSCRIPTION_PRICE_ID_YEARLY"].present?
+    %w[
+      STRIPE_PLAN_PAGE_URL
+      STRIPE_SUBSCRIPTION_PRICE_ID
+      STRIPE_SUBSCRIPTION_PRICE_ID_MONTHLY
+      STRIPE_SUBSCRIPTION_PRICE_ID_YEARLY
+      STRIPE_MONTHLY_PRICE_ID
+      STRIPE_YEARLY_PRICE_ID
+    ].any? { |name| ENV[name].present? }
   end
 
   def perform
