@@ -30,10 +30,14 @@ ENV BUNDLE_DEPLOYMENT="1" \
 
 # Install Node.js
 ARG NODE_VERSION=22.11.0
+ARG NODE_BUILD_COMMIT=78955c917127645a2a7b931abf3dad3d0ca7a418
+ARG NODE_BUILD_SHA256=df74012469a1b44dd5d0fd9248f77d2bd5795b3909299ab23db2aaa2cd4121c4
 ENV PATH=/usr/local/node/bin:$PATH
-RUN curl -sL https://github.com/nodenv/node-build/archive/master.tar.gz | tar xz -C /tmp/ && \
-    /tmp/node-build-master/bin/node-build "${NODE_VERSION}" /usr/local/node && \
-    rm -rf /tmp/node-build-master
+RUN curl -fsSL "https://github.com/nodenv/node-build/archive/${NODE_BUILD_COMMIT}.tar.gz" -o /tmp/node-build.tar.gz && \
+    echo "${NODE_BUILD_SHA256}  /tmp/node-build.tar.gz" | sha256sum -c - && \
+    tar xzf /tmp/node-build.tar.gz -C /tmp/ && \
+    "/tmp/node-build-${NODE_BUILD_COMMIT}/bin/node-build" "${NODE_VERSION}" /usr/local/node && \
+    rm -rf /tmp/node-build*
 
 # Install pnpm
 RUN npm install -g pnpm@9

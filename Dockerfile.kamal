@@ -27,7 +27,11 @@ ENV BUNDLE_DEPLOYMENT="1" \
 
 # Install Node.js via NodeSource repository
 ARG NODE_VERSION=22
-RUN curl -fsSL https://deb.nodesource.com/setup_${NODE_VERSION}.x | bash - && \
+ARG NODESOURCE_SETUP_SHA256=575583bbac2fccc0b5edd0dbc03e222d9f9dc8d724da996d22754d6411104fd1
+RUN curl -fsSL "https://deb.nodesource.com/setup_${NODE_VERSION}.x" -o /tmp/nodesource_setup.sh && \
+    echo "${NODESOURCE_SETUP_SHA256}  /tmp/nodesource_setup.sh" | sha256sum -c - && \
+    bash /tmp/nodesource_setup.sh && \
+    rm /tmp/nodesource_setup.sh && \
     apt-get install -y --no-install-recommends nodejs && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
