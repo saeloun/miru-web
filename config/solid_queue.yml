@@ -18,6 +18,9 @@ default: &default
         trial_emails:
           class: TrialEmailsJob
           schedule: '0 9 * * *'
+        founder_digest:
+          class: Analytics::FounderDigestJob
+          schedule: '0 8 * * 1'
         refresh_cached_analytics_reports:
           class: Analytics::RefreshCachedReportsJob
           schedule: '0 * * * *'
@@ -63,6 +66,9 @@ production:
         trial_emails:
           class: TrialEmailsJob
           schedule: '<%= ENV.fetch("TRIAL_EMAILS_CRON", "0 9 * * *") %>'
+        founder_digest:
+          class: Analytics::FounderDigestJob
+          schedule: '<%= ENV.fetch("FOUNDER_DIGEST_CRON", "0 8 * * 1") %>'
         refresh_cached_analytics_reports:
           class: Analytics::RefreshCachedReportsJob
           schedule: '0 * * * *'
