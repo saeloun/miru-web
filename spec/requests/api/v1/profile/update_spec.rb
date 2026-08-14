@@ -6,6 +6,24 @@ RSpec.describe "Api::V1::Profile#update", type: :request do
   let(:user) { create(:user, password: "testing12") }
   let(:company) { create(:company) }
 
+  it "does not persist the CLI session workspace while updating the user" do
+    browser_company = create(:company)
+    create(:employment, company:, user:)
+    create(:employment, company: browser_company, user:)
+    user.add_role :employee, company
+    user.update!(current_workspace_id: browser_company.id)
+    _, cli_token = CliSession.issue_for(user:, company:)
+
+    send_request(
+      :put,
+      api_v1_profile_path,
+      params: { user: { first_name: "Sam" } },
+      headers: cli_auth_headers(cli_token))
+
+    expect(response).to have_http_status(:ok)
+    expect(user.reload).to have_attributes(first_name: "Sam", current_workspace_id: browser_company.id)
+  end
+
   describe "update user details" do
     before do
       user.add_role :employee, company
@@ -29,6 +47,37 @@ RSpec.describe "Api::V1::Profile#update", type: :request do
       expect(response).to have_http_status(:ok)
       expect(user.reload.locale).to eq("mr")
       expect(json_response["notice"]).to eq(I18n.t("companies.update.success"))
+    end
+
+    it "requires the current password when changing the phone" do
+      original_phone = user.phone
+      params = { user: { phone: "+919876543210" } }
+
+      send_request(:put, api_v1_profile_path, params:, headers: auth_headers(user))
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(json_response["errors"]).to eq(["Current password can't be blank"])
+      expect(user.reload.phone).to eq(original_phone)
+    end
+
+    it "rejects an incorrect current password when changing the phone" do
+      original_phone = user.phone
+      params = { user: { phone: "+919876543210", current_password: "incorrect" } }
+
+      send_request(:put, api_v1_profile_path, params:, headers: auth_headers(user))
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(json_response["errors"]).to eq(["Current password is invalid"])
+      expect(user.reload.phone).to eq(original_phone)
+    end
+
+    it "updates the phone with the correct current password" do
+      params = { user: { phone: "+919876543210", current_password: "testing12" } }
+
+      send_request(:put, api_v1_profile_path, params:, headers: auth_headers(user))
+
+      expect(response).to have_http_status(:ok)
+      expect(user.reload.phone).to eq("+919876543210")
     end
 
     it "updates user data with password" do
@@ -178,7 +227,7 @@ RSpec.describe "Api::V1::Profile#update", type: :request do
     end
 
     it "rejects a phone number longer than 15 digits" do
-      params = { user: { phone: "+1234567890123456" } }
+      params = { user: { phone: "+1234567890123456", current_password: "testing12" } }
 
       send_request(:put, api_v1_profile_path, params:, headers: auth_headers(user))
 
@@ -187,7 +236,7 @@ RSpec.describe "Api::V1::Profile#update", type: :request do
     end
 
     it "rejects a phone number shorter than 2 digits" do
-      params = { user: { phone: "+1" } }
+      params = { user: { phone: "+1", current_password: "testing12" } }
 
       send_request(:put, api_v1_profile_path, params:, headers: auth_headers(user))
 
@@ -196,7 +245,7 @@ RSpec.describe "Api::V1::Profile#update", type: :request do
     end
 
     it "rejects an invalid Indian phone number" do
-      params = { user: { phone: "+9198765432101" } }
+      params = { user: { phone: "+9198765432101", current_password: "testing12" } }
 
       send_request(:put, api_v1_profile_path, params:, headers: auth_headers(user))
 

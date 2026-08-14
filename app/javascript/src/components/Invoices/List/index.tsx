@@ -40,13 +40,19 @@ const Invoices = () => {
     query: searchParams.get("query") || "",
   });
 
-  const LS_INVOICE_FILTERS = window.localStorage.getItem(
-    LocalStorageKeys.INVOICE_FILTERS
-  );
+  const [filterParams, setFilterParams] = useState<any>(() => {
+    try {
+      const stored = window.localStorage.getItem(
+        LocalStorageKeys.INVOICE_FILTERS
+      );
 
-  const [filterParams, setFilterParams] = useState<any>(
-    JSON.parse(LS_INVOICE_FILTERS) || filterIntialValues
-  );
+      const parsed = stored ? JSON.parse(stored) : null;
+
+      return parsed && typeof parsed === "object" ? parsed : filterIntialValues;
+    } catch {
+      return filterIntialValues;
+    }
+  });
   const [filterParamsStr, setFilterParamsStr] = useState("");
   const [selectedInput, setSelectedInput] = useState("from-input");
 

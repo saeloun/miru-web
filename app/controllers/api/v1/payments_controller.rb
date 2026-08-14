@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
 class Api::V1::PaymentsController < Api::V1::ApplicationController
+  # ponytail: hard cap; add cursor pagination when workspaces outgrow this response.
+  MAX_INDEX_PAYMENTS = 500
+
   before_action :set_invoice, only: [:create]
   before_action :set_payment, only: [:show, :withdraw, :quickbooks_sync]
   after_action :track_event, only: [:create]
@@ -49,7 +52,7 @@ class Api::V1::PaymentsController < Api::V1::ApplicationController
                                query: "%#{search_query}%")
     end
 
-    payments = payments.order(created_at: :desc)
+    payments = payments.order(created_at: :desc).limit(MAX_INDEX_PAYMENTS)
 
     render :index,
       locals: PaymentsPresenter.new(payments, current_company).index_data
@@ -119,7 +122,7 @@ class Api::V1::PaymentsController < Api::V1::ApplicationController
     end
 
     def set_invoice
-      @invoice = current_company.invoices.find(payment_params[:invoice_id])
+      @invoice = current_company.invoices.kept.find(payment_params[:invoice_id])
     end
 
     def set_payment
@@ -132,23 +135,21 @@ class Api::V1::PaymentsController < Api::V1::ApplicationController
     end
 
     def generate_bulk_csv(payments)
-      require "csv"
-
-      CSV.generate(headers: true) do |csv|
-        csv << ["Date", "Client", "Invoice Number", "Payment Method", "Transaction ID", "Amount", "Currency", "Status", "Notes"]
-        payments.each do |payment|
-          csv << [
-            payment.transaction_date,
-            payment.invoice&.client&.name || "Unknown Client",
-            payment.invoice&.invoice_number,
-            payment.transaction_type&.humanize,
-            "PAY-#{payment.id}",
-            payment.amount,
-            payment.payment_currency || payment.company&.base_currency,
-            payment.status&.humanize,
-            payment.note
-          ]
-        end
+      headers = ["Date", "Client", "Invoice Number", "Payment Method", "Transaction ID", "Amount", "Currency", "Status", "Notes"]
+      rows = payments.map do |payment|
+        [
+          payment.transaction_date,
+          payment.invoice&.client&.name || "Unknown Client",
+          payment.invoice&.invoice_number,
+          payment.transaction_type&.humanize,
+          "PAY-#{payment.id}",
+          payment.amount,
+          payment.payment_currency || payment.company&.base_currency,
+          payment.status&.humanize,
+          payment.note
+        ]
       end
+
+      Reports::GenerateCsv.new(rows, headers).process
     end
 end

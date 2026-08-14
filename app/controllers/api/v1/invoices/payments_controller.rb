@@ -19,20 +19,11 @@ class Api::V1::Invoices::PaymentsController < Api::V1::ApplicationController
       return render json: { error: I18n.t("invoices.payments.success.failure") }, status: 422
     end
 
-    if InvoicePayment::StripePaymentIntent.new(@invoice).process
-      if @invoice.paid?
-        PaymentMailer.with(
-          invoice_id: @invoice.id,
-          subject: "Payment details by #{@invoice.client.name}").payment.deliver_later
-
-        @invoice.send_to_client_email(
-          invoice_id: @invoice.id,
-          subject: "Payment Confirmation of Invoice #{@invoice.invoice_number} by #{@invoice.client.name}"
-        )
-        render json: { invoice: payment_success_invoice_payload, notice: I18n.t("invoices.payments.success.success") }, status: 200
-      else
-        render json: { invoice: payment_success_invoice_payload, notice: I18n.t("invoices.payments.success.success") }, status: 200
-      end
+    if @invoice.paid?
+      render json: {
+        invoice: payment_success_invoice_payload,
+        notice: I18n.t("invoices.payments.success.success")
+      }, status: 200
     else
       render json: { error: I18n.t("invoices.payments.success.failure") }, status: 422
     end
@@ -41,7 +32,7 @@ class Api::V1::Invoices::PaymentsController < Api::V1::ApplicationController
   private
 
     def load_invoice
-      @invoice = Invoice.includes(client: :company).find(params[:id])
+      @invoice = Invoice.kept.includes(client: :company).find_by!(external_view_key: params[:id])
     end
 
     def track_event

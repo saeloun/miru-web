@@ -12,11 +12,11 @@ class InvoicePayment::StripePaymentFailed < ApplicationService
 
   def process
     @invoice = Invoice.where("payment_infos ->> 'stripe_payment_intent' = ?", data_object.id).first
-    @payment = Payment.create!(payment_params)
-    rescue StandardError => error
-      Rails.logger.error error.message
-      Rails.logger.error error.backtrace.join("\n")
-      nil
+    return true unless invoice
+
+    Payment.create_or_find_by!(provider_event_id: event.id) do |payment|
+      payment.assign_attributes(payment_params)
+    end
   end
 
   private

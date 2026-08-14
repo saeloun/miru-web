@@ -65,7 +65,7 @@ RSpec.describe Api::V1::Reports::PaymentsController, type: :request do
 
         expect(payment_data.keys).to match_array([
           "id", "payment_date", "transaction_id", "payment_method",
-          "client_name", "invoice_number", "amount", "notes", "status"
+          "client_name", "invoice_number", "amount", "base_currency_amount", "notes", "status"
         ])
 
         expect(payment_data["client_name"]).to eq(client.name)
@@ -242,13 +242,17 @@ RSpec.describe Api::V1::Reports::PaymentsController, type: :request do
     end
 
     context "PDF download" do
-      it "generates PDF file" do
+      it "sends the generated PDF report instead of the old not-implemented stub" do
+        allow_any_instance_of(::Reports::GeneratePdf)
+          .to receive(:process).and_return("%PDF-1.4 generated-payment-report")
+
         get "/api/v1/reports/payments/download.pdf"
 
         expect(response).to have_http_status(:ok)
         expect(response.content_type).to eq("application/pdf")
         expect(response.headers["Content-Disposition"]).to include("payment_report_")
-        # Note: PDF generation is not yet implemented, so we just check it doesn't error
+        expect(response.body).to eq("%PDF-1.4 generated-payment-report")
+        expect(response.body).not_to include("not yet implemented")
       end
     end
 

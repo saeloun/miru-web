@@ -4,6 +4,7 @@ class Webhooks::RazorpayController < ApplicationController
   RAZORPAY_SIGNATURE_HEADER = "HTTP_X_RAZORPAY_SIGNATURE"
   PAYMENT_LINKS_WEBHOOK = "razorpay_payment_links"
   PAYOUTS_WEBHOOK = "razorpay_payouts"
+  MAX_WEBHOOK_BODY_BYTES = 1.megabyte
 
   # Razorpay calls this endpoint server-to-server without a Miru user session.
   # The trust boundary is the X-Razorpay-Signature check in the fulfillment service.
@@ -13,7 +14,9 @@ class Webhooks::RazorpayController < ApplicationController
   skip_after_action :verify_authorized
 
   def payment_links
-    payload = request.body.read
+    payload = bounded_payload
+    return if performed?
+
     fulfillment = InvoicePayment::RazorpayPaymentLinkWebhookFulfillment.new(
       payload:,
       signature: request.get_header(RAZORPAY_SIGNATURE_HEADER)
@@ -26,7 +29,9 @@ class Webhooks::RazorpayController < ApplicationController
   end
 
   def payouts
-    payload = request.body.read
+    payload = bounded_payload
+    return if performed?
+
     fulfillment = PaymentProviders::RazorpayPayoutWebhookFulfillment.new(
       payload:,
       signature: request.get_header(RAZORPAY_SIGNATURE_HEADER)
@@ -39,6 +44,14 @@ class Webhooks::RazorpayController < ApplicationController
   end
 
   private
+
+    def bounded_payload
+      payload = request.body.read(MAX_WEBHOOK_BODY_BYTES + 1)
+      return payload if payload.bytesize <= MAX_WEBHOOK_BODY_BYTES
+
+      render json: { error: "Razorpay webhook payload is too large" }, status: 413
+      nil
+    end
 
     # Fulfillment services return true when the event is handled or can be safely
     # ignored. On failure they expose a user-safe error plus an optional error_code.

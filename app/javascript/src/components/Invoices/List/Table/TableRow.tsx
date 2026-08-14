@@ -228,7 +228,7 @@ const TableRow = ({
         )}
         {(isSending || isSendReminder) && !isDesktop && (
           <div
-            className="absolute inset-0 z-50 flex flex-col bg-white"
+            className="absolute inset-0 z-50 flex flex-col bg-card"
             onClick={e => {
               e.preventDefault();
               e.stopPropagation();

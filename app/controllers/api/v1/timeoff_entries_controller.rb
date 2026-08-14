@@ -23,16 +23,20 @@ class Api::V1::TimeoffEntriesController < Api::V1::ApplicationController
   end
 
   def create
-    authorize TimeoffEntry
+    timeoff_entry = @user.timeoff_entries.new(timeoff_params)
+    authorize timeoff_entry
 
-    timeoff_entry = @user.timeoff_entries.create!(timeoff_params)
+    timeoff_entry.save!
     render json: { notice: I18n.t("timeoff_entries.create.success"), timeoff_entry: }, status: 200
   end
 
   def update
     authorize @timeoff_entry
 
-    @timeoff_entry.update!(timeoff_params)
+    @timeoff_entry.assign_attributes(timeoff_params)
+    authorize @timeoff_entry
+
+    @timeoff_entry.save!
     render json: { notice: I18n.t("timeoff_entries.update.success"), timeoff_entry: @timeoff_entry }, status: 200
   end
 
@@ -50,7 +54,7 @@ class Api::V1::TimeoffEntriesController < Api::V1::ApplicationController
     end
 
     def load_user!
-      @user ||= current_company.users.find(params[:timeoff_entry][:user_id])
+      @user ||= current_company.users.find(params[:timeoff_entry][:user_id].to_s)
     end
 
     def load_leave_type!

@@ -35,8 +35,19 @@ RSpec.describe "Api::V1::Project#update", type: :request do
               description: "test for update"
             }
           }), headers: auth_headers(user)
-        expect(response).to have_http_status(:unprocessable_content)
-        expect(json_response["errors"]).to eq("Client must exist")
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it "does not move a project to another workspace's client" do
+        foreign_client = create(:client)
+
+        send_request :patch, api_v1_project_path(
+          id: project.id,
+          params: { project: { client_id: foreign_client.id } }
+        ), headers: auth_headers(user)
+
+        expect(response).to have_http_status(:not_found)
+        expect(project.reload.client).to eq(client)
       end
     end
   end

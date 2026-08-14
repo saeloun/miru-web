@@ -1,15 +1,22 @@
 # frozen_string_literal: true
 
 class Api::V1::Invoices::BulkDownloadController < Api::V1::ApplicationController
+  MAX_INVOICES = 25
+
   def index
     authorize :index, policy_class: Invoices::BulkDownloadPolicy
+    invoice_ids = bulk_download_params[:invoice_ids].map(&:to_i).uniq
+    if invoice_ids.size > MAX_INVOICES
+      return render json: { error: "Bulk downloads are limited to #{MAX_INVOICES} invoices" }, status: 422
+    end
 
     BulkInvoiceDownloadJob.perform_later(
-      bulk_download_params[:invoice_ids],
+      invoice_ids,
       current_company.company_logo,
       bulk_download_params[:download_id],
       root_url,
-      current_url_options
+      current_url_options,
+      current_company.id
     )
     head 202
   end
@@ -17,7 +24,10 @@ class Api::V1::Invoices::BulkDownloadController < Api::V1::ApplicationController
   def status
     authorize :status, policy_class: Invoices::BulkDownloadPolicy
 
-    download_status = BulkInvoiceDownloadStatus.find_by(download_id: params[:download_id])
+    download_status = BulkInvoiceDownloadStatus.find_by(
+      download_id: params[:download_id],
+      company_id: current_company.id
+    )
     if download_status
       render json: { status: download_status.status, file_url: download_status.file_url }
     else

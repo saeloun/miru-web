@@ -54,6 +54,24 @@ RSpec.describe "Api::V1::Users::Registrations#create", type: :request do
       )
     end
 
+    it "rejects cross-origin signup requests" do
+      expect {
+        post api_v1_users_signup_path,
+          params: { user: valid_user_json.merge(email: generate(:user_email)) },
+          headers: { "Origin" => "https://evil.example" }
+      }.not_to change(User, :count)
+
+      expect(response).to have_http_status(:forbidden)
+    end
+
+    it "rejects opaque signup origins" do
+      post api_v1_users_signup_path,
+        params: { user: valid_user_json.merge(email: generate(:user_email)) },
+        headers: { "Origin" => "null" }
+
+      expect(response).to have_http_status(:forbidden)
+    end
+
     it "creates user successfully from the desktop app payload" do
       send_request :post, api_v1_users_signup_path, params: {
         user: desktop_signup_json

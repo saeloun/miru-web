@@ -29,16 +29,51 @@ RSpec.describe "Api::V1::Users::Otps", type: :request do
     expect(json_response.dig("company", "id")).to eq(company.id)
   end
 
-  it "returns workspace choices when the phone belongs to multiple workspaces" do
+  it "does not disclose workspace choices before OTP verification" do
     other_company = create(:company, name: "Other")
     create(:employment, company: other_company, user:)
     user.add_role :admin, other_company
 
     post "/api/v1/users/otp/request", params: { phone: "+91 98765 43210" }
 
-    expect(response).to have_http_status(:conflict)
-    expect(json_response["requires_workspace"]).to eq(true)
-    workspace_ids = json_response["workspaces"].pluck("id")
-    expect(workspace_ids).to contain_exactly(company.id, other_company.id)
+    expect(response).to have_http_status(:accepted)
+    expect(json_response).not_to have_key("workspaces")
+    expect(json_response["pending_token"]).to be_present
+  end
+
+  it "returns the same challenge shape for an unknown phone" do
+    post "/api/v1/users/otp/request", params: { phone: "+91 99999 99999" }
+
+    expect(response).to have_http_status(:accepted)
+    expect(json_response).to include("message" => "OTP sent", "otp_sent" => true)
+    expect(json_response["pending_token"]).to be_present
+  end
+
+  it "rejects cross-origin OTP verification" do
+    post "/api/v1/users/otp/request", params: { phone: "9876543210" }
+
+    post "/api/v1/users/otp/verify",
+      params: {
+        pending_token: json_response["pending_token"],
+        code: "123456"
+      },
+      headers: { "Origin" => "https://attacker.example" }
+
+    expect(response).to have_http_status(:forbidden)
+    expect(json_response["error"]).to eq("Cross-origin authentication is not allowed")
+  end
+
+  it "rejects verification after workspace access is removed" do
+    post "/api/v1/users/otp/request", params: { phone: "9876543210" }
+    pending_token = json_response["pending_token"]
+    user.employments.find_by!(company:).discard!
+
+    post "/api/v1/users/otp/verify", params: {
+      pending_token:,
+      code: "123456"
+    }
+
+    expect(response).to have_http_status(:unprocessable_content)
+    expect(json_response["error"]).to eq("OTP expired or invalid. Request a new code.")
   end
 end

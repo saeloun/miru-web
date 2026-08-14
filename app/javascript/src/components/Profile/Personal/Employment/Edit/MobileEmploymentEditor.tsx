@@ -178,7 +178,7 @@ const MobileEmploymentEditor = ({
               />
               <CalendarIcon
                 className="absolute top-0 bottom-0 right-4 my-auto"
-                color="#5E58F1"
+                color="hsl(var(--primary))"
                 size={20}
               />
             </div>
@@ -216,7 +216,7 @@ const MobileEmploymentEditor = ({
               />
               <CalendarIcon
                 className="absolute top-0 bottom-0 right-4 my-auto"
-                color="#5E58F1"
+                color="hsl(var(--primary))"
                 size={20}
               />
             </div>

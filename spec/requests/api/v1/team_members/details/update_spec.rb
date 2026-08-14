@@ -15,6 +15,7 @@ RSpec.describe "Api::V1::TeamMembers::DetailsController#update", type: :request 
       first_name: user.first_name,
       last_name: Faker::Alphanumeric.alpha(number: 2..10),
       phone: "+14155552671",
+      current_password: "Password123!",
       date_of_birth: Faker::Date.between(from: "1990-01-01", to: "2000-01-01"),
       personal_email_id: Faker::Internet.email,
       social_accounts: {
@@ -158,8 +159,43 @@ RSpec.describe "Api::V1::TeamMembers::DetailsController#update", type: :request 
     end
   end
 
+  context "when an employee changes their own phone without the current password" do
+    it "rejects the change" do
+      user.add_role :employee, company
+      original_phone = user.phone
+      sign_in user
+
+      send_request :patch, api_v1_team_details_path(
+        team_id: employment.user_id,
+        params: { user: { phone: "+14155552671" } }
+      ), headers: auth_headers(user)
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(json_response["errors"]).to eq(["Current password can't be blank"])
+      expect(user.reload.phone).to eq(original_phone)
+    end
+  end
+
+  context "when an employee changes their own phone with the wrong current password" do
+    it "rejects the change" do
+      user.add_role :employee, company
+      original_phone = user.phone
+      sign_in user
+
+      send_request :patch, api_v1_team_details_path(
+        team_id: employment.user_id,
+        params: { user: { phone: "+14155552671", current_password: "wrong" } }
+      ), headers: auth_headers(user)
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(json_response["errors"]).to eq(["Current password is invalid"])
+      expect(user.reload.phone).to eq(original_phone)
+    end
+  end
+
   context "when logged in user wants to update details of another employee from a different company" do
     before do
+      create(:employment, user:, company:)
       employment2 = create(:employment, user: user2, company: company2)
       user.add_role :employee, company
       user2.add_role :employee, company2
@@ -178,6 +214,7 @@ RSpec.describe "Api::V1::TeamMembers::DetailsController#update", type: :request 
 
   context "when logged in user wants to update details of another employee from his own company" do
     before do
+      create(:employment, user:, company:)
       employment2 = create(:employment, user: user2, company:)
       user.add_role :employee, company
       user2.add_role :employee, company
@@ -197,6 +234,7 @@ RSpec.describe "Api::V1::TeamMembers::DetailsController#update", type: :request 
 
   context "when logged in Owner wants to update details of another employee from a different company" do
     before do
+      create(:employment, user:, company:)
       employment2 = create(:employment, user: user2, company: company2)
       user.add_role :owner, company
       user2.add_role :employee, company2
@@ -215,6 +253,7 @@ RSpec.describe "Api::V1::TeamMembers::DetailsController#update", type: :request 
 
   context "when logged in Admin wants to update details of another employee from a different company" do
     before do
+      create(:employment, user:, company:)
       employment2 = create(:employment, user: user2, company: company2)
       user.add_role :admin, company
       user2.add_role :employee, company2
@@ -228,6 +267,57 @@ RSpec.describe "Api::V1::TeamMembers::DetailsController#update", type: :request 
 
     it "is unsuccessful" do
       expect(response).to have_http_status(:not_found)
+    end
+  end
+
+  context "when an admin attempts to change another member's login phone" do
+    it "rejects the change" do
+      admin = create(:user, current_workspace_id: company.id)
+      create(:employment, user: admin, company:)
+      admin.add_role :admin, company
+      original_phone = user.phone
+      sign_in admin
+
+      send_request :patch, api_v1_team_details_path(
+        team_id: employment.user_id,
+        params: { user: { phone: "+14155552671" } }
+      ), headers: auth_headers(admin)
+
+      expect(response).to have_http_status(:forbidden)
+      expect(user.reload.phone).to eq(original_phone)
+    end
+
+    it "rejects clearing the phone" do
+      admin = create(:user, current_workspace_id: company.id)
+      create(:employment, user: admin, company:)
+      admin.add_role :admin, company
+      original_phone = user.phone
+      sign_in admin
+
+      [nil, "", " "].each do |phone|
+        send_request :patch, api_v1_team_details_path(
+          team_id: employment.user_id,
+          params: { user: { phone: } }
+        ), headers: auth_headers(admin)
+
+        expect(response).to have_http_status(:forbidden)
+        expect(user.reload.phone).to eq(original_phone)
+      end
+    end
+
+    it "allows other profile changes when the phone is unchanged" do
+      admin = create(:user, current_workspace_id: company.id)
+      create(:employment, user: admin, company:)
+      admin.add_role :admin, company
+      sign_in admin
+
+      send_request :patch, api_v1_team_details_path(
+        team_id: employment.user_id,
+        params: { user: { first_name: "Updated", phone: user.phone } }
+      ), headers: auth_headers(admin)
+
+      expect(response).to have_http_status(:ok)
+      expect(user.reload.first_name).to eq("Updated")
     end
   end
 end

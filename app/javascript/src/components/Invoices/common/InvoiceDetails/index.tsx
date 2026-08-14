@@ -107,7 +107,7 @@ const InvoiceDetails = ({
             />
             <CalendarIcon
               className="absolute top-4 right-4"
-              color="#5E58F1"
+              color="hsl(var(--primary))"
               size={20}
               weight="bold"
             />
@@ -136,7 +136,7 @@ const InvoiceDetails = ({
             />
             <CalendarIcon
               className="absolute top-4 right-4"
-              color="#5E58F1"
+              color="hsl(var(--primary))"
               size={20}
               weight="bold"
             />

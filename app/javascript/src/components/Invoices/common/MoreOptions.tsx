@@ -21,7 +21,7 @@ const MoreOptions: FC<MoreOptionsProps> = ({
   sendInvoice,
   setIsMoreOptionsVisible,
 }) => (
-  <ul className="absolute right-20 z-10 rounded border-2 border-border bg-white py-2 drop-shadow">
+  <ul className="absolute right-20 z-10 rounded border-2 border-border bg-card py-2 drop-shadow">
     {downloadInvoice != null && invoice.status != "draft" && (
       <li
         className="flex cursor-pointer items-center py-2.5 px-4 text-primary hover:bg-muted"

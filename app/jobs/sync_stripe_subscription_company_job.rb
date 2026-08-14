@@ -8,5 +8,6 @@ class SyncStripeSubscriptionCompanyJob < ApplicationJob
     return if company.blank?
 
     Subscriptions::StripeSyncService.process(company:)
+    Subscriptions::SeatReconciliationService.process(company: company.reload)
   end
 end

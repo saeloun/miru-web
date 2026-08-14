@@ -11,12 +11,12 @@ class Invoices::PaymentsController < ApplicationController
       PaymentProviders::RazorpayPaymentLinkService.new(
         invoice: @invoice,
         provider: razorpay_provider,
-        callback_url: razorpay_success_invoice_payments_url(@invoice)
+        callback_url: razorpay_success_invoice_payments_url(@invoice.external_view_key)
       ).process
     else
       session = @invoice.create_checkout_session!(
-        success_url: request.base_url + "/invoices/#{@invoice.id}/payments/success",
-        cancel_url: cancel_invoice_payments_url(@invoice)
+        success_url: request.base_url + "/invoices/#{@invoice.external_view_key}/payments/success",
+        cancel_url: cancel_invoice_payments_url(@invoice.external_view_key)
       )
       session.url
     end
@@ -26,7 +26,7 @@ class Invoices::PaymentsController < ApplicationController
     Rails.logger.warn(
       "Razorpay payment link failed for invoice #{@invoice.id}: #{error.message}"
     )
-    redirect_to cancel_invoice_payments_url(@invoice),
+    redirect_to cancel_invoice_payments_url(@invoice.external_view_key),
       alert: "Unable to create Razorpay payment link"
   end
 
@@ -40,7 +40,7 @@ class Invoices::PaymentsController < ApplicationController
       params:
     )
 
-    redirect_url = request.base_url + "/invoices/#{@invoice.id}/payments/success?provider=razorpay"
+    redirect_url = request.base_url + "/invoices/#{@invoice.external_view_key}/payments/success?provider=razorpay"
     if fulfilled
       redirect_to redirect_url, allow_other_host: false
     else
@@ -53,12 +53,12 @@ class Invoices::PaymentsController < ApplicationController
   private
 
     def load_invoice
-      @invoice = Invoice.kept.includes(client: :company).find(params[:invoice_id])
+      @invoice = Invoice.kept.includes(client: :company).find_by!(external_view_key: params[:invoice_id])
     end
 
     def ensure_invoice_unpaid
       if @invoice.paid?
-        redirect_to request.base_url + "/invoices/#{@invoice.id}/payments/success"
+        redirect_to request.base_url + "/invoices/#{@invoice.external_view_key}/payments/success"
       end
     end
 

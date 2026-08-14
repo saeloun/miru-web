@@ -64,8 +64,9 @@ const CompactInvoiceSummary: React.FC<CompactInvoiceSummaryProps> = ({
       label: i18n.t("invoiceDashboard.allInvoices"),
       value: overdueAmount + openAmount + draftAmount,
       icon: ArrowCounterClockwise,
-      colorClass: "text-[#5E58F1]",
-      bgClass: "bg-[#5E58F1]/5 hover:bg-[#5E58F1]/10 border-[#5E58F1]/20",
+      colorClass: "text-[hsl(var(--primary))]",
+      bgClass:
+        "bg-[hsl(var(--primary))]/5 hover:bg-[hsl(var(--primary))]/10 border-[hsl(var(--primary))]/20",
       onClick: resetFilters,
       isReset: true,
     },
@@ -96,8 +97,8 @@ const CompactInvoiceSummary: React.FC<CompactInvoiceSummaryProps> = ({
       label: i18n.t("invoices.draft"),
       value: draftAmount,
       icon: FileText,
-      colorClass: "text-gray-600",
-      bgClass: "bg-gray-50 hover:bg-gray-100 border-gray-200",
+      colorClass: "text-muted-foreground",
+      bgClass: "bg-muted hover:bg-muted border-border",
       onClick: () => applyFilter([{ value: "draft", label: "DRAFT" }]),
     },
   ];
@@ -105,7 +106,7 @@ const CompactInvoiceSummary: React.FC<CompactInvoiceSummaryProps> = ({
   return (
     <div className={`${className}`}>
       <div className="flex flex-col lg:flex-row gap-3">
-        <h3 className="text-sm font-medium text-gray-700 lg:hidden">
+        <h3 className="text-sm font-medium text-muted-foreground lg:hidden">
           {i18n.t("invoices.invoices")}
         </h3>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
@@ -125,7 +126,7 @@ const CompactInvoiceSummary: React.FC<CompactInvoiceSummaryProps> = ({
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
                       <Icon className={`w-3.5 h-3.5 ${item.colorClass}`} />
-                      <p className="text-xs text-gray-500 uppercase tracking-wider font-medium">
+                      <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium">
                         {item.label}
                       </p>
                     </div>

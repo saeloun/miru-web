@@ -171,7 +171,7 @@ const LineItemEditorRow = ({
               handleDelete(item);
             }}
           >
-            <DeleteIcon color="#5E58F1" size={16} weight="bold" />
+            <DeleteIcon color="hsl(var(--primary))" size={16} weight="bold" />
           </button>
         </td>
       </tr>

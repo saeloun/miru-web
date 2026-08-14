@@ -5,8 +5,10 @@ class Api::V1::Users::SessionsController < Devise::SessionsController
   include Authenticable
   include AuthResponsePayload
   include CurrentCompanyConcern
+  include SameOriginAuthentication
 
   before_action :authenticate_user_using_x_auth_token, only: :me
+  before_action :reject_cross_origin_authentication!, only: :create
 
   respond_to :json
 
@@ -33,6 +35,7 @@ class Api::V1::Users::SessionsController < Devise::SessionsController
   end
 
   def destroy
+    revoke_bearer_token
     sign_out(current_user)
     reset_session
     response.headers["Clear-Site-Data"] = "\"storage\""
@@ -60,6 +63,13 @@ class Api::V1::Users::SessionsController < Devise::SessionsController
   end
 
   private
+
+    def revoke_bearer_token
+      token = Warden::JWTAuth::HeaderParser.from_env(request.env)
+      Warden::JWTAuth::TokenRevoker.new.call(token) if token
+    rescue JWT::DecodeError
+      nil
+    end
 
     def user_params
       params.require(:user).permit(:email, :password, :locale)

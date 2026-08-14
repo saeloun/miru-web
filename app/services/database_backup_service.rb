@@ -3,6 +3,7 @@
 require "aws-sdk-s3"
 require "open3"
 require "tempfile"
+require "uri"
 
 class DatabaseBackupService
   attr_reader :database_url, :bucket_name, :endpoint, :region, :access_key_id, :secret_access_key, :prefix, :backup_name, :time
@@ -51,13 +52,17 @@ class DatabaseBackupService
     end
 
     def run_pg_dump!(target_path)
+      uri = URI.parse(database_url)
+      password = uri.password.to_s
+      uri.password = nil
       stdout, stderr, status = Open3.capture3(
+        { "PGPASSWORD" => password },
         "pg_dump",
         "-Fc",
         "--no-owner",
         "--no-privileges",
         "--dbname",
-        database_url,
+        uri.to_s,
         "--file",
         target_path
       )

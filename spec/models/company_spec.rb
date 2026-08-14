@@ -357,6 +357,18 @@ RSpec.describe Company, type: :model do
         expect(company.pro_access?).to eq(true)
         expect(company.stripe_subscription_active?).to eq(true)
       end
+
+      it "prefers the paid plan and Stripe status over an active trial" do
+        company.update!(
+          plan_tier: "paid",
+          subscription_status: "active",
+          trial_started_at: Time.current,
+          trial_ends_at: 1.day.from_now
+        )
+
+        expect(company.current_plan_label).to eq("paid")
+        expect(company.current_subscription_status).to eq("active")
+      end
     end
 
     describe "#team_member_limit_reached?" do
@@ -374,15 +386,23 @@ RSpec.describe Company, type: :model do
 
     describe "#billable_team_seats" do
       it "returns at least one seat for billing" do
-        expect(company.billable_team_seats).to eq([company.used_team_seats, 1].max)
+        expect(create(:company).billable_team_seats).to eq(1)
       end
 
-      it "matches the kept employment count when the team grows" do
-        baseline = company.used_team_seats
+      it "matches the non-client kept employment count when the team grows" do
         second_user = create(:user)
         create(:employment, company:, user: second_user)
 
-        expect(company.billable_team_seats).to eq(baseline + 1)
+        expect(company.billable_team_seats).to eq(3)
+      end
+
+      it "excludes client-only users from billing but counts them as used seats" do
+        client_portal_user = create(:user)
+        create(:employment, company:, user: client_portal_user)
+        client_portal_user.add_role(:client, company)
+
+        expect(company.billable_team_seats).to eq(2)
+        expect(company.used_team_seats).to eq(3)
       end
     end
 
@@ -424,6 +444,9 @@ RSpec.describe Company, type: :model do
 
     describe "#apply_stripe_subscription!" do
       it "marks the company as paid for active subscriptions" do
+        started_at = Time.current
+        company.update!(trial_started_at: started_at, trial_ends_at: 1.day.from_now)
+
         company.apply_stripe_subscription!(
           stripe_customer_id: "cus_123",
           stripe_subscription_id: "sub_123",
@@ -439,9 +462,38 @@ RSpec.describe Company, type: :model do
         expect(company.stripe_subscription_id).to eq("sub_123")
         expect(company.subscription_status).to eq("active")
         expect(company.subscription_interval).to eq("month")
+        expect(company.trial_ends_at).to be_nil
+        expect(company.trial_started_at).to be_within(1.second).of(started_at)
       end
 
-      it "marks the company as free for canceled subscriptions" do
+      it "does not let a subscribe then cancel cycle grant a second trial" do
+        company.update!(trial_started_at: 20.days.ago, trial_ends_at: 6.days.ago)
+
+        company.apply_stripe_subscription!(
+          stripe_customer_id: "cus_123",
+          stripe_subscription_id: "sub_123",
+          subscription_status: "active",
+          subscription_interval: "month"
+        )
+        company.apply_stripe_subscription!(
+          stripe_customer_id: "cus_123",
+          stripe_subscription_id: "sub_123",
+          subscription_status: "canceled",
+          subscription_interval: "month"
+        )
+
+        company.reload
+
+        expect(company.plan_tier).to eq("free")
+        expect(company.trial_available?).to eq(false)
+        expect(company.trial_active?).to eq(false)
+      end
+
+      it "downgrades without changing trial timestamps" do
+        trial_started_at = Time.zone.local(2026, 3, 1, 12, 0, 0)
+        trial_ends_at = Time.zone.local(2026, 3, 15, 12, 0, 0)
+        company.update!(plan_tier: "paid", trial_started_at:, trial_ends_at:)
+
         company.apply_stripe_subscription!(
           stripe_customer_id: "cus_123",
           stripe_subscription_id: "sub_123",
@@ -449,7 +501,11 @@ RSpec.describe Company, type: :model do
           subscription_interval: "year"
         )
 
-        expect(company.reload.plan_tier).to eq("free")
+        company.reload
+
+        expect(company.plan_tier).to eq("free")
+        expect(company.trial_started_at).to eq(trial_started_at)
+        expect(company.trial_ends_at).to eq(trial_ends_at)
       end
     end
 

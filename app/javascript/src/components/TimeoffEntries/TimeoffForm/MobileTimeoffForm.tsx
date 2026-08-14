@@ -65,10 +65,10 @@ const MobileTimeoffForm = ({
     <>
       <SidePanel
         disableOutsideClick
-        WrapperClassname="z-50 justify-content-between lg:hidden bg-white"
+        WrapperClassname="z-50 justify-content-between lg:hidden bg-card"
         setFilterVisibilty={setNewTimeoffEntryView}
       >
-        <SidePanel.Header className="mb-2 flex items-center justify-between bg-primary px-5 py-5 text-white lg:bg-white lg:font-bold lg:text-foreground">
+        <SidePanel.Header className="mb-2 flex items-center justify-between bg-primary px-5 py-5 text-white lg:bg-card lg:font-bold lg:text-foreground">
           <span className="flex w-full items-center justify-center pl-6 text-base font-medium leading-5">
             {editTimeoffEntryId ? "Edit Mark Time Off" : "Mark Time Off"}
           </span>
@@ -96,7 +96,7 @@ const MobileTimeoffForm = ({
                   />
                   <CaretDownIcon
                     className="absolute top-0 bottom-0 right-1 mx-2 my-3 "
-                    color="#5E58F1"
+                    color="hsl(var(--primary))"
                     size={20}
                     weight="bold"
                   />
@@ -150,7 +150,7 @@ const MobileTimeoffForm = ({
                     />
                     <CaretDownIcon
                       className="absolute top-0 bottom-0 right-1 mx-2 my-3 "
-                      color="#5E58F1"
+                      color="hsl(var(--primary))"
                       size={20}
                       weight="bold"
                     />
@@ -214,7 +214,7 @@ const MobileTimeoffForm = ({
                   />
                   <CalendarIcon
                     className="absolute top-0 bottom-0 right-1 mx-2 my-3 "
-                    color="#5E58F1"
+                    color="hsl(var(--primary))"
                     size={20}
                     weight="bold"
                   />
@@ -240,7 +240,7 @@ const MobileTimeoffForm = ({
                   />
                 </Button>
                 <TimeInput
-                  className="focus:outline-none w-1/2 cursor-pointer rounded text-center text-xl font-bold text-foreground placeholder:text-muted-foreground focus:border-border focus:bg-white focus:ring-1 focus:ring-ring"
+                  className="focus:outline-none w-1/2 cursor-pointer rounded text-center text-xl font-bold text-foreground placeholder:text-muted-foreground focus:border-border focus:bg-card focus:ring-1 focus:ring-ring"
                   initTime={duration}
                   name="timeInput"
                   onTimeChange={handleDurationChange}

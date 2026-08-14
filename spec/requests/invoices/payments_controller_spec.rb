@@ -9,7 +9,7 @@ RSpec.describe Invoices::PaymentsController, type: :request do
   let(:client) { create(:client_with_phone_number_without_country_code, company:) }
   let!(:invoice) { create(:invoice, status: "sent", client:) }
   let!(:stripe_connected_account) { create(:stripe_connected_account, company:) }
-  let(:params) { { invoice_id: invoice.id } }
+  let(:params) { { invoice_id: invoice.external_view_key } }
 
   before do
     create(:employment, company:, user: admin)
@@ -19,7 +19,7 @@ RSpec.describe Invoices::PaymentsController, type: :request do
   describe "GET new", :vcr do
     subject { send_request :get, new_invoice_payment_path(params) }
 
-    let(:success_path) { "/invoices/#{invoice.id}/payments/success" }
+    let(:success_path) { "/invoices/#{invoice.external_view_key}/payments/success" }
     let(:checkout_response) { Struct.new(:url).new(success_path) }
 
     before do
@@ -129,12 +129,12 @@ RSpec.describe Invoices::PaymentsController, type: :request do
       stripe_connected_account.update_columns(account_id: account.id)
 
       invoice.create_checkout_session!(
-        success_url: "https://example.com/invoices/#{invoice.id}/payments/success",
-        cancel_url: cancel_invoice_payments_url(invoice)
+        success_url: "https://example.com/invoices/#{invoice.external_view_key}/payments/success",
+        cancel_url: cancel_invoice_payments_url(invoice.external_view_key)
       )
     end
 
-    subject { send_request :get, "/invoices/#{invoice.id}/payments/success" }
+    subject { send_request :get, "/invoices/#{invoice.external_view_key}/payments/success" }
 
     it "doesn't mark invoice status as paid" do
       expect(invoice.status).not_to eq "paid"
@@ -154,5 +154,11 @@ RSpec.describe Invoices::PaymentsController, type: :request do
       expect(response.status).to eq 200
       expect(response.body).to include("Time tracking and invoicing")
     end
+  end
+
+  it "does not accept a numeric invoice id" do
+    send_request :get, new_invoice_payment_path(invoice_id: invoice.id)
+
+    expect(response).to have_http_status(:not_found)
   end
 end

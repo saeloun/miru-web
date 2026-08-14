@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { minFromHHMM, minToHHMM, validateTimesheetEntry } from "helpers";
 import { EditIcon, ClockIcon, CalendarIcon } from "miruIcons";
 import { Toastr } from "StyledComponents";
+import { reportClientError } from "utils/runtimeRecovery";
 import AnimatedTimeInput from "../../ui/animated-time-input";
 import { Card, CardHeader, CardContent } from "../../ui/card";
 import { Button } from "../../ui/button";
@@ -103,7 +104,9 @@ const WeeklyEntriesCard = ({
 
         return newState;
       });
-    } catch (error) {}
+    } catch (error) {
+      reportClientError("weekly-entries:create", error);
+    }
   };
 
   const handleUpdateEntry = async () => {
@@ -133,7 +136,9 @@ const WeeklyEntriesCard = ({
         return entry;
       });
       setEntryList(allEntries);
-    } catch (error) {}
+    } catch (error) {
+      reportClientError("weekly-entries:update", error);
+    }
   };
 
   const calculateTotalWeeklyDuration = () => {

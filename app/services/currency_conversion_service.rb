@@ -5,6 +5,8 @@ require "net/http"
 require "uri"
 
 class CurrencyConversionService
+  REQUEST_TIMEOUT_SECONDS = 5
+
   class << self
     def get_exchange_rate(from_currency, to_currency, date = Date.current)
       from = from_currency.to_s.upcase
@@ -31,17 +33,21 @@ class CurrencyConversionService
         rate
       end
 
-      def fetch_from_exchangerate_api(from_currency, to_currency, _date)
+      def fetch_from_exchangerate_api(from_currency, to_currency, date)
+        return nil unless current_date?(date)
+
         response = request_json("https://api.exchangerate-api.com/v4/latest/#{from_currency}")
         response&.dig("rates", to_currency)&.to_f
       end
 
       def fetch_from_ecb(from_currency, to_currency, date)
-        response = request_json("https://api.frankfurter.app/#{date}?from=#{from_currency}&to=#{to_currency}")
+        response = request_json("https://api.frankfurter.app/#{date.to_date}?from=#{from_currency}&to=#{to_currency}")
         response&.dig("rates", to_currency)&.to_f
       end
 
-      def fetch_from_fixer_io(from_currency, to_currency, _date)
+      def fetch_from_fixer_io(from_currency, to_currency, date)
+        return nil unless current_date?(date)
+
         api_key = ENV["FIXER_API_KEY"]
         return nil if api_key.blank?
 
@@ -55,12 +61,21 @@ class CurrencyConversionService
 
       def request_json(url)
         uri = URI.parse(url)
-        response = Net::HTTP.get_response(uri)
+        http = Net::HTTP.new(uri.host, uri.port)
+        http.use_ssl = uri.scheme == "https"
+        http.open_timeout = REQUEST_TIMEOUT_SECONDS
+        http.read_timeout = REQUEST_TIMEOUT_SECONDS
+
+        response = http.get(uri.request_uri)
         return nil unless response.is_a?(Net::HTTPSuccess)
 
         JSON.parse(response.body)
       rescue StandardError
         nil
+      end
+
+      def current_date?(date)
+        date.nil? || date.to_date == Date.current
       end
   end
 

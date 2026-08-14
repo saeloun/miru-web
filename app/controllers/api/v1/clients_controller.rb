@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Api::V1::ClientsController < Api::V1::ApplicationController
+  rescue_from ActiveRecord::RecordNotUnique, with: :record_not_unique
+
   def index
     authorize Client
     response = Clients::IndexService.process(
@@ -82,9 +84,13 @@ class Api::V1::ClientsController < Api::V1::ApplicationController
   def send_payment_reminder
     authorize client
 
+    invoice_ids = client_email_params[:selected_invoices]
+    raise ActiveRecord::RecordNotFound if invoice_ids.blank?
+    selected_invoices = client.invoices.find(invoice_ids)
     SendPaymentReminderMailer.with(
-      recipients: client_email_params[:email_params][:recipients],
-      selected_invoices: client_email_params[:selected_invoices],
+      client_id: client.id,
+      recipients: client.send_invoice_emails(@virtual_verified_invitations_allowed),
+      selected_invoices: selected_invoices.pluck(:id),
       message: client_email_params[:email_params][:message],
       subject: client_email_params[:email_params][:subject],
     ).send_payment_reminder.deliver_later
@@ -93,6 +99,10 @@ class Api::V1::ClientsController < Api::V1::ApplicationController
   end
 
   private
+
+    def record_not_unique
+      render json: { errors: I18n.t("errors.messages.taken") }, status: 422
+    end
 
     def client
       @_client ||= current_company.clients.find(params[:id])
@@ -117,6 +127,6 @@ class Api::V1::ClientsController < Api::V1::ApplicationController
     end
 
     def client_email_params
-      params.require(:client_email).permit(email_params: [:subject, :message, recipients: []], selected_invoices: [])
+      params.require(:client_email).permit(email_params: [:subject, :message], selected_invoices: [])
     end
 end

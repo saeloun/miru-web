@@ -12,10 +12,18 @@ class Reports::GenerateCsv
 
   def process
     CSV.generate do |csv|
-      csv << headers
+      csv << sanitize_row(headers)
       data.each do |row|
-        csv << row
+        csv << sanitize_row(row)
       end
     end
   end
+
+  private
+
+    def sanitize_row(row)
+      row.map do |cell|
+        cell.is_a?(String) && cell.match?(/\A[=+\-@\t\r\n]/) ? "'#{cell}" : cell
+      end
+    end
 end

@@ -49,6 +49,16 @@ class SubscriptionMailer < ApplicationMailer
     )
   end
 
+  def trial_expired
+    load_trial_context
+
+    mail(
+      to: @recipient.email,
+      subject: "Your Miru Pro trial has ended — upgrade to keep your team",
+      reply_to: default_reply_to_address
+    )
+  end
+
   def plan_purchased
     @company = Company.find(params[:company_id])
     @alert_email = params[:alert_email].presence

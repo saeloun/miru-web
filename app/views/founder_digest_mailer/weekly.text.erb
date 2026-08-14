@@ -1,0 +1,34 @@
+Miru growth digest — <%= @digest_date.to_fs(:long) %>
+
+SIGNUPS
+Total workspaces: <%= @metrics.dig(:signups, :totals, :companies) %>
+Total users: <%= @metrics.dig(:signups, :totals, :users) %>
+<% @metrics.dig(:signups, :weeks).each do |week| %>
+Week of <%= week[:week_start].to_date.to_fs(:long) %>: <%= week[:companies] %> workspaces, <%= week[:users] %> users
+<% end %>
+
+ACTIVATION FUNNEL
+All workspaces: <%= @metrics.dig(:activation_funnel, :total) %>
+Added a client: <%= @metrics.dig(:activation_funnel, :with_client) %>
+Logged time or invoiced: <%= @metrics.dig(:activation_funnel, :with_activity) %>
+Created an invoice: <%= @metrics.dig(:activation_funnel, :with_invoice) %>
+Recorded a payment: <%= @metrics.dig(:activation_funnel, :with_payment) %>
+
+LAST 7 DAYS
+Active workspaces: <%= @metrics.dig(:weekly_active, :companies) %>
+Users logged in: <%= @metrics.dig(:weekly_active, :users) %>
+
+TRIALS
+Active: <%= @metrics.dig(:trials, :active) %>
+Ending within 7 days: <%= @metrics.dig(:trials, :ending_within_7_days) %>
+Expired: <%= @metrics.dig(:trials, :expired) %>
+Converted: <%= @metrics.dig(:trials, :converted) %>
+
+CHECKOUTS
+Last 7 days: <%= @metrics.dig(:checkouts, :last_7_days, :started) %> started, <%= @metrics.dig(:checkouts, :last_7_days, :purchased) %> purchased
+Last 30 days: <%= @metrics.dig(:checkouts, :last_30_days, :started) %> started, <%= @metrics.dig(:checkouts, :last_30_days, :purchased) %> purchased
+
+TOP WORKSPACES · 30 DAYS
+<% @metrics[:top_workspaces].each do |workspace| %>
+<%= workspace[:name] %>: <%= workspace[:activity_score] %> actions, <%= workspace[:users_count] %> users<%= ", billing exempt" if workspace[:billing_exempt] %>
+<% end %>

@@ -17,13 +17,29 @@ RSpec.describe BulkInvoiceDownloadService do
     end
 
     it "zips generated invoice pdfs, uploads the archive, and cleans up" do
-      result = described_class.new([invoice.id], "logo.png", "http://localhost:3000").process
+      result = described_class.new([invoice.id], "logo.png", "http://localhost:3000", company.id).process
 
       expect(result).to eq("https://example.com/invoices.zip")
       expect(Zipper).to have_received(:new).with([{ name: "#{invoice.invoice_number}.pdf", file: pdf_file }])
       expect(zipper).to have_received(:zip)
       expect(zipper).to have_received(:temp_upload).with(1.hour)
       expect(zipper).to have_received(:cleanup!)
+    end
+
+    it "never includes invoices belonging to another company" do
+      other_company = create(:company)
+      other_client = create(:client, company: other_company)
+      other_invoice = create(:invoice, company: other_company, client: other_client)
+
+      described_class.new([invoice.id, other_invoice.id], "logo.png", "http://localhost:3000", company.id).process
+
+      expect(Zipper).to have_received(:new).with([{ name: "#{invoice.invoice_number}.pdf", file: pdf_file }])
+    end
+
+    it "returns an empty archive when no company scope is provided" do
+      described_class.new([invoice.id], "logo.png", "http://localhost:3000").process
+
+      expect(Zipper).to have_received(:new).with([])
     end
   end
 end

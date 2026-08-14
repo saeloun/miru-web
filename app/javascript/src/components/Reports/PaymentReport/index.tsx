@@ -141,7 +141,7 @@ const getPaymentMethodColor = (method: string) => {
     return "text-purple-600";
   }
 
-  return "text-gray-600";
+  return "text-muted-foreground";
 };
 
 const PaymentReport: React.FC = () => {
@@ -380,7 +380,7 @@ const PaymentReport: React.FC = () => {
       accessorKey: "notes",
       header: i18n.t("notes"),
       cell: ({ row }) => (
-        <div className="text-gray-600 text-sm truncate max-w-[200px]">
+        <div className="text-muted-foreground text-sm truncate max-w-[200px]">
           {row.original.notes || "-"}
         </div>
       ),
@@ -453,16 +453,16 @@ const PaymentReport: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-muted">
       {/* Header */}
-      <div className="bg-white shadow-sm border-b">
+      <div className="bg-card shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row md:justify-between md:items-center py-4 gap-4">
             <div>
-              <h1 className="text-2xl font-semibold text-gray-900">
+              <h1 className="text-2xl font-semibold text-foreground">
                 {i18n.t("reports.paymentReportTitle")}
               </h1>
-              <p className="text-sm text-gray-600 mt-1">
+              <p className="text-sm text-muted-foreground mt-1">
                 {i18n.t("reports.paymentReportDesc")}
               </p>
             </div>
@@ -775,7 +775,7 @@ const PaymentReport: React.FC = () => {
                     ([method, amount]) => (
                       <div
                         key={method}
-                        className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                        className="flex items-center justify-between p-3 bg-muted rounded-lg"
                       >
                         <div
                           className={cn(

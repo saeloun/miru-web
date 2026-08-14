@@ -23,7 +23,7 @@ RSpec.describe "Api::V1::Users::Totp", type: :request do
 
   describe "POST /api/v1/users/totp/setup" do
     it "returns a secret and provisioning uri" do
-      post "/api/v1/users/totp/setup"
+      post "/api/v1/users/totp/setup", params: { current_password: "welcome12" }
 
       expect(response).to have_http_status(:ok)
       expect(json_response["secret"]).to be_present
@@ -34,7 +34,7 @@ RSpec.describe "Api::V1::Users::Totp", type: :request do
 
   describe "POST /api/v1/users/totp/confirm" do
     it "enables totp and returns recovery codes" do
-      post "/api/v1/users/totp/setup"
+      post "/api/v1/users/totp/setup", params: { current_password: "welcome12" }
       code = ROTP::TOTP.new(user.reload.otp_secret, issuer: User::TOTP_ISSUER).now
 
       post "/api/v1/users/totp/confirm", params: { code: }
@@ -54,7 +54,7 @@ RSpec.describe "Api::V1::Users::Totp", type: :request do
       user.update!(otp_required_for_login: true)
       user.generate_recovery_codes!
 
-      post "/api/v1/users/totp/recovery_codes"
+      post "/api/v1/users/totp/recovery_codes", params: { current_password: "welcome12" }
 
       expect(response).to have_http_status(:ok)
       expect(json_response["recovery_codes"].length).to eq(User::RECOVERY_CODES_COUNT)
@@ -67,11 +67,28 @@ RSpec.describe "Api::V1::Users::Totp", type: :request do
       user.update!(otp_required_for_login: true)
       user.generate_recovery_codes!
 
-      delete "/api/v1/users/totp"
+      delete "/api/v1/users/totp", params: { current_password: "welcome12" }
 
       expect(response).to have_http_status(:ok)
       expect(user.reload.totp_enabled?).to eq(false)
       expect(json_response["enabled"]).to eq(false)
     end
+  end
+
+  it "rejects cross-origin TOTP authentication" do
+    post "/api/v1/users/totp/authenticate",
+      params: { pending_token: "pending-token", code: "123456" },
+      headers: { "Origin" => "https://attacker.example" }
+
+    expect(response).to have_http_status(:forbidden)
+    expect(json_response["error"]).to eq("Cross-origin authentication is not allowed")
+  end
+
+  it "requires the current password for TOTP security changes" do
+    post "/api/v1/users/totp/setup", params: { current_password: "wrong" }
+
+    expect(response).to have_http_status(:unprocessable_content)
+    expect(json_response["error"]).to eq("Current password is invalid")
+    expect(user.reload.otp_secret).to be_nil
   end
 end

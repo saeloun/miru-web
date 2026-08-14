@@ -15,16 +15,24 @@ class InvoicePayment::StripeCheckoutFulfillment < ApplicationService
     return false if invoice.blank?
 
     return false unless is_valid_event?
-    return true if duplicate_payment?
 
-    InvoicePayment::Settle.process(payment_params, invoice)
+    settle_payment
     rescue StandardError => error
       Rails.logger.error error.message
       Rails.logger.error error.backtrace.join("\n")
+      Sentry.capture_exception(error)
       nil
   end
 
   private
+
+    def settle_payment
+      invoice.with_lock do
+        next true if duplicate_payment?
+
+        InvoicePayment::Settle.process(payment_params, invoice)
+      end
+    end
 
     def is_valid_event?
       return false unless is_checkout_status_complete? && is_payment_status_paid?

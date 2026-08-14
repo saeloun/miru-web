@@ -63,9 +63,9 @@ const RevenueByClientResults = () => {
       <div />
       {isDesktop ? (
         <div className="overflow-x-auto">
-          <table className="mt-4 min-w-[56rem] table-auto divide-y divide-gray-200 lg:min-w-full">
+          <table className="mt-4 min-w-[56rem] table-auto divide-y divide-border lg:min-w-full">
             <RevenueByClientTableHeader />
-            <tbody className="divide-y divide-gray-200 bg-white">
+            <tbody className="divide-y divide-border bg-card">
               {revenueByClientReport.clientList.length &&
                 revenueByClientReport.currency &&
                 revenueByClientReport.clientList.map((client, index) => (

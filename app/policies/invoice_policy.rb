@@ -2,7 +2,7 @@
 
 class InvoicePolicy < ApplicationPolicy
   def index?
-    user_owner_role? || user_admin_role? || user_book_keeper_role? || user_client_role?
+    user_owner_role? || user_admin_role? || user_book_keeper_role?
   end
 
   def create?
@@ -10,7 +10,7 @@ class InvoicePolicy < ApplicationPolicy
   end
 
   def show?
-    authorize_owner_admin_book_keeper_client
+    authorize_owner_admin_book_keeper || authorize_client_member
   end
 
   def update?
@@ -30,7 +30,7 @@ class InvoicePolicy < ApplicationPolicy
   end
 
   def download?
-    authorize_owner_admin_book_keeper_client
+    authorize_owner_admin_book_keeper || authorize_client_member
   end
 
   def send_reminder?
@@ -82,7 +82,10 @@ class InvoicePolicy < ApplicationPolicy
     authorize_current_user && (user_owner_role? || user_admin_role?)
   end
 
-  def authorize_owner_admin_book_keeper_client
-    authorize_current_user && (user_owner_role? || user_admin_role? || user_book_keeper_role? || user_client_role?)
+  def authorize_client_member
+    return false unless user_client_role?
+    return false unless authorize_current_user
+
+    record.client.client_members.kept.exists?(user_id: user.id)
   end
 end

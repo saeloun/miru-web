@@ -4,7 +4,7 @@ import classnames from "classnames";
 import { useOutsideClick } from "helpers";
 
 const DEFAULT_STYLE =
-  "absolute rounded-lg border-border bg-white py-2 shadow-c1 text-sm w-34";
+  "absolute rounded-lg border-border bg-card py-2 shadow-c1 text-sm w-34";
 type MoreOptionsProps = {
   children?: any;
   className?: string;

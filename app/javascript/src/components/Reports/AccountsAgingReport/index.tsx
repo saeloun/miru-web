@@ -247,7 +247,9 @@ const AccountsAgingReport: React.FC = () => {
           <div
             className={cn(
               "text-right whitespace-nowrap",
-              value > 0 ? "text-gray-700 font-medium" : "text-gray-300"
+              value > 0
+                ? "text-muted-foreground font-medium"
+                : "text-muted-foreground"
             )}
           >
             {currencyFormat(data?.report?.base_currency, value || 0)}
@@ -269,7 +271,9 @@ const AccountsAgingReport: React.FC = () => {
           <div
             className={cn(
               "text-right whitespace-nowrap",
-              value > 0 ? "text-gray-700 font-medium" : "text-gray-300"
+              value > 0
+                ? "text-muted-foreground font-medium"
+                : "text-muted-foreground"
             )}
           >
             {currencyFormat(data?.report?.base_currency, value || 0)}
@@ -291,7 +295,9 @@ const AccountsAgingReport: React.FC = () => {
           <div
             className={cn(
               "text-right whitespace-nowrap",
-              value > 0 ? "text-gray-700 font-medium" : "text-gray-300"
+              value > 0
+                ? "text-muted-foreground font-medium"
+                : "text-muted-foreground"
             )}
           >
             {currencyFormat(data?.report?.base_currency, value || 0)}
@@ -313,7 +319,7 @@ const AccountsAgingReport: React.FC = () => {
           <div
             className={cn(
               "text-right whitespace-nowrap",
-              value > 0 ? "text-gray-900 font-bold" : "text-gray-300"
+              value > 0 ? "text-foreground font-bold" : "text-muted-foreground"
             )}
           >
             {currencyFormat(data?.report?.base_currency, value || 0)}
@@ -381,10 +387,10 @@ const AccountsAgingReport: React.FC = () => {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">
+          <h1 className="text-3xl font-bold text-foreground">
             {i18n.t("reports.accountsAgingReport")}
           </h1>
-          <p className="text-gray-600 mt-1">
+          <p className="text-muted-foreground mt-1">
             {i18n.t("reports.analysisOfOutstandingReceivables")}
           </p>
         </div>
@@ -482,7 +488,7 @@ const AccountsAgingReport: React.FC = () => {
 
       {/* Summary Cards */}
       <div className="grid gap-4 md:grid-cols-5">
-        <Card className="border-gray-200">
+        <Card className="border-border">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
               {i18n.t("reports.totalDue")}
@@ -490,7 +496,7 @@ const AccountsAgingReport: React.FC = () => {
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-gray-900">
+            <div className="text-2xl font-bold text-foreground">
               {currencyFormat(
                 data?.report?.base_currency,
                 data?.report?.total_amount_overdue?.total || 0
@@ -499,15 +505,15 @@ const AccountsAgingReport: React.FC = () => {
           </CardContent>
         </Card>
 
-        <Card className="border-gray-200">
+        <Card className="border-border">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
               {i18n.t("reports.zeroToThirtyDays")}
             </CardTitle>
-            <Calendar className="h-4 w-4 text-gray-500" />
+            <Calendar className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-xl font-bold text-gray-700">
+            <div className="text-xl font-bold text-muted-foreground">
               {currencyFormat(
                 data?.report?.base_currency,
                 data?.report?.total_amount_overdue?.zero_to_thirty_days || 0
@@ -516,15 +522,15 @@ const AccountsAgingReport: React.FC = () => {
           </CardContent>
         </Card>
 
-        <Card className="border-gray-200">
+        <Card className="border-border">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
               {i18n.t("reports.thirtyOneToSixtyDays")}
             </CardTitle>
-            <Calendar className="h-4 w-4 text-gray-600" />
+            <Calendar className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-xl font-bold text-gray-700">
+            <div className="text-xl font-bold text-muted-foreground">
               {currencyFormat(
                 data?.report?.base_currency,
                 data?.report?.total_amount_overdue?.thirty_one_to_sixty_days ||
@@ -534,15 +540,15 @@ const AccountsAgingReport: React.FC = () => {
           </CardContent>
         </Card>
 
-        <Card className="border-gray-200">
+        <Card className="border-border">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
               {i18n.t("reports.sixtyOneToNinetyDays")}
             </CardTitle>
-            <AlertCircle className="h-4 w-4 text-gray-700" />
+            <AlertCircle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-xl font-bold text-gray-800">
+            <div className="text-xl font-bold text-foreground">
               {currencyFormat(
                 data?.report?.base_currency,
                 data?.report?.total_amount_overdue?.sixty_one_to_ninety_days ||
@@ -552,15 +558,15 @@ const AccountsAgingReport: React.FC = () => {
           </CardContent>
         </Card>
 
-        <Card className="border-gray-200">
+        <Card className="border-border">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
               {i18n.t("reports.ninetyPlusDays")}
             </CardTitle>
-            <AlertCircle className="h-4 w-4 text-gray-800" />
+            <AlertCircle className="h-4 w-4 text-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-xl font-bold text-gray-900">
+            <div className="text-xl font-bold text-foreground">
               {currencyFormat(
                 data?.report?.base_currency,
                 data?.report?.total_amount_overdue?.ninety_plus_days || 0
@@ -570,7 +576,7 @@ const AccountsAgingReport: React.FC = () => {
         </Card>
       </div>
 
-      <Card className="border-gray-200">
+      <Card className="border-border">
         <CardHeader>
           <CardTitle>{i18n.t("reports.agingDistribution")}</CardTitle>
         </CardHeader>
@@ -611,7 +617,7 @@ const AccountsAgingReport: React.FC = () => {
       </Card>
 
       {/* Aging Table */}
-      <Card className="border-gray-200">
+      <Card className="border-border">
         <CardHeader>
           <CardTitle>{i18n.t("reports.invoiceAgingDetails")}</CardTitle>
         </CardHeader>

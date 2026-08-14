@@ -168,5 +168,31 @@ RSpec.describe "Api::V1::TimeTracking#index", type: :request do
       expect(json_response["clients"]).to eq([])
       expect(json_response["projects"]).to be_nil.or eq({})
     end
+
+    it "ignores another user's id" do
+      other_user = create(:user, current_workspace_id: company1.id)
+      create(:employment, company: company1, user: other_user)
+      create(:timesheet_entry, user: other_user, project: project1, note: "Private entry")
+
+      send_request :get, api_v1_time_tracking_index_path, params: {
+        user_id: other_user.id
+      }, headers: auth_headers(user)
+
+      expect(response).to have_http_status(:ok)
+      expect(json_response.to_json).to include("Tracked from Codex")
+      expect(json_response.to_json).not_to include("Private entry")
+    end
+  end
+
+  context "when the user has no workspace" do
+    let(:user) { create(:user, current_workspace: nil) }
+
+    it "returns not found instead of crashing" do
+      sign_in user
+
+      send_request :get, api_v1_time_tracking_index_path, headers: auth_headers(user)
+
+      expect(response).to have_http_status(:not_found)
+    end
   end
 end

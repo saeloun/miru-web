@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_07_15_000000) do
+ActiveRecord::Schema[8.1].define(version: 2026_07_30_000000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_stat_statements"
@@ -188,6 +188,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_15_000000) do
     t.string "file_url"
     t.string "status"
     t.datetime "updated_at", null: false
+    t.index ["company_id", "download_id"], name: "idx_on_company_id_download_id_432c83202c", unique: true
     t.index ["company_id"], name: "index_bulk_invoice_download_statuses_on_company_id"
   end
 
@@ -209,6 +210,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_15_000000) do
   end
 
   create_table "cli_sessions", force: :cascade do |t|
+    t.string "auth_state_digest"
     t.bigint "company_id", null: false
     t.datetime "created_at", null: false
     t.datetime "expires_at", null: false
@@ -288,6 +290,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_15_000000) do
     t.string "timezone"
     t.date "trial_email_last_sent_on"
     t.datetime "trial_ends_at"
+    t.datetime "trial_expired_email_sent_at"
     t.datetime "trial_started_at"
     t.datetime "updated_at", null: false
     t.string "us_taxpayer_id"
@@ -612,6 +615,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_15_000000) do
     t.index ["year", "company_id"], name: "index_leaves_on_year_and_company_id", unique: true
   end
 
+  create_table "mcp_idempotency_records", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "expires_at", null: false
+    t.string "key_digest", null: false
+    t.jsonb "response", null: false
+    t.datetime "updated_at", null: false
+    t.index ["expires_at"], name: "index_mcp_idempotency_records_on_expires_at"
+    t.index ["key_digest"], name: "index_mcp_idempotency_records_on_key_digest", unique: true
+  end
+
   create_table "metrics", force: :cascade do |t|
     t.datetime "calculated_at", null: false
     t.datetime "created_at", null: false
@@ -636,8 +649,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_15_000000) do
     t.index ["period_date"], name: "index_metrics_on_period_date"
     t.index ["trackable_type", "trackable_id", "metric_type", "period", "period_date"], name: "index_metrics_on_trackable_and_type_and_period", unique: true
     t.index ["trackable_type", "trackable_id"], name: "index_metrics_on_trackable"
-    t.check_constraint "metric_type::text = ANY (ARRAY['hours_logged'::character varying, 'invoice_summary'::character varying, 'project_stats'::character varying, 'client_revenue'::character varying, 'team_utilization'::character varying, 'outstanding_amounts'::character varying, 'overdue_amounts'::character varying, 'timesheet_summary'::character varying]::text[])", name: "valid_metric_type"
-    t.check_constraint "period::text = ANY (ARRAY['hour'::character varying, 'day'::character varying, 'week'::character varying, 'month'::character varying, 'quarter'::character varying, 'year'::character varying, 'all_time'::character varying]::text[])", name: "valid_period"
+    t.check_constraint "metric_type::text = ANY (ARRAY['hours_logged'::character varying::text, 'invoice_summary'::character varying::text, 'project_stats'::character varying::text, 'client_revenue'::character varying::text, 'team_utilization'::character varying::text, 'outstanding_amounts'::character varying::text, 'overdue_amounts'::character varying::text, 'timesheet_summary'::character varying::text])", name: "valid_metric_type"
+    t.check_constraint "period::text = ANY (ARRAY['hour'::character varying::text, 'day'::character varying::text, 'week'::character varying::text, 'month'::character varying::text, 'quarter'::character varying::text, 'year'::character varying::text, 'all_time'::character varying::text])", name: "valid_period"
   end
 
   create_table "notification_preferences", force: :cascade do |t|
@@ -680,12 +693,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_15_000000) do
     t.string "name"
     t.text "note"
     t.string "payment_currency"
+    t.string "provider_event_id"
     t.integer "status", null: false
     t.date "transaction_date", null: false
     t.integer "transaction_type", null: false
     t.datetime "updated_at", null: false
     t.index ["invoice_id", "transaction_date", "status"], name: "index_payments_on_invoice_transaction_date_status"
     t.index ["invoice_id"], name: "index_payments_on_invoice_id"
+    t.index ["provider_event_id"], name: "index_payments_on_provider_event_id", unique: true
     t.index ["status"], name: "index_payments_on_status"
     t.index ["transaction_date"], name: "index_payments_on_transaction_date"
   end
@@ -1176,6 +1191,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_15_000000) do
   add_foreign_key "analytics_reports", "companies"
   add_foreign_key "analytics_reports", "users", column: "created_by_id"
   add_foreign_key "analytics_threshold_notification_logs", "companies"
+  add_foreign_key "bulk_invoice_download_statuses", "companies", validate: false
   add_foreign_key "carryovers", "companies"
   add_foreign_key "carryovers", "leave_types"
   add_foreign_key "carryovers", "users"

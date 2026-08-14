@@ -10,7 +10,7 @@ http_interactions:
       User-Agent:
       - Stripe/v1 RubyBindings/6.2.0
       Authorization:
-      - Bearer sk_test_51IhHdESCBF1Aa8FdlQxSSHGS5gWElHBukbysjHZulWBs7te332pIGai45UkDZrNZh4ZuUHy36vVZ6Kj0Xl6YA7WS00DmWisooQ
+      - "<FILTERED>"
       Content-Type:
       - application/x-www-form-urlencoded
       X-Stripe-Client-Telemetry:
@@ -224,7 +224,7 @@ http_interactions:
       User-Agent:
       - Stripe/v1 RubyBindings/6.2.0
       Authorization:
-      - Bearer sk_test_51IhHdESCBF1Aa8FdlQxSSHGS5gWElHBukbysjHZulWBs7te332pIGai45UkDZrNZh4ZuUHy36vVZ6Kj0Xl6YA7WS00DmWisooQ
+      - "<FILTERED>"
       Content-Type:
       - application/x-www-form-urlencoded
       X-Stripe-Client-Telemetry:
@@ -550,7 +550,7 @@ http_interactions:
       User-Agent:
       - Stripe/v1 RubyBindings/6.2.0
       Authorization:
-      - Bearer sk_test_51IhHdESCBF1Aa8FdlQxSSHGS5gWElHBukbysjHZulWBs7te332pIGai45UkDZrNZh4ZuUHy36vVZ6Kj0Xl6YA7WS00DmWisooQ
+      - "<FILTERED>"
       Content-Type:
       - application/x-www-form-urlencoded
       X-Stripe-Client-Telemetry:

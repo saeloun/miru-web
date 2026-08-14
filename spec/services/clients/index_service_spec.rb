@@ -34,5 +34,34 @@ RSpec.describe Clients::IndexService do
         currency: company.base_currency
       )
     end
+
+    it "does not query the latest invoice once per client" do
+      latest_invoice_queries = []
+      subscriber = ActiveSupport::Notifications.subscribe("sql.active_record") do |*, payload|
+        sql = payload[:sql].to_s.gsub(%r{/\\*.*?\\*/}m, "").squish
+        next unless sql.match?(/FROM "invoices"/i)
+        next unless sql.match?(/WHERE .*"invoices"\."client_id" = /i)
+        next unless sql.match?(/ORDER BY .*"invoices"\."created_at".*LIMIT/i)
+
+        latest_invoice_queries << sql
+      end
+
+      described_class.process(company, owner, nil, "week")
+
+      expect(latest_invoice_queries).to be_empty
+    ensure
+      ActiveSupport::Notifications.unsubscribe(subscriber)
+    end
+
+    it "returns the latest kept invoice number from the preloaded invoices" do
+      latest_kept_invoice = create(:invoice, company:, client: client_one, created_at: 1.minute.from_now)
+      discarded_invoice = create(:invoice, company:, client: client_one, created_at: 2.minutes.from_now)
+      discarded_invoice.discard!
+
+      response = described_class.process(company, owner, nil, "week")
+      client_details = response[:client_details].find { |details| details[:id] == client_one.id }
+
+      expect(client_details[:previousInvoiceNumber]).to eq(latest_kept_invoice.invoice_number)
+    end
   end
 end

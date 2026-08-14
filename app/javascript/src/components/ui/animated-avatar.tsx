@@ -184,7 +184,7 @@ const AnimatedAvatar: React.FC<AnimatedAvatarProps> = ({
       transition={animationConfig.transition}
     >
       <div
-        className={`${sizeClass} bg-gray-200 rounded-full flex items-center justify-center`}
+        className={`${sizeClass} bg-muted rounded-full flex items-center justify-center`}
       >
         <img
           src={NavAvatarSVG}

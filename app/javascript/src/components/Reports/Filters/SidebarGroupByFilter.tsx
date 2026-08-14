@@ -68,27 +68,29 @@ const SidebarGroupByFilter = ({ filters, handleSelectFilter }) => {
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen}>
       <CollapsibleTrigger className="w-full">
-        <div className="flex items-center justify-between py-3 px-4 rounded-lg hover:bg-gray-50 transition-colors">
+        <div className="flex items-center justify-between py-3 px-4 rounded-lg hover:bg-muted transition-colors">
           <div className="flex items-center gap-3">
             <div
               className={cn(
                 "p-1.5 rounded-md transition-colors",
-                isActive ? "bg-[#5E58F1]/10" : "bg-gray-100"
+                isActive ? "bg-[hsl(var(--primary))]/10" : "bg-muted"
               )}
             >
               <Stack
                 className={cn(
                   "h-4 w-4",
-                  isActive ? "text-[#5E58F1]" : "text-gray-600"
+                  isActive
+                    ? "text-[hsl(var(--primary))]"
+                    : "text-muted-foreground"
                 )}
               />
             </div>
             <div className="text-left">
-              <p className="text-sm font-medium text-gray-900">
+              <p className="text-sm font-medium text-foreground">
                 {i18n.t("reports.groupBy")}
               </p>
               {isActive && currentOption && (
-                <p className="text-xs text-gray-500 mt-0.5">
+                <p className="text-xs text-muted-foreground mt-0.5">
                   {currentOption.label}
                 </p>
               )}
@@ -98,15 +100,15 @@ const SidebarGroupByFilter = ({ filters, handleSelectFilter }) => {
             {isActive && (
               <Badge
                 variant="secondary"
-                className="h-5 px-1.5 bg-[#5E58F1] text-white text-xs"
+                className="h-5 px-1.5 bg-[hsl(var(--primary))] text-white text-xs"
               >
                 1
               </Badge>
             )}
             {isOpen ? (
-              <CaretUp className="h-4 w-4 text-gray-400" />
+              <CaretUp className="h-4 w-4 text-muted-foreground" />
             ) : (
-              <CaretDown className="h-4 w-4 text-gray-400" />
+              <CaretDown className="h-4 w-4 text-muted-foreground" />
             )}
           </div>
         </div>
@@ -128,34 +130,34 @@ const SidebarGroupByFilter = ({ filters, handleSelectFilter }) => {
               key={option.value}
               className={cn(
                 "relative flex items-start gap-3 p-3 rounded-lg cursor-pointer transition-all",
-                "hover:bg-gray-50 border",
+                "hover:bg-muted border",
                 currentValue === option.value
-                  ? "border-[#5E58F1]/30 bg-[#5E58F1]/5"
+                  ? "border-[hsl(var(--primary))]/30 bg-[hsl(var(--primary))]/5"
                   : "border-transparent"
               )}
             >
               <RadioGroupItem
                 value={option.value}
                 id={`groupby-${option.value}`}
-                className="mt-0.5 border-gray-300 text-[#5E58F1] focus:ring-[#5E58F1]"
+                className="mt-0.5 border-border text-[hsl(var(--primary))] focus:ring-[hsl(var(--primary))]"
               />
               <div className="flex items-center gap-2 flex-1">
                 <span className="text-lg">{option.icon}</span>
                 <div className="flex-1">
                   <Label
                     htmlFor={`groupby-${option.value}`}
-                    className="text-sm font-medium text-gray-900 cursor-pointer block"
+                    className="text-sm font-medium text-foreground cursor-pointer block"
                   >
                     {option.label}
                   </Label>
-                  <p className="text-xs text-gray-500 mt-0.5">
+                  <p className="text-xs text-muted-foreground mt-0.5">
                     {option.description}
                   </p>
                 </div>
               </div>
               {currentValue === option.value && (
                 <div className="absolute top-3 right-3">
-                  <div className="h-2 w-2 rounded-full bg-[#5E58F1]" />
+                  <div className="h-2 w-2 rounded-full bg-[hsl(var(--primary))]" />
                 </div>
               )}
             </div>
@@ -164,14 +166,14 @@ const SidebarGroupByFilter = ({ filters, handleSelectFilter }) => {
 
         {/* Visual Preview */}
         {currentValue !== "none" && (
-          <div className="mt-4 p-3 bg-gray-50 rounded-lg">
-            <p className="text-xs text-gray-600 mb-2">
+          <div className="mt-4 p-3 bg-muted rounded-lg">
+            <p className="text-xs text-muted-foreground mb-2">
               {i18n.t("reports.previewLabel")}
             </p>
             <div className="space-y-1">
               <div className="flex items-center gap-2">
-                <div className="w-2 h-2 bg-[#5E58F1] rounded-full" />
-                <span className="text-xs text-gray-700">
+                <div className="w-2 h-2 bg-[hsl(var(--primary))] rounded-full" />
+                <span className="text-xs text-muted-foreground">
                   {i18n.t("reports.entriesWillBeGrouped", {
                     grouping: currentOption?.label.toLowerCase(),
                   })}
@@ -179,7 +181,7 @@ const SidebarGroupByFilter = ({ filters, handleSelectFilter }) => {
               </div>
               <div className="flex items-center gap-2 ml-4">
                 <div className="w-1 h-1 bg-gray-400 rounded-full" />
-                <span className="text-xs text-gray-500">
+                <span className="text-xs text-muted-foreground">
                   {i18n.t("reports.subtotalsShownForEachGroup")}
                 </span>
               </div>

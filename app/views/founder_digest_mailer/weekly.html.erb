@@ -1,0 +1,60 @@
+<% content_for :email_preheader, "Weekly signups, activation, trials, and workspace activity." %>
+<% content_for :email_eyebrow, "Growth analytics" %>
+<% content_for :email_title, "Miru growth digest" %>
+<% content_for :email_subtitle do %>
+  Week of <%= @digest_date.to_fs(:long) %>
+<% end %>
+
+<h2 style="margin: 0 0 12px; color: #020617; font-size: 18px;">Signups</h2>
+<%= render "shared/mailer/fact_rows", rows: [
+  { label: "Total workspaces", value: @metrics.dig(:signups, :totals, :companies) },
+  { label: "Total users", value: @metrics.dig(:signups, :totals, :users) }
+] %>
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="email-fact-table">
+  <% @metrics.dig(:signups, :weeks).each do |week| %>
+    <tr>
+      <td class="email-fact-key">Week of <%= week[:week_start].to_date.to_fs(:long) %></td>
+      <td class="email-fact-value"><%= week[:companies] %> workspaces · <%= week[:users] %> users</td>
+    </tr>
+  <% end %>
+</table>
+
+<h2 style="margin: 30px 0 12px; color: #020617; font-size: 18px;">Activation funnel</h2>
+<%= render "shared/mailer/fact_rows", rows: [
+  { label: "All workspaces", value: @metrics.dig(:activation_funnel, :total) },
+  { label: "Added a client", value: @metrics.dig(:activation_funnel, :with_client) },
+  { label: "Logged time or invoiced", value: @metrics.dig(:activation_funnel, :with_activity) },
+  { label: "Created an invoice", value: @metrics.dig(:activation_funnel, :with_invoice) },
+  { label: "Recorded a payment", value: @metrics.dig(:activation_funnel, :with_payment) }
+] %>
+
+<h2 style="margin: 30px 0 12px; color: #020617; font-size: 18px;">Last 7 days</h2>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="detail-grid">
+  <tr>
+    <%= render "shared/mailer/detail_card", label: "Active workspaces", value: @metrics.dig(:weekly_active, :companies) %>
+    <%= render "shared/mailer/detail_card", label: "Users logged in", value: @metrics.dig(:weekly_active, :users) %>
+  </tr>
+</table>
+
+<h2 style="margin: 30px 0 12px; color: #020617; font-size: 18px;">Trials and checkout</h2>
+<%= render "shared/mailer/fact_rows", rows: [
+  { label: "Active trials", value: @metrics.dig(:trials, :active) },
+  { label: "Ending within 7 days", value: @metrics.dig(:trials, :ending_within_7_days) },
+  { label: "Expired trials", value: @metrics.dig(:trials, :expired) },
+  { label: "Converted trials", value: @metrics.dig(:trials, :converted) },
+  { label: "Checkout starts · 7 days", value: @metrics.dig(:checkouts, :last_7_days, :started) },
+  { label: "Purchases · 7 days", value: @metrics.dig(:checkouts, :last_7_days, :purchased) },
+  { label: "Checkout starts · 30 days", value: @metrics.dig(:checkouts, :last_30_days, :started) },
+  { label: "Purchases · 30 days", value: @metrics.dig(:checkouts, :last_30_days, :purchased) }
+] %>
+
+<h2 style="margin: 30px 0 12px; color: #020617; font-size: 18px;">Top workspaces · 30 days</h2>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="email-fact-table">
+  <% @metrics[:top_workspaces].each do |workspace| %>
+    <tr>
+      <td class="email-fact-key"><%= workspace[:name] %><%= " · billing exempt" if workspace[:billing_exempt] %></td>
+      <td class="email-fact-value"><%= workspace[:activity_score] %> actions · <%= workspace[:users_count] %> users</td>
+    </tr>
+  <% end %>
+</table>

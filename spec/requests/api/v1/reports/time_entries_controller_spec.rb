@@ -64,6 +64,18 @@ RSpec.describe Api::V1::Reports::TimeEntriesController, type: :request do
       expect(all_entries.size).to eq(5)
     end
 
+    it "does not return entries for a client from another company" do
+      other_client = create(:client)
+      other_project = create(:project, client: other_client)
+      create(:timesheet_entry, project: other_project, work_date: Date.current)
+
+      get api_v1_reports_time_entries_path, params: { client: [other_client.id] }
+
+      json = JSON.parse(response.body)
+      expect(json["reports"].flat_map { |report| report["entries"] }).to be_empty
+      expect(json.dig("groupByTotalDuration", "groupedDurations")).to be_empty
+    end
+
     it "groups by client" do
       create_list(:timesheet_entry, 5, user:, project:, work_date: Date.current)
 
@@ -186,6 +198,17 @@ RSpec.describe Api::V1::Reports::TimeEntriesController, type: :request do
       }
 
       expect(response).to have_http_status(:ok)
+    end
+
+    it "does not download entries from another company" do
+      other_client = create(:client)
+      other_project = create(:project, client: other_client, name: "Foreign project")
+      create(:timesheet_entry, project: other_project, work_date: Date.current)
+
+      get download_api_v1_reports_time_entries_path(format: :csv), params: { client: [other_client.id] }
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).not_to include("Foreign project")
     end
 
     context "when user is not authorized" do

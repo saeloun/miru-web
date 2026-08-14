@@ -4,7 +4,7 @@ require "rails_helper"
 
 RSpec.describe "Api::V1::Users#destroy", type: :request do
   let(:company) { create(:company, name: "Acme") }
-  let(:super_admin) { create(:user, email: "hello@example.com", current_workspace_id: company.id) }
+  let(:super_admin) { create(:user, email: "hello@saeloun.com", current_workspace_id: company.id) }
   let(:target_user) { create(:user, current_workspace_id: company.id) }
 
   before do

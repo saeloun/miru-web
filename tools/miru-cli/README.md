@@ -13,7 +13,7 @@ Full documentation lives in [docs/miru-cli.md](/Users/sward/saeloun/miru-web/doc
 ## Install
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/saeloun/miru-web/main/tools/miru-cli/install.sh | bash
+mise exec go@1.25.12 -- env GOBIN="$HOME/.local/bin" go install github.com/saeloun/miru-web/tools/miru-cli/cmd/miru@b45dee47c3aa58d6312dabfad3b40012b04071fd
 ```
 
 For local development:
@@ -28,13 +28,13 @@ mise exec -- env GOBIN="$HOME/.local/bin" go install ./cmd/miru
 Hosted Miru:
 
 ```bash
-miru login --email user@example.com --password your-password
+miru login --email user@example.com
 ```
 
 Local or self-hosted Miru:
 
 ```bash
-miru login --base-url http://127.0.0.1:9000 --email user@example.com --password your-password
+miru login --base-url http://127.0.0.1:9000 --email user@example.com
 ```
 
 Find a project id, then create time:
@@ -55,9 +55,8 @@ Pull all work I did in Jira today, summarize it hour by hour when the issue hist
 ```bash
 miru help
 miru version
-miru upgrade
-miru login --email <email> --password <password>
-miru login --base-url <url> --email <email> --password <password>
+miru login --email <email>
+miru login --base-url <url> --email <email>
 miru logout
 miru whoami
 miru config show

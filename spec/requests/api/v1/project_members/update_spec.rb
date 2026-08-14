@@ -40,6 +40,22 @@ RSpec.describe "Api::V1::Employments#index", type: :request do
                                  { user_id: user2.id, hourly_rate: 20 } ]
         expect(db_added_users).to match_array(expected_added_users)
       end
+
+      it "rejects members from another workspace" do
+        other_company = create(:company)
+        other_user = create(:user, current_workspace_id: other_company.id)
+        create(:employment, company: other_company, user: other_user)
+
+        params = {
+          members: {
+            added_members: [{ id: other_user.id, hourly_rate: 10 }]
+          }
+        }
+        send_request(:put, api_v1_project_member_path(project.id), params:, headers: auth_headers(user1))
+
+        expect(response).to have_http_status(:not_found)
+        expect(project.project_members.where(user: other_user)).not_to exist
+      end
     end
 
     context "when updating hourly rate of a existing project member" do

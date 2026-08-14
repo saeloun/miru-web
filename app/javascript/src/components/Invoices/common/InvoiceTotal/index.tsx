@@ -85,7 +85,7 @@ const InvoiceTotal = ({
             )}
             <td className="pb-1 text-right">
               <input
-                className="focusPadding focus:outline-none w-20 cursor-pointer rounded bg-transparent py-1 text-right text-base font-bold text-foreground focus:border-border focus:bg-white focus:ring-1 focus:ring-ring"
+                className="focusPadding focus:outline-none w-20 cursor-pointer rounded bg-transparent py-1 text-right text-base font-bold text-foreground focus:border-border focus:bg-card focus:ring-1 focus:ring-ring"
                 id="Discount"
                 type="text"
                 value={discount}
@@ -102,7 +102,7 @@ const InvoiceTotal = ({
             </td>
             <td className="w-22 pt-4 text-right text-base font-bold text-foreground">
               <input
-                className="focusPadding focus:outline-none w-20 cursor-pointer rounded bg-transparent py-1 text-right text-base font-bold text-foreground focus:border-border focus:bg-white focus:ring-1 focus:ring-ring"
+                className="focusPadding focus:outline-none w-20 cursor-pointer rounded bg-transparent py-1 text-right text-base font-bold text-foreground focus:border-border focus:bg-card focus:ring-1 focus:ring-ring"
                 id="Tax"
                 type="text"
                 value={tax}
@@ -136,7 +136,7 @@ const InvoiceTotal = ({
               )}
               <td className="pb-1 text-right">
                 <input
-                  className="focusPadding focus:outline-none w-20 cursor-pointer rounded bg-transparent py-1 text-right text-base font-bold text-foreground focus:border-border focus:bg-white focus:ring-1 focus:ring-ring"
+                  className="focusPadding focus:outline-none w-20 cursor-pointer rounded bg-transparent py-1 text-right text-base font-bold text-foreground focus:border-border focus:bg-card focus:ring-1 focus:ring-ring"
                   id="baseCurrency"
                   type="text"
                   value={baseCurrencyAmount}

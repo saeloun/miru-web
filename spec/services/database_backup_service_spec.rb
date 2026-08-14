@@ -35,12 +35,13 @@ RSpec.describe DatabaseBackupService do
 
     expect(key).to eq("miru/database-backups/2026/03/29/miru-production-20260329-023000.dump")
     expect(Open3).to have_received(:capture3).with(
+      { "PGPASSWORD" => "postgres" },
       "pg_dump",
       "-Fc",
       "--no-owner",
       "--no-privileges",
       "--dbname",
-      "postgres://postgres:postgres@db:5432/miru_production",
+      "postgres://postgres@db:5432/miru_production",
       "--file",
       kind_of(String)
     )

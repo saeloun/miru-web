@@ -40,8 +40,9 @@ RSpec.describe InvoicePolicy, type: :policy do
       expect(described_class).to permit(book_keeper)
     end
 
-    it "does not grants Invoice#index permission to an employee" do
+    it "does not grant Invoice#index permission to an employee or client" do
       expect(described_class).not_to permit(employee)
+      expect(described_class).not_to permit(client_member)
     end
   end
 
@@ -58,18 +59,26 @@ RSpec.describe InvoicePolicy, type: :policy do
   end
 
   permissions :show?, :download? do
-    context "when user is an admin, owner, client or book keeper" do
+    context "when user is an admin, owner or book keeper" do
       it "grants permission" do
         expect(described_class).to permit(admin, invoice)
         expect(described_class).to permit(owner, invoice)
         expect(described_class).to permit(book_keeper, invoice)
+      end
+    end
+
+    context "when user is a client member of the invoice's client" do
+      before { create(:client_member, company:, client: invoice.client, user: client_member) }
+
+      it "grants permission" do
         expect(described_class).to permit(client_member, invoice)
       end
     end
 
-    context "when user is an employee" do
+    context "when user is an employee or a client without membership in the invoice's client" do
       it "does not grants permission" do
         expect(described_class).not_to permit(employee, invoice)
+        expect(described_class).not_to permit(client_member, invoice)
       end
     end
   end

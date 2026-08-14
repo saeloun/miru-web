@@ -77,7 +77,7 @@ const MoreOptions = ({ item, setShowMoreOptions, showMoreOptions }: Iprops) => {
           handleAction(e, TeamModalType.ADD_EDIT);
         }}
       >
-        <EditIcon className="mr-4" color="#5E58F1" size={16} />
+        <EditIcon className="mr-4" color="hsl(var(--primary))" size={16} />
         {i18n.t("edit")}
       </li>
       {canDeleteTeamMember(companyRole, item, currentUser) && (

@@ -3,13 +3,15 @@
 module Api::V1
   module Reports
     class PaymentsController < Api::V1::ApplicationController
+      MAX_REPORT_PAYMENTS = 5_000
+
       after_action :verify_authorized
 
       def index
         authorize :report, :index?
 
-        payments = filter_payments
-        report_data = generate_payment_report(payments)
+        report_data = bounded_report_data
+        return if performed?
 
         render json: {
           payments: report_data,
@@ -25,8 +27,8 @@ module Api::V1
       def download
         authorize :report, :index?
 
-        payments = filter_payments
-        report_data = generate_payment_report(payments)
+        report_data = bounded_report_data
+        return if performed?
 
         if request.query_parameters[:format] == "pdf" || params[:format] == "pdf"
           send_data generate_pdf(report_data),
@@ -38,6 +40,18 @@ module Api::V1
       end
 
       private
+
+        def bounded_report_data
+          payments = filter_payments.limit(MAX_REPORT_PAYMENTS + 1).to_a
+          if payments.size > MAX_REPORT_PAYMENTS
+            render json: {
+              error: "The report exceeds #{MAX_REPORT_PAYMENTS} payments; narrow the filters and try again."
+            }, status: 422
+            return
+          end
+
+          generate_payment_report(payments)
+        end
 
         def filter_payments
           scope = current_company.payments.includes(:invoice, invoice: :client)
@@ -90,6 +104,7 @@ module Api::V1
               client_name: client&.name || "Unknown Client",
               invoice_number: invoice&.invoice_number,
               amount: payment.amount,
+              base_currency_amount: payment.base_currency_amount.to_f.positive? ? payment.base_currency_amount : payment.amount,
               notes: payment.note,
               status: payment.status || "paid"
             }
@@ -97,10 +112,10 @@ module Api::V1
         end
 
         def calculate_summary(report_data)
-          total_amount = report_data.sum { |r| r[:amount] }
+          total_amount = report_data.sum { |r| r[:base_currency_amount] }
 
           by_method = report_data.group_by { |r| r[:payment_method] }
-          method_breakdown = by_method.transform_values { |payments| payments.sum { |p| p[:amount] } }
+          method_breakdown = by_method.transform_values { |payments| payments.sum { |p| p[:base_currency_amount] } }
 
           {
             total_amount: total_amount,
@@ -111,22 +126,20 @@ module Api::V1
         end
 
         def generate_csv(report_data)
-          require "csv"
-
-          CSV.generate(headers: true) do |csv|
-            csv << ["Date", "Client", "Invoice Number", "Payment Method", "Transaction ID", "Amount", "Status"]
-            report_data.each do |payment|
-              csv << [
-                payment[:payment_date],
-                payment[:client_name],
-                payment[:invoice_number],
-                payment[:payment_method],
-                payment[:transaction_id],
-                payment[:amount],
-                payment[:status]
-              ]
-            end
+          headers = ["Date", "Client", "Invoice Number", "Payment Method", "Transaction ID", "Amount", "Status"]
+          rows = report_data.map do |payment|
+            [
+              payment[:payment_date],
+              payment[:client_name],
+              payment[:invoice_number],
+              payment[:payment_method],
+              payment[:transaction_id],
+              payment[:amount],
+              payment[:status]
+            ]
           end
+
+          ::Reports::GenerateCsv.new(rows, headers).process
         end
 
         def generate_pdf(report_data)

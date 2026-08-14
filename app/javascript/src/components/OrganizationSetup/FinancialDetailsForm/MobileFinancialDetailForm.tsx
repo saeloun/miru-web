@@ -66,7 +66,7 @@ const MobileFinancialDetailForm = ({
               <div>
                 {/* Base Currency */}
                 <div className="field relative">
-                  <label className="absolute -top-1 left-0 z-1 ml-3 origin-0 bg-white px-1 text-xsm font-medium text-muted-foreground duration-300">
+                  <label className="absolute -top-1 left-0 z-1 ml-3 origin-0 bg-card px-1 text-xsm font-medium text-muted-foreground duration-300">
                     {i18n.t("orgSetup.baseCurrency")}
                   </label>
                   <Select
@@ -120,7 +120,7 @@ const MobileFinancialDetailForm = ({
                       }}
                     />
                     <label
-                      className="absolute top-0 z-1 origin-0 bg-white p-3 text-base font-medium text-muted-foreground duration-300"
+                      className="absolute top-0 z-1 origin-0 bg-card p-3 text-base font-medium text-muted-foreground duration-300"
                       htmlFor="standard_rate"
                     >
                       {i18n.t("orgSetup.standardPrice")}
@@ -134,7 +134,7 @@ const MobileFinancialDetailForm = ({
                 </div>
                 {/* Fiscal Year End  */}
                 <div className="field relative">
-                  <label className="absolute -top-1 left-0 z-1 ml-3 origin-0 bg-white px-1 text-xsm font-medium text-muted-foreground duration-300">
+                  <label className="absolute -top-1 left-0 z-1 ml-3 origin-0 bg-card px-1 text-xsm font-medium text-muted-foreground duration-300">
                     {i18n.t("orgSetup.fiscalYear")}
                   </label>
                   <Select
@@ -165,7 +165,7 @@ const MobileFinancialDetailForm = ({
                 </div>
                 {/* Date Format */}
                 <div className="field relative">
-                  <label className="absolute -top-1 left-0 z-1 ml-3 origin-0 bg-white px-1 text-xsm font-medium text-muted-foreground duration-300">
+                  <label className="absolute -top-1 left-0 z-1 ml-3 origin-0 bg-card px-1 text-xsm font-medium text-muted-foreground duration-300">
                     {i18n.t("orgSetup.dateFormat")}
                   </label>
                   <Select

@@ -2,6 +2,9 @@
 
 class BulkPreviousEmploymentPolicy < ApplicationPolicy
   def update?
-    has_owner_or_admin_role? || record.id == user.id
+    return true if user_owner_role? || user_admin_role?
+    return false unless user_employee_role?
+
+    record.id == user.id
   end
 end

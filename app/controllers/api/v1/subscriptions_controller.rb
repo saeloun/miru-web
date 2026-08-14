@@ -10,6 +10,11 @@ class Api::V1::SubscriptionsController < Api::V1::ApplicationController
   def checkout
     authorize current_company, policy_class: CompanyPolicy
 
+    if current_company.plan_tier == "paid"
+      render json: { errors: I18n.t("subscriptions.already_subscribed") }, status: 422
+      return
+    end
+
     plan_page_url = checkout_plan_page_url
     if plan_page_url.present?
       track_checkout_started("stripe_plan_page")
@@ -91,6 +96,7 @@ class Api::V1::SubscriptionsController < Api::V1::ApplicationController
         has_stripe_customer: current_company.stripe_customer_id.present?,
         team_member_limit: current_company.team_member_limit,
         used_team_seats: current_company.used_team_seats,
+        billable_team_seats: current_company.billable_team_seats,
         client_portal_users_count: current_company.client_portal_users_count,
         team_member_limit_reached: current_company.team_member_limit_reached?,
         trial_active: current_company.trial_active?,
@@ -139,14 +145,15 @@ class Api::V1::SubscriptionsController < Api::V1::ApplicationController
     end
 
     def checkout_price_id
-      interval_key =
+      candidates =
         if billing_interval == "yearly"
-          "STRIPE_SUBSCRIPTION_PRICE_ID_YEARLY"
+          %w[STRIPE_SUBSCRIPTION_PRICE_ID_YEARLY STRIPE_YEARLY_PRICE_ID]
         else
-          "STRIPE_SUBSCRIPTION_PRICE_ID_MONTHLY"
+          %w[STRIPE_SUBSCRIPTION_PRICE_ID_MONTHLY STRIPE_MONTHLY_PRICE_ID]
         end
+      candidates << "STRIPE_SUBSCRIPTION_PRICE_ID"
 
-      ENV[interval_key].presence || ENV["STRIPE_SUBSCRIPTION_PRICE_ID"].to_s
+      candidates.filter_map { |name| ENV[name].presence }.first.to_s
     end
 
     def ensure_stripe_customer_id

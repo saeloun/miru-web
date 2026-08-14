@@ -3,9 +3,10 @@ import { cashFormatter } from "./cashFormater";
 import { companyDateFormater } from "./companyDateFormater";
 import { currencyFormat } from "./currency";
 import { currencySymbol } from "./currencySymbol";
+import { buildDateParseFormats } from "./dateParseFormats";
 import { getMonthFromString } from "./dateParser";
 import { useDebounce } from "./debounce";
-import { getDisplayAvatarUrl, getGravatarUrl } from "./gravatar";
+import { getDisplayAvatarUrl } from "./gravatar";
 import { minFromHHMM, minToHHMM } from "./hhmmParser";
 import { lineTotalCalc } from "./lineTotalCalc";
 import { getLineItemDisplayName } from "./lineItemDisplayName";
@@ -16,13 +17,13 @@ import useKeypress from "./useKeyPress";
 import { validateTimesheetEntry } from "./validateTimesheetEntry";
 
 export {
+  buildDateParseFormats,
   bytesToSize,
   cashFormatter,
   companyDateFormater,
   currencyFormat,
   currencySymbol,
   getDisplayAvatarUrl,
-  getGravatarUrl,
   getMonthFromString,
   getNumberWithOrdinal,
   minFromHHMM,

@@ -75,7 +75,7 @@ Notes:
 MCP uses existing Miru bearer auth. Use a Miru CLI session token:
 
 ```bash
-miru login --base-url https://app.miru.so --email user@example.com --password '***'
+miru login --base-url https://app.miru.so --email user@example.com
 miru config token
 ```
 

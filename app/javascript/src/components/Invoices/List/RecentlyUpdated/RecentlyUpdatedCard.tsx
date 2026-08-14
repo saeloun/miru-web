@@ -35,9 +35,13 @@ const RecentlyUpdatedCard = ({
       case "overdue":
         return <Warning className="w-4 h-4 text-red-600" weight="fill" />;
       case "draft":
-        return <FileText className="w-4 h-4 text-gray-500" weight="fill" />;
+        return (
+          <FileText className="w-4 h-4 text-muted-foreground" weight="fill" />
+        );
       default:
-        return <Clock className="w-4 h-4 text-gray-500" weight="fill" />;
+        return (
+          <Clock className="w-4 h-4 text-muted-foreground" weight="fill" />
+        );
     }
   };
 

@@ -9,6 +9,8 @@ on:
 jobs:
   backup:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     env:
       FLY_API_TOKEN: ${{ secrets.FLY_PRODUCTION_DB_TOKEN }}
       FLY_DB_APP: ${{ secrets.FLY_DB_APP_NAME }}
@@ -20,7 +22,7 @@ jobs:
       R2_DB_BUCKET: db-backup
 
     steps:
-      - uses: superfly/flyctl-actions/setup-flyctl@master
+      - uses: superfly/flyctl-actions/setup-flyctl@ed8efb33836e8b2096c7fd3ba1c8afe303ebbff1 # v1.6
       - name: Set filename
         run: echo "filename=db-$(date -u +"%Y-%m-%d-%H%M%S").sql" >> $GITHUB_ENV
       - name: install pg_dump version 15.2
@@ -41,7 +43,7 @@ jobs:
           mv ${{ env.filename }}.gz backup/
           ls -la backup/
       - name: Upload backup to R2
-        uses: ryand56/r2-upload-action@latest
+        uses: ryand56/r2-upload-action@b801a390acbdeb034c5e684ff5e1361c06639e7c # v1.4
         with:
             r2-account-id: ${{ secrets.R2_ACCOUNT_ID }}
             r2-access-key-id: ${{ secrets.R2_ACCESS_KEY }}

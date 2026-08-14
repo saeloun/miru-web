@@ -84,6 +84,26 @@ RSpec.describe EncodingSanitizer do
 
         expect(response_env["rack.input"]).to equal(input)
       end
+
+      it "returns bad request when Rack rejects malformed multipart data" do
+        app = lambda do |env|
+          Rack::Request.new(env).POST
+          [200, { "Content-Type" => "text/plain" }, ["OK"]]
+        end
+
+        boundary_limit = Rack::Multipart::Parser.const_get(:BOUNDARY_START_LIMIT)
+        boundary = "x" * (boundary_limit + 1)
+        env = Rack::MockRequest.env_for(
+          "/test",
+          "CONTENT_TYPE" => "multipart/form-data; boundary=#{boundary}",
+          input: "--#{boundary}\r\nContent-Disposition: form-data; name=\"file\"\r\n\r\nboom\r\n--#{boundary}--\r\n"
+        )
+
+        status, _headers, body = described_class.new(app).call(env)
+
+        expect(status).to eq(400)
+        expect(body).to eq(["Bad Request"])
+      end
     end
   end
 

@@ -6,7 +6,9 @@ RSpec.describe "Api::V1::Invoices::BulkDownload#status", type: :request do
   let(:company) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id) }
   let(:download_id) { Faker::Alphanumeric.unique.alpha(number: 10) }
-  let(:bulk_download_status) { create(:bulk_invoice_download_status, download_id:, status: "processing") }
+  let(:bulk_download_status) do
+    create(:bulk_invoice_download_status, download_id:, status: "processing", company:)
+  end
 
   subject do
     send_request :get, status_api_v1_invoices_bulk_download_index_path(download_id:),
@@ -43,6 +45,21 @@ RSpec.describe "Api::V1::Invoices::BulkDownload#status", type: :request do
         it "returns a status not found message" do
           expect(response).to have_http_status(:ok)
           expect(json_response["status"]).to eq("not_found")
+        end
+      end
+
+      context "when the download status belongs to another company" do
+        let(:other_company) { create(:company) }
+
+        before do
+          create(:bulk_invoice_download_status, download_id:, status: "processing", company: other_company)
+          subject
+        end
+
+        it "does not expose the other company's download status" do
+          expect(response).to have_http_status(:ok)
+          expect(json_response["status"]).to eq("not_found")
+          expect(json_response["file_url"]).to be_nil
         end
       end
     end

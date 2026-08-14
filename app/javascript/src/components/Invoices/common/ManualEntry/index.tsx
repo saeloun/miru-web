@@ -217,7 +217,11 @@ const ManualEntry = ({
                   className="flex w-full items-center rounded p-2.5 text-center hover:bg-secondary"
                   onClick={handleDelete}
                 >
-                  <DeleteIcon color="#5E58F1" size={16} weight="bold" />
+                  <DeleteIcon
+                    color="hsl(var(--primary))"
+                    size={16}
+                    weight="bold"
+                  />
                 </button>
               </TooltipTrigger>
               <TooltipContent>

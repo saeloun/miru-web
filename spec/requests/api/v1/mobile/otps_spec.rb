@@ -29,17 +29,40 @@ RSpec.describe "Api::V1::Mobile::Otps", type: :request do
     expect(json_response.dig("company", "id")).to eq(company.id)
   end
 
-  it "asks the app to choose a workspace when a phone belongs to multiple workspaces" do
+  it "does not disclose workspace choices before OTP verification" do
     other_company = create(:company, name: "Other")
     create(:employment, company: other_company, user: customer)
     customer.add_role :client, other_company
 
     post "/api/v1/mobile/otp/request", params: { phone: "+91 98765 43210" }
 
-    expect(response).to have_http_status(:conflict)
-    expect(json_response["requires_workspace"]).to eq(true)
-    workspace_ids = json_response["workspaces"].pluck("id")
-    expect(workspace_ids).to contain_exactly(company.id, other_company.id)
+    expect(response).to have_http_status(:accepted)
+    expect(json_response).not_to have_key("workspaces")
+    expect(json_response["pending_token"]).to be_present
+  end
+
+  it "returns the same challenge shape for an unknown phone" do
+    post "/api/v1/mobile/otp/request", params: { phone: "+91 99999 99999" }
+
+    expect(response).to have_http_status(:accepted)
+    expect(json_response).to include("message" => "OTP sent", "otp_sent" => true)
+    expect(json_response["pending_token"]).to be_present
+  end
+
+  it "rejects verification for a workspace the customer cannot access" do
+    other_company = create(:company)
+    post "/api/v1/mobile/otp/request", params: {
+      phone: "9876543210",
+      company_id: other_company.id
+    }
+
+    post "/api/v1/mobile/otp/verify", params: {
+      pending_token: json_response["pending_token"],
+      code: "123456"
+    }
+
+    expect(response).to have_http_status(:unprocessable_content)
+    expect(json_response["error"]).to eq("Invalid OTP")
   end
 
   it "rejects an invalid OTP" do

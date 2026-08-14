@@ -45,6 +45,12 @@ export interface Company {
   team_member_limit?: number | string;
   team_member_limit_reached?: boolean;
   pro_access?: boolean;
+  plan_tier?: string;
+  billing_exempt?: boolean;
+  trial_active?: boolean;
+  trial_ends_at?: string | null;
+  trial_expired?: boolean;
+  subscription_status?: string;
   working_hours?: number | string;
   working_days?: number | string;
 }

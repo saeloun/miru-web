@@ -9,10 +9,14 @@ class TrialEmailsJob < ApplicationJob
   # Self-hosted instances without Stripe pricing have no upgrade path, so
   # trial emails would only nag admins about a checkout that cannot succeed.
   def self.billing_configured?
-    ENV["STRIPE_PLAN_PAGE_URL"].present? ||
-      ENV["STRIPE_SUBSCRIPTION_PRICE_ID"].present? ||
-      ENV["STRIPE_SUBSCRIPTION_PRICE_ID_MONTHLY"].present? ||
-      ENV["STRIPE_SUBSCRIPTION_PRICE_ID_YEARLY"].present?
+    %w[
+      STRIPE_PLAN_PAGE_URL
+      STRIPE_SUBSCRIPTION_PRICE_ID
+      STRIPE_SUBSCRIPTION_PRICE_ID_MONTHLY
+      STRIPE_SUBSCRIPTION_PRICE_ID_YEARLY
+      STRIPE_MONTHLY_PRICE_ID
+      STRIPE_YEARLY_PRICE_ID
+    ].any? { |name| ENV[name].present? }
   end
 
   def perform
@@ -20,6 +24,12 @@ class TrialEmailsJob < ApplicationJob
 
     companies_on_trial.find_each do |company|
       process_company(company)
+    rescue StandardError => e
+      Rails.logger.error("TrialEmailsJob: company=#{company.id} failed: #{e.class}: #{e.message}")
+    end
+
+    companies_recently_expired.find_each do |company|
+      process_expired_company(company)
     rescue StandardError => e
       Rails.logger.error("TrialEmailsJob: company=#{company.id} failed: #{e.class}: #{e.message}")
     end
@@ -34,12 +44,24 @@ class TrialEmailsJob < ApplicationJob
         .where("trial_ends_at > ?", Time.current)
     end
 
+    def companies_recently_expired
+      Company.where(billing_exempt: false)
+        .where.not(plan_tier: "paid")
+        .where.not(trial_started_at: nil)
+        .where(trial_expired_email_sent_at: nil)
+        .where("trial_ends_at <= ? AND trial_ends_at > ?", Time.current, 3.days.ago)
+    end
+
     def process_company(company)
       today = Time.current.in_time_zone(company.resolved_time_zone).to_date
       email, days_remaining = due_email(company, today)
       return if email.blank?
 
       deliver_once(company, email, days_remaining, today)
+    end
+
+    def process_expired_company(company)
+      deliver_expired_once(company)
     end
 
     def due_email(company, today)
@@ -83,6 +105,21 @@ class TrialEmailsJob < ApplicationJob
         end
 
         company.update!(trial_email_last_sent_on: today)
+      end
+    end
+
+    def deliver_expired_once(company)
+      company.with_lock do
+        return if company.trial_expired_email_sent_at.present?
+
+        eligible_recipients = recipients(company).to_a
+        return if eligible_recipients.empty?
+
+        eligible_recipients.each do |user|
+          SubscriptionMailer.with(company_id: company.id, recipient_id: user.id).trial_expired.deliver_later
+        end
+
+        company.update!(trial_expired_email_sent_at: Time.current)
       end
     end
 

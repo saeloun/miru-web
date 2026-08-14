@@ -4,6 +4,14 @@ require "openssl"
 require "rails_helper"
 
 RSpec.describe "Razorpay webhooks", type: :request do
+  it "rejects oversized webhook bodies before verification" do
+    post "/webhooks/razorpay/payment_links",
+      params: "x" * (Webhooks::RazorpayController::MAX_WEBHOOK_BODY_BYTES + 1),
+      headers: { "CONTENT_TYPE" => "application/json" }
+
+    expect(response).to have_http_status(:content_too_large)
+  end
+
   let(:company) { create(:india_company, base_currency: "INR") }
   let(:client) { create(:client, company:, currency: "INR", name: "Acme", email: "client@example.com") }
   let(:invoice) do

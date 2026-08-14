@@ -46,6 +46,15 @@ const en = {
   toggleSidebar: "Toggle Sidebar",
   morePages: "More pages",
 
+  trialBanner: {
+    daysLeftOne: "1 day left in your Pro trial",
+    daysLeft: "%{count} days left in your Pro trial",
+    upgrade: "Upgrade",
+    trialEndedTitle: "Your Pro trial has ended",
+    trialEndedDescription:
+      "Upgrade to keep Reports, analytics, and your full team.",
+  },
+
   // Common labels
   name: "Name",
   email: "Email",
@@ -1952,9 +1961,20 @@ const en = {
       monthly: "Billed month to month",
       yearlySavings: "Save 2 months per seat",
     },
+    featureGate: {
+      reportsTitle: "Reports is a Pro feature",
+      reportsDescription:
+        "Upgrade to Pro to unlock Reports, analytics, and exports.",
+      seatsTitle: "You've reached your free plan's team limit",
+      seatsDescription:
+        "Upgrade to Pro to add unlimited team members to this workspace.",
+    },
     alerts: {
       subscriptionUpdatedTitle: "Subscription updated",
       subscriptionUpdated: "Your plan was updated in Stripe successfully.",
+      finalizing: "Finalizing your subscription…",
+      finalizingDelayed:
+        "Payment received — your Pro access will appear shortly. Refresh in a minute.",
       checkoutCancelled: "Checkout cancelled",
       noSubscriptionChanges: "No changes were made to your subscription.",
       unableToLoad: "Unable to load billing details",
@@ -1971,7 +1991,7 @@ const en = {
         "Upgrade in Stripe to add more than 3 members to this workspace.",
       clientPortalUsersTitle: "Client portal users included in seat count",
       clientPortalUsersDescription:
-        "Your seat count includes %{count} client portal user(s) who have login access. These users can view their invoices, projects, and time entries. Team members are managed on the Team page.",
+        "%{count} client portal user(s) have login access and count toward your workspace's seat usage, but they are not billed — only team members are charged. Team members are managed on the Team page.",
     },
     errors: {
       unableToOpenStripeCheckout: "Unable to open Stripe checkout",

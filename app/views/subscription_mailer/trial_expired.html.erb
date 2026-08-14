@@ -1,0 +1,15 @@
+<% content_for :email_preheader, "Your Miru Pro trial has ended. Upgrade to keep your team on Pro." %>
+<% content_for :email_eyebrow, "Miru Pro" %>
+<% content_for :email_title, "Your Pro trial has ended" %>
+<% content_for :email_subtitle do %>
+  Upgrade to keep your team working with Miru Pro.
+<% end %>
+
+<p>Hi <%= @recipient.first_name.presence || @recipient.email %>,</p>
+
+<p>
+  Your Miru Pro trial for <strong><%= @company.name %></strong> has ended.
+  Upgrade to keep Reports, analytics, and your full team working together.
+</p>
+
+<%= render "shared/mailer/button", href: @billing_url, label: "Upgrade to Pro" %>

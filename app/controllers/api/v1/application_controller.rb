@@ -31,6 +31,12 @@ class Api::V1::ApplicationController < ActionController::API
 
   private
 
+    def require_current_password!
+      return if current_user.valid_password?(params[:current_password].to_s)
+
+      render json: { error: "Current password is invalid" }, status: 422
+    end
+
     def financial_api_meta(currency: nil)
       {
         i18n: {
@@ -42,9 +48,13 @@ class Api::V1::ApplicationController < ActionController::API
           currency: currency || current_company&.base_currency,
           decimal_precision: 2
         },
-        timezone: Time.zone.tzinfo.name,
+        timezone: company_time_zone.tzinfo.name,
         generated_at: Time.current.iso8601
       }
+    end
+
+    def company_time_zone
+      ActiveSupport::TimeZone[current_company&.timezone.to_s] || Time.zone
     end
 
     def switch_locale(&action)

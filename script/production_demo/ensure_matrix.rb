@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-password = ENV.fetch("DEMO_MATRIX_PASSWORD", "password")
+password = ENV.fetch("DEMO_MATRIX_PASSWORD")
 company = Company.find_by(name: "Saeloun Inc") || Company.first
 
 raise "No company found" unless company
@@ -14,7 +14,7 @@ user_specs = [
 
 demo_client = Client.find_or_initialize_by(company:, email: "finance@example.com")
 demo_client.name = "Finance Demo Client"
-demo_client.phone ||= "+15555550123"
+demo_client.phone ||= "+14155552671"
 demo_client.currency ||= company.base_currency || "USD"
 demo_client.save!
 
@@ -29,14 +29,13 @@ user_specs.each do |spec|
   user = User.find_or_initialize_by(email: spec[:email])
   user.first_name = spec[:first_name]
   user.last_name = spec[:last_name]
-  user.password = password
-  user.password_confirmation = password
+  user.assign_attributes(password:, password_confirmation: password)
   user.confirmed_at ||= Time.current if user.respond_to?(:confirmed_at)
   user.current_workspace = company if user.respond_to?(:current_workspace=)
   user.current_workspace_id = company.id if user.has_attribute?(:current_workspace_id)
   user.personal_email_id ||= spec[:email]
   user.date_of_birth ||= Date.new(1995, 1, 1) if user.has_attribute?(:date_of_birth)
-  user.phone ||= "+15555550100" if user.has_attribute?(:phone)
+  user.phone ||= "+14155552672" if user.has_attribute?(:phone)
   user.save!
 
   user.remove_roles_for(company)
@@ -81,7 +80,6 @@ puts(
   {
     company_id: company.id,
     company_name: company.name,
-    password:,
     demo_client_id: demo_client.id,
     demo_client_email: demo_client.email,
     demo_project_id: demo_project.id,

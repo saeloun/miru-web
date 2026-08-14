@@ -33,6 +33,8 @@ class EncodingSanitizer
     end
 
     @app.call(env)
+  rescue Rack::Multipart::BoundaryTooLongError
+    [400, { "Content-Type" => "text/plain", "Content-Length" => "11" }, ["Bad Request"]]
   end
 
   private

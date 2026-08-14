@@ -336,9 +336,9 @@ Devise.setup do |config|
     jwt.dispatch_requests = [
       ["POST", %r{^/api/v1/users/login$}]
     ]
-    jwt.revocation_requests = [
-      ["DELETE", %r{^/api/v1/users/logout$}]
-    ]
+    # Logout revocation is handled in SessionsController so malformed bearer
+    # tokens cannot raise after the response has already been rendered.
+    jwt.revocation_requests = []
     jwt.request_formats = {
       user: [:json]
     }

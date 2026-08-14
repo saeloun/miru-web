@@ -42,14 +42,14 @@ class Api::V1::ProjectsController < Api::V1::ApplicationController
   def create
     authorize Project
     render :create, locals: {
-      project: Project.create!(project_params),
+      project: Project.create!(scoped_project_params),
       notice: I18n.t("projects.create.success")
     }
   end
 
   def update
     authorize project
-    project.update!(project_params)
+    project.update!(scoped_project_params)
     render :update, locals: {
       project:,
       notice: I18n.t("projects.update.success")
@@ -73,5 +73,13 @@ class Api::V1::ProjectsController < Api::V1::ApplicationController
       params.require(:project).permit(
         policy(Project).permitted_attributes
       )
+    end
+
+    def scoped_project_params
+      attributes = project_params
+      return attributes if attributes[:client_id].blank?
+
+      client = current_company.clients.kept.find(attributes[:client_id])
+      attributes.merge(client_id: client.id)
     end
 end

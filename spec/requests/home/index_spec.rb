@@ -50,5 +50,17 @@ RSpec.describe "Root#index", type: :request do
       send_request :get, "/.well-known/assetlinks.json"
       expect(response).to have_http_status(:not_found)
     end
+
+    it "does not route non-GET scanner requests to the SPA" do
+      send_request :post, "/index.php"
+
+      expect(response).to have_http_status(:not_found)
+    end
+
+    it "provides the Devise sign-in route used by password reset redirects" do
+      send_request :get, edit_user_password_path
+
+      expect(response).to redirect_to(new_user_session_path)
+    end
   end
 end

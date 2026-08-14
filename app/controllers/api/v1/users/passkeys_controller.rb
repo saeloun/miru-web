@@ -2,10 +2,13 @@
 
 class Api::V1::Users::PasskeysController < Api::V1::ApplicationController
   include AuthResponsePayload
+  include SameOriginAuthentication
 
   skip_before_action :authenticate_user!, only: :authenticate
   skip_before_action :authenticate_user_using_x_auth_token, only: :authenticate
   skip_before_action :set_virtual_verified_invitations_allowed, only: :authenticate
+  before_action :reject_cross_origin_authentication!, only: :authenticate
+  before_action :require_current_password!, only: [:registration_options, :update_requirement, :destroy]
 
   rescue_from Passkeys::ChallengeToken::InvalidTokenError, with: :render_invalid_passkey_token
   rescue_from ::WebAuthn::Error, with: :render_invalid_passkey_response
@@ -70,6 +73,9 @@ class Api::V1::Users::PasskeysController < Api::V1::ApplicationController
     raise Passkeys::ChallengeToken::InvalidTokenError unless payload["type"] == "authentication"
 
     user = User.find(payload["user_id"])
+    company = Company.find_by(id: payload["company_id"])
+    raise ActiveRecord::RecordNotFound unless user.active_for_authentication? && company && user.employed_at?(company.id)
+
     credential, passkey = relying_party.verify_authentication(
       authentication_params[:credential].to_h,
       payload["challenge"],
@@ -84,7 +90,7 @@ class Api::V1::Users::PasskeysController < Api::V1::ApplicationController
 
     render json: signed_in_payload(
       user,
-      company: current_company,
+      company:,
       notice: I18n.t("devise.sessions.signed_in"),
       include_token: false
     ), status: 200
@@ -131,7 +137,7 @@ class Api::V1::Users::PasskeysController < Api::V1::ApplicationController
     end
 
     def requirement_params
-      params.permit(:required)
+      params.permit(:required, :current_password)
     end
 
     def render_passkeys(status: :ok, notice: nil)

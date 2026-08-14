@@ -1,16 +1,30 @@
 # frozen_string_literal: true
 
 class Api::V1::CalendarsController < Api::V1::ApplicationController
+  OAUTH_STATE_SESSION_KEY = :google_calendar_oauth_state
+  OAUTH_USER_SESSION_KEY = :google_calendar_oauth_user_id
+
   before_action :set_client
 
   def redirect
     authorize :redirect, policy_class: CalendarPolicy
+
+    state = SecureRandom.hex(24)
+    session[OAUTH_STATE_SESSION_KEY] = state
+    session[OAUTH_USER_SESSION_KEY] = current_user.id
+    @client.state = state
 
     render json: { url: @client.authorization_uri.to_s }
   end
 
   def callback
     authorize :callback, policy_class: CalendarPolicy
+
+    unless valid_oauth_state?
+      clear_oauth_state
+      redirect_to root_path, alert: "Calendar authorization failed"
+      return
+    end
 
     authorization_code = params[:code]
 
@@ -19,9 +33,11 @@ class Api::V1::CalendarsController < Api::V1::ApplicationController
 
       response = @client.fetch_access_token!
       session[:authorization] = response
+      clear_oauth_state
 
       redirect_to api_v1_calendars_path
     else
+      clear_oauth_state
       current_user.update!(calendar_connected: false)
       redirect_to root_path, alert: "Calendar authorization failed"
     end
@@ -78,5 +94,16 @@ class Api::V1::CalendarsController < Api::V1::ApplicationController
 
     def set_client
       @client = Signet::OAuth2::Client.new(client_options)
+    end
+
+    def valid_oauth_state?
+      params[:state].present? &&
+        params[:state] == session[OAUTH_STATE_SESSION_KEY] &&
+        session[OAUTH_USER_SESSION_KEY].to_i == current_user.id
+    end
+
+    def clear_oauth_state
+      session.delete(OAUTH_STATE_SESSION_KEY)
+      session.delete(OAUTH_USER_SESSION_KEY)
     end
 end

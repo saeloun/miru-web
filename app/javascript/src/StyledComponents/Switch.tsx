@@ -7,7 +7,7 @@ const Switch = ({ enabled, onChange }) => (
   <HeadlessSwitch
     checked={enabled}
     className={classNames(
-      enabled ? "bg-indigo-600" : "bg-gray-200",
+      enabled ? "bg-indigo-600" : "bg-muted",
       "focus:outline-none relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2"
     )}
     onChange={onChange}

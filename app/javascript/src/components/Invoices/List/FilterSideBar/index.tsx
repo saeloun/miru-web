@@ -261,7 +261,7 @@ const FilterSidebar = ({
       setFilterVisibilty={setIsFilterVisible}
     >
       <div>
-        <SidePanel.Header className="mb-2 flex h-12 items-center justify-between bg-primary px-2 text-white lg:h-auto lg:bg-white lg:px-5 lg:py-5 lg:font-bold lg:text-foreground">
+        <SidePanel.Header className="mb-2 flex h-12 items-center justify-between bg-primary px-2 text-white lg:h-auto lg:bg-card lg:px-5 lg:py-5 lg:font-bold lg:text-foreground">
           {isDesktop ? (
             <h4 className="flex items-center text-base">
               <FilterIcon className="mr-2.5" size={16} />{" "}

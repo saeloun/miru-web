@@ -32,7 +32,13 @@ class Api::V1::TimeTrackingController < Api::V1::ApplicationController
   private
 
     def set_user
-      user_id = params[:user_id] || current_user.id
-      @user = current_company.users.find(user_id)
+      company = current_company || raise(ActiveRecord::RecordNotFound, "Company not found")
+      user_id =
+        if current_user.has_role?(:owner, company) || current_user.has_role?(:admin, company)
+          params[:user_id] || current_user.id
+        else
+          current_user.id
+        end
+      @user = company.users.find(user_id)
     end
 end

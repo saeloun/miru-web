@@ -20,7 +20,7 @@ const IndeterminateCheckbox = forwardRef(
           {...rest}
           className="custom__checkbox absolute h-8 w-8 opacity-0"
         />
-        <div className="mr-2 flex h-5 w-5 flex-shrink-0 items-center justify-center border-2 border-primary bg-white focus-within:border-blue-500">
+        <div className="mr-2 flex h-5 w-5 flex-shrink-0 items-center justify-center border-2 border-primary bg-card focus-within:border-blue-500">
           <svg
             className="custom__checkbox-tick pointer-events-none hidden h-2 w-2 fill-current text-primary"
             version="1.1"
@@ -118,7 +118,7 @@ const Table = ({
   };
 
   return (
-    <table className="mt-4 min-w-full divide-y divide-gray-200 md:w-full md:table-fixed">
+    <table className="mt-4 min-w-full divide-y divide-border md:w-full md:table-fixed">
       <thead>
         <tr>
           {hasCheckbox && (

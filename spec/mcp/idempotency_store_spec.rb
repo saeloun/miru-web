@@ -3,18 +3,6 @@
 require "rails_helper"
 
 RSpec.describe MCP::Miru::IdempotencyStore do
-  let(:cache_store) { ActiveSupport::Cache::MemoryStore.new }
-
-  before do
-    allow(Rails).to receive(:cache).and_return(cache_store)
-  end
-
-  around do |example|
-    cache_store.clear
-    example.run
-    cache_store.clear
-  end
-
   describe ".fetch" do
     let(:tool_name) { "miru.time.create" }
     let(:authorization) { "Bearer token-1" }
@@ -90,6 +78,45 @@ RSpec.describe MCP::Miru::IdempotencyStore do
       end
 
       expect(calls).to eq(2)
+    end
+
+    it "does not run a duplicate request while the first request is in progress" do
+      duplicate_error = nil
+
+      described_class.fetch(tool_name:, idempotency_key: "in-progress", authorization:) do
+        Thread.new do
+          described_class.fetch(tool_name:, idempotency_key: "in-progress", authorization:) { result }
+        rescue StandardError => error
+          duplicate_error = error
+        end.join
+
+        result
+      end
+
+      expect(duplicate_error).to be_present
+      expect(duplicate_error.message).to match(/already in progress/)
+    end
+
+    it "retries expired results" do
+      key = described_class.send(
+        :build_key,
+        tool_name:,
+        idempotency_key: "expired",
+        authorization:
+      )
+      MCPIdempotencyRecord.create!(
+        key_digest: Digest::SHA256.hexdigest(key),
+        response: result.to_h,
+        expires_at: 1.second.ago
+      )
+
+      calls = 0
+      described_class.fetch(tool_name:, idempotency_key: "expired", authorization:) do
+        calls += 1
+        result
+      end
+
+      expect(calls).to eq(1)
     end
   end
 end

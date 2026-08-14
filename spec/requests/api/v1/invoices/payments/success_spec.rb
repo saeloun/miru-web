@@ -33,7 +33,8 @@ RSpec.describe "Api::V1::Invoices::Payments#success", type: :request do
   end
 
   it "returns a limited invoice payload for verified Razorpay success" do
-    send_request :get, api_v1_invoices_success_path(invoice, provider: PaymentsProvider::RAZORPAY_PROVIDER)
+    send_request :get,
+      api_v1_invoices_success_path(invoice.external_view_key, provider: PaymentsProvider::RAZORPAY_PROVIDER)
 
     expect(response).to have_http_status(:ok)
     expect(json_response.dig("invoice", "id")).to eq(invoice.id)
@@ -43,24 +44,40 @@ RSpec.describe "Api::V1::Invoices::Payments#success", type: :request do
     expect(json_response["notice"]).to eq(I18n.t("invoices.payments.success.success"))
   end
 
-  it "returns a limited invoice payload for verified Stripe success" do
-    payment_intent = instance_double(InvoicePayment::StripePaymentIntent, process: true)
-    allow(InvoicePayment::StripePaymentIntent).to receive(:new).and_return(payment_intent)
+  it "returns a limited invoice payload for settled Stripe success without external side effects" do
+    allow(InvoicePayment::StripePaymentIntent).to receive(:new)
 
-    send_request :get, api_v1_invoices_success_path(unpaid_invoice)
+    expect {
+      2.times { send_request :get, api_v1_invoices_success_path(invoice.external_view_key) }
+    }.not_to have_enqueued_mail
 
     expect(response).to have_http_status(:ok)
-    expect(json_response.dig("invoice", "id")).to eq(unpaid_invoice.id)
-    expect(json_response.dig("invoice", "invoice_number")).to eq("INV-RAZORPAY-2")
-    expect(json_response.dig("invoice", "status")).to eq("sent")
+    expect(json_response.dig("invoice", "id")).to eq(invoice.id)
+    expect(json_response.dig("invoice", "invoice_number")).to eq("INV-RAZORPAY-1")
+    expect(json_response.dig("invoice", "status")).to eq("paid")
     expect(json_response.dig("invoice", "payment_infos")).to be_nil
     expect(json_response["notice"]).to eq(I18n.t("invoices.payments.success.success"))
+    expect(InvoicePayment::StripePaymentIntent).not_to have_received(:new)
   end
 
-  it "rejects Razorpay success while the invoice is not paid" do
-    send_request :get, api_v1_invoices_success_path(unpaid_invoice, provider: PaymentsProvider::RAZORPAY_PROVIDER)
+  it "rejects Stripe success while the invoice is not paid" do
+    send_request :get, api_v1_invoices_success_path(unpaid_invoice.external_view_key)
 
     expect(response).to have_http_status(:unprocessable_content)
     expect(json_response["error"]).to eq(I18n.t("invoices.payments.success.failure"))
+  end
+
+  it "rejects Razorpay success while the invoice is not paid" do
+    send_request :get,
+      api_v1_invoices_success_path(unpaid_invoice.external_view_key, provider: PaymentsProvider::RAZORPAY_PROVIDER)
+
+    expect(response).to have_http_status(:unprocessable_content)
+    expect(json_response["error"]).to eq(I18n.t("invoices.payments.success.failure"))
+  end
+
+  it "cannot be reached by guessing the sequential invoice id" do
+    send_request :get, api_v1_invoices_success_path(invoice.id, provider: PaymentsProvider::RAZORPAY_PROVIDER)
+
+    expect(response).to have_http_status(:not_found)
   end
 end

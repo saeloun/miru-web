@@ -21,7 +21,7 @@ class WeeklyReminderForMissedEntriesService
 
     name = user.full_name
     company_name = company.name
-    start_date, end_date = previous_week_date_range
+    start_date, end_date = previous_week_date_range(company)
 
     limit = weekly_limit(company:)
 
@@ -129,8 +129,9 @@ class WeeklyReminderForMissedEntriesService
       end
     end
 
-    def previous_week_date_range
-      previous_week = Time.zone.today.prev_week
+    def previous_week_date_range(company)
+      zone = ActiveSupport::TimeZone[company.timezone.to_s] || Time.zone
+      previous_week = zone.today.prev_week
       [previous_week.beginning_of_week, previous_week.end_of_week]
     end
 end

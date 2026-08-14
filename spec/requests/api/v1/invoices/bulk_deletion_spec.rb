@@ -33,6 +33,21 @@ RSpec.describe "Api::V1::Invoices::BulkDeletion#create", type: :request do
         headers: auth_headers(user)
       expect(response).to have_http_status(:no_content)
     end
+
+    it "deletes payment-free invoices but reports the ones that have payments" do
+      deletable = create(:invoice, company:, client:)
+      with_payment = create(:invoice, company:, client:, amount_due: 300)
+      create(:payment, invoice: with_payment, amount: 300)
+
+      send_request :post, api_v1_invoices_bulk_deletion_index_path,
+        params: { invoices_ids: [deletable.id, with_payment.id] },
+        headers: auth_headers(user)
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(json_response["undeletable_invoice_ids"]).to eq([with_payment.id])
+      expect(Invoice.exists?(deletable.id)).to be(false)
+      expect(Invoice.exists?(with_payment.id)).to be(true)
+    end
   end
 
   context "when user is an employee" do

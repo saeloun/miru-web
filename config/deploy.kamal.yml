@@ -94,7 +94,6 @@ accessories:
   postgres:
     image: postgres:17-alpine
     host: redacted-host.example
-    port: 5432
     env:
       clear:
         POSTGRES_DB: miru_web
@@ -107,6 +106,5 @@ accessories:
   redis:
     image: redis:7-alpine
     host: redacted-host.example
-    port: 6379
     directories:
       - miru_web_redis:/data

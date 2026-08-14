@@ -35,6 +35,17 @@ RSpec.describe "Api::V1::Project#create", type: :request do
         expect(response).to have_http_status(:unprocessable_content)
         expect(json_response["errors"]).to eq("Client must exist")
       end
+
+      it "does not create a project for another workspace's client" do
+        foreign_client = create(:client)
+
+        send_request :post, api_v1_projects_path(
+          project: attributes_for(:project, client_id: foreign_client.id)
+        ), headers: auth_headers(user)
+
+        expect(response).to have_http_status(:not_found)
+        expect(Project.where(client: foreign_client)).to be_empty
+      end
     end
   end
 
