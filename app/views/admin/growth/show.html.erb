@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Miru growth analytics</title>
+    <style>
+      body { margin: 0; background: #fff; color: #333; font: 15px/1.5 system-ui, sans-serif; }
+      main { max-width: 1100px; margin: 0 auto; padding: 32px 20px 64px; }
+      h1 { margin: 0; font-size: 28px; }
+      h2 { margin: 30px 0 10px; font-size: 19px; }
+      .muted { color: #666; }
+      .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+      .card { padding: 14px; border: 1px solid #ddd; }
+      .card strong { display: block; font-size: 24px; }
+      table { width: 100%; border-collapse: collapse; }
+      th, td { padding: 9px 10px; border: 1px solid #ddd; text-align: left; }
+      th { background: #f7f7f7; font-weight: 600; }
+      .number { text-align: right; }
+      @media (max-width: 650px) { main { padding: 20px 12px; } th, td { padding: 7px; } }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Miru growth analytics</h1>
+      <p class="muted">Updated <%= Time.current.to_fs(:long) %></p>
+
+      <h2>Signups · last 4 ISO weeks</h2>
+      <div class="cards">
+        <div class="card"><span>Total workspaces</span><strong><%= @metrics.dig(:signups, :totals, :companies) %></strong></div>
+        <div class="card"><span>Total users</span><strong><%= @metrics.dig(:signups, :totals, :users) %></strong></div>
+      </div>
+      <table>
+        <thead><tr><th>Week starting</th><th class="number">Workspaces</th><th class="number">Users</th></tr></thead>
+        <tbody>
+          <% @metrics.dig(:signups, :weeks).each do |week| %>
+            <tr>
+              <td><%= week[:week_start].to_date.to_fs(:long) %></td>
+              <td class="number"><%= week[:companies] %></td>
+              <td class="number"><%= week[:users] %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+
+      <h2>Activation funnel</h2>
+      <% funnel = @metrics[:activation_funnel] %>
+      <% stages = [
+        ["All workspaces", funnel[:total]],
+        ["Added a client", funnel[:with_client]],
+        ["Logged time or invoiced", funnel[:with_activity]],
+        ["Created an invoice", funnel[:with_invoice]],
+        ["Recorded a payment", funnel[:with_payment]]
+      ] %>
+      <table>
+        <thead><tr><th>Stage</th><th class="number">Workspaces</th><th class="number">From prior stage</th></tr></thead>
+        <tbody>
+          <% stages.each_with_index do |(label, count), index| %>
+            <% previous_count = index.zero? ? nil : stages[index - 1].last %>
+            <% conversion = previous_count.to_i.positive? ? number_to_percentage(count * 100.0 / previous_count, precision: 1) : "—" %>
+            <tr><td><%= label %></td><td class="number"><%= count %></td><td class="number"><%= conversion %></td></tr>
+          <% end %>
+        </tbody>
+      </table>
+
+      <h2>Weekly active · last 7 days</h2>
+      <div class="cards">
+        <div class="card"><span>Active workspaces</span><strong><%= @metrics.dig(:weekly_active, :companies) %></strong></div>
+        <div class="card"><span>Users logged in</span><strong><%= @metrics.dig(:weekly_active, :users) %></strong></div>
+      </div>
+
+      <h2>Trial cohort</h2>
+      <div class="cards">
+        <div class="card"><span>Active</span><strong><%= @metrics.dig(:trials, :active) %></strong></div>
+        <div class="card"><span>Ending within 7 days</span><strong><%= @metrics.dig(:trials, :ending_within_7_days) %></strong></div>
+        <div class="card"><span>Expired</span><strong><%= @metrics.dig(:trials, :expired) %></strong></div>
+        <div class="card"><span>Converted to paid</span><strong><%= @metrics.dig(:trials, :converted) %></strong></div>
+      </div>
+
+      <h2>Subscription checkout</h2>
+      <table>
+        <thead><tr><th>Window</th><th class="number">Started</th><th class="number">Purchased</th></tr></thead>
+        <tbody>
+          <tr><td>Last 7 days</td><td class="number"><%= @metrics.dig(:checkouts, :last_7_days, :started) %></td><td class="number"><%= @metrics.dig(:checkouts, :last_7_days, :purchased) %></td></tr>
+          <tr><td>Last 30 days</td><td class="number"><%= @metrics.dig(:checkouts, :last_30_days, :started) %></td><td class="number"><%= @metrics.dig(:checkouts, :last_30_days, :purchased) %></td></tr>
+        </tbody>
+      </table>
+
+      <h2>Top workspaces · last 30 days</h2>
+      <table>
+        <thead><tr><th>Workspace</th><th class="number">Users</th><th class="number">Activity score</th><th>Last activity</th><th>Billing exempt</th></tr></thead>
+        <tbody>
+          <% @metrics[:top_workspaces].each do |workspace| %>
+            <tr>
+              <td><%= workspace[:name] %></td>
+              <td class="number"><%= workspace[:users_count] %></td>
+              <td class="number"><%= workspace[:activity_score] %></td>
+              <td><%= workspace[:last_activity_at]&.to_date&.to_fs(:long) || "Never" %></td>
+              <td><%= workspace[:billing_exempt] ? "Yes" : "No" %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </main>
+  </body>
+</html>
