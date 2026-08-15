@@ -7,6 +7,7 @@ import BankInfo from "components/Profile/Organization/BankInfo";
 import OrgEdit from "components/Profile/Organization/Edit";
 import Holidays from "components/Profile/Organization/Holidays";
 import Billing from "components/Profile/Organization/Billing";
+import AuditLog from "components/Profile/Organization/AuditLog";
 import PaymentSettings from "components/Profile/Organization/Payment";
 import TaxConfigurationSettings from "components/Profile/Organization/TaxConfiguration";
 import AllocatedDevicesDetails from "components/Profile/Personal/Devices";
@@ -202,6 +203,15 @@ export const SETTINGS = [
     icon: <PaymentsIcon className="mr-2" size={20} weight="bold" />,
     authorisedRoles: [ADMIN, OWNER],
     Component: Billing,
+    category: "organization",
+    isTab: true,
+  },
+  {
+    label: "AUDIT LOG",
+    path: "audit-log",
+    icon: <ReminderIcon className="mr-2" size={20} weight="bold" />,
+    authorisedRoles: [ADMIN, OWNER],
+    Component: AuditLog,
     category: "organization",
     isTab: true,
   },

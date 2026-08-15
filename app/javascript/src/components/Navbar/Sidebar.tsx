@@ -22,6 +22,7 @@ import {
   Wallet,
   Palmtree,
   UsersRound,
+  ClockCounterClockwise,
 } from "phosphor-react";
 
 import { cn } from "../../lib/utils";
@@ -211,6 +212,12 @@ const Sidebar: React.FC = () => {
       icon: <UsersRound className="h-5 w-5" />,
       label: i18n.t("navbar.team"),
       path: Paths.TEAM.replace("/*", ""),
+      allowedRoles: [Roles.ADMIN, Roles.OWNER],
+    },
+    {
+      icon: <ClockCounterClockwise className="h-5 w-5" />,
+      label: i18n.t("navbar.auditLog"),
+      path: "/settings/audit-log",
       allowedRoles: [Roles.ADMIN, Roles.OWNER],
     },
     {

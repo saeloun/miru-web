@@ -3,13 +3,19 @@
 require "rails_helper"
 
 RSpec.describe AnalyticsPolicy, type: :policy do
-  let(:company) { create(:company) }
+  let(:company) { create(:company, plan_tier: "paid") }
+  let(:free_company) { create(:company, plan_tier: "free") }
+  let(:trial_company) do
+    create(:company, plan_tier: "free", trial_started_at: Time.current, trial_ends_at: 1.day.from_now)
+  end
   let(:owner) { create(:user, current_workspace_id: company.id) }
   let(:admin) { create(:user, current_workspace_id: company.id) }
   let(:manager) { create(:user, current_workspace_id: company.id) }
   let(:book_keeper) { create(:user, current_workspace_id: company.id) }
   let(:employee) { create(:user, current_workspace_id: company.id) }
   let(:client_user) { create(:user, current_workspace_id: company.id) }
+  let(:free_owner) { create(:user, current_workspace_id: free_company.id) }
+  let(:trial_owner) { create(:user, current_workspace_id: trial_company.id) }
 
   before do
     owner.add_role :owner, company
@@ -18,6 +24,8 @@ RSpec.describe AnalyticsPolicy, type: :policy do
     book_keeper.add_role :book_keeper, company
     employee.add_role :employee, company
     client_user.add_role :client, company
+    free_owner.add_role :owner, free_company
+    trial_owner.add_role :owner, trial_company
   end
 
   permissions :index? do
@@ -28,6 +36,8 @@ RSpec.describe AnalyticsPolicy, type: :policy do
       expect(described_class).to permit(book_keeper, :analytics)
       expect(described_class).to permit(employee, :analytics)
       expect(described_class).not_to permit(client_user, :analytics)
+      expect(described_class).not_to permit(free_owner, :analytics)
+      expect(described_class).to permit(trial_owner, :analytics)
     end
   end
 

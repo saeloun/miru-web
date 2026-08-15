@@ -3,7 +3,7 @@
 require "rails_helper"
 
 RSpec.describe "InternalApi::V1::AnalyticsReportsController", type: :request do
-  let(:company) { create(:company) }
+  let(:company) { create(:company, plan_tier: "paid") }
   let(:creator) { create(:user, current_workspace_id: company.id) }
   let(:viewer) { create(:user, current_workspace_id: company.id) }
   let(:client_user) { create(:user, current_workspace_id: company.id) }

@@ -30,7 +30,7 @@ RSpec.describe "Invoice Currency Conversion", type: :model do
       end
 
       it "creates an audit trail" do
-        expect { invoice.save! }.to change { Audited::Audit.count }.by(1)
+        expect { invoice.save! }.to change { Audited::Audit.where(auditable_type: "Invoice").count }.by(1)
 
         audit = invoice.audits.last
         expect(audit.audited_changes).to include("base_currency_amount", "exchange_rate", "exchange_rate_date")

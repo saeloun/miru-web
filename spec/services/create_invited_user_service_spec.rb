@@ -18,6 +18,46 @@ RSpec.describe CreateInvitedUserService do
   end
 
   describe "#process" do
+    context "when the free workspace's seats filled after the invitation was sent" do
+      before do
+        (3 - company.used_team_seats).times do
+          create(:employment, company:, user: create(:user, current_workspace_id: company.id))
+        end
+      end
+
+      it "rejects a team member invitation without accepting it" do
+        service = described_class.new(invitation.token)
+        service.process
+
+        expect(service.success).to be(false)
+        expect(service.error_message).to eq(
+          "This workspace has reached its team member limit. Ask the workspace owner to upgrade before accepting this invitation."
+        )
+        expect(invitation.reload.accepted_at).to be_nil
+        expect(User.exists?(email: invitation.recipient_email)).to be(false)
+      end
+
+      it "allows a client invitation" do
+        invitation.update!(role: :client, client: create(:client, company:))
+
+        service = described_class.new(invitation.token)
+        service.process
+
+        expect(service.success).to be(true)
+        expect(invitation.reload.accepted_at).to be_present
+      end
+
+      it "allows a team member invitation with Pro access" do
+        company.update!(plan_tier: "paid")
+
+        service = described_class.new(invitation.token)
+        service.process
+
+        expect(service.success).to be(true)
+        expect(invitation.reload.accepted_at).to be_present
+      end
+    end
+
     context "when invited user doesn't exists in application" do
       before do
         @service = CreateInvitedUserService.new(invitation.token)

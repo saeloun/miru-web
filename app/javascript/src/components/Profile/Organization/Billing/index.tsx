@@ -440,6 +440,28 @@ const Billing = () => {
         </Alert>
       )}
 
+      {featureGate === "analytics" && summary && !summary.pro_access && (
+        <Alert>
+          <AlertTitle>
+            {i18n.t("billingSettings.featureGate.analyticsTitle")}
+          </AlertTitle>
+          <AlertDescription>
+            {i18n.t("billingSettings.featureGate.analyticsDescription")}
+          </AlertDescription>
+        </Alert>
+      )}
+
+      {featureGate === "audit" && summary && !summary.pro_access && (
+        <Alert>
+          <AlertTitle>
+            {i18n.t("billingSettings.featureGate.auditTitle")}
+          </AlertTitle>
+          <AlertDescription>
+            {i18n.t("billingSettings.featureGate.auditDescription")}
+          </AlertDescription>
+        </Alert>
+      )}
+
       {featureGate === "seats" && summary && !summary.pro_access && (
         <Alert>
           <AlertTitle>

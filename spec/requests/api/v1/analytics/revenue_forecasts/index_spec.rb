@@ -3,7 +3,7 @@
 require "rails_helper"
 
 RSpec.describe "Api::V1::Analytics::RevenueForecastsController#index", type: :request do
-  let(:company) { create(:company, base_currency: "USD") }
+  let(:company) { create(:company, base_currency: "USD", plan_tier: "paid") }
   let(:user) { create(:user, current_workspace_id: company.id) }
   let(:client) { create(:client, company:) }
 
@@ -49,6 +49,33 @@ RSpec.describe "Api::V1::Analytics::RevenueForecastsController#index", type: :re
       send_request :get, api_v1_analytics_revenue_forecasts_path, headers: auth_headers(user)
 
       expect(response).to have_http_status(:ok)
+    end
+  end
+
+  context "when the workspace has an active trial" do
+    before do
+      company.update!(plan_tier: "free", trial_started_at: Time.current, trial_ends_at: 1.day.from_now)
+      user.add_role :owner, company
+    end
+
+    it "allows access" do
+      send_request :get, api_v1_analytics_revenue_forecasts_path, headers: auth_headers(user)
+
+      expect(response).to have_http_status(:ok)
+    end
+  end
+
+  context "when the workspace trial has expired" do
+    before do
+      company.update!(plan_tier: "free", trial_started_at: 15.days.ago, trial_ends_at: 1.day.ago)
+      user.add_role :owner, company
+    end
+
+    it "returns the standard structured authorization error" do
+      send_request :get, api_v1_analytics_revenue_forecasts_path, headers: auth_headers(user)
+
+      expect(response).to have_http_status(:forbidden)
+      expect(json_response).to eq("errors" => "You are not authorized to perform this action.")
     end
   end
 

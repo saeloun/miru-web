@@ -31,6 +31,17 @@ RSpec.describe Team::UpdateService do
       }.from("employee").to("admin")
     end
 
+    it "audits a role change with the actor and workspace" do
+      expect { process }.to change { Audited::Audit.where(auditable: user, action: "update").count }.by(1)
+
+      audit = Audited::Audit.where(auditable: user, action: "update").last
+      expect(audit).to have_attributes(
+        associated: company,
+        user: actor,
+        audited_changes: { "role" => ["", "admin"] }
+      )
+    end
+
     context "with an unknown role" do
       let(:new_role) { "superhacker" }
 
