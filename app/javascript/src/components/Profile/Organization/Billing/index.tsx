@@ -485,7 +485,7 @@ const Billing = () => {
       )}
 
       <Card className="border-border bg-card shadow-sm">
-        <CardHeader className="flex flex-row items-center justify-between">
+        <CardHeader className="flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:justify-between">
           <CardTitle>{i18n.t("billingSettings.membership")}</CardTitle>
           {summary && <Badge variant="secondary">{planLabel()}</Badge>}
         </CardHeader>
@@ -614,7 +614,7 @@ const Billing = () => {
                 </Alert>
               )}
 
-              <div className="flex flex-wrap gap-3">
+              <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
                 <div className="inline-flex rounded-lg border border-border bg-muted p-1 shadow-sm">
                   <Button
                     type="button"
@@ -662,6 +662,7 @@ const Billing = () => {
                   !summary.billing_exempt &&
                   summary.plan_tier !== "paid" && (
                     <Button
+                      className="w-full sm:w-auto"
                       onClick={startCheckout}
                       disabled={processingCheckout}
                     >
@@ -691,7 +692,7 @@ const Billing = () => {
 
       <Card className="overflow-hidden border-border bg-card shadow-sm">
         <CardHeader className="gap-2">
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="flex flex-col items-start gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:gap-3">
             <Badge className="gap-1.5 px-3 py-1">
               <Sparkle size={14} weight="fill" />
               {i18n.t("billingSettings.startTrial")}
@@ -742,7 +743,7 @@ const Billing = () => {
                   {i18n.t("billingSettings.seatEstimatorDescription")}
                 </p>
               </div>
-              <div className="rounded-lg border border-border bg-background px-4 py-3 text-right shadow-sm">
+              <div className="w-full rounded-lg border border-border bg-background px-4 py-3 text-left shadow-sm lg:w-auto lg:text-right">
                 <p className="text-xs uppercase tracking-wide text-muted-foreground">
                   {i18n.t("billingSettings.estimatedSeats")}
                 </p>
@@ -810,7 +811,7 @@ const Billing = () => {
 
           <div className="grid gap-4 xl:grid-cols-3">
             <div className="rounded-xl border border-primary/40 bg-card p-4 shadow-sm ring-1 ring-primary/10">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:justify-between">
                 <h3 className="text-base font-semibold text-foreground">Pro</h3>
                 <div className="flex items-center gap-2">
                   {billingInterval === "yearly" && (
@@ -969,8 +970,8 @@ const Billing = () => {
             </div>
           </div>
 
-          <div className="rounded-xl border border-border bg-card shadow-sm">
-            <Table>
+          <div className="overflow-x-auto rounded-xl border border-border bg-card shadow-sm">
+            <Table className="min-w-[720px]">
               <TableHeader>
                 <TableRow>
                   <TableHead>

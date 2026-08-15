@@ -46,8 +46,8 @@ const ForgotPassword = () => {
   }
 
   return (
-    <div className="relative min-h-screen w-full bg-background px-8 pb-4 pt-10 text-foreground md:px-0 md:pt-36">
-      <div className="mx-auto min-h-full md:w-1/2 lg:w-352">
+    <div className="relative min-h-screen w-full bg-background px-4 pb-4 pt-8 text-foreground sm:px-8 md:pt-24 lg:pt-36">
+      <div className="mx-auto min-h-full w-full max-w-md">
         <div>
           <a href={MIRU_APP_URL} rel="noreferrer noopener">
             <img
@@ -64,7 +64,7 @@ const ForgotPassword = () => {
         <h1 className="text-center font-geist text-2xl font-extrabold text-foreground md:text-3xl lg:text-4.5xl">
           {i18n.t("auth.forgotPassword")}
         </h1>
-        <div className="pt-10 lg:pt-20">
+        <div className="pt-8 sm:pt-10 lg:pt-20">
           <Formik
             initialValues={forgotPasswordFormInitialValues}
             validateOnBlur={false}
