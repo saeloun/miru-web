@@ -23,6 +23,8 @@ import {
   Palmtree,
   UsersRound,
   ClockCounterClockwise,
+  Lifebuoy,
+  ShieldCheck,
 } from "phosphor-react";
 
 import { cn } from "../../lib/utils";
@@ -219,6 +221,24 @@ const Sidebar: React.FC = () => {
       label: i18n.t("navbar.auditLog"),
       path: "/settings/audit-log",
       allowedRoles: [Roles.ADMIN, Roles.OWNER],
+    },
+    {
+      icon: <ShieldCheck className="h-5 w-5" />,
+      label: i18n.t("navbar.securitySso"),
+      path: "/settings/sso",
+      allowedRoles: [Roles.ADMIN, Roles.OWNER],
+    },
+    {
+      icon: <Lifebuoy className="h-5 w-5" />,
+      label: i18n.t("navbar.support"),
+      path: "/settings/support",
+      allowedRoles: [
+        Roles.ADMIN,
+        Roles.OWNER,
+        Roles.BOOK_KEEPER,
+        Roles.EMPLOYEE,
+        Roles.CLIENT,
+      ],
     },
     {
       icon: <Wallet className="h-5 w-5" />,

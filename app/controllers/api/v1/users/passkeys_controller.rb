@@ -3,6 +3,7 @@
 class Api::V1::Users::PasskeysController < Api::V1::ApplicationController
   include AuthResponsePayload
   include SameOriginAuthentication
+  include SsoEnforcementConcern
 
   skip_before_action :authenticate_user!, only: :authenticate
   skip_before_action :authenticate_user_using_x_auth_token, only: :authenticate
@@ -86,6 +87,9 @@ class Api::V1::Users::PasskeysController < Api::V1::ApplicationController
     end
 
     passkey.update!(sign_count: credential.sign_count, last_used_at: Time.current)
+    # Passkeys do not satisfy workspace SSO; enforced workspaces require Google or GitHub sign-in.
+    return unless sso_sign_in_allowed?(user)
+
     sign_in(user)
 
     render json: signed_in_payload(

@@ -2,6 +2,7 @@
 
 class Api::V1::Mobile::OtpsController < Api::V1::ApplicationController
   include AuthResponsePayload
+  include SsoEnforcementConcern
 
   skip_before_action :authenticate_user!
   skip_before_action :authenticate_user_using_x_auth_token
@@ -27,6 +28,8 @@ class Api::V1::Mobile::OtpsController < Api::V1::ApplicationController
     )
     user = result.user
     company = result.company
+    return unless sso_sign_in_allowed?(user)
+
     sign_in user, store: false
 
     render json: {

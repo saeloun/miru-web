@@ -4,6 +4,8 @@ class Company < ApplicationRecord
   include MetricsTracking
   include PhoneNumberValidatable
 
+  attr_accessor :sso_settings_actor
+
   audited except: [
     :updated_at,
     :trial_email_last_sent_on,
@@ -74,8 +76,12 @@ class Company < ApplicationRecord
   validates :name, length: { maximum: 30 }
   validate :business_phone_must_be_valid
   validate :validate_attachment_constraints
+  validate :allowed_sso_domains_are_valid
+  validate :sso_settings_do_not_lock_out_actor
   validates :standard_price, numericality: { greater_than_or_equal_to: 0 }
   validates :timesheet_edit_days, numericality: { only_integer: true, in: 1..365 }
+
+  before_validation :normalize_allowed_sso_domains
 
   # scopes
   scope :with_kept_employments, -> { merge(Employment.kept) }
@@ -266,6 +272,34 @@ class Company < ApplicationRecord
   end
 
   private
+
+    def normalize_allowed_sso_domains
+      self.allowed_sso_domains = Array(allowed_sso_domains).filter_map do |domain|
+        domain.to_s.strip.downcase.presence
+      end.uniq
+    end
+
+    def allowed_sso_domains_are_valid
+      invalid_domains = allowed_sso_domains.reject { |domain| domain.exclude?("@") && domain.include?(".") }
+      errors.add(:allowed_sso_domains, "must be valid domains without @") if invalid_domains.any?
+    end
+
+    def sso_settings_do_not_lock_out_actor
+      return unless sso_enforced? && sso_settings_actor.present?
+
+      if will_save_change_to_sso_enforced?(from: false, to: true) &&
+          !sso_settings_actor.has_role?(:owner, self) &&
+          !sso_settings_actor.identities.where(provider: %w[google_oauth2 github]).exists?
+        errors.add(:sso_enforced, "requires you to connect Google or GitHub first")
+      end
+
+      return if allowed_sso_domains.blank?
+
+      actor_domain = sso_settings_actor.email.to_s.downcase.split("@", 2).last
+      return if allowed_sso_domains.include?(actor_domain)
+
+      errors.add(:allowed_sso_domains, "must include your own email domain when SSO is required")
+    end
 
     def validate_attachment_constraints
       ATTACHMENT_CONTENT_TYPES.each do |name, allowed_content_types|

@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Api::V1::Users::PasswordsController < Devise::PasswordsController
+  include SsoEnforcementConcern
+
   respond_to :json
 
   def create
@@ -22,7 +24,7 @@ class Api::V1::Users::PasswordsController < Devise::PasswordsController
         }, status: 422
       end
 
-      sign_in(user) if Devise.sign_in_after_reset_password
+      sign_in(user) if Devise.sign_in_after_reset_password && sso_sign_in_error(user).nil?
       safe_user = user.as_json(only: %i[id email first_name last_name current_workspace_id])
       render json: { notice: I18n.t("password.update.success"), user: safe_user }, status: 200
     else

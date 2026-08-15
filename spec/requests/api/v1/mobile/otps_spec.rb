@@ -77,6 +77,19 @@ RSpec.describe "Api::V1::Mobile::Otps", type: :request do
     expect(json_response["error"]).to eq("Invalid OTP")
   end
 
+  it "rejects OTP sign-in for a member of an SSO-enforced workspace" do
+    company.update!(sso_enforced: true)
+
+    post "/api/v1/mobile/otp/request", params: { phone: "9876543210" }
+    post "/api/v1/mobile/otp/verify", params: {
+      pending_token: json_response["pending_token"],
+      code: "123456"
+    }
+
+    expect(response).to have_http_status(:forbidden)
+    expect(json_response["error"]).to eq(SsoEnforcement::SSO_REQUIRED_MESSAGE)
+  end
+
   it "requests OTP through MSG91 when widget credentials are configured outside test" do
     allow(Rails.env).to receive(:test?).and_return(false)
     send_stub = stub_request(:post, "https://control.msg91.com/api/v5/widget/sendOtp")

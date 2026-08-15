@@ -90,6 +90,34 @@ RSpec.describe "Api::V1::Users::Passkeys", type: :request do
     expect(json_response["error"]).to eq("Cross-origin authentication is not allowed")
   end
 
+  it "rejects passkey sign-in for a member of an SSO-enforced workspace" do
+    create(:employment, company:, user:)
+    user.add_role :employee, company
+    company.update!(sso_enforced: true)
+    passkey = user.passkeys.create!(external_id: "credential-id", public_key: "public-key", sign_count: 0)
+    credential = OpenStruct.new(sign_count: 1)
+    webauthn_credential = OpenStruct.new(id: passkey.external_id)
+    sign_out user
+    allow(Passkeys::ChallengeToken).to receive(:verify).and_return(
+      "type" => "authentication",
+      "user_id" => user.id,
+      "company_id" => company.id,
+      "challenge" => "challenge"
+    )
+    allow(::WebAuthn::RelyingParty).to receive(:new).and_return(relying_party)
+    allow(relying_party).to receive(:verify_authentication) do |_response, _challenge, **_options, &block|
+      [credential, block.call(webauthn_credential)]
+    end
+
+    post "/api/v1/users/passkeys/authenticate", params: {
+      pending_token: "pending-token",
+      credential: { id: passkey.external_id }
+    }
+
+    expect(response).to have_http_status(:forbidden)
+    expect(json_response["error"]).to eq(SsoEnforcement::SSO_REQUIRED_MESSAGE)
+  end
+
   it "requires the current password for passkey security changes" do
     post "/api/v1/users/passkeys/registration_options", params: { current_password: "wrong" }
 

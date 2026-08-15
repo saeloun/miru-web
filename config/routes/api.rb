@@ -135,6 +135,8 @@ namespace :api, defaults: { format: "json" } do
       post :trial
     end
     resources :audit_logs, only: [:index]
+    resource :sso_setting, only: [:show, :update]
+    resources :support_requests, only: [:create]
     namespace :invoices do
       resources :bulk_deletion, only: [:create]
       resources :bulk_download, only: [:index] do

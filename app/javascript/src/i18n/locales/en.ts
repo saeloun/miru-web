@@ -1359,6 +1359,8 @@ const en = {
     leavesDescription: "Manage time off requests",
     expensesDescription: "Track business expenses",
     auditLog: "Audit Log",
+    securitySso: "Security & SSO",
+    support: "Support",
   },
 
   // Passkeys
@@ -1949,6 +1951,44 @@ const en = {
     },
   },
 
+  ssoSettings: {
+    title: "Security & SSO",
+    description: "Control how members sign in to this workspace.",
+    requireSso: "Require SSO sign-in",
+    requireSsoWarning:
+      "Members will need to use Google or GitHub. Workspace owners keep password access to prevent lockout.",
+    allowedDomains: "Allowed SSO domains",
+    allowedDomainsDescription:
+      "Press Enter or type a comma after each domain. Domains are saved in lowercase without @.",
+    domainPlaceholder: "saeloun.com",
+    membersDomainNote: "Members must sign in with an email on these domains.",
+    invalidDomain: "Enter a domain with a dot and without @.",
+    removeDomain: "Remove %{domain}",
+    save: "Save SSO settings",
+    saving: "Saving...",
+    saved: "SSO settings updated.",
+    loadError: "Could not load SSO settings.",
+    saveError: "Could not save SSO settings.",
+  },
+
+  supportSettings: {
+    title: "Support",
+    priorityBadge: "Priority support",
+    standardBadge: "Standard support",
+    priorityDescription:
+      "Priority support -- we respond within 1 business day.",
+    standardDescription:
+      "Send our team a support request and we will respond as soon as we can.",
+    subject: "Subject",
+    subjectPlaceholder: "What do you need help with?",
+    message: "Message",
+    messagePlaceholder: "Share the details our team needs to help.",
+    send: "Send support request",
+    sending: "Sending...",
+    sent: "Support request sent.",
+    sendError: "Could not send your support request.",
+  },
+
   billingSettings: {
     membership: "Membership",
     currentPlan: "Current plan",
@@ -2005,6 +2045,9 @@ const en = {
       auditTitle: "Audit Log is a Pro feature",
       auditDescription:
         "Upgrade to Pro to review administrative and record changes.",
+      ssoTitle: "Security & SSO is a Pro feature",
+      ssoDescription:
+        "Upgrade to Pro to enforce SSO and restrict workspace email domains.",
       seatsTitle: "You've reached your free plan's team limit",
       seatsDescription:
         "Upgrade to Pro to add unlimited team members to this workspace.",
@@ -2605,6 +2648,8 @@ const en = {
       organization: "Organization",
       billing: "Billing",
       auditLog: "Audit Log",
+      securitySso: "Security & SSO",
+      support: "Support",
       payment: "Payment",
       holidays: "Holidays",
       leaves: "Leaves",

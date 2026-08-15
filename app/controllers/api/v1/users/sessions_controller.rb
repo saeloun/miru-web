@@ -6,6 +6,7 @@ class Api::V1::Users::SessionsController < Devise::SessionsController
   include AuthResponsePayload
   include CurrentCompanyConcern
   include SameOriginAuthentication
+  include SsoEnforcementConcern
 
   before_action :authenticate_user_using_x_auth_token, only: :me
   before_action :reject_cross_origin_authentication!, only: :create
@@ -21,6 +22,8 @@ class Api::V1::Users::SessionsController < Devise::SessionsController
       render_invalid_password_error
     elsif !user.confirmed?
       render_unconfirmed_user_error(user)
+    elsif (error = sso_sign_in_error(user))
+      render_sso_sign_in_error(error)
     elsif passkey_login_unsupported?(user)
       render_passkey_unsupported_error
     elsif passkey_login_required?(user)

@@ -8,6 +8,8 @@ import OrgEdit from "components/Profile/Organization/Edit";
 import Holidays from "components/Profile/Organization/Holidays";
 import Billing from "components/Profile/Organization/Billing";
 import AuditLog from "components/Profile/Organization/AuditLog";
+import SsoSettings from "components/Profile/Organization/Sso";
+import Support from "components/Profile/Organization/Support";
 import PaymentSettings from "components/Profile/Organization/Payment";
 import TaxConfigurationSettings from "components/Profile/Organization/TaxConfiguration";
 import AllocatedDevicesDetails from "components/Profile/Personal/Devices";
@@ -212,6 +214,24 @@ export const SETTINGS = [
     icon: <ReminderIcon className="mr-2" size={20} weight="bold" />,
     authorisedRoles: [ADMIN, OWNER],
     Component: AuditLog,
+    category: "organization",
+    isTab: true,
+  },
+  {
+    label: "SECURITY & SSO",
+    path: "sso",
+    icon: <ReminderIcon className="mr-2" size={20} weight="bold" />,
+    authorisedRoles: [ADMIN, OWNER],
+    Component: SsoSettings,
+    category: "organization",
+    isTab: true,
+  },
+  {
+    label: "SUPPORT",
+    path: "support",
+    icon: <ReminderIcon className="mr-2" size={20} weight="bold" />,
+    authorisedRoles: [ADMIN, OWNER, BOOK_KEEPER, EMPLOYEE, CLIENT],
+    Component: Support,
     category: "organization",
     isTab: true,
   },
