@@ -233,6 +233,15 @@ module Analytics
       ))
     end
 
+    def track_support_request(company, metadata = {})
+      track_event("support_request", metadata.merge(
+        company_id: company.id,
+        user_id: user&.id,
+        priority: company.pro_access?,
+        requested_at: Time.current
+      ))
+    end
+
     # Analytics Dashboard Events
     def track_analytics_viewed(section, metadata = {})
       track_event("analytics_viewed", metadata.merge(

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_07_30_000000) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_15_022000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_stat_statements"
@@ -262,6 +262,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_30_000000) do
 
   create_table "companies", force: :cascade do |t|
     t.text "address"
+    t.string "allowed_sso_domains", default: [], null: false, array: true
     t.string "bank_account_number"
     t.string "bank_name"
     t.string "bank_routing_number"
@@ -279,6 +280,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_30_000000) do
     t.string "gst_number"
     t.string "name", null: false
     t.string "plan_tier", default: "free", null: false
+    t.boolean "sso_enforced", default: false, null: false
     t.decimal "standard_price", default: "0.0", null: false
     t.string "stripe_customer_id"
     t.string "stripe_subscription_id"

@@ -40,6 +40,10 @@ const labelForSetting = path => {
 
   if (path.startsWith("audit-log")) return t("settings.labels.auditLog");
 
+  if (path.startsWith("sso")) return t("settings.labels.securitySso");
+
+  if (path.startsWith("support")) return t("settings.labels.support");
+
   return path;
 };
 

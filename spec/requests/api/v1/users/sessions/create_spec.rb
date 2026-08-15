@@ -98,6 +98,55 @@ RSpec.describe "Api::V1::Users::Sessions#create", type: :request do
     end
   end
 
+  context "when a workspace requires SSO" do
+    before do
+      company.update!(sso_enforced: true)
+      user.add_role :employee, company
+    end
+
+    it "rejects password sign-in for a member" do
+      post api_v1_users_login_path, params: {
+        user: { email: user.email, password: user.password }
+      }
+
+      expect(response).to have_http_status(:forbidden)
+      expect(json_response["error"]).to eq(SsoEnforcement::SSO_REQUIRED_MESSAGE)
+    end
+
+    it "allows password sign-in for an owner of every enforced workspace" do
+      second_company = create(:company, sso_enforced: true)
+      create(:employment, company: second_company, user:)
+      user.add_role :owner, company
+      user.add_role :owner, second_company
+
+      post api_v1_users_login_path, params: {
+        user: { email: user.email, password: user.password }
+      }
+
+      expect(response).to have_http_status(:ok)
+    end
+  end
+
+  context "when a workspace restricts SSO domains" do
+    let(:user) do
+      create(:user, email: "member@example.com", current_workspace_id: company.id, password: "welcome12")
+    end
+
+    before do
+      company.update!(allowed_sso_domains: ["saeloun.com"])
+      user.add_role :employee, company
+    end
+
+    it "rejects password sign-in outside the allowed domains" do
+      post api_v1_users_login_path, params: {
+        user: { email: user.email, password: user.password }
+      }
+
+      expect(response).to have_http_status(:forbidden)
+      expect(json_response["error"]).to eq(SsoEnforcement::DOMAIN_NOT_ALLOWED_MESSAGE)
+    end
+  end
+
   context "when logged in on miru mobile app with valid email and password" do
     it "logs the user successfully" do
       send_request :post, api_v1_users_login_path(app: "miru-mobile"), params: {

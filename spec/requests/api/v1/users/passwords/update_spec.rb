@@ -35,6 +35,27 @@ RSpec.describe "Api::V1::Users::Passwords#update", type: :request do
         expect(response).to have_http_status(:ok)
         expect(cli_session.reload.revoked_at).to be_present
       end
+
+      it "resets the password without signing in a member of an SSO-enforced workspace" do
+        company = create(:company, sso_enforced: true)
+        create(:employment, company:, user:)
+        user.add_role :employee, company
+        token = user.send(:set_reset_password_token)
+
+        send_request :put, api_v1_users_reset_password_path, params: {
+          user: {
+            reset_password_token: token, password: "newpassword",
+            password_confirmation: "newpassword"
+          }
+        }
+
+        expect(response).to have_http_status(:ok)
+        expect(user.reload.valid_password?("newpassword")).to eq(true)
+
+        get "/api/v1/users/_me"
+
+        expect(response).to have_http_status(:unauthorized)
+      end
     end
 
     context "with invalid token" do

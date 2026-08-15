@@ -462,6 +462,17 @@ const Billing = () => {
         </Alert>
       )}
 
+      {featureGate === "sso" && summary && !summary.pro_access && (
+        <Alert>
+          <AlertTitle>
+            {i18n.t("billingSettings.featureGate.ssoTitle")}
+          </AlertTitle>
+          <AlertDescription>
+            {i18n.t("billingSettings.featureGate.ssoDescription")}
+          </AlertDescription>
+        </Alert>
+      )}
+
       {featureGate === "seats" && summary && !summary.pro_access && (
         <Alert>
           <AlertTitle>

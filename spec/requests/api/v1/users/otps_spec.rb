@@ -76,4 +76,17 @@ RSpec.describe "Api::V1::Users::Otps", type: :request do
     expect(response).to have_http_status(:unprocessable_content)
     expect(json_response["error"]).to eq("OTP expired or invalid. Request a new code.")
   end
+
+  it "rejects OTP sign-in for a member of an SSO-enforced workspace" do
+    company.update!(sso_enforced: true)
+
+    post "/api/v1/users/otp/request", params: { phone: "9876543210" }
+    post "/api/v1/users/otp/verify", params: {
+      pending_token: json_response["pending_token"],
+      code: "123456"
+    }
+
+    expect(response).to have_http_status(:forbidden)
+    expect(json_response["error"]).to eq(SsoEnforcement::SSO_REQUIRED_MESSAGE)
+  end
 end
