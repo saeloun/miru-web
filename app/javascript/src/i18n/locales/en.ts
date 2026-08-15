@@ -1358,6 +1358,7 @@ const en = {
     paymentsDescription: "Track payment history",
     leavesDescription: "Manage time off requests",
     expensesDescription: "Track business expenses",
+    auditLog: "Audit Log",
   },
 
   // Passkeys
@@ -1915,6 +1916,39 @@ const en = {
     ratePerHour: "/ hour",
   },
 
+  auditLog: {
+    title: "Audit Log",
+    description: "Review administrative and record changes in this workspace.",
+    system: "System",
+    empty: "No audit events match these filters.",
+    loadError: "Could not load audit events. Try again or adjust the filters.",
+    filters: {
+      recordType: "Record type",
+      allRecordTypes: "All record types",
+      action: "Action",
+      allActions: "All actions",
+      from: "From date",
+      to: "To date",
+    },
+    actions: {
+      create: "Created",
+      update: "Updated",
+      destroy: "Deleted",
+    },
+    columns: {
+      date: "Date",
+      actor: "Actor",
+      action: "Action",
+      record: "Record",
+      changes: "Changes",
+    },
+    pagination: {
+      previous: "Previous",
+      next: "Next",
+      page: "Page %{page} of %{pages}",
+    },
+  },
+
   billingSettings: {
     membership: "Membership",
     currentPlan: "Current plan",
@@ -1965,6 +1999,12 @@ const en = {
       reportsTitle: "Reports is a Pro feature",
       reportsDescription:
         "Upgrade to Pro to unlock Reports, analytics, and exports.",
+      analyticsTitle: "Analytics is a Pro feature",
+      analyticsDescription:
+        "Upgrade to Pro to unlock forecasts, performance insights, and exports.",
+      auditTitle: "Audit Log is a Pro feature",
+      auditDescription:
+        "Upgrade to Pro to review administrative and record changes.",
       seatsTitle: "You've reached your free plan's team limit",
       seatsDescription:
         "Upgrade to Pro to add unlimited team members to this workspace.",
@@ -2014,7 +2054,7 @@ const en = {
       ssoDescription: "Give growing teams secure access without extra tools.",
       financeTitle: "Finance visibility that stays calm",
       financeDescription:
-        "Know margin, billing cadence, and team usage without extra setup.",
+        "Know revenue, billing cadence, and team usage without extra setup.",
     },
     planDescriptions: {
       pro: "Pro adds reports, SSO, more seats, and calmer admin controls without enterprise overhead.",
@@ -2564,6 +2604,7 @@ const en = {
       preferences: "Preferences",
       organization: "Organization",
       billing: "Billing",
+      auditLog: "Audit Log",
       payment: "Payment",
       holidays: "Holidays",
       leaves: "Leaves",

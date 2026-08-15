@@ -4,6 +4,26 @@ class Company < ApplicationRecord
   include MetricsTracking
   include PhoneNumberValidatable
 
+  audited except: [
+    :updated_at,
+    :trial_email_last_sent_on,
+    :trial_expired_email_sent_at,
+    :stripe_customer_id,
+    :stripe_subscription_id,
+    :subscription_status,
+    :subscription_ends_at,
+    :subscription_interval,
+    :cancel_at_period_end,
+    :bank_account_number,
+    :bank_routing_number,
+    :bank_swift_code,
+    :ein,
+    :gst_number,
+    :tax_id,
+    :us_taxpayer_id,
+    :vat_number
+  ]
+
   MAX_ATTACHMENT_SIZE_MB = 5
   TRIAL_LENGTH = 14.days
   ATTACHMENT_CONTENT_TYPES = {

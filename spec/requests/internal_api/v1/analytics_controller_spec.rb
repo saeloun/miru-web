@@ -3,7 +3,7 @@
 require "rails_helper"
 
 RSpec.describe "InternalApi::V1::AnalyticsController", type: :request do
-  let(:company) { create(:company, base_currency: "USD", working_days: "5", working_hours: "40") }
+  let(:company) { create(:company, base_currency: "USD", working_days: "5", working_hours: "40", plan_tier: "paid") }
   let(:user) { create(:user, current_workspace_id: company.id) }
   let(:client) { create(:client, company:) }
   let(:project) { create(:project, client:, billable: true) }

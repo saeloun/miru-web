@@ -95,6 +95,16 @@ RSpec.describe Invitation, type: :model do
     it { is_expected.to callback(:send_invitation_mail).after(:commit) }
   end
 
+  describe "auditing" do
+    it "records creation against the invitation's company without its token" do
+      invitation = create(:invitation, company:)
+      audit = invitation.audits.last
+
+      expect(audit).to have_attributes(action: "create", associated: company)
+      expect(audit.audited_changes).not_to have_key("token")
+    end
+  end
+
   describe "#send_invitation_mail" do
     let(:mailer_scope) { double(send_user_invitation: mail_delivery) }
     let(:mail_delivery) { instance_double(ActionMailer::MessageDelivery, deliver_later: true) }

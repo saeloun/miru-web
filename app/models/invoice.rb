@@ -7,7 +7,8 @@ class Invoice < ApplicationRecord
   include Searchable
 
   # Audit currency conversions and amount changes
-  audited only: [:amount, :base_currency_amount, :exchange_rate, :exchange_rate_date, :currency, :status, :amount_paid, :amount_due]
+  audited associated_with: :company,
+    only: [:amount, :base_currency_amount, :exchange_rate, :exchange_rate_date, :currency, :status, :amount_paid, :amount_due]
 
   # Configure pg_search - use ILIKE for more precise matching
   scope :pg_search, ->(query) {

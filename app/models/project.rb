@@ -5,6 +5,8 @@ class Project < ApplicationRecord
   include Searchable
   include MetricsTracking
 
+  audited associated_with: :company, except: [:updated_at]
+
   # Configure pg_search
   pg_search_scope :pg_search,
     against: [:name, :description],
@@ -15,6 +17,7 @@ class Project < ApplicationRecord
 
   # Associations
   belongs_to :client
+  has_one :company, through: :client
   has_many :timesheet_entries, inverse_of: :project
   has_many :project_members, dependent: :destroy
   has_many :expenses, dependent: :nullify

@@ -652,6 +652,10 @@ export const subscriptionsApi = {
   portal: () => http.post(`/subscription/portal`),
 };
 
+export const auditLogsApi = {
+  index: (params = {}) => http.get(`/audit_logs`, { params }),
+};
+
 // Teams
 export const teamsApi = {
   get: (id: any) => http.get(`/team/${id}/details`),
