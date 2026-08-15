@@ -16,6 +16,12 @@ class CreateInvitedUserService
     end
   end
 
+  class SeatLimitReached < StandardError
+    def message
+      "This workspace has reached its team member limit. Ask the workspace owner to upgrade before accepting this invitation."
+    end
+  end
+
   def initialize(token, current_user = nil)
     @token = token
     @success = true
@@ -31,6 +37,7 @@ class CreateInvitedUserService
     user_valid!
     ActiveRecord::Base.transaction do
       update_invitation!
+      ensure_seat_available!
       find_or_create_user!
       add_role_to_invited_user
       create_client_member
@@ -64,6 +71,10 @@ class CreateInvitedUserService
 
     def update_invitation!
       invitation.update!(accepted_at: Time.current)
+    end
+
+    def ensure_seat_available!
+      raise SeatLimitReached unless invitation.company.can_add_team_member_role?(invitation.role)
     end
 
     def find_or_create_user!

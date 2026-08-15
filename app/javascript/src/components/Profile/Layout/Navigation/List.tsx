@@ -38,6 +38,8 @@ const labelForSetting = path => {
 
   if (path.startsWith("billing")) return t("settings.labels.billing");
 
+  if (path.startsWith("audit-log")) return t("settings.labels.auditLog");
+
   return path;
 };
 

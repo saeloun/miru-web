@@ -2,6 +2,7 @@
 
 class Invitation < ApplicationRecord
   include Searchable
+  audited associated_with: :company, except: [:updated_at, :token]
   enum :role, [:owner, :admin, :employee, :book_keeper, :client]
 
   pg_search_scope :pg_search,

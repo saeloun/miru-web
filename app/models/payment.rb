@@ -2,7 +2,8 @@
 
 class Payment < ApplicationRecord
   # Audit all payment and currency conversion details
-  audited only: [:amount, :base_currency_amount, :exchange_rate, :exchange_rate_date, :payment_currency, :transaction_date, :status]
+  audited associated_with: :company,
+    only: [:amount, :base_currency_amount, :exchange_rate, :exchange_rate_date, :payment_currency, :transaction_date, :status]
 
   scope :for_kept_invoices, -> { joins(:invoice).merge(Invoice.kept).distinct }
 

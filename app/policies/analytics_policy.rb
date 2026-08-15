@@ -32,10 +32,15 @@ class AnalyticsPolicy < ApplicationPolicy
     end
 
     def financial_analytics_access?
-      company_analytics_access? || user_book_keeper_role? || user_manager_role?
+      pro_analytics_enabled? &&
+        (company_analytics_access? || user_book_keeper_role? || user_manager_role?)
     end
 
     def self_analytics_access?
-      financial_analytics_access? || user_employee_role?
+      pro_analytics_enabled? && (financial_analytics_access? || user_employee_role?)
+    end
+
+    def pro_analytics_enabled?
+      user.current_workspace&.pro_access?
     end
 end

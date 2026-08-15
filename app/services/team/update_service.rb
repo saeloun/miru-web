@@ -51,6 +51,18 @@ module Team
         end
 
         user.add_role(new_role, current_company)
+        audit_role_change
+      end
+
+      def audit_role_change
+        Audited::Audit.create!(
+          auditable: user,
+          associated: current_company,
+          user: actor,
+          action: "update",
+          audited_changes: { "role" => [current_role.to_s, new_role.to_s] },
+          comment: "Workspace role changed"
+        )
       end
   end
 end

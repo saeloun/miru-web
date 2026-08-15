@@ -3,7 +3,8 @@
 class TimesheetEntry < ApplicationRecord
   include Discardable
   include Searchable
-  audited only: [:duration, :work_date, :note, :bill_status, :review_status, :project_id, :user_id, :agent_id, :source, :source_metadata, :proof_url, :proof_metadata, :discarded_at]
+  audited associated_with: :company,
+    only: [:duration, :work_date, :note, :bill_status, :review_status, :project_id, :user_id, :agent_id, :source, :source_metadata, :proof_url, :proof_metadata, :discarded_at]
   attribute :agent_id, :integer
   attribute :proof_url, :string
   attribute :source, :string, default: "manual"

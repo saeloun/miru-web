@@ -11,6 +11,7 @@ import SignUp from "components/Authentication/SignUp";
 import InvoiceEmail from "components/InvoiceEmail";
 import Success from "components/payments/Success";
 import InvalidLink from "components/Team/List/InvalidLink";
+import PlanAccessGate from "components/PlanAccessGate";
 import ReportsAccessGate from "../components/Reports/AccessGate";
 
 const DashboardHome = lazy(
@@ -84,6 +85,13 @@ const withReportsGate = Component => props =>
     React.createElement(Component, props)
   );
 
+const withPlanGate = (feature, Component) => props =>
+  React.createElement(
+    PlanAccessGate,
+    { feature },
+    React.createElement(Component, props)
+  );
+
 const DashboardRoutes = [
   { path: "", Component: DashboardHome },
   { path: "*", Component: ErrorPage },
@@ -115,11 +123,20 @@ const ReportsRoutes = [
 ];
 
 const AnalyticsRoutes = [
-  { path: "", Component: AnalyticsHome },
-  { path: "revenue-forecast", Component: RevenueForecastPage },
-  { path: "team", Component: TeamAnalyticsPage },
-  { path: "clients", Component: ClientInsightsPage },
-  { path: "expenses", Component: ExpenseTrendsPage },
+  { path: "", Component: withPlanGate("analytics", AnalyticsHome) },
+  {
+    path: "revenue-forecast",
+    Component: withPlanGate("analytics", RevenueForecastPage),
+  },
+  { path: "team", Component: withPlanGate("analytics", TeamAnalyticsPage) },
+  {
+    path: "clients",
+    Component: withPlanGate("analytics", ClientInsightsPage),
+  },
+  {
+    path: "expenses",
+    Component: withPlanGate("analytics", ExpenseTrendsPage),
+  },
   { path: "*", Component: ErrorPage },
 ];
 

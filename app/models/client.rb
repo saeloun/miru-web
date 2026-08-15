@@ -6,6 +6,8 @@ class Client < ApplicationRecord
   include MetricsTracking
   include PhoneNumberValidatable
 
+  audited associated_with: :company, except: [:updated_at]
+
   EIN_FORMAT = /\A\d{2}-\d{7}\z/
   MAX_LOGO_SIZE_MB = 5
   ALLOWED_LOGO_CONTENT_TYPES = %w[image/png image/jpeg image/jpg].freeze

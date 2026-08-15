@@ -4,7 +4,8 @@ class Expense < ApplicationRecord
   include Discardable
   include Searchable
 
-  audited only: [:amount, :base_currency_amount, :currency, :date, :expense_type, :status, :paid_at, :category_name]
+  audited associated_with: :company,
+    only: [:amount, :base_currency_amount, :currency, :date, :expense_type, :status, :paid_at, :category_name]
 
   MAX_RECEIPT_SIZE_MB = 10
   MAX_RECEIPTS = 10
