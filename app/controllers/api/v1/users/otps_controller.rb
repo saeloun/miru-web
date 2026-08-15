@@ -3,6 +3,7 @@
 class Api::V1::Users::OtpsController < Api::V1::ApplicationController
   include AuthResponsePayload
   include SameOriginAuthentication
+  include SsoEnforcementConcern
 
   skip_before_action :authenticate_user!
   skip_before_action :authenticate_user_using_x_auth_token
@@ -27,6 +28,8 @@ class Api::V1::Users::OtpsController < Api::V1::ApplicationController
       pending_token: otp_params[:pending_token],
       code: otp_params[:code]
     )
+    return unless sso_sign_in_allowed?(result.user)
+
     sign_in(result.user)
 
     render json: signed_in_payload(

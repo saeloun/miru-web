@@ -656,6 +656,23 @@ export const auditLogsApi = {
   index: (params = {}) => http.get(`/audit_logs`, { params }),
 };
 
+export const ssoSettingsApi = {
+  show: () => http.get(`/sso_setting`, { skipErrorToast: true }),
+  update: (payload: any) =>
+    http.put(`/sso_setting`, payload, {
+      skipErrorToast: true,
+      skipSuccessToast: true,
+    }),
+};
+
+export const supportRequestsApi = {
+  create: (payload: any) =>
+    http.post(`/support_requests`, payload, {
+      skipErrorToast: true,
+      skipSuccessToast: true,
+    }),
+};
+
 // Teams
 export const teamsApi = {
   get: (id: any) => http.get(`/team/${id}/details`),

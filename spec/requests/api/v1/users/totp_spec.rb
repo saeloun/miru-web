@@ -84,6 +84,25 @@ RSpec.describe "Api::V1::Users::Totp", type: :request do
     expect(json_response["error"]).to eq("Cross-origin authentication is not allowed")
   end
 
+  it "rejects TOTP sign-in for a member of an SSO-enforced workspace" do
+    create(:employment, company:, user:)
+    user.add_role :employee, company
+    company.update!(sso_enforced: true)
+    user.reset_totp_setup!
+    code = ROTP::TOTP.new(user.reload.otp_secret, issuer: User::TOTP_ISSUER).now
+    sign_out user
+    allow(Passkeys::ChallengeToken).to receive(:verify).and_return(
+      "type" => "totp_authentication",
+      "user_id" => user.id,
+      "company_id" => company.id
+    )
+
+    post "/api/v1/users/totp/authenticate", params: { pending_token: "pending-token", code: }
+
+    expect(response).to have_http_status(:forbidden)
+    expect(json_response["error"]).to eq(SsoEnforcement::SSO_REQUIRED_MESSAGE)
+  end
+
   it "requires the current password for TOTP security changes" do
     post "/api/v1/users/totp/setup", params: { current_password: "wrong" }
 

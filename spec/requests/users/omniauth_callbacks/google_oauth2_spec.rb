@@ -66,6 +66,24 @@ RSpec.describe "Users::OmniauthCallbacks#google_oauth2", type: :request do
     end
   end
 
+  context "when the user's email domain is not allowed" do
+    let(:user) { create(:user, email: "john@example.com", current_workspace_id: company.id) }
+
+    before do
+      company.update!(allowed_sso_domains: ["saeloun.com"])
+      create(:employment, company:, user:)
+      user.add_role :employee, company
+      OmniAuth.config.mock_auth[:google_oauth2] = build(:google_user_data)
+
+      post user_google_oauth2_omniauth_callback_path
+    end
+
+    it "denies OAuth sign-in" do
+      expect(response).to redirect_to(root_path)
+      expect(flash[:error]).to eq(SsoEnforcement::DOMAIN_NOT_ALLOWED_MESSAGE)
+    end
+  end
+
   describe "oauth initiation host" do
     around do |example|
       original_app_base_url = ENV["APP_BASE_URL"]

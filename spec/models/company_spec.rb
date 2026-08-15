@@ -529,5 +529,59 @@ RSpec.describe Company, type: :model do
         expect(company.subscription_interval).to be_nil
       end
     end
+
+    describe "SSO settings" do
+      let(:actor) { create(:user, email: "owner@saeloun.com") }
+
+      it "normalizes and validates allowed domains" do
+        company.allowed_sso_domains = [" Saeloun.COM ", "saeloun.com"]
+
+        expect(company).to be_valid
+        expect(company.allowed_sso_domains).to eq(["saeloun.com"])
+      end
+
+      it "rejects invalid domains" do
+        company.allowed_sso_domains = ["@saeloun"]
+
+        expect(company).not_to be_valid
+        expect(company.errors[:allowed_sso_domains]).to include("must be valid domains without @")
+      end
+
+      it "rejects SSO settings that exclude the acting user's domain" do
+        company.assign_attributes(sso_enforced: true, allowed_sso_domains: ["example.com"])
+        company.sso_settings_actor = actor
+
+        expect(company).not_to be_valid
+        expect(company.errors[:allowed_sso_domains]).to include(
+          "must include your own email domain when SSO is required"
+        )
+      end
+
+      it "requires a non-owner enabling SSO to have a connected OAuth identity" do
+        actor.add_role :admin, company
+        company.assign_attributes(sso_enforced: true, allowed_sso_domains: [])
+        company.sso_settings_actor = actor
+
+        expect(company).not_to be_valid
+        expect(company.errors[:sso_enforced]).to include("requires you to connect Google or GitHub first")
+      end
+
+      it "allows a non-owner with a connected OAuth identity to enable SSO" do
+        actor.add_role :admin, company
+        create(:identity, user: actor, provider: "google_oauth2")
+        company.assign_attributes(sso_enforced: true, allowed_sso_domains: [])
+        company.sso_settings_actor = actor
+
+        expect(company).to be_valid
+      end
+
+      it "allows an owner without an OAuth identity to enable SSO" do
+        actor.add_role :owner, company
+        company.assign_attributes(sso_enforced: true, allowed_sso_domains: [])
+        company.sso_settings_actor = actor
+
+        expect(company).to be_valid
+      end
+    end
   end
 end

@@ -3,8 +3,11 @@
 class Api::V1::Users::TotpController < Api::V1::ApplicationController
   include AuthResponsePayload
   include SameOriginAuthentication
+  include SsoEnforcementConcern
 
   skip_before_action :authenticate_user!, only: :authenticate
+  skip_before_action :authenticate_user_using_x_auth_token, only: :authenticate
+  skip_before_action :set_virtual_verified_invitations_allowed, only: :authenticate
   before_action :reject_cross_origin_authentication!, only: :authenticate
   before_action :require_current_password!, only: [:setup, :regenerate_recovery_codes, :destroy]
 
@@ -83,6 +86,8 @@ class Api::V1::Users::TotpController < Api::V1::ApplicationController
       render json: { error: I18n.t("totp.invalid_verification") }, status: 422
       return
     end
+
+    return unless sso_sign_in_allowed?(user)
 
     sign_in(user)
 

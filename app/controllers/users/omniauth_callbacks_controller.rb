@@ -31,6 +31,12 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
       user = provider.new(request.env["omniauth.auth"]).user!
 
       if user&.persisted?
+        if (error = SsoEnforcement.new(user).oauth_error)
+          flash[:error] = error
+          redirect_to root_path
+          return
+        end
+
         sign_in_and_redirect user
         set_flash_message(:notice, :success, kind:) if is_navigational_format?
       else
