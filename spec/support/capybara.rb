@@ -25,6 +25,7 @@ end
 
 
 cuprite_options = {
+  browser_path: ENV["FERRUM_BROWSER_PATH"].presence,
   headless: ENV["HEADED"].blank?,
   window_size: [1400, 1000],
   url_blacklist: [

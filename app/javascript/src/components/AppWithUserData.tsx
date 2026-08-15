@@ -274,7 +274,9 @@ const AppWithUserData = (props: any) => {
   const isAdminUser = [Roles.ADMIN, Roles.OWNER].includes(companyRole);
   const isSuperAdmin = Boolean(user?.is_super_admin);
 
-  const [isDesktop, setIsDesktop] = useState<boolean>(window.innerWidth > 1023);
+  const [isDesktop, setIsDesktop] = useState<boolean>(
+    () => window.matchMedia("(min-width: 1024px)").matches
+  );
   const [selectedTab, setSelectedTab] = useState(null);
   const [currentAvatarUrl, setCurrentAvatarUrl] = useState(avatarUrl);
   const [companyState, setCompany] = useState(company);
@@ -296,6 +298,16 @@ const AppWithUserData = (props: any) => {
 
   useEffect(() => {
     handleOverlayVisibility(false);
+  }, []);
+
+  useEffect(() => {
+    const desktopMediaQuery = window.matchMedia("(min-width: 1024px)");
+    const handleDesktopChange = () => setIsDesktop(desktopMediaQuery.matches);
+
+    desktopMediaQuery.addEventListener("change", handleDesktopChange);
+
+    return () =>
+      desktopMediaQuery.removeEventListener("change", handleDesktopChange);
   }, []);
 
   useEffect(() => {
@@ -345,7 +357,6 @@ const AppWithUserData = (props: any) => {
           googleOauthSuccess={googleOauthSuccess}
           isAdminUser={isAdminUser}
           isDesktop={isDesktop}
-          setIsDesktop={setIsDesktop}
           user={user}
         />
       </AppUserContextProvider>

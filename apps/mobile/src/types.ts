@@ -18,6 +18,7 @@ export interface Workspace {
 export interface Company {
   id: number;
   name: string;
+  baseCurrency?: string;
   dateFormat?: string;
   planTier?: string;
 }
@@ -27,6 +28,30 @@ export interface MobileLoginResponse {
   user: MobileUser;
   companyRole: string | null;
   company: Company | null;
+}
+
+export interface MobileBootstrapResponse
+  extends Omit<MobileLoginResponse, "notice"> {
+  capabilities: Record<string, boolean>;
+  workspace: {
+    id: number;
+    name: string;
+    baseCurrency: string;
+    dateFormat: string;
+  } | null;
+}
+
+export interface CurrentTimer {
+  billable: boolean;
+  elapsed_ms: number;
+  notes: string;
+  project_name: string;
+  running: boolean;
+  source?: string | null;
+  started_at: string | null;
+  synced_at: string | null;
+  task_name: string;
+  timer_deck: Record<string, unknown> | null;
 }
 
 export interface TimeTrackingEntry {

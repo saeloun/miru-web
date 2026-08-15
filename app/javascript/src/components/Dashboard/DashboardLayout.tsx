@@ -20,7 +20,6 @@ import {
   CurrencyCircleDollar,
   Tree,
   SignOut,
-  Monitor,
 } from "phosphor-react";
 import { useLocation } from "react-router-dom";
 import { useUserContext } from "context/UserContext";
@@ -71,13 +70,6 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
           href: "/time-tracking",
           icon: Timer,
           roles: ["admin", "owner", "employee"],
-        },
-        {
-          label: "Desktop App",
-          href: "https://miru.so/features/desktop-app?utm_source=app.miru.so&utm_medium=sidebar&utm_campaign=desktop-app",
-          icon: Monitor,
-          external: true,
-          roles: ["admin", "owner", "book_keeper", "employee", "client"],
         },
         {
           label: t("nav.clients"),
@@ -347,6 +339,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
           <div className="flex items-center justify-between gap-3 px-3 py-3 sm:px-4 sm:py-4 md:px-6 lg:px-8">
             <div className="flex items-center gap-3 min-w-0">
               <button
+                aria-label={t("openMenu")}
                 onClick={() => setMobileOpen(true)}
                 className="rounded-lg border border-border bg-card p-2.5 shadow-sm transition-colors hover:bg-accent lg:hidden shrink-0"
               >

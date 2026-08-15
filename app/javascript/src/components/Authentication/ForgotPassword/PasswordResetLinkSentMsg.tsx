@@ -19,8 +19,8 @@ const PasswordResetLinkSentMsg = ({ email }: Props) => {
   };
 
   return (
-    <div className="relative min-h-screen w-full bg-background px-8 pb-4 pt-10 text-foreground md:px-0 md:pt-36">
-      <div className="mx-auto min-h-full md:w-5/12 lg:w-352">
+    <div className="relative min-h-screen w-full bg-background px-4 pb-4 pt-8 text-foreground sm:px-8 md:pt-24 lg:pt-36">
+      <div className="mx-auto min-h-full w-full max-w-md">
         <div>
           <a href={MIRU_APP_URL} rel="noreferrer noopener">
             <img
@@ -40,7 +40,7 @@ const PasswordResetLinkSentMsg = ({ email }: Props) => {
         <div className="pt-10">
           <p className="text-center font-geist text-sm text-foreground ">
             A password reset link has been sent to your email ID:
-            <span className="pl-1 font-geist font-bold">{email}</span>
+            <span className="break-all pl-1 font-geist font-bold">{email}</span>
           </p>
         </div>
         <p className="pt-6 text-center font-geist text-xs font-normal not-italic">
