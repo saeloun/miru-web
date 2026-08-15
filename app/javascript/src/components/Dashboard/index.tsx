@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 
 import DashboardRoutes from "./Home";
 import DashboardLayout from "./DashboardLayout";
@@ -13,14 +13,7 @@ const Dashboard = props => {
     props.isAdminUser !== undefined
       ? props.isAdminUser
       : userContext.isAdminUser;
-  const { isDesktop, setIsDesktop } = props;
-
-  useEffect(() => {
-    const handleResize = () => setIsDesktop(window.innerWidth > 1023);
-    window.addEventListener("resize", handleResize);
-
-    return () => window.removeEventListener("resize", handleResize);
-  }, [setIsDesktop]);
+  const { isDesktop } = props;
 
   const dashboardRouteProps = {
     ...props,

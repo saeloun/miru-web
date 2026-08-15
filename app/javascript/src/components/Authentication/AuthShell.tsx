@@ -100,7 +100,7 @@ const AuthShell = ({ children, description, title }: AuthShellProps) => {
 
   return (
     <div className="relative min-h-screen bg-background text-foreground">
-      <div className="absolute right-4 top-4 z-30 flex items-center gap-3">
+      <div className="relative z-30 flex items-center justify-end gap-3 p-4 sm:absolute sm:right-4 sm:top-4 sm:p-0">
         <label className="sr-only" htmlFor="auth-locale">
           {t("common.language")}
         </label>
@@ -118,11 +118,11 @@ const AuthShell = ({ children, description, title }: AuthShellProps) => {
         </select>
         <AuthThemeToggle />
       </div>
-      <div className="mx-auto flex min-h-screen w-full max-w-7xl items-center px-4 py-8 sm:px-6 lg:px-8">
+      <div className="mx-auto flex min-h-[calc(100vh-72px)] w-full max-w-7xl items-center px-4 pb-8 sm:min-h-screen sm:px-6 sm:py-8 lg:px-8">
         <div className="grid w-full gap-8 lg:grid-cols-[minmax(0,440px)_minmax(0,1fr)] lg:items-start">
           <div className="mx-auto flex w-full max-w-md flex-col">
             <a
-              className="mb-8 inline-flex items-center justify-center self-center"
+              className="mb-6 inline-flex items-center justify-center self-center sm:mb-8"
               href={MIRU_APP_URL}
               rel="noreferrer noopener"
             >
@@ -135,9 +135,9 @@ const AuthShell = ({ children, description, title }: AuthShellProps) => {
                 }}
               />
             </a>
-            <div className="rounded-3xl border border-border bg-card/95 p-6 shadow-xl backdrop-blur sm:p-8">
-              <div className="mb-8 space-y-2">
-                <h1 className="text-3xl font-semibold tracking-tight text-foreground">
+            <div className="rounded-3xl border border-border bg-card/95 p-4 shadow-xl backdrop-blur sm:p-8">
+              <div className="mb-6 space-y-2 sm:mb-8">
+                <h1 className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
                   {title}
                 </h1>
                 <p className="text-sm leading-6 text-muted-foreground">

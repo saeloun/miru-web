@@ -146,6 +146,80 @@ jobs:
             log/test.log
           if-no-files-found: warn
 
+  responsive-system-specs:
+    name: Responsive system specs
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    if: github.event_name != 'push' || !contains(github.event.head_commit.message, 'skip ci')
+    env:
+      RAILS_ENV: test
+      DB_HOST: localhost
+      DB_USER: root
+      DB_PASS: password
+      CI: true
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: miru_web_test
+          POSTGRES_USER: root
+          POSTGRES_PASSWORD: password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U root -d miru_web_test"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@95ef2b042f9d7a56d8268cba8559e2842e2ad01b # v1
+        with:
+          ruby-version: '4.0.1'
+          bundler-cache: true
+          bundler: latest
+
+      - name: Setup Node
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: 22
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5
+        with:
+          run_install: false
+
+      - name: Install web packages
+        run: PUPPETEER_SKIP_DOWNLOAD=true pnpm install --frozen-lockfile
+
+      - name: Install mobile packages
+        run: pnpm --dir apps/mobile install --frozen-lockfile
+
+      - name: Typecheck mobile app
+        run: pnpm mobile:typecheck
+
+      - name: Build Vite assets
+        env:
+          SECRET_KEY_BASE: dummy
+        run: timeout 180 bin/vite build
+
+      - name: Install Chrome for Cuprite
+        uses: browser-actions/setup-chrome@b94431e051d1c52dcbe9a7092a4f10f827795416 # v2
+        id: setup-chrome
+
+      - name: Setup test database
+        run: bundle exec rails db:test:prepare
+
+      - name: Run responsive system specs
+        env:
+          FERRUM_BROWSER_PATH: ${{ steps.setup-chrome.outputs.chrome-path }}
+        run: bundle exec rspec spec/system/responsive
+
   security-audit:
     name: Security audit
     runs-on: ubuntu-latest

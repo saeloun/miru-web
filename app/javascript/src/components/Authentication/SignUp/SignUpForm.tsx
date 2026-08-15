@@ -124,54 +124,37 @@ const SignUpForm = () => {
       title={t("auth.signUp.title")}
     >
       <div>
-        <Formik
-          initialValues={{}}
-          validateOnBlur={false}
-          validationSchema=""
-          onSubmit={() => {}}
-        >
-          {() => (
-            <div className="mb-6 space-y-3">
-              <Form
-                action="/users/auth/google_oauth2"
-                method="post"
-                ref={googleOauth}
-              >
-                <input
-                  name="authenticity_token"
-                  type="hidden"
-                  value={csrfToken}
-                />
-                <button
-                  className="flex w-full items-center justify-center rounded-xl border border-border bg-card px-4 py-3 text-sm font-medium text-foreground shadow-sm transition hover:bg-accent"
-                  type="submit"
-                  onClick={handleGoogleAuth}
-                >
-                  <img alt="" className="mr-2" src={GoogleSVG} />
-                  {t("auth.signUp.continueWithGoogle")}
-                </button>
-              </Form>
-              <Form action="/users/auth/github" method="post" ref={githubOauth}>
-                <input
-                  name="authenticity_token"
-                  type="hidden"
-                  value={csrfToken}
-                />
-                <button
-                  className="flex w-full items-center justify-center rounded-xl border border-border bg-card px-4 py-3 text-sm font-medium text-foreground shadow-sm transition hover:bg-accent"
-                  type="submit"
-                  onClick={handleGithubAuth}
-                >
-                  <GithubIcon
-                    className="mr-2 h-4 w-4 text-foreground"
-                    weight="fill"
-                  />
-                  {t("auth.signUp.continueWithGitHub")}
-                </button>
-              </Form>
-            </div>
-          )}
-        </Formik>
+        <div className="mb-6 space-y-3">
+          <form
+            action="/users/auth/google_oauth2"
+            method="post"
+            ref={googleOauth}
+          >
+            <input name="authenticity_token" type="hidden" value={csrfToken} />
+            <button
+              className="flex w-full items-center justify-center rounded-xl border border-border bg-card px-4 py-3 text-sm font-medium text-foreground shadow-sm transition hover:bg-accent"
+              type="submit"
+              onClick={handleGoogleAuth}
+            >
+              <img alt="" className="mr-2" src={GoogleSVG} />
+              {t("auth.signUp.continueWithGoogle")}
+            </button>
+          </form>
+          <form action="/users/auth/github" method="post" ref={githubOauth}>
+            <input name="authenticity_token" type="hidden" value={csrfToken} />
+            <button
+              className="flex w-full items-center justify-center rounded-xl border border-border bg-card px-4 py-3 text-sm font-medium text-foreground shadow-sm transition hover:bg-accent"
+              type="submit"
+              onClick={handleGithubAuth}
+            >
+              <GithubIcon
+                className="mr-2 h-4 w-4 text-foreground"
+                weight="fill"
+              />
+              {t("auth.signUp.continueWithGitHub")}
+            </button>
+          </form>
+        </div>
         <div className="relative mb-6 flex items-center">
           <div className="flex-grow border-t border-border" />
           <span className="mx-4 flex-shrink text-xs uppercase tracking-[0.18em] text-muted-foreground">
@@ -200,8 +183,8 @@ const SignUpForm = () => {
 
               return (
                 <Form>
-                  <div className="flex justify-between">
-                    <div className="field relative mr-2 w-1/2 md:mr-6 lg:w-168">
+                  <div className="flex flex-col sm:flex-row sm:gap-6">
+                    <div className="field relative w-full sm:w-1/2">
                       <InputField
                         hasError={errors.first_name && touched.first_name}
                         id="first_name"
@@ -217,7 +200,7 @@ const SignUpForm = () => {
                         fieldTouched={touched.first_name}
                       />
                     </div>
-                    <div className="field relative w-1/2 lg:w-168">
+                    <div className="field relative w-full sm:w-1/2">
                       <InputField
                         hasError={errors.last_name && touched.last_name}
                         id="last_name"

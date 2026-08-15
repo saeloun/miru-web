@@ -49,6 +49,8 @@ RSpec.describe "Responsive pages", type: :system, js: true do
         visit path
         expect(page).to have_current_path(path, wait: 10)
         expect(page).to have_css("#react-root", wait: 10)
+        expect(page).to have_css('button[aria-label="Open menu"]', visible: true)
+        expect(page.evaluate_script("document.documentElement.scrollWidth <= window.innerWidth + 1")).to be(true)
         expect(page).not_to have_content("Something went wrong")
       end
     end
