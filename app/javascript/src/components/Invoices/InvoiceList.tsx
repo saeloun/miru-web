@@ -431,16 +431,16 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
   );
 
   return (
-    <div className="space-y-6 p-4 w-full">
+    <div className="w-full min-w-0 space-y-6 p-4">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <p className="text-sm text-muted-foreground md:text-base">
             {i18n.t("invoices.invoices")}
           </p>
         </div>
         {canManageInvoices && (
-          <Button onClick={onCreateInvoice}>
+          <Button className="w-full sm:w-auto" onClick={onCreateInvoice}>
             <Plus className="h-4 w-4 mr-2" />
             {i18n.t("invoices.createNewInvoice")}
           </Button>
@@ -481,8 +481,8 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
 
             {/* Show active filter from cards */}
             {filterParams.status && filterParams.status.length > 0 && (
-              <div className="flex items-center gap-2">
-                <div className="px-3 py-1.5 bg-blue-50 border border-blue-200 rounded-lg text-sm font-medium text-blue-700 flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2">
+                <div className="flex items-center gap-2 rounded-lg border border-blue-200 bg-blue-50 px-3 py-1.5 text-sm font-medium text-blue-700">
                   <Funnel className="h-3 w-3" />
                   {filterParams.status[0].label}
                 </div>
@@ -505,7 +505,7 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
       {/* Invoice Table */}
       <Card>
         <CardContent className="p-0">
-          <Table>
+          <Table className="min-w-[760px]">
             <TableHeader>
               <TableRow>
                 <TableHead>{i18n.t("invoices.invoice")}</TableHead>

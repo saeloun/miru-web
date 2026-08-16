@@ -22,7 +22,7 @@ const InvoiceDetails = ({ invoice }) => {
   return (
     <>
       <CompanyInfo company={invoice.company} />
-      <div className="flex h-40 justify-between border-b border-border px-10 py-5">
+      <div className="flex h-auto flex-col gap-4 border-b border-border px-4 py-5 lg:h-40 lg:flex-row lg:justify-between lg:px-10">
         <ClientInfo client={invoice.client} />
         <InvoiceInfo invoice={invoice} strikeAmount={strikeAmount} />
       </div>

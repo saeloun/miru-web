@@ -40,7 +40,7 @@ const PaymentDetails: React.FC<PaymentDetailsProps> = ({ invoice }) => {
 
   if (loading) {
     return (
-      <div className="px-10 py-5">
+      <div className="px-4 py-5 sm:px-10">
         <div className="animate-pulse">
           <div className="mb-4 h-4 w-1/4 rounded bg-muted"></div>
           <div className="h-3 w-3/4 rounded bg-muted"></div>
@@ -54,7 +54,7 @@ const PaymentDetails: React.FC<PaymentDetailsProps> = ({ invoice }) => {
   }
 
   return (
-    <div className="border-t border-border bg-muted/30 px-10 py-5">
+    <div className="border-t border-border bg-muted/30 px-4 py-5 sm:px-10">
       <div className="mb-4">
         <h3 className="flex items-center gap-2 text-lg font-semibold text-foreground">
           <CreditCard className="h-5 w-5" />
@@ -68,7 +68,7 @@ const PaymentDetails: React.FC<PaymentDetailsProps> = ({ invoice }) => {
             key={index}
             className="rounded-lg border border-border bg-card p-4 transition-shadow hover:shadow-md"
           >
-            <div className="flex items-start justify-between">
+            <div className="flex flex-col items-start gap-3 sm:flex-row sm:justify-between">
               <div className="flex-1">
                 <div className="mb-2 flex items-center gap-3">
                   <CheckCircle className="h-4 w-4 text-green-600" />
@@ -78,7 +78,7 @@ const PaymentDetails: React.FC<PaymentDetailsProps> = ({ invoice }) => {
                   <StatusBadge status={payment.status} />
                 </div>
 
-                <div className="grid grid-cols-3 gap-4 text-sm">
+                <div className="grid grid-cols-1 gap-2 text-sm sm:grid-cols-3 sm:gap-4">
                   <div className="flex items-center gap-2">
                     <Calendar className="h-4 w-4 text-muted-foreground" />
                     <span className="text-muted-foreground">

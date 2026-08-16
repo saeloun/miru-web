@@ -33,7 +33,7 @@ import {
 import InvoiceTable from "../common/InvoiceTable";
 import InvoicePreview from "../InvoicePreview";
 import { fetchNewLineItems } from "../common/utils";
-import { lineTotalCalc } from "../../../helpers";
+import { currencyFormat, lineTotalCalc } from "../../../helpers";
 import { i18n } from "../../../i18n";
 import { InvoiceTax, TaxConfiguration } from "../../../services/invoiceApi";
 
@@ -580,7 +580,7 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-background/60">
+    <div className="min-h-screen min-w-0 bg-background/60">
       {/* Header */}
       <div className="sticky top-0 z-30 border-b bg-background/95 backdrop-blur">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4">
@@ -595,7 +595,7 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
                 {i18n.t("invoices.editorSubtitle")}
               </p>
             </div>
-            <div className="flex flex-wrap gap-2 sm:gap-3">
+            <div className="grid w-full grid-cols-2 gap-2 sm:flex sm:w-auto sm:flex-wrap sm:gap-3">
               <div
                 aria-label="Invoice editor view mode"
                 className="flex rounded-md border border-input bg-background p-0.5 min-[1800px]:hidden"
@@ -851,7 +851,7 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
             </Card>
 
             {/* Line Items */}
-            <Card>
+            <Card className="min-w-0 overflow-hidden">
               <CardHeader>
                 <CardTitle>{i18n.t("invoices.lineItems")}</CardTitle>
                 <CardDescription>
@@ -872,6 +872,40 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
                     setManualEntryArr={setManualEntryArr}
                     onDraftChange={setPendingManualEntry}
                   />
+                </div>
+                <div className="border-t border-border px-4 py-4 sm:px-6">
+                  <dl className="ml-auto w-full space-y-2 sm:max-w-sm">
+                    <div className="flex items-center justify-between gap-4">
+                      <dt className="text-sm text-muted-foreground">
+                        {i18n.t("invoices.subtotal")}
+                      </dt>
+                      <dd className="font-medium tabular-nums">
+                        {currencyFormat(formData.currency, subtotal)}
+                      </dd>
+                    </div>
+                    <div className="flex items-center justify-between gap-4">
+                      <dt className="text-sm text-muted-foreground">
+                        {i18n.t("invoices.discount")}
+                      </dt>
+                      <dd className="font-medium tabular-nums">
+                        {currencyFormat(formData.currency, formData.discount)}
+                      </dd>
+                    </div>
+                    <div className="flex items-center justify-between gap-4">
+                      <dt className="text-sm text-muted-foreground">
+                        {i18n.t("invoices.tax")}
+                      </dt>
+                      <dd className="font-medium tabular-nums">
+                        {currencyFormat(formData.currency, taxTotal)}
+                      </dd>
+                    </div>
+                    <div className="flex items-center justify-between gap-4 border-t border-border pt-2">
+                      <dt className="font-semibold">{i18n.t("total")}</dt>
+                      <dd className="font-semibold tabular-nums">
+                        {currencyFormat(formData.currency, total)}
+                      </dd>
+                    </div>
+                  </dl>
                 </div>
               </CardContent>
             </Card>

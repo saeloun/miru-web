@@ -6,9 +6,10 @@ const Table = React.forwardRef<
   React.ElementRef<"table">,
   React.ComponentPropsWithoutRef<"table">
 >(({ className, ...props }, ref) => (
-  <div className="relative w-full overflow-auto">
+  <div className="relative w-full overflow-auto" data-slot="table-container">
     <table
       ref={ref}
+      data-slot="table"
       className={cn("w-full caption-bottom text-sm", className)}
       {...props}
     />

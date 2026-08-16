@@ -45,7 +45,7 @@ const InvoiceActions = ({
   const dateFormat = invoice?.company?.dateFormat;
 
   return (
-    <div className="justify-items-right flex flex-row">
+    <div className="flex w-full flex-wrap items-center justify-start gap-2 sm:w-auto sm:justify-end">
       <EditButton editInvoiceLink={editInvoiceLink} />
       <SendButton
         onClick={() => {

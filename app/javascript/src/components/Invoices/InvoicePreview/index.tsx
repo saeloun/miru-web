@@ -345,7 +345,7 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
               </span>
             )}
           </div>
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="grid w-full grid-cols-2 gap-2 sm:flex sm:w-auto sm:flex-wrap">
             <Button
               variant="outline"
               size="sm"
