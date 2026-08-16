@@ -33,8 +33,8 @@ const InvoiceLineItems = ({
   );
 
   return (
-    <div className="px-10 py-5">
-      <table className="w-full table-fixed border-collapse">
+    <div className="w-full overflow-x-auto px-4 py-5 sm:px-10">
+      <table className="w-full min-w-[640px] table-fixed border-collapse">
         {showHeader ? getHeader() : null}
         <tbody className="w-full">
           {items.length > 0 &&

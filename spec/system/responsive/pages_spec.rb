@@ -5,6 +5,8 @@ require "rails_helper"
 RSpec.describe "Responsive pages", type: :system, js: true do
   let(:company) { create(:company) }
   let(:user) { create(:user, current_workspace_id: company.id) }
+  let(:client) { create(:client, company:) }
+  let(:invoice) { create(:invoice, company:, client:) }
   let(:owner_routes) do
     [
       "/dashboard",
@@ -14,6 +16,7 @@ RSpec.describe "Responsive pages", type: :system, js: true do
       "/team",
       "/invoices",
       "/invoices/new",
+      "/invoices/#{invoice.id}",
       "/payments",
       "/reports",
       "/reports/revenue-by-client",
