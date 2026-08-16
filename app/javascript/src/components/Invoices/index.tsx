@@ -695,7 +695,7 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
 
     case "create":
       view = (
-        <div>
+        <div className="min-w-0">
           {renderBackButton()}
           <InvoiceEditor
             clients={clients}
@@ -752,7 +752,7 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
           };
 
       view = (
-        <div>
+        <div className="min-w-0">
           {renderBackButton()}
           <InvoiceEditor
             invoice={editFormData}
@@ -838,7 +838,7 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
       };
 
       view = (
-        <div>
+        <div className="min-w-0 px-4 sm:px-6">
           {renderBackButton()}
           <InvoicePreview
             invoice={previewInvoice}

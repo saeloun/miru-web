@@ -36,7 +36,7 @@ const ReceiptPreviewDialog: React.FC<ReceiptPreviewDialogProps> = ({
           {expense?.description || i18n.t("expenses.reviewUploadedReceipts")}
         </DialogDescription>
       </DialogHeader>
-      <ScrollArea className="max-h-[75vh] pr-4">
+      <ScrollArea className="pr-4">
         <ReceiptPreview receipts={expense?.receipts || []} />
       </ScrollArea>
     </DialogContent>

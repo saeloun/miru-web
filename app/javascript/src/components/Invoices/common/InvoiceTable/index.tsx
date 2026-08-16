@@ -110,7 +110,7 @@ const InvoiceTable = ({
             <button
               type="button"
               disabled={!selectedClient}
-              className={`hoverButton w-full rounded-md border-2 border-dashed bg-card py-1 pr-10 text-center text-base font-bold tracking-widest transition-colors ${
+              className={`hoverButton w-full rounded-md border-2 border-dashed bg-card py-1 pr-10 pl-4 text-left text-base font-bold tracking-widest transition-colors sm:pl-0 sm:text-center ${
                 selectedClient
                   ? "border-primary/40 text-foreground hover:border-primary/60 hover:bg-accent"
                   : "border-border text-muted-foreground"
@@ -177,7 +177,7 @@ const InvoiceTable = ({
 
   return (
     <Fragment>
-      <div className="w-full overflow-x-auto">
+      <div className="w-full overflow-x-auto overscroll-x-contain">
         <table className="min-w-[760px] w-full table-fixed bg-card">
           <colgroup>
             <col className="w-[38%]" />
