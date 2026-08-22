@@ -35,6 +35,7 @@ import { DateRange } from "react-day-picker";
 import { useSearchParams } from "react-router-dom";
 import axios from "../../../apis/api";
 import useInfiniteLoadTrigger from "../../../hooks/useInfiniteLoadTrigger";
+import { useIsMobile } from "../../../hooks/use-mobile";
 import { Button } from "../../ui/button";
 import {
   Select,
@@ -71,6 +72,7 @@ import {
 } from "../filterUtils";
 import { i18n } from "../../../i18n";
 import ViewInAnalyticsButton from "../ViewInAnalyticsButton";
+import MobileView from "./MobileView";
 import type { Payment } from "../../../types/payment";
 
 interface PaymentReportData {
@@ -145,6 +147,7 @@ const getPaymentMethodColor = (method: string) => {
 };
 
 const PaymentReport: React.FC = () => {
+  const isMobile = useIsMobile();
   const [searchParams, setSearchParams] = useSearchParams();
   const initialPreset = searchParams.get("preset") || "this_year";
   const initialFrom = searchParams.get("from");
@@ -473,7 +476,7 @@ const PaymentReport: React.FC = () => {
                 value={dateRangePreset}
                 onValueChange={handleDateRangePreset}
               >
-                <SelectTrigger className="w-[180px]">
+                <SelectTrigger className="w-full sm:w-[180px]">
                   <SelectValue placeholder={i18n.t("selectPeriod")} />
                 </SelectTrigger>
                 <SelectContent>
@@ -507,7 +510,7 @@ const PaymentReport: React.FC = () => {
                   <Button
                     variant="outline"
                     className={cn(
-                      "w-[280px] justify-start text-left font-normal",
+                      "w-full justify-start text-left font-normal sm:w-[280px]",
                       !dateRange && "text-muted-foreground"
                     )}
                   >
@@ -536,7 +539,7 @@ const PaymentReport: React.FC = () => {
                       setDateRange(range);
                       setDateRangePreset("custom");
                     }}
-                    numberOfMonths={2}
+                    numberOfMonths={isMobile ? 1 : 2}
                     disabled={date =>
                       date > new Date() || date < new Date("1900-01-01")
                     }
@@ -551,7 +554,7 @@ const PaymentReport: React.FC = () => {
                     <PopoverTrigger asChild>
                       <Button
                         variant="outline"
-                        className="w-[180px] justify-between"
+                        className="w-full justify-between sm:w-[180px]"
                       >
                         <span className="truncate">
                           {selectedClients.length === 0
@@ -610,7 +613,7 @@ const PaymentReport: React.FC = () => {
                   setPaymentMethod(value === "all" ? "" : value)
                 }
               >
-                <SelectTrigger className="w-[180px]">
+                <SelectTrigger className="w-full sm:w-[180px]">
                   <SelectValue placeholder={i18n.t("reports.allMethods")} />
                 </SelectTrigger>
                 <SelectContent>
@@ -770,7 +773,7 @@ const PaymentReport: React.FC = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4">
                   {Object.entries(data.summary.by_payment_method).map(
                     ([method, amount]) => (
                       <div
@@ -805,7 +808,11 @@ const PaymentReport: React.FC = () => {
             <CardTitle>{i18n.t("reports.paymentDetails")}</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="rounded-md border">
+            <MobileView
+              currency={data?.currency || ""}
+              payments={table.getRowModel().rows.map(row => row.original)}
+            />
+            <div className="hidden rounded-md border md:block">
               <Table>
                 <TableHeader>
                   {table.getHeaderGroups().map(headerGroup => (
