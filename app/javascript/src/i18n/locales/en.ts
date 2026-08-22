@@ -1014,6 +1014,7 @@ const en = {
     ninetyPlusDays: "90+ Days",
     noClientsWithOutstandingBalances: "No clients with outstanding balances.",
     showingOfClients: "Showing %{displayed} of %{total} clients...",
+    loadMore: "Load more",
     errorLoadingReportData: "Error loading report data. Please try again.",
     projectClient: "PROJECT/ CLIENT",
     noteHeader: "NOTE",

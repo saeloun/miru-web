@@ -1,12 +1,14 @@
 import React from "react";
 
 import Header from "../Header";
+import MobileView from "./MobileView";
 
 const TotalHoursReport = () => (
-  <div>
+  <div className="w-full">
     <Header
-      setIsFilterVisible
+      setIsFilterVisible={() => {}}
       showExportButon
+      showFilterIcon={false}
       showNavFilters
       handleDownload={() => {}}
       isFilterVisible={() => {}}
@@ -14,7 +16,7 @@ const TotalHoursReport = () => (
       revenueFilterCounter={() => {}}
       type="Total Hours Logged"
     />
-    <div />
+    <MobileView />
   </div>
 );
 

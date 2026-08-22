@@ -27,6 +27,7 @@ import { useUserContext } from "../../../context/UserContext";
 import { i18n } from "../../../i18n";
 import { invoicesApi } from "apis/api";
 import type { Invoice } from "../../../types/invoice";
+import MobileView from "./MobileView";
 
 interface ClientGroup {
   client_id: string;
@@ -763,61 +764,75 @@ const OutstandingInvoicesWorkspaceView: React.FC = () => {
               ))}
             </div>
           ) : (
-            <div className="rounded-md border" data-testid="filtered-results">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>{i18n.t("reports.clientHeader")}</TableHead>
-                    <TableHead>{i18n.t("reports.invoiceHeader")}</TableHead>
-                    <TableHead>{i18n.t("status")}</TableHead>
-                    <TableHead>{i18n.t("reports.originalAmount")}</TableHead>
-                    <TableHead>{i18n.t("reports.baseAmount")}</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {(data?.invoices || []).length ? (
-                    (data?.invoices || []).map(invoice => (
-                      <TableRow key={invoice.id}>
-                        <TableCell>
-                          <a
-                            href="#"
-                            className="text-primary underline-offset-4 hover:underline"
-                            onClick={event => {
-                              event.preventDefault();
-                              setSelectedClientId(invoice.client_id);
-                            }}
-                          >
-                            {invoice.client_name || invoice.client?.name}
-                          </a>
-                        </TableCell>
-                        <TableCell>{invoice.invoice_number}</TableCell>
-                        <TableCell className="capitalize">
-                          {invoice.status}
-                        </TableCell>
-                        <TableCell>
-                          {currencyFormat(
-                            invoice.currency || baseCurrency,
-                            amountDue(invoice)
-                          )}
-                        </TableCell>
-                        <TableCell>
-                          {currencyFormat(
-                            baseCurrency,
-                            amountDueInBaseCurrency(invoice)
-                          )}
+            <>
+              <MobileView
+                baseCurrency={baseCurrency}
+                onSelectClient={setSelectedClientId}
+                rows={(data?.invoices || []).map(invoice => ({
+                  invoice,
+                  originalAmount: amountDue(invoice),
+                  baseAmount: amountDueInBaseCurrency(invoice),
+                }))}
+              />
+              <div
+                className="hidden rounded-md border sm:block"
+                data-testid="filtered-results"
+              >
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>{i18n.t("reports.clientHeader")}</TableHead>
+                      <TableHead>{i18n.t("reports.invoiceHeader")}</TableHead>
+                      <TableHead>{i18n.t("status")}</TableHead>
+                      <TableHead>{i18n.t("reports.originalAmount")}</TableHead>
+                      <TableHead>{i18n.t("reports.baseAmount")}</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {(data?.invoices || []).length ? (
+                      (data?.invoices || []).map(invoice => (
+                        <TableRow key={invoice.id}>
+                          <TableCell>
+                            <a
+                              href="#"
+                              className="text-primary underline-offset-4 hover:underline"
+                              onClick={event => {
+                                event.preventDefault();
+                                setSelectedClientId(invoice.client_id);
+                              }}
+                            >
+                              {invoice.client_name || invoice.client?.name}
+                            </a>
+                          </TableCell>
+                          <TableCell>{invoice.invoice_number}</TableCell>
+                          <TableCell className="capitalize">
+                            {invoice.status}
+                          </TableCell>
+                          <TableCell>
+                            {currencyFormat(
+                              invoice.currency || baseCurrency,
+                              amountDue(invoice)
+                            )}
+                          </TableCell>
+                          <TableCell>
+                            {currencyFormat(
+                              baseCurrency,
+                              amountDueInBaseCurrency(invoice)
+                            )}
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    ) : (
+                      <TableRow>
+                        <TableCell colSpan={5} className="h-24 text-center">
+                          {i18n.t("reports.noOutstandingOrOverdueInvoices")}
                         </TableCell>
                       </TableRow>
-                    ))
-                  ) : (
-                    <TableRow>
-                      <TableCell colSpan={5} className="h-24 text-center">
-                        {i18n.t("reports.noOutstandingOrOverdueInvoices")}
-                      </TableCell>
-                    </TableRow>
-                  )}
-                </TableBody>
-              </Table>
-            </div>
+                    )}
+                  </TableBody>
+                </Table>
+              </div>
+            </>
           )}
         </CardContent>
       </Card>
