@@ -54,6 +54,7 @@ import {
   ChartTooltipContent,
 } from "../../ui/chart";
 import ShareReportButton from "../ShareReportButton";
+import MobileView from "./MobileView";
 import {
   buildSearchParams,
   formatReportApiDate,
@@ -395,14 +396,14 @@ const AccountsAgingReport: React.FC = () => {
           </p>
         </div>
 
-        <div className="flex items-center space-x-3">
+        <div className="flex flex-wrap items-center gap-3">
           {/* As of Date Picker */}
           <Popover>
             <PopoverTrigger asChild>
               <Button
                 variant="outline"
                 className={cn(
-                  "w-[200px] justify-start text-left font-normal",
+                  "w-full justify-start text-left font-normal sm:w-[200px]",
                   !asOfDate && "text-muted-foreground"
                 )}
               >
@@ -425,7 +426,7 @@ const AccountsAgingReport: React.FC = () => {
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline">
+              <Button className="w-full sm:w-auto" variant="outline">
                 {getMultiFilterLabel(
                   i18n.t("reports.clients"),
                   selectedClients.length,
@@ -466,7 +467,7 @@ const AccountsAgingReport: React.FC = () => {
           {/* Export Dropdown */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline">
+              <Button className="w-full sm:w-auto" variant="outline">
                 <Download className="mr-2 h-4 w-4" />
                 {i18n.t("reports.export")}
                 <ChevronDown className="ml-2 h-4 w-4" />
@@ -622,9 +623,13 @@ const AccountsAgingReport: React.FC = () => {
           <CardTitle>{i18n.t("reports.invoiceAgingDetails")}</CardTitle>
         </CardHeader>
         <CardContent>
+          <MobileView
+            clients={visibleClients}
+            currency={data?.report?.base_currency || ""}
+          />
           <div
             ref={tableRef}
-            className="rounded-md border max-h-[600px] overflow-y-auto"
+            className="hidden rounded-md border max-h-[600px] overflow-y-auto sm:block"
           >
             <Table>
               <TableHeader>
@@ -676,13 +681,24 @@ const AccountsAgingReport: React.FC = () => {
 
           {/* Loading indicator for infinite scroll */}
           {displayedItems < allClients.length && (
-            <div className="flex justify-center py-4">
+            <div className="flex flex-col items-center gap-2 py-4">
               <div className="text-sm text-muted-foreground">
                 {i18n.t("reports.showingOfClients", {
                   displayed: displayedItems,
                   total: allClients.length,
                 })}
               </div>
+              <Button
+                className="sm:hidden"
+                variant="outline"
+                onClick={() =>
+                  setDisplayedItems(prev =>
+                    Math.min(prev + 10, allClients.length)
+                  )
+                }
+              >
+                {i18n.t("reports.loadMore")}
+              </Button>
             </div>
           )}
         </CardContent>
