@@ -2,7 +2,7 @@
 
 require "csv"
 require "bigdecimal"
-require "digest/sha1"
+require "digest/sha2"
 
 module Imports
   class HarvestTimeEntriesImporter
@@ -441,7 +441,7 @@ module Imports
       end
 
       def duplicate_key(user_id, project_id, work_date, duration, note)
-        Digest::SHA1.hexdigest([user_id, project_id, work_date.to_date, duration.to_f, note].join("|"))
+        Digest::SHA256.hexdigest([user_id, project_id, work_date.to_date, duration.to_f, note].join("|"))
       end
 
       def project_label(plan)
