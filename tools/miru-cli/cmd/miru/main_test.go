@@ -1,8 +1,13 @@
 package main
 
 import (
+	"fmt"
+	"net/http"
+	"net/http/httptest"
 	"os"
 	"path/filepath"
+	"reflect"
+	"sync/atomic"
 	"testing"
 )
 
@@ -164,4 +169,227 @@ func TestParseErrorFallsBackToStatusAndBody(t *testing.T) {
 	if err == nil || err.Error() != "request failed with status 500: oops" {
 		t.Fatalf("expected fallback error, got %v", err)
 	}
+}
+
+func TestParseImportOptionsCollectsUserMappings(t *testing.T) {
+	path := writeImportFixture(t)
+	options, err := parseImportOptions([]string{
+		"--file", path,
+		"--format", "harvest",
+		"--dry-run",
+		"--map", "Paul Connors=paul@example.com",
+		"--map", "Jane Doe=jane@example.com",
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !options.dryRun {
+		t.Fatal("expected dry run")
+	}
+	expected := []string{"Paul Connors=paul@example.com", "Jane Doe=jane@example.com"}
+	if !reflect.DeepEqual(options.userMap, expected) {
+		t.Fatalf("expected user mappings %v, got %v", expected, options.userMap)
+	}
+}
+
+func TestParseImportOptionsRejectsOtherFormats(t *testing.T) {
+	_, err := parseImportOptions([]string{"--file", writeImportFixture(t), "--format", "toggl"})
+	if err == nil || err.Error() != "format must be harvest" {
+		t.Fatalf("expected format error, got %v", err)
+	}
+}
+
+func TestImportDryRunSendsMultipartFields(t *testing.T) {
+	var requests atomic.Int32
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		requests.Add(1)
+		w.Header().Set("Content-Type", "application/json")
+		if r.Method == http.MethodGet && r.URL.Path == "/api/v1/imports/1" {
+			fmt.Fprint(w, `{"id":1,"status":"completed","dry_run":true,"summary":{"rows":1,"entries_to_create":1,"duplicates_skipped":0,"zero_hour_skipped":0,"clients":{"existing":[],"to_create":["Acme"]},"projects":{"existing":[],"to_create":["Acme / Website"]},"users":{"matched":{"Paul Connors":"paul@example.com"},"unmatched":[]},"date_range":{"from":"2026-01-01","to":"2026-01-01"},"warnings":[]},"row_errors":[]}`)
+			return
+		}
+		if r.Method != http.MethodPost || r.URL.Path != "/api/v1/imports" {
+			t.Errorf("unexpected request: %s %s", r.Method, r.URL.Path)
+			http.Error(w, "unexpected request", http.StatusNotFound)
+			return
+		}
+		if r.Header.Get("Authorization") != "Bearer test-token" {
+			t.Errorf("unexpected authorization header: %s", r.Header.Get("Authorization"))
+		}
+		if err := r.ParseMultipartForm(1 << 20); err != nil {
+			t.Errorf("parse multipart form: %v", err)
+			http.Error(w, "invalid multipart form", http.StatusBadRequest)
+			return
+		}
+		if r.FormValue("source") != "harvest" || r.FormValue("kind") != "time_entries" || r.FormValue("dry_run") != "true" {
+			t.Errorf("unexpected multipart fields: %#v", r.MultipartForm.Value)
+		}
+		expectedMappings := []string{"Paul Connors=paul@example.com", "Jane Doe=jane@example.com"}
+		if !reflect.DeepEqual(r.MultipartForm.Value["user_map[]"], expectedMappings) {
+			t.Errorf("unexpected mappings: %#v", r.MultipartForm.Value["user_map[]"])
+		}
+		if r.FormValue("assign_unmatched_to") != "fallback@example.com" {
+			t.Errorf("unexpected fallback: %s", r.FormValue("assign_unmatched_to"))
+		}
+		file, _, err := r.FormFile("file")
+		if err != nil {
+			t.Errorf("read uploaded file: %v", err)
+			http.Error(w, "missing file", http.StatusBadRequest)
+			return
+		}
+		file.Close()
+		w.WriteHeader(http.StatusAccepted)
+		fmt.Fprint(w, `{"id":1,"status":"pending","dry_run":true,"summary":{},"row_errors":[]}`)
+	}))
+	defer server.Close()
+
+	originalInterval := importPollInterval
+	importPollInterval = 0
+	defer func() { importPollInterval = originalInterval }()
+	cli := &client{baseURL: server.URL, token: "test-token"}
+	err := cli.imports([]string{
+		"--file", writeImportFixture(t),
+		"--format", "harvest",
+		"--dry-run",
+		"--map", "Paul Connors=paul@example.com",
+		"--map", "Jane Doe=jane@example.com",
+		"--assign-unmatched-to", "fallback@example.com",
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if requests.Load() != 2 {
+		t.Fatalf("expected POST and one poll, got %d requests", requests.Load())
+	}
+}
+
+func TestImportRealRunPollsUntilCompleted(t *testing.T) {
+	var requests atomic.Int32
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		requests.Add(1)
+		w.Header().Set("Content-Type", "application/json")
+		switch {
+		case r.Method == http.MethodPost && r.URL.Path == "/api/v1/imports":
+			w.WriteHeader(http.StatusAccepted)
+			fmt.Fprint(w, `{"id":42,"status":"pending","summary":{},"row_errors":[]}`)
+		case r.Method == http.MethodGet && r.URL.Path == "/api/v1/imports/42":
+			fmt.Fprint(w, `{"id":42,"status":"completed","total_rows":1,"imported_rows":1,"failed_rows":0,"summary":{"rows":1,"entries_created":1,"entries_failed":0,"duplicates_skipped":0,"zero_hour_skipped":0,"clients":{"existing":["Acme"],"to_create":[]},"projects":{"existing":["Acme / Website"],"to_create":[]},"users":{"matched":{"Paul Connors":"paul@example.com"},"unmatched":[]},"date_range":{"from":"2026-01-01","to":"2026-01-01"},"warnings":[]},"row_errors":[]}`)
+		default:
+			t.Errorf("unexpected request: %s %s", r.Method, r.URL.Path)
+			http.Error(w, "unexpected request", http.StatusNotFound)
+		}
+	}))
+	defer server.Close()
+
+	originalInterval := importPollInterval
+	importPollInterval = 0
+	defer func() { importPollInterval = originalInterval }()
+	cli := &client{baseURL: server.URL, token: "test-token"}
+	if err := cli.imports([]string{"--file", writeImportFixture(t), "--format", "harvest"}); err != nil {
+		t.Fatal(err)
+	}
+	if requests.Load() != 2 {
+		t.Fatalf("expected POST and one poll, got %d requests", requests.Load())
+	}
+}
+
+func TestImportRealRunReturnsServerFailure(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		if r.Method == http.MethodPost {
+			w.WriteHeader(http.StatusAccepted)
+			fmt.Fprint(w, `{"id":42,"status":"pending","summary":{},"row_errors":[]}`)
+			return
+		}
+		fmt.Fprint(w, `{"id":42,"status":"failed","error_message":"Import failed. Support has been notified.","summary":{},"row_errors":[]}`)
+	}))
+	defer server.Close()
+
+	originalInterval := importPollInterval
+	importPollInterval = 0
+	defer func() { importPollInterval = originalInterval }()
+	err := (&client{baseURL: server.URL, token: "test-token"}).imports([]string{
+		"--file", writeImportFixture(t), "--format", "harvest",
+	})
+	if err == nil || err.Error() != "Import failed. Support has been notified." {
+		t.Fatalf("expected server failure message, got %v", err)
+	}
+}
+
+func TestImportRealRunReturnsFailedRows(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		if r.Method == http.MethodPost {
+			w.WriteHeader(http.StatusAccepted)
+			fmt.Fprint(w, `{"id":42,"status":"pending","summary":{},"row_errors":[]}`)
+			return
+		}
+		fmt.Fprint(w, `{"id":42,"status":"completed","failed_rows":2,"summary":{"entries_created":3,"entries_failed":2},"row_errors":[]}`)
+	}))
+	defer server.Close()
+
+	originalInterval := importPollInterval
+	importPollInterval = 0
+	defer func() { importPollInterval = originalInterval }()
+	err := (&client{baseURL: server.URL, token: "test-token"}).imports([]string{
+		"--file", writeImportFixture(t), "--format", "harvest",
+	})
+	if err == nil || err.Error() != "import completed with 2 failed rows" {
+		t.Fatalf("expected failed row error, got %v", err)
+	}
+}
+
+func TestImportDryRunReturnsUnmatchedUsers(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		if r.Method == http.MethodPost {
+			w.WriteHeader(http.StatusAccepted)
+			fmt.Fprint(w, `{"id":1,"status":"pending","dry_run":true,"summary":{},"row_errors":[]}`)
+			return
+		}
+		fmt.Fprint(w, `{"id":1,"status":"completed","dry_run":true,"summary":{"users":{"matched":{},"unmatched":["Paul Connors"]}},"row_errors":[]}`)
+	}))
+	defer server.Close()
+
+	originalInterval := importPollInterval
+	importPollInterval = 0
+	defer func() { importPollInterval = originalInterval }()
+	err := (&client{baseURL: server.URL, token: "test-token"}).imports([]string{
+		"--file", writeImportFixture(t), "--format", "harvest", "--dry-run",
+	})
+	if err == nil || err.Error() != "dry run has unmatched users or row errors" {
+		t.Fatalf("expected unmatched user error, got %v", err)
+	}
+}
+
+func TestImportStatus(t *testing.T) {
+	var requests atomic.Int32
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		requests.Add(1)
+		if r.Method != http.MethodGet || r.URL.Path != "/api/v1/imports/42" {
+			t.Errorf("unexpected request: %s %s", r.Method, r.URL.Path)
+			http.Error(w, "unexpected request", http.StatusNotFound)
+			return
+		}
+		w.Header().Set("Content-Type", "application/json")
+		fmt.Fprint(w, `{"id":42,"status":"completed","summary":{"entries_created":3,"entries_failed":0},"row_errors":[]}`)
+	}))
+	defer server.Close()
+
+	err := (&client{baseURL: server.URL, token: "test-token"}).imports([]string{"status", "--id", "42"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if requests.Load() != 1 {
+		t.Fatalf("expected one status request, got %d", requests.Load())
+	}
+}
+
+func writeImportFixture(t *testing.T) string {
+	t.Helper()
+	path := filepath.Join(t.TempDir(), "harvest.csv")
+	if err := os.WriteFile(path, []byte("Date,Client,Project,Hours,First Name,Last Name\n"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	return path
 }

@@ -328,6 +328,47 @@ Example:
 miru time delete --id 631
 ```
 
+## Import Commands
+
+Export a Harvest Detailed Time CSV from **Reports > Detailed Time**, set the range to **All Time**, then choose **Export > CSV**.
+
+Run a dry run first. The dry run runs in the background and the CLI waits for it to finish:
+
+```bash
+miru import --file harvest-detailed-time.csv --format harvest --dry-run
+```
+
+Harvest exports names but not email addresses. When a name does not exactly match a Miru team member, map it to an existing workspace email. `--map` can be repeated:
+
+```bash
+miru import \
+  --file harvest-detailed-time.csv \
+  --format harvest \
+  --dry-run \
+  --map "Paul Connors=paul@example.com" \
+  --map "Jane Doe=jane@example.com"
+```
+
+To assign every otherwise unmatched Harvest user to one team member:
+
+```bash
+miru import --file harvest-detailed-time.csv --format harvest --dry-run --assign-unmatched-to owner@example.com
+```
+
+After the dry run is clean, omit `--dry-run` to start the import. The CLI polls until it completes:
+
+```bash
+miru import --file harvest-detailed-time.csv --format harvest --map "Paul Connors=paul@example.com"
+```
+
+Time entries are the default and only supported import type. `--type time` may be supplied explicitly.
+
+Check an existing import:
+
+```bash
+miru import status --id 42
+```
+
 ## Invoice Commands
 
 ### `miru invoice list`
@@ -538,6 +579,8 @@ miru invoice send --id 1 --recipients client@example.com
 - `miru invoice send` -> `POST /api/v1/invoices/:id/send_invoice`
 - `miru payment list` -> `GET /api/v1/payments`
 - `miru payment show` -> `GET /api/v1/payments/:id`
+- `miru import` -> `POST /api/v1/imports`
+- `miru import status` -> `GET /api/v1/imports/:id`
 - `miru time list` -> `GET /api/v1/timesheet_entry`
 - `miru time create` -> `POST /api/v1/cli/timesheet_entries`
 - `miru time update` -> `PATCH /api/v1/cli/timesheet_entries/:id`
@@ -597,6 +640,7 @@ Current supported CLI surface:
 - expenses: `expense list`, `expense create`
 - invoices: `invoice list`, `invoice create`, `invoice show`, `invoice send`
 - payments: `payment list`, `payment show`
+- imports: `import`, `import status`
 
 MCP parity:
 

@@ -1,0 +1,14 @@
+﻿Date,Client,Project,Project Code,Task,Notes,Hours,Billable?,Invoiced?,Approved?,First Name,Last Name,Employee Id,Roles,Teams,Employee?,Billable Rate,Billable Amount,Cost Rate,Cost Amount,Currency,External Reference URL
+2026-01-02,Acme LLC,Website,WEB,Programming,"Built landing
+and tests",1.25,Yes,No,Yes,Paul,Connors,1,Developer,Delivery,Yes,150,187.50,80,100,United States Dollar - USD,https://example.test/1
+2026-01-03,Acme LLC,Website,WEB,Design,Wireframes,25.38,Yes,Yes,Yes,Paul,Connors,1,Developer,Delivery,Yes,150,3807,80,2030.40,United States Dollar - USD,https://example.test/2
+2026-01-04,Acme LLC,Internal,INT,Administration,Payroll,0.5,No,No,Yes,Jane,Doe,2,Operations,Admin,Yes,90,0,40,20,United States Dollar - USD,
+2026-01-05,Very Long Client Name That Exceeds Thirty Characters,Advisory,ADV,Research,Memo,1.333,Yes,No,Yes,Jane,Doe,2,Consultant,Delivery,Yes,120,159.96,60,79.98,United States Dollar - USD,
+2026-01-05,Acme LLC,Website,WEB,Programming,Skipped timer,0,Yes,No,Yes,Paul,Connors,1,Developer,Delivery,Yes,150,0,80,0,United States Dollar - USD,
+01/06/2026,Acme LLC,Website,WEB,Review,Final review,0.5,Yes,No,Yes,Paul,Connors,1,Developer,Delivery,Yes,150,75,80,40,United States Dollar - USD,
+01-07-2026,Acme LLC,Website,WEB,Review,Client feedback,0.75,Yes,No,Yes,Paul,Connors,1,Developer,Delivery,Yes,150,112.50,80,60,United States Dollar - USD,
+2026-01-08,Acme LLC,Website,WEB,Meeting,Daily sync,0.5,Yes,No,Yes,Paul,Connors,1,Developer,Delivery,Yes,150,75,80,40,United States Dollar - USD,
+2026-01-08,Acme LLC,Website,WEB,Meeting,Daily sync,0.5,Yes,No,Yes,Paul,Connors,1,Developer,Delivery,Yes,150,75,80,40,United States Dollar - USD,
+2026-01-09,Acme LLC,Internal,INT,Administration,Planning,0.25,No,Yes,Yes,Jane,Doe,2,Operations,Admin,Yes,90,0,40,10,United States Dollar - USD,
+2026-01-10,Very Long Client Name That Exceeds Thirty Characters,Advisory,ADV,Research,Follow-up,2,No,No,Yes,Jane,Doe,2,Consultant,Delivery,Yes,120,0,60,120,United States Dollar - USD,
+2026-01-11,Acme LLC,Website,WEB,Programming,Polish,1.1,Yes,No,Yes,Paul,Connors,1,Developer,Delivery,Yes,150,165,80,88,United States Dollar - USD,

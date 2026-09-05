@@ -229,6 +229,7 @@ class TimesheetEntry < ApplicationRecord
     end
 
     def inferred_source
+      return "import" if source.to_s.downcase == "import"
       return "mcp" if source_metadata["mcp_server"].present?
       return "automation" if source_metadata["tool"].present?
 

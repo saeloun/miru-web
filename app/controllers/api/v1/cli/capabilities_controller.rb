@@ -63,6 +63,14 @@ class Api::V1::Cli::CapabilitiesController < Api::V1::Cli::BaseController
         {
           name: "expense create",
           description: "Create an expense in the current workspace"
+        },
+        {
+          name: "import",
+          description: "Import time entries from a Harvest Detailed Time CSV export; supports --dry-run and name-to-email mapping"
+        },
+        {
+          name: "import status",
+          description: "Show the status and summary of a data import"
         }
       ]
     }, status: 200
