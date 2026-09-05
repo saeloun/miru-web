@@ -164,6 +164,13 @@ RSpec.describe TimesheetEntry, type: :model do
   end
 
   describe "source normalization" do
+    it "preserves the explicit import source when tool metadata is present" do
+      timesheet_entry.assign_attributes(source: "import", source_metadata: { tool: "harvest" })
+      timesheet_entry.valid?
+
+      expect(timesheet_entry.source).to eq("import")
+    end
+
     it "normalizes blank and unknown sources to manual" do
       timesheet_entry.assign_attributes(source: "unknown", source_metadata: { tool: "", skill: nil, extra: "ignore-me" })
       timesheet_entry.valid?

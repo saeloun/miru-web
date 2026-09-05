@@ -73,11 +73,31 @@ miru invoice show --id <id>
 miru invoice send --id <id> --recipients <email1,email2> [--subject <text>] [--message <text>]
 miru payment list [--query <term>]
 miru payment show --id <id>
+miru import --file <path> --format harvest [--type time] [--dry-run] [--map "First Last=email"]... [--assign-unmatched-to <email>]
+miru import status --id <id>
 miru time list --from <YYYY-MM-DD> --to <YYYY-MM-DD>
 miru time create --project-id <id> --duration <minutes> --date <YYYY-MM-DD> [--note <text>] [--bill-status <status>]
 miru time update --id <id> --project-id <id> --duration <minutes> --date <YYYY-MM-DD> [--note <text>] [--bill-status <status>]
 miru time delete --id <id>
 ```
+
+## Harvest Import
+
+In Harvest, open **Reports > Detailed Time**, set the range to **All Time**, and choose **Export > CSV**. Preview the import before writing anything:
+
+```bash
+miru import --file harvest-detailed-time.csv --format harvest --dry-run
+```
+
+Map Harvest names that do not exactly match Miru team members by repeating `--map`:
+
+```bash
+miru import --file harvest-detailed-time.csv --format harvest --dry-run \
+  --map "Paul Connors=paul@example.com" \
+  --map "Jane Doe=jane@example.com"
+```
+
+The dry run runs in the background and the CLI waits for it to finish. When the preview is clean, run the same command without `--dry-run`. Use `miru import status --id <id>` to inspect an existing import.
 
 ## Session Behavior
 
@@ -95,7 +115,7 @@ miru config token --format shell
 
 ## Current Scope
 
-Version `0.2.0` supports:
+Version `0.3.0` supports:
 
 - client listing
 - expense list/create
@@ -103,3 +123,4 @@ Version `0.2.0` supports:
 - time list/create/update/delete
 - invoice list/create/show/send
 - payment list/show
+- Harvest time import/status

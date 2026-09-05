@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_15_022000) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_05_000000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_stat_statements"
@@ -332,6 +332,29 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_15_022000) do
     t.string "name", null: false
     t.datetime "updated_at", null: false
     t.index ["leave_id"], name: "index_custom_leaves_on_leave_id"
+  end
+
+  create_table "data_imports", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.datetime "created_at", null: false
+    t.boolean "dry_run", default: false, null: false
+    t.text "error_message"
+    t.integer "failed_rows", default: 0, null: false
+    t.datetime "finished_at"
+    t.integer "imported_rows", default: 0, null: false
+    t.string "kind", default: "time_entries", null: false
+    t.jsonb "options", default: {}, null: false
+    t.jsonb "row_errors", default: [], null: false
+    t.integer "skipped_rows", default: 0, null: false
+    t.string "source", null: false
+    t.datetime "started_at"
+    t.string "status", default: "pending", null: false
+    t.jsonb "summary", default: {}, null: false
+    t.integer "total_rows", default: 0, null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["company_id", "created_at"], name: "index_data_imports_on_company_id_and_created_at"
+    t.index ["user_id"], name: "index_data_imports_on_user_id"
   end
 
   create_table "data_migrations", primary_key: "version", id: :string, force: :cascade do |t|
@@ -1206,6 +1229,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_15_022000) do
   add_foreign_key "custom_leave_users", "custom_leaves", column: "custom_leave_id"
   add_foreign_key "custom_leave_users", "users"
   add_foreign_key "custom_leaves", "leaves", column: "leave_id"
+  add_foreign_key "data_imports", "companies"
+  add_foreign_key "data_imports", "users"
   add_foreign_key "desktop_current_timers", "companies"
   add_foreign_key "desktop_current_timers", "users"
   add_foreign_key "devices", "companies"

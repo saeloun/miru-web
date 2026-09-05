@@ -37,7 +37,6 @@ namespace :api, defaults: { format: "json" } do
     end
 
     resource :chatbase_token, only: [:show]
-
     resources :clients, only: [:index, :update, :destroy, :show, :create] do
       collection do
         get "invoices", to: "clients/invoices#index"
@@ -59,6 +58,7 @@ namespace :api, defaults: { format: "json" } do
         resource :bulk_action, only: [:update, :destroy], controller: "timesheet_entry/bulk_action"
       end
     end
+    resources :imports, only: [:create, :show]
     namespace :cli do
       resource :capabilities, only: [:show], controller: "capabilities"
       resource :session, only: [:destroy], controller: "sessions"

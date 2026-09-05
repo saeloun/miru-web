@@ -58,6 +58,15 @@ en:
     stripe:
       connect_not_enabled: Stripe Connect is not enabled for this Stripe account. Enable Connect in Stripe Dashboard and try again.
       generic: "%{message}"
+  imports:
+    errors:
+      csv_required: File must be a CSV
+      file_required: File is required
+      file_too_large: File must be 20 MB or smaller
+      invalid_csv: "Invalid CSV: %{message}"
+      invalid_user_map: User mappings must use First Last=email
+      missing_headers: "Missing required headers: %{headers}"
+      unexpected: Import failed. Support has been notified.
   avatar:
     destroy:
       success: Avatar deleted successfully
