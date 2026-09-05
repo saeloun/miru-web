@@ -144,7 +144,7 @@ gem "ruby_audit", require: false
 gem "sentry-rails"
 gem "sentry-ruby", "~> 5.17"
 
-gem "rubyzip"
+gem "rubyzip", "~> 3.4"
 
 gem "httparty"
 gem "observer"
