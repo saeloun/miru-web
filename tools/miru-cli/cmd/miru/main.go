@@ -7,11 +7,13 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"mime/multipart"
 	"net"
 	"net/http"
 	"net/url"
 	"os"
 	"path/filepath"
+	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -19,7 +21,7 @@ import (
 	"golang.org/x/term"
 )
 
-const version = "0.2.0"
+const version = "0.3.0"
 
 type client struct {
 	baseURL string
@@ -30,6 +32,58 @@ type config struct {
 	BaseURL string `json:"base_url"`
 	Token   string `json:"token"`
 }
+
+type importOptions struct {
+	filePath          string
+	dryRun            bool
+	userMap           []string
+	assignUnmatchedTo string
+}
+
+type importResponse struct {
+	ID           int              `json:"id"`
+	Status       string           `json:"status"`
+	DryRun       bool             `json:"dry_run"`
+	TotalRows    int              `json:"total_rows"`
+	ImportedRows int              `json:"imported_rows"`
+	FailedRows   int              `json:"failed_rows"`
+	Summary      importSummary    `json:"summary"`
+	RowErrors    []importRowError `json:"row_errors"`
+	ErrorMessage string           `json:"error_message"`
+}
+
+type importSummary struct {
+	Rows              int `json:"rows"`
+	EntriesToCreate   int `json:"entries_to_create"`
+	EntriesCreated    int `json:"entries_created"`
+	EntriesFailed     int `json:"entries_failed"`
+	DuplicatesSkipped int `json:"duplicates_skipped"`
+	ZeroHourSkipped   int `json:"zero_hour_skipped"`
+	Clients           struct {
+		Existing []string `json:"existing"`
+		ToCreate []string `json:"to_create"`
+	} `json:"clients"`
+	Projects struct {
+		Existing []string `json:"existing"`
+		ToCreate []string `json:"to_create"`
+	} `json:"projects"`
+	Users struct {
+		Matched   map[string]string `json:"matched"`
+		Unmatched []string          `json:"unmatched"`
+	} `json:"users"`
+	DateRange struct {
+		From string `json:"from"`
+		To   string `json:"to"`
+	} `json:"date_range"`
+	Warnings []string `json:"warnings"`
+}
+
+type importRowError struct {
+	Row     int    `json:"row"`
+	Message string `json:"message"`
+}
+
+var importPollInterval = 2 * time.Second
 
 func main() {
 	args := os.Args[1:]
@@ -84,6 +138,8 @@ func main() {
 		err = cli.expenses(args[1:])
 	case "invoice", "invoices":
 		err = cli.invoices(args[1:])
+	case "import":
+		err = cli.imports(args[1:])
 	case "payment":
 		err = cli.payments(args[1:])
 	case "time":
@@ -420,6 +476,219 @@ func (c *client) expenses(args []string) error {
 	default:
 		return fmt.Errorf("unknown command: miru expense %s", strings.Join(args, " "))
 	}
+}
+
+func (c *client) imports(args []string) error {
+	if len(args) > 0 && args[0] == "status" {
+		return c.importStatus(args[1:])
+	}
+
+	options, err := parseImportOptions(args)
+	if err != nil {
+		return err
+	}
+
+	fields := map[string][]string{
+		"source":     {"harvest"},
+		"kind":       {"time_entries"},
+		"dry_run":    {strconv.FormatBool(options.dryRun)},
+		"user_map[]": options.userMap,
+	}
+	if options.assignUnmatchedTo != "" {
+		fields["assign_unmatched_to"] = []string{options.assignUnmatchedTo}
+	}
+
+	responseBody, err := c.doMultipartRequest(http.MethodPost, "/api/v1/imports", options.filePath, fields)
+	if err != nil {
+		return err
+	}
+	dataImport, err := decodeImport(responseBody)
+	if err != nil {
+		return err
+	}
+
+	if options.dryRun {
+		fmt.Printf("Dry run #%d started\n", dataImport.ID)
+		fmt.Println("Planning...")
+	} else {
+		fmt.Printf("Import #%d started\n", dataImport.ID)
+	}
+
+	for {
+		time.Sleep(importPollInterval)
+		dataImport, err = c.fetchImport(dataImport.ID)
+		if err != nil {
+			return err
+		}
+		if !options.dryRun {
+			fmt.Printf("Imported %d/%d (%d failed)\n", dataImport.ImportedRows, dataImport.TotalRows, dataImport.FailedRows)
+		}
+		switch dataImport.Status {
+		case "completed":
+			renderImportSummary(dataImport)
+			if options.dryRun && (len(dataImport.Summary.Users.Unmatched) > 0 || len(dataImport.RowErrors) > 0) {
+				return fmt.Errorf("dry run has unmatched users or row errors")
+			}
+			if dataImport.FailedRows > 0 {
+				return fmt.Errorf("import completed with %d failed rows", dataImport.FailedRows)
+			}
+			return nil
+		case "failed":
+			return errors.New(defaultString(dataImport.ErrorMessage, "import failed"))
+		}
+	}
+}
+
+func parseImportOptions(args []string) (importOptions, error) {
+	normalized := make([]string, 0, len(args)+1)
+	for index := 0; index < len(args); index++ {
+		normalized = append(normalized, args[index])
+		if args[index] == "--dry-run" && (index+1 >= len(args) || strings.HasPrefix(args[index+1], "--")) {
+			normalized = append(normalized, "true")
+		}
+	}
+
+	flags, err := parseRepeatedFlags(normalized)
+	if err != nil {
+		return importOptions{}, err
+	}
+	if err := validateAllowedFlags(flags, map[string]bool{
+		"assign-unmatched-to": true,
+		"dry-run":             true,
+		"file":                true,
+		"format":              true,
+		"map":                 true,
+		"type":                true,
+	}); err != nil {
+		return importOptions{}, err
+	}
+
+	if flagValue(flags, "format") != "harvest" {
+		return importOptions{}, fmt.Errorf("format must be harvest")
+	}
+	importType := defaultString(flagValue(flags, "type"), "time")
+	if importType == "expenses" {
+		return importOptions{}, fmt.Errorf("expenses import is not supported yet")
+	}
+	if importType != "time" {
+		return importOptions{}, fmt.Errorf("type must be time")
+	}
+
+	filePath := strings.TrimSpace(flagValue(flags, "file"))
+	file, err := os.Open(filePath)
+	if err != nil {
+		return importOptions{}, fmt.Errorf("file must exist and be readable: %w", err)
+	}
+	info, err := file.Stat()
+	file.Close()
+	if err != nil || !info.Mode().IsRegular() {
+		return importOptions{}, fmt.Errorf("file must exist and be readable")
+	}
+
+	dryRun := false
+	if value := flagValue(flags, "dry-run"); value != "" {
+		dryRun, err = strconv.ParseBool(value)
+		if err != nil {
+			return importOptions{}, fmt.Errorf("dry-run must be true or false")
+		}
+	}
+
+	return importOptions{
+		filePath:          filePath,
+		dryRun:            dryRun,
+		userMap:           flags["map"],
+		assignUnmatchedTo: strings.TrimSpace(flagValue(flags, "assign-unmatched-to")),
+	}, nil
+}
+
+func (c *client) importStatus(args []string) error {
+	flags, err := parseRepeatedFlags(args)
+	if err != nil {
+		return err
+	}
+	if err := validateAllowedFlags(flags, map[string]bool{"id": true}); err != nil {
+		return err
+	}
+	id, err := positiveIntFlag(flags, "id")
+	if err != nil {
+		return err
+	}
+
+	dataImport, err := c.fetchImport(id)
+	if err != nil {
+		return err
+	}
+	renderImportSummary(dataImport)
+	if dataImport.Status == "failed" {
+		return errors.New(defaultString(dataImport.ErrorMessage, "import failed"))
+	}
+	return nil
+}
+
+func (c *client) fetchImport(id int) (importResponse, error) {
+	responseBody, err := c.doRequest(http.MethodGet, fmt.Sprintf("/api/v1/imports/%d", id), nil)
+	if err != nil {
+		return importResponse{}, err
+	}
+	return decodeImport(responseBody)
+}
+
+func decodeImport(responseBody []byte) (importResponse, error) {
+	var dataImport importResponse
+	if err := json.Unmarshal(responseBody, &dataImport); err != nil {
+		return importResponse{}, err
+	}
+	return dataImport, nil
+}
+
+func renderImportSummary(dataImport importResponse) {
+	summary := dataImport.Summary
+	fmt.Printf("Rows: %d\n", summary.Rows)
+	fmt.Printf("Date range: %s to %s\n", summary.DateRange.From, summary.DateRange.To)
+	fmt.Printf("Clients existing: %s\n", listOrNone(summary.Clients.Existing))
+	fmt.Printf("Clients to create: %s\n", listOrNone(summary.Clients.ToCreate))
+	fmt.Printf("Projects existing: %s\n", listOrNone(summary.Projects.Existing))
+	fmt.Printf("Projects to create: %s\n", listOrNone(summary.Projects.ToCreate))
+
+	names := make([]string, 0, len(summary.Users.Matched))
+	for name := range summary.Users.Matched {
+		names = append(names, name)
+	}
+	sort.Strings(names)
+	for _, name := range names {
+		fmt.Printf("Team member: %s -> %s\n", name, summary.Users.Matched[name])
+	}
+	for _, name := range summary.Users.Unmatched {
+		fmt.Printf("Unmatched team member: %s\n", name)
+	}
+	if len(summary.Users.Unmatched) > 0 {
+		fmt.Println("Map unmatched users with --map \"First Last=email\"")
+	}
+
+	if dataImport.DryRun {
+		fmt.Printf("Entries to create: %d\n", summary.EntriesToCreate)
+	} else if dataImport.Status == "completed" {
+		fmt.Printf("Entries created: %d\n", summary.EntriesCreated)
+		fmt.Printf("Entries failed: %d\n", summary.EntriesFailed)
+	}
+	fmt.Printf("Duplicates skipped: %d\n", summary.DuplicatesSkipped)
+	fmt.Printf("Zero-hour rows skipped: %d\n", summary.ZeroHourSkipped)
+	for index, rowError := range dataImport.RowErrors {
+		if index == 20 {
+			break
+		}
+		fmt.Printf("Row %d: %s\n", rowError.Row, rowError.Message)
+	}
+	for _, warning := range summary.Warnings {
+		fmt.Printf("Warning: %s\n", warning)
+	}
+}
+
+func listOrNone(values []string) string {
+	if len(values) == 0 {
+		return "none"
+	}
+	return strings.Join(values, ", ")
 }
 
 func (c *client) listTimeEntries(args []string) error {
@@ -988,6 +1257,55 @@ func (c *client) doRequest(method, path string, body map[string]any) ([]byte, er
 	return responseBody, nil
 }
 
+func (c *client) doMultipartRequest(method, path, filePath string, fields map[string][]string) ([]byte, error) {
+	var payload bytes.Buffer
+	writer := multipart.NewWriter(&payload)
+	file, err := os.Open(filePath)
+	if err != nil {
+		return nil, err
+	}
+	defer file.Close()
+
+	part, err := writer.CreateFormFile("file", filepath.Base(filePath))
+	if err != nil {
+		return nil, err
+	}
+	if _, err := io.Copy(part, file); err != nil {
+		return nil, err
+	}
+	for name, values := range fields {
+		for _, value := range values {
+			if err := writer.WriteField(name, value); err != nil {
+				return nil, err
+			}
+		}
+	}
+	if err := writer.Close(); err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(method, c.baseURL+path, &payload)
+	if err != nil {
+		return nil, err
+	}
+	req.Header.Set("Content-Type", writer.FormDataContentType())
+	req.Header.Set("Authorization", "Bearer "+c.token)
+
+	response, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer response.Body.Close()
+	responseBody, err := io.ReadAll(response.Body)
+	if err != nil {
+		return nil, err
+	}
+	if response.StatusCode >= http.StatusBadRequest {
+		return nil, parseError(response.StatusCode, responseBody)
+	}
+	return responseBody, nil
+}
+
 func parseError(statusCode int, responseBody []byte) error {
 	var payload map[string]any
 	if err := json.Unmarshal(responseBody, &payload); err == nil {
@@ -1236,6 +1554,8 @@ miru invoice show --id <id>
 miru invoice send --id <id> --recipients <email1,email2> [--subject <text>] [--message <text>]
 miru payment list [--query <term>]
 miru payment show --id <id>
+miru import --file <path> --format harvest [--type time] [--dry-run] [--map "First Last=email"]... [--assign-unmatched-to <email>]
+miru import status --id <id>
 miru time list --from <YYYY-MM-DD> --to <YYYY-MM-DD>
 miru time create --project-id <id> --duration <minutes> --date <YYYY-MM-DD> [--note <text>] [--bill-status <status>]
 miru time update --id <id> --project-id <id> --duration <minutes> --date <YYYY-MM-DD> [--note <text>] [--bill-status <status>]
