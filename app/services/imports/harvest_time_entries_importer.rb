@@ -121,15 +121,7 @@ module Imports
       end
 
       def build_plan
-        @warnings = Set.new
-        @row_errors = []
-        @zero_hour_rows = 0
-        @duplicate_rows = 0
-        @client_plans = {}
-        @project_plans = {}
-        @planned_rows = []
-        @failed_rows = 0
-        @imported_rows = 0
+        initialize_plan
 
         build_entity_plans
         load_database_duplicates
@@ -140,6 +132,18 @@ module Imports
         end
         @rows.each { |row| plan_row(row) }
         @summary = build_summary
+      end
+
+      def initialize_plan
+        @warnings = Set.new
+        @row_errors = []
+        @zero_hour_rows = 0
+        @duplicate_rows = 0
+        @client_plans = {}
+        @project_plans = {}
+        @planned_rows = []
+        @failed_rows = 0
+        @imported_rows = 0
       end
 
       def load_database_duplicates
@@ -162,16 +166,7 @@ module Imports
         @rows.each do |row|
           next if row[:client_name].blank? || row[:project_name].blank?
 
-          original_name = row[:client_name]
-          client_name = original_name[0, 30]
-          @warnings << "Client name truncated: #{original_name.truncate(80)}" if original_name.length > 30
-          client_key = key(client_name)
-          client_plan = @client_plans[client_key] ||= {
-            name: client_name,
-            existing: @existing_clients[client_key],
-            currency: row[:currency]
-          }
-          @warnings << "Restored archived client: #{client_name}" if client_plan[:existing]&.discarded?
+          client_key, client_plan = build_client_plan(row)
 
           original_project_name = row[:project_name]
           project_name = original_project_name[0, 30]
@@ -192,6 +187,20 @@ module Imports
         end
       end
 
+      def build_client_plan(row)
+        original_name = row[:client_name]
+        client_name = original_name[0, 30]
+        @warnings << "Client name truncated: #{original_name.truncate(80)}" if original_name.length > 30
+        client_key = key(client_name)
+        client_plan = @client_plans[client_key] ||= {
+          name: client_name,
+          existing: @existing_clients[client_key],
+          currency: row[:currency]
+        }
+        @warnings << "Restored archived client: #{client_name}" if client_plan[:existing]&.discarded?
+        [client_key, client_plan]
+      end
+
       def plan_row(row)
         error = row_error(row)
         return add_row_error(row, error) if error
@@ -206,27 +215,16 @@ module Imports
         work_date = parse_date(row[:date])
         return add_row_error(row, "Date is invalid: #{row[:date]}") unless work_date
 
-        user = resolved_user(row[:user_name])
+        user_name = row[:user_name]
+        user = resolved_user(user_name)
         unless user
-          message = if ambiguous_user?(row[:user_name])
-            "Harvest user \"#{row[:user_name]}\" matches more than one team member; pass --map \"#{row[:user_name]}=their@email\"."
-          else
-            "No team member in this Miru workspace matches Harvest user \"#{row[:user_name]}\". Invite them, or pass --map \"#{row[:user_name]}=their@email\"."
-          end
-          return add_row_error(
-            row,
-            message
-          )
+          return add_row_error(row, unmatched_user_message(user_name))
         end
 
         project_plan = row[:project_plan]
-        project = project_plan[:existing]
         bill_status = bill_status(row, project_plan)
 
-        if project && @database_duplicates.include?(duplicate_key(user.id, project.id, work_date, duration, row[:note]))
-          @duplicate_rows += 1
-          return
-        end
+        return if duplicate_row?(row, user, project_plan[:existing], work_date, duration)
 
         @planned_rows << row.merge(
           user:,
@@ -235,6 +233,21 @@ module Imports
           duration:,
           bill_status:
         )
+      end
+
+      def duplicate_row?(row, user, project, work_date, duration)
+        return false unless project && @database_duplicates.include?(duplicate_key(user.id, project.id, work_date, duration, row[:note]))
+
+        @duplicate_rows += 1
+        true
+      end
+
+      def unmatched_user_message(user_name)
+        if ambiguous_user?(user_name)
+          "Harvest user \"#{user_name}\" matches more than one team member; pass --map \"#{user_name}=their@email\"."
+        else
+          "No team member in this Miru workspace matches Harvest user \"#{user_name}\". Invite them, or pass --map \"#{user_name}=their@email\"."
+        end
       end
 
       def row_error(row)
@@ -293,9 +306,7 @@ module Imports
 
       def build_summary
         dates = @rows.filter_map { |row| parse_date(row[:date]) }
-        names = @rows.pluck(:user_name).compact_blank.uniq.sort
-        matched, unmatched = names.partition { |name| resolved_user(name) }
-        matched = matched.index_with { |name| resolved_user(name).email }
+        users = build_user_summary
         existing_clients = @client_plans.values.filter_map { |plan| plan[:existing]&.name }.sort
         new_clients = @client_plans.values.reject { |plan| plan[:existing] }.pluck(:name).sort.first(200)
         existing_projects = @project_plans.values.filter_map do |plan|
@@ -312,10 +323,18 @@ module Imports
           "zero_hour_skipped" => @zero_hour_rows,
           "clients" => { "existing" => existing_clients, "to_create" => new_clients },
           "projects" => { "existing" => existing_projects, "to_create" => new_projects },
-          "users" => { "matched" => matched, "unmatched" => unmatched.first(200) },
+          "users" => users,
           "date_range" => { "from" => dates.min&.iso8601, "to" => dates.max&.iso8601 },
           "warnings" => @warnings.to_a.sort
         }
+      end
+
+      def build_user_summary
+        names = @rows.pluck(:user_name).compact_blank.uniq.sort
+        matched, unmatched = names.partition { |name| resolved_user(name) }
+        matched = matched.index_with { |name| resolved_user(name).email }
+
+        { "matched" => matched, "unmatched" => unmatched.first(200) }
       end
 
       def persist_entries
