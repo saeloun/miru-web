@@ -792,7 +792,7 @@ GEM
       logger
     ruby_audit (3.1.0)
       bundler-audit (~> 0.9.0)
-    rubyzip (2.3.2)
+    rubyzip (3.6.0)
     safely_block (0.4.0)
     safety_net_attestation (0.5.0)
       jwt (>= 2.0, < 4.0)
@@ -1059,7 +1059,7 @@ DEPENDENCIES
   rubocop-rspec
   rubocop-thread_safety
   ruby_audit
-  rubyzip
+  rubyzip (~> 3.4)
   sentry-rails
   sentry-ruby (~> 5.17)
   shoulda-callback-matchers (~> 1.1.1)
