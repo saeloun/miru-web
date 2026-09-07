@@ -249,6 +249,27 @@ RSpec.describe Imports::HarvestTimeEntriesImporter do
     expect(data_import.reload.summary["warnings"]).to include(match(/Client name truncated:/))
   end
 
+  it "reuses unambiguous client and project names created by the legacy importer" do
+    client_name = "Acme Corporate Legal Services Alpha"
+    project_name = "Acme 1H 2025 Committed Hours (PC)"
+    create(:data_import, company:, user: actor, status: "completed", summary: {
+      "warnings" => ["Client name truncated: #{client_name}", "Project name truncated: #{project_name}"]
+    })
+    legacy_client = create(:client, company:, name: client_name.first(30))
+    legacy_project = create(:project, client: legacy_client, name: project_name.first(30))
+    create(:timesheet_entry, project: legacy_project, user: paul, work_date: Date.new(2026, 1, 1), duration: 60, note: "", source: "import")
+    attach_csv_contents(data_import, <<~CSV)
+      Date,Client,Project,Hours,First Name,Last Name
+      2026-01-01,#{client_name},#{project_name},1,Paul,Connors
+    CSV
+
+    expect do
+      described_class.new(data_import).process
+    end.not_to change { [company.clients.count, company.projects.count, TimesheetEntry.count] }
+
+    expect(data_import.reload).to have_attributes(imported_rows: 0, skipped_rows: 1)
+  end
+
   it "records invalid hours, date, and blank client rows without creating entries" do
     attach_csv_contents(data_import, <<~CSV)
       Date,Client,Project,Hours,First Name,Last Name
