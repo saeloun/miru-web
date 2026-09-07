@@ -91,6 +91,11 @@ RSpec.describe "Time Tracking Views", type: :system, js: true do
       within("[data-testid='timeoff-entry-card']", text: "Company holiday") do
         expect(page).to have_button("Edit entry", wait: 10)
         expect(page).to have_button("Delete entry", wait: 10)
+        dismiss_confirm("Are you sure you want to delete this time entry?") do
+          click_button "Delete entry"
+        end
+        expect(holiday_entry.reload).to be_kept
+
         accept_confirm("Are you sure you want to delete this time entry?") do
           click_button "Delete entry"
         end
