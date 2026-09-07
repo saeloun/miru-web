@@ -68,7 +68,7 @@ RSpec.describe "Time Tracking Views", type: :system, js: true do
       duration: 480,
       note: "Planned PTO"
     )
-    create(
+    holiday_entry = create(
       :timeoff_entry,
       user:,
       leave_type: nil,
@@ -87,6 +87,59 @@ RSpec.describe "Time Tracking Views", type: :system, js: true do
       expect(page).to have_content("Holiday", wait: 10)
       expect(page).to have_content("Foundation Day", wait: 10)
       expect(page).to have_content("Company holiday", wait: 10)
+
+      within("[data-testid='timeoff-entry-card']", text: "Company holiday") do
+        expect(page).to have_button("Edit entry", wait: 10)
+        expect(page).to have_button("Delete entry", wait: 10)
+        accept_confirm("Are you sure you want to delete this time entry?") do
+          click_button "Delete entry"
+        end
+      end
+
+      expect(page).not_to have_content("Company holiday", wait: 10)
+      expect(page).to have_content("Deleted time off successfully", wait: 10)
+      expect(holiday_entry.reload).to be_discarded
+    end
+  end
+
+  it "shows PTO actions to employees only until the entry's week ends" do
+    user.remove_role :admin, company
+    user.add_role :employee, company
+    leave = create(:leave, company:, year: Date.current.year)
+    leave_type = create(:leave_type, leave:, name: "Paid Time Off")
+
+    create(
+      :timeoff_entry,
+      user:,
+      leave_type:,
+      leave_date: Date.current,
+      duration: 480,
+      note: "Current week PTO"
+    )
+    create(
+      :timeoff_entry,
+      user:,
+      leave_type:,
+      leave_date: Date.current.beginning_of_week - 1.day,
+      duration: 480,
+      note: "Previous week PTO"
+    )
+
+    with_forgery_protection do
+      open_week_review
+
+      within("[data-testid='timeoff-entry-card']", text: "Current week PTO") do
+        expect(page).to have_button("Edit entry", wait: 10)
+        expect(page).to have_button("Delete entry", wait: 10)
+      end
+
+      find("[data-testid='time-nav-prev']", wait: 10).click
+      find("[data-testid='time-review-week']", wait: 10).click
+
+      within("[data-testid='timeoff-entry-card']", text: "Previous week PTO") do
+        expect(page).not_to have_button("Edit entry")
+        expect(page).not_to have_button("Delete entry")
+      end
     end
   end
 
