@@ -188,6 +188,55 @@ RSpec.describe Imports::HarvestTimeEntriesImporter do
     expect(TimesheetEntry.kept.last.work_date).to eq(Date.new(2026, 1, 7))
   end
 
+  it "keeps project names distinct when their 30-character prefixes collide" do
+    attach_csv_contents(data_import, <<~CSV)
+      Date,Client,Project,Hours,First Name,Last Name
+      2026-01-01,Acme LLC,Acme 1H 2025 Committed Hours (PC),1,Paul,Connors
+      2026-01-02,Acme LLC,Acme 1H 2025 Committed Hours (LW),1,Paul,Connors
+    CSV
+
+    described_class.new(data_import).process
+
+    projects = company.projects.kept.order(:name)
+    expect(projects.pluck(:name).uniq.size).to eq(2)
+    expect(projects.pluck(:name).map(&:length)).to all(be <= 30)
+    expect(projects.pluck(:description)).to contain_exactly(
+      "Harvest project: Acme 1H 2025 Committed Hours (LW)",
+      "Harvest project: Acme 1H 2025 Committed Hours (PC)"
+    )
+    expect(projects.flat_map { |project| project.timesheet_entries.kept.pluck(:work_date) }).to contain_exactly(
+      Date.new(2026, 1, 1),
+      Date.new(2026, 1, 2)
+    )
+    expect(data_import.reload.summary["warnings"]).to include(match(/Project name collision resolved:/))
+
+    second_import = create(:data_import, company:, user: actor)
+    attach_csv_contents(second_import, <<~CSV)
+      Date,Client,Project,Hours,First Name,Last Name
+      2026-01-02,Acme LLC,Acme 1H 2025 Committed Hours (LW),1,Paul,Connors
+      2026-01-01,Acme LLC,Acme 1H 2025 Committed Hours (PC),1,Paul,Connors
+    CSV
+
+    expect do
+      described_class.new(second_import).process
+    end.not_to change { [company.projects.kept.count, TimesheetEntry.kept.count] }
+    expect(second_import.reload).to have_attributes(imported_rows: 0, skipped_rows: 2)
+  end
+
+  it "keeps client names distinct when their 30-character prefixes collide" do
+    attach_csv_contents(data_import, <<~CSV)
+      Date,Client,Project,Hours,First Name,Last Name
+      2026-01-01,Acme Corporate Legal Services Alpha,Website,1,Paul,Connors
+      2026-01-02,Acme Corporate Legal Services Bravo,Website,1,Paul,Connors
+    CSV
+
+    described_class.new(data_import).process
+
+    expect(company.clients.kept.pluck(:name).uniq.size).to eq(2)
+    expect(company.projects.kept.count).to eq(2)
+    expect(data_import.reload.summary["warnings"]).to include(match(/Client name collision resolved:/))
+  end
+
   it "records invalid hours, date, and blank client rows without creating entries" do
     attach_csv_contents(data_import, <<~CSV)
       Date,Client,Project,Hours,First Name,Last Name

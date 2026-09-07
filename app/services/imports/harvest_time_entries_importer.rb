@@ -163,18 +163,24 @@ module Imports
       end
 
       def build_entity_plans
+        build_name_maps
+
         @rows.each do |row|
           next if row[:client_name].blank? || row[:project_name].blank?
 
           client_key, client_plan = build_client_plan(row)
 
           original_project_name = row[:project_name]
-          project_name = original_project_name[0, 30]
+          project_name = @project_names.fetch([key(row[:client_name]), key(original_project_name)])
           @warnings << "Project name truncated: #{original_project_name.truncate(80)}" if original_project_name.length > 30
+          if project_name != original_project_name.first(30)
+            @warnings << "Project name collision resolved: #{original_project_name.truncate(80)} as #{project_name}"
+          end
           project_key = [client_key, key(project_name)]
           existing_project = client_plan[:existing] && @existing_projects[[client_plan[:existing].id, key(project_name)]]
           row[:project_plan] = @project_plans[project_key] ||= {
             name: project_name,
+            source_name: original_project_name,
             client: client_plan,
             existing: existing_project,
             billable: false,
@@ -189,8 +195,11 @@ module Imports
 
       def build_client_plan(row)
         original_name = row[:client_name]
-        client_name = original_name[0, 30]
+        client_name = @client_names.fetch(key(original_name))
         @warnings << "Client name truncated: #{original_name.truncate(80)}" if original_name.length > 30
+        if client_name != original_name.first(30)
+          @warnings << "Client name collision resolved: #{original_name.truncate(80)} as #{client_name}"
+        end
         client_key = key(client_name)
         client_plan = @client_plans[client_key] ||= {
           name: client_name,
@@ -199,6 +208,30 @@ module Imports
         }
         @warnings << "Restored archived client: #{client_name}" if client_plan[:existing]&.discarded?
         [client_key, client_plan]
+      end
+
+      def build_name_maps
+        @client_names = disambiguated_names(@rows.pluck(:client_name))
+        @project_names = @rows.group_by { |row| key(row[:client_name]) }.each_with_object({}) do |(client_key, rows), names|
+          disambiguated_names(rows.pluck(:project_name)).each do |project_key, project_name|
+            names[[client_key, project_key]] = project_name
+          end
+        end
+      end
+
+      def disambiguated_names(names)
+        names.compact_blank.group_by { |name| key(name) }.transform_values(&:first)
+          .group_by { |_source_key, name| key(name.first(30)) }
+          .each_value.with_object({}) do |entries, result|
+            entries.sort_by(&:first).each_with_index do |(source_key, name), index|
+              result[source_key] = index.zero? ? name.first(30) : disambiguated_name(name)
+            end
+          end
+      end
+
+      def disambiguated_name(name)
+        suffix = "-#{Digest::SHA256.hexdigest(name).first(6)}"
+        "#{name.first(30 - suffix.length)}#{suffix}"
       end
 
       def plan_row(row)
@@ -381,11 +414,18 @@ module Imports
             plan[:record] = plan[:existing] || plan[:client][:record].projects.create!(
               name: plan[:name],
               billable: plan[:billable],
-              description: plan[:code] && "Harvest project code: #{plan[:code]}"
+              description: project_description(plan)
             )
             plan[:record].undiscard! if plan[:record].discarded?
           end
         end
+      end
+
+      def project_description(plan)
+        [
+          ("Harvest project: #{plan[:source_name]}" if plan[:source_name] != plan[:name]),
+          ("Harvest project code: #{plan[:code]}" if plan[:code])
+        ].compact.join("\n").presence
       end
 
       def create_project_members

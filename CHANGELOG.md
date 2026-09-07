@@ -14,6 +14,7 @@
 
 ### Changed
 
+- Harvest imports now keep long client and project names distinct when their 30-character prefixes collide
 - Invoice creation and editing now guard against duplicate draft line items, preserve zero-value amounts, and clamp totals to zero when the last line item is removed
 - Invoice line-item rows now prefer employee first/last names over description-backed fallback text so selected employee names render correctly on new invoices (rendering-only change, no DB impact)
 - Invoice line-item rate lookups now resolve project-member hourly rates per project consistently, preventing missing rates when generating invoices across multiple projects or after member-removal workflows
