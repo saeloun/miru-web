@@ -9,7 +9,6 @@ import { Badge } from "../ui/badge";
 import { buildDateParseFormats, minToHHMM } from "../../helpers";
 import { i18n } from "../../i18n";
 import { useUserContext } from "../../context/UserContext";
-import { Roles } from "../../constants";
 
 dayjs.extend(customParseFormat);
 
@@ -51,8 +50,7 @@ const TimeEntriesDisplay: React.FC<TimeEntriesDisplayProps> = ({
   hideEmptyState = false,
 }) => {
   const [reviewMode, setReviewMode] = useState<"day" | "week">("day");
-  const { companyRole, isDesktop, company } = useUserContext();
-  const timesheetEditDays: number = company?.timesheet_edit_days ?? 30;
+  const { isDesktop, company } = useUserContext();
   const dateFormats = buildDateParseFormats(
     company?.date_format || company?.dateFormat
   );
@@ -89,19 +87,6 @@ const TimeEntriesDisplay: React.FC<TimeEntriesDisplayProps> = ({
   const reviewEntries = reviewMode === "week" ? weekEntries : entries || [];
   const shouldRenderReviewPanel = hasEntries || canShowWeekReview;
 
-  const isPrivilegedUser =
-    companyRole === Roles["ADMIN"] || companyRole === Roles["OWNER"];
-
-  const isOutsideEditWindow = (entryDate: string) => {
-    const parsedDate = dayjs(entryDate, dateFormats, true);
-    if (!parsedDate.isValid()) return false;
-
-    return (
-      dayjs().startOf("day").diff(parsedDate.startOf("day"), "day") >
-      timesheetEditDays
-    );
-  };
-
   const renderEntry = (entry: any, index: number) => {
     if (entry?.type === "leave") {
       const entryKey = entry?.id ? `leave-${entry.id}` : `leave-${index}`;
@@ -119,12 +104,8 @@ const TimeEntriesDisplay: React.FC<TimeEntriesDisplayProps> = ({
       const entryDate =
         entry.display_date || entry.leave_date || selectedFullDate;
 
-      const canManageTimeoff =
-        !holidayDetails &&
-        (!isOutsideEditWindow(entryDate) || isPrivilegedUser);
-
       const handleEditTimeoff = () => {
-        if (!canManageTimeoff) return;
+        if (!entry.can_update) return;
         setNewEntryView(false);
         setEditEntryId(0);
         setSelectedFullDate(
@@ -137,7 +118,12 @@ const TimeEntriesDisplay: React.FC<TimeEntriesDisplayProps> = ({
       };
 
       const handleDeleteTimeoff = () => {
-        if (!canManageTimeoff) return;
+        if (!entry.can_destroy) return;
+
+        if (!window.confirm(i18n.t("timeTracking.deleteTimeEntryConfirm"))) {
+          return;
+        }
+
         handleDeleteTimeoffEntry(entry.id, entryDate);
       };
 
@@ -145,7 +131,7 @@ const TimeEntriesDisplay: React.FC<TimeEntriesDisplayProps> = ({
         <Card
           key={entryKey}
           className={`mb-4 border-border bg-card ${
-            !isDesktop && canManageTimeoff ? "cursor-pointer" : ""
+            !isDesktop && entry.can_update ? "cursor-pointer" : ""
           }`}
           data-testid="timeoff-entry-card"
           onClick={() => {
@@ -186,32 +172,36 @@ const TimeEntriesDisplay: React.FC<TimeEntriesDisplayProps> = ({
                   {minToHHMM(entry.duration)}
                 </div>
               </div>
-              {isDesktop && canManageTimeoff && (
+              {isDesktop && (entry.can_update || entry.can_destroy) && (
                 <div className="flex items-center gap-2">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-9 w-9 hover:bg-accent hover:text-primary"
-                    onClick={event => {
-                      event.stopPropagation();
-                      handleEditTimeoff();
-                    }}
-                    title={i18n.t("timeTracking.editEntry")}
-                  >
-                    <PencilSimple className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-9 w-9 hover:bg-destructive/10 hover:text-destructive"
-                    onClick={event => {
-                      event.stopPropagation();
-                      handleDeleteTimeoff();
-                    }}
-                    title={i18n.t("timeTracking.deleteEntry")}
-                  >
-                    <Trash className="h-4 w-4" />
-                  </Button>
+                  {entry.can_update && (
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-9 w-9 hover:bg-accent hover:text-primary"
+                      onClick={event => {
+                        event.stopPropagation();
+                        handleEditTimeoff();
+                      }}
+                      title={i18n.t("timeTracking.editEntry")}
+                    >
+                      <PencilSimple className="h-4 w-4" />
+                    </Button>
+                  )}
+                  {entry.can_destroy && (
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-9 w-9 hover:bg-destructive/10 hover:text-destructive"
+                      onClick={event => {
+                        event.stopPropagation();
+                        handleDeleteTimeoff();
+                      }}
+                      title={i18n.t("timeTracking.deleteEntry")}
+                    >
+                      <Trash className="h-4 w-4" />
+                    </Button>
+                  )}
                 </div>
               )}
             </div>
