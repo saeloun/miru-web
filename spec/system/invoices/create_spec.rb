@@ -44,6 +44,89 @@ RSpec.describe "Invoice creation", type: :system, js: true do
     end
   end
 
+  it "saves a zero-rate invoice" do
+    with_forgery_protection do
+      visit_new_invoice_for(client)
+
+      fill_in "invoiceNumber", with: "INV-ZERO-SAVE-001"
+      add_manual_line_item(
+        name: "Trial period",
+        rate: "0",
+        quantity: "02:00",
+        description: "Complimentary trial work"
+      )
+
+      expect(page).to have_button("Save", disabled: false)
+      save_invoice
+
+      expect(page).to have_text("Invoice created successfully", wait: 10)
+      expect(
+        Invoice.find_by!(invoice_number: "INV-ZERO-SAVE-001")
+          .invoice_line_items
+          .sole
+          .rate
+      ).to eq(0)
+    end
+  end
+
+  it "confirms before sending a zero-rate invoice and sends it only once" do
+    allow(InvoicePayment::PdfGeneration).to receive(:process).and_return("%PDF-1.4")
+
+    with_forgery_protection do
+      visit_new_invoice_for(client)
+
+      fill_in "invoiceNumber", with: "INV-ZERO-SEND-001"
+      add_manual_line_item(
+        name: "Trial period",
+        rate: "0",
+        quantity: "02:00",
+        description: "Complimentary trial work"
+      )
+
+      expect(page).to have_button("Send Invoice", disabled: false)
+      click_button "Send Invoice"
+
+      within("[role='dialog']") do
+        expect(page).to have_text("This invoice contains entries with a zero rate. Are you sure you want to send it?")
+        click_button "No, continue editing"
+      end
+
+      expect(page).to have_no_css("[role='dialog']")
+      expect(page).to have_field("invoiceNumber", with: "INV-ZERO-SEND-001")
+      expect(Invoice.where(invoice_number: "INV-ZERO-SEND-001")).to be_empty
+
+      click_button "Send Invoice"
+
+      expect do
+        page.execute_script(<<~JS)
+          const button = document.querySelector("[data-testid='confirm-zero-rate-send']");
+          button.click();
+          button.click();
+        JS
+        expect(page).to have_text("Invoice has been sent successfully", wait: 10)
+      end.to have_enqueued_mail(InvoiceMailer, :send_invoice).once
+
+      expect(Invoice.where(invoice_number: "INV-ZERO-SEND-001").count).to eq(1)
+      expect(Invoice.find_by!(invoice_number: "INV-ZERO-SEND-001")).to be_sent
+    end
+  end
+
+  it "keeps negative-rate invoices invalid" do
+    with_forgery_protection do
+      visit_new_invoice_for(client)
+
+      fill_in "invoiceNumber", with: "INV-NEGATIVE-RATE-001"
+      add_manual_line_item(
+        name: "Invalid work",
+        rate: "-1",
+        quantity: "02:00"
+      )
+
+      expect(page).to have_button("Save", disabled: true)
+      expect(page).to have_button("Send Invoice", disabled: true)
+    end
+  end
+
   it "keeps send failure feedback clear after creating a new invoice" do
     allow(InvoicePayment::PdfGeneration)
       .to receive(:process)

@@ -19,6 +19,14 @@ import {
   SelectValue,
 } from "../../ui/select";
 import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "../../ui/dialog";
 
 import { cn } from "../../../lib/utils";
 import { format } from "date-fns";
@@ -110,6 +118,11 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
   const [submitIntent, setSubmitIntent] = useState<"save" | "send" | null>(
     null
   );
+
+  const [showZeroRateConfirmation, setShowZeroRateConfirmation] =
+    useState(false);
+
+  const sendRequestedRef = useRef(false);
 
   const parseDate = (date: any): Date | undefined => {
     if (!date) return undefined;
@@ -302,8 +315,13 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
   const hasInvalidLineItems = useMemo(
     () =>
       activeLineItems.some(
-        item => Number(item?.quantity || 0) <= 0 || Number(item?.rate || 0) <= 0
+        item => Number(item?.quantity || 0) <= 0 || Number(item?.rate || 0) < 0
       ),
+    [activeLineItems]
+  );
+
+  const hasZeroRateLineItems = useMemo(
+    () => activeLineItems.some(item => Number(item?.rate || 0) === 0),
     [activeLineItems]
   );
 
@@ -345,6 +363,7 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
   useEffect(() => {
     if (!isLoading) {
       setSubmitIntent(null);
+      sendRequestedRef.current = false;
     }
   }, [isLoading]);
 
@@ -437,6 +456,21 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
         : Number(formData.tax || 0),
     [activeInvoiceTaxes, formData.tax]
   );
+
+  const sendInvoice = () => {
+    if (!onSend || sendRequestedRef.current) return;
+
+    sendRequestedRef.current = true;
+    setShowZeroRateConfirmation(false);
+    setSubmitIntent("send");
+    onSend({
+      ...formData,
+      status: "sent",
+      tax: taxTotal,
+      invoiceTaxes: submissionInvoiceTaxes,
+      invoiceLineItems: submissionLineItems,
+    });
+  };
 
   const total = useMemo(
     () => subtotal - formData.discount + taxTotal,
@@ -664,15 +698,11 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
               </Button>
               <Button
                 onClick={() => {
-                  setSubmitIntent("send");
-                  onSend &&
-                    onSend({
-                      ...formData,
-                      status: "sent",
-                      tax: taxTotal,
-                      invoiceTaxes: submissionInvoiceTaxes,
-                      invoiceLineItems: submissionLineItems,
-                    });
+                  if (hasZeroRateLineItems) {
+                    setShowZeroRateConfirmation(true);
+                  } else {
+                    sendInvoice();
+                  }
                 }}
                 size="sm"
                 disabled={isLoading || !canSubmitInvoice || isSentInvoice}
@@ -1039,6 +1069,38 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
           </div>
         </div>
       </div>
+
+      <Dialog
+        open={showZeroRateConfirmation}
+        onOpenChange={setShowZeroRateConfirmation}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Send zero-rate invoice?</DialogTitle>
+            <DialogDescription>
+              This invoice contains entries with a zero rate. Are you sure you
+              want to send it?
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setShowZeroRateConfirmation(false)}
+            >
+              No, continue editing
+            </Button>
+            <Button
+              data-testid="confirm-zero-rate-send"
+              disabled={isLoading}
+              type="button"
+              onClick={sendInvoice}
+            >
+              Yes, send invoice
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
