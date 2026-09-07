@@ -14,7 +14,6 @@
 
 ### Changed
 
-- Harvest imports now keep long client and project names distinct when their 30-character prefixes collide
 - Invoice creation and editing now guard against duplicate draft line items, preserve zero-value amounts, and clamp totals to zero when the last line item is removed
 - Invoice line-item rows now prefer employee first/last names over description-backed fallback text so selected employee names render correctly on new invoices (rendering-only change, no DB impact)
 - Invoice line-item rate lookups now resolve project-member hourly rates per project consistently, preventing missing rates when generating invoices across multiple projects or after member-removal workflows
@@ -26,6 +25,12 @@
 - Weekly reminder processing now better distinguishes legacy hour-based timesheet data from minute-based entries to avoid false reminder emails for users who met weekly hour targets
 - Mailer layout branding now uses asset helper URLs with production `action_mailer.asset_host` to keep email logo assets resolvable in production mail clients
 - Razorpay Payment Settings now copies the production webhook URLs with the required event names for faster dashboard setup
+
+## 3.0.3 - 2026-09-08
+
+### Fixed
+
+- Harvest imports now keep long client and project names distinct when their 30-character prefixes collide
 
 ## 3.0.2 - 2026-09-07
 
