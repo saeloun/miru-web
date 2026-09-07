@@ -314,14 +314,30 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
 
   const hasInvalidLineItems = useMemo(
     () =>
-      activeLineItems.some(
-        item => Number(item?.quantity || 0) <= 0 || Number(item?.rate || 0) < 0
-      ),
+      activeLineItems.some(item => {
+        const rate = item?.rate;
+
+        return (
+          Number(item?.quantity || 0) <= 0 ||
+          rate === "" ||
+          rate === null ||
+          rate === undefined ||
+          !Number.isFinite(Number(rate)) ||
+          Number(rate) < 0
+        );
+      }),
     [activeLineItems]
   );
 
   const hasZeroRateLineItems = useMemo(
-    () => activeLineItems.some(item => Number(item?.rate || 0) === 0),
+    () =>
+      activeLineItems.some(
+        item =>
+          item?.rate !== "" &&
+          item?.rate !== null &&
+          item?.rate !== undefined &&
+          Number(item.rate) === 0
+      ),
     [activeLineItems]
   );
 
@@ -1076,10 +1092,11 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
       >
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Send zero-rate invoice?</DialogTitle>
+            <DialogTitle>
+              {i18n.t("invoices.zeroRateConfirmationTitle")}
+            </DialogTitle>
             <DialogDescription>
-              This invoice contains entries with a zero rate. Are you sure you
-              want to send it?
+              {i18n.t("invoices.zeroRateConfirmationDescription")}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
@@ -1088,7 +1105,7 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
               variant="outline"
               onClick={() => setShowZeroRateConfirmation(false)}
             >
-              No, continue editing
+              {i18n.t("invoices.zeroRateConfirmationCancel")}
             </Button>
             <Button
               data-testid="confirm-zero-rate-send"
@@ -1096,7 +1113,7 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
               type="button"
               onClick={sendInvoice}
             >
-              Yes, send invoice
+              {i18n.t("invoices.zeroRateConfirmationSend")}
             </Button>
           </DialogFooter>
         </DialogContent>

@@ -127,6 +127,22 @@ RSpec.describe "Invoice creation", type: :system, js: true do
     end
   end
 
+  it "keeps blank-rate invoices invalid" do
+    with_forgery_protection do
+      visit_new_invoice_for(client)
+
+      fill_in "invoiceNumber", with: "INV-BLANK-RATE-001"
+      add_manual_line_item(
+        name: "Missing rate",
+        rate: "",
+        quantity: "02:00"
+      )
+
+      expect(page).to have_button("Save", disabled: true)
+      expect(page).to have_button("Send Invoice", disabled: true)
+    end
+  end
+
   it "keeps send failure feedback clear after creating a new invoice" do
     allow(InvoicePayment::PdfGeneration)
       .to receive(:process)

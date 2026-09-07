@@ -710,6 +710,11 @@ const en = {
     alreadySent: "Already sent",
     downloading: "Downloading...",
     selectClientBeforeSending: "Select a client before sending the invoice.",
+    zeroRateConfirmationTitle: "Send zero-rate invoice?",
+    zeroRateConfirmationDescription:
+      "This invoice contains entries with a zero rate. Are you sure you want to send it?",
+    zeroRateConfirmationCancel: "No, continue editing",
+    zeroRateConfirmationSend: "Yes, send invoice",
 
     // Counters
     showingOf: "Showing %{shown} of %{total}",
