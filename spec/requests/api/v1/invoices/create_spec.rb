@@ -131,6 +131,44 @@ RSpec.describe "Api::V1::Invoices#create", type: :request do
         expect(line_item.timesheet_entry_id).to eq(timesheet_entry.id)
       end
 
+      it "accepts zero line-item rates and rejects negative rates" do
+        invoice_params = lambda do |invoice_number, rate|
+          {
+            client_id: client.id,
+            invoice_number:,
+            issue_date: Date.current.iso8601,
+            due_date: 30.days.from_now.to_date.iso8601,
+            status: "draft",
+            currency: company.base_currency,
+            invoice_line_items_attributes: [
+              {
+                name: "Trial period",
+                description: "Complimentary trial work",
+                date: Date.current.iso8601,
+                rate:,
+                quantity: 120
+              }
+            ]
+          }
+        end
+
+        send_request :post, api_v1_invoices_path(
+          invoice: invoice_params.call("INV-ZERO-RATE-001", 0)
+        ), headers: auth_headers(user)
+
+        expect(response).to have_http_status(:ok)
+        expect(Invoice.find_by!(invoice_number: "INV-ZERO-RATE-001").invoice_line_items.sole.rate).to eq(0)
+
+        expect do
+          send_request :post, api_v1_invoices_path(
+            invoice: invoice_params.call("INV-NEGATIVE-RATE-001", -1)
+          ), headers: auth_headers(user)
+        end.not_to change(Invoice, :count)
+
+        expect(response).to have_http_status(:unprocessable_content)
+        expect(response.body).to include("greater than or equal to 0")
+      end
+
       it "creates aggregate invoice line items linked to multiple timesheet entries" do
         project = create(:project, client:, name: "Platform Build", billable: true)
         entries = create_list(
