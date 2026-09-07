@@ -26,6 +26,8 @@ json.entries do
             json.leave_type_id entry[:leave_type_id]
             json.custom_leave_id entry[:custom_leave_id]
             json.user_id entry[:user_id]
+            json.can_update policy(entry).update?
+            json.can_destroy policy(entry).destroy?
           end
         end
       end
