@@ -205,7 +205,7 @@ module Imports
       def import_name(name)
         return name if name.length <= 30
 
-        suffix = "-#{Digest::SHA256.hexdigest(name).first(6)}"
+        suffix = "-#{Digest::SHA256.hexdigest(key(name)).first(6)}"
         "#{name.first(30 - suffix.length)}#{suffix}"
       end
 
