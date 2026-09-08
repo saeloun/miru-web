@@ -28,7 +28,7 @@ RSpec.describe Imports::HarvestTimeEntriesImporter do
       failed_rows: 0,
       skipped_rows: 1
     )
-    expect(company.clients.kept.pluck(:name)).to contain_exactly("Acme LLC", "Very Long Client Name That Exc")
+    expect(company.clients.kept.pluck(:name)).to contain_exactly("Acme LLC", "Very Long Client Name T-715152")
     expect(company.projects.kept.count).to eq(3)
     expect(ProjectMember.kept.joins(project: :client).where(clients: { company_id: company.id }).count).to eq(3)
 
@@ -43,7 +43,7 @@ RSpec.describe Imports::HarvestTimeEntriesImporter do
     internal = company.projects.kept.find_by!(name: "Internal")
     expect(internal).not_to be_billable
     expect(internal.timesheet_entries.kept).to all(be_non_billable)
-    expect(company.clients.kept.find_by!(name: "Very Long Client Name That Exc").currency).to eq("USD")
+    expect(company.clients.kept.find_by!(name: "Very Long Client Name T-715152").currency).to eq("USD")
     expect(website.project_members.kept.find_by!(user: paul).hourly_rate).to eq(150)
   end
 
@@ -153,11 +153,11 @@ RSpec.describe Imports::HarvestTimeEntriesImporter do
         "zero_hour_skipped" => 1,
         "duplicates_skipped" => 0
       )
-      expect(data_import.summary.dig("clients", "to_create")).to contain_exactly("Acme LLC", "Very Long Client Name That Exc")
+      expect(data_import.summary.dig("clients", "to_create")).to contain_exactly("Acme LLC", "Very Long Client Name T-715152")
       expect(data_import.summary.dig("projects", "to_create")).to contain_exactly(
         "Acme LLC / Internal",
         "Acme LLC / Website",
-        "Very Long Client Name That Exc / Advisory"
+        "Very Long Client Name T-715152 / Advisory"
       )
       expect(data_import.summary.dig("date_range")).to eq("from" => "2026-01-02", "to" => "2026-01-11")
       expect(data_import.summary).not_to have_key("row_errors")
@@ -186,6 +186,88 @@ RSpec.describe Imports::HarvestTimeEntriesImporter do
     described_class.new(data_import).process
 
     expect(TimesheetEntry.kept.last.work_date).to eq(Date.new(2026, 1, 7))
+  end
+
+  it "keeps project names distinct when their 30-character prefixes collide" do
+    attach_csv_contents(data_import, <<~CSV)
+      Date,Client,Project,Project Code,Hours,First Name,Last Name
+      2026-01-01,Acme LLC,Acme 1H 2025 Committed Hours (PC),PC,1,Paul,Connors
+    CSV
+
+    described_class.new(data_import).process
+
+    second_import = create(:data_import, company:, user: actor)
+    attach_csv_contents(second_import, <<~CSV)
+      Date,Client,Project,Hours,First Name,Last Name
+      2026-01-02,Acme LLC,Acme 1H 2025 Committed Hours (LW),1,Paul,Connors
+    CSV
+    described_class.new(second_import).process
+
+    projects = company.projects.kept.order(:name)
+    expect(projects.pluck(:name).uniq.size).to eq(2)
+    expect(projects.pluck(:name).map(&:length)).to all(be <= 30)
+    expect(projects.pluck(:description)).to contain_exactly(
+      "Harvest project: Acme 1H 2025 Committed Hours (LW)",
+      "Harvest project: Acme 1H 2025 Committed Hours (PC)\nHarvest project code: PC"
+    )
+    expect(projects.flat_map { |project| project.timesheet_entries.kept.pluck(:work_date) }).to contain_exactly(
+      Date.new(2026, 1, 1),
+      Date.new(2026, 1, 2)
+    )
+    expect(data_import.reload.summary["warnings"]).to include(match(/Project name truncated:/))
+
+    reimport = create(:data_import, company:, user: actor)
+    attach_csv_contents(reimport, <<~CSV)
+      Date,Client,Project,Hours,First Name,Last Name
+      2026-01-02,Acme LLC,Acme 1H 2025 Committed Hours (LW),1,Paul,Connors
+      2026-01-01,Acme LLC,Acme 1H 2025 Committed Hours (PC),1,Paul,Connors
+    CSV
+
+    expect do
+      described_class.new(reimport).process
+    end.not_to change { [company.projects.kept.count, TimesheetEntry.kept.count] }
+    expect(reimport.reload).to have_attributes(imported_rows: 0, skipped_rows: 2)
+  end
+
+  it "keeps client names distinct when their 30-character prefixes collide" do
+    attach_csv_contents(data_import, <<~CSV)
+      Date,Client,Project,Hours,First Name,Last Name
+      2026-01-01,Acme Corporate Legal Services Alpha,Website,1,Paul,Connors
+    CSV
+
+    described_class.new(data_import).process
+
+    second_import = create(:data_import, company:, user: actor)
+    attach_csv_contents(second_import, <<~CSV)
+      Date,Client,Project,Hours,First Name,Last Name
+      2026-01-02,Acme Corporate Legal Services Bravo,Website,1,Paul,Connors
+    CSV
+    described_class.new(second_import).process
+
+    expect(company.clients.kept.pluck(:name).uniq.size).to eq(2)
+    expect(company.projects.kept.count).to eq(2)
+    expect(data_import.reload.summary["warnings"]).to include(match(/Client name truncated:/))
+  end
+
+  it "reuses unambiguous client and project names created by the legacy importer" do
+    client_name = "Acme Corporate Legal Services Alpha"
+    project_name = "Acme 1H 2025 Committed Hours (PC)"
+    create(:data_import, company:, user: actor, status: "completed", summary: {
+      "warnings" => ["Client name truncated: #{client_name}", "Project name truncated: #{project_name}"]
+    })
+    legacy_client = create(:client, company:, name: client_name.first(30))
+    legacy_project = create(:project, client: legacy_client, name: project_name.first(30))
+    create(:timesheet_entry, project: legacy_project, user: paul, work_date: Date.new(2026, 1, 1), duration: 60, note: "", source: "import")
+    attach_csv_contents(data_import, <<~CSV)
+      Date,Client,Project,Hours,First Name,Last Name
+      2026-01-01,#{client_name},#{project_name},1,Paul,Connors
+    CSV
+
+    expect do
+      described_class.new(data_import).process
+    end.not_to change { [company.clients.count, company.projects.count, TimesheetEntry.count] }
+
+    expect(data_import.reload).to have_attributes(imported_rows: 0, skipped_rows: 1)
   end
 
   it "records invalid hours, date, and blank client rows without creating entries" do
@@ -238,9 +320,8 @@ RSpec.describe Imports::HarvestTimeEntriesImporter do
     )
   end
 
-  it "truncates project names and reuses a matching project" do
+  it "shortens long project names deterministically" do
     client = create(:client, company:, name: "Acme LLC")
-    project = create(:project, client:, name: "A Project Name Longer Than Thi", billable: true)
     attach_csv_contents(data_import, <<~CSV)
       Date,Client,Project,Hours,First Name,Last Name,Billable?
       2026-01-01,Acme LLC,A Project Name Longer Than Thirty Characters,1,Paul,Connors,Yes
@@ -248,11 +329,21 @@ RSpec.describe Imports::HarvestTimeEntriesImporter do
 
     described_class.new(data_import).process
 
-    expect(client.projects.count).to eq(1)
+    project = client.projects.find_by!(name: "A Project Name Longer T-ae2f52")
     expect(project.timesheet_entries.kept).to exist
     expect(data_import.reload.summary["warnings"]).to include(
       "Project name truncated: A Project Name Longer Than Thirty Characters"
     )
+
+    reimport = create(:data_import, company:, user: actor)
+    attach_csv_contents(reimport, <<~CSV)
+      Date,Client,Project,Hours,First Name,Last Name,Billable?
+      2026-01-01,Acme LLC,A PROJECT NAME LONGER THAN THIRTY CHARACTERS,1,Paul,Connors,Yes
+    CSV
+
+    expect do
+      described_class.new(reimport).process
+    end.not_to change { [client.projects.count, TimesheetEntry.kept.count] }
   end
 
   it "restores an archived client before importing entries" do
