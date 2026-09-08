@@ -53,7 +53,11 @@ first.
 
 ## Verify
 
-1. Sync one draft invoice with a known client and service item.
+For the first verification, use a workspace whose current records are all safe
+to export because **Sync workspace** queues every client, invoice, and payment.
+
+1. Create a draft invoice with a known client and service item, then click
+   **Sync workspace**.
 2. Confirm the customer and invoice appear in the connected QuickBooks company.
 3. Record and sync a payment in Miru.
 4. Confirm the QuickBooks payment is linked to the exported invoice and, when
@@ -66,4 +70,5 @@ authorizes Miru.
 ## Disconnect
 
 Click **Disconnect** in Payment Settings to stop future exports. Existing
-QuickBooks records are not deleted.
+QuickBooks records are not deleted. Wait for a queued sync to finish first:
+disconnecting does not cancel exports that are already queued or in progress.
