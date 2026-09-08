@@ -70,5 +70,6 @@ authorizes Miru.
 ## Disconnect
 
 Click **Disconnect** in Payment Settings to stop future exports. Existing
-QuickBooks records are not deleted. Wait for a queued sync to finish first:
-disconnecting does not cancel exports that are already queued or in progress.
+QuickBooks records are not deleted. Wait for a queued sync to finish first.
+Disconnecting does not remove queued jobs: jobs that start afterward fail, while
+an export that already loaded the connection may finish.
