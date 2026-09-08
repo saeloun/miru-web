@@ -118,6 +118,7 @@ module Imports
           .includes(:client)
           .to_a
           .index_by { |project| [project.client_id, key(project.name)] }
+        load_legacy_names
       end
 
       def build_plan
@@ -169,12 +170,17 @@ module Imports
           client_key, client_plan = build_client_plan(row)
 
           original_project_name = row[:project_name]
-          project_name = original_project_name[0, 30]
+          project_name = import_name(original_project_name)
+          existing_project = client_plan[:existing] && @existing_projects[[client_plan[:existing].id, key(project_name)]]
+          if existing_project.nil? && (legacy_name = legacy_import_name(original_project_name, @legacy_project_names))
+            existing_project = client_plan[:existing] && @existing_projects[[client_plan[:existing].id, key(legacy_name)]]
+            project_name = legacy_name if existing_project
+          end
           @warnings << "Project name truncated: #{original_project_name.truncate(80)}" if original_project_name.length > 30
           project_key = [client_key, key(project_name)]
-          existing_project = client_plan[:existing] && @existing_projects[[client_plan[:existing].id, key(project_name)]]
           row[:project_plan] = @project_plans[project_key] ||= {
             name: project_name,
+            source_name: original_project_name,
             client: client_plan,
             existing: existing_project,
             billable: false,
@@ -189,7 +195,10 @@ module Imports
 
       def build_client_plan(row)
         original_name = row[:client_name]
-        client_name = original_name[0, 30]
+        client_name = import_name(original_name)
+        if !@existing_clients.key?(key(client_name)) && (legacy_name = legacy_import_name(original_name, @legacy_client_names))
+          client_name = legacy_name if @existing_clients.key?(key(legacy_name))
+        end
         @warnings << "Client name truncated: #{original_name.truncate(80)}" if original_name.length > 30
         client_key = key(client_name)
         client_plan = @client_plans[client_key] ||= {
@@ -199,6 +208,36 @@ module Imports
         }
         @warnings << "Restored archived client: #{client_name}" if client_plan[:existing]&.discarded?
         [client_key, client_plan]
+      end
+
+      def import_name(name)
+        return name if name.length <= 30
+
+        suffix = "-#{Digest::SHA256.hexdigest(key(name)).first(6)}"
+        "#{name.first(30 - suffix.length)}#{suffix}"
+      end
+
+      def load_legacy_names
+        warnings = company.data_imports.where(source: "harvest", kind: "time_entries", status: "completed", dry_run: false)
+          .pluck(:summary)
+          .flat_map { |summary| Array(summary["warnings"]) }
+        @legacy_client_names = legacy_names(warnings, "Client")
+        @legacy_project_names = legacy_names(warnings, "Project")
+      end
+
+      def legacy_names(warnings, entity)
+        prefix = "#{entity} name truncated: "
+        names = warnings.filter_map do |warning|
+          warning.delete_prefix(prefix) if warning.start_with?(prefix) && !warning.end_with?("...")
+        end
+        names.group_by { |name| key(name.first(30)) }.transform_values do |matches|
+          matches.first if matches.map { |name| key(name) }.uniq.one?
+        end.compact
+      end
+
+      def legacy_import_name(name, legacy_names)
+        legacy_name = legacy_names[key(name.first(30))]
+        name.first(30) if legacy_name && key(legacy_name) == key(name)
       end
 
       def plan_row(row)
@@ -381,11 +420,18 @@ module Imports
             plan[:record] = plan[:existing] || plan[:client][:record].projects.create!(
               name: plan[:name],
               billable: plan[:billable],
-              description: plan[:code] && "Harvest project code: #{plan[:code]}"
+              description: project_description(plan)
             )
             plan[:record].undiscard! if plan[:record].discarded?
           end
         end
+      end
+
+      def project_description(plan)
+        [
+          ("Harvest project: #{plan[:source_name]}" if plan[:source_name] != plan[:name]),
+          ("Harvest project code: #{plan[:code]}" if plan[:code])
+        ].compact.join("\n").presence
       end
 
       def create_project_members

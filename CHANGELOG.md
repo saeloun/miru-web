@@ -26,6 +26,12 @@
 - Mailer layout branding now uses asset helper URLs with production `action_mailer.asset_host` to keep email logo assets resolvable in production mail clients
 - Razorpay Payment Settings now copies the production webhook URLs with the required event names for faster dashboard setup
 
+## 3.0.3 - 2026-09-07
+
+### Fixed
+
+- Harvest imports now keep long client and project names distinct when their 30-character prefixes collide
+
 ## 3.0.2 - 2026-09-07
 
 ### Fixed
