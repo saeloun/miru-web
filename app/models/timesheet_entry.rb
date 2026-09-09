@@ -11,8 +11,8 @@ class TimesheetEntry < ApplicationRecord
   attribute :source_metadata, :json, default: {}
   attribute :proof_metadata, :json, default: {}
   attribute :review_status, :integer
-  enum :bill_status, [:non_billable, :unbilled, :billed]
-  enum :review_status, [:not_required, :pending_review, :approved, :rejected]
+  enum :bill_status, [:non_billable, :unbilled, :billed], validate: true
+  enum :review_status, [:not_required, :pending_review, :approved, :rejected], validate: true
 
   SOURCES = %w[manual cli mcp automation import].freeze
   SOURCE_METADATA_KEYS = %w[tool skill mcp_server].freeze
