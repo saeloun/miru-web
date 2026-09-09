@@ -26,6 +26,15 @@
 - Mailer layout branding now uses asset helper URLs with production `action_mailer.asset_host` to keep email logo assets resolvable in production mail clients
 - Razorpay Payment Settings now copies the production webhook URLs with the required event names for faster dashboard setup
 
+## 3.0.4 - 2026-09-09
+
+### Fixed
+
+- Malformed multipart uploads no longer crash the request; the reports PDF throttle stops parsing request bodies and `EncodingSanitizer` answers 400 for every `Rack::Multipart` error
+- Unverified form posts now fail with 422 instead of a `NoMethodError`, because `ApplicationController` explicitly enables exception-based CSRF protection
+- Unknown `bill_status` or `review_status` values from the API return 422 instead of raising
+- Database backups retry transient R2 errors with backoff and close their upload file handles
+
 ## 3.0.3 - 2026-09-07
 
 ### Fixed

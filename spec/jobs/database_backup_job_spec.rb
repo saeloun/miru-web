@@ -29,4 +29,15 @@ RSpec.describe DatabaseBackupJob do
 
     expect(DatabaseBackupService).not_to have_received(:new)
   end
+
+  it "retries S3 service errors" do
+    ENV["DATABASE_BACKUP_ENABLED"] = "true"
+    service = instance_double(DatabaseBackupService)
+    allow(DatabaseBackupService).to receive(:new).and_return(service)
+    allow(service).to receive(:process).and_raise(Aws::S3::Errors::InternalError.new(nil, "boom"))
+
+    described_class.perform_now
+
+    expect(described_class).to have_been_enqueued
+  end
 end

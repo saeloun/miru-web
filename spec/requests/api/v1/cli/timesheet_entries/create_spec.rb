@@ -76,4 +76,20 @@ RSpec.describe "Api::V1::Cli::TimesheetEntries#create", type: :request do
 
     expect(response).to have_http_status(:not_found)
   end
+
+  it "returns an error for an invalid bill status" do
+    create(:project_member, project:, user:)
+
+    send_request :post, api_v1_cli_timesheet_entries_path, params: {
+      timesheet_entry: {
+        project_id: project.id,
+        duration_minutes: 90,
+        work_date: Date.current.iso8601,
+        bill_status: "zzz"
+      }
+    }, headers: cli_auth_headers(cli_token)
+
+    expect(response).to have_http_status(:unprocessable_content)
+    expect(json_response["errors"]).to be_present
+  end
 end

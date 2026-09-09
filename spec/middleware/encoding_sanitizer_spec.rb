@@ -104,6 +104,15 @@ RSpec.describe EncodingSanitizer do
         expect(status).to eq(400)
         expect(body).to eq(["Bad Request"])
       end
+
+      it "returns bad request when multipart content is empty" do
+        app = ->(_env) { raise Rack::Multipart::EmptyContentError }
+
+        status, _headers, body = described_class.new(app).call({})
+
+        expect(status).to eq(400)
+        expect(body).to eq(["Bad Request"])
+      end
     end
   end
 

@@ -23,8 +23,9 @@ class Rack::Attack
   end
 
   throttle("reports/pdf/ip", limit: 5, period: 1.minute) do |req|
-    pdf_download = req.path.end_with?(".pdf") || req.params["format"] == "pdf"
-    req.ip if req.get? && pdf_download && req.path.match?(%r{\A/api/v1/reports/[^/]+/download(?:\.pdf)?\z})
+    next unless req.get? && req.path.match?(%r{\A/api/v1/reports/[^/]+/download(?:\.pdf)?\z})
+
+    req.ip if req.path.end_with?(".pdf") || req.GET["format"] == "pdf"
   end
 
   throttle("invitations/resend/ip", limit: 5, period: 1.minute) do |req|
