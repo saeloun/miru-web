@@ -25,4 +25,19 @@ RSpec.describe "Rack::Attack multipart handling", type: :request do
 
     expect(response.status).to be < 500
   end
+
+  it "keeps the reports pdf throttle from parsing the request body" do
+    env = Rack::MockRequest.env_for(
+      "/",
+      method: "POST",
+      input: "",
+      "CONTENT_TYPE" => "multipart/form-data; boundary=----x",
+      "CONTENT_LENGTH" => "64"
+    )
+    request = Rack::Attack::Request.new(env)
+    throttle = Rack::Attack.throttles.fetch("reports/pdf/ip")
+
+    expect { request.params }.to raise_error(EOFError)
+    expect(throttle.block.call(request)).to be_nil
+  end
 end
