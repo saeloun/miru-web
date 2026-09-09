@@ -11,6 +11,15 @@ class EncodingSanitizer
     "application/x-www-form-urlencoded",
     "text/"
   ].freeze
+  MULTIPART_ERRORS = %i[
+    EmptyContentError
+    BoundaryTooLongError
+    MultipartPartLimitError
+    MultipartTotalPartLimitError
+    MissingInputError
+  ].filter_map do |name|
+    Rack::Multipart.const_get(name, false) if Rack::Multipart.const_defined?(name, false)
+  end.freeze
 
   def initialize(app)
     @app = app
@@ -33,7 +42,11 @@ class EncodingSanitizer
     end
 
     @app.call(env)
-  rescue Rack::Multipart::BoundaryTooLongError
+  rescue *MULTIPART_ERRORS
+    [400, { "Content-Type" => "text/plain", "Content-Length" => "11" }, ["Bad Request"]]
+  rescue EOFError
+    raise unless multipart_form_data?(env)
+
     [400, { "Content-Type" => "text/plain", "Content-Length" => "11" }, ["Bad Request"]]
   end
 
@@ -61,6 +74,10 @@ class EncodingSanitizer
       return false if content_type.start_with?("multipart/form-data", "application/octet-stream")
 
       TEXTUAL_CONTENT_TYPES.any? { |type| content_type.start_with?(type) }
+    end
+
+    def multipart_form_data?(env)
+      env["CONTENT_TYPE"].to_s.downcase.start_with?("multipart/form-data")
     end
 
     # Wrapper for rack.input that sanitizes encoding on read

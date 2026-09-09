@@ -61,6 +61,14 @@ RSpec.describe TimesheetEntry, type: :model do
         .is_less_than_or_equal_to(6000000)
         .is_greater_than_or_equal_to(0.0)
     end
+
+    it "validates an invalid bill status" do
+      timesheet_entry = build(:timesheet_entry)
+
+      expect { timesheet_entry.bill_status = "zzz" }.not_to raise_error
+      expect(timesheet_entry).not_to be_valid
+      expect(timesheet_entry.errors[:bill_status]).to be_present
+    end
   end
 
   describe "Callbacks" do
