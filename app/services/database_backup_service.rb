@@ -73,8 +73,8 @@ class DatabaseBackupService
     end
 
     def upload_backup!(path)
-      client.put_object(bucket: bucket_name, key: archive_key, body: File.open(path, "rb"))
-      client.put_object(bucket: bucket_name, key: latest_key, body: File.open(path, "rb"))
+      File.open(path, "rb") { |file| client.put_object(bucket: bucket_name, key: archive_key, body: file) }
+      File.open(path, "rb") { |file| client.put_object(bucket: bucket_name, key: latest_key, body: file) }
       archive_key
     end
 

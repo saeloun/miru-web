@@ -8,6 +8,8 @@ class ApplicationController < ActionController::Base
   include Pagy::Backend
   include SetCurrentDetails
 
+  protect_from_forgery with: :exception
+
   # Vite handles asset compilation
 
   around_action :switch_locale
