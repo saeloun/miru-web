@@ -15,12 +15,7 @@ class InvoicePayment::PaypalCaptureFulfillment
     return fail_with("PayPal is not configured for this workspace") unless provider&.paypal_configured?
     return fail_with("PayPal order id is required") if order_id.blank?
 
-    payment = settle_under_lock
-    return false if error.present?
-
-    @settled = payment.present?
-    send_payment_emails if payment.present? && invoice.paid?
-    true
+    settle_and_notify
   rescue PaymentProviders::PaypalClient::Error => exception
     capture_failure(exception, "PayPal capture failed")
     fail_with(exception.message, transient?(exception) ? :provider_unavailable : nil)
@@ -38,14 +33,33 @@ class InvoicePayment::PaypalCaptureFulfillment
 
   private
 
+    def settle_and_notify
+      payment = settle_under_lock
+      return false if error.present?
+
+      @settled = payment.present?
+      send_payment_emails if payment.present? && invoice.paid?
+      true
+    end
+
     def settle_under_lock
       return nil if invoice.paid?
 
+      settle_captured(fetch_capture)
+    end
+
+    def fetch_capture
       expected_order_id = invoice.paypal_order_id
       order = capture_or_fetch_order
       purchase_unit = Array(order["purchase_units"]).first || {}
       capture = capture_from(purchase_unit)
-      owned = belongs_to_invoice?(purchase_unit, capture, expected_order_id)
+
+      { order:, capture:, owned: belongs_to_invoice?(purchase_unit, capture, expected_order_id) }
+    end
+
+    def settle_captured(captured)
+      order = captured[:order]
+      capture = captured[:capture]
 
       invoice.with_lock do
         return nil if invoice.paid?
@@ -53,15 +67,19 @@ class InvoicePayment::PaypalCaptureFulfillment
         record_order_details(order, capture)
 
         return validation_error("PayPal payment is not completed") unless completed?(capture)
-        return validation_error("PayPal order does not belong to this invoice") unless owned
+        return validation_error("PayPal order does not belong to this invoice") unless captured[:owned]
         return validation_error("PayPal capture currency does not match the invoice") unless currency_matches?(capture)
 
-        provider_event_id = "paypal:#{capture['id']}"
-        return nil if Payment.exists?(provider_event_id:)
-
-        log_amount_mismatch(capture)
-        InvoicePayment::Settle.process(payment_params(order, capture, provider_event_id), invoice)
+        settle_payment(order, capture)
       end
+    end
+
+    def settle_payment(order, capture)
+      provider_event_id = "paypal:#{capture['id']}"
+      return nil if Payment.exists?(provider_event_id:)
+
+      log_amount_mismatch(capture)
+      InvoicePayment::Settle.process(payment_params(order, capture, provider_event_id), invoice)
     end
 
     def capture_or_fetch_order
