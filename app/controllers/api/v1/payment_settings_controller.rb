@@ -56,6 +56,31 @@ class Api::V1::PaymentSettingsController < Api::V1::ApplicationController
     end
   end
 
+  def update_paypal
+    authorize :update_paypal, policy_class: PaymentSettingsPolicy
+
+    paypal_provider.assign_attributes(paypal_provider_attributes)
+    paypal_provider.client_secret = paypal_params[:client_secret].to_s.strip
+
+    service = PaymentProviders::PaypalConnectionService.new(provider: paypal_provider, webhook_url: paypal_webhook_url)
+    if service.process
+      render :index, locals: payment_settings_locals
+    else
+      render json: { errors: service.error }, status: 422
+    end
+  end
+
+  def disconnect_paypal
+    authorize :disconnect_paypal, policy_class: PaymentSettingsPolicy
+
+    provider = current_company.payments_providers.find_by(name: PaymentsProvider::PAYPAL_PROVIDER)
+    return render json: { errors: "PayPal is not connected" }, status: 404 if provider.blank?
+
+    PaymentProviders::PaypalConnectionService.new(provider:).disconnect!
+    @_paypal_provider = nil
+    render :index, locals: payment_settings_locals
+  end
+
   private
 
     def stripe_connected_account
@@ -70,6 +95,10 @@ class Api::V1::PaymentSettingsController < Api::V1::ApplicationController
       @_razorpay_provider ||= current_company.payments_providers.find_or_initialize_by(name: PaymentsProvider::RAZORPAY_PROVIDER)
     end
 
+    def paypal_provider
+      @_paypal_provider ||= current_company.payments_providers.find_or_initialize_by(name: PaymentsProvider::PAYPAL_PROVIDER)
+    end
+
     def quickbooks_connection
       @_quickbooks_connection ||= current_company.quickbooks_connections.active.find_by(
         environment: QuickBooks::Configuration.environment
@@ -81,6 +110,7 @@ class Api::V1::PaymentSettingsController < Api::V1::ApplicationController
         stripe_connected_account:,
         upi_provider:,
         razorpay_provider:,
+        paypal_provider:,
         quickbooks_connection:
       }
     end
@@ -152,6 +182,24 @@ class Api::V1::PaymentSettingsController < Api::V1::ApplicationController
       }
 
       attrs
+    end
+
+    def paypal_webhook_url
+      "#{request.base_url}/webhooks/paypal/events"
+    end
+
+    def paypal_params
+      params.require(:provider).permit(:enabled, :enabled_on_invoices, :client_id, :client_secret, :environment)
+    end
+
+    def paypal_provider_attributes
+      {
+        enabled: boolean_type.cast(paypal_params[:enabled]),
+        accepted_payment_methods: ["paypal"],
+        enabled_on_invoices: paypal_params.key?(:enabled_on_invoices) ? boolean_type.cast(paypal_params[:enabled_on_invoices]) : paypal_provider.enabled_on_invoices?,
+        client_id: paypal_params[:client_id].to_s.strip,
+        environment: paypal_params[:environment].presence || paypal_provider.paypal_environment
+      }
     end
 
     # Secret fields are write-only: an empty string keeps the existing encrypted value.

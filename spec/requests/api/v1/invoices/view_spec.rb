@@ -73,6 +73,40 @@ RSpec.describe "Api::V1::Invoices::View#index", type: :request do
         expect(response).to be_successful
         expect(json_response["stripe_connected_account"]).to be(false)
       end
+
+      it "exposes PayPal as a payment option when enabled for a supported currency" do
+        create(
+          :payments_provider,
+          company:,
+          name: PaymentsProvider::PAYPAL_PROVIDER,
+          enabled: true,
+          connected: true,
+          settings: { client_id: "client-id", environment: "sandbox", enabled_on_invoices: true }
+        ).tap { |record| record.client_secret = "secret"; record.save! }
+        invoice.update!(currency: "USD")
+
+        send_request :get, api_v1_invoices_view_path(invoice.external_view_key)
+
+        expect(json_response.dig("paypal_payment", "enabled")).to be(true)
+        expect(json_response.dig("paypal_payment", "url")).to end_with("/invoices/#{invoice.external_view_key}/payments/new?provider=paypal")
+        expect(json_response.to_json).not_to include("client-id")
+      end
+
+      it "hides PayPal for unsupported currencies" do
+        create(
+          :payments_provider,
+          company:,
+          name: PaymentsProvider::PAYPAL_PROVIDER,
+          enabled: true,
+          connected: true,
+          settings: { client_id: "client-id", environment: "sandbox", enabled_on_invoices: true }
+        ).tap { |record| record.client_secret = "secret"; record.save! }
+        invoice.update!(currency: "INR")
+
+        send_request :get, api_v1_invoices_view_path(invoice.external_view_key)
+
+        expect(json_response.dig("paypal_payment", "enabled")).to be(false)
+      end
     end
 
     context "when the client viewed the invoice" do

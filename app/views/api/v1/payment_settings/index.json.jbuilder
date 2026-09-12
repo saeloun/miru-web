@@ -45,6 +45,18 @@ json.providers do
     json.payout_purpose razorpay_provider&.payout_purpose || "payout"
     json.payout_queue_if_low_balance razorpay_provider&.payout_queue_if_low_balance? || false
   end
+  json.paypal do
+    json.connected paypal_provider&.connected? || false
+    json.enabled paypal_provider&.enabled? || false
+    json.enabled_on_invoices paypal_provider ? paypal_provider.enabled_on_invoices? : true
+    json.client_id paypal_provider&.client_id
+    json.client_secret_configured paypal_provider&.client_secret.present? || false
+    json.environment paypal_provider&.paypal_environment || "live"
+    json.webhook_id paypal_provider&.webhook_id
+    json.webhook_error paypal_provider&.webhook_error
+    json.webhook_url "#{request.base_url}/webhooks/paypal/events"
+    json.supported_currencies PaymentsProvider::PAYPAL_CURRENCIES
+  end
   json.quickbooks do
     json.configured QuickBooks::Configuration.configured?
     json.connected quickbooks_connection&.connected? || false

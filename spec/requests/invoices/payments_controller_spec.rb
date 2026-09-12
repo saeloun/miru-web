@@ -14,6 +14,7 @@ RSpec.describe Invoices::PaymentsController, type: :request do
   before do
     create(:employment, company:, user: admin)
     create(:employment, company:, user: employee)
+    allow_any_instance_of(StripeConnectedAccount).to receive(:details_submitted).and_return(true)
   end
 
   describe "GET new", :vcr do
@@ -101,6 +102,97 @@ RSpec.describe Invoices::PaymentsController, type: :request do
         expect(response.status).to eq 302
         expect(response).to redirect_to(success_path)
       end
+    end
+
+    context "when PayPal is requested and enabled", vcr: false do
+      let!(:paypal_provider) do
+        create(
+          :payments_provider,
+          company:,
+          name: PaymentsProvider::PAYPAL_PROVIDER,
+          enabled: true,
+          connected: true,
+          settings: { client_id: "client-id", environment: "sandbox", enabled_on_invoices: true }
+        ).tap { |record| record.client_secret = "secret"; record.save! }
+      end
+
+      before do
+        invoice.update!(currency: "USD")
+        allow_any_instance_of(PaymentProviders::PaypalOrderService).to receive(:process).and_return("https://www.sandbox.paypal.com/checkoutnow?token=ORDER-1")
+      end
+
+      it "redirects to the PayPal approval URL" do
+        send_request :get, new_invoice_payment_path(params.merge(provider: "paypal"))
+
+        expect(response).to redirect_to("https://www.sandbox.paypal.com/checkoutnow?token=ORDER-1")
+      end
+
+      it "falls back to PayPal when Stripe is not connected" do
+        stripe_connected_account.destroy!
+
+        send_request :get, new_invoice_payment_path(params)
+
+        expect(response).to redirect_to("https://www.sandbox.paypal.com/checkoutnow?token=ORDER-1")
+      end
+
+      it "keeps Stripe as the default when both are available" do
+        send_request :get, new_invoice_payment_path(params)
+
+        expect(response).to redirect_to(success_path)
+      end
+
+      it "redirects to the cancel page when PayPal order creation fails" do
+        allow_any_instance_of(PaymentProviders::PaypalOrderService).to receive(:process).and_raise(PaymentProviders::PaypalClient::Error.new("Currency not supported"))
+
+        send_request :get, new_invoice_payment_path(params.merge(provider: "paypal"))
+
+        expect(response).to redirect_to(cancel_invoice_payments_url(invoice.external_view_key))
+      end
+
+      it "ignores the PayPal parameter for unsupported currencies" do
+        invoice.update!(currency: "INR")
+
+        send_request :get, new_invoice_payment_path(params.merge(provider: "paypal"))
+
+        expect(response).to redirect_to(success_path)
+      end
+    end
+  end
+
+  describe "GET paypal_return", vcr: false do
+    it "captures the order and redirects to the success page" do
+      fulfillment = instance_double(InvoicePayment::PaypalCaptureFulfillment, error: nil)
+      allow(fulfillment).to receive(:process) do
+        invoice.update!(status: "paid", amount_due: 0, amount_paid: invoice.amount)
+        true
+      end
+      expect(InvoicePayment::PaypalCaptureFulfillment).to receive(:new).with(invoice:, order_id: "ORDER-1").and_return(fulfillment)
+
+      send_request :get, paypal_return_invoice_payments_path(params.merge(token: "ORDER-1", PayerID: "PAYER"))
+
+      expect(response).to redirect_to("http://www.example.com/invoices/#{invoice.external_view_key}/payments/success?provider=paypal")
+    end
+
+    it "sends the payer back to the invoice when the capture only part pays it" do
+      fulfillment = instance_double(InvoicePayment::PaypalCaptureFulfillment, process: true, error: nil)
+      allow(InvoicePayment::PaypalCaptureFulfillment).to receive(:new).and_return(fulfillment)
+
+      send_request :get, paypal_return_invoice_payments_path(params.merge(token: "ORDER-1"))
+
+      expect(response).to redirect_to("http://www.example.com/invoices/#{invoice.external_view_key}/view")
+    end
+
+    it "warns the payer instead of offering a second payment when the capture fails" do
+      fulfillment = instance_double(InvoicePayment::PaypalCaptureFulfillment, process: false, error: "Instrument declined")
+      allow(InvoicePayment::PaypalCaptureFulfillment).to receive(:new).and_return(fulfillment)
+
+      send_request :get, paypal_return_invoice_payments_path(params.merge(token: "ORDER-1"))
+
+      expect(response).to redirect_to(cancel_invoice_payments_url(invoice.external_view_key, reason: "capture"))
+
+      follow_redirect!
+      expect(response.body).to include("We could not confirm your payment")
+      expect(response.body).not_to include("Try again")
     end
   end
 

@@ -30,8 +30,10 @@ json.invoice invoice.slice(
 json.logo invoice.company.company_logo
 json.lineItems invoice.invoice_line_items
 json.stripe_connected_account stripe_connected_account&.details_submitted || false
-upi_provider = invoice.company.payments_providers.find_by(name: PaymentsProvider::UPI_PROVIDER, enabled: true)
-razorpay_provider = invoice.company.payments_providers.find_by(name: PaymentsProvider::RAZORPAY_PROVIDER, enabled: true)
+enabled_providers = invoice.company.payments_providers.where(enabled: true).index_by(&:name)
+upi_provider = enabled_providers[PaymentsProvider::UPI_PROVIDER]
+razorpay_provider = enabled_providers[PaymentsProvider::RAZORPAY_PROVIDER]
+paypal_provider = enabled_providers[PaymentsProvider::PAYPAL_PROVIDER]
 upi_payment =
   if upi_provider&.enabled_on_invoices? && invoice.currency == "INR"
     PaymentProviders::UpiIntentService.new(provider: upi_provider, invoice:).details
@@ -57,6 +59,15 @@ json.razorpay_payment do
     invoice.currency == "INR"
   )
   json.provider "razorpay"
+end
+json.paypal_payment do
+  json.enabled !!(
+    paypal_provider&.enabled_on_invoices? &&
+    paypal_provider&.paypal_configured? &&
+    paypal_provider&.connected? &&
+    PaymentsProvider.paypal_currency_supported?(invoice.currency)
+  )
+  json.url "#{new_invoice_payment_url(invoice.external_view_key)}?provider=paypal"
 end
 json.bank_payment do
   json.enabled bank_payment_enabled

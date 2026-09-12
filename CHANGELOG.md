@@ -4,6 +4,7 @@
 
 ### Added
 
+- PayPal invoice payments: connect a PayPal REST app in Payment Settings, show Pay with PayPal on public invoices, capture on return, and reconcile through PayPal webhooks
 - UPI payment settings with free Miru-branded QR generation for INR invoices, including public invoice and PDF invoice display
 - Razorpay webhook handling for cancelled and expired Payment Links, plus `payout.updated` status refreshes
 - Razorpay onboarding docs with exact Payment Links and RazorpayX webhook setup steps

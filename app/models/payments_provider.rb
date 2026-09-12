@@ -4,7 +4,13 @@ class PaymentsProvider < ApplicationRecord
   STRIPE_PROVIDER = "stripe"
   UPI_PROVIDER = "upi"
   RAZORPAY_PROVIDER = "razorpay"
-  PROVIDERS = [STRIPE_PROVIDER, UPI_PROVIDER, RAZORPAY_PROVIDER].freeze
+  PAYPAL_PROVIDER = "paypal"
+  PROVIDERS = [STRIPE_PROVIDER, UPI_PROVIDER, RAZORPAY_PROVIDER, PAYPAL_PROVIDER].freeze
+  PAYPAL_ENVIRONMENTS = %w[sandbox live].freeze
+  PAYPAL_CURRENCIES = %w[
+    AUD BRL CAD CNY CZK DKK EUR HKD HUF ILS JPY MYR MXN TWD NZD NOK PHP PLN GBP RUB SGD SEK CHF THB USD
+  ].freeze
+  PAYPAL_ZERO_DECIMAL_CURRENCIES = %w[HUF JPY TWD].freeze
   UPI_ID_REGEX = /\A[a-zA-Z0-9._-]{2,256}@[a-zA-Z][a-zA-Z0-9_-]{2,64}\z/
 
   store_accessor :settings,
@@ -22,12 +28,20 @@ class PaymentsProvider < ApplicationRecord
     :payout_account_number,
     :payout_upi_id,
     :payout_purpose,
-    :payout_queue_if_low_balance
+    :payout_queue_if_low_balance,
+    :client_id,
+    :environment,
+    :webhook_id,
+    :webhook_client_id,
+    :webhook_environment,
+    :webhook_url,
+    :webhook_error
 
   belongs_to :company
 
   before_validation :ensure_settings
   before_validation :normalize_razorpay_settings, if: :razorpay?
+  before_validation :normalize_paypal_settings, if: :paypal?
 
   validates :name, uniqueness: { scope: :company_id }
   validates :name, inclusion: { in: PROVIDERS }
@@ -42,10 +56,38 @@ class PaymentsProvider < ApplicationRecord
   validates :payout_account_number, length: { maximum: 40 }, allow_blank: true, if: :razorpay?
   validates :payout_upi_id, format: { with: UPI_ID_REGEX }, allow_blank: true, if: :razorpay?
   validates :payout_purpose, length: { maximum: 40 }, allow_blank: true, if: :razorpay?
+  validates :client_id, length: { maximum: 200 }, allow_blank: true, if: :paypal?
+  validates :environment, inclusion: { in: PAYPAL_ENVIRONMENTS }, allow_blank: true, if: :paypal?
   validate :upi_enabled_requires_upi_id, if: :upi?
   validate :razorpay_enabled_requires_credentials, if: :razorpay?
   validate :route_transfers_require_linked_account, if: :razorpay?
   validate :payouts_require_account_and_upi, if: :razorpay?
+  validate :paypal_enabled_requires_connection, if: :paypal?
+
+  def self.encrypted_setting(*names)
+    names.each do |name|
+      define_method(name) do
+        ciphertext = settings&.dig("#{name}_ciphertext")
+        return decrypt_setting(ciphertext) if ciphertext.present?
+
+        settings&.dig(name.to_s)
+      end
+
+      define_method("#{name}=") do |value|
+        ensure_settings
+        return if value.blank?
+
+        settings.delete(name.to_s)
+        settings["#{name}_ciphertext"] = encrypt_setting(value)
+      end
+    end
+  end
+
+  encrypted_setting :key_secret, :webhook_secret, :client_secret
+
+  def self.paypal_currency_supported?(currency)
+    PAYPAL_CURRENCIES.include?(currency.to_s.upcase)
+  end
 
   def upi?
     name == UPI_PROVIDER
@@ -53,6 +95,10 @@ class PaymentsProvider < ApplicationRecord
 
   def razorpay?
     name == RAZORPAY_PROVIDER
+  end
+
+  def paypal?
+    name == PAYPAL_PROVIDER
   end
 
   def upi_configured?
@@ -63,34 +109,16 @@ class PaymentsProvider < ApplicationRecord
     razorpay? && key_id.present? && key_secret.present?
   end
 
-  def key_secret
-    encrypted_key_secret = settings["key_secret_ciphertext"]
-    return decrypt_key_secret(encrypted_key_secret) if encrypted_key_secret.present?
-
-    settings["key_secret"]
+  def paypal_configured?
+    paypal? && client_id.present? && client_secret.present?
   end
 
-  def key_secret=(value)
-    ensure_settings
-    return if value.blank?
-
-    settings.delete("key_secret")
-    settings["key_secret_ciphertext"] = encrypt_key_secret(value)
+  def paypal_environment
+    environment.presence || "live"
   end
 
-  def webhook_secret
-    encrypted_webhook_secret = settings["webhook_secret_ciphertext"]
-    return decrypt_key_secret(encrypted_webhook_secret) if encrypted_webhook_secret.present?
-
-    settings["webhook_secret"]
-  end
-
-  def webhook_secret=(value)
-    ensure_settings
-    return if value.blank?
-
-    settings.delete("webhook_secret")
-    settings["webhook_secret_ciphertext"] = encrypt_key_secret(value)
+  def paypal_sandbox?
+    paypal_environment == "sandbox"
   end
 
   def enabled_on_invoices?
@@ -135,6 +163,11 @@ class PaymentsProvider < ApplicationRecord
       platform_fee_percent
     end
 
+    def normalize_paypal_settings
+      self.client_id = client_id.to_s.strip
+      self.environment = environment.to_s.strip.downcase.presence
+    end
+
     def razorpay_enabled_requires_credentials
       return unless enabled? && !razorpay_configured?
 
@@ -154,11 +187,17 @@ class PaymentsProvider < ApplicationRecord
       errors.add(:payout_upi_id, :blank) if payout_upi_id.blank?
     end
 
-    def encrypt_key_secret(value)
+    def paypal_enabled_requires_connection
+      return unless enabled? && !(paypal_configured? && connected?)
+
+      errors.add(:base, "Connect PayPal before enabling it")
+    end
+
+    def encrypt_setting(value)
       key_secret_encryptor.encrypt_and_sign(value)
     end
 
-    def decrypt_key_secret(value)
+    def decrypt_setting(value)
       key_secret_encryptor.decrypt_and_verify(value)
     rescue ActiveSupport::MessageVerifier::InvalidSignature,
       ActiveSupport::MessageEncryptor::InvalidMessage

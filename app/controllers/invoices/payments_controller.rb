@@ -7,30 +7,17 @@ class Invoices::PaymentsController < ApplicationController
   before_action :ensure_invoice_unpaid, only: [:new]
 
   def new
-    payment_url = if razorpay_provider.present?
-      PaymentProviders::RazorpayPaymentLinkService.new(
-        invoice: @invoice,
-        provider: razorpay_provider,
-        callback_url: razorpay_success_invoice_payments_url(@invoice.external_view_key)
-      ).process
-    else
-      session = @invoice.create_checkout_session!(
-        success_url: request.base_url + "/invoices/#{@invoice.external_view_key}/payments/success",
-        cancel_url: cancel_invoice_payments_url(@invoice.external_view_key)
-      )
-      session.url
-    end
-
     redirect_to payment_url, allow_other_host: true
-  rescue PaymentProviders::RazorpayClient::Error => error
+  rescue PaymentProviders::RazorpayClient::Error, PaymentProviders::PaypalClient::Error, Stripe::StripeError => error
     Rails.logger.warn(
-      "Razorpay payment link failed for invoice #{@invoice.id}: #{error.message}"
+      "[Payments] could not start payment invoice_id=#{@invoice.id} provider=#{params[:provider]} " \
+      "error_class=#{error.class} error=#{error.message}"
     )
-    redirect_to cancel_invoice_payments_url(@invoice.external_view_key),
-      alert: "Unable to create Razorpay payment link"
+    redirect_to cancel_invoice_payments_url(@invoice.external_view_key)
   end
 
   def cancel
+    @unconfirmed_payment = params[:reason] == "capture"
     render
   end
 
@@ -50,6 +37,23 @@ class Invoices::PaymentsController < ApplicationController
     end
   end
 
+  def paypal_return
+    fulfillment = InvoicePayment::PaypalCaptureFulfillment.new(invoice: @invoice, order_id: params[:token].to_s)
+    processed = fulfillment.process
+
+    if processed && @invoice.reload.paid?
+      redirect_to request.base_url + "/invoices/#{@invoice.external_view_key}/payments/success?provider=paypal",
+        allow_other_host: false
+    elsif processed
+      redirect_to request.base_url + "/invoices/#{@invoice.external_view_key}/view", allow_other_host: false
+    else
+      Rails.logger.warn(
+        "[PayPal] capture failed invoice_id=#{@invoice.id} order_id=#{params[:token]} error=#{fulfillment.error}"
+      )
+      redirect_to cancel_invoice_payments_url(@invoice.external_view_key, reason: "capture")
+    end
+  end
+
   private
 
     def load_invoice
@@ -60,6 +64,57 @@ class Invoices::PaymentsController < ApplicationController
       if @invoice.paid?
         redirect_to request.base_url + "/invoices/#{@invoice.external_view_key}/payments/success"
       end
+    end
+
+    def payment_url
+      return paypal_payment_url if paypal_requested? && paypal_provider.present?
+      return razorpay_payment_url if razorpay_provider.present?
+      return stripe_payment_url if stripe_onboarded?
+      return paypal_payment_url if paypal_provider.present?
+
+      stripe_payment_url
+    end
+
+    def stripe_onboarded?
+      @invoice.company.stripe_connected_account&.details_submitted || false
+    end
+
+    def paypal_requested?
+      params[:provider].to_s == PaymentsProvider::PAYPAL_PROVIDER
+    end
+
+    def paypal_payment_url
+      PaymentProviders::PaypalOrderService.new(
+        invoice: @invoice,
+        provider: paypal_provider,
+        return_url: paypal_return_invoice_payments_url(@invoice.external_view_key),
+        cancel_url: cancel_invoice_payments_url(@invoice.external_view_key)
+      ).process
+    end
+
+    def razorpay_payment_url
+      PaymentProviders::RazorpayPaymentLinkService.new(
+        invoice: @invoice,
+        provider: razorpay_provider,
+        callback_url: razorpay_success_invoice_payments_url(@invoice.external_view_key)
+      ).process
+    end
+
+    def stripe_payment_url
+      @invoice.create_checkout_session!(
+        success_url: request.base_url + "/invoices/#{@invoice.external_view_key}/payments/success",
+        cancel_url: cancel_invoice_payments_url(@invoice.external_view_key)
+      ).url
+    end
+
+    def paypal_provider
+      return @_paypal_provider if instance_variable_defined?(:@_paypal_provider)
+
+      provider = @invoice.company.payments_providers.find_by(name: PaymentsProvider::PAYPAL_PROVIDER, enabled: true)
+      @_paypal_provider =
+        if provider&.enabled_on_invoices? && provider.paypal_configured? && provider.connected? && PaymentsProvider.paypal_currency_supported?(@invoice.currency)
+          provider
+        end
     end
 
     def razorpay_provider
