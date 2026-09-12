@@ -45,6 +45,7 @@ const UPI_ID_PATTERN = /^[a-zA-Z0-9._-]{2,256}@[a-zA-Z][a-zA-Z0-9_-]{2,64}$/;
 
 const OrganizationPaymentSettingsPage: React.FC = () => {
   const razorpayProviderRef = useRef<HTMLDivElement | null>(null);
+  const paypalProviderRef = useRef<HTMLDivElement | null>(null);
   const [status, setStatus] = useState<PaymentSettingsStatus>(
     PaymentSettingsStatus.IDLE
   );
@@ -55,6 +56,13 @@ const OrganizationPaymentSettingsPage: React.FC = () => {
   const [isDisconnecting, setIsDisconnecting] = useState<boolean>(false);
   const [isSavingUpi, setIsSavingUpi] = useState<boolean>(false);
   const [isSavingRazorpay, setIsSavingRazorpay] = useState<boolean>(false);
+  const [isSavingPaypal, setIsSavingPaypal] = useState<boolean>(false);
+  const [isDisconnectingPaypal, setIsDisconnectingPaypal] =
+    useState<boolean>(false);
+
+  const [showPaypalDisconnectDialog, setShowPaypalDisconnectDialog] =
+    useState<boolean>(false);
+
   const [isConnectingQuickBooks, setIsConnectingQuickBooks] =
     useState<boolean>(false);
 
@@ -93,6 +101,19 @@ const OrganizationPaymentSettingsPage: React.FC = () => {
     payoutUpiId: "",
     payoutPurpose: "payout",
     payoutQueueIfLowBalance: false,
+  });
+
+  const [paypalSettings, setPaypalSettings] = useState({
+    connected: false,
+    enabled: false,
+    enabledOnInvoices: true,
+    clientId: "",
+    clientSecret: "",
+    clientSecretConfigured: false,
+    environment: "live",
+    webhookId: "",
+    webhookError: "",
+    webhookUrl: "",
   });
 
   const [quickBooksSettings, setQuickBooksSettings] = useState({
@@ -199,6 +220,22 @@ const OrganizationPaymentSettingsPage: React.FC = () => {
   ).length;
   const razorpayReadyForInvoices = razorpayKeysReady && razorpayInvoicesReady;
 
+  const applyPaypalSettings = (paypal: any = {}) => {
+    setPaypalSettings(settings => ({
+      ...settings,
+      connected: !!paypal.connected,
+      enabled: !!paypal.enabled,
+      enabledOnInvoices: paypal.enabledOnInvoices ?? true,
+      clientId: paypal.clientId || "",
+      clientSecret: "",
+      clientSecretConfigured: !!paypal.clientSecretConfigured,
+      environment: paypal.environment || "live",
+      webhookId: paypal.webhookId || "",
+      webhookError: paypal.webhookError || "",
+      webhookUrl: paypal.webhookUrl || "",
+    }));
+  };
+
   const applyQuickBooksSettings = (quickbooks: any = {}) => {
     const mappingSettings = quickbooks.mappingSettings || {};
 
@@ -261,6 +298,7 @@ const OrganizationPaymentSettingsPage: React.FC = () => {
           payoutQueueIfLowBalance: !!razorpay.payoutQueueIfLowBalance,
         }));
       }
+      applyPaypalSettings(res.data.providers.paypal);
       applyQuickBooksSettings(res.data.providers.quickbooks);
       setStatus(PaymentSettingsStatus.SUCCESS);
     } catch (error) {
@@ -290,6 +328,10 @@ const OrganizationPaymentSettingsPage: React.FC = () => {
 
   const updateRazorpaySetting = (key: string, value: string | boolean) => {
     setRazorpaySettings(settings => ({ ...settings, [key]: value }));
+  };
+
+  const updatePaypalSetting = (key: string, value: string | boolean) => {
+    setPaypalSettings(settings => ({ ...settings, [key]: value }));
   };
 
   const updateQuickBooksSetting = (key: string, value: string) => {
@@ -406,6 +448,57 @@ const OrganizationPaymentSettingsPage: React.FC = () => {
       toast.error(i18n.t("paymentSettingsPage.razorpaySaveFailed"));
     } finally {
       setIsSavingRazorpay(false);
+    }
+  };
+
+  const savePaypalSettings = async () => {
+    if (paypalSettings.clientId.trim().length === 0) {
+      toast.error(i18n.t("paymentSettingsPage.paypalClientIdRequired"));
+
+      return;
+    }
+
+    if (
+      !paypalSettings.clientSecretConfigured &&
+      paypalSettings.clientSecret.trim().length === 0
+    ) {
+      toast.error(i18n.t("paymentSettingsPage.paypalClientSecretRequired"));
+
+      return;
+    }
+
+    try {
+      setIsSavingPaypal(true);
+      const res = await paymentSettings.updatePaypal({
+        enabled: paypalSettings.enabled,
+        enabled_on_invoices: paypalSettings.enabledOnInvoices,
+        client_id: paypalSettings.clientId,
+        client_secret: paypalSettings.clientSecret,
+        environment: paypalSettings.environment,
+      });
+      applyPaypalSettings(res.data.providers.paypal);
+      toast.success(i18n.t("paymentSettingsPage.paypalSaved"));
+    } catch (error: any) {
+      const message =
+        error?.response?.data?.errors ||
+        i18n.t("paymentSettingsPage.paypalSaveFailed");
+      toast.error(message);
+    } finally {
+      setIsSavingPaypal(false);
+    }
+  };
+
+  const disconnectPaypal = async () => {
+    try {
+      setIsDisconnectingPaypal(true);
+      const res = await paymentSettings.disconnectPaypal();
+      applyPaypalSettings(res.data.providers.paypal);
+      setShowPaypalDisconnectDialog(false);
+      toast.success(i18n.t("paymentSettingsPage.paypalDisconnected"));
+    } catch {
+      toast.error(i18n.t("paymentSettingsPage.paypalDisconnectFailed"));
+    } finally {
+      setIsDisconnectingPaypal(false);
     }
   };
 
@@ -543,8 +636,15 @@ const OrganizationPaymentSettingsPage: React.FC = () => {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
 
-    if (params.get("provider") === "razorpay") {
+    const provider = params.get("provider");
+
+    if (provider === "razorpay") {
       razorpayProviderRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    } else if (provider === "paypal") {
+      paypalProviderRef.current?.scrollIntoView({
         behavior: "smooth",
         block: "start",
       });
@@ -676,6 +776,243 @@ const OrganizationPaymentSettingsPage: React.FC = () => {
                             )}
                           </Button>
                         )}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div
+                    className="rounded-lg border border-border bg-card p-4 sm:p-6"
+                    ref={paypalProviderRef}
+                  >
+                    <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-start gap-3">
+                          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-border bg-muted">
+                            <CreditCard className="h-6 w-6 text-[#003087]" />
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <div className="flex flex-wrap items-center gap-2">
+                              <h3 className="text-lg font-medium text-foreground">
+                                {i18n.t("paymentSettingsPage.paypalTitle")}
+                              </h3>
+                              <Badge
+                                variant="secondary"
+                                className="border-border bg-accent text-foreground"
+                              >
+                                {i18n.t("paymentSettingsPage.paypalBadge")}
+                              </Badge>
+                            </div>
+                            <p className="mt-1 text-sm text-muted-foreground">
+                              {i18n.t("paymentSettingsPage.paypalDescription")}
+                            </p>
+                          </div>
+                        </div>
+
+                        <Button
+                          asChild
+                          variant="outline"
+                          size="sm"
+                          className="mt-4 bg-background"
+                        >
+                          <a
+                            href="https://developer.paypal.com/dashboard/applications/live"
+                            rel="noreferrer"
+                            target="_blank"
+                          >
+                            {i18n.t("paymentSettingsPage.openPaypalDeveloper")}
+                            <ExternalLink className="ml-2 h-4 w-4" />
+                          </a>
+                        </Button>
+
+                        <div className="mt-5 grid grid-cols-1 gap-4 md:grid-cols-2">
+                          <div className="space-y-2">
+                            <Label htmlFor="paypal_client_id">
+                              {i18n.t("paymentSettingsPage.paypalClientId")}
+                            </Label>
+                            <Input
+                              id="paypal_client_id"
+                              value={paypalSettings.clientId}
+                              onChange={e =>
+                                updatePaypalSetting("clientId", e.target.value)
+                              }
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="paypal_client_secret">
+                              {i18n.t("paymentSettingsPage.paypalClientSecret")}
+                            </Label>
+                            <Input
+                              id="paypal_client_secret"
+                              type="password"
+                              value={paypalSettings.clientSecret}
+                              placeholder={
+                                paypalSettings.clientSecretConfigured
+                                  ? i18n.t(
+                                      "paymentSettingsPage.secretAlreadySaved"
+                                    )
+                                  : i18n.t(
+                                      "paymentSettingsPage.enterClientSecret"
+                                    )
+                              }
+                              onChange={e =>
+                                updatePaypalSetting(
+                                  "clientSecret",
+                                  e.target.value
+                                )
+                              }
+                            />
+                          </div>
+                        </div>
+
+                        <div className="mt-5 space-y-4 rounded-lg border border-border bg-muted/30 p-4">
+                          <div className="flex items-center justify-between gap-4">
+                            <div>
+                              <Label
+                                htmlFor="paypal_sandbox"
+                                className="text-sm font-medium"
+                              >
+                                {i18n.t("paymentSettingsPage.paypalSandbox")}
+                              </Label>
+                              <p className="mt-1 text-sm text-muted-foreground">
+                                {i18n.t(
+                                  "paymentSettingsPage.paypalSandboxHint"
+                                )}
+                              </p>
+                            </div>
+                            <Switch
+                              id="paypal_sandbox"
+                              checked={paypalSettings.environment === "sandbox"}
+                              onCheckedChange={checked =>
+                                updatePaypalSetting(
+                                  "environment",
+                                  checked ? "sandbox" : "live"
+                                )
+                              }
+                            />
+                          </div>
+                          <div className="flex items-center justify-between gap-4">
+                            <Label
+                              htmlFor="paypal_on_invoices"
+                              className="text-sm font-medium"
+                            >
+                              {i18n.t(
+                                "paymentSettingsPage.showPaypalOnInvoices"
+                              )}
+                            </Label>
+                            <Switch
+                              id="paypal_on_invoices"
+                              checked={paypalSettings.enabledOnInvoices}
+                              onCheckedChange={checked =>
+                                updatePaypalSetting(
+                                  "enabledOnInvoices",
+                                  checked
+                                )
+                              }
+                            />
+                          </div>
+                          <div className="flex items-center justify-between gap-4">
+                            <Label
+                              htmlFor="paypal_enabled"
+                              className="text-sm font-medium"
+                            >
+                              {i18n.t("paymentSettingsPage.paypalEnabled")}
+                            </Label>
+                            <Switch
+                              id="paypal_enabled"
+                              checked={paypalSettings.enabled}
+                              disabled={
+                                !paypalSettings.connected &&
+                                !paypalSettings.clientSecretConfigured &&
+                                paypalSettings.clientSecret.length === 0
+                              }
+                              onCheckedChange={checked =>
+                                updatePaypalSetting("enabled", checked)
+                              }
+                            />
+                          </div>
+                        </div>
+
+                        <div className="mt-5 space-y-2 text-sm">
+                          <div className="flex items-center gap-2">
+                            {paypalSettings.webhookId ? (
+                              <>
+                                <CheckCircle2 className="h-4 w-4 text-primary" />
+                                <span>
+                                  {i18n.t(
+                                    "paymentSettingsPage.paypalWebhookRegistered"
+                                  )}
+                                </span>
+                              </>
+                            ) : (
+                              <>
+                                <AlertCircle className="h-4 w-4 text-destructive" />
+                                <span>
+                                  {i18n.t(
+                                    "paymentSettingsPage.paypalWebhookMissing"
+                                  )}
+                                </span>
+                                {paypalSettings.webhookError && (
+                                  <span className="text-destructive">
+                                    {paypalSettings.webhookError}
+                                  </span>
+                                )}
+                              </>
+                            )}
+                          </div>
+                          <div className="flex flex-col gap-1 text-muted-foreground sm:flex-row sm:items-center">
+                            <span>
+                              {i18n.t("paymentSettingsPage.paypalWebhookUrl")}:
+                            </span>
+                            <code className="break-all rounded bg-muted px-2 py-1 text-xs text-foreground">
+                              {paypalSettings.webhookUrl}
+                            </code>
+                          </div>
+                          <p className="text-muted-foreground">
+                            {i18n.t(
+                              "paymentSettingsPage.paypalSupportedCurrencies"
+                            )}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex shrink-0 flex-col gap-2 sm:flex-row lg:flex-col">
+                        {paypalSettings.connected && (
+                          <>
+                            <Badge className="border-border bg-accent text-foreground">
+                              {i18n.t("paymentSettingsPage.connected")}
+                            </Badge>
+                            <Badge variant="outline" className="justify-center">
+                              {i18n.t(
+                                paypalSettings.environment === "sandbox"
+                                  ? "paymentSettingsPage.paypalEnvironmentSandbox"
+                                  : "paymentSettingsPage.paypalEnvironmentLive"
+                              )}
+                            </Badge>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="border-border text-destructive hover:bg-destructive/10 hover:text-destructive"
+                              onClick={() =>
+                                setShowPaypalDisconnectDialog(true)
+                              }
+                            >
+                              {i18n.t("paymentSettingsPage.paypalDisconnect")}
+                            </Button>
+                          </>
+                        )}
+                        <Button
+                          onClick={savePaypalSettings}
+                          disabled={isSavingPaypal}
+                        >
+                          {isSavingPaypal ? (
+                            <>
+                              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                              {i18n.t("paymentSettingsPage.savingPaypal")}
+                            </>
+                          ) : (
+                            i18n.t("paymentSettingsPage.savePaypal")
+                          )}
+                        </Button>
                       </div>
                     </div>
                   </div>
@@ -1731,6 +2068,44 @@ const OrganizationPaymentSettingsPage: React.FC = () => {
                 </>
               ) : (
                 i18n.t("paymentSettingsPage.disconnect")
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      <Dialog
+        open={showPaypalDisconnectDialog}
+        onOpenChange={setShowPaypalDisconnectDialog}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>
+              {i18n.t("paymentSettingsPage.paypalDisconnectDialogTitle")}
+            </DialogTitle>
+            <DialogDescription>
+              {i18n.t("paymentSettingsPage.paypalDisconnectDialogDescription")}
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setShowPaypalDisconnectDialog(false)}
+              disabled={isDisconnectingPaypal}
+            >
+              {i18n.t("cancel")}
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={disconnectPaypal}
+              disabled={isDisconnectingPaypal}
+            >
+              {isDisconnectingPaypal ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  {i18n.t("paymentSettingsPage.paypalDisconnecting")}
+                </>
+              ) : (
+                i18n.t("paymentSettingsPage.paypalDisconnect")
               )}
             </Button>
           </DialogFooter>

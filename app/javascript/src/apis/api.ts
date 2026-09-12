@@ -420,6 +420,13 @@ export const paymentSettingsApi = {
     http.patch(`/payments/settings/upi`, { provider }),
   updateRazorpay: (provider: any) =>
     http.patch(`/payments/settings/razorpay`, { provider }),
+  updatePaypal: (provider: any) =>
+    http.patch(
+      `/payments/settings/paypal`,
+      { provider },
+      { skipErrorToast: true }
+    ),
+  disconnectPaypal: () => http.delete(`/payments/settings/paypal`),
   connectStripe: () => http.post(`/payments/settings/stripe/connect`),
   disconnectStripe: () => http.delete(`/payments/settings/stripe/disconnect`),
 };
