@@ -62,6 +62,7 @@ Rails.application.routes.draw do
       collection do
         get :cancel
         get :razorpay_success
+        get :paypal_return
       end
     end
   end
@@ -79,6 +80,7 @@ Rails.application.routes.draw do
     post "stripe/checkout/fulfillment", to: "stripe#fulfill_stripe_checkout"
     post "razorpay/payment_links", to: "razorpay#payment_links"
     post "razorpay/payouts", to: "razorpay#payouts"
+    post "paypal/events", to: "paypal#events"
   end
 
   # Keep docs reachable from the main app domain.
