@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class InvoicePayment::PaypalCaptureFulfillment
-  attr_reader :invoice, :order_id, :error
+  attr_reader :invoice, :order_id, :error, :error_code
 
   def initialize(invoice:, order_id:)
     @invoice = invoice
@@ -21,7 +21,7 @@ class InvoicePayment::PaypalCaptureFulfillment
     true
   rescue PaymentProviders::PaypalClient::Error => exception
     capture_failure(exception, "PayPal capture failed")
-    fail_with(exception.message)
+    fail_with(exception.message, transient?(exception) ? :provider_unavailable : nil)
   rescue ActiveRecord::RecordInvalid => exception
     capture_failure(exception, "PayPal capture could not be recorded")
     fail_with(exception.record.errors.full_messages.to_sentence)
@@ -93,6 +93,10 @@ class InvoicePayment::PaypalCaptureFulfillment
       capture.dig("amount", "currency_code").to_s.casecmp?(invoice.currency)
     end
 
+    def zero_decimal?
+      PaymentsProvider::PAYPAL_ZERO_DECIMAL_CURRENCIES.include?(invoice.currency.to_s.upcase)
+    end
+
     def record_order_details(order, capture)
       invoice.update!(
         paypal_order_id: order["id"].presence || order_id,
@@ -104,6 +108,8 @@ class InvoicePayment::PaypalCaptureFulfillment
     def log_amount_mismatch(capture)
       captured = PaymentProviders::PaypalAmount.parse(capture.dig("amount", "value"))
       return if captured == invoice.amount_due
+      # Zero-decimal currencies are rounded up when the order is created, so a sub-unit gap is expected.
+      return if zero_decimal? && (captured - invoice.amount_due).abs < 1
 
       Rails.logger.warn(
         "PayPal capture #{capture['id']} for invoice #{invoice.id} was #{captured}, amount due #{invoice.amount_due}"
@@ -154,7 +160,10 @@ class InvoicePayment::PaypalCaptureFulfillment
     end
 
     def capture_failure(exception, message)
-      Rails.logger.warn("#{message} for invoice #{invoice.id} order #{order_id}: #{exception.class}: #{exception.message}")
+      Rails.logger.warn(
+        "[PayPal] #{message} invoice_id=#{invoice.id} order_id=#{order_id} " \
+        "error_class=#{exception.class} error=#{exception.message}"
+      )
       Sentry.capture_exception(
         exception,
         extra: { invoice_id: invoice.id, paypal_order_id: order_id }
@@ -169,13 +178,26 @@ class InvoicePayment::PaypalCaptureFulfillment
       @_client ||= PaymentProviders::PaypalClient.new(provider:)
     end
 
+    # PayPal has already taken the money at this point, so a rejected capture is an alert, not a log line.
     def validation_error(message)
       @error = message
+      Rails.logger.warn("[PayPal] capture rejected invoice_id=#{invoice.id} order_id=#{order_id} reason=#{message}")
+      Sentry.capture_message(
+        "PayPal capture rejected after the payer was charged",
+        level: :error,
+        extra: { invoice_id: invoice.id, paypal_order_id: order_id, reason: message }
+      ) if defined?(Sentry)
       nil
     end
 
-    def fail_with(message)
+    def fail_with(message, code = nil)
       @error = message
+      @error_code = code
       false
+    end
+
+    # A transport failure or a PayPal 5xx may succeed on a retry; a rejection will not.
+    def transient?(exception)
+      exception.status.nil? || exception.status >= 500
     end
 end

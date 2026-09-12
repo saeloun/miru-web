@@ -8,17 +8,6 @@ class Api::V1::Invoices::PaymentsController < Api::V1::ApplicationController
   after_action :track_event, only: [:success]
 
   def success
-    if params[:provider] == PaymentsProvider::RAZORPAY_PROVIDER
-      if @invoice.paid?
-        return render json: {
-          invoice: payment_success_invoice_payload,
-          notice: I18n.t("invoices.payments.success.success")
-        }, status: 200
-      end
-
-      return render json: { error: I18n.t("invoices.payments.success.failure") }, status: 422
-    end
-
     if @invoice.paid?
       render json: {
         invoice: payment_success_invoice_payload,

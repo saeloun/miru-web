@@ -93,25 +93,34 @@ RSpec.describe InvoicePayment::PaypalWebhookFulfillment do
     expect(fulfillment.error_code).to eq(:verification_unavailable)
   end
 
-  it "rejects payloads whose JSON is not a webhook event" do
+  it "acknowledges payloads whose JSON is not a webhook event instead of raising" do
+    expect(InvoicePayment::PaypalCaptureFulfillment).not_to receive(:new)
+
     ["[]", "null", "123", '{"event_type":"CHECKOUT.ORDER.APPROVED","resource":{"purchase_units":["x"]}}',
      '{"event_type":"PAYMENT.CAPTURE.COMPLETED","resource":{"supplementary_data":"x"}}'].each do |body|
       fulfillment = described_class.new(payload: body, headers:)
 
-      expect { fulfillment.process }.not_to raise_error
-      expect(fulfillment.process).to be(true).or be(false)
+      expect(fulfillment.process).to be(true), "expected #{body} to be acknowledged"
     end
   end
 
-  it "surfaces capture errors" do
+  it "acknowledges a permanent capture failure so PayPal stops retrying it" do
     payload = payload_for("CHECKOUT.ORDER.APPROVED", { id: "ORDER-1", purchase_units: [{ custom_id: invoice.id.to_s }] })
     allow(client).to receive(:verify_webhook_signature).and_return(true)
-    allow(capture_fulfillment).to receive(:process).and_return(false)
-    allow(capture_fulfillment).to receive(:error).and_return("Instrument declined")
+    allow(capture_fulfillment).to receive_messages(process: false, error: "Instrument declined", error_code: nil)
+
+    expect(described_class.new(payload:, headers:).process).to be(true)
+  end
+
+  it "asks PayPal to retry when the capture failed because PayPal was unavailable" do
+    payload = payload_for("CHECKOUT.ORDER.APPROVED", { id: "ORDER-1", purchase_units: [{ custom_id: invoice.id.to_s }] })
+    allow(client).to receive(:verify_webhook_signature).and_return(true)
+    allow(capture_fulfillment).to receive_messages(process: false, error: "PayPal request failed", error_code: :provider_unavailable)
 
     fulfillment = described_class.new(payload:, headers:)
     expect(fulfillment.process).to be(false)
-    expect(fulfillment.error).to eq("Instrument declined")
+    expect(fulfillment.error_code).to eq(:provider_unavailable)
+    expect(fulfillment.error).to eq("PayPal request failed")
   end
 
   it "fails on malformed JSON" do

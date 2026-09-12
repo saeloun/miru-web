@@ -107,7 +107,7 @@ RSpec.describe PaymentProviders::PaypalConnectionService do
   end
 
   it "saves a disconnected, disabled provider when credentials are rejected" do
-    allow(client).to receive(:access_token).and_raise(PaymentProviders::PaypalClient::Error.new("Client Authentication failed"))
+    allow(client).to receive(:access_token).and_raise(PaymentProviders::PaypalClient::Error.new("Client Authentication failed", status: 401))
 
     expect(service.process).to be(false)
     expect(service.error).to eq("Client Authentication failed")
@@ -132,5 +132,26 @@ RSpec.describe PaymentProviders::PaypalConnectionService do
 
       expect { service.disconnect! }.to change(PaymentsProvider, :count).by(-1)
     end
+  end
+
+  it "keeps a working connection when PayPal cannot be reached" do
+    provider.connected = true
+    provider.settings.merge!("webhook_id" => "WH-1", "webhook_client_id" => "client-id", "webhook_environment" => "sandbox", "webhook_url" => webhook_url)
+    provider.save!
+    allow(client).to receive(:access_token).and_raise(PaymentProviders::PaypalClient::Error.new("PayPal request failed: TimeoutError"))
+
+    expect(service.process).to be(false)
+    expect(service.error).to eq("PayPal request failed: TimeoutError")
+    expect(provider.reload).to have_attributes(connected: true, enabled: true)
+    expect(provider.webhook_id).to eq("WH-1")
+  end
+
+  it "disconnects when PayPal rejects the credentials" do
+    provider.connected = true
+    provider.save!
+    allow(client).to receive(:access_token).and_raise(PaymentProviders::PaypalClient::Error.new("Client Authentication failed", status: 401))
+
+    expect(service.process).to be(false)
+    expect(provider.reload).to have_attributes(connected: false, enabled: false)
   end
 end

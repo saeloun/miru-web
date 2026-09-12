@@ -118,7 +118,7 @@ const Header = ({
                   <ReportsIcon color="white" size={16} weight="bold" />
                 </div>
                 <p className="ml-1 text-base font-bold tracking-widest text-primary-foreground">
-                  PAY
+                  {paypalOnly ? i18n.t("invoices.payWithPaypal") : "PAY"}
                 </p>
               </div>
             </button>

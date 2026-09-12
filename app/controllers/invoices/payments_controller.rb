@@ -9,11 +9,17 @@ class Invoices::PaymentsController < ApplicationController
   def new
     redirect_to payment_url, allow_other_host: true
   rescue PaymentProviders::RazorpayClient::Error, PaymentProviders::PaypalClient::Error, Stripe::StripeError => error
-    Rails.logger.warn("Payment link failed for invoice #{@invoice.id}: #{error.class} #{error.message}")
-    redirect_to cancel_invoice_payments_url(@invoice.external_view_key), alert: "Unable to start the payment"
+    Rails.logger.warn(
+      "[Payments] could not start payment invoice_id=#{@invoice.id} provider=#{params[:provider]} " \
+      "error_class=#{error.class} error=#{error.message}"
+    )
+    redirect_to cancel_invoice_payments_url(@invoice.external_view_key)
   end
 
   def cancel
+    # An approved PayPal order may already have taken the client's money, so that case must not
+    # offer to start a second payment.
+    @unconfirmed_payment = params[:reason] == "capture"
     render
   end
 
@@ -44,8 +50,10 @@ class Invoices::PaymentsController < ApplicationController
       # A part payment leaves a balance, so the success page would reject it. Send the payer back to the invoice.
       redirect_to request.base_url + "/invoices/#{@invoice.external_view_key}/view", allow_other_host: false
     else
-      Rails.logger.warn("PayPal capture failed for invoice #{@invoice.id}: #{fulfillment.error}")
-      redirect_to cancel_invoice_payments_url(@invoice.external_view_key), alert: "Unable to verify PayPal payment"
+      Rails.logger.warn(
+        "[PayPal] capture failed invoice_id=#{@invoice.id} order_id=#{params[:token]} error=#{fulfillment.error}"
+      )
+      redirect_to cancel_invoice_payments_url(@invoice.external_view_key, reason: "capture")
     end
   end
 

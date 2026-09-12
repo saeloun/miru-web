@@ -62,7 +62,7 @@ const MobileView = ({ data }) => {
   return (
     <div className="h-full">
       <Header invoice={invoice} />
-      <div className="h-full overflow-y-scroll">
+      <div className="h-full overflow-y-scroll pb-40">
         <CompanyInfo company={company} />
         <InvoiceInfo
           company={company}
@@ -147,7 +147,7 @@ const MobileView = ({ data }) => {
         >
           <ReportsIcon className="text-white" size={16} weight="bold" />
           <span className="ml-2 text-center text-base font-bold leading-5 text-white">
-            PAY
+            {paypalOnly ? i18n.t("invoices.payWithPaypal") : "PAY"}
           </span>
         </Button>
       </div>

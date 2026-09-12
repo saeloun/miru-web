@@ -30,8 +30,14 @@ class InvoicePayment::PaypalWebhookFulfillment
     fulfillment = InvoicePayment::PaypalCaptureFulfillment.new(invoice:, order_id:)
     return true if fulfillment.process
 
-    fail_with(fulfillment.error || "Unable to settle PayPal payment")
-  rescue JSON::ParserError, TypeError, NoMethodError
+    # A retry can only help when PayPal itself was unavailable. Everything else is permanent,
+    # and answering non-2xx would have PayPal retry for three days and then deactivate the webhook.
+    if fulfillment.error_code == :provider_unavailable
+      fail_with(fulfillment.error, :provider_unavailable)
+    else
+      acknowledge_failure(fulfillment.error || "Unable to settle PayPal payment")
+    end
+  rescue JSON::ParserError, TypeError
     fail_with("Invalid PayPal webhook payload")
   end
 
@@ -98,15 +104,30 @@ class InvoicePayment::PaypalWebhookFulfillment
       )
       verified ? :valid : :invalid
     rescue PaymentProviders::PaypalClient::Error => exception
-      Rails.logger.warn("PayPal webhook signature verification unavailable: #{exception.message}")
+      Rails.logger.warn("[PayPal webhook] signature verification unavailable error=#{exception.message} #{event_context}")
       :unavailable
     end
 
     # The webhook is registered on the merchant's whole REST app, so PayPal also delivers events
     # that belong to their other integrations. Those are acknowledged and logged, never retried.
     def acknowledge(message)
-      Rails.logger.info("PayPal webhook acknowledged without settlement: #{message}")
+      Rails.logger.info("[PayPal webhook] acknowledged without settlement reason=#{message} #{event_context}")
       true
+    end
+
+    def acknowledge_failure(message)
+      Rails.logger.error("[PayPal webhook] settlement failed permanently reason=#{message} #{event_context}")
+      Sentry.capture_message(
+        "PayPal webhook could not be settled",
+        level: :error,
+        extra: { reason: message, event_id: parsed_payload["id"], event_type:, order_id:, invoice_id: invoice&.id }
+      ) if defined?(Sentry)
+      true
+    end
+
+    def event_context
+      "event_id=#{parsed_payload['id']} event_type=#{event_type} order_id=#{order_id} " \
+        "custom_id=#{custom_id} invoice_id=#{invoice&.id} company_id=#{invoice&.company_id}"
     end
 
     def fail_with(message, code = nil)

@@ -23,9 +23,18 @@ module PaymentProviders
       save_provider
     rescue PaypalClient::Error => exception
       @error = exception.message
-      provider.connected = false
-      provider.enabled = false
-      provider.webhook_id = nil
+      # A timeout or a PayPal 5xx says nothing about the credentials, so a live connection is kept.
+      if credentials_rejected?(exception)
+        provider.connected = false
+        provider.enabled = false
+        provider.webhook_id = nil
+      else
+        Rails.logger.warn(
+          "[PayPal] connection check could not reach PayPal, keeping the current connection " \
+          "provider_id=#{provider.id} error=#{exception.message}"
+        )
+      end
+
       unless provider.save
         @error = [exception.message, provider.errors.full_messages.to_sentence].compact_blank.join(". ")
       end
@@ -38,6 +47,10 @@ module PaymentProviders
     end
 
     private
+
+      def credentials_rejected?(exception)
+        exception.status.present? && exception.status.between?(400, 499)
+      end
 
       def save_provider
         return true if provider.save
@@ -71,6 +84,10 @@ module PaymentProviders
           remember_webhook(existing)
         else
           provider.webhook_error = exception.message
+          Rails.logger.warn(
+            "[PayPal] webhook registration failed provider_id=#{provider.id} url=#{webhook_url} " \
+            "issue=#{exception.issue} error=#{exception.message}"
+          )
         end
       end
 

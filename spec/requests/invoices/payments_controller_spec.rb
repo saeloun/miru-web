@@ -182,14 +182,17 @@ RSpec.describe Invoices::PaymentsController, type: :request do
       expect(response).to redirect_to("http://www.example.com/invoices/#{invoice.external_view_key}/view")
     end
 
-    it "redirects to the cancel page when capture fails" do
+    it "warns the payer instead of offering a second payment when the capture fails" do
       fulfillment = instance_double(InvoicePayment::PaypalCaptureFulfillment, process: false, error: "Instrument declined")
       allow(InvoicePayment::PaypalCaptureFulfillment).to receive(:new).and_return(fulfillment)
 
       send_request :get, paypal_return_invoice_payments_path(params.merge(token: "ORDER-1"))
 
-      expect(response).to redirect_to(cancel_invoice_payments_url(invoice.external_view_key))
-      expect(flash[:alert]).to eq("Unable to verify PayPal payment")
+      expect(response).to redirect_to(cancel_invoice_payments_url(invoice.external_view_key, reason: "capture"))
+
+      follow_redirect!
+      expect(response.body).to include("We could not confirm your payment")
+      expect(response.body).not_to include("Try again")
     end
   end
 

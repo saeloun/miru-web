@@ -43,6 +43,15 @@ import { toast } from "sonner";
 
 const UPI_ID_PATTERN = /^[a-zA-Z0-9._-]{2,256}@[a-zA-Z][a-zA-Z0-9_-]{2,64}$/;
 
+const PaypalIcon = ({ className }: { className?: string }) => (
+  <svg className={className} fill="none" viewBox="0 0 24 24">
+    <path
+      d="M7.076 21.337H2.47a.641.641 0 0 1-.633-.74L4.944.901C5.026.382 5.474 0 5.998 0h7.46c2.57 0 4.578.543 5.69 1.81.514.586.84 1.196.994 1.86.16.696.163 1.52.008 2.5l-.012.072v.638l.4.225c.34.18.61.386.815.62.34.39.56.885.65 1.472.094.605.063 1.325-.09 2.14-.177.938-.462 1.755-.846 2.424a4.8 4.8 0 0 1-1.34 1.47 5.42 5.42 0 0 1-1.805.815c-.67.174-1.435.262-2.276.262h-.542c-.387 0-.763.14-1.058.39a1.64 1.64 0 0 0-.55 1.002l-.04.22-.706 4.476-.032.164c-.008.052-.023.078-.045.096a.12.12 0 0 1-.075.026H7.076Z"
+      fill="#003087"
+    />
+  </svg>
+);
+
 const OrganizationPaymentSettingsPage: React.FC = () => {
   const razorpayProviderRef = useRef<HTMLDivElement | null>(null);
   const paypalProviderRef = useRef<HTMLDivElement | null>(null);
@@ -220,16 +229,18 @@ const OrganizationPaymentSettingsPage: React.FC = () => {
   ).length;
   const razorpayReadyForInvoices = razorpayKeysReady && razorpayInvoicesReady;
 
-  const applyPaypalSettings = (paypal: any = {}) => {
+  const applyPaypalSettings = (paypal: any = {}, keepInput = false) => {
     setPaypalSettings(settings => ({
       ...settings,
       connected: !!paypal.connected,
       enabled: !!paypal.enabled,
       enabledOnInvoices: paypal.enabledOnInvoices ?? true,
-      clientId: paypal.clientId || "",
-      clientSecret: "",
+      clientId: keepInput ? settings.clientId : paypal.clientId || "",
+      clientSecret: keepInput ? settings.clientSecret : "",
       clientSecretConfigured: !!paypal.clientSecretConfigured,
-      environment: paypal.environment || "live",
+      environment: keepInput
+        ? settings.environment
+        : paypal.environment || "live",
       webhookId: paypal.webhookId || "",
       webhookError: paypal.webhookError || "",
       webhookUrl: paypal.webhookUrl || "",
@@ -479,11 +490,20 @@ const OrganizationPaymentSettingsPage: React.FC = () => {
       applyPaypalSettings(res.data.providers.paypal);
       toast.success(i18n.t("paymentSettingsPage.paypalSaved"));
     } catch (error: any) {
-      const message =
-        error?.response?.data?.errors ||
-        i18n.t("paymentSettingsPage.paypalSaveFailed");
-      toast.error(message);
-      await fetchPaymentSettings();
+      const reason = error?.response?.data?.errors;
+      toast.error(
+        typeof reason === "string" && reason.length > 0
+          ? reason
+          : i18n.t("paymentSettingsPage.paypalSaveFailed")
+      );
+
+      // Refresh what the server decided without clearing the credentials the admin just typed.
+      try {
+        const refreshed = await paymentSettings.get();
+        applyPaypalSettings(refreshed.data.providers.paypal, true);
+      } catch {
+        // Keep the card as it is when the refresh itself fails.
+      }
     } finally {
       setIsSavingPaypal(false);
     }
@@ -787,27 +807,25 @@ const OrganizationPaymentSettingsPage: React.FC = () => {
                   >
                     <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
                       <div className="min-w-0 flex-1">
-                        <div className="flex items-start gap-3">
+                        <div className="mb-2 flex items-center gap-3">
                           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-border bg-muted">
-                            <CreditCard className="h-6 w-6 text-primary" />
+                            <PaypalIcon className="h-6 w-6" />
                           </div>
-                          <div className="min-w-0 flex-1">
-                            <div className="flex flex-wrap items-center gap-2">
-                              <h3 className="text-lg font-medium text-foreground">
-                                {i18n.t("paymentSettingsPage.paypalTitle")}
-                              </h3>
-                              <Badge
-                                variant="secondary"
-                                className="border-border bg-accent text-foreground"
-                              >
-                                {i18n.t("paymentSettingsPage.paypalBadge")}
-                              </Badge>
-                            </div>
-                            <p className="mt-1 text-sm text-muted-foreground">
-                              {i18n.t("paymentSettingsPage.paypalDescription")}
-                            </p>
+                          <div className="flex flex-wrap items-center gap-2">
+                            <h3 className="text-lg font-medium text-foreground">
+                              {i18n.t("paymentSettingsPage.paypalTitle")}
+                            </h3>
+                            <Badge
+                              variant="secondary"
+                              className="border-border bg-accent text-foreground"
+                            >
+                              {i18n.t("paymentSettingsPage.paypalBadge")}
+                            </Badge>
                           </div>
                         </div>
+                        <p className="text-sm text-muted-foreground">
+                          {i18n.t("paymentSettingsPage.paypalDescription")}
+                        </p>
 
                         <Button
                           asChild
@@ -816,7 +834,11 @@ const OrganizationPaymentSettingsPage: React.FC = () => {
                           className="mt-4 bg-background"
                         >
                           <a
-                            href="https://developer.paypal.com/dashboard/applications/live"
+                            href={`https://developer.paypal.com/dashboard/applications/${
+                              paypalSettings.environment === "sandbox"
+                                ? "sandbox"
+                                : "live"
+                            }`}
                             rel="noreferrer"
                             target="_blank"
                           >
@@ -833,6 +855,7 @@ const OrganizationPaymentSettingsPage: React.FC = () => {
                             <Input
                               id="paypal_client_id"
                               value={paypalSettings.clientId}
+                              placeholder="AZ..."
                               onChange={e =>
                                 updatePaypalSetting("clientId", e.target.value)
                               }
@@ -945,39 +968,71 @@ const OrganizationPaymentSettingsPage: React.FC = () => {
                                 </span>
                               </div>
                             )}
-                          <div className="flex items-center gap-2">
-                            {paypalSettings.webhookId ? (
-                              <>
-                                <CheckCircle2 className="h-4 w-4 text-primary" />
-                                <span>
-                                  {i18n.t(
-                                    "paymentSettingsPage.paypalWebhookRegistered"
-                                  )}
-                                </span>
-                              </>
-                            ) : (
-                              <>
-                                <AlertCircle className="h-4 w-4 text-destructive" />
-                                <span>
-                                  {i18n.t(
-                                    "paymentSettingsPage.paypalWebhookMissing"
-                                  )}
-                                </span>
-                                {paypalSettings.webhookError && (
-                                  <span className="text-destructive">
-                                    {paypalSettings.webhookError}
+                          {paypalSettings.connected && (
+                            <div className="flex items-center gap-2">
+                              {paypalSettings.webhookId ? (
+                                <>
+                                  <CheckCircle2 className="h-4 w-4 shrink-0 text-primary" />
+                                  <span>
+                                    {i18n.t(
+                                      "paymentSettingsPage.paypalWebhookRegistered"
+                                    )}
                                   </span>
-                                )}
-                              </>
-                            )}
-                          </div>
-                          <div className="flex flex-col gap-1 text-muted-foreground sm:flex-row sm:items-center">
+                                </>
+                              ) : (
+                                <>
+                                  <AlertCircle className="h-4 w-4 shrink-0 text-destructive" />
+                                  <span>
+                                    {i18n.t(
+                                      "paymentSettingsPage.paypalWebhookMissing"
+                                    )}
+                                  </span>
+                                  {paypalSettings.webhookError && (
+                                    <span className="text-destructive">
+                                      {paypalSettings.webhookError}
+                                    </span>
+                                  )}
+                                </>
+                              )}
+                            </div>
+                          )}
+                          <div className="flex flex-col gap-2 text-muted-foreground sm:flex-row sm:items-center">
                             <span>
                               {i18n.t("paymentSettingsPage.paypalWebhookUrl")}:
                             </span>
                             <code className="break-all rounded bg-muted px-2 py-1 text-xs text-foreground">
                               {paypalSettings.webhookUrl}
                             </code>
+                            <div className="flex items-center gap-2">
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                className="bg-background"
+                                onClick={() =>
+                                  copyText(paypalSettings.webhookUrl)
+                                }
+                              >
+                                <Copy className="mr-2 h-4 w-4" />
+                                {i18n.t("paymentSettingsPage.copyWebhookUrl")}
+                              </Button>
+                              <Button
+                                asChild
+                                size="sm"
+                                variant="outline"
+                                className="bg-background"
+                              >
+                                <a
+                                  href="https://developer.paypal.com/dashboard/webhooks"
+                                  rel="noreferrer"
+                                  target="_blank"
+                                >
+                                  {i18n.t(
+                                    "paymentSettingsPage.openPaypalWebhooks"
+                                  )}
+                                  <ExternalLink className="ml-2 h-4 w-4" />
+                                </a>
+                              </Button>
+                            </div>
                           </div>
                           <p className="text-muted-foreground">
                             {i18n.t(
@@ -987,10 +1042,10 @@ const OrganizationPaymentSettingsPage: React.FC = () => {
                         </div>
                       </div>
 
-                      <div className="flex shrink-0 flex-col gap-2 sm:flex-row lg:flex-col">
+                      <div className="flex shrink-0 flex-col items-stretch gap-2 sm:flex-row sm:items-center lg:flex-col lg:items-stretch">
                         {paypalSettings.connected && (
                           <>
-                            <Badge className="border-border bg-accent text-foreground">
+                            <Badge className="justify-center border-border bg-accent text-foreground">
                               {i18n.t("paymentSettingsPage.connected")}
                             </Badge>
                             <Badge variant="outline" className="justify-center">
@@ -1000,16 +1055,6 @@ const OrganizationPaymentSettingsPage: React.FC = () => {
                                   : "paymentSettingsPage.paypalEnvironmentLive"
                               )}
                             </Badge>
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              className="border-border text-destructive hover:bg-destructive/10 hover:text-destructive"
-                              onClick={() =>
-                                setShowPaypalDisconnectDialog(true)
-                              }
-                            >
-                              {i18n.t("paymentSettingsPage.paypalDisconnect")}
-                            </Button>
                           </>
                         )}
                         <Button
@@ -1025,6 +1070,17 @@ const OrganizationPaymentSettingsPage: React.FC = () => {
                             i18n.t("paymentSettingsPage.savePaypal")
                           )}
                         </Button>
+                        {(paypalSettings.connected ||
+                          paypalSettings.clientSecretConfigured) && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="border-border text-destructive hover:bg-destructive/10 hover:text-destructive"
+                            onClick={() => setShowPaypalDisconnectDialog(true)}
+                          >
+                            {i18n.t("paymentSettingsPage.paypalDisconnect")}
+                          </Button>
+                        )}
                       </div>
                     </div>
                   </div>

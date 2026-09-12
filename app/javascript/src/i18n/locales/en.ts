@@ -1743,6 +1743,7 @@ const en = {
     paypalDescription:
       "Let clients pay invoices with their PayPal balance, bank, or card. Paste the Client ID and Secret from a REST app in your PayPal Developer Dashboard.",
     openPaypalDeveloper: "Open PayPal Developer",
+    openPaypalWebhooks: "Open PayPal webhooks",
     paypalClientId: "Client ID",
     paypalClientSecret: "Client secret",
     enterClientSecret: "Enter client secret",

@@ -30,9 +30,10 @@ json.invoice invoice.slice(
 json.logo invoice.company.company_logo
 json.lineItems invoice.invoice_line_items
 json.stripe_connected_account stripe_connected_account&.details_submitted || false
-upi_provider = invoice.company.payments_providers.find_by(name: PaymentsProvider::UPI_PROVIDER, enabled: true)
-razorpay_provider = invoice.company.payments_providers.find_by(name: PaymentsProvider::RAZORPAY_PROVIDER, enabled: true)
-paypal_provider = invoice.company.payments_providers.find_by(name: PaymentsProvider::PAYPAL_PROVIDER, enabled: true)
+enabled_providers = invoice.company.payments_providers.where(enabled: true).index_by(&:name)
+upi_provider = enabled_providers[PaymentsProvider::UPI_PROVIDER]
+razorpay_provider = enabled_providers[PaymentsProvider::RAZORPAY_PROVIDER]
+paypal_provider = enabled_providers[PaymentsProvider::PAYPAL_PROVIDER]
 upi_payment =
   if upi_provider&.enabled_on_invoices? && invoice.currency == "INR"
     PaymentProviders::UpiIntentService.new(provider: upi_provider, invoice:).details

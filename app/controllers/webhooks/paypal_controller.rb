@@ -17,7 +17,9 @@ class Webhooks::PaypalController < ApplicationController
     if fulfillment.process
       render json: { status: "ok" }, status: 200
     else
-      render json: { error: fulfillment.error || "Unable to process PayPal webhook" }, status: failure_status(fulfillment)
+      status = failure_status(fulfillment)
+      log_failure(fulfillment, status)
+      render json: { error: fulfillment.error || "Unable to process PayPal webhook" }, status:
     end
   rescue StandardError => exception
     log_processing_error(exception)
@@ -41,9 +43,23 @@ class Webhooks::PaypalController < ApplicationController
     def failure_status(fulfillment)
       case fulfillment.error_code
       when :invalid_signature then 401
-      when :verification_unavailable then 503
+      when :verification_unavailable, :provider_unavailable then 503
       else 422
       end
+    end
+
+    def log_failure(fulfillment, status)
+      Rails.logger.warn(
+        "[PayPal webhook] rejected status=#{status} code=#{fulfillment.error_code} " \
+        "error=#{fulfillment.error} request_id=#{request.request_id}"
+      )
+      return unless status == 401
+
+      Sentry.capture_message(
+        "PayPal webhook signature rejected",
+        level: :warning,
+        extra: { request_id: request.request_id }
+      ) if defined?(Sentry)
     end
 
     def log_processing_error(exception)
