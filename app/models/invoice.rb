@@ -49,7 +49,10 @@ class Invoice < ApplicationRecord
     :razorpay_payment_link_id,
     :razorpay_payment_link_url,
     :razorpay_payment_link_status,
-    :razorpay_payment_id
+    :razorpay_payment_id,
+    :paypal_order_id,
+    :paypal_order_status,
+    :paypal_capture_id
 
   before_validation :set_external_view_key, on: :create
   before_validation :set_currency_from_client, if: :should_sync_currency_from_client?
