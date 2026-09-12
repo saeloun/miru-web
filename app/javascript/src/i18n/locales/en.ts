@@ -1751,6 +1751,8 @@ const en = {
       "Use sandbox credentials for testing. Turn off for live payments.",
     showPaypalOnInvoices: "Show PayPal on invoices",
     paypalEnabled: "Enabled",
+    paypalEnableHint:
+      "Turn on Enabled and save again to show PayPal on invoices.",
     savePaypal: "Save PayPal",
     savingPaypal: "Saving...",
     paypalSaved: "PayPal settings saved.",

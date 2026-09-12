@@ -17,8 +17,10 @@ PayPal lets clients pay supported invoices from their PayPal account. Miru captu
 2. Create or open a live REST app in the [PayPal Developer Dashboard](https://developer.paypal.com/dashboard/applications/live).
 3. Copy the Client ID and Client Secret.
 4. Paste both credentials into Miru.
-5. Keep **Show PayPal on invoices** enabled.
+5. Keep **Show PayPal on invoices** on and turn on **Enabled**.
 6. Click **Save PayPal**.
+
+Clients see PayPal only when both switches are on. If the card shows **Connected** but no invoice offers PayPal, turn on **Enabled** and save again.
 
 ## Sandbox Testing
 

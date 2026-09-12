@@ -118,4 +118,55 @@ RSpec.describe InvoicePayment::PaypalCaptureFulfillment do
     expect(fulfillment.process).to be(false)
     expect(fulfillment.error).to eq("PayPal is not configured for this workspace")
   end
+
+  it "records the capture id even when the capture is rejected" do
+    completed_order["purchase_units"][0]["custom_id"] = "999"
+    allow(client).to receive(:capture_order).and_return(completed_order)
+
+    expect(fulfillment.process).to be(false)
+    expect(invoice.reload.paypal_capture_id).to eq("CAP-1")
+    expect(invoice.paypal_order_status).to eq("COMPLETED")
+  end
+
+  it "settles on the stored order id when PayPal omits custom_id" do
+    completed_order["purchase_units"][0].delete("custom_id")
+    allow(client).to receive(:capture_order).and_return(completed_order)
+
+    expect { expect(fulfillment.process).to be(true) }.to change(Payment, :count).by(1)
+    expect(invoice.reload.status).to eq("paid")
+  end
+
+  it "accepts custom_id carried on the capture instead of the purchase unit" do
+    completed_order["purchase_units"][0].delete("custom_id")
+    completed_order["purchase_units"][0]["payments"]["captures"][0]["custom_id"] = invoice.id.to_s
+    invoice.update!(payment_infos: {})
+    allow(client).to receive(:capture_order).and_return(completed_order)
+
+    expect { expect(fulfillment.process).to be(true) }.to change(Payment, :count).by(1)
+  end
+
+  it "records a part payment instead of discarding a smaller capture" do
+    completed_order["purchase_units"][0]["payments"]["captures"][0]["amount"]["value"] = "40.00"
+    allow(client).to receive(:capture_order).and_return(completed_order)
+
+    expect { expect(fulfillment.process).to be(true) }.to change(Payment, :count).by(1)
+    expect(Payment.last.status).to eq("partially_paid")
+    expect(invoice.reload.status).not_to eq("paid")
+  end
+
+  it "fails without raising when PayPal returns an unreadable capture amount" do
+    completed_order["purchase_units"][0]["payments"]["captures"][0]["amount"]["value"] = ""
+    allow(client).to receive(:capture_order).and_return(completed_order)
+
+    expect(fulfillment.process).to be(false)
+    expect(fulfillment.error).to eq("PayPal returned an unexpected capture response")
+  end
+
+  it "fails without raising when the payment cannot be saved" do
+    completed_order["purchase_units"][0]["payments"]["captures"][0]["amount"]["value"] = "0.00"
+    allow(client).to receive(:capture_order).and_return(completed_order)
+
+    expect(fulfillment.process).to be(false)
+    expect(fulfillment.error).to include("Amount")
+  end
 end

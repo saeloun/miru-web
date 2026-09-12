@@ -39,7 +39,11 @@ class Webhooks::PaypalController < ApplicationController
     end
 
     def failure_status(fulfillment)
-      fulfillment.error_code == :invalid_signature ? 401 : 422
+      case fulfillment.error_code
+      when :invalid_signature then 401
+      when :verification_unavailable then 503
+      else 422
+      end
     end
 
     def log_processing_error(exception)

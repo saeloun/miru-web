@@ -36,8 +36,8 @@ class Api::V1::Invoices::PaymentsController < Api::V1::ApplicationController
     end
 
     def track_event
-      create_stripe = "create_stripe"
-      Invoices::EventTrackerService.new(create_stripe, @invoice, params).process
+      event = params[:provider] == PaymentsProvider::PAYPAL_PROVIDER ? "create_paypal" : "create_stripe"
+      Invoices::EventTrackerService.new(event, @invoice, params).process
     end
 
     def payment_success_invoice_payload

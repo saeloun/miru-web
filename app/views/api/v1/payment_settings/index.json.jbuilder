@@ -48,7 +48,7 @@ json.providers do
   json.paypal do
     json.connected paypal_provider&.connected? || false
     json.enabled paypal_provider&.enabled? || false
-    json.enabled_on_invoices paypal_provider&.enabled_on_invoices? || false
+    json.enabled_on_invoices paypal_provider ? paypal_provider.enabled_on_invoices? : true
     json.client_id paypal_provider&.client_id
     json.client_secret_configured paypal_provider&.client_secret.present? || false
     json.environment paypal_provider&.paypal_environment || "live"

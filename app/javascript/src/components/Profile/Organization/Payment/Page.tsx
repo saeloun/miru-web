@@ -483,6 +483,7 @@ const OrganizationPaymentSettingsPage: React.FC = () => {
         error?.response?.data?.errors ||
         i18n.t("paymentSettingsPage.paypalSaveFailed");
       toast.error(message);
+      await fetchPaymentSettings();
     } finally {
       setIsSavingPaypal(false);
     }
@@ -788,7 +789,7 @@ const OrganizationPaymentSettingsPage: React.FC = () => {
                       <div className="min-w-0 flex-1">
                         <div className="flex items-start gap-3">
                           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-border bg-muted">
-                            <CreditCard className="h-6 w-6 text-[#003087]" />
+                            <CreditCard className="h-6 w-6 text-primary" />
                           </div>
                           <div className="min-w-0 flex-1">
                             <div className="flex flex-wrap items-center gap-2">
@@ -933,6 +934,17 @@ const OrganizationPaymentSettingsPage: React.FC = () => {
                         </div>
 
                         <div className="mt-5 space-y-2 text-sm">
+                          {paypalSettings.connected &&
+                            !paypalSettings.enabled && (
+                              <div className="flex items-center gap-2">
+                                <AlertCircle className="h-4 w-4 text-muted-foreground" />
+                                <span>
+                                  {i18n.t(
+                                    "paymentSettingsPage.paypalEnableHint"
+                                  )}
+                                </span>
+                              </div>
+                            )}
                           <div className="flex items-center gap-2">
                             {paypalSettings.webhookId ? (
                               <>

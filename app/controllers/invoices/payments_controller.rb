@@ -8,7 +8,7 @@ class Invoices::PaymentsController < ApplicationController
 
   def new
     redirect_to payment_url, allow_other_host: true
-  rescue PaymentProviders::RazorpayClient::Error, PaymentProviders::PaypalClient::Error => error
+  rescue PaymentProviders::RazorpayClient::Error, PaymentProviders::PaypalClient::Error, Stripe::StripeError => error
     Rails.logger.warn("Payment link failed for invoice #{@invoice.id}: #{error.class} #{error.message}")
     redirect_to cancel_invoice_payments_url(@invoice.external_view_key), alert: "Unable to start the payment"
   end
@@ -35,9 +35,14 @@ class Invoices::PaymentsController < ApplicationController
 
   def paypal_return
     fulfillment = InvoicePayment::PaypalCaptureFulfillment.new(invoice: @invoice, order_id: params[:token].to_s)
+    processed = fulfillment.process
 
-    if fulfillment.process
-      redirect_to request.base_url + "/invoices/#{@invoice.external_view_key}/payments/success?provider=paypal", allow_other_host: false
+    if processed && @invoice.reload.paid?
+      redirect_to request.base_url + "/invoices/#{@invoice.external_view_key}/payments/success?provider=paypal",
+        allow_other_host: false
+    elsif processed
+      # A part payment leaves a balance, so the success page would reject it. Send the payer back to the invoice.
+      redirect_to request.base_url + "/invoices/#{@invoice.external_view_key}/view", allow_other_host: false
     else
       Rails.logger.warn("PayPal capture failed for invoice #{@invoice.id}: #{fulfillment.error}")
       redirect_to cancel_invoice_payments_url(@invoice.external_view_key), alert: "Unable to verify PayPal payment"
@@ -59,10 +64,16 @@ class Invoices::PaymentsController < ApplicationController
     def payment_url
       return paypal_payment_url if paypal_requested? && paypal_provider.present?
       return razorpay_payment_url if razorpay_provider.present?
-      return stripe_payment_url if @invoice.company.stripe_connected_account.present?
+      return stripe_payment_url if stripe_onboarded?
       return paypal_payment_url if paypal_provider.present?
 
       stripe_payment_url
+    end
+
+    # A Stripe row exists from the moment someone clicks Connect Stripe, so presence alone would send
+    # payers into a checkout the merchant never finished onboarding.
+    def stripe_onboarded?
+      @invoice.company.stripe_connected_account&.details_submitted || false
     end
 
     def paypal_requested?

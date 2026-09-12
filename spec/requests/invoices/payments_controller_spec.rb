@@ -14,6 +14,7 @@ RSpec.describe Invoices::PaymentsController, type: :request do
   before do
     create(:employment, company:, user: admin)
     create(:employment, company:, user: employee)
+    allow_any_instance_of(StripeConnectedAccount).to receive(:details_submitted).and_return(true)
   end
 
   describe "GET new", :vcr do
@@ -160,12 +161,25 @@ RSpec.describe Invoices::PaymentsController, type: :request do
 
   describe "GET paypal_return", vcr: false do
     it "captures the order and redirects to the success page" do
-      fulfillment = instance_double(InvoicePayment::PaypalCaptureFulfillment, process: true, error: nil)
+      fulfillment = instance_double(InvoicePayment::PaypalCaptureFulfillment, error: nil)
+      allow(fulfillment).to receive(:process) do
+        invoice.update!(status: "paid", amount_due: 0, amount_paid: invoice.amount)
+        true
+      end
       expect(InvoicePayment::PaypalCaptureFulfillment).to receive(:new).with(invoice:, order_id: "ORDER-1").and_return(fulfillment)
 
       send_request :get, paypal_return_invoice_payments_path(params.merge(token: "ORDER-1", PayerID: "PAYER"))
 
       expect(response).to redirect_to("http://www.example.com/invoices/#{invoice.external_view_key}/payments/success?provider=paypal")
+    end
+
+    it "sends the payer back to the invoice when the capture only part pays it" do
+      fulfillment = instance_double(InvoicePayment::PaypalCaptureFulfillment, process: true, error: nil)
+      allow(InvoicePayment::PaypalCaptureFulfillment).to receive(:new).and_return(fulfillment)
+
+      send_request :get, paypal_return_invoice_payments_path(params.merge(token: "ORDER-1"))
+
+      expect(response).to redirect_to("http://www.example.com/invoices/#{invoice.external_view_key}/view")
     end
 
     it "redirects to the cancel page when capture fails" do

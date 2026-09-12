@@ -34,6 +34,7 @@ class PaymentsProvider < ApplicationRecord
     :webhook_id,
     :webhook_client_id,
     :webhook_environment,
+    :webhook_url,
     :webhook_error
 
   belongs_to :company

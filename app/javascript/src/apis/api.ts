@@ -426,7 +426,8 @@ export const paymentSettingsApi = {
       { provider },
       { skipErrorToast: true }
     ),
-  disconnectPaypal: () => http.delete(`/payments/settings/paypal`),
+  disconnectPaypal: () =>
+    http.delete(`/payments/settings/paypal`, { skipErrorToast: true }),
   connectStripe: () => http.post(`/payments/settings/stripe/connect`),
   disconnectStripe: () => http.delete(`/payments/settings/stripe/disconnect`),
 };

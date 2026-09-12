@@ -40,6 +40,17 @@ RSpec.describe PaymentProviders::PaypalClient do
     expect(a_request(:post, "#{base_url}/v1/oauth2/token")).to have_been_made.once
   end
 
+  it "asks PayPal again when the secret changes for the same client id" do
+    expect(client.access_token).to eq("token-1")
+
+    provider.client_secret = "rotated-secret"
+    stub_request(:post, "#{base_url}/v1/oauth2/token")
+      .with(basic_auth: ["client-id", "rotated-secret"])
+      .to_return(status: 401, body: { error: "invalid_client", error_description: "Client Authentication failed" }.to_json)
+
+    expect { described_class.new(provider:).access_token }.to raise_error(described_class::Error, "Client Authentication failed")
+  end
+
   it "raises a readable error for bad credentials" do
     stub_request(:post, "#{base_url}/v1/oauth2/token")
       .to_return(status: 401, body: { error: "invalid_client", error_description: "Client Authentication failed" }.to_json)

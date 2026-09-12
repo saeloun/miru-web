@@ -125,8 +125,10 @@ module PaymentProviders
         { open_timeout: REQUEST_OPEN_TIMEOUT, timeout: REQUEST_TIMEOUT }
       end
 
+      # The secret is part of the key so a re-saved or rotated credential cannot ride the previous token.
       def token_cache_key
-        "paypal:access_token:#{provider.paypal_environment}:#{Digest::SHA256.hexdigest(provider.client_id.to_s)}"
+        credentials = Digest::SHA256.hexdigest("#{provider.client_id}:#{provider.client_secret}")
+        "paypal:access_token:#{provider.paypal_environment}:#{provider.company_id}:#{credentials}"
       end
 
       def parsed_response(response)

@@ -43,6 +43,15 @@ RSpec.describe "PayPal webhooks", type: :request do
     expect(response).to have_http_status(:unauthorized)
   end
 
+  it "answers 503 so PayPal retries when verification is unavailable" do
+    fulfillment = instance_double(InvoicePayment::PaypalWebhookFulfillment, process: false, error: "Unable to verify the PayPal webhook signature", error_code: :verification_unavailable)
+    allow(InvoicePayment::PaypalWebhookFulfillment).to receive(:new).and_return(fulfillment)
+
+    post "/webhooks/paypal/events", params: payload, headers: headers
+
+    expect(response).to have_http_status(:service_unavailable)
+  end
+
   it "answers 422 for other failures" do
     fulfillment = instance_double(InvoicePayment::PaypalWebhookFulfillment, process: false, error: "Invoice not found", error_code: nil)
     allow(InvoicePayment::PaypalWebhookFulfillment).to receive(:new).and_return(fulfillment)

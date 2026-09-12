@@ -12,26 +12,36 @@ class InvoicePayment::PaypalWebhookFulfillment
     @headers = headers || {}
   end
 
+  # Returning true acknowledges the event. PayPal retries every non-2xx for three days and then
+  # deactivates the webhook, so only a signature failure or an outage answers with an error.
   def process
     return true unless SUPPORTED_EVENTS.include?(event_type)
-    return fail_with("Invoice not found") if invoice.blank?
-    return fail_with("PayPal is not configured for this workspace") unless provider&.paypal_configured?
-    return fail_with("PayPal webhook is not registered for this workspace") if provider.webhook_id.blank?
-    return fail_with("Invalid PayPal webhook signature", :invalid_signature) unless valid_signature?
-    return fail_with("PayPal order id is missing") if order_id.blank?
+    return acknowledge("Invoice not found") if invoice.blank?
+    return acknowledge("PayPal is not configured for this workspace") unless provider&.paypal_configured?
+    return acknowledge("PayPal webhook is not registered for this workspace") if provider.webhook_id.blank?
+
+    case signature_status
+    when :invalid then return fail_with("Invalid PayPal webhook signature", :invalid_signature)
+    when :unavailable then return fail_with("Unable to verify the PayPal webhook signature", :verification_unavailable)
+    end
+
+    return acknowledge("PayPal order id is missing") if order_id.blank?
 
     fulfillment = InvoicePayment::PaypalCaptureFulfillment.new(invoice:, order_id:)
     return true if fulfillment.process
 
     fail_with(fulfillment.error || "Unable to settle PayPal payment")
-  rescue JSON::ParserError
+  rescue JSON::ParserError, TypeError, NoMethodError
     fail_with("Invalid PayPal webhook payload")
   end
 
   private
 
     def parsed_payload
-      @_parsed_payload ||= JSON.parse(payload)
+      @_parsed_payload ||= begin
+        parsed = JSON.parse(payload)
+        parsed.is_a?(Hash) ? parsed : {}
+      end
     end
 
     def event_type
@@ -42,20 +52,25 @@ class InvoicePayment::PaypalWebhookFulfillment
       parsed_payload["resource"].is_a?(Hash) ? parsed_payload["resource"] : {}
     end
 
+    def purchase_unit
+      unit = Array(resource["purchase_units"]).first
+      unit.is_a?(Hash) ? unit : {}
+    end
+
     def order_id
       if event_type == ORDER_APPROVED_EVENT
         resource["id"].to_s
       else
-        resource.dig("supplementary_data", "related_ids", "order_id").to_s
+        supplementary = resource["supplementary_data"]
+        return "" unless supplementary.is_a?(Hash)
+
+        related = supplementary["related_ids"]
+        related.is_a?(Hash) ? related["order_id"].to_s : ""
       end
     end
 
     def custom_id
-      if event_type == ORDER_APPROVED_EVENT
-        Array(resource["purchase_units"]).first&.dig("custom_id").to_s
-      else
-        resource["custom_id"].to_s
-      end
+      event_type == ORDER_APPROVED_EVENT ? purchase_unit["custom_id"].to_s : resource["custom_id"].to_s
     end
 
     def invoice
@@ -75,10 +90,23 @@ class InvoicePayment::PaypalWebhookFulfillment
       @_provider ||= invoice&.company&.payments_providers&.find_by(name: PaymentsProvider::PAYPAL_PROVIDER)
     end
 
-    def valid_signature?
-      PaymentProviders::PaypalClient.new(provider:).verify_webhook_signature(headers:, body: payload, webhook_id: provider.webhook_id)
-    rescue PaymentProviders::PaypalClient::Error
-      false
+    def signature_status
+      verified = PaymentProviders::PaypalClient.new(provider:).verify_webhook_signature(
+        headers:,
+        body: payload,
+        webhook_id: provider.webhook_id
+      )
+      verified ? :valid : :invalid
+    rescue PaymentProviders::PaypalClient::Error => exception
+      Rails.logger.warn("PayPal webhook signature verification unavailable: #{exception.message}")
+      :unavailable
+    end
+
+    # The webhook is registered on the merchant's whole REST app, so PayPal also delivers events
+    # that belong to their other integrations. Those are acknowledged and logged, never retried.
+    def acknowledge(message)
+      Rails.logger.info("PayPal webhook acknowledged without settlement: #{message}")
+      true
     end
 
     def fail_with(message, code = nil)

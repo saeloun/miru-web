@@ -69,20 +69,38 @@ RSpec.describe InvoicePayment::PaypalWebhookFulfillment do
     expect(fulfillment.error_code).to eq(:invalid_signature)
   end
 
-  it "fails when the invoice cannot be found" do
+  it "acknowledges events that belong to another integration on the merchant account" do
     fulfillment = described_class.new(payload: payload_for("PAYMENT.CAPTURE.COMPLETED", { custom_id: "0", supplementary_data: { related_ids: { order_id: "NOPE" } } }), headers:)
 
-    expect(fulfillment.process).to be(false)
-    expect(fulfillment.error).to eq("Invoice not found")
+    expect(fulfillment.process).to be(true)
+    expect(fulfillment.error).to be_nil
   end
 
-  it "fails when no webhook is registered for the workspace" do
+  it "acknowledges events when no webhook is registered for the workspace" do
     provider.update!(settings: provider.settings.except("webhook_id"))
     payload = payload_for("PAYMENT.CAPTURE.COMPLETED", { custom_id: invoice.id.to_s, supplementary_data: { related_ids: { order_id: "ORDER-1" } } })
+    expect(InvoicePayment::PaypalCaptureFulfillment).not_to receive(:new)
 
+    expect(described_class.new(payload:, headers:).process).to be(true)
+  end
+
+  it "asks PayPal to retry when signature verification is unavailable" do
+    payload = payload_for("PAYMENT.CAPTURE.COMPLETED", { custom_id: invoice.id.to_s, supplementary_data: { related_ids: { order_id: "ORDER-1" } } })
+    allow(client).to receive(:verify_webhook_signature).and_raise(PaymentProviders::PaypalClient::Error.new("Client Authentication failed"))
     fulfillment = described_class.new(payload:, headers:)
+
     expect(fulfillment.process).to be(false)
-    expect(fulfillment.error).to eq("PayPal webhook is not registered for this workspace")
+    expect(fulfillment.error_code).to eq(:verification_unavailable)
+  end
+
+  it "rejects payloads whose JSON is not a webhook event" do
+    ["[]", "null", "123", '{"event_type":"CHECKOUT.ORDER.APPROVED","resource":{"purchase_units":["x"]}}',
+     '{"event_type":"PAYMENT.CAPTURE.COMPLETED","resource":{"supplementary_data":"x"}}'].each do |body|
+      fulfillment = described_class.new(payload: body, headers:)
+
+      expect { fulfillment.process }.not_to raise_error
+      expect(fulfillment.process).to be(true).or be(false)
+    end
   end
 
   it "surfaces capture errors" do

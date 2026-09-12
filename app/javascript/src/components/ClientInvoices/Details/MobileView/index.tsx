@@ -37,9 +37,8 @@ const MobileView = ({ data }) => {
   const paypalOnly = paypalEnabled && !hasOtherProvider;
   const paymentUrl = razorpay_payment?.enabled
     ? url
-    : stripe_connected_account
-    ? url
-    : upi_payment?.payment_link || (paypalEnabled ? paypal_payment.url : url);
+    : upi_payment?.payment_link ||
+      (!stripe_connected_account && paypalEnabled ? paypal_payment.url : url);
 
   const bankRows = [
     {

@@ -43,6 +43,42 @@ RSpec.describe PaymentProviders::PaypalConnectionService do
     expect(provider.webhook_id).to eq("WH-OLD")
   end
 
+  it "matches an existing webhook whose URL differs only by case or a trailing slash" do
+    allow(client).to receive(:access_token).and_return("token")
+    allow(client).to receive(:create_webhook).and_raise(PaymentProviders::PaypalClient::Error.new("exists", issue: "WEBHOOK_URL_ALREADY_EXISTS"))
+    allow(client).to receive(:list_webhooks).and_return([{ "id" => "WH-OLD", "url" => "#{webhook_url.upcase}/" }])
+
+    expect(service.process).to be(true)
+    expect(provider.webhook_id).to eq("WH-OLD")
+  end
+
+  it "re-registers and deletes the previous webhook when the URL changes" do
+    provider.settings.merge!(
+      "webhook_id" => "WH-OLD",
+      "webhook_client_id" => "client-id",
+      "webhook_environment" => "sandbox",
+      "webhook_url" => "https://old.miru.so/webhooks/paypal/events"
+    )
+    allow(client).to receive(:access_token).and_return("token")
+    allow(client).to receive(:create_webhook).with(url: webhook_url).and_return("id" => "WH-NEW")
+    expect(client).to receive(:delete_webhook).with("WH-OLD")
+
+    expect(service.process).to be(true)
+    expect(provider.webhook_id).to eq("WH-NEW")
+    expect(provider.webhook_url).to eq(webhook_url)
+  end
+
+  it "logs the orphaned webhook when credentials change, since another app owns it" do
+    provider.settings.merge!("webhook_id" => "WH-OLD", "webhook_client_id" => "old-client-id", "webhook_environment" => "live")
+    allow(client).to receive(:access_token).and_return("token")
+    allow(client).to receive(:create_webhook).and_return("id" => "WH-NEW")
+    expect(client).not_to receive(:delete_webhook)
+    expect(Rails.logger).to receive(:warn).with(/orphaned/)
+
+    expect(service.process).to be(true)
+    expect(provider.webhook_id).to eq("WH-NEW")
+  end
+
   it "skips webhook registration for non-https URLs and records why" do
     allow(client).to receive(:access_token).and_return("token")
     expect(client).not_to receive(:create_webhook)
@@ -63,7 +99,7 @@ RSpec.describe PaymentProviders::PaypalConnectionService do
   end
 
   it "does not re-register when the webhook matches the current credentials" do
-    provider.settings.merge!("webhook_id" => "WH-1", "webhook_client_id" => "client-id", "webhook_environment" => "sandbox")
+    provider.settings.merge!("webhook_id" => "WH-1", "webhook_client_id" => "client-id", "webhook_environment" => "sandbox", "webhook_url" => webhook_url)
     allow(client).to receive(:access_token).and_return("token")
     expect(client).not_to receive(:create_webhook)
 
