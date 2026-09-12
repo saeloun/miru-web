@@ -12,9 +12,8 @@ class InvoicePayment::PaypalWebhookFulfillment
     @headers = headers || {}
   end
 
-  # Returning true acknowledges the event. PayPal retries every non-2xx for three days and then
-  # deactivates the webhook, so only a signature failure or an outage answers with an error.
   def process
+    return acknowledge_failure("Invalid PayPal webhook payload") if malformed?
     return true unless SUPPORTED_EVENTS.include?(event_type)
     return acknowledge("Invoice not found") if invoice.blank?
     return acknowledge("PayPal is not configured for this workspace") unless provider&.paypal_configured?
@@ -30,24 +29,33 @@ class InvoicePayment::PaypalWebhookFulfillment
     fulfillment = InvoicePayment::PaypalCaptureFulfillment.new(invoice:, order_id:)
     return true if fulfillment.process
 
-    # A retry can only help when PayPal itself was unavailable. Everything else is permanent,
-    # and answering non-2xx would have PayPal retry for three days and then deactivate the webhook.
     if fulfillment.error_code == :provider_unavailable
       fail_with(fulfillment.error, :provider_unavailable)
     else
       acknowledge_failure(fulfillment.error || "Unable to settle PayPal payment")
     end
-  rescue JSON::ParserError, TypeError
-    fail_with("Invalid PayPal webhook payload")
+  rescue TypeError
+    acknowledge_failure("Invalid PayPal webhook payload")
   end
 
   private
 
     def parsed_payload
-      @_parsed_payload ||= begin
-        parsed = JSON.parse(payload)
-        parsed.is_a?(Hash) ? parsed : {}
+      return @_parsed_payload if defined?(@_parsed_payload)
+
+      parsed = begin
+        JSON.parse(payload)
+      rescue JSON::ParserError
+        @_malformed = true
+        nil
       end
+
+      @_parsed_payload = parsed.is_a?(Hash) ? parsed : {}
+    end
+
+    def malformed?
+      parsed_payload
+      @_malformed == true
     end
 
     def event_type
@@ -108,8 +116,6 @@ class InvoicePayment::PaypalWebhookFulfillment
       :unavailable
     end
 
-    # The webhook is registered on the merchant's whole REST app, so PayPal also delivers events
-    # that belong to their other integrations. Those are acknowledged and logged, never retried.
     def acknowledge(message)
       Rails.logger.info("[PayPal webhook] acknowledged without settlement reason=#{message} #{event_context}")
       true

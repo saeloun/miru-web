@@ -6,7 +6,6 @@ module PaymentProviders
       value = BigDecimal(amount.to_s)
 
       if PaymentsProvider::PAYPAL_ZERO_DECIMAL_CURRENCIES.include?(currency.to_s.upcase)
-        # PayPal rejects decimals for these currencies. Round up so the capture always covers the invoice.
         value.ceil.to_i.to_s
       else
         Kernel.format("%.2f", value.round(2))

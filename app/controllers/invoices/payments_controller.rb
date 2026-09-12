@@ -17,8 +17,6 @@ class Invoices::PaymentsController < ApplicationController
   end
 
   def cancel
-    # An approved PayPal order may already have taken the client's money, so that case must not
-    # offer to start a second payment.
     @unconfirmed_payment = params[:reason] == "capture"
     render
   end
@@ -47,7 +45,6 @@ class Invoices::PaymentsController < ApplicationController
       redirect_to request.base_url + "/invoices/#{@invoice.external_view_key}/payments/success?provider=paypal",
         allow_other_host: false
     elsif processed
-      # A part payment leaves a balance, so the success page would reject it. Send the payer back to the invoice.
       redirect_to request.base_url + "/invoices/#{@invoice.external_view_key}/view", allow_other_host: false
     else
       Rails.logger.warn(
@@ -78,8 +75,6 @@ class Invoices::PaymentsController < ApplicationController
       stripe_payment_url
     end
 
-    # A Stripe row exists from the moment someone clicks Connect Stripe, so presence alone would send
-    # payers into a checkout the merchant never finished onboarding.
     def stripe_onboarded?
       @invoice.company.stripe_connected_account&.details_submitted || false
     end

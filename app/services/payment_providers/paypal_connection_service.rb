@@ -23,7 +23,6 @@ module PaymentProviders
       save_provider
     rescue PaypalClient::Error => exception
       @error = exception.message
-      # A timeout or a PayPal 5xx says nothing about the credentials, so a live connection is kept.
       if credentials_rejected?(exception)
         provider.connected = false
         provider.enabled = false
@@ -66,8 +65,6 @@ module PaymentProviders
           normalize_url(provider.webhook_url) != normalize_url(webhook_url)
       end
 
-      # The previous webhook is removed first so a rotated credential or an environment switch cannot
-      # leave an orphan webhook posting events Miru can no longer verify.
       def register_webhook
         retire_previous_webhook
 
@@ -99,7 +96,6 @@ module PaymentProviders
         if provider.webhook_client_id == provider.client_id && provider.webhook_environment == provider.paypal_environment
           delete_webhook(previous_id)
         else
-          # A webhook belongs to the REST app that created it, so new credentials cannot remove it.
           Rails.logger.warn(
             "PayPal webhook #{previous_id} is orphaned on app #{provider.webhook_client_id} " \
             "(#{provider.webhook_environment}) for provider #{provider.id}; remove it in the PayPal dashboard"

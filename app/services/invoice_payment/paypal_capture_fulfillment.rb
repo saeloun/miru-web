@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class InvoicePayment::PaypalCaptureFulfillment
+  RETRYABLE_STATUSES = [408, 429].freeze
+
   attr_reader :invoice, :order_id, :error, :error_code
 
   def initialize(invoice:, order_id:)
@@ -36,8 +38,6 @@ class InvoicePayment::PaypalCaptureFulfillment
 
   private
 
-    # PayPal is called before the lock is taken so a slow capture cannot hold the invoice row.
-    # The request id makes the capture idempotent, and a replay returns ORDER_ALREADY_CAPTURED.
     def settle_under_lock
       return nil if invoice.paid?
 
@@ -48,8 +48,9 @@ class InvoicePayment::PaypalCaptureFulfillment
       owned = belongs_to_invoice?(purchase_unit, capture, expected_order_id)
 
       invoice.with_lock do
-        record_order_details(order, capture)
         return nil if invoice.paid?
+
+        record_order_details(order, capture)
 
         return validation_error("PayPal payment is not completed") unless completed?(capture)
         return validation_error("PayPal order does not belong to this invoice") unless owned
@@ -80,8 +81,6 @@ class InvoicePayment::PaypalCaptureFulfillment
       capture["status"] == "COMPLETED"
     end
 
-    # PayPal echoes custom_id on the purchase unit, the capture, or neither. When neither carries it,
-    # fall back to the order id Miru stored when it created the order for this invoice.
     def belongs_to_invoice?(purchase_unit, capture, expected_order_id)
       custom_ids = [purchase_unit["custom_id"], capture["custom_id"]].compact_blank
       return custom_ids.include?(invoice.id.to_s) if custom_ids.any?
@@ -108,7 +107,6 @@ class InvoicePayment::PaypalCaptureFulfillment
     def log_amount_mismatch(capture)
       captured = PaymentProviders::PaypalAmount.parse(capture.dig("amount", "value"))
       return if captured == invoice.amount_due
-      # Zero-decimal currencies are rounded up when the order is created, so a sub-unit gap is expected.
       return if zero_decimal? && (captured - invoice.amount_due).abs < 1
 
       Rails.logger.warn(
@@ -178,7 +176,6 @@ class InvoicePayment::PaypalCaptureFulfillment
       @_client ||= PaymentProviders::PaypalClient.new(provider:)
     end
 
-    # PayPal has already taken the money at this point, so a rejected capture is an alert, not a log line.
     def validation_error(message)
       @error = message
       Rails.logger.warn("[PayPal] capture rejected invoice_id=#{invoice.id} order_id=#{order_id} reason=#{message}")
@@ -196,8 +193,8 @@ class InvoicePayment::PaypalCaptureFulfillment
       false
     end
 
-    # A transport failure or a PayPal 5xx may succeed on a retry; a rejection will not.
+
     def transient?(exception)
-      exception.status.nil? || exception.status >= 500
+      exception.status.nil? || exception.status >= 500 || RETRYABLE_STATUSES.include?(exception.status)
     end
 end

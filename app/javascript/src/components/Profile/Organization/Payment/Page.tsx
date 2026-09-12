@@ -44,10 +44,14 @@ import { toast } from "sonner";
 const UPI_ID_PATTERN = /^[a-zA-Z0-9._-]{2,256}@[a-zA-Z][a-zA-Z0-9_-]{2,64}$/;
 
 const PaypalIcon = ({ className }: { className?: string }) => (
-  <svg className={className} fill="none" viewBox="0 0 24 24">
+  <svg
+    className={`${className} text-[#003087] dark:text-[#88b4ff]`}
+    fill="none"
+    viewBox="0 0 24 24"
+  >
     <path
       d="M7.076 21.337H2.47a.641.641 0 0 1-.633-.74L4.944.901C5.026.382 5.474 0 5.998 0h7.46c2.57 0 4.578.543 5.69 1.81.514.586.84 1.196.994 1.86.16.696.163 1.52.008 2.5l-.012.072v.638l.4.225c.34.18.61.386.815.62.34.39.56.885.65 1.472.094.605.063 1.325-.09 2.14-.177.938-.462 1.755-.846 2.424a4.8 4.8 0 0 1-1.34 1.47 5.42 5.42 0 0 1-1.805.815c-.67.174-1.435.262-2.276.262h-.542c-.387 0-.763.14-1.058.39a1.64 1.64 0 0 0-.55 1.002l-.04.22-.706 4.476-.032.164c-.008.052-.023.078-.045.096a.12.12 0 0 1-.075.026H7.076Z"
-      fill="#003087"
+      fill="currentColor"
     />
   </svg>
 );
@@ -497,12 +501,10 @@ const OrganizationPaymentSettingsPage: React.FC = () => {
           : i18n.t("paymentSettingsPage.paypalSaveFailed")
       );
 
-      // Refresh what the server decided without clearing the credentials the admin just typed.
-      try {
-        const refreshed = await paymentSettings.get();
+      const refreshed = await paymentSettings.get().catch(() => null);
+
+      if (refreshed) {
         applyPaypalSettings(refreshed.data.providers.paypal, true);
-      } catch {
-        // Keep the card as it is when the refresh itself fails.
       }
     } finally {
       setIsSavingPaypal(false);
@@ -960,7 +962,7 @@ const OrganizationPaymentSettingsPage: React.FC = () => {
                           {paypalSettings.connected &&
                             !paypalSettings.enabled && (
                               <div className="flex items-center gap-2">
-                                <AlertCircle className="h-4 w-4 text-muted-foreground" />
+                                <AlertCircle className="h-4 w-4 shrink-0 text-muted-foreground" />
                                 <span>
                                   {i18n.t(
                                     "paymentSettingsPage.paypalEnableHint"

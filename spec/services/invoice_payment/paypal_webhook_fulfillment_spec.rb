@@ -123,10 +123,9 @@ RSpec.describe InvoicePayment::PaypalWebhookFulfillment do
     expect(fulfillment.error).to eq("PayPal request failed")
   end
 
-  it "fails on malformed JSON" do
+  it "acknowledges malformed JSON instead of letting PayPal retry it" do
     fulfillment = described_class.new(payload: "{", headers:)
 
-    expect(fulfillment.process).to be(false)
-    expect(fulfillment.error).to eq("Invalid PayPal webhook payload")
+    expect(fulfillment.process).to be(true)
   end
 end
