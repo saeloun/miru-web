@@ -36,16 +36,20 @@ class InvoicePayment::PaypalCaptureFulfillment
 
   private
 
+    # PayPal is called before the lock is taken so a slow capture cannot hold the invoice row.
+    # The request id makes the capture idempotent, and a replay returns ORDER_ALREADY_CAPTURED.
     def settle_under_lock
-      invoice.with_lock do
-        return nil if invoice.paid?
+      return nil if invoice.paid?
 
-        expected_order_id = invoice.paypal_order_id
-        order = capture_or_fetch_order
-        purchase_unit = Array(order["purchase_units"]).first || {}
-        capture = capture_from(purchase_unit)
-        owned = belongs_to_invoice?(purchase_unit, capture, expected_order_id)
+      expected_order_id = invoice.paypal_order_id
+      order = capture_or_fetch_order
+      purchase_unit = Array(order["purchase_units"]).first || {}
+      capture = capture_from(purchase_unit)
+      owned = belongs_to_invoice?(purchase_unit, capture, expected_order_id)
+
+      invoice.with_lock do
         record_order_details(order, capture)
+        return nil if invoice.paid?
 
         return validation_error("PayPal payment is not completed") unless completed?(capture)
         return validation_error("PayPal order does not belong to this invoice") unless owned
