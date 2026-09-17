@@ -81,7 +81,7 @@ Japanese yen, Hungarian forint, and New Taiwan dollar have no decimal places at 
 
 **Connected, but no invoice offers PayPal.** Turn on **Enabled**, keep **Show PayPal on invoices** on, and check that the webhook row reads Webhook registered. All three are required.
 
-**A client says they paid but the invoice is unpaid.** Do not ask them to pay again. In the matching Sandbox or Live PayPal dashboard, find the transaction by invoice number, client, amount, and payment time, then copy its order or capture ID. In **Settings > Payments**, confirm the environment is correct and PayPal still says **Connected** and **Webhook registered**. Check the event in the PayPal webhook deliveries page and resend it if PayPal offers that action. If the invoice remains unpaid, email [Miru support](mailto:hello@saeloun.com) with the workspace name, invoice number, and PayPal order or capture ID so the capture can be reconciled.
+**A client says they paid but the invoice is unpaid.** Do not ask them to pay again. In the matching Sandbox or Live PayPal dashboard, find the transaction by invoice number, client, amount, and payment time, then copy its order or capture ID. In **Settings → Payment Settings**, confirm the environment is correct and PayPal still says **Connected** and **Webhook registered**. Check the event in the PayPal webhook deliveries page and resend it if PayPal offers that action. If the invoice remains unpaid, email [Miru support](mailto:hello@saeloun.com) with the workspace name, invoice number, and PayPal order or capture ID so the capture can be reconciled.
 
 ## How Clients Pay
 
