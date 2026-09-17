@@ -102,11 +102,26 @@ RSpec.describe InvoicePayment::PaypalCaptureFulfillment do
     expect { described_class.new(invoice:, order_id: "ORDER-1").process }.not_to change(Payment, :count)
   end
 
-  it "returns true without calling PayPal when the invoice is already paid" do
+  it "does not capture an approved order when the invoice is already paid" do
     invoice.update!(status: "paid", amount_due: 0, amount_paid: 100)
     expect(client).not_to receive(:capture_order)
 
     expect(fulfillment.process).to be(true)
+  end
+
+  it "records a completed capture for reconciliation when the invoice is already paid" do
+    invoice.update!(status: "paid", amount_due: 0, amount_paid: 100)
+    allow(client).to receive(:show_order).with("ORDER-1").and_return(completed_order)
+    expect(client).not_to receive(:capture_order)
+
+    expect { expect(fulfillment.process).to be(true) }.to change(Payment, :count).by(1)
+    expect(Payment.last).to have_attributes(
+      provider_event_id: "paypal:CAP-1",
+      status: "partially_paid",
+      note: "PayPal_Payment_Already_Paid_Reconciliation"
+    )
+    expect(invoice.reload).to have_attributes(status: "paid", amount_due: 0, amount_paid: 100)
+    expect(fulfillment).not_to be_settled
   end
 
   it "does not capture after the invoice is waived" do

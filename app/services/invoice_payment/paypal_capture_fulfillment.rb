@@ -40,23 +40,24 @@ class InvoicePayment::PaypalCaptureFulfillment
       payment = settle_under_lock
       return false if error.present?
 
-      @settled = payment.present?
-      send_payment_emails if payment.present? && invoice.paid?
+      @settled = payment.present? && !@reconciliation
+      send_payment_emails if settled? && invoice.paid?
       true
     end
 
     def settle_under_lock
       invoice.with_lock do
-        return nil if invoice.paid?
+        already_paid = invoice.paid?
 
-        captured = fetch_capture
+        captured = fetch_capture(capture_if_approved: !already_paid)
         return nil if error.present?
+        return nil if already_paid && captured[:owned] && !completed?(captured[:capture])
 
-        settle_captured(captured)
+        settle_captured(captured, reconcile: already_paid)
       end
     end
 
-    def fetch_capture
+    def fetch_capture(capture_if_approved: true)
       expected_order_id = invoice.paypal_order_id
       preview = client.show_order(order_id)
       unless owned?(preview, expected_order_id)
@@ -66,6 +67,7 @@ class InvoicePayment::PaypalCaptureFulfillment
       purchase_unit = Array(preview["purchase_units"]).first || {}
       preview_capture = capture_from(purchase_unit)
       return { order: preview, capture: preview_capture, owned: true } if completed?(preview_capture)
+      return { order: preview, capture: preview_capture, owned: true } unless capture_if_approved
       return validation_error("PayPal order is no longer active for this invoice") unless invoice.paypal_order_id == order_id
       return unless capturable?(purchase_unit)
 
@@ -84,7 +86,7 @@ class InvoicePayment::PaypalCaptureFulfillment
       belongs_to_invoice?(purchase_unit, capture_from(purchase_unit), expected_order_id)
     end
 
-    def settle_captured(captured)
+    def settle_captured(captured, reconcile: false)
       order = captured[:order]
       capture = captured[:capture]
 
@@ -93,18 +95,24 @@ class InvoicePayment::PaypalCaptureFulfillment
       return validation_error("PayPal payment is not completed") unless completed?(capture)
       return validation_error("PayPal capture id is missing") if capture["id"].blank?
       record_order_details(order, capture)
-      settle_payment(order, capture)
+      settle_payment(order, capture, reconcile:)
     end
 
-    def settle_payment(order, capture)
+    def settle_payment(order, capture, reconcile: false)
       provider_event_id = "paypal:#{capture['id']}"
       return nil if Payment.exists?(provider_event_id:)
 
-      if currency_matches?(capture)
+      if reconcile
+        record_reconciliation(order, capture, provider_event_id,
+          reason: "the invoice was already paid",
+          note: "PayPal_Payment_Already_Paid_Reconciliation")
+      elsif currency_matches?(capture)
         log_amount_mismatch(capture)
         InvoicePayment::Settle.process(payment_params(order, capture, provider_event_id), invoice)
       else
-        record_currency_mismatch(order, capture, provider_event_id)
+        record_reconciliation(order, capture, provider_event_id,
+          reason: "the invoice now uses #{invoice.currency}",
+          note: "PayPal_Payment_Currency_Reconciliation")
       end
     end
 
@@ -179,22 +187,23 @@ class InvoicePayment::PaypalCaptureFulfillment
       ) if defined?(Sentry)
     end
 
-    def record_currency_mismatch(order, capture, provider_event_id)
+    def record_reconciliation(order, capture, provider_event_id, reason:, note:)
       captured_currency = capture.dig("amount", "currency_code").to_s.upcase
+      @reconciliation = true
       Rails.logger.error(
-        "PayPal capture #{capture['id']} for invoice #{invoice.id} used #{captured_currency}, " \
-        "but the invoice now uses #{invoice.currency}; recording it for reconciliation"
+        "PayPal capture #{capture['id']} for invoice #{invoice.id} used #{captured_currency}; " \
+        "#{reason}; recording it for reconciliation"
       )
       Sentry.capture_message(
-        "PayPal capture requires currency reconciliation",
+        "PayPal capture requires reconciliation",
         level: :error,
-        extra: { invoice_id: invoice.id, capture_id: capture["id"], captured_currency:, invoice_currency: invoice.currency }
+        extra: { invoice_id: invoice.id, capture_id: capture["id"], captured_currency:, reason: }
       ) if defined?(Sentry)
 
       Payment.create!(
         payment_params(order, capture, provider_event_id).merge(
           status: :partially_paid,
-          note: "PayPal_Payment_Currency_Reconciliation"
+          note:
         )
       )
     end

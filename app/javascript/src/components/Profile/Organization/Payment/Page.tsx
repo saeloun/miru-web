@@ -35,7 +35,10 @@ import {
   DialogTitle,
 } from "../../../ui/dialog";
 import { paymentSettings, quickBooksApi } from "apis/api";
-import { ApiStatus as PaymentSettingsStatus } from "../../../../constants/index";
+import {
+  ApiStatus as PaymentSettingsStatus,
+  MIRU_APP_SUPPORT_EMAIL_ID,
+} from "../../../../constants/index";
 import { Skeleton } from "../../../ui/skeleton";
 import { i18n } from "../../../../i18n";
 import { MiruLogoWithTextSVG } from "miruIcons";
@@ -233,22 +236,19 @@ const OrganizationPaymentSettingsPage: React.FC = () => {
   ).length;
   const razorpayReadyForInvoices = razorpayKeysReady && razorpayInvoicesReady;
 
-  const applyPaypalSettings = (paypal: any = {}, keepInput = false) => {
-    setPaypalSettings(settings => ({
-      ...settings,
+  const applyPaypalSettings = (paypal: any = {}) => {
+    setPaypalSettings({
       connected: !!paypal.connected,
       enabled: !!paypal.enabled,
       enabledOnInvoices: paypal.enabledOnInvoices ?? true,
-      clientId: keepInput ? settings.clientId : paypal.clientId || "",
-      clientSecret: keepInput ? settings.clientSecret : "",
+      clientId: paypal.clientId || "",
+      clientSecret: "",
       clientSecretConfigured: !!paypal.clientSecretConfigured,
-      environment: keepInput
-        ? settings.environment
-        : paypal.environment || "live",
+      environment: paypal.environment || "live",
       webhookId: paypal.webhookId || "",
       webhookError: paypal.webhookError || "",
       webhookUrl: paypal.webhookUrl || "",
-    }));
+    });
   };
 
   const applyQuickBooksSettings = (quickbooks: any = {}) => {
@@ -504,7 +504,7 @@ const OrganizationPaymentSettingsPage: React.FC = () => {
       const refreshed = await paymentSettings.get().catch(() => null);
 
       if (refreshed) {
-        applyPaypalSettings(refreshed.data.providers.paypal, true);
+        applyPaypalSettings(refreshed.data.providers.paypal);
       }
     } finally {
       setIsSavingPaypal(false);
@@ -1236,7 +1236,7 @@ const OrganizationPaymentSettingsPage: React.FC = () => {
                           data-testid="upi-qr-preview"
                         >
                           <div
-                            className="mb-3 flex items-center justify-center rounded-md border border-slate-200 bg-card px-3 py-2"
+                            className="mb-3 flex items-center justify-center rounded-md border border-slate-200 bg-white px-3 py-2"
                             data-testid="upi-logo-surface"
                           >
                             <img
@@ -1246,7 +1246,7 @@ const OrganizationPaymentSettingsPage: React.FC = () => {
                             />
                           </div>
                           <div
-                            className="mx-auto flex h-44 w-44 items-center justify-center rounded-md border border-slate-200 bg-card p-2"
+                            className="mx-auto flex h-44 w-44 items-center justify-center rounded-md border border-slate-200 bg-white p-2"
                             data-testid="upi-qr-surface"
                           >
                             <img
@@ -2096,8 +2096,10 @@ const OrganizationPaymentSettingsPage: React.FC = () => {
                   <ExternalLink className="h-4 w-4 mr-2" />
                   {i18n.t("paymentSettingsPage.viewDocumentation")}
                 </Button>
-                <Button variant="outline" className="bg-card">
-                  {i18n.t("paymentSettingsPage.contactSupport")}
+                <Button asChild variant="outline" className="bg-card">
+                  <a href={MIRU_APP_SUPPORT_EMAIL_ID}>
+                    {i18n.t("paymentSettingsPage.contactSupport")}
+                  </a>
                 </Button>
               </div>
             </CardContent>

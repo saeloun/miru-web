@@ -40,6 +40,44 @@ RSpec.describe "Settings - Payment", type: :system, js: true do
         expect(page).to have_content("PayPal", wait: 10)
         expect(page).to have_content("/webhooks/paypal/events")
         expect(page).to have_button("Copy webhook URL", disabled: false)
+        expect(page).to have_link("Contact Support", href: "mailto:hello@saeloun.com")
+      end
+    end
+
+    it "restores persisted PayPal settings after a failed save" do
+      provider = build(
+        :payments_provider,
+        company:,
+        name: PaymentsProvider::PAYPAL_PROVIDER,
+        connected: true,
+        enabled: true,
+        settings: {
+          client_id: "live-client-id",
+          environment: "live",
+          webhook_id: "WH-LIVE",
+          enabled_on_invoices: true
+        }
+      )
+      provider.client_secret = "live-secret"
+      provider.save!
+      allow_any_instance_of(PaymentProviders::PaypalConnectionService).to receive_messages(
+        process: false,
+        error: "PayPal is unavailable"
+      )
+
+      with_forgery_protection do
+        visit "/settings/payment"
+
+        expect(page).to have_field("paypal_client_id", with: "live-client-id", wait: 10)
+        fill_in "paypal_client_id", with: "sandbox-client-id"
+        find("#paypal_sandbox").click
+        click_on "Save PayPal"
+
+        expect(page).to have_content("PayPal is unavailable", wait: 10)
+        expect(page).to have_field("paypal_client_id", with: "live-client-id")
+        expect(find("#paypal_sandbox")["aria-checked"]).to eq("false")
+        expect(page).to have_content("Live")
+        expect(page).to have_content("Webhook registered")
       end
     end
 
