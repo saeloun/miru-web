@@ -21,9 +21,25 @@ const MobileView = ({ data }) => {
     bank_payment,
     upi_payment,
     razorpay_payment,
+    paypal_payment,
+    stripe_connected_account,
   } = data;
   const invoiceWaived = invoice?.status === "waived";
   const strikeAmount = invoiceWaived && "line-through";
+  const isNonActionable =
+    invoice.status === "paid" || invoiceWaived || invoice.amount <= 0;
+
+  const hasOtherProvider =
+    !!stripe_connected_account ||
+    !!razorpay_payment?.enabled ||
+    !!upi_payment?.payment_link;
+  const paypalEnabled = !!paypal_payment?.enabled && !!paypal_payment?.url;
+  const paypalOnly = paypalEnabled && !hasOtherProvider;
+  const paymentUrl = razorpay_payment?.enabled
+    ? url
+    : upi_payment?.payment_link ||
+      (!stripe_connected_account && paypalEnabled ? paypal_payment.url : url);
+
   const bankRows = [
     {
       label: i18n.t("paymentSettingsPage.bankName"),
@@ -46,7 +62,7 @@ const MobileView = ({ data }) => {
   return (
     <div className="h-full">
       <Header invoice={invoice} />
-      <div className="h-full overflow-y-scroll">
+      <div className="h-full overflow-y-scroll pb-40">
         <CompanyInfo company={company} />
         <InvoiceInfo
           company={company}
@@ -107,26 +123,31 @@ const MobileView = ({ data }) => {
           </div>
         )}
       </div>
-      <div className="sticky bottom-0 left-0 right-0 z-50 flex w-full items-center justify-between  bg-card p-4 shadow-c1">
+      <div className="sticky bottom-0 left-0 right-0 z-50 flex w-full flex-col gap-2 bg-card p-4 shadow-c1">
+        {paypalEnabled && !paypalOnly && !isNonActionable && (
+          <Button
+            className="flex w-full items-center justify-center px-4 py-2"
+            style="secondary"
+            onClick={() => {
+              window.location.href = paypal_payment.url;
+            }}
+          >
+            {i18n.t("invoices.payWithPaypal")}
+          </Button>
+        )}
         <Button
-          className="mr-2 flex w-full items-center justify-center px-4 py-2"
+          className="flex w-full items-center justify-center px-4 py-2"
           style="primary"
-          disabled={
-            invoice.status == "paid" ||
-            invoice.status == "waived" ||
-            invoice.amount <= 0
-          }
+          disabled={isNonActionable}
           onClick={() => {
             if (invoice.status != "paid") {
-              window.location.href = razorpay_payment?.enabled
-                ? url
-                : upi_payment?.payment_link || url;
+              window.location.href = paymentUrl;
             }
           }}
         >
           <ReportsIcon className="text-white" size={16} weight="bold" />
           <span className="ml-2 text-center text-base font-bold leading-5 text-white">
-            PAY
+            {paypalOnly ? i18n.t("invoices.payWithPaypal") : "PAY"}
           </span>
         </Button>
       </div>

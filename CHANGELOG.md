@@ -26,6 +26,18 @@
 - Mailer layout branding now uses asset helper URLs with production `action_mailer.asset_host` to keep email logo assets resolvable in production mail clients
 - Razorpay Payment Settings now copies the production webhook URLs with the required event names for faster dashboard setup
 
+## 3.0.5 - 2026-09-17
+
+### Added
+
+- PayPal invoice payments: connect a PayPal REST app in Payment Settings, accept payments on public and client invoices, and reconcile captures through verified webhooks
+
+### Fixed
+
+- PayPal capture now serializes concurrent checkout returns, rejects stale balances before charging, and safely records already-completed captures for reconciliation
+- PayPal connection setup now preserves working credentials through transient API failures and requires a verified webhook before checkout
+- Payment settings now enforce CSRF protection, validate PayPal ownership with an immutable reference, and keep payment QR codes readable in dark mode
+
 ## 3.0.4 - 2026-09-09
 
 ### Fixed

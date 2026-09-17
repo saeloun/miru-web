@@ -5,7 +5,7 @@ title: Payments Dashboard
 
 Miru payments dashboard provides an organized and efficient way to handle payments. 
 
-Payment Dashboard is currently available only for Admin Role. When a payment is processed through Stripe, it is instantly designated as "paid" and incorporated into the list.
+Payment Dashboard is currently available only for Admin Role. When a payment is processed through Stripe or PayPal, it is instantly designated as "paid" and incorporated into the list.
 
 ## Key Features:
 
@@ -26,7 +26,7 @@ Date of transaction.
 Add comments or additional information for reference.
 
 #### Transaction Type: 
-Type of transaction allows you to identify the payment method used such as Stripe, ACH etc.
+Type of transaction allows you to identify the payment method used, such as Stripe, PayPal, or ACH.
 
 #### Amount: 
 Displays the financial value of each transaction.

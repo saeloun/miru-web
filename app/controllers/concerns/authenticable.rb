@@ -14,8 +14,14 @@ module Authenticable
       # Skip if already authenticated via session cookie
       return if current_user
 
-      return if authenticate_user_using_cli_token
-      return if authenticate_user_using_jwt
+      if authenticate_user_using_cli_token
+        @token_authenticated_request = true
+        return
+      end
+      if authenticate_user_using_jwt
+        @token_authenticated_request = true
+        return
+      end
 
       user_email = request.headers["X-Auth-Email"].presence
       auth_token = request.headers["X-Auth-Token"].presence
@@ -23,6 +29,7 @@ module Authenticable
 
       if legacy_token_active?(user) && auth_token && Devise.secure_compare(user.token, auth_token)
         sign_in user, store: false, skip_session_limitable: true
+        @token_authenticated_request = true
       else
         render json: { error: I18n.t("devise.failure.unauthenticated") }, status: 401
       end
@@ -60,5 +67,9 @@ module Authenticable
 
     def current_cli_session
       @current_cli_session
+    end
+
+    def token_authenticated_request?
+      @token_authenticated_request == true
     end
 end

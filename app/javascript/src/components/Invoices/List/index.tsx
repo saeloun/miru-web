@@ -256,7 +256,7 @@ const Invoices = () => {
   const fetchPaymentSettings = async () => {
     try {
       const res = await paymentSettings.get();
-      const { stripe, upi, razorpay } = res.data.providers;
+      const { stripe, upi, razorpay, paypal } = res.data.providers;
       const stripeEnabled = !!stripe?.enabled || !!stripe?.connected;
       const upiEnabledOnInvoices = !!upi?.enabled && !!upi?.enabledOnInvoices;
       const razorpayEnabledOnInvoices =
@@ -264,8 +264,14 @@ const Invoices = () => {
         !!razorpay?.connected &&
         !!razorpay?.enabledOnInvoices;
 
+      const paypalEnabledOnInvoices =
+        !!paypal?.enabled && !!paypal?.connected && !!paypal?.enabledOnInvoices;
+
       setIsPaymentEnabled(
-        stripeEnabled || upiEnabledOnInvoices || razorpayEnabledOnInvoices
+        stripeEnabled ||
+          upiEnabledOnInvoices ||
+          razorpayEnabledOnInvoices ||
+          paypalEnabledOnInvoices
       );
     } catch {
       Toastr.error(i18n.t("invoices.errorConnectingPayments"));
