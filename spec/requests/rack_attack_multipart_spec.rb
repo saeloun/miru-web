@@ -53,4 +53,19 @@ RSpec.describe "Rack::Attack multipart handling", type: :request do
     expect(throttle.limit).to eq(120)
     expect(throttle.block.call(request)).to eq("203.0.113.10")
   end
+
+  it "throttles PayPal invoice starts and returns by source IP" do
+    throttle = Rack::Attack.throttles.fetch("invoice/checkout/ip")
+
+    %w[
+      /invoices/invoice-key/payments/new
+      /invoices/invoice-key/payments/paypal_return
+    ].each do |path|
+      request = Rack::Attack::Request.new(
+        Rack::MockRequest.env_for(path, method: "GET", "REMOTE_ADDR" => "203.0.113.10")
+      )
+
+      expect(throttle.block.call(request)).to eq("203.0.113.10")
+    end
+  end
 end

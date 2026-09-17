@@ -73,4 +73,29 @@ RSpec.describe "Client invoice detail", type: :system, js: true do
       expect(page).to have_content("HDFC0001234")
     end
   end
+
+  it "offers PayPal when it is the only online payment provider" do
+    invoice.update!(currency: "USD", amount: 1200, amount_due: 1200)
+    provider = build(
+      :payments_provider,
+      company:,
+      name: PaymentsProvider::PAYPAL_PROVIDER,
+      enabled: true,
+      connected: true,
+      settings: {
+        client_id: "client-id",
+        environment: "sandbox",
+        webhook_id: "WH-1",
+        enabled_on_invoices: true
+      }
+    )
+    provider.client_secret = "secret"
+    provider.save!
+
+    with_forgery_protection do
+      visit "/invoices/#{invoice.external_view_key}"
+
+      expect(page).to have_button("Pay with PayPal", wait: 10)
+    end
+  end
 end

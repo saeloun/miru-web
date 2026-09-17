@@ -81,6 +81,24 @@ RSpec.describe PaymentProviders::PaypalClient do
     expect(client.capture_order("ORDER-1", request_id: "cap-1")).to include("status" => "COMPLETED")
   end
 
+  it "refreshes an expired token and keeps the idempotency key on retry" do
+    stub_request(:post, "#{base_url}/v1/oauth2/token")
+      .to_return(
+        { status: 200, body: { access_token: "token-1", expires_in: 3600 }.to_json, headers: { "Content-Type" => "application/json" } },
+        { status: 200, body: { access_token: "token-2", expires_in: 3600 }.to_json, headers: { "Content-Type" => "application/json" } }
+      )
+    capture_request = stub_request(:post, "#{base_url}/v2/checkout/orders/ORDER-1/capture")
+      .with(headers: { "PayPal-Request-Id" => "cap-1" })
+      .to_return(
+        { status: 401, body: { error: "invalid_token" }.to_json, headers: { "Content-Type" => "application/json" } },
+        { status: 201, body: { id: "ORDER-1", status: "COMPLETED" }.to_json, headers: { "Content-Type" => "application/json" } }
+      )
+
+    expect(client.capture_order("ORDER-1", request_id: "cap-1")).to include("status" => "COMPLETED")
+    expect(capture_request).to have_been_requested.twice
+    expect(a_request(:post, "#{base_url}/v1/oauth2/token")).to have_been_made.twice
+  end
+
   it "exposes the PayPal issue code on API errors" do
     stub_request(:post, "#{base_url}/v2/checkout/orders/ORDER-1/capture")
       .to_return(status: 422, body: { name: "UNPROCESSABLE_ENTITY", message: "The requested action could not be performed.", details: [{ issue: "ORDER_ALREADY_CAPTURED", description: "Order already captured." }] }.to_json)
