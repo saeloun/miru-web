@@ -33,6 +33,16 @@ RSpec.describe "Settings - Payment", type: :system, js: true do
       end
     end
 
+    it "shows the PayPal webhook setup" do
+      with_forgery_protection do
+        visit "/settings/payment"
+
+        expect(page).to have_content("PayPal", wait: 10)
+        expect(page).to have_content("/webhooks/paypal/events")
+        expect(page).to have_button("Copy webhook URL", disabled: false)
+      end
+    end
+
     it "shows configured UPI QR branding and invoice controls" do
       create(
         :payments_provider,

@@ -106,7 +106,9 @@ module PaymentProviders
         end.post("/v1/oauth2/token", grant_type: "client_credentials")
 
         body = parsed_response(response)
-        token = body.fetch("access_token")
+        token = body["access_token"].presence
+        raise Error.new("PayPal did not return an access token", status: response.status) if token.blank?
+
         ttl = [body["expires_in"].to_i - TOKEN_CACHE_MARGIN, TOKEN_CACHE_MARGIN].max
         Rails.cache.write(token_cache_key, token, expires_in: ttl.seconds)
         token

@@ -40,4 +40,17 @@ RSpec.describe "Rack::Attack multipart handling", type: :request do
     expect { request.params }.to raise_error(EOFError)
     expect(throttle.block.call(request)).to be_nil
   end
+
+  it "throttles PayPal webhooks by source IP" do
+    env = Rack::MockRequest.env_for(
+      "/webhooks/paypal/events",
+      method: "POST",
+      "REMOTE_ADDR" => "203.0.113.10"
+    )
+    request = Rack::Attack::Request.new(env)
+    throttle = Rack::Attack.throttles.fetch("webhooks/paypal/ip")
+
+    expect(throttle.limit).to eq(120)
+    expect(throttle.block.call(request)).to eq("203.0.113.10")
+  end
 end

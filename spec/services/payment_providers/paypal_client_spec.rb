@@ -58,6 +58,13 @@ RSpec.describe PaymentProviders::PaypalClient do
     expect { client.access_token }.to raise_error(described_class::Error, "Client Authentication failed")
   end
 
+  it "raises a PayPal error when a successful token response has no access token" do
+    stub_request(:post, "#{base_url}/v1/oauth2/token")
+      .to_return(status: 200, body: { expires_in: 3600 }.to_json, headers: { "Content-Type" => "application/json" })
+
+    expect { client.access_token }.to raise_error(described_class::Error, "PayPal did not return an access token")
+  end
+
   it "creates orders with an idempotency header" do
     stub_request(:post, "#{base_url}/v2/checkout/orders")
       .with(headers: { "Authorization" => "Bearer token-1", "PayPal-Request-Id" => "req-1" }, body: { intent: "CAPTURE" }.to_json)

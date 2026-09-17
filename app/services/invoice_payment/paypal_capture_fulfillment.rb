@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
 class InvoicePayment::PaypalCaptureFulfillment
+  CAPTURABLE_STATUSES = %w[sent viewed overdue].freeze
   RETRYABLE_STATUSES = [408, 429].freeze
+  ORDER_ID_PATTERN = /\A[A-Za-z0-9_-]+\z/
 
   attr_reader :invoice, :order_id, :error, :error_code
 
@@ -14,6 +16,7 @@ class InvoicePayment::PaypalCaptureFulfillment
   def process
     return fail_with("PayPal is not configured for this workspace") unless provider&.paypal_configured?
     return fail_with("PayPal order id is required") if order_id.blank?
+    return fail_with("PayPal order id is invalid") unless order_id.match?(ORDER_ID_PATTERN)
 
     settle_and_notify
   rescue PaymentProviders::PaypalClient::Error => exception
@@ -43,43 +46,66 @@ class InvoicePayment::PaypalCaptureFulfillment
     end
 
     def settle_under_lock
-      return nil if invoice.paid?
+      invoice.with_lock do
+        return nil if invoice.paid?
 
-      settle_captured(fetch_capture)
+        captured = fetch_capture
+        return nil if error.present?
+
+        settle_captured(captured)
+      end
     end
 
     def fetch_capture
       expected_order_id = invoice.paypal_order_id
+      preview = client.show_order(order_id)
+      unless owned?(preview, expected_order_id)
+        return { order: preview, capture: {}, owned: false }
+      end
+
+      purchase_unit = Array(preview["purchase_units"]).first || {}
+      preview_capture = capture_from(purchase_unit)
+      return { order: preview, capture: preview_capture, owned: true } if completed?(preview_capture)
+      return validation_error("PayPal order is no longer active for this invoice") unless invoice.paypal_order_id == order_id
+      return unless capturable?(purchase_unit)
+
       order = capture_or_fetch_order
       purchase_unit = Array(order["purchase_units"]).first || {}
-      capture = capture_from(purchase_unit)
 
-      { order:, capture:, owned: belongs_to_invoice?(purchase_unit, capture, expected_order_id) }
+      {
+        order:,
+        capture: capture_from(purchase_unit),
+        owned: owned?(order, expected_order_id)
+      }
+    end
+
+    def owned?(order, expected_order_id)
+      purchase_unit = Array(order["purchase_units"]).first || {}
+      belongs_to_invoice?(purchase_unit, capture_from(purchase_unit), expected_order_id)
     end
 
     def settle_captured(captured)
       order = captured[:order]
       capture = captured[:capture]
 
-      invoice.with_lock do
-        return nil if invoice.paid?
+      return validation_error("PayPal order does not belong to this invoice") unless captured[:owned]
 
-        record_order_details(order, capture)
-
-        return validation_error("PayPal payment is not completed") unless completed?(capture)
-        return validation_error("PayPal order does not belong to this invoice") unless captured[:owned]
-        return validation_error("PayPal capture currency does not match the invoice") unless currency_matches?(capture)
-
-        settle_payment(order, capture)
-      end
+      return validation_error("PayPal payment is not completed") unless completed?(capture)
+      return validation_error("PayPal capture id is missing") if capture["id"].blank?
+      record_order_details(order, capture)
+      settle_payment(order, capture)
     end
 
     def settle_payment(order, capture)
       provider_event_id = "paypal:#{capture['id']}"
       return nil if Payment.exists?(provider_event_id:)
 
-      log_amount_mismatch(capture)
-      InvoicePayment::Settle.process(payment_params(order, capture, provider_event_id), invoice)
+      if currency_matches?(capture)
+        log_amount_mismatch(capture)
+        InvoicePayment::Settle.process(payment_params(order, capture, provider_event_id), invoice)
+      else
+        record_currency_mismatch(order, capture, provider_event_id)
+      end
     end
 
     def capture_or_fetch_order
@@ -100,6 +126,9 @@ class InvoicePayment::PaypalCaptureFulfillment
     end
 
     def belongs_to_invoice?(purchase_unit, capture, expected_order_id)
+      expected_reference_id = PaymentProviders::PaypalOrderService.reference_id(invoice)
+      return false unless purchase_unit["reference_id"] == expected_reference_id
+
       custom_ids = [purchase_unit["custom_id"], capture["custom_id"]].compact_blank
       return custom_ids.include?(invoice.id.to_s) if custom_ids.any?
 
@@ -108,6 +137,19 @@ class InvoicePayment::PaypalCaptureFulfillment
 
     def currency_matches?(capture)
       capture.dig("amount", "currency_code").to_s.casecmp?(invoice.currency)
+    end
+
+    def capturable?(purchase_unit)
+      unless CAPTURABLE_STATUSES.include?(invoice.status) && invoice.amount_due.positive?
+        return validation_error("Invoice is no longer payable")
+      end
+
+      amount = purchase_unit["amount"] || {}
+      matches_invoice = amount["currency_code"].to_s.casecmp?(invoice.currency) &&
+        PaymentProviders::PaypalAmount.parse(amount["value"]) == invoice.amount_due
+      return validation_error("PayPal order amount no longer matches the invoice") unless matches_invoice
+
+      true
     end
 
     def zero_decimal?
@@ -137,13 +179,33 @@ class InvoicePayment::PaypalCaptureFulfillment
       ) if defined?(Sentry)
     end
 
+    def record_currency_mismatch(order, capture, provider_event_id)
+      captured_currency = capture.dig("amount", "currency_code").to_s.upcase
+      Rails.logger.error(
+        "PayPal capture #{capture['id']} for invoice #{invoice.id} used #{captured_currency}, " \
+        "but the invoice now uses #{invoice.currency}; recording it for reconciliation"
+      )
+      Sentry.capture_message(
+        "PayPal capture requires currency reconciliation",
+        level: :error,
+        extra: { invoice_id: invoice.id, capture_id: capture["id"], captured_currency:, invoice_currency: invoice.currency }
+      ) if defined?(Sentry)
+
+      Payment.create!(
+        payment_params(order, capture, provider_event_id).merge(
+          status: :partially_paid,
+          note: "PayPal_Payment_Currency_Reconciliation"
+        )
+      )
+    end
+
     def payment_params(order, capture, provider_event_id)
       {
         invoice_id: invoice.id,
         transaction_date: transaction_date(capture["create_time"]),
         transaction_type: "paypal",
         amount: PaymentProviders::PaypalAmount.parse(capture.dig("amount", "value")),
-        payment_currency: invoice.currency,
+        payment_currency: capture.dig("amount", "currency_code").to_s.upcase,
         provider_event_id:,
         note: "PayPal_Payment_Success",
         name: payer_name(order)

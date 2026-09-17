@@ -41,6 +41,8 @@ It subscribes to:
 
 If Payment Settings shows **Webhook not registered**, save the PayPal connection from a Miru installation available at a public HTTPS URL. Local HTTP addresses cannot receive a PayPal webhook registration.
 
+PayPal stays off your invoices until the webhook is registered. Without it Miru cannot confirm a payment whose browser return was interrupted, so the button is hidden rather than risk an unreconciled charge.
+
 ## Supported Currencies
 
 PayPal invoice payments are available for:
@@ -70,6 +72,16 @@ PayPal invoice payments are available for:
 - CHF
 - THB
 - USD
+
+Japanese yen, Hungarian forint, and New Taiwan dollar have no decimal places at PayPal. An invoice in those currencies must total a whole number, otherwise PayPal cannot be used for it and the client sees an error instead of the payment page.
+
+## Troubleshooting
+
+**"Client Authentication failed" when saving.** The credentials do not match the environment. Sandbox credentials need **Sandbox mode** on; live credentials need it off. Copy them again from the matching PayPal dashboard.
+
+**Connected, but no invoice offers PayPal.** Turn on **Enabled**, keep **Show PayPal on invoices** on, and check that the webhook row reads Webhook registered. All three are required.
+
+**A client says they paid but the invoice is unpaid.** Open the invoice in PayPal using the order id from the Miru logs. A capture PayPal accepted always reaches Miru through the webhook, so an invoice that stays unpaid usually means the webhook is missing or the capture was declined.
 
 ## How Clients Pay
 

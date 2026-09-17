@@ -36,6 +36,10 @@ class Rack::Attack
     req.ip if req.get? && req.path.match?(%r{\A/invoices/[^/]+/payments/(new|paypal_return)\z})
   end
 
+  throttle("webhooks/paypal/ip", limit: 120, period: 1.minute) do |req|
+    req.ip if req.post? && req.path == "/webhooks/paypal/events"
+  end
+
   throttle("auth/recovery/ip", limit: 10, period: 1.minute) do |req|
     req.ip if req.post? && [
       "/api/v1/users/forgot_password",

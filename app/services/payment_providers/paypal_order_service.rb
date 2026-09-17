@@ -4,6 +4,15 @@ module PaymentProviders
   class PaypalOrderService
     APPROVAL_LINK_RELS = ["payer-action", "approve"].freeze
 
+    def self.reference_id(invoice)
+      digest = OpenSSL::HMAC.hexdigest(
+        "SHA256",
+        Rails.application.secret_key_base,
+        "paypal-order:#{invoice.company_id}:#{invoice.id}"
+      )
+      "miru-inv-#{digest}"
+    end
+
     attr_reader :invoice, :provider, :return_url, :cancel_url
 
     def initialize(invoice:, provider:, return_url:, cancel_url:)
@@ -14,12 +23,20 @@ module PaymentProviders
     end
 
     def process
-      response = client.create_order(order_payload, request_id: SecureRandom.uuid)
+      response = client.create_order(order_payload, request_id: request_id)
+      order_id = response["id"].presence
+      approval_url = approval_link(response)
+
+      raise PaypalClient::Error, "PayPal did not return an order id" if order_id.blank?
+      raise PaypalClient::Error, "PayPal did not return an approval link" if approval_url.blank?
+
       invoice.update!(
-        paypal_order_id: response.fetch("id"),
+        paypal_order_id: order_id,
         paypal_order_status: response["status"].presence || "CREATED"
       )
-      approval_link(response) || raise(PaypalClient::Error, "PayPal did not return an approval link")
+      approval_url
+    rescue PaypalAmount::UnsupportedAmountError => error
+      raise PaypalClient::Error, error.message
     end
 
     private
@@ -28,7 +45,7 @@ module PaymentProviders
         {
           intent: "CAPTURE",
           purchase_units: [{
-            reference_id: "miru-inv-#{invoice.id}",
+            reference_id: self.class.reference_id(invoice),
             custom_id: invoice.id.to_s,
             description: "Invoice #{invoice.invoice_number} from #{invoice.company.name}".truncate(127),
             amount: {
@@ -50,6 +67,15 @@ module PaymentProviders
             }
           }
         }
+      end
+
+      def request_id
+        Digest::SHA256.hexdigest([
+          "miru-paypal-order",
+          invoice.external_view_key,
+          invoice.currency.to_s.upcase,
+          PaypalAmount.format(invoice.amount_due, invoice.currency)
+        ].join(":"))[0, 38]
       end
 
       def approval_link(response)

@@ -81,7 +81,7 @@ RSpec.describe "Api::V1::Invoices::View#index", type: :request do
           name: PaymentsProvider::PAYPAL_PROVIDER,
           enabled: true,
           connected: true,
-          settings: { client_id: "client-id", environment: "sandbox", enabled_on_invoices: true }
+          settings: { client_id: "client-id", environment: "sandbox", enabled_on_invoices: true, webhook_id: "WH-1" }
         ).tap { |record| record.client_secret = "secret"; record.save! }
         invoice.update!(currency: "USD")
 
@@ -99,7 +99,7 @@ RSpec.describe "Api::V1::Invoices::View#index", type: :request do
           name: PaymentsProvider::PAYPAL_PROVIDER,
           enabled: true,
           connected: true,
-          settings: { client_id: "client-id", environment: "sandbox", enabled_on_invoices: true }
+          settings: { client_id: "client-id", environment: "sandbox", enabled_on_invoices: true, webhook_id: "WH-1" }
         ).tap { |record| record.client_secret = "secret"; record.save! }
         invoice.update!(currency: "INR")
 

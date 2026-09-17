@@ -1,12 +1,7 @@
 # frozen_string_literal: true
 
-class Webhooks::PaypalController < ApplicationController
+class Webhooks::PaypalController < ActionController::API
   MAX_WEBHOOK_BODY_BYTES = 1.megabyte
-
-  skip_around_action :switch_locale
-  skip_before_action :authenticate_user!
-  skip_before_action :verify_authenticity_token
-  skip_after_action :verify_authorized
 
   def events
     payload = bounded_payload

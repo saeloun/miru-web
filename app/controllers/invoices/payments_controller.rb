@@ -13,11 +13,12 @@ class Invoices::PaymentsController < ApplicationController
       "[Payments] could not start payment invoice_id=#{@invoice.id} provider=#{params[:provider]} " \
       "error_class=#{error.class} error=#{error.message}"
     )
-    redirect_to cancel_invoice_payments_url(@invoice.external_view_key)
+    redirect_to cancel_invoice_payments_url(@invoice.external_view_key, reason: "start")
   end
 
   def cancel
     @unconfirmed_payment = params[:reason] == "capture"
+    @payment_not_started = params[:reason] == "start"
     render
   end
 
@@ -111,10 +112,7 @@ class Invoices::PaymentsController < ApplicationController
       return @_paypal_provider if instance_variable_defined?(:@_paypal_provider)
 
       provider = @invoice.company.payments_providers.find_by(name: PaymentsProvider::PAYPAL_PROVIDER, enabled: true)
-      @_paypal_provider =
-        if provider&.enabled_on_invoices? && provider.paypal_configured? && provider.connected? && PaymentsProvider.paypal_currency_supported?(@invoice.currency)
-          provider
-        end
+      @_paypal_provider = provider if provider&.paypal_ready_for_invoices?(@invoice.currency, @invoice.amount_due)
     end
 
     def razorpay_provider

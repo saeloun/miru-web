@@ -89,6 +89,15 @@ class PaymentsProvider < ApplicationRecord
     PAYPAL_CURRENCIES.include?(currency.to_s.upcase)
   end
 
+  def self.paypal_amount_supported?(currency, amount)
+    return true if amount.blank?
+    return true unless PAYPAL_ZERO_DECIMAL_CURRENCIES.include?(currency.to_s.upcase)
+
+    BigDecimal(amount.to_s).frac.zero?
+  rescue ArgumentError
+    false
+  end
+
   def upi?
     name == UPI_PROVIDER
   end
@@ -111,6 +120,16 @@ class PaymentsProvider < ApplicationRecord
 
   def paypal_configured?
     paypal? && client_id.present? && client_secret.present?
+  end
+
+  def paypal_ready_for_invoices?(currency, amount = nil)
+    paypal_configured? &&
+      connected? &&
+      enabled? &&
+      enabled_on_invoices? &&
+      webhook_id.present? &&
+      self.class.paypal_currency_supported?(currency) &&
+      self.class.paypal_amount_supported?(currency, amount)
   end
 
   def paypal_environment

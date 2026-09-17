@@ -169,6 +169,51 @@ RSpec.describe Api::V1::PaymentSettingsController, type: :request do
       expect(JSON.parse(response.body)["errors"]).to eq("Client Authentication failed")
     end
 
+    it "rejects session-authenticated credential changes without a CSRF token" do
+      original = described_class.allow_forgery_protection
+      described_class.allow_forgery_protection = true
+      begin
+        patch api_v1_payments_settings_paypal_path,
+          params: { provider: { client_id: "attacker", client_secret: "secret", environment: "live" } }
+      ensure
+        described_class.allow_forgery_protection = original
+      end
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(PaymentProviders::PaypalConnectionService).not_to have_received(:new)
+    end
+
+    it "does not let an invalid bearer header bypass CSRF for a browser session" do
+      original = described_class.allow_forgery_protection
+      described_class.allow_forgery_protection = true
+      begin
+        patch api_v1_payments_settings_paypal_path,
+          params: { provider: { client_id: "attacker", client_secret: "secret", environment: "live" } },
+          headers: { "Authorization" => "Bearer invalid" }
+      ensure
+        described_class.allow_forgery_protection = original
+      end
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(PaymentProviders::PaypalConnectionService).not_to have_received(:new)
+    end
+
+    it "allows a valid stateless token without a browser CSRF token" do
+      sign_out user
+      _, cli_token = CliSession.issue_for(user:, company:)
+      original = described_class.allow_forgery_protection
+      described_class.allow_forgery_protection = true
+      begin
+        patch api_v1_payments_settings_paypal_path,
+          params: { provider: { client_id: "client-id", client_secret: "secret", environment: "sandbox" } },
+          headers: cli_auth_headers(cli_token)
+      ensure
+        described_class.allow_forgery_protection = original
+      end
+
+      expect(response).to have_http_status(:success)
+    end
+
     it "is forbidden for employees" do
       user.remove_role :admin, company
       user.add_role :employee, company
@@ -196,6 +241,21 @@ RSpec.describe Api::V1::PaymentSettingsController, type: :request do
       delete api_v1_payments_settings_paypal_path
 
       expect(response).to have_http_status(:not_found)
+    end
+
+    it "rejects session-authenticated disconnects without a CSRF token" do
+      company.payments_providers.create!(name: PaymentsProvider::PAYPAL_PROVIDER, settings: { client_id: "client-id" })
+
+      original = described_class.allow_forgery_protection
+      described_class.allow_forgery_protection = true
+      begin
+        delete api_v1_payments_settings_paypal_path
+      ensure
+        described_class.allow_forgery_protection = original
+      end
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(company.payments_providers.find_by(name: PaymentsProvider::PAYPAL_PROVIDER)).to be_present
     end
   end
 end

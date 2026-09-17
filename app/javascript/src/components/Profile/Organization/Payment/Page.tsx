@@ -1003,13 +1003,14 @@ const OrganizationPaymentSettingsPage: React.FC = () => {
                               {i18n.t("paymentSettingsPage.paypalWebhookUrl")}:
                             </span>
                             <code className="break-all rounded bg-muted px-2 py-1 text-xs text-foreground">
-                              {paypalSettings.webhookUrl}
+                              {paypalSettings.webhookUrl || "—"}
                             </code>
                             <div className="flex items-center gap-2">
                               <Button
                                 size="sm"
                                 variant="outline"
                                 className="bg-background"
+                                disabled={!paypalSettings.webhookUrl}
                                 onClick={() =>
                                   copyText(paypalSettings.webhookUrl)
                                 }

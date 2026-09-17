@@ -1,6 +1,13 @@
 # frozen_string_literal: true
 
 class Api::V1::PaymentSettingsController < Api::V1::ApplicationController
+  include ActionController::RequestForgeryProtection
+  self.allow_forgery_protection = ActionController::Base.allow_forgery_protection
+
+  protect_from_forgery with: :exception,
+    only: [:update_paypal, :disconnect_paypal],
+    unless: :token_authenticated_request?
+
   after_action :save_stripe_settings, only: :index
 
   def index

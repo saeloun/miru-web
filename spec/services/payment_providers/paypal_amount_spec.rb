@@ -7,14 +7,16 @@ RSpec.describe PaymentProviders::PaypalAmount do
     expect(described_class.format(BigDecimal("1234.5"), "USD")).to eq("1234.50")
   end
 
-  it "formats zero-decimal currencies without decimals" do
-    expect(described_class.format(BigDecimal("1234.6"), "JPY")).to eq("1235")
+  it "formats whole zero-decimal amounts without decimals" do
+    expect(described_class.format(BigDecimal("1234"), "JPY")).to eq("1234")
+    expect(described_class.format(BigDecimal("1234.00"), "TWD")).to eq("1234")
   end
 
-  it "rounds zero-decimal currencies up so the capture covers the invoice" do
-    expect(described_class.format(BigDecimal("1234.44"), "JPY")).to eq("1235")
-    expect(described_class.format(BigDecimal("1234.01"), "HUF")).to eq("1235")
-    expect(described_class.format(BigDecimal("1234"), "TWD")).to eq("1234")
+  it "refuses a fractional amount in a zero-decimal currency rather than rounding the payer up or down" do
+    expect { described_class.format(BigDecimal("1234.44"), "JPY") }
+      .to raise_error(described_class::UnsupportedAmountError, /no decimals/)
+    expect { described_class.format(BigDecimal("1234.01"), "HUF") }
+      .to raise_error(described_class::UnsupportedAmountError)
   end
 
   it "parses PayPal amounts to BigDecimal" do

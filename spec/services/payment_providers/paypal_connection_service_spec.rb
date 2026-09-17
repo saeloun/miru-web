@@ -79,23 +79,25 @@ RSpec.describe PaymentProviders::PaypalConnectionService do
     expect(provider.webhook_id).to eq("WH-NEW")
   end
 
-  it "skips webhook registration for non-https URLs and records why" do
+  it "rejects a connection whose webhook URL is not https" do
     allow(client).to receive(:access_token).and_return("token")
     expect(client).not_to receive(:create_webhook)
 
-    expect(described_class.new(provider:, webhook_url: "http://localhost:3000/webhooks/paypal/events").process).to be(true)
+    failed_service = described_class.new(provider:, webhook_url: "http://localhost:3000/webhooks/paypal/events")
+
+    expect(failed_service.process).to be(false)
+    expect(failed_service.error).to eq("Webhook registration needs a public HTTPS URL")
     expect(provider.webhook_id).to be_nil
-    expect(provider.webhook_error).to eq("Webhook registration needs a public HTTPS URL")
-    expect(provider.connected).to be(true)
+    expect(provider).not_to be_persisted
   end
 
-  it "keeps the connection but records a webhook failure" do
+  it "rejects the connection when webhook registration fails" do
     allow(client).to receive(:access_token).and_return("token")
     allow(client).to receive(:create_webhook).and_raise(PaymentProviders::PaypalClient::Error.new("Webhook URL is invalid", issue: "WEBHOOK_URL_INVALID"))
 
-    expect(service.process).to be(true)
-    expect(provider.connected).to be(true)
-    expect(provider.webhook_error).to eq("Webhook URL is invalid")
+    expect(service.process).to be(false)
+    expect(service.error).to eq("Webhook URL is invalid")
+    expect(provider).not_to be_persisted
   end
 
   it "does not re-register when the webhook matches the current credentials" do
@@ -138,11 +140,16 @@ RSpec.describe PaymentProviders::PaypalConnectionService do
     provider.connected = true
     provider.settings.merge!("webhook_id" => "WH-1", "webhook_client_id" => "client-id", "webhook_environment" => "sandbox", "webhook_url" => webhook_url)
     provider.save!
-    allow(client).to receive(:access_token).and_raise(PaymentProviders::PaypalClient::Error.new("PayPal request failed: TimeoutError"))
+    provider.assign_attributes(client_id: "unverified-client", environment: "live")
+    provider.client_secret = "unverified-secret"
+    allow(client).to receive(:access_token).and_raise(PaymentProviders::PaypalClient::Error.new("PayPal rate limit reached", status: 429))
 
     expect(service.process).to be(false)
-    expect(service.error).to eq("PayPal request failed: TimeoutError")
+    expect(service.error).to eq("PayPal rate limit reached")
     expect(provider.reload).to have_attributes(connected: true, enabled: true)
+    expect(provider.client_id).to eq("client-id")
+    expect(provider.paypal_environment).to eq("sandbox")
+    expect(provider.client_secret).to eq("client-secret")
     expect(provider.webhook_id).to eq("WH-1")
   end
 
@@ -153,5 +160,24 @@ RSpec.describe PaymentProviders::PaypalConnectionService do
 
     expect(service.process).to be(false)
     expect(provider.reload).to have_attributes(connected: false, enabled: false)
+  end
+
+  it "keeps the previous webhook when registering its replacement fails" do
+    provider.settings.merge!("webhook_id" => "WH-OLD", "webhook_client_id" => "client-id", "webhook_environment" => "sandbox", "webhook_url" => "https://old.miru.so/webhooks/paypal/events")
+    provider.connected = true
+    provider.save!
+    provider.assign_attributes(client_id: "new-client-id", environment: "live", enabled: false)
+    provider.client_secret = "new-secret"
+    allow(client).to receive(:access_token).and_return("token")
+    allow(client).to receive(:create_webhook).and_raise(PaymentProviders::PaypalClient::Error.new("Webhook URL is invalid", issue: "WEBHOOK_URL_INVALID"))
+    allow(client).to receive(:list_webhooks).and_return([])
+    expect(client).not_to receive(:delete_webhook)
+
+    expect(service.process).to be(false)
+    expect(service.error).to eq("Webhook URL is invalid")
+    expect(provider.reload.webhook_id).to eq("WH-OLD")
+    expect(provider.webhook_url).to eq("https://old.miru.so/webhooks/paypal/events")
+    expect(provider).to have_attributes(client_id: "client-id", paypal_environment: "sandbox", enabled: true, connected: true)
+    expect(provider.client_secret).to eq("client-secret")
   end
 end

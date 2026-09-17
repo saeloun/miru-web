@@ -25,8 +25,20 @@ RSpec.describe InvoicePayment::PaypalCaptureFulfillment do
       "status" => "COMPLETED",
       "payer" => { "name" => { "given_name" => "Jane", "surname" => "Buyer" }, "email_address" => "jane@example.com" },
       "purchase_units" => [{
+        "reference_id" => PaymentProviders::PaypalOrderService.reference_id(invoice),
         "custom_id" => invoice.id.to_s,
         "payments" => { "captures" => [{ "id" => "CAP-1", "status" => "COMPLETED", "amount" => { "currency_code" => "USD", "value" => "100.00" }, "create_time" => "2026-09-12T10:00:00Z" }] }
+      }]
+    }
+  end
+  let(:approved_order) do
+    {
+      "id" => "ORDER-1",
+      "status" => "APPROVED",
+      "purchase_units" => [{
+        "reference_id" => PaymentProviders::PaypalOrderService.reference_id(invoice),
+        "custom_id" => invoice.id.to_s,
+        "amount" => { "currency_code" => "USD", "value" => "100.00" }
       }]
     }
   end
@@ -34,6 +46,7 @@ RSpec.describe InvoicePayment::PaypalCaptureFulfillment do
 
   before do
     allow(PaymentProviders::PaypalClient).to receive(:new).with(provider:).and_return(client)
+    allow(client).to receive(:show_order).with("ORDER-1").and_return(approved_order)
   end
 
   it "captures the order and settles the invoice" do
@@ -47,6 +60,26 @@ RSpec.describe InvoicePayment::PaypalCaptureFulfillment do
     expect(invoice.paypal_order_status).to eq("COMPLETED")
   end
 
+  it "holds the invoice lock while validating and capturing the order" do
+    locked = false
+    allow(invoice).to receive(:with_lock) do |&block|
+      locked = true
+      block.call
+    ensure
+      locked = false
+    end
+    allow(client).to receive(:show_order) do
+      expect(locked).to be(true)
+      approved_order
+    end
+    allow(client).to receive(:capture_order) do
+      expect(locked).to be(true)
+      completed_order
+    end
+
+    expect(fulfillment.process).to be(true)
+  end
+
   it "sends payment emails on settlement" do
     allow(client).to receive(:capture_order).and_return(completed_order)
 
@@ -55,7 +88,7 @@ RSpec.describe InvoicePayment::PaypalCaptureFulfillment do
 
   it "reads the order when PayPal reports it already captured" do
     allow(client).to receive(:capture_order).and_raise(PaymentProviders::PaypalClient::Error.new("captured", issue: "ORDER_ALREADY_CAPTURED"))
-    expect(client).to receive(:show_order).with("ORDER-1").and_return(completed_order)
+    allow(client).to receive(:show_order).with("ORDER-1").and_return(approved_order, completed_order)
 
     expect(fulfillment.process).to be(true)
     expect(invoice.reload.status).to eq("paid")
@@ -76,21 +109,83 @@ RSpec.describe InvoicePayment::PaypalCaptureFulfillment do
     expect(fulfillment.process).to be(true)
   end
 
-  it "rejects captures for another invoice" do
-    completed_order["purchase_units"][0]["custom_id"] = "999"
-    allow(client).to receive(:capture_order).and_return(completed_order)
+  it "does not capture after the invoice is waived" do
+    invoice.update!(status: "waived")
+    expect(client).not_to receive(:capture_order)
+
+    expect(fulfillment.process).to be(false)
+    expect(fulfillment.error).to eq("Invoice is no longer payable")
+  end
+
+  it "does not capture an order for a stale balance" do
+    invoice.update!(amount_paid: 40, amount_due: 60)
+    expect(client).not_to receive(:capture_order)
+
+    expect(fulfillment.process).to be(false)
+    expect(fulfillment.error).to eq("PayPal order amount no longer matches the invoice")
+  end
+
+  it "does not capture an order for a stale currency" do
+    approved_order["purchase_units"][0]["amount"]["currency_code"] = "EUR"
+    expect(client).not_to receive(:capture_order)
+
+    expect(fulfillment.process).to be(false)
+    expect(fulfillment.error).to eq("PayPal order amount no longer matches the invoice")
+  end
+
+  it "records a completed capture after the invoice becomes unpayable" do
+    invoice.update!(status: "waived")
+    allow(client).to receive(:show_order).with("ORDER-1").and_return(completed_order)
+    expect(client).not_to receive(:capture_order)
+
+    expect { expect(fulfillment.process).to be(true) }.to change(Payment, :count).by(1)
+    expect(invoice.reload.status).to eq("paid")
+  end
+
+  it "records a completed capture after the invoice currency changes" do
+    original_due = invoice.amount_due
+    invoice.update_columns(currency: "EUR")
+    allow(client).to receive(:show_order).with("ORDER-1").and_return(completed_order)
+    expect(client).not_to receive(:capture_order)
+
+    expect { expect(fulfillment.process).to be(true) }.to change(Payment, :count).by(1)
+    expect(Payment.last).to have_attributes(payment_currency: "USD", status: "partially_paid")
+    expect(invoice.reload.amount_due).to eq(original_due)
+  end
+
+  it "recognizes a completed order after the invoice public key rotates" do
+    invoice.update_columns(external_view_key: SecureRandom.hex)
+    allow(client).to receive(:show_order).with("ORDER-1").and_return(completed_order)
+    expect(client).not_to receive(:capture_order)
+
+    expect { expect(fulfillment.process).to be(true) }.to change(Payment, :count).by(1)
+  end
+
+  it "never captures an order that belongs to another invoice" do
+    approved_order["purchase_units"][0]["reference_id"] = "miru-inv-another-checkout"
+    expect(client).not_to receive(:capture_order)
 
     expect(fulfillment.process).to be(false)
     expect(fulfillment.error).to eq("PayPal order does not belong to this invoice")
     expect(invoice.reload.status).to eq("sent")
+    expect(invoice.paypal_capture_id).to be_nil
   end
 
-  it "rejects captures in a different currency" do
+  it "does not capture an older order after a replacement was created" do
+    invoice.update!(paypal_order_id: "ORDER-2")
+    expect(client).not_to receive(:capture_order)
+
+    expect(fulfillment.process).to be(false)
+    expect(fulfillment.error).to eq("PayPal order is no longer active for this invoice")
+  end
+
+  it "records captures in a different currency for reconciliation" do
     completed_order["purchase_units"][0]["payments"]["captures"][0]["amount"]["currency_code"] = "EUR"
     allow(client).to receive(:capture_order).and_return(completed_order)
 
-    expect(fulfillment.process).to be(false)
-    expect(fulfillment.error).to eq("PayPal capture currency does not match the invoice")
+    expect { expect(fulfillment.process).to be(true) }.to change(Payment, :count).by(1)
+    expect(Payment.last).to have_attributes(payment_currency: "EUR", status: "partially_paid", note: "PayPal_Payment_Currency_Reconciliation")
+    expect(invoice.reload.amount_due).to eq(100)
   end
 
   it "fails when the capture is not completed" do
@@ -112,6 +207,14 @@ RSpec.describe InvoicePayment::PaypalCaptureFulfillment do
     expect(described_class.new(invoice:, order_id: "").process).to be(false)
   end
 
+  it "rejects an order id that could alter the PayPal request path" do
+    expect(client).not_to receive(:show_order)
+
+    fulfillment = described_class.new(invoice:, order_id: "../../v1/oauth2/token?x=1")
+    expect(fulfillment.process).to be(false)
+    expect(fulfillment.error).to eq("PayPal order id is invalid")
+  end
+
   it "fails when PayPal is not configured for the workspace" do
     provider.destroy!
 
@@ -119,16 +222,17 @@ RSpec.describe InvoicePayment::PaypalCaptureFulfillment do
     expect(fulfillment.error).to eq("PayPal is not configured for this workspace")
   end
 
-  it "records the capture id even when the capture is rejected" do
-    completed_order["purchase_units"][0]["custom_id"] = "999"
+  it "records capture details when currency reconciliation is required" do
+    completed_order["purchase_units"][0]["payments"]["captures"][0]["amount"]["currency_code"] = "EUR"
     allow(client).to receive(:capture_order).and_return(completed_order)
 
-    expect(fulfillment.process).to be(false)
-    expect(invoice.reload.paypal_capture_id).to eq("CAP-1")
-    expect(invoice.paypal_order_status).to eq("COMPLETED")
+    expect { fulfillment.process }
+      .to change { invoice.reload.paypal_capture_id }.from(nil).to("CAP-1")
+    expect(Payment.last.payment_currency).to eq("EUR")
   end
 
   it "settles on the stored order id when PayPal omits custom_id" do
+    approved_order["purchase_units"][0].delete("custom_id")
     completed_order["purchase_units"][0].delete("custom_id")
     allow(client).to receive(:capture_order).and_return(completed_order)
 
@@ -137,9 +241,13 @@ RSpec.describe InvoicePayment::PaypalCaptureFulfillment do
   end
 
   it "accepts custom_id carried on the capture instead of the purchase unit" do
+    approved_order["purchase_units"] = [{
+      "reference_id" => PaymentProviders::PaypalOrderService.reference_id(invoice),
+      "amount" => { "currency_code" => "USD", "value" => "100.00" },
+      "payments" => { "captures" => [{ "custom_id" => invoice.id.to_s }] }
+    }]
     completed_order["purchase_units"][0].delete("custom_id")
     completed_order["purchase_units"][0]["payments"]["captures"][0]["custom_id"] = invoice.id.to_s
-    invoice.update!(payment_infos: {})
     allow(client).to receive(:capture_order).and_return(completed_order)
 
     expect { expect(fulfillment.process).to be(true) }.to change(Payment, :count).by(1)
@@ -168,5 +276,25 @@ RSpec.describe InvoicePayment::PaypalCaptureFulfillment do
 
     expect(fulfillment.process).to be(false)
     expect(fulfillment.error).to include("Amount")
+  end
+
+  it "rejects a completed capture without an id" do
+    completed_order["purchase_units"][0]["payments"]["captures"][0]["id"] = ""
+    allow(client).to receive(:capture_order).and_return(completed_order)
+
+    expect { expect(fulfillment.process).to be(false) }.not_to change(Payment, :count)
+    expect(fulfillment.error).to eq("PayPal capture id is missing")
+  end
+
+  it "settles a zero-decimal currency without scaling the amount" do
+    invoice.update!(currency: "JPY", amount: 250, amount_due: 250)
+    approved_order["purchase_units"][0]["amount"] = { "currency_code" => "JPY", "value" => "250" }
+    capture = completed_order["purchase_units"][0]["payments"]["captures"][0]
+    capture["amount"] = { "currency_code" => "JPY", "value" => "250" }
+    allow(client).to receive(:capture_order).and_return(completed_order)
+
+    expect { expect(fulfillment.process).to be(true) }.to change(Payment, :count).by(1)
+    expect(Payment.last.amount).to eq(250)
+    expect(invoice.reload.status).to eq("paid")
   end
 end

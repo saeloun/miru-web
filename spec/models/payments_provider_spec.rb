@@ -209,6 +209,44 @@ RSpec.describe PaymentsProvider, type: :model do
     end
   end
 
+  describe "#paypal_ready_for_invoices?" do
+    subject(:provider) do
+      build(
+        :payments_provider,
+        name: PaymentsProvider::PAYPAL_PROVIDER,
+        enabled: true,
+        connected: true,
+        settings: { client_id: "client-id", environment: "live", webhook_id: "WH-1", enabled_on_invoices: true }
+      ).tap { |record| record.client_secret = "shh" }
+    end
+
+    it "is ready when the provider is connected, enabled, registered and the currency is supported" do
+      expect(provider.paypal_ready_for_invoices?("USD")).to be(true)
+    end
+
+    it "is not ready without a registered webhook, since captures could not be reconciled" do
+      provider.settings.delete("webhook_id")
+
+      expect(provider.paypal_ready_for_invoices?("USD")).to be(false)
+    end
+
+    it "is not ready for an unsupported currency" do
+      expect(provider.paypal_ready_for_invoices?("INR")).to be(false)
+    end
+
+    it "is not ready for a fractional amount in a currency PayPal charges in whole units" do
+      expect(provider.paypal_ready_for_invoices?("JPY", BigDecimal("250.25"))).to be(false)
+      expect(provider.paypal_ready_for_invoices?("JPY", BigDecimal("250.00"))).to be(true)
+      expect(provider.paypal_ready_for_invoices?("USD", BigDecimal("250.25"))).to be(true)
+    end
+
+    it "is not ready when the merchant switched it off for invoices" do
+      provider.enabled_on_invoices = false
+
+      expect(provider.paypal_ready_for_invoices?("USD")).to be(false)
+    end
+  end
+
   describe ".paypal_currency_supported?" do
     it "accepts PayPal currencies case-insensitively" do
       expect(described_class.paypal_currency_supported?("usd")).to be(true)

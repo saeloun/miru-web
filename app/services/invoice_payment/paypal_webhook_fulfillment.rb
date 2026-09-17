@@ -17,7 +17,9 @@ class InvoicePayment::PaypalWebhookFulfillment
     return true unless SUPPORTED_EVENTS.include?(event_type)
     return acknowledge("Invoice not found") if invoice.blank?
     return acknowledge("PayPal is not configured for this workspace") unless provider&.paypal_configured?
-    return acknowledge("PayPal webhook is not registered for this workspace") if provider.webhook_id.blank?
+    if provider.webhook_id.blank?
+      return fail_with("PayPal webhook is not registered for this workspace", :provider_unavailable)
+    end
 
     case signature_status
     when :invalid then return fail_with("Invalid PayPal webhook signature", :invalid_signature)

@@ -37,7 +37,7 @@ RSpec.describe PaymentProviders::PaypalOrderService do
       hash_including(
         intent: "CAPTURE",
         purchase_units: [hash_including(
-          reference_id: "miru-inv-#{invoice.id}",
+          reference_id: described_class.reference_id(invoice),
           custom_id: invoice.id.to_s,
           description: "Invoice INV-42 from Acme Studio",
           amount: { currency_code: "USD", value: "250.00" }
@@ -69,9 +69,37 @@ RSpec.describe PaymentProviders::PaypalOrderService do
     expect(service.process).to eq("https://www.sandbox.paypal.com/checkoutnow?token=ORDER-2")
   end
 
+  it "reuses the request id for the same checkout and rotates it when the balance changes" do
+    request_ids = []
+    allow(client).to receive(:create_order) do |_payload, request_id:|
+      request_ids << request_id
+      { "id" => "ORDER-2", "links" => [{ "rel" => "approve", "href" => "https://paypal.test/ORDER-2" }] }
+    end
+
+    2.times { service.process }
+    invoice.update!(amount: 200, amount_due: 200)
+    service.process
+
+    expect(request_ids.first(2).uniq.one?).to be(true)
+    expect(request_ids.last).not_to eq(request_ids.first)
+  end
+
   it "raises when PayPal returns no approval link" do
     allow(client).to receive(:create_order).and_return("id" => "ORDER-3", "links" => [])
 
     expect { service.process }.to raise_error(PaymentProviders::PaypalClient::Error, "PayPal did not return an approval link")
+  end
+  it "does not store a failed checkout on the invoice" do
+    allow(client).to receive(:create_order).and_return("id" => "ORDER-3", "links" => [])
+
+    expect { expect { service.process }.to raise_error(PaymentProviders::PaypalClient::Error) }
+      .not_to change { invoice.reload.paypal_order_id }
+  end
+
+  it "refuses a fractional amount in a zero-decimal currency" do
+    invoice.update!(currency: "JPY", amount: 250.25, amount_due: 250.25)
+    expect(client).not_to receive(:create_order)
+
+    expect { service.process }.to raise_error(PaymentProviders::PaypalClient::Error, /no decimals/)
   end
 end

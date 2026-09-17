@@ -112,7 +112,7 @@ RSpec.describe Invoices::PaymentsController, type: :request do
           name: PaymentsProvider::PAYPAL_PROVIDER,
           enabled: true,
           connected: true,
-          settings: { client_id: "client-id", environment: "sandbox", enabled_on_invoices: true }
+          settings: { client_id: "client-id", environment: "sandbox", enabled_on_invoices: true, webhook_id: "WH-1" }
         ).tap { |record| record.client_secret = "secret"; record.save! }
       end
 
@@ -141,12 +141,25 @@ RSpec.describe Invoices::PaymentsController, type: :request do
         expect(response).to redirect_to(success_path)
       end
 
-      it "redirects to the cancel page when PayPal order creation fails" do
+      it "tells the payer the payment never started when PayPal rejects the order" do
         allow_any_instance_of(PaymentProviders::PaypalOrderService).to receive(:process).and_raise(PaymentProviders::PaypalClient::Error.new("Currency not supported"))
 
         send_request :get, new_invoice_payment_path(params.merge(provider: "paypal"))
 
-        expect(response).to redirect_to(cancel_invoice_payments_url(invoice.external_view_key))
+        expect(response).to redirect_to(cancel_invoice_payments_url(invoice.external_view_key, reason: "start"))
+
+        follow_redirect!
+        expect(response.body).to include("We could not start your payment")
+        expect(response.body).to include("You have not been charged")
+      end
+
+      it "hides PayPal for a fractional amount in a currency PayPal charges in whole units" do
+        invoice.update!(currency: "JPY", amount: 250.25, amount_due: 250.25)
+        expect_any_instance_of(PaymentProviders::PaypalOrderService).not_to receive(:process)
+
+        send_request :get, new_invoice_payment_path(params.merge(provider: "paypal"))
+
+        expect(response).to redirect_to(success_path)
       end
 
       it "ignores the PayPal parameter for unsupported currencies" do

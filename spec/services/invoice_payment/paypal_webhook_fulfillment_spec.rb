@@ -63,6 +63,7 @@ RSpec.describe InvoicePayment::PaypalWebhookFulfillment do
   it "rejects invalid signatures with an error code" do
     payload = payload_for("PAYMENT.CAPTURE.COMPLETED", { custom_id: invoice.id.to_s, supplementary_data: { related_ids: { order_id: "ORDER-1" } } })
     allow(client).to receive(:verify_webhook_signature).and_return(false)
+    expect(InvoicePayment::PaypalCaptureFulfillment).not_to receive(:new)
     fulfillment = described_class.new(payload:, headers:)
 
     expect(fulfillment.process).to be(false)
@@ -76,12 +77,14 @@ RSpec.describe InvoicePayment::PaypalWebhookFulfillment do
     expect(fulfillment.error).to be_nil
   end
 
-  it "acknowledges events when no webhook is registered for the workspace" do
+  it "asks PayPal to retry when no webhook is registered for the workspace" do
     provider.update!(settings: provider.settings.except("webhook_id"))
     payload = payload_for("PAYMENT.CAPTURE.COMPLETED", { custom_id: invoice.id.to_s, supplementary_data: { related_ids: { order_id: "ORDER-1" } } })
     expect(InvoicePayment::PaypalCaptureFulfillment).not_to receive(:new)
 
-    expect(described_class.new(payload:, headers:).process).to be(true)
+    fulfillment = described_class.new(payload:, headers:)
+    expect(fulfillment.process).to be(false)
+    expect(fulfillment.error_code).to eq(:provider_unavailable)
   end
 
   it "asks PayPal to retry when signature verification is unavailable" do

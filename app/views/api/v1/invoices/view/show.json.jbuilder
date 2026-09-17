@@ -61,12 +61,7 @@ json.razorpay_payment do
   json.provider "razorpay"
 end
 json.paypal_payment do
-  json.enabled !!(
-    paypal_provider&.enabled_on_invoices? &&
-    paypal_provider&.paypal_configured? &&
-    paypal_provider&.connected? &&
-    PaymentsProvider.paypal_currency_supported?(invoice.currency)
-  )
+  json.enabled paypal_provider&.paypal_ready_for_invoices?(invoice.currency, invoice.amount_due) || false
   json.url "#{new_invoice_payment_url(invoice.external_view_key)}?provider=paypal"
 end
 json.bank_payment do
