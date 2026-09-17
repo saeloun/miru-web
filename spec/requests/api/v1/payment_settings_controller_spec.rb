@@ -160,6 +160,24 @@ RSpec.describe Api::V1::PaymentSettingsController, type: :request do
       expect(provider.reload.client_secret).to eq("old-secret")
     end
 
+    it "keeps PayPal enabled when the enabled field is omitted" do
+      provider = create(
+        :payments_provider,
+        company:,
+        name: PaymentsProvider::PAYPAL_PROVIDER,
+        connected: true,
+        enabled: true,
+        settings: { client_id: "old-client-id", environment: "sandbox", webhook_id: "WH-1" }
+      )
+
+      patch api_v1_payments_settings_paypal_path, params: {
+        provider: { client_id: "client-id", client_secret: "secret", environment: "sandbox" }
+      }
+
+      expect(response).to have_http_status(:success)
+      expect(provider.reload).to be_enabled
+    end
+
     it "returns 422 with the PayPal error when the connection fails" do
       allow(connection_service).to receive_messages(process: false, error: "Client Authentication failed")
 

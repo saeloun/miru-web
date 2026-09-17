@@ -201,7 +201,7 @@ class Api::V1::PaymentSettingsController < Api::V1::ApplicationController
 
     def paypal_provider_attributes
       {
-        enabled: boolean_type.cast(paypal_params[:enabled]),
+        enabled: paypal_params.key?(:enabled) ? boolean_type.cast(paypal_params[:enabled]) : paypal_provider.enabled?,
         accepted_payment_methods: ["paypal"],
         enabled_on_invoices: paypal_params.key?(:enabled_on_invoices) ? boolean_type.cast(paypal_params[:enabled_on_invoices]) : paypal_provider.enabled_on_invoices?,
         client_id: paypal_params[:client_id].to_s.strip,
