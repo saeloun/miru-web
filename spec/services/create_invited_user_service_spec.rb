@@ -37,6 +37,11 @@ RSpec.describe CreateInvitedUserService do
         expect(User.exists?(email: invitation.recipient_email)).to be(false)
       end
 
+      it "does not persist invitation acceptance when the seat check rolls back" do
+        expect { described_class.new(invitation.token).process }
+          .not_to change { RailsEventViewer::Entry.where(name: "Invitations::Accepted").count }
+      end
+
       it "allows a client invitation" do
         invitation.update!(role: :client, client: create(:client, company:))
 
@@ -51,7 +56,7 @@ RSpec.describe CreateInvitedUserService do
         company.update!(plan_tier: "paid")
 
         service = described_class.new(invitation.token)
-        service.process
+        assert_event_reported("Invitations::Accepted") { service.process }
 
         expect(service.success).to be(true)
         expect(invitation.reload.accepted_at).to be_present

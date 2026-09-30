@@ -7,8 +7,8 @@ class Api::V1::ApplicationController < ActionController::API
   include CurrentCompanyConcern
   include QuickbooksConnectionAccess
   include Pagy::Backend
-  include SetCurrentDetails
   include Authenticable
+  include SetCurrentDetails
 
   around_action :switch_locale
   before_action :authenticate_user!

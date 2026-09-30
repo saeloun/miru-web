@@ -90,6 +90,7 @@ class Api::V1::Users::TotpController < Api::V1::ApplicationController
     return unless sso_sign_in_allowed?(user)
 
     sign_in(user)
+    Rails.event.notify(Users::SignedIn.new(user, sign_in_method: :totp))
 
     render json: signed_in_payload(
       user,

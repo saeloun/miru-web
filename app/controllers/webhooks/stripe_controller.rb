@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class Webhooks::StripeController < ApplicationController
+  before_action { Rails.event.set_context(source: "stripe_webhook") }
   MAX_WEBHOOK_BODY_BYTES = 1.megabyte
 
   skip_before_action :authenticate_user!

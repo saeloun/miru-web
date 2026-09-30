@@ -44,7 +44,7 @@ Miru is built for teams that bill by the hour and want the full money workflow i
 - Track time without friction
 - Turn tracked work into invoices
 - Log and review expenses
-- Collect payments through Stripe
+- Collect payments through Stripe and PayPal
 - See revenue, utilization, and aging reports
 
 <p align="center">
@@ -111,7 +111,7 @@ Miru is built for teams that bill by the hour and want the full money workflow i
 
 - 📊 **Reports Page**: Generate comprehensive reports for insights into project performance. View time tracking data, expenses, and revenue summaries. Export reports in various formats (PDF, CSV) for sharing or record-keeping.
 
-- 💳 **Integration with Payment Gateways**: Seamlessly connect with STRIPE for quick and secure payments. Accept payments directly through Miru.so to streamline invoicing and payment processing.
+- 💳 **Integration with Payment Gateways**: Connect Stripe or PayPal for quick and secure payments. Accept payments directly through Miru.so to streamline invoicing and payment processing.
 
 ## Who It Is For
 

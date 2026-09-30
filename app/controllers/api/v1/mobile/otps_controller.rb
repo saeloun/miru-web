@@ -31,6 +31,7 @@ class Api::V1::Mobile::OtpsController < Api::V1::ApplicationController
     return unless sso_sign_in_allowed?(user)
 
     sign_in user, store: false
+    Rails.event.notify(Users::SignedIn.new(user, sign_in_method: :mobile_otp))
 
     render json: {
       notice: I18n.t("devise.sessions.signed_in"),

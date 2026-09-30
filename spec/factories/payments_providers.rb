@@ -31,5 +31,11 @@ FactoryBot.define do
     connected { false }
     enabled { false }
     accepted_payment_methods { ["card", "ach"] }
+
+    after(:build) do |provider|
+      if provider.name == PaymentsProvider::PAYPAL_PROVIDER && provider.connected? && provider.client_id.present? && provider.client_secret.blank?
+        provider.client_secret = "secret"
+      end
+    end
   end
 end

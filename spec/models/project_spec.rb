@@ -124,7 +124,7 @@ RSpec.describe Project, type: :model do
       let(:time_frame) { "month" }
 
       it "returns the project_members_snippet for a project in a month" do
-        timesheet_entry = create(:timesheet_entry, user:, project:, work_date: Date.today.at_beginning_of_month)
+        timesheet_entry = create(:timesheet_entry, user:, project:, work_date: Date.current.at_beginning_of_month)
         result.first[:hourly_rate] = hourly_rate
         cost = (timesheet_entry.duration / 60) * member.hourly_rate
         result.first[:cost] = cost
@@ -136,7 +136,7 @@ RSpec.describe Project, type: :model do
       let(:time_frame) { "year" }
 
       it "returns the project_members_snippet for a project in a year" do
-        timesheet_entry = create(:timesheet_entry, user:, project:, work_date: Date.today.beginning_of_year)
+        timesheet_entry = create(:timesheet_entry, user:, project:, work_date: Date.current.beginning_of_year)
         result.first[:hourly_rate] = hourly_rate
         cost = (timesheet_entry.duration / 60) * member.hourly_rate
         result.first[:cost] = cost

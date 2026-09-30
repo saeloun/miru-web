@@ -53,6 +53,8 @@ RSpec.configure do |config|
   config.include Devise::Test::IntegrationHelpers, type: :request
   config.include Devise::Test::IntegrationHelpers, type: :system
   config.include ActiveSupport::Testing::TimeHelpers
+  config.include ActiveSupport::Testing::EventReporterAssertions
+  config.before { Rails.event.clear_context }
 
   config.use_transactional_fixtures = false
 
