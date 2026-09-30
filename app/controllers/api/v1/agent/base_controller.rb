@@ -24,6 +24,7 @@ class Api::V1::Agent::BaseController < Api::V1::ApplicationController
     def set_agent_current_details!
       Current.user = current_user
       Current.company = current_company
+      Rails.event.set_context(source: "agent", agent_id: current_agent.id)
     end
 
     def bearer_token

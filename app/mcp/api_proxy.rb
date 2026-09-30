@@ -34,6 +34,7 @@ module MCP
         def request(method:, path:, authorization:, params: nil, body: nil, headers: {})
           full_path = build_path(path:, params:)
           request_options = normalize_headers(default_headers(authorization:).merge(headers))
+          request_options["miru.event_source"] = "mcp"
           request_options[:input] = JSON.generate(body) if body.present?
 
           response = Rack::MockRequest.new(Rails.application).request(method.to_s.upcase, full_path, request_options)

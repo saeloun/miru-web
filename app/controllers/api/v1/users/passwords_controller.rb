@@ -24,7 +24,10 @@ class Api::V1::Users::PasswordsController < Devise::PasswordsController
         }, status: 422
       end
 
-      sign_in(user) if Devise.sign_in_after_reset_password && sso_sign_in_error(user).nil?
+      if Devise.sign_in_after_reset_password && sso_sign_in_error(user).nil?
+        sign_in(user)
+        Rails.event.notify(Users::SignedIn.new(user, sign_in_method: :password_reset))
+      end
       safe_user = user.as_json(only: %i[id email first_name last_name current_workspace_id])
       render json: { notice: I18n.t("password.update.success"), user: safe_user }, status: 200
     else

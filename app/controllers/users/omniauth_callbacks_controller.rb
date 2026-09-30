@@ -38,6 +38,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
         end
 
         sign_in_and_redirect user
+        Rails.event.notify(Users::SignedIn.new(user, sign_in_method: kind.downcase))
         set_flash_message(:notice, :success, kind:) if is_navigational_format?
       else
         flash[:error] = failure_message

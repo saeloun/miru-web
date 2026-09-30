@@ -46,6 +46,7 @@ module Authenticable
       return false unless session
 
       @current_cli_session = session
+      Rails.event.set_context(source: "cli")
       sign_in session.user, store: false, skip_session_limitable: true
       current_user.current_workspace = session.company
       current_user.clear_attribute_changes([:current_workspace_id])

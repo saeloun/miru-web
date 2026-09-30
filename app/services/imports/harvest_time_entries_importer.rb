@@ -36,6 +36,7 @@ module Imports
     end
 
     def process
+      Rails.event.set_context(source: "harvest_import", data_import_id: data_import.id)
       data_import.update!(
         status: "processing",
         started_at: Time.current,
@@ -484,6 +485,7 @@ module Imports
           row_errors: @row_errors
         )
         data_import.file.purge_later unless data_import.dry_run?
+        Rails.event.notify(Imports::Completed.new(data_import))
       end
 
       def duplicate_key(user_id, project_id, work_date, duration, note)

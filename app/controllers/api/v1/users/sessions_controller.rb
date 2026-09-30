@@ -111,6 +111,7 @@ class Api::V1::Users::SessionsController < Devise::SessionsController
       persist_requested_locale(user)
       user.reset_failed_attempts! if user.respond_to?(:reset_failed_attempts!)
       sign_in(user)
+      Rails.event.notify(Users::SignedIn.new(user, sign_in_method: :password))
       set_pwned_password_warning(user)
 
       app = params[:app] || ""

@@ -50,6 +50,7 @@ class TimesheetEntry < ApplicationRecord
   before_validation :ensure_billed_status_should_not_be_changed, on: :update
   before_validation :normalize_source_fields
   before_validation :normalize_proof_metadata
+  after_create_commit { Rails.event.notify(TimesheetEntries::Created.new(self)) }
 
   validates :duration, :work_date, :bill_status, :review_status, presence: true
   validates :duration, numericality: { less_than_or_equal_to: 6000000, greater_than_or_equal_to: 0.0 }

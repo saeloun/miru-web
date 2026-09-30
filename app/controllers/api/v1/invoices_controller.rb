@@ -102,6 +102,7 @@ class Api::V1::InvoicesController < Api::V1::ApplicationController
     attrs[:status] = "sent" if invoice.draft?
     attrs[:sent_at] = Time.current if invoice.sent_at.nil?
     invoice.update!(attrs) if attrs.any?
+    Rails.event.notify(Invoices::Sent.new(invoice, recipients_count: recipients.size))
 
     render json: { message: I18n.t("invoices_controller.send_invoice.success") }, status: 200
   end

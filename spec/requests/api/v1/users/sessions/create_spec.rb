@@ -32,6 +32,14 @@ RSpec.describe "Api::V1::Users::Sessions#create", type: :request do
       expect(response).to have_http_status(:forbidden)
     end
 
+    it "reports the password sign in" do
+      event = assert_event_reported("Users::SignedIn") do
+        send_request :post, api_v1_users_login_path, params: { user: { email: user.email, password: user.password } }
+      end
+
+      expect(event[:payload].to_h[:data]).to eq(user_id: user.id, sign_in_method: :password)
+    end
+
     it "logs the user successfully" do
       send_request :post, api_v1_users_login_path, params: {
         user: {

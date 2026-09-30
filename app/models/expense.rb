@@ -53,6 +53,7 @@ class Expense < ApplicationRecord
 
   before_validation :normalize_currency
   before_validation :calculate_base_currency_amount
+  after_create_commit { Rails.event.notify(Expenses::Created.new(self)) }
 
   scope :kept_ordered, -> { kept.order(created_at: :desc) }
 

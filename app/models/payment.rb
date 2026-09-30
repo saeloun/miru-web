@@ -37,6 +37,7 @@ class Payment < ApplicationRecord
 
   before_validation :set_status, if: :new_record?
   before_validation :calculate_base_currency_amount
+  after_create_commit { Rails.event.notify(Payments::Recorded.new(self)) }
 
   validates :invoice, :transaction_date, :transaction_type, :amount, :status, presence: true
   validates :amount, numericality: { greater_than: 0 }

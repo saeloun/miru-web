@@ -37,6 +37,10 @@ RSpec.describe CreateInvitedUserService do
         expect(User.exists?(email: invitation.recipient_email)).to be(false)
       end
 
+      it "does not report the invitation as accepted when the seat check rolls back" do
+        assert_no_event_reported("Invitations::Accepted") { described_class.new(invitation.token).process }
+      end
+
       it "allows a client invitation" do
         invitation.update!(role: :client, client: create(:client, company:))
 
@@ -51,7 +55,7 @@ RSpec.describe CreateInvitedUserService do
         company.update!(plan_tier: "paid")
 
         service = described_class.new(invitation.token)
-        service.process
+        assert_event_reported("Invitations::Accepted") { service.process }
 
         expect(service.success).to be(true)
         expect(invitation.reload.accepted_at).to be_present
