@@ -15,6 +15,8 @@ RSpec.describe "Event viewer", type: :request do
     sign_in user
     get "/events"
 
+    expect(response).to have_http_status(:ok)
+    expect(response).to render_template("home/index")
     expect(response.body).not_to include("Rails Event Viewer")
   end
 
