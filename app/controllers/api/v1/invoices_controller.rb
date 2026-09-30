@@ -97,14 +97,7 @@ class Api::V1::InvoicesController < Api::V1::ApplicationController
       message: invoice_email_params[:message]
     ).send_invoice.deliver_later
 
-    # Update invoice status and sent_at in a single query
-    attrs = {}
-    attrs[:status] = "sent" if invoice.draft?
-    attrs[:sent_at] = Time.current if invoice.sent_at.nil?
-    Invoice.transaction do
-      invoice.update!(attrs) if attrs.any?
-      Rails.event.notify(Invoices::Sent.new(invoice, recipients_count: recipients.size))
-    end
+    invoice.record_send!(recipients_count: recipients.size)
 
     render json: { message: I18n.t("invoices_controller.send_invoice.success") }, status: 200
   end
