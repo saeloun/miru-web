@@ -58,12 +58,56 @@ RSpec.describe "Event emission" do
   end
 
   it "does not report a status change that rolls back" do
-    assert_no_event_reported("Invoices::StatusChanged") do
-      Invoice.transaction do
+    invoice
+    expect do
+      Invoice.transaction(requires_new: true) do
         invoice.update!(status: :paid)
         raise ActiveRecord::Rollback
       end
+    end.not_to change { RailsEventViewer::Entry.where(name: "Invoices::StatusChanged").count }
+  end
+
+  it "keeps the outer status event when a savepoint rolls back" do
+    invoice.update!(status: :draft)
+    events = RailsEventViewer::Entry.where(name: "Invoices::StatusChanged")
+
+    expect do
+      Invoice.transaction(requires_new: true) do
+        invoice.update!(status: :sent)
+        Invoice.transaction(requires_new: true) do
+          invoice.update!(status: :viewed)
+          raise ActiveRecord::Rollback
+        end
+      end
+    end.to change { events.count }.by(1)
+
+    expect(invoice.reload.status).to eq("sent")
+    expect(events.last.payload["data"]).to include("from" => "draft", "to" => "sent")
+  end
+
+  it "writes creation events within the record transaction" do
+    company
+    events = RailsEventViewer::Entry.where(name: "Clients::Created")
+
+    expect do
+      Client.transaction(requires_new: true) do
+        client = create(:client, company:)
+        expect(events.last.payload["data"]).to include("client_id" => client.id)
+        raise ActiveRecord::Rollback
+      end
+    end.not_to change { events.count }
+  end
+
+  it "preserves the business write when event storage fails" do
+    company
+    allow(RailsEventViewer::Entry).to receive(:insert_all) do
+      RailsEventViewer::Entry.connection.execute("SELECT 1 / 0")
     end
+
+    client = create(:client, company:)
+
+    expect(Client.exists?(client.id)).to be(true)
+    expect(Client.connection.select_value("SELECT 1")).to eq(1)
   end
 
   it "does not report unchanged invoice status" do
@@ -74,6 +118,18 @@ RSpec.describe "Event emission" do
     invitation = assert_event_reported("Invitations::Sent") { create(:invitation, company:) }[:payload].record
 
     assert_event_reported("Invitations::Accepted") { invitation.update!(accepted_at: Time.current) }
+  end
+
+  it "keeps invitation acceptance after an unrelated save" do
+    invitation = create(:invitation, company:)
+    events = RailsEventViewer::Entry.where(name: "Invitations::Accepted")
+
+    expect do
+      Invitation.transaction do
+        invitation.update!(accepted_at: Time.current)
+        invitation.update!(expired_at: 1.day.from_now)
+      end
+    end.to change { events.count }.by(1)
   end
 
   it "attributes events to Current.user without leaking record attributes" do

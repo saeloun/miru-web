@@ -36,7 +36,8 @@ module Imports
     end
 
     def process
-      Rails.event.set_context(source: "harvest_import", data_import_id: data_import.id)
+      previous_context = Rails.event.context.dup
+      Rails.event.set_context(source: "harvest_import", data_import_id: data_import.id.to_s)
       data_import.update!(
         status: "processing",
         started_at: Time.current,
@@ -65,6 +66,9 @@ module Imports
       end
       data_import.update!(status: "failed", error_message: message, finished_at: Time.current)
       raise
+    ensure
+      Rails.event.clear_context
+      Rails.event.set_context(previous_context)
     end
 
     private
@@ -474,18 +478,20 @@ module Imports
 
       def complete_import
         imported_rows = data_import.dry_run? ? 0 : @imported_rows
-        data_import.update!(
-          status: "completed",
-          finished_at: Time.current,
-          total_rows: @rows.length,
-          imported_rows:,
-          failed_rows: @failed_rows,
-          skipped_rows: @zero_hour_rows + @duplicate_rows,
-          summary: @summary,
-          row_errors: @row_errors
-        )
+        DataImport.transaction do
+          data_import.update!(
+            status: "completed",
+            finished_at: Time.current,
+            total_rows: @rows.length,
+            imported_rows:,
+            failed_rows: @failed_rows,
+            skipped_rows: @zero_hour_rows + @duplicate_rows,
+            summary: @summary,
+            row_errors: @row_errors
+          )
+          Rails.event.notify(Imports::Completed.new(data_import))
+        end
         data_import.file.purge_later unless data_import.dry_run?
-        Rails.event.notify(Imports::Completed.new(data_import))
       end
 
       def duplicate_key(user_id, project_id, work_date, duration, note)

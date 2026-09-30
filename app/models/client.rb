@@ -42,7 +42,7 @@ class Client < ApplicationRecord
     allow_blank: true
 
   after_discard :discard_projects
-  after_create_commit { Rails.event.notify(Clients::Created.new(self)) }
+  after_create { Rails.event.notify(Clients::Created.new(self)) }
 
   accepts_nested_attributes_for :addresses, reject_if: :address_attributes_blank?, allow_destroy: true
   scope :with_ids, -> (client_ids) { where(id: client_ids) if client_ids.present? }
