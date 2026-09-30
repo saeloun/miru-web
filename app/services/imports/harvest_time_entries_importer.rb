@@ -59,12 +59,7 @@ module Imports
       complete_import
       data_import
     rescue StandardError => error
-      message = error.message
-      unless error.is_a?(InvalidFileError)
-        Rails.logger.error("Data import ##{data_import.id} failed: #{message}")
-        message = I18n.t("imports.errors.unexpected")
-      end
-      data_import.update!(status: "failed", error_message: message, finished_at: Time.current)
+      fail_import(error)
       raise
     ensure
       Rails.event.clear_context
@@ -72,6 +67,15 @@ module Imports
     end
 
     private
+
+      def fail_import(error)
+        message = error.message
+        unless error.is_a?(InvalidFileError)
+          Rails.logger.error("Data import ##{data_import.id} failed: #{message}")
+          message = I18n.t("imports.errors.unexpected")
+        end
+        data_import.update!(status: "failed", error_message: message, finished_at: Time.current)
+      end
 
       def load_rows
         @rows = []
