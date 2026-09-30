@@ -206,6 +206,8 @@ namespace :api, defaults: { format: "json" } do
     get "payments/settings", to: "payment_settings#index"
     patch "payments/settings/upi", to: "payment_settings#update_upi"
     patch "payments/settings/razorpay", to: "payment_settings#update_razorpay"
+    patch "payments/settings/paypal", to: "payment_settings#update_paypal", as: :payments_settings_paypal
+    delete "payments/settings/paypal", to: "payment_settings#disconnect_paypal"
     post "payments/settings/stripe/connect", to: "payment_settings#connect_stripe"
     delete "payments/settings/stripe/disconnect", to: "payment_settings#destroy"
     namespace :integrations do

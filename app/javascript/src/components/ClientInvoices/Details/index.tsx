@@ -54,6 +54,7 @@ const ClientInvoiceDetails = () => {
       bank_payment,
       upi_payment,
       razorpay_payment,
+      paypal_payment,
       stripe_connected_account,
     } = data;
 
@@ -67,6 +68,7 @@ const ClientInvoiceDetails = () => {
             stripeUrl={url}
             upiPayment={upi_payment}
             razorpayPayment={razorpay_payment}
+            paypalPayment={paypal_payment}
             stripe_connected_account={stripe_connected_account}
           />
           <div className="m-0 mt-5 mb-10 w-full bg-muted p-0">

@@ -37,6 +37,14 @@ RSpec.describe "Api::V1::Invoices#send_invoice", type: :request do
         expect(json_response["message"]).to eq("Invoice has been sent successfully")
       end
 
+      it "reports the invoice as sent" do
+        event = assert_event_reported("Invoices::Sent") do
+          post send_invoice_api_v1_invoice_path(id: invoice.id), params: { invoice_email: }, headers: auth_headers(user)
+        end
+
+        expect(event[:payload].to_h[:data]).to include(invoice_id: invoice.id, recipients_count: 2)
+      end
+
       it "returns unprocessable_content when recipients are empty" do
         empty_recipients = { subject: "Test", recipients: [], message: "Hello" }
         post send_invoice_api_v1_invoice_path(id: invoice.id),

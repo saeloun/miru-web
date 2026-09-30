@@ -21,6 +21,14 @@ class PaymentSettingsPolicy < ApplicationPolicy
     update_upi?
   end
 
+  def update_paypal?
+    update_upi?
+  end
+
+  def disconnect_paypal?
+    update_upi?
+  end
+
   def refresh_stripe_connect?
     user_owner_role? || user_admin_role?
   end

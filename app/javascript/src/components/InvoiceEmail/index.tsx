@@ -50,7 +50,17 @@ const InvoiceEmail = () => {
     );
   }
 
-  const { url, invoice, logo, lineItems, company, client, upi_payment } = data;
+  const {
+    url,
+    invoice,
+    logo,
+    lineItems,
+    company,
+    client,
+    upi_payment,
+    razorpay_payment,
+    paypal_payment,
+  } = data;
 
   return isDesktop ? (
     <div className="flex flex-col justify-between">
@@ -61,6 +71,8 @@ const InvoiceEmail = () => {
         <Header
           invoice={invoice}
           isStripeConnected={isStripeConnected}
+          paypalPayment={paypal_payment}
+          razorpayPayment={razorpay_payment}
           setIsInvoiceEmail={setIsInvoiceEmail}
           setShowConnectPaymentDialog={setShowConnectPaymentDialog}
           setShowStripeDisabledDialog={setShowStripeDisabledDialog}

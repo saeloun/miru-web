@@ -35,7 +35,7 @@ RSpec.describe PaymentsProvider, type: :model do
     end
 
     describe "inclusion" do
-      it { is_expected.to validate_inclusion_of(:name).in_array(%w(stripe upi razorpay)) }
+      it { is_expected.to validate_inclusion_of(:name).in_array(%w(stripe upi razorpay paypal)) }
     end
 
     context "when UPI is configured" do
@@ -138,6 +138,124 @@ RSpec.describe PaymentsProvider, type: :model do
         expect(provider.errors[:payout_account_number]).to be_present
         expect(provider.errors[:payout_upi_id]).to be_present
       end
+    end
+  end
+
+  describe "PayPal" do
+    subject(:provider) do
+      build(
+        :payments_provider,
+        name: PaymentsProvider::PAYPAL_PROVIDER,
+        enabled: enabled,
+        connected: connected,
+        settings: { client_id: client_id, environment: "sandbox" }
+      )
+    end
+
+    let(:enabled) { false }
+    let(:connected) { false }
+    let(:client_id) { "AZ-client-id" }
+
+    it "stores the client secret encrypted and reads it back" do
+      provider.client_secret = "shh"
+
+      expect(provider.settings["client_secret"]).to be_nil
+      expect(provider.settings["client_secret_ciphertext"]).to be_present
+      expect(provider.client_secret).to eq("shh")
+      expect(provider.paypal_configured?).to be(true)
+    end
+
+    it "keeps the stored secret when assigned a blank value" do
+      provider.client_secret = "shh"
+      provider.client_secret = ""
+
+      expect(provider.client_secret).to eq("shh")
+    end
+
+    it "defaults the environment to live" do
+      provider.settings.delete("environment")
+
+      expect(provider.paypal_environment).to eq("live")
+      expect(provider.paypal_sandbox?).to be(false)
+    end
+
+    it "rejects unknown environments" do
+      provider.environment = "staging"
+
+      expect(provider).not_to be_valid
+      expect(provider.errors[:environment]).to be_present
+    end
+
+    context "when enabled without verified credentials" do
+      let(:enabled) { true }
+
+      it "is invalid" do
+        provider.client_secret = "shh"
+
+        expect(provider).not_to be_valid
+        expect(provider.errors[:base]).to include("Connect PayPal before enabling it")
+      end
+    end
+
+    context "when enabled and connected" do
+      let(:enabled) { true }
+      let(:connected) { true }
+
+      it "is valid" do
+        provider.client_secret = "shh"
+
+        expect(provider).to be_valid
+      end
+    end
+  end
+
+  describe "#paypal_ready_for_invoices?" do
+    subject(:provider) do
+      build(
+        :payments_provider,
+        name: PaymentsProvider::PAYPAL_PROVIDER,
+        enabled: true,
+        connected: true,
+        settings: { client_id: "client-id", environment: "live", webhook_id: "WH-1", enabled_on_invoices: true }
+      ).tap { |record| record.client_secret = "shh" }
+    end
+
+    it "is ready when the provider is connected, enabled, registered and the currency is supported" do
+      expect(provider.paypal_ready_for_invoices?("USD")).to be(true)
+    end
+
+    it "is not ready without a registered webhook, since captures could not be reconciled" do
+      provider.settings.delete("webhook_id")
+
+      expect(provider.paypal_ready_for_invoices?("USD")).to be(false)
+    end
+
+    it "is not ready for an unsupported currency" do
+      expect(provider.paypal_ready_for_invoices?("INR")).to be(false)
+    end
+
+    it "is not ready for a fractional amount in a currency PayPal charges in whole units" do
+      expect(provider.paypal_ready_for_invoices?("JPY", BigDecimal("250.25"))).to be(false)
+      expect(provider.paypal_ready_for_invoices?("JPY", BigDecimal("250.00"))).to be(true)
+      expect(provider.paypal_ready_for_invoices?("USD", BigDecimal("250.25"))).to be(true)
+    end
+
+    it "is not ready when the merchant switched it off for invoices" do
+      provider.enabled_on_invoices = false
+
+      expect(provider.paypal_ready_for_invoices?("USD")).to be(false)
+    end
+  end
+
+  describe ".paypal_currency_supported?" do
+    it "accepts PayPal currencies case-insensitively" do
+      expect(described_class.paypal_currency_supported?("usd")).to be(true)
+      expect(described_class.paypal_currency_supported?("EUR")).to be(true)
+    end
+
+    it "rejects unsupported currencies" do
+      expect(described_class.paypal_currency_supported?("INR")).to be(false)
+      expect(described_class.paypal_currency_supported?(nil)).to be(false)
     end
   end
 

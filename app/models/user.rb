@@ -130,6 +130,7 @@ class User < ApplicationRecord
 
   after_update :revoke_cli_sessions, if: :authentication_state_changed?
   after_commit :send_to_hubspot, on: :create
+  after_create { Rails.event.notify(Users::Registered.new(self)) }
 
   def primary_role(company)
     roles = self.roles.where(resource: company)

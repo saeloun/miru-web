@@ -42,6 +42,8 @@ class Invitation < ApplicationRecord
   before_validation :set_token, on: :create
   before_validation :set_expired_at, on: :create
   after_create_commit :send_invitation_mail
+  after_create { Rails.event.notify(Invitations::Sent.new(self)) }
+  after_update(if: -> { saved_change_to_accepted_at?(from: nil) }) { Rails.event.notify(Invitations::Accepted.new(self)) }
 
   def full_name
     "#{first_name} #{last_name}"

@@ -14,6 +14,7 @@ class Api::V1::Users::RegistrationsController < Devise::RegistrationsController
       render json: { error: user.errors }, status: 422
     else
       Analytics::TrackingService.new(user:).track_signup(signup_attribution)
+      Rails.event.notify(Users::SignedIn.new(user, sign_in_method: :sign_up)) if user.active_for_authentication?
 
       render json: {
         notice: I18n.t("devise.registrations.signed_up"),

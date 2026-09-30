@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class Webhooks::RazorpayController < ApplicationController
+  before_action { Rails.event.set_context(source: "razorpay_webhook") }
   RAZORPAY_SIGNATURE_HEADER = "HTTP_X_RAZORPAY_SIGNATURE"
   PAYMENT_LINKS_WEBHOOK = "razorpay_payment_links"
   PAYOUTS_WEBHOOK = "razorpay_payouts"

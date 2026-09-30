@@ -10,11 +10,14 @@ import {
 import { Badge, Button, MoreOptions, Toastr, Tooltip } from "StyledComponents";
 import getStatusCssClass from "utils/getBadgeStatus";
 
+import { i18n } from "../../../i18n";
+
 const Header = ({
   invoice,
   stripeUrl,
   upiPayment,
   razorpayPayment,
+  paypalPayment,
   stripe_connected_account,
   setShowConnectPaymentDialog,
   setShowStripeDisabledDialog,
@@ -38,6 +41,13 @@ const Header = ({
 
   const isNonActionable =
     status === "paid" || status === "waived" || invoice.amount <= 0;
+
+  const hasOtherProvider =
+    !!stripe_connected_account ||
+    !!razorpayPayment?.enabled ||
+    !!upiPayment?.payment_link;
+  const paypalEnabled = !!paypalPayment?.enabled && !!paypalPayment?.url;
+  const paypalOnly = paypalEnabled && !hasOtherProvider;
 
   return (
     <div className="mt-6 mb-3 sm:flex sm:items-center sm:justify-between">
@@ -95,6 +105,8 @@ const Header = ({
                     window.location.href = stripeUrl;
                   } else if (upiPayment?.payment_link) {
                     window.location.href = upiPayment.payment_link;
+                  } else if (paypalEnabled) {
+                    window.location.href = paypalPayment.url;
                   } else {
                     setShowConnectPaymentDialog(true);
                   }
@@ -106,12 +118,20 @@ const Header = ({
                   <ReportsIcon color="white" size={16} weight="bold" />
                 </div>
                 <p className="ml-1 text-base font-bold tracking-widest text-primary-foreground">
-                  PAY
+                  {paypalOnly ? i18n.t("invoices.payWithPaypal") : "PAY"}
                 </p>
               </div>
             </button>
           )}
         </div>
+        {paypalEnabled && !paypalOnly && !isNonActionable && (
+          <a
+            className="ml-2 flex h-10 flex-row items-center justify-center rounded border border-primary bg-background px-4 text-sm font-semibold text-primary"
+            href={paypalPayment.url}
+          >
+            {i18n.t("invoices.payWithPaypal")}
+          </a>
+        )}
         <div className="relative">
           <Button
             className="ml-2 rounded border border-primary bg-secondary p-2.5 text-primary opacity-50"
