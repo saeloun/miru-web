@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_05_000000) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_30_174750) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_stat_statements"
@@ -864,6 +864,24 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_05_000000) do
     t.index ["id", "quickbooks_connection_id", "company_id"], name: "idx_qbo_runs_id_connection_company", unique: true
     t.index ["quickbooks_connection_id", "created_at"], name: "idx_on_quickbooks_connection_id_created_at_fbda7af87c"
     t.index ["quickbooks_connection_id"], name: "index_quickbooks_sync_runs_on_quickbooks_connection_id"
+  end
+
+  create_table "rails_event_viewer_entries", force: :cascade do |t|
+    t.jsonb "context", default: {}
+    t.datetime "created_at", null: false
+    t.string "name", null: false
+    t.datetime "occurred_at", null: false
+    t.jsonb "payload", default: {}
+    t.string "source_file"
+    t.string "source_label"
+    t.integer "source_line"
+    t.jsonb "tags", default: {}
+    t.datetime "updated_at", null: false
+    t.index ["context"], name: "index_rails_event_viewer_entries_on_context", using: :gin
+    t.index ["name", "occurred_at"], name: "index_rails_event_viewer_entries_on_name_and_occurred_at"
+    t.index ["name"], name: "index_rails_event_viewer_entries_on_name"
+    t.index ["occurred_at"], name: "index_rails_event_viewer_entries_on_occurred_at"
+    t.index ["tags"], name: "index_rails_event_viewer_entries_on_tags", using: :gin
   end
 
   create_table "razorpay_payouts", force: :cascade do |t|

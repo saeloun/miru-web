@@ -131,6 +131,9 @@ gem "solid_queue", "~> 0.6"
 gem "pghero"           # PostgreSQL performance dashboard
 gem "dexter"           # Automatic index suggestions
 
+# Dashboard for structured events emitted via Rails.event
+gem "rails_event_viewer", "~> 0.1.2"
+
 # PDF generator - using Ferrum PDF for modern Chrome-based PDF generation
 gem "ferrum_pdf", ">= 3.0.0"
 
