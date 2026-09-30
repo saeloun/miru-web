@@ -64,6 +64,11 @@ class Invoice < ApplicationRecord
   after_discard :update_invoice_number
   after_commit :reset_skip_line_item_total_sync
   after_rollback :reset_skip_line_item_total_sync
+  after_create { Rails.event.notify(Invoices::Created.new(self)) }
+  after_update(if: :saved_change_to_status?) do
+    from, to = saved_change_to_status
+    Rails.event.notify(Invoices::StatusChanged.new(self, from:, to:))
+  end
 
   validates :issue_date, :due_date, :invoice_number, presence: true
   validates :due_date, comparison: { greater_than_or_equal_to: :issue_date }, if: :not_waived

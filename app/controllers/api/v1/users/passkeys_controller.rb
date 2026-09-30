@@ -91,6 +91,7 @@ class Api::V1::Users::PasskeysController < Api::V1::ApplicationController
     return unless sso_sign_in_allowed?(user)
 
     sign_in(user)
+    Rails.event.notify(Users::SignedIn.new(user, sign_in_method: :passkey))
 
     render json: signed_in_payload(
       user,

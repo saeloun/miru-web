@@ -47,6 +47,22 @@ RSpec.describe Imports::HarvestTimeEntriesImporter do
     expect(website.project_members.kept.find_by!(user: paul).hourly_rate).to eq(150)
   end
 
+  it "tags imported records with the import source and reports completion" do
+    Rails.event.set_context(source: "cli")
+    entry_event = nil
+    completed = assert_event_reported("Imports::Completed") do
+      entry_event = assert_event_reported("TimesheetEntries::Created") { described_class.new(data_import).process }
+    end
+
+    expect(entry_event[:context]).to include(source: "harvest_import", data_import_id: data_import.id.to_s)
+    expect(completed[:payload].to_h).to include(actor: { id: actor.id, type: "User" })
+    expect(completed[:payload].to_h[:data]).to include(id: data_import.id, imported_rows: 11)
+    expect(RailsEventViewer.events.with_context(:data_import_id, data_import.id.to_s).count).to be_positive
+
+    following_event = assert_event_reported("after_import") { Rails.event.notify("after_import") }
+    expect(following_event[:context]).to eq(source: "cli")
+  end
+
   it "avoids per-row project membership and company queries" do
     select_queries = 0
     project_member_queries = 0

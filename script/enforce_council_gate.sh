@@ -70,7 +70,7 @@ CHECK_OUTPUT="$(
       matched = entries.find do |entry|
         next false unless entry["skill"] == skill
         status = entry["status"].to_s.downcase
-        commit = entry["commit"].to_s
+        commit = (entry["commit_full"] || entry["commit"]).to_s
         next false if commit.empty?
         next false unless valid_statuses.include?(status)
         head_sha.start_with?(commit) || commit.start_with?(head_short)

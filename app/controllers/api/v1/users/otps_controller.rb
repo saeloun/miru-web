@@ -31,6 +31,7 @@ class Api::V1::Users::OtpsController < Api::V1::ApplicationController
     return unless sso_sign_in_allowed?(result.user)
 
     sign_in(result.user)
+    Rails.event.notify(Users::SignedIn.new(result.user, sign_in_method: :otp))
 
     render json: signed_in_payload(
       result.user,

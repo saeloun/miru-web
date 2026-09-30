@@ -373,8 +373,8 @@ importers:
         specifier: ^6.4.3
         version: 6.4.3(@types/node@24.3.0)(jiti@2.5.1)(sass-embedded@1.90.0)(sass@1.90.0)(yaml@2.8.3)
       vite-plugin-ruby:
-        specifier: ^5.1.1
-        version: 5.1.1(vite@6.4.3(@types/node@24.3.0)(jiti@2.5.1)(sass-embedded@1.90.0)(sass@1.90.0)(yaml@2.8.3))
+        specifier: ^5.2.5
+        version: 5.2.5(vite@6.4.3(@types/node@24.3.0)(jiti@2.5.1)(sass-embedded@1.90.0)(sass@1.90.0)(yaml@2.8.3))
 
 packages:
 
@@ -3557,6 +3557,10 @@ packages:
     resolution: {integrity: sha512-gXah6aZrcUxjWg2zR2MwouP2eHlCBzdV4pygudehaKXSGW4v2AsRQUK+lwwXhii6KFZcunEnmSUoYp5CXibxtA==}
     engines: {node: '>= 0.4'}
 
+  obug@2.2.1:
+    resolution: {integrity: sha512-XrsrhT5sybtKI6wakr2SPOlGZWWYbUXZ7a0jT8/QOeAPau+1X/bSegNe5YR75oJmEZQbKningirmGOEJCIk61Q==}
+    engines: {node: '>=12.20.0'}
+
   onetime@5.1.2:
     resolution: {integrity: sha512-kbpaSSGJTWdAY5KPVeMOKXSrPtr8C8C7wodJbcsd51jRnmD+GZu8Y0VoU6Dm5Z4vWr0Ig/1NKuWRKf7j5aaYSg==}
     engines: {node: '>=6'}
@@ -4555,8 +4559,8 @@ packages:
   victory-vendor@37.3.6:
     resolution: {integrity: sha512-SbPDPdDBYp+5MJHhBCAyI7wKM3d5ivekigc2Dk2s7pgbZ9wIgIBYGVw4zGHBml/qTFbexrofXW6Gu4noGxrOwQ==}
 
-  vite-plugin-ruby@5.1.1:
-    resolution: {integrity: sha512-I1dXJq2ywdvTD2Cz5LYNcYLujqQ3eUxPoCjruRdfm2QBtHBY15NEeb6x5HuPM3T5S+y8S3p9fwRsieQQCjk0gg==}
+  vite-plugin-ruby@5.2.5:
+    resolution: {integrity: sha512-Oa1cmA7FobR49YcFPa+hvASenxd8tI1jQeOuDRJNh9gsbO8ugDCHI0zh75niQGq8cnMXriJfhJrPa2F2qDeA5Q==}
     peerDependencies:
       vite: '>=5.0.0'
 
@@ -7975,6 +7979,8 @@ snapshots:
       define-properties: 1.2.1
       es-object-atoms: 1.1.1
 
+  obug@2.2.1: {}
+
   onetime@5.1.2:
     dependencies:
       mimic-fn: 2.1.0
@@ -9046,13 +9052,11 @@ snapshots:
       d3-time: 3.1.0
       d3-timer: 3.0.1
 
-  vite-plugin-ruby@5.1.1(vite@6.4.3(@types/node@24.3.0)(jiti@2.5.1)(sass-embedded@1.90.0)(sass@1.90.0)(yaml@2.8.3)):
+  vite-plugin-ruby@5.2.5(vite@6.4.3(@types/node@24.3.0)(jiti@2.5.1)(sass-embedded@1.90.0)(sass@1.90.0)(yaml@2.8.3)):
     dependencies:
-      debug: 4.4.1(supports-color@9.4.0)
-      fast-glob: 3.3.3
+      obug: 2.2.1
+      tinyglobby: 0.2.17
       vite: 6.4.3(@types/node@24.3.0)(jiti@2.5.1)(sass-embedded@1.90.0)(sass@1.90.0)(yaml@2.8.3)
-    transitivePeerDependencies:
-      - supports-color
 
   vite@6.4.3(@types/node@24.3.0)(jiti@2.5.1)(sass-embedded@1.90.0)(sass@1.90.0)(yaml@2.8.3):
     dependencies:

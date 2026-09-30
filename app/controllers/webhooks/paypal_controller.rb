@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class Webhooks::PaypalController < ActionController::API
+  before_action { Rails.event.set_context(source: "paypal_webhook", request_id: request.request_id) }
   MAX_WEBHOOK_BODY_BYTES = 1.megabyte
 
   def events

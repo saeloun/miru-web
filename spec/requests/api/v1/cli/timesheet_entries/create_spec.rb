@@ -34,6 +34,32 @@ RSpec.describe "Api::V1::Cli::TimesheetEntries#create", type: :request do
     expect(TimesheetEntry.last.source).to eq("cli")
   end
 
+  describe "event attribution" do
+    let(:params) { { timesheet_entry: { project_id: project.id, duration_minutes: 30, work_date: Date.current.iso8601 } } }
+
+    before { create(:project_member, project:, user:) }
+
+    it "tags CLI writes with the CLI user and source" do
+      event = assert_event_reported("TimesheetEntries::Created") do
+        send_request :post, api_v1_cli_timesheet_entries_path, params:, headers: cli_auth_headers(cli_token)
+      end
+
+      expect(event[:context]).to include(source: "cli")
+      expect(event[:payload].to_h[:actor]).to eq(id: user.id, type: "User")
+    end
+
+    it "tags MCP proxied writes with the mcp source" do
+      event = assert_event_reported("TimesheetEntries::Created") do
+        MCP::Miru::ApiProxy.request(
+          method: :post, path: "/api/v1/cli/timesheet_entries", authorization: "Bearer #{cli_token}", body: params
+        )
+      end
+
+      expect(event[:context]).to include(source: "mcp")
+      expect(event[:payload].to_h[:actor]).to eq(id: user.id, type: "User")
+    end
+  end
+
   it "creates a timesheet entry with AI source metadata" do
     create(:project_member, project:, user:)
 

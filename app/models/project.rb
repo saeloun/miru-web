@@ -30,6 +30,7 @@ class Project < ApplicationRecord
 
   # Callbacks
   after_discard :discard_project_members
+  after_create { Rails.event.notify(Projects::Created.new(self)) }
   delegate :name, to: :client, prefix: true, allow_nil: true
 
   scope :with_ids, -> (project_ids) { where(id: project_ids) if project_ids.present? }
