@@ -117,8 +117,15 @@ module Analytics
       end
 
       def weekly_active
+        time_entry_companies = time_entry_company_sources
+        imported_companies = time_entry_companies.filter_map { |id, source| id if source == "import" }
+        other_companies = time_entry_companies.filter_map { |id, source| id unless source == "import" } |
+          invoice_company_ids | payment_company_ids
+
         {
-          companies: weekly_active_company_ids.size,
+          companies: (other_companies | imported_companies).size,
+          other_record_companies: other_companies.size,
+          imported_time_entry_companies: imported_companies.uniq.size,
           users: Ahoy::Event
             .where(name: "user_login", time: seven_day_range)
             .where.not(user_id: nil)
@@ -127,18 +134,14 @@ module Analytics
         }
       end
 
-      def weekly_active_company_ids
-        time_entry_company_ids | invoice_company_ids | payment_company_ids
-      end
-
-      def time_entry_company_ids
+      def time_entry_company_sources
         TimesheetEntry.kept
           .joins(project: :client)
           .merge(Project.kept)
           .merge(Client.kept)
           .where(timesheet_entries: { created_at: seven_day_range })
           .distinct
-          .pluck("clients.company_id")
+          .pluck("clients.company_id", "timesheet_entries.source")
       end
 
       def invoice_company_ids
@@ -191,13 +194,15 @@ module Analytics
         user_counts = Employment.kept.group(:company_id).distinct.count(:user_id)
 
         Company.pluck(:id, :name, :billing_exempt).map do |id, name, billing_exempt|
-          company_activity = activity.fetch(id, { activity_score: 0, last_activity_at: nil })
+          company_activity = activity.fetch(id, { activity_score: 0, imported_time_entries_count: 0, last_activity_at: nil })
 
           {
             id:,
             name:,
             users_count: user_counts.fetch(id, 0),
             activity_score: company_activity[:activity_score],
+            imported_time_entries_count: company_activity[:imported_time_entries_count],
+            other_records_count: company_activity[:activity_score] - company_activity[:imported_time_entries_count],
             last_activity_at: company_activity[:last_activity_at],
             billing_exempt:
           }
@@ -206,9 +211,10 @@ module Analytics
 
       def activity_by_company
         [time_entry_activity, invoice_activity, payment_activity].each_with_object({}) do |rows, activity|
-          rows.each do |company_id, count, last_activity_at|
-            company_activity = activity[company_id] ||= { activity_score: 0, last_activity_at: nil }
+          rows.each do |company_id, count, last_activity_at, imported_count|
+            company_activity = activity[company_id] ||= { activity_score: 0, imported_time_entries_count: 0, last_activity_at: nil }
             company_activity[:activity_score] += count
+            company_activity[:imported_time_entries_count] += imported_count.to_i
             company_activity[:last_activity_at] = [company_activity[:last_activity_at], last_activity_at].compact.max
           end
         end
@@ -224,7 +230,8 @@ module Analytics
           .pluck(
             Arel.sql("clients.company_id"),
             Arel.sql("COUNT(*)"),
-            Arel.sql("MAX(timesheet_entries.created_at)")
+            Arel.sql("MAX(timesheet_entries.created_at)"),
+            Arel.sql("COUNT(*) FILTER (WHERE timesheet_entries.source = 'import')")
           )
       end
 

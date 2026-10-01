@@ -10,25 +10,41 @@ Week of <%= week[:week_start].to_date.to_fs(:long) %>: <%= week[:companies] %> w
 ACTIVATION FUNNEL
 All workspaces: <%= @metrics.dig(:activation_funnel, :total) %>
 Added a client: <%= @metrics.dig(:activation_funnel, :with_client) %>
-Logged time or invoiced: <%= @metrics.dig(:activation_funnel, :with_activity) %>
+Created time entries or invoices: <%= @metrics.dig(:activation_funnel, :with_activity) %>
 Created an invoice: <%= @metrics.dig(:activation_funnel, :with_invoice) %>
-Recorded a payment: <%= @metrics.dig(:activation_funnel, :with_payment) %>
+Recorded a client invoice payment: <%= @metrics.dig(:activation_funnel, :with_payment) %>
+All-time record presence, including imported history. Client invoice payments are workspace activity.
 
 LAST 7 DAYS
-Active workspaces: <%= @metrics.dig(:weekly_active, :companies) %>
+Workspaces with records created: <%= @metrics.dig(:weekly_active, :companies) %>
 Users logged in: <%= @metrics.dig(:weekly_active, :users) %>
+<% if @metrics[:weekly_active].key?(:imported_time_entry_companies) %>
+With imported time entries: <%= @metrics.dig(:weekly_active, :imported_time_entry_companies) %>
+With other records: <%= @metrics.dig(:weekly_active, :other_record_companies) %>
+A workspace can appear in both groups.
+<% else %>
+Import breakdown unavailable
+<% end %>
 
 TRIALS
-Active: <%= @metrics.dig(:trials, :active) %>
+Unexpired trial dates: <%= @metrics.dig(:trials, :active) %>
 Ending within 7 days: <%= @metrics.dig(:trials, :ending_within_7_days) %>
-Expired: <%= @metrics.dig(:trials, :expired) %>
-Converted: <%= @metrics.dig(:trials, :converted) %>
+Expired trial dates · non-paid tier: <%= @metrics.dig(:trials, :expired) %>
+Paid-tier trial workspaces: <%= @metrics.dig(:trials, :converted) %>
+The trial cohort includes billing-exempt workspaces. Paid tier includes Stripe active, trialing, and past_due statuses.
 
 CHECKOUTS
-Last 7 days: <%= @metrics.dig(:checkouts, :last_7_days, :started) %> started, <%= @metrics.dig(:checkouts, :last_7_days, :purchased) %> purchased
-Last 30 days: <%= @metrics.dig(:checkouts, :last_30_days, :started) %> started, <%= @metrics.dig(:checkouts, :last_30_days, :purchased) %> purchased
+Last 7 days: <%= @metrics.dig(:checkouts, :last_7_days, :started) %> Checkout start events, <%= @metrics.dig(:checkouts, :last_7_days, :purchased) %> Purchase events
+Last 30 days: <%= @metrics.dig(:checkouts, :last_30_days, :started) %> Checkout start events, <%= @metrics.dig(:checkouts, :last_30_days, :purchased) %> Purchase events
+Purchase events count transitions into paid tier, not paid invoices or MRR; repeated events can belong to one workspace.
 
 TOP WORKSPACES · 30 DAYS
 <% @metrics[:top_workspaces].each do |workspace| %>
-<%= workspace[:name] %>: <%= workspace[:activity_score] %> actions, <%= workspace[:users_count] %> users<%= ", billing exempt" if workspace[:billing_exempt] %>
+<%= workspace[:name] %>: <%= workspace[:activity_score] %> records, <%= workspace[:users_count] %> users<%= ", billing exempt" if workspace[:billing_exempt] %>
+<% if workspace.key?(:imported_time_entries_count) %>
+<%= workspace[:imported_time_entries_count] %> imported time entries, <%= workspace[:other_records_count] %> other records
+<% else %>
+Import breakdown unavailable
 <% end %>
+<% end %>
+Records are counted by creation date and ranked by total records. Other records are time entries not marked as imports, plus invoices and payments; invoice and payment import origins are not distinguished. Users are workspace members, not billable seats.
