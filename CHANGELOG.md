@@ -26,6 +26,17 @@
 - Mailer layout branding now uses asset helper URLs with production `action_mailer.asset_host` to keep email logo assets resolvable in production mail clients
 - Razorpay Payment Settings now copies the production webhook URLs with the required event names for faster dashboard setup
 
+## 3.0.7 - 2026-10-01
+
+### Added
+
+- Confirmed allowlisted accounts can access full business event details, analytics, and request/import groups at `/events`; database and growth administration remain superadmin-only
+
+### Changed
+
+- Upgrade Rails Event Viewer to 0.2.1 so synchronous capture failures reach Rails error reporting while the existing savepoint preserves business writes
+- Upgrade Axios from 1.18.0 to 1.20.0
+
 ## 3.0.6 - 2026-10-01
 
 ### Added
