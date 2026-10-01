@@ -18,5 +18,5 @@ RailsEventViewer.configure do |config|
   config.storage_adapter = RailsEventViewer::TransactionalAdapter
   config.captured_events = [/\A(?:Clients|Companies|Expenses|Imports|Invitations|Invoices|Payments|Projects|TimesheetEntries|Users)::/]
   config.group_keys = [:request_id, :data_import_id]
-  config.authentication = ->(controller) { controller.current_user&.super_admin? }
+  config.authentication = ->(controller) { controller.current_user&.event_viewer? }
 end

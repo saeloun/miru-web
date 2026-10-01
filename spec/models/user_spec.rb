@@ -67,6 +67,15 @@ RSpec.describe User, type: :model do
     end
   end
 
+  describe "#event_viewer?" do
+    it "allows super admins and confirmed allowlisted emails" do
+      expect(build_stubbed(:user, email: "hello@saeloun.com")).to be_event_viewer
+      expect(build_stubbed(:user, email: "keshav@saeloun.com")).to be_event_viewer
+      expect(build_stubbed(:user, email: "keshav@saeloun.com", confirmed_at: nil)).not_to be_event_viewer
+      expect(build_stubbed(:user, email: "other@example.com")).not_to be_event_viewer
+    end
+  end
+
   describe "Associations" do
     it { is_expected.to have_many(:companies).through(:employments) }
     it { is_expected.to have_many(:employments).dependent(:destroy) }

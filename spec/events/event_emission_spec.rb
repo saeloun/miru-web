@@ -98,16 +98,21 @@ RSpec.describe "Event emission" do
     end.not_to change { events.count }
   end
 
-  it "preserves the business write when event storage fails" do
+  it "preserves the business write and reports the failure when event storage fails" do
     company
     allow(RailsEventViewer::Entry).to receive(:insert_all) do
       RailsEventViewer::Entry.connection.execute("SELECT 1 / 0")
     end
+    allow(Rails.error).to receive(:report).and_call_original
+    Rails.event.raise_on_error = false
 
     client = create(:client, company:)
 
     expect(Client.exists?(client.id)).to be(true)
     expect(Client.connection.select_value("SELECT 1")).to eq(1)
+    expect(Rails.error).to have_received(:report).with(an_instance_of(ActiveRecord::StatementInvalid), handled: true)
+  ensure
+    Rails.event.raise_on_error = Rails.application.config.consider_all_requests_local
   end
 
   it "does not report unchanged invoice status" do

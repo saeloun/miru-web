@@ -672,7 +672,7 @@ GEM
     rails-i18n (8.1.0)
       i18n (>= 0.7, < 2)
       railties (>= 8.0.0, < 9)
-    rails_event_viewer (0.1.2)
+    rails_event_viewer (0.2.1)
       chartkick (>= 5.0)
       groupdate (>= 6.0)
       rails (>= 8.1.0)
@@ -1049,7 +1049,7 @@ DEPENDENCIES
   rack-cors (= 2.0.0)
   rails (~> 8.1.2)
   rails-controller-testing (~> 1.0, >= 1.0.5)
-  rails_event_viewer (~> 0.1.2)
+  rails_event_viewer (~> 0.2.1)
   razorpay (~> 3.2.3)
   redis (~> 5.4)
   reek

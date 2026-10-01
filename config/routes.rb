@@ -14,10 +14,13 @@ Rails.application.routes.draw do
     mount MissionControl::Jobs::Engine, at: "/jobs"
   end
 
+  authenticate :user, lambda { |u| u.event_viewer? } do
+    mount RailsEventViewer::Engine, at: "/events"
+  end
+
   # Mount PgHero for database monitoring (restricted to super admins)
   authenticate :user, lambda { |u| u.super_admin? } do
     mount PgHero::Engine, at: "/pghero"
-    mount RailsEventViewer::Engine, at: "/events"
     get "/admin/growth", to: "admin/growth#show"
   end
 
