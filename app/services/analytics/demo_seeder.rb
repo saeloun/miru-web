@@ -265,17 +265,15 @@ module Analytics
       def seed_expenses
         expense_rows.each_with_index do |row, index|
           description = "#{EXPENSE_PREFIX} ##{index + 1}"
-          expense = Expense.find_or_initialize_by(
-            company: company,
-            user: row[:user],
-            project: row[:project],
-            date: row[:date],
-            description: description
-          )
+          # Employee selection and relative dates can change between seed runs.
+          expense = company.expenses.find_or_initialize_by(description: description)
 
           next unless expense.new_record?
 
           expense.assign_attributes(
+            user: row[:user],
+            project: row[:project],
+            date: row[:date],
             amount: row[:amount],
             category_name: row[:category],
             vendor_name: row[:vendor],
