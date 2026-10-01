@@ -34,5 +34,19 @@ RSpec.describe Analytics::DemoSeeder do
       expect(company.invoices.where("invoice_number LIKE ?", "AN-DEMO-%").count).to eq(first_counts[:invoices])
       expect(company.expenses.where("description LIKE ?", "Analytics demo expense %").count).to eq(first_counts[:expenses])
     end
+
+    it "preserves seeded expenses when employee order and the seed date change" do
+      seeder = described_class.new(company: company)
+      seeder.process
+      expenses = company.expenses.order(:description).to_a
+      first_attributes = expenses.map { |expense| expense.attributes }
+
+      seeder.send(:users)[:employees].reverse!
+      travel 1.day do
+        expect { seeder.send(:seed_expenses) }.not_to change(company.expenses, :count)
+      end
+
+      expect(expenses.map { |expense| expense.reload.attributes }).to eq(first_attributes)
+    end
   end
 end
