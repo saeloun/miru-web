@@ -10,7 +10,7 @@ RSpec.describe "Admin growth analytics" do
         totals: { companies: 10, users: 20 }
       },
       activation_funnel: { total: 10, with_client: 8, with_activity: 6, with_invoice: 4, with_payment: 2 },
-      weekly_active: { companies: 5, users: 7 },
+      weekly_active: { companies: 5, other_record_companies: 4, imported_time_entry_companies: 2, users: 7 },
       trials: { active: 3, ending_within_7_days: 1, expired: 4, converted: 2 },
       checkouts: {
         last_7_days: { started: 4, purchased: 1 },
@@ -20,6 +20,8 @@ RSpec.describe "Admin growth analytics" do
         name: "Acme",
         users_count: 3,
         activity_score: 14,
+        imported_time_entries_count: 9,
+        other_records_count: 5,
         last_activity_at: Time.zone.local(2026, 8, 13),
         billing_exempt: false
       }]
@@ -37,6 +39,11 @@ RSpec.describe "Admin growth analytics" do
 
     expect(response).to have_http_status(:ok)
     expect(response.body).to include("Miru growth analytics", "Activation funnel", "Top workspaces", "Acme")
+    expect(response.body).to include(
+      "Paid-tier trial workspaces", "Purchase events", "Imported time entries", "Other records",
+      "not paid invoices or MRR", "With imported time entries"
+    )
+    expect(response.body).not_to include("Converted to paid", "Activity score", "Active workspaces")
   end
 
   it "does not render the report for a regular user" do

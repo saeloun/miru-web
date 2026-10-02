@@ -106,11 +106,59 @@ RSpec.describe Analytics::GrowthMetricsService do
     expect(previous_week[:companies]).to eq(1)
     expect(metrics[:signups][:totals][:companies]).to eq(4)
 
-    expect(metrics[:weekly_active]).to eq(companies: 2, users: 1)
+    expect(metrics[:weekly_active]).to eq(
+      companies: 2, other_record_companies: 2, imported_time_entry_companies: 0, users: 1
+    )
 
     expect(metrics[:checkouts]).to eq(
       last_7_days: { started: 1, purchased: 0 },
       last_30_days: { started: 1, purchased: 1 }
     )
+  end
+
+  it "separates imported history from other records for mixed and import-only workspaces" do
+    import_company = create(:company)
+    import_project = create(:project, client: create(:client, company: import_company))
+    create_list(:timesheet_entry, 4, project: import_project, source: "import", work_date: 2.years.ago)
+    engaged_project = create(:project, client: engaged_client)
+    create_list(:timesheet_entry, 2, project: engaged_project, source: "import", work_date: 2.years.ago)
+    create(:timesheet_entry, project: engaged_project, source: "import", created_at: 31.days.ago)
+    create(:timesheet_entry, project: engaged_project, source: "import").discard!
+
+    metrics = described_class.process
+
+    expect(metrics[:weekly_active]).to include(
+      companies: 3, other_record_companies: 2, imported_time_entry_companies: 2
+    )
+    expect(metrics[:top_workspaces].find { |workspace| workspace[:id] == import_company.id }).to include(
+      activity_score: 4, imported_time_entries_count: 4, other_records_count: 0
+    )
+    expect(metrics[:top_workspaces].find { |workspace| workspace[:id] == engaged_company.id }).to include(
+      activity_score: 3, imported_time_entries_count: 2, other_records_count: 1
+    )
+    expect(metrics[:top_workspaces].find { |workspace| workspace[:id] == paid_company.id }).to include(
+      activity_score: 2, imported_time_entries_count: 0, other_records_count: 2
+    )
+    expect(metrics[:top_workspaces].find { |workspace| workspace[:id] == inactive_company.id }).to include(
+      activity_score: 0, imported_time_entries_count: 0, other_records_count: 0
+    )
+  end
+
+  it "counts purchase events separately from paid-tier trial workspaces without requiring cash receipts" do
+    %w[trialing past_due].each do |status|
+      create(:company, plan_tier: "paid", subscription_status: status, trial_started_at: 20.days.ago)
+    end
+    2.times do
+      Ahoy::Event.create!(
+        visit: Ahoy::Visit.create!(started_at: 1.day.ago),
+        name: "subscription_purchased", time: 1.day.ago, properties: { company_id: paid_company.id }
+      )
+    end
+
+    metrics = described_class.process
+
+    expect(metrics[:trials][:converted]).to eq(3)
+    expect(metrics[:checkouts][:last_7_days][:purchased]).to eq(2)
+    expect(metrics[:checkouts][:last_30_days][:purchased]).to eq(2)
   end
 end

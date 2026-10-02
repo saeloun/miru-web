@@ -24,37 +24,56 @@
 <%= render "shared/mailer/fact_rows", rows: [
   { label: "All workspaces", value: @metrics.dig(:activation_funnel, :total) },
   { label: "Added a client", value: @metrics.dig(:activation_funnel, :with_client) },
-  { label: "Logged time or invoiced", value: @metrics.dig(:activation_funnel, :with_activity) },
+  { label: "Created time entries or invoices", value: @metrics.dig(:activation_funnel, :with_activity) },
   { label: "Created an invoice", value: @metrics.dig(:activation_funnel, :with_invoice) },
-  { label: "Recorded a payment", value: @metrics.dig(:activation_funnel, :with_payment) }
+  { label: "Recorded a client invoice payment", value: @metrics.dig(:activation_funnel, :with_payment) }
 ] %>
+<p>All-time record presence, including imported history. Client invoice payments are workspace activity.</p>
 
 <h2 style="margin: 30px 0 12px; color: #020617; font-size: 18px;">Last 7 days</h2>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="detail-grid">
   <tr>
-    <%= render "shared/mailer/detail_card", label: "Active workspaces", value: @metrics.dig(:weekly_active, :companies) %>
+    <%= render "shared/mailer/detail_card", label: "Workspaces with records created", value: @metrics.dig(:weekly_active, :companies) %>
     <%= render "shared/mailer/detail_card", label: "Users logged in", value: @metrics.dig(:weekly_active, :users) %>
   </tr>
 </table>
+<% if @metrics[:weekly_active].key?(:imported_time_entry_companies) %>
+  <%= render "shared/mailer/fact_rows", rows: [
+    { label: "With imported time entries", value: @metrics.dig(:weekly_active, :imported_time_entry_companies) },
+    { label: "With other records", value: @metrics.dig(:weekly_active, :other_record_companies) }
+  ] %>
+  <p>A workspace can appear in both groups.</p>
+<% else %>
+  <p>Import breakdown unavailable</p>
+<% end %>
 
 <h2 style="margin: 30px 0 12px; color: #020617; font-size: 18px;">Trials and checkout</h2>
 <%= render "shared/mailer/fact_rows", rows: [
-  { label: "Active trials", value: @metrics.dig(:trials, :active) },
+  { label: "Unexpired trial dates", value: @metrics.dig(:trials, :active) },
   { label: "Ending within 7 days", value: @metrics.dig(:trials, :ending_within_7_days) },
-  { label: "Expired trials", value: @metrics.dig(:trials, :expired) },
-  { label: "Converted trials", value: @metrics.dig(:trials, :converted) },
-  { label: "Checkout starts · 7 days", value: @metrics.dig(:checkouts, :last_7_days, :started) },
-  { label: "Purchases · 7 days", value: @metrics.dig(:checkouts, :last_7_days, :purchased) },
-  { label: "Checkout starts · 30 days", value: @metrics.dig(:checkouts, :last_30_days, :started) },
-  { label: "Purchases · 30 days", value: @metrics.dig(:checkouts, :last_30_days, :purchased) }
+  { label: "Expired trial dates · non-paid tier", value: @metrics.dig(:trials, :expired) },
+  { label: "Paid-tier trial workspaces", value: @metrics.dig(:trials, :converted) },
+  { label: "Checkout start events · 7 days", value: @metrics.dig(:checkouts, :last_7_days, :started) },
+  { label: "Purchase events · 7 days", value: @metrics.dig(:checkouts, :last_7_days, :purchased) },
+  { label: "Checkout start events · 30 days", value: @metrics.dig(:checkouts, :last_30_days, :started) },
+  { label: "Purchase events · 30 days", value: @metrics.dig(:checkouts, :last_30_days, :purchased) }
 ] %>
+<p>The trial cohort includes billing-exempt workspaces. Paid tier includes Stripe active, trialing, and past_due statuses. Purchase events count transitions into paid tier, not paid invoices or MRR; repeated events can belong to one workspace.</p>
 
 <h2 style="margin: 30px 0 12px; color: #020617; font-size: 18px;">Top workspaces · 30 days</h2>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="email-fact-table">
   <% @metrics[:top_workspaces].each do |workspace| %>
     <tr>
       <td class="email-fact-key"><%= workspace[:name] %><%= " · billing exempt" if workspace[:billing_exempt] %></td>
-      <td class="email-fact-value"><%= workspace[:activity_score] %> actions · <%= workspace[:users_count] %> users</td>
+      <td class="email-fact-value">
+        <%= workspace[:activity_score] %> records · <%= workspace[:users_count] %> users<br>
+        <% if workspace.key?(:imported_time_entries_count) %>
+          <%= workspace[:imported_time_entries_count] %> imported time entries · <%= workspace[:other_records_count] %> other records
+        <% else %>
+          Import breakdown unavailable
+        <% end %>
+      </td>
     </tr>
   <% end %>
 </table>
+<p>Records are counted by creation date and ranked by total records. Other records are time entries not marked as imports, plus invoices and payments; invoice and payment import origins are not distinguished. Users are workspace members, not billable seats.</p>

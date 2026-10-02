@@ -17,6 +17,7 @@
       th, td { padding: 9px 10px; border: 1px solid #ddd; text-align: left; }
       th { background: #f7f7f7; font-weight: 600; }
       .number { text-align: right; }
+      .table-scroll { overflow-x: auto; }
       @media (max-width: 650px) { main { padding: 20px 12px; } th, td { padding: 7px; } }
     </style>
   </head>
@@ -48,9 +49,9 @@
       <% stages = [
         ["All workspaces", funnel[:total]],
         ["Added a client", funnel[:with_client]],
-        ["Logged time or invoiced", funnel[:with_activity]],
+        ["Created time entries or invoices", funnel[:with_activity]],
         ["Created an invoice", funnel[:with_invoice]],
-        ["Recorded a payment", funnel[:with_payment]]
+        ["Recorded a client invoice payment", funnel[:with_payment]]
       ] %>
       <table>
         <thead><tr><th>Stage</th><th class="number">Workspaces</th><th class="number">From prior stage</th></tr></thead>
@@ -62,45 +63,56 @@
           <% end %>
         </tbody>
       </table>
+      <p class="muted">All-time record presence, including imported history. Client invoice payments are workspace activity.</p>
 
-      <h2>Weekly active · last 7 days</h2>
+      <h2>Workspace records · last 7 days</h2>
       <div class="cards">
-        <div class="card"><span>Active workspaces</span><strong><%= @metrics.dig(:weekly_active, :companies) %></strong></div>
+        <div class="card"><span>Workspaces with records created</span><strong><%= @metrics.dig(:weekly_active, :companies) %></strong></div>
+        <div class="card"><span>With imported time entries</span><strong><%= @metrics.dig(:weekly_active, :imported_time_entry_companies) %></strong></div>
+        <div class="card"><span>With other records</span><strong><%= @metrics.dig(:weekly_active, :other_record_companies) %></strong></div>
         <div class="card"><span>Users logged in</span><strong><%= @metrics.dig(:weekly_active, :users) %></strong></div>
       </div>
+      <p class="muted">A workspace can appear in both record groups.</p>
 
       <h2>Trial cohort</h2>
       <div class="cards">
-        <div class="card"><span>Active</span><strong><%= @metrics.dig(:trials, :active) %></strong></div>
+        <div class="card"><span>Unexpired trial dates</span><strong><%= @metrics.dig(:trials, :active) %></strong></div>
         <div class="card"><span>Ending within 7 days</span><strong><%= @metrics.dig(:trials, :ending_within_7_days) %></strong></div>
-        <div class="card"><span>Expired</span><strong><%= @metrics.dig(:trials, :expired) %></strong></div>
-        <div class="card"><span>Converted to paid</span><strong><%= @metrics.dig(:trials, :converted) %></strong></div>
+        <div class="card"><span>Expired trial dates · non-paid tier</span><strong><%= @metrics.dig(:trials, :expired) %></strong></div>
+        <div class="card"><span>Paid-tier trial workspaces</span><strong><%= @metrics.dig(:trials, :converted) %></strong></div>
       </div>
+      <p class="muted">The trial cohort includes billing-exempt workspaces. Paid tier includes Stripe active, trialing, and past_due statuses.</p>
 
       <h2>Subscription checkout</h2>
       <table>
-        <thead><tr><th>Window</th><th class="number">Started</th><th class="number">Purchased</th></tr></thead>
+        <thead><tr><th>Window</th><th class="number">Checkout start events</th><th class="number">Purchase events</th></tr></thead>
         <tbody>
           <tr><td>Last 7 days</td><td class="number"><%= @metrics.dig(:checkouts, :last_7_days, :started) %></td><td class="number"><%= @metrics.dig(:checkouts, :last_7_days, :purchased) %></td></tr>
           <tr><td>Last 30 days</td><td class="number"><%= @metrics.dig(:checkouts, :last_30_days, :started) %></td><td class="number"><%= @metrics.dig(:checkouts, :last_30_days, :purchased) %></td></tr>
         </tbody>
       </table>
+      <p class="muted">Purchase events count transitions into paid tier, not paid invoices or MRR; repeated events can belong to one workspace.</p>
 
       <h2>Top workspaces · last 30 days</h2>
+      <div class="table-scroll">
       <table>
-        <thead><tr><th>Workspace</th><th class="number">Users</th><th class="number">Activity score</th><th>Last activity</th><th>Billing exempt</th></tr></thead>
+        <thead><tr><th>Workspace</th><th class="number">Users</th><th class="number">Total records</th><th class="number">Imported time entries</th><th class="number">Other records</th><th>Last record created</th><th>Billing exempt</th></tr></thead>
         <tbody>
           <% @metrics[:top_workspaces].each do |workspace| %>
             <tr>
               <td><%= workspace[:name] %></td>
               <td class="number"><%= workspace[:users_count] %></td>
               <td class="number"><%= workspace[:activity_score] %></td>
+              <td class="number"><%= workspace[:imported_time_entries_count] %></td>
+              <td class="number"><%= workspace[:other_records_count] %></td>
               <td><%= workspace[:last_activity_at]&.to_date&.to_fs(:long) || "Never" %></td>
               <td><%= workspace[:billing_exempt] ? "Yes" : "No" %></td>
             </tr>
           <% end %>
         </tbody>
       </table>
+      </div>
+      <p class="muted">Records are counted by creation date and ranked by total records. Other records are time entries not marked as imports, plus invoices and payments; invoice and payment import origins are not distinguished. Users are workspace members, not billable seats.</p>
     </main>
   </body>
 </html>
