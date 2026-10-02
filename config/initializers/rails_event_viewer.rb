@@ -1,6 +1,17 @@
 # frozen_string_literal: true
 
 require "rails_event_viewer/adapters/active_record"
+require "rails_event_viewer/json_query"
+
+module RailsEventViewer::PostgresqlKeyPresenceQuery
+  def postgresql_contains(column, key, value = nil)
+    return super if value.present?
+
+    ["#{column} ? :key", { key: key.to_s }]
+  end
+end
+
+RailsEventViewer::JsonQuery.singleton_class.prepend(RailsEventViewer::PostgresqlKeyPresenceQuery)
 
 class RailsEventViewer::TransactionalAdapter < RailsEventViewer::Adapters::ActiveRecord
   def write_events(events)
