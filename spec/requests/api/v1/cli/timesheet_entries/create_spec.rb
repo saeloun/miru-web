@@ -44,7 +44,7 @@ RSpec.describe "Api::V1::Cli::TimesheetEntries#create", type: :request do
         send_request :post, api_v1_cli_timesheet_entries_path, params:, headers: cli_auth_headers(cli_token)
       end
 
-      expect(event[:context]).to include(source: "cli")
+      expect(event[:context]).to include(source: "cli", user_id: user.id)
       expect(event[:payload].to_h[:actor]).to eq(id: user.id, type: "User")
     end
 

@@ -132,7 +132,7 @@ gem "pghero"           # PostgreSQL performance dashboard
 gem "dexter"           # Automatic index suggestions
 
 # Dashboard for structured events emitted via Rails.event
-gem "rails_event_viewer", "~> 0.2.1"
+gem "rails_event_viewer", "~> 0.4.1"
 
 # PDF generator - using Ferrum PDF for modern Chrome-based PDF generation
 gem "ferrum_pdf", ">= 3.0.0"
