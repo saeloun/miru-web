@@ -59,6 +59,25 @@ RSpec.describe "Api::V1::Agent::TimesheetEntries#create", type: :request do
     expect(json_response.dig("entry", "review_status")).to eq("pending_review")
   end
 
+  [false, true].each do |signed_in|
+    it "attributes persisted events to the agent user with signed-in cookie #{signed_in}" do
+      sign_in create(:user) if signed_in
+
+      send_request :post, api_v1_agent_timesheet_entries_path, params: {
+        timesheet_entry: {
+          duration_minutes: 30,
+          work_date: Date.current.iso8601
+        }
+      }, headers: { "Authorization" => "Bearer #{agent_token}" }
+
+      expect(response).to have_http_status(:ok)
+      event = RailsEventViewer::Entry.where(name: "TimesheetEntries::Created").last
+
+      expect(event.context).to include("user_id" => user.id, "source" => "agent", "agent_id" => agent.id)
+      expect(event.payload["actor"]).to eq("id" => user.id, "type" => "User")
+    end
+  end
+
   it "rejects revoked agent keys" do
     issued_key.first.revoke!
 

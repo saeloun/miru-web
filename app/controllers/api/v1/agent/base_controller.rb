@@ -18,13 +18,13 @@ class Api::V1::Agent::BaseController < Api::V1::ApplicationController
       @current_agent_key = agent_key
       @current_agent = agent_key.agent
       sign_in @current_agent.user, store: false
-      current_user.current_workspace = @current_agent.company
+      @current_agent.user.current_workspace = @current_agent.company
     end
 
     def set_agent_current_details!
-      Current.user = current_user
+      Current.user = current_agent.user
       Current.company = current_company
-      Rails.event.set_context(source: "agent", agent_id: current_agent.id)
+      Rails.event.set_context(source: "agent", agent_id: current_agent.id, user_id: Current.user.id)
     end
 
     def bearer_token

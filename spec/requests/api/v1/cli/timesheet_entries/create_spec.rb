@@ -48,6 +48,28 @@ RSpec.describe "Api::V1::Cli::TimesheetEntries#create", type: :request do
       expect(event[:payload].to_h[:actor]).to eq(id: user.id, type: "User")
     end
 
+    it "groups persisted CLI events by the authenticated user" do
+      send_request :post, api_v1_cli_timesheet_entries_path, params:, headers: cli_auth_headers(cli_token)
+
+      expect(response).to have_http_status(:ok)
+      entry = RailsEventViewer::Entry.where(name: "TimesheetEntries::Created").last
+      expect(entry.context).to include("user_id" => user.id, "source" => "cli")
+
+      sign_in create(:user, email: "hello@saeloun.com")
+      get "/events/groups"
+
+      expect(response).to have_http_status(:ok)
+      group_link = Nokogiri::HTML(response.body).css("a").find do |link|
+        link["href"]&.include?("key=user_id") && link.text.strip == user.id.to_s
+      end
+      expect(group_link).to be_present
+
+      get group_link["href"]
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("TimesheetEntries::Created")
+    end
+
     it "tags MCP proxied writes with the mcp source" do
       event = assert_event_reported("TimesheetEntries::Created") do
         MCP::Miru::ApiProxy.request(
