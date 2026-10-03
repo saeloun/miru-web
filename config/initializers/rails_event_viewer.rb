@@ -1,5 +1,15 @@
 # frozen_string_literal: true
 
+require "rails_event_viewer/json_query"
+
+module RailsEventViewer::BlankJsonFilterQuery
+  def contains(column, key, value = nil)
+    super(column, key, value.presence)
+  end
+end
+
+RailsEventViewer::JsonQuery.singleton_class.prepend(RailsEventViewer::BlankJsonFilterQuery)
+
 RailsEventViewer.configure do |config|
   config.async = false
   config.transactional = false
