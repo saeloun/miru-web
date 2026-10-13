@@ -2,6 +2,12 @@
 
 namespace :api, defaults: { format: "json" } do
   namespace :v1 do
+    namespace :native do
+      namespace :auth do
+        resources :google_requests, only: :create, path: "google/requests"
+        resources :google_exchanges, only: :create, path: "google/exchanges"
+      end
+    end
     namespace :users do
       devise_scope :user do
         post "login", to: "sessions#create", as: "login"

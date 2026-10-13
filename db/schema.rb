@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_05_000000) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_14_000000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_stat_statements"
@@ -678,6 +678,32 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_05_000000) do
     t.check_constraint "period::text = ANY (ARRAY['hour'::character varying::text, 'day'::character varying::text, 'week'::character varying::text, 'month'::character varying::text, 'quarter'::character varying::text, 'year'::character varying::text, 'all_time'::character varying::text])", name: "valid_period"
   end
 
+  create_table "native_google_auth_requests", force: :cascade do |t|
+    t.string "auth_state_digest"
+    t.string "browser_digest"
+    t.datetime "cancelled_at"
+    t.string "client_state", null: false
+    t.string "code_challenge", null: false
+    t.string "code_digest"
+    t.datetime "code_expires_at"
+    t.bigint "company_id"
+    t.datetime "consumed_at"
+    t.datetime "created_at", null: false
+    t.datetime "expires_at", null: false
+    t.string "intent", null: false
+    t.bigint "invitation_id"
+    t.string "outcome"
+    t.string "request_digest", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id"
+    t.index ["code_digest"], name: "index_native_google_auth_requests_on_code_digest", unique: true
+    t.index ["company_id"], name: "index_native_google_auth_requests_on_company_id"
+    t.index ["expires_at"], name: "index_native_google_auth_requests_on_expires_at"
+    t.index ["invitation_id"], name: "index_native_google_auth_requests_on_invitation_id"
+    t.index ["request_digest"], name: "index_native_google_auth_requests_on_request_digest", unique: true
+    t.index ["user_id"], name: "index_native_google_auth_requests_on_user_id"
+  end
+
   create_table "notification_preferences", force: :cascade do |t|
     t.bigint "company_id", null: false
     t.datetime "created_at", null: false
@@ -1259,6 +1285,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_05_000000) do
   add_foreign_key "invoices", "companies"
   add_foreign_key "leave_types", "leaves", column: "leave_id"
   add_foreign_key "leaves", "companies"
+  add_foreign_key "native_google_auth_requests", "companies", on_delete: :cascade
+  add_foreign_key "native_google_auth_requests", "invitations", on_delete: :cascade
+  add_foreign_key "native_google_auth_requests", "users", on_delete: :cascade
   add_foreign_key "notification_preferences", "companies"
   add_foreign_key "notification_preferences", "users"
   add_foreign_key "passkeys", "users"

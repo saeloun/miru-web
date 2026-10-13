@@ -7,6 +7,8 @@ class ActionDispatch::Routing::Mapper
 end
 
 Rails.application.routes.draw do
+  get "/native/auth/google/:request_id", to: "native_google_auth/browser#show",
+    as: :native_google_authorization
   # Health check endpoint
   get "/health", to: "health#index"
 
