@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Sign in to Miru</title>
+    <%= csrf_meta_tags %>
+    <style>
+      :root { color-scheme: light dark; }
+      body { margin: 0; padding: 24px; font-family: system-ui, sans-serif; }
+      main { max-width: 28rem; margin: 10vh auto; }
+      h1 { font-size: 1.75rem; }
+      p { line-height: 1.5; }
+      button { min-height: 44px; padding: 12px 20px; font: inherit; cursor: pointer; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Continue to Miru</h1>
+      <p>Use Google to sign in or create your Miru account.</p>
+      <%= button_to "Continue with Google", user_google_oauth2_omniauth_authorize_path,
+        method: :post, params: { prompt: "select_account" }, data: { turbo: false } %>
+    </main>
+  </body>
+</html>
