@@ -125,7 +125,13 @@ test("client filtering resets pagination and keeps the client on subsequent page
   await page.getByRole("option", { name: "Empty", exact: true }).click();
   await expect(page.getByText("#2-1", { exact: true })).toHaveCount(0);
   await expect(clientPicker).toContainText("Empty");
+  const emptyClientRequests = () =>
+    requests.filter(url => url.searchParams.get("client_id") === "3").length;
+  const requestsBeforeDeleteCompletes = emptyClientRequests();
   await finishDelete();
+  await expect
+    .poll(emptyClientRequests)
+    .toBe(requestsBeforeDeleteCompletes + 1);
   await expect(
     page.getByText("No invoice has been generated yet.")
   ).toBeVisible();
