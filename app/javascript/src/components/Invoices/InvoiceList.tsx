@@ -2,6 +2,13 @@ import React, { useState, useEffect, useRef } from "react";
 import { Card, CardContent } from "../ui/card";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
 import { HighlightText } from "../ui/highlight-text";
 import SendInvoice from "./common/InvoiceForm/SendInvoice";
 
@@ -42,7 +49,7 @@ import {
 } from "phosphor-react";
 
 import { ApiStatus as InvoiceStatus } from "../../constants";
-import { Invoice } from "../../services/invoiceApi";
+import { Client, Invoice } from "../../services/invoiceApi";
 import ChartWithSummary from "./ChartWithSummary";
 import { currencyFormat } from "../../helpers/currency";
 import { useUserContext } from "../../context/UserContext";
@@ -52,6 +59,9 @@ import { INVOICES_PAGE_SIZE } from "./usePaginatedInvoices";
 
 interface InvoiceListProps {
   invoices: Invoice[];
+  clients?: Client[];
+  clientId?: string;
+  onClientChange?: (clientId: string) => void;
   totalInvoices?: number;
   summary?: any;
   onCreateInvoice?: () => void;
@@ -76,6 +86,9 @@ interface InvoiceListProps {
 
 const InvoiceList: React.FC<InvoiceListProps> = ({
   invoices,
+  clients = [],
+  clientId = "",
+  onClientChange,
   totalInvoices = invoices.length,
   summary,
   onCreateInvoice,
@@ -462,7 +475,7 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
         />
       )}
 
-      {/* Search Only */}
+      {/* Search and filters */}
       <Card>
         <CardContent className="p-4">
           <div className="flex flex-col space-y-4 md:flex-row md:space-y-0 md:space-x-4">
@@ -478,6 +491,27 @@ const InvoiceList: React.FC<InvoiceListProps> = ({
                 />
               </div>
             </div>
+
+            <Select
+              value={clientId || "all"}
+              onValueChange={value =>
+                onClientChange?.(value === "all" ? "" : value)
+              }
+            >
+              <SelectTrigger aria-label={i18n.t("client")} className="md:w-64">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">
+                  {i18n.t("clients.allClients")}
+                </SelectItem>
+                {clients.map(client => (
+                  <SelectItem key={client.id} value={String(client.id)}>
+                    {client.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
 
             {/* Show active filter from cards */}
             {filterParams.status && filterParams.status.length > 0 && (
