@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { Invoice, invoiceApi } from "../../services/invoiceApi";
 
@@ -26,6 +26,10 @@ export const usePaginatedInvoices = (
   clientId = ""
 ): UsePaginatedInvoicesResult => {
   const requestId = useRef(0);
+  const activeClientId = useRef(clientId);
+  useEffect(() => {
+    activeClientId.current = clientId;
+  }, [clientId]);
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [totalInvoices, setTotalInvoices] = useState(0);
   const [summary, setSummary] = useState<any>(null);
@@ -47,6 +51,8 @@ export const usePaginatedInvoices = (
       page?: number;
       append?: boolean;
     } = {}) => {
+      if (clientId !== activeClientId.current) return;
+
       const currentRequestId = ++requestId.current;
       try {
         if (append) {
