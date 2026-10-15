@@ -147,7 +147,7 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
 
   useEffect(() => {
     loadInvoices();
-  }, [loadInvoices]);
+  }, [clientId, loadInvoices]);
 
   useEffect(() => {
     loadClients();

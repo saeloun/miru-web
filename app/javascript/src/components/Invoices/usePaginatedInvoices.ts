@@ -51,8 +51,6 @@ export const usePaginatedInvoices = (
       page?: number;
       append?: boolean;
     } = {}) => {
-      if (clientId !== activeClientId.current) return;
-
       const currentRequestId = ++requestId.current;
       try {
         if (append) {
@@ -64,7 +62,7 @@ export const usePaginatedInvoices = (
         const response = await invoiceApi.getInvoices({
           per: INVOICES_PAGE_SIZE,
           page,
-          clientId,
+          clientId: activeClientId.current,
         });
 
         if (currentRequestId !== requestId.current) return;
@@ -104,7 +102,7 @@ export const usePaginatedInvoices = (
         }
       }
     },
-    [clientId]
+    []
   );
 
   const loadMoreInvoices = useCallback(async () => {
