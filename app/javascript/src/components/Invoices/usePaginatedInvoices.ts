@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { Invoice, invoiceApi } from "../../services/invoiceApi";
 
@@ -22,7 +22,14 @@ interface UsePaginatedInvoicesResult {
 
 export const INVOICES_PAGE_SIZE = 100;
 
-export const usePaginatedInvoices = (): UsePaginatedInvoicesResult => {
+export const usePaginatedInvoices = (
+  clientId = ""
+): UsePaginatedInvoicesResult => {
+  const requestId = useRef(0);
+  const activeClientId = useRef(clientId);
+  useEffect(() => {
+    activeClientId.current = clientId;
+  }, [clientId]);
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [totalInvoices, setTotalInvoices] = useState(0);
   const [summary, setSummary] = useState<any>(null);
@@ -44,6 +51,7 @@ export const usePaginatedInvoices = (): UsePaginatedInvoicesResult => {
       page?: number;
       append?: boolean;
     } = {}) => {
+      const currentRequestId = ++requestId.current;
       try {
         if (append) {
           setIsLoadingMore(true);
@@ -54,7 +62,10 @@ export const usePaginatedInvoices = (): UsePaginatedInvoicesResult => {
         const response = await invoiceApi.getInvoices({
           per: INVOICES_PAGE_SIZE,
           page,
+          clientId: activeClientId.current,
         });
+
+        if (currentRequestId !== requestId.current) return;
 
         setInvoices(previousInvoices => {
           if (!append) return response.invoices;
@@ -80,21 +91,25 @@ export const usePaginatedInvoices = (): UsePaginatedInvoicesResult => {
         );
         setError(null);
       } catch (err) {
+        if (currentRequestId !== requestId.current) return;
+
         setError("Failed to load invoices");
         console.error("Error loading invoices:", err);
       } finally {
-        setIsLoading(false);
-        setIsLoadingMore(false);
+        if (currentRequestId === requestId.current) {
+          setIsLoading(false);
+          setIsLoadingMore(false);
+        }
       }
     },
     []
   );
 
   const loadMoreInvoices = useCallback(async () => {
-    if (isLoadingMore || !hasMoreInvoices) return;
+    if (isLoading || isLoadingMore || !hasMoreInvoices) return;
 
     await loadInvoices({ page: currentPage + 1, append: true });
-  }, [currentPage, hasMoreInvoices, isLoadingMore, loadInvoices]);
+  }, [currentPage, hasMoreInvoices, isLoading, isLoadingMore, loadInvoices]);
 
   return {
     invoices,
