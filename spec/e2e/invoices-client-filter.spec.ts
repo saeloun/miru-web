@@ -108,11 +108,28 @@ test("client filtering resets pagination and keeps the client on subsequent page
     )
   ).toBe(true);
 
+  let finishDelete: () => Promise<void>;
+  await page.route("**/api/v1/invoices/1", route => {
+    finishDelete = () => route.fulfill({ json: {} });
+  });
+  page.once("dialog", dialog => dialog.accept());
+  await page.getByTestId("invoice-actions-trigger-1").click();
+  const deleteRequest = page.waitForRequest(
+    request => request.method() === "DELETE"
+  );
+  await page.getByTestId("invoice-action-delete-1").click();
+  await deleteRequest;
+
   await clientPicker.scrollIntoViewIfNeeded();
   await clientPicker.click();
   await page.getByRole("option", { name: "Empty", exact: true }).click();
   await expect(page.getByText("#2-1", { exact: true })).toHaveCount(0);
   await expect(clientPicker).toContainText("Empty");
+  await finishDelete();
+  await expect(
+    page.getByText("No invoice has been generated yet.")
+  ).toBeVisible();
+  expect(requests.at(-1)?.searchParams.get("client_id")).toBe("3");
   await clientPicker.click();
   await page.getByRole("option", { name: "All Clients", exact: true }).click();
   await expect(page.getByText("#all-1", { exact: true })).toBeVisible();
