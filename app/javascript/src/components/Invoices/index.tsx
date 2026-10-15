@@ -60,6 +60,7 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
     string | null
   >(null);
   const [clients, setClients] = useState<Client[]>([]);
+  const [clientId, setClientId] = useState("");
   const [taxConfigurations, setTaxConfigurations] = useState<
     TaxConfiguration[]
   >([]);
@@ -75,7 +76,7 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
     clearError: clearListError,
     loadInvoices,
     loadMoreInvoices,
-  } = usePaginatedInvoices();
+  } = usePaginatedInvoices(clientId);
   const [isLoading, setIsLoading] = useState(false);
   const [pageError, setPageError] = useState<string | null>(null);
   const error = pageError || listError;
@@ -146,6 +147,9 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
 
   useEffect(() => {
     loadInvoices();
+  }, [loadInvoices]);
+
+  useEffect(() => {
     loadClients();
     loadTaxConfigurations();
 
@@ -160,7 +164,7 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
     if (initialMode === "preview") {
       handleViewInvoice(initialInvoiceId);
     }
-  }, [initialInvoiceId, initialMode, loadInvoices]);
+  }, [initialInvoiceId, initialMode]);
 
   const loadClients = async () => {
     try {
@@ -674,6 +678,9 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
     case "list":
       view = (
         <InvoiceList
+          clients={clients}
+          clientId={clientId}
+          onClientChange={setClientId}
           invoices={invoices}
           totalInvoices={totalInvoices}
           summary={summary}
