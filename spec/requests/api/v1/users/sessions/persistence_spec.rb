@@ -86,6 +86,24 @@ RSpec.describe "Browser session persistence", type: :request do
     expect(user.browser_sessions).to be_empty
   end
 
+  it "retires the previous cookie when the same browser switches accounts" do
+    browser = signed_in_browser
+    copied_cookie = browser.cookies["_miru_web_session"]
+    other_user = create(:user, current_workspace_id: company.id, password: "welcome12")
+    create(:employment, company:, user: other_user)
+    browser.post api_v1_users_login_path, params: { user: { email: other_user.email, password: other_user.password } }
+    expect(browser.response).to have_http_status(:ok)
+
+    replay = ActionDispatch::Integration::Session.new(Rails.application)
+    replay.host! "localhost"
+    replay.cookies["_miru_web_session"] = copied_cookie
+    replay.get api_v1_users_me_path
+    expect(replay.response).to have_http_status(:unauthorized)
+    browser.get api_v1_users_me_path
+    expect(browser.response).to have_http_status(:ok)
+    expect(browser.response.parsed_body.dig("user", "id")).to eq(other_user.id)
+  end
+
   it "keeps password changes able to invalidate existing sessions" do
     browser = signed_in_browser
     user.update!(password: "another-password-123")
