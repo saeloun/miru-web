@@ -88,7 +88,7 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
     :recoverable, :rememberable, :validatable,
     :trackable, :confirmable, :lockable, :invitable,
-    :session_limitable, :pwned_password, :jwt_authenticatable, :omniauthable,
+    :pwned_password, :jwt_authenticatable, :omniauthable,
     jwt_revocation_strategy: self,
     omniauth_providers: [:google_oauth2, :github]
 
