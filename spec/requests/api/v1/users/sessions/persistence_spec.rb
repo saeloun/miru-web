@@ -19,6 +19,20 @@ RSpec.describe "Browser session persistence", type: :request do
     end
   end
 
+  def legacy_browser(unique_session_id:)
+    jar = ActionDispatch::Cookies::CookieJar.build(ActionDispatch::TestRequest.create, {})
+    jar.encrypted["_miru_web_session"] = { value: {
+      "session_id" => SecureRandom.hex(16),
+      "warden.user.user.key" => User.serialize_into_session(user),
+      "warden.user.user.session" => { "unique_session_id" => unique_session_id }
+    } }
+    legacy_cookie = jar["_miru_web_session"]
+    browser = ActionDispatch::Integration::Session.new(Rails.application)
+    browser.host! "localhost"
+    browser.cookies["_miru_web_session"] = legacy_cookie
+    [browser, legacy_cookie]
+  end
+
   it "keeps both browsers signed in after another browser signs in" do
     first_browser = signed_in_browser
     second_browser = signed_in_browser
@@ -114,17 +128,8 @@ RSpec.describe "Browser session persistence", type: :request do
 
   [true, false].each do |with_unique_session_id|
     it "migrates and revokes legacy cookies with unique session id: #{with_unique_session_id}" do
-      legacy_session = with_unique_session_id ? { "unique_session_id" => SecureRandom.hex(16) } : {}
-      jar = ActionDispatch::Cookies::CookieJar.build(ActionDispatch::TestRequest.create, {})
-      jar.encrypted["_miru_web_session"] = { value: {
-        "session_id" => SecureRandom.hex(16),
-        "warden.user.user.key" => User.serialize_into_session(user),
-        "warden.user.user.session" => legacy_session
-      } }
-      legacy_cookie = jar["_miru_web_session"]
-      browser = ActionDispatch::Integration::Session.new(Rails.application)
-      browser.host! "localhost"
-      browser.cookies["_miru_web_session"] = legacy_cookie
+      user.update!(unique_session_id: SecureRandom.hex(16))
+      browser, legacy_cookie = legacy_browser(unique_session_id: with_unique_session_id ? user.unique_session_id : nil)
       browser.get api_v1_users_me_path
       expect(browser.response).to have_http_status(:ok)
       browser.delete api_v1_users_logout_path
@@ -136,5 +141,14 @@ RSpec.describe "Browser session persistence", type: :request do
       replay.get api_v1_users_me_path
       expect(replay.response).to have_http_status(:unauthorized)
     end
+  end
+
+  it "does not restore a legacy cookie invalidated before deployment" do
+    user.update!(unique_session_id: SecureRandom.hex(16))
+    browser, = legacy_browser(unique_session_id: SecureRandom.hex(16))
+
+    browser.get api_v1_users_me_path
+    expect(browser.response).to have_http_status(:unauthorized)
+    expect(user.browser_sessions).to be_empty
   end
 end
