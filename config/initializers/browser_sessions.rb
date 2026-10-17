@@ -13,6 +13,9 @@ Warden::Manager.after_set_user do |user, warden, options|
 
   if token
     browser_session = user.browser_sessions.find_by(token_digest: Digest::SHA256.hexdigest(token))
+  elsif options[:event] == :fetch && session["unique_session_id"].present? &&
+      session["unique_session_id"] != user.unique_session_id
+    browser_session = nil
   else
     # Keep legacy cookies identifiable after logout so replay cannot register them again.
     token = if options[:event] == :fetch
