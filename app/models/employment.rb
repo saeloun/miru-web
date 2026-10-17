@@ -6,6 +6,7 @@ class Employment < ApplicationRecord
   # Associations
   belongs_to :company
   belongs_to :user
+  has_many :salary_slips, dependent: :destroy
 
   # Validations
   validates :designation, :employment_type, :joined_at, :employee_id, presence: true, on: :update

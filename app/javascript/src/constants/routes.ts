@@ -21,6 +21,7 @@ const ClientsTable = lazy(() => import("../components/Clients/ClientsTable"));
 const ClientDetails = lazy(() => import("../components/Clients/Details"));
 const ExpenseDetails = lazy(() => import("components/Expenses/Details"));
 const ExpensesTable = lazy(() => import("components/Expenses/ExpensesTable"));
+const SalarySlips = lazy(() => import("components/SalarySlips"));
 const InvoicesRouteConfig = lazy(
   () => import("components/Invoices/RouteConfig")
 );
@@ -237,6 +238,11 @@ export const PUBLIC_ROUTES = [
 ];
 
 export const ROUTES = [
+  {
+    path: "/salary-slips",
+    subRoutes: [{ path: "", Component: SalarySlips }],
+    authorisedRoles: [ADMIN, OWNER, BOOK_KEEPER, EMPLOYEE, Roles.MANAGER],
+  },
   {
     path: Paths.DASHBOARD,
     subRoutes: DashboardRoutes,

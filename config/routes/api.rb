@@ -59,6 +59,13 @@ namespace :api, defaults: { format: "json" } do
       end
     end
     resources :imports, only: [:create, :show]
+    resources :salary_slips, only: [:index, :create] do
+      member do
+        post :publish
+        post :withdraw
+        get :download
+      end
+    end
     namespace :cli do
       resource :capabilities, only: [:show], controller: "capabilities"
       resource :session, only: [:destroy], controller: "sessions"

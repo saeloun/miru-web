@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_30_174750) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_17_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_stat_statements"
@@ -922,6 +922,27 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_30_174750) do
     t.index ["resource_type", "resource_id"], name: "index_roles_on_resource"
   end
 
+  create_table "salary_slips", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "employment_id", null: false
+    t.date "pay_month", null: false
+    t.datetime "published_at"
+    t.bigint "published_by_id"
+    t.string "source", null: false
+    t.bigint "supersedes_id"
+    t.datetime "updated_at", null: false
+    t.bigint "uploaded_by_id", null: false
+    t.datetime "withdrawn_at"
+    t.bigint "withdrawn_by_id"
+    t.index ["employment_id", "pay_month"], name: "index_salary_slips_current_publication", unique: true, where: "((published_at IS NOT NULL) AND (withdrawn_at IS NULL))"
+    t.index ["employment_id"], name: "index_salary_slips_on_employment_id"
+    t.index ["published_by_id"], name: "index_salary_slips_on_published_by_id"
+    t.index ["supersedes_id"], name: "index_salary_slips_on_supersedes_id"
+    t.index ["uploaded_by_id"], name: "index_salary_slips_on_uploaded_by_id"
+    t.index ["withdrawn_by_id"], name: "index_salary_slips_on_withdrawn_by_id"
+    t.check_constraint "EXTRACT(day FROM pay_month) = 1::numeric", name: "salary_slips_month_start"
+  end
+
   create_table "solid_cable_messages", force: :cascade do |t|
     t.binary "channel", null: false
     t.bigint "channel_hash", null: false
@@ -1300,6 +1321,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_30_174750) do
   add_foreign_key "quickbooks_sync_runs", "quickbooks_connections", column: ["quickbooks_connection_id", "company_id"], primary_key: ["id", "company_id"], name: "fk_qbo_runs_connection_company"
   add_foreign_key "razorpay_payouts", "payments"
   add_foreign_key "razorpay_payouts", "users", column: "requested_by_id"
+  add_foreign_key "salary_slips", "employments"
+  add_foreign_key "salary_slips", "salary_slips", column: "supersedes_id"
+  add_foreign_key "salary_slips", "users", column: "published_by_id"
+  add_foreign_key "salary_slips", "users", column: "uploaded_by_id"
+  add_foreign_key "salary_slips", "users", column: "withdrawn_by_id"
   add_foreign_key "solid_queue_blocked_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_claimed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_failed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade

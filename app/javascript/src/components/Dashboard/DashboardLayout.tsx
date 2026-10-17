@@ -119,6 +119,12 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
           icon: CurrencyCircleDollar,
           roles: ["admin", "owner", "book_keeper", "employee"],
         },
+        {
+          label: t("salarySlips.title"),
+          href: "/salary-slips",
+          icon: Receipt,
+          roles: ["admin", "owner", "book_keeper", "employee", "manager"],
+        },
       ],
     },
     {

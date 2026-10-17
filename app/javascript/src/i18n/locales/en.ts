@@ -1,4 +1,35 @@
 const en = {
+  salarySlips: {
+    title: "Salary slips",
+    description: "View and download salary slips published by your employer.",
+    import: "Import approved salary slips",
+    importHelp:
+      "Assign each PDF to an employee and pay month. Save drafts, review them, then publish.",
+    source: "Payroll provider or source",
+    files: "PDF documents",
+    fileLimit: "Select up to 20 PDFs, each 5 MiB or smaller.",
+    employee: "Employee",
+    chooseEmployee: "Choose an employee",
+    payMonth: "Pay month",
+    saveDrafts: "Save drafts",
+    allMonths: "All months",
+    status: "Status",
+    actions: "Actions",
+    draft: "Draft",
+    published: "Published",
+    withdrawn: "Withdrawn",
+    publish: "Publish salary slip",
+    withdraw: "Withdraw salary slip",
+    publishHelp:
+      "This makes the slip available to this employee and replaces any published slip for the same month. Earlier revisions are retained. Publication does not confirm payment.",
+    withdrawHelp:
+      "The employee will no longer be able to download this slip. The original is retained. Import a new revision to correct it.",
+    empty:
+      "No salary slips match this period. Slips appear here after your employer publishes them.",
+    unavailable: "Salary slips could not be loaded.",
+    failed: "Unable to complete this action. Please try again.",
+    page: "Page %{page} of %{pages}",
+  },
   // Image validation
   invalidImageFormatSize:
     "Incorrect file format. Please upload an image of type PNG or JPG. Max size (%{fileSize}KB)",

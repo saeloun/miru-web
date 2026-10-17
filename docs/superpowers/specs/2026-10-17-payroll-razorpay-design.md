@@ -1,6 +1,8 @@
 # Miru salary slips, payroll integration, and India payments
 
-Status: proposed design for review; no product implementation yet.
+Status: Release 1 implemented in the isolated worktree; later releases remain proposed and depend on provider access and statutory verification.
+
+Scope update: the user subsequently requested native India employer payroll and tax preparation, including deductions/evidence, reimbursements, statutory contributions, consultants and company GST. See [the expanded design](2026-10-17-india-payroll-tax-design.md) and [research](../../research/2026-10-17-india-payroll-tax-research.md). This document's Release 1 remains the salary-slip import foundation; its provider-only assumptions do not limit the expanded product.
 
 ## Intent and decisions
 
@@ -118,6 +120,6 @@ No Razorpay account enrollment, external messages, credential retrieval, product
 
 ## Approval and verification status
 
-User-approved requirement: provider-generated salary-slip import/publication and Razorpay connect/create onboarding. The detailed release design above is proposed for approval before product implementation, as required by the brainstorming workflow.
+User-selected first workflow: provider-generated salary-slip import/publication. The subsequent direction prioritizes employer payroll, with employee tax preparation next, and delegates routine implementation choices. Razorpay connect/create remains requested but unimplemented.
 
-Documentation only. No product code changed, app tests run, build run, browser acceptance performed, or provider account tested. Research verified official documentation and inspected current source; implementation claims require the acceptance checks above.
+Release 1 adds private PDF imports, draft/publication/withdrawal history, employee downloads, company-scoped audit records and dashboard navigation. See the [implementation plan and verification record](../plans/2026-10-17-salary-slip-import.md). No native payroll/tax calculation, provider account integration, production change or deployment is included. The expanded India design records the remaining calculation and tax-readiness work.
