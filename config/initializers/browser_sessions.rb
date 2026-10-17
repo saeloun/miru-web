@@ -5,6 +5,10 @@ Warden::Manager.after_set_user do |user, warden, options|
   next unless scope == :user && user.is_a?(User) && options[:store] != false
 
   session = warden.session(scope)
+  if options[:event] != :fetch && session["browser_session_token"]
+    BrowserSession.where(token_digest: Digest::SHA256.hexdigest(session["browser_session_token"]), revoked_at: nil)
+      .update_all(revoked_at: Time.current)
+  end
   token = session["browser_session_token"] if options[:event] == :fetch
 
   if token
