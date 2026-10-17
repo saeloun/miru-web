@@ -13,7 +13,7 @@ module PayrollProviders
 
       @environment = environment.to_s.freeze
       @legal_business_name = legal_business_name.dup.freeze
-      @client = ReadOnlyClient.new(endpoint:, token:)
+      @client = ReadOnlyClient.new(endpoint:, company_id: @company_id, token:)
     end
 
     def fetch_balance(company_id:, currency:)

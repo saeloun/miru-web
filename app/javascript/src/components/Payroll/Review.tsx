@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 
 import { useUserContext } from "context/UserContext";
+import { hasPayrollReviewAccess } from "../../lib/payrollAccess";
 
 import {
   payrollApi,
@@ -12,6 +13,7 @@ import {
   Approval,
 } from "./api";
 import PreflightSummary from "./PreflightSummary";
+import PayrollAccessGate from "./AccessGate";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader } from "../ui/card";
@@ -389,11 +391,18 @@ interface ReviewState {
 
 const Review = () => {
   const { runId } = useParams();
-  const { user, company } = useUserContext();
+  const { user, company, companyRole } = useUserContext();
+  const payrollEnabled = hasPayrollReviewAccess(
+    company,
+    user?.current_workspace_id,
+    companyRole
+  );
   const companyId = String(user?.current_workspace_id || "");
   const [page, setPage] = useState(1);
   const [refresh, setRefresh] = useState(0);
-  const scope = `${companyId}:${runId || "list"}:${page}:${refresh}`;
+  const scope = `${companyId}:${payrollEnabled}:${
+    runId || "list"
+  }:${page}:${refresh}`;
   const [state, setState] = useState<ReviewState | null>(null);
 
   useEffect(() => {
@@ -408,7 +417,7 @@ const Review = () => {
       preflight: null,
     };
     setState(empty);
-    if (!companyId) return () => controller.abort();
+    if (!companyId || !payrollEnabled) return () => controller.abort();
 
     const load = async () => {
       try {
@@ -471,7 +480,7 @@ const Review = () => {
     load();
 
     return () => controller.abort();
-  }, [companyId, runId, page, refresh]);
+  }, [companyId, payrollEnabled, runId, page, refresh]);
 
   const current = state?.scope === scope ? state : null;
   const run = current?.run;
@@ -727,10 +736,19 @@ const Review = () => {
 };
 
 const PayrollReview = () => {
-  const { user, companyRole } = useUserContext();
+  const { user, companyRole, company } = useUserContext();
+  const payrollEnabled = hasPayrollReviewAccess(
+    company,
+    user?.current_workspace_id,
+    companyRole
+  );
 
   return (
-    <Review key={`${user?.id}:${user?.current_workspace_id}:${companyRole}`} />
+    <PayrollAccessGate>
+      <Review
+        key={`${user?.id}:${user?.current_workspace_id}:${companyRole}:${payrollEnabled}`}
+      />
+    </PayrollAccessGate>
   );
 };
 

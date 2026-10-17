@@ -9,7 +9,7 @@ class PayrollRunPolicy < ApplicationPolicy
   end
 
   def index?
-    active_member? && roles.exists?
+    Payroll::Entitlement.enabled?(workspace_id) && active_member? && roles.exists?
   end
 
   def show?

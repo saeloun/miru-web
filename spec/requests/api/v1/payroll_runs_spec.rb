@@ -99,10 +99,10 @@ RSpec.describe "Payroll review reads", type: :request do
     create(:employment, company: other_company, user: owner, resigned_at: nil)
     owner.add_role(:owner, other_company)
     fetch_run
-    expect(response).to have_http_status(404)
+    expect(response).to have_http_status(403)
     expect(response.body).not_to include(worker.full_name, revision.digest, "10250")
     fetch_run(company_id: company.id)
-    expect(response).to have_http_status(409)
+    expect(response).to have_http_status(403)
     expect(response.headers["Cache-Control"]).to include("no-store")
   end
 
@@ -111,6 +111,37 @@ RSpec.describe "Payroll review reads", type: :request do
     fetch_run
     expect(response).to have_http_status(401)
     expect(response.headers["Cache-Control"]).to include("no-store")
+  end
+
+  it "denies all payroll reads when the trusted enable is absent despite owner roles or forged parameters" do
+    allow(ENV).to receive(:[]).with("MIRU_PAYROLL_ENABLED").and_return(nil)
+    [api_v1_payroll_runs_path, api_v1_payroll_run_path(run), preflight_api_v1_payroll_run_path(run)].each do |path|
+      get path, params: { company_id: company.id, payroll_review_enabled: true, payroll_enabled: true }, as: :json
+      expect(response).to have_http_status(403)
+      expect(response.body).not_to include(worker.full_name, revision.digest, "10250")
+      expect(response.headers["Cache-Control"]).to include("no-store")
+    end
+  end
+
+  it "denies an enabled flag with another immutable company binding" do
+    allow(ENV).to receive(:[]).with("MIRU_PAYROLL_SAELOUN_COMPANY_ID").and_return((company.id + 1).to_s)
+    fetch_run(company_id: company.id)
+    expect(response).to have_http_status(403)
+  end
+
+  it "rejects forged expected-company parameters while retaining the entitled workspace" do
+    fetch_run(company_id: company.id + 1)
+    expect(response).to have_http_status(409)
+    expect(response.body).not_to include(worker.full_name, revision.digest, "10250")
+  end
+
+  it "serializes an authoritative boolean in the actual current-company auth response" do
+    get api_v1_users_me_path, as: :json
+    expect(response).to have_http_status(200)
+    expect(json_response.dig("company", "payroll_review_enabled")).to be(true)
+    allow(ENV).to receive(:[]).with("MIRU_PAYROLL_ENABLED").and_return(nil)
+    get api_v1_users_me_path, as: :json
+    expect(json_response.dig("company", "payroll_review_enabled")).to be(false)
   end
 
   it "never turns supplied client account or approval flags into a ready preflight" do

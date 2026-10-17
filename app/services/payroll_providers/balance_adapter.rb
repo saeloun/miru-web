@@ -2,6 +2,7 @@
 
 require "digest"
 require "time"
+require_relative "../payroll/entitlement"
 
 module PayrollProviders
   class BalanceAdapter
@@ -22,6 +23,7 @@ module PayrollProviders
     private
 
       def validate_binding!(company_id, currency)
+        Payroll::Entitlement.require!(@company_id)
         unless company_id == @company_id && currency == @currency
           raise Error, "Balance company or currency mismatch"
         end

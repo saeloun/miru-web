@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "spec_helper"
+require_relative "../../support/helpers/payroll_entitlement_helper"
 require_relative "../../../app/services/payroll_providers/error"
 require_relative "../../../app/services/payroll_providers/read_only_client"
 require_relative "../../../app/services/payroll_providers/balance_adapter"
@@ -35,7 +36,10 @@ RSpec.describe "Read-only payroll provider balances" do
       key_id: "rzp_live_synthetic_key", key_secret: "synthetic-secret", clock: -> { now })
   end
 
-  before { WebMock.disable_net_connect! }
+  before do
+    enable_synthetic_payroll(11)
+    WebMock.disable_net_connect!
+  end
 
   def respond_with(url, value)
     body = JSON.generate(value)
@@ -134,6 +138,7 @@ RSpec.describe "Read-only payroll provider balances" do
   end
 
   describe "Razorpay" do
+    before { enable_synthetic_payroll(22) }
     it "reads available paise rather than the total balance and preserves refreshed_at" do
       respond_with(razorpay_url, { entity: "collection", count: 1, items: [razorpay_account] })
       result = fetch_razorpay
@@ -197,6 +202,22 @@ RSpec.describe "Read-only payroll provider balances" do
   end
 
   describe "transport isolation" do
+    it "blocks disabled adapters and direct transport before any provider HTTP" do
+      adapter = mercury
+      transport = PayrollProviders::ReadOnlyClient.new(endpoint: :mercury_live, company_id: 11, token: "synthetic-token")
+      allow(ENV).to receive(:[]).with("MIRU_PAYROLL_ENABLED").and_return("false")
+      expect { adapter.fetch_balance(company_id: 11, currency: "USD") }.to raise_error(Payroll::Entitlement::NotEnabled)
+      expect { transport.fetch }.to raise_error(Payroll::Entitlement::NotEnabled)
+      expect(a_request(:any, /api\.mercury\.com|api\.razorpay\.com/)).not_to have_been_made
+    end
+
+    it "blocks another tenant and an unbound raw transport before HTTP" do
+      expect { razorpay.fetch_balance(company_id: 22, currency: "INR") }.to raise_error(Payroll::Entitlement::NotEnabled)
+      transport = PayrollProviders::ReadOnlyClient.new(endpoint: :mercury_live, token: "synthetic-token")
+      expect { transport.fetch }.to raise_error(Payroll::Entitlement::NotEnabled)
+      expect(a_request(:any, /api\.mercury\.com|api\.razorpay\.com/)).not_to have_been_made
+    end
+
     [301, 302, 401, 403, 429, 500].each do |status|
       it "sanitizes status #{status} and never follows redirects" do
         stub_request(:get, mercury_url).to_return(status:, body: "synthetic-token secret-bank-number",

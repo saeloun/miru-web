@@ -10,6 +10,7 @@ module Payroll
     end
 
     def revise!(actor:, payload:, idempotency_key:, expected_digest:)
+      Entitlement.require!(@run.company_id)
       @run.with_lock do
         unless @run.eligible_actor?(actor, "accounts") && User.kept.exists?(id: actor.id, current_workspace_id: @run.company_id)
           raise NotAuthorized, "Active accounts role in the current workspace required"
@@ -34,6 +35,7 @@ module Payroll
     end
 
     def approve!(actor:, stage:, expected_digest:)
+      Entitlement.require!(@run.company_id)
       @run.with_lock do
         head = @run.current_revision
         raise Conflict, "Revision changed; reload before approving" unless head && head.digest == expected_digest
@@ -43,6 +45,7 @@ module Payroll
     end
 
     def status
+      Entitlement.require!(@run.company_id)
       @run.with_lock do
         head = @run.current_revision
         return "draft" unless head && head.approval_issues.empty?

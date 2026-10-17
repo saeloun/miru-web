@@ -13,7 +13,10 @@ RSpec.describe PayrollSources::MonthlyFacts do
   let(:leave) { create(:leave, company:, year: 2026) }
   let(:leave_type) { create(:leave_type, leave:) }
 
-  before { actor.add_role(:book_keeper, company) }
+  before do
+    enable_synthetic_payroll(company.id)
+    actor.add_role(:book_keeper, company)
+  end
 
   def collect(**options)
     described_class.new(company:, employment:, actor:, month: "2026-11", **options).call
@@ -230,7 +233,8 @@ RSpec.describe PayrollSources::MonthlyFacts do
       altered.fetch("work_entries").first["duration_minutes"] = "999.0"
       expect(described_class.current_snapshot?(altered, company:, employment:)).to be(false)
       expect(described_class.current_snapshot?(snapshot.merge("digest" => "0" * 64), company:, employment:)).to be(false)
-      expect(described_class.current_snapshot?(snapshot, company: create(:company), employment:)).to be(false)
+      expect { described_class.current_snapshot?(snapshot, company: create(:company), employment:) }
+        .to raise_error(Payroll::Entitlement::NotEnabled)
       expect(described_class.current_snapshot?({}, company:, employment:)).to be(false)
       expect(described_class.current_snapshot?(nil, company:, employment:)).to be(false)
       expect(described_class.current_snapshot?({ "company_id" => company.id, "employment" => "bad" }, company:, employment:))

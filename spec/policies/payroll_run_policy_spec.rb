@@ -40,8 +40,10 @@ RSpec.describe PayrollRunPolicy do
     [other_accounts, other_owner].each { |user| create(:employment, company: other_company, user:, resigned_at: nil) }
     other_accounts.add_role(:book_keeper, other_company)
     other_owner.add_role(:owner, other_company)
+    enable_synthetic_payroll(other_company.id)
     other_run = PayrollRun.create!(company: other_company, period: run.period, currency: "INR",
       accounts_reviewer: other_accounts, final_reviewer: other_owner)
+    enable_synthetic_payroll(company.id)
     create(:employment, company: other_company, user: owner, resigned_at: Date.yesterday)
     owner.add_role(:owner, other_company)
     allow_any_instance_of(described_class).to receive(:index?).and_wrap_original do |original|

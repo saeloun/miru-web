@@ -4,6 +4,7 @@ require "net/http"
 require "json"
 require "bigdecimal"
 require "timeout"
+require_relative "../payroll/entitlement"
 
 module PayrollProviders
   class ReadOnlyClient
@@ -14,8 +15,9 @@ module PayrollProviders
     }.freeze
     MAX_BODY_BYTES = 262_144
 
-    def initialize(endpoint:, token: nil, key_id: nil, key_secret: nil)
+    def initialize(endpoint:, company_id: nil, token: nil, key_id: nil, key_secret: nil)
       @uri = URI(ENDPOINTS.fetch(endpoint))
+      @company_id = company_id
       credentials = endpoint == :razorpay ? [key_id, key_secret] : [token]
       unless credentials.all? { |value| value.is_a?(String) && !value.empty? && !value.match?(/[\r\n]/) }
         raise Error, "Provider credentials are required"
@@ -30,8 +32,9 @@ module PayrollProviders
     end
 
     def fetch
+      Payroll::Entitlement.require!(@company_id)
       JSON.parse(fetch_body, decimal_class: BigDecimal, max_nesting: 20, allow_duplicate_key: false)
-    rescue Error
+    rescue Error, Payroll::Entitlement::NotEnabled
       raise
     rescue StandardError
       raise Error, "Provider balance request failed", cause: nil

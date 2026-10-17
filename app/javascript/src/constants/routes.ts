@@ -13,6 +13,7 @@ import Success from "components/payments/Success";
 import InvalidLink from "components/Team/List/InvalidLink";
 import PlanAccessGate from "components/PlanAccessGate";
 import ReportsAccessGate from "../components/Reports/AccessGate";
+import PayrollAccessGate from "../components/Payroll/AccessGate";
 
 const DashboardHome = lazy(
   () => import("../components/Dashboard/DashboardHome")
@@ -82,6 +83,13 @@ const TimeTracking = lazy(() => import("../components/TimeTracking"));
 const withReportsGate = Component => props =>
   React.createElement(
     ReportsAccessGate,
+    null,
+    React.createElement(Component, props)
+  );
+
+const withPayrollGate = Component => props =>
+  React.createElement(
+    PayrollAccessGate,
     null,
     React.createElement(Component, props)
   );
@@ -241,8 +249,8 @@ export const ROUTES = [
   {
     path: "/payroll",
     subRoutes: [
-      { path: "", Component: PayrollReview },
-      { path: ":runId", Component: PayrollReview },
+      { path: "", Component: withPayrollGate(PayrollReview) },
+      { path: ":runId", Component: withPayrollGate(PayrollReview) },
     ],
     authorisedRoles: [ADMIN, OWNER, BOOK_KEEPER],
   },

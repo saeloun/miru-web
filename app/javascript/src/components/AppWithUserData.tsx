@@ -1,5 +1,5 @@
 import { Roles } from "../constants/index";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import UserContext from "../context/UserContext";
 import { LocaleProvider, useLocale } from "../context/LocaleContext";
 import {
@@ -280,7 +280,20 @@ const AppWithUserData = (props: any) => {
   const [selectedTab, setSelectedTab] = useState(null);
   const [currentAvatarUrl, setCurrentAvatarUrl] = useState(avatarUrl);
   const [companyState, setCompany] = useState(company);
-  const resolvedCompany = companyState || company;
+  const resolvedCompany = useMemo(() => {
+    const editableCompany = companyState || company;
+
+    return editableCompany
+      ? {
+          ...editableCompany,
+          payroll_review_enabled:
+            company?.payroll_review_enabled === true &&
+            company?.id != null &&
+            editableCompany.id != null &&
+            String(company.id) === String(editableCompany.id),
+        }
+      : null;
+  }, [companyState, company]);
 
   const handleOverlayVisibility = (isOverlayVisible: boolean) => {
     const overlayEl = document.getElementById("overlay");

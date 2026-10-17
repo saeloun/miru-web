@@ -28,6 +28,7 @@ import { Toastr } from "StyledComponents";
 import ThemeToggle from "../../common/ThemeToggle";
 import useThemeMode from "../../common/useThemeMode";
 import { hasProAccess } from "../../lib/planAccess";
+import { hasPayrollReviewAccess } from "../../lib/payrollAccess";
 import { t } from "../../i18n";
 import CompactLocaleSwitcher from "../common/CompactLocaleSwitcher";
 import TrialBanner from "../common/TrialBanner";
@@ -47,6 +48,11 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
   const [mobileOpen, setMobileOpen] = useState(false);
   const location = useLocation();
   const { companyRole, user, company, avatarUrl, locale } = useUserContext();
+  const payrollEnabled = hasPayrollReviewAccess(
+    company,
+    user?.current_workspace_id,
+    companyRole
+  );
   const themeMode = useThemeMode();
   const logoStyle = useMemo(
     () => ({
@@ -192,6 +198,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
     ...group,
     items: group.items
       .filter(item => !item.roles || item.roles.includes(companyRole))
+      .filter(item => item.href !== "/payroll" || payrollEnabled)
       .map(item =>
         ["/reports", "/analytics"].includes(item.href) && !hasProAccess(company)
           ? {
@@ -205,7 +212,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
   // prettier-ignore
   const filteredNavigation = useMemo(
     () => navigationGroups.map(filterNavigationGroup),
-    [companyRole, company?.pro_access, locale]
+    [companyRole, company?.pro_access, locale, payrollEnabled]
   );
 
   const pageTitle = useMemo(() => {

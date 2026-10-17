@@ -21,6 +21,7 @@ module PayrollSources
     end
 
     def call
+      Payroll::Entitlement.require!(@company_id)
       ApplicationRecord.transaction do
         authorize!
         capture
@@ -28,6 +29,7 @@ module PayrollSources
     end
 
     def self.current_snapshot?(snapshot, company:, employment:)
+      Payroll::Entitlement.require!(company.id)
       return false unless snapshot.is_a?(Hash) && snapshot["company_id"] == company.id &&
         snapshot.dig("employment", "id") == employment.id
 

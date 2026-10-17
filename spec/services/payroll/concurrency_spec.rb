@@ -7,6 +7,7 @@ RSpec.describe "Payroll revision concurrency" do
     run_id, actor_id, payload = Thread.new do
       ActiveRecord::Base.connection_pool.with_connection do
         company = create(:company, base_currency: "INR")
+        enable_synthetic_payroll(company.id)
         accounts = create(:user, current_workspace: company)
         owner = create(:user, current_workspace: company)
         [accounts, owner].each { |user| create(:employment, company:, user:, resigned_at: nil) }

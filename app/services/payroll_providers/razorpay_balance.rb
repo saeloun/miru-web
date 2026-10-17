@@ -7,7 +7,7 @@ module PayrollProviders
       unless key_id.is_a?(String) && key_id.match?(/\Arzp_live_[A-Za-z0-9_]+\z/)
         raise Error, "Live Razorpay balance credentials are required"
       end
-      @client = ReadOnlyClient.new(endpoint: :razorpay, key_id:, key_secret:)
+      @client = ReadOnlyClient.new(endpoint: :razorpay, company_id: @company_id, key_id:, key_secret:)
     end
 
     def fetch_balance(company_id:, currency:)

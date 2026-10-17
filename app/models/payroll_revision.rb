@@ -6,6 +6,7 @@ class PayrollRevision < ApplicationRecord
   belongs_to :payroll_run
   belongs_to :created_by, class_name: "User"
   has_many :payroll_approvals, dependent: :restrict_with_exception
+  before_validation :require_payroll_entitlement, on: :create
 
   validates :number, numericality: { only_integer: true, greater_than: 0 }, uniqueness: { scope: :payroll_run_id }
   validates :idempotency_key, presence: true, length: { maximum: 128 }, uniqueness: { scope: :payroll_run_id }
@@ -26,6 +27,10 @@ class PayrollRevision < ApplicationRecord
   end
 
   private
+
+    def require_payroll_entitlement
+      Payroll::Entitlement.require!(payroll_run&.company_id)
+    end
 
     def valid_snapshot
       return unless payroll_run

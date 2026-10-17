@@ -28,6 +28,7 @@ module Payroll
     end
 
     def valid?
+      Entitlement.require!(@run.company_id)
       return false unless digest
       return false unless keys?(@payload, %w[schema_version company_id period currency policies exceptions lines])
       return false unless @payload["schema_version"] == 1 && @payload["company_id"] == @run.company_id
@@ -38,10 +39,7 @@ module Payroll
 
       lines = @payload["lines"]
       return false unless lines.is_a?(Array) && lines.size.between?(1, MAX_LINES)
-      return false unless lines.all? { |line| valid_line?(line) }
-
-      ids = lines.pluck("employment_id")
-      ids.uniq.size == ids.size && Employment.kept.where(company_id: @run.company_id, id: ids).count == ids.size
+      valid_population?(lines)
     end
 
     def approval_issues
@@ -61,6 +59,13 @@ module Payroll
     end
 
     private
+
+      def valid_population?(lines)
+        return false unless lines.all? { |line| valid_line?(line) }
+
+        ids = lines.pluck("employment_id")
+        ids.uniq.size == ids.size && Employment.kept.where(company_id: @run.company_id, id: ids).count == ids.size
+      end
 
       def canonical(value, depth = 0)
         raise ArgumentError if depth > 20

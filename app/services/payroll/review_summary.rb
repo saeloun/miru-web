@@ -10,6 +10,7 @@ module Payroll
     end
 
     def summary
+      Entitlement.require!(@run.company_id)
       {
         id: @run.id.to_s, company_id: @run.company_id.to_s, period: @run.period.iso8601,
         currency: @run.currency, dry_run: @run.dry_run,
@@ -18,6 +19,7 @@ module Payroll
     end
 
     def detail
+      Entitlement.require!(@run.company_id)
       @run.with_lock do
         @revision = @run.current_revision
         summary.merge(status: Workflow.new(@run).status, review_issues: review_issues,
@@ -27,6 +29,7 @@ module Payroll
     end
 
     def preflight
+      Entitlement.require!(@run.company_id)
       @run.with_lock do
         @revision = @run.current_revision
         state = Workflow.new(@run).status

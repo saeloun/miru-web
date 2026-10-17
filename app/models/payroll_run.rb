@@ -5,6 +5,7 @@ class PayrollRun < ApplicationRecord
   belongs_to :accounts_reviewer, class_name: "User"
   belongs_to :final_reviewer, class_name: "User"
   has_many :payroll_revisions, dependent: :restrict_with_exception
+  before_validation :require_payroll_entitlement, on: :create
 
   validates :period, :currency, presence: true
   validates :currency, format: { with: /\A[A-Z]{3}\z/ }
@@ -19,10 +20,12 @@ class PayrollRun < ApplicationRecord
   end
 
   def current_revision
+    Payroll::Entitlement.require!(company_id)
     payroll_revisions.order(number: :desc).first
   end
 
   def eligible_actor?(actor, stage)
+    return false unless Payroll::Entitlement.enabled?(company_id)
     return false unless actor&.persisted? && company_id && period
     return false unless User.kept.exists?(id: actor.id)
     return false unless Employment.kept.where(company_id:, user_id: actor.id)
@@ -33,6 +36,10 @@ class PayrollRun < ApplicationRecord
   end
 
   private
+
+    def require_payroll_entitlement
+      Payroll::Entitlement.require!(company_id)
+    end
 
     def month_start
       errors.add(:period, "must be the first day of a month") if period && period.day != 1

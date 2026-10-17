@@ -36,6 +36,7 @@ RSpec.describe Payroll::Workflow do
   end
 
   before do
+    enable_synthetic_payroll(company.id)
     accounts.update!(current_workspace: company)
     owner.update!(current_workspace: company)
     create(:employment, company:, user: accounts, resigned_at: nil)

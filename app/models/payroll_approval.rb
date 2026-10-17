@@ -3,6 +3,7 @@
 class PayrollApproval < ApplicationRecord
   belongs_to :payroll_revision
   belongs_to :actor, class_name: "User"
+  before_validation :require_payroll_entitlement, on: :create
 
   validates :stage, inclusion: { in: %w[accounts final] }, uniqueness: { scope: :payroll_revision_id }
   validate :approval_is_permitted, on: :create
@@ -12,6 +13,11 @@ class PayrollApproval < ApplicationRecord
   end
 
   private
+
+    def require_payroll_entitlement
+      company_id = PayrollRevision.joins(:payroll_run).where(id: payroll_revision_id).pick("payroll_runs.company_id")
+      Payroll::Entitlement.require!(company_id)
+    end
 
     def approval_is_permitted
       return unless payroll_revision
