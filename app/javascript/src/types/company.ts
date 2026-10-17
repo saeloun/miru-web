@@ -45,6 +45,7 @@ export interface Company {
   team_member_limit?: number | string;
   team_member_limit_reached?: boolean;
   pro_access?: boolean;
+  payroll_review_enabled?: boolean;
   plan_tier?: string;
   billing_exempt?: boolean;
   trial_active?: boolean;

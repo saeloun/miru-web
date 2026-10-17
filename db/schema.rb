@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_17_112000) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_17_150000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_stat_statements"
@@ -755,6 +755,54 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_17_112000) do
     t.index ["name", "company_id"], name: "index_payments_providers_on_name_and_company_id", unique: true
   end
 
+  create_table "payroll_approvals", force: :cascade do |t|
+    t.bigint "actor_id", null: false
+    t.datetime "created_at", null: false
+    t.bigint "payroll_revision_id", null: false
+    t.string "stage", null: false
+    t.datetime "updated_at", null: false
+    t.index ["actor_id"], name: "index_payroll_approvals_on_actor_id"
+    t.index ["payroll_revision_id", "stage"], name: "index_payroll_approvals_on_payroll_revision_id_and_stage", unique: true
+    t.index ["payroll_revision_id"], name: "index_payroll_approvals_on_payroll_revision_id"
+    t.check_constraint "stage::text = ANY (ARRAY['accounts'::character varying, 'final'::character varying]::text[])", name: "payroll_approval_stage"
+  end
+
+  create_table "payroll_revisions", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "created_by_id", null: false
+    t.string "digest", null: false
+    t.string "idempotency_key", null: false
+    t.integer "number", null: false
+    t.string "parent_digest"
+    t.jsonb "payroll_payload", null: false
+    t.bigint "payroll_run_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["created_by_id"], name: "index_payroll_revisions_on_created_by_id"
+    t.index ["payroll_run_id", "idempotency_key"], name: "index_payroll_revisions_on_payroll_run_id_and_idempotency_key", unique: true
+    t.index ["payroll_run_id", "number"], name: "index_payroll_revisions_on_payroll_run_id_and_number", unique: true
+    t.index ["payroll_run_id"], name: "index_payroll_revisions_on_payroll_run_id"
+    t.check_constraint "number > 0", name: "payroll_revision_positive_number"
+  end
+
+  create_table "payroll_runs", force: :cascade do |t|
+    t.bigint "accounts_reviewer_id", null: false
+    t.bigint "company_id", null: false
+    t.datetime "created_at", null: false
+    t.string "currency", null: false
+    t.boolean "dry_run", default: true, null: false
+    t.bigint "final_reviewer_id", null: false
+    t.date "period", null: false
+    t.datetime "updated_at", null: false
+    t.index ["accounts_reviewer_id"], name: "index_payroll_runs_on_accounts_reviewer_id"
+    t.index ["company_id", "period", "currency"], name: "index_payroll_runs_on_company_id_and_period_and_currency", unique: true
+    t.index ["company_id"], name: "index_payroll_runs_on_company_id"
+    t.index ["final_reviewer_id"], name: "index_payroll_runs_on_final_reviewer_id"
+    t.check_constraint "EXTRACT(day FROM period) = 1::numeric", name: "payroll_run_month_start"
+    t.check_constraint "accounts_reviewer_id <> final_reviewer_id", name: "payroll_distinct_reviewers"
+    t.check_constraint "currency::text ~ '^[A-Z]{3}$'::text", name: "payroll_run_currency"
+    t.check_constraint "dry_run = true", name: "payroll_run_dry_run_only"
+  end
+
   create_table "previous_employments", force: :cascade do |t|
     t.string "company_name"
     t.datetime "created_at", null: false
@@ -1293,6 +1341,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_17_112000) do
   add_foreign_key "passkeys", "users"
   add_foreign_key "payments", "invoices"
   add_foreign_key "payments_providers", "companies"
+  add_foreign_key "payroll_approvals", "payroll_revisions"
+  add_foreign_key "payroll_approvals", "users", column: "actor_id"
+  add_foreign_key "payroll_revisions", "payroll_runs"
+  add_foreign_key "payroll_revisions", "users", column: "created_by_id"
+  add_foreign_key "payroll_runs", "companies"
+  add_foreign_key "payroll_runs", "users", column: "accounts_reviewer_id"
+  add_foreign_key "payroll_runs", "users", column: "final_reviewer_id"
   add_foreign_key "previous_employments", "users"
   add_foreign_key "project_members", "projects"
   add_foreign_key "project_members", "users"
@@ -1329,4 +1384,23 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_17_112000) do
   add_foreign_key "vendors", "companies"
   add_foreign_key "wise_accounts", "companies"
   add_foreign_key "wise_accounts", "users"
+  execute <<~SQL
+    CREATE OR REPLACE FUNCTION protect_payroll_review_history() RETURNS trigger LANGUAGE plpgsql AS $$
+    BEGIN
+      RAISE EXCEPTION 'Payroll review history is immutable';
+    END;
+    $$;
+  SQL
+  execute <<~SQL
+    CREATE TRIGGER payroll_runs_immutable BEFORE UPDATE OR DELETE ON payroll_runs
+    FOR EACH ROW EXECUTE FUNCTION protect_payroll_review_history();
+  SQL
+  execute <<~SQL
+    CREATE TRIGGER payroll_revisions_immutable BEFORE UPDATE OR DELETE ON payroll_revisions
+    FOR EACH ROW EXECUTE FUNCTION protect_payroll_review_history();
+  SQL
+  execute <<~SQL
+    CREATE TRIGGER payroll_approvals_immutable BEFORE UPDATE OR DELETE ON payroll_approvals
+    FOR EACH ROW EXECUTE FUNCTION protect_payroll_review_history();
+  SQL
 end
