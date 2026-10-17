@@ -12,8 +12,9 @@ module Payroll
     def revise!(actor:, payload:, idempotency_key:, expected_digest:)
       Entitlement.require!(@run.company_id)
       @run.with_lock do
-        unless @run.eligible_actor?(actor, "accounts") && User.kept.exists?(id: actor.id, current_workspace_id: @run.company_id)
-          raise NotAuthorized, "Active accounts role in the current workspace required"
+        unless actor&.id == @run.accounts_reviewer_id && @run.eligible_actor?(actor, "accounts") &&
+            User.kept.exists?(id: actor.id, current_workspace_id: @run.company_id)
+          raise NotAuthorized, "Assigned active accounts reviewer in the current workspace required"
         end
 
         snapshot = Snapshot.new(@run, payload)

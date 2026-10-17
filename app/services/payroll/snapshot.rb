@@ -113,8 +113,22 @@ module Payroll
             entries.sum { |entry| entry["amount_minor"] } == amounts["#{kind}_minor"]
         end
 
-        amounts["net_minor"] == amounts["base_minor"] + amounts["extras_minor"] +
-          amounts["reimbursements_minor"] - amounts["deductions_minor"]
+        valid_net?(line)
+      end
+
+      def valid_net?(line)
+        amounts = line.fetch("amounts")
+        subtotal = amounts["base_minor"] + amounts["extras_minor"] + amounts["reimbursements_minor"] - amounts["deductions_minor"]
+        calculation = line["calculation_snapshot"]
+        return amounts["net_minor"] == subtotal unless calculation
+
+        currency = Money::Currency.find(@run.currency)
+        return false unless currency
+
+        net = BigDecimal(subtotal.to_s) / currency.subunit_to_unit
+        digits = calculation.dig("policy", "rounding", "net", "digits")
+        net = net.round(digits, BigDecimal::ROUND_HALF_UP) unless digits.nil?
+        amounts["net_minor"] == net * currency.subunit_to_unit
       end
 
       def valid_line_metadata?(line)
@@ -178,7 +192,8 @@ module Payroll
           [@run.company_id.to_s, employment.user_id.to_s, @run.period.strftime("%Y-%m"), @run.currency]
         return false unless calculation.dig("input", "engagement_type") == line["pay_type"]
         source = line["source_snapshot"]
-        return false unless calculation.dig("input", "quantity_source") == source["digest"]
+        source_field = calculation.dig("input", "compensation", "basis") == "hourly" ? "hours_source" : "quantity_source"
+        return false unless calculation.dig("input", source_field) == source["digest"]
         return false unless calculation.dig("policy", "version") == @payload.dig("policies", "pay", "version")
 
         source["pay_policy_version"] == @payload.dig("policies", "pay", "version") &&

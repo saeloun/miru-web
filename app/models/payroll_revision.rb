@@ -47,6 +47,9 @@ class PayrollRevision < ApplicationRecord
       previous = payroll_run.current_revision
       errors.add(:parent_digest, "is stale") unless parent_digest == previous&.digest
       errors.add(:number, "must follow current revision") unless number == (previous&.number || 0) + 1
-      errors.add(:created_by, "must be an active accounts reviewer") unless payroll_run.eligible_actor?(created_by, "accounts")
+      unless created_by_id == payroll_run.accounts_reviewer_id && payroll_run.eligible_actor?(created_by, "accounts") &&
+          User.kept.exists?(id: created_by_id, current_workspace_id: payroll_run.company_id)
+        errors.add(:created_by, "must be the assigned active accounts reviewer in the current workspace")
+      end
     end
 end
