@@ -21,6 +21,7 @@ const ClientsTable = lazy(() => import("../components/Clients/ClientsTable"));
 const ClientDetails = lazy(() => import("../components/Clients/Details"));
 const ExpenseDetails = lazy(() => import("components/Expenses/Details"));
 const ExpensesTable = lazy(() => import("components/Expenses/ExpensesTable"));
+const PayrollReview = lazy(() => import("components/Payroll/Review"));
 const InvoicesRouteConfig = lazy(
   () => import("components/Invoices/RouteConfig")
 );
@@ -237,6 +238,14 @@ export const PUBLIC_ROUTES = [
 ];
 
 export const ROUTES = [
+  {
+    path: "/payroll",
+    subRoutes: [
+      { path: "", Component: PayrollReview },
+      { path: ":runId", Component: PayrollReview },
+    ],
+    authorisedRoles: [ADMIN, OWNER, BOOK_KEEPER],
+  },
   {
     path: Paths.DASHBOARD,
     subRoutes: DashboardRoutes,

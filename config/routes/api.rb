@@ -247,6 +247,10 @@ namespace :api, defaults: { format: "json" } do
 
     resource :profile, only: [:update], controller: "profile"
 
+    resources :payroll_runs, only: [:index, :show] do
+      get :preflight, on: :member
+    end
+
     resources :expenses, only: [:create, :index, :show, :update, :destroy] do
       member do
         patch :approve

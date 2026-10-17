@@ -60,6 +60,12 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
       title: t("sidebar.main"),
       items: [
         {
+          label: "Payroll review",
+          href: "/payroll",
+          icon: Wallet,
+          roles: ["admin", "owner", "book_keeper"],
+        },
+        {
           label: t("nav.dashboard"),
           href: "/dashboard",
           icon: House,

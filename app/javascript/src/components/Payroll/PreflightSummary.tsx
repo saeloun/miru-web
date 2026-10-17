@@ -18,9 +18,13 @@ interface Props {
   readonly companyLabel: string;
   readonly month: string;
   readonly result: Readonly<PreflightResult> | null;
+  readonly payrollOnly?: boolean;
 }
 
 const blockerLabels: Readonly<Record<string, string>> = {
+  provider_setup_required: "Provider connection has not been verified.",
+  roster_binding_required: "The complete payroll roster has not been verified.",
+  dry_run_only: "This dry run cannot send payments.",
   invalid_expected_binding:
     "Confirm the company, currency and provider account.",
   balance_binding_mismatch: "The balance does not match the selected account.",
@@ -40,7 +44,7 @@ const parseMinorUnits = (value: MinorUnits): bigint | null => {
     return Number.isSafeInteger(value) && value >= 0 ? BigInt(value) : null;
   }
 
-  if (typeof value === "string" && /^\d{1,40}$/.test(value)) {
+  if (typeof value === "string" && /^\d{1,80}$/.test(value)) {
     return BigInt(value);
   }
 
@@ -63,7 +67,12 @@ const formatAmount = (
   return `${currency} ${whole}.${fraction}`;
 };
 
-const PreflightSummary = ({ companyLabel, month, result }: Props) => {
+const PreflightSummary = ({
+  companyLabel,
+  month,
+  result,
+  payrollOnly = false,
+}: Props) => {
   const headingId = useId();
   const required = parseMinorUnits(result?.required_minor_units);
   const available = parseMinorUnits(result?.available_minor_units);
@@ -118,15 +127,18 @@ const PreflightSummary = ({ companyLabel, month, result }: Props) => {
             </Badge>
           </div>
           <p className="text-sm text-muted-foreground">
-            This preview compares the recorded balance with payroll, fees and
-            reserve. It does not authorize or send payments.
+            {payrollOnly
+              ? "Recorded payroll totals are shown below. Provider balance, fees and reserve are unavailable until the connection is verified. Payments remain blocked."
+              : "This preview compares the recorded balance with payroll, fees and reserve. It does not authorize or send payments."}
           </p>
         </CardHeader>
         <CardContent className="space-y-6">
           <dl className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div className="min-w-0 rounded-md border border-border p-4">
               <dt className="text-sm text-muted-foreground">
-                Required including fees and reserve
+                {payrollOnly
+                  ? "Recorded net payroll total"
+                  : "Required including fees and reserve"}
               </dt>
               <dd className="mt-2 break-all text-lg font-semibold tabular-nums text-foreground">
                 {formatAmount(required, currency)}
@@ -151,7 +163,7 @@ const PreflightSummary = ({ companyLabel, month, result }: Props) => {
                   <li key={`${code}-${index}`}>
                     {Object.prototype.hasOwnProperty.call(blockerLabels, code)
                       ? blockerLabels[code]
-                      : "Additional review is required."}
+                      : code.replace(/[_:]/g, " ")}
                   </li>
                 ))}
                 {(!validDisplay || !blockers?.length) && (
