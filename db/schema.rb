@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_30_174750) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_17_112000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_stat_statements"
@@ -179,6 +179,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_30_174750) do
     t.index ["created_at"], name: "index_audits_on_created_at"
     t.index ["request_uuid"], name: "index_audits_on_request_uuid"
     t.index ["user_id", "user_type"], name: "user_index"
+  end
+
+  create_table "browser_sessions", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "revoked_at"
+    t.string "token_digest", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["token_digest"], name: "index_browser_sessions_on_token_digest", unique: true
+    t.index ["user_id"], name: "index_browser_sessions_on_user_id"
   end
 
   create_table "bulk_invoice_download_statuses", force: :cascade do |t|
@@ -1234,6 +1244,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_30_174750) do
   add_foreign_key "analytics_reports", "companies"
   add_foreign_key "analytics_reports", "users", column: "created_by_id"
   add_foreign_key "analytics_threshold_notification_logs", "companies"
+  add_foreign_key "browser_sessions", "users"
   add_foreign_key "bulk_invoice_download_statuses", "companies", validate: false
   add_foreign_key "carryovers", "companies"
   add_foreign_key "carryovers", "leave_types"
