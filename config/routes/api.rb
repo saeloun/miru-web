@@ -59,6 +59,14 @@ namespace :api, defaults: { format: "json" } do
       end
     end
     resources :imports, only: [:create, :show]
+    resources :tax_declarations, only: [:index, :show, :create] do
+      member do
+        post :submit
+        post :review
+        post :withdraw
+        get "evidence/:evidence_id", action: :download
+      end
+    end
     resources :salary_slips, only: [:index, :create] do
       member do
         post :publish

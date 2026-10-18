@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_17_120000) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_18_100000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_stat_statements"
@@ -1096,6 +1096,32 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_17_120000) do
     t.index ["discarded_at"], name: "index_tax_configurations_on_discarded_at"
   end
 
+  create_table "tax_declarations", force: :cascade do |t|
+    t.decimal "approved_amount", precision: 12, scale: 2
+    t.string "category", null: false
+    t.decimal "claimed_amount", precision: 12, scale: 2, null: false
+    t.datetime "created_at", null: false
+    t.bigint "employment_id", null: false
+    t.text "notes"
+    t.text "review_reason"
+    t.datetime "reviewed_at"
+    t.bigint "reviewed_by_id"
+    t.string "status", default: "draft", null: false
+    t.datetime "submitted_at"
+    t.bigint "supersedes_id"
+    t.integer "tax_year", null: false
+    t.datetime "updated_at", null: false
+    t.datetime "withdrawn_at"
+    t.bigint "withdrawn_by_id"
+    t.index ["employment_id", "tax_year"], name: "index_tax_declarations_on_employment_id_and_tax_year"
+    t.index ["employment_id"], name: "index_tax_declarations_on_employment_id"
+    t.index ["reviewed_by_id"], name: "index_tax_declarations_on_reviewed_by_id"
+    t.index ["supersedes_id"], name: "index_tax_declarations_on_supersedes_id", unique: true
+    t.index ["withdrawn_by_id"], name: "index_tax_declarations_on_withdrawn_by_id"
+    t.check_constraint "approved_amount IS NULL OR approved_amount > 0::numeric AND approved_amount <= claimed_amount", name: "tax_declarations_approved_limit"
+    t.check_constraint "claimed_amount > 0::numeric", name: "tax_declarations_positive_claim"
+  end
+
   create_table "timeoff_entries", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.bigint "custom_leave_id"
@@ -1334,6 +1360,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_17_120000) do
   add_foreign_key "solid_queue_scheduled_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "stripe_connected_accounts", "companies"
   add_foreign_key "tax_configurations", "companies"
+  add_foreign_key "tax_declarations", "employments"
+  add_foreign_key "tax_declarations", "tax_declarations", column: "supersedes_id"
+  add_foreign_key "tax_declarations", "users", column: "reviewed_by_id"
+  add_foreign_key "tax_declarations", "users", column: "withdrawn_by_id"
   add_foreign_key "timeoff_entries", "custom_leaves", column: "custom_leave_id"
   add_foreign_key "timeoff_entries", "leave_types"
   add_foreign_key "timeoff_entries", "users"

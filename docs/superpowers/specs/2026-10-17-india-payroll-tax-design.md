@@ -2,6 +2,8 @@
 
 Status: expanded product design, informed by primary-source research; statutory calculation rules remain subject to the evidence gates below.
 
+Implemented foundations: private salary slips and [manual employer declaration/evidence review](../../product-guide/payroll/02-tax-declarations.md). The declaration workflow records year/category, claimed/reviewed INR amounts, private proof, reviewer decisions and linked corrections. It does not determine eligibility, apply shared caps or admit amounts to a calculated payroll. Compensation/opening balances, expense settlement controls, structured eligibility questions/cutoffs and statutory calculations remain subsequent work.
+
 ## Scope and order
 
 User chose employer payroll first, then employee tax preparation. Build salary slips, documented deductions and reimbursements; then validated payroll calculation, consultant settlements, company GST and year-end tax preparation. Keep Razorpay merchant connect/create and Payroll integrations from the earlier design as separate, compatible workstreams.

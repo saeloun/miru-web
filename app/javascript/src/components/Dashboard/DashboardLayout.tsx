@@ -125,6 +125,12 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
           icon: Receipt,
           roles: ["admin", "owner", "book_keeper", "employee", "manager"],
         },
+        {
+          label: t("taxDeclarations.title"),
+          href: "/tax-declarations",
+          icon: Receipt,
+          roles: ["admin", "owner", "book_keeper", "employee", "manager"],
+        },
       ],
     },
     {
