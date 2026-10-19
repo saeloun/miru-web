@@ -68,6 +68,10 @@ const en = {
       "7": "Sun",
     },
     warnings: {
+      invalid_work_duration:
+        "Work entries contain invalid durations. Hours and recorded days are unavailable; review the original entries. No unpaid deduction was inferred.",
+      invalid_timeoff_duration:
+        "Leave entries contain invalid durations. Recorded leave hours are unavailable; review the original entries. No unpaid deduction was inferred.",
       missing_terms:
         "No fee and schedule terms apply at the start of this month.",
       work_requires_review:

@@ -166,6 +166,35 @@ RSpec.describe "Consultant payroll review", type: :request, issue: 2458 do
     expect(report.fetch("reimbursement_total")).to eq("5000.0")
   end
 
+  [Float::NAN, Float::INFINITY, -60].each do |invalid_duration|
+    it "flags legacy work duration #{invalid_duration} without presenting invalid totals or inferring a deduction" do
+      configured
+      project = create(:project, client: create(:client, company:))
+      work = create(:timesheet_entry, project:, user: consultant, work_date: "2026-09-03", duration: 60, review_status: :approved)
+      work.update_columns(duration: invalid_duration)
+      create(:timesheet_entry, project:, user: consultant, work_date: "2026-09-04", duration: 120, review_status: :approved)
+      preview
+      expect(response).to have_http_status(:ok)
+      expect(report.fetch("warnings")).to include("invalid_work_duration")
+      expect(report.values_at("recorded_hours", "approved_work_hours", "working_days")).to eq([nil, nil, nil])
+      expect(report).to include("fee_estimate" => "100000.0", "confirmed_unpaid_hours" => "0.0", "payment_ready" => false)
+    end
+  end
+
+  it "flags negative legacy leave even when positive entries would hide it in the total" do
+    configured
+    leave = create(:leave, company:, year: 2026)
+    leave_type = create(:leave_type, leave:)
+    entry = create(:timeoff_entry, user: consultant, leave_type:, duration: 60, leave_date: "2026-09-03")
+    entry.update_columns(duration: -60)
+    create(:timeoff_entry, user: consultant, leave_type:, duration: 120, leave_date: "2026-09-04")
+    preview
+    expect(response).to have_http_status(:ok)
+    expect(report.fetch("warnings")).to include("invalid_timeoff_duration")
+    expect(report.fetch("recorded_timeoff_hours")).to be_nil
+    expect(report).to include("fee_estimate" => "100000.0", "confirmed_unpaid_hours" => "0.0", "payment_ready" => false)
+  end
+
   it "does not estimate fee for partial service, midmonth terms, unknown service dates or zero scheduled hours" do
     configured
     configure(effective_on: "2026-09-15", monthly_fee: "120000")

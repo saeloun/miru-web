@@ -15,6 +15,8 @@ Enter only explicitly confirmed unpaid hours and their decision/reason, select e
 
 Partial service months, missing service dates, midmonth fee changes and zero expected hours require resolution before a fee/total estimate is shown. Work/leave warnings remain visible for review. Tax withholding and other adjustments are not applied to the estimate.
 
+Invalid historical work or leave durations make the affected source totals unavailable and show a warning to review the original entries. They do not create unpaid hours or deductions.
+
 Reimbursements are selected explicitly, separately from fee proration. Eligible claims belong to that person/workspace, are approved and unpaid, use INR, and were both incurred and approved by the cutoff in the company timezone. The preview shows amount, date, description and receipt count; review original receipts in **Expenses**. Up to 100 claims can be selected in one preview. Changed, paid or otherwise ineligible selections require a refresh. Selection does not prevent another expense settlement; payroll reservation will be added with locked runs.
 
 Historical claims without a recorded approval time and foreign-currency claims require review and are excluded. Miru does not guess an old approval date or an exchange rate. Editing an approved claim's amount, currency, date, claimant or company returns it to submitted and clears its recorded approval time until reapproved. Repeating approval on an unchanged approved claim preserves the original timestamp. A financial edit based on an older approval state is rejected; reload the claim before editing so a competing approval or explicit reconfirmation cannot silently apply to changed facts.

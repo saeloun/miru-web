@@ -43,14 +43,14 @@ type Review = {
   payment_source: string | null;
   legal_entity_name: string | null;
   expected_hours: string | null;
-  recorded_hours: string;
-  approved_work_hours: string;
-  not_required_work_hours: string;
-  pending_work_hours: string;
-  rejected_work_hours: string;
-  unresolved_work_hours: string;
-  working_days: string;
-  recorded_timeoff_hours: string;
+  recorded_hours: string | null;
+  approved_work_hours: string | null;
+  not_required_work_hours: string | null;
+  pending_work_hours: string | null;
+  rejected_work_hours: string | null;
+  unresolved_work_hours: string | null;
+  working_days: string | null;
+  recorded_timeoff_hours: string | null;
   confirmed_unpaid_hours: string;
   unpaid_reason: string | null;
   fee_estimate: string | null;
@@ -351,8 +351,12 @@ const PayrollWorkspace = ({
                   <td className="p-3 tabular-nums">
                     {row.expected_hours ?? "—"}
                   </td>
-                  <td className="p-3 tabular-nums">{row.recorded_hours}</td>
-                  <td className="p-3 tabular-nums">{row.working_days}</td>
+                  <td className="p-3 tabular-nums">
+                    {row.recorded_hours ?? "—"}
+                  </td>
+                  <td className="p-3 tabular-nums">
+                    {row.working_days ?? "—"}
+                  </td>
                   <td className="p-3 tabular-nums">
                     {amount(row.fee_estimate)}
                   </td>
@@ -735,7 +739,7 @@ const PayrollWorkspace = ({
                 ].map(([key, value]) => (
                   <React.Fragment key={key}>
                     <dt>{t(`consultantPayroll.${key}`)}</dt>
-                    <dd className="tabular-nums">{value}</dd>
+                    <dd className="tabular-nums">{value ?? "—"}</dd>
                   </React.Fragment>
                 ))}
               </dl>
