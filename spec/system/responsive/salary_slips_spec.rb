@@ -15,6 +15,29 @@ RSpec.describe "Salary-slip browser workflows", type: :system, js: true do
     employee.add_role(:employee, company)
   end
 
+  it "restores focus after confirmation dismissal and uses the heading when publication removes its opener" do
+    slip = employment.salary_slips.create!(uploaded_by: admin, source: "Approved provider", pay_month: "2026-09-01",
+      file: { io: File.open(Rails.root.join("spec/support/fixtures/pdf-file.pdf")),
+              filename: "approved.pdf", content_type: "application/pdf" })
+    sign_in(admin)
+    with_forgery_protection do
+      visit "/salary-slips"
+      click_button "Publish salary slip"
+      find_button("Close").send_keys(:escape)
+      expect(page).not_to have_css("[role='dialog']")
+      expect(page).to have_css("button:focus", text: "Publish salary slip", exact_text: true)
+      click_button "Publish salary slip"
+      within("[role='dialog']") { click_button "Cancel" }
+      expect(page).to have_css("button:focus", text: "Publish salary slip", exact_text: true)
+      click_button "Publish salary slip"
+      within("[role='dialog']") { click_button "Confirm" }
+      expect(page).not_to have_css("[role='dialog']")
+      expect(page).to have_css("tbody tr", text: "Published")
+      expect(page).to have_css("h1:focus", text: "Salary slips", exact_text: true)
+      expect(slip.reload.status).to eq("published")
+    end
+  end
+
   it "saves later valid PDFs after a failed row and allows removing and reselecting the same file" do
     sign_in(admin)
     with_forgery_protection do

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Api from "apis/api";
 import { useUserContext } from "context/UserContext";
 import { currencyFormat } from "helpers/currency";
+import useDialogReturnFocus from "../../hooks/useDialogReturnFocus";
 import { t } from "../../i18n";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
@@ -114,6 +115,7 @@ const PayrollWorkspace = ({
   const [dirty, setDirty] = useState(false);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
+  const dialogFocus = useDialogReturnFocus();
   const fail = (failure: any) =>
     setError(failure?.response?.data?.errors || t("consultantPayroll.failed"));
 
@@ -249,7 +251,11 @@ const PayrollWorkspace = ({
     <section className="mx-auto max-w-7xl space-y-6 p-4 md:p-8">
       <header className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-semibold">
+          <h1
+            className="text-2xl font-semibold"
+            ref={dialogFocus.fallbackRef}
+            tabIndex={-1}
+          >
             {t("consultantPayroll.title")}
           </h1>
           <p className="mt-1 text-sm text-muted-foreground">
@@ -258,7 +264,10 @@ const PayrollWorkspace = ({
         </div>
         <Button
           disabled={busy || !archive || !companyId}
-          onClick={startConfiguration}
+          onClick={event => {
+            dialogFocus.remember(event);
+            startConfiguration();
+          }}
         >
           {t("consultantPayroll.configure")}
         </Button>
@@ -370,7 +379,10 @@ const PayrollWorkspace = ({
                       <Button
                         disabled={busy}
                         size="sm"
-                        onClick={() => openReview(row)}
+                        onClick={event => {
+                          dialogFocus.remember(event);
+                          openReview(row);
+                        }}
                       >
                         {t("consultantPayroll.review", {
                           name: row.consultant_name,
@@ -380,7 +392,10 @@ const PayrollWorkspace = ({
                         disabled={busy}
                         size="sm"
                         variant="outline"
-                        onClick={() => loadHistory(row.employment_id)}
+                        onClick={event => {
+                          dialogFocus.remember(event);
+                          loadHistory(row.employment_id);
+                        }}
                       >
                         {t("consultantPayroll.history")}
                       </Button>
@@ -421,7 +436,7 @@ const PayrollWorkspace = ({
         open={!!configuration}
         onOpenChange={open => !busy && !open && setConfiguration(null)}
       >
-        <DialogContent>
+        <DialogContent onCloseAutoFocus={dialogFocus.restore}>
           <DialogHeader>
             <DialogTitle>{t("consultantPayroll.configure")}</DialogTitle>
             <DialogDescription>
@@ -631,7 +646,7 @@ const PayrollWorkspace = ({
         open={!!history}
         onOpenChange={open => !busy && !open && setHistory(null)}
       >
-        <DialogContent>
+        <DialogContent onCloseAutoFocus={dialogFocus.restore}>
           <DialogHeader>
             <DialogTitle>{t("consultantPayroll.history")}</DialogTitle>
             <DialogDescription>
@@ -697,7 +712,7 @@ const PayrollWorkspace = ({
         open={!!selected}
         onOpenChange={open => !busy && !open && setSelected(null)}
       >
-        <DialogContent>
+        <DialogContent onCloseAutoFocus={dialogFocus.restore}>
           <DialogHeader>
             <DialogTitle>
               {selected?.consultant_name || t("consultantPayroll.title")}

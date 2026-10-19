@@ -30,6 +30,21 @@ RSpec.describe "Consultant payroll source warnings", type: :system, js: true do
 
   after { travel_back }
 
+  it "returns keyboard focus to the opening control after each consultant dialog closes" do
+    sign_in(admin)
+    with_forgery_protection do
+      visit "/consultant-payroll"
+      expect(page).to have_css("tbody tr", count: 1)
+      ["Add consultant terms", "Review #{consultant.full_name}", "Terms history"].each do |label|
+        click_button label
+        expect(page).to have_css("[role='dialog']")
+        find_button("Close").send_keys(:escape)
+        expect(page).not_to have_css("[role='dialog']")
+        expect(page).to have_css("button:focus", text: label, exact_text: true)
+      end
+    end
+  end
+
   it "renders unavailable work and leave totals with actionable warnings instead of NaN or blank fields" do
     sign_in(admin)
     with_forgery_protection do

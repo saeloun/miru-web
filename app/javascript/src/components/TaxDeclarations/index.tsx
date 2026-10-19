@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Api from "apis/api";
 import { useUserContext } from "context/UserContext";
 import { currencyFormat } from "helpers/currency";
+import useDialogReturnFocus from "../../hooks/useDialogReturnFocus";
 import { t } from "../../i18n";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
@@ -77,6 +78,8 @@ const DeclarationWorkspace = ({
   const [approved, setApproved] = useState("");
   const [reason, setReason] = useState("");
   const [withdraw, setWithdraw] = useState(false);
+  const dialogFocus = useDialogReturnFocus();
+  const withdrawalFocus = useDialogReturnFocus();
 
   const fail = (failure: any) =>
     setError(failure?.response?.data?.errors || t("taxDeclarations.failed"));
@@ -203,7 +206,11 @@ const DeclarationWorkspace = ({
     <section className="mx-auto max-w-7xl space-y-6 p-4 md:p-8">
       <header className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-semibold">
+          <h1
+            className="text-2xl font-semibold"
+            ref={dialogFocus.fallbackRef}
+            tabIndex={-1}
+          >
             {t("taxDeclarations.title")}
           </h1>
           <p className="mt-1 text-sm text-muted-foreground">
@@ -212,7 +219,10 @@ const DeclarationWorkspace = ({
         </div>
         <Button
           disabled={busy || !archive || !companyId}
-          onClick={() => startDraft()}
+          onClick={event => {
+            dialogFocus.remember(event);
+            startDraft();
+          }}
         >
           {t("taxDeclarations.new")}
         </Button>
@@ -311,7 +321,10 @@ const DeclarationWorkspace = ({
                       disabled={busy}
                       size="sm"
                       variant="outline"
-                      onClick={() => openRecord(record.id)}
+                      onClick={event => {
+                        dialogFocus.remember(event);
+                        openRecord(record.id);
+                      }}
                     >
                       {t("taxDeclarations.view", { id: record.id })}
                     </Button>
@@ -356,7 +369,7 @@ const DeclarationWorkspace = ({
           }
         }}
       >
-        <DialogContent>
+        <DialogContent onCloseAutoFocus={dialogFocus.restore}>
           <DialogHeader>
             <DialogTitle>
               {t(
@@ -529,7 +542,7 @@ const DeclarationWorkspace = ({
           }
         }}
       >
-        <DialogContent>
+        <DialogContent onCloseAutoFocus={dialogFocus.restore}>
           <DialogHeader>
             <DialogTitle>
               {selected
@@ -694,7 +707,10 @@ const DeclarationWorkspace = ({
                   <Button
                     disabled={busy}
                     variant="ghost"
-                    onClick={() => setWithdraw(true)}
+                    onClick={event => {
+                      withdrawalFocus.remember(event);
+                      setWithdraw(true);
+                    }}
                   >
                     {t("taxDeclarations.withdraw")}
                   </Button>
@@ -722,7 +738,7 @@ const DeclarationWorkspace = ({
         </DialogContent>
       </Dialog>
       <Dialog open={withdraw} onOpenChange={open => !busy && setWithdraw(open)}>
-        <DialogContent>
+        <DialogContent onCloseAutoFocus={withdrawalFocus.restore}>
           <DialogHeader>
             <DialogTitle>{t("taxDeclarations.withdraw")}</DialogTitle>
             <DialogDescription>

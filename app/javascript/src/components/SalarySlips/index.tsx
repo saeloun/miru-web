@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import useDialogReturnFocus from "../../hooks/useDialogReturnFocus";
 import Api from "apis/api";
 import { useUserContext } from "context/UserContext";
 import { t } from "../../i18n";
@@ -39,6 +40,7 @@ const SalarySlipArchive = () => {
   const [uploads, setUploads] = useState<Upload[]>([]);
   const [source, setSource] = useState("");
   const [busy, setBusy] = useState(false);
+  const dialogFocus = useDialogReturnFocus();
   const [error, setError] = useState("");
   const [confirmation, setConfirmation] = useState<{
     slip: Slip;
@@ -137,7 +139,13 @@ const SalarySlipArchive = () => {
   return (
     <main className="mx-auto max-w-7xl space-y-6 p-4 md:p-8">
       <header>
-        <h1 className="text-2xl font-semibold">{t("salarySlips.title")}</h1>
+        <h1
+          className="text-2xl font-semibold"
+          ref={dialogFocus.fallbackRef}
+          tabIndex={-1}
+        >
+          {t("salarySlips.title")}
+        </h1>
         <p className="mt-2 text-sm text-muted-foreground">
           {t("salarySlips.description")}
         </p>
@@ -365,9 +373,10 @@ const SalarySlipArchive = () => {
                         <Button
                           disabled={busy}
                           size="sm"
-                          onClick={() =>
-                            setConfirmation({ slip, action: "publish" })
-                          }
+                          onClick={event => {
+                            dialogFocus.remember(event);
+                            setConfirmation({ slip, action: "publish" });
+                          }}
                         >
                           {t("salarySlips.publish")}
                         </Button>
@@ -377,9 +386,10 @@ const SalarySlipArchive = () => {
                           disabled={busy}
                           size="sm"
                           variant="ghost"
-                          onClick={() =>
-                            setConfirmation({ slip, action: "withdraw" })
-                          }
+                          onClick={event => {
+                            dialogFocus.remember(event);
+                            setConfirmation({ slip, action: "withdraw" });
+                          }}
                         >
                           {t("salarySlips.withdraw")}
                         </Button>
@@ -420,7 +430,7 @@ const SalarySlipArchive = () => {
         open={!!confirmation}
         onOpenChange={open => !busy && !open && setConfirmation(null)}
       >
-        <DialogContent>
+        <DialogContent onCloseAutoFocus={dialogFocus.restore}>
           <DialogHeader>
             <DialogTitle>
               {t(`salarySlips.${confirmation?.action || "publish"}`)}

@@ -15,6 +15,34 @@ RSpec.describe "Tax-declaration browser workflow", type: :system, js: true do
     employee.add_role(:employee, company)
   end
 
+  it "returns focus through tax dialogs and keeps it inside details after a nested withdrawal" do
+    claim = employee.employments.find_by!(company:).tax_declarations.create!(tax_year: 2026,
+      category: "investment", claimed_amount: "1000")
+    sign_in(employee)
+    with_forgery_protection do
+      visit "/tax-declarations"
+      click_button "Add declaration"
+      find_button("Close").send_keys(:escape)
+      expect(page).not_to have_css("[role='dialog']")
+      expect(page).to have_css("button:focus", text: "Add declaration", exact_text: true)
+      click_button "View declaration ##{claim.id}"
+      find_button("Close").send_keys(:escape)
+      expect(page).not_to have_css("[role='dialog']")
+      expect(page).to have_css("button:focus", text: "View declaration ##{claim.id}", exact_text: true)
+      click_button "View declaration ##{claim.id}"
+      click_button "Withdraw declaration"
+      within(find("[role='dialog']", text: "Withdraw this version from consideration.")) { click_button "Cancel" }
+      expect(page).to have_css("button:focus", text: "Withdraw declaration", exact_text: true)
+      click_button "Withdraw declaration"
+      within(find("[role='dialog']", text: "Withdraw this version from consideration.")) { click_button "Confirm" }
+      expect(page).to have_css("[role='dialog']", count: 1)
+      expect(page).to have_css("[role='dialog']", text: "Withdrawn")
+      expect(page).to have_css("[role='dialog']:focus, [role='dialog'] :focus")
+      click_button "Close"
+      expect(page).to have_css("h1:focus", text: "Tax declarations", exact_text: true)
+    end
+  end
+
   it "reviews private proof and preserves the approved original until its correction is approved" do
     sign_in(employee)
     with_forgery_protection do
@@ -25,6 +53,8 @@ RSpec.describe "Tax-declaration browser workflow", type: :system, js: true do
       attach_file "Supporting documents", Rails.root.join("spec/support/fixtures/pdf-file.pdf")
       click_button "Save draft"
       expect(page).to have_button("Submit for review")
+      expect(page).not_to have_css("[role='dialog'][data-state='closed']")
+      expect(page).to have_css("[role='dialog']:focus, [role='dialog'] :focus")
       within("[role='dialog']") do
         expect(page).to have_content("Draft")
         expect(page).to have_button("Download · pdf-file.pdf")
@@ -53,10 +83,14 @@ RSpec.describe "Tax-declaration browser workflow", type: :system, js: true do
       find("button", text: /\AView declaration #\d+\z/).click
       click_button "Create correction"
       expect(page).to have_checked_field("Keep the 1 previous document(s)")
+      expect(page).not_to have_css("[role='dialog'][data-state='closed']")
+      expect(page).to have_css("[role='dialog']:focus, [role='dialog'] :focus")
       fill_in "Claimed amount (INR)", with: "13000.50"
       fill_in "Claim details", with: "Corrected investment details; original proof retained"
       click_button "Save draft"
       expect(page).to have_button("Submit for review")
+      expect(page).not_to have_css("[role='dialog'][data-state='closed']")
+      expect(page).to have_css("[role='dialog']:focus, [role='dialog'] :focus")
       within("[role='dialog']") do
         expect(page).to have_button("Download · pdf-file.pdf")
         click_button "Submit for review"
