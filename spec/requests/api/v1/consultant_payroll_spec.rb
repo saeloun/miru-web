@@ -400,6 +400,39 @@ RSpec.describe "Consultant payroll review", type: :request, issue: 2458 do
     expect(report.fetch("recorded_timeoff_hours")).to eq("0.0")
   end
 
+  it "requires holiday date reconciliation after calendar edits before estimating unpaid proration" do
+    configured
+    calendar = holidays
+    calendar.update!(no_of_allowed_optional_holidays: 2)
+    selected = create(:holiday_info, holiday: calendar, category: :optional, date: "2026-08-03")
+    entry = create(:timeoff_entry, user: consultant, leave_type: nil, holiday_info: selected, leave_date: selected.date)
+    preview
+    expect(report).to include("expected_hours" => "160.0", "fee_estimate" => "100000.0")
+    expect(report.fetch("warnings")).not_to include("holiday_date_requires_review")
+    selected.update!(date: "2026-09-03")
+
+    preview(confirmed_unpaid_hours: "8", unpaid_reason: "Reviewed unpaid absence")
+    expect(response).to have_http_status(:ok)
+    expect(report).to include("expected_hours" => nil, "fee_estimate" => nil, "total_estimate" => nil)
+    expect(report.fetch("warnings")).to include("holiday_date_requires_review")
+
+    entry.update!(leave_date: selected.date)
+    preview(confirmed_unpaid_hours: "8", unpaid_reason: "Reviewed unpaid absence")
+    expect(report).to include("expected_hours" => "152.0", "fee_estimate" => "94736.84")
+    expect(report.fetch("warnings")).not_to include("holiday_date_requires_review")
+
+    selected.update!(date: "2026-10-03")
+    preview(confirmed_unpaid_hours: "8", unpaid_reason: "Reviewed unpaid absence")
+    expect(report).to include("expected_hours" => nil, "fee_estimate" => nil)
+    expect(report.fetch("warnings")).to include("holiday_date_requires_review")
+
+    selected.update!(date: "2026-09-04")
+    preview(confirmed_unpaid_hours: "8", unpaid_reason: "Reviewed unpaid absence")
+    expect(report).to include("expected_hours" => nil, "fee_estimate" => nil)
+    expect(report.fetch("warnings")).to include("holiday_date_requires_review")
+    expect(entry.reload.leave_date).to eq(Date.new(2026, 9, 3))
+  end
+
   it "restricts source work to active service dates and blocks an invented exit-month fee" do
     configured
     employment.update!(resigned_at: "2026-09-15")

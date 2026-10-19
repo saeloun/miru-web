@@ -29,8 +29,8 @@ class Payroll::ConsultantReview
     warnings = []
     work = work_summary(warnings)
     working_days = work[:hours] / 8 if work[:hours]
-    timeoff = TimeoffEntry.from_workspace(@company.id).where(user_id: @employment.user_id, leave_date: service_dates)
-    leave_hours = leave_summary(timeoff, warnings)
+    timeoff = TimeoffEntry.from_workspace(@company.id).where(user_id: @employment.user_id)
+    leave_hours = leave_summary(timeoff.where(leave_date: service_dates), warnings)
     unpaid = confirmed_unpaid_hours
     expected, fee = calculate_fee(terms, timeoff, work[:covered], unpaid, warnings)
     eligible, excluded, selected_ids, reimbursements = selected_reimbursements
@@ -101,7 +101,9 @@ class Payroll::ConsultantReview
 
         return [nil, nil]
       end
-      expected = expected_hours(terms, timeoff)
+      expected = expected_hours(terms, timeoff, warnings)
+      return [nil, nil] if expected.nil?
+
       raise InvalidInput, "Unpaid hours cannot exceed expected hours" if unpaid > expected
 
       warnings.concat(fee_warnings(expected, covered, unpaid))
@@ -134,12 +136,18 @@ class Payroll::ConsultantReview
       @service_dates ||= [@month, @employment.joined_at || @month].max..[@finish, @employment.resigned_at || @finish].min
     end
 
-    def expected_hours(terms, timeoff)
+    def expected_hours(terms, timeoff, warnings)
       national = HolidayInfo.kept.joins(:holiday).where(holidays: { company_id: @company.id, discarded_at: nil },
         category: :national, date: service_dates).pluck(:date)
-      selected = timeoff.where.not(holiday_info_id: nil).joins(:holiday_info)
-        .where(holiday_infos: { discarded_at: nil }).pluck("holiday_infos.date")
-      holidays = (national + selected).uniq
+      selected = timeoff.joins(:holiday_info)
+        .where(holiday_infos: { discarded_at: nil }, holidays: { company_id: @company.id, discarded_at: nil })
+      dates = selected.where(leave_date: service_dates).or(selected.where(holiday_infos: { date: service_dates }))
+        .pluck(:leave_date, "holiday_infos.date")
+      if dates.any? { |recorded, configured| recorded != configured }
+        warnings << "holiday_date_requires_review"
+        return nil
+      end
+      holidays = (national + dates.map(&:last)).uniq
       days = service_dates.count { |date| terms.weekdays.include?(date.cwday) && !holidays.include?(date) }
       days * terms.hours_per_day
     end

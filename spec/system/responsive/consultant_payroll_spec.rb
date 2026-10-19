@@ -45,6 +45,31 @@ RSpec.describe "Consultant payroll source warnings", type: :system, js: true do
     end
   end
 
+  it "explains conflicting holiday dates and withholds a fee estimate after recalculation" do
+    calendar = create(:holiday, company:, year: 2026, holiday_types: ["national", "optional"])
+    holiday = create(:holiday_info, holiday: calendar, date: "2026-09-03", category: :optional)
+    create(:timeoff_entry, user: consultant, leave_type: nil, holiday_info: holiday, leave_date: holiday.date)
+    holiday.update!(date: "2026-09-04")
+    sign_in(admin)
+    with_forgery_protection do
+      visit "/consultant-payroll"
+      click_button "Review #{consultant.full_name}"
+      within("[role='dialog']") do
+        expect(page).to have_content("Selected holiday dates differ from recorded leave dates.")
+        fill_in "Confirmed unpaid hours", with: "8"
+        fill_in "Unpaid-hours decision / reason", with: "Reviewed unpaid absence"
+        expect(page).to have_css("[role='status']", text: "Inputs changed.")
+        click_button "Recalculate preview"
+        expect(page).not_to have_css("[role='status']", text: "Inputs changed.")
+        expect(page).to have_button("Recalculate preview", disabled: false)
+        expect(page).not_to have_css("[role='alert']")
+        expect(find("dt", text: "Expected hours", exact_text: true).find(:xpath, "following-sibling::dd[1]")).to have_text("—", exact: true)
+        expect(find("dt", text: "Fee estimate (INR)", exact_text: true).find(:xpath, "following-sibling::dd[1]")).to have_text("—", exact: true)
+        expect(page).to have_content("Reconcile the dates before estimating fees; source records were not changed.")
+      end
+    end
+  end
+
   it "renders unavailable work and leave totals with actionable warnings instead of NaN or blank fields" do
     sign_in(admin)
     with_forgery_protection do
