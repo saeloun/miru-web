@@ -70,7 +70,7 @@ interface Expense {
   id: string;
   date: string;
   description: string;
-  amount: number;
+  amount: string;
   currency: string;
   category: string;
   vendor?: string;
@@ -99,9 +99,9 @@ interface ExpensesData {
   categories: ExpenseOption[];
   summary: {
     baseCurrency: string;
-    totalAmount: number;
-    businessAmount: number;
-    personalAmount: number;
+    totalAmount: string;
+    businessAmount: string;
+    personalAmount: string;
     excludedCurrencyCount: number;
   };
   paginationDetails: {
@@ -143,7 +143,7 @@ const fetchExpenses = async (
     id: String(expense.id),
     date: expense.date,
     description: expense.description,
-    amount: Number(expense.amount) || 0,
+    amount: expense.amount ?? "0",
     currency: expense.currency || "USD",
     category: expense.categoryName || "",
     vendor: expense.vendorName || "",
@@ -167,9 +167,9 @@ const fetchExpenses = async (
     categories: response.data.categories || [],
     summary: {
       baseCurrency: response.data.summary?.baseCurrency || "USD",
-      totalAmount: Number(response.data.summary?.totalAmount) || 0,
-      businessAmount: Number(response.data.summary?.businessAmount) || 0,
-      personalAmount: Number(response.data.summary?.personalAmount) || 0,
+      totalAmount: response.data.summary?.totalAmount ?? "0",
+      businessAmount: response.data.summary?.businessAmount ?? "0",
+      personalAmount: response.data.summary?.personalAmount ?? "0",
       excludedCurrencyCount:
         Number(response.data.summary?.excludedCurrencyCount) || 0,
     },
@@ -380,7 +380,7 @@ const ExpensesTable: React.FC = () => {
     setFormData({
       date: dateForInput,
       description: expense.description,
-      amount: expense.amount.toString(),
+      amount: expense.amount,
       currency: expense.currency || baseCurrency,
       category: expense.category,
       vendor: expense.vendor || "",
@@ -752,6 +752,16 @@ const ExpensesTable: React.FC = () => {
     },
     {
       accessorKey: "amount",
+      sortingFn: (rowA, rowB) => {
+        const [a, b] = [rowA, rowB].map(row => {
+          const [integer, fraction = ""] = row.original.amount.split(".");
+
+          return `${integer}.${fraction.padEnd(2, "0")}`;
+        });
+        const order = a.localeCompare(b, "en", { numeric: true });
+
+        return a.startsWith("-") && b.startsWith("-") ? -order : order;
+      },
       header: ({ column }) => (
         <Button
           variant="ghost"
