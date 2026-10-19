@@ -1,0 +1,50 @@
+# Consultant payroll review — issue 2458
+
+Source: [Sonam's Payroll feature issue #2458](https://github.com/saeloun/miru-web/issues/2458), read on 19 October 2026, including its appended working-hours/PTO policy. Existing commits provide private salary-slip archives and manual employer tax declarations; neither implements consultant payroll.
+
+Canonical scope and delivery order: [recalibrated consultant payroll requirements](../specs/2026-10-19-consultant-payroll-requirements.md). This plan completes delivery 1, not the whole issue.
+
+## Complete next slice
+
+Owner/admin can add immutable, effective-dated consultant terms for an existing workspace member: monthly INR fee, contracting legal-entity name, separate Mercury-US/India funding choice, explicit weekdays/hours per day, change reason and actor. Same-date corrections append a version; latest effective date and version wins, preserving history. No bank account or beneficiary is inferred from the funding label.
+
+Monthly review lists configured consultants with active service dates, expected schedule hours excluding distinct national/selected optional holidays, recorded work and fractional working days (hours / 8). Include nonbillable work and show approved/not-required/pending/rejected classifications separately; recorded work is not automatically payroll-approved. Existing time-off records lack approval/paid/unpaid classification, so display recorded leave separately and flag it for review; never infer paid PTO or unpaid deductions from it, a negative balance or missing work. No invented opening/closing PTO balances.
+
+The preview accepts explicitly confirmed unpaid hours plus a reason and calculates `monthly fee * (expected hours - confirmed unpaid hours) / expected hours`, rounding once to two INR decimals. Missing work alone leaves the full fee. Midmonth term changes, joining/exiting midmonth, missing service dates or zero expected hours require manual resolution and produce no fee/total estimate. No historical-PTO recovery, statutory withholding or salary-tax declaration is applied automatically.
+
+Approved/unpaid expenses can be selected explicitly for the preview, independently of fee proration. Capture approval time from now on; do not backfill historical approval dates from `updated_at`. Only the person's current-company, kept, approved, unpaid, INR claims incurred and approved by the cutoff can be selected; unknown approval dates and foreign currencies require review, never a fallback conversion. Other expenses are not automatically treated as consultancy reimbursements. Return original currency/date/description/receipt count and excluded-reason counts. Selection rejects stale, duplicate or foreign expense IDs.
+
+Preview inputs and selected claims are not reserved or saved as a payroll approval. No payment readiness is asserted; verified beneficiaries, role delegation, locked payroll runs/reservations, provider submission and confirmed-credit/invoice workflows follow separately. Each incomplete consultant is flagged individually. This slice performs no email, bank action, provider API request or invoice creation.
+
+## Issue coverage and remaining work
+
+| Issue area | This slice | Still required |
+| --- | --- | --- |
+| Consultant profile/banks | No sensitive bank collection | Encrypted/versioned verified beneficiaries, confirmation, account notifications, invoice authorization |
+| Admin configuration | Effective-dated INR fee, source label, contracting entity, weekday schedule | Bank accounts, PTO policy/accrual/year, dedicated preparation/approval/payment permissions |
+| Monthly review/hours | Read-only month/cutoff review and explicit unpaid-hours calculation | Persisted reviewed runs, approvals, input invalidation and payroll snapshots |
+| PTO exceptions | Missing/unclassified time flags without automatic deductions | Approved paid/unpaid/advance PTO, exception decisions, balances, exit/year-end recovery ledger |
+| Reimbursements | Explicit selection with cutoff/currency/paid checks | Atomic reservation against direct settlement and confirmed-payment allocation |
+| Mercury/India payments | Separate funding choice; public Mercury contract researched | Account/sandbox acceptance, rates/fees, OUR execution, transfer/credit reconciliation, accounts handoff |
+| Spouse splits | Unimplemented | Verified beneficiary approval, allocation, per-transfer retries and reconciliation |
+| Consultant invoices/remittance | Unimplemented | Invoice authorization/tax timing, duplicate protection, credit triggers, bank-issued remittance proof |
+
+## Work and verification
+
+- [x] Focused failing model/service/API tests for term versions, calculation examples, hours/holiday isolation, proration, expense cutoff/selection, permissions and malformed inputs.
+- [x] Add terms persistence, approval timestamp, review service, policies and API in the existing isolated worktree.
+- [x] Add consultant setup/history and monthly preview UI using existing components/translations.
+- [x] Focused tests, related expense regression, lint, required Vite build and synthetic Brave admin/employee verification.
+- [x] Independent review; fix findings and record evidence. Delivery is a local commit only; do not close/comment on the issue or push/deploy.
+
+## Verification record — 19 October 2026
+
+- Initial consultant request specs failed with missing endpoints. Final focused/related regression command passed **99 examples, 0 failures**: consultant payroll, expense model/all expense requests, salary slips and tax declarations. Tests used the isolated `miru_payroll_test` database. `SKIP_VITE_TEST_BUILD=1` avoids the previously observed Ruby/Vite test-helper recursion; the required standalone build ran separately.
+- `rtk mise exec -- timeout 30 bin/vite build` exited 0 after the final UI changes; Prettier, ESLint and RuboCop for the touched files passed. Migration applied successfully to both isolated test and development databases.
+- Brave on `127.0.0.1:3100`: owner/admin setup saved terms; report showed expected 160, approved nonbillable work 100, fractional days 12.5; missing-work warning preserved the full fee. An explicit 60-hour unpaid scenario plus selected INR 5,000 reimbursement showed fee INR 62,500 and total INR 67,500 before withholding. Paid PTO/balances/withholding gaps were shown honestly. Browser warnings/errors were empty on the verified consultant and employee flows.
+- Seeded synthetic data with test-only job delivery: consultant list displayed exactly 30 records, then the 31st with correct previous/next controls and order. Terms history showed versions 31 through 2 on page one, then the original version on page two. Employee navigation hid payroll and direct navigation redirected away without remuneration data; API specs independently confirmed 403 and cross-company 404 behavior.
+- Local screenshot evidence: `/tmp/miru-consultant-payroll-qa/prorated-reimbursement.png`, `page-two.png`, `history-original.png`, `employee-denied.png`. These contain synthetic data only and were not uploaded externally.
+- Independent review found two issues: approval retries changing cutoff timestamps and missing separate work classifications. Both were fixed, tested, and re-reviewed without further findings. Additional input checks reject malformed request objects/arrays and dates outside the supported year range.
+- Public Mercury documentation is researched in the linked contract note; no provider credentials, beneficiaries, provider requests, emails or payments were created. No bank sandbox/live account acceptance, PTO ledger, locked payroll approval/reservation, payment/credit automation or invoice/remittance workflow is claimed complete. The full issue remains open.
+
+Runtime note: the long-running QA server used `mise exec --` directly because the RTK wrapper previously stopped persistent server sessions; builds/tests/lint used RTK. gbrain retrieval was unavailable (Bun 1.3.14 installed; >=1.4.0 required), so current issue/repository/official-provider evidence governed this work.

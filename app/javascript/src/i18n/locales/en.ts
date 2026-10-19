@@ -1,4 +1,100 @@
 const en = {
+  consultantPayroll: {
+    title: "Consultant payroll",
+    description:
+      "Review monthly consultant fees, recorded work and reimbursement candidates.",
+    previewHelp:
+      "Preview only. No payroll is approved, claims reserved, money transferred or invoice issued. Beneficiary verification and payment approval are still required. Estimates exclude withholding and other adjustments.",
+    configure: "Add consultant terms",
+    choose: "Choose a consultant",
+    month: "Payroll month",
+    cutoff: "Expense cutoff",
+    consultant: "Consultant",
+    monthlyFee: "Monthly fee (INR)",
+    expected: "Expected hours",
+    recorded: "Recorded hours (all review states)",
+    days: "Recorded days (hours / 8)",
+    feeEstimate: "Fee estimate (INR)",
+    source: "Funding source",
+    actions: "Actions",
+    notReady: "Not ready for payment",
+    empty:
+      "No configured consultants are active in this period. Add consultant terms to start.",
+    review: "Review %{name}",
+    history: "Terms history",
+    versionHelp:
+      "Save a new effective-dated version. Earlier terms are retained; a correction on the same effective date uses the newest version.",
+    effective: "Effective date",
+    entity: "Contracting legal entity",
+    dailyHours: "Scheduled hours per day",
+    weekdays: "Scheduled weekdays",
+    changeReason: "Reason for these terms",
+    save: "Save terms",
+    hoursPerDay: "hours per scheduled day",
+    approvedWork: "Approved work hours",
+    notRequiredWork: "Work without required approval",
+    pendingWork: "Work hours pending approval",
+    rejectedWork: "Rejected work hours",
+    unresolvedWork: "Unresolved work hours",
+    recordedLeave: "Recorded leave hours (unclassified)",
+    approvedPaidLeave: "Approved paid leave",
+    ptoBalances: "Opening / closing PTO",
+    unavailable: "Requires review",
+    missingEntity: "Contracting entity not configured",
+    unpaid: "Confirmed unpaid hours",
+    unpaidReason: "Unpaid-hours decision / reason",
+    unpaidHelp:
+      "Enter only explicitly confirmed unpaid time for this month. Missing timesheets and negative PTO are not unpaid leave. This scenario is not a saved payroll approval.",
+    reimbursements: "Reimbursement candidates",
+    reimbursementHelp:
+      "Select approved, unpaid INR claims incurred and approved by the cutoff. Selection is for this preview only and does not reserve or settle claims.",
+    noClaims: "No eligible INR reimbursement candidates.",
+    receipts: "%{count} receipt(s); review originals in Expenses",
+    selectedClaims: "Selected reimbursements (INR)",
+    withholding: "Tax withholding",
+    total: "Estimate before withholding (INR)",
+    recalculate: "Recalculate preview",
+    recalculateHelp: "Inputs changed. Recalculate to update the estimates.",
+    failed:
+      "Unable to complete this action. Please review the inputs and try again.",
+    sources: { india: "India account", mercury_us: "US Mercury account" },
+    weekday: {
+      "1": "Mon",
+      "2": "Tue",
+      "3": "Wed",
+      "4": "Thu",
+      "5": "Fri",
+      "6": "Sat",
+      "7": "Sun",
+    },
+    warnings: {
+      missing_terms:
+        "No fee and schedule terms apply at the start of this month.",
+      work_requires_review:
+        "Recorded work includes hours that are not payroll-approved. Review their approval classifications.",
+      timeoff_requires_review:
+        "Recorded leave has no payroll paid/unpaid approval classification.",
+      missing_service_dates:
+        "Service dates are incomplete; no fee estimate is available.",
+      partial_service:
+        "Joining or leaving during the month needs a reviewed fee treatment.",
+      terms_changed_during_month:
+        "Terms change during the month; a reviewed allocation is required.",
+      zero_expected_hours:
+        "There are no scheduled hours in this service period.",
+      unexplained_hours:
+        "Scheduled hours are not fully explained by recorded work and confirmed unpaid time. No automatic deduction was made.",
+      expense_review_required:
+        "Some expense candidates need separate review; see the exclusions below.",
+    },
+    excluded: {
+      unknown_approval_time:
+        "%{count} claim(s) have no verified approval timestamp.",
+      approved_after_cutoff:
+        "%{count} claim(s) were approved after the cutoff.",
+      foreign_currency: "%{count} claim(s) need a reviewed INR conversion.",
+    },
+  },
   taxDeclarations: {
     title: "Tax declarations",
     description:

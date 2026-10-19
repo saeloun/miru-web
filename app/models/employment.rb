@@ -8,6 +8,7 @@ class Employment < ApplicationRecord
   belongs_to :user
   has_many :salary_slips, dependent: :destroy
   has_many :tax_declarations, dependent: :destroy
+  has_many :consultant_compensations, dependent: :destroy
 
   # Validations
   validates :designation, :employment_type, :joined_at, :employee_id, presence: true, on: :update

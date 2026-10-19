@@ -5,7 +5,7 @@ class Expense < ApplicationRecord
   include Searchable
 
   audited associated_with: :company,
-    only: [:amount, :base_currency_amount, :currency, :date, :expense_type, :status, :paid_at, :category_name]
+    only: [:amount, :base_currency_amount, :currency, :date, :expense_type, :status, :paid_at, :approved_at, :category_name]
 
   MAX_RECEIPT_SIZE_MB = 10
   MAX_RECEIPTS = 10
@@ -53,6 +53,7 @@ class Expense < ApplicationRecord
 
   before_validation :normalize_currency
   before_validation :calculate_base_currency_amount
+  before_save :record_approval_time
   after_create { Rails.event.notify(Expenses::Created.new(self)) }
 
   scope :kept_ordered, -> { kept.order(created_at: :desc) }
@@ -112,7 +113,7 @@ class Expense < ApplicationRecord
   end
 
   def approve!
-    update!(status: :approved, paid_at: nil)
+    update!(status: :approved, paid_at: nil, approved_at: approved? && approved_at ? approved_at : Time.current)
   end
 
   def reject!
@@ -136,6 +137,14 @@ class Expense < ApplicationRecord
   end
 
   private
+
+    def record_approval_time
+      if approved? && will_save_change_to_status?
+        self.approved_at = Time.current
+      elsif persisted? && [:amount, :currency, :date, :user_id].any? { |field| will_save_change_to_attribute?(field) }
+        self.approved_at = nil
+      end
+    end
 
     def validate_receipt_constraints
       return unless receipts.attached?

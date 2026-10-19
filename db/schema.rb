@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_18_100000) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_19_180000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_stat_statements"
@@ -303,6 +303,24 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_18_100000) do
     t.index ["stripe_subscription_id"], name: "index_companies_on_stripe_subscription_id"
   end
 
+  create_table "consultant_compensations", force: :cascade do |t|
+    t.text "change_reason", null: false
+    t.datetime "created_at", null: false
+    t.bigint "created_by_id", null: false
+    t.date "effective_on", null: false
+    t.bigint "employment_id", null: false
+    t.decimal "hours_per_day", precision: 4, scale: 2, null: false
+    t.string "legal_entity_name", null: false
+    t.decimal "monthly_fee", precision: 12, scale: 2, null: false
+    t.string "payment_source", null: false
+    t.datetime "updated_at", null: false
+    t.integer "weekdays", null: false, array: true
+    t.index ["created_by_id"], name: "index_consultant_compensations_on_created_by_id"
+    t.index ["employment_id", "effective_on", "id"], name: "index_consultant_terms_effective_version"
+    t.index ["employment_id"], name: "index_consultant_compensations_on_employment_id"
+    t.check_constraint "monthly_fee > 0::numeric AND hours_per_day > 0::numeric AND hours_per_day <= 24::numeric", name: "consultant_compensations_positive_terms"
+  end
+
   create_table "currency_pairs", force: :cascade do |t|
     t.boolean "active", default: true
     t.datetime "created_at", null: false
@@ -434,6 +452,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_18_100000) do
 
   create_table "expenses", force: :cascade do |t|
     t.decimal "amount", precision: 20, scale: 2, default: "0.0", null: false
+    t.datetime "approved_at"
     t.decimal "base_currency_amount", precision: 20, scale: 2
     t.string "category_name"
     t.bigint "company_id", null: false
@@ -1291,6 +1310,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_18_100000) do
   add_foreign_key "client_members", "companies"
   add_foreign_key "client_members", "users"
   add_foreign_key "clients", "companies"
+  add_foreign_key "consultant_compensations", "employments"
+  add_foreign_key "consultant_compensations", "users", column: "created_by_id"
   add_foreign_key "custom_leave_users", "custom_leaves", column: "custom_leave_id"
   add_foreign_key "custom_leave_users", "users"
   add_foreign_key "custom_leaves", "leaves", column: "leave_id"

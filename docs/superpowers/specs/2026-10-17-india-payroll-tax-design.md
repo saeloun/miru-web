@@ -1,5 +1,7 @@
 # India employer payroll and tax workspace
 
+Priority update, 19 October: [Sonam issue #2458 requirements](2026-10-19-consultant-payroll-requirements.md) now govern the payroll delivery order: consultant preparation, approval, settlement and invoices first. This document remains the later India employee-tax/statutory/GST research scope; its original employer-first sequence is superseded.
+
 Status: expanded product design, informed by primary-source research; statutory calculation rules remain subject to the evidence gates below.
 
 Implemented foundations: private salary slips and [manual employer declaration/evidence review](../../product-guide/payroll/02-tax-declarations.md). The declaration workflow records year/category, claimed/reviewed INR amounts, private proof, reviewer decisions and linked corrections. It does not determine eligibility, apply shared caps or admit amounts to a calculated payroll. Compensation/opening balances, expense settlement controls, structured eligibility questions/cutoffs and statutory calculations remain subsequent work.

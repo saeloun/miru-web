@@ -59,6 +59,10 @@ namespace :api, defaults: { format: "json" } do
       end
     end
     resources :imports, only: [:create, :show]
+    get "consultant_payroll", to: "consultant_payroll#index"
+    get "consultant_payroll/:id/compensations", to: "consultant_payroll#history"
+    post "consultant_payroll/:id/compensations", to: "consultant_payroll#create"
+    post "consultant_payroll/:id/preview", to: "consultant_payroll#preview"
     resources :tax_declarations, only: [:index, :show, :create] do
       member do
         post :submit

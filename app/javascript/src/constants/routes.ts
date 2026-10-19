@@ -23,6 +23,7 @@ const ExpenseDetails = lazy(() => import("components/Expenses/Details"));
 const ExpensesTable = lazy(() => import("components/Expenses/ExpensesTable"));
 const SalarySlips = lazy(() => import("components/SalarySlips"));
 const TaxDeclarations = lazy(() => import("components/TaxDeclarations"));
+const ConsultantPayroll = lazy(() => import("components/ConsultantPayroll"));
 const InvoicesRouteConfig = lazy(
   () => import("components/Invoices/RouteConfig")
 );
@@ -248,6 +249,11 @@ export const ROUTES = [
     path: "/tax-declarations",
     subRoutes: [{ path: "", Component: TaxDeclarations }],
     authorisedRoles: [ADMIN, OWNER, BOOK_KEEPER, EMPLOYEE, Roles.MANAGER],
+  },
+  {
+    path: "/consultant-payroll",
+    subRoutes: [{ path: "", Component: ConsultantPayroll }],
+    authorisedRoles: [ADMIN, OWNER],
   },
   {
     path: Paths.DASHBOARD,

@@ -1,0 +1,20 @@
+---
+id: consultant-payroll
+title: Consultant payroll review
+---
+
+Owners and admins can open **Consultant payroll** to review a month's consultant fees and reimbursement candidates. This is a preview: it does not approve payroll, reserve claims, transfer money, send accounts instructions or issue invoices. Other staff cannot access coworkers' consultant terms or reports.
+
+Choose **Add consultant terms**, select a current staff member, and enter the effective date, INR monthly fee, contracting legal entity, funding source, scheduled weekdays/hours and reason. Save a new version to correct terms; earlier versions remain in **Terms history**. A correction with the same effective date uses the newest version. The funding source is a label for preparation; it does not connect a bank account or change the contracting entity. Workspace/employment deletion follows Miru's existing deletion behavior and removes associated terms.
+
+Select the payroll month and expense cutoff. The report shows configured consultants active in that period, expected schedule hours, recorded hours across review states, fractional recorded days (`hours / 8`) and the fee estimate. Applicable holiday dates count once. **Review [name]** shows approved, pending, rejected and approval-not-required work separately. Recorded time off is unclassified; approved paid leave and opening/closing PTO require a future approval/balance workflow.
+
+Enter only explicitly confirmed unpaid hours and their decision/reason, select eligible reimbursement claims, then choose **Recalculate preview**. The scenario uses `monthly fee × (expected hours − confirmed unpaid hours) / expected hours`. Missing work alone does not reduce the fee; historical negative PTO is never deducted automatically. Changed inputs hide the old totals until recalculation. These decisions are not saved payroll approvals.
+
+Partial service months, missing service dates, midmonth fee changes and zero expected hours require resolution before a fee/total estimate is shown. Work/leave warnings remain visible for review. Tax withholding and other adjustments are not applied to the estimate.
+
+Reimbursements are selected explicitly, separately from fee proration. Eligible claims belong to that person/workspace, are approved and unpaid, use INR, and were both incurred and approved by the cutoff in the company timezone. The preview shows amount, date, description and receipt count; review original receipts in **Expenses**. Up to 100 claims can be selected in one preview. Changed, paid or otherwise ineligible selections require a refresh. Selection does not prevent another expense settlement; payroll reservation will be added with locked runs.
+
+Historical claims without a recorded approval time and foreign-currency claims require review and are excluded. Miru does not guess an old approval date or an exchange rate. Editing a claim's amount, currency, date or claimant clears its recorded approval time until reapproved. Repeating approval on an unchanged approved claim preserves the original timestamp.
+
+Verified beneficiaries, actual funding accounts, PTO decisions/accrual/recovery, delegated accounts permissions, locked runs, withholding, India handoff, Mercury wires/spouse splits, credit reconciliation and consultant invoices/remittance documents remain required follow-on work. See the [complete issue requirements](../../superpowers/specs/2026-10-19-consultant-payroll-requirements.md) for acceptance status.
