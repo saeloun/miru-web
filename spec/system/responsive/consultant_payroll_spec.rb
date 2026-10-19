@@ -30,6 +30,32 @@ RSpec.describe "Consultant payroll source warnings", type: :system, js: true do
 
   after { travel_back }
 
+  it "retains exact cents in large reimbursement candidates and recalculated totals" do
+    claim = create(:expense, company:, user: consultant, currency: "INR", amount: "900719925474099.99",
+      date: "2026-09-10", description: "Synthetic precise reimbursement")
+    claim.approve!
+    sign_in(admin)
+    with_forgery_protection do
+      visit "/consultant-payroll"
+      click_button "Review #{consultant.full_name}"
+      within("[role='dialog']") do
+        candidate = find("label", text: claim.description)
+        displayed = candidate.find("span.block", match: :first).text.split("·").last.gsub(/[^\d.]/, "")
+        expect(displayed).to eq("900719925474099.99")
+        candidate.find("input[type='checkbox']").set(true)
+        click_button "Recalculate preview"
+        expect(page).not_to have_css("[role='status']", text: "Inputs changed.")
+        expect(page).to have_button("Recalculate preview", disabled: false)
+        expect(page).not_to have_css("[role='alert']")
+        { "Selected reimbursements (INR)" => "900719925474099.99",
+          "Estimate before withholding (INR)" => "900719925574099.99" }.each do |label, expected|
+          value = find("dt", text: label, exact_text: true).find(:xpath, "following-sibling::dd[1]")
+          expect(value.text.gsub(/[^\d.]/, "")).to eq(expected)
+        end
+      end
+    end
+  end
+
   it "keeps long legal entities and large fees inside narrow review and history dialogs" do
     employment = consultant.employments.find_by!(company:)
     employment.consultant_compensations.create!(created_by: admin, effective_on: "2026-09-01",

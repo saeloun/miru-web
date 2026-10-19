@@ -223,7 +223,7 @@ RSpec.describe "Reports", type: :system, js: true do
 
         find("button", text: "Clients", match: :first).click
         find("[role='menuitemcheckbox']", text: "Toolbar Filter Alpha Client", match: :first).click
-        page.send_keys(:escape)
+        expect(page).not_to have_css("[role='menu']")
 
         expect(page).to have_content("Toolbar Filter Alpha Client", wait: 10)
         expect(page).to have_no_content("Toolbar Filter Beta Client")

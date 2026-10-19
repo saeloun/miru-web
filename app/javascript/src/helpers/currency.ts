@@ -44,12 +44,36 @@ const currencyFormat = (
       ? amount
       : parseFloat(amount) || 0;
 
-  return new Intl.NumberFormat(activeLocale, {
+  const formatter = new Intl.NumberFormat(activeLocale, {
     style: "currency",
     currency,
     maximumFractionDigits: 2,
     notation,
-  }).format(numericAmount);
+  });
+
+  const decimal =
+    typeof amount === "string"
+      ? amount.match(/^([+-]?\d+)(?:\.(\d{1,2}))?$/)
+      : null;
+
+  if (decimal && notation !== "compact") {
+    // Separate exact integers and cents for browsers that round decimal strings.
+    const integers = formatter
+      .formatToParts(BigInt(decimal[1]))
+      .filter(part => part.type === "integer" || part.type === "group");
+
+    const fraction = Number(
+      `${decimal[1].startsWith("-") ? "-" : ""}0.${decimal[2] || "0"}`
+    );
+
+    return formatter
+      .formatToParts(numericAmount === 0 ? 0 : fraction)
+      .flatMap(part => (part.type === "integer" ? integers : part))
+      .map(part => part.value)
+      .join("");
+  }
+
+  return formatter.format(numericAmount);
 };
 
 export { currencyFormat };
