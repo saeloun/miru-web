@@ -35,6 +35,7 @@ module AuthResponsePayload
         "us_taxpayer_id",
         "plan_tier"
       ).merge(
+        "payroll_review_enabled" => Payroll::Entitlement.enabled?(company.id),
         "address" => company.current_address,
         "logo" => company.company_logo,
         "pro_access" => company.pro_access?,

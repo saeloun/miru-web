@@ -31,6 +31,7 @@ class Api::V1::UsersController < Api::V1::BaseController
           "tax_id",
           "timesheet_edit_days"
         )&.merge(
+          "payroll_review_enabled" => Payroll::Entitlement.enabled?(current_company&.id),
           "address" => current_company&.current_address,
           "logo" => current_company&.company_logo,
           "pro_access" => current_company&.pro_access?,
