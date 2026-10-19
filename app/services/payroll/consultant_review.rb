@@ -3,13 +3,13 @@
 class Payroll::ConsultantReview
   class InvalidInput < StandardError; end
 
-  def self.period(month, cutoff)
+  def self.period(month, cutoff, today:)
     raise InvalidInput, "Choose a payroll month" unless month.is_a?(String) && month.match?(/\A\d{4}-\d{2}\z/)
     raise InvalidInput, "Choose a cutoff date" unless cutoff.is_a?(String) && cutoff.match?(/\A\d{4}-\d{2}-\d{2}\z/)
 
     start = Date.iso8601("#{month}-01")
     date = Date.iso8601(cutoff)
-    unless (1900..2099).cover?(start.year) && start <= Date.current.beginning_of_month && date >= start && date <= Date.current
+    unless (1900..2099).cover?(start.year) && start <= today.beginning_of_month && date >= start && date <= today
       raise InvalidInput, "Month and cutoff must be valid and not in the future"
     end
     [start, date]
@@ -127,7 +127,7 @@ class Payroll::ConsultantReview
     end
 
     def expense_candidates
-      zone = ActiveSupport::TimeZone[@company.timezone.to_s] || Time.zone
+      zone = @company.resolved_time_zone
       cutoff_time = zone.local(@cutoff.year, @cutoff.month, @cutoff.day).end_of_day
       candidates = @company.expenses.kept.where(user_id: @employment.user_id, status: :approved, paid_at: nil)
         .where("date <= ?", @cutoff).includes(receipts_attachments: :blob).order(:date, :id)

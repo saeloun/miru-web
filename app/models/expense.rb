@@ -50,10 +50,11 @@ class Expense < ApplicationRecord
   validates :currency, presence: true, format: { with: /\A[A-Z]{3}\z/ }
   validate :known_currency_code
   validate :validate_receipt_constraints
+  validate :paid_settlement_is_final, on: :update
 
   before_validation :normalize_currency
   before_validation :calculate_base_currency_amount
-  before_save :record_approval_time
+  before_validation :record_approval_time
   after_create { Rails.event.notify(Expenses::Created.new(self)) }
 
   scope :kept_ordered, -> { kept.order(created_at: :desc) }
@@ -113,15 +114,23 @@ class Expense < ApplicationRecord
   end
 
   def approve!
-    update!(status: :approved, paid_at: nil, approved_at: approved? && approved_at ? approved_at : Time.current)
+    with_lock do
+      update!(status: :approved, paid_at: nil, approved_at: approved? && approved_at ? approved_at : Time.current)
+    end
   end
 
   def reject!
-    update!(status: :rejected, paid_at: nil)
+    with_lock { update!(status: :rejected, paid_at: nil) }
   end
 
   def mark_paid!
-    update!(status: :paid, paid_at: Time.current)
+    with_lock do
+      unless approved? && paid_at.nil?
+        errors.add(:status, "must be approved and unpaid before recording payment")
+        raise ActiveRecord::RecordInvalid, self
+      end
+      update!(status: :paid, paid_at: Time.current)
+    end
   end
 
   def formatted_date
@@ -138,11 +147,21 @@ class Expense < ApplicationRecord
 
   private
 
+    def paid_settlement_is_final
+      return unless will_save_change_to_status? || will_save_change_to_paid_at?
+
+      previous_status, previous_paid_at = self.class.where(id:).lock.pick(:status, :paid_at)
+      if previous_status == "paid" || previous_paid_at.present?
+        errors.add(:status, "cannot reopen or rewrite a paid settlement")
+      end
+    end
+
     def record_approval_time
       if approved? && will_save_change_to_status?
         self.approved_at = Time.current
       elsif persisted? && [:amount, :currency, :date, :user_id].any? { |field| will_save_change_to_attribute?(field) }
         self.approved_at = nil
+        self.status = :submitted if approved?
       end
     end
 

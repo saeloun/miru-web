@@ -34,6 +34,7 @@ RSpec.describe "Salary slips", type: :request do
     expect(slip.published_at).to be_nil
     expect(response.parsed_body.fetch("salary_slip")).to include("status" => "draft", "employment_id" => employment.id)
     expect(response.body).not_to include(slip.file.blob.key, "signed_id", "active_storage")
+    expect(response.headers["Cache-Control"]).to include("private", "no-store")
   end
 
   it "hides drafts from the employee and denies draft downloads" do
@@ -53,6 +54,7 @@ RSpec.describe "Salary slips", type: :request do
     sign_in employee
     get "/api/v1/salary_slips"
     expect(response.parsed_body.fetch("salary_slips").pluck("id")).to eq([slip.id])
+    expect(response.headers["Cache-Control"]).to include("private", "no-store")
     get "/api/v1/salary_slips/#{slip.id}/download"
     expect(response).to have_http_status(:ok)
     expect(response.media_type).to eq("application/pdf")
@@ -86,6 +88,18 @@ RSpec.describe "Salary slips", type: :request do
     expect(slip.reload.file).to be_attached
     post "/api/v1/salary_slips/#{slip.id}/publish"
     expect(response).to have_http_status(:unprocessable_entity)
+  end
+
+  it "links a replacement to a previously withdrawn publication without rewriting the withdrawal" do
+    previous = imported_slip
+    previous.publish!(actor: admin)
+    previous.withdraw!(actor: admin)
+    withdrawn_at = previous.reload.withdrawn_at
+    replacement = imported_slip
+    replacement.publish!(actor: admin)
+    expect(replacement.reload.supersedes).to eq(previous)
+    expect(previous.reload.withdrawn_at).to eq(withdrawn_at)
+    expect(previous.file).to be_attached
   end
 
   it "enforces a single current publication even when a write bypasses the publication lock" do
@@ -211,5 +225,14 @@ RSpec.describe "Salary slips", type: :request do
     expect(response.parsed_body.fetch("pagination")).to include("page" => 1, "pages" => 1)
     get "/api/v1/salary_slips", params: { month: "2026-15" }
     expect(response).to have_http_status(:bad_request)
+  end
+
+  it "rejects malformed page values before conversion without returning confidential cached metadata" do
+    imported_slip
+    [["2"], { unexpected: "1" }, "bad", "1.5"].each do |page|
+      get "/api/v1/salary_slips", params: { page: }
+      expect(response).to have_http_status(400)
+      expect(response.headers["Cache-Control"]).to include("private", "no-store")
+    end
   end
 end

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import dayjs from "dayjs";
 import Api from "apis/api";
 import { useUserContext } from "context/UserContext";
 import { currencyFormat } from "helpers/currency";
@@ -73,6 +72,7 @@ type Archive = {
   reviews: Review[];
   employments: { id: number; name: string }[];
   pagination: { page: number; pages: number };
+  period: { month: string; cutoff: string; today: string };
 };
 type Configuration = {
   employment: string;
@@ -93,11 +93,13 @@ type History = {
 const amount = (value: string | null) =>
   value === null ? "—" : currencyFormat("INR", value);
 
-const PayrollWorkspace = ({ companyId }: { companyId: number | undefined }) => {
-  const [month, setMonth] = useState(
-    dayjs().subtract(1, "month").format("YYYY-MM")
-  );
-  const [cutoff, setCutoff] = useState(dayjs().format("YYYY-MM-DD"));
+const PayrollWorkspace = ({
+  companyId,
+}: {
+  companyId: number | string | undefined;
+}) => {
+  const [month, setMonth] = useState("");
+  const [cutoff, setCutoff] = useState("");
   const [page, setPage] = useState(1);
   const [refresh, setRefresh] = useState(0);
   const [archive, setArchive] = useState<Archive | null>(null);
@@ -118,8 +120,16 @@ const PayrollWorkspace = ({ companyId }: { companyId: number | undefined }) => {
   useEffect(() => {
     let active = true;
     setArchive(null);
-    Api.get("/consultant_payroll", { params: { month, cutoff, page } })
-      .then(({ data }) => active && setArchive(data))
+    Api.get("/consultant_payroll", {
+      params: { month: month || undefined, cutoff: cutoff || undefined, page },
+    })
+      .then(({ data }) => {
+        if (!active) return;
+        setArchive(data);
+        if (!month) setMonth(data.period.month);
+
+        if (!cutoff) setCutoff(data.period.cutoff);
+      })
       .catch(failure => active && fail(failure));
 
     return () => {
@@ -267,7 +277,7 @@ const PayrollWorkspace = ({ companyId }: { companyId: number | undefined }) => {
           <Input
             disabled={busy}
             id="payroll-month"
-            max={dayjs().format("YYYY-MM")}
+            max={archive?.period.today.slice(0, 7)}
             type="month"
             value={month}
             onChange={event => {
@@ -284,7 +294,7 @@ const PayrollWorkspace = ({ companyId }: { companyId: number | undefined }) => {
           <Input
             disabled={busy}
             id="payroll-cutoff"
-            max={dayjs().format("YYYY-MM-DD")}
+            max={archive?.period.today}
             type="date"
             value={cutoff}
             onChange={event => {

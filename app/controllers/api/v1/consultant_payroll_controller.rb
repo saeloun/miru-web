@@ -14,7 +14,9 @@ class Api::V1::ConsultantPayrollController < Api::V1::ApplicationController
 
   def index
     authorize :consultant_payroll
-    month, cutoff = Payroll::ConsultantReview.period(params[:month], params[:cutoff])
+    today = current_company.resolved_time_zone.today
+    month, cutoff = Payroll::ConsultantReview.period(params[:month] || (today << 1).strftime("%Y-%m"),
+      params[:cutoff] || today.iso8601, today:)
     records = current_company.employments.joins(:consultant_compensations).distinct.includes(:user)
       .where("employments.joined_at IS NULL OR employments.joined_at <= ?", month.end_of_month)
       .where("employments.resigned_at IS NULL OR employments.resigned_at >= ?", month)
@@ -24,7 +26,8 @@ class Api::V1::ConsultantPayrollController < Api::V1::ApplicationController
       reviews: records.order(:id).limit(30).offset((page - 1) * 30).map do |employment|
         Payroll::ConsultantReview.new(employment:, month:, cutoff:).process
       end,
-      employments: staff_choices, pagination: { page:, pages: }, company_id: current_company.id
+      employments: staff_choices, pagination: { page:, pages: }, company_id: current_company.id,
+      period: { month: month.strftime("%Y-%m"), cutoff: cutoff.iso8601, today: today.iso8601 }
     }
   end
 
@@ -61,7 +64,7 @@ class Api::V1::ConsultantPayrollController < Api::V1::ApplicationController
     return unless matching_company?(inputs[:company_id])
 
     employment = current_company.employments.find(params[:id])
-    month, cutoff = Payroll::ConsultantReview.period(inputs[:month], inputs[:cutoff])
+    month, cutoff = Payroll::ConsultantReview.period(inputs[:month], inputs[:cutoff], today: current_company.resolved_time_zone.today)
     render json: { review: Payroll::ConsultantReview.new(employment:, month:, cutoff:, inputs:).process }
   end
 

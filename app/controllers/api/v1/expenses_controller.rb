@@ -32,11 +32,12 @@ class Api::V1::ExpensesController < Api::V1::ApplicationController
   end
 
   def update
-    authorize @expense
-
-    @expense.update!(normalized_expense_params.except("receipts"))
-    attach_receipts!(@expense)
-    resubmit_rejected_expense! if @expense.rejected? && @expense.user_id == current_user.id
+    @expense.with_lock do
+      authorize @expense
+      @expense.update!(normalized_expense_params.except("receipts"))
+      attach_receipts!(@expense)
+      resubmit_rejected_expense! if @expense.rejected? && @expense.user_id == current_user.id
+    end
 
     render json: { notice: I18n.t("expenses.update") }, status: 200
   end
@@ -109,7 +110,7 @@ class Api::V1::ExpensesController < Api::V1::ApplicationController
     end
 
     def resubmit_rejected_expense!
-      @expense.update_columns(status: Expense.statuses[:submitted], paid_at: nil)
+      @expense.update!(status: :submitted, paid_at: nil)
       @expense.notify_submission_reviewers!
     end
 

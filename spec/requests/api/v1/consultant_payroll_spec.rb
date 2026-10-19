@@ -377,4 +377,20 @@ RSpec.describe "Consultant payroll review", type: :request, issue: 2458 do
     preview
     expect(report.fetch("fee_estimate")).to eq("100000.0")
   end
+
+  it "validates cutoff and month in the company timezone across the application UTC date boundary" do
+    configured
+    Time.use_zone("UTC") do
+      travel_to Time.utc(2026, 10, 19, 20)
+      preview(cutoff: "2026-10-20")
+      expect(response).to have_http_status(200)
+      preview(cutoff: "2026-10-21")
+      expect(response).to have_http_status(422)
+      travel_to Time.utc(2026, 10, 31, 20)
+      get "/api/v1/consultant_payroll", params: { month: "2026-11", cutoff: "2026-11-01" }
+      expect(response).to have_http_status(200)
+      get "/api/v1/consultant_payroll"
+      expect(response.parsed_body.fetch("period")).to eq("month" => "2026-10", "cutoff" => "2026-11-01", "today" => "2026-11-01")
+    end
+  end
 end

@@ -4,6 +4,7 @@ class Api::V1::SalarySlipsController < Api::V1::ApplicationController
   include ActionController::RequestForgeryProtection
   self.allow_forgery_protection = ActionController::Base.allow_forgery_protection
   protect_from_forgery with: :exception, only: [:create, :publish, :withdraw], unless: :token_authenticated_request?
+  before_action -> { response.headers["Cache-Control"] = "private, no-store" }
 
   def index
     authorize SalarySlip
@@ -17,7 +18,11 @@ class Api::V1::SalarySlipsController < Api::V1::ApplicationController
       slips = slips.where(pay_month: Date.iso8601("#{params[:month]}-01"))
     end
     pages = [(slips.count / 30.0).ceil, 1].max
-    page = [[params[:page].to_i, 1].max, pages].min
+    value = params[:page] || "1"
+    unless value.is_a?(String) && value.match?(/\A\d+\z/)
+      return render json: { errors: "Invalid page" }, status: 400
+    end
+    page = [[value.to_i, 1].max, pages].min
     render json: {
       salary_slips: slips.order(pay_month: :desc, id: :desc).limit(30).offset((page - 1) * 30).map { |slip| details(slip) },
       can_manage: manage?, employments: manage? ? employee_choices : [], pagination: { page:, pages: }
@@ -60,7 +65,6 @@ class Api::V1::SalarySlipsController < Api::V1::ApplicationController
     slip = find_slip
     authorize slip
     slip.audits.create!(action: "download", user: current_user, associated: current_company, audited_changes: {})
-    response.headers["Cache-Control"] = "private, no-store"
     response.headers["X-Content-Type-Options"] = "nosniff"
     send_data slip.file.download, filename: "salary-slip-#{slip.pay_month.strftime('%Y-%m')}.pdf",
       type: "application/pdf", disposition: "attachment"

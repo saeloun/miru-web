@@ -33,12 +33,10 @@ class ExpensePolicy < ApplicationPolicy
   end
 
   def approve?
-    same_workspace? && elevated_access?
+    same_workspace? && elevated_access? && !record.paid? && record.paid_at.nil?
   end
 
-  def reject?
-    same_workspace? && elevated_access?
-  end
+  alias_method :reject?, :approve?
 
   def authorize_current_user
     unless same_workspace?

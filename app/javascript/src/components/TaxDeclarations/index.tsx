@@ -63,7 +63,7 @@ const yearLabel = (year: number | string) => t(`taxDeclarations.years.${year}`);
 const DeclarationWorkspace = ({
   companyId,
 }: {
-  companyId: number | undefined;
+  companyId: number | string | undefined;
 }) => {
   const [archive, setArchive] = useState<Archive | null>(null);
   const [year, setYear] = useState("all");
@@ -349,7 +349,12 @@ const DeclarationWorkspace = ({
 
       <Dialog
         open={!!draft}
-        onOpenChange={open => !busy && !open && setDraft(null)}
+        onOpenChange={open => {
+          if (!busy && !open) {
+            setDraft(null);
+            setError("");
+          }
+        }}
       >
         <DialogContent>
           <DialogHeader>
@@ -499,7 +504,10 @@ const DeclarationWorkspace = ({
                   disabled={busy}
                   type="button"
                   variant="outline"
-                  onClick={() => setDraft(null)}
+                  onClick={() => {
+                    setDraft(null);
+                    setError("");
+                  }}
                 >
                   {t("cancel")}
                 </Button>
@@ -514,7 +522,12 @@ const DeclarationWorkspace = ({
 
       <Dialog
         open={!!selected}
-        onOpenChange={open => !busy && !open && setSelected(null)}
+        onOpenChange={open => {
+          if (!busy && !open) {
+            setSelected(null);
+            setError("");
+          }
+        }}
       >
         <DialogContent>
           <DialogHeader>

@@ -34,7 +34,8 @@ class SalarySlip < ApplicationRecord
       end
       return self if published_at?
 
-      previous = employment.salary_slips.published.find_by(pay_month:)
+      previous = employment.salary_slips.published.find_by(pay_month:) || employment.salary_slips
+        .where(pay_month:).where.not(published_at: nil).order(published_at: :desc, id: :desc).first
       previous&.withdraw!(actor:)
       update!(published_at: Time.current, published_by: actor, supersedes: previous)
     end

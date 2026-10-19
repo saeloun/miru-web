@@ -81,6 +81,7 @@ interface Expense {
   expenseType: "business" | "personal";
   status: "submitted" | "approved" | "rejected" | "paid";
   paidAt?: string | null;
+  approvedAt?: string | null;
   createdBy?: string;
   createdAt?: string;
 }
@@ -157,6 +158,7 @@ const fetchExpenses = async (
         ? "rejected"
         : "submitted",
     paidAt: expense.paidAt || null,
+    approvedAt: expense.approvedAt || null,
     createdBy: expense.submitterName || "",
   }));
 
@@ -845,13 +847,16 @@ const ExpensesTable: React.FC = () => {
                 Edit expense
               </DropdownMenuItem>
               {canManageReimbursements &&
-                expense.status !== "approved" &&
-                expense.status !== "paid" && (
+                !expense.paidAt &&
+                expense.status !== "paid" &&
+                (expense.status !== "approved" || !expense.approvedAt) && (
                   <DropdownMenuItem
                     onClick={() => approveMutation.mutate(expense.id)}
                   >
                     <CheckCircle size={16} className="mr-2" />
-                    Approve expense
+                    {expense.status === "approved"
+                      ? "Confirm approval"
+                      : "Approve expense"}
                   </DropdownMenuItem>
                 )}
               {canManageReimbursements &&
