@@ -64,10 +64,13 @@ class Api::V1::SalarySlipsController < Api::V1::ApplicationController
   def download
     slip = find_slip
     authorize slip
-    slip.audits.create!(action: "download", user: current_user, associated: current_company, audited_changes: {})
     response.headers["X-Content-Type-Options"] = "nosniff"
-    send_data slip.file.download, filename: "salary-slip-#{slip.pay_month.strftime('%Y-%m')}.pdf",
+    data = slip.file.download
+    slip.audits.create!(action: "download", user: current_user, associated: current_company, audited_changes: {})
+    send_data data, filename: "salary-slip-#{slip.pay_month.strftime('%Y-%m')}.pdf",
       type: "application/pdf", disposition: "attachment"
+  rescue ActiveStorage::FileNotFoundError
+    render json: { errors: "Document is unavailable. Please contact your workspace administrator." }, status: 404
   end
 
   private

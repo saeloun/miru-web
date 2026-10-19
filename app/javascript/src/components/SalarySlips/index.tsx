@@ -122,6 +122,7 @@ const SalarySlipArchive = () => {
     try {
       const { data } = await Api.get(`/salary_slips/${slip.id}/download`, {
         responseType: "blob",
+        skipErrorToast: true,
       });
       const url = URL.createObjectURL(data);
       const link = document.createElement("a");
@@ -129,8 +130,12 @@ const SalarySlipArchive = () => {
       link.download = `salary-slip-${slip.pay_month.slice(0, 7)}.pdf`;
       link.click();
       setTimeout(() => URL.revokeObjectURL(url), 1000);
-    } catch (failure) {
-      fail(failure);
+    } catch (failure: any) {
+      if (failure?.response?.status === 404) {
+        setError(t("documentUnavailable"));
+      } else {
+        fail(failure);
+      }
     } finally {
       setBusy(false);
     }

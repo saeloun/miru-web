@@ -106,6 +106,23 @@ RSpec.describe "Tax declarations", type: :request do
     expect(record.reload.status).to eq("draft")
   end
 
+  it "reports unavailable proof privately without recording a successful download or removing its history" do
+    record = claim
+    file = record.evidence.first
+    file.blob.service.delete(file.blob.key)
+
+    expect do
+      get "/api/v1/tax_declarations/#{record.id}/evidence/#{file.id}"
+    end.not_to change { record.audits.where(action: "download").count }
+
+    expect(response).to have_http_status(:not_found)
+    expect(response.parsed_body).to eq("errors" => "Document is unavailable. Please contact your workspace administrator.")
+    expect(response.headers["Cache-Control"]).to include("private", "no-store")
+    expect(response.headers["X-Content-Type-Options"]).to eq("nosniff")
+    expect(record.reload.status).to eq("draft")
+    expect(record.evidence.count).to eq(1)
+  end
+
   it "refuses an upload intended for another workspace after a workspace switch" do
     other = create(:company)
     create(:employment, company: other, user: employee, resigned_at: nil)

@@ -20,6 +20,20 @@ RSpec.describe "Salary-slip browser workflows", type: :system, js: true do
     employee.add_role(:employee, company)
   end
 
+  it "explains an unavailable PDF without hiding the published slip or leaving download disabled" do
+    slip = draft_slip
+    slip.publish!(actor: admin)
+    slip.file.blob.service.delete(slip.file.blob.key)
+    sign_in(employee)
+    with_forgery_protection do
+      visit "/salary-slips"
+      click_button "Download"
+      expect(page).to have_css("[role='alert']", text: "Document is unavailable. Please contact your workspace administrator.")
+      expect(page).to have_button("Download", disabled: false)
+      expect(page).to have_css("tbody tr", text: "Published")
+    end
+  end
+
   it "shows a competing withdrawal's publication error inside the still-open confirmation" do
     slip = draft_slip
     sign_in(admin)

@@ -187,7 +187,7 @@ const DeclarationWorkspace = ({
     try {
       const { data } = await Api.get(
         `/tax_declarations/${selected.id}/evidence/${file.id}`,
-        { responseType: "blob" }
+        { responseType: "blob", skipErrorToast: true }
       );
       const url = URL.createObjectURL(data);
       const link = document.createElement("a");
@@ -195,8 +195,12 @@ const DeclarationWorkspace = ({
       link.download = file.filename;
       link.click();
       setTimeout(() => URL.revokeObjectURL(url), 1000);
-    } catch (failure) {
-      fail(failure);
+    } catch (failure: any) {
+      if (failure?.response?.status === 404) {
+        setError(t("documentUnavailable"));
+      } else {
+        fail(failure);
+      }
     } finally {
       setBusy(false);
     }

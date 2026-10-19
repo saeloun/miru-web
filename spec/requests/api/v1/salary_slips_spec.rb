@@ -118,6 +118,24 @@ RSpec.describe "Salary slips", type: :request do
     expect(response).to have_http_status(:unprocessable_entity)
   end
 
+  it "reports unavailable stored PDFs privately without recording a successful download or changing the publication" do
+    slip = imported_slip
+    slip.publish!(actor: admin)
+    slip.file.blob.service.delete(slip.file.blob.key)
+    sign_in employee
+
+    expect do
+      get "/api/v1/salary_slips/#{slip.id}/download"
+    end.not_to change { slip.audits.where(action: "download").count }
+
+    expect(response).to have_http_status(:not_found)
+    expect(response.parsed_body).to eq("errors" => "Document is unavailable. Please contact your workspace administrator.")
+    expect(response.headers["Cache-Control"]).to include("private", "no-store")
+    expect(response.headers["X-Content-Type-Options"]).to eq("nosniff")
+    expect(slip.reload.status).to eq("published")
+    expect(slip.file).to be_attached
+  end
+
   it "links a replacement to a previously withdrawn publication without rewriting the withdrawal" do
     previous = imported_slip
     previous.publish!(actor: admin)

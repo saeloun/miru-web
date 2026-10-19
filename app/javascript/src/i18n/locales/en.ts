@@ -1,4 +1,6 @@
 const en = {
+  documentUnavailable:
+    "Document is unavailable. Please contact your workspace administrator.",
   consultantPayroll: {
     title: "Consultant payroll",
     description:

@@ -85,10 +85,13 @@ class Api::V1::TaxDeclarationsController < Api::V1::ApplicationController
     record = find_record
     authorize record
     file = record.evidence.find(params[:evidence_id])
-    record.audits.create!(action: "download", user: current_user, associated: current_company, audited_changes: {})
     response.headers["Cache-Control"] = "private, no-store"
     response.headers["X-Content-Type-Options"] = "nosniff"
-    send_data file.download, filename: file.filename.to_s, type: file.blob.content_type, disposition: "attachment"
+    data = file.download
+    record.audits.create!(action: "download", user: current_user, associated: current_company, audited_changes: {})
+    send_data data, filename: file.filename.to_s, type: file.blob.content_type, disposition: "attachment"
+  rescue ActiveStorage::FileNotFoundError
+    render json: { errors: "Document is unavailable. Please contact your workspace administrator." }, status: 404
   end
 
   private

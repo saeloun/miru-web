@@ -15,6 +15,27 @@ RSpec.describe "Tax-declaration browser workflow", type: :system, js: true do
     employee.add_role(:employee, company)
   end
 
+  it "explains unavailable proof inside details and leaves the claim and close control available" do
+    claim = employee.employments.find_by!(company:).tax_declarations.create!(tax_year: 2026,
+      category: "investment", claimed_amount: "1000", evidence: [{
+        io: File.open(Rails.root.join("spec/support/fixtures/pdf-file.pdf")),
+        filename: "proof.pdf", content_type: "application/pdf"
+      }])
+    file = claim.evidence.first
+    file.blob.service.delete(file.blob.key)
+    sign_in(employee)
+    with_forgery_protection do
+      visit "/tax-declarations"
+      click_button "View declaration ##{claim.id}"
+      within("[role='dialog']") do
+        click_button "Download · proof.pdf"
+        expect(page).to have_css("[role='alert']", text: "Document is unavailable. Please contact your workspace administrator.")
+        expect(page).to have_button("Close", disabled: false)
+        expect(page).to have_content("Draft")
+      end
+    end
+  end
+
   it "shows revoked-access errors inside the withdrawal confirmation without changing the claim" do
     membership = employee.employments.find_by!(company:)
     claim = membership.tax_declarations.create!(tax_year: 2026, category: "investment", claimed_amount: "1000")
