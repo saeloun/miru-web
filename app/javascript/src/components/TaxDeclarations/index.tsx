@@ -573,7 +573,7 @@ const DeclarationWorkspace = ({
                   {t(`taxDeclarations.categories.${selected.category}`)}
                 </span>
               </div>
-              <dl className="grid grid-cols-2 gap-2 text-sm">
+              <dl className="grid grid-cols-[minmax(0,1fr)_auto] gap-2 text-sm">
                 <dt>{t("taxDeclarations.claimed")}</dt>
                 <dd className="tabular-nums">
                   {currencyFormat("INR", selected.claimed_amount)}

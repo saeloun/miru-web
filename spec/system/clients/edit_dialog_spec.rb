@@ -22,7 +22,7 @@ RSpec.describe "Client edit dialog", type: :system, js: true do
     find("[role='menuitem']", text: "Edit Client").click
 
     expect(page).to have_content("Edit Client", wait: 10)
-    expect(page).to have_button("Edit Client")
+    expect(page).to have_button("Save")
     expect(page).to have_field("name", with: "Acme Labs")
     expect(page).to have_field("email")
   end
@@ -34,7 +34,7 @@ RSpec.describe "Client edit dialog", type: :system, js: true do
     find("[role='menuitem']", text: "Edit Client").click
 
     fill_in "email", with: "billing@acmelabs.test"
-    click_button "Edit Client"
+    click_button "Save"
 
     expect(page).to have_field("email", with: "billing@acmelabs.test", wait: 10)
     expect(client.reload.email).to eq("billing@acmelabs.test")

@@ -30,6 +30,37 @@ RSpec.describe "Consultant payroll source warnings", type: :system, js: true do
 
   after { travel_back }
 
+  it "keeps long legal entities and large fees inside narrow review and history dialogs" do
+    employment = consultant.employments.find_by!(company:)
+    employment.consultant_compensations.create!(created_by: admin, effective_on: "2026-09-01",
+      monthly_fee: "9999999999.99", hours_per_day: "8", weekdays: [1, 2, 3, 4, 5],
+      payment_source: "india", legal_entity_name: "Legal" * 40, change_reason: "Reviewed terms")
+    with_forgery_protection do
+      sign_in(admin)
+      [320, 375].each do |width|
+        page.current_window.resize_to(width, 812)
+        visit "/consultant-payroll"
+        ["Review #{consultant.full_name}", "Terms history"].each do |label|
+          click_button label
+          expect(page).to have_css("[role='dialog']")
+          expect(page.evaluate_script(<<~JS)).to be(true)
+            (() => {
+              const dialog = document.querySelector('[role="dialog"]');
+              const values = Array.from(dialog.querySelectorAll('dl dd'));
+              return dialog.scrollWidth <= dialog.clientWidth + 1 && document.documentElement.scrollWidth <= window.innerWidth + 1 && values.every(value => {
+                const range = document.createRange();
+                range.selectNodeContents(value);
+                return range.getClientRects().length === 1;
+              });
+            })()
+          JS
+          click_button "Close"
+          expect(page).not_to have_css("[role='dialog']")
+        end
+      end
+    end
+  end
+
   it "returns keyboard focus to the opening control after each consultant dialog closes" do
     sign_in(admin)
     with_forgery_protection do

@@ -737,7 +737,7 @@ const PayrollWorkspace = ({
                   ? t(`consultantPayroll.sources.${selected.payment_source}`)
                   : "—"}
               </p>
-              <dl className="grid grid-cols-2 gap-2 text-sm">
+              <dl className="grid grid-cols-[minmax(0,1fr)_auto] gap-2 text-sm">
                 {[
                   ["monthlyFee", amount(selected.monthly_fee)],
                   ["expected", selected.expected_hours ?? "—"],
@@ -864,7 +864,7 @@ const PayrollWorkspace = ({
                   {t("consultantPayroll.recalculateHelp")}
                 </p>
               )}
-              <dl className="grid grid-cols-2 gap-2 border-t pt-4 text-sm">
+              <dl className="grid grid-cols-[minmax(0,1fr)_auto] gap-2 border-t pt-4 text-sm">
                 <dt>{t("consultantPayroll.feeEstimate")}</dt>
                 <dd className="tabular-nums">
                   {dirty ? "—" : amount(selected.fee_estimate)}
