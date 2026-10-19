@@ -210,4 +210,41 @@ RSpec.describe "Api::V1::Expense review actions", type: :request do
       expect(stale.reload.approved_at).to eq(approved_at)
     end
   end
+
+  [:submitted, :rejected].each do |initial_status|
+    it "rejects stale material edits loaded as #{initial_status} before a competing approval" do
+      allow(CurrencyConversionService).to receive(:get_exchange_rate).and_return(BigDecimal("80"))
+      expense.update!(status: initial_status)
+      edits = [{ amount: expense.amount + 1 }, { currency: "INR" }, { date: expense.date - 1.day },
+        { user_id: admin.id }, { company_id: create(:company).id }]
+      stale_records = edits.map { Expense.find(expense.id) }
+      expense.approve!
+      approved = expense.reload.attributes
+
+      stale_records.zip(edits).each do |stale, attributes|
+        expect { stale.update!(attributes) }.to raise_error(ActiveRecord::RecordInvalid, /Reload/)
+        expect(expense.reload.attributes).to eq(approved)
+      end
+    end
+  end
+
+  it "rejects a stale legacy approval after another reviewer explicitly confirms its timestamp" do
+    expense.approve!
+    expense.update_column(:approved_at, nil)
+    stale = Expense.find(expense.id)
+    expense.approve!
+    approved = expense.reload.attributes
+    expect { stale.update!(amount: expense.amount + 1) }.to raise_error(ActiveRecord::RecordInvalid, /Reload/)
+    expect(expense.reload.attributes).to eq(approved)
+  end
+
+  it "clears approval for each fresh material edit, including a change of company" do
+    allow(CurrencyConversionService).to receive(:get_exchange_rate).and_return(BigDecimal("80"))
+    [{ amount: expense.amount + 1 }, { currency: "INR" }, { date: expense.date - 1.day },
+      { user_id: admin.id }, { company_id: create(:company).id }].each do |attributes|
+      expense.approve!
+      expense.update!(attributes)
+      expect(expense.reload).to have_attributes(status: "submitted", approved_at: nil)
+    end
+  end
 end

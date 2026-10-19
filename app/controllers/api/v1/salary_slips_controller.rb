@@ -8,7 +8,7 @@ class Api::V1::SalarySlipsController < Api::V1::ApplicationController
 
   def index
     authorize SalarySlip
-    slips = company_slips.includes(:employment, file_attachment: :blob)
+    slips = company_slips.includes(employment: :user, file_attachment: :blob)
     slips = slips.published.where(employments: { user_id: current_user.id }) unless manage?
     if params[:month].present?
       unless params[:month].is_a?(String) && params[:month].match?(/\A\d{4}-\d{2}\z/)

@@ -9,7 +9,7 @@ class Api::V1::TaxDeclarationsController < Api::V1::ApplicationController
   def index
     authorize TaxDeclaration
     records = company_records.includes(:corrections, employment: :user, evidence_attachments: :blob)
-    records = records.where(employments: { user_id: current_user.id }) unless policy(TaxDeclaration).manage?
+    records = records.where(employments: { user_id: current_user.id }) unless declaration_permissions[:manage]
     if params[:tax_year].present?
       return render json: { errors: "Unsupported tax year" }, status: 400 unless TaxDeclaration::YEARS.map(&:to_s).include?(params[:tax_year])
 
@@ -106,17 +106,24 @@ class Api::V1::TaxDeclarationsController < Api::V1::ApplicationController
         :supersedes_id, :reuse_evidence, evidence: [])
     end
 
+    def declaration_permissions
+      @declaration_permissions ||= { member: policy(TaxDeclaration).index?, manage: policy(TaxDeclaration).manage? }
+    end
+
     def details(record)
-      authorization = policy(record)
+      member = declaration_permissions[:member] && record.employment.company_id == current_company.id
+      own = member && record.employment.user_id == current_user.id
+      reviewer = member && !own && declaration_permissions[:manage]
+      unrevised = record.corrections.empty?
       { id: record.id, employee_name: record.employment.user.full_name, tax_year: record.tax_year,
         category: record.category, claimed_amount: record.claimed_amount.to_s("F"),
         approved_amount: record.approved_amount&.to_s("F"), notes: record.notes, status: record.status,
         review_reason: record.review_reason, reviewed_at: record.reviewed_at, supersedes_id: record.supersedes_id,
         revision_id: record.corrections.first&.id,
-        can_submit: authorization.submit? && record.status == "draft" && record.corrections.empty?,
-        can_review: authorization.review? && record.status == "submitted" && record.corrections.empty?,
-        can_revise: authorization.revise? && record.corrections.empty?,
-        can_withdraw: authorization.withdraw? && record.status != "withdrawn",
+        can_submit: own && record.status == "draft" && unrevised,
+        can_review: reviewer && record.status == "submitted" && unrevised,
+        can_revise: own && unrevised,
+        can_withdraw: own && record.status != "withdrawn",
         evidence: record.evidence.map { |file| { id: file.id, filename: file.filename.to_s } } }
     end
 end

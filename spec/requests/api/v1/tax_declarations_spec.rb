@@ -286,4 +286,47 @@ RSpec.describe "Tax declarations", type: :request do
   ensure
     controller.allow_forgery_protection = original
   end
+
+  it "does not repeat workspace membership checks for each declaration in the archive" do
+    membership_checks = lambda do
+      checks = []
+      listener = ->(*args) { checks << args.last[:sql] if args.last[:sql].include?('SELECT 1 AS one FROM "employments"') }
+      ActiveSupport::Notifications.subscribed(listener, "sql.active_record") { get "/api/v1/tax_declarations" }
+      expect(response).to have_http_status(:ok)
+      checks.size
+    end
+    employment.tax_declarations.create!(tax_year: 2026, category: "investment", claimed_amount: 100)
+    sign_in admin
+    single_record_checks = membership_checks.call
+    expect(single_record_checks).to be_positive
+    5.times { employment.tax_declarations.create!(tax_year: 2026, category: "investment", claimed_amount: 100) }
+    expect(membership_checks.call).to be <= single_record_checks
+    expect(response.parsed_body.fetch("tax_declarations").size).to eq(6)
+  end
+
+  it "keeps archive action flags consistent with record policies for owners, reviewers and corrected records" do
+    [employment, admin_employment].each do |membership|
+      TaxDeclaration::STATUSES.each do |status|
+        membership.tax_declarations.create!(tax_year: 2026, category: "investment", claimed_amount: 100,
+          status:, approved_amount: status == "approved" ? 100 : nil)
+      end
+    end
+    original = employment.tax_declarations.find_by!(status: "approved")
+    employment.tax_declarations.create!(tax_year: 2026, category: "investment", claimed_amount: 100, supersedes: original)
+
+    [admin, employee].each do |actor|
+      sign_in actor
+      get "/api/v1/tax_declarations"
+      expect(response).to have_http_status(:ok)
+      response.parsed_body.fetch("tax_declarations").each do |item|
+        record = TaxDeclaration.find(item.fetch("id"))
+        authorization = TaxDeclarationPolicy.new(actor, record)
+        expect(item.slice("can_submit", "can_review", "can_revise", "can_withdraw")).to eq(
+          "can_submit" => authorization.submit? && record.status == "draft" && record.corrections.empty?,
+          "can_review" => authorization.review? && record.status == "submitted" && record.corrections.empty?,
+          "can_revise" => authorization.revise? && record.corrections.empty?,
+          "can_withdraw" => authorization.withdraw? && record.status != "withdrawn")
+      end
+    end
+  end
 end
