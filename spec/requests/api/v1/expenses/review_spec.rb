@@ -3,10 +3,10 @@
 require "rails_helper"
 
 RSpec.describe "Api::V1::Expense review actions", type: :request do
-  let(:company) { create(:company) }
+  let(:company) { create(:company, base_currency: "USD") }
   let(:admin) { create(:user, current_workspace_id: company.id) }
   let(:employee) { create(:user, current_workspace_id: company.id) }
-  let(:expense) { create(:expense, company:, category_name: "Travel", user: employee) }
+  let(:expense) { create(:expense, company:, category_name: "Travel", user: employee, amount: 5000, currency: "USD", date: Date.current - 7.days) }
 
   before do
     create(:employment, company:, user: admin)
@@ -108,6 +108,7 @@ RSpec.describe "Api::V1::Expense review actions", type: :request do
   end
 
   it "preserves paid financial facts against fresh admin edits and direct model writes" do
+    allow(CurrencyConversionService).to receive(:get_exchange_rate).and_return(BigDecimal("80"))
     expense.approve!
     expense.mark_paid!
     original = expense.reload.attributes
@@ -117,7 +118,7 @@ RSpec.describe "Api::V1::Expense review actions", type: :request do
     expect(response).to have_http_status(:forbidden)
     expect(expense.reload.attributes).to eq(original)
 
-    { amount: 6000, currency: "USD", date: Date.yesterday, user_id: admin.id,
+    { amount: 6000, currency: "INR", date: expense.date - 1.day, user_id: admin.id,
       base_currency_amount: 6000, exchange_rate: 2, approved_at: nil }.each do |field, value|
       expect { expense.update!(field => value) }.to raise_error(ActiveRecord::RecordInvalid)
       expect(expense.reload.attributes).to eq(original)

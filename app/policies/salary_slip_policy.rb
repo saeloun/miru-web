@@ -22,7 +22,6 @@ class SalarySlipPolicy < ApplicationPolicy
   private
 
     def active_member?
-      user.present? && !user.discarded? &&
-        user.employments.kept.exists?(company_id: user.current_workspace_id)
+      user.present? && PayrollRunPolicy.new(user, PayrollRun).active_member?
     end
 end

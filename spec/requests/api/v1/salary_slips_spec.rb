@@ -6,8 +6,8 @@ RSpec.describe "Salary slips", type: :request do
   let(:company) { create(:company) }
   let(:admin) { create(:user, current_workspace: company) }
   let(:employee) { create(:user, current_workspace: company) }
-  let!(:admin_employment) { create(:employment, company:, user: admin) }
-  let!(:employment) { create(:employment, company:, user: employee) }
+  let!(:admin_employment) { create(:employment, company:, user: admin, resigned_at: nil) }
+  let!(:employment) { create(:employment, company:, user: employee, resigned_at: nil) }
 
   before do
     admin.add_role(:admin, company)
@@ -26,6 +26,31 @@ RSpec.describe "Salary slips", type: :request do
     import_slip
     expect(response).to have_http_status(:created)
     SalarySlip.order(:id).last
+  end
+
+  [:resigned, :future_joining, :missing_joining].each do |membership_state|
+    it "denies #{membership_state} administrators even when their role is retained" do
+      slip = imported_slip
+      slip.publish!(actor: admin)
+      attributes = case membership_state
+                   when :resigned then { resigned_at: Date.yesterday }
+                   when :future_joining then { joined_at: Date.tomorrow }
+                   when :missing_joining then { joined_at: nil }
+      end
+      admin_employment.update_columns(attributes)
+      expect(admin.has_role?(:admin, company)).to be(true)
+      get "/api/v1/salary_slips"
+      expect(response).to have_http_status(:forbidden)
+      get "/api/v1/salary_slips/#{slip.id}/download"
+      expect(response).to have_http_status(:forbidden)
+      post "/api/v1/salary_slips/#{slip.id}/publish"
+      expect(response).to have_http_status(:forbidden)
+      post "/api/v1/salary_slips/#{slip.id}/withdraw"
+      expect(response).to have_http_status(:forbidden)
+      import_slip
+      expect(response).to have_http_status(:forbidden)
+      expect(slip.reload.status).to eq("published")
+    end
   end
 
   it "imports a draft without returning storage URLs or blob identifiers" do
@@ -126,7 +151,7 @@ RSpec.describe "Salary slips", type: :request do
     slip = imported_slip
     slip.publish!(actor: admin)
     coworker = create(:user, current_workspace: company)
-    create(:employment, company:, user: coworker)
+    create(:employment, company:, user: coworker, resigned_at: nil)
     coworker.add_role(:book_keeper, company)
     sign_in coworker
     get "/api/v1/salary_slips/#{slip.id}/download"
@@ -141,7 +166,7 @@ RSpec.describe "Salary slips", type: :request do
     slip = imported_slip
     other_company = create(:company)
     other_admin = create(:user, current_workspace: other_company)
-    create(:employment, company: other_company, user: other_admin)
+    create(:employment, company: other_company, user: other_admin, resigned_at: nil)
     other_admin.add_role(:admin, other_company)
     sign_in other_admin
     import_slip

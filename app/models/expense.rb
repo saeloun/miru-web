@@ -200,7 +200,7 @@ class Expense < ApplicationRecord
 
     def calculate_base_currency_amount
       return if amount.blank?
-      return unless new_record? || amount_changed? || currency_changed? || date_changed?
+      return unless new_record? || amount_changed? || currency_changed? || date_changed? || company_id_changed?
 
       base_currency = company&.base_currency
       if base_currency.blank? || currency.blank? || currency == base_currency

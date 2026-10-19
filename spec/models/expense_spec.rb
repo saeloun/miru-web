@@ -34,6 +34,21 @@ require "rails_helper"
 RSpec.describe Expense, type: :model do
   let(:expense) { build(:expense) }
 
+  it "recalculates conversion and requires reapproval after a move to another company currency" do
+    original = create(:company, base_currency: "USD")
+    destination = create(:company, base_currency: "INR")
+    record = create(:expense, company: original, amount: 100, currency: "USD", date: Date.current)
+    record.approve!
+    allow(CurrencyConversionService).to receive(:get_exchange_rate).with("USD", "INR", record.date).and_return(BigDecimal("83"))
+    record.update!(company: destination)
+    expect(record.reload).to have_attributes(base_currency_amount: BigDecimal("8300"), exchange_rate: BigDecimal("83"),
+      exchange_rate_date: record.date, status: "submitted", approved_at: nil)
+    record.approve!
+    record.update!(company: original)
+    expect(record.reload).to have_attributes(base_currency_amount: BigDecimal("100"), exchange_rate: BigDecimal("1"),
+      status: "submitted", approved_at: nil)
+  end
+
   describe "Validations" do
     it { is_expected.to validate_presence_of(:date) }
 

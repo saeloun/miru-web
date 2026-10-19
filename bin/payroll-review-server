@@ -1,0 +1,43 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+abort "Review app only" unless ENV["PAYROLL_REVIEW_APP"] == "true" &&
+  ENV["APP_BASE_URL"] == "https://miru-payroll-pr-2459.onrender.com"
+
+require_relative "../config/environment"
+
+abort "Review database only" unless ActiveRecord::Base.connection_db_config.database == "miru_payroll_review"
+abort "Review storage only" unless Rails.application.config.active_storage.service == :local
+
+ActionMailer::Base.perform_deliveries = false
+ActiveJob::Base.queue_adapter = :test
+
+if ActiveRecord::Base.connection.data_sources.empty?
+  load Rails.root.join("db/schema.rb")
+end
+ActiveRecord::Tasks::DatabaseTasks.migrate
+
+Company.transaction do
+  company = Company.find_or_initialize_by(id: 1)
+  abort "Unexpected review data" if company.persisted? && company.name != "Miru Payroll Review"
+
+  company.update!(name: "Miru Payroll Review", country: "IN", base_currency: "INR",
+    standard_price: 0, timezone: "Asia/Kolkata", billing_exempt: true, date_format: "DD-MM-YYYY")
+  %w[admin employee colleague].each_with_index do |role, index|
+    user = User.find_or_initialize_by(email: "payroll-#{role}@example.test")
+    next if user.persisted?
+
+    user.assign_attributes(first_name: role.capitalize, last_name: "Review", current_workspace: company,
+      password: ENV.fetch("PAYROLL_REVIEW_PASSWORD"), confirmed_at: Time.current,
+      jti: SecureRandom.uuid, unique_session_id: SecureRandom.uuid)
+    user.save!(validate: false)
+    Employment.create!(company:, user:, joined_at: Date.new(2025, 1, 1), resigned_at: nil,
+      employee_id: "QA-#{index + 1}", designation: "Consultant", employment_type: "consultant")
+    user.add_role(role == "admin" ? :owner : :employee, company)
+  end
+end
+
+require "rails/command"
+require "rails/commands/server/server_command"
+Rails::Server.new(Host: "0.0.0.0", Port: ENV.fetch("PORT", "10000").to_i,
+  environment: "production", config: "config.ru").start

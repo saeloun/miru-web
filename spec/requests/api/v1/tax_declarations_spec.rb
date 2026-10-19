@@ -6,8 +6,8 @@ RSpec.describe "Tax declarations", type: :request do
   let(:company) { create(:company) }
   let(:employee) { create(:user, current_workspace: company) }
   let(:admin) { create(:user, current_workspace: company) }
-  let!(:employment) { create(:employment, company:, user: employee) }
-  let!(:admin_employment) { create(:employment, company:, user: admin) }
+  let!(:employment) { create(:employment, company:, user: employee, resigned_at: nil) }
+  let!(:admin_employment) { create(:employment, company:, user: admin, resigned_at: nil) }
 
   before do
     employee.add_role(:employee, company)
@@ -43,6 +43,31 @@ RSpec.describe "Tax declarations", type: :request do
     post "/api/v1/tax_declarations/#{record.id}/review", params: {
       review: { decision:, approved_amount: amount, reason: }
     }
+  end
+
+  [:resigned, :future_joining, :missing_joining].each do |membership_state|
+    it "denies #{membership_state} reviewers access to coworkers' tax evidence" do
+      record = claim
+      submit(record)
+      attributes = case membership_state
+                   when :resigned then { resigned_at: Date.yesterday }
+                   when :future_joining then { joined_at: Date.tomorrow }
+                   when :missing_joining then { joined_at: nil }
+      end
+      admin_employment.update_columns(attributes)
+      sign_in admin
+      get "/api/v1/tax_declarations"
+      expect(response).to have_http_status(:forbidden)
+      get "/api/v1/tax_declarations/#{record.id}"
+      expect(response).to have_http_status(:forbidden)
+      get "/api/v1/tax_declarations/#{record.id}/evidence/#{record.evidence.first.id}"
+      expect(response).to have_http_status(:forbidden)
+      review(record)
+      expect(response).to have_http_status(:forbidden)
+      create_claim
+      expect(response).to have_http_status(:forbidden)
+      expect(record.reload.status).to eq("submitted")
+    end
   end
 
   it "creates an own draft with private evidence and decimal INR amounts without trusting owner/state parameters" do
@@ -83,7 +108,7 @@ RSpec.describe "Tax declarations", type: :request do
 
   it "refuses an upload intended for another workspace after a workspace switch" do
     other = create(:company)
-    create(:employment, company: other, user: employee)
+    create(:employment, company: other, user: employee, resigned_at: nil)
     employee.add_role(:employee, other)
     employee.update!(current_workspace: other)
     create_claim
@@ -132,7 +157,7 @@ RSpec.describe "Tax declarations", type: :request do
   it "denies coworkers, clients, discarded members and cross-company reads or evidence access" do
     record = claim
     coworker = create(:user, current_workspace: company)
-    membership = create(:employment, company:, user: coworker)
+    membership = create(:employment, company:, user: coworker, resigned_at: nil)
     coworker.add_role(:book_keeper, company)
     sign_in coworker
     get "/api/v1/tax_declarations"
@@ -153,7 +178,7 @@ RSpec.describe "Tax declarations", type: :request do
     expect(response).not_to have_http_status(200)
     other = create(:company)
     admin.update!(current_workspace: other)
-    create(:employment, company: other, user: admin)
+    create(:employment, company: other, user: admin, resigned_at: nil)
     admin.add_role(:admin, other)
     sign_in admin
     get "/api/v1/tax_declarations/#{record.id}"

@@ -29,7 +29,7 @@ type Archive = {
   employments: { id: number; name: string; email: string }[];
   pagination: { page: number; pages: number };
 };
-type Upload = { file: File; employee: string; month: string };
+type Upload = { file: File; employee: string; month: string; error?: string };
 
 const SalarySlipArchive = () => {
   const [archive, setArchive] = useState<Archive | null>(null);
@@ -71,13 +71,26 @@ const SalarySlipArchive = () => {
         body.append("salary_slip[pay_month]", `${upload.month}-01`);
         body.append("salary_slip[source]", source);
         body.append("salary_slip[file]", upload.file);
-        await Api.post("/salary_slips", body);
-        setUploads(previous =>
-          previous.filter(item => item.file !== upload.file)
-        );
+        try {
+          await Api.post("/salary_slips", body);
+          setUploads(previous =>
+            previous.filter(item => item.file !== upload.file)
+          );
+        } catch (failure: any) {
+          setUploads(previous =>
+            previous.map(item =>
+              item.file === upload.file
+                ? {
+                    ...item,
+                    error:
+                      failure?.response?.data?.errors ||
+                      t("salarySlips.failed"),
+                  }
+                : item
+            )
+          );
+        }
       }
-    } catch (failure) {
-      fail(failure);
     } finally {
       setBusy(false);
       setRefresh(value => value + 1);
@@ -190,7 +203,23 @@ const SalarySlipArchive = () => {
               className="grid items-center gap-3 rounded-md border p-3 md:grid-cols-3"
               key={`${upload.file.name}-${index}`}
             >
-              <span className="break-all text-sm">{upload.file.name}</span>
+              <div className="space-y-2">
+                <span className="break-all text-sm">{upload.file.name}</span>
+                <Button
+                  aria-label={`${t("remove")} ${upload.file.name}`}
+                  disabled={busy}
+                  size="sm"
+                  type="button"
+                  variant="outline"
+                  onClick={() =>
+                    setUploads(items =>
+                      items.filter(item => item.file !== upload.file)
+                    )
+                  }
+                >
+                  {t("remove")}
+                </Button>
+              </div>
               <Select
                 disabled={busy}
                 value={upload.employee}
@@ -233,6 +262,14 @@ const SalarySlipArchive = () => {
                   )
                 }
               />
+              {upload.error && (
+                <p
+                  className="text-sm text-destructive md:col-span-3"
+                  role="alert"
+                >
+                  {upload.file.name}: {upload.error}
+                </p>
+              )}
             </div>
           ))}
           <Button
