@@ -95,7 +95,7 @@ class Api::V1::SalarySlipsController < Api::V1::ApplicationController
     end
 
     def employee_choices
-      current_company.employments.kept.includes(:user).filter_map do |employment|
+      current_company.employments.kept.includes(user: :roles).filter_map do |employment|
         next unless staff_employment?(employment)
 
         { id: employment.id, name: employment.user.full_name, email: employment.user.email }

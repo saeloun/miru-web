@@ -94,7 +94,7 @@ class Api::V1::ConsultantPayrollController < Api::V1::ApplicationController
     end
 
     def staff_choices
-      current_company.employments.kept.includes(:user).filter_map do |employment|
+      current_company.employments.kept.includes(user: :roles).filter_map do |employment|
         { id: employment.id, name: employment.user.full_name } if staff_member?(employment)
       end
     end
