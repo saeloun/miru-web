@@ -181,6 +181,7 @@ const SalarySlipArchive = () => {
                 type="file"
                 onChange={event => {
                   const files = Array.from(event.target.files || []);
+                  event.target.value = "";
                   if (
                     files.length > 20 ||
                     files.some(file => file.size > 5 * 1024 * 1024)
