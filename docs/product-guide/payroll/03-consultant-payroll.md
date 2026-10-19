@@ -21,6 +21,8 @@ Historical claims without a recorded approval time and foreign-currency claims r
 
 For an approved historical claim with no recorded approval time, an authorized reviewer can choose **Confirm approval** in its **Expenses** row menu. This records a current review date; it does not backdate approval to an earlier payroll cutoff.
 
-Recording an expense as paid prevents approval, rejection or resubmission from reopening it. Payment/review transitions and employee resubmission reload the claim under a row lock; stale edits cannot clear the recorded settlement status or timestamp. Reversing a settlement needs a separate reviewed accounting workflow.
+Recording an expense as paid prevents further edits, approval, rejection or resubmission. Payment/review transitions and employee resubmission reload the claim under a row lock; validated writes cannot change settled financial facts, approval time or payment status/timestamp. Reversing a settlement needs a separate reviewed accounting workflow.
+
+Permanent user deletion is blocked when retained payroll records reference that person as uploader, publisher, reviewer or terms creator. The records and their attribution remain intact; deactivate workspace access instead. A blocked deletion does not create a successful-deletion audit record.
 
 Verified beneficiaries, actual funding accounts, PTO decisions/accrual/recovery, delegated accounts permissions, locked runs, withholding, India handoff, Mercury wires/spouse splits, credit reconciliation and consultant invoices/remittance documents remain required follow-on work. See the [complete issue requirements](../../superpowers/specs/2026-10-19-consultant-payroll-requirements.md) for acceptance status.

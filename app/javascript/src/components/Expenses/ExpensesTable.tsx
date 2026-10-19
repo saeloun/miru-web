@@ -827,6 +827,7 @@ const ExpensesTable: React.FC = () => {
       enableHiding: false,
       cell: ({ row }) => {
         const expense = row.original;
+        if (expense.status === "paid" || expense.paidAt) return null;
 
         return (
           <DropdownMenu>

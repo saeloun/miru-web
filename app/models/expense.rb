@@ -9,6 +9,8 @@ class Expense < ApplicationRecord
 
   MAX_RECEIPT_SIZE_MB = 10
   MAX_RECEIPTS = 10
+  SETTLEMENT_FIELDS = %i[status paid_at approved_at amount currency date user_id company_id
+    base_currency_amount exchange_rate exchange_rate_date].freeze
   ALLOWED_RECEIPT_CONTENT_TYPES = %w[
     image/png image/jpeg image/jpg image/webp application/pdf text/csv application/vnd.ms-excel
     application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
@@ -148,7 +150,7 @@ class Expense < ApplicationRecord
   private
 
     def paid_settlement_is_final
-      return unless will_save_change_to_status? || will_save_change_to_paid_at?
+      return unless SETTLEMENT_FIELDS.any? { |field| will_save_change_to_attribute?(field) }
 
       previous_status, previous_paid_at = self.class.where(id:).lock.pick(:status, :paid_at)
       if previous_status == "paid" || previous_paid_at.present?

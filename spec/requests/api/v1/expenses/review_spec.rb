@@ -107,6 +107,23 @@ RSpec.describe "Api::V1::Expense review actions", type: :request do
     expect { stale.reload.mark_paid! }.to raise_error(ActiveRecord::RecordInvalid)
   end
 
+  it "preserves paid financial facts against fresh admin edits and direct model writes" do
+    expense.approve!
+    expense.mark_paid!
+    original = expense.reload.attributes
+    sign_in admin
+
+    patch api_v1_expense_path(expense), params: { expense: { amount: 6000 } }
+    expect(response).to have_http_status(:forbidden)
+    expect(expense.reload.attributes).to eq(original)
+
+    { amount: 6000, currency: "USD", date: Date.yesterday, user_id: admin.id,
+      base_currency_amount: 6000, exchange_rate: 2, approved_at: nil }.each do |field, value|
+      expect { expense.update!(field => value) }.to raise_error(ActiveRecord::RecordInvalid)
+      expect(expense.reload.attributes).to eq(original)
+    end
+  end
+
   it "rejects a direct stale model write after another instance records payment" do
     expense.approve!
     stale = Expense.find(expense.id)
