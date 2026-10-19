@@ -4,6 +4,7 @@
 abort "Review app only" unless ENV["PAYROLL_REVIEW_APP"] == "true" &&
   ENV["APP_BASE_URL"] == "https://miru-payroll-pr-2459.onrender.com"
 
+ENV["RAILS_ENV"] = "production"
 require_relative "../config/environment"
 
 abort "Review database only" unless ActiveRecord::Base.connection_db_config.database == "miru_payroll_review"

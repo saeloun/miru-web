@@ -46,7 +46,7 @@ RSpec.describe Expense, type: :model do
     record.approve!
     record.update!(company: original)
     expect(record.reload).to have_attributes(base_currency_amount: BigDecimal("100"), exchange_rate: BigDecimal("1"),
-      status: "submitted", approved_at: nil)
+      exchange_rate_date: nil, status: "submitted", approved_at: nil)
   end
 
   describe "Validations" do

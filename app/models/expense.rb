@@ -205,6 +205,7 @@ class Expense < ApplicationRecord
       base_currency = company&.base_currency
       if base_currency.blank? || currency.blank? || currency == base_currency
         self.exchange_rate = 1.0
+        self.exchange_rate_date = nil
         self.base_currency_amount = amount
         return
       end

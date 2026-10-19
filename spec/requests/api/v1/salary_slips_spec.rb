@@ -72,7 +72,10 @@ RSpec.describe "Salary slips", type: :request do
     expect(response).to have_http_status(:forbidden)
   end
 
-  it "publishes and downloads an employee's own slip through private no-store responses" do
+  it "publishes and privately downloads approved-provider slips independently of native payroll rollout" do
+    allow(ENV).to receive(:[]).and_call_original
+    allow(ENV).to receive(:[]).with("MIRU_PAYROLL_ENABLED").and_return("false")
+    expect(Payroll::Entitlement.enabled?(company.id)).to be(false)
     slip = imported_slip
     post "/api/v1/salary_slips/#{slip.id}/publish"
     expect(response).to have_http_status(:ok)
