@@ -54,7 +54,7 @@ RSpec.describe "Consultant payroll source warnings", type: :system, js: true do
               });
             })()
           JS
-          click_button "Close"
+          find_button("Close").send_keys(:escape)
           expect(page).not_to have_css("[role='dialog']")
         end
       end
