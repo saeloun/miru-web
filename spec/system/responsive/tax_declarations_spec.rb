@@ -15,6 +15,34 @@ RSpec.describe "Tax-declaration browser workflow", type: :system, js: true do
     employee.add_role(:employee, company)
   end
 
+  it "shows revoked-access errors inside the withdrawal confirmation without changing the claim" do
+    membership = employee.employments.find_by!(company:)
+    claim = membership.tax_declarations.create!(tax_year: 2026, category: "investment", claimed_amount: "1000")
+    sign_in(employee)
+    with_forgery_protection do
+      visit "/tax-declarations"
+      click_button "View declaration ##{claim.id}"
+      click_button "Withdraw declaration"
+      employee.remove_role(:employee, company)
+      employee.add_role(:client, company)
+      within(find("[role='dialog']", text: "Withdraw this version from consideration.")) do
+        click_button "Confirm"
+        expect(page).to have_css("[role='alert']", text: "You are not authorized to perform this action.")
+        expect(page).to have_button("Cancel", disabled: false)
+      end
+      click_button "Cancel"
+      expect(page).to have_css("[role='dialog']", count: 1)
+      within("[role='dialog']") do
+        expect(page).to have_css("[role='alert']", text: "You are not authorized to perform this action.")
+      end
+      click_button "Withdraw declaration"
+      within(find("[role='dialog']", text: "Withdraw this version from consideration.")) do
+        expect(page).not_to have_css("[role='alert']")
+      end
+      expect(claim.reload.status).to eq("draft")
+    end
+  end
+
   it "returns focus through tax dialogs and keeps it inside details after a nested withdrawal" do
     claim = employee.employments.find_by!(company:).tax_declarations.create!(tax_year: 2026,
       category: "investment", claimed_amount: "1000")

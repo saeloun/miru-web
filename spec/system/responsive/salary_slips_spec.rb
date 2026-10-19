@@ -9,16 +9,40 @@ RSpec.describe "Salary-slip browser workflows", type: :system, js: true do
   let(:employee) { create(:user, current_workspace: company) }
   let!(:admin_employment) { create(:employment, company:, user: admin, resigned_at: nil) }
   let!(:employment) { create(:employment, company:, user: employee, resigned_at: nil) }
+  let(:draft_slip) do
+    employment.salary_slips.create!(uploaded_by: admin, source: "Approved provider", pay_month: "2026-09-01",
+      file: { io: File.open(Rails.root.join("spec/support/fixtures/pdf-file.pdf")),
+              filename: "approved.pdf", content_type: "application/pdf" })
+  end
 
   before do
     admin.add_role(:admin, company)
     employee.add_role(:employee, company)
   end
 
+  it "shows a competing withdrawal's publication error inside the still-open confirmation" do
+    slip = draft_slip
+    sign_in(admin)
+    with_forgery_protection do
+      visit "/salary-slips"
+      click_button "Publish salary slip"
+      slip.withdraw!(actor: admin)
+      within("[role='dialog']") do
+        click_button "Confirm"
+        expect(page).to have_css("[role='alert']", text: "Import a new revision instead of republishing a withdrawn slip")
+        expect(page).to have_button("Cancel", disabled: false)
+      end
+      click_button "Cancel"
+      expect(page).not_to have_css("[role='dialog']")
+      expect(page).to have_css("[role='alert']", text: "Import a new revision instead of republishing a withdrawn slip")
+      click_button "Withdraw salary slip"
+      within("[role='dialog']") { expect(page).not_to have_css("[role='alert']") }
+      expect(slip.reload.status).to eq("withdrawn")
+    end
+  end
+
   it "restores focus after confirmation dismissal and uses the heading when publication removes its opener" do
-    slip = employment.salary_slips.create!(uploaded_by: admin, source: "Approved provider", pay_month: "2026-09-01",
-      file: { io: File.open(Rails.root.join("spec/support/fixtures/pdf-file.pdf")),
-              filename: "approved.pdf", content_type: "application/pdf" })
+    slip = draft_slip
     sign_in(admin)
     with_forgery_protection do
       visit "/salary-slips"

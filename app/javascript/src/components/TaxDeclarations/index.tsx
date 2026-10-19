@@ -556,7 +556,7 @@ const DeclarationWorkspace = ({
           </DialogHeader>
           {selected && (
             <div className="space-y-4">
-              {error && (
+              {error && !withdraw && (
                 <p className="text-sm text-destructive" role="alert">
                   {error}
                 </p>
@@ -709,6 +709,7 @@ const DeclarationWorkspace = ({
                     variant="ghost"
                     onClick={event => {
                       withdrawalFocus.remember(event);
+                      setError("");
                       setWithdraw(true);
                     }}
                   >
@@ -745,6 +746,11 @@ const DeclarationWorkspace = ({
               {t("taxDeclarations.withdrawHelp")}
             </DialogDescription>
           </DialogHeader>
+          {error && (
+            <p className="text-sm text-destructive" role="alert">
+              {error}
+            </p>
+          )}
           <div className="flex justify-end gap-2">
             <Button
               disabled={busy}

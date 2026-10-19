@@ -150,7 +150,7 @@ const SalarySlipArchive = () => {
           {t("salarySlips.description")}
         </p>
       </header>
-      {error && (
+      {error && !confirmation && (
         <p
           role="alert"
           className="rounded-md border border-destructive p-3 text-sm text-destructive"
@@ -375,6 +375,7 @@ const SalarySlipArchive = () => {
                           size="sm"
                           onClick={event => {
                             dialogFocus.remember(event);
+                            setError("");
                             setConfirmation({ slip, action: "publish" });
                           }}
                         >
@@ -388,6 +389,7 @@ const SalarySlipArchive = () => {
                           variant="ghost"
                           onClick={event => {
                             dialogFocus.remember(event);
+                            setError("");
                             setConfirmation({ slip, action: "withdraw" });
                           }}
                         >
@@ -436,6 +438,11 @@ const SalarySlipArchive = () => {
               {t(`salarySlips.${confirmation?.action || "publish"}`)}
             </DialogTitle>
           </DialogHeader>
+          {error && (
+            <p className="text-sm text-destructive" role="alert">
+              {error}
+            </p>
+          )}
           <p className="text-sm">
             {confirmation?.slip.employee_name} ·{" "}
             {confirmation?.slip.pay_month.slice(0, 7)}
