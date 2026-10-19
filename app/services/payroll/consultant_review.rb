@@ -158,6 +158,8 @@ class Payroll::ConsultantReview
           "approved_after_cutoff"
         elsif expense.currency != "INR"
           "foreign_currency"
+        elsif !expense.amount.finite? || !expense.amount.positive?
+          "invalid_amount"
         end
         reason ? excluded[reason] += 1 : eligible << expense
       end

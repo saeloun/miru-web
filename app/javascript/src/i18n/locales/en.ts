@@ -97,6 +97,8 @@ const en = {
       approved_after_cutoff:
         "%{count} claim(s) were approved after the cutoff.",
       foreign_currency: "%{count} claim(s) need a reviewed INR conversion.",
+      invalid_amount:
+        "%{count} claim(s) have an invalid reimbursement amount. Review the original claims.",
     },
   },
   taxDeclarations: {

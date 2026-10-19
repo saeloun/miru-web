@@ -23,6 +23,9 @@ RSpec.describe "Consultant payroll source warnings", type: :system, js: true do
     leave_type = create(:leave_type, leave: create(:leave, company:, year: 2026))
     leave = create(:timeoff_entry, user: consultant, leave_type:, duration: 60, leave_date: "2026-09-04")
     leave.update_columns(duration: -60)
+    claim = create(:expense, company:, user: consultant, currency: "INR", amount: 5000, date: "2026-09-10")
+    claim.approve!
+    claim.update_column(:amount, BigDecimal("NaN"))
   end
 
   after { travel_back }
@@ -38,6 +41,8 @@ RSpec.describe "Consultant payroll source warnings", type: :system, js: true do
         expect(page).to have_content("Work entries contain invalid durations.")
         expect(page).to have_content("Leave entries contain invalid durations.")
         expect(page).to have_content("No unpaid deduction was inferred.")
+        expect(page).to have_content("1 claim(s) have an invalid reimbursement amount. Review the original claims.")
+        expect(page).not_to have_css("input[type='checkbox']")
         expect(page).to have_css("dd", text: "—", exact_text: true, minimum: 1)
         expect(page).not_to have_content("NaN")
         expect(page).not_to have_content("Infinity")

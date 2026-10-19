@@ -166,6 +166,29 @@ RSpec.describe "Consultant payroll review", type: :request, issue: 2458 do
     expect(report.fetch("reimbursement_total")).to eq("5000.0")
   end
 
+  it "excludes invalid legacy reimbursement amounts and rejects selecting them without altering valid claims" do
+    configured
+    valid = expense(amount: "0.01")
+    valid.approve!
+    invalid = [BigDecimal("NaN"), 0, -500].map do |amount|
+      claim = expense
+      claim.approve!
+      claim.update_column(:amount, amount)
+      claim
+    end
+    invalid.each do |claim|
+      preview(expense_ids: [claim.id])
+      expect(response).to have_http_status(422)
+    end
+    preview(expense_ids: [valid.id])
+    expect(response).to have_http_status(200)
+    expect(report.fetch("eligible_expenses").pluck("id")).to eq([valid.id])
+    expect(report.fetch("excluded_expenses")).to include("invalid_amount" => 3)
+    expect(report.fetch("warnings")).to include("expense_review_required")
+    expect(report).to include("reimbursement_total" => "0.01", "total_estimate" => "100000.01")
+    expect(valid.reload.status).to eq("approved")
+  end
+
   [Float::NAN, Float::INFINITY, -60].each do |invalid_duration|
     it "flags legacy work duration #{invalid_duration} without presenting invalid totals or inferring a deduction" do
       configured
