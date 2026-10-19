@@ -138,6 +138,27 @@ RSpec.describe "Consultant payroll review", type: :request, issue: 2458 do
     expect(report.fetch("warnings")).to include("work_requires_review")
   end
 
+  it "prorates only against active applicable holidays and refreshes the schedule after calendar removal" do
+    configured
+    calendar = holidays
+    selected = create(:holiday_info, holiday: calendar, date: "2026-09-03", category: :optional)
+    create(:holiday_info, holiday: calendar, date: "2026-09-04", category: :optional)
+    create(:timeoff_entry, user: consultant, leave_type: nil, holiday_info: selected, leave_date: selected.date)
+    create(:holiday_info, holiday: create(:holiday, year: 2026), date: "2026-09-07")
+
+    preview(confirmed_unpaid_hours: "8", unpaid_reason: "Confirmed unpaid absence")
+    expect(response).to have_http_status(:ok)
+    expect(report).to include("expected_hours" => "152.0", "fee_estimate" => "94736.84")
+
+    selected.discard!
+    preview(confirmed_unpaid_hours: "8", unpaid_reason: "Confirmed unpaid absence")
+    expect(report).to include("expected_hours" => "160.0", "fee_estimate" => "95000.0")
+
+    calendar.discard!
+    preview(confirmed_unpaid_hours: "8", unpaid_reason: "Confirmed unpaid absence")
+    expect(report).to include("expected_hours" => "176.0", "fee_estimate" => "95454.55")
+  end
+
   it "requires explicit, cutoff-valid INR claim selection and refuses stale or foreign claim IDs" do
     configured
     valid = expense
