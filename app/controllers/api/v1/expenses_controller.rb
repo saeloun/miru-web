@@ -43,9 +43,10 @@ class Api::V1::ExpensesController < Api::V1::ApplicationController
   end
 
   def destroy
-    authorize @expense
-
-    @expense.discard!
+    @expense.with_lock do
+      authorize @expense
+      @expense.discard!
+    end
 
     render json: { notice: I18n.t("expenses.destroy") }, status: 200
   end

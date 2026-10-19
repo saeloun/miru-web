@@ -127,8 +127,8 @@ class Expense < ApplicationRecord
 
   def mark_paid!
     with_lock do
-      unless approved? && paid_at.nil?
-        errors.add(:status, "must be approved and unpaid before recording payment")
+      unless approved? && paid_at.nil? && !discarded?
+        errors.add(:status, "must be approved, unpaid and not discarded before recording payment")
         raise ActiveRecord::RecordInvalid, self
       end
       update!(status: :paid, paid_at: Time.current)

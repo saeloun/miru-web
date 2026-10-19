@@ -134,6 +134,27 @@ RSpec.describe "Api::V1::Expense review actions", type: :request do
     expect(expense.reload.status).to eq("paid")
   end
 
+  it "reloads a stale approved claim before authorizing deletion after another request pays it" do
+    expense.approve!
+    stale = Expense.find(expense.id)
+    expense.mark_paid!
+    allow_any_instance_of(Api::V1::ExpensesController).to receive(:set_expense) do |controller|
+      controller.instance_variable_set(:@expense, stale)
+    end
+    sign_in admin
+    delete api_v1_expense_path(expense)
+    expect(response).to have_http_status(:forbidden)
+    expect(expense.reload).to have_attributes(status: "paid", discarded_at: nil)
+  end
+
+  it "does not record payment after a competing request discards the claim first" do
+    expense.approve!
+    stale = Expense.find(expense.id)
+    expense.discard!
+    expect { stale.mark_paid! }.to raise_error(ActiveRecord::RecordInvalid)
+    expect(expense.reload).to have_attributes(status: "approved", paid_at: nil)
+  end
+
   it "reloads a stale rejected claim before authorizing an employee edit and resubmission" do
     expense.reject!
     stale = Expense.find(expense.id)
