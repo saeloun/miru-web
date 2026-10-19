@@ -5,6 +5,8 @@ title: Consultant payroll review
 
 Owners and admins can open **Consultant payroll** to review a month's consultant fees and reimbursement candidates. This is a preview: it does not approve payroll, reserve claims, transfer money, send accounts instructions or issue invoices. Other staff cannot access coworkers' consultant terms or reports.
 
+This workflow follows Miru's internal payroll rollout gate and is unavailable until the server explicitly enables the authoritative company ID. A role or company name alone does not enable it. The same gate protects API access, direct calculations and term creation; salary-slip archives and tax-evidence collection remain separate workflows.
+
 Choose **Add consultant terms**, select a current staff member, and enter the effective date, INR monthly fee, contracting legal entity, funding source, scheduled weekdays/hours and reason. Save a new version to correct terms; earlier versions remain in **Terms history**. A correction with the same effective date uses the newest version. The funding source is a label for preparation; it does not connect a bank account or change the contracting entity. Workspace/employment deletion follows Miru's existing deletion behavior and removes associated terms.
 
 Select the payroll month and expense cutoff. The report shows configured consultants active in that period, expected schedule hours, recorded hours across review states, fractional recorded days (`hours / 8`) and the fee estimate. Applicable holiday dates count once. **Review [name]** shows approved, pending, rejected and approval-not-required work separately. Recorded time off is unclassified; approved paid leave and opening/closing PTO require a future approval/balance workflow.

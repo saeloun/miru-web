@@ -5,6 +5,7 @@ class ConsultantCompensation < ApplicationRecord
   belongs_to :employment
   belongs_to :created_by, class_name: "User"
   has_one :company, through: :employment
+  before_validation :require_payroll_entitlement, on: :create
   audited associated_with: :company, only: [:effective_on]
   attr_readonly :employment_id, :created_by_id, :effective_on, :monthly_fee, :hours_per_day,
     :weekdays, :payment_source, :legal_entity_name, :change_reason
@@ -18,6 +19,10 @@ class ConsultantCompensation < ApplicationRecord
   validate :valid_terms
 
   private
+
+    def require_payroll_entitlement
+      Payroll::Entitlement.require!(employment&.company_id)
+    end
 
     def valid_terms
       [:monthly_fee, :hours_per_day].each do |attribute|

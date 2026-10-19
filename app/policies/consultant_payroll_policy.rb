@@ -2,7 +2,10 @@
 
 class ConsultantPayrollPolicy < ApplicationPolicy
   def index?
-    user&.current_workspace&.id == user&.current_workspace_id && SalarySlipPolicy.new(user, SalarySlip).create?
+    return false unless user && user.current_workspace&.id == user.current_workspace_id
+
+    PayrollRunPolicy.new(user, PayrollRun).index? &&
+      user.roles.where(resource: user.current_workspace, name: %w[owner admin]).exists?
   end
   alias_method :create?, :index?
   alias_method :preview?, :index?

@@ -216,7 +216,11 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
     ...group,
     items: group.items
       .filter(item => !item.roles || item.roles.includes(companyRole))
-      .filter(item => item.href !== "/payroll" || payrollEnabled)
+      .filter(
+        item =>
+          !["/payroll", "/consultant-payroll"].includes(item.href) ||
+          payrollEnabled
+      )
       .map(item =>
         ["/reports", "/analytics"].includes(item.href) && !hasProAccess(company)
           ? {

@@ -261,7 +261,7 @@ export const ROUTES = [
   },
   {
     path: "/consultant-payroll",
-    subRoutes: [{ path: "", Component: ConsultantPayroll }],
+    subRoutes: [{ path: "", Component: withPayrollGate(ConsultantPayroll) }],
     authorisedRoles: [ADMIN, OWNER],
   },
   {

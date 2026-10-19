@@ -6,6 +6,8 @@ Updated: 2026-10-17. Target: the November 2026 payroll dry run. March 2027 is a 
 
 The inspected develop baseline is `16be9654f34b3baf327b4ee8e8de94720e7167f5`.
 
+Integration update, 19 October: this branch now includes private salary slips, tax-evidence review and consultant terms/review from `feature/payroll-razorpay-design`, merged with the snapshot foundation from PR #2456. The historical inventory below describes its original baseline. [Sonam's #2458 acceptance ledger](superpowers/specs/2026-10-19-consultant-payroll-requirements.md) governs the complete consultant workflow. Consultant terms/review follows the existing company-ID entitlement gate; it does not yet create locked runs or reserve/pay claims. Issue-wide pending acceptance examples live in `spec/acceptance/payroll_issue_2458_pending_spec.rb`.
+
 | Area | Existing state | Delivery boundary |
 | --- | --- | --- |
 | Salary slips | Separate proposed design on `feature/payroll-razorpay-design`, commit `afbafaebaeb89d5ddcd310c7faaa19a6088c03ea`; no product implementation in that branch | Preserve the import-and-publish design and its worktree. This branch does not implement another document archive. |

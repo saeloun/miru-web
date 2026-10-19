@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe "Consultant payroll review", type: :request do
+RSpec.describe "Consultant payroll review", type: :request, issue: 2458 do
   let(:company) { create(:company, base_currency: "INR", timezone: "Asia/Kolkata") }
   let(:admin) { create(:user, current_workspace: company) }
   let(:consultant) { create(:user, current_workspace: company) }
@@ -11,6 +11,7 @@ RSpec.describe "Consultant payroll review", type: :request do
 
   before do
     travel_to Time.zone.local(2026, 10, 19, 12)
+    enable_synthetic_payroll(company.id)
     admin.add_role(:admin, company)
     consultant.add_role(:employee, company)
     sign_in admin
@@ -238,8 +239,9 @@ RSpec.describe "Consultant payroll review", type: :request do
     expect(response).to have_http_status(403)
     other = create(:company)
     admin.update!(current_workspace: other)
-    create(:employment, company: other, user: admin)
+    create(:employment, company: other, user: admin, resigned_at: nil)
     admin.add_role(:admin, other)
+    enable_synthetic_payroll(other.id)
     sign_in User.find(admin.id)
     get "/api/v1/consultant_payroll/#{employment.id}/compensations"
     expect(response).to have_http_status(404)
@@ -271,5 +273,108 @@ RSpec.describe "Consultant payroll review", type: :request do
     expect(ConsultantCompensation.count).to eq(0)
   ensure
     controller.allow_forgery_protection = original
+  end
+
+  it "keeps every preview endpoint and direct calculation or term creation disabled outside the enabled company" do
+    terms = configured
+    allow(ENV).to receive(:[]).with("MIRU_PAYROLL_ENABLED").and_return("false")
+    get "/api/v1/consultant_payroll", params: { month: "2026-09", cutoff: "2026-10-19" }
+    expect(response).to have_http_status(403)
+    get "/api/v1/consultant_payroll/#{employment.id}/compensations"
+    expect(response).to have_http_status(403)
+    configure
+    expect(response).to have_http_status(403)
+    preview
+    expect(response).to have_http_status(403)
+    expect do
+      terms.dup.save!
+    end.to raise_error(Payroll::Entitlement::NotEnabled)
+    expect do
+      Payroll::ConsultantReview.new(employment:, month: Date.new(2026, 9, 1), cutoff: Date.new(2026, 10, 19)).process
+    end.to raise_error(Payroll::Entitlement::NotEnabled)
+  end
+
+  it "rounds fractional unpaid proration once and preserves a zero-fee month's selected reimbursement" do
+    configured
+    holidays
+    configure(monthly_fee: "100000.01")
+    preview(confirmed_unpaid_hours: "59.99", unpaid_reason: "Reviewed fractional unpaid time")
+    expect(report.fetch("fee_estimate")).to eq("62506.26")
+    claim = expense
+    claim.approve!
+    preview(confirmed_unpaid_hours: "160", unpaid_reason: "Reviewed full unpaid month", expense_ids: [claim.id])
+    expect(report).to include("fee_estimate" => "0.0", "reimbursement_total" => "5000.0", "total_estimate" => "5000.0")
+  end
+
+  it "uses configured daily hours for expected hours while keeping recorded days at hours divided by eight" do
+    configured
+    holidays
+    configure(hours_per_day: "4")
+    project = create(:project, client: create(:client, company:))
+    create(:timesheet_entry, project:, user: consultant, work_date: "2026-09-03", duration: 240, review_status: :approved)
+    preview(confirmed_unpaid_hours: "76", unpaid_reason: "Reviewed unpaid hours on a four-hour schedule")
+    expect(report).to include("expected_hours" => "80.0", "recorded_hours" => "4.0", "working_days" => "0.5", "fee_estimate" => "5000.0")
+  end
+
+  it "counts selected optional holidays without treating unselected optional dates as holidays" do
+    configured
+    calendar = holidays
+    selected = create(:holiday_info, holiday: calendar, category: :optional, date: "2026-09-03")
+    create(:holiday_info, holiday: calendar, category: :optional, date: "2026-09-04")
+    create(:timeoff_entry, user: consultant, leave_type: nil, holiday_info: selected, leave_date: selected.date, duration: 480)
+    preview
+    expect(report.fetch("expected_hours")).to eq("152.0")
+    expect(report.fetch("recorded_timeoff_hours")).to eq("0.0")
+  end
+
+  it "restricts source work to active service dates and blocks an invented exit-month fee" do
+    configured
+    employment.update!(resigned_at: "2026-09-15")
+    project = create(:project, client: create(:client, company:))
+    create(:timesheet_entry, project:, user: consultant, work_date: "2026-09-15", duration: 240)
+    create(:timesheet_entry, project:, user: consultant, work_date: "2026-09-16", duration: 480)
+    preview
+    expect(report).to include("recorded_hours" => "4.0", "fee_estimate" => nil, "total_estimate" => nil)
+    expect(report.fetch("warnings")).to include("partial_service")
+  end
+
+  it "rechecks live admin access after a cached role or employment is revoked" do
+    configured
+    admin.has_cached_role?(:admin, company)
+    admin.remove_role(:admin, company)
+    get "/api/v1/consultant_payroll", params: { month: "2026-09", cutoff: "2026-10-19" }
+    expect(response).to have_http_status(403)
+    admin.add_role(:admin, company)
+    admin_membership.discard!
+    preview
+    expect(response).to have_http_status(401)
+    expect(ConsultantPayrollPolicy.new(admin, :consultant_payroll).index?).to be(false)
+  end
+
+  it "never reserves or settles selected claims even when the same preview is submitted repeatedly" do
+    configured
+    claim = expense
+    claim.approve!
+    original = claim.reload.attributes
+    2.times do
+      preview(expense_ids: [claim.id])
+      expect(report).to include("reimbursement_total" => "5000.0", "claims_reserved" => false, "payment_ready" => false)
+    end
+    expect(claim.reload.attributes).to eq(original)
+    claim.mark_paid!
+    preview(expense_ids: [claim.id])
+    expect(response).to have_http_status(422)
+  end
+
+  it "requires effective terms before an unpaid scenario without affecting a valid period" do
+    configured
+    configure(effective_on: "2026-08-01")
+    preview(month: "2026-07")
+    expect(report).to include("monthly_fee" => nil, "fee_estimate" => nil)
+    expect(report.fetch("warnings")).to include("missing_terms")
+    preview(month: "2026-07", confirmed_unpaid_hours: "1", unpaid_reason: "Cannot apply without agreed terms")
+    expect(response).to have_http_status(422)
+    preview
+    expect(report.fetch("fee_estimate")).to eq("100000.0")
   end
 end

@@ -115,6 +115,10 @@ Acceptance must cover the five 160-hour examples, nonbillable work, holidays cou
 
 Every issue section is retained below. **Preview** means covered only by delivery 1; **Pending** means a required follow-on acceptance, not an implemented feature. Preserve this ledger as later deliveries replace pending entries with test/browser/provider evidence.
 
+Executable coverage: `spec/requests/api/v1/consultant_payroll_spec.rb` tests implemented preview behavior; the merged `spec/services/payroll*`, `spec/services/payroll_calculation`, `spec/services/payroll_sources`, `spec/services/payroll_providers`, `spec/policies/payroll_run_policy_spec.rb` and `spec/requests/api/v1/payroll_runs_spec.rb` cover the existing dry-run calculation/source/revision/preflight foundations. They do not establish completed payment workflows. `spec/acceptance/payroll_issue_2458_pending_spec.rb` enumerates the remaining end-to-end contracts for all 12 issue sections as explicitly pending RSpec examples; replace each with executable assertions as its workflow is implemented, rather than deleting it or treating pending as passed.
+
+Rollout integration: the consultant terms/review feature uses the same trusted, company-ID-bound `Payroll::Entitlement` gate as the merged payroll foundation. API/policy, direct service/model writes and UI navigation/routes enforce it. Payroll is disabled by default; this work does not enable any production company. Existing source/revision/approval foundations reduce later delivery work, but the consultant preview is not yet connected to locked runs, claims reservations or transfers.
+
 | Issue | Required cases and improvements | Delivery 1 status |
 | --- | --- | --- |
 | 1 | Consultant legal/tax facts, invoice consent/version/withdrawal; account number confirmed twice; country/currency/IFSC/SWIFT and provider-specific fields | Pending |

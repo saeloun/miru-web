@@ -48,3 +48,13 @@ Preview inputs and selected claims are not reserved or saved as a payroll approv
 - Public Mercury documentation is researched in the linked contract note; no provider credentials, beneficiaries, provider requests, emails or payments were created. No bank sandbox/live account acceptance, PTO ledger, locked payroll approval/reservation, payment/credit automation or invoice/remittance workflow is claimed complete. The full issue remains open.
 
 Runtime note: the long-running QA server used `mise exec --` directly because the RTK wrapper previously stopped persistent server sessions; builds/tests/lint used RTK. gbrain retrieval was unavailable (Bun 1.3.14 installed; >=1.4.0 required), so current issue/repository/official-provider evidence governed this work.
+
+## PR integration and acceptance expansion
+
+PR #2459 publishes the full documents/tax-evidence/consultant-preview branch. Current `develop`, including PR #2456's payroll snapshot foundation and persistent-session fixes, was merged without rewriting history. Route, parameter-filter and schema conflicts retain both changes.
+
+Consultant review now follows the foundation's default-off, company-ID-bound entitlement at API/policy, direct service/model creation, navigation and route boundaries. A failing disabled-company request spec reproduced the ungated access before the fix. Fresh authorization also respects role removal and current employment; membership revocation may revoke the login session itself. No production rollout configuration was set.
+
+Expanded regression coverage includes fractional INR rounding, zero fee plus full reimbursement, four-hour schedules versus the issue's fixed eight-hour worked-day divisor, selected optional holidays, exit-date boundaries, stale roles, absent effective terms, and repeated previews versus subsequent direct settlement. All remaining issue-wide end-to-end cases are explicitly pending in the issue-tagged acceptance file; pending examples are not implementation evidence.
+
+Local integration run: **474 examples, zero failures: 395 passing and 79 pending** across consultant/payroll requests, existing calculation/source/revision/preflight/permission/concurrency foundations, expense model/requests, slips and declarations. JSON result: `/tmp/miru-2458-tests.json`. Standalone Vite build, touched-file RuboCop/ESLint/Prettier and repository-wide Reek passed. CI's initial Reek failure was resolved by extracting attendance, unpaid-hour validation, fee and claim-selection steps without changing calculations. Brave verified disabled navigation/direct-route access and the explicitly enabled synthetic company; no provider operations were exercised.

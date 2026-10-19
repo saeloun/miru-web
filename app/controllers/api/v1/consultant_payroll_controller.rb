@@ -8,6 +8,9 @@ class Api::V1::ConsultantPayrollController < Api::V1::ApplicationController
   rescue_from Payroll::ConsultantReview::InvalidInput do |error|
     render json: { errors: error.message }, status: 422
   end
+  rescue_from Payroll::Entitlement::NotEnabled do |error|
+    render json: { errors: error.message }, status: 403
+  end
 
   def index
     authorize :consultant_payroll
