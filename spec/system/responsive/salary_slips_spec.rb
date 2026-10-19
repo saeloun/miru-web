@@ -76,6 +76,42 @@ RSpec.describe "Salary-slip browser workflows", type: :system, js: true do
     end
   end
 
+  it "preserves assigned PDFs when a replacement selection exceeds the file limits" do
+    sign_in(admin)
+    with_forgery_protection do
+      visit "/salary-slips"
+      fill_in "Payroll provider or source", with: "Approved payroll provider"
+      Dir.mktmpdir("salary-slip-limits") do |directory|
+        queued = File.join(directory, "queued.pdf")
+        FileUtils.cp(Rails.root.join("spec/support/fixtures/pdf-file.pdf"), queued)
+        oversized = File.join(directory, "oversized.pdf")
+        File.open(oversized, "wb") { |file| file.truncate(5.megabytes + 1) }
+        too_many = Array.new(21) do |index|
+          File.join(directory, "replacement-#{index}.pdf").tap { |path| FileUtils.cp(queued, path) }
+        end
+        attach_file "PDF documents", queued
+        find("[aria-label='Employee queued.pdf']").click
+        find("[role='option']", text: "#{employee.full_name} (#{employee.email})", exact_text: true).click
+        page.execute_script(<<~JS, find("input[aria-label='Pay month queued.pdf']"))
+          const input = arguments[0];
+          Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value").set.call(input, "2026-09");
+          input.dispatchEvent(new Event("input", { bubbles: true }));
+        JS
+        expect(page).to have_button("Save drafts", disabled: false)
+        [oversized, too_many].each do |selection|
+          attach_file "PDF documents", selection
+          expect(page).to have_css("[role='alert']", text: "20 PDFs")
+          expect(find("input[aria-label='Pay month queued.pdf']").value).to eq("2026-09")
+          expect(find("[aria-label='Employee queued.pdf']")).to have_text(employee.full_name)
+          expect(page).to have_button("Save drafts", disabled: false)
+        end
+        click_button "Save drafts"
+        expect(page).to have_css("tbody tr", text: "queued.pdf", count: 1)
+        expect(employment.salary_slips.count).to eq(1)
+      end
+    end
+  end
+
   it "saves later valid PDFs after a failed row and allows removing and reselecting the same file" do
     sign_in(admin)
     with_forgery_protection do

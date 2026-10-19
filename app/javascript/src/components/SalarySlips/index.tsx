@@ -199,7 +199,6 @@ const SalarySlipArchive = () => {
                     files.length > 20 ||
                     files.some(file => file.size > 5 * 1024 * 1024)
                   ) {
-                    setUploads([]);
                     setError(t("salarySlips.fileLimit"));
 
                     return;
