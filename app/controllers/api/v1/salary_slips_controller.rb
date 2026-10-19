@@ -88,7 +88,7 @@ class Api::V1::SalarySlipsController < Api::V1::ApplicationController
     end
 
     def slip_params
-      params.require(:salary_slip).permit(:employment_id, :pay_month, :source, :file)
+      params.expect(salary_slip: [:employment_id, :pay_month, :source, :file])
     end
 
     def staff_employment?(employment)

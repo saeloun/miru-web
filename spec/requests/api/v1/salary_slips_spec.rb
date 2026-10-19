@@ -62,6 +62,16 @@ RSpec.describe "Salary slips", type: :request do
     expect(response.headers["Cache-Control"]).to include("private", "no-store")
   end
 
+  it "rejects malformed import objects without creating a slip or attachment" do
+    ["unexpected", [{ employment_id: employment.id }]].each do |payload|
+      sign_in admin
+      expect do
+        post "/api/v1/salary_slips", params: { salary_slip: payload }, as: :json
+      end.not_to change { [SalarySlip.count, ActiveStorage::Attachment.count] }
+      expect(response).to have_http_status(:bad_request)
+    end
+  end
+
   it "hides drafts from the employee and denies draft downloads" do
     slip = imported_slip
     sign_in employee

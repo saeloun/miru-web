@@ -69,7 +69,7 @@ class Api::V1::TaxDeclarationsController < Api::V1::ApplicationController
   def review
     record = find_record
     authorize record
-    review = params.require(:review).permit(:decision, :approved_amount, :reason)
+    review = params.expect(review: [:decision, :approved_amount, :reason])
     record.review!(actor: current_user, decision: review[:decision], amount: review[:approved_amount], reason: review[:reason])
     render json: { tax_declaration: details(record) }
   end
@@ -105,8 +105,8 @@ class Api::V1::TaxDeclarationsController < Api::V1::ApplicationController
     end
 
     def claim_params
-      params.require(:tax_declaration).permit(:company_id, :tax_year, :category, :claimed_amount, :notes,
-        :supersedes_id, :reuse_evidence, evidence: [])
+      params.expect(tax_declaration: [:company_id, :tax_year, :category, :claimed_amount, :notes,
+        :supersedes_id, :reuse_evidence, { evidence: [] }])
     end
 
     def declaration_permissions

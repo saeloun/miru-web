@@ -82,6 +82,28 @@ RSpec.describe "Tax declarations", type: :request do
     expect(record.audits.last.audited_changes.to_s).not_to include("Investment statement", "12000.50")
   end
 
+  it "rejects malformed declaration objects without creating a claim or attachment" do
+    ["unexpected", [{ company_id: company.id }]].each do |payload|
+      sign_in employee
+      expect do
+        post "/api/v1/tax_declarations", params: { tax_declaration: payload }, as: :json
+      end.not_to change { [TaxDeclaration.count, ActiveStorage::Attachment.count] }
+      expect(response).to have_http_status(:bad_request)
+    end
+  end
+
+  it "rejects malformed review objects without changing the submitted claim or its audit" do
+    record = claim
+    submit(record)
+    ["unexpected", [{ decision: "approved", approved_amount: "12000.50" }]].each do |payload|
+      sign_in admin
+      expect do
+        post "/api/v1/tax_declarations/#{record.id}/review", params: { review: payload }, as: :json
+      end.not_to change { [record.reload.attributes, record.audits.count] }
+      expect(response).to have_http_status(:bad_request)
+    end
+  end
+
   it "submits, reviews and downloads the owner's proof through an authenticated no-store response" do
     record = claim
     submit(record)
