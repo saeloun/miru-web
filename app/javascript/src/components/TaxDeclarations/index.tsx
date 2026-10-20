@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import Api from "apis/api";
 import { useUserContext } from "context/UserContext";
 import { currencyFormat } from "helpers/currency";
@@ -44,6 +45,7 @@ type Declaration = {
   evidence: { id: number; filename: string }[];
 };
 type Archive = {
+  can_estimate_tax: boolean;
   tax_declarations: Declaration[];
   categories: string[];
   tax_years: number[];
@@ -221,15 +223,22 @@ const DeclarationWorkspace = ({
             {t("taxDeclarations.description")}
           </p>
         </div>
-        <Button
-          disabled={busy || !archive || !companyId}
-          onClick={event => {
-            dialogFocus.remember(event);
-            startDraft();
-          }}
-        >
-          {t("taxDeclarations.new")}
-        </Button>
+        <div className="flex flex-wrap gap-2">
+          {archive?.can_estimate_tax && (
+            <Button asChild variant="outline">
+              <Link to="/india-tax">{t("indiaTax.open")}</Link>
+            </Button>
+          )}
+          <Button
+            disabled={busy || !archive || !companyId}
+            onClick={event => {
+              dialogFocus.remember(event);
+              startDraft();
+            }}
+          >
+            {t("taxDeclarations.new")}
+          </Button>
+        </div>
       </header>
       <p className="rounded-lg border bg-muted/30 p-4 text-sm">
         {t("taxDeclarations.manualHelp")}

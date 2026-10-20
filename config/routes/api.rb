@@ -59,6 +59,7 @@ namespace :api, defaults: { format: "json" } do
       end
     end
     resources :imports, only: [:create, :show]
+    resources :india_tax_estimates, only: [:index, :create]
     get "consultant_payroll", to: "consultant_payroll#index"
     get "consultant_payroll/:id/compensations", to: "consultant_payroll#history"
     post "consultant_payroll/:id/compensations", to: "consultant_payroll#create"

@@ -1,0 +1,30 @@
+# India annual salary tax estimates
+
+User priority: India only; expand the existing salary-slip and evidence workspace toward reliable tax preparation. This is the first calculation unit within the approved India payroll design, not complete ClearTax, payroll settlement or filing coverage.
+
+## First working unit
+
+Provide a private, default-off payroll-gated annual estimator linked from Tax Declarations. Active staff can compare their entered full-year INR projections; no coworker records, identifiers or claim amounts are imported. The existing evidence workflow remains independent. A preview never changes a declaration, payroll run, salary slip or payment.
+
+Support resident individuals with ordinary salaried income and domestic taxable interest only, all three age bands, FY 2025–26 / AY 2026–27 under the 1961 Act, and Tax Year 2026–27 under the 2025 Act. No other income type is implied by a generic 'other income' box. Require explicit confirmation that the income and deduction profile fits the supported scope and entered deduction amounts are otherwise legally eligible, documented and not duplicated. Missing/false confirmations, unknown fields, unsupported years, foreign currencies and non-decimal amounts fail closed.
+
+Compare old/new regimes using aggregate salary across employers, the salary-capped standard deduction, actual eligible professional tax, the shared investment/annuity/employee-pension pool, distinct additional personal NPS, noncash eligible health-insurance premiums in separate family/parent buckets, and employer NPS. Apply each regime's exclusions, per-rule caps and gross-total-income ceiling. The investment/annuity amount is an otherwise eligible input after subtype-specific restrictions. Employee NPS has its own contribution and qualifying salary/DA basis; apply its 10% salary ceiling before the shared ₹150,000 cap. Require a stated total personal NPS paid and reject allocations across the shared/additional pools exceeding that total. The eligibility confirmation additionally excludes reuse of the same underlying payment. The preview does not independently establish investment eligibility from a PDF or a total.
+
+Gross salary includes employer NPS contributions. Model up to ten employer-NPS rows with separate contributions, qualifying salary/DA bases and Central/State Government status; apply the percentage ceiling to each employer before aggregation. A single employer-category flag cannot stand for mixed employers. Reject total qualifying salary bases plus contributions exceeding the aggregate salary entered. For domestic interest, separately collect the eligible bank/cooperative-bank/post-office subset (not exceeding total taxable interest): old under-60 savings-only deduction ₹10,000, resident senior eligible deposits ₹50,000; new zero. Legacy 80TTA/80TTB map to current section 153. Interest eligibility is explicit, not inferred from all interest income.
+
+The first health calculation covers insurance premiums only. Preventive checkups, medical expenditure, multi-year policies and health-scheme contributions remain outside this unit until their structured rules are implemented. HRA/LTA, house-property deductions/losses, donations, agricultural/dividend/special-rate/foreign/business income, pension withdrawals, arrears relief and unlisted deductions are outside the supported profile. Do not silently calculate a supposedly complete result for those cases.
+
+Tax computation: income rounded by discarding paise then rounding to the nearest ten; age-aware old and current new slabs; resident rebate and new-regime rebate marginal relief; surcharge and surcharge marginal relief at each actual rate transition; 4% cess; final annual liability rounded to ten. Return intermediate values, admitted deduction lines, governing Act/period/section references, calculation version and explicit estimate-only/not-payroll-ready status. No tax credits, interest, late fees, monthly TDS allocation, PF/ESI, GST or consultant withholding is inferred.
+
+## Implementation choices
+
+- One Ruby calculation object under `app/models/india_tax`, reusing existing decimal/immutable value helpers; no gem or formula DSL.
+- A preview-only India Tax Estimates resource, strict shape-aware parameters, existing Tax Declaration active-membership authorization plus the trusted company rollout gate, CSRF protection, filtered request parameters and private/no-store responses. Its metadata endpoint also authorizes the form before inputs are shown. Keep the declaration archive's calculation_enabled false; a distinct can_estimate_tax capability links to the separate tool.
+- A separate React estimate page reached from the declaration workspace, using existing inputs/buttons/selects and currency formatting. The API's capability flag controls the link; server authorization remains authoritative. Use INR decimal strings throughout and clear results immediately when inputs change. Workspace-keyed remounts discard prior private inputs.
+- No persistence or automatic use of reviewed evidence in this release. Input eligibility is a stated prerequisite; unsupported tax situations require the later structured eligibility workflow.
+
+## Verification
+
+Literal official/independently derived examples, slab/rebate/surcharge transitions, rounding at paise/ten-rupee boundaries, senior bands, deduction caps and regime exclusions; gross-income ceilings; immutable output and malformed/unsupported inputs. Request specs cover every authorization/rollout/workspace/privacy boundary and no side effects. Native Brave verifies both periods, a capped-deduction comparison, stale-result removal, invalid requests, mobile layout and zero captured browser errors. Run the required Vite build, focused Ruby/JS checks, current-head CI and isolated staging verification. Keep screenshot and source provenance in the PR.
+
+Source audits: [statutory calculation](../../research/2026-10-21-india-payroll-calculation-audit.md) and [deduction eligibility](../../research/2026-10-21-india-deduction-eligibility.md).

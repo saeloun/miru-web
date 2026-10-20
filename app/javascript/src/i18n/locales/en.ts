@@ -1,4 +1,102 @@
 const en = {
+  indiaTax: {
+    title: "India annual tax estimate",
+    open: "Estimate annual tax",
+    compare: "Compare tax regimes",
+    comparison: "Tax comparison",
+    description:
+      "Compare annual income tax for supported resident salary and domestic interest. This does not calculate take-home pay or file a return.",
+    year: "Income period and governing law",
+    age: "Age attained during this income period",
+    deductions: "Eligible annual deductions",
+    salaryHelp:
+      "Use full-year salary across employers, including taxable benefits and employer NPS contributions. Exclude genuine non-taxable business reimbursements. Do not enter CTC or a monthly amount.",
+    deductionHelp:
+      "Enter only eligible amounts paid for this period. Investment and annuity inputs exclude NPS; enter NPS separately. Insurance inputs cover non-cash premiums for this period only, excluding checkups, medical costs and multi-year policies.",
+    savingsHelp:
+      "Eligible interest: savings accounts with eligible Indian banks, cooperative banks or post offices; fixed/time deposits do not qualify under age 60. Old-regime limit: INR 10,000.",
+    depositHelp:
+      "Eligible interest: deposits with eligible Indian banks, cooperative banks or post offices, including qualifying time deposits. Resident senior old-regime limit: INR 50,000.",
+    family_senior: "An insured family member is a resident senior citizen",
+    parents_senior: "An insured parent is a resident senior citizen",
+    employerPensions: "Employer NPS already included in salary",
+    employerHelp:
+      "Add each employer separately. Qualifying salary includes eligible basic salary and DA under the employment terms, excluding other allowances and perquisites. A government-owned company is not automatically Central or State Government.",
+    employer_contribution: "Employer %{number} pension contribution (INR)",
+    employer_salary_basis: "Employer %{number} qualifying salary (INR)",
+    employerGovernment: "Employer %{number} is Central or State Government",
+    addEmployer: "Add employer pension",
+    removeEmployer: "Remove employer %{number}",
+    scopeHelp:
+      "Supported: resident individuals with salary and domestic taxable interest only. This tool excludes HRA/LTA, property income/losses, dividends, capital gains, business/consultant income, agriculture, foreign income, pension withdrawals, arrears relief and deductions not listed here.",
+    scopeConfirm: "I confirm this supported income profile",
+    eligibilityHelp:
+      "Amounts must satisfy each scheme's legal conditions and be supported by records. Personal NPS allocations must not reuse the same contribution. Reviewed documents are not imported or treated as automatic tax eligibility.",
+    eligibilityConfirm:
+      "I confirm deduction eligibility and no duplicate claims",
+    admitted: "Entered and admitted deductions",
+    saving: "Difference in annual tax",
+    sources: "Official rule sources",
+    source: "Income Tax Department source %{number}",
+    resultHelp:
+      "Estimate from entered qualifying inputs only. No payroll deduction, tax credit, TDS deposit, official certificate or filing is created. Standard/personal deductions reduce taxable income, not your bank payment.",
+    failed:
+      "Unable to calculate this estimate. Check your access and inputs, then try again.",
+    ages: {
+      under_60: "Under 60",
+      "60_to_79": "60 to 79",
+      "80_plus": "80 or older",
+    },
+    regimes: { old: "Old regime", new: "New regime" },
+    preferred: {
+      old: "Lower estimate: old regime",
+      new: "Lower estimate: new regime",
+      same: "Both estimates are equal",
+    },
+    fields: {
+      gross_salary: "Annual gross salary (INR)",
+      taxable_interest: "Domestic taxable interest (INR)",
+      investments: "Eligible investments and annuity (INR)",
+      employee_nps: "Employee NPS in shared pool (INR)",
+      additional_nps: "Additional personal NPS (INR)",
+      personal_nps_paid: "Total personal NPS paid (INR)",
+      pension_salary: "Qualifying personal pension salary (INR)",
+      professional_tax: "Professional tax paid (INR)",
+      health_self: "Eligible family insurance premiums (INR)",
+      health_parents: "Eligible parent insurance premiums (INR)",
+      eligible_interest: "Eligible bank and post-office interest (INR)",
+    },
+    totals: {
+      salary_deductions: "Salary deductions",
+      chapter_deductions: "Other admitted deductions",
+      taxable_income: "Rounded taxable income",
+      slab_tax: "Tax before rebate",
+      rebate: "Resident rebate",
+      rebate_marginal_relief: "Rebate marginal relief",
+      surcharge: "Surcharge after relief",
+      surcharge_marginal_relief: "Surcharge marginal relief",
+      cess: "Health and education cess",
+      annual_tax: "Annual income tax",
+    },
+    columns: {
+      item: "Deduction",
+      rule: "Applicable provision",
+      entered: "Entered / statutory",
+      old: "Old regime",
+      new: "New regime",
+    },
+    items: {
+      standard_deduction: "Standard deduction",
+      professional_tax: "Professional tax",
+      employer_nps: "Employer NPS",
+      investments: "Investment and annuity pool",
+      employee_nps: "Employee NPS shared pool",
+      additional_nps: "Additional personal NPS",
+      health_self: "Family health insurance",
+      health_parents: "Parent health insurance",
+      eligible_interest: "Eligible deposit interest",
+    },
+  },
   documentUnavailable:
     "Document is unavailable. Please contact your workspace administrator.",
   consultantPayroll: {

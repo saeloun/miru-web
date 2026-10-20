@@ -6,6 +6,10 @@ class TaxDeclarationPolicy < ApplicationPolicy
   end
   alias_method :create?, :index?
 
+  def estimate?
+    index? && Payroll::Entitlement.enabled?(user.current_workspace_id)
+  end
+
   def manage?
     index? && has_owner_or_admin_role?
   end

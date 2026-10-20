@@ -16,3 +16,5 @@ Claimants can withdraw their own versions. Withdrawal retains the proof, amount 
 Documents require authenticated downloads and have no public sharing links. Workflow changes and downloads enter the company audit log; claim amounts, details and review reasons are excluded from those audit payloads and filtered from request parameters. Proof/claim responses use private, no-store caching.
 
 Approval is a manual employer review record. Miru does not yet calculate statutory eligibility, shared deduction caps, PF, salary TDS, net pay or return amounts from these declarations. No return is filed and no Form 16/130 certificate is issued by this workflow. Reimbursements continue through **Expenses**; scheduling them into payroll and preventing duplicate payroll/direct settlement is a separate planned capability.
+
+Payroll-enabled workspaces also offer a separate [India annual tax estimate](04-india-tax-estimates.md). It compares supported salary/interest projections from manually entered eligible inputs; it does not apply these reviewed claims automatically.

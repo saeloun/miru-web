@@ -23,6 +23,7 @@ class Api::V1::TaxDeclarationsController < Api::V1::ApplicationController
     page = [[(page_value || "1").to_i, 1].max, pages].min
     render json: { tax_declarations: records.order(id: :desc).limit(30).offset((page - 1) * 30).map { |record| details(record) },
       categories: TaxDeclaration::CATEGORIES, tax_years: TaxDeclaration::YEARS, calculation_enabled: false,
+      can_estimate_tax: policy(TaxDeclaration).estimate?,
       pagination: { page:, pages: } }
   end
 
