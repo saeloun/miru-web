@@ -12,6 +12,39 @@ RSpec.describe "Expenses CRUD", type: :system, js: true do
     sign_in(user)
   end
 
+  describe "company date formats" do
+    { "DD-MM-YYYY" => %w[19-10-2026 01-10-2026],
+      "MM-DD-YYYY" => %w[10-19-2026 10-01-2026],
+      "YYYY-MM-DD" => %w[2026-10-19 2026-10-01],
+      nil => %w[10-19-2026 10-01-2026], "" => %w[10-19-2026 10-01-2026] }.each do |format, displayed_dates|
+      context "with #{format.inspect}" do
+        let(:company) { create(:company, date_format: format) }
+
+        %w[2026-10-19 2026-10-01].zip(displayed_dates).each do |date, displayed_date|
+          it "preserves #{date} and approval after a description-only edit" do
+            expense = create(:expense, company:, user:, date:, category_name: "Travel",
+              description: "Synthetic dated reimbursement")
+            expense.approve!
+
+            with_forgery_protection do
+              visit "/expenses"
+              find("button[aria-label='Expense actions for Synthetic dated reimbursement']", wait: 10).click
+              find("[role='menuitem']", text: "Edit expense").click
+              within("[role='dialog']") do
+                expect(page).to have_field("Date", with: displayed_date)
+                fill_in "Description", with: "Synthetic corrected description"
+                click_button "Save Changes"
+              end
+              expect(page).to have_content("Synthetic corrected description")
+              expect(expense.reload.date).to eq(Date.iso8601(date))
+              expect(expense).to be_approved
+            end
+          end
+        end
+      end
+    end
+  end
+
   describe "exact monetary values" do
     let(:company) { create(:company, base_currency: "INR") }
 

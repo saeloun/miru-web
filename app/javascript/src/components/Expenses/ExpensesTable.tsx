@@ -51,6 +51,7 @@ import {
 import { useUserContext } from "../../context/UserContext";
 import { expensesApi } from "apis/api";
 import { currencyFormat } from "../../helpers/currency";
+import { buildDateParseFormats } from "../../helpers/dateParseFormats";
 import { toast } from "sonner";
 import { i18n } from "../../i18n";
 import ReceiptPreviewDialog from "./ReceiptPreviewDialog";
@@ -199,7 +200,8 @@ const ExpensesTable: React.FC = () => {
   const queryClient = useQueryClient();
   const { company, companyRole } = useUserContext();
   const baseCurrency = company?.baseCurrency || company?.base_currency || "USD";
-  const dateFormat = company?.dateFormat || "DD-MM-YYYY";
+  const dateFormat =
+    company?.dateFormat || company?.date_format || "MM-DD-YYYY";
   const location = useLocation();
   const navigate = useNavigate();
   const isNewExpenseRoute = location.pathname.endsWith("/expenses/new");
@@ -368,17 +370,16 @@ const ExpensesTable: React.FC = () => {
 
   const handleEdit = (expense: Expense) => {
     setSelectedExpense(expense);
-    let dateForInput = expense.date;
-    if (dateForInput && !dateForInput.includes("-")) {
-      // If it's in some other format, try to parse it
-      const parsed = dayjs(dateForInput);
-      if (parsed.isValid()) {
-        dateForInput = parsed.format("YYYY-MM-DD");
-      }
-    }
+    const parsedDate = dayjs(
+      expense.date,
+      buildDateParseFormats(dateFormat),
+      true
+    );
 
     setFormData({
-      date: dateForInput,
+      date: parsedDate.isValid()
+        ? parsedDate.format("YYYY-MM-DD")
+        : expense.date,
       description: expense.description,
       amount: expense.amount,
       currency: expense.currency || baseCurrency,
