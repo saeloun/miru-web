@@ -21,7 +21,7 @@ class TaxDeclaration < ApplicationRecord
   validates :tax_year, inclusion: { in: YEARS }
   validates :category, inclusion: { in: CATEGORIES }
   validates :status, inclusion: { in: STATUSES }
-  validates :notes, length: { maximum: 2000 }, presence: true, if: -> { category == "other" }
+  validates :notes, presence: true, if: -> { category == "other" }
   validates :notes, :review_reason, length: { maximum: 2000 }
   validates :claimed_amount, numericality: { greater_than: 0, less_than: 10_000_000_000 }
   validates :approved_amount, numericality: { greater_than: 0, less_than_or_equal_to: :claimed_amount }, allow_nil: true
@@ -46,9 +46,8 @@ class TaxDeclaration < ApplicationRecord
       invalid!("You cannot review your own declaration") if employment.user_id == actor.id
       invalid!("Choose a valid review decision") unless %w[approved rejected needs_information].include?(decision)
       invalid!("Provide a review reason") if reason.blank?
-      assign_attributes(status: decision, approved_amount: decision == "approved" ? amount : nil,
+      update!(status: decision, approved_amount: decision == "approved" ? amount : nil,
         review_reason: reason, reviewed_by: actor, reviewed_at: Time.current)
-      save!
       if decision == "approved"
         previous = supersedes
         while previous

@@ -8,8 +8,9 @@ class Api::V1::SalarySlipsController < Api::V1::ApplicationController
 
   def index
     authorize SalarySlip
+    can_manage = policy(SalarySlip).create?
     slips = company_slips.includes(employment: :user, file_attachment: :blob)
-    slips = slips.published.where(employments: { user_id: current_user.id }) unless manage?
+    slips = slips.published.where(employments: { user_id: current_user.id }) unless can_manage
     if params[:month].present?
       unless params[:month].is_a?(String) && params[:month].match?(/\A\d{4}-\d{2}\z/)
         return render json: { errors: "Invalid pay month" }, status: 400
@@ -25,7 +26,7 @@ class Api::V1::SalarySlipsController < Api::V1::ApplicationController
     page = [[value.to_i, 1].max, pages].min
     render json: {
       salary_slips: slips.order(pay_month: :desc, id: :desc).limit(30).offset((page - 1) * 30).map { |slip| details(slip) },
-      can_manage: manage?, employments: manage? ? employee_choices : [], pagination: { page:, pages: }
+      can_manage:, employments: can_manage ? employee_choices : [], pagination: { page:, pages: }
     }
   rescue Date::Error
     render json: { errors: "Invalid pay month" }, status: 400
@@ -33,11 +34,12 @@ class Api::V1::SalarySlipsController < Api::V1::ApplicationController
 
   def create
     authorize SalarySlip
-    employment = current_company.employments.kept.find(slip_params[:employment_id])
+    attributes = slip_params
+    employment = current_company.employments.kept.find(attributes[:employment_id])
     raise ActiveRecord::RecordNotFound unless staff_employment?(employment)
 
-    slip = employment.salary_slips.new(slip_params.except(:employment_id, :file).merge(uploaded_by: current_user))
-    upload = slip_params[:file]
+    slip = employment.salary_slips.new(attributes.except(:employment_id, :file).merge(uploaded_by: current_user))
+    upload = attributes[:file]
     unless upload.is_a?(ActionDispatch::Http::UploadedFile) && Marcel::MimeType.for(upload.tempfile) == "application/pdf"
       slip.errors.add(:file, "must be a PDF")
       raise ActiveRecord::RecordInvalid, slip
@@ -81,10 +83,6 @@ class Api::V1::SalarySlipsController < Api::V1::ApplicationController
 
     def find_slip
       company_slips.find(params[:id])
-    end
-
-    def manage?
-      policy(SalarySlip).create?
     end
 
     def slip_params

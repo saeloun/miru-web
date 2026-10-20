@@ -34,19 +34,20 @@ class Api::V1::TaxDeclarationsController < Api::V1::ApplicationController
 
   def create
     authorize TaxDeclaration
-    unless claim_params[:company_id].to_s == current_company.id.to_s
+    attributes = claim_params
+    unless attributes[:company_id].to_s == current_company.id.to_s
       return render json: { errors: "Workspace changed. Reload before uploading a declaration." }, status: 409
     end
     employment = current_user.employments.kept.find_by!(company: current_company)
-    record = employment.tax_declarations.new(claim_params.except(:company_id, :evidence, :supersedes_id, :reuse_evidence))
+    record = employment.tax_declarations.new(attributes.except(:company_id, :evidence, :supersedes_id, :reuse_evidence))
     employment.with_lock do
-      if claim_params[:supersedes_id].present?
-        previous = company_records.find(claim_params[:supersedes_id])
+      if attributes[:supersedes_id].present?
+        previous = company_records.find(attributes[:supersedes_id])
         authorize previous, :revise?
         record.supersedes = previous
-        record.evidence = previous.evidence.map(&:blob) if claim_params[:reuse_evidence] == "true"
+        record.evidence = previous.evidence.map(&:blob) if attributes[:reuse_evidence] == "true"
       end
-      uploads = Array(claim_params[:evidence]).compact_blank
+      uploads = Array(attributes[:evidence]).compact_blank
       uploads.each do |upload|
         unless upload.is_a?(ActionDispatch::Http::UploadedFile) &&
             TaxDeclaration::EVIDENCE_TYPES.include?(Marcel::MimeType.for(upload.tempfile))
@@ -85,7 +86,6 @@ class Api::V1::TaxDeclarationsController < Api::V1::ApplicationController
     record = find_record
     authorize record
     file = record.evidence.find(params[:evidence_id])
-    response.headers["Cache-Control"] = "private, no-store"
     response.headers["X-Content-Type-Options"] = "nosniff"
     data = file.download
     record.audits.create!(action: "download", user: current_user, associated: current_company, audited_changes: {})

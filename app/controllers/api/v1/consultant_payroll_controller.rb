@@ -33,12 +33,13 @@ class Api::V1::ConsultantPayrollController < Api::V1::ApplicationController
 
   def create
     authorize :consultant_payroll
-    return unless matching_company?(term_params[:company_id])
+    attributes = term_params
+    return unless matching_company?(attributes[:company_id])
 
     employment = current_company.employments.kept.find(params[:id])
     raise ActiveRecord::RecordNotFound unless staff_member?(employment)
 
-    record = employment.consultant_compensations.create!(term_params.except(:company_id).merge(created_by: current_user))
+    record = employment.consultant_compensations.create!(attributes.except(:company_id).merge(created_by: current_user))
     render json: { compensation: details(record) }, status: 201
   end
 

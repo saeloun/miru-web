@@ -72,7 +72,7 @@ class Payroll::ConsultantReview
       entries = work.pluck(:review_status, :duration)
       if entries.any? { |_status, minutes| !minutes.finite? || minutes.negative? }
         warnings << "invalid_work_duration"
-        return { hours: nil, approved: nil, not_required: nil, unresolved: nil, covered: nil, pending: nil, rejected: nil }
+        return {}
       end
       hours = entries.group_by(&:first).transform_values do |rows|
         rows.sum(zero) { |_status, minutes| minutes.to_s.to_d } / 60
@@ -86,7 +86,11 @@ class Payroll::ConsultantReview
     end
 
     def confirmed_unpaid_hours
-      unpaid = decimal(@inputs[:confirmed_unpaid_hours].presence || "0")
+      value = @inputs[:confirmed_unpaid_hours].presence || "0"
+      unless value.is_a?(String) && value.match?(/\A\d{1,6}(\.\d{1,2})?\z/)
+        raise InvalidInput, "Unpaid hours must be a nonnegative decimal with up to two places"
+      end
+      unpaid = value.to_d
       reason = @inputs[:unpaid_reason]
       if unpaid.positive? && (!reason.is_a?(String) || reason.strip.empty? || reason.length > 1000)
         raise InvalidInput, "Provide the reason for confirmed unpaid hours"
@@ -156,7 +160,7 @@ class Payroll::ConsultantReview
       zone = @company.resolved_time_zone
       cutoff_time = zone.local(@cutoff.year, @cutoff.month, @cutoff.day).end_of_day
       candidates = @company.expenses.kept.where(user_id: @employment.user_id, status: :approved, paid_at: nil)
-        .where("date <= ?", @cutoff).includes(receipts_attachments: :blob).order(:date, :id)
+        .where("date <= ?", @cutoff).includes(:receipts_attachments).order(:date, :id)
       eligible = []
       excluded = Hash.new(0)
       candidates.each do |expense|
@@ -185,15 +189,8 @@ class Payroll::ConsultantReview
       ids
     end
 
-    def decimal(value)
-      unless value.is_a?(String) && value.match?(/\A\d{1,6}(\.\d{1,2})?\z/)
-        raise InvalidInput, "Unpaid hours must be a nonnegative decimal with up to two places"
-      end
-      value.to_d
-    end
-
     def money(value)
-      value&.to_d&.to_s("F")
+      value&.to_s("F")
     end
 
     def expense_details(expense)
