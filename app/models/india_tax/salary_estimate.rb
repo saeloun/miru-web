@@ -48,15 +48,28 @@ class IndiaTax::SalaryEstimate
   private
 
     def validate_inputs
+      validate_profile
+      @salary = amount(@input.fetch("gross_salary"), "gross salary")
+      @interest = amount(@input.fetch("taxable_interest"), "taxable interest")
+      validate_deductions
+      validate_employer_pensions
+      if @deductions["pension_salary"] > @salary - @employer_pensions.sum(0.to_d) { |row| row["contribution"] }
+        raise ArgumentError, "Qualifying pension salary cannot exceed gross salary excluding employer contributions"
+      end
+    rescue ArgumentError => error
+      raise InvalidInput, error.message
+    end
+
+    def validate_profile
       raise ArgumentError, "Choose a supported tax year" unless PERIODS.key?(@input["tax_year"])
       raise ArgumentError, "Only INR estimates are supported" unless @input["currency"] == "INR"
       raise ArgumentError, "Choose a resident age group" unless AGE_EXEMPTIONS.key?(@input["age_group"])
       unless @input["scope_confirmed"] == true && @input["eligibility_confirmed"] == true
         raise ArgumentError, "Confirm the supported income profile and deduction eligibility before calculating"
       end
+    end
 
-      @salary = amount(@input.fetch("gross_salary"), "gross salary")
-      @interest = amount(@input.fetch("taxable_interest"), "taxable interest")
+    def validate_deductions
       deductions = @input.fetch("deductions")
       schema(deductions, DEDUCTIONS + HEALTH_FLAGS, "deductions")
       HEALTH_FLAGS.each { |field| boolean(deductions[field], field) if deductions.key?(field) }
@@ -68,12 +81,6 @@ class IndiaTax::SalaryEstimate
       if @deductions["employee_nps"].positive? && @deductions["pension_salary"].zero?
         raise ArgumentError, "Provide qualifying salary for employee pension contributions"
       end
-      validate_employer_pensions
-      if @deductions["pension_salary"] > @salary - @employer_pensions.sum(0.to_d) { |row| row["contribution"] }
-        raise ArgumentError, "Qualifying pension salary cannot exceed gross salary excluding employer contributions"
-      end
-    rescue ArgumentError => error
-      raise InvalidInput, error.message
     end
 
     def validate_employer_pensions
@@ -121,6 +128,13 @@ class IndiaTax::SalaryEstimate
         lines << deduction_line(code, claimed, allowed)
       end
       income = nearest_ten(remaining)
+      { "salary_deductions" => formatted(standard + professional), "gross_total_income" => formatted(gross_total),
+        "chapter_deductions" => formatted(gross_total - remaining), "taxable_income" => formatted(income),
+        "deductions" => lines }.merge(tax_summary(income, name))
+    end
+
+    def tax_summary(income, name)
+      old = name == "old"
       tax = slab_tax(income, name)
       rebate_limit = old ? 500000 : 1200000
       rebate = income <= rebate_limit ? [tax, (old ? 12500 : 60000).to_d].min : 0.to_d
@@ -128,11 +142,9 @@ class IndiaTax::SalaryEstimate
       after_rebate = tax - rebate - rebate_relief
       surcharge, surcharge_relief = surcharge(income, after_rebate, name)
       cess = (after_rebate + surcharge) * BigDecimal("0.04")
-      { "salary_deductions" => formatted(standard + professional), "gross_total_income" => formatted(gross_total),
-        "chapter_deductions" => formatted(gross_total - remaining), "taxable_income" => formatted(income),
-        "slab_tax" => formatted(tax), "rebate" => formatted(rebate), "rebate_marginal_relief" => formatted(rebate_relief),
+      { "slab_tax" => formatted(tax), "rebate" => formatted(rebate), "rebate_marginal_relief" => formatted(rebate_relief),
         "surcharge" => formatted(surcharge), "surcharge_marginal_relief" => formatted(surcharge_relief),
-        "cess" => formatted(cess), "annual_tax" => formatted(nearest_ten(after_rebate + surcharge + cess)), "deductions" => lines }
+        "cess" => formatted(cess), "annual_tax" => formatted(nearest_ten(after_rebate + surcharge + cess)) }
     end
 
     def chapter_candidates(old)
