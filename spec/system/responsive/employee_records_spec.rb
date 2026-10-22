@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 require "rails_helper"
+require "csv"
+require "tmpdir"
 
 RSpec.describe "Private employee records browser workflow", type: :system, js: true do
   let(:company) { create(:company) }
@@ -37,6 +39,15 @@ RSpec.describe "Private employee records browser workflow", type: :system, js: t
         .then(() => requestAnimationFrame(() => requestAnimationFrame(done)));
     JS
     page.save_screenshot(Rails.root.join("tmp/capybara/#{filename}"), full: true)
+  end
+
+  def downloaded_file(filename, &action)
+    Dir.mktmpdir("employee-records-download") do |directory|
+      downloads = page.driver.browser.downloads
+      downloads.set_behavior(save_path: directory)
+      expect(downloads.wait(10, &action)).to be(true)
+      File.binread(File.join(directory, filename))
+    end
   end
 
   it "lets staff save family, emergency and bank information without submitting admin salary keys" do
@@ -83,7 +94,8 @@ RSpec.describe "Private employee records browser workflow", type: :system, js: t
       expect(page).to have_button("Download · pdf-file.pdf")
       document = employment.employee_documents.find_by!(kind: "pan")
       expect(document.uploaded_by).to eq(employee)
-      click_button "Download · pdf-file.pdf"
+      downloaded = downloaded_file("pdf-file.pdf") { click_button "Download · pdf-file.pdf" }
+      expect(downloaded).to eq(File.binread(Rails.root.join("spec/support/fixtures/pdf-file.pdf")))
       expect(page).to have_button("Download · pdf-file.pdf", disabled: false)
       document.file.blob.service.delete(document.file.blob.key)
       click_button "Download · pdf-file.pdf"
@@ -115,8 +127,13 @@ RSpec.describe "Private employee records browser workflow", type: :system, js: t
       click_button "Insurance preset"
       click_button "Save report definition"
       expect(page).to have_content("Report definition saved.")
-      expect(company.employee_reports.find_by!(name: "Synthetic Insurance").columns).to include("family_members", "phone")
-      click_button "Download CSV"
+      report = company.employee_reports.find_by!(name: "Synthetic Insurance")
+      expect(report.columns).to include("family_members", "phone")
+      month = find_field("Report month").value
+      csv = downloaded_file("employee-report-#{report.id}-#{month}.csv") { click_button "Download CSV" }
+      rows = CSV.parse(csv, headers: true)
+      expect(rows.headers).to include("Employee name", "Family members (JSON)", "Phone")
+      expect(rows["Employee name"]).to include(employee.full_name)
       expect(page).to have_button("Download CSV", disabled: false)
       check "Enable advance occasion reminders"
       expect(page).to have_css("[role='status']", text: "Occasion reminder preference saved.")
