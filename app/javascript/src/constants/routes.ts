@@ -27,6 +27,10 @@ const TaxDeclarations = lazy(() => import("components/TaxDeclarations"));
 const IndiaTaxEstimates = lazy(() => import("components/IndiaTaxEstimates"));
 const ConsultantPayroll = lazy(() => import("components/ConsultantPayroll"));
 const PayrollReview = lazy(() => import("components/Payroll/Review"));
+const EmployeeRecords = lazy(
+  () => import("components/Profile/EmployeeRecords")
+);
+
 const InvoicesRouteConfig = lazy(
   () => import("components/Invoices/RouteConfig")
 );
@@ -250,6 +254,16 @@ export const PUBLIC_ROUTES = [
 ];
 
 export const ROUTES = [
+  {
+    path: "/settings/employee-records",
+    subRoutes: [{ path: "", Component: EmployeeRecords }],
+    authorisedRoles: [ADMIN, OWNER, BOOK_KEEPER, EMPLOYEE, Roles.MANAGER],
+  },
+  {
+    path: "/team/:memberId/employee-records",
+    subRoutes: [{ path: "", Component: EmployeeRecords }],
+    authorisedRoles: [ADMIN, OWNER, BOOK_KEEPER, EMPLOYEE, Roles.MANAGER],
+  },
   {
     path: "/india-tax",
     subRoutes: [{ path: "", Component: IndiaTaxEstimates }],
