@@ -103,12 +103,54 @@ RSpec.describe EmployeeOccasionRemindersJob, type: :job do
   it "does not log failed sends and allows a later successful retry" do
     opt_in
     allow(EmployeeOccasionMailer).to receive(:reminder).and_raise(IOError, "Synthetic failure")
-    expect { described_class.perform_now }.to raise_error(IOError, "Synthetic failure")
+    expect(Rails.logger).to receive(:warn).with(hash_including(
+      event: "employee_occasion_delivery_failed", company_id: company.id, employment_id: employment.id,
+      admin_id: admin.id, error_class: "IOError")).twice
+    described_class.perform_now
     expect(EmployeeOccasionDelivery.count).to eq(0)
     allow(EmployeeOccasionMailer).to receive(:reminder).and_call_original
     described_class.perform_now
     expect(EmployeeOccasionDelivery.count).to eq(2)
     expect(ActionMailer::Base.deliveries.size).to eq(2)
+  end
+
+  it "continues past an inactive recipient to other admins and opted-in companies without duplicating successful sends" do
+    opt_in
+    healthy_admin = create(:user, current_workspace: company, date_of_birth: nil)
+    create(:employment, company:, user: healthy_admin, joined_at: "2020-06-01", resigned_at: nil)
+    healthy_admin.add_role(:admin, company)
+    other_company = create(:company, timezone: company.timezone)
+    other_admin = create(:user, current_workspace: other_company, date_of_birth: nil)
+    other_admin.add_role(:admin, other_company)
+    create(:employment, company: other_company, user: other_admin, joined_at: "2020-01-03", resigned_at: nil)
+    EmployeeRecordSetting.create!(company: other_company, occasion_reminders_enabled: true)
+    allow(Payroll::Entitlement).to receive(:enabled?).and_call_original
+    allow(Payroll::Entitlement).to receive(:enabled?).with(other_company.id).and_return(true)
+    diagnostics = []
+    allow(Rails.logger).to receive(:warn) { |metadata| diagnostics << metadata }
+    allow_any_instance_of(Mail::Message).to receive(:deliver).and_wrap_original do |original|
+      raise Postmark::InactiveRecipientError, "Private recipient #{admin.email}" if original.receiver.to.include?(admin.email)
+
+      original.call
+    end
+
+    2.times { described_class.perform_now }
+
+    expect(ActionMailer::Base.deliveries.map(&:to)).to match_array([[healthy_admin.email], [healthy_admin.email], [other_admin.email]])
+    expect(EmployeeOccasionDelivery.where(admin:).count).to eq(0)
+    expect(EmployeeOccasionDelivery.where(admin: healthy_admin).count).to eq(2)
+    expect(EmployeeOccasionDelivery.where(admin: other_admin).count).to eq(1)
+    expect(diagnostics.size).to eq(4)
+    expect(diagnostics).to all(include(event: "employee_occasion_delivery_failed", company_id: company.id,
+      employment_id: employment.id, admin_id: admin.id, event_on: "2027-01-03", error_class: "Postmark::InactiveRecipientError"))
+    expect(diagnostics.to_json).not_to include(admin.email, "Private recipient")
+  end
+
+  it "propagates unexpected programming errors" do
+    opt_in
+    allow(EmployeeOccasionMailer).to receive(:reminder).and_raise(NoMethodError, "Synthetic programming error")
+    expect { described_class.perform_now }.to raise_error(NoMethodError, "Synthetic programming error")
+    expect(EmployeeOccasionDelivery.count).to eq(0)
   end
 
   it "does not log delivery when mail sending is disabled" do

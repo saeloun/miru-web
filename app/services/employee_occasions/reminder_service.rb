@@ -60,11 +60,21 @@ module EmployeeOccasions
           identity = { employment:, admin:, kind:, event_on: @event_on }
           next if EmployeeOccasionDelivery.exists?(identity)
 
-          message = EmployeeOccasionMailer.reminder(employment:, admin:, kind:, event_on: @event_on).deliver_now
+          message = send_reminder(employment, admin, kind)
           next unless message&.perform_deliveries
 
           EmployeeOccasionDelivery.create!(**identity, delivered_at: Time.current)
         end
+      end
+
+      def send_reminder(employment, admin, kind)
+        EmployeeOccasionMailer.reminder(employment:, admin:, kind:, event_on: @event_on).deliver_now
+      rescue Postmark::Error, Net::SMTPError, IOError, Timeout::Error, SocketError, SystemCallError,
+          OpenSSL::SSL::SSLError => exception
+        Rails.logger.warn(event: "employee_occasion_delivery_failed", company_id: @company.id,
+          employment_id: employment.id, admin_id: admin.id, kind:, event_on: @event_on.iso8601,
+          error_class: exception.class.name)
+        nil
       end
   end
 end
