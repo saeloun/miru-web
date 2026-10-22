@@ -36,7 +36,7 @@ RSpec.describe "Client edit dialog", type: :system, js: true do
     fill_in "email", with: "billing@acmelabs.test"
     click_button "Save"
 
-    expect(page).to have_field("email", with: "billing@acmelabs.test", wait: 10)
+    expect(page).to have_no_css("[role='dialog']")
     expect(client.reload.email).to eq("billing@acmelabs.test")
   end
 end
