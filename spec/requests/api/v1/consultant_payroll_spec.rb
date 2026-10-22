@@ -337,6 +337,79 @@ RSpec.describe "Consultant payroll review", type: :request, issue: 2458 do
     expect(response).to have_http_status(422)
   end
 
+  it "batches configured archive sources without loading preview-only reimbursement details" do
+    terms = configured
+    project = create(:project, client: create(:client, company:))
+    create(:timesheet_entry, project:, user: consultant, work_date: "2026-09-03", duration: 60)
+    expense.approve!
+    queries = lambda do
+      statements = []
+      listener = ->(*args) { statements << args.last.fetch(:sql) if args.last.fetch(:sql).start_with?("SELECT") }
+      ActiveRecord::Base.uncached do
+        ActiveSupport::Notifications.subscribed(listener, "sql.active_record") do
+          get "/api/v1/consultant_payroll", params: { month: "2026-09", cutoff: "2026-10-19" }
+        end
+      end
+      expect(response).to have_http_status(:ok)
+      statements
+    end
+    get "/api/v1/consultant_payroll", params: { month: "2026-09", cutoff: "2026-10-19" }
+    expect(response).to have_http_status(:ok)
+    one = queries.call
+    7.times do
+      user = create(:user, current_workspace: company)
+      user.add_role(:employee, company)
+      membership = create(:employment, company:, user:, joined_at: "2026-01-01", resigned_at: nil)
+      ConsultantCompensation.create!(terms.attributes.except("id", "employment_id", "created_at", "updated_at").merge(employment: membership))
+      create(:timesheet_entry, project:, user:, work_date: "2026-09-03", duration: 120)
+      create(:expense, company:, user:, currency: "INR", amount: 100, date: "2026-09-10").approve!
+    end
+    eight = queries.call
+    expect(response.parsed_body.fetch("reviews").size).to eq(8)
+    aggregate_failures do
+      expect(eight.size).to be <= one.size + 2, "Archive SELECTs grew from #{one.size} to #{eight.size} for 1 versus 8 configured consultants"
+      expect(eight.grep(/FROM "expenses"/)).to be_empty
+      expect(response.parsed_body.fetch("reviews").first).not_to have_key("eligible_expenses")
+    end
+    preview
+    expect(report.fetch("eligible_expenses").size).to eq(1)
+  end
+
+  it "keeps batched summaries consistent with fresh previews across consultants, service dates and workspaces" do
+    terms = configured
+    configure(monthly_fee: "120000", change_reason: "Latest same-date correction")
+    another = create(:user, current_workspace: company)
+    another.add_role(:employee, company)
+    membership = create(:employment, company:, user: another, joined_at: "2026-09-10", resigned_at: "2026-09-25")
+    ConsultantCompensation.create!(terms.attributes.except("id", "employment_id", "created_at", "updated_at").merge(employment: membership))
+    project = create(:project, client: create(:client, company:))
+    create(:timesheet_entry, project:, user: consultant, work_date: "2026-09-03", duration: 60)
+    create(:timesheet_entry, project:, user: another, work_date: "2026-09-16", duration: 120)
+    create(:timesheet_entry, project:, user: another, work_date: "2026-09-03", duration: 480)
+    create(:timesheet_entry, user: consultant, work_date: "2026-09-03", duration: 600)
+    leave_type = create(:leave_type, leave: create(:leave, company:, year: 2026))
+    create(:timeoff_entry, user: consultant, leave_type:, duration: 60, leave_date: "2026-09-04")
+    create(:timeoff_entry, user: another, leave_type:, duration: 120, leave_date: "2026-09-16")
+    selected = create(:holiday_info, holiday: holidays, date: "2026-09-03", category: :optional)
+    entry = create(:timeoff_entry, user: another, leave_type: nil, holiday_info: selected, leave_date: selected.date)
+    entry.update_column(:leave_date, Date.new(2026, 9, 16))
+
+    get "/api/v1/consultant_payroll", params: { month: "2026-09", cutoff: "2026-10-19" }
+    rows = response.parsed_body.fetch("reviews").index_by { |row| row.fetch("employment_id") }
+    expect(rows[employment.id]).to include("monthly_fee" => "120000.0", "recorded_hours" => "1.0", "recorded_timeoff_hours" => "1.0")
+    expect(rows[membership.id]).to include("recorded_hours" => "2.0", "recorded_timeoff_hours" => "2.0", "expected_hours" => nil)
+    rows.each do |id, summary|
+      post "/api/v1/consultant_payroll/#{id}/preview", params: { payroll_preview: {
+        company_id: company.id, month: "2026-09", cutoff: "2026-10-19"
+      } }
+      expect(response).to have_http_status(:ok)
+      expect(report.slice(*summary.keys)).to eq(summary)
+    end
+    create(:timesheet_entry, project:, user: consultant, work_date: "2026-09-04", duration: 180)
+    preview
+    expect(report.fetch("recorded_hours")).to eq("4.0")
+  end
+
   it "protects cookie-authenticated configuration writes with CSRF" do
     controller = Api::V1::ConsultantPayrollController
     original = controller.allow_forgery_protection

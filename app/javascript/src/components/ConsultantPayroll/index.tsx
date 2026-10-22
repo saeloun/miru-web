@@ -35,7 +35,7 @@ type Terms = {
   change_reason: string;
   created_by: string;
 };
-type Review = {
+type ReviewSummary = {
   employment_id: number;
   consultant_name: string;
   month: string;
@@ -55,10 +55,12 @@ type Review = {
   confirmed_unpaid_hours: string;
   unpaid_reason: string | null;
   fee_estimate: string | null;
+  warnings: string[];
+};
+type Review = ReviewSummary & {
   reimbursement_total: string;
   total_estimate: string | null;
   selected_expense_ids: number[];
-  warnings: string[];
   excluded_expenses: Record<string, number>;
   eligible_expenses: {
     id: number;
@@ -70,7 +72,7 @@ type Review = {
   }[];
 };
 type Archive = {
-  reviews: Review[];
+  reviews: ReviewSummary[];
   employments: { id: number; name: string }[];
   pagination: { page: number; pages: number };
   period: { month: string; cutoff: string; today: string };
@@ -193,7 +195,7 @@ const PayrollWorkspace = ({
     }
   };
 
-  const openReview = async (row: Review) => {
+  const openReview = async (row: ReviewSummary) => {
     setBusy(true);
     setError("");
     try {

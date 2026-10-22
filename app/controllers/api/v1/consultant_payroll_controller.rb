@@ -22,9 +22,11 @@ class Api::V1::ConsultantPayrollController < Api::V1::ApplicationController
       .where("employments.resigned_at IS NULL OR employments.resigned_at >= ?", month)
     pages = [(records.count / 30.0).ceil, 1].max
     page = page_number(pages)
+    employments = records.order(:id).limit(30).offset((page - 1) * 30).to_a
+    sources = Payroll::ConsultantSources.new(company: current_company, employments:, month:)
     render json: {
-      reviews: records.order(:id).limit(30).offset((page - 1) * 30).map do |employment|
-        Payroll::ConsultantReview.new(employment:, month:, cutoff:).process
+      reviews: employments.map do |employment|
+        Payroll::ConsultantReview.new(employment:, month:, cutoff:, sources:).process(include_expenses: false)
       end,
       employments: staff_choices, pagination: { page:, pages: }, company_id: current_company.id,
       period: { month: month.strftime("%Y-%m"), cutoff: cutoff.iso8601, today: today.iso8601 }

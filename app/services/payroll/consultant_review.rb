@@ -17,24 +17,22 @@ class Payroll::ConsultantReview
     raise InvalidInput, "Invalid month or cutoff date"
   end
 
-  def initialize(employment:, month:, cutoff:, inputs: {})
+  def initialize(employment:, month:, cutoff:, inputs: {}, sources: nil)
     @employment, @month, @cutoff, @inputs = employment, month, cutoff, inputs
-    @company = employment.company
+    @company = sources ? sources.company : employment.company
+    @sources = sources || Payroll::ConsultantSources.new(company: @company, employments: [employment], month:)
     @finish = month.end_of_month
   end
 
-  def process
+  def process(include_expenses: true)
     Payroll::Entitlement.require!(@company.id)
-    terms = @employment.consultant_compensations.where("effective_on <= ?", @month).order(effective_on: :desc, id: :desc).first
+    terms = @sources.terms(@employment.id)
     warnings = []
     work = work_summary(warnings)
     working_days = work[:hours] / 8 if work[:hours]
-    timeoff = TimeoffEntry.from_workspace(@company.id).where(user_id: @employment.user_id)
-    leave_hours = leave_summary(timeoff.where(leave_date: service_dates), warnings)
+    leave_hours = leave_summary(@sources.leave_durations(@employment.user_id, service_dates), warnings)
     unpaid = confirmed_unpaid_hours
-    expected, fee = calculate_fee(terms, timeoff, work[:covered], unpaid, warnings)
-    eligible, excluded, selected_ids, reimbursements = selected_reimbursements
-    warnings << "expense_review_required" if excluded.any?
+    expected, fee = calculate_fee(terms, work[:covered], unpaid, warnings)
     {
       employment_id: @employment.id, consultant_name: @employment.user.full_name,
       month: @month.strftime("%Y-%m"), cutoff: @cutoff.iso8601, compensation_id: terms&.id,
@@ -46,17 +44,13 @@ class Payroll::ConsultantReview
       working_days: money(working_days&.round(4)), recorded_timeoff_hours: money(leave_hours),
       approved_paid_hours: nil, opening_pto_hours: nil, closing_pto_hours: nil,
       confirmed_unpaid_hours: money(unpaid), unpaid_reason: @inputs[:unpaid_reason], fee_estimate: money(fee),
-      reimbursement_total: money(reimbursements), total_estimate: money(fee && fee + reimbursements),
-      withholding: nil, eligible_expenses: eligible.map { |expense| expense_details(expense) },
-      excluded_expenses: excluded, selected_expense_ids: selected_ids,
-      warnings:, payment_ready: false, claims_reserved: false
-    }
+      withholding: nil, warnings:, payment_ready: false, claims_reserved: false
+    }.merge(include_expenses ? reimbursement_summary(fee, warnings) : {})
   end
 
   private
 
-    def leave_summary(timeoff, warnings)
-      minutes = timeoff.where(holiday_info_id: nil).pluck(:duration)
+    def leave_summary(minutes, warnings)
       if minutes.any?(&:negative?)
         warnings << "invalid_timeoff_duration"
         return nil
@@ -68,8 +62,7 @@ class Payroll::ConsultantReview
 
     def work_summary(warnings)
       zero = 0.to_d
-      work = TimesheetEntry.kept.in_workspace(@company).where(user_id: @employment.user_id, work_date: service_dates)
-      entries = work.pluck(:review_status, :duration)
+      entries = @sources.work(@employment.user_id, service_dates)
       if entries.any? { |_status, minutes| !minutes.finite? || minutes.negative? }
         warnings << "invalid_work_duration"
         return {}
@@ -98,14 +91,14 @@ class Payroll::ConsultantReview
       unpaid
     end
 
-    def calculate_fee(terms, timeoff, covered, unpaid, warnings)
+    def calculate_fee(terms, covered, unpaid, warnings)
       unless terms
         warnings << "missing_terms"
         raise InvalidInput, "Configure terms before entering unpaid hours" if unpaid.positive?
 
         return [nil, nil]
       end
-      expected = expected_hours(terms, timeoff, warnings)
+      expected = expected_hours(terms, warnings)
       return [nil, nil] if expected.nil?
 
       raise InvalidInput, "Unpaid hours cannot exceed expected hours" if unpaid > expected
@@ -120,10 +113,18 @@ class Payroll::ConsultantReview
       warnings = []
       warnings << "missing_service_dates" if @employment.joined_at.nil?
       warnings << "partial_service" if @employment.joined_at&.between?(@month + 1, @finish) || @employment.resigned_at&.between?(@month, @finish - 1)
-      warnings << "terms_changed_during_month" if @employment.consultant_compensations.where(effective_on: (@month + 1)..@finish).exists?
+      warnings << "terms_changed_during_month" if @sources.terms_changed?(@employment.id)
       warnings << "zero_expected_hours" if expected.zero?
       warnings << "unexplained_hours" if covered && (expected - covered - unpaid).round(4).positive?
       warnings
+    end
+
+    def reimbursement_summary(fee, warnings)
+      eligible, excluded, selected_ids, reimbursements = selected_reimbursements
+      warnings << "expense_review_required" if excluded.any?
+      { reimbursement_total: money(reimbursements), total_estimate: money(fee && fee + reimbursements),
+        eligible_expenses: eligible.map { |expense| expense_details(expense) },
+        excluded_expenses: excluded, selected_expense_ids: selected_ids }
     end
 
     def selected_reimbursements
@@ -140,13 +141,9 @@ class Payroll::ConsultantReview
       @service_dates ||= [@month, @employment.joined_at || @month].max..[@finish, @employment.resigned_at || @finish].min
     end
 
-    def expected_hours(terms, timeoff, warnings)
-      national = HolidayInfo.kept.joins(:holiday).where(holidays: { company_id: @company.id, discarded_at: nil },
-        category: :national, date: service_dates).pluck(:date)
-      selected = timeoff.joins(:holiday_info)
-        .where(holiday_infos: { discarded_at: nil }, holidays: { company_id: @company.id, discarded_at: nil })
-      dates = selected.where(leave_date: service_dates).or(selected.where(holiday_infos: { date: service_dates }))
-        .pluck(:leave_date, "holiday_infos.date")
+    def expected_hours(terms, warnings)
+      national = @sources.national_holidays(service_dates)
+      dates = @sources.selected_holidays(@employment.user_id, service_dates)
       if dates.any? { |recorded, configured| recorded != configured }
         warnings << "holiday_date_requires_review"
         return nil
