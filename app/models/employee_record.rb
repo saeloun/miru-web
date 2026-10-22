@@ -40,6 +40,11 @@ class EmployeeRecord < ApplicationRecord
       validate_format(details["bank_account_number"], "bank_account_number", /\A\d{1,34}\z/)
       validate_format(details["bank_ifsc"], "bank_ifsc", /\A[A-Z]{4}0[A-Z0-9]{6}\z/)
       validate_format(details["bank_swift"], "bank_swift", /\A[A-Z]{6}[A-Z0-9]{2}(?:[A-Z0-9]{3})?\z/)
+      validate_salary(details)
+      validate_family(details["family_members"]) if details.key?("family_members")
+    end
+
+    def validate_salary(details)
       amount = details["salary_amount"]
       if optional_value?(amount) && !(amount.is_a?(String) && amount.match?(AMOUNT_FORMAT) && BigDecimal(amount).positive?)
         errors.add(:private_details, "salary_amount must be positive with up to two decimal places")
@@ -53,7 +58,6 @@ class EmployeeRecord < ApplicationRecord
         errors.add(:private_details, "salary_frequency must be monthly or annual")
       end
       validate_date(details["salary_effective_on"], "salary_effective_on")
-      validate_family(details["family_members"]) if details.key?("family_members")
     end
 
     def optional_value?(value)
