@@ -3,6 +3,16 @@
 require "rails_helper"
 
 RSpec.describe PdfGeneration::HtmlTemplateService do
+  it "preserves inline PDF styles without fetching the application stylesheet" do
+    html = ApplicationController.render(
+      inline: "<style>body { color: #123456; }</style><p>Private PDF content</p>",
+      layout: "pdf"
+    )
+
+    expect(html).to include("body { color: #123456; }", "Private PDF content")
+    expect(Nokogiri::HTML(html).css('link[rel="stylesheet"]')).to be_empty
+  end
+
   describe "#process" do
     let(:template) { "pdfs/test" }
     let(:layout) { "layouts/pdf" }

@@ -130,6 +130,26 @@ RSpec.describe "Invoice PDF Download", type: :request do
     end
 
     context "error handling" do
+      it "keeps PDF exception content out of send and download responses and logs" do
+        marker = "SYNTHETIC-PRIVATE-INVOICE-CONTENT"
+        allow(InvoicePayment::PdfGeneration).to receive(:process).and_raise(StandardError, marker)
+        allow(Rails.logger).to receive(:error).and_call_original
+
+        post send_invoice_api_v1_invoice_path(invoice),
+          params: { invoice_email: { recipients: ["client@example.test"] } }, headers: auth_headers(user)
+        expect(response).to have_http_status(:internal_server_error)
+        expect(json_response).to eq("error" => I18n.t("invoices_controller.send_invoice.pdf_failed"))
+
+        get download_api_v1_invoice_path(invoice), headers: auth_headers(user)
+        expect(response).to have_http_status(:internal_server_error)
+        expect(json_response).to eq("error" => I18n.t("invoices_controller.download.pdf_failed"))
+
+        expect(Rails.logger).to have_received(:error).with(
+          "invoice_pdf_generation_failed invoice_id=#{invoice.id} company_id=#{company.id} error_class=StandardError"
+        ).twice
+        expect(Rails.logger).not_to have_received(:error).with(a_string_including(marker))
+      end
+
       it "returns 404 for non-existent invoice" do
         get "/api/v1/invoices/999999/download", headers: auth_headers(user)
 
