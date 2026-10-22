@@ -9,6 +9,9 @@ class Employment < ApplicationRecord
   has_many :salary_slips, dependent: :destroy
   has_many :tax_declarations, dependent: :destroy
   has_many :consultant_compensations, dependent: :destroy
+  has_one :employee_record, dependent: :destroy
+  has_many :employee_documents, dependent: :destroy
+  has_many :employee_payments, dependent: :destroy
 
   # Validations
   validates :designation, :employment_type, :joined_at, :employee_id, presence: true, on: :update

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_19_180000) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_22_090000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_stat_statements"
@@ -411,6 +411,42 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_19_180000) do
     t.index ["company_id"], name: "index_devices_on_company_id"
     t.index ["device_type"], name: "index_devices_on_device_type"
     t.index ["user_id"], name: "index_devices_on_user_id"
+  end
+
+  create_table "employee_documents", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "employment_id", null: false
+    t.string "kind", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "uploaded_by_id", null: false
+    t.index ["employment_id"], name: "index_employee_documents_on_employment_id"
+    t.index ["uploaded_by_id"], name: "index_employee_documents_on_uploaded_by_id"
+    t.check_constraint "kind::text = ANY (ARRAY['pan'::character varying, 'contract'::character varying]::text[])", name: "employee_documents_kind"
+  end
+
+  create_table "employee_payments", force: :cascade do |t|
+    t.decimal "amount", precision: 12, scale: 2, null: false
+    t.datetime "created_at", null: false
+    t.bigint "created_by_id", null: false
+    t.string "currency", null: false
+    t.bigint "employment_id", null: false
+    t.text "note"
+    t.date "paid_on", null: false
+    t.string "reference", null: false
+    t.datetime "updated_at", null: false
+    t.index ["created_by_id"], name: "index_employee_payments_on_created_by_id"
+    t.index ["employment_id", "paid_on", "id"], name: "index_employee_payments_on_employment_id_and_paid_on_and_id"
+    t.index ["employment_id", "reference"], name: "index_employee_payments_on_employment_id_and_reference", unique: true
+    t.index ["employment_id"], name: "index_employee_payments_on_employment_id"
+    t.check_constraint "amount > 0::numeric", name: "employee_payments_positive_amount"
+  end
+
+  create_table "employee_records", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "employment_id", null: false
+    t.text "private_details", null: false
+    t.datetime "updated_at", null: false
+    t.index ["employment_id"], name: "index_employee_records_on_employment_id", unique: true
   end
 
   create_table "employments", force: :cascade do |t|
@@ -1380,6 +1416,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_19_180000) do
   add_foreign_key "desktop_current_timers", "users"
   add_foreign_key "devices", "companies"
   add_foreign_key "devices", "users"
+  add_foreign_key "employee_documents", "employments"
+  add_foreign_key "employee_documents", "users", column: "uploaded_by_id"
+  add_foreign_key "employee_payments", "employments"
+  add_foreign_key "employee_payments", "users", column: "created_by_id"
+  add_foreign_key "employee_records", "employments"
   add_foreign_key "employments", "companies"
   add_foreign_key "employments", "users"
   add_foreign_key "expense_categories", "companies"
