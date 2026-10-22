@@ -12,6 +12,7 @@ class Employment < ApplicationRecord
   has_one :employee_record, dependent: :destroy
   has_many :employee_documents, dependent: :destroy
   has_many :employee_payments, dependent: :destroy
+  has_many :employee_occasion_deliveries, dependent: :destroy
 
   # Validations
   validates :designation, :employment_type, :joined_at, :employee_id, presence: true, on: :update

@@ -72,6 +72,10 @@ namespace :api, defaults: { format: "json" } do
         get "evidence/:evidence_id", action: :download
       end
     end
+    resources :employee_reports, only: [:index, :create, :update, :destroy] do
+      get :download, on: :member
+    end
+    resource :employee_record_settings, only: [:show, :update], controller: "employee_record_settings"
     resource :employee_records, only: [:show, :update], controller: "employee_records" do
       post :documents, action: :upload_document
       get "documents/:id", action: :download_document
