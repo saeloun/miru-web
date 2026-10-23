@@ -69,6 +69,15 @@ RSpec.describe "Organization compensation profitability", type: :request do
     end
   end
 
+  it "allows an organization owner created before an HR joining date is entered" do
+    workspace = create(:company, plan_tier: "paid")
+    CreateCompanyService.new(admin, company: workspace).process
+    expect(workspace.employments.find_by!(user: admin).joined_at).to be_nil
+    payload = generate
+    get payload.fetch("export_url")
+    expect(response).to have_http_status(:ok)
+  end
+
   %w[manager employee book_keeper client].each do |role|
     it "blocks #{role} from the report, JSON, configuration and direct export downloads" do
       payload = generate
