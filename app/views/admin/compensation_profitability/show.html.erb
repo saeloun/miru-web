@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Compensation Burn and Profitability | Miru</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex,nofollow">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <style>
+      :root { color-scheme: light dark; --background: #fafafb; --foreground: #27272a; --card: #fff; --border: #e4e4e7; --muted-foreground: #52525b; --primary: #5b34ea; }
+      * { box-sizing: border-box; }
+      body { margin: 0; background: var(--background); color: var(--foreground); font: 14px/1.5 system-ui, sans-serif; }
+      main { max-width: 1600px; margin: auto; padding: 28px; }
+      h1 { font-size: 26px; margin: 8px 0; } h2 { font-size: 18px; }
+      a { color: var(--primary); } p { color: var(--muted-foreground); }
+      .panel { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin: 20px 0; }
+      form, .summary { display: flex; flex-wrap: wrap; gap: 16px; align-items: end; }
+      label { display: flex; flex-direction: column; gap: 6px; font-size: 13px; }
+      input, select, button, .button { padding: 9px 12px; font: inherit; border: 1px solid var(--border); border-radius: 6px; background: var(--card); color: var(--foreground); }
+      button, .button { cursor: pointer; background: var(--primary); color: white; text-decoration: none; }
+      :focus-visible { outline: 3px solid #a78bfa; outline-offset: 2px; }
+      .metric { flex: 1 1 180px; } .metric strong { display: block; font-size: 21px; font-variant-numeric: tabular-nums; }
+      .table-scroll { overflow-x: auto; } table { border-collapse: collapse; width: 100%; font-variant-numeric: tabular-nums; }
+      th, td { padding: 12px; border-bottom: 1px solid var(--border); text-align: right; white-space: nowrap; vertical-align: top; }
+      th { font-size: 12px; color: var(--muted-foreground); } th:first-child, td:first-child { text-align: left; }
+      caption { text-align: left; margin-bottom: 12px; font-weight: 600; }
+      summary { cursor: pointer; font-weight: 600; } .flag { display: inline-block; color: #92400e; background: #fef3c7; padding: 2px 6px; border-radius: 4px; font-size: 12px; }
+      .detail { white-space: normal; text-align: left; } .detail table { margin-top: 14px; } .quality { max-width: 260px; white-space: normal; }
+      fieldset { border: 1px solid var(--border); border-radius: 6px; margin: 20px 0; padding: 16px; } legend { font-weight: 600; }
+      @media (prefers-color-scheme: dark) { :root { --background: #09090b; --foreground: #fafafa; --card: #18181b; --border: #3f3f46; --muted-foreground: #a1a1aa; --primary: #a78bfa; } button, .button { color: #09090b; } }
+      @media (max-width: 700px) { main { padding: 16px; } form label, form button { width: 100%; } }
+    </style>
+  </head>
+  <body>
+    <main>
+      <a href="/">← Miru</a>
+      <p>Confidential · Super Admins only</p>
+      <h1>Compensation Burn and Profitability</h1>
+      <p>Approved work and compensation costs across all applicable projects. Operating expenses are excluded. Client filters select people assigned to that client; their revenue still includes all projects.</p>
+      <section class="panel" aria-label="Reporting controls">
+        <%= form_with url: admin_compensation_profitability_path, method: :get do |form| %>
+          <label>Period <%= form.select :period, [["Month", "month"], ["Quarter", "quarter"], ["Financial year", "financial_year"], ["Calendar year", "calendar_year"], ["Custom", "custom"]], selected: @report[:filters]["period"] || @report[:filters][:period] || "month" %></label>
+          <label>Date within period <%= form.date_field :anchor, value: params[:anchor].presence || Date.current.iso8601 %></label>
+          <label>Custom from <%= form.date_field :from, value: params[:from] %></label>
+          <label>Custom to <%= form.date_field :to, value: params[:to] %></label>
+          <label>Currency <%= form.select :currency, %w[INR USD], selected: @report[:currency] %></label>
+          <label>Person <%= form.select :person_id, @employments.map { |e| [e.user.full_name, e.user_id] }, selected: params[:person_id], include_blank: "All people" %></label>
+          <label>Primary project <%= form.select :primary_project_id, @projects.map { |p| [p.name, p.id] }, selected: params[:primary_project_id], include_blank: "All projects" %></label>
+          <label>Client <%= form.select :client_id, @clients.map { |c| [c.name, c.id] }, selected: params[:client_id], include_blank: "All clients" %></label>
+          <label>Department <%= form.select :department, @report[:available_departments], selected: params[:department], include_blank: "All departments" %></label>
+          <label>Employment status <%= form.select :status, [["Active", "active"], ["Exited", "exited"], ["Archived", "archived"]], selected: params[:status], include_blank: "All statuses" %></label>
+          <%= form.submit "Generate report" %>
+        <% end %>
+      </section>
+      <p><strong><%= @report[:from] %> – <%= @report[:to] %></strong> · Generated <%= @report[:generated_at] %> · <%= @report[:currency] %></p>
+      <% if @report[:provisional] %><span class="flag">Provisional — period includes future dates</span><% end %>
+      <% if @report[:incomplete] %><span class="flag">Incomplete — review data quality flags</span><% end %>
+      <div class="panel summary">
+        <% { gross_compensation_burn: "Gross Compensation Burn", revenue: "Revenue", net_compensation_burn: "Net Compensation Burn", overall_margin: "Overall Margin" }.each do |key, title| %>
+          <div class="metric"><%= title %><strong><%= profitability_number(@report[:summary][key], currency: @report[:currency]) %></strong></div>
+        <% end %>
+        <div class="metric">Overall Margin %<strong><%= profitability_number(@report[:summary][:overall_margin_percentage], percent: true) %></strong></div>
+        <div class="metric">Overall Utilization<strong><%= profitability_number(@report[:summary][:overall_utilization], percent: true) %></strong></div>
+      </div>
+      <p>INR and USD salary columns show the same cost. Do not add them together. N/A means required data is unavailable.</p>
+      <a class="button" href="<%= @export_url %>">Download CSV</a>
+      <p>Authorized download link expires in <%= Rails.configuration.x.compensation_report_export_ttl / 60 %> minutes. The CSV contains this exact generated snapshot, filters, totals and supporting details.</p>
+      <div class="panel table-scroll">
+        <table aria-label="Employee profitability">
+          <caption><%= @report[:people].length %> people · amounts in <%= @report[:currency] %> unless indicated</caption>
+          <thead><tr><th scope="col">Person / Primary Project</th><th scope="col">Effective Rate / hr</th><th scope="col">Total Worked</th><th scope="col">Billable Hours</th><th scope="col">Available Hours</th><th scope="col">Utilization</th><th scope="col">Annual Compensation</th><th scope="col">Days to Yearly Salary</th><th scope="col">Salary in INR</th><th scope="col">Salary in USD</th><th scope="col">Revenue</th><th scope="col">Compensation Cost</th><th scope="col">Margin</th><th scope="col">Margin %</th><th scope="col">Data Quality</th></tr></thead>
+          <tbody>
+            <% @report[:people].each do |row| %>
+              <tr>
+                <td><strong><%= row[:person] %></strong><br><%= row[:primary_project] || "No primary project" %><br><small><%= [row[:department], row[:status]].compact.join(" · ") %></small></td>
+                <% [:effective_rate, :total_hours, :billable_hours, :available_hours, :utilization].each do |key| %><td><%= profitability_number(row[key], currency: (key == :effective_rate ? @report[:currency] : nil), percent: key == :utilization) %></td><% end %>
+                <td><%= profitability_number(row[:annual_compensation], currency: row[:compensation_currency]) %></td>
+                <td><%= profitability_number(row[:days_to_yearly_salary]) %></td>
+                <td><%= profitability_number(row[:salary_inr], currency: "INR") %></td><td><%= profitability_number(row[:salary_usd], currency: "USD") %></td>
+                <% [:revenue, :compensation_cost, :margin].each do |key| %><td><%= profitability_number(row[key], currency: @report[:currency]) %></td><% end %>
+                <td><%= profitability_number(row[:margin_percentage], percent: true) %></td>
+                <td class="quality"><% row[:flags].each do |flag| %><span class="flag"><%= flag.humanize %></span> <% end %><%= "Complete" if row[:flags].empty? %></td>
+              </tr>
+              <tr><td colspan="15" class="detail">
+                <details><summary>Inspect <%= row[:person] %> — project hours, rates and compensation history</summary>
+                  <% row[:projects].each do |project| %>
+                    <h3><%= project[:project] %> · <%= project[:client] %> · <%= profitability_number(project[:revenue], currency: @report[:currency]) %></h3>
+                    <table><thead><tr><th>Date</th><th>Hours</th><th>Billable</th><th>Billing Method</th><th>Billing Rate / hr</th><th>Effective On</th><th>Revenue</th></tr></thead><tbody>
+                      <% project[:entries].each do |entry| %><tr><td><%= entry[:date] %></td><td><%= profitability_number(entry[:hours]) %></td><td><%= entry[:billable] ? "Yes" : "No" %></td><td><%= entry[:billing_method] || "N/A" %></td><td><%= profitability_number(entry[:hourly_rate], currency: entry[:rate_currency]) %></td><td><%= entry[:rate_effective_on] || "N/A" %></td><td><%= profitability_number(entry[:revenue], currency: @report[:currency]) %></td></tr><% end %>
+                    </tbody></table>
+                  <% end %>
+                  <table><caption>Compensation effective at period start and changes within period</caption><thead><tr><th>Effective On</th><th>Monthly Compensation</th><th>Source</th></tr></thead><tbody>
+                    <% row[:compensation_changes].each do |change| %><tr><td><%= change[:effective_on] %></td><td><%= profitability_number(change[:monthly_amount], currency: change[:currency]) %></td><td><%= change[:source] || "N/A" %></td></tr><% end %>
+                  </tbody></table>
+                </details>
+              </td></tr>
+            <% end %>
+            <% if @report[:people].empty? %><tr><td colspan="15">No people match this period and filters.</td></tr><% end %>
+          </tbody>
+        </table>
+      </div>
+      <section class="panel table-scroll">
+        <h2>Previous equivalent period</h2>
+        <p><%= @report[:comparison][:from] %> – <%= @report[:comparison][:to] %> · <%= @report[:comparison][:incomplete] ? "Incomplete" : "Complete" %></p>
+        <table><thead><tr><th>Metric</th><th>Selected Period</th><th>Previous Period</th></tr></thead><tbody>
+          <% [:gross_compensation_burn, :revenue, :net_compensation_burn, :overall_margin, :overall_margin_percentage, :overall_utilization].each do |key| %><tr><td><%= key.to_s.humanize %></td><% [@report, @report[:comparison]].each do |period| %><td><%= profitability_number(period[:summary][key], currency: (%i[overall_margin_percentage overall_utilization].include?(key) ? nil : @report[:currency]), percent: %i[overall_margin_percentage overall_utilization].include?(key)) %></td><% end %></tr><% end %>
+        </tbody></table>
+      </section>
+      <section class="panel table-scroll">
+        <h2>Exchange rates used</h2><p>Latest stored direct rate on or before each calculation date, or its inverse. No live rate is substituted. Same-currency conversion uses 1.</p>
+        <table><thead><tr><th>Pair</th><th>Rate</th><th>Rate Date</th><th>Source</th></tr></thead><tbody><% @report[:exchange_rates].each do |rate| %><tr><td><%= rate[:from] %> → <%= rate[:to] %></td><td><%= number_with_precision(rate[:rate].to_d, precision: 8) %></td><td><%= rate[:date] %></td><td><%= rate[:source] %><%= " (inverse)" if rate[:inverse] %></td></tr><% end %></tbody></table>
+      </section>
+      <p>Days to Yearly Salary is a revenue-equivalence estimate based on the latest annual compensation and scheduled hours per billable day. It does not represent collected cash or account for other company expenses.</p>
+      <details class="panel"><summary>Configure missing reporting data</summary>
+        <p>These settings affect confidential reporting. Record known effective dates; historical rates are never inferred from a person's current project rate. Compensation history is encrypted. Changes retain an audit record.</p>
+        <fieldset><legend>Workspace payroll policy</legend>
+          <%= form_with url: admin_compensation_profitability_configure_path do |form| %>
+            <%= form.hidden_field :configuration, value: "policy" %>
+            <label>Prorate monthly compensation using <%= form.select :compensation_proration, [["Calendar days in each month", "calendar_days"], ["Scheduled working days in each month", "working_days"]], selected: current_company.compensation_proration, include_blank: "Choose the defined payroll policy" %></label>
+            <%= form.submit "Save payroll policy" %>
+          <% end %>
+        </fieldset>
+        <fieldset><legend>Person's reporting profile</legend>
+          <%= form_with url: admin_compensation_profitability_configure_path do |form| %>
+            <%= form.hidden_field :configuration, value: "profile" %>
+            <label>Person <%= form.select :employment_id, @employments.map { |e| [e.user.full_name, e.id] } %></label>
+            <%= fields_for :profitability_profile do |profile| %>
+              <label>Department <%= profile.text_field :department, maxlength: 100 %></label>
+              <label>Primary project <%= profile.select :primary_project_id, @projects.map { |p| [p.name, p.id] }, include_blank: "Most worked hours" %></label>
+              <label>Scheduled hours per day <%= profile.number_field :hours_per_day, min: 0.01, max: 24, step: 0.01, required: true %></label>
+              <label>Working weekdays (select all that apply) <%= profile.select :weekdays, Date::DAYNAMES.rotate(1).each_with_index.map { |day, index| [day, index + 1] }, {}, multiple: true, required: true %></label>
+            <% end %>
+            <%= form.submit "Save profile" %>
+          <% end %>
+        </fieldset>
+        <fieldset><legend>Dated project billing terms</legend>
+          <%= form_with url: admin_compensation_profitability_configure_path do |form| %>
+            <%= form.hidden_field :configuration, value: "billing_rate" %>
+            <%= fields_for :profitability_billing_rate do |rate| %>
+              <label>Person <%= rate.select :user_id, @employments.map { |e| [e.user.full_name, e.user_id] } %></label>
+              <label>Project <%= rate.select :project_id, @projects.map { |p| [p.name, p.id] } %></label>
+              <label>Effective on <%= rate.date_field :effective_on, required: true %></label>
+              <label>Billing method <%= rate.select :billing_method, [["Hourly", "hourly"], ["Fixed fee — allocation unavailable", "fixed_fee"]] %></label>
+              <label>Hourly rate (leave blank for fixed fee) <%= rate.number_field :hourly_rate, min: 0, step: 0.0001 %></label>
+              <label>Currency <%= rate.text_field :currency, required: true, pattern: "[A-Z]{3}", maxlength: 3 %></label>
+            <% end %>
+            <%= form.submit "Record billing terms" %>
+          <% end %>
+        </fieldset>
+        <fieldset><legend>Historical employee compensation</legend>
+          <p>Consultant compensation comes from existing dated consultant terms in INR. This form records employee history for reporting; the employee record remains the source for current salary edits.</p>
+          <%= form_with url: admin_compensation_profitability_configure_path do |form| %>
+            <%= form.hidden_field :configuration, value: "compensation" %>
+            <label>Person <%= form.select :employment_id, @employments.map { |e| [e.user.full_name, e.id] } %></label>
+            <%= fields_for :salary_details do |salary| %>
+              <label>Compensation <%= salary.number_field :salary_amount, required: true, min: 0.01, step: 0.01 %></label>
+              <label>Currency <%= salary.text_field :salary_currency, required: true, pattern: "[A-Z]{3}", maxlength: 3 %></label>
+              <label>Frequency <%= salary.select :salary_frequency, %w[monthly annual] %></label>
+              <label>Effective on <%= salary.date_field :salary_effective_on, required: true %></label>
+            <% end %>
+            <%= form.submit "Record compensation history" %>
+          <% end %>
+        </fieldset>
+      </details>
+    </main>
+  </body>
+</html>

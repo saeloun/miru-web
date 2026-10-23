@@ -48,7 +48,9 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const location = useLocation();
-  const { companyRole, user, company, avatarUrl, locale } = useUserContext();
+  const { companyRole, user, company, avatarUrl, locale, isSuperAdmin } =
+    useUserContext();
+
   const employeeRecordsEnabled = hasEmployeeRecordsAccess(
     company,
     user,
@@ -125,6 +127,13 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
           href: "/reports",
           icon: ChartLine,
           roles: ["admin", "owner", "book_keeper"],
+        },
+        {
+          label: "Compensation Profitability",
+          href: "/admin/compensation-profitability",
+          icon: ChartLine,
+          external: true,
+          roles: [],
         },
         {
           label: "Analytics",
@@ -227,7 +236,11 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
   const filterNavigationGroup = group => ({
     ...group,
     items: group.items
-      .filter(item => !item.roles || item.roles.includes(companyRole))
+      .filter(item =>
+        item.href === "/admin/compensation-profitability"
+          ? isSuperAdmin
+          : !item.roles || item.roles.includes(companyRole)
+      )
       .filter(
         item =>
           item.href !== "/settings/employee-records" || employeeRecordsEnabled
@@ -250,7 +263,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
   // prettier-ignore
   const filteredNavigation = useMemo(
     () => navigationGroups.map(filterNavigationGroup),
-    [companyRole, company?.pro_access, locale, payrollEnabled, employeeRecordsEnabled]
+    [companyRole, company?.pro_access, locale, payrollEnabled, employeeRecordsEnabled, isSuperAdmin]
   );
 
   const pageTitle = useMemo(() => {
