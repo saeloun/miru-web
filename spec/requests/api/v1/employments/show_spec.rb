@@ -68,11 +68,15 @@ RSpec.describe "Api::V1::Employments#show", type: :request do
   end
 
   context "when the user has a discarded employment" do
-    let!(:employment) { create(:employment, company:, user:, joined_at: nil, resigned_at: nil) }
-    let!(:discarded_employment) { create(:employment, company:, user:, joined_at: Date.new(2019, 1, 1), resigned_at: nil) }
+    let!(:employment) do
+      discarded_employment
+      create(:employment, company:, user:, joined_at: nil, resigned_at: nil)
+    end
+    let(:discarded_employment) do
+      create(:employment, company:, user:, joined_at: Date.new(2019, 1, 1), resigned_at: nil, discarded_at: Time.current)
+    end
 
     before do
-      discarded_employment.update_columns(discarded_at: Time.current)
       user.add_role :admin, company
       sign_in user
       get api_v1_employment_path(user), headers: auth_headers(user)
