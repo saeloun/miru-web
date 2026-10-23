@@ -37,6 +37,9 @@ class Client < ApplicationRecord
   validate :validate_logo_constraints
   validates :email, format: { with: Devise.email_regexp }, allow_blank: true
   validates :email, uniqueness: { scope: :company_id, case_sensitive: false }, allow_blank: true
+  validates :legal_name, :signatory_name, :signatory_designation, length: { maximum: 255 }, allow_blank: true
+  validates :finance_email, :signatory_email,
+    format: { with: Devise.email_regexp }, length: { maximum: 254 }, allow_blank: true
   validates :ein,
     format: { with: EIN_FORMAT, message: "must be a valid 9-digit EIN (NN-NNNNNNN)" },
     allow_blank: true
@@ -77,6 +80,7 @@ class Client < ApplicationRecord
     {
       id:,
       name:,
+      legal_name:,
       email:,
       ein: valid_ein,
       phone:,
@@ -181,12 +185,11 @@ class Client < ApplicationRecord
     invitations.where(virtual_verified: true, accepted_at: nil).pluck(:recipient_email)
   end
 
-  def send_invoice_emails(virtual_verified)
-    if virtual_verified
-      client_members_emails + client_virtual_verified_emails
-    else
-      client_members_emails
-    end
+  def send_invoice_emails(virtual_verified, include_finance: true)
+    emails = client_members_emails
+    emails += client_virtual_verified_emails if virtual_verified
+    emails << finance_email if include_finance && finance_email.present?
+    emails.compact_blank.uniq(&:downcase)
   end
 
   private
@@ -221,6 +224,9 @@ class Client < ApplicationRecord
 
     def strip_attributes
       self.name = name.strip if name.present?
+      %i[legal_name finance_email signatory_name signatory_designation signatory_email].each do |attribute|
+        self[attribute] = self[attribute].to_s.strip.presence
+      end
     end
 
     # Keep optional email truly optional by avoiding duplicate blank-string collisions

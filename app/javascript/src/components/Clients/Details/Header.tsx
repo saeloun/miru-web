@@ -21,6 +21,7 @@ import { i18n } from "../../../i18n";
 import Contacts from "../Contacts";
 import DeleteClient from "../Modals/DeleteClient";
 import EditClientModal from "../Modals/EditClientModal";
+import { CLIENT_AGREEMENT_FIELDS } from "../ClientForm/utils";
 
 const Header = ({
   clientDetails,
@@ -157,6 +158,18 @@ const Header = ({
             <p className="text-lg font-bold">
               {i18n.t("clients.clientDetails")}
             </p>
+            <dl className="mt-4 space-y-3 text-sm">
+              {CLIENT_AGREEMENT_FIELDS.map(([name, label]) => (
+                <div key={name}>
+                  <dt className="font-semibold">
+                    {i18n.t(`clients.agreement.${label}`)}
+                  </dt>
+                  <dd className="mt-1 break-words text-muted-foreground">
+                    {clientDetails[name] || i18n.t("clients.agreement.empty")}
+                  </dd>
+                </div>
+              ))}
+            </dl>
             <div className="mt-4 text-base">
               <p className=" font-semibold">{i18n.t("address")}</p>
               <div className="mt-1 text-muted-foreground">

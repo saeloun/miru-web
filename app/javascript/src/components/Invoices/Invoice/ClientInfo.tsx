@@ -13,7 +13,7 @@ const ClientInfo = ({ client }) => {
       </p>
       <div className="h-full overflow-y-auto">
         <p className="text-xl font-bold leading-7 text-foreground">
-          {client.name}
+          {client.legalName || client.legal_name || client.name}
         </p>
         <p className="w-full text-sm font-normal text-muted-foreground lg:w-52">
           {client?.address

@@ -52,7 +52,9 @@ class Api::V1::InvoicesController < Api::V1::ApplicationController
     render :show, locals: {
       invoice:,
       client: invoice.client,
-      client_member_emails: invoice.client.send_invoice_emails(@virtual_verified_invitations_allowed)
+      client_member_emails: invoice.client.send_invoice_emails(
+        @virtual_verified_invitations_allowed, include_finance: policy(Client).create?
+      )
     }
   end
 

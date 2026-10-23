@@ -18,6 +18,7 @@ import worldCountries from "world-countries";
 
 import { clientSchema, getInitialvalues } from "./formValidationSchema";
 import UploadLogo from "./UploadLogo";
+import AgreementDetailsFields from "./AgreementDetailsFields";
 import {
   formatFormData,
   disableBtn,
@@ -221,6 +222,9 @@ const MobileClientEditor = ({
                       fieldTouched={errors.phone}
                     />
                   </div>
+                </div>
+                <div className="mt-4">
+                  <AgreementDetailsFields />
                 </div>
                 <div className="mt-4">
                   <div className="field relative">

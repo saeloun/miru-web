@@ -359,7 +359,7 @@
     <!-- Billed To -->
     <div class="billed-to-section">
       <p class="section-heading"><%= t("pdfs.invoices.billed_to") %></p>
-      <p class="client-name"><%= client.name %></p>
+              <p class="client-name"><%= client.legal_name.presence || client.name %></p>
       <div class="client-details">
         <% if billed_to_address %>
           <p><%= billed_to_address %></p>

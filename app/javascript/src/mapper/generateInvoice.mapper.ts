@@ -4,6 +4,8 @@ interface GenerateInvoiceClientList {
   address: any;
   id: number;
   name: string;
+  legal_name?: string;
+  legalName?: string;
   phone: string;
   email: string;
   currency: string;
@@ -44,6 +46,7 @@ const getClientList = (clientList: Array<GenerateInvoiceClientList>) =>
     id: client.id,
     value: client.id, // Some components expect a 'value' property for dropdowns
     name: client.name,
+    legalName: client.legalName || client.legal_name,
     label: client.name, // Some components expect a 'label' property for dropdowns
     phone: client.phone,
     clientCurrency: client.currency,

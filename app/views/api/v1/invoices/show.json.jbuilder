@@ -8,6 +8,7 @@ include_financial_details = !current_user.has_role?(:client, current_company)
 json.partial! "internal_api/v1/partial/invoice", locals: { invoice:, include_financial_details: }
 json.client do
   json.partial! "internal_api/v1/partial/client", locals: { client: }
+  json.finance_email client.finance_email if policy(Client).create?
   json.client_members_emails client_member_emails
 end
 json.company do

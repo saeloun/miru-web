@@ -45,6 +45,7 @@ interface InvoicePreviewProps {
     client: {
       id?: string | number;
       name: string;
+      legalName?: string;
       email: string;
       address?: string;
       phone?: string;
@@ -547,7 +548,7 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
           </h3>
           <div className="space-y-1 break-words text-sm">
             <p className="text-lg font-semibold text-foreground print:text-foreground">
-              {invoice.client.name}
+              {invoice.client.legalName || invoice.client.name}
             </p>
             {invoice.client.address && (
               <p className="text-muted-foreground print:text-muted-foreground">
