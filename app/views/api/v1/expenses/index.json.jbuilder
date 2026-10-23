@@ -11,6 +11,7 @@ json.expenses expenses do |expense|
     :expense_type,
     :description,
     :status,
+    :approved_at,
     :paid_at,
     :user_id,
     :category_name,

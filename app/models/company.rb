@@ -35,6 +35,8 @@ class Company < ApplicationRecord
 
   # Associations
   has_many :employments, dependent: :destroy
+  has_many :employee_reports, dependent: :destroy
+  has_one :employee_record_setting, dependent: :destroy
   has_many :users, -> { kept }, through: :employments
   has_many :clients, dependent: :destroy
   has_many :projects, through: :clients, dependent: :destroy

@@ -59,6 +59,36 @@ namespace :api, defaults: { format: "json" } do
       end
     end
     resources :imports, only: [:create, :show]
+    resources :india_tax_estimates, only: [:index, :create]
+    get "consultant_payroll", to: "consultant_payroll#index"
+    get "consultant_payroll/:id/compensations", to: "consultant_payroll#history"
+    post "consultant_payroll/:id/compensations", to: "consultant_payroll#create"
+    post "consultant_payroll/:id/preview", to: "consultant_payroll#preview"
+    resources :tax_declarations, only: [:index, :show, :create] do
+      member do
+        post :submit
+        post :review
+        post :withdraw
+        get "evidence/:evidence_id", action: :download
+      end
+    end
+    resources :employee_reports, only: [:index, :create, :update, :destroy] do
+      get :download, on: :member
+    end
+    resource :employee_record_settings, only: [:show, :update], controller: "employee_record_settings"
+    resource :employee_records, only: [:show, :update], controller: "employee_records" do
+      post :documents, action: :upload_document
+      get "documents/:id", action: :download_document
+      get :payments
+      post :payments, action: :create_payment
+    end
+    resources :salary_slips, only: [:index, :create] do
+      member do
+        post :publish
+        post :withdraw
+        get :download
+      end
+    end
     namespace :cli do
       resource :capabilities, only: [:show], controller: "capabilities"
       resource :session, only: [:destroy], controller: "sessions"

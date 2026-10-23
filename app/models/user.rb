@@ -33,6 +33,7 @@ class User < ApplicationRecord
 
   # Associations
   has_many :employments, dependent: :destroy
+  has_many :employee_occasion_deliveries, foreign_key: :admin_id, dependent: :destroy
   has_many :companies, through: :employments
   has_many :project_members, dependent: :destroy
   has_many :timesheet_entries
