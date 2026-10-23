@@ -11,7 +11,7 @@ class AgreementTemplate < ApplicationRecord
   attribute :document, default: -> { {} }
   attribute :fields, default: -> { [] }
   encrypts :document, :fields
-  audited associated_with: :company, only: [:company_id, :created_by_id, :kind]
+  audited associated_with: :company, only: [:company_id, :created_by_id, :kind, :updated_at]
 
   validates :title, presence: true, length: { maximum: 200 }
   validates :kind, inclusion: { in: KINDS }

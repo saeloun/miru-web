@@ -13,7 +13,7 @@ class Agreement < ApplicationRecord
   attribute :fields, default: -> { [] }
   attribute :field_values, default: -> { {} }
   encrypts :document, :fields, :field_values
-  audited associated_with: :company, only: [:company_id, :created_by_id, :client_id, :employment_id, :kind, :status]
+  audited associated_with: :company, only: [:company_id, :created_by_id, :client_id, :employment_id, :kind, :status, :updated_at]
 
   validates :title, presence: true, length: { maximum: 200 }
   validates :kind, inclusion: { in: AgreementTemplate::KINDS }

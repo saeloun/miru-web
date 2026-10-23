@@ -58,7 +58,7 @@ RSpec.describe "Agreement template copies" do
     raw = AgreementTemplate.connection.select_one("SELECT document, fields FROM agreement_templates WHERE id = #{master.id}")
     expect(raw.values.join).not_to include("Consulting terms", "Legal name")
     expect(master.reload.document).to eq(agreement_document)
-    expect(master.audits.last.audited_changes.keys).to match_array(%w[company_id created_by_id kind])
+    expect(master.audits.last.audited_changes.keys).to match_array(%w[company_id created_by_id kind updated_at])
   end
 
   it "keeps the previous master when a stale editor tries to save" do

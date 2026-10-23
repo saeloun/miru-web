@@ -66,6 +66,10 @@ namespace :api, defaults: { format: "json" } do
     get "consultant_payroll/:id/compensations", to: "consultant_payroll#history"
     post "consultant_payroll/:id/compensations", to: "consultant_payroll#create"
     post "consultant_payroll/:id/preview", to: "consultant_payroll#preview"
+    resources :agreement_templates, only: [:index, :show, :create, :update]
+    resources :agreements, only: [:index, :show, :create, :update] do
+      get :download, on: :member
+    end
     resources :tax_declarations, only: [:index, :show, :create] do
       member do
         post :submit

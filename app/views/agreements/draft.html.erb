@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Draft agreement</title>
+    <style>
+      @page { size: A4; margin: 18mm; }
+      body { font-family: sans-serif; font-size: 11pt; line-height: 1.5; overflow-wrap: anywhere; }
+      .draft-heading { border-bottom: 1px solid; padding-bottom: 8px; }
+      .draft-note { font-size: 9pt; }
+      h1, h2, h3 { break-after: avoid; }
+      table { border-collapse: collapse; width: 100%; table-layout: fixed; }
+      th, td { border: 1px solid; padding: 6px; vertical-align: top; overflow-wrap: anywhere; }
+      tr { break-inside: avoid; }
+      p { white-space: pre-wrap; }
+      .page-break { break-after: page; }
+    </style>
+  </head>
+  <body>
+    <header class="draft-heading">
+      <strong>DRAFT — <%= title %></strong>
+      <p class="draft-note">For review only. This document has not been approved or electronically signed.</p>
+    </header>
+    <main><%= body_html.html_safe %></main>
+  </body>
+</html>

@@ -150,7 +150,7 @@ module Agreements
         end
         case type
         when "heading"
-          @problems << "Heading level is invalid" unless (1..3).include?(attributes["level"])
+          @problems << "Heading level is invalid" unless positive_integer?(attributes["level"], 3)
         when "orderedList"
           @problems << "List start is invalid" unless positive_integer?(attributes.fetch("start", 1), 1_000_000)
         when "mergeField"

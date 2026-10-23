@@ -20,7 +20,7 @@ RSpec.describe "Agreement draft storage" do
     raw = Agreement.connection.select_one("SELECT document, fields, field_values FROM agreements WHERE id = #{record.id}")
     expect(raw.values.join).not_to include("Consulting terms", "Legal name", "Confidential Legal Name")
     expect(record.reload.field_values).to eq("legal_name" => "Confidential Legal Name")
-    expect(record.audits.last.audited_changes.keys).to match_array(%w[company_id created_by_id client_id employment_id kind status])
+    expect(record.audits.last.audited_changes.keys).to match_array(%w[company_id created_by_id client_id employment_id kind status updated_at])
     expect(record.update(status: "signed")).to be(false)
   end
 

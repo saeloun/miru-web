@@ -34,6 +34,7 @@ RSpec.describe "Agreement document contract" do
     "a paragraph containing a table row" => { "type" => "paragraph", "content" => [{ "type" => "tableRow" }] },
     "an empty table" => { "type" => "table" },
     "an invalid heading level" => { "type" => "heading", "attrs" => { "level" => 7 } },
+    "a fractional heading level" => { "type" => "heading", "attrs" => { "level" => 1.5 } },
     "a style/HTML attribute" => { "type" => "paragraph", "attrs" => { "style" => "color:red" } },
     "a link mark" => { "type" => "paragraph", "content" => [
       { "type" => "text", "text" => "Click", "marks" => [{ "type" => "link", "attrs" => { "href" => "javascript:alert(1)" } }] }
