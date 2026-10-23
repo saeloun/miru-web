@@ -4,7 +4,7 @@ class EmployeeRecordPolicy < ApplicationPolicy
   STAFF_ROLES = %w[owner admin manager employee book_keeper].freeze
 
   def index?
-    Payroll::Entitlement.enabled?(workspace_id) && active_employments.where(user_id: user.id).exists? &&
+    active_employments.where(user_id: user.id).exists? &&
       User.kept.exists?(id: user.id, current_workspace_id: workspace_id) && staff_roles(user.id).exists?
   end
 
@@ -19,7 +19,8 @@ class EmployeeRecordPolicy < ApplicationPolicy
   end
 
   def active_employments
-    Employment.kept.joins(:user).merge(User.kept).where(company_id: workspace_id, joined_at: ..Date.current)
+    Employment.kept.joins(:user).merge(User.kept).where(company_id: workspace_id)
+      .where("joined_at IS NULL OR joined_at <= ?", Date.current)
       .where("resigned_at IS NULL OR resigned_at >= ?", Date.current)
   end
 

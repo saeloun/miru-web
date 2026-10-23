@@ -12,7 +12,9 @@ RSpec.describe EmployeeOccasionRemindersJob, type: :job do
   let!(:employment) { create(:employment, company:, user: employee, joined_at: "2020-01-03", resigned_at: nil) }
 
   before do
-    enable_synthetic_payroll(company.id)
+    allow(ENV).to receive(:[]).and_call_original
+    allow(ENV).to receive(:[]).with("MIRU_PAYROLL_ENABLED").and_return("false")
+    allow(ENV).to receive(:[]).with("MIRU_PAYROLL_SAELOUN_COMPANY_ID").and_return(nil)
     admin.add_role(:admin, company)
     employee.add_role(:employee, company)
     ActionMailer::Base.deliveries.clear
@@ -25,18 +27,24 @@ RSpec.describe EmployeeOccasionRemindersJob, type: :job do
     EmployeeRecordSetting.create!(company:, occasion_reminders_enabled: true)
   end
 
-  it "is off by default and respects opt-out and entitlement" do
+  it "is off by default and respects opt-out independently of native payroll" do
     described_class.perform_now
     expect(ActionMailer::Base.deliveries).to be_empty
+    expect(EmployeeRecordSetting.count).to eq(0)
     setting = opt_in
-    allow(ENV).to receive(:[]).with("MIRU_PAYROLL_ENABLED").and_return("false")
-    described_class.perform_now
-    expect(ActionMailer::Base.deliveries).to be_empty
-    allow(ENV).to receive(:[]).with("MIRU_PAYROLL_ENABLED").and_return("true")
     setting.update!(occasion_reminders_enabled: false)
     described_class.perform_now
     expect(ActionMailer::Base.deliveries).to be_empty
     expect(EmployeeOccasionDelivery.count).to eq(0)
+  end
+
+  it "sends an opted-in birthday with unknown joining dates without inventing an anniversary" do
+    opt_in
+    admin_employment.update_column(:joined_at, nil)
+    employment.update_column(:joined_at, nil)
+    2.times { described_class.perform_now }
+    expect(ActionMailer::Base.deliveries.map(&:to)).to eq([[admin.email]])
+    expect(EmployeeOccasionDelivery.pluck(:kind, :event_on)).to eq([["birthday", Date.new(2027, 1, 3)]])
   end
 
   it "sends birthdays and completed-year anniversaries seven local calendar days ahead across a year boundary once" do
@@ -89,6 +97,10 @@ RSpec.describe EmployeeOccasionRemindersJob, type: :job do
     described_class.perform_now
     expect(ActionMailer::Base.deliveries).to be_empty
     admin_employment.update_column(:resigned_at, nil)
+    employment.update_column(:joined_at, Date.new(2027, 1, 3))
+    described_class.perform_now
+    expect(ActionMailer::Base.deliveries).to be_empty
+    employment.update_column(:joined_at, Date.new(2020, 1, 3))
     employee.remove_role(:employee, company)
     employee.add_role(:client, company)
     described_class.perform_now
@@ -124,8 +136,6 @@ RSpec.describe EmployeeOccasionRemindersJob, type: :job do
     other_admin.add_role(:admin, other_company)
     create(:employment, company: other_company, user: other_admin, joined_at: "2020-01-03", resigned_at: nil)
     EmployeeRecordSetting.create!(company: other_company, occasion_reminders_enabled: true)
-    allow(Payroll::Entitlement).to receive(:enabled?).and_call_original
-    allow(Payroll::Entitlement).to receive(:enabled?).with(other_company.id).and_return(true)
     diagnostics = []
     allow(Rails.logger).to receive(:warn) { |metadata| diagnostics << metadata }
     allow_any_instance_of(Mail::Message).to receive(:deliver).and_wrap_original do |original|

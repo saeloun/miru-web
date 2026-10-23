@@ -11,7 +11,9 @@ RSpec.describe "Employee reports and settings", type: :request do
   let!(:employment) { create(:employment, company:, user: employee, resigned_at: nil) }
 
   before do
-    enable_synthetic_payroll(company.id)
+    allow(ENV).to receive(:[]).and_call_original
+    allow(ENV).to receive(:[]).with("MIRU_PAYROLL_ENABLED").and_return("false")
+    allow(ENV).to receive(:[]).with("MIRU_PAYROLL_SAELOUN_COMPANY_ID").and_return(nil)
     admin.add_role(:admin, company)
     employee.add_role(:employee, company)
     sign_in admin
@@ -64,6 +66,14 @@ RSpec.describe "Employee reports and settings", type: :request do
     client = create(:user, current_workspace: company)
     create(:employment, company:, user: client, resigned_at: nil)
     client.add_role(:client, company)
+    [{ joined_at: Date.tomorrow }, { resigned_at: Date.yesterday }, { discarded_at: Time.current }].each do |attributes|
+      excluded = create(:user, current_workspace: company)
+      excluded.add_role(:employee, company)
+      create(:employment, company:, user: excluded, resigned_at: nil).update_columns(attributes)
+    end
+    discarded = create(:user, current_workspace: company, discarded_at: Time.current)
+    discarded.add_role(:employee, company)
+    create(:employment, company:, user: discarded, resigned_at: nil)
     save_report(columns: %w[name bank_account_number])
     get "/api/v1/employee_reports/#{EmployeeReport.last.id}/download", params: { month: "2026-10" }
     expect(response).to have_http_status(:ok)
@@ -126,7 +136,26 @@ RSpec.describe "Employee reports and settings", type: :request do
     expect(EmployeeRecordSetting.last.occasion_reminders_enabled).to be(true)
   end
 
-  it "denies staff, inactive admins, cross-company roles and a disabled entitlement" do
+  it "exports insurance and salary presets for incomplete active profiles without inventing dates" do
+    admin_employment.update_column(:joined_at, nil)
+    employment.update_column(:joined_at, nil)
+    EmployeeRecord.create!(employment:, private_details: { salary_amount: "123.45", salary_currency: "INR" })
+    %w[insurance salary].each do |preset|
+      save_report(name: preset, columns: EmployeeReports::Columns::PRESETS.fetch(preset.to_sym))
+      expect(response).to have_http_status(:created)
+      get "/api/v1/employee_reports/#{EmployeeReport.last.id}/download", params: { month: "2026-10" }
+      expect(response).to have_http_status(:ok)
+      rows = CSV.parse(response.body, headers: true)
+      expect(rows.size).to eq(2)
+      rows.each do |row|
+        expect(row["Joining date"]).to eq("") if preset == "insurance"
+        expect(row["Month calendar weekdays (Mon–Fri)"]).to eq("") if preset == "salary"
+      end
+      expect(response.body).to include("123.45") if preset == "salary"
+    end
+  end
+
+  it "denies staff, inactive admins and cross-company roles" do
     sign_in employee
     get "/api/v1/employee_reports"
     expect(response).to have_http_status(:forbidden)
@@ -140,10 +169,6 @@ RSpec.describe "Employee reports and settings", type: :request do
     admin.add_role(:admin, company)
     admin_employment.update_column(:resigned_at, Date.yesterday)
     get "/api/v1/employee_reports"
-    expect(response).to have_http_status(:forbidden)
-    admin_employment.update_column(:resigned_at, nil)
-    allow(ENV).to receive(:[]).with("MIRU_PAYROLL_ENABLED").and_return("false")
-    get "/api/v1/employee_record_settings"
     expect(response).to have_http_status(:forbidden)
   end
 

@@ -10,7 +10,9 @@ RSpec.describe "Employee records", type: :request do
   let!(:employment) { create(:employment, company:, user: employee, resigned_at: nil) }
 
   before do
-    enable_synthetic_payroll(company.id)
+    allow(ENV).to receive(:[]).and_call_original
+    allow(ENV).to receive(:[]).with("MIRU_PAYROLL_ENABLED").and_return("false")
+    allow(ENV).to receive(:[]).with("MIRU_PAYROLL_SAELOUN_COMPANY_ID").and_return(nil)
     admin.add_role(:admin, company)
     employee.add_role(:employee, company)
     sign_in admin
@@ -84,7 +86,24 @@ RSpec.describe "Employee records", type: :request do
     expect(response).to have_http_status(:forbidden)
   end
 
-  it "denies coworkers, clients, inactive memberships and the default-off gate" do
+  it "allows incomplete active profiles independently of native payroll" do
+    admin_employment.update_column(:joined_at, nil)
+    employment.update_column(:joined_at, nil)
+    get "/api/v1/employee_records", params: { user_id: employee.id }
+    expect(response).to have_http_status(:ok)
+    expect(response.parsed_body.dig("employee_record", "employment", "joined_at")).to be_nil
+    update_record({ salary_amount: "100.00", bank_name: "Synthetic Bank" })
+    expect(response).to have_http_status(:ok)
+    upload_document(kind: "contract")
+    expect(response).to have_http_status(:created)
+    record_payment
+    expect(response).to have_http_status(:created)
+    sign_in employee
+    update_record({ emergency_contact_name: "Synthetic contact" })
+    expect(response).to have_http_status(:ok)
+  end
+
+  it "denies coworkers, clients and inactive memberships" do
     sign_in employee
     get "/api/v1/employee_records", params: { user_id: admin.id }
     expect(response).to have_http_status(:forbidden)
@@ -101,9 +120,6 @@ RSpec.describe "Employee records", type: :request do
       admin_employment.update_column(attribute, old)
       sign_in admin
     end
-    allow(ENV).to receive(:[]).with("MIRU_PAYROLL_ENABLED").and_return("false")
-    get "/api/v1/employee_records"
-    expect(response).to have_http_status(:forbidden)
   end
 
   it "scopes shared users to the current employment and rejects stale-company mutations" do
@@ -114,7 +130,6 @@ RSpec.describe "Employee records", type: :request do
     admin.add_role(:admin, other_company)
     employee.add_role(:employee, other_company)
     admin.update!(current_workspace: other_company)
-    enable_synthetic_payroll(other_company.id)
     sign_out admin
     sign_in User.find(admin.id)
     get "/api/v1/employee_records", params: { user_id: employee.id }
@@ -202,7 +217,6 @@ RSpec.describe "Employee records", type: :request do
     admin.add_role(:admin, other_company)
     employee.add_role(:employee, other_company)
     admin.update!(current_workspace: other_company)
-    enable_synthetic_payroll(other_company.id)
     sign_out admin
     sign_in User.find(admin.id)
     get "/api/v1/employee_records/documents/#{document.id}", params: { user_id: employee.id, kind: "pan" }

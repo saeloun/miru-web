@@ -47,18 +47,19 @@ class Api::V1::Users::SessionsController < Devise::SessionsController
 
   def me
     if current_user
+      company = current_company
       render json: {
         user: auth_user_payload(current_user).merge(
           "date_of_birth" => current_user.date_of_birth,
           "phone" => current_user.phone,
           "personal_email_id" => current_user.personal_email_id,
           "social_accounts" => current_user.social_accounts,
-          "date_format" => current_company&.date_format,
+          "date_format" => company&.date_format,
           "avatar_url" => current_user.avatar_url,
           "password_changed_at" => current_user.password_changed_at
         ),
-        company_role: company_role_payload(current_user, current_company),
-        company: company_payload(current_company)
+        company_role: company_role_payload(current_user, company),
+        company: company_payload(company, user: current_user)
       }, status: 200
     else
       render json: { error: "Not authenticated" }, status: 401

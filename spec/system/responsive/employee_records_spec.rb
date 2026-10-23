@@ -8,11 +8,13 @@ RSpec.describe "Private employee records browser workflow", type: :system, js: t
   let(:company) { create(:company) }
   let(:admin) { create(:user, current_workspace: company) }
   let(:employee) { create(:user, current_workspace: company) }
-  let!(:employment) { create(:employment, company:, user: employee, joined_at: "2020-01-01", resigned_at: nil) }
+  let!(:employment) { create(:employment, company:, user: employee, joined_at: nil, resigned_at: nil) }
 
   before do
-    enable_synthetic_payroll(company.id)
-    create(:employment, company:, user: admin, joined_at: "2020-01-01", resigned_at: nil)
+    allow(ENV).to receive(:[]).and_call_original
+    allow(ENV).to receive(:[]).with("MIRU_PAYROLL_ENABLED").and_return("false")
+    allow(ENV).to receive(:[]).with("MIRU_PAYROLL_SAELOUN_COMPANY_ID").and_return(nil)
+    create(:employment, company:, user: admin, joined_at: nil, resigned_at: nil)
     admin.add_role(:admin, company)
     employee.add_role(:employee, company)
   end
@@ -296,15 +298,15 @@ RSpec.describe "Private employee records browser workflow", type: :system, js: t
     JS
   end
 
-  it "denies a coworker's private tab and hides the tab when the entitlement is off" do
+  it "denies a coworker's private tab while keeping personal records available with payroll off" do
     sign_in(employee)
     visit "/team/#{admin.id}/employee-records?company_id=#{company.id}"
     expect(page).to have_css("[role='alert']", text: "Employee records are unavailable")
     expect(page).not_to have_css("[data-testid='employee-records']")
-    allow(ENV).to receive(:[]).with("MIRU_PAYROLL_ENABLED").and_return("false")
     visit "/settings/profile"
-    expect(page).not_to have_link("Employee records")
+    expect(page).to have_link("Employee records")
+    expect(page).not_to have_link("Payroll review")
     visit "/settings/employee-records"
-    expect(page).to have_css("[role='alert']", text: "Employee records are unavailable")
+    expect(page).to have_css("[data-testid='employee-records']")
   end
 end

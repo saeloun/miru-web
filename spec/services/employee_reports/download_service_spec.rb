@@ -16,6 +16,11 @@ RSpec.describe EmployeeReports::DownloadService do
     CSV.parse(csv, headers: true).first
   end
 
+  it "leaves joining date and calendar weekdays blank for an incomplete active profile" do
+    employment.update_column(:joined_at, nil)
+    expect(row.to_h).to include("Joining date" => "", "Month calendar weekdays (Mon–Fri)" => "")
+  end
+
   it "uses company-scoped kept monthly time records and distinct working dates" do
     project = create(:project, company:)
     create(:timesheet_entry, project:, user:, work_date: "2026-10-01", duration: 60)
