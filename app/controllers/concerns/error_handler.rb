@@ -72,6 +72,8 @@ module ErrorHandler
     def record_not_unique(exception)
       raise exception unless Employment.employee_id_conflict?(exception)
 
-      render json: { errors: "Employee has already been taken" }, status: 422
+      employment = Employment.new
+      employment.errors.add(:employee_id, :taken)
+      render json: { errors: employment.errors.full_messages.first }, status: 422
     end
 end

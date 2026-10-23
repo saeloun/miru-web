@@ -34,7 +34,7 @@ RSpec.describe "Api::V1::BulkPreviousEmployments#update", type: :request do
         patch api_v1_bulk_previous_employment_path(target_user), params: payload, headers: auth_headers(user)
       end.not_to change { target_user.previous_employments.count }
       expect(response).to have_http_status(422)
-      expect(json_response["errors"]).to match(/already been taken/)
+      expect(json_response["errors"]).to eq("Employee ID has already been taken")
       payload[:employments][:current_employment][:employee_id] = "SI070"
       patch api_v1_bulk_previous_employment_path(target_user), params: payload, headers: auth_headers(user)
       expect(response).to have_http_status(:ok)

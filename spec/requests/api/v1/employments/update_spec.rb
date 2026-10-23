@@ -14,12 +14,30 @@ RSpec.describe "Api::V1::Employments#update", type: :request do
     patch api_v1_employment_path(user), params: { employment: { employee_id: "reserved" } },
       headers: auth_headers(user)
     expect(response).to have_http_status(422)
-    expect(json_response["errors"]).to match(/already been taken/)
+    expect(json_response["errors"]).to eq("Employee ID has already been taken")
     patch api_v1_employment_path(user), params: { employment: { employee_id: "SI064" } },
       headers: auth_headers(user)
     expect(response).to have_http_status(:ok)
     expect(employment.reload.employee_id).to eq("SI064")
     expect(company.reload.last_employee_number).to eq(64)
+  end
+
+  it "uses the same label for a named employee ID index conflict" do
+    user.add_role(:admin, company)
+    sign_in user
+    create(:employment, company:, employee_id: "reserved")
+    conflict = begin
+      Employment.transaction(requires_new: true) { employment.update_columns(employee_id: "reserved") }
+    rescue ActiveRecord::RecordNotUnique => exception
+      exception
+    end
+    allow_any_instance_of(Employment).to receive(:update_profile!).and_raise(conflict)
+
+    patch api_v1_employment_path(user), params: { employment: { employee_id: "reserved" } },
+      headers: auth_headers(user)
+
+    expect(response).to have_http_status(422)
+    expect(json_response["errors"]).to eq("Employee ID has already been taken")
   end
 
   context "when user is an admin" do
