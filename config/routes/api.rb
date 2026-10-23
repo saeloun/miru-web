@@ -86,6 +86,7 @@ namespace :api, defaults: { format: "json" } do
       member do
         post :publish
         post :withdraw
+        post :email
         get :download
       end
     end

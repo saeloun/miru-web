@@ -22,7 +22,7 @@ class Api::V1::EmploymentsController < Api::V1::ApplicationController
   private
 
     def set_employment
-      @employment = Employment.find_by!(user_id: params[:id], company_id: current_company.id)
+      @employment = current_company.employments.kept.find_by!(user_id: params[:id])
     end
 
     def employment_params

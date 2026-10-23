@@ -28,7 +28,55 @@ RSpec.describe "Salary slips", type: :request do
     SalarySlip.order(:id).last
   end
 
-  [:resigned, :future_joining, :missing_joining].each do |membership_state|
+  it "queues only the confirmed assigned recipient with company and publication bound to confirmation" do
+    slip = imported_slip
+    body = { company_id: company.id, expected_recipient_email: employee.email }
+    post "/api/v1/salary_slips/#{slip.id}/email", params: body
+    expect(response).to have_http_status(:unprocessable_content)
+    slip.publish!(actor: admin)
+    post "/api/v1/salary_slips/#{slip.id}/email", params: body.merge(company_id: company.id + 1)
+    expect(response).to have_http_status(:conflict)
+    post "/api/v1/salary_slips/#{slip.id}/email", params: body.merge(expected_recipient_email: admin.email)
+    expect(response).to have_http_status(:unprocessable_content)
+    expect do
+      post "/api/v1/salary_slips/#{slip.id}/email", params: body
+    end.to have_enqueued_job(SalarySlipEmailJob).with(slip.id, admin.id, company.id, employee.email)
+    expect(response).to have_http_status(:accepted)
+    sign_in employee
+    post "/api/v1/salary_slips/#{slip.id}/email", params: body
+    expect(response).to have_http_status(:forbidden)
+  end
+
+  it "lists own published past months while excluding drafts and coworkers" do
+    september = imported_slip
+    september.publish!(actor: admin)
+    august = imported_slip
+    august.update!(pay_month: "2026-08-01")
+    august.publish!(actor: admin)
+    imported_slip
+    import_slip(employment_id: admin_employment.id)
+    SalarySlip.order(:id).last.publish!(actor: admin)
+    sign_in employee
+    get "/api/v1/salary_slips"
+    expect(response.parsed_body.fetch("salary_slips").pluck("id")).to eq([september.id, august.id])
+    get "/api/v1/salary_slips", params: { month: "2026-08" }
+    expect(response.parsed_body.fetch("salary_slips").pluck("id")).to eq([august.id])
+  end
+
+  it "allows legacy administrator and employee memberships without joining dates with native payroll disabled" do
+    allow(ENV).to receive(:[]).and_call_original
+    allow(ENV).to receive(:[]).with("MIRU_PAYROLL_ENABLED").and_return("false")
+    admin_employment.update_columns(joined_at: nil)
+    employment.update_columns(joined_at: nil)
+    slip = imported_slip
+    post "/api/v1/salary_slips/#{slip.id}/publish"
+    expect(response).to have_http_status(:ok)
+    sign_in employee
+    get "/api/v1/salary_slips"
+    expect(response.parsed_body.fetch("salary_slips").pluck("id")).to eq([slip.id])
+  end
+
+  [:resigned, :future_joining].each do |membership_state|
     it "denies #{membership_state} administrators even when their role is retained" do
       slip = imported_slip
       slip.publish!(actor: admin)

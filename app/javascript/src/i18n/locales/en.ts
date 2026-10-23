@@ -395,6 +395,12 @@ const en = {
     withdrawn: "Withdrawn",
     publish: "Publish salary slip",
     withdraw: "Withdraw salary slip",
+    email: "Email employee",
+    emailHelp:
+      "Send a private sign-in link to this employee. No PDF is attached.",
+    emailQueued: "Email queued.",
+    workspaceNotice:
+      "This link belongs to another workspace. Switch to that workspace to view the salary slip.",
     publishHelp:
       "This makes the slip available to this employee and replaces any published slip for the same month. Earlier revisions are retained. Publication does not confirm payment.",
     withdrawHelp:
