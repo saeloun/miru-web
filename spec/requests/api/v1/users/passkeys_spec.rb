@@ -45,7 +45,7 @@ RSpec.describe "Api::V1::Users::Passkeys", type: :request do
     it "registers a passkey" do
       post "/api/v1/users/passkeys/registration_options", params: { current_password: "welcome12" }
 
-      credential = fake_client.create(challenge: json_response.dig("public_key", "challenge"), rp_id: "localhost")
+      credential = fake_client.create(challenge: json_response.dig("public_key", "challenge"), rp_id: "localhost", user_verified: true)
 
       post "/api/v1/users/passkeys", params: {
         challenge_token: json_response["challenge_token"],
@@ -93,24 +93,21 @@ RSpec.describe "Api::V1::Users::Passkeys", type: :request do
   it "rejects passkey sign-in for a member of an SSO-enforced workspace" do
     create(:employment, company:, user:)
     user.add_role :employee, company
-    company.update!(sso_enforced: true)
     passkey = user.passkeys.create!(external_id: "credential-id", public_key: "public-key", sign_count: 0)
+    user.update!(passkey_required_for_login: true)
     credential = OpenStruct.new(sign_count: 1)
     webauthn_credential = OpenStruct.new(id: passkey.external_id)
     sign_out user
-    allow(Passkeys::ChallengeToken).to receive(:verify).and_return(
-      "type" => "authentication",
-      "user_id" => user.id,
-      "company_id" => company.id,
-      "challenge" => "challenge"
-    )
+    post api_v1_users_login_path, params: { user: { email: user.email, password: "welcome12" } }
+    pending_token = json_response.fetch("pending_token")
+    company.update!(sso_enforced: true)
     allow(::WebAuthn::RelyingParty).to receive(:new).and_return(relying_party)
     allow(relying_party).to receive(:verify_authentication) do |_response, _challenge, **_options, &block|
       [credential, block.call(webauthn_credential)]
     end
 
     post "/api/v1/users/passkeys/authenticate", params: {
-      pending_token: "pending-token",
+      pending_token:,
       credential: { id: passkey.external_id }
     }
 
@@ -130,7 +127,7 @@ RSpec.describe "Api::V1::Users::Passkeys", type: :request do
     challenge_token = json_response["challenge_token"]
     challenge = json_response.dig("public_key", "challenge")
 
-    credential = fake_client.create(challenge:, rp_id: "localhost")
+    credential = fake_client.create(challenge:, rp_id: "localhost", user_verified: true)
 
     post "/api/v1/users/passkeys", params: {
       challenge_token:,

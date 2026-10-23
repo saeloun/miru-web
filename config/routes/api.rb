@@ -7,6 +7,7 @@ namespace :api, defaults: { format: "json" } do
         post "login", to: "sessions#create", as: "login"
         delete "logout", to: "sessions#destroy", as: "logout"
         get "_me", to: "sessions#me", as: "me"
+        get "second_factor", to: "sessions#second_factor"
         post "signup", to: "registrations#create", as: "signup"
         post "forgot_password", to: "passwords#create", as: "forgot_password"
         put "reset_password", to: "passwords#update", as: "reset_password"
@@ -27,6 +28,7 @@ namespace :api, defaults: { format: "json" } do
           post :confirm
           post :authenticate
           post :recovery_codes, action: :regenerate_recovery_codes
+          post :revoke_trusted_browsers
         end
       end
 

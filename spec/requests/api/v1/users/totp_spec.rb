@@ -29,6 +29,25 @@ RSpec.describe "Api::V1::Users::Totp", type: :request do
       expect(json_response["secret"]).to be_present
       expect(json_response["provisioning_uri"]).to include("otpauth://totp/")
       expect(user.reload.otp_secret).to be_present
+      expect(json_response["qr_code"]).to start_with("data:image/png;base64,")
+      expect(response.headers["Cache-Control"]).to include("no-store")
+    end
+
+    it "does not reset an enabled authenticator before a replacement is confirmed" do
+      user.reset_totp_setup!
+      user.update!(otp_required_for_login: true)
+      secret = user.otp_secret
+      post "/api/v1/users/totp/setup", params: { current_password: "welcome12" }
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(user.reload.otp_secret).to eq(secret)
+      expect(user).to be_totp_enabled
+    end
+
+    it "allows authenticator setup alongside a required passkey" do
+      user.update!(passkey_required_for_login: true)
+      post "/api/v1/users/totp/setup", params: { current_password: "welcome12" }
+      expect(response).to have_http_status(:ok)
+      expect(user.reload.passkey_required_for_login).to eq(true)
     end
   end
 
@@ -87,17 +106,15 @@ RSpec.describe "Api::V1::Users::Totp", type: :request do
   it "rejects TOTP sign-in for a member of an SSO-enforced workspace" do
     create(:employment, company:, user:)
     user.add_role :employee, company
-    company.update!(sso_enforced: true)
     user.reset_totp_setup!
+    user.update!(otp_required_for_login: true)
     code = ROTP::TOTP.new(user.reload.otp_secret, issuer: User::TOTP_ISSUER).now
     sign_out user
-    allow(Passkeys::ChallengeToken).to receive(:verify).and_return(
-      "type" => "totp_authentication",
-      "user_id" => user.id,
-      "company_id" => company.id
-    )
+    post api_v1_users_login_path, params: { user: { email: user.email, password: "welcome12" } }
+    pending_token = json_response.fetch("pending_token")
+    company.update!(sso_enforced: true)
 
-    post "/api/v1/users/totp/authenticate", params: { pending_token: "pending-token", code: }
+    post "/api/v1/users/totp/authenticate", params: { pending_token:, code: }
 
     expect(response).to have_http_status(:forbidden)
     expect(json_response["error"]).to eq(SsoEnforcement::SSO_REQUIRED_MESSAGE)

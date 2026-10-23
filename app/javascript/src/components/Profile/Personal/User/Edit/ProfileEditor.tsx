@@ -81,6 +81,7 @@ const ProfileEditor = ({
   totpBusy,
   totpEnabled,
   totpProvisioningUri,
+  totpQrCode,
   totpSecret,
   totpVerificationCode,
 }) => (
@@ -532,6 +533,7 @@ const ProfileEditor = ({
             onGenerateRecoveryCodes={onGenerateRecoveryCodes}
             onSetup={onSetupTotp}
             provisioningUri={totpProvisioningUri}
+            qrCode={totpQrCode}
             recoveryCodes={recoveryCodes}
             recoveryCodesCount={recoveryCodesCount}
             secret={totpSecret}

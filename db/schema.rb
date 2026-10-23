@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_23_120000) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_23_130000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_stat_statements"
@@ -1133,6 +1133,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_23_120000) do
     t.check_constraint "EXTRACT(day FROM pay_month) = 1::numeric", name: "salary_slips_month_start"
   end
 
+  create_table "second_factor_challenges", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.datetime "expires_at", null: false
+    t.index ["user_id"], name: "index_second_factor_challenges_on_user_id"
+  end
+
   create_table "solid_cable_messages", force: :cascade do |t|
     t.binary "channel", null: false
     t.bigint "channel_hash", null: false
@@ -1414,6 +1420,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_23_120000) do
     t.string "unique_session_id", null: false
     t.datetime "updated_at", null: false
     t.string "webauthn_id"
+    t.integer "browser_trust_version", default: 0, null: false
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token"
     t.index ["current_workspace_id"], name: "index_users_on_current_workspace_id"
     t.index ["discarded_at"], name: "index_users_on_discarded_at"
@@ -1568,6 +1575,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_23_120000) do
   add_foreign_key "salary_slips", "users", column: "published_by_id"
   add_foreign_key "salary_slips", "users", column: "uploaded_by_id"
   add_foreign_key "salary_slips", "users", column: "withdrawn_by_id"
+  add_foreign_key "second_factor_challenges", "users"
   add_foreign_key "solid_queue_blocked_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_claimed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_failed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
