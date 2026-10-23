@@ -323,6 +323,8 @@ RSpec.describe "Expenses CRUD", type: :system, js: true do
         end
         attach_file "Receipts", receipts
         expect(page).to have_content("You can attach up to 10 files per expense")
+        attach_file "Receipts", Rails.root.join("spec/support/fixtures/invalid-avatar.txt")
+        expect(page).to have_content("Attachments must be images (JPG, PNG, WebP), PDF, CSV, or Excel files.")
         within("[role='dialog']") do
           expect(page).to have_button("Remove", count: 1)
           expect(page).to have_content("test-image.png")

@@ -3,6 +3,7 @@ import React from "react";
 import { ArrowLeftIcon, EditIcon, DeleteIcon } from "miruIcons";
 import { useNavigate } from "react-router-dom";
 import { Button } from "StyledComponents";
+import { i18n } from "../../../i18n";
 
 const Header = ({ expense, handleEdit, handleDelete }) => {
   const navigate = useNavigate();
@@ -51,7 +52,7 @@ const Header = ({ expense, handleEdit, handleDelete }) => {
       <div className="flex lg:hidden">
         <Button className="p-2" style="ternary" onClick={handleEdit}>
           <EditIcon size={16} weight="bold" />
-          <span className="sr-only">Edit</span>
+          <span className="sr-only">{i18n.t("edit")}</span>
         </Button>
         {showDelete && (
           <Button className="p-2" style="ternary" onClick={handleDelete}>

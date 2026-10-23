@@ -1589,6 +1589,8 @@ const en = {
     tooManyReceipts:
       "You can attach up to 10 files per expense, including existing attachments.",
     receiptTooLarge: "Each attachment must be 10 MB or smaller.",
+    unsupportedReceiptFormat:
+      "Attachments must be images (JPG, PNG, WebP), PDF, CSV, or Excel files.",
     receipts: "Receipts",
     receiptsAttached: "%{count} attached",
     preview: "Preview",

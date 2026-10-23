@@ -11,5 +11,16 @@ export const receiptUploadError = (files: File[], existingCount: number) => {
     return i18n.t("expenses.receiptTooLarge");
   }
 
+  if (
+    files.some(
+      file =>
+        !RECEIPT_ACCEPT.split(",").some(extension =>
+          file.name.toLowerCase().endsWith(extension)
+        )
+    )
+  ) {
+    return i18n.t("expenses.unsupportedReceiptFormat");
+  }
+
   return "";
 };
