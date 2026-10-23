@@ -8,7 +8,34 @@
 
 # Make sure RUBY_VERSION matches the Ruby version in .ruby-version
 ARG RUBY_VERSION=4.0.9
-FROM ruby:$RUBY_VERSION-slim AS base
+# Build from the verified release until Docker Hub publishes the security patch.
+FROM debian:trixie-slim AS ruby-build
+ARG RUBY_VERSION
+ARG RUBY_SHA256=a8057adb39f51ad6dc3106237504c93dd792bb515837b4fe7817ae21ed7e51f4
+RUN apt-get update -qq && \
+    apt-get install --no-install-recommends -y build-essential ca-certificates curl \
+    libffi-dev libgmp-dev libreadline-dev libssl-dev libyaml-dev ruby rustc xz-utils zlib1g-dev && \
+    curl -fsSL "https://cache.ruby-lang.org/pub/ruby/4.0/ruby-${RUBY_VERSION}.tar.xz" -o /tmp/ruby.tar.xz && \
+    echo "${RUBY_SHA256}  /tmp/ruby.tar.xz" | sha256sum -c - && \
+    mkdir /tmp/ruby && tar -xJf /tmp/ruby.tar.xz -C /tmp/ruby --strip-components=1 && \
+    cd /tmp/ruby && \
+    LDFLAGS="-Wl,-z,relro -Wl,-z,now" ./configure --enable-shared --enable-yjit --disable-install-doc && \
+    make -j 4 && make install
+
+FROM debian:trixie-slim AS base
+ARG RUBY_VERSION
+ENV LANG=C.UTF-8 \
+    GEM_HOME=/usr/local/bundle \
+    BUNDLE_APP_CONFIG=/usr/local/bundle \
+    BUNDLE_SILENCE_ROOT_WARNING=1
+ENV PATH=/usr/local/bundle/bin:$PATH
+RUN apt-get update -qq && \
+    apt-get install --no-install-recommends -y ca-certificates libcrypt1 libffi8 \
+    libgmp10 libreadline8t64 libssl3t64 libyaml-0-2 zlib1g && \
+    rm -rf /var/lib/apt/lists/*
+COPY --from=ruby-build /usr/local/ /usr/local/
+RUN ldconfig && mkdir -p /usr/local/bundle && chmod 1777 /usr/local/bundle && \
+    ruby -ropenssl -rpsych -rzlib -e 'abort "Unexpected Ruby" unless RUBY_VERSION == ARGV.fetch(0); abort "YJIT unavailable" unless RubyVM::YJIT.respond_to?(:enable)' "${RUBY_VERSION}"
 
 # Rails app lives here
 WORKDIR /rails
