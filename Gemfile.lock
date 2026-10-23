@@ -212,7 +212,7 @@ GEM
     crack (1.0.1)
       bigdecimal
       rexml
-    crass (1.0.7)
+    crass (1.0.8)
     csv (3.3.5)
     cuprite (0.17)
       capybara (~> 3.0)
@@ -588,8 +588,8 @@ GEM
     pg_search (2.3.8)
       activerecord (>= 7.2)
       activesupport (>= 7.2)
-    pghero (3.7.0)
-      activerecord (>= 7.1)
+    pghero (4.1.0)
+      activerecord (>= 7.2)
     phonelib (0.10.28)
     postmark (1.25.1)
       json

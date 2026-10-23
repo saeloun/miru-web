@@ -139,7 +139,10 @@ RSpec.describe "Employee reports and settings", type: :request do
   it "exports insurance and salary presets for incomplete active profiles without inventing dates" do
     admin_employment.update_column(:joined_at, nil)
     employment.update_column(:joined_at, nil)
-    EmployeeRecord.create!(employment:, private_details: { salary_amount: "123.45", salary_currency: "INR" })
+    record = EmployeeRecord.create!(employment:, private_details: { salary_amount: "123.45", salary_currency: "INR" })
+    raw = EmployeeRecord.connection.select_value("SELECT private_details FROM employee_records WHERE id = #{record.id}")
+    expect(raw).not_to include("123.45", "INR")
+    expect(record.reload.private_details).to include("salary_amount" => "123.45", "salary_currency" => "INR")
     %w[insurance salary].each do |preset|
       save_report(name: preset, columns: EmployeeReports::Columns::PRESETS.fetch(preset.to_sym))
       expect(response).to have_http_status(:created)

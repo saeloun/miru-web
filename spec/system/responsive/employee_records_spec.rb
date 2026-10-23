@@ -168,6 +168,7 @@ RSpec.describe "Private employee records browser workflow", type: :system, js: t
 
   it "edits a saved report in place and downloads the changed columns on desktop and mobile" do
     report = company.employee_reports.create!(name: "Synthetic Directory", columns: %w[name email])
+    release_update = Queue.new
     with_forgery_protection do
       open_records(admin)
       page.current_window.resize_to(1440, 1000)
@@ -183,18 +184,21 @@ RSpec.describe "Private employee records browser workflow", type: :system, js: t
       expect(page).to have_checked_field("Phone")
       capture_records("employee-report-editor-desktop.png")
       pending_updates = Queue.new
-      page.driver.browser.network.intercept(pattern: "*/api/v1/employee_reports/#{report.id}")
-      page.driver.browser.on(:request) { |request| pending_updates << request }
+      allow_any_instance_of(Api::V1::EmployeeReportsController).to receive(:update).and_wrap_original do |action, *args|
+        pending_updates << [action.receiver.request.request_method, action.receiver.request.path]
+        release_update.pop
+        action.call(*args)
+      end
       click_button "Save report changes"
       request = pending_updates.pop(timeout: Capybara.default_max_wait_time)
-      expect(request).to be_present
+      expect(request).to eq(["PATCH", "/api/v1/employee_reports/#{report.id}"])
+      expect(report.reload).to have_attributes(name: "Synthetic Directory", columns: %w[name email])
       expect(page).to have_field("Report name", disabled: true)
       expect(page).to have_field("Phone", disabled: true)
       ["Save report changes", "Cancel", "Edit Synthetic Directory", "Delete Synthetic Directory", "Download CSV"].each do |action|
         expect(page).to have_button(action, disabled: true)
       end
-      request.continue
-      page.driver.browser.command("Fetch.disable")
+      release_update << true
       expect(page).to have_css("[role='status']", text: "Report definition saved.")
       expect(report.reload).to have_attributes(name: "Synthetic Contacts", columns: %w[name phone])
       expect(company.employee_reports.pluck(:id)).to eq([report.id])
@@ -217,6 +221,8 @@ RSpec.describe "Private employee records browser workflow", type: :system, js: t
       capture_records("employee-report-editor-mobile.png")
       expect(@console_errors).to be_empty
     end
+  ensure
+    release_update << true if release_update
   end
 
   it "cancels report edits, retains rejected drafts for retry and resets an edited report after deletion" do
