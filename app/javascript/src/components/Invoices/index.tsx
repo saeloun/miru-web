@@ -19,6 +19,7 @@ import { toast } from "sonner";
 import { usePaginatedInvoices } from "./usePaginatedInvoices";
 import { lineTotalCalc } from "../../helpers";
 import { i18n } from "../../i18n";
+import { getInitialRecipients } from "./common/InvoiceForm/SendInvoice/utils";
 
 type ViewMode = "list" | "edit" | "create" | "preview";
 
@@ -382,7 +383,7 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
         const response = await invoiceApi.sendInvoice(invoiceId, {
           subject: `Invoice ${invoiceData.invoiceNumber}`,
           message: "Please find your invoice attached.",
-          recipients: [client.email],
+          recipients: getInitialRecipients({ client }),
         });
 
         toast.success(
@@ -444,7 +445,7 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
         invoiceEmail || {
           subject: `Invoice ${invoice.invoiceNumber}`,
           message: "Please find your invoice attached.",
-          recipients: [invoice.client.email],
+          recipients: getInitialRecipients(invoice),
         }
       );
 
@@ -518,7 +519,7 @@ const InvoicesPage: React.FC<InvoicesPageProps> = ({
           subject: `Reminder to complete payment for invoice ${invoice.invoiceNumber}`,
           message:
             "This is a reminder about your overdue invoice. Please complete payment.",
-          recipients: [invoice.client.email],
+          recipients: getInitialRecipients(invoice),
         }
       );
 

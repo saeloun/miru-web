@@ -33,6 +33,8 @@ json.updated_at invoice.updated_at
 json.client do
   json.id invoice.client_id
   json.name invoice.client&.name
+  json.legal_name invoice.client&.legal_name
+  json.finance_email invoice.client&.finance_email
   json.email invoice.client&.email if invoice.client&.email
   json.phone invoice.client&.phone if invoice.client&.phone
   json.logo invoice.client&.logo_url if invoice.client&.logo_url

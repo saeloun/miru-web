@@ -80,7 +80,9 @@ class Client < ApplicationRecord
     {
       id:,
       name:,
+      legal_name:,
       email:,
+      finance_email:,
       ein: valid_ein,
       phone:,
       currency:,
@@ -185,11 +187,10 @@ class Client < ApplicationRecord
   end
 
   def send_invoice_emails(virtual_verified)
-    if virtual_verified
-      client_members_emails + client_virtual_verified_emails
-    else
-      client_members_emails
-    end
+    emails = client_members_emails
+    emails += client_virtual_verified_emails if virtual_verified
+    emails << finance_email if finance_email.present?
+    emails.compact_blank.uniq(&:downcase)
   end
 
   private

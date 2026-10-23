@@ -335,7 +335,9 @@ class InvoiceApiService {
     return (response.data.client_details || []).map((clientDetail: any) => ({
       id: clientDetail.id,
       name: clientDetail.name,
+      legalName: clientDetail.legal_name,
       email: clientDetail.email,
+      financeEmail: clientDetail.finance_email,
       address: clientDetail.address || "",
       logo: clientDetail.logo,
       ein: clientDetail.ein || "",
@@ -464,7 +466,11 @@ class InvoiceApiService {
       client: {
         id: apiInvoice.client?.id || apiInvoice.client_id || "",
         name: apiInvoice.client?.name || apiInvoice.client_name || "",
+        legalName:
+          apiInvoice.client?.legalName || apiInvoice.client?.legal_name,
         email: apiInvoice.client?.email || "",
+        financeEmail:
+          apiInvoice.client?.financeEmail || apiInvoice.client?.finance_email,
         address: formatAddress(apiInvoice.client?.address),
         logo: apiInvoice.client?.logo,
         ein: apiInvoice.client?.ein || "",
