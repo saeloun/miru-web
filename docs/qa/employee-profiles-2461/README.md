@@ -13,10 +13,13 @@ Every person, company, address, bank value and payment value shown is a generate
 | Duplicate ID rejected with draft retained | [Validation](duplicate-id-desktop.png) | [Validation](duplicate-id-mobile.png) |
 | Valid correction after rejection | [Saved correction](corrected-id-desktop.png) | [Saved correction](corrected-id-mobile.png) |
 | Authentication regression | — | [Second-factor challenge](second-factor-mobile.png), [loaded dashboard](authenticated-mobile.png) |
+| Historical employment errors shown generally, with Employee ID unmarked | [General error](employment-history-error-desktop.png) | [General error](employment-history-error-mobile.png) |
 
 The focused report captures use 1440×1000 and 375×1000 viewports. Full-page record captures begin at scroll position zero. The associated checks also exercise permissions, document/CSV responses, persistence and concurrent database writes; screenshots alone do not establish those properties.
 
 Local integrated verification passed 204 profile/lifecycle, 129 authentication and 117 payroll-guard examples, plus 14 distinct browser cases. An additional focused browser capture passed after the functional checks. Vite build, focused lint and fresh-database migration/index assertions passed. Production rollout, company-specific ID backfill and live verification are separate release steps.
+
+The two historical-employment error captures were taken in Brave against runtime source `0e3db3ac1af894195dfc4e285a1feca00d33b07e`. They show a server rejection preserving the draft without marking Employee ID invalid. That follow-up passed 23 focused backend/migration examples and three Brave cases (desktop/mobile errors and retry, plus the upgraded PgHero page), with zero captured console errors; required Vite build and focused lint passed. The earlier 14 captures retain their original source attribution above. These counts overlap earlier checks and are not a new full-suite total.
 
 ## Release checklist
 
