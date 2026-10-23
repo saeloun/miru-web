@@ -10,7 +10,7 @@ class BulkPreviousEmploymentService
   end
 
   def process
-    ActiveRecord::Base.transaction do
+    employment.company.with_employee_number_lock do
       add_new_employments
       update_existing_employments
       remove_employments

@@ -127,6 +127,10 @@ class User < ApplicationRecord
   end
 
   # Callbacks
+  before_destroy(prepend: true) do
+    Company.where(id: Employment.where(user_id: id_in_database).select(:company_id))
+      .order(:id).lock("FOR NO KEY UPDATE").load
+  end
   after_discard :discard_project_members
   before_create :set_token
   before_update :set_token, if: :authentication_state_will_change?

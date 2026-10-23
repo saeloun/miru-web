@@ -202,4 +202,124 @@ RSpec.describe "Employee ID lifecycle lock ordering", type: :service do
     threads&.each(&:join)
     ActiveSupport::Notifications.unsubscribe(subscriber) if subscriber
   end
+
+  describe "aggregate lock boundaries" do
+    def race_aggregate_writes(first_operation, second_operation, first_sql:, second_sql:)
+      first_ready = Queue.new
+      second_ready = Queue.new
+      releases = [Queue.new, Queue.new]
+      pids = [Queue.new, Queue.new]
+      threads = []
+      first_observation = nil
+      subscriber = ActiveSupport::Notifications.subscribe("sql.active_record") do |event|
+        role = Thread.current[:employee_id_aggregate_role]
+        next unless role && !Thread.current[:employee_id_aggregate_paused]
+        next unless event.payload[:sql].match?(role.zero? ? first_sql : second_sql)
+
+        Thread.current[:employee_id_aggregate_paused] = true
+        (role.zero? ? first_ready : second_ready) << event.payload.slice(:sql, :row_count)
+        Timeout.timeout(20) { releases.fetch(role).pop }
+      end
+      [first_operation, second_operation].each_with_index do |operation, role|
+        threads << Thread.new do
+          ActiveRecord::Base.connection_pool.with_connection do |connection|
+            pids.fetch(role) << connection.raw_connection.backend_pid
+            Thread.current[:employee_id_aggregate_role] = role
+            operation.call
+          end
+          :completed
+        rescue StandardError => error
+          error.class
+        end
+        first_observation = Timeout.timeout(20) { first_ready.pop } if role.zero?
+      end
+      first_pid, second_pid = pids.map { |queue| Timeout.timeout(20) { queue.pop } }
+      wait_until { !second_ready.empty? || waiting_for_lock?(second_pid) || !threads.last.alive? }
+      blocked_by_first = waiting_for_lock?(second_pid) && ActiveRecord::Base.connection.select_value(
+        "SELECT pg_blocking_pids(#{Integer(second_pid)})::text").scan(/\d+/).map(&:to_i).include?(first_pid)
+      releases.each { |queue| queue << true }
+      results = Timeout.timeout(20) { threads.map(&:value) }
+      expect(results).not_to include(ActiveRecord::Deadlocked)
+      expect(results - [:completed, ActiveRecord::RecordNotFound]).to be_empty
+      expect(blocked_by_first).to be(true)
+      first_observation
+    ensure
+      releases&.each { |queue| queue << true }
+      threads&.each { |thread| thread.kill if thread.alive? }
+      threads&.each { |thread| thread.join(20) }
+      ActiveSupport::Notifications.unsubscribe(subscriber) if subscriber
+    end
+
+    it "locks Company before bulk history writes when permanent deletion wins" do
+      company = create(:company)
+      target = create(:user, current_workspace: company)
+      employment = create(:employment, company:, user: target, employee_id: "legacy")
+      employment.update_columns(employee_id: "SI063")
+      previous = create(:previous_employment, user: target)
+
+      race_aggregate_writes(
+        -> { User.transaction { User.find(target.id).destroy! } },
+        -> {
+          BulkPreviousEmploymentService.new({
+            updated_employments: [{ id: previous.id, company_name: "Synthetic History", role: "Developer" }],
+            current_employment: { designation: "Unsaved designation" }
+          }, User.find(target.id), Employment.find(employment.id)).process
+        },
+        first_sql: /FROM "companies".*FOR NO KEY UPDATE/m,
+        second_sql: /\AUPDATE "previous_employments"/
+      )
+
+      expect(User.exists?(target.id)).to be(false)
+      expect(Employment.exists?(employment.id)).to be(false)
+      expect(PreviousEmployment.exists?(previous.id)).to be(false)
+      expect(company.reload.last_employee_number).to eq(63)
+    end
+
+    it "locks all historical companies in ID order before either User destroys dependents" do
+      first_company, second_company = create_pair(:company)
+      first_user = create(:user, current_workspace: first_company)
+      second_user = create(:user, current_workspace: second_company)
+      first_membership = create(:employment, company: first_company, user: first_user, employee_id: "first-a")
+      create(:employment, company: second_company, user: first_user, employee_id: "first-b", discarded_at: Time.current)
+      second_membership = create(:employment, company: second_company, user: second_user, employee_id: "second-b")
+      create(:employment, company: first_company, user: second_user, employee_id: "second-a", discarded_at: Time.current)
+      first_membership.update_columns(employee_id: "SI063")
+      second_membership.update_columns(employee_id: "SI064")
+
+      observation = race_aggregate_writes(
+        -> { User.transaction { User.find(first_user.id).destroy! } },
+        -> { User.transaction { User.find(second_user.id).destroy! } },
+        first_sql: /FROM "companies".*FOR NO KEY UPDATE/m,
+        second_sql: /FROM "companies".*FOR NO KEY UPDATE/m
+      )
+
+      expect(observation.fetch(:sql)).to include('ORDER BY "companies"."id" ASC')
+      expect(observation.fetch(:row_count)).to eq(2)
+      expect(User.where(id: [first_user.id, second_user.id])).to be_empty
+      expect(Employment.where(user_id: [first_user.id, second_user.id])).to be_empty
+      expect(first_company.reload.last_employee_number).to eq(63)
+      expect(second_company.reload.last_employee_number).to eq(64)
+    end
+
+    it "locks Company before report-run deletion while its creator User is deleted" do
+      company = create(:company)
+      target = create(:user, current_workspace: company)
+      employment = create(:employment, company:, user: target)
+      run = CompensationReportRun.create!(company:, created_by: target, expires_at: 1.hour.from_now,
+        payload: { "synthetic" => true })
+
+      observation = race_aggregate_writes(
+        -> { Company.find(company.id).destroy! },
+        -> { User.transaction { User.find(target.id).destroy! } },
+        first_sql: /\ADELETE FROM "compensation_report_runs"|FROM "companies".*FOR UPDATE/m,
+        second_sql: /FROM "companies".*FOR NO KEY UPDATE/m
+      )
+
+      expect(observation.fetch(:sql)).to include('FROM "companies"', "FOR UPDATE")
+      expect(Company.exists?(company.id)).to be(false)
+      expect(User.exists?(target.id)).to be(false)
+      expect(Employment.exists?(employment.id)).to be(false)
+      expect(CompensationReportRun.exists?(run.id)).to be(false)
+    end
+  end
 end
