@@ -77,6 +77,22 @@ RSpec.describe "Employee reports and settings", type: :request do
     expect(response).to have_http_status(:bad_request)
   end
 
+  it "returns one workspace conflict before validating malformed columns on create and update" do
+    report = EmployeeReport.create!(company:, name: "Original", columns: ["name"])
+    [nil, company.id + 1].each do |company_id|
+      ["name", [123]].each do |columns|
+        [:post, :patch].each do |method|
+          path = method == :post ? "/api/v1/employee_reports" : "/api/v1/employee_reports/#{report.id}"
+          expect do
+            public_send(method, path, params: { employee_report: { company_id:, columns:, name: "Changed" } }, as: :json)
+          end.not_to change { EmployeeReport.pluck(:id, :name, :columns) }
+          expect(response).to have_http_status(:conflict)
+          expect(response.parsed_body.fetch("errors")).to include("workspace changed")
+        end
+      end
+    end
+  end
+
   it "scopes every saved-report action to the current company" do
     foreign = EmployeeReport.create!(company: create(:company), name: "Other", columns: ["name"])
     get "/api/v1/employee_reports/#{foreign.id}/download", params: { month: "2026-10" }

@@ -63,6 +63,8 @@ class Api::V1::EmployeeReportsController < Api::V1::EmployeeRecordAdminControlle
 
     def report_params
       attributes = mutation_params(:employee_report, %w[company_id name columns])
+      return attributes if performed?
+
       if attributes.key?(:columns) && (!attributes[:columns].is_a?(Array) || !attributes[:columns].all? { |value| value.is_a?(String) })
         raise ActionController::BadRequest
       end
