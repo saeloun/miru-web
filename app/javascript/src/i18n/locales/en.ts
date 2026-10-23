@@ -398,8 +398,7 @@ const en = {
     email: "Email employee",
     emailHelp:
       "Send a private sign-in link to this employee. No PDF is attached.",
-    emailQueued:
-      "Email queued. Delivery will be attempted after checking access again.",
+    emailQueued: "Email queued.",
     workspaceNotice:
       "This link belongs to another workspace. Switch to that workspace to view the salary slip.",
     publishHelp:

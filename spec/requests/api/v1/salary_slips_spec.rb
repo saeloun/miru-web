@@ -32,12 +32,12 @@ RSpec.describe "Salary slips", type: :request do
     slip = imported_slip
     body = { company_id: company.id, expected_recipient_email: employee.email }
     post "/api/v1/salary_slips/#{slip.id}/email", params: body
-    expect(response).to have_http_status(:unprocessable_entity)
+    expect(response).to have_http_status(:unprocessable_content)
     slip.publish!(actor: admin)
     post "/api/v1/salary_slips/#{slip.id}/email", params: body.merge(company_id: company.id + 1)
     expect(response).to have_http_status(:conflict)
     post "/api/v1/salary_slips/#{slip.id}/email", params: body.merge(expected_recipient_email: admin.email)
-    expect(response).to have_http_status(:unprocessable_entity)
+    expect(response).to have_http_status(:unprocessable_content)
     expect do
       post "/api/v1/salary_slips/#{slip.id}/email", params: body
     end.to have_enqueued_job(SalarySlipEmailJob).with(slip.id, admin.id, company.id, employee.email)

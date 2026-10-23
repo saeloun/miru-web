@@ -84,7 +84,7 @@ class Api::V1::SalarySlipsController < Api::V1::ApplicationController
     recipient = slip.email_recipient
     unless slip.status == "published" && recipient.present? && params[:expected_recipient_email] == recipient
       return render json: { errors: "Recipient or publication changed. Reload salary slips before sending." },
-        status: :unprocessable_entity
+        status: 422
     end
     SalarySlipEmailJob.perform_later(slip.id, current_user.id, current_company.id, recipient)
     render json: { queued: true }, status: 202

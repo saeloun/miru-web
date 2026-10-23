@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "rails_helper"
+require "base64"
 require "tmpdir"
 require Rails.root.join("spec/mailers/previews/salary_slip_mailer_preview")
 
@@ -23,14 +24,9 @@ RSpec.describe "Salary-slip browser workflows", type: :system, js: true do
 
   it "renders the synthetic private-link email on desktop and mobile" do
     mail = SalarySlipMailerPreview.new.published
-    visit "/400.html"
+    visit "data:text/html;base64,#{Base64.strict_encode64(mail.html_part.body.decoded)}"
     [1400, 390].each do |width|
       page.current_window.resize_to(width, 844)
-      page.execute_script(<<~JS, mail.html_part.body.decoded)
-        const parsed = new DOMParser().parseFromString(arguments[0], "text/html");
-        document.head.innerHTML = parsed.head.innerHTML;
-        document.body.innerHTML = parsed.body.innerHTML;
-      JS
       expect(page).to have_content("Synthetic Preview Studio")
       expect(page).to have_link("View salary slip", href: /company_id=123.*month=2026-09/)
       expect(page.evaluate_script("document.documentElement.scrollWidth <= window.innerWidth + 1")).to be(true)

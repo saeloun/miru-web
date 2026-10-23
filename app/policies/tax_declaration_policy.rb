@@ -2,7 +2,7 @@
 
 class TaxDeclarationPolicy < ApplicationPolicy
   def index?
-    SalarySlipPolicy.new(user, SalarySlip).index?
+    SalarySlipPolicy.new(user, SalarySlip).index? && PayrollRunPolicy.new(user, PayrollRun).active_member?
   end
   alias_method :create?, :index?
 
