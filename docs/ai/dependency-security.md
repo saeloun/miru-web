@@ -29,10 +29,10 @@ CVE-2026-110264. These affect compilation of attacker-controlled patterns;
 fixes, even though the Ruby advisory scanner currently reports no findings.
 
 The official `ruby:4.0.9-slim` image was not published at verification time.
-The main Dockerfile compiles the official release archive on Debian trixie,
-verifies its SHA256, and copies the runtime into a separate image without build
-tools. Its smoke check verifies the exact Ruby version, OpenSSL, YAML, zlib, and
-YJIT availability. Legacy Docker recipes still require the official slim tag.
+All Docker recipes compile the official release archive on Debian trixie,
+verify its SHA256, and copy the runtime into a separate image without build
+tools. Their smoke checks verify the exact Ruby version, OpenSSL, YAML, zlib, and
+YJIT availability. Kamal's build arguments match Ruby 4.0.9 and Node 24.
 
 The existing brace-expansion CommonJS compatibility patches now target 5.0.12.
 Mobile keeps React and React DOM at 19.1.0, matching Expo SDK 54 / React Native
