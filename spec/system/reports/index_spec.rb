@@ -7,7 +7,7 @@ RSpec.describe "Reports", type: :system, js: true do
   let!(:admin) { create(:user, current_workspace: company) }
 
   before do
-    create(:employment, company:, user: admin)
+    create(:employment, company:, user: admin, resigned_at: nil)
     admin.add_role :admin, company
   end
 
@@ -30,6 +30,20 @@ RSpec.describe "Reports", type: :system, js: true do
         expect(page).to have_content("Revenue by Client", wait: 10)
         expect(page).to have_content("Accounts Aging", wait: 10)
         expect(page).to have_content("Outstanding", wait: 10)
+        expect(page).to have_css('[role="button"][aria-label="Open Compensation Burn and Profitability report"]')
+      end
+    end
+
+    it "opens the organization compensation report and returns to Reports" do
+      with_forgery_protection do
+        visit "/reports"
+        find('[role="button"][aria-label="Open Compensation Burn and Profitability report"]').click
+        expect(page).to have_current_path("/reports/compensation-profitability", wait: 10)
+        expect(page).to have_content("Organization owners and admins only")
+        expect(page).to have_content(company.name)
+        click_link "← Reports"
+        expect(page).to have_current_path("/reports", wait: 10)
+        expect_reports_shell
       end
     end
 
@@ -550,6 +564,19 @@ RSpec.describe "Reports", type: :system, js: true do
         )
         expect(page).to have_content("Client Insights", wait: 10)
       end
+    end
+  end
+
+  it "keeps compensation confidential from organization bookkeepers" do
+    bookkeeper = create(:user, current_workspace: company)
+    create(:employment, company:, user: bookkeeper, resigned_at: nil)
+    bookkeeper.add_role :book_keeper, company
+    sign_in(bookkeeper)
+
+    with_forgery_protection do
+      visit "/reports"
+      expect(page).to have_content("Revenue by Client", wait: 10)
+      expect(page).to have_no_css('[role="button"][aria-label="Open Compensation Burn and Profitability report"]')
     end
   end
 

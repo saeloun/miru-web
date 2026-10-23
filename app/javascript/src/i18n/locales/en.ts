@@ -1317,6 +1317,9 @@ const en = {
   // Reports
   reports: {
     reports: "Reports",
+    compensationProfitability: "Compensation Burn and Profitability",
+    compensationProfitabilityDesc:
+      "Confidential compensation costs, revenue, utilization and margins across your organization.",
     backToReports: "Back to Reports",
     timeReports: "Time Reports",
     hoursAndTime: "Hours and time",

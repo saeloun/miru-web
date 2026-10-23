@@ -3,8 +3,13 @@
 require "rails_helper"
 
 RSpec.describe Reports::CompensationProfitability do
-  let(:company) { create(:company, base_currency: "INR", fiscal_year_end: "March", compensation_proration: "calendar_days") }
-  let(:admin) { create(:user, email: "hello@saeloun.com", confirmed_at: Time.current, current_workspace: company) }
+  let(:company) { create(:company, plan_tier: "paid", base_currency: "INR", fiscal_year_end: "March", compensation_proration: "calendar_days") }
+  let(:admin) do
+    create(:user, confirmed_at: Time.current, current_workspace: company).tap do |user|
+      user.add_role(:admin, company)
+      create(:employment, company:, user:, joined_at: Date.current, resigned_at: nil)
+    end
+  end
   let(:person) { create(:user, current_workspace: company) }
   let!(:employment) { create(:employment, company:, user: person, joined_at: "2026-01-01", resigned_at: nil) }
   let!(:profile) { ProfitabilityProfile.create!(employment:, weekdays: [1, 2, 3, 4, 5], hours_per_day: 8) }
@@ -237,7 +242,7 @@ RSpec.describe Reports::CompensationProfitability do
     expect { report(period: "financial_year") }.to raise_error(described_class::InvalidFilters, "Configure the financial year end month")
   end
 
-  it "denies the underlying query before loading data for non Super Admins and other workspaces" do
+  it "denies the underlying query before loading data for unauthorized roles and other workspaces" do
     expect { described_class.new(user: person, company:, filters:) }.to raise_error(Pundit::NotAuthorizedError)
     expect { described_class.new(user: admin, company: create(:company), filters:) }.to raise_error(Pundit::NotAuthorizedError)
   end

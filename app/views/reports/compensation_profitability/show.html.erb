@@ -33,12 +33,12 @@
   </head>
   <body>
     <main>
-      <a href="/">← Miru</a>
-      <p>Confidential · Super Admins only</p>
+      <a href="/reports">← Reports</a>
+      <p><%= current_company.name %> · Confidential · Organization owners and admins only</p>
       <h1>Compensation Burn and Profitability</h1>
       <p>Approved work and compensation costs across all applicable projects. Operating expenses are excluded. Client filters select people assigned to that client; their revenue still includes all projects.</p>
       <section class="panel" aria-label="Reporting controls">
-        <%= form_with url: admin_compensation_profitability_path, method: :get do |form| %>
+        <%= form_with url: compensation_profitability_path, method: :get do |form| %>
           <label>Period <%= form.select :period, [["Month", "month"], ["Quarter", "quarter"], ["Financial year", "financial_year"], ["Calendar year", "calendar_year"], ["Custom", "custom"]], selected: @report[:filters]["period"] || @report[:filters][:period] || "month" %></label>
           <label>Date within period <%= form.date_field :anchor, value: params[:anchor].presence || Date.current.iso8601 %></label>
           <label>Custom from <%= form.date_field :from, value: params[:from] %></label>
@@ -67,7 +67,7 @@
       <p>Authorized download link expires in <%= Rails.configuration.x.compensation_report_export_ttl / 60 %> minutes. The CSV contains this exact generated snapshot, filters, totals and supporting details.</p>
       <div class="panel table-scroll">
         <table aria-label="Employee profitability">
-          <caption><%= @report[:people].length %> people · amounts in <%= @report[:currency] %> unless indicated</caption>
+          <caption><%= pluralize(@report[:people].length, "person", "people") %> · amounts in <%= @report[:currency] %> unless indicated</caption>
           <thead><tr><th scope="col">Person / Primary Project</th><th scope="col">Effective Rate / hr</th><th scope="col">Total Worked</th><th scope="col">Billable Hours</th><th scope="col">Available Hours</th><th scope="col">Utilization</th><th scope="col">Annual Compensation</th><th scope="col">Days to Yearly Salary</th><th scope="col">Salary in INR</th><th scope="col">Salary in USD</th><th scope="col">Revenue</th><th scope="col">Compensation Cost</th><th scope="col">Margin</th><th scope="col">Margin %</th><th scope="col">Data Quality</th></tr></thead>
           <tbody>
             <% @report[:people].each do |row| %>
@@ -114,15 +114,17 @@
       <details class="panel"><summary>Configure missing reporting data</summary>
         <p>These settings affect confidential reporting. Record known effective dates; historical rates are never inferred from a person's current project rate. Compensation history is encrypted. Changes retain an audit record.</p>
         <fieldset><legend>Workspace payroll policy</legend>
-          <%= form_with url: admin_compensation_profitability_configure_path do |form| %>
+          <%= form_with url: compensation_profitability_configure_path do |form| %>
             <%= form.hidden_field :configuration, value: "policy" %>
+            <%= form.hidden_field :company_id, value: current_company.id %>
             <label>Prorate monthly compensation using <%= form.select :compensation_proration, [["Calendar days in each month", "calendar_days"], ["Scheduled working days in each month", "working_days"]], selected: current_company.compensation_proration, include_blank: "Choose the defined payroll policy" %></label>
             <%= form.submit "Save payroll policy" %>
           <% end %>
         </fieldset>
         <fieldset><legend>Person's reporting profile</legend>
-          <%= form_with url: admin_compensation_profitability_configure_path do |form| %>
+          <%= form_with url: compensation_profitability_configure_path do |form| %>
             <%= form.hidden_field :configuration, value: "profile" %>
+            <%= form.hidden_field :company_id, value: current_company.id %>
             <label>Person <%= form.select :employment_id, @employments.map { |e| [e.user.full_name, e.id] } %></label>
             <%= fields_for :profitability_profile do |profile| %>
               <label>Department <%= profile.text_field :department, maxlength: 100 %></label>
@@ -134,8 +136,9 @@
           <% end %>
         </fieldset>
         <fieldset><legend>Dated project billing terms</legend>
-          <%= form_with url: admin_compensation_profitability_configure_path do |form| %>
+          <%= form_with url: compensation_profitability_configure_path do |form| %>
             <%= form.hidden_field :configuration, value: "billing_rate" %>
+            <%= form.hidden_field :company_id, value: current_company.id %>
             <%= fields_for :profitability_billing_rate do |rate| %>
               <label>Person <%= rate.select :user_id, @employments.map { |e| [e.user.full_name, e.user_id] } %></label>
               <label>Project <%= rate.select :project_id, @projects.map { |p| [p.name, p.id] } %></label>
@@ -149,8 +152,9 @@
         </fieldset>
         <fieldset><legend>Historical employee compensation</legend>
           <p>Consultant compensation comes from existing dated consultant terms in INR. This form records employee history for reporting; the employee record remains the source for current salary edits.</p>
-          <%= form_with url: admin_compensation_profitability_configure_path do |form| %>
+          <%= form_with url: compensation_profitability_configure_path do |form| %>
             <%= form.hidden_field :configuration, value: "compensation" %>
+            <%= form.hidden_field :company_id, value: current_company.id %>
             <label>Person <%= form.select :employment_id, @employments.map { |e| [e.user.full_name, e.id] } %></label>
             <%= fields_for :salary_details do |salary| %>
               <label>Compensation <%= salary.number_field :salary_amount, required: true, min: 0.01, step: 0.01 %></label>

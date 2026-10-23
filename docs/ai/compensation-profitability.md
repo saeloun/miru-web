@@ -1,9 +1,10 @@
 # Compensation Burn and Profitability
 
-Open `/admin/compensation-profitability` through the Super Admin navigation link.
+Open **Reports → Compensation Burn and Profitability** at `/reports/compensation-profitability`.
 The same endpoint accepts `.json`; the CSV download uses the generated encrypted snapshot.
-Only a confirmed `User#super_admin?` in the current workspace can generate, configure or download it.
-Ordinary workspace owners and admins are excluded.
+Active organization owners and admins with Pro report access can generate, configure and download it.
+Platform Super Admin status grants no access by itself. Bookkeepers and other organization roles cannot
+access employee compensation. Legacy `/admin/compensation-profitability` URLs enforce the same policy.
 
 ## Source data and setup
 
@@ -37,6 +38,6 @@ recorded leave therefore flags `leave_approval_unavailable` and withholds finali
 This report does not introduce a leave-approval workflow, payroll settlement, statutory calculations or operating-expense burn.
 
 Generation and download events are audited without salary amounts or report payloads. Report payloads and salary histories
-use the existing Active Record encryption keys. Export links additionally require authentication, current Super Admin access,
+use the existing Active Record encryption keys. Export links additionally require authentication, current organization report access,
 the generating user and workspace, and an unexpired signature. `COMPENSATION_REPORT_EXPORT_TTL` controls link lifetime
 in seconds (default 900, minimum 60, maximum 86400). Snapshots remain encrypted in the database after link expiry.

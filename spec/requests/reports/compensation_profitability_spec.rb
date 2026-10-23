@@ -3,14 +3,16 @@
 require "rails_helper"
 require "csv"
 
-RSpec.describe "Confidential compensation profitability", type: :request do
-  let(:company) { create(:company, compensation_proration: "calendar_days") }
-  let(:admin) { create(:user, email: "hello@saeloun.com", confirmed_at: Time.current, current_workspace: company) }
+RSpec.describe "Organization compensation profitability", type: :request do
+  let(:company) { create(:company, plan_tier: "paid", compensation_proration: "calendar_days") }
+  let(:admin) { create(:user, confirmed_at: Time.current, current_workspace: company) }
   let(:person) { create(:user, current_workspace: company) }
   let!(:employment) { create(:employment, company:, user: person, joined_at: "2026-01-01", resigned_at: nil) }
-  let(:path) { "/admin/compensation-profitability" }
+  let!(:admin_employment) { create(:employment, company:, user: admin, joined_at: Date.current, resigned_at: nil) }
+  let(:path) { "/reports/compensation-profitability" }
 
   before do
+    admin.add_role(:admin, company)
     EmployeeRecord.create!(employment:, private_details: { "salary_amount" => "3100.00", "salary_currency" => "INR",
       "salary_frequency" => "monthly", "salary_effective_on" => "2026-01-01" })
     ProfitabilityProfile.create!(employment:, weekdays: [1, 2, 3, 4, 5], hours_per_day: 8)
@@ -27,6 +29,8 @@ RSpec.describe "Confidential compensation profitability", type: :request do
     get path
     expect(response).to have_http_status(:ok)
     expect(response.body).to include("Annual Compensation", "Previous equivalent period", "Inspect #{person.full_name}", "Download CSV")
+    expect(response.body).to include("Organization owners and admins only", "← Reports", company.name)
+    expect(response.body).not_to include("Super Admins only", "/admin/compensation-profitability")
     expect(response.headers["Cache-Control"]).to include("private", "no-store")
     expect(response.headers["X-Robots-Tag"]).to eq("noindex, nofollow")
   end
@@ -50,7 +54,22 @@ RSpec.describe "Confidential compensation profitability", type: :request do
     expect(run.audits.last.action).to eq("export")
   end
 
-  %w[owner admin manager employee book_keeper client].each do |role|
+  %w[owner admin].each do |role|
+    it "allows an active organization #{role} without platform Super Admin access" do
+      person.add_role(role.to_sym, company)
+      sign_in person
+      expect(person).not_to be_super_admin
+      payload = generate
+      expect(payload.fetch("export_url")).to start_with("#{path}/exports/")
+      get payload.fetch("export_url")
+      expect(response).to have_http_status(:ok)
+      post "#{path}/configure", params: { company_id: company.id, configuration: "policy", compensation_proration: "working_days" }
+      expect(response).to redirect_to(path)
+      expect(company.reload.compensation_proration).to eq("working_days")
+    end
+  end
+
+  %w[manager employee book_keeper client].each do |role|
     it "blocks #{role} from the report, JSON, configuration and direct export downloads" do
       payload = generate
       person.add_role(role.to_sym, company)
@@ -61,10 +80,57 @@ RSpec.describe "Confidential compensation profitability", type: :request do
       expect(response).to have_http_status(:forbidden)
       get payload.fetch("export_url")
       expect(response).not_to have_http_status(:ok)
-      post "#{path}/configure", params: { configuration: "policy", compensation_proration: "working_days" }
+      post "#{path}/configure", params: { company_id: company.id, configuration: "policy", compensation_proration: "working_days" }
       expect(response).not_to have_http_status(:see_other)
       expect(company.reload.compensation_proration).to eq("calendar_days")
+      get "/admin/compensation-profitability.json"
+      expect(response).to have_http_status(:forbidden)
     end
+  end
+
+  it "rejects revoked roles, inactive employment and free plans on existing exports" do
+    payload = generate
+    admin.remove_role(:admin, company)
+    get payload.fetch("export_url")
+    expect(response).not_to have_http_status(:ok)
+    admin.add_role(:admin, company)
+    admin_employment.update!(joined_at: 2.days.ago.to_date, resigned_at: Date.yesterday)
+    get "#{path}.json"
+    expect(response).to have_http_status(:forbidden)
+    admin_employment.update_columns(resigned_at: nil, joined_at: Date.tomorrow)
+    get "#{path}.json"
+    expect(response).to have_http_status(:forbidden)
+    admin_employment.update!(joined_at: Date.current, discarded_at: Time.current)
+    get payload.fetch("export_url")
+    expect(response).not_to have_http_status(:ok)
+    admin_employment.undiscard!
+    company.update!(plan_tier: "free", trial_started_at: nil)
+    get payload.fetch("export_url")
+    expect(response).not_to have_http_status(:ok)
+  end
+
+  it "grants no platform Super Admin bypass or cross-organization role access" do
+    admin.update_column(:email, "hello@saeloun.com")
+    admin.remove_role(:admin, company)
+    admin.add_role(:owner, create(:company))
+    expect(admin).to be_super_admin
+    get "#{path}.json"
+    expect(response).to have_http_status(:forbidden)
+    expect(CompensationReportRun.count).to eq(0)
+  end
+
+  it "keeps legacy report and export URLs protected by the organization policy" do
+    get "/admin/compensation-profitability.json"
+    expect(response).to have_http_status(:ok)
+    token = response.parsed_body.fetch("export_url").split("/").last
+    get "/admin/compensation-profitability/exports/#{token}"
+    expect(response).to have_http_status(:ok)
+    admin.remove_role(:admin, company)
+    get "/admin/compensation-profitability/exports/#{token}"
+    expect(response).not_to have_http_status(:ok)
+    post "/admin/compensation-profitability/configure", params: { company_id: company.id, configuration: "policy", compensation_proration: "working_days" }
+    expect(response).not_to have_http_status(:see_other)
+    expect(company.reload.compensation_proration).to eq("calendar_days")
   end
 
   it "requires authentication and rejects expired, modified and wrong-workspace links" do
@@ -76,7 +142,10 @@ RSpec.describe "Confidential compensation profitability", type: :request do
       get url
       expect(response).to have_http_status(:not_found)
     end
-    admin.update!(current_workspace: create(:company))
+    other_company = create(:company, plan_tier: "paid")
+    admin.add_role(:owner, other_company)
+    create(:employment, user: admin, company: other_company, resigned_at: nil)
+    admin.update!(current_workspace: other_company)
     get url
     expect(response).to have_http_status(:not_found)
     sign_out admin
@@ -85,19 +154,31 @@ RSpec.describe "Confidential compensation profitability", type: :request do
   end
 
   it "scopes configuration to the workspace, validates policies and audits compensation without salary amounts" do
-    post "#{path}/configure", params: { configuration: "policy", compensation_proration: "unknown" }
+    post "#{path}/configure", params: { company_id: company.id, configuration: "policy", compensation_proration: "unknown" }
     expect(response).to have_http_status(:unprocessable_entity)
     foreign = create(:employment)
-    post "#{path}/configure", params: { configuration: "profile", employment_id: foreign.id,
+    post "#{path}/configure", params: { company_id: company.id, configuration: "profile", employment_id: foreign.id,
       profitability_profile: { department: "Private" } }
     expect(response).to have_http_status(:not_found)
-    post "#{path}/configure", params: { configuration: "compensation", employment_id: employment.id,
+    post "#{path}/configure", params: { company_id: company.id, configuration: "compensation", employment_id: employment.id,
       salary_details: { salary_amount: "6200.00", salary_currency: "INR", salary_frequency: "monthly", salary_effective_on: "2026-07-16" } }
     expect(response).to have_http_status(:see_other)
     expect(employment.compensation_versions.count).to eq(2)
     audit = company.audits.last
     expect(audit.action).to eq("compensation_history")
     expect(audit.audited_changes.to_json).not_to include("6200")
+  end
+
+  it "rejects configuration from a stale organization tab before making changes" do
+    other_company = create(:company, plan_tier: "paid", compensation_proration: "calendar_days")
+    admin.add_role(:owner, other_company)
+    create(:employment, company: other_company, user: admin, resigned_at: nil)
+    admin.update!(current_workspace: other_company)
+    post "#{path}/configure", params: { company_id: company.id, configuration: "policy", compensation_proration: "working_days" }
+    expect(response).to have_http_status(:conflict)
+    expect([company.reload.compensation_proration, other_company.reload.compensation_proration]).to eq(%w[calendar_days calendar_days])
+    post "#{path}/configure", params: { configuration: "policy", compensation_proration: "working_days" }
+    expect(response).to have_http_status(:conflict)
   end
 
   it "escapes spreadsheet formulas in names without changing numeric negative margins" do
