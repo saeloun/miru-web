@@ -74,11 +74,11 @@ module Reports
                 when "calendar_year" then [anchor.beginning_of_year, anchor.end_of_year]
                 when "financial_year"
                   end_month = Date::MONTHNAMES.index(@company.fiscal_year_end)
-                  raise InvalidFilters, "Configure the financial year end month" unless end_month
+                  raise InvalidFilters, "Configure the financial year end month" unless end_month&.between?(1, 12)
 
                   finish = Date.new(anchor.year, end_month, -1)
-                  finish = finish.next_year if anchor > finish
-                  [finish.prev_year + 1, finish]
+                  finish = Date.new(anchor.year + 1, end_month, -1) if anchor > finish
+                  [Date.new(finish.year - 1, end_month, -1) + 1, finish]
                 else [parse_date(@filters["from"]), parse_date(@filters["to"])]
         end
         unless range.first <= range.last && range.last - range.first <= 366 && range.all? { |date| (1900..2099).cover?(date.year) }
@@ -221,6 +221,12 @@ module Reports
             date = EmployeeRecord.iso_date?(details["salary_effective_on"])
             employee << [date, 0, details.slice(*EmployeeRecord::SALARY_KEYS)] if date
           end
+          # A dated correction resolves incomplete versions recorded after its effective date.
+          employee.reject! do |date, id, details|
+            !valid_employee_salary?(details) && employee.any? do |later_date, later_id, later_details|
+              later_id > id && later_date <= date && valid_employee_salary?(later_details)
+            end
+          end
           employee.sort_by { |date, id, _details| [date, id] }
         end
       end
@@ -236,14 +242,18 @@ module Reports
         return unless version
 
         details = version.last
-        return unless EmployeeRecord.iso_date?(details["salary_effective_on"]) &&
-          details["salary_amount"].to_s.match?(EmployeeRecord::AMOUNT_FORMAT) && details["salary_amount"].to_d.positive? &&
-          EmployeeRecord.supported_currency?(details["salary_currency"]) && %w[monthly annual].include?(details["salary_frequency"])
+        return unless valid_employee_salary?(details)
 
         monthly = details["salary_amount"].to_d
         monthly /= 12 if details["salary_frequency"] == "annual"
         annual = details["salary_frequency"] == "annual" ? details["salary_amount"].to_d : monthly * 12
         { monthly:, annual:, currency: details["salary_currency"], source: "employee_record", effective_on: version.first }
+      end
+
+      def valid_employee_salary?(details)
+        EmployeeRecord.iso_date?(details["salary_effective_on"]) &&
+          details["salary_amount"].to_s.match?(EmployeeRecord::AMOUNT_FORMAT) && details["salary_amount"].to_d.positive? &&
+          EmployeeRecord.supported_currency?(details["salary_currency"]) && %w[monthly annual].include?(details["salary_frequency"])
       end
 
       def schedule(employment, terms, flags)

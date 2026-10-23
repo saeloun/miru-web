@@ -104,6 +104,15 @@ RSpec.describe Reports::CompensationProfitability do
     expect(result[:flags]).to include("missing_compensation")
   end
 
+  it "uses a newly dated salary after an undated salary is corrected retroactively" do
+    record.update!(private_details: record.private_details.merge("salary_effective_on" => nil))
+    expect do
+      record.update!(private_details: record.private_details.merge("salary_amount" => "6200.00", "salary_effective_on" => "2026-07-01"))
+    end.to change { employment.compensation_versions.count }.by(1)
+    expect(row(period: "month", anchor: Date.current.iso8601)[:compensation_cost]).to eq(6200.to_d)
+    expect(row[:compensation_cost]).to eq(6200.to_d)
+  end
+
   it "retains employee salary before a transition into dated consultant compensation" do
     enable_synthetic_payroll(company.id)
     employment.consultant_compensations.create!(effective_on: "2026-08-01", monthly_fee: "6200.00", hours_per_day: "8.00",
@@ -218,6 +227,14 @@ RSpec.describe Reports::CompensationProfitability do
     expect { report(from: "2026-07-31", to: "2026-07-01") }.to raise_error(described_class::InvalidFilters)
     expect { report(currency: "EUR") }.to raise_error(described_class::InvalidFilters)
     expect { report(from: "bad") }.to raise_error(described_class::InvalidFilters)
+  end
+
+  it "keeps February financial years aligned across leap years and rejects missing configuration" do
+    company.fiscal_year_end = "February"
+    expect(report(period: "financial_year", anchor: "2027-03-01")).to include(from: "2027-03-01", to: "2028-02-29")
+    expect(report(period: "financial_year", anchor: "2028-03-01")).to include(from: "2028-03-01", to: "2029-02-28")
+    company.fiscal_year_end = nil
+    expect { report(period: "financial_year") }.to raise_error(described_class::InvalidFilters, "Configure the financial year end month")
   end
 
   it "denies the underlying query before loading data for non Super Admins and other workspaces" do

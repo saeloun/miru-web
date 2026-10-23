@@ -73,7 +73,7 @@
             <% @report[:people].each do |row| %>
               <tr>
                 <td><strong><%= row[:person] %></strong><br><%= row[:primary_project] || "No primary project" %><br><small><%= [row[:department], row[:status]].compact.join(" · ") %></small></td>
-                <% [:effective_rate, :total_hours, :billable_hours, :available_hours, :utilization].each do |key| %><td><%= profitability_number(row[key], currency: (key == :effective_rate ? @report[:currency] : nil), percent: key == :utilization) %></td><% end %>
+                <% [:effective_rate, :total_hours, :billable_hours, :available_hours, :utilization].each do |key| %><td><%= profitability_number(row[key], currency: (key == :effective_rate ? @report[:currency] : nil), percent: key == :utilization, precision: key == :effective_rate ? 4 : 2) %></td><% end %>
                 <td><%= profitability_number(row[:annual_compensation], currency: row[:compensation_currency]) %></td>
                 <td><%= profitability_number(row[:days_to_yearly_salary]) %></td>
                 <td><%= profitability_number(row[:salary_inr], currency: "INR") %></td><td><%= profitability_number(row[:salary_usd], currency: "USD") %></td>
@@ -86,7 +86,7 @@
                   <% row[:projects].each do |project| %>
                     <h3><%= project[:project] %> · <%= project[:client] %> · <%= profitability_number(project[:revenue], currency: @report[:currency]) %></h3>
                     <table><thead><tr><th>Date</th><th>Hours</th><th>Billable</th><th>Billing Method</th><th>Billing Rate / hr</th><th>Effective On</th><th>Revenue</th></tr></thead><tbody>
-                      <% project[:entries].each do |entry| %><tr><td><%= entry[:date] %></td><td><%= profitability_number(entry[:hours]) %></td><td><%= entry[:billable] ? "Yes" : "No" %></td><td><%= entry[:billing_method] || "N/A" %></td><td><%= profitability_number(entry[:hourly_rate], currency: entry[:rate_currency]) %></td><td><%= entry[:rate_effective_on] || "N/A" %></td><td><%= profitability_number(entry[:revenue], currency: @report[:currency]) %></td></tr><% end %>
+                      <% project[:entries].each do |entry| %><tr><td><%= entry[:date] %></td><td><%= profitability_number(entry[:hours]) %></td><td><%= entry[:billable] ? "Yes" : "No" %></td><td><%= entry[:billing_method] || "N/A" %></td><td><%= profitability_number(entry[:hourly_rate], currency: entry[:rate_currency], precision: 4) %></td><td><%= entry[:rate_effective_on] || "N/A" %></td><td><%= profitability_number(entry[:revenue], currency: @report[:currency]) %></td></tr><% end %>
                     </tbody></table>
                   <% end %>
                   <table><caption>Compensation effective at period start and changes within period</caption><thead><tr><th>Effective On</th><th>Monthly Compensation</th><th>Source</th></tr></thead><tbody>
@@ -101,7 +101,7 @@
       </div>
       <section class="panel table-scroll">
         <h2>Previous equivalent period</h2>
-        <p><%= @report[:comparison][:from] %> – <%= @report[:comparison][:to] %> · <%= @report[:comparison][:incomplete] ? "Incomplete" : "Complete" %></p>
+        <p><%= @report[:comparison][:from] %> – <%= @report[:comparison][:to] %> · <%= @report[:comparison][:incomplete] ? "Incomplete" : "Complete" %><%= " · Provisional — period includes future dates" if @report[:comparison][:provisional] %></p>
         <table><thead><tr><th>Metric</th><th>Selected Period</th><th>Previous Period</th></tr></thead><tbody>
           <% [:gross_compensation_burn, :revenue, :net_compensation_burn, :overall_margin, :overall_margin_percentage, :overall_utilization].each do |key| %><tr><td><%= key.to_s.humanize %></td><% [@report, @report[:comparison]].each do |period| %><td><%= profitability_number(period[:summary][key], currency: (%i[overall_margin_percentage overall_utilization].include?(key) ? nil : @report[:currency]), percent: %i[overall_margin_percentage overall_utilization].include?(key)) %></td><% end %></tr><% end %>
         </tbody></table>

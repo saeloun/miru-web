@@ -2,7 +2,7 @@
 
 class CompensationReportRun < ApplicationRecord
   belongs_to :company
-  belongs_to :created_by, class_name: "User"
+  belongs_to :created_by, class_name: "User", inverse_of: :compensation_report_runs
   serialize :payload, coder: JSON, type: Hash
   encrypts :payload
   audited associated_with: :company, only: [:company_id, :created_by_id, :expires_at]

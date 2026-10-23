@@ -43,7 +43,10 @@ class EmployeeRecord < ApplicationRecord
         salary = details.slice(*SALARY_KEYS)
         next if salary.empty?
 
-        effective_on = self.class.iso_date?(salary["salary_effective_on"]) || Date.current
+        explicit_date = self.class.iso_date?(salary["salary_effective_on"])
+        next if index.zero? && !explicit_date
+
+        effective_on = explicit_date || Date.current
         next if index.zero? && employment.compensation_versions.exists?(effective_on:)
 
         latest = employment.compensation_versions.order(:effective_on, :id).last

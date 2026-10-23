@@ -42,7 +42,7 @@ module Reports
         csv << COLUMNS.keys.map do |key|
           value = row[key]
           value = value.join("; ") if value.is_a?(Array)
-          TEXT_COLUMNS.include?(key) ? safe(value) : numeric(value)
+          TEXT_COLUMNS.include?(key) ? safe(value) : numeric(value, precision: key == :effective_rate ? 4 : 2)
         end
       end
     end
@@ -50,7 +50,7 @@ module Reports
     def self.write_summaries(csv, report)
       [report, report[:comparison]].each do |period|
         csv << []
-        csv << ["Summary", period[:from], period[:to]]
+        csv << ["Summary", period[:from], period[:to], "Provisional", period[:provisional], "Incomplete", period[:incomplete]]
         period[:summary].each { |key, value| csv << [key.to_s.humanize, numeric(value)] }
       end
     end
@@ -70,7 +70,7 @@ module Reports
         row[:projects].each do |project|
           project[:entries].each do |entry|
             csv << [safe(row[:person]), safe(project[:project]), safe(project[:client]), entry[:date], numeric(entry[:hours]),
-              entry[:billable], entry[:billing_method], numeric(entry[:hourly_rate]), entry[:rate_currency],
+              entry[:billable], entry[:billing_method], numeric(entry[:hourly_rate], precision: 4), entry[:rate_currency],
               entry[:rate_effective_on], numeric(entry[:revenue])]
           end
         end
@@ -92,8 +92,8 @@ module Reports
       text.match?(/\A[[:space:]]*[=+@-]/) ? "'#{text}" : text
     end
 
-    def self.numeric(value)
-      value.nil? ? "N/A" : value.to_d.round(2).to_s("F")
+    def self.numeric(value, precision: 2)
+      value.nil? ? "N/A" : value.to_d.round(precision).to_s("F")
     end
   end
 end
