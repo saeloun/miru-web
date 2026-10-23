@@ -140,4 +140,66 @@ RSpec.describe "Employee ID lifecycle lock ordering", type: :service do
     thread&.join
     ActiveSupport::Notifications.unsubscribe(subscriber) if subscriber
   end
+
+  it "serializes permanent deletion and reinvitation acceptance without losing historical numbers" do
+    company = create(:company)
+    target = create(:user, current_workspace: company)
+    employment = create(:employment, company:, user: target, employee_id: nil, discarded_at: Time.current)
+    employment.update_columns(employee_id: "SI063")
+    target.add_role(:employee, company)
+    invitation = create(:invitation, company:, recipient_email: target.email)
+    company_locked = Queue.new
+    release_acceptance = Queue.new
+    invitation_deleted = Queue.new
+    deletion_pid = Queue.new
+    threads = []
+    subscriber = ActiveSupport::Notifications.subscribe("sql.active_record") do |event|
+      sql = event.payload[:sql]
+      if Thread.current[:employee_id_acceptance] && sql.include?('FROM "companies"') &&
+          sql.include?("FOR NO KEY UPDATE")
+        Thread.current[:employee_id_acceptance] = false
+        company_locked << true
+        release_acceptance.pop
+      elsif Thread.current[:employee_id_deletion] && sql.start_with?('DELETE FROM "invitations"')
+        invitation_deleted << true
+      end
+    end
+
+    threads << Thread.new do
+      ActiveRecord::Base.connection_pool.with_connection do
+        Thread.current[:employee_id_acceptance] = true
+        service = CreateInvitedUserService.new(invitation.token)
+        service.process
+        raise service.error_message unless service.success
+      end
+      :accepted
+    rescue StandardError => error
+      error.class
+    end
+    Timeout.timeout(10) { company_locked.pop }
+    threads << Thread.new do
+      ActiveRecord::Base.connection_pool.with_connection do |connection|
+        deletion_pid << connection.raw_connection.backend_pid
+        Thread.current[:employee_id_deletion] = true
+        User.find(target.id).destroy!
+      end
+      :deleted
+    rescue StandardError => error
+      error.class
+    end
+    pid = Timeout.timeout(10) { deletion_pid.pop }
+    wait_until { !invitation_deleted.empty? || waiting_for_lock?(pid) }
+    release_acceptance << true
+
+    expect(Timeout.timeout(20) { threads.map(&:value) }).to eq([:accepted, :deleted])
+    expect(User.exists?(target.id)).to be(false)
+    expect(Employment.exists?(employment.id)).to be(false)
+    expect(Invitation.exists?(invitation.id)).to be(false)
+    expect(company.reload.last_employee_number).to eq(63)
+  ensure
+    release_acceptance << true if release_acceptance
+    threads&.each { |thread| thread.kill if thread.alive? }
+    threads&.each(&:join)
+    ActiveSupport::Notifications.unsubscribe(subscriber) if subscriber
+  end
 end

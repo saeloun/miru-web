@@ -30,7 +30,7 @@ class Employment < ApplicationRecord
   # Callbacks
   before_destroy :remove_user_invitations
   around_save :reserve_employee_number, if: -> { will_save_change_to_employee_id? && employee_id.present? }
-  around_destroy :reserve_employee_number
+  around_destroy :reserve_employee_number, prepend: true
   after_create :ensure_employee_id!
 
   after_discard do
