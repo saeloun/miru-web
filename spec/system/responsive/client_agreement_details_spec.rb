@@ -17,11 +17,17 @@ RSpec.describe "Client agreement details", type: :system, js: true do
     end
   end
 
-  def open_editor
-    visit "/clients"
-    page.all("button", text: "Open menu").first.click
-    find("[role=menuitem]", text: "Edit Client").click
-    expect(page).to have_selector("[role=dialog]")
+  def open_editor(width)
+    if width < 768
+      visit "/clients/#{client.id}"
+      find("#kebabMenu").click
+      find("li", exact_text: "Edit").click
+    else
+      visit "/clients"
+      page.all("button", text: "Open menu").first.click
+      find("[role=menuitem]", text: "Edit Client").click
+      expect(page).to have_selector("[role=dialog]")
+    end
   end
 
   def capture(filename)
@@ -39,31 +45,32 @@ RSpec.describe "Client agreement details", type: :system, js: true do
   [1440, 390].each do |width|
     it "saves, reopens and independently updates contacts at #{width}px" do
       page.current_window.resize_to(width, width < 768 ? 844 : 1000)
-      open_editor
+      save_label = width < 768 ? "Save Changes" : "Save"
+      open_editor(width)
       expect(page).to have_field("Legal company name", with: "")
       fill_in "legal_name", with: "Example International Consulting Private Limited"
       fill_in "finance_email", with: "invalid-email"
-      expect(page).to have_button("Save", disabled: true)
+      expect(page).to have_button(save_label, disabled: true)
       fill_in "finance_email", with: "finance@example.test"
       fill_in "signatory_name", with: "Asha Núñez"
       fill_in "signatory_designation", with: "Head of Legal"
       click_button "Use finance email for signatory"
       expect(page).to have_field("signatory_email", with: "finance@example.test")
-      expect(page).to have_button("Save", disabled: false)
+      expect(page).to have_button(save_label, disabled: false)
       legend = find("legend", text: "Agreement and billing details")
       page.execute_script("arguments[0].scrollIntoView({ block: 'start', behavior: 'instant' })", legend)
       capture("client-agreement-fields-#{width}.png")
-      click_button "Save"
-      expect(page).to have_no_selector("[role=dialog]")
+      click_button save_label
+      expect(page).to have_no_field("Finance email")
       expect(client.reload.signatory_email).to eq("finance@example.test")
 
-      open_editor
+      open_editor(width)
       expect(page).to have_field("legal_name", with: "Example International Consulting Private Limited")
       expect(page).to have_field("signatory_name", with: "Asha Núñez")
       fill_in "finance_email", with: "new-finance@example.test"
       expect(page).to have_field("signatory_email", with: "finance@example.test")
-      click_button "Save"
-      expect(page).to have_no_selector("[role=dialog]")
+      click_button save_label
+      expect(page).to have_no_field("Finance email")
       expect(client.reload.finance_email).to eq("new-finance@example.test")
       expect(client.signatory_email).to eq("finance@example.test")
 

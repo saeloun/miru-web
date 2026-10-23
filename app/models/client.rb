@@ -82,7 +82,6 @@ class Client < ApplicationRecord
       name:,
       legal_name:,
       email:,
-      finance_email:,
       ein: valid_ein,
       phone:,
       currency:,
@@ -186,10 +185,10 @@ class Client < ApplicationRecord
     invitations.where(virtual_verified: true, accepted_at: nil).pluck(:recipient_email)
   end
 
-  def send_invoice_emails(virtual_verified)
+  def send_invoice_emails(virtual_verified, include_finance: true)
     emails = client_members_emails
     emails += client_virtual_verified_emails if virtual_verified
-    emails << finance_email if finance_email.present?
+    emails << finance_email if include_finance && finance_email.present?
     emails.compact_blank.uniq(&:downcase)
   end
 

@@ -20,6 +20,7 @@ RSpec.describe Client, "invoice contacts" do
 
     expect(client.send_invoice_emails(false)).to contain_exactly(contact.email, "finance@example.test")
     expect(client.send_invoice_emails(true)).to contain_exactly(contact.email, "pending@example.test", "finance@example.test")
+    expect(client.send_invoice_emails(true, include_finance: false)).to contain_exactly(contact.email, "pending@example.test")
   end
 
   it "deduplicates a matching finance contact case-insensitively and preserves the old fallback" do

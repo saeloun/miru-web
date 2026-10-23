@@ -52,4 +52,41 @@ RSpec.describe "Client billing identity", type: :request do
     expect(json_response.dig("client", "legal_name")).to eq(client.legal_name)
     expect(json_response.fetch("client").keys).not_to include("finance_email", "signatory_email", "signatory_name")
   end
+
+  [:book_keeper, :client].each do |role|
+    it "preserves #{role} invoice access without exposing the new finance contact through recipients" do
+      reader = sign_in_billing_reader(role)
+      create(:client_member, company:, client:, user: reader) if role == :client
+
+      send_request :get, api_v1_invoice_path(invoice), headers: auth_headers(reader)
+      expect(response).to have_http_status(:ok)
+      details = json_response.fetch("client")
+      expect(details).to include("legalName" => client.legal_name, "email" => client.email)
+      expect(details.to_json).not_to include(client.finance_email, client.signatory_email)
+    end
+  end
+
+  it "preserves bookkeeper lists without exposing the new finance contact directly or through recipients" do
+    reader = sign_in_billing_reader(:book_keeper)
+    invoice
+
+    send_request :get, api_v1_clients_path, headers: auth_headers(reader)
+    expect(response).to have_http_status(:ok)
+    details = json_response.fetch("client_details").find { |row| row["id"] == client.id }
+    expect(details).to include("legal_name" => client.legal_name, "email" => client.email)
+    expect(details.to_json).not_to include(client.finance_email, client.signatory_email)
+
+    send_request :get, api_v1_invoices_path, headers: auth_headers(reader)
+    expect(response).to have_http_status(:ok)
+    details = json_response.fetch("invoices").find { |row| row["id"] == invoice.id }.fetch("client")
+    expect(details.to_json).not_to include(client.finance_email, client.signatory_email)
+  end
+
+  def sign_in_billing_reader(role)
+    reader = create(:user, current_workspace: company)
+    create(:employment, company:, user: reader)
+    reader.add_role(role, company)
+    sign_in reader
+    reader
+  end
 end

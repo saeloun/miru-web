@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+include_client_contacts = policy(Client).create?
+
 invoice_currency =
   if invoice.draft? && invoice.client&.currency.present?
     invoice.client.currency
@@ -34,11 +36,13 @@ json.client do
   json.id invoice.client_id
   json.name invoice.client&.name
   json.legal_name invoice.client&.legal_name
-  json.finance_email invoice.client&.finance_email
+  json.finance_email invoice.client&.finance_email if include_client_contacts
   json.email invoice.client&.email if invoice.client&.email
   json.phone invoice.client&.phone if invoice.client&.phone
   json.logo invoice.client&.logo_url if invoice.client&.logo_url
-  json.client_members_emails invoice.client&.send_invoice_emails(virtual_verified_invitations_allowed) || []
+  json.client_members_emails invoice.client&.send_invoice_emails(
+    virtual_verified_invitations_allowed, include_finance: include_client_contacts
+  ) || []
 end
 
 json.company do
