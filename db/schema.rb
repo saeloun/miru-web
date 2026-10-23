@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_23_130000) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_23_150100) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_stat_statements"
@@ -309,6 +309,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_23_130000) do
     t.string "vat_number"
     t.string "working_days", default: "5"
     t.string "working_hours", default: "40"
+    t.bigint "last_employee_number", default: 0, null: false
     t.string "compensation_proration"
     t.index ["stripe_customer_id"], name: "index_companies_on_stripe_customer_id"
     t.index ["stripe_subscription_id"], name: "index_companies_on_stripe_subscription_id"
@@ -510,6 +511,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_23_130000) do
     t.date "resigned_at"
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
+    t.index ["company_id", "employee_id"], name: "index_employments_on_company_employee_id", unique: true, where: "((employee_id IS NOT NULL) AND (btrim((employee_id)::text) <> ''::text))"
     t.index ["company_id"], name: "index_employments_on_company_id"
     t.index ["discarded_at"], name: "index_employments_on_discarded_at"
     t.index ["user_id"], name: "index_employments_on_user_id"

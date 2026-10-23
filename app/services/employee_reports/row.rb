@@ -38,6 +38,8 @@ module EmployeeReports
     end
 
     def calendar_weekdays
+      return if @employment.joined_at.nil?
+
       @month.all_month.count do |date|
         date.on_weekday? && date >= @employment.joined_at && (@employment.resigned_at.nil? || date <= @employment.resigned_at)
       end

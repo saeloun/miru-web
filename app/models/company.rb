@@ -91,6 +91,25 @@ class Company < ApplicationRecord
   # scopes
   scope :with_kept_employments, -> { merge(Employment.kept) }
 
+  def with_employee_number_lock
+    self.class.transaction(requires_new: true) do
+      # FK inserts hold KEY SHARE; NO KEY UPDATE serializes numbering without upgrading that lock.
+      yield self.class.lock("FOR NO KEY UPDATE").find(id)
+    end
+  end
+
+  def reserve_employee_number!
+    historical_max = employments.where("employee_id ~ '^SI[0-9]+$'")
+      .maximum(Arel.sql("substring(employee_id from 3)::numeric")).to_i
+    number = [last_employee_number, historical_max].max
+    if number > Employment::MAX_EMPLOYEE_NUMBER
+      errors.add(:base, "Employee ID is outside the supported range")
+      raise ActiveRecord::RecordInvalid.new(self)
+    end
+    update_columns(last_employee_number: number) if number > last_employee_number
+    number
+  end
+
   def client_list
     clients.kept.includes(:invoices, :addresses, client_members: :user).map do |client|
       {

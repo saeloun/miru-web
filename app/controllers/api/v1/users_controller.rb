@@ -3,6 +3,7 @@
 class Api::V1::UsersController < Api::V1::BaseController
   def me
     if current_user
+      company = current_company
       render json: {
         user: {
           id: current_user.id,
@@ -14,14 +15,14 @@ class Api::V1::UsersController < Api::V1::BaseController
           personal_email_id: current_user.personal_email_id,
           locale: current_user.locale,
           social_accounts: current_user.social_accounts,
-          date_format: current_company&.date_format,
+          date_format: company&.date_format,
           avatar_url: current_user.avatar.attached? ? url_for(current_user.avatar) : nil,
           confirmed: current_user.confirmed?,
           calendar_enabled: current_user.calendar_enabled,
           calendar_connected: current_user.calendar_connected,
           current_workspace_id: current_user.current_workspace_id
         },
-        company: current_company&.attributes&.slice(
+        company: company&.attributes&.slice(
           "id",
           "name",
           "base_currency",
@@ -31,18 +32,20 @@ class Api::V1::UsersController < Api::V1::BaseController
           "tax_id",
           "timesheet_edit_days"
         )&.merge(
-          "payroll_review_enabled" => Payroll::Entitlement.enabled?(current_company&.id),
-          "address" => current_company&.current_address,
-          "logo" => current_company&.company_logo,
-          "pro_access" => current_company&.pro_access?,
-          "plan_tier" => current_company&.plan_tier,
-          "current_plan_label" => current_company&.current_plan_label,
-          "team_member_limit" => current_company&.team_member_limit,
-          "used_team_seats" => current_company&.used_team_seats,
-          "reserved_team_seats" => current_company&.reserved_team_seats,
-          "team_member_limit_reached" => current_company&.team_member_limit_reached?
+          "payroll_review_enabled" => Payroll::Entitlement.enabled?(company&.id),
+          "employee_records_available" => company.id == current_user.current_workspace_id &&
+            EmployeeRecordPolicy.new(current_user, EmployeeRecord).index?,
+          "address" => company&.current_address,
+          "logo" => company&.company_logo,
+          "pro_access" => company&.pro_access?,
+          "plan_tier" => company&.plan_tier,
+          "current_plan_label" => company&.current_plan_label,
+          "team_member_limit" => company&.team_member_limit,
+          "used_team_seats" => company&.used_team_seats,
+          "reserved_team_seats" => company&.reserved_team_seats,
+          "team_member_limit_reached" => company&.team_member_limit_reached?
         ),
-        company_role: current_user.roles.find_by(resource: current_company)&.name
+        company_role: current_user.roles.find_by(resource: company)&.name
       }
     else
       render json: { user: nil, company: nil, company_role: nil }, status: 401

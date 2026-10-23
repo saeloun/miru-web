@@ -21,12 +21,12 @@ module EmployeeOccasions
     private
 
       def enabled?
-        Payroll::Entitlement.enabled?(@company.id) &&
-          EmployeeRecordSetting.exists?(company: @company, occasion_reminders_enabled: true)
+        EmployeeRecordSetting.exists?(company: @company, occasion_reminders_enabled: true)
       end
 
       def active_employments
-        Employment.kept.joins(:user).merge(User.kept).where(company: @company, joined_at: ..@today)
+        Employment.kept.joins(:user).merge(User.kept).where(company: @company)
+          .where("joined_at IS NULL OR joined_at <= ?", @today)
           .where("resigned_at IS NULL OR resigned_at >= ?", @today)
           .where(user_id: staff_users)
       end
