@@ -51,6 +51,7 @@ const Header = ({ expense, handleEdit, handleDelete }) => {
       <div className="flex lg:hidden">
         <Button className="p-2" style="ternary" onClick={handleEdit}>
           <EditIcon size={16} weight="bold" />
+          <span className="sr-only">Edit</span>
         </Button>
         {showDelete && (
           <Button className="p-2" style="ternary" onClick={handleDelete}>

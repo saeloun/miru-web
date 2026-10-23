@@ -70,7 +70,7 @@ RSpec.describe "Api::V1::Expense#create", type: :request do
       sign_in employee
     end
 
-    it "creates the employee expense, attaches the receipt, and notifies reviewers" do
+    it "creates the employee expense, attaches multiple receipts, and notifies reviewers" do
       expect do
         post api_v1_expenses_path, params: {
           expense: {
@@ -80,7 +80,8 @@ RSpec.describe "Api::V1::Expense#create", type: :request do
             expense_type: "business",
             category_name: "Travel",
             vendor_name: "Jetway",
-            receipts: [receipt]
+            receipts: [receipt, Rack::Test::UploadedFile.new(
+              Rails.root.join("spec/support/fixtures/pdf-file.pdf"), "application/pdf")]
           }
         }
       end.to have_enqueued_mail(ExpenseMailer, :submitted)
@@ -88,7 +89,7 @@ RSpec.describe "Api::V1::Expense#create", type: :request do
       expect(response).to have_http_status(:ok)
       expect(Expense.last.user).to eq(employee)
       expect(Expense.last.currency).to eq(company.base_currency)
-      expect(Expense.last.receipts.count).to eq(1)
+      expect(Expense.last.receipts.count).to eq(2)
     end
   end
 

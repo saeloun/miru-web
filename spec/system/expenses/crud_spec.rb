@@ -146,7 +146,7 @@ RSpec.describe "Expenses CRUD", type: :system, js: true do
       employee.add_role :employee, company
     end
 
-    it "allows an employee to submit a receipt and an admin to preview, approve, and mark it paid" do
+    it "allows an employee to submit multiple receipts and an admin to preview, approve, and mark it paid" do
       with_forgery_protection do
         sign_in(employee)
         visit "/expenses"
@@ -158,12 +158,19 @@ RSpec.describe "Expenses CRUD", type: :system, js: true do
         find("[role='option']", text: "Travel", wait: 10).click
         fill_in "Vendor", with: "Cafe 21"
         attach_file "Receipts", Rails.root.join("spec/support/fixtures/test-image.png"), make_visible: true
+        attach_file "Receipts", Rails.root.join("spec/support/fixtures/test-image.png"), make_visible: true
+        within("[role='dialog']") do
+          expect(page).to have_button("Remove", count: 2)
+          find_all("button", text: "Remove").first.click
+          expect(page).to have_button("Remove", count: 1)
+        end
+        attach_file "Receipts", Rails.root.join("spec/support/fixtures/test-signature.png"), make_visible: true
         within("[role='dialog']") do
           click_on "Add Expense"
         end
 
         expect(page).to have_content("Client dinner reimbursement", wait: 10)
-        expect(Expense.last.receipts.count).to eq(1)
+        expect(Expense.last.receipts.count).to eq(2)
 
         sign_in(admin)
         visit "/expenses"
@@ -180,6 +187,68 @@ RSpec.describe "Expenses CRUD", type: :system, js: true do
         find("button[aria-label='Expense actions for Client dinner reimbursement']", wait: 10).click
         find("[role='menuitem']", text: "Mark as paid", wait: 10).click
         expect(page).to have_content("Paid", wait: 10)
+      end
+    end
+  end
+
+  describe "adding attachments from expense details" do
+    let!(:expense) do
+      create(:expense, company:, user:, category_name: "Travel", amount: 25, date: Date.current).tap do |expense|
+        expense.receipts.attach(
+          io: File.open(Rails.root.join("spec/support/fixtures/test-image.png")),
+          filename: "original.png", content_type: "image/png")
+      end
+    end
+
+    [1400, 390].each do |width|
+      it "keeps the upload available for additional batches at #{width}px" do
+        page.current_window.resize_to(width, 1000)
+        with_forgery_protection do
+          visit "/expenses/#{expense.id}"
+          click_on "Edit"
+          attach_file "expense-receipts", [
+            Rails.root.join("spec/support/fixtures/test-image.png"),
+            Rails.root.join("spec/support/fixtures/test-signature.png")
+          ], make_visible: true
+          expect(page).to have_content("Add attachments")
+          attach_file "expense-receipts", Rails.root.join("spec/support/fixtures/test-image.png"), make_visible: true
+          expect(page).to have_button("Remove test-image.png", count: 2)
+          expect(page).to have_button("Remove test-signature.png")
+          click_on "Save Changes"
+
+          expect(page).to have_content("4 attached", wait: 10)
+          expect(expense.reload.receipts.count).to eq(4)
+        end
+      ensure
+        page.current_window.resize_to(1400, 1000)
+      end
+    end
+  end
+
+  it "reports attachment limits without dropping selected receipts" do
+    with_forgery_protection do
+      visit "/expenses/new"
+      fill_in "Description", with: "Attachment validation"
+      attach_file "Receipts", Rails.root.join("spec/support/fixtures/test-image.png")
+
+      Dir.mktmpdir do |directory|
+        oversized_receipt = File.join(directory, "oversized.png")
+        File.write(oversized_receipt, "")
+        File.truncate(oversized_receipt, 10.megabytes + 1)
+        attach_file "Receipts", oversized_receipt
+        expect(page).to have_content("Each attachment must be 10 MB or smaller.")
+
+        receipts = 10.times.map do |index|
+          File.join(directory, "receipt-#{index}.png").tap do |path|
+            FileUtils.cp(Rails.root.join("spec/support/fixtures/test-image.png"), path)
+          end
+        end
+        attach_file "Receipts", receipts
+        expect(page).to have_content("You can attach up to 10 files per expense")
+        within("[role='dialog']") do
+          expect(page).to have_button("Remove", count: 1)
+          expect(page).to have_content("test-image.png")
+        end
       end
     end
   end
