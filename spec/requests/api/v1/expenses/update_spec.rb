@@ -47,6 +47,23 @@ RSpec.describe "Api::V1::Expense#update", type: :request do
       expect(expense.amount.to_f).to eq(420.50)
       expect(expense.currency).to eq("INR")
     end
+
+    it "appends multiple receipts without replacing existing attachments" do
+      fixture = Rails.root.join("spec/support/fixtures/test-image.png")
+      expense.receipts.attach(io: File.open(fixture), filename: "original.png", content_type: "image/png")
+      original_receipt = expense.receipts.first.id
+
+      patch api_v1_expense_path(expense), params: {
+        expense: { receipts: [
+          Rack::Test::UploadedFile.new(fixture, "image/png"),
+          Rack::Test::UploadedFile.new(Rails.root.join("spec/support/fixtures/pdf-file.pdf"), "application/pdf")
+        ] }
+      }
+
+      expect(response).to have_http_status(:ok)
+      expect(expense.reload.receipts.count).to eq(3)
+      expect(expense.receipts.ids).to include(original_receipt)
+    end
   end
 
   context "when the user is an employee" do
