@@ -17,6 +17,8 @@ import {
   SelectValue,
 } from "../../ui/select";
 import { i18n } from "../../../i18n";
+import { RECEIPT_ACCEPT, receiptUploadError } from "../receiptUploads";
+import { toast } from "sonner";
 
 const isCustomExpenseCategory = (category, categories = []) => {
   const trimmedCategory = category.trim();
@@ -71,11 +73,15 @@ const ExpenseForm = ({
   };
 
   const handleFileSelection = event => {
-    const uploadedFiles = [...event.target.files];
-    const sortedFiles = uploadedFiles.filter(
-      (file, index) => file.size < 2097152 && index < 10
-    );
-    setReceipts(sortedFiles);
+    const files = Array.from(event.target.files || []) as File[];
+    const error = receiptUploadError(files, receipts.length);
+    event.target.value = "";
+    if (error) {
+      toast.error(error);
+
+      return;
+    }
+    setReceipts(previous => [...previous, ...files]);
   };
 
   const handleSubmit = () => {
@@ -100,10 +106,10 @@ const ExpenseForm = ({
 
   const ReceiptCard = () => (
     <div className="flex w-full flex-col">
-      {receipts.map(receipt => (
+      {receipts.map((receipt, index) => (
         <div
           className="my-2 flex w-full items-center justify-between rounded bg-muted p-3"
-          key={receipt.name || receipt}
+          key={`${receipt.name || receipt}-${index}`}
         >
           <div className="rounded bg-accent p-3">
             <FileIcon
@@ -122,9 +128,14 @@ const ExpenseForm = ({
               </div>
             )}
           </div>
-          <Button style="ternary" onClick={() => removeReceipt(receipt)}>
-            <XIcon size={16} />
-          </Button>
+          {receipt instanceof File && (
+            <Button style="ternary" onClick={() => removeReceipt(receipt)}>
+              <span className="sr-only">{`${i18n.t("remove")} ${
+                receipt.name
+              }`}</span>
+              <XIcon size={16} />
+            </Button>
+          )}
         </div>
       ))}
     </div>
@@ -145,11 +156,13 @@ const ExpenseForm = ({
     >
       <FileIcon className="text-muted-foreground" size={16} weight="bold" />
       <span className="text-center text-base font-bold text-muted-foreground">
-        {i18n.t("expenses.uploadFile")}
+        {i18n.t("expenses.addReceipts")}
       </span>
       <input
         multiple
-        accept=".jpg,.jpeg,.xls,.xlsx,.csv,.pdf,.png; max-size:2097152"
+        accept={RECEIPT_ACCEPT}
+        aria-label={i18n.t("expenses.receipts")}
+        id="expense-receipts"
         className="hidden cursor-pointer"
         ref={fileRef}
         type="file"
@@ -312,7 +325,11 @@ const ExpenseForm = ({
           <span className="text-base font-medium text-muted-foreground">
             {i18n.t("expenses.receiptOptional")}
           </span>
-          {receipts.length > 0 ? <ReceiptCard /> : <UploadCard />}
+          <ReceiptCard />
+          <UploadCard />
+          <p className="mt-2 text-sm text-muted-foreground">
+            {i18n.t("expenses.receiptUploadHint")}
+          </p>
         </div>
       </div>
       <div>

@@ -55,6 +55,7 @@ import { buildDateParseFormats } from "../../helpers/dateParseFormats";
 import { toast } from "sonner";
 import { i18n } from "../../i18n";
 import ReceiptPreviewDialog from "./ReceiptPreviewDialog";
+import { RECEIPT_ACCEPT, receiptUploadError } from "./receiptUploads";
 import { findCategoryMeta } from "./utils";
 import { useLocation, useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
@@ -402,15 +403,23 @@ const ExpensesTable: React.FC = () => {
   };
 
   const handleReceiptFiles = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(event.target.files || []).filter(
-      file => file.size <= 2 * 1024 * 1024
+    const files = Array.from(event.target.files || []);
+    const error = receiptUploadError(
+      files,
+      receiptFiles.length +
+        (showEditDialog ? selectedExpense?.receipts?.length || 0 : 0)
     );
-    setReceiptFiles(prev => [...prev, ...files].slice(0, 10));
     event.target.value = "";
+    if (error) {
+      toast.error(error);
+
+      return;
+    }
+    setReceiptFiles(prev => [...prev, ...files]);
   };
 
-  const removeReceiptFile = (fileName: string) => {
-    setReceiptFiles(prev => prev.filter(file => file.name !== fileName));
+  const removeReceiptFile = (index: number) => {
+    setReceiptFiles(prev => prev.filter((_, fileIndex) => fileIndex !== index));
   };
 
   const openReceiptsPreview = (expense: Expense) => {
@@ -1301,14 +1310,17 @@ const ExpensesTable: React.FC = () => {
                   id="receipts"
                   type="file"
                   multiple
-                  accept=".jpg,.jpeg,.png,.webp,.pdf"
+                  accept={RECEIPT_ACCEPT}
                   onChange={handleReceiptFiles}
                 />
+                <p className="text-sm text-muted-foreground">
+                  {i18n.t("expenses.receiptUploadHint")}
+                </p>
                 {receiptFiles.length > 0 && (
                   <div className="space-y-2 rounded-lg border border-border bg-muted/40 p-3">
-                    {receiptFiles.map(file => (
+                    {receiptFiles.map((file, index) => (
                       <div
-                        key={`${file.name}-${file.size}`}
+                        key={`${file.name}-${index}`}
                         className="flex items-center justify-between gap-3 text-sm"
                       >
                         <span className="truncate text-foreground">
@@ -1318,7 +1330,7 @@ const ExpensesTable: React.FC = () => {
                           type="button"
                           size="sm"
                           variant="ghost"
-                          onClick={() => removeReceiptFile(file.name)}
+                          onClick={() => removeReceiptFile(index)}
                         >
                           {i18n.t("remove")}
                         </Button>
@@ -1578,14 +1590,17 @@ const ExpensesTable: React.FC = () => {
                   id="edit-receipts"
                   type="file"
                   multiple
-                  accept=".jpg,.jpeg,.png,.webp,.pdf"
+                  accept={RECEIPT_ACCEPT}
                   onChange={handleReceiptFiles}
                 />
+                <p className="text-sm text-muted-foreground">
+                  {i18n.t("expenses.receiptUploadHint")}
+                </p>
                 {receiptFiles.length > 0 && (
                   <div className="space-y-2 rounded-lg border border-border bg-muted/40 p-3">
-                    {receiptFiles.map(file => (
+                    {receiptFiles.map((file, index) => (
                       <div
-                        key={`${file.name}-${file.size}`}
+                        key={`${file.name}-${index}`}
                         className="flex items-center justify-between gap-3 text-sm"
                       >
                         <span className="truncate text-foreground">
@@ -1595,7 +1610,7 @@ const ExpensesTable: React.FC = () => {
                           type="button"
                           size="sm"
                           variant="ghost"
-                          onClick={() => removeReceiptFile(file.name)}
+                          onClick={() => removeReceiptFile(index)}
                         >
                           {i18n.t("remove")}
                         </Button>

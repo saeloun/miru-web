@@ -1606,6 +1606,14 @@ const en = {
     enterVendorName: "Enter vendor name",
     receipt: "Receipt",
     receiptOptional: "Receipt (optional)",
+    addReceipts: "Add attachments",
+    receiptUploadHint:
+      "Select multiple files or add more in batches. Up to 10 attachments, 10 MB each. Images, PDF, CSV, or Excel.",
+    tooManyReceipts:
+      "You can attach up to 10 files per expense, including existing attachments.",
+    receiptTooLarge: "Each attachment must be 10 MB or smaller.",
+    unsupportedReceiptFormat:
+      "Attachments must be images (JPG, PNG, WebP), PDF, CSV, or Excel files.",
     receipts: "Receipts",
     receiptsAttached: "%{count} attached",
     preview: "Preview",
