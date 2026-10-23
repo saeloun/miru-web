@@ -101,6 +101,6 @@ module SecondFactorAuthentication
     end
 
     def security_digest(user)
-      Digest::SHA256.hexdigest(user.token)
+      Digest::SHA256.hexdigest("#{user.token}:#{user.browser_trust_version}")
     end
 end

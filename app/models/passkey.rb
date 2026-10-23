@@ -14,6 +14,6 @@ class Passkey < ApplicationRecord
   private
 
     def revoke_browser_trust
-      user.regenerate_token
+      user.increment!(:browser_trust_version)
     end
 end

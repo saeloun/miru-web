@@ -14,7 +14,7 @@ Native clients that cannot complete the challenge are directed to the web app.
 ## Deployment
 
 - Configure durable `ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY`, `ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY` and `ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT`, or their existing Rails credentials equivalents, before migration. These are the same encryption keys used for employee records.
-- Run both new migrations. The first creates single-use login challenges; the second encrypts existing authenticator secrets without changing their values.
+- Run the new migrations to create single-use login challenges, encrypt existing authenticator secrets, and add the browser-trust revocation version.
 - Coordinate the backfill with application replacement: the previous code cannot read encrypted authenticator secrets. Do not leave old application instances serving authentication after the backfill, or roll back to code without encryption support.
 - The encryption migration is deliberately irreversible. Preserve the encryption keys with database backups.
 

@@ -82,7 +82,7 @@ const SecondFactorForm = ({ challenge, onComplete, onBack }) => {
               htmlFor="verification_code"
             >
               {useRecoveryCode
-                ? t("auth.signIn.recoveryCode")
+                ? t("auth.recoveryCode")
                 : t("auth.signIn.totpCode")}
             </label>
             <Input

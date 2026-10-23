@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_23_120000) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_23_130000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_stat_statements"
@@ -1420,6 +1420,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_23_120000) do
     t.string "unique_session_id", null: false
     t.datetime "updated_at", null: false
     t.string "webauthn_id"
+    t.integer "browser_trust_version", default: 0, null: false
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token"
     t.index ["current_workspace_id"], name: "index_users_on_current_workspace_id"
     t.index ["discarded_at"], name: "index_users_on_discarded_at"

@@ -220,11 +220,13 @@ RSpec.describe "Second-factor sign in", type: :request do
 
   it "lets a user revoke all trusted browsers after confirming their password" do
     trust_browser
+    api_token = user.reload.token
     login
     post "/api/v1/users/totp/revoke_trusted_browsers", params: { current_password: "wrong" }
     expect(response).to have_http_status(:unprocessable_content)
     post "/api/v1/users/totp/revoke_trusted_browsers", params: { current_password: "welcome12" }
     expect(response).to have_http_status(:ok)
+    expect(user.reload.token).to eq(api_token)
     delete api_v1_users_logout_path
     expect(login["requires_totp"]).to eq(true)
   end

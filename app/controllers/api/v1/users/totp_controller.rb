@@ -117,7 +117,7 @@ class Api::V1::Users::TotpController < Api::V1::ApplicationController
 
   def revoke_trusted_browsers
     authorize current_user, policy_class: TotpPolicy
-    current_user.regenerate_token
+    current_user.increment!(:browser_trust_version)
     cookies.delete(SecondFactorAuthentication::TRUST_COOKIE)
     render json: { notice: I18n.t("totp.trusted_browsers_revoked") }
   end
