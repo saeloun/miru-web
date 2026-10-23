@@ -4,7 +4,7 @@ require "rails_helper"
 
 RSpec.describe Team::UpdateService do
   let(:company) { create(:company) }
-  let(:user) { create(:user, current_workspace_id: company.id) }
+  let(:user) { create(:user, first_name: "John", last_name: "Doe", current_workspace_id: company.id) }
   let(:employment) { create(:employment, company:, user:) }
   let(:actor) { create(:user, current_workspace_id: company.id) }
   let(:actor_role) { :admin }
