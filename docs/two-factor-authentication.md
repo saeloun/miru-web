@@ -22,3 +22,14 @@ Native clients that cannot complete the challenge are directed to the web app.
 
 Use `http://localhost:3000` for passkey tests; WebAuthn rejects an IP address as a relying-party domain.
 Automated browser verification can use a virtual WebAuthn authenticator. Physical Touch ID and iCloud Keychain approval still require a manual check.
+
+Focused verification commands (use the repo's local test database configuration):
+
+```sh
+SKIP_VITE_TEST_BUILD=1 rtk mise exec -- bundle exec rspec spec/requests/api/v1/users/second_factor_spec.rb spec/models/user_two_factor_spec.rb
+rtk mise exec -- node scripts/ci/passkeys_test.mjs
+RAILS_ENV=test rtk mise exec -- timeout 30 bin/vite build
+SKIP_VITE_TEST_BUILD=1 rtk mise exec -- bundle exec rspec spec/system/auth/two_factor_spec.rb
+```
+
+The authentication system spec and passkey parser check also run in CI.
