@@ -4,6 +4,8 @@
 
 ### Added
 
+- Private approved-provider salary-slip imports and publication, employee tax-evidence review, consultant payment previews, and a bounded India annual salary/interest tax comparison
+- Encrypted employee records, private PAN/contracts, manually recorded payment history, customizable CSV reports, and opt-in birthday/work-anniversary reminders
 - UPI payment settings with free Miru-branded QR generation for INR invoices, including public invoice and PDF invoice display
 - Razorpay webhook handling for cancelled and expired Payment Links, plus `payout.updated` status refreshes
 - Razorpay onboarding docs with exact Payment Links and RazorpayX webhook setup steps
@@ -14,6 +16,8 @@
 
 ### Changed
 
+- Employee reports batch monthly source queries and preserve exact decimal reimbursement totals; stale-workspace mutations retain their conflict response
+- Invoice PDFs keep ordinary-sized line items together, avoid an unnecessary external stylesheet request, and omit document contents from failure logs
 - Invoice creation and editing now guard against duplicate draft line items, preserve zero-value amounts, and clamp totals to zero when the last line item is removed
 - Invoice line-item rows now prefer employee first/last names over description-backed fallback text so selected employee names render correctly on new invoices (rendering-only change, no DB impact)
 - Invoice line-item rate lookups now resolve project-member hourly rates per project consistently, preventing missing rates when generating invoices across multiple projects or after member-removal workflows
