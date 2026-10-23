@@ -44,7 +44,7 @@ const PasskeysPanel = ({
               {i18n.t("passkeys.addTitle")}
             </p>
             <p className="text-sm text-muted-foreground">
-              {i18n.t("passkeys.addDescription")}
+              {i18n.t("loginSecurity.devicePasskey")}
             </p>
           </div>
           <Button disabled={busy} onClick={onRegister} type="button">
@@ -63,6 +63,7 @@ const PasskeysPanel = ({
             </p>
           </div>
           <Switch
+            aria-label={i18n.t("passkeys.requirementTitle")}
             checked={passkeyRequiredForLogin}
             disabled={busy || passkeys.length === 0}
             onCheckedChange={onToggleRequirement}

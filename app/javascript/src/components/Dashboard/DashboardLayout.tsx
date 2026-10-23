@@ -49,6 +49,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
   const [mobileOpen, setMobileOpen] = useState(false);
   const location = useLocation();
   const { companyRole, user, company, avatarUrl, locale } = useUserContext();
+
   const employeeRecordsEnabled = hasEmployeeRecordsAccess(
     company,
     user,

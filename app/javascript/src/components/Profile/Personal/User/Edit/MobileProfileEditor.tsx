@@ -76,6 +76,7 @@ const MobileProfileEditor = ({
   totpBusy,
   totpEnabled,
   totpProvisioningUri,
+  totpQrCode,
   totpSecret,
   totpVerificationCode,
 }) => {
@@ -671,6 +672,7 @@ const MobileProfileEditor = ({
           onGenerateRecoveryCodes={onGenerateRecoveryCodes}
           onSetup={onSetupTotp}
           provisioningUri={totpProvisioningUri}
+          qrCode={totpQrCode}
           recoveryCodes={recoveryCodes}
           recoveryCodesCount={recoveryCodesCount}
           secret={totpSecret}

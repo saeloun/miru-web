@@ -1,8 +1,8 @@
 import { Paths } from "constants/index";
 
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
-import { authenticationApi, passkeysApi, totpApi } from "apis/api";
+import { authenticationApi } from "apis/api";
 import { InputErrors, InputField } from "common/FormikFields";
 import { useAuthDispatch } from "context/auth";
 import { useUserContext } from "context/UserContext";
@@ -11,7 +11,7 @@ import { GithubIcon, GoogleSVG } from "miruIcons";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { dashboardUrl } from "utils/dashboardUrl";
-import { beginPasskeyAuthentication } from "utils/passkeys";
+import SecondFactorForm from "./SecondFactorForm";
 
 import { t } from "../../../i18n";
 import {
@@ -37,11 +37,21 @@ const SignInForm = () => {
 
   const googleOauth = useRef(null);
   const githubOauth = useRef(null);
-  const [isPasskeyPending, setIsPasskeyPending] = useState(false);
-  const [isTotpPending, setIsTotpPending] = useState(false);
-  const [totpPendingToken, setTotpPendingToken] = useState("");
-  const [totpCode, setTotpCode] = useState("");
-  const [recoveryCode, setRecoveryCode] = useState("");
+  const [challenge, setChallenge] = useState(null);
+  useEffect(() => {
+    if (!new URLSearchParams(window.location.search).has("verify")) return;
+
+    authenticationApi
+      .secondFactor()
+      .then(response => setChallenge(response.data))
+      .catch(error =>
+        toast.error(
+          error?.response?.data?.error || t("auth.signIn.loginFailed")
+        )
+      );
+    window.history.replaceState(null, "", window.location.pathname);
+  }, []);
+
   const csrfToken =
     document.querySelector('[name="csrf-token"]')?.getAttribute("content") ||
     "";
@@ -77,28 +87,8 @@ const SignInForm = () => {
     try {
       const res = await authenticationApi.signin(values);
 
-      if (res.data?.requires_passkey) {
-        setIsPasskeyPending(true);
-        toast.message(t("auth.signIn.passkeyPrompt"));
-
-        const credential = await beginPasskeyAuthentication(
-          res.data.public_key
-        );
-
-        const passkeyResponse = await passkeysApi.authenticate({
-          credential,
-          pending_token: res.data.pending_token,
-        });
-
-        completeLogin(passkeyResponse.data);
-
-        return;
-      }
-
-      if (res.data?.requires_totp) {
-        setTotpPendingToken(res.data.pending_token);
-        setIsTotpPending(true);
-        toast.message(t("auth.signIn.totpPrompt"));
+      if (res.data?.requires_passkey || res.data?.requires_totp) {
+        setChallenge(res.data);
 
         return;
       }
@@ -114,22 +104,6 @@ const SignInForm = () => {
       } else {
         toast.error(t("auth.signIn.loginFailed"));
       }
-    } finally {
-      setIsPasskeyPending(false);
-    }
-  };
-
-  const handleTotpVerification = async () => {
-    try {
-      const response = await totpApi.authenticate({
-        pending_token: totpPendingToken,
-        code: totpCode,
-        recovery_code: recoveryCode,
-      });
-
-      completeLogin(response.data);
-    } catch (error) {
-      toast.error(error?.response?.data?.error || "Invalid verification code.");
     }
   };
 
@@ -155,6 +129,16 @@ const SignInForm = () => {
 
   const isBtnDisabled = (values: SignInFormValues) =>
     !(values.email?.trim() && values?.password?.trim());
+
+  if (challenge) {
+    return (
+      <SecondFactorForm
+        challenge={challenge}
+        onComplete={completeLogin}
+        onBack={() => setChallenge(null)}
+      />
+    );
+  }
 
   return (
     <AuthShell
@@ -201,71 +185,6 @@ const SignInForm = () => {
           <div className="flex-grow border-t border-border" />
         </div>
         <div>
-          {isTotpPending && (
-            <div className="mb-6 space-y-4 rounded-2xl border border-border bg-card p-5 shadow-sm">
-              <div className="space-y-1">
-                <h3 className="text-base font-medium text-foreground">
-                  {t("auth.signIn.totpTitle")}
-                </h3>
-                <p className="text-sm text-muted-foreground">
-                  {t("auth.signIn.totpDescription")}
-                </p>
-              </div>
-              <div className="space-y-2">
-                <label
-                  className="text-sm font-medium text-foreground"
-                  htmlFor="totp_code"
-                >
-                  {t("auth.signIn.totpCode")}
-                </label>
-                <input
-                  id="totp_code"
-                  className="h-11 w-full rounded-xl border border-border bg-background px-3 text-foreground placeholder:text-muted-foreground"
-                  inputMode="numeric"
-                  onChange={event => setTotpCode(event.target.value)}
-                  placeholder="123456"
-                  value={totpCode}
-                />
-              </div>
-              <div className="space-y-2">
-                <label
-                  className="text-sm font-medium text-foreground"
-                  htmlFor="recovery_code"
-                >
-                  {t("auth.signIn.recoveryCode")}
-                </label>
-                <input
-                  id="recovery_code"
-                  className="h-11 w-full rounded-xl border border-border bg-background px-3 text-foreground placeholder:text-muted-foreground"
-                  onChange={event => setRecoveryCode(event.target.value)}
-                  placeholder="ABCD-EFGH"
-                  value={recoveryCode}
-                />
-              </div>
-              <div className="flex gap-3">
-                <button
-                  type="button"
-                  className="flex-1 rounded-xl border border-transparent bg-primary px-4 py-3 text-sm font-medium text-primary-foreground transition hover:bg-primary/90"
-                  disabled={!(totpCode.trim() || recoveryCode.trim())}
-                  onClick={handleTotpVerification}
-                >
-                  {t("auth.signIn.verifyAndSignIn")}
-                </button>
-                <button
-                  type="button"
-                  className="rounded-xl border border-border px-4 py-3 text-sm font-medium text-foreground transition hover:bg-accent"
-                  onClick={() => {
-                    setIsTotpPending(false);
-                    setTotpPendingToken("");
-                    setTotpCode("");
-                    setRecoveryCode("");
-                  }}
-                >
-                  {t("auth.signIn.back")}
-                </button>
-              </div>
-            </div>
-          )}
           <Formik
             key={locale}
             initialValues={signInFormInitialValues}
@@ -322,11 +241,9 @@ const SignInForm = () => {
                           ? "cursor-not-allowed border-border bg-muted text-foreground/70"
                           : "cursor-pointer border-transparent bg-primary text-primary-foreground hover:bg-primary/90"
                       }`}
-                      disabled={isBtnDisabled(values) || isPasskeyPending}
+                      disabled={isBtnDisabled(values) || props.isSubmitting}
                     >
-                      {isPasskeyPending
-                        ? t("auth.signIn.waitingForPasskey")
-                        : t("auth.signIn.submit")}
+                      {t("auth.signIn.submit")}
                     </button>
                   </div>
                 </Form>

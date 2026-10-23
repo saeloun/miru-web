@@ -18,6 +18,15 @@ Rails.application.routes.draw do
     mount RailsEventViewer::Engine, at: "/events"
   end
 
+  get "/reports/compensation-profitability", to: "reports/compensation_profitability#show", as: :compensation_profitability
+  post "/reports/compensation-profitability/configure", to: "reports/compensation_profitability#configure", as: :compensation_profitability_configure
+  get "/reports/compensation-profitability/exports/:token", to: "reports/compensation_profitability#download", as: :compensation_profitability_export
+
+  # Preserve existing bookmarks and signed exports with the same organization authorization.
+  get "/admin/compensation-profitability", to: "reports/compensation_profitability#show"
+  post "/admin/compensation-profitability/configure", to: "reports/compensation_profitability#configure"
+  get "/admin/compensation-profitability/exports/:token", to: "reports/compensation_profitability#download"
+
   # Mount PgHero for database monitoring (restricted to super admins)
   authenticate :user, lambda { |u| u.super_admin? } do
     mount PgHero::Engine, at: "/pghero"

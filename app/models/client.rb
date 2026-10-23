@@ -43,6 +43,7 @@ class Client < ApplicationRecord
 
   after_discard :discard_projects
   after_create { Rails.event.notify(Clients::Created.new(self)) }
+  after_update :record_profitability_currency_change, if: :saved_change_to_currency?
 
   accepts_nested_attributes_for :addresses, reject_if: :address_attributes_blank?, allow_destroy: true
   scope :with_ids, -> (client_ids) { where(id: client_ids) if client_ids.present? }
@@ -189,6 +190,10 @@ class Client < ApplicationRecord
   end
 
   private
+
+    def record_profitability_currency_change
+      ProjectMember.kept.where(project_id: projects.select(:id)).includes(:user, project: :client).find_each(&:record_profitability_billing_rate)
+    end
 
     def validate_logo_constraints
       return unless logo.attached?

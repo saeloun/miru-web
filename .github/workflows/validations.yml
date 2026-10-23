@@ -218,10 +218,13 @@ jobs:
       - name: Setup test database
         run: bundle exec rails db:test:prepare
 
-      - name: Run responsive and expense system specs
+      - name: Check passkey option parsing
+        run: node scripts/ci/passkeys_test.mjs
+
+      - name: Run responsive, expense, and authentication system specs
         env:
           FERRUM_BROWSER_PATH: ${{ steps.setup-chrome.outputs.chrome-path }}
-        run: bundle exec rspec spec/system/responsive spec/system/expenses/crud_spec.rb
+        run: bundle exec rspec spec/system/responsive spec/system/expenses/crud_spec.rb spec/system/auth/two_factor_spec.rb
 
   security-audit:
     name: Security audit
