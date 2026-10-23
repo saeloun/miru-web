@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import http from "apis/api";
 import { Button } from "components/ui/button";
@@ -12,11 +12,19 @@ const Reports = ({ companyId }) => {
   const [enabled, setEnabled] = useState(false);
   const [name, setName] = useState("");
   const [columns, setColumns] = useState<string[]>([]);
+  const [editingReportId, setEditingReportId] = useState<number | null>(null);
+  const form = useRef<React.ElementRef<"form">>(null);
   const [month, setMonth] = useState(new Date().toISOString().slice(0, 7));
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
   const options = requestOptions(controller.signal);
+
+  const resetEditor = () => {
+    setEditingReportId(null);
+    setName("");
+    setColumns([]);
+  };
 
   const load = async () => {
     const [reports, settings] = await Promise.all([
@@ -73,24 +81,37 @@ const Reports = ({ companyId }) => {
           <p className="text-sm text-muted-foreground">{text("reportHelp")}</p>
           <form
             className="space-y-4"
+            ref={form}
             onSubmit={event => {
               event.preventDefault();
               perform(async () => {
-                await http.post(
-                  "/employee_reports",
-                  { employee_report: { company_id: companyId, name, columns } },
-                  options
-                );
+                const data = {
+                  employee_report: { company_id: companyId, name, columns },
+                };
+                if (editingReportId === null) {
+                  await http.post("/employee_reports", data, options);
+                } else {
+                  await http.patch(
+                    `/employee_reports/${editingReportId}`,
+                    data,
+                    options
+                  );
+                }
                 await load();
                 if (!controller.signal.aborted) {
-                  setName("");
+                  if (editingReportId === null) setName("");
+                  else resetEditor();
                   setNotice(text("reportSaved"));
                 }
               });
             }}
           >
+            {editingReportId !== null && (
+              <h3 className="font-semibold">{text("editReportDefinition")}</h3>
+            )}
             <Field
               required
+              disabled={busy}
               maxLength={100}
               name="reportName"
               value={name}
@@ -109,7 +130,7 @@ const Reports = ({ companyId }) => {
                 </Button>
               ))}
             </div>
-            <fieldset className="grid gap-3 sm:grid-cols-2">
+            <fieldset className="grid gap-3 sm:grid-cols-2" disabled={busy}>
               <legend className="mb-2 font-medium">
                 {text("reportColumns")}
               </legend>
@@ -141,12 +162,31 @@ const Reports = ({ companyId }) => {
                 </label>
               ))}
             </fieldset>
-            <Button disabled={busy || columns.length === 0} type="submit">
-              {text("saveReport")}
-            </Button>
+            <div className="flex flex-wrap gap-2">
+              <Button disabled={busy || columns.length === 0} type="submit">
+                {text(
+                  editingReportId === null ? "saveReport" : "saveReportChanges"
+                )}
+              </Button>
+              {editingReportId !== null && (
+                <Button
+                  disabled={busy}
+                  type="button"
+                  variant="outline"
+                  onClick={() => {
+                    resetEditor();
+                    setError("");
+                    setNotice("");
+                  }}
+                >
+                  {text("cancel")}
+                </Button>
+              )}
+            </div>
           </form>
           <Field
             required
+            disabled={busy}
             name="reportMonth"
             type="month"
             value={month}
@@ -163,6 +203,26 @@ const Reports = ({ companyId }) => {
                   {report.name}
                 </span>
                 <div className="flex flex-wrap gap-2">
+                  <Button
+                    disabled={busy}
+                    type="button"
+                    variant="outline"
+                    onClick={() => {
+                      setEditingReportId(report.id);
+                      setName(report.name);
+                      setColumns([...report.columns]);
+                      setError("");
+                      setNotice("");
+                      const input =
+                        form.current?.querySelector<HTMLInputElement>(
+                          "#reportName"
+                        );
+                      input?.focus();
+                      input?.scrollIntoView({ block: "center" });
+                    }}
+                  >
+                    {text("editReport", { name: report.name })}
+                  </Button>
                   <Button
                     disabled={busy || !/^\d{4}-\d{2}$/.test(month)}
                     type="button"
@@ -190,6 +250,12 @@ const Reports = ({ companyId }) => {
                           ...options,
                           data: { employee_report: { company_id: companyId } },
                         });
+                        if (
+                          !controller.signal.aborted &&
+                          report.id === editingReportId
+                        ) {
+                          resetEditor();
+                        }
                         await load();
                       })
                     }
