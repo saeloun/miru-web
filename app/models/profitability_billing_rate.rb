@@ -3,7 +3,7 @@
 class ProfitabilityBillingRate < ApplicationRecord
   belongs_to :project
   belongs_to :user
-  has_one :company, through: :project
+  delegate :company, to: :project
   audited associated_with: :company, only: [:project_id, :user_id, :effective_on]
   attr_readonly :project_id, :user_id, :effective_on, :hourly_rate, :currency, :billing_method
 
