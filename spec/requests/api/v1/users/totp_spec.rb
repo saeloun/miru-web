@@ -30,6 +30,7 @@ RSpec.describe "Api::V1::Users::Totp", type: :request do
       expect(json_response["provisioning_uri"]).to include("otpauth://totp/")
       expect(user.reload.otp_secret).to be_present
       expect(json_response["qr_code"]).to start_with("data:image/png;base64,")
+      expect(response.headers["Cache-Control"]).to include("no-store")
     end
 
     it "does not reset an enabled authenticator before a replacement is confirmed" do

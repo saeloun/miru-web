@@ -144,6 +144,16 @@ RSpec.describe "Second-factor sign in", type: :request do
     expect(response).to have_http_status(:unauthorized)
   end
 
+  it "locks the account after repeated incorrect second-factor codes" do
+    pending_token = login.fetch("pending_token")
+    Devise.maximum_attempts.times do
+      post "/api/v1/users/totp/authenticate", params: { pending_token:, code: "incorrect" }
+    end
+    expect(user.reload).to be_access_locked
+    verify_totp(pending_token)
+    expect(response).to have_http_status(:unauthorized)
+  end
+
   it "does not grant trust for an invalid second factor" do
     post "/api/v1/users/totp/authenticate", params: {
       pending_token: login.fetch("pending_token"), code: "not-a-code", trust_browser: true

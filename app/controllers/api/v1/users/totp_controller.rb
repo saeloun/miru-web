@@ -97,7 +97,7 @@ class Api::V1::Users::TotpController < Api::V1::ApplicationController
       validate_pending_login!(user, payload)
       raise Passkeys::ChallengeToken::InvalidTokenError unless user.totp_enabled?
 
-      unless valid_second_factor?(user)
+      unless user.valid_for_authentication? { valid_second_factor?(user) }
         render json: { error: I18n.t("totp.invalid_verification") }, status: 422
         return
       end

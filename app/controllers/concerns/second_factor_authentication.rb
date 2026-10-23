@@ -5,6 +5,7 @@ module SecondFactorAuthentication
 
   included do
     include ActionController::Cookies
+    before_action { response.cache_control[:no_store] = true }
   end
 
   TRUST_DURATION = 30.days

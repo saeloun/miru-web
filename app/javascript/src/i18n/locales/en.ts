@@ -8,7 +8,7 @@ const en = {
     useRecoveryCode: "Use a recovery code instead",
     trustBrowser: "Trust this browser for 30 days",
     trustDescription:
-      "Only choose this on a device you own. You will still need your password.",
+      "Only choose this on a device you own. You will still need to sign in.",
     invalidCode: "Invalid verification code. Try again.",
     passkeyCancelled:
       "Passkey verification was cancelled or unavailable. Try again or choose another method.",
