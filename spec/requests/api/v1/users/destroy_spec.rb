@@ -55,6 +55,38 @@ RSpec.describe "Api::V1::Users#destroy", type: :request do
       )
       expect(audit.audited_changes.symbolize_keys[:occurred_at]).to be_present
     end
+
+    { salary_slip: [:uploaded_by, :published_by, :withdrawn_by],
+      tax_declaration: [:reviewed_by, :withdrawn_by], consultant_compensation: [:created_by] }.each do |kind, actors|
+      actors.each do |actor|
+        it "retains the user and coworker's #{kind} history when referenced as #{actor}" do
+          coworker = create(:employment, company:)
+          record = case kind
+                   when :salary_slip
+                     SalarySlip.create!(employment: coworker, uploaded_by: super_admin, pay_month: "2026-09-01",
+                       source: "Payroll provider", actor => target_user,
+                       file: { io: File.open(Rails.root.join("spec/support/fixtures/pdf-file.pdf")),
+                               filename: "slip.pdf", content_type: "application/pdf" })
+                   when :tax_declaration
+                     TaxDeclaration.create!(employment: coworker, tax_year: 2026, category: "investment",
+                       claimed_amount: 1000, actor => target_user)
+                   when :consultant_compensation
+                     enable_synthetic_payroll(company.id)
+                     ConsultantCompensation.create!(employment: coworker, created_by: target_user,
+                       monthly_fee: 100_000, effective_on: "2026-09-01", payment_source: "india",
+                       legal_entity_name: company.name, hours_per_day: 8, weekdays: [1, 2, 3, 4, 5], change_reason: "Agreed terms")
+          end
+          audit_count = Audited::Audit.where(action: "super_admin_delete").count
+          delete_user(target_user)
+          expect(response).to have_http_status(:unprocessable_content)
+          expect(json_response.fetch("errors")).to include("Deactivate")
+          expect(User.exists?(target_user.id)).to be(true)
+          expect(target_user.employments.count).to eq(1)
+          expect(record.reload.public_send(actor)).to eq(target_user)
+          expect(Audited::Audit.where(action: "super_admin_delete").count).to eq(audit_count)
+        end
+      end
+    end
   end
 
   context "when the current user is not a super admin" do

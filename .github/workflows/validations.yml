@@ -215,10 +215,10 @@ jobs:
       - name: Setup test database
         run: bundle exec rails db:test:prepare
 
-      - name: Run responsive system specs
+      - name: Run responsive and expense system specs
         env:
           FERRUM_BROWSER_PATH: ${{ steps.setup-chrome.outputs.chrome-path }}
-        run: bundle exec rspec spec/system/responsive
+        run: bundle exec rspec spec/system/responsive spec/system/expenses/crud_spec.rb
 
   security-audit:
     name: Security audit

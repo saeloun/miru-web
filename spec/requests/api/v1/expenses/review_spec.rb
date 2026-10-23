@@ -3,10 +3,10 @@
 require "rails_helper"
 
 RSpec.describe "Api::V1::Expense review actions", type: :request do
-  let(:company) { create(:company) }
+  let(:company) { create(:company, base_currency: "USD") }
   let(:admin) { create(:user, current_workspace_id: company.id) }
   let(:employee) { create(:user, current_workspace_id: company.id) }
-  let(:expense) { create(:expense, company:, category_name: "Travel", user: employee) }
+  let(:expense) { create(:expense, company:, category_name: "Travel", user: employee, amount: 5000, currency: "USD", date: Date.current - 7.days) }
 
   before do
     create(:employment, company:, user: admin)
@@ -71,5 +71,181 @@ RSpec.describe "Api::V1::Expense review actions", type: :request do
     expect(response).to have_http_status(:ok)
     expect(expense.reload.status).to eq("submitted")
     expect(expense.description).to eq("Updated meal reimbursement")
+  end
+
+  it "cannot reopen an already-paid claim through approval, rejection or a direct model transition" do
+    expense.approve!
+    expense.mark_paid!
+    paid_at = expense.reload.paid_at
+    sign_in admin
+
+    patch approve_api_v1_expense_path(expense)
+    expect(response).to have_http_status(:forbidden)
+    patch reject_api_v1_expense_path(expense)
+    expect(response).to have_http_status(:forbidden)
+    expect(expense.reload).to have_attributes(status: "paid", paid_at:)
+
+    [:approve!, :reject!].each do |action|
+      expect { expense.public_send(action) }.to raise_error(ActiveRecord::RecordInvalid)
+      expense.reload
+    end
+    expect { expense.update!(status: :submitted) }.to raise_error(ActiveRecord::RecordInvalid)
+    expect(expense.reload).to have_attributes(status: "paid", paid_at:)
+    expense.update_column(:status, :approved)
+    patch approve_api_v1_expense_path(expense)
+    expect(response).to have_http_status(:forbidden)
+    expect { expense.reload.approve! }.to raise_error(ActiveRecord::RecordInvalid)
+    expect(expense.reload.paid_at).to eq(paid_at)
+  end
+
+  it "rechecks a stale approved claim under lock before paying or reviewing it" do
+    expense.approve!
+    stale = Expense.find(expense.id)
+    expense.mark_paid!
+    expect { stale.reject! }.to raise_error(ActiveRecord::RecordInvalid)
+    expect(expense.reload.status).to eq("paid")
+    expect { stale.reload.mark_paid! }.to raise_error(ActiveRecord::RecordInvalid)
+  end
+
+  it "preserves paid financial facts against fresh admin edits and direct model writes" do
+    allow(CurrencyConversionService).to receive(:get_exchange_rate).and_return(BigDecimal("80"))
+    expense.approve!
+    expense.mark_paid!
+    original = expense.reload.attributes
+    sign_in admin
+
+    patch api_v1_expense_path(expense), params: { expense: { amount: 6000 } }
+    expect(response).to have_http_status(:forbidden)
+    expect(expense.reload.attributes).to eq(original)
+
+    { amount: 6000, currency: "INR", date: expense.date - 1.day, user_id: admin.id,
+      base_currency_amount: 6000, exchange_rate: 2, approved_at: nil }.each do |field, value|
+      expect { expense.update!(field => value) }.to raise_error(ActiveRecord::RecordInvalid)
+      expect(expense.reload.attributes).to eq(original)
+    end
+  end
+
+  it "rejects a direct stale model write after another instance records payment" do
+    expense.approve!
+    stale = Expense.find(expense.id)
+    stale_amount = Expense.find(expense.id)
+    expense.mark_paid!
+    expect { stale.update!(status: :rejected) }.to raise_error(ActiveRecord::RecordInvalid)
+    expect { stale_amount.update!(amount: 6000) }.to raise_error(ActiveRecord::RecordInvalid)
+    expect(expense.reload.status).to eq("paid")
+  end
+
+  it "reloads a stale approved claim before authorizing deletion after another request pays it" do
+    expense.approve!
+    stale = Expense.find(expense.id)
+    expense.mark_paid!
+    allow_any_instance_of(Api::V1::ExpensesController).to receive(:set_expense) do |controller|
+      controller.instance_variable_set(:@expense, stale)
+    end
+    sign_in admin
+    delete api_v1_expense_path(expense)
+    expect(response).to have_http_status(:forbidden)
+    expect(expense.reload).to have_attributes(status: "paid", discarded_at: nil)
+  end
+
+  it "does not record payment after a competing request discards the claim first" do
+    expense.approve!
+    stale = Expense.find(expense.id)
+    expense.discard!
+    expect { stale.mark_paid! }.to raise_error(ActiveRecord::RecordInvalid)
+    expect(expense.reload).to have_attributes(status: "approved", paid_at: nil)
+  end
+
+  it "reloads a stale rejected claim before authorizing an employee edit and resubmission" do
+    expense.reject!
+    stale = Expense.find(expense.id)
+    expense.approve!
+    expense.mark_paid!
+    paid_at = expense.reload.paid_at
+    allow_any_instance_of(Api::V1::ExpensesController).to receive(:set_expense) do |controller|
+      controller.instance_variable_set(:@expense, stale)
+    end
+    sign_in employee
+
+    patch api_v1_expense_path(expense), params: { expense: { description: "Stale rejected-claim edit" } }
+
+    expect(response).to have_http_status(:forbidden)
+    expect(expense.reload).to have_attributes(status: "paid", paid_at:)
+    expect(expense.description).not_to eq("Stale rejected-claim edit")
+  end
+
+  it "requires renewed approval after changing an approved claim amount before recording payment" do
+    expense.approve!
+    sign_in admin
+    patch api_v1_expense_path(expense), params: { expense: { amount: "6000" } }
+    expect(response).to have_http_status(:ok)
+    expect(expense.reload).to have_attributes(status: "submitted", approved_at: nil)
+    patch mark_paid_api_v1_expense_path(expense)
+    expect(response).to have_http_status(422)
+    patch approve_api_v1_expense_path(expense)
+    expect(response).to have_http_status(:ok)
+    patch mark_paid_api_v1_expense_path(expense)
+    expect(response).to have_http_status(:ok)
+    expect(expense.reload).to have_attributes(status: "paid", amount: BigDecimal("6000"))
+  end
+
+  it "exposes missing historical approval time and records an explicit current reconfirmation" do
+    expense.approve!
+    expense.update_column(:approved_at, nil)
+    sign_in admin
+    get api_v1_expenses_path
+    expect(json_response.fetch("expenses").find { |item| item["id"] == expense.id }.fetch("approvedAt")).to be_nil
+    patch approve_api_v1_expense_path(expense)
+    expect(response).to have_http_status(:ok)
+    expect(expense.reload.approved_at).to be_present
+    get api_v1_expenses_path
+    expect(json_response.fetch("expenses").find { |item| item["id"] == expense.id }.fetch("approvedAt")).to be_present
+  end
+
+  it "preserves the first approval timestamp when a stale approval retries after the cutoff day" do
+    stale = Expense.find(expense.id)
+    expense.approve!
+    approved_at = expense.reload.approved_at
+    travel_to(1.day.from_now) do
+      stale.approve!
+      expect(stale.reload.approved_at).to eq(approved_at)
+    end
+  end
+
+  [:submitted, :rejected].each do |initial_status|
+    it "rejects stale material edits loaded as #{initial_status} before a competing approval" do
+      allow(CurrencyConversionService).to receive(:get_exchange_rate).and_return(BigDecimal("80"))
+      expense.update!(status: initial_status)
+      edits = [{ amount: expense.amount + 1 }, { currency: "INR" }, { date: expense.date - 1.day },
+        { user_id: admin.id }, { company_id: create(:company).id }]
+      stale_records = edits.map { Expense.find(expense.id) }
+      expense.approve!
+      approved = expense.reload.attributes
+
+      stale_records.zip(edits).each do |stale, attributes|
+        expect { stale.update!(attributes) }.to raise_error(ActiveRecord::RecordInvalid, /Reload/)
+        expect(expense.reload.attributes).to eq(approved)
+      end
+    end
+  end
+
+  it "rejects a stale legacy approval after another reviewer explicitly confirms its timestamp" do
+    expense.approve!
+    expense.update_column(:approved_at, nil)
+    stale = Expense.find(expense.id)
+    expense.approve!
+    approved = expense.reload.attributes
+    expect { stale.update!(amount: expense.amount + 1) }.to raise_error(ActiveRecord::RecordInvalid, /Reload/)
+    expect(expense.reload.attributes).to eq(approved)
+  end
+
+  it "clears approval for each fresh material edit, including a change of company" do
+    allow(CurrencyConversionService).to receive(:get_exchange_rate).and_return(BigDecimal("80"))
+    [{ amount: expense.amount + 1 }, { currency: "INR" }, { date: expense.date - 1.day },
+      { user_id: admin.id }, { company_id: create(:company).id }].each do |attributes|
+      expense.approve!
+      expense.update!(attributes)
+      expect(expense.reload).to have_attributes(status: "submitted", approved_at: nil)
+    end
   end
 end

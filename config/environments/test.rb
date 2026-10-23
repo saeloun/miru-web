@@ -10,6 +10,9 @@ Rails.application.configure do
     "SECRET_KEY_BASE",
     "test-secret-key-base-for-ci-and-local-specs"
   )
+  config.active_record.encryption.primary_key = "synthetic-test-primary-key-only"
+  config.active_record.encryption.deterministic_key = "synthetic-test-deterministic-key-only"
+  config.active_record.encryption.key_derivation_salt = "synthetic-test-key-derivation-salt-only"
 
   error_logger = ActiveSupport::Logger.new($stderr)
   error_logger.level = Logger::ERROR

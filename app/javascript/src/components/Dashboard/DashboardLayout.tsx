@@ -29,6 +29,7 @@ import ThemeToggle from "../../common/ThemeToggle";
 import useThemeMode from "../../common/useThemeMode";
 import { hasProAccess } from "../../lib/planAccess";
 import { hasPayrollReviewAccess } from "../../lib/payrollAccess";
+import { hasEmployeeRecordsAccess } from "../../lib/employeeRecordsAccess";
 import { t } from "../../i18n";
 import CompactLocaleSwitcher from "../common/CompactLocaleSwitcher";
 import TrialBanner from "../common/TrialBanner";
@@ -48,6 +49,12 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
   const [mobileOpen, setMobileOpen] = useState(false);
   const location = useLocation();
   const { companyRole, user, company, avatarUrl, locale } = useUserContext();
+  const employeeRecordsEnabled = hasEmployeeRecordsAccess(
+    company,
+    user,
+    companyRole
+  );
+
   const payrollEnabled = hasPayrollReviewAccess(
     company,
     user?.current_workspace_id,
@@ -131,6 +138,24 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
           icon: CurrencyCircleDollar,
           roles: ["admin", "owner", "book_keeper", "employee"],
         },
+        {
+          label: t("salarySlips.title"),
+          href: "/salary-slips",
+          icon: Receipt,
+          roles: ["admin", "owner", "book_keeper", "employee", "manager"],
+        },
+        {
+          label: t("taxDeclarations.title"),
+          href: "/tax-declarations",
+          icon: Receipt,
+          roles: ["admin", "owner", "book_keeper", "employee", "manager"],
+        },
+        {
+          label: t("consultantPayroll.title"),
+          href: "/consultant-payroll",
+          icon: Receipt,
+          roles: ["admin", "owner"],
+        },
       ],
     },
     {
@@ -167,6 +192,11 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
       items: [
         { label: t("sidebar.profile"), href: "/settings/profile", icon: User },
         {
+          label: t("employeeRecords.title"),
+          href: "/settings/employee-records",
+          icon: Briefcase,
+        },
+        {
           label: t("settings.labels.preferences"),
           href: "/settings/preferences",
           icon: Gear,
@@ -198,7 +228,15 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
     ...group,
     items: group.items
       .filter(item => !item.roles || item.roles.includes(companyRole))
-      .filter(item => item.href !== "/payroll" || payrollEnabled)
+      .filter(
+        item =>
+          item.href !== "/settings/employee-records" || employeeRecordsEnabled
+      )
+      .filter(
+        item =>
+          !["/payroll", "/consultant-payroll"].includes(item.href) ||
+          payrollEnabled
+      )
       .map(item =>
         ["/reports", "/analytics"].includes(item.href) && !hasProAccess(company)
           ? {
@@ -212,10 +250,14 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
   // prettier-ignore
   const filteredNavigation = useMemo(
     () => navigationGroups.map(filterNavigationGroup),
-    [companyRole, company?.pro_access, locale, payrollEnabled]
+    [companyRole, company?.pro_access, locale, payrollEnabled, employeeRecordsEnabled]
   );
 
   const pageTitle = useMemo(() => {
+    if (location.pathname.endsWith("/employee-records")) {
+      return t("employeeRecords.title");
+    }
+
     const item = filteredNavigation
       .flatMap(group => group.items)
       .find(navItem => location.pathname.startsWith(navItem.href));
