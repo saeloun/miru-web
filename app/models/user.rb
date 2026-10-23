@@ -61,7 +61,7 @@ class User < ApplicationRecord
     inverse_of: :creator,
     dependent: :destroy
 
-  rolify strict: true
+  rolify strict: true, after_add: :ensure_staff_employee_id
 
   scope :with_kept_employments, -> { merge(Employment.kept) }
   scope :with_ids, -> (user_ids) { where(id: user_ids) if user_ids.present? }
@@ -187,6 +187,7 @@ class User < ApplicationRecord
     ActiveRecord::Base.transaction do
       assign_company
       assign_role
+      employments.kept.find_by(company: current_company)&.ensure_employee_id!
     end
   end
 
@@ -379,6 +380,12 @@ class User < ApplicationRecord
         "github_url": "",
         "linkedin_url": ""
       }
+    end
+
+    def ensure_staff_employee_id(role)
+      return unless role.resource_type == "Company" && Employment::STAFF_ROLES.include?(role.name)
+
+      employments.kept.find_by(company_id: role.resource_id)&.ensure_employee_id!
     end
 
     def assign_company

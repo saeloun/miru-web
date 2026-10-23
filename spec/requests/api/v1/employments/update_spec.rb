@@ -7,6 +7,21 @@ RSpec.describe "Api::V1::Employments#update", type: :request do
   let(:user) { create(:user, current_workspace_id: company.id) }
   let!(:employment) { create(:employment, company_id: company.id, user_id: user.id) }
 
+  it "returns a friendly duplicate error for a historical ID and accepts a valid retry" do
+    user.add_role(:admin, company)
+    sign_in user
+    create(:employment, company:, employee_id: "reserved", discarded_at: Time.current)
+    patch api_v1_employment_path(user), params: { employment: { employee_id: "reserved" } },
+      headers: auth_headers(user)
+    expect(response).to have_http_status(422)
+    expect(json_response["errors"]).to match(/already been taken/)
+    patch api_v1_employment_path(user), params: { employment: { employee_id: "SI064" } },
+      headers: auth_headers(user)
+    expect(response).to have_http_status(:ok)
+    expect(employment.reload.employee_id).to eq("SI064")
+    expect(company.reload.last_employee_number).to eq(64)
+  end
+
   context "when user is an admin" do
     before do
       user.add_role :admin, company

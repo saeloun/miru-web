@@ -292,6 +292,11 @@ const EmploymentDetailsEdit = () => {
           }
         });
         setErrDetails(errObj);
+      } else if (err.response?.data?.errors) {
+        setErrDetails({
+          ...initialErrState,
+          employee_id_err: err.response.data.errors,
+        });
       }
     }
   };

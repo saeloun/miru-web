@@ -8,6 +8,7 @@ module ErrorHandler
     rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
     rescue_from Discard::RecordNotDiscarded, with: :record_not_discarded
     rescue_from ActiveRecord::RecordInvalid, with: :record_invalid
+    rescue_from ActiveRecord::RecordNotUnique, with: :record_not_unique
     rescue_from Pagy::VariableError, with: :invalid_param_value
   end
 
@@ -66,5 +67,11 @@ module ErrorHandler
         format.json { render json: { errors: message }, status: 400 }
         format.html { render file: "public/400.html", status: 400, layout: false, alert: message }
       end
+    end
+
+    def record_not_unique(exception)
+      raise exception unless Employment.employee_id_conflict?(exception)
+
+      render json: { errors: "Employee has already been taken" }, status: 422
     end
 end

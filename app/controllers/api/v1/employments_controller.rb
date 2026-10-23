@@ -15,7 +15,7 @@ class Api::V1::EmploymentsController < Api::V1::ApplicationController
 
   def update
     authorize @employment
-    @employment.update!(employment_params)
+    @employment.update_profile!(employment_params)
     render json: { notice: I18n.t("employment.update.success") }
   end
 

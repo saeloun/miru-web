@@ -18,6 +18,32 @@ RSpec.describe "Api::V1::BulkPreviousEmployments#update", type: :request do
       sign_in user
     end
 
+    it "rolls history edits back on duplicate ID, then updates only the kept membership on retry" do
+      current = target_user.employments.kept.find_by!(company:)
+      historic = create(:employment, company:, user: target_user, employee_id: "reserved",
+        discarded_at: Time.current, designation: "Historical")
+      # Give history the lower primary key to catch an unscoped first-row lookup.
+      current.update_columns(discarded_at: Time.current)
+      historic.update_columns(discarded_at: nil)
+      current, historic = historic, current
+      payload = { employments: {
+        current_employment: { employee_id: historic.employee_id, designation: "Updated" },
+        added_employments: [{ company_name: "Past Company", role: "Developer" }]
+      } }
+      expect do
+        patch api_v1_bulk_previous_employment_path(target_user), params: payload, headers: auth_headers(user)
+      end.not_to change { target_user.previous_employments.count }
+      expect(response).to have_http_status(422)
+      expect(json_response["errors"]).to match(/already been taken/)
+      payload[:employments][:current_employment][:employee_id] = "SI070"
+      patch api_v1_bulk_previous_employment_path(target_user), params: payload, headers: auth_headers(user)
+      expect(response).to have_http_status(:ok)
+      expect(current.reload.employee_id).to eq("SI070")
+      expect(current.designation).to eq("Updated")
+      expect(historic.reload.designation).to eq("SDE")
+      expect(target_user.previous_employments.count).to eq(1)
+    end
+
     it "updates employment details" do
       patch api_v1_bulk_previous_employment_path(target_user),
         params: {
