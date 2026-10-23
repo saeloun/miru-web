@@ -13,6 +13,7 @@ class EmployeeRecord < ApplicationRecord
   serialize :private_details, coder: JSON, type: Hash
   encrypts :private_details
   audited associated_with: :company, only: [:employment_id]
+  after_save :record_salary_version, if: :saved_change_to_private_details?
 
   validates :employment_id, uniqueness: true
   validate :valid_private_details
@@ -32,6 +33,28 @@ class EmployeeRecord < ApplicationRecord
   end
 
   private
+
+    def record_salary_version
+      previous = private_details_before_last_save || {}
+      return if previous.slice(*SALARY_KEYS) == private_details.slice(*SALARY_KEYS)
+
+      # Preserve the previous effective salary before the mutable private record replaces it.
+      [previous, private_details].each_with_index do |details, index|
+        salary = details.slice(*SALARY_KEYS)
+        next if salary.empty?
+
+        explicit_date = self.class.iso_date?(salary["salary_effective_on"])
+        next if index.zero? && !explicit_date
+
+        effective_on = explicit_date || Date.current
+        next if index.zero? && employment.compensation_versions.exists?(effective_on:)
+
+        latest = employment.compensation_versions.order(:effective_on, :id).last
+        next if latest&.salary_details == salary
+
+        employment.compensation_versions.create!(effective_on:, salary_details: salary)
+      end
+    end
 
     def valid_private_details
       details = private_details
