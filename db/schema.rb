@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_22_140000) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_23_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_stat_statements"
@@ -309,8 +309,30 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_22_140000) do
     t.string "vat_number"
     t.string "working_days", default: "5"
     t.string "working_hours", default: "40"
+    t.string "compensation_proration"
     t.index ["stripe_customer_id"], name: "index_companies_on_stripe_customer_id"
     t.index ["stripe_subscription_id"], name: "index_companies_on_stripe_subscription_id"
+  end
+
+  create_table "compensation_report_runs", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "created_by_id", null: false
+    t.text "payload", null: false
+    t.datetime "expires_at", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id"], name: "index_compensation_report_runs_on_company_id"
+    t.index ["created_by_id"], name: "index_compensation_report_runs_on_created_by_id"
+  end
+
+  create_table "compensation_versions", force: :cascade do |t|
+    t.bigint "employment_id", null: false
+    t.date "effective_on", null: false
+    t.text "salary_details", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["employment_id", "effective_on", "id"], name: "index_compensation_versions_effective"
+    t.index ["employment_id"], name: "index_compensation_versions_on_employment_id"
   end
 
   create_table "consultant_compensations", force: :cascade do |t|
@@ -895,6 +917,33 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_22_140000) do
     t.index ["user_id"], name: "index_previous_employments_on_user_id"
   end
 
+  create_table "profitability_billing_rates", force: :cascade do |t|
+    t.bigint "project_id", null: false
+    t.bigint "user_id", null: false
+    t.date "effective_on", null: false
+    t.decimal "hourly_rate", precision: 14, scale: 4
+    t.string "currency", null: false
+    t.string "billing_method", default: "hourly", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["project_id", "user_id", "effective_on"], name: "index_profitability_rates_effective"
+    t.index ["project_id"], name: "index_profitability_billing_rates_on_project_id"
+    t.index ["user_id"], name: "index_profitability_billing_rates_on_user_id"
+    t.check_constraint "billing_method::text = 'hourly'::text AND hourly_rate >= 0::numeric OR billing_method::text = 'fixed_fee'::text AND hourly_rate IS NULL", name: "profitability_valid_billing_rate"
+  end
+
+  create_table "profitability_profiles", force: :cascade do |t|
+    t.bigint "employment_id", null: false
+    t.bigint "primary_project_id"
+    t.string "department"
+    t.integer "weekdays", default: [], null: false, array: true
+    t.decimal "hours_per_day", precision: 4, scale: 2
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["employment_id"], name: "index_profitability_profiles_on_employment_id", unique: true
+    t.index ["primary_project_id"], name: "index_profitability_profiles_on_primary_project_id"
+  end
+
   create_table "project_members", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "discarded_at"
@@ -1433,6 +1482,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_22_140000) do
   add_foreign_key "client_members", "companies"
   add_foreign_key "client_members", "users"
   add_foreign_key "clients", "companies"
+  add_foreign_key "compensation_report_runs", "companies"
+  add_foreign_key "compensation_report_runs", "users", column: "created_by_id"
+  add_foreign_key "compensation_versions", "employments"
   add_foreign_key "consultant_compensations", "employments"
   add_foreign_key "consultant_compensations", "users", column: "created_by_id"
   add_foreign_key "custom_leave_users", "custom_leaves", column: "custom_leave_id"
@@ -1490,6 +1542,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_22_140000) do
   add_foreign_key "payroll_runs", "users", column: "accounts_reviewer_id"
   add_foreign_key "payroll_runs", "users", column: "final_reviewer_id"
   add_foreign_key "previous_employments", "users"
+  add_foreign_key "profitability_billing_rates", "projects"
+  add_foreign_key "profitability_billing_rates", "users"
+  add_foreign_key "profitability_profiles", "employments"
+  add_foreign_key "profitability_profiles", "projects", column: "primary_project_id"
   add_foreign_key "project_members", "projects"
   add_foreign_key "project_members", "users"
   add_foreign_key "projects", "clients"
