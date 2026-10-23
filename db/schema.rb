@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_23_150100) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_24_000000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_stat_statements"
@@ -262,6 +262,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_23_150100) do
     t.boolean "signature_enabled", default: false, null: false
     t.string "stripe_id"
     t.datetime "updated_at", null: false
+    t.string "legal_name", limit: 255
+    t.string "signatory_name", limit: 255
+    t.string "signatory_designation", limit: 255
+    t.string "finance_email", limit: 254
+    t.string "signatory_email", limit: 254
     t.index ["company_id"], name: "index_clients_on_company_id"
     t.index ["discarded_at"], name: "index_clients_on_discarded_at"
     t.index ["email", "company_id"], name: "index_clients_on_email_and_company_id", unique: true

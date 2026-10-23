@@ -85,7 +85,10 @@ RSpec.describe ClientPolicy, type: :policy do
     end
 
     let(:expected_attributes) do
-      %i[name phone email ein logo currency signature_enabled].push(addresses_attributes:)
+      %i[
+        name phone email ein logo currency signature_enabled
+        legal_name finance_email signatory_name signatory_designation signatory_email
+      ].push(addresses_attributes:)
     end
 
     context "when user is an owner" do

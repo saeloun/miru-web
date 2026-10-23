@@ -28,7 +28,7 @@
 
 ### Task 1: Client data and existing editors
 
-Files: new additive client migration/schema; app/models/client.rb; app/policies/client_policy.rb; app/presenters/client/show_presenter.rb; both client create Jbuilder partials; ClientForm types/schema/utils and shared AgreementDetailsFields plus both editors; client mapper and Details/Header; config/locales/en.yml. Focused specs: client model/policy/CRUD and one actual responsive client-agreement flow at desktop/mobile.
+Files: new additive client migration/schema; app/models/client.rb; app/policies/client_policy.rb; app/presenters/client/show_presenter.rb; both client create Jbuilder partials; ClientForm types/schema/utils and shared AgreementDetailsFields plus both editors; client mapper and Details/Header; app/javascript/src/i18n/locales/en.ts. Focused specs: client model/policy/CRUD and one actual responsive client-agreement flow at desktop/mobile.
 
 - [ ] Add focused failing assertions for the new facts, invalid/clear/independent fields and authorization; run to prove RED.
 - [ ] Implement columns/normalization/validation and exact existing CRUD contracts; add shared fields, safe copy action, labels/errors/details. Make shared button guard honor optional-field validation errors.

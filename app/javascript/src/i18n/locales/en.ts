@@ -730,6 +730,21 @@ const en = {
 
   // Clients
   clients: {
+    agreement: {
+      title: "Agreement and billing details",
+      description:
+        "Keep the primary contact, finance contact and authorized signatory separate. The address below is the registered company address.",
+      legalCompanyName: "Legal company name",
+      financeEmail: "Finance email",
+      financeHelp:
+        "Invoice emails also go to this address alongside existing invoice contacts.",
+      signatoryName: "Authorized signatory name",
+      signatoryDesignation: "Signatory designation",
+      signatoryEmail: "Signatory email",
+      useFinanceEmail: "Use finance email for signatory",
+      maxLength: "Use %{count} characters or fewer",
+      empty: "Not provided",
+    },
     addClients: "Add Clients",
     addNewClient: "Add New Client",
     editClient: "Edit Client",
