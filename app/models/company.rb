@@ -86,6 +86,7 @@ class Company < ApplicationRecord
   validates :timesheet_edit_days, numericality: { only_integer: true, in: 1..365 }
 
   before_validation :normalize_allowed_sso_domains
+  before_destroy(prepend: true) { self.class.where(id: id_in_database).lock.load }
   after_create { Rails.event.notify(Companies::Created.new(self)) }
 
   # scopes
