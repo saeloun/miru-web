@@ -62,6 +62,7 @@ const EmploymentDetailsEdit = () => {
     visibility: false,
   });
   const [errDetails, setErrDetails] = useState(initialErrState);
+  const [serverError, setServerError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [dateFormat, setDateFormat] = useState("DD-MM-YYYY");
   const [resignedAt, setResignedAt] = useState(null);
@@ -212,6 +213,8 @@ const EmploymentDetailsEdit = () => {
   };
 
   const handleUpdateDetails = async () => {
+    setErrDetails(initialErrState);
+    setServerError("");
     setIsLoading(true);
     const getDifference = (array1, array2) =>
       array1.filter(object1 => !array2.some(object2 => object1 === object2));
@@ -282,7 +285,7 @@ const EmploymentDetailsEdit = () => {
       navigate(`${navigateToPath}/employment`, { replace: true });
     } catch (err) {
       setIsLoading(false);
-      const errObj = initialErrState;
+      const errObj = { ...initialErrState };
       if (err.inner) {
         err.inner.map(item => {
           if (item.path.includes("current_employment")) {
@@ -293,10 +296,15 @@ const EmploymentDetailsEdit = () => {
         });
         setErrDetails(errObj);
       } else if (err.response?.data?.errors) {
-        setErrDetails({
-          ...initialErrState,
-          employee_id_err: err.response.data.errors,
-        });
+        const { errors, error_details } = err.response.data;
+        if (
+          error_details?.model === "Employment" &&
+          error_details?.attribute === "employee_id"
+        ) {
+          setErrDetails({ ...initialErrState, employee_id_err: errors });
+        } else {
+          setServerError(errors);
+        }
       }
     }
   };
@@ -308,6 +316,11 @@ const EmploymentDetailsEdit = () => {
 
   return (
     <Fragment>
+      {serverError && (
+        <p className="p-4 text-destructive" role="alert">
+          {serverError}
+        </p>
+      )}
       {isDesktop && (
         <Fragment>
           <EditHeader

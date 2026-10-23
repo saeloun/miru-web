@@ -17,3 +17,22 @@ Every person, company, address, bank value and payment value shown is a generate
 The focused report captures use 1440×1000 and 375×1000 viewports. Full-page record captures begin at scroll position zero. The associated checks also exercise permissions, document/CSV responses, persistence and concurrent database writes; screenshots alone do not establish those properties.
 
 Local integrated verification passed 204 profile/lifecycle, 129 authentication and 117 payroll-guard examples, plus 14 distinct browser cases. An additional focused browser capture passed after the functional checks. Vite build, focused lint and fresh-database migration/index assertions passed. Production rollout, company-specific ID backfill and live verification are separate release steps.
+
+## Release checklist
+
+Before running the employee ID index migration, run this read-only preflight across all employment history, including discarded rows. It reports only affected company IDs and duplicate-group counts. Resolve any returned groups explicitly before retrying; never silently delete or renumber records.
+
+```sql
+SELECT company_id, COUNT(*) AS duplicate_groups
+FROM (
+  SELECT company_id, employee_id
+  FROM employments
+  WHERE employee_id IS NOT NULL AND btrim(employee_id) <> ''
+  GROUP BY company_id, employee_id
+  HAVING COUNT(*) > 1
+) AS duplicates
+GROUP BY company_id
+ORDER BY company_id;
+```
+
+The migration repeats this exact case-sensitive, nonblank, all-history duplicate check. A retry rebuilds its invalid concurrent index; an already-valid correct index retains its protection.
