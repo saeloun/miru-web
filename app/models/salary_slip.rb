@@ -43,7 +43,22 @@ class SalarySlip < ApplicationRecord
   end
 
   def withdraw!(actor:)
-    update!(withdrawn_at: Time.current, withdrawn_by: actor) unless withdrawn_at?
+    employment.with_lock do
+      reload
+      update!(withdrawn_at: Time.current, withdrawn_by: actor) unless withdrawn_at?
+    end
+  end
+
+  def email_recipient
+    member = employment
+    recipient = member.user
+    return if member.discarded? || recipient.discarded? || !recipient.confirmed? ||
+      (member.joined_at && member.joined_at > Date.current) ||
+      (member.resigned_at && member.resigned_at < Date.current)
+    return unless recipient.roles.where(resource_type: "Company", resource_id: member.company_id,
+      name: SalarySlipPolicy::STAFF_ROLES).exists?
+
+    recipient.email
   end
 
   private

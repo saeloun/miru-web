@@ -19,6 +19,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 type Slip = {
   id: number;
   employee_name: string;
+  employee_email?: string;
   pay_month: string;
   source: string;
   status: "draft" | "published" | "withdrawn";
@@ -33,8 +34,14 @@ type Archive = {
 type Upload = { file: File; employee: string; month: string; error?: string };
 
 const SalarySlipArchive = () => {
+  const { company } = useUserContext();
+  const linkParams = new URLSearchParams(window.location.search);
+  const wrongWorkspace =
+    !!linkParams.get("company_id") &&
+    linkParams.get("company_id") !== String(company?.id);
   const [archive, setArchive] = useState<Archive | null>(null);
-  const [month, setMonth] = useState("");
+  const [month, setMonth] = useState(linkParams.get("month") || "");
+  const [notice, setNotice] = useState("");
   const [page, setPage] = useState(1);
   const [refresh, setRefresh] = useState(0);
   const [uploads, setUploads] = useState<Upload[]>([]);
@@ -44,7 +51,8 @@ const SalarySlipArchive = () => {
   const [error, setError] = useState("");
   const [confirmation, setConfirmation] = useState<{
     slip: Slip;
-    action: "publish" | "withdraw";
+    action: "publish" | "withdraw" | "email";
+    companyId?: number;
   } | null>(null);
 
   const fail = (failure: any) =>
@@ -53,6 +61,7 @@ const SalarySlipArchive = () => {
   useEffect(() => {
     let active = true;
     setArchive(null);
+    if (wrongWorkspace) return;
     Api.get("/salary_slips", { params: { month, page } })
       .then(({ data }) => active && setArchive(data))
       .catch(failure => active && fail(failure));
@@ -60,7 +69,7 @@ const SalarySlipArchive = () => {
     return () => {
       active = false;
     };
-  }, [month, page, refresh]);
+  }, [month, page, refresh, wrongWorkspace]);
 
   const saveDrafts = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -105,10 +114,20 @@ const SalarySlipArchive = () => {
     setError("");
     try {
       await Api.post(
-        `/salary_slips/${confirmation.slip.id}/${confirmation.action}`
+        `/salary_slips/${confirmation.slip.id}/${confirmation.action}`,
+        confirmation.action === "email"
+          ? {
+              company_id: confirmation.companyId,
+              expected_recipient_email: confirmation.slip.employee_email,
+            }
+          : undefined
       );
+      if (confirmation.action === "email") {
+        setNotice(t("salarySlips.emailQueued"));
+      } else {
+        setRefresh(value => value + 1);
+      }
       setConfirmation(null);
-      setRefresh(value => value + 1);
     } catch (failure) {
       fail(failure);
     } finally {
@@ -155,6 +174,8 @@ const SalarySlipArchive = () => {
           {t("salarySlips.description")}
         </p>
       </header>
+      {wrongWorkspace && <p role="alert">{t("salarySlips.workspaceNotice")}</p>}
+      {notice && <p role="status">{notice}</p>}
       {error && !confirmation && (
         <p
           role="alert"
@@ -322,7 +343,7 @@ const SalarySlipArchive = () => {
           {t("salarySlips.allMonths")}
         </Button>
       </div>
-      {!archive ? (
+      {wrongWorkspace ? null : !archive ? (
         <p role="status">
           {error ? t("salarySlips.unavailable") : t("loading")}
         </p>
@@ -400,6 +421,26 @@ const SalarySlipArchive = () => {
                           {t("salarySlips.withdraw")}
                         </Button>
                       )}
+                      {archive.can_manage &&
+                        slip.status === "published" &&
+                        slip.employee_email && (
+                          <Button
+                            disabled={busy}
+                            size="sm"
+                            variant="outline"
+                            onClick={event => {
+                              dialogFocus.remember(event);
+                              setError("");
+                              setConfirmation({
+                                slip,
+                                action: "email",
+                                companyId: company?.id,
+                              });
+                            }}
+                          >
+                            {t("salarySlips.email")}
+                          </Button>
+                        )}
                     </div>
                   </td>
                 </tr>
@@ -451,9 +492,16 @@ const SalarySlipArchive = () => {
             {confirmation?.slip.employee_name} ·{" "}
             {confirmation?.slip.pay_month.slice(0, 7)}
           </p>
+          {confirmation?.action === "email" && (
+            <p className="break-all text-sm">
+              {confirmation.slip.employee_email}
+            </p>
+          )}
           <p className="text-sm text-muted-foreground">
             {t(
-              confirmation?.action === "withdraw"
+              confirmation?.action === "email"
+                ? "salarySlips.emailHelp"
+                : confirmation?.action === "withdraw"
                 ? "salarySlips.withdrawHelp"
                 : "salarySlips.publishHelp"
             )}

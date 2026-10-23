@@ -2,6 +2,7 @@
 
 require "rails_helper"
 require "tmpdir"
+require Rails.root.join("spec/mailers/previews/salary_slip_mailer_preview")
 
 RSpec.describe "Salary-slip browser workflows", type: :system, js: true do
   let(:company) { create(:company) }
@@ -18,6 +19,61 @@ RSpec.describe "Salary-slip browser workflows", type: :system, js: true do
   before do
     admin.add_role(:admin, company)
     employee.add_role(:employee, company)
+  end
+
+  it "renders the synthetic private-link email on desktop and mobile" do
+    mail = SalarySlipMailerPreview.new.published
+    visit "/400.html"
+    [1400, 390].each do |width|
+      page.current_window.resize_to(width, 844)
+      page.execute_script(<<~JS, mail.html_part.body.decoded)
+        const parsed = new DOMParser().parseFromString(arguments[0], "text/html");
+        document.head.innerHTML = parsed.head.innerHTML;
+        document.body.innerHTML = parsed.body.innerHTML;
+      JS
+      expect(page).to have_content("Synthetic Preview Studio")
+      expect(page).to have_link("View salary slip", href: /company_id=123.*month=2026-09/)
+      expect(page.evaluate_script("document.documentElement.scrollWidth <= window.innerWidth + 1")).to be(true)
+      page.save_screenshot(Rails.root.join("tmp", "salary-slip-email-#{width}.png"))
+    end
+  end
+
+  it "opens legacy membership history, confirms the exact email and keeps staff controls private" do
+    admin_employment.update_columns(joined_at: nil)
+    employment.update_columns(joined_at: nil)
+    slip = draft_slip
+    slip.publish!(actor: admin)
+    second = employment.salary_slips.create!(uploaded_by: admin, source: "Approved provider", pay_month: "2026-08-01",
+      file: { io: File.open(Rails.root.join("spec/support/fixtures/pdf-file.pdf")),
+              filename: "august.pdf", content_type: "application/pdf" })
+    second.publish!(actor: admin)
+    sign_in(admin)
+    console_errors = []
+    page.driver.browser.on("Runtime.consoleAPICalled") do |event|
+      console_errors << event if event["type"] == "error"
+    end
+    with_forgery_protection do
+      visit "/salary-slips?company_id=#{company.id}&month=2026-09"
+      expect(page).to have_css("tbody tr", count: 1)
+      click_button "Email employee"
+      within("[role='dialog']") do
+        expect(page).to have_content(employee.email)
+        expect(page).to have_content("2026-09")
+        click_button "Confirm"
+      end
+      expect(page).to have_css("[role='status']", text: "Email queued")
+      page.save_screenshot(Rails.root.join("tmp", "salary-slip-email-queued.png"))
+      expect(page).to have_css("button:focus", text: "Email employee", exact_text: true)
+      sign_in(employee)
+      visit "/salary-slips"
+      expect(page).to have_css("tbody tr", count: 2)
+      expect(page).not_to have_button("Email employee")
+      expect(page).not_to have_field("PDF documents")
+      expect(console_errors).to be_empty
+      visit "/salary-slips?company_id=#{company.id + 1}&month=2026-09"
+      expect(page).to have_css("[role='alert']", text: "another workspace")
+      expect(page).not_to have_css("tbody tr")
+    end
   end
 
   it "explains an unavailable PDF without hiding the published slip or leaving download disabled" do

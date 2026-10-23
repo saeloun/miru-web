@@ -1,0 +1,4 @@
+<% content_for :email_title, "Your salary slip is available" %>
+<p><%= @company.name %> has published your salary slip for <%= @month %>.</p>
+<p>Sign in to the matching workspace to view and download your private document.</p>
+<%= render "shared/mailer/button", href: @archive_url, label: "View salary slip" %>

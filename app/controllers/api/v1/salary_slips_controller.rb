@@ -3,7 +3,7 @@
 class Api::V1::SalarySlipsController < Api::V1::ApplicationController
   include ActionController::RequestForgeryProtection
   self.allow_forgery_protection = ActionController::Base.allow_forgery_protection
-  protect_from_forgery with: :exception, only: [:create, :publish, :withdraw], unless: :token_authenticated_request?
+  protect_from_forgery with: :exception, only: [:create, :publish, :withdraw, :email], unless: :token_authenticated_request?
   before_action -> { response.headers["Cache-Control"] = "private, no-store" }
 
   def index
@@ -59,7 +59,7 @@ class Api::V1::SalarySlipsController < Api::V1::ApplicationController
   def withdraw
     slip = find_slip
     authorize slip
-    slip.employment.with_lock { slip.reload.withdraw!(actor: current_user) }
+    slip.withdraw!(actor: current_user)
     render json: { salary_slip: details(slip) }
   end
 
@@ -73,6 +73,21 @@ class Api::V1::SalarySlipsController < Api::V1::ApplicationController
       type: "application/pdf", disposition: "attachment"
   rescue ActiveStorage::FileNotFoundError
     render json: { errors: "Document is unavailable. Please contact your workspace administrator." }, status: 404
+  end
+
+  def email
+    authorize SalarySlip
+    unless params[:company_id].to_s == current_company.id.to_s
+      return render json: { errors: "Workspace changed. Reload salary slips before sending." }, status: 409
+    end
+    slip = find_slip
+    recipient = slip.email_recipient
+    unless slip.status == "published" && recipient.present? && params[:expected_recipient_email] == recipient
+      return render json: { errors: "Recipient or publication changed. Reload salary slips before sending." },
+        status: :unprocessable_entity
+    end
+    SalarySlipEmailJob.perform_later(slip.id, current_user.id, current_company.id, recipient)
+    render json: { queued: true }, status: 202
   end
 
   private
@@ -107,7 +122,8 @@ class Api::V1::SalarySlipsController < Api::V1::ApplicationController
       {
         id: slip.id, employment_id: slip.employment_id, employee_name: slip.employment.user.full_name,
         pay_month: slip.pay_month.iso8601, source: slip.source, status: slip.status,
-        filename: slip.file.filename.to_s, published_at: slip.published_at, supersedes_id: slip.supersedes_id
+        filename: slip.file.filename.to_s, published_at: slip.published_at, supersedes_id: slip.supersedes_id,
+        employee_email: policy(SalarySlip).create? ? slip.email_recipient : nil
       }
     end
 end
