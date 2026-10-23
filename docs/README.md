@@ -20,8 +20,8 @@ This repository contains the documentation website for Miru, built with [Docusau
 ## 🚀 Quick Start
 
 ### Prerequisites
-- Node.js 20+ (Node 22 recommended)
-- pnpm 9+
+- Node.js 24.22.1 LTS (Node 24)
+- pnpm 9.15.9
 
 ### Installation
 
@@ -73,7 +73,7 @@ docs/
 ## 🛠️ Technology Stack
 
 - **[Docusaurus 3](https://docusaurus.io/)**: Documentation framework
-- **[React 18](https://reactjs.org/)**: UI components
+- **[React 18](https://react.dev/)**: UI components
 - **[MDX](https://mdxjs.com/)**: Markdown with JSX support
 - **[Tailwind CSS](https://tailwindcss.com/)**: Utility-first CSS framework
 - **[Prism](https://prismjs.com/)**: Syntax highlighting
@@ -248,11 +248,11 @@ npm start
 
 #### Node Version Issues
 ```bash
-# Check Node version (should be 18+)
+# Check Node version (should be 24.22.1)
 node --version
 
 # Use nvm to switch versions
-nvm use 22.11.0
+nvm use 24.22.1
 ```
 
 ## 👥 Contributors

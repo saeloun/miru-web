@@ -130,7 +130,7 @@ Miru is built for teams that bill by the hour and want the full money workflow i
 
 ## Miru 3.0 Highlights
 
-- Rails 8 + Ruby 4.0.1 upgrade
+- Rails 8.1 + Ruby 4.0.9 upgrade
 - Modernized React + TypeScript frontend and UI refresh
 - Responsive email layouts with local preview coverage
 - Render-first deployment workflow for production and one-click setup
@@ -145,6 +145,8 @@ For detailed information on how to use Miru Web and its various features, please
 For local development on this branch, see CLAUDE.md and docs under `docs/`.
 
 For CLI and MCP setup details, see [`docs/miru-cli.md`](docs/miru-cli.md) and [`docs/miru-mcp.md`](docs/miru-mcp.md).
+
+For dependency audit commands, runtime pins, and reviewed CVE exceptions, see [`docs/ai/dependency-security.md`](docs/ai/dependency-security.md).
 
 ## MCP + CLI (Agent And Automation Ready)
 
@@ -168,7 +170,7 @@ Feature availability:
 Install and authenticate:
 
 ```bash
-mise exec go@1.25.12 -- env GOBIN="$HOME/.local/bin" go install github.com/saeloun/miru-web/tools/miru-cli/cmd/miru@b45dee47c3aa58d6312dabfad3b40012b04071fd
+mise exec go@1.26.10 -- env GOBIN="$HOME/.local/bin" go install github.com/saeloun/miru-web/tools/miru-cli/cmd/miru@b45dee47c3aa58d6312dabfad3b40012b04071fd
 miru login --base-url https://app.miru.so --email user@example.com
 ```
 

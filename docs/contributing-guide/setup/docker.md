@@ -8,7 +8,7 @@ title: Docker
 Make sure you have Docker installed on your system.
 If not please follow [this](https://docs.docker.com/get-docker/) guide.
 
-**Note:** This app uses Rails 8.0.2 with Ruby 4.0.1 and Node 22.11.0. The Docker setup includes PostgreSQL for the database and Solid Queue for background jobs.
+**Note:** This app uses Rails 8.1.4 with Ruby 4.0.9 and Node 24.22.1 LTS. The Docker setup includes PostgreSQL for the database and Solid Queue for background jobs.
 
 Make sure to stop your local PostgreSQL service while using Docker to avoid port conflicts.
 ## Installation
@@ -57,9 +57,9 @@ This will setup your database with seed data.
 
 #### 6. Navigate to [http://0.0.0.0:3000](http://0.0.0.0:3000) to access your running app.
 
-### Rails 8.0.2 Features
+### Rails 8.1 Features
 
-This app is built on Rails 8.0.2 with the following modern features:
+This app is built on Rails 8.1.4 with the following modern features:
 - **Solid Queue** for background job processing (database-based, no external dependencies)
 - **Vite** for asset bundling and dev server
 - **Hotwire** (Turbo + Stimulus) for interactive UI

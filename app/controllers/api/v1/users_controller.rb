@@ -31,6 +31,7 @@ class Api::V1::UsersController < Api::V1::BaseController
           "tax_id",
           "timesheet_edit_days"
         )&.merge(
+          "payroll_review_enabled" => Payroll::Entitlement.enabled?(current_company&.id),
           "address" => current_company&.current_address,
           "logo" => current_company&.company_logo,
           "pro_access" => current_company&.pro_access?,
@@ -64,26 +65,30 @@ class Api::V1::UsersController < Api::V1::BaseController
       return
     end
 
-    Audited::Audit.create!(
-      auditable: target_user,
-      associated: current_company,
-      user: current_user,
-      action: "super_admin_delete",
-      audited_changes: {
-        actor_id: current_user.id,
-        actor_email: current_user.email,
-        target_user_id: target_user.id,
-        target_user_email: target_user.email,
-        occurred_at: Time.current.iso8601
-      },
-      comment: "Super admin permanently deleted user"
-    )
+    User.transaction do
+      Audited::Audit.create!(
+        auditable: target_user,
+        associated: current_company,
+        user: current_user,
+        action: "super_admin_delete",
+        audited_changes: {
+          actor_id: current_user.id,
+          actor_email: current_user.email,
+          target_user_id: target_user.id,
+          target_user_email: target_user.email,
+          occurred_at: Time.current.iso8601
+        },
+        comment: "Super admin permanently deleted user"
+      )
 
-    target_user.destroy!
+      target_user.destroy!
+    end
 
     render json: {
       notice: I18n.t("user.super_admin_delete.success", email: target_user.email)
     }, status: 200
+  rescue ActiveRecord::InvalidForeignKey
+    render json: { errors: I18n.t("user.super_admin_delete.retained_history") }, status: 422
   end
 
   private

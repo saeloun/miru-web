@@ -51,6 +51,7 @@ import {
 import { useUserContext } from "../../context/UserContext";
 import { expensesApi } from "apis/api";
 import { currencyFormat } from "../../helpers/currency";
+import { buildDateParseFormats } from "../../helpers/dateParseFormats";
 import { toast } from "sonner";
 import { i18n } from "../../i18n";
 import ReceiptPreviewDialog from "./ReceiptPreviewDialog";
@@ -71,7 +72,7 @@ interface Expense {
   id: string;
   date: string;
   description: string;
-  amount: number;
+  amount: string;
   currency: string;
   category: string;
   vendor?: string;
@@ -82,6 +83,7 @@ interface Expense {
   expenseType: "business" | "personal";
   status: "submitted" | "approved" | "rejected" | "paid";
   paidAt?: string | null;
+  approvedAt?: string | null;
   createdBy?: string;
   createdAt?: string;
 }
@@ -99,9 +101,9 @@ interface ExpensesData {
   categories: ExpenseOption[];
   summary: {
     baseCurrency: string;
-    totalAmount: number;
-    businessAmount: number;
-    personalAmount: number;
+    totalAmount: string;
+    businessAmount: string;
+    personalAmount: string;
     excludedCurrencyCount: number;
   };
   paginationDetails: {
@@ -143,7 +145,7 @@ const fetchExpenses = async (
     id: String(expense.id),
     date: expense.date,
     description: expense.description,
-    amount: Number(expense.amount) || 0,
+    amount: expense.amount ?? "0",
     currency: expense.currency || "USD",
     category: expense.categoryName || "",
     vendor: expense.vendorName || "",
@@ -158,6 +160,7 @@ const fetchExpenses = async (
         ? "rejected"
         : "submitted",
     paidAt: expense.paidAt || null,
+    approvedAt: expense.approvedAt || null,
     createdBy: expense.submitterName || "",
   }));
 
@@ -166,9 +169,9 @@ const fetchExpenses = async (
     categories: response.data.categories || [],
     summary: {
       baseCurrency: response.data.summary?.baseCurrency || "USD",
-      totalAmount: Number(response.data.summary?.totalAmount) || 0,
-      businessAmount: Number(response.data.summary?.businessAmount) || 0,
-      personalAmount: Number(response.data.summary?.personalAmount) || 0,
+      totalAmount: response.data.summary?.totalAmount ?? "0",
+      businessAmount: response.data.summary?.businessAmount ?? "0",
+      personalAmount: response.data.summary?.personalAmount ?? "0",
       excludedCurrencyCount:
         Number(response.data.summary?.excludedCurrencyCount) || 0,
     },
@@ -198,7 +201,8 @@ const ExpensesTable: React.FC = () => {
   const queryClient = useQueryClient();
   const { company, companyRole } = useUserContext();
   const baseCurrency = company?.baseCurrency || company?.base_currency || "USD";
-  const dateFormat = company?.dateFormat || "DD-MM-YYYY";
+  const dateFormat =
+    company?.dateFormat || company?.date_format || "MM-DD-YYYY";
   const location = useLocation();
   const navigate = useNavigate();
   const isNewExpenseRoute = location.pathname.endsWith("/expenses/new");
@@ -367,19 +371,18 @@ const ExpensesTable: React.FC = () => {
 
   const handleEdit = (expense: Expense) => {
     setSelectedExpense(expense);
-    let dateForInput = expense.date;
-    if (dateForInput && !dateForInput.includes("-")) {
-      // If it's in some other format, try to parse it
-      const parsed = dayjs(dateForInput);
-      if (parsed.isValid()) {
-        dateForInput = parsed.format("YYYY-MM-DD");
-      }
-    }
+    const parsedDate = dayjs(
+      expense.date,
+      buildDateParseFormats(dateFormat),
+      true
+    );
 
     setFormData({
-      date: dateForInput,
+      date: parsedDate.isValid()
+        ? parsedDate.format("YYYY-MM-DD")
+        : expense.date,
       description: expense.description,
-      amount: expense.amount.toString(),
+      amount: expense.amount,
       currency: expense.currency || baseCurrency,
       category: expense.category,
       vendor: expense.vendor || "",
@@ -759,6 +762,16 @@ const ExpensesTable: React.FC = () => {
     },
     {
       accessorKey: "amount",
+      sortingFn: (rowA, rowB) => {
+        const [a, b] = [rowA, rowB].map(row => {
+          const [integer, fraction = ""] = row.original.amount.split(".");
+
+          return `${integer}.${fraction.padEnd(2, "0")}`;
+        });
+        const order = a.localeCompare(b, "en", { numeric: true });
+
+        return a.startsWith("-") && b.startsWith("-") ? -order : order;
+      },
       header: ({ column }) => (
         <Button
           variant="ghost"
@@ -834,6 +847,7 @@ const ExpensesTable: React.FC = () => {
       enableHiding: false,
       cell: ({ row }) => {
         const expense = row.original;
+        if (expense.status === "paid" || expense.paidAt) return null;
 
         return (
           <DropdownMenu>
@@ -854,13 +868,16 @@ const ExpensesTable: React.FC = () => {
                 Edit expense
               </DropdownMenuItem>
               {canManageReimbursements &&
-                expense.status !== "approved" &&
-                expense.status !== "paid" && (
+                !expense.paidAt &&
+                expense.status !== "paid" &&
+                (expense.status !== "approved" || !expense.approvedAt) && (
                   <DropdownMenuItem
                     onClick={() => approveMutation.mutate(expense.id)}
                   >
                     <CheckCircle size={16} className="mr-2" />
-                    Approve expense
+                    {expense.status === "approved"
+                      ? "Confirm approval"
+                      : "Approve expense"}
                   </DropdownMenuItem>
                 )}
               {canManageReimbursements &&

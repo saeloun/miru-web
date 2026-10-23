@@ -83,7 +83,7 @@ class Api::V1::InvoicesController < Api::V1::ApplicationController
     begin
       pdf_data = InvoicePayment::PdfGeneration.process(invoice, current_company.company_logo, root_url)
     rescue StandardError => e
-      Rails.logger.error "Failed to generate PDF: #{e.message}"
+      Rails.logger.error "invoice_pdf_generation_failed invoice_id=#{invoice.id} company_id=#{current_company.id} error_class=#{e.class}"
       return render json: { error: I18n.t("invoices_controller.send_invoice.pdf_failed") }, status: 500
     end
 
@@ -173,7 +173,7 @@ class Api::V1::InvoicesController < Api::V1::ApplicationController
   rescue Pundit::NotAuthorizedError
     raise # Re-raise authorization errors
   rescue StandardError => e
-    Rails.logger.error "Failed to generate PDF for invoice #{invoice.id}: #{e.message}"
+    Rails.logger.error "invoice_pdf_generation_failed invoice_id=#{invoice.id} company_id=#{current_company.id} error_class=#{e.class}"
     render json: { error: I18n.t("invoices_controller.download.pdf_failed") }, status: 500
   end
 

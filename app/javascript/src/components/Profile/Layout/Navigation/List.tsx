@@ -2,6 +2,8 @@ import React from "react";
 import { t } from "../../../../i18n";
 
 import { NavLink } from "react-router-dom";
+import { useUserContext } from "context/UserContext";
+import { hasEmployeeRecordsAccess } from "../../../../lib/employeeRecordsAccess";
 
 const getActiveClassName = isActive => {
   if (isActive) {
@@ -12,6 +14,8 @@ const getActiveClassName = isActive => {
 };
 
 const labelForSetting = path => {
+  if (path === "employee-records") return t("employeeRecords.title");
+
   if (path.startsWith("profile")) return t("settings.labels.profile");
 
   if (path.startsWith("employment")) return t("settings.labels.employment");
@@ -47,39 +51,50 @@ const labelForSetting = path => {
   return path;
 };
 
-const List = ({ settingsList, companyRole }) => (
-  <nav className="space-y-3">
-    {settingsList.map((setting, index) => {
-      if (setting.isTab && setting.authorisedRoles.includes(companyRole)) {
-        return (
-          <NavLink
-            end
-            className={({ isActive }) => getActiveClassName(isActive)}
-            key={index}
-            to={`/settings/${setting.path}`}
-          >
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-border bg-card text-foreground shadow-sm">
-              {React.cloneElement(setting.icon, {
-                size: 26,
-                weight: "bold",
-                color: "currentColor",
-              })}
-            </div>
-            <div className="flex flex-col">
-              <span className="text-base font-semibold tracking-tight">
-                {labelForSetting(setting.path)}
-              </span>
-              <span className="mt-0.5 text-xs text-muted-foreground">
-                {setting.category === "personal"
-                  ? t("settings.categories.personal")
-                  : t("settings.categories.organization")}
-              </span>
-            </div>
-          </NavLink>
-        );
-      }
-    })}
-  </nav>
-);
+const List = ({ settingsList, companyRole }) => {
+  const { company, user } = useUserContext();
+
+  return (
+    <nav className="space-y-3">
+      {settingsList.map((setting, index) => {
+        if (
+          setting.path === "employee-records" &&
+          !hasEmployeeRecordsAccess(company, user, companyRole)
+        ) {
+          return null;
+        }
+
+        if (setting.isTab && setting.authorisedRoles.includes(companyRole)) {
+          return (
+            <NavLink
+              end
+              className={({ isActive }) => getActiveClassName(isActive)}
+              key={index}
+              to={`/settings/${setting.path}`}
+            >
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-border bg-card text-foreground shadow-sm">
+                {React.cloneElement(setting.icon, {
+                  size: 26,
+                  weight: "bold",
+                  color: "currentColor",
+                })}
+              </div>
+              <div className="flex flex-col">
+                <span className="text-base font-semibold tracking-tight">
+                  {labelForSetting(setting.path)}
+                </span>
+                <span className="mt-0.5 text-xs text-muted-foreground">
+                  {setting.category === "personal"
+                    ? t("settings.categories.personal")
+                    : t("settings.categories.organization")}
+                </span>
+              </div>
+            </NavLink>
+          );
+        }
+      })}
+    </nav>
+  );
+};
 
 export default List;

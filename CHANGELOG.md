@@ -4,6 +4,8 @@
 
 ### Added
 
+- Private approved-provider salary-slip imports and publication, employee tax-evidence review, consultant payment previews, and a bounded India annual salary/interest tax comparison
+- Encrypted employee records, private PAN/contracts, manually recorded payment history, customizable CSV reports, and opt-in birthday/work-anniversary reminders
 - UPI payment settings with free Miru-branded QR generation for INR invoices, including public invoice and PDF invoice display
 - Razorpay webhook handling for cancelled and expired Payment Links, plus `payout.updated` status refreshes
 - Razorpay onboarding docs with exact Payment Links and RazorpayX webhook setup steps
@@ -14,6 +16,8 @@
 
 ### Changed
 
+- Employee reports batch monthly source queries and preserve exact decimal reimbursement totals; stale-workspace mutations retain their conflict response
+- Invoice PDFs keep ordinary-sized line items together, avoid an unnecessary external stylesheet request, and omit document contents from failure logs
 - Invoice creation and editing now guard against duplicate draft line items, preserve zero-value amounts, and clamp totals to zero when the last line item is removed
 - Invoice line-item rows now prefer employee first/last names over description-backed fallback text so selected employee names render correctly on new invoices (rendering-only change, no DB impact)
 - Invoice line-item rate lookups now resolve project-member hourly rates per project consistently, preventing missing rates when generating invoices across multiple projects or after member-removal workflows
@@ -25,6 +29,19 @@
 - Weekly reminder processing now better distinguishes legacy hour-based timesheet data from minute-based entries to avoid false reminder emails for users who met weekly hour targets
 - Mailer layout branding now uses asset helper URLs with production `action_mailer.asset_host` to keep email logo assets resolvable in production mail clients
 - Razorpay Payment Settings now copies the production webhook URLs with the required event names for faster dashboard setup
+
+## 3.0.6 - 2026-10-23
+
+### Security
+
+- Upgrade Rails to 8.1.4, Ruby to 4.0.9, Node to 24.22.1 LTS, and Go to 1.26.10; refresh gems and web, docs, and mobile packages.
+- Include Ruby's regexp compilation fixes related to GitLab CVE-2026-89078, CVE-2026-93577, CVE-2026-97229, and CVE-2026-110264.
+- Upgrade Brakeman and enforce Ruby and all three JavaScript dependency audits in CI.
+- Document two narrowly scoped CVE exceptions without published fixes, with a review deadline of 22 November 2026; remove the withdrawn sprintf-js exception.
+
+### Fixed
+
+- Preserve mobile asset loading and CommonJS compatibility with patched image-size and brace-expansion dependencies.
 
 ## 3.0.5 - 2026-09-17
 

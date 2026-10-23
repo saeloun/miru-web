@@ -33,6 +33,7 @@ class User < ApplicationRecord
 
   # Associations
   has_many :employments, dependent: :destroy
+  has_many :employee_occasion_deliveries, foreign_key: :admin_id, dependent: :destroy
   has_many :companies, through: :employments
   has_many :project_members, dependent: :destroy
   has_many :timesheet_entries
@@ -43,6 +44,7 @@ class User < ApplicationRecord
   has_many :addresses, as: :addressable, dependent: :destroy
   has_many :devices, dependent: :destroy
   has_many :passkeys, dependent: :destroy
+  has_many :browser_sessions, dependent: :destroy
   has_many :invitations, foreign_key: "sender_id", dependent: :destroy
   has_secure_token :token, length: 50
   has_many :projects, through: :project_members
@@ -88,7 +90,7 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
     :recoverable, :rememberable, :validatable,
     :trackable, :confirmable, :lockable, :invitable,
-    :session_limitable, :pwned_password, :jwt_authenticatable, :omniauthable,
+    :pwned_password, :jwt_authenticatable, :omniauthable,
     jwt_revocation_strategy: self,
     omniauth_providers: [:google_oauth2, :github]
 
