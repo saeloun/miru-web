@@ -184,7 +184,7 @@ class User < ApplicationRecord
   def assign_company_and_role
     return self.errors.add(:base, I18n.t("errors.internal_server_error")) if current_company.nil? || role.nil?
 
-    ActiveRecord::Base.transaction do
+    current_company.with_employee_number_lock do
       assign_company
       assign_role
       employments.kept.find_by(company: current_company)&.ensure_employee_id!
