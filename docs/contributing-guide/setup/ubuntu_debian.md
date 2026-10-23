@@ -73,16 +73,16 @@ echo 'eval "$(~/.local/bin/mise activate bash)"' >> ~/.bashrc
 source ~/.bashrc
 
 # Install Ruby and Node
-mise install ruby@4.0.1
-mise install node@22.11.0
+mise install ruby@4.0.9
+mise install node@24.22.1
 
 # Set as default for this project
-mise use ruby@4.0.1
-mise use node@22.11.0
+mise use ruby@4.0.9
+mise use node@24.22.1
 
 # Verify installations
-ruby --version  # Should show: ruby 4.0.1
-node --version  # Should show: v22.11.0
+ruby --version  # Should show: ruby 4.0.9
+node --version  # Should show: v24.22.1
 ```
 
 ### Option B: Using Traditional Version Managers
@@ -104,8 +104,8 @@ gpg --keyserver hkp://keys.gnupg.net --recv-keys \
 source ~/.rvm/scripts/rvm
 
 # Install Ruby
-rvm install 4.0.1
-rvm use 4.0.1 --default
+rvm install 4.0.9
+rvm use 4.0.9 --default
 ```
 
 #### Install NVM for Node
@@ -119,9 +119,9 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 
 # Install Node
-nvm install 22.11.0
-nvm use 22.11.0
-nvm alias default 22.11.0
+nvm install 24.22.1
+nvm use 24.22.1
+nvm alias default 24.22.1
 ```
 
 </details>

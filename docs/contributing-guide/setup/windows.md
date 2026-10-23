@@ -68,7 +68,7 @@ Execute this command to make `rvm` accessible in your current session:
 source ~/.rvm/scripts/rvm
 ```
 
-#### 5. Install Ruby 4.0.1
+#### 5. Install Ruby 4.0.9
 
 Now use the `rvm` command to install the required version of Ruby:
 
@@ -97,7 +97,7 @@ first source your `.bashrc` file:
 source ~/.bashrc
 ```
 
-#### 7. Install Node 22.11.0
+#### 7. Install Node 24.22.1
 
 Now use the `nvm` command to install the required version of Node:
 
@@ -114,7 +114,7 @@ nvm list
 You can switch between installed versions with `nvm` use:
 
 ```bash
-nvm use v22.11.0
+nvm use 24.22.1
 ```
 
 #### 8. Install PostgreSQL

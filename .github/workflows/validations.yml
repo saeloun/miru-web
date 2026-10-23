@@ -45,16 +45,16 @@ jobs:
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
 
       - name: Setup Ruby
-        uses: ruby/setup-ruby@95ef2b042f9d7a56d8268cba8559e2842e2ad01b # v1
+        uses: ruby/setup-ruby@26e5b7d197ebf60545ee9667bcbace0be11ccaec # v1
         with:
-          ruby-version: '4.0.1'
+          ruby-version: '4.0.9'
           bundler-cache: true
           bundler: latest
 
       - name: Setup Node
         uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
         with:
-          node-version: 22
+          node-version-file: .node-version
 
       - name: Setup pnpm
         uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5
@@ -178,16 +178,16 @@ jobs:
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
 
       - name: Setup Ruby
-        uses: ruby/setup-ruby@95ef2b042f9d7a56d8268cba8559e2842e2ad01b # v1
+        uses: ruby/setup-ruby@26e5b7d197ebf60545ee9667bcbace0be11ccaec # v1
         with:
-          ruby-version: '4.0.1'
+          ruby-version: '4.0.9'
           bundler-cache: true
           bundler: latest
 
       - name: Setup Node
         uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
         with:
-          node-version: 22
+          node-version-file: .node-version
 
       - name: Setup pnpm
         uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5
@@ -202,6 +202,9 @@ jobs:
 
       - name: Typecheck mobile app
         run: pnpm mobile:typecheck
+
+      - name: Check mobile dependency compatibility
+        run: pnpm --dir apps/mobile check:dependencies
 
       - name: Build Vite assets
         env:
@@ -231,16 +234,34 @@ jobs:
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
 
       - name: Setup Ruby
-        uses: ruby/setup-ruby@95ef2b042f9d7a56d8268cba8559e2842e2ad01b # v1
+        uses: ruby/setup-ruby@26e5b7d197ebf60545ee9667bcbace0be11ccaec # v1
         with:
-          ruby-version: '4.0.1'
+          ruby-version: '4.0.9'
           bundler-cache: true
           bundler: latest
 
       - name: Run bundler-audit
         run: |
-          gem install bundler-audit --no-document
-          bundler-audit check --update
+          bundle exec bundler-audit check --update
+
+      - name: Setup Node
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version-file: .node-version
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5
+        with:
+          run_install: false
+
+      - name: Audit web, docs, and mobile packages
+        run: |
+          pnpm audit
+          pnpm --dir docs audit
+          pnpm --dir apps/mobile audit
+
+      - name: Run Ruby runtime audit
+        run: bundle exec ruby-audit check
 
       - name: Run brakeman
         run: |

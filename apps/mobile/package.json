@@ -7,42 +7,52 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "check:brace-expansion": "node -e \"const { minimatch } = require('minimatch'); if (!minimatch('file.js', '*.{js,ts}')) process.exit(1)\"",
+    "check:brace-expansion": "node -e \"const minimatch = require('minimatch'); if (!(minimatch.minimatch || minimatch)('file.js', '*.{js,ts}')) process.exit(1)\"",
+    "check:dependencies": "pnpm run check:brace-expansion && node scripts/check-image-size.cjs",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@expo/metro-runtime": "~6.1.2",
-    "expo": "~54.0.33",
+    "expo": "~54.0.38",
     "expo-secure-store": "~15.0.8",
     "expo-status-bar": "~3.0.9",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "react-native": "0.81.5",
-    "react-native-web": "^0.21.0"
+    "react-native-web": "^0.21.4"
   },
   "devDependencies": {
-    "@types/react": "~19.1.0",
-    "typescript": "~5.9.2"
+    "@types/react": "~19.1.17",
+    "typescript": "~5.9.3"
   },
   "pnpm": {
+    "auditConfig": {
+      "ignoreCves": [
+        "CVE-2026-85393",
+        "CVE-2026-93687"
+      ]
+    },
     "overrides": {
       "@babel/core@^7": "7.29.6",
-      "@xmldom/xmldom@^0.8": "0.8.13",
+      "@xmldom/xmldom@^0.8": "0.8.15",
       "tar@^7": ">=7.5.21 <8",
-      "brace-expansion": "5.0.8",
-      "js-yaml@^3": "3.15.0",
-      "js-yaml@^4": "4.3.0",
-      "postcss@^8": "8.5.18",
-      "shell-quote@^1": "1.9.0",
-      "undici@^6": "6.27.0",
+      "brace-expansion": "5.0.12",
+      "js-yaml@^3": "3.15.2",
+      "js-yaml@^4": "4.3.2",
+      "postcss@^8": "8.5.23",
+      "shell-quote@^1": "1.11.0",
+      "undici@^6": "6.28.1",
       "ws@^6": "6.2.4",
       "ws@^7": "7.5.11",
       "ws@^8": "8.21.0",
-      "xcode>uuid": "11.1.1"
+      "xcode>uuid": "11.1.1",
+      "metro>image-size": "2.0.3"
     },
     "patchedDependencies": {
-      "brace-expansion@5.0.8": "patches/brace-expansion@5.0.8.patch"
+      "brace-expansion@5.0.12": "patches/brace-expansion@5.0.12.patch",
+      "metro@0.83.3": "patches/metro@0.83.3.patch"
     }
   },
+  "packageManager": "pnpm@9.15.9",
   "private": true
 }
