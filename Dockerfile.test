@@ -1,27 +1,24 @@
 #syntax=docker/dockerfile:1
-FROM ruby:3.2.4-slim AS base
+FROM ruby:4.0.9-slim AS base
 
-ARG NODE_VERSION=20.18.2
-ARG NODESOURCE_SETUP_SHA256=2c4c6683a17b6f4128898a7b521e3c8bb725a99ffaf1b5e32ac97c6fa7d381be
+ARG NODE_VERSION=24.22.1
+ARG NODESOURCE_SETUP_SHA256=6e3d580f5bd7ccf2aa1e8df8d35c60d78e873c3ff8beb282c9bebd914904ad72
 
 RUN mkdir /app
 WORKDIR /app
 RUN mkdir -p tmp/pids
 
 RUN apt-get update && apt-get install -y --no-install-recommends curl gnupg2 && \
-    echo "deb https://dl.yarnpkg.com/debian/ stable main" > /etc/apt/sources.list.d/yarn.list && \
-    curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
-    curl -fsSL https://deb.nodesource.com/setup_20.x -o /tmp/nodesource_setup.sh && \
+    curl -fsSL https://deb.nodesource.com/setup_24.x -o /tmp/nodesource_setup.sh && \
     echo "${NODESOURCE_SETUP_SHA256}  /tmp/nodesource_setup.sh" | sha256sum -c - && \
     bash /tmp/nodesource_setup.sh && \
     rm /tmp/nodesource_setup.sh && \
-    apt-get install -y --no-install-recommends nodejs yarn && \
+    apt-get install -y --no-install-recommends nodejs && \
+    npm install -g pnpm@9.15.9 && \
     npm --version && \
     apt-get clean && rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
 
-RUN curl --location --silent https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
-    && sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list' \
-    && apt-get update && apt-get install google-chrome-stable -y --no-install-recommends postgresql-client && \
+RUN apt-get update && apt-get install -y --no-install-recommends chromium chromium-sandbox postgresql-client && \
     apt-get clean && rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
 
 FROM base AS build-deps
@@ -32,7 +29,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends git build-essen
 
 FROM build-deps AS gems
 
-RUN gem install bundler -v 2.3.11
+RUN gem install bundler -v 4.0.20
 
 COPY Gemfile Gemfile.lock ./
 
@@ -40,9 +37,9 @@ RUN bundle install &&  rm -rf vendor/bundle/ruby/*/cache
 
 FROM base AS node_modules
 
-COPY package.json yarn.lock ./
+COPY package.json pnpm-lock.yaml ./
 
-RUN yarn install --check-files
+RUN pnpm install --frozen-lockfile --ignore-scripts
 
 FROM base
 

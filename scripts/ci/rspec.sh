@@ -4,7 +4,7 @@ set -eu
 
 bundle config set --local with 'ci'
 bundle config set --local without 'development production test'
-bin/yarn install
+pnpm install --frozen-lockfile
 bin/rails db:create
 bin/rails runner 'ActiveRecord::Base.connection_pool.migration_context.migrate'
 bundle exec rspec --color --exclude-pattern "spec/system/**/*.rb"

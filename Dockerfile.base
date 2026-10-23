@@ -1,6 +1,6 @@
 # Miru 2.0 Base Image - Optimized for Rails 8 & Playwright
 # Build once and push to registry for reuse across environments
-FROM ruby:4.0.1-slim AS miru-base
+FROM ruby:4.0.9-slim AS miru-base
 
 # Install essential system dependencies
 RUN apt-get update -qq && \
@@ -45,9 +45,9 @@ RUN apt-get update -qq && \
     libasound2 \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Node.js 22 LTS
-ARG NODESOURCE_SETUP_SHA256=575583bbac2fccc0b5edd0dbc03e222d9f9dc8d724da996d22754d6411104fd1
-RUN curl -fsSL https://deb.nodesource.com/setup_22.x -o /tmp/nodesource_setup.sh && \
+# Install Node.js 24 LTS
+ARG NODESOURCE_SETUP_SHA256=6e3d580f5bd7ccf2aa1e8df8d35c60d78e873c3ff8beb282c9bebd914904ad72
+RUN curl -fsSL https://deb.nodesource.com/setup_24.x -o /tmp/nodesource_setup.sh && \
     echo "${NODESOURCE_SETUP_SHA256}  /tmp/nodesource_setup.sh" | sha256sum -c - && \
     bash /tmp/nodesource_setup.sh && \
     rm /tmp/nodesource_setup.sh && \
@@ -55,7 +55,7 @@ RUN curl -fsSL https://deb.nodesource.com/setup_22.x -o /tmp/nodesource_setup.sh
     rm -rf /var/lib/apt/lists/*
 
 # Install pnpm (fast, disk space efficient package manager)
-RUN npm install -g pnpm@9.15.5
+RUN npm install -g pnpm@9.15.9
 
 # Install only Chromium for Playwright (no Firefox or WebKit needed)
 ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright

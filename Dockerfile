@@ -7,7 +7,7 @@
 # Use with Kamal for deployment or docker-compose for local development.
 
 # Make sure RUBY_VERSION matches the Ruby version in .ruby-version
-ARG RUBY_VERSION=4.0.1
+ARG RUBY_VERSION=4.0.9
 FROM ruby:$RUBY_VERSION-slim AS base
 
 # Rails app lives here
@@ -29,9 +29,9 @@ ENV BUNDLE_DEPLOYMENT="1" \
     RAILS_ENV="production"
 
 # Install Node.js
-ARG NODE_VERSION=22.11.0
-ARG NODE_BUILD_COMMIT=78955c917127645a2a7b931abf3dad3d0ca7a418
-ARG NODE_BUILD_SHA256=df74012469a1b44dd5d0fd9248f77d2bd5795b3909299ab23db2aaa2cd4121c4
+ARG NODE_VERSION=24.22.1
+ARG NODE_BUILD_COMMIT=9a3d47916225d39d53b6305f3be91c7fb3e3875f
+ARG NODE_BUILD_SHA256=ff474d52fe7d2f1d60a337facb4924530a7b406b187f2843f36beb6be897af9f
 ENV PATH=/usr/local/node/bin:$PATH
 RUN curl -fsSL "https://github.com/nodenv/node-build/archive/${NODE_BUILD_COMMIT}.tar.gz" -o /tmp/node-build.tar.gz && \
     echo "${NODE_BUILD_SHA256}  /tmp/node-build.tar.gz" | sha256sum -c - && \
@@ -40,7 +40,7 @@ RUN curl -fsSL "https://github.com/nodenv/node-build/archive/${NODE_BUILD_COMMIT
     rm -rf /tmp/node-build*
 
 # Install pnpm
-RUN npm install -g pnpm@9
+RUN npm install -g pnpm@9.15.9
 
 
 # Development stage for local development

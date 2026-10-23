@@ -26,6 +26,19 @@
 - Mailer layout branding now uses asset helper URLs with production `action_mailer.asset_host` to keep email logo assets resolvable in production mail clients
 - Razorpay Payment Settings now copies the production webhook URLs with the required event names for faster dashboard setup
 
+## 3.0.6 - 2026-10-23
+
+### Security
+
+- Upgrade Rails to 8.1.4, Ruby to 4.0.9, Node to 24.22.1 LTS, and Go to 1.26.10; refresh gems and web, docs, and mobile packages.
+- Include Ruby's regexp compilation fixes related to GitLab CVE-2026-89078, CVE-2026-93577, CVE-2026-97229, and CVE-2026-110264.
+- Upgrade Brakeman and enforce Ruby and all three JavaScript dependency audits in CI.
+- Document three narrowly scoped CVE exceptions without published fixes, with a review deadline of 22 November 2026.
+
+### Fixed
+
+- Preserve mobile asset loading and CommonJS compatibility with patched image-size and brace-expansion dependencies.
+
 ## 3.0.5 - 2026-09-17
 
 ### Added

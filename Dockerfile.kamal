@@ -4,7 +4,7 @@
 # Kamal-specific Dockerfile for Hetzner deployment
 
 # Make sure RUBY_VERSION matches the Ruby version in .ruby-version
-ARG RUBY_VERSION=4.0.1
+ARG RUBY_VERSION=4.0.9
 FROM ruby:$RUBY_VERSION-slim AS base
 
 # Rails app lives here
@@ -26,8 +26,8 @@ ENV BUNDLE_DEPLOYMENT="1" \
     RAILS_ENV="production"
 
 # Install Node.js via NodeSource repository
-ARG NODE_VERSION=22
-ARG NODESOURCE_SETUP_SHA256=575583bbac2fccc0b5edd0dbc03e222d9f9dc8d724da996d22754d6411104fd1
+ARG NODE_VERSION=24
+ARG NODESOURCE_SETUP_SHA256=6e3d580f5bd7ccf2aa1e8df8d35c60d78e873c3ff8beb282c9bebd914904ad72
 RUN curl -fsSL "https://deb.nodesource.com/setup_${NODE_VERSION}.x" -o /tmp/nodesource_setup.sh && \
     echo "${NODESOURCE_SETUP_SHA256}  /tmp/nodesource_setup.sh" | sha256sum -c - && \
     bash /tmp/nodesource_setup.sh && \
@@ -44,7 +44,7 @@ RUN apt-get update -qq && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
 # Install pnpm
-RUN corepack enable && corepack prepare pnpm@9 --activate
+RUN npm install -g pnpm@9.15.9
 
 # Build options
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD="true"
