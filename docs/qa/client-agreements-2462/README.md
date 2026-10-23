@@ -2,7 +2,7 @@
 
 Part of #2462: capture client legal company name, finance email, and authorized signatory name, designation and email. The existing address is the registered/billing address. Finance and signatory addresses remain independent after copying. Legal name is used in billed-to views and PDFs, falling back to the display name for existing clients.
 
-Runtime source: `ff0f4ce5aeb8abd3e91ddc339497da5e6676d626`. Every person, company, address, email and payment value shown is a synthetic local fixture. Images are copied unchanged from real Brave captures. No production HR data, live emails, signature requests or payments were used.
+Runtime source: `ff0f4ce5aeb8abd3e91ddc339497da5e6676d626`. The two editor captures were refreshed on `8f916e90b22088730b87e4230880ea5d51052065` after clarifying that finance is a default invoice recipient; desktop/mobile checks passed 2/0, required Vite command and focused lint passed. Every person, company, address, email and payment value shown is a synthetic local fixture. Images are copied unchanged from real Brave captures. No production HR data, live emails, signature requests or payments were used.
 
 | Flow | Desktop | Mobile |
 | --- | --- | --- |
