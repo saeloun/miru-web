@@ -58,11 +58,12 @@ These exceptions acknowledge remaining vulnerabilities; they do not repair them.
 | --- | --- | --- |
 | [CVE-2026-93687 / GHSA-vfj7-8cjw-p6xm](https://github.com/advisories/GHSA-vfj7-8cjw-p6xm) | braces 3.0.3 in web, docs, and mobile build tooling | No patched release. Keep glob patterns trusted. Remove the exception when a patched compatible release or replacement is available. |
 | [CVE-2026-85393 / GHSA-86w9-cpqp-85rv](https://github.com/advisories/GHSA-86w9-cpqp-85rv) | node-forge 1.4.0 through Expo CLI certificate tooling | No patched release. Do not accept untrusted signing material. Remove after a patched release and Expo export verification. |
-| [CVE-2026-97058 / GHSA-hp3w-g68c-fv3c](https://github.com/advisories/GHSA-hp3w-g68c-fv3c) | sprintf-js through mobile Jest/config tooling | No patched release. Keep format strings trusted. Remove after the dependency is fixed or removed. |
 
 Review these exceptions by 22 November 2026 and during every dependency update.
 Unfiltered registry findings fell from 33 to 1 for web, 40 to 1 for docs, and 37
-to 3 for mobile. The remaining five findings are the three CVEs listed above.
+to 2 for mobile. The remaining four findings are the two CVEs listed above.
+The sprintf-js advisory CVE-2026-97058 was withdrawn on 22 October 2026;
+its temporary exception was removed after refreshing the registry audit.
 
 The old bundler-audit exception for CVE-2026-38969 was removed: its CVE record
 was withdrawn because further investigation found it was not a security issue.

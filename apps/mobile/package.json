@@ -29,8 +29,7 @@
     "auditConfig": {
       "ignoreCves": [
         "CVE-2026-85393",
-        "CVE-2026-93687",
-        "CVE-2026-97058"
+        "CVE-2026-93687"
       ]
     },
     "overrides": {

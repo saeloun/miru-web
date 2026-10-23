@@ -37,7 +37,7 @@
 - Upgrade Rails to 8.1.4, Ruby to 4.0.9, Node to 24.22.1 LTS, and Go to 1.26.10; refresh gems and web, docs, and mobile packages.
 - Include Ruby's regexp compilation fixes related to GitLab CVE-2026-89078, CVE-2026-93577, CVE-2026-97229, and CVE-2026-110264.
 - Upgrade Brakeman and enforce Ruby and all three JavaScript dependency audits in CI.
-- Document three narrowly scoped CVE exceptions without published fixes, with a review deadline of 22 November 2026.
+- Document two narrowly scoped CVE exceptions without published fixes, with a review deadline of 22 November 2026; remove the withdrawn sprintf-js exception.
 
 ### Fixed
 
