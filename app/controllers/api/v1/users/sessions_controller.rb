@@ -2,11 +2,14 @@
 
 class Api::V1::Users::SessionsController < Devise::SessionsController
   skip_before_action :verify_authenticity_token, only: :create
+  # Password validation here must not let Warden establish a session before the second factor.
+  skip_before_action :allow_params_authentication!, only: :create
   include Authenticable
   include AuthResponsePayload
   include CurrentCompanyConcern
   include SameOriginAuthentication
   include SsoEnforcementConcern
+  include SecondFactorAuthentication
 
   before_action :authenticate_user_using_x_auth_token, only: :me
   before_action :reject_cross_origin_authentication!, only: :create
@@ -20,18 +23,22 @@ class Api::V1::Users::SessionsController < Devise::SessionsController
       render_invalid_password_error
     elsif user.access_locked?
       render_invalid_password_error
+    elsif !user.active_for_authentication?
+      render_invalid_password_error
     elsif !user.confirmed?
       render_unconfirmed_user_error(user)
     elsif (error = sso_sign_in_error(user))
       render_sso_sign_in_error(error)
+    elsif params[:app].blank? && trusted_browser?(user)
+      handle_successful_sign_in(user)
     elsif passkey_login_unsupported?(user)
       render_passkey_unsupported_error
     elsif passkey_login_required?(user)
-      render_passkey_challenge(user)
+      render_second_factor_challenge(user)
     elsif totp_login_unsupported?(user)
       render_totp_unsupported_error
     elsif totp_login_required?(user)
-      render_totp_challenge(user)
+      render_second_factor_challenge(user)
     else
       handle_successful_sign_in(user)
     end
@@ -62,6 +69,15 @@ class Api::V1::Users::SessionsController < Devise::SessionsController
       }, status: 200
     else
       render json: { error: "Not authenticated" }, status: 401
+    end
+  end
+
+  def second_factor
+    payload = session.delete(:pending_second_factor)
+    if payload
+      render json: payload
+    else
+      render json: { error: I18n.t("totp.session_expired") }, status: 422
     end
   end
 
@@ -138,39 +154,8 @@ class Api::V1::Users::SessionsController < Devise::SessionsController
       ), status: 200
     end
 
-    def render_passkey_challenge(user)
-      options = ::WebAuthn::RelyingParty.new(
-        allowed_origins: [request.base_url],
-        id: request.host,
-        name: "Miru"
-      ).options_for_authentication(
-        allow: user.passkeys.pluck(:external_id),
-        user_verification: "preferred"
-      )
-
-      render json: {
-        requires_passkey: true,
-        public_key: options,
-        pending_token: Passkeys::ChallengeToken.issue(
-          "challenge" => options.challenge,
-          "user_id" => user.id,
-          "company_id" => current_company&.id,
-          "type" => "authentication",
-          "app" => params[:app].presence || "web"
-        )
-      }, status: 200
-    end
-
-    def render_totp_challenge(user)
-      render json: {
-        requires_totp: true,
-        pending_token: Passkeys::ChallengeToken.issue(
-          "user_id" => user.id,
-          "company_id" => current_company&.id,
-          "type" => "totp_authentication",
-          "app" => params[:app].presence || "web"
-        )
-      }, status: 200
+    def render_second_factor_challenge(user)
+      render json: second_factor_challenge_payload(user), status: 200
     end
 
     def render_sign_in_response_for_desktop(user)

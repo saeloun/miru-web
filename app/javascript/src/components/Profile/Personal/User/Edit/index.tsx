@@ -83,6 +83,7 @@ const UserDetailsEdit = () => {
   const [totpBusy, setTotpBusy] = useState(false);
   const [totpSecret, setTotpSecret] = useState("");
   const [totpProvisioningUri, setTotpProvisioningUri] = useState("");
+  const [totpQrCode, setTotpQrCode] = useState("");
   const [totpVerificationCode, setTotpVerificationCode] = useState("");
   const [recoveryCodes, setRecoveryCodes] = useState([]);
   const [recoveryCodesCount, setRecoveryCodesCount] = useState(0);
@@ -175,6 +176,7 @@ const UserDetailsEdit = () => {
     setRecoveryCodesCount(data.recovery_codes_count || 0);
     setTotpSecret(data.secret || "");
     setTotpProvisioningUri(data.provisioning_uri || "");
+    setTotpQrCode(data.qr_code || "");
     setRecoveryCodes(data.recovery_codes || []);
   };
 
@@ -668,6 +670,7 @@ const UserDetailsEdit = () => {
               totpBusy={totpBusy}
               totpEnabled={totpEnabled}
               totpProvisioningUri={totpProvisioningUri}
+              totpQrCode={totpQrCode}
               totpSecret={totpSecret}
               totpVerificationCode={totpVerificationCode}
               updateBasicDetails={updateBasicDetails}
@@ -743,6 +746,7 @@ const UserDetailsEdit = () => {
               totpBusy={totpBusy}
               totpEnabled={totpEnabled}
               totpProvisioningUri={totpProvisioningUri}
+              totpQrCode={totpQrCode}
               totpSecret={totpSecret}
               totpVerificationCode={totpVerificationCode}
               updateBasicDetails={updateBasicDetails}
@@ -750,6 +754,36 @@ const UserDetailsEdit = () => {
             />
           )}
         </Fragment>
+      )}
+      {isCalledFromSettings && !isLoading && (
+        <div className="mx-auto max-w-6xl space-y-3 px-4 pb-8 sm:px-6 lg:px-8">
+          <p className="text-sm text-muted-foreground">
+            {i18n.t("loginSecurity.revokeDescription")}
+          </p>
+          <Button
+            disabled={totpBusy}
+            style="secondary"
+            onClick={async () => {
+              const currentPassword = await requestCurrentPassword();
+              if (!currentPassword) return;
+              setTotpBusy(true);
+              try {
+                await totpApi.revokeTrustedBrowsers({
+                  current_password: currentPassword,
+                });
+              } catch (error) {
+                toast.error(
+                  error?.response?.data?.error ||
+                    i18n.t("loginSecurity.revokeFailed")
+                );
+              } finally {
+                setTotpBusy(false);
+              }
+            }}
+          >
+            {i18n.t("loginSecurity.revokeBrowsers")}
+          </Button>
+        </div>
       )}
       <Modal
         isOpen={showReauthDialog}

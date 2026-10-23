@@ -15,6 +15,7 @@ const TotpPanel = ({
   onGenerateRecoveryCodes,
   onSetup,
   provisioningUri,
+  qrCode,
   recoveryCodes,
   recoveryCodesCount,
   secret,
@@ -62,6 +63,15 @@ const TotpPanel = ({
               </p>
             </div>
             <div className="rounded-xl border border-border bg-muted/30 p-3">
+              {qrCode && (
+                <img
+                  alt={i18n.t("loginSecurity.qrCode")}
+                  className="mb-3 rounded-lg"
+                  src={qrCode}
+                  width={240}
+                  height={240}
+                />
+              )}
               <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wider text-muted-foreground">
                 <Key className="h-3.5 w-3.5" weight="bold" />
                 {i18n.t("twoFactor.manualEntryKey")}
@@ -84,6 +94,7 @@ const TotpPanel = ({
               </label>
               <Input
                 id="totp_verification_code"
+                autoComplete="one-time-code"
                 inputMode="numeric"
                 placeholder={i18n.t("twoFactor.verificationCodePlaceholder")}
                 value={verificationCode}
@@ -169,6 +180,29 @@ const TotpPanel = ({
                 </div>
               ))}
             </div>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => {
+                const url = URL.createObjectURL(
+                  new Blob(
+                    [
+                      `Miru recovery codes\n\n${recoveryCodes.join(
+                        "\n"
+                      )}\n\nEach code can only be used once. Keep these codes in a safe place.\n`,
+                    ],
+                    { type: "text/plain" }
+                  )
+                );
+                const link = document.createElement("a");
+                link.href = url;
+                link.download = "miru-recovery-codes.txt";
+                link.click();
+                setTimeout(() => URL.revokeObjectURL(url), 1000);
+              }}
+            >
+              {i18n.t("loginSecurity.downloadCodes")}
+            </Button>
           </div>
         )}
       </CardContent>
