@@ -24,4 +24,8 @@ class TotpPolicy < ApplicationPolicy
   def authenticate?
     true
   end
+
+  def revoke_trusted_browsers?
+    user.present?
+  end
 end

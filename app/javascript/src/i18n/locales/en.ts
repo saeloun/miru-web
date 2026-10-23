@@ -1,4 +1,27 @@
 const en = {
+  loginSecurity: {
+    title: "Verify it’s you",
+    description: "Complete two-factor verification to sign in to Miru.",
+    usePasskey: "Verify with a passkey or Touch ID",
+    orAuthenticator: "Or use your authenticator app",
+    useAuthenticator: "Use an authenticator code",
+    useRecoveryCode: "Use a recovery code instead",
+    trustBrowser: "Trust this browser for 30 days",
+    trustDescription:
+      "Only choose this on a device you own. You will still need to sign in.",
+    invalidCode: "Invalid verification code. Try again.",
+    passkeyCancelled:
+      "Passkey verification was cancelled or unavailable. Try again or choose another method.",
+    verifying: "Verifying…",
+    qrCode: "Scan this QR code with your authenticator app",
+    downloadCodes: "Download recovery codes",
+    devicePasskey:
+      "Save a passkey with Touch ID, iCloud Keychain, Windows Hello, or your password manager. Your device keeps the private key; Miru never receives your biometrics.",
+    revokeBrowsers: "Revoke all trusted browsers",
+    revokeFailed: "Unable to revoke trusted browsers. Try again.",
+    revokeDescription:
+      "Require two-factor verification on the next sign in from every browser.",
+  },
   employeeRecords: {
     title: "Employee records",
     backProfile: "Back to profile",

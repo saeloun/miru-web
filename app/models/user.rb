@@ -5,6 +5,7 @@ class User < ApplicationRecord
   include PhoneNumberValidatable
 
   TOTP_ISSUER = "Miru"
+  encrypts :otp_secret_ciphertext, support_unencrypted_data: true
   RECOVERY_CODES_COUNT = 8
   MAX_AVATAR_SIZE_MB = 5
   ALLOWED_AVATAR_CONTENT_TYPES = %w[image/png image/jpeg image/jpg image/webp].freeze
@@ -46,6 +47,7 @@ class User < ApplicationRecord
   has_many :addresses, as: :addressable, dependent: :destroy
   has_many :devices, dependent: :destroy
   has_many :passkeys, dependent: :destroy
+  has_many :second_factor_challenges, dependent: :delete_all
   has_many :browser_sessions, dependent: :destroy
   has_many :invitations, foreign_key: "sender_id", dependent: :destroy
   has_secure_token :token, length: 50
@@ -257,19 +259,21 @@ class User < ApplicationRecord
   end
 
   def verify_totp_code!(code)
-    return false if otp_secret.blank?
+    with_lock do
+      return false if otp_secret.blank?
 
-    timestamp = ::ROTP::TOTP.new(otp_secret, issuer: TOTP_ISSUER).verify(
-      normalized_otp_code(code),
-      drift_behind: 30,
-      drift_ahead: 30,
-      after: otp_last_used_at
-    )
+      timestamp = ::ROTP::TOTP.new(otp_secret, issuer: TOTP_ISSUER).verify(
+        normalized_otp_code(code),
+        drift_behind: 30,
+        drift_ahead: 30,
+        after: otp_last_used_at
+      )
 
-    return false unless timestamp
+      return false unless timestamp
 
-    update!(otp_last_used_at: timestamp.to_i)
-    true
+      update!(otp_last_used_at: timestamp.to_i)
+      true
+    end
   end
 
   def generate_recovery_codes!
@@ -284,13 +288,15 @@ class User < ApplicationRecord
   end
 
   def consume_recovery_code!(code)
-    normalized = normalized_recovery_code(code)
-    digest = digest_recovery_code(normalized)
-    digests = Array(otp_recovery_codes_digest)
-    return false unless digests.include?(digest)
+    with_lock do
+      normalized = normalized_recovery_code(code)
+      digest = digest_recovery_code(normalized)
+      digests = Array(otp_recovery_codes_digest)
+      return false unless digests.include?(digest)
 
-    update!(otp_recovery_codes_digest: digests - [digest])
-    true
+      update!(otp_recovery_codes_digest: digests - [digest])
+      true
+    end
   end
 
   def clear_totp!
@@ -336,12 +342,16 @@ class User < ApplicationRecord
 
     def authentication_state_changed?
       saved_change_to_encrypted_password? ||
+        saved_change_to_otp_secret_ciphertext? ||
+        saved_change_to_otp_recovery_codes_generated_at? ||
         saved_change_to_otp_required_for_login? ||
         saved_change_to_passkey_required_for_login?
     end
 
     def authentication_state_will_change?
       will_save_change_to_encrypted_password? ||
+        will_save_change_to_otp_secret_ciphertext? ||
+        will_save_change_to_otp_recovery_codes_generated_at? ||
         will_save_change_to_otp_required_for_login? ||
         will_save_change_to_passkey_required_for_login?
     end

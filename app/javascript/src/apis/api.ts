@@ -189,6 +189,7 @@ const http = Api.axios;
 
 // Auth
 export const authenticationApi = {
+  secondFactor: () => http.get("/users/second_factor"),
   signin: (payload: any) =>
     http.post(
       "/users/login",
@@ -247,6 +248,8 @@ export const totpApi = {
     http.post("/users/totp/authenticate", payload),
   regenerateRecoveryCodes: (payload: any) =>
     http.post("/users/totp/recovery_codes", payload),
+  revokeTrustedBrowsers: (payload: any) =>
+    http.post("/users/totp/revoke_trusted_browsers", payload),
   destroy: (payload: any) => http.delete("/users/totp", { data: payload }),
 };
 

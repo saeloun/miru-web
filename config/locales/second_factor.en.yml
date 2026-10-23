@@ -1,0 +1,4 @@
+en:
+  totp:
+    already_enabled: Authenticator verification is already enabled. Disable it before starting a new setup.
+    trusted_browsers_revoked: All trusted browsers have been revoked. Your next sign in will require two-factor verification.
