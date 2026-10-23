@@ -737,7 +737,7 @@ const en = {
       legalCompanyName: "Legal company name",
       financeEmail: "Finance email",
       financeHelp:
-        "Invoice emails also go to this address alongside existing invoice contacts.",
+        "Added to default invoice recipients alongside existing contacts.",
       signatoryName: "Authorized signatory name",
       signatoryDesignation: "Signatory designation",
       signatoryEmail: "Signatory email",
