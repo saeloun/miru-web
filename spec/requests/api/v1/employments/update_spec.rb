@@ -85,6 +85,30 @@ RSpec.describe "Api::V1::Employments#update", type: :request do
     end
   end
 
+  context "when the user has a discarded employment" do
+    let!(:employment) { create(:employment, company:, user:, joined_at: nil, resigned_at: nil) }
+    let!(:discarded_employment) { create(:employment, company:, user:, joined_at: Date.new(2019, 1, 1), resigned_at: nil) }
+
+    before do
+      discarded_employment.update_columns(discarded_at: Time.current)
+      user.add_role :admin, company
+      sign_in user
+      send_request(
+        :patch, api_v1_employment_path(user), params: {
+          employment: {
+            designation: "Current designation", employment_type: "Consultant", employee_id: "SA123",
+            joined_at: Date.current
+          }
+        }, headers: auth_headers(user))
+    end
+
+    it "updates only the current employment" do
+      expect(response).to have_http_status(:ok)
+      expect(employment.reload.designation).to eq("Current designation")
+      expect(discarded_employment.reload.designation).to eq("SDE")
+    end
+  end
+
   context "when a self-service user updates another user's employment" do
     let(:book_keeper) { create(:user, current_workspace_id: company.id) }
 
