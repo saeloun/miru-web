@@ -116,23 +116,9 @@ module Reports
 
       def period_result(from, to)
         rows = @employments.filter_map do |employment|
-          roles = employment.user.roles.filter_map { |role| role.name if role.resource_type == "Company" && role.resource_id == @company.id }.uniq
-          next if roles == ["client"] && employment.employee_record.nil? && employment.consultant_compensations.empty? && employment.compensation_versions.empty?
-          next if employment.joined_at && employment.joined_at > to
-          next if employment.resigned_at && employment.resigned_at < from
-
-          person_result(employment, from, to)
+          person_result(employment, from, to) if reportable_employment?(employment, from, to)
         end
-        rows = rows.group_by { |row| row[:person_id] }.map do |_person_id, records|
-          next records.first if records.one?
-
-          # Overlapping or repeated employment records need reconciliation before attributing costs and hours.
-          row = records.last.merge(flags: (records.flat_map { |record| record[:flags] } + ["multiple_employment_records_require_review"]).uniq,
-            client_ids: records.flat_map { |record| record[:client_ids] }.uniq, projects: [])
-          %i[total_hours billable_hours available_hours utilization effective_rate annual_compensation days_to_yearly_salary
-            salary_inr salary_usd compensation_cost revenue margin margin_percentage].each { |key| row[key] = nil }
-          row
-        end.select { |row| matches_filters?(row) }
+        rows = one_row_per_person(rows).select { |row| matches_filters?(row) }
         {
           from: from.iso8601, to: to.iso8601, people: rows,
           summary: summarize(rows),
@@ -142,17 +128,54 @@ module Reports
         }
       end
 
+      def reportable_employment?(employment, from, to)
+        roles = employment.user.roles.filter_map { |role| role.name if role.resource_type == "Company" && role.resource_id == @company.id }.uniq
+        return false if roles == ["client"] && employment.employee_record.nil? && employment.consultant_compensations.empty? && employment.compensation_versions.empty?
+        return false if employment.joined_at && employment.joined_at > to
+        return false if employment.resigned_at && employment.resigned_at < from
+
+        true
+      end
+
+      def one_row_per_person(rows)
+        rows.group_by { |row| row[:person_id] }.map do |_person_id, records|
+          next records.first if records.one?
+
+          # Overlapping or repeated employment records need reconciliation before attributing costs and hours.
+          row = records.last.merge(flags: (records.flat_map { |record| record[:flags] } + ["multiple_employment_records_require_review"]).uniq,
+            client_ids: records.flat_map { |record| record[:client_ids] }.uniq, projects: [])
+          %i[total_hours billable_hours available_hours utilization effective_rate annual_compensation days_to_yearly_salary
+            salary_inr salary_usd compensation_cost revenue margin margin_percentage].each { |key| row[key] = nil }
+          row
+        end
+      end
+
       def person_result(employment, from, to)
         flags = []
         flags << "missing_joining_date" unless employment.joined_at
         flags << "archived_employment_missing_exit_date" if employment.discarded_at && employment.resigned_at.nil?
         start = [from, employment.joined_at || from].max
         finish = [to, employment.resigned_at || to].min
+        approved = approved_entries(employment, start, finish, flags)
+        projects = project_results(employment, approved, flags)
+        totals = compensation_and_availability(employment, start, finish, flags)
+        finances = person_finances(employment, approved, projects, totals, finish, flags)
+        if totals[:available_hours] && totals[:available_hours].positive? && start <= Date.current && approved.empty?
+          flags << "timesheets_incomplete"
+        end
+        person_identity(employment, projects, from, to).merge(finances).merge(
+          compensation_changes: compensation_changes(employment, start, finish), projects:, flags: flags.uniq.sort)
+      end
+
+      def approved_entries(employment, start, finish, flags)
         entries = @entries.fetch(employment.user_id, []).select { |entry| entry.work_date.between?(start, finish) }
         flags << "unapproved_hours_excluded" if entries.any? { |entry| !entry.approved? }
         approved = entries.select(&:approved?)
         flags << "missing_timesheets" if approved.empty?
-        projects = project_results(employment, approved, flags)
+        approved
+      end
+
+      def person_identity(employment, projects, from, to)
         primary_id = employment.profitability_profile&.primary_project_id ||
           projects.sort_by { |project| [-project[:total_hours], project[:project_id]] }.first&.dig(:project_id)
         primary = @projects_by_id[primary_id]
@@ -162,7 +185,15 @@ module Reports
 
           client_ids << @projects_by_id[assignment.project_id]&.client_id
         end
-        totals = compensation_and_availability(employment, start, finish, flags)
+        {
+          employment_id: employment.id, person_id: employment.user_id, person: employment.user.full_name,
+          primary_project_id: primary_id, primary_project: primary&.name, client_ids: client_ids.compact.uniq,
+          department: employment.profitability_profile&.department,
+          status: employment.discarded_at ? "archived" : (employment.resigned_at && employment.resigned_at <= to ? "exited" : "active")
+        }
+      end
+
+      def person_finances(employment, approved, projects, totals, finish, flags)
         revenue = complete_sum(projects, :revenue)
         cost = totals[:compensation_cost]
         margin = revenue && cost && revenue - cost
@@ -171,21 +202,13 @@ module Reports
         annual = annual_compensation(employment, finish)
         annual_reporting = annual && convert(annual[:amount], annual[:currency], @currency, finish, flags)
         hours_per_day = totals[:scheduled_days].positive? ? totals[:scheduled_hours] / totals[:scheduled_days] : nil
-        if totals[:available_hours] && totals[:available_hours].positive? && start <= Date.current && approved.empty?
-          flags << "timesheets_incomplete"
-        end
         {
-          employment_id: employment.id, person_id: employment.user_id, person: employment.user.full_name,
-          primary_project_id: primary_id, primary_project: primary&.name, client_ids: client_ids.compact.uniq,
-          department: employment.profitability_profile&.department,
-          status: employment.discarded_at ? "archived" : (employment.resigned_at && employment.resigned_at <= to ? "exited" : "active"),
           total_hours: approved.sum(0.to_d) { |entry| entry.duration.to_s.to_d / 60 }, billable_hours: billable,
           available_hours: totals[:available_hours], utilization: percentage(billable, totals[:available_hours]),
           effective_rate:, annual_compensation: annual&.dig(:amount), compensation_currency: annual&.dig(:currency),
           days_to_yearly_salary: ratio(annual_reporting, effective_rate && hours_per_day && effective_rate * hours_per_day),
           salary_inr: totals[:salary_inr], salary_usd: totals[:salary_usd], compensation_cost: cost,
-          revenue:, margin:, margin_percentage: percentage(margin, revenue),
-          compensation_changes: compensation_changes(employment, start, finish), projects:, flags: flags.uniq.sort
+          revenue:, margin:, margin_percentage: percentage(margin, revenue)
         }
       end
 
@@ -236,29 +259,17 @@ module Reports
       end
 
       def compensation_and_availability(employment, start, finish, flags)
-        results = { compensation_cost: 0.to_d, salary_inr: 0.to_d, salary_usd: 0.to_d,
-          available_hours: 0.to_d, scheduled_days: 0, scheduled_hours: 0.to_d }
+        zero = 0.to_d
+        results = { compensation_cost: zero, salary_inr: zero, salary_usd: zero,
+          available_hours: zero, scheduled_days: 0, scheduled_hours: zero }
         flags << "missing_payroll_proration_policy" unless PRORATIONS.include?(@company.compensation_proration)
         holidays, leave = timeoff_for(employment, start, finish, flags)
         (start..finish).each do |date|
           terms = compensation_at(employment, date)
           flags << "missing_compensation" unless terms
           weekdays, hours = schedule(employment, terms, flags)
-          if hours
-            if weekdays.include?(date.cwday)
-              results[:scheduled_days] += 1
-              results[:scheduled_hours] += hours
-              available = holidays.include?(date) ? 0.to_d : [hours - leave.fetch(date, 0.to_d), 0.to_d].max
-              results[:available_hours] += available if results[:available_hours]
-            end
-          else
-            results[:available_hours] = nil
-          end
-          cost = daily_cost(terms, date, weekdays, flags)
-          { compensation_cost: @currency, salary_inr: "INR", salary_usd: "USD" }.each do |field, target|
-            amount = cost && convert(cost, terms[:currency], target, date, flags)
-            results[field] = results[field] && amount && results[field] + amount
-          end
+          add_daily_availability(results, date, weekdays, hours, holidays, leave)
+          add_daily_compensation(results, terms, date, weekdays, flags)
         end
         if employment.joined_at.nil? || (employment.discarded_at && employment.resigned_at.nil?)
           results.merge!(compensation_cost: nil, salary_inr: nil, salary_usd: nil, available_hours: nil)
@@ -267,7 +278,29 @@ module Reports
         results
       end
 
-      def daily_cost(terms, date, weekdays, flags)
+      def add_daily_availability(results, date, weekdays, hours, holidays, leave)
+        unless hours
+          results[:available_hours] = nil
+          return
+        end
+        return unless weekdays.include?(date.cwday)
+
+        results[:scheduled_days] += 1
+        results[:scheduled_hours] += hours
+        zero = 0.to_d
+        available = holidays.include?(date) ? zero : [hours - leave.fetch(date, zero), zero].max
+        results[:available_hours] += available if results[:available_hours]
+      end
+
+      def add_daily_compensation(results, terms, date, weekdays, flags)
+        cost = daily_cost(terms, date, weekdays)
+        { compensation_cost: @currency, salary_inr: "INR", salary_usd: "USD" }.each do |field, target|
+          amount = cost && convert(cost, terms[:currency], target, date, flags)
+          results[field] = results[field] && amount && results[field] + amount
+        end
+      end
+
+      def daily_cost(terms, date, weekdays)
         return unless terms && PRORATIONS.include?(@company.compensation_proration)
         return terms[:monthly] / date.end_of_month.day if @company.compensation_proration == "calendar_days"
         return if weekdays.empty?
@@ -300,29 +333,32 @@ module Reports
       def project_results(employment, entries, flags)
         entries.group_by(&:project_id).map do |project_id, project_entries|
           project = project_entries.first.project
-          details = project_entries.map do |entry|
-            rate = @billing_rates.fetch([employment.user_id, project_id], []).reverse.find { |item| item.effective_on <= entry.work_date }
-            revenue = 0.to_d
-            unless entry.non_billable?
-              if rate.nil?
-                flags << "missing_effective_billing_rate"
-                revenue = nil
-              elsif rate.billing_method == "fixed_fee"
-                flags << "fixed_fee_allocation_unavailable"
-                revenue = nil
-              else
-                revenue = convert(entry.duration.to_s.to_d / 60 * rate.hourly_rate, rate.currency, @currency, entry.work_date, flags)
-              end
-            end
-            { date: entry.work_date.iso8601, hours: entry.duration.to_s.to_d / 60, billable: !entry.non_billable?,
-              hourly_rate: rate&.hourly_rate, rate_currency: rate&.currency, rate_effective_on: rate&.effective_on&.iso8601,
-              billing_method: rate&.billing_method, revenue: }
-          end
+          details = project_entries.map { |entry| entry_result(employment, entry, flags) }
           { project_id:, project: project.name, client_id: project.client_id, client: project.client.name,
             total_hours: details.sum { |entry| entry[:hours] },
             billable_hours: details.select { |entry| entry[:billable] }.sum(0.to_d) { |entry| entry[:hours] },
             revenue: complete_sum(details, :revenue), entries: details }
         end
+      end
+
+      def entry_result(employment, entry, flags)
+        rate = @billing_rates.fetch([employment.user_id, entry.project_id], []).reverse.find { |item| item.effective_on <= entry.work_date }
+        { date: entry.work_date.iso8601, hours: entry.duration.to_s.to_d / 60, billable: !entry.non_billable?,
+          hourly_rate: rate&.hourly_rate, rate_currency: rate&.currency, rate_effective_on: rate&.effective_on&.iso8601,
+          billing_method: rate&.billing_method, revenue: entry_revenue(entry, rate, flags) }
+      end
+
+      def entry_revenue(entry, rate, flags)
+        return 0.to_d if entry.non_billable?
+        if rate.nil?
+          flags << "missing_effective_billing_rate"
+          return
+        end
+        if rate.billing_method == "fixed_fee"
+          flags << "fixed_fee_allocation_unavailable"
+          return
+        end
+        convert(entry.duration.to_s.to_d / 60 * rate.hourly_rate, rate.currency, @currency, entry.work_date, flags)
       end
 
       def annual_compensation(employment, date)
