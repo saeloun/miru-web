@@ -36,6 +36,7 @@ const Generate = ({
   const [title, setTitle] = useState(template.title);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
+  const [refresh, setRefresh] = useState(0);
   const mounted = useRef(true);
   useEffect(
     () => () => {
@@ -47,6 +48,7 @@ const Generate = ({
   useEffect(() => {
     let active = true;
     setParties(null);
+    setError("");
     const timer = setTimeout(() => {
       Api.get("/agreements/parties", {
         ...quiet,
@@ -68,7 +70,7 @@ const Generate = ({
       active = false;
       clearTimeout(timer);
     };
-  }, [query, page, template.kind]);
+  }, [query, page, template.kind, refresh]);
 
   const generate = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -99,7 +101,7 @@ const Generate = ({
 
   return (
     <Dialog open onOpenChange={open => !open && !busy && close()}>
-      <DialogContent>
+      <DialogContent className="agreement-controls">
         <DialogHeader>
           <DialogTitle>Generate draft</DialogTitle>
           <DialogDescription>
@@ -195,9 +197,18 @@ const Generate = ({
             </div>
           )}
           {error && (
-            <p role="alert" className="text-sm text-destructive">
-              {error}
-            </p>
+            <div role="alert" className="space-y-2">
+              <p className="text-sm text-destructive">{error}</p>
+              {!parties && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setRefresh(value => value + 1)}
+                >
+                  Retry search
+                </Button>
+              )}
+            </div>
           )}
           <div className="flex justify-end gap-2">
             <Button
@@ -291,7 +302,7 @@ const Workspace = ({ companyId }: { companyId: number | string }) => {
   };
 
   return (
-    <div className="mx-auto max-w-7xl space-y-6 p-4 md:p-6">
+    <div className="agreement-controls mx-auto max-w-7xl space-y-6 p-4 md:p-6">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <h1 className="text-2xl font-semibold">Agreements</h1>
@@ -399,7 +410,7 @@ const Workspace = ({ companyId }: { companyId: number | string }) => {
         </div>
       )}
       <Dialog open={creating} onOpenChange={open => !busy && setCreating(open)}>
-        <DialogContent>
+        <DialogContent className="agreement-controls">
           <DialogHeader>
             <DialogTitle>New agreement template</DialogTitle>
             <DialogDescription>

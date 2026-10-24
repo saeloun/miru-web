@@ -335,7 +335,7 @@ const LoadedEditor = ({
   ).length;
 
   return (
-    <div className="mx-auto max-w-7xl space-y-5 p-4 md:p-6">
+    <div className="agreement-controls mx-auto max-w-7xl space-y-5 p-4 md:p-6">
       <Link to="/agreements" className="text-sm text-primary underline">
         All agreements
       </Link>
@@ -483,6 +483,7 @@ const LoadedEditor = ({
       </Button>
       <Dialog open={fieldsOpen} onOpenChange={setFieldsOpen}>
         <DialogContent
+          className="agreement-controls"
           onCloseAutoFocus={event => {
             event.preventDefault();
             editor.current?.commands.focus();
@@ -502,7 +503,7 @@ const LoadedEditor = ({
         open={Boolean(preview)}
         onOpenChange={open => !open && setPreview(null)}
       >
-        <DialogContent className="max-h-[90vh] max-w-4xl overflow-y-auto">
+        <DialogContent className="agreement-controls max-h-[90vh] max-w-4xl overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Preview Word import</DialogTitle>
             <DialogDescription>
@@ -541,7 +542,7 @@ const LoadedEditor = ({
         </DialogContent>
       </Dialog>
       <Dialog open={workspaceWarning} onOpenChange={setWorkspaceWarning}>
-        <DialogContent>
+        <DialogContent className="agreement-controls">
           <DialogHeader>
             <DialogTitle>Unsaved changes</DialogTitle>
             <DialogDescription>
@@ -554,7 +555,7 @@ const LoadedEditor = ({
         </DialogContent>
       </Dialog>
       <Dialog open={confirmReload} onOpenChange={setConfirmReload}>
-        <DialogContent>
+        <DialogContent className="agreement-controls">
           <DialogHeader>
             <DialogTitle>Discard local edits?</DialogTitle>
             <DialogDescription>
@@ -576,7 +577,7 @@ const LoadedEditor = ({
           if (!open && blocker.state === "blocked") blocker.reset();
         }}
       >
-        <DialogContent>
+        <DialogContent className="agreement-controls">
           <DialogHeader>
             <DialogTitle>Unsaved changes</DialogTitle>
             <DialogDescription>
@@ -638,7 +639,7 @@ const Editor = ({
   }, [companyId, type, id, refresh]);
   if (error) {
     return (
-      <div role="alert" className="space-y-3 p-6">
+      <div role="alert" className="agreement-controls space-y-3 p-6">
         <p>{error}</p>
         <Button onClick={() => setRefresh(value => value + 1)}>Retry</Button>
         <Link to="/agreements">All agreements</Link>

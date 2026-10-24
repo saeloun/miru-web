@@ -1,8 +1,1 @@
-{
-  "environment": "headless Brave/Cuprite, arm64 macOS, Ruby4.0.9, isolated Rails test server",
-  "width": 375,
-  "fields": 60,
-  "field_dialog_ms": 190.05100009962916,
-  "field_settings_ms": 203.0520000262186,
-  "pdf_download_ms": 607.8549999510869
-}
+{"environment":"headless Brave/Cuprite, arm64 macOS, Ruby4.0.9, isolated Rails test server","width":375,"fields":60,"field_dialog_ms":185.54299999959767,"field_settings_ms":194.66999999713153,"pdf_download_ms":692.4559999024495}

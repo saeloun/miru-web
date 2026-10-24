@@ -75,7 +75,7 @@ const Toolbar = ({ editor }: { editor: Editor }) => {
   return (
     <div
       className="sticky top-0 z-10 flex flex-wrap items-center gap-1 rounded-t-lg border-b border-border bg-card p-2"
-      role="toolbar"
+      role="group"
       aria-label="Contract formatting"
     >
       {button(

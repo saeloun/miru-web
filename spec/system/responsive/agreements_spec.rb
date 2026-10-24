@@ -91,10 +91,51 @@ RSpec.describe "Agreement authoring", type: :system, js: true do
         expect(page.evaluate_script("document.documentElement.scrollWidth <= window.innerWidth + 1")).to be(true)
       end
       page.current_window.resize_to(375, 900)
+      heights = page.evaluate_script("Array.from(document.querySelectorAll('[aria-label=\"Contract formatting\"] button, [aria-label=\"Contract formatting\"] select'), element => element.getBoundingClientRect().height)")
+      expect(heights).not_to be_empty
+      expect(heights).to all(be >= 44)
       click_button "Fields (1)"
-      within('[role="dialog"]') { expect(page).to have_button("Edit Legal name") }
+      find('[role="dialog"]') { |dialog| dialog.evaluate_script("this.getAnimations().every(animation => animation.playState === 'finished')") }
+      within('[role="dialog"]') do
+        expect(page).to have_button("Edit Legal name")
+        expect(all("button").map { |button| button.evaluate_script("this.getBoundingClientRect().height") }).to all(be >= 44)
+      end
       expect(@console_errors).to be_empty
     end
+  end
+
+  it "retries a failed counterparty search without requiring the query to change" do
+    template = master
+    consultant = create(:employment, company:, resigned_at: nil, employment_type: "Consultant")
+    consultant.user.update!(first_name: "Synthetic", last_name: "Retry Consultant")
+    open_agreements
+    page.execute_script(<<~JS)
+      const open = XMLHttpRequest.prototype.open;
+      const send = XMLHttpRequest.prototype.send;
+      XMLHttpRequest.prototype.open = function(method, url, ...args) {
+        this.isPartySearch = String(url).includes("/agreements/parties");
+        return open.call(this, method, url, ...args);
+      };
+      XMLHttpRequest.prototype.send = function(body) {
+        if (this.isPartySearch) {
+          XMLHttpRequest.prototype.open = open;
+          XMLHttpRequest.prototype.send = send;
+          this.abort();
+          this.dispatchEvent(new ProgressEvent("error"));
+        } else send.call(this, body);
+      };
+    JS
+    within("article", text: template.title) { click_button "Generate draft" }
+    within('[role="dialog"]') do
+      expect(page).to have_css('[role="alert"]', text: /network|connection/i)
+      click_button "Retry search"
+      expect(page).to have_field("Find counterparty", with: "")
+      choose "Synthetic Retry Consultant"
+      click_button "Generate draft"
+    end
+    expect(page).to have_content(/Draft agreement/i)
+    expect(Agreement.find_by!(agreement_template: template).employment_id).to eq(consultant.id)
+    expect(@console_errors).to be_empty
   end
 
   it "previews Word import before replacement and keeps existing content after an unsupported upload" do

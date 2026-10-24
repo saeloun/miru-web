@@ -229,7 +229,7 @@ const Fields = ({
 
   return (
     <aside
-      className="min-w-0 space-y-4 rounded-lg border border-border bg-card p-4"
+      className="agreement-controls min-w-0 space-y-4 rounded-lg border border-border bg-card p-4"
       aria-label="Document fields"
     >
       <div className="flex items-center justify-between gap-2">
@@ -311,7 +311,7 @@ const Fields = ({
         open={Boolean(removing)}
         onOpenChange={open => !open && setRemoving(null)}
       >
-        <DialogContent>
+        <DialogContent className="agreement-controls">
           <DialogHeader>
             <DialogTitle>Remove field?</DialogTitle>
             <DialogDescription>
@@ -338,7 +338,7 @@ const Fields = ({
         open={Boolean(editing)}
         onOpenChange={open => !open && setEditing(null)}
       >
-        <DialogContent>
+        <DialogContent className="agreement-controls">
           <DialogHeader>
             <DialogTitle>{original ? "Edit field" : "Add field"}</DialogTitle>
             <DialogDescription>

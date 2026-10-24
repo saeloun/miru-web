@@ -1,3 +1,24 @@
+.agreement-controls button,
+.agreement-controls input:not([type="checkbox"]):not([type="radio"]),
+.agreement-controls select {
+  min-height: 2.75rem;
+  min-width: 2.75rem;
+}
+.agreement-controls label:has(input) {
+  min-height: 2.75rem;
+}
+.agreement-controls a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+}
+.agreement-controls[role="dialog"] > button:last-child {
+  display: grid;
+  place-items: center;
+}
+.agreement-controls[role="dialog"] > div:first-child {
+  padding-right: 2.75rem;
+}
 .agreement-select {
   min-width: 0;
   width: 100%;

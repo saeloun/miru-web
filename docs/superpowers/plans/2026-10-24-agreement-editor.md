@@ -196,16 +196,96 @@ REALITY: obligation-tiers pass Must-ship authoring gates retained; next review/s
 
 Scope accepted as-is; no new issues in the four engineering sections, no critical silent gaps, no unresolved decisions. Required reality rows and saved-report read-back must pass before the review is logged. Local completion suite: 149 examples, zero failures [measured: docs/qa/agreement-editor-2462/README.md:7]. Full CI and production release remain unproven.
 
+## Design review — implemented authoring unit
+
+Target: the agreement editor branch and this plan's authoring requirements. Calibration: DESIGN.md's Operational Calm, role clarity, semantic tokens, existing ui primitives and mobile-safe flows. This is app UI (OPERATE), not a landing page. Step0 initial impression:8/10; a complete plan here defines authoring hierarchy, all failure/recovery states, copy isolation, mobile controls and honest Draft status. All seven dimensions were assessed under the user's standing instruction to perform UI/UX reviews and fixes; no new user answer or product-scope decision is claimed.
+
+Designer setup found an installed binary, but its authentication resolver prioritizes a local JSON credential outside the mandated agent-vault flow; metadata lookup found no gstack OpenAI item. No secret was read, setup run, paid mockup generated or visual choice falsely attributed to the user. The user's secret-source rule takes precedence; review continued using the actual implemented UI. The external Codex voice is unavailable under the current Codex host. An explicitly required, read-only native design reviewer completed the separate design-plan assessment; it is in-host evidence, not Claude or external-provider coverage.
+
+### Pass1 — Information architecture:9/10 ->9/10
+
+No issues found. The shell identifies Agreements; archives distinguish Templates/Drafts; each editor identifies master or independent draft, title, save status and action before clauses. The contract body owns the workspace; field settings are secondary and open in a focused mobile dialog. No scope or layout redesign needed.
+
+```
+Miru shell -> Agreements -> Templates / Drafts archive
+  Template -> title/status/actions -> editable body + secondary fields
+    Generate -> choose company-scoped party -> independent Draft editor
+  Draft -> title/status/actions -> clauses/typed values -> explicit DRAFT PDF
+  Mobile -> full-width title/action row -> body -> Fields dialog -> field settings
+```
+
+### Pass2 — Interaction states:7/10 ->9/10
+
+Finding2 (Low, reproduced): failed party search described retry but offered no Retry control. Fixed with the existing button/state pattern and active-request cleanup. Query stays unchanged; a successful retry can generate the selected party's draft. This restores the already-required recoverable error state without adding a new product policy.
+
+| Feature | Loading | Empty | Error | Success | Partial |
+| --- | --- | --- | --- | --- | --- |
+| Archive | Loading agreements | Start master / generate copy guidance | Inline message + Retry | Named newest records | Explicit pagination |
+| Editor/save | Loading / Saving status | Editable blank paragraph | Retained dirty state + retry/recovery | All changes saved | Required-missing count |
+| Fields | Local explicit dialog | Add identity/payment/custom field | Validation beside configuration | Labeled placement/value | Required blanks stay Draft |
+| Word import | Checking Word document | Empty supported body normalizes | Unsupported upload leaves body intact | Preview before explicit replace | Normalized-layout warning |
+| Generation | Loading counterparties / Generating | Search/profile guidance | Retry search or retry submission | Independent draft route | No selection disables generate |
+| PDF | Preparing PDF | No invented completed document | Visible error, draft retained | Actual download | Dirty/busy disables export |
+
+### Pass3 — Journey:8/10 ->9/10
+
+No separate issue beyond the same search recovery gap. This storyboard is a simulated user journey, not usability-study evidence.
+
+| Step | User does | Likely concern | Specified support |
+| --- | --- | --- | --- |
+| Arrive | Opens Agreements | What can I edit? | Templates/Drafts and clear first action |
+| Author | Edits/imports terms and fields | Will text/formatting survive? | Schema, preview, warnings, actual reopen/export proof |
+| Save | Types and waits | Did it save? | Visible status; failed/stale writes retain recovery |
+| Generate | Finds client/consultant | Did the master change? | Explicit independent-copy explanation and identity snapshot |
+| Recover | Search/network/save fails | Must I start over? | Retry, retained query/body and explicit discard decisions |
+| Export | Downloads draft | Is this already approved/signed? | Draft label; no false approval/sign controls |
+
+### Pass4 — Specificity / slop:9/10 ->9/10
+
+No issues found; no hard rejection. The record rows and field sections contain actual actions/configuration. No decorative feature grid, generic hero, ornamental imagery, gradient, carousel, repeated mood copy or dashboard mosaic was added. All seven litmus answers are YES: Miru/Agreements context is clear; body is the visual anchor; title/status/actions scan; each section has one job; bounded record/field containers earn their function; motion is confined to state/dialog feedback; the layout works without decorative shadows. These are primary/native design judgments from source and actual screenshots, not external consensus.
+
+### Pass5 — Design system:8/10 ->9/10
+
+Finding1 overlaps Pass6: small controls did not meet the touch target contract. Existing Button/Input/Dialog primitives and CSS variables remain the vocabulary; the fix is scoped to agreement controls, including portals. Shared application primitives and theme settings are unchanged. Current dark screenshots are readable; color-only status is avoided and focus rings remain. Full assistive-technology/contrast certification is not claimed.
+
+### Pass6 — Responsive and accessibility:6/10 ->9/10
+
+Finding1 (Medium, reproduced): toolbar buttons were36px tall [measured: spec/system/responsive/agreements_spec.rb:94], below the design minimum. The shared agreement control style now enforces44px controls and clickable checkbox/radio labels; portal close buttons are centered with header clearance. First browser checks failed before the fix; settled toolbar and dialog geometry now pass without lowering the threshold. Dialog opening animation is allowed to finish before measuring. Width checks still cover320/375/1440, and the long mobile title remains readable [measured: spec/system/responsive/agreements_spec.rb:87].
+
+Finding3 (Low, static): formatting declared a toolbar while providing ordinary Tab stops. It is now a labeled group, matching its retained keyboard behavior. No bespoke arrow-key implementation was added. This follows the distinction in https://www.w3.org/WAI/ARIA/apg/patterns/toolbar/; no measured WCAG failure is claimed. Actual screen-reader sessions and physical mobile software keyboards remain unverified, with no claim that viewport testing proves them.
+
+### Pass7 — Unresolved design decisions
+
+None. Three concrete defects are fixed under existing user authorization for UI/UX fixes and established design/recovery requirements. No new product/design decisions were added, no user menu answer invented and no in-scope design remedy deferred. The9/10 completeness judgment reflects remaining real-environment validation limits rather than a pending design choice.
+
+NOT in scope: approvals/sharing/signing/addenda/immutable completed artifacts remain later units of the same open issue; arbitrary PDF body editing and lossless Word round-trip are not provided. What already exists: DESIGN.md, shell/navigation, ui primitives, focus/dialog behavior and theme tokens are reused. No new TODO proposed. No new tasks from Pass1, Pass3 or Pass4. Pass2 search recovery and Pass5/6 control/semantic tasks are implemented and verified; no open implementation task remains for this review.
+
+## Implementation Tasks
+
+- [x] T1 (P2, estimated human45min / agent10min): meet the existing touch-target requirement in agreement controls and portal dialogs. Files: Agreements CSS/Editor/Fields/index and system spec. Verified by settled44px measurements, mobile widths and actual screenshots.
+- [x] T2 (P2, estimated human30min / agent5min): recover failed party lookup with Retry search, retaining the query and active-request cleanup. Files: Agreements/index and system spec. Verified by a failed real-browser request followed by successful selection/generation.
+- [x] T3 (P2, estimated human5min / agent1min): use group semantics for existing ordinary Tab controls. File: Agreements/DocumentEditor. Verified by source and refreshed browser snapshot; no screen-reader certification claimed.
+
+## Design Review Completion Summary
+
+System audit: existing DESIGN.md, new archive/editor/dialog interactions; Step0 impression8/10. Passes1–6 before/after:9->9,7->9,8->9,9->9,8->9,6->9. Overall uses the lowest rated pass:6->9. Pass7: zero pending or deferred decisions. New product/design decisions:0. Generated/approved mockups:0/0. Native read-only reviewer: three findings, all fixed; external coverage unavailable. Scores are review judgments, not measurements.
+
+Standard combined suite:150/0 [measured: docs/qa/agreement-editor-2462/README.md:7]; Vite and focused lint pass. Real Playwright/Brave mobile screenshot and native field-settings screenshot are refreshed; current PDF text matches the previously rendered artifact. The separate screenshot harness's expired marker wait is explicitly excluded from passing-test evidence. No durable learning write-back performed. Full CI, CodeRabbit and production checks remain pending.
+
+## Engineering follow-up after design fixes
+
+Revisited the affected stages before refreshing exact-head evidence: architecture/security/storage/API contracts unchanged; code quality retains active-request cancellation for the new search refresh state and the existing error envelope; tests prove failed lookup recovery plus44px settled geometry; performance adds bounded local state/CSS work without new endpoints, loops over records, eager payloads or rendering per keystroke. No new engineering issues or silent critical gap. Unchanged model/parser/auth/export evidence is reused; the current150-example combined run also rechecks those contracts [measured: docs/qa/agreement-editor-2462/README.md:7]. Original scope/deferred requirements stay intact.
+
 ## GSTACK REVIEW REPORT
 
 | Review | Trigger | Why | Runs | Status | Findings |
 | --- | --- | --- | --- | --- | --- |
 | CEO Review | not run | No new product-scope decision | 0 | NOT RUN | Existing authoring unit retained |
-| Outside Review | Codex preflight | Independent plan challenge | 1 | UNAVAILABLE | Host mismatch; required native fallback tools absent |
-| Eng Review | /plan-eng-review | Architecture and tests | 1 | CLEAR; required log follows read-back | No new issues; no critical gaps; no unresolved decisions |
-| Design Review | /plan-design-review | UI/UX coverage | 0 | PENDING | Separate review remains required |
+| Outside Review | Codex preflight / native design assessment | Independent challenge | 2 phases | EXTERNAL UNAVAILABLE | Native design reviewer completed; three findings fixed |
+| Eng Review | /plan-eng-review + affected-stage follow-up | Architecture and tests | 2 | CLEAR; refreshed log follows read-back | No new issues; no critical gaps or unresolved decisions |
+| Design Review | /plan-design-review | UI/UX coverage | 1 | CLEAR; log follows read-back | Overall6->9; three implementation fixes; zero unresolved |
 | DX Review | /plan-devex-review | Internal API developer experience | 0 | PENDING | Separate review remains required |
 
-**OUTSIDE COVERAGE:** Codex / plan-review unavailable; no completed external phase or substitute credit.
-**VERDICT:** Engineering design clear for this authoring unit. Design/DX, exact-head CI, CodeRabbit and release checks remain required; this is not deployment approval.
+**OUTSIDE COVERAGE:** External Codex plan/design phases unavailable in current host. Native design assessment is in-host only; no outside-completion or cross-provider consensus claim.
+**VERDICT:** Engineering and design clear for this authoring unit after fixes. DX, exact-head CI, CodeRabbit and release checks remain required; no deployment approval is implied.
 NO UNRESOLVED DECISIONS
