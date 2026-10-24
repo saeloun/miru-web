@@ -63,7 +63,7 @@ const UserDetailsEdit = () => {
   const [showDatePicker, setShowDatePicker] = useState({ visibility: false });
   const [countries, setCountries] = useState([]);
   const [errDetails, setErrDetails] = useState(initialErrState);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [addrId, setAddrId] = useState();
   const [userId, setUserId] = useState();
   const [initialPersonalDetails, setInitialPersonalDetails] = useState(null);

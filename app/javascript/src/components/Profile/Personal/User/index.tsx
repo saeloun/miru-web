@@ -23,7 +23,7 @@ import AccountSecurity from "./AccountSecurity";
 const UserDetailsView = () => {
   const { updateDetails, personalDetails, isCalledFromSettings } =
     useProfileContext();
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [currentUserId, setCurrentUserId] = useState(null);
   const { avatarUrl, user, company, isDesktop, companyRole } = useUserContext();
   const { memberId } = useParams();
