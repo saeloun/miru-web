@@ -83,7 +83,7 @@ export type Revision = {
     }[];
     operations: {
       id: number;
-      kind: string;
+      kind: "send" | "cancel" | "remind" | "refresh";
       state: string;
       phase: string;
       error_message: string | null;

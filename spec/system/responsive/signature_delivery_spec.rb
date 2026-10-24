@@ -91,6 +91,10 @@ RSpec.describe "Signature delivery controls", type: :system, js: true do
     expect(SignatureOperation.where(kind: "send").count).to eq(1)
     expect(page).to have_field("Document title", disabled: true)
     expect(page).not_to have_button("Send for signature")
+    SignatureOperation.find_by!(kind: "send").update!(state: "confirmed", phase: "distributing", finished_at: Time.current)
+    @record.current_revision.update!(status: "awaiting_signatures", provider_envelope_id: "envelope_confirmed", provider_status: "PENDING")
+    expect(page).to have_content("Provider status: Pending.", wait: 15)
+    expect(page).not_to have_content("Send queued")
     click_button "Cancel signature request"
     within('[role="dialog"]') { click_button "Request cancellation" }
     expect(page).to have_content("Cancellation requested")
@@ -101,14 +105,23 @@ RSpec.describe "Signature delivery controls", type: :system, js: true do
   end
 
   it "shows recipient status and enforces the reminder cooldown" do
+    @record.with_lock do
+      @record.revise!(actor: admin, attributes: { recipients: @record.current_revision.recipients + [
+        { id: "reviewer", name: "Synthetic Reviewer", email: "reviewer@example.test", role: "reviewer" }] })
+    end
+    Signatures::Review.new(@record, actor: admin, attributes: signature_context(@record).merge(
+      approval_source: "manual", approval_note: "Synthetic reviewer approval evidence")).approve
     operation = queue_send
     operation.update!(state: "confirmed", phase: "distributing", finished_at: Time.current)
     revision = @record.current_revision
     revision.update!(status: "awaiting_signatures", provider_envelope_id: "envelope_synthetic", provider_status: "PENDING",
       provider_checked_at: Time.current, recipient_statuses: [{ "recipient_id" => "signer", "provider_recipient_id" => 42,
-        "signing_status" => "NOT_SIGNED", "send_status" => "SENT", "read_status" => "OPENED" }])
+        "signing_status" => "NOT_SIGNED", "send_status" => "SENT", "read_status" => "OPENED" },
+        { "recipient_id" => "reviewer", "provider_recipient_id" => 43,
+          "signing_status" => "NOT_SIGNED", "send_status" => "SENT", "read_status" => "NOT_OPENED" }])
     open_delivery
     expect(page).to have_content("Opened")
+    expect(page).to have_content("Awaiting approval")
     click_button "Remind pending recipients"
     expect(page).to have_content("Reminder queued")
     expect(page).to have_button("Remind pending recipients", disabled: true)

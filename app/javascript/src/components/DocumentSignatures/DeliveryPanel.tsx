@@ -18,6 +18,13 @@ type Connection = {
   configured: boolean;
   server_configured: boolean;
 };
+const operationMessages = {
+  send: "Send queued",
+  cancel: "Cancellation requested",
+  remind: "Reminder queued",
+  refresh: "Status check queued",
+};
+
 const label = (value: string) =>
   value
     .toLowerCase()
@@ -47,11 +54,13 @@ export default function DeliveryPanel({
   const [apiKey, setApiKey] = useState("");
   const [candidate, setCandidate] = useState("");
   const [error, setError] = useState("");
-  const [notice, setNotice] = useState("");
   const [confirm, setConfirm] = useState<"send" | "cancel" | null>(null);
   const mounted = useRef(true);
   const revision = record.revision;
   const delivery = revision.delivery;
+  const activeOperation = delivery.operations.find(operation =>
+    ["queued", "running", "waiting"].includes(operation.state)
+  );
   const historical = revision.id !== record.current_revision_id;
   const blocked =
     busy || disabled || historical || record.company_id !== Number(companyId);
@@ -151,7 +160,6 @@ export default function DeliveryPanel({
       if (mounted.current) {
         setConnection(data.signature_connection);
         setChangingConnection(false);
-        setNotice("Company signing connected");
       }
     } catch (failure) {
       if (mounted.current) setError(failureMessage(failure));
@@ -170,7 +178,6 @@ export default function DeliveryPanel({
     if (blocked) return;
     onBusyChange(true);
     setError("");
-    setNotice("");
     try {
       const { data } = await Api.post(
         `${endpoint(record.id)}/operations`,
@@ -190,18 +197,6 @@ export default function DeliveryPanel({
         onRecordChange(data.signature_request);
         setConfirm(null);
         setCandidate("");
-        setNotice(
-          data.operation.state === "queued"
-            ? {
-                send: "Send queued",
-                cancel: "Cancellation requested",
-                remind: "Reminder queued",
-                refresh: "Status check queued",
-              }[kind]
-            : data.operation.state === "confirmed"
-            ? `${label(kind)} confirmed`
-            : ""
-        );
         if (data.operation.error_message) {
           setError(data.operation.error_message);
         }
@@ -222,7 +217,9 @@ export default function DeliveryPanel({
       className="space-y-3 rounded-lg border border-border p-4"
     >
       <h2 className="font-semibold">Signing delivery</h2>
-      {notice && <p role="status">{notice}</p>}
+      {activeOperation && (
+        <p role="status">{operationMessages[activeOperation.kind]}</p>
+      )}
       {error && (
         <div role="alert" className="space-y-2">
           <p className="text-destructive">{error}</p>
@@ -451,6 +448,11 @@ export default function DeliveryPanel({
                     ? person.role === "reviewer"
                       ? "Approved"
                       : "Signed"
+                    : person.role === "reviewer" &&
+                      status?.signing_status === "NOT_SIGNED"
+                    ? active
+                      ? "Awaiting approval"
+                      : "Not approved"
                     : status
                     ? label(status.signing_status)
                     : "Not confirmed"}
