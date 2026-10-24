@@ -46,6 +46,20 @@ RSpec.describe "Signature delivery controls", type: :system, js: true do
     Signatures::Operations.new(@record, actor: admin, attributes: signature_context(@record)).send_request
   end
 
+  it "clears a queued status check after a cancelled request's job finishes" do
+    queue_send
+    cancellation = Signatures::Operations.new(@record, actor: admin, attributes: signature_context(@record)).cancel
+    SignatureDeliveryJob.perform_now(cancellation.id)
+    expect(@record.reload.current_revision.status).to eq("cancelled")
+    open_delivery
+    click_button "Check signing status"
+    expect(page).to have_content("Status check queued")
+    operation = @record.current_revision.signature_operations.find_by!(kind: "refresh")
+    operation.update!(state: "confirmed", finished_at: Time.current)
+    expect(page).to have_no_content("Status check queued", wait: 15)
+    expect(@console_errors).to be_empty
+  end
+
   it "connects and rotates the company key without showing it in the document or changing old credentials" do
     provider = stub_request(:get, "#{origin}/api/v2/envelope?perPage=1")
       .to_return(body: { data: [], count: 0, currentPage: 1, perPage: 1, totalPages: 0 }.to_json,

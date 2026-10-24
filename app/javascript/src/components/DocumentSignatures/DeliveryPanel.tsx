@@ -69,6 +69,7 @@ export default function DeliveryPanel({
   const active = ["sending", "send_uncertain", "awaiting_signatures"].includes(
     revision.status
   );
+  const shouldPoll = active || Boolean(activeOperation);
 
   const pending =
     revision.status === "awaiting_signatures" &&
@@ -100,7 +101,7 @@ export default function DeliveryPanel({
   }, [companyId, historical, connectionCheck]);
 
   useEffect(() => {
-    if (historical || !active || busy) return;
+    if (historical || !shouldPoll || busy) return;
     const controller = new window.AbortController();
     let loading = false;
     const timer = window.setInterval(async () => {
@@ -136,7 +137,7 @@ export default function DeliveryPanel({
     revision.id,
     companyId,
     historical,
-    active,
+    shouldPoll,
     busy,
     onRecordChange,
   ]);
