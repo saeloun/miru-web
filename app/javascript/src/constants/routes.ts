@@ -24,6 +24,7 @@ const ExpenseDetails = lazy(() => import("components/Expenses/Details"));
 const ExpensesTable = lazy(() => import("components/Expenses/ExpensesTable"));
 const SalarySlips = lazy(() => import("components/SalarySlips"));
 const TaxDeclarations = lazy(() => import("components/TaxDeclarations"));
+const Agreements = lazy(() => import("components/Agreements"));
 const IndiaTaxEstimates = lazy(() => import("components/IndiaTaxEstimates"));
 const ConsultantPayroll = lazy(() => import("components/ConsultantPayroll"));
 const PayrollReview = lazy(() => import("components/Payroll/Review"));
@@ -273,6 +274,14 @@ export const ROUTES = [
     path: "/salary-slips",
     subRoutes: [{ path: "", Component: SalarySlips }],
     authorisedRoles: [ADMIN, OWNER, BOOK_KEEPER, EMPLOYEE, Roles.MANAGER],
+  },
+  {
+    path: "/agreements",
+    subRoutes: [
+      { path: "", Component: Agreements },
+      { path: ":recordType/:recordId", Component: Agreements },
+    ],
+    authorisedRoles: [ADMIN, OWNER],
   },
   {
     path: "/tax-declarations",

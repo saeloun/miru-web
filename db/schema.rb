@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_24_000000) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_24_100000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_stat_statements"
@@ -91,6 +91,47 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_24_000000) do
     t.index ["company_id"], name: "index_agents_on_company_id"
     t.index ["default_project_id"], name: "index_agents_on_default_project_id"
     t.index ["user_id"], name: "index_agents_on_user_id"
+  end
+
+  create_table "agreement_templates", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "created_by_id", null: false
+    t.string "title", limit: 200, null: false
+    t.string "kind", null: false
+    t.text "document", null: false
+    t.text "fields", null: false
+    t.integer "lock_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id"], name: "index_agreement_templates_on_company_id"
+    t.index ["created_by_id"], name: "index_agreement_templates_on_created_by_id"
+    t.check_constraint "kind::text = ANY (ARRAY['client'::character varying, 'consultant'::character varying]::text[])", name: "agreement_templates_kind"
+  end
+
+  create_table "agreements", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "created_by_id", null: false
+    t.bigint "agreement_template_id"
+    t.integer "source_template_version"
+    t.bigint "client_id"
+    t.bigint "employment_id"
+    t.string "title", limit: 200, null: false
+    t.string "kind", null: false
+    t.string "status", default: "draft", null: false
+    t.text "document", null: false
+    t.text "fields", null: false
+    t.text "field_values", null: false
+    t.integer "lock_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["agreement_template_id"], name: "index_agreements_on_agreement_template_id"
+    t.index ["client_id"], name: "index_agreements_on_client_id"
+    t.index ["company_id"], name: "index_agreements_on_company_id"
+    t.index ["created_by_id"], name: "index_agreements_on_created_by_id"
+    t.index ["employment_id"], name: "index_agreements_on_employment_id"
+    t.check_constraint "agreement_template_id IS NULL AND source_template_version IS NULL OR agreement_template_id IS NOT NULL AND source_template_version IS NOT NULL AND source_template_version >= 0", name: "agreements_source_version"
+    t.check_constraint "kind::text = 'client'::text AND client_id IS NOT NULL AND employment_id IS NULL OR kind::text = 'consultant'::text AND employment_id IS NOT NULL AND client_id IS NULL", name: "agreements_counterparty"
+    t.check_constraint "status::text = 'draft'::text", name: "agreements_status"
   end
 
   create_table "ahoy_events", force: :cascade do |t|
@@ -1482,6 +1523,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_24_000000) do
   add_foreign_key "agents", "companies"
   add_foreign_key "agents", "projects", column: "default_project_id"
   add_foreign_key "agents", "users"
+  add_foreign_key "agreement_templates", "companies"
+  add_foreign_key "agreement_templates", "users", column: "created_by_id"
+  add_foreign_key "agreements", "agreement_templates"
+  add_foreign_key "agreements", "clients"
+  add_foreign_key "agreements", "companies"
+  add_foreign_key "agreements", "employments"
+  add_foreign_key "agreements", "users", column: "created_by_id"
   add_foreign_key "analytics_reports", "companies"
   add_foreign_key "analytics_reports", "users", column: "created_by_id"
   add_foreign_key "analytics_threshold_notification_logs", "companies"

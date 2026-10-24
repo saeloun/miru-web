@@ -75,7 +75,7 @@ FROM base AS development
 
 # Install packages needed for development
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y build-essential git libffi-dev libpq-dev libyaml-dev node-gyp pkg-config python-is-python3 chromium chromium-sandbox && \
+    apt-get install --no-install-recommends -y build-essential git libffi-dev libpq-dev libyaml-dev node-gyp pkg-config python-is-python3 chromium chromium-sandbox fonts-noto-core && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
 # Unset production environment for development
@@ -143,9 +143,10 @@ FROM base AS production
 
 # Install packages needed for deployment
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y chromium chromium-sandbox imagemagick libvips && \
+    apt-get install --no-install-recommends -y chromium chromium-sandbox fontconfig fonts-noto-core imagemagick libvips && \
+    fc-list :charset=0906 | grep -q . && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives && \
-    rm -rf /usr/local/node || true
+    rm -rf /usr/local/node
 
 # Copy built artifacts: gems, application
 COPY --from=build "${BUNDLE_PATH}" "${BUNDLE_PATH}"
