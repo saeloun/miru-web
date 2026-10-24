@@ -405,15 +405,23 @@ All affected engineering stages were rechecked: field values now use only valida
 
 Design follow-up rechecked the two recovery states: existing alert/dialog patterns display the reference or archive instruction, error state clears on successful PDF retry, and the document remains intact. New screenshots are readable; existing mobile layout/control/role coverage passes in the current core run. Earlier unchanged seven-pass design evidence is reused; no new layout, new design decision, human approval or physical-device claim is made. These follow-ups must be logged at the final committed head, not assumed from earlier hashes.
 
+## CI follow-up review
+
+Public PR2475 at c7c14cdd3 exposed nine new Reek warnings and an inherited docs package advisory. The validator/importer now separates existing parsing responsibilities into focused private methods without disabling detectors or changing supported input. Review compared every extracted branch to its prior caller: package check order, trusted child validation, numbering overrides/starts, text marks and split placeholders, list counters, table spans, recursion and rejection/cleanup boundaries remain. A temporary stray return from extraction failed five focused tests and was removed before commit. Current focused validator/importer57/0 and combined155/0 pass [measured: docs/qa/agreement-editor-2462/README.md:7]; the final pluck idiom was checked by the focused run. Full CI Reek0warnings and focused RuboCop pass. No new behavior-specific tests mirror these extractions; existing substantive Word fixtures cover them.
+
+The docs serialize-javascript pin changes7.0.5->7.1.3. Running the remaining mobile audit then exposed active undici advisories, so its CLI pin changes6.28.1->6.29.1. Both lockfile changes are limited to those packages. Primary advisories and exact build/audit limits are recorded in QA evidence. Root/docs audits pass; mobile exits0 with its pre-existing ignored advisory retained. Frozen installs, docs production build, mobile TypeScript check and web export pass. No new audit exception, runtime feature or mobile UI change was added; native device builds remain unverified.
+
+Engineering follow-up reviewed the extraction diff and existing rejection/formatting tests; dependency changes use patched versions in the same major and their actual build consumers pass. Design evidence is reused unchanged: no UI or rendering contract changed, and the current combined browser run rechecks authoring/import/export/recovery. DX follow-up checks contributor references still point to valid definitions and preserves the established failure contracts. No new product decision or unresolved implementation finding remains in this follow-up. Exact-head logs must identify evidence reuse; remote CI, CodeRabbit and deployment remain pending rather than receiving clean credit from local checks.
+
 ## GSTACK REVIEW REPORT
 
 | Review | Trigger | Why | Runs | Status | Findings |
 | --- | --- | --- | --- | --- | --- |
 | CEO Review | not run | No new product-scope decision | 0 | NOT RUN | Original authoring unit retained |
 | Outside Review | Codex preflights / native design assessment | Independent challenge | plan/design/DX phases | EXTERNAL UNAVAILABLE | Native design findings fixed; no DX outside reviewer completed |
-| Eng Review | /plan-eng-review + affected-stage follow-ups | Architecture and tests | 3 | CLEAR; final-head log follows read-back | No new unresolved issue or critical gap after fixes |
-| Design Review | /plan-design-review + recovery follow-up | UI/UX | 2 | CLEAR; final-head log follows read-back | Prior6->9; new recovery states verified |
-| DX Review | /plan-devex-review | Internal developer experience | 1 | CLEAR; log follows read-back | Overall4->8; caps fixed; zero unresolved decisions |
+| Eng Review | /plan-eng-review + affected-stage follow-ups | Architecture and tests | 3 + CI follow-up | CLEAR; final-head log follows read-back | No new unresolved issue or critical gap after fixes |
+| Design Review | /plan-design-review + recovery follow-up | UI/UX | 2; unchanged evidence reused | CLEAR; final-head log follows read-back | Prior6->9; new recovery states verified |
+| DX Review | /plan-devex-review + CI follow-up | Internal developer experience | 1 + affected-stage follow-up | CLEAR; log follows read-back | Overall4->8; caps fixed; zero unresolved decisions |
 
 **OUTSIDE COVERAGE:** External Codex phases unavailable in this host. Native design assessment is in-host only; the missing bounded DX fallback is not a completed review.
 **VERDICT:** Engineering, design and internal DX clear for the authoring unit after verified fixes. Exact-head CI, CodeRabbit and production release checks remain required; the full issue/goal is not complete.

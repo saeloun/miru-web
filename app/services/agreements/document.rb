@@ -118,7 +118,10 @@ module Agreements
         end
         validate_attributes(type, node.fetch("attrs", {}))
         validate_text_and_marks(type, node)
-        children = node.fetch("content", [])
+        validate_children(type, node.fetch("content", []), depth)
+      end
+
+      def validate_children(type, children, depth)
         unless children.is_a?(Array) && children.all? { |child| child.is_a?(Hash) && CHILDREN.fetch(type, []).include?(child["type"]) }
           @problems << "Document contains invalid child nodes"
           return

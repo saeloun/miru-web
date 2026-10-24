@@ -38,12 +38,42 @@ module Agreements
       Zip::File.open_buffer(@archive_data) do |zip|
         validate_archive!(zip)
         validate_note_parts!(zip)
+        validate_content_type!(zip)
+        validate_relationships!(zip)
+        load_styles(zip) if zip.find_entry("word/styles.xml")
+        load_numbering(zip) if zip.find_entry("word/numbering.xml")
+        document = { "type" => "doc", "content" => parse_blocks(document_body(zip), 0) }
+        document["content"] = [{ "type" => "paragraph" }] if document["content"].empty?
+        validate_result!(document)
+        return { document:, fields: @fields, warnings: [NORMALIZED_LAYOUT] }
+      end
+    rescue Zip::Error, Nokogiri::XML::SyntaxError, Enumerable::SoleItemExpectedError
+      raise Error, "The DOCX archive or XML is invalid; the existing agreement has not changed"
+    end
+
+    private
+
+      def document_body(zip)
+        root = xml_part(zip, "word/document.xml").root
+        unless root&.name == "document" && WORD_NAMESPACES.include?(root.namespace&.href)
+          raise Error, "The upload does not contain a supported Word document"
+        end
+        body = word_children(root).sole
+        raise Error, "The Word document body is invalid" unless body.name == "body"
+
+        body
+      end
+
+      def validate_content_type!(zip)
         content_types = xml_part(zip, "[Content_Types].xml")
         unless content_types.xpath("//*[local-name()='Override']").any? do |node|
             node["PartName"] == "/word/document.xml" && node["ContentType"] == "#{MIME_TYPE}.main+xml"
           end
           raise Error, "Choose a Word DOCX document, without macros"
         end
+      end
+
+      def validate_relationships!(zip)
         zip.entries.select { |entry| entry.name.end_with?(".rels") }.each do |entry|
           if xml_part(zip, entry.name).xpath("//*[local-name()='Relationship'][@TargetMode='External']").any?
             raise Error, "External relationships are unsupported; include the required terms directly in the document"
@@ -56,26 +86,7 @@ module Agreements
         unless relationships.size == 1 && relationships.first["Target"]&.delete_prefix("/") == "word/document.xml"
           raise Error, "Unsupported main document relationship"
         end
-        load_styles(zip) if zip.find_entry("word/styles.xml")
-        load_numbering(zip) if zip.find_entry("word/numbering.xml")
-        source = xml_part(zip, "word/document.xml")
-        root = source.root
-        unless root&.name == "document" && WORD_NAMESPACES.include?(root.namespace&.href)
-          raise Error, "The upload does not contain a supported Word document"
-        end
-        body = word_children(root).sole
-        raise Error, "The Word document body is invalid" unless body.name == "body"
-
-        document = { "type" => "doc", "content" => parse_blocks(body, 0) }
-        document["content"] = [{ "type" => "paragraph" }] if document["content"].empty?
-        validate_result!(document)
-        return { document:, fields: @fields, warnings: [NORMALIZED_LAYOUT] }
       end
-    rescue Zip::Error, Nokogiri::XML::SyntaxError, Enumerable::SoleItemExpectedError
-      raise Error, "The DOCX archive or XML is invalid; the existing agreement has not changed"
-    end
-
-    private
 
       def validate_upload!
         unless @upload.is_a?(ActionDispatch::Http::UploadedFile) &&
@@ -220,16 +231,20 @@ module Agreements
             level = integer_value(child, maximum: 9)
             result["level"] = level == 9 ? nil : level + 1
           when "numPr"
-            properties = word_children(child)
-            result["num_id"] = word_value(properties.find { |property| property.name == "numId" })
-            level = properties.find { |property| property.name == "ilvl" }
-            result["list_level"] = level ? integer_value(level, maximum: 8) : 0
+            result.merge!(list_properties(child))
           when "pageBreakBefore"
             result["page_break"] = !%w[0 false off].include?(word_value(child))
           else
             unsupported!(child) unless PARAGRAPH_METADATA.include?(child.name)
           end
         end
+      end
+
+      def list_properties(node)
+        properties = word_children(node).group_by(&:name)
+        level = properties.fetch("ilvl", []).first
+        { "num_id" => word_value(properties.fetch("numId", []).first),
+          "list_level" => level ? integer_value(level, maximum: 8) : 0 }
       end
 
       def run_properties(node, ancestors = [])
@@ -266,30 +281,35 @@ module Agreements
       end
 
       def numbering_format(id, index)
+        level, overrides = numbering_level(id, index)
+        return unless level
+
+        properties = word_children(level).group_by(&:name)
+        format = word_value(properties.fetch("numFmt", []).first)
+        label = word_value(properties.fetch("lvlText", []).first)
+        bullets = ["•", "·", "●", "○", "▪", "o", "-", "\uF0B7", "\uF0A7"]
+        unless (format == "decimal" && label == "%#{index + 1}.") || (format == "bullet" && bullets.include?(label))
+          raise Error, "Unsupported Word list numbering; preserve clause numbers as text before importing"
+        end
+        start = overrides.find { |node| node.name == "startOverride" } || properties.fetch("start", []).first
+        { type: format == "bullet" ? "bulletList" : "orderedList", start: start ? integer_value(start, minimum: 1) : 1 }
+      end
+
+      def numbering_level(id, index)
         number = @numbering[id]
         return unless number
 
-        references = word_children(number)
-        abstract = @abstract_numbering[word_value(references.find { |node| node.name == "abstractNumId" })]
+        references = word_children(number).group_by(&:name)
+        abstract = @abstract_numbering[word_value(references.fetch("abstractNumId", []).first)]
         return unless abstract
 
-        override = references.find { |node| node.name == "lvlOverride" && word_value(node, "ilvl") == index.to_s }
+        override = references.fetch("lvlOverride", []).find { |node| word_value(node, "ilvl") == index.to_s }
         overrides = override ? word_children(override) : []
         raise Error, "Unsupported Word numbering override" if overrides.any? { |node| !%w[lvl startOverride].include?(node.name) }
 
         level = overrides.find { |node| node.name == "lvl" } ||
           word_children(abstract).find { |node| node.name == "lvl" && word_value(node, "ilvl") == index.to_s }
-        return unless level
-
-        properties = word_children(level)
-        format = word_value(properties.find { |node| node.name == "numFmt" })
-        label = word_value(properties.find { |node| node.name == "lvlText" })
-        bullets = ["•", "·", "●", "○", "▪", "o", "-", "\uF0B7", "\uF0A7"]
-        unless (format == "decimal" && label == "%#{index + 1}.") || (format == "bullet" && bullets.include?(label))
-          raise Error, "Unsupported Word list numbering; preserve clause numbers as text before importing"
-        end
-        start = overrides.find { |node| node.name == "startOverride" } || properties.find { |node| node.name == "start" }
-        { type: format == "bullet" ? "bulletList" : "orderedList", start: start ? integer_value(start, minimum: 1) : 1 }
+        [level, overrides]
       end
 
       def parse_blocks(parent, depth)
@@ -324,30 +344,39 @@ module Agreements
         style_id = word_value(ppr && word_children(ppr).find { |child| child.name == "pStyle" }) || "Normal"
         style = style_properties(style_id)
         properties = @default_properties[:paragraph].merge(style[:paragraph]).merge(paragraph_properties(ppr))
-        inlines = []
-        children.each do |child|
-          next if %w[pPr bookmarkStart bookmarkEnd proofErr].include?(child.name)
+        inlines = children.flat_map do |child|
+          next [] if %w[pPr bookmarkStart bookmarkEnd proofErr].include?(child.name)
           unsupported!(child) unless child.name == "r"
 
-          run_children = word_children(child)
-          marks = @default_properties[:marks].merge(style[:marks]).merge(run_properties(run_children.find { |item| item.name == "rPr" }))
-            .filter_map { |type, enabled| { "type" => type } if enabled }
-          run_children.each do |item|
-            case item.name
-            when "rPr", "lastRenderedPageBreak" then next
-            when "t"
-              unsupported!(item) if item.element_children.any?
-              inlines << { "type" => "text", "text" => item.text, "marks" => marks } unless item.text.empty?
-            when "tab" then inlines << { "type" => "text", "text" => "\t", "marks" => marks }
-            when "br", "cr"
-              type = word_value(item, "type")
-              raise Error, "Unsupported Word column break" unless [nil, "textWrapping", "page"].include?(type)
-
-              inlines << { "type" => type == "page" ? "pageBreak" : "hardBreak" }
-            else unsupported!(item)
-            end
-          end
+          parse_run(child, style[:marks])
         end
+        [properties, paragraph_blocks(inlines, properties)]
+      end
+
+      def parse_run(node, style_marks)
+        children = word_children(node)
+        marks = @default_properties[:marks].merge(style_marks).merge(run_properties(children.find { |item| item.name == "rPr" }))
+          .filter_map { |type, enabled| { "type" => type } if enabled }
+        children.filter_map { |item| parse_run_item(item, marks) }
+      end
+
+      def parse_run_item(item, marks)
+        case item.name
+        when "rPr", "lastRenderedPageBreak" then nil
+        when "t"
+          unsupported!(item) if item.element_children.any?
+          { "type" => "text", "text" => item.text, "marks" => marks } unless item.text.empty?
+        when "tab" then { "type" => "text", "text" => "\t", "marks" => marks }
+        when "br", "cr"
+          type = word_value(item, "type")
+          raise Error, "Unsupported Word column break" unless [nil, "textWrapping", "page"].include?(type)
+
+          { "type" => type == "page" ? "pageBreak" : "hardBreak" }
+        else unsupported!(item)
+        end
+      end
+
+      def paragraph_blocks(inlines, properties)
         type = properties["level"] ? "heading" : "paragraph"
         attributes = properties.slice("level", "textAlign").compact
         paragraphs = []
@@ -358,41 +387,42 @@ module Agreements
           paragraphs << { "type" => "pageBreak" } if index.positive?
           paragraphs << { "type" => type, "attrs" => attributes, "content" => merge_placeholders(segment) } unless segment.empty? && segments.length > 1
         end
-        [properties, paragraphs]
+        paragraphs
       end
 
       def merge_placeholders(inlines)
-        result = []
-        inlines.chunk { |node| node["type"] == "text" }.each do |text_group, nodes|
-          unless text_group
-            result.concat(nodes)
-            next
-          end
-          text = nodes.map { |node| node["text"] }.join
-          offsets = []
-          position = 0
-          nodes.each { |node| offsets << [position, position += node["text"].length, node] }
-          cursor = 0
-          text.to_enum(:scan, /\{\{([^{}]+)\}\}/).each do
-            match = Regexp.last_match
-            result.concat(text_slice(offsets, cursor, match.begin(0)))
-            key = match[1]
-            unless key.match?(/\A[a-z][a-z0-9_]{0,63}\z/) && !%w[constructor prototype].include?(key)
-              raise Error, "Unsupported placeholder key"
-            end
-            unless @fields.any? { |field| field["key"] == key }
-              raise Error, "A template can contain at most 100 fields" if @fields.length >= 100
-
-              @fields << { "key" => key, "label" => key.humanize, "type" => "text", "role" => "admin",
-                "required" => true, "read_only" => false }
-            end
-            marks = offsets.bsearch { |_start, finish, _node| finish > match.begin(0) }.last["marks"]
-            result << { "type" => "mergeField", "attrs" => { "key" => key }, "marks" => marks }
-            cursor = match.end(0)
-          end
-          result.concat(text_slice(offsets, cursor, text.length))
+        inlines.chunk { |node| node["type"] == "text" }.flat_map do |text_group, nodes|
+          text_group ? replace_placeholders(nodes) : nodes
         end
-        result
+      end
+
+      def replace_placeholders(nodes)
+        text = nodes.pluck("text").join
+        offsets = []
+        position = 0
+        nodes.each { |node| offsets << [position, position += node["text"].length, node] }
+        cursor = 0
+        result = []
+        text.to_enum(:scan, /\{\{([^{}]+)\}\}/).each do
+          match = Regexp.last_match
+          result.concat(text_slice(offsets, cursor, match.begin(0)))
+          result << merge_field(match[1], offsets.bsearch { |_start, finish, _node| finish > match.begin(0) }.last["marks"])
+          cursor = match.end(0)
+        end
+        result.concat(text_slice(offsets, cursor, text.length))
+      end
+
+      def merge_field(key, marks)
+        unless key.match?(/\A[a-z][a-z0-9_]{0,63}\z/) && !%w[constructor prototype].include?(key)
+          raise Error, "Unsupported placeholder key"
+        end
+        unless @fields.any? { |field| field["key"] == key }
+          raise Error, "A template can contain at most 100 fields" if @fields.length >= 100
+
+          @fields << { "key" => key, "label" => key.humanize, "type" => "text", "role" => "admin",
+            "required" => true, "read_only" => false }
+        end
+        { "type" => "mergeField", "attrs" => { "key" => key }, "marks" => marks }
       end
 
       def text_slice(offsets, from, to)
@@ -413,18 +443,20 @@ module Agreements
 
         lists.clear if lists.first && lists.first[:id] != id
         lists.pop while lists.length > level + 1
-        if lists.length <= level
-          raise Error, "Unsupported skipped Word list level" unless lists.length == level
-
-          list = { "type" => format[:type], "content" => [] }
-          list["attrs"] = { "start" => @list_counters.fetch([id, level], format[:start]) } if format[:type] == "orderedList"
-          destination = level.zero? ? blocks : lists.last[:node]["content"].last["content"]
-          destination << list
-          lists << { id:, node: list }
-        end
+        build_list(blocks, lists, id, level, format) if lists.length <= level
         lists.last[:node]["content"] << { "type" => "listItem", "content" => paragraphs }
         @list_counters[[id, level]] = @list_counters.fetch([id, level], format[:start]) + 1
         @list_counters.delete_if { |(number_id, number_level), _value| number_id == id && number_level > level }
+      end
+
+      def build_list(blocks, lists, id, level, format)
+        raise Error, "Unsupported skipped Word list level" unless lists.length == level
+
+        list = { "type" => format[:type], "content" => [] }
+        list["attrs"] = { "start" => @list_counters.fetch([id, level], format[:start]) } if format[:type] == "orderedList"
+        destination = level.zero? ? blocks : lists.last[:node]["content"].last["content"]
+        destination << list
+        lists << { id:, node: list }
       end
 
       def parse_table(node, depth)
@@ -432,28 +464,36 @@ module Agreements
           next if %w[tblPr tblGrid].include?(row.name)
           unsupported!(row) unless row.name == "tr"
 
-          cells = word_children(row).filter_map do |cell|
-            next if cell.name == "trPr"
-            unsupported!(cell) unless cell.name == "tc"
-
-            properties = word_children(cell).find { |child| child.name == "tcPr" }
-            span = 1
-            word_children(properties).each do |property|
-              if property.name == "gridSpan"
-                span = integer_value(property, minimum: 1, maximum: 20)
-              elsif !%w[tcW tcBorders shd vAlign tcMar].include?(property.name)
-                unsupported!(property)
-              end
-            end if properties
-            content_parent = cell.dup
-            content_parent.element_children.select { |child| child.name == "tcPr" }.each(&:remove)
-            content = parse_blocks(content_parent, depth)
-            { "type" => "tableCell", "attrs" => { "colspan" => span, "rowspan" => 1 },
-              "content" => content.presence || [{ "type" => "paragraph" }] }
-          end
-          { "type" => "tableRow", "content" => cells }
+          parse_row(row, depth)
         end
         { "type" => "table", "content" => rows }
+      end
+
+      def parse_row(row, depth)
+        cells = word_children(row).filter_map do |cell|
+          next if cell.name == "trPr"
+          unsupported!(cell) unless cell.name == "tc"
+
+          parse_cell(cell, depth)
+        end
+        { "type" => "tableRow", "content" => cells }
+      end
+
+      def parse_cell(cell, depth)
+        properties = word_children(cell).find { |child| child.name == "tcPr" }
+        span = 1
+        word_children(properties).each do |property|
+          if property.name == "gridSpan"
+            span = integer_value(property, minimum: 1, maximum: 20)
+          elsif !%w[tcW tcBorders shd vAlign tcMar].include?(property.name)
+            unsupported!(property)
+          end
+        end if properties
+        content_parent = cell.dup
+        content_parent.element_children.select { |child| child.name == "tcPr" }.each(&:remove)
+        content = parse_blocks(content_parent, depth)
+        { "type" => "tableCell", "attrs" => { "colspan" => span, "rowspan" => 1 },
+          "content" => content.presence || [{ "type" => "paragraph" }] }
       end
 
       def unsupported!(node)
