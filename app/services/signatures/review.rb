@@ -42,7 +42,7 @@ class Signatures::Review
 
     def approval_errors(revision)
       invitations = revision.review_invitations.where(revoked_at: nil).to_a
-      failures = revision.configuration.ready_errors
+      failures = revision.ready_errors
       failures << "Resolve requested changes before recording approval" if invitations.any? { |item| item.decision == "changes_requested" }
       failures + approval_source_errors(invitations)
     end

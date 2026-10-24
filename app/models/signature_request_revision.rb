@@ -2,7 +2,7 @@
 
 class SignatureRequestRevision < ApplicationRecord
   STATUSES = %w[draft under_review changes_requested approved sending send_uncertain awaiting_signatures signed declined cancelled expired].freeze
-  CONTENT_ATTRIBUTES = %w[signature_request_id created_by_id number title documents recipients fields content_digest].freeze
+  CONTENT_ATTRIBUTES = %w[signature_request_id created_by_id number title documents recipients fields signing_options content_digest].freeze
 
   belongs_to :signature_request
   belongs_to :created_by, class_name: "User"
@@ -13,7 +13,8 @@ class SignatureRequestRevision < ApplicationRecord
   serialize :documents, coder: JSON
   serialize :recipients, coder: JSON
   serialize :fields, coder: JSON
-  encrypts :documents, :recipients, :fields, :approval_note
+  serialize :signing_options, coder: JSON
+  encrypts :documents, :recipients, :fields, :signing_options, :approval_note
   self.filter_attributes += [:title, :documents, :recipients, :fields, :approval_note]
   before_validation :assign_digest, on: :create
 
@@ -26,6 +27,16 @@ class SignatureRequestRevision < ApplicationRecord
 
   def configuration
     Signatures::Configuration.new(documents:, recipients:, fields:)
+  end
+
+  def ready_errors
+    failures = configuration.ready_errors
+    return failures if failures.any?
+
+    Signatures::Envelope.new(self).payload(operation_id: "approval-check")
+    []
+  rescue Signatures::Envelope::InvalidConfiguration => error
+    [error.message]
   end
 
   def review_comments_page(before_id: nil)
@@ -62,6 +73,11 @@ class SignatureRequestRevision < ApplicationRecord
       configuration.errors.each { |message| errors.add(:base, message) }
       return if configuration.errors.any?
 
+      unless Signatures::Envelope.valid_options?(signing_options)
+        errors.add(:base, "Save a new version with valid signing settings")
+        return
+      end
+
       blobs = originals.blobs.to_a
       unless documents.is_a?(Array) && documents.size == blobs.size && documents.sum { |document| document["byte_size"].to_i } <= 25.megabytes &&
           documents.all? do |document|
@@ -80,10 +96,16 @@ class SignatureRequestRevision < ApplicationRecord
     end
 
     def assign_digest
+      if signature_request&.company
+        self.signing_options ||= Signatures::Envelope.default_options(timezone: signature_request.company.resolved_time_zone.tzinfo.name)
+      end
       return if configuration.errors.any?
 
+      self.fields = fields.map do |field|
+        field.merge(field.slice("x", "y", "width", "height").transform_values { |value| value.round(2) })
+      end
       payload = { "title" => title, "documents" => documents.map { |document| document.except("blob_id") },
-        "recipients" => recipients, "fields" => fields }
+        "recipients" => recipients, "fields" => fields, "signing_options" => signing_options }
       self.content_digest = Digest::SHA256.hexdigest(JSON.generate(canonical(payload)))
     end
 

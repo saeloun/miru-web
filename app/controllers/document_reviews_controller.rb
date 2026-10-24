@@ -66,7 +66,7 @@ class DocumentReviewsController < ActionController::Base
       revision.review_comments_page(before_id: @attributes[:before_id]).merge(
         name: @invitation.recipient.fetch("name"), company_name: revision.signature_request.company.name,
         expires_at: @invitation.expires_at, decision: @invitation.decision,
-        revision: revision.slice(:number, :title, :content_digest, :status).merge(
+        revision: revision.slice(:number, :title, :content_digest, :signing_options, :status).merge(
           documents: revision.documents.map { |document| document.except("blob_id") }, fields: revision.fields,
           recipients: revision.recipients.map { |recipient| recipient.slice("id", "name", "role") }))
     end

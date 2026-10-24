@@ -118,6 +118,9 @@ RSpec.describe "Uploaded documents for signing", type: :system, js: true do
     click_button "Add field"
     expect(page).not_to have_field("Field value")
     expect(page).to have_unchecked_field("Read-only", disabled: true)
+    select "Date", from: "Field type"
+    expect(find_field("Field value")["aria-describedby"]).to eq("signature-value-help")
+    expect(page).to have_css("#signature-value-help", text: "Leave blank to fill automatically")
     select "Dropdown", from: "Field type"
     fill_in "Dropdown options", with: "INR\nUSD"
     select "INR", from: "Field value"
@@ -171,6 +174,7 @@ RSpec.describe "Uploaded documents for signing", type: :system, js: true do
   end
 
   it "drags and resizes fields assigned to different signers and persists their exact positions" do
+    company.update!(timezone: "Mumbai")
     open_documents
     add_signer
     add_signer(index: 2, name: "Synthetic Company Signer", email: "company@example.test")
@@ -195,6 +199,17 @@ RSpec.describe "Uploaded documents for signing", type: :system, js: true do
     company_signer = revision.recipients.find { |recipient| recipient.fetch("email") == "company@example.test" }
     expect(revision.fields.find { |field| field.fetch("label") == "Company signature" })
       .to include("recipient_id" => company_signer.fetch("id"), "x" => left, "width" => width)
+    { "Company signature" => 55, "Consultant signature" => 10 }.each do |label, position|
+      within("section[aria-label='Document fields']") { click_button label, exact: true }
+      fill_in "Left (%)", with: position
+      fill_in "Top (%)", with: "59.5"
+      fill_in "Width (%)", with: "28.5"
+      fill_in "Height (%)", with: "3"
+    end
+    click_button "Save changes"
+    expect(page).to have_css('[role="status"]', text: "All changes saved")
+    expect(page).not_to have_content("Loading PDF preview…")
+    expect(page).to have_css(".signature-placement", count: 2)
     page.execute_script("window.scrollTo(0,0)")
     page.save_screenshot(Rails.root.join("tmp/capybara/signature-placement-desktop.png"), full: true)
     page.current_window.resize_to(375, 900)
@@ -208,9 +223,25 @@ RSpec.describe "Uploaded documents for signing", type: :system, js: true do
       raise Capybara::ExpectationNotMet, "The mobile workspace did not reach a usable width" unless usable_width
     end
     expect(page).to have_css('[data-pdf-ready="true"]')
+    expect(page).not_to have_content("Loading PDF preview…")
+    expect(page).to have_css(".signature-placement", count: 2)
     expect(page.evaluate_script("document.documentElement.scrollWidth <= window.innerWidth + 1")).to be(true)
     page.execute_script("window.scrollTo(0,0)")
     page.save_screenshot(Rails.root.join("tmp/capybara/signature-placement-mobile.png"), full: false)
+    expect(@console_errors).to be_empty
+  end
+
+  it "saves a field at the page edge without a floating-point validation error" do
+    open_documents
+    add_signer
+    click_button "Add field"
+    fill_in "Width (%)", with: "8.21"
+    fill_in "Left (%)", with: "91.79"
+    expect(page.evaluate_script("document.querySelector('#signature-field-x').checkValidity()")).to be(true)
+    click_button "Save changes"
+    expect(page).to have_css('[role="status"]', text: "All changes saved")
+    field = SignatureRequest.find_by!(title: "Synthetic uploaded agreement").current_revision.fields.first
+    expect(field).to include("x" => 91.79, "width" => 8.21)
     expect(@console_errors).to be_empty
   end
 
@@ -249,14 +280,20 @@ RSpec.describe "Uploaded documents for signing", type: :system, js: true do
   end
 
   it "reviews the exact uploaded version privately and records approval before a replacement invalidates it" do
+    company.update!(timezone: "Mumbai")
     open_documents
+    expect(page).to have_content("Time zone: Asia/Kolkata")
+    expect(page).to have_content("Signing window: 3 months")
     add_signer
     click_button "Add field"
+    fill_in "Top (%)", with: "59.5"
+    fill_in "Width (%)", with: "28.5"
+    fill_in "Height (%)", with: "3"
     click_button "Add field"
     select "Text", from: "Field type"
     fill_in "Field label", with: "Reviewed fee"
     fill_in "Field value", with: "INR 12345"
-    fill_in "Top (%)", with: "60"
+    fill_in "Top (%)", with: "45"
     check "Read-only"
     click_button "Save changes"
     expect(page).to have_css('[role="status"]', text: "All changes saved")
@@ -267,10 +304,12 @@ RSpec.describe "Uploaded documents for signing", type: :system, js: true do
     link = "/document-review##{invitation.access_token}"
     visit link
     expect(page).to have_content("Review this document")
+    expect(page).to have_content("Time zone: Asia/Kolkata")
     expect(page).to have_css('[data-pdf-ready="true"]')
     expect(page.evaluate_script("window.location.hash")).to eq("")
     expect(page).to have_content("INR 12345")
     expect(page).to have_css(".signature-placement", text: "INR 12345")
+    expect(page).not_to have_content("Loading PDF preview…")
     expect(page).not_to have_field("Field value")
     fill_in "Review comment", with: "<script>window.review_xss = true</script> Please confirm the fee."
     click_button "Request changes"
@@ -280,6 +319,8 @@ RSpec.describe "Uploaded documents for signing", type: :system, js: true do
     page.save_screenshot(Rails.root.join("tmp/capybara/signature-review-desktop.png"), full: true)
     page.current_window.resize_to(375, 900)
     expect(page).to have_css('[data-pdf-ready="true"]')
+    expect(page).not_to have_content("Loading PDF preview…")
+    expect(page).to have_css(".signature-placement", count: 2)
     expect(page.evaluate_script("document.documentElement.scrollWidth <= window.innerWidth + 1")).to be(true)
     page.save_screenshot(Rails.root.join("tmp/capybara/signature-review-mobile.png"), full: false)
     fill_in "Review comment", with: "Confirmed the fee; this version is approved."
@@ -340,6 +381,41 @@ RSpec.describe "Uploaded documents for signing", type: :system, js: true do
     expect(SignatureReviewComment.last.body).to eq("Unsent private negotiations")
     click_link "All documents"
     expect(page).to have_current_path("/agreements")
+    expect(@console_errors).to be_empty
+  end
+
+  it "recovers an older package by saving its signing settings as a new version" do
+    company.update!(timezone: "Mumbai")
+    open_documents
+    record = SignatureRequest.find_by!(title: "Synthetic uploaded agreement")
+    previous = record.current_revision
+    previous.update_columns(signing_options: nil)
+    visit current_path
+    expect(page).to have_content("Save a new version to record signing settings")
+    click_button "Save new version"
+    expect(page).to have_content("Time zone: Asia/Kolkata")
+    expect(record.reload.current_revision_id).not_to eq(previous.id)
+    expect(record.current_revision.documents).to eq(previous.documents)
+    expect(record.current_revision.approval_digest).to be_nil
+    expect(@console_errors).to be_empty
+  end
+
+  it "requires confirmation before a new version discards an unsent review comment" do
+    open_documents
+    record = SignatureRequest.find_by!(title: "Synthetic uploaded agreement")
+    previous_id = record.current_revision_id
+    fill_in "Reply to this review", with: "Unsent private negotiations"
+    fill_in "Document title", with: "Updated synthetic terms"
+    click_button "Save changes"
+    within('[role="dialog"]') { click_button "Keep editing" }
+    expect(page).to have_field("Document title", with: "Updated synthetic terms")
+    expect(page).to have_field("Reply to this review", with: "Unsent private negotiations", disabled: true)
+    expect(record.reload.current_revision_id).to eq(previous_id)
+    click_button "Save changes"
+    within('[role="dialog"]') { click_button "Discard review text and save" }
+    expect(page).to have_css('[role="status"]', text: "All changes saved")
+    expect(record.reload.current_revision_id).not_to eq(previous_id)
+    expect(page).to have_field("Reply to this review", with: "")
     expect(@console_errors).to be_empty
   end
 

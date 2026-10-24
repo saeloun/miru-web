@@ -182,12 +182,14 @@ export default function Fields({
                   step="any"
                   min={key === "x" || key === "y" ? 0 : 1}
                   max={
-                    {
-                      x: 100 - field.width,
-                      y: 100 - field.height,
-                      width: 100 - field.x,
-                      height: 100 - field.y,
-                    }[key]
+                    Math.round(
+                      {
+                        x: 100 - field.width,
+                        y: 100 - field.height,
+                        width: 100 - field.x,
+                        height: 100 - field.y,
+                      }[key] * 100
+                    ) / 100
                   }
                   value={field[key]}
                   onChange={event =>
@@ -252,6 +254,15 @@ export default function Fields({
                 </div>
               )}
               <Label htmlFor="signature-value">Field value</Label>
+              {["name", "email", "date"].includes(field.type) && (
+                <p
+                  id="signature-value-help"
+                  className="text-xs text-muted-foreground"
+                >
+                  Leave blank to fill automatically when signing. Pre-filled
+                  values use text entry; choose Read-only to preserve them.
+                </p>
+              )}
               {field.type === "checkbox" ? (
                 <input
                   id="signature-value"
@@ -280,6 +291,11 @@ export default function Fields({
               ) : (
                 <Input
                   id="signature-value"
+                  aria-describedby={
+                    ["name", "email", "date"].includes(field.type)
+                      ? "signature-value-help"
+                      : undefined
+                  }
                   type={
                     field.type === "date"
                       ? "date"

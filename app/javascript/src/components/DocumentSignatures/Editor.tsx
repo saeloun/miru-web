@@ -50,7 +50,7 @@ export default function Editor({
   const [reviewDirty, setReviewDirty] = useState(false);
   const [reviewKey, setReviewKey] = useState(0);
   const [confirm, setConfirm] = useState<
-    "reload" | "replace" | "version" | null
+    "reload" | "replace" | "version" | "save" | null
   >(null);
   const [version, setVersion] = useState("");
   const mounted = useRef(true);
@@ -132,9 +132,14 @@ export default function Editor({
     }
   };
 
-  const save = async (event: React.FormEvent) => {
-    event.preventDefault();
+  const save = async (discardReview = false) => {
     if (!record || busy || conflict) return;
+
+    if (reviewDirty && !discardReview) {
+      setConfirm("save");
+
+      return;
+    }
     setBusy(true);
     setError("");
     try {
@@ -191,11 +196,16 @@ export default function Editor({
   };
 
   const change = (field: Field, patch: Partial<Field>) => {
-    const next = { ...field, ...patch };
+    const updates = { ...patch };
+    for (const key of ["x", "y", "width", "height"] as const) {
+      const value = updates[key];
+      if (value !== undefined) updates[key] = Math.round(value * 100) / 100;
+    }
+    const next = { ...field, ...updates };
     setDraft(value => ({
       ...value,
       fields: value.fields.map(item =>
-        item.id === field.id ? { ...item, ...patch } : item
+        item.id === field.id ? { ...item, ...updates } : item
       ),
     }));
     if ("page" in patch || "document_id" in patch) {
@@ -296,7 +306,13 @@ export default function Editor({
           )}
         </div>
       )}
-      <form onSubmit={save} className="space-y-4">
+      <form
+        onSubmit={event => {
+          event.preventDefault();
+          void save();
+        }}
+        className="space-y-4"
+      >
         <div className="flex flex-wrap items-end gap-3">
           <div className="min-w-0 flex-1">
             <Label htmlFor="signing-title">Document title</Label>
@@ -312,8 +328,19 @@ export default function Editor({
             />
           </div>
           {editable && (
-            <Button type="submit" disabled={busy || !dirty || conflict}>
-              {busy ? "Saving…" : "Save changes"}
+            <Button
+              type="submit"
+              disabled={
+                busy ||
+                (!dirty && Boolean(record.revision.signing_options)) ||
+                conflict
+              }
+            >
+              {busy
+                ? "Saving…"
+                : !record.revision.signing_options
+                ? "Save new version"
+                : "Save changes"}
             </Button>
           )}
         </div>
@@ -477,11 +504,15 @@ export default function Editor({
             <DialogTitle>
               {confirm === "replace"
                 ? "Replace source documents?"
+                : confirm === "save"
+                ? "Save a new version?"
                 : "Unsaved changes"}
             </DialogTitle>
             <DialogDescription>
               {confirm === "replace"
-                ? "This creates a new version and clears all field placements and approval. Your previous version remains available."
+                ? "This creates a new version and clears field placements, approval and any unsent review text. Your previous version remains available."
+                : confirm === "save"
+                ? "Saving creates a new version and discards your unsent review comment or approval evidence. Keep editing to preserve that text."
                 : "Reloading or leaving discards your unsaved edits. Keep editing to preserve them."}
             </DialogDescription>
           </DialogHeader>
@@ -507,6 +538,13 @@ export default function Editor({
                   return;
                 }
 
+                if (confirm === "save") {
+                  setConfirm(null);
+                  void save(true);
+
+                  return;
+                }
+
                 if (confirm) {
                   const target = confirm === "version" ? version : undefined;
                   setConfirm(null);
@@ -516,6 +554,8 @@ export default function Editor({
             >
               {confirm === "replace"
                 ? "Replace and clear fields"
+                : confirm === "save"
+                ? "Discard review text and save"
                 : confirm
                 ? "Discard and reload"
                 : "Discard and leave"}

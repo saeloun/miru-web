@@ -43,6 +43,7 @@ export default function ReviewPanel({
     ? recipient
     : people[0]?.id || "";
   const historical = record.revision.id !== record.current_revision_id;
+  const settings = record.revision.signing_options;
   const editable =
     !historical &&
     ["draft", "under_review", "changes_requested", "approved"].includes(
@@ -144,9 +145,22 @@ export default function ReviewPanel({
       <h2 className="font-semibold">Review and approval</h2>
       <p className="text-sm text-muted-foreground">
         Approval covers version {record.revision.number}, including its sources,
-        recipients and fields. It is not a signature. Any edit creates a version
-        requiring fresh approval.
+        recipients, fields and signing settings. It is not a signature. Any edit
+        creates a version requiring fresh approval.
       </p>
+      {settings ? (
+        <p className="break-words text-sm text-muted-foreground">
+          Time zone: {settings.timezone} · Automatic dates:{" "}
+          {settings.dateFormat.toUpperCase()} · Signing window:{" "}
+          {settings.envelopeExpirationPeriod.amount} months
+        </p>
+      ) : (
+        <p className="text-sm">
+          {historical
+            ? "Signing settings were not recorded for this historical version."
+            : "Save a new version to record signing settings before approval."}
+        </p>
+      )}
       {disabled && (
         <p className="text-sm">
           Save your document changes before sending invitations or recording
@@ -191,7 +205,7 @@ export default function ReviewPanel({
               </p>
               <Button
                 type="button"
-                disabled={!recipientId}
+                disabled={!recipientId || !settings}
                 onClick={() =>
                   void change("invitations", { recipient_id: recipientId })
                 }
@@ -312,7 +326,11 @@ export default function ReviewPanel({
               </label>
               <Button
                 type="button"
-                disabled={!confirmed || (source === "manual" && !note.trim())}
+                disabled={
+                  !settings ||
+                  !confirmed ||
+                  (source === "manual" && !note.trim())
+                }
                 onClick={() =>
                   void change("approval", {
                     approval_source: source,

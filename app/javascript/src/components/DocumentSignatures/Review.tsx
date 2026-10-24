@@ -17,7 +17,13 @@ type ReviewData = {
   decision: string | null;
   revision: Pick<
     Revision,
-    "number" | "title" | "content_digest" | "status" | "documents" | "fields"
+    | "number"
+    | "title"
+    | "content_digest"
+    | "signing_options"
+    | "status"
+    | "documents"
+    | "fields"
   > & {
     recipients: { id: string; name: string; role: string }[];
   };
@@ -174,6 +180,19 @@ function Review({ token }: { token: string }) {
               For {review.name} · {review.company_name} · Version{" "}
               {review.revision.number}
             </p>
+            {review.revision.signing_options && (
+              <p className="break-words text-sm text-muted-foreground">
+                Time zone: {review.revision.signing_options.timezone} ·
+                Automatic dates:{" "}
+                {review.revision.signing_options.dateFormat.toUpperCase()} ·
+                Signing window:{" "}
+                {
+                  review.revision.signing_options.envelopeExpirationPeriod
+                    .amount
+                }{" "}
+                months
+              </p>
+            )}
             <p className="text-sm">
               Review approval is not a signature. This link expires{" "}
               {new Date(review.expires_at).toLocaleString()}.

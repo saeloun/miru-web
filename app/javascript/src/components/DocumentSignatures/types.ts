@@ -52,6 +52,12 @@ export type Revision = {
   title: string;
   status: string;
   content_digest: string;
+  signing_options: {
+    version: number;
+    timezone: string;
+    dateFormat: string;
+    envelopeExpirationPeriod: { unit: "month"; amount: number };
+  } | null;
   documents: SourceDocument[];
   recipients: Recipient[];
   fields: Field[];

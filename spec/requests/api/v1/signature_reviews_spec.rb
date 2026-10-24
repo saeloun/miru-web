@@ -143,6 +143,42 @@ RSpec.describe "Version-bound signature reviews", type: :request do
     expect(@record.reload.current_revision).to have_attributes(status: "draft", approved_by_id: nil, approval_digest: nil)
   end
 
+  it "binds date and delivery settings to the version and approval digest" do
+    company.update!(timezone: "Mumbai")
+    @record.reload.with_lock { @record.revise!(actor: admin, attributes: {}) }
+    previous = @record.current_revision
+    expect(previous.signing_options).to include("timezone" => "Asia/Kolkata", "dateFormat" => "dd/MM/yyyy", "version" => 1)
+    get "/api/v1/signature_requests/#{@record.id}"
+    expect(response.parsed_body.dig("signature_request", "revision", "signing_options")).to eq(previous.signing_options)
+    post review_path("/approval"), params: { signature_request: context(approval_source: "manual", approval_note: "Recorded approval") }, as: :json
+    expect(response).to have_http_status(:ok)
+    company.update!(timezone: "UTC")
+    expect(previous.reload.signing_options.fetch("timezone")).to eq("Asia/Kolkata")
+    expect(previous.update(signing_options: previous.signing_options.merge("timezone" => "UTC"))).to be(false)
+    @record.reload.with_lock { @record.revise!(actor: admin, attributes: {}) }
+    expect(@record.current_revision.signing_options.fetch("timezone")).to eq("Etc/UTC")
+    expect(@record.current_revision.content_digest).not_to eq(previous.reload.content_digest)
+    expect(@record.current_revision.approval_digest).to be_nil
+  end
+
+  it "requires a new version before approving a legacy package without signing settings" do
+    @record.current_revision.update_columns(signing_options: nil)
+    post review_path("/approval"), params: { signature_request: context(approval_source: "manual", approval_note: "Recorded approval") }, as: :json
+    expect(response).to have_http_status(:unprocessable_content)
+    expect(response.body).to include("new version")
+    expect(@record.current_revision.reload.approved_at).to be_nil
+  end
+
+  it "saves canonical field positions before they can be reviewed or approved" do
+    field = @record.current_revision.fields.first.merge("x" => 10.1234)
+    patch "/api/v1/signature_requests/#{@record.id}", params: {
+      signature_request: { company_id: company.id, lock_version: @record.lock_version, fields: [field] }
+    }, as: :json
+    expect(response).to have_http_status(:ok)
+    expect(response.parsed_body.dig("signature_request", "revision", "fields", 0, "x")).to eq(10.12)
+    expect(@record.reload.current_revision.fields.first.fetch("x")).to eq(10.12)
+  end
+
   it "rejects pending or changes-requested reviews and requires evidence for manually recorded approval" do
     invitation = invite
     post review_path("/approval"), params: { signature_request: context(approval_source: "reviewers") }, as: :json
