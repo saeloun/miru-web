@@ -45,9 +45,9 @@
 **Files:** additive migration/schema; `app/models/signature_request.rb`, `signature_request_revision.rb`; policy; `app/services/signatures/upload.rb`; `app/controllers/api/v1/signature_requests_controller.rb`; API routes/filtering; model/request specs and factories.
 **Interfaces:** request owns company/creator, optional client/employment and current revision; revision owns original attachments, trusted file metadata, encrypted recipients/fields, approval/status/digest and provider operation identity. API create/upload returns `signature_request` metadata/configuration; updates carry `company_id` and integer `lock_version`. Original reads use authenticated request/revision/file-key routes, never public blob URLs.
 
-- [ ] Write request/model failures for standalone upload, private storage, active-admin/tenant/workspace access, stale updates, rejected source preservation, revision replacement, approved/sent locks, metadata-only lists/audits and ambiguous create recovery.
-- [ ] Run RED; implement transactional upload/configuration operations. Source replacement always creates a revision; editing a shared/approved draft forks it and clears approval. Reject edits while sending/pending/completed.
-- [ ] Run GREEN, existing agreement/profile regressions and migration up/down/up in the owned test database; commit.
+- [x] Write request/model failures for standalone upload, private storage, active-admin/tenant/workspace access, stale updates, rejected source preservation, revision replacement, approved/sent locks, metadata-only lists/audits and ambiguous create recovery.
+- [x] Run RED; implement transactional upload/configuration operations. Source replacement always creates a revision; editing a shared/approved draft forks it and clears approval. Reject edits while sending/pending/completed.
+- [x] Run GREEN, existing agreement/profile regressions and migration up/down/up in the owned test database; commit.
 
 ### Task 3: Make upload and field placement the primary UI
 

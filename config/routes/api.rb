@@ -73,6 +73,13 @@ namespace :api, defaults: { format: "json" } do
       get :parties, on: :collection
       get :download, on: :member
     end
+    resources :signature_requests, only: [:index, :show, :create, :update] do
+      member do
+        post :sources
+        get "revisions/:revision_id", action: :revision
+        get "revisions/:revision_id/originals/:key", action: :original
+      end
+    end
     resources :tax_declarations, only: [:index, :show, :create] do
       member do
         post :submit

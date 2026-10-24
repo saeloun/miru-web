@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_24_100000) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_24_150000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_stat_statements"
@@ -1187,6 +1187,55 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_24_100000) do
     t.index ["user_id"], name: "index_second_factor_challenges_on_user_id"
   end
 
+  create_table "signature_request_revisions", force: :cascade do |t|
+    t.bigint "signature_request_id", null: false
+    t.bigint "created_by_id", null: false
+    t.bigint "approved_by_id"
+    t.integer "number", null: false
+    t.string "title", limit: 200, null: false
+    t.text "documents", null: false
+    t.text "recipients", null: false
+    t.text "fields", null: false
+    t.string "content_digest", limit: 64, null: false
+    t.string "status", default: "draft", null: false
+    t.datetime "approved_at"
+    t.string "provider_envelope_id"
+    t.string "operation_id"
+    t.datetime "send_started_at"
+    t.integer "lock_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["approved_by_id"], name: "index_signature_request_revisions_on_approved_by_id"
+    t.index ["created_by_id"], name: "index_signature_request_revisions_on_created_by_id"
+    t.index ["operation_id"], name: "index_signature_request_revisions_on_operation_id", unique: true
+    t.index ["provider_envelope_id"], name: "index_signature_request_revisions_on_provider_envelope_id", unique: true
+    t.index ["signature_request_id", "number"], name: "idx_on_signature_request_id_number_f9b90d1824", unique: true
+    t.index ["signature_request_id"], name: "index_signature_request_revisions_on_signature_request_id"
+    t.check_constraint "number > 0", name: "signature_request_revisions_number"
+    t.check_constraint "status::text = ANY (ARRAY['draft'::character varying, 'under_review'::character varying, 'changes_requested'::character varying, 'approved'::character varying, 'sending'::character varying, 'send_uncertain'::character varying, 'awaiting_signatures'::character varying, 'signed'::character varying, 'declined'::character varying, 'cancelled'::character varying, 'expired'::character varying]::text[])", name: "signature_request_revisions_status"
+  end
+
+  create_table "signature_requests", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "created_by_id", null: false
+    t.bigint "client_id"
+    t.bigint "employment_id"
+    t.string "title", limit: 200, null: false
+    t.string "creation_key", limit: 64, null: false
+    t.string "creation_digest", limit: 64, null: false
+    t.bigint "current_revision_id"
+    t.integer "lock_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["client_id"], name: "index_signature_requests_on_client_id"
+    t.index ["company_id", "creation_key"], name: "index_signature_requests_on_company_id_and_creation_key", unique: true
+    t.index ["company_id"], name: "index_signature_requests_on_company_id"
+    t.index ["created_by_id"], name: "index_signature_requests_on_created_by_id"
+    t.index ["current_revision_id"], name: "index_signature_requests_on_current_revision_id"
+    t.index ["employment_id"], name: "index_signature_requests_on_employment_id"
+    t.check_constraint "client_id IS NULL OR employment_id IS NULL", name: "signature_requests_party"
+  end
+
   create_table "solid_cable_messages", force: :cascade do |t|
     t.binary "channel", null: false
     t.bigint "channel_hash", null: false
@@ -1631,6 +1680,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_24_100000) do
   add_foreign_key "salary_slips", "users", column: "uploaded_by_id"
   add_foreign_key "salary_slips", "users", column: "withdrawn_by_id"
   add_foreign_key "second_factor_challenges", "users"
+  add_foreign_key "signature_request_revisions", "signature_requests"
+  add_foreign_key "signature_request_revisions", "users", column: "approved_by_id"
+  add_foreign_key "signature_request_revisions", "users", column: "created_by_id"
+  add_foreign_key "signature_requests", "clients"
+  add_foreign_key "signature_requests", "companies"
+  add_foreign_key "signature_requests", "employments"
+  add_foreign_key "signature_requests", "signature_request_revisions", column: "current_revision_id"
+  add_foreign_key "signature_requests", "users", column: "created_by_id"
   add_foreign_key "solid_queue_blocked_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_claimed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_failed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade

@@ -10,5 +10,5 @@ Rails.application.config.filter_parameters += [
   /\A(code|recovery_code)\z/, /\Acredential\z/, :provisioning_uri,
   :tax_declaration, "review.approved_amount", "review.reason", :consultant_compensation, :payroll_preview,
   :payroll_payload, :tax_estimate, :employee_record, :private_details, :employee_payment, :employee_document,
-  :salary_details, :profitability_billing_rate, :agreement, :agreement_template
+  :salary_details, :profitability_billing_rate, :agreement, :agreement_template, :signature_request, :files
 ]
