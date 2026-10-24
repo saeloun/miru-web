@@ -60,6 +60,32 @@ export type SigningRequest = Summary & {
   revision: Revision;
   revisions: { id: number; number: number; status: string }[];
 };
+export type ReviewComment = {
+  id: number;
+  body: string;
+  created_at: string;
+  author_name: string;
+  author_kind: "admin" | "reviewer";
+};
+export type ReviewSummary = {
+  comments: ReviewComment[];
+  older_before_id: number | null;
+  invitations: {
+    id: number;
+    recipient_id: string;
+    name: string;
+    expires_at: string;
+    revoked_at: string | null;
+    decision: string | null;
+    email_status: string;
+  }[];
+  approval: {
+    approved_at: string | null;
+    approval_source: string | null;
+    approval_digest: string | null;
+    approval_note: string | null;
+  };
+};
 export const fieldTypes: Field["type"][] = [
   "signature",
   "initials",

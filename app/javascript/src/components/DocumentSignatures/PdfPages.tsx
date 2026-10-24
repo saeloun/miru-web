@@ -10,7 +10,7 @@ import workerUrl from "pdfjs-dist/build/pdf.worker.min.mjs?url";
 import { PdfResources } from "./pdfResources";
 import { Button } from "../ui/button";
 import { Label } from "../ui/label";
-import { failureMessage, originalBytes, originalPath } from "./api";
+import { failureMessage } from "./api";
 import type { Field, SourceDocument } from "./types";
 
 GlobalWorkerOptions.workerSrc = workerUrl;
@@ -18,8 +18,10 @@ const clamp = (value: number, min: number, max: number) =>
   Math.min(max, Math.max(min, value));
 
 type Props = {
-  requestId: number;
-  revisionId: number;
+  loadSource: (
+    key: string,
+    signal: InstanceType<typeof window.AbortController>["signal"]
+  ) => Promise<ArrayBuffer>;
   documents: SourceDocument[];
   fields: Field[];
   selected: string;
@@ -31,8 +33,7 @@ type Props = {
 };
 
 export default function PdfPages({
-  requestId,
-  revisionId,
+  loadSource,
   documents,
   fields,
   selected,
@@ -84,10 +85,7 @@ export default function PdfPages({
     setPdf(null);
     setError("");
     setReady(false);
-    originalBytes(
-      originalPath(requestId, revisionId, source.key),
-      controller.signal
-    )
+    loadSource(source.key, controller.signal)
       .then(bytes => {
         if (!active) return;
         loading = getDocument({
@@ -113,7 +111,7 @@ export default function PdfPages({
       controller.abort();
       void loading?.destroy();
     };
-  }, [requestId, revisionId, source.key, refresh]);
+  }, [loadSource, source.key, refresh]);
 
   const displayWidth = (Math.min(800, width) * zoom) / 100;
   useEffect(() => {
@@ -260,8 +258,9 @@ export default function PdfPages({
         </div>
       </div>
       <p className="text-xs text-muted-foreground">
-        Drag fields or use their position controls. Arrow keys move a focused
-        field or resize handle by 1%.
+        {editable
+          ? "Drag fields or use their position controls. Arrow keys move a focused field or resize handle by 1%."
+          : "Read-only preview of this document version."}
       </p>
       {error && (
         <div role="alert">
@@ -310,12 +309,18 @@ export default function PdfPages({
                     height: `${field.height}%`,
                   }}
                 >
-                  {[false, true].map(resize => (
+                  {(editable ? [false, true] : [false]).map(resize => (
                     <button
                       key={String(resize)}
                       type="button"
                       className={resize ? "signature-resize" : "signature-move"}
-                      aria-label={(resize ? "Resize " : "Move ") + field.label}
+                      aria-label={
+                        (editable
+                          ? resize
+                            ? "Resize "
+                            : "Move "
+                          : "Inspect ") + field.label
+                      }
                       aria-disabled={!editable}
                       onClick={() => select(field)}
                       onKeyDown={event => keyboard(event, field, resize)}
@@ -340,7 +345,17 @@ export default function PdfPages({
                         gesture.current = null;
                       }}
                     >
-                      {resize ? "↘" : field.label}
+                      {resize
+                        ? "↘"
+                        : field.value === undefined ||
+                          field.value === null ||
+                          field.value === ""
+                        ? field.label
+                        : typeof field.value === "boolean"
+                        ? field.value
+                          ? "Yes"
+                          : "No"
+                        : field.value}
                     </button>
                   ))}
                 </div>

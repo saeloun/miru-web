@@ -1,0 +1,11 @@
+Hello <%= @invitation.recipient.fetch("name") %>,
+
+<%= @invitation.invited_by.full_name %> invited you to review a document for <%= @company.name %>.
+
+This private link opens version <%= @invitation.revision.number %>. You can comment, request changes or approve this version for signing. Review approval is not a signature.
+
+<%= @review_url %>
+
+The link expires <%= @invitation.expires_at.utc.strftime("%d %B %Y at %H:%M UTC") %>. Anyone with this link can access this version until it expires or is revoked. Please do not forward it.
+
+If the document changes, ask the sender for a new review link.

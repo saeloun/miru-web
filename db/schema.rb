@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_24_150000) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_24_170000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_stat_statements"
@@ -1205,6 +1205,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_24_150000) do
     t.integer "lock_version", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "approval_digest", limit: 64
+    t.string "approval_source"
+    t.text "approval_note"
     t.index ["approved_by_id"], name: "index_signature_request_revisions_on_approved_by_id"
     t.index ["created_by_id"], name: "index_signature_request_revisions_on_created_by_id"
     t.index ["operation_id"], name: "index_signature_request_revisions_on_operation_id", unique: true
@@ -1234,6 +1237,40 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_24_150000) do
     t.index ["current_revision_id"], name: "index_signature_requests_on_current_revision_id"
     t.index ["employment_id"], name: "index_signature_requests_on_employment_id"
     t.check_constraint "client_id IS NULL OR employment_id IS NULL", name: "signature_requests_party"
+  end
+
+  create_table "signature_review_comments", force: :cascade do |t|
+    t.bigint "revision_id", null: false
+    t.bigint "author_user_id"
+    t.bigint "author_invitation_id"
+    t.text "body", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["author_invitation_id"], name: "index_signature_review_comments_on_author_invitation_id"
+    t.index ["author_user_id"], name: "index_signature_review_comments_on_author_user_id"
+    t.index ["revision_id"], name: "index_signature_review_comments_on_revision_id"
+    t.check_constraint "(author_user_id IS NULL) <> (author_invitation_id IS NULL)", name: "signature_review_comments_author"
+  end
+
+  create_table "signature_review_invitations", force: :cascade do |t|
+    t.bigint "revision_id", null: false
+    t.bigint "invited_by_id", null: false
+    t.string "recipient_id", limit: 64, null: false
+    t.text "access_token", null: false
+    t.datetime "expires_at", null: false
+    t.datetime "revoked_at"
+    t.string "decision"
+    t.datetime "decided_at"
+    t.string "email_status", default: "queued", null: false
+    t.datetime "email_sent_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["access_token"], name: "index_signature_review_invitations_on_access_token", unique: true
+    t.index ["invited_by_id"], name: "index_signature_review_invitations_on_invited_by_id"
+    t.index ["revision_id", "recipient_id"], name: "signature_review_invitations_active_recipient", unique: true, where: "(revoked_at IS NULL)"
+    t.index ["revision_id"], name: "index_signature_review_invitations_on_revision_id"
+    t.check_constraint "decision IS NULL OR (decision::text = ANY (ARRAY['approved'::character varying, 'changes_requested'::character varying]::text[]))", name: "signature_review_invitations_decision"
+    t.check_constraint "email_status::text = ANY (ARRAY['queued'::character varying, 'sent'::character varying, 'failed'::character varying]::text[])", name: "signature_review_invitations_email_status"
   end
 
   create_table "solid_cable_messages", force: :cascade do |t|
@@ -1688,6 +1725,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_24_150000) do
   add_foreign_key "signature_requests", "employments"
   add_foreign_key "signature_requests", "signature_request_revisions", column: "current_revision_id"
   add_foreign_key "signature_requests", "users", column: "created_by_id"
+  add_foreign_key "signature_review_comments", "signature_request_revisions", column: "revision_id"
+  add_foreign_key "signature_review_comments", "signature_review_invitations", column: "author_invitation_id"
+  add_foreign_key "signature_review_comments", "users", column: "author_user_id"
+  add_foreign_key "signature_review_invitations", "signature_request_revisions", column: "revision_id"
+  add_foreign_key "signature_review_invitations", "users", column: "invited_by_id"
   add_foreign_key "solid_queue_blocked_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_claimed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_failed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade

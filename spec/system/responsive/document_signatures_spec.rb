@@ -247,4 +247,115 @@ RSpec.describe "Uploaded documents for signing", type: :system, js: true do
     expect(page).to have_field("Document title", with: "Unsaved private negotiations")
     expect(SignatureRequest.last.title).to eq("Synthetic uploaded agreement")
   end
+
+  it "reviews the exact uploaded version privately and records approval before a replacement invalidates it" do
+    open_documents
+    add_signer
+    click_button "Add field"
+    click_button "Add field"
+    select "Text", from: "Field type"
+    fill_in "Field label", with: "Reviewed fee"
+    fill_in "Field value", with: "INR 12345"
+    fill_in "Top (%)", with: "60"
+    check "Read-only"
+    click_button "Save changes"
+    expect(page).to have_css('[role="status"]', text: "All changes saved")
+    click_button "Invite for review"
+    expect(page).to have_content("Review invitation queued")
+    record = SignatureRequest.find_by!(title: "Synthetic uploaded agreement")
+    invitation = record.current_revision.review_invitations.last
+    link = "/document-review##{invitation.access_token}"
+    visit link
+    expect(page).to have_content("Review this document")
+    expect(page).to have_css('[data-pdf-ready="true"]')
+    expect(page.evaluate_script("window.location.hash")).to eq("")
+    expect(page).to have_content("INR 12345")
+    expect(page).to have_css(".signature-placement", text: "INR 12345")
+    expect(page).not_to have_field("Field value")
+    fill_in "Review comment", with: "<script>window.review_xss = true</script> Please confirm the fee."
+    click_button "Request changes"
+    expect(page).to have_content("Changes requested")
+    expect(page).to have_content("<script>window.review_xss = true</script>")
+    expect(page.evaluate_script("window.review_xss === undefined")).to be(true)
+    page.save_screenshot(Rails.root.join("tmp/capybara/signature-review-desktop.png"), full: true)
+    page.current_window.resize_to(375, 900)
+    expect(page).to have_css('[data-pdf-ready="true"]')
+    expect(page.evaluate_script("document.documentElement.scrollWidth <= window.innerWidth + 1")).to be(true)
+    page.save_screenshot(Rails.root.join("tmp/capybara/signature-review-mobile.png"), full: false)
+    fill_in "Review comment", with: "Confirmed the fee; this version is approved."
+    click_button "Approve this version"
+    expect(page).to have_content("Review approved")
+    visit "/agreements/documents/#{record.id}"
+    expect(page).to have_content("Confirmed the fee")
+    select "2", from: "Preview page"
+    select "Invited reviews", from: "Approval source"
+    check "I confirm this version is approved for signature"
+    click_button "Record approval for signing"
+    expect(page).to have_content("Approval recorded for this version")
+    expect(page).to have_select("Preview page", selected: "2")
+    expect(record.reload.current_revision.approval_digest).to eq(record.current_revision.content_digest)
+    attach_file "Replacement PDFs", addendum
+    click_button "Replace sources"
+    within('[role="dialog"]') { click_button "Replace and clear fields" }
+    expect(page).to have_content("Place fields again on the new source")
+    visit link
+    expect(page).to have_content("This review link is unavailable")
+    expect(page).not_to have_content("INR 12345")
+    expect(@console_errors).to be_empty
+  end
+
+  it "renders the local-only review invitation email at desktop and mobile widths" do
+    open_documents
+    add_signer
+    click_button "Save changes"
+    expect(page).to have_css('[role="status"]', text: "All changes saved")
+    click_button "Invite for review"
+    expect(page).to have_content("Review invitation queued")
+    invitation = SignatureReviewInvitation.last
+    mail = SignatureReviewMailer.invite(invitation.id).message
+    html = mail.html_part.body.decoded
+    mail.attachments.each do |attachment|
+      next unless attachment.content_id
+
+      cid = attachment.content_id.delete_prefix("<").delete_suffix(">")
+      html.gsub!("cid:#{cid}", "data:#{attachment.mime_type};base64,#{Base64.strict_encode64(attachment.body.decoded)}")
+    end
+    visit "data:text/html;base64,#{Base64.strict_encode64(html)}"
+    expect(page).to have_link("Review document")
+    expect(page).to have_content("Review approval is not a signature")
+    page.save_screenshot(Rails.root.join("tmp/capybara/signature-review-email-desktop.png"), full: true)
+    page.current_window.resize_to(375, 900)
+    expect(page.evaluate_script("document.documentElement.scrollWidth <= window.innerWidth + 1")).to be(true)
+    page.save_screenshot(Rails.root.join("tmp/capybara/signature-review-email-mobile.png"), full: false)
+  end
+
+  it "preserves an unsent admin review comment when navigation is cancelled" do
+    open_documents
+    fill_in "Reply to this review", with: "Unsent private negotiations"
+    click_link "All documents"
+    within('[role="dialog"]') { click_button "Keep editing" }
+    expect(page).to have_field("Reply to this review", with: "Unsent private negotiations")
+    click_button "Add review comment"
+    expect(page).to have_content("Review updated")
+    expect(SignatureReviewComment.last.body).to eq("Unsent private negotiations")
+    click_link "All documents"
+    expect(page).to have_current_path("/agreements")
+    expect(@console_errors).to be_empty
+  end
+
+  it "revokes a private review link from the admin screen" do
+    open_documents
+    add_signer
+    click_button "Save changes"
+    expect(page).to have_css('[role="status"]', text: "All changes saved")
+    click_button "Invite for review"
+    expect(page).to have_content("Review invitation queued")
+    invitation = SignatureReviewInvitation.last
+    click_button "Revoke review link for Synthetic Consultant"
+    expect(page).to have_content("Link: Revoked")
+    expect(invitation.reload.revoked_at).to be_present
+    visit "/document-review##{invitation.access_token}"
+    expect(page).to have_content("This review link is unavailable")
+    expect(@console_errors).to be_empty
+  end
 end

@@ -1,6 +1,6 @@
 # Documenso local validation, 2026-10-24
 
-**DONE_WITH_CONCERNS: the provider feasibility test below is complete. Miru's private upload/revision and field-placement implementation is in progress; review, sending and completed-artifact integration are not released. PR #2475 stays a draft.** The [corrected requirements](../../superpowers/specs/2026-10-24-generic-document-signing.md) make individual uploads primary and templates optional. Existing authoring-unit CI/test counts do not verify this workflow.
+**DONE_WITH_CONCERNS: the provider feasibility test below is complete. Miru's private upload/revision, field placement and version-bound review implementation is in progress; provider sending and completed-artifact integration are not released. PR #2475 stays a draft.** The [corrected requirements](../../superpowers/specs/2026-10-24-generic-document-signing.md) make individual uploads primary and templates optional. Existing authoring-unit CI/test counts do not verify this workflow.
 
 ## Miru upload and placement checks
 
@@ -15,6 +15,26 @@ A separate manual Brave/CUA QA invocation stopped at local sign-in because its k
 ![Synthetic Miru field placement on mobile](miru-upload-mobile.png)
 
 ![Synthetic malformed-upload recovery with retained title](miru-upload-recovery.png)
+
+## Miru version review and approval checks
+
+The branch adds private reviewer links, encrypted comments/replies, explicit review decisions and admin approval tied to the exact source/recipient/field digest. Editing or replacing a source creates a new version and invalidates its links and approval. Reviewer access expires or can be revoked; a decision recorded before expiry remains historical evidence. Review approval is not a signature or verified signer identity. Links grant access to their holder and must not be forwarded.
+
+Focused backend verification passed 42 examples covering scoped access, expired/revoked/reissued capabilities, immutable invitation bindings and comments, pagination, stale/incomplete approvals, readiness, CSRF, public rate limits, queue failures and mail privacy. The invitation mailer keeps link credentials out of delivery instrumentation and job arguments. The migration passed up/down/up against the isolated test database.
+
+An additional CLI-driven Playwright probe used the actual Brave executable and fictional data on a separate local database. The review page loaded its PDF with 17 local requests, no account API or off-site requests, no browser errors and an empty URL fragment after mounting. Original download matched the fixture byte for byte; mobile comments/change requests worked without overflow. This is a functional probe, not a formal gstack QA release gate. Local email previews were rendered in Brave at desktop/mobile widths; no real recipient email was sent. A final combined regression run remains the task-close gate.
+
+These screenshots are actual local Miru UI with synthetic documents and recipients:
+
+![Synthetic version-bound document review, desktop](miru-review-desktop.png)
+
+![Synthetic private document review, mobile](miru-review-mobile.png)
+
+![Synthetic review invitation email preview, desktop](miru-review-email-desktop.png)
+
+![Synthetic review invitation email preview, mobile](miru-review-email-mobile.png)
+
+Provider connection/send/cancel/reconciliation and verified completed artifacts are the next units. No production readiness or completed Miru signature follows from these review checks.
 
 ## Environment and isolation
 

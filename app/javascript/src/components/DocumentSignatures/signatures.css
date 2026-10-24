@@ -75,6 +75,10 @@
   touch-action: none;
   cursor: nwse-resize;
 }
+.signature-workspace .signature-move[aria-disabled="true"] {
+  cursor: default;
+  padding-right: 4px;
+}
 .signature-check {
   display: flex;
   min-height: 44px;

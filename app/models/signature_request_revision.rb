@@ -7,12 +7,14 @@ class SignatureRequestRevision < ApplicationRecord
   belongs_to :signature_request
   belongs_to :created_by, class_name: "User"
   belongs_to :approved_by, class_name: "User", optional: true
+  has_many :review_invitations, class_name: "SignatureReviewInvitation", foreign_key: :revision_id, dependent: :restrict_with_exception
+  has_many :review_comments, class_name: "SignatureReviewComment", foreign_key: :revision_id, dependent: :restrict_with_exception
   has_many_attached :originals
   serialize :documents, coder: JSON
   serialize :recipients, coder: JSON
   serialize :fields, coder: JSON
-  encrypts :documents, :recipients, :fields
-  self.filter_attributes += [:title, :documents, :recipients, :fields]
+  encrypts :documents, :recipients, :fields, :approval_note
+  self.filter_attributes += [:title, :documents, :recipients, :fields, :approval_note]
   before_validation :assign_digest, on: :create
 
   validates :title, presence: true, length: { maximum: 200 }
@@ -24,6 +26,34 @@ class SignatureRequestRevision < ApplicationRecord
 
   def configuration
     Signatures::Configuration.new(documents:, recipients:, fields:)
+  end
+
+  def review_comments_page(before_id: nil)
+    raise ActionController::BadRequest unless before_id.nil? || before_id.to_s.match?(/\A[1-9]\d{0,17}\z/)
+
+    records = review_comments.includes(:author_user, author_invitation: :revision).order(id: :desc)
+    records = records.where("id < ?", before_id) if before_id
+    page = records.limit(31).to_a
+    comments = page.first(30).reverse.map do |comment|
+      comment.slice(:id, :body, :created_at).merge(author_name: comment.author_name,
+        author_kind: comment.author_user_id ? "admin" : "reviewer")
+    end
+    { comments:, older_before_id: page.size > 30 ? comments.first.fetch("id") : nil }
+  end
+
+  def original_bytes(key)
+    document = documents.find { |item| item["key"] == key }
+    raise ActiveRecord::RecordNotFound unless document
+
+    blob = originals.blobs.find(document.fetch("blob_id"))
+    data = +"".b
+    blob.download do |chunk|
+      data << chunk
+      raise Signatures::Upload::Unavailable, "The original document could not be verified." if data.bytesize > Signatures::PdfInfo::MAX_BYTES
+    end
+    raise Signatures::Upload::Unavailable, "The original document could not be verified." unless Digest::SHA256.hexdigest(data) == document.fetch("sha256")
+
+    [data, document]
   end
 
   private

@@ -9,6 +9,10 @@ end
 Rails.application.routes.draw do
   # Health check endpoint
   get "/health", to: "health#index"
+  get "/document-review", to: "document_reviews#show", as: :document_review
+  post "/document-review/open", to: "document_reviews#open"
+  post "/document-review/comments", to: "document_reviews#comment"
+  post "/document-review/original", to: "document_reviews#original"
 
   if ENV["MISSION_CONTROL_ENABLED"] == "true"
     mount MissionControl::Jobs::Engine, at: "/jobs"

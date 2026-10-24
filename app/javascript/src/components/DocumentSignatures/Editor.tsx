@@ -24,6 +24,7 @@ import type { Field, SigningRequest } from "./types";
 import Fields from "./Fields";
 import Recipients from "./Recipients";
 import PdfPages from "./PdfPages";
+import ReviewPanel from "./ReviewPanel";
 
 export default function Editor({
   id,
@@ -46,16 +47,18 @@ export default function Editor({
   const [conflict, setConflict] = useState(false);
   const [files, setFiles] = useState<File[]>([]);
   const [notice, setNotice] = useState("");
+  const [reviewDirty, setReviewDirty] = useState(false);
+  const [reviewKey, setReviewKey] = useState(0);
   const [confirm, setConfirm] = useState<
     "reload" | "replace" | "version" | null
   >(null);
   const [version, setVersion] = useState("");
   const mounted = useRef(true);
   const dirty = Boolean(record) && JSON.stringify(draft) !== saved;
-  const blocker = useBlocker(dirty || busy);
+  const blocker = useBlocker(dirty || reviewDirty || busy);
   useEffect(() => {
     const guard = event => {
-      if (dirty || busy) {
+      if (dirty || reviewDirty || busy) {
         event.preventDefault();
         setError(
           "Save your edits or leave the editor before changing workspaces."
@@ -65,17 +68,17 @@ export default function Editor({
     window.addEventListener(BEFORE_WORKSPACE_CHANGE, guard);
 
     return () => window.removeEventListener(BEFORE_WORKSPACE_CHANGE, guard);
-  }, [dirty, busy]);
+  }, [dirty, reviewDirty, busy]);
 
   useBeforeUnload(
     useCallback(
       event => {
-        if (dirty || busy) {
+        if (dirty || reviewDirty || busy) {
           event.preventDefault();
           event.returnValue = "";
         }
       },
-      [dirty, busy]
+      [dirty, reviewDirty, busy]
     )
   );
 
@@ -118,7 +121,10 @@ export default function Editor({
         endpoint(id) + (revision ? `/revisions/${revision}` : ""),
         quiet
       );
-      if (mounted.current) reset(data.signature_request);
+      if (mounted.current) {
+        reset(data.signature_request);
+        setReviewKey(value => value + 1);
+      }
     } catch (failure) {
       if (mounted.current) setError(failureMessage(failure));
     } finally {
@@ -197,6 +203,15 @@ export default function Editor({
     }
   };
 
+  const revisionId = record?.revision.id;
+  const loadSource = useCallback(
+    (
+      key: string,
+      signal: InstanceType<typeof window.AbortController>["signal"]
+    ) => originalBytes(originalPath(Number(id), revisionId!, key), signal),
+    [id, revisionId]
+  );
+
   if (!record) {
     return (
       <div className="p-6">
@@ -246,7 +261,7 @@ export default function Editor({
             value={record.revision.id}
             disabled={busy}
             onChange={event => {
-              if (dirty) {
+              if (dirty || reviewDirty) {
                 setVersion(event.target.value);
                 setConfirm("version");
               } else void load(event.target.value);
@@ -307,8 +322,7 @@ export default function Editor({
         </p>
         <div className="signature-layout">
           <PdfPages
-            requestId={record.id}
-            revisionId={record.revision.id}
+            loadSource={loadSource}
             documents={documents}
             fields={draft.fields}
             selected={selected}
@@ -370,6 +384,17 @@ export default function Editor({
           </fieldset>
         </div>
       </form>
+      <ReviewPanel
+        key={`${record.revision.id}:${reviewKey}`}
+        record={record}
+        companyId={companyId}
+        disabled={dirty || conflict}
+        busy={busy}
+        onRecordChange={setRecord}
+        onBusyChange={setBusy}
+        onDirtyChange={setReviewDirty}
+        reload={() => setConfirm("reload")}
+      />
       <section aria-label="Original documents" className="space-y-2">
         <h2 className="font-semibold">Original documents</h2>
         {documents.map(document => (

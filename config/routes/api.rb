@@ -74,6 +74,12 @@ namespace :api, defaults: { format: "json" } do
       get :download, on: :member
     end
     resources :signature_requests, only: [:index, :show, :create, :update] do
+      resource :review, only: :show, controller: :signature_request_reviews do
+        post :invitations, action: :invite
+        delete "invitations/:invitation_id", action: :revoke
+        post :comments, action: :comment
+        post :approval, action: :approve
+      end
       member do
         post :sources
         get "revisions/:revision_id", action: :revision

@@ -73,11 +73,7 @@ class Api::V1::SignatureRequestsController < Api::V1::ApplicationController
   def original
     record = find_request
     revision = record.signature_revisions.find(params[:revision_id])
-    document = revision.documents.find { |item| item["key"] == params[:key] }
-    raise ActiveRecord::RecordNotFound unless document
-
-    blob = revision.originals.blobs.find(document.fetch("blob_id"))
-    data = original_bytes(blob, document)
+    data, document = revision.original_bytes(params[:key])
     record.audits.create!(action: "download", user: current_user, associated: current_company,
       audited_changes: { revision_id: revision.id })
     response.headers["Content-Security-Policy"] = "sandbox; default-src 'none'"
@@ -90,18 +86,6 @@ class Api::V1::SignatureRequestsController < Api::V1::ApplicationController
 
     def company_requests
       SignatureRequest.where(company: current_company)
-    end
-
-    def original_bytes(blob, document)
-      data = +"".b
-      blob.download do |chunk|
-        data << chunk
-        raise Signatures::Upload::Unavailable, "The original document could not be verified. Contact your workspace administrator." if data.bytesize > Signatures::PdfInfo::MAX_BYTES
-      end
-      unless Digest::SHA256.hexdigest(data) == document.fetch("sha256")
-        raise Signatures::Upload::Unavailable, "The original document could not be verified. Contact your workspace administrator."
-      end
-      data
     end
 
     def find_request
