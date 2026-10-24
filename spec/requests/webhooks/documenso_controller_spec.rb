@@ -90,4 +90,17 @@ RSpec.describe "Documenso callbacks", type: :request do
     expect(response).to have_http_status(:accepted)
     expect(SignatureCallback.count).to eq(1)
   end
+
+  it "leaves an interrupted enqueue retryable instead of acknowledging an unqueued receipt" do
+    interruption = Class.new(StandardError)
+    allow(SignatureSyncJob).to receive(:perform_later).and_raise(interruption)
+    expect { callback }.to raise_error(interruption)
+    receipt = SignatureCallback.sole
+    expect(receipt.enqueued_at).to be_nil
+    allow(SignatureSyncJob).to receive(:perform_later).and_call_original
+    expect { callback }.to have_enqueued_job(SignatureSyncJob).with(@revision.id, receipt.id)
+    expect(response).to have_http_status(:accepted)
+    expect(SignatureCallback.count).to eq(1)
+    expect(receipt.reload.enqueued_at).to be_present
+  end
 end

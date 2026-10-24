@@ -9,27 +9,18 @@ class SignatureCallback < ApplicationRecord
   validates :event, inclusion: { in: EVENTS }
 
   def enqueue!
-    attempted_at = Time.current
-    needed = with_lock do
-      next false if processed_at || enqueued_at && enqueued_at > 5.minutes.ago
-
-      update!(enqueued_at: attempted_at)
-      true
+    queued = with_lock do
+      processed_at || enqueued_at && enqueued_at > 5.minutes.ago
     end
-    return true unless needed
+    return true if queued
 
     job = SignatureSyncJob.perform_later(revision_id, id)
-    return true if job && job.successfully_enqueued?
+    return false unless job && job.successfully_enqueued?
 
-    queue_failed(attempted_at)
+    # Record acceptance after enqueue so an interruption cannot suppress the provider's retry.
+    with_lock { update!(enqueued_at: Time.current) unless processed_at }
+    true
   rescue ActiveJob::EnqueueError
-    queue_failed(attempted_at)
+    false
   end
-
-  private
-
-    def queue_failed(attempted_at)
-      self.class.where(id:, enqueued_at: attempted_at, processed_at: nil).update_all(enqueued_at: nil)
-      false
-    end
 end
